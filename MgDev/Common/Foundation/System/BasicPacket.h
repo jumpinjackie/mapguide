@@ -22,6 +22,12 @@
 //  Basic Packet Wrapper Structure
 struct MgBasicPacket
 {
+    MgBasicPacket()
+    :
+     m_PacketHeader(0)
+    {
+    }
+
     UINT32 m_PacketHeader;
 };
 /// \endcond

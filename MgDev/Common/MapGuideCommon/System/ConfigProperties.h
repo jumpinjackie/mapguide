@@ -74,6 +74,10 @@ EXTERNAL_API:
     static const STRING GeneralPropertyLicenseServerPath;               /// value("LicenseServerPath")
     static const STRING DefaultGeneralPropertyLicenseServerPath;        /// value("");
 
+    /// Memory allocator debugging for Linux
+    static const STRING GeneralPropertyLinuxMemDebug;               /// value("LinuxMemDebug")
+    static const bool DefaultGeneralPropertyLinuxMemDebug;        /// value(false);
+
     /// Sets the field delimiter in the logs
     static const STRING GeneralPropertyLogsDelimiter;                   /// value("LogsDelimiter")
     static const STRING DefaultGeneralPropertyLogsDelimiter;            /// value("\t")

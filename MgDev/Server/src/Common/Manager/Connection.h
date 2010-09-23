@@ -85,10 +85,10 @@ public:
     void SetCurrentOperationStatus(OperationStatus opStatus);
     void SetCurrentOperationTime(INT32 opTime);
 
-    CREFSTRING GetClientAgent() const;
-    CREFSTRING GetClientIp() const;
-    CREFSTRING GetUserName() const;
-    CREFSTRING GetSessionId() const;
+    STRING GetClientAgent() const;
+    STRING GetClientIp() const;
+    STRING GetUserName() const;
+    STRING GetSessionId() const;
     const ACE_Time_Value& GetLastUsageTime() const;
     const ACE_Time_Value& GetStartTime() const;
     INT32 GetProcessedOperations() const;
@@ -127,22 +127,22 @@ private:
 
 /// Inline Methods
 
-inline CREFSTRING MgConnection::GetClientAgent() const
+inline STRING MgConnection::GetClientAgent() const
 {
     return m_clientAgent;
 }
 
-inline CREFSTRING MgConnection::GetClientIp() const
+inline STRING MgConnection::GetClientIp() const
 {
     return m_clientIp;
 }
 
-inline CREFSTRING MgConnection::GetUserName() const
+inline STRING MgConnection::GetUserName() const
 {
     return m_userName;
 }
 
-inline CREFSTRING MgConnection::GetSessionId() const
+inline STRING MgConnection::GetSessionId() const
 {
     return m_sessionId;
 }

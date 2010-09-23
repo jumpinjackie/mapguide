@@ -32,10 +32,10 @@ public:
 public:
     MgOperationParameter& operator=(const MgOperationParameter& opParam);
 
-    CREFSTRING GetValue() const;
+    STRING GetValue() const;
     void SetValue(CREFSTRING value);
 
-    CREFSTRING GetContentType() const;
+    STRING GetContentType() const;
     void SetContentType(CREFSTRING contentType);
 
 /// Data Members
@@ -67,13 +67,13 @@ private:
 
 /// Inline Methods
 
-inline CREFSTRING MgOperationParameter::GetValue() const
+inline STRING MgOperationParameter::GetValue() const
 {
     return m_value;
 }
 
 
-inline CREFSTRING MgOperationParameter::GetContentType() const
+inline STRING MgOperationParameter::GetContentType() const
 {
     return m_contentType;
 }

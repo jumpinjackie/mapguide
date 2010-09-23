@@ -70,8 +70,8 @@ public:
 
     virtual void Dispose();
 
-    CREFSTRING GetPackagePathname() const;
-    CREFSTRING GetLogPathname() const;
+    STRING GetPackagePathname() const;
+    STRING GetLogPathname() const;
     MgPackageStatusInformation& GetStatusInfo();
 
     void End();
@@ -96,12 +96,12 @@ protected:
 
 /// Inline Methods
 
-inline CREFSTRING MgPackageLogHandler::GetPackagePathname() const
+inline STRING MgPackageLogHandler::GetPackagePathname() const
 {
     return m_packagePathname;
 }
 
-inline CREFSTRING MgPackageLogHandler::GetLogPathname() const
+inline STRING MgPackageLogHandler::GetLogPathname() const
 {
     return m_logPathname;
 }

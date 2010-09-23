@@ -50,7 +50,8 @@ libMgGeometry_la_SOURCES = \
   ../CoordinateSystem/CoordSysMgrsZone.cpp \
   ../CoordinateSystem/CoordSysMgrs.cpp \
   ../CoordinateSystem/CoordSysMgrsMajorRegion.cpp \
-  ../CoordinateSystem/CoordSysOneGrid.cpp
+  ../CoordinateSystem/CoordSysOneGrid.cpp \
+  ../CoordinateSystem/namestruct.cpp
 
 include_SOURCES = \
   AgfReaderWriter.cpp \

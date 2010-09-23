@@ -225,7 +225,7 @@ class MgLogThread;
     STRING connInfoUserName = L""; \
     try \
     { \
-        MgUserInformation* pUserInfo = MgUserInformation::GetCurrentUserInfo(); \
+        Ptr<MgUserInformation> pUserInfo = MgUserInformation::GetCurrentUserInfo(); \
         MgConnection* pConnection = MgConnection::GetCurrentConnection(); \
         /* Get client version. This needs to come from the web tier. */ \
         /* For logs involving operations, this will be stored in MgUserInformation. */ \
@@ -301,7 +301,7 @@ public:
     static MgLogManager* GetInstance();
     void Initialize();
     void LoadConfigurationProperties();
-    CREFSTRING GetLogsPath();
+    STRING GetLogsPath();
     void SetMaximumLogSize(INT32 size);
     void SetLogDelimiter(CREFSTRING delimiter);
     STRING GetLogDelimiter();

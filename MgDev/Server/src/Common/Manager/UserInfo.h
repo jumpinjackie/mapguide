@@ -39,7 +39,7 @@ public:
 public:
 
     void SetPassword(CREFSTRING password, bool passwordEncrypted = false);
-    CREFSTRING GetPassword() const;
+    STRING GetPassword() const;
 
 /// Data Members
 

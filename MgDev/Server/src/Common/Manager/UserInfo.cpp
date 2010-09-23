@@ -88,7 +88,7 @@ void MgUserInfo::SetPassword(CREFSTRING password, bool passwordEncrypted)
 /// </summary>
 ///----------------------------------------------------------------------------
 
-CREFSTRING MgUserInfo::GetPassword() const
+STRING MgUserInfo::GetPassword() const
 {
     if (m_passwordEncrypted)
     {

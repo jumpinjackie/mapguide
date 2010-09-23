@@ -255,7 +255,8 @@ MgByteReader* MgServerKmlService::GetFeaturesKml(MgLayer* layer, MgEnvelope* ext
     {
         // Create a new, empty map
         Ptr<MgSiteConnection> siteConn = new MgSiteConnection();
-        siteConn->Open(MgUserInformation::GetCurrentUserInfo());
+        Ptr<MgUserInformation> userInfo = MgUserInformation::GetCurrentUserInfo();
+        siteConn->Open(userInfo);
         Ptr<MgMap> map = new MgMap(siteConn);
         map->Create(GOOGLE_EARTH_WKT, extents, L"Google Earth Map");
         map->SetDisplayWidth(width);
@@ -846,7 +847,7 @@ MgByteSource* MgServerKmlService::GetByteSource(KmlContent& kmlContent, CREFSTRI
 STRING MgServerKmlService::GetSessionId()
 {
     STRING sessionId;
-    MgUserInformation* userInfo = MgUserInformation::GetCurrentUserInfo();
+    Ptr<MgUserInformation> userInfo = MgUserInformation::GetCurrentUserInfo();
     if (userInfo != NULL)
     {
         sessionId = userInfo->GetMgSessionId();

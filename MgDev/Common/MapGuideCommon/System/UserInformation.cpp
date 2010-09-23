@@ -47,7 +47,7 @@ MgUserInformation::MgUserInformation()
 ///</summary>
 MgUserInformation::MgUserInformation(CREFSTRING sessionId)
 {
-    SetMgSessionId(sessionId);
+    SetMgSessionId(sessionId.c_str());
     m_type = uitMgSession;
     m_apiVersion = MG_API_VERSION(1,0,0);
 }
@@ -69,8 +69,8 @@ MgUserInformation::MgUserInformation(CREFSTRING userName, CREFSTRING password)
 {
     MgUtil::CheckXss(userName);
 
-    m_username = userName;
-    m_password = password;
+    m_username = userName.c_str();
+    m_password = password.c_str();
     m_type = uitMg;
     m_apiVersion = MG_API_VERSION(1,0,0);
 }
@@ -103,13 +103,13 @@ MgUserInformation& MgUserInformation::operator=(const MgUserInformation& userInf
 {
     if (&userInfo != this)
     {
-        m_username = userInfo.m_username;
-        m_password = userInfo.m_password;
-        m_sessionId = userInfo.m_sessionId;
-        m_locale = userInfo.m_locale;
+        m_username = userInfo.m_username.c_str();
+        m_password = userInfo.m_password.c_str();
+        m_sessionId = userInfo.m_sessionId.c_str();
+        m_locale = userInfo.m_locale.c_str();
         m_type = userInfo.m_type;
-        m_clientAgent = userInfo.m_clientAgent;
-        m_clientIp = userInfo.m_clientIp;
+        m_clientAgent = userInfo.m_clientAgent.c_str();
+        m_clientIp = userInfo.m_clientIp.c_str();
         m_apiVersion = userInfo.m_apiVersion;
     }
 
@@ -134,8 +134,8 @@ void MgUserInformation::SetMgUsernamePassword(CREFSTRING userName, CREFSTRING pa
 {
     MgUtil::CheckXss(userName);
 
-    m_username = userName;
-    m_password = password;
+    m_username = userName.c_str();
+    m_password = password.c_str();
     m_type = uitMg;
 }
 
@@ -156,7 +156,7 @@ void MgUserInformation::SetMgUsernamePassword(CREFSTRING userName, CREFSTRING pa
 ///<returns>
 /// Username stored
 ///</returns>
-STRING MgUserInformation::GetUserName() { return m_username; }
+STRING MgUserInformation::GetUserName() { return (STRING)m_username.c_str(); }
 
 ///////////////////////////////
 ///<summary>
@@ -165,7 +165,7 @@ STRING MgUserInformation::GetUserName() { return m_username; }
 ///<returns>
 /// password stored
 ///</returns>
-STRING MgUserInformation::GetPassword() { return m_password; }
+STRING MgUserInformation::GetPassword() { return (STRING)m_password.c_str(); }
 
 ///////////////////////////////
 ///<summary>
@@ -173,7 +173,7 @@ STRING MgUserInformation::GetPassword() { return m_password; }
 ///</summary>
 STRING MgUserInformation::GetMgSessionId()
 {
-    return m_sessionId;
+    return (STRING)m_sessionId.c_str();
 }
 
 ///////////////////////////////
@@ -200,7 +200,7 @@ void MgUserInformation::SetMgSessionId(CREFSTRING sessionId)
         {
             SetLocale(sessionId.substr(sepChar+1, MG_LOCALE_LENGTH));
         }
-        m_sessionId = sessionId;
+        m_sessionId = sessionId.c_str();
     }
     else
     {
@@ -245,7 +245,7 @@ void MgUserInformation::SetLocale(CREFSTRING locale)
     else
     {
         // two-character locales remain case insensitive for legacy behavior
-        m_locale = locale;
+        m_locale = locale.c_str();
     }
 }
 
@@ -256,17 +256,17 @@ void MgUserInformation::SetLocale(CREFSTRING locale)
 ///</summary>
 STRING MgUserInformation::GetLocale()
 {
-    return m_locale;
+    return (STRING)m_locale.c_str();
 }
 
 void MgUserInformation::SetClientAgent(CREFSTRING agent)
 {
-    m_clientAgent = agent;
+    m_clientAgent = agent.c_str();
 }
 
 STRING MgUserInformation::GetClientAgent()
 {
-    return m_clientAgent;
+    return (STRING)m_clientAgent.c_str();
 }
 
 void MgUserInformation::SetClientIp(CREFSTRING ip)
@@ -275,12 +275,12 @@ void MgUserInformation::SetClientIp(CREFSTRING ip)
     // Note that MgIpUtil::ValidateAddress is not used here because
     // an IP look up will affect peformance.
     MgUtil::CheckXss(ip);
-    m_clientIp = ip;
+    m_clientIp = ip.c_str();
 }
 
 STRING MgUserInformation::GetClientIp()
 {
-    return m_clientIp;
+    return (STRING)m_clientIp.c_str();
 }
 
 ///////////////////////////////
@@ -407,6 +407,8 @@ MgUserInformation* MgUserInformation::GetCurrentUserInfo()
         throw new MgConnectionNotOpenException(L"MgSiteConnection.GetCurrentUserInfo", __LINE__, __WFILE__, NULL, L"", NULL);
     }
 
+    SAFE_ADDREF(userInfo);
+
     return userInfo;
 }
 
@@ -481,8 +483,8 @@ void MgUserInformation::Deserialize(MgStream* stream)
         MgCryptographyUtil cryptoUtil;
         string username, password;
 
-        cryptoUtil.DecryptCredentials(MgUtil::WideCharToMultiByte(credentials),
-            username, password);
+        string cred = MgUtil::WideCharToMultiByte(credentials);
+        cryptoUtil.DecryptCredentials(cred, username, password);
 
         MgUtil::MultiByteToWideChar(username, m_username);
         MgUtil::MultiByteToWideChar(password, m_password);

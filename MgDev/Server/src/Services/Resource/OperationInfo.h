@@ -58,10 +58,10 @@ public:
 public:
     MgOperationInfo& operator=(const MgOperationInfo& opInfo);
 
-    CREFSTRING GetName() const;
+    STRING GetName() const;
     void SetName(CREFSTRING name);
 
-    CREFSTRING GetVersion() const;
+    STRING GetVersion() const;
     void SetVersion(CREFSTRING version);
 
     const MgOperationParameter& GetParameter(CREFSTRING name,
@@ -86,13 +86,13 @@ private:
 
 /// Inline Methods
 
-inline CREFSTRING MgOperationInfo::GetName() const
+inline STRING MgOperationInfo::GetName() const
 {
     return m_name;
 }
 
 
-inline CREFSTRING MgOperationInfo::GetVersion() const
+inline STRING MgOperationInfo::GetVersion() const
 {
     return m_version;
 }

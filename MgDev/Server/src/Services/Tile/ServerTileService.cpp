@@ -234,7 +234,8 @@ MgByteReader* MgServerTileService::GetTile(MgResourceIdentifier* mapDefinition,
             else
             {
                 Ptr<MgSiteConnection> siteConn = new MgSiteConnection();
-                siteConn->Open(MgUserInformation::GetCurrentUserInfo());
+                Ptr<MgUserInformation> userInfo = MgUserInformation::GetCurrentUserInfo();
+                siteConn->Open(userInfo);
                 map = new MgMap(siteConn);
                 map->Create(resourceService, mapDefinition, mapString);
                 cachedMap = new MgMemoryStreamHelper();

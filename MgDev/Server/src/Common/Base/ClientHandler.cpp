@@ -213,7 +213,12 @@ INT32 MgClientHandler::ProcessInput(ACE_HANDLE handle)
 
     //  create a MgStreamData Object for our message queue
     MgStreamData* pData = NULL;
-    ACE_NEW_RETURN( pData, MgServerStreamData( this, handle, m_pStreamHelper ), -1 );
+    ACE_Allocator* allocator = ACE_Allocator::instance();
+    ACE_NEW_MALLOC_RETURN( pData,
+        static_cast<MgServerStreamData*>(allocator->malloc(sizeof(MgServerStreamData))),
+        MgServerStreamData( this, handle, m_pStreamHelper ), -1 );
+
+    //ACE_NEW_RETURN( pData, MgServerStreamData( this, handle, m_pStreamHelper ), -1 );
 
     //  create the message block
     ACE_Message_Block* mb = NULL;
@@ -282,6 +287,7 @@ MgClientHandler::HandlerStatus MgClientHandler::GetStatus()
 /// </summary>
 void MgClientHandler::SetStatus( MgClientHandler::HandlerStatus status )
 {
+    ACE_MT(ACE_GUARD(ACE_Recursive_Thread_Mutex, ace_mon, m_mutex));
     m_Status = status;
 };
 

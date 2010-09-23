@@ -41,7 +41,7 @@ private:
 
 public:
 
-    CREFSTRING GetDescription() const;
+    STRING GetDescription() const;
     void SetDescription(CREFSTRING description);
 
 /// Data Members
@@ -58,7 +58,7 @@ protected:
 
 /// Inline Methods
 
-inline CREFSTRING MgResourcePackageManifestHandler::GetDescription() const
+inline STRING MgResourcePackageManifestHandler::GetDescription() const
 {
     return m_description;
 }

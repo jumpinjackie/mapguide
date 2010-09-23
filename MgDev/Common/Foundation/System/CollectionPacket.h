@@ -25,6 +25,12 @@
 //  Collection Packet Wrapper Structure
 struct MgCollectionPacket : public MgArgumentPacket
 {
+    MgCollectionPacket()
+    :
+     m_NumElements(0)
+    {
+    }
+
     UINT32  m_NumElements;
 };
 /// \endcond

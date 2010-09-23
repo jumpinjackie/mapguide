@@ -34,10 +34,10 @@ class MgDataBindingInfo
 
         MgDataBindingInfo& operator=(const MgDataBindingInfo& dataBindingInfo);
 
-        CREFSTRING GetPreProcessTags() const;
-        CREFSTRING GetResourceDataFilePath() const;
-        CREFSTRING GetLoginUsername() const;
-        CREFSTRING GetLoginPassword() const;
+        STRING GetPreProcessTags() const;
+        STRING GetResourceDataFilePath() const;
+        STRING GetLoginUsername() const;
+        STRING GetLoginPassword() const;
         bool GetSubstituteUnmanagedDataMappings() const;
 
         void SetPreProcessTags(CREFSTRING preProcessTags);
@@ -59,22 +59,22 @@ class MgDataBindingInfo
 
 /// Inline Methods
 
-inline CREFSTRING MgDataBindingInfo::GetPreProcessTags() const
+inline STRING MgDataBindingInfo::GetPreProcessTags() const
 {
     return m_preProcessTags;
 }
 
-inline CREFSTRING MgDataBindingInfo::GetResourceDataFilePath() const
+inline STRING MgDataBindingInfo::GetResourceDataFilePath() const
 {
     return m_resourceDataFilePath;
 }
 
-inline CREFSTRING MgDataBindingInfo::GetLoginUsername() const
+inline STRING MgDataBindingInfo::GetLoginUsername() const
 {
     return m_loginUsername;
 }
 
-inline CREFSTRING MgDataBindingInfo::GetLoginPassword() const
+inline STRING MgDataBindingInfo::GetLoginPassword() const
 {
     return m_loginPassword;
 }

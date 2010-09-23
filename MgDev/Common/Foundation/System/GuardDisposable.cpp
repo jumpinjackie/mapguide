@@ -79,6 +79,13 @@ INT32 MgGuardDisposable::Release()
 
 
 //////////////////////////////////////////////////////////////
+void MgGuardDisposable::SetRefCountFlag()
+{
+   ACE_MT(ACE_GUARD(ACE_Recursive_Thread_Mutex, ace_mon, m_mutex));
+   m_refCountFlag = true;
+}
+
+//////////////////////////////////////////////////////////////
 MgGuardDisposable::MgGuardDisposable()
 {
 }
