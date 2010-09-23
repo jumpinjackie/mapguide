@@ -36,7 +36,8 @@ public:
     // The the section which displays in the GetCapabilities response document
     void SetGetCapabilitiesSection(CREFSTRING sSection);
 
-    STRING GetDefaultOutputFormat(CREFSTRING sVersion);
+    STRING GetDefaultDescribeFeatureTypeOutputFormat(CREFSTRING sVersion);
+    STRING GetDefaultGetFeatureOutputFormat(CREFSTRING sVersion);
 
 protected:
     virtual void RespondToRequest();
@@ -46,6 +47,8 @@ protected:
     void DescribeFeatureTypeResponse();
     void GetFeatureResponse();
 
+    bool ValidateGetCapabilitiesRequest();
+    bool ValidateDescribeFeatureTypeRequest();
     bool ValidateGetFeatureRequest();
 
     enum WfsRequestType

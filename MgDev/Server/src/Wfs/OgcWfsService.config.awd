@@ -134,7 +134,9 @@ table {
  <!-- These are the supported DescribeFeatureType formats
       Specific version templates can override these -->
  <Define item="Formats.DescribeFeatureType">
+   <item>GML2</item>
    <item>text/xml; subtype=gml/2.1.2</item>
+   <item>GML3</item>
    <item>text/xml; subtype=gml/3.1.1</item>
  </Define>
 
@@ -152,7 +154,9 @@ table {
  <!-- These are the supported GetFeature formats
       Specific version templates can override these    -->
  <Define item="Formats.GetFeature">
+   <item>GML2</item>
    <item>text/xml; subtype=gml/2.1.2</item>
+   <item>GML3</item>
    <item>text/xml; subtype=gml/3.1.1</item>
  </Define>
 
@@ -261,6 +265,15 @@ table {
  * &Enum.item;
  </Define>
 
+ <!-- This definition allows a site to override the behavior of -->
+ <!-- the SRS= parameter of requests.                           -->
+ <!-- Add translate elements here to map any particularly       -->
+ <!-- troublesome SRS to some appropriate WKT.                  -->
+ <Define item="SRS.WKT.map">
+  <translate from="urn:ogc:def:crs:EPSG::4326">GEOGCS["LL84",DATUM["WGS84",SPHEROID["WGS84",6378137.000,298.25722293]],PRIMEM["Greenwich",0],UNIT["Degree",0.01745329251994]]</translate>
+  <translate from="CRS:84">GEOGCS["LL84",DATUM["WGS84",SPHEROID["WGS84",6378137.000,298.25722293]],PRIMEM["Greenwich",0],UNIT["Degree",0.01745329251994]]</translate>
+ </Define>
+ 
 </Definitions>
 
 

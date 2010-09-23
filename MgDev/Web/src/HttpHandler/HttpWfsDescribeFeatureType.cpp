@@ -71,6 +71,17 @@ void MgHttpWfsDescribeFeatureType::Execute(MgHttpResponse& hResponse)
     // Instance a server-lette
     MgOgcWfsServer Wfs(Parms,Out);
 
+    // In order to validate request we have to invoke the ProcessRequest
+    if(!Wfs.ProcessRequest(this))
+    {
+        // Obtain the response byte reader
+        Ptr<MgByteReader> errorResponse = Out.Stream().GetReader();
+
+        // Set the result
+        hResult->SetResultObject(errorResponse, errorResponse->GetMimeType());
+        return;
+    }
+
     // Determine required feature types
     CPSZ pszFeatureTypes = Wfs.RequestParameter(MgHttpResourceStrings::reqWfsTypeName.c_str());
     STRING sFeatureTypes = pszFeatureTypes? pszFeatureTypes : _("");
