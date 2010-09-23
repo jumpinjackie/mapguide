@@ -25,6 +25,12 @@
 //  Binary Stream Argument Packet Wrapper Structure
 struct MgBinaryStreamArgumentPacket : public MgArgumentPacket
 {
+    MgBinaryStreamArgumentPacket()
+    :
+    m_Version(0)
+    {
+    }
+
     UINT32      m_Version;
 };
 /// \endcond

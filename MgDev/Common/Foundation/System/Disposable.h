@@ -79,7 +79,7 @@ INTERNAL_API:
     /// \return
     /// Returns nothing
     ///
-    void SetRefCountFlag();
+    virtual void SetRefCountFlag();
 
 protected:
 

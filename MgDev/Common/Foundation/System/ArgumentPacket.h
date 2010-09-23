@@ -25,9 +25,19 @@
 //  Argument Packet Wrapper Structure
 struct MgArgumentPacket : public MgBasicPacket
 {
-    MgArgumentPacket() : m_pData( NULL )      { };
+    MgArgumentPacket()
+    :
+    m_ArgumentType(0),
+    m_pData(NULL),
+    m_Length(0)
+    {
+    }
 
-    virtual ~MgArgumentPacket()               { delete[] m_pData; };
+    virtual ~MgArgumentPacket()
+    {
+        delete[] m_pData;
+        m_pData = NULL;
+    }
 
     UINT32      m_ArgumentType;
     UINT8*      m_pData;

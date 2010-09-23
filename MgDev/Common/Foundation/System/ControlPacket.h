@@ -24,6 +24,13 @@
 //  Control Packet Wrapper Structure
 struct MgControlPacket : public MgBasicPacket
 {
+    MgControlPacket()
+    :
+    m_PacketVersion(0),
+    m_ControlID(0)
+    {
+    }
+
     UINT32 m_PacketVersion;
     UINT32 m_ControlID;
 };

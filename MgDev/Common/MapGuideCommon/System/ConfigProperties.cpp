@@ -134,6 +134,8 @@ const STRING MgConfigProperties::GeneralPropertyFdoPath                         
 const STRING MgConfigProperties::DefaultGeneralPropertyFdoPath                              = L"";
 const STRING MgConfigProperties::GeneralPropertyLicenseServerPath                           = L"LicenseServerPath";
 const STRING MgConfigProperties::DefaultGeneralPropertyLicenseServerPath                    = L"";
+const STRING MgConfigProperties::GeneralPropertyLinuxMemDebug                               = L"LinuxMemDebug";
+const bool   MgConfigProperties::DefaultGeneralPropertyLinuxMemDebug                        = false;
 const STRING MgConfigProperties::GeneralPropertyLogsDelimiter                               = L"LogsDelimiter";
 const STRING MgConfigProperties::DefaultGeneralPropertyLogsDelimiter                        = L"\t";
 const STRING MgConfigProperties::GeneralPropertyLogsDetail                                  = L"LogsDetail";
@@ -517,6 +519,7 @@ const MgConfigValidationInfo MgConfigProperties::sm_cviGeneralProperties[] =
     { MgConfigProperties::GeneralPropertyDisplayName                                , MgPropertyType::String    , MG_CONFIG_MIN_OPTIONAL_STRING_LENGTH  , MG_CONFIG_MAX_OPTIONAL_STRING_LENGTH  , MG_CONFIG_FILE_NAME_RESERVED_CHARACTERS   },
     { MgConfigProperties::GeneralPropertyFdoPath                                    , MgPropertyType::String    , MG_CONFIG_MIN_PATH_LENGTH             , MG_CONFIG_MAX_PATH_LENGTH             , MG_CONFIG_PATH_RESERVED_CHARACTERS        },
     { MgConfigProperties::GeneralPropertyLicenseServerPath                          , MgPropertyType::String    , MG_CONFIG_MIN_OPTIONAL_STRING_LENGTH  , MG_CONFIG_MAX_OPTIONAL_STRING_LENGTH  , L""                                       },
+    { MgConfigProperties::GeneralPropertyLinuxMemDebug                              , MgPropertyType::Boolean   , 0                                     , 1                                     , L""                                       },
     { MgConfigProperties::GeneralPropertyLogsDelimiter                              , MgPropertyType::String    , 1                                     , 128                                   , L""                                       },
     { MgConfigProperties::GeneralPropertyLogsDetail                                 , MgPropertyType::String    , MG_CONFIG_MIN_OPTIONAL_STRING_LENGTH  , MG_CONFIG_MAX_OPTIONAL_STRING_LENGTH  , L""                                       },
     { MgConfigProperties::GeneralPropertyLogsPath                                   , MgPropertyType::String    , MG_CONFIG_MIN_PATH_LENGTH             , MG_CONFIG_MAX_PATH_LENGTH             , MG_CONFIG_PATH_RESERVED_CHARACTERS        },
