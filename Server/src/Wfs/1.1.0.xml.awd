@@ -73,7 +73,7 @@
  <Define item="Feature.namespace">http://fdo.osgeo.org/schemas</Define>
  <Define item="Feature.Abstract">Abstract for this layer</Define>
  <Define item="Feature.KeywordList"></Define>
- <Define item="Feature.DefaultSRS">urn:x-ogc:def:crs:EPSG:4326</Define>
+ <Define item="Feature.DefaultSRS">urn:ogc:def:crs:EPSG::4326</Define>
  <!--Define item="Feature.OtherSRS"></Define-->
  <Define item="Feature.Bounds.north">90</Define>
  <Define item="Feature.Bounds.south">-90</Define>
