@@ -165,7 +165,7 @@ void MgServiceManager::Terminate()
 ///
 MgService* MgServiceManager::RequestLocalService(INT32 serviceType)
 {
-    MgUserInformation* currUserInfo = MgUserInformation::GetCurrentUserInfo();
+    Ptr<MgUserInformation> currUserInfo = MgUserInformation::GetCurrentUserInfo();
     Ptr<MgConnectionProperties> connProp = new MgConnectionProperties(
         currUserInfo, L"", 0);
 
@@ -186,7 +186,7 @@ MgService* MgServiceManager::RequestProxyService(INT32 serviceType)
     serverAddress = m_loadBalanceManager->RequestServer(serviceType);
 
     // Use the site port for Site/Support Server communications.
-    MgUserInformation* currUserInfo = MgUserInformation::GetCurrentUserInfo();
+    Ptr<MgUserInformation> currUserInfo = MgUserInformation::GetCurrentUserInfo();
     Ptr<MgConnectionProperties> connProp = new MgConnectionProperties(
         currUserInfo, serverAddress, m_serverManager->GetSitePort());
 

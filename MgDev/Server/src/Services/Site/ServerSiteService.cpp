@@ -728,7 +728,7 @@ MgStringCollection* MgServerSiteService::Authenticate(
 STRING MgServerSiteService::CreateSession()
 {
     STRING session;
-    MgUserInformation* currUserInfo = MgUserInformation::GetCurrentUserInfo();
+    Ptr<MgUserInformation> currUserInfo = MgUserInformation::GetCurrentUserInfo();
     assert(NULL != currUserInfo);
 
     MG_SITE_SERVICE_TRY()
@@ -839,7 +839,7 @@ STRING MgServerSiteService::GetUserForSession()
 {
     STRING session;
     STRING userId;
-    MgUserInformation* currUserInfo = MgUserInformation::GetCurrentUserInfo();
+    Ptr<MgUserInformation> currUserInfo = MgUserInformation::GetCurrentUserInfo();
     assert(NULL != currUserInfo);
 
     MG_SITE_SERVICE_TRY()
@@ -1067,7 +1067,7 @@ void MgServerSiteService::ValidateAuthorOrSelf(CREFSTRING user, CREFSTRING group
 {
     bool bAllowed = false;
 
-    MgUserInformation* userInfo = MgUserInformation::GetCurrentUserInfo();
+    Ptr<MgUserInformation> userInfo = MgUserInformation::GetCurrentUserInfo();
     STRING currUser = userInfo->GetUserName();
     if (currUser.empty())
     {

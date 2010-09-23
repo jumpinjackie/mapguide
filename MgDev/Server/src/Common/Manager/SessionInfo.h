@@ -44,9 +44,9 @@ private:
 
 public:
 
-    CREFSTRING GetUser() const;
-    CREFSTRING GetClient() const;
-    CREFSTRING GetClientIp() const;
+    STRING GetUser() const;
+    STRING GetClient() const;
+    STRING GetClientIp() const;
     const MgDateTime& GetStartTime() const;
     MgDateTime GetEndTime() const;
     const ACE_Time_Value& GetAccessedTime() const;
@@ -75,17 +75,17 @@ private:
 
 /// Inline Methods
 
-inline CREFSTRING MgSessionInfo::GetUser() const
+inline STRING MgSessionInfo::GetUser() const
 {
     return m_user;
 }
 
-inline CREFSTRING MgSessionInfo::GetClient() const
+inline STRING MgSessionInfo::GetClient() const
 {
     return m_client;
 }
 
-inline CREFSTRING MgSessionInfo::GetClientIp() const
+inline STRING MgSessionInfo::GetClientIp() const
 {
     return m_clientIp;
 }

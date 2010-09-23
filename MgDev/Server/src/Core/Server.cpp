@@ -1196,7 +1196,7 @@ STRING MgServer::LocaleCallback()
 
     MG_TRY()
 
-    MgUserInformation* currUserInfo = MgUserInformation::GetCurrentUserInfo();
+    Ptr<MgUserInformation> currUserInfo = MgUserInformation::GetCurrentUserInfo();
 
     if (NULL != currUserInfo)
     {

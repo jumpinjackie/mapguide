@@ -61,7 +61,7 @@ private:
 public:
 
     time_t GetAccessedTime() const;
-    CREFSTRING GetOwner() const;
+    STRING GetOwner() const;
     bool IsInherited() const;
     const MgUserPermissionMap& GetUserPermissionMap() const;
     const MgGroupPermissionMap& GetGroupPermissionMap() const;
@@ -96,7 +96,7 @@ inline time_t MgPermissionInfo::GetAccessedTime() const
     return m_accessedTime;
 }
 
-inline CREFSTRING MgPermissionInfo::GetOwner() const
+inline STRING MgPermissionInfo::GetOwner() const
 {
     return m_owner;
 }

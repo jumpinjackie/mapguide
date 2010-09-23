@@ -76,7 +76,8 @@ void MgOpUnregisterServicesOnServers::Execute()
 
         // Validate() not called here because this is an internal server-only operation.
         // Instead, MgSecurityManager::Authenticate() should be called to perform authentication.
-        MgSecurityManager::Authenticate(MgUserInformation::GetCurrentUserInfo());
+        Ptr<MgUserInformation> userInfo = MgUserInformation::GetCurrentUserInfo();
+        MgSecurityManager::Authenticate(userInfo);
 
         m_service->UnregisterServicesOnServers(serverInfoList);
 

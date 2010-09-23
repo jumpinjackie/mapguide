@@ -45,7 +45,7 @@ class MgApplicationRepository : public MgRepository
     public:
 
         MgResourceDatabase* GetResourceDataStreamDatabase() const;
-        CREFSTRING GetResourceDataFilePath() const;
+        STRING GetResourceDataFilePath() const;
 
 /// Data Members
 
@@ -57,7 +57,7 @@ class MgApplicationRepository : public MgRepository
 
 /// Inline Methods
 
-inline CREFSTRING MgApplicationRepository::GetResourceDataFilePath() const
+inline STRING MgApplicationRepository::GetResourceDataFilePath() const
 {
     return m_resourceDataFilePath;
 }

@@ -54,7 +54,7 @@ public:
     void Initialize(CREFSTRING locale);
     void LoadConfigurationProperties();
 
-    CREFSTRING GetDefaultMessageLocale();
+    STRING GetDefaultMessageLocale();
 
     MgPropertyCollection* GetConfigurationProperties(CREFSTRING propertySection);
     void SetConfigurationProperties(CREFSTRING propertySection, MgPropertyCollection* properties);
@@ -68,20 +68,20 @@ public:
     void SetDocument(CREFSTRING identifier, MgByteReader* data);
 
     bool IsSiteServer() const;
-    CREFSTRING GetServerName() const;
-    CREFSTRING GetLocalServerAddress() const;
+    STRING GetServerName() const;
+    STRING GetLocalServerAddress() const;
 
     // Admin Properties
     INT32 GetAdminPort();
     INT32 GetAdminThreads();
-    CREFSTRING GetAdminEmail();
+    STRING GetAdminEmail();
 
     // Client Properties
     INT32 GetClientPort();
     INT32 GetClientThreads();
 
     // Site Properties
-    CREFSTRING GetSiteServerAddress() const;
+    STRING GetSiteServerAddress() const;
     INT32 GetSitePort();
     INT32 GetSiteThreads();
 
@@ -201,17 +201,17 @@ inline bool MgServerManager::IsSiteServer() const
     return m_isSiteServer;
 }
 
-inline CREFSTRING MgServerManager::GetServerName() const
+inline STRING MgServerManager::GetServerName() const
 {
     return m_displayName;
 }
 
-inline CREFSTRING MgServerManager::GetLocalServerAddress() const
+inline STRING MgServerManager::GetLocalServerAddress() const
 {
     return m_localServerAddress;
 }
 
-inline CREFSTRING MgServerManager::GetSiteServerAddress() const
+inline STRING MgServerManager::GetSiteServerAddress() const
 {
     return m_siteServerAddress;
 }

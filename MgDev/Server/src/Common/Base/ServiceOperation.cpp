@@ -219,7 +219,7 @@ bool MgServiceOperation::HandleException(MgException* except)
     {
         // Log the exception using Server locale or User locale if it exists
         STRING locale = MgResources::DefaultMessageLocale;
-        MgUserInformation* currUserInfo = MgUserInformation::GetCurrentUserInfo();
+        Ptr<MgUserInformation> currUserInfo = MgUserInformation::GetCurrentUserInfo();
         if (NULL != currUserInfo)
         {
             locale = currUserInfo->GetLocale();
@@ -644,7 +644,7 @@ void MgServiceOperation::AuthenticateCurrentUser()
 
     if (serverManager->IsSiteServer())
     {
-        MgUserInformation* currUserInfo = MgUserInformation::GetCurrentUserInfo();
+        Ptr<MgUserInformation> currUserInfo = MgUserInformation::GetCurrentUserInfo();
         assert(NULL != currUserInfo);
         Ptr<MgStringCollection> requiredRoles = GetRoles();
 

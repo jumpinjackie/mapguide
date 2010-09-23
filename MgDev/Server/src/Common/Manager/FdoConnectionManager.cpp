@@ -2006,7 +2006,7 @@ STRING MgFdoConnectionManager::GetFdoCacheInfo()
 ///
 void MgFdoConnectionManager::SubstituteConnectionTags(REFSTRING connectionStr)
 {
-    MgUserInformation* userInfo =  MgUserInformation::GetCurrentUserInfo();
+    Ptr<MgUserInformation> userInfo =  MgUserInformation::GetCurrentUserInfo();
 
     if (NULL != userInfo)
     {

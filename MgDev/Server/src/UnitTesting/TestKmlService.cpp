@@ -416,7 +416,7 @@ STRING TestKmlService::RemoveSessionIds(CREFSTRING content)
     STRING newContent = content;
 
     STRING sessionId;
-    MgUserInformation* userInfo = MgUserInformation::GetCurrentUserInfo();
+    Ptr<MgUserInformation> userInfo = MgUserInformation::GetCurrentUserInfo();
     if (userInfo != NULL)
     {
         sessionId = userInfo->GetMgSessionId();

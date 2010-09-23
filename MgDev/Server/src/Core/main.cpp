@@ -72,8 +72,20 @@ int ACE_TMAIN(int argc, ACE_TCHAR *argv[])
     XMLPlatformUtils::Initialize();
 
 #ifndef _WIN32
-    // Set memory checking to report only and not abort
-    mallopt(M_CHECK_ACTION, 1);
+    MgConfiguration* pConfiguration = MgConfiguration::GetInstance();
+    pConfiguration->LoadConfiguration(MgConfigProperties::ServerConfigurationFilename);
+    bool bDebugMem = false;
+    pConfiguration->GetBoolValue(MgConfigProperties::GeneralPropertiesSection, MgConfigProperties::GeneralPropertyLinuxMemDebug, bDebugMem, MgConfigProperties::DefaultGeneralPropertyLinuxMemDebug);
+    if (!bDebugMem)
+    {
+        // Set memory checking to report only and not abort
+        mallopt(M_CHECK_ACTION, 1);
+    }
+    else
+    {
+        // Set memory checking to report and abort
+        mallopt(M_CHECK_ACTION, 3);
+    }
 #endif
 
     MG_TRY()

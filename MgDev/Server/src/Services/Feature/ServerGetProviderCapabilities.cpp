@@ -74,7 +74,7 @@ MgServerGetProviderCapabilities::MgServerGetProviderCapabilities(CREFSTRING prov
     // no more risk of exceptions, so we can now assign these
     m_fdoConn = fdoConn.Detach();
     m_providerName = providerNoVersion;
-    MgUserInformation* userInfo =  MgUserInformation::GetCurrentUserInfo();
+    Ptr<MgUserInformation> userInfo =  MgUserInformation::GetCurrentUserInfo();
     m_version = userInfo->GetApiVersion();
 }
 

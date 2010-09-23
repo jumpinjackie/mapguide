@@ -262,7 +262,7 @@ void MgServerManager::LoadConfigurationProperties()
     MG_CATCH_AND_THROW(L"MgServerManager.LoadConfigurationProperties")
 }
 
-CREFSTRING MgServerManager::GetDefaultMessageLocale()
+STRING MgServerManager::GetDefaultMessageLocale()
 {
     return m_defaultMessageLocale;
 }
@@ -799,7 +799,7 @@ INT32 MgServerManager::GetAdminThreads()
     return m_nAdminThreads;
 }
 
-CREFSTRING MgServerManager::GetAdminEmail()
+STRING MgServerManager::GetAdminEmail()
 {
     return m_adminEmail;
 }

@@ -211,7 +211,7 @@ MgByteReader* MgSiteRepositoryManager::EnumerateUsers(CREFSTRING group,
         // TODO: Remove this option if it is not in use.
 
         MgSecurityManager securityMan;
-        MgUserInformation* currUserInfo = MgUserInformation::GetCurrentUserInfo();
+        Ptr<MgUserInformation> currUserInfo = MgUserInformation::GetCurrentUserInfo();
         assert(NULL != currUserInfo);
         STRING userName = currUserInfo->GetUserName();
 

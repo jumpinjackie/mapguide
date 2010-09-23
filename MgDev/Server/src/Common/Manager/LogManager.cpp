@@ -319,7 +319,7 @@ void MgLogManager::LoadConfigurationProperties()
     MG_LOGMANAGER_CATCH_AND_THROW(L"MgLogManager.LoadConfigurationProperties")
 }
 
-CREFSTRING MgLogManager::GetLogsPath()
+STRING MgLogManager::GetLogsPath()
 {
     return m_path;
 }
@@ -2381,8 +2381,13 @@ void MgLogManager::QueueLogEntry(enum MgLogType logType, CREFSTRING message, ACE
     MG_LOGMANAGER_TRY()
 
     // We want the log thread to handle the log entry for us
-    MgLogEntryData* led;
-    ACE_NEW_NORETURN( led, MgLogEntryData(logType, message, logPriority) );
+    MgLogEntryData* led = NULL;
+    ACE_Allocator* allocator = ACE_Allocator::instance();
+    ACE_NEW_MALLOC_NORETURN (led,
+        static_cast<MgLogEntryData*> (allocator->malloc(sizeof(MgLogEntryData))),
+        MgLogEntryData(logType, message, logPriority) );
+
+    //ACE_NEW_NORETURN( led, MgLogEntryData(logType, message, logPriority) );
 
     ACE_Message_Block* mb;
     ACE_NEW_NORETURN( mb, ACE_Message_Block( led ) );
@@ -2442,11 +2447,14 @@ void MgLogManager::WriteLogMessage(enum MgLogType logType, CREFSTRING message, A
 
         MG_LOGMANAGER_TRY()
 
-        LogToSysLog(pAce, (char *)(MgUtil::WideCharToMultiByte(m_applicationName)).c_str());
+        string appName = MgUtil::WideCharToMultiByte(m_applicationName);
+        wchar_t* messageStr = (wchar_t*) message.c_str();
+
+        LogToSysLog(pAce, (char *)appName.c_str());
 #ifdef _WIN32
         pAce->log(logPriority, ACE_TEXT("%Z\r\n"), message.c_str()); // WAS %W
 #else
-        pAce->log(logPriority, ACE_TEXT("%Z\n"), message.c_str()); // WAS %W
+        pAce->log(logPriority, ACE_TEXT("%Z\n"), messageStr); // WAS %W
 #endif
         LogToStderr(pAce);
 
@@ -2735,22 +2743,10 @@ MgByteReader* MgLogManager::GetLogHeader(CREFSTRING filename)
     if (pReadFile != NULL)
     {
         const int size = 2048;
-        char* buffer = new char[size];
-        if (buffer == NULL)
-        {
-            ACE_OS::fclose(pReadFile);
-            throw new MgOutOfMemoryException(L"MgLogManager.GetLogHeader", __LINE__, __WFILE__, NULL, L"", NULL);
-        }
+        char buffer[2048] = {0};
 
-        // Clear buffer
-        memset(buffer, 0, (size)*sizeof(char));
-
-        ACE_OS::fread(buffer, sizeof(char), size*sizeof(char), pReadFile);
+        ACE_OS::fread(buffer, sizeof(char), size-1, pReadFile);
         contents = buffer;
-
-        // Clean up buffer
-        delete [] buffer;
-        buffer = NULL;
 
         ACE_OS::fclose(pReadFile);
     }
