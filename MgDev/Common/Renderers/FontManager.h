@@ -62,8 +62,6 @@ class FontManager
         ~FontManager();
 
     public:
-        int get_face(const char* filename, FT_Long index, FT_Face* face);
-
         void init_font_list();
         void create_font(FT_Face face, FT_Long index, wchar_t const* filename);
 
@@ -81,7 +79,6 @@ class FontManager
 
     private:
         FT_Library  m_library;
-        FaceMap     m_facemap;
         FontList    m_fontlist;
         FontMap     m_fontAliases;
 
