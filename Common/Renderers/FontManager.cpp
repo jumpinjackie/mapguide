@@ -50,7 +50,7 @@ FontManager FontManager::sm_manager;
 
 
 //-------------------------------------------------------------------------
-//  Constructor/Desctructor
+//  Constructor/Destructor
 //-------------------------------------------------------------------------
 
 
@@ -68,22 +68,6 @@ FontManager::~FontManager()
 {
     AutoMutexLocker autoLocker(sm_mutex);
 
-    FaceMapIterator it;
-    FaceMapEntryType* pEntry = NULL;
-    char* pData = NULL;
-
-    it = m_facemap.begin();
-
-    // clean up entries
-    while (it != m_facemap.end())
-    {
-        pEntry = (FaceMapEntryType*)(*it).second;
-        pData = pEntry->pData;
-        free(pData);
-        delete pEntry;
-        ++it;
-    }
-
     // free up font map entries
     for (FontMapIterator fmi = m_fontAliases.begin(); fmi != m_fontAliases.end(); fmi++)
     {
@@ -93,15 +77,9 @@ FontManager::~FontManager()
 
     m_fontAliases.clear();
 
-    // clear map
-    m_facemap.clear();
-
     // clean up fontlist
-    FontListIterator it_font;
     RS_Font* font = NULL;
-
-    it_font = m_fontlist.begin();
-
+    FontListIterator it_font = m_fontlist.begin();
     while (it_font != m_fontlist.end())
     {
         font = (RS_Font*)(*it_font);
@@ -125,51 +103,6 @@ FontManager::~FontManager()
 FontManager* FontManager::Instance()
 {
     return &sm_manager;
-}
-
-
-int FontManager::get_face(const char* filename, FT_Long index, FT_Face* face)
-{
-    AutoMutexLocker autoLocker(sm_mutex);
-
-    int ret = 0;                      //  our return error code
-    FaceMapIterator it;               //  an interator
-    FaceMapEntryType* pEntry = NULL;  //  pointer to loaded font data
-
-    // look for face in map
-    it = m_facemap.find(filename);
-
-    if (it != m_facemap.end())
-    {
-        // found an entry
-        pEntry = (FaceMapEntryType*)(*it).second;
-
-        // create a new face
-        ret = FT_New_Memory_Face(m_library, (FT_Byte*)pEntry->pData, (FT_Long)pEntry->length, index, face);
-    }
-    else
-    {
-        // ok, we have to load it
-//      ret = FT_New_Face(m_library, filename, index, face);
-
-        pEntry = load_file(filename);
-
-        if (pEntry)
-        {
-            // insert the entry into the map
-            m_facemap.insert(FaceMapPair(filename, pEntry));
-
-            // create a new face
-            ret = FT_New_Memory_Face(m_library, (FT_Byte*)pEntry->pData, (FT_Long)pEntry->length, index, face);
-        }
-        else
-        {
-            face = NULL;
-            ret = -1;
-        }
-    }
-
-    return ret;
 }
 
 
@@ -337,11 +270,8 @@ void FontManager::init_font_list()
 
                 do
                 {
-                    error = FT_New_Face(m_library, entryName.c_str(), index, &face);
-
                     // TODO:  revisit using the font manager here
-//                  error = m_FM->get_face(entryName.c_str(), index, &face);
-
+                    error = FT_New_Face(m_library, entryName.c_str(), index, &face);
                     if (!error)
                     {
                         // init num_faces if necessary
