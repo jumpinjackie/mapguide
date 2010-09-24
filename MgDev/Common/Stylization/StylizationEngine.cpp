@@ -236,15 +236,10 @@ inline double GetUnitPerMeter(WatermarkOffset::WatermarkOffsetUnit unit)
 }
 
 
-// THIS METHOD NEEDS TO BE CLEANED UP
-// ** unnecessary object creation using new (allocated n the stack instead)
-// ** compiler warnings being generated
 void StylizationEngine::StylizeWatermark(SE_Renderer* se_renderer,
                                          WatermarkDefinition* watermark,
-                                         int drawWidth,
-                                         int drawHeight,
-                                         int saveWidth,
-                                         int saveHeight)
+                                         int drawWidth, int drawHeight,
+                                         int saveWidth, int saveHeight)
 {
     m_serenderer = se_renderer;
     m_reader = NULL;
@@ -262,7 +257,8 @@ void StylizationEngine::StylizeWatermark(SE_Renderer* se_renderer,
     SE_Rule rule;
 
     // Translate watermark source into SE_SymbolInstance list.
-    // As the source is adopted into symbol, we need to detach them after the rendering is done.
+    // As the source is adopted into symbol, we need to detach them after
+    // the rendering is done.
     CompositeSymbolization symbols;
 
     std::auto_ptr<SymbolInstance> instance(new SymbolInstance());
@@ -273,13 +269,12 @@ void StylizationEngine::StylizeWatermark(SE_Renderer* se_renderer,
     m_visitor->Convert(rule.symbolInstances, &symbols);
     _ASSERT(rule.symbolInstances.size() == 1u);
     
-    // Translate appearance (transparency / rotation) into symbol instance
-    // Prepare values
+    // translate appearance (transparency / rotation) into symbol instance
     double transparency = watermark->GetAppearance()->GetTransparency();
-    transparency = (transparency < 0) ? 0 : ((transparency > 100) ? 100 : transparency);
-    double opacity = 1 - transparency / 100;
+    transparency = (transparency < 0.0)? 0.0 : ((transparency > 100.0)? 100.0 : transparency);
+    double opacity = 1.0 - 0.01*transparency;
     double rotation = watermark->GetAppearance()->GetRotation();
-    rotation = (rotation < 0) ? 0 : ((rotation > 360) ? 360 : rotation);
+    rotation = (rotation < 0.0)? 0.0 : ((rotation > 360.0)? 360.0 : rotation);
 
     SE_SymbolInstance* sym = rule.symbolInstances[0];
     size_t nStyles = sym->styles.size();
@@ -287,9 +282,12 @@ void StylizationEngine::StylizeWatermark(SE_Renderer* se_renderer,
     {
         SE_PointStyle* style = (SE_PointStyle*)(sym->styles[styleIx]);
         style->angleDeg.value = style->angleDeg.defValue = style->angleDeg.defValue + rotation;
-        if(style->symbol.size() == 0) continue;
+        if (style->symbol.size() == 0)
+            continue;
         
-        if(1 - opacity < 0.0001) continue;    //The opaque is 1.
+        if (opacity > 0.9999)   // opaque is 1
+            continue;
+
         size_t nPrimitives = style->symbol.size();
         for (size_t primitiveIx=0; primitiveIx<nPrimitives; ++primitiveIx)
         {
@@ -298,36 +296,28 @@ void StylizationEngine::StylizeWatermark(SE_Renderer* se_renderer,
             SE_Polygon* polygonPri = dynamic_cast<SE_Polygon*>(primitive);
             SE_Polyline* linePri = dynamic_cast<SE_Polyline*>(primitive);
             SE_Raster* rasterPri = dynamic_cast<SE_Raster*>(primitive);
-            if(textPri)
+            if (textPri)
             {
-                //Text need to change color
-                textPri->textColor.value.argb = textPri->textColor.defValue.argb
-                    = TransparentColor(textPri->textColor.defValue.argb, opacity);
-                textPri->ghostColor.value.argb = textPri->ghostColor.defValue.argb
-                    = TransparentColor(textPri->ghostColor.defValue.argb, opacity);
-                textPri->frameLineColor.value.argb = textPri->frameLineColor.defValue.argb
-                    = TransparentColor(textPri->frameLineColor.defValue.argb, opacity);
-                textPri->frameFillColor.value.argb = textPri->frameFillColor.defValue.argb
-                    = TransparentColor(textPri->frameFillColor.defValue.argb, opacity);
+                // text needs to change color
+                textPri->textColor.value.argb      = textPri->textColor.defValue.argb      = TransparentColor(textPri->textColor.defValue.argb, opacity);
+                textPri->ghostColor.value.argb     = textPri->ghostColor.defValue.argb     = TransparentColor(textPri->ghostColor.defValue.argb, opacity);
+                textPri->frameLineColor.value.argb = textPri->frameLineColor.defValue.argb = TransparentColor(textPri->frameLineColor.defValue.argb, opacity);
+                textPri->frameFillColor.value.argb = textPri->frameFillColor.defValue.argb = TransparentColor(textPri->frameFillColor.defValue.argb, opacity);
             }
-            else if(linePri)
+            else if (linePri)
             {
-                linePri->color.value.argb = linePri->color.defValue.argb
-                    = TransparentColor(linePri->color.defValue.argb, opacity);
-                if(polygonPri)
-                {
-                    polygonPri->fill.value.argb = polygonPri->fill.defValue.argb
-                        = TransparentColor(polygonPri->fill.defValue.argb, opacity);
-                }
+                linePri->color.value.argb = linePri->color.defValue.argb = TransparentColor(linePri->color.defValue.argb, opacity);
+                if (polygonPri)
+                    polygonPri->fill.value.argb = polygonPri->fill.defValue.argb = TransparentColor(polygonPri->fill.defValue.argb, opacity);
             }
-            else if(rasterPri)
+            else if (rasterPri)
             {
                 rasterPri->opacity = opacity;
             }
         }
     }
     
-    //Prepare some rendering context variable
+    // prepare some rendering context variable
     double mm2sud = m_serenderer->GetScreenUnitsPerMillimeterDevice();
     double mm2suw = m_serenderer->GetScreenUnitsPerMillimeterWorld();
     double px2su  = m_serenderer->GetScreenUnitsPerPixel();
@@ -336,46 +326,43 @@ void StylizationEngine::StylizeWatermark(SE_Renderer* se_renderer,
     // the factor to convert screen units to mapping units
     double su2wu = 0.001 / (mm2suw * m_serenderer->GetMetersPerUnit());
 
-    //Prepare the position list
+    // prepare the position list
     XYWatermarkPosition* xyPosition = dynamic_cast<XYWatermarkPosition*>(watermark->GetPosition());
     TileWatermarkPosition* tilePosition = dynamic_cast<TileWatermarkPosition*>(watermark->GetPosition());
     WatermarkXOffset::HorizontalAlignment hAlignment = WatermarkXOffset::Center;
     WatermarkYOffset::VerticalAlignment vAlignment = WatermarkYOffset::Center;
-    WatermarkOffset::WatermarkOffsetUnit hUnit, vUnit;
-    double suPerhUnit, suPervUnit, xOffset, yOffset;
-    if(xyPosition)
+    WatermarkOffset::WatermarkOffsetUnit hUnit = WatermarkOffset::Pixels;
+    WatermarkOffset::WatermarkOffsetUnit vUnit = WatermarkOffset::Pixels;
+    double xOffset = 0.0;
+    double yOffset = 0.0;
+    if (xyPosition)
     {
         hAlignment = xyPosition->GetXPosition()->GetAlignment();
         vAlignment = xyPosition->GetYPosition()->GetAlignment();
         hUnit = xyPosition->GetXPosition()->GetUnit();
         vUnit = xyPosition->GetYPosition()->GetUnit();
-        xOffset = xyPosition->GetXPosition()->GetOffset();      //In watermark unit
-        yOffset = xyPosition->GetYPosition()->GetOffset();      //In watermark unit
+        xOffset = xyPosition->GetXPosition()->GetOffset();              // in watermark units
+        yOffset = xyPosition->GetYPosition()->GetOffset();              // in watermark units
     }
-    else if(tilePosition)
+    else if (tilePosition)
     {
         hAlignment = tilePosition->GetHorizontalPosition()->GetAlignment();
         vAlignment = tilePosition->GetVerticalPosition()->GetAlignment();
         hUnit = tilePosition->GetHorizontalPosition()->GetUnit();
         vUnit = tilePosition->GetVerticalPosition()->GetUnit();
-        xOffset = tilePosition->GetHorizontalPosition()->GetOffset();      //In watermark unit
-        yOffset = tilePosition->GetVerticalPosition()->GetOffset();        //In watermark unit
+        xOffset = tilePosition->GetHorizontalPosition()->GetOffset();   // in watermark units
+        yOffset = tilePosition->GetVerticalPosition()->GetOffset();     // in watermark units
     }
-    double pixelPerMeterDevice = 1000*mm2sud/px2su;
-    suPerhUnit = ((hUnit == WatermarkOffset::Pixels) 
-                    ? 1
-                    : pixelPerMeterDevice / GetUnitPerMeter(hUnit)) * px2su;
-    suPervUnit = ((vUnit == WatermarkOffset::Pixels) 
-                    ? 1
-                    : pixelPerMeterDevice / GetUnitPerMeter(vUnit)) * px2su;
-    xOffset *= suPerhUnit;      //In screen unit
-    yOffset *= suPervUnit;      //In screen unit
-
+    double pixelPerMeterDevice = 1000.0 * mm2sud / px2su;
+    double suPerhUnit = ((hUnit == WatermarkOffset::Pixels)? 1.0 : pixelPerMeterDevice / GetUnitPerMeter(hUnit)) * px2su;
+    double suPervUnit = ((vUnit == WatermarkOffset::Pixels)? 1.0 : pixelPerMeterDevice / GetUnitPerMeter(vUnit)) * px2su;
+    xOffset *= suPerhUnit;      // in screen units
+    yOffset *= suPervUnit;      // in screen units
 
     std::vector<double> watermarkPosList;
-    if(xyPosition)
+    if (xyPosition)
     {
-        switch(hAlignment)
+        switch (hAlignment)
         {
         case WatermarkXOffset::Right:
             xOffset = saveWidth - xOffset;
@@ -383,21 +370,23 @@ void StylizationEngine::StylizeWatermark(SE_Renderer* se_renderer,
         case WatermarkXOffset::Left:
             break;
         default:
-            xOffset += saveWidth/2;
+            xOffset += 0.5*saveWidth;
             break;
         }
-        switch(vAlignment)
+
+        switch (vAlignment)
         {
         case WatermarkYOffset::Bottom:
-            yOffset = yUp ? yOffset : saveHeight - yOffset;
+            yOffset = yUp? yOffset : saveHeight - yOffset;
             break;
         case WatermarkYOffset::Top:
-            yOffset = yUp ? saveHeight - yOffset : yOffset;
+            yOffset = yUp? saveHeight - yOffset : yOffset;
             break;
         default:
-            yOffset = saveHeight/2 + (yUp ? yOffset : (-yOffset));
+            yOffset = 0.5*saveHeight + (yUp? yOffset : -yOffset);
             break;
         }
+
         xOffset *= drawWidth / saveWidth;
         yOffset *= drawHeight / saveHeight;
         double mapPosX, mapPosY;
@@ -405,11 +394,12 @@ void StylizationEngine::StylizeWatermark(SE_Renderer* se_renderer,
         watermarkPosList.push_back(mapPosX);
         watermarkPosList.push_back(mapPosY);
     }
-    else if(tilePosition)
+    else if (tilePosition)
     {
-        double tileWidth = tilePosition->GetTileWidth()*px2su, 
-            tileHeight = tilePosition->GetTileHeight()*px2su;
-        switch(hAlignment)
+        double tileWidth  = tilePosition->GetTileWidth()*px2su;
+        double tileHeight = tilePosition->GetTileHeight()*px2su;
+
+        switch (hAlignment)
         {
         case WatermarkXOffset::Right:
             xOffset = tileWidth - xOffset;
@@ -417,28 +407,30 @@ void StylizationEngine::StylizeWatermark(SE_Renderer* se_renderer,
         case WatermarkXOffset::Left:
             break;
         default:
-            xOffset += tileWidth/2;
+            xOffset += 0.5*tileWidth;
             break;
         }
-        switch(vAlignment)
+
+        switch (vAlignment)
         {
         case WatermarkYOffset::Bottom:
-            yOffset = yUp ? yOffset : tileHeight - yOffset;
+            yOffset = yUp? yOffset : tileHeight - yOffset;
             break;
         case WatermarkYOffset::Top:
-            yOffset = yUp ? tileHeight - yOffset : yOffset;
+            yOffset = yUp? tileHeight - yOffset : yOffset;
             break;
         default:
-            yOffset = tileHeight/2 + (yUp ? yOffset : (-yOffset));
+            yOffset = 0.5*tileHeight + (yUp? yOffset : -yOffset);
             break;
         }
+
         double drawPosX, drawPosY, mapPosX, mapPosY;
-        for(int i = 0; i<= (int)(saveWidth/tileWidth); i++)
+        for (int i=0; i<=(int)(saveWidth/tileWidth); ++i)
         {
-            for(int j = 0; j <= (int)(saveHeight/tileHeight); j++)
+            for (int j=0; j<=(int)(saveHeight/tileHeight); ++j)
             {
                 drawPosX = i*tileWidth+xOffset;
-                drawPosY = yUp ? (saveHeight-(j+1)*tileHeight+yOffset) : j*tileHeight+yOffset;
+                drawPosY = yUp? (saveHeight-(j+1)*tileHeight+yOffset) : j*tileHeight+yOffset;
                 xOffset *= drawWidth / saveWidth;
                 yOffset *= drawHeight / saveHeight;
                 m_serenderer->ScreenToWorldPoint(drawPosX, drawPosY, mapPosX, mapPosY);
@@ -470,8 +462,7 @@ void StylizationEngine::StylizeWatermark(SE_Renderer* se_renderer,
         for (size_t posIx=0; posIx<nPos; posIx+=2)
         {
             //Get geometry
-            LineBuffer* lb = LineBufferPool::NewLineBuffer(
-                m_pool, 8, FdoDimensionality_Z);
+            LineBuffer* lb = LineBufferPool::NewLineBuffer(m_pool, 8, FdoDimensionality_Z);
             spLB.reset(lb);
             lb->MoveTo(watermarkPosList[posIx], watermarkPosList[posIx+1]);
             // tell line buffer the current drawing scale (used for arc tessellation)
@@ -604,41 +595,36 @@ void StylizationEngine::StylizeWatermark(SE_Renderer* se_renderer,
                     bounds[2].y = bounds[3].y = rs_max(bounds[2].y, pt.y);
                 }
             }
+
             // bounds[0].x is left, bounds[1].x is right
-            switch(hAlignment)
+            switch (hAlignment)
             {
             case WatermarkXOffset::Right:
-                sym->absOffset[0].value = sym->absOffset[0].defValue 
-                                        = -bounds[1].x / mm2suX;
+                sym->absOffset[0].value = sym->absOffset[0].defValue = -bounds[1].x / mm2suX;
                 break;
             case WatermarkXOffset::Left:
-                sym->absOffset[0].value = sym->absOffset[0].defValue 
-                                        = -bounds[0].x / mm2suX;
+                sym->absOffset[0].value = sym->absOffset[0].defValue = -bounds[0].x / mm2suX;
                 break;
             default:
-                sym->absOffset[0].value = sym->absOffset[0].defValue 
-                                        = -(bounds[0].x + bounds[1].x) / 2 / mm2suX;
+                sym->absOffset[0].value = sym->absOffset[0].defValue = -0.5*(bounds[0].x + bounds[1].x) / mm2suX;
                 break;
             }
+
             // bounds[1].y is bottom, bounds[2].y is top
-            switch(vAlignment)
+            switch (vAlignment)
             {
             case WatermarkYOffset::Bottom:
-                sym->absOffset[1].value = sym->absOffset[1].defValue 
-                                        = (yUp ? (-bounds[1].y) : bounds[1].y) / mm2suY;
+                sym->absOffset[1].value = sym->absOffset[1].defValue = (yUp? -1.0: 1.0) * bounds[1].y / mm2suY;
                 break;
             case WatermarkYOffset::Top:
-                sym->absOffset[1].value = sym->absOffset[1].defValue 
-                                        = (yUp ? (-bounds[2].y) : bounds[2].y) / mm2suY;
+                sym->absOffset[1].value = sym->absOffset[1].defValue = (yUp? -1.0: 1.0) * bounds[2].y / mm2suY;
                 break;
             default:
-                sym->absOffset[1].value = sym->absOffset[1].defValue 
-                    = (yUp ? -1: 1)*((bounds[1].y + bounds[2].y) / 2 / mm2suY);
+                sym->absOffset[1].value = sym->absOffset[1].defValue = (yUp? -1.0: 1.0) * 0.5*(bounds[1].y + bounds[2].y) / mm2suY;
                 break;
             }
 
             // prepare the geometry on which we will apply the styles
-
             if (bClip)
             {
                 // compute offset to apply to the clipping bounds
@@ -742,6 +728,7 @@ void StylizationEngine::StylizeWatermark(SE_Renderer* se_renderer,
             if(spLB.get())
                 LineBufferPool::FreeLineBuffer(m_pool, spLB.release());
         }
+
         // switch to the next symbol rendering pass
         symbolRenderingPass = nextSymbolRenderingPass;
         nextSymbolRenderingPass = -1;
