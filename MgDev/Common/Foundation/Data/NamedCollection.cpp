@@ -59,11 +59,8 @@ MgNamedCollection::MgNamedCollection(bool allowDuplicate, bool caseSensitive)
 /// </summary>
 MgNamedCollection::~MgNamedCollection()
 {
-    if (m_pNameMap)
-    {
-        delete m_pNameMap;
-        m_pNameMap = NULL;
-    }
+    delete m_pNameMap;
+    m_pNameMap = NULL;
 }
 
 
@@ -263,11 +260,8 @@ void MgNamedCollection::Insert(INT32 index, MgNamedSerializable* value)
 void MgNamedCollection::Clear()
 {
     // Clear the map
-    if (m_pNameMap)
-    {
-        delete m_pNameMap;
-        m_pNameMap = NULL;
-    }
+    delete m_pNameMap;
+    m_pNameMap = NULL;
 
     // Clear the list
     m_dCollection->Clear();

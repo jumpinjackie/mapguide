@@ -440,11 +440,7 @@ MgByteReader* MgStreamReader::GetStream(bool enableDirect)
         {
             if (len > allocLen)
             {
-                if (NULL != temp)
-                {
-                    delete [] temp;
-                }
-
+                delete [] temp;
                 temp = new char[len];
                 allocLen = len;
             }
@@ -487,10 +483,7 @@ MgByteReader* MgStreamReader::GetStream(bool enableDirect)
 
     MG_CATCH(L"MgStreamReader.GetStream")
 
-    if (NULL != temp)
-    {
-        delete [] temp;
-    }
+    delete [] temp;
 
     MG_THROW()
 

@@ -87,24 +87,16 @@ MgXmlUtil::MgXmlUtil(const char* rootElementName) :
 
 MgXmlUtil::~MgXmlUtil()
 {
-    if (NULL != m_parser)
-    {
-        delete m_parser;
-        m_parser = NULL;
-    }
+    delete m_parser;
+    m_parser = NULL;
 
-    if (NULL != m_bis)
-    {
-        delete m_bis;
-        m_bis = NULL;
-    }
+    delete m_bis;
+    m_bis = NULL;
 
     if (NULL != m_doc)
     {
         if (m_ownDomDoc)
-        {
             m_doc->release();
-        }
 
         m_doc = NULL;
     }
