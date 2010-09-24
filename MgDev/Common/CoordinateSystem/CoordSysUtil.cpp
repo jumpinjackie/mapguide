@@ -700,4 +700,3 @@ INT64 GetAvailableMemory()
     throw new MgNotImplementedException(L"GetAvailableMemory", __LINE__, __WFILE__, NULL, L"", NULL);
 #endif
 }
-//End of file.

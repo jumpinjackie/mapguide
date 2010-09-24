@@ -134,4 +134,4 @@ private:
     bool m_bEntered;
 };
 
-#endif
+#endif //CRITICALSECTION_H_

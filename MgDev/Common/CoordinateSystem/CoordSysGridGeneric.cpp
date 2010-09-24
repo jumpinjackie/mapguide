@@ -229,5 +229,3 @@ void CCoordinateSystemGridGeneric::Dispose()
 {
     delete this;
 }
-
-//End of file.

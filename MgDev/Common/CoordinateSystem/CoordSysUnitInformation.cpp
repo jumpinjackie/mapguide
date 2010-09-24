@@ -312,5 +312,3 @@ STRING CCoordinateSystemUnitInformation::GetAbbreviation(INT32 unit)
     assert(0);
     return L"";
 }
-
-//End of file.

@@ -573,5 +573,3 @@ STRING CCoordinateSystemProjectionInformation::GetTagString(INT32 nProjectionCod
 
     return str;
 }
-
-//End of file.

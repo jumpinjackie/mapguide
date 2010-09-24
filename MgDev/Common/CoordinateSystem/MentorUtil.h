@@ -369,6 +369,3 @@ bool MathematicallySameEllipsoidDef(
 //refer to the class MgCoordinateSystemProjectionParameterType for the values
 
 #endif //MG_MENTORUTIL_H
-
-//End of file.
-

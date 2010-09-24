@@ -694,5 +694,3 @@ MgCoordinateSystemCatalog* CCoordinateSystemCategory::GetCatalog()
 {
     return SAFE_ADDREF(m_pCatalog.p);
 }
-
-//End of file.

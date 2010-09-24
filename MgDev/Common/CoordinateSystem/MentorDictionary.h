@@ -359,5 +359,3 @@ namespace MentorDictionary
 
 
 #endif //MG_MENTORDICTIONARY_H
-
-//End of file.

@@ -1489,4 +1489,3 @@ bool CCoordinateSystemMgrs::CanDoPoles (MgCoordinateSystem* frameCRS)
     }
     return canDoPoles;
 }
-//End of file.

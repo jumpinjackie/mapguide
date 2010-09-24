@@ -67,5 +67,3 @@ MgCoordinateSystemEnum* CCoordinateSystemEnumEllipsoid::CreateClone()
 
     return pNew.Detach();
 }
-
-//End of file.

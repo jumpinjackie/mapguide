@@ -191,5 +191,3 @@ void MentorDictionary::SetFileName(
 
     MG_CATCH_AND_THROW(kpMethodName)
 }
-
-//End of file.

@@ -35,4 +35,3 @@ bool CCoordinateSystemGeodeticTransformDefParams::IsProtected()
 {
     return this->isProtected;
 }
-

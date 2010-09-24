@@ -129,6 +129,3 @@ typedef std::map<CCategoryName, long> CCategoryNameIndexMap;
 typedef std::list<CCategoryName> CCategoryNameList;
 
 #endif //MG_NAMESTRUCT_H
-
-
-//End of file.

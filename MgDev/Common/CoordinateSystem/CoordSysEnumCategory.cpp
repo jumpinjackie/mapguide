@@ -328,6 +328,3 @@ MgCoordinateSystemEnum* CCoordinateSystemEnumCategory::CreateClone()
 
     return pNew.Detach();
 }
-
-
-//End of file.
