@@ -40,7 +40,10 @@ public:
     void Reset();
 
 protected:
-    virtual void Dispose(){delete this;}
+    virtual void Dispose()
+    {
+        delete this;
+    }
 
 private:
     bool   SkipElement(CPSZ pszElementName);

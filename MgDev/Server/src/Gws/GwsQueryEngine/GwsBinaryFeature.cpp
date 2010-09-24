@@ -42,8 +42,7 @@ CGwsBinaryFeature::CGwsBinaryFeature (IGWSExtendedFeatureDescription * iResdscs)
 
 CGwsBinaryFeature::~CGwsBinaryFeature () throw()
 {
-    if(m_pBinaryReader)
-        delete m_pBinaryReader;
+    delete m_pBinaryReader;
 }
 
 

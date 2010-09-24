@@ -102,7 +102,7 @@ WfsGetFeatureParams::WfsGetFeatureParams(MgOgcWfsServer& oServer/*MgHttpRequestP
 
 WfsGetFeatureParams::~WfsGetFeatureParams()
 {
-    delete(m_pNamespaces);
+    delete m_pNamespaces;
 }
 
 MgXmlNamespaceManager& WfsGetFeatureParams::NamespaceManager()

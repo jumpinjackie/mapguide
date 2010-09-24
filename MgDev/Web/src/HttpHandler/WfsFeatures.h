@@ -32,7 +32,10 @@ public:
     bool Next();
     void GenerateDefinitions(MgUtilDictionary& Dictionary);
     bool GenerateNamespacesDefinition(MgUtilDictionary& Dictionary);
-    virtual void Dispose(){delete this;}
+    virtual void Dispose()
+    {
+        delete this;
+    }
 
 private:
     STRING m_sFeatureCollection;  // the entire blob of features

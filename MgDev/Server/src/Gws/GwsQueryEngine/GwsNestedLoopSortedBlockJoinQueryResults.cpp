@@ -62,7 +62,6 @@ EGwsStatus CGwsNestedLoopSortedBlockJoinQueryResults::InitializeReader (
         return stat;
     }
     m_prepquery = prepquery;
-
     CGwsRightJoinQueryResults * results =
             (CGwsRightJoinQueryResults *) rightquery->CreateFeatureIterator (eGwsRightNestedLoopSortedBlockIterator);
     stat = results->InitializeReader (query, rightquery, rightcols, bScrollable);
@@ -73,5 +72,6 @@ EGwsStatus CGwsNestedLoopSortedBlockJoinQueryResults::InitializeReader (
         m_right = results;
         m_right->AddRef ();
     }
+
     return stat;
 }

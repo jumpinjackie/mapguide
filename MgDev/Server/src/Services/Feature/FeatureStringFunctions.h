@@ -36,7 +36,10 @@ protected:
 
     MgFeatureStringFunctions();
     virtual ~MgFeatureStringFunctions();
-    virtual void Dispose() { delete this; }
+    virtual void Dispose()
+    {
+        delete this;
+    }
 
 private:
 

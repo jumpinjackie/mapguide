@@ -38,7 +38,10 @@ protected:
 
     MgFeatureGeometricFunctions();
     virtual ~MgFeatureGeometricFunctions();
-    virtual void Dispose() { delete this; }
+    virtual void Dispose()
+    {
+        delete this;
+    }
 
 private:
 

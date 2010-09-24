@@ -429,7 +429,6 @@ EXTERNAL_API:
     MgByteReader* ToXml();
 
 protected:
-
     virtual void Dispose()
     {
         delete this;

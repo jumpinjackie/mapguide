@@ -526,17 +526,16 @@ MgXmlParser::MgXmlParser(VPSZ pszString)
 
 MgXmlParser::~MgXmlParser()
 {
-    if(m_sString != NULL)
+    if (m_sString != NULL)
         free((void*)m_sString);
-    if(m_pCurrent != NULL)
-        delete(m_pCurrent);
+
+    delete m_pCurrent;
 }
 
 // Resets the enumerator.
 void MgXmlParser::Reset()
 {
-    if(m_pCurrent != NULL)
-        delete(m_pCurrent);
+    delete m_pCurrent;
     m_pCurrent = new MgXmlInvalid();
     m_iPos = UNINITIALIZED_XSIZE_T;
 }
@@ -558,7 +557,7 @@ bool MgXmlParser::Next()
     bool bSkipping;
     do {
         if(AtEnd()) {
-            delete(m_pCurrent);
+            delete m_pCurrent;
             m_pCurrent = new MgXmlInvalid();
             return false;
         }
@@ -572,10 +571,8 @@ bool MgXmlParser::Next()
         CPSZ pszDebug = ((CPSZ)m_sString)+m_iPos; pszDebug;
 
         // Clean up what was there before.
-        if(m_pCurrent != NULL) {
-            delete(m_pCurrent);
-            m_pCurrent = NULL; // Note: not new MgXmlInvalid(); pointer will be set soon.
-        }
+        delete m_pCurrent;
+        m_pCurrent = NULL; // Note: not new MgXmlInvalid(); pointer will be set soon.
 
         // Examine what is under the "cursor" in our scan forward.
         if(m_sString[m_iPos] == '<') {
@@ -692,7 +689,7 @@ MgXmlNamespaceManager::~MgXmlNamespaceManager()
     {
         MgXmlNamespaceScope* pOldTop = m_pTopScope;
         m_pTopScope = (MgXmlNamespaceScope*)m_pTopScope->NextScope();
-        delete(pOldTop);
+        delete pOldTop;
     }
 }
 
@@ -740,7 +737,7 @@ bool MgXmlNamespaceManager::TrackEndElement  (MgXmlEndElement&   oEnd)
     // Remove that top scope.
     MgXmlNamespaceScope* pOldTop = m_pTopScope;
     m_pTopScope = (MgXmlNamespaceScope*)m_pTopScope->NextScope();
-    delete(pOldTop);
+    delete pOldTop;
 
     return true;
 }

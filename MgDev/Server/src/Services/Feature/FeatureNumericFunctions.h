@@ -32,7 +32,10 @@ public:
     MgFeatureNumericFunctions(MgReader* reader, FdoFunction* customFunction, CREFSTRING propertyAlias);
     virtual ~MgFeatureNumericFunctions();
     virtual MgReader* Execute();
-    virtual void Dispose() { delete this; }
+    virtual void Dispose()
+    {
+        delete this;
+    }
 
 protected:
 

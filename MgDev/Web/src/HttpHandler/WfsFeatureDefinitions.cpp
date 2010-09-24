@@ -73,8 +73,7 @@ MgWfsFeatureDefinitions::MgWfsFeatureDefinitions(MgResourceService* pResourceSer
 
 MgWfsFeatureDefinitions::~MgWfsFeatureDefinitions()
 {
-    if(m_pXmlInput != NULL)
-        delete(m_pXmlInput);
+    delete m_pXmlInput;
 }
 
 

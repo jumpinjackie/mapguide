@@ -93,11 +93,8 @@ void MgWmsLayerDefinitions::Reset()
 
 MgWmsLayerDefinitions::~MgWmsLayerDefinitions()
 {
-    if(m_xmlParser != NULL)
-    {
-        delete m_xmlParser;
-        m_xmlParser = NULL;
-    }
+    delete m_xmlParser;
+    m_xmlParser = NULL;
 }
 
 bool MgWmsLayerDefinitions::Next()
