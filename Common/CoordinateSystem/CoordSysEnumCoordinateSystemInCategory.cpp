@@ -424,6 +424,3 @@ MgCoordinateSystemEnum* CCoordinateSystemEnumCoordinateSystemInCategory::CreateC
     //And we're done!  Return success.
     return pNew.Detach();
 }
-
-
-//End of file.

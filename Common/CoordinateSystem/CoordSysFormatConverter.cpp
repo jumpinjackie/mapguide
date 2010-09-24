@@ -1184,5 +1184,3 @@ void CCoordinateSystemFormatConverter::ReformatOldArbitraryName(REFSTRING strNam
         }
     }
 }
-
-//End of file.

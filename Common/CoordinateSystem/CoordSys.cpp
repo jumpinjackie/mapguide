@@ -3409,5 +3409,3 @@ UINT32 CCoordinateSystem::GetSizeSerialized()
     size_t size=sizeof(m_csprm.csdef)+sizeof(UINT8);
     return static_cast<UINT32>(size);
 }
-
-//End of file.

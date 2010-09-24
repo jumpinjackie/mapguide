@@ -1680,5 +1680,3 @@ void MentorSetString(CREFSTRING sSrc, char *pDest, UINT32 nMaxSize)
 
     MG_THROW()
 }
-
-//End of file.

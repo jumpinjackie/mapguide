@@ -67,5 +67,3 @@ MgCoordinateSystemEnum* CCoordinateSystemEnumDatum::CreateClone()
 
     return pNew.Detach();
 }
-
-//End of file.

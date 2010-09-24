@@ -267,5 +267,3 @@ MgCoordinateSystemEnumInteger32* CCoordinateSystemEnumInteger32::CreateClone()
 
     return pNew.Detach();
 }
-
-//End of file.
