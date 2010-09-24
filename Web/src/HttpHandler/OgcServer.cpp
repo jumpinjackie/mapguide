@@ -1737,9 +1737,8 @@ void MgOgcServer::PopDictionary()
 
     m_pTopOfDefinitions = m_pTopOfDefinitions->NextScope();
 
-    delete(pOldTop);
+    delete pOldTop;
 }
-
 
 
 bool MgOgcServer::Write(CPSZ pszText)

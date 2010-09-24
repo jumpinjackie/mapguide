@@ -60,7 +60,10 @@ public:
     virtual bool SupportsSelectOrdering();
     virtual bool SupportsSelectDistinct();
 
-    virtual void Dispose() { delete this; }
+    virtual void Dispose()
+    {
+        delete this;
+    }
 
 private:
     Ptr<MgServerFeatureConnection> m_connection;

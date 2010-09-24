@@ -714,8 +714,7 @@ MgByteReader* MgServerMappingService::GenerateMapUpdate(MgMap* map,
         if (*iter) (*iter)->Release();
 
     //finally clean up if needed
-    if (xformToLL)
-        delete xformToLL;
+    delete xformToLL;
 
     return byteReader.Detach();
 }

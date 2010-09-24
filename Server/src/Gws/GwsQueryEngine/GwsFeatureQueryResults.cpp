@@ -57,8 +57,7 @@ CGwsFeatureIterator::~CGwsFeatureIterator () throw()
         printf ("\n%ld points converted\n", nPoints);
     }
 #endif
-    if(m_pBinaryWriter)
-        delete m_pBinaryWriter;
+    delete m_pBinaryWriter;
 }
 
 
@@ -691,9 +690,7 @@ void CGwsFeatureIterator::CheckReader ()
 
 unsigned char* CGwsFeatureIterator::ToBuffer(int& bufLen)
 {
-    if(m_pBinaryWriter != NULL)
-        delete m_pBinaryWriter;
-
+    delete m_pBinaryWriter;
     m_pBinaryWriter = new GwsBinaryFeatureWriter();
 
     FdoPtr<IGWSExtendedFeatureDescription> ifdesc;

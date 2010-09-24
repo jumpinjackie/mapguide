@@ -26,7 +26,10 @@ public:
     static MgFeatureManipulationCommand* CreateCommand(MgFeatureCommand* command, MgServerFeatureConnection* connection, INT32 cmdId);
     virtual MgProperty* Execute() = 0;
 protected:
-    virtual void Dispose() { delete this; }
+    virtual void Dispose()
+    {
+        delete this;
+    }
 };
 
 #endif

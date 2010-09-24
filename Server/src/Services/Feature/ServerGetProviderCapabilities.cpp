@@ -98,11 +98,8 @@ MgServerGetProviderCapabilities::~MgServerGetProviderCapabilities()
 
     m_fdoConn = NULL;
 
-    if (NULL != m_xmlUtil)
-        delete m_xmlUtil;
-
-    if (NULL != m_xmlCap)
-        delete m_xmlCap;
+    delete m_xmlUtil;
+    delete m_xmlCap;
 }
 
 

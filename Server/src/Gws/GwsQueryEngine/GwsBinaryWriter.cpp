@@ -37,9 +37,7 @@ BinaryWriter::BinaryWriter(int initialLen)
 BinaryWriter::~BinaryWriter()
 {
     delete [] m_data;
-
-    if (m_strCache)
-        delete [] m_strCache;
+    delete [] m_strCache;
 }
 
 
@@ -161,9 +159,7 @@ void BinaryWriter::WriteString(const wchar_t* src)
 
     if (m_strCacheLen < maxmbslen)
     {
-        if (m_strCache)
-            delete [] m_strCache;
-
+        delete [] m_strCache;
         m_strCacheLen = maxmbslen;
         m_strCache = new char[maxmbslen];
     }
@@ -207,9 +203,7 @@ void BinaryWriter::WriteRawString(const wchar_t* src)
 
     if (m_strCacheLen < maxmbslen)
     {
-        if (m_strCache)
-            delete [] m_strCache;
-
+        delete [] m_strCache;
         m_strCacheLen = maxmbslen;
         m_strCache = new char[maxmbslen];
     }

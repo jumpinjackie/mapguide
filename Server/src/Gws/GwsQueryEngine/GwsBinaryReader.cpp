@@ -54,8 +54,7 @@ BinaryReader::~BinaryReader()
             delete [] (*iter);
     }
 
-    if (m_wcsCache)
-        delete [] m_wcsCache;
+    delete [] m_wcsCache;
 }
 
 

@@ -254,7 +254,10 @@ MgFdoFilterCollection* MgSelectCommand::GetSubFilters()
         bool IsFragmented() { return m_isFragmented; }
         FdoFilter* GetNewFilter() { return m_newFilter ? FDO_SAFE_ADDREF(m_newFilter.p) : NULL; }
 
-        virtual void Dispose() { delete this; }
+        virtual void Dispose()
+        {
+            delete this;
+        }
 
         virtual void ProcessBinaryLogicalOperator(FdoBinaryLogicalOperator& filter)
         {

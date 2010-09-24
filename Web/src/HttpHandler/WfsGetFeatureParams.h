@@ -136,7 +136,10 @@ INTERNAL_API:
     WfsGetFeatureParams();
 
 protected:
-    virtual void Dispose(){delete this;}
+    virtual void Dispose()
+    {
+        delete this;
+    }
 
 private:
     // Use this in lieu of direct access to parameters.

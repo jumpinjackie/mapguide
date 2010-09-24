@@ -92,7 +92,10 @@ public:
     /// <returns>
     /// Classification of handler
     /// </returns>
-    virtual MgRequestClassification GetRequestClassification() { return MgHttpRequestResponseHandler::mrcAuthor; }
+    virtual MgRequestClassification GetRequestClassification()
+    {
+        return MgHttpRequestResponseHandler::mrcAuthor;
+    }
 
 protected:
     /// <summary>
@@ -100,7 +103,10 @@ protected:
     /// its member variables and then destruct itself.
     /// </summary>
     /// <returns>Returns nothing</returns>
-    virtual void Dispose() { delete this; }
+    virtual void Dispose()
+    {
+        delete this;
+    }
 
     /// <summary>
     /// This method is responsible for checking if

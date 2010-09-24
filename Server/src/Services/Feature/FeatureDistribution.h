@@ -33,7 +33,10 @@ protected:
 
     MgFeatureDistribution();
     virtual ~MgFeatureDistribution();
-    virtual void Dispose() { delete this; }
+    virtual void Dispose()
+    {
+        delete this;
+    }
 };
 
 #endif
