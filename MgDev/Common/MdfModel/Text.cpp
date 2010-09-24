@@ -76,8 +76,7 @@ Text::Text()
 //-------------------------------------------------------------------------
 Text::~Text()
 {
-    if (this->m_pFrame != NULL)
-        delete this->m_pFrame;
+    delete this->m_pFrame;
 }
 
 //-------------------------------------------------------------------------
@@ -457,8 +456,7 @@ void Text::AdoptFrame(TextFrame* frame)
 {
     if (this->m_pFrame != frame)
     {
-        if (this->m_pFrame != NULL)
-            delete this->m_pFrame;
+        delete this->m_pFrame;
         this->m_pFrame = frame;
     }
 }

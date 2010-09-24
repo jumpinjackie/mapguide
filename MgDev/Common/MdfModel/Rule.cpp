@@ -124,8 +124,7 @@ void Rule::AdoptLabel(Label* pLabel)
 {
     if (this->m_pLabel != pLabel)
     {
-        if (this->m_pLabel != NULL)
-            delete this->m_pLabel;
+        delete this->m_pLabel;
         this->m_pLabel = pLabel;
     }
 }

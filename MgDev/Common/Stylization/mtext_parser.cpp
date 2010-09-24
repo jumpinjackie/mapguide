@@ -1892,12 +1892,12 @@ ATOM::Status MTextGenerator::Create(ATOM::ISink** ppNewSink)
 // Takes a pointer to an existing parser and destroys it.
 ATOM::Status MTextGenerator::Destroy(ATOM::ISink* pOldSink)
 {
-    if(pOldSink == NULL)
+    if (pOldSink == NULL)
         return ATOM::Status::keInvalidArg;
 
     // TO DO ... validate that it's one of ours?
 
-    delete(pOldSink);
+    delete pOldSink;
     return ATOM::Status::keOk;
 }
 

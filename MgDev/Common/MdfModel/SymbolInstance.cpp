@@ -60,8 +60,7 @@ SymbolInstance::SymbolInstance()
 //-------------------------------------------------------------------------
 SymbolInstance::~SymbolInstance()
 {
-    if (this->m_pSymbolDefinition != NULL)
-        delete this->m_pSymbolDefinition;
+    delete this->m_pSymbolDefinition;
 }
 
 //-------------------------------------------------------------------------
@@ -85,11 +84,8 @@ void SymbolInstance::SetResourceId(const MdfString& symbolReference)
 
     // Definition and Reference are mutually exclusive.  Setting one
     // clears the other.
-    if (this->m_pSymbolDefinition != NULL)
-    {
-        delete this->m_pSymbolDefinition;
-        this->m_pSymbolDefinition = NULL;
-    }
+    delete this->m_pSymbolDefinition;
+    this->m_pSymbolDefinition = NULL;
 }
 
 //-------------------------------------------------------------------------
@@ -109,8 +105,7 @@ void SymbolInstance::AdoptSymbolDefinition(SymbolDefinition* symbolDefinition)
 {
     if (this->m_pSymbolDefinition != symbolDefinition)
     {
-        if (this->m_pSymbolDefinition != NULL)
-            delete this->m_pSymbolDefinition;
+        delete this->m_pSymbolDefinition;
         this->m_pSymbolDefinition = symbolDefinition;
 
         // Definition and Reference are mutually exclusive.  Setting one

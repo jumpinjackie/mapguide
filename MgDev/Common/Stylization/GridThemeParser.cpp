@@ -236,16 +236,11 @@ GridTheme* GridThemeParser::ParseThemeColorRule(const MdfModel::GridColorRule *p
     }
     catch (std::exception &)
     {
-        if (pTheme)
-        {
-            delete pTheme;
-            pTheme = NULL;
-        }
-        if (pBucket)
-        {
-            delete pBucket;
-            pBucket = NULL;
-        }
+        delete pTheme;
+        pTheme = NULL;
+
+        delete pBucket;
+        pBucket = NULL;
     }
     return pTheme;
 }

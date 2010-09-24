@@ -39,8 +39,7 @@ AreaRule::AreaRule()
 //-------------------------------------------------------------------------
 AreaRule::~AreaRule()
 {
-    if (this->m_Symbolization != NULL)
-        delete this->m_Symbolization;
+    delete this->m_Symbolization;
 }
 
 //-------------------------------------------------------------------------
@@ -67,8 +66,7 @@ void AreaRule::AdoptSymbolization(AreaSymbolization2D* pflAdoptedSymbolization)
 {
     if (this->m_Symbolization != pflAdoptedSymbolization)
     {
-        if (this->m_Symbolization != NULL)
-            delete this->m_Symbolization;
+        delete this->m_Symbolization;
         this->m_Symbolization = pflAdoptedSymbolization;
     }
 }

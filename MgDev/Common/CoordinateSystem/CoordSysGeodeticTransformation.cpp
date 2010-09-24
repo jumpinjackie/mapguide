@@ -386,8 +386,7 @@ void CCoordinateSystemGeodeticTransformation::SetupFromTransformationDef(MgCoord
 
     MG_CATCH(L"CCoordinateSystemGeodeticTransformation.SetupFromTransformationDef")
 
-    if (NULL != transformName)
-        delete[] transformName;
+    delete[] transformName;
 
     MG_THROW()
 }

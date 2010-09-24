@@ -51,10 +51,8 @@ BEGIN_NAMESPACE_MDFMODEL
         {
             // delete all members
             for(int i = 0; i < m_nSize; i++)
-            {
-                if (m_objArray[i] != NULL) //redundant check.
-                    delete m_objArray[i];
-            }
+                delete m_objArray[i];
+
             // delete allocated memory
             delete[] m_objArray;
         }

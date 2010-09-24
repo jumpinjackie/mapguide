@@ -467,11 +467,8 @@ bool ParseArc(ArcDefinition& def, SE_LineBuffer* lb)
 
 void SE_StyleVisitor::VisitPath(Path& path)
 {
-    if (m_primitive)
-    {
-        delete m_primitive;
-        m_primitive = NULL;
-    }
+    delete m_primitive;
+    m_primitive = NULL;
 
     SE_Color fillColor;
     ParseColorExpression(path.GetFillColor(), fillColor, 0);
@@ -532,11 +529,8 @@ void SE_StyleVisitor::VisitPath(Path& path)
 
 void SE_StyleVisitor::VisitImage(Image& image)
 {
-    if (m_primitive)
-    {
-        delete m_primitive;
-        m_primitive = NULL;
-    }
+    delete m_primitive;
+    m_primitive = NULL;
 
     SE_Raster* primitive = new SE_Raster();
     m_primitive = primitive;
@@ -609,11 +603,8 @@ void SE_StyleVisitor::VisitImage(Image& image)
 
 void SE_StyleVisitor::VisitText(Text& text)
 {
-    if (m_primitive)
-    {
-        delete m_primitive;
-        m_primitive = NULL;
-    }
+    delete m_primitive;
+    m_primitive = NULL;
 
     SE_Text* primitive = new SE_Text();
     m_primitive = primitive;

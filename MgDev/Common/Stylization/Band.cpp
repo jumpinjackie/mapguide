@@ -68,10 +68,7 @@ Band::Band(BandDataType dataType, const Point2D& point, double xExtent, double y
 
 Band::~Band()
 {
-    if (m_pBandData)
-    {
-        delete m_pBandData;
-    }
+    delete m_pBandData;
 }
 
 //*************************************************************************************************************

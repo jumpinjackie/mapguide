@@ -286,10 +286,7 @@ bool   BitBandData::SetAllToValue (const INT64* pvalue)
 
 BitBandData::~BitBandData()
 {
-    if (m_pData)
-    {
-        delete[] m_pData;
-    }
+    delete[] m_pData;
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -303,10 +300,7 @@ ByteBandData::ByteBandData(unsigned char size, unsigned int width, unsigned int 
 
 ByteBandData::~ByteBandData()
 {
-    if (m_pData)
-    {
-        delete[] m_pData;
-    }
+    delete[] m_pData;
 }
 
 //*************************************************************************************************************

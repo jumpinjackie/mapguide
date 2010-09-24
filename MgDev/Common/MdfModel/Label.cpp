@@ -39,8 +39,7 @@ Label::Label()
 //-------------------------------------------------------------------------
 Label::~Label()
 {
-    if (this->m_Symbol != NULL)
-        delete this->m_Symbol;
+    delete this->m_Symbol;
 }
 
 //-------------------------------------------------------------------------
@@ -67,8 +66,7 @@ void Label::AdoptSymbol(TextSymbol* pflAdoptedSymbol)
 {
     if (this->m_Symbol != pflAdoptedSymbol)
     {
-        if (this->m_Symbol != NULL)
-            delete this->m_Symbol;
+        delete this->m_Symbol;
         this->m_Symbol = pflAdoptedSymbol;
     }
 }

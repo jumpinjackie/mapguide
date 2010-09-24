@@ -2122,10 +2122,8 @@ public:
 
     ~RangeCapabilityParticle()
     {
-        if(m_pMin)
-            delete(m_pMin);
-        if(m_pMax)
-            delete(m_pMax);
+        delete(m_pMin);
+        delete(m_pMax);
     }
 
     Particle* Clone() const

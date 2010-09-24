@@ -315,18 +315,9 @@ MgCoordinateSystem* CCoordinateSystemFormatConverter::WktToDefinition(INT32 nWkt
                     //the dictionary we will fail because it is protected
                     //in the dictionary file
                     pCsFromDict->SetProtectMode(false);
-                    if (pswCsName)
-                    {
-                        delete[] pswCsName;
-                    }
-                    if (pswDtName)
-                    {
-                        delete[] pswDtName;
-                    }
-                    if (pswElName)
-                    {
-                        delete[] pswElName;
-                    }
+                    delete[] pswCsName;
+                    delete[] pswDtName;
+                    delete[] pswElName;
 
                     delete[] pszWkt;
 
@@ -343,18 +334,10 @@ MgCoordinateSystem* CCoordinateSystemFormatConverter::WktToDefinition(INT32 nWkt
             //text information parameters
             pEFromDict->Release();
         }
-        if (pswCsName)
-        {
-            delete[] pswCsName;
-        }
-        if (pswDtName)
-        {
-            delete[] pswDtName;
-        }
-        if (pswElName)
-        {
-            delete[] pswElName;
-        }
+
+        delete[] pswCsName;
+        delete[] pswDtName;
+        delete[] pswElName;
 
         //creates the coordsys defintion
         //don't ask the function to load the datum from the catalog, we'll set it later

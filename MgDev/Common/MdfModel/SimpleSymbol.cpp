@@ -44,8 +44,7 @@ SimpleSymbol::SimpleSymbol()
 //-------------------------------------------------------------------------
 SimpleSymbol::~SimpleSymbol()
 {
-    if (this->m_pSymbolDefinition != NULL)
-        delete this->m_pSymbolDefinition;
+    delete this->m_pSymbolDefinition;
 }
 
 //-------------------------------------------------------------------------
@@ -65,8 +64,7 @@ void SimpleSymbol::AdoptSymbolDefinition(SimpleSymbolDefinition* symbolDefinitio
 {
     if (this->m_pSymbolDefinition != symbolDefinition)
     {
-        if (this->m_pSymbolDefinition != NULL)
-            delete this->m_pSymbolDefinition;
+        delete this->m_pSymbolDefinition;
         this->m_pSymbolDefinition = symbolDefinition;
 
         // Definition and Reference are mutually exclusive.  Setting one
@@ -107,11 +105,8 @@ void SimpleSymbol::SetResourceId(const MdfString& resourceId)
 
     // Definition and Reference are mutually exclusive.  Setting one
     // clears the other.
-    if (this->m_pSymbolDefinition != NULL)
-    {
-        delete this->m_pSymbolDefinition;
-        this->m_pSymbolDefinition = NULL;
-    }
+    delete this->m_pSymbolDefinition;
+    this->m_pSymbolDefinition = NULL;
 }
 
 //-------------------------------------------------------------------------

@@ -194,8 +194,15 @@ INTERNAL_API:
     virtual void Serialize(MgStream* stream);
     virtual void Deserialize(MgStream* stream);
 
-    virtual INT32 GetClassId() { return m_cls_id; }
-    virtual void Dispose() { delete this; }
+    virtual INT32 GetClassId()
+    {
+        return m_cls_id;
+    }
+
+    virtual void Dispose()
+    {
+        delete this;
+    }
 
 private:
 

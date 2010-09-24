@@ -195,8 +195,7 @@ void RasterAdapter::Stylize(Renderer*                   renderer,
                     {
                         RS_InputStream* pal = raster->GetPalette();
                         DecodeMapped(reader, pal, dst, imgW, imgH);
-                        if (pal)
-                            delete pal;
+                        delete pal;
                     }
                     break;
                 case 1:

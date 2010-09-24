@@ -45,8 +45,7 @@ Override::Override()
 //-------------------------------------------------------------------------
 Override::~Override()
 {
-    if (this->m_pThemeLabel != NULL)
-        delete this->m_pThemeLabel;
+    delete this->m_pThemeLabel;
 }
 
 //-------------------------------------------------------------------------
@@ -120,8 +119,7 @@ void Override::AdoptThemeLabel(ThemeLabel* themeLabel)
 {
     if (this->m_pThemeLabel != themeLabel)
     {
-        if (this->m_pThemeLabel != NULL)
-            delete this->m_pThemeLabel;
+        delete this->m_pThemeLabel;
         this->m_pThemeLabel = themeLabel;
     }
 }

@@ -99,7 +99,10 @@ MgByteReader* MgGeometryProperty::GetValue()
 /// <summary>
 /// Self destructing method
 /// </summary>
- void MgGeometryProperty::Dispose() { delete this; }
+ void MgGeometryProperty::Dispose()
+ {
+     delete this;
+ }
 
 /////////////////////////////////////////////////////////////////
 /// <summary>

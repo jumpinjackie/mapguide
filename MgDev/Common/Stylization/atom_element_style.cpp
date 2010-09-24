@@ -71,7 +71,8 @@ ATOM::Status StyleDescriptionElement::AddToDescription(const ATOM::StyleParticle
 ATOM::Status StyleDescriptionElement::RemoveFromDescription(const ATOM::StyleParticle::StyleParticleType eType)
 {
     ATOM::StyleParticle* pGone = RemoveFromList(m_pDescription,eType);
-    if(pGone != NULL) {
+    if(pGone != NULL)
+    {
         delete(pGone);
         return ATOM::Status::keOk;
     }
@@ -85,7 +86,6 @@ ATOM::StyleParticle* StyleDescriptionElement::GetDescriptionParticle(ATOM::Style
 {
     return GetParticle(eType,this->m_pDescription);
 }
-
 
 
 
@@ -180,7 +180,8 @@ StyleChangeElement::~StyleChangeElement()
 void StyleChangeElement::Reset()
 {
     // Kill the deltas.
-    while(m_pDeltas) {
+    while(m_pDeltas)
+    {
         ATOM::StyleParticle* p = m_pDeltas;
         m_pDeltas = const_cast<ATOM::StyleParticle*>(p->Next());
         delete(p);

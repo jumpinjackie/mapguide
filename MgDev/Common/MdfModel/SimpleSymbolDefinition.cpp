@@ -42,14 +42,10 @@ SimpleSymbolDefinition::SimpleSymbolDefinition()
 //-------------------------------------------------------------------------
 SimpleSymbolDefinition::~SimpleSymbolDefinition()
 {
-    if (this->m_pResizeBox != NULL)
-        delete this->m_pResizeBox;
-    if (this->m_pPointUsage != NULL)
-        delete this->m_pPointUsage;
-    if (this->m_pLineUsage != NULL)
-        delete this->m_pLineUsage;
-    if (this->m_pAreaUsage != NULL)
-        delete this->m_pAreaUsage;
+    delete this->m_pResizeBox;
+    delete this->m_pPointUsage;
+    delete this->m_pLineUsage;
+    delete this->m_pAreaUsage;
 }
 
 //-------------------------------------------------------------------------
@@ -78,8 +74,7 @@ void SimpleSymbolDefinition::AdoptResizeBox(ResizeBox* resizeBox)
 {
     if (this->m_pResizeBox != resizeBox)
     {
-        if (this->m_pResizeBox != NULL)
-            delete this->m_pResizeBox;
+        delete this->m_pResizeBox;
         this->m_pResizeBox = resizeBox;
     }
 }
@@ -112,8 +107,7 @@ void SimpleSymbolDefinition::AdoptPointUsage(PointUsage* pointUsage)
 {
     if (this->m_pPointUsage != pointUsage)
     {
-        if (this->m_pPointUsage != NULL)
-            delete this->m_pPointUsage;
+        delete this->m_pPointUsage;
         this->m_pPointUsage = pointUsage;
     }
 }
@@ -146,8 +140,7 @@ void SimpleSymbolDefinition::AdoptLineUsage(LineUsage* lineUsage)
 {
     if (this->m_pLineUsage != lineUsage)
     {
-        if (this->m_pLineUsage != NULL)
-            delete this->m_pLineUsage;
+        delete this->m_pLineUsage;
         this->m_pLineUsage = lineUsage;
     }
 }
@@ -180,8 +173,7 @@ void SimpleSymbolDefinition::AdoptAreaUsage(AreaUsage* areaUsage)
 {
     if (this->m_pAreaUsage != areaUsage)
     {
-        if (this->m_pAreaUsage != NULL)
-            delete this->m_pAreaUsage;
+        delete this->m_pAreaUsage;
         this->m_pAreaUsage = areaUsage;
     }
 }

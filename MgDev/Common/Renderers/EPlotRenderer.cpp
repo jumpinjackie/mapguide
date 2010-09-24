@@ -73,9 +73,7 @@ EPlotRenderer::~EPlotRenderer()
 {
     delete m_uuid;
 
-    if (m_dwfPackageWriter)
-        delete m_dwfPackageWriter;
-
+    delete m_dwfPackageWriter;
     m_dwfPackageWriter = NULL;
 }
 

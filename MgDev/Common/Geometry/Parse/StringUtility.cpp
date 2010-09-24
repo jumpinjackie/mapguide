@@ -25,8 +25,7 @@ wchar_t*  GisStringUtility::NullString = L"NULL";
 
 void GisStringUtility::ClearString(wchar_t*& psz)
 {
-    if (psz != NULL)
-        delete [] psz;
+    delete [] psz;
     psz = NULL;
 }
 

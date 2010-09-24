@@ -64,8 +64,7 @@ LineUsage::LineUsage()
 //-------------------------------------------------------------------------
 LineUsage::~LineUsage()
 {
-    if (this->m_pDefaultPath != NULL)
-        delete this->m_pDefaultPath;
+    delete this->m_pDefaultPath;
 }
 
 //-------------------------------------------------------------------------
@@ -265,8 +264,7 @@ void LineUsage::AdoptDefaultPath(Path* defaultPath)
 {
     if (this->m_pDefaultPath != defaultPath)
     {
-        if (this->m_pDefaultPath != NULL)
-            delete this->m_pDefaultPath;
+        delete this->m_pDefaultPath;
         this->m_pDefaultPath = defaultPath;
     }
 }

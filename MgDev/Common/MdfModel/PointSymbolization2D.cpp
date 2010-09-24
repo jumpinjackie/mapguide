@@ -76,8 +76,7 @@ void PointSymbolization2D::AdoptSymbol(Symbol* psymAdoptedSymbol)
 {
     if (this->m_psymSymbol != psymAdoptedSymbol)
     {
-        if (this->m_psymSymbol != NULL)
-            delete this->m_psymSymbol;
+        delete this->m_psymSymbol;
         this->m_psymSymbol = psymAdoptedSymbol;
     }
 }

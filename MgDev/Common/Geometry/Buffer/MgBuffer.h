@@ -44,10 +44,8 @@ private: // internal
 
         ~BufferParams()
         {
-            if (progressCallback != NULL)
-                delete progressCallback;
-            if (transform != NULL)
-                delete transform;
+            delete progressCallback;
+            delete transform;
         }
 
         ProgressCallback* progressCallback;

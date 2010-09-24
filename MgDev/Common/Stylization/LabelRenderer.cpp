@@ -55,19 +55,13 @@ void LabelRenderer::Cleanup()
         {
             LabelInfo& info = group.m_labels[j];
 
-            if (info.m_pts)
-            {
-                delete [] info.m_pts;
-                info.m_pts = NULL;
-                info.m_numpts = 0;
-            }
+            delete [] info.m_pts;
+            info.m_pts = NULL;
+            info.m_numpts = 0;
 
             // the style was cloned when it was passed to the LabelRenderer
-            if (info.m_sestyle)
-            {
-                delete info.m_sestyle;
-                info.m_sestyle = NULL;
-            }
+            delete info.m_sestyle;
+            info.m_sestyle = NULL;
         }
     }
 
@@ -253,19 +247,13 @@ void LabelRenderer::BlastLabels()
                     {
                         LabelInfo& info = group.m_labels[j];
 
-                        if (info.m_pts)
-                        {
-                            delete [] info.m_pts;
-                            info.m_pts = NULL;
-                            info.m_numpts = 0;
-                        }
+                        delete [] info.m_pts;
+                        info.m_pts = NULL;
+                        info.m_numpts = 0;
 
                         // the style was cloned when it was passed to the LabelRenderer
-                        if (info.m_sestyle)
-                        {
-                            delete info.m_sestyle;
-                            info.m_sestyle = NULL;
-                        }
+                        delete info.m_sestyle;
+                        info.m_sestyle = NULL;
                     }
 
                     group.m_labels.clear();

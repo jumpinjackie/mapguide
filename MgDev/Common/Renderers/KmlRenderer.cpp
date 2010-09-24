@@ -508,20 +508,15 @@ void KmlRenderer::ClearThemes()
 
 void KmlRenderer::ClearStyles()
 {
-    if (m_styleContent != NULL)
-    {
-        delete m_styleContent;
-        m_styleContent = NULL;
-    }
+    delete m_styleContent;
+    m_styleContent = NULL;
 }
 
 
 void KmlRenderer::WriteStyle(RS_FillStyle& fill)
 {
     if (m_styleContent == NULL)
-    {
         m_styleContent = new KmlContent();
-    }
 
     char buffer[256];
     int thisStyleId = 0;

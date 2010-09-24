@@ -797,8 +797,7 @@ void RS_FontEngine::DrawBlockText(const RS_TextMetrics& tm, RS_TextDef& tdef, do
         }
     }
 
-    if (pRichTextEngine)
-        delete pRichTextEngine;
+    delete pRichTextEngine;
 }
 
 

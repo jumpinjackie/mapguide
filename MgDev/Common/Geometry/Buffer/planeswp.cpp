@@ -332,10 +332,6 @@ void PlaneSweep::DoPlaneSweep(ProgressCallback &callback, FloatTransform *pTrans
 void PlaneSweep::DoPlaneSweep(ProgressCallback &callback,
     OrientedPolyPolygon &outputPolygon)
 {
-
-
-
-
     // check if there is anything to do
 
     if (m_nEdgesAdded == 0)
@@ -352,7 +348,6 @@ void PlaneSweep::DoPlaneSweep(ProgressCallback &callback,
     m_tupleArray->Sort(callback, sortMethod);
     if (callback.IsCanceled())
         return;
-
 
     // initialize pointers to data structures
 
@@ -495,12 +490,6 @@ void PlaneSweep::DoPlaneSweep(ProgressCallback &callback,
             callback.AdvanceOneSubInterval();
     }
 
-
-
-
-
-
-
     // clean up data structures that are no longer required, and the
     // progress interval for the sweep part
 
@@ -541,21 +530,12 @@ void PlaneSweep::DoPlaneSweep(ProgressCallback &callback,
         MG_THROW()
     }
 
-
-
-
-
-
-
     delete intersectList;
 
     // extract the output poly-polygon from the graph of WingedEdges
 
-
-
-
-
     if (!callback.IsCanceled())
+    {
         try
         {
             GetOutputPolygon(callback, outputPolygon);
@@ -566,13 +546,7 @@ void PlaneSweep::DoPlaneSweep(ProgressCallback &callback,
             callback.EndProgressInterval();
             throw(ex);
         }
-
-
-
-
-
-
-
+    }
 
     // end the progress interval started above
 
@@ -680,7 +654,8 @@ void PlaneSweep::Cleanup()
 
 void PlaneSweep::AddEdge(OpsDoublePoint *vertices[2])
 {
-    if (*vertices[0] != *vertices[1]) {
+    if (*vertices[0] != *vertices[1])
+    {
         WingedEdge *wEdge = m_wingedEdgeAlloc->Allocate(vertices);
         m_tupleArray->AddSweepTuples(m_sweepEdgeAlloc->Allocate(wEdge));
         m_nEdgesAdded++;
@@ -735,7 +710,8 @@ void PlaneSweep::FindStartPointIntersections(const SweepEdge *edge,
 
     double ordinate;
     SweepEdge *edge2 = xOrdTree->Below(edge);
-    while (edge2 != NULL) {
+    while (edge2 != NULL)
+    {
         ordinate = edge2->Ordinate(x);
         if (y != ordinate)
             break;
@@ -746,7 +722,8 @@ void PlaneSweep::FindStartPointIntersections(const SweepEdge *edge,
     // walk up the X-Order looking for intersecting edges
 
     edge2 = xOrdTree->Above(edge);
-    while (edge2 != NULL) {
+    while (edge2 != NULL)
+    {
         ordinate = edge2->Ordinate(x);
         if (y != ordinate)
             break;
@@ -795,11 +772,9 @@ void PlaneSweep::AddStartPointIntersections(const SweepEdge *edge1,
 
     OpsDoublePoint *intersectPt = edge1->MinVert();
 
-
     if ( !intersectList->Add(*intersectPt, edge1->GetWingedEdge(),
         edge2->GetWingedEdge()))
         return;
-
 
     // if the edges have the same slope, and the start point of edge1 is not
     // the end point of edge2 then the two edges overlap - add the appropriate
@@ -1279,10 +1254,6 @@ void PlaneSweep::ClampIntersection(const OpsDoublePoint *minVert1,
 void PlaneSweep::GetOutputPolygon(ProgressCallback &callback,
     OrientedPolyPolygon &outputPolygon)
 {
-
-
-
-
     // open boundary traversal trace file if necessary (debug mode only)
 
 #if defined _DEBUG
@@ -1318,13 +1289,6 @@ void PlaneSweep::GetOutputPolygon(ProgressCallback &callback,
                                                               (float)wEdge->m_vert[1]->x, (float)wEdge->m_vert[1]->y);
     }
     MgDumpFFGF::closeFile(ffgfFile);
-
-
-
-
-
-
-
 #endif
 
     for (int i = 0; i < totalEdges; i++) {
@@ -1393,12 +1357,6 @@ void PlaneSweep::GetOutputPolygon(ProgressCallback &callback,
         boundaryTraversalTraceFile = NULL;
     }
 #endif
-
-
-
-
-
-
 
     // if no points in the output polygon and no cancelation was signalled,
     // then some sort of topological error must have occurred - throw a Plane-
@@ -1477,9 +1435,6 @@ BOOL PlaneSweep::TraverseBoundary(WingedEdge *wEdge, WingedEdge::EdgeSide side,
                 ::fprintf(boundaryTraversalTraceFile, "id: %d - already visited\n", wEdge->m_id);
 #endif
 
-
-
-
             abandonBoundary = TRUE;
             break;
         }
@@ -1508,7 +1463,6 @@ BOOL PlaneSweep::TraverseBoundary(WingedEdge *wEdge, WingedEdge::EdgeSide side,
         side = wEdge->GetSide(vert);
 
     } while ( wEdge != startEdge || side != startSide);
-
 
     // if no interior edges were encountered, then close the boundary and
     // call internal AcceptBoundary() method to determine whether or not to
@@ -1674,11 +1628,13 @@ void PlaneSweep::CloseBoundary()
 
 void PlaneSweep::ResizeBoundaryArray()
 {
-    if (m_nBoundaryVertices + 1 > m_boundaryArraySize) {
+    if (m_nBoundaryVertices + 1 > m_boundaryArraySize)
+    {
         size_t newSize = m_boundaryArraySize + BoundaryArraySize;
         OpsFloatPoint *tmp = new OpsFloatPoint[newSize];
 
-        if (m_nBoundaryVertices > 0) {
+        if (m_nBoundaryVertices > 0)
+        {
             size_t nBytesToCopy = m_nBoundaryVertices * sizeof(OpsFloatPoint);
             ::memcpy(tmp, m_boundaryVertices, nBytesToCopy);
         }
@@ -1914,7 +1870,6 @@ BOOL PlaneSweep::GetBoundaryInfo(const OpsFloatPoint boundaryVerts[],
                 yCross[1] = y;
         }
     }
-
 
     if (yCross[0] == HUGE_VAL || yCross[1] == HUGE_VAL)
         return FALSE;

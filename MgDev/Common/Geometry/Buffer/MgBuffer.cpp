@@ -254,11 +254,8 @@ void MgBuffer::CreatePointBuffer(BufferParams* bufferParams, MgPoint* mgPoint,
     else
         delete bufferPolygon;
 
-    if (bufferUtil != NULL)
-        delete bufferUtil;
-
-    if (borderWalker)
-        delete borderWalker;
+    delete bufferUtil;
+    delete borderWalker;
 
     return;
 }
@@ -311,11 +308,8 @@ void MgBuffer::CreateCurveStringBuffer(BufferParams* bufferParams, MgCurveString
     else
         delete bufferPolygon;
 
-    if (bufferUtil != NULL)
-        delete bufferUtil;
-
-    if (borderWalker)
-        delete borderWalker;
+    delete bufferUtil;
+    delete borderWalker;
 
     return;
 }
@@ -378,11 +372,8 @@ void MgBuffer::CreateLineStringBuffer(BufferParams* bufferParams, MgLineString* 
     else
         delete bufferPolygon;
 
-    if (bufferUtil != NULL)
-        delete bufferUtil;
-
-    if (borderWalker)
-        delete borderWalker;
+    delete bufferUtil;
+    delete borderWalker;
 
     return;
 }
@@ -461,11 +452,8 @@ void MgBuffer::CreatePolygonBuffer(BufferParams* bufferParams, MgPolygon* polygo
         else
             delete bufferPolygon;
 
-        if (bufferUtil != NULL)
-            delete bufferUtil;
-
-        if (borderWalker)
-            delete borderWalker;
+        delete bufferUtil;
+        delete borderWalker;
     }
 
     return;
@@ -542,11 +530,8 @@ void MgBuffer::CreateLinearRingBuffer(BufferParams* bufferParams, MgLinearRing* 
         else
             delete bufferPolygon;
 
-        if (bufferUtil != NULL)
-            delete bufferUtil;
-
-        if (borderWalker)
-            delete borderWalker;
+        delete bufferUtil;
+        delete borderWalker;
 
         if (topoError)
             throw new PlaneSweepException(PlaneSweepException::TopologicalError);
@@ -627,11 +612,8 @@ void MgBuffer::CreateCurvePolygonBuffer(BufferParams* bufferParams, MgCurvePolyg
         else
             delete bufferPolygon;
 
-        if (bufferUtil != NULL)
-            delete bufferUtil;
-
-        if (borderWalker)
-            delete borderWalker;
+        delete bufferUtil;
+        delete borderWalker;
     }
 
     return;
@@ -719,11 +701,8 @@ void MgBuffer::CreateMultiLineStringBuffer(BufferParams* bufferParams, MgMultiLi
         else
             delete bufferPolygon;
 
-        if (bufferUtil != NULL)
-            delete bufferUtil;
-
-        if (borderWalker)
-            delete borderWalker;
+        delete bufferUtil;
+        delete borderWalker;
     }
 
     return;
