@@ -260,24 +260,16 @@ DWFRenderer::DWFRenderer()
 
 DWFRenderer::~DWFRenderer()
 {
-    if (m_wtPointBuffer)
-        delete[] m_wtPointBuffer;
-
-    if (m_hatchFac)
-        delete m_hatchFac;
-
-    if (m_fillFac)
-        delete m_fillFac;
-
-    if (m_obsMesh)
-        delete m_obsMesh; //should not get here
+    delete[] m_wtPointBuffer;
+    delete m_hatchFac;
+    delete m_fillFac;
+    delete m_obsMesh;
 
     delete (NodeTable*)m_hObjNodes;
 
     // could be non-NULL if an exception was raised before this was
     // added to the attribute resources collection
-    if (m_attributes)
-        delete m_attributes;
+    delete m_attributes;
 }
 
 
@@ -369,11 +361,8 @@ void DWFRenderer::EndMap()
     m_lLayoutStreams.clear();
     m_lLayoutLabelStreams.clear();
 
-    if (m_obsMesh)
-    {
-        delete m_obsMesh;
-        m_obsMesh = NULL;
-    }
+    delete m_obsMesh;
+    m_obsMesh = NULL;
 
     // clear the map info
     m_mapInfo = NULL;
@@ -397,11 +386,8 @@ void DWFRenderer::StartLayer(RS_LayerUIInfo* layerInfo, RS_FeatureClassInfo* cla
 
         // could be non-NULL if an exception was raised before this was
         // added to the attribute resources collection
-        if (m_attributes)
-        {
-            delete m_attributes;
-            m_attributes = NULL;
-        }
+        delete m_attributes;
+        m_attributes = NULL;
 
         m_attributes = DWFCORE_ALLOC_OBJECT(DWFObjectDefinitionResource(
                                         DWFXML::kzElement_PageObjectDefinition,
@@ -838,8 +824,7 @@ void DWFRenderer::ProcessRaster(unsigned char* _data,
         IncrementDrawableCount();
     }
 
-    if (NULL != aggcxt)
-        delete aggcxt;
+    delete aggcxt;
 }
 
 

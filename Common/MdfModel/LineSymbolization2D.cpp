@@ -70,8 +70,7 @@ void LineSymbolization2D::AdoptStroke(Stroke* pstkAdoptedStroke)
 {
     if (this->m_pstkStroke != pstkAdoptedStroke)
     {
-        if (this->m_pstkStroke != NULL)
-            delete this->m_pstkStroke;
+        delete this->m_pstkStroke;
         this->m_pstkStroke = pstkAdoptedStroke;
     }
 }

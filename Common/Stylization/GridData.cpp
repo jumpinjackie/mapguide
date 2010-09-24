@@ -107,30 +107,18 @@ GridData::~GridData()
          itr != m_BandVector.end();
          ++itr)
     {
-        if (*itr)
-        {
-            delete *itr;
-            *itr = NULL;
-        }
+        delete *itr;
+        *itr = NULL;
     }
 
-    if (NULL != m_pColorBand)
-    {
-        delete m_pColorBand;
-        m_pColorBand = NULL;
-    }
+    delete m_pColorBand;
+    m_pColorBand = NULL;
 
-    if (NULL != m_pDrapedColorBand)
-    {
-        delete m_pDrapedColorBand;
-        m_pDrapedColorBand = NULL;
-    }
+    delete m_pDrapedColorBand;
+    m_pDrapedColorBand = NULL;
 
-    if (NULL != m_pStylizedBand)
-    {
-        delete m_pStylizedBand;
-        m_pStylizedBand = NULL;
-    }
+    delete m_pStylizedBand;
+    m_pStylizedBand = NULL;
 }
 
 //*************************************************************************************************************
@@ -139,9 +127,7 @@ Band* GridData::CreateBand(Band::BandDataType dataType, const MdfModel::MdfStrin
 {
     Band* pBand = new Band(dataType, this);
     if (NULL == pBand)
-    {
         return NULL;
-    }
 
     pBand->SetName(name.c_str());
 

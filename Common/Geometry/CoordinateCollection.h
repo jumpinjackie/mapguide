@@ -316,7 +316,10 @@ INTERNAL_API:
     virtual void ToAwkt(REFSTRING awktStr, REFSTRING coordDim, bool is2dOnly);
 
 protected:
-    void Dispose() { delete this; }
+    void Dispose()
+    {
+        delete this;
+    }
 
 private:
 

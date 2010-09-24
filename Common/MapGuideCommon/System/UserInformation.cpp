@@ -338,13 +338,19 @@ void MgUserInformation::ClearMgSessionId()
 /// </summary>
 /// <returns> Nothing
 /// </returns>
-void MgUserInformation::Dispose() { delete this; }
+void MgUserInformation::Dispose()
+{
+    delete this;
+}
 
 /////////////////////////////////////////////////////////////////
 /// <summary>
 /// Returns the classId.
 /// </summary>
-INT32 MgUserInformation::GetClassId() { return m_cls_id; }
+INT32 MgUserInformation::GetClassId()
+{
+    return m_cls_id;
+}
 
 MgByteReader* MgUserInformation::GetReader()
 {

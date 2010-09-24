@@ -43,11 +43,8 @@ RichTextEngine::~RichTextEngine()
         delete pNext;
     }
 
-    if ( this->m_pHeadBlock )
-        delete this->m_pHeadBlock;
-
-    if ( this->m_pCurrLine )
-        delete this->m_pCurrLine;
+    delete this->m_pHeadBlock;
+    delete this->m_pCurrLine;
 }
 
 
@@ -1137,8 +1134,7 @@ AtomBaseComponentCollection::~AtomBaseComponentCollection()
 {
     size_t numComponents = this->m_components.size();
     for ( size_t i=0; i<numComponents; ++i )
-        if ( m_components[i] )
-            delete this->m_components[i];
+        delete this->m_components[i];
 }
 
 void AtomBaseComponentCollection::AddComponent( AtomBaseComponent* pComponent )

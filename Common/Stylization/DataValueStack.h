@@ -32,8 +32,7 @@ public:
     {
         //note this destructor will not call
         //the individual element destructors
-        if (m_data)
-            delete [] m_data;
+        delete [] m_data;
     }
 
     inline void push(T* dv)

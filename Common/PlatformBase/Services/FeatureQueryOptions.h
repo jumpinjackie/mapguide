@@ -507,8 +507,15 @@ INTERNAL_API:
     virtual void Deserialize(MgStream* stream);
     STRING GetLogString();
 
-    virtual INT32 GetClassId() { return m_cls_id; }
-    virtual void Dispose() { delete this; }
+    virtual INT32 GetClassId()
+    {
+        return m_cls_id;
+    }
+
+    virtual void Dispose()
+    {
+        delete this;
+    }
 
     void ValidateEmptyArgument(CREFSTRING value);
 

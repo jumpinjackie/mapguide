@@ -38,12 +38,9 @@ FSDSAX2Parser::FSDSAX2Parser() : DefaultHandler()
 
 FSDSAX2Parser::~FSDSAX2Parser()
 {
-    if (m_handlerStack != NULL)
-        delete m_handlerStack;
-    if (m_parser != NULL)
-        delete m_parser;
-    if (m_featureSource)
-        delete m_featureSource;
+    delete m_handlerStack;
+    delete m_parser;
+    delete m_featureSource;
 }
 
 

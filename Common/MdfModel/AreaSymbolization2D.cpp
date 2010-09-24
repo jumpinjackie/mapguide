@@ -72,8 +72,7 @@ void AreaSymbolization2D::AdoptFill(Fill* pflAdoptedFill)
 {
     if (this->m_pflFill != pflAdoptedFill)
     {
-        if (this->m_pflFill != NULL)
-            delete this->m_pflFill;
+        delete this->m_pflFill;
         this->m_pflFill = pflAdoptedFill;
     }
 }
@@ -120,8 +119,7 @@ void AreaSymbolization2D::AdoptEdge(Stroke* pstkAdoptedEdge)
 {
     if (this->m_pstkEdge != pstkAdoptedEdge)
     {
-        if (this->m_pstkEdge != NULL)
-            delete this->m_pstkEdge;
+        delete this->m_pstkEdge;
         this->m_pstkEdge = pstkAdoptedEdge;
     }
 }

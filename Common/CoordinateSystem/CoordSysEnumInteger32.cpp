@@ -57,11 +57,9 @@ void CCoordinateSystemEnumInteger32::SetList(INT32 *pnValues, UINT32 ulSize)
         throw new MgNullArgumentException(L"MgCoordinateSystemEnumInteger32.SetList", __LINE__, __WFILE__, NULL, L"", NULL);
     }
 
-    if (m_pnValues)
-    {
-        delete [] m_pnValues;
-        m_pnValues = NULL;
-    }
+    delete [] m_pnValues;
+    m_pnValues = NULL;
+
     m_ulPos = 0;
     m_ulSize = 0;
 

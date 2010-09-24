@@ -174,10 +174,7 @@ void GreatCircleBufferUtil::Initialize(INT32 nSegsPerCircle)
 
 void GreatCircleBufferUtil::InitPolyObject()
 {
-    if (m_pfBufferVerts != NULL)
-    {
-        delete [] m_pfBufferVerts;
-    }
+    delete [] m_pfBufferVerts;
 
     // allocate the buffer used by CreateConvexOffsetChains() - note that the
     // buffer is given an "overrun" area at the end - this helps simplify the

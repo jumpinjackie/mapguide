@@ -529,7 +529,7 @@ bool ParseWktString(string& sWktOriginal, string& sObject, vector<string>& vComp
    }
 
 
-   if(szComponent) delete [] szComponent;
+   delete [] szComponent;
 
    return bOK;
 }

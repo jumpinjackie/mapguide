@@ -55,14 +55,12 @@ MgServerConnection::~MgServerConnection()
 {
     assert( 0 == this->GetRefCount() );
 
-    if (NULL != m_lastUsed)
-        delete m_lastUsed;
-
-    if (NULL != m_serverConnImp)
-        delete m_serverConnImp;
-
+    delete m_lastUsed;
     m_lastUsed = NULL;
+
+    delete m_serverConnImp;
     m_serverConnImp = NULL;
+
     m_stack = NULL;
 }
 
@@ -195,7 +193,7 @@ INT32 MgServerConnection::Release()
 /// </returns>
 void MgServerConnection::Dispose()
 {
-        delete this;
+    delete this;
 }
 
 /////////////////////////////////////////////////////////////////

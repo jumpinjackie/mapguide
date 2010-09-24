@@ -254,7 +254,7 @@ void CCoordinateSystemDatum::SetDtCode(CREFSTRING sCode)
     strncpy(m_DtDef.key_nm, pStr, cs_KEYNM_MAX);
 
     //Free the converted string
-    delete [] pStr;
+    delete[] pStr;
 
     //And we're done!
     MG_CATCH_AND_THROW(L"MgCoordinateSystemDatum.SetDtCode")

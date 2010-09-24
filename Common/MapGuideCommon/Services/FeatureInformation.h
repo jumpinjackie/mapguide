@@ -178,7 +178,10 @@ protected:
     /////////////////////////////////////////
     /// Dispose the object
     ///
-    virtual void Dispose() { delete this; }
+    virtual void Dispose()
+    {
+        delete this;
+    }
 
 private:
     Ptr<MgSelection>            m_selection;

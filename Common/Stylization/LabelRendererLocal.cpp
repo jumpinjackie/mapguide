@@ -56,25 +56,16 @@ void LabelRendererLocal::Cleanup()
         {
             LabelInfoLocal& info = group.m_labels[j];
 
-            if (info.m_rotated_points)
-            {
-                delete [] info.m_rotated_points;
-                info.m_rotated_points = NULL;
-            }
+            delete [] info.m_rotated_points;
+            info.m_rotated_points = NULL;
 
-            if (info.m_pts)
-            {
-                delete [] info.m_pts;
-                info.m_pts = NULL;
-                info.m_numpts = 0;
-            }
+            delete [] info.m_pts;
+            info.m_pts = NULL;
+            info.m_numpts = 0;
 
             // the style was cloned when it was passed to the LabelRenderer
-            if (info.m_sestyle)
-            {
-                delete info.m_sestyle;
-                info.m_sestyle = NULL;
-            }
+            delete info.m_sestyle;
+            info.m_sestyle = NULL;
         }
     }
 
@@ -407,19 +398,13 @@ void LabelRendererLocal::BlastLabels()
                         // at this point there shouldn't yet be any rotated points
                         _ASSERT(info.m_rotated_points == NULL);
 
-                        if (info.m_pts)
-                        {
-                            delete [] info.m_pts;
-                            info.m_pts = NULL;
-                            info.m_numpts = 0;
-                        }
+                        delete [] info.m_pts;
+                        info.m_pts = NULL;
+                        info.m_numpts = 0;
 
                         // the style was cloned when it was passed to the LabelRenderer
-                        if (info.m_sestyle)
-                        {
-                            delete info.m_sestyle;
-                            info.m_sestyle = NULL;
-                        }
+                        delete info.m_sestyle;
+                        info.m_sestyle = NULL;
                     }
 
                     group.m_labels.clear();
@@ -502,19 +487,13 @@ void LabelRendererLocal::BlastLabels()
                 // the original label infos should still not have any rotated points
                 _ASSERT(info.m_rotated_points == NULL);
 
-                if (info.m_pts)
-                {
-                    delete [] info.m_pts;
-                    info.m_pts = NULL;
-                    info.m_numpts = 0;
-                }
+                delete [] info.m_pts;
+                info.m_pts = NULL;
+                info.m_numpts = 0;
 
                 // the style was cloned when it was passed to the LabelRenderer
-                if (info.m_sestyle)
-                {
-                    delete info.m_sestyle;
-                    info.m_sestyle = NULL;
-                }
+                delete info.m_sestyle;
+                info.m_sestyle = NULL;
             }
 
             group.m_labels = repeated_infos;
@@ -831,11 +810,8 @@ void LabelRendererLocal::BlastLabels()
                 _ASSERT(info.m_pts == NULL);
 
                 // the style was cloned when it was passed to the LabelRenderer
-                if (info.m_sestyle)
-                {
-                    delete info.m_sestyle;
-                    info.m_sestyle = NULL;
-                }
+                delete info.m_sestyle;
+                info.m_sestyle = NULL;
             }
         }
 

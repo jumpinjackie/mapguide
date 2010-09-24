@@ -68,11 +68,8 @@ MgSelectionBase::~MgSelectionBase()
     }
     m_selections.clear();
 
-    if (m_stream != NULL)
-    {
-        delete m_stream;
-        m_stream = NULL;
-    }
+    delete m_stream;
+    m_stream = NULL;
 }
 
 

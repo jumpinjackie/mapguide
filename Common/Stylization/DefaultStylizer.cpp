@@ -463,9 +463,7 @@ void DefaultStylizer::StylizeDrawingLayer(MdfModel::DrawingLayerDefinition* laye
 void DefaultStylizer::SetGeometryAdapter(FdoGeometryType type, GeometryAdapter* stylizer)
 {
     GeometryAdapter* old = (GeometryAdapter*)m_hGeomStylizers[type];
-
-    if (old)
-        delete old;
+    delete old;
 
     m_hGeomStylizers[type] = stylizer;
 }
@@ -534,9 +532,6 @@ void DefaultStylizer::ClearAdapters()
 
     m_hGeomStylizers.clear();
 
-    if (m_pRasterAdapter)
-    {
-        delete m_pRasterAdapter;
-        m_pRasterAdapter = NULL;
-    }
+    delete m_pRasterAdapter;
+    m_pRasterAdapter = NULL;
 }

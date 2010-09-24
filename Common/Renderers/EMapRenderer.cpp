@@ -53,6 +53,7 @@ EMapRenderer::~EMapRenderer()
     delete m_uuid;
 }
 
+
 void EMapRenderer::StartMap(RS_MapUIInfo*    mapInfo,
                             RS_Bounds&       extents,
                             double           mapScale,

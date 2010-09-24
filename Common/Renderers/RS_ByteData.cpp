@@ -43,8 +43,7 @@ RS_ByteData::RS_ByteData(unsigned char* bytes, unsigned int numBytes) :
 
 RS_ByteData::~RS_ByteData()
 {
-    if (m_bytes)
-        delete [] m_bytes;
+    delete [] m_bytes;
 }
 
 

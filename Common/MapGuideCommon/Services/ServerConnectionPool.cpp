@@ -57,11 +57,9 @@ MgServerConnectionPool::~MgServerConnectionPool()
     ConnectionPool::iterator iter = pool.begin();
     while (iter != pool.end())
     {
-        if (NULL != iter->second)
-        {
-            delete iter->second;
-            iter->second = NULL;
-        }
+        delete iter->second;
+        iter->second = NULL;
+
         iter++;
     }
 
@@ -116,10 +114,9 @@ void MgServerConnectionPool::CloseConnections()
 {
     ACE_MT (ACE_GUARD (ACE_Recursive_Thread_Mutex, ace_mon, *ACE_Static_Object_Lock::instance ()));
     MG_TRY()
-    if (MgServerConnectionPool::sm_pool != NULL)
-    {
-            delete MgServerConnectionPool::sm_pool;
-            MgServerConnectionPool::sm_pool = NULL;
-    }
+
+    delete MgServerConnectionPool::sm_pool;
+    MgServerConnectionPool::sm_pool = NULL;
+
     MG_CATCH_AND_RELEASE()   
 }

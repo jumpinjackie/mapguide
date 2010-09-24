@@ -40,8 +40,7 @@ CompositeRule::CompositeRule()
 //-------------------------------------------------------------------------
 CompositeRule::~CompositeRule()
 {
-    if (this->m_pSymbolization != NULL)
-        delete this->m_pSymbolization;
+    delete this->m_pSymbolization;
 }
 
 //-------------------------------------------------------------------------
@@ -68,8 +67,7 @@ void CompositeRule::AdoptSymbolization(CompositeSymbolization* compositeSymboliz
 {
     if (this->m_pSymbolization != compositeSymbolization)
     {
-        if (this->m_pSymbolization != NULL)
-            delete this->m_pSymbolization;
+        delete this->m_pSymbolization;
         this->m_pSymbolization = compositeSymbolization;
     }
 }

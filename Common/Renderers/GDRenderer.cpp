@@ -157,11 +157,8 @@ GDRenderer::~GDRenderer()
     if (m_imsym)
         gdImageDestroy((gdImagePtr)m_imsym);
 
-    if (m_wtPointBuffer)
-        delete [] m_wtPointBuffer;
-
+    delete [] m_wtPointBuffer;
     delete m_labeler;
-
     delete m_polyrasterizer;
 }
 
