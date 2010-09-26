@@ -71,17 +71,6 @@ void MgHttpWfsDescribeFeatureType::Execute(MgHttpResponse& hResponse)
     // Instance a server-lette
     MgOgcWfsServer Wfs(Parms,Out);
 
-    // In order to validate request we have to invoke the ProcessRequest
-    if(!Wfs.ProcessRequest(this))
-    {
-        // Obtain the response byte reader
-        Ptr<MgByteReader> errorResponse = Out.Stream().GetReader();
-
-        // Set the result
-        hResult->SetResultObject(errorResponse, errorResponse->GetMimeType());
-        return;
-    }
-
     // Determine required feature types
     CPSZ pszFeatureTypes = Wfs.RequestParameter(MgHttpResourceStrings::reqWfsTypeName.c_str());
     STRING sFeatureTypes = pszFeatureTypes? pszFeatureTypes : _("");
@@ -105,6 +94,17 @@ void MgHttpWfsDescribeFeatureType::Execute(MgHttpResponse& hResponse)
     // Retrieve feature definitions
     MgWfsFeatureDefinitions oFeatureTypes(pResourceService,pFeatureService,featureTypeList);
     Wfs.SetFeatureDefinitions(&oFeatureTypes);
+
+    // In order to validate request we have to invoke the ProcessRequest
+    if(!Wfs.ProcessRequest(this))
+    {
+        // Obtain the response byte reader
+        Ptr<MgByteReader> errorResponse = Out.Stream().GetReader();
+
+        // Set the result
+        hResult->SetResultObject(errorResponse, errorResponse->GetMimeType());
+        return;
+    }
 
     // This is a comma-sep a list.  If empty, == all.
     // If it's just one feature (no comma sep found) let's do
@@ -152,7 +152,7 @@ void MgHttpWfsDescribeFeatureType::Execute(MgHttpResponse& hResponse)
             MyLog.Write(_("WFS::DescribeFeatureType\r\n"));
 #endif
             // Execute the request
-            Wfs.ProcessRequest(this);
+            //Wfs.ProcessRequest(this);
 
             // Slurp the results.
             Ptr<MgByteReader> capabilities = Out.Stream().GetReader();

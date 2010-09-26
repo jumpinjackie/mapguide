@@ -119,7 +119,7 @@ bool MgWfsFeatures::Next()
 
 void MgWfsFeatures::GenerateDefinitions(MgUtilDictionary& Dictionary)
 {
-    if(m_bOk) {
+    if(m_bOk && !m_sCurrentFeature.empty()) {
         Dictionary.AddDefinition(L"Feature.OuterXml",    m_sCurrentFeature);
         Dictionary.AddDefinition(L"Feature.InnerXml",    m_sCurrentFeature.substr(m_iCurrentInnerContent,m_iCurrentInnerLength));
         Dictionary.AddDefinition(L"Feature.EndElement",  m_sCurrentFeature.substr(m_iCurrentInnerContent+m_iCurrentInnerLength));
