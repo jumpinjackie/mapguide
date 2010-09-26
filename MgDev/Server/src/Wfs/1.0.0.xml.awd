@@ -265,11 +265,18 @@
 
 -->
 <Response request="Exception" content-type="text/xml">
-<ServiceExceptionReport version="&TemplateVersion;" xmlns="http://www.opengis.net/ogc">
- <ServiceException code="&Exception.Type;">
-  Request=&Request.request; resulted in an exception: &Exception.message;
- </ServiceException>
-</ServiceExceptionReport>
+<ows:ExceptionReport 
+   version="&TemplateVersion;"
+   xmlns:ows="http://www.opengis.net/ows"
+   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+   xsi:schemaLocation="http://www.opengis.net/ows http://schemas.opengis.net/ows/1.0.0/owsExceptionReport.xsd">
+  <ows:Exception exceptionCode="&Exception.Type;" locator="&Exception.Locator;">
+  <ows:ExceptionText>
+   &Exception.message;
+  </ows:ExceptionText>
+ </ows:Exception>
+</ows:ExceptionReport>
+
 </Response>
 
 </Template>

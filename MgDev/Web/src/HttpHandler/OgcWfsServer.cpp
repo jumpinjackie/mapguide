@@ -63,6 +63,7 @@ CPSZ kpszExceptionMessageUnknownOutputFormat = _("Expected valid outputFormat ar
 CPSZ kpszExceptionMessageUnknownTypeName   = _("Expected valid typeName argument, as enumerated by GetCapabilities. (Instead, found typeName='&Request.TypeName;'.)"); // Localize
 CPSZ kpszExceptionMessageWfsGetFeatureMissingFeatureType = _("A WFS GetFeature request requires at least one feature type to be specified."); // Localize
 CPSZ kpszExceptionMessageWfsVersionNegotiationFailed = _("Requested version is unsupported in AcceptVersions"); //Localize
+CPSZ kpszExceptionMessageWfsInvalidVersion = _("Version number specified must correspond to a version supported by the service."); // Localize
 CPSZ kpszExceptionMessageWfsInvalidService = _("Invalid parameter value for SERVICE"); //Localize
 
 CPSZ kpszInternalErrorMissingGetFeatureRequestParams   = _("Internal Error: Missing WFS GetFeature request parameters."); // Localize
@@ -259,7 +260,8 @@ bool MgOgcWfsServer::ValidateGetCapabilitiesRequest()
                 {
                     if(sAcceptVersions.find(sVersion) != STRING::npos)
                     {
-                        return true;
+                        bSupported = true;
+                        break;
                     }
                 }    
             }
@@ -286,18 +288,58 @@ bool MgOgcWfsServer::ValidateDescribeFeatureTypeRequest()
         return false;
     }
 
+    // If all the validation passed, we add the FeatureTypeList into definition to 
+    // make ProcedureEnumFeatureTypes happy. 
+    AddDefinition(kpszDefinitionSectionFeatureTypeList,kpszOmittedValue);
+
     return true;
 }
 
 bool MgOgcWfsServer::ValidateGetFeatureRequest()
 {
     CPSZ pVersion = RequestParameter(kpszQueryStringVersion);
-    if(pVersion == NULL)
+    if(pVersion == NULL || STRING(pVersion).empty())
     {
         ServiceExceptionReportResponse(MgOgcWfsException(MgOgcWfsException::kpszMissingRequestParameter,
                                                          kpszExceptionMessageWfsMissingVersion,
                                                          kpszQueryStringVersion));
         return false;
+    }
+    else
+    {
+        // OGC CITE: Test wfs:wfs-1.1.0-Basic-GetFeature-tc44.2 (s0001/d1e35137_1/d1e740_1/d1e25217_1/d1e6238_1)
+        // Assertion: Version number specified in a given request must correspond to a version supported by the service.
+        CPSZ pszSupportedVersions = Definition(kpszDictionarySupportedVersions);
+        // Pass out a NULL, which caller must use to tickle an exception.
+        if(pszSupportedVersions == NULL)
+            return false;
+
+        MgXmlParser SupportedVersions(pszSupportedVersions);
+
+        STRING sVersion;
+        bool bSupported = false;
+        while(SupportedVersions.Next())
+        {
+            if(SupportedVersions.Current().Type() == keBeginElement)
+            {
+                MgXmlBeginElement& Begin = (MgXmlBeginElement&)SupportedVersions.Current();
+                if(Begin.Name() == kpszElementVersion && Begin.GetAttribute(kpszAttributeNumber,sVersion))
+                {
+                    if(SZ_EQI(pVersion,sVersion.c_str()))
+                    {
+                        bSupported = true;
+                        break;
+                    }
+                }    
+            }
+        }
+        if(!bSupported)
+        {
+            ServiceExceptionReportResponse(MgOgcWfsException(MgOgcWfsException::kpszInvalidParameterValue,
+                                                             kpszExceptionMessageWfsInvalidVersion,
+                                                             kpszQueryStringVersion));
+            return false;
+        }
     }
 
     if(m_pGetFeatureParams == NULL)
@@ -450,18 +492,22 @@ void MgOgcWfsServer::ProcedureEnumFeatureTypes(MgXmlProcessingInstruction& PIEnu
     ProcessExpandableTextIntoString(sSubset,sSubset);
 
     int iNum = 0;
+    
+    if(NULL != m_pFeatures)
+    {
+        while(m_pFeatures->Next())
+        {
+            // We ensure that each feature gets its own stack frame
+            // so definitions don't get carried over to the next feature.
+            CDictionaryStackFrame ForEachFeature(this);
+            m_pFeatures->GenerateDefinitions(*m_pTopOfDefinitions);
 
-    while(m_pFeatures->Next()) {
-        // We ensure that each feature gets its own stack frame
-        // so definitions don't get carried over to the next feature.
-        CDictionaryStackFrame ForEachFeature(this);
-        m_pFeatures->GenerateDefinitions(*m_pTopOfDefinitions);
-
-        CPSZ pszIsPublished = this->Definition(_("Feature.IsPublished"));
-        if(pszIsPublished != NULL && SZ_EQ(pszIsPublished,_("1")))
-            if(IsIterationInSubset(++iNum,sSubset,kpszPiDefinitionFeatureIteration)) {
-                ProcessExpandableText(sFormat);
-        }
+            CPSZ pszIsPublished = this->Definition(_("Feature.IsPublished"));
+            if(pszIsPublished != NULL && SZ_EQ(pszIsPublished,_("1")))
+                if(IsIterationInSubset(++iNum,sSubset,kpszPiDefinitionFeatureIteration)) {
+                    ProcessExpandableText(sFormat);
+            }
+         }
     }
 }
 
@@ -480,15 +526,18 @@ void MgOgcWfsServer::ProcedureEnumFeatures(MgXmlProcessingInstruction& PIEnum)
     int iNum = 0;
 
     if(m_pFeatureSet != NULL) {
-        while(m_pFeatureSet->Next()) {
+        while(m_pFeatureSet->Next())
+        {
             // We ensure that each feature gets its own stack frame
             // so definitions don't get carried over to the next feature.
             CDictionaryStackFrame ForEachFeature(this);
 
             m_pFeatureSet->GenerateDefinitions(*m_pTopOfDefinitions);
-
-            if(IsIterationInSubset(++iNum,sSubset,kpszPiDefinitionFeatureIteration))
+            
+            if(IsIterationInSubset(++iNum,sSubset,kpszPiDefinitionFeatureIteration) && (*m_pTopOfDefinitions)[L"Feature.OuterXml"] )
+            {
                 ProcessExpandableText(sFormat);
+            }
         }
     }
 }
