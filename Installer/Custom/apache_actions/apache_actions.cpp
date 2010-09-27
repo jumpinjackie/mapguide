@@ -331,11 +331,16 @@ UpdateApacheConfig(MSIHANDLE hMSI)
 
 	if( FileExists(szFile) )
 	{
-		//::MessageBoxW(NULL, L"File found", L"Test", MB_OK);
+		//::MessageBoxW(NULL, L"httpd.conf found", L"Test", MB_OK);
 		// Opening the file to read and write.
 		//
 		CFile cfInFile(szFile, CFile::modeRead);
 		DWORD dwFileLen = cfInFile.GetLength();
+
+        //CHAR msg[20];
+        //sprintf(msg, "Length: %d", dwFileLen);
+        //::MessageBox(NULL, msg, "Test", MB_OK);
+        
 
 		// Read the entire contents of the file.
 		//
@@ -344,6 +349,7 @@ UpdateApacheConfig(MSIHANDLE hMSI)
 		szBuff[dwFileLen] = '\0';                   // Add ending null to buffer.
 
 		cfInFile.Close();
+        //::MessageBoxW(NULL, L"read httpd.conf contents", L"Test", MB_OK);
 
 		// Creating a CString object to store the contents and help
 		// us to add the desired configuration.
@@ -355,39 +361,55 @@ UpdateApacheConfig(MSIHANDLE hMSI)
 		strcpy(szReplace, szWebDir);
 		csBuff.Replace(szFind,szReplace);
 
+        //::MessageBox(NULL, TEXT("Replace MG_WEB_ROOT"), TEXT("Test"), MB_OK);
+
 		// Replace %MG_WEB_PORT%
 		strcpy(szFind,"%MG_WEB_PORT%");
 		strcpy(szReplace, szServerPort);
 		csBuff.Replace(szFind,szReplace);
+
+        //::MessageBox(NULL, TEXT("Replace MG_WEB_PORT"), TEXT("Test"), MB_OK);
 
 		// Replace %MG_WEB_PHP%
 		strcpy(szFind,"%MG_WEB_PHP%");
 		strcpy(szReplace, szPhpDir);
 		csBuff.Replace(szFind,szReplace);
 
+        //::MessageBox(NULL, TEXT("Replace MG_WEB_PHP"), TEXT("Test"), MB_OK);
+
 		// Replace %MG_WEB_APACHE%
 		strcpy(szFind,"%MG_WEB_APACHE%");
 		strcpy(szReplace, szApacheDir);
 		csBuff.Replace(szFind, szReplace);
+
+        //::MessageBox(NULL, TEXT("Replace MG_WEB_APACHE"), TEXT("Test"), MB_OK);
 
 		// Replace %MG_VIRTUAL_DIR%
 		strcpy(szFind, "%MG_VIRTUAL_DIR%");
 		strcpy(szReplace, szVirtualDir);
 		csBuff.Replace(szFind, szReplace);
 
+        //::MessageBox(NULL, TEXT("Replace MG_VIRTUAL_DIR"), TEXT("Test"), MB_OK);
+
 		// If java, then include the tomcat configuration
 		strcpy(szFind, "%MG_INCLUDE_TOMCAT%");
 		csBuff.Replace(szFind, bJava ? "Include conf/tomcat.conf" : "#Uncomment to enable the Java API\n#Include conf/tomcat.conf");
+
+        //::MessageBox(NULL, TEXT("Set Tomcat"), TEXT("Test"), MB_OK);
 
 		// Toggle PHP API section
 		strcpy(szFind, "%MG_PHP_API%");
 		strcpy(szReplace, bJava ? "#" : "");
 		csBuff.Replace(szFind, szReplace);
 
+        //::MessageBox(NULL, TEXT("Toggle PHP API"), TEXT("Test"), MB_OK);
+
 		// Toggle Java API section
 		strcpy(szFind, "%MG_JAVA_API%");
 		strcpy(szReplace, bJava ? "" : "#");
 		csBuff.Replace(szFind, szReplace);
+
+        //::MessageBox(NULL, TEXT("Toggle Java API"), TEXT("Test"), MB_OK);
 
 		CFile cfOutFile(szFile, CFile::modeWrite);
 
@@ -398,6 +420,8 @@ UpdateApacheConfig(MSIHANDLE hMSI)
 		cfOutFile.Write(csBuff, dwNewLength);
 		cfOutFile.SetLength(dwNewLength);
 		cfOutFile.Close();
+
+        //::MessageBoxW(NULL, L"httpd.conf updated", L"Test", MB_OK);
 	}
 
 	//Check if the tomcat.conf file was included in httpd.conf, if so we need to do placeholder substitution there too.
@@ -406,6 +430,8 @@ UpdateApacheConfig(MSIHANDLE hMSI)
 
 	if(FileExists(szFile))
 	{
+        //::MessageBoxW(NULL, L"tomcat.conf found", L"Test", MB_OK);
+
 		CFile cfInFile(szFile, CFile::modeRead);
 		DWORD dwFileLen = cfInFile.GetLength();
 
