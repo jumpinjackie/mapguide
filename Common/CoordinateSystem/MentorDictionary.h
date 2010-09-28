@@ -130,7 +130,7 @@ namespace MentorDictionary
         }
 
         //Make sure the def they've given us is valid
-        if (NULL != isValid && CALL_MEMBER_FN(kpDef, isValid)())
+        if (NULL != isValid && !CALL_MEMBER_FN(kpDef, isValid)())
         {
             throw new MgInvalidArgumentException(L"MentorDictionary.UpdateDef", __LINE__, __WFILE__, NULL, L"", NULL);
         }
