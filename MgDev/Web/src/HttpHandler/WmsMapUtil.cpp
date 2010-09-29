@@ -187,6 +187,9 @@ MgColor* MgWmsMapUtil::GetBackgroundColor(CREFSTRING bgColor, bool transparent)
 
 void MgWmsMapUtil::SrsToWktMapping(MgOgcServer& oWms,STRING sSRS,REFSTRING sWKT)
 {
+
+    ProcessURNSrs(sSRS);
+
     // Plan A is to look for a user-defined mapping.  This allows a config
     // file to contain overrides for incorrect, incomplete, or new reference
     // systems.  Input is an SRS string, output is (user-defined) WKT.
@@ -319,4 +322,10 @@ void MgWmsMapUtil::ReverseCoords(double& coord1, double& coord2)
 {
     coord1 = 0.0- coord1;
     coord2 = 0.0- coord2;
+}
+
+void MgWmsMapUtil::ProcessURNSrs(REFSTRING sSRS)
+{
+    sSRS = MgUtil::ToUpper(sSRS);
+    sSRS = MgUtil::ReplaceString(sSRS,L"URN:OGC:DEF:CRS:EPSG:",L"EPSG");
 }

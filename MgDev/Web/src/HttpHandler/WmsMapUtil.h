@@ -47,6 +47,8 @@ public:
     static void SwapCoords(double(& coord)[4]);
     // Help method to make coordinates about-turn
     static void ReverseCoords(double& coord1, double& coord2);
+    // Help method to convert URN SRS(urn:ogc:def:crs:EPSG::4326) to EPSG SRS (EPSG:4326)
+    static void ProcessURNSrs(REFSTRING sSRS);
 };
 
 #endif  // _FS_WMS_MAP_UTIL_H

@@ -157,7 +157,10 @@ STRING MgOgcFilterUtil::process_element(DOMElement* root)
         // This is a workaround for GML3. For Name and Description properties, there will be a "gml:" prefix
         // Remove the prefix to make sure Name and Description properties can be found by FDO API.
         size_t pos = m_propName.find_first_of(L":");
-        m_propName = m_propName.substr(pos+1);
+        if(pos != STRING::npos)
+        {
+            m_propName = m_propName.substr(pos+1);
+        }
 
         return m_propName;
     }
