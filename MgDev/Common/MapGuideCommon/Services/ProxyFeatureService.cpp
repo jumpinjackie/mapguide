@@ -1406,13 +1406,14 @@ MgByteReader* MgProxyFeatureService::GetWfsFeature(MgResourceIdentifier* feature
                                                    CREFSTRING filter,
                                                    INT32 maxFeatures,
                                                    CREFSTRING wfsVersion,
-                                                   CREFSTRING outputFormat)
+                                                   CREFSTRING outputFormat,
+                                                   CREFSTRING sortCriteria)
 {
     MgCommand cmd;
     cmd.ExecuteCommand(m_connProp,                                  // Connection
                        MgCommand::knObject,                         // Return type expected
                        MgFeatureServiceOpId::GetWfsFeature_Id,      // Command Code
-                       8,                                           // No of arguments
+                       9,                                           // No of arguments
                        Feature_Service,                             // Service Id
                        BUILD_VERSION(2,3,0),                        // Operation version
                        MgCommand::knObject, featureSourceId,        // Argument#1
@@ -1423,6 +1424,7 @@ MgByteReader* MgProxyFeatureService::GetWfsFeature(MgResourceIdentifier* feature
                        MgCommand::knInt32,  maxFeatures,            // Argument#6
                        MgCommand::knString, &wfsVersion,            // Argument#7
                        MgCommand::knString, &outputFormat,          // Argument#8
+                       MgCommand::knString, &sortCriteria,          // Argument#9
                        MgCommand::knNone);                          // End of argument
 
     SetWarning(cmd.GetWarningObject());

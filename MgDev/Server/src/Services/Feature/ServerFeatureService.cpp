@@ -1700,13 +1700,13 @@ MgClassDefinitionCollection* MgServerFeatureService::GetIdentityProperties(MgRes
 ///
 /// <!-- Syntax in .Net, Java, and PHP -->
 /// \htmlinclude DotNetSyntaxTop.html
-/// virtual MgByteReader GetWfsFeature(MgResourceIdentifier featureSourceId, string featureClass, MgStringCollection requiredProperties, string srs, string filter, int maxFeatures, string outputFormat);
+/// virtual MgByteReader GetWfsFeature(MgResourceIdentifier featureSourceId, string featureClass, MgStringCollection requiredProperties, string srs, string filter, int maxFeatures, string wfsVersion, string outputFormat, string sortCriteria);
 /// \htmlinclude SyntaxBottom.html
 /// \htmlinclude JavaSyntaxTop.html
-/// virtual MgByteReader GetWfsFeature(MgResourceIdentifier featureSourceId, String featureClass, MgStringCollection requiredProperties, String srs, String filter, int maxFeatures, string outputFormat);
+/// virtual MgByteReader GetWfsFeature(MgResourceIdentifier featureSourceId, string featureClass, MgStringCollection requiredProperties, string srs, string filter, int maxFeatures, string wfsVersion, string outputFormat, string sortCriteria);
 /// \htmlinclude SyntaxBottom.html
 /// \htmlinclude PHPSyntaxTop.html
-/// virtual MgByteReader GetWfsFeature(MgResourceIdentifier featureSourceId, string featureClass, MgStringCollection requiredProperties, string srs, string filter, int maxFeatures, string outputFormat);
+/// virtual MgByteReader GetWfsFeature(MgResourceIdentifier featureSourceId, string featureClass, MgStringCollection requiredProperties, string srs, string filter, int maxFeatures, string wfsVersion, string outputFormat, string sortCriteria);
 /// \htmlinclude SyntaxBottom.html
 ///
 /// \param featureSourceId (MgResourceIdentifier)
@@ -1732,6 +1732,8 @@ MgClassDefinitionCollection* MgServerFeatureService::GetIdentityProperties(MgRes
 /// the retrieved feature information.
 /// The supported values of output format are specified in OpenGIS Web Feature Service (WFS) Implementation Specification - section 9.2
 /// http://portal.opengeospatial.org/files/?artifact_id=8339
+/// \param sortCriteria (String/string)
+/// A string identifying the sort criteria
 ///
 /// \return
 /// Returns an MgByteReader containing the requested feature information.
@@ -1745,7 +1747,8 @@ MgByteReader* MgServerFeatureService::GetWfsFeature(MgResourceIdentifier* fs,
                                                      CREFSTRING wfsFilter, 
                                                      INT32 maxFeatures,
                                                      CREFSTRING wfsVersion,
-                                                     CREFSTRING outputFormat)
+                                                     CREFSTRING outputFormat,
+                                                     CREFSTRING sortCriteria)
 {
     MG_LOG_TRACE_ENTRY(L"MgServerFeatureService::GetWfsFeature()");
 
@@ -1834,6 +1837,31 @@ MgByteReader* MgServerFeatureService::GetWfsFeature(MgResourceIdentifier* fs,
         options->SetFilter(fdoFilterString);
     }
 
+    if(!sortCriteria.empty())
+    {
+        Ptr<MgStringCollection> orderByProperties = new MgStringCollection();
+        int orderOption = MgOrderingOption::Ascending;
+
+        STRING sSortCriteria = sortCriteria;
+        STRING::size_type pos = sSortCriteria.find_last_of(L" ");
+        if(pos != STRING::npos)
+        {
+            STRING sSortByProperty = sSortCriteria.substr(0, pos);
+            orderByProperties->Add(sSortByProperty);
+            
+            STRING sSortOption  = MgUtil::ToUpper(sSortCriteria.substr(pos+1));
+            if(sSortOption == L"D")
+            {
+                orderOption = MgOrderingOption::Descending;
+            }
+        }
+        else
+        {
+            orderByProperties->Add(sortCriteria);
+        }
+
+        options->SetOrderingFilter(orderByProperties,orderOption);
+    }
     // TODO: can FeatureName be an extension name rather than a FeatureClass?
     Ptr<MgFeatureReader> mgfReader = SelectFeatures(fs, lfeatureName, options);
 
@@ -1932,7 +1960,7 @@ MgByteReader* MgServerFeatureService::GetWfsFeature(MgResourceIdentifier* fs,
                                                      CREFSTRING wfsFilter,
                                                      INT32 maxFeatures)
 {
-    return GetWfsFeature(fs, featureClass, propNames, srs, wfsFilter, maxFeatures, L"1.0.0", L"2.1.2");
+    return GetWfsFeature(fs, featureClass, propNames, srs, wfsFilter, maxFeatures, L"1.0.0", L"text/xml; subtype=gml/2.1.2",L"");
 }
 
 

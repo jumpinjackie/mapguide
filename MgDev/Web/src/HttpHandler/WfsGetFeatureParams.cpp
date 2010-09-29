@@ -68,6 +68,10 @@ WfsGetFeatureParams::WfsGetFeatureParams(MgOgcWfsServer& oServer/*MgHttpRequestP
 
     // Get the requested SRS value
     m_srs = GetRequestParameter(oServer,MgHttpResourceStrings::reqWfsSrsName);
+    if(m_srs.empty())
+    {
+        m_srs = GetSRSFromBbox(bbox);
+    }
 
     // Get the SRS in WKT form
     STRING srsWkt;
@@ -97,6 +101,9 @@ WfsGetFeatureParams::WfsGetFeatureParams(MgOgcWfsServer& oServer/*MgHttpRequestP
 
     // Get the wfs version 
     m_version = GetRequestParameter(oServer,MgHttpResourceStrings::reqWfsVersion);
+
+    // Get the sortby property name
+    m_sortCriteria = GetRequestParameter(oServer,MgHttpResourceStrings::reqWfsSortBy);
 
 }
 
@@ -281,6 +288,23 @@ void WfsGetFeatureParams::BuildFilterStrings(CREFSTRING filters, CREFSTRING feat
     }
 }
 
+
+// Get SRS from BBOX parameter
+STRING WfsGetFeatureParams::GetSRSFromBbox(CREFSTRING bbox)
+{
+    if(bbox.length() > 0)
+    {
+        // Build a filter from the bounding box
+        Ptr<MgStringCollection> bboxCoords = MgStringCollection::ParseCollection(bbox, L",");
+        if(bboxCoords->GetCount() >= 5)
+        {
+            return MgUtil::Trim(bboxCoords->GetItem(4));
+        }
+    }
+
+    return L"";
+}
+
 /// <summary>
 /// Retrieves the requested feature types
 /// </summary>
@@ -356,6 +380,17 @@ STRING WfsGetFeatureParams::GetOutputFormat()
 STRING WfsGetFeatureParams::GetVersion()
 {
     return m_version;
+}
+
+/// <summary>
+/// Retrieves the property name which is used sort the GetFeature result
+/// </summary>
+/// <returns>
+/// A STRING defining the property name which is used sort the GetFeature result
+/// </returns>
+STRING WfsGetFeatureParams::GetSortCriteria()
+{
+    return m_sortCriteria;
 }
 
 /// <summary>

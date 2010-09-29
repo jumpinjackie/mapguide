@@ -118,6 +118,14 @@ public:
     STRING GetVersion();
 
     /// <summary>
+    /// Retrieves the sort criteria
+    /// </summary>
+    /// <returns>
+    /// A STRING defining the sort criteria
+    /// </returns>
+    STRING GetSortCriteria();
+
+    /// <summary>
     /// Performs a minimum amount of request parsing in order to determine
     /// whether this class can handle the specified XML request
     /// </summary>
@@ -147,6 +155,7 @@ private:
 
     MgStringCollection* GetParenthesisedList(CREFSTRING sourceString);
     void BuildFilterStrings(CREFSTRING filters, CREFSTRING featureIds, CREFSTRING bbox);
+    STRING GetSRSFromBbox(CREFSTRING bbox);
     bool ParseQueryElement(MgOgcWfsServer& oServer,MgXmlParser& parser,MgXmlNamespaceManager& oNamespaces);
     bool ParseFilterElement(MgOgcWfsServer& oServer,MgXmlParser& parser,MgXmlNamespaceManager& oNamespaces);
 
@@ -173,6 +182,7 @@ private:
     STRING m_srs;
     STRING m_outputFormat;
     STRING m_version;
+    STRING m_sortCriteria;
 };
 
 #endif  // _FS_WFS_GET_FEATURE_PARAMS_H
