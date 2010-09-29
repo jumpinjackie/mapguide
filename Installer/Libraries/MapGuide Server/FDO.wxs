@@ -113,7 +113,6 @@
           <!-- ArcSDE Provider -->
           <Component Id="FdoArcSdeComponent" Win64="$(var.Win64)" Guid="73E0719B-243F-49E9-BF74-F1B7CF7EA35F">
               <File Id="ArcSdeMessage" Checksum="yes" Source="$(var.MgSource)\Server\FDO\ArcSDEMessage.dll" />
-              <File Id="ArcSdeProvider91" Checksum="yes" Source="$(var.MgSource)\Server\FDO\ArcSdeProvider91.dll" />
               <File Id="ArcSdeProvider92" Checksum="yes" Source="$(var.MgSource)\Server\FDO\ArcSdeProvider92.dll" />
               <File Id="ArcSdeProvider" Checksum="yes" Source="$(var.MgSource)\Server\FDO\ArcSdeProvider.dll" />
           </Component>
