@@ -1808,17 +1808,29 @@ MgByteReader* MgServerFeatureService::GetWfsFeature(MgResourceIdentifier* fs,
     //and set it to the FDO feature query
     if (!wfsFilter.empty())
     {
-        //create a modifiable copy of the filter
-        STRING ogcFilter = wfsFilter;
         STRING GEOM_PROP_TAG = L"%MG_GEOM_PROP%"; //NOXLATE
-        size_t geomPropPos = 0;
-        while((geomPropPos = ogcFilter.find(GEOM_PROP_TAG, geomPropPos)) != STRING::npos)
-        {
-            ogcFilter = ogcFilter.replace(geomPropPos, GEOM_PROP_TAG.length(), fc->GetDefaultGeometryPropertyName());
-        }
+        STRING fdoFilterString = L""; //NOXLATE
+
         Ptr<MgPropertyDefinitionCollection> properties = fc->GetProperties();
         MgOgcFilterUtil u;
-        STRING fdoFilterString = u.Ogc2FdoFilter(ogcFilter, trans, geomPropName, properties);
+        if(wfsFilter.find(GEOM_PROP_TAG, 0) != STRING::npos)
+        {
+            for(int i = 0; i<properties->GetCount(); i++)
+            {
+                Ptr<MgPropertyDefinition> prop = properties->GetItem(i);
+                if(prop->GetPropertyType() == MgFeaturePropertyType::GeometricProperty)
+                {
+                    STRING ogcFilter = MgUtil::ReplaceString(wfsFilter,GEOM_PROP_TAG.c_str(),prop->GetName().c_str());
+                    
+                    if(!fdoFilterString.empty())
+                    {
+                        fdoFilterString += L" OR ";
+                    }
+                    fdoFilterString += u.Ogc2FdoFilter(ogcFilter, trans, prop->GetName(), properties);
+                }
+            }
+        }
+       
         options->SetFilter(fdoFilterString);
     }
 
