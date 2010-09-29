@@ -228,9 +228,16 @@ void MgHttpWfsGetFeature::AcquireResponseData(MgOgcServer* ogcServer)
                                 }
                             }
 
+                            STRING sSortCriteria = m_getFeatureParams->GetSortCriteria();
+                            if(!sSortCriteria.empty())
+                            {
+                                STRING::size_type pos = sSortCriteria.find_first_of(L":");
+                                sSortCriteria  = sSortCriteria.substr(pos+1);
+                            }
+
                             // Call the C++ API
                             Ptr<MgByteReader> resultReader = featureService->GetWfsFeature(featureSourceId, ((sSchemaHash.size()==0) ? sClass : sSchemaHash + _(":") + sClass),
-                                requiredProperties, m_getFeatureParams->GetSrs(), filter, numFeaturesToRetrieve, sVersion, sOutputFormat);
+                                requiredProperties, m_getFeatureParams->GetSrs(), filter, numFeaturesToRetrieve, sVersion, sOutputFormat,sSortCriteria);
 
                             // TODO How to determine number of features retrieved...?
                             // Note: for now, maxFeatures is managed by the MgWfsFeatures object. - TMT 2006-3-20

@@ -912,6 +912,9 @@ public:
     /// The supported values of output format are specified in OpenGIS Web Feature Service (WFS) Implementation Specification - section 9.2
     /// http://portal.opengeospatial.org/files/?artifact_id=8339
     /// </param>
+    /// <param name="sortCriteria">Input
+    /// A string identifying the sort criteria
+    /// </param>
     /// <returns>
     /// Returns an MgByteReader containing the requested feature information.
     /// </returns>
@@ -919,7 +922,7 @@ public:
     /// EXCEPTIONS:
     /// MgInvalidArgumentException
     MgByteReader* GetWfsFeature(MgResourceIdentifier* featureSourceId, CREFSTRING featureClass,
-        MgStringCollection* requiredProperties, CREFSTRING srs, CREFSTRING filter, INT32 maxFeatures, CREFSTRING wfsVersion, CREFSTRING outputFormat);
+        MgStringCollection* requiredProperties, CREFSTRING srs, CREFSTRING filter, INT32 maxFeatures, CREFSTRING wfsVersion, CREFSTRING outputFormat, CREFSTRING sortCriteria);
 
     ///////////////////////////////////////////////////////////////////////////
     /// This method has been deprecated. Use the above method.

@@ -311,6 +311,7 @@ const STRING MgHttpResourceStrings::reqWfsFeatureId = L"FEATUREID";
 const STRING MgHttpResourceStrings::reqWfsFilter = L"FILTER";
 const STRING MgHttpResourceStrings::reqWfsBbox = L"BBOX";
 const STRING MgHttpResourceStrings::reqWfsOutputFormat = L"OUTPUTFORMAT";
+const STRING MgHttpResourceStrings::reqWfsSortBy = L"SORTBY";
 
 // Web Application Parameters
 const STRING MgHttpResourceStrings::reqFormat = L"FORMAT";

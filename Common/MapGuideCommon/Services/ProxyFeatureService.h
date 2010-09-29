@@ -1106,13 +1106,13 @@ INTERNAL_API:
     ///
     /// <!-- Syntax in .Net, Java, and PHP -->
     /// \htmlinclude DotNetSyntaxTop.html
-    /// virtual MgByteReader GetWfsFeature(MgResourceIdentifier featureSourceId, string featureClass, MgStringCollection requiredProperties, string srs, string filter, int maxFeatures, string wfsVersion, string outputFormat);
+    /// virtual MgByteReader GetWfsFeature(MgResourceIdentifier featureSourceId, string featureClass, MgStringCollection requiredProperties, string srs, string filter, int maxFeatures, string wfsVersion, string outputFormat, string sortCriteria);
     /// \htmlinclude SyntaxBottom.html
     /// \htmlinclude JavaSyntaxTop.html
-    /// virtual MgByteReader GetWfsFeature(MgResourceIdentifier featureSourceId, String featureClass, MgStringCollection requiredProperties, String srs, String filter, int maxFeatures, string wfsVersion, string outputFormat);
+    /// virtual MgByteReader GetWfsFeature(MgResourceIdentifier featureSourceId, string featureClass, MgStringCollection requiredProperties, string srs, string filter, int maxFeatures, string wfsVersion, string outputFormat, string sortCriteria);
     /// \htmlinclude SyntaxBottom.html
     /// \htmlinclude PHPSyntaxTop.html
-    /// virtual MgByteReader GetWfsFeature(MgResourceIdentifier featureSourceId, string featureClass, MgStringCollection requiredProperties, string srs, string filter, int maxFeatures, string wfsVersion, string outputFormat);
+    /// virtual MgByteReader GetWfsFeature(MgResourceIdentifier featureSourceId, string featureClass, MgStringCollection requiredProperties, string srs, string filter, int maxFeatures, string wfsVersion, string outputFormat, string sortCriteria);
     /// \htmlinclude SyntaxBottom.html
     ///
     /// \param featureSourceId (MgResourceIdentifier)
@@ -1138,6 +1138,8 @@ INTERNAL_API:
     /// the retrieved feature information.
     /// The supported values of output format are specified in OpenGIS Web Feature Service (WFS) Implementation Specification - section 9.2
     /// http://portal.opengeospatial.org/files/?artifact_id=8339
+    /// \param sortCriteria (String/string)
+    /// A string identifying the sort criteria
     ///
     /// \return
     /// Returns an MgByteReader containing the requested feature information.
@@ -1146,7 +1148,7 @@ INTERNAL_API:
     /// \exception MgInvalidArgumentException
     ///
     MgByteReader* GetWfsFeature(MgResourceIdentifier* featureSourceId, CREFSTRING featureClass,
-        MgStringCollection* requiredProperties, CREFSTRING srs, CREFSTRING filter, INT32 maxFeatures,CREFSTRING wfsVersion, CREFSTRING outputFormat);
+        MgStringCollection* requiredProperties, CREFSTRING srs, CREFSTRING filter, INT32 maxFeatures,CREFSTRING wfsVersion, CREFSTRING outputFormat, CREFSTRING sortCriteria);
 
     ////////////////////////////////////////////////////////////////////////////////
     /// \brief
