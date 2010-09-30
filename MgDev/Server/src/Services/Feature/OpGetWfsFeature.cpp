@@ -111,7 +111,7 @@ void MgOpGetWfsFeature::Execute()
         // Write the response
         EndExecution(byteReader);
     }
-    else if (9 == m_packet.m_NumArguments)
+    else if (11 == m_packet.m_NumArguments)
     {
         // Get the feature source
         Ptr<MgResourceIdentifier> featureSourceId = (MgResourceIdentifier*)m_stream->GetObject();
@@ -147,6 +147,14 @@ void MgOpGetWfsFeature::Execute()
         STRING sortCriteria;
         m_stream->GetString(sortCriteria);
 
+        // Get the namespace prefix
+        STRING namespacePrefix;
+        m_stream->GetString(namespacePrefix);
+
+        // Get the namespace url
+        STRING namespaceUrl;
+        m_stream->GetString(namespaceUrl);
+
         BeginExecution();
 
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_START();
@@ -167,13 +175,17 @@ void MgOpGetWfsFeature::Execute()
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(outputFormat.c_str());
         MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(sortCriteria.c_str());
+        MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
+        MG_LOG_OPERATION_MESSAGE_ADD_STRING(namespacePrefix.c_str());
+        MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
+        MG_LOG_OPERATION_MESSAGE_ADD_STRING(namespaceUrl.c_str());
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
 
         Validate();
 
         // Execute the operation
         Ptr<MgByteReader> byteReader = m_service->GetWfsFeature(featureSourceId, featureClass,
-            requiredProperties, srs, filter, maxFeatures, wfsVersion, outputFormat, sortCriteria);
+            requiredProperties, srs, filter, maxFeatures, wfsVersion, outputFormat, sortCriteria, namespacePrefix, namespaceUrl);
 
         // Write the response
         EndExecution(byteReader);

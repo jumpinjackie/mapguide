@@ -1610,13 +1610,13 @@ PUBLISHED_API:
     ///
     /// <!-- Syntax in .Net, Java, and PHP -->
     /// \htmlinclude DotNetSyntaxTop.html
-    /// virtual MgByteReader GetWfsFeature(MgResourceIdentifier featureSourceId, string featureClass, MgStringCollection requiredProperties, string srs, string filter, int maxFeatures, string wfsVersion, string outputFormat, string sortCriteria);
+    /// virtual MgByteReader GetWfsFeature(MgResourceIdentifier featureSourceId, string featureClass, MgStringCollection requiredProperties, string srs, string filter, int maxFeatures, string wfsVersion, string outputFormat, string sortCriteria, string namespacePrefix, string namespaceUrl);
     /// \htmlinclude SyntaxBottom.html
     /// \htmlinclude JavaSyntaxTop.html
-    /// virtual MgByteReader GetWfsFeature(MgResourceIdentifier featureSourceId, string featureClass, MgStringCollection requiredProperties, string srs, string filter, int maxFeatures, string wfsVersion, string outputFormat, string sortCriteria);
+    /// virtual MgByteReader GetWfsFeature(MgResourceIdentifier featureSourceId, string featureClass, MgStringCollection requiredProperties, string srs, string filter, int maxFeatures, string wfsVersion, string outputFormat, string sortCriteria, string namespacePrefix, string namespaceUrl);
     /// \htmlinclude SyntaxBottom.html
     /// \htmlinclude PHPSyntaxTop.html
-    /// virtual MgByteReader GetWfsFeature(MgResourceIdentifier featureSourceId, string featureClass, MgStringCollection requiredProperties, string srs, string filter, int maxFeatures, string wfsVersion, string outputFormat, string sortCriteria);
+    /// virtual MgByteReader GetWfsFeature(MgResourceIdentifier featureSourceId, string featureClass, MgStringCollection requiredProperties, string srs, string filter, int maxFeatures, string wfsVersion, string outputFormat, string sortCriteria, string namespacePrefix, string namespaceUrl);
     /// \htmlinclude SyntaxBottom.html
     ///
     /// \param featureSourceId (MgResourceIdentifier)
@@ -1644,6 +1644,10 @@ PUBLISHED_API:
     /// http://portal.opengeospatial.org/files/?artifact_id=8339
     /// \param sortCriteria (String/string)
     /// A string identifying the sort criteria
+    /// \param namespacePrefix (String/string)
+    /// A string identifying the namespace prefix in the output xml
+    /// \param namespaceUrl (String/string)
+    /// A string idenyifying the namespace url in the output xml
     ///
     /// \return
     /// Returns an MgByteReader containing the requested feature information.
@@ -1651,7 +1655,7 @@ PUBLISHED_API:
     /// \exception MgInvalidArgumentException
     ///
     virtual MgByteReader* GetWfsFeature(MgResourceIdentifier* featureSourceId, CREFSTRING featureClass,
-        MgStringCollection* requiredProperties, CREFSTRING srs, CREFSTRING filter, INT32 maxFeatures,CREFSTRING wfsVersion, CREFSTRING outputFormat, CREFSTRING sortCriteria) = 0;
+        MgStringCollection* requiredProperties, CREFSTRING srs, CREFSTRING filter, INT32 maxFeatures,CREFSTRING wfsVersion, CREFSTRING outputFormat, CREFSTRING sortCriteria, CREFSTRING namespacePrefix, CREFSTRING namespaceUrl) = 0;
 
     ////////////////////////////////////////////////////////////////////////////////
     /// \brief
