@@ -171,6 +171,15 @@ WfsGetFeatureParams::WfsGetFeatureParams(MgOgcWfsServer& oServer,CREFSTRING xmlR
             else
                 m_maxFeatures = -1;
 
+            STRING sVersion;
+            if(pBegin->GetAttribute(_("version"), sVersion) && sVersion.length() > 0)
+                m_version = sVersion;
+
+            STRING sOutputFormat;
+            if(pBegin->GetAttribute(_("outputFormat"), sOutputFormat) && sOutputFormat.length() > 0)
+                m_outputFormat = sOutputFormat;
+
+
             // We want to hang onto the namespaces that are
             // defined in the GetFeature request, since that will
             // likely contain namespaces that help us track feature type

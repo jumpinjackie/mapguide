@@ -77,18 +77,15 @@ void MgHttpWfsGetFeature::Execute(MgHttpResponse& hResponse)
     MG_HTTP_HANDLER_TRY()
 
     Ptr<MgHttpRequestParam> origReqParams = m_hRequest->GetRequestParam();
-     // Comment out to pass the OGC CITE test
-    // We should find a proper way to handle POST requests rather than hard code.
+
     // Make sure the REQUEST and SERVICE parameters are set, in case this came from
     // a POST request.
-    //if(!origReqParams->ContainsParameter(MgHttpResourceStrings::reqWmsRequest))
-    //{
-    //    origReqParams->AddParameter(MgHttpResourceStrings::reqWmsRequest, L"GetFeature"); //NOXLATE
-    //}
-    //if(!origReqParams->ContainsParameter(MgHttpResourceStrings::reqWmsService))
-    //{
-    //    origReqParams->AddParameter(MgHttpResourceStrings::reqWmsService, L"WFS"); //NOXLATE
-    //}
+    if(m_sPostRequestXml.length() > 0)
+    {
+        origReqParams->AddParameter(MgHttpResourceStrings::reqWmsRequest, L"GetFeature"); //NOXLATE
+        origReqParams->AddParameter(MgHttpResourceStrings::reqWmsService, L"WFS"); //NOXLATE
+        origReqParams->AddParameter(MgHttpResourceStrings::reqWmsVersion, L"1.1.0"); //NOXLATE
+    }
     MgHttpRequestParameters requestParams(origReqParams);
 
     MgHttpResponseStream responseStream;
