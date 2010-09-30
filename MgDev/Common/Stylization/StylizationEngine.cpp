@@ -299,16 +299,16 @@ void StylizationEngine::StylizeWatermark(SE_Renderer* se_renderer,
             if (textPri)
             {
                 // text needs to change color
-                textPri->textColor.value.argb      = textPri->textColor.defValue.argb      = TransparentColor(textPri->textColor.defValue.argb, opacity);
-                textPri->ghostColor.value.argb     = textPri->ghostColor.defValue.argb     = TransparentColor(textPri->ghostColor.defValue.argb, opacity);
-                textPri->frameLineColor.value.argb = textPri->frameLineColor.defValue.argb = TransparentColor(textPri->frameLineColor.defValue.argb, opacity);
-                textPri->frameFillColor.value.argb = textPri->frameFillColor.defValue.argb = TransparentColor(textPri->frameFillColor.defValue.argb, opacity);
+                textPri->textColor.value.argb      = textPri->textColor.defValue.argb      = TransparentColor(textPri->textColor.value.argb, opacity);
+                textPri->ghostColor.value.argb     = textPri->ghostColor.defValue.argb     = TransparentColor(textPri->ghostColor.value.argb, opacity);
+                textPri->frameLineColor.value.argb = textPri->frameLineColor.defValue.argb = TransparentColor(textPri->frameLineColor.value.argb, opacity);
+                textPri->frameFillColor.value.argb = textPri->frameFillColor.defValue.argb = TransparentColor(textPri->frameFillColor.value.argb, opacity);
             }
             else if (linePri)
             {
-                linePri->color.value.argb = linePri->color.defValue.argb = TransparentColor(linePri->color.defValue.argb, opacity);
+                linePri->color.value.argb = linePri->color.defValue.argb = TransparentColor(linePri->color.value.argb, opacity);
                 if (polygonPri)
-                    polygonPri->fill.value.argb = polygonPri->fill.defValue.argb = TransparentColor(polygonPri->fill.defValue.argb, opacity);
+                    polygonPri->fill.value.argb = polygonPri->fill.defValue.argb = TransparentColor(polygonPri->fill.value.argb, opacity);
             }
             else if (rasterPri)
             {
