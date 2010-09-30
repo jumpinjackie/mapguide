@@ -915,6 +915,12 @@ public:
     /// <param name="sortCriteria">Input
     /// A string identifying the sort criteria
     /// </param>
+    /// <param name="namespacePrefix">Input
+    /// A string identifying the namespace prefix in the output xml
+    /// </param>
+    /// <param name="namespaceUrl">Input
+    /// A string identifying the namespace url in the output xml
+    /// </param>
     /// <returns>
     /// Returns an MgByteReader containing the requested feature information.
     /// </returns>
@@ -922,7 +928,7 @@ public:
     /// EXCEPTIONS:
     /// MgInvalidArgumentException
     MgByteReader* GetWfsFeature(MgResourceIdentifier* featureSourceId, CREFSTRING featureClass,
-        MgStringCollection* requiredProperties, CREFSTRING srs, CREFSTRING filter, INT32 maxFeatures, CREFSTRING wfsVersion, CREFSTRING outputFormat, CREFSTRING sortCriteria);
+        MgStringCollection* requiredProperties, CREFSTRING srs, CREFSTRING filter, INT32 maxFeatures, CREFSTRING wfsVersion, CREFSTRING outputFormat, CREFSTRING sortCriteria, CREFSTRING namespacePrefix, CREFSTRING namespaceUrl);
 
     ///////////////////////////////////////////////////////////////////////////
     /// This method has been deprecated. Use the above method.

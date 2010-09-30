@@ -91,11 +91,7 @@
  </Define>
 
  <Define item="DescribeFeature.Import.xml">
-  <xs:import schemaLocation="&Url.DescribeFeatureType;?OPERATION=DESCRIBEFEATURESCHEMA&amp;VERSION=1.0.0&amp;LOCALE=en&amp;RESOURCEID=Library://&Enum.item;.FeatureSource&amp;SCHEMA="/>
- </Define>
-
- <Define item="DescribeFeature.Import.xml">
-  <xs:import schemaLocation="&Url.DescribeFeatureType;?OPERATION=DESCRIBEFEATURESCHEMA&amp;VERSION=1.0.0&amp;LOCALE=en&amp;RESOURCEID=Library://&Enum.item;.FeatureSource&amp;SCHEMA="/>
+  <xs:import schemaLocation="&Url.DescribeFeatureType;?request=DescribeFeatureType&amp;service=WFS&amp;version=1.1.0&amp;typeName=&Feature.Prefix;:&Enum.item;"/>
  </Define>
 
  <Define item="GetFeature.xml">

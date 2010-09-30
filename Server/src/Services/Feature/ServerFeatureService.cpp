@@ -1700,13 +1700,13 @@ MgClassDefinitionCollection* MgServerFeatureService::GetIdentityProperties(MgRes
 ///
 /// <!-- Syntax in .Net, Java, and PHP -->
 /// \htmlinclude DotNetSyntaxTop.html
-/// virtual MgByteReader GetWfsFeature(MgResourceIdentifier featureSourceId, string featureClass, MgStringCollection requiredProperties, string srs, string filter, int maxFeatures, string wfsVersion, string outputFormat, string sortCriteria);
+/// virtual MgByteReader GetWfsFeature(MgResourceIdentifier featureSourceId, string featureClass, MgStringCollection requiredProperties, string srs, string filter, int maxFeatures, string wfsVersion, string outputFormat, string sortCriteria, string namespacePrefix, string namespaceUrl);
 /// \htmlinclude SyntaxBottom.html
 /// \htmlinclude JavaSyntaxTop.html
-/// virtual MgByteReader GetWfsFeature(MgResourceIdentifier featureSourceId, string featureClass, MgStringCollection requiredProperties, string srs, string filter, int maxFeatures, string wfsVersion, string outputFormat, string sortCriteria);
+/// virtual MgByteReader GetWfsFeature(MgResourceIdentifier featureSourceId, string featureClass, MgStringCollection requiredProperties, string srs, string filter, int maxFeatures, string wfsVersion, string outputFormat, string sortCriteria, string namespacePrefix, string namespaceUrl);
 /// \htmlinclude SyntaxBottom.html
 /// \htmlinclude PHPSyntaxTop.html
-/// virtual MgByteReader GetWfsFeature(MgResourceIdentifier featureSourceId, string featureClass, MgStringCollection requiredProperties, string srs, string filter, int maxFeatures, string wfsVersion, string outputFormat, string sortCriteria);
+/// virtual MgByteReader GetWfsFeature(MgResourceIdentifier featureSourceId, string featureClass, MgStringCollection requiredProperties, string srs, string filter, int maxFeatures, string wfsVersion, string outputFormat, string sortCriteria, string namespacePrefix, string namespaceUrl);
 /// \htmlinclude SyntaxBottom.html
 ///
 /// \param featureSourceId (MgResourceIdentifier)
@@ -1734,6 +1734,10 @@ MgClassDefinitionCollection* MgServerFeatureService::GetIdentityProperties(MgRes
 /// http://portal.opengeospatial.org/files/?artifact_id=8339
 /// \param sortCriteria (String/string)
 /// A string identifying the sort criteria
+/// \param namespacePrefix (String/string)
+/// A string identifying the namespace prefix in the output xml
+/// \param namespaceUrl (String/string)
+/// A string idenyifying the namespace url in the output xml
 ///
 /// \return
 /// Returns an MgByteReader containing the requested feature information.
@@ -1748,7 +1752,9 @@ MgByteReader* MgServerFeatureService::GetWfsFeature(MgResourceIdentifier* fs,
                                                      INT32 maxFeatures,
                                                      CREFSTRING wfsVersion,
                                                      CREFSTRING outputFormat,
-                                                     CREFSTRING sortCriteria)
+                                                     CREFSTRING sortCriteria,
+                                                     CREFSTRING namespacePrefix,
+                                                     CREFSTRING namespaceUrl)
 {
     MG_LOG_TRACE_ENTRY(L"MgServerFeatureService::GetWfsFeature()");
 
@@ -1920,8 +1926,21 @@ MgByteReader* MgServerFeatureService::GetWfsFeature(MgResourceIdentifier* fs,
     
     // default namespace schema location
     flags->SetSchemaLocation(L"http://www.mynamespace.com/myns", L"http://www.mynamespace.com/myns/myns.xsd");
+    
     // set the default namespace
-    flags->SetDefaultNamespace(L"http://www.mynamespace.com/myns");
+    if(!namespacePrefix.empty())
+    {
+        STRING defaultNamespace(L"http://fdo.osgeo.org/schemas/feature/");
+        defaultNamespace += namespacePrefix;
+        
+        flags->SetDefaultNamespace(defaultNamespace.c_str());
+    }
+    else
+    {
+        flags->SetDefaultNamespace(L"http://www.mynamespace.com/myns");
+    }
+
+
 
     //create the FDO xml serializer stack and write out the features
     FdoPtr<FdoXmlWriter> xmlWriter = FdoXmlWriter::Create(fileName.c_str(), false);
@@ -1960,7 +1979,7 @@ MgByteReader* MgServerFeatureService::GetWfsFeature(MgResourceIdentifier* fs,
                                                      CREFSTRING wfsFilter,
                                                      INT32 maxFeatures)
 {
-    return GetWfsFeature(fs, featureClass, propNames, srs, wfsFilter, maxFeatures, L"1.0.0", L"text/xml; subtype=gml/2.1.2",L"");
+    return GetWfsFeature(fs, featureClass, propNames, srs, wfsFilter, maxFeatures, L"1.0.0", L"text/xml; subtype=gml/2.1.2", L"", L"", L"");
 }
 
 
