@@ -26,9 +26,9 @@ static bool m_bInitialized = false;
 #  define DllExport   __declspec( dllexport )
 #  define SWIGSTDCALL __stdcall
 #else
-#  define DllExport  
+#  define DllExport
 #  define SWIGSTDCALL
-#endif 
+#endif
 
 void MgInitializeWebTierInternal(CREFSTRING configFile)
 {

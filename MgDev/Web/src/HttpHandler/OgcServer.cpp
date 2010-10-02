@@ -1664,9 +1664,9 @@ CPSZ MgOgcServer::NegotiatedVersion(CPSZ pszRequested)
                     if(bLowest) {
                         // OGC spec: "If a version lower than any of those known to the server
                         // then the server shall send the lowest version it supports."
-                        
-                        // This fixed a potential issue for an unknown request version which just 
-                        // greater than the lowest version and lower than any other supported 
+
+                        // This fixed a potential issue for an unknown request version which just
+                        // greater than the lowest version and lower than any other supported
                         // versions, then we should return the loweset version.
                         m_sNegotiatedVersion = sVersion;
 

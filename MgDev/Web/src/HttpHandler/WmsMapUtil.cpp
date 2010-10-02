@@ -234,7 +234,7 @@ void MgWmsMapUtil::ProcessBoundingBoxAxes(STRING sSrs,REFSTRING bbox)
 
     INT16 quadrant = cs->GetEpsgQuadrant();
 
-    //X increases to the East,  Y increases to the North 
+    //X increases to the East,  Y increases to the North
     if(0 == quadrant || 1 == quadrant)
         return;
 
@@ -246,11 +246,11 @@ void MgWmsMapUtil::ProcessBoundingBoxAxes(STRING sSrs,REFSTRING bbox)
         {
             coords[i] = MgUtil::StringToDouble(bounds->GetItem(i));
         }
-        
+
         switch(quadrant)
         {
             //X increases to the West,  Y increases to the North
-            case 2: 
+            case 2:
                 ReverseCoords(coords[0],coords[2]);
                 break;
             //X increases to the West,  Y increases to the South
@@ -288,7 +288,7 @@ void MgWmsMapUtil::ProcessBoundingBoxAxes(STRING sSrs,REFSTRING bbox)
             default:
                 break;
         }
-       
+
         bbox.clear();
         for(INT32 i=0;i<4;i++)
         {

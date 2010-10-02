@@ -99,7 +99,7 @@ WfsGetFeatureParams::WfsGetFeatureParams(MgOgcWfsServer& oServer/*MgHttpRequestP
     // Get the requested output format
     m_outputFormat = GetRequestParameter(oServer,MgHttpResourceStrings::reqWfsOutputFormat);
 
-    // Get the wfs version 
+    // Get the wfs version
     m_version = GetRequestParameter(oServer,MgHttpResourceStrings::reqWfsVersion);
 
     // Get the sortby property name
