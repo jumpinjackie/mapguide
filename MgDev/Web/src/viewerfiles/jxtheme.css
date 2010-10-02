@@ -20,7 +20,7 @@
 .jxDialog {
   /* Base setup */
   display: block;
-  /* starting default z-index for dialogs. Multiple dialogs will get 
+  /* starting default z-index for dialogs. Multiple dialogs will get
    * incremental values starting from this value
    */
   z-index: 1000;

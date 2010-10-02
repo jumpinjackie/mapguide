@@ -21,11 +21,11 @@ margin-bottom: 0px;
 }
 
 div.body_content {
-margin: 0 12pt;	
+margin: 0 12pt;
 }
 
 /* ----------------------------------------------------------------------------
-										Link styles
+                                        Link styles
  ---------------------------------------------------------------------------- */
 
 a:link, a:active {color: #00289C; text-decoration: none;}
@@ -33,7 +33,7 @@ a:visited {color: #00289C; text-decoration: none;}
 a:hover {color: #CE9E08; text-decoration: underline;}
 
 /* ----------------------------------------------------------------------------
-										Table styles
+                                        Table styles
  ---------------------------------------------------------------------------- */
 
 table {
@@ -65,24 +65,24 @@ vertical-align: top;
 
 } /*Body cells*/
 
-table.ruled, table.ruled-wide { 
-width: 97%; 
-margin: 1.4em 0; 
-border-bottom: 3px solid #3D3D3D; 
-border-top: 4px solid #3D3D3D; 
-background-color: #F2F2F2; 
+table.ruled, table.ruled-wide {
+width: 97%;
+margin: 1.4em 0;
+border-bottom: 3px solid #3D3D3D;
+border-top: 4px solid #3D3D3D;
+background-color: #F2F2F2;
 }
 
-table.ruled th, table.ruled-wide th  { 
-color: white; 
-background-color: #3D3D3D; 
-padding: 4px 10px 7px 12px; 
+table.ruled th, table.ruled-wide th  {
+color: white;
+background-color: #3D3D3D;
+padding: 4px 10px 7px 12px;
 vertical-align: middle;
 }
 
 
-table.ruled td, table.ruled-wide td { 
-padding: 6px 10px 7px 12px; 
+table.ruled td, table.ruled-wide td {
+padding: 6px 10px 7px 12px;
 border-bottom: 1px solid #3D3D3D;
 vertical-align: baseline;
 }
@@ -106,26 +106,26 @@ font-weight: bold;
 color: #3D3D3D;
 }
 
-/* Unruled Tables */ 
+/* Unruled Tables */
 
-table.not-ruled, table.not-ruled-wide { 
+table.not-ruled, table.not-ruled-wide {
 width: 97%;
-margin: 1em 0; 
+margin: 1em 0;
 }
 
-table.not-ruled th, table.not-ruled-wide th { 
+table.not-ruled th, table.not-ruled-wide th {
 color: #338;
 padding: 4px 20px 2px 0;
 vertical-align: text-bottom;
 }
 
-table.not-ruled td, table.not-ruled-wide td { 
+table.not-ruled td, table.not-ruled-wide td {
 padding: 4px 20px 2px 0;
 vertical-align: top;
 }
-table.not-ruled td div.figure-anchor, 
+table.not-ruled td div.figure-anchor,
 table.not-ruled-wide td div.figure-anchor {
-margin-top: 5pt;	
+margin-top: 5pt;
 }
 
 
@@ -141,9 +141,9 @@ margin: 2pt 0;
 }
 
 /* div.note_xx within tables */
-table.ruled div.note-note, 
-table.ruled-wide div.note-note, 
-table.not-ruled div.note-note, 
+table.ruled div.note-note,
+table.ruled-wide div.note-note,
+table.not-ruled div.note-note,
 table.not-ruled-wide div.note-note {
 margin: 2pt 0;
 }
@@ -207,7 +207,7 @@ width: 0;
 
 
 /* ----------------------------------------------------------------------------
-										List styles
+                                        List styles
  ---------------------------------------------------------------------------- */
 
 ul {
@@ -441,25 +441,25 @@ padding-left: 5px;
 cursor: pointer;
 }
 /* ----------------------------------------------------------------------------
-										Note styles
+                                        Note styles
  ---------------------------------------------------------------------------- */
 
-div.note-note, 
-div.note-warning, 
-div.note-tip, 
-div.note-related, 
-div.note-important, 
+div.note-note,
+div.note-warning,
+div.note-tip,
+div.note-related,
+div.note-important,
 div.note-bestpractice {
 margin-top: 10pt;
 margin-bottom: 0px;
 }
 
 /* Notes within table */
-table.table div.note-note, 
-table.table div.note-warning, 
-table.table div.note-tip, 
-table.table div.note-related, 
-table.table div.note-important, 
+table.table div.note-note,
+table.table div.note-warning,
+table.table div.note-tip,
+table.table div.note-related,
+table.table div.note-important,
 table.table div.note-bestpractice {
 padding-top: 5px;
 padding-bottom: 5px;
@@ -467,11 +467,11 @@ font-size: 9pt;
 }
 /* Notes within lists */
 
-li div.note-note, 
-li div.note-warning, 
-li div.note-tip, 
-li div.note-related, 
-li div.note-important, 
+li div.note-note,
+li div.note-warning,
+li div.note-tip,
+li div.note-related,
+li div.note-important,
 li div.note-bestpractice {
 margin-left: 0pt;
 margin-top: 2pt;
@@ -531,10 +531,10 @@ padding-right: 5px;
 /* ---------------------------------------------------------------------------------------------
                                         Code elements
  --------------------------------------------------------------------------------------------- */
-span.code, 
-div.codeBlock, 
-p.codeLine, 
-p.codeComment, 
+span.code,
+div.codeBlock,
+p.codeLine,
+p.codeComment,
 span.codeLiteral {
 font-family: "Courier New", Courier, monospace;
 font-size: 10pt;
@@ -548,7 +548,7 @@ div.codeBlock div.codeBlock {
 margin-left: 30pt;
 } /* Only descendant code blocks should have indents */
 
-p.codeLine, 
+p.codeLine,
 p.codeComment {
 padding: 1px;
 margin: 1px;
@@ -591,7 +591,7 @@ margin-bottom: 0pt;
 
 
 /* ---------------------------------------------------------------------------------------------
-							Charspan
+                            Charspan
 --------------------------------------------------------------------------------------------- */
 span.charspan-keyboardEntry {}
 
@@ -607,7 +607,7 @@ are being formatted as <em>, <sub> and <sub> html elements so please change elem
 */
 
 /* ---------------------------------------------------------------------------------------------
-							Emphasis
+                            Emphasis
 --------------------------------------------------------------------------------------------- */
 em, em.mild {
 font-style: italic;
@@ -624,7 +624,7 @@ font-weight: bold;
 }
 
 /* ---------------------------------------------------------------------------------------------
-							UIString
+                            UIString
 --------------------------------------------------------------------------------------------- */
 span.uis-promptMessage {
 font-style: normal;
@@ -648,7 +648,7 @@ span.uis-stringTable {}
 span.uis-unspecified {}
 
 /* -------------------------------------------------------------------------------------------
-							Comments
+                            Comments
 ------------------------------------------------------------------------------------------- */
 div.comments-editor {
 font-weight: bold;
@@ -672,9 +672,9 @@ margin-right: 48pt;
 }
 
 /* ------------------------------------------------------------------------------------------
-							Misc
+                            Misc
 ------------------------------------------------------------------------------------------ */
-.title, 
+.title,
 .list-intro {
 font-weight: bold;
 color: #990000;
@@ -787,7 +787,7 @@ div.section {}
 p.summary {}
 
 /* -----------------------------------------------------------------------------------------------
-								Topic heading elements
+                                Topic heading elements
  ----------------------------------------------------------------------------------------------- */
 
 /* head region */
@@ -967,7 +967,7 @@ line-height: 18pt;
 } /* @media print */
 
 /* collapse-expand block */
-/* contains the collapse block () and the expand block (), only 
+/* contains the collapse block () and the expand block (), only
    one of which is visible depending on collapse-expand state */
 div.collapse-expand {
 width: 200px;
@@ -1116,7 +1116,7 @@ td.tab-active {
 background-color: #fff;
 cursor: default;
 vertical-align: middle;
-background-image: url(../images/tab-bkg-xn.gif); 
+background-image: url(../images/tab-bkg-xn.gif);
 background-repeat: repeat;
 }
 
@@ -1183,7 +1183,7 @@ div.quickReferenceList div.section p.section_title_h1  {
 }
 
 /* -----------------------------------------------------------------------------------------------
-								Topic footing (comments section) elements
+                                Topic footing (comments section) elements
  ----------------------------------------------------------------------------------------------- */
 
 div.footer-block {
@@ -1205,7 +1205,7 @@ display: block;
 }  /* @media print */
 
 /* -----------------------------------------------------------------------------------------------
-								Art related elements
+                                Art related elements
  ----------------------------------------------------------------------------------------------- */
 
 p.figure-title {
