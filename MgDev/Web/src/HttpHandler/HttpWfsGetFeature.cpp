@@ -23,6 +23,37 @@
 #include "OgcFramework.h"
 #include "OgcWfsServer.h"
 
+///////////////////////////////////////////////////////////////////////////////////////////
+//                                      MgException* or derivative                       //
+//                                      |                 MgOgcWfsException::kpsz...     //
+//                                      |                 |                  OgcServer&  //
+//                                      |                 |                  |           //
+#define CATCH_MGEXCEPTION_HANDLE_AS_OGC(mg_exception_type,ogc_exception_code,ogc_server)  \
+        catch (mg_exception_type* e) {                                                    \
+            STRING sReport = e->GetExceptionMessage();                                    \
+            ogc_server.ServiceExceptionReportResponse(                                    \
+                MgOgcWfsException(MgOgcWfsException::ogc_exception_code,                  \
+                                  sReport.c_str() ));                                     \
+            Ptr<MgByteReader> capabilities = responseStream.Stream().GetReader();         \
+            hResult->SetResultObject(capabilities, capabilities->GetMimeType());          \
+            e->Release();                                                                 \
+        }                                                                                 \
+///////////////////////////////////////////////////////////////////////////////////////////
+
+///////////////////////////////////////////////////////////////////////////////////////////
+//                                   MgOgcWfsException::kpsz...                          //
+//                                   |                  OgcServer&                       //
+//                                   |                  |                                //
+#define CATCH_ANYTHING_HANDLE_AS_OGC(ogc_exception_code,ogc_server)                       \
+        catch (...) {                                                                     \
+            ogc_server.ServiceExceptionReportResponse(                                    \
+                MgOgcWfsException(MgOgcWfsException::kpszInternalError,                   \
+                                  _("Unexpected exception was thrown.  No additional details available.")));\
+            Ptr<MgByteReader> capabilities = responseStream.Stream().GetReader();         \
+            hResult->SetResultObject(capabilities, capabilities->GetMimeType());          \
+        }                                                                                 \
+///////////////////////////////////////////////////////////////////////////////////////////
+
 HTTP_IMPLEMENT_CREATE_OBJECT(MgHttpWfsGetFeature)
 
 /// <summary>
@@ -95,14 +126,20 @@ void MgHttpWfsGetFeature::Execute(MgHttpResponse& hResponse)
 
     // Create the WFS Server object and respond to the request
     MgOgcWfsServer wfsServer(requestParams, responseStream);
-    wfsServer.ProcessRequest(this);
 
-    // Obtain the response byte reader
-    Ptr<MgByteReader> responseReader = responseStream.Stream().GetReader();
+    try
+    {
+        wfsServer.ProcessRequest(this);
 
-    // Set the result
-    hResult->SetResultObject(responseReader, responseReader->GetMimeType());
+        // Obtain the response byte reader
+        Ptr<MgByteReader> responseReader = responseStream.Stream().GetReader();
 
+        // Set the result
+        hResult->SetResultObject(responseReader, responseReader->GetMimeType());
+    }
+    
+    CATCH_MGEXCEPTION_HANDLE_AS_OGC(MgException,kpszInternalError,wfsServer)
+    CATCH_ANYTHING_HANDLE_AS_OGC(pszInternalError,wfsServer)
     MG_HTTP_HANDLER_CATCH_AND_THROW_EX(L"MgHttpWfsGetFeature.Execute")
 }
 

@@ -19,6 +19,7 @@
 #define _OgcWfsServer_h
 
 #include "OgcServer.h"
+#include "OgcWfsException.h"
 #include "WfsFeatureDefinitions.h"
 #include "WfsFeatures.h"
 
