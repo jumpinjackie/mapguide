@@ -40,7 +40,7 @@ CCoordinateSystemGeodeticTransformGridFile::CCoordinateSystemGeodeticTransformGr
     if (NULL == this->gridFileDesc)
         throw new MgOutOfMemoryException(L"CCoordinateSystemGeodeticAnalyticalTransformDefParams.ctor", __LINE__, __WFILE__, NULL, L"", NULL);
 
-    ::memset(this->gridFileDesc, 0, sizeof(csGeodeticXfromParmsFile_)); 
+    ::memset(this->gridFileDesc, 0, sizeof(csGeodeticXfromParmsFile_));
     if (NULL != fileFormatParam)
         *this->gridFileDesc = *fileFormatParam;
     //else: keep the 0'ed memory
@@ -60,7 +60,7 @@ void CCoordinateSystemGeodeticTransformGridFile::ReleaseInstance()
 {
     if (NULL != this->gridFileDesc)
     {
-        CS_free(this->gridFileDesc);        
+        CS_free(this->gridFileDesc);
         this->gridFileDesc = NULL;
     }
 }
@@ -81,7 +81,7 @@ bool CCoordinateSystemGeodeticTransformGridFile::IsValid()
     _ASSERT(NULL != this->gridFileDesc);
 
     size_t fileNameLength = strlen(this->gridFileDesc->fileName);
-    
+
     _ASSERT(fileNameLength < csGRIDI1_FLNMSZ);
     if (0 == fileNameLength || fileNameLength >= csGRIDI1_FLNMSZ)
         return false;
@@ -97,7 +97,7 @@ bool CCoordinateSystemGeodeticTransformGridFile::IsValid()
     case cs_DTCFRMT_OST97:
     case cs_DTCFRMT_OST02:
         break;
-    
+
     case cs_DTCFRMT_NONE:
         _ASSERT(false);
         break;

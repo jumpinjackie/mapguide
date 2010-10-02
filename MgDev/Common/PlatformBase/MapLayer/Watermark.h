@@ -22,7 +22,7 @@ BEGIN_NAMESPACE_MDFMODEL
 class WatermarkDefinition;
 END_NAMESPACE_MDFMODEL
 
-//Currently the only reason MgWatermark exists is that 
+//Currently the only reason MgWatermark exists is that
 //the rendering service can get the WatermarkDefinition.
 //So it's only an internal API.
 

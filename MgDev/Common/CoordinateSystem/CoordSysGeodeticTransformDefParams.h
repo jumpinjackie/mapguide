@@ -20,7 +20,7 @@
 
 
 namespace CSLibrary
-{    
+{
     class CCoordinateSystemGeodeticTransformDefParams : public MgCoordinateSystemGeodeticTransformDefParams
     {
     public:

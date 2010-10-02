@@ -33,7 +33,7 @@ DICTIONARY_BASE_TEMPLATE
 DICTIONARY_BASE_TEMPLATE_METHOD::~CCoordinateSystemDictionaryBase()
 {
     this->catalog = NULL;
-    
+
     delete this->dictionaryItems;
     this->dictionaryItems = NULL;
 }
@@ -91,9 +91,9 @@ DICTIONARY_BASE_TEMPLATE
 STRING DICTIONARY_BASE_TEMPLATE_METHOD::GetPath() /* the full path to the file we're currently using */
 {
     MG_TRY()
-    
+
     return (this->catalog->GetDictionaryDir() + this->fileName);
-    
+
     MG_CATCH_AND_THROW(L"CCoordinateSystemDictionaryBase.GetPath")
 
     _ASSERT(false); //OOM - unable to create the exception object?
@@ -111,7 +111,7 @@ UINT32 DICTIONARY_BASE_TEMPLATE_METHOD::GetSize()
     }
 
     SmartCriticalClass critical(true);
-    
+
     STRING strPath = this->GetPath();
     csFILE *pFile = MentorDictionary::Open(this->dictMagicNumber, definitionAccess->magicNumberCallback, strPath.c_str(), Read);
 
@@ -184,7 +184,7 @@ void DICTIONARY_BASE_TEMPLATE_METHOD::Remove(CREFSTRING sName)
         definitionAccess->deleteDefinition,
         sName.c_str());
 
-    MG_CATCH_AND_THROW(L"CCoordinateSystemDictionaryBase.Remove")    
+    MG_CATCH_AND_THROW(L"CCoordinateSystemDictionaryBase.Remove")
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
@@ -234,7 +234,7 @@ MgGuardDisposable* DICTIONARY_BASE_TEMPLATE_METHOD::Get(CREFSTRING sName)
 
     //make sure, we've exclusive access here
     SmartCriticalClass critical(true);
-    
+
     //Look in the dictionary
     pDef = definitionAccess->readDefinition(pName);
     if (NULL == pDef)
@@ -256,7 +256,7 @@ MgGuardDisposable* DICTIONARY_BASE_TEMPLATE_METHOD::Get(CREFSTRING sName)
     MG_CATCH(L"CCoordinateSystemDictionaryBase.Get")
 
     /* cleanup - MG_CATCH() catches every exception; i.e. we'll go through here regardless of whether an exception occurred or not */
-    
+
     CS_free(pDef);
     delete [] pName;
 
@@ -270,7 +270,7 @@ DICTIONARY_BASE_TEMPLATE
 bool DICTIONARY_BASE_TEMPLATE_METHOD::Has(CREFSTRING sName)
 {
     MG_TRY()
-    
+
     try
     {
         Ptr<MgGuardDisposable> definition = this->Get(sName);
@@ -303,7 +303,7 @@ DICTIONARY_BASE_TEMPLATE
 CCoordinateSystemEnum* DICTIONARY_BASE_TEMPLATE_METHOD::GetEnumImp()
 {
     Ptr<CCoordinateSystemEnum> pNew;
-    
+
     csFILE *dictionaryFile = NULL;
     SmartCriticalClass critical(true);
 
@@ -317,7 +317,7 @@ CCoordinateSystemEnum* DICTIONARY_BASE_TEMPLATE_METHOD::GetEnumImp()
         //Not read yet - try to build the map from the entries found in the dictionary file
         //
         STRING strPath = this->GetPath();
-    
+
         //[Open] throws an exception, if the dictionary file couldn't be opened
         dictionaryFile = MentorDictionary::Open(this->dictMagicNumber, definitionAccess->magicNumberCallback, strPath.c_str(), Read);
 
@@ -326,7 +326,7 @@ CCoordinateSystemEnum* DICTIONARY_BASE_TEMPLATE_METHOD::GetEnumImp()
             definitionAccess->readDefinitionName,
             definitionAccess->readDefinitionDescription,
             definitionAccess->readAllDefinitions);
-        
+
         if (NULL == allDictionaryEntries) //whatever happend here - the dictionay file seems to be invalid
             throw new MgCoordinateSystemLoadFailedException(L"CCoordinateSystemDictionaryBase.GetEnumImp", __LINE__, __WFILE__, NULL, L"", NULL);
     }
@@ -357,7 +357,7 @@ CCoordinateSystemEnum* DICTIONARY_BASE_TEMPLATE_METHOD::GetEnumImp()
         //without proper precautions being taken
         _ASSERT(NULL != allDictionaryEntries);
         _ASSERT(NULL == this->dictionaryItems || (void*)this->dictionaryItems == (void*)allDictionaryEntries);
-        
+
         this->dictionaryItems = allDictionaryEntries; //cache the map now
     }
 

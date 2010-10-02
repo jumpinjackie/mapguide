@@ -219,11 +219,11 @@ public:
     virtual double GetRasterGridSizeOverrideRatio() = 0;
     virtual void SetRasterGridSizeOverrideRatio(double ratio) = 0;
 
-    // gets/sets the max width for raster image 
+    // gets/sets the max width for raster image
     virtual double GetMaxRasterImageWidth() = 0;
     virtual void SetMaxRasterImageWidth(int width) = 0;
 
-    // gets/sets the max height for raster image 
+    // gets/sets the max height for raster image
     virtual double GetMaxRasterImageHeight() = 0;
     virtual void SetMaxRasterImageHeight(int height) = 0;
 

@@ -124,7 +124,7 @@ void MgByteProperty::ToXml(string &str, bool includeType, string rootElmName)
     {
         str += "<Type>byte</Type>";
     }
-    
+
     if (!this->IsNull())
     {
         str += "<Value>";

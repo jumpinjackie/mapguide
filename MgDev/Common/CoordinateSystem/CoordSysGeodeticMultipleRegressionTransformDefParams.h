@@ -54,7 +54,7 @@ namespace CSLibrary
 
         virtual double GetTestLambda();
         virtual void SetTestLambda(double testLambda);
-        		
+
         virtual double GetDeltaPhi();
         virtual void SetDeltaPhi(double deltaPhi);
 
@@ -63,19 +63,19 @@ namespace CSLibrary
 
         virtual double GetDeltaHeight();
         virtual void SetDeltaHeight(double deltaHeight);
-    			
+
         virtual double GetPhiOffset();
         virtual void SetPhiOffset(double phiOffset);
 
         virtual double GetLambdaOffset();
         virtual void SetLambdaOffset(double lambdaOffset);
-        
+
         virtual double GetNormalizationScale();
         virtual void SetNormalizationScale(double NormalizationScale);
 
         virtual double GetCoefficientPhi(INT32 index /* range [0..104]*/);
         virtual void SetCoefficientPhi(INT32 index, double value);
-        
+
         virtual double GetCoefficientLambda(INT32 index /* range [0..104]*/);
         virtual void SetCoefficientLambda(INT32 index, double value);
 
@@ -87,10 +87,10 @@ namespace CSLibrary
 
     private:
         void CopyTo(void* target) const;
-        
+
         void Reset();
         void ReleaseInstance();
-    
+
     private:
         csMultipleRegressionXformParams* mulRegParams;
         INT32 transformationMethod;

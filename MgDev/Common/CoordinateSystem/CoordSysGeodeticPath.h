@@ -29,10 +29,10 @@ namespace CSLibrary
         ~CCoordinateSystemGeodeticPath();
 
         virtual void Dispose();
-        
+
         void Initialize(const cs_GeodeticPath_& pathDef);
         void Reset();
-        
+
         virtual MgCoordinateSystemGeodeticPath* CreateClone();
         virtual MgCoordinateSystemGeodeticPathElement* NewPathElement();
 
@@ -40,22 +40,22 @@ namespace CSLibrary
         virtual STRING GetPathName();
         virtual void SetPathName(CREFSTRING);
 
-        virtual STRING GetDescription();  
+        virtual STRING GetDescription();
         virtual void SetDescription(CREFSTRING);
 
-        virtual STRING GetGroup();  
+        virtual STRING GetGroup();
         virtual void SetGroup(CREFSTRING);
 
-        virtual STRING GetSource();  
+        virtual STRING GetSource();
         virtual void SetSource(CREFSTRING);
 
-        virtual STRING GetTargetDatum();  
+        virtual STRING GetTargetDatum();
         virtual void SetTargetDatum(CREFSTRING);
 
-        virtual STRING GetSourceDatum();  
+        virtual STRING GetSourceDatum();
         virtual void SetSourceDatum(CREFSTRING);
 
-        virtual double GetAccuracy(); 
+        virtual double GetAccuracy();
         virtual void SetAccuracy(double accuracy);
 
         virtual bool GetIsReversible();
@@ -72,12 +72,12 @@ namespace CSLibrary
 
         //helper - don't delete
         virtual bool IsEncrypted();
-        
+
         virtual bool IsProtected();
         virtual bool IsValid();
 
         void CopyTo(cs_GeodeticPath_& pathDef) const;
-    
+
     private:
         void CleanupInstanceVariables();
 

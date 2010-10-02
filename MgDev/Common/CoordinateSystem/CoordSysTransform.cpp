@@ -467,7 +467,7 @@ MgEnvelope* CCoordinateSystemTransform::Transform(MgEnvelope* envelope)
     // Extract the two defining corners of this envelope.
     Ptr<MgCoordinate> lowerLeft  = envelope->GetLowerLeftCoordinate();
     Ptr<MgCoordinate> upperRight = envelope->GetUpperRightCoordinate();
-    
+
     // Determine if this is a 3D envelope.  Don't know that this is possible,
     // but the code I modified handles 3D envelopes, so I will too.
     dimension = upperRight->GetDimension();

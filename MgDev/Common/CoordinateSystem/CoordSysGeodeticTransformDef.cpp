@@ -41,7 +41,7 @@ CCoordinateSystemGeodeticTransformDef::CCoordinateSystemGeodeticTransformDef(MgC
 {
     //have we been passed a non-null argument?
     if (NULL == this->catalog)
-        throw new MgNullArgumentException(L"CCoordinateSystemGeodeticTransformDef.ctor", __LINE__, __WFILE__, NULL, L"", NULL); 
+        throw new MgNullArgumentException(L"CCoordinateSystemGeodeticTransformDef.ctor", __LINE__, __WFILE__, NULL, L"", NULL);
 }
 
 CCoordinateSystemGeodeticTransformDef::~CCoordinateSystemGeodeticTransformDef()
@@ -79,7 +79,7 @@ void CCoordinateSystemGeodeticTransformDef::Reset(INT32 transformationDefType)
     default:
         throw new MgInvalidArgumentException(L"CCoordinateSystemGeodeticTransformDef.Reset", __LINE__, __WFILE__, NULL, L"", NULL);
     }
-    
+
     //try creating a new [cs_GeodeticTransform_] instance before we wipe out our own stuff
     cs_GeodeticTransform_* newEmptyDef = (cs_GeodeticTransform_*)CS_malc(sizeof(cs_GeodeticTransform_));
     if (NULL == newEmptyDef) //uses CS_malc which returns NULL in case allocation fails
@@ -93,7 +93,7 @@ void CCoordinateSystemGeodeticTransformDef::Reset(INT32 transformationDefType)
     //ok - everything worked out so far; release this instance's information
     this->ReleaseInstance();
     _ASSERT(NULL == this->transformDefinition);
-   
+
     this->transformDefinition = newEmptyDef;
     newEmptyDef = NULL; //make sure, we don't free that one after we get a hold on the (no longer temp) memory
 
@@ -112,7 +112,7 @@ INT32 CCoordinateSystemGeodeticTransformDef::GetTransformationDefType(INT32 meth
     INT32 transformationType;
     switch(methodCode)
     {
-    //standalone methods; see information in cs_geodetic.h 
+    //standalone methods; see information in cs_geodetic.h
     case cs_DTCMTH_NULLX:
     case cs_DTCMTH_WGS72:
         transformationType = MgCoordinateSystemGeodeticTransformDefType::None;
@@ -145,7 +145,7 @@ INT32 CCoordinateSystemGeodeticTransformDef::GetTransformationDefType(INT32 meth
     case cs_DTCMTH_GFILE:
         transformationType = MgCoordinateSystemGeodeticTransformDefType::Interpolation;
         break;
-    
+
     //the next entries are not expected; we're mapping them to the interpolation transformation type
     case cs_DTCMTH_CNTv1:
     case cs_DTCMTH_CNTv2:
@@ -181,7 +181,7 @@ MgCoordinateSystemGeodeticTransformation* CCoordinateSystemGeodeticTransformDef:
 
     if (MgCoordinateSystemGeodeticTransformDefType::None == this->GetTransformDefType() || !this->IsValid())
         throw new MgInvalidOperationException(L"CCoordinateSystemGeodeticTransformDef.CreateTransformation", __LINE__,__WFILE__, NULL, L"", NULL);
-    
+
     //we don't take ownership of the transformation being returned but
     //will release [sourceDatum] and [targetDatum];
     //new [CCoordinateSystemGeodeticTransformation] will have to ADDREF if needed
@@ -202,7 +202,7 @@ MgCoordinateSystemGeodeticTransformDef* CCoordinateSystemGeodeticTransformDef::C
 void CCoordinateSystemGeodeticTransformDef::CopyTo(cs_GeodeticTransform_& transformDef) const
 {
     VERIFY_INITIALIZED(L"CCoordinateSystemGeodeticTransformDef.CopyTo");
-    
+
     //copy our values into the [cs_GeodeticTransform_] we've been passed here
     transformDef = *this->transformDefinition;
 }
@@ -224,15 +224,15 @@ MgCoordinateSystemGeodeticTransformDefParams* CCoordinateSystemGeodeticTransform
     case MgCoordinateSystemGeodeticTransformDefType::Analytical:
         return static_cast<MgCoordinateSystemGeodeticAnalyticalTransformDefParams*>(new CCoordinateSystemGeodeticAnalyticalTransformDefParams(
             this->transformDefinition->parameters.geocentricParameters, this->transformDefinition->methodCode, this->IsProtected()));
-    
+
     case MgCoordinateSystemGeodeticTransformDefType::Interpolation:
         return static_cast<MgCoordinateSystemGeodeticInterpolationTransformDefParams*>(
             new CCoordinateSystemGeodeticInterpolationTransformDefParams(this->transformDefinition->parameters.fileParameters, this->IsProtected()));
-    
+
     case MgCoordinateSystemGeodeticTransformDefType::MultipleRegression:
         return static_cast<MgCoordinateSystemGeodeticMultipleRegressionTransformDefParams*>(new CCoordinateSystemGeodeticMultipleRegressionTransformDefParams(
             this->transformDefinition->parameters.dmaMulRegParameters, this->transformDefinition->methodCode, this->IsProtected()));
-    
+
     default: //invalid state; why's that?
         _ASSERT(false);
         throw new MgInvalidOperationException(L"CCoordinateSystemGeodeticTransformDef.GetParameters", __LINE__, __WFILE__, NULL, L"", NULL);
@@ -254,7 +254,7 @@ void CCoordinateSystemGeodeticTransformDef::SetParameters(MgCoordinateSystemGeod
 
     //otherwise: make sure, we've been passed non null paramaters...
     ENSURE_NOT_NULL(parameters, L"CCoordinateSystemGeodeticTransformDef.SetParameters");
-    
+
     INT32 paramsMethodCode = 0x0;
 
     //...and the parameters are actually of the correct type, i.e. match whatever we've stored in [this->transformationDefType]
@@ -280,7 +280,7 @@ void CCoordinateSystemGeodeticTransformDef::SetParameters(MgCoordinateSystemGeod
         //such a transformation can use multiple grid files where each can have a different format
         paramsMethodCode = cs_DTCMTH_GFILE;
         break;
-    
+
     case MgCoordinateSystemGeodeticTransformDefType::MultipleRegression:
         mulRegParams = dynamic_cast<CCoordinateSystemGeodeticMultipleRegressionTransformDefParams*>(parameters);
         if (NULL != mulRegParams)
@@ -326,7 +326,7 @@ bool CCoordinateSystemGeodeticTransformDef::IsValid()
     //TODO: pass correct parameters; make sure, CS_gxchk checks all stuff
     int nNumErrs = CS_gxchk(this->transformDefinition, 0, NULL, 0);
     CriticalClass.Leave();
-    
+
     return (0 == nNumErrs);
     */
     return true;

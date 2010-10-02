@@ -49,9 +49,9 @@ extern DefinitionAccess<CCoordinateSystemGeodeticTransformDef, cs_GeodeticTransf
     CCoordinateSystemGeodeticTransformDefDictionary::ReadName,
     CCoordinateSystemGeodeticTransformDefDictionary::ReadDescription,
     CCoordinateSystemGeodeticTransformDefDictionary::ReadAllGeodeticTransformDefs,
-    
+
     CS_gxfnm,
-    
+
     CCoordinateSystemGeodeticTransformDefDictionary::GetFileOpenMode);
 
 CCoordinateSystemGeodeticTransformDefDictionary::CCoordinateSystemGeodeticTransformDefDictionary(MgCoordinateSystemCatalog *pCatalog)
@@ -76,7 +76,7 @@ MgCoordinateSystemGeodeticTransformDef* CCoordinateSystemGeodeticTransformDefDic
 {
     Ptr<CCoordinateSystemGeodeticTransformDef> newTransformDef = this->m_pDictionary->NewItem();
     newTransformDef->Reset(transformationDefType); //sets up the [cs_geodeticTransfrom_] struct and initializes it to [transformationDefType]
-    
+
     return newTransformDef.Detach(); //this instance is not yet initialized
 }
 
@@ -177,7 +177,7 @@ bool CCoordinateSystemGeodeticTransformDefDictionary::SetupCsStructFromMgTransfo
     mgGeodeticTransformDef->CopyTo(csTransformDef);
     return true;
 }
-    
+
 void CCoordinateSystemGeodeticTransformDefDictionary::FullInitialize(CCoordinateSystemGeodeticTransformDef* mgGeodeticTransformDef,
                                                                      cs_GeodeticTransform_* csTransformDef,
                                                                      MgCoordinateSystemCatalog* catalog)

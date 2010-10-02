@@ -76,7 +76,7 @@ public:
 
     //assignment
     TNameStruct& operator=(const TNameStruct&);
-    
+
     //assignment
     TNameStruct& operator=(const char* newName);
 

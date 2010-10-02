@@ -49,9 +49,9 @@ extern DefinitionAccess<CCoordinateSystemGeodeticPath, cs_GeodeticPath_> definit
     CCoordinateSystemGeodeticPathDictionary::ReadName,
     CCoordinateSystemGeodeticPathDictionary::ReadDescription,
     CCoordinateSystemGeodeticPathDictionary::ReadAllGeodeticPaths,
-    
+
     CS_gpfnm,
-    
+
     CCoordinateSystemGeodeticPathDictionary::GetFileOpenMode);
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -99,7 +99,7 @@ int CCoordinateSystemGeodeticPathDictionary::ReadAllGeodeticPaths(csFILE *file, 
 bool CCoordinateSystemGeodeticPathDictionary::SetupCsGeodeticPathStruct(CCoordinateSystemGeodeticPath* mgGeodeticPath, cs_GeodeticPath_& csPath)
 {
     _ASSERT(NULL != mgGeodeticPath);
-    
+
     //copy the values from [mgGeodeticPath] to [csPath]; this will throw an exception in case [mgGeodeticPath] hasn't been initialized yet
     mgGeodeticPath->CopyTo(csPath);
 
@@ -120,8 +120,8 @@ void CCoordinateSystemGeodeticPathDictionary::FullInitialize(CCoordinateSystemGe
 MgCoordinateSystemGeodeticPath* CCoordinateSystemGeodeticPathDictionary::NewGeodeticPath()
 {
     Ptr<CCoordinateSystemGeodeticPath> newPathItem = this->m_pDictionary->NewItem();
-    newPathItem->Reset(); //sets up the [cs_geodeticpath_] struct; it can thus be used by 
-    
+    newPathItem->Reset(); //sets up the [cs_geodeticpath_] struct; it can thus be used by
+
     return newPathItem.Detach();
 }
 

@@ -118,7 +118,7 @@ void MgInt64Property::ToXml(string &str, bool includeType, string rootElmName)
         std::string tmp = "";
         MgUtil::Int64ToString(this->GetValue(), tmp);
 
-        str += tmp; 
+        str += tmp;
         str += "</Value>";
     }
 

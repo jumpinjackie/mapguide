@@ -39,16 +39,16 @@ PUBLISHED_API:
 
     virtual STRING GetPathName()=0;
     virtual void SetPathName(CREFSTRING)=0;
-    
+
     virtual STRING GetDescription()=0;  /// __get
     virtual void SetDescription(CREFSTRING)=0;
-    
+
     virtual STRING GetGroup()=0;  /// __get
     virtual void SetGroup(CREFSTRING)=0;
-    
+
     virtual STRING GetSource()=0;  /// __get
     virtual void SetSource(CREFSTRING)=0;
-    
+
     virtual STRING GetTargetDatum()=0;  /// __get
     virtual void SetTargetDatum(CREFSTRING)=0;
 
@@ -63,7 +63,7 @@ PUBLISHED_API:
 
     virtual INT32 GetEpsgCode()=0;
     virtual void SetEpsgCode(INT32 epsgCode)=0;
-    
+
     virtual INT32 GetEpsgVariant()=0;
     virtual void SetEpsgVariant(INT32 epsgVariant)=0;
 
@@ -71,7 +71,7 @@ PUBLISHED_API:
     /// \brief
     /// Returns an ordered collection of MgCoordinateSystemGeodeticPathElement objects
     /// that form this geodetic transformation path. See remarks.
-    /// 
+    ///
     /// \return
     /// Returns a (possibly empty) collection of MgCoordinateSystemGeodeticPathElement instances.
     /// The caller is responsible for disposing the collection being returned.
@@ -81,17 +81,17 @@ PUBLISHED_API:
     /// path instance. Instead, the collection can be modified and then re-set via
     /// SetPathElements.
     virtual MgDisposableCollection* GetPathElements() = 0;
-    
+
     ///////////////////////////////////////////////////////////////////////////
     /// \brief
     /// Sets the individual transformation steps that form this geodetic transformation
     /// path.
-    /// 
+    ///
     /// \remarks
     /// The caller is responsible for disposing the collection passed in, i.e.
     /// this geodetic path instance will not take ownership of the elements.
     virtual void SetPathElements(MgDisposableCollection* pathElements) = 0;
-    
+
     virtual bool IsProtected() = 0;
     virtual bool IsValid() = 0;
 

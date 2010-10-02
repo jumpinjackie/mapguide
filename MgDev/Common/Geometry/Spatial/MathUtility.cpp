@@ -260,7 +260,7 @@ bool MgMathUtility::DblCmp (double first,double second)
 bool MgMathUtility::DblCmp (double first,double second,double tolerance)
 {
     bool equal;
-    
+
     equal = (fabs (first - second) < tolerance);
     return equal;
 }

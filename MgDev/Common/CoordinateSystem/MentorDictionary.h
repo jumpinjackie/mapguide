@@ -148,10 +148,10 @@ namespace MentorDictionary
         //Look in the dictionary
         bool bActuallyExists = false;
         INT16 sProtect = 0;
-        
+
         //make sure, we've exclusive access to the file(s)
         SmartCriticalClass critical(true);
-        
+
         T *pDef = CS_Tdef(keyName);
         if (NULL != pDef)
         {

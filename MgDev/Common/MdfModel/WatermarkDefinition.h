@@ -39,19 +39,19 @@ BEGIN_NAMESPACE_MDFMODEL
         virtual ~WatermarkDefinition();
 
         // Operations
-        
+
         // Property: Content
         const SymbolDefinition* GetContent() const;
         SymbolDefinition* GetContent();
         void AdoptContent(SymbolDefinition* pContent);
         SymbolDefinition* OrphanContent();
-        
+
         // Property: Appearance
         const WatermarkAppearance* GetAppearance() const;
         WatermarkAppearance* GetAppearance();
         void AdoptAppearance(WatermarkAppearance* pAppearance);
         WatermarkAppearance* OrphanAppearance();
-        
+
         // Property: Position
         const WatermarkPosition* GetPosition() const;
         WatermarkPosition* GetPosition();

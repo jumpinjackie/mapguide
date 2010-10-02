@@ -130,10 +130,10 @@ void MgDoubleProperty::ToXml(string &str, bool includeType, string rootElmName)
     string doubleStr = "";
     MgUtil::DoubleToString(m_value, doubleStr);
 
-    if (!this->IsNull()) 
+    if (!this->IsNull())
     {
         str += "<Value>";
-        str += doubleStr; 
+        str += doubleStr;
         str += "</Value>";
     }
 

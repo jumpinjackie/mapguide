@@ -63,7 +63,7 @@ void CCoordinateSystemGeodeticAnalyticalTransformDefParams::ReleaseInstance()
 void CCoordinateSystemGeodeticAnalyticalTransformDefParams::CopyTo(void* target) const
 {
     ENSURE_NOT_NULL(target, L"CCoordinateSystemGeodeticAnalyticalTransformDefParams.CopyTo");
-    
+
     memcpy(target, this->geocentricTransformParams, sizeof(cs_GeodeticTransform_::csGeodeticXformParameters::csGeodeticXformParmsGeocentric));
 }
 

@@ -575,7 +575,7 @@ INT32 MgSpatialUtility::SegmentIntersection (MgCoordinate* result,MgCoordinate* 
 
     // Until we know different.
     status = 0;
- 
+
     // Compute the denominator which also tells us if the lines are collinear.
     delX1 = seg1To->GetX () - seg1From->GetX ();
     delY1 = seg1To->GetY () - seg1From->GetY ();
@@ -1073,7 +1073,7 @@ INT32 MgSpatialUtility::PointIsInPolygon (MgCoordinateIterator* polyItr,MgCoordi
         // It will tell us if we are on the polygon or not.
         lastIntersection = dynamic_cast<MgCoordinateXYM*>(intersectionCollection->GetItem (count-1));
         INT32 status = static_cast<INT32>(lastIntersection->GetM ());
-        
+
         // If the point is on the polygon, the status of the last intersection will
         // have the IntersectIsSeg2End bit set.
         if ((status & MgSpatialUtilityStatus::IntersectIsSeg2End) != 0)
@@ -1130,7 +1130,7 @@ static const INT32 StringPointNotDetermined = 0;
 static const INT32 StringPointOutside       = 1;
 static const INT32 StringPointOnBoundary    = 2;
 static const INT32 StringPointInside        = 3;
-//    
+//
 // Values which are stored in the Z member of the internally used point
 // collection; i.e. the status of each segment relative to the clip
 // ploygon.  The value stored refers to the segment which starts at
@@ -1150,7 +1150,7 @@ MgLineStringCollection* MgSpatialUtility::ClipStringToPolygon (MgCoordinateItera
     Ptr<MgCoordinateCollection> pointCollection;
     Ptr<MgCoordinateIterator> pointIterator;
     Ptr<MgLineStringCollection> lineCollection;
-    
+
     // Phase One: Expand the line string with all implied transition points,
     // i.e. intersection with the polygon.
     pointCollection = StringClipPhaseOne (lineItr,polyItr);
@@ -1270,7 +1270,7 @@ MgCoordinateCollection* MgSpatialUtility::StringClipPhaseOne (MgCoordinateIterat
         while (itrPolygon->MoveNext ())
         {
             // We need a place for SegementIntersection to place the
-            // calculated intersection.  We can't add the transition 
+            // calculated intersection.  We can't add the transition
             // points directly to the xyzmCollection object as in the
             // case of more than one transition point for a segment,
             // there is no guarantee that this algorithm will find them
@@ -1294,11 +1294,11 @@ MgCoordinateCollection* MgSpatialUtility::StringClipPhaseOne (MgCoordinateIterat
             // Determine the end points of the polygon segment.
             plyFromPoint = plyToPoint;
             plyToPoint = itrPolygon->GetCurrent ();
-            
+
             // Determine the relationship of the current line string segment
             // with the current polygon segment.
             status = SegmentIntersection (intersection,plyFromPoint,plyToPoint,segFromPoint,segToPoint,magnitude);
-            
+
             // Disect the large amount of information embedded in the
             // status return.
             segmentStatus   = status & MgSpatialUtilityStatus::SegmentStatusMask;
@@ -1355,7 +1355,7 @@ MgCoordinateCollection* MgSpatialUtility::StringClipPhaseOne (MgCoordinateIterat
                 // We need to do something with collinear lines, sometimes.  The rather
                 // verbose comments were necessary for the author to keep track of what
                 // can/might/could happen and what to do about each possible situation.
-                
+
                 // The sixteen cases are:
                 //  0000  -> DO NOTHING!! There is no overlap, the segments are disjoint.
                 //  0001  -> DO NOTHING!! Not possible.
@@ -1367,7 +1367,7 @@ MgCoordinateCollection* MgSpatialUtility::StringClipPhaseOne (MgCoordinateIterat
                 //  0111  -> Insert segment 1 end point, overlap ends at segment 1 end point.
                 //  1000  -> DO NOTHING!! Not possible.
                 //  1001  -> Insert segment 1 start point, overlap beginns in the middle of segment 2.
-                //  1010  -> DO NOTHING!! Segment 2 is the overlap segment. 
+                //  1010  -> DO NOTHING!! Segment 2 is the overlap segment.
                 //  1011  -> DO NOTHING!! Segment 2 is the overlap segment.
                 //  1100  -> DO NOTHING!! End to end continuous, but no overlap.
                 //  1101  -> Insert segment 1 start point, overlap begins in the middle of segment 2.
@@ -1424,7 +1424,7 @@ MgCoordinateCollection* MgSpatialUtility::StringClipPhaseOne (MgCoordinateIterat
                                                                        rStringPointNotDetermined,
                                                                        rStringSegNotDetermined);
         xyzmCollection->Add (xyzmPoint);
-        
+
         // The xyzmTemporary collection should go out of scope and be deleted
         // here.
     }
@@ -1443,19 +1443,19 @@ void MgSpatialUtility::StringClipPhaseTwo (MgCoordinateIterator* lineString,
                                            MgCoordinateIterator* itrPolygon)
 {
     INT32 pointStatus;
-    
+
     double rPointStatus;
 
     Ptr<MgCoordinate> outPoint;
     Ptr<MgCoordinate> xyzmPoint;
-    
+
     MgGeometryFactory mgFactory;
- 
+
     Ptr<MgCoordinateXY> xyPoint = new MgCoordinateXY ();
-    
+
     // Compute an outpoint.
-    outPoint = MgSpatialUtility::PointOutsidePolygon (itrPolygon);   
-    
+    outPoint = MgSpatialUtility::PointOutsidePolygon (itrPolygon);
+
     lineString->Reset ();
     while (lineString->MoveNext ())
     {
@@ -1512,7 +1512,7 @@ void MgSpatialUtility::StringClipPhaseThree (MgCoordinateIterator* lineString,
     Ptr<MgCoordinate> nextPoint;
 
     xyPoint = new MgCoordinateXY ();
-    
+
     lineString->Reset ();
     lineString->MoveNext ();
     nextPoint = lineString->GetCurrent ();
@@ -1520,7 +1520,7 @@ void MgSpatialUtility::StringClipPhaseThree (MgCoordinateIterator* lineString,
     {
         currentPoint = nextPoint;
         nextPoint = lineString->GetCurrent ();
-        
+
         currentStatus = static_cast<INT32>(currentPoint->GetM());
         nextStatus    = static_cast<INT32>(nextPoint->GetM());
 
@@ -1575,7 +1575,7 @@ void MgSpatialUtility::StringClipPhaseThree (MgCoordinateIterator* lineString,
             }
         }
          rSegStatus = static_cast<double>(segStatus) + 0.01;
-        currentPoint->SetZ (rSegStatus);       
+        currentPoint->SetZ (rSegStatus);
     }
 }
 
@@ -1603,7 +1603,7 @@ MgLineStringCollection* MgSpatialUtility::StringClipPhaseFour (MgCoordinateItera
     Ptr<MgCoordinate> nextPoint;
     Ptr<MgCoordinateCollection> curCollection;
     Ptr<MgLineStringCollection> lineCollection;
-    
+
     MgGeometryFactory mgFactory;
 
     curCollection = new MgCoordinateCollection ();

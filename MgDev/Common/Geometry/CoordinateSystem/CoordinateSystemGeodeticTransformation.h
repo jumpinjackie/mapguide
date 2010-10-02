@@ -25,9 +25,9 @@
 ////////////////////////////////////////////////////////////////
 /// \brief
 /// An instance of this class allow a caller do perform a geodetic transformation (datum shift).
-/// That is, this class does not operate on coordinate system level, but rather on 
+/// That is, this class does not operate on coordinate system level, but rather on
 /// datum level.
-/// 
+///
 class MgCoordinateSystemGeodeticTransformation : public MgGuardDisposable
 {
     DECLARE_CLASSNAME(MgCoordinateSystemGeodeticTransformation)

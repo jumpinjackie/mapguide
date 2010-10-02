@@ -40,7 +40,7 @@ PUBLISHED_API:
     /// \return
     /// Returns true, if this parameter object is considered valid. Otherwise false.
     virtual bool IsValid() = 0;
-    
+
     ////////////////////////////////////////////////////////////////
     /// \brief
     /// Checks, whether this transformation object is protected, i.e. any attempts to change its

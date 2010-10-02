@@ -398,8 +398,8 @@ void MgMap::Create(MgResourceService* resourceService, MgResourceIdentifier* map
     }
 
     // Now that we've added all the layers (dynamic and base map) to the m_layers collection,
-	// bulk load the identity properties for all layers
-	Ptr<MgSiteConnection> siteConn;
+    // bulk load the identity properties for all layers
+    Ptr<MgSiteConnection> siteConn;
     if (m_siteConnection.p != NULL)
     {
         siteConn = SAFE_ADDREF((MgSiteConnection*)m_siteConnection);

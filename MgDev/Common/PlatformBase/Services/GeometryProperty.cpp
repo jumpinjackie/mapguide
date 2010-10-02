@@ -125,7 +125,7 @@ void MgGeometryProperty::ToXml(string &str, bool includeType, string rootElmName
     if (!this->IsNull())
     {
         string valueXml = "";
-        try 
+        try
         {
             valueXml += "<Value>";
             Ptr<MgByteReader> byteReader = this->GetValue();

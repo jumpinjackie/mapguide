@@ -62,7 +62,7 @@ void CCoordinateSystemGeodeticPathElement::Reset(const cs_GeodeticPathElement_* 
     cs_GeodeticPathElement_* tempPathElement = (cs_GeodeticPathElement_*) CS_malc(sizeof(cs_GeodeticPathElement_));
     if (NULL == tempPathElement)
         throw new MgOutOfMemoryException(L"CCoordinateSystemGeodeticPathElement.Reset", __LINE__, __WFILE__, NULL, L"", NULL);
-    
+
     MG_TRY()
 
     this->CleanupInstanceVariables();
@@ -89,7 +89,7 @@ bool CCoordinateSystemGeodeticPathElement::IsValid()
 
     size_t transformNameLength = strlen(this->pathElement->geodeticXformName);
     _ASSERT(transformNameLength < sizeof(this->pathElement->geodeticXformName)); //how comes?
-    
+
     //TODO: put transformNameLength 64 in cs_map.h
     if (0 == transformNameLength || transformNameLength >= sizeof(this->pathElement->geodeticXformName))
         return false;

@@ -338,7 +338,7 @@ void CCoordinateSystemCategory::SetName(CREFSTRING sName)
     {
         throw new MgOutOfMemoryException(L"MgCoordinateSystemCategory.SetName", __LINE__, __WFILE__, NULL, L"", NULL);
     }
-    
+
     //assign the name to our internal [TNameStruct]
     m_categoryName = pName;
 

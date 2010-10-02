@@ -62,7 +62,7 @@ void CCoordinateSystemGeodeticPath::Reset()
 {
     this->CleanupInstanceVariables();
     this->pathDefinition = (cs_GeodeticPath_*)CS_malc(sizeof(cs_GeodeticPath_));
-    
+
     if (NULL == this->pathDefinition)
         throw new MgOutOfMemoryException(L"CCoordinateSystemGeodeticPath.Initialize", __LINE__, __WFILE__, NULL, L"", NULL);
 
@@ -72,7 +72,7 @@ void CCoordinateSystemGeodeticPath::Reset()
 void CCoordinateSystemGeodeticPath::Initialize(const cs_GeodeticPath_& pathDef)
 {
     this->Reset();
-    
+
     *this->pathDefinition = pathDef;
 }
 
@@ -168,14 +168,14 @@ MgDisposableCollection* CCoordinateSystemGeodeticPath::GetPathElements()
 
         Ptr<CCoordinateSystemGeodeticPathElement> mgPathElement =
             new CCoordinateSystemGeodeticPathElement(&pathElement, this->IsProtected());
-        
+
         //the elements will be released when the collection is released
         pathElements->Add(mgPathElement);
     }
 
     return pathElements.Detach();
 }
-   
+
 void CCoordinateSystemGeodeticPath::SetPathElements(MgDisposableCollection* pathElements)
 {
     VERIFY_INITIALIZED(L"CCoordinateSystemGeodeticPath.SetPathElements");
