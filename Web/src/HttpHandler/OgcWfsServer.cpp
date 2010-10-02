@@ -263,7 +263,7 @@ bool MgOgcWfsServer::ValidateGetCapabilitiesRequest()
                         bSupported = true;
                         break;
                     }
-                }    
+                }
             }
         }
         if(!bSupported)
@@ -288,8 +288,8 @@ bool MgOgcWfsServer::ValidateDescribeFeatureTypeRequest()
         return false;
     }
 
-    // If all the validation passed, we add the FeatureTypeList into definition to 
-    // make ProcedureEnumFeatureTypes happy. 
+    // If all the validation passed, we add the FeatureTypeList into definition to
+    // make ProcedureEnumFeatureTypes happy.
     AddDefinition(kpszDefinitionSectionFeatureTypeList,kpszOmittedValue);
 
     return true;
@@ -330,7 +330,7 @@ bool MgOgcWfsServer::ValidateGetFeatureRequest()
                         bSupported = true;
                         break;
                     }
-                }    
+                }
             }
         }
         if(!bSupported)
@@ -474,7 +474,7 @@ bool MgOgcWfsServer::ProcessOtherInstruction(CREFSTRING sProc,MgXmlProcessingIns
 void MgOgcWfsServer::ProcedureEnumFeatureTypes(MgXmlProcessingInstruction& PIEnum)
 {
     // OGC CITE: Test wfs:wfs-1.1.0-Basic-GetCapabilities-tc19.2 (s0012/d1e34887_1/d1e732_1/d1e25171_1/d1e949_1)
-    // Assertion: 
+    // Assertion:
     // The response to a GetCapabilities request that includes a sections parameter
     // listing optional elements shall include only the requested elements in the
     // response entity.
@@ -492,7 +492,7 @@ void MgOgcWfsServer::ProcedureEnumFeatureTypes(MgXmlProcessingInstruction& PIEnu
     ProcessExpandableTextIntoString(sSubset,sSubset);
 
     int iNum = 0;
-    
+
     if(NULL != m_pFeatures)
     {
         while(m_pFeatures->Next())
@@ -533,7 +533,7 @@ void MgOgcWfsServer::ProcedureEnumFeatures(MgXmlProcessingInstruction& PIEnum)
             CDictionaryStackFrame ForEachFeature(this);
 
             m_pFeatureSet->GenerateDefinitions(*m_pTopOfDefinitions);
-            
+
             if(IsIterationInSubset(++iNum,sSubset,kpszPiDefinitionFeatureIteration) && (*m_pTopOfDefinitions)[L"Feature.OuterXml"] )
             {
                 ProcessExpandableText(sFormat);

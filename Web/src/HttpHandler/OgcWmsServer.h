@@ -93,7 +93,7 @@ private:
     bool ValidateGetFeatureInfoParameters();
     bool ValidateMapParameters();
     bool ValidateMapParameters(MgStringCollection* queryableLayers);
-    
+
     // Hetp method to get WMS request version
     STRING GetRequestVersion();
 

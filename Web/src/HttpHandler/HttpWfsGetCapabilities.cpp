@@ -135,7 +135,7 @@ void MgHttpWfsGetCapabilities::AcquireValidationData(MgOgcServer* ogcServer)
 void MgHttpWfsGetCapabilities::InitializeRequestParameters(MgOgcWfsServer& oServer)
 {
     // OGC CITE: Test wfs:wfs-1.1.0-Basic-GetCapabilities-tc19.2 (s0012/d1e34887_1/d1e732_1/d1e25171_1/d1e949_1)
-    // Assertion: 
+    // Assertion:
     // The response to a GetCapabilities request that includes a sections parameter
     // listing optional elements shall include only the requested elements in the
     // response entity.
@@ -143,7 +143,7 @@ void MgHttpWfsGetCapabilities::InitializeRequestParameters(MgOgcWfsServer& oServ
     if(pszSections)
     {
         STRING sSections = MgUtil::ToLower(STRING(pszSections));
-        
+
         if(sSections.find(kpszServiceIdentification) != STRING::npos)
         {
             oServer.SetGetCapabilitiesSection(kpszDefinitionSectionServiceIdentification);

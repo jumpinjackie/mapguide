@@ -83,7 +83,7 @@ void MgHttpWfsDescribeFeatureType::Execute(MgHttpResponse& hResponse)
     {
         featureTypeList = MgStringCollection::ParseCollection(sFeatureTypes, L",");
     }
-    
+
     // Determine required output format
     CPSZ pszOutputFormat = Wfs.RequestParameter(MgHttpResourceStrings::reqWfsOutputFormat.c_str());
     STRING sOutputFormat = pszOutputFormat? pszOutputFormat : _("");

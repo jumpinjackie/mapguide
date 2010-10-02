@@ -293,7 +293,7 @@ bool IsOgcRequest(MgHttpRequestParam* params)
     MgConfiguration* cfg = MgConfiguration::GetInstance();
     bool bCITEWfsEnabled = false;
     cfg->GetBoolValue(MgConfigProperties::OgcPropertiesSection, MgConfigProperties::CITEWfsEnabled, bCITEWfsEnabled, MgConfigProperties::DefaultCITEWfsEnabled);
-    
+
     return bCITEWfsEnabled;
 }
 
@@ -392,9 +392,9 @@ bool AuthenticateOgcRequest(MgHttpRequestParam* params)
     MgConfiguration* cfg = MgConfiguration::GetInstance();
 
     // OGC CITE: Test wfs:wfs-1.1.0-Basic-GetCapabilities-tc16.2 (s0012/d1e34887_1/d1e732_1/d1e25171_1/d1e903_1)
-    // Assertion: 
-    // In the event that a GetCapabilities request cannot be processed for any reason, 
-    // the response entity shall include an exception report. The exception code must 
+    // Assertion:
+    // In the event that a GetCapabilities request cannot be processed for any reason,
+    // the response entity shall include an exception report. The exception code must
     // be one of those listed in Table 5.
     if(!isWms && !isWfs)
     {
