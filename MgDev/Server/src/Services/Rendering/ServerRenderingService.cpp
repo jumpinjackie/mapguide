@@ -963,7 +963,7 @@ MgByteReader* MgServerRenderingService::RenderMapInternal(MgMap* map,
                     if (!tempInstance.get())
                         continue;
                     if (((map->GetWatermarkUsage() & MgMap::Viewer) != 0
-                        && (tempInstance->GetUsage() & WatermarkInstance::Viewer) == 0) 
+                        && (tempInstance->GetUsage() & WatermarkInstance::Viewer) == 0)
                         || ((map->GetWatermarkUsage() & MgMap::WMS) != 0
                         && (tempInstance->GetUsage() & WatermarkInstance::WMS) == 0))
                         continue;
@@ -998,7 +998,7 @@ MgByteReader* MgServerRenderingService::RenderMapInternal(MgMap* map,
                     continue;
 
                 ldf.reset(MgLayerBase::GetLayerDefinition(mapLayer->GetLayerResourceContent()));
-                
+
                 WatermarkInstanceCollection* layerWatermarks = ldf->GetWatermarks();
                 for (int j=layerWatermarks->GetCount()-1; j>=0; j--)
                     tempWatermarkInstances.Adopt(layerWatermarks->OrphanAt(j));
@@ -1008,7 +1008,7 @@ MgByteReader* MgServerRenderingService::RenderMapInternal(MgMap* map,
                     if (!tempInstance.get())
                         continue;
                     if (((map->GetWatermarkUsage() & MgMap::Viewer) != 0
-                        && (tempInstance->GetUsage() & WatermarkInstance::Viewer) == 0) 
+                        && (tempInstance->GetUsage() & WatermarkInstance::Viewer) == 0)
                         || ((map->GetWatermarkUsage() & MgMap::WMS) != 0
                         && (tempInstance->GetUsage() & WatermarkInstance::WMS) == 0))
                         continue;

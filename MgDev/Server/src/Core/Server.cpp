@@ -727,9 +727,9 @@ int MgServer::open(void *args)
         {
             report_status(SERVICE_RUNNING);
 
-            // By default the executeable is the thread owner, but when this is being run as a 
+            // By default the executeable is the thread owner, but when this is being run as a
             // service the Windows Service Control Manager becomes the default thread owner.
-            // We need to make this thread the owner of the ACE reactor because this is a 
+            // We need to make this thread the owner of the ACE reactor because this is a
             // requirement of the ACE SELECT reactor.
             ACE_Reactor::instance()->owner(ACE_Thread::self());
         }

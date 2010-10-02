@@ -1286,7 +1286,7 @@ MgByteReader* MgServerFeatureService::DescribeWfsFeatureType(MgResourceIdentifie
 /// retrieve schema information. If this collection is null or empty, information
 /// is returned for all feature classes.
 /// \param outputFormat (String/string)
-/// A string identifying the output format of 
+/// A string identifying the output format of
 /// the retrieved schema information.
 /// The supported values of output format are specified in OpenGIS Web Feature Service (WFS) Implementation Specification - section 8.2
 /// http://portal.opengeospatial.org/files/?artifact_id=8339
@@ -1728,7 +1728,7 @@ MgClassDefinitionCollection* MgServerFeatureService::GetIdentityProperties(MgRes
 /// \param wfsVersion (String/string)
 /// A string identifying the wfs version
 /// \param outputFormat (String/string)
-/// A string identifying the output format of 
+/// A string identifying the output format of
 /// the retrieved feature information.
 /// The supported values of output format are specified in OpenGIS Web Feature Service (WFS) Implementation Specification - section 9.2
 /// http://portal.opengeospatial.org/files/?artifact_id=8339
@@ -1746,9 +1746,9 @@ MgClassDefinitionCollection* MgServerFeatureService::GetIdentityProperties(MgRes
 /// MgInvalidArgumentException
 MgByteReader* MgServerFeatureService::GetWfsFeature(MgResourceIdentifier* fs,
                                                      CREFSTRING featureClass,
-                                                     MgStringCollection* propNames, 
-                                                     CREFSTRING srs, 
-                                                     CREFSTRING wfsFilter, 
+                                                     MgStringCollection* propNames,
+                                                     CREFSTRING srs,
+                                                     CREFSTRING wfsFilter,
                                                      INT32 maxFeatures,
                                                      CREFSTRING wfsVersion,
                                                      CREFSTRING outputFormat,
@@ -1830,7 +1830,7 @@ MgByteReader* MgServerFeatureService::GetWfsFeature(MgResourceIdentifier* fs,
                 if(prop->GetPropertyType() == MgFeaturePropertyType::GeometricProperty)
                 {
                     STRING ogcFilter = MgUtil::ReplaceString(wfsFilter,GEOM_PROP_TAG.c_str(),prop->GetName().c_str());
-                    
+
                     if(!fdoFilterString.empty())
                     {
                         fdoFilterString += L" OR ";
@@ -1839,7 +1839,7 @@ MgByteReader* MgServerFeatureService::GetWfsFeature(MgResourceIdentifier* fs,
                 }
             }
         }
-       
+
         options->SetFilter(fdoFilterString);
     }
 
@@ -1854,7 +1854,7 @@ MgByteReader* MgServerFeatureService::GetWfsFeature(MgResourceIdentifier* fs,
         {
             STRING sSortByProperty = sSortCriteria.substr(0, pos);
             orderByProperties->Add(sSortByProperty);
-            
+
             STRING sSortOption  = MgUtil::ToUpper(sSortCriteria.substr(pos+1));
             if(sSortOption == L"D")
             {
@@ -1890,7 +1890,7 @@ MgByteReader* MgServerFeatureService::GetWfsFeature(MgResourceIdentifier* fs,
     flags->SetMemberName(L"featureMember");
     flags->SetMemberUri(L"http://www.opengis.net/gml");
 
-    // set schemaLocations 
+    // set schemaLocations
 
     // gml schema location and version
     if(L"text/xml; subtype=gml/2.1.2" == outputFormat)
@@ -1908,7 +1908,7 @@ MgByteReader* MgServerFeatureService::GetWfsFeature(MgResourceIdentifier* fs,
         throw new MgInvalidArgumentException(L"MgServerFeatureService.GetWfsFeature",
         __LINE__, __WFILE__, NULL, L"", NULL);
     }
-    
+
     // wfs schema location
     if(L"1.0.0" == wfsVersion)
     {
@@ -1923,16 +1923,16 @@ MgByteReader* MgServerFeatureService::GetWfsFeature(MgResourceIdentifier* fs,
         throw new MgInvalidArgumentException(L"MgServerFeatureService.GetWfsFeature",
         __LINE__, __WFILE__, NULL, L"", NULL);
     }
-    
+
     // default namespace schema location
     flags->SetSchemaLocation(L"http://www.mynamespace.com/myns", L"http://www.mynamespace.com/myns/myns.xsd");
-    
+
     // set the default namespace
     if(!namespacePrefix.empty())
     {
         STRING defaultNamespace(L"http://fdo.osgeo.org/schemas/feature/");
         defaultNamespace += namespacePrefix;
-        
+
         flags->SetDefaultNamespace(defaultNamespace.c_str());
     }
     else
