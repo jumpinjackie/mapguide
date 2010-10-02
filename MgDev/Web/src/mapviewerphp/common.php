@@ -252,33 +252,33 @@ function ValidateColorString($proposedColorString)
 
 function GetParameter($params, $paramName)
 {
-	$paramValue = "";
+    $paramValue = "";
 
-	if(isset($params[$paramName]))
-	{
-		$paramValue = $params[$paramName];
-	}
-	return $paramValue;
+    if(isset($params[$paramName]))
+    {
+        $paramValue = $params[$paramName];
+    }
+    return $paramValue;
 }
 
 function GetIntParameter($params, $paramName)
 {
-	$paramValue = 0;
-	if(isset($params[$paramName]) && is_numeric($params[$paramName]))
-	{
-		$paramValue = intval($params[$paramName]);
-	}
-	return $paramValue;
+    $paramValue = 0;
+    if(isset($params[$paramName]) && is_numeric($params[$paramName]))
+    {
+        $paramValue = intval($params[$paramName]);
+    }
+    return $paramValue;
 }
 
 function GetDoubleParameter($params, $paramName)
 {
-	$paramValue = 0.0;
-	if(isset($params[$paramName]) && is_numeric($params[$paramName]))
-	{
-		$paramValue = doubleval($params[$paramName]);
-	}
-	return $paramValue;
+    $paramValue = 0.0;
+    if(isset($params[$paramName]) && is_numeric($params[$paramName]))
+    {
+        $paramValue = doubleval($params[$paramName]);
+    }
+    return $paramValue;
 }
 
 ?>

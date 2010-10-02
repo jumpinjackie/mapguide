@@ -17,20 +17,20 @@
 
     include 'common.php';
     include 'constants.php';
-    
+
     $locale = GetDefaultLocale();
     $scaleDenominator;
     $annotations;
-    
+
     $args = GetRequestMethod();
     GetParameters($args);
 
     $templ = file_get_contents("../viewerfiles/QuickPlotPreviewInner.templ");
     SetLocalizedFilesPath(GetLocalizationPath());
-    
+
     // Localize the page
     $templ = Localize($templ, $locale, GetClientOS());
-    
+
     // Set some annotation labels in the page by replacing the placeholders in the html code
     $templ = str_replace(array_keys($annotations), array_values($annotations), $templ);
     // Set the date annotation according to its format mask
@@ -42,7 +42,7 @@
         $date  = date($mask);
         $templ = preg_replace($pattern, $date, $templ);
     }
-    
+
     $jsPath    = "../viewerfiles/";
     print sprintf($templ, $jsPath);
 ?>
@@ -51,10 +51,10 @@
 function GetParameters($params)
 {
     global $scaleDenominator, $annotations;
-    
+
     $scaleDenominator = intval($params["scale_denominator"]);
     $annotations = array();
-    
+
     // The parameters whose name matches this pattern will be treated as annotation
     $pattern = "/^\{field:.+\}$/i";
     foreach ($params as $key => $value)
@@ -64,7 +64,7 @@ function GetParameters($params)
             $annotations[$key] = htmlspecialchars(urlDecode($value), ENT_QUOTES);
         }
     }
-    
+
     // The scale annotation
     $annotations["{scale}"] = "1 : " . $scaleDenominator;
 }

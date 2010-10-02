@@ -173,7 +173,7 @@ function GetParameters($params)
     $hlTgt = ValidateHyperlinkTargetValue(GetParameter($params, 'HLTGT'));
     $hlTgtName = ValidateFrameName(GetParameter($params, 'HLTGTNAME'));
     $mapDefinition = ValidateResourceId(GetParameter($params, 'MAPDEFINITION'));
-	$showLegend = (GetIntParameter($params, 'SHOWLEGEND') == 1);
+    $showLegend = (GetIntParameter($params, 'SHOWLEGEND') == 1);
     $showProperties = (GetIntParameter($params, 'SHOWPROP') == 1);
     $showSlider = (GetIntParameter($params, 'SHOWSLIDER') == 1);
     $infoWidth = GetIntParameter($params, 'INFOWIDTH');

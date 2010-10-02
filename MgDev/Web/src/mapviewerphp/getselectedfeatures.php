@@ -4,9 +4,9 @@
 
 TODO:
 
-- Use the property mapping. This will have to be old-fashioned parsing the <PropertyMapping> elements 
+- Use the property mapping. This will have to be old-fashioned parsing the <PropertyMapping> elements
 of the layer definition. I really wanted to use MgSelection::GetSelectedFeatures(layer, class, true) but realised
-that unless the geometry is mapped, you're not going to see it in the Feature Reader (ie. No zoom point). Right now 
+that unless the geometry is mapped, you're not going to see it in the Feature Reader (ie. No zoom point). Right now
 it is returning all properties.
 
 - I know of a few features in the Sheboygan Dataset that trip up the JSON response. Need to find out of addslashes() fixes this.
@@ -24,31 +24,31 @@ it is returning all properties.
 class SelectionSet
 {
     private $layers;
-    
+
     public function __construct()
     {
         $this->layers = array();
     }
-    
+
     public function AddFeature($feat)
     {
         $layerName = $feat->layerName;
         if(!array_key_exists($layerName, $this->layers))
             $this->layers[$layerName] = array();
-            
+
         array_push($this->layers[$layerName], $feat);
     }
-    
+
     public function GetLayers()
     {
         return array_keys($this->layers);
     }
-    
+
     public function GetFeatures($layerName)
     {
         if(array_key_exists($layerName, $this->layers))
             return $this->layers[$layerName];
-        
+
         return null;
     }
 }
@@ -75,27 +75,27 @@ class Feature
 {
     public $layerName;
     public $zoom;
-    
+
     private $properties;
-    
+
     public function __construct($layerName)
     {
         $this->layerName = $layerName;
         $this->properties = array();
     }
-    
+
     public function AddProperty($prop)
     {
         $this->properties[$prop->name] = $prop;
     }
-    
+
     public function GetProperties()
     {
         return $this->properties;
     }
 }
 
-	include 'common.php';
+    include 'common.php';
     include 'constants.php';
 
     $mapName = "";
@@ -103,17 +103,17 @@ class Feature
     $locale = "";
 
     GetRequestParameters();
-    
+
     if (null == $locale || strlen($locale) == 0)
         $locale = GetDefaultLocale();
-        
+
     setlocale(LC_ALL, $locale);
-   
-	try
-	{
-		InitializeWebTier();
-		
-		$cred = new MgUserInformation($sessionId);
+
+    try
+    {
+        InitializeWebTier();
+
+        $cred = new MgUserInformation($sessionId);
         $cred->SetClientIp(GetClientIp());
         $cred->SetClientAgent(GetClientAgent());
 
@@ -127,30 +127,30 @@ class Feature
         //
         $map = new MgMap($site);
         $map->Open($mapName);
-		
-		// Create the selection set
+
+        // Create the selection set
         $selection = new MgSelection($map);
         $selection->Open($resourceSrvc, $mapName);
-		
-		$layers = $selection->GetLayers();
+
+        $layers = $selection->GetLayers();
         if($layers != null)
         {
             $nLayers = $layers->GetCount();
             $agfRW = new MgAgfReaderWriter();
-            
+
             $selectionSet = new SelectionSet();
-            
+
             for ($i = 0; $i < $nLayers; $i++) {
                 $lyr = $layers->GetItem($i);
                 $layerName = $lyr->GetName();
-                
+
                 //FB::log("Layer Name: " . $lyr->GetName());
-                
+
                 $featResId = new MgResourceIdentifier($lyr->GetFeatureSourceId());
                 $class = $lyr->GetFeatureClassName();
-                
+
                 $queryOptions = new MgFeatureQueryOptions();
-                
+
                 $mappings = GetLayerPropertyMappings($resourceSrvc, $lyr);
                 //FB::log("Property Mappings for Layer: $layerName");
                 foreach($mappings as $name => $value) {
@@ -159,27 +159,27 @@ class Feature
                 }
                 $geomName = $lyr->GetFeatureGeometryName();
                 $queryOptions->AddFeatureProperty($geomName);
-                
+
                 $filter = $selection->GenerateFilter($lyr, $class);
                 $queryOptions->SetFilter($filter);
                 $fr = $lyr->SelectFeatures($queryOptions);
-                
+
                 $clsDef = $fr->GetClassDefinition();
                 $props = $clsDef->GetProperties();
-                
+
                 //FB::log("Geometry: $geomName");
-                
+
                 while($fr->ReadNext())
                 {
                     $feat = new Feature($layerName);
                     $zoom = null;
-                    
+
                     for ($k = 0; $k < $props->GetCount(); $k++)
                     {
                         $prop = $props->GetItem($k);
                         $propName = $prop->GetName();
                         $propType = $fr->GetPropertyType($propName);
-                        
+
                         //We only care about mapped properties or geometry properties
                         if (array_key_exists($propName, $mappings) || $propType == MgPropertyType::Geometry)
                         {
@@ -192,11 +192,11 @@ class Feature
                                     $agf = $fr->GetGeometry($propName);
                                     $geom = $agfRW->Read($agf);
                                     $pt = $geom->GetCentroid()->GetCoordinate();
-                                    
+
                                     $zoom = new ZoomPoint();
                                     $zoom->x = $pt->GetX();
                                     $zoom->y = $pt->GetY();
-                                    
+
                                     $feat->zoom = $zoom;
                                     //FB::log("zoom: (".$zoom->x.",".$zoom->y.")");
                                 }
@@ -205,28 +205,28 @@ class Feature
                                     $value = GetPropertyValueFromFeatureReader($fr, $agfRW, $propType, $propName);
                                 }
                             }
-                        
+
                             if (array_key_exists($propName, $mappings))
                             {
                                 $fp = new FeatureProperty();
                                 $fp->name = $mappings[$propName];
                                 $fp->value = $value;
-                                
+
                                 $feat->AddProperty($fp);
                             }
                         }
                     }
-                    
+
                     $c = count($feat->GetProperties());
                     //FB::log("Selected feature processed ($c)");
-                    
+
                     $selectionSet->AddFeature($feat);
                 }
                 $fr->Close();
             }
-            
+
             //Now output the selection set
-            
+
             header("Content-Type: application/json");
             header("X-JSON: true");
             echo GetJson($selectionSet);
@@ -238,7 +238,7 @@ class Feature
         header("X-JSON: true");
         echo JsonifyError($e->getMessage(), $e->getTraceAsString());
     }
-	catch(MgException $e)
+    catch(MgException $e)
     {
         header("Content-Type: application/json");
         header("X-JSON: true");
@@ -249,60 +249,60 @@ function GetJson($selectionSet)
 {
     if($selectionSet == null)
         return "";
-        
+
     //FB::log("Processing JSON response");
     /*
-	A sample of the JSON output this method will produce:
-	
-	
-	{
-		"Layer1" : [ 
-			{ 
-				'values' { "name" : "name1" , "value" : "value1" }, 
-				'zoom' : { x: num1, y: num2 } 
-			} , 
-			..,
-			..,
-			..,
-		],
-		"Layer2" : [ 
-			{ 
-				'values' { "name" : "name2" , "value" : "value2" }, 
-				'zoom' : { x: num1, y: num2 } 
-			} , 
-			..,
-			..,
-			..,
-		]
-	}
-	*/
-    
+    A sample of the JSON output this method will produce:
+
+
+    {
+        "Layer1" : [
+            {
+                'values' { "name" : "name1" , "value" : "value1" },
+                'zoom' : { x: num1, y: num2 }
+            } ,
+            ..,
+            ..,
+            ..,
+        ],
+        "Layer2" : [
+            {
+                'values' { "name" : "name2" , "value" : "value2" },
+                'zoom' : { x: num1, y: num2 }
+            } ,
+            ..,
+            ..,
+            ..,
+        ]
+    }
+    */
+
     $layers = $selectionSet->GetLayers();
     $totalLayers = array(); //The data portion of the JSON response
-    
+
     //FB::log("Layers in selection set: ".count($layers));
-    
+
     for ($i = 0; $i < count($layers); $i++)
-    {   
+    {
         $layerName = $layers[$i];
-		
+
         $features = $selectionSet->GetFeatures($layerName);
-        
+
         //FB::log("Features: ".$features);
-        
+
         if($features != null)
         {
             //FB::log("Processing layer: $layerName");
-        
+
             $totalFeaturesOnLayer = array();
-            
+
             if (count($features) > 0)
             {
                 for ($j = 0; $j < count($features); $j++)
                 {
                     $feat = $features[$j];
                     $featureProperties = array();
-                    
+
                     $fps = $feat->GetProperties();
                     foreach($fps as $fp)
                     {
@@ -316,18 +316,18 @@ function GetJson($selectionSet)
                         array_push($totalFeaturesOnLayer, "{\"values\" : [".join(",", $featureProperties)."], \"zoom\" : { \"x\": ".$feat->zoom->x.", \"y\": ".$feat->zoom->y." } }");
                     else
                         array_push($totalFeaturesOnLayer, "{\"values\" : [".join(",", $featureProperties)."], \"zoom\" : null }");
-                        
+
                     //FB::log("Feature processed on layer: $layerName");
                 }
             }
-            
+
             array_push($totalLayers, "\"$layerName\" : [" . join(", ", $totalFeaturesOnLayer) . "]");
             //FB::log("Selected features on layer added to final JSON response");
         }
     }
-    
+
     //FB::log("Selection layer count: ".count($totalLayers));
-    
+
     $result = "{" . join(",",$totalLayers) . "}";
     //return json_encode($result);
     return $result;
