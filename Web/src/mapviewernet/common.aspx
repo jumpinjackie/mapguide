@@ -191,7 +191,7 @@ String ValidateSessionId(String proposedSessionId)
 {
     // 00000000-0000-0000-0000-000000000000_aa_00000000000000000000
     String validSessionId = "";
-    if(proposedSessionId != null && System.Text.RegularExpressions.Regex.IsMatch(proposedSessionId, 
+    if(proposedSessionId != null && System.Text.RegularExpressions.Regex.IsMatch(proposedSessionId,
         "^[A-Fa-f0-9]{8}-[A-Fa-f0-9]{4}-[A-Fa-f0-9]{4}-[A-Fa-f0-9]{4}-[A-Fa-f0-9]{12}_[A-Za-z]{2}_[A-Fa-f0-9]{20}$"))
     {
         validSessionId = proposedSessionId;
@@ -203,7 +203,7 @@ String ValidateLocaleString(String proposedLocaleString)
 {
     // aa or aa-aa
     String validLocaleString = GetDefaultLocale(); // Default
-    if(proposedLocaleString != null && (System.Text.RegularExpressions.Regex.IsMatch(proposedLocaleString, "^[A-Za-z]{2}$") || 
+    if(proposedLocaleString != null && (System.Text.RegularExpressions.Regex.IsMatch(proposedLocaleString, "^[A-Za-z]{2}$") ||
         System.Text.RegularExpressions.Regex.IsMatch(proposedLocaleString, "^[A-Za-z]{2}-[A-Za-z]{2}$")))
     {
         validLocaleString = proposedLocaleString;
@@ -241,7 +241,7 @@ String ValidateIntegerString(String proposedNumberString)
     {
         validNumberString = proposedNumberString;
     }
-    return validNumberString;    
+    return validNumberString;
 }
 
 String ValidateResourceId(String proposedResourceId)
@@ -272,7 +272,7 @@ String ValidateMapName(String proposedMapName)
 String ValidateColorString(String proposedColorString)
 {
     String validColorString = "000000";
-    if (proposedColorString != null && 
+    if (proposedColorString != null &&
         System.Text.RegularExpressions.Regex.IsMatch(proposedColorString, "^[A-Fa-f0-9]{6}$"))
     {
         validColorString = proposedColorString;

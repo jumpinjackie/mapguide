@@ -1,4 +1,4 @@
-﻿<%@ Page Language="C#" %>
+<%@ Page Language="C#" %>
 <%@ Import Namespace="System" %>
 <%@ Import Namespace="System.IO" %>
 <%@ Import Namespace="System.Collections.Generic" %>
@@ -9,7 +9,7 @@
 <!-- #include File="common.aspx" -->
 
 <script runat="server">
-    
+
     class SelectionSet
     {
         private Dictionary<string, List<Feature>> _layers;
@@ -76,7 +76,7 @@
             return new List<FeatureProperty>(_properties.Values).ToArray();
         }
     }
-    
+
     String mapName;
     String sessionId;
     String locale;
@@ -98,7 +98,7 @@
         }
         return mappings;
     }
-    
+
     String GetPropertyValueFromFeatureReader(MgFeatureReader reader, MgAgfReaderWriter agfRw, int propType, String propName)
     {
         String value = "";
@@ -109,7 +109,7 @@
                 break;
             case MgPropertyType.Byte:
                 value = String.Format(culture, "{0:d}", reader.GetByte(propName));
-                break; 
+                break;
             case MgPropertyType.DateTime:
                 value = GetDateTimeString(reader.GetDateTime(propName)); // yyyy-mm-dd is enforced regardless of locale
                 break;
@@ -135,14 +135,14 @@
                 value = "";
                 break;
         }
-        return value;   
+        return value;
     }
 
     static String GetDateTimeString(MgDateTime value)
     {
         return String.Format("{0}-{1}-{2}", value.Year, value.Month, value.Day);
     }
-    
+
     void GetParameters(NameValueCollection param)
     {
         mapName = param["MAPNAME"];
@@ -157,12 +157,12 @@
         else
             GetParameters(Request.QueryString);
     }
-    
+
     String JsonEscape(String str)
     {
         return EscapeForHtml(str).Replace("\\", "\\\\");
     }
-    
+
     String JsonifyError(Exception ex)
     {
         return "{\"Error\":{\"Message\":\"" + JsonEscape(ex.Message) + "\",\"StackTrace\":\"" + JsonEscape(ex.StackTrace) + "\"}}";
@@ -172,33 +172,33 @@
     {
         /*
         A sample of the JSON output this method will produce:
-        
-        
+
+
         {
-            "Layer1" : [ 
-                { 
-                    'values' { "name" : "name1" , "value" : "value1" }, 
-                    'zoom' : { x: num1, y: num2 } 
-                } , 
+            "Layer1" : [
+                {
+                    'values' { "name" : "name1" , "value" : "value1" },
+                    'zoom' : { x: num1, y: num2 }
+                } ,
                 ..,
                 ..,
                 ..,
             ],
-            "Layer2" : [ 
-                { 
-                    'values' { "name" : "name2" , "value" : "value2" }, 
-                    'zoom' : { x: num1, y: num2 } 
-                } , 
+            "Layer2" : [
+                {
+                    'values' { "name" : "name2" , "value" : "value2" },
+                    'zoom' : { x: num1, y: num2 }
+                } ,
                 ..,
                 ..,
                 ..,
             ]
         }
         */
-        
+
         if (set == null)
             return "";
-        
+
         StringBuilder sb = new StringBuilder();
         //Begin selection set
         sb.Append("{");
@@ -244,22 +244,22 @@
         sb.Append("}");
         return sb.ToString();
     }
-    
+
 </script>
-<% 
+<%
 
     mapName = "";
     sessionId = "";
     locale = "";
 
     GetRequestParameters();
-    
+
     if (String.IsNullOrEmpty(locale))
         locale = GetDefaultLocale();
-        
+
     culture = CultureInfo.GetCultureInfo(locale);
-    
-    //HACK: The default locale (en) resolves to a neutral culture, .net forbids the use of 
+
+    //HACK: The default locale (en) resolves to a neutral culture, .net forbids the use of
     //neutral cultures for formatting purposes, so default to InvariantCulture if the resolved
     //culture is not neutral.
     if (culture.IsNeutralCulture)
@@ -275,7 +275,7 @@
         site.Open(cred);
 
         MgResourceService resSvc = (MgResourceService)site.CreateService(MgServiceType.ResourceService);
-        
+
         MgMap map = new MgMap(site);
         map.Open(mapName);
 
@@ -378,10 +378,10 @@
         Response.Write(JsonifyError(ex));
     }
     catch (Exception ex)
-    { 
+    {
         Response.AddHeader("Content-Type", "application/json");
         Response.AddHeader("X-JSON", "true");
         Response.Write(JsonifyError(ex));
     }
-    
+
 %>
