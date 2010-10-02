@@ -42,9 +42,9 @@ int us;
     GetRequestParameters(request);
 
     String vpath = GetSurroundVirtualPath(request);
-	String jsPath = "../viewerfiles/";
+    String jsPath = "../viewerfiles/";
     String templ = MgLocalizer.Localize(LoadTemplate("/viewerfiles/quickplotpanel.templ"), locale, GetClientOS(request));
-    String[] vals = { 
+    String[] vals = {
                       jsPath,
                       jsPath,
                       String.valueOf(targetType),

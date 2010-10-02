@@ -46,9 +46,9 @@ Hashtable<String, String> annotations = new Hashtable<String, String>();
     MgLocalizer.SetLocalizedFilesPath(getServletContext().getRealPath("/") + "localized/");
     GetRequestParameters(request);
 
-	String jsPath = "../viewerfiles/";
+    String jsPath = "../viewerfiles/";
     String templ = MgLocalizer.Localize(LoadTemplate("/viewerfiles/quickplotpreviewinner.templ"), locale, GetClientOS(request));
-    
+
     for (Enumeration<String> keys = annotations.keys();
          keys.hasMoreElements();)
     {
@@ -64,7 +64,7 @@ Hashtable<String, String> annotations = new Hashtable<String, String>();
     {
         formatString = matcher.group(1);
     }
-    
+
     templ = templ.replaceAll(pattern.toString(), String.format(formatString, Calendar.getInstance()));
     String[] vals = {jsPath};
 
@@ -79,7 +79,7 @@ void GetRequestParameters(HttpServletRequest request)
     mapName = ValidateMapName(GetParameter(request, "MAPNAME"));
     targetType = GetIntParameter(request, "TARGETTYPE");
     us = GetIntParameter(request, "US");
-    
+
     // The parameters whose name matches this pattern will be treated as annotation
     String pattern = "^\\{field:.+\\}$";
     for (Enumeration<String> names = request.getParameterNames();
@@ -92,7 +92,7 @@ void GetRequestParameters(HttpServletRequest request)
             annotations.put(name, EscapeForHtml(request.getParameter(name)));
         }
      }
-    
+
     annotations.put("{scale}", "1 : " + GetParameter(request, "scale_denominator"));
 }
 %>

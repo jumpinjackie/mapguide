@@ -46,7 +46,7 @@ String naPath = "";
 %>
 
 <%
-    
+
     GetRequestParameters(request);
     response.setContentType("image/png");
     ImageIO.write(GenerateMap(printSize), "png", response.getOutputStream());
@@ -61,17 +61,17 @@ void GetRequestParameters(HttpServletRequest request) throws MgException
     rotation  = GetDoubleParameter(request, "rotation");
     printDpi  = GetIntParameter(request, "print_dpi");
     scaleDenominator = GetIntParameter(request, "scale_denominator");
-    
+
     String[] a = GetParameter(request, "paper_size").split(",");
     paperSize  = new Size<Double>(Double.parseDouble(a[0]), Double.parseDouble(a[1]));
     printSize  = new Size<Integer>((int) (paperSize.width / 25.4 * printDpi), (int) (paperSize.height / 25.4 * printDpi));
-    
+
     a = GetParameter(request, "box").split(",");
     captureBox = CreatePolygon(a);
-    
+
     a = GetParameter(request, "normalized_box").split(",");
     normalizedCapture = CreatePolygon(a);
-    
+
     mapAgentPath = GetMapAgentPath(request);
     naPath = getServletContext().getRealPath("viewerfiles/quickplotnortharrow.png");
 }
@@ -80,15 +80,15 @@ MgPolygon CreatePolygon(String[] coordinates) throws MgException
 {
     MgGeometryFactory geometryFactory = new MgGeometryFactory();
     MgCoordinateCollection coordinateCollection = new MgCoordinateCollection();
-    
+
     for (int i = 0; i < coordinates.length; ++i)
     {
         coordinateCollection.Add(geometryFactory.CreateCoordinateXY(Double.parseDouble(coordinates[i]), Double.parseDouble(coordinates[++i])));
     }
-    
+
     coordinateCollection.Add(geometryFactory.CreateCoordinateXY(Double.parseDouble(coordinates[0]), Double.parseDouble(coordinates[1])));
     MgLinearRing linearRing = geometryFactory.CreateLinearRing(coordinateCollection);
-    
+
     return geometryFactory.CreatePolygon(linearRing, null);
 }
 
@@ -99,21 +99,21 @@ BufferedImage GenerateMap(Size<Integer> size) throws MgException, IOException
     siteConnection.Open(userInfo);
     MgResourceService resourceService = (MgResourceService) siteConnection.CreateService(MgServiceType.ResourceService);
     MgRenderingService renderingService = (MgRenderingService) siteConnection.CreateService(MgServiceType.RenderingService);
-    
+
     MgMap map = new MgMap();
     map.Open(resourceService, mapName);
-    
+
     MgSelection selection = new MgSelection(map);
-    
+
     // Caculate the generated picture size
     MgEnvelope envelope = captureBox.Envelope();
     MgEnvelope normalizedE = normalizedCapture.Envelope();
     Size<Double> size1 = new Size<Double>(envelope.GetWidth(), envelope.GetHeight());
     Size<Double> size2 = new Size<Double>(normalizedE.GetWidth(), normalizedE.GetHeight());
-    
+
     Size<Double> toSize = new Size<Double>(size1.width / size2.width * size.width, size1.height / size2.height * size.height);
     MgCoordinate center = captureBox.GetCentroid().GetCoordinate();
-    
+
     // Get the map agent url
     // Get the correct http protocol
     StringBuilder mapAgent = new StringBuilder(mapAgentPath);
@@ -128,11 +128,11 @@ BufferedImage GenerateMap(Size<Integer> size) throws MgException, IOException
             .append("&SETDISPLAYWIDTH=").append(String.valueOf(toSize.width))
             .append("&SETDISPLAYHEIGHT=").append(String.valueOf(toSize.height))
             .append("&CLIP=0");
-            
+
     BufferedImage image  = ImageIO.read(new URL(mapAgent.toString()));
     BufferedImage result = Math.abs(rotation) > Double.MIN_VALUE ? new BufferedImage(size.width, size.height, BufferedImage.TYPE_INT_RGB) : image;
     Graphics2D graphics  = result.createGraphics();
-    
+
     if (Math.abs(rotation) > Double.MIN_VALUE)
     {
         graphics.translate(size.width / 2, size.height / 2);
@@ -141,9 +141,9 @@ BufferedImage GenerateMap(Size<Integer> size) throws MgException, IOException
     }
 
     graphics.dispose();
-    
+
     DrawNorthArrow(result);
-    
+
     return result;
 }
 
@@ -158,7 +158,7 @@ void DrawNorthArrow(BufferedImage image) throws IOException
     BufferedImage na  = ImageIO.read(new File(naPath));
     Rectangle2D rec = new Rectangle2D.Double();
     rec.setRect(0.0, 0.0, na.getWidth(), na.getHeight());
-    
+
     Path2D.Double path = new Path2D.Double();
     path.moveTo(0, 0);
     path.lineTo(na.getWidth(), 0);
@@ -169,7 +169,7 @@ void DrawNorthArrow(BufferedImage image) throws IOException
     transform.rotate(rotation * Math.PI / 180, (double) na.getWidth() / 2, (double) na.getHeight() / 2);
     transform.scale(scaleFactor, scaleFactor);
     path.transform(transform);
-    
+
     rec = path.getBounds2D();
 
     BufferedImage rotatedNA = na;
@@ -186,10 +186,10 @@ void DrawNorthArrow(BufferedImage image) throws IOException
         nag.drawImage(na, new AffineTransformOp(new AffineTransform(), AffineTransformOp.TYPE_BICUBIC), (int) Math.ceil(-na.getWidth() / 2), (int) Math.ceil(-na.getHeight() / 2));
         nag.dispose();
     }
-    
+
     int x = (int) Math.ceil(image.getWidth() - rotatedNA.getWidth() - naMargin / 25.4 * printDpi);;
     int y = (int) Math.ceil(image.getHeight() - rotatedNA.getHeight() - naMargin / 25.4 * printDpi);
-    
+
     Graphics2D graphics = image.createGraphics();
     graphics.drawImage(rotatedNA, new AffineTransformOp(new AffineTransform(), AffineTransformOp.TYPE_BICUBIC), x, y);
     graphics.dispose();
@@ -202,14 +202,14 @@ String GetMapAgentPath(HttpServletRequest request)
     StringBuilder mapAgent = new StringBuilder(request.getScheme());
     mapAgent.append("://");
     // Just use the 127.0.0.1 specificly to point to localhost. Because the WebExtension will
-    // be always on the same server with map agent. 
+    // be always on the same server with map agent.
     mapAgent.append("127.0.0.1").append(":");
     // Get the correct port number;
     mapAgent.append(request.getServerPort());
     // Get the correct virtual directory
     mapAgent.append(request.getContextPath());
     mapAgent.append("/mapagent/mapagent.fcgi");
-    
+
     return mapAgent.toString();
 }
 %>
@@ -219,7 +219,7 @@ String GetMapAgentPath(HttpServletRequest request)
     {
         public T width;
         public T height;
-        
+
         public Size(T width, T height)
         {
             this.width  = width;
