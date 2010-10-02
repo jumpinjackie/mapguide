@@ -403,7 +403,7 @@ void GetRequestParameters(HttpServletRequest request)
     distance = GetLocalizedDoubleParameter(request, "DISTANCE", locale);
     if(IsParameter(request, "MERGE"))
          merge = 1;
-    
+
     bufferName = GetParameter(request, "BUFFER");
     layersParam = GetParameter(request, "LAYERS");
     units = GetParameter(request, "UNITS");

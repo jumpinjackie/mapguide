@@ -42,7 +42,7 @@
         {
             String[] layers = new String[_layers.keySet().size()];
             _layers.keySet().toArray(layers);
-            
+
             return layers;
         }
 
@@ -98,7 +98,7 @@
             return props;
         }
     }
-    
+
     static String getTextValue(Element el, String tagName)
     {
         String textVal = null;
@@ -110,34 +110,34 @@
         }
         return textVal;
     }
-    
+
     static HashMap<String, String> GetLayerPropertyMappings(MgResourceService resSvc, MgLayerBase layer) throws Exception
     {
         HashMap<String, String> mappings = new HashMap<String, String>();
-        
+
         MgByteReader content = resSvc.GetResourceContent(layer.GetLayerDefinition());
         ByteArrayInputStream contentReader = new ByteArrayInputStream(content.ToString().getBytes("UTF-8"));
-        
+
         DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
         DocumentBuilder db = dbf.newDocumentBuilder();
         Document doc = db.parse(contentReader);
-        
+
         doc.getDocumentElement().normalize();
         NodeList propNodes = doc.getElementsByTagName("PropertyMapping");
-        
+
         for (int i = 0; i < propNodes.getLength(); i++)
         {
             Element propEl = (Element)propNodes.item(i);
             String name = getTextValue(propEl, "Name");
             String value = getTextValue(propEl, "Value");
-            
+
             if (name != null && value != null)
                 mappings.put(name, value);
         }
-        
+
         return mappings;
     }
-    
+
     String GetPropertyValueFromFeatureReader(MgFeatureReader reader, MgAgfReaderWriter agfRw, int propType, String propName) throws Exception
     {
         String value = "";
@@ -148,7 +148,7 @@
                 break;
             case MgPropertyType.Byte:
                 value = String.format(locale, "%d", reader.GetByte(propName));
-                break; 
+                break;
             case MgPropertyType.DateTime:
                 value = GetDateTimeString(reader.GetDateTime(propName)); // yyyy-mm-dd is enforced regardless of locale
                 break;
@@ -174,26 +174,26 @@
                 value = "";
                 break;
         }
-        return value;   
+        return value;
     }
 
     static String GetDateTimeString(MgDateTime value) throws MgException
     {
         return value.GetYear() + "-" + value.GetMonth() + "-" + value.GetDay();
     }
-    
+
     void GetParameters(HttpServletRequest request)
     {
         mapName = GetParameter(request, "MAPNAME");
         sessionId = GetParameter(request, "SESSION");
         localeCode = GetParameter(request, "LOCALE");
     }
-    
+
     String JsonEscape(String str)
     {
         return EscapeForHtml(str).replace("\\", "\\\\");
     }
-    
+
     String JsonifyError(Exception ex)
     {
         if (ex == null)
@@ -206,7 +206,7 @@
             }
         }
         */
-        
+
         StringBuffer sb = new StringBuffer();
         //Use exception message or type name if no message found
         String msg = ex.getMessage();
@@ -229,38 +229,38 @@
         sb.append("}}");
         return sb.toString();
     }
-    
+
     static String GetJson(SelectionSet set)
     {
         /*
         A sample of the JSON output this method will produce:
-        
-        
+
+
         {
-            "Layer1" : [ 
-                { 
-                    'values' { "name" : "name1" , "value" : "value1" }, 
-                    'zoom' : { x: num1, y: num2 } 
-                } , 
+            "Layer1" : [
+                {
+                    'values' { "name" : "name1" , "value" : "value1" },
+                    'zoom' : { x: num1, y: num2 }
+                } ,
                 ..,
                 ..,
                 ..,
             ],
-            "Layer2" : [ 
-                { 
-                    'values' { "name" : "name2" , "value" : "value2" }, 
-                    'zoom' : { x: num1, y: num2 } 
-                } , 
+            "Layer2" : [
+                {
+                    'values' { "name" : "name2" , "value" : "value2" },
+                    'zoom' : { x: num1, y: num2 }
+                } ,
                 ..,
                 ..,
                 ..,
             ]
         }
         */
-        
+
         if (set == null)
             return "";
-        
+
         StringBuffer sb = new StringBuffer();
         //Begin selection set
         sb.append("{");
@@ -313,10 +313,10 @@
     localeCode = "";
 
     GetParameters(request);
-    
+
     if (null == localeCode || localeCode.length() == 0)
         localeCode = GetDefaultLocale();
-        
+
     locale = new Locale(localeCode);
 
     try
@@ -329,7 +329,7 @@
         site.Open(cred);
 
         MgResourceService resSvc = (MgResourceService)site.CreateService(MgServiceType.ResourceService);
-        
+
         MgMap map = new MgMap(site);
         map.Open(mapName);
 

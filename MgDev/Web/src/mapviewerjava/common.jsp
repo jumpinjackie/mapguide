@@ -199,7 +199,7 @@ String ValidateSessionId(String proposedSessionId)
 {
     // 00000000-0000-0000-0000-000000000000_aa_00000000000000000000
     String validSessionId = "";
-    if(proposedSessionId != null && 
+    if(proposedSessionId != null &&
         Pattern.matches("^[A-Fa-f0-9]{8}-[A-Fa-f0-9]{4}-[A-Fa-f0-9]{4}-[A-Fa-f0-9]{4}-[A-Fa-f0-9]{12}_[A-Za-z]{2}_[A-Fa-f0-9]{20}$", proposedSessionId))
     {
         validSessionId = proposedSessionId;
@@ -211,7 +211,7 @@ String ValidateLocaleString(String proposedLocaleString)
 {
     // aa or aa-aa
     String validLocaleString = GetDefaultLocale(); // Default
-    if(proposedLocaleString != null && 
+    if(proposedLocaleString != null &&
         (Pattern.matches("^[A-Za-z]{2}$", proposedLocaleString) || Pattern.matches("^[A-Za-z]{2}-[A-Za-z]{2}$", proposedLocaleString)))
     {
         validLocaleString = proposedLocaleString;
@@ -249,7 +249,7 @@ String ValidateIntegerString(String proposedNumberString)
     {
         validNumberString = proposedNumberString;
     }
-    return validNumberString;    
+    return validNumberString;
 }
 
 String ValidateResourceId(String proposedResourceId)
@@ -280,7 +280,7 @@ String ValidateMapName(String proposedMapName)
 String ValidateColorString(String proposedColorString)
 {
     String validColorString = "000000";
-    if (proposedColorString != null && 
+    if (proposedColorString != null &&
         Pattern.matches("^[A-Fa-f0-9]{6}$", proposedColorString))
     {
         validColorString = proposedColorString;
