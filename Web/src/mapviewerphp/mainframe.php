@@ -581,7 +581,7 @@ function GetParameters($params)
     global $debug, $webLayoutDefinition;
     global $sessionId, $username, $password, $orgSessionId, $locale;
 
-	$sessionId = ValidateSessionId(GetParameter($params, 'SESSION'));
+    $sessionId = ValidateSessionId(GetParameter($params, 'SESSION'));
     $locale = ValidateLocaleString(GetParameter($params, 'LOCALE'));
     $webLayoutDefinition = ValidateResourceId(GetParameter($params, 'WEBLAYOUT'));
 

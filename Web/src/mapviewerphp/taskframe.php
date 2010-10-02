@@ -30,27 +30,27 @@ SetLocalizedFilesPath(GetLocalizationPath());
 
 try
 {
-	InitializeWebTier();
+    InitializeWebTier();
 
-	$cred = new MgUserInformation($sessionId);
-	$cred->SetClientIp(GetClientIp());
-	$cred->SetClientAgent(GetClientAgent());
+    $cred = new MgUserInformation($sessionId);
+    $cred->SetClientIp(GetClientIp());
+    $cred->SetClientAgent(GetClientAgent());
 
-	//Connect to the site
-	$site = new MgSiteConnection();
-	$site->Open($cred);
+    //Connect to the site
+    $site = new MgSiteConnection();
+    $site->Open($cred);
 
-	//Get the MgWebLayout object
-	$resourceSrvc = $site->CreateService(MgServiceType::ResourceService);
-	$webLayoutResId = new MgResourceIdentifier($webLayoutId);
-	$webLayout = new MgWebLayout($resourceSrvc, $webLayoutResId);
-	$taskPane = $webLayout->GetTaskPane();
-	$taskPaneUrl = $taskPane->GetInitialTaskUrl();
-	$vpath = GetSurroundVirtualPath();
-	if ($taskPaneUrl == null || strlen($taskPaneUrl) == 0)
-	{
-		$taskPaneUrl = "gettingstarted.php";
-	}
+    //Get the MgWebLayout object
+    $resourceSrvc = $site->CreateService(MgServiceType::ResourceService);
+    $webLayoutResId = new MgResourceIdentifier($webLayoutId);
+    $webLayout = new MgWebLayout($resourceSrvc, $webLayoutResId);
+    $taskPane = $webLayout->GetTaskPane();
+    $taskPaneUrl = $taskPane->GetInitialTaskUrl();
+    $vpath = GetSurroundVirtualPath();
+    if ($taskPaneUrl == null || strlen($taskPaneUrl) == 0)
+    {
+        $taskPaneUrl = "gettingstarted.php";
+    }
 
     //If there is an initial url, it will be encoded, so parse the decoded url.
     $comp = parse_url(urldecode($taskPaneUrl));

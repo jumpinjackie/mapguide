@@ -148,8 +148,8 @@ function GetParameters($params)
     $sessionId = ValidateSessionId(GetParameter($params, 'SESSION'));
     $mapName = ValidateMapName(GetParameter($params, 'MAPNAME'));
     $dwf = GetIntParameter($params, 'DWF');
-    
-	$inputSel = UnescapeMagicQuotes(GetParameter($params, 'SELECTION'));
+
+    $inputSel = UnescapeMagicQuotes(GetParameter($params, 'SELECTION'));
     $layers = GetParameter($params, 'LAYERS');
 }
 

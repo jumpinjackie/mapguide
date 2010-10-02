@@ -44,8 +44,8 @@ function GetParameters($params)
 
     $sessionId = ValidateSessionId(GetParameter($params, 'SESSION'));
     $locale = ValidateLocaleString(GetParameter($params, 'LOCALE'));
-    $mapName = ValidateMapName(GetParameter($params, 'MAPNAME'));    
-	$target = GetIntParameter($params, 'TGT');
+    $mapName = ValidateMapName(GetParameter($params, 'MAPNAME'));
+    $target = GetIntParameter($params, 'TGT');
     $popup = GetIntParameter($params, 'POPUP');
     $cmdIndex = GetIntParameter($params, 'CMDINDEX');
     $clientWidth = GetIntParameter($params, 'WIDTH');

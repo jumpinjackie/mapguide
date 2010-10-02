@@ -377,7 +377,7 @@ function GetParameters()
     $foretrans = GetDoubleParameter($params, 'FORETRANS');
     $thickness = GetDoubleParameter($params, 'THICKNESS');
     $bufferName = GetParameter($params, 'BUFFER');
-    
+
     $layersParam = GetParameter($params, 'LAYERS');
     $units = GetParameter($params, 'UNITS');
     $linestyle = GetParameter($params, 'LINESTYLE');
