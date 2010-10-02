@@ -1052,11 +1052,11 @@ INTERNAL_API:
     /// retrieve schema information. If this collection is null or empty, information
     /// is returned for all feature classes.
     /// \param outputFormat (String/string)
-    /// A string identifying the output format of 
+    /// A string identifying the output format of
     /// the retrieved schema information.
     /// The supported values of output format are specified in OpenGIS Web Feature Service (WFS) Implementation Specification - section 8.2
     /// http://portal.opengeospatial.org/files/?artifact_id=8339
-    /// 
+    ///
     /// \return
     /// Returns an MgByteReader containing the XML schema.
     ///
@@ -1134,7 +1134,7 @@ INTERNAL_API:
     /// \param wfsVersion (String/string)
     /// A string identifying the wfs version
     /// \param outputFormat (String/string)
-    /// A string identifying the output format of 
+    /// A string identifying the output format of
     /// the retrieved feature information.
     /// The supported values of output format are specified in OpenGIS Web Feature Service (WFS) Implementation Specification - section 9.2
     /// http://portal.opengeospatial.org/files/?artifact_id=8339

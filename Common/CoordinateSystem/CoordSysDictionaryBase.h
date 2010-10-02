@@ -25,11 +25,11 @@
 #define DECLARE_DICTIONARY_FILE_NAME(x) extern const wchar_t DefaultDictName##x[] //declares(!) the extern variable we need for the template class
 #define DEFINE_DICTIONARY_FILE_NAME(x,y) const wchar_t DefaultDictName##x[] = MAP_CS_DEFAULT_FILE_NAME(y) //defines(!) the extern variable we need for the template class
 
-//typedef of the callback that's being invoked, when a dictionary file is being opened; the invoked method 
+//typedef of the callback that's being invoked, when a dictionary file is being opened; the invoked method
 //has to specify the open mode the target dictionary file has to be opened with; the [long] parameter is the magic header number
 typedef CsDictionaryOpenMode (*MagicNumberCallback)(long);
 
-template<class T/* Mg API class */, class U /* CS map struct */> 
+template<class T/* Mg API class */, class U /* CS map struct */>
 struct DefinitionAccess //carries all method pointers needed by this dictionary base implementation so it can interact with the Mg API and the CS Map API
 {
 public:
@@ -49,7 +49,7 @@ public:
             readDefinition(ReadDefinition),
             updateDefinition(UpdateDefinition),
             deleteDefinition(DeleteDefinition),
-            
+
             validateDefinition(ValidateDefinition),
 
             setupCsStructFromMgInstance(SetupCsStructFromMgInstance),
@@ -59,7 +59,7 @@ public:
             readDefinitionDescription(ReadDefinitionDescription),
 
             readAllDefinitions(ReadAllDefinitions),
-            
+
             csMapTargetFileName(CsMapTargetFileName),
             magicNumberCallback(MagicNumberCallback)
     {
@@ -125,7 +125,7 @@ namespace CSLibrary
         Ptr<MgCoordinateSystemCatalog> catalog;
         STRING fileName;
         CSystemNameDescriptionMap* dictionaryItems;
-        INT32 dictMagicNumber;    
+        INT32 dictMagicNumber;
     };
 
 } // End of namespace

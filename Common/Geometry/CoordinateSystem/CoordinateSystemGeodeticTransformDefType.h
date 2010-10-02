@@ -25,7 +25,7 @@
 ///////////////////////////////////////////////////////////////
 /// \brief
 /// This class contains the constants for all current transformation definition types.
-/// 
+///
 class MG_GEOMETRY_API MgCoordinateSystemGeodeticTransformDefType
 {
 
@@ -36,21 +36,21 @@ PUBLISHED_API:
     /// The transformation definition describes the NONE transformation. That is, that
     /// transformation doesn't actually perform a datum shift but is basically a NOOP.
     static const INT32 None = 0;
-    
+
     ///////////////////////////////////////////////////////////////
     /// \brief
     /// The transformation definition describes an analytical transformation where
     /// the transformation between the source and the target datum is defined
     /// through a formular that's fed with up to 10 parameters.
     static const INT32 Analytical = 1;
-    
+
     ///////////////////////////////////////////////////////////////
     /// \brief
     /// The transformation definition describes a transformation that
     /// uses grid files to calculate the actual datum shift for a given
     /// coordinate by interpolating between given grid points.
     static const INT32 Interpolation = 2;
-    
+
     ///////////////////////////////////////////////////////////////
     /// \brief
     /// The transformation definition describes a transformation that

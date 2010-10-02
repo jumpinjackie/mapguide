@@ -130,8 +130,8 @@ void MgStringProperty::ToXml(string &str, bool onlyKey, bool includeType, string
 
         if (!this->IsNull())
         {
-            str += "<Value>"; 
-            str += MgUtil::WideCharToMultiByte(MgUtil::ReplaceEscapeCharInXml(this->GetValue())); 
+            str += "<Value>";
+            str += MgUtil::WideCharToMultiByte(MgUtil::ReplaceEscapeCharInXml(this->GetValue()));
             str += "</Value>";
         }
 

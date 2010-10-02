@@ -38,7 +38,7 @@ PUBLISHED_API:
     /// Creates a new, empty geodetic path object that has to be filled by an API client. This
     /// method does not create a new entry in the dictionary. The caller is responsible
     /// for disposing the object being returned.
-    /// 
+    ///
     /// \return
     /// Return a new, in-memory geodetic path object. No content is written to disk
     /// when this method executes.
@@ -49,10 +49,10 @@ PUBLISHED_API:
     /// \brief
     /// Returns the geodetic path object where the name is equal to the parameter
     /// pathName. The caller is responsible for disposing the object.
-    /// 
+    ///
     /// \param pathName
     /// The name of the geodetic path to look up in the dictionary. Must not be an empty string.
-    /// 
+    ///
     /// \return
     /// Return the geodetic path if found. Otherwise NULL.
     ///

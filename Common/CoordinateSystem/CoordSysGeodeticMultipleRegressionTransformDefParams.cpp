@@ -55,7 +55,7 @@ void CCoordinateSystemGeodeticMultipleRegressionTransformDefParams::Dispose()
 void CCoordinateSystemGeodeticMultipleRegressionTransformDefParams::Reset()
 {
     this->ReleaseInstance();
-    
+
     this->mulRegParams = (csMultipleRegressionXformParams*) CS_malc(sizeof(csMultipleRegressionXformParams));
     if (NULL == this->mulRegParams)
         throw new MgOutOfMemoryException(L"CCoordinateSystemGeodeticMultipleRegressionTransformDefParams.Reset", __LINE__, __WFILE__, NULL, L"", NULL);
@@ -75,7 +75,7 @@ void CCoordinateSystemGeodeticMultipleRegressionTransformDefParams::ReleaseInsta
 void CCoordinateSystemGeodeticMultipleRegressionTransformDefParams::CopyTo(void* target) const
 {
     ENSURE_NOT_NULL(target, L"CCoordinateSystemGeodeticMultipleRegressionTransformDefParams.CopyTo");
-    
+
     memcpy(target, this->mulRegParams, sizeof(csMultipleRegressionXformParams));
 }
 
@@ -127,7 +127,7 @@ DEFINE_GET_SET_NUMERIC(CCoordinateSystemGeodeticMultipleRegressionTransformDefPa
 DEFINE_GET_SET_NUMERIC(CCoordinateSystemGeodeticMultipleRegressionTransformDefParams,PhiOffset,double,this->mulRegParams->phiOffset)
 DEFINE_GET_SET_NUMERIC(CCoordinateSystemGeodeticMultipleRegressionTransformDefParams,LambdaOffset,double,this->mulRegParams->lambdaOffset)
 DEFINE_GET_SET_NUMERIC(CCoordinateSystemGeodeticMultipleRegressionTransformDefParams,NormalizationScale,double,this->mulRegParams->normalizationScale)
-        
+
 DEFINE_GET_SET_NUMERIC_IDX(CCoordinateSystemGeodeticMultipleRegressionTransformDefParams,CoefficientPhi,double,this->mulRegParams->coeffPhi,104)
 DEFINE_GET_SET_NUMERIC_IDX(CCoordinateSystemGeodeticMultipleRegressionTransformDefParams,CoefficientLambda,double,this->mulRegParams->coeffLambda,104)
 DEFINE_GET_SET_NUMERIC_IDX(CCoordinateSystemGeodeticMultipleRegressionTransformDefParams,CoefficientHeight,double,this->mulRegParams->coeffHeight,104)

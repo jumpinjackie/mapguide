@@ -35,13 +35,13 @@ PUBLISHED_API:
     //BEGIN: struct csGeodeticXformParmsGeocentric
     virtual double GetDeltaX() = 0;
     virtual void SetDeltaX(double deltaX) = 0;
-			
+
     virtual double GetDeltaY() = 0;
     virtual void SetDeltaY(double deltaY) = 0;
 
     virtual double GetDeltaZ() = 0;
     virtual void SetDeltaZ(double deltaZ) = 0;
-			
+
     virtual double GetRotateX() = 0;
     virtual void SetRotateX(double rotateX) = 0;
 
@@ -50,8 +50,8 @@ PUBLISHED_API:
 
     virtual double GetRotateZ() = 0;
     virtual void SetRotateZ(double rotateZ) = 0;
-			
-	virtual double GetScale() = 0;
+
+    virtual double GetScale() = 0;
     virtual void SetScale(double scale) = 0;
 
     virtual double GetTranslateX() = 0;
@@ -62,12 +62,12 @@ PUBLISHED_API:
 
     virtual double GetTranslateZ() = 0;
     virtual void SetTranslateZ(double translateZ) = 0;
-    
+
     //END: struct csGeodeticXformParmsGeocentric
 
     virtual INT32 GetTransformationMethod() = 0;
     virtual void SetTransformationMethod(INT32 analyticalMethodCode) = 0;
-			
+
 protected:
     /////////////////////////////////////////////////////////////////
     /// \brief

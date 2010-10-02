@@ -54,7 +54,7 @@ void CCoordinateSystemGeodeticInterpolationTransformDefParams::Dispose()
 void CCoordinateSystemGeodeticInterpolationTransformDefParams::Reset()
 {
     this->ReleaseInstance();
-    
+
     this->gridFileParams = (csGridFileXformParams*) CS_malc(sizeof(csGridFileXformParams));
     if (NULL == this->gridFileParams)
         throw new MgOutOfMemoryException(L"CCoordinateSystemGeodeticInterpolationTransformDefParams.Reset", __LINE__, __WFILE__, NULL, L"", NULL);
@@ -84,7 +84,7 @@ void CCoordinateSystemGeodeticInterpolationTransformDefParams::SetGridFiles(MgDi
 
     bool emptyFileCollection = (0 == fileNamesCount);
     csGeodeticXfromParmsFile_* allFiles = emptyFileCollection ? NULL : new csGeodeticXfromParmsFile_[fileNamesCount];
-    
+
     MG_TRY()
 
     if (!emptyFileCollection)
@@ -128,7 +128,7 @@ MgDisposableCollection* CCoordinateSystemGeodeticInterpolationTransformDefParams
     INT32 fileCount = this->gridFileParams->fileReferenceCount;
     if (0 == fileCount)
         return gridFileNames.Detach();
-    
+
     for(INT32 i = 0; i < fileCount && i < csGRIDI1_FILEMAX; i++)
     {
         csGeodeticXfromParmsFile_& singleGridFile = this->gridFileParams->fileNames[i];
@@ -183,6 +183,6 @@ DEFINE_GET_SET_STRING(CCoordinateSystemGeodeticInterpolationTransformDefParams,F
 void CCoordinateSystemGeodeticInterpolationTransformDefParams::CopyTo(void* target) const
 {
     ENSURE_NOT_NULL(target, L"CCoordinateSystemGeodeticInterpolationTransformDefParams.CopyTo");
-    
+
     memcpy(target, this->gridFileParams, sizeof(csGridFileXformParams));
 }

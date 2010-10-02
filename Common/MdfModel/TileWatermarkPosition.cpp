@@ -18,7 +18,7 @@
 //-------------------------------------------------------------------------
 // DESCRIPTION:
 // The TileWatermarkPosition class implementation.
-// TileWatermarkPosition class is one implementation of WatermarkPosition to 
+// TileWatermarkPosition class is one implementation of WatermarkPosition to
 // define the position of watermark.
 //-------------------------------------------------------------------------
 
@@ -51,7 +51,7 @@ TileWatermarkPosition::~TileWatermarkPosition()
 }
 
 //-------------------------------------------------------------------------
-// Get the tile width 
+// Get the tile width
 //-------------------------------------------------------------------------
 double TileWatermarkPosition::GetTileWidth() const
 {
@@ -59,7 +59,7 @@ double TileWatermarkPosition::GetTileWidth() const
 }
 
 //-------------------------------------------------------------------------
-// Set the tile width 
+// Set the tile width
 //-------------------------------------------------------------------------
 void TileWatermarkPosition::SetTileWidth(const double& dTileWidth)
 {
@@ -67,7 +67,7 @@ void TileWatermarkPosition::SetTileWidth(const double& dTileWidth)
 }
 
 //-------------------------------------------------------------------------
-// Get the tile height 
+// Get the tile height
 //-------------------------------------------------------------------------
 double TileWatermarkPosition::GetTileHeight() const
 {
@@ -75,7 +75,7 @@ double TileWatermarkPosition::GetTileHeight() const
 }
 
 //-------------------------------------------------------------------------
-// Set the tile height 
+// Set the tile height
 //-------------------------------------------------------------------------
 void TileWatermarkPosition::SetTileHeight(const double& dTileHeight)
 {
@@ -194,7 +194,7 @@ bool TileWatermarkPosition::Equals(WatermarkPosition* another)
         return false;
     if (fabs(this->m_tileHeight - anotherPosition->m_tileHeight) > doubleTolerance)
         return false;
-    
+
     // check horizontal position
     if (!this->m_horizontalPosition)
     {

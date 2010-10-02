@@ -47,7 +47,7 @@ WatermarkAppearance::~WatermarkAppearance()
 
 //-------------------------------------------------------------------------
 // Returns the transparency (0 - 100).  Zero means fully opaque, and 100
-// means fully transparent. 
+// means fully transparent.
 //-------------------------------------------------------------------------
 double WatermarkAppearance::GetTransparency() const
 {

@@ -42,7 +42,7 @@ PUBLISHED_API:
     /// \return
     /// Returns the file format as an INT32 value.
     virtual INT32 GetFileFormat() = 0;
-    
+
     ////////////////////////////////////////////////////////////////
     /// \brief
     /// Sets this file's format. Has to be constant
@@ -54,13 +54,13 @@ PUBLISHED_API:
     /// When used within a geodetic transformation that defines a source and a target
     /// datum, this flag instructs the API whether to consider the grid file's content
     /// to be the inverse of the actual conversion direction.
-    /// 
+    ///
     /// \return
     /// Returns true, if the grid file provides information to transform between
     /// 2 datums in the inversed direction to what's actually specified in
     /// the parent transformation definition.
     virtual bool GetIsInverseDirection() = 0;
-    
+
     ////////////////////////////////////////////////////////////////
     /// \brief
     /// Sets the flag, whether this grid file carries the information

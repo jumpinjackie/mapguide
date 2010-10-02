@@ -1361,7 +1361,7 @@ INT32 GeodeticTransformationPoint(cs_Dtcprm_ *pDtcprm, double& dLongitude, doubl
 
     // Skip datum transformation if we have a null transformation
     // We have a null transform if the first transform type is dtcTypNone
-    
+
     // FIXME
     if (NULL != pDtcprm->xforms[0])
     //if (dtcTypNone != pDtcprm->xforms[0].xfrmType) <-- doesn't compile
@@ -1416,7 +1416,7 @@ void SetDictionaryFileName(CREFSTRING sFileName /* no directory information must
 
     char* szCs = NULL;
     bool entered = false;
-    
+
     MG_TRY()
 
     //Make local variables to hold converted strings
@@ -1440,18 +1440,18 @@ void SetDictionaryFileName(CREFSTRING sFileName /* no directory information must
     //Okay, everybody opened all right, so update Mentor's global
     //variables appropriately.
     szCs = Convert_Wide_To_Ascii(fileNameSet.c_str());
-    
+
     CriticalClass.Enter();
     entered = true;
 
     //the target function in CS map that sets the current active dictionary file name
     FileNameTarget(szCs);
-    
+
     MG_CATCH(L"MentorUtil.SetDictionaryFileName")
-    
+
     if (entered)
         CriticalClass.Leave();
-    
+
     delete[] szCs;
 
     MG_THROW()
@@ -1626,11 +1626,11 @@ STRING MentorReadString(const char* mentorString)
     wchar_t* pString = NULL;
 
     MG_TRY()
-    
+
     pString = Convert_Ascii_To_Wide(mentorString);
     if (NULL == pString) //ABA: this cannot be null, can it?
         throw new MgOutOfMemoryException(L"MentorUtil.ReadString", __LINE__, __WFILE__, NULL, L"", NULL);
-    
+
     MG_CATCH(L"MentorUtil.ReadString")
 
     readString = pString;
@@ -1644,7 +1644,7 @@ STRING MentorReadString(const char* mentorString)
 void MentorSetString(CREFSTRING sSrc, char *pDest, UINT32 nMaxSize)
 {
     //make sure to have checked the Protection level before calling this method
-    
+
     char *pStr = NULL;
 
     MG_TRY()

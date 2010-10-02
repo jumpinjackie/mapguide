@@ -66,16 +66,16 @@ public:
 
     virtual INT32 GetMaxIterations();
     virtual void SetMaxIterations(INT32 maxIterations);
-	
+
     virtual double GetConvergenceValue();
     virtual void SetConvergenceValue(double convergenceValue);
-	
+
     virtual double GetErrorValue();
     virtual void SetErrorValue(double errorValue);
-	
+
     virtual double GetAccuracy();
     virtual void SetAccuracy(double accuracy);
-    
+
     virtual MgCoordinateSystemGeodeticTransformDefParams* GetParameters();
     virtual void SetParameters(MgCoordinateSystemGeodeticTransformDefParams* parameters);
     //end properties
@@ -86,7 +86,7 @@ public:
 
     //helper - don't delete
     virtual bool IsEncrypted();
-    
+
     virtual bool IsProtected();
     virtual bool IsValid();
 

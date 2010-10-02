@@ -16,7 +16,7 @@
 //
 
 #ifndef WATERMARKOFFSETUNIT_H_
-#define WATERMARKOFFSETUNIT_H_     
+#define WATERMARKOFFSETUNIT_H_
 
 #include "MdfModel.h"
 

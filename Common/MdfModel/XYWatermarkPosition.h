@@ -38,13 +38,13 @@ BEGIN_NAMESPACE_MDFMODEL
         virtual ~XYWatermarkPosition();
 
         // Operations
-        
+
         // Property: XPosition
         const WatermarkXOffset* GetXPosition() const;
         WatermarkXOffset* GetXPosition();
         void AdoptXPosition(WatermarkXOffset* pXPosition);
         WatermarkXOffset* OrphanXPosition();
-        
+
         // Property: YPosition
         const WatermarkYOffset* GetYPosition() const;
         WatermarkYOffset* GetYPosition();

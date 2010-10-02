@@ -34,7 +34,7 @@ WatermarkOffset::WatermarkOffsetUnit IOWatermarkOffsetUnit::ParseWatermarkOffset
     else if (::wcscmp(ch, L"Points") == 0) // NOXLATE
         return WatermarkOffset::Points;
     else // treat as "Pixels" if string is incorrect
-        return WatermarkOffset::Pixels;    
+        return WatermarkOffset::Pixels;
 }
 
 

@@ -355,7 +355,7 @@ protected:
     static const INT32 StringPointIsOutside     = 1;
     static const INT32 StringPointIsOnBoundary  = 2;
     static const INT32 StringPointIsInside      = 3;
-    
+
     // Values which are stored in the Z member of the internally used point
     // collection; i.e. the status of each segment relative to the clip
     // ploygon.  The value stored refers to the segment which starts at

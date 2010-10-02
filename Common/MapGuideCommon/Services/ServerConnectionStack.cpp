@@ -43,7 +43,7 @@ MgServerConnectionStack::MgServerConnectionStack(INT32 port)
         MgConfigProperties::DefaultSiteConnectionPropertyPort);
 
     // Note: The comment below only applies if using the ACE WFMO reactor on Windows.
-    //       The ACE config.h file has been updated to use the ACE SELECT reactor on 
+    //       The ACE config.h file has been updated to use the ACE SELECT reactor on
     //       Windows which is the default reactor used on Linux.
     //       ie: #define ACE_USE_SELECT_REACTOR_FOR_REACTOR_IMPL
     //
@@ -202,7 +202,7 @@ void MgServerConnectionStack::InUse(MgServerConnection* connection)
     m_inUse->push_back(connection);
 }
 
-void MgServerConnectionStack::CloseStaleConnections(ACE_Time_Value* timeValue) 
+void MgServerConnectionStack::CloseStaleConnections(ACE_Time_Value* timeValue)
 {
     ACE_MT(ACE_GUARD(ACE_Recursive_Thread_Mutex, ace_mon, m_mutex));
 

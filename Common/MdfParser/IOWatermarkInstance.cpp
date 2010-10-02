@@ -180,7 +180,7 @@ void IOWatermarkInstance::Write(MdfStream& fd, WatermarkInstance* watermark, Ver
     WatermarkAppearance* appearanceOverride = watermark->GetAppearanceOverride();
     if (appearanceOverride)
         IOWatermarkAppearance::Write(fd, appearanceOverride, version, sAppearanceOverride);
-    
+
     // Property: PositionOverride (optional)
     WatermarkPosition* positionOverride = watermark->GetPositionOverride();
     if (positionOverride)

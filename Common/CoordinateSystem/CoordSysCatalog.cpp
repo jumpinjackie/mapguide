@@ -76,7 +76,7 @@ CCoordinateSystemCatalog::CCoordinateSystemCatalog() :
     m_pDtDict = new CCoordinateSystemDatumDictionary(this);
     m_pElDict = new CCoordinateSystemEllipsoidDictionary(this);
     m_pCtDict = new CCoordinateSystemCategoryDictionary(this);
-	m_pGpDict = new CCoordinateSystemGeodeticPathDictionary(this);
+    m_pGpDict = new CCoordinateSystemGeodeticPathDictionary(this);
     m_pGxDict = new CCoordinateSystemGeodeticTransformDefDictionary(this);
 
     if (!m_pCsDict || !m_pDtDict || !m_pElDict || !m_pCtDict || !m_pGpDict || !m_pGxDict)
@@ -123,7 +123,7 @@ CCoordinateSystemCatalog::CCoordinateSystemCatalog() :
         m_pDtDict = NULL;
         m_pElDict = NULL;
         m_pCtDict = NULL;
-		m_pGpDict = NULL;
+        m_pGpDict = NULL;
         m_pGxDict = NULL;
 
         //NOTE: the following behavior happens only in DEBUG if we do not reset the countFlag
@@ -157,7 +157,7 @@ void CCoordinateSystemCatalog::PrepareForDispose()
     m_pDtDict = NULL;
     m_pElDict = NULL;
     m_pCtDict = NULL;
-	m_pGpDict = NULL;
+    m_pGpDict = NULL;
     m_pGxDict = NULL;
 }
 
@@ -306,10 +306,10 @@ void CCoordinateSystemCatalog::SetDictionaryDir(CREFSTRING sDirPath)
     wchar_t* pNewDir=NULL;
     if ((_tcslen(szFname) > 0) || (_tcslen(szExt) > 0))
     {
-		//ABA: don't understand: if a filename or an extension has been found,
+        //ABA: don't understand: if a filename or an extension has been found,
         //we concatenate the filename to the directory + then the extension;
         //Then, we call makepath() what will give us a full path information incl.
-        //the file name; 
+        //the file name;
         //
         //Nope, not properly terminated, need to fix it.
         assert(_tcslen(szDir) + _tcslen(szFname) + _tcslen(szExt) < _MAX_DIR);
@@ -359,7 +359,7 @@ void CCoordinateSystemCatalog::SetDictionaryDir(CREFSTRING sDirPath)
     STRING sDt=m_pDtDict->GetFileName();
     STRING sEl=m_pElDict->GetFileName();
     STRING sCt=m_pCtDict->GetFileName();
-	STRING sGp=m_pGpDict->GetFileName();
+    STRING sGp=m_pGpDict->GetFileName();
     STRING sGx=m_pGxDict->GetFileName();
 
     //Set the dictionary file names
@@ -368,7 +368,7 @@ void CCoordinateSystemCatalog::SetDictionaryDir(CREFSTRING sDirPath)
     m_pDtDict->SetFileName(sDt);
     m_pElDict->SetFileName(sEl);
     m_pCtDict->SetFileName(sCt);
-	m_pGpDict->SetFileName(sGp);
+    m_pGpDict->SetFileName(sGp);
     m_pGxDict->SetFileName(sGx);
 
     MG_CATCH_AND_THROW(L"MgCoordinateSystemCatalog.SetDictionaryDir")
@@ -439,8 +439,8 @@ bool CCoordinateSystemCatalog::AreDictionaryFilesWritable()
     {
         return false;
     }
-	
-	sPath=m_pGpDict->GetPath();
+
+    sPath=m_pGpDict->GetPath();
     if (!ValidateFile(
         sPath.c_str(),          //file name
         true,                   //must exist
@@ -482,7 +482,7 @@ void CCoordinateSystemCatalog::SetDefaultDictionaryDirAndFileNames()
     STRING sDt=m_pDtDict->GetDefaultFileName();
     STRING sEl=m_pElDict->GetDefaultFileName();
     STRING sCt=m_pCtDict->GetDefaultFileName();
-	STRING sGp=m_pGpDict->GetDefaultFileName();
+    STRING sGp=m_pGpDict->GetDefaultFileName();
     STRING sGx=m_pGxDict->GetDefaultFileName();
 
     //sets the path to the dictionaries
@@ -495,7 +495,7 @@ void CCoordinateSystemCatalog::SetDefaultDictionaryDirAndFileNames()
     m_pDtDict->SetFileName(sDt);
     m_pElDict->SetFileName(sEl);
     m_pCtDict->SetFileName(sCt);
-	m_pGpDict->SetFileName(sGp);
+    m_pGpDict->SetFileName(sGp);
     m_pGxDict->SetFileName(sGx);
 
     m_libraryStatus=lsInitialized;

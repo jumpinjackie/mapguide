@@ -19,12 +19,12 @@
 #define _MG_COORDSYSMACRO_H_
 
 //make sure to have CS_MAP_DEF_VARIABLE defined before including this header; this is used by VERIFY_INITIALIZED(x)
-    
+
 #define MAKE_L_STRING(x) L## #x
 
 #define MAKE_QUALIFIED_MEMBER_STRING(className,member) MAKE_L_STRING(className.member)
 
-#ifdef CS_MAP_DEF_VARIABLE   
+#ifdef CS_MAP_DEF_VARIABLE
     #define VERIFY_INITIALIZED(x)   if (NULL == CS_MAP_DEF_VARIABLE) \
         throw new MgInvalidOperationException(x, __LINE__, __WFILE__, NULL, L"", NULL)
 #else

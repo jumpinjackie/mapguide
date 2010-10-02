@@ -199,7 +199,7 @@ cs_Eldef_ * CCoordinateSystemEllipsoidDictionary::eldef(const char *kpName) cons
     //
     //It's an old version.  We need to do a special search
     //in the file, and then, if found, update it to a current struct.
-    
+
     /*
     UINT32 nStructSize, nNameSize;
     GetEllipsoidSizeInfo(m_lMagic, nStructSize, nNameSize);

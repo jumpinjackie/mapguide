@@ -247,7 +247,7 @@ protected:
     void MultiPointCentroid(double* cx, double* cy) const;
     void MultiPolygonCentroid(double* cx, double* cy) const;
     void MultiPolylineCentroid(double* cx, double* cy, double* slope) const;
-    
+
 
     void ResizePoints(int n);    // new size of array # of points
     void ResizeContours(int n);

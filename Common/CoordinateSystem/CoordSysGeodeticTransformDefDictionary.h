@@ -47,7 +47,7 @@ namespace CSLibrary
         virtual STRING GetDefaultFileName();
         virtual STRING GetFileName();
         virtual void SetFileName(CREFSTRING sFileName);
-        
+
         //modify the dictionary
         virtual void Add(MgGuardDisposable *pDefinition);
         virtual void Remove(CREFSTRING sName);
@@ -62,10 +62,10 @@ namespace CSLibrary
         CCoordinateSystemDictionaryBase<CCoordinateSystemGeodeticTransformDef, cs_GeodeticTransform_, &transformDefinitionAccess, true, cs_GXDEF_MAGIC, DICTIONARY_FILE_NAME(GeodeticTransformation)>* m_pDictionary;
 
     public:
-        
+
         static int UpdateGeodeticTransformDef(cs_GeodeticTransform_* csTransformDef, int /*unused*/);
         static bool SetupCsStructFromMgTransformDef(CCoordinateSystemGeodeticTransformDef* mgGeodeticTransformDef, cs_GeodeticTransform_& csTransformDef);
-        
+
         static void FullInitialize(CCoordinateSystemGeodeticTransformDef* mgGeodeticTransformDef, cs_GeodeticTransform_* csTransformDef, MgCoordinateSystemCatalog* catalog);
 
         static const char* ReadName(const cs_GeodeticTransform_& definition);

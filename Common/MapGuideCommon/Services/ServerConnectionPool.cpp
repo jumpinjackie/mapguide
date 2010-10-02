@@ -19,7 +19,7 @@
 #include "ServerConnectionPool.h"
 #include "ServerConnectionStack.h"
 #include "ServerConnectionEventHandler.h"
- 
+
 MgServerConnectionPool* MgServerConnectionPool::sm_pool = NULL;
 
 /// <summary>
@@ -89,10 +89,10 @@ MgServerConnectionPool* MgServerConnectionPool::GetInstance()
 
     // To avoid overheads and maintain thread safety,
     // do not assign this returned static singleton to a Ptr object.
-    return MgServerConnectionPool::sm_pool; 
+    return MgServerConnectionPool::sm_pool;
 }
 
-void MgServerConnectionPool::CloseStaleConnections(ACE_Time_Value* timeValue) 
+void MgServerConnectionPool::CloseStaleConnections(ACE_Time_Value* timeValue)
 {
     ACE_MT (ACE_GUARD (ACE_Recursive_Thread_Mutex, ace_mon, *ACE_Static_Object_Lock::instance ()));
     MG_TRY()
@@ -118,5 +118,5 @@ void MgServerConnectionPool::CloseConnections()
     delete MgServerConnectionPool::sm_pool;
     MgServerConnectionPool::sm_pool = NULL;
 
-    MG_CATCH_AND_RELEASE()   
+    MG_CATCH_AND_RELEASE()
 }

@@ -32,24 +32,24 @@ class MG_GEOMETRY_API MgCoordinateSystemGeodeticInterpolationTransformDefParams 
     DECLARE_CLASSNAME(MgCoordinateSystemGeodeticInterpolationTransformDefParams)
 
 PUBLISHED_API:
-		
+
     //BEGIN: struct csGeodeticXfromParmsFile
 
     ///////////////////////////////////////////////////////////////////////////
     /// \brief
     /// Sets the grid files to be used by this transformation. See the description for
     /// gridFiles parameter.
-    /// 
+    ///
     /// \param gridFiles
     /// A (possibly empty) ordered(!) collection of MgCoordinateSystemGeodeticTransformGridFile objects.
     /// The order of the elements contained in the collection is important, because this
     /// instructs the underlying API in which order to use the grid files, e.g. in case of an overlap.
-    /// 
+    ///
     /// \remarks
     /// The caller is responsible for disposing the collection of grid files. That is,
     /// this parameter object will not take ownership of the collection passed in.
     virtual void SetGridFiles(MgDisposableCollection* gridFiles) = 0;
-    
+
     ///////////////////////////////////////////////////////////////////////////
     /// \brief
     /// Returns an ordered, non-live collection MgCoordinateSystemGeodeticTransformGridFile elements
@@ -62,7 +62,7 @@ PUBLISHED_API:
     /// The caller is responsible for disposing the collection of grid files being returned
     /// here.
     virtual MgDisposableCollection* GetGridFiles() = 0;
-			
+
     ///////////////////////////////////////////////////////////////////////////
     /// \brief
     /// Returns the name of the transformation to fallback to in case the transformation using the
@@ -71,7 +71,7 @@ PUBLISHED_API:
     /// \return
     /// Returns the name of the fallback transformation. Can be empty if no such fallback transformation
     /// is defined.
-    /// 
+    ///
     virtual STRING GetFallback() = 0;
 
     ///////////////////////////////////////////////////////////////////////////
@@ -87,7 +87,7 @@ PUBLISHED_API:
     /// \brief
     /// Creates a new, empty MgCoordinateSystemGeodeticTransformGridFile object
     /// that can be added to the collection set via SetGridFiles.
-    /// 
+    ///
     /// \return
     /// Returns a new, unitialized MgCoordinateSystemGeodeticTransformGridFile instance
     /// The caller is resonsible for disposing the object if no longer needed.

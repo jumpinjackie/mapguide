@@ -49,7 +49,7 @@ CCoordinateSystemGeodeticTransformation::CCoordinateSystemGeodeticTransformation
     //this->Uninitialize(); //not needed - this does release the resourced held by this instance; we haven't set anything yet
 
     this->SetCatalog(pCatalog);
-    
+
     //now - setup ourselves from the [MgCoordinateSystemGeodeticTransformDef] we've been passed
     //we'll not pass a source and a target datum to CS Map so it constructs the cs_Dtcprm_ struct
     //but we'll do that because we already have a transformation
@@ -361,10 +361,10 @@ void CCoordinateSystemGeodeticTransformation::Uninitialize()
 void CCoordinateSystemGeodeticTransformation::SetupFromTransformationDef(MgCoordinateSystemGeodeticTransformDef* transformationDef, bool createInversed)
 {
     char* transformName = Convert_Wide_To_Ascii(transformationDef->GetTransformName().c_str());
-    
+
     MG_TRY()
-    
-    
+
+
     //protect the call to the lib files; the calls to the [datumDictionary] below
     //we also enter the critical section but on the same thread - i.e. no problem;
     //putting the check here saves us from [enter, leave, enter leave]
@@ -375,7 +375,7 @@ void CCoordinateSystemGeodeticTransformation::SetupFromTransformationDef(MgCoord
 
     if (NULL == datumTransform)
         throw new MgInvalidArgumentException(L"CCoordinateSystemGeodeticTransformation.SetupFromTransformationDef", __LINE__, __WFILE__, NULL, L"", NULL);
-    
+
     Ptr<MgCoordinateSystemDatumDictionary> datumDictionary = this->m_pCatalog->GetDatumDictionary();
     Ptr<MgCoordinateSystemDatum> srcDatum = datumDictionary->GetDatum(transformationDef->GetSourceDatum());
     Ptr<MgCoordinateSystemDatum> trgDatum = datumDictionary->GetDatum(transformationDef->GetTargetDatum());

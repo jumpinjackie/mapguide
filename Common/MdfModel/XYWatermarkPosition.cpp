@@ -18,7 +18,7 @@
 //-------------------------------------------------------------------------
 // DESCRIPTION:
 // The XYWatermarkPosition class implementation.
-// XYWatermarkPosition class is one implementation of WatermarkPosition to 
+// XYWatermarkPosition class is one implementation of WatermarkPosition to
 // define the position of watermark.
 //-------------------------------------------------------------------------
 
@@ -151,7 +151,7 @@ bool XYWatermarkPosition::Equals(WatermarkPosition* another)
     XYWatermarkPosition* anotherPosition = dynamic_cast<XYWatermarkPosition*>(another);
     if (!anotherPosition)
         return false;
-    
+
     // check X position
     if (!this->m_XPosition)
     {

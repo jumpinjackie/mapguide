@@ -51,7 +51,7 @@ namespace CSLibrary
         virtual STRING GetDefaultFileName();
         virtual STRING GetFileName();
         virtual void SetFileName(CREFSTRING sFileName);
-        
+
         //modify the dictionary
         virtual void Add(MgGuardDisposable *pDefinition);
         virtual void Remove(CREFSTRING sName);
@@ -70,7 +70,7 @@ namespace CSLibrary
 
         static const char* ReadName(const cs_GeodeticPath_& definition);
         static const char* ReadDescription(const cs_GeodeticPath_& definition);
-        
+
         static int UpdateGeodeticPath(cs_GeodeticPath_* csPath, int /*unused*/);
         static int ReadAllGeodeticPaths(csFILE *file, cs_GeodeticPath_ *gp_def, int* /*unused*/);
 

@@ -65,32 +65,32 @@ PUBLISHED_API:
 
     virtual INT32 GetMaxIterations() = 0;
     virtual void SetMaxIterations(INT32 maxIterations) = 0;
-	
+
     virtual double GetConvergenceValue() = 0;
     virtual void SetConvergenceValue(double convergenceValue) = 0;
-	
+
     virtual double GetErrorValue() = 0;
     virtual void SetErrorValue(double errorValue) = 0;
-	
+
     virtual double GetAccuracy() = 0;
     virtual void SetAccuracy(double accuracy) = 0;
-    
+
     //END: struct cs_GeodeticTransform_
 
     virtual bool IsProtected() = 0;
     virtual bool IsValid() = 0;
-    
+
     ////////////////////////////////////////////////////////////////
     /// \brief
     /// Returns the type of this geodetic transformation (as defined by MgCoordinateSystemGeodeticTransformDefType).
     /// The type defines the parameters that are being returned by the GetParameters method.
     virtual INT32 GetTransformDefType() = 0;
-    
+
     ////////////////////////////////////////////////////////////////
     /// \brief
     /// Returns the extended parameters object valid for this transformation definition. See remarks.
     /// Depending on the type returned by GetTransformDefType(), this method returns one of the following:
-    /// 
+    ///
     /// \li NULL if this is a NULL transformation
     /// \li MgCoordinateSystemGeodeticAnalyticalTransformDefParams if this transformation uses an anylitical transformation method
     /// \li MgCoordinateSystemGeodeticInterpolationTransformDefParams if this transformation uses grid files
@@ -99,23 +99,23 @@ PUBLISHED_API:
     /// \return
     /// Returns the extended parameters (or NULL) object for this transformation object. The
     /// caller is responsible for disposing the object being returned. See remarks.
-    /// 
+    ///
     /// \remarks
     /// If a caller needs to change the parameters of a transformation, the values
     /// have to be changed on the object being returned here and then written
-    /// back via SetParameters. Setting the values on the parameters object 
+    /// back via SetParameters. Setting the values on the parameters object
     /// has no affect on this transformation definition.
     virtual MgCoordinateSystemGeodeticTransformDefParams* GetParameters() = 0;
-    
+
     ////////////////////////////////////////////////////////////////
     /// \brief
     /// Sets the extended parameters for this transformation.
-    /// 
+    ///
     /// \param parameters
     /// The parameters to set for this transformation. The object passed in,
     /// has to be of the same type as it has been returned by GetParameters. Otherwise,
     /// an exception will be thrown. This parameter can only be NULL, if this is a NONE transformation.
-    /// 
+    ///
     /// \remarks
     /// The instance passed in has to be disposed by the caller, i.e. this transformation
     /// object will not take ownership of it.
@@ -137,7 +137,7 @@ PUBLISHED_API:
     /// have to change such values before trying to write the cloned instance into
     /// the dictionary file.
     virtual MgCoordinateSystemGeodeticTransformDef* CreateClone() = 0;
-    
+
     ///////////////////////////////////////////////////////////////////////////
     /// \brief
     /// Creates a new MgCoordinateSystemGeodeticTransformation object that

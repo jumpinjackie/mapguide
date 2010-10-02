@@ -50,7 +50,7 @@ PUBLISHED_API:
 
     virtual double GetTestLambda() = 0;
     virtual void SetTestLambda(double testLambda) = 0;
-    		
+
     virtual double GetDeltaPhi() = 0;
     virtual void SetDeltaPhi(double deltaPhi) = 0;
 
@@ -59,19 +59,19 @@ PUBLISHED_API:
 
     virtual double GetDeltaHeight() = 0;
     virtual void SetDeltaHeight(double deltaHeight) = 0;
-			
+
     virtual double GetPhiOffset() = 0;
     virtual void SetPhiOffset(double phiOffset) = 0;
 
     virtual double GetLambdaOffset() = 0;
     virtual void SetLambdaOffset(double lambdaOffset) = 0;
-    
+
     virtual double GetNormalizationScale() = 0;
     virtual void SetNormalizationScale(double NormalizationScale) = 0;
 
     virtual double GetCoefficientPhi(INT32 index) = 0; // range [0..104]
     virtual void SetCoefficientPhi(INT32 index, double value) = 0;
-    
+
     virtual double GetCoefficientLambda(INT32 index) = 0; // range [0..104]
     virtual void SetCoefficientLambda(INT32 index, double value) = 0;
 

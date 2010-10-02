@@ -32,13 +32,13 @@ class MG_GEOMETRY_API MgCoordinateSystemGeodeticTransformDefDictionary : public 
     DECLARE_CLASSNAME(MgCoordinateSystemGeodeticTransformDefDictionary)
 
 PUBLISHED_API:
-    
+
     ///////////////////////////////////////////////////////////////////////////
     /// \brief
     /// Creates a new, empty geodetic transformation definition object that has to be filled by an API client. This
     /// method does not create a new entry in the dictionary. The caller is responsible
     /// for disposing the object being returned.
-    /// 
+    ///
     /// \return
     /// Return a new, in-memory geodetic transformation definition object. No content is written to disk
     /// when this method executes.
@@ -49,10 +49,10 @@ PUBLISHED_API:
     /// \brief
     /// Returns the geodetic transformation definition object where the name is equal to the parameter
     /// pathName. The caller is responsible for disposing the object.
-    /// 
+    ///
     /// \param transformationName
     /// The name of the geodetic transformation to look up in the dictionary. Must not be an empty string.
-    /// 
+    ///
     /// \return
     /// Return the geodetic transformation if found. Otherwise NULL.
     ///

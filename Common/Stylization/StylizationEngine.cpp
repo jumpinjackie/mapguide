@@ -206,7 +206,7 @@ void StylizationEngine::StylizeVectorLayer(MdfModel::VectorLayerDefinition* laye
 inline unsigned int TransparentColor(unsigned int argb, double opaque)
 {
     //unsigned int alpha = (unsigned int)(((argb >> 24) & 0xFF) * opaque);
-    return argb & 0xFFFFFF 
+    return argb & 0xFFFFFF
         | (((unsigned int)(((argb >> 24) & 0xFF)* opaque)) << 24);
 }
 
@@ -253,7 +253,7 @@ void StylizationEngine::StylizeWatermark(SE_Renderer* se_renderer,
         m_visitor->ParseStringExpression(L"", seTip, L"");
     if (se_renderer->SupportsHyperlinks())
         m_visitor->ParseStringExpression(L"", seUrl, L"");
-    
+
     SE_Rule rule;
 
     // Translate watermark source into SE_SymbolInstance list.
@@ -268,7 +268,7 @@ void StylizationEngine::StylizeWatermark(SE_Renderer* se_renderer,
 
     m_visitor->Convert(rule.symbolInstances, &symbols);
     _ASSERT(rule.symbolInstances.size() == 1u);
-    
+
     // translate appearance (transparency / rotation) into symbol instance
     double transparency = watermark->GetAppearance()->GetTransparency();
     transparency = (transparency < 0.0)? 0.0 : ((transparency > 100.0)? 100.0 : transparency);
@@ -284,7 +284,7 @@ void StylizationEngine::StylizeWatermark(SE_Renderer* se_renderer,
         style->angleDeg.value = style->angleDeg.defValue = style->angleDeg.defValue + rotation;
         if (style->symbol.size() == 0)
             continue;
-        
+
         if (opacity > 0.9999)   // opaque is 1
             continue;
 
@@ -316,7 +316,7 @@ void StylizationEngine::StylizeWatermark(SE_Renderer* se_renderer,
             }
         }
     }
-    
+
     // prepare some rendering context variable
     double mm2sud = m_serenderer->GetScreenUnitsPerMillimeterDevice();
     double mm2suw = m_serenderer->GetScreenUnitsPerMillimeterWorld();
@@ -469,7 +469,7 @@ void StylizationEngine::StylizeWatermark(SE_Renderer* se_renderer,
             lb->SetDrawingScale(drawingScale);
 
             //Render line buffer
-            
+
             // -------------------------------------------------------------------------
             //
             // Here's a description of how the transforms work for point symbols.
@@ -735,7 +735,7 @@ void StylizationEngine::StylizeWatermark(SE_Renderer* se_renderer,
     }
 
     // Detach symbol definition from the created composite symbol so that
-    // it will not be finalized when composite symbol is finalized. 
+    // it will not be finalized when composite symbol is finalized.
     // The code is sure there is only one symbol instance.
     _ASSERT(symbols.GetSymbolCollection()->GetCount() == 1);
     symbols.GetSymbolCollection()->GetAt(0)->OrphanSymbolDefinition();

@@ -21,8 +21,8 @@ int _tmain(int argc, _TCHAR* argv[])
     INT32 gridLineCount;
     INT32 lineSegmentCount;
 
-	clock_t startTime;
-	clock_t endTime;
+    clock_t startTime;
+    clock_t endTime;
 
     double xx;
     double yy;
@@ -32,12 +32,12 @@ int _tmain(int argc, _TCHAR* argv[])
 
     MgCoordinateSystemFactory factory;
     MgCoordinateSystemCatalog* catalog;
-	MgCoordinateSystemCategoryDictionary* categoryDict;
-	MgCoordinateSystemEnum* categoryEnum;
-	MgCoordinateSystemDictionary* coordsysDict;
-	MgCoordinateSystemEnum* coordsysEnum;
-	MgDisposableCollection* coordsysCollection;
-	MgStringCollection* stringCollection;
+    MgCoordinateSystemCategoryDictionary* categoryDict;
+    MgCoordinateSystemEnum* categoryEnum;
+    MgCoordinateSystemDictionary* coordsysDict;
+    MgCoordinateSystemEnum* coordsysEnum;
+    MgDisposableCollection* coordsysCollection;
+    MgStringCollection* stringCollection;
 
     MgCoordinate* pCoordinate;
     MgCoordinateIterator* coordItr;
@@ -61,12 +61,12 @@ coordsysDict = catalog->GetCoordinateSystemDictionary ();
 coordsysEnum = coordsysDict->GetEnum ();
 do
 {
-	stringCollection = coordsysEnum->NextName (1);
-	if (stringCollection->GetCount () > 0)
-	{
-		STRING code = stringCollection->GetItem (0);
-		Ptr<MgCoordinateSystem> coordSysPtr = factory.CreateFromCode (code);
-	}
+    stringCollection = coordsysEnum->NextName (1);
+    if (stringCollection->GetCount () > 0)
+    {
+        STRING code = stringCollection->GetItem (0);
+        Ptr<MgCoordinateSystem> coordSysPtr = factory.CreateFromCode (code);
+    }
 } while (stringCollection->GetCount () > 0);
 endTime = clock ();
 printf ("Dictionary enumeration time = %ld milliseconds.\n",endTime - startTime);

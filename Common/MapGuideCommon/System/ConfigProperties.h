@@ -868,8 +868,8 @@ EXTERNAL_API:
     /// Password for Wms requests
     static const STRING WmsPassword;                                    /// value("WmsPassword")
 
-    /// Enable OGC CITE Test for WFS 
-    static const STRING CITEWfsEnabled;                                 /// value("CITEWfsEnabled") 
+    /// Enable OGC CITE Test for WFS
+    static const STRING CITEWfsEnabled;                                 /// value("CITEWfsEnabled")
     static const bool DefaultCITEWfsEnabled;                            /// value(false)
 
     /// WEB APPLICATION PROPERTIES SECTION -------------------------------------------------------------------------------------------

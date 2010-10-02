@@ -47,13 +47,13 @@ BEGIN_NAMESPACE_MDFMODEL
         // Property: TileHeight
         double GetTileHeight() const;
         void SetTileHeight(const double& dTileHeight);
-        
+
         // Property: HorizontalPosition
         const WatermarkXOffset* GetHorizontalPosition() const;
         WatermarkXOffset* GetHorizontalPosition();
         void AdoptHorizontalPosition(WatermarkXOffset* pHorizontalPosition);
         WatermarkXOffset* OrphanHorizontalPosition();
-        
+
         // Property: VerticalPosition
         const WatermarkYOffset* GetVerticalPosition() const;
         WatermarkYOffset* GetVerticalPosition();

@@ -21,7 +21,7 @@
 namespace CSLibrary
 {
     typedef cs_GeodeticTransform_::csGeodeticXformParameters::csGeodeticXformParmsGeocentric csGeocentricXformParams;
-    
+
     class CCoordinateSystemGeodeticAnalyticalTransformDefParams :
         public MgCoordinateSystemGeodeticAnalyticalTransformDefParams,
         public CCoordinateSystemGeodeticTransformDefParams
@@ -40,13 +40,13 @@ namespace CSLibrary
         //MgCoordinateSystemGeodeticAnalyticalTransformDefParams implementation
         virtual double GetDeltaX();
         virtual void SetDeltaX(double deltaX);
-			
+
         virtual double GetDeltaY();
         virtual void SetDeltaY(double deltaY);
 
         virtual double GetDeltaZ();
         virtual void SetDeltaZ(double deltaZ);
-    			
+
         virtual double GetRotateX();
         virtual void SetRotateX(double rotateX);
 
@@ -55,8 +55,8 @@ namespace CSLibrary
 
         virtual double GetRotateZ();
         virtual void SetRotateZ(double rotateZ);
-    			
-	    virtual double GetScale();
+
+        virtual double GetScale();
         virtual void SetScale(double scale);
 
         virtual double GetTranslateX();

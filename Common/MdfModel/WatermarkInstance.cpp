@@ -266,7 +266,7 @@ bool WatermarkInstance::Equals(WatermarkInstance* another)
         return false;
 
     // check resource ID
-    if (::wcscmp(this->m_strResourceId.c_str(), another->m_strResourceId.c_str())) 
+    if (::wcscmp(this->m_strResourceId.c_str(), another->m_strResourceId.c_str()))
         return false;
 
     // check appearance

@@ -44,14 +44,14 @@ void RenderUtil::DrawScreenRaster(SE_Renderer* render,
         unsigned int* decoded = AGGImageIO::DecodePNG(data, length, native_width, native_height);
         if (decoded)
         {
-            DrawScreenRaster(render, 
-                             (unsigned char*)decoded, 
-                             native_width * native_height * 4, 
-                             RS_ImageFormat_ARGB, 
-                             native_width, 
-                             native_height, 
-                             x, y, 
-                             w, h, 
+            DrawScreenRaster(render,
+                             (unsigned char*)decoded,
+                             native_width * native_height * 4,
+                             RS_ImageFormat_ARGB,
+                             native_width,
+                             native_height,
+                             x, y,
+                             w, h,
                              angledeg, alpha);
         }
 

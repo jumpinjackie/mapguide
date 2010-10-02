@@ -25,7 +25,7 @@
 struct MgOperationResponsePacket : public MgBasicPacket
 {
     MgOperationResponsePacket()
-    : 
+    :
     m_PacketVersion(0),
     m_ECode(0),
     m_NumReturnValues(0)

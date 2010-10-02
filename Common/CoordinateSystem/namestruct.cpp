@@ -51,20 +51,20 @@ void TNameStruct::Init(const char *kpName)
     this->Release();
 
     size_t stringLength = (NULL == kpName) ? 0 : strnlen(kpName, MAX_STRING_LENGTH);
-    
+
     //cannot be null; throws std::bad_alloc in case of failure; (what about replacing the new operator?)
     //don't catch it here - if we're not even able to allocate about [MAX_STRING_LENGTH] something very serious is going on here
     name = new char[stringLength + 1];
 
     if (stringLength > 0) //copy the string into the buffer if we've been given a valid, non-empty string
         strncpy(name, kpName, stringLength);
-    
+
     name[stringLength] = '\0'; // finally, set the terminating NULL char in any case; the buffer is at least 1 char long
 }
 
 //Assignment operator; assign based on other TNameStruct
 //
-TNameStruct& 
+TNameStruct&
 TNameStruct::operator=(const TNameStruct& other)
 {
     this->Init(other.name);

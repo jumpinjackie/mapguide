@@ -30,11 +30,11 @@ namespace CSLibrary
     public:
         CCoordinateSystemGeodeticInterpolationTransformDefParams(const csGridFileXformParams& params, bool isProtected);
         ~CCoordinateSystemGeodeticInterpolationTransformDefParams();
-        
+
         // >>> MgCoordinateSystemGeodeticInterpolationTransformDefParams
         virtual void SetGridFiles(MgDisposableCollection* gridFiles);
         virtual MgDisposableCollection* GetGridFiles();
-			
+
         virtual STRING GetFallback();
         virtual void SetFallback(CREFSTRING);
 
@@ -49,7 +49,7 @@ namespace CSLibrary
 
     private:
         void CopyTo(void* target) const;
-        
+
         void Reset();
         void ReleaseInstance();
 
