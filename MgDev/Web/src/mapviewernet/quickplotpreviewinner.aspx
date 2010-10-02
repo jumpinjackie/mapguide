@@ -55,7 +55,7 @@ NameValueCollection annotations = new NameValueCollection();
     String mask    = Regex.Match(templ, pattern).Result("${mask}");
     templ = Regex.Replace(templ, pattern, DateTime.Now.ToString(mask));
     // The scale annotation
-    
+
     String jsPath = "../viewerfiles/";
     String[] vals = {jsPath};
 
@@ -80,7 +80,7 @@ void GetParameters(NameValueCollection parameters)
     us = GetIntParameter(parameters, "US");
     scaleDenominator = GetIntParameter(parameters, "SCALE_DENOMINATOR");
     mapName = ValidateMapName(GetParameter(parameters, "MAPNAME"));
-    
+
     // The parameters whose name matches this pattern will be treated as annotation
     String pattern = @"^\{field:.+\}$";
     foreach (String key in parameters.AllKeys)
@@ -90,7 +90,7 @@ void GetParameters(NameValueCollection parameters)
             annotations.Add(key, HttpUtility.HtmlEncode(parameters[key]));
         }
     }
-    
+
     annotations.Add("{scale}", String.Format("1 : {0}", scaleDenominator));
 }
 

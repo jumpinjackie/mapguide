@@ -61,16 +61,16 @@ void GetParameters(NameValueCollection parameters)
     mapName = ValidateMapName(GetParameter(parameters, "map_name"));
     rotation = GetDoubleParameter(parameters, "rotation");
     printDpi = GetIntParameter(parameters, "print_dpi");
-    
+
     scaleDenominator = GetIntParameter(parameters, "scale_denominator");
-    
+
     string[] a = parameters["paper_size"].Split(',');
     paperSize  = new SizeF(float.Parse(a[0]), float.Parse(a[1]));
     printSize  = new Size((int) (paperSize.Width / 25.4 * printDpi), (int) (paperSize.Height / 25.4 * printDpi));
-    
+
     a = parameters["box"].Split(',');
     captureBox = CreatePolygon(a);
-    
+
     a = parameters["normalized_box"].Split(',');
     normalizedCapture = CreatePolygon(a);
 }
@@ -79,15 +79,15 @@ MgPolygon CreatePolygon(string[] coordinates)
 {
     MgGeometryFactory geometryFactory = new MgGeometryFactory();
     MgCoordinateCollection coordinateCollection = new MgCoordinateCollection();
-    
+
     for (int i = 0; i < coordinates.Length; ++i)
     {
         coordinateCollection.Add(geometryFactory.CreateCoordinateXY(double.Parse(coordinates[i]), double.Parse(coordinates[++i])));
     }
-    
+
     coordinateCollection.Add(geometryFactory.CreateCoordinateXY(double.Parse(coordinates[0]), double.Parse(coordinates[1])));
     MgLinearRing linearRing = geometryFactory.CreateLinearRing(coordinateCollection);
-    
+
     return geometryFactory.CreatePolygon(linearRing, null);
 }
 
@@ -98,12 +98,12 @@ void GenerateMap(Size size)
     siteConnection.Open(userInfo);
     MgResourceService resourceService = siteConnection.CreateService(MgServiceType.ResourceService) as MgResourceService;
     MgRenderingService renderingService = siteConnection.CreateService(MgServiceType.RenderingService) as MgRenderingService;
-    
+
     MgMap map = new MgMap();
     map.Open(resourceService, mapName);
-    
+
     MgSelection selection = new MgSelection(map);
-    
+
     // Calculate the generated picture size
     MgEnvelope envelope = captureBox.Envelope();
     MgEnvelope normalizedE = normalizedCapture.Envelope();
@@ -112,13 +112,13 @@ void GenerateMap(Size size)
 
     SizeF toSize = new SizeF(size1.Width / size2.Width * size.Width, size1.Height / size2.Height * size.Height);
     MgCoordinate center = captureBox.GetCentroid().GetCoordinate();
-    
+
     // Get the map agent url
     // Get the correct http protocol
     StringBuilder mapAgent = new StringBuilder(Request.IsSecureConnection ? "https://" : "http://");
     // Get the correct port number
     // Just use the 127.0.0.1 specificly to point to localhost. Because the WebExtension will
-    // be always on the same server with map agent. 
+    // be always on the same server with map agent.
     mapAgent.Append("127.0.0.1").Append(":").Append(Request.ServerVariables["SERVER_PORT"]);
 
     // Get the correct virtual directory
@@ -156,9 +156,9 @@ void GenerateMap(Size size)
                             graphics.DrawImage(image, -image.Width / 2, -image.Height / 2);
                         }
                     }
-                    
+
                     DrawNorthArrow(result);
-                    
+
                     using (MemoryStream stream = new MemoryStream())
                     {
                         result.Save(stream, System.Drawing.Imaging.ImageFormat.Png);
@@ -184,7 +184,7 @@ void DrawNorthArrow(Bitmap image)
         {
             float scaleFactor = (float) printDpi / naDpi;
             RectangleF rec = new RectangleF(new PointF(0.0f, 0.0f), new SizeF(na.Width * scaleFactor, na.Height * scaleFactor));
-            
+
             if (Math.Abs(rotation) > double.Epsilon)
             {
                 GraphicsUnit pixelUnit = GraphicsUnit.Pixel;
@@ -195,7 +195,7 @@ void DrawNorthArrow(Bitmap image)
                 region.Transform(matrix);
                 rec = region.GetBounds(graphics);
             }
-            
+
             using (System.Drawing.Image rotatedNA = new Bitmap((int) Math.Ceiling(rec.Width), (int) Math.Ceiling(rec.Height)))
             {
                 using (Graphics nag = Graphics.FromImage(rotatedNA))
@@ -205,7 +205,7 @@ void DrawNorthArrow(Bitmap image)
                     nag.ScaleTransform(scaleFactor, scaleFactor);
                     nag.DrawImage(na, -na.Width / 2, -na.Height / 2);
                 }
-                
+
                 double x = image.Width - rotatedNA.Width - naMargin / 25.4 * printDpi;
                 double y = image.Height - rotatedNA.Height - naMargin / 25.4 * printDpi;
                 graphics.DrawImage(rotatedNA, new PointF((float)x, (float)y));

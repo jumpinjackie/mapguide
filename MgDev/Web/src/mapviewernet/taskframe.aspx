@@ -47,7 +47,7 @@ String locale = "";
         //connect to the site and get a feature service and a resource service instances
         MgSiteConnection site = new MgSiteConnection();
         site.Open(cred);
-        
+
         //Get the MgWebLayout object
         MgResourceService resourceSrvc = (MgResourceService)site.CreateService(MgServiceType.ResourceService);
         MgResourceIdentifier webLayoutResId = new MgResourceIdentifier(webLayoutId);
