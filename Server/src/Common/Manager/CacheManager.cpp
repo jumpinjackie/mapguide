@@ -321,7 +321,7 @@ MgSpatialContextCacheItem* MgCacheManager::GetSpatialContextCacheItem(MgResource
 ///
 bool MgCacheManager::IsResourceChangeNotificationNeeded(MgResourceIdentifier* resource)
 {
-    bool notificationNeeded = false; 
+    bool notificationNeeded = false;
 
     // Note that the filter below may be changed in the future or whenever
     // a new resource type is supported.
@@ -352,9 +352,9 @@ bool MgCacheManager::IsResourceChangeNotificationNeeded(MgResourceIdentifier* re
          && MgResourceType::PrintLayoutDefinition        != resourceType
          && MgResourceType::PrintLayoutElementDefinition != resourceType)
         {
-            notificationNeeded = true; 
+            notificationNeeded = true;
         }
     }
 
-    return notificationNeeded; 
+    return notificationNeeded;
 }

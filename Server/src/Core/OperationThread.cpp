@@ -413,7 +413,7 @@ IMgServiceHandler::MgProcessStatus MgOperationThread::ProcessOperation( MgServer
             {
                 ACE_Time_Value operationTime(0);
                 operationTime = ACE_OS::gettimeofday() - operationStartTime;
-                
+
                 unsigned long opTime = operationTime.msec();
 
                 pConnection->IncrementProcessedOperations();

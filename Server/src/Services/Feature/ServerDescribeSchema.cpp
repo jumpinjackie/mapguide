@@ -41,7 +41,7 @@ FdoFeatureSchemaCollection* MgServerDescribeSchema::DescribeFdoSchema(MgResource
     CREFSTRING schemaName, MgStringCollection* classNames, bool& classNameHintUsed)
 {
     // IMPORTANT INFORMATION
-    // FDO objects cannot be cached as they are not thread safe. 
+    // FDO objects cannot be cached as they are not thread safe.
     // This is not an issue because we create a MapGuide wrapper of this information that is thread safe.
     FdoPtr<FdoFeatureSchemaCollection> ffsc;
     ffsc = NULL;
@@ -1049,7 +1049,7 @@ MgClassDefinitionCollection* MgServerDescribeSchema::GetIdentityProperties(
         }
 
         // IMPORTANT INFORMATION
-        // FDO objects cannot be cached as they are not thread safe. 
+        // FDO objects cannot be cached as they are not thread safe.
         // This is not an issue because we create a MapGuide wrapper of this information that is thread safe.
         FdoPtr<FdoFeatureSchemaCollection> fdoSchemas;
         fdoSchemas = NULL;

@@ -979,7 +979,7 @@ void MgServerManager::IncrementActiveConnections()
     // The ACE SELECT reactor does not have the same handle limit as the ACE WFMO reactor.
     // The code below is left as is, but commented out in case the ACE WFMO reactor is ever used in the future.
 
-    // The limit for the default Windows ACE WFMO reactor is 62 handles this is due to the 64 handle limit of 
+    // The limit for the default Windows ACE WFMO reactor is 62 handles this is due to the 64 handle limit of
     // the Windows WaitForMultipleObjects() API, but ACE uses 2 handles internally leaving only 62 handles for the application.
     // The only reason the value 55 is chosen is because it is slightly under this value and
     // so we can log an error as the # of active connections approaches the current ACE reactor limit.

@@ -153,7 +153,7 @@ STRING MgOgcFilterUtil::process_element(DOMElement* root)
     else if (xmlcmp(wnm, L"PropertyName") == 0)
     {
         m_propName = process_identifier(root);
-        
+
         // This is a workaround for GML3. For Name and Description properties, there will be a "gml:" prefix
         // Remove the prefix to make sure Name and Description properties can be found by FDO API.
         size_t pos = m_propName.find_first_of(L":");
