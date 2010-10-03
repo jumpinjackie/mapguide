@@ -285,7 +285,7 @@ void StylizationEngine::StylizeWatermark(SE_Renderer* se_renderer,
         if (style->symbol.size() == 0)
             continue;
 
-        if (opacity > 0.9999)   // opaque is 1
+        if (opacity < 0.001)   // opaque is 0
             continue;
 
         size_t nPrimitives = style->symbol.size();
