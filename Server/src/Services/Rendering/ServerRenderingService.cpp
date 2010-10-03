@@ -1059,7 +1059,7 @@ MgByteReader* MgServerRenderingService::RenderMapInternal(MgMap* map,
                 }
                 if (instance->GetAppearanceOverride())
                 {
-                    wdef->AdoptAppearance(instance->GetAppearanceOverride());
+                    wdef->AdoptAppearance(instance->OrphanAppearanceOverride());
                 }
                 ds.StylizeWatermark(dr, wdef, drawWidth, drawHeight, saveWidth, saveHeight);
             }
