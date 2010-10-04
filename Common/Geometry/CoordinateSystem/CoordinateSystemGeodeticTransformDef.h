@@ -75,6 +75,18 @@ PUBLISHED_API:
     virtual double GetAccuracy() = 0;
     virtual void SetAccuracy(double accuracy) = 0;
 
+    virtual double GetRangeMinLongitude() = 0;
+    virtual void SetRangeMinLongitude(double minLong) = 0;
+
+    virtual double GetRangeMaxLongitude() = 0;
+    virtual void SetRangeMaxLongitude(double maxLong) = 0;
+
+    virtual double GetRangeMinLatitude() = 0;
+    virtual void SetRangeMinLatitude(double minLat) = 0;
+
+    virtual double GetRangeMaxLatitude() = 0;
+    virtual void SetRangeMaxLatitude(double maxLat) = 0;
+
     //END: struct cs_GeodeticTransform_
 
     virtual bool IsProtected() = 0;

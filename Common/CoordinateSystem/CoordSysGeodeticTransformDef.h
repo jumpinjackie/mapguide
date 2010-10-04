@@ -76,6 +76,18 @@ public:
     virtual double GetAccuracy();
     virtual void SetAccuracy(double accuracy);
 
+    virtual double GetRangeMinLongitude();
+    virtual void SetRangeMinLongitude(double minLong);
+
+    virtual double GetRangeMaxLongitude();
+    virtual void SetRangeMaxLongitude(double maxLong);
+
+    virtual double GetRangeMinLatitude();
+    virtual void SetRangeMinLatitude(double minLat);
+
+    virtual double GetRangeMaxLatitude();
+    virtual void SetRangeMaxLatitude(double maxLat);
+
     virtual MgCoordinateSystemGeodeticTransformDefParams* GetParameters();
     virtual void SetParameters(MgCoordinateSystemGeodeticTransformDefParams* parameters);
     //end properties
