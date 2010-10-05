@@ -49,25 +49,17 @@ struct csCsrup_
 #undef cs_Csdef08_
 
 
-//FIXME (CS_rlsUodt.c isn't built anymore)
-//
 //Externs from Mentor
-/*
 extern "C"
 {
     int CScsrupReadOld (csFILE *oldStrm,struct csCsrup_ *csrup,int old_lvl);
     int CScsrupRead05 (csFILE *oldStrm,struct csCsrup_ *csrup);
     int CScsrupRead06 (csFILE *oldStrm,struct csCsrup_ *csrup);
 }
-*/
 
-
-//FIXME (CS_rlsUodt.c isn't built anymore)
-//
 //Function which works like CS_csrd(), except that it reads version
 //5 coordsys structs.
 //
-/*
 static int
 CS_csrd05(
     csFILE *oldStrm,
@@ -84,8 +76,6 @@ CS_csrd05(
     }
     return nStatus;
 }
-
-
 
 //Function which works like CS_csrd(), except that it reads version
 //6 coordsys structs.
@@ -106,8 +96,6 @@ CS_csrd06(
     }
     return nStatus;
 }
-*/
-
 
 //Function which returns whether the specified "magic number" is
 //a valid one for a Mentor coordsys dictionary.  The returned value
@@ -268,12 +256,8 @@ cs_Csdef_ * CCoordinateSystemDictionary::csdef(const char *kpName)
 
     throw new MgInvalidOperationException(L"CCoordinateSystemDictionary.csdef", __LINE__, __WFILE__, NULL, L"", NULL);
 
-    //FIXME (CS_rlsUodt.c isn't built anymore)
-    //
-
     //It's an old version.  We need to do a special search
     //in the file, and then, if found, update it to a current struct.
-    /*
     UINT32 nStructSize, nNameSize;
     GetCoordinateSystemSizeInfo(m_lMagic, nStructSize, nNameSize);
     if (strlen(kpName) > nNameSize-1) return NULL;
@@ -334,7 +318,6 @@ cs_Csdef_ * CCoordinateSystemDictionary::csdef(const char *kpName)
     }
 
     return pDef;
-    */
 }
 
 //------------------------------------------------------------------------
@@ -681,12 +664,11 @@ CCoordinateSystemEnum* CCoordinateSystemDictionary::GetEnumImp()
         assert(nVersion > 0);
         switch (nVersion)
         {
-        //FIXME (CS_rlsUpdt.c isn't built anymore)
-            /*
         case 5:
             //Generate summary for version 5 coordsys file.
             m_pmapSystemNameDescription = MentorDictionary::GenerateSystemNameDescriptionMap<cs_Csdef05_>(
                 pFile,
+                CsKey05,
                 CsDesc05,
                 CS_csrd05);
             break;
@@ -694,10 +676,10 @@ CCoordinateSystemEnum* CCoordinateSystemDictionary::GetEnumImp()
             //Generate summary for version 6 coordsys file.
             m_pmapSystemNameDescription = MentorDictionary::GenerateSystemNameDescriptionMap<cs_Csdef06_>(
                 pFile,
+                CsKey06,
                 CsDesc06,
                 CS_csrd06);
             break;
-            */
         case 7:
         case 8:
             //Generate summary for version 7 or 8 coordsys file.

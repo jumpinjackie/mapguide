@@ -179,7 +179,7 @@ MgCoordinateSystemGeodeticTransformation* CCoordinateSystemGeodeticTransformDef:
 {
     VERIFY_INITIALIZED(L"CCoordinateSystemGeodeticTransformDef.CreateTransformation");
 
-    if (MgCoordinateSystemGeodeticTransformDefType::None == this->GetTransformDefType() || !this->IsValid())
+    if (!this->IsValid())
         throw new MgInvalidOperationException(L"CCoordinateSystemGeodeticTransformDef.CreateTransformation", __LINE__,__WFILE__, NULL, L"", NULL);
 
     //we don't take ownership of the transformation being returned but
@@ -316,6 +316,9 @@ bool CCoordinateSystemGeodeticTransformDef::IsValid()
         return false;
 
     Ptr<MgCoordinateSystemGeodeticTransformDefParams> params = this->GetParameters();
+    if (NULL == params)
+        return true; //this is a NULL transformation; this is valid
+
     if (!params->IsValid())
         return false;
 

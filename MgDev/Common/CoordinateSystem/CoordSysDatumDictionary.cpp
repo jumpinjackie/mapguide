@@ -50,10 +50,7 @@ struct csDtrup_
 #undef cs_Dtdef07_
 #undef cs_Dtdef08_
 
-
-//FIXME (CS_rlsUodt.c isn't built anymore)
 //Externs from Mentor
-/*
 extern "C"
 {
     int CSdtrupReadOld (csFILE *oldStrm,struct csDtrup_ *dtrup,int old_lvl);
@@ -61,13 +58,11 @@ extern "C"
     int CSdtrupRead06 (csFILE *oldStrm,struct csDtrup_ *dtrup);
     extern char cs_Dir[];
 }
-*/
 
-//FIXME (CS_rlsUodt.c isn't built anymore)
+
 //Function which works like CS_dtrd(), except that it reads version
 //5 datum structs.
 //
-/*
 static int
 CS_dtrd05(
     csFILE *oldStrm,
@@ -106,7 +101,7 @@ CS_dtrd06(
     }
     return nStatus;
 }
-*/
+
 
 //Function which returns whether the specified "magic number" is
 //a valid one for a Mentor datum dictionary.  The returned value
@@ -254,11 +249,9 @@ cs_Dtdef_ * CCoordinateSystemDatumDictionary::dtdef(const char *kpName) const
 
     throw new MgInvalidOperationException(L"CCoordinateSystemDatumDictionary.dtdef", __LINE__, __WFILE__, NULL, L"", NULL);
 
-    //FIXME (CS_rlsUodt.c isn't built anymore)
-    //
     //It's an old version.  We need to do a special search
     //in the file, and then, if found, update it to a current struct.
-    /*
+    
     UINT32 nStructSize, nNameSize;
     GetDatumSizeInfo(m_lMagic, nStructSize, nNameSize);
     if (strlen(kpName) > nNameSize-1) return NULL;
@@ -308,7 +301,6 @@ cs_Dtdef_ * CCoordinateSystemDatumDictionary::dtdef(const char *kpName) const
     }
     CS_fclose(pFile);
     return pDef;
-    */
 }
 
 //-------------------------------------------------------------------------------
@@ -657,12 +649,11 @@ CCoordinateSystemEnumDatum* CCoordinateSystemDatumDictionary::GetEnumImp()
         assert(nVersion > 0);
         switch (nVersion)
         {
-        // FIXME (CS_rlsUpdt.c isn't built anymore)
-            /*
         case 5:
             //Generate summary for version 5 datum file.
             m_pmapSystemNameDescription = MentorDictionary::GenerateSystemNameDescriptionMap<cs_Dtdef05_>(
                 pFile,
+                DtKey05,
                 DtDesc05,
                 CS_dtrd05);
             break;
@@ -670,10 +661,10 @@ CCoordinateSystemEnumDatum* CCoordinateSystemDatumDictionary::GetEnumImp()
             //Generate summary for version 6 datum file.
             m_pmapSystemNameDescription = MentorDictionary::GenerateSystemNameDescriptionMap<cs_Dtdef06_>(
                 pFile,
+                DtKey06,
                 DtDesc06,
                 CS_dtrd06);
-            break;
-            */
+            break;   
         case 7:
         case 8:
             //Generate summary for version 7 or 8 datum file.

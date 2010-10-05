@@ -21,6 +21,7 @@
 #include "CoordSysUtil.h"                   //for Convert_Wide_To_Ascii, CsDictionaryOpenMode
 #include "MentorUtil.h"                     //for BuildDtDefFromInterface + various utilities
 
+#include "CoordSysGeodeticTransformDef.h"   //for CCoordinateSystemGeodeticTransformDef
 #include "CoordSysDatum.h"                  //for CCoordinateSystemDatum
 #include "CoordSysGeodeticTransformation.h" //for CCoordinateSystemGeodeticTransformation
 
@@ -40,7 +41,9 @@ CCoordinateSystemGeodeticTransformation::CCoordinateSystemGeodeticTransformation
 }
 
 //-----------------------------------------------------------------------------
-CCoordinateSystemGeodeticTransformation::CCoordinateSystemGeodeticTransformation(MgCoordinateSystemCatalog* pCatalog, MgCoordinateSystemGeodeticTransformDef* transformationDef, bool createInversed)
+CCoordinateSystemGeodeticTransformation::CCoordinateSystemGeodeticTransformation(MgCoordinateSystemCatalog* pCatalog,
+                                                                                 MgCoordinateSystemGeodeticTransformDef* transformationDef,
+                                                                                 bool createInversed)
 : m_pDtcprm(NULL), m_pDtSource(NULL), m_pDtTarget(NULL)
 {
     if (NULL == pCatalog || NULL == transformationDef)
@@ -360,18 +363,24 @@ void CCoordinateSystemGeodeticTransformation::Uninitialize()
 //
 void CCoordinateSystemGeodeticTransformation::SetupFromTransformationDef(MgCoordinateSystemGeodeticTransformDef* transformationDef, bool createInversed)
 {
-    char* transformName = Convert_Wide_To_Ascii(transformationDef->GetTransformName().c_str());
+    cs_Dtcprm_* datumTransform = NULL;
 
     MG_TRY()
-
 
     //protect the call to the lib files; the calls to the [datumDictionary] below
     //we also enter the critical section but on the same thread - i.e. no problem;
     //putting the check here saves us from [enter, leave, enter leave]
     SmartCriticalClass criticalSection(true);
 
+    CCoordinateSystemGeodeticTransformDef* transformDefImpl = dynamic_cast<CCoordinateSystemGeodeticTransformDef*>(transformationDef);
+    if (NULL == transformDefImpl)
+        throw new MgInvalidArgumentException(L"CCoordinateSystemGeodeticTransformation.SetupFromTransformationDef", __LINE__, __WFILE__, NULL, L"", NULL);
+
+    cs_GeodeticTransform_ csMapTransformDef;
+    transformDefImpl->CopyTo(csMapTransformDef);
+
     //ask CS_Map for the transformation
-    cs_Dtcprm_* datumTransform = CSdtcsu1(transformName, createInversed ? cs_DTCDIR_INV : cs_DTCDIR_FWD, cs_DTCFLG_BLK_W);
+    datumTransform = CSdtcsu2(&csMapTransformDef, createInversed ? cs_DTCDIR_INV : cs_DTCDIR_FWD, cs_DTCFLG_BLK_W);
 
     if (NULL == datumTransform)
         throw new MgInvalidArgumentException(L"CCoordinateSystemGeodeticTransformation.SetupFromTransformationDef", __LINE__, __WFILE__, NULL, L"", NULL);
@@ -381,12 +390,15 @@ void CCoordinateSystemGeodeticTransformation::SetupFromTransformationDef(MgCoord
     Ptr<MgCoordinateSystemDatum> trgDatum = datumDictionary->GetDatum(transformationDef->GetTargetDatum());
 
     this->m_pDtcprm = datumTransform;
+    datumTransform = NULL; //make sure, it's not being released below
+
     this->m_pDtSource = srcDatum.Detach();  //m_pDtSource is no auto pointer
     this->m_pDtTarget = trgDatum.Detach();  //m_pDtTarget is no auto pointer
 
     MG_CATCH(L"CCoordinateSystemGeodeticTransformation.SetupFromTransformationDef")
 
-    delete[] transformName;
+    if (NULL != datumTransform) //has been set to NULL after assignment
+        CS_free(datumTransform);
 
     MG_THROW()
 }
