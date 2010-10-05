@@ -1357,41 +1357,43 @@ INT32 GeodeticTransformationPoint(cs_Dtcprm_ *pDtcprm, double& dLongitude, doubl
 {
     assert(NULL != pDtcprm);
 
-    INT32 nResult = 0;
+    //Skip datum transformation if we have a null transformation
+    //That is, if [pDtcprm->xfrmCount] is 0 or the transformation at index 0 is [cs_DTCMTH_NULLX];
+    //in either case, the entry at index 0 must never be NULL, if [xfrmCount] is not 0
+    assert(0 == pDtcprm->xfrmCount || NULL != pDtcprm->xforms[0]);
+    
+    bool isNullTransform = (0 == pDtcprm->xfrmCount || //is there a transformation entry at all?
+          (1 == pDtcprm->xfrmCount && NULL != pDtcprm->xforms[0] && cs_DTCMTH_NULLX == pDtcprm->xforms[0]->methodCode)); //if so, check, whether we've [cs_DTCMTH_NULLX] at index 0
 
-    // Skip datum transformation if we have a null transformation
-    // We have a null transform if the first transform type is dtcTypNone
+    if (isNullTransform)
+        return 0;
 
-    // FIXME
-    if (NULL != pDtcprm->xforms[0])
-    //if (dtcTypNone != pDtcprm->xforms[0].xfrmType) <-- doesn't compile
+    double dZ=0.;
+    if (pdZ)
     {
-        double dZ=0.;
-        if (pdZ)
-        {
-            dZ=*pdZ;
-        }
-
-        CriticalClass.Enter();
-        double dLonLat[3] = { dLongitude, dLatitude, dZ };
-        INT32 nResult;
-        if (!pdZ)
-        {
-            nResult = CS_dtcvt(pDtcprm, dLonLat, dLonLat);
-        }
-        else
-        {
-            nResult = CS_dtcvt3D(pDtcprm, dLonLat, dLonLat);
-        }
-        CriticalClass.Leave();
-
-        dLongitude = dLonLat[0];
-        dLatitude = dLonLat[1];
-        if (pdZ)
-        {
-            *pdZ=dLonLat[2];
-        }
+        dZ=*pdZ;
     }
+
+    CriticalClass.Enter();
+    double dLonLat[3] = { dLongitude, dLatitude, dZ };
+    INT32 nResult;
+    if (!pdZ)
+    {
+        nResult = CS_dtcvt(pDtcprm, dLonLat, dLonLat);
+    }
+    else
+    {
+        nResult = CS_dtcvt3D(pDtcprm, dLonLat, dLonLat);
+    }
+    CriticalClass.Leave();
+
+    dLongitude = dLonLat[0];
+    dLatitude = dLonLat[1];
+    if (pdZ)
+    {
+        *pdZ=dLonLat[2];
+    }
+    
     return nResult;
 }
 

@@ -52,16 +52,11 @@ struct csElrup_
 
 
 
-//FIXME (CS_rlsUodt.c isn't built anymore)
 //Externs from Mentor
-/*
 extern "C"
 {
     int CSelrupReadOld (csFILE *oldStrm,struct csElrup_ *elrup,int old_lvl);
 }
-*/
-
-
 
 //Function which returns whether the specified "magic number" is
 //a valid one for a Mentor ellipsoid dictionary.  The returned value
@@ -194,13 +189,9 @@ cs_Eldef_ * CCoordinateSystemEllipsoidDictionary::eldef(const char *kpName) cons
     }
 
     throw new MgInvalidOperationException(L"CCoordinateSystemEllipsoidDictionary.eldef", __LINE__, __WFILE__, NULL, L"", NULL);
-
-    //FIXME (CS_rlsUodt.c isn't built anymore)
-    //
+    
     //It's an old version.  We need to do a special search
-    //in the file, and then, if found, update it to a current struct.
-
-    /*
+    //in the file, and then, if found, update it to a current struct.    
     UINT32 nStructSize, nNameSize;
     GetEllipsoidSizeInfo(m_lMagic, nStructSize, nNameSize);
     if (strlen(kpName) > nNameSize-1) return NULL;
@@ -250,7 +241,6 @@ cs_Eldef_ * CCoordinateSystemEllipsoidDictionary::eldef(const char *kpName) cons
     }
     CS_fclose(pFile);
     return pDef;
-    */
 }
 
 //-----------------------------------------------------------------------------
