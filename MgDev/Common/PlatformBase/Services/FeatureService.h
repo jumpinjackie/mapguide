@@ -203,9 +203,9 @@ PUBLISHED_API:
     /// \exception MgInvalidArgumentException
     /// \exception MgFdoException
     ///
-    virtual MgStringCollection* GetConnectionPropertyValues( CREFSTRING providerName,
-                                                             CREFSTRING propertyName,
-                                                             CREFSTRING partialConnString    ) = 0;
+    virtual MgStringCollection* GetConnectionPropertyValues(CREFSTRING providerName,
+                                                            CREFSTRING propertyName,
+                                                            CREFSTRING partialConnString) = 0;
 
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     /// \brief
@@ -461,7 +461,8 @@ PUBLISHED_API:
     /// schema and classes.
     ///
     virtual MgFeatureSchemaCollection* DescribeSchema(MgResourceIdentifier* resource,
-        CREFSTRING schemaName, MgStringCollection* classNames) = 0;
+                                                      CREFSTRING schemaName,
+                                                      MgStringCollection* classNames) = 0;
 
     ///////////////////////////////////////////////////////////////////////////
     /// \brief
@@ -505,7 +506,7 @@ PUBLISHED_API:
     /// schema and classes.
     ///
     virtual MgFeatureSchemaCollection* DescribeSchema(MgResourceIdentifier* resource,
-        CREFSTRING schemaName) = 0;
+                                                      CREFSTRING schemaName) = 0;
 
     ///////////////////////////////////////////////////////////////////////////
     /// \brief
@@ -556,7 +557,8 @@ PUBLISHED_API:
     /// \exception MgFdoException
     ///
     virtual STRING DescribeSchemaAsXml(MgResourceIdentifier* resource,
-        CREFSTRING schemaName, MgStringCollection* classNames) = 0;
+                                       CREFSTRING schemaName,
+                                       MgStringCollection* classNames) = 0;
 
     ///////////////////////////////////////////////////////////////////////////
     /// \brief
@@ -599,7 +601,7 @@ PUBLISHED_API:
     /// \exception MgFdoException
     ///
     virtual STRING DescribeSchemaAsXml(MgResourceIdentifier* resource,
-        CREFSTRING schemaName) = 0;
+                                       CREFSTRING schemaName) = 0;
 
     ////////////////////////////////////////////////////////////////////////////
     /// \brief
@@ -715,9 +717,9 @@ PUBLISHED_API:
     /// \exception MgInvalidArgumentException
     /// \exception MgFdoException
     ///
-    virtual MgFeatureReader*  SelectFeatures(   MgResourceIdentifier* resource,
-                                                CREFSTRING className,
-                                                MgFeatureQueryOptions* options ) = 0;
+    virtual MgFeatureReader* SelectFeatures(MgResourceIdentifier* resource,
+                                            CREFSTRING className,
+                                            MgFeatureQueryOptions* options) = 0;
 
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     /// \brief
@@ -765,10 +767,10 @@ PUBLISHED_API:
     /// \exception MgInvalidArgumentException
     /// \exception MgFdoException
     ///
-    virtual MgFeatureReader*  SelectFeatures(   MgResourceIdentifier* resource,
-                                                CREFSTRING className,
-                                                MgFeatureQueryOptions* options,
-                                                CREFSTRING coordinateSystem ) = 0;
+    virtual MgFeatureReader* SelectFeatures(MgResourceIdentifier* resource,
+                                            CREFSTRING className,
+                                            MgFeatureQueryOptions* options,
+                                            CREFSTRING coordinateSystem) = 0;
 
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     /// \brief
@@ -811,9 +813,9 @@ PUBLISHED_API:
     /// \exception MgInvalidArgumentException
     /// \exception MgFdoException
     ///
-    virtual MgDataReader*  SelectAggregate( MgResourceIdentifier* resource,
-                                            CREFSTRING className,
-                                            MgFeatureAggregateOptions* options ) = 0;
+    virtual MgDataReader* SelectAggregate(MgResourceIdentifier* resource,
+                                          CREFSTRING className,
+                                          MgFeatureAggregateOptions* options) = 0;
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     /// \brief
@@ -878,9 +880,9 @@ PUBLISHED_API:
     /// \exception MgInvalidOperationException
     /// \exception MgFdoException
     ///
-    virtual MgPropertyCollection* UpdateFeatures( MgResourceIdentifier* resource,
-                                                  MgFeatureCommandCollection* commands,
-                                                  bool useTransaction ) = 0;
+    virtual MgPropertyCollection* UpdateFeatures(MgResourceIdentifier* resource,
+                                                 MgFeatureCommandCollection* commands,
+                                                 bool useTransaction) = 0;
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     /// \brief
@@ -951,9 +953,9 @@ PUBLISHED_API:
     /// \exception MgInvalidOperationException
     /// \exception MgFdoException
     ///
-    virtual MgPropertyCollection* UpdateFeatures( MgResourceIdentifier* resource,
-                                                  MgFeatureCommandCollection* commands,
-                                                  MgTransaction* transaction ) = 0;
+    virtual MgPropertyCollection* UpdateFeatures(MgResourceIdentifier* resource,
+                                                 MgFeatureCommandCollection* commands,
+                                                 MgTransaction* transaction) = 0;
 
     ////////////////////////////////////////////////////////////////////////////////////////////////
     /// \brief
@@ -990,9 +992,9 @@ PUBLISHED_API:
     /// \exception MgInvalidArgumentException
     /// \exception ...
     ///
-    virtual MgFeatureReader* GetLockedFeatures( MgResourceIdentifier* resource,
-                                                CREFSTRING className,
-                                                MgFeatureQueryOptions* options ) = 0;
+    virtual MgFeatureReader* GetLockedFeatures(MgResourceIdentifier* resource,
+                                               CREFSTRING className,
+                                               MgFeatureQueryOptions* options) = 0;
 
     ////////////////////////////////////////////////////////////////////////////////////////////////
     /// \brief
@@ -1023,7 +1025,7 @@ PUBLISHED_API:
     /// \exception MgInvalidOperationException
     /// \exception MgFdoException
     ///
-    virtual MgTransaction* BeginTransaction( MgResourceIdentifier* resource ) = 0;
+    virtual MgTransaction* BeginTransaction(MgResourceIdentifier* resource) = 0;
 
     ////////////////////////////////////////////////////////////////////////////////////////////////
     /// \brief
@@ -1071,8 +1073,8 @@ PUBLISHED_API:
     /// \exception MgInvalidOperationException
     /// \exception MgFdoException
     ///
-    virtual MgSqlDataReader* ExecuteSqlQuery( MgResourceIdentifier* resource,
-                                              CREFSTRING sqlStatement ) = 0;
+    virtual MgSqlDataReader* ExecuteSqlQuery(MgResourceIdentifier* resource,
+                                             CREFSTRING sqlStatement) = 0;
 
     ////////////////////////////////////////////////////////////////////////////////////////////////
     /// \brief
@@ -1131,10 +1133,10 @@ PUBLISHED_API:
     /// \exception MgInvalidOperationException
     /// \exception MgFdoException
     ///
-    virtual MgSqlDataReader* ExecuteSqlQuery( MgResourceIdentifier* resource,
-                                              CREFSTRING sqlStatement,
-                                              MgParameterCollection* parameters,
-                                              MgTransaction* transaction ) = 0;
+    virtual MgSqlDataReader* ExecuteSqlQuery(MgResourceIdentifier* resource,
+                                             CREFSTRING sqlStatement,
+                                             MgParameterCollection* parameters,
+                                             MgTransaction* transaction) = 0;
 
     ////////////////////////////////////////////////////////////////////////////////////////////////
     /// \brief
@@ -1179,8 +1181,8 @@ PUBLISHED_API:
     /// \exception MgInvalidOperationException
     /// \exception MgFdoException
     ///
-    virtual INT32 ExecuteSqlNonQuery( MgResourceIdentifier* resource,
-                                      CREFSTRING sqlNonSelectStatement ) = 0;
+    virtual INT32 ExecuteSqlNonQuery(MgResourceIdentifier* resource,
+                                     CREFSTRING sqlNonSelectStatement) = 0;
 
     ////////////////////////////////////////////////////////////////////////////////////////////////
     /// \brief
@@ -1237,10 +1239,10 @@ PUBLISHED_API:
     /// \exception MgInvalidOperationException
     /// \exception MgFdoException
     ///
-    virtual INT32 ExecuteSqlNonQuery( MgResourceIdentifier* resource,
-                                      CREFSTRING sqlNonSelectStatement,
-                                      MgParameterCollection* parameters,
-                                      MgTransaction* transaction ) = 0;
+    virtual INT32 ExecuteSqlNonQuery(MgResourceIdentifier* resource,
+                                     CREFSTRING sqlNonSelectStatement,
+                                     MgParameterCollection* parameters,
+                                     MgTransaction* transaction) = 0;
 
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     /// \brief
@@ -1277,8 +1279,8 @@ PUBLISHED_API:
     /// \exception MgInvalidOperationException
     /// \exception MgFdoException
     ///
-    virtual MgSpatialContextReader* GetSpatialContexts( MgResourceIdentifier* resource,
-                                                        bool bActiveOnly) = 0;
+    virtual MgSpatialContextReader* GetSpatialContexts(MgResourceIdentifier* resource,
+                                                       bool bActiveOnly) = 0;
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     /// \brief
@@ -1315,8 +1317,8 @@ PUBLISHED_API:
     /// \exception MgInvalidOperationException
     /// \exception MgFdoException
     ///
-    virtual MgLongTransactionReader* GetLongTransactions( MgResourceIdentifier* resource,
-                                                          bool bActiveOnly) = 0;
+    virtual MgLongTransactionReader* GetLongTransactions(MgResourceIdentifier* resource,
+                                                         bool bActiveOnly) = 0;
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     /// \brief
@@ -1352,8 +1354,8 @@ PUBLISHED_API:
     /// \exception MgInvalidResourceTypeException
     /// \exception MgSessionNotFoundException
     ///
-    virtual bool SetLongTransaction( MgResourceIdentifier* featureSourceId,
-                                     CREFSTRING longTransactionName) = 0;
+    virtual bool SetLongTransaction(MgResourceIdentifier* featureSourceId,
+                                    CREFSTRING longTransactionName) = 0;
 
     /////////////////////////////////////////////////////////////////////////////
     /// \brief
@@ -1383,7 +1385,7 @@ PUBLISHED_API:
     /// \exception MgInvalidArgumentException
     /// \exception MgFdoException
     ///
-    virtual MgStringCollection* GetSchemas( MgResourceIdentifier* resource ) = 0;
+    virtual MgStringCollection* GetSchemas(MgResourceIdentifier* resource) = 0;
 
     /////////////////////////////////////////////////////////////////////////////////////////////
     /// \brief
@@ -1416,7 +1418,7 @@ PUBLISHED_API:
     /// \exception MgInvalidArgumentException
     /// \exception MgFdoException
     ///
-    virtual MgStringCollection* GetClasses( MgResourceIdentifier* resource, CREFSTRING schemaName ) = 0;
+    virtual MgStringCollection* GetClasses(MgResourceIdentifier* resource, CREFSTRING schemaName) = 0;
 
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     /// \brief
@@ -1449,9 +1451,9 @@ PUBLISHED_API:
     /// \exception MgInvalidArgumentException
     /// \exception MgFdoException
     ///
-    virtual MgClassDefinition* GetClassDefinition(  MgResourceIdentifier* resource,
-                                                    CREFSTRING schemaName,
-                                                    CREFSTRING className) = 0;
+    virtual MgClassDefinition* GetClassDefinition(MgResourceIdentifier* resource,
+                                                  CREFSTRING schemaName,
+                                                  CREFSTRING className) = 0;
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////
     /// \brief
@@ -1524,7 +1526,8 @@ PUBLISHED_API:
     /// \return
     /// Returns an MgByteReader containing the XML schema.
     ///
-    virtual MgByteReader* DescribeWfsFeatureType(MgResourceIdentifier* featureSourceId, MgStringCollection* featureClasses) = 0;
+    virtual MgByteReader* DescribeWfsFeatureType(MgResourceIdentifier* featureSourceId,
+                                                 MgStringCollection* featureClasses) = 0;
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////
     /// \brief
@@ -1560,7 +1563,9 @@ PUBLISHED_API:
     /// \return
     /// Returns an MgByteReader containing the XML schema.
     ///
-    virtual MgByteReader* DescribeWfsFeatureType(MgResourceIdentifier* featureSourceId, MgStringCollection* featureClasses,CREFSTRING outputFormat) = 0;
+    virtual MgByteReader* DescribeWfsFeatureType(MgResourceIdentifier* featureSourceId,
+                                                 MgStringCollection* featureClasses,
+                                                 CREFSTRING outputFormat) = 0;
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////
     /// \brief
@@ -1599,8 +1604,12 @@ PUBLISHED_API:
     /// \return
     /// Returns an MgByteReader containing the requested feature information.
     ///
-    virtual MgByteReader* GetWfsFeature(MgResourceIdentifier* featureSourceId, CREFSTRING featureClass,
-        MgStringCollection* requiredProperties, CREFSTRING srs, CREFSTRING filter, INT32 maxFeatures) = 0;
+    virtual MgByteReader* GetWfsFeature(MgResourceIdentifier* featureSourceId,
+                                        CREFSTRING featureClass,
+                                        MgStringCollection* requiredProperties,
+                                        CREFSTRING srs,
+                                        CREFSTRING filter,
+                                        INT32 maxFeatures) = 0;
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////
     /// \brief
@@ -1654,8 +1663,17 @@ PUBLISHED_API:
     ///
     /// \exception MgInvalidArgumentException
     ///
-    virtual MgByteReader* GetWfsFeature(MgResourceIdentifier* featureSourceId, CREFSTRING featureClass,
-        MgStringCollection* requiredProperties, CREFSTRING srs, CREFSTRING filter, INT32 maxFeatures,CREFSTRING wfsVersion, CREFSTRING outputFormat, CREFSTRING sortCriteria, CREFSTRING namespacePrefix, CREFSTRING namespaceUrl) = 0;
+    virtual MgByteReader* GetWfsFeature(MgResourceIdentifier* featureSourceId,
+                                        CREFSTRING featureClass,
+                                        MgStringCollection* requiredProperties,
+                                        CREFSTRING srs,
+                                        CREFSTRING filter,
+                                        INT32 maxFeatures,
+                                        CREFSTRING wfsVersion,
+                                        CREFSTRING outputFormat,
+                                        CREFSTRING sortCriteria,
+                                        CREFSTRING namespacePrefix,
+                                        CREFSTRING namespaceUrl) = 0;
 
     ////////////////////////////////////////////////////////////////////////////////
     /// \brief
@@ -1727,10 +1745,10 @@ INTERNAL_API:
 
     virtual STRING GetFdoCacheInfo() = 0;
 
-    virtual MgClassDefinition* GetClassDefinition(  MgResourceIdentifier* resource,
-                                                    CREFSTRING schemaName,
-                                                    CREFSTRING className,
-                                                    bool serialize) = 0;
+    virtual MgClassDefinition* GetClassDefinition(MgResourceIdentifier* resource,
+                                                  CREFSTRING schemaName,
+                                                  CREFSTRING className,
+                                                  bool serialize) = 0;
 
     // Commit the transaction specified by the transaction id.
     virtual bool CommitTransaction(CREFSTRING transactionId) = 0;
@@ -1803,11 +1821,11 @@ INTERNAL_API:
     /// \exception MgInvalidOperationException
     /// \exception MgFdoException
     ///
-    virtual MgSqlDataReader* ExecuteSqlQuery( MgResourceIdentifier* resource,
-                                              CREFSTRING sqlStatement,
-                                              MgParameterCollection* parameters,
-                                              MgTransaction* transaction,
-                                              INT32 fetchSize ) = 0;
+    virtual MgSqlDataReader* ExecuteSqlQuery(MgResourceIdentifier* resource,
+                                             CREFSTRING sqlStatement,
+                                             MgParameterCollection* parameters,
+                                             MgTransaction* transaction,
+                                             INT32 fetchSize) = 0;
 
 protected:
 

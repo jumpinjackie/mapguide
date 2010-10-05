@@ -281,6 +281,8 @@ MgByteReader* MgProxyFeatureService::GetCapabilities(CREFSTRING providerName)
     return GetCapabilities(providerName, connectionString);
 }
 
+
+//////////////////////////////////////////////////////////////////
 MgByteReader* MgProxyFeatureService::GetCapabilities(CREFSTRING providerName, CREFSTRING connectionString)
 {
     Ptr<MgUserInformation> userInfo = m_connProp->GetUserInfo();
@@ -301,6 +303,7 @@ MgByteReader* MgProxyFeatureService::GetCapabilities(CREFSTRING providerName, CR
     return (MgByteReader*)cmd.GetReturnValue().val.m_obj;
 }
 
+
 //////////////////////////////////////////////////////////////////
 /// <summary>
 /// Creates or updates a feature schema within the specified feature source.
@@ -317,7 +320,6 @@ MgByteReader* MgProxyFeatureService::GetCapabilities(CREFSTRING providerName, CR
 void MgProxyFeatureService::ApplySchema(MgResourceIdentifier* resource, MgFeatureSchema* schema)
 {
     MgCommand cmd;
-
     cmd.ExecuteCommand(m_connProp,                                  // Connection
                        MgCommand::knVoid,                           // Return type expected
                        MgFeatureServiceOpId::ApplySchema_Id,        // Command Code
@@ -331,6 +333,7 @@ void MgProxyFeatureService::ApplySchema(MgResourceIdentifier* resource, MgFeatur
     SetWarning(cmd.GetWarningObject());
 }
 
+
 ///////////////////////////////////////////////////////////////////////////////
 /// \brief
 /// Gets the definitions of one or more schemas contained in the
@@ -338,10 +341,10 @@ void MgProxyFeatureService::ApplySchema(MgResourceIdentifier* resource, MgFeatur
 /// a class name does not exist, this method will throw an exception.
 ///
 MgFeatureSchemaCollection* MgProxyFeatureService::DescribeSchema(MgResourceIdentifier* resource,
-    CREFSTRING schemaName, MgStringCollection* classNames)
+                                                                 CREFSTRING schemaName,
+                                                                 MgStringCollection* classNames)
 {
     MgCommand cmd;
-
     cmd.ExecuteCommand(m_connProp,                                  // Connection
                        MgCommand::knObject,                         // Return type expected
                        MgFeatureServiceOpId::DescribeSchema_Id,     // Command Code
@@ -358,14 +361,16 @@ MgFeatureSchemaCollection* MgProxyFeatureService::DescribeSchema(MgResourceIdent
     return (MgFeatureSchemaCollection*)cmd.GetReturnValue().val.m_obj;
 }
 
+
 ///////////////////////////////////////////////////////////////////////////////
 /// This method has been deprecated. Use the above method.
 ///
 MgFeatureSchemaCollection* MgProxyFeatureService::DescribeSchema(MgResourceIdentifier* resource,
-    CREFSTRING schemaName)
+                                                                 CREFSTRING schemaName)
 {
     return DescribeSchema(resource, schemaName, NULL);
 }
+
 
 ///////////////////////////////////////////////////////////////////////////////
 /// \brief
@@ -374,10 +379,10 @@ MgFeatureSchemaCollection* MgProxyFeatureService::DescribeSchema(MgResourceIdent
 /// a class name does not exist, this method will throw an exception.
 ///
 STRING MgProxyFeatureService::DescribeSchemaAsXml(MgResourceIdentifier* resource,
-    CREFSTRING schemaName, MgStringCollection* classNames)
+                                                  CREFSTRING schemaName,
+                                                  MgStringCollection* classNames)
 {
     MgCommand cmd;
-
     cmd.ExecuteCommand(m_connProp,                                  // Connection
                        MgCommand::knString,                         // Return type expected
                        MgFeatureServiceOpId::DescribeSchemaAsXml_Id,// Command Code
@@ -397,14 +402,16 @@ STRING MgProxyFeatureService::DescribeSchemaAsXml(MgResourceIdentifier* resource
     return retVal;
 }
 
+
 ///////////////////////////////////////////////////////////////////////////////
 /// This method has been deprecated. Use the above method.
 ///
 STRING MgProxyFeatureService::DescribeSchemaAsXml(MgResourceIdentifier* resource,
-    CREFSTRING schemaName)
+                                                  CREFSTRING schemaName)
 {
     return DescribeSchemaAsXml(resource, schemaName, NULL);
 }
+
 
 //////////////////////////////////////////////////////////////////
 /// <summary>
@@ -508,9 +515,9 @@ MgFeatureSchemaCollection* MgProxyFeatureService::XmlToSchema(CREFSTRING xml)
 ///    filter text.
 /// 2. Interrogation of class definition would allow to determine properties of classes
 ///    which can be used for filter text.
-MgFeatureReader*  MgProxyFeatureService::SelectFeatures(MgResourceIdentifier* resource,
-                                                        CREFSTRING className,
-                                                        MgFeatureQueryOptions* options)
+MgFeatureReader* MgProxyFeatureService::SelectFeatures(MgResourceIdentifier* resource,
+                                                       CREFSTRING className,
+                                                       MgFeatureQueryOptions* options)
 {
     MgCommand cmd;
     cmd.ExecuteCommand(m_connProp,                                  // Connection
@@ -572,10 +579,10 @@ MgFeatureReader*  MgProxyFeatureService::SelectFeatures(MgResourceIdentifier* re
 ///    filter text.
 /// 2. Interrogation of class definition would allow to determine properties of classes
 ///    which can be used for filter text.
-MgFeatureReader*  MgProxyFeatureService::SelectFeatures(MgResourceIdentifier* resource,
-                                                        CREFSTRING className,
-                                                        MgFeatureQueryOptions* options,
-                                                        CREFSTRING coordinateSystem)
+MgFeatureReader* MgProxyFeatureService::SelectFeatures(MgResourceIdentifier* resource,
+                                                       CREFSTRING className,
+                                                       MgFeatureQueryOptions* options,
+                                                       CREFSTRING coordinateSystem)
 {
     throw new MgNotImplementedException(
         L"MgProxyFeatureService::SelectFeatures",
@@ -609,7 +616,7 @@ MgFeatureReader*  MgProxyFeatureService::SelectFeatures(MgResourceIdentifier* re
 /// </param>
 /// <returns>
 /// MgDataReader pointer which operates on the instance of actual reader returned from the
-/// FdoProvider ( OR NULL ).
+/// FdoProvider (OR NULL).
 /// </returns>
 /// EXCEPTIONS:
 /// MgFeatureSourceException
@@ -712,6 +719,7 @@ MgPropertyCollection* MgProxyFeatureService::UpdateFeatures(MgResourceIdentifier
     return SAFE_ADDREF((MgPropertyCollection*)propCol);
 }
 
+
 //////////////////////////////////////////////////////////////////
 /// <summary>
 /// It executes all the commands specified in command collection
@@ -782,6 +790,7 @@ MgPropertyCollection* MgProxyFeatureService::UpdateFeatures(MgResourceIdentifier
     return SAFE_ADDREF((MgPropertyCollection*)propCol);
 }
 
+
 ////////////////////////////////////////////////////////////////////////////////////////
 /// <summary>
 /// Gets the locked features
@@ -806,9 +815,9 @@ MgPropertyCollection* MgProxyFeatureService::UpdateFeatures(MgResourceIdentifier
 /// EXCEPTIONS:
 /// MgFeatureServiceException
 /// MgInvalidArgumentException
-MgFeatureReader* MgProxyFeatureService::GetLockedFeatures( MgResourceIdentifier* resource,
-                                                CREFSTRING className,
-                                                MgFeatureQueryOptions* options )
+MgFeatureReader* MgProxyFeatureService::GetLockedFeatures(MgResourceIdentifier* resource,
+                                                          CREFSTRING className,
+                                                          MgFeatureQueryOptions* options)
 {
     throw new MgNotImplementedException(
         L"MgProxyFeatureService::GetLockedFeatures",
@@ -816,6 +825,7 @@ MgFeatureReader* MgProxyFeatureService::GetLockedFeatures( MgResourceIdentifier*
 
     return NULL; // to make some compiler happy
 }
+
 
 ////////////////////////////////////////////////////////////////////////////////////////////////
 /// <summary>
@@ -837,7 +847,7 @@ MgFeatureReader* MgProxyFeatureService::GetLockedFeatures( MgResourceIdentifier*
 /// MgInvalidArgumentException
 /// MgInvalidOperationException
 /// MgFdoException
-MgTransaction* MgProxyFeatureService::BeginTransaction( MgResourceIdentifier* resource )
+MgTransaction* MgProxyFeatureService::BeginTransaction(MgResourceIdentifier* resource)
 {
     MgCommand cmd;
     cmd.ExecuteCommand(m_connProp,                                  // Connection
@@ -857,6 +867,7 @@ MgTransaction* MgProxyFeatureService::BeginTransaction( MgResourceIdentifier* re
 
     return SAFE_ADDREF((MgProxyFeatureTransaction*)featTransaction);
 }
+
 
 //////////////////////////////////////////////////////////////////
 /// <summary>
@@ -910,6 +921,7 @@ MgSqlDataReader* MgProxyFeatureService::ExecuteSqlQuery(MgResourceIdentifier* re
     return SAFE_ADDREF((MgProxySqlDataReader*)sqlReader);
 }
 
+
 //////////////////////////////////////////////////////////////////
 /// <summary>
 /// This method executes the SELECT SQL statement specified within a given transaction
@@ -948,7 +960,7 @@ MgSqlDataReader* MgProxyFeatureService::ExecuteSqlQuery(MgResourceIdentifier* re
 MgSqlDataReader* MgProxyFeatureService::ExecuteSqlQuery(MgResourceIdentifier* resource,
                                                         CREFSTRING sqlStatement,
                                                         MgParameterCollection* params,
-                                                        MgTransaction* transaction )
+                                                        MgTransaction* transaction)
 {
     STRING transactionId = L"";
     MgProxyFeatureTransaction* proxyTransaction = dynamic_cast<MgProxyFeatureTransaction*>(transaction);
@@ -978,6 +990,7 @@ MgSqlDataReader* MgProxyFeatureService::ExecuteSqlQuery(MgResourceIdentifier* re
 
     return SAFE_ADDREF((MgProxySqlDataReader*)sqlReader);
 }
+
 
 //////////////////////////////////////////////////////////////////
 /// <summary>
@@ -1067,6 +1080,7 @@ MgSqlDataReader* MgProxyFeatureService::ExecuteSqlQuery(MgResourceIdentifier* re
     return SAFE_ADDREF((MgProxySqlDataReader*)sqlReader);
 }
 
+
 //////////////////////////////////////////////////////////////////
 /// <summary>
 /// This method executes all SQL statements supported by providers except SELECT.
@@ -1104,6 +1118,7 @@ INT32 MgProxyFeatureService::ExecuteSqlNonQuery(MgResourceIdentifier* resource,
 
     return cmd.GetReturnValue().val.m_i32;
 }
+
 
 //////////////////////////////////////////////////////////////////
 /// <summary>
@@ -1263,7 +1278,8 @@ MgSpatialContextReader* MgProxyFeatureService::GetSpatialContexts(MgResourceIden
 /// MgInvalidResourceIdentifer
 /// NOTE:
 /// Subject to change in FDO R2
-MgLongTransactionReader* MgProxyFeatureService::GetLongTransactions(MgResourceIdentifier* resource, bool bActiveOnly)
+MgLongTransactionReader* MgProxyFeatureService::GetLongTransactions(MgResourceIdentifier* resource,
+                                                                    bool bActiveOnly)
 {
     MgCommand cmd;
     cmd.ExecuteCommand(m_connProp,                                  // Connection
@@ -1304,8 +1320,8 @@ MgLongTransactionReader* MgProxyFeatureService::GetLongTransactions(MgResourceId
 /// MgNullArgumentException
 /// MgInvalidResourceTypeException
 /// MgSessionNotFoundException
-bool MgProxyFeatureService::SetLongTransaction( MgResourceIdentifier* featureSourceId,
-                                                CREFSTRING longTransactionName)
+bool MgProxyFeatureService::SetLongTransaction(MgResourceIdentifier* featureSourceId,
+                                               CREFSTRING longTransactionName)
 {
     MgCommand cmd;
     cmd.ExecuteCommand(m_connProp,                                  // Connection
@@ -1345,6 +1361,7 @@ MgByteReader* MgProxyFeatureService::DescribeWfsFeatureType(MgResourceIdentifier
     return (MgByteReader*)cmd.GetReturnValue().val.m_obj;
 }
 
+
 //////////////////////////////////////////////////////////////////
 // Retrieves WFS schema information for the specified feature classes with specified format
 MgByteReader* MgProxyFeatureService::DescribeWfsFeatureType(MgResourceIdentifier* featureSourceId,
@@ -1367,6 +1384,7 @@ MgByteReader* MgProxyFeatureService::DescribeWfsFeatureType(MgResourceIdentifier
 
     return (MgByteReader*)cmd.GetReturnValue().val.m_obj;
 }
+
 
 //////////////////////////////////////////////////////////////////
 // Retrieves feature information in WFS format, based on the specified criteria
@@ -1396,6 +1414,7 @@ MgByteReader* MgProxyFeatureService::GetWfsFeature(MgResourceIdentifier* feature
 
     return (MgByteReader*)cmd.GetReturnValue().val.m_obj;
 }
+
 
 //////////////////////////////////////////////////////////////////
 // Retrieves feature information in with specified WFS format, based on the specified criteria
@@ -1435,6 +1454,7 @@ MgByteReader* MgProxyFeatureService::GetWfsFeature(MgResourceIdentifier* feature
 
     return (MgByteReader*)cmd.GetReturnValue().val.m_obj;
 }
+
 
 //////////////////////////////////////////////////////////////////
 MgBatchPropertyCollection* MgProxyFeatureService::GetFeatures(CREFSTRING featureReader)
@@ -1656,8 +1676,8 @@ void MgProxyFeatureService::CreateFeatureSource(MgResourceIdentifier* resource, 
 // Returns the collection of identity properties for the specified class.
 // If schemaName is empty, then className needs to be fully qualified.
 MgClassDefinitionCollection* MgProxyFeatureService::GetIdentityProperties(MgResourceIdentifier* resource,
-                                                                             CREFSTRING schemaName,
-                                                                             MgStringCollection* classNames)
+                                                                          CREFSTRING schemaName,
+                                                                          MgStringCollection* classNames)
 {
     MgCommand cmd;
     cmd.ExecuteCommand(m_connProp,                                  // Connection
@@ -1695,6 +1715,7 @@ MgByteReader* MgProxyFeatureService::EnumerateDataStores(CREFSTRING providerName
     return (MgByteReader*)cmd.GetReturnValue().val.m_obj;
 }
 
+
 MgByteReader* MgProxyFeatureService::GetSchemaMapping(CREFSTRING providerName,
                                                       CREFSTRING partialConnString)
 {
@@ -1714,6 +1735,7 @@ MgByteReader* MgProxyFeatureService::GetSchemaMapping(CREFSTRING providerName,
     return (MgByteReader*)cmd.GetReturnValue().val.m_obj;
 }
 
+
 //////////////////////////////////////////////////////////////////
 /// \brief
 /// Sets the connection properties for the Proxy Service.  This
@@ -1726,6 +1748,7 @@ void MgProxyFeatureService::SetConnectionProperties(MgConnectionProperties* conn
 {
     m_connProp = SAFE_ADDREF(connProp);
 }
+
 
 //////////////////////////////////////////////////////////////////
 /// <summary>
@@ -1753,6 +1776,7 @@ STRING MgProxyFeatureService::GetFdoCacheInfo()
     return retVal;
 }
 
+
 //////////////////////////////////////////////////////////////////
 MgClassDefinition* MgProxyFeatureService::GetClassDefinition(MgResourceIdentifier* resource,
                                                              CREFSTRING schemaName,
@@ -1777,6 +1801,8 @@ MgClassDefinition* MgProxyFeatureService::GetClassDefinition(MgResourceIdentifie
     return (MgClassDefinition*)cmd.GetReturnValue().val.m_obj;
 }
 
+
+//////////////////////////////////////////////////////////////////
 bool MgProxyFeatureService::CommitTransaction(CREFSTRING transactionId)
 {
     MgCommand cmd;
@@ -1794,6 +1820,8 @@ bool MgProxyFeatureService::CommitTransaction(CREFSTRING transactionId)
     return (bool)cmd.GetReturnValue().val.m_i8;
 }
 
+
+//////////////////////////////////////////////////////////////////
 bool MgProxyFeatureService::RollbackTransaction(CREFSTRING transactionId)
 {
     MgCommand cmd;
