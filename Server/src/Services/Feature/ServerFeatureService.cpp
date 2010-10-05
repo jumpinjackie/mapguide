@@ -64,6 +64,7 @@ MgServerFeatureService::MgServerFeatureService() : MgFeatureService()
 {
 }
 
+
 //////////////////////////////////////////////////////////////////
 /// <summary>
 /// Destructor
@@ -171,9 +172,9 @@ MgByteReader* MgServerFeatureService::GetFeatureProviders()
 /// <returns>
 /// String Collection or NULL if nothing is found
 /// </returns>
-MgStringCollection* MgServerFeatureService::GetConnectionPropertyValues( CREFSTRING providerName,
-                                                                         CREFSTRING propertyName,
-                                                                         CREFSTRING partialConnString )
+MgStringCollection* MgServerFeatureService::GetConnectionPropertyValues(CREFSTRING providerName,
+                                                                        CREFSTRING propertyName,
+                                                                        CREFSTRING partialConnString)
 {
     MG_LOG_TRACE_ENTRY(L"MgServerFeatureService::GetConnectionPropertyValues()");
 
@@ -219,7 +220,7 @@ bool MgServerFeatureService::TestConnection(CREFSTRING providerName, CREFSTRING 
 /// <returns>
 /// True if connection was successful
 /// </returns>
-bool MgServerFeatureService::TestConnection( MgResourceIdentifier* resource )
+bool MgServerFeatureService::TestConnection(MgResourceIdentifier* resource)
 {
     MG_LOG_TRACE_ENTRY(L"MgServerFeatureService::TestConnection()");
 
@@ -261,7 +262,7 @@ bool MgServerFeatureService::TestConnection( MgResourceIdentifier* resource )
 /// MgInvalidResourceIdentifer
 /// NOTE:
 /// Subject to change with FDO R2
-MgByteReader* MgServerFeatureService::GetCapabilities( CREFSTRING providerName )
+MgByteReader* MgServerFeatureService::GetCapabilities(CREFSTRING providerName)
 {
     MG_LOG_TRACE_ENTRY(L"MgServerFeatureService::GetCapabilities()");
 
@@ -277,7 +278,9 @@ MgByteReader* MgServerFeatureService::GetCapabilities( CREFSTRING providerName )
     return msgpc.GetProviderCapabilities();
 }
 
-MgByteReader* MgServerFeatureService::GetCapabilities( CREFSTRING providerName, CREFSTRING connectionString )
+
+///////////////////////////////////////////////////////////////////////////
+MgByteReader* MgServerFeatureService::GetCapabilities(CREFSTRING providerName, CREFSTRING connectionString)
 {
     MG_LOG_TRACE_ENTRY(L"MgServerFeatureService::GetCapabilities()");
 
@@ -285,7 +288,8 @@ MgByteReader* MgServerFeatureService::GetCapabilities( CREFSTRING providerName, 
     return msgpc.GetProviderCapabilities();
 }
 
-/////////////////////////////////////////////////////////////////////////////////////////////
+
+///////////////////////////////////////////////////////////////////////////
 /// \brief
 /// Creates or updates a feature schema within the specified feature source.
 ///
@@ -297,6 +301,7 @@ void MgServerFeatureService::ApplySchema(MgResourceIdentifier* resource, MgFeatu
     msas.ApplySchema(resource, schema);
 }
 
+
 ///////////////////////////////////////////////////////////////////////////
 /// \brief
 /// Gets the definitions of one or more schemas contained in the
@@ -304,7 +309,8 @@ void MgServerFeatureService::ApplySchema(MgResourceIdentifier* resource, MgFeatu
 /// a class name does not exist, this method will throw an exception.
 ///
 MgFeatureSchemaCollection* MgServerFeatureService::DescribeSchema(MgResourceIdentifier* resource,
-    CREFSTRING schemaName, MgStringCollection* classNames)
+                                                                  CREFSTRING schemaName,
+                                                                  MgStringCollection* classNames)
 {
     Ptr<MgFeatureSchemaCollection> schemas;
 
@@ -330,14 +336,16 @@ MgFeatureSchemaCollection* MgServerFeatureService::DescribeSchema(MgResourceIden
     return schemas.Detach();
 }
 
+
 ///////////////////////////////////////////////////////////////////////////////
 /// This method has been deprecated. Use the above method.
 ///
 MgFeatureSchemaCollection* MgServerFeatureService::DescribeSchema(MgResourceIdentifier* resource,
-    CREFSTRING schemaName)
+                                                                  CREFSTRING schemaName)
 {
     return DescribeSchema(resource, schemaName, NULL);
 }
+
 
 ///////////////////////////////////////////////////////////////////////////
 /// \brief
@@ -346,7 +354,8 @@ MgFeatureSchemaCollection* MgServerFeatureService::DescribeSchema(MgResourceIden
 /// a class name does not exist, this method will throw an exception.
 ///
 STRING MgServerFeatureService::DescribeSchemaAsXml(MgResourceIdentifier* resource,
-    CREFSTRING schemaName, MgStringCollection* classNames)
+                                                   CREFSTRING schemaName,
+                                                   MgStringCollection* classNames)
 {
     STRING schemaXml;
 
@@ -372,14 +381,16 @@ STRING MgServerFeatureService::DescribeSchemaAsXml(MgResourceIdentifier* resourc
     return schemaXml;
 }
 
+
 ///////////////////////////////////////////////////////////////////////////////
 /// This method has been deprecated. Use the above method.
 ///
 STRING MgServerFeatureService::DescribeSchemaAsXml(MgResourceIdentifier* resource,
-    CREFSTRING schemaName)
+                                                   CREFSTRING schemaName)
 {
     return DescribeSchemaAsXml(resource, schemaName, NULL);
 }
+
 
 //////////////////////////////////////////////////////////////////
 /// <summary>
@@ -414,9 +425,9 @@ STRING MgServerFeatureService::DescribeSchemaAsXml(MgResourceIdentifier* resourc
 ///    filter text.
 /// 2. Interrogation of class definition would allow to determine properties of classes
 ///    which can be used for filter text.
-MgFeatureReader* MgServerFeatureService::SelectFeatures( MgResourceIdentifier* resource,
-                                                         CREFSTRING className,
-                                                         MgFeatureQueryOptions* options )
+MgFeatureReader* MgServerFeatureService::SelectFeatures(MgResourceIdentifier* resource,
+                                                        CREFSTRING className,
+                                                        MgFeatureQueryOptions* options)
 {
     MG_LOG_TRACE_ENTRY(L"MgServerFeatureService::SelectFeatures()");
 
@@ -482,10 +493,10 @@ MgFeatureReader* MgServerFeatureService::SelectFeatures( MgResourceIdentifier* r
 ///    filter text.
 /// 2. Interrogation of class definition would allow to determine properties of classes
 ///    which can be used for filter text.
-MgFeatureReader*  MgServerFeatureService::SelectFeatures( MgResourceIdentifier* resource,
-                                  CREFSTRING className,
-                                  MgFeatureQueryOptions* options,
-                                  CREFSTRING coordinateSystem )
+MgFeatureReader* MgServerFeatureService::SelectFeatures(MgResourceIdentifier* resource,
+                                                        CREFSTRING className,
+                                                        MgFeatureQueryOptions* options,
+                                                        CREFSTRING coordinateSystem)
 {
     throw new MgNotImplementedException(
         L"MgServerFeatureService::SelectFeatures",
@@ -534,9 +545,9 @@ MgFeatureReader*  MgServerFeatureService::SelectFeatures( MgResourceIdentifier* 
 /// 3. Interrogation of provider capabilities will inform list of operations supported
 /// 4. Interrogation of class definition would allow to determine properties of classes
 ///    which can be used for filter text.
-MgDataReader* MgServerFeatureService::SelectAggregate( MgResourceIdentifier* resource,
-                                                       CREFSTRING className,
-                                                       MgFeatureAggregateOptions* options )
+MgDataReader* MgServerFeatureService::SelectAggregate(MgResourceIdentifier* resource,
+                                                      CREFSTRING className,
+                                                      MgFeatureAggregateOptions* options)
 {
     MG_LOG_TRACE_ENTRY(L"MgServerFeatureService::SelectAggregate()");
 
@@ -574,15 +585,16 @@ MgDataReader* MgServerFeatureService::SelectAggregate( MgResourceIdentifier* res
 ///
 /// EXCEPTIONS:
 /// MgInvalidResourceIdentifer
-MgPropertyCollection* MgServerFeatureService::UpdateFeatures( MgResourceIdentifier* resource,
-                                                              MgFeatureCommandCollection* commands,
-                                                              bool useTransaction )
+MgPropertyCollection* MgServerFeatureService::UpdateFeatures(MgResourceIdentifier* resource,
+                                                             MgFeatureCommandCollection* commands,
+                                                             bool useTransaction)
 {
     MG_LOG_TRACE_ENTRY(L"MgServerFeatureService::UpdateFeatures()");
 
     MgServerUpdateFeatures asuf;
     return asuf.Execute(resource, commands, useTransaction);
 }
+
 
 //////////////////////////////////////////////////////////////////
 /// <summary>
@@ -606,15 +618,16 @@ MgPropertyCollection* MgServerFeatureService::UpdateFeatures( MgResourceIdentifi
 ///
 /// EXCEPTIONS:
 /// MgInvalidResourceIdentifer
-MgPropertyCollection* MgServerFeatureService::UpdateFeatures( MgResourceIdentifier* resource,
-                                                              MgFeatureCommandCollection* commands,
-                                                              MgTransaction* transaction )
+MgPropertyCollection* MgServerFeatureService::UpdateFeatures(MgResourceIdentifier* resource,
+                                                             MgFeatureCommandCollection* commands,
+                                                             MgTransaction* transaction)
 {
     MG_LOG_TRACE_ENTRY(L"MgServerFeatureService::UpdateFeatures()");
 
     MgServerUpdateFeatures asuf;
     return asuf.Execute(resource, commands, transaction);
 }
+
 
 ////////////////////////////////////////////////////////////////////////////////////////
 /// <summary>
@@ -640,9 +653,9 @@ MgPropertyCollection* MgServerFeatureService::UpdateFeatures( MgResourceIdentifi
 /// EXCEPTIONS:
 /// MgFeatureServiceException
 /// MgInvalidArgumentException
-MgFeatureReader* MgServerFeatureService::GetLockedFeatures( MgResourceIdentifier* resource,
-                                                CREFSTRING className,
-                                                MgFeatureQueryOptions* options )
+MgFeatureReader* MgServerFeatureService::GetLockedFeatures(MgResourceIdentifier* resource,
+                                                           CREFSTRING className,
+                                                           MgFeatureQueryOptions* options)
 {
     throw new MgNotImplementedException(
         L"MgServerFeatureService::GetLockedFeatures",
@@ -650,6 +663,7 @@ MgFeatureReader* MgServerFeatureService::GetLockedFeatures( MgResourceIdentifier
 
     return NULL; // to make some compiler happy
 }
+
 
 ////////////////////////////////////////////////////////////////////////////////////////////////
 /// <summary>
@@ -671,7 +685,7 @@ MgFeatureReader* MgServerFeatureService::GetLockedFeatures( MgResourceIdentifier
 /// MgInvalidArgumentException
 /// MgInvalidOperationException
 /// MgFdoException
-MgTransaction* MgServerFeatureService::BeginTransaction( MgResourceIdentifier* resource )
+MgTransaction* MgServerFeatureService::BeginTransaction(MgResourceIdentifier* resource)
 {
     MG_LOG_TRACE_ENTRY(L"MgServerFeatureService::BeginTransaction()");
 
@@ -688,6 +702,7 @@ MgTransaction* MgServerFeatureService::BeginTransaction( MgResourceIdentifier* r
 
     return transaction.Detach();
 }
+
 
 //////////////////////////////////////////////////////////////////
 /// <summary>
@@ -718,14 +733,15 @@ MgTransaction* MgServerFeatureService::BeginTransaction( MgResourceIdentifier* r
 /// MgInvalidResourceIdentifer
 /// MgInvalidSqlStatement
 /// MgSqlNotSupported
-MgSqlDataReader* MgServerFeatureService::ExecuteSqlQuery( MgResourceIdentifier* resource,
-                                                          CREFSTRING sqlStatement )
+MgSqlDataReader* MgServerFeatureService::ExecuteSqlQuery(MgResourceIdentifier* resource,
+                                                         CREFSTRING sqlStatement)
 {
     MG_LOG_TRACE_ENTRY(L"MgServerFeatureService::ExecuteSqlQuery()");
 
     MgServerSqlCommand sqlCommand;
     return sqlCommand.ExecuteQuery(resource, sqlStatement, NULL, NULL);
 }
+
 
 //////////////////////////////////////////////////////////////////
 /// <summary>
@@ -762,16 +778,17 @@ MgSqlDataReader* MgServerFeatureService::ExecuteSqlQuery( MgResourceIdentifier* 
 /// MgInvalidResourceIdentifer
 /// MgInvalidSqlStatement
 /// MgSqlNotSupported
-MgSqlDataReader* MgServerFeatureService::ExecuteSqlQuery( MgResourceIdentifier* resource,
-                                                          CREFSTRING sqlStatement,
-                                                          MgParameterCollection* params,
-                                                          MgTransaction* transaction )
+MgSqlDataReader* MgServerFeatureService::ExecuteSqlQuery(MgResourceIdentifier* resource,
+                                                         CREFSTRING sqlStatement,
+                                                         MgParameterCollection* params,
+                                                         MgTransaction* transaction)
 {
     MG_LOG_TRACE_ENTRY(L"MgServerFeatureService::ExecuteSqlQuery()");
 
     MgServerSqlCommand sqlCommand;
     return sqlCommand.ExecuteQuery(resource, sqlStatement, params, transaction);
 }
+
 
 //////////////////////////////////////////////////////////////////
 /// <summary>
@@ -812,17 +829,18 @@ MgSqlDataReader* MgServerFeatureService::ExecuteSqlQuery( MgResourceIdentifier* 
 /// MgInvalidResourceIdentifer
 /// MgInvalidSqlStatement
 /// MgSqlNotSupported
-MgSqlDataReader* MgServerFeatureService::ExecuteSqlQuery( MgResourceIdentifier* resource,
-                                                          CREFSTRING sqlStatement,
-                                                          MgParameterCollection* params,
-                                                          MgTransaction* transaction,
-                                                          INT32 fetchSize )
+MgSqlDataReader* MgServerFeatureService::ExecuteSqlQuery(MgResourceIdentifier* resource,
+                                                         CREFSTRING sqlStatement,
+                                                         MgParameterCollection* params,
+                                                         MgTransaction* transaction,
+                                                         INT32 fetchSize)
 {
     MG_LOG_TRACE_ENTRY(L"MgServerFeatureService::ExecuteSqlQuery()");
 
     MgServerSqlCommand sqlCommand;
-    return sqlCommand.ExecuteQuery(resource, sqlStatement, params, transaction, fetchSize );
+    return sqlCommand.ExecuteQuery(resource, sqlStatement, params, transaction, fetchSize);
 }
+
 
 //////////////////////////////////////////////////////////////////
 /// <summary>
@@ -843,14 +861,15 @@ MgSqlDataReader* MgServerFeatureService::ExecuteSqlQuery( MgResourceIdentifier* 
 ///
 /// EXCEPTIONS:
 /// MgInvalidResourceIdentifer
-INT32 MgServerFeatureService::ExecuteSqlNonQuery( MgResourceIdentifier* resource,
-                                                  CREFSTRING sqlNonSelectStatement )
+INT32 MgServerFeatureService::ExecuteSqlNonQuery(MgResourceIdentifier* resource,
+                                                 CREFSTRING sqlNonSelectStatement)
 {
     MG_LOG_TRACE_ENTRY(L"MgServerFeatureService::ExecuteSqlNonQuery()");
 
     MgServerSqlCommand sqlCommand;
     return sqlCommand.ExecuteNonQuery(resource, sqlNonSelectStatement, NULL, NULL);
 }
+
 
 //////////////////////////////////////////////////////////////////
 /// <summary>
@@ -879,16 +898,17 @@ INT32 MgServerFeatureService::ExecuteSqlNonQuery( MgResourceIdentifier* resource
 ///
 /// EXCEPTIONS:
 /// MgInvalidResourceIdentifer
-INT32 MgServerFeatureService::ExecuteSqlNonQuery( MgResourceIdentifier* resource,
-                                                  CREFSTRING sqlNonSelectStatement,
-                                                  MgParameterCollection* params,
-                                                  MgTransaction* transaction )
+INT32 MgServerFeatureService::ExecuteSqlNonQuery(MgResourceIdentifier* resource,
+                                                 CREFSTRING sqlNonSelectStatement,
+                                                 MgParameterCollection* params,
+                                                 MgTransaction* transaction)
 {
     MG_LOG_TRACE_ENTRY(L"MgServerFeatureService::ExecuteSqlNonQuery()");
 
     MgServerSqlCommand sqlCommand;
     return sqlCommand.ExecuteNonQuery(resource, sqlNonSelectStatement, params, transaction);
 }
+
 
 //////////////////////////////////////////////////////////////////
 /// <summary>
@@ -925,7 +945,7 @@ INT32 MgServerFeatureService::ExecuteSqlNonQuery( MgResourceIdentifier* resource
 /// MgInvalidResourceIdentifer
 /// NOTE:
 /// Subject to change in FDO R2
-MgSpatialContextReader* MgServerFeatureService::GetSpatialContexts( MgResourceIdentifier* resource,
+MgSpatialContextReader* MgServerFeatureService::GetSpatialContexts(MgResourceIdentifier* resource,
                                                                    bool bActiveOnly)
 {
     Ptr<MgSpatialContextReader> reader;
@@ -985,7 +1005,8 @@ MgSpatialContextReader* MgServerFeatureService::GetSpatialContexts( MgResourceId
 /// MgInvalidResourceIdentifer
 /// NOTE:
 /// Subject to change in FDO R2
-MgLongTransactionReader* MgServerFeatureService::GetLongTransactions(MgResourceIdentifier* resource, bool bActiveOnly)
+MgLongTransactionReader* MgServerFeatureService::GetLongTransactions(MgResourceIdentifier* resource,
+                                                                     bool bActiveOnly)
 {
     MG_LOG_TRACE_ENTRY(L"MgServerFeatureService::GetLongTransactions()");
 
@@ -1015,8 +1036,8 @@ MgLongTransactionReader* MgServerFeatureService::GetLongTransactions(MgResourceI
 /// MgNullArgumentException
 /// MgInvalidResourceTypeException
 /// MgSessionNotFoundException
-bool MgServerFeatureService::SetLongTransaction( MgResourceIdentifier* featureSourceId,
-                                                 CREFSTRING longTransactionName)
+bool MgServerFeatureService::SetLongTransaction(MgResourceIdentifier* featureSourceId,
+                                                CREFSTRING longTransactionName)
 {
     MG_LOG_TRACE_ENTRY(L"MgServerFeatureService::SetLongTransaction()");
 
@@ -1045,6 +1066,7 @@ bool MgServerFeatureService::SetLongTransaction( MgResourceIdentifier* featureSo
 }
 
 
+///////////////////////////////////////////////////////////////////////////
 // Just a simple hashing algorithm
 unsigned MgServerFeatureService::StringHasher(FdoString* pszString)
 {
@@ -1062,6 +1084,7 @@ unsigned MgServerFeatureService::StringHasher(FdoString* pszString)
   }
   return uRet;
 }
+
 
 ///////////////////////////////////////////////////////////////////////////////
 /// \brief
@@ -1130,6 +1153,7 @@ void MgServerFeatureService::FindClassDefinition(Ptr<MgFeatureSchemaCollection>&
     }
 }
 
+
 //////////////////////////////////////////////////////////////////
 /// \brief
 /// Retrieves schema information about a set of feature classes for a given feature source.
@@ -1157,7 +1181,8 @@ void MgServerFeatureService::FindClassDefinition(Ptr<MgFeatureSchemaCollection>&
 /// \return
 /// Returns an MgByteReader containing the XML schema.
 ///
-MgByteReader* MgServerFeatureService::DescribeWfsFeatureType(MgResourceIdentifier* featureSourceId, MgStringCollection* featureClasses)
+MgByteReader* MgServerFeatureService::DescribeWfsFeatureType(MgResourceIdentifier* featureSourceId,
+                                                             MgStringCollection* featureClasses)
 {
     MG_LOG_TRACE_ENTRY(L"MgServerFeatureService::DescribeWfsFeatureType()");
 
@@ -1294,7 +1319,9 @@ MgByteReader* MgServerFeatureService::DescribeWfsFeatureType(MgResourceIdentifie
 /// \return
 /// Returns an MgByteReader containing the XML schema.
 ///
-MgByteReader* MgServerFeatureService::DescribeWfsFeatureType(MgResourceIdentifier* featureSourceId, MgStringCollection* featureClasses,CREFSTRING outputFormat)
+MgByteReader* MgServerFeatureService::DescribeWfsFeatureType(MgResourceIdentifier* featureSourceId,
+                                                             MgStringCollection* featureClasses,
+                                                             CREFSTRING outputFormat)
 {
     throw new MgNotImplementedException(
     L"MgServerFeatureService::DescribeWfsFeatureType",
@@ -1430,9 +1457,9 @@ MgStringCollection* MgServerFeatureService::GetClasses( MgResourceIdentifier* re
 
 
 //////////////////////////////////////////////////////////////////
-MgClassDefinition* MgServerFeatureService::GetClassDefinition(  MgResourceIdentifier* resource,
-                                                                CREFSTRING schemaName,
-                                                                CREFSTRING className)
+MgClassDefinition* MgServerFeatureService::GetClassDefinition(MgResourceIdentifier* resource,
+                                                              CREFSTRING schemaName,
+                                                              CREFSTRING className)
 {
     MG_LOG_TRACE_ENTRY(L"MgServerFeatureService::GetClassDefinition()");
 
@@ -1440,11 +1467,12 @@ MgClassDefinition* MgServerFeatureService::GetClassDefinition(  MgResourceIdenti
     return msds.GetClassDefinition(resource, schemaName, className, true);
 }
 
+
 //////////////////////////////////////////////////////////////////
-MgClassDefinition* MgServerFeatureService::GetClassDefinition(  MgResourceIdentifier* resource,
-                                                                CREFSTRING schemaName,
-                                                                CREFSTRING className,
-                                                                bool serialize)
+MgClassDefinition* MgServerFeatureService::GetClassDefinition(MgResourceIdentifier* resource,
+                                                              CREFSTRING schemaName,
+                                                              CREFSTRING className,
+                                                              bool serialize)
 {
     MG_LOG_TRACE_ENTRY(L"MgServerFeatureService::GetClassDefinition()");
 
@@ -1684,14 +1712,15 @@ void MgServerFeatureService::CreateFeatureSource(MgResourceIdentifier* resource,
 // Returns the collection of identity properties for the specified class.
 // If schemaName is empty, then className needs to be fully qualified.
 MgClassDefinitionCollection* MgServerFeatureService::GetIdentityProperties(MgResourceIdentifier* resource,
-                                                                              CREFSTRING schemaName,
-                                                                              MgStringCollection* classNames)
+                                                                           CREFSTRING schemaName,
+                                                                           MgStringCollection* classNames)
 {
     MG_LOG_TRACE_ENTRY(L"MgServerFeatureService::GetIdentityProperties()");
 
     MgServerDescribeSchema msds;
     return msds.GetIdentityProperties(resource, schemaName, classNames);
 }
+
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////
 /// \brief
@@ -1745,16 +1774,16 @@ MgClassDefinitionCollection* MgServerFeatureService::GetIdentityProperties(MgRes
 /// EXCEPTIONS:
 /// MgInvalidArgumentException
 MgByteReader* MgServerFeatureService::GetWfsFeature(MgResourceIdentifier* fs,
-                                                     CREFSTRING featureClass,
-                                                     MgStringCollection* propNames,
-                                                     CREFSTRING srs,
-                                                     CREFSTRING wfsFilter,
-                                                     INT32 maxFeatures,
-                                                     CREFSTRING wfsVersion,
-                                                     CREFSTRING outputFormat,
-                                                     CREFSTRING sortCriteria,
-                                                     CREFSTRING namespacePrefix,
-                                                     CREFSTRING namespaceUrl)
+                                                    CREFSTRING featureClass,
+                                                    MgStringCollection* propNames,
+                                                    CREFSTRING srs,
+                                                    CREFSTRING wfsFilter,
+                                                    INT32 maxFeatures,
+                                                    CREFSTRING wfsVersion,
+                                                    CREFSTRING outputFormat,
+                                                    CREFSTRING sortCriteria,
+                                                    CREFSTRING namespacePrefix,
+                                                    CREFSTRING namespaceUrl)
 {
     MG_LOG_TRACE_ENTRY(L"MgServerFeatureService::GetWfsFeature()");
 
@@ -1940,8 +1969,6 @@ MgByteReader* MgServerFeatureService::GetWfsFeature(MgResourceIdentifier* fs,
         flags->SetDefaultNamespace(L"http://www.mynamespace.com/myns");
     }
 
-
-
     //create the FDO xml serializer stack and write out the features
     FdoPtr<FdoXmlWriter> xmlWriter = FdoXmlWriter::Create(fileName.c_str(), false);
     FdoPtr<FdoXmlFeaturePropertyWriter> propWriter = FdoXmlFeaturePropertyWriter::Create(xmlWriter,flags);
@@ -1973,11 +2000,11 @@ MgByteReader* MgServerFeatureService::GetWfsFeature(MgResourceIdentifier* fs,
 /// This method has been deprecated. Use the above method.
 ///
 MgByteReader* MgServerFeatureService::GetWfsFeature(MgResourceIdentifier* fs,
-                                                     CREFSTRING featureClass,
-                                                     MgStringCollection* propNames,
-                                                     CREFSTRING srs,
-                                                     CREFSTRING wfsFilter,
-                                                     INT32 maxFeatures)
+                                                    CREFSTRING featureClass,
+                                                    MgStringCollection* propNames,
+                                                    CREFSTRING srs,
+                                                    CREFSTRING wfsFilter,
+                                                    INT32 maxFeatures)
 {
     return GetWfsFeature(fs, featureClass, propNames, srs, wfsFilter, maxFeatures, L"1.0.0", L"text/xml; subtype=gml/2.1.2", L"", L"", L"");
 }
@@ -2003,6 +2030,7 @@ MgByteReader* MgServerFeatureService::EnumerateDataStores(CREFSTRING providerNam
     return mseds.EnumerateDataStores(providerName, partialConnString);
 }
 
+
 ////////////////////////////////////////////////////////////////////////////////
 /// \brief
 /// This method returns all of the logical to physical schema mappings for
@@ -2023,12 +2051,15 @@ MgByteReader* MgServerFeatureService::GetSchemaMapping(CREFSTRING providerName, 
     return msgsm.GetSchemaMapping(providerName, partialConnString);
 }
 
+
 ////////////////////////////////////////////////////////////////////////////////
 void MgServerFeatureService::SetConnectionProperties(MgConnectionProperties*)
 {
     // Do nothing.  No connection properties are required for Server-side service objects.
 }
 
+
+///////////////////////////////////////////////////////////////////////////
 bool MgServerFeatureService::CommitTransaction(CREFSTRING transactionId)
 {
     MG_LOG_TRACE_ENTRY(L"MgServerFeatureService::CommitTransaction()");
@@ -2047,6 +2078,8 @@ bool MgServerFeatureService::CommitTransaction(CREFSTRING transactionId)
     return bResult;
 }
 
+
+///////////////////////////////////////////////////////////////////////////
 bool MgServerFeatureService::RollbackTransaction(CREFSTRING transactionId)
 {
     MG_LOG_TRACE_ENTRY(L"MgServerFeatureService::RollbackTransaction()");
@@ -2064,6 +2097,7 @@ bool MgServerFeatureService::RollbackTransaction(CREFSTRING transactionId)
 
     return bResult;
 }
+
 
 //////////////////////////////////////////////////////////////////
 /// <summary>
@@ -2086,6 +2120,7 @@ STRING MgServerFeatureService::GetFdoCacheInfo()
 
     return info;
 }
+
 
 ///////////////////////////////////////////////////////////////////////////////
 /// \brief
@@ -2130,6 +2165,7 @@ bool MgServerFeatureService::NotifyResourcesChanged(const set<STRING>& resources
 
     return success;
 }
+
 
 ///////////////////////////////////////////////////////////////////////////////
 /// \brief

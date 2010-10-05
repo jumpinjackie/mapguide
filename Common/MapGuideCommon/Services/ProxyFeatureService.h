@@ -147,9 +147,9 @@ INTERNAL_API:
     /// \return
     /// String Collection or NULL if nothing is found
     ///
-    MgStringCollection* GetConnectionPropertyValues( CREFSTRING providerName,
-                                                     CREFSTRING propertyName,
-                                                     CREFSTRING partialConnString );
+    MgStringCollection* GetConnectionPropertyValues(CREFSTRING providerName,
+                                                    CREFSTRING propertyName,
+                                                    CREFSTRING partialConnString);
 
     /////////////////////////////////////////////////////////////////
     /// \brief
@@ -252,7 +252,7 @@ INTERNAL_API:
     ///
     /// \exception MgInvalidResourceIdentifier
     ///
-    MgStringCollection* GetSchemas( MgResourceIdentifier* resource );
+    MgStringCollection* GetSchemas(MgResourceIdentifier* resource);
 
     /////////////////////////////////////////////////////////////////
     /// \brief
@@ -271,7 +271,7 @@ INTERNAL_API:
     ///
     /// \exception MgInvalidResourceIdentifier
     ///
-    MgStringCollection* GetClasses( MgResourceIdentifier* resource, CREFSTRING schemaName );
+    MgStringCollection* GetClasses(MgResourceIdentifier* resource, CREFSTRING schemaName);
 
     /////////////////////////////////////////////////////////////////
     /// \brief
@@ -292,9 +292,9 @@ INTERNAL_API:
     ///
     /// \exception MgInvalidResourceIdentifier
     ///
-    MgClassDefinition* GetClassDefinition(  MgResourceIdentifier* resource,
-                                            CREFSTRING schemaName,
-                                            CREFSTRING className);
+    MgClassDefinition* GetClassDefinition(MgResourceIdentifier* resource,
+                                          CREFSTRING schemaName,
+                                          CREFSTRING className);
 
     /////////////////////////////////////////////////////////////////////////////////////////////
     /// \brief
@@ -370,13 +370,14 @@ INTERNAL_API:
     /// schema and classes.
     ///
     MgFeatureSchemaCollection* DescribeSchema(MgResourceIdentifier* resource,
-        CREFSTRING schemaName, MgStringCollection* classNames);
+                                              CREFSTRING schemaName,
+                                              MgStringCollection* classNames);
 
     ///////////////////////////////////////////////////////////////////////////
     /// This method has been deprecated. Use the above method.
     ///
     MgFeatureSchemaCollection* DescribeSchema(MgResourceIdentifier* resource,
-        CREFSTRING schemaName);
+                                              CREFSTRING schemaName);
 
     ///////////////////////////////////////////////////////////////////////////
     /// \brief
@@ -427,13 +428,14 @@ INTERNAL_API:
     /// \exception MgFdoException
     ///
     STRING DescribeSchemaAsXml(MgResourceIdentifier* resource,
-        CREFSTRING schemaName, MgStringCollection* classNames);
+                               CREFSTRING schemaName,
+                               MgStringCollection* classNames);
 
     ///////////////////////////////////////////////////////////////////////////
     /// This method has been deprecated. Use the above method.
     ///
     STRING DescribeSchemaAsXml(MgResourceIdentifier* resource,
-        CREFSTRING schemaName);
+                               CREFSTRING schemaName);
 
     /////////////////////////////////////////////////////////////////
     /// \brief
@@ -503,9 +505,9 @@ INTERNAL_API:
     /// 2. Interrogation of class definition would allow to determine properties of classes
     /// which can be used for filter text.
     ///
-    MgFeatureReader*  SelectFeatures(   MgResourceIdentifier* resource,
-                                        CREFSTRING className,
-                                        MgFeatureQueryOptions* options );
+    MgFeatureReader* SelectFeatures(MgResourceIdentifier* resource,
+                                    CREFSTRING className,
+                                    MgFeatureQueryOptions* options);
 
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     /// \brief
@@ -550,10 +552,10 @@ INTERNAL_API:
     /// \exception MgInvalidArgumentException
     /// \exception MgFdoException
     ///
-    virtual MgFeatureReader*  SelectFeatures(   MgResourceIdentifier* resource,
-                                                CREFSTRING className,
-                                                MgFeatureQueryOptions* options,
-                                                CREFSTRING coordinateSystem );
+    virtual MgFeatureReader* SelectFeatures(MgResourceIdentifier* resource,
+                                            CREFSTRING className,
+                                            MgFeatureQueryOptions* options,
+                                            CREFSTRING coordinateSystem);
 
     /////////////////////////////////////////////////////////////////
     /// \brief
@@ -580,7 +582,7 @@ INTERNAL_API:
     ///
     /// \return
     /// MgDataReader pointer which operates on the instance of actual reader returned from the
-    /// FdoProvider ( OR NULL ).
+    /// FdoProvider (OR NULL).
     ///
     /// \exception MgFeatureServiceException
     /// \exception MgInvalidArgumentException
@@ -598,9 +600,9 @@ INTERNAL_API:
     /// 4. Interrogation of class definition would allow to determine properties of classes
     /// which can be used for filter text.
     ///
-    MgDataReader*  SelectAggregate( MgResourceIdentifier* resource,
-                                    CREFSTRING className,
-                                    MgFeatureAggregateOptions* options );
+    MgDataReader* SelectAggregate(MgResourceIdentifier* resource,
+                                  CREFSTRING className,
+                                  MgFeatureAggregateOptions* options);
 
     /////////////////////////////////////////////////////////////////
     /// \brief
@@ -624,9 +626,9 @@ INTERNAL_API:
     ///
     /// \exception MgInvalidResourceIdentifier
     ///
-    MgPropertyCollection* UpdateFeatures( MgResourceIdentifier* resource,
-                                     MgFeatureCommandCollection* commands,
-                                     bool useTransaction );
+    MgPropertyCollection* UpdateFeatures(MgResourceIdentifier* resource,
+                                         MgFeatureCommandCollection* commands,
+                                         bool useTransaction);
 
     /////////////////////////////////////////////////////////////////
     /// \brief
@@ -653,9 +655,9 @@ INTERNAL_API:
     /// Index of commandCollection and index of IntCollection would match the result.
     ///
     /// \exception MgInvalidResourceIdentifier
-    MgPropertyCollection* UpdateFeatures( MgResourceIdentifier* resource,
-                                          MgFeatureCommandCollection* commands,
-                                          MgTransaction* transaction );
+    MgPropertyCollection* UpdateFeatures(MgResourceIdentifier* resource,
+                                         MgFeatureCommandCollection* commands,
+                                         MgTransaction* transaction);
 
     ////////////////////////////////////////////////////////////////////////////////////////////////
     /// \brief
@@ -692,9 +694,9 @@ INTERNAL_API:
     /// \exception MgInvalidArgumentException
     /// \exception ...
     ///
-    virtual MgFeatureReader* GetLockedFeatures( MgResourceIdentifier* resource,
-                                                CREFSTRING className,
-                                                MgFeatureQueryOptions* options );
+    virtual MgFeatureReader* GetLockedFeatures(MgResourceIdentifier* resource,
+                                               CREFSTRING className,
+                                               MgFeatureQueryOptions* options);
 
     ////////////////////////////////////////////////////////////////////////////////////////////////
     /// <summary>
@@ -716,7 +718,7 @@ INTERNAL_API:
     /// MgInvalidArgumentException
     /// MgInvalidOperationException
     /// MgFdoException
-    MgTransaction* BeginTransaction( MgResourceIdentifier* resource );
+    MgTransaction* BeginTransaction(MgResourceIdentifier* resource);
 
     /////////////////////////////////////////////////////////////////
     /// \brief
@@ -746,8 +748,8 @@ INTERNAL_API:
     /// \exception MgInvalidSqlStatement
     /// \exception MgSqlNotSupported
     ///
-    MgSqlDataReader* ExecuteSqlQuery( MgResourceIdentifier* resource,
-                                      CREFSTRING sqlStatement );
+    MgSqlDataReader* ExecuteSqlQuery(MgResourceIdentifier* resource,
+                                     CREFSTRING sqlStatement);
 
     /////////////////////////////////////////////////////////////////
     /// \brief
@@ -783,10 +785,10 @@ INTERNAL_API:
     /// \exception MgInvalidSqlStatement
     /// \exception MgSqlNotSupported
     ///
-    MgSqlDataReader* ExecuteSqlQuery( MgResourceIdentifier* resource,
-                                      CREFSTRING sqlStatement,
-                                      MgParameterCollection* params,
-                                      MgTransaction* transaction );
+    MgSqlDataReader* ExecuteSqlQuery(MgResourceIdentifier* resource,
+                                     CREFSTRING sqlStatement,
+                                     MgParameterCollection* params,
+                                     MgTransaction* transaction);
 
     /////////////////////////////////////////////////////////////////
     /// \brief
@@ -826,11 +828,11 @@ INTERNAL_API:
     /// \exception MgInvalidSqlStatement
     /// \exception MgSqlNotSupported
     ///
-    MgSqlDataReader* ExecuteSqlQuery( MgResourceIdentifier* resource,
-                                      CREFSTRING sqlStatement,
-                                      MgParameterCollection* params,
-                                      MgTransaction* transaction,
-                                      INT32 fetchSize);
+    MgSqlDataReader* ExecuteSqlQuery(MgResourceIdentifier* resource,
+                                     CREFSTRING sqlStatement,
+                                     MgParameterCollection* params,
+                                     MgTransaction* transaction,
+                                     INT32 fetchSize);
 
     /////////////////////////////////////////////////////////////////
     /// \brief
@@ -853,8 +855,8 @@ INTERNAL_API:
     ///
     /// \exception MgInvalidResourceIdentifier
     ///
-    INT32 ExecuteSqlNonQuery( MgResourceIdentifier* resource,
-                              CREFSTRING sqlNonSelectStatement );
+    INT32 ExecuteSqlNonQuery(MgResourceIdentifier* resource,
+                             CREFSTRING sqlNonSelectStatement);
 
     /////////////////////////////////////////////////////////////////
     /// \brief
@@ -883,10 +885,10 @@ INTERNAL_API:
     ///
     /// \exception MgInvalidResourceIdentifier
     ///
-    INT32 ExecuteSqlNonQuery( MgResourceIdentifier* resource,
-                              CREFSTRING sqlNonSelectStatement,
-                              MgParameterCollection* params,
-                              MgTransaction* transaction );
+    INT32 ExecuteSqlNonQuery(MgResourceIdentifier* resource,
+                             CREFSTRING sqlNonSelectStatement,
+                             MgParameterCollection* params,
+                             MgTransaction* transaction);
 
     /////////////////////////////////////////////////////////////////
     /// \brief
@@ -926,8 +928,8 @@ INTERNAL_API:
     /// \note
     /// Subject to change in FDO R2
     ///
-    MgSpatialContextReader* GetSpatialContexts( MgResourceIdentifier* resource,
-                                                bool bActiveOnly);
+    MgSpatialContextReader* GetSpatialContexts(MgResourceIdentifier* resource,
+                                               bool bActiveOnly);
 
     /////////////////////////////////////////////////////////////////
     /// \brief
@@ -965,8 +967,8 @@ INTERNAL_API:
     /// \note
     /// Subject to change in FDO R2
     ///
-    MgLongTransactionReader* GetLongTransactions( MgResourceIdentifier* resource,
-                                                  bool bActiveOnly);
+    MgLongTransactionReader* GetLongTransactions(MgResourceIdentifier* resource,
+                                                 bool bActiveOnly);
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     /// \brief
@@ -989,8 +991,8 @@ INTERNAL_API:
     /// \exception MgInvalidResourceTypeException
     /// \exception MgSessionNotFoundException
     ///
-    bool SetLongTransaction( MgResourceIdentifier* featureSourceId,
-                             CREFSTRING longTransactionName);
+    bool SetLongTransaction(MgResourceIdentifier* featureSourceId,
+                            CREFSTRING longTransactionName);
 
     /////////////////////////////////////////////////////////////////
     /// \brief
@@ -1026,7 +1028,8 @@ INTERNAL_API:
     /// \return
     /// Returns an MgByteReader containing the XML schema.
     ///
-    MgByteReader* DescribeWfsFeatureType(MgResourceIdentifier* featureSourceId, MgStringCollection* featureClasses);
+    MgByteReader* DescribeWfsFeatureType(MgResourceIdentifier* featureSourceId,
+                                         MgStringCollection* featureClasses);
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////
     /// \brief
@@ -1060,7 +1063,9 @@ INTERNAL_API:
     /// \return
     /// Returns an MgByteReader containing the XML schema.
     ///
-    virtual MgByteReader* DescribeWfsFeatureType(MgResourceIdentifier* featureSourceId, MgStringCollection* featureClasses,CREFSTRING outputFormat);
+    virtual MgByteReader* DescribeWfsFeatureType(MgResourceIdentifier* featureSourceId,
+                                                 MgStringCollection* featureClasses,
+                                                 CREFSTRING outputFormat);
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////
     /// \brief
@@ -1097,8 +1102,12 @@ INTERNAL_API:
     /// \return
     /// Returns an MgByteReader containing the requested feature information.
     ///
-    MgByteReader* GetWfsFeature(MgResourceIdentifier* featureSourceId, CREFSTRING featureClass,
-        MgStringCollection* requiredProperties, CREFSTRING srs, CREFSTRING filter, INT32 maxFeatures);
+    MgByteReader* GetWfsFeature(MgResourceIdentifier* featureSourceId,
+                                CREFSTRING featureClass,
+                                MgStringCollection* requiredProperties,
+                                CREFSTRING srs,
+                                CREFSTRING filter,
+                                INT32 maxFeatures);
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////
     /// \brief
@@ -1151,8 +1160,17 @@ INTERNAL_API:
     ///
     /// \exception MgInvalidArgumentException
     ///
-    MgByteReader* GetWfsFeature(MgResourceIdentifier* featureSourceId, CREFSTRING featureClass,
-        MgStringCollection* requiredProperties, CREFSTRING srs, CREFSTRING filter, INT32 maxFeatures,CREFSTRING wfsVersion, CREFSTRING outputFormat, CREFSTRING sortCriteria, CREFSTRING namespacePrefix, CREFSTRING namespaceUrl);
+    MgByteReader* GetWfsFeature(MgResourceIdentifier* featureSourceId,
+                                CREFSTRING featureClass,
+                                MgStringCollection* requiredProperties,
+                                CREFSTRING srs,
+                                CREFSTRING filter,
+                                INT32 maxFeatures,
+                                CREFSTRING wfsVersion,
+                                CREFSTRING outputFormat,
+                                CREFSTRING sortCriteria,
+                                CREFSTRING namespacePrefix,
+                                CREFSTRING namespaceUrl);
 
     ////////////////////////////////////////////////////////////////////////////////
     /// \brief
@@ -1256,10 +1274,10 @@ INTERNAL_API:
     ///
     /// \exception MgInvalidResourceIdentifier
     ///
-    MgClassDefinition* GetClassDefinition(  MgResourceIdentifier* resource,
-                                            CREFSTRING schemaName,
-                                            CREFSTRING className,
-                                            bool serialize);
+    MgClassDefinition* GetClassDefinition(MgResourceIdentifier* resource,
+                                          CREFSTRING schemaName,
+                                          CREFSTRING className,
+                                          bool serialize);
 
     // Commit the transaction specified by the transaction id.
     bool CommitTransaction(CREFSTRING transactionId);

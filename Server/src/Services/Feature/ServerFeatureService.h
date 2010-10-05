@@ -132,9 +132,9 @@ public:
     /// <returns>
     /// String Collection or NULL if nothing is found
     /// </returns>
-    MgStringCollection* GetConnectionPropertyValues( CREFSTRING providerName,
-                                                     CREFSTRING propertyName,
-                                                     CREFSTRING partialConnString );
+    MgStringCollection* GetConnectionPropertyValues(CREFSTRING providerName,
+                                                    CREFSTRING propertyName,
+                                                    CREFSTRING partialConnString);
 
     //////////////////////////////////////////////////////////////////
     /// <summary>
@@ -227,7 +227,7 @@ public:
     ///
     /// EXCEPTIONS:
     /// MgInvalidResourceIdentifer
-    MgStringCollection* GetSchemas( MgResourceIdentifier* resource );
+    MgStringCollection* GetSchemas(MgResourceIdentifier* resource);
 
     //////////////////////////////////////////////////////////////////
     /// <summary>
@@ -246,7 +246,7 @@ public:
     ///
     /// EXCEPTIONS:
     /// MgInvalidResourceIdentifer
-    MgStringCollection* GetClasses( MgResourceIdentifier* resource, CREFSTRING schemaName );
+    MgStringCollection* GetClasses(MgResourceIdentifier* resource, CREFSTRING schemaName);
 
     //////////////////////////////////////////////////////////////////
     /// <summary>
@@ -267,9 +267,9 @@ public:
     ///
     /// EXCEPTIONS:
     /// MgInvalidResourceIdentifer
-    MgClassDefinition* GetClassDefinition(  MgResourceIdentifier* resource,
-                                            CREFSTRING schemaName,
-                                            CREFSTRING className);
+    MgClassDefinition* GetClassDefinition(MgResourceIdentifier* resource,
+                                          CREFSTRING schemaName,
+                                          CREFSTRING className);
 
     //////////////////////////////////////////////////////////////////
     /// <summary>
@@ -290,10 +290,10 @@ public:
     ///
     /// EXCEPTIONS:
     /// MgInvalidResourceIdentifer
-    MgClassDefinition* GetClassDefinition(  MgResourceIdentifier* resource,
-                                            CREFSTRING schemaName,
-                                            CREFSTRING className,
-                                            bool serialize);
+    MgClassDefinition* GetClassDefinition(MgResourceIdentifier* resource,
+                                          CREFSTRING schemaName,
+                                          CREFSTRING className,
+                                          bool serialize);
 
     /////////////////////////////////////////////////////////////////////////////////////////////
     /// \brief
@@ -308,13 +308,14 @@ public:
     /// a class name does not exist, this method will throw an exception.
     ///
     MgFeatureSchemaCollection* DescribeSchema(MgResourceIdentifier* resource,
-        CREFSTRING schemaName, MgStringCollection* classNames);
+                                              CREFSTRING schemaName,
+                                              MgStringCollection* classNames);
 
     ///////////////////////////////////////////////////////////////////////////
     /// This method has been deprecated. Use the above method.
     ///
     MgFeatureSchemaCollection* DescribeSchema(MgResourceIdentifier* resource,
-        CREFSTRING schemaName);
+                                              CREFSTRING schemaName);
 
     ///////////////////////////////////////////////////////////////////////////
     /// \brief
@@ -323,13 +324,14 @@ public:
     /// a class name does not exist, this method will throw an exception.
     ///
     STRING DescribeSchemaAsXml(MgResourceIdentifier* resource,
-        CREFSTRING schemaName, MgStringCollection* classNames);
+                               CREFSTRING schemaName,
+                               MgStringCollection* classNames);
 
     ///////////////////////////////////////////////////////////////////////////
     /// This method has been deprecated. Use the above method.
     ///
     STRING DescribeSchemaAsXml(MgResourceIdentifier* resource,
-        CREFSTRING schemaName);
+                               CREFSTRING schemaName);
 
     //////////////////////////////////////////////////////////////////
     /// <summary>
@@ -364,9 +366,9 @@ public:
     ///    filter text.
     /// 2. Interrogation of class definition would allow to determine properties of classes
     ///    which can be used for filter text.
-    MgFeatureReader*  SelectFeatures(   MgResourceIdentifier* resource,
-                                        CREFSTRING className,
-                                        MgFeatureQueryOptions* options );
+    MgFeatureReader* SelectFeatures(MgResourceIdentifier* resource,
+                                    CREFSTRING className,
+                                    MgFeatureQueryOptions* options);
 
     //////////////////////////////////////////////////////////////////
     /// <summary>
@@ -405,10 +407,10 @@ public:
     ///    filter text.
     /// 2. Interrogation of class definition would allow to determine properties of classes
     ///    which can be used for filter text.
-    MgFeatureReader*  SelectFeatures(   MgResourceIdentifier* resource,
-                                        CREFSTRING className,
-                                        MgFeatureQueryOptions* options,
-                                        CREFSTRING coordinateSystem );
+    MgFeatureReader* SelectFeatures(MgResourceIdentifier* resource,
+                                    CREFSTRING className,
+                                    MgFeatureQueryOptions* options,
+                                    CREFSTRING coordinateSystem);
 
     //////////////////////////////////////////////////////////////////
     /// <summary>
@@ -434,7 +436,7 @@ public:
     /// </param>
     /// <returns>
     /// MgDataReader pointer which operates on the instance of actual reader returned from the
-    /// FdoProvider ( OR NULL ).
+    /// FdoProvider (OR NULL).
     /// </returns>
     /// EXCEPTIONS:
     /// MgFeatureSourceException
@@ -449,9 +451,9 @@ public:
     /// 3. Interrogation of provider capabilities will inform list of operations supported
     /// 4. Interrogation of class definition would allow to determine properties of classes
     ///    which can be used for filter text.
-    MgDataReader*  SelectAggregate( MgResourceIdentifier* resource,
-                                    CREFSTRING className,
-                                    MgFeatureAggregateOptions* options );
+    MgDataReader* SelectAggregate(MgResourceIdentifier* resource,
+                                  CREFSTRING className,
+                                  MgFeatureAggregateOptions* options);
 
     //////////////////////////////////////////////////////////////////
     /// <summary>
@@ -474,9 +476,9 @@ public:
     ///
     /// EXCEPTIONS:
     /// MgInvalidResourceIdentifer
-    MgPropertyCollection* UpdateFeatures( MgResourceIdentifier* resource,
-                                          MgFeatureCommandCollection* commands,
-                                          bool useTransaction );
+    MgPropertyCollection* UpdateFeatures(MgResourceIdentifier* resource,
+                                         MgFeatureCommandCollection* commands,
+                                         bool useTransaction);
 
     //////////////////////////////////////////////////////////////////
     /// <summary>
@@ -500,9 +502,9 @@ public:
     ///
     /// EXCEPTIONS:
     /// MgInvalidResourceIdentifer
-    MgPropertyCollection* UpdateFeatures( MgResourceIdentifier* resource,
-                                          MgFeatureCommandCollection* commands,
-                                          MgTransaction* transaction );
+    MgPropertyCollection* UpdateFeatures(MgResourceIdentifier* resource,
+                                         MgFeatureCommandCollection* commands,
+                                         MgTransaction* transaction);
 
     ////////////////////////////////////////////////////////////////////////////////////////
     /// <summary>
@@ -528,9 +530,9 @@ public:
     /// EXCEPTIONS:
     /// MgFeatureServiceException
     /// MgInvalidArgumentException
-    MgFeatureReader* GetLockedFeatures( MgResourceIdentifier* resource,
-                                        CREFSTRING className,
-                                        MgFeatureQueryOptions* options );
+    MgFeatureReader* GetLockedFeatures(MgResourceIdentifier* resource,
+                                       CREFSTRING className,
+                                       MgFeatureQueryOptions* options);
 
     ////////////////////////////////////////////////////////////////////////////////////////////////
     /// <summary>
@@ -552,7 +554,7 @@ public:
     /// MgInvalidArgumentException
     /// MgInvalidOperationException
     /// MgFdoException
-    MgTransaction* BeginTransaction( MgResourceIdentifier* resource );
+    MgTransaction* BeginTransaction(MgResourceIdentifier* resource);
 
     //////////////////////////////////////////////////////////////////
     /// <summary>
@@ -583,8 +585,8 @@ public:
     /// MgInvalidResourceIdentifer
     /// MgInvalidSqlStatement
     /// MgSqlNotSupported
-    MgSqlDataReader* ExecuteSqlQuery( MgResourceIdentifier* resource,
-                                      CREFSTRING sqlStatement );
+    MgSqlDataReader* ExecuteSqlQuery(MgResourceIdentifier* resource,
+                                     CREFSTRING sqlStatement);
 
     //////////////////////////////////////////////////////////////////
     /// <summary>
@@ -624,10 +626,10 @@ public:
     /// MgInvalidResourceIdentifer
     /// MgInvalidSqlStatement
     /// MgSqlNotSupported
-    MgSqlDataReader* ExecuteSqlQuery( MgResourceIdentifier* resource,
-                                      CREFSTRING sqlStatement,
-                                      MgParameterCollection* params,
-                                      MgTransaction* transaction );
+    MgSqlDataReader* ExecuteSqlQuery(MgResourceIdentifier* resource,
+                                     CREFSTRING sqlStatement,
+                                     MgParameterCollection* params,
+                                     MgTransaction* transaction);
 
     //////////////////////////////////////////////////////////////////
     /// <summary>
@@ -671,11 +673,11 @@ public:
     /// MgInvalidResourceIdentifer
     /// MgInvalidSqlStatement
     /// MgSqlNotSupported
-    MgSqlDataReader* ExecuteSqlQuery( MgResourceIdentifier* resource,
-                                      CREFSTRING sqlStatement,
-                                      MgParameterCollection* params,
-                                      MgTransaction* transaction,
-                                      INT32 fetchSize );
+    MgSqlDataReader* ExecuteSqlQuery(MgResourceIdentifier* resource,
+                                     CREFSTRING sqlStatement,
+                                     MgParameterCollection* params,
+                                     MgTransaction* transaction,
+                                     INT32 fetchSize);
 
     //////////////////////////////////////////////////////////////////
     /// <summary>
@@ -696,8 +698,8 @@ public:
     ///
     /// EXCEPTIONS:
     /// MgInvalidResourceIdentifer
-    INT32 ExecuteSqlNonQuery( MgResourceIdentifier* resource,
-                              CREFSTRING sqlNonSelectStatement );
+    INT32 ExecuteSqlNonQuery(MgResourceIdentifier* resource,
+                             CREFSTRING sqlNonSelectStatement);
 
     //////////////////////////////////////////////////////////////////
     /// <summary>
@@ -729,10 +731,10 @@ public:
     ///
     /// EXCEPTIONS:
     /// MgInvalidResourceIdentifer
-    INT32 ExecuteSqlNonQuery( MgResourceIdentifier* resource,
-                              CREFSTRING sqlNonSelectStatement,
-                              MgParameterCollection* params,
-                              MgTransaction* transaction );
+    INT32 ExecuteSqlNonQuery(MgResourceIdentifier* resource,
+                             CREFSTRING sqlNonSelectStatement,
+                             MgParameterCollection* params,
+                             MgTransaction* transaction);
 
     //////////////////////////////////////////////////////////////////
     /// <summary>
@@ -769,8 +771,8 @@ public:
     /// MgInvalidResourceIdentifer
     /// NOTE:
     /// Subject to change in FDO R2
-    MgSpatialContextReader* GetSpatialContexts( MgResourceIdentifier* resource,
-                                                bool bActiveOnly);
+    MgSpatialContextReader* GetSpatialContexts(MgResourceIdentifier* resource,
+                                               bool bActiveOnly);
 
     //////////////////////////////////////////////////////////////////
     /// <summary>
@@ -805,8 +807,8 @@ public:
     /// MgInvalidResourceIdentifer
     /// NOTE:
     /// Subject to change in FDO R2
-    MgLongTransactionReader* GetLongTransactions( MgResourceIdentifier* resource,
-                                                  bool bActiveOnly);
+    MgLongTransactionReader* GetLongTransactions(MgResourceIdentifier* resource,
+                                                 bool bActiveOnly);
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     /// <summary>
@@ -830,8 +832,8 @@ public:
     /// MgInvalidResourceTypeException
     /// MgSessionNotFoundException
     ///
-    bool SetLongTransaction( MgResourceIdentifier* featureSourceId,
-                             CREFSTRING longTransactionName);
+    bool SetLongTransaction(MgResourceIdentifier* featureSourceId,
+                            CREFSTRING longTransactionName);
 
     //////////////////////////////////////////////////////////////////
     /// <summary>
@@ -851,7 +853,8 @@ public:
     /// Returns an MgByteReader containing the XML schema.
     /// </returns>
     ///
-    MgByteReader* DescribeWfsFeatureType(MgResourceIdentifier* featureSourceId, MgStringCollection* featureClasses);
+    MgByteReader* DescribeWfsFeatureType(MgResourceIdentifier* featureSourceId,
+                                         MgStringCollection* featureClasses);
 
     //////////////////////////////////////////////////////////////////
     /// <summary>
@@ -876,7 +879,9 @@ public:
     /// Returns an MgByteReader containing the XML schema.
     /// </returns>
     ///
-    MgByteReader* DescribeWfsFeatureType(MgResourceIdentifier* featureSourceId, MgStringCollection* featureClasses, CREFSTRING outputFormat);
+    MgByteReader* DescribeWfsFeatureType(MgResourceIdentifier* featureSourceId,
+                                         MgStringCollection* featureClasses,
+                                         CREFSTRING outputFormat);
 
     //////////////////////////////////////////////////////////////////
     /// <summary>
@@ -927,14 +932,27 @@ public:
     ///
     /// EXCEPTIONS:
     /// MgInvalidArgumentException
-    MgByteReader* GetWfsFeature(MgResourceIdentifier* featureSourceId, CREFSTRING featureClass,
-        MgStringCollection* requiredProperties, CREFSTRING srs, CREFSTRING filter, INT32 maxFeatures, CREFSTRING wfsVersion, CREFSTRING outputFormat, CREFSTRING sortCriteria, CREFSTRING namespacePrefix, CREFSTRING namespaceUrl);
+    MgByteReader* GetWfsFeature(MgResourceIdentifier* featureSourceId,
+                                CREFSTRING featureClass,
+                                MgStringCollection* requiredProperties,
+                                CREFSTRING srs,
+                                CREFSTRING filter,
+                                INT32 maxFeatures,
+                                CREFSTRING wfsVersion,
+                                CREFSTRING outputFormat,
+                                CREFSTRING sortCriteria,
+                                CREFSTRING namespacePrefix,
+                                CREFSTRING namespaceUrl);
 
     ///////////////////////////////////////////////////////////////////////////
     /// This method has been deprecated. Use the above method.
     ///
-    MgByteReader* GetWfsFeature(MgResourceIdentifier* featureSourceId, CREFSTRING featureClass,
-        MgStringCollection* requiredProperties, CREFSTRING srs, CREFSTRING filter, INT32 maxFeatures);
+    MgByteReader* GetWfsFeature(MgResourceIdentifier* featureSourceId,
+                                CREFSTRING featureClass,
+                                MgStringCollection* requiredProperties,
+                                CREFSTRING srs,
+                                CREFSTRING filter,
+                                INT32 maxFeatures);
 
     ////////////////////////////////////////////////////////////////////////////////
     /// <summary>
@@ -1015,10 +1033,8 @@ public:
                                                                CREFSTRING schemaName,
                                                                MgStringCollection* classNames);
 
-    virtual bool NotifyResourcesChanged(const set<STRING>& resources,
-        bool strict = true);
-    virtual bool NotifyResourcesChanged(MgSerializableCollection* resources,
-        bool strict = true);
+    virtual bool NotifyResourcesChanged(const set<STRING>& resources, bool strict = true);
+    virtual bool NotifyResourcesChanged(MgSerializableCollection* resources, bool strict = true);
 
     STRING GetFdoCacheInfo();
 
