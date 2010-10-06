@@ -679,6 +679,7 @@ void StylizationEngine::StylizeWatermark(SE_Renderer* se_renderer,
             applyCtx.geometry = lb;
             applyCtx.renderer = m_serenderer;
             applyCtx.xform = &xformTrans;
+            applyCtx.sizeContext = sym->sizeContext;
 
             for (size_t styIx=0; styIx<nStyles; ++styIx)
             {
@@ -1161,6 +1162,7 @@ void StylizationEngine::Stylize(RS_FeatureReader* reader,
             applyCtx.geometry = lb;
             applyCtx.renderer = m_serenderer;
             applyCtx.xform = &xformTrans;
+            applyCtx.sizeContext = sym->sizeContext;
 
             size_t nStyles = sym->styles.size();
             for (size_t styIx=0; styIx<nStyles; ++styIx)

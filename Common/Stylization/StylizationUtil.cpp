@@ -639,6 +639,7 @@ void StylizationUtil::RenderCompositeSymbolization(CompositeSymbolization* csym,
         applyCtx.geometry = NULL;   // gets set below
         applyCtx.renderer = pSERenderer;
         applyCtx.xform = &xform;
+        applyCtx.sizeContext = sym->sizeContext;
 
         for (std::vector<SE_Style*>::const_iterator siter = sym->styles.begin(); siter != sym->styles.end(); siter++)
         {
