@@ -26,39 +26,39 @@ extern CPSZ kpszDefineSupportedFormats; // borrowed. TODO: publish as member var
 
 // TODO: migrate these to a common Mg*.h header (not Ogc*.h) for use in other handlers.
 
-///////////////////////////////////////////////////////////////////////////////////////////
-//                                      MgException* or derivative                       //
-//                                      |                 MgOgcWmsException::kpsz...     //
-//                                      |                 |                  OgcServer&  //
-//                                      |                 |                  |           //
-#define CATCH_MGEXCEPTION_HANDLE_AS_OGC(mg_exception_type,ogc_exception_code,ogc_server)  \
-        catch (mg_exception_type* e) {                                                    \
-            STRING sReport = e->GetExceptionMessage();                                    \
-            sReport += _("<details>");                                                    \
-            sReport += e->GetDetails();                                                   \
-            sReport += _("</details>");                                                   \
-            ogc_server.ServiceExceptionReportResponse(                                    \
-                MgOgcWmsException(MgOgcWmsException::ogc_exception_code,                  \
-                                  sReport.c_str() ));                                     \
-            Ptr<MgByteReader> capabilities = responseStream.Stream().GetReader();         \
-            hResult->SetResultObject(capabilities, capabilities->GetMimeType());          \
-            e->Release();                                                                 \
-        }                                                                                 \
-///////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////
+//                                          MgException* or derivative                       //
+//                                          |                 MgOgcWmsException::kpsz...     //
+//                                          |                 |                  OgcServer&  //
+//                                          |                 |                  |           //
+#define CATCH_MGEXCEPTION_HANDLE_AS_OGC_WMS(mg_exception_type,ogc_exception_code,ogc_server)  \
+        catch (mg_exception_type* e) {                                                        \
+            STRING sReport = e->GetExceptionMessage();                                        \
+            sReport += _("<details>");                                                        \
+            sReport += e->GetDetails();                                                       \
+            sReport += _("</details>");                                                       \
+            ogc_server.ServiceExceptionReportResponse(                                        \
+                MgOgcWmsException(MgOgcWmsException::ogc_exception_code,                      \
+                                  sReport.c_str() ));                                         \
+            Ptr<MgByteReader> capabilities = responseStream.Stream().GetReader();             \
+            hResult->SetResultObject(capabilities, capabilities->GetMimeType());              \
+            e->Release();                                                                     \
+        }                                                                                     \
+///////////////////////////////////////////////////////////////////////////////////////////////
 
-///////////////////////////////////////////////////////////////////////////////////////////
-//                                   MgOgcWmsException::kpsz...                          //
-//                                   |                  OgcServer&                       //
-//                                   |                  |                                //
-#define CATCH_ANYTHING_HANDLE_AS_OGC(ogc_exception_code,ogc_server)                       \
-        catch (...) {                                                                     \
-            ogc_server.ServiceExceptionReportResponse(                                    \
-                MgOgcWmsException(MgOgcWmsException::kpszInternalError,                   \
+///////////////////////////////////////////////////////////////////////////////////////////////
+//                                       MgOgcWmsException::kpsz...                          //
+//                                       |                  OgcServer&                       //
+//                                       |                  |                                //
+#define CATCH_ANYTHING_HANDLE_AS_OGC_WMS(ogc_exception_code,ogc_server)                       \
+        catch (...) {                                                                         \
+            ogc_server.ServiceExceptionReportResponse(                                        \
+                MgOgcWmsException(MgOgcWmsException::kpszInternalError,                       \
                                   _("Unexpected exception was thrown.  No additional details available.")));\
-            Ptr<MgByteReader> capabilities = responseStream.Stream().GetReader();         \
-            hResult->SetResultObject(capabilities, capabilities->GetMimeType());          \
-        }                                                                                 \
-///////////////////////////////////////////////////////////////////////////////////////////
+            Ptr<MgByteReader> capabilities = responseStream.Stream().GetReader();             \
+            hResult->SetResultObject(capabilities, capabilities->GetMimeType());              \
+        }                                                                                     \
+///////////////////////////////////////////////////////////////////////////////////////////////
 
 HTTP_IMPLEMENT_CREATE_OBJECT(MgHttpWmsGetMap)
 
@@ -192,9 +192,9 @@ void MgHttpWmsGetMap::Execute(MgHttpResponse& hResponse)
         //  Custom catch clauses.  In short, NO, we do NOT want to let MapGuide exceptions
         //  pass through.  The buck stops here, with an exception report that WE generate
         //  according to OGC specifications.
-        CATCH_MGEXCEPTION_HANDLE_AS_OGC(MgInvalidCoordinateSystemException,kpszInvalidCRS,   wms)
-        CATCH_MGEXCEPTION_HANDLE_AS_OGC(MgException,                       kpszInternalError,wms)
-        CATCH_ANYTHING_HANDLE_AS_OGC(                                      kpszInternalError,wms)
+        CATCH_MGEXCEPTION_HANDLE_AS_OGC_WMS(MgInvalidCoordinateSystemException,kpszInvalidCRS,   wms)
+        CATCH_MGEXCEPTION_HANDLE_AS_OGC_WMS(MgException,                       kpszInternalError,wms)
+        CATCH_ANYTHING_HANDLE_AS_OGC_WMS(                                      kpszInternalError,wms)
     }
     else
     {
