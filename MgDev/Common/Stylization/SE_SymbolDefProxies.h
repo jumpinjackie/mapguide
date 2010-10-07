@@ -54,7 +54,7 @@ public:
     LineBuffer* geometry;
     SE_Renderer* renderer;
     SE_Matrix* xform;
-    SizeContext sizeContext;
+    MdfModel::SizeContext sizeContext;
 };
 
 
