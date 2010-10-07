@@ -124,7 +124,7 @@ CURRTIME=`date -R`
 cat > debian/changelog <<END-OF-CHANGELOG
 mapguideopensource-src (${MGBUILD}-${BUILDNUM}) experimental; urgency=low
 
-  * Beta build.
+  * 2.2.0 Release Candidate 1
 
  -- MapGuide Internals Mail List <mapguide-internals@lists.osgeo.org>  ${CURRTIME}
 END-OF-CHANGELOG
