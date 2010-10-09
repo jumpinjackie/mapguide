@@ -86,6 +86,7 @@ CPSZ kpszExceptionMessageInvalidBoundingBox   = _("The bounding box for the map 
 CPSZ kpszExceptionMessageInvalidImageFormat   = _("The request uses an unsupported image format. (Found FORMAT=&Request.format;)"); // Localize
 CPSZ kpszExceptionMessageMissingImageFormat   = _("The request must contain a FORMAT parameter to specify the required image format."); // Localize
 CPSZ kpszExceptionMessageMissingInfoFormat    = _("The request must contain an INFO_FORMAT parameter to specify the format of feature information (MIME type)."); // Localize
+CPSZ kpszExceptionMessageMissingQueryLayers   = _("The request must contain a QUERY_LAYERS parameter to specify one or more layers to be queried."); // Localize
 CPSZ kpszExceptionMessageInvalidInfoFormat    = _("The request uses an unsupported info format. (Found INFO_FORMAT=&Request.info_format;)"); // Localize
 CPSZ kpszExceptionMessageMissingVersion       = _("The request must contain a VERSION parameter to specify the WMS version."); // Localize
 // END LOCALIZATION
@@ -718,7 +719,13 @@ bool MgOgcWmsServer::ValidateGetFeatureInfoParameters()
     {
         // Check that all query layers are present in the map
         CPSZ queryLayerList = RequestParameter(kpszQueryStringQueryLayers);
-        if(queryLayerList != NULL && szlen(queryLayerList) > 0)
+        if(queryLayerList == NULL || szlen(queryLayerList) == 0)
+        {
+            ServiceExceptionReportResponse(MgOgcWmsException(MgOgcWmsException::kpszMissingQueryLayers,
+                                                     kpszExceptionMessageMissingQueryLayers));
+            bValid = false;
+        }
+        else
         {
             // The LAYERS param has already been validated in ValidateMapParameters()
             CPSZ mapLayerList = RequestParameter(kpszQueryStringLayers);
