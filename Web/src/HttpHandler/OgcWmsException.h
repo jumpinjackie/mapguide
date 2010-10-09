@@ -77,6 +77,7 @@ MissingVersion        Request does not contain a required version parameter.
     static CPSZ kpszMissingBoundingBox;
     static CPSZ kpszInvalidBoundingBox;
     static CPSZ kpszMissingInfoFormat;
+    static CPSZ kpszMissingQueryLayers;
     static CPSZ kpszMissingVersion;
 };
 

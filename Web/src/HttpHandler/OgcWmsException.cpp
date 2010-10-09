@@ -37,6 +37,7 @@ CPSZ MgOgcWmsException::kpszOperationNotSupported  = _("OperationNotSupported");
 CPSZ MgOgcWmsException::kpszMissingBoundingBox     = _("MissingBoundingBox");
 CPSZ MgOgcWmsException::kpszInvalidBoundingBox     = _("InvalidBoundingBox");
 CPSZ MgOgcWmsException::kpszMissingInfoFormat      = _("MissingInfoFormat");
+CPSZ MgOgcWmsException::kpszMissingQueryLayers     = _("MissingQueryLayers");
 CPSZ MgOgcWmsException::kpszMissingVersion         = _("MissingVersion");
 
 // A catch-all for the innards being really unhealthy!
