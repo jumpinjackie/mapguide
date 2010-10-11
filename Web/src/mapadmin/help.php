@@ -20,9 +20,7 @@
     try
     {
         include 'resizableadmin.php';
-
-        LoadSessionVars();
-
+        
         CheckForPopupRegistration();
 
         // Define Local values
@@ -37,6 +35,9 @@
             $helpPage = $_GET[ HELP_PAGE_ID ];
         if ( array_key_exists( HELP_PAGE_ID, $_POST ) )
             $helpPage = $_POST[ HELP_PAGE_ID ];
+            
+        if($helpPage != 'HelpDocs/about_sites_and_servers.htm')
+            LoadSessionVars();
 
         if ( !$firstTimeHere )
         {
