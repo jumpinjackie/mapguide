@@ -348,6 +348,25 @@ MgApi_wrap.cpp : \
     ../../../Common/Geometry/CoordinateSystem/CoordinateSystemMeasure.h \
     ../../../Common/Geometry/CoordinateSystem/CoordinateSystemTransform.h \
     ../../../Common/Geometry/CoordinateSystem/CoordinateSystemType.h \
+    ../../../Common/Geometry/CoordinateSystem/CoordinateSystemCodeFormat.h \
+    ../../../Common/Geometry/CoordinateSystem/CoordinateSystemErrorCode.h \
+    ../../../Common/Geometry/CoordinateSystem/CoordinateSystemGeodeticTransformationMethod.h \
+    ../../../Common/Geometry/CoordinateSystem/CoordinateSystemGridOrientation.h \
+    ../../../Common/Geometry/CoordinateSystem/CoordinateSystemGridSpecializationType.h \
+    ../../../Common/Geometry/CoordinateSystem/CoordinateSystemMgrsGridLevel.h \
+    ../../../Common/Geometry/CoordinateSystem/CoordinateSystemMgrsLetteringScheme.h \
+    ../../../Common/Geometry/CoordinateSystem/CoordinateSystemMgrsGridSquarePosition.h \
+    ../../../Common/Geometry/CoordinateSystem/CoordinateSystemProjectionCode.h \
+    ../../../Common/Geometry/CoordinateSystem/CoordinateSystemProjectionFormatType.h \
+    ../../../Common/Geometry/CoordinateSystem/CoordinateSystemProjectionLogicalType.h \
+    ../../../Common/Geometry/CoordinateSystem/CoordinateSystemProjectionParameterType.h \
+    ../../../Common/Geometry/CoordinateSystem/CoordinateSystemUnitCode.h \
+    ../../../Common/Geometry/CoordinateSystem/CoordinateSystemUnitType.h \
+    ../../../Common/Geometry/CoordinateSystem/CoordinateSystemWktFlavor.h \
+    ../../../Common/Geometry/CoordinateSystem/CoordinateSystemGeodeticTransformDefType.h \
+    ../../../Common/Geometry/CoordinateSystem/CoordinateSystemGeodeticAnalyticalTransformationMethod.h \
+    ../../../Common/Geometry/CoordinateSystem/CoordinateSystemGeodeticMultipleRegressionTransformationMethod.h \
+    ../../../Common/Geometry/CoordinateSystem/CoordinateSystemGeodeticTransformGridFileFormat.h \
     ../WebApp/WebCommand.h \
     ../WebApp/WebUiTargetCommand.h \
     ../WebApp/WebSearchCommand.h \
