@@ -254,12 +254,6 @@
     <Layer>
      <Title>&Service.Title;</Title>
      <?Enum list="&ReferenceSystems;" using="&RS_CRS.xml;"?>
-     <EX_GeographicBoundingBox>
-        <westBoundLongitude>-180</westBoundLongitude>
-        <eastBoundLongitude>180</eastBoundLongitude>
-        <southBoundLatitude>-90</southBoundLatitude>
-        <northBoundLatitude>90</northBoundLatitude>
-    </EX_GeographicBoundingBox>
      <?EnumLayers using="&Layer.xml;" ?>
     </Layer>
    </Capability>

@@ -872,6 +872,10 @@ EXTERNAL_API:
     static const STRING CITEWfsEnabled;                                 /// value("CITEWfsEnabled")
     static const bool DefaultCITEWfsEnabled;                            /// value(false)
 
+    /// Enable OGC CITE Test for WMS 
+    static const STRING CITEWmsEnabled;                                 /// value("CITEWmsEnabled") 
+    static const bool DefaultCITEWmsEnabled;                            /// value(false)
+
     /// WEB APPLICATION PROPERTIES SECTION -------------------------------------------------------------------------------------------
 
     /// Viewer framework properties

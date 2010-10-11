@@ -37,9 +37,11 @@ bool MapAgentCommon::IsOgcRequest(MgHttpRequestParam* params)
 
     MgConfiguration* cfg = MgConfiguration::GetInstance();
     bool bCITEWfsEnabled = false;
+    bool bCITEWmsEnabled = false;
     cfg->GetBoolValue(MgConfigProperties::OgcPropertiesSection, MgConfigProperties::CITEWfsEnabled, bCITEWfsEnabled, MgConfigProperties::DefaultCITEWfsEnabled);
+    cfg->GetBoolValue(MgConfigProperties::OgcPropertiesSection, MgConfigProperties::CITEWmsEnabled, bCITEWmsEnabled, MgConfigProperties::DefaultCITEWmsEnabled);
 
-    return bCITEWfsEnabled;
+    return (bCITEWfsEnabled || bCITEWmsEnabled);
 }
 
 
@@ -146,6 +148,7 @@ bool MapAgentCommon::AuthenticateOgcRequest(MgHttpRequestParam* params)
     if(!isWms && !isWfs)
     {
         cfg->GetBoolValue(MgConfigProperties::OgcPropertiesSection, MgConfigProperties::CITEWfsEnabled, isWfs, MgConfigProperties::DefaultCITEWfsEnabled);
+        cfg->GetBoolValue(MgConfigProperties::OgcPropertiesSection, MgConfigProperties::CITEWmsEnabled, isWms, MgConfigProperties::DefaultCITEWmsEnabled);
     }
 
     // Get WMS/WFS password from configuration.
