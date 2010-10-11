@@ -138,16 +138,16 @@ typedef wchar_t* STRINGPARAM;
     <Header path="../../../../Common/Geometry/CoordinateSystem/CoordinateSystemCategoryDictionary.h" />
     <Header path="../../../../Common/Geometry/CoordinateSystem/CoordinateSystemDatum.h" />
     <Header path="../../../../Common/Geometry/CoordinateSystem/CoordinateSystemDatumDictionary.h" />
-	 <Header path="../../../../Common/Geometry/CoordinateSystem/CoordinateSystemGeodeticTransformDefParams.h" />
-	 <Header path="../../../../Common/Geometry/CoordinateSystem/CoordinateSystemGeodeticPathElement.h" />
-	 <Header path="../../../../Common/Geometry/CoordinateSystem/CoordinateSystemGeodeticPath.h" />
-	 <Header path="../../../../Common/Geometry/CoordinateSystem/CoordinateSystemGeodeticPathDictionary.h" />
-	 <Header path="../../../../Common/Geometry/CoordinateSystem/CoordinateSystemGeodeticTransformDef.h" />
-	 <Header path="../../../../Common/Geometry/CoordinateSystem/CoordinateSystemGeodeticTransformGridFile.h" />
-	 <Header path="../../../../Common/Geometry/CoordinateSystem/CoordinateSystemGeodeticAnalyticalTransformDefParams.h" />
-	 <Header path="../../../../Common/Geometry/CoordinateSystem/CoordinateSystemGeodeticInterpolationTransformDefParams.h" />
-	 <Header path="../../../../Common/Geometry/CoordinateSystem/CoordinateSystemGeodeticMultipleRegressionTransformDefParams.h" />
-	 <Header path="../../../../Common/Geometry/CoordinateSystem/CoordinateSystemGeodeticTransformDefDictionary.h" />
+    <Header path="../../../../Common/Geometry/CoordinateSystem/CoordinateSystemGeodeticTransformDefParams.h" />
+    <Header path="../../../../Common/Geometry/CoordinateSystem/CoordinateSystemGeodeticPathElement.h" />
+    <Header path="../../../../Common/Geometry/CoordinateSystem/CoordinateSystemGeodeticPath.h" />
+    <Header path="../../../../Common/Geometry/CoordinateSystem/CoordinateSystemGeodeticPathDictionary.h" />
+    <Header path="../../../../Common/Geometry/CoordinateSystem/CoordinateSystemGeodeticTransformDef.h" />
+    <Header path="../../../../Common/Geometry/CoordinateSystem/CoordinateSystemGeodeticTransformGridFile.h" />
+    <Header path="../../../../Common/Geometry/CoordinateSystem/CoordinateSystemGeodeticAnalyticalTransformDefParams.h" />
+    <Header path="../../../../Common/Geometry/CoordinateSystem/CoordinateSystemGeodeticInterpolationTransformDefParams.h" />
+    <Header path="../../../../Common/Geometry/CoordinateSystem/CoordinateSystemGeodeticMultipleRegressionTransformDefParams.h" />
+    <Header path="../../../../Common/Geometry/CoordinateSystem/CoordinateSystemGeodeticTransformDefDictionary.h" />
     <Header path="../../../../Common/Geometry/CoordinateSystem/CoordinateSystemDictionary.h" />
     <Header path="../../../../Common/Geometry/CoordinateSystem/CoordinateSystemDictionaryUtility.h" />
     <Header path="../../../../Common/Geometry/CoordinateSystem/CoordinateSystemEllipsoid.h" />
@@ -169,6 +169,8 @@ typedef wchar_t* STRINGPARAM;
 
     <Header path="../../../../Common/Geometry/Exception/CoordinateSystemComputationFailedException.h" />
     <Header path="../../../../Common/Geometry/Exception/CoordinateSystemConversionFailedException.h" />
+    <Header path="../../../../Common/Geometry/Exception/CoordinateSystemInitializationFailedException.h" />
+    <Header path="../../../../Common/Geometry/Exception/CoordinateSystemLoadFailedException.h" />
     <Header path="../../../../Common/Geometry/Exception/CoordinateSystemMeasureFailedException.h" />
     <Header path="../../../../Common/Geometry/Exception/CoordinateSystemTransformFailedException.h" />
     <Header path="../../../../Common/Geometry/Exception/GeometryException.h" />

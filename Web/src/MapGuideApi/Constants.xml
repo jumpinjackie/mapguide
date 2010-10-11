@@ -108,7 +108,9 @@
   <Class name="MgCoordinateSystemGeodeticTransformationMethod" />
   <Class name="MgCoordinateSystemGridOrientation" />
   <Class name="MgCoordinateSystemGridSpecializationType" />
+  <Class name="MgCoordinateSystemMgrsGridLevel" />
   <Class name="MgCoordinateSystemMgrsLetteringScheme" />
+  <Class name="MgCoordinateSystemMgrsGridSquarePosition" />
   <Class name="MgCoordinateSystemProjectionCode" />
   <Class name="MgCoordinateSystemProjectionFormatType" />
   <Class name="MgCoordinateSystemProjectionLogicalType" />
@@ -117,6 +119,10 @@
   <Class name="MgCoordinateSystemUnitCode" />
   <Class name="MgCoordinateSystemUnitType" />
   <Class name="MgCoordinateSystemWktFlavor" />
+  <Class name="MgCoordinateSystemGeodeticTransformDefType" />
+  <Class name="MgCoordinateSystemGeodeticAnalyticalTransformationMethod" />
+  <Class name="MgCoordinateSystemGeodeticMultipleRegressionTransformationMethod"/>
+  <Class name="MgCoordinateSystemGeodeticTransformGridFileFormat"/>
   <Class name="MgMapPlotInstruction" />
   <Class name="MgUnitType" />
   <Class name="MgPackageStatus" />
@@ -159,7 +165,9 @@
     <Header path="../../../Common/Geometry/CoordinateSystem/CoordinateSystemGeodeticTransformationMethod.h" />
     <Header path="../../../Common/Geometry/CoordinateSystem/CoordinateSystemGridOrientation.h" />
     <Header path="../../../Common/Geometry/CoordinateSystem/CoordinateSystemGridSpecializationType.h" />
+    <Header path="../../../Common/Geometry/CoordinateSystem/CoordinateSystemMgrsGridLevel.h" />
     <Header path="../../../Common/Geometry/CoordinateSystem/CoordinateSystemMgrsLetteringScheme.h" />
+    <Header path="../../../Common/Geometry/CoordinateSystem/CoordinateSystemMgrsGridSquarePosition.h" />
     <Header path="../../../Common/Geometry/CoordinateSystem/CoordinateSystemProjectionCode.h" />
     <Header path="../../../Common/Geometry/CoordinateSystem/CoordinateSystemProjectionFormatType.h" />
     <Header path="../../../Common/Geometry/CoordinateSystem/CoordinateSystemProjectionLogicalType.h" />
@@ -168,6 +176,10 @@
     <Header path="../../../Common/Geometry/CoordinateSystem/CoordinateSystemUnitCode.h" />
     <Header path="../../../Common/Geometry/CoordinateSystem/CoordinateSystemUnitType.h" />
     <Header path="../../../Common/Geometry/CoordinateSystem/CoordinateSystemWktFlavor.h" />
+    <Header path="../../../Common/Geometry/CoordinateSystem/CoordinateSystemGeodeticTransformDefType.h" />
+    <Header path="../../../Common/Geometry/CoordinateSystem/CoordinateSystemGeodeticAnalyticalTransformationMethod.h" />
+    <Header path="../../../Common/Geometry/CoordinateSystem/CoordinateSystemGeodeticMultipleRegressionTransformationMethod.h" />
+    <Header path="../../../Common/Geometry/CoordinateSystem/CoordinateSystemGeodeticTransformGridFileFormat.h" />
 
     <Header path="../../../Common/MapGuideCommon/Services/MappingDefs.h" />
     <Header path="../../../Common/MapGuideCommon/Services/MapPlotInstruction.h" />
