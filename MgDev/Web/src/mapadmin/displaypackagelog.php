@@ -99,7 +99,7 @@ catch ( Exception $e )
         <tr>
             <?php DisplaySiteHeader( false, true, false, false, $formName, NULL ); ?>
         </tr>
-        <tr>
+        <tr class="logDisplayTable"> 
             <!-- Contents Area -->
                 <?php
                 BeginContentArea( null );
@@ -108,10 +108,9 @@ catch ( Exception $e )
                 DisplayErrorMsg( $errorMsg );
                 ?>
 
-                <br>
                 <table class="logDisplayTable" align="center" >
                     <tr>
-                        <td class="logDisplayTable"><textarea class="logDisplayTable" cols="120" ><?php echo $logContents ?></textarea></td>
+                        <td class="logDisplayTable"><textarea class="logDisplayTable"><?php echo $logContents ?></textarea></td>
                     </tr>
                 </table>
 
