@@ -723,7 +723,13 @@ td.logPropsTableBody {
 
 table.logDisplayTable {
     width: 100%;
+    height: 100%;
 }
+
+tr.logDisplayTable td.content form{  
+    height: 100%;  
+} 
+
 td.logDisplayTable {
     width: 100%;
     background-color: #FFFFFF;
