@@ -504,6 +504,8 @@ const STRING MgConfigProperties::WfsPassword                                    
 const STRING MgConfigProperties::WmsPassword                                                = L"WmsPassword";
 const STRING MgConfigProperties::CITEWfsEnabled                                             = L"CITEWfsEnabled";
 const bool   MgConfigProperties::DefaultCITEWfsEnabled                                      = false;
+const STRING MgConfigProperties::CITEWmsEnabled                                             = L"CITEWmsEnabled";
+const bool   MgConfigProperties::DefaultCITEWmsEnabled                                      = false;
 
 // ******************************************************************
 // Web Application Properties
@@ -754,5 +756,6 @@ const MgConfigValidationInfo MgConfigProperties::sm_cviOgcProperties[] =
     { MgConfigProperties::WfsPassword                                               , MgPropertyType::String    , MG_CONFIG_MIN_PASSWORD_LENGTH         , MG_CONFIG_MAX_PASSWORD_LENGTH         , MG_CONFIG_PASSWORD_RESERVED_CHARACTERS    },
     { MgConfigProperties::WmsPassword                                               , MgPropertyType::String    , MG_CONFIG_MIN_PASSWORD_LENGTH         , MG_CONFIG_MAX_PASSWORD_LENGTH         , MG_CONFIG_PASSWORD_RESERVED_CHARACTERS    },
     { MgConfigProperties::CITEWfsEnabled                                            , MgPropertyType::Boolean   , 0                                     , 1                                     , L""                                       },
+    { MgConfigProperties::CITEWmsEnabled                                            , MgPropertyType::Boolean   , 0                                     , 1                                     , L""                                       },
     { L""                                                                           , 0                         , 0.0                                   , 0.0                                   , L""                                       }
 };

@@ -203,6 +203,10 @@ MgHttpResponse* MgHttpRequest::Execute()
     hResponse = new MgHttpResponse();
     result = hResponse->GetResult();
 
+    MgConfiguration* cfg = MgConfiguration::GetInstance();
+    bool bCITEWfsEnabled = false;
+    bool bCITEWmsEnabled = false;
+
     // Get operation request value
     STRING sParamValue = m_requestParam->GetParameterValue(MgHttpResourceStrings::reqOperation);
     if(sParamValue.length() == 0)
@@ -218,7 +222,17 @@ MgHttpResponse* MgHttpRequest::Execute()
             }
             else
             {
-                sParamValue = L"WFS";
+                cfg->GetBoolValue(MgConfigProperties::OgcPropertiesSection, MgConfigProperties::CITEWfsEnabled, bCITEWfsEnabled, MgConfigProperties::DefaultCITEWfsEnabled);
+                cfg->GetBoolValue(MgConfigProperties::OgcPropertiesSection, MgConfigProperties::CITEWmsEnabled, bCITEWmsEnabled, MgConfigProperties::DefaultCITEWmsEnabled);
+                
+                if(bCITEWfsEnabled)
+                {
+                    sParamValue = L"WFS";
+                }
+                else if(bCITEWmsEnabled)
+                {
+                    sParamValue = L"WMS";
+                }
             }
             sParamValue.append(L".");
             sParamValue.append(sRequestValue);
@@ -228,13 +242,16 @@ MgHttpResponse* MgHttpRequest::Execute()
             // Error handling for OGC certification.
             // MapGuide should generate an WFS exception while receiveing following request:
             // http://locahost/mapguide/mapagent/mapagent.fcgi??request~GetCapabilities!service~WFS!version~1.1.0
-            MgConfiguration* cfg = MgConfiguration::GetInstance();
-            bool bCITEWfsEnabled = false;
-
             cfg->GetBoolValue(MgConfigProperties::OgcPropertiesSection, MgConfigProperties::CITEWfsEnabled, bCITEWfsEnabled, MgConfigProperties::DefaultCITEWfsEnabled);
+            cfg->GetBoolValue(MgConfigProperties::OgcPropertiesSection, MgConfigProperties::CITEWmsEnabled, bCITEWmsEnabled, MgConfigProperties::DefaultCITEWmsEnabled);
+            
             if(bCITEWfsEnabled)
             {
                 sParamValue = L"WFS.GETCAPABILITIES";
+            }
+            else if(bCITEWmsEnabled)
+            {
+                sParamValue = L"WMS.GETCAPABILITIES";
             }
         }
     }

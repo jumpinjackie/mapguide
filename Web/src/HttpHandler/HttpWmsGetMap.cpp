@@ -157,18 +157,20 @@ void MgHttpWmsGetMap::Execute(MgHttpResponse& hResponse)
     // Create the WMS handler
     MgHttpResponseStream responseStream;
     MgOgcWmsServer wms(requestParams, responseStream);
-    if(wms.ProcessRequest(this))
+    try
     {
-        // Get an instance of the resource service
-        Ptr<MgResourceService> resourceService = (MgResourceService*)CreateService(MgServiceType::ResourceService);
+        if(wms.ProcessRequest(this))
+        {
+            // Get an instance of the resource service
+            Ptr<MgResourceService> resourceService = (MgResourceService*)CreateService(MgServiceType::ResourceService);
 
-        // Get the background color
-        Ptr<MgColor> bkColor = MgWmsMapUtil::GetBackgroundColor(m_bgColor, m_transparent);
+            // Get the background color
+            Ptr<MgColor> bkColor = MgWmsMapUtil::GetBackgroundColor(m_bgColor, m_transparent);
 
-        // Get the extents
-        Ptr<MgEnvelope> extents = MgWmsMapUtil::GetExtents(m_bbox);
+            // Get the extents
+            Ptr<MgEnvelope> extents = MgWmsMapUtil::GetExtents(m_bbox);
 
-        try {
+            
             // Get a map object corresponding to the request parameters
             Ptr<MgMap> map = MgWmsMapUtil::GetMap(wms, m_layerDefIds, m_bbox, m_crs,
                 m_width, m_height, resourceService);
@@ -188,23 +190,24 @@ void MgHttpWmsGetMap::Execute(MgHttpResponse& hResponse)
             // Set the result
             STRING sMimeType = mapImage->GetMimeType();
             hResult->SetResultObject(mapImage, sMimeType.length() > 0 ? sMimeType : m_format);
+            
         }
-        //  Custom catch clauses.  In short, NO, we do NOT want to let MapGuide exceptions
-        //  pass through.  The buck stops here, with an exception report that WE generate
-        //  according to OGC specifications.
-        CATCH_MGEXCEPTION_HANDLE_AS_OGC_WMS(MgInvalidCoordinateSystemException,kpszInvalidCRS,   wms)
-        CATCH_MGEXCEPTION_HANDLE_AS_OGC_WMS(MgException,                       kpszInternalError,wms)
-        CATCH_ANYTHING_HANDLE_AS_OGC_WMS(                                      kpszInternalError,wms)
-    }
-    else
-    {
-        // Obtain the response byte reader
-        Ptr<MgByteReader> errorResponse = responseStream.Stream().GetReader();
+        else
+        {
+            // Obtain the response byte reader
+            Ptr<MgByteReader> errorResponse = responseStream.Stream().GetReader();
 
-        // Set the result
-        hResult->SetResultObject(errorResponse, errorResponse->GetMimeType());
+            // Set the result
+            hResult->SetResultObject(errorResponse, errorResponse->GetMimeType());
+        }
     }
-
+    //  Custom catch clauses.  In short, NO, we do NOT want to let MapGuide exceptions
+    //  pass through.  The buck stops here, with an exception report that WE generate
+    //  according to OGC specifications.
+    CATCH_MGEXCEPTION_HANDLE_AS_OGC_WMS(MgInvalidCoordinateSystemException,   kpszInvalidCRS,   wms)
+    CATCH_MGEXCEPTION_HANDLE_AS_OGC_WMS(MgCoordinateSystemLoadFailedException,kpszInvalidCRS,   wms)
+    CATCH_MGEXCEPTION_HANDLE_AS_OGC_WMS(MgException,                          kpszInternalError,wms)
+    CATCH_ANYTHING_HANDLE_AS_OGC_WMS(                                         kpszInternalError,wms)
     MG_HTTP_HANDLER_CATCH_AND_THROW_EX(L"MgHttpWmsGetMap.Execute")
 }
 
