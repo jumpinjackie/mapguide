@@ -88,8 +88,8 @@
   <Class name="MgCoordinateSystemWktFlavor" />
   <Class name="MgCoordinateSystemGeodeticTransformDefType" />
   <Class name="MgCoordinateSystemGeodeticAnalyticalTransformationMethod" />
-  <Class name="MgCoordinateSystemGeodeticMultipleRegressionTransformationMethod"/>
-  <Class name="MgCoordinateSystemGeodeticTransformGridFileFormat"/>
+  <Class name="MgCoordinateSystemGeodeticMultipleRegressionTransformationMethod" />
+  <Class name="MgCoordinateSystemGeodeticTransformGridFileFormat" />
 </Classes>
 
 <!--

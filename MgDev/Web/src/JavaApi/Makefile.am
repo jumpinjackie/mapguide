@@ -67,123 +67,52 @@ MgApi_wrap.cpp : \
     ../../../Common/Foundation/System/GuardDisposable.h \
     ../../../Common/Foundation/System/Serializable.h \
     ../../../Common/Foundation/System/NamedSerializable.h \
-    ../../../Common/MapGuideCommon/System/UserInformation.h \
-    ../../../Common/PlatformBase/Services/Warnings.h \
-    ../../../Common/MapGuideCommon/System/ConfigProperties.h \
+    ../../../Common/Foundation/Data/Collection.h \
+    ../../../Common/Foundation/Data/Property.h \
+    ../../../Common/Foundation/System/DisposableCollection.h \
+    ../../../Common/Foundation/Data/BatchPropertyCollection.h \
     ../../../Common/Foundation/Data/ByteReader.h \
     ../../../Common/Foundation/Data/ByteSource.h \
     ../../../Common/Foundation/Data/ByteSink.h \
     ../../../Common/Foundation/Data/DateTime.h \
-    ../../../Common/Foundation/Data/Collection.h \
-    ../../../Common/Foundation/System/DisposableCollection.h \
-    ../../../Common/PlatformBase/Data/IntCollection.h \
-    ../../../Common/Foundation/Data/PropertyCollection.h \
-    ../../../Common/Foundation/Data/StringCollection.h \
-    ../../../Common/PlatformBase/Data/StringPropertyCollection.h \
-    ../../../Common/PlatformBase/Data/PropertyDefinitionCollection.h \
-    ../../../Common/Foundation/Data/BatchPropertyCollection.h \
-    ../../../Common/Foundation/Data/Property.h \
     ../../../Common/Foundation/Data/NullableProperty.h \
+    ../../../Common/Foundation/Data/PropertyCollection.h \
     ../../../Common/Foundation/Data/PropertyDefinition.h \
-    ../../../Common/PlatformBase/Data/BlobProperty.h \
-    ../../../Common/PlatformBase/Data/BooleanProperty.h \
-    ../../../Common/PlatformBase/Data/ByteProperty.h \
-    ../../../Common/PlatformBase/Data/ClobProperty.h \
-    ../../../Common/PlatformBase/Data/DateTimeProperty.h \
-    ../../../Common/PlatformBase/Data/DoubleProperty.h \
-    ../../../Common/PlatformBase/Data/Int16Property.h \
-    ../../../Common/PlatformBase/Data/Int32Property.h \
-    ../../../Common/PlatformBase/Data/Int64Property.h \
-    ../../../Common/PlatformBase/Data/SingleProperty.h \
+    ../../../Common/Foundation/Data/StringCollection.h \
     ../../../Common/Foundation/Data/StringProperty.h \
+    ../../../Common/Foundation/Data/FeaturePropertyType.h \
     ../../../Common/Foundation/Data/MimeType.h \
     ../../../Common/Foundation/Data/PropertyType.h \
-    ../../../Common/Foundation/Data/FeaturePropertyType.h \
     ../../../Common/Foundation/Exception/Exception.h \
-    ../../../Common/Foundation/Exception/ApplicationException.h \
     ../../../Common/Foundation/Exception/SystemException.h \
-    ../../../Common/Foundation/Exception/ThirdPartyException.h \
     ../../../Common/Foundation/Exception/IoException.h \
     ../../../Common/Foundation/Exception/FileIoException.h \
+    ../../../Common/Foundation/Exception/ApplicationException.h \
+    ../../../Common/Foundation/Exception/ThirdPartyException.h \
     ../../../Common/Foundation/Exception/StreamIoException.h \
     ../../../Common/Foundation/Exception/OutOfRangeException.h \
     ../../../Common/Foundation/Exception/ArgumentOutOfRangeException.h \
-    ../../../Common/PlatformBase/Exception/ArrayTypeMismatchException.h \
-    ../../../Common/MapGuideCommon/Exception/AuthenticationFailedException.h \
     ../../../Common/Foundation/Exception/ClassNotFoundException.h \
     ../../../Common/Foundation/Exception/ConfigurationException.h \
     ../../../Common/Foundation/Exception/ConfigurationLoadFailedException.h \
     ../../../Common/Foundation/Exception/ConfigurationSaveFailedException.h \
-    ../../../Common/MapGuideCommon/Exception/ConnectionFailedException.h \
-    ../../../Common/MapGuideCommon/Exception/ConnectionNotOpenException.h \
-    ../../../Common/Geometry/Exception/CoordinateSystemComputationFailedException.h \
-    ../../../Common/Geometry/Exception/CoordinateSystemConversionFailedException.h \
-    ../../../Common/Geometry/Exception/CoordinateSystemMeasureFailedException.h \
-    ../../../Common/Geometry/Exception/CoordinateSystemTransformFailedException.h \
     ../../../Common/Foundation/Exception/DateTimeException.h \
-    ../../../Common/MapGuideCommon/Exception/DbException.h \
-    ../../../Common/MapGuideCommon/Exception/DbXmlException.h \
     ../../../Common/Foundation/Exception/DecryptionException.h \
     ../../../Common/Foundation/Exception/DirectoryNotFoundException.h \
     ../../../Common/Foundation/Exception/DivideByZeroException.h \
     ../../../Common/Foundation/Exception/DomainException.h \
     ../../../Common/Foundation/Exception/DuplicateDirectoryException.h \
     ../../../Common/Foundation/Exception/DuplicateFileException.h \
-    ../../../Common/MapGuideCommon/Exception/DuplicateGroupException.h \
-    ../../../Common/MapGuideCommon/Exception/DuplicateNameException.h \
     ../../../Common/Foundation/Exception/DuplicateObjectException.h \
-    ../../../Common/MapGuideCommon/Exception/DuplicateParameterException.h \
-    ../../../Common/MapGuideCommon/Exception/DuplicateRepositoryException.h \
-    ../../../Common/PlatformBase/Exception/DuplicateResourceDataException.h \
-    ../../../Common/PlatformBase/Exception/DuplicateResourceException.h \
-    ../../../Common/MapGuideCommon/Exception/DuplicateRoleException.h \
-    ../../../Common/MapGuideCommon/Exception/DuplicateServerException.h \
-    ../../../Common/MapGuideCommon/Exception/DuplicateSessionException.h \
-    ../../../Common/MapGuideCommon/Exception/DuplicateUserException.h \
-    ../../../Common/MapGuideCommon/Exception/DwfException.h \
-    ../../../Common/MapGuideCommon/Exception/DwfSectionNotFoundException.h \
-    ../../../Common/MapGuideCommon/Exception/DwfSectionResourceNotFoundException.h \
-    ../../../Common/PlatformBase/Exception/EmptyFeatureSetException.h \
     ../../../Common/Foundation/Exception/EncryptionException.h \
-    ../../../Common/MapGuideCommon/Exception/EndOfStreamException.h \
-    ../../../Common/PlatformBase/Exception/FdoException.h \
-    ../../../Common/PlatformBase/Exception/FeatureServiceException.h \
     ../../../Common/Foundation/Exception/FileNotFoundException.h \
-    ../../../Common/Geometry/Exception/GeometryException.h \
-    ../../../Common/MapGuideCommon/Exception/GroupNotFoundException.h \
     ../../../Common/Foundation/Exception/IndexOutOfRangeException.h \
     ../../../Common/Foundation/Exception/InvalidArgumentException.h \
     ../../../Common/Foundation/Exception/InvalidCastException.h \
-    ../../../Common/Geometry/Exception/InvalidCoordinateSystemException.h \
-    ../../../Common/Geometry/Exception/InvalidCoordinateSystemTypeException.h \
-    ../../../Common/Geometry/Exception/InvalidCoordinateSystemUnitsException.h \
-    ../../../Common/MapGuideCommon/Exception/InvalidDwfPackageException.h \
-    ../../../Common/MapGuideCommon/Exception/InvalidDwfSectionException.h \
-    ../../../Common/MapGuideCommon/Exception/InvalidFeatureSourceException.h \
-    ../../../Common/MapGuideCommon/Exception/InvalidIpAddressException.h \
-    ../../../Common/MapGuideCommon/Exception/InvalidLicenseException.h \
-    ../../../Common/MapGuideCommon/Exception/InvalidLogEntryException.h \
-    ../../../Common/PlatformBase/Exception/InvalidMapDefinitionException.h \
     ../../../Common/Foundation/Exception/InvalidOperationException.h \
-    ../../../Common/MapGuideCommon/Exception/InvalidPasswordException.h \
-    ../../../Common/MapGuideCommon/Exception/InvalidPrintLayoutFontSizeUnitsException.h \
-    ../../../Common/MapGuideCommon/Exception/InvalidPrintLayoutPositionUnitsException.h \
-    ../../../Common/MapGuideCommon/Exception/InvalidPrintLayoutSizeUnitsException.h \
     ../../../Common/Foundation/Exception/InvalidPropertyTypeException.h \
-    ../../../Common/PlatformBase/Exception/InvalidRepositoryNameException.h \
-    ../../../Common/PlatformBase/Exception/InvalidRepositoryTypeException.h \
-    ../../../Common/PlatformBase/Exception/InvalidResourceDataNameException.h \
-    ../../../Common/PlatformBase/Exception/InvalidResourceDataTypeException.h \
-    ../../../Common/PlatformBase/Exception/InvalidResourceNameException.h \
-    ../../../Common/PlatformBase/Exception/InvalidResourcePathException.h \
-    ../../../Common/PlatformBase/Exception/InvalidResourcePreProcessingTypeException.h \
-    ../../../Common/PlatformBase/Exception/InvalidResourceTypeException.h \
-    ../../../Common/MapGuideCommon/Exception/InvalidServerNameException.h \
     ../../../Common/Foundation/Exception/InvalidStreamHeaderException.h \
-    ../../../Common/PlatformBase/Exception/LayerNotFoundException.h \
     ../../../Common/Foundation/Exception/LengthException.h \
-    ../../../Common/MapGuideCommon/Exception/LicenseException.h \
-    ../../../Common/MapGuideCommon/Exception/LicenseExpiredException.h \
     ../../../Common/Foundation/Exception/LogicException.h \
     ../../../Common/Foundation/Exception/NotFiniteNumberException.h \
     ../../../Common/Foundation/Exception/NotImplementedException.h \
@@ -191,163 +120,112 @@ MgApi_wrap.cpp : \
     ../../../Common/Foundation/Exception/NullPropertyValueException.h \
     ../../../Common/Foundation/Exception/NullReferenceException.h \
     ../../../Common/Foundation/Exception/ObjectNotFoundException.h \
-    ../../../Common/MapGuideCommon/Exception/OperationProcessingException.h \
     ../../../Common/Foundation/Exception/OutOfMemoryException.h \
     ../../../Common/Foundation/Exception/OverflowException.h \
-    ../../../Common/MapGuideCommon/Exception/ParameterNotFoundException.h \
-    ../../../Common/MapGuideCommon/Exception/PathTooLongException.h \
     ../../../Common/Foundation/Exception/PlatformNotSupportedException.h \
-    ../../../Common/MapGuideCommon/Exception/PortNotAvailableException.h \
-    ../../../Common/MapGuideCommon/Exception/PrintToScaleModeNotSelectedException.h \
-    ../../../Common/MapGuideCommon/Exception/RepositoryCreationFailedException.h \
-    ../../../Common/MapGuideCommon/Exception/RepositoryNotFoundException.h \
-    ../../../Common/MapGuideCommon/Exception/RepositoryNotOpenException.h \
-    ../../../Common/MapGuideCommon/Exception/RepositoryOpenFailedException.h \
-    ../../../Common/PlatformBase/Exception/ResourceDataNotFoundException.h \
-    ../../../Common/PlatformBase/Exception/ResourceNotFoundException.h \
     ../../../Common/Foundation/Exception/ResourcesException.h \
     ../../../Common/Foundation/Exception/ResourcesLoadFailedException.h \
-    ../../../Common/MapGuideCommon/Exception/RoleNotFoundException.h \
     ../../../Common/Foundation/Exception/RuntimeException.h \
-    ../../../Common/MapGuideCommon/Exception/ServerNotFoundException.h \
-    ../../../Common/MapGuideCommon/Exception/ServerNotOnlineException.h \
-    ../../../Common/PlatformBase/Exception/ServiceNotAvailableException.h \
-    ../../../Common/PlatformBase/Exception/ServiceNotSupportedException.h \
-    ../../../Common/MapGuideCommon/Exception/SessionExpiredException.h \
     ../../../Common/Foundation/Exception/TemporaryFileNotAvailableException.h \
-    ../../../Common/MapGuideCommon/Exception/UnauthorizedAccessException.h \
     ../../../Common/Foundation/Exception/UnclassifiedException.h \
     ../../../Common/Foundation/Exception/UnderflowException.h \
-    ../../../Common/MapGuideCommon/Exception/UriFormatException.h \
-    ../../../Common/PlatformBase/Exception/UserNotFoundException.h \
     ../../../Common/Foundation/Exception/XmlException.h \
     ../../../Common/Foundation/Exception/XmlParserException.h \
+    ../../../Common/Geometry/GeometricEntity.h \
+    ../../../Common/Geometry/Geometry.h \
+    ../../../Common/Geometry/GeometryComponent.h \
+    ../../../Common/Geometry/Curve.h \
+    ../../../Common/Geometry/CurveSegment.h \
+    ../../../Common/Geometry/Ring.h \
+    ../../../Common/Geometry/Region.h \
+    ../../../Common/Geometry/AgfReaderWriter.h \
+    ../../../Common/Geometry/AggregateGeometry.h \
+    ../../../Common/Geometry/ArcSegment.h \
     ../../../Common/Geometry/Coordinate.h \
+    ../../../Common/Geometry/CoordinateCollection.h \
+    ../../../Common/Geometry/CoordinateIterator.h \
     ../../../Common/Geometry/CoordinateXY.h \
     ../../../Common/Geometry/CoordinateXYM.h \
     ../../../Common/Geometry/CoordinateXYZ.h \
     ../../../Common/Geometry/CoordinateXYZM.h \
-    ../../../Common/Geometry/Envelope.h \
-    ../../../Common/Geometry/CoordinateCollection.h \
-    ../../../Common/Geometry/CoordinateIterator.h \
-    ../../../Common/Geometry/Measure.h \
-    ../../../Common/Geometry/Transform.h \
-    ../../../Common/Geometry/GeometricEntity.h \
-    ../../../Common/Geometry/Geometry.h \
-    ../../../Common/Geometry/GeometryComponent.h \
-    ../../../Common/Geometry/GeometryCollection.h \
-    ../../../Common/Geometry/Point.h \
-    ../../../Common/Geometry/Curve.h \
-    ../../../Common/Geometry/Region.h \
-    ../../../Common/Geometry/CurveSegment.h \
-    ../../../Common/Geometry/CurveSegmentCollection.h \
-    ../../../Common/Geometry/Ring.h \
-    ../../../Common/Geometry/ArcSegment.h \
-    ../../../Common/Geometry/LinearSegment.h \
+    ../../../Common/Geometry/CurvePolygon.h \
+    ../../../Common/Geometry/CurvePolygonCollection.h \
     ../../../Common/Geometry/CurveRing.h \
     ../../../Common/Geometry/CurveRingCollection.h \
+    ../../../Common/Geometry/CurveSegmentCollection.h \
+    ../../../Common/Geometry/CurveString.h \
+    ../../../Common/Geometry/CurveStringCollection.h \
+    ../../../Common/Geometry/Envelope.h \
+    ../../../Common/Geometry/GeometryCollection.h \
+    ../../../Common/Geometry/GeometryFactory.h \
     ../../../Common/Geometry/LinearRing.h \
     ../../../Common/Geometry/LinearRingCollection.h \
-    ../../../Common/Geometry/CurveString.h \
+    ../../../Common/Geometry/LinearSegment.h \
     ../../../Common/Geometry/LineString.h \
-    ../../../Common/Geometry/Polygon.h \
-    ../../../Common/Geometry/CurvePolygon.h \
-    ../../../Common/Geometry/CurveStringCollection.h \
     ../../../Common/Geometry/LineStringCollection.h \
-    ../../../Common/Geometry/PolygonCollection.h \
-    ../../../Common/Geometry/CurvePolygonCollection.h \
-    ../../../Common/Geometry/PointCollection.h \
-    ../../../Common/Geometry/AggregateGeometry.h \
+    ../../../Common/Geometry/Measure.h \
     ../../../Common/Geometry/MultiCurvePolygon.h \
     ../../../Common/Geometry/MultiCurveString.h \
     ../../../Common/Geometry/MultiGeometry.h \
     ../../../Common/Geometry/MultiLineString.h \
     ../../../Common/Geometry/MultiPoint.h \
     ../../../Common/Geometry/MultiPolygon.h \
-    ../../../Common/Geometry/AgfReaderWriter.h \
-    ../../../Common/Geometry/GeometryFactory.h \
+    ../../../Common/Geometry/Point.h \
+    ../../../Common/Geometry/PointCollection.h \
+    ../../../Common/Geometry/Polygon.h \
+    ../../../Common/Geometry/PolygonCollection.h \
+    ../../../Common/Geometry/Transform.h \
     ../../../Common/Geometry/WktReaderWriter.h \
-    ../../../Common/Geometry/GeometricEntityType.h \
-    ../../../Common/Geometry/CoordinateDimension.h \
-    ../../../Common/Geometry/GeometricPathInstructionType.h \
-    ../../../Common/Geometry/GeometryType.h \
-    ../../../Common/Geometry/GeometryComponentType.h \
-    ../../../Common/MapGuideCommon/MapLayer/Layer.h \
-    ../../../Common/PlatformBase/MapLayer/LayerGroup.h \
-    ../../../Common/PlatformBase/MapLayer/LayerCollection.h \
-    ../../../Common/PlatformBase/MapLayer/LayerGroupCollection.h \
-    ../../../Common/MapGuideCommon/MapLayer/Map.h \
-    ../../../Common/PlatformBase/MapLayer/MapCollection.h \
-    ../../../Common/PlatformBase/MapLayer/ReadOnlyLayerCollection.h \
-    ../../../Common/MapGuideCommon/MapLayer/Selection.h \
-    ../../../Common/PlatformBase/MapLayer/LayerGroupType.h \
-    ../../../Common/PlatformBase/MapLayer/LayerType.h \
-    ../../../Common/PlatformBase/Services/BaseService.h \
-    ../../../Common/PlatformBase/Services/Service.h \
-    ../../../Common/MapGuideCommon/Services/Site.h \
-    ../../../Common/MapGuideCommon/Services/SiteConnection.h \
-    ../../../Common/PlatformBase/Services/ResourceIdentifier.h \
-    ../../../Common/PlatformBase/Services/ResourceService.h \
-    ../../../Common/PlatformBase/Services/Resource.h \
-    ../../../Common/PlatformBase/Services/FeatureCommand.h \
-    ../../../Common/PlatformBase/Services/Reader.h \
-    ../../../Common/PlatformBase/Services/FeatureReader.h \
-    ../../../Common/PlatformBase/Services/FeatureService.h \
-    ../../../Common/PlatformBase/Services/SpatialContextReader.h \
-    ../../../Common/PlatformBase/Services/FeatureSchema.h \
-    ../../../Common/PlatformBase/Services/FeatureSchemaCollection.h \
-    ../../../Common/PlatformBase/Services/ClassDefinitionCollection.h \
-    ../../../Common/PlatformBase/Services/LongTransactionReader.h \
-    ../../../Common/PlatformBase/Services/DataPropertyDefinition.h \
-    ../../../Common/PlatformBase/Services/GeometricPropertyDefinition.h \
-    ../../../Common/PlatformBase/Services/GeometryTypeInfo.h \
-    ../../../Common/PlatformBase/Services/RasterPropertyDefinition.h \
-    ../../../Common/PlatformBase/Services/ClassDefinition.h \
-    ../../../Common/PlatformBase/Services/RasterProperty.h \
-    ../../../Common/PlatformBase/Services/GeometryProperty.h \
-    ../../../Common/PlatformBase/Services/FeatureProperty.h \
-    ../../../Common/PlatformBase/Services/ObjectPropertyDefinition.h \
-    ../../../Common/PlatformBase/Services/Raster.h \
-    ../../../Common/PlatformBase/Services/SqlDataReader.h \
-    ../../../Common/PlatformBase/Services/DataReader.h \
-    ../../../Common/PlatformBase/Services/FeatureQueryOptions.h \
-    ../../../Common/PlatformBase/Services/FeatureAggregateOptions.h \
-    ../../../Common/PlatformBase/Services/FeatureCommandCollection.h \
-    ../../../Common/PlatformBase/Services/InsertFeatures.h \
-    ../../../Common/PlatformBase/Services/UpdateFeatures.h \
-    ../../../Common/PlatformBase/Services/DeleteFeatures.h \
-    ../../../Common/PlatformBase/Services/FeatureSourceParams.h \
-    ../../../Common/PlatformBase/Services/CreateSdfParams.h \
-    ../../../Common/PlatformBase/Services/GwsFeatureReader.h \
-    ../../../Common/MapGuideCommon/Services/DrawingService.h \
-    ../../../Common/MapGuideCommon/Services/DwfVersion.h \
-    ../../../Common/MapGuideCommon/Services/PlotSpecification.h \
-    ../../../Common/MapGuideCommon/Services/MappingService.h \
-    ../../../Common/MapGuideCommon/Services/Layout.h \
-    ../../../Common/MapGuideCommon/Services/MapPlot.h \
-    ../../../Common/MapGuideCommon/Services/MapPlotCollection.h \
-    ../../../Common/MapGuideCommon/Services/RenderingService.h \
-    ../../../Common/MapGuideCommon/Services/FeatureInformation.h \
-    ../../../Common/MapGuideCommon/Services/TileService.h \
-    ../../../Common/MapGuideCommon/Services/ServerAdmin.h \
-    ../../../Common/PlatformBase/Services/BaseServiceDefs.h \
-    ../../../Common/PlatformBase/Services/ResourceDefs.h \
-    ../../../Common/MapGuideCommon/Services/MappingDefs.h \
-    ../../../Common/PlatformBase/Services/ReaderType.h \
-    ../../../Common/PlatformBase/Services/OrderingOption.h \
-    ../../../Common/PlatformBase/Services/ObjectPropertyType.h \
-    ../../../Common/PlatformBase/Services/FeatureSpatialOperations.h \
-    ../../../Common/PlatformBase/Services/FeatureCommandType.h \
-    ../../../Common/PlatformBase/Services/SpatialContextExtentType.h \
-    ../../../Common/PlatformBase/Services/FeatureGeometricType.h \
-    ../../../Common/MapGuideCommon/Services/ServerAdminDefs.h \
-    ../../../Common/MapGuideCommon/Services/MapPlotInstruction.h \
-    ../../../Common/MapGuideCommon/Services/UnitType.h \
     ../../../Common/Geometry/CoordinateSystem/CoordinateSystem.h \
+    ../../../Common/Geometry/CoordinateSystem/CoordinateSystemDictionaryBase.h \
+    ../../../Common/Geometry/CoordinateSystem/CoordinateSystemCatalog.h \
+    ../../../Common/Geometry/CoordinateSystem/CoordinateSystemCategory.h \
+    ../../../Common/Geometry/CoordinateSystem/CoordinateSystemCategoryDictionary.h \
+    ../../../Common/Geometry/CoordinateSystem/CoordinateSystemDatum.h \
+    ../../../Common/Geometry/CoordinateSystem/CoordinateSystemDatumDictionary.h \
+    ../../../Common/Geometry/CoordinateSystem/CoordinateSystemGeodeticTransformDefParams.h \
+    ../../../Common/Geometry/CoordinateSystem/CoordinateSystemGeodeticPathElement.h \
+    ../../../Common/Geometry/CoordinateSystem/CoordinateSystemGeodeticPath.h \
+    ../../../Common/Geometry/CoordinateSystem/CoordinateSystemGeodeticPathDictionary.h \
+    ../../../Common/Geometry/CoordinateSystem/CoordinateSystemGeodeticTransformDef.h \
+    ../../../Common/Geometry/CoordinateSystem/CoordinateSystemGeodeticTransformGridFile.h \
+    ../../../Common/Geometry/CoordinateSystem/CoordinateSystemGeodeticAnalyticalTransformDefParams.h \
+    ../../../Common/Geometry/CoordinateSystem/CoordinateSystemGeodeticInterpolationTransformDefParams.h \
+    ../../../Common/Geometry/CoordinateSystem/CoordinateSystemGeodeticMultipleRegressionTransformDefParams.h \
+    ../../../Common/Geometry/CoordinateSystem/CoordinateSystemGeodeticTransformDefDictionary.h \
+    ../../../Common/Geometry/CoordinateSystem/CoordinateSystemDictionary.h \
+    ../../../Common/Geometry/CoordinateSystem/CoordinateSystemDictionaryUtility.h \
+    ../../../Common/Geometry/CoordinateSystem/CoordinateSystemEllipsoid.h \
+    ../../../Common/Geometry/CoordinateSystem/CoordinateSystemEllipsoidDictionary.h \
+    ../../../Common/Geometry/CoordinateSystem/CoordinateSystemEnum.h \
+    ../../../Common/Geometry/CoordinateSystem/CoordinateSystemEnumInteger32.h \
     ../../../Common/Geometry/CoordinateSystem/CoordinateSystemFactory.h \
+    ../../../Common/Geometry/CoordinateSystem/CoordinateSystemFilter.h \
+    ../../../Common/Geometry/CoordinateSystem/CoordinateSystemFilterInteger32.h \
+    ../../../Common/Geometry/CoordinateSystem/CoordinateSystemFormatConverter.h \
+    ../../../Common/Geometry/CoordinateSystem/CoordinateSystemGeodeticTransformation.h \
+    ../../../Common/Geometry/CoordinateSystem/CoordinateSystemGrids.h \
+    ../../../Common/Geometry/CoordinateSystem/CoordinateSystemMathComparator.h \
     ../../../Common/Geometry/CoordinateSystem/CoordinateSystemMeasure.h \
+    ../../../Common/Geometry/CoordinateSystem/CoordinateSystemMgrs.h \
+    ../../../Common/Geometry/CoordinateSystem/CoordinateSystemProjectionInformation.h \
     ../../../Common/Geometry/CoordinateSystem/CoordinateSystemTransform.h \
-    ../../../Common/Geometry/CoordinateSystem/CoordinateSystemType.h \
+    ../../../Common/Geometry/CoordinateSystem/CoordinateSystemUnitInformation.h \
+    ../../../Common/Geometry/Exception/CoordinateSystemComputationFailedException.h \
+    ../../../Common/Geometry/Exception/CoordinateSystemConversionFailedException.h \
+    ../../../Common/Geometry/Exception/CoordinateSystemInitializationFailedException.h \
+    ../../../Common/Geometry/Exception/CoordinateSystemLoadFailedException.h \
+    ../../../Common/Geometry/Exception/CoordinateSystemMeasureFailedException.h \
+    ../../../Common/Geometry/Exception/CoordinateSystemTransformFailedException.h \
+    ../../../Common/Geometry/Exception/GeometryException.h \
+    ../../../Common/Geometry/Exception/InvalidCoordinateSystemException.h \
+    ../../../Common/Geometry/Exception/InvalidCoordinateSystemTypeException.h \
+    ../../../Common/Geometry/Exception/InvalidCoordinateSystemUnitsException.h \
+    ../../../Common/Geometry/CoordinateDimension.h \
+    ../../../Common/Geometry/GeometricEntityType.h \
+    ../../../Common/Geometry/GeometricPathInstructionType.h \
+    ../../../Common/Geometry/GeometryComponentType.h \
+    ../../../Common/Geometry/GeometryType.h \
     ../../../Common/Geometry/CoordinateSystem/CoordinateSystemCodeFormat.h \
     ../../../Common/Geometry/CoordinateSystem/CoordinateSystemErrorCode.h \
     ../../../Common/Geometry/CoordinateSystem/CoordinateSystemGeodeticTransformationMethod.h \
@@ -360,6 +238,7 @@ MgApi_wrap.cpp : \
     ../../../Common/Geometry/CoordinateSystem/CoordinateSystemProjectionFormatType.h \
     ../../../Common/Geometry/CoordinateSystem/CoordinateSystemProjectionLogicalType.h \
     ../../../Common/Geometry/CoordinateSystem/CoordinateSystemProjectionParameterType.h \
+    ../../../Common/Geometry/CoordinateSystem/CoordinateSystemType.h \
     ../../../Common/Geometry/CoordinateSystem/CoordinateSystemUnitCode.h \
     ../../../Common/Geometry/CoordinateSystem/CoordinateSystemUnitType.h \
     ../../../Common/Geometry/CoordinateSystem/CoordinateSystemWktFlavor.h \
@@ -367,45 +246,215 @@ MgApi_wrap.cpp : \
     ../../../Common/Geometry/CoordinateSystem/CoordinateSystemGeodeticAnalyticalTransformationMethod.h \
     ../../../Common/Geometry/CoordinateSystem/CoordinateSystemGeodeticMultipleRegressionTransformationMethod.h \
     ../../../Common/Geometry/CoordinateSystem/CoordinateSystemGeodeticTransformGridFileFormat.h \
+    ../../../Common/PlatformBase/Data/BlobProperty.h \
+    ../../../Common/PlatformBase/Data/BooleanProperty.h \
+    ../../../Common/PlatformBase/Data/ByteProperty.h \
+    ../../../Common/PlatformBase/Data/ClobProperty.h \
+    ../../../Common/PlatformBase/Data/Color.h \
+    ../../../Common/PlatformBase/Data/DateTimeProperty.h \
+    ../../../Common/PlatformBase/Data/DoubleProperty.h \
+    ../../../Common/PlatformBase/Data/Int16Property.h \
+    ../../../Common/PlatformBase/Data/Int32Property.h \
+    ../../../Common/PlatformBase/Data/Int64Property.h \
+    ../../../Common/PlatformBase/Data/IntCollection.h \
+    ../../../Common/PlatformBase/Data/PropertyDefinitionCollection.h \
+    ../../../Common/PlatformBase/Data/SingleProperty.h \
+    ../../../Common/PlatformBase/Data/StringPropertyCollection.h \
+    ../../../Common/PlatformBase/Exception/ArrayTypeMismatchException.h \
+    ../../../Common/PlatformBase/Exception/DuplicateResourceDataException.h \
+    ../../../Common/PlatformBase/Exception/DuplicateResourceException.h \
+    ../../../Common/PlatformBase/Exception/EmptyFeatureSetException.h \
+    ../../../Common/PlatformBase/Exception/FdoException.h \
+    ../../../Common/PlatformBase/Exception/FeatureServiceException.h \
+    ../../../Common/PlatformBase/Exception/InvalidMapDefinitionException.h \
+    ../../../Common/PlatformBase/Exception/InvalidRepositoryNameException.h \
+    ../../../Common/PlatformBase/Exception/InvalidRepositoryTypeException.h \
+    ../../../Common/PlatformBase/Exception/InvalidResourceDataNameException.h \
+    ../../../Common/PlatformBase/Exception/InvalidResourceDataTypeException.h \
+    ../../../Common/PlatformBase/Exception/InvalidResourceNameException.h \
+    ../../../Common/PlatformBase/Exception/InvalidResourcePathException.h \
+    ../../../Common/PlatformBase/Exception/InvalidResourcePreProcessingTypeException.h \
+    ../../../Common/PlatformBase/Exception/InvalidResourceTypeException.h \
+    ../../../Common/PlatformBase/Exception/LayerNotFoundException.h \
+    ../../../Common/PlatformBase/Exception/ResourceBusyException.h \
+    ../../../Common/PlatformBase/Exception/ResourceDataNotFoundException.h \
+    ../../../Common/PlatformBase/Exception/ResourceNotFoundException.h \
+    ../../../Common/PlatformBase/Exception/ServiceNotAvailableException.h \
+    ../../../Common/PlatformBase/Exception/ServiceNotSupportedException.h \
+    ../../../Common/PlatformBase/Exception/UserNotFoundException.h \
+    ../../../Common/PlatformBase/Services/FeatureCommand.h \
+    ../../../Common/PlatformBase/Services/FeatureQueryOptions.h \
+    ../../../Common/PlatformBase/Services/FeatureSourceParams.h \
+    ../../../Common/PlatformBase/Services/Reader.h \
+    ../../../Common/PlatformBase/Services/Service.h \
+    ../../../Common/PlatformBase/Services/BaseService.h \
+    ../../../Common/PlatformBase/Services/ClassDefinition.h \
+    ../../../Common/PlatformBase/Services/ClassDefinitionCollection.h \
+    ../../../Common/PlatformBase/Services/FileFeatureSourceParams.h \
+    ../../../Common/PlatformBase/Services/CreateSdfParams.h \
+    ../../../Common/PlatformBase/Services/DataPropertyDefinition.h \
+    ../../../Common/PlatformBase/Services/DataReader.h \
+    ../../../Common/PlatformBase/Services/DeleteFeatures.h \
+    ../../../Common/PlatformBase/Services/FeatureAggregateOptions.h \
+    ../../../Common/PlatformBase/Services/FeatureCommandCollection.h \
+    ../../../Common/PlatformBase/Services/FeatureProperty.h \
+    ../../../Common/PlatformBase/Services/FeatureReader.h \
+    ../../../Common/PlatformBase/Services/FeatureSchema.h \
+    ../../../Common/PlatformBase/Services/FeatureSchemaCollection.h \
+    ../../../Common/PlatformBase/Services/FeatureService.h \
+    ../../../Common/PlatformBase/Services/GeometricPropertyDefinition.h \
+    ../../../Common/PlatformBase/Services/GeometryProperty.h \
+    ../../../Common/PlatformBase/Services/GeometryTypeInfo.h \
+    ../../../Common/PlatformBase/Services/GwsFeatureReader.h \
+    ../../../Common/PlatformBase/Services/InsertFeatures.h \
+    ../../../Common/PlatformBase/Services/LongTransactionReader.h \
+    ../../../Common/PlatformBase/Services/ObjectPropertyDefinition.h \
+    ../../../Common/PlatformBase/Services/Parameter.h \
+    ../../../Common/PlatformBase/Services/ParameterCollection.h \
+    ../../../Common/PlatformBase/Services/Raster.h \
+    ../../../Common/PlatformBase/Services/RasterProperty.h \
+    ../../../Common/PlatformBase/Services/RasterPropertyDefinition.h \
+    ../../../Common/PlatformBase/Services/Resource.h \
+    ../../../Common/PlatformBase/Services/ResourceIdentifier.h \
+    ../../../Common/PlatformBase/Services/ResourceService.h \
+    ../../../Common/PlatformBase/Services/SpatialContextReader.h \
+    ../../../Common/PlatformBase/Services/SqlDataReader.h \
+    ../../../Common/PlatformBase/Services/Transaction.h \
+    ../../../Common/PlatformBase/Services/UpdateFeatures.h \
+    ../../../Common/PlatformBase/Services/Warnings.h \
+    ../../../Common/PlatformBase/Services/BaseServiceDefs.h \
+    ../../../Common/PlatformBase/Services/FeatureCommandType.h \
+    ../../../Common/PlatformBase/Services/FeatureGeometricType.h \
+    ../../../Common/PlatformBase/Services/FeatureSpatialOperations.h \
+    ../../../Common/PlatformBase/Services/ObjectPropertyType.h \
+    ../../../Common/PlatformBase/Services/OrderingOption.h \
+    ../../../Common/PlatformBase/Services/ParameterDirection.h \
+    ../../../Common/PlatformBase/Services/RasterTypes.h \
+    ../../../Common/PlatformBase/Services/ReaderType.h \
+    ../../../Common/PlatformBase/Services/ResourceDefs.h \
+    ../../../Common/PlatformBase/Services/SpatialContextExtentType.h \
+    ../../../Common/PlatformBase/MapLayer/LayerBase.h \
+    ../../../Common/PlatformBase/MapLayer/LayerCollection.h \
+    ../../../Common/PlatformBase/MapLayer/LayerGroup.h \
+    ../../../Common/PlatformBase/MapLayer/LayerGroupCollection.h \
+    ../../../Common/PlatformBase/MapLayer/MapBase.h \
+    ../../../Common/PlatformBase/MapLayer/MapCollection.h \
+    ../../../Common/PlatformBase/MapLayer/ReadOnlyLayerCollection.h \
+    ../../../Common/PlatformBase/MapLayer/SelectionBase.h \
+    ../../../Common/PlatformBase/MapLayer/LayerGroupType.h \
+    ../../../Common/PlatformBase/MapLayer/LayerType.h \
+    ../../../Common/MapGuideCommon/Exception/AuthenticationFailedException.h \
+    ../../../Common/MapGuideCommon/Exception/ConnectionFailedException.h \
+    ../../../Common/MapGuideCommon/Exception/ConnectionNotOpenException.h \
+    ../../../Common/MapGuideCommon/Exception/DbException.h \
+    ../../../Common/MapGuideCommon/Exception/DbXmlException.h \
+    ../../../Common/MapGuideCommon/Exception/DuplicateGroupException.h \
+    ../../../Common/MapGuideCommon/Exception/DuplicateNameException.h \
+    ../../../Common/MapGuideCommon/Exception/DuplicateParameterException.h \
+    ../../../Common/MapGuideCommon/Exception/DuplicateRepositoryException.h \
+    ../../../Common/MapGuideCommon/Exception/DuplicateRoleException.h \
+    ../../../Common/MapGuideCommon/Exception/DuplicateServerException.h \
+    ../../../Common/MapGuideCommon/Exception/DuplicateSessionException.h \
+    ../../../Common/MapGuideCommon/Exception/DuplicateUserException.h \
+    ../../../Common/MapGuideCommon/Exception/DwfException.h \
+    ../../../Common/MapGuideCommon/Exception/DwfSectionNotFoundException.h \
+    ../../../Common/MapGuideCommon/Exception/DwfSectionResourceNotFoundException.h \
+    ../../../Common/MapGuideCommon/Exception/EndOfStreamException.h \
+    ../../../Common/MapGuideCommon/Exception/GroupNotFoundException.h \
+    ../../../Common/MapGuideCommon/Exception/InvalidDwfPackageException.h \
+    ../../../Common/MapGuideCommon/Exception/InvalidDwfSectionException.h \
+    ../../../Common/MapGuideCommon/Exception/InvalidFeatureSourceException.h \
+    ../../../Common/MapGuideCommon/Exception/InvalidIpAddressException.h \
+    ../../../Common/MapGuideCommon/Exception/InvalidLicenseException.h \
+    ../../../Common/MapGuideCommon/Exception/InvalidLogEntryException.h \
+    ../../../Common/MapGuideCommon/Exception/InvalidPasswordException.h \
+    ../../../Common/MapGuideCommon/Exception/InvalidPrintLayoutFontSizeUnitsException.h \
+    ../../../Common/MapGuideCommon/Exception/InvalidPrintLayoutPositionUnitsException.h \
+    ../../../Common/MapGuideCommon/Exception/InvalidPrintLayoutSizeUnitsException.h \
+    ../../../Common/MapGuideCommon/Exception/InvalidServerNameException.h \
+    ../../../Common/MapGuideCommon/Exception/LicenseException.h \
+    ../../../Common/MapGuideCommon/Exception/LicenseExpiredException.h \
+    ../../../Common/MapGuideCommon/Exception/OperationProcessingException.h \
+    ../../../Common/MapGuideCommon/Exception/ParameterNotFoundException.h \
+    ../../../Common/MapGuideCommon/Exception/PathTooLongException.h \
+    ../../../Common/MapGuideCommon/Exception/PortNotAvailableException.h \
+    ../../../Common/MapGuideCommon/Exception/PrintToScaleModeNotSelectedException.h \
+    ../../../Common/MapGuideCommon/Exception/RepositoryCreationFailedException.h \
+    ../../../Common/MapGuideCommon/Exception/RepositoryNotFoundException.h \
+    ../../../Common/MapGuideCommon/Exception/RepositoryNotOpenException.h \
+    ../../../Common/MapGuideCommon/Exception/RepositoryOpenFailedException.h \
+    ../../../Common/MapGuideCommon/Exception/RoleNotFoundException.h \
+    ../../../Common/MapGuideCommon/Exception/ServerNotFoundException.h \
+    ../../../Common/MapGuideCommon/Exception/ServerNotOnlineException.h \
+    ../../../Common/MapGuideCommon/Exception/SessionExpiredException.h \
+    ../../../Common/MapGuideCommon/Exception/SessionNotFoundException.h \
+    ../../../Common/MapGuideCommon/Exception/UnauthorizedAccessException.h \
+    ../../../Common/MapGuideCommon/Exception/UriFormatException.h \
+    ../../../Common/MapGuideCommon/Services/DrawingService.h \
+    ../../../Common/MapGuideCommon/Services/DwfVersion.h \
+    ../../../Common/MapGuideCommon/Services/FeatureInformation.h \
+    ../../../Common/MapGuideCommon/Services/KmlService.h \
+    ../../../Common/MapGuideCommon/Services/Layout.h \
+    ../../../Common/MapGuideCommon/Services/MappingService.h \
+    ../../../Common/MapGuideCommon/Services/MapPlot.h \
+    ../../../Common/MapGuideCommon/Services/MapPlotCollection.h \
+    ../../../Common/MapGuideCommon/Services/PackageStatusInformation.h \
+    ../../../Common/MapGuideCommon/Services/PlotSpecification.h \
+    ../../../Common/MapGuideCommon/Services/RenderingOptions.h \
+    ../../../Common/MapGuideCommon/Services/RenderingService.h \
+    ../../../Common/MapGuideCommon/Services/ServerAdmin.h \
+    ../../../Common/MapGuideCommon/Services/Site.h \
+    ../../../Common/MapGuideCommon/Services/SiteConnection.h \
+    ../../../Common/MapGuideCommon/Services/SiteInfo.h \
+    ../../../Common/MapGuideCommon/Services/TileService.h \
+    ../../../Common/MapGuideCommon/System/UserInformation.h \
+    ../../../Common/MapGuideCommon/MapLayer/Layer.h \
+    ../../../Common/MapGuideCommon/MapLayer/Map.h \
+    ../../../Common/MapGuideCommon/MapLayer/Selection.h \
+    ../../../Common/MapGuideCommon/Services/MappingDefs.h \
+    ../../../Common/MapGuideCommon/Services/MapPlotInstruction.h \
+    ../../../Common/MapGuideCommon/Services/ServerAdminDefs.h \
+    ../../../Common/MapGuideCommon/Services/UnitType.h \
+    ../../../Common/MapGuideCommon/System/ConfigProperties.h \
     ../WebApp/WebCommand.h \
     ../WebApp/WebUiTargetCommand.h \
-    ../WebApp/WebSearchCommand.h \
-    ../WebApp/WebInvokeUrlCommand.h \
-    ../WebApp/WebInvokeScriptCommand.h \
-    ../WebApp/WebBufferCommand.h \
-    ../WebApp/WebSelectWithinCommand.h \
-    ../WebApp/WebPrintCommand.h \
-    ../WebApp/WebMeasureCommand.h \
-    ../WebApp/WebGetPrintablePageCommand.h \
-    ../WebApp/WebViewOptionsCommand.h \
-    ../WebApp/WebHelpCommand.h \
-    ../WebApp/WebCommandCollection.h \
     ../WebApp/WebWidget.h \
-    ../WebApp/WebSeparatorWidget.h \
-    ../WebApp/WebCommandWidget.h \
-    ../WebApp/WebFlyoutWidget.h \
-    ../WebApp/WebTaskBarWidget.h \
     ../WebApp/WebWidgetCollection.h \
     ../WebApp/WebUiPane.h \
     ../WebApp/WebUiSizablePane.h \
-    ../WebApp/WebToolbar.h \
-    ../WebApp/WebTaskBar.h \
-    ../WebApp/WebTaskPane.h \
-    ../WebApp/WebInformationPane.h \
+    ../WebApp/WebBufferCommand.h \
+    ../WebApp/WebCommandCollection.h \
+    ../WebApp/WebCommandWidget.h \
     ../WebApp/WebContextMenu.h \
+    ../WebApp/WebFlyoutWidget.h \
+    ../WebApp/WebGetPrintablePageCommand.h \
+    ../WebApp/WebHelpCommand.h \
+    ../WebApp/WebInformationPane.h \
+    ../WebApp/WebInvokeScriptCommand.h \
+    ../WebApp/WebInvokeUrlCommand.h \
     ../WebApp/WebLayout.h \
+    ../WebApp/WebMeasureCommand.h \
+    ../WebApp/WebPrintCommand.h \
+    ../WebApp/WebSearchCommand.h \
+    ../WebApp/WebSelectWithinCommand.h \
+    ../WebApp/WebSeparatorWidget.h \
+    ../WebApp/WebTaskBar.h \
+    ../WebApp/WebTaskBarWidget.h \
+    ../WebApp/WebTaskPane.h \
+    ../WebApp/WebToolbar.h \
+    ../WebApp/WebViewOptionsCommand.h \
+    ../WebApp/WebActions.h \
     ../WebApp/WebTargetType.h \
     ../WebApp/WebTargetViewerType.h \
-    ../WebApp/WebWidgetType.h \
     ../WebApp/WebTaskButtonType.h \
-    ../WebApp/WebActions.h \
-    ../HttpHandler/HttpRequest.h \
+    ../WebApp/WebWidgetType.h \
     ../HttpHandler/HttpHeader.h \
-    ../HttpHandler/HttpRequestParam.h \
+    ../HttpHandler/HttpPrimitiveValue.h
+    ../HttpHandler/HttpRequest.h \
     ../HttpHandler/HttpRequestMetadata.h \
+    ../HttpHandler/HttpRequestParam.h \
     ../HttpHandler/HttpResponse.h \
     ../HttpHandler/HttpResult.h \
-    ../HttpHandler/HttpPrimitiveValue.h
 	../../../BuildTools/WebTools/IMake/Linux/IMake ../MapGuideApi/MapGuideApiGen.xml Java
 	cp -f java.i language.i
 	../../../BuildTools/WebTools/IMake/Linux/IMake ../MapGuideApi/Constants.xml Java .
