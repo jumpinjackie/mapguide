@@ -447,12 +447,12 @@ MgApi_wrap.cpp : \
     ../WebApp/WebTaskButtonType.h \
     ../WebApp/WebWidgetType.h \
     ../HttpHandler/HttpHeader.h \
-    ../HttpHandler/HttpPrimitiveValue.h
+    ../HttpHandler/HttpPrimitiveValue.h \
     ../HttpHandler/HttpRequest.h \
     ../HttpHandler/HttpRequestMetadata.h \
     ../HttpHandler/HttpRequestParam.h \
     ../HttpHandler/HttpResponse.h \
-    ../HttpHandler/HttpResult.h \
+    ../HttpHandler/HttpResult.h
 	../../../BuildTools/WebTools/IMake/Linux/IMake ../MapGuideApi/Constants.xml PHP ./constants.php
 	cp -f php.i language.i
 	../../../BuildTools/WebTools/IMake/Linux/IMake ../MapGuideApi/MapGuideApiGen.xml PHP
