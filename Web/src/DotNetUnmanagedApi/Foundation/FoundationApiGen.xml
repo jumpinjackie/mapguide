@@ -92,7 +92,7 @@ typedef wchar_t* STRINGPARAM;
     <Header path="../../../../Common/Foundation/Data/Property.h" />
 
     <!-- The MgDisposableCollection depends on the MgCollection above and so must come after it -->
-    <Header path="../../../../Common/Foundation/System/DisposableCollection.h"/>
+    <Header path="../../../../Common/Foundation/System/DisposableCollection.h" />
 
     <Header path="../../../../Common/Foundation/Data/BatchPropertyCollection.h" />
     <Header path="../../../../Common/Foundation/Data/ByteReader.h" />

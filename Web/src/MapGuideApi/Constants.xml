@@ -121,8 +121,8 @@
   <Class name="MgCoordinateSystemWktFlavor" />
   <Class name="MgCoordinateSystemGeodeticTransformDefType" />
   <Class name="MgCoordinateSystemGeodeticAnalyticalTransformationMethod" />
-  <Class name="MgCoordinateSystemGeodeticMultipleRegressionTransformationMethod"/>
-  <Class name="MgCoordinateSystemGeodeticTransformGridFileFormat"/>
+  <Class name="MgCoordinateSystemGeodeticMultipleRegressionTransformationMethod" />
+  <Class name="MgCoordinateSystemGeodeticTransformGridFileFormat" />
   <Class name="MgMapPlotInstruction" />
   <Class name="MgUnitType" />
   <Class name="MgPackageStatus" />
