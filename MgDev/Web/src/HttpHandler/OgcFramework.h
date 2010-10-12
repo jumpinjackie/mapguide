@@ -105,6 +105,7 @@ TODO: MIGRATE REFERENCES TO MapGuide
 extern CPSZ kpszQueryStringService         ;// = _("service");
 extern CPSZ kpszQueryStringRequest         ;// = _("request");
 extern CPSZ kpszQueryStringVersion         ;// = _("version");
+extern CPSZ kpszQueryStringWmtVersion      ;// = _("wmtver");
 extern CPSZ kpszQueryStringFormat          ;// = _("format");
 extern CPSZ kpszQueryStringInfoFormat      ;// = _("info_format");
 extern CPSZ kpszQueryStringLayers          ;// = _("layers");

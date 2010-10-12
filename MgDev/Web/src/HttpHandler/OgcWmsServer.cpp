@@ -877,7 +877,7 @@ STRING MgOgcWmsServer::GetRequestVersion()
         // That name is now deprecated, but for backwards compatibility and
         // version negotiation a post-1.0.0 server should accept
         // either form without issuing a Service Exception.
-        version = RequestParameter(kpszQueryStringVersion);
+        version = RequestParameter(kpszQueryStringWmtVersion);
     }
 
     return STRING(version? version : _(""));
