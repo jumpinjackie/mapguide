@@ -50,7 +50,6 @@
 				ExceptionHandling="2"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
-				UsePrecompiledHeader="0"
 				WarningLevel="3"
 				DebugInformationFormat="3"
 			/>
@@ -66,11 +65,14 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="ACEd.lib"
-				OutputFile="$(OutDir)\WebSupportd.dll"
+				OutputFile="$(OutDir)\MgWebSupportd.dll"
 				LinkIncremental="2"
 				AdditionalLibraryDirectories="..\..\..\Oem\ACE\ACE_wrappers\lib"
 				GenerateDebugInformation="true"
+				ProgramDatabaseFile="$(OutDir)\MgWebSupportd.pdb"
 				SubSystem="2"
+				RandomizedBaseAddress="1"
+				DataExecutionPrevention="0"
 				ImportLibrary="..\..\lib\debug\WebSupportd.lib"
 				TargetMachine="1"
 			/>
@@ -117,7 +119,6 @@
 			/>
 			<Tool
 				Name="VCMIDLTool"
-				TargetEnvironment="3"
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
@@ -128,8 +129,6 @@
 				ExceptionHandling="2"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
-				UsePrecompiledHeader="0"
-				PrecompiledHeaderThrough=""
 				WarningLevel="3"
 				DebugInformationFormat="3"
 			/>
@@ -145,11 +144,14 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="ACEd.lib"
-				OutputFile="$(OutDir)\WebSupportd.dll"
+				OutputFile="$(OutDir)\MgWebSupportd.dll"
 				LinkIncremental="2"
 				AdditionalLibraryDirectories="..\..\..\Oem\ACE\ACE_wrappers\lib64"
 				GenerateDebugInformation="true"
+				ProgramDatabaseFile="$(OutDir)\MgWebSupportd.pdb"
 				SubSystem="2"
+				RandomizedBaseAddress="1"
+				DataExecutionPrevention="0"
 				ImportLibrary="..\..\lib\debug64\WebSupportd.lib"
 				TargetMachine="17"
 			/>
@@ -181,7 +183,6 @@
 			IntermediateDirectory="..\..\obj\release\WebSupport"
 			ConfigurationType="2"
 			CharacterSet="1"
-			WholeProgramOptimization="1"
 			>
 			<Tool
 				Name="VCPreBuildEventTool"
@@ -206,7 +207,6 @@
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;WEBSUPPORT_EXPORTS"
 				RuntimeLibrary="2"
 				EnableFunctionLevelLinking="true"
-				UsePrecompiledHeader="0"
 				WarningLevel="3"
 				DebugInformationFormat="3"
 			/>
@@ -222,13 +222,16 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="ACE.lib"
-				OutputFile="$(OutDir)\WebSupport.dll"
+				OutputFile="$(OutDir)\MgWebSupport.dll"
 				LinkIncremental="1"
 				AdditionalLibraryDirectories="..\..\..\Oem\ACE\ACE_wrappers\lib"
 				GenerateDebugInformation="true"
+				ProgramDatabaseFile="$(OutDir)\MgWebSupport.pdb"
 				SubSystem="2"
 				OptimizeReferences="2"
 				EnableCOMDATFolding="2"
+				RandomizedBaseAddress="1"
+				DataExecutionPrevention="0"
 				ImportLibrary="..\..\lib\release\WebSupport.lib"
 				TargetMachine="1"
 			/>
@@ -260,7 +263,6 @@
 			IntermediateDirectory="..\..\obj\release64\WebSupport"
 			ConfigurationType="2"
 			CharacterSet="1"
-			WholeProgramOptimization="1"
 			>
 			<Tool
 				Name="VCPreBuildEventTool"
@@ -276,7 +278,6 @@
 			/>
 			<Tool
 				Name="VCMIDLTool"
-				TargetEnvironment="3"
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
@@ -286,7 +287,6 @@
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;WEBSUPPORT_EXPORTS"
 				RuntimeLibrary="2"
 				EnableFunctionLevelLinking="true"
-				UsePrecompiledHeader="0"
 				WarningLevel="3"
 				DebugInformationFormat="3"
 			/>
@@ -302,15 +302,17 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="ACE.lib"
-				OutputFile="$(OutDir)\WebSupport.dll"
+				OutputFile="$(OutDir)\MgWebSupport.dll"
 				LinkIncremental="1"
 				AdditionalLibraryDirectories="..\..\..\Oem\ACE\ACE_wrappers\lib64"
 				GenerateDebugInformation="true"
+				ProgramDatabaseFile="$(OutDir)\MgWebSupport.pdb"
 				SubSystem="2"
 				OptimizeReferences="2"
 				EnableCOMDATFolding="2"
+				RandomizedBaseAddress="1"
+				DataExecutionPrevention="0"
 				ImportLibrary="..\..\lib\release64\WebSupport.lib"
-				MergeSections=""
 				TargetMachine="17"
 			/>
 			<Tool
