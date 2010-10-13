@@ -58,7 +58,7 @@
  <!-- This pair of definitions works around a current limitation that -->
  <!-- <?If...?><?Endif?> cannot be nested.                            -->
  <Define item="EX_GeographicBoundingBox.xml">
-    <?Translate text="&Enum.item.CRS;" with="&EX_GeographicBoundingBox.translate.xml;"?>
+    <?Translate text="&Enum.item.SRS;" with="&EX_GeographicBoundingBox.translate.xml;"?>
  </Define>
 
  <Define item="EX_GeographicBoundingBox.translate.xml">
@@ -74,11 +74,11 @@
 </Define>
 
  <Define item="BoundingBox.xml">
-  <BoundingBox CRS="&Enum.item.CRS;" minx="&Enum.item.west;" miny="&Enum.item.south;" maxx="&Enum.item.east;" maxy="&Enum.item.north;"/>
+  <BoundingBox CRS="&Enum.item.SRS;" minx="&Enum.item.west;" miny="&Enum.item.south;" maxx="&Enum.item.east;" maxy="&Enum.item.north;"/>
  </Define>
 
  <Define item="CRS.xml">
-  <CRS>&Enum.item.CRS;</CRS>
+  <CRS>&Enum.item.SRS;</CRS>
  </Define>
 
  <Define item="FeatureInfo.xml">
