@@ -206,6 +206,7 @@ debug : ..\..\bin\debug\MgFoundationd.dll \
         ..\..\bin\UnitTestFiles\UT_GetLayerKmlResult.txt \
         ..\..\bin\UnitTestFiles\UT_GetFeaturesKmlResult.txt \
         ..\..\bin\UnitTestFiles\TESTChainedInner1ToManyJoin.FeatureSource \
+        ..\..\bin\UnitTestFiles\MdfTestMap.mdf \
         ..\..\bin\UnitTestFiles\MdfTestTypeStyles.ldf \
         ..\..\bin\UnitTestFiles\MdfTestCompoundSymbol.sd \
         ..\..\bin\UnitTestFiles\MdfTestSimpleSymbol.sd \
@@ -454,6 +455,7 @@ debug64 : ..\..\bin\debug64\MgFoundationd.dll \
         ..\..\bin\UnitTestFiles\UT_GetLayerKmlResult.txt \
         ..\..\bin\UnitTestFiles\UT_GetFeaturesKmlResult.txt \
         ..\..\bin\UnitTestFiles\TESTChainedInner1ToManyJoin.FeatureSource \
+        ..\..\bin\UnitTestFiles\MdfTestMap.mdf \
         ..\..\bin\UnitTestFiles\MdfTestTypeStyles.ldf \
         ..\..\bin\UnitTestFiles\MdfTestCompoundSymbol.sd \
         ..\..\bin\UnitTestFiles\MdfTestSimpleSymbol.sd \
@@ -702,6 +704,7 @@ release : ..\..\bin\release\MgFoundation.dll \
           ..\..\bin\UnitTestFiles\UT_GetLayerKmlResult.txt \
           ..\..\bin\UnitTestFiles\UT_GetFeaturesKmlResult.txt \
           ..\..\bin\UnitTestFiles\TESTChainedInner1ToManyJoin.FeatureSource \
+          ..\..\bin\UnitTestFiles\MdfTestMap.mdf \
           ..\..\bin\UnitTestFiles\MdfTestTypeStyles.ldf \
           ..\..\bin\UnitTestFiles\MdfTestCompoundSymbol.sd \
           ..\..\bin\UnitTestFiles\MdfTestSimpleSymbol.sd \
@@ -950,6 +953,7 @@ release64 : ..\..\bin\release64\MgFoundation.dll \
           ..\..\bin\UnitTestFiles\UT_GetLayerKmlResult.txt \
           ..\..\bin\UnitTestFiles\UT_GetFeaturesKmlResult.txt \
           ..\..\bin\UnitTestFiles\TESTChainedInner1ToManyJoin.FeatureSource \
+          ..\..\bin\UnitTestFiles\MdfTestMap.mdf \
           ..\..\bin\UnitTestFiles\MdfTestTypeStyles.ldf \
           ..\..\bin\UnitTestFiles\MdfTestCompoundSymbol.sd \
           ..\..\bin\UnitTestFiles\MdfTestSimpleSymbol.sd \
@@ -1071,6 +1075,7 @@ cleandebug:
     if EXIST ..\..\bin\UnitTestFiles\UT_GetLayerKmlResult.txt       del /F ..\..\bin\UnitTestFiles\UT_GetLayerKmlResult.txt
     if EXIST ..\..\bin\UnitTestFiles\UT_GetFeaturesKmlResult.txt    del /F ..\..\bin\UnitTestFiles\UT_GetFeaturesKmlResult.txt
     if EXIST ..\..\bin\UnitTestFiles\TESTChainedInner1ToManyJoin.FeatureSource del /F ..\..\bin\UnitTestFiles\TESTChainedInner1ToManyJoin.FeatureSource
+    if EXIST ..\..\bin\UnitTestFiles\MdfTestMap.mdf                 del /F ..\..\bin\UnitTestFiles\MdfTestMap.mdf
     if EXIST ..\..\bin\UnitTestFiles\MdfTestTypeStyles.ldf          del /F ..\..\bin\UnitTestFiles\MdfTestTypeStyles.ldf
     if EXIST ..\..\bin\UnitTestFiles\MdfTestCompoundSymbol.sd       del /F ..\..\bin\UnitTestFiles\MdfTestCompoundSymbol.sd
     if EXIST ..\..\bin\UnitTestFiles\MdfTestSimpleSymbol.sd         del /F ..\..\bin\UnitTestFiles\MdfTestSimpleSymbol.sd
@@ -1187,6 +1192,7 @@ cleandebug64:
     if EXIST ..\..\bin\UnitTestFiles\UT_GetLayerKmlResult.txt       del /F ..\..\bin\UnitTestFiles\UT_GetLayerKmlResult.txt
     if EXIST ..\..\bin\UnitTestFiles\UT_GetFeaturesKmlResult.txt    del /F ..\..\bin\UnitTestFiles\UT_GetFeaturesKmlResult.txt
     if EXIST ..\..\bin\UnitTestFiles\TESTChainedInner1ToManyJoin.FeatureSource del /F ..\..\bin\UnitTestFiles\TESTChainedInner1ToManyJoin.FeatureSource
+    if EXIST ..\..\bin\UnitTestFiles\MdfTestMap.mdf                 del /F ..\..\bin\UnitTestFiles\MdfTestMap.mdf
     if EXIST ..\..\bin\UnitTestFiles\MdfTestTypeStyles.ldf          del /F ..\..\bin\UnitTestFiles\MdfTestTypeStyles.ldf
     if EXIST ..\..\bin\UnitTestFiles\MdfTestCompoundSymbol.sd       del /F ..\..\bin\UnitTestFiles\MdfTestCompoundSymbol.sd
     if EXIST ..\..\bin\UnitTestFiles\MdfTestSimpleSymbol.sd         del /F ..\..\bin\UnitTestFiles\MdfTestSimpleSymbol.sd
@@ -1303,6 +1309,7 @@ cleanrelease:
     if EXIST ..\..\bin\UnitTestFiles\UT_GetLayerKmlResult.txt       del /F ..\..\bin\UnitTestFiles\UT_GetLayerKmlResult.txt
     if EXIST ..\..\bin\UnitTestFiles\UT_GetFeaturesKmlResult.txt    del /F ..\..\bin\UnitTestFiles\UT_GetFeaturesKmlResult.txt
     if EXIST ..\..\bin\UnitTestFiles\TESTChainedInner1ToManyJoin.FeatureSource del /F ..\..\bin\UnitTestFiles\TESTChainedInner1ToManyJoin.FeatureSource
+    if EXIST ..\..\bin\UnitTestFiles\MdfTestMap.mdf                 del /F ..\..\bin\UnitTestFiles\MdfTestMap.mdf
     if EXIST ..\..\bin\UnitTestFiles\MdfTestTypeStyles.ldf          del /F ..\..\bin\UnitTestFiles\MdfTestTypeStyles.ldf
     if EXIST ..\..\bin\UnitTestFiles\MdfTestCompoundSymbol.sd       del /F ..\..\bin\UnitTestFiles\MdfTestCompoundSymbol.sd
     if EXIST ..\..\bin\UnitTestFiles\MdfTestSimpleSymbol.sd         del /F ..\..\bin\UnitTestFiles\MdfTestSimpleSymbol.sd
@@ -1418,6 +1425,7 @@ cleanrelease64:
     if EXIST ..\..\bin\UnitTestFiles\UT_GetLayerKmlResult.txt       del /F ..\..\bin\UnitTestFiles\UT_GetLayerKmlResult.txt
     if EXIST ..\..\bin\UnitTestFiles\UT_GetFeaturesKmlResult.txt    del /F ..\..\bin\UnitTestFiles\UT_GetFeaturesKmlResult.txt
     if EXIST ..\..\bin\UnitTestFiles\TESTChainedInner1ToManyJoin.FeatureSource del /F ..\..\bin\UnitTestFiles\TESTChainedInner1ToManyJoin.FeatureSource
+    if EXIST ..\..\bin\UnitTestFiles\MdfTestMap.mdf                 del /F ..\..\bin\UnitTestFiles\MdfTestMap.mdf
     if EXIST ..\..\bin\UnitTestFiles\MdfTestTypeStyles.ldf          del /F ..\..\bin\UnitTestFiles\MdfTestTypeStyles.ldf
     if EXIST ..\..\bin\UnitTestFiles\MdfTestCompoundSymbol.sd       del /F ..\..\bin\UnitTestFiles\MdfTestCompoundSymbol.sd
     if EXIST ..\..\bin\UnitTestFiles\MdfTestSimpleSymbol.sd         del /F ..\..\bin\UnitTestFiles\MdfTestSimpleSymbol.sd
@@ -1500,6 +1508,7 @@ cleanrelease64:
 "..\..\..\UnitTest\TestData\KmlService\UT_GetMapKmlResult.txt" :
 "..\..\..\UnitTest\TestData\KmlService\UT_GetLayerKmlResult.txt" :
 "..\..\..\UnitTest\TestData\KmlService\UT_GetFeaturesKmlResult.txt" :
+"..\..\..\UnitTest\TestData\MdfModel\MdfTestMap.mdf" :
 "..\..\..\UnitTest\TestData\MdfModel\MdfTestTypeStyles.ldf" :
 "..\..\..\UnitTest\TestData\MdfModel\MdfTestCompoundSymbol.sd" :
 "..\..\..\UnitTest\TestData\MdfModel\MdfTestSimpleSymbol.sd" :
@@ -1728,6 +1737,10 @@ cleanrelease64:
 ..\..\bin\UnitTestFiles\UT_GetFeaturesKmlResult.txt : "..\..\..\UnitTest\TestData\KmlService\UT_GetFeaturesKmlResult.txt"
     if NOT EXIST ..\..\bin\UnitTestFiles\nul mkdir ..\..\bin\UnitTestFiles
     if EXIST "..\..\..\UnitTest\TestData\KmlService\UT_GetFeaturesKmlResult.txt" xcopy /r /d /y "..\..\..\UnitTest\TestData\KmlService\UT_GetFeaturesKmlResult.txt" ..\..\bin\UnitTestFiles\
+
+..\..\bin\UnitTestFiles\MdfTestMap.mdf : "..\..\..\UnitTest\TestData\MdfModel\MdfTestMap.mdf"
+    if NOT EXIST ..\..\bin\UnitTestFiles\nul mkdir ..\..\bin\UnitTestFiles
+    if EXIST "..\..\..\UnitTest\TestData\MdfModel\MdfTestMap.mdf" xcopy /r /d /y "..\..\..\UnitTest\TestData\MdfModel\MdfTestMap.mdf" ..\..\bin\UnitTestFiles\
 
 ..\..\bin\UnitTestFiles\MdfTestTypeStyles.ldf : "..\..\..\UnitTest\TestData\MdfModel\MdfTestTypeStyles.ldf"
     if NOT EXIST ..\..\bin\UnitTestFiles\nul mkdir ..\..\bin\UnitTestFiles
