@@ -695,6 +695,12 @@
       </ExtendedData1>
     </VectorScaleRange>
     <ExtendedData1>
+      <Watermarks>
+        <Watermark>
+          <Name>New Watermark Definition</Name>
+          <ResourceId>Library://UnitTests/Watermark/Text.WatermarkDefinition</ResourceId>
+        </Watermark>
+      </Watermarks>
       <NewElementA>
         <SubElement>DataA</SubElement>
       </NewElementA>
