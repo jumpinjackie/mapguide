@@ -450,7 +450,14 @@ MgCoordinateSystemDatum* CCoordinateSystemDatum::CreateClone()
     //
     pNew->m_datum = m_datum;
     pNew->m_DtDef = m_DtDef;
+
+    //unset the EPSG code; we've an editable instance now where we neither can guarantee the correctness of the EPSG code
+    //nor is it currently supported by CsMap's NameMapper anyway
+    pNew->m_DtDef.epsgNbr = 0;
+
     pNew->m_ElDef = m_ElDef;
+    //don't unset the EPSG code of the ellipsoid this datum refers to
+
     pNew->m_bEncrypted = m_bEncrypted;
 
     MG_CATCH_AND_THROW(L"MgCoordinateSystemDatum.CreateClone")

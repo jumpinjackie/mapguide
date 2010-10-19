@@ -306,6 +306,10 @@ MgCoordinateSystemEllipsoid* CCoordinateSystemEllipsoid::CreateClone()
     //data members are added to CCoordinateSystemEllipsoid, this will
     //need to be updated.
     pDef->m_def = m_def;
+
+    //unset the EPSG code; we've an editable instance now where we neither can guarantee the correctness of the EPSG code
+    //nor is it currently supported by CsMap's NameMapper anyway
+    pDef->m_def.epsgNbr = 0;
     pDef->m_bEncrypted = m_bEncrypted;
 
     MG_CATCH_AND_THROW(L"MgCoordinateSystemEllipsoid.CreateClone")
