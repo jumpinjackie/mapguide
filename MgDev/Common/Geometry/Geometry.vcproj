@@ -3135,6 +3135,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\CoordinateSystem\CriticalSection.cpp"
+				>
+			</File>
+			<File
 				RelativePath="..\CoordinateSystem\CriticalSection.h"
 				>
 			</File>
@@ -3164,6 +3168,14 @@
 			</File>
 			<File
 				RelativePath="..\CoordinateSystem\namestruct.h"
+				>
+			</File>
+			<File
+				RelativePath="..\CoordinateSystem\SmartCriticalClass.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\CoordinateSystem\SmartCriticalClass.h"
 				>
 			</File>
 		</Filter>

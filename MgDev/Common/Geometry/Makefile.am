@@ -51,7 +51,9 @@ libMgGeometry_la_SOURCES = \
   ../CoordinateSystem/CoordSysMgrs.cpp \
   ../CoordinateSystem/CoordSysMgrsMajorRegion.cpp \
   ../CoordinateSystem/CoordSysOneGrid.cpp \
-  ../CoordinateSystem/namestruct.cpp
+  ../CoordinateSystem/namestruct.cpp \
+  ../CoordinateSystem/CriticalSection.cpp \
+  ../CoordinateSystem/SmartCriticalClass.cpp
 
 include_SOURCES = \
   AgfReaderWriter.cpp \
@@ -197,7 +199,9 @@ include_SOURCES = \
   ../CoordinateSystem/CoordSysMgrsZone.cpp \
   ../CoordinateSystem/CoordSysMgrs.cpp \
   ../CoordinateSystem/CoordSysMgrsMajorRegion.cpp \
-  ../CoordinateSystem/CoordSysOneGrid.cpp
+  ../CoordinateSystem/CoordSysOneGrid.cpp \
+  ../CoordinateSystem/CriticalSection.cpp \
+  ../CoordinateSystem/SmartCriticalClass.cpp
 
 noinst_HEADERS = $(include_SOURCES) \
   AgfReaderWriter.h \
@@ -408,6 +412,7 @@ noinst_HEADERS = $(include_SOURCES) \
   ../CoordinateSystem/CoordSysType.h \
   ../CoordinateSystem/CoordSysUtil.h \
   ../CoordinateSystem/CriticalSection.h \
+  ../CoordinateSystem/SmartCriticalClass.h \
   ../CoordinateSystem/CoordSysDictionaryUtility.h \
   ../CoordinateSystem/CoordSysEnumInteger32.h \
   ../CoordinateSystem/CoordSysMathComparator.h \

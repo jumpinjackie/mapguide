@@ -15,27 +15,19 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
-#ifndef CRITICALSECTION_H_
-#define CRITICALSECTION_H_
+#ifndef SMARTCRITICALCLASS_H_
+#define SMARTCRITICALCLASS_H_
 
-#include "SmartCriticalClass.h"
-
-class CustomCriticalSection
+class SmartCriticalClass
 {
 public:
-    CustomCriticalSection();
-    ~CustomCriticalSection();
-
-    void Initialize();
+    SmartCriticalClass(bool bEnter);
+    ~SmartCriticalClass();
 
     void Enter();
-    void Leave();
 
 private:
-    bool m_bInitialized;
+    bool m_bEntered;
 };
 
-//This is used to protect *all* library calls - make sure, all comilation units refer to the same instance
-extern CustomCriticalSection CriticalClass;
-
-#endif //CRITICALSECTION_H_
+#endif //SMARTCRITICALCLASS_H_
