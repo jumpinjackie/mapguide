@@ -194,6 +194,11 @@ MgCoordinateSystemGeodeticTransformDef* CCoordinateSystemGeodeticTransformDef::C
 
     Ptr<CCoordinateSystemGeodeticTransformDef> clonedTransformDef = new CCoordinateSystemGeodeticTransformDef(this->catalog.p);
     clonedTransformDef->Initialize(*this->transformDefinition);
+
+    //unset the EPSG code; we've an editable instance now where we neither can guarantee the correctness of the EPSG code
+    //nor is it currently supported by CsMap's NameMapper anyway
+    clonedTransformDef->transformDefinition->epsgCode = 0;
+    clonedTransformDef->transformDefinition->epsgVariation = 0;
     clonedTransformDef->transformDefinition->protect = 0; //unset the protection flag; otherwise the caller wouldn't be able to change any values
 
     return clonedTransformDef.Detach();

@@ -82,6 +82,10 @@ MgCoordinateSystemGeodeticPath* CCoordinateSystemGeodeticPath::CreateClone()
 
     Ptr<CCoordinateSystemGeodeticPath> clonedPath = new CCoordinateSystemGeodeticPath(this->catalog);
     clonedPath->Initialize(*this->pathDefinition);
+
+    //unset the EPSG code; we've an editable instance now where we neither can guarantee the correctness of the EPSG code
+    //nor is it currently supported by CsMap's NameMapper anyway
+    clonedPath->pathDefinition->epsgCode = 0;
     clonedPath->pathDefinition->protect = 0; //unset the protection flag; otherwise the caller wouldn't be able to change any values
 
     return clonedPath.Detach();

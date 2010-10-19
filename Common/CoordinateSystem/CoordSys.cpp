@@ -1650,6 +1650,10 @@ MgCoordinateSystem* CCoordinateSystem::CreateClone()
     pNew->m_csprm = m_csprm;
     pNew->m_bEncrypted = m_bEncrypted;
 
+    //unset the EPSG code; we've an editable instance now where we neither can guarantee the correctness of the EPSG code
+    //nor is it currently supported by CsMap's NameMapper anyway
+    pNew->m_csprm.csdef.epsgNbr = 0;
+
     if (m_pDatum)
     {
         Ptr<MgCoordinateSystemDatum> pDtClone=m_pDatum->CreateClone();
