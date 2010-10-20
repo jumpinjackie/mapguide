@@ -312,6 +312,19 @@ void TestRenderingService::TestStart()
         Ptr<MgByteReader> sdrdr5 = sdsrc5->GetReader();
         m_svcResource->SetResource(sdres5, sdrdr5, NULL);
 
+        // For watermark test
+        // publish the map definition
+        Ptr<MgResourceIdentifier> mapres12 = new MgResourceIdentifier(L"Library://UnitTests/Maps/SheboyganWithWatermark.MapDefinition");
+        Ptr<MgByteSource> mdfsrc12 = new MgByteSource(L"../UnitTestFiles/UT_SheboyganWithWatermark.mdf", false);
+        Ptr<MgByteReader> mdfrdr12 = mdfsrc12->GetReader();
+        m_svcResource->SetResource(mapres12, mdfrdr12, NULL);
+
+        // publish the watermark definition
+        Ptr<MgResourceIdentifier> wdfres1 = new MgResourceIdentifier(L"Library://UnitTests/Watermarks/PoweredByMapGuide.WatermarkDefinition");
+        Ptr<MgByteSource> wdfsrc1 = new MgByteSource(L"../UnitTestFiles/UT_PoweredByMapGuide.wdf", false);
+        Ptr<MgByteReader> wdfrdr1 = wdfsrc1->GetReader();
+        m_svcResource->SetResource(wdfres1, wdfrdr1, NULL);
+
     }
     catch (MgException* e)
     {
@@ -420,6 +433,11 @@ void TestRenderingService::TestEnd()
         m_svcResource->DeleteResource(ldfres11);
         Ptr<MgResourceIdentifier> sdres5 = new MgResourceIdentifier(L"Library://UnitTests/Symbols/AreaSymbol.SymbolDefinition");
         m_svcResource->DeleteResource(sdres5);
+        
+        Ptr<MgResourceIdentifier> mapres12 = new MgResourceIdentifier(L"Library://UnitTests/Maps/SheboyganWithWatermark.MapDefinition");
+        m_svcResource->DeleteResource(mapres12);
+        Ptr<MgResourceIdentifier> wdfres1 = new MgResourceIdentifier(L"Library://UnitTests/Watermarks/PoweredByMapGuide.WatermarkDefinition");
+        m_svcResource->DeleteResource(wdfres1);
 
        #ifdef _DEBUG
         MgFdoConnectionManager* pFdoConnectionManager = MgFdoConnectionManager::GetInstance();
@@ -508,6 +526,34 @@ void TestRenderingService::TestCase_RenderMap()
         map->SetViewScale(12000.0);
         Ptr<MgByteReader> rdr2 = m_svcRendering->RenderMap(map, NULL, L"PNG");
         rdr2->ToFile(L"../UnitTestFiles/RenderMap12k.png");
+    }
+    catch (MgException* e)
+    {
+        STRING message = e->GetDetails(TEST_LOCALE);
+        SAFE_RELEASE(e);
+        CPPUNIT_FAIL(MG_WCHAR_TO_CHAR(message.c_str()));
+    }
+    catch (...)
+    {
+        throw;
+    }
+}
+
+void TestRenderingService::TestCase_RenderMapWithWatermark()
+{
+    try
+    {
+        // make a runtime map
+        Ptr<MgMap> map = CreateTestMapWithWatermark();
+
+        // call the API using scales of 75000 and 12000
+        map->SetViewScale(75000.0);
+        Ptr<MgByteReader> rdr1 = m_svcRendering->RenderMap(map, NULL, L"PNG");
+        rdr1->ToFile(L"../UnitTestFiles/RenderMapWithWatermark75k.png");
+
+        map->SetViewScale(12000.0);
+        Ptr<MgByteReader> rdr2 = m_svcRendering->RenderMap(map, NULL, L"PNG");
+        rdr2->ToFile(L"../UnitTestFiles/RenderMapWithWatermark12k.png");
     }
     catch (MgException* e)
     {
@@ -624,6 +670,22 @@ void TestRenderingService::TestCase_QueryFeatures()
     }
 }
 
+MgMap* TestRenderingService::CreateTestMapWithWatermark()
+{
+    Ptr<MgResourceIdentifier> mdfres = new MgResourceIdentifier(L"Library://UnitTests/Maps/SheboyganWithWatermark.MapDefinition");
+    MgMap* map = new MgMap(m_siteConnection);
+    map->Create(mdfres, L"UnitTestSheboyganWithWatermark");
+
+    Ptr<MgCoordinate> coordNewCenter = new MgCoordinateXY(-87.733253, 43.746199);
+    Ptr<MgPoint> ptNewCenter = new MgPoint(coordNewCenter);
+    map->SetViewCenter(ptNewCenter);
+    map->SetViewScale(75000.0);
+    map->SetDisplayDpi(96);
+    map->SetDisplayWidth(1024);
+    map->SetDisplayHeight(1024);
+
+    return map;
+}
 
 MgMap* TestRenderingService::CreateTestMap()
 {

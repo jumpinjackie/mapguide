@@ -177,6 +177,8 @@ debug : ..\..\bin\debug\MgFoundationd.dll \
         ..\..\bin\UnitTestFiles\UT_NoLegend.pl \
         ..\..\bin\UnitTestFiles\UT_SymbolMart.sl \
         ..\..\bin\UnitTestFiles\UT_Symbols.dwf \
+        ..\..\bin\UnitTestFiles\UT_SheboyganWithWatermark.mdf \
+        ..\..\bin\UnitTestFiles\UT_PoweredByMapGuide.wdf \
         ..\..\bin\UnitTestFiles\UT_Sheboygan.mdf \
         ..\..\bin\UnitTestFiles\UT_HydrographicPolygons.sdf \
         ..\..\bin\UnitTestFiles\UT_HydrographicPolygons.fs \
@@ -426,6 +428,8 @@ debug64 : ..\..\bin\debug64\MgFoundationd.dll \
         ..\..\bin\UnitTestFiles\UT_NoLegend.pl \
         ..\..\bin\UnitTestFiles\UT_SymbolMart.sl \
         ..\..\bin\UnitTestFiles\UT_Symbols.dwf \
+        ..\..\bin\UnitTestFiles\UT_SheboyganWithWatermark.mdf \
+        ..\..\bin\UnitTestFiles\UT_PoweredByMapGuide.wdf \
         ..\..\bin\UnitTestFiles\UT_Sheboygan.mdf \
         ..\..\bin\UnitTestFiles\UT_HydrographicPolygons.sdf \
         ..\..\bin\UnitTestFiles\UT_HydrographicPolygons.fs \
@@ -675,6 +679,8 @@ release : ..\..\bin\release\MgFoundation.dll \
           ..\..\bin\UnitTestFiles\UT_NoLegend.pl \
           ..\..\bin\UnitTestFiles\UT_SymbolMart.sl \
           ..\..\bin\UnitTestFiles\UT_Symbols.dwf \
+          ..\..\bin\UnitTestFiles\UT_SheboyganWithWatermark.mdf \
+          ..\..\bin\UnitTestFiles\UT_PoweredByMapGuide.wdf \
           ..\..\bin\UnitTestFiles\UT_Sheboygan.mdf \
           ..\..\bin\UnitTestFiles\UT_HydrographicPolygons.sdf \
           ..\..\bin\UnitTestFiles\UT_HydrographicPolygons.fs \
@@ -924,6 +930,8 @@ release64 : ..\..\bin\release64\MgFoundation.dll \
           ..\..\bin\UnitTestFiles\UT_NoLegend.pl \
           ..\..\bin\UnitTestFiles\UT_SymbolMart.sl \
           ..\..\bin\UnitTestFiles\UT_Symbols.dwf \
+          ..\..\bin\UnitTestFiles\UT_SheboyganWithWatermark.mdf \
+          ..\..\bin\UnitTestFiles\UT_PoweredByMapGuide.wdf \
           ..\..\bin\UnitTestFiles\UT_Sheboygan.mdf \
           ..\..\bin\UnitTestFiles\UT_HydrographicPolygons.sdf \
           ..\..\bin\UnitTestFiles\UT_HydrographicPolygons.fs \
@@ -1046,6 +1054,8 @@ cleandebug:
     if EXIST ..\..\bin\UnitTestFiles\UT_NoLegend.pl                 del /F ..\..\bin\UnitTestFiles\UT_NoLegend.pl
     if EXIST ..\..\bin\UnitTestFiles\UT_SymbolMart.sl               del /F ..\..\bin\UnitTestFiles\UT_SymbolMart.sl
     if EXIST ..\..\bin\UnitTestFiles\UT_Symbols.dwf                 del /F ..\..\bin\UnitTestFiles\UT_Symbols.dwf
+    if EXIST ..\..\bin\UnitTestFiles\UT_SheboyganWithWatermark.mdf  del /F ..\..\bin\UnitTestFiles\UT_SheboyganWithWatermark.mdf
+    if EXIST ..\..\bin\UnitTestFiles\UT_PoweredByMapGuide.wdf       del /F ..\..\bin\UnitTestFiles\UT_PoweredByMapGuide.wdf
     if EXIST ..\..\bin\UnitTestFiles\UT_Sheboygan.mdf               del /F ..\..\bin\UnitTestFiles\UT_Sheboygan.mdf
     if EXIST ..\..\bin\UnitTestFiles\UT_HydrographicPolygons.sdf    del /F ..\..\bin\UnitTestFiles\UT_HydrographicPolygons.sdf
     if EXIST ..\..\bin\UnitTestFiles\UT_HydrographicPolygons.fs     del /F ..\..\bin\UnitTestFiles\UT_HydrographicPolygons.fs
@@ -1163,6 +1173,8 @@ cleandebug64:
     if EXIST ..\..\bin\UnitTestFiles\UT_NoLegend.pl                 del /F ..\..\bin\UnitTestFiles\UT_NoLegend.pl
     if EXIST ..\..\bin\UnitTestFiles\UT_SymbolMart.sl               del /F ..\..\bin\UnitTestFiles\UT_SymbolMart.sl
     if EXIST ..\..\bin\UnitTestFiles\UT_Symbols.dwf                 del /F ..\..\bin\UnitTestFiles\UT_Symbols.dwf
+    if EXIST ..\..\bin\UnitTestFiles\UT_SheboyganWithWatermark.mdf  del /F ..\..\bin\UnitTestFiles\UT_SheboyganWithWatermark.mdf
+    if EXIST ..\..\bin\UnitTestFiles\UT_PoweredByMapGuide.wdf       del /F ..\..\bin\UnitTestFiles\UT_PoweredByMapGuide.wdf
     if EXIST ..\..\bin\UnitTestFiles\UT_Sheboygan.mdf               del /F ..\..\bin\UnitTestFiles\UT_Sheboygan.mdf
     if EXIST ..\..\bin\UnitTestFiles\UT_HydrographicPolygons.sdf    del /F ..\..\bin\UnitTestFiles\UT_HydrographicPolygons.sdf
     if EXIST ..\..\bin\UnitTestFiles\UT_HydrographicPolygons.fs     del /F ..\..\bin\UnitTestFiles\UT_HydrographicPolygons.fs
@@ -1280,6 +1292,8 @@ cleanrelease:
     if EXIST ..\..\bin\UnitTestFiles\UT_NoLegend.pl                 del /F ..\..\bin\UnitTestFiles\UT_NoLegend.pl
     if EXIST ..\..\bin\UnitTestFiles\UT_SymbolMart.sl               del /F ..\..\bin\UnitTestFiles\UT_SymbolMart.sl
     if EXIST ..\..\bin\UnitTestFiles\UT_Symbols.dwf                 del /F ..\..\bin\UnitTestFiles\UT_Symbols.dwf
+    if EXIST ..\..\bin\UnitTestFiles\UT_SheboyganWithWatermark.mdf  del /F ..\..\bin\UnitTestFiles\UT_SheboyganWithWatermark.mdf
+    if EXIST ..\..\bin\UnitTestFiles\UT_PoweredByMapGuide.wdf       del /F ..\..\bin\UnitTestFiles\UT_PoweredByMapGuide.wdf
     if EXIST ..\..\bin\UnitTestFiles\UT_Sheboygan.mdf               del /F ..\..\bin\UnitTestFiles\UT_Sheboygan.mdf
     if EXIST ..\..\bin\UnitTestFiles\UT_HydrographicPolygons.sdf    del /F ..\..\bin\UnitTestFiles\UT_HydrographicPolygons.sdf
     if EXIST ..\..\bin\UnitTestFiles\UT_HydrographicPolygons.fs     del /F ..\..\bin\UnitTestFiles\UT_HydrographicPolygons.fs
@@ -1396,6 +1410,8 @@ cleanrelease64:
     if EXIST ..\..\bin\UnitTestFiles\UT_NoLegend.pl                 del /F ..\..\bin\UnitTestFiles\UT_NoLegend.pl
     if EXIST ..\..\bin\UnitTestFiles\UT_SymbolMart.sl               del /F ..\..\bin\UnitTestFiles\UT_SymbolMart.sl
     if EXIST ..\..\bin\UnitTestFiles\UT_Symbols.dwf                 del /F ..\..\bin\UnitTestFiles\UT_Symbols.dwf
+    if EXIST ..\..\bin\UnitTestFiles\UT_SheboyganWithWatermark.mdf  del /F ..\..\bin\UnitTestFiles\UT_SheboyganWithWatermark.mdf
+    if EXIST ..\..\bin\UnitTestFiles\UT_PoweredByMapGuide.wdf       del /F ..\..\bin\UnitTestFiles\UT_PoweredByMapGuide.wdf
     if EXIST ..\..\bin\UnitTestFiles\UT_Sheboygan.mdf               del /F ..\..\bin\UnitTestFiles\UT_Sheboygan.mdf
     if EXIST ..\..\bin\UnitTestFiles\UT_HydrographicPolygons.sdf    del /F ..\..\bin\UnitTestFiles\UT_HydrographicPolygons.sdf
     if EXIST ..\..\bin\UnitTestFiles\UT_HydrographicPolygons.fs     del /F ..\..\bin\UnitTestFiles\UT_HydrographicPolygons.fs
@@ -1485,6 +1501,8 @@ cleanrelease64:
 "..\..\..\UnitTest\TestData\MappingService\UT_NoLegend.pl" :
 "..\..\..\UnitTest\TestData\MappingService\UT_SymbolMart.sl" :
 "..\..\..\UnitTest\TestData\MappingService\UT_Symbols.dwf" :
+"..\..\..\UnitTest\TestData\MappingService\UT_SheboyganWithWatermark.mdf" :
+"..\..\..\UnitTest\TestData\MappingService\UT_PoweredByMapGuide.wdf" :
 "..\..\..\UnitTest\TestData\MappingService\UT_Sheboygan.mdf" :
 "..\..\..\UnitTest\TestData\MappingService\UT_HydrographicPolygons.sdf" :
 "..\..\..\UnitTest\TestData\MappingService\UT_HydrographicPolygons.fs" :
@@ -1645,6 +1663,14 @@ cleanrelease64:
 ..\..\bin\UnitTestFiles\UT_Symbols.dwf : "..\..\..\UnitTest\TestData\MappingService\UT_Symbols.dwf"
     if NOT EXIST ..\..\bin\UnitTestFiles\nul mkdir ..\..\bin\UnitTestFiles
     if EXIST "..\..\..\UnitTest\TestData\MappingService\UT_Symbols.dwf" xcopy /r /d /y "..\..\..\UnitTest\TestData\MappingService\UT_Symbols.dwf" ..\..\bin\UnitTestFiles\
+
+..\..\bin\UnitTestFiles\UT_SheboyganWithWatermark.mdf : "..\..\..\UnitTest\TestData\MappingService\UT_SheboyganWithWatermark.mdf"
+    if NOT EXIST ..\..\bin\UnitTestFiles\nul mkdir ..\..\bin\UnitTestFiles
+    if EXIST "..\..\..\UnitTest\TestData\MappingService\UT_SheboyganWithWatermark.mdf" xcopy /r /d /y "..\..\..\UnitTest\TestData\MappingService\UT_SheboyganWithWatermark.mdf" ..\..\bin\UnitTestFiles\
+
+..\..\bin\UnitTestFiles\UT_PoweredByMapGuide.wdf : "..\..\..\UnitTest\TestData\MappingService\UT_PoweredByMapGuide.wdf"
+    if NOT EXIST ..\..\bin\UnitTestFiles\nul mkdir ..\..\bin\UnitTestFiles
+    if EXIST "..\..\..\UnitTest\TestData\MappingService\UT_PoweredByMapGuide.wdf" xcopy /r /d /y "..\..\..\UnitTest\TestData\MappingService\UT_PoweredByMapGuide.wdf" ..\..\bin\UnitTestFiles\
 
 ..\..\bin\UnitTestFiles\UT_Sheboygan.mdf : "..\..\..\UnitTest\TestData\MappingService\UT_Sheboygan.mdf"
     if NOT EXIST ..\..\bin\UnitTestFiles\nul mkdir ..\..\bin\UnitTestFiles
