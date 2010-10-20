@@ -3519,6 +3519,7 @@ function ShowBaseGroup(name, id, show)
 
 function RequestHyperLinkData(id, x, y, exec)
 {
+    if(IsMouseInsideHyperlink()) return;
     if(lastMapRcv != mapId) return;
     if(isPopupOpen(tbMenu) || isPopupOpen(ctxMenu)) return;
     req = CreateRequestHandler();
@@ -3587,7 +3588,37 @@ function DisplayHyperlinkTip(x,y)
 function HideHyperlinkTip()
 {
     tip = document.getElementById("hlTip");
-    if(tip != null) tip.style.visibility = "hidden";
+    if(tip != null) 
+    {
+        if (IsMouseInsideHyperlink())
+        {
+            return;
+        }
+        tip.style.visibility = "hidden";
+    }
+}
+
+function IsMouseInsideHyperlink()
+{
+    tip = document.getElementById("hlTip");
+    var info = document.getElementById("InfoBand");
+    if(tip != null && info != null) 
+    {
+        if (tip.style.visibility == "hidden")
+            return false;
+
+        var xpad = 20;
+        var ypad = 30;
+        var iw = parseInt(info.style.width);
+        var cx = hlData.curx + iw;
+        var cy = hlData.cury;
+        var minx = (parseInt(tip.style.left)) - xpad;
+        var miny = parseInt(tip.style.top) - ypad;
+        var maxx = minx + parseInt(tip.offsetWidth) + xpad;
+        var maxy = miny + parseInt(tip.offsetHeight) + ypad;
+        return (cx >= minx && cx <= maxx && cy >= miny && cy <= maxy);
+    }
+    return false;
 }
 
 function ExecuteHyperlink(url)
