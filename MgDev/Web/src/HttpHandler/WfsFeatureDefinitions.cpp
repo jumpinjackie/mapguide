@@ -243,6 +243,11 @@ bool MgWfsFeatureDefinitions::GetMetadataDefinitions(MgXmlParser& Input,CStream&
                 {
                     isPublished = true;
                 }
+                // WFS 1.1.0 replaces PrimarySRS with DefaultSRS
+                else if(SZ_EQ(sDefinitionName.c_str(), _("Feature.PrimarySRS")))
+                {
+                    AddDefinition(oStream, _("Feature.DefaultSRS"), sValue.c_str());
+                }
             }
         }
     }
