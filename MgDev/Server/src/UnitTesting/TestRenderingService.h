@@ -37,6 +37,7 @@ class TestRenderingService : public CppUnit::TestFixture
 
     CPPUNIT_TEST(TestCase_RenderDynamicOverlay);
     CPPUNIT_TEST(TestCase_RenderMap);
+    CPPUNIT_TEST(TestCase_RenderMapWithWatermark);
     CPPUNIT_TEST(TestCase_RenderLegend);
     CPPUNIT_TEST(TestCase_QueryFeatures);
 
@@ -56,6 +57,7 @@ public:
 
     void TestCase_RenderDynamicOverlay();
     void TestCase_RenderMap();
+    void TestCase_RenderMapWithWatermark();
     void TestCase_RenderLegend();
     void TestCase_QueryFeatures();
 
@@ -73,6 +75,7 @@ public:
 
 private:
     MgMap* CreateTestMap();
+    MgMap* CreateTestMapWithWatermark();
     MgPolygon* CreateSelectionPolygon(MgMap* map, double width, double height);
 
 private:
