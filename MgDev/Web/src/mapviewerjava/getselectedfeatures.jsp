@@ -290,7 +290,7 @@
                 if (feat.Zoom == null)
                     sb.append("null");
                 else
-                    sb.append("{\"x\" : " + feat.Zoom.X + ", \"y\" : " + feat.Zoom.Y + "}");
+                    sb.append(String.format(Locale.ROOT, "{\"x\" : %f, \"y\" : %f }", feat.Zoom.X, feat.Zoom.Y));
                 //end zoom
                 //end feature
                 sb.append("}");

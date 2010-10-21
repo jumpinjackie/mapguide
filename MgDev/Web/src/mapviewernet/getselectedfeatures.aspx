@@ -228,7 +228,7 @@
                 if (feat.Zoom == null)
                     sb.Append("null");
                 else
-                    sb.Append("{\"x\" : " + feat.Zoom.X + ", \"y\" : " + feat.Zoom.Y + "}");
+                    sb.Append("{" + String.Format(CultureInfo.InvariantCulture, "\"x\" : {0}, \"y\" : {1} ", feat.Zoom.X, feat.Zoom.Y) + "}");
                 //end zoom
                 //end feature
                 sb.Append("}");
