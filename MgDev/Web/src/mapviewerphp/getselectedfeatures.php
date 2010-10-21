@@ -316,7 +316,11 @@ function GetJson($selectionSet)
                     }
                     //Add JSONified feature
                     if($feat->zoom != null)
-                        array_push($totalFeaturesOnLayer, "{\"values\" : [".join(",", $featureProperties)."], \"zoom\" : { \"x\": ".$feat->zoom->x.", \"y\": ".$feat->zoom->y." } }");
+                    {
+                        $xstr = number_format($feat->zoom->x, 8, '.','');
+                        $ystr = number_format($feat->zoom->y, 8, '.','');
+                        array_push($totalFeaturesOnLayer, "{\"values\" : [".join(",", $featureProperties)."], \"zoom\" : { \"x\": $xstr, \"y\": $ystr } }");
+                    }
                     else
                         array_push($totalFeaturesOnLayer, "{\"values\" : [".join(",", $featureProperties)."], \"zoom\" : null }");
 
