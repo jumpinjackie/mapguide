@@ -335,10 +335,10 @@
                                 {
                                     MgByteReader agf = reader.GetGeometry(propName);
                                     MgGeometry geom = agfRW.Read(agf);
-                                    
-									MgEnvelope env = geom.Envelope();
-									MgCoordinate ll = env.GetLowerLeftCoordinate();
-									MgCoordinate ur = env.GetUpperRightCoordinate();
+
+                                    MgEnvelope env = geom.Envelope();
+                                    MgCoordinate ll = env.GetLowerLeftCoordinate();
+                                    MgCoordinate ur = env.GetUpperRightCoordinate();
 
                                     zoom = new ZoomPoint();
                                     zoom.X = (ll.X + ur.X) / 2;
