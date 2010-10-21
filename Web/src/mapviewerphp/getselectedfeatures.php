@@ -191,11 +191,14 @@ class Feature
                                     //We want the centroid so we have a zoom-to point
                                     $agf = $fr->GetGeometry($propName);
                                     $geom = $agfRW->Read($agf);
-                                    $pt = $geom->GetCentroid()->GetCoordinate();
+
+                                    $env = $geom->Envelope();
+                                    $ll = $env->GetLowerLeftCoordinate();
+                                    $ur = $env->GetUpperRightCoordinate();
 
                                     $zoom = new ZoomPoint();
-                                    $zoom->x = $pt->GetX();
-                                    $zoom->y = $pt->GetY();
+                                    $zoom->x = ($ll->GetX() + $ur->GetX()) / 2;
+                                    $zoom->y = ($ll->GetY() + $ur->GetY()) / 2;
 
                                     $feat->zoom = $zoom;
                                     //FB::log("zoom: (".$zoom->x.",".$zoom->y.")");
