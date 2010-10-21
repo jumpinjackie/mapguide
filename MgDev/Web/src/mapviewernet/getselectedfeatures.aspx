@@ -335,11 +335,14 @@
                                 {
                                     MgByteReader agf = reader.GetGeometry(propName);
                                     MgGeometry geom = agfRW.Read(agf);
-                                    MgCoordinate pt = geom.Centroid.Coordinate;
+
+                                    MgEnvelope env = geom.Envelope();
+                                    MgCoordinate ll = env.GetLowerLeftCoordinate();
+                                    MgCoordinate ur = env.GetUpperRightCoordinate();
 
                                     zoom = new ZoomPoint();
-                                    zoom.X = pt.X;
-                                    zoom.Y = pt.Y;
+                                    zoom.X = (ll.X + ur.X) / 2;
+                                    zoom.Y = (ll.Y + ur.Y) / 2;
 
                                     feat.Zoom = zoom;
                                 }
