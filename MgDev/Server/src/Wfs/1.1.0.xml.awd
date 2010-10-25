@@ -15,9 +15,9 @@
    <wfs:Name>&Feature.FullName;</wfs:Name>
    <wfs:Title>&Feature.Title;</wfs:Title>
    <wfs:Abstract>&Feature.Abstract;</wfs:Abstract>
-   <?Ifdef item="Feature.KeywordList"?>
+   <?Ifdef item="Feature.Keywords"?>
    <ows:Keywords>
-    <?EnumDelim list="&Feature.KeywordList;" using="&Keywords.xml;"?>
+    <?EnumDelim list="&Feature.Keywords;" using="&Keywords.xml;"?>
    </ows:Keywords>
    <?Endif?>
    <wfs:DefaultSRS>&Feature.DefaultSRS;</wfs:DefaultSRS>
@@ -72,7 +72,6 @@
  <!-- for now, these are operating defaults. -->
  <Define item="Feature.namespace">http://fdo.osgeo.org/schemas</Define>
  <Define item="Feature.Abstract">Abstract for this layer</Define>
- <Define item="Feature.KeywordList"></Define>
  <Define item="Feature.DefaultSRS">urn:ogc:def:crs:EPSG::4326</Define>
  <!--Define item="Feature.OtherSRS"></Define-->
  <Define item="Feature.Bounds.north">90</Define>
