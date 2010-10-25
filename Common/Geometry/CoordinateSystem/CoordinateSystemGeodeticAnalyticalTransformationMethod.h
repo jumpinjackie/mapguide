@@ -36,16 +36,16 @@ PUBLISHED_API:
 
     static const INT32 None = 0;
 
-    static const INT32 ThreeParameter =     (8192 + 1);     //cs_DTCMTH_3PARM
-    static const INT32 Molodensky =         (8192 + 2);     //cs_DTCMTH_MOLOD
-    static const INT32 AbridgedMolodensky = (8192 + 3);     //cs_DTCMTH_AMOLO
-    static const INT32 Geocentric =         (8192 + 4);     //cs_DTCMTH_GEOCT
-    static const INT32 FourParameter =      (8192 + 5);     //cs_DTCMTH_4PARM
-    static const INT32 SixParameter =       (8192 + 6);     //cs_DTCMTH_6PARM
-    static const INT32 Bursa =              (8192 + 7);     //cs_DTCMTH_BURSA
-    static const INT32 Frame =              (8192 + 8);     //cs_DTCMTH_FRAME
-    static const INT32 SevenParameter =     (8192 + 9);     //cs_DTCMTH_7PARM
-    static const INT32 MolodenskyBadekas =  (8192 + 10);    //cs_DTCMTH_BDKAS
+    static const INT32 ThreeParameter =     8193;     //cs_DTCMTH_3PARM
+    static const INT32 Molodensky =         8194;     //cs_DTCMTH_MOLOD
+    static const INT32 AbridgedMolodensky = 8195;     //cs_DTCMTH_AMOLO
+    static const INT32 Geocentric =         8196;     //cs_DTCMTH_GEOCT
+    static const INT32 FourParameter =      8197;     //cs_DTCMTH_4PARM
+    static const INT32 SixParameter =       8198;     //cs_DTCMTH_6PARM
+    static const INT32 Bursa =              8199;     //cs_DTCMTH_BURSA
+    static const INT32 Frame =              8200;     //cs_DTCMTH_FRAME
+    static const INT32 SevenParameter =     8201;     //cs_DTCMTH_7PARM
+    static const INT32 MolodenskyBadekas =  8202;     //cs_DTCMTH_BDKAS
 
 };
 /// \}
