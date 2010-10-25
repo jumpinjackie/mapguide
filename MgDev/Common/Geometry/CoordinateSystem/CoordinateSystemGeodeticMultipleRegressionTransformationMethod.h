@@ -36,8 +36,8 @@ PUBLISHED_API:
 
     static const INT32 None = 0;
 
-    static const INT32 MultipleRegression =     (20480 + 1); //cs_DTCMTH_MULRG
-    static const INT32 GeneralPolynomialEpsg =  (20480 + 2); //cs_DTCMTH_PLYNM
+    static const INT32 MultipleRegression =     20481; //cs_DTCMTH_MULRG
+    static const INT32 GeneralPolynomialEpsg =  20482; //cs_DTCMTH_PLYNM
 
 };
 /// \}
