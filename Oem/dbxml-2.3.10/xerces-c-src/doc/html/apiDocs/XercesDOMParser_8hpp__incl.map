@@ -1,9 +1,0 @@
-base referer
-rect $AbstractDOMParser_8hpp.html 221,248 495,272
-rect $DOMDocument_8hpp.html 585,8 811,32
-rect $XMLDocumentHandler_8hpp.html 545,56 851,80
-rect $XMLErrorReporter_8hpp.html 558,104 838,128
-rect $XMLEntityHandler_8hpp.html 558,152 838,176
-rect $SecurityManager_8hpp.html 585,200 811,224
-rect $DOMDocumentType_8hpp.html 570,344 826,368
-rect $PSVIHandler_8hpp.html 559,488 837,512

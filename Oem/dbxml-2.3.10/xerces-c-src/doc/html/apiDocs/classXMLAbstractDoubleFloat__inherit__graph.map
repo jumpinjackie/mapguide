@@ -1,5 +1,0 @@
-base referer
-rect $classXMLDouble.html 8,233 101,257
-rect $classXMLFloat.html 125,233 208,257
-rect $classXMLNumber.html 61,83 160,107
-rect $classXMemory.html 69,9 152,33

@@ -1,5 +1,0 @@
-base referer
-rect $classLocalFileFormatTarget.html 8,158 165,182
-rect $classMemBufFormatTarget.html 189,158 344,182
-rect $classStdOutFormatTarget.html 368,158 514,182
-rect $classXMemory.html 225,9 308,33

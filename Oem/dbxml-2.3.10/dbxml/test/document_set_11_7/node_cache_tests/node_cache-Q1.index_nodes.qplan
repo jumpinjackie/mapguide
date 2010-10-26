@@ -1,5 +1,0 @@
-<XQuery>
-  <LookupIndex container="11.7.5.dbxml">
-    <ValueQP index="node-element-equality-double" operation="eq" child="id" value="50"/>
-  </LookupIndex>
-</XQuery>

@@ -1,8 +1,0 @@
-base referer
-rect $XercesDefs_8hpp.html 534,116 729,140
-rect $DOMNode_8hpp.html 245,68 440,92
-rect $DOMDocumentRange_8hpp.html 209,116 476,140
-rect $DOMDocumentTraversal_8hpp.html 201,164 484,188
-rect $DOMXPathEvaluator_8hpp.html 213,212 472,236
-rect $XercesVersion_8hpp.html 778,92 992,116
-rect $AutoSense_8hpp.html 789,140 981,164

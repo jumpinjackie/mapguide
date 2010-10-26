@@ -1,4 +1,0 @@
-base referer
-rect $classAbstractDOMParser.html 8,84 154,108
-rect $classSAXParser.html 178,84 266,108
-rect $classXercesDOMParser.html 12,158 150,182
