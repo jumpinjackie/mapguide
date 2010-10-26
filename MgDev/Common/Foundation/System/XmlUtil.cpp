@@ -723,8 +723,10 @@ void MgXmlUtil::GetTextFromElement(DOMElement* element, REFSTRING str)
 MgByte* MgXmlUtil::ToBytes()
 {
     Ptr<MgByte> bytes;
-    DOMWriter* theSerializer = NULL;
-    MemBufFormatTarget* memTarget = NULL;
+    DOMLSSerializer* theSerializer = NULL;
+    DOMLSOutput* theOutputDesc = NULL;
+    DOMConfiguration* theDC = NULL;
+    XMLFormatTarget* memTarget = NULL;
 
     MG_XML_TRY()
 
@@ -737,32 +739,37 @@ MgByte* MgXmlUtil::ToBytes()
     DOMImplementation *impl  = DOMImplementationRegistry::getDOMImplementation(tempStr);
     CHECKNULL(impl, L"MgXmlUtil.ToBytes");
 
-    theSerializer = ((DOMImplementationLS*)impl)->createDOMWriter();
+    theSerializer = ((DOMImplementationLS*)impl)->createLSSerializer();
+    theOutputDesc = ((DOMImplementationLS*)impl)->createLSOutput();
     CHECKNULL(theSerializer, L"MgXmlUtil.ToBytes");
+    CHECKNULL(theOutputDesc, L"MgXmlUtil.ToBytes");
+    theDC = theSerializer->getDomConfig();
 
     // set user specified output encoding
     XMLCh encodeStr[100];
     XMLString::transcode("UTF-8", encodeStr, 99);
-    theSerializer->setEncoding(encodeStr);
+    theOutputDesc->setEncoding(encodeStr);
 
     // set feature if the serializer supports the feature/mode
-    if (theSerializer->canSetFeature(XMLUni::fgDOMWRTSplitCdataSections, gSplitCdataSections))
-        theSerializer->setFeature(XMLUni::fgDOMWRTSplitCdataSections, gSplitCdataSections);
+    if (theDC->canSetParameter(XMLUni::fgDOMWRTSplitCdataSections, gSplitCdataSections))
+        theDC->setParameter(XMLUni::fgDOMWRTSplitCdataSections, gSplitCdataSections);
 
-    if (theSerializer->canSetFeature(XMLUni::fgDOMWRTDiscardDefaultContent, gDiscardDefaultContent))
-        theSerializer->setFeature(XMLUni::fgDOMWRTDiscardDefaultContent, gDiscardDefaultContent);
+    if (theDC->canSetParameter(XMLUni::fgDOMWRTDiscardDefaultContent, gDiscardDefaultContent))
+        theDC->setParameter(XMLUni::fgDOMWRTDiscardDefaultContent, gDiscardDefaultContent);
 
-    if (theSerializer->canSetFeature(XMLUni::fgDOMWRTFormatPrettyPrint, gFormatPrettyPrint))
-        theSerializer->setFeature(XMLUni::fgDOMWRTFormatPrettyPrint, gFormatPrettyPrint);
+    if (theDC->canSetParameter(XMLUni::fgDOMWRTFormatPrettyPrint, gFormatPrettyPrint))
+        theDC->setParameter(XMLUni::fgDOMWRTFormatPrettyPrint, gFormatPrettyPrint);
 
-    if (theSerializer->canSetFeature(XMLUni::fgDOMWRTBOM, gWriteBOM))
-        theSerializer->setFeature(XMLUni::fgDOMWRTBOM, gWriteBOM);
+    if (theDC->canSetParameter(XMLUni::fgDOMWRTBOM, gWriteBOM))
+        theDC->setParameter(XMLUni::fgDOMWRTBOM, gWriteBOM);
 
     memTarget = new MemBufFormatTarget();
-    theSerializer->writeNode(memTarget, *m_doc);
+    theOutputDesc->setByteStream(memTarget);
 
-    INT32 bytesLen = (INT32)memTarget->getLen();
-    BYTE_ARRAY_IN rawBytes = (BYTE_ARRAY_IN)(memTarget->getRawBuffer());
+    theSerializer->write(m_doc, theOutputDesc);
+
+    INT32 bytesLen = (INT32)((MemBufFormatTarget*)memTarget)->getLen();
+    BYTE_ARRAY_IN rawBytes = (BYTE_ARRAY_IN)((MemBufFormatTarget*)memTarget)->getRawBuffer();
     bytes->Append(rawBytes, bytesLen);
 
     MG_XML_CATCH(L"MgXmlUtil.ToBytes")

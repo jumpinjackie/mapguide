@@ -44,7 +44,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="..\MdfModel;..\..\Oem\ACE\ACE_wrappers;..\..\Oem\dbxml-2.3.10\xerces-c-src\src"
+				AdditionalIncludeDirectories="..\MdfModel;..\..\Oem\ACE\ACE_wrappers;&quot;..\..\Oem\dbxml\xerces-c-src\src&quot;"
 				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL;FOUNDATION_EXPORTS"
 				MinimalRebuild="true"
 				ExceptionHandling="2"
@@ -64,10 +64,10 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="ACEd.lib xerces-c_2D.lib"
+				AdditionalDependencies="ACEd.lib xerces-c_3mgD.lib"
 				OutputFile="$(OutDir)\MgFoundationd.dll"
 				LinkIncremental="2"
-				AdditionalLibraryDirectories="..\..\Oem\ACE\ACE_wrappers\lib;..\..\Oem\dbxml-2.3.10\lib"
+				AdditionalLibraryDirectories="..\..\Oem\ACE\ACE_wrappers\lib;..\..\Oem\dbxml\lib"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="$(OutDir)\MgFoundationd.pdb"
 				SubSystem="2"
@@ -123,7 +123,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="..\MdfModel;..\..\Oem\ACE\ACE_wrappers;..\..\Oem\dbxml-2.3.10\xerces-c-src\src"
+				AdditionalIncludeDirectories="..\MdfModel;..\..\Oem\ACE\ACE_wrappers;&quot;..\..\Oem\dbxml\xerces-c-src\src&quot;"
 				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL;FOUNDATION_EXPORTS;__LITTLE_ENDIAN__"
 				MinimalRebuild="true"
 				ExceptionHandling="2"
@@ -143,10 +143,10 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="ACEd.lib xerces-c_2D.lib"
+				AdditionalDependencies="ACEd.lib xerces-c_3mgD.lib"
 				OutputFile="$(OutDir)\MgFoundationd.dll"
 				LinkIncremental="2"
-				AdditionalLibraryDirectories="..\..\Oem\ACE\ACE_wrappers\lib64;..\..\Oem\dbxml-2.3.10\lib64"
+				AdditionalLibraryDirectories="..\..\Oem\ACE\ACE_wrappers\lib64;..\..\Oem\dbxml\lib64"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="$(OutDir)\MgFoundationd.pdb"
 				SubSystem="2"
@@ -200,7 +200,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="2"
-				AdditionalIncludeDirectories="..\MdfModel;..\..\Oem\ACE\ACE_wrappers;..\..\Oem\dbxml-2.3.10\xerces-c-src\src"
+				AdditionalIncludeDirectories="..\MdfModel;..\..\Oem\ACE\ACE_wrappers;..\..\Oem\dbxml\xerces-c-src\src"
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;FOUNDATION_EXPORTS"
 				ExceptionHandling="2"
 				RuntimeLibrary="2"
@@ -218,10 +218,10 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="ACE.lib xerces-c_2.lib"
+				AdditionalDependencies="ACE.lib xerces-c_3mg.lib"
 				OutputFile="$(OutDir)\MgFoundation.dll"
 				LinkIncremental="1"
-				AdditionalLibraryDirectories="..\..\Oem\ACE\ACE_wrappers\lib;..\..\Oem\dbxml-2.3.10\lib"
+				AdditionalLibraryDirectories="..\..\Oem\ACE\ACE_wrappers\lib;..\..\Oem\dbxml\lib"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="$(OutDir)\MgFoundation.pdb"
 				SubSystem="2"
@@ -279,7 +279,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="2"
-				AdditionalIncludeDirectories="..\MdfModel;..\..\Oem\ACE\ACE_wrappers;..\..\Oem\dbxml-2.3.10\xerces-c-src\src"
+				AdditionalIncludeDirectories="..\MdfModel;..\..\Oem\ACE\ACE_wrappers;..\..\Oem\dbxml\xerces-c-src\src"
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;FOUNDATION_EXPORTS;__LITTLE_ENDIAN__"
 				ExceptionHandling="2"
 				RuntimeLibrary="2"
@@ -297,10 +297,10 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="ACE.lib xerces-c_2.lib"
+				AdditionalDependencies="ACE.lib xerces-c_3mg.lib"
 				OutputFile="$(OutDir)\MgFoundation.dll"
 				LinkIncremental="1"
-				AdditionalLibraryDirectories="..\..\Oem\ACE\ACE_wrappers\lib64;..\..\Oem\dbxml-2.3.10\lib64"
+				AdditionalLibraryDirectories="..\..\Oem\ACE\ACE_wrappers\lib64;..\..\Oem\dbxml\lib64"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="$(OutDir)\MgFoundation.pdb"
 				SubSystem="2"

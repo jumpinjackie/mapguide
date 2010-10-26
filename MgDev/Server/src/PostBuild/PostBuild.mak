@@ -64,29 +64,29 @@
 ..\..\bin\debug\GEOSd.pdb : ..\..\..\Oem\geos-2.2.0\VisualStudio\Debug\GEOSd.pdb
     xcopy /r /d /y ..\..\..\Oem\geos-2.2.0\VisualStudio\Debug\GEOSd.pdb ..\..\bin\debug\
 
-..\..\bin\debug\libdb45d.dll : ..\..\..\Oem\dbxml-2.3.10\bin\debug\libdb45d.dll
-    xcopy /r /d /y ..\..\..\Oem\dbxml-2.3.10\bin\debug\libdb45d.dll ..\..\bin\debug\
+..\..\bin\debug\libdb48d.dll : ..\..\..\Oem\dbxml\bin\debug\libdb48d.dll
+    xcopy /r /d /y ..\..\..\Oem\dbxml\bin\debug\libdb48d.dll ..\..\bin\debug\
 
-..\..\bin\debug\libdb45d.pdb : ..\..\..\Oem\dbxml-2.3.10\bin\debug\libdb45d.pdb
-    xcopy /r /d /y ..\..\..\Oem\dbxml-2.3.10\bin\debug\libdb45d.pdb ..\..\bin\debug\
+..\..\bin\debug\libdb48d.pdb : ..\..\..\Oem\dbxml\bin\debug\libdb48d.pdb
+    xcopy /r /d /y ..\..\..\Oem\dbxml\bin\debug\libdb48d.pdb ..\..\bin\debug\
 
-..\..\bin\debug\libdbxml23d.dll : ..\..\..\Oem\dbxml-2.3.10\bin\debug\libdbxml23d.dll
-    xcopy /r /d /y ..\..\..\Oem\dbxml-2.3.10\bin\debug\libdbxml23d.dll ..\..\bin\debug\
+..\..\bin\debug\libdbxml25d.dll : ..\..\..\Oem\dbxml\bin\debug\libdbxml25d.dll
+    xcopy /r /d /y ..\..\..\Oem\dbxml\bin\debug\libdbxml25d.dll ..\..\bin\debug\
 
-..\..\bin\debug\libdbxml23d.pdb : ..\..\..\Oem\dbxml-2.3.10\bin\debug\libdbxml23d.pdb
-    xcopy /r /d /y ..\..\..\Oem\dbxml-2.3.10\bin\debug\libdbxml23d.pdb ..\..\bin\debug\
+..\..\bin\debug\libdbxml25d.pdb : ..\..\..\Oem\dbxml\bin\debug\libdbxml25d.pdb
+    xcopy /r /d /y ..\..\..\Oem\dbxml\bin\debug\libdbxml25d.pdb ..\..\bin\debug\
 
-..\..\bin\debug\xqilla10d.dll : ..\..\..\Oem\dbxml-2.3.10\bin\debug\xqilla10d.dll
-    xcopy /r /d /y ..\..\..\Oem\dbxml-2.3.10\bin\debug\xqilla10d.dll ..\..\bin\debug\
+..\..\bin\debug\xqilla24d.dll : ..\..\..\Oem\dbxml\bin\debug\xqilla24d.dll
+    xcopy /r /d /y ..\..\..\Oem\dbxml\bin\debug\xqilla24d.dll ..\..\bin\debug\
 
-..\..\bin\debug\xqilla10d.pdb : ..\..\..\Oem\dbxml-2.3.10\bin\debug\xqilla10d.pdb
-    xcopy /r /d /y ..\..\..\Oem\dbxml-2.3.10\bin\debug\xqilla10d.pdb ..\..\bin\debug\
+..\..\bin\debug\xqilla24d.pdb : ..\..\..\Oem\dbxml\bin\debug\xqilla24d.pdb
+    xcopy /r /d /y ..\..\..\Oem\dbxml\bin\debug\xqilla24d.pdb ..\..\bin\debug\
 
-..\..\bin\debug\xerces-c_2_7D.dll : ..\..\..\Oem\dbxml-2.3.10\bin\debug\xerces-c_2_7D.dll
-    xcopy /r /d /y ..\..\..\Oem\dbxml-2.3.10\bin\debug\xerces-c_2_7D.dll ..\..\bin\debug\
+..\..\bin\debug\xerces-c_3_1mgD.dll : ..\..\..\Oem\dbxml\bin\debug\xerces-c_3_1mgD.dll
+    xcopy /r /d /y ..\..\..\Oem\dbxml\bin\debug\xerces-c_3_1mgD.dll ..\..\bin\debug\
 
-..\..\bin\debug\xerces-c_2_7D.pdb : ..\..\..\Oem\dbxml-2.3.10\bin\debug\xerces-c_2_7D.pdb
-    xcopy /r /d /y ..\..\..\Oem\dbxml-2.3.10\bin\debug\xerces-c_2_7D.pdb ..\..\bin\debug\
+..\..\bin\debug\xerces-c_3_1mgD.pdb : ..\..\..\Oem\dbxml\bin\debug\xerces-c_3_1mgD.pdb
+    xcopy /r /d /y ..\..\..\Oem\dbxml\bin\debug\xerces-c_3_1mgD.pdb ..\..\bin\debug\
 
 ..\..\bin\debug\serverconfig.ini : ..\..\src\Core\serverconfig.ini
     xcopy /r /d /y ..\..\src\Core\serverconfig.ini ..\..\bin\debug\
@@ -148,14 +148,14 @@ debug : ..\..\bin\debug\MgFoundationd.dll \
         ..\..\bin\debug\gd.pdb \
         ..\..\bin\debug\GEOSd.dll \
         ..\..\bin\debug\GEOSd.pdb \
-        ..\..\bin\debug\libdb45d.dll \
-        ..\..\bin\debug\libdb45d.pdb \
-        ..\..\bin\debug\libdbxml23d.dll \
-        ..\..\bin\debug\libdbxml23d.pdb \
-        ..\..\bin\debug\xqilla10d.dll \
-        ..\..\bin\debug\xqilla10d.pdb \
-        ..\..\bin\debug\xerces-c_2_7D.dll \
-        ..\..\bin\debug\xerces-c_2_7D.pdb \
+        ..\..\bin\debug\libdb48d.dll \
+        ..\..\bin\debug\libdb48d.pdb \
+        ..\..\bin\debug\libdbxml25d.dll \
+        ..\..\bin\debug\libdbxml25d.pdb \
+        ..\..\bin\debug\xqilla24d.dll \
+        ..\..\bin\debug\xqilla24d.pdb \
+        ..\..\bin\debug\xerces-c_3_1mgD.dll \
+        ..\..\bin\debug\xerces-c_3_1mgD.pdb \
         ..\..\bin\debug\serverconfig.ini \
         ..\..\bin\UnitTestFiles\LibraryRepositoryContent.xml \
         ..\..\bin\UnitTestFiles\SampleRepositoryHeader.xml \
@@ -315,29 +315,29 @@ debug : ..\..\bin\debug\MgFoundationd.dll \
 ..\..\bin\debug64\GEOSd.pdb : ..\..\..\Oem\geos-2.2.0\VisualStudio\Debug64\GEOSd.pdb
     xcopy /r /d /y ..\..\..\Oem\geos-2.2.0\VisualStudio\Debug64\GEOSd.pdb ..\..\bin\debug64\
 
-..\..\bin\debug64\libdb45d.dll : ..\..\..\Oem\dbxml-2.3.10\bin64\debug\libdb45d.dll
-    xcopy /r /d /y ..\..\..\Oem\dbxml-2.3.10\bin64\debug\libdb45d.dll ..\..\bin\debug64\
+..\..\bin\debug64\libdb48d.dll : ..\..\..\Oem\dbxml\bin64\debug\libdb48d.dll
+    xcopy /r /d /y ..\..\..\Oem\dbxml\bin64\debug\libdb48d.dll ..\..\bin\debug64\
 
-..\..\bin\debug64\libdb45d.pdb : ..\..\..\Oem\dbxml-2.3.10\bin64\debug\libdb45d.pdb
-    xcopy /r /d /y ..\..\..\Oem\dbxml-2.3.10\bin64\debug\libdb45d.pdb ..\..\bin\debug64\
+..\..\bin\debug64\libdb48d.pdb : ..\..\..\Oem\dbxml\bin64\debug\libdb48d.pdb
+    xcopy /r /d /y ..\..\..\Oem\dbxml\bin64\debug\libdb48d.pdb ..\..\bin\debug64\
 
-..\..\bin\debug64\libdbxml23d.dll : ..\..\..\Oem\dbxml-2.3.10\bin64\debug\libdbxml23d.dll
-    xcopy /r /d /y ..\..\..\Oem\dbxml-2.3.10\bin64\debug\libdbxml23d.dll ..\..\bin\debug64\
+..\..\bin\debug64\libdbxml25d.dll : ..\..\..\Oem\dbxml\bin64\debug\libdbxml25d.dll
+    xcopy /r /d /y ..\..\..\Oem\dbxml\bin64\debug\libdbxml25d.dll ..\..\bin\debug64\
 
-..\..\bin\debug64\libdbxml23d.pdb : ..\..\..\Oem\dbxml-2.3.10\bin64\debug\libdbxml23d.pdb
-    xcopy /r /d /y ..\..\..\Oem\dbxml-2.3.10\bin64\debug\libdbxml23d.pdb ..\..\bin\debug64\
+..\..\bin\debug64\libdbxml25d.pdb : ..\..\..\Oem\dbxml\bin64\debug\libdbxml25d.pdb
+    xcopy /r /d /y ..\..\..\Oem\dbxml\bin64\debug\libdbxml25d.pdb ..\..\bin\debug64\
 
-..\..\bin\debug64\xqilla10d.dll : ..\..\..\Oem\dbxml-2.3.10\bin64\debug\xqilla10d.dll
-    xcopy /r /d /y ..\..\..\Oem\dbxml-2.3.10\bin64\debug\xqilla10d.dll ..\..\bin\debug64\
+..\..\bin\debug64\xqilla24d.dll : ..\..\..\Oem\dbxml\bin64\debug\xqilla24d.dll
+    xcopy /r /d /y ..\..\..\Oem\dbxml\bin64\debug\xqilla24d.dll ..\..\bin\debug64\
 
-..\..\bin\debug64\xqilla10d.pdb : ..\..\..\Oem\dbxml-2.3.10\bin64\debug\xqilla10d.pdb
-    xcopy /r /d /y ..\..\..\Oem\dbxml-2.3.10\bin64\debug\xqilla10d.pdb ..\..\bin\debug64\
+..\..\bin\debug64\xqilla24d.pdb : ..\..\..\Oem\dbxml\bin64\debug\xqilla24d.pdb
+    xcopy /r /d /y ..\..\..\Oem\dbxml\bin64\debug\xqilla24d.pdb ..\..\bin\debug64\
 
-..\..\bin\debug64\xerces-c_2_7D.dll : ..\..\..\Oem\dbxml-2.3.10\bin64\debug\xerces-c_2_7D.dll
-    xcopy /r /d /y ..\..\..\Oem\dbxml-2.3.10\bin64\debug\xerces-c_2_7D.dll ..\..\bin\debug64\
+..\..\bin\debug64\xerces-c_3_1mgD.dll : ..\..\..\Oem\dbxml\bin64\debug\xerces-c_3_1mgD.dll
+    xcopy /r /d /y ..\..\..\Oem\dbxml\bin64\debug\xerces-c_3_1mgD.dll ..\..\bin\debug64\
 
-..\..\bin\debug64\xerces-c_2_7D.pdb : ..\..\..\Oem\dbxml-2.3.10\bin64\debug\xerces-c_2_7D.pdb
-    xcopy /r /d /y ..\..\..\Oem\dbxml-2.3.10\bin64\debug\xerces-c_2_7D.pdb ..\..\bin\debug64\
+..\..\bin\debug64\xerces-c_3_1mgD.pdb : ..\..\..\Oem\dbxml\bin64\debug\xerces-c_3_1mgD.pdb
+    xcopy /r /d /y ..\..\..\Oem\dbxml\bin64\debug\xerces-c_3_1mgD.pdb ..\..\bin\debug64\
 
 ..\..\bin\debug64\serverconfig.ini : ..\..\src\Core\serverconfig.ini
     xcopy /r /d /y ..\..\src\Core\serverconfig.ini ..\..\bin\debug64\
@@ -399,14 +399,14 @@ debug64 : ..\..\bin\debug64\MgFoundationd.dll \
         ..\..\bin\debug64\gd.pdb \
         ..\..\bin\debug64\GEOSd.dll \
         ..\..\bin\debug64\GEOSd.pdb \
-        ..\..\bin\debug64\libdb45d.dll \
-        ..\..\bin\debug64\libdb45d.pdb \
-        ..\..\bin\debug64\libdbxml23d.dll \
-        ..\..\bin\debug64\libdbxml23d.pdb \
-        ..\..\bin\debug64\xqilla10d.dll \
-        ..\..\bin\debug64\xqilla10d.pdb \
-        ..\..\bin\debug64\xerces-c_2_7D.dll \
-        ..\..\bin\debug64\xerces-c_2_7D.pdb \
+        ..\..\bin\debug64\libdb48d.dll \
+        ..\..\bin\debug64\libdb48d.pdb \
+        ..\..\bin\debug64\libdbxml25d.dll \
+        ..\..\bin\debug64\libdbxml25d.pdb \
+        ..\..\bin\debug64\xqilla24d.dll \
+        ..\..\bin\debug64\xqilla24d.pdb \
+        ..\..\bin\debug64\xerces-c_3_1mgD.dll \
+        ..\..\bin\debug64\xerces-c_3_1mgD.pdb \
         ..\..\bin\debug64\serverconfig.ini \
         ..\..\bin\UnitTestFiles\LibraryRepositoryContent.xml \
         ..\..\bin\UnitTestFiles\SampleRepositoryHeader.xml \
@@ -566,29 +566,29 @@ debug64 : ..\..\bin\debug64\MgFoundationd.dll \
 ..\..\bin\release\GEOS.pdb : ..\..\..\Oem\geos-2.2.0\VisualStudio\Release\GEOS.pdb
     xcopy /r /d /y ..\..\..\Oem\geos-2.2.0\VisualStudio\Release\GEOS.pdb ..\..\bin\release\
 
-..\..\bin\release\libdb45.dll : ..\..\..\Oem\dbxml-2.3.10\bin\libdb45.dll
-    xcopy /r /d /y ..\..\..\Oem\dbxml-2.3.10\bin\libdb45.dll ..\..\bin\release\
+..\..\bin\release\libdb48.dll : ..\..\..\Oem\dbxml\bin\libdb48.dll
+    xcopy /r /d /y ..\..\..\Oem\dbxml\bin\libdb48.dll ..\..\bin\release\
 
-..\..\bin\release\libdb45.pdb : ..\..\..\Oem\dbxml-2.3.10\bin\libdb45.pdb
-    xcopy /r /d /y ..\..\..\Oem\dbxml-2.3.10\bin\libdb45.pdb ..\..\bin\release\
+..\..\bin\release\libdb48.pdb : ..\..\..\Oem\dbxml\bin\libdb48.pdb
+    xcopy /r /d /y ..\..\..\Oem\dbxml\bin\libdb48.pdb ..\..\bin\release\
 
-..\..\bin\release\libdbxml23.dll : ..\..\..\Oem\dbxml-2.3.10\bin\libdbxml23.dll
-    xcopy /r /d /y ..\..\..\Oem\dbxml-2.3.10\bin\libdbxml23.dll ..\..\bin\release\
+..\..\bin\release\libdbxml25.dll : ..\..\..\Oem\dbxml\bin\libdbxml25.dll
+    xcopy /r /d /y ..\..\..\Oem\dbxml\bin\libdbxml25.dll ..\..\bin\release\
 
-..\..\bin\release\libdbxml23.pdb : ..\..\..\Oem\dbxml-2.3.10\bin\libdbxml23.pdb
-    xcopy /r /d /y ..\..\..\Oem\dbxml-2.3.10\bin\libdbxml23.pdb ..\..\bin\release\
+..\..\bin\release\libdbxml25.pdb : ..\..\..\Oem\dbxml\bin\libdbxml25.pdb
+    xcopy /r /d /y ..\..\..\Oem\dbxml\bin\libdbxml25.pdb ..\..\bin\release\
 
-..\..\bin\release\xqilla10.dll : ..\..\..\Oem\dbxml-2.3.10\bin\xqilla10.dll
-    xcopy /r /d /y ..\..\..\Oem\dbxml-2.3.10\bin\xqilla10.dll ..\..\bin\release\
+..\..\bin\release\xqilla24.dll : ..\..\..\Oem\dbxml\bin\xqilla24.dll
+    xcopy /r /d /y ..\..\..\Oem\dbxml\bin\xqilla24.dll ..\..\bin\release\
 
-..\..\bin\release\xqilla10.pdb : ..\..\..\Oem\dbxml-2.3.10\bin\xqilla10.pdb
-    xcopy /r /d /y ..\..\..\Oem\dbxml-2.3.10\bin\xqilla10.pdb ..\..\bin\release\
+..\..\bin\release\xqilla24.pdb : ..\..\..\Oem\dbxml\bin\xqilla24.pdb
+    xcopy /r /d /y ..\..\..\Oem\dbxml\bin\xqilla24.pdb ..\..\bin\release\
 
-..\..\bin\release\xerces-c_2_7.dll : ..\..\..\Oem\dbxml-2.3.10\bin\xerces-c_2_7.dll
-    xcopy /r /d /y ..\..\..\Oem\dbxml-2.3.10\bin\xerces-c_2_7.dll ..\..\bin\release\
+..\..\bin\release\xerces-c_3_1mg.dll : ..\..\..\Oem\dbxml\bin\xerces-c_3_1mg.dll
+    xcopy /r /d /y ..\..\..\Oem\dbxml\bin\xerces-c_3_1mg.dll ..\..\bin\release\
 
-..\..\bin\release\xerces-c_2_7.pdb : ..\..\..\Oem\dbxml-2.3.10\bin\xerces-c_2_7.pdb
-    xcopy /r /d /y ..\..\..\Oem\dbxml-2.3.10\bin\xerces-c_2_7.pdb ..\..\bin\release\
+..\..\bin\release\xerces-c_3_1mg.pdb : ..\..\..\Oem\dbxml\bin\xerces-c_3_1mg.pdb
+    xcopy /r /d /y ..\..\..\Oem\dbxml\bin\xerces-c_3_1mg.pdb ..\..\bin\release\
 
 ..\..\bin\release\serverconfig.ini : ..\..\src\Core\serverconfig.ini
     xcopy /r /d /y ..\..\src\Core\serverconfig.ini ..\..\bin\release\
@@ -650,14 +650,14 @@ release : ..\..\bin\release\MgFoundation.dll \
           ..\..\bin\release\gd.pdb \
           ..\..\bin\release\GEOS.dll \
           ..\..\bin\release\GEOS.pdb \
-          ..\..\bin\release\libdb45.dll \
-          ..\..\bin\release\libdb45.pdb \
-          ..\..\bin\release\libdbxml23.dll \
-          ..\..\bin\release\libdbxml23.pdb \
-          ..\..\bin\release\xqilla10.dll \
-          ..\..\bin\release\xqilla10.pdb \
-          ..\..\bin\release\xerces-c_2_7.dll \
-          ..\..\bin\release\xerces-c_2_7.pdb \
+          ..\..\bin\release\libdb48.dll \
+          ..\..\bin\release\libdb48.pdb \
+          ..\..\bin\release\libdbxml25.dll \
+          ..\..\bin\release\libdbxml25.pdb \
+          ..\..\bin\release\xqilla24.dll \
+          ..\..\bin\release\xqilla24.pdb \
+          ..\..\bin\release\xerces-c_3_1mg.dll \
+          ..\..\bin\release\xerces-c_3_1mg.pdb \
           ..\..\bin\release\serverconfig.ini \
           ..\..\bin\UnitTestFiles\LibraryRepositoryContent.xml \
           ..\..\bin\UnitTestFiles\SampleRepositoryHeader.xml \
@@ -817,29 +817,29 @@ release : ..\..\bin\release\MgFoundation.dll \
 ..\..\bin\release64\GEOS.pdb : ..\..\..\Oem\geos-2.2.0\VisualStudio\Release64\GEOS.pdb
     xcopy /r /d /y ..\..\..\Oem\geos-2.2.0\VisualStudio\Release64\GEOS.pdb ..\..\bin\release64\
 
-..\..\bin\release64\libdb45.dll : ..\..\..\Oem\dbxml-2.3.10\bin64\libdb45.dll
-    xcopy /r /d /y ..\..\..\Oem\dbxml-2.3.10\bin64\libdb45.dll ..\..\bin\release64\
+..\..\bin\release64\libdb48.dll : ..\..\..\Oem\dbxml\bin64\libdb48.dll
+    xcopy /r /d /y ..\..\..\Oem\dbxml\bin64\libdb48.dll ..\..\bin\release64\
 
-..\..\bin\release64\libdb45.pdb : ..\..\..\Oem\dbxml-2.3.10\bin64\libdb45.pdb
-    xcopy /r /d /y ..\..\..\Oem\dbxml-2.3.10\bin64\libdb45.pdb ..\..\bin\release64\
+..\..\bin\release64\libdb48.pdb : ..\..\..\Oem\dbxml\bin64\libdb48.pdb
+    xcopy /r /d /y ..\..\..\Oem\dbxml\bin64\libdb48.pdb ..\..\bin\release64\
 
-..\..\bin\release64\libdbxml23.dll : ..\..\..\Oem\dbxml-2.3.10\bin64\libdbxml23.dll
-    xcopy /r /d /y ..\..\..\Oem\dbxml-2.3.10\bin64\libdbxml23.dll ..\..\bin\release64\
+..\..\bin\release64\libdbxml25.dll : ..\..\..\Oem\dbxml\bin64\libdbxml25.dll
+    xcopy /r /d /y ..\..\..\Oem\dbxml\bin64\libdbxml25.dll ..\..\bin\release64\
 
-..\..\bin\release64\libdbxml23.pdb : ..\..\..\Oem\dbxml-2.3.10\bin64\libdbxml23.pdb
-    xcopy /r /d /y ..\..\..\Oem\dbxml-2.3.10\bin64\libdbxml23.pdb ..\..\bin\release64\
+..\..\bin\release64\libdbxml25.pdb : ..\..\..\Oem\dbxml\bin64\libdbxml25.pdb
+    xcopy /r /d /y ..\..\..\Oem\dbxml\bin64\libdbxml25.pdb ..\..\bin\release64\
 
-..\..\bin\release64\xqilla10.dll : ..\..\..\Oem\dbxml-2.3.10\bin64\xqilla10.dll
-    xcopy /r /d /y ..\..\..\Oem\dbxml-2.3.10\bin64\xqilla10.dll ..\..\bin\release64\
+..\..\bin\release64\xqilla24.dll : ..\..\..\Oem\dbxml\bin64\xqilla24.dll
+    xcopy /r /d /y ..\..\..\Oem\dbxml\bin64\xqilla24.dll ..\..\bin\release64\
 
-..\..\bin\release64\xqilla10.pdb : ..\..\..\Oem\dbxml-2.3.10\bin64\xqilla10.pdb
-    xcopy /r /d /y ..\..\..\Oem\dbxml-2.3.10\bin64\xqilla10.pdb ..\..\bin\release64\
+..\..\bin\release64\xqilla24.pdb : ..\..\..\Oem\dbxml\bin64\xqilla24.pdb
+    xcopy /r /d /y ..\..\..\Oem\dbxml\bin64\xqilla24.pdb ..\..\bin\release64\
 
-..\..\bin\release64\xerces-c_2_7.dll : ..\..\..\Oem\dbxml-2.3.10\bin64\xerces-c_2_7.dll
-    xcopy /r /d /y ..\..\..\Oem\dbxml-2.3.10\bin64\xerces-c_2_7.dll ..\..\bin\release64\
+..\..\bin\release64\xerces-c_3_1mg.dll : ..\..\..\Oem\dbxml\bin64\xerces-c_3_1mg.dll
+    xcopy /r /d /y ..\..\..\Oem\dbxml\bin64\xerces-c_3_1mg.dll ..\..\bin\release64\
 
-..\..\bin\release64\xerces-c_2_7.pdb : ..\..\..\Oem\dbxml-2.3.10\bin64\xerces-c_2_7.pdb
-    xcopy /r /d /y ..\..\..\Oem\dbxml-2.3.10\bin64\xerces-c_2_7.pdb ..\..\bin\release64\
+..\..\bin\release64\xerces-c_3_1mg.pdb : ..\..\..\Oem\dbxml\bin64\xerces-c_3_1mg.pdb
+    xcopy /r /d /y ..\..\..\Oem\dbxml\bin64\xerces-c_3_1mg.pdb ..\..\bin\release64\
 
 ..\..\bin\release64\serverconfig.ini : ..\..\src\Core\serverconfig.ini
     xcopy /r /d /y ..\..\src\Core\serverconfig.ini ..\..\bin\release64\
@@ -901,14 +901,14 @@ release64 : ..\..\bin\release64\MgFoundation.dll \
           ..\..\bin\release64\gd.pdb \
           ..\..\bin\release64\GEOS.dll \
           ..\..\bin\release64\GEOS.pdb \
-          ..\..\bin\release64\libdb45.dll \
-          ..\..\bin\release64\libdb45.pdb \
-          ..\..\bin\release64\libdbxml23.dll \
-          ..\..\bin\release64\libdbxml23.pdb \
-          ..\..\bin\release64\xqilla10.dll \
-          ..\..\bin\release64\xqilla10.pdb \
-          ..\..\bin\release64\xerces-c_2_7.dll \
-          ..\..\bin\release64\xerces-c_2_7.pdb \
+          ..\..\bin\release64\libdb48.dll \
+          ..\..\bin\release64\libdb48.pdb \
+          ..\..\bin\release64\libdbxml25.dll \
+          ..\..\bin\release64\libdbxml25.pdb \
+          ..\..\bin\release64\xqilla24.dll \
+          ..\..\bin\release64\xqilla24.pdb \
+          ..\..\bin\release64\xerces-c_3_1mg.dll \
+          ..\..\bin\release64\xerces-c_3_1mg.pdb \
           ..\..\bin\release64\serverconfig.ini \
           ..\..\bin\UnitTestFiles\LibraryRepositoryContent.xml \
           ..\..\bin\UnitTestFiles\SampleRepositoryHeader.xml \
@@ -1025,14 +1025,14 @@ cleandebug:
     if EXIST ..\..\bin\debug\gd.pdb                          del /F ..\..\bin\debug\gd.pdb
     if EXIST ..\..\bin\debug\GEOSd.dll                       del /F ..\..\bin\debug\GEOSd.dll
     if EXIST ..\..\bin\debug\GEOSd.pdb                       del /F ..\..\bin\debug\GEOSd.pdb
-    if EXIST ..\..\bin\debug\libdb45d.dll                    del /F ..\..\bin\debug\libdb45d.dll
-    if EXIST ..\..\bin\debug\libdb45d.pdb                    del /F ..\..\bin\debug\libdb45d.pdb
-    if EXIST ..\..\bin\debug\libdbxml23d.dll                 del /F ..\..\bin\debug\libdbxml23d.dll
-    if EXIST ..\..\bin\debug\libdbxml23d.pdb                 del /F ..\..\bin\debug\libdbxml23d.pdb
-    if EXIST ..\..\bin\debug\xqilla10d.dll                   del /F ..\..\bin\debug\xqilla10d.dll
-    if EXIST ..\..\bin\debug\xqilla10d.pdb                   del /F ..\..\bin\debug\xqilla10d.pdb
-    if EXIST ..\..\bin\debug\xerces-c_2_7D.dll               del /F ..\..\bin\debug\xerces-c_2_7D.dll
-    if EXIST ..\..\bin\debug\xerces-c_2_7D.pdb               del /F ..\..\bin\debug\xerces-c_2_7D.pdb
+    if EXIST ..\..\bin\debug\libdb48d.dll                    del /F ..\..\bin\debug\libdb48d.dll
+    if EXIST ..\..\bin\debug\libdb48d.pdb                    del /F ..\..\bin\debug\libdb48d.pdb
+    if EXIST ..\..\bin\debug\libdbxml25d.dll                 del /F ..\..\bin\debug\libdbxml25d.dll
+    if EXIST ..\..\bin\debug\libdbxml25d.pdb                 del /F ..\..\bin\debug\libdbxml25d.pdb
+    if EXIST ..\..\bin\debug\xqilla24d.dll                   del /F ..\..\bin\debug\xqilla24d.dll
+    if EXIST ..\..\bin\debug\xqilla24d.pdb                   del /F ..\..\bin\debug\xqilla24d.pdb
+    if EXIST ..\..\bin\debug\xerces-c_3_1mgD.dll             del /F ..\..\bin\debug\xerces-c_3_1mgD.dll
+    if EXIST ..\..\bin\debug\xerces-c_3_1mgD.pdb             del /F ..\..\bin\debug\xerces-c_3_1mgD.pdb
     if EXIST ..\..\bin\debug\serverconfig.ini                del /F ..\..\bin\debug\serverconfig.ini
     if EXIST ..\..\bin\UnitTestFiles\LibraryRepositoryContent.xml   del /F ..\..\bin\UnitTestFiles\LibraryRepositoryContent.xml
     if EXIST ..\..\bin\UnitTestFiles\SampleRepositoryHeader.xml     del /F ..\..\bin\UnitTestFiles\SampleRepositoryHeader.xml
@@ -1144,14 +1144,14 @@ cleandebug64:
     if EXIST ..\..\bin\debug64\gd.pdb                          del /F ..\..\bin\debug64\gd.pdb
     if EXIST ..\..\bin\debug64\GEOSd.dll                       del /F ..\..\bin\debug64\GEOSd.dll
     if EXIST ..\..\bin\debug64\GEOSd.pdb                       del /F ..\..\bin\debug64\GEOSd.pdb
-    if EXIST ..\..\bin\debug64\libdb45d.dll                    del /F ..\..\bin\debug64\libdb45d.dll
-    if EXIST ..\..\bin\debug64\libdb45d.pdb                    del /F ..\..\bin\debug64\libdb45d.pdb
-    if EXIST ..\..\bin\debug64\libdbxml23d.dll                 del /F ..\..\bin\debug64\libdbxml23d.dll
-    if EXIST ..\..\bin\debug64\libdbxml23d.pdb                 del /F ..\..\bin\debug64\libdbxml23d.pdb
-    if EXIST ..\..\bin\debug64\xqilla10d.dll                   del /F ..\..\bin\debug64\xqilla10d.dll
-    if EXIST ..\..\bin\debug64\xqilla10d.pdb                   del /F ..\..\bin\debug64\xqilla10d.pdb
-    if EXIST ..\..\bin\debug64\xerces-c_2_7D.dll               del /F ..\..\bin\debug64\xerces-c_2_7D.dll
-    if EXIST ..\..\bin\debug64\xerces-c_2_7D.pdb               del /F ..\..\bin\debug64\xerces-c_2_7D.pdb
+    if EXIST ..\..\bin\debug64\libdb48d.dll                    del /F ..\..\bin\debug64\libdb48d.dll
+    if EXIST ..\..\bin\debug64\libdb48d.pdb                    del /F ..\..\bin\debug64\libdb48d.pdb
+    if EXIST ..\..\bin\debug64\libdbxml25d.dll                 del /F ..\..\bin\debug64\libdbxml25d.dll
+    if EXIST ..\..\bin\debug64\libdbxml25d.pdb                 del /F ..\..\bin\debug64\libdbxml25d.pdb
+    if EXIST ..\..\bin\debug64\xqilla24d.dll                   del /F ..\..\bin\debug64\xqilla24d.dll
+    if EXIST ..\..\bin\debug64\xqilla24d.pdb                   del /F ..\..\bin\debug64\xqilla24d.pdb
+    if EXIST ..\..\bin\debug64\xerces-c_3_1mgD.dll             del /F ..\..\bin\debug64\xerces-c_3_1mgD.dll
+    if EXIST ..\..\bin\debug64\xerces-c_3_1mgD.pdb             del /F ..\..\bin\debug64\xerces-c_3_1mgD.pdb
     if EXIST ..\..\bin\debug64\serverconfig.ini                del /F ..\..\bin\debug64\serverconfig.ini
     if EXIST ..\..\bin\UnitTestFiles\LibraryRepositoryContent.xml   del /F ..\..\bin\UnitTestFiles\LibraryRepositoryContent.xml
     if EXIST ..\..\bin\UnitTestFiles\SampleRepositoryHeader.xml     del /F ..\..\bin\UnitTestFiles\SampleRepositoryHeader.xml
@@ -1263,14 +1263,14 @@ cleanrelease:
     if EXIST ..\..\bin\release\gd.pdb                        del /F ..\..\bin\release\gd.pdb
     if EXIST ..\..\bin\release\GEOS.dll                      del /F ..\..\bin\release\GEOS.dll
     if EXIST ..\..\bin\release\GEOS.pdb                      del /F ..\..\bin\release\GEOS.pdb
-    if EXIST ..\..\bin\release\libdb45.dll                   del /F ..\..\bin\release\libdb45.dll
-    if EXIST ..\..\bin\release\libdb45.pdb                   del /F ..\..\bin\release\libdb45.pdb
-    if EXIST ..\..\bin\release\libdbxml23.dll                del /F ..\..\bin\release\libdbxml23.dll
-    if EXIST ..\..\bin\release\libdbxml23.pdb                del /F ..\..\bin\release\libdbxml23.pdb
-    if EXIST ..\..\bin\release\xqilla10.dll                  del /F ..\..\bin\release\xqilla10.dll
-    if EXIST ..\..\bin\release\xqilla10.pdb                  del /F ..\..\bin\release\xqilla10.pdb
-    if EXIST ..\..\bin\release\xerces-c_2_7.dll              del /F ..\..\bin\release\xerces-c_2_7.dll
-    if EXIST ..\..\bin\release\xerces-c_2_7.pdb              del /F ..\..\bin\release\xerces-c_2_7.pdb
+    if EXIST ..\..\bin\release\libdb48.dll                   del /F ..\..\bin\release\libdb48.dll
+    if EXIST ..\..\bin\release\libdb48.pdb                   del /F ..\..\bin\release\libdb48.pdb
+    if EXIST ..\..\bin\release\libdbxml25.dll                del /F ..\..\bin\release\libdbxml25.dll
+    if EXIST ..\..\bin\release\libdbxml25.pdb                del /F ..\..\bin\release\libdbxml25.pdb
+    if EXIST ..\..\bin\release\xqilla24.dll                  del /F ..\..\bin\release\xqilla24.dll
+    if EXIST ..\..\bin\release\xqilla24.pdb                  del /F ..\..\bin\release\xqilla24.pdb
+    if EXIST ..\..\bin\release\xerces-c_3_1mg.dll            del /F ..\..\bin\release\xerces-c_3_1mg.dll
+    if EXIST ..\..\bin\release\xerces-c_3_1mg.pdb            del /F ..\..\bin\release\xerces-c_3_1mg.pdb
     if EXIST ..\..\bin\release\serverconfig.ini              del /F ..\..\bin\release\serverconfig.ini
     if EXIST ..\..\bin\UnitTestFiles\LibraryRepositoryContent.xml   del /F ..\..\bin\UnitTestFiles\LibraryRepositoryContent.xml
     if EXIST ..\..\bin\UnitTestFiles\SampleRepositoryHeader.xml     del /F ..\..\bin\UnitTestFiles\SampleRepositoryHeader.xml
@@ -1381,14 +1381,14 @@ cleanrelease64:
     if EXIST ..\..\bin\release64\gd.pdb                        del /F ..\..\bin\release64\gd.pdb
     if EXIST ..\..\bin\release64\GEOS.dll                      del /F ..\..\bin\release64\GEOS.dll
     if EXIST ..\..\bin\release64\GEOS.pdb                      del /F ..\..\bin\release64\GEOS.pdb
-    if EXIST ..\..\bin\release64\libdb45.dll                   del /F ..\..\bin\release64\libdb45.dll
-    if EXIST ..\..\bin\release64\libdb45.pdb                   del /F ..\..\bin\release64\libdb45.pdb
-    if EXIST ..\..\bin\release64\libdbxml23.dll                del /F ..\..\bin\release64\libdbxml23.dll
-    if EXIST ..\..\bin\release64\libdbxml23.pdb                del /F ..\..\bin\release64\libdbxml23.pdb
-    if EXIST ..\..\bin\release64\xqilla10.dll                  del /F ..\..\bin\release64\xqilla10.dll
-    if EXIST ..\..\bin\release64\xqilla10.pdb                  del /F ..\..\bin\release64\xqilla10.pdb
-    if EXIST ..\..\bin\release64\xerces-c_2_7.dll              del /F ..\..\bin\release64\xerces-c_2_7.dll
-    if EXIST ..\..\bin\release64\xerces-c_2_7.pdb              del /F ..\..\bin\release64\xerces-c_2_7.pdb
+    if EXIST ..\..\bin\release64\libdb48.dll                   del /F ..\..\bin\release64\libdb48.dll
+    if EXIST ..\..\bin\release64\libdb48.pdb                   del /F ..\..\bin\release64\libdb48.pdb
+    if EXIST ..\..\bin\release64\libdbxml25.dll                del /F ..\..\bin\release64\libdbxml25.dll
+    if EXIST ..\..\bin\release64\libdbxml25.pdb                del /F ..\..\bin\release64\libdbxml25.pdb
+    if EXIST ..\..\bin\release64\xqilla24.dll                  del /F ..\..\bin\release64\xqilla24.dll
+    if EXIST ..\..\bin\release64\xqilla24.pdb                  del /F ..\..\bin\release64\xqilla24.pdb
+    if EXIST ..\..\bin\release64\xerces-c_3_1mg.dll            del /F ..\..\bin\release64\xerces-c_3_1mg.dll
+    if EXIST ..\..\bin\release64\xerces-c_3_1mg.pdb            del /F ..\..\bin\release64\xerces-c_3_1mg.pdb
     if EXIST ..\..\bin\release64\serverconfig.ini              del /F ..\..\bin\release64\serverconfig.ini
     if EXIST ..\..\bin\UnitTestFiles\LibraryRepositoryContent.xml   del /F ..\..\bin\UnitTestFiles\LibraryRepositoryContent.xml
     if EXIST ..\..\bin\UnitTestFiles\SampleRepositoryHeader.xml     del /F ..\..\bin\UnitTestFiles\SampleRepositoryHeader.xml

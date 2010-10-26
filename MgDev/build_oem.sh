@@ -268,18 +268,18 @@ clean_swigex()
 }
 
 #**********************************************************
-# Build BDBXML 2.3.10
+# Build BDBXML
 # Notes: none
 #**********************************************************
 
 init_bdbxml()
 {
-    LIB_NAME="BDBXML 2.3.10"
+    LIB_NAME="BDBXML"
 }
 
 build_bdbxml()
 {
-    pushd dbxml-2.3.10
+    pushd dbxml
     sh ./buildall.sh
     check_build
     popd
@@ -287,7 +287,7 @@ build_bdbxml()
 
 clean_bdbxml()
 {
-    pushd dbxml-2.3.10
+    pushd dbxml
     sh ./buildall.sh --clean
     check_clean
     popd

@@ -41,6 +41,8 @@
 #include <xercesc/framework/XMLFormatter.hpp>
 #include <xercesc/util/XMLString.hpp>
 #include <xercesc/framework/MemBufInputSource.hpp>
+#include <xercesc/parsers/SAX2XMLReaderImpl.hpp>
+
 #pragma warning(pop)
 
 #include "IOUtil.h"
@@ -133,7 +135,7 @@ class MDFPARSER_API SAX2Parser : public DefaultHandler
                         const XMLCh* const qname);
 
         // Occurs when characters in between XML tags are encountered.
-        void characters(const XMLCh* const chars, const unsigned int length);
+        void characters(const XMLCh* const chars, const XMLSize_t length);
 
         // Get error info
         const MdfString& GetErrorMessage();

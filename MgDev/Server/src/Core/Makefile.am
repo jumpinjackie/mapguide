@@ -9,7 +9,7 @@ prefix=@prefix@/server
 
 INCLUDES = \
   -I../../../Oem/ACE/ACE_wrappers \
-  -I../../../Oem/dbxml-2.3.10/xerces-c-src/src \
+  -I../../../Oem/dbxml/xerces-c-src/src \
   -I $(map_fdo_include) \
   -I $(map_fdo_include)/ExpressionEngine \
   -I../Common \
@@ -131,7 +131,7 @@ mgserver_LDFLAGS = \
   -R$(map_srcdir)/Oem/DWFTK7.1/develop/global/src/dwfcore \
   -R$(map_srcdir)/Oem/DWFTK7.1/develop/global/src/dwf \
   -R$(map_srcdir)/Oem/DWFTK7.1/develop/global/src/dwfemap \
-  -R$(map_srcdir)/Oem/dbxml-2.3.10/install/lib \
+  -R$(map_srcdir)/Oem/dbxml/install/lib \
   -R$(map_srcdir)/Common/CoordinateSystem/.libs \
   -R$(map_srcdir)/Common/MdfModel/.libs \
   -R$(map_srcdir)/Common/MdfParser/.libs \
@@ -160,7 +160,7 @@ mgserver_LDFLAGS = \
   -L../../../Oem/DWFTK7.1/develop/global/src/dwfcore \
   -L../../../Oem/DWFTK7.1/develop/global/src/dwf \
   -L../../../Oem/DWFTK7.1/develop/global/src/dwfemap \
-  -L../../../Oem/dbxml-2.3.10/install/lib \
+  -L../../../Oem/dbxml/install/lib \
   -L$(top_builddir)/Common/CoordinateSystem \
   -L../../../Common/MdfModel \
   -L../../../Common/MdfParser \
@@ -367,17 +367,17 @@ install-data-local:
 				cp -f -r $(mentor_dict_source_dir)/* $(mentor_dict_install_dir);)
 	@cp -fp ../../../Common/Schema/*.xsd $(schemadir)
 	@cp -fp ../../../Oem/DWFTK7.1/develop/global/fonts/* ${prefix}/bin/
-	@cp -fp ../../../Oem/dbxml-2.3.10/install/bin/db_archive ${prefix}/bin/
-	@cp -fp ../../../Oem/dbxml-2.3.10/install/bin/db_checkpoint ${prefix}/bin/
-	@cp -fp ../../../Oem/dbxml-2.3.10/install/bin/db_dump ${prefix}/bin/
-	@cp -fp ../../../Oem/dbxml-2.3.10/install/bin/db_hotbackup ${prefix}/bin/
-	@cp -fp ../../../Oem/dbxml-2.3.10/install/bin/db_load ${prefix}/bin/
-	@cp -fp ../../../Oem/dbxml-2.3.10/install/bin/db_recover ${prefix}/bin/
-	@cp -fp ../../../Oem/dbxml-2.3.10/install/bin/db_upgrade ${prefix}/bin/
-	@cp -fp ../../../Oem/dbxml-2.3.10/install/bin/db_verify ${prefix}/bin/
-	@cp -fp ../../../Oem/dbxml-2.3.10/install/bin/dbxml ${prefix}/bin/
-	@cp -fp ../../../Oem/dbxml-2.3.10/install/bin/dbxml_dump ${prefix}/bin/
-	@cp -fp ../../../Oem/dbxml-2.3.10/install/bin/dbxml_load ${prefix}/bin/
+	@cp -fp ../../../Oem/dbxml/install/bin/db_archive ${prefix}/bin/
+	@cp -fp ../../../Oem/dbxml/install/bin/db_checkpoint ${prefix}/bin/
+	@cp -fp ../../../Oem/dbxml/install/bin/db_dump ${prefix}/bin/
+	@cp -fp ../../../Oem/dbxml/install/bin/db_hotbackup ${prefix}/bin/
+	@cp -fp ../../../Oem/dbxml/install/bin/db_load ${prefix}/bin/
+	@cp -fp ../../../Oem/dbxml/install/bin/db_recover ${prefix}/bin/
+	@cp -fp ../../../Oem/dbxml/install/bin/db_upgrade ${prefix}/bin/
+	@cp -fp ../../../Oem/dbxml/install/bin/db_verify ${prefix}/bin/
+	@cp -fp ../../../Oem/dbxml/install/bin/dbxml ${prefix}/bin/
+	@cp -fp ../../../Oem/dbxml/install/bin/dbxml_dump ${prefix}/bin/
+	@cp -fp ../../../Oem/dbxml/install/bin/dbxml_load ${prefix}/bin/
 	@cp -fp ../../RepositoryAdmin/*.sh $(repositoryadmindir)
 	@cp -fp ../../RepositoryAdmin/*.php $(repositoryadmindir)
 	@cp -fp ../../RepositoryAdmin/*.inc $(repositoryadmindir)

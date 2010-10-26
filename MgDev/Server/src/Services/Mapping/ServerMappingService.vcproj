@@ -44,7 +44,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="..\..\Common;..\..\Common\Base;..\..\Common\Manager;..\Feature;..\..\..\..\Common\Foundation;..\..\..\..\Common\Geometry;..\..\..\..\Common\PlatformBase;..\..\..\..\Common\MapGuideCommon;..\..\..\..\Common\MdfModel;..\..\..\..\Common\MdfParser;..\..\..\..\Common\Renderers;..\..\..\..\Common\Stylization;..\..\..\..\Oem\ACE\ACE_wrappers;..\..\..\..\Oem\dbxml-2.3.10\xerces-c-src\src;..\..\..\..\Oem\FDO\inc;..\..\..\..\Oem\FDO\inc\ExpressionEngine;..\..\Gws\Include"
+				AdditionalIncludeDirectories="..\..\Common;..\..\Common\Base;..\..\Common\Manager;..\Feature;..\..\..\..\Common\Foundation;..\..\..\..\Common\Geometry;..\..\..\..\Common\PlatformBase;..\..\..\..\Common\MapGuideCommon;..\..\..\..\Common\MdfModel;..\..\..\..\Common\MdfParser;..\..\..\..\Common\Renderers;..\..\..\..\Common\Stylization;..\..\..\..\Oem\ACE\ACE_wrappers;&quot;..\..\..\..\Oem\dbxml\xerces-c-src\src&quot;;..\..\..\..\Oem\FDO\inc;..\..\..\..\Oem\FDO\inc\ExpressionEngine;..\..\Gws\Include"
 				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL;MG_SERVER_MAPPING_EXPORTS"
 				MinimalRebuild="true"
 				ExceptionHandling="2"
@@ -64,10 +64,10 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="ACEd.lib xerces-c_2D.lib FDO.lib FDOCommon.lib"
+				AdditionalDependencies="ACEd.lib xerces-c_3mgD.lib FDO.lib FDOCommon.lib"
 				OutputFile="$(OutDir)\MgServerMappingServiced.dll"
 				LinkIncremental="2"
-				AdditionalLibraryDirectories="..\..\..\..\Oem\ACE\ACE_wrappers\lib;..\..\..\..\Oem\dbxml-2.3.10\lib;..\..\..\..\Oem\FDO\lib"
+				AdditionalLibraryDirectories="..\..\..\..\Oem\ACE\ACE_wrappers\lib;..\..\..\..\Oem\dbxml\lib;..\..\..\..\Oem\FDO\lib"
 				DelayLoadDLLs="FDO.dll;FDOCommon.dll"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="$(OutDir)\MgServerMappingServiced.pdb"
@@ -124,7 +124,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="..\..\Common;..\..\Common\Base;..\..\Common\Manager;..\Feature;..\..\..\..\Common\Foundation;..\..\..\..\Common\Geometry;..\..\..\..\Common\PlatformBase;..\..\..\..\Common\MapGuideCommon;..\..\..\..\Common\MdfModel;..\..\..\..\Common\MdfParser;..\..\..\..\Common\Renderers;..\..\..\..\Common\Stylization;..\..\..\..\Oem\ACE\ACE_wrappers;..\..\..\..\Oem\dbxml-2.3.10\xerces-c-src\src;..\..\..\..\Oem\FDO\inc;..\..\..\..\Oem\FDO\inc\ExpressionEngine;..\..\Gws\Include"
+				AdditionalIncludeDirectories="..\..\Common;..\..\Common\Base;..\..\Common\Manager;..\Feature;..\..\..\..\Common\Foundation;..\..\..\..\Common\Geometry;..\..\..\..\Common\PlatformBase;..\..\..\..\Common\MapGuideCommon;..\..\..\..\Common\MdfModel;..\..\..\..\Common\MdfParser;..\..\..\..\Common\Renderers;..\..\..\..\Common\Stylization;..\..\..\..\Oem\ACE\ACE_wrappers;&quot;..\..\..\..\Oem\dbxml\xerces-c-src\src&quot;;..\..\..\..\Oem\FDO\inc;..\..\..\..\Oem\FDO\inc\ExpressionEngine;..\..\Gws\Include"
 				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL;MG_SERVER_MAPPING_EXPORTS"
 				MinimalRebuild="true"
 				ExceptionHandling="2"
@@ -144,10 +144,10 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="ACEd.lib xerces-c_2D.lib FDO.lib FDOCommon.lib"
+				AdditionalDependencies="ACEd.lib xerces-c_3mgD.lib FDO.lib FDOCommon.lib"
 				OutputFile="$(OutDir)\MgServerMappingServiced.dll"
 				LinkIncremental="2"
-				AdditionalLibraryDirectories="..\..\..\..\Oem\ACE\ACE_wrappers\lib64;..\..\..\..\Oem\dbxml-2.3.10\lib64;..\..\..\..\Oem\FDO\lib64"
+				AdditionalLibraryDirectories="..\..\..\..\Oem\ACE\ACE_wrappers\lib64;..\..\..\..\Oem\dbxml\lib64;..\..\..\..\Oem\FDO\lib64"
 				DelayLoadDLLs="FDO.dll;FDOCommon.dll"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="$(OutDir)\MgServerMappingServiced.pdb"
@@ -204,7 +204,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="2"
-				AdditionalIncludeDirectories="..\..\Common;..\..\Common\Base;..\..\Common\Manager;..\Feature;..\..\..\..\Common\Foundation;..\..\..\..\Common\Geometry;..\..\..\..\Common\PlatformBase;..\..\..\..\Common\MapGuideCommon;..\..\..\..\Common\MdfModel;..\..\..\..\Common\MdfParser;..\..\..\..\Common\Renderers;..\..\..\..\Common\Stylization;..\..\..\..\Oem\ACE\ACE_wrappers;..\..\..\..\Oem\dbxml-2.3.10\xerces-c-src\src;..\..\..\..\Oem\FDO\inc;..\..\..\..\Oem\FDO\inc\ExpressionEngine;..\..\Gws\Include"
+				AdditionalIncludeDirectories="..\..\Common;..\..\Common\Base;..\..\Common\Manager;..\Feature;..\..\..\..\Common\Foundation;..\..\..\..\Common\Geometry;..\..\..\..\Common\PlatformBase;..\..\..\..\Common\MapGuideCommon;..\..\..\..\Common\MdfModel;..\..\..\..\Common\MdfParser;..\..\..\..\Common\Renderers;..\..\..\..\Common\Stylization;..\..\..\..\Oem\ACE\ACE_wrappers;&quot;..\..\..\..\Oem\dbxml\xerces-c-src\src&quot;;..\..\..\..\Oem\FDO\inc;..\..\..\..\Oem\FDO\inc\ExpressionEngine;..\..\Gws\Include"
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;MG_SERVER_MAPPING_EXPORTS"
 				ExceptionHandling="2"
 				RuntimeLibrary="2"
@@ -222,10 +222,10 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="ACE.lib xerces-c_2.lib FDO.lib FDOCommon.lib"
+				AdditionalDependencies="ACE.lib xerces-c_3mg.lib FDO.lib FDOCommon.lib"
 				OutputFile="$(OutDir)\MgServerMappingService.dll"
 				LinkIncremental="1"
-				AdditionalLibraryDirectories="..\..\..\..\Oem\ACE\ACE_wrappers\lib;..\..\..\..\Oem\dbxml-2.3.10\lib;..\..\..\..\Oem\FDO\lib"
+				AdditionalLibraryDirectories="..\..\..\..\Oem\ACE\ACE_wrappers\lib;..\..\..\..\Oem\dbxml\lib;..\..\..\..\Oem\FDO\lib"
 				DelayLoadDLLs="FDO.dll;FDOCommon.dll"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="$(OutDir)\MgServerMappingService.pdb"
@@ -284,7 +284,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="2"
-				AdditionalIncludeDirectories="..\..\Common;..\..\Common\Base;..\..\Common\Manager;..\Feature;..\..\..\..\Common\Foundation;..\..\..\..\Common\Geometry;..\..\..\..\Common\PlatformBase;..\..\..\..\Common\MapGuideCommon;..\..\..\..\Common\MdfModel;..\..\..\..\Common\MdfParser;..\..\..\..\Common\Renderers;..\..\..\..\Common\Stylization;..\..\..\..\Oem\ACE\ACE_wrappers;..\..\..\..\Oem\dbxml-2.3.10\xerces-c-src\src;..\..\..\..\Oem\FDO\inc;..\..\..\..\Oem\FDO\inc\ExpressionEngine;..\..\Gws\Include"
+				AdditionalIncludeDirectories="..\..\Common;..\..\Common\Base;..\..\Common\Manager;..\Feature;..\..\..\..\Common\Foundation;..\..\..\..\Common\Geometry;..\..\..\..\Common\PlatformBase;..\..\..\..\Common\MapGuideCommon;..\..\..\..\Common\MdfModel;..\..\..\..\Common\MdfParser;..\..\..\..\Common\Renderers;..\..\..\..\Common\Stylization;..\..\..\..\Oem\ACE\ACE_wrappers;&quot;..\..\..\..\Oem\dbxml\xerces-c-src\src&quot;;..\..\..\..\Oem\FDO\inc;..\..\..\..\Oem\FDO\inc\ExpressionEngine;..\..\Gws\Include"
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;MG_SERVER_MAPPING_EXPORTS"
 				ExceptionHandling="2"
 				RuntimeLibrary="2"
@@ -302,10 +302,10 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="ACE.lib xerces-c_2.lib FDO.lib FDOCommon.lib"
+				AdditionalDependencies="ACE.lib xerces-c_3mg.lib FDO.lib FDOCommon.lib"
 				OutputFile="$(OutDir)\MgServerMappingService.dll"
 				LinkIncremental="1"
-				AdditionalLibraryDirectories="..\..\..\..\Oem\ACE\ACE_wrappers\lib64;..\..\..\..\Oem\dbxml-2.3.10\lib64;..\..\..\..\Oem\FDO\lib64"
+				AdditionalLibraryDirectories="..\..\..\..\Oem\ACE\ACE_wrappers\lib64;..\..\..\..\Oem\dbxml\lib64;..\..\..\..\Oem\FDO\lib64"
 				DelayLoadDLLs="FDO.dll;FDOCommon.dll"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="$(OutDir)\MgServerMappingService.pdb"

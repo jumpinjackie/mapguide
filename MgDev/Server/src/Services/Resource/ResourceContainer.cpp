@@ -43,23 +43,96 @@ MgResourceContainer::MgResourceContainer(MgDbEnvironment& environment,
 #endif
 
     XmlManager& xmlMan = m_environment.GetXmlManager();
-    assert(XmlContainer::WholedocContainer == xmlMan.getDefaultContainerType());
-    u_int32_t flags = xmlMan.getDefaultContainerFlags();
+    XmlContainer::ContainerType defaultContType = xmlMan.getDefaultContainerType();
+    assert(XmlContainer::WholedocContainer == defaultContType);
 
     if (m_environment.IsTransacted())
     {
-        assert(flags | DBXML_TRANSACTIONAL);
         XmlTransaction xmlTxn = xmlMan.createTransaction();
 
-        m_xmlContainer.reset(new XmlContainer(xmlMan.openContainer(
-            xmlTxn, fileName, flags)));
+        XmlContainerConfig cconfig;
+        cconfig.setAllowCreate(true); // If the container does not exist, create it.
+        cconfig.setTransactional(true); // Enable transactions.
+        cconfig.setThreaded(true);
+        cconfig.setContainerType(defaultContType);
+        cconfig.setAllowValidation(true);
+        cconfig.setIndexNodes(XmlContainerConfig::Off);
+        
+        m_xmlContainer.reset(new XmlContainer(xmlMan.openContainer(xmlTxn, fileName, cconfig)));
         xmlTxn.commit(0);
+
+        XmlContainer::ContainerType contType = m_xmlContainer->getContainerType();
+        assert(XmlContainer::WholedocContainer == contType);
     }
     else
     {
-        m_xmlContainer.reset(new XmlContainer(xmlMan.openContainer(
-            fileName, flags)));
+        XmlContainerConfig cconfig;
+        cconfig.setAllowCreate(true); // If the container does not exist, create it.
+        cconfig.setThreaded(true);
+        cconfig.setContainerType(defaultContType);
+        cconfig.setAllowValidation(true);
+        cconfig.setIndexNodes(XmlContainerConfig::Off);
+
+        m_xmlContainer.reset(new XmlContainer(xmlMan.openContainer(fileName, cconfig)));
+
+        XmlContainer::ContainerType contType = m_xmlContainer->getContainerType();
+        assert(XmlContainer::WholedocContainer == contType);
     }
+
+#ifdef _DEBUG
+    // Dump the flags used to create the container
+    STRING containerFileName = MgUtil::MultiByteToWideChar(fileName);
+    ACE_DEBUG ((LM_INFO, ACE_TEXT("Opened Container        : %s\n"), MG_WCHAR_TO_TCHAR(containerFileName)));
+
+    bool bResult;
+    int nResult;
+    unsigned int unResult;
+    std::string strResult;
+    XmlContainer::ContainerType cResult;
+    XmlContainerConfig::ConfigState sResult;
+
+    XmlContainerConfig cconfig = m_xmlContainer->getFlags();
+    bResult = cconfig.getAllowCreate();
+    ACE_DEBUG ((LM_INFO, ACE_TEXT("getAllowCreate          : %s\n"), bResult ? ACE_TEXT("True") : ACE_TEXT("False")));
+    bResult = cconfig.getAllowValidation();
+    ACE_DEBUG ((LM_INFO, ACE_TEXT("getAllowValidation      : %s\n"), bResult ? ACE_TEXT("True") : ACE_TEXT("False")));
+    bResult = cconfig.getChecksum();
+    ACE_DEBUG ((LM_INFO, ACE_TEXT("getChecksum             : %s\n"), bResult ? ACE_TEXT("True") : ACE_TEXT("False")));
+    strResult = cconfig.getCompressionName();
+    STRING compressionName = MgUtil::MultiByteToWideChar(strResult);
+    ACE_DEBUG ((LM_INFO, ACE_TEXT("getCompressionName      : %s\n"), MG_WCHAR_TO_TCHAR(compressionName)));
+    cResult = cconfig.getContainerType();
+    ACE_DEBUG ((LM_INFO, ACE_TEXT("getContainerType        : %s\n"), (cResult == XmlContainer::WholedocContainer) ? ACE_TEXT("WholedocContainer") : ACE_TEXT("NodeContainer")));
+    bResult = cconfig.getEncrypted();
+    ACE_DEBUG ((LM_INFO, ACE_TEXT("getEncrypted            : %s\n"), bResult ? ACE_TEXT("True") : ACE_TEXT("False")));
+    bResult = cconfig.getExclusiveCreate();
+    ACE_DEBUG ((LM_INFO, ACE_TEXT("getExclusiveCreate      : %s\n"), bResult ? ACE_TEXT("True") : ACE_TEXT("False")));
+    sResult = cconfig.getIndexNodes();
+    ACE_DEBUG ((LM_INFO, ACE_TEXT("getIndexNodes           : %d\n"), sResult));
+    nResult = cconfig.getMode();
+    ACE_DEBUG ((LM_INFO, ACE_TEXT("getMode                 : %d\n"), nResult));
+    bResult = cconfig.getMultiversion();
+    ACE_DEBUG ((LM_INFO, ACE_TEXT("getMultiversion         : %s\n"), bResult ? ACE_TEXT("True") : ACE_TEXT("False")));
+    bResult = cconfig.getNoMMap();
+    ACE_DEBUG ((LM_INFO, ACE_TEXT("getNoMMap               : %s\n"), bResult ? ACE_TEXT("True") : ACE_TEXT("False")));
+    unResult = cconfig.getPageSize();
+    ACE_DEBUG ((LM_INFO, ACE_TEXT("getPageSize             : %d\n"), unResult));
+    bResult = cconfig.getReadOnly();
+    ACE_DEBUG ((LM_INFO, ACE_TEXT("getReadOnly             : %s\n"), bResult ? ACE_TEXT("True") : ACE_TEXT("False")));
+    bResult = cconfig.getReadUncommitted();
+    ACE_DEBUG ((LM_INFO, ACE_TEXT("getReadUncommitted      : %s\n"), bResult ? ACE_TEXT("True") : ACE_TEXT("False")));
+    unResult = cconfig.getSequenceIncrement();
+    ACE_DEBUG ((LM_INFO, ACE_TEXT("getSequenceIncrement    : %d\n"), unResult));
+    sResult = cconfig.getStatistics();
+    ACE_DEBUG ((LM_INFO, ACE_TEXT("getStatistics           : %d\n"), sResult));
+    bResult = cconfig.getThreaded();
+    ACE_DEBUG ((LM_INFO, ACE_TEXT("getThreaded             : %s\n"), bResult ? ACE_TEXT("True") : ACE_TEXT("False")));
+    bResult = cconfig.getTransactional();
+    ACE_DEBUG ((LM_INFO, ACE_TEXT("getTransactional        : %s\n"), bResult ? ACE_TEXT("True") : ACE_TEXT("False")));
+    bResult = cconfig.getTransactionNotDurable();
+    ACE_DEBUG ((LM_INFO, ACE_TEXT("getTransactionNotDurable: %s\n"), bResult ? ACE_TEXT("True") : ACE_TEXT("False")));
+    ACE_DEBUG ((LM_INFO, ACE_TEXT("\n")));
+#endif
 
     m_opened = (NULL != m_xmlContainer.get());
     Reset();

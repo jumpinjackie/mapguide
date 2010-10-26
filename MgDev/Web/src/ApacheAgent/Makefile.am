@@ -45,7 +45,7 @@ mod_mgmapagent_la_LIBADD = -lMgFoundation \
 
 mod_mgmapagent_la_LDFLAGS = -release $(PACKAGE_VERSION) \
             -L../../../Oem/ACE/ACE_wrappers/ace \
-            -L../../../Oem/dbxml-2.3.10/install/lib \
+            -L../../../Oem/dbxml/install/lib \
             -L../../../Common/CoordinateSystem \
             -L../../../Common/MdfModel \
             -L../../../Common/MdfParser \

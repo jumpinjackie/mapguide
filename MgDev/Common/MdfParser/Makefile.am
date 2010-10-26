@@ -4,7 +4,7 @@ EXTRA_DIST = MdfParser.vcproj MdfParser.rc
 
 INCLUDES = \
   -I../MdfModel/ \
-  -I../../Oem/dbxml-2.3.10/xerces-c-src/src/
+  -I../../Oem/dbxml/xerces-c-src/src/
 
 lib_LTLIBRARIES = libMgMdfParser.la
 
@@ -216,4 +216,4 @@ libMgMdfParser_la_LIBADD = -lMgMdfModel -lxerces-c
 
 libMgMdfParser_la_LDFLAGS = -release $(PACKAGE_VERSION) \
   -L../MdfModel \
-  -L../../Oem/dbxml-2.3.10/install/lib
+  -L../../Oem/dbxml/install/lib

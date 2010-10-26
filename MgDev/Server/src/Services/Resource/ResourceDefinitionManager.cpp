@@ -388,33 +388,33 @@ void MgResourceDefinitionManager::ValidateDocument(XmlDocument& xmlDoc)
 
     if (!resource.IsRuntimeResource())
     {
-        DOMDocument* domDoc = xmlDoc.getContentAsDOM();
-        assert(NULL != domDoc);
-        MgXmlUtil xmlUtil(domDoc, false);
+        std::string xmlContent;
+        MgXmlUtil xmlUtil(xmlDoc.getContent(xmlContent));
+
         DOMElement* rootNode = xmlUtil.GetRootNode();
-        assert(NULL != rootNode);
-
-        STRING rootName;
-        const XMLCh* tag = rootNode->getTagName();
-
-        if (NULL != tag)
+        if(NULL != rootNode)
         {
-            rootName = X2W(tag);
-            assert(!rootName.empty());
+            assert(NULL != rootNode);
+
+            STRING rootName;
+            const XMLCh* tag = rootNode->getTagName();
+
+            if (NULL != tag)
+            {
+                rootName = X2W(tag);
+                assert(!rootName.empty());
+            }
+
+            STRING schemaName;
+            const XMLCh* attr = rootNode->getAttribute(X("xsi:noNamespaceSchemaLocation"));
+
+            if (NULL != attr)
+            {
+                schemaName = X2W(attr);
+            }
+
+            ValidateDocument(resource, rootName, schemaName);
         }
-
-        STRING schemaName;
-        const XMLCh* attr = rootNode->getAttribute(X("xsi:noNamespaceSchemaLocation"));
-
-        if (NULL != attr)
-        {
-            schemaName = X2W(attr);
-        }
-
-        // Free resources
-        domDoc->release();
-
-        ValidateDocument(resource, rootName, schemaName);
     }
 
     MG_RESOURCE_CONTAINER_CATCH_AND_THROW(L"MgResourceDefinitionManager.ValidateDocument")
@@ -523,7 +523,7 @@ void MgResourceDefinitionManager::PutDocument(XmlDocument& xmlDoc,
         ValidateDocument(xmlDoc);
 
         // Insert the resource.
-        m_container.putDocument(GetXmlTxn(), xmlDoc, updateContext, 0);
+        m_container.putDocument(GetXmlTxn(), xmlDoc, updateContext);
     }
     catch (XmlException& e)
     {

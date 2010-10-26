@@ -44,7 +44,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="..\..\Common;..\..\Common\Base;..\..\Common\Cache;..\..\Common\Manager;..\Feature;..\Site;..\..\..\..\Common\Foundation;..\..\..\..\Common\Geometry;..\..\..\..\Common\PlatformBase;..\..\..\..\Common\MapGuideCommon;..\..\..\..\Common\MdfModel;..\..\..\..\Common\MdfParser;..\..\..\..\Common\Security;..\..\..\..\Oem\ACE\ACE_wrappers;..\..\..\..\Oem\dbxml-2.3.10\xerces-c-src\src;..\..\..\..\Oem\dbxml-2.3.10\db-4.5.20\\build_windows;..\..\..\..\Oem\dbxml-2.3.10\dbxml\include;..\..\..\..\Oem\dbxml-2.3.10\dbxml\src;..\..\..\..\Oem\DWFTK7.1\develop\global\src;..\..\..\..\Oem\FDO\inc"
+				AdditionalIncludeDirectories="..\..\Common;..\..\Common\Base;..\..\Common\Cache;..\..\Common\Manager;..\Feature;..\Site;..\..\..\..\Common\Foundation;..\..\..\..\Common\Geometry;..\..\..\..\Common\PlatformBase;..\..\..\..\Common\MapGuideCommon;..\..\..\..\Common\MdfModel;..\..\..\..\Common\MdfParser;..\..\..\..\Common\Security;..\..\..\..\Oem\ACE\ACE_wrappers;&quot;..\..\..\..\Oem\dbxml\xerces-c-src\src&quot;;&quot;..\..\..\..\Oem\dbxml\db-4.8.26\\build_windows&quot;;..\..\..\..\Oem\dbxml\dbxml\include;..\..\..\..\Oem\dbxml\dbxml\src;..\..\..\..\Oem\DWFTK7.1\develop\global\src;..\..\..\..\Oem\FDO\inc"
 				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL;MG_SERVER_RESOURCE_EXPORTS;DWFCORE_STATIC;DWFTK_USE_DWFCORE_ZLIB"
 				MinimalRebuild="true"
 				ExceptionHandling="2"
@@ -64,10 +64,10 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="ACEd.lib xerces-c_2D.lib libdb45d.lib libdbxml23d.lib dwfcore_wt.1.1.1.lib"
+				AdditionalDependencies="ACEd.lib xerces-c_3mgD.lib libdb48d.lib libdbxml25d.lib dwfcore_wt.1.1.1.lib"
 				OutputFile="$(OutDir)\MgServerResourceServiced.dll"
 				LinkIncremental="2"
-				AdditionalLibraryDirectories="..\..\..\..\Oem\ACE\ACE_wrappers\lib;..\..\..\..\Oem\dbxml-2.3.10\lib;..\..\..\..\Oem\DWFTK7.1\develop\global\lib\static\debug\vc8.0"
+				AdditionalLibraryDirectories="..\..\..\..\Oem\ACE\ACE_wrappers\lib;..\..\..\..\Oem\dbxml\lib;..\..\..\..\Oem\DWFTK7.1\develop\global\lib\static\debug\vc8.0"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="$(OutDir)\MgServerResourceServiced.pdb"
 				SubSystem="2"
@@ -123,7 +123,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="..\..\Common;..\..\Common\Base;..\..\Common\Cache;..\..\Common\Manager;..\Feature;..\Site;..\..\..\..\Common\Foundation;..\..\..\..\Common\Geometry;..\..\..\..\Common\PlatformBase;..\..\..\..\Common\MapGuideCommon;..\..\..\..\Common\MdfModel;..\..\..\..\Common\MdfParser;..\..\..\..\Common\Security;..\..\..\..\Oem\ACE\ACE_wrappers;..\..\..\..\Oem\dbxml-2.3.10\xerces-c-src\src;..\..\..\..\Oem\dbxml-2.3.10\db-4.5.20\\build_windows;..\..\..\..\Oem\dbxml-2.3.10\dbxml\include;..\..\..\..\Oem\dbxml-2.3.10\dbxml\src;..\..\..\..\Oem\DWFTK7.1\develop\global\src;..\..\..\..\Oem\FDO\inc"
+				AdditionalIncludeDirectories="..\..\Common;..\..\Common\Base;..\..\Common\Cache;..\..\Common\Manager;..\Feature;..\Site;..\..\..\..\Common\Foundation;..\..\..\..\Common\Geometry;..\..\..\..\Common\PlatformBase;..\..\..\..\Common\MapGuideCommon;..\..\..\..\Common\MdfModel;..\..\..\..\Common\MdfParser;..\..\..\..\Common\Security;..\..\..\..\Oem\ACE\ACE_wrappers;&quot;..\..\..\..\Oem\dbxml\xerces-c-src\src&quot;;&quot;..\..\..\..\Oem\dbxml\db-4.8.26\\build_windows&quot;;..\..\..\..\Oem\dbxml\dbxml\include;..\..\..\..\Oem\dbxml\dbxml\src;..\..\..\..\Oem\DWFTK7.1\develop\global\src;..\..\..\..\Oem\FDO\inc"
 				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL;MG_SERVER_RESOURCE_EXPORTS;DWFCORE_STATIC;DWFTK_USE_DWFCORE_ZLIB"
 				MinimalRebuild="true"
 				ExceptionHandling="2"
@@ -143,10 +143,10 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="ACEd.lib xerces-c_2D.lib libdb45d.lib libdbxml23d.lib dwfcore_wt.1.1.1.lib"
+				AdditionalDependencies="ACEd.lib xerces-c_3mgD.lib libdb48d.lib libdbxml25d.lib dwfcore_wt.1.1.1.lib"
 				OutputFile="$(OutDir)\MgServerResourceServiced.dll"
 				LinkIncremental="2"
-				AdditionalLibraryDirectories="..\..\..\..\Oem\ACE\ACE_wrappers\lib64;..\..\..\..\Oem\dbxml-2.3.10\lib64;..\..\..\..\Oem\DWFTK7.1\develop\global\lib\static\debug64\vc8.0"
+				AdditionalLibraryDirectories="..\..\..\..\Oem\ACE\ACE_wrappers\lib64;..\..\..\..\Oem\dbxml\lib64;..\..\..\..\Oem\DWFTK7.1\develop\global\lib\static\debug64\vc8.0"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="$(OutDir)\MgServerResourceServiced.pdb"
 				SubSystem="2"
@@ -202,7 +202,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="2"
-				AdditionalIncludeDirectories="..\..\Common;..\..\Common\Base;..\..\Common\Cache;..\..\Common\Manager;..\Feature;..\Site;..\..\..\..\Common\Foundation;..\..\..\..\Common\Geometry;..\..\..\..\Common\PlatformBase;..\..\..\..\Common\MapGuideCommon;..\..\..\..\Common\MdfModel;..\..\..\..\Common\MdfParser;..\..\..\..\Common\Security;..\..\..\..\Oem\ACE\ACE_wrappers;..\..\..\..\Oem\dbxml-2.3.10\xerces-c-src\src;..\..\..\..\Oem\dbxml-2.3.10\db-4.5.20\\build_windows;..\..\..\..\Oem\dbxml-2.3.10\dbxml\include;..\..\..\..\Oem\dbxml-2.3.10\dbxml\src;..\..\..\..\Oem\DWFTK7.1\develop\global\src;..\..\..\..\Oem\FDO\inc"
+				AdditionalIncludeDirectories="..\..\Common;..\..\Common\Base;..\..\Common\Cache;..\..\Common\Manager;..\Feature;..\Site;..\..\..\..\Common\Foundation;..\..\..\..\Common\Geometry;..\..\..\..\Common\PlatformBase;..\..\..\..\Common\MapGuideCommon;..\..\..\..\Common\MdfModel;..\..\..\..\Common\MdfParser;..\..\..\..\Common\Security;..\..\..\..\Oem\ACE\ACE_wrappers;&quot;..\..\..\..\Oem\dbxml\xerces-c-src\src&quot;;&quot;..\..\..\..\Oem\dbxml\db-4.8.26\\build_windows&quot;;..\..\..\..\Oem\dbxml\dbxml\include;..\..\..\..\Oem\dbxml\dbxml\src;..\..\..\..\Oem\DWFTK7.1\develop\global\src;..\..\..\..\Oem\FDO\inc"
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;MG_SERVER_RESOURCE_EXPORTS;DWFCORE_STATIC;DWFTK_USE_DWFCORE_ZLIB"
 				ExceptionHandling="2"
 				RuntimeLibrary="2"
@@ -220,10 +220,10 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="ACE.lib xerces-c_2.lib libdb45.lib libdbxml23.lib dwfcore_wt.1.1.1.lib"
+				AdditionalDependencies="ACE.lib xerces-c_3mg.lib libdb48.lib libdbxml25.lib dwfcore_wt.1.1.1.lib"
 				OutputFile="$(OutDir)\MgServerResourceService.dll"
 				LinkIncremental="1"
-				AdditionalLibraryDirectories="..\..\..\..\Oem\ACE\ACE_wrappers\lib;..\..\..\..\Oem\dbxml-2.3.10\lib;..\..\..\..\Oem\DWFTK7.1\develop\global\lib\static\release\vc8.0"
+				AdditionalLibraryDirectories="..\..\..\..\Oem\ACE\ACE_wrappers\lib;..\..\..\..\Oem\dbxml\lib;..\..\..\..\Oem\DWFTK7.1\develop\global\lib\static\release\vc8.0"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="$(OutDir)\MgServerResourceService.pdb"
 				SubSystem="2"
@@ -281,7 +281,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="2"
-				AdditionalIncludeDirectories="..\..\Common;..\..\Common\Base;..\..\Common\Cache;..\..\Common\Manager;..\Feature;..\Site;..\..\..\..\Common\Foundation;..\..\..\..\Common\Geometry;..\..\..\..\Common\PlatformBase;..\..\..\..\Common\MapGuideCommon;..\..\..\..\Common\MdfModel;..\..\..\..\Common\MdfParser;..\..\..\..\Common\Security;..\..\..\..\Oem\ACE\ACE_wrappers;..\..\..\..\Oem\dbxml-2.3.10\xerces-c-src\src;..\..\..\..\Oem\dbxml-2.3.10\db-4.5.20\\build_windows;..\..\..\..\Oem\dbxml-2.3.10\dbxml\include;..\..\..\..\Oem\dbxml-2.3.10\dbxml\src;..\..\..\..\Oem\DWFTK7.1\develop\global\src;..\..\..\..\Oem\FDO\inc"
+				AdditionalIncludeDirectories="..\..\Common;..\..\Common\Base;..\..\Common\Cache;..\..\Common\Manager;..\Feature;..\Site;..\..\..\..\Common\Foundation;..\..\..\..\Common\Geometry;..\..\..\..\Common\PlatformBase;..\..\..\..\Common\MapGuideCommon;..\..\..\..\Common\MdfModel;..\..\..\..\Common\MdfParser;..\..\..\..\Common\Security;..\..\..\..\Oem\ACE\ACE_wrappers;&quot;..\..\..\..\Oem\dbxml\xerces-c-src\src&quot;;&quot;..\..\..\..\Oem\dbxml\db-4.8.26\\build_windows&quot;;..\..\..\..\Oem\dbxml\dbxml\include;..\..\..\..\Oem\dbxml\dbxml\src;..\..\..\..\Oem\DWFTK7.1\develop\global\src;..\..\..\..\Oem\FDO\inc"
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;MG_SERVER_RESOURCE_EXPORTS;DWFCORE_STATIC;DWFTK_USE_DWFCORE_ZLIB"
 				ExceptionHandling="2"
 				RuntimeLibrary="2"
@@ -299,10 +299,10 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="ACE.lib xerces-c_2.lib libdb45.lib libdbxml23.lib dwfcore_wt.1.1.1.lib"
+				AdditionalDependencies="ACE.lib xerces-c_3mg.lib libdb48.lib libdbxml25.lib dwfcore_wt.1.1.1.lib"
 				OutputFile="$(OutDir)\MgServerResourceService.dll"
 				LinkIncremental="1"
-				AdditionalLibraryDirectories="..\..\..\..\Oem\ACE\ACE_wrappers\lib64;..\..\..\..\Oem\dbxml-2.3.10\lib64;..\..\..\..\Oem\DWFTK7.1\develop\global\lib\static\release64\vc8.0"
+				AdditionalLibraryDirectories="..\..\..\..\Oem\ACE\ACE_wrappers\lib64;..\..\..\..\Oem\dbxml\lib64;..\..\..\..\Oem\DWFTK7.1\develop\global\lib\static\release64\vc8.0"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="$(OutDir)\MgServerResourceService.pdb"
 				SubSystem="2"

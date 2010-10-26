@@ -204,7 +204,7 @@ void FSDSAX2Parser::startElement(const XMLCh* const uri,
                                  const XMLCh* const qname,
                                  const Attributes&  attributes)
 {
-    std::wstring str = X2W(localname);
+    std::wstring str = X2W(qname);
     m_strbuffer = L"";   // discard any text between start tags
     m_tagOpen = true;
 
@@ -237,7 +237,7 @@ void FSDSAX2Parser::startElement(const XMLCh* const uri,
 
 
 void FSDSAX2Parser::characters(const XMLCh* const chars,
-                               const unsigned int length)
+                               const XMLSize_t length)
 {
     // The character data may be split into multiple calls, so just store it for now.
     // Also, do not record text outside of start/end tags
@@ -260,7 +260,7 @@ void FSDSAX2Parser::endElement(const XMLCh* const uri,
              m_strbuffer = L"";
         }
 
-        (m_handlerStack->top())->EndElement(X2W(localname), m_handlerStack);
+        (m_handlerStack->top())->EndElement(X2W(qname), m_handlerStack);
     }
 }
 

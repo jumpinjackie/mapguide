@@ -44,7 +44,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="..\..\..\Common\MdfModel;..\..\..\Common\MdfParser;..\..\..\Common\Foundation;..\..\..\Common\Geometry;..\..\..\Common\PlatformBase;..\..\..\Oem\Ace\ACE_wrappers;&quot;..\..\..\Oem\dbxml-2.3.10\xerces-c-src\src&quot;"
+				AdditionalIncludeDirectories="..\..\..\Common\MdfModel;..\..\..\Common\MdfParser;..\..\..\Common\Foundation;..\..\..\Common\Geometry;..\..\..\Common\PlatformBase;..\..\..\Oem\Ace\ACE_wrappers;&quot;..\..\..\Oem\dbxml\xerces-c-src\src&quot;"
 				PreprocessorDefinitions="WIN32;_DEBUG;_CONSOLE;ACE_HAS_SVC_DLL=1"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
@@ -121,7 +121,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="..\..\..\Common\MdfModel;..\..\..\Common\MdfParser;..\..\..\Common\Foundation;..\..\..\Common\Geometry;..\..\..\Common\PlatformBase;..\..\..\Oem\Ace\ACE_wrappers;&quot;..\..\..\Oem\dbxml-2.3.10\xerces-c-src\src&quot;"
+				AdditionalIncludeDirectories="..\..\..\Common\MdfModel;..\..\..\Common\MdfParser;..\..\..\Common\Foundation;..\..\..\Common\Geometry;..\..\..\Common\PlatformBase;..\..\..\Oem\Ace\ACE_wrappers;&quot;..\..\..\Oem\dbxml\xerces-c-src\src&quot;"
 				PreprocessorDefinitions="WIN32;_DEBUG;_CONSOLE;ACE_HAS_SVC_DLL=1"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
@@ -197,7 +197,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
-				AdditionalIncludeDirectories="..\..\..\Common\MdfModel;..\..\..\Common\MdfParser;..\..\..\Common\Foundation;..\..\..\Common\Geometry;..\..\..\Common\PlatformBase;..\..\..\Oem\Ace\ACE_wrappers;&quot;..\..\..\Oem\dbxml-2.3.10\xerces-c-src\src&quot;"
+				AdditionalIncludeDirectories="..\..\..\Common\MdfModel;..\..\..\Common\MdfParser;..\..\..\Common\Foundation;..\..\..\Common\Geometry;..\..\..\Common\PlatformBase;..\..\..\Oem\Ace\ACE_wrappers;&quot;..\..\..\Oem\dbxml\xerces-c-src\src&quot;"
 				PreprocessorDefinitions="WIN32;NDEBUG;_CONSOLE;ACE_HAS_SVC_DLL=1"
 				RuntimeLibrary="2"
 				WarningLevel="3"
@@ -272,7 +272,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
-				AdditionalIncludeDirectories="..\..\..\Common\MdfModel;..\..\..\Common\MdfParser;..\..\..\Common\Foundation;..\..\..\Common\Geometry;..\..\..\Common\PlatformBase;..\..\..\Oem\Ace\ACE_wrappers;&quot;..\..\..\Oem\dbxml-2.3.10\xerces-c-src\src&quot;"
+				AdditionalIncludeDirectories="..\..\..\Common\MdfModel;..\..\..\Common\MdfParser;..\..\..\Common\Foundation;..\..\..\Common\Geometry;..\..\..\Common\PlatformBase;..\..\..\Oem\Ace\ACE_wrappers;&quot;..\..\..\Oem\dbxml\xerces-c-src\src&quot;"
 				PreprocessorDefinitions="WIN32;NDEBUG;_CONSOLE;ACE_HAS_SVC_DLL=1"
 				RuntimeLibrary="2"
 				WarningLevel="3"
@@ -387,8 +387,8 @@
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Copying thirdparty dlls"
-						CommandLine="copy ..\..\..\Oem\FDO\bin\Debug\Xalan-C_1_7_0D.dll $(OutDir)&#x0D;&#x0A;copy ..\..\..\Oem\FDO\bin\Debug\XalanMessages_1_7_0D.dll $(OutDir)&#x0D;&#x0A;copy ..\..\..\Oem\FDO\bin\Debug\xerces-c_2_5_0D.dll $(OutDir)&#x0D;&#x0A;copy ..\..\..\Oem\ACE\ACE_wrappers\lib\ACEd.dll $(OutDir)&#x0D;&#x0A;copy ..\..\..\Oem\dbxml-2.3.10\xerces-c-src\Build\Win32\VC7.1\Debug\xerces-c_2_7D.dll $(OutDir)&#x0D;&#x0A;copy ..\..\..\Oem\geos-2.2.0\VisualStudio\Debug\GEOSd.dll $(OutDir)&#x0D;&#x0A;echo &quot;delete me please&quot;&gt;$(OutDir)\CopyThirdparty.ilk&#x0D;&#x0A;&#x0D;&#x0A;"
-						AdditionalDependencies="..\..\..\Oem\FDO\bin\Debug\Xalan-C_1_7_0D.dll;..\..\..\Oem\FDO\bin\Debug\XalanMessages_1_7_0D.dll;..\..\..\Oem\FDO\bin\Debug\xerces-c_2_5_0D.dll;..\..\..\Oem\ACE\ACE_wrappers\lib\ACEd.dll;..\..\..\Oem\dbxml-2.3.10\xerces-c-src\Build\Win32\VC7.1\Debug\xerces-c_2_7D.dll;..\..\..\Oem\geos-2.2.0\VisualStudio\Debug\GEOSd.dll"
+						CommandLine="copy ..\..\..\Oem\FDO\bin\Debug\Xalan-C_1_7_0D.dll $(OutDir)&#x0D;&#x0A;copy ..\..\..\Oem\FDO\bin\Debug\XalanMessages_1_7_0D.dll $(OutDir)&#x0D;&#x0A;copy ..\..\..\Oem\FDO\bin\Debug\xerces-c_3mg_5_0D.dll $(OutDir)&#x0D;&#x0A;copy ..\..\..\Oem\ACE\ACE_wrappers\lib\ACEd.dll $(OutDir)&#x0D;&#x0A;copy ..\..\..\Oem\dbxml\xerces-c-src\Build\Win32\VC7.1\Debug\xerces-c_3mg_7D.dll $(OutDir)&#x0D;&#x0A;copy ..\..\..\Oem\geos-2.2.0\VisualStudio\Debug\GEOSd.dll $(OutDir)&#x0D;&#x0A;echo &quot;delete me please&quot;&gt;$(OutDir)\CopyThirdparty.ilk&#x0D;&#x0A;&#x0D;&#x0A;"
+						AdditionalDependencies="..\..\..\Oem\FDO\bin\Debug\Xalan-C_1_7_0D.dll;..\..\..\Oem\FDO\bin\Debug\XalanMessages_1_7_0D.dll;..\..\..\Oem\FDO\bin\Debug\xerces-c_3mg_5_0D.dll;..\..\..\Oem\ACE\ACE_wrappers\lib\ACEd.dll;..\..\..\Oem\dbxml\xerces-c-src\Build\Win32\VC7.1\Debug\xerces-c_3mg_7D.dll;..\..\..\Oem\geos-2.2.0\VisualStudio\Debug\GEOSd.dll"
 						Outputs="$(OutDir)\CopyThirdparty.ilk"
 					/>
 				</FileConfiguration>
@@ -398,8 +398,8 @@
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Copying thirdparty dlls"
-						CommandLine="copy ..\..\..\Oem\FDO\bin\Debug64\Xalan-C_1_7_0D.dll $(OutDir)&#x0D;&#x0A;copy ..\..\..\Oem\FDO\bin\Debug64\XalanMessages_1_7_0D.dll $(OutDir)&#x0D;&#x0A;copy ..\..\..\Oem\FDO\bin\Debug64\xerces-c_2_5_0D.dll $(OutDir)&#x0D;&#x0A;copy ..\..\..\Oem\ACE\ACE_wrappers\lib\ACEd.dll $(OutDir)&#x0D;&#x0A;copy ..\..\..\Oem\dbxml-2.3.10\xerces-c-src\Build\Win64\VC7.1\Debug\xerces-c_2_7D.dll $(OutDir)&#x0D;&#x0A;copy ..\..\..\Oem\geos-2.2.0\VisualStudio\Debug64\GEOSd.dll $(OutDir)&#x0D;&#x0A;echo &quot;delete me please&quot;&gt;$(OutDir)\CopyThirdparty.ilk&#x0D;&#x0A;"
-						AdditionalDependencies="..\..\..\Oem\FDO\bin\Debug64\Xalan-C_1_7_0D.dll;..\..\..\Oem\FDO\bin\Debug64\XalanMessages_1_7_0D.dll;..\..\..\Oem\FDO\bin\Debug64\xerces-c_2_5_0D.dll;..\..\..\Oem\ACE\ACE_wrappers\lib\ACEd.dll;..\..\..\Oem\dbxml-2.3.10\xerces-c-src\Build\Win64\VC7.1\Debug\xerces-c_2_7D.dll;..\..\..\Oem\geos-2.2.0\VisualStudio\Debug64\GEOSd.dll"
+						CommandLine="copy ..\..\..\Oem\FDO\bin\Debug64\Xalan-C_1_7_0D.dll $(OutDir)&#x0D;&#x0A;copy ..\..\..\Oem\FDO\bin\Debug64\XalanMessages_1_7_0D.dll $(OutDir)&#x0D;&#x0A;copy ..\..\..\Oem\FDO\bin\Debug64\xerces-c_3mg_5_0D.dll $(OutDir)&#x0D;&#x0A;copy ..\..\..\Oem\ACE\ACE_wrappers\lib\ACEd.dll $(OutDir)&#x0D;&#x0A;copy ..\..\..\Oem\dbxml\xerces-c-src\Build\Win64\VC7.1\Debug\xerces-c_3mg_7D.dll $(OutDir)&#x0D;&#x0A;copy ..\..\..\Oem\geos-2.2.0\VisualStudio\Debug64\GEOSd.dll $(OutDir)&#x0D;&#x0A;echo &quot;delete me please&quot;&gt;$(OutDir)\CopyThirdparty.ilk&#x0D;&#x0A;"
+						AdditionalDependencies="..\..\..\Oem\FDO\bin\Debug64\Xalan-C_1_7_0D.dll;..\..\..\Oem\FDO\bin\Debug64\XalanMessages_1_7_0D.dll;..\..\..\Oem\FDO\bin\Debug64\xerces-c_3mg_5_0D.dll;..\..\..\Oem\ACE\ACE_wrappers\lib\ACEd.dll;..\..\..\Oem\dbxml\xerces-c-src\Build\Win64\VC7.1\Debug\xerces-c_3mg_7D.dll;..\..\..\Oem\geos-2.2.0\VisualStudio\Debug64\GEOSd.dll"
 						Outputs="$(OutDir)\CopyThirdparty.ilk"
 					/>
 				</FileConfiguration>
@@ -409,8 +409,8 @@
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Copying thirdparty dlls"
-						CommandLine="copy ..\..\..\Oem\FDO\bin\Release\Xalan-C_1_7_0D.dll $(OutDir)&#x0D;&#x0A;copy ..\..\..\Oem\FDO\bin\Release\XalanMessages_1_7_0D.dll $(OutDir)&#x0D;&#x0A;copy ..\..\..\Oem\FDO\bin\Release\xerces-c_2_5_0D.dll $(OutDir)&#x0D;&#x0A;copy ..\..\..\Oem\dbxml-2.3.10\xerces-c-src\Build\Win32\VC7.1\Release\xerces-c_2_7D.dll $(OutDir)&#x0D;&#x0A;copy ..\..\..\Oem\geos-2.2.0\VisualStudio\Release\GEOS.dll&#x0D;&#x0A;echo &quot;delete me please&quot;&gt;$(OutDir)\CopyThirdparty.ilk&#x0D;&#x0A;"
-						AdditionalDependencies="..\..\..\Oem\FDO\bin\Release\Xalan-C_1_7_0D.dll;..\..\..\Oem\FDO\bin\Release\XalanMessages_1_7_0D.dll;..\..\..\Oem\FDO\bin\Release\xerces-c_2_5_0D.dll;..\..\..\Oem\dbxml-2.3.10\xerces-c-src\Build\Win32\VC7.1\Release\xerces-c_2_7D.dll;..\..\..\Oem\geos-2.2.0\VisualStudio\Release\GEOS.dll"
+						CommandLine="copy ..\..\..\Oem\FDO\bin\Release\Xalan-C_1_7_0D.dll $(OutDir)&#x0D;&#x0A;copy ..\..\..\Oem\FDO\bin\Release\XalanMessages_1_7_0D.dll $(OutDir)&#x0D;&#x0A;copy ..\..\..\Oem\FDO\bin\Release\xerces-c_3mg_5_0D.dll $(OutDir)&#x0D;&#x0A;copy ..\..\..\Oem\dbxml\xerces-c-src\Build\Win32\VC7.1\Release\xerces-c_3mg_7D.dll $(OutDir)&#x0D;&#x0A;copy ..\..\..\Oem\geos-2.2.0\VisualStudio\Release\GEOS.dll&#x0D;&#x0A;echo &quot;delete me please&quot;&gt;$(OutDir)\CopyThirdparty.ilk&#x0D;&#x0A;"
+						AdditionalDependencies="..\..\..\Oem\FDO\bin\Release\Xalan-C_1_7_0D.dll;..\..\..\Oem\FDO\bin\Release\XalanMessages_1_7_0D.dll;..\..\..\Oem\FDO\bin\Release\xerces-c_3mg_5_0D.dll;..\..\..\Oem\dbxml\xerces-c-src\Build\Win32\VC7.1\Release\xerces-c_3mg_7D.dll;..\..\..\Oem\geos-2.2.0\VisualStudio\Release\GEOS.dll"
 						Outputs="$(OutDir)\CopyThirdparty.ilk"
 					/>
 				</FileConfiguration>
@@ -420,8 +420,8 @@
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Copying thirdparty dlls"
-						CommandLine="copy ..\..\..\Oem\FDO\bin\Release64\Xalan-C_1_7_0D.dll $(OutDir)&#x0D;&#x0A;copy ..\..\..\Oem\FDO\bin\Release64\XalanMessages_1_7_0D.dll $(OutDir)&#x0D;&#x0A;copy ..\..\..\Oem\FDO\bin\Release64\xerces-c_2_5_0D.dll $(OutDir)&#x0D;&#x0A;copy ..\..\..\Oem\dbxml-2.3.10\xerces-c-src\Build\Win64\VC7.1\Release\xerces-c_2_7D.dll $(OutDir)&#x0D;&#x0A;copy ..\..\..\Oem\geos-2.2.0\VisualStudio\Release64\GEOS.dll $(OutDir)&#x0D;&#x0A;echo &quot;delete me please&quot;&gt;$(OutDir)\CopyThirdparty.ilk&#x0D;&#x0A;"
-						AdditionalDependencies="..\..\..\Oem\FDO\bin\Release64\Xalan-C_1_7_0D.dll;..\..\..\Oem\FDO\bin\Release64\XalanMessages_1_7_0D.dll;..\..\..\Oem\FDO\bin\Release64\xerces-c_2_5_0D.dll;..\..\..\Oem\dbxml-2.3.10\xerces-c-src\Build\Win64\VC7.1\Release\xerces-c_2_7D.dll;..\..\..\Oem\geos-2.2.0\VisualStudio\Release64\GEOS.dll"
+						CommandLine="copy ..\..\..\Oem\FDO\bin\Release64\Xalan-C_1_7_0D.dll $(OutDir)&#x0D;&#x0A;copy ..\..\..\Oem\FDO\bin\Release64\XalanMessages_1_7_0D.dll $(OutDir)&#x0D;&#x0A;copy ..\..\..\Oem\FDO\bin\Release64\xerces-c_3mg_5_0D.dll $(OutDir)&#x0D;&#x0A;copy ..\..\..\Oem\dbxml\xerces-c-src\Build\Win64\VC7.1\Release\xerces-c_3mg_7D.dll $(OutDir)&#x0D;&#x0A;copy ..\..\..\Oem\geos-2.2.0\VisualStudio\Release64\GEOS.dll $(OutDir)&#x0D;&#x0A;echo &quot;delete me please&quot;&gt;$(OutDir)\CopyThirdparty.ilk&#x0D;&#x0A;"
+						AdditionalDependencies="..\..\..\Oem\FDO\bin\Release64\Xalan-C_1_7_0D.dll;..\..\..\Oem\FDO\bin\Release64\XalanMessages_1_7_0D.dll;..\..\..\Oem\FDO\bin\Release64\xerces-c_3mg_5_0D.dll;..\..\..\Oem\dbxml\xerces-c-src\Build\Win64\VC7.1\Release\xerces-c_3mg_7D.dll;..\..\..\Oem\geos-2.2.0\VisualStudio\Release64\GEOS.dll"
 						Outputs="$(OutDir)\CopyThirdparty.ilk"
 					/>
 				</FileConfiguration>

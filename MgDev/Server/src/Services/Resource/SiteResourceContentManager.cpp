@@ -292,7 +292,6 @@ MgByteReader* MgSiteResourceContentManager::EnumerateUsersInGroup(
 
         string docQuery = "/Group/Users/User/Name/text()";
         XmlQueryContext docContext = xmlMan.createQueryContext();
-        docContext.setReturnType(XmlQueryContext::DeadValues);
 
         // Execute the XQuery.
 
@@ -395,7 +394,6 @@ MgByteReader* MgSiteResourceContentManager::EnumerateUsersInRole(
 
         string docQuery = "/Role/Users/User/Name/text()";
         XmlQueryContext docContext = xmlMan.createQueryContext();
-        docContext.setReturnType(XmlQueryContext::DeadValues);
 
         // Execute the XQuery.
 
@@ -889,7 +887,6 @@ MgByteReader* MgSiteResourceContentManager::EnumerateGroupsByRole(
 
         string docQuery = "/Role/Groups/Group/Name/text()";
         XmlQueryContext docContext = xmlMan.createQueryContext();
-        docContext.setReturnType(XmlQueryContext::DeadValues);
 
         // Execute the XQuery.
 
@@ -2027,7 +2024,10 @@ void MgSiteResourceContentManager::RemoveUserFromGroup(
 
     // Set up an XQuery.
 
-    string query = "/Group/Users/User[Name=\"";
+    string query = "delete nodes collection('";
+    query += m_container.getName();
+    query += "')";
+    query += "/Group/Users/User[Name=\"";
     query += MgUtil::WideCharToMultiByte(userId);
     query += "\"]";
 
@@ -2035,22 +2035,14 @@ void MgSiteResourceContentManager::RemoveUserFromGroup(
 
     XmlManager& xmlMan = m_container.getManager();
     XmlQueryContext queryContext = xmlMan.createQueryContext();
-    XmlUpdateContext updateContext = xmlMan.createUpdateContext();
-    XmlModify xmlMod = xmlMan.createModify();
 
     if (IsTransacted())
     {
-        XmlQueryExpression xmlSelect = xmlMan.prepare(GetXmlTxn(), query, queryContext);
-
-        xmlMod.addRemoveStep(xmlSelect);
-        xmlMod.execute(GetXmlTxn(), docValue, queryContext, updateContext);
+        xmlMan.query(GetXmlTxn(), query, queryContext, 0);
     }
     else
     {
-        XmlQueryExpression xmlSelect = xmlMan.prepare(query, queryContext);
-
-        xmlMod.addRemoveStep(xmlSelect);
-        xmlMod.execute(docValue, queryContext, updateContext);
+        xmlMan.query(query, queryContext);
     }
 
     MG_RESOURCE_SERVICE_CATCH_AND_THROW(L"MgSiteResourceContentManager.RemoveUserFromGroup")
@@ -2143,7 +2135,10 @@ void MgSiteResourceContentManager::RemoveUserFromRole(
 
     // Set up an XQuery.
 
-    string query = "/Role/Users/User[Name=\"";
+    string query = "delete nodes collection('";
+    query += m_container.getName();
+    query += "')";
+    query += "/Role/Users/User[Name=\"";
     query += MgUtil::WideCharToMultiByte(userId);
     query += "\"]";
 
@@ -2151,22 +2146,14 @@ void MgSiteResourceContentManager::RemoveUserFromRole(
 
     XmlManager& xmlMan = m_container.getManager();
     XmlQueryContext queryContext = xmlMan.createQueryContext();
-    XmlUpdateContext updateContext = xmlMan.createUpdateContext();
-    XmlModify xmlMod = xmlMan.createModify();
 
     if (IsTransacted())
     {
-        XmlQueryExpression xmlSelect = xmlMan.prepare(GetXmlTxn(), query, queryContext);
-
-        xmlMod.addRemoveStep(xmlSelect);
-        xmlMod.execute(GetXmlTxn(), docValue, queryContext, updateContext);
+        xmlMan.query(GetXmlTxn(), query, queryContext, 0);
     }
     else
     {
-        XmlQueryExpression xmlSelect = xmlMan.prepare(query, queryContext);
-
-        xmlMod.addRemoveStep(xmlSelect);
-        xmlMod.execute(docValue, queryContext, updateContext);
+        xmlMan.query(query, queryContext);
     }
 
     MG_RESOURCE_SERVICE_CATCH_AND_THROW(L"MgSiteResourceContentManager.RemoveUserFromRole")
@@ -2259,7 +2246,10 @@ void MgSiteResourceContentManager::RemoveGroupFromRole(
 
     // Set up an XQuery.
 
-    string query = "/Role/Groups/Group[Name=\"";
+    string query = "delete nodes collection('";
+    query += m_container.getName();
+    query += "')";
+    query += "/Roles/Groups/Group[Name=\"";
     query += MgUtil::WideCharToMultiByte(groupId);
     query += "\"]";
 
@@ -2267,22 +2257,14 @@ void MgSiteResourceContentManager::RemoveGroupFromRole(
 
     XmlManager& xmlMan = m_container.getManager();
     XmlQueryContext queryContext = xmlMan.createQueryContext();
-    XmlUpdateContext updateContext = xmlMan.createUpdateContext();
-    XmlModify xmlMod = xmlMan.createModify();
 
     if (IsTransacted())
     {
-        XmlQueryExpression xmlSelect = xmlMan.prepare(GetXmlTxn(), query, queryContext);
-
-        xmlMod.addRemoveStep(xmlSelect);
-        xmlMod.execute(GetXmlTxn(), docValue, queryContext, updateContext);
+        xmlMan.query(GetXmlTxn(), query, queryContext, 0);
     }
     else
     {
-        XmlQueryExpression xmlSelect = xmlMan.prepare(query, queryContext);
-
-        xmlMod.addRemoveStep(xmlSelect);
-        xmlMod.execute(docValue, queryContext, updateContext);
+        xmlMan.query(query, queryContext);
     }
 
     MG_RESOURCE_SERVICE_CATCH_AND_THROW(L"MgSiteResourceContentManager.RemoveGroupFromRole")
@@ -2358,7 +2340,6 @@ MgSecurityCache* MgSiteResourceContentManager::CreateSecurityCache()
     XmlManager& xmlMan = m_container.getManager();
 
     XmlQueryContext docContext = xmlMan.createQueryContext();
-    docContext.setReturnType(XmlQueryContext::DeadValues);
 
     string xpathUserPassword = "/User/Password/text()";
     XmlQueryExpression selectUserPassword = IsTransacted() ?
