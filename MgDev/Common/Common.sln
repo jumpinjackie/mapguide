@@ -50,6 +50,9 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "FoundationTest", "..\UnitTe
 	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "GeometryConsoleTest", "Geometry\GeometryConsoleTest\GeometryConsoleTest.vcproj", "{F1285F4D-3CB7-427A-A2E8-43A575932C9F}"
+	ProjectSection(ProjectDependencies) = postProject
+		{D954DAAC-E305-40CE-B3F3-C229A0BEF4F0} = {D954DAAC-E305-40CE-B3F3-C229A0BEF4F0}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

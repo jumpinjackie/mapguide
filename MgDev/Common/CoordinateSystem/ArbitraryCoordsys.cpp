@@ -92,7 +92,7 @@ char* CCsArbitraryCoordinateSystemUtil::ConvertCoordinateSystemToWkt(struct cs_C
     {
         return NULL;
     }
-    if (ProjectionFromString(pcsDefPtr->prj_knm)!=MgCoordinateSystemProjectionCode::Nerth)
+    if (!ProjectionIsNerthType (pcsDefPtr->prj_knm))
     {
         return NULL;
     }

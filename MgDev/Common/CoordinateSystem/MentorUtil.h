@@ -101,6 +101,12 @@ INT32 ProjectionFromString(const char *kpStr);
 //INT32 value.
 const char * StringFromProjection(INT32 prj);
 
+// Returns true if th indictaed project, via projection key name
+// or projection code, is of the non-earth referenced type.  That
+// is, the projection type is either NERTH or NRTHSRT.
+bool ProjectionIsNerthType (const char *kpStr);
+bool ProjectionIsNerthType (INT32 prjCode);
+
 
 //Returns the MgCoordinateSystemUnitCode value associated with a given unit
 //key name.  Returns MgCoordinateSystemUnitCode::Unknown if it's not a recognized string.
