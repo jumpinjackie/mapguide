@@ -78,7 +78,7 @@
  <Define item="Feature.Bounds.south">-90</Define>
  <Define item="Feature.Bounds.west">-180</Define>
  <Define item="Feature.Bounds.east">180</Define>
-
+ <Define item="FeatureCollection.Namespaces">xmlns:gml="http://www.opengis.net/gml" xmlns:wfs="http://www.opengis.net/wfs" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"</Define>
 
  <Define item="DescribeFeature.EnumDelim.xml">
    <!-- &Enum.iteration; -->
