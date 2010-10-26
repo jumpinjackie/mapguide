@@ -1,9 +1,0 @@
-#!/bin/sh -
-#	$Id: s_win32,v 1.4 2006/09/22 02:20:51 gmf Exp $
-#
-# Build Windows-specific include, project, workspace and solution files
-
-sh s_paths
-sh s_win32_inc		# Win32 include files.
-sh s_win32_dsp		# Win32 project files (VC6).
-sh s_win32_vcproj	# Win32 project files (VC7).

@@ -1,7 +1,0 @@
-base referer
-rect $PSVIAttribute_8hpp.html 274,8 405,32
-rect $XSFacet_8hpp.html 289,56 390,80
-rect $XSMultiValueFacet_8hpp.html 257,104 422,128
-rect $PSVIAttributeList_8hpp.html 472,8 626,32
-rect $PSVIHandler_8hpp.html 676,8 801,32
-rect $AbstractDOMParser_8hpp.html 852,8 1022,32

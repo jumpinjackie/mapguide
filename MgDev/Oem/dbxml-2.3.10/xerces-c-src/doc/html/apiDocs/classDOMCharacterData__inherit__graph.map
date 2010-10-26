@@ -1,5 +1,0 @@
-base referer
-rect $classDOMComment.html 8,158 120,182
-rect $classDOMText.html 144,158 221,182
-rect $classDOMNode.html 80,9 165,33
-rect $classDOMCDATASection.html 110,233 254,257

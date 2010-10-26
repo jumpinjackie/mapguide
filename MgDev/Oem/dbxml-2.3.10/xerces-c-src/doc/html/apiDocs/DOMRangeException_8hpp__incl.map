@@ -1,8 +1,0 @@
-base referer
-rect $DOMException_8hpp.html 237,80 461,104
-rect $XercesDefs_8hpp.html 513,56 707,80
-rect $PlatformUtils_8hpp.html 509,104 711,128
-rect $XercesVersion_8hpp.html 759,8 973,32
-rect $AutoSense_8hpp.html 770,56 962,80
-rect $XMLException_8hpp.html 761,104 971,128
-rect $PanicHandler_8hpp.html 763,152 969,176

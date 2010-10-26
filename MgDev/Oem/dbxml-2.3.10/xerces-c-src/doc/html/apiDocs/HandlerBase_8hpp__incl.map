@@ -1,8 +1,0 @@
-base referer
-rect $DocumentHandler_8hpp.html 190,8 428,32
-rect $DTDHandler_8hpp.html 209,56 409,80
-rect $EntityResolver_8hpp.html 201,104 417,128
-rect $ErrorHandler_8hpp.html 208,152 410,176
-rect $SAXParseException_8hpp.html 184,200 434,224
-rect $XercesDefs_8hpp.html 493,80 688,104
-rect $SAXException_8hpp.html 484,200 697,224

@@ -1,6 +1,0 @@
-base referer
-rect $XMLNumber_8hpp.html 262,57 462,81
-rect $PlatformUtils_8hpp.html 261,106 463,130
-rect $XMemory_8hpp.html 791,106 973,130
-rect $XMLException_8hpp.html 522,106 733,130
-rect $PanicHandler_8hpp.html 525,154 730,178

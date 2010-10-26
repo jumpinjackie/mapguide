@@ -1,6 +1,0 @@
-base referer
-rect $LocalFileInputSource_8hpp.html 199,8 378,32
-rect $MemBufInputSource_8hpp.html 202,56 375,80
-rect $StdInInputSource_8hpp.html 211,104 366,128
-rect $URLInputSource_8hpp.html 214,152 363,176
-rect $Wrapper4DOMInputSource_8hpp.html 182,200 395,224

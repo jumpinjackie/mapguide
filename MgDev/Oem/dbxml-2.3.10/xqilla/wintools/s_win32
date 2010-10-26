@@ -1,5 +1,0 @@
-#!/bin/sh
-#	$Id: s_win32,v 1.1 2006/01/13 21:41:44 gmfeinberg Exp $
-#
-sh ./s_win32_dsp
-sh ./s_win32_vcproj

@@ -1,5 +1,0 @@
-base referer
-rect $classEntityResolver.html 8,9 120,33
-rect $classDTDHandler.html 144,9 240,33
-rect $classDocumentHandler.html 264,9 397,33
-rect $classErrorHandler.html 421,9 520,33

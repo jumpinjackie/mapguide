@@ -1,5 +1,0 @@
-base referer
-rect $InputSource_8hpp.html 273,32 473,56
-rect $PlatformUtils_8hpp.html 522,32 725,56
-rect $XMLException_8hpp.html 774,8 985,32
-rect $PanicHandler_8hpp.html 777,56 982,80

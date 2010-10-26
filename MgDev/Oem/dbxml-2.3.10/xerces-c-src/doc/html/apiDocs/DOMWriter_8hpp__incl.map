@@ -1,5 +1,0 @@
-base referer
-rect $DOMNode_8hpp.html 205,8 400,32
-rect $DOMWriterFilter_8hpp.html 188,56 417,80
-rect $DOMErrorHandler_8hpp.html 182,104 422,128
-rect $XMLFormatter_8hpp.html 174,152 430,176

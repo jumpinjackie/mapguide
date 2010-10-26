@@ -1,6 +1,0 @@
-base referer
-rect $XMLAbstractDoubleFloat_8hpp.html 185,32 388,56
-rect $XMLBigDecimal_8hpp.html 213,80 360,104
-rect $XMLDateTime_8hpp.html 218,128 354,152
-rect $XMLDouble_8hpp.html 438,8 558,32
-rect $XMLFloat_8hpp.html 444,56 553,80
