@@ -1475,7 +1475,6 @@ void MgResourceHeaderManager::SetUpPermissionQuery(
     XmlQueryExpression& selectGroupPermissions)
 {
     XmlManager& xmlMan = m_container.getManager();
-    queryContext.setReturnType(XmlQueryContext::DeadValues);
 
     string xpathInheritedFlags = "/*/Security/Inherited/text()";
     selectInheritedFlags = IsTransacted() ?

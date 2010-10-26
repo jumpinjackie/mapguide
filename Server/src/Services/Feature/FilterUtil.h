@@ -21,11 +21,11 @@
 #include "ServerFeatureDllExport.h"
 
 //fwd declare
-namespace xercesc_2_7
+namespace XERCES_CPP_NAMESPACE
 {
     class DOMElement;
 }
-using namespace xercesc_2_7;
+using namespace XERCES_CPP_NAMESPACE;
 
 class MgCoordinateSystemTransform;
 

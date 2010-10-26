@@ -79,13 +79,13 @@ INCLUDES = -I../../../Common/MdfModel \
            -I../../../Common/Geometry \
            -I../../../Common/PlatformBase \
            -I../../../Common/MapGuideCommon \
-           -I../../../Oem/dbxml-2.3.10/xerces-c-src/src \
+           -I../../../Oem/dbxml/xerces-c-src/src \
            -I../../../Oem/ACE/ACE_wrappers
 
 libMgWebApp_la_LIBADD = -lxerces-c -lMgFoundation -lMgGeometry -lMgPlatformBase -lMgMapGuideCommon
 
 libMgWebApp_la_LDFLAGS = -release $(PACKAGE_VERSION) \
-            -L../../../Oem/dbxml-2.3.10/install/lib \
+            -L../../../Oem/dbxml/install/lib \
             -L../../../Common/Foundation \
             -L../../../Common/Geometry \
             -L../../../Common/PlatformBase \

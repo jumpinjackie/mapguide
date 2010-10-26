@@ -47,8 +47,9 @@ MgDbEnvironment::MgDbEnvironment(CREFSTRING repositoryType, const string& home,
     m_dbEnv.set_timeout(MG_DB_ENV_TIMEOUT, DB_SET_LOCK_TIMEOUT);
     m_dbEnv.set_timeout(MG_DB_ENV_TIMEOUT, DB_SET_TXN_TIMEOUT);
     m_dbEnv.set_tx_max(MG_MAX_TRANSACTIONS);
+    m_dbEnv.set_tx_max(40); // Set maximum number of allowed transactions. Default is 20
 
-    u_int32_t containerFlags = DB_CREATE|DB_THREAD;
+    u_int32_t containerFlags = DB_CREATE|DB_THREAD|DBXML_NO_INDEX_NODES;
     u_int32_t environmentFlags = DB_CREATE|DB_THREAD|DB_INIT_MPOOL;
 
     if (m_transacted)
@@ -69,7 +70,7 @@ MgDbEnvironment::MgDbEnvironment(CREFSTRING repositoryType, const string& home,
 
         if (MgRepositoryType::Session == repositoryType)
         {
-            m_dbEnv.set_flags(DB_LOG_INMEMORY, 1);
+            m_dbEnv.log_set_config(DB_LOG_IN_MEMORY, 1);
             environmentFlags |= DB_PRIVATE;
         }
         else
@@ -96,7 +97,7 @@ MgDbEnvironment::MgDbEnvironment(CREFSTRING repositoryType, const string& home,
         pageSize = MG_SESS_DBXML_PAGE_SIZE;
     }
 
-    m_xmlMan = XmlManager(&m_dbEnv, DBXML_ALLOW_EXTERNAL_ACCESS);
+    m_xmlMan = XmlManager(m_dbEnv.get_DB_ENV(), DBXML_ALLOW_EXTERNAL_ACCESS);
     m_xmlMan.setDefaultPageSize(pageSize);
     m_xmlMan.setDefaultContainerType(XmlContainer::WholedocContainer);
 

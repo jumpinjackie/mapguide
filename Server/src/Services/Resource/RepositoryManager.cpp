@@ -431,7 +431,7 @@ void MgRepositoryManager::CreateTransaction()
         assert(NULL != m_dbTxn);
 
         m_xmlTxn.reset(new XmlTransaction(
-            environment->GetXmlManager().createTransaction(m_dbTxn)));
+            environment->GetXmlManager().createTransaction(m_dbTxn->get_DB_TXN())));
         assert(NULL != m_xmlTxn.get());
     }
     else

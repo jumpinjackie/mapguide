@@ -27,6 +27,7 @@
 #include <vector>
 #include <dbxml/DbXml.hpp>
 #include <dwfcore/ZipFileDescriptor.h>
+#include "db_cxx.h"
 
 using namespace DbXml;
 

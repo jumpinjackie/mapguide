@@ -89,7 +89,7 @@ class MDFPARSER_API FSDSAX2Parser : public DefaultHandler
                         const XMLCh* const qname);
 
         // Occurs when characters in between XML tags are encountered.
-        void characters(const XMLCh* const chars, const unsigned int length);
+        void characters(const XMLCh* const chars, const XMLSize_t length);
 
         // get error info
         const MdfString& GetErrorMessage();

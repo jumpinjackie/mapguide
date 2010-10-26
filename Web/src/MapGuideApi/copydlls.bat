@@ -44,7 +44,7 @@ echo Copying JSON Release DLL to %WEB_BIN_RELEASE%
 xcopy /r /d /y "..\..\..\Oem\jsoncpp\lib\lib_json.dll" %WEB_BIN_RELEASE%
 
 echo Copying Xerces Release DLL to %WEB_BIN_RELEASE%
-xcopy /r /d /y "..\..\..\Oem\dbxml-2.3.10\bin\xerces-c_2_7.dll" %WEB_BIN_RELEASE%
+xcopy /r /d /y "..\..\..\Oem\dbxml\bin\xerces-c_3_1mg.dll" %WEB_BIN_RELEASE%
 
 echo Copying MgFoundation Release DLL to %WEB_BIN_RELEASE%
 xcopy /r /d /y %COMMON_BIN_RELEASE%\MgFoundation.dll %WEB_BIN_RELEASE%
@@ -84,7 +84,7 @@ echo Copying JSON Release DLL to %WEB_BIN_RELEASE%64
 xcopy /r /d /y "..\..\..\Oem\jsoncpp\lib64\lib_json.dll" %WEB_BIN_RELEASE%64
 
 echo Copying Xerces Release DLL to %WEB_BIN_RELEASE%64
-xcopy /r /d /y "..\..\..\Oem\dbxml-2.3.10\bin64\xerces-c_2_7.dll" %WEB_BIN_RELEASE%64
+xcopy /r /d /y "..\..\..\Oem\dbxml\bin64\xerces-c_3_1mg.dll" %WEB_BIN_RELEASE%64
 
 echo Copying MgFoundation Release DLL to %WEB_BIN_RELEASE%64
 xcopy /r /d /y %COMMON_BIN_RELEASE%64\MgFoundation.dll %WEB_BIN_RELEASE%64
@@ -124,7 +124,7 @@ echo Copying JSON Debug DLL to %WEB_BIN_DEBUG%
 xcopy /r /d /y "..\..\..\Oem\jsoncpp\lib\lib_jsond.dll" %WEB_BIN_DEBUG%
 
 echo Copying Xerces Debug DLL to %WEB_BIN_DEBUG%
-xcopy /r /d /y "..\..\..\Oem\dbxml-2.3.10\bin\debug\xerces-c_2_7D.dll" %WEB_BIN_DEBUG%
+xcopy /r /d /y "..\..\..\Oem\dbxml\bin\debug\xerces-c_3_1mgD.dll" %WEB_BIN_DEBUG%
 
 echo Copying MgFoundation Debug DLL to %WEB_BIN_DEBUG%
 xcopy /r /d /y %COMMON_BIN_DEBUG%\MgFoundationd.dll %WEB_BIN_DEBUG%
@@ -164,7 +164,7 @@ echo Copying JSON Debug DLL to %WEB_BIN_DEBUG%64
 xcopy /r /d /y "..\..\..\Oem\jsoncpp\lib64\lib_jsond.dll" %WEB_BIN_DEBUG%64
 
 echo Copying Xerces Debug DLL to %WEB_BIN_DEBUG%64
-xcopy /r /d /y "..\..\..\Oem\dbxml-2.3.10\bin64\debug\xerces-c_2_7D.dll" %WEB_BIN_DEBUG%64
+xcopy /r /d /y "..\..\..\Oem\dbxml\bin64\debug\xerces-c_3_1mgD.dll" %WEB_BIN_DEBUG%64
 
 echo Copying MgFoundation Debug DLL to %WEB_BIN_DEBUG%64
 xcopy /r /d /y %COMMON_BIN_DEBUG%64\MgFoundationd.dll %WEB_BIN_DEBUG%64

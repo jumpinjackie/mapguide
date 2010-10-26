@@ -44,7 +44,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="..\Foundation;..\PlatformBase;..\Geometry;..\Security;..\MdfModel;..\MdfParser;..\..\Oem\ACE\ACE_wrappers;..\..\Oem\dbxml-2.3.10\xerces-c-src\src"
+				AdditionalIncludeDirectories="..\Foundation;..\PlatformBase;..\Geometry;..\Security;..\MdfModel;..\MdfParser;..\..\Oem\ACE\ACE_wrappers;&quot;..\..\Oem\dbxml\xerces-c-src\src&quot;"
 				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL;MAPGUIDECOMMON_EXPORTS"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
@@ -121,7 +121,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="..\Foundation;..\PlatformBase;..\Geometry;..\Security;..\MdfModel;..\MdfParser;..\..\Oem\ACE\ACE_wrappers;..\..\Oem\dbxml-2.3.10\xerces-c-src\src"
+				AdditionalIncludeDirectories="..\Foundation;..\PlatformBase;..\Geometry;..\Security;..\MdfModel;..\MdfParser;..\..\Oem\ACE\ACE_wrappers;&quot;..\..\Oem\dbxml\xerces-c-src\src&quot;"
 				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL;MAPGUIDECOMMON_EXPORTS"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
@@ -198,7 +198,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="2"
-				AdditionalIncludeDirectories="..\Foundation;..\PlatformBase;..\Geometry;..\Security;..\MdfModel;..\MdfParser;..\..\Oem\ACE\ACE_wrappers;..\..\Oem\dbxml-2.3.10\xerces-c-src\src"
+				AdditionalIncludeDirectories="..\Foundation;..\PlatformBase;..\Geometry;..\Security;..\MdfModel;..\MdfParser;..\..\Oem\ACE\ACE_wrappers;..\..\Oem\dbxml\xerces-c-src\src"
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;MAPGUIDECOMMON_EXPORTS"
 				RuntimeLibrary="2"
 				WarningLevel="3"
@@ -275,7 +275,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="2"
-				AdditionalIncludeDirectories="..\Foundation;..\PlatformBase;..\Geometry;..\Security;..\MdfModel;..\MdfParser;..\..\Oem\ACE\ACE_wrappers;..\..\Oem\dbxml-2.3.10\xerces-c-src\src"
+				AdditionalIncludeDirectories="..\Foundation;..\PlatformBase;..\Geometry;..\Security;..\MdfModel;..\MdfParser;..\..\Oem\ACE\ACE_wrappers;..\..\Oem\dbxml\xerces-c-src\src"
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;MAPGUIDECOMMON_EXPORTS"
 				RuntimeLibrary="2"
 				WarningLevel="3"

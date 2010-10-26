@@ -45,7 +45,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="..\HttpHandler;..\WebApp;..\WebSupport;..\..\..\Common\MdfModel;..\..\..\Common\Foundation;..\..\..\Common\PlatformBase;..\..\..\Common\Geometry;..\..\..\Common\MapGuideCommon;..\..\..\Oem\ACE\ACE_wrappers;..\..\..\Oem\dbxml-2.3.10\xerces-c-src\src;$(JAVA_HOME)\include;$(JAVA_HOME)\include\win32"
+				AdditionalIncludeDirectories="..\HttpHandler;..\WebApp;..\WebSupport;..\..\..\Common\MdfModel;..\..\..\Common\Foundation;..\..\..\Common\PlatformBase;..\..\..\Common\Geometry;..\..\..\Common\MapGuideCommon;..\..\..\Oem\ACE\ACE_wrappers;..\..\..\Oem\dbxml\xerces-c-src\src;$(JAVA_HOME)\include;$(JAVA_HOME)\include\win32"
 				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;JAVA"
 				MinimalRebuild="true"
 				ExceptionHandling="2"
@@ -125,7 +125,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="..\HttpHandler;..\WebApp;..\WebSupport;..\..\..\Common\MdfModel;..\..\..\Common\Foundation;..\..\..\Common\PlatformBase;..\..\..\Common\Geometry;..\..\..\Common\MapGuideCommon;..\..\..\Oem\ACE\ACE_wrappers;..\..\..\Oem\dbxml-2.3.10\xerces-c-src\src;$(JAVA_HOME)\include;$(JAVA_HOME)\include\win32"
+				AdditionalIncludeDirectories="..\HttpHandler;..\WebApp;..\WebSupport;..\..\..\Common\MdfModel;..\..\..\Common\Foundation;..\..\..\Common\PlatformBase;..\..\..\Common\Geometry;..\..\..\Common\MapGuideCommon;..\..\..\Oem\ACE\ACE_wrappers;..\..\..\Oem\dbxml\xerces-c-src\src;$(JAVA_HOME)\include;$(JAVA_HOME)\include\win32"
 				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;JAVA"
 				MinimalRebuild="true"
 				ExceptionHandling="2"
@@ -205,7 +205,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="2"
-				AdditionalIncludeDirectories="..\HttpHandler;..\WebApp;..\WebSupport;..\..\..\Common\MdfModel;..\..\..\Common\Foundation;..\..\..\Common\PlatformBase;..\..\..\Common\Geometry;..\..\..\Common\MapGuideCommon;..\..\..\Oem\ACE\ACE_wrappers;..\..\..\Oem\dbxml-2.3.10\xerces-c-src\src;$(JAVA_HOME)\include;$(JAVA_HOME)\include\win32"
+				AdditionalIncludeDirectories="..\HttpHandler;..\WebApp;..\WebSupport;..\..\..\Common\MdfModel;..\..\..\Common\Foundation;..\..\..\Common\PlatformBase;..\..\..\Common\Geometry;..\..\..\Common\MapGuideCommon;..\..\..\Oem\ACE\ACE_wrappers;..\..\..\Oem\dbxml\xerces-c-src\src;$(JAVA_HOME)\include;$(JAVA_HOME)\include\win32"
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;JAVA"
 				ExceptionHandling="2"
 				RuntimeLibrary="2"
@@ -285,7 +285,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="2"
-				AdditionalIncludeDirectories="..\HttpHandler;..\WebApp;..\WebSupport;..\..\..\Common\MdfModel;..\..\..\Common\Foundation;..\..\..\Common\PlatformBase;..\..\..\Common\Geometry;..\..\..\Common\MapGuideCommon;..\..\..\Oem\ACE\ACE_wrappers;..\..\..\Oem\dbxml-2.3.10\xerces-c-src\src;$(JAVA_HOME)\include;$(JAVA_HOME)\include\win32"
+				AdditionalIncludeDirectories="..\HttpHandler;..\WebApp;..\WebSupport;..\..\..\Common\MdfModel;..\..\..\Common\Foundation;..\..\..\Common\PlatformBase;..\..\..\Common\Geometry;..\..\..\Common\MapGuideCommon;..\..\..\Oem\ACE\ACE_wrappers;..\..\..\Oem\dbxml\xerces-c-src\src;$(JAVA_HOME)\include;$(JAVA_HOME)\include\win32"
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;JAVA"
 				ExceptionHandling="2"
 				RuntimeLibrary="2"

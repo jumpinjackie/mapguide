@@ -10,7 +10,7 @@ INCLUDES    = -I../../../Common/MdfModel \
               -I../../../Common/PlatformBase \
               -I../../../Common/MapGuideCommon \
               -I../../../Oem/ACE/ACE_wrappers \
-              -I../../../Oem/dbxml-2.3.10/xerces-c-src/src \
+              -I../../../Oem/dbxml/xerces-c-src/src \
               -I../../../Oem/jsoncpp/include
 
 lib_LTLIBRARIES = libMgHttpHandler.la

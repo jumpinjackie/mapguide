@@ -8,7 +8,7 @@ INCLUDES = \
   -I$(map_fdo_include) \
   -I$(map_fdo_include)/ExpressionEngine \
   -I../../../../Oem/ACE/ACE_wrappers \
-  -I../../../../Oem/dbxml-2.3.10/xerces-c-src/src \
+  -I../../../../Oem/dbxml/xerces-c-src/src \
   -I../../Gws/Include \
   -I../../Gws/GwsCommon/inc \
   -I../../Gws/GwsQueryEngine/inc \

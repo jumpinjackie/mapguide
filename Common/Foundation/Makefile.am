@@ -231,7 +231,7 @@ INCLUDES = \
   -I../Security \
   -I../MdfModel \
   -I../../Oem/ACE/ACE_wrappers \
-  -I../../Oem/dbxml-2.3.10/xerces-c-src/src
+  -I../../Oem/dbxml/xerces-c-src/src
 
 libMgFoundation_la_LIBADD = \
   -lACE \
@@ -241,6 +241,6 @@ libMgFoundation_la_LIBADD = \
 
 libMgFoundation_la_LDFLAGS = -release $(PACKAGE_VERSION) \
   -L../../Oem/ACE/ACE_wrappers/ace \
-  -L../../Oem/dbxml-2.3.10/install/lib \
+  -L../../Oem/dbxml/install/lib \
   -L../MdfParser \
   -L../MdfModel
