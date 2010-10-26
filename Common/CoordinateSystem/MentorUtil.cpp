@@ -588,6 +588,20 @@ const char * StringFromProjection(INT32 prj)
     return NULL;
 }
 
+// Returns true if th indictaed project, via projection key name
+// or projection code, is of the non-earth referenced type.  That
+// is, the projection type is either NERTH or NRTHSRT.
+bool ProjectionIsNerthType (const char *kpStr)
+{
+    INT32 prjCode = ProjectionFromString (kpStr);
+    return ProjectionIsNerthType (prjCode);
+}
+bool ProjectionIsNerthType (INT32 prjCode)
+{
+    bool isNerth = (prjCode == cs_PRJCOD_NERTH) || (prjCode == cs_PRJCOD_NRTHSRT);
+    return isNerth;
+}
+
 struct UnitStrPair
 {
     INT32 unit;
@@ -1107,7 +1121,7 @@ struct cs_Prjtab_* GetMentorProjectionObject(const char* prjKeyName)
 //Builds a cs_Csprm_ struct from a cs_Csdef_ structure.
 bool BuildCsprmFromArbitraryDef(const cs_Csdef_& csdef, cs_Csprm_& csprm)
 {
-    if (MgCoordinateSystemProjectionCode::Nerth!=ProjectionFromString(csdef.prj_knm))
+    if (!ProjectionIsNerthType (csdef.prj_knm))
     {
         return false;
     }
@@ -1137,7 +1151,7 @@ bool BuildCsprmFromInterface(MgCoordinateSystem *pSrc, cs_Csprm_& csprm)
     if (!bResult) return bResult;
 
     struct cs_Csprm_ *pCsprm = NULL;
-    if (MgCoordinateSystemProjectionCode::Nerth==ProjectionFromString(csdef.prj_knm))
+    if (ProjectionIsNerthType (csdef.prj_knm))
     {
         pCsprm = (struct cs_Csprm_ *)CS_malc (sizeof(struct cs_Csprm_));
         if (NULL == pCsprm) return false; //E_OUTOFMEMORY;
@@ -1232,7 +1246,7 @@ bool BuildDefsFromInterface(
         return bResult;
     }
 
-    if (MgCoordinateSystemProjectionCode::Nerth!=ProjectionFromString(pCsDef->prj_knm))
+    if (ProjectionIsNerthType (pCsDef->prj_knm))
     {
         //Try to get a datum from the coordsys.
         Ptr<MgCoordinateSystemDatum> pDatum = pSrc->GetDatumDefinition();

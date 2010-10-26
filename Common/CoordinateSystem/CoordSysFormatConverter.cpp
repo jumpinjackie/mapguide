@@ -74,7 +74,7 @@ STRING CCoordinateSystemFormatConverter::DefinitionToWkt(MgCoordinateSystem* pSo
         throw new MgCoordinateSystemInitializationFailedException(L"MgCoordinateSystemFormatConverter.DefinitionToWkt", __LINE__, __WFILE__, NULL, L"", NULL);
     }
 
-    if (ProjectionFromString(pCsDef->prj_knm)==MgCoordinateSystemProjectionCode::Nerth)
+    if (ProjectionIsNerthType (pCsDef->prj_knm))
     {
         //Get the coordinate system definition.
         ConvertArbitraryToWkt(pSource, sWkt);
@@ -516,7 +516,7 @@ STRING CCoordinateSystemFormatConverter::CodeToWkt(INT32 nFormatSource, CREFSTRI
     }
 
     INT32 prj=pCsCoordinateSystemDef->GetProjectionCode();
-    if (MgCoordinateSystemProjectionCode::Nerth==prj)
+    if (ProjectionIsNerthType (prj))
     {
         ConvertArbitraryToWkt(pCsCoordinateSystemDef, sWkt);
     }

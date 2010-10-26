@@ -81,7 +81,7 @@ bool CCoordinateSystem::InitArbitrary(const cs_Csprm_ &csprm)
 {
     //if an arbitrary coordinate system it has to DT and no EL
     //it uses the NERTH projection
-    if (ProjectionFromString(csprm.csdef.prj_knm)==MgCoordinateSystemProjectionCode::Nerth)
+    if (ProjectionIsNerthType (csprm.csdef.prj_knm))
     {
         //Everything worked okay!  Copy the data into our member variables.
         Uninitialize();
@@ -108,7 +108,7 @@ void CCoordinateSystem::InitFromCatalog(const cs_Csdef_& csdef)
 
     //if an arbitrary coordinate system it has to DT and no EL
     //it uses the NERTH projection
-    if (ProjectionFromString(csdef.prj_knm)==MgCoordinateSystemProjectionCode::Nerth)
+    if (ProjectionIsNerthType (csdef.prj_knm))
     {
         //Everything worked okay!  Copy the data into our member variables.
         Uninitialize();
@@ -202,7 +202,7 @@ INT32 CCoordinateSystem::GetType()
         nCoordinateSystemType=MgCoordinateSystemType::Unknown;
     }
     //arbitrary systems, the one that use the NERTH projection
-    else if(ProjectionFromString(m_csprm.csdef.prj_knm)==MgCoordinateSystemProjectionCode::Nerth)
+    else if(ProjectionIsNerthType (m_csprm.csdef.prj_knm))
     {
         nCoordinateSystemType = MgCoordinateSystemType::Arbitrary;
     }
@@ -1120,7 +1120,7 @@ void CCoordinateSystem::SetProjectionCode(INT32 prjType)
     }
 
     //in case of NERTH we have no datum and no ellipsoid
-    if (MgCoordinateSystemProjectionCode::Nerth==prjType)
+    if (ProjectionIsNerthType (prjType))
     {
         memset(m_csprm.csdef.dat_knm, 0, sizeof(m_csprm.csdef.dat_knm));
         memset(m_csprm.csdef.elp_knm, 0, sizeof(m_csprm.csdef.elp_knm));
@@ -1149,7 +1149,7 @@ STRING CCoordinateSystem::GetDatum()
 
     MG_TRY()
 
-    if (ProjectionFromString(m_csprm.csdef.prj_knm)==MgCoordinateSystemProjectionCode::Nerth)
+    if (ProjectionIsNerthType (m_csprm.csdef.prj_knm))
     {
         //It's an arbitrary system.
         assert(NULL==m_pDatum);
@@ -1207,7 +1207,7 @@ STRING CCoordinateSystem::GetEllipsoid()
 
     MG_TRY()
 
-    if (ProjectionFromString(m_csprm.csdef.prj_knm)==MgCoordinateSystemProjectionCode::Nerth)
+    if (ProjectionIsNerthType (m_csprm.csdef.prj_knm))
     {
         //It's an arbitrary system.
         assert(NULL==m_pDatum);
@@ -1372,7 +1372,7 @@ bool CCoordinateSystem::IsValid()
 
     MG_TRY()
 
-    if (ProjectionFromString(m_csprm.csdef.prj_knm)==MgCoordinateSystemProjectionCode::Nerth)
+    if (ProjectionIsNerthType (m_csprm.csdef.prj_knm))
     {
         return true;
     }
@@ -1446,7 +1446,7 @@ bool CCoordinateSystem::IsUsable(MgCoordinateSystemCatalog *pCatalog)
     }
 
     //no DT or EL reference for NERTH
-    if (ProjectionFromString(m_csprm.csdef.prj_knm)==MgCoordinateSystemProjectionCode::Nerth)
+    if (ProjectionIsNerthType (m_csprm.csdef.prj_knm))
     {
         return true;
     }
@@ -2455,7 +2455,7 @@ void CCoordinateSystem::SetDatum(CREFSTRING sDatum)
         throw new MgCoordinateSystemInitializationFailedException(L"MgCoordinateSystem.SetDatum", __LINE__, __WFILE__, NULL, L"MgCoordinateSystemProtectedException", NULL);
     }
     //no DT or EL if NERTH projection is used
-    if (MgCoordinateSystemProjectionCode::Nerth==GetProjectionCode())
+    if (ProjectionIsNerthType (GetProjectionCode()))
     {
         throw new MgCoordinateSystemInitializationFailedException(L"MgCoordinateSystem.SetDatum", __LINE__, __WFILE__, NULL, L"MgCoordinateSystemNoDatumIfArbitraryException", NULL);
     }
@@ -2484,7 +2484,7 @@ void CCoordinateSystem::SetEllipsoid(CREFSTRING sEllipsoid)
         throw new MgCoordinateSystemInitializationFailedException(L"MgCoordinateSystem.SetEllipsoid", __LINE__, __WFILE__, NULL, L"MgCoordinateSystemProtectedException", NULL);
     }
     //no DT or EL if NERTH projection is used
-    if (MgCoordinateSystemProjectionCode::Nerth==GetProjectionCode())
+    if (ProjectionIsNerthType (GetProjectionCode()))
     {
         throw new MgCoordinateSystemInitializationFailedException(L"MgCoordinateSystem.SetEllipsoid", __LINE__, __WFILE__, NULL, L"MgCoordinateSystemNoDatumIfArbitraryException", NULL);
     }
@@ -2538,7 +2538,7 @@ void CCoordinateSystem::SetDatumDefinition(MgCoordinateSystemDatum *pDatum)
     */
 
     //no DT or EL if NERTH projection is used
-    if (MgCoordinateSystemProjectionCode::Nerth==GetProjectionCode())
+    if (ProjectionIsNerthType (GetProjectionCode()))
     {
         throw new MgCoordinateSystemInitializationFailedException(L"MgCoordinateSystem.SetDatumDefinition", __LINE__, __WFILE__, NULL, L"MgCoordinateSystemNoDatumIfArbitraryException", NULL);
     }
@@ -2691,7 +2691,7 @@ void CCoordinateSystem::SetEllipsoidDefinition(MgCoordinateSystemEllipsoid *pEll
     */
 
     //no DT or EL if NERTH projection is used
-    if (MgCoordinateSystemProjectionCode::Nerth==GetProjectionCode())
+    if (ProjectionIsNerthType (GetProjectionCode()))
     {
         throw new MgCoordinateSystemInitializationFailedException(L"MgCoordinateSystem.SetEllipsoidDefinition", __LINE__, __WFILE__, NULL, L"MgCoordinateSystemNoEllipsoidIfArbitraryException", NULL);
     }
