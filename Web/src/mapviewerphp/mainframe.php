@@ -470,8 +470,8 @@ function BuildViewer($forDwf = true)
                                     $srcStatusbar);
         }
 
-        $homePageUrl = $taskPaneUrl;
-        if(strncasecmp($homePageUrl, "http://", 7) != 0)
+        $homePageUrl = urldecode($taskPaneUrl);
+        if(strlen($homePageUrl) < 8 || strncasecmp($homePageUrl, "http://", 7) != 0)
             $homePageUrl = $vpath . $homePageUrl;
 
         //load the HTML template and format it

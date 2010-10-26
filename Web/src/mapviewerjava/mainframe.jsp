@@ -471,8 +471,8 @@ try
         frameset = Substitute(frameSetTempl, vals);
     }
 
-    String homePageUrl = taskPaneUrl;
-    if(homePageUrl.substring(0, 7).compareToIgnoreCase("http://") != 0)
+    String homePageUrl = URLDecoder.decode(taskPaneUrl,"UTF-8");
+    if(homePageUrl.length() < 8 || homePageUrl.substring(0, 7).compareToIgnoreCase("http://") != 0)
         homePageUrl = vpath + homePageUrl;
 
     //load the HTML template and format it
