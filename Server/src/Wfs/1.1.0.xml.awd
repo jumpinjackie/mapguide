@@ -82,15 +82,15 @@
 
  <Define item="DescribeFeature.EnumDelim.xml">
    <!-- &Enum.iteration; -->
-   <?EnumDelim list="&Enum.item;" sep=":" subset="1" using="&DescribeFeature.Import.xml;"?>
+   <?EnumDelim list="&Enum.item;" sep="," subset="1" using="&DescribeFeature.Import.xml;"?>
  </Define>
  <Define item="DescribeFeature.EnumFeature.xml">
    <!-- &Feature.iteration; -->
-   <?EnumDelim list="&Feature.name;" sep=":" subset="1" using="&DescribeFeature.Import.xml;"?>
+   <?EnumDelim list="&Feature.Fullname;" sep="," subset="1" using="&DescribeFeature.Import.xml;"?>
  </Define>
 
  <Define item="DescribeFeature.Import.xml">
-  <xs:import schemaLocation="&Url.DescribeFeatureType;?request=DescribeFeatureType&amp;service=WFS&amp;version=1.1.0&amp;typeName=&Feature.Prefix;:&Enum.item;"/>
+  <xs:import schemaLocation="&Url.DescribeFeatureType;?request=DescribeFeatureType&amp;service=WFS&amp;version=1.1.0&amp;typeName=&Enum.item;"/>
  </Define>
 
  <Define item="GetFeature.xml">
