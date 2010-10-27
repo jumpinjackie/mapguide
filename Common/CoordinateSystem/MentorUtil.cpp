@@ -1246,7 +1246,7 @@ bool BuildDefsFromInterface(
         return bResult;
     }
 
-    if (ProjectionIsNerthType (pCsDef->prj_knm))
+    if (!ProjectionIsNerthType (pCsDef->prj_knm))
     {
         //Try to get a datum from the coordsys.
         Ptr<MgCoordinateSystemDatum> pDatum = pSrc->GetDatumDefinition();
