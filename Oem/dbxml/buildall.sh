@@ -337,6 +337,7 @@ if [ $BUILD_ONE = "no" -o $BUILD_ONE = "berkeleydb" ]; then
     cd $DB_DIR/build_unix
     if [ $DO_CONFIGURE = "yes" ]; then
 	echo Configuring Berkeley DB
+        chmod +x ../dist/configure
 	eval $CONF_ENV ../dist/configure --prefix=$DB_INSTALL_DIR --enable-cxx \
 	    $DB_CONF_ARGS $DB_CONF_XARGS || exit $?
     fi
@@ -387,6 +388,7 @@ if [ $BUILD_ONE = "no" -o $BUILD_ONE = "xerces" ]; then
     cd $XERCES_DIR
     if [ $DO_CONFIGURE = "yes" ]; then
 	echo Configuring Xerces
+        chmod +x ./configure
  	eval $CONF_ENV ./configure --prefix=$XERCES_INSTALL_DIR \
 	$XERCES_CONF_ARGS $XERCES_CONF_XARGS || exit $?
     fi
@@ -431,6 +433,7 @@ if [ $BUILD_ONE = "no" -o $BUILD_ONE = "xqilla" ]; then
     cd $XQILLA_BUILD_DIR
     if [ $DO_CONFIGURE = "yes" ]; then
 	echo Configuring XQilla
+        chmod +x ../configure
 	eval $CONF_ENV ../configure --prefix=$XQILLA_INSTALL_DIR \
 	    --with-xerces=$XERCESCROOT \
 	    $XQILLA_CONF_ARGS $XQILLA_CONF_XARGS || exit $?
@@ -460,6 +463,7 @@ if [ $BUILD_ONE = "no" -o $BUILD_ONE = "dbxml" ]; then
          # Note: passing ../../$DB_DIR for --with-dbbuild will not work
          # if DB_DIR is absolute.  This is only used for test configuration,
          # and failure to find the directory is not fatal.
+         chmod +x ../configure
          eval $CONF_ENV ../configure --prefix=$DBXML_INSTALL_DIR \
              --with-xqilla=$XQILLA_INSTALL_DIR \
              --with-xerces=$XERCES_INSTALL_DIR \
