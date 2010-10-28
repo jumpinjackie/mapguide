@@ -258,11 +258,21 @@ function GotoHomePage()
 }
 
 function GettingStartedURL ()
-{
+{    
     if(defHome)
         return homePage + "?WEBLAYOUT=" + encodeURIComponent(webLayout) + "&SESSION=" + GetMapFrame().GetSessionId() + "&LOCALE=" + locale + "&DWF=" + dwf;
     else
-        return homePage + "?SESSION=" + GetMapFrame().GetSessionId() + "&LOCALE=" + locale + "&MAPNAME=" + encodeURIComponent(GetMapFrame().GetMapName());
+    {
+        var baseUrl = homePage;
+        var query = "";
+        var index = homePage.indexOf("?");
+        if (index > 0)
+        {
+            baseUrl = homePage.substring(0, index);
+            query = "&" + homePage.substring(index+1);
+        }
+        return baseUrl + "?SESSION=" + GetMapFrame().GetSessionId() + "&LOCALE=" + locale + "&MAPNAME=" + encodeURIComponent(GetMapFrame().GetMapName()) + query;
+    }
 }
 
 function SetSelectionXML(xmlSet)
