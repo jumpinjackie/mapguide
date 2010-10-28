@@ -54,7 +54,7 @@ try
 
     //If there is an initial url, it will be encoded, so parse the decoded url.
     $comp = parse_url(urldecode($taskPaneUrl));
-    $baseUrl = urldecode(taskPaneUrl);
+    $baseUrl = urldecode($taskPaneUrl);
     if(strncasecmp($taskPaneUrl, "http://", 7) != 0) //Is relative
         $baseUrl = $vpath . $comp["path"];
 
