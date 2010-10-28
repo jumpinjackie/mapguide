@@ -474,7 +474,7 @@ NameValueCollection cmds = null;
             frameset = Substitute(frameset, vals);
         }
 
-        String homePageUrl = taskPaneUrl;
+        String homePageUrl = HttpUtility.UrlDecode(taskPaneUrl);
         if (String.Compare(homePageUrl.Substring(0, 7), "http://", true) != 0)
             homePageUrl = vpath + homePageUrl;
 

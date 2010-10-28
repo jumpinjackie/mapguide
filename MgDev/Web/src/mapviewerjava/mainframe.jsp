@@ -471,7 +471,7 @@ try
         frameset = Substitute(frameSetTempl, vals);
     }
 
-    String homePageUrl = taskPaneUrl;
+    String homePageUrl = URLDecoder.decode(taskPaneUrl,"UTF-8");
     if(homePageUrl.substring(0, 7).compareToIgnoreCase("http://") != 0)
         homePageUrl = vpath + homePageUrl;
 

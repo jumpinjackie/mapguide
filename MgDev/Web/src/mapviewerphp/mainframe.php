@@ -470,7 +470,7 @@ function BuildViewer($forDwf = true)
                                     $srcStatusbar);
         }
 
-        $homePageUrl = $taskPaneUrl;
+        $homePageUrl = urldecode($taskPaneUrl);
         if(strncasecmp($homePageUrl, "http://", 7) != 0)
             $homePageUrl = $vpath . $homePageUrl;
 
