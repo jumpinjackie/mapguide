@@ -53,16 +53,27 @@ try
 	}
 
     //If there is an initial url, it will be encoded, so parse the decoded url.
-    $comp = parse_url(urldecode($taskPaneUrl));
-    $baseUrl = urldecode($taskPaneUrl);
-    if(strncasecmp($taskPaneUrl, "http://", 7) != 0) //Is relative
-        $baseUrl = $vpath . $comp["path"];
-
+    $tpDecodedUrl = urldecode($taskPaneUrl);
+    $baseUrl = $tpDecodedUrl;
+    $query = "";
+    
+    //Is relative?
+    if (strncasecmp($tpDecodedUrl, "http://", 7) != 0)
+        $baseUrl = $vpath . $tpDecodedUrl;
+        
+    //Strip query string component off of base url (if there is any) and assign to query component
+    $tokens = explode("?", $baseUrl);
+    if (count($tokens) == 2)
+    {
+        $query = $tokens[1];
+        $baseUrl = $tokens[0];
+    }
+    
     //If there is a query component to the initial url, append it to the end of the full url string
-    if(!isset($comp["query"]) || strlen($comp["query"]) == 0)
+    if (strlen($query) == 0)
         $url = sprintf("%s?SESSION=%s&WEBLAYOUT=%s&DWF=%s&LOCALE=%s", $baseUrl, $sessionId, urlencode($webLayoutId), $dwf, $locale);
     else
-        $url = sprintf("%s?SESSION=%s&WEBLAYOUT=%s&DWF=%s&LOCALE=%s&%s", $baseUrl, $sessionId, urlencode($webLayoutId), $dwf, $locale, $comp["query"]);
+        $url = sprintf("%s?SESSION=%s&WEBLAYOUT=%s&DWF=%s&LOCALE=%s&%s", $baseUrl, $sessionId, urlencode($webLayoutId), $dwf, $locale, $query);
 
     $templ = file_get_contents("../viewerfiles/taskframe.templ");
     print sprintf($templ, $vpath ."tasklist.php", $locale, $url);
