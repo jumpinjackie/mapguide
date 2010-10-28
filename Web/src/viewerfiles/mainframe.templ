@@ -258,7 +258,7 @@ function GotoHomePage()
 }
 
 function GettingStartedURL ()
-{    
+{
     if(defHome)
         return homePage + "?WEBLAYOUT=" + encodeURIComponent(webLayout) + "&SESSION=" + GetMapFrame().GetSessionId() + "&LOCALE=" + locale + "&DWF=" + dwf;
     else
@@ -721,8 +721,24 @@ function ExecutePrintablePageCommand(index)
 {
     if(inMeasure)
         EndMeasure();
-    var center = GetMapFrame().GetCenter();
-    OpenUrl("%s?SCALE=" + curScale + "&DPI=" + GetMapFrame().GetDPI() + "&CENTERX=" + center.X + "&CENTERY=" + center.Y, index);
+    var mapFrame = GetMapFrame();
+    var center = mapFrame.GetCenter();
+
+    var vpath = "%s";
+    mapFrame.LoadJxLib(function()
+    {
+        if (typeof mapFrame.MapCapturer == "undefined")
+        {
+            mapFrame.LoadJsFile("../viewerfiles/quickplot.js", function()
+            {
+                OpenUrl(vpath + "?TARGETTYPE=" + commands[index].targetType, index);
+            });
+        }
+        else
+        {
+            OpenUrl(vpath + "?TARGETTYPE=" + commands[index].targetType, index);
+        }
+    });
 }
 
 function ExecuteMeasureCommand(index)
