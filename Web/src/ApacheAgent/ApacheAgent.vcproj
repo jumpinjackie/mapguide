@@ -50,7 +50,6 @@
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
-				UsePrecompiledHeader="0"
 				WarningLevel="3"
 				DebugInformationFormat="4"
 			/>
@@ -129,7 +128,6 @@
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
-				UsePrecompiledHeader="0"
 				WarningLevel="3"
 				DebugInformationFormat="3"
 			/>
@@ -206,7 +204,6 @@
 				AdditionalIncludeDirectories="..\..\..\Oem\ACE\ACE_wrappers;&quot;..\..\..\Oem\LinuxApt\httpd-2.2.15\include&quot;;&quot;..\..\..\Oem\LinuxApt\httpd-2.2.15\srclib\apr\include&quot;;&quot;..\..\..\Oem\LinuxApt\httpd-2.2.15\srclib\apr-util\include&quot;;&quot;..\..\..\Oem\LinuxApt\httpd-2.2.15\os\win32&quot;;..\..\..\Common\MapGuideCommon;..\..\..\Common\PlatformBase;..\..\..\Common\Geometry;..\..\..\Common\Foundation;..\..\..\Common\MdfModel;..\WebSupport;..\HttpHandler;..\MapAgentCommon"
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;APACHEAGENT_EXPORTS"
 				RuntimeLibrary="2"
-				UsePrecompiledHeader="0"
 				WarningLevel="3"
 				DebugInformationFormat="3"
 			/>
@@ -285,7 +282,6 @@
 				AdditionalIncludeDirectories="..\..\..\Oem\ACE\ACE_wrappers;&quot;..\..\..\Oem\LinuxApt\httpd-2.2-x64\include&quot;;..\..\..\Common\MapGuideCommon;..\..\..\Common\PlatformBase;..\..\..\Common\Geometry;..\..\..\Common\Foundation;..\..\..\Common\MdfModel;..\WebSupport;..\HttpHandler;..\MapAgentCommon"
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;APACHEAGENT_EXPORTS"
 				RuntimeLibrary="2"
-				UsePrecompiledHeader="0"
 				WarningLevel="3"
 				DebugInformationFormat="3"
 			/>
