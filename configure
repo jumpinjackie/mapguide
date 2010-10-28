@@ -20259,7 +20259,7 @@ map_srcdir=`(cd $srcdir && pwd)`
 
 
 # MAP_CONFIG_FILES_WEBTIER
-                                                                                ac_config_files="$ac_config_files Web/Makefile Web/src/Makefile Web/src/WebApp/Makefile Web/src/JavaApi/Makefile Web/src/PhpApi/Makefile Web/src/HttpHandler/Makefile Web/src/CgiAgent/Makefile Web/src/ApacheAgent/Makefile"
+                                                                                ac_config_files="$ac_config_files Web/Makefile Web/src/Makefile Web/src/WebApp/Makefile Web/src/WebSupport/Makefile Web/src/JavaApi/Makefile Web/src/PhpApi/Makefile Web/src/HttpHandler/Makefile Web/src/CgiAgent/Makefile Web/src/ApacheAgent/Makefile"
 
 
 cat >confcache <<\_ACEOF
@@ -20896,6 +20896,7 @@ do
   "Web/Makefile" ) CONFIG_FILES="$CONFIG_FILES Web/Makefile" ;;
   "Web/src/Makefile" ) CONFIG_FILES="$CONFIG_FILES Web/src/Makefile" ;;
   "Web/src/WebApp/Makefile" ) CONFIG_FILES="$CONFIG_FILES Web/src/WebApp/Makefile" ;;
+  "Web/src/WebSupport/Makefile" ) CONFIG_FILES="$CONFIG_FILES Web/src/WebSupport/Makefile" ;;
   "Web/src/JavaApi/Makefile" ) CONFIG_FILES="$CONFIG_FILES Web/src/JavaApi/Makefile" ;;
   "Web/src/PhpApi/Makefile" ) CONFIG_FILES="$CONFIG_FILES Web/src/PhpApi/Makefile" ;;
   "Web/src/HttpHandler/Makefile" ) CONFIG_FILES="$CONFIG_FILES Web/src/HttpHandler/Makefile" ;;
