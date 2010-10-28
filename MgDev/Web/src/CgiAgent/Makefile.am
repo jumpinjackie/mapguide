@@ -39,7 +39,8 @@ mapagent_LDADD = -lACE \
                  -lMgPlatformBase \
                  -lMgMdfModel \
                  -lMgMdfParser \
-                 -lMgHttpHandler
+                 -lMgHttpHandler \
+                 -lMgWebSupport
 
 mapagent_LDFLAGS = \
             -L../../../Oem/ACE/ACE_wrappers/ace \
@@ -51,4 +52,5 @@ mapagent_LDFLAGS = \
             -L../../../Common/Geometry \
             -L../../../Common/PlatformBase \
             -L../../../Common/MapGuideCommon \
-            -L../HttpHandler
+            -L../HttpHandler \
+            -L../WebSupport
