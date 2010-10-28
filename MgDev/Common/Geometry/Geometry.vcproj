@@ -126,8 +126,6 @@
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
-				UsePrecompiledHeader="0"
-				PrecompiledHeaderThrough=""
 				WarningLevel="3"
 				DebugInformationFormat="3"
 			/>
@@ -278,8 +276,6 @@
 				AdditionalIncludeDirectories="..\CoordinateSystem;..\Foundation;..\Geometry;..\..\Oem\ACE\ACE_wrappers;&quot;..\..\Oem\geos-2.2.0\source\headers&quot;;..\..\Oem\CsMap\Include"
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;GEOMETRY_EXPORTS"
 				RuntimeLibrary="2"
-				UsePrecompiledHeader="0"
-				PrecompiledHeaderThrough=""
 				WarningLevel="3"
 				DebugInformationFormat="3"
 			/>
