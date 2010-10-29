@@ -32,7 +32,7 @@ XERCES_CPP_NAMESPACE_BEGIN
 // ---------------------------------------------------------------------------
 //  XMLBuffer: Buffer management
 // ---------------------------------------------------------------------------
-
+/* Note: Moved this to the header file to resolve a Linux linking issue.
 void XMLBuffer::ensureCapacity(const XMLSize_t extraNeeded)
 {    
     // If we can't handle it, try doubling the buffer size.
@@ -81,6 +81,6 @@ void XMLBuffer::ensureCapacity(const XMLSize_t extraNeeded)
         fCapacity = newCap;
     }
 }
-
+*/
 XERCES_CPP_NAMESPACE_END
 

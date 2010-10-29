@@ -25,11 +25,35 @@
 #include <xercesc/util/XMemory.hpp>
 #include <xercesc/util/PlatformUtils.hpp>
 #include <xercesc/framework/MemoryManager.hpp>
+#include <xercesc/util/RuntimeException.hpp>
 #include <string.h>
 
 XERCES_CPP_NAMESPACE_BEGIN
 
-class XMLBufferFullHandler;
+class XMLBuffer;
+
+/**
+ *  XMLBufferFullHandler is a callback interface for clients of
+ *  XMLBuffers that impose a size restriction (e.g. XMLScanner).
+ *  Note that this is intended solely as a mix-in for internal
+ *  use, and therefore does not derive from XMemory (to avoid
+ *  the ambiguous base class problem).
+ */
+class XMLPARSER_EXPORT XMLBufferFullHandler
+{
+public :
+
+    virtual ~XMLBufferFullHandler() {}
+
+    /**
+     * Callback method, intended to allow clients of an XMLBuffer which has
+     * become full to empty it appropriately.
+     * @return true if the handler was able to empty the buffer (either
+     * partially or completely), otherwise false to indicate an error.
+     */
+    virtual bool bufferFull(XMLBuffer&) = 0;
+
+};
 
 /**
  *  XMLBuffer is a lightweight, expandable Unicode text buffer. Since XML is
@@ -217,8 +241,54 @@ private :
     // -----------------------------------------------------------------------
     //  Private helpers
     // -----------------------------------------------------------------------
-    void ensureCapacity(const XMLSize_t extraNeeded);
+    void ensureCapacity(const XMLSize_t extraNeeded)
+    {    
+        // If we can't handle it, try doubling the buffer size.
+        XMLSize_t newCap = (fIndex + extraNeeded) * 2;
 
+        // If a maximum size is set, and double the current buffer size exceeds that
+        // maximum, first check if the maximum size will accomodate the extra needed.
+        if (fFullHandler && (newCap > fFullSize))
+        {
+            // If the maximum buffer size accomodates the extra needed, resize to
+            // the maximum
+            if (fIndex + extraNeeded <= fFullSize) 
+            {
+                newCap = fFullSize;
+            }
+
+            // Otherwise, allow the registered full-handler to try to empty the buffer.
+            // If it claims success, and we can accommodate the extra needed in the buffer
+            // to be expanded, resize to the maximum
+            // Note the order of evaluation: bufferFull() has the intentional side-effect
+            // of modifying fIndex.
+            else if (fFullHandler->bufferFull(*this) && (fIndex + extraNeeded <= fFullSize))
+            {
+                newCap = fFullSize;
+            }
+
+            // Finally, if the full-handler failed, or the buffer (of maximum size) 
+            // still can't accomodate the extra needed, we must fail.
+            else
+                ThrowXMLwithMemMgr(RuntimeException, XMLExcepts::Array_BadNewSize, fMemoryManager);
+        }
+
+        // Note the previous if block can modify newCap, so we may not need to allocate
+        // at all.
+        if (newCap > fCapacity)
+        {
+            // Allocate new buffer
+            XMLCh* newBuf = (XMLCh*) fMemoryManager->allocate((newCap+1) * sizeof(XMLCh)); //new XMLCh[newCap+1];
+     
+            // Copy over the old stuff
+            memcpy(newBuf, fBuffer, fIndex * sizeof(XMLCh));
+
+            // Clean up old buffer and store new stuff
+            fMemoryManager->deallocate(fBuffer); //delete [] fBuffer;
+            fBuffer = newBuf;
+            fCapacity = newCap;
+        }
+    }
 
     // -----------------------------------------------------------------------
     //  Private data members
@@ -251,29 +321,6 @@ private :
     MemoryManager* const        fMemoryManager;
     XMLBufferFullHandler*       fFullHandler;
     XMLCh*                      fBuffer;
-};
-
-/**
- *  XMLBufferFullHandler is a callback interface for clients of
- *  XMLBuffers that impose a size restriction (e.g. XMLScanner).
- *  Note that this is intended solely as a mix-in for internal
- *  use, and therefore does not derive from XMemory (to avoid
- *  the ambiguous base class problem).
- */
-class XMLPARSER_EXPORT XMLBufferFullHandler
-{
-public :
-
-    virtual ~XMLBufferFullHandler() {}
-
-    /**
-     * Callback method, intended to allow clients of an XMLBuffer which has
-     * become full to empty it appropriately.
-     * @return true if the handler was able to empty the buffer (either
-     * partially or completely), otherwise false to indicate an error.
-     */
-    virtual bool bufferFull(XMLBuffer&) = 0;
-
 };
 
 XERCES_CPP_NAMESPACE_END
