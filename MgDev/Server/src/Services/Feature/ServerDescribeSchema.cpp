@@ -60,7 +60,7 @@ FdoFeatureSchemaCollection* MgServerDescribeSchema::DescribeFdoSchema(MgResource
 
         classNameHintUsed = IsClassNameHintUsed(fdoCommand);
 
-        if (!schemaName.empty())
+ /*       if (!schemaName.empty())
         {
             fdoCommand->SetSchemaName(schemaName.c_str());
         }
@@ -70,7 +70,7 @@ FdoFeatureSchemaCollection* MgServerDescribeSchema::DescribeFdoSchema(MgResource
         if (NULL != fdoClassNames.p && fdoClassNames->GetCount() > 0)
         {
             fdoCommand->SetClassNames(fdoClassNames.p);
-        }
+        }*/
 
         // Execute the command
         ffsc = fdoCommand->Execute();
@@ -136,22 +136,35 @@ FdoFeatureSchemaCollection* MgServerDescribeSchema::DescribeFdoSchema(MgResource
                         FdoPtr<FdoIDescribeSchema> fdoCommand2 = (FdoIDescribeSchema*)fdoConn2->CreateCommand(FdoCommandType_DescribeSchema);
                         CHECKNULL((FdoIDescribeSchema*)fdoCommand2, L"MgDescribeSchema.DescribeFdoSchema");
 
-                        if (!secSchemaName.empty())
-                        {
-                            fdoCommand2->SetSchemaName(secSchemaName.c_str());
-                        }
+                        //if (!secSchemaName.empty())
+                        //{
+                        //    fdoCommand2->SetSchemaName(secSchemaName.c_str());
+                        //}
 
-                        if (!secClassName.empty())
-                        {
-                            FdoPtr<FdoStringCollection> fdoClassNames2 = FdoStringCollection::Create();
+                        //if (!secClassName.empty())
+                        //{
+                        //    FdoPtr<FdoStringCollection> fdoClassNames2 = FdoStringCollection::Create();
 
-                            fdoClassNames2->Add(secClassName.c_str());
-                            fdoCommand2->SetClassNames(fdoClassNames2.p);
-                        }
+                        //    fdoClassNames2->Add(secClassName.c_str());
+                        //    fdoCommand2->SetClassNames(fdoClassNames2.p);
+                        //}
 
                         // Execute the command
                         ffsc2 = fdoCommand2->Execute();
                         CHECKNULL((FdoFeatureSchemaCollection*)ffsc2, L"MgServerDescribeSchema.DescribeFdoSchema");
+
+                        //if (!secSchemaName.empty())
+                        //{
+                        //    fdoCommand2->SetSchemaName(secSchemaName.c_str());
+                        //}
+
+                        //if (!secClassName.empty())
+                        //{
+                        //    FdoPtr<FdoStringCollection> fdoClassNames2 = FdoStringCollection::Create();
+
+                        //    fdoClassNames2->Add(secClassName.c_str());
+                        //    fdoCommand2->SetClassNames(fdoClassNames2.p);
+                        //}
 
                         // Extract the schemas from the secondary collection and add them to the main collection
                         // Get schema count
@@ -438,18 +451,18 @@ MgFeatureSchemaCollection* MgServerDescribeSchema::DescribeSchema(MgResourceIden
                             FdoPtr<FdoIDescribeSchema> fdoCommand2  = (FdoIDescribeSchema*)fdoConn2->CreateCommand(FdoCommandType_DescribeSchema);
                             CHECKNULL((FdoIDescribeSchema*)fdoCommand2, L"MgDescribeSchema.DescribeSchema");
 
-                            if (!secSchemaName.empty())
-                            {
-                                fdoCommand2->SetSchemaName(secSchemaName.c_str());
-                            }
+                            //if (!secSchemaName.empty())
+                            //{
+                            //    fdoCommand2->SetSchemaName(secSchemaName.c_str());
+                            //}
 
-                            if (!secClassName.empty())
-                            {
-                                FdoPtr<FdoStringCollection> fdoClassNames2 = FdoStringCollection::Create();
+                            //if (!secClassName.empty())
+                            //{
+                            //    FdoPtr<FdoStringCollection> fdoClassNames2 = FdoStringCollection::Create();
 
-                                fdoClassNames2->Add(secClassName.c_str());
-                                fdoCommand2->SetClassNames(fdoClassNames2.p);
-                            }
+                            //    fdoClassNames2->Add(secClassName.c_str());
+                            //    fdoCommand2->SetClassNames(fdoClassNames2.p);
+                            //}
 
                             // Execute the command
                             ffsc2 = fdoCommand2->Execute();
