@@ -42,7 +42,7 @@ mod_mgmapagent_la_LIBADD = -lMgFoundation \
                  -lMgMdfModel \
                  -lMgMdfParser \
                  -lMgHttpHandler \
-				 -lMgWebSupport
+                 -lMgWebSupport
 
 mod_mgmapagent_la_LDFLAGS = -release $(PACKAGE_VERSION) \
             -L../../../Oem/ACE/ACE_wrappers/ace \
