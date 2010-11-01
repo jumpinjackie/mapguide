@@ -213,7 +213,7 @@ void IODrawingLayerDefinition::Write(MdfStream& fd, DrawingLayerDefinition* draw
             for (int i=0; i<watermarkCount; ++i)
                 IOWatermarkInstance::Write(fd, drawingLayer->GetWatermarks()->GetAt(i), version);
             dectab();
-            fd << endStr(sWatermarks) << std::endl;
+            fd << tab() << endStr(sWatermarks) << std::endl;
         }
         else if (*version >= Version(1, 0, 0))
         {
@@ -225,7 +225,7 @@ void IODrawingLayerDefinition::Write(MdfStream& fd, DrawingLayerDefinition* draw
             for (int i=0; i<watermarkCount; ++i)
                 IOWatermarkInstance::Write(fdExtData, drawingLayer->GetWatermarks()->GetAt(i), version);
             dectab();
-            fdExtData << endStr(sWatermarks) << std::endl;
+            fdExtData << tab() << endStr(sWatermarks) << std::endl;
 
             dectab();
         }
