@@ -254,6 +254,16 @@ void StylizationEngine::StylizeWatermark(SE_Renderer* se_renderer,
     if (se_renderer->SupportsHyperlinks())
         m_visitor->ParseStringExpression(L"", seUrl, L"");
 
+    double transparency = watermark->GetAppearance()->GetTransparency();
+    transparency = (transparency < 0.0)? 0.0 : ((transparency > 100.0)? 100.0 : transparency);
+    double opacity = 1.0 - 0.01*transparency;
+
+    const double MIMIMUM_RENDERING_OPACITY = 0.001;
+    if (opacity < MIMIMUM_RENDERING_OPACITY)   // Not render when totally transparent
+        return;
+    double rotation = watermark->GetAppearance()->GetRotation();
+    rotation = (rotation < 0.0)? 0.0 : ((rotation > 360.0)? 360.0 : rotation);
+
     SE_Rule rule;
 
     // Translate watermark source into SE_SymbolInstance list.
@@ -270,12 +280,6 @@ void StylizationEngine::StylizeWatermark(SE_Renderer* se_renderer,
     _ASSERT(rule.symbolInstances.size() == 1u);
 
     // translate appearance (transparency / rotation) into symbol instance
-    double transparency = watermark->GetAppearance()->GetTransparency();
-    transparency = (transparency < 0.0)? 0.0 : ((transparency > 100.0)? 100.0 : transparency);
-    double opacity = 1.0 - 0.01*transparency;
-    double rotation = watermark->GetAppearance()->GetRotation();
-    rotation = (rotation < 0.0)? 0.0 : ((rotation > 360.0)? 360.0 : rotation);
-
     SE_SymbolInstance* sym = rule.symbolInstances[0];
     size_t nStyles = sym->styles.size();
     for (size_t styleIx=0; styleIx<nStyles; ++styleIx)
@@ -283,9 +287,6 @@ void StylizationEngine::StylizeWatermark(SE_Renderer* se_renderer,
         SE_PointStyle* style = (SE_PointStyle*)(sym->styles[styleIx]);
         style->angleDeg.value = style->angleDeg.defValue = style->angleDeg.defValue + rotation;
         if (style->symbol.size() == 0)
-            continue;
-
-        if (opacity < 0.001)   // opaque is 0
             continue;
 
         size_t nPrimitives = style->symbol.size();

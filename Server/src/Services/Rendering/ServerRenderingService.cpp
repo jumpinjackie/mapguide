@@ -937,12 +937,15 @@ MgByteReader* MgServerRenderingService::RenderMapInternal(MgMap* map,
 
                 MgMappingUtil::StylizeLayers(m_svcResource, m_svcFeature, m_svcDrawing, m_pCSFactory, map,
                     modLayers, overrideFilters, &ds, dr, dstCs, false, false, scale, (behavior & MgRenderingOptions::KeepSelection) != 0);
+
+                // Set selection mode to false to avoid affecting following code
+                dr->SetRenderSelectionMode(false);
             }
         }
 
-        if (renderWatermark)
+        if (renderWatermark && (behavior & MgRenderingOptions::RenderLayers))
         {
-            // Rendering watermark
+            // Rendering watermark only when rendering layers and not set renderWatermark to false
 
             MgStringCollection watermarkIds;      //ID list to load watermark definition
             WatermarkInstanceCollection watermarkInstances;   //Watermark list to render
