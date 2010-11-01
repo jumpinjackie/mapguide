@@ -1547,6 +1547,9 @@ MgPermissionInfo* MgResourceHeaderManager::CreatePermissionInfo(
 
     MG_RESOURCE_SERVICE_TRY()
 
+    // Setup the working XmlDocument as we don't want to query the source
+    XmlDocument workingDoc = m_container.getDocument(GetXmlTxn(), xmlDoc.getName());
+
     // Read the resource permission information.
 
     permissionInfo.reset(new MgPermissionInfo(m_repositoryMan.m_accessedTime));
@@ -1557,7 +1560,7 @@ MgPermissionInfo* MgResourceHeaderManager::CreatePermissionInfo(
 
     // Get the owner.
 
-    if (xmlDoc.getMetaData(
+    if (workingDoc.getMetaData(
             MgResourceInfo::sm_metadataUri,
             MgResourceInfo::sm_metadataNames[MgResourceInfo::Owner],
             ownerValue))
@@ -1576,8 +1579,8 @@ MgPermissionInfo* MgResourceHeaderManager::CreatePermissionInfo(
     // Get the inherited flag.
 
     inheritedFlagResults = IsTransacted() ?
-        selectInheritedFlags.execute(GetXmlTxn(), xmlDoc, queryContext, 0) :
-        selectInheritedFlags.execute(xmlDoc, queryContext, 0);
+        selectInheritedFlags.execute(GetXmlTxn(), workingDoc, queryContext, 0) :
+        selectInheritedFlags.execute(workingDoc, queryContext, 0);
 
     if (inheritedFlagResults.next(inheritedValue))
     {
@@ -1597,11 +1600,11 @@ MgPermissionInfo* MgResourceHeaderManager::CreatePermissionInfo(
         // Get user permissions.
 
         nameResults = IsTransacted() ?
-            selectUserNames.execute(GetXmlTxn(), xmlDoc, queryContext, 0) :
-            selectUserNames.execute(xmlDoc, queryContext, 0);
+            selectUserNames.execute(GetXmlTxn(), workingDoc, queryContext, 0) :
+            selectUserNames.execute(workingDoc, queryContext, 0);
         permissionResults = IsTransacted() ?
-            selectUserPermissions.execute(GetXmlTxn(), xmlDoc, queryContext, 0) :
-            selectUserPermissions.execute(xmlDoc, queryContext, 0);
+            selectUserPermissions.execute(GetXmlTxn(), workingDoc, queryContext, 0) :
+            selectUserPermissions.execute(workingDoc, queryContext, 0);
 
         if (nameResults.size() != permissionResults.size())
         {
@@ -1620,11 +1623,11 @@ MgPermissionInfo* MgResourceHeaderManager::CreatePermissionInfo(
         // Get group permissions.
 
         nameResults = IsTransacted() ?
-            selectGroupNames.execute(GetXmlTxn(), xmlDoc, queryContext, 0) :
-            selectGroupNames.execute(xmlDoc, queryContext, 0);
+            selectGroupNames.execute(GetXmlTxn(), workingDoc, queryContext, 0) :
+            selectGroupNames.execute(workingDoc, queryContext, 0);
         permissionResults = IsTransacted() ?
-            selectGroupPermissions.execute(GetXmlTxn(), xmlDoc, queryContext, 0) :
-            selectGroupPermissions.execute(xmlDoc, queryContext, 0);
+            selectGroupPermissions.execute(GetXmlTxn(), workingDoc, queryContext, 0) :
+            selectGroupPermissions.execute(workingDoc, queryContext, 0);
 
         if (nameResults.size() != permissionResults.size())
         {
