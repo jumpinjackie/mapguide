@@ -212,7 +212,7 @@ void IOMapDefinition::Write(MdfStream& fd, MapDefinition* map, Version* version)
             for (int i=0; i<watermarkCount; ++i)
                 IOWatermarkInstance::Write(fd, map->GetWatermarks()->GetAt(i), version);
             dectab();
-            fd << endStr("Watermarks") << std::endl; // NOXLATE
+            fd << tab() << endStr("Watermarks") << std::endl; // NOXLATE
         }
     }
 

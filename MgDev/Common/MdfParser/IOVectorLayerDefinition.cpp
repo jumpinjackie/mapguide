@@ -245,7 +245,7 @@ void IOVectorLayerDefinition::Write(MdfStream& fd, VectorLayerDefinition* vector
             for (int i=0; i<watermarkCount; ++i)
                 IOWatermarkInstance::Write(fd, vectorLayer->GetWatermarks()->GetAt(i), version);
             dectab();
-            fd << endStr(sWatermarks) << std::endl;
+            fd << tab() << endStr(sWatermarks) << std::endl;
         }
         else if (*version >= Version(1, 0, 0))
         {
@@ -257,7 +257,7 @@ void IOVectorLayerDefinition::Write(MdfStream& fd, VectorLayerDefinition* vector
             for (int i=0; i<watermarkCount; ++i)
                 IOWatermarkInstance::Write(fdExtData, vectorLayer->GetWatermarks()->GetAt(i), version);
             dectab();
-            fdExtData << endStr(sWatermarks) << std::endl;
+            fdExtData << tab() << endStr(sWatermarks) << std::endl;
 
             dectab();
         }
