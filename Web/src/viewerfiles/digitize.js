@@ -396,9 +396,8 @@ function LineStringDigitizer(handler, cnvfunc, cancelTgt, fbShape, fbDiv, fbColo
         if(this.xs.length == 0)
             this.InitFeedback();
         this.pline.AddPoint(cnvfunc(x, y));
-        var agent = navigator.userAgent.toLowerCase();
-        var safari = agent.indexOf("safari") != -1;
-        var endLine = safari ? e.shiftKey : e.ctrlKey;
+        var macOS = navigator.appVersion.indexOf("Mac")!=-1;
+        var endLine = macOS ? e.shiftKey : e.ctrlKey;
         if(!endLine)
         {
             if(this.xs.length == 0)
