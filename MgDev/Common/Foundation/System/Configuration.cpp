@@ -91,28 +91,32 @@ void MgConfiguration::LoadConfiguration(CREFSTRING fileName)
 
     MG_CONFIGURATION_TRY()
 
-    m_fileLoaded = false;
-    m_fileName = fileName;
-
-    if(m_config.Open())
+    // We need to ensure that the configuration file is loaded only once from this configuration object
+    // ACE returns an EBUSY error if the Open() method of ACE_Configuration_Heap is called more than once.
+    if(!m_fileLoaded)
     {
-        if(m_config.ImportConfig(fileName))
+        m_fileName = fileName;
+
+        if(m_config.Open())
         {
-            m_fileLoaded = true;
+            if(m_config.ImportConfig(fileName))
+            {
+                m_fileLoaded = true;
+            }
+            else
+            {
+                MgStringCollection arguments;
+                arguments.Add(fileName);
+
+                throw new MgConfigurationLoadFailedException(
+                    L"MgConfiguration.LoadConfiguration",
+                    __LINE__, __WFILE__, &arguments, L"", NULL);
+            }
         }
         else
         {
-            MgStringCollection arguments;
-            arguments.Add(fileName);
-
-            throw new MgConfigurationLoadFailedException(
-                L"MgConfiguration.LoadConfiguration",
-                __LINE__, __WFILE__, &arguments, L"", NULL);
+            ACE_ERROR((LM_ERROR, ACE_TEXT("%p\n"), ACE_TEXT("MgConfiguration::LoadConfiguration()")));
         }
-    }
-    else
-    {
-        ACE_ERROR((LM_ERROR, ACE_TEXT("%p\n"), ACE_TEXT("MgConfiguration::LoadConfiguration()")));
     }
 
     MG_CONFIGURATION_CATCH_AND_THROW(L"MgConfiguration.LoadConfiguration")
