@@ -211,7 +211,7 @@ void CCoordinateSystemGeodeticPath::SetPathElements(MgDisposableCollection* path
         MentorSetString(pathElement->GetTransformName(),
             pathElementDef.geodeticXformName /* target buffer */, sizeof(pathElementDef.geodeticXformName));
 
-        pathElementDef.direction = pathElement->GetIsInversed() ? cs_PATHDIR_INV : cs_PATHDIR_FWD;
+        pathElementDef.direction = pathElement->GetIsInversed() ? cs_DTCDIR_INV : cs_DTCDIR_FWD;
     }
 
     //wipe out the current path definition settings...

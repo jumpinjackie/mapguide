@@ -94,13 +94,19 @@ bool CCoordinateSystemGeodeticPathElement::IsValid()
     if (0 == transformNameLength || transformNameLength >= sizeof(this->pathElement->geodeticXformName))
         return false;
 
-    return (cs_PATHDIR_FWD == this->pathElement->direction) || (cs_PATHDIR_INV == this->pathElement->direction);
+    return (cs_DTCDIR_FWD == this->pathElement->direction) || (cs_DTCDIR_INV == this->pathElement->direction);
 }
 
 bool CCoordinateSystemGeodeticPathElement::IsProtected()
 {
     return this->isProtected;
 }
-
+bool CCoordinateSystemGeodeticPathElement::GetIsInversed ()
+{
+    return (pathElement->direction == cs_DTCDIR_INV);  
+}
+void CCoordinateSystemGeodeticPathElement::SetIsInversed (bool inversed)
+{
+    pathElement->direction = (inversed) ? cs_DTCDIR_INV : cs_DTCDIR_FWD;
+}
 DEFINE_GET_SET_STRING(CCoordinateSystemGeodeticPathElement,TransformName,this->pathElement->geodeticXformName)
-DEFINE_GET_SET_NUMERIC(CCoordinateSystemGeodeticPathElement,IsInversed,bool,this->pathElement->direction)
