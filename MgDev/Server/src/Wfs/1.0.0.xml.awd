@@ -98,17 +98,17 @@
  <Define item="GeometryOperands.xml"><ogc:GeometryOperand>&Enum.item;</ogc:GeometryOperand></Define>
  <Define item="SpatialOperators.xml"><ogc:SpatialOperator name="&Enum.item;"/></Define>
  <Define item="ComparisonOperators.xml"><ogc:ComparisonOperator>&Enum.item;</ogc:ComparisonOperator></Define>
- <Define item="FunctionNames.xml"><ogc:FunctionName nArgs="&Enum.item.args;">&Enum.item;</ogc:FunctionName></Define>
+ <Define item="FunctionNames.xml"><ogc:Function_Name nArgs="&Enum.item.args;">&Enum.item;</ogc:Function_Name></Define>
  <Define item="OtherSRS.xml"><wfs:OtherSRS>&Enum.item;</wfs:OtherSRS></Define>
  <Define item="Format.xml"><ows:Format>&Enum.item;</ows:Format></Define>
 
  <Define item="DescribeFeature.EnumDelim.xml">
    <!-- &Enum.iteration; -->
-   <xs:import schemaLocation="&Url.DescribeFeatureType;?request=DescribeFeatureType&amp;service=WFS&amp;typeName=&Enum.item;"/>
+   <xs:import schemaLocation="&Url.DescribeFeatureType;?request=DescribeFeatureType&amp;service=WFS&amp;version=1.0.0&amp;typeName=&Enum.item;"/>
  </Define>
  <Define item="DescribeFeature.EnumFeature.xml">
    <!-- &Feature.iteration; -->
-   <xs:import schemaLocation="&Url.DescribeFeatureType;?request=DescribeFeatureType&amp;service=WFS&amp;typeName=&Feature.FullName;"/>
+   <xs:import schemaLocation="&Url.DescribeFeatureType;?request=DescribeFeatureType&amp;service=WFS&amp;version=1.0.0&amp;typeName=&Feature.FullName;"/>
  </Define>
 
  <Define item="Format.OgcElement">
@@ -120,6 +120,11 @@
    &Feature.OuterXml;
  </Define>
 
+ <Define item="GetFeatureCollection.xml">
+   <wfs:FeatureCollection &FeatureCollection.Namespaces;>
+     <?EnumFeatures using="&GetFeature.xml;" ?> 
+   </wfs:FeatureCollection>
+ </Define>
 </Definitions>
 
 <!--
@@ -254,9 +259,7 @@
 
 -->
 <Response request="GetFeature" content-type="text/xml; subtype=gml/2.1.2">
- <wfs:FeatureCollection xmlns:gml="http://www.opengis.net/gml" xmlns:wfs="http://www.opengis.net/wfs">
-  <?EnumFeatures using="&GetFeature.xml;" ?>
- </wfs:FeatureCollection>
+ <?GetFeatureCollection using="&GetFeatureCollection.xml;" ?>
 </Response>
 
 <!--
