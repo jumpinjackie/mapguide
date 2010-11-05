@@ -1987,7 +1987,7 @@ MgByteReader* MgServerFeatureService::GetWfsFeature(MgResourceIdentifier* fs,
     else
     {
         STRING defaultNamespace(L"http://fdo.osgeo.org/schemas/feature/");
-        defaultNamespace += schemaName;
+        defaultNamespace += namespacePrefix;
         flags->SetDefaultNamespace(defaultNamespace.c_str());
     }
 
