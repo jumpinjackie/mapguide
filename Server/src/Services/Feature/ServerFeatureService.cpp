@@ -1830,8 +1830,6 @@ MgByteReader* MgServerFeatureService::GetWfsFeature(MgResourceIdentifier* fs,
     if (fc == NULL)
         return NULL;
 
-    STRING geomPropName = fc->GetDefaultGeometryPropertyName();
-
     //execute the spatial query
     Ptr<MgFeatureQueryOptions> options = new MgFeatureQueryOptions();
 
@@ -1919,8 +1917,6 @@ MgByteReader* MgServerFeatureService::GetWfsFeature(MgResourceIdentifier* fs,
     flags->SetMemberName(L"featureMember");
     flags->SetMemberUri(L"http://www.opengis.net/gml");
 
-    // set schemaLocations
-
     // gml schema location and version
     if(L"text/xml; subtype=gml/2.1.2" == outputFormat)
     {
@@ -1938,6 +1934,30 @@ MgByteReader* MgServerFeatureService::GetWfsFeature(MgResourceIdentifier* fs,
         __LINE__, __WFILE__, NULL, L"", NULL);
     }
 
+    // For WFS CITE certification
+    // gml_id, gml_name and gml_description properties must be serialized with gml namespace.
+    Ptr<MgPropertyDefinitionCollection> properties = fc->GetProperties();
+    for(int i = 0; i<properties->GetCount(); i++)
+    {
+        Ptr<MgPropertyDefinition> prop = properties->GetItem(i);
+        STRING propName = prop->GetName();
+        
+        if(L"GML_ID" == MgUtil::ToUpper(propName))
+        {
+             FdoPtr<FdoStringCollection> gmlIDRelatePropertyNames = FdoStringCollection::Create();
+             gmlIDRelatePropertyNames->Add(propName.c_str());
+             flags->SetGmlIDRelatePropertyNames(gmlIDRelatePropertyNames);
+        }
+        else if(L"GML_NAME" == MgUtil::ToUpper(propName))
+        {
+            flags->SetGmlNameRelatePropertyName(propName.c_str()); 
+        }
+        else if(L"GML_DESCRIPTION" == MgUtil::ToUpper(propName))
+        {
+            flags->SetGmlDescriptionRelatePropertyName(propName.c_str()); 
+        }
+    }
+
     // wfs schema location
     if(L"1.0.0" == wfsVersion)
     {
@@ -1953,20 +1973,22 @@ MgByteReader* MgServerFeatureService::GetWfsFeature(MgResourceIdentifier* fs,
         __LINE__, __WFILE__, NULL, L"", NULL);
     }
 
-    // default namespace schema location
-    flags->SetSchemaLocation(L"http://www.mynamespace.com/myns", L"http://www.mynamespace.com/myns/myns.xsd");
-
-    // set the default namespace
+    // set the default namespace prefix
     if(!namespacePrefix.empty())
     {
-        STRING defaultNamespace(L"http://fdo.osgeo.org/schemas/feature/");
-        defaultNamespace += namespacePrefix;
+        flags->SetDefaultNamespacePrefix(namespacePrefix.c_str());
+    }
 
-        flags->SetDefaultNamespace(defaultNamespace.c_str());
+    // set the default namespace
+    if(!namespaceUrl.empty())
+    {
+        flags->SetDefaultNamespace(namespaceUrl.c_str());
     }
     else
     {
-        flags->SetDefaultNamespace(L"http://www.mynamespace.com/myns");
+        STRING defaultNamespace(L"http://fdo.osgeo.org/schemas/feature/");
+        defaultNamespace += schemaName;
+        flags->SetDefaultNamespace(defaultNamespace.c_str());
     }
 
     //create the FDO xml serializer stack and write out the features
