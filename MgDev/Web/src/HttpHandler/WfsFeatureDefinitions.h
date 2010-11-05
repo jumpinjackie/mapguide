@@ -54,10 +54,11 @@ public:
     //   and DescribeFeatureType.)
     bool PrefixToFeatureSource(STRING sPrefix, REFSTRING sFeatureSource, REFSTRING sSchemaName);
 
+    STRING GetNamespaceUrl();
 private:
     bool   SkipElement(MgXmlParser& Input,CPSZ pszElementName);
     bool   GetElementContents(MgXmlParser& Input,CPSZ pszElementName,STRING& sValue);
-    bool   GetMetadataDefinitions(MgXmlParser& Input,CStream& oStream,bool& isPublished);
+    bool   GetMetadataDefinitions(MgXmlParser& Input,CStream& oStream,bool& isPublished,STRING& prefix);
 
     void   AddDefinition(CStream& oStream,CPSZ pszPropertyName,CPSZ pszPropertyValue);
 

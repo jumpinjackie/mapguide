@@ -183,7 +183,7 @@ bool MgWfsFeatureDefinitions::GetElementContents(MgXmlParser& Input,CPSZ pszElem
 }
 
 
-bool MgWfsFeatureDefinitions::GetMetadataDefinitions(MgXmlParser& Input,CStream& oStream, bool& isPublished)
+bool MgWfsFeatureDefinitions::GetMetadataDefinitions(MgXmlParser& Input,CStream& oStream, bool& isPublished, STRING& prefix)
 {
     STRING sDebug = Input.Current().Contents();
     MgXmlSynchronizeOnElement ElementResourceDocumentHeader(Input,_("ResourceDocumentHeader"));
@@ -242,6 +242,11 @@ bool MgWfsFeatureDefinitions::GetMetadataDefinitions(MgXmlParser& Input,CStream&
                 if(SZ_EQ(sDefinitionName.c_str(), _("Feature.IsPublished")) && SZ_EQ(sValue.c_str(), _("1")))
                 {
                     isPublished = true;
+                }
+                // If user defined a customized prefix, it will replace the auto generated one.
+                else if(SZ_EQ(sDefinitionName.c_str(), _("Feature.Prefix")))
+                {
+                     prefix = sValue;
                 }
                 // WFS 1.1.0 replaces PrimarySRS with DefaultSRS
                 else if(SZ_EQ(sDefinitionName.c_str(), _("Feature.PrimarySRS")))
@@ -332,6 +337,13 @@ void MgWfsFeatureDefinitions::Initialize()
                 STRING requiredPrefix = typeName.substr(0, separatorPos);
                 if(!requiredPrefix.empty())
                 {
+                    // If there's a customized prefix, we should ignore the optimization.
+                    if(requiredPrefix.find(_("ns")) != 0)
+                    {
+                        requiredPrefixList = NULL;
+                        break;
+                    }
+
                     requiredPrefixList->Add(requiredPrefix);
                 }
                 else
@@ -403,7 +415,7 @@ void MgWfsFeatureDefinitions::Initialize()
                 AddDefinition(oDefinitions,_("Feature.Prefix"),sPrefix.c_str());
                 AddDefinition(oDefinitions,_("Feature.Resource"),sResource.c_str());
             }
-            else if(GetMetadataDefinitions(Input,oDefinitions,required))
+            else if(GetMetadataDefinitions(Input,oDefinitions,required,sPrefix))
             {
                 // Optimization: Stop processing if this feature source isn't published
                 if(!required)
@@ -635,6 +647,21 @@ unsigned MgWfsFeatureDefinitions::StringHasher(CPSZ pszString)
 }
 
 
+STRING MgWfsFeatureDefinitions::GetNamespaceUrl()
+{
+    STRING sKey = _("<Define item='Feature.Url'>");
+    STRING::size_type iPos = m_sSourcesAndClasses.find(sKey);
+    STRING url = _("");
+
+    if(iPos != STRING::npos)
+    {
+        iPos += sKey.length(); // advance us past the key
+        STRING::size_type iEnd = m_sSourcesAndClasses.find(_("</Define>"),iPos); // NOXLATE
+        url = m_sSourcesAndClasses.substr(iPos,iEnd-iPos);
+    }
+
+    return url;
+}
 
 
 
