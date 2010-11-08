@@ -58,7 +58,7 @@ CCoordinateSystemGeodeticTransformDefDictionary::CCoordinateSystemGeodeticTransf
     : m_pDictionary(NULL)
 {
     this->m_pDictionary = new CCoordinateSystemDictionaryBase<CCoordinateSystemGeodeticTransformDef, cs_GeodeticTransform_,
-        &transformDefinitionAccess, true, cs_GXDEF_MAGIC, DICTIONARY_FILE_NAME(GeodeticTransformation)>(pCatalog);
+        &transformDefinitionAccess, true, false, cs_GXDEF_MAGIC, DICTIONARY_FILE_NAME(GeodeticTransformation)>(pCatalog);
 }
 
 CCoordinateSystemGeodeticTransformDefDictionary::~CCoordinateSystemGeodeticTransformDefDictionary()

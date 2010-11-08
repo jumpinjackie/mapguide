@@ -59,7 +59,7 @@ CCoordinateSystemGeodeticPathDictionary::CCoordinateSystemGeodeticPathDictionary
     : m_pDictionary(NULL)
 {
     this->m_pDictionary = new CCoordinateSystemDictionaryBase<CCoordinateSystemGeodeticPath, cs_GeodeticPath_,
-        &definitionAccess, true, cs_GPDEF_MAGIC, DICTIONARY_FILE_NAME(GeodeticPath)>(pCatalog);
+        &definitionAccess, true, true, cs_GPDEF_MAGIC, DICTIONARY_FILE_NAME(GeodeticPath)>(pCatalog);
 }
 
 CCoordinateSystemGeodeticPathDictionary::~CCoordinateSystemGeodeticPathDictionary()

@@ -80,11 +80,11 @@ public:
 
 #define DICTIONARY_BASE_TEMPLATE template <class T /* dictionary entries */, class U /* CS_MAP C type*/, \
     DefinitionAccess<T, U>* definitionAccess, \
-    bool cacheDictionaryEntries, INT32 defaultMagicNumber, const wchar_t* defaultFileName>
+    bool cacheDictionaryEntries, bool checkProtectedOnUpdate, INT32 defaultMagicNumber, const wchar_t* defaultFileName>
 
-#define DICTIONARY_BASE_TEMPLATE_METHOD CCoordinateSystemDictionaryBase<T, U, definitionAccess, cacheDictionaryEntries, defaultMagicNumber, defaultFileName>
-#define DICTIONARY_BASE_TEMPLATE_OBJECT CCoordinateSystemDictionaryBase<T, U, definitionAccess, cacheDictionaryEntries, defaultMagicNumber, defaultFileName>
-#define DICTIONARY_BASE_ENUM_TEMPLATE_METHOD DictionaryBaseEnum<T, U, definitionAccess, cacheDictionaryEntries, defaultMagicNumber, defaultFileName>
+#define DICTIONARY_BASE_TEMPLATE_METHOD CCoordinateSystemDictionaryBase<T, U, definitionAccess, cacheDictionaryEntries, checkProtectedOnUpdate, defaultMagicNumber, defaultFileName>
+#define DICTIONARY_BASE_TEMPLATE_OBJECT CCoordinateSystemDictionaryBase<T, U, definitionAccess, cacheDictionaryEntries, checkProtectedOnUpdate, defaultMagicNumber, defaultFileName>
+#define DICTIONARY_BASE_ENUM_TEMPLATE_METHOD DictionaryBaseEnum<T, U, definitionAccess, cacheDictionaryEntries, checkProtectedOnUpdate, defaultMagicNumber, defaultFileName>
 
 namespace CSLibrary
 {

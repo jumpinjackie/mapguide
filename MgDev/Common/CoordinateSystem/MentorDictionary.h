@@ -123,6 +123,22 @@ namespace MentorDictionary
         Tinterface *kpDef,
         bool bAlreadyExists)
     {
+        return UpdateDef(pmapSystemNameDescription, key, description, isValid, CS_Tdef, CS_Tupd, BuildDefFromInterface, kpDef, bAlreadyExists, true);
+    }
+
+    template <class T, class Tinterface>
+    void UpdateDef(
+        CSystemNameDescriptionMap *pmapSystemNameDescription,
+        const char * (*key)(const T&),
+        const char * (*description)(const T&),
+        bool (Tinterface::*isValid)(),
+        T * (*CS_Tdef)(const char *),
+        int (*CS_Tupd)(T *, int),
+        bool (*BuildDefFromInterface)(Tinterface *, T&),
+        Tinterface *kpDef,
+        bool bAlreadyExists,
+        bool verifyNotProtected)
+    {
         assert(NULL != kpDef);
         if (NULL == kpDef)
         {
@@ -185,10 +201,13 @@ namespace MentorDictionary
             throw new MgCoordinateSystemLoadFailedException(L"MentorDictionary.UpdateDef", __LINE__, __WFILE__, &arguments, L"", NULL);
         }
 
-        //If it already exists, make sure it's not protected.
-        if ((bAlreadyExists) && (IsReallyProtected(sProtect)))
+        if (verifyNotProtected)
         {
-            throw new MgCoordinateSystemInitializationFailedException(L"MentorDictionary.UpdateDef", __LINE__, __WFILE__, NULL, L"MgCoordinateSystemProtectedException", NULL);
+            //If it already exists, make sure it's not protected.
+            if ((bAlreadyExists) && (IsReallyProtected(sProtect)))
+            {
+                throw new MgCoordinateSystemInitializationFailedException(L"MentorDictionary.UpdateDef", __LINE__, __WFILE__, NULL, L"MgCoordinateSystemProtectedException", NULL);
+            }
         }
 
         //Find out whether it's encrypted
