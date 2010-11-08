@@ -64,7 +64,7 @@ namespace CSLibrary
 
     protected:
 
-        CCoordinateSystemDictionaryBase<CCoordinateSystemGeodeticPath, cs_GeodeticPath_, &definitionAccess, true, cs_GPDEF_MAGIC, DICTIONARY_FILE_NAME(GeodeticPath)>* m_pDictionary;
+        CCoordinateSystemDictionaryBase<CCoordinateSystemGeodeticPath, cs_GeodeticPath_, &definitionAccess, true, true, cs_GPDEF_MAGIC, DICTIONARY_FILE_NAME(GeodeticPath)>* m_pDictionary;
 
     public:
 
