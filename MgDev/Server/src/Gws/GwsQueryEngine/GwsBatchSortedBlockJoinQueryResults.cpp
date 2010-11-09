@@ -63,6 +63,12 @@ CGwsBatchSortedBlockJoinQueryResults::~CGwsBatchSortedBlockJoinQueryResults (
 
     m_propertyDescriptionCollection.clear();
 
+    if (m_right != NULL)
+    {
+        m_right->Release();
+        m_right = NULL;
+    }
+
     if (m_primaryFeatureIterator != NULL)
     {
         m_primaryFeatureIterator->Release ();
