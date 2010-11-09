@@ -28,11 +28,13 @@ using namespace std;
 // Class MgFdoFeatureReader
 MgFdoFeatureReader::MgFdoFeatureReader() : m_currentReaderId(-1)
 {
+    m_readerDepleted = false;
     m_readerCollection = MgFdoReaderCollection::Create();
 }
 
 MgFdoFeatureReader::MgFdoFeatureReader(MgFdoReaderCollection *readerCollection) : m_currentReaderId(-1)
 {
+    m_readerDepleted = false;
     m_readerCollection = FDO_SAFE_ADDREF(readerCollection);
 }
 
@@ -421,35 +423,25 @@ FdoIRaster* MgFdoFeatureReader::GetRaster(FdoInt32 index)
 
 bool MgFdoFeatureReader::ReadNext( )
 {
-   bool retVal = false;
+    if (m_readerDepleted)
+        return false;
+
    if (m_currentReader == NULL)
-   {
        Initialize();
-   }
 
    if (m_currentReader->ReadNext())
-   {
-        retVal = true;
-   }
-   else
-   {
-       m_currentReaderId++;
-       if (m_readerCollection->GetCount() > m_currentReaderId)
-       {
-           m_currentReader = (FdoIFeatureReader*)m_readerCollection->GetItem(m_currentReaderId);
-           if (m_currentReader == NULL)
-           {
-               retVal = false;
-           }
-           else
-           {
-                retVal = m_currentReader->ReadNext();
-           }
-       }
-   }
+       return true;
 
-   return retVal;
+   m_currentReader = NULL;
+   m_currentReaderId++;
+   if ((m_readerCollection->GetCount() > m_currentReaderId))
+       m_currentReader = static_cast<FdoIFeatureReader*>(m_readerCollection->GetItem(m_currentReaderId));
 
+   if (m_currentReader != NULL)
+       return this->ReadNext();
+
+   m_readerDepleted = true;
+   return false;
 }
 
 void MgFdoFeatureReader::Close( )
