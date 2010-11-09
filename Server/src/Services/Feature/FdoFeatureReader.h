@@ -92,6 +92,7 @@ private:
     FdoPtr<MgFdoReaderCollection> m_readerCollection;
     FdoPtr<FdoIFeatureReader> m_currentReader;
     FdoInt32 m_currentReaderId;
+    FdoBoolean m_readerDepleted;
     void Initialize();
 
 };
