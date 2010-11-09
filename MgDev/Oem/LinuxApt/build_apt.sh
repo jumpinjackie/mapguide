@@ -120,8 +120,8 @@ check_tomcat_install ()
 # Notes: none
 #**********************************************************
 echo Apache Httpd build started
-tar -zxf httpd-2.2.15.tar.gz
-pushd httpd-2.2.15
+tar -zxf httpd-2.2.17.tar.gz
+pushd httpd-2.2.17
 ./configure --prefix=$INSTALLWEB/apache2 --enable-mods-shared=all \
 --enable-ldap --with-ldap --enable-authnz-ldap --with-included-apr --with-port=$PORT
 check_apache_build
@@ -153,7 +153,7 @@ fi
 # Notes: none
 #**********************************************************
 echo Apache install started
-pushd httpd-2.2.15
+pushd httpd-2.2.17
 make install
 check_apache_install
 popd
