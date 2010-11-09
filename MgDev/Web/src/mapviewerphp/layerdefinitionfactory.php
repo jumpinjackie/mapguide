@@ -27,7 +27,7 @@ class LayerDefinitionFactory
     //$textSymbol - use textsymbol.templ to create it
     static function CreateAreaRule($legendLabel, $filterText, $foreGroundColor)
     {
-        $areaRule = file_get_contents("../../viewerfiles/arearule.templ");
+        $areaRule = file_get_contents("../viewerfiles/arearule.templ");
         $areaRule = sprintf($areaRule, $legendLabel, $filterText, $foreGroundColor);
         return $areaRule;
     }
@@ -37,7 +37,7 @@ class LayerDefinitionFactory
     //$areaRules - call CreateAreaRule to create area rules
     static function CreateAreaTypeStyle($areaRules)
     {
-        $style = file_get_contents("../../viewerfiles/areatypestyle.templ");
+        $style = file_get_contents("../viewerfiles/areatypestyle.templ");
         $style = sprintf($style, $areaRules);
         return $style;
     }
@@ -49,7 +49,7 @@ class LayerDefinitionFactory
     //$filter - filter string
     static function CreateLineRule($legendLabel, $filter, $color)
     {
-        $lineRule = file_get_contents("../../viewerfiles/linerule.templ");
+        $lineRule = file_get_contents("../viewerfiles/linerule.templ");
         $lineRule = sprintf($lineRule, $legendLabel, $filter, $color);
         return $lineRule;
     }
@@ -59,7 +59,7 @@ class LayerDefinitionFactory
     //$lineRules - call CreateLineRule to create line rules
     static function CreateLineTypeStyle($lineRules)
     {
-        $lineStyle = file_get_contents("../../viewerfiles/linetypestyle.templ");
+        $lineStyle = file_get_contents("../viewerfiles/linetypestyle.templ");
         $lineStyle = sprintf($lineStyle, $lineRules);
         return $lineStyle;
     }
@@ -73,7 +73,7 @@ class LayerDefinitionFactory
     //$color - color code for the symbol color
     static function CreateMarkSymbol($resourceId, $symbolName, $width, $height, $color)
     {
-        $markSymbol = file_get_contents("../../viewerfiles/marksymbol.templ");
+        $markSymbol = file_get_contents("../viewerfiles/marksymbol.templ");
         $markSymbol = sprintf($markSymbol, $width, $height, $resourceId, $symbolName, $color);
         return $markSymbol;
     }
@@ -86,7 +86,7 @@ class LayerDefinitionFactory
     //$foregroundColor - color code for the foreground color
     static function CreateTextSymbol($text, $fontHeight, $foregroundColor)
     {
-        $textSymbol = file_get_contents("../../viewerfiles/textsymbol.templ");
+        $textSymbol = file_get_contents("../viewerfiles/textsymbol.templ");
         $textSymbol = sprintf($textSymbol, $fontHeight, $fontHeight, $text, $foregroundColor);
         return $textSymbol;
     }
@@ -99,7 +99,7 @@ class LayerDefinitionFactory
     //$label - use CreateTextSymbol to create it
     static function CreatePointRule($legendLabel, $filter, $label, $pointSym)
     {
-        $pointRule = file_get_contents("../../viewerfiles/pointrule.templ");
+        $pointRule = file_get_contents("../viewerfiles/pointrule.templ");
         $pointRule = sprintf($pointRule, $legendLabel, $filter, $label, $pointSym);
         return $pointRule;
     }
@@ -109,7 +109,7 @@ class LayerDefinitionFactory
     //$pointRule - use CreatePointRule to define rules
     static function CreatePointTypeStyle($pointRule)
     {
-        $pointTypeStyle = file_get_contents("../../viewerfiles/pointtypestyle.templ");
+        $pointTypeStyle = file_get_contents("../viewerfiles/pointtypestyle.templ");
         $pointTypeStyle = sprintf($pointTypeStyle, $pointRule);
         return $pointTypeStyle;
     }
@@ -121,7 +121,7 @@ class LayerDefinitionFactory
     //$typeStyle - use one CreateAreaTypeStyle, CreateLineTypeStyle, or CreatePointTypeStyle
     static function CreateScaleRange($minScale, $maxScale, $typeStyle)
     {
-        $scaleRange = file_get_contents("../../viewerfiles/scalerange.templ");
+        $scaleRange = file_get_contents("../viewerfiles/scalerange.templ");
         $scaleRange = sprintf($scaleRange, $minScale, $maxScale, $typeStyle);
         return $scaleRange;
     }
@@ -133,7 +133,7 @@ class LayerDefinitionFactory
     //$featureClassRange - use CreateScaleRange to define it.
     static function CreateLayerDefinition($resourceId, $featureClass, $geometry, $featureClassRange)
     {
-        $layerDef = file_get_contents("../../viewerfiles/layerdefinition.templ");
+        $layerDef = file_get_contents("../viewerfiles/layerdefinition.templ");
         $layerDef = sprintf($layerDef, $resourceId, $featureClass, $geometry, $featureClassRange);
         return $layerDef;
     }
