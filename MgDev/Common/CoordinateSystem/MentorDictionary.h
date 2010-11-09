@@ -111,20 +111,6 @@ namespace MentorDictionary
     //is the corresponding public API interface (MgCoordinateSystem
     //et al).
     //
-    template <class T, class Tinterface>
-    void UpdateDef(
-        CSystemNameDescriptionMap *pmapSystemNameDescription,
-        const char * (*key)(const T&),
-        const char * (*description)(const T&),
-        bool (Tinterface::*isValid)(),
-        T * (*CS_Tdef)(const char *),
-        int (*CS_Tupd)(T *, int),
-        bool (*BuildDefFromInterface)(Tinterface *, T&),
-        Tinterface *kpDef,
-        bool bAlreadyExists)
-    {
-        return UpdateDef(pmapSystemNameDescription, key, description, isValid, CS_Tdef, CS_Tupd, BuildDefFromInterface, kpDef, bAlreadyExists, true);
-    }
 
     template <class T, class Tinterface>
     void UpdateDef(
@@ -298,6 +284,20 @@ namespace MentorDictionary
         }    //for each possible result of the update
     }
 
+    template <class T, class Tinterface>
+    void UpdateDef(
+        CSystemNameDescriptionMap *pmapSystemNameDescription,
+        const char * (*key)(const T&),
+        const char * (*description)(const T&),
+        bool (Tinterface::*isValid)(),
+        T * (*CS_Tdef)(const char *),
+        int (*CS_Tupd)(T *, int),
+        bool (*BuildDefFromInterface)(Tinterface *, T&),
+        Tinterface *kpDef,
+        bool bAlreadyExists)
+    {
+        UpdateDef<T, Tinterface>(pmapSystemNameDescription, key, description, isValid, CS_Tdef, CS_Tupd, BuildDefFromInterface, kpDef, bAlreadyExists, true);
+    }
 
     //Template function for removing a def from a dictionary.
     //Works for ellipsoids, datums, and coordinate systems.
