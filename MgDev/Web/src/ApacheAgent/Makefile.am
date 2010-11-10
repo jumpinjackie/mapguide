@@ -22,12 +22,12 @@ INCLUDES    = -I../../../Common/Foundation \
 lib_LTLIBRARIES = mod_mgmapagent.la
 
 mod_mgmapagent_la_SOURCES = ApacheAgent.cpp \
-                              ApachePostParser.cpp \
-                              ApacheResponseHandler.cpp \
-                              ../MapAgentCommon/MapAgentCommon.cpp \
-                              ../MapAgentCommon/MapAgentGetParser.cpp \
-                              ../MapAgentCommon/MapAgentStrings.cpp \
-                              ../WebSupport/InitializeWebTier.cpp
+                            ApachePostParser.cpp \
+                            ApacheResponseHandler.cpp \
+                            ../MapAgentCommon/MapAgentCommon.cpp \
+                            ../MapAgentCommon/MapAgentGetParser.cpp \
+                            ../MapAgentCommon/MapAgentStrings.cpp \
+                            ../WebSupport/InitializeWebTier.cpp
 
 noinst_HEADERS = ApachePostParser.h \
                  ApacheResponseHandler.h \
@@ -42,7 +42,7 @@ mod_mgmapagent_la_LIBADD = -lMgFoundation \
                  -lMgMdfModel \
                  -lMgMdfParser \
                  -lMgHttpHandler \
-				 -lMgWebSupport
+                 -lMgWebSupport
 
 mod_mgmapagent_la_LDFLAGS = -release $(PACKAGE_VERSION) \
             -L../../../Oem/ACE/ACE_wrappers/ace \
