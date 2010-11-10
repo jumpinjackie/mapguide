@@ -10,10 +10,10 @@ INCLUDES    = -I../../../Common/Foundation \
               -I../../../Common/MapGuideCommon \
               -I../../../Common/MdfModel \
               -I../../../Oem/ACE/ACE_wrappers \
-              -I../../../Oem/LinuxApt/httpd-2.2.15/include \
-              -I../../../Oem/LinuxApt/httpd-2.2.15/srclib/apr/include \
-              -I../../../Oem/LinuxApt/httpd-2.2.15/srclib/apr-util/include \
-              -I../../../Oem/LinuxApt/httpd-2.2.15/os/unix \
+              -I../../../Oem/LinuxApt/httpd-2.2.17/include \
+              -I../../../Oem/LinuxApt/httpd-2.2.17/srclib/apr/include \
+              -I../../../Oem/LinuxApt/httpd-2.2.17/srclib/apr-util/include \
+              -I../../../Oem/LinuxApt/httpd-2.2.17/os/unix \
               -I/usr/local/mapguideopensource/webserverextensions/apache2/include\
               -I../HttpHandler \
               -I../WebSupport \
@@ -42,7 +42,7 @@ mod_mgmapagent_la_LIBADD = -lMgFoundation \
                  -lMgMdfModel \
                  -lMgMdfParser \
                  -lMgHttpHandler \
-                 -lMgWebSupport
+				 -lMgWebSupport
 
 mod_mgmapagent_la_LDFLAGS = -release $(PACKAGE_VERSION) \
             -L../../../Oem/ACE/ACE_wrappers/ace \
