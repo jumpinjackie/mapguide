@@ -214,7 +214,8 @@ void DICTIONARY_BASE_TEMPLATE_METHOD::Modify(MgGuardDisposable *pDefinition)
         definitionAccess->updateDefinition,
         definitionAccess->setupCsStructFromMgInstance,
         pDictionaryDef,
-        true); //the definition has to exist
+        true, //the definition has to exist
+		checkProtectedOnUpdate); 
 
     MG_CATCH_AND_THROW(L"CCoordinateSystemDictionaryBase.Modify")
 }
