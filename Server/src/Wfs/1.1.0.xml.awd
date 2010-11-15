@@ -54,7 +54,7 @@
  <Define item="Keywords.xml"><ows:Keyword>&Enum.item;</ows:Keyword></Define>
  <Define item="ParameterValue.xml"><ows:Value>&Enum.item;</ows:Value></Define>
  <Define item="ParameterValue.Version.xml"><ows:Value>&Enum.item.number;</ows:Value></Define>
- <Define item="GeometryOperands.xml"><ogc:GeometryOperand>&Enum.item;</ogc:GeometryOperand></Define>
+ <Define item="GeometryOperands.xml"><ogc:GeometryOperand>gml:&Enum.item;</ogc:GeometryOperand></Define>
  <Define item="SpatialOperators.xml"><ogc:SpatialOperator name="&Enum.item;"/></Define>
  <Define item="ComparisonOperators.xml"><ogc:ComparisonOperator>&Enum.item;</ogc:ComparisonOperator></Define>
  <Define item="FunctionNames.xml"><ogc:FunctionName nArgs="&Enum.item.args;">&Enum.item;</ogc:FunctionName></Define>

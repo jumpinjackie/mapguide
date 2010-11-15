@@ -490,7 +490,8 @@ bool MgXmlTextElement::IsWhitespace() const
 MgXmlComment::MgXmlComment(CPSZ pszString,xsize_t& iStartStop)
 {
     m_pszStart = pszString + iStartStop;
-    m_iLen = Advance(m_pszStart);
+    CPSZ psz = AdvanceToCommentEnd(m_pszStart + /*len("<!--")*/ 4);
+    m_iLen = (xsize_t) (psz - m_pszStart);
     iStartStop += m_iLen;
     m_iLen++; // advance to include the close angle bracket.
 }
@@ -499,6 +500,16 @@ STRING MgXmlComment::Text() const
 {
     CPSZ pszStart = m_pszStart + 4;    // ignore the <!-- (four chars)
     return STRING(pszStart,m_iLen - 7);  // ignore the --> (three)
+}
+
+CPSZ MgXmlComment::AdvanceToCommentEnd(CPSZ psz)
+{
+    for(;;psz++) {
+        if(psz[0] == '0')
+            return psz; // Trouble!!!
+        else if(psz[0] == '-' && psz[1] == '-' && psz[2] == '>')
+            return psz+2; // point to that final '>'
+    }
 }
 
 ////////////////////////////////////////////////////////////////////////////////
