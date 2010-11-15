@@ -276,6 +276,9 @@ public:
     MgXmlNodeType Type() const { return keComment; }
 
     STRING Text() const;
+
+private:
+    CPSZ AdvanceToCommentEnd(CPSZ psz);
 };
 
 
