@@ -646,6 +646,14 @@ function GotoView(x,y,scale,tohistory,moveovimg)
     {
         HideMapImage();
         requestTiles = true;
+
+        if (digitizing)
+        {
+            if (typeof digitizer.ScaleFeedback != "undefined")
+            {
+                digitizer.ScaleFeedback(curScale / scale, new Point(wheelZoomCursor.X, wheelZoomCursor.Y));
+            }
+        }
     }
     else
     {
