@@ -447,4 +447,14 @@ function LineStringDigitizer(handler, cnvfunc, cancelTgt, fbShape, fbDiv, fbColo
         }
         this.fbShape.paint();
     }
+    this.ScaleFeedback = function(scale, origin)
+    {
+        for (var i = 0; i < this.xs.length; ++i)
+        {
+            this.xs[i] = origin.X + (scale * (this.xs[i] - origin.X));
+            this.ys[i] = origin.Y + (scale * (this.ys[i] - origin.Y));
+        }
+
+        this.Feedback(origin.X, origin.Y);
+    }
 }
