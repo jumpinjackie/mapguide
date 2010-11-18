@@ -943,11 +943,12 @@ MgByteReader* MgServerRenderingService::RenderMapInternal(MgMap* map,
             }
         }
 
-        if (renderWatermark && (behavior & MgRenderingOptions::RenderLayers))
+        if (renderWatermark && (behavior & MgRenderingOptions::RenderLayers) && map->GetWatermarkUsage() != 0)
         {
-            // Rendering watermark only when rendering layers and not set renderWatermark to false
-
-            MgStringCollection watermarkIds;      //ID list to load watermark definition
+            // Rendering watermark only when:
+            //      1. rendering layers
+            //      2. not set renderWatermark to false (not render tile)
+            //      3. Map's watermark usage is not 0, which means watermark usage is WMS and / or Viewer.
             WatermarkInstanceCollection watermarkInstances;   //Watermark list to render
             WatermarkInstanceCollection tempWatermarkInstances;    //Used to reverse list
             auto_ptr<WatermarkInstance> tempInstance;
@@ -970,7 +971,6 @@ MgByteReader* MgServerRenderingService::RenderMapInternal(MgMap* map,
                         || ((map->GetWatermarkUsage() & MgMap::WMS) != 0
                         && (tempInstance->GetUsage() & WatermarkInstance::WMS) == 0))
                         continue;
-
                     bool alreadyInList = false;
                     for (int j=watermarkInstances.GetCount()-1; j >=0; j--)
                     {
@@ -983,7 +983,6 @@ MgByteReader* MgServerRenderingService::RenderMapInternal(MgMap* map,
 
                     if (!alreadyInList)
                     {
-                        watermarkIds.Add(tempInstance->GetResourceId().c_str());
                         watermarkInstances.Adopt(tempInstance.release());
                     }
                 }
@@ -996,7 +995,7 @@ MgByteReader* MgServerRenderingService::RenderMapInternal(MgMap* map,
             {
                 Ptr<MgLayerBase> mapLayer(tempLayers->GetItem(i));
 
-                // the layer resource content should be set during stylization
+                // the layer resource content should be set during stylization if visible
                 if (mapLayer->GetLayerResourceContent() == L"")
                     continue;
 
@@ -1028,43 +1027,91 @@ MgByteReader* MgServerRenderingService::RenderMapInternal(MgMap* map,
 
                     if (!alreadyInList)
                     {
-                        watermarkIds.Add(tempInstance->GetResourceId().c_str());
                         watermarkInstances.Adopt(tempInstance.release());
                     }
                 }
             }
             assert(tempWatermarkInstances.GetCount() == 0);
 
-            // load watermark source
-            if (watermarkIds.GetCount() != 0)
-            {
-                Ptr<MgStringCollection> wdefs = m_svcResource->GetResourceContents(&watermarkIds, NULL);
-                for (int i=watermarkIds.GetCount()-1; i>=0; i--)
-                {
-                    for (int j=watermarkInstances.GetCount()-1; j>=0; j--)
-                    {
-                        WatermarkInstance* instance = watermarkInstances.GetAt(j);
-                        if (instance->GetResourceId() == watermarkIds.GetItem(i))
-                        {
-                            instance->AdoptWatermarkDefinition(MgWatermark::GetWatermarkDefinition(wdefs->GetItem(i)));
-                        }
-                    }
-                }
-            }
+            MgStringCollection watermarkIds;            // ID list of loaded watermark definition
+            MgStringCollection watermarkDefinitions;    // Loaded watermark definition
+            MgStringCollection failLoadedIds;           // ID list of failed in loading resource
 
             for (int i=watermarkInstances.GetCount()-1; i>=0; i--)
             {
                 WatermarkInstance* instance = watermarkInstances.GetAt(i);
-                WatermarkDefinition* wdef = instance->GetWatermarkDefinition();
-                if (instance->GetPositionOverride())
+                STRING resourceId = instance->GetResourceId();
+                WatermarkDefinition* wdef = NULL;
+                MG_TRY()
+                    for(int j = 0; j < watermarkIds.GetCount(); j++)
+                    {
+                        if(resourceId == watermarkIds.GetItem(j))
+                        {
+                            wdef = MgWatermark::GetWatermarkDefinition(watermarkDefinitions.GetItem(j));
+                            break;
+                        }
+                    }
+                    if(wdef == NULL)
+                    {
+                        Ptr<MgResourceIdentifier> resId = new MgResourceIdentifier(resourceId);
+                        Ptr<MgByteReader> reader = m_svcResource->GetResourceContent(resId);
+                        STRING content = reader->ToString();
+                        watermarkIds.Add(resourceId);
+                        watermarkDefinitions.Add(content);
+                        wdef = MgWatermark::GetWatermarkDefinition(content);
+                    }
+                    assert(wdef != NULL);
+                    if (instance->GetPositionOverride())
+                    {
+                        wdef->AdoptPosition(instance->OrphanPositionOverride());
+                    }
+                    if (instance->GetAppearanceOverride())
+                    {
+                        wdef->AdoptAppearance(instance->OrphanAppearanceOverride());
+                    }
+                    ds.StylizeWatermark(dr, wdef, drawWidth, drawHeight, saveWidth, saveHeight);
+                
+                MG_CATCH(L"MgServerRenderingService.RenderMapInternal")
+                if(mgException.p)
                 {
-                    wdef->AdoptPosition(instance->OrphanPositionOverride());
+                    // Do not do anything if fail in resource loading and has logged error.
+                    bool isExceptionLogged = false;
+                    if(wdef == NULL) // Fail in resource loading
+                    { 
+                        for(int i = 0; i < failLoadedIds.GetCount(); i++)
+                        {
+                            if(resourceId == failLoadedIds.GetItem(i))
+                            {
+                                isExceptionLogged = true;
+                                break;
+                            }
+                        }
+                    }
+                    if(!isExceptionLogged)
+                    {
+                        // TODO: Eventually this should be used to indicate visually to the client what
+                        //       layer failed in addition to logging the error.
+                        MgServerManager* serverManager = MgServerManager::GetInstance();
+                        STRING locale = (NULL == serverManager)? MgResources::DefaultMessageLocale : serverManager->GetDefaultMessageLocale();
+                        MG_LOG_EXCEPTION_ENTRY(mgException->GetExceptionMessage(locale).c_str(), mgException->GetStackTrace(locale).c_str());
+
+#if defined(_DEBUG) || defined(_DEBUG_PNG8)
+                        STRING details = mgException->GetDetails(locale);
+
+                        wstring err = L"\n %t Error during stylization of watermark:";
+                        err += instance->GetName();
+                        err += L"\n";
+                        err += L"Details: ";
+                        err += details;
+                        err += L"\n";
+                        ACE_DEBUG( (LM_DEBUG, err.c_str()) );
+#endif
+                        if(wdef == NULL)            // Failed in resource loading
+                        {
+                            failLoadedIds.Add(resourceId);
+                        }
+                    }
                 }
-                if (instance->GetAppearanceOverride())
-                {
-                    wdef->AdoptAppearance(instance->OrphanAppearanceOverride());
-                }
-                ds.StylizeWatermark(dr, wdef, drawWidth, drawHeight, saveWidth, saveHeight);
             }
         }
 
