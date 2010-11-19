@@ -3,6 +3,11 @@
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 <link rel="stylesheet" href="../viewerfiles/viewer.css" type="text/css">
 <style type="text/css">
+
+    html, body
+    {
+        height: 100%%;
+    }
     div.PopupMenu
     {
         position: absolute;
@@ -517,7 +522,7 @@ function IsDigitizing()
 //
 function InitDocument()
 {
-    if(!msie)
+        if(!msie || msie9)
         document.getElementById("InfoDiv").style.display = "block";
 
     if((orgExtX1 - orgExtX2) == 0 || (orgExtY1 - orgExtY2) == 0)
@@ -860,8 +865,13 @@ function OnMouseDown(e)
 
     if(!mapInit)
         return false;
-
-    if(msie)
+        
+    if(e.which && e.which != 1)
+        return true;
+    else if(e.button && e.button != 1)//for ie
+        return true;
+        
+/*    if(msie && !msie9)
     {
         if(e.button != 1)
             return true;
@@ -870,7 +880,7 @@ function OnMouseDown(e)
     {
         if(e.which != 1)
             return true;
-    }
+    }*/
     appending = e.shiftKey;
 
     hidePopup(tbMenu)
@@ -899,10 +909,16 @@ function OnMouseDown(e)
 
     var processed = parent.ClickMap(x,y);
 
-    if(msie)
-        e.cancelBubble = true;
-    else
-        e.stopPropagation();
+    
+    try
+    {
+      e.stopPropagation();
+    }
+    catch(e)
+    {
+    e.cancelBubble = true;
+    }
+
 
     if(!processed)
     {
@@ -971,8 +987,16 @@ function EndPolygonSelection(x, y)
 
 function OnContextMenu(e)
 {
-    x = e.clientX;
-    y = e.clientY;
+    //fix a IE9 beta defect.
+    if(e.clientX)
+        x = e.clientX;
+    else
+        x = window.event.clientX;
+        
+    if(e.clientY)
+        y = e.clientY;
+    else
+        y = window.event.clientY;
 
     if(IsInformationMenu(e))
         InformationContextMenu(x,y);
@@ -981,7 +1005,16 @@ function OnContextMenu(e)
         if(parent.IsContextMenu())
             ContextMenu(x, y);
     }
-    e.cancelBubble = true;
+    //e.cancelBubble = true;
+    try
+    {
+      e.stopPropagation();
+    }
+    catch(e)
+    {
+      e.cancelBubble = true;
+    }
+    
     return false;
 }
 
@@ -1152,12 +1185,24 @@ function PrepareSelectionSet()
 function StartResizing(e)
 {
     moveType = RESIZING;
-    if(msie)
+    
+    try
+    {
         document.getElementById("mapSpace").setCapture();
-    if(msie)
-        e.cancelBubble = true;
-    else
-        e.stopPropagation();
+    }
+    catch(e)
+    {
+    }
+        
+    try
+    {
+      e.stopPropagation();
+    }
+    catch(e)
+    {
+      e.cancelBubble = true;
+    }
+        
     return false;
 }
 
@@ -1231,10 +1276,14 @@ function OnMouseUp(e)
 {
     var x = e.clientX - mapPosX;
     var y = e.clientY;
-    if(msie)
-        e.cancelBubble = true;
-    else
-        e.stopPropagation();
+    try
+    {
+      e.stopPropagation();
+    }
+    catch(e)
+    {
+    e.cancelBubble = true;
+    }
 
     if(digitizing)
     {
@@ -1248,7 +1297,7 @@ function OnMouseUp(e)
         moveType = NONE;
         RequestMapAfterResizing();
 
-        if(msie)
+        if(msie && !msie9)
             document.getElementById("mapSpace").releaseCapture();
         return true;
     }
@@ -1306,14 +1355,14 @@ function ResizeTo(x)
     infoDiv.style.display = "block";
     infoDiv.style.visibility = "visible";
 
-    document.getElementById("LayerCaption").style.width = x;
-    document.getElementById("LegendCtrl").style.width = x;
-    document.getElementById("PropertyCaption").style.width = x;
-    document.getElementById("PropertyCtrl").style.width = x;
+    document.getElementById("LayerCaption").style.width = x+"px";
+    document.getElementById("LegendCtrl").style.width = x+"px";
+    document.getElementById("PropertyCaption").style.width = x+"px";
+    document.getElementById("PropertyCtrl").style.width = x+"px";
 
-    ShowChildren(infoDiv, msie?"block": "visible");
+    ShowChildren(infoDiv, (msie && !msie9)?"block": "visible");
 
-    document.getElementById("InfoBand").style.width = x;
+    document.getElementById("InfoBand").style.width = x+"px";
 
     ResizeMapSpace();
 }
@@ -1325,10 +1374,22 @@ function ShowChildren(elt, state)
         for(var i=0; i < nodes.length; i++)
             ShowChildren(nodes[i], state);
     if(elt.style)
+        try
+        {
+            elt.style.visibility = state;
+        }
+        catch(e)
+        {
+            elt.style.display = state;//for msie
+        }
+        /*if(elt.style.visibility)
+            elt.style.visibility = state;
+        else
+            elt.style.display = state;//for msie
         if(msie)
             elt.style.display = state;
         else
-            elt.style.visibility = state;
+            elt.style.visibility = state;*/
 }
 
 function MoveMapControl(eltId, offsx, x, y)
@@ -1336,8 +1397,8 @@ function MoveMapControl(eltId, offsx, x, y)
     if(!showSlider)
         return;
     var es = document.getElementById(eltId).style;
-    es.left = offsx + x;
-    es.top = y;
+    es.left = (offsx + x)+"px";
+    es.top = y+"px";
     es.visibility = "visible";
 }
 
@@ -1387,10 +1448,10 @@ function DragSlider(y)
         {
             imgs = img.style;
             imgs.position = "absolute";
-            imgs.left = xi;
-            imgs.top = yi;
-            imgs.width = w;
-            imgs.height = h;
+            imgs.left = xi + "px";
+            imgs.top = yi + "px";
+            imgs.width = w + "px";
+            imgs.height = h + "px";
         }
     }
     ShowScaleTip(sliderx + mapPosX, sliderPos, scale);
@@ -1580,22 +1641,22 @@ function ResizeMapSpace()
     mapDiv = document.getElementById("mapSpace");
     mapDiv.style.clip = "rect(0px " + (mapDevW - 1) + "px " + (mapDevH - 1) + "px 0px)";
     mapDiv.style.overflow = "hidden";
-    mapDiv.style.width = mapDevW;
-    mapDiv.style.height = mapDevH;
+    mapDiv.style.width = mapDevW+"px";
+    mapDiv.style.height = mapDevH+"px";
 
     if(hasTiles)
     {
         tilesDiv = document.getElementById("tilePlanes").style;
-        tilesDiv.width = mapDevW;
-        tilesDiv.height = mapDevH;
+        tilesDiv.width = mapDevW+"px";
+        tilesDiv.height = mapDevH+"px";
         tilesDiv.visibility = "visible";
     }
 
     imgs = mapDiv.getElementsByTagName("img");
     for(i=0; i < imgs.length; i++)
     {
-        imgs[i].width = mapDevW;
-        imgs[i].height = mapDevH;
+        imgs[i].width = mapDevW+"px";
+        imgs[i].height = mapDevH+"px";
     }
 
     slidoffs = slidery - sscaley;
@@ -1781,10 +1842,14 @@ function OnMapOverlayImageLoaded(e)
 {
     ovimgloaded = true;
 
-    if(msie)
-        e.cancelBubble = true;
-    else
-        e.stopPropagation();
+    try
+    {
+      e.stopPropagation();
+    }
+    catch(e)
+    {
+    e.cancelBubble = true;
+    }
     
     var overlayimg = document.getElementById("mapImage");
     var img = document.getElementById(curimg);
@@ -1805,8 +1870,8 @@ function OnMapOverlayImageLoaded(e)
         img.src = overlayimg.src;
         img.style.position = "absolute";
         img.style.visibility = "visible";
-        img.style.width = mapDevW;
-        img.style.height = mapDevH;
+        img.style.width = mapDevW+"px";
+        img.style.height = mapDevH+"px";
         img.style.left = 0;
         img.style.top = 0;
     }
@@ -1847,10 +1912,14 @@ function OnMapOverlayImageLoadedError(e)
 
 function OnSelectionOverlayImageLoaded(e)
 {
-    if(msie)
-        e.cancelBubble = true;
-    else
-        e.stopPropagation();
+    try
+    {
+      e.stopPropagation();
+    }
+    catch(e)
+    {
+    e.cancelBubble = true;
+    }
     
     var selectionOverlayImg = document.getElementById("selectionImage");
     var selImg = document.getElementById(curSelImg);
@@ -1868,10 +1937,10 @@ function OnSelectionOverlayImageLoaded(e)
     {
         selImg.src = selectionOverlayImg.src;
         selImg.style.position = "absolute";
-        selImg.style.width = mapDevW;
-        selImg.style.height = mapDevH;
-        selImg.style.left = 0;
-        selImg.style.top = 0;
+        selImg.style.width = mapDevW + "px";
+        selImg.style.height = mapDevH + "px";
+        selImg.style.left = 0 + "px";
+        selImg.style.top = 0 + "px";
         selImg.style.visibility = "visible";
     }
 
@@ -1945,15 +2014,14 @@ function OnAlternateImageLoaded()
     // Show the newly loaded image
     img.style.position = "absolute";
     img.style.visibility = "visible";
-    img.style.width = mapDevW;
-    img.style.height = mapDevH;
-    img.style.left = 0;
-    img.style.top = 0;
-    
+    img.style.width = mapDevW + "px";
+    img.style.height = mapDevH + "px";
+    img.style.left = 0 + "px";
+    img.style.top = 0 + "px";    
     // Hide the previous image
     altimg.style.visibility = "hidden";
-    altimg.style.left = 0;
-    altimg.style.top = 0;
+    altimg.style.left = 0 + "px";
+    altimg.style.top = 0 + "px";
     
     document.getElementById("img1").style.display = "block";
 
@@ -1972,15 +2040,15 @@ function OnAlternateSelectionImageLoaded()
     // Show the newly loaded selection
     selImg.style.position = "absolute";
     selImg.style.visibility = "visible";
-    selImg.style.width = mapDevW;
-    selImg.style.height = mapDevH;
-    selImg.style.left = 0;
-    selImg.style.top = 0;
+    selImg.style.width = mapDevW + "px";
+    selImg.style.height = mapDevH + "px";
+    selImg.style.left = 0 + "px";
+    selImg.style.top = 0 + "px";
     
     // Hide the previous selection image
     altSelImg.style.visibility = "hidden";
-    altSelImg.style.left = 0;
-    altSelImg.style.top = 0;
+    altSelImg.style.left = 0 + "px";
+    altSelImg.style.top = 0 + "px";
     
     return false;
 }
@@ -2059,10 +2127,15 @@ function PanRight()
 
 function ZoomCloser(e)
 {
-    if(msie)
-        e.cancelBubble = true;
-    else
-        e.stopPropagation();
+    try
+    {
+      e.stopPropagation();
+    }
+    catch(e)
+    {
+    e.cancelBubble = true;
+    }
+    
     if(sci == 0)
         return false;
     ZoomToScale(scales[sci - 1]);
@@ -2071,10 +2144,15 @@ function ZoomCloser(e)
 
 function ZoomFurther(e)
 {
-    if(msie)
-        e.cancelBubble = true;
-    else
-        e.stopPropagation();
+    try
+    {
+      e.stopPropagation();
+    }
+    catch(e)
+    {
+    e.cancelBubble = true;
+    }
+            
     if(sci == scales.length - 1)
         return false;
     ZoomToScale(scales[sci + 1]);
@@ -2162,6 +2240,9 @@ function EndToolFeedback(x, y)
 
 function StartPanning(e)
 {
+    if(!e.clientX)
+	  e=window.event;
+
     img = document.getElementById(msie6minus ? "img1div": curimg)
     if(!ovimgloaded || img == null)
         return;
@@ -2552,11 +2633,11 @@ function CreateEmptyRow()
 function CreateEmptyCell()
 {
     cell = document.createElement("TD");
-    cell.width = TILECX;
+    cell.width = TILECX + "px";
     cell.bgcolor = /*bgColor*/ "black";
     div = document.createElement("DIV");
-    div.style.width = TILECX;
-    div.style.height = TILECY;
+    div.style.width = TILECX + "px";
+    div.style.height = TILECY + "px";
     div.appendChild(document.createTextNode(" "));
     cell.appendChild(div);
     return cell;
@@ -3121,14 +3202,17 @@ function StartResizingLegend(e)
     rlAnchor = msie?event.screenY: e.screenY;
     initLegendHeight = legendHeight;
     moveType = RESIZINGLEGEND;
-    if(!msie)
-        if (e.stopPropagation)
-            e.stopPropagation();
-    else
+    
+    try
     {
-        e.cancelBubble = true;
-        document.getElementById("LegendResizer").setCapture();
+      e.stopPropagation();
     }
+    catch(e)
+    {
+      e.cancelBubble = true;
+      document.getElementById("LegendResizer").setCapture();
+    }
+    
     return false;
 }
 
@@ -3147,19 +3231,28 @@ function ScaleSliding(e)
         dragElt = SLIDER;
         anchorY = e.screenY;
     }
-    if(msie)
-        e.cancelBubble = true;
-    else
-        e.stopPropagation();
+    
+    try
+    {
+      e.stopPropagation();
+    }
+    catch(e)
+    {
+      e.cancelBubble = true;
+    }
     return false;
 }
 
 function OnPan(e, dir)
 {
-    if(msie)
-        e.cancelBubble = true;
-    else
-        e.stopPropagation();
+    try
+    {
+      e.stopPropagation();
+    }
+    catch(e)
+    {
+      e.cancelBubble = true;
+    }
     switch(dir)
     {
         case 0: PanUp(); break;
@@ -3174,10 +3267,14 @@ function ClickSliderScale(e)
 {
     x = (msie?event.clientX: e.clientX) - mapPosX;
     y = (msie?event.clientY: e.clientY);
-    if(msie)
-        e.cancelBubble = true;
-    else
-        e.stopPropagation();
+    try
+    {
+      e.stopPropagation();
+    }
+    catch(e)
+    {
+      e.cancelBubble = true;
+    }
 
     moveType = DRAGGINGCTRL;
     dragElt = SCALE;
@@ -3295,7 +3392,7 @@ function SetScaleSliderPos()
     sci = GetFiniteScaleIndex(curScale);
     newPos = slidercourse / (scales.length - 1) * sci;
     slidery = sscaley + slidertop + newPos;
-    document.getElementById("slider").style.top = slidery;
+    document.getElementById("slider").style.top = slidery+"px";
 }
 
 function GetFiniteScaleIndex(reqScale)
@@ -3394,8 +3491,8 @@ function BuildTilePlanes(nx1, ny1, nx2, ny2)
         tileCode += '</tbody></table>\n';
     }
     tilesDiv = document.getElementById("tilePlanes");
-    tilesDiv.style.width = mapDevW;
-    tilesDiv.style.height = mapDevH;
+    tilesDiv.style.width = mapDevW + "px";
+    tilesDiv.style.height = mapDevH + "px";
     tilesDiv.clip = "rect(0px " + (mapDevW - 1) + "px " + (mapDevH - 1) + "px 0px)";
     tilesDiv.innerHTML = tileCode;
     RequestVisibleTiles();
@@ -3821,20 +3918,20 @@ function HandleMouseWheelEvent(delta, event)
     {
         imgs = img.style;
         imgs.position = "absolute";
-        imgs.left = xi;
-        imgs.top = yi;
-        imgs.width = w;
-        imgs.height = h;
+        imgs.left = xi + "px";
+        imgs.top = yi + "px";
+        imgs.width = w + "px";
+        imgs.height = h + "px";
     }
 
     selImg = document.getElementById(msie6minus ? "selImg1div": curSelImg);
     if(selImg)
     {
         selImg.style.position = "absolute";
-        selImg.style.left = xi;
-        selImg.style.top = yi;
-        selImg.style.width = w;
-        selImg.style.height = h;
+        selImg.style.left = xi + "px";
+        selImg.style.top = yi + "px";
+        selImg.style.width = w + "px";
+        selImg.style.height = h + "px";
     }
 
     //Update scale displayed in status bar
@@ -4095,10 +4192,14 @@ function OnResizeToolbar(e)
 
 function OnPropertyPaneDropDownClick(e)
 {
-    if(msie)
-        e.cancelBubble = true;
-    else
-        e.stopPropagation();
+    try
+    {
+      e.stopPropagation();
+    }
+    catch(e)
+    {
+      e.cancelBubble = true;
+    }
     return true;
 }
 

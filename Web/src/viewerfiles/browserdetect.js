@@ -28,10 +28,14 @@ var msieIndex = agent.indexOf("msie");
 var msie = false;
 var msie7plus = false;
 var msie6minus = false;
+var msie9 = false;
 if(msieIndex != -1)
 {
     msie = true;
     var msieVersion = agent.substr(msieIndex + 5, 1);
+    if (parseFloat(msieVersion) == 9) {
+        msie9 = true;
+    }
     if(parseFloat(msieVersion) >= 7)
     {
         msie7plus = true;
@@ -45,7 +49,7 @@ if(msieIndex != -1)
 function getAttributeNodeValue(obj,attr){
     try 
     {   
-        return (opera || chrome || firefox || safari3plus) ? obj.attributes[attr].nodeValue : obj[attr];
+        return (opera || chrome || firefox || safari3plus || msie9) ? obj.attributes[attr].nodeValue : obj[attr];
     }
     catch(e) 
     {
