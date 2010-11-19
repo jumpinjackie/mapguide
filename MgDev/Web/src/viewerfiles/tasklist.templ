@@ -61,14 +61,14 @@ function BuildList(maxWidth, maxHeight, ownerRef)
     outerList = document.getElementById("TaskList");
     xHeight = scrollable? 32: 0;
     outerList.innerHTML = html;
-    outerList.style.height = actualHeight + xHeight + (scrollable? msie? 2: 0: 0);
+    outerList.style.height = actualHeight + xHeight + (scrollable? msie? 2: 0: 0) + "px";
     scrollAmount = fullHeight - actualHeight;
 
     su = document.getElementById("TScrollUpArea");
     if(scrollable) {
         su.style.position = "absolute";
-        su.style.top = 0;
-        su.style.left = 0;
+        su.style.top = 0 + "px";
+        su.style.left = 0 + "px";
         su.style.width = maxWidth + "px";
     }
     else
@@ -76,23 +76,23 @@ function BuildList(maxWidth, maxHeight, ownerRef)
 
     list = document.getElementById("TList");
     list.style.position = "absolute";
-    list.style.width = maxWidth;
-    list.style.left = 0;
-    list.style.top = scrollable? 16: 0;
-    list.style.height = actualHeight -1;
+    list.style.width = maxWidth + "px";
+    list.style.left = 0 + "px";
+    list.style.top = scrollable? (16 + "px"): "0px";
+    list.style.height = (actualHeight -1) + "px";
 
     innerlist = document.getElementById("TInnerList");
     innerlist.style.position = "absolute";
-    innerlist.style.width = maxWidth;
-    innerlist.style.left = 0;
-    innerlist.style.top = 0;
+    innerlist.style.width = maxWidth + "px";
+    innerlist.style.left = 0 + "px";
+    innerlist.style.top = 0 + "px";
 
     sd = document.getElementById("TScrollDnArea");
     if(scrollable) {
         sd.style.position = "absolute";
-        sd.style.top = actualHeight + 16;
-        sd.style.left = 0;
-        sd.style.width = maxWidth;
+        sd.style.top = actualHeight + 16 + "px";
+        sd.style.left = 0 + "px";
+        sd.style.width = maxWidth + "px";
     }
     else
         sd.style.display = "none";
