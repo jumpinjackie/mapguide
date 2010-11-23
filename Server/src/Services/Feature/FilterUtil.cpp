@@ -154,10 +154,18 @@ STRING MgOgcFilterUtil::process_element(DOMElement* root)
     {
         m_propName = process_identifier(root);
 
-        // This is a workaround for GML3. For Name and Description properties, there will be a "gml:" prefix
-        // Remove the prefix to make sure Name and Description properties can be found by FDO API.
-        size_t pos = m_propName.find_first_of(L":");
+        // This is a workaround for OGC WFS Certification.
+
+        // In GML3 , for Name and Description elements, there will be a "gml:" prefix. 
+        // The colon will be replaced with underline in FDO.
+        size_t pos = m_propName.find(L"gml:");
         if(pos != STRING::npos)
+        {
+            m_propName = MgUtil::ReplaceString(m_propName,L":",L"_");
+        }
+        // For other elemnts, there will be a namespace prefix like "sf:". 
+        // The prefix should be removed before passing to FDO.
+        else if((pos = m_propName.find(L":")) != STRING::npos)
         {
             m_propName = m_propName.substr(pos+1);
         }

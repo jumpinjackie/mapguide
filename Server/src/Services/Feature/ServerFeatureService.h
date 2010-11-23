@@ -837,7 +837,7 @@ public:
 
     //////////////////////////////////////////////////////////////////
     /// <summary>
-    /// Retrieves schema information about a set of feature classes for a given feature source.
+    /// Retrieves schema information about a set of feature classes for a given feature source with specified namespace prefix and url.
     /// </summary>
     /// <param name="featureSourceId">Input
     /// The resource identifier defining the
@@ -849,31 +849,11 @@ public:
     /// retrieve schema information. If this collection is null or empty, information
     /// is returned for all feature classes.
     /// </param>
-    /// <returns>
-    /// Returns an MgByteReader containing the XML schema.
-    /// </returns>
-    ///
-    MgByteReader* DescribeWfsFeatureType(MgResourceIdentifier* featureSourceId,
-                                         MgStringCollection* featureClasses);
-
-    //////////////////////////////////////////////////////////////////
-    /// <summary>
-    /// Retrieves schema information about a set of feature classes for a given feature source with specified output format.
-    /// </summary>
-    /// <param name="featureSourceId">Input
-    /// The resource identifier defining the
-    /// location of the feature source in
-    /// the repository.
+    /// <param name="namespacePrefix">Input
+    /// A string identifying the namespace prefix in the output xml
     /// </param>
-    /// <param name="featureClasses">Input
-    /// A collection of strings identifying the feature classes for which to
-    /// retrieve schema information. If this collection is null or empty, information
-    /// is returned for all feature classes.
-    /// </param>
-    /// <param name="outputFormat">Input
-    /// A string identifying the output format of the retrieved schema information.
-    /// The supported values of output format are specified in OpenGIS Web Feature Service (WFS) Implementation Specification - section 8.2
-    /// http://portal.opengeospatial.org/files/?artifact_id=8339
+    /// <param name="namespaceUrl">Input
+    /// A string idenyifying the namespace url in the output xml
     /// </param>
     /// <returns>
     /// Returns an MgByteReader containing the XML schema.
@@ -881,7 +861,14 @@ public:
     ///
     MgByteReader* DescribeWfsFeatureType(MgResourceIdentifier* featureSourceId,
                                          MgStringCollection* featureClasses,
-                                         CREFSTRING outputFormat);
+                                         CREFSTRING namespacePrefix,
+                                         CREFSTRING namespaceUrl);
+
+    ///////////////////////////////////////////////////////////////////////////
+    /// This method has been deprecated. Use the above method.
+    ///
+    MgByteReader* DescribeWfsFeatureType(MgResourceIdentifier* featureSourceId,
+                                         MgStringCollection* featureClasses);
 
     //////////////////////////////////////////////////////////////////
     /// <summary>
@@ -1055,6 +1042,8 @@ private:
         CREFSTRING schemaName, CREFSTRING className, REFSTRING schemaHash,
         Ptr<MgFeatureSchema>& schemaFound, Ptr<MgClassDefinition>& classFound);
     void FeatureSourceToString(MgResourceIdentifier* resource, string& resourceContent);
+    //This method just used for OGC WFS certification
+    STRING SchemaToXml(MgFeatureSchemaCollection* schema, CREFSTRING namespacePrefix, CREFSTRING namespaceUrl);
 };
 
 #endif

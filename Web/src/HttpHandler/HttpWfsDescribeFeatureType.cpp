@@ -125,8 +125,7 @@ void MgHttpWfsDescribeFeatureType::Execute(MgHttpResponse& hResponse)
                 Ptr<MgStringCollection> pFeatureClasses = new MgStringCollection();
                 pFeatureClasses->Add(((sSchemaHash.size()==0) ? sClass : sSchemaHash + _(":") + sClass)); //NOXLATE
 
-                Ptr<MgByteReader> response  = pFeatureService->DescribeWfsFeatureType(&idResource,pFeatureClasses);
-                //Ptr<MgByteReader> response  = pFeatureService->DescribeWfsFeatureType(&idResource,pFeatureClasses,sOutputFormat);
+                Ptr<MgByteReader> response  = pFeatureService->DescribeWfsFeatureType(&idResource, pFeatureClasses, sPrefix, oFeatureTypes.GetNamespaceUrl());
 
                 // Set the result
                 hResult->SetResultObject(response, response->GetMimeType());
