@@ -663,6 +663,47 @@ STRING MgServerDescribeSchema::SchemaToXml(MgFeatureSchemaCollection* schema)
 }
 
 //////////////////////////////////////////////////////////////////
+// Converts MgFeatureSchemaCollection to XML with specified namespacePrefix and namespaceURL (Just used for OGC WFS certification)
+STRING MgServerDescribeSchema::SchemaToXml(MgFeatureSchemaCollection* schema, CREFSTRING namespacePrefix, CREFSTRING namespaceUrl)
+{
+    STRING xmlSchema;
+
+    MG_FEATURE_SERVICE_TRY()
+
+    if (NULL == schema)
+    {
+        throw new MgNullArgumentException(L"MgServerDescribeSchema.SchemaToXml", __LINE__, __WFILE__, NULL, L"", NULL);
+    }
+
+    CHECKNULL((MgFeatureSchemaCollection*)schema, L"MgServerDescribeSchema.SchemaToXml");
+
+    FdoPtr<FdoFeatureSchemaCollection> fdoSchemaCol = MgServerFeatureUtil::GetFdoFeatureSchemaCollection(schema);
+
+    FdoPtr<FdoXmlFlags> flags = FdoXmlFlags::Create();
+
+    if(!namespacePrefix.empty() && !namespaceUrl.empty())
+    {
+        FdoPtr<FdoPhysicalSchemaMappingCollection> fdoPhysicalSchemaMappingCol = FdoPhysicalSchemaMappingCollection::Create();
+        for(int i = 0; i<fdoSchemaCol->GetCount(); i++)
+        {
+            FdoPtr<FdoFeatureSchema> fdoSchema = fdoSchemaCol->GetItem(i);
+            FdoPtr<FdoXmlSchemaMapping> fdoSchemaMapping = FdoXmlSchemaMapping::Create(fdoSchema->GetName());
+            fdoSchemaMapping->SetTargetNamespacePrefix(namespacePrefix.c_str());
+            fdoSchemaMapping->SetTargetNamespace(namespaceUrl.c_str());
+            fdoPhysicalSchemaMappingCol->Add(fdoSchemaMapping);
+        }
+        flags->SetSchemaMappings(fdoPhysicalSchemaMappingCol);
+    }
+
+
+    xmlSchema = GetSerializedXml(fdoSchemaCol,flags);
+
+    MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgServerDescribeSchema.SchemaToXml")
+
+    return xmlSchema;
+}
+
+//////////////////////////////////////////////////////////////////
 MgFeatureSchemaCollection* MgServerDescribeSchema::XmlToSchema(CREFSTRING xml)
 {
     Ptr<MgFeatureSchemaCollection> mgSchemaCol;
@@ -760,6 +801,40 @@ STRING MgServerDescribeSchema::GetSerializedXml(FdoFeatureSchemaCollection* fdoS
     return serializedXml;
 }
 
+//////////////////////////////////////////////////////////////////
+STRING MgServerDescribeSchema::GetSerializedXml(FdoFeatureSchemaCollection* fdoSchemaCol, FdoXmlFlags* flags)
+{
+    STRING serializedXml;
+
+    MG_FEATURE_SERVICE_TRY()
+    CHECKNULL(fdoSchemaCol, L"MgServerDescribeSchema.GetSerializedXml");
+
+    FdoIoMemoryStreamP fmis = FdoIoMemoryStream::Create();
+    CHECKNULL((FdoIoMemoryStream*)fmis, L"MgServerDescribeSchema.GetSerializedXml");
+
+    // Write to memory stream
+    fdoSchemaCol->WriteXml(fmis,flags);
+    fmis->Reset(); // TODO: We should not be calling reset here. A defect in FDO should be fixed.
+
+    FdoInt64 len = fmis->GetLength();
+    FdoByte *bytes = new FdoByte[(size_t)len];
+    CHECKNULL(bytes, L"MgServerDescribeSchema.GetSerializedXml");
+
+    fmis->Read(bytes, (FdoSize)len);
+
+    Ptr<MgByteSource> byteSource = new MgByteSource((BYTE_ARRAY_IN)bytes, (INT32)len);
+    byteSource->SetMimeType(MgMimeType::Xml);
+    Ptr<MgByteReader> byteReader = byteSource->GetReader();
+
+    string out = MgUtil::GetTextFromReader(byteReader);
+    serializedXml = MgUtil::MultiByteToWideChar(out);
+
+    delete [] bytes;
+
+    MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgServerDescribeSchema.GetSerializedXml")
+
+    return serializedXml;
+}
 
 ///////////////////////////////////////////////////////////////////////////////
 MgStringCollection* MgServerDescribeSchema::GetSchemas(MgResourceIdentifier* resource)

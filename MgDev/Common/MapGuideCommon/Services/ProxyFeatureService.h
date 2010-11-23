@@ -1033,17 +1033,17 @@ INTERNAL_API:
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////
     /// \brief
-    /// Retrieves schema informationabout a set of feature classes for a given feature source  with specified format.
+    /// Retrieves schema informationabout a set of feature classes for a given feature source  with specified namespace prefix and url.
     ///
     /// <!-- Syntax in .Net, Java, and PHP -->
     /// \htmlinclude DotNetSyntaxTop.html
-    /// virtual MgByteReader DescribeWfsFeatureType(MgResourceIdentifier featureSourceId, MgStringCollection featureClasses, string outputFormat);
+    /// virtual MgByteReader DescribeWfsFeatureType(MgResourceIdentifier featureSourceId, MgStringCollection featureClasses, string namespacePrefix, string namespaceUrl);
     /// \htmlinclude SyntaxBottom.html
     /// \htmlinclude JavaSyntaxTop.html
-    /// virtual MgByteReader DescribeWfsFeatureType(MgResourceIdentifier featureSourceId, MgStringCollection featureClasses, string outputFormat);
+    /// virtual MgByteReader DescribeWfsFeatureType(MgResourceIdentifier featureSourceId, MgStringCollection featureClasses, string namespacePrefix, string namespaceUrl);
     /// \htmlinclude SyntaxBottom.html
     /// \htmlinclude PHPSyntaxTop.html
-    /// virtual MgByteReader DescribeWfsFeatureType(MgResourceIdentifier featureSourceId, MgStringCollection featureClasse, string outputFormats);
+    /// virtual MgByteReader DescribeWfsFeatureType(MgResourceIdentifier featureSourceId, MgStringCollection featureClasses, string namespacePrefix, string namespaceUrl);
     /// \htmlinclude SyntaxBottom.html
     ///
     /// \param featureSourceId (MgResourceIdentifier)
@@ -1054,18 +1054,18 @@ INTERNAL_API:
     /// A collection of strings identifying the feature classes for which to
     /// retrieve schema information. If this collection is null or empty, information
     /// is returned for all feature classes.
-    /// \param outputFormat (String/string)
-    /// A string identifying the output format of
-    /// the retrieved schema information.
-    /// The supported values of output format are specified in OpenGIS Web Feature Service (WFS) Implementation Specification - section 8.2
-    /// http://portal.opengeospatial.org/files/?artifact_id=8339
+    /// \param namespacePrefix (String/string)
+    /// A string identifying the namespace prefix in the output xml
+    /// \param namespaceUrl (String/string)
+    /// A string idenyifying the namespace url in the output xml
     ///
     /// \return
     /// Returns an MgByteReader containing the XML schema.
     ///
     virtual MgByteReader* DescribeWfsFeatureType(MgResourceIdentifier* featureSourceId,
                                                  MgStringCollection* featureClasses,
-                                                 CREFSTRING outputFormat);
+                                                 CREFSTRING namespacePrefix,
+                                                 CREFSTRING namespaceUrl);
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////
     /// \brief

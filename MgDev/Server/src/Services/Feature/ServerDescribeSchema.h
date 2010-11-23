@@ -48,6 +48,7 @@ public:
     MgStringCollection* GetClasses(MgResourceIdentifier* resource, CREFSTRING schemaName);
     MgClassDefinition*  GetClassDefinition(MgResourceIdentifier* resource, CREFSTRING schemaName, CREFSTRING className, bool serialize = true);
     STRING SchemaToXml(MgFeatureSchemaCollection* schema);
+    STRING SchemaToXml(MgFeatureSchemaCollection* schema, CREFSTRING namespacePrefix, CREFSTRING namespaceUrl);
     MgFeatureSchemaCollection* XmlToSchema(CREFSTRING xml);
     MgClassDefinitionCollection* GetIdentityProperties(MgResourceIdentifier* resource, CREFSTRING schemaName, MgStringCollection* classNames);
 
@@ -55,6 +56,7 @@ private:
     FdoFeatureSchemaCollection* DescribeFdoSchema(MgResourceIdentifier* resource,
         CREFSTRING schemaName, MgStringCollection* classNames, bool& classNameHintUsed);
     STRING GetSerializedXml(FdoFeatureSchemaCollection* fdoSchemaCol);
+    STRING GetSerializedXml(FdoFeatureSchemaCollection* fdoSchemaCol, FdoXmlFlags* flags);
     bool GetIdentityProperties(CREFSTRING className,
         FdoClassCollection* classCol, MgPropertyDefinitionCollection* idProps);
 

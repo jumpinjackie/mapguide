@@ -1156,17 +1156,17 @@ void MgServerFeatureService::FindClassDefinition(Ptr<MgFeatureSchemaCollection>&
 
 //////////////////////////////////////////////////////////////////
 /// \brief
-/// Retrieves schema information about a set of feature classes for a given feature source.
+/// Retrieves schema information about a set of feature classes for a given feature source with specified namespace prefix and url.
 ///
 /// <!-- Syntax in .Net, Java, and PHP -->
 /// \htmlinclude DotNetSyntaxTop.html
-/// virtual MgByteReader CreateFeatureSource(MgResourceIdentifier featureSourceId, MgStringCollection featureClasses);
+/// virtual MgByteReader DescribeWfsFeatureType(MgResourceIdentifier featureSourceId, MgStringCollection featureClasses, string namespacePrefix, string namespaceUrl);
 /// \htmlinclude SyntaxBottom.html
 /// \htmlinclude JavaSyntaxTop.html
-/// virtual MgByteReader CreateFeatureSource(MgResourceIdentifier featureSourceId, MgStringCollection featureClasses);
+/// virtual MgByteReader DescribeWfsFeatureType(MgResourceIdentifier featureSourceId, MgStringCollection featureClasses, string namespacePrefix, string namespaceUrl);
 /// \htmlinclude SyntaxBottom.html
 /// \htmlinclude PHPSyntaxTop.html
-/// virtual MgByteReader CreateFeatureSource(MgResourceIdentifier featureSourceId, MgStringCollection featureClasses);
+/// virtual MgByteReader DescribeWfsFeatureType(MgResourceIdentifier featureSourceId, MgStringCollection featureClasses, string namespacePrefix, string namespaceUrl);
 /// \htmlinclude SyntaxBottom.html
 ///
 /// \param featureSourceId (MgResourceIdentifier)
@@ -1177,12 +1177,18 @@ void MgServerFeatureService::FindClassDefinition(Ptr<MgFeatureSchemaCollection>&
 /// A collection of strings identifying the feature classes for which to
 /// retrieve schema information. If this collection is null or empty, information
 /// is returned for all feature classes.
+/// \param namespacePrefix (String/string)
+/// A string identifying the namespace prefix in the output xml
+/// \param namespaceUrl (String/string)
+/// A string idenyifying the namespace url in the output xml
 ///
 /// \return
 /// Returns an MgByteReader containing the XML schema.
 ///
 MgByteReader* MgServerFeatureService::DescribeWfsFeatureType(MgResourceIdentifier* featureSourceId,
-                                                             MgStringCollection* featureClasses)
+                                                             MgStringCollection* featureClasses,
+                                                             CREFSTRING namespacePrefix,
+                                                             CREFSTRING namespaceUrl)
 {
     MG_LOG_TRACE_ENTRY(L"MgServerFeatureService::DescribeWfsFeatureType()");
 
@@ -1271,7 +1277,7 @@ MgByteReader* MgServerFeatureService::DescribeWfsFeatureType(MgResourceIdentifie
         fsc = dfsc;
     }
 
-    STRING sch = SchemaToXml(fsc);
+    STRING sch = SchemaToXml(fsc, namespacePrefix, namespaceUrl);
 
     string utfsch = MgUtil::WideCharToMultiByte(sch);
 
@@ -1285,49 +1291,13 @@ MgByteReader* MgServerFeatureService::DescribeWfsFeatureType(MgResourceIdentifie
     return byteReader.Detach();
 }
 
-
-////////////////////////////////////////////////////////////////////////////////////////////////////////
-/// \brief
-/// Retrieves schema informationabout a set of feature classes for a given feature source  with specified format.
-///
-///
-/// <!-- Syntax in .Net, Java, and PHP -->
-/// \htmlinclude DotNetSyntaxTop.html
-/// virtual MgByteReader DescribeWfsFeatureType(MgResourceIdentifier featureSourceId, MgStringCollection featureClasses, string outputFormat);
-/// \htmlinclude SyntaxBottom.html
-/// \htmlinclude JavaSyntaxTop.html
-/// virtual MgByteReader DescribeWfsFeatureType(MgResourceIdentifier featureSourceId, MgStringCollection featureClasses, string outputFormat);
-/// \htmlinclude SyntaxBottom.html
-/// \htmlinclude PHPSyntaxTop.html
-/// virtual MgByteReader DescribeWfsFeatureType(MgResourceIdentifier featureSourceId, MgStringCollection featureClasse, string outputFormats);
-/// \htmlinclude SyntaxBottom.html
-///
-/// \param featureSourceId (MgResourceIdentifier)
-/// The resource identifier defining the
-/// location of the feature source in
-/// the repository.
-/// \param featureClasses (MgStringCollection)
-/// A collection of strings identifying the feature classes for which to
-/// retrieve schema information. If this collection is null or empty, information
-/// is returned for all feature classes.
-/// \param outputFormat (String/string)
-/// A string identifying the output format of
-/// the retrieved schema information.
-/// The supported values of output format are specified in OpenGIS Web Feature Service (WFS) Implementation Specification - section 8.2
-/// http://portal.opengeospatial.org/files/?artifact_id=8339
-///
-/// \return
-/// Returns an MgByteReader containing the XML schema.
+///////////////////////////////////////////////////////////////////////////
+/// This method has been deprecated. Use the above method.
 ///
 MgByteReader* MgServerFeatureService::DescribeWfsFeatureType(MgResourceIdentifier* featureSourceId,
-                                                             MgStringCollection* featureClasses,
-                                                             CREFSTRING outputFormat)
+                                                             MgStringCollection* featureClasses)
 {
-    throw new MgNotImplementedException(
-    L"MgServerFeatureService::DescribeWfsFeatureType",
-    __LINE__, __WFILE__, NULL, L"", NULL);
-
-    return NULL; // to make some compiler happy
+    return DescribeWfsFeatureType(featureSourceId, featureClasses, L"", L"");
 }
 
 
@@ -1490,6 +1460,14 @@ STRING MgServerFeatureService::SchemaToXml(MgFeatureSchemaCollection* schema)
     return msds.SchemaToXml(schema);
 }
 
+//////////////////////////////////////////////////////////////////
+STRING MgServerFeatureService::SchemaToXml(MgFeatureSchemaCollection* schema, CREFSTRING namespacePrefix, CREFSTRING namespaceUrl)
+{
+    MG_LOG_TRACE_ENTRY(L"MgServerFeatureService::SchemaToXml()");
+
+    MgServerDescribeSchema msds;
+    return msds.SchemaToXml(schema, namespacePrefix, namespaceUrl);
+}
 
 //////////////////////////////////////////////////////////////////
 MgFeatureSchemaCollection* MgServerFeatureService::XmlToSchema(CREFSTRING xml)

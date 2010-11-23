@@ -1366,18 +1366,20 @@ MgByteReader* MgProxyFeatureService::DescribeWfsFeatureType(MgResourceIdentifier
 // Retrieves WFS schema information for the specified feature classes with specified format
 MgByteReader* MgProxyFeatureService::DescribeWfsFeatureType(MgResourceIdentifier* featureSourceId,
                                                             MgStringCollection* featureClasses,
-                                                            CREFSTRING outputFormat)
+                                                            CREFSTRING namespacePrefix,
+                                                            CREFSTRING namespaceUrl)
 {
     MgCommand cmd;
     cmd.ExecuteCommand(m_connProp,                                  // Connection
                        MgCommand::knObject,                         // Return type expected
                        MgFeatureServiceOpId::DescribeWfsFeatureType_Id, // Command Code
-                       3,                                           // No of arguments
+                       4,                                           // No of arguments
                        Feature_Service,                             // Service Id
                        BUILD_VERSION(2,3,0),                        // Operation version
                        MgCommand::knObject, featureSourceId,        // Argument#1
                        MgCommand::knObject, featureClasses,         // Argument#2
-                       MgCommand::knString, &outputFormat,          // Argument#3
+                       MgCommand::knString, &namespacePrefix,       // Argument#3
+                       MgCommand::knString, &namespaceUrl,          // Argument#4
                        MgCommand::knNone);                          // End of argument
 
     SetWarning(cmd.GetWarningObject());
