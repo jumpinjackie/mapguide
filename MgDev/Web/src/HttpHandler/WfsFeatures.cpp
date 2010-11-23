@@ -85,6 +85,9 @@ bool MgWfsFeatures::Next()
                     else if(m_Namespaces.QualifiedName(Begin) == gszElementNameFeatureCollection){
                         MgXmlAttribute& attributes = Begin.Attributes();
                         m_sFeatureCollectionNamespaces = attributes.Contents();
+
+                        m_iMaxFeatures++; // Read schema namespaces should not count the feature
+
                         m_XmlInput.Next();
                         return m_bOk;
                     }
