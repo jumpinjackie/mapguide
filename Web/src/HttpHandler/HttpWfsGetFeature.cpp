@@ -270,8 +270,11 @@ void MgHttpWfsGetFeature::AcquireResponseData(MgOgcServer* ogcServer)
                             }
 
                             // Call the C++ API
+                            // NOTE: I updated the maxFeatures value from numFeaturesToRetrieve to numFeaturesToRetrieve-1
+                            // Because the MgServerFdoFeatureReader in MapGudie server uses -1 to mark empty, while MgWfsFeatures
+                            // in MapGuide web tier uses 0
                             Ptr<MgByteReader> resultReader = featureService->GetWfsFeature(featureSourceId, ((sSchemaHash.size()==0) ? sClass : sSchemaHash + _(":") + sClass),
-                                requiredProperties, m_getFeatureParams->GetSrs(), filter, numFeaturesToRetrieve, sVersion, sOutputFormat, sSortCriteria, sPrefix, oFeatureTypes.GetNamespaceUrl());
+                                requiredProperties, m_getFeatureParams->GetSrs(), filter, numFeaturesToRetrieve-1, sVersion, sOutputFormat, sSortCriteria, sPrefix, oFeatureTypes.GetNamespaceUrl());
 
                             // TODO How to determine number of features retrieved...?
                             // Note: for now, maxFeatures is managed by the MgWfsFeatures object. - TMT 2006-3-20
