@@ -17,6 +17,9 @@
 
 #include "HttpHandler.h"
 #include "WmsMapUtil.h"
+#include "VectorLayerDefinition.h"
+#include "GridLayerDefinition.h"
+#include "../../../Common/MdfParser/SAX2Parser.h"
 
 //static map<STRING, STRING> srsMappings;
 //static bool InitializeSrsMappings();
@@ -103,7 +106,7 @@ MgStringCollection* MgWmsMapUtil::GetLayerDefinitionIds(CREFSTRING layerList)
 /// </returns>
 MgMap* MgWmsMapUtil::GetMap(MgOgcWmsServer& oWms,
     MgStringCollection* layerDefIds, CREFSTRING bbox, CREFSTRING sSRS,
-    INT32 width, INT32 height, MgResourceService* resourceService)
+    INT32 width, INT32 height, MgResourceService* resourceService, MgFeatureService* featureService, CREFSTRING sSession)
 {
     // Get the requested map extents
     Ptr<MgEnvelope> extents = GetExtents(bbox);
@@ -124,6 +127,7 @@ MgMap* MgWmsMapUtil::GetMap(MgOgcWmsServer& oWms,
     double scale = realWorldWidthMeters / imageWidthMeters;
     map->SetViewScale(scale);
 
+    Ptr<MgWmsLayerDefinitions> layerDefs = MgHttpWmsGetCapabilities::GetLayerDefinitions(*resourceService, layerDefIds);
     // Add the requested layers
     if (NULL != layerDefIds && layerDefIds->GetCount() > 0)
     {
@@ -133,11 +137,139 @@ MgMap* MgWmsMapUtil::GetMap(MgOgcWmsServer& oWms,
         {
             Ptr<MgResourceIdentifier> resId = new MgResourceIdentifier(layerDefIds->GetItem(i));
             Ptr<MgLayer> mgLayer = new MgLayer(resId, resourceService);
+            
+            STRING layerPath = resId->GetPathname(true);
+            Ptr<MgResourceIdentifier> wmsLayerResId = new MgResourceIdentifier(L"Session:"+ sSession + L"//" + layerPath);
 
-            mgLayer->SetName(resId->GetPathname(false));
-            mapLayers->Add(mgLayer);
-            mgLayer->SetSelectable(true);
-            mgLayer->ForceRefresh();
+            // OGC 06-042 section 7.3.3.6
+            // If a request contains a BBox whose area does not overlap at all with the <BoundingBox> element in the 
+            // service metadata for the requested layer, the server shall return empty content (that is, a blank map 
+            // or an graphic elemenet file with no elements) for that map. Any features that are partly or entirely 
+            // contained in the Bounding Box shall be returned in the appropriate format
+            if(layerDefs->Next())
+            {
+                // Get user defined boundingbox 
+                MgUtilDictionary currentDef(NULL);
+                layerDefs->GenerateDefinitions(currentDef);
+                STRING layerBounds = currentDef[L"Layer.Bounds"];
+                Ptr<MgStringCollection> wmsLayerBoundingbox = GetWMSlayerBoundingbox(sSRS, layerBounds);
+                STRING sMinX, sMinY, sMaxX, sMaxY;
+               
+                ASSERT(4 == wmsLayerBoundingbox->GetCount());
+                if(4 == wmsLayerBoundingbox->GetCount())
+                {
+                    sMinX = wmsLayerBoundingbox->GetItem(0);
+                    sMinY = wmsLayerBoundingbox->GetItem(1);
+                    sMaxX = wmsLayerBoundingbox->GetItem(2);
+                    sMaxY = wmsLayerBoundingbox->GetItem(3);
+                }
+                else
+                {
+                    sMinX = L"0";
+                    sMinY = L"0";
+                    sMaxX = L"0";
+                    sMaxY = L"0";
+                }
+
+                Ptr<MgCoordinate> lowerLeftCoord = extents->GetLowerLeftCoordinate();
+                Ptr<MgCoordinate> upperRightCoord = extents->GetUpperRightCoordinate();
+                double mapMinX = lowerLeftCoord->GetX();
+                double mapMinY = lowerLeftCoord->GetY();
+                double mapMaxX = upperRightCoord->GetX();
+                double mapMaxY = upperRightCoord->GetX();
+
+                // Optimization...
+                // If the request boundingbox (map boundingbox) within the user defined boundingbox (wms layer boundingbox),
+                // spatial query on the layer should be ignored. Just reuse the original layer's layer definition
+                if(mapMinX >= MgUtil::StringToDouble(sMinX) && mapMinY >= MgUtil::StringToDouble(sMinY)
+                    && mapMaxX <= MgUtil::StringToDouble(sMaxX) && mapMaxY <= MgUtil::StringToDouble(sMaxY))
+                {
+                    wmsLayerResId = resId;
+                }
+                else
+                {
+                    // Get layer definition from the original layer
+                    auto_ptr<MdfModel::LayerDefinition> layerDef;
+                    layerDef.reset(mgLayer->GetLayerDefinition(resourceService,resId));
+                    MdfModel::VectorLayerDefinition* vl = dynamic_cast<MdfModel::VectorLayerDefinition*>(layerDef.get());
+                    MdfModel::GridLayerDefinition* gl = dynamic_cast<MdfModel::GridLayerDefinition*>(layerDef.get());
+
+                    // Spatial filter
+                    STRING filter;
+
+                    // Vector Layer
+                    if(NULL != vl)
+                    {
+                        filter = vl->GetFilter();
+                    }
+                    // Grid Layer
+                    if(NULL != gl)
+                    {
+                        filter = gl->GetFilter();
+                    }
+
+                    
+                    Ptr<MgResourceIdentifier> fsId = new MgResourceIdentifier(mgLayer->GetFeatureSourceId());
+                    STRING qualifiedName = mgLayer->GetFeatureClassName();
+
+                    int pos = qualifiedName.find(L":");
+                    STRING schemaName = qualifiedName.substr(0,pos);
+                    STRING className = qualifiedName.substr(pos+1,qualifiedName.length()-pos-1);
+
+                    Ptr<MgClassDefinition> classDef = featureService->GetClassDefinition(fsId,schemaName,className);
+                    Ptr<MgPropertyDefinitionCollection> propDefCol = classDef->GetProperties();
+
+                    // filter on every geometric properties
+                    for(int i =0; i<propDefCol->GetCount(); i++)
+                    {
+                        Ptr<MgPropertyDefinition> prop = propDefCol->GetItem(i);
+                        if(prop->GetPropertyType() == MgFeaturePropertyType::GeometricProperty)
+                        {
+                            STRING propName = prop->GetName();
+                            
+                            STRING boundingboxGeom = L"GeomFromText('POLYGON((" 
+                                                        + sMinX + L" " + sMinY + L","
+                                                        + sMaxX + L" " + sMinY + L","
+                                                        + sMaxX + L" " + sMaxY + L","
+                                                        + sMinX + L" " + sMaxY + L","
+                                                        + sMinX + L" " + sMinY + L"))')";
+                            if(filter.empty())
+                            {
+                                filter = L"( " + propName + L" ENVELOPEINTERSECTS " + boundingboxGeom + L" )";
+                            }
+                            else
+                            {
+                                filter += L" AND ( " + propName + L" ENVELOPEINTERSECTS " + boundingboxGeom + L" )";
+                            }
+                        }
+                    }
+
+                     // Vector Layer
+                    if(NULL != vl)
+                    {
+                        vl->SetFilter(filter);
+                    }
+                    // Grid Layer
+                    if(NULL != gl)
+                    {
+                        gl->SetFilter(filter);
+                    }
+
+                    MdfParser::SAX2Parser parser;
+                    std::string content = parser.SerializeToXML(layerDef.get(), NULL);
+
+                    Ptr<MgByteSource> byteSource = new MgByteSource((BYTE_ARRAY_IN)content.c_str(), (INT32)content.length());
+                    Ptr<MgByteReader> byteReader = byteSource->GetReader();
+
+                    resourceService->SetResource(wmsLayerResId,byteReader,NULL);
+                }
+            }
+
+            Ptr<MgLayer> mgWmsLayer = new MgLayer(wmsLayerResId, resourceService);
+            mgWmsLayer->SetName(resId->GetPathname(false));
+            mapLayers->Add(mgWmsLayer);
+            mgWmsLayer->SetSelectable(true);
+            mgWmsLayer->ForceRefresh();
         }
     }
 
@@ -328,4 +460,57 @@ void MgWmsMapUtil::ProcessURNSrs(REFSTRING sSRS)
 {
     sSRS = MgUtil::ToUpper(sSRS);
     sSRS = MgUtil::ReplaceString(sSRS,L"URN:OGC:DEF:CRS:EPSG:",L"EPSG");
+}
+
+MgStringCollection* MgWmsMapUtil::GetWMSlayerBoundingbox(STRING sSrs, STRING layerBounds)
+{
+    // return value which specified the boundingbox of user defined boundingbox
+    Ptr<MgStringCollection> wmsLayerBoundingbox = new MgStringCollection();
+
+    // Looking for all <Bounds> elements from layerBounds
+    // Example: <Bounds SRS="EPSG:4326" west="-87.74" south="43.68" east="-87.69" north="43.815"/>
+    Ptr<MgStringCollection> bounds = new MgStringCollection();
+    int pos = 0;
+    while(layerBounds.find(L"<Bounds",pos) != STRING::npos)
+    {
+        pos += 7; // pos+7 to the first character after <Bounds
+        int endPos = layerBounds.find(L"/>",pos); 
+        bounds->Add(layerBounds.substr(pos,endPos-pos));
+    }
+
+    // Looking for the boundingbox defined with specified SRS
+    for(int i = 0; i<bounds->GetCount(); i++)
+    {
+        STRING bound = bounds->GetItem(i);
+
+        //Find SRS value from Bounds element 
+        int startPos = bound.find(L"SRS=\"");
+        int endPos = bound.find(L"\"",startPos+5); // pos+5 to the first character after SRS="
+        STRING srs = bound.substr(startPos+5,endPos-startPos-5);
+
+        if(MgUtil::ToUpper(srs) == MgUtil::ToUpper(sSrs))
+        {
+            //Find west value from Bounds element 
+            startPos = bound.find(L"west=\"");
+            endPos = bound.find(L"\"",startPos+6); // pos+6 to the first character after west="
+            wmsLayerBoundingbox->Add(bound.substr(startPos+6,endPos-startPos-6));
+
+            //Find south value from Bounds element 
+            startPos = bound.find(L"south=\"");
+            endPos = bound.find(L"\"",startPos+7); // pos+7 to the first character after south="
+            wmsLayerBoundingbox->Add(bound.substr(startPos+7,endPos-startPos-7));
+
+            //Find east value from Bounds element 
+            startPos = bound.find(L"east=\"");
+            endPos = bound.find(L"\"",startPos+6); // pos+6 to the first character after east="
+            wmsLayerBoundingbox->Add(bound.substr(startPos+6,endPos-startPos-6));
+
+            //Find north value from Bounds element 
+            startPos = bound.find(L"north=\"");
+            endPos = bound.find(L"\"",startPos+7); // pos+7 to the first character after north="
+            wmsLayerBoundingbox->Add(bound.substr(startPos+7,endPos-startPos-7));
+        }
+    }
+
+    return wmsLayerBoundingbox.Detach();
 }
