@@ -23,17 +23,18 @@ libMgGeometry_la_SOURCES = \
   ../CoordinateSystem/CoordSysEnumDatum.cpp \
   ../CoordinateSystem/CoordSysEnumEllipsoid.cpp \
   ../CoordinateSystem/CoordSysFormatConverter.cpp \
-  ../CoordinateSystem/CoordSysGeodeticAnalyticalTransformDefParams.cpp\
-  ../CoordinateSystem/CoordSysGeodeticInterpolationTransformDefParams.cpp\
-  ../CoordinateSystem/CoordSysGeodeticMultipleRegressionTransformDefParams.cpp\
-  ../CoordinateSystem/CoordSysGeodeticPath.cpp\
-  ../CoordinateSystem/CoordSysGeodeticPathDictionary.cpp\
-  ../CoordinateSystem/CoordSysGeodeticPathElement.cpp\
-  ../CoordinateSystem/CoordSysGeodeticTransformation.cpp\
-  ../CoordinateSystem/CoordSysGeodeticTransformDef.cpp\
-  ../CoordinateSystem/CoordSysGeodeticTransformDefDictionary.cpp\
-  ../CoordinateSystem/CoordSysGeodeticTransformDefParams.cpp\
-  ../CoordinateSystem/CoordSysGeodeticTransformGridFile.cpp\
+  ../CoordinateSystem/CoordSysGeodeticAnalyticalTransformDefParams.cpp \
+  ../CoordinateSystem/CoordSysGeodeticInterpolationTransformDefParams.cpp \
+  ../CoordinateSystem/CoordSysGeodeticMultipleRegressionTransformDefParams.cpp \
+  ../CoordinateSystem/CoordSysGeodeticStandaloneTransformDefParams.cpp \
+  ../CoordinateSystem/CoordSysGeodeticPath.cpp \
+  ../CoordinateSystem/CoordSysGeodeticPathDictionary.cpp \
+  ../CoordinateSystem/CoordSysGeodeticPathElement.cpp \
+  ../CoordinateSystem/CoordSysGeodeticTransformation.cpp \
+  ../CoordinateSystem/CoordSysGeodeticTransformDef.cpp \
+  ../CoordinateSystem/CoordSysGeodeticTransformDefDictionary.cpp \
+  ../CoordinateSystem/CoordSysGeodeticTransformDefParams.cpp \
+  ../CoordinateSystem/CoordSysGeodeticTransformGridFile.cpp \
   ../CoordinateSystem/CoordSysMeasure.cpp \
   ../CoordinateSystem/CoordSysTransform.cpp \
   ../CoordinateSystem/CoordSysDictionaryUtility.cpp \
@@ -175,6 +176,7 @@ include_SOURCES = \
   ../CoordinateSystem/CoordSysGeodeticAnalyticalTransformDefParams.cpp\
   ../CoordinateSystem/CoordSysGeodeticInterpolationTransformDefParams.cpp\
   ../CoordinateSystem/CoordSysGeodeticMultipleRegressionTransformDefParams.cpp\
+  ../CoordinateSystem/CoordSysGeodeticStandaloneTransformDefParams.cpp\
   ../CoordinateSystem/CoordSysGeodeticPath.cpp\
   ../CoordinateSystem/CoordSysGeodeticPathDictionary.cpp\
   ../CoordinateSystem/CoordSysGeodeticPathElement.cpp\
@@ -335,6 +337,10 @@ noinst_HEADERS = $(include_SOURCES) \
   CoordinateSystem/CoordinateSystemFormatConverter.h \
   CoordinateSystem/CoordinateSystemGeodeticTransformation.h \
   CoordinateSystem/CoordinateSystemGeodeticTransformationMethod.h \
+  CoordinateSystem/CoordinateSystemGeodeticAnalyticalTransformationMethod.h \
+  CoordinateSystem/CoordinateSystemGeodeticMultipleRegressionTransformationMethod.h \
+  CoordinateSystem/CoordinateSystemGeodeticStandaloneTransformationMethod.h \
+  CoordinateSystem/CoordinateSystemGeodeticTransformGridFileFormat.h \
   CoordinateSystem/CoordinateSystemMathComparator.h \
   CoordinateSystem/CoordinateSystemMeasure.h \
   CoordinateSystem/CoordinateSystemProjectionCode.h \
@@ -396,17 +402,18 @@ noinst_HEADERS = $(include_SOURCES) \
   ../CoordinateSystem/CoordSysEnumDatum.h \
   ../CoordinateSystem/CoordSysEnumEllipsoid.h \
   ../CoordinateSystem/CoordSysFormatConverter.h \
-  ../CoordinateSystem/CoordSysGeodeticAnalyticalTransformDefParams.h\
-  ../CoordinateSystem/CoordSysGeodeticInterpolationTransformDefParams.h\
-  ../CoordinateSystem/CoordSysGeodeticMultipleRegressionTransformDefParams.h\
-  ../CoordinateSystem/CoordSysGeodeticPath.h\
-  ../CoordinateSystem/CoordSysGeodeticPathDictionary.h\
-  ../CoordinateSystem/CoordSysGeodeticPathElement.h\
-  ../CoordinateSystem/CoordSysGeodeticTransformation.h\
-  ../CoordinateSystem/CoordSysGeodeticTransformDef.h\
-  ../CoordinateSystem/CoordSysGeodeticTransformDefDictionary.h\
-  ../CoordinateSystem/CoordSysGeodeticTransformDefParams.h\
-  ../CoordinateSystem/CoordSysGeodeticTransformGridFile.h\
+  ../CoordinateSystem/CoordSysGeodeticAnalyticalTransformDefParams.h \
+  ../CoordinateSystem/CoordSysGeodeticInterpolationTransformDefParams.h \
+  ../CoordinateSystem/CoordSysGeodeticMultipleRegressionTransformDefParams.h \
+  ../CoordinateSystem/CoordSysGeodeticStandaloneTransformDefParams.h \
+  ../CoordinateSystem/CoordSysGeodeticPath.h \
+  ../CoordinateSystem/CoordSysGeodeticPathDictionary.h \
+  ../CoordinateSystem/CoordSysGeodeticPathElement.h \
+  ../CoordinateSystem/CoordSysGeodeticTransformation.h \
+  ../CoordinateSystem/CoordSysGeodeticTransformDef.h \
+  ../CoordinateSystem/CoordSysGeodeticTransformDefDictionary.h \
+  ../CoordinateSystem/CoordSysGeodeticTransformDefParams.h \
+  ../CoordinateSystem/CoordSysGeodeticTransformGridFile.h \
   ../CoordinateSystem/CoordSysMeasure.h \
   ../CoordinateSystem/CoordSysTransform.h \
   ../CoordinateSystem/CoordSysType.h \

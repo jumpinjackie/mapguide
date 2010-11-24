@@ -147,6 +147,7 @@ typedef wchar_t* STRINGPARAM;
     <Header path="../../../../Common/Geometry/CoordinateSystem/CoordinateSystemGeodeticAnalyticalTransformDefParams.h" />
     <Header path="../../../../Common/Geometry/CoordinateSystem/CoordinateSystemGeodeticInterpolationTransformDefParams.h" />
     <Header path="../../../../Common/Geometry/CoordinateSystem/CoordinateSystemGeodeticMultipleRegressionTransformDefParams.h" />
+    <Header path="../../../../Common/Geometry/CoordinateSystem/CoordinateSystemGeodeticStandaloneTransformDefParams.h" />
     <Header path="../../../../Common/Geometry/CoordinateSystem/CoordinateSystemGeodeticTransformDefDictionary.h" />
     <Header path="../../../../Common/Geometry/CoordinateSystem/CoordinateSystemDictionary.h" />
     <Header path="../../../../Common/Geometry/CoordinateSystem/CoordinateSystemDictionaryUtility.h" />

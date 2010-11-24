@@ -90,6 +90,7 @@
   <Class name="MgCoordinateSystemGeodeticAnalyticalTransformationMethod" />
   <Class name="MgCoordinateSystemGeodeticMultipleRegressionTransformationMethod" />
   <Class name="MgCoordinateSystemGeodeticTransformGridFileFormat" />
+  <Class name="MgCoordinateSystemGeodeticStandaloneTransformationMethod" />
 </Classes>
 
 <!--
@@ -123,6 +124,7 @@
     <Header path="../../../../Common/Geometry/CoordinateSystem/CoordinateSystemGeodeticTransformDefType.h" />
     <Header path="../../../../Common/Geometry/CoordinateSystem/CoordinateSystemGeodeticAnalyticalTransformationMethod.h" />
     <Header path="../../../../Common/Geometry/CoordinateSystem/CoordinateSystemGeodeticMultipleRegressionTransformationMethod.h" />
+    <Header path="../../../../Common/Geometry/CoordinateSystem/CoordinateSystemGeodeticStandaloneTransformationMethod.h" />
     <Header path="../../../../Common/Geometry/CoordinateSystem/CoordinateSystemGeodeticTransformGridFileFormat.h" />
 
 </Headers>

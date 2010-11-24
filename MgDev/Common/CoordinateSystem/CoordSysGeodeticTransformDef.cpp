@@ -21,6 +21,7 @@
 
 #include "CoordSysGeodeticTransformation.h"
 #include "CoordSysGeodeticTransformDefParams.h"
+#include "CoordSysGeodeticStandaloneTransformDefParams.h"
 #include "CoordSysGeodeticAnalyticalTransformDefParams.h"
 #include "CoordSysGeodeticInterpolationTransformDefParams.h"
 #include "CoordSysGeodeticMultipleRegressionTransformDefParams.h"
@@ -70,12 +71,13 @@ void CCoordinateSystemGeodeticTransformDef::Reset(INT32 transformationDefType)
     INT32 transformationType;
     switch(transformationDefType)
     {
-    case MgCoordinateSystemGeodeticTransformDefType::None:
+    case MgCoordinateSystemGeodeticTransformDefType::Standalone:
     case MgCoordinateSystemGeodeticTransformDefType::Analytical:
     case MgCoordinateSystemGeodeticTransformDefType::Interpolation:
     case MgCoordinateSystemGeodeticTransformDefType::MultipleRegression:
         transformationType = transformationDefType;
         break;
+
     default:
         throw new MgInvalidArgumentException(L"CCoordinateSystemGeodeticTransformDef.Reset", __LINE__, __WFILE__, NULL, L"", NULL);
     }
@@ -112,10 +114,10 @@ INT32 CCoordinateSystemGeodeticTransformDef::GetTransformationDefType(INT32 meth
     INT32 transformationType;
     switch(methodCode)
     {
-    //standalone methods; see information in cs_geodetic.h
+    //standalone/built-in methods; see information in cs_geodetic.h
     case cs_DTCMTH_NULLX:
     case cs_DTCMTH_WGS72:
-        transformationType = MgCoordinateSystemGeodeticTransformDefType::None;
+        transformationType = MgCoordinateSystemGeodeticTransformDefType::Standalone;
         break;
 
     //multiple Regression methods
@@ -223,8 +225,9 @@ MgCoordinateSystemGeodeticTransformDefParams* CCoordinateSystemGeodeticTransform
 
     switch(this->transformationDefType)
     {
-    case MgCoordinateSystemGeodeticTransformDefType::None:
-        return NULL;
+    case MgCoordinateSystemGeodeticTransformDefType::Standalone:
+        return static_cast<MgCoordinateSystemGeodeticStandaloneTransformDefParams*>(new CCoordinateSystemGeodeticStandaloneTransformDefParams(
+            this->transformDefinition->methodCode, this->IsProtected()));
 
     case MgCoordinateSystemGeodeticTransformDefType::Analytical:
         return static_cast<MgCoordinateSystemGeodeticAnalyticalTransformDefParams*>(new CCoordinateSystemGeodeticAnalyticalTransformDefParams(
@@ -266,9 +269,19 @@ void CCoordinateSystemGeodeticTransformDef::SetParameters(MgCoordinateSystemGeod
     CCoordinateSystemGeodeticTransformDefParams* transformDefParams = NULL;
     CCoordinateSystemGeodeticMultipleRegressionTransformDefParams* mulRegParams = NULL;
     CCoordinateSystemGeodeticAnalyticalTransformDefParams* analyticalParams = NULL;
+    CCoordinateSystemGeodeticStandaloneTransformDefParams* standaloneParams = NULL;
 
     switch(this->transformationDefType)
     {
+    case MgCoordinateSystemGeodeticTransformDefType::Standalone:
+        standaloneParams = dynamic_cast<CCoordinateSystemGeodeticStandaloneTransformDefParams*>(parameters);
+        if (NULL != standaloneParams)
+        {
+            paramsMethodCode = standaloneParams->GetTransformationMethod();
+            transformDefParams = standaloneParams;
+        }
+        break;
+
     case MgCoordinateSystemGeodeticTransformDefType::Analytical:
         analyticalParams = dynamic_cast<CCoordinateSystemGeodeticAnalyticalTransformDefParams*>(parameters);
         if (NULL != analyticalParams)

@@ -190,6 +190,7 @@ MgApi_wrap.cpp : \
     ../../../Common/Geometry/CoordinateSystem/CoordinateSystemGeodeticAnalyticalTransformDefParams.h \
     ../../../Common/Geometry/CoordinateSystem/CoordinateSystemGeodeticInterpolationTransformDefParams.h \
     ../../../Common/Geometry/CoordinateSystem/CoordinateSystemGeodeticMultipleRegressionTransformDefParams.h \
+    ../../../Common/Geometry/CoordinateSystem/CoordinateSystemGeodeticStandaloneTransformDefParams.h \
     ../../../Common/Geometry/CoordinateSystem/CoordinateSystemGeodeticTransformDefDictionary.h \
     ../../../Common/Geometry/CoordinateSystem/CoordinateSystemDictionary.h \
     ../../../Common/Geometry/CoordinateSystem/CoordinateSystemDictionaryUtility.h \
@@ -243,6 +244,7 @@ MgApi_wrap.cpp : \
     ../../../Common/Geometry/CoordinateSystem/CoordinateSystemGeodeticTransformDefType.h \
     ../../../Common/Geometry/CoordinateSystem/CoordinateSystemGeodeticAnalyticalTransformationMethod.h \
     ../../../Common/Geometry/CoordinateSystem/CoordinateSystemGeodeticMultipleRegressionTransformationMethod.h \
+	../../../Common/Geometry/CoordinateSystem/CoordinateSystemGeodeticStandaloneTransformationMethod.h \
     ../../../Common/Geometry/CoordinateSystem/CoordinateSystemGeodeticTransformGridFileFormat.h \
     ../../../Common/PlatformBase/Data/BlobProperty.h \
     ../../../Common/PlatformBase/Data/BooleanProperty.h \

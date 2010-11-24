@@ -127,6 +127,7 @@
 #define CoordinateSystem_CoordinateSystemGeodeticInterpolationTransformDefParams        GEOMETRY_COORDINATE_SYSTEM_ID+43
 #define CoordinateSystem_CoordinateSystemGeodeticMultipleRegressionTransformDefParams   GEOMETRY_COORDINATE_SYSTEM_ID+44
 #define CoordinateSystem_CoordinateSystemGeodeticTransformGridFile                      GEOMETRY_COORDINATE_SYSTEM_ID+45
+#define CoordinateSystem_CoordinateSystemGeodeticStandaloneTransformDefParams           GEOMETRY_COORDINATE_SYSTEM_ID+46
 
 // Exceptions
 #define Geometry_Exception_MgCoordinateSystemComputationFailedException     GEOMETRY_EXCEPTION_ID+0
