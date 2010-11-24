@@ -1619,15 +1619,15 @@ CPSZ MgOgcServer::NegotiatedVersion(CPSZ pszRequested)
 {
     if(m_sNegotiatedVersion.length() == 0 || pszRequested != NULL)
     {
-        if(pszRequested == NULL)
+        if(pszRequested == NULL || SZ_EQ(pszRequested,_("")))
         {
             // Read the VERSION parameter
             pszRequested = this->RequestParameter(kpszQueryStringVersion);
-            if(pszRequested == NULL)
+            if(pszRequested == NULL || SZ_EQ(pszRequested,_("")))
             {
                 // Look for the WMTVER parameter used in older request formats
                 pszRequested = this->RequestParameter(kpszQueryStringWmtVersion);
-                if(pszRequested == NULL) // still
+                if(pszRequested == NULL || SZ_EQ(pszRequested,_(""))) // still
                 {
                     pszRequested = kpszVersionRediculouslyHighVersion;
                 }
