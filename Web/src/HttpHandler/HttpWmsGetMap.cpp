@@ -163,6 +163,8 @@ void MgHttpWmsGetMap::Execute(MgHttpResponse& hResponse)
         {
             // Get an instance of the resource service
             Ptr<MgResourceService> resourceService = (MgResourceService*)CreateService(MgServiceType::ResourceService);
+            // Get an instance of the resource service
+            Ptr<MgFeatureService> featureService = (MgFeatureService*)CreateService(MgServiceType::FeatureService);
 
             // Get the background color
             Ptr<MgColor> bkColor = MgWmsMapUtil::GetBackgroundColor(m_bgColor, m_transparent);
@@ -170,10 +172,15 @@ void MgHttpWmsGetMap::Execute(MgHttpResponse& hResponse)
             // Get the extents
             Ptr<MgEnvelope> extents = MgWmsMapUtil::GetExtents(m_bbox);
 
-            
+            // Create session
+            Ptr<MgUserInformation> userInfo = m_siteConn->GetUserInfo();
+            Ptr<MgSite> site = m_siteConn->GetSite();
+            STRING session = site->CreateSession();
+            userInfo->SetMgSessionId(session);
+
             // Get a map object corresponding to the request parameters
             Ptr<MgMap> map = MgWmsMapUtil::GetMap(wms, m_layerDefIds, m_bbox, m_crs,
-                m_width, m_height, resourceService);
+                m_width, m_height, resourceService, featureService, session);
             map->SetWatermarkUsage(MgMap::WMS);
 
             // Get the image format

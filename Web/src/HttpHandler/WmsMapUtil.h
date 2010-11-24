@@ -28,7 +28,7 @@ public:
 
     static MgMap* GetMap(MgOgcWmsServer& wms,
         MgStringCollection* layerDefIds, CREFSTRING bbox, CREFSTRING sSRS,
-        INT32 width, INT32 height, MgResourceService* resourceService);
+        INT32 width, INT32 height, MgResourceService* resourceService, MgFeatureService* featureService, CREFSTRING sSession);
 
     static MgEnvelope* GetExtents(CREFSTRING bbox);
 
@@ -49,6 +49,8 @@ public:
     static void ReverseCoords(double& coord1, double& coord2);
     // Help method to convert URN SRS(urn:ogc:def:crs:EPSG::4326) to EPSG SRS (EPSG:4326)
     static void ProcessURNSrs(REFSTRING sSRS);
+    // Help method to get user defined WMS boundingbox with particular SRS
+    static MgStringCollection* GetWMSlayerBoundingbox(STRING sSrs, STRING layerBounds);
 };
 
 #endif  // _FS_WMS_MAP_UTIL_H
