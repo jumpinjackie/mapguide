@@ -33,23 +33,30 @@ PUBLISHED_API:
 
     ///////////////////////////////////////////////////////////////
     /// \brief
-    /// The transformation definition describes the NONE transformation. That is, that
-    /// transformation doesn't actually perform a datum shift but is basically a NOOP.
+    /// Default 0 constant available for programming convenience only. It does not
+    /// describe a specific geodetic transformation type.
     static const INT32 None = 0;
+
+    ///////////////////////////////////////////////////////////////
+    /// \brief
+    /// The transformation definition describes a built-in transformation. That is, that
+    /// transformation is well-known and cannot be parameterized because
+    /// the information is available to the transformation engine.
+    static const INT32 Standalone = 1;
 
     ///////////////////////////////////////////////////////////////
     /// \brief
     /// The transformation definition describes an analytical transformation where
     /// the transformation between the source and the target datum is defined
     /// through a formular that's fed with up to 10 parameters.
-    static const INT32 Analytical = 1;
+    static const INT32 Analytical = 2;
 
     ///////////////////////////////////////////////////////////////
     /// \brief
     /// The transformation definition describes a transformation that
     /// uses grid files to calculate the actual datum shift for a given
     /// coordinate by interpolating between given grid points.
-    static const INT32 Interpolation = 2;
+    static const INT32 Interpolation = 3;
 
     ///////////////////////////////////////////////////////////////
     /// \brief

@@ -2671,6 +2671,14 @@
 				>
 			</File>
 			<File
+				RelativePath=".\CoordinateSystem\CoordinateSystemGeodeticStandaloneTransformationMethod.h"
+				>
+			</File>
+			<File
+				RelativePath=".\CoordinateSystem\CoordinateSystemGeodeticStandaloneTransformDefParams.h"
+				>
+			</File>
+			<File
 				RelativePath=".\CoordinateSystem\CoordinateSystemGeodeticTransformation.h"
 				>
 			</File>
@@ -2992,6 +3000,14 @@
 			</File>
 			<File
 				RelativePath="..\CoordinateSystem\CoordSysGeodeticPathElement.h"
+				>
+			</File>
+			<File
+				RelativePath="..\CoordinateSystem\CoordSysGeodeticStandaloneTransformDefParams.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\CoordinateSystem\CoordSysGeodeticStandaloneTransformDefParams.h"
 				>
 			</File>
 			<File

@@ -107,6 +107,7 @@ PUBLISHED_API:
     /// \li MgCoordinateSystemGeodeticAnalyticalTransformDefParams if this transformation uses an anylitical transformation method
     /// \li MgCoordinateSystemGeodeticInterpolationTransformDefParams if this transformation uses grid files
     /// \li MgCoordinateSystemGeodeticMultipleRegressionTransformDefParams if this transformation is a multiple regression transformation type
+    /// \li MgCoordinateSystemGeodeticStandaloneTransformDefParams if this transformation is a standalone (aka built-in) transformation type
     ///
     /// \return
     /// Returns the extended parameters (or NULL) object for this transformation object. The
@@ -126,7 +127,9 @@ PUBLISHED_API:
     /// \param parameters
     /// The parameters to set for this transformation. The object passed in,
     /// has to be of the same type as it has been returned by GetParameters. Otherwise,
-    /// an exception will be thrown. This parameter can only be NULL, if this is a NONE transformation.
+    /// an exception will be thrown. This parameter must not be NULL. Creating a transformation that
+    /// is supposed to do nothing except for allowing to switch from one datum to another (that is considered to be equal),
+    /// requires to create standalone transformation of type NullX.
     ///
     /// \remarks
     /// The instance passed in has to be disposed by the caller, i.e. this transformation

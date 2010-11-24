@@ -39,6 +39,10 @@ PUBLISHED_API:
     /// method does not create a new entry in the dictionary. The caller is responsible
     /// for disposing the object being returned.
     ///
+    /// \param transformationDefType
+    /// The type of the geodetic transformation to create. This must be a constant value as defined
+    /// in MgCoordinateSystemGeodeticTransformDefType (except for None)
+    ///
     /// \return
     /// Return a new, in-memory geodetic transformation definition object. No content is written to disk
     /// when this method executes.
