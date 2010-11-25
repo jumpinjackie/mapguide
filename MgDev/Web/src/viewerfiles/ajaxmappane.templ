@@ -1250,8 +1250,6 @@ function OnMouseMove(e)
             {
                 if(!parent.InMeasure())
                 {
-                    if(safari || chrome)
-                        document.getElementById("tbMap").style.cursor = (x < 0 && x > -6? "w-resize" : "arrow");
                     if(x >= 0)
                     {
                         hlData.curx = x;
