@@ -283,8 +283,8 @@ libMgHttpHandler_la_LIBADD = \
     -lMgPlatformBase \
     -lMgMapGuideCommon \
     -llib_json \
-    -lMdfModel \
-    -lMdfParser
+    -lMgMdfModel \
+    -lMgMdfParser
 
 libMgHttpHandler_la_LDFLAGS = -release $(PACKAGE_VERSION) \
     -L../../../Common/Foundation \

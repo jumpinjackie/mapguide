@@ -64,10 +64,10 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="ACEd.lib lib_jsond.lib"
+				AdditionalDependencies="ACEd.lib lib_jsond.lib MgMdfParserd.lib MgMdfModeld.lib"
 				OutputFile="$(OutDir)\MgHttpHandlerd.dll"
 				LinkIncremental="2"
-				AdditionalLibraryDirectories="..\..\..\Oem\ACE\ACE_wrappers\lib;&quot;..\..\..\Oem\dbxml\lib&quot;;..\..\..\Oem\jsoncpp\lib"
+				AdditionalLibraryDirectories="..\..\..\Oem\ACE\ACE_wrappers\lib;..\..\..\Oem\dbxml\lib;..\..\..\Oem\jsoncpp\lib;..\..\..\common\lib\debug"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="$(OutDir)\MgHttpHandlerd.pdb"
 				SubSystem="2"
@@ -143,10 +143,10 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="ACEd.lib lib_jsond.lib"
+				AdditionalDependencies="ACEd.lib lib_jsond.lib MgMdfParserd.lib MgMdfModeld.lib"
 				OutputFile="$(OutDir)\MgHttpHandlerd.dll"
 				LinkIncremental="2"
-				AdditionalLibraryDirectories="..\..\..\Oem\ACE\ACE_wrappers\lib64;&quot;..\..\..\Oem\dbxml\lib64&quot;;..\..\..\Oem\jsoncpp\lib64"
+				AdditionalLibraryDirectories="..\..\..\Oem\ACE\ACE_wrappers\lib64;..\..\..\Oem\dbxml\lib64;..\..\..\Oem\jsoncpp\lib64;..\..\..\Common\lib\debug64"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="$(OutDir)\MgHttpHandlerd.pdb"
 				SubSystem="2"
@@ -220,10 +220,10 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="ACE.lib lib_json.lib"
+				AdditionalDependencies="ACE.lib lib_json.lib MgMdfParser.lib MgMdfModel.lib"
 				OutputFile="$(OutDir)\MgHttpHandler.dll"
 				LinkIncremental="1"
-				AdditionalLibraryDirectories="..\..\..\Oem\ACE\ACE_wrappers\lib;&quot;..\..\..\Oem\dbxml\lib&quot;;..\..\..\Oem\jsoncpp\lib"
+				AdditionalLibraryDirectories="..\..\..\Oem\ACE\ACE_wrappers\lib;..\..\..\Oem\dbxml\lib;..\..\..\Oem\jsoncpp\lib;..\..\..\common\lib\release"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="$(OutDir)\MgHttpHandler.pdb"
 				SubSystem="2"
@@ -299,10 +299,10 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="ACE.lib lib_json.lib"
+				AdditionalDependencies="ACE.lib lib_json.lib MgMdfParser.lib MgMdfModel.lib"
 				OutputFile="$(OutDir)\MgHttpHandler.dll"
 				LinkIncremental="1"
-				AdditionalLibraryDirectories="..\..\..\Oem\ACE\ACE_wrappers\lib64;&quot;..\..\..\Oem\dbxml\lib64&quot;;..\..\..\Oem\jsoncpp\lib64"
+				AdditionalLibraryDirectories="..\..\..\Oem\ACE\ACE_wrappers\lib64;..\..\..\Oem\dbxml\lib64;..\..\..\Oem\jsoncpp\lib64;..\..\..\common\lib\release64"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="$(OutDir)\MgHttpHandler.pdb"
 				SubSystem="2"
