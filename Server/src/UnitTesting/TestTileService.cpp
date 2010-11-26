@@ -243,7 +243,7 @@ void TestTileService::TestEnd()
 
 
 // data structure which is passed to each thread
-struct ThreadData
+struct TileThreadData
 {
     INT32 threadId;
     bool done;
@@ -263,7 +263,7 @@ struct ThreadData
 ACE_THR_FUNC_RETURN GetTileWorker(void* param)
 {
     // get the data for this thread
-    ThreadData* threadData = (ThreadData*)param;
+    TileThreadData* threadData = (TileThreadData*)param;
     INT32 threadId = threadData->threadId;
     INT32 tileRow  = threadData->tileRow;
     INT32 tileCol  = threadData->tileCol;
@@ -324,7 +324,7 @@ void TestTileService::TestCase_GetTile()
 {
     // specify the number of threads to use
     const INT32 numThreads = MG_TEST_THREADS;
-    ThreadData threadData[numThreads];
+    TileThreadData threadData[numThreads];
 
     // define the range of tiles to get
     INT32 tileRowMin =  0;
@@ -461,7 +461,7 @@ void TestTileService::TestCase_GetTile()
 ACE_THR_FUNC_RETURN SetTileWorker(void* param)
 {
     // get the data for this thread
-    ThreadData* threadData = (ThreadData*)param;
+    TileThreadData* threadData = (TileThreadData*)param;
     INT32 threadId = threadData->threadId;
     INT32 tileRow  = threadData->tileRow;
     INT32 tileCol  = threadData->tileCol;
@@ -528,7 +528,7 @@ void TestTileService::TestCase_SetTile()
 {
     // specify the number of threads to use
     const INT32 numThreads = MG_TEST_THREADS;
-    ThreadData threadData[numThreads];
+    TileThreadData threadData[numThreads];
 
     // define the range of tiles to set
     INT32 tileRowMin =  0;
@@ -719,7 +719,7 @@ void TestTileService::TestCase_GetSetTile()
 {
     // specify the number of threads to use
     const INT32 numThreads = MG_TEST_THREADS;
-    ThreadData threadData[numThreads];
+    TileThreadData threadData[numThreads];
 
     // define the range of tiles to get and set
     INT32 tileRowMin =  0;
