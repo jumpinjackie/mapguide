@@ -1644,7 +1644,7 @@ void TestResourceService::TestCase_EnumerateUnmanagedData()
 }
 
 // data structure which is passed to each thread
-struct ThreadData
+struct ResourceThreadData
 {
     INT32 threadId;
     INT32 command;
@@ -1656,7 +1656,7 @@ struct ThreadData
 ACE_THR_FUNC_RETURN RepositoryWorker(void* param)
 {
     // get the data for this thread
-    ThreadData* threadData = (ThreadData*)param;
+    ResourceThreadData* threadData = (ResourceThreadData*)param;
     INT32 threadId = threadData->threadId;
     INT32 command = threadData->command;
     ACE_DEBUG((LM_INFO, ACE_TEXT("> thread %d started\n"), threadId));
@@ -1704,7 +1704,7 @@ ACE_THR_FUNC_RETURN RepositoryWorker(void* param)
         message += L"\n";
         message += e->GetStackTrace(TEST_LOCALE);
         SAFE_RELEASE(e);
-        ACE_DEBUG((LM_INFO, ACE_TEXT("RepositoryWorker - Exception:\n%W\n"), message.c_str()));
+        ACE_DEBUG((LM_INFO, ACE_TEXT("RepositoryWorker(%d) - Exception:\n%W\n"), threadId, message.c_str()));
     }
     catch (...)
     {
@@ -1724,7 +1724,7 @@ void TestResourceService::TestCase_RepositoryBusy()
 {
     // specify the number of threads to use
     const INT32 numThreads = MG_TEST_THREADS;
-    ThreadData threadData[numThreads];
+    ResourceThreadData threadData[numThreads];
 
     try
     {
