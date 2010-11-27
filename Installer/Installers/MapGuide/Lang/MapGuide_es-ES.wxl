@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<WixLocalization Culture="es-ES" xmlns="http://schemas.microsoft.com/wix/2006/localization">
+    <!-- 
+    Use this link to get the culture id
+    http://msdn.microsoft.com/en-us/library/system.globalization.cultureinfo(vs.80).aspx
+    -->
+    <String Id="LANG">3082</String>
+    <String Id="ProductName">MapGuide Open Source 2.2</String>
+    <String Id="ProductManufacturer">Open Source Geospatial Foundation</String>
+
+    <String Id="InstallerTitle">Instalación de [ProductName]</String>
+
+    <String Id="MapGuideFeature">MapGuide</String>
+    <String Id="MapGuideFeature_Description">Ubicación de instalación MapGuide</String>
+
+    <String Id="NextButtonText">Siguiente</String>
+    <String Id="BackButtonText">Anterior</String>
+    <String Id="CancelButtonText">Cancelar</String>
+
+    <String Id="DisabledFeaturesDialog_Title">Características de los discapacitados</String>
+    <String Id="DisabledFeaturesDialog_Description">Algunas funciones no estarán disponibles</String>
+    <String Id="DisabledFeaturesDialog_IIS">IIS no está instalado, por lo que no estará disponible como una opción de instalación</String>
+    <String Id="DisabledFeaturesDialog_DotNet">Dot Net Framework 2.0 no se ha encontrado, por lo que el Asp.Net Web Extensiones no estará disponible</String>
+    <String Id="DisabledFeaturesDialog_Instructions">Si desea utilizar estas funciones, haga clic en cancelar y corregir el problema antes de proceder con la instalación</String>
+
+    <String Id="ServerConfigDlg_Title">Puerto del servidor de configuración</String>
+    <String Id="ServerConfigDlg_Description">Configurar los puertos de escucha para MapGuide Server</String>
+    <String Id="ServerConfigDlg_Prompt">MapGuide Server se instala utilizando los números de puerto siguiente. El servidor de Web y los archivos de configuración de nivel se establece para utilizar los números de puerto se especifica a continuación.</String>
+    <String Id="ServerConfigDlg_AdminPortNo">Administrador de Puerto de conexión</String>
+    <String Id="ServerConfigDlg_ClientPortNo">Puerto de conexión de cliente</String>
+    <String Id="ServerConfigDlg_SitePortNo">Sitio Puerto de conexión</String>
+
+    <String Id="WebServerConfigDlg_Title">Seleccione el tipo de configuración</String>
+    <String Id="WebServerConfigDlg_Description">Seleccione el tipo de configuración del servidor Web que desea</String>
+    <String Id="WebServerConfigDlg_Apache">Paquete de configuración</String>
+    <String Id="WebServerConfigDlg_IIS">Configuración de IIS</String>
+    <String Id="WebServerConfigDlg_Manual">Configuración manual</String>
+    <String Id="WebServerConfigDlg_Apache_Tooltip">Instalar y configurar Apache, PHP y Tomcat</String>
+    <String Id="WebServerConfigDlg_IIS_Tooltip">Instalar PHP y de auto-configuración de IIS</String>
+    <String Id="WebServerConfigDlg_Manual_Tooltip">Instalar manual los componentes.</String>
+
+    <String Id="ApacheConfigDlg_Title">Paquete de ajustes de configuración</String>
+    <String Id="ApacheConfigDlg_Description">Configure el entorno de desarrollo</String>
+    <String Id="ApacheConfigDlg_PortNo">número de puerto del servidor web</String>
+    <String Id="ApacheConfigDlg_DevEnv">Entorno de desarrollo</String>
+    <String Id="ApacheConfigDlg_VDirName">Nombre del directorio virtual</String>
+
+    <String Id="IISLangConfigDlg_Title">Ajustes de configuración de IIS</String>
+    <String Id="IISLangConfigDlg_Description">Configure el entorno de desarrollo</String>
+    <String Id="IISLangConfigDlg_DevEnv">Entorno de desarrollo</String>
+    <String Id="IISLangConfigDlg_VDirName">Nombre del directorio virtual</String>
+
+    <String Id="IIS6ConfigDlg_Title">Configuración de IIS 6.0</String>
+    <String Id="IIS6ConfigDlg_Description">Configurar IIS 6.0 Configuración</String>
+    <String Id="IIS6ConfigDlg_InstallTo">Instalación de extensiones Web de sitio web la siguiente</String>
+    <String Id="IIS6ConfigDlg_AppPool">Crear un grupo de aplicaciones</String>
+    <String Id="IIS6ConfigDlg_AppPoolDescription">Un grupo de aplicaciones MapGuide permite a las aplicaciones ser aislado de otras aplicaciones que se ejecutan en el servidor web</String>
+
+    <String Id="NoIISDlg_Title">IIS no se encuentra</String>
+    <String Id="NoIISDlg_Description">IIS no se encuentra</String>
+    <String Id="NoIISDlg_Text">IIS no se pudo encontrar en su sistema. Por favor, volver atrás y elegir una configuración diferente web o instalar IIS.</String>
+    
+    <String Id="IPConfigDlg_Title">Dirección IP del servidor</String>
+    <String Id="IPConfigDlg_Description">Introduzca el servidor de sitio MapGuide dirección IP del servidor</String>
+    <String Id="IPConfigDlg_IPAddress">Introduzca el servidor de sitio MapGuide dirección IP del servidor:</String>
+    <String Id="IPConfigDlg_Note">La dirección IP del servidor web por defecto es localhost (127.0.0.1)</String>
+
+    <String Id="UpdateApacheConfig">Ajuste los valores de httpd.conf</String>
+    <String Id="UpdatePhpIni">Ajuste los valores de php.ini</String>
+    <String Id="InstallApacheServiceCA">Servicio de Instalación de Apache</String>
+    <String Id="MgServerInstallCA">Servicio de Instalación de MapGuide</String>
+    <String Id="MgServerUninstallCA">Extracción de MapGuide Servicio</String>
+    <String Id="RemoveApacheServiceCA">Servicio de eliminación de Apache</String>
+
+</WixLocalization>

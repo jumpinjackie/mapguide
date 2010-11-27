@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<WixLocalization Culture="en-US" xmlns="http://schemas.microsoft.com/wix/2006/localization">
+    <!-- 
+    Use this link to get the culture id
+    http://msdn.microsoft.com/en-us/library/system.globalization.cultureinfo(vs.80).aspx
+    -->
+    <String Id="LANG">1033</String>
+    <String Id="ProductName">MapGuide Open Source 2.2</String>
+    <String Id="ProductManufacturer">Open Source Geospatial Foundation</String>
+
+    <String Id="InstallerTitle">[ProductName] Setup</String>
+
+    <String Id="MapGuideFeature">MapGuide</String>
+    <String Id="MapGuideFeature_Description">MapGuide Install Location</String>
+
+    <String Id="NextButtonText">Next</String>
+    <String Id="BackButtonText">Back</String>
+    <String Id="CancelButtonText">Cancel</String>
+
+    <String Id="DisabledFeaturesDialog_Title">Disabled Features</String>
+    <String Id="DisabledFeaturesDialog_Description">Some features will not be available</String>
+    <String Id="DisabledFeaturesDialog_IIS">IIS is not installed, so it will not be available as an installation choice.</String>
+    <String Id="DisabledFeaturesDialog_DotNet">The .NET Framework 2.0 was not found, so the .NET Web Extensions for IIS will not be available</String>
+    <String Id="DisabledFeaturesDialog_Instructions">If you want to use these features, click on cancel and correct the problem before proceeding with installation</String>
+
+    <String Id="ServerConfigDlg_Title">Server Port Configuration</String>
+    <String Id="ServerConfigDlg_Description">Set up the listening ports for MapGuide Server</String>
+    <String Id="ServerConfigDlg_Prompt">MapGuide Server will be installed using the following port numbers. The Server and Web Tier configuration files will be set to use the specified port numbers below.</String>
+    <String Id="ServerConfigDlg_AdminPortNo">Admin Connection Port</String>
+    <String Id="ServerConfigDlg_ClientPortNo">Client Connection Port</String>
+    <String Id="ServerConfigDlg_SitePortNo">Site Connection Port</String>
+    
+    <String Id="WebServerConfigDlg_Title">Select configuration type</String>
+    <String Id="WebServerConfigDlg_Description">Select the type of web server configuration you want</String>
+    <String Id="WebServerConfigDlg_Apache">Bundled Configuration</String>
+    <String Id="WebServerConfigDlg_IIS">IIS Configuration</String>
+    <String Id="WebServerConfigDlg_Manual">Manual Configuration</String>
+    <String Id="WebServerConfigDlg_Apache_Tooltip">Install and configure Apache, PHP, and Tomcat.</String>
+    <String Id="WebServerConfigDlg_IIS_Tooltip">Install PHP and auto-configure IIS.</String>
+    <String Id="WebServerConfigDlg_Manual_Tooltip">Manually install and configure MapGuide.</String>
+
+    <String Id="ApacheConfigDlg_Title">Bundled Configuration Settings</String>
+    <String Id="ApacheConfigDlg_Description">Set up the development environment</String>
+    <String Id="ApacheConfigDlg_PortNo">Web Server Port Number</String>
+    <String Id="ApacheConfigDlg_DevEnv">Development Environment</String>
+    <String Id="ApacheConfigDlg_VDirName">Virtual Directory Name</String>
+
+    <String Id="IISLangConfigDlg_Title">IIS Configuration Settings</String>
+    <String Id="IISLangConfigDlg_Description">Set up the development environment</String>
+    <String Id="IISLangConfigDlg_DevEnv">Development Environment</String>
+    <String Id="IISLangConfigDlg_VDirName">Virtual Directory Name</String>
+
+    <String Id="IIS6ConfigDlg_Title">IIS 6.0 Configuration</String>
+    <String Id="IIS6ConfigDlg_Description">Configure IIS 6.0 Settings</String>
+    <String Id="IIS6ConfigDlg_InstallTo">Install Web Extensions to the following website</String>
+    <String Id="IIS6ConfigDlg_AppPool">Create an application pool</String>
+    <String Id="IIS6ConfigDlg_AppPoolDescription">An application pool allows MapGuide applications to be isolated from other applications running on the web server</String>
+
+    <String Id="NoIISDlg_Title">IIS not found</String>
+    <String Id="NoIISDlg_Description">IIS not found</String>
+    <String Id="NoIISDlg_Text">IIS could not be found on your system. Please go back and choose a different web configuration or install IIS.</String>
+
+    <String Id="IPConfigDlg_Title">Server IP address</String>
+    <String Id="IPConfigDlg_Description">Enter the MapGuide Server site server IP address.</String>
+    <String Id="IPConfigDlg_IPAddress">Enter the MapGuide Server site server IP address:</String>
+    <String Id="IPConfigDlg_Note">The site server IP address defaults to localhost (127.0.0.1)</String>
+
+    <String Id="UpdateApacheConfig">Setting values for httpd.conf</String>
+    <String Id="UpdatePhpIni">Setting values for php.ini</String>
+    <String Id="InstallApacheServiceCA">Installing Apache Service</String>
+    <String Id="MgServerInstallCA">Installing MapGuide Service</String>
+    <String Id="MgServerUninstallCA">Removing MapGuide Service</String>
+    <String Id="RemoveApacheServiceCA">Removing Apache Service</String>
+
+</WixLocalization>

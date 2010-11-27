@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<WixLocalization Culture="en-US" xmlns="http://schemas.microsoft.com/wix/2006/localization">
+	<String Id="ServerFeature">Server</String>
+    <String Id="ServerFeature_Description">MapGuide Server provides geographic analysis and rendering services.</String>
+    <String Id="ServerLogsFeature">Log Files</String>
+    <String Id="ServerLogsFeature_Description">You may choose a location to place the server logfiles.</String>
+    <String Id="ServerPackagesFeature">Packages</String>
+    <String Id="ServerPackagesFeature_Description">You may choose a location where the server will access Packages (*.mgp).</String>
+    <String Id="ServerRepositoriesFeature">Repositories</String>
+    <String Id="ServerRepositoriesFeature_Description">You may choose a parent location for the server repositories.</String>
+    <String Id="ServerRepositoriesLibraryFeature">Library</String>
+    <String Id="ServerRepositoriesLibraryFeature_Description">You may choose a location for the Library repository.</String>
+    <String Id="ServerRepositoriesSessionFeature">Session</String>
+    <String Id="ServerRepositoriesSessionFeature_Description">You may choose a location for the Session repository.</String>
+    <String Id="ServerRepositoriesSiteFeature">Site</String>
+    <String Id="ServerRepositoriesSiteFeature_Description">You may choose a location for the Site repository.</String>
+    <String Id="ServerRepositoriesTileCacheFeature">TileCache</String>
+    <String Id="ServerRepositoriesTileCacheFeature_Description">You may choose a location for the Tile Cache repository.</String>
+    <String Id="ServerTempFeature">Temp Directory</String>
+    <String Id="ServerTempFeature_Description">You may choose a location where MapGuide will store temporary files.</String>
+    <!-- FDO -->
+    <String Id="FdoDescription">FDO (Feature Data Objects) allows abstract access to many different data sources.</String>
+    <String Id="ArcSdeProvider">ArcSDE Provider</String>
+    <String Id="ArcSdeProviderDesc">Read/write access to an ESRI ArcSDE-based data store, using Oracle and SQL Server. (Requires external ArcSDE dlls)</String>
+    <String Id="GdalProvider">GDAL Provider</String>
+    <String Id="GdalProviderDesc">FDO Raster Provider for GDAL</String>
+    <String Id="KingOracleProvider">Oracle Provider</String>
+    <String Id="KingOracleProviderDesc">Read/write access to spatial and attribute data in an Oracle Spatial. (requires Oracle Instant Client libraries)</String>
+    <String Id="MySqlProvider">MySQL Provider</String>
+    <String Id="MySqlProviderDesc">FDO Provider for MySQL (requires libmysql.dll)</String>
+    <String Id="OdbcProvider">ODBC Provider</String>
+    <String Id="OdbcProviderDesc">FDO Provider for ODBC</String>
+    <String Id="OgrProvider">OGR Provider</String>
+    <String Id="OgrProviderDesc">FDO Access to OGR Data Sources</String>
+    <String Id="PostGisProvider">PostGIS Provider</String>
+    <String Id="PostGisProviderDesc">Read/write access to spatial and attribute data in a PostGIS database. (requires libpq.dll)</String>
+    <String Id="PostgreSqlProvider">PostgreSQL/PostGIS Provider</String>
+    <String Id="PostgreSqlProviderDesc">Read/write access to PostgreSQL/PostGIS-based data store. Supports spatial data types and spatial query operations.</String>
+    <String Id="SdfProvider">SDF Provider</String>
+    <String Id="SdfProviderDesc">Read/write access to Autodesk's spatial database format, a file-based personal geodatabase that supports multiple features/attributes, spatial indexing, and file-locking.</String>
+    <String Id="ShpProvider">SHP Provider</String>
+    <String Id="ShpProviderDesc">Read/write access to spatial and attribute data in an ESRI SHP file.</String>
+    <String Id="SltProvider">SQLite Provider</String>
+    <String Id="SltProviderDesc">The SQLite Provider</String>
+    <String Id="SqlServerProvider">MS SQL Server Spatial Provider</String>
+    <String Id="SqlServerProviderDesc">Read/Write access to feature data in a MS SQL Server spatially enabled data store. Supports geospatial and non-geospatial data and schema.</String>
+    <String Id="WfsProvider">WFS Provider</String>
+    <String Id="WfsProviderDesc">Read access to OGC WFS-based data store.</String>
+    <String Id="WmsProvider">WMS Provider</String>
+    <String Id="WmsProviderDesc">Read access to OGC WMS-based data store.</String>
+</WixLocalization>

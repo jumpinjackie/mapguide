@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi"
+     xmlns:iis="http://schemas.microsoft.com/wix/IIsExtension"
+     xmlns:util="http://schemas.microsoft.com/wix/UtilExtension">
+	<Fragment>
+
+    <!-- ************************* Custom Actions for IIS7 INSTALL ***************************************** -->
+
+    <CustomAction Id="MapGuideIIS7_I_AppCmd_Cmd" Property="AppCmd" Execute="immediate" Value="&quot;[WindowsFolder]system32\inetsrv\APPCMD.EXE&quot;" />
+
+    <!-- IIS7 Base MapGuide INSTALL -->
+
+    <!-- Create the application pool -->
+    <CustomAction Id="MapGuideIIS7_I_CreateAppPool_Cmd" Property="MapGuideIIS7_I_CreateAppPool" Execute="immediate"
+        Value="[AppCmd] add apppool /name:&quot;[APP_POOL_NAME]&quot;" />
+    <CustomAction Id="MapGuideIIS7_I_CreateAppPool" BinaryKey="WixCA" DllEntry="CAQuietExec" Execute="deferred" Return="ignore" Impersonate="no"/>
+
+    <!-- Set the application pool's properties -->
+    <CustomAction Id="MapGuideIIS7_I_SetAppPoolProp_Cmd" Property="MapGuideIIS7_I_SetAppPoolProp" Execute="immediate"
+        Value="[AppCmd] set config /section:applicationPools /[\[]name='[APP_POOL_NAME]'[\]].processModel.idleTimeout:00:00:00  /[\[]name='[APP_POOL_NAME]'[\]].recycling.disallowOverlappingRotation:True" />
+    <CustomAction Id="MapGuideIIS7_I_SetAppPoolProp" BinaryKey="WixCA" DllEntry="CAQuietExec" Execute="deferred" Return="ignore" Impersonate="no"/>
+
+    <!-- Unlock handlers at the server level -->
+    <CustomAction Id="MapGuideIIS7_I_UnlockSrvHandlers_Cmd" Property="MapGuideIIS7_I_UnlockSrvHandlers" Execute="immediate"
+        Value="[AppCmd] unlock config /section:handlers" />
+    <CustomAction Id="MapGuideIIS7_I_UnlockSrvHandlers" BinaryKey="WixCA" DllEntry="CAQuietExec" Execute="deferred" Return="ignore" Impersonate="no"/>
+
+    <!-- Unlock handlers at the website level -->
+    <CustomAction Id="MapGuideIIS7_I_UnlockSiteHandlers_Cmd" Property="MapGuideIIS7_I_UnlockSiteHandlers" Execute="immediate"
+        Value="[AppCmd] unlock config &quot;[MG_WEBSITE]&quot; /section:handlers" />
+    <CustomAction Id="MapGuideIIS7_I_UnlockSiteHandlers" BinaryKey="WixCA" DllEntry="CAQuietExec" Execute="deferred" Return="ignore" Impersonate="no"/>
+
+    <!-- Create the "mapguide" virtual directory / app -->
+    <CustomAction Id="MapGuideIIS7_I_CreateMapGuideApp_Cmd" Property="MapGuideIIS7_I_CreateMapGuideApp" Execute="immediate"
+        Value="[AppCmd] add app /site.name:&quot;[MG_WEBSITE]&quot; /path:&quot;/[VIRTUALDIR]&quot; /physicalPath:&quot;[WEBEXTENSIONSLOCATION]www&quot;" />
+    <CustomAction Id="MapGuideIIS7_I_CreateMapGuideApp" BinaryKey="WixCA" DllEntry="CAQuietExec" Execute="deferred" Return="ignore" Impersonate="no"/>
+
+    <!-- Set up the PHP script mapping -->
+    <CustomAction Id="MapGuideIIS7_I_CreatePhpScriptMapping_Cmd" Property="MapGuideIIS7_I_CreatePhpScriptMapping" Execute="immediate"
+        Value="[AppCmd] set config &quot;[MG_WEBSITE]/[VIRTUALDIR]&quot; /section:handlers /+[\[]name='&quot;PHP ISAPI handler&quot;',path='*.php',verb='*',scriptProcessor='&quot;[WEBEXTENSIONSLOCATION]Php\php5isapi.dll&quot;',modules='IsapiModule',resourceType='Unspecified'[\]]" />
+    <CustomAction Id="MapGuideIIS7_I_CreatePhpScriptMapping" BinaryKey="WixCA" DllEntry="CAQuietExec" Execute="deferred" Return="ignore" Impersonate="no"/>
+
+    <!-- Allow access to the PHP ISAPI -->
+    <CustomAction Id="MapGuideIIS7_I_EnablePhpExtension_Cmd" Property="MapGuideIIS7_I_EnablePhpExtension" Execute="immediate"
+        Value="[AppCmd] set config /section:isapiCgiRestriction /+[\[]path='&quot;[WEBEXTENSIONSLOCATION]Php\php5isapi.dll&quot;',allowed='True',description='&quot;MapGuide PHP ISAPI handler&quot;'[\]]" />
+    <CustomAction Id="MapGuideIIS7_I_EnablePhpExtension" BinaryKey="WixCA" DllEntry="CAQuietExec" Execute="deferred" Return="ignore" Impersonate="no"/>
+
+    <!-- Create the MapAgent application -->
+    <CustomAction Id="MapGuideIIS7_I_CreateMapAgentApp_Cmd" Property="MapGuideIIS7_I_CreateMapAgentApp" Execute="immediate"
+        Value="[AppCmd] add app /site.name:&quot;[MG_WEBSITE]&quot; /path:&quot;/[VIRTUALDIR]/mapagent&quot; /physicalPath:&quot;[WEBEXTENSIONSLOCATION]www\mapagent&quot;" />
+    <CustomAction Id="MapGuideIIS7_I_CreateMapAgentApp" BinaryKey="WixCA" DllEntry="CAQuietExec" Execute="deferred" Return="ignore" Impersonate="no"/>
+
+    <!-- Unlock handlers at the MapAgent level -->
+    <CustomAction Id="MapGuideIIS7_I_SetMapAgentHandlerAccess_Cmd" Property="MapGuideIIS7_I_SetMapAgentHandlerAccess" Execute="immediate"
+        Value="[AppCmd] set config &quot;[MG_WEBSITE]/[VIRTUALDIR]/mapagent&quot; /section:handlers /accessPolicy:Read,Script,Execute" />
+    <CustomAction Id="MapGuideIIS7_I_SetMapAgentHandlerAccess" BinaryKey="WixCA" DllEntry="CAQuietExec" Execute="deferred" Return="ignore" Impersonate="no"/>
+
+    <!-- Set up the MapAgent script mapping -->
+    <CustomAction Id="MapGuideIIS7_I_CreateMapAgentScriptHandling_Cmd" Property="MapGuideIIS7_I_CreateMapAgentScriptHandling" Execute="immediate"
+        Value="[AppCmd] set config &quot;[MG_WEBSITE]/[VIRTUALDIR]/mapagent&quot; /section:handlers /+[\[]name='&quot;MapGuide MapAgent ISAPI handler&quot;',path='mapagent.fcgi',verb='*',scriptProcessor='&quot;[WEBEXTENSIONSLOCATION]www\mapagent\isapi_MapAgent.dll&quot;',modules='IsapiModule'[\]]" />
+    <CustomAction Id="MapGuideIIS7_I_CreateMapAgentScriptHandling" BinaryKey="WixCA" DllEntry="CAQuietExec" Execute="deferred" Return="ignore" Impersonate="no"/>
+
+    <!-- Allow access to the MapAgent ISAPI -->
+    <CustomAction Id="MapGuideIIS7_I_EnableMapAgentExtension_Cmd" Property="MapGuideIIS7_I_EnableMapAgentExtension" Execute="immediate"
+        Value="[AppCmd] set config /section:isapiCgiRestriction /+[\[]path='&quot;[WEBEXTENSIONSLOCATION]www\mapagent\isapi_MapAgent.dll&quot;',allowed='True',description='&quot;MapGuide MapAgent ISAPI handler&quot;'[\]]" />
+    <CustomAction Id="MapGuideIIS7_I_EnableMapAgentExtension" BinaryKey="WixCA" DllEntry="CAQuietExec" Execute="deferred" Return="ignore" Impersonate="no"/>
+
+    <!-- Set App Pool to 32-bit mode (applies to 64-bit windows) -->
+    <CustomAction Id="MapGuideIIS7_I_Set32BitAppPool_Cmd" Property="MapGuideIIS7_I_Set32BitAppPool" Execute="immediate"
+        Value="[AppCmd] apppool set /apppool.name:&quot;[APP_POOL_NAME]&quot; /enable32BitAppOnWin64:true" />
+    <CustomAction Id="MapGuideIIS7_I_Set32BitAppPool" BinaryKey="WixCA" DllEntry="CAQuietExec" Execute="deferred" Return="ignore" Impersonate="no" />
+        
+    <!-- Make the MapGuide application run in the MapGuide app pool -->
+    <CustomAction Id="MapGuideIIS7_I_AssignMapGuideAppPool_Cmd" Property="MapGuideIIS7_I_AssignMapGuideAppPool" Execute="immediate"
+        Value="[AppCmd] set app &quot;[MG_WEBSITE]/[VIRTUALDIR]&quot; /applicationPool:&quot;[APP_POOL_NAME]&quot;" />
+    <CustomAction Id="MapGuideIIS7_I_AssignMapGuideAppPool" BinaryKey="WixCA" DllEntry="CAQuietExec" Execute="deferred" Return="ignore" Impersonate="no"/>
+
+    <!-- Make the MapAgent application run in the MapGuide app pool -->
+    <CustomAction Id="MapGuideIIS7_I_AssignMapAgentAppPool_Cmd" Property="MapGuideIIS7_I_AssignMapAgentAppPool" Execute="immediate"
+        Value="[AppCmd] set app &quot;[MG_WEBSITE]/[VIRTUALDIR]/mapagent&quot; /applicationPool:&quot;[APP_POOL_NAME]&quot;" />
+    <CustomAction Id="MapGuideIIS7_I_AssignMapAgentAppPool" BinaryKey="WixCA" DllEntry="CAQuietExec" Execute="deferred" Return="ignore" Impersonate="no"/>
+
+    <!-- Unlock the httpErrors configuration section for the entire server -->
+    <CustomAction Id="MapGuideIIS7_I_UnlockHttpErrorsMain_Cmd" Property="MapGuideIIS7_I_UnlockHttpErrorsMain" Execute="immediate"
+        Value="[AppCmd] unlock config /section:httpErrors" />
+    <CustomAction Id="MapGuideIIS7_I_UnlockHttpErrorsMain" BinaryKey="WixCA" DllEntry="CAQuietExec" Execute="deferred" Return="ignore" Impersonate="no"/>
+
+    <!-- Unlock the httpErrors configuration section for the web site -->
+    <CustomAction Id="MapGuideIIS7_I_UnlockHttpErrorsWebSite_Cmd" Property="MapGuideIIS7_I_UnlockHttpErrorsWebSite" Execute="immediate"
+        Value="[AppCmd] unlock config &quot;[MG_WEBSITE]&quot; /section:httpErrors" />
+    <CustomAction Id="MapGuideIIS7_I_UnlockHttpErrorsWebSite" BinaryKey="WixCA" DllEntry="CAQuietExec" Execute="deferred" Return="ignore" Impersonate="no"/>
+
+    <!-- Unlock the httpErrors configuration section for the MapGuide application -->
+    <CustomAction Id="MapGuideIIS7_I_UnlockHttpErrorsMapGuide_Cmd" Property="MapGuideIIS7_I_UnlockHttpErrorsMapGuide" Execute="immediate"
+        Value="[AppCmd] unlock config &quot;[MG_WEBSITE]/[VIRTUALDIR]&quot; /section:httpErrors" />
+    <CustomAction Id="MapGuideIIS7_I_UnlockHttpErrorsMapGuide" BinaryKey="WixCA" DllEntry="CAQuietExec" Execute="deferred" Return="ignore" Impersonate="no"/>
+
+    <!-- Reset the 401 error handlers to their default undecorated responses -->
+    <CustomAction Id="MapGuideIIS7_I_Reset401Handler_Cmd" Property="MapGuideIIS7_I_Reset401Handler" Execute="immediate"
+        Value="[AppCmd] set config &quot;[MG_WEBSITE]/[VIRTUALDIR]&quot; /section:httpErrors /-[\[]statusCode='401'[\]]" />
+    <CustomAction Id="MapGuideIIS7_I_Reset401Handler" BinaryKey="WixCA" DllEntry="CAQuietExec" Execute="deferred" Return="ignore" Impersonate="no"/>
+
+    <!-- Add a MIME type for JSON -->
+    <CustomAction Id="MapGuideIIS7_I_AddJsonMime_Cmd" Property="MapGuideIIS7_I_AddJsonMime" Execute="immediate"
+        Value="[AppCmd] set config /section:staticContent /+&quot;[\[]fileExtension='.json',mimeType='application/json'[\]]&quot;" />
+    <CustomAction Id="MapGuideIIS7_I_AddJsonMime" BinaryKey="WixCA" DllEntry="CAQuietExec" Execute="deferred" Return="ignore" Impersonate="no"/>
+
+    <!-- ************************* IIS7 PHP Viewer INSTALL ***************************************** -->
+
+    <!-- Create the application / virtual directory pointing mapviewerajax to mapviewerphp  -->
+    <CustomAction Id="MapGuideIIS7_I_CreateViewerPhp_Cmd" Property="MapGuideIIS7_I_CreateViewerPhp" Execute="immediate"
+        Value="[AppCmd] add app /site.name:&quot;[MG_WEBSITE]&quot; /path:&quot;/[VIRTUALDIR]/mapviewerajax&quot; /physicalPath:&quot;[WEBEXTENSIONSLOCATION]www\mapviewerphp&quot;" />
+    <CustomAction Id="MapGuideIIS7_I_CreateViewerPhp" BinaryKey="WixCA" DllEntry="CAQuietExec" Execute="deferred" Return="ignore" Impersonate="no"/>
+
+    <!-- Set the default document for mapviewerajax to ajaxviewer.php -->
+    <CustomAction Id="MapGuideIIS7_I_SetViewerDocPhp_Cmd" Property="MapGuideIIS7_I_SetViewerDocPhp" Execute="immediate"
+        Value="[AppCmd] set config &quot;[MG_WEBSITE]/[VIRTUALDIR]/mapviewerajax&quot; /section:defaultDocument /+files.[\[]value='ajaxviewer.php'[\]]" />
+    <CustomAction Id="MapGuideIIS7_I_SetViewerDocPhp" BinaryKey="WixCA" DllEntry="CAQuietExec" Execute="deferred" Return="ignore" Impersonate="no"/>
+
+    <!-- Make the MapAgent application run in the MapGuide app pool -->
+    <CustomAction Id="MapGuideIIS7_I_AssignViewerAppPoolPhp_Cmd" Property="MapGuideIIS7_I_AssignViewerAppPoolPhp" Execute="immediate"
+        Value="[AppCmd] set app &quot;[MG_WEBSITE]/[VIRTUALDIR]/mapviewerajax&quot; /applicationPool:&quot;[APP_POOL_NAME]&quot;" />
+    <CustomAction Id="MapGuideIIS7_I_AssignViewerAppPoolPhp" BinaryKey="WixCA" DllEntry="CAQuietExec" Execute="deferred" Return="ignore" Impersonate="no"/>
+
+    <!-- ************************* IIS7 ASP.Net Viewer INSTALL ***************************************** -->
+
+    <!-- Create the MapAgent application -->
+    <CustomAction Id="MapGuideIIS7_I_CreateViewerNet_Cmd" Property="MapGuideIIS7_I_CreateViewerNet" Execute="immediate"
+        Value="[AppCmd] add app /site.name:&quot;[MG_WEBSITE]&quot; /path:&quot;/[VIRTUALDIR]/mapviewerajax&quot; /physicalPath:&quot;[WEBEXTENSIONSLOCATION]www\mapviewernet&quot;" />
+    <CustomAction Id="MapGuideIIS7_I_CreateViewerNet" BinaryKey="WixCA" DllEntry="CAQuietExec" Execute="deferred" Return="ignore" Impersonate="no"/>
+
+    <!-- Set the default document for mapviewerajax to ajaxviewer.aspx -->
+    <CustomAction Id="MapGuideIIS7_I_SetViewerDocNet_Cmd" Property="MapGuideIIS7_I_SetViewerDocNet" Execute="immediate"
+        Value="[AppCmd] set config &quot;[MG_WEBSITE]/[VIRTUALDIR]/mapviewerajax&quot; /section:defaultDocument /+files.[\[]value='ajaxviewer.aspx'[\]]" />
+    <CustomAction Id="MapGuideIIS7_I_SetViewerDocNet" BinaryKey="WixCA" DllEntry="CAQuietExec" Execute="deferred" Return="ignore" Impersonate="no"/>
+
+    <!-- Make the MapAgent application run in the MapGuide app pool -->
+    <CustomAction Id="MapGuideIIS7_I_AssignViewerAppPoolNet_Cmd" Property="MapGuideIIS7_I_AssignViewerAppPoolNet" Execute="immediate"
+        Value="[AppCmd] set app &quot;[MG_WEBSITE]/[VIRTUALDIR]/mapviewerajax&quot; /applicationPool:&quot;[APP_POOL_NAME]&quot;" />
+    <CustomAction Id="MapGuideIIS7_I_AssignViewerAppPoolNet" BinaryKey="WixCA" DllEntry="CAQuietExec" Execute="deferred" Return="ignore" Impersonate="no"/>
+
+    <!-- ************************* IIS7 All Features UNINSTALL ***************************************** -->
+
+    <CustomAction Id="MapGuideIIS7_U_AppCmd_Cmd" Property="AppCmd" Execute="immediate" Value="&quot;[WindowsFolder]system32\inetsrv\APPCMD.EXE&quot;" />
+
+    <!-- Remove entry in ISAPI/CGI Restrictions for the MapAgent -->
+    <CustomAction Id="MapGuideIIS7_U_ClearMapAgentRestriction_Cmd" Property="MapGuideIIS7_U_ClearMapAgentRestriction" Execute="immediate"
+        Value="[AppCmd] set config /section:isapiCgiRestriction /-[\[]path='&quot;[WEBEXTENSIONSLOCATION]www\mapagent\isapi_MapAgent.dll&quot;'[\]]" />
+    <CustomAction Id="MapGuideIIS7_U_ClearMapAgentRestriction" BinaryKey="WixCA" DllEntry="CAQuietExec" Execute="deferred" Return="ignore" Impersonate="no"/>
+
+    <!-- Remove entry in ISAPI/CGI Restrictions for PHP -->
+    <CustomAction Id="MapGuideIIS7_U_ClearPhpRestriction_Cmd" Property="MapGuideIIS7_U_ClearPhpRestriction" Execute="immediate"
+        Value="[AppCmd] set config /section:isapiCgiRestriction /-[\[]path='&quot;[WEBEXTENSIONSLOCATION]Php\php5isapi.dll&quot;'[\]]" />
+    <CustomAction Id="MapGuideIIS7_U_ClearPhpRestriction" BinaryKey="WixCA" DllEntry="CAQuietExec" Execute="deferred" Return="ignore" Impersonate="no"/>
+
+    <!-- Remove MapViewerAjax application -->
+    <CustomAction Id="MapGuideIIS7_U_RemoveViewer_Cmd" Property="MapGuideIIS7_U_RemoveViewer" Execute="immediate"
+        Value="[AppCmd] delete app &quot;[MG_WEBSITE]/[VIRTUALDIR]/mapviewerajax&quot;" />
+    <CustomAction Id="MapGuideIIS7_U_RemoveViewer" BinaryKey="WixCA" DllEntry="CAQuietExec" Execute="deferred" Return="ignore" Impersonate="no"/>
+
+    <!-- Remove MapAgent application -->
+    <CustomAction Id="MapGuideIIS7_U_RemoveMapAgent_Cmd" Property="MapGuideIIS7_U_RemoveMapAgent" Execute="immediate"
+        Value="[AppCmd] delete app &quot;[MG_WEBSITE]/[VIRTUALDIR]/mapagent&quot;" />
+    <CustomAction Id="MapGuideIIS7_U_RemoveMapAgent" BinaryKey="WixCA" DllEntry="CAQuietExec" Execute="deferred" Return="ignore" Impersonate="no"/>
+
+    <!-- Remove MapGuide application -->
+    <CustomAction Id="MapGuideIIS7_U_RemoveMapGuide_Cmd" Property="MapGuideIIS7_U_RemoveMapGuide" Execute="immediate"
+        Value="[AppCmd] delete app &quot;[MG_WEBSITE]/[VIRTUALDIR]&quot;" />
+    <CustomAction Id="MapGuideIIS7_U_RemoveMapGuide" BinaryKey="WixCA" DllEntry="CAQuietExec" Execute="deferred" Return="ignore" Impersonate="no"/>
+
+    <!-- Remove MapGuide App Pool -->
+    <CustomAction Id="MapGuideIIS7_U_DeleteAppPool_Cmd" Property="MapGuideIIS7_U_DeleteAppPool" Execute="immediate"
+        Value="[AppCmd] delete apppool &quot;[APP_POOL_NAME]&quot;" />
+    <CustomAction Id="MapGuideIIS7_U_DeleteAppPool" BinaryKey="WixCA" DllEntry="CAQuietExec" Execute="deferred" Return="ignore" Impersonate="no"/>
+
+  </Fragment>
+</Wix>

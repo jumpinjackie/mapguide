@@ -1,0 +1,211 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi"
+     xmlns:util="http://schemas.microsoft.com/wix/UtilExtension">
+    <?if "$(var.MgPlatform)" = "x64" ?>
+      <?define Win64 = "yes" ?>
+      <?define PlatformProgramFilesFolder = "ProgramFiles64Folder" ?>
+    <?else ?>
+       <?define Win64 = "no" ?>
+       <?define PlatformProgramFilesFolder = "ProgramFilesFolder" ?>
+    <?endif ?>
+    <Fragment>
+
+        <PropertyRef Id="NETFRAMEWORK20"/>
+        <PropertyRef Id="MGWEB_CONFIG"/>
+        <PropertyRef Id="IIS_API_TYPE"/>
+      
+        <DirectoryRef Id="WebParentFolder">
+            <Directory Id="WEBEXTENSIONSLOCATION" Name="Web">
+                <Component Id="WebPortConfigComponent" Win64="$(var.Win64)" Guid="3C8FE0E1-3161-423D-9E08-0983B7075C4C" Feature="WebExtensionsFeature">
+                    <CreateFolder />
+                    <IniFile Id="INISETWEBADMINPORT"
+                             Action="addLine"
+                             Directory="WEBROOTLOCATION"
+                             Key="Port"
+                             Name="webconfig.ini"
+                             Section="AdministrativeConnectionProperties"
+                             Value="[MG_ADMIN_PORT]"/>
+                    <IniFile Id="INISETWEBCLIENTPORT"
+                             Action="addLine"
+                             Directory="WEBROOTLOCATION"
+                             Key="Port"
+                             Name="webconfig.ini"
+                             Section="ClientConnectionProperties"
+                             Value="[MG_CLIENT_PORT]"/>
+                    <IniFile Id="INISETWEBSITEPORT"
+                             Action="addLine"
+                             Directory="WEBROOTLOCATION"
+                             Key="Port"
+                             Name="webconfig.ini"
+                             Section="SiteConnectionProperties"
+                             Value="[MG_SITE_PORT]"/>
+                </Component>
+                <Component Id="WebExtensionsComponent" Win64="$(var.Win64)" Guid="AE77C8EB-284D-4410-903F-92AD516DEA93">
+                  <RegistryKey Id="MapGuideKey" Action="create" Root="HKLM" Key="$(var.MgRegKey)">
+                    <RegistryValue Id="IisApiType" Action="write" Type="string" Name="IIS_API_TYPE" Value="[IIS_API_TYPE]" />
+                    <RegistryValue Id="MgWebConfig" Action="write" Type="string" Name="MGWEB_CONFIG" Value="[MGWEB_CONFIG]" />
+                  </RegistryKey>
+                  <CreateFolder />
+                </Component>
+                <Directory Id="WEBTEMPLOCATION" Name="Temp">
+                    <Component Id="WebTempComponent" Win64="$(var.Win64)" Guid="38C3E0A5-88F8-4A98-896D-CCB5DADCC566" Feature="WebTempFeature">
+                        <CreateFolder>
+                            <util:PermissionEx User="Everyone" GenericAll="yes" />
+                        </CreateFolder>
+                    </Component>
+                </Directory>
+                <Directory Id="APACHELOCATION" Name="Apache2" />
+                <Directory Id="PHPLOCATION" Name="Php">
+                    <Component Id="WebExtPhpComponent" Win64="$(var.Win64)" Guid="88814E96-07DC-4fb7-A993-F31FC1E000CB" Feature="WebExtPhpFeature">
+                        <CreateFolder />
+                        <Environment Id="PhpEnvVar"
+                                     Action="set"
+                                     Name="PATH"
+                                     Part="last"
+                                     Permanent="no"
+                                     System="yes"
+                                     Value="[PHPLOCATION]" />
+                        <RegistryKey Action="createAndRemoveOnUninstall"
+                                     Root="HKLM"
+                                     Key="Software\PHP\[PHP_VERSION]">
+                            <RegistryValue Action="write"
+                                       Name="IniFilePath"
+                                       Type="string"
+                                       Value="[PHPLOCATION]" />
+                        </RegistryKey>
+                        <RegistryKey Action="createAndRemoveOnUninstall"
+                                     Root="HKLM"
+                                     Key="Software\PHP\5.3.1">
+                             <RegistryValue Action="write"
+                                        Name="IniFilePath"
+                                        Type="string"
+                                        Value="[PHPLOCATION]" />
+                        </RegistryKey>
+                    </Component>
+                </Directory>
+                <Directory Id="WEBROOTLOCATION" Name="www">
+                  <Directory Id="HELPLOCATION" Name="help" />
+                  <Component Id="WebRootComponent" Win64="$(var.Win64)" Guid="A84579E6-285D-4869-9F04-AA47FB1ACFD5" Feature="WebExtensionsFeature">
+                    <CreateFolder />
+                    <RemoveFile Id="MapGuideWebConfig" On="uninstall" Name="web.config" Property="WEBROOTLOCATION" />
+                      <RemoveFile Id="MapAgentWebConfig" On="uninstall" Name="web.config" Property="dir_mapagent_0" />
+                      <RemoveFile Id="MapviewerNetWebConfig" On="uninstall" Name="web.config" Property="dir_mapviewernet_0" />
+                      <RemoveFile Id="MapviewerPhpWebConfig" On="uninstall" Name="web.config" Property="dir_mapviewerphp_0" />
+                      <IniFile Id="INISETMAPAGENTRESOURCESPATH"
+                               Action="addLine"
+                               Directory="WEBROOTLOCATION"
+                               Key="ResourcesPath"
+                               Name="webconfig.ini"
+                               Section="GeneralProperties"
+                               Value="[WEBROOTLOCATION]mapagent\Resources" />
+                      <IniFile Id="INISETWEBTEMPPATH"
+                               Action="addLine"
+                               Directory="WEBROOTLOCATION"
+                               Key="TempPath"
+                               Name="webconfig.ini"
+                               Section="GeneralProperties"
+                               Value="[WEBTEMPLOCATION]" />
+                      <IniFile Id="INISETSERVERIP"
+                               Action="addLine"
+                               Directory="WEBROOTLOCATION"
+                               Key="IpAddress"
+                               Name="webconfig.ini"
+                               Section="SiteConnectionProperties"
+                               Value="[MGSERVER_IP]" />
+                      <IniFile Id="INISETTEMPLATEROOTPATH"
+                               Action="addLine"
+                               Directory="WEBROOTLOCATION"
+                               Key="TemplateRootFolder"
+                               Name="webconfig.ini"
+                               Section="WebApplicationProperties"
+                               Value="[dir_fusion_0]templates\mapguide" />
+                      <IniFile Id="INISETWIDGETINFOPATH"
+                               Action="addLine"
+                               Directory="WEBROOTLOCATION"
+                               Key="WidgetInfoFolder"
+                               Name="webconfig.ini"
+                               Section="WebApplicationProperties"
+                               Value="[dir_fusion_0]widgets\widgetinfo" />
+                      <IniFile Id="INISETCONTAINERINFOPATH"
+                               Action="addLine"
+                               Directory="WEBROOTLOCATION"
+                               Key="ContainerInfoFolder"
+                               Name="webconfig.ini"
+                               Section="WebApplicationProperties"
+                               Value="[dir_fusion_0]containerinfo" />
+                    </Component>
+                </Directory>
+                <Directory Id="TOMCATLOCATION" Name="Tomcat" />
+            </Directory>
+        </DirectoryRef>
+        <Feature Id="WebExtensionsFeature" Title="!(loc.WebExtensionsFeature)" Level="1" Description="!(loc.WebExtensionsFeature_Description)" AllowAdvertise="no" TypicalDefault="install" InstallDefault="local">
+            <ComponentGroupRef Id="group_WEBROOTFILES"/>
+            <ComponentRef Id="WebExtensionsComponent"/>
+            <ComponentRef Id="WebShortcutsComponent"/>
+            <ComponentRef Id="WebApacheShortcutComponent"/>
+            <ComponentRef Id="WebIISShortcutComponent"/>
+            <ComponentRef Id="GenericShortcutComponent"/>
+            <ComponentRef Id="WebTempComponent"/>
+
+            <Feature Id="WebExtApacheFeature" Title="!(loc.WebExtApacheFeature)" Level="1" Description="!(loc.WebExtApacheFeature_Description)" AllowAdvertise="no" TypicalDefault="install" InstallDefault="local" >
+                <ComponentGroupRef Id="group_APACHEFILES"/>
+            </Feature>
+            <Feature Id="WebExtPhpFeature" Title="!(loc.WebExtPhpFeature)" Display="hidden" Level="1" Description="!(loc.WebExtPhpFeature_Description)" Absent="disallow" AllowAdvertise="no" TypicalDefault="install" InstallDefault="local" >
+                <ComponentGroupRef Id="group_PHPFILES"/>
+            </Feature>
+            <Feature Id="WebExtTomcatFeature" Title="!(loc.WebExtTomcatFeature)" Level="1" Description="!(loc.WebExtTomcatFeature_Description)" AllowAdvertise="no" TypicalDefault="install" InstallDefault="local" >
+              <ComponentGroupRef Id="group_TOMCATFILES"/>
+            </Feature>
+            <Feature Id="WebExtHelpFeature" Title="!(loc.WebExtHelpFeature)" Level="1" Description="!(loc.WebExtHelpFeature_Description)" AllowAdvertise="no" TypicalDefault="install" InstallDefault="local">
+                <ComponentGroupRef Id="group_HELPFILES" />
+                <ComponentRef Id="ApacheWebApiShortcutComponent"/>
+                <ComponentRef Id="IISWebApiShortcutComponent"/>
+                <ComponentRef Id="ApacheViewerApiShortcutComponent"/>
+                <ComponentRef Id="IISViewerApiShortcutComponent"/>
+            </Feature>
+            <Feature Id="WebExtMapViewerFeature" Title="!(loc.WebExtMapViewerFeature)" Display="hidden" Level="1" Description="!(loc.WebExtMapViewerFeature_Description)" AllowAdvertise="no" TypicalDefault="install" InstallDefault="local" >
+                <ComponentGroupRef Id="group_MAPVIEWERFILES"/>
+            </Feature>
+            <Feature Id="WebExtMapViewerPHPFeature" Title="!(loc.WebExtMapViewerPHPFeature)" Level="1" Description="!(loc.WebExtMapViewerPHPFeature_Description)" AllowAdvertise="no" TypicalDefault="install" InstallDefault="local" >
+                <ComponentGroupRef Id="group_MAPVIEWERPHPFILES"/>
+            </Feature>
+            <Feature Id="WebExtMapViewerJSPFeature" Title="!(loc.WebExtMapViewerJSPFeature)" Level="1" Description="!(loc.WebExtMapViewerJSPFeature_Description)" AllowAdvertise="no" TypicalDefault="install" InstallDefault="local" >
+              <ComponentGroupRef Id="group_MAPVIEWERJSPFILES"/>
+              <ComponentGroupRef Id="group_WEBINFFILES"/>
+            </Feature>
+            <Feature Id="WebExtMapViewerASPXFeature" Title="!(loc.WebExtMapViewerASPXFeature)" Level="1" Description="!(loc.WebExtMapViewerASPXFeature_Description)" AllowAdvertise="no" TypicalDefault="install" InstallDefault="local" >
+                <ComponentGroupRef Id="group_MAPVIEWERASPXFILES"/>
+            </Feature>
+            <Feature Id="WebTempFeature" Title="!(loc.WebTempFeature)" Level="1" ConfigurableDirectory="WEBTEMPLOCATION" Description="!(loc.WebTempFeature_Description)" Absent="disallow" AllowAdvertise="no" TypicalDefault="install" InstallDefault="local" />
+            <Feature Id="WebExtSamplesFeature" Title="!(loc.WebExtSamplesFeature)" Level="1" Description="!(loc.WebExtSamplesFeature_Description)" AllowAdvertise="no" TypicalDefault="install" InstallDefault="local">
+              <Component Id="WebExtSamplesComponent" Win64="$(var.Win64)" Guid="525BAE2A-F8E4-415F-A095-91DDD17FD5E6" Directory="WEBEXTENSIONSLOCATION" >
+                <!-- This is required because a UI bug displays the feature as network-installable if there are no folders or files. -->
+                <CreateFolder />
+              </Component>
+              <Feature Id="WebExtDevGuideSamplesFeature" Title="!(loc.WebExtDevGuideSamplesFeature)" Level="1" Description="!(loc.WebExtDevGuideSamplesFeature_Description)" AllowAdvertise="no" TypicalDefault="install" InstallDefault="local">
+                    <ComponentGroupRef Id="group_DEVGUIDEFILES" />
+                </Feature>
+            </Feature>
+            <Feature Id="WebLocalizedFeature" Title="!(loc.WebLocalizedFeature)" Display="hidden"  Level="1" Description="!(loc.WebLocalizedFeature_Description)" AllowAdvertise="no" TypicalDefault="install" InstallDefault="local">
+                <ComponentGroupRef Id="group_MAPVIEWERLOCALIZEDFILES" />
+            </Feature>
+            <Feature Id="WebFusionFeature" Title="!(loc.WebFusionFeature)" Display="hidden"  Level="1" Description="!(loc.WebFusionFeature_Description)" AllowAdvertise="no" TypicalDefault="install" InstallDefault="local">
+                <ComponentGroupRef Id="group_FUSIONFILES"/>
+            </Feature>
+            <Feature Id="WebMapAdminFeature" Title="!(loc.WebMapAdminFeature)" Display="hidden" Level="1" Description="!(loc.WebMapAdminFeature_Description)" AllowAdvertise="no" TypicalDefault="install" InstallDefault="local">
+                <ComponentGroupRef Id="group_MAPVIEWERMAPADMINFILES" />
+            </Feature>
+            <Feature Id="WebMapAgentFeature" Title="!(loc.WebMapAgentFeature)" Display="hidden"  Level="1" Description="!(loc.WebMapAgentFeature_Description)" AllowAdvertise="no" TypicalDefault="install" InstallDefault="local">
+                <ComponentGroupRef Id="group_MAPAGENTFILES" />
+            </Feature>
+            <Feature Id="WebSchemaReportFeature" Title="!(loc.WebSchemaReportFeature)" Display="hidden"  Level="1" Description="!(loc.WebSchemaReportFeature_Description)" AllowAdvertise="no" TypicalDefault="install" InstallDefault="local">
+                <ComponentGroupRef Id="group_MAPVIEWERSCHEMAREPORTFILES" />
+            </Feature>
+            <Feature Id="WebStdIconsFeature" Title="!(loc.WebStdIconsFeature)" Display="hidden"  Level="1" Description="!(loc.WebStdIconsFeature_Description)" AllowAdvertise="no" TypicalDefault="install" InstallDefault="local">
+                <ComponentGroupRef Id="group_MAPVIEWERSTDICONFILES" />
+            </Feature>
+            <FeatureRef Id="IISSetupFeature" />
+        </Feature>
+
+    </Fragment>
+</Wix>

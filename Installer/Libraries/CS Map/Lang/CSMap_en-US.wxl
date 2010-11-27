@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<WixLocalization Culture="en-US" xmlns="http://schemas.microsoft.com/wix/2006/localization">
+	<String Id="CSMapFeature">CS-Map</String>
+    <String Id="CSMapFeature_Description">CS-Map Open Source is a required component for MapGuide Server and Web Extensions.</String>
+</WixLocalization>

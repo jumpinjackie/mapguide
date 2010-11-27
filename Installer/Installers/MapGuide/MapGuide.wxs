@@ -1,0 +1,785 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Wix
+  xmlns="http://schemas.microsoft.com/wix/2006/wi"
+  xmlns:util="http://schemas.microsoft.com/wix/UtilExtension"
+  xmlns:netfx="http://schemas.microsoft.com/wix/NetFxExtension"
+  >
+    <?if "$(var.MgPlatform)" = "x64" ?>
+      <?define Win64 = "yes" ?>
+      <?define PlatformProgramFilesFolder = "ProgramFiles64Folder" ?>
+    <?else ?>
+      <?define Win64 = "no" ?>
+      <?define PlatformProgramFilesFolder = "ProgramFilesFolder" ?>
+    <?endif ?>
+    <Product
+           Id="*"
+           UpgradeCode="5D9A7D8D-485E-43E0-A4C8-3582E4D80051"
+           Name="$(var.MgTitle)"
+           Version="$(var.MgVersion)"
+           Manufacturer="!(loc.ProductManufacturer)"
+           Language="!(loc.LANG)" >
+
+        <Package InstallerVersion="300" Compressed="yes" Platform="$(var.MgPlatform)" />
+
+        <Media Id="1" Cabinet="MapGuideOpenSource.cab" EmbedCab="yes" CompressionLevel="none" />
+
+        <!-- Initial MapGuide Web Configuration: APACHE | IIS | MANUAL 
+             RegSearches are for uninstall -->
+        <Property Id="MGWEB_CONFIG" Secure="yes" Value="APACHE">
+          <RegistrySearch
+            Id="MgWebConfigRs"
+            Type="raw"
+            Root="HKLM"
+            Win64="$(var.Win64)"
+            Key="$(var.MgRegKey)"
+            Name="MGWEB_CONFIG" />
+        </Property>
+        <Property Id="APACHE_API_TYPE" Secure="yes" Value="PHP" />
+        <Property Id="IIS_API_TYPE" Secure="yes" Value="PHP">
+          <RegistrySearch
+            Id="IisApiTypeRs"
+            Type="raw"
+            Root="HKLM"
+            Win64="$(var.Win64)"
+            Key="$(var.MgRegKey)"
+            Name="IIS_API_TYPE"  />
+        </Property>
+        <Property Id="APP_POOL_NAME" Secure="yes" Value="MapGuideAppPool" />
+        <Property Id="MGSERVER_IP" Secure="yes" Value="127.0.0.1" />
+        <Property Id="APACHE_PORT" Secure="yes" Value="8008" />
+        <Property Id="APACHE_VERSION" Secure="yes" Value="2.2.11" />
+        <Property Id="PHP_VERSION" Secure="yes" Value="5.3.2" />
+        <Property Id="MG_VERSION_MAJOR_MINOR" Secure="yes" Value="2.2" />
+        <!-- Server Port Settings  -->
+        <Property Id="MG_ADMIN_PORT" Secure="yes" Value="2810" />
+        <Property Id="MG_CLIENT_PORT" Secure="yes" Value="2811" />
+        <Property Id="MG_SITE_PORT" Secure="yes" Value="2812" />
+        <!-- Used by FdoRegUtil.exe -->
+        <Property Id="FDO_VERSION" Secure="yes" Value="3.5.0.0" />
+        <Property Id="FDO_VERSION_SMALL" Secure="yes" Value="3.5" />
+
+        <!-- 
+        These are currently static, though there is opportunity in the future for these
+        properties to be exposed in the dialog UI.
+        -->
+        <Property Id="SITE_ID" Secure="yes" Value="1" />
+        <Property Id="VIRTUALDIR" Secure="yes" Value="mapguide" />
+        <Property Id="MG_WEBSITE" Secure="yes" Value="Default Web Site">
+            <RegistrySearch
+            Id="MgWebsiteRs"
+            Type="raw"
+            Root="HKLM"
+            Win64="$(var.Win64)"
+            Key="$(var.MgRegKey)"
+            Name="MG_WEBSITE"  />
+        </Property>
+
+        <!-- Add Remove Programs metadata -->
+        <Property Id="ARPHELPLINK" Value="http://mapguide.osgeo.org" />
+        <Property Id="ARPURLINFOABOUT" Value="http://mapguide.osgeo.org" />
+        <Property Id="ARPPRODUCTICON" Value="OSGeo.ico" />
+        
+        <Property Id="ALLUSERS">1</Property>
+
+        <!-- we need to know what version of IIS is installed (if any) to see what options to offer during install UI, and
+             which custom actions to run during installation -->
+        <Property Id="IISVERSIONMAJOR" Value="#0" Secure="yes">
+            <RegistrySearch
+            Id="SearchRegIISVERSIONMAJOR"
+            Root="HKLM"
+            Win64="$(var.Win64)"
+            Key="Software\Microsoft\InetStp"
+            Name="MajorVersion"
+            Type="raw" />
+        </Property>
+
+        <Icon Id="OSGeo.ico" SourceFile="..\..\Support\Graphics\OSGeo.ico" />
+        
+        <Directory Id="TARGETDIR" Name="SourceDir">
+            <Directory Id="ProgramMenuFolder" Name="Programs"/>
+            <Directory Id="DesktopFolder" Name="Desktop"/>
+            <Directory Id="$(var.PlatformProgramFilesFolder)">
+                <Directory Id="OSGeoFolder" Name="OSGeo">
+                    <Directory Id="INSTALLLOCATION" Name="MapGuide">
+                        <!-- These are "aliases", set in the individual feature libraries.-->
+                        <Directory Id="WebParentFolder" />
+                        <Directory Id="ServerParentFolder" />
+                        <Directory Id="CsMapParentFolder" />
+                    </Directory>
+                </Directory>
+            </Directory>
+        </Directory>
+
+        <!-- The actual features are defined in the individual WiX libraries, e.g. MapGuideServer.wxs -->
+        <FeatureRef Id="CSMapFeature"/>
+        <FeatureRef Id="ServerFeature"/>
+        <FeatureRef Id="WebExtensionsFeature"/>
+
+        <UIRef Id="WixUI_Common"/>
+
+        <!-- These control UI elements -->
+        <WixVariable Id="WixUILicenseRtf" Value="Resources/LGPL21.rtf" />
+        <WixVariable Id="WixUIBannerBmp" Value="Resources/InstallerSmall.bmp" />
+        <WixVariable Id="WixUIDialogBmp" Value="Resources/InstallerLarge.bmp" />
+
+        <!-- Required to allow browsing for install directory -->
+        <Property Id="WIXUI_INSTALLDIR" Value="INSTALLLOCATION" />
+
+        <!-- This is required, it allows us to set MGWEB_CONFIG from two different dialog boxes -->
+        <Property Id="MgWeb_Config_IIS" Value="APACHE" />
+        <Property Id="MgWeb_Config_NoIIS" Value="APACHE" />
+        <CustomAction Id="MgWeb_Config_To_IIS_CA" Property="MgWeb_Config_IIS" Value="[MGWEB_CONFIG]" />
+        <CustomAction Id="MgWeb_Config_To_NoIIS_CA" Property="MgWeb_Config_NoIIS" Value="[MGWEB_CONFIG]" />
+        <CustomAction Id="MgWeb_Config_From_IIS_CA" Property="MGWEB_CONFIG" Value="[MgWeb_Config_IIS]" />
+        <CustomAction Id="MgWeb_Config_From_NoIIS_CA" Property="MGWEB_CONFIG" Value="[MgWeb_Config_NoIIS]" />
+        
+        <UI>
+            <TextStyle Id="WixUI_Font_Normal" FaceName="Tahoma" Size="8" />
+            <TextStyle Id="WixUI_Font_Bigger" FaceName="Tahoma" Size="12" />
+            <TextStyle Id="WixUI_Font_Title" FaceName="Tahoma" Size="8" Bold="yes" />
+
+            <Property Id="DefaultUIFont" Value="WixUI_Font_Normal" />
+
+            <DialogRef Id="BrowseDlg" />
+            <DialogRef Id="DiskCostDlg" />
+            <DialogRef Id="ErrorDlg" />
+            <DialogRef Id="FatalError" />
+            <DialogRef Id="FilesInUse" />
+            <DialogRef Id="MsiRMFilesInUse" />
+            <DialogRef Id="PrepareDlg" />
+            <DialogRef Id="ProgressDlg" />
+            <DialogRef Id="ResumeDlg" />
+            <DialogRef Id="UserExit" />
+
+            <!-- Dialog to warn about .NET Framework not found on system -->
+            <Dialog Id="DisabledFeaturesDialog" Width="370" Height="270" Title="!(loc.InstallerTitle)">
+                <!-- 
+                    Some features will not be available
+                    
+                    If you want to use these features, click on cancel and 
+                    correct the problem before proceeding with installation
+
+                       IIS is not installed, so it will not be available as an installation choice.
+                       
+                       The .NET Framework 2.0 was not found, so the .NET Web Extensions for IIS will not be available
+                    
+                -->
+                <Control Id="Title" Type="Text" X="15" Y="6" Width="200" Height="15" Transparent="yes" NoPrefix="yes" Text="{\WixUI_Font_Title}!(loc.DisabledFeaturesDialog_Title)" />
+                <Control Id="Description" Type="Text" X="25" Y="23" Width="280" Height="15" Transparent="yes" NoPrefix="yes" Text="!(loc.DisabledFeaturesDialog_Description)" />
+                <Control Id="BannerBitmap" Type="Bitmap" X="0" Y="0" Width="370" Height="44" TabSkip="no" Text="!(loc.InstallDirDlgBannerBitmap)" />
+                <Control Id="BannerLine" Type="Line" X="0" Y="44" Width="370" Height="0" />
+
+                <Control Id="TxtMessageIIS" Type="Text" X="30" Y="110" Width="316" Height="26" Text="!(loc.DisabledFeaturesDialog_IIS)">
+                    <Condition Action="hide">NOT IISVERSIONMAJOR=&quot;#0&quot;</Condition>
+                </Control>
+                <Control Id="TxtMessageDotNet" Type="Text" X="30" Y="150" Width="302" Height="30" Text="!(loc.DisabledFeaturesDialog_DotNet)">
+                    <Condition Action="hide">NETFRAMEWORK20</Condition>
+                </Control>
+                <Control Id="TxtMessageInstructions" Type="Text" X="22" Y="64" Width="318" Height="27" Text="!(loc.DisabledFeaturesDialog_Instructions)" />
+                
+                <Control Id="Next" Type="PushButton" X="236" Y="243" Width="56" Height="17" Default="yes" Text="!(loc.NextButtonText)" />
+                <Control Id="Back" Type="PushButton" X="180" Y="243" Width="56" Height="17" Text="!(loc.BackButtonText)" />
+                <Control Id="Cancel" Type="PushButton" X="304" Y="243" Width="56" Height="17" Cancel="yes" Text="!(loc.CancelButtonText)" />
+            </Dialog>
+
+            <!-- Dialog to choose web server configuration: IIS / Apache / Manual -->
+            <Dialog Id="WebServerConfigDlgIIS" Width="370" Height="270" Title="!(loc.InstallerTitle)">
+                <!-- 
+                    Select the type of web server configuration you want
+                
+                    ( ) Bundled Configuration
+                
+                    Install and configure Apache, PHP, and Tomcat. Choose either a PHP or Java 
+                    development environment for use with MapGuide
+                
+                    ( ) IIS Configuration
+                
+                    Install PHP and auto-configure IIS. Choose either a PHP or .NET development
+                    environment for use with MapGuide
+                
+                    ( ) Manual Configuration
+                    
+                    Install all required components for PHP, .NET and Java development, but don't configure
+                    a web server.
+                -->
+                <Control Id="Title" Type="Text" X="15" Y="6" Width="200" Height="15" Transparent="yes" NoPrefix="yes" Text="{\WixUI_Font_Title}!(loc.WebServerConfigDlg_Title)" />
+                <Control Id="Description" Type="Text" X="25" Y="23" Width="280" Height="15" Transparent="yes" NoPrefix="yes" Text="!(loc.WebServerConfigDlg_Description)" />
+                <Control Id="BannerBitmap" Type="Bitmap" X="0" Y="0" Width="370" Height="44" TabSkip="no" Text="!(loc.InstallDirDlgBannerBitmap)" />
+                <Control Id="BannerLine" Type="Line" X="0" Y="44" Width="370" Height="0" />
+                
+                <Control Property="MgWeb_Config_IIS" Id="RdWebConfigIIS" Type="RadioButtonGroup" X="30" Y="60" Height="138" Width="290">
+                    <RadioButtonGroup Property="MgWeb_Config_IIS">
+                        <RadioButton Text="{\WixUI_Font_Title}!(loc.WebServerConfigDlg_Apache)" ToolTip="!(loc.WebServerConfigDlg_Apache_Tooltip)" Value="APACHE" X="25" Y="10" Width="200" Height="45" />
+                        <RadioButton Text="{\WixUI_Font_Title}!(loc.WebServerConfigDlg_IIS)" ToolTip="!(loc.WebServerConfigDlg_IIS_Tooltip)" Value="IIS" X="25" Y="40" Width="200" Height="45" />
+                        <RadioButton Text="{\WixUI_Font_Title}!(loc.WebServerConfigDlg_Manual)" ToolTip="!(loc.WebServerConfigDlg_Manual_Tooltip)" Value="MANUAL" X="25" Y="70" Width="200" Height="45" />
+                    </RadioButtonGroup>
+                 </Control>
+
+                <Control Id="Next" Type="PushButton" X="236" Y="243" Width="56" Height="17" Default="yes" Text="!(loc.NextButtonText)" />
+                <Control Id="Back" Type="PushButton" X="180" Y="243" Width="56" Height="17" Text="!(loc.BackButtonText)" />
+                <Control Id="Cancel" Type="PushButton" X="304" Y="243" Width="56" Height="17" Cancel="yes" Text="!(loc.CancelButtonText)" />
+            </Dialog>
+
+            <!-- Dialog to choose web server configuration: IIS / Apache / Manual -->
+            <Dialog Id="WebServerConfigDlgNoIIS" Width="370" Height="270" Title="!(loc.InstallerTitle)">
+                <!-- 
+                    Select the type of web server configuration you want
+                
+                    ( ) Bundled Configuration
+                
+                    Install and configure Apache, PHP, and Tomcat. Choose either a PHP or Java 
+                    development environment for use with MapGuide
+                
+                    ( ) Manual Configuration
+                    
+                    Install all required components for PHP, .NET and Java development, but don't configure
+                    a web server.
+                -->
+                <Control Id="Title" Type="Text" X="15" Y="6" Width="200" Height="15" Transparent="yes" NoPrefix="yes" Text="{\WixUI_Font_Title}!(loc.WebServerConfigDlg_Title)" />
+                <Control Id="Description" Type="Text" X="25" Y="23" Width="280" Height="15" Transparent="yes" NoPrefix="yes" Text="!(loc.WebServerConfigDlg_Description)" />
+                <Control Id="BannerBitmap" Type="Bitmap" X="0" Y="0" Width="370" Height="44" TabSkip="no" Text="!(loc.InstallDirDlgBannerBitmap)" />
+                <Control Id="BannerLine" Type="Line" X="0" Y="44" Width="370" Height="0" />
+                
+                <Control Property="MgWeb_Config_NoIIS" Id="RdWebConfigIIS" Type="RadioButtonGroup" X="30" Y="60" Height="190" Width="290">
+                    <RadioButtonGroup Property="MgWeb_Config_NoIIS">
+                        <RadioButton Text="{\WixUI_Font_Title}!(loc.WebServerConfigDlg_Apache)" ToolTip="!(loc.WebServerConfigDlg_Apache_Tooltip)" Value="APACHE" X="25" Y="10" Width="200" Height="45" />
+                        <RadioButton Text="{\WixUI_Font_Title}!(loc.WebServerConfigDlg_Manual)" ToolTip="!(loc.WebServerConfigDlg_Manual_Tooltip)" Value="MANUAL" X="25" Y="40" Width="200" Height="45" />
+                    </RadioButtonGroup>
+                </Control>
+
+                <Control Id="Next" Type="PushButton" X="236" Y="243" Width="56" Height="17" Default="yes" Text="!(loc.NextButtonText)" />
+                <Control Id="Back" Type="PushButton" X="180" Y="243" Width="56" Height="17" Text="!(loc.BackButtonText)" />
+                <Control Id="Cancel" Type="PushButton" X="304" Y="243" Width="56" Height="17" Cancel="yes" Text="!(loc.CancelButtonText)" />
+            </Dialog>
+
+            <Dialog Id="ServerConfigDlg" Width="370" Height="270" Title="!(loc.InstallerTitle)">
+                <!--
+                
+                MapGuide Server will be installed using the following port numbers. The Server and Web Tier configuration
+                files will be set to use the specified port numbers below.
+                
+                Admin Connection Port: _______
+                Client Connection Port: _______
+                Site Connection Port: _______
+                
+                -->
+                <Control Id="Title" Type="Text" X="15" Y="6" Width="200" Height="15" Transparent="yes" NoPrefix="yes" Text="{\WixUI_Font_Title}!(loc.ServerConfigDlg_Title)" />
+                <Control Id="Description" Type="Text" X="25" Y="23" Width="280" Height="15" Transparent="yes" NoPrefix="yes" Text="!(loc.ServerConfigDlg_Description)" />
+                <Control Id="BannerBitmap" Type="Bitmap" X="0" Y="0" Width="370" Height="44" TabSkip="no" Text="!(loc.InstallDirDlgBannerBitmap)" />
+                <Control Id="BannerLine" Type="Line" X="0" Y="44" Width="370" Height="0" />
+
+                <Control Id="LblPrompt" Type="Text" X="20" Y="60" Text="!(loc.ServerConfigDlg_Prompt)" Width="320" Height="30" />
+
+                <Control Id="LblAdminPort" Type="Text" X="20" Y="100" Text="{\WixUI_Font_Title}!(loc.ServerConfigDlg_AdminPortNo)" Width="140" Height="15" />
+                <Control Id="NumAdminPort" Type="Edit" Property="MG_ADMIN_PORT" X="170" Y="100" Width="80" Height="15" />
+                <Control Id="LblClientPort" Type="Text" X="20" Y="120" Text="{\WixUI_Font_Title}!(loc.ServerConfigDlg_ClientPortNo)" Width="140" Height="15" />
+                <Control Id="NumClientPort" Type="Edit" Property="MG_CLIENT_PORT" X="170" Y="120" Width="80" Height="15" />
+                <Control Id="LblSitePort" Type="Text" X="20" Y="140" Text="{\WixUI_Font_Title}!(loc.ServerConfigDlg_SitePortNo)" Width="140" Height="15" />
+                <Control Id="NumSitePort" Type="Edit" Property="MG_SITE_PORT" X="170" Y="140" Width="80" Height="15" />
+
+                <Control Id="Next" Type="PushButton" X="236" Y="243" Width="56" Height="17" Default="yes" Text="!(loc.NextButtonText)" />
+                <Control Id="Back" Type="PushButton" X="180" Y="243" Width="56" Height="17" Text="!(loc.BackButtonText)" />
+                <Control Id="Cancel" Type="PushButton" X="304" Y="243" Width="56" Height="17" Cancel="yes" Text="!(loc.CancelButtonText)" />
+            </Dialog>
+            
+            <!-- Dialog to configure Apache settings: Port, PHP/Java -->
+            <Dialog Id="ApacheConfigDlg" Width="370" Height="270" Title="!(loc.InstallerTitle)">
+                <Control Id="Title" Type="Text" X="15" Y="6" Width="200" Height="15" Transparent="yes" NoPrefix="yes" Text="{\WixUI_Font_Title}!(loc.ApacheConfigDlg_Title)" />
+                <Control Id="Description" Type="Text" X="25" Y="23" Width="280" Height="15" Transparent="yes" NoPrefix="yes" Text="!(loc.ApacheConfigDlg_Description)" />
+                <Control Id="BannerBitmap" Type="Bitmap" X="0" Y="0" Width="370" Height="44" TabSkip="no" Text="!(loc.InstallDirDlgBannerBitmap)" />
+                <Control Id="BannerLine" Type="Line" X="0" Y="44" Width="370" Height="0" />
+                <!-- 
+                    Set up the development environment
+                
+                    Web Server Port Number:  _______________________
+                    Virtual Directory Name:  _______________________
+                    Development Environment:
+                    
+                    ( ) PHP
+                    ( ) Java
+                -->
+                <Control Id="LblServerPort" Type="Text" Text="{\WixUI_Font_Title}!(loc.ApacheConfigDlg_PortNo)" X="20" Y="60" Width="120" Height="15" />
+                <Control Id="TxtServerPort" Type="Edit" Property="APACHE_PORT" X="150" Y="60" Width="120" Height="15" />
+                <Control Id="LblVdirName" Type="Text" Text="{\WixUI_Font_Title}!(loc.ApacheConfigDlg_VDirName)" X="20" Y="80" Width="120" Height="15" />
+                <Control Id="TxtVdirName" Type="Edit" Property="VIRTUALDIR" X="150" Y="80" Width="120" Height="15" />
+                <Control Id="LblDevEnv" Type="Text" Text="{\WixUI_Font_Title}!(loc.ApacheConfigDlg_DevEnv)" X="20" Y="110" Width="120" Height="15" />
+                <Control Id="RdApacheApiType" Property="APACHE_API_TYPE" Type="RadioButtonGroup" X="20" Y="130" Height="100" Width="290">
+                    <RadioButtonGroup Property="APACHE_API_TYPE">
+                        <RadioButton Text="PHP" Value="PHP" X="25" Y="10" Width="200" Height="45" />
+                        <RadioButton Text="Java" Value="JAVA" X="25" Y="40" Width="200" Height="45" />
+                    </RadioButtonGroup>
+                </Control>
+
+                <Control Id="Next" Type="PushButton" X="236" Y="243" Width="56" Height="17" Default="yes" Text="!(loc.NextButtonText)" />
+                <Control Id="Back" Type="PushButton" X="180" Y="243" Width="56" Height="17" Text="!(loc.BackButtonText)" />
+                <Control Id="Cancel" Type="PushButton" X="304" Y="243" Width="56" Height="17" Cancel="yes" Text="!(loc.CancelButtonText)" />
+            </Dialog>
+
+            <!-- Dialog to configure IIS settings: PHP/.net -->
+            <Dialog Id="IISLangConfigDlg" Width="370" Height="270" Title="!(loc.InstallerTitle)">
+                <Control Id="Title" Type="Text" X="15" Y="6" Width="200" Height="15" Transparent="yes" NoPrefix="yes" Text="{\WixUI_Font_Title}!(loc.IISLangConfigDlg_Title)" />
+                <Control Id="Description" Type="Text" X="25" Y="23" Width="280" Height="15" Transparent="yes" NoPrefix="yes" Text="!(loc.IISLangConfigDlg_Description)" />
+                <Control Id="BannerBitmap" Type="Bitmap" X="0" Y="0" Width="370" Height="44" TabSkip="no" Text="!(loc.InstallDirDlgBannerBitmap)" />
+                <Control Id="BannerLine" Type="Line" X="0" Y="44" Width="370" Height="0" />
+                <!-- 
+                Virtual Directory Name:  __________________________________
+                Development environment:
+                
+                ( ) PHP
+                ( ) .NET
+                -->
+                <Control Id="LblVDirName" Type="Text" Text="{\WixUI_Font_Title}!(loc.IISLangConfigDlg_VDirName)" X="20" Y="60" Width="120" Height="15" />
+                <Control Id="TxtVDirName" Type="Edit" Property="VIRTUALDIR" X="150" Y="60" Width="120" Height="15" />
+                <Control Id="LblDevEnv" Type="Text" Text="{\WixUI_Font_Title}!(loc.IISLangConfigDlg_DevEnv)" X="20" Y="80" Width="120" Height="15" />
+                <Control Id="RdIIsApiType" Property="IIS_API_TYPE" Type="RadioButtonGroup" Text="{\WixUI_Font_Title}!(loc.IISLangConfigDlg_DevEnv)" X="30" Y="90" Height="100" Width="290">
+                    <RadioButtonGroup Property="IIS_API_TYPE">
+                        <RadioButton Text="PHP" Value="PHP" X="25" Y="10" Width="200" Height="45" />
+                        <RadioButton Text=".NET" Value="DOTNET" X="25" Y="40" Width="200" Height="45" />
+                    </RadioButtonGroup>
+                </Control>
+                <Control Id="Next" Type="PushButton" X="236" Y="243" Width="56" Height="17" Default="yes" Text="!(loc.NextButtonText)" />
+                <Control Id="Back" Type="PushButton" X="180" Y="243" Width="56" Height="17" Text="!(loc.BackButtonText)" />
+                <Control Id="Cancel" Type="PushButton" X="304" Y="243" Width="56" Height="17" Cancel="yes" Text="!(loc.CancelButtonText)" />
+            </Dialog>
+
+            <!-- Dialog to configure IIS6 specific things: web-site installation and application pool (w/ Trac #361 enhancements) -->
+            <Dialog Id="IIS6ConfigDlg" Width="370" Height="270" Title="!(loc.InstallerTitle)">
+                <Control Id="Title" Type="Text" X="15" Y="6" Width="200" Height="15" Transparent="yes" NoPrefix="yes" Text="{\WixUI_Font_Title}!(loc.IIS6ConfigDlg_Title)" />
+                <Control Id="Description" Type="Text" X="25" Y="23" Width="280" Height="15" Transparent="yes" NoPrefix="yes" Text="!(loc.IIS6ConfigDlg_Description)" />
+                <Control Id="BannerBitmap" Type="Bitmap" X="0" Y="0" Width="370" Height="44" TabSkip="no" Text="!(loc.InstallDirDlgBannerBitmap)" />
+                <Control Id="BannerLine" Type="Line" X="0" Y="44" Width="370" Height="0" />
+                <!-- 
+                
+                Install Web Extensions to the following website:
+                ________________________________________________|V|
+                Create an application pool: ___________________________
+                
+                It is recommended to create an application pool if you are running mixed 
+                ASP.net application environments on your web server.
+                
+                -->
+                <Control Id="LblWebSite" Type="Text" Text="!(loc.IIS6ConfigDlg_InstallTo)" X="20" Y="80" Width="240" Height="15" />
+                <Control Id="LstWebSite" Type="ListBox" Property="MG_WEBSITE" X="20" Y="100" Width="240" Height="60" />
+                <Control Id="LblAppPool" Type="Text" Text="!(loc.IIS6ConfigDlg_AppPool)" X="20" Y="170" Width="240" Height="15" />
+                <Control Id="TxtAppPool" Type="Edit" Property="APP_POOL_NAME" X="20" Y="190" Width="140" Height="15" />
+                <Control Id="LblAppPoolDescription" Type="Text" Text="!(loc.IIS6ConfigDlg_AppPoolDescription)" X="20" Y="210" Width="240" Height="30" />
+
+                <Control Id="Next" Type="PushButton" X="236" Y="243" Width="56" Height="17" Default="yes" Text="!(loc.NextButtonText)" />
+                <Control Id="Back" Type="PushButton" X="180" Y="243" Width="56" Height="17" Text="!(loc.BackButtonText)" />
+                <Control Id="Cancel" Type="PushButton" X="304" Y="243" Width="56" Height="17" Cancel="yes" Text="!(loc.CancelButtonText)" />
+            </Dialog>
+
+            <!-- Dialog to configure IIS7 specific things -->
+            <Dialog Id="IIS7ConfigDlg" Width="370" Height="270" Title="!(loc.InstallerTitle)">
+                <Control Id="Title" Type="Text" X="15" Y="6" Width="200" Height="15" Transparent="yes" NoPrefix="yes" Text="{\WixUI_Font_Title}IIS 7.0 Configuration" />
+                <Control Id="Description" Type="Text" X="25" Y="23" Width="280" Height="15" Transparent="yes" NoPrefix="yes" Text="Configure IIS 7.0 Settings" />
+                <Control Id="BannerBitmap" Type="Bitmap" X="0" Y="0" Width="370" Height="44" TabSkip="no" Text="!(loc.InstallDirDlgBannerBitmap)" />
+                <Control Id="BannerLine" Type="Line" X="0" Y="44" Width="370" Height="0" />
+
+                <!-- 
+                  
+                  Create an application pool: ___________________________
+                  
+                  It is recommended to create an application pool if you are running mixed 
+                  ASP.net application environments on your web server.
+                  
+                -->
+                <Control Id="LblAppPool" Type="Text" Text="!(loc.IIS6ConfigDlg_AppPool)" X="20" Y="80" Width="240" Height="15" />
+                <Control Id="TxtAppPool" Type="Edit" Property="APP_POOL_NAME" X="20" Y="100" Width="240" Height="15" />
+                <Control Id="LblAppPoolDescription" Type="Text" Text="!(loc.IIS6ConfigDlg_AppPoolDescription)" X="20" Y="120" Width="240" Height="45" />
+
+                <Control Id="Next" Type="PushButton" X="236" Y="243" Width="56" Height="17" Default="yes" Text="!(loc.NextButtonText)" />
+                <Control Id="Back" Type="PushButton" X="180" Y="243" Width="56" Height="17" Text="!(loc.BackButtonText)" />
+                <Control Id="Cancel" Type="PushButton" X="304" Y="243" Width="56" Height="17" Cancel="yes" Text="!(loc.CancelButtonText)" />
+            </Dialog>
+
+            <!-- Dialog to configure MG Server IP address -->
+            <Dialog Id="IPConfigDlg" Width="370" Height="270" Title="!(loc.InstallerTitle)">
+                <Control Id="Title" Type="Text" X="15" Y="6" Width="200" Height="15" Transparent="yes" NoPrefix="yes" Text="{\WixUI_Font_Title}!(loc.IPConfigDlg_Title)" />
+                <Control Id="Description" Type="Text" X="25" Y="23" Width="280" Height="15" Transparent="yes" NoPrefix="yes" Text="!(loc.IPConfigDlg_Description)" />
+                <Control Id="BannerBitmap" Type="Bitmap" X="0" Y="0" Width="370" Height="44" TabSkip="no" Text="!(loc.InstallDirDlgBannerBitmap)" />
+                <Control Id="BannerLine" Type="Line" X="0" Y="44" Width="370" Height="0" />
+                <!-- 
+                Enter the MapGuide Server site server IP address:
+                
+                ______________________________________________
+                
+                The site server IP address defaults to localhost (127.0.0.1)
+                
+                -->
+                <Control Id="LblServerIP" Type="Text" Text="!(loc.IPConfigDlg_IPAddress)" X="20" Y="80" Width="240" Height="15" />
+                <Control Id="TxtServerPort" Type="Edit" Property="MGSERVER_IP" X="30" Y="100" Width="120" Height="15" />
+                <Control Id="LblNote" Type="Text" Text="!(loc.IPConfigDlg_Note)" X="20" Y="120" Width="320" Height="15" />
+                
+                <Control Id="Next" Type="PushButton" X="236" Y="243" Width="56" Height="17" Default="yes" Text="!(loc.NextButtonText)" />
+                <Control Id="Back" Type="PushButton" X="180" Y="243" Width="56" Height="17" Text="!(loc.BackButtonText)" />
+                <Control Id="Cancel" Type="PushButton" X="304" Y="243" Width="56" Height="17" Cancel="yes" Text="!(loc.CancelButtonText)" />
+            </Dialog>
+
+            <!-- Utility browse dialog to locate installation directory -->
+            <Publish Dialog="BrowseDlg" Control="OK" Event="DoAction" Value="WixUIValidatePath" Order="3">1</Publish>
+            <Publish Dialog="BrowseDlg" Control="OK" Event="SpawnDialog" Value="InvalidDirDlg" Order="4"><![CDATA[WIXUI_INSTALLDIR_VALID<>"1"]]></Publish>
+
+          
+            <!-- This section controls the order and custom UI events performed as user navigates the UI  -->
+          
+            <Publish Dialog="WelcomeDlg" Control="Next" Event="NewDialog" Value="LicenseAgreementDlg">1</Publish>
+            
+            <Publish Dialog="LicenseAgreementDlg" Control="Back" Event="NewDialog" Value="WelcomeDlg">1</Publish>
+            <Publish Dialog="LicenseAgreementDlg" Control="Next" Event="NewDialog" Value="ServerConfigDlg" Order="1">LicenseAccepted=&quot;1&quot;</Publish>
+            <Publish Dialog="LicenseAgreementDlg" Control="Next" Event="NewDialog" Value="DisabledFeaturesDialog" Order="2">LicenseAccepted=&quot;1&quot; AND (IISVERSIONMAJOR=&quot;#0&quot; OR (NOT NETFRAMEWORK20))</Publish>
+
+            <Publish Dialog="DisabledFeaturesDialog" Control="Next" Event="NewDialog" Value="ServerConfigDlg" Order="1">1</Publish>
+            <Publish Dialog="DisabledFeaturesDialog" Control="Back" Event="NewDialog" Value="LicenseAgreementDlg">1</Publish>
+            <Publish Dialog="DisabledFeaturesDialog" Control="Cancel" Event="SpawnDialog" Value="CancelDlg">1</Publish>
+
+            <Publish Dialog="ServerConfigDlg" Control="Next" Event="NewDialog" Value="WebServerConfigDlgIIS" Order="1">NOT IISVERSIONMAJOR=&quot;#0&quot;</Publish>
+            <Publish Dialog="ServerConfigDlg" Control="Next" Event="NewDialog" Value="WebServerConfigDlgNoIIS" Order="2">IISVERSIONMAJOR=&quot;#0&quot;</Publish>
+            <Publish Dialog="ServerConfigDlg" Control="Back" Event="NewDialog" Value="LicenseAgreementDlg" Order="2">1</Publish>
+            <Publish Dialog="ServerConfigDlg" Control="Cancel" Event="SpawnDialog" Value="CancelDlg">1</Publish>
+
+            <Publish Dialog="WebServerConfigDlgIIS" Control="Next" Event="DoAction" Value="MgWeb_Config_From_IIS_CA" Order="1">1</Publish>
+            <!-- This "resets" the feature tree in case someone starts down a path then changes their mind -->
+            <Publish Dialog="WebServerConfigDlgIIS" Control="Next" Event="AddLocal" Value="ALL" Order="2">1</Publish>
+            <!-- Turn off these FDO providers by default since they require external libraries not bundled in this installer. -->
+            <Publish Dialog="WebServerConfigDlgIIS" Control="Next" Event="Remove" Value="FdoArcSdeProviderFeature" Order="3">1</Publish>
+            <Publish Dialog="WebServerConfigDlgIIS" Control="Next" Event="Remove" Value="FdoKingOracleProviderFeature" Order="4">1</Publish>
+            <Publish Dialog="WebServerConfigDlgIIS" Control="Next" Event="Remove" Value="FdoMySqlProviderFeature" Order="5">1</Publish>
+            <Publish Dialog="WebServerConfigDlgIIS" Control="Next" Event="Remove" Value="FdoPostGisProviderFeature" Order="6">1</Publish>
+            <Publish Dialog="WebServerConfigDlgIIS" Control="Next" Event="Remove" Value="FdoPostgreSqlProviderFeature" Order="7">1</Publish>
+            <!-- If Apache, or IIS and the .Net Framework is not installed, set feature default for the ASPX viewer to not install -->
+            <Publish Dialog="WebServerConfigDlgIIS" Control="Next" Event="Remove" Value="WebExtMapViewerASPXFeature" Order="7">(MGWEB_CONFIG=&quot;APACHE&quot;) OR (MGWEB_CONFIG=&quot;IIS&quot; AND NOT NETFRAMEWORK20)</Publish>
+            <Publish Dialog="WebServerConfigDlgIIS" Control="Next" Event="NewDialog" Value="ApacheConfigDlg" Order="8">MGWEB_CONFIG=&quot;APACHE&quot;</Publish>
+            <Publish Dialog="WebServerConfigDlgIIS" Control="Next" Event="NewDialog" Value="IISLangConfigDlg" Order="9">MGWEB_CONFIG=&quot;IIS&quot; AND NETFRAMEWORK20</Publish>
+            <Publish Dialog="WebServerConfigDlgIIS" Control="Next" Event="NewDialog" Value="IPConfigDlg" Order="10">MGWEB_CONFIG=&quot;IIS&quot; AND IISVERSIONMAJOR=&quot;#5&quot; AND (NOT NETFRAMEWORK20)</Publish>
+            <Publish Dialog="WebServerConfigDlgIIS" Control="Next" Event="NewDialog" Value="IIS6ConfigDlg" Order="11">MGWEB_CONFIG=&quot;IIS&quot; AND IISVERSIONMAJOR=&quot;#6&quot; AND (NOT NETFRAMEWORK20)</Publish>
+            <Publish Dialog="WebServerConfigDlgIIS" Control="Next" Event="NewDialog" Value="IIS7ConfigDlg" Order="12">MGWEB_CONFIG=&quot;IIS&quot; AND IISVERSIONMAJOR=&quot;#7&quot; AND (NOT NETFRAMEWORK20)</Publish>
+            <!-- If IIS, set feature defaults for Apache, Tomcat, and JSP viewer to not install -->
+            <Publish Dialog="WebServerConfigDlgIIS" Control="Next" Event="Remove" Value="WebExtApacheFeature" Order="13">MGWEB_CONFIG=&quot;IIS&quot;</Publish>
+            <Publish Dialog="WebServerConfigDlgIIS" Control="Next" Event="Remove" Value="WebExtTomcatFeature" Order="14">MGWEB_CONFIG=&quot;IIS&quot;</Publish>
+            <Publish Dialog="WebServerConfigDlgIIS" Control="Next" Event="Remove" Value="WebExtMapViewerJSPFeature" Order="15">MGWEB_CONFIG=&quot;IIS&quot;</Publish>
+            <Publish Dialog="WebServerConfigDlgIIS" Control="Next" Event="NewDialog" Value="IPConfigDlg" Order="16">MGWEB_CONFIG=&quot;MANUAL&quot;</Publish>
+            <Publish Dialog="WebServerConfigDlgIIS" Control="Back" Event="NewDialog" Value="LicenseAgreementDlg">1</Publish>
+            <Publish Dialog="WebServerConfigDlgIIS" Control="Cancel" Event="SpawnDialog" Value="CancelDlg">1</Publish>
+
+            <Publish Dialog="WebServerConfigDlgNoIIS" Control="Next" Event="DoAction" Value="MgWeb_Config_From_NoIIS_CA" Order="1">1</Publish>
+            <!-- This "resets" the feature tree in case someone starts down a path then changes their mind -->
+            <Publish Dialog="WebServerConfigDlgNoIIS" Control="Next" Event="AddLocal" Value="ALL" Order="2">1</Publish>
+            <!-- Turn off these FDO providers by default since they require external libraries not bundled in this installer. -->
+            <Publish Dialog="WebServerConfigDlgNoIIS" Control="Next" Event="Remove" Value="FdoArcSdeProviderFeature" Order="3">1</Publish>
+            <Publish Dialog="WebServerConfigDlgNoIIS" Control="Next" Event="Remove" Value="FdoKingOracleProviderFeature" Order="4">1</Publish>
+            <Publish Dialog="WebServerConfigDlgNoIIS" Control="Next" Event="Remove" Value="FdoMySqlProviderFeature" Order="5">1</Publish>
+            <Publish Dialog="WebServerConfigDlgNoIIS" Control="Next" Event="Remove" Value="FdoPostGisProviderFeature" Order="6">1</Publish>
+            <!-- If Apache, set feature default for the ASPX viewer to not install -->
+            <Publish Dialog="WebServerConfigDlgNoIIS" Control="Next" Event="Remove" Value="WebExtMapViewerASPXFeature" Order="7">MGWEB_CONFIG=&quot;APACHE&quot;</Publish>
+            <Publish Dialog="WebServerConfigDlgNoIIS" Control="Next" Event="NewDialog" Value="ApacheConfigDlg" Order="8">MGWEB_CONFIG=&quot;APACHE&quot;</Publish>
+            <Publish Dialog="WebServerConfigDlgNoIIS" Control="Next" Event="NewDialog" Value="IPConfigDlg" Order="9">MGWEB_CONFIG=&quot;MANUAL&quot;</Publish>
+            <Publish Dialog="WebServerConfigDlgNoIIS" Control="Back" Event="NewDialog" Value="LicenseAgreementDlg">1</Publish>
+            <Publish Dialog="WebServerConfigDlgNoIIS" Control="Cancel" Event="SpawnDialog" Value="CancelDlg">1</Publish>
+
+            <Publish Dialog="ApacheConfigDlg" Control="Next" Event="NewDialog" Value="IPConfigDlg">1</Publish>
+            <!-- Set default features based on Java API choice - AddLocal required in case user changes mind and comes back -->
+            <Publish Dialog="ApacheConfigDlg" Control="Next" Event="Remove" Value="WebExtMapViewerPHPFeature">APACHE_API_TYPE=&quot;JAVA&quot;</Publish>
+            <Publish Dialog="ApacheConfigDlg" Control="Next" Event="AddLocal" Value="WebExtTomcatFeature">APACHE_API_TYPE=&quot;JAVA&quot;</Publish>
+            <Publish Dialog="ApacheConfigDlg" Control="Next" Event="AddLocal" Value="WebExtMapViewerJSPFeature">APACHE_API_TYPE=&quot;JAVA&quot;</Publish>
+            <!-- Set default features based on PHP API choice - AddLocal required in case user changes mind and comes back -->
+            <Publish Dialog="ApacheConfigDlg" Control="Next" Event="Remove" Value="WebExtTomcatFeature">APACHE_API_TYPE=&quot;PHP&quot;</Publish>
+            <Publish Dialog="ApacheConfigDlg" Control="Next" Event="Remove" Value="WebExtMapViewerJSPFeature">APACHE_API_TYPE=&quot;PHP&quot;</Publish>
+            <Publish Dialog="ApacheConfigDlg" Control="Next" Event="AddLocal" Value="WebExtMapViewerPHPFeature">APACHE_API_TYPE=&quot;PHP&quot;</Publish>
+            <!-- Handle special "Back" actions to set UI properties -->
+            <Publish Dialog="ApacheConfigDlg" Control="Back" Event="DoAction" Value="MgWeb_Config_To_NoIIS_CA" Order="1">IISVERSIONMAJOR=&quot;#0&quot;</Publish> 
+            <Publish Dialog="ApacheConfigDlg" Control="Back" Event="NewDialog" Value="WebServerConfigDlgNoIIS" Order="2">IISVERSIONMAJOR=&quot;#0&quot;</Publish>
+            <Publish Dialog="ApacheConfigDlg" Control="Back" Event="DoAction" Value="MgWeb_Config_To_IIS_CA" Order="1">NOT IISVERSIONMAJOR=&quot;#0&quot;</Publish>
+            <Publish Dialog="ApacheConfigDlg" Control="Back" Event="NewDialog" Value="WebServerConfigDlgIIS" Order="2">NOT IISVERSIONMAJOR=&quot;#0&quot;</Publish>
+            <Publish Dialog="ApacheConfigDlg" Control="Cancel" Event="SpawnDialog" Value="CancelDlg">1</Publish>
+
+            <Publish Dialog="IISLangConfigDlg" Control="Next" Event="NewDialog" Value="IPConfigDlg" Order="2">IISVERSIONMAJOR=&quot;#5&quot;</Publish>
+            <Publish Dialog="IISLangConfigDlg" Control="Next" Event="NewDialog" Value="IIS6ConfigDlg" Order="3">IISVERSIONMAJOR=&quot;#6&quot;</Publish>
+            <Publish Dialog="IISLangConfigDlg" Control="Next" Event="NewDialog" Value="IIS7ConfigDlg" Order="4">IISVERSIONMAJOR=&quot;#7&quot;</Publish>
+            <!-- Default feature settings for PHP API - AddLocal required in case user changes mind and comes back -->
+            <Publish Dialog="IISLangConfigDlg" Control="Next" Event="Remove" Value="WebExtMapViewerASPXFeature">IIS_API_TYPE=&quot;PHP&quot;</Publish>
+            <Publish Dialog="IISLangConfigDlg" Control="Next" Event="AddLocal" Value="WebExtMapViewerPHPFeature">IIS_API_TYPE=&quot;PHP&quot;</Publish>
+            <!-- Default feature settings for ASP.Net API - AddLocal required in case user changes mind and comes back -->
+            <Publish Dialog="IISLangConfigDlg" Control="Next" Event="Remove" Value="WebExtMapViewerPHPFeature">IIS_API_TYPE=&quot;DOTNET&quot;</Publish>
+            <Publish Dialog="IISLangConfigDlg" Control="Next" Event="AddLocal" Value="WebExtMapViewerASPXFeature">IIS_API_TYPE=&quot;DOTNET&quot;</Publish>
+            <!-- Handle special "Back" actions to set UI properties -->
+            <Publish Dialog="IISLangConfigDlg" Control="Back" Event="DoAction" Value="MgWeb_Config_To_IIS_CA" Order="1">1</Publish> 
+            <Publish Dialog="IISLangConfigDlg" Control="Back" Event="NewDialog" Value="WebServerConfigDlgIIS" Order="2">1</Publish>
+            <Publish Dialog="IISLangConfigDlg" Control="Cancel" Event="SpawnDialog" Value="CancelDlg">1</Publish>
+            
+            <Publish Dialog="IIS6ConfigDlg" Control="Next" Event="NewDialog" Value="IPConfigDlg">1</Publish>
+            <Publish Dialog="IIS6ConfigDlg" Control="Back" Event="NewDialog" Value="IISLangConfigDlg" Order="1">NETFRAMEWORK20</Publish>
+            <Publish Dialog="IIS6ConfigDlg" Control="Back" Event="DoAction" Value="MgWeb_Config_To_IIS_CA" Order="2">NOT NETFRAMEWORK20</Publish>
+            <Publish Dialog="IIS6ConfigDlg" Control="Back" Event="NewDialog" Value="WebServerConfigDlgIIS" Order="3">NOT NETFRAMEWORK20</Publish>
+            <Publish Dialog="IIS6ConfigDlg" Control="Cancel" Event="SpawnDialog" Value="CancelDlg">1</Publish>
+
+            <Publish Dialog="IIS7ConfigDlg" Control="Next" Event="NewDialog" Value="IPConfigDlg">1</Publish>
+            <Publish Dialog="IIS7ConfigDlg" Control="Back" Event="NewDialog" Value="IISLangConfigDlg" Order="1">NETFRAMEWORK20</Publish>
+            <Publish Dialog="IIS7ConfigDlg" Control="Back" Event="DoAction" Value="MgWeb_Config_To_IIS_CA" Order="2">NOT NETFRAMEWORK20</Publish>
+            <Publish Dialog="IIS7ConfigDlg" Control="Back" Event="NewDialog" Value="WebServerConfigDlgIIS" Order="3">NOT NETFRAMEWORK20</Publish>
+            <Publish Dialog="IIS7ConfigDlg" Control="Cancel" Event="SpawnDialog" Value="CancelDlg">1</Publish>
+
+            <Publish Dialog="IPConfigDlg" Control="Next" Event="NewDialog" Value="InstallDirDlg">1</Publish>
+            <Publish Dialog="IPConfigDlg" Control="Back" Event="NewDialog" Value="IISLangConfigDlg" Order="1">MGWEB_CONFIG=&quot;IIS&quot; AND IISVERSIONMAJOR=&quot;#5&quot; AND NETFRAMEWORK20</Publish>
+            <Publish Dialog="IPConfigDlg" Control="Back" Event="NewDialog" Value="IIS6ConfigDlg" Order="2">MGWEB_CONFIG=&quot;IIS&quot; AND IISVERSIONMAJOR=&quot;#6&quot;</Publish>
+            <Publish Dialog="IPConfigDlg" Control="Back" Event="NewDialog" Value="IIS7ConfigDlg" Order="3">MGWEB_CONFIG=&quot;IIS&quot; AND IISVERSIONMAJOR=&quot;#7&quot;</Publish>
+            <Publish Dialog="IPConfigDlg" Control="Back" Event="NewDialog" Value="ApacheConfigDlg" Order="4">MGWEB_CONFIG=&quot;APACHE&quot;</Publish>
+            <Publish Dialog="IPConfigDlg" Control="Back" Event="DoAction" Value="MgWeb_Config_To_IIS_CA" Order="5">(NOT IISVERSIONMAJOR=&quot;#0&quot;) AND ( (IISVERSIONMAJOR=&quot;#5&quot; AND (NOT NETFRAMEWORK20)) OR (MGWEB_CONFIG=&quot;MANUAL&quot; ))</Publish>
+            <Publish Dialog="IPConfigDlg" Control="Back" Event="NewDialog" Value="WebServerConfigDlgIIS" Order="6">(NOT IISVERSIONMAJOR=&quot;#0&quot;) AND ( (IISVERSIONMAJOR=&quot;#5&quot; AND (NOT NETFRAMEWORK20) AND MGWEB_CONFIG=&quot;IIS&quot; ) OR (MGWEB_CONFIG=&quot;MANUAL&quot; ))</Publish>
+            <Publish Dialog="IPConfigDlg" Control="Back" Event="DoAction" Value="MgWeb_Config_To_NoIIS_CA" Order="7">IISVERSIONMAJOR=&quot;#0&quot;</Publish>
+            <Publish Dialog="IPConfigDlg" Control="Back" Event="NewDialog" Value="WebServerConfigDlgNoIIS" Order="8">IISVERSIONMAJOR=&quot;#0&quot; AND MGWEB_CONFIG=&quot;MANUAL&quot;</Publish>
+            <Publish Dialog="IPConfigDlg" Control="Cancel" Event="SpawnDialog" Value="CancelDlg">1</Publish>
+
+            <Publish Dialog="InstallDirDlg" Control="Back" Event="NewDialog" Value="IPConfigDlg">1</Publish>
+            <Publish Dialog="InstallDirDlg" Control="Next" Event="SetTargetPath" Value="[WIXUI_INSTALLDIR]" Order="1">1</Publish>
+            <Publish Dialog="InstallDirDlg" Control="Next" Event="DoAction" Value="WixUIValidatePath" Order="2">1</Publish>
+            <Publish Dialog="InstallDirDlg" Control="Next" Event="SpawnDialog" Value="InvalidDirDlg" Order="3"><![CDATA[WIXUI_INSTALLDIR_VALID<>"1"]]></Publish>
+            <Publish Dialog="InstallDirDlg" Control="Next" Event="NewDialog" Value="CustomizeDlg" Order="4"><![CDATA[WIXUI_INSTALLDIR_VALID="1"]]></Publish>
+            <Publish Dialog="InstallDirDlg" Control="ChangeFolder" Property="_BrowseProperty" Value="[WIXUI_INSTALLDIR]" Order="1">1</Publish>
+            <Publish Dialog="InstallDirDlg" Control="ChangeFolder" Event="SpawnDialog" Value="BrowseDlg" Order="2">1</Publish>
+
+            <Publish Dialog="CustomizeDlg" Control="Back" Event="NewDialog" Value="MaintenanceTypeDlg" Order="1">Installed</Publish>
+            <Publish Dialog="CustomizeDlg" Control="Back" Event="NewDialog" Value="InstallDirDlg" Order="7">NOT Installed</Publish>
+            <Publish Dialog="CustomizeDlg" Control="Next" Event="NewDialog" Value="VerifyReadyDlg">1</Publish>
+
+            <Publish Dialog="VerifyReadyDlg" Control="Back" Event="NewDialog" Value="CustomizeDlg" Order="1">NOT Installed OR WixUI_InstallMode = &quot;Change&quot;</Publish>
+            <Publish Dialog="VerifyReadyDlg" Control="Back" Event="NewDialog" Value="MaintenanceTypeDlg" Order="2">Installed</Publish>
+
+            <Publish Dialog="MaintenanceWelcomeDlg" Control="Next" Event="NewDialog" Value="MaintenanceTypeDlg">1</Publish>
+
+            <Publish Dialog="MaintenanceTypeDlg" Control="ChangeButton" Event="NewDialog" Value="CustomizeDlg">1</Publish>
+            <Publish Dialog="MaintenanceTypeDlg" Control="RepairButton" Event="NewDialog" Value="VerifyReadyDlg">1</Publish>
+            <Publish Dialog="MaintenanceTypeDlg" Control="RemoveButton" Event="NewDialog" Value="VerifyReadyDlg">1</Publish>
+            <Publish Dialog="MaintenanceTypeDlg" Control="Back" Event="NewDialog" Value="MaintenanceWelcomeDlg">1</Publish>
+
+            <Publish Dialog="ExitDialog" Control="Finish" Event="EndDialog" Value="Return" Order="999">1</Publish>
+
+
+
+            <!-- Progress messages (so the user knows what's happening under the hood) - could use more of these... -->
+            <ProgressText Action="UpdateApacheConfig">!(loc.UpdateApacheConfig)</ProgressText>
+            <ProgressText Action="UpdatePhpIni">!(loc.UpdatePhpIni)</ProgressText>
+            <ProgressText Action="InstallApacheServiceCA">!(loc.InstallApacheServiceCA)</ProgressText>
+            <ProgressText Action="MgServerInstallCA">!(loc.MgServerInstallCA)</ProgressText>
+            <ProgressText Action="MgServerUninstallCA">!(loc.MgServerUninstallCA)</ProgressText>
+            <ProgressText Action="RemoveApacheServiceCA">!(loc.RemoveApacheServiceCA)</ProgressText>
+
+        </UI>
+
+        <!-- Trac #361: Run our custom CA as part of the UI install sequence -->
+        <InstallUISequence>
+            <Custom Action="EnumerateIIS6WebSites" After="CostFinalize" Overridable="yes">NOT Installed AND IISVERSIONMAJOR=&quot;#6&quot;</Custom>
+        </InstallUISequence>
+
+        <InstallExecuteSequence>
+
+          <!-- IIS7 Base properties for deferred actions -->
+            <Custom Action="MapGuideIIS7_I_AppCmd_Cmd" After="CostFinalize">MGWEB_CONFIG=&quot;IIS&quot; AND IISVERSIONMAJOR=&quot;#7&quot; AND &amp;WebExtensionsFeature&gt;2</Custom>
+            <Custom Action="MapGuideIIS7_I_CreateAppPool_Cmd" After="MapGuideIIS7_I_AppCmd_Cmd">MGWEB_CONFIG=&quot;IIS&quot; AND IISVERSIONMAJOR=&quot;#7&quot; AND &amp;WebExtensionsFeature&gt;2</Custom>
+            <Custom Action="MapGuideIIS7_I_SetAppPoolProp_Cmd" After="MapGuideIIS7_I_CreateAppPool_Cmd">MGWEB_CONFIG=&quot;IIS&quot; AND IISVERSIONMAJOR=&quot;#7&quot; AND &amp;WebExtensionsFeature&gt;2</Custom>
+            <Custom Action="MapGuideIIS7_I_UnlockSrvHandlers_Cmd" After="MapGuideIIS7_I_SetAppPoolProp_Cmd">MGWEB_CONFIG=&quot;IIS&quot; AND IISVERSIONMAJOR=&quot;#7&quot; AND &amp;WebExtensionsFeature&gt;2</Custom>
+            <Custom Action="MapGuideIIS7_I_UnlockSiteHandlers_Cmd" After="MapGuideIIS7_I_UnlockSrvHandlers_Cmd">MGWEB_CONFIG=&quot;IIS&quot; AND IISVERSIONMAJOR=&quot;#7&quot; AND &amp;WebExtensionsFeature&gt;2</Custom>
+            <Custom Action="MapGuideIIS7_I_CreateMapGuideApp_Cmd" After="MapGuideIIS7_I_UnlockSiteHandlers_Cmd">MGWEB_CONFIG=&quot;IIS&quot; AND IISVERSIONMAJOR=&quot;#7&quot; AND &amp;WebExtensionsFeature&gt;2</Custom>
+            <Custom Action="MapGuideIIS7_I_CreatePhpScriptMapping_Cmd" After="MapGuideIIS7_I_CreateMapGuideApp_Cmd">MGWEB_CONFIG=&quot;IIS&quot; AND IISVERSIONMAJOR=&quot;#7&quot; AND &amp;WebExtensionsFeature&gt;2</Custom>
+            <Custom Action="MapGuideIIS7_I_EnablePhpExtension_Cmd" After="MapGuideIIS7_I_CreatePhpScriptMapping_Cmd">MGWEB_CONFIG=&quot;IIS&quot; AND IISVERSIONMAJOR=&quot;#7&quot; AND &amp;WebExtensionsFeature&gt;2</Custom>
+            <Custom Action="MapGuideIIS7_I_CreateMapAgentApp_Cmd" After="MapGuideIIS7_I_EnablePhpExtension_Cmd">MGWEB_CONFIG=&quot;IIS&quot; AND IISVERSIONMAJOR=&quot;#7&quot; AND &amp;WebExtensionsFeature&gt;2</Custom>
+            <Custom Action="MapGuideIIS7_I_SetMapAgentHandlerAccess_Cmd" After="MapGuideIIS7_I_CreateMapAgentApp_Cmd">MGWEB_CONFIG=&quot;IIS&quot; AND IISVERSIONMAJOR=&quot;#7&quot; AND &amp;WebExtensionsFeature&gt;2</Custom>
+            <Custom Action="MapGuideIIS7_I_CreateMapAgentScriptHandling_Cmd" After="MapGuideIIS7_I_SetMapAgentHandlerAccess_Cmd">MGWEB_CONFIG=&quot;IIS&quot; AND IISVERSIONMAJOR=&quot;#7&quot; AND &amp;WebExtensionsFeature&gt;2</Custom>
+            <Custom Action="MapGuideIIS7_I_EnableMapAgentExtension_Cmd" After="MapGuideIIS7_I_CreateMapAgentScriptHandling_Cmd">MGWEB_CONFIG=&quot;IIS&quot; AND IISVERSIONMAJOR=&quot;#7&quot; AND &amp;WebExtensionsFeature&gt;2</Custom>
+            <Custom Action="MapGuideIIS7_I_AssignMapGuideAppPool_Cmd" After="MapGuideIIS7_I_EnableMapAgentExtension_Cmd">MGWEB_CONFIG=&quot;IIS&quot; AND IISVERSIONMAJOR=&quot;#7&quot; AND &amp;WebExtensionsFeature&gt;2</Custom>
+            <Custom Action="MapGuideIIS7_I_AssignMapAgentAppPool_Cmd" After="MapGuideIIS7_I_AssignMapGuideAppPool_Cmd">MGWEB_CONFIG=&quot;IIS&quot; AND IISVERSIONMAJOR=&quot;#7&quot; AND &amp;WebExtensionsFeature&gt;2</Custom>
+            <Custom Action="MapGuideIIS7_I_UnlockHttpErrorsMain_Cmd" After="MapGuideIIS7_I_AssignMapAgentAppPool_Cmd">MGWEB_CONFIG=&quot;IIS&quot; AND IISVERSIONMAJOR=&quot;#7&quot; AND &amp;WebExtensionsFeature&gt;2</Custom>
+            <Custom Action="MapGuideIIS7_I_UnlockHttpErrorsWebSite_Cmd" After="MapGuideIIS7_I_UnlockHttpErrorsMain_Cmd">MGWEB_CONFIG=&quot;IIS&quot; AND IISVERSIONMAJOR=&quot;#7&quot; AND &amp;WebExtensionsFeature&gt;2</Custom>
+            <Custom Action="MapGuideIIS7_I_UnlockHttpErrorsMapGuide_Cmd" After="MapGuideIIS7_I_UnlockHttpErrorsWebSite_Cmd">MGWEB_CONFIG=&quot;IIS&quot; AND IISVERSIONMAJOR=&quot;#7&quot; AND &amp;WebExtensionsFeature&gt;2</Custom>
+            <Custom Action="MapGuideIIS7_I_Reset401Handler_Cmd" After="MapGuideIIS7_I_UnlockHttpErrorsMapGuide_Cmd">MGWEB_CONFIG=&quot;IIS&quot; AND IISVERSIONMAJOR=&quot;#7&quot; AND &amp;WebExtensionsFeature&gt;2</Custom>
+            <Custom Action="MapGuideIIS7_I_AddJsonMime_Cmd" After="MapGuideIIS7_I_Reset401Handler_Cmd">MGWEB_CONFIG=&quot;IIS&quot; AND IISVERSIONMAJOR=&quot;#7&quot; AND &amp;WebExtensionsFeature&gt;2</Custom>
+
+          <!-- IIS7 PHP Viewer properties for deferred actions -->
+            <Custom Action="MapGuideIIS7_I_CreateViewerPhp_Cmd" After="MapGuideIIS7_I_AddJsonMime_Cmd">MGWEB_CONFIG=&quot;IIS&quot; AND IIS_API_TYPE=&quot;PHP&quot; AND IISVERSIONMAJOR=&quot;#7&quot; AND &amp;WebExtensionsFeature&gt;2</Custom>
+            <Custom Action="MapGuideIIS7_I_SetViewerDocPhp_Cmd" After="MapGuideIIS7_I_CreateViewerPhp_Cmd">MGWEB_CONFIG=&quot;IIS&quot; AND IIS_API_TYPE=&quot;PHP&quot; AND IISVERSIONMAJOR=&quot;#7&quot; AND &amp;WebExtensionsFeature&gt;2</Custom>
+            <Custom Action="MapGuideIIS7_I_AssignViewerAppPoolPhp_Cmd" After="MapGuideIIS7_I_SetViewerDocPhp_Cmd">MGWEB_CONFIG=&quot;IIS&quot; AND IIS_API_TYPE=&quot;PHP&quot; AND IISVERSIONMAJOR=&quot;#7&quot; AND &amp;WebExtensionsFeature&gt;2</Custom>
+
+          <!-- IIS7 ASP.Net Viewer properties for deferred actions -->
+            <Custom Action="MapGuideIIS7_I_CreateViewerNet_Cmd" After="MapGuideIIS7_I_Reset401Handler_Cmd">MGWEB_CONFIG=&quot;IIS&quot; AND IIS_API_TYPE=&quot;DOTNET&quot; AND IISVERSIONMAJOR=&quot;#7&quot; AND &amp;WebExtensionsFeature&gt;2</Custom>
+            <Custom Action="MapGuideIIS7_I_SetViewerDocNet_Cmd" After="MapGuideIIS7_I_CreateViewerNet_Cmd">MGWEB_CONFIG=&quot;IIS&quot; AND IIS_API_TYPE=&quot;DOTNET&quot; AND IISVERSIONMAJOR=&quot;#7&quot; AND &amp;WebExtensionsFeature&gt;2</Custom>
+            <Custom Action="MapGuideIIS7_I_AssignViewerAppPoolNet_Cmd" After="MapGuideIIS7_I_SetViewerDocNet_Cmd">MGWEB_CONFIG=&quot;IIS&quot; AND IIS_API_TYPE=&quot;DOTNET&quot; AND IISVERSIONMAJOR=&quot;#7&quot; AND &amp;WebExtensionsFeature&gt;2</Custom>
+
+          <!-- IIS7 Base deferred CAs -->
+            <Custom Action="MapGuideIIS7_I_CreateAppPool" After="InstallFiles">MGWEB_CONFIG=&quot;IIS&quot; AND IISVERSIONMAJOR=&quot;#7&quot; AND &amp;WebExtensionsFeature&gt;2</Custom>
+            <Custom Action="MapGuideIIS7_I_SetAppPoolProp" After="MapGuideIIS7_I_CreateAppPool">MGWEB_CONFIG=&quot;IIS&quot; AND IISVERSIONMAJOR=&quot;#7&quot; AND &amp;WebExtensionsFeature&gt;2</Custom>
+            
+            <?if "$(var.MgPlatform)" = "x64" ?>
+            <Custom Action="MapGuideIIS7_I_UnlockSrvHandlers" After="MapGuideIIS7_I_SetAppPoolProp">MGWEB_CONFIG=&quot;IIS&quot; AND IISVERSIONMAJOR=&quot;#7&quot; AND &amp;WebExtensionsFeature&gt;2</Custom>
+            <?else ?>
+            <Custom Action="MapGuideIIS7_I_Set32BitAppPool" After="MapGuideIIS7_I_SetAppPoolProp">MGWEB_CONFIG=&quot;IIS&quot; AND IISVERSIONMAJOR=&quot;#7&quot; AND &amp;WebExtensionsFeature&gt;2</Custom>
+            <Custom Action="MapGuideIIS7_I_UnlockSrvHandlers" After="MapGuideIIS7_I_Set32BitAppPool">MGWEB_CONFIG=&quot;IIS&quot; AND IISVERSIONMAJOR=&quot;#7&quot; AND &amp;WebExtensionsFeature&gt;2</Custom>
+            <?endif ?>
+            
+            <Custom Action="MapGuideIIS7_I_UnlockSiteHandlers" After="MapGuideIIS7_I_UnlockSrvHandlers">MGWEB_CONFIG=&quot;IIS&quot; AND IISVERSIONMAJOR=&quot;#7&quot; AND &amp;WebExtensionsFeature&gt;2</Custom>
+            <Custom Action="MapGuideIIS7_I_CreateMapGuideApp" After="MapGuideIIS7_I_UnlockSiteHandlers">MGWEB_CONFIG=&quot;IIS&quot; AND IISVERSIONMAJOR=&quot;#7&quot; AND &amp;WebExtensionsFeature&gt;2</Custom>
+            <Custom Action="MapGuideIIS7_I_CreatePhpScriptMapping" After="MapGuideIIS7_I_CreateMapGuideApp">MGWEB_CONFIG=&quot;IIS&quot; AND IISVERSIONMAJOR=&quot;#7&quot; AND &amp;WebExtensionsFeature&gt;2</Custom>
+            <Custom Action="MapGuideIIS7_I_EnablePhpExtension" After="MapGuideIIS7_I_CreatePhpScriptMapping">MGWEB_CONFIG=&quot;IIS&quot; AND IISVERSIONMAJOR=&quot;#7&quot; AND &amp;WebExtensionsFeature&gt;2</Custom>
+            <Custom Action="MapGuideIIS7_I_CreateMapAgentApp" After="MapGuideIIS7_I_EnablePhpExtension">MGWEB_CONFIG=&quot;IIS&quot; AND IISVERSIONMAJOR=&quot;#7&quot; AND &amp;WebExtensionsFeature&gt;2</Custom>
+            <Custom Action="MapGuideIIS7_I_SetMapAgentHandlerAccess" After="MapGuideIIS7_I_CreateMapAgentApp">MGWEB_CONFIG=&quot;IIS&quot; AND IISVERSIONMAJOR=&quot;#7&quot; AND &amp;WebExtensionsFeature&gt;2</Custom>
+            <Custom Action="MapGuideIIS7_I_CreateMapAgentScriptHandling" After="MapGuideIIS7_I_SetMapAgentHandlerAccess">MGWEB_CONFIG=&quot;IIS&quot; AND IISVERSIONMAJOR=&quot;#7&quot; AND &amp;WebExtensionsFeature&gt;2</Custom>
+            <Custom Action="MapGuideIIS7_I_EnableMapAgentExtension" After="MapGuideIIS7_I_CreateMapAgentScriptHandling">MGWEB_CONFIG=&quot;IIS&quot; AND IISVERSIONMAJOR=&quot;#7&quot; AND &amp;WebExtensionsFeature&gt;2</Custom>
+            <Custom Action="MapGuideIIS7_I_AssignMapGuideAppPool" After="MapGuideIIS7_I_EnableMapAgentExtension">MGWEB_CONFIG=&quot;IIS&quot; AND IISVERSIONMAJOR=&quot;#7&quot; AND &amp;WebExtensionsFeature&gt;2</Custom>
+            <Custom Action="MapGuideIIS7_I_AssignMapAgentAppPool" After="MapGuideIIS7_I_AssignMapGuideAppPool">MGWEB_CONFIG=&quot;IIS&quot; AND IISVERSIONMAJOR=&quot;#7&quot; AND &amp;WebExtensionsFeature&gt;2</Custom>
+            <Custom Action="MapGuideIIS7_I_UnlockHttpErrorsMain" After="MapGuideIIS7_I_AssignMapAgentAppPool">MGWEB_CONFIG=&quot;IIS&quot; AND IISVERSIONMAJOR=&quot;#7&quot; AND &amp;WebExtensionsFeature&gt;2</Custom>
+            <Custom Action="MapGuideIIS7_I_UnlockHttpErrorsWebSite" After="MapGuideIIS7_I_UnlockHttpErrorsMain">MGWEB_CONFIG=&quot;IIS&quot; AND IISVERSIONMAJOR=&quot;#7&quot; AND &amp;WebExtensionsFeature&gt;2</Custom>
+            <Custom Action="MapGuideIIS7_I_UnlockHttpErrorsMapGuide" After="MapGuideIIS7_I_UnlockHttpErrorsWebSite">MGWEB_CONFIG=&quot;IIS&quot; AND IISVERSIONMAJOR=&quot;#7&quot; AND &amp;WebExtensionsFeature&gt;2</Custom>
+            <Custom Action="MapGuideIIS7_I_Reset401Handler" After="MapGuideIIS7_I_UnlockHttpErrorsMapGuide">MGWEB_CONFIG=&quot;IIS&quot; AND IISVERSIONMAJOR=&quot;#7&quot; AND &amp;WebExtensionsFeature&gt;2</Custom>
+            <Custom Action="MapGuideIIS7_I_AddJsonMime" After="MapGuideIIS7_I_Reset401Handler">MGWEB_CONFIG=&quot;IIS&quot; AND IISVERSIONMAJOR=&quot;#7&quot; AND &amp;WebExtensionsFeature&gt;2</Custom>
+
+          <!-- IIS7 PHP Viewer deferred CAs -->
+            <Custom Action="MapGuideIIS7_I_CreateViewerPhp" After="MapGuideIIS7_I_AddJsonMime">MGWEB_CONFIG=&quot;IIS&quot; AND IIS_API_TYPE=&quot;PHP&quot; AND IISVERSIONMAJOR=&quot;#7&quot; AND &amp;WebExtensionsFeature&gt;2</Custom>
+            <Custom Action="MapGuideIIS7_I_SetViewerDocPhp" After="MapGuideIIS7_I_CreateViewerPhp">MGWEB_CONFIG=&quot;IIS&quot; AND IIS_API_TYPE=&quot;PHP&quot; AND IISVERSIONMAJOR=&quot;#7&quot; AND &amp;WebExtensionsFeature&gt;2</Custom>
+            <Custom Action="MapGuideIIS7_I_AssignViewerAppPoolPhp" After="MapGuideIIS7_I_SetViewerDocPhp">MGWEB_CONFIG=&quot;IIS&quot; AND IIS_API_TYPE=&quot;PHP&quot; AND IISVERSIONMAJOR=&quot;#7&quot; AND &amp;WebExtensionsFeature&gt;2</Custom>
+
+          <!-- IIS7 DOTNET Viewer deferred CAs -->
+            <Custom Action="MapGuideIIS7_I_CreateViewerNet" After="MapGuideIIS7_I_Reset401Handler">MGWEB_CONFIG=&quot;IIS&quot; AND IIS_API_TYPE=&quot;DOTNET&quot; AND IISVERSIONMAJOR=&quot;#7&quot; AND &amp;WebExtensionsFeature&gt;2</Custom>
+            <Custom Action="MapGuideIIS7_I_SetViewerDocNet" After="MapGuideIIS7_I_CreateViewerNet">MGWEB_CONFIG=&quot;IIS&quot; AND IIS_API_TYPE=&quot;DOTNET&quot; AND IISVERSIONMAJOR=&quot;#7&quot; AND &amp;WebExtensionsFeature&gt;2</Custom>
+            <Custom Action="MapGuideIIS7_I_AssignViewerAppPoolNet" After="MapGuideIIS7_I_SetViewerDocNet">MGWEB_CONFIG=&quot;IIS&quot; AND IIS_API_TYPE=&quot;DOTNET&quot; AND IISVERSIONMAJOR=&quot;#7&quot; AND &amp;WebExtensionsFeature&gt;2</Custom>
+
+          <!-- IIS7 UNINSTALL deferred action properties -->
+            <Custom Action="MapGuideIIS7_U_AppCmd_Cmd" After="InstallInitialize">MGWEB_CONFIG=&quot;IIS&quot; AND IISVERSIONMAJOR=&quot;#7&quot; AND &amp;WebExtensionsFeature=2</Custom>
+            <Custom Action="MapGuideIIS7_U_ClearMapAgentRestriction_Cmd" After="MapGuideIIS7_U_AppCmd_Cmd">MGWEB_CONFIG=&quot;IIS&quot; AND IISVERSIONMAJOR=&quot;#7&quot; AND &amp;WebExtensionsFeature=2</Custom>
+            <Custom Action="MapGuideIIS7_U_ClearPhpRestriction_Cmd" After="MapGuideIIS7_U_ClearMapAgentRestriction_Cmd">MGWEB_CONFIG=&quot;IIS&quot; AND IISVERSIONMAJOR=&quot;#7&quot; AND &amp;WebExtensionsFeature=2</Custom>
+            <Custom Action="MapGuideIIS7_U_RemoveViewer_Cmd" After="MapGuideIIS7_U_ClearPhpRestriction_Cmd">MGWEB_CONFIG=&quot;IIS&quot; AND IISVERSIONMAJOR=&quot;#7&quot; AND &amp;WebExtensionsFeature=2</Custom>
+            <Custom Action="MapGuideIIS7_U_RemoveMapAgent_Cmd" After="MapGuideIIS7_U_RemoveViewer_Cmd">MGWEB_CONFIG=&quot;IIS&quot; AND IISVERSIONMAJOR=&quot;#7&quot; AND &amp;WebExtensionsFeature=2</Custom>
+            <Custom Action="MapGuideIIS7_U_RemoveMapGuide_Cmd" After="MapGuideIIS7_U_RemoveMapAgent_Cmd">MGWEB_CONFIG=&quot;IIS&quot; AND IISVERSIONMAJOR=&quot;#7&quot; AND &amp;WebExtensionsFeature=2</Custom>
+            <Custom Action="MapGuideIIS7_U_DeleteAppPool_Cmd" After="MapGuideIIS7_U_RemoveMapGuide_Cmd">MGWEB_CONFIG=&quot;IIS&quot; AND IISVERSIONMAJOR=&quot;#7&quot; AND &amp;WebExtensionsFeature=2</Custom>
+
+          <!-- IIS7 UNINSTALL deferred CAs -->
+            <Custom Action="MapGuideIIS7_U_ClearMapAgentRestriction" After="MapGuideIIS7_U_DeleteAppPool_Cmd">MGWEB_CONFIG=&quot;IIS&quot; AND IISVERSIONMAJOR=&quot;#7&quot; AND &amp;WebExtensionsFeature=2</Custom>
+            <Custom Action="MapGuideIIS7_U_ClearPhpRestriction" After="MapGuideIIS7_U_ClearMapAgentRestriction">MGWEB_CONFIG=&quot;IIS&quot; AND IISVERSIONMAJOR=&quot;#7&quot; AND &amp;WebExtensionsFeature=2</Custom>
+            <Custom Action="MapGuideIIS7_U_RemoveViewer" After="MapGuideIIS7_U_ClearPhpRestriction">MGWEB_CONFIG=&quot;IIS&quot; AND IISVERSIONMAJOR=&quot;#7&quot; AND &amp;WebExtensionsFeature=2</Custom>
+            <Custom Action="MapGuideIIS7_U_RemoveMapAgent" After="MapGuideIIS7_U_RemoveViewer">MGWEB_CONFIG=&quot;IIS&quot; AND IISVERSIONMAJOR=&quot;#7&quot; AND &amp;WebExtensionsFeature=2</Custom>
+            <Custom Action="MapGuideIIS7_U_RemoveMapGuide" After="MapGuideIIS7_U_RemoveMapAgent">MGWEB_CONFIG=&quot;IIS&quot; AND IISVERSIONMAJOR=&quot;#7&quot; AND &amp;WebExtensionsFeature=2</Custom>
+            <Custom Action="MapGuideIIS7_U_DeleteAppPool" After="MapGuideIIS7_U_RemoveMapGuide">MGWEB_CONFIG=&quot;IIS&quot; AND IISVERSIONMAJOR=&quot;#7&quot; AND &amp;WebExtensionsFeature=2</Custom>
+
+          <!-- IIS6 properties for deferred actions -->
+            <Custom Action="AspNetRegIIS_Cmd" After="CostFinalize">NETFRAMEWORK20 AND MGWEB_CONFIG=&quot;IIS&quot; AND (IISVERSIONMAJOR=&quot;#5&quot; OR IISVERSIONMAJOR=&quot;#6&quot;) AND &amp;WebExtensionsFeature&gt;2</Custom>
+
+          <!-- IIS6 deferred actions  ConfigureIIS is a WiX built-in action; I'm overriding and making the action conditional -->
+            <Custom Action="ConfigureIIs" After="InstallFiles">MGWEB_CONFIG=&quot;IIS&quot; AND (IISVERSIONMAJOR=&quot;#5&quot; OR IISVERSIONMAJOR=&quot;#6&quot;) AND (&amp;WebExtensionsFeature&gt;2 OR &amp;WebExtensionsFeature=2)</Custom>
+            <Custom Action="AspNetRegIIS" After="ConfigureIIs">NETFRAMEWORK20 AND MGWEB_CONFIG=&quot;IIS&quot; AND (IISVERSIONMAJOR=&quot;#5&quot; OR IISVERSIONMAJOR=&quot;#6&quot;) AND &amp;WebExtensionsFeature&gt;2</Custom>
+
+            
+            <Custom Action="FdoRegCmd" After="InstallInitialize"></Custom>
+            <!-- FDO Provider Registration Immediate Actions -->
+            <Custom Action="FdoRegArcSdeCmd" After="InstallFiles">&amp;FdoArcSdeProviderFeature&gt;2</Custom>
+            <Custom Action="FdoRegSdfCmd" After="FdoRegArcSdeCmd">&amp;FdoSdfProviderFeature&gt;2</Custom>
+            <Custom Action="FdoRegShpCmd" After="FdoRegSdfCmd">&amp;FdoShpProviderFeature&gt;2</Custom>
+            <Custom Action="FdoRegWfsCmd" After="FdoRegShpCmd">&amp;FdoWfsProviderFeature&gt;2</Custom>
+            <Custom Action="FdoRegWmsCmd" After="FdoRegWfsCmd">&amp;FdoWmsProviderFeature&gt;2</Custom>
+            <Custom Action="FdoRegOdbcCmd" After="FdoRegWmsCmd">&amp;FdoOdbcProviderFeature&gt;2</Custom>
+            <Custom Action="FdoRegMySqlCmd" After="FdoRegOdbcCmd">&amp;FdoMySqlProviderFeature&gt;2</Custom>
+            <Custom Action="FdoRegGdalCmd" After="FdoRegMySqlCmd">&amp;FdoGdalProviderFeature&gt;2</Custom>
+            <Custom Action="FdoRegOgrCmd" After="FdoRegGdalCmd">&amp;FdoOgrProviderFeature&gt;2</Custom>
+            <Custom Action="FdoRegPostGisCmd" After="FdoRegOgrCmd">&amp;FdoPostGisProviderFeature&gt;2</Custom>
+            <Custom Action="FdoRegPostgreSqlCmd" After="FdoRegPostGisCmd">&amp;FdoPostgreSqlProviderFeature&gt;2</Custom>
+            <Custom Action="FdoRegOracleCmd" After="FdoRegPostgreSqlCmd">&amp;FdoKingOracleProviderFeature&gt;2</Custom>
+            <Custom Action="FdoRegSqlServerCmd" After="FdoRegOracleCmd">&amp;FdoSqlServerSpatialProviderFeature&gt;2</Custom>
+            <Custom Action="FdoRegSltCmd" After="FdoRegSqlServerCmd">&amp;FdoSltProviderFeature&gt;2</Custom>
+
+            <!-- FDO Provider Registration deferred Actions -->
+            <Custom Action="FdoRegArcSde" After="FdoRegSltCmd">&amp;FdoArcSdeProviderFeature&gt;2</Custom>
+            <Custom Action="FdoRegSdf" After="FdoRegArcSde">&amp;FdoSdfProviderFeature&gt;2</Custom>
+            <Custom Action="FdoRegShp" After="FdoRegSdf">&amp;FdoShpProviderFeature&gt;2</Custom>
+            <Custom Action="FdoRegWfs" After="FdoRegShp">&amp;FdoWfsProviderFeature&gt;2</Custom>
+            <Custom Action="FdoRegWms" After="FdoRegWfs">&amp;FdoWmsProviderFeature&gt;2</Custom>
+            <Custom Action="FdoRegOdbc" After="FdoRegWms">&amp;FdoOdbcProviderFeature&gt;2</Custom>
+            <Custom Action="FdoRegMySql" After="FdoRegOdbc">&amp;FdoMySqlProviderFeature&gt;2</Custom>
+            <Custom Action="FdoRegGdal" After="FdoRegMySql">&amp;FdoGdalProviderFeature&gt;2</Custom>
+            <Custom Action="FdoRegOgr" After="FdoRegGdal">&amp;FdoOgrProviderFeature&gt;2</Custom>
+            <Custom Action="FdoRegPostGis" After="FdoRegOgr">&amp;FdoPostGisProviderFeature&gt;2</Custom>
+            <Custom Action="FdoRegPostgreSql" After="FdoRegPostGis">&amp;FdoPostgreSqlProviderFeature&gt;2</Custom>
+            <Custom Action="FdoRegOracle" After="FdoRegPostgreSql">&amp;FdoKingOracleProviderFeature&gt;2</Custom>
+            <Custom Action="FdoRegSqlServer" After="FdoRegOracle">&amp;FdoSqlServerSpatialProviderFeature&gt;2</Custom>
+            <Custom Action="FdoRegSlt" After="FdoRegSqlServer">&amp;FdoSltProviderFeature&gt;2</Custom>
+
+            <!-- FDO Provider Unregistration Immediate Actions -->
+            <Custom Action="FdoUnRegArcSdeCmd" After="InstallInitialize">&amp;FdoArcSdeProviderFeature=2</Custom>
+            <Custom Action="FdoUnRegSdfCmd" After="FdoUnRegArcSdeCmd">&amp;FdoSdfProviderFeature=2</Custom>
+            <Custom Action="FdoUnRegShpCmd" After="FdoUnRegSdfCmd">&amp;FdoShpProviderFeature=2</Custom>
+            <Custom Action="FdoUnRegWfsCmd" After="FdoUnRegShpCmd">&amp;FdoWfsProviderFeature=2</Custom>
+            <Custom Action="FdoUnRegWmsCmd" After="FdoUnRegWfsCmd">&amp;FdoWmsProviderFeature=2</Custom>
+            <Custom Action="FdoUnRegOdbcCmd" After="FdoUnRegWmsCmd">&amp;FdoOdbcProviderFeature=2</Custom>
+            <Custom Action="FdoUnRegMySqlCmd" After="FdoUnRegOdbcCmd">&amp;FdoMySqlProviderFeature=2</Custom>
+            <Custom Action="FdoUnRegGdalCmd" After="FdoUnRegMySqlCmd">&amp;FdoGdalProviderFeature=2</Custom>
+            <Custom Action="FdoUnRegOgrCmd" After="FdoUnRegGdalCmd">&amp;FdoOgrProviderFeature=2</Custom>
+            <Custom Action="FdoUnRegPostGisCmd" After="FdoUnRegOgrCmd">&amp;FdoPostGisProviderFeature=2</Custom>
+            <Custom Action="FdoUnRegPostgreSqlCmd" After="FdoUnRegPostGisCmd">&amp;FdoPostgreSqlProviderFeature=2</Custom>
+            <Custom Action="FdoUnRegOracleCmd" After="FdoUnRegPostgreSqlCmd">&amp;FdoKingOracleProviderFeature=2</Custom>
+            <Custom Action="FdoUnRegSqlServerCmd" After="FdoUnRegOracleCmd">&amp;FdoSqlServerSpatialProviderFeature=2</Custom>
+            <Custom Action="FdoUnRegSltCmd" After="FdoUnRegSqlServerCmd">&amp;FdoSltProviderFeature=2</Custom>
+
+            <!-- FDO Provider Unregistration Deferred Actions -->
+            <Custom Action="FdoUnRegArcSde" After="FdoUnRegSltCmd">&amp;FdoArcSdeProviderFeature=2</Custom>
+            <Custom Action="FdoUnRegSdf" After="FdoUnRegArcSde">&amp;FdoSdfProviderFeature=2</Custom>
+            <Custom Action="FdoUnRegShp" After="FdoUnRegSdf">&amp;FdoShpProviderFeature=2</Custom>
+            <Custom Action="FdoUnRegWfs" After="FdoUnRegShp">&amp;FdoWfsProviderFeature=2</Custom>
+            <Custom Action="FdoUnRegWms" After="FdoUnRegWfs">&amp;FdoWmsProviderFeature=2</Custom>
+            <Custom Action="FdoUnRegOdbc" After="FdoUnRegWms">&amp;FdoOdbcProviderFeature=2</Custom>
+            <Custom Action="FdoUnRegMySql" After="FdoUnRegOdbc">&amp;FdoMySqlProviderFeature=2</Custom>
+            <Custom Action="FdoUnRegGdal" After="FdoUnRegMySql">&amp;FdoGdalProviderFeature=2</Custom>
+            <Custom Action="FdoUnRegOgr" After="FdoUnRegGdal">&amp;FdoOgrProviderFeature=2</Custom>
+            <Custom Action="FdoUnRegPostGis" After="FdoUnRegOgr">&amp;FdoPostGisProviderFeature=2</Custom>
+            <Custom Action="FdoUnRegPostgreSql" After="FdoUnRegPostGis">&amp;FdoPostgreSqlProviderFeature=2</Custom>
+            <Custom Action="FdoUnRegOracle" After="FdoUnRegPostgreSql">&amp;FdoKingOracleProviderFeature=2</Custom>
+            <Custom Action="FdoUnRegSqlServer" After="FdoUnRegOracle">&amp;FdoSqlServerSpatialProviderFeature=2</Custom>
+            <Custom Action="FdoUnRegSlt" After="FdoUnRegSqlServer">&amp;FdoSltProviderFeature=2</Custom>
+
+            <!-- Apache / PHP / MG Server Custom Actions-->
+            <Custom
+                Action="UpdateApacheConfig"
+                After="UpdateApacheConfig.SetValues">&amp;WebExtPhpFeature&gt;2 AND &amp;WebExtApacheFeature&gt;2</Custom>
+            <Custom
+                Action="UpdateApacheConfig.SetValues"
+                After="InstallFiles">&amp;WebExtPhpFeature&gt;2 AND &amp;WebExtApacheFeature&gt;2</Custom>
+            <Custom
+                Action="UpdatePhpIni"
+                After="UpdatePhpIni.SetValues">&amp;WebExtPhpFeature&gt;2</Custom>
+            <Custom
+                Action="UpdatePhpIni.SetValues"
+                After="UpdateApacheConfig">&amp;WebExtPhpFeature&gt;2</Custom>
+            <Custom
+                Action="InstallApacheServiceCA"
+                Before="InstallFinalize">MGWEB_CONFIG=&quot;APACHE&quot; AND &amp;WebExtApacheFeature&gt;2</Custom>
+            <Custom
+                Action="StartApacheServiceCA"
+                After="InstallApacheServiceCA">MGWEB_CONFIG=&quot;APACHE&quot; AND &amp;WebExtApacheFeature&gt;2</Custom>
+            <Custom
+                Action="MgServerInstallCA"
+                Before="InstallFinalize">&amp;ServerFeature&gt;2</Custom>
+            <Custom
+                Action="MgServerUninstallCA"
+                Before="RemoveFiles">&amp;ServerFeature=2</Custom>
+            <Custom
+                Action="RemoveApacheServiceCA"
+                Before="RemoveFiles">MGWEB_CONFIG=&quot;APACHE&quot; AND &amp;WebExtApacheFeature=2</Custom>
+
+            <!--
+            64-bit IIS requires a machine reboot in order for MENTOR_DICTIONARY_PATH to be picked up by the Web Extensions
+            
+            You can technically avoid this reboot by using IIS environment variable overrides as described here:
+            http://www.teachout.com/Blog/tabid/165/EntryId/246/Windows-Environment-Variables-Overrides-for-IIS6.aspx
+            
+            If you follow this approach, just say "no" at the reboot prompt.
+            
+            Read the below condition as:
+            
+            REBOOT if:
+                (("Configuration is IIS" AND "This is a 64-bit windows") OR ("Windows XP or older"))
+                AND "Not installed" AND "CS-Map is freshly installed"
+            
+            The 64-bit condition is tested first before the "Windows XP or older" condition
+            
+            502 is the VersionNT value for Windows Server 2003
+            
+            -->
+            <ScheduleReboot After="InstallFinalize">((VersionNT64 AND MGWEB_CONFIG=&quot;IIS&quot;) OR VersionNT&lt;502) AND NOT Installed AND &amp;CSMapFeature&gt;2</ScheduleReboot> 
+        </InstallExecuteSequence>
+    </Product>
+</Wix>
