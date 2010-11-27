@@ -71,7 +71,6 @@ InstallVSRedist:
 !endif
 
 BeginInstall:
-	MessageBox MB_OK "Begin main installation"
 	Banner::show /NOUNLOAD "Extracting files. Please Wait"
 	Banner::getWindow /NOUNLOAD
 	File "${INSTALLER_OUTPUT}\${OUTNAME}.msi"
