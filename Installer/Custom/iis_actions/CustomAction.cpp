@@ -21,7 +21,7 @@ UINT __stdcall PopulateWebSites(MSIHANDLE hInstall)
 	char szMsg[256];
 	PBYTE pbBuffer = NULL;
 
-	CComPtr<IMSAdminBase> pIMeta;
+	IMSAdminBase* pIMeta = NULL;
 
 	hr = WcaInitialize(hInstall, "PopulateWebSites");
 	ExitOnFailure(hr, "Failed to initialize");
@@ -103,11 +103,17 @@ Final:
 	WcaLog(LOGMSG_STANDARD, "Finalizing");
 	sprintf(szMsg, "Final error code: %d", er);
 	WcaLog(LOGMSG_STANDARD, szMsg);
+	if (pIMeta)
+	{
+		pIMeta->Release();
+		pIMeta = NULL;
+	}
 	if (pbBuffer)
 	{
 		delete pbBuffer;
 		pbBuffer = NULL;
 	}
+	CoUninitialize();
 	if (hDb)
 		MsiCloseHandle(hDb);
 	return WcaFinalize(er);

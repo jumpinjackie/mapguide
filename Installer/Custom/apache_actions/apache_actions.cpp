@@ -26,22 +26,46 @@
 #include "stdafx.h"
 #include "apache_actions.h"
 
+#include <string>
+#include <vector>
+#include <iostream>
+#include <istream>
+#include <ostream>
+#include <iterator>
+#include <sstream>
+#include <algorithm>
+#include <fstream>
+
 #define NULL_CHAR '\0'
 
-void ConvertToApachePath(char * str);
+void Tokenize(const std::string& str, std::vector<std::string>& tokens, const std::string& delimiters);
+void FindAndReplace(std::string& str, const std::string& find, const std::string& replace);
 
-/*****************************************************************************
-* Name	        : ConverToApachePath
-* Description   : Converts a path to a apache-friendly format
-* Parameters    : str
-* Return        : none
-*****************************************************************************/
-void ConvertToApachePath(char * str) 
+void Tokenize(const std::string& str, std::vector<std::string>& tokens, const std::string& delimiters)
 {
-	for(unsigned int i = 0; i < strlen(str); i++)
+	// Skip delimiters at beginning.
+	std::string::size_type lastPos = str.find_first_not_of(delimiters, 0);
+    // Find first "non-delimiter".
+    std::string::size_type pos     = str.find_first_of(delimiters, lastPos);
+
+    while (std::string::npos != pos || std::string::npos != lastPos)
+    {
+        // Found a token, add it to the vector.
+        tokens.push_back(str.substr(lastPos, pos - lastPos));
+        // Skip delimiters.  Note the "not_of"
+        lastPos = str.find_first_not_of(delimiters, pos);
+        // Find next "non-delimiter"
+        pos = str.find_first_of(delimiters, lastPos);
+    }
+}
+
+void FindAndReplace(std::string& str, const std::string& find, const std::string& replace)
+{
+	size_t pos = 0;
+	while ((pos = str.find(find, pos)) != std::string::npos)
 	{
-		if(str[i] == '\\')
-			str[i] = '/';
+		str.replace(pos, find.length(), replace);
+		pos += replace.length();
 	}
 }
 
@@ -127,101 +151,64 @@ GetApacheDir(MSIHANDLE hMSI)
 UINT __stdcall
 UpdatePhpIni(MSIHANDLE hMSI)
 {
-	DWORD   dwDataLen = MAX_BUFFER;
-	WCHAR   wszCustomActionData[MAX_BUFFER + 1] = L"";
-	CHAR    szCustomActionData[MAX_BUFFER];
-	CHAR    szPhpDir[MAX_BUFFER];
+	// Method overview:
+	//
+	// We extract the value of the MSI property "CustomActionData" which will
+	// be of the form:
+	//
+	// [PHPLOCATION];[WEBSERVERTYPE];[WEBTEMPLOCATION]
+	//
+	// With this, we update php.ini as follows:
+	//
+	// replace %MG_WEB_PHP% with [PHPLOCATION]
+	// replace %MG_WEB_TEMP% with [WEBTEMPLOCATION]
+	// if [WEBSERVERTYPE] == "2" replace "; cgi.force_redirect = 1" with "cgi.force_redirect = 0"
 
-	CHAR	szWebTempDir[MAX_BUFFER];
-	CHAR    szWebServerType[MAX_BUFFER];
-	CHAR    szFile[MAX_BUFFER];
-	CHAR    szFind[MAX_BUFFER];
-	CHAR    szReplace[MAX_BUFFER];
-	int     nLen;
+	CHAR szCustomActionData[MAX_BUFFER];
+	DWORD dwDataLen = MAX_BUFFER;
 
-	// retrieve the CustomActionData
-	dwDataLen = MAX_BUFFER;
-	MsiGetPropertyW(hMSI, L"CustomActionData", wszCustomActionData, &dwDataLen);
+	MsiGetProperty(hMSI, "CustomActionData", szCustomActionData, &dwDataLen);
 
-	nLen = WideCharToMultiByte(CP_ACP, 0, wszCustomActionData, dwDataLen, szCustomActionData, MAX_BUFFER, NULL, NULL);
-	szCustomActionData[nLen] = NULL_CHAR;
+	std::string szMsiData = szCustomActionData;
+	
+	std::vector<std::string> tokens;
+	Tokenize(szMsiData, tokens, ";");
 
-	szPhpDir[0] = NULL_CHAR;
-	szWebServerType[0] = NULL_CHAR;
-
-	//::MessageBoxW(NULL, wszCustomActionData, L"CustomActionData", MB_OK);
-
-	//[PHPLOCATION];[WEBSERVERTYPE];[WEBTEMPLOCATION]
-	char * tok = strtok(szCustomActionData, ";");
-	//[PHPLOCATION]
-	if(tok)
+	if (tokens.size() == 3)
 	{
-		strcpy(szPhpDir, tok);
-		tok = strtok(NULL, ";");
-		//[WEBSERVERTYPE]
-		if(tok)
+		std::string szPhpDir = tokens[0];
+		std::string szWebType = tokens[1];
+		std::string szTmpDir = tokens[2];
+
+		std::string szFileName = szPhpDir + "php.ini";
+		const char* szFile = szFileName.c_str();
+
+		if (FileExists(szFile))
 		{
-			strcpy(szWebServerType, tok);
-			tok = strtok(NULL, ";");
-		}
-		//[WEBTEMPLOCATION]
-		if(tok)
-		{
-			strcpy(szWebTempDir, tok);
-			tok = strtok(NULL, ";");
+			std::ifstream fin(szFile);
+
+			std::string buffer;
+			std::string line;
+			while(!fin.eof())
+			{
+				std::getline(fin, line);
+
+				FindAndReplace(line, "%MG_WEB_PHP%", szPhpDir);
+				FindAndReplace(line, "%MG_WEB_TEMP%", szTmpDir);
+				if (strcmp(szWebType.c_str(), "2") == 0)
+				{
+					FindAndReplace(line, "; cgi.force_redirect = 1", "cgi.force_redirect = 0");
+				}
+
+				buffer += line + "\n";
+			}
+			fin.close();
+
+			std::ofstream fout(szFile);
+			fout << buffer;
+			fout.close();
 		}
 	}
-
-	// create the file path to php.ini
-	strcpy(szFile, szPhpDir);
-	strcat(szFile, "php.ini");
-
-	//::MessageBox(NULL, szFile, "Test", MB_OK);
-
-	if( FileExists(szFile) )
-	{
-		//::MessageBoxW(NULL, L"File found", L"Test", MB_OK);
-		// Opening the file to read and write.
-		//
-		CFile cfInFile(szFile, CFile::modeRead);
-		DWORD dwFileLen = cfInFile.GetLength();
-
-		// Read the entire contents of the file.
-		//
-		char *szBuff = new char[dwFileLen + 1];
-		cfInFile.Read(szBuff, dwFileLen);
-		szBuff[dwFileLen] = NULL_CHAR;                   // Add ending null to buffer.
-
-		cfInFile.Close();
-
-		// Creating a CString object to store the contents and help
-		// us to add the desired configuration.
-		//
-		CString csBuff(szBuff);
-		strcpy(szFind,"%MG_WEB_PHP%");
-		csBuff.Replace(szFind,szPhpDir);
-
-		strcpy(szFind,"%MG_WEB_TEMP%");
-		csBuff.Replace(szFind,szWebTempDir);
-
-		if ( strcmp(szWebServerType,"2") == 0 )
-		{
-			strcpy(szFind,"; cgi.force_redirect = 1");
-			strcpy(szReplace,"cgi.force_redirect = 0");
-			csBuff.Replace(szFind,szReplace);
-		}
-
-		CFile cfOutFile(szFile, CFile::modeWrite);
-
-		// Write and modify the contents.
-		//
-		DWORD dwNewLength = csBuff.GetLength();
-		cfOutFile.SeekToBegin();
-		cfOutFile.Write(csBuff, dwNewLength);
-		cfOutFile.SetLength(dwNewLength);
-		cfOutFile.Close();
-	}
-
 	return ERROR_SUCCESS;
 }
 
@@ -241,268 +228,143 @@ UpdatePhpIni(MSIHANDLE hMSI)
 UINT __stdcall
 UpdateApacheConfig(MSIHANDLE hMSI)
 {
+	// Method overview:
+	//
+	// Extract the value of the MSI property: CustomActionData
+	//
+	// The value is of the form: [WEBEXTENSIONSLOCATION];[APACHE_API_TYPE];[APACHE_PORT];[APACHELOCATION];[PHPLOCATION];[WEBROOTLOCATION];[VIRTUALDIR]
+	//
+	// Then in [APACHELOCATION]\conf\httpd.conf, perform the following replacements:
+	//
+	// %MG_WEB_ROOT% for [WEBROOTLOCATION]
+	// %MG_WEB_PORT% for [APACHE_PORT]
+	// %MG_WEB_PHP% for [PHPLOCATION]
+	// %MG_WEB_APACHE% for [APACHELOCATION]
+	// %MG_VIRTUAL_DIR% for [VIRTUALDIR]
+	//
+	// %MG_INCLUDE_TOMCAT% for "Include conf/tomcat.conf" if java config otherwise
+	// "#Uncomment to enable the Java API\n#Include conf/tomcat.conf"
+	//
+	// %MG_PHP_API% for "#" if java config otherwise ""
+	// %MG_JAVA_API% for "" if java config otherwise "#"
+	//
+	// If java config perform the following additional replacements in the
+	// file [APACHELOCATION]\conf\tomcat.conf
+	//
+	// %MG_WEB_APACHE% for [APACHELOCATION]
+	// %MG_VIRTUAL_DIR% for [VIRTUALDIR]
+
 	DWORD   dwDataLen = MAX_BUFFER;
-	WCHAR   wszCustomActionData[MAX_BUFFER + 1] = L"";
 	CHAR    szCustomActionData[MAX_BUFFER];
-	CHAR    szInstallDir[MAX_BUFFER];
-	CHAR    szApacheDir[MAX_BUFFER];
-	CHAR    szPhpDir[MAX_BUFFER];
-	CHAR    szWebDir[MAX_BUFFER];
-	CHAR	szVirtualDir[MAX_BUFFER];
-	CHAR    szApiType[MAX_BUFFER];
-	CHAR    szServerPort[MAX_BUFFER];
-	CHAR    szFile[MAX_BUFFER];
-	CHAR    szFind[MAX_BUFFER];
-	CHAR    szReplace[MAX_BUFFER];
-	bool    bJava = false;
-	int     nLen;
 
-	// retrieve the CustomActionData
-	dwDataLen = MAX_BUFFER;
-	MsiGetPropertyW(hMSI, L"CustomActionData", wszCustomActionData, &dwDataLen);
+	MsiGetProperty(hMSI, "CustomActionData", szCustomActionData, &dwDataLen);
 
-	nLen = WideCharToMultiByte(CP_ACP, 0, wszCustomActionData, dwDataLen, szCustomActionData, MAX_BUFFER, NULL, NULL);
-	szCustomActionData[nLen] = NULL_CHAR;
+	std::string szMsiData = szCustomActionData;
+	
+	std::vector<std::string> tokens;
+	Tokenize(szMsiData, tokens, ";");
 
-	szInstallDir[0] = NULL_CHAR;
-	szApacheDir[0] = NULL_CHAR;
-	szPhpDir[0] = NULL_CHAR;
-	szWebDir[0] = NULL_CHAR;
-	szApiType[0] = NULL_CHAR;
-	szServerPort[0] = NULL_CHAR;
-
-	//[WEBEXTENSIONSLOCATION];[APACHE_API_TYPE];[APACHE_PORT];[APACHELOCATION];[PHPLOCATION];[WEBROOTLOCATION]
-	char * tok = strtok(szCustomActionData, ";");
-	//[WEBEXTENSIONSLOCATION]
-	if(tok)
+	if (tokens.size() == 7)
 	{
-		strcpy(szInstallDir, tok);
-		tok = strtok(NULL, ";");
-		//[APACHE_API_TYPE]
-		if(tok)
+		std::string szWebExtDir = tokens[0];
+		std::string szApiType = tokens[1];
+		std::string szPortNo = tokens[2];
+		std::string szApacheDir = tokens[3];
+		std::string szPhpDir = tokens[4];
+		std::string szWebRootDir = tokens[5];
+		std::string szVirtualDir = tokens[6];
+
+		//Apach-ify these paths
+		FindAndReplace(szWebExtDir, "\\", "/");
+		FindAndReplace(szPhpDir, "\\", "/");
+		FindAndReplace(szWebRootDir, "\\", "/");
+		FindAndReplace(szApacheDir, "\\", "/");
+
+		//Strip trailing slashes if there is one
+		std::string::size_type pos = szWebExtDir.find_last_of("/");
+		if (pos != std::string::npos && pos == szWebExtDir.length() - 1)
+			szWebExtDir.erase(pos);
+
+		pos = szPhpDir.find_last_of("/");
+		if (pos != std::string::npos && pos == szPhpDir.length() - 1)
+			szPhpDir.erase(pos);
+
+		pos = szWebRootDir.find_last_of("/");
+		if (pos != std::string::npos && pos == szWebRootDir.length() - 1)
+			szWebRootDir.erase(pos);
+
+		pos = szApacheDir.find_last_of("/");
+		if (pos != std::string::npos && pos == szApacheDir.length() - 1)
+			szApacheDir.erase(pos);
+
+		std::string szFileName = szApacheDir + "\\conf\\httpd.conf";
+		const char* szHttpdConf = szFileName.c_str();
+		bool bJava = (strcmp(szApiType.c_str(), "JAVA") == 0);
+
+		if (FileExists(szHttpdConf))
 		{
-			strcpy(szApiType, tok);
-			tok = strtok(NULL, ";");
+			std::ifstream fin(szHttpdConf);
+			
+			std::string buffer;
+			std::string line;
+			while(!fin.eof())
+			{
+				std::getline(fin, line);
+
+				//Process this line
+
+				FindAndReplace(line, "%MG_WEB_ROOT%", szWebRootDir);
+				FindAndReplace(line, "%MG_WEB_PORT%", szPortNo);
+				FindAndReplace(line, "%MG_WEB_PHP%", szPhpDir);
+				FindAndReplace(line, "%MG_WEB_APACHE%", szApacheDir);
+				FindAndReplace(line, "%MG_VIRTUAL_DIR%", szVirtualDir);
+				if (bJava)
+				{
+					FindAndReplace(line, "%MG_INCLUDE_TOMCAT%", "Include conf/tomcat.conf");
+					FindAndReplace(line, "%MG_PHP_API%", "#");
+					FindAndReplace(line, "%MG_JAVA_API%", "");
+				}
+				else
+				{
+					FindAndReplace(line, "%MG_INCLUDE_TOMCAT%", "#Uncomment to enable the Java API\n#Include conf/tomcat.conf");
+					FindAndReplace(line, "%MG_PHP_API%", "");
+					FindAndReplace(line, "%MG_JAVA_API%", "#");
+				}
+
+				buffer += line + "\n";
+			}
+			fin.close();
+			
+			std::ofstream fout(szHttpdConf);
+			fout << buffer;
+			fout.close();
 		}
-		//[APACHE_PORT]
-		if(tok)
+
+		szFileName = szApacheDir + "\\conf\\tomcat.conf";
+		const char* szTomcatConf = szFileName.c_str();
+
+		if (FileExists(szTomcatConf))
 		{
-			strcpy(szServerPort, tok);
-			tok = strtok(NULL, ";");
+			std::ifstream fin(szTomcatConf);
+			
+			std::string buffer;
+			std::string line;
+			while(!fin.eof())
+			{
+				std::getline(fin, line);
+
+				//Process this line
+				FindAndReplace(line, "%MG_WEB_APACHE%", szApacheDir);
+				FindAndReplace(line, "%MG_VIRTUAL_DIR%", szVirtualDir);
+
+				buffer += line + "\n";
+			}
+			fin.close();
+
+			std::ofstream fout(szTomcatConf);
+			fout << buffer;
+			fout.close();
 		}
-		//[APACHELOCATION]
-		if(tok)
-		{
-			strcpy(szApacheDir, tok);
-			tok = strtok(NULL, ";");
-		}
-		//[PHPLOCATION]
-		if(tok)
-		{
-			strcpy(szPhpDir, tok);
-			tok = strtok(NULL, ";");
-		}
-		//[WEBROOTLOCATION]
-		if(tok)
-		{
-			strcpy(szWebDir, tok);
-			tok = strtok(NULL, ";");
-		}
-		//[VIRTUALDIR]
-		if(tok)
-		{
-			strcpy(szVirtualDir, tok);
-		}
-	}
-
-	bJava = ( strcmp(szApiType,"JAVA") == 0 );
-
-	ConvertToApachePath(szInstallDir);
-	ConvertToApachePath(szPhpDir);
-	ConvertToApachePath(szWebDir);
-	ConvertToApachePath(szApacheDir);
-
-	// The directory will have a fwd slash, so the last char should be null-terminated
-	szApacheDir[strlen(szApacheDir)-1] = NULL_CHAR;
-
-	// create the file path to http.conf
-	strcpy(szFile, szApacheDir);
-	strcat(szFile, "\\conf\\httpd.conf");
-
-	if( FileExists(szFile) )
-	{
-		//::MessageBoxW(NULL, L"httpd.conf found", L"Test", MB_OK);
-		// Opening the file to read and write.
-		//
-		CFile cfInFile(szFile, CFile::modeRead);
-		DWORD dwFileLen = cfInFile.GetLength();
-
-        //CHAR msg[20];
-        //sprintf(msg, "Length: %d", dwFileLen);
-        //::MessageBox(NULL, msg, "Test", MB_OK);
-        
-
-		// Read the entire contents of the file.
-		//
-		char *szBuff = new char[dwFileLen + 1];
-		cfInFile.Read(szBuff, dwFileLen);
-		szBuff[dwFileLen] = '\0';                   // Add ending null to buffer.
-
-		cfInFile.Close();
-        //::MessageBoxW(NULL, L"read httpd.conf contents", L"Test", MB_OK);
-
-		// Creating a CString object to store the contents and help
-		// us to add the desired configuration.
-		//
-		CString csBuff(szBuff);
-
-		// Replace %MG_WEB_ROOT%
-		strcpy(szFind,"%MG_WEB_ROOT%");
-		strcpy(szReplace, szWebDir);
-		csBuff.Replace(szFind,szReplace);
-
-        //::MessageBox(NULL, TEXT("Replace MG_WEB_ROOT"), TEXT("Test"), MB_OK);
-
-		// Replace %MG_WEB_PORT%
-		strcpy(szFind,"%MG_WEB_PORT%");
-		strcpy(szReplace, szServerPort);
-		csBuff.Replace(szFind,szReplace);
-
-        //::MessageBox(NULL, TEXT("Replace MG_WEB_PORT"), TEXT("Test"), MB_OK);
-
-		// Replace %MG_WEB_PHP%
-		strcpy(szFind,"%MG_WEB_PHP%");
-		strcpy(szReplace, szPhpDir);
-		csBuff.Replace(szFind,szReplace);
-
-        //::MessageBox(NULL, TEXT("Replace MG_WEB_PHP"), TEXT("Test"), MB_OK);
-
-		// Replace %MG_WEB_APACHE%
-		strcpy(szFind,"%MG_WEB_APACHE%");
-		strcpy(szReplace, szApacheDir);
-		csBuff.Replace(szFind, szReplace);
-
-        //::MessageBox(NULL, TEXT("Replace MG_WEB_APACHE"), TEXT("Test"), MB_OK);
-
-		// Replace %MG_VIRTUAL_DIR%
-		strcpy(szFind, "%MG_VIRTUAL_DIR%");
-		strcpy(szReplace, szVirtualDir);
-		csBuff.Replace(szFind, szReplace);
-
-        //::MessageBox(NULL, TEXT("Replace MG_VIRTUAL_DIR"), TEXT("Test"), MB_OK);
-
-		// If java, then include the tomcat configuration
-		strcpy(szFind, "%MG_INCLUDE_TOMCAT%");
-		csBuff.Replace(szFind, bJava ? "Include conf/tomcat.conf" : "#Uncomment to enable the Java API\n#Include conf/tomcat.conf");
-
-        //::MessageBox(NULL, TEXT("Set Tomcat"), TEXT("Test"), MB_OK);
-
-		// Toggle PHP API section
-		strcpy(szFind, "%MG_PHP_API%");
-		strcpy(szReplace, bJava ? "#" : "");
-		csBuff.Replace(szFind, szReplace);
-
-        //::MessageBox(NULL, TEXT("Toggle PHP API"), TEXT("Test"), MB_OK);
-
-		// Toggle Java API section
-		strcpy(szFind, "%MG_JAVA_API%");
-		strcpy(szReplace, bJava ? "" : "#");
-		csBuff.Replace(szFind, szReplace);
-
-        //::MessageBox(NULL, TEXT("Toggle Java API"), TEXT("Test"), MB_OK);
-
-		CFile cfOutFile(szFile, CFile::modeWrite);
-
-		// Write and modify the contents.
-		//
-		DWORD dwNewLength = csBuff.GetLength();
-		cfOutFile.SeekToBegin();
-		cfOutFile.Write(csBuff, dwNewLength);
-		cfOutFile.SetLength(dwNewLength);
-		cfOutFile.Close();
-
-        //::MessageBoxW(NULL, L"httpd.conf updated", L"Test", MB_OK);
-	}
-
-	//Check if the tomcat.conf file was included in httpd.conf, if so we need to do placeholder substitution there too.
-	strcpy(szFile, szApacheDir);
-	strcat(szFile, "\\conf\\tomcat.conf");
-
-	if(FileExists(szFile))
-	{
-        //::MessageBoxW(NULL, L"tomcat.conf found", L"Test", MB_OK);
-
-		CFile cfInFile(szFile, CFile::modeRead);
-		DWORD dwFileLen = cfInFile.GetLength();
-
-		// Read the entire contents of the file.
-		//
-		char *szBuff = new char[dwFileLen + 1];
-		cfInFile.Read(szBuff, dwFileLen);
-		szBuff[dwFileLen] = '\0';                   // Add ending null to buffer.
-
-		cfInFile.Close();
-
-		CString csBuff(szBuff);
-		// Replace %MG_WEB_APACHE%
-		strcpy(szFind,"%MG_WEB_APACHE%");
-		strcpy(szReplace, szApacheDir);
-		csBuff.Replace(szFind,szReplace);
-
-		// Replace %MG_VIRTUAL_DIR%
-		strcpy(szFind, "%MG_VIRTUAL_DIR%");
-		strcpy(szReplace, szVirtualDir);
-		csBuff.Replace(szFind, szReplace);
-
-		CFile cfOutFile(szFile, CFile::modeWrite);
-
-		// Write and modify the contents.
-		//
-		DWORD dwNewLength = csBuff.GetLength();
-		cfOutFile.SeekToBegin();
-		cfOutFile.Write(csBuff, dwNewLength);
-		cfOutFile.SetLength(dwNewLength);
-		cfOutFile.Close();
-	}
-
-	strcpy(szFile, szInstallDir);
-	strcat(szFile, "Tomcat\\conf\\Catalina\\localhost\\mapguide.xml");
-
-	if( FileExists(szFile) )
-	{
-		// Opening the file to read and write.
-		//
-		CFile cfInFile(szFile, CFile::modeRead);
-		DWORD dwFileLen = cfInFile.GetLength();
-
-		// Read the entire contents of the file.
-		//
-		char *szBuff = new char[dwFileLen + 1];
-		cfInFile.Read(szBuff, dwFileLen);
-		szBuff[dwFileLen] = '\0';                   // Add ending null to buffer.
-
-		cfInFile.Close();
-
-		// Creating a CString object to store the contents and help
-		// us to add the desired configuration.
-		//
-		CString csBuff(szBuff);
-		// Replace %MG_WEB_ROOT%
-		strcpy(szFind,"%MG_WEB_ROOT%");
-		//CString csWebDir(szWebDir);
-		//csWebDir.Replace("\\", "/");
-		strcpy(szReplace, szWebDir);
-		csBuff.Replace(szFind,szReplace);
-
-		CFile cfOutFile(szFile, CFile::modeWrite);
-
-		// Write and modify the contents.
-		//
-		DWORD dwNewLength = csBuff.GetLength();
-		cfOutFile.SeekToBegin();
-		cfOutFile.Write(csBuff, dwNewLength);
-		cfOutFile.SetLength(dwNewLength);
-		cfOutFile.Close();
 	}
 	return ERROR_SUCCESS;
 }

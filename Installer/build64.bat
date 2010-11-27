@@ -45,10 +45,10 @@ SET TYPEBUILD=Release64
 SET CONFIGURATION=Release
 SET PLATFORM=x64
 SET CULTURE=en-US
-SET INSTALLER_VERSION_MAJOR_MINOR_REV=2.2.0
+SET INSTALLER_VERSION_MAJOR_MINOR_REV=2.3.0
 SET INSTALLER_NAME=MapGuideOpenSource-%INSTALLER_VERSION_MAJOR_MINOR_REV%-Trunk-%CULTURE%-%TYPEBUILD%-%PLATFORM%
 SET INSTALLER_VERSION=%INSTALLER_VERSION_MAJOR_MINOR_REV%.0
-SET INSTALLER_TITLE="MapGuide Open Source 2.2 Trunk (%TYPEBUILD%)"
+SET INSTALLER_TITLE="MapGuide Open Source 2.3 Trunk (%TYPEBUILD%)"
 SET MG_REG_KEY=Software\OSGeo\MapGuide\%INSTALLER_VERSION_MAJOR_MINOR_REV%
 SET MG_SOURCE=%CD%\..\MgDev\%TYPEBUILD%
 SET MG_SOURCE_INC=
@@ -239,9 +239,8 @@ echo [prepare] MapGuide Installer
 if not exist "%MG_SOURCE%\Server" goto error_mg_server_not_found
 if not exist "%MG_SOURCE%\Web" goto error_mg_web_not_found
 if not exist "%MG_SOURCE%\CS-Map" goto error_mg_csmap_not_found
-echo [prepare] FdoRegUtil.exe
-pushd %INSTALLER_FDO_REG_UTIL%
-%MSBUILD% FdoRegUtil.vcproj
+echo [prepare] Installer Pre-Requisites
+%MSBUILD% InstallerPreReq.sln
 copy %INSTALLER_FDO_REG_UTIL%\%TYPEBUILD%\FdoRegUtil.exe %MG_SOURCE%\Server\FDO
 popd
 rem copy support files into server and web directories
@@ -421,15 +420,14 @@ echo [generate]: Web - misc web root
 goto quit
 
 :build
-echo [build]: Installer
 SET RUN_BUILD=%MSBUILD% /p:OutputName=%INSTALLER_NAME%;MgCulture=%CULTURE%;MgTitle=%INSTALLER_TITLE%;MgVersion=%INSTALLER_VERSION%;MgRegKey=%MG_REG_KEY%;MgPlatform=%PLATFORM%
 if not ""=="%MG_SOURCE_INC%" set RUN_BUILD=%RUN_BUILD%;MgSource=%MG_SOURCE_INC%
-set RUN_BUILD=%RUN_BUILD% Installer.sln
-%RUN_BUILD% 
+echo [build]: Installer 
+%RUN_BUILD% InstallerWix.sln
 if "%errorlevel%"=="1" goto error
 pushd "%INSTALLER_DEV_BOOTSTRAP%"
-echo [bootstrap]: Creating
-%MSBUILD% /p:TargetFile=%INSTALLER_NAME%.msi Bootstrap-x64.proj
+echo [bootstrap]: Copying vcredist
+copy /Y vcredist_x64.exe "%INSTALLER_OUTPUT%\vcredist_x64.exe"
 popd
 if "%errorlevel%"=="1" goto error
 if "%MAX_COMPRESSION%"=="YES" goto build_max_compress

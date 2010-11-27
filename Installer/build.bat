@@ -44,10 +44,10 @@ SET TYPEACTION=build
 SET CPUTYPE=x86
 SET TYPEBUILD=Release
 SET CULTURE=en-US
-SET INSTALLER_VERSION_MAJOR_MINOR_REV=2.2.0
+SET INSTALLER_VERSION_MAJOR_MINOR_REV=2.3.0
 SET INSTALLER_NAME=MapGuideOpenSource-%INSTALLER_VERSION_MAJOR_MINOR_REV%-Trunk-%CULTURE%-%TYPEBUILD%-%CPUTYPE%
 SET INSTALLER_VERSION=%INSTALLER_VERSION_MAJOR_MINOR_REV%.0
-SET INSTALLER_TITLE="MapGuide Open Source 2.2 Trunk (%TYPEBUILD%)"
+SET INSTALLER_TITLE="MapGuide Open Source 2.3 Trunk (%TYPEBUILD%)"
 SET MG_REG_KEY=Software\OSGeo\MapGuide\%INSTALLER_VERSION_MAJOR_MINOR_REV%
 SET MG_SOURCE=%CD%\..\MgDev\%TYPEBUILD%
 SET MG_SOURCE_INC=
@@ -58,7 +58,7 @@ rem ==================================================
 rem MapGuide Installer vars
 rem ==================================================
 SET INSTALLER_DEV=%CD%
-SET INSTALLER_OUTPUT=%INSTALLER_DEV%\Output\%CULTURE%\%TYPEBUILD%
+SET INSTALLER_OUTPUT=%INSTALLER_DEV%\Output\%CULTURE%
 SET INSTALLER_DEV_SUPPORT=%INSTALLER_DEV%\Support
 SET INSTALLER_DEV_BOOTSTRAP=%INSTALLER_DEV%\Bootstrapper
 
@@ -71,7 +71,7 @@ SET INSTALLER_DEV_INSTALLER=%INSTALLER_DEV%\Installers\MapGuide
 
 SET NSIS=%CD%\Support\NSIS
 SET PARAFFIN=%CD%
-SET PATH=%PATH%;%PARAFFIN%;%NSIS%
+SET PATH=%PATH%;%PARAFFIN%;%NSIS%;%WIX%\bin\
 
 rem ==================================================
 rem MSBuild Settings
@@ -150,9 +150,9 @@ goto next_param
 
 :get_conf
 SET TYPEBUILD=%2
-SET INSTALLER_OUTPUT=%CD%\Installers\MapGuide\bin\%TYPEBUILD%
-SET MSBUILD=msbuild.exe /nologo /m:%CPU_CORES% /p:Configuration=%TYPEBUILD% %MSBUILD_VERBOSITY% %MSBUILD_LOG%
-SET MSBUILD_CLEAN=msbuild.exe /nologo /m:%CPU_CORES% /p:Configuration=%TYPEBUILD% /t:Clean %MSBUILD_VERBOSITY%
+REM SET INSTALLER_OUTPUT=%CD%\Installers\MapGuide\bin\%TYPEBUILD%
+SET MSBUILD=msbuild.exe /nologo /m:%CPU_CORES% /p:Configuration=%TYPEBUILD% /p:Platform=Win32 %MSBUILD_VERBOSITY% %MSBUILD_LOG%
+SET MSBUILD_CLEAN=msbuild.exe /nologo /m:%CPU_CORES% /p:Configuration=%TYPEBUILD% /p:Platform=Win32 /t:Clean %MSBUILD_VERBOSITY%
 SET MG_SOURCE=%CD%\..\MgDev\%TYPEBUILD%
 IF NOT ""=="%MG_SOURCE_INC%" SET MG_SOURCE_INC=%MG_SOURCE%
 
@@ -190,25 +190,10 @@ if "%TYPEACTION%"=="generate" goto generate
 if "%TYPEACTION%"=="regen" goto regen
 
 :clean
-echo [clean]: FdoRegUtil
-pushd %INSTALLER_FDO_REG_UTIL%
-%MSBUILD_CLEAN% FdoRegUtil.vcproj
-popd
-echo [clean]: CS-Map
-pushd "%INSTALLER_DEV_CSMAP%"
-%MSBUILD_CLEAN% "CS Map.wixproj"
-popd
-echo [clean]: MapGuide Server
-pushd "%INSTALLER_DEV_MGSERVER%"
-%MSBUILD_CLEAN% "MapGuide Server.wixproj"
-popd
-echo [clean]: MapGuide Web
-pushd "%INSTALLER_DEV_MGWEB%"
-%MSBUILD_CLEAN% "MapGuide Web Extensions.wixproj"
-popd
+echo [clean]: Installer Pre-Reqs
+%MSBUILD_CLEAN% InstallerPreReq.sln
 echo [clean]: Installer
-%MSBUILD_CLEAN% Installer.sln
-popd
+%MSBUILD_CLEAN% InstallerWix.sln
 goto quit
 
 :prepare
@@ -216,9 +201,8 @@ echo [prepare] MapGuide Installer
 if not exist "%MG_SOURCE%\Server" goto error_mg_server_not_found
 if not exist "%MG_SOURCE%\Web" goto error_mg_web_not_found
 if not exist "%MG_SOURCE%\CS-Map" goto error_mg_csmap_not_found
-echo [prepare] FdoRegUtil.exe
-pushd %INSTALLER_FDO_REG_UTIL%
-%MSBUILD% FdoRegUtil.vcproj
+echo [prepare] Installer Pre-Requisites
+%MSBUILD% InstallerPreReq.sln
 copy %INSTALLER_FDO_REG_UTIL%\%TYPEBUILD%\FdoRegUtil.exe %MG_SOURCE%\Server\FDO
 popd
 rem copy support files into server and web directories
@@ -398,15 +382,14 @@ echo [generate]: Web - misc web root
 goto quit
 
 :build
-echo [build]: Installer
 SET RUN_BUILD=%MSBUILD% /p:OutputName=%INSTALLER_NAME%;MgCulture=%CULTURE%;MgTitle=%INSTALLER_TITLE%;MgVersion=%INSTALLER_VERSION%;MgRegKey=%MG_REG_KEY%;MgPlatform=%CPUTYPE%
 if not ""=="%MG_SOURCE_INC%" set RUN_BUILD=%RUN_BUILD%;MgSource=%MG_SOURCE_INC%
-set RUN_BUILD=%RUN_BUILD% Installer.sln
-%RUN_BUILD% 
+echo [build]: Installer 
+%RUN_BUILD% InstallerWix.sln
 if "%errorlevel%"=="1" goto error
 pushd "%INSTALLER_DEV_BOOTSTRAP%"
-echo [bootstrap]: Creating
-%MSBUILD% /p:TargetFile=%INSTALLER_NAME%.msi Bootstrap-x86.proj
+echo [bootstrap]: Copying vcredist
+copy /Y vcredist_x86.exe "%INSTALLER_OUTPUT%\vcredist_x86.exe"
 popd
 if "%errorlevel%"=="1" goto error
 if "%MAX_COMPRESSION%"=="YES" goto build_max_compress

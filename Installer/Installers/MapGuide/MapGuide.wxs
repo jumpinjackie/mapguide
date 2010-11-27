@@ -49,14 +49,14 @@
         <Property Id="APACHE_PORT" Secure="yes" Value="8008" />
         <Property Id="APACHE_VERSION" Secure="yes" Value="2.2.11" />
         <Property Id="PHP_VERSION" Secure="yes" Value="5.3.2" />
-        <Property Id="MG_VERSION_MAJOR_MINOR" Secure="yes" Value="2.2" />
+        <Property Id="MG_VERSION_MAJOR_MINOR" Secure="yes" Value="2.3" />
         <!-- Server Port Settings  -->
         <Property Id="MG_ADMIN_PORT" Secure="yes" Value="2810" />
         <Property Id="MG_CLIENT_PORT" Secure="yes" Value="2811" />
         <Property Id="MG_SITE_PORT" Secure="yes" Value="2812" />
         <!-- Used by FdoRegUtil.exe -->
-        <Property Id="FDO_VERSION" Secure="yes" Value="3.5.0.0" />
-        <Property Id="FDO_VERSION_SMALL" Secure="yes" Value="3.5" />
+        <Property Id="FDO_VERSION" Secure="yes" Value="3.6.0.0" />
+        <Property Id="FDO_VERSION_SMALL" Secure="yes" Value="3.6" />
 
         <!-- 
         These are currently static, though there is opportunity in the future for these
@@ -445,7 +445,6 @@
             <Publish Dialog="WebServerConfigDlgIIS" Control="Next" Event="Remove" Value="FdoArcSdeProviderFeature" Order="3">1</Publish>
             <Publish Dialog="WebServerConfigDlgIIS" Control="Next" Event="Remove" Value="FdoKingOracleProviderFeature" Order="4">1</Publish>
             <Publish Dialog="WebServerConfigDlgIIS" Control="Next" Event="Remove" Value="FdoMySqlProviderFeature" Order="5">1</Publish>
-            <Publish Dialog="WebServerConfigDlgIIS" Control="Next" Event="Remove" Value="FdoPostGisProviderFeature" Order="6">1</Publish>
             <Publish Dialog="WebServerConfigDlgIIS" Control="Next" Event="Remove" Value="FdoPostgreSqlProviderFeature" Order="7">1</Publish>
             <!-- If Apache, or IIS and the .Net Framework is not installed, set feature default for the ASPX viewer to not install -->
             <Publish Dialog="WebServerConfigDlgIIS" Control="Next" Event="Remove" Value="WebExtMapViewerASPXFeature" Order="7">(MGWEB_CONFIG=&quot;APACHE&quot;) OR (MGWEB_CONFIG=&quot;IIS&quot; AND NOT NETFRAMEWORK20)</Publish>
@@ -677,8 +676,7 @@
             <Custom Action="FdoRegMySqlCmd" After="FdoRegOdbcCmd">&amp;FdoMySqlProviderFeature&gt;2</Custom>
             <Custom Action="FdoRegGdalCmd" After="FdoRegMySqlCmd">&amp;FdoGdalProviderFeature&gt;2</Custom>
             <Custom Action="FdoRegOgrCmd" After="FdoRegGdalCmd">&amp;FdoOgrProviderFeature&gt;2</Custom>
-            <Custom Action="FdoRegPostGisCmd" After="FdoRegOgrCmd">&amp;FdoPostGisProviderFeature&gt;2</Custom>
-            <Custom Action="FdoRegPostgreSqlCmd" After="FdoRegPostGisCmd">&amp;FdoPostgreSqlProviderFeature&gt;2</Custom>
+            <Custom Action="FdoRegPostgreSqlCmd" After="FdoRegOgrCmd">&amp;FdoPostgreSqlProviderFeature&gt;2</Custom>
             <Custom Action="FdoRegOracleCmd" After="FdoRegPostgreSqlCmd">&amp;FdoKingOracleProviderFeature&gt;2</Custom>
             <Custom Action="FdoRegSqlServerCmd" After="FdoRegOracleCmd">&amp;FdoSqlServerSpatialProviderFeature&gt;2</Custom>
             <Custom Action="FdoRegSltCmd" After="FdoRegSqlServerCmd">&amp;FdoSltProviderFeature&gt;2</Custom>
@@ -693,8 +691,7 @@
             <Custom Action="FdoRegMySql" After="FdoRegOdbc">&amp;FdoMySqlProviderFeature&gt;2</Custom>
             <Custom Action="FdoRegGdal" After="FdoRegMySql">&amp;FdoGdalProviderFeature&gt;2</Custom>
             <Custom Action="FdoRegOgr" After="FdoRegGdal">&amp;FdoOgrProviderFeature&gt;2</Custom>
-            <Custom Action="FdoRegPostGis" After="FdoRegOgr">&amp;FdoPostGisProviderFeature&gt;2</Custom>
-            <Custom Action="FdoRegPostgreSql" After="FdoRegPostGis">&amp;FdoPostgreSqlProviderFeature&gt;2</Custom>
+            <Custom Action="FdoRegPostgreSql" After="FdoRegOgr">&amp;FdoPostgreSqlProviderFeature&gt;2</Custom>
             <Custom Action="FdoRegOracle" After="FdoRegPostgreSql">&amp;FdoKingOracleProviderFeature&gt;2</Custom>
             <Custom Action="FdoRegSqlServer" After="FdoRegOracle">&amp;FdoSqlServerSpatialProviderFeature&gt;2</Custom>
             <Custom Action="FdoRegSlt" After="FdoRegSqlServer">&amp;FdoSltProviderFeature&gt;2</Custom>
@@ -709,8 +706,7 @@
             <Custom Action="FdoUnRegMySqlCmd" After="FdoUnRegOdbcCmd">&amp;FdoMySqlProviderFeature=2</Custom>
             <Custom Action="FdoUnRegGdalCmd" After="FdoUnRegMySqlCmd">&amp;FdoGdalProviderFeature=2</Custom>
             <Custom Action="FdoUnRegOgrCmd" After="FdoUnRegGdalCmd">&amp;FdoOgrProviderFeature=2</Custom>
-            <Custom Action="FdoUnRegPostGisCmd" After="FdoUnRegOgrCmd">&amp;FdoPostGisProviderFeature=2</Custom>
-            <Custom Action="FdoUnRegPostgreSqlCmd" After="FdoUnRegPostGisCmd">&amp;FdoPostgreSqlProviderFeature=2</Custom>
+            <Custom Action="FdoUnRegPostgreSqlCmd" After="FdoUnRegOgrCmd">&amp;FdoPostgreSqlProviderFeature=2</Custom>
             <Custom Action="FdoUnRegOracleCmd" After="FdoUnRegPostgreSqlCmd">&amp;FdoKingOracleProviderFeature=2</Custom>
             <Custom Action="FdoUnRegSqlServerCmd" After="FdoUnRegOracleCmd">&amp;FdoSqlServerSpatialProviderFeature=2</Custom>
             <Custom Action="FdoUnRegSltCmd" After="FdoUnRegSqlServerCmd">&amp;FdoSltProviderFeature=2</Custom>
@@ -725,8 +721,7 @@
             <Custom Action="FdoUnRegMySql" After="FdoUnRegOdbc">&amp;FdoMySqlProviderFeature=2</Custom>
             <Custom Action="FdoUnRegGdal" After="FdoUnRegMySql">&amp;FdoGdalProviderFeature=2</Custom>
             <Custom Action="FdoUnRegOgr" After="FdoUnRegGdal">&amp;FdoOgrProviderFeature=2</Custom>
-            <Custom Action="FdoUnRegPostGis" After="FdoUnRegOgr">&amp;FdoPostGisProviderFeature=2</Custom>
-            <Custom Action="FdoUnRegPostgreSql" After="FdoUnRegPostGis">&amp;FdoPostgreSqlProviderFeature=2</Custom>
+            <Custom Action="FdoUnRegPostgreSql" After="FdoUnRegOgr">&amp;FdoPostgreSqlProviderFeature=2</Custom>
             <Custom Action="FdoUnRegOracle" After="FdoUnRegPostgreSql">&amp;FdoKingOracleProviderFeature=2</Custom>
             <Custom Action="FdoUnRegSqlServer" After="FdoUnRegOracle">&amp;FdoSqlServerSpatialProviderFeature=2</Custom>
             <Custom Action="FdoUnRegSlt" After="FdoUnRegSqlServer">&amp;FdoSltProviderFeature=2</Custom>

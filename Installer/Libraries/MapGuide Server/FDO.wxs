@@ -19,7 +19,6 @@
       <CustomAction Execute="immediate" Id="FdoRegMySqlCmd" Property="FdoRegMySql" Value="[FdoReg] -r &quot;OSGeo.MySQL.[FDO_VERSION_SMALL]&quot; &quot;!(loc.MySqlProvider)&quot; &quot;!(loc.MySqlProviderDesc)&quot; &quot;[FDO_VERSION]&quot; &quot;[FDO_VERSION]&quot; &quot;.\MySQLProvider.dll&quot;" />
       <CustomAction Execute="immediate" Id="FdoRegGdalCmd" Property="FdoRegGdal" Value="[FdoReg] -r &quot;OSGeo.Gdal.[FDO_VERSION_SMALL]&quot; &quot;!(loc.GdalProvider)&quot; &quot;!(loc.GdalProviderDesc)&quot; &quot;[FDO_VERSION]&quot; &quot;[FDO_VERSION]&quot; &quot;.\GRFPProvider.dll&quot;" />
       <CustomAction Execute="immediate" Id="FdoRegOgrCmd" Property="FdoRegOgr" Value="[FdoReg] -r &quot;OSGeo.OGR.[FDO_VERSION_SMALL]&quot; &quot;!(loc.OgrProvider)&quot; &quot;!(loc.OgrProviderDesc)&quot; &quot;[FDO_VERSION]&quot; &quot;[FDO_VERSION]&quot; &quot;.\OGRProvider.dll&quot;" />
-      <CustomAction Execute="immediate" Id="FdoRegPostGisCmd" Property="FdoRegPostGis" Value="[FdoReg] -r &quot;OSGeo.PostGIS.[FDO_VERSION_SMALL]&quot; &quot;!(loc.PostGisProvider)&quot; &quot;!(loc.PostGisProviderDesc)&quot; &quot;[FDO_VERSION]&quot; &quot;[FDO_VERSION]&quot; &quot;.\PostGISProvider.dll&quot;" />
       <CustomAction Execute="immediate" Id="FdoRegPostgreSqlCmd" Property="FdoRegPostgreSql" Value="[FdoReg] -r &quot;OSGeo.PostgreSQL.[FDO_VERSION_SMALL]&quot; &quot;!(loc.PostgreSqlProvider)&quot; &quot;!(loc.PostgreSqlProviderDesc)&quot; &quot;[FDO_VERSION]&quot; &quot;[FDO_VERSION]&quot; &quot;.\PostgreSQLProvider.dll&quot;" />
       <CustomAction Execute="immediate" Id="FdoRegOracleCmd" Property="FdoRegOracle" Value="[FdoReg] -r &quot;King.Oracle.[FDO_VERSION_SMALL]&quot; &quot;!(loc.KingOracleProvider)&quot; &quot;!(loc.KingOracleProviderDesc)&quot; &quot;[FDO_VERSION]&quot; &quot;[FDO_VERSION]&quot; &quot;.\KingOracleProvider.dll&quot;" />
       <CustomAction Execute="immediate" Id="FdoRegSqlServerCmd" Property="FdoRegSqlServer" Value="[FdoReg] -r &quot;OSGeo.SQLServerSpatial.[FDO_VERSION_SMALL]&quot; &quot;!(loc.SqlServerProvider)&quot; &quot;!(loc.SqlServerProviderDesc)&quot; &quot;[FDO_VERSION]&quot; &quot;[FDO_VERSION]&quot; &quot;.\SQLServerSpatialProvider.dll&quot;" />
@@ -34,7 +33,6 @@
       <CustomAction Id="FdoRegMySql" BinaryKey="WixCA" DllEntry="CAQuietExec" Execute="deferred" Return="ignore" Impersonate="no"/>
       <CustomAction Id="FdoRegGdal" BinaryKey="WixCA" DllEntry="CAQuietExec" Execute="deferred" Return="ignore" Impersonate="no"/>
       <CustomAction Id="FdoRegOgr" BinaryKey="WixCA" DllEntry="CAQuietExec" Execute="deferred" Return="ignore" Impersonate="no"/>
-      <CustomAction Id="FdoRegPostGis" BinaryKey="WixCA" DllEntry="CAQuietExec" Execute="deferred" Return="ignore" Impersonate="no"/>
       <CustomAction Id="FdoRegPostgreSql" BinaryKey="WixCA" DllEntry="CAQuietExec" Execute="deferred" Return="ignore" Impersonate="no"/>
       <CustomAction Id="FdoRegOracle" BinaryKey="WixCA" DllEntry="CAQuietExec" Execute="deferred" Return="ignore" Impersonate="no"/>
       <CustomAction Id="FdoRegSqlServer" BinaryKey="WixCA" DllEntry="CAQuietExec" Execute="deferred" Return="ignore" Impersonate="no"/>
@@ -49,7 +47,6 @@
       <CustomAction Execute="immediate" Id="FdoUnRegMySqlCmd" Property="FdoUnRegMySql" Value="[FdoReg] -u &quot;OSGeo.MySQL.[FDO_VERSION_SMALL]&quot;" />
       <CustomAction Execute="immediate" Id="FdoUnRegGdalCmd" Property="FdoUnRegGdal" Value="[FdoReg] -u &quot;OSGeo.Gdal.[FDO_VERSION_SMALL]&quot;" />
       <CustomAction Execute="immediate" Id="FdoUnRegOgrCmd" Property="FdoUnRegOgr" Value="[FdoReg] -u &quot;OSGeo.OGR.[FDO_VERSION_SMALL]&quot;" />
-      <CustomAction Execute="immediate" Id="FdoUnRegPostGisCmd" Property="FdoUnRegPostGis" Value="[FdoReg] -u &quot;OSGeo.PostGIS.[FDO_VERSION_SMALL]&quot;" />
       <CustomAction Execute="immediate" Id="FdoUnRegPostgreSqlCmd" Property="FdoUnRegPostgresSql" Value="[FdoReg] -u &quot;OSGeo.PostgreSQL.[FDO_VERSION_SMALL]&quot;" />
       <CustomAction Execute="immediate" Id="FdoUnRegOracleCmd" Property="FdoUnRegOracle" Value="[FdoReg] -u &quot;King.Oracle.[FDO_VERSION_SMALL]&quot;" />
       <CustomAction Execute="immediate" Id="FdoUnRegSqlServerCmd" Property="FdoUnRegSqlServer" Value="[FdoReg] -u &quot;OSGeo.SQLServerSpatial.[FDO_VERSION_SMALL]&quot;" />
@@ -64,7 +61,6 @@
       <CustomAction Id="FdoUnRegMySql" BinaryKey="WixCA" DllEntry="CAQuietExec" Execute="deferred" Return="ignore" Impersonate="no"/>
       <CustomAction Id="FdoUnRegGdal" BinaryKey="WixCA" DllEntry="CAQuietExec" Execute="deferred" Return="ignore" Impersonate="no"/>
       <CustomAction Id="FdoUnRegOgr" BinaryKey="WixCA" DllEntry="CAQuietExec" Execute="deferred" Return="ignore" Impersonate="no"/>
-      <CustomAction Id="FdoUnRegPostGis" BinaryKey="WixCA" DllEntry="CAQuietExec" Execute="deferred" Return="ignore" Impersonate="no"/>
       <CustomAction Id="FdoUnRegPostgreSql" BinaryKey="WixCA" DllEntry="CAQuietExec" Execute="deferred" Return="ignore" Impersonate="no"/>
       <CustomAction Id="FdoUnRegOracle" BinaryKey="WixCA" DllEntry="CAQuietExec" Execute="deferred" Return="ignore" Impersonate="no"/>
       <CustomAction Id="FdoUnRegSqlServer" BinaryKey="WixCA" DllEntry="CAQuietExec" Execute="deferred" Return="ignore" Impersonate="no"/>
@@ -92,8 +88,8 @@
           <!-- FDO Core -->
           <Component Id="FdoCoreCompnent" Win64="$(var.Win64)" Guid="90F4CB26-524F-499B-AA22-BD17036B167D">
               <File Id="FdoRegUtil" Checksum="yes" Source="$(var.MgSource)\Server\FDO\FdoRegUtil.exe" />
-              <File Id="FdoBoostDateTime" Checksum="yes" Source="$(var.MgSource)\Server\FDO\boost_date_time-vc90-mt-1_34_1.dll" />
-              <File Id="FdoBoostThread" Checksum="yes" Source="$(var.MgSource)\Server\FDO\boost_thread-vc90-mt-1_34_1.dll" />
+              <File Id="FdoBoostDateTime" Checksum="yes" Source="$(var.MgSource)\Server\FDO\boost_date_time-vc90-mt-1_42.dll" />
+              <File Id="FdoBoostThread" Checksum="yes" Source="$(var.MgSource)\Server\FDO\boost_thread-vc90-mt-1_42.dll" />
               <File Id="FdoExpressionEngine" Checksum="yes" Source="$(var.MgSource)\Server\FDO\ExpressionEngine.dll" />
               <File Id="FdoCore" Checksum="yes" Source="$(var.MgSource)\Server\FDO\FDO.dll" />
               <File Id="FdoCommon" Checksum="yes" Source="$(var.MgSource)\Server\FDO\FDOCommon.dll" />
@@ -101,10 +97,10 @@
               <File Id="FdoMessage" Checksum="yes" Source="$(var.MgSource)\Server\FDO\FDOMessage.dll" />
               <File Id="FdoSpatial" Checksum="yes" Source="$(var.MgSource)\Server\FDO\FDOSpatial.dll" />
               <File Id="FdoOWS" Checksum="yes" Source="$(var.MgSource)\Server\FDO\OWS.dll" />
-              <File Id="GdalLib" Checksum="yes" Source="$(var.MgSource)\Server\FDO\gdal16.dll" />
-              <File Id="XalanLib" Checksum="yes" Source="$(var.MgSource)\Server\FDO\Xalan-C_1_7_0.dll" />
-              <File Id="XalanMessagesLib" Checksum="yes" Source="$(var.MgSource)\Server\FDO\XalanMessages_1_7_0.dll" />
-              <File Id="XercesLib" Checksum="yes" Source="$(var.MgSource)\Server\FDO\xerces-c_2_5_0.dll" />
+              <File Id="GdalLib" Checksum="yes" Source="$(var.MgSource)\Server\FDO\gdal17.dll" />
+              <File Id="XalanLib" Checksum="yes" Source="$(var.MgSource)\Server\FDO\Xalan-C_1_11.dll" />
+              <File Id="XalanMessagesLib" Checksum="yes" Source="$(var.MgSource)\Server\FDO\XalanMessages_1_11.dll" />
+              <File Id="XercesLib" Checksum="yes" Source="$(var.MgSource)\Server\FDO\xerces-c_3_1.dll" />
               <!-- Generic RDBMS -->
               <File Id="RdbmsMsg" Checksum="yes" Source="$(var.MgSource)\Server\FDO\RdbmsMsg.dll" />
               <File Id="RdbmsOverrides" Checksum="yes" Source="$(var.MgSource)\Server\FDO\RdbmsOverrides.dll" />
@@ -141,12 +137,6 @@
           <!-- OGR Provider -->
           <Component Id="FdoOgrProviderComponent" Win64="$(var.Win64)" Guid="7FB890D4-8824-478E-83F6-E14DF2A3F949">
               <File Id="OgrProvider" Checksum="yes" Source="$(var.MgSource)\Server\FDO\OGRProvider.dll" />
-          </Component>
-          <!-- PostGIS (legacy) Provider -->
-          <Component Id="FdoPostGisProviderComponent" Win64="$(var.Win64)" Guid="1D51342F-3ECC-4053-8475-F70333B4B22D">
-              <File Id="PostGisMessage" Checksum="yes" Source="$(var.MgSource)\Server\FDO\PostGISMessage.dll" />
-              <File Id="PostGisOverrides" Checksum="yes" Source="$(var.MgSource)\Server\FDO\PostGISOverrides.dll" />
-              <File Id="PostGisProvider" Checksum="yes" Source="$(var.MgSource)\Server\FDO\PostGISProvider.dll" />
           </Component>
           <!-- PostGIS (new) Provider -->
           <Component Id="FdoPostgreSqlProviderComponent" Win64="$(var.Win64)" Guid="550B6CA0-10F8-444B-B51B-8569FF23B8C2">
@@ -207,9 +197,6 @@
         </Feature>
         <Feature Id="FdoOgrProviderFeature" Title="!(loc.OgrProvider)" Level="1" Description="!(loc.OgrProviderDesc)" AllowAdvertise="no" TypicalDefault="install" InstallDefault="local">
             <ComponentRef Id="FdoOgrProviderComponent" />
-        </Feature>
-        <Feature Id="FdoPostGisProviderFeature" Title="!(loc.PostGisProvider)" Level="1" Description="!(loc.PostGisProviderDesc)" AllowAdvertise="no" TypicalDefault="install" InstallDefault="local">
-            <ComponentRef Id="FdoPostGisProviderComponent" />
         </Feature>
         <Feature Id="FdoPostgreSqlProviderFeature" Title="!(loc.PostgreSqlProvider)" Level="1" Description="!(loc.PostgreSqlProviderDesc)" AllowAdvertise="no" TypicalDefault="install" InstallDefault="local">
             <ComponentRef Id="FdoPostgreSqlProviderComponent" />

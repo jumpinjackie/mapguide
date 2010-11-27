@@ -14,7 +14,11 @@
 // Insert your headers here
 #define WIN32_LEAN_AND_MEAN		// Exclude rarely-used stuff from Windows headers
 
-#include <afxwin.h>
+// Windows Header Files:
+#include <windows.h>
+#include <tchar.h>
+#include <strsafe.h>
+#include <msiquery.h>
 
 // TODO: reference additional headers your program requires here
 

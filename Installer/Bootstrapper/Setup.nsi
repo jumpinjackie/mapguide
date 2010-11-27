@@ -1,9 +1,9 @@
 !ifdef MAXCOMPRESSION
 
-SetCompressor /FINAL /SOLID lzma
-SetCompressorDictSize 64
+;SetCompressor /FINAL /SOLID lzma
+;SetCompressorDictSize 64
 
-FileBufSize 256
+;FileBufSize 256
 
 !endif
 
@@ -35,18 +35,55 @@ Function .onInit
 FunctionEnd
 
 Section Main
-	Banner::show /NOUNLOAD "Extracting files. Please Wait"
-	Banner::getWindow /NOUNLOAD
-	
 	SetOutPath $TEMP
 	SetOverwrite On
-	File "${INSTALLER_OUTPUT}\${OUTNAME}.msi"
-	File "${INSTALLER_OUTPUT}\setup.exe"
+	
+	Push $R0
+    ClearErrors
+;
+; http://social.msdn.microsoft.com/Forums/en-US/vcgeneral/thread/639e2cfd-bb61-425b-a087-a2442df23402   
+;
 !if ${CPU} = "x64"
-	File /r "${INSTALLER_OUTPUT}\vcredist_x64"
+	SetRegView 64
+    ReadRegDword $R0 HKLM "SOFTWARE\Microsoft\DevDiv\VC\Servicing\9.0\RED\1033" "SP"
+    IfErrors InstallVSRedist BeginInstall
 !else
-	File /r "${INSTALLER_OUTPUT}\vcredist_x86"
+	SetRegView 32
+    ; Reg key for 32-bit OS
+    ReadRegDword $R0 HKLM "SOFTWARE\Microsoft\DevDiv\VC\Servicing\9.0\RED\1033" "SP"
+    IfErrors CheckWow32Registry BeginInstall
+	
+CheckWow32Registry:	
+	SetRegView 64
+    ; Reg key for 64-bit OS (WoW32)
+    ReadRegDword $R0 HKLM "SOFTWARE\Microsoft\DevDiv\VC\Servicing\9.0\RED\1033" "SP"
+    IfErrors InstallVSRedist BeginInstall
 !endif
+
+InstallVSRedist:
+	MessageBox MB_OK "Installing VS redist"
+!if ${CPU} = "x64"
+	File /r "${INSTALLER_OUTPUT}\vcredist_x64.exe"
+	ExecWait '"$OUTDIR\vcredist_x64.exe" /q:a"'
+!else
+	File /r "${INSTALLER_OUTPUT}\vcredist_x86.exe"
+	ExecWait '"$OUTDIR\vcredist_x86.exe" /q:a'
+!endif
+
+BeginInstall:
+	MessageBox MB_OK "Begin main installation"
+	Banner::show /NOUNLOAD "Extracting files. Please Wait"
+	Banner::getWindow /NOUNLOAD
+	File "${INSTALLER_OUTPUT}\${OUTNAME}.msi"
 	Banner::destroy
-	ExecWait '"$OUTDIR\setup.exe"'
+	; Run the MGOS installer
+	ExecWait '"msiexec" /i "$OUTDIR\${OUTNAME}.msi"'
+	; Delete the MGOS installer and any other extracted after completion
+	Delete "$OUTDIR\${OUTNAME}.msi"
+!if ${CPU} = "x64"
+	Delete "$OUTDIR\vcredist_x64.exe"
+!else
+	Delete "$OUTDIR\vcredist_x86.exe"
+!endif
+	
 SectionEnd

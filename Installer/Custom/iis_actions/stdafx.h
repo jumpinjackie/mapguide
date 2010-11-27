@@ -14,7 +14,6 @@
 #include <strsafe.h>
 #include <msiquery.h>
 
-#include "atlBase.h"
 #include <initguid.h>
 #include "iadmw.h"
 #include "iiscnfg.h"
