@@ -770,6 +770,16 @@ PreviewDialog.prototype =
             this.closedCallback();
         }
     },
+    dispose : function()
+    {
+        this.jxDialog.blanket.parentNode.removeChild(this.jxDialog.blanket);
+        this.jxDialog.domObj.parentNode.removeChild(this.jxDialog.domObj);
+        // Inform the listener that the dialog is closed
+        if (this.closedCallback)
+        {
+            this.closedCallback();
+        }
+    },
     
     jxDialogContentLoaded : function()
     {
@@ -1094,7 +1104,8 @@ function endPlotPreview()
 {
     if (quickPlotPreviewDialog != null)
     {
-        quickPlotPreviewDialog.cancel();
+        quickPlotPreviewDialog.dispose();
+        quickPlotPreviewDialog = null;
     }
 }
 
