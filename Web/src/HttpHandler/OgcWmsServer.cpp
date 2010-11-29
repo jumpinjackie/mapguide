@@ -657,29 +657,32 @@ bool MgOgcWmsServer::ValidateGetFeatureInfoParameters()
                 bValid = false;
             }
 
-            CPSZ pszSupportedFormats = this->Definition(_("Formats.GetFeatureInfo")); //NOXLATE
-            bool bSupport = false;
-
-            if(pszSupportedFormats != NULL)
+            if(bValid)
             {
-                MgXmlParser SupportedFormats(pszSupportedFormats);
+                CPSZ pszSupportedFormats = this->Definition(_("Formats.GetFeatureInfo")); //NOXLATE
+                bool bSupport = false;
 
-                while(SupportedFormats.Next())
+                if(pszSupportedFormats != NULL)
                 {
-                    MgXmlNode& node = SupportedFormats.Current();
-                    if(node.Contents() == pszFormat)
+                    MgXmlParser SupportedFormats(pszSupportedFormats);
+
+                    while(SupportedFormats.Next())
                     {
-                        bSupport = true;
-                        break;
+                        MgXmlNode& node = SupportedFormats.Current();
+                        if(node.Contents() == pszFormat)
+                        {
+                            bSupport = true;
+                            break;
+                        }
                     }
                 }
-            }
 
-            if(!bSupport)
-            {
-                ServiceExceptionReportResponse(MgOgcWmsException(MgOgcWmsException::kpszInvalidFormat,
-                                                         kpszExceptionMessageInvalidInfoFormat));
-                bValid = false;
+                if(!bSupport)
+                {
+                    ServiceExceptionReportResponse(MgOgcWmsException(MgOgcWmsException::kpszInvalidFormat,
+                                                             kpszExceptionMessageInvalidInfoFormat));
+                    bValid = false;
+                }
             }
         }
     }
