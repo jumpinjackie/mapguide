@@ -120,41 +120,9 @@ bool CCoordinateSystemGeodeticPath::IsValid()
     if (NULL == this->pathDefinition)
         return false;
 
-    //make sure, the names for this path and the datums are set
-    size_t pathNameLength = strlen(this->pathDefinition->pathName);
-    if (0 == pathNameLength || pathNameLength >= sizeof(this->pathDefinition->pathName))
-        return false;
-
-    size_t srcDatumNameLength = strlen(this->pathDefinition->srcDatum);
-    if (0 == srcDatumNameLength || srcDatumNameLength >= sizeof(this->pathDefinition->srcDatum))
-        return false;
-
-    size_t trgDatumNameLength = strlen(this->pathDefinition->trgDatum);
-    if (0 == trgDatumNameLength || trgDatumNameLength >= sizeof(this->pathDefinition->trgDatum))
-        return false;
-
-    //check, whether there are only valid path elements according to MgCoordinateSystemGeodeticPathElement::IsValid()
-    Ptr<MgDisposableCollection> pathElements = this->GetPathElements();
-    INT32 pathElementCount = pathElements->GetCount();
-    if (0 == pathElementCount || pathElementCount > csPATH_MAXXFRM)
-        return false;
-
-    if (pathElementCount != this->pathDefinition->elementCount)
-        return false;
-
-    for(INT32 i = 0; i < pathElementCount; i++)
-    {
-        Ptr<MgDisposable> mgDisposable = pathElements->GetItem(i);
-        MgCoordinateSystemGeodeticPathElement* pathElement = dynamic_cast<MgCoordinateSystemGeodeticPathElement*>(mgDisposable.p);
-        if (NULL == pathElement)
-            throw new MgInvalidArgumentException(L"CCoordinateSystemGeodeticPath.IsValid", __LINE__, __WFILE__, NULL, L"", NULL);
-
-        if (!pathElement->IsValid())
-            return false;
-    }
-
-    //TODO: add gp_gpchk in cs_map.h
-    return true; //for any other stuff, like [accuracy] etc. rely on cs_gpcheck
+	int errorCount = CS_gpchk (this->pathDefinition,(cs_GPCHK_DATUM | cs_GPCHK_XFORM),NULL,0);
+	
+    return (errorCount == 0);
 }
 
 //all getters and setters
