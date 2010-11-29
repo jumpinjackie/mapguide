@@ -340,17 +340,11 @@ bool CCoordinateSystemGeodeticTransformDef::IsValid()
     if (!params->IsValid())
         return false;
 
-    //TODO: would we also need to check, whether the datum(s) exists?
-
-    /*
     CriticalClass.Enter();
-    //TODO: pass correct parameters; make sure, CS_gxchk checks all stuff
-    int nNumErrs = CS_gxchk(this->transformDefinition, 0, NULL, 0);
+    int nNumErrs = CS_gxchk(this->transformDefinition,cs_GXCHK_DATUM, NULL, 0);
     CriticalClass.Leave();
 
     return (0 == nNumErrs);
-    */
-    return true;
 }
 
 //helper - don't delete
