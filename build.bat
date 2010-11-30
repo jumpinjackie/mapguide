@@ -55,6 +55,9 @@ rem MapGuide vars
 rem ==================================================
 SET MG_DEV=%CD%
 SET MG_OEM=%MG_DEV%\Oem
+rem DBXML seems to change frequently enough that we should externalize this information
+SET MG_OEM_DBXML=dbxml
+SET MG_OEM_DB=db-4.8.26
 SET MG_COMMON=%MG_DEV%\Common
 SET MG_SERVER=%MG_DEV%\Server
 SET MG_WEB=%MG_DEV%\Web
@@ -374,8 +377,8 @@ echo [install]: Server - WFS
 echo [install]: Server - WMS
 %XCOPY% "%MG_SERVER%\bin\%TYPEBUILD%\wms" "%MG_OUTPUT_SERVER%\wms" /EXCLUDE:svn_excludes.txt+%TYPEBUILD%_excludes.txt
 echo [install]: Server - DBXML
-copy /Y "%MG_OEM%\dbxml-2.3.10\db-4.5.20\build_windows\Release\*.exe" "%MG_OUTPUT_SERVER%\bin"
-copy /Y "%MG_OEM%\dbxml-2.3.10\bin\*.exe" "%MG_OUTPUT_SERVER%\bin"
+copy /Y "%MG_OEM%\%MG_OEM_DBXML%\%MG_OEM_DB%\build_windows\%TYPEBUILD%32\*.exe" "%MG_OUTPUT_SERVER%\bin"
+copy /Y "%MG_OEM%\%MG_OEM_DBXML%\bin\*.exe" "%MG_OUTPUT_SERVER%\bin"
 echo [install]: Server - RepositoryAdmin
 %XCOPY% "%MG_SERVER%\RepositoryAdmin" "%MG_OUTPUT_SERVER%\RepositoryAdmin" /EXCLUDE:svn_excludes.txt+%TYPEBUILD%_excludes.txt
 echo [install]: CsMap Dictionaries
