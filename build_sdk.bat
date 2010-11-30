@@ -292,7 +292,6 @@ rem =======================================================
 :install
 :install_sdk
 echo [install]: SDK
-if not exist "%MG_SDK_INC%\ACE" mkdir "%MG_SDK_INC%\ACE"
 if not exist "%MG_SDK_INC%\Fdo" mkdir "%MG_SDK_INC%\Fdo"
 if not exist "%MG_SDK_LIB%\Fdo" mkdir "%MG_SDK_LIB%\Fdo"
 if not exist "%MG_SDK_BIN%\Fdo" mkdir "%MG_SDK_BIN%\Fdo"
@@ -305,13 +304,19 @@ copy /Y "%MG_OEM%\ACE\ACE_wrappers\lib\ACE.dll" "%MG_SDK_BIN%"
 copy /Y "%MG_OEM%\ACE\ACE_wrappers\lib\ACE.pdb" "%MG_SDK_BIN%"
 copy /Y "%MG_OEM%\ACE\ACE_wrappers\lib\ACE.lib" "%MG_SDK_LIB%"
 rem Due to hard dependency, we need the header files too
-%XCOPY% /S "%MG_OEM%\ACE\ACE_wrappers\ace\*.h" "%MG_SDK_INC%\ACE" /EXCLUDE:svn_excludes.txt
+%XCOPY% /S "%MG_OEM%\ACE\ACE_wrappers\ace\*.h" "%MG_SDK_INC%\ACE_wrappers\ACE" /EXCLUDE:svn_excludes.txt
+%XCOPY% /S "%MG_OEM%\ACE\ACE_wrappers\ace\*.inl" "%MG_SDK_INC%\ACE_wrappers\ACE" /EXCLUDE:svn_excludes.txt
+%XCOPY% /S "%MG_OEM%\ACE\ACE_wrappers\ace\*.cpp" "%MG_SDK_INC%\ACE_wrappers\ACE" /EXCLUDE:svn_excludes.txt
 rem GEOS
 copy /Y "%MG_OEM%\geos-2.2.0\VisualStudio\%TYPEBUILD%\GEOS.dll" "%MG_SDK_BIN%"
 copy /Y "%MG_OEM%\geos-2.2.0\VisualStudio\%TYPEBUILD%\GEOS.pdb" "%MG_SDK_BIN%"
 rem xerces
 copy /Y "%MG_OEM%\dbxml\xerces-c-src\Build\Win32\VC9\%TYPEBUILD%\xerces-c_3_1mg.dll" "%MG_SDK_BIN%"
 copy /Y "%MG_OEM%\dbxml\xerces-c-src\Build\Win32\VC9\%TYPEBUILD%\xerces-c_3_1mg.pdb" "%MG_SDK_BIN%"
+copy /Y "%MG_OEM%\dbxml\xerces-c-src\Build\Win32\VC9\%TYPEBUILD%\xerces-c_3mg.lib" "%MG_SDK_LIB%"
+%XCOPY% /S "%MG_OEM%\dbxml\xerces-c-src\src\*.h" "%MG_SDK_INC%\xerces" /EXCLUDE:svn_excludes.txt
+%XCOPY% /S "%MG_OEM%\dbxml\xerces-c-src\src\*.hpp" "%MG_SDK_INC%\xerces" /EXCLUDE:svn_excludes.txt
+%XCOPY% /S "%MG_OEM%\dbxml\xerces-c-src\src\*.c" "%MG_SDK_INC%\xerces" /EXCLUDE:svn_excludes.txt
 echo [install]: SDK - FDO
 rem FDO SDK. Copy each subdir into each respective "Fdo" subdirectory to distinguish FDO files from MG files
 %XCOPY% "%MG_OEM%\FDO\bin\%TYPEBUILD%" "%MG_SDK_BIN%\Fdo"
@@ -322,6 +327,9 @@ rem Common binaries
 copy /Y "%MG_COMMON%\bin\%TYPEBUILD%\*.dll" "%MG_SDK_BIN%
 copy /Y "%MG_COMMON%\lib\%TYPEBUILD%\*.lib" "%MG_SDK_LIB%
 copy /Y "%MG_COMMON%\bin\%TYPEBUILD%\*.pdb" "%MG_SDK_BIN%
+rem GD binary (required by Renderers)
+copy /Y "%MG_OEM%\gd\build\win32\gd\%TYPEBUILD%\gd.dll" "%MG_SDK_BIN%
+copy /Y "%MG_OEM%\gd\build\win32\gd\%TYPEBUILD%\gd.pdb" "%MG_SDK_BIN%
 rem Foundation
 if not exist "%MG_SDK_INC%\Foundation" mkdir "%MG_SDK_INC%\Foundation"
 %XCOPY% /S "%MG_COMMON%\Foundation\*.h" "%MG_SDK_INC%\Foundation" /EXCLUDE:svn_excludes.txt
