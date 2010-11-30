@@ -27,18 +27,18 @@ LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
 // TEXTINCLUDE
 //
 
-1 TEXTINCLUDE 
+1 TEXTINCLUDE
 BEGIN
     "GWSResource.h\0"
 END
 
-2 TEXTINCLUDE 
+2 TEXTINCLUDE
 BEGIN
     "#include ""winresrc.h""\r\n"
     "\0"
 END
 
-3 TEXTINCLUDE 
+3 TEXTINCLUDE
 BEGIN
     "#define _AFX_NO_SPLITTER_RESOURCES\r\n"
     "#define _AFX_NO_OLE_RESOURCES\r\n"
@@ -62,8 +62,8 @@ END
 //
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 2,2,0,0
- PRODUCTVERSION 2,2,0,0
+ FILEVERSION 2,3,0,0
+ PRODUCTVERSION 2,3,0,0
  FILEFLAGSMASK 0x17L
 #ifdef _DEBUG
  FILEFLAGS 0x1L
@@ -80,12 +80,12 @@ BEGIN
         BEGIN
             VALUE "CompanyName", "Open Source Geospatial Foundation"
             VALUE "FileDescription", "GwsResource Dynamic Link Library"
-            VALUE "FileVersion", "2, 2, 0, 0"
+            VALUE "FileVersion", "2, 3, 0, 0"
             VALUE "InternalName", "MgGwsResource"
             VALUE "LegalCopyright", "Copyright (C) 2006-2010 by Autodesk, Inc."
             VALUE "OriginalFilename", "MgGwsResource.dll"
             VALUE "ProductName", "MapGuide Open Source"
-            VALUE "ProductVersion", "2, 2, 0, 0"
+            VALUE "ProductVersion", "2, 3, 0, 0"
         END
     END
     BLOCK "VarFileInfo"
@@ -100,162 +100,162 @@ END
 // String Table
 //
 
-STRINGTABLE 
+STRINGTABLE
 BEGIN
     IDS_STRING_CACHEID      "Feature with Cache Id"
     IDS_STRING_UPDATEFAILED "Update Instance failed in Add Features"
     IDS_STRING_eGwsOutOfMemory "GWS Out of memory."
-    IDS_STRING_eGwsFailedToCommitTransaction 
+    IDS_STRING_eGwsFailedToCommitTransaction
                             "Failed to commit feature source session transaction."
-    IDS_STRING_eGwsFailedToCommitSomeTransactions 
+    IDS_STRING_eGwsFailedToCommitSomeTransactions
                             "Commit failed for some feature sources."
-    IDS_STRING_eGwsFailedToCommitCache 
+    IDS_STRING_eGwsFailedToCommitCache
                             "Commit succeeded for all feature sources but not for cache.  Cache is invalid."
-    IDS_STRING_eGwsFailedToRollbackTransaction 
+    IDS_STRING_eGwsFailedToRollbackTransaction
                             "Rollback failed for all feature sources."
-    IDS_STRING_eGwsFailedToRollbackSomeTransactions 
+    IDS_STRING_eGwsFailedToRollbackSomeTransactions
                             "Rollback failed for some feature sources."
-    IDS_STRING_eGwsFailedToRollbackCache 
+    IDS_STRING_eGwsFailedToRollbackCache
                             "Rollback succeeded for all feature sources but not for cache.  Cache is invalid."
     IDS_STRING_eGwsNullPointer "Null pointer parameter."
     IDS_STRING_eGwsFailedToCreateThread "Create Thread Failed."
     IDS_STRING_eGwsFailedToPrepareQuery "Query preparation Failed."
     IDS_STRING_eGwsFailedToExecuteQuery "Failed to execute query."
-    IDS_STRING_eGwsGetCachedFeaturesByIdsFailed 
+    IDS_STRING_eGwsGetCachedFeaturesByIdsFailed
                             "Unable to get cached features by ids."
     IDS_STRING_eGwsIsReadOnly "The GWS is open in read-only mode."
     IDS_STRING_eGwsFileNotFound "GWS XML file not found."
 END
 
-STRINGTABLE 
+STRINGTABLE
 BEGIN
-    IDS_STRING_eGwsCannotCopyGwsCacheFiles 
+    IDS_STRING_eGwsCannotCopyGwsCacheFiles
                             "Failed to copy GWS cache files to target directory."
-    IDS_STRING_eGwsFailedToDropLayerStorage 
+    IDS_STRING_eGwsFailedToDropLayerStorage
                             "Failed to delete a GWS storage file."
-    IDS_STRING_eGwsOutstandingSessions 
+    IDS_STRING_eGwsOutstandingSessions
                             "Operation could not be completed due to outstanding GWSSesssions on the Layer or Feature Source."
     IDS_STRING_eGwsClosedFeatureIterator "Cursor is closed"
     IDS_STRING_eGwsDisconnected "Feature Source is disconnected."
     IDS_STRING_eGwsInvalidGwsName "Invalid GWS file name."
     IDS_STRING_eGwsFailedToReadGws "Failed to read the GWS XML file."
     IDS_STRING_eGwsAlreadyOpened "The GWS is already open."
-    IDS_STRING_eGwsGwsAlreadyExists 
+    IDS_STRING_eGwsGwsAlreadyExists
                             "A GWS file with that name already exists."
     IDS_STRING_eGwsClosed   "The GWS is closed."
     IDS_STRING_eGwsFailedToWriteGws "Failed to write the GWS XML file."
     IDS_STRING_eGwsFailed   "Failed to complete operation."
-    IDS_STRING_eGwsInvalidCacheId 
+    IDS_STRING_eGwsInvalidCacheId
                             "Cache id is invalid or feature is not cached."
-    IDS_STRING_eGwsFailedToInitializeFdoConnection 
+    IDS_STRING_eGwsFailedToInitializeFdoConnection
                             "Failed to initialize Fdo connection."
-    IDS_STRING_eGwsConnectionParameterNotFound 
+    IDS_STRING_eGwsConnectionParameterNotFound
                             "Connection parameter not found."
-    IDS_STRING_eFailedToStartFeatureSourceSession 
+    IDS_STRING_eFailedToStartFeatureSourceSession
                             "Failed to start feature source session."
 END
 
-STRINGTABLE 
+STRINGTABLE
 BEGIN
     IDS_STRING_eGwsFailedToCacheFeatures "Failed to cache features."
     IDS_STRING_eGwsLayerSourceNotPartOfGws "Layer source not part of Gws"
-    IDS_STRING_eGwsFeatureSourceDoesnotSupportLongIdentity 
+    IDS_STRING_eGwsFeatureSourceDoesnotSupportLongIdentity
                             "This Feature Source does not support integer feature ids."
     IDS_STRING_eGwsFailedToDeleteFeature "Failed to delete Feature."
     IDS_STRING_eGwsFailedToInsertFeature "Failed to insert feature."
     IDS_STRING_eGwsInvalidParameter "Invalid parameter."
     IDS_STRING_eGwsIndexOutOfBounds "Index is out of bounds."
-    IDS_STRING_eGwsFailedToGetLockInformation 
+    IDS_STRING_eGwsFailedToGetLockInformation
                             "Failed to retrieve lock information from the Feature Source."
     IDS_STRING_eGwsObjectsRemainInEditSet "Features remain in the Edit Set."
     IDS_STRING_eGwsOk       "Successful completion."
-    IDS_STRING_eGwsWarningFailedToLockSomeFeatures 
+    IDS_STRING_eGwsWarningFailedToLockSomeFeatures
                             "Warning: Failed to lock some features."
-    IDS_STRING_eGwsWarningFailedToUnlockSomeFeatures 
+    IDS_STRING_eGwsWarningFailedToUnlockSomeFeatures
                             "Warning: Failed to unlock some features."
-    IDS_STRING_eGwsWarningFailedToConnectSomeFeatureSources 
+    IDS_STRING_eGwsWarningFailedToConnectSomeFeatureSources
                             "Warning: Failed to connect to some feature sources."
-    IDS_STRING_eGwsWarningFeatureSourceSessionNotStarted 
+    IDS_STRING_eGwsWarningFeatureSourceSessionNotStarted
                             "Warning: Feature source session not started."
     IDS_STRING_eGwsNotSupported "Operation is not supported."
     IDS_STRING_eGwsFdoProviderError "Error in the FDO provider."
 END
 
-STRINGTABLE 
+STRINGTABLE
 BEGIN
     IDS_STRING_eGwsFailedToFetchResults "Failed to featch query results."
     IDS_STRING_eGwsFailedToGetProperty "Failed to get property value."
     IDS_STRING_eGwsFdoInvalidPropertyType "Invalid property type."
     IDS_STRING_eGwsFdoUnsupportedPropertyType "Unsupported property type."
-    IDS_STRING_eFailedToStartLayerSourceSession 
+    IDS_STRING_eFailedToStartLayerSourceSession
                             "Failed to start layer source session."
     IDS_STRING_eGwsFeatureDoesNotExist "Feature does not exist."
     IDS_STRING_eGwsFeatureHasBeenDeleted "Feature has been deleted."
     IDS_STRING_eGwsRevisionNumbersConflict "Revision numbers conflict."
     IDS_STRING_eGwsInvalidPropertyName "Invalid property name."
-    IDS_STRING_eGwsFailedToLockFeatures 
+    IDS_STRING_eGwsFailedToLockFeatures
                             "Failed to add features to the edit set."
-    IDS_STRING_eGwsFailedToUnlockFeatures 
+    IDS_STRING_eGwsFailedToUnlockFeatures
                             "Failed to remove features from the edit set."
-    IDS_STRING_eGwsCannotRemoveNewFeatureFromEditSet 
+    IDS_STRING_eGwsCannotRemoveNewFeatureFromEditSet
                             "Cannot remove new features from the edit set."
-    IDS_STRING_eGwsJoinPropertiesCardinalityViolation 
+    IDS_STRING_eGwsJoinPropertiesCardinalityViolation
                             "Join properties cardinality violation."
-    IDS_STRING_eGwsGwsCacheCorrupted 
+    IDS_STRING_eGwsGwsCacheCorrupted
                             "Gws cache is corrupted or has unsupported format."
     IDS_STRING_eGwsFailedToUpdateFeature "Failed to update feature."
-    IDS_STRING_eGwsEditSetUnavailable 
+    IDS_STRING_eGwsEditSetUnavailable
                             "The edit set is unavailable for un-cached layers and layers in direct update mode."
 END
 
-STRINGTABLE 
+STRINGTABLE
 BEGIN
-    IDS_STRING_eGwsConnected 
+    IDS_STRING_eGwsConnected
                             "Cannot complete the operation bacause feature source is connected."
-    IDS_STRING_eGwsConnectionNotInitialized 
+    IDS_STRING_eGwsConnectionNotInitialized
                             "Fdo connection is not initialized."
     IDS_STRING_eFailedToStartTransaction "Failed to start transaction."
     IDS_STRING_eGwsNoTransactionStarted "There is no active transaction."
     IDS_STRING_eGwsFailedToTerminateSession "Failed to end session."
     IDS_STRING_eGwsSessionNotFound "Session does not exist."
-    IDS_STRING_eGwsFailedToFlushChanges 
+    IDS_STRING_eGwsFailedToFlushChanges
                             "Failed to flush changed to the feature source or cache."
     IDS_STRING_eGwsFailedToDesribeClass "Failed to describe class."
-    IDS_STRING_eGwsFeatureStorageDoesNotExist 
+    IDS_STRING_eGwsFeatureStorageDoesNotExist
                             "Gws cache feature storage does not exist."
-    IDS_STRING_eGwsFeatureStorageAlreadyCreated 
+    IDS_STRING_eGwsFeatureStorageAlreadyCreated
                             "Gws cache feature storage already exist."
     IDS_STRING_eGwsFailedToCreateQuery "Failed to create query."
-    IDS_STRING_eGwsDoesNotSupportRightJoin 
+    IDS_STRING_eGwsDoesNotSupportRightJoin
                             "Join is not supported at the right hand side of the query definition."
-    IDS_STRING_eGwsDoesNotSupportLeftJoin 
+    IDS_STRING_eGwsDoesNotSupportLeftJoin
                             "Join is not supported at the left hand side of the query definition."
-    IDS_STRING_eGwsWarningStorageAlreadyLoaded 
+    IDS_STRING_eGwsWarningStorageAlreadyLoaded
                             "The GWS storage has already been loaded."
-    IDS_STRING_eGwsNoExplicitFeatureSourceInLayerQuery 
+    IDS_STRING_eGwsNoExplicitFeatureSourceInLayerQuery
                             "Layer source query is missing explicit feature source reference. "
     IDS_STRING_eGwsDataSourceNotFound "Feature source not found in GWS."
 END
 
-STRINGTABLE 
+STRINGTABLE
 BEGIN
-    IDS_STRING_eGwsDataSourceAlreadyExists 
+    IDS_STRING_eGwsDataSourceAlreadyExists
                             "Feature source with the same already exists in GWS."
-    IDS_STRING_eGwsDataSourceAlreadyAdded 
+    IDS_STRING_eGwsDataSourceAlreadyAdded
                             "Feature source is already part of GWS. Cannot add it again."
     IDS_STRING_eGwsFailedToOpenFdoConnection "Failed to open FDO connection."
-    IDS_STRING_eGwsFailedToCloseFdoConnection 
+    IDS_STRING_eGwsFailedToCloseFdoConnection
                             "Failed to close FDO connection."
-    IDS_STRING_eGwsFailedToCreateLayerStorage 
+    IDS_STRING_eGwsFailedToCreateLayerStorage
                             "Failed to create layer source feature cache."
-    IDS_STRING_eGwsFailedToAddPropertyDefinition 
+    IDS_STRING_eGwsFailedToAddPropertyDefinition
                             "Failed to add FDO property definition."
-    IDS_STRING_eGwsFailedToAddIdentityPropertyDefinition 
+    IDS_STRING_eGwsFailedToAddIdentityPropertyDefinition
                             "Failed to add FDO identity property definition."
-    IDS_STRING_eGwsFailedToCreateGwsFeatureDefintion 
+    IDS_STRING_eGwsFailedToCreateGwsFeatureDefintion
                             "Failed to create feature definition in GWS cache."
     IDS_STRING_eGwsStorageNotLoaded "Gws cache is not yet loaded."
-    IDS_STRING_eGwsFdoReadOnlyProperty 
+    IDS_STRING_eGwsFdoReadOnlyProperty
                             "Failed to set or update read only property."
     IDS_STRING_eGwsFdoQueryIsNotPrepared "Query is not prepared."
     IDS_STRING_eGwsFdoCommandIsNotPrepared "Fdo command is not prepared."
@@ -265,75 +265,75 @@ BEGIN
     IDS_STRING_eGwsFailedToPrepareCommand "Failed to prepare Fdo command."
 END
 
-STRINGTABLE 
+STRINGTABLE
 BEGIN
     IDS_STRING_eGwsFailedToSaveGws "Failed to save GWS."
     IDS_STRING_eGwsFailedToDescribeLayer "Cannot get layer description."
-    IDS_STRING_eGwsWarningNotCaching 
+    IDS_STRING_eGwsWarningNotCaching
                             "Gws does not cache feature for the layer."
-    IDS_STRING_eGwsWarningStillLoadingCache 
+    IDS_STRING_eGwsWarningStillLoadingCache
                             "Gws working thread is still caching features. "
-    IDS_STRING_eGwsWarningCacheLoadingStopped 
+    IDS_STRING_eGwsWarningCacheLoadingStopped
                             "Gws cache loading has been stopped."
-    IDS_STRING_eGwsItemAlreadyAdded 
+    IDS_STRING_eGwsItemAlreadyAdded
                             "An item with the specified name is already in the collection."
-    IDS_STRING_eGwsItemNotFound 
+    IDS_STRING_eGwsItemNotFound
                             "An item with the specified name was not found in the collection."
-    IDS_STRING_eGwsFailedToCommitLayerSourceTransaction 
+    IDS_STRING_eGwsFailedToCommitLayerSourceTransaction
                             "Failed to commit layer source session transaction."
-    IDS_STRING_eGwsCannotGetPropertyValueOffline 
+    IDS_STRING_eGwsCannotGetPropertyValueOffline
                             "Cannot get property value when feature source is offline."
-    IDS_STRING_eGwsFeatureNotFoundOnline 
+    IDS_STRING_eGwsFeatureNotFoundOnline
                             "Feature was not found in the feature source."
-    IDS_STRING_eGwsFailedToCreateMutableFeature 
+    IDS_STRING_eGwsFailedToCreateMutableFeature
                             "Failed to create mutable feature."
-    IDS_STRING_eGwsWarningSomePropertyValuesAreUninitialized 
+    IDS_STRING_eGwsWarningSomePropertyValuesAreUninitialized
                             "Some property values were not initialized during mutable feature creation."
-    IDS_STRING_eGwsNotAFeatureClass 
+    IDS_STRING_eGwsNotAFeatureClass
                             "The specified feature is not a FeatureClass."
-    IDS_STRING_eGwsNoGeometryProperty 
+    IDS_STRING_eGwsNoGeometryProperty
                             "The specified FeatureClass contains no geometric property."
-    IDS_STRING_eGwsVersionNotFound 
+    IDS_STRING_eGwsVersionNotFound
                             "The version with the specified name was not found."
-    IDS_STRING_eGwsVersionResolutionFailed 
+    IDS_STRING_eGwsVersionResolutionFailed
                             "Failed to commit the specified version. There were unresolved feature conflicts."
 END
 
-STRINGTABLE 
+STRINGTABLE
 BEGIN
-    IDS_STRING_eGwsFailedToPrepareLayerSourceQuery 
+    IDS_STRING_eGwsFailedToPrepareLayerSourceQuery
                             "Failed to prepare layer source query."
-    IDS_STRING_eGwsDeleteCommandNotSupported 
+    IDS_STRING_eGwsDeleteCommandNotSupported
                             "Delete command is not supported by the feature source."
-    IDS_STRING_eGwsUpdateCommandNotSupported 
+    IDS_STRING_eGwsUpdateCommandNotSupported
                             "Update command is not supported by the feature source."
-    IDS_STRING_eGwsInsertCommandNotSupported 
+    IDS_STRING_eGwsInsertCommandNotSupported
                             "Insert command is not supported by the feature source."
-    IDS_STRING_eGwsWrongLayerFeatureId 
+    IDS_STRING_eGwsWrongLayerFeatureId
                             "Wrong layer feature id. Layer feature id must be a single long value."
     IDS_STRING_eGwsFailedToSaveEditSet "Failed to save edit set."
-    IDS_STRING_eGwsMissingLeftJoinAttributes 
+    IDS_STRING_eGwsMissingLeftJoinAttributes
                             "Join attributes were not specified."
-    IDS_STRING_eGwsInvalidJoinAttributeType 
+    IDS_STRING_eGwsInvalidJoinAttributeType
                             "Invalid join attribute type. Must not be LOB data property."
-    IDS_STRING_eGwsJoinAttributesAreNotComparable 
+    IDS_STRING_eGwsJoinAttributesAreNotComparable
                             "Join attributes are not comparable."
-    IDS_STRING_eGwsFailedToDeleteLayerFeature 
+    IDS_STRING_eGwsFailedToDeleteLayerFeature
                             "Failed to delete the layer source feature."
-    IDS_STRING_eGwsFailedToInsertLayerFeature 
+    IDS_STRING_eGwsFailedToInsertLayerFeature
                             "Failed to insert feature to the layer source."
-    IDS_STRING_eGwsFailedToUpdateLayerFeature 
+    IDS_STRING_eGwsFailedToUpdateLayerFeature
                             "Failed to update the layer source feature."
-    IDS_STRING_eGwsClassNotReferencedByLayer 
+    IDS_STRING_eGwsClassNotReferencedByLayer
                             "Class is not part of the layer source."
     IDS_STRING_eGwsInvalidFeatureSourceName "Feature source is not found. "
-    IDS_STRING_eGwsOperationInProgress 
+    IDS_STRING_eGwsOperationInProgress
                             "There is another operation in progress that prevents executing the current one."
-    IDS_STRING_eGwsOperationIsNotRunning 
+    IDS_STRING_eGwsOperationIsNotRunning
                             "Operation has been competed is not cancelable."
 END
 
-STRINGTABLE 
+STRINGTABLE
 BEGIN
     IDS_STRING_eGwsOperationCanceled "Operation has been canceled."
     IDS_PROGRESS_READINGMETADATA "Reading feature class metadata..."
@@ -353,86 +353,86 @@ BEGIN
     IDS_PROGRESS_OPERATIONSUCESSFUL "Operation sucessfully completed."
 END
 
-STRINGTABLE 
+STRINGTABLE
 BEGIN
-    IDS_STRING_eGwsFailedToTransformFeature 
+    IDS_STRING_eGwsFailedToTransformFeature
                             "Coordinate transformation failed for this feature."
     IDS_STRING_eGwsFailedToParseFeature "Invalid feature geometry."
     IDS_STRING_eGwsSCNotFound "Coordinate system not found."
-    IDS_STRING_eGwsFailedToHandleSourceCS 
+    IDS_STRING_eGwsFailedToHandleSourceCS
                             "Source coordinate system not found."
-    IDS_STRING_eGwsFailedToHandleDestinationCS 
+    IDS_STRING_eGwsFailedToHandleDestinationCS
                             "Destination coordinate system not found."
-    IDS_STRING_eGwsFailedToInitializeCSC 
+    IDS_STRING_eGwsFailedToInitializeCSC
                             "Failed to initialize coordinate system converter."
-    IDS_STRING_eGwsFeatureSourceSessionTerminated 
+    IDS_STRING_eGwsFeatureSourceSessionTerminated
                             "Feature source session has been terminated."
-    IDS_STRING_eGwsLayerSourceSessionTerminated 
+    IDS_STRING_eGwsLayerSourceSessionTerminated
                             "Layer source session has been terminated."
-    IDS_STRING_eGwsWarningFeatureSourceClassIsNotVersionEnabled 
+    IDS_STRING_eGwsWarningFeatureSourceClassIsNotVersionEnabled
                             "A version was specified, but versioning was not enabled for the feature class referenced by this layer."
-    IDS_STRING_eGwsCannotSetActiveVersion 
+    IDS_STRING_eGwsCannotSetActiveVersion
                             "Cannot start session with invalid active version name."
-    IDS_STRING_eGwsNotAllFeatureSourcesConnected 
+    IDS_STRING_eGwsNotAllFeatureSourcesConnected
                             "All Feature Sources were not connected."
-    IDS_STRING_eGwsFailedToUpdateLayerSourceVersion 
+    IDS_STRING_eGwsFailedToUpdateLayerSourceVersion
                             "Failed to update the Layer Source's version information."
     IDS_STRING_eGwsCannotMakeUniqueGwsName "Failed to create unique GWS name."
     IDS_PROGRESS_READINGFEATUREIDS "Reading feature ids..."
-    IDS_STRING_eGwsWarningExtentsNotYetAvailable 
+    IDS_STRING_eGwsWarningExtentsNotYetAvailable
                             "Extents are not yet available."
     IDS_PROGRESS_PROCESSINGLAYER "Processing Layer %s..."
 END
 
-STRINGTABLE 
+STRINGTABLE
 BEGIN
-    IDS_STRING_eGwsProviderNotRegistered 
+    IDS_STRING_eGwsProviderNotRegistered
                             "The specified provider is not registered."
     IDS_STRING_eGwsSucceeded "Operation was successul for the feature."
-    IDS_STRING_eGwsRevisionNumberConflict 
+    IDS_STRING_eGwsRevisionNumberConflict
                             "Revision number conflict for the feature."
-    IDS_STRING_eGwsLockRejected 
+    IDS_STRING_eGwsLockRejected
                             "Persistent lock has been rejected for the feature."
-    IDS_STRING_eGwsUnlockRejected 
+    IDS_STRING_eGwsUnlockRejected
                             "Persistent lock has not been released for the feature."
-    IDS_STRING_eGwsLockedOffline 
+    IDS_STRING_eGwsLockedOffline
                             "Feature has been added to the edit set offline."
-    IDS_STRING_eGwsCannotUnlockOffline 
+    IDS_STRING_eGwsCannotUnlockOffline
                             "Feature that has persistent lock cannot be removed from the edit set offline."
-    IDS_STRING_eGwsFeatureAlreadyInEditSet 
+    IDS_STRING_eGwsFeatureAlreadyInEditSet
                             "Feature was not added to the edit set because it is already there."
-    IDS_STRING_eGwsSkippedNewFeature 
+    IDS_STRING_eGwsSkippedNewFeature
                             "New feature in the edit set has been ignored by the operation."
-    IDS_STRING_eGwsSkippedNotLockedFeature 
+    IDS_STRING_eGwsSkippedNotLockedFeature
                             "Feature is not in the edit set and was skipped by the operation."
-    IDS_STRING_eGwsFeatureNotSaved 
+    IDS_STRING_eGwsFeatureNotSaved
                             "Feature was not saved in the target feature source."
-    IDS_STRING_eGwsNotProcessed 
+    IDS_STRING_eGwsNotProcessed
                             "Feature was not processed because operation has been terminated prematurely."
-    IDS_STRING_eGwsCannotRemoveModifedFeatureOffline 
+    IDS_STRING_eGwsCannotRemoveModifedFeatureOffline
                             "Modified feature cannot be removed from the edit set offline."
-    IDS_STRING_eGwsNewFeatureCannotBeRemoved 
+    IDS_STRING_eGwsNewFeatureCannotBeRemoved
                             "Cannot removed new feature from the edit set."
-    IDS_STRING_eGwsNewFeatureRemoved 
+    IDS_STRING_eGwsNewFeatureRemoved
                             "New feature has been removed from the edit set."
-    IDS_STRING_eGwsRefreshFailedToReloadEditSetFeature 
+    IDS_STRING_eGwsRefreshFailedToReloadEditSetFeature
                             "Feature was not refreshed because it is part of the edit set."
 END
 
-STRINGTABLE 
+STRINGTABLE
 BEGIN
     IDS_STRING_eGwsRefreshCacheFeatureIsUpTodate "Feature is up-to-date."
-    IDS_STRING_eGwsRefreshDeletedFeatureInCache 
+    IDS_STRING_eGwsRefreshDeletedFeatureInCache
                             "Feature has been deleted from the cache during refresh."
-    IDS_STRING_eGwsRefreshReloadedFeatureInCache 
+    IDS_STRING_eGwsRefreshReloadedFeatureInCache
                             "Feature has been refreshed in the cache."
-    IDS_STRING_eGwsRefreshFeatureNotFound 
+    IDS_STRING_eGwsRefreshFeatureNotFound
                             "Feature was not found either in the feature source or in the cache."
     IDS_STRING_eGwsFailedToRefreshFeatures "Failed to refresh features."
     IDS_PROGRESS_REFRESHINGLAYERSOURCE "Refreshing layer source."
     IDS_STRING_eGwsNoLayers "No layers have been defined."
     IDS_STRING_eGwsFeatureSourceIsReadOnly "Feature source cannot be updated."
-    IDS_STRING_eGwsFeatureClassHasNoIdentity 
+    IDS_STRING_eGwsFeatureClassHasNoIdentity
                             "Instance cannot be updated because the feature class doesn't have identity properties."
     IDS_PROGRESS_LAYEREXTENTS "Calculating layer extents..."
     IDS_STRING_eGwsFdoInvalidDataType "Invalid data type."
