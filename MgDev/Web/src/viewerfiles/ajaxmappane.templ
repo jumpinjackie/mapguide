@@ -523,9 +523,14 @@ function IsDigitizing()
 //
 function InitDocument()
 {
-        if(!msie || msie9)
+    ///if(!msie || msie9)
+    try
+    {
         document.getElementById("InfoDiv").style.display = "block";
-
+    }
+    catch(e)
+    {
+    }
     if((orgExtX1 - orgExtX2) == 0 || (orgExtY1 - orgExtY2) == 0)
     {
         extX1 = orgExtX1 = -.1; extY1 = orgExtY1 = .1,
@@ -957,10 +962,10 @@ function OnMouseDown(e)
                     StartToolFeedback(x, y, CIRCLE);
                     break;
                 case 6:
-		    if((e.ctrlKey && !macOS) || (e.metaKey && macOS))
-		    {
-			EndPolygonSelection(x, y);
-		    }
+            if((e.ctrlKey && !macOS) || (e.metaKey && macOS))
+            {
+            EndPolygonSelection(x, y);
+            }
                     else
                     {
                         if(polySel.xs.length == 0)
@@ -1301,8 +1306,14 @@ function OnMouseUp(e)
         moveType = NONE;
         RequestMapAfterResizing();
 
-        if(msie && !msie9)
+        //if(msie && !msie9)
+        try
+        {
             document.getElementById("mapSpace").releaseCapture();
+        }
+        catch(e)
+        {
+        }
         return true;
     }
     else if(moveType == RESIZINGLEGEND)
@@ -1364,7 +1375,15 @@ function ResizeTo(x)
     document.getElementById("PropertyCaption").style.width = x+"px";
     document.getElementById("PropertyCtrl").style.width = x+"px";
 
-    ShowChildren(infoDiv, (msie && !msie9)?"block": "visible");
+    //ShowChildren(infoDiv, (msie && !msie9)?"block": "visible");
+    try
+    {
+        ShowChildren(infoDiv, "block");
+    }
+    catch(e)
+    {
+        ShowChildren(infoDiv, "visible");
+    }
 
     document.getElementById("InfoBand").style.width = x+"px";
 
