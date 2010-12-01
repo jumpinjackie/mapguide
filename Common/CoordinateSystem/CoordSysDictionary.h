@@ -58,6 +58,11 @@ protected:
     cs_Csdef_ * csdef(const char *kpName);
     CCoordinateSystemEnum* GetEnumImp();
 
+    //static (helper) members
+    void DoCsDefPostReadProcessing(cs_Csdef_* pDef);
+    static MgDisposableCollection* ReadAllCoordinateSystems(MgCoordinateSystemDictionaryBase* targetDictionary, const std::vector<MgCoordinateSystemFilter*>* const filters);
+    MgCoordinateSystem* GetCoordinateSystem(const cs_Csdef_* csDef, const std::vector<std::map<STRING,Ptr<MgDisposable> >*>* const datumEllipsoidInfos);
+
 private:
     //Unimplemented stuff
     CCoordinateSystemDictionary();

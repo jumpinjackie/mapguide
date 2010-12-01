@@ -102,7 +102,9 @@ void CCoordinateSystem::SetCatalog(MgCoordinateSystemCatalog* pCatalog)
 //without loading the DT from the dictionary
 //The DT can then be set via CCoordinateSystem::SetDatumDefinition
 //
-void CCoordinateSystem::InitFromCatalog(const cs_Csdef_& csdef)
+void CCoordinateSystem::InitFromCatalog(const cs_Csdef_& csdef,
+                                        const map<STRING, Ptr<MgDisposable> >* const ellipsoidMap,
+                                        const map<STRING, Ptr<MgDisposable> >* const datumMap)
 {
     MG_TRY()
 
@@ -134,21 +136,43 @@ void CCoordinateSystem::InitFromCatalog(const cs_Csdef_& csdef)
     bool bGeodetic=CsdefIsGeodetic(csdef);
     if (bGeodetic)
     {
-        //It's geodetic.  We need a datum definition.
-        Ptr<MgCoordinateSystemDatumDictionary> pDtDict=m_pCatalog->GetDatumDictionary();
-        if (!pDtDict)
-        {
-            throw new MgCoordinateSystemInitializationFailedException(L"MgCoordinateSystem.InitFromCatalog", __LINE__, __WFILE__, NULL, L"MgCoordinateSystemNoDatumDictionaryException", NULL);
-        }
-        wchar_t* pwszDtName=Convert_Ascii_To_Wide(csdef.dat_knm);
+        wchar_t* pwszDtName = Convert_Ascii_To_Wide(csdef.dat_knm);
         STRING sDtName(pwszDtName);
-        delete[] pwszDtName;
 
-        Ptr<MgGuardDisposable> pDatum=pDtDict->Get(sDtName);
-        assert(pDatum);
-        if (!pDatum)
+        delete[] pwszDtName;
+        pwszDtName = NULL;
+
+        Ptr<MgGuardDisposable> pDatum;
+
+        //It's geodetic.  We need a datum definition.
+        if (NULL != datumMap)
         {
-            throw new MgCoordinateSystemInitializationFailedException(L"MgCoordinateSystem.InitFromCatalog", __LINE__, __WFILE__, NULL, L"MgCoordinateSystemNoDatumInDictionaryException", NULL);
+            map<STRING, Ptr<MgDisposable> >::const_iterator datumMapIterator = datumMap->find(sDtName);
+            if (datumMapIterator != datumMap->end())
+            {
+                Ptr<MgDisposable> disposableCsObject = datumMapIterator->second;
+                MgCoordinateSystemDatum* datumInfo = dynamic_cast<MgCoordinateSystemDatum*>(disposableCsObject.p);
+                if (NULL == datumInfo)
+                    throw new MgInvalidArgumentException(L"MgCoordinateSystem.InitFromCatalog", __LINE__, __WFILE__, NULL, L"", NULL);
+                
+                pDatum = SAFE_ADDREF(datumInfo);
+            }
+        }
+
+        if (NULL == pDatum)
+        {
+            Ptr<MgCoordinateSystemDatumDictionary> pDtDict = m_pCatalog->GetDatumDictionary();
+            if (!pDtDict)
+            {
+                throw new MgCoordinateSystemInitializationFailedException(L"MgCoordinateSystem.InitFromCatalog", __LINE__, __WFILE__, NULL, L"MgCoordinateSystemNoDatumDictionaryException", NULL);
+            }
+
+            pDatum = pDtDict->Get(sDtName);
+            assert(pDatum);
+            if (!pDatum)
+            {
+                throw new MgCoordinateSystemInitializationFailedException(L"MgCoordinateSystem.InitFromCatalog", __LINE__, __WFILE__, NULL, L"MgCoordinateSystemNoDatumInDictionaryException", NULL);
+            }
         }
 
         //We've got a datum object.  Complete the initialization.
@@ -156,21 +180,42 @@ void CCoordinateSystem::InitFromCatalog(const cs_Csdef_& csdef)
     }   //if it's geodetic
     else
     {
-        //It's cartographic.  We need an ellipsoid definition.
-        Ptr<MgCoordinateSystemEllipsoidDictionary> pElDict=m_pCatalog->GetEllipsoidDictionary();
-        if (!pElDict)
-        {
-            throw new MgCoordinateSystemInitializationFailedException(L"MgCoordinateSystem.InitFromCatalog", __LINE__, __WFILE__, NULL, L"MgCoordinateSystemNoEllipsoidDictionaryException", NULL);
-        }
-        wchar_t* pwszElName=Convert_Ascii_To_Wide(csdef.elp_knm);
+        wchar_t* pwszElName = Convert_Ascii_To_Wide(csdef.elp_knm);
         STRING sElName(pwszElName);
         delete[] pwszElName;
+        pwszElName = NULL;
 
-        Ptr<MgGuardDisposable> pEllipsoid=pElDict->Get(sElName);
-        assert(pEllipsoid);
-        if (!pEllipsoid)
+        Ptr<MgGuardDisposable> pEllipsoid;
+
+        if (NULL != ellipsoidMap)
         {
-            throw new MgCoordinateSystemInitializationFailedException(L"MgCoordinateSystem.InitFromCatalog", __LINE__, __WFILE__, NULL, L"MgCoordinateSystemNoEllipsoidInDictionaryException", NULL);
+            map<STRING, Ptr<MgDisposable> >::const_iterator ellipsoidMapIterator = ellipsoidMap->find(sElName);
+            if (ellipsoidMapIterator != ellipsoidMap->end())
+            {
+                Ptr<MgDisposable> disposableCsObject = ellipsoidMapIterator->second;
+                MgCoordinateSystemEllipsoid* ellipsoidInfo = dynamic_cast<MgCoordinateSystemEllipsoid*>(disposableCsObject.p);
+                if (NULL == ellipsoidInfo)
+                    throw new MgInvalidArgumentException(L"MgCoordinateSystem.InitFromCatalog", __LINE__, __WFILE__, NULL, L"", NULL);
+                
+                pEllipsoid = SAFE_ADDREF(ellipsoidInfo);
+            }
+        }
+
+        if (NULL == pEllipsoid)
+        {
+            //It's cartographic.  We need an ellipsoid definition.
+            Ptr<MgCoordinateSystemEllipsoidDictionary> pElDict = m_pCatalog->GetEllipsoidDictionary();
+            if (!pElDict)
+            {
+                throw new MgCoordinateSystemInitializationFailedException(L"MgCoordinateSystem.InitFromCatalog", __LINE__, __WFILE__, NULL, L"MgCoordinateSystemNoEllipsoidDictionaryException", NULL);
+            }
+
+            pEllipsoid = pElDict->Get(sElName);
+            assert(pEllipsoid);
+            if (!pEllipsoid)
+            {
+                throw new MgCoordinateSystemInitializationFailedException(L"MgCoordinateSystem.InitFromCatalog", __LINE__, __WFILE__, NULL, L"MgCoordinateSystemNoEllipsoidInDictionaryException", NULL);
+            }
         }
 
         //We've got the ellipsoid definition.  Complete the initialization.

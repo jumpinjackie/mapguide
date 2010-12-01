@@ -39,7 +39,9 @@ public:
     virtual ~CCoordinateSystem();
 
     bool InitArbitrary(const cs_Csprm_ &csprm);
-    void InitFromCatalog(const cs_Csdef_& def);
+    void InitFromCatalog(const cs_Csdef_& def,        
+        const map<STRING, Ptr<MgDisposable> >* const ellipsoidMap = NULL,
+        const map<STRING, Ptr<MgDisposable> >* const datumMap = NULL);
     void GetMentorDef(cs_Csdef_& def){def=m_csprm.csdef;};
 
     //from MgCoordinateSystem

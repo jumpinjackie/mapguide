@@ -58,6 +58,9 @@ protected:
     cs_Eldef_ * eldef(const char *kpName) const;
     CCoordinateSystemEnumEllipsoid* GetEnumImp();
 
+    static MgDisposableCollection* ReadAllEllipsoids(MgCoordinateSystemDictionaryBase* targetDictionary, const std::vector<MgCoordinateSystemFilter*>* const filters);
+    MgCoordinateSystemEllipsoid* GetEllipsoid(const cs_Eldef_* elDef, const std::vector<std::map<STRING,Ptr<MgDisposable> >*>* const /* unused */ = NULL);
+
 private:
     //Unimplemented stuff
     CCoordinateSystemEllipsoidDictionary();

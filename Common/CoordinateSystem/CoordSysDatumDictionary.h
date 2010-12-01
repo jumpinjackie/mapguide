@@ -57,6 +57,12 @@ protected:
     //Private member functions
     cs_Dtdef_ * dtdef(const char *kpName) const;
     CCoordinateSystemEnumDatum* GetEnumImp();
+    
+    MgCoordinateSystemDatum* GetDatum(const cs_Dtdef_* datumDef,
+        const std::vector<std::map<STRING,Ptr<MgDisposable> >*>* const ellipsoidInfos = NULL);
+    
+    static MgDisposableCollection* ReadAllDatums(MgCoordinateSystemDictionaryBase* targetDictionary,
+        const std::vector<MgCoordinateSystemFilter*>* const filters);
 
 private:
     //Unimplemented stuff

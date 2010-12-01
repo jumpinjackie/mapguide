@@ -247,8 +247,6 @@ cs_Dtdef_ * CCoordinateSystemDatumDictionary::dtdef(const char *kpName) const
         return CS_dtdef(kpName);
     }
 
-    throw new MgInvalidOperationException(L"CCoordinateSystemDatumDictionary.dtdef", __LINE__, __WFILE__, NULL, L"", NULL);
-
     //It's an old version.  We need to do a special search
     //in the file, and then, if found, update it to a current struct.
     
@@ -515,26 +513,28 @@ void CCoordinateSystemDatumDictionary::Modify(MgGuardDisposable *pDefinition)
 //returns it (user is responsible for freeing the def via Release()
 //function).
 //Throws an exception (if no such definition exists in the catalog).
+//Delegates the call to the ::GetDatum(CREFSTRING) method
 MgGuardDisposable* CCoordinateSystemDatumDictionary::Get(CREFSTRING sName)
 {
     return GetDatum(sName);
 }
 
+//--------------------------------------------------------------
+//Reads a CsMap definition from the dictionaries and then creates an MgCoordinateSystemDatum
+//out of it - this method is the more expensive one as it interacts with CsMap and
+//the dictionary files; if you've already read all ellipsoid information
+//you may want to consider using the overloaded [GetDatum(std::*)] method instead
 MgCoordinateSystemDatum* CCoordinateSystemDatumDictionary::GetDatum(CREFSTRING sName)
 {
-    Ptr<MgCoordinateSystemDatum> pDefinition;
     cs_Dtdef_ *pDef = NULL;
     char *pName = NULL;
+
+    Ptr<MgCoordinateSystemDatum> pDatum;
 
     MG_TRY()
 
     //Get the name to search for
     pName = Convert_Wide_To_Ascii(sName.c_str()); //need to delete [] pName
-
-    if (NULL == pName)
-    {
-        throw new MgOutOfMemoryException(L"MgCoordinateSystemDatumDictionary.GetDatum", __LINE__, __WFILE__, NULL, L"", NULL);
-    }
 
     //Look in the dictionary
     pDef = dtdef(pName);
@@ -549,33 +549,44 @@ MgCoordinateSystemDatum* CCoordinateSystemDatumDictionary::GetDatum(CREFSTRING s
 
     //Okay, at this point we have a Mentor coordsys definition
     //struct.  Build an object out of it.
-    pDefinition=NewDatum();
-
-    if (NULL == pDefinition.p)
-    {
-        throw new MgOutOfMemoryException(L"MgCoordinateSystemDatumDictionary.GetDatum", __LINE__, __WFILE__, NULL, L"", NULL);
-    }
-
-    CCoordinateSystemDatum* pImp=dynamic_cast<CCoordinateSystemDatum*>(pDefinition.p);
-    assert(pImp);
-    if (!pImp)
-    {
-        MgStringCollection arguments;
-        arguments.Add(sName);
-        throw new MgCoordinateSystemLoadFailedException(L"MgCoordinateSystemDatumDictionary.GetDatum", __LINE__, __WFILE__, &arguments, L"", NULL);
-    }
-
-    pImp->InitFromCatalog(*pDef);
-    //And return success!
+    pDatum = this->GetDatum(pDef, NULL /* we don't have a std::map available that contains all ellipsoids*/);
 
     MG_CATCH(L"MgCoordinateSystemDatumDictionary.GetDatum")
 
-    CS_free(pDef);
     delete [] pName;
+    if (NULL != pDef)
+    {
+        CS_free(pDef);
+        pDef = NULL;
+    }
 
     MG_THROW()
 
-    return pDefinition.Detach();
+    return pDatum.Detach();
+}
+
+//--------------------------------------------------------------
+//Method that creates an [MgCoordinateSystemDatum] from a CsMap [cs_Dtdef_] struct
+//and (optionally) a std::map of ellipsoids the caller knows of. Passing this
+//information in, will prevent the [InitFromCatalog] method from making too many calls
+//into the File-IO methods of CsMap. [ellipsoidInfos] can be NULL - the necessary information is then
+//read from via CsMap
+MgCoordinateSystemDatum* CCoordinateSystemDatumDictionary::GetDatum(const cs_Dtdef_* pDef,
+                                                                    const std::vector<std::map<STRING,Ptr<MgDisposable> >*>* const ellipsoidInfos)
+{
+    Ptr<CCoordinateSystemDatum> pDatum = static_cast<CCoordinateSystemDatum*>(NewDatum());
+    
+    assert(NULL == ellipsoidInfos || 1 == ellipsoidInfos->size());
+    if (NULL != ellipsoidInfos && 1 == ellipsoidInfos->size())
+    {
+        pDatum->InitFromCatalog(*pDef, ellipsoidInfos->at(0));
+    }
+    else
+    {
+        pDatum->InitFromCatalog(*pDef);
+    }
+
+    return pDatum.Detach();
 }
 
 //--------------------------------------------------------------
@@ -638,15 +649,22 @@ CCoordinateSystemEnumDatum* CCoordinateSystemDatumDictionary::GetEnumImp()
     csFILE *pFile=NULL;
     SmartCriticalClass critical(true);
 
+    //use to create an optimized enum that returns *all* available definitions in a block
+    //this does only work for the latest versions of the dictionaries
+    bool setReadAllDatumsCallback = false;
+
     MG_TRY()
+
     STRING strPath=GetPath();
     pFile=MentorDictionary::Open(m_lMagic, DatumValidMagic, strPath.c_str(), Read);
 
+    const int nVersion = DatumVersion(m_lMagic);
+    assert(nVersion > 0);
+    setReadAllDatumsCallback = (7 == nVersion || 8 == nVersion);
+    
     //Generate a summary list, if we don't already have one
     if (NULL == m_pmapSystemNameDescription)
     {
-        int nVersion = DatumVersion(m_lMagic);
-        assert(nVersion > 0);
         switch (nVersion)
         {
         case 5:
@@ -690,25 +708,65 @@ CCoordinateSystemEnumDatum* CCoordinateSystemDatumDictionary::GetEnumImp()
     {
         throw new MgOutOfMemoryException(L"MgCoordinateSystemDatumDictionary.GetEnum", __LINE__, __WFILE__, NULL, L"", NULL);
     }
-    if (0!=CS_fclose(pFile))
-    {
-        throw new MgFileIoException(L"MgCoordinateSystemDatumDictionary.GetEnum", __LINE__, __WFILE__, NULL, L"MgCoordinateSystemDictionaryCloseFailedException", NULL);
-    }
-    pFile=NULL;
 
     MG_CATCH(L"MgCoordinateSystemDatumDictionary.GetEnum")
 
     if (pFile)
     {
-        CS_fclose(pFile);
+        const bool fileClosed = (0 == CS_fclose(pFile));
+        if (!fileClosed && NULL == mgException) //throw this exception in case no other exception has already been caught
+            mgException = new MgFileIoException(L"MgCoordinateSystemDatumDictionary.GetEnum", __LINE__, __WFILE__, NULL, L"MgCoordinateSystemDictionaryCloseFailedException", NULL);
+
+        pFile = NULL;
     }
 
     MG_THROW()
 
     //Set it up to use our list
     pNew->Initialize(this, m_pmapSystemNameDescription);
+    
+    if (setReadAllDatumsCallback) //if we're working on the latest dictionaries, allow read-as-block, if so required by the caller in the ::Next(ULONG) method
+        pNew->SetReadAllDefinitionCallback(CCoordinateSystemDatumDictionary::ReadAllDatums);
 
     return pNew.Detach();
+}
+
+//--------------------------------------------------------------
+//Reads all datums in one run - opens the dictionary file and then scans the whole file
+//all definitions found are stored in the [definitionsFound] collection that the caller will
+//have to release - incl. its content (what is done automatically, when disposing the collection itself)
+MgDisposableCollection* CCoordinateSystemDatumDictionary::ReadAllDatums(/*IN, required*/MgCoordinateSystemDictionaryBase* targetDictionary,
+                                                                        /*IN, optional*/const std::vector<MgCoordinateSystemFilter*>* const filters)
+{
+    if (NULL == targetDictionary)
+        throw new MgNullArgumentException(L"CCoordinateSystemDatumDictionary.ReadAllDatums", __LINE__, __WFILE__, NULL, L"", NULL);
+
+    CCoordinateSystemDatumDictionary* datumDictionary = dynamic_cast<CCoordinateSystemDatumDictionary*>(targetDictionary);
+    if (NULL == datumDictionary) //everything else is an implementation defect
+        throw new MgInvalidArgumentException(L"CCoordinateSystemDatumDictionary.ReadAllDatums", __LINE__, __WFILE__, NULL, L"", NULL);
+
+    //place a lock here - we don't want any interference; what we need is the *current* status of all dictionary files
+    SmartCriticalClass dictionaryLock(true);
+
+    Ptr<MgCoordinateSystemCatalog> catalog = targetDictionary->GetCatalog();
+    Ptr<MgCoordinateSystemEllipsoidDictionary> ellipsoidDictionary = catalog->GetEllipsoidDictionary();
+
+    //read all ellipsoids
+    map<STRING, Ptr<MgDisposable> > ellipsoidMap;
+    MentorDictionary::ReadAllDefinitions<MgCoordinateSystemEllipsoid>(ellipsoidDictionary, &MgCoordinateSystemEllipsoid::GetElCode, ellipsoidMap);
+
+    //place the std::maps in a vector which later be passed to the [GetDatum] method
+    std::vector<std::map<STRING,Ptr<MgDisposable> >*> ellipsoidInfos;
+    ellipsoidInfos.push_back(&ellipsoidMap);
+
+    //finally, read all "root" coordinate system definitions from the dictionary
+    return MentorDictionary::ReadAllDefinitions<MgCoordinateSystemDatum, cs_Dtdef_, CCoordinateSystemDatumDictionary>(
+        datumDictionary,
+        CS_dtrd, 
+        NULL, //no additional processing
+        &CCoordinateSystemDatumDictionary::GetDatum,
+        &ellipsoidInfos,
+        filters);
 }
 
 //MgDisposable
