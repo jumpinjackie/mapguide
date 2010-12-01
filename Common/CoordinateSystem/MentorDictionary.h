@@ -171,7 +171,7 @@ namespace MentorDictionary
             if (NULL == allDictEntries.get())
                 return NULL;
 
-            for(vector<T>::size_type i = 0; i < allDictEntries->size(); i++)
+            for(typename vector<T>::size_type i = 0; i < allDictEntries->size(); i++)
             {
                 T& def = allDictEntries->at(i);
                 
@@ -286,7 +286,7 @@ namespace MentorDictionary
 
         //go through all defs as we've read them from CsMap, do some post processing and finally
         //retrieve the MgCs item we'll later return to the caller
-        for(vector<U>::size_type i = 0; i < allDefs->size(); i++)
+        for(typename vector<U>::size_type i = 0; i < allDefs->size(); i++)
         {
             U csMapDef = allDefs->at(i); //don't work on the reference
             if (doPostProcess)
