@@ -342,6 +342,7 @@ var selectionColor = '0x0000FFFF'; // Blue
 var lastLegendScaleUpdate = curScale;
 var featureRequestUrl = '%s';
 %s
+var isAlertShow = false;
 
 
 // public functions -----------------------------------------------
@@ -1271,7 +1272,7 @@ function OnMoveTimer()
 }
 
 function OnMouseUp(e)
-{
+{       
     var x = e.clientX - mapPosX;
     var y = e.clientY;
     try
@@ -1287,7 +1288,12 @@ function OnMouseUp(e)
     {
         digitizer.MouseUp(e, x, y);
         return false;
+        
     }
+    
+     if(isAlertShow)
+        return;
+        
     lastposx = x; lastposy = y;
     if(moveType == RESIZING)
     {
@@ -2052,7 +2058,7 @@ function OnAlternateSelectionImageLoaded()
 }
 
 function RequestFailed(text)
-{
+{  
     var message = text;
     var startPos = text.indexOf("<h2>");
     if(startPos != -1)
@@ -2062,7 +2068,10 @@ function RequestFailed(text)
         if(endPos != -1)
             message = text.substring(startPos, endPos);
     }
+    
+    isAlertShow = true;
     alert(message);
+    isAlertShow = false;
 }
 
 function DraggingShape(e)
@@ -2862,12 +2871,12 @@ function RequestPointSelection(x1, y1, x2, y2, append)
 }
 
 function RequestRectSelection(x1, y1, x2, y2, append)
-{
+{    
     QueryFeatureInfo(MakeWktPolygon(x1,y1,x2,y2), append, -1, 7);
 }
 
 function RequestCircleSelection(x, y, r, append)
-{
+{  
     QueryFeatureInfo("CURVEPOLYGON ((" + (x - r) + " " + y + " (CIRCULARARCSEGMENT (" + x + " " + (y - r) + ", " + (x + r) + " " + y + "), CIRCULARARCSEGMENT (" + x + " " + (y + r) + ", " + (x - r) + " " + y + "))))", append, 0, 7);
 }
 
@@ -3110,7 +3119,7 @@ function ZoomSelection()
     dr.open("POST", webAgent, false);
     dr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
     dr.send(reqParams);
-
+   
     if(dr.status == 200)
     {
         var env = ParseEnvelope(dr.responseXML.documentElement);
@@ -4016,7 +4025,7 @@ function RequestSelectedFeatureProperties()
     selRequest.open("POST", featureRequestUrl, false);
     selRequest.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
     selRequest.send(reqParams);
-    
+ 
     var respText = selRequest.responseText;
     if (respText && respText.length > 0)
     {
