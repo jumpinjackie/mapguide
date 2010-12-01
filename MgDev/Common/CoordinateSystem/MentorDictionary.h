@@ -27,17 +27,115 @@
 
 #ifndef MG_MENTORDICTIONARY_H
 #define MG_MENTORDICTIONARY_H
+
 #pragma once
+
+#include <memory>
 
 #include "MentorUtil.h"
 #include "Foundation.h"
 
 #define DICTIONARY_SYS_DEF 1
 
+#define CALL_MEMBER_FN(object,ptrToMember)  ((object)->*(ptrToMember))
+
 namespace MentorDictionary
 {
     void SetFileName(INT32& lMagic, CsDictionaryOpenMode (*ValidMagic)(long), CREFSTRING sDirectory, CREFSTRING sFileName, REFSTRING sFileNameSet, const wchar_t* kpMethodName);
     csFILE* Open(INT32& lMagic, CsDictionaryOpenMode (*ValidMagic)(long), const wchar_t* kpPath, CsDictionaryOpenMode nOpenMode);
+    CsDictionaryOpenMode OpenReadDictionaryOpenCallback(long dictMagicNumber);
+
+    //reads the next 'CsMap' entry from the file passed in by [pFile]
+    //the file is assumed to have been opened already
+    //returns:
+    // [true]: if an entry has been read
+    // [false]: if no entry has been read, i.e. EOF has been reached
+    //
+    //throws an [MgFileIoException] for any other condition, e.g. CsMap has encountered unexpected content
+    template <class T>
+    bool GetNextEntry(csFILE *pFile, T& def, int& nCrypt, int (*CS_Trd)(csFILE*, T *, int *))
+    {
+        int nResult = CS_Trd(pFile, &def, &nCrypt);
+        if (nResult > 0) //read successfull
+            return true;
+
+        if (0 == nResult) //we've reached the file's end
+            return false;
+
+        //i.e. nResult < 0
+        throw new MgFileIoException(L"MentorDictionary.GetNextEntry", __LINE__, __WFILE__, NULL, L"", NULL);
+    }
+
+    //iterates through all entries return a vector of definitions in the same order as they've been returned by CsMap
+    //return NULL, if the file couldn't be read successfully
+    template <class T>
+    vector<T>*
+    ReadDictionaryEntries(
+        csFILE *pFile,
+        int (*CS_Trd)(csFILE*, T *, int *))
+    {
+        //Scan through the file - add an entry for each definition we find
+        try
+        {
+            auto_ptr<vector<T> > allDictEntries(new vector<T>);
+
+            int nCrypt;
+            T def;
+
+            while (MentorDictionary::GetNextEntry(pFile, def, nCrypt, CS_Trd))
+            {
+                allDictEntries->push_back(def);
+
+            } //for each def in the file
+
+            return allDictEntries.release();
+        }
+        catch(MgFileIoException* ioException)
+        {
+            ioException->Release();
+        }
+        catch (std::bad_alloc&)
+        {
+        }
+
+        return NULL;
+    }
+
+    //opens a dictionary file for reading and then iterates over all entries and returns them as a vector; the order is the same as returned by CsMap
+    //before accessing the file, a global lock is placed through an [SmartCriticalClass] object
+    template <class T>
+    vector<T>* ReadDictionaryEntries(
+        /*IN*/ MgCoordinateSystemDictionaryBase* targetDictionary,
+        /*IN*/ int (*CS_Trd)(csFILE*, T *, int *))
+    {
+        auto_ptr<vector<T> > allDefs;
+        csFILE *pFile = NULL;
+
+        MG_TRY()
+
+        INT32 dictionaryMagicNumber;
+
+        SmartCriticalClass critical(true);
+
+        STRING strPath = targetDictionary->GetPath();
+        pFile = MentorDictionary::Open(dictionaryMagicNumber, OpenReadDictionaryOpenCallback, strPath.c_str(), Read);
+
+        allDefs.reset(MentorDictionary::ReadDictionaryEntries<T>(pFile, CS_Trd));
+        if (NULL == allDefs.get())
+            throw new MgInvalidArgumentException(L"MentorDictionary.ReadDictionaryEntries", __LINE__, __WFILE__, NULL, L"", NULL);
+
+        MG_CATCH(L"MentorDictionary.ReadDictionaryEntries")
+
+        bool fileClosed = (0 == CS_fclose(pFile));
+        pFile = NULL;
+
+        if (!fileClosed && NULL == mgException)
+            throw new MgFileIoException(L"MentorDictionary.ReadDictionaryEntries", __LINE__, __WFILE__, NULL, L"MgCoordinateSystemDictionaryCloseFailedException", NULL);
+
+        MG_THROW()
+
+        return allDefs.release();
+    }
 
     //Template function which generates a summary from a dictionary
     //file.  The caller is responsible for deleting the returned map.
@@ -63,45 +161,145 @@ namespace MentorDictionary
         CS_fseek(pFile, sizeof(cs_magic_t), SEEK_SET);
         assert(!ferror(pFile));
 
-        //Make a collection to return.
-        CSystemNameDescriptionMap *pmapSystemNameDescription = new CSystemNameDescriptionMap;
-        if (NULL == pmapSystemNameDescription) return NULL;
-
-        //Scan through the file, inserting a summary entry
-        //for each def we encounter.
-        int nResult, nCrypt;
-        T def;
         try
         {
-            while ((nResult = CS_Trd(pFile, &def, &nCrypt)) > 0)
-            {
-                const char* keyName = CS_Tkey(def);
+            //Make a collection to return - we first read all entries from the dictionary file
+            //and use those to fill up the dictionary we're returning
+            auto_ptr<CSystemNameDescriptionMap> pmapSystemNameDescription(new CSystemNameDescriptionMap);
+            
+            auto_ptr<vector<T> > allDictEntries(MentorDictionary::ReadDictionaryEntries(pFile, CS_Trd));
+            if (NULL == allDictEntries.get())
+                return NULL;
 
+            for(vector<T>::size_type i = 0; i < allDictEntries->size(); i++)
+            {
+                T& def = allDictEntries->at(i);
+                
+                const char* keyName = CS_Tkey(def);
                 pmapSystemNameDescription->insert(
                     CSystemNameDescriptionPair(
                         CSystemName(keyName),
                         CSystemDescription(description(def))
                     )
                 );
-            }    //for each def in the file
+            }
+
+            return pmapSystemNameDescription.release();
         }
-        catch (std::bad_alloc)
+        catch(std::bad_alloc&)
         {
-            delete pmapSystemNameDescription;
-            return NULL;
-        }
-        if (nResult < 0)
-        {
-            //An error occurred while reading the file.
-            delete pmapSystemNameDescription;
-            return NULL;
         }
 
-        //And we're done!  Return the collection we've built.
-        return pmapSystemNameDescription;
+        return NULL;
     }
 
-    #define CALL_MEMBER_FN(object,ptrToMember)  ((object)->*(ptrToMember))
+    //Reads all Mg definitions from the dictionary [targetDictionary] and returns them
+    //in the std::map [definitions], where the code is mapped to the MgDisposable
+    template <class T>
+    void ReadAllDefinitions(
+        /*IN, required*/ MgCoordinateSystemDictionaryBase* targetDictionary,
+        /*IN, required*/ STRING (T::*GetCode)(),
+        /*IN/OUT, required*/ std::map<STRING, Ptr<MgDisposable> >& definitions)
+    {
+        if (NULL == targetDictionary || NULL == GetCode)
+            throw new MgNullArgumentException(L"MentorDictionary.ReadAllDefinitions", __LINE__, __WFILE__, NULL, L"", NULL);
+
+        if (0 != definitions.size())
+            throw new MgInvalidArgumentException(L"MentorDictionary.ReadAllDefinitions", __LINE__, __WFILE__, NULL, L"", NULL);
+
+        const UINT32 entryCount = targetDictionary->GetSize();;
+        
+        Ptr<MgCoordinateSystemEnum> entryEnum = targetDictionary->GetEnum();
+        Ptr<MgDisposableCollection> entryList = entryEnum->Next(entryCount);
+        
+        for(INT32 entryIndex = 0; entryIndex < entryList->GetCount(); entryIndex++)
+        {
+            Ptr<T> entry = static_cast<T*>(entryList->GetItem(entryIndex));
+            STRING entryCode = CALL_MEMBER_FN(entry, GetCode)();
+            definitions.insert(pair<STRING, Ptr<MgDisposable> >(entryCode, entry));
+        }
+    }
+
+    //takes the [toBeFiltered] MgDisposableCollection which is assumed to contain only items of type
+    //[T] and runs the [MgCoordinateSystemFilter]s passed in by [filters] on it (optional)
+    //the caller is responsible for deleting the collection being returned
+    //if [filters] is NULL or empty, the same(!) collection as passed by [toBeFiltered]
+    //is returned - but still the caller has to release it ([toBeFiltered] had been ADDREFed then)
+    template <class T>
+    MgDisposableCollection* FilterDefinitions(
+        /*IN, required*/MgDisposableCollection* toBeFiltered,
+        /*IN, optional*/const std::vector<MgCoordinateSystemFilter*>* const filters)
+    {
+        if (NULL == toBeFiltered)
+            throw new MgNullArgumentException(L"MentorDictionary.FilterDefinitions", __LINE__, __WFILE__, NULL, L"", NULL);
+
+        if (NULL == filters)
+            return SAFE_ADDREF(toBeFiltered); //see coment - the caller does always have to release the collection being returned
+        
+        const std::vector<MgCoordinateSystemFilter*>::size_type filterCount = filters->size();
+        if (0 == filterCount)
+            return SAFE_ADDREF(toBeFiltered); //see coment - the caller does always have to release the collection being returned
+
+        Ptr<MgDisposableCollection> filteredCollection = new MgDisposableCollection();
+        for(std::vector<MgCoordinateSystemFilter*>::size_type j = 0; j < filterCount; j++)
+        {
+            Ptr<MgDisposable> disposableItem = toBeFiltered->GetItem(j);
+            T* mgCsItem = dynamic_cast<T*>(disposableItem.p);
+            if (NULL == mgCsItem)
+                throw new MgInvalidArgumentException(L"MentorDictionary.FilterDefinitions", __LINE__, __WFILE__, NULL, L"", NULL);
+
+            //exclude the [mgCsItem], if it's not accepted by the filter we got
+            if (filters->at(j)->IsFilteredOut(mgCsItem))
+                continue;
+
+            filteredCollection->Add(disposableItem);
+        }
+
+        return filteredCollection.Detach();
+    }
+
+    //Reads all definitions from the dictionary and returns them as an [MgDisposableCollection] the
+    //caller has to release
+    template <class T /* The MgCS type [primaryDictionary] contains*/, class U /* The CsMap struct type*/, class V /* The dictionary type that will return items of type T*/>
+    MgDisposableCollection* ReadAllDefinitions(
+        /*IN, required*/ V* primaryDictionary, //the primary MgCS dictionary to read the items of type T from
+        /*IN, required*/ int (*CS_Trd)(csFILE*, U *, int *), //The file access method as retrieved from CsMap
+        /*IN, optional*/ void (V::*PostProcess)(U*), //A method that's being called with the CsMap definition struct just read from the file
+        /*IN, required*/ T* (V::*GetMgItem)(const U*, const std::vector<std::map<STRING,Ptr<MgDisposable> >*>* const), //the method on the [primaryDictionary] to read the actual MgCS item from
+        /*IN, optional*/ const std::vector<std::map<STRING,Ptr<MgDisposable> >*>* const secondaryDictionaryInfos, //infos that have been read from the dictionaries before; will be passed to [V::*GetMgItem]
+        /*IN, optional*/ const std::vector<MgCoordinateSystemFilter*>* const filters) //a list of filters - if passed in, the [MgDisposableCollection] will be filtered before being returned
+    {
+        //'true' input parameter check
+        if (NULL == primaryDictionary)
+            throw new MgNullArgumentException(L"MentorDictionary.ReadAllDefinitionsCascaded", __LINE__, __WFILE__, NULL, L"", NULL);
+
+        //method pointer checks
+        if (NULL == GetMgItem || NULL == CS_Trd)
+            throw new MgNullArgumentException(L"MentorDictionary.ReadAllDefinitionsCascaded", __LINE__, __WFILE__, NULL, L"", NULL);
+
+        auto_ptr<vector<U> > allDefs(MentorDictionary::ReadDictionaryEntries<U>(primaryDictionary, CS_Trd));
+        if (NULL == allDefs.get()) //[ReadDictionaryEntries] will return NULL, if the dictionary entries couldn't be read
+            throw new MgInvalidArgumentException(L"MgCoordinateSystemDictionary.ReadAllCoordinateSystems", __LINE__, __WFILE__, NULL, L"", NULL);
+
+        const bool doPostProcess = (NULL != PostProcess);
+        Ptr<MgDisposableCollection> filteredDefinitions = new MgDisposableCollection();
+
+        //go through all defs as we've read them from CsMap, do some post processing and finally
+        //retrieve the MgCs item we'll later return to the caller
+        for(vector<U>::size_type i = 0; i < allDefs->size(); i++)
+        {
+            U csMapDef = allDefs->at(i); //don't work on the reference
+            if (doPostProcess)
+                CALL_MEMBER_FN(primaryDictionary, PostProcess)(&csMapDef);
+
+            Ptr<T> mgItem = CALL_MEMBER_FN(primaryDictionary, GetMgItem)(&csMapDef, secondaryDictionaryInfos); //throws an exception, if the entry hasn't been found
+            filteredDefinitions->Add(mgItem);
+        }
+
+        //we might get the same reference back - what isn't a problem as we're using the Ptr<> here
+        filteredDefinitions = MentorDictionary::FilterDefinitions<MgCoordinateSystem>(filteredDefinitions, filters);
+        return filteredDefinitions.Detach();
+    }
 
     //Template function for updating a def in a dictionary.
     //Works for ellipsoids, datums, and coordinate systems.
@@ -111,7 +309,6 @@ namespace MentorDictionary
     //is the corresponding public API interface (MgCoordinateSystem
     //et al).
     //
-
     template <class T, class Tinterface>
     void UpdateDef(
         CSystemNameDescriptionMap *pmapSystemNameDescription,

@@ -20,7 +20,15 @@
 
 namespace CSLibrary
 {
-
+    //defines the callback that's being invoked, when *all* definitions are to be read from the dictionary
+    //as passed in by [targetDictionary]
+    //
+    //param targetDictionary: the dictionary to read all MgCs objects from
+    //param filters: a list of filters to determine, whether an MgCs object found should be added to the list being returned; can be null or empty
+    //
+    //return: MgDisposableCollection that contains the filtered MgCs objects from the dictionary. The caller has to release it
+    typedef MgDisposableCollection* (*ReadAllDictionaryDefinitionsCallback)(MgCoordinateSystemDictionaryBase* targetDictionary, const std::vector<MgCoordinateSystemFilter*>* const filters);
+    
 class CCoordinateSystemEnum : public MgCoordinateSystemEnum
 {
 public:
@@ -38,6 +46,8 @@ public:
     virtual MgStringCollection* NextName(UINT32 ulCount);
     virtual MgStringCollection* NextDescription(UINT32 ulCount);
 
+    void SetReadAllDefinitionCallback(ReadAllDictionaryDefinitionsCallback callback);
+
 protected:
     virtual void Dispose();
 
@@ -52,6 +62,7 @@ protected:
     CSystemNameDescriptionMap::iterator m_iter;
     Ptr<MgCoordinateSystemDictionaryBase> m_pDict;
     std::vector<MgCoordinateSystemFilter*> m_vectFilter;
+    ReadAllDictionaryDefinitionsCallback m_readAllDefCallback;
 
 private:
     CCoordinateSystemEnum(const CCoordinateSystemEnum&);

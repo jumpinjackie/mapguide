@@ -26,7 +26,7 @@ using namespace CSLibrary;
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 CCoordinateSystemEnum::CCoordinateSystemEnum() :
-    m_pmapSystemNameDescription(NULL)
+    m_pmapSystemNameDescription(NULL), m_readAllDefCallback(NULL)
 {
 }
 
@@ -66,6 +66,8 @@ void CCoordinateSystemEnum::Uninitialize()
 {
     m_pmapSystemNameDescription = NULL;
     m_pDict = NULL;
+    m_readAllDefCallback = NULL;
+
     ClearFilter();
 }
 
@@ -93,6 +95,7 @@ void CCoordinateSystemEnum::ClearFilter()
 }
 
 //----------------------------------------------------------
+//Reads the entries from the parent dictionary
 MgDisposableCollection* CCoordinateSystemEnum::Next(UINT32 ulCount)
 {
     Ptr<MgDisposableCollection> pOutput;
@@ -103,6 +106,25 @@ MgDisposableCollection* CCoordinateSystemEnum::Next(UINT32 ulCount)
     {
         throw new MgOutOfMemoryException(L"MgCoordinateSystemEnum.Next", __LINE__, __WFILE__, NULL, L"", NULL);
     }
+
+    //optimization:
+    //if the caller intends to read all information at once, that is...
+    // - if our iterator points to the map's beginning and
+    // - the number of entries to read is at least the size of the entries we know of
+    //
+    //use the the callback (if there's any) into our parent dictionary to read all entries
+    if (ulCount >= this->m_pmapSystemNameDescription->size() && this->m_iter == this->m_pmapSystemNameDescription->begin())
+    {
+        if (NULL != this->m_readAllDefCallback)
+        {
+            pOutput = this->m_readAllDefCallback(this->m_pDict, &this->m_vectFilter);
+            this->m_iter = this->m_pmapSystemNameDescription->end(); //set our iterator to end() as we've read all entries
+            
+            return pOutput.Detach();
+        }
+    }
+
+    //default behavior - read each entry one by one and add it to the list to be returned
     for (; m_iter != m_pmapSystemNameDescription->end(); m_iter++)
     {
         if (pOutput->GetCount() == ulCount)
@@ -358,7 +380,17 @@ MgCoordinateSystemEnum* CCoordinateSystemEnum::CreateClone()
         SAFE_ADDREF(m_vectFilter[i]);
     }
 
+    pNew->m_readAllDefCallback = this->m_readAllDefCallback;
+
     MG_CATCH_AND_THROW(L"MgCoordinateSystemEnum.CreateClone")
 
     return pNew.Detach();
+}
+
+//----------------------------------------------------------
+//Sets the [m_readAllDefCallback] member; if set, the method
+//will be invoked by [::Next(UINT32)]
+void CCoordinateSystemEnum::SetReadAllDefinitionCallback(ReadAllDictionaryDefinitionsCallback callback)
+{
+    this->m_readAllDefCallback = callback;
 }

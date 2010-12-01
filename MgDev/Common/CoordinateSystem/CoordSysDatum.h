@@ -27,7 +27,7 @@ public:
     CCoordinateSystemDatum(MgCoordinateSystemCatalog* pCatalog);
     virtual ~CCoordinateSystemDatum();
 
-    void InitFromCatalog(const cs_Dtdef_& def);
+    void InitFromCatalog(const cs_Dtdef_& def, const map<STRING, Ptr<MgDisposable> >* const ellipsoidMap = NULL);
     void GetMentorDef(cs_Dtdef_& def){def=m_DtDef;};
 
     virtual STRING GetDtCode();

@@ -243,18 +243,10 @@ cs_Csdef_ * CCoordinateSystemDictionary::csdef(const char *kpName)
         cs_Csdef_* pDef=CS_csdef(kpName);
         if (pDef)
         {
-            INT32 unit=UnitFromString(pDef->unit);
-            INT32 unitType;
-            double dfUnitScale=0.;
-            if (GetUnitInfo(unit, &unitType, &dfUnitScale))
-            {
-                pDef->unit_scl=dfUnitScale;
-            }
+            this->DoCsDefPostReadProcessing(pDef);
         }
         return pDef;
     }
-
-    throw new MgInvalidOperationException(L"CCoordinateSystemDictionary.csdef", __LINE__, __WFILE__, NULL, L"", NULL);
 
     //It's an old version.  We need to do a special search
     //in the file, and then, if found, update it to a current struct.
@@ -308,16 +300,24 @@ cs_Csdef_ * CCoordinateSystemDictionary::csdef(const char *kpName)
     CS_fclose(pFile);
     if (pDef)
     {
-        INT32 unit=UnitFromString(pDef->unit);
-        INT32 unitType;
-        double dfUnitScale=0.;
-        if (GetUnitInfo(unit, &unitType, &dfUnitScale))
-        {
-            pDef->unit_scl=dfUnitScale;
-        }
+        this->DoCsDefPostReadProcessing(pDef);
     }
 
     return pDef;
+}
+
+//------------------------------------------------------------------------
+//does some post processing after a [cs_Csdef_] struct has been read from the
+//CsMap dictionary; [pDef] might get changed!
+void CCoordinateSystemDictionary::DoCsDefPostReadProcessing(cs_Csdef_* pDef)
+{
+    INT32 unit = UnitFromString(pDef->unit);
+    INT32 unitType;
+    double dfUnitScale=0.;
+    if (GetUnitInfo(unit, &unitType, &dfUnitScale))
+    {
+        pDef->unit_scl=dfUnitScale;
+    }
 }
 
 //------------------------------------------------------------------------
@@ -537,6 +537,10 @@ MgGuardDisposable* CCoordinateSystemDictionary::Get(CREFSTRING sName)
     return GetCoordinateSystem(sName);
 }
 
+//creates an MgCoordinateSystem by querying the underlying dictionary files - incl.
+//these for the ellipsoids and the datums.
+//If no such CS exists, an exception will be thrown, i.e. this method does
+//never return NULL
 MgCoordinateSystem* CCoordinateSystemDictionary::GetCoordinateSystem(CREFSTRING sName)
 {
     Ptr<MgCoordinateSystem> pDefinition;
@@ -544,6 +548,7 @@ MgCoordinateSystem* CCoordinateSystemDictionary::GetCoordinateSystem(CREFSTRING 
     char *pName = NULL;
 
     MG_TRY()
+
     //Get the name to search for
     pName = Convert_Wide_To_Ascii(sName.c_str()); //need to delete [] pName
 
@@ -565,28 +570,50 @@ MgCoordinateSystem* CCoordinateSystemDictionary::GetCoordinateSystem(CREFSTRING 
 
     //Okay, at this point we have a Mentor coordsys definition
     //struct.  Build an object out of it.
-    pDefinition=NewCoordinateSystem();
-
-    if (NULL == pDefinition.p)
-    {
-        throw new MgOutOfMemoryException(L"MgCoordinateSystemDictionary.GetCoordinateSystem", __LINE__, __WFILE__, NULL, L"", NULL);
-    }
-
-    CCoordinateSystem* pImp=dynamic_cast<CCoordinateSystem*>(pDefinition.p);
-    assert(pImp);
-    if (!pImp)
-    {
-        MgStringCollection arguments;
-        arguments.Add(sName);
-        throw new MgCoordinateSystemLoadFailedException(L"MgCoordinateSystemDictionary.GetCoordinateSystem", __LINE__, __WFILE__, &arguments, L"", NULL);
-    }
-
-    pImp->InitFromCatalog(*pDef);
+    pDefinition = this->GetCoordinateSystem(pDef, NULL);
+    assert(NULL != pDefinition);
 
     MG_CATCH(L"MgCoordinateSystemDictionary.GetCoordinateSystem")
+    
+    if (NULL != pDef)
+    {
+        CS_free(pDef);
+        pDef = NULL;
+    }
 
-    CS_free(pDef);
     delete [] pName;
+    pName = NULL;
+
+    MG_THROW()
+
+    return pDefinition.Detach();
+}
+
+//creates an MgCoordinateSystem; basically, it forward the
+//call to [InitFromCatalog] which will deal with the information
+//as it might have been passed by [datumEllipsoidInfos]
+MgCoordinateSystem* CCoordinateSystemDictionary::GetCoordinateSystem(const cs_Csdef_* csDef,
+                                                                     const std::vector<std::map<STRING,Ptr<MgDisposable> >*>* const datumEllipsoidInfos)
+{
+    Ptr<MgCoordinateSystem> pDefinition;
+
+    MG_TRY()
+
+    pDefinition = NewCoordinateSystem();
+
+    CCoordinateSystem* pImp = static_cast<CCoordinateSystem*>(pDefinition.p);
+
+    assert(NULL == datumEllipsoidInfos || 2 == datumEllipsoidInfos->size());
+    if (NULL != datumEllipsoidInfos && 2 == datumEllipsoidInfos->size())
+    {
+        pImp->InitFromCatalog(*csDef, datumEllipsoidInfos->at(0) /* ellipsoids */, datumEllipsoidInfos->at(1) /* datums */);
+    }
+    else
+    {
+        pImp->InitFromCatalog(*csDef);
+    }
+
+    MG_CATCH(L"MgCoordinateSystemDictionary.GetCoordinateSystem")
 
     MG_THROW()
 
@@ -628,6 +655,49 @@ bool CCoordinateSystemDictionary::Has(CREFSTRING sName)
     return bHas;
 }
 
+//------------------------------------------------------------------------
+//Reads *all* coordinate systems from the dictionary in one run
+//Does also read the necessary datum and ellipsoid information from the respective dictionaries
+MgDisposableCollection* CCoordinateSystemDictionary::ReadAllCoordinateSystems(/*IN, required*/ MgCoordinateSystemDictionaryBase* targetDictionary,
+                                                                              /*IN, optional*/ const std::vector<MgCoordinateSystemFilter*>* const filters)
+{
+    if (NULL == targetDictionary)
+        throw new MgNullArgumentException(L"MgCoordinateSystemDictionary.ReadAllCoordinateSystems", __LINE__, __WFILE__, NULL, L"", NULL);
+
+    CCoordinateSystemDictionary* csDictionary = dynamic_cast<CCoordinateSystemDictionary*>(targetDictionary);
+    if (NULL == csDictionary)
+        throw new MgInvalidArgumentException(L"MgCoordinateSystemDictionary.ReadAllCoordinateSystems", __LINE__, __WFILE__, NULL, L"", NULL);
+
+    //in order to create the MgCoordinateSystem objects, we have to have also the information on the datums and ellipsoids
+    map<STRING, Ptr<MgDisposable> > ellipsoidMap;
+    map<STRING, Ptr<MgDisposable> > datumMap;
+
+    //place a lock here - we don't want any interference; what we need is the *current* status of all dictionary files
+    SmartCriticalClass dictionaryLock(true);
+
+    Ptr<MgCoordinateSystemCatalog> catalog = targetDictionary->GetCatalog();
+    Ptr<MgCoordinateSystemEllipsoidDictionary> ellipsoidDictionary = catalog->GetEllipsoidDictionary();
+    Ptr<MgCoordinateSystemDatumDictionary> datumDictionary = catalog->GetDatumDictionary();
+
+    //read all ellipsoids and all datums
+    MentorDictionary::ReadAllDefinitions<MgCoordinateSystemEllipsoid>(ellipsoidDictionary, &MgCoordinateSystemEllipsoid::GetElCode, ellipsoidMap);
+    MentorDictionary::ReadAllDefinitions<MgCoordinateSystemDatum>(datumDictionary, &MgCoordinateSystemDatum::GetDtCode, datumMap);
+
+    //place the std::maps in a vector which later be passed to the [GetCoordinateSystem] method - the oder is important!
+    std::vector<std::map<STRING,Ptr<MgDisposable> >*> datumEllipsoidInfos;
+    datumEllipsoidInfos.push_back(&ellipsoidMap);
+    datumEllipsoidInfos.push_back(&datumMap);
+
+    //finally, read all "root" coordinate system definitions from the dictionary
+    return MentorDictionary::ReadAllDefinitions<MgCoordinateSystem, cs_Csdef_, CCoordinateSystemDictionary>(
+        csDictionary,
+        CS_csrd, 
+        &CCoordinateSystemDictionary::DoCsDefPostReadProcessing,
+        &CCoordinateSystemDictionary::GetCoordinateSystem,
+        &datumEllipsoidInfos,
+        filters);
+}
+
 //--------------------------------------------------------------
 //Gets an enumerator for all the defs
 MgCoordinateSystemEnum* CCoordinateSystemDictionary::GetEnum()
@@ -653,15 +723,21 @@ CCoordinateSystemEnum* CCoordinateSystemDictionary::GetEnumImp()
     csFILE *pFile=NULL;
     SmartCriticalClass critical(true);
 
+    bool setQuickReadCallback = false;
+
     MG_TRY()
+    
     STRING strPath=GetPath();
     pFile=MentorDictionary::Open(m_lMagic, CoordinateSystemValidMagic, strPath.c_str(), Read);
+
+    const int nVersion = CoordinateSystemVersion(m_lMagic);
+    assert(nVersion > 0);
+
+    setQuickReadCallback = (7 == nVersion || 8 == nVersion);
 
     //Generate a summary list, if we don't already have one
     if (NULL == m_pmapSystemNameDescription)
     {
-        int nVersion = CoordinateSystemVersion(m_lMagic);
-        assert(nVersion > 0);
         switch (nVersion)
         {
         case 5:
@@ -723,6 +799,8 @@ CCoordinateSystemEnum* CCoordinateSystemDictionary::GetEnumImp()
 
     //Set it up to use our list
     pNew->Initialize(this, m_pmapSystemNameDescription);
+    if (setQuickReadCallback)
+        pNew->SetReadAllDefinitionCallback(CCoordinateSystemDictionary::ReadAllCoordinateSystems);
 
     return pNew.Detach();
 }

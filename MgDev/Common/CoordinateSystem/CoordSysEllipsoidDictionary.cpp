@@ -188,8 +188,6 @@ cs_Eldef_ * CCoordinateSystemEllipsoidDictionary::eldef(const char *kpName) cons
         return CS_eldef(kpName);
     }
 
-    throw new MgInvalidOperationException(L"CCoordinateSystemEllipsoidDictionary.eldef", __LINE__, __WFILE__, NULL, L"", NULL);
-    
     //It's an old version.  We need to do a special search
     //in the file, and then, if found, update it to a current struct.    
     UINT32 nStructSize, nNameSize;
@@ -462,6 +460,7 @@ MgGuardDisposable* CCoordinateSystemEllipsoidDictionary::Get(CREFSTRING sName)
     return GetEllipsoid(sName);
 }
 
+//--------------------------------------------------------------
 MgCoordinateSystemEllipsoid* CCoordinateSystemEllipsoidDictionary::GetEllipsoid(CREFSTRING sName)
 {
     Ptr<MgCoordinateSystemEllipsoid> pEllipsoidDef;
@@ -472,11 +471,6 @@ MgCoordinateSystemEllipsoid* CCoordinateSystemEllipsoidDictionary::GetEllipsoid(
 
     //Get the name to search for
     pName = Convert_Wide_To_Ascii(sName.c_str()); //need to delete [] pName
-
-    if (NULL == pName)
-    {
-        throw new MgOutOfMemoryException(L"MgCoordinateSystemEllipsoidDictionary.GetEllipsoid", __LINE__, __WFILE__, NULL, L"", NULL);
-    }
 
     //Look in the dictionary
     pDef = eldef(pName);
@@ -492,19 +486,35 @@ MgCoordinateSystemEllipsoid* CCoordinateSystemEllipsoidDictionary::GetEllipsoid(
     //Okay, at this point we have a Mentor ellipsoid definition
     //struct.  Build an object out of it.
     //Try to get the def from the set
-    pEllipsoidDef = BuildInterfaceFromElDef(*pDef, m_pCatalog);
+    pEllipsoidDef = this->GetEllipsoid(pDef);
+    assert(NULL != pEllipsoidDef);
+
+    MG_CATCH(L"MgCoordinateSystemEllipsoidDictionary.GetEllipsoid")
+
+    if (NULL != pDef)
+    {
+        CS_free(pDef);
+        pDef = NULL;
+    }
+
+    delete [] pName;
+    pName = NULL;
+
+    MG_THROW()
+
+    return pEllipsoidDef.Detach();
+}
+
+//--------------------------------------------------------------
+//needed to work with the [ReadAllEllipsoids] method
+MgCoordinateSystemEllipsoid* CCoordinateSystemEllipsoidDictionary::GetEllipsoid(const cs_Eldef_* elDef, const std::vector<std::map<STRING,Ptr<MgDisposable> >*>* const /* unused */)
+{
+    Ptr<MgCoordinateSystemEllipsoid> pEllipsoidDef = BuildInterfaceFromElDef(*elDef, m_pCatalog);
 
     if (NULL == pEllipsoidDef.p)
     {
         throw new MgCoordinateSystemInitializationFailedException(L"MgCoordinateSystemEllipsoidDictionary.GetEllipsoid", __LINE__, __WFILE__, NULL, L"", NULL);
     }
-    //And return success!
-    MG_CATCH(L"MgCoordinateSystemEllipsoidDictionary.GetEllipsoid")
-
-    CS_free(pDef);
-    delete [] pName;
-
-    MG_THROW()
 
     return pEllipsoidDef.Detach();
 }
@@ -609,8 +619,29 @@ CCoordinateSystemEnumEllipsoid* CCoordinateSystemEllipsoidDictionary::GetEnumImp
 
     //Set it up to use our list
     pNew->Initialize(this, m_pmapSystemNameDescription);
+    pNew->SetReadAllDefinitionCallback(CCoordinateSystemEllipsoidDictionary::ReadAllEllipsoids);
 
     return pNew.Detach();
+}
+
+//----------------------------------------------------------------------
+MgDisposableCollection* CCoordinateSystemEllipsoidDictionary::ReadAllEllipsoids(/*IN, required*/MgCoordinateSystemDictionaryBase* targetDictionary,
+                                                                                /*IN, optional*/const std::vector<MgCoordinateSystemFilter*>* const filters)
+{
+    if (NULL == targetDictionary)
+        throw new MgNullArgumentException(L"CCoordinateSystemEllipsoidDictionary.ReadAllEllipsoids", __LINE__, __WFILE__, NULL, L"", NULL);
+
+    CCoordinateSystemEllipsoidDictionary* ellipsoidDictionary = dynamic_cast<CCoordinateSystemEllipsoidDictionary*>(targetDictionary);
+    if (NULL == ellipsoidDictionary)
+        throw new MgInvalidArgumentException(L"CCoordinateSystemEllipsoidDictionary.ReadAllEllipsoids", __LINE__, __WFILE__, NULL, L"", NULL);
+
+    return MentorDictionary::ReadAllDefinitions<MgCoordinateSystemEllipsoid, cs_Eldef_, CCoordinateSystemEllipsoidDictionary>(
+        ellipsoidDictionary,
+        CS_elrd, 
+        NULL, //no post processing needed
+        &CCoordinateSystemEllipsoidDictionary::GetEllipsoid,
+        NULL, //no additional info needed/used to create an MgCoordinateSystemEllipsoid object
+        filters);
 }
 
 //MgDisposable

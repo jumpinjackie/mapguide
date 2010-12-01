@@ -114,7 +114,11 @@ MgCoordinateSystemEllipsoid* CCoordinateSystemDatum::GetEllipsoidDefinition()
 //without loading the ellipsoid from the dictionary
 //The ellipsoid can then be set via CCoordinateSystemDatum::SetEllipsoidDefinition
 //
-void CCoordinateSystemDatum::InitFromCatalog(const cs_Dtdef_& def)
+//When passing a non-NULL pointer for the [ellipsoidMap] parameter, the ellipsoid information is tried
+//being read from there; if still not found in the std::map, the fallback
+//is to read the information from CsMap, i.e. the dictionary files
+void CCoordinateSystemDatum::InitFromCatalog(const cs_Dtdef_& def,
+                                             const map<STRING, Ptr<MgDisposable> >* const ellipsoidMap)
 {
     MG_TRY()
 
@@ -144,12 +148,6 @@ void CCoordinateSystemDatum::InitFromCatalog(const cs_Dtdef_& def)
         return;
     }
 
-    //Get the ellipsoid dictionary
-    Ptr<MgCoordinateSystemEllipsoidDictionary> pElDict=m_pCatalog->GetEllipsoidDictionary();
-    if (!pElDict)
-    {
-        throw new MgCoordinateSystemInitializationFailedException(L"MgCoordinateSystemDatum.InitFromCatalog", __LINE__, __WFILE__, NULL, L"MgCoordinateSystemDatumNoEllipsoidDictionaryException", NULL);
-    }
     //Get the ellipsoid name the datum uses
     wchar_t* pwszElName=Convert_Ascii_To_Wide(def.ell_knm);
     if (!pwszElName)
@@ -158,14 +156,42 @@ void CCoordinateSystemDatum::InitFromCatalog(const cs_Dtdef_& def)
     }
     STRING sElName(pwszElName);
     delete[] pwszElName;
+    pwszElName = NULL;
 
-    //load the ellipsoid defintion from the dictionary
-    Ptr<MgGuardDisposable> pEllipsoid=pElDict->Get(sElName);
-    assert(pEllipsoid);
-    if (!pEllipsoid)
+    Ptr<MgGuardDisposable> pEllipsoid;
+    
+    //if the caller passed in a std::map of known ellipsoids, we're trying to take the information from there
+    if (NULL != ellipsoidMap)
     {
-        throw new MgCoordinateSystemInitializationFailedException(L"MgCoordinateSystemDatum.InitFromCatalog", __LINE__, __WFILE__, NULL, L"MgCoordinateSystemDatumNoEllipsoidInDictionaryException", NULL);
+        map<STRING, Ptr<MgDisposable> >::const_iterator ellipsoidsIterator = ellipsoidMap->find(sElName);
+        if (ellipsoidsIterator != ellipsoidMap->end())
+        {
+            Ptr<MgDisposable> disposableCsObject = ellipsoidsIterator->second;
+            MgCoordinateSystemEllipsoid* ellipsoidInfo = dynamic_cast<MgCoordinateSystemEllipsoid*>(disposableCsObject.p);
+            if (NULL == ellipsoidInfo)
+                throw new MgInvalidArgumentException(L"MgCoordinateSystemDatum.InitFromCatalog", __LINE__, __WFILE__, NULL, L"", NULL);
+            
+            pEllipsoid = SAFE_ADDREF(ellipsoidInfo);
+        }
     }
+
+    //either no [ellipsoidMap] or the information we're interested in, hasn't been found in the map
+    if (NULL == pEllipsoid)
+    {
+        //Get the ellipsoid dictionary
+        Ptr<MgCoordinateSystemEllipsoidDictionary> pElDict = m_pCatalog->GetEllipsoidDictionary();
+        if (!pElDict)
+        {
+            throw new MgCoordinateSystemInitializationFailedException(L"MgCoordinateSystemDatum.InitFromCatalog", __LINE__, __WFILE__, NULL, L"MgCoordinateSystemDatumNoEllipsoidDictionaryException", NULL);
+        }
+
+        //load the ellipsoid defintion from the dictionary
+        pEllipsoid = pElDict->Get(sElName);
+        assert(pEllipsoid);
+    }
+
+    if (NULL == pEllipsoid)
+        throw new MgCoordinateSystemInitializationFailedException(L"MgCoordinateSystemDatum.InitFromCatalog", __LINE__, __WFILE__, NULL, L"MgCoordinateSystemDatumNoEllipsoidInDictionaryException", NULL);
 
     //Initialize from ellipsoid definitions we have
     SetEllipsoidDefinition(dynamic_cast<MgCoordinateSystemEllipsoid*>(pEllipsoid.p));
@@ -175,6 +201,7 @@ void CCoordinateSystemDatum::InitFromCatalog(const cs_Dtdef_& def)
     {
         Uninitialize();
     }
+
     MG_THROW()
 }
 
