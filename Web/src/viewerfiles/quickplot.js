@@ -45,6 +45,8 @@ MapCapturer.prototype =
     paperSize : {width : 0, height : 0},
     scaleDenominator : 1,
     
+    eventSuppressed : false,
+    
     initialize : function()
     {
         this.mapWindow = window;
@@ -253,7 +255,7 @@ MapCapturer.prototype =
         this.handleGraphics.drawLine(start.X, start.Y, end.X, end.Y);
         
         // Draw the rotate start point
-        this.gripGraphics.fillEllipse(start.X - this.rotateGripDiameter / 2, start.Y - this.rotateGripDiameter / 2, this.rotateGripDiameter, this.rotateGripDiameter);
+        this.boxGraphics.fillEllipse(start.X - this.rotateGripDiameter / 2, start.Y - this.rotateGripDiameter / 2, this.rotateGripDiameter, this.rotateGripDiameter);
         // Draw the end point 
         this.gripGraphics.setColor(this.strokeColor);
         this.gripGraphics.fillEllipse(end.X - this.rotateGripDiameter / 2, end.Y - this.rotateGripDiameter / 2, this.rotateGripDiameter, this.rotateGripDiameter);
@@ -262,18 +264,34 @@ MapCapturer.prototype =
         this.handleGraphics.paint();
         this.gripGraphics.paint();
         
-        // Set the cursor styles
+        this.setCursor();
+    },
+    
+    setCursor : function()
+    {
+        var moveCursor   = this.eventSuppressed ? "default" : "move";
+        var rotateCursor = this.eventSuppressed ? "default" : "url(../stdicons/rotate.cur), default";
+
         var nodes = this.boxCanvas.childNodes;
         for (var i = 0; i < nodes.length; ++i)
         {
-            nodes[i].style.cursor = "move";
+            nodes[i].style.cursor = moveCursor;
         }
         
         nodes = this.gripCanvas.childNodes;
         for (var i = 0; i < nodes.length; ++i)
         {
-            nodes[i].style.cursor = "url(../stdicons/rotate.cur), default";
+            nodes[i].style.cursor = rotateCursor;
         }
+    },
+    
+    // Suppress all event handlers, like move, rotate, show warning message when the capture box "overflows" the current viewport.
+    // It's kind of "back-door" for some functions which are using the quick plot map capturer to draw a rectangle on the screen. Those
+    // functions need only to draw a rectangle on the screen but don't need any events
+    suppressEvent : function(suppress)
+    {
+        this.eventSuppressed = suppress;
+        this.setCursor();
     },
     
     validateResolution : function()
@@ -334,7 +352,7 @@ MapCapturer.prototype =
     {
         var result = false;
         
-        if (this.active)
+        if (this.active && !this.eventSuppressed)
         {
             var point  = this.getMousePosition(evt);
 
@@ -482,7 +500,7 @@ MapCapturer.prototype =
         
         if (this.active)
         {
-            if (this.validateResolution())
+            if (this.validateResolution() || this.eventSuppressed)
             {
                 this.mapWindow.ClearMapMessage();
                 this.draw(this.captureBox);
