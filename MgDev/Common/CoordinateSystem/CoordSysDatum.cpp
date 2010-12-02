@@ -154,7 +154,7 @@ void CCoordinateSystemDatum::InitFromCatalog(const cs_Dtdef_& def,
     {
         throw new MgOutOfMemoryException(L"MgCoordinateSystemDatum.InitFromCatalog", __LINE__, __WFILE__, NULL, L"", NULL);
     }
-    STRING sElName(pwszElName);
+    STRING sElName(::ToLower(pwszElName));
     delete[] pwszElName;
     pwszElName = NULL;
 

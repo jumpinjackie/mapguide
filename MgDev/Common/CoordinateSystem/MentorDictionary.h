@@ -216,7 +216,8 @@ namespace MentorDictionary
         {
             Ptr<T> entry = static_cast<T*>(entryList->GetItem(entryIndex));
             STRING entryCode = CALL_MEMBER_FN(entry, GetCode)();
-            definitions.insert(pair<STRING, Ptr<MgDisposable> >(entryCode, entry));
+            STRING entryCodeLc = ::ToLower(entryCode);
+            definitions.insert(pair<STRING, Ptr<MgDisposable> >(entryCodeLc, entry));
         }
     }
 
