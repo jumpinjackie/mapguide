@@ -137,7 +137,7 @@ void CCoordinateSystem::InitFromCatalog(const cs_Csdef_& csdef,
     if (bGeodetic)
     {
         wchar_t* pwszDtName = Convert_Ascii_To_Wide(csdef.dat_knm);
-        STRING sDtName(pwszDtName);
+        STRING sDtName(::ToLower(pwszDtName));
 
         delete[] pwszDtName;
         pwszDtName = NULL;
@@ -181,7 +181,7 @@ void CCoordinateSystem::InitFromCatalog(const cs_Csdef_& csdef,
     else
     {
         wchar_t* pwszElName = Convert_Ascii_To_Wide(csdef.elp_knm);
-        STRING sElName(pwszElName);
+        STRING sElName(::ToLower(pwszElName));
         delete[] pwszElName;
         pwszElName = NULL;
 
