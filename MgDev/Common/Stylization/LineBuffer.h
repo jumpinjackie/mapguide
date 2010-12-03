@@ -127,9 +127,9 @@ public:
     STYLIZATION_API void ComputeBounds(RS_Bounds& bounds);
 
     // attributes
-    STYLIZATION_API FdoDimensionality dimensionality();
-    STYLIZATION_API bool hasZ();
-    STYLIZATION_API bool ignoreZ();
+    STYLIZATION_API FdoDimensionality dimensionality() const;
+    STYLIZATION_API bool hasZ() const;
+    STYLIZATION_API bool ignoreZ() const;
 
     // start a new geometry
     STYLIZATION_API void NewGeometry();
