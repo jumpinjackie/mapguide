@@ -41,7 +41,7 @@ const int MIN_RING_SIZE_TO_OPTIMIZE = 6;
 
 #define MAX_POINT_BLOCK 128
 
-LineBuffer::LineBuffer(int size, FdoDimensionality dimensionality, bool bIgnoreZ) :
+LineBuffer::LineBuffer(int size, int dimensionality, bool bIgnoreZ) :
     m_bounds(DBL_MAX, DBL_MAX, DBL_MAX, -DBL_MAX, -DBL_MAX, -DBL_MAX),
     m_types(NULL),
     m_types_len(0),
@@ -116,7 +116,7 @@ LineBuffer::~LineBuffer()
 }
 
 
-void LineBuffer::Reset(FdoDimensionality dimensionality, bool bIgnoreZ)
+void LineBuffer::Reset(int dimensionality, bool bIgnoreZ)
 {
     m_cur_types = 0;
     m_cur_cntr = -1; // will increment with first MoveTo segment
@@ -911,7 +911,7 @@ void LineBuffer::LoadFromAgf(unsigned char* RESTRICT data, int /*sz*/, CSysTrans
                 // ensure that all dimensionalities of each geometry are the same
                 _ASSERT(q==0 || m_dimensionality == dim);
 
-                m_dimensionality = dim;
+                m_dimensionality = dim & ~FdoDimensionality_M; //LineBuffer doesn't support M
                 m_bProcessZ = (m_dimensionality & FdoDimensionality_Z) && !m_bIgnoreZ;
 
                 skip = 0;
@@ -1207,9 +1207,10 @@ void LineBuffer::ToAgf(RS_OutputStream* os)
             int num_geoms = m_cur_geom + 1;
             if (is_multi)
             {
-                if (m_geom_type == FdoGeometryType_MultiPoint)
+                if (   m_geom_type == FdoGeometryType_MultiPoint 
+                    || m_geom_type == FdoGeometryType_MultiLineString )
                 {
-                    //write number of geometries -- for multipoint the
+                    //write number of geometries -- for multipoint/linestring the
                     //number of contours (i.e. MoveTos) is equal to the
                     //number of point geometries in the multipoint
                     WRITE_INT(os, m_num_geomcntrs[0]);
@@ -1465,7 +1466,7 @@ LineBuffer* LineBuffer::Clip(RS_Bounds& b, GeomOperationType clipType, LineBuffe
         || m_bounds.maxy < b.miny)
         return NULL;
 
-    std::auto_ptr<LineBuffer> spLB(LineBufferPool::NewLineBuffer(lbp, m_cur_types, m_dimensionality, m_bIgnoreZ));
+    std::auto_ptr<LineBuffer> spLB(LineBufferPool::NewLineBuffer(lbp, m_cur_types, (FdoDimensionality)m_dimensionality, m_bIgnoreZ));
 
     if (clipType == ctArea)
     {
@@ -2543,7 +2544,7 @@ bool LineBuffer::ignoreZ()
 
 FdoDimensionality LineBuffer::dimensionality()
 {
-    return m_dimensionality;
+    return (FdoDimensionality)m_dimensionality;
 }
 
 
@@ -2604,7 +2605,7 @@ LineBufferPool::~LineBufferPool()
 }
 
 
-LineBuffer* LineBufferPool::NewLineBuffer(LineBufferPool* pool, int requestSize, FdoDimensionality dimensionality, bool bIgnoreZ)
+LineBuffer* LineBufferPool::NewLineBuffer(LineBufferPool* pool, int requestSize, int dimensionality, bool bIgnoreZ)
 {
     if (pool && !pool->m_pool.empty())
     {
