@@ -2535,19 +2535,19 @@ bool LineBuffer::PointInPolygon(double& x, double& y) const
 }
 
 
-bool LineBuffer::hasZ()
+bool LineBuffer::hasZ() const
 {
     return m_bProcessZ;
 }
 
 
-bool LineBuffer::ignoreZ()
+bool LineBuffer::ignoreZ() const
 {
     return m_bIgnoreZ;
 }
 
 
-FdoDimensionality LineBuffer::dimensionality()
+FdoDimensionality LineBuffer::dimensionality() const
 {
     return (FdoDimensionality)m_dimensionality;
 }
