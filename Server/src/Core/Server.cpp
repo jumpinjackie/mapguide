@@ -29,6 +29,7 @@
 #include "LongTransactionManager.h"
 #include "CacheManager.h"
 #include "ServerFeatureTransactionPool.h"
+#include "ServerResourceService.h"
 
 #include "Stylizer.h"
 #include "Bounds.h"
@@ -1110,6 +1111,57 @@ int MgServer::open(void *args)
             ACE_DEBUG ((LM_DEBUG, ACE_TEXT("    Parameters                    : %s\n"), MG_WCHAR_TO_TCHAR(pLogManager->GetTraceLogParameters())));
             ACE_DEBUG ((LM_DEBUG, ACE_TEXT("\n")));
 #endif
+
+            if((!m_bTestMode) && (!m_bTestFdo))
+            {
+                // Precache the specified maps
+                STRING preCacheMaps;
+                pConfiguration->GetStringValue(MgConfigProperties::GeneralPropertiesSection, MgConfigProperties::GeneralPropertyPreCacheMaps, preCacheMaps, MgConfigProperties::DefaultGeneralPropertyPreCacheMaps);
+
+                // Check if there is actually anything to precache
+                if(!preCacheMaps.empty())
+                {
+                    Ptr<MgStringCollection> preCacheMapsCollection;
+                    preCacheMapsCollection = MgStringCollection::ParseCollection(preCacheMaps, L",");
+
+                    if(preCacheMapsCollection->GetCount() > 0)
+                    {
+                        Ptr<MgUserInformation> userInfo = new MgUserInformation(MgUser::Administrator, L"");
+                        MgUserInformation::SetCurrentUserInfo(userInfo);
+
+                        Ptr<MgSiteConnection> siteConnection = new MgSiteConnection();
+                        siteConnection->Open(userInfo);
+
+                        Ptr<MgServerResourceService> resourceService = dynamic_cast<MgServerResourceService*>(pServiceManager->RequestService(MgServiceType::ResourceService));
+                        assert(NULL != resourceService.p);
+
+                        ACE_DEBUG((LM_INFO, ACE_TEXT("%W\n"), MgResources::PreCacheMapsStart.c_str()));
+
+                        for(INT32 i=0;i<preCacheMapsCollection->GetCount();i++)
+                        {
+                            try
+                            {
+                                STRING mapRes = preCacheMapsCollection->GetItem(i);
+                                ACE_DEBUG((LM_INFO, ACE_TEXT("  %W  "), mapRes.c_str()));
+                                Ptr<MgResourceIdentifier> mapResId = new MgResourceIdentifier(mapRes);
+                                Ptr<MgMap> map = new MgMap(siteConnection);
+                                map->Create(resourceService, mapResId, L"PreCacheMap");
+                                ACE_DEBUG((LM_INFO, ACE_TEXT("<%W>\n"), MgResources::Success.c_str()));
+                            }
+                            catch(MgException* e)
+                            {
+                                // Skip map entries that fail to be cached
+                                STRING message = e->GetDetails();
+                                SAFE_RELEASE(e);
+                                ACE_DEBUG((LM_INFO, ACE_TEXT("<%W> %W\n"), MgResources::Failure.c_str(), message.c_str()));
+                            }
+                        }
+
+                        ACE_DEBUG((LM_INFO, ACE_TEXT("\n")));
+                        MgUserInformation::SetCurrentUserInfo(NULL);
+                    }
+                }
+            }
         }
     }
     MG_CATCH(L"MgServer.open")

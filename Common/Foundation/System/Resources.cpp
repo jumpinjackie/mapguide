@@ -52,6 +52,7 @@ const STRING MgResources::LicenseCheckoutCancel         = L"The license checkout
 const STRING MgResources::LicenseInvalidSerialNumber    = L"Invalid serial number.";
 const STRING MgResources::LicenseCheckoutError          = L"Generic license checkout error.";
 const STRING MgResources::LicenseNotFound               = L"The license was not found.";
+const STRING MgResources::PreCacheMapsStart             = L"Precaching the following Maps:";
 
 
 
