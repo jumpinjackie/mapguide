@@ -90,7 +90,7 @@ public:
         ctAGF   = 4
     };
 
-    STYLIZATION_API LineBuffer(int size, FdoDimensionality dimensionality = FdoDimensionality_XY, bool bIgnoreZ = true);
+    STYLIZATION_API LineBuffer(int size, int dimensionality = FdoDimensionality_XY, bool bIgnoreZ = true);
     STYLIZATION_API virtual ~LineBuffer();
 
     // rudimentary stuff
@@ -120,7 +120,7 @@ public:
     STYLIZATION_API void Centroid(GeomOperationType type, double* x, double * y, double* slope) const;
 
     // clears the buffer for reuse
-    STYLIZATION_API void Reset(FdoDimensionality dimensionality = FdoDimensionality_XY, bool bIgnoreZ = true);
+    STYLIZATION_API void Reset(int dimensionality = FdoDimensionality_XY, bool bIgnoreZ = true);
     STYLIZATION_API void SetGeometryType(int geomType);
 
     // computes the bounds of the line buffer's geometry
@@ -211,7 +211,7 @@ protected:
     int m_cur_geom;
     bool m_bIgnoreZ;
     bool m_bProcessZ;
-    FdoDimensionality m_dimensionality;
+    int m_dimensionality;
     double m_drawingScale;
     int m_arcs_sp_len;          // length of m_arcs_sp array
     int m_cur_arcs_sp;          // current index into m_arcs_sp
@@ -266,7 +266,7 @@ public:
     STYLIZATION_API LineBufferPool();
     STYLIZATION_API virtual ~LineBufferPool();
 
-    STYLIZATION_API static LineBuffer* NewLineBuffer(LineBufferPool* pool, int requestSize, FdoDimensionality dimensionality = FdoDimensionality_XY, bool bIgnoreZ = true);
+    STYLIZATION_API static LineBuffer* NewLineBuffer(LineBufferPool* pool, int requestSize, int dimensionality = FdoDimensionality_XY, bool bIgnoreZ = true);
     STYLIZATION_API static void FreeLineBuffer(LineBufferPool* pool, LineBuffer* lb);
 
 private:
