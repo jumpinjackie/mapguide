@@ -134,6 +134,10 @@ EXTERNAL_API:
     static const STRING GeneralPropertyRenderer;                        /// value("Renderer")
     static const STRING DefaultGeneralPropertyRenderer;                 /// value("GD")
 
+    /// Sets the maps to precache
+    static const STRING GeneralPropertyPreCacheMaps;                    /// value("PreCacheMaps")
+    static const STRING DefaultGeneralPropertyPreCacheMaps;             /// value("")
+
 INTERNAL_API:
 
     static const STRING GeneralPropertyWorkerThreadPoolSize;            /// value("WorkerThreadPoolSize")

@@ -168,6 +168,8 @@ const STRING MgConfigProperties::GeneralPropertyRenderer                        
 const STRING MgConfigProperties::DefaultGeneralPropertyRenderer                             = L"GD";
 const STRING MgConfigProperties::GeneralPropertyFailoverRetryTime                           = L"FailoverRetryTime"; // for internal use only
 const INT32  MgConfigProperties::DefaultGeneralPropertyFailoverRetryTime                    = 60;
+const STRING MgConfigProperties::GeneralPropertyPreCacheMaps                                = L"PreCacheMaps";
+const STRING MgConfigProperties::DefaultGeneralPropertyPreCacheMaps                         = L"";
 
 // ******************************************************************
 // Administrative Connection Properties

@@ -235,6 +235,7 @@ INTERNAL_API:
     static const STRING LicenseCheckoutCancel;
     static const STRING LicenseCheckoutError;
     static const STRING LicenseInvalidSerialNumber;
+    static const STRING PreCacheMapsStart;
 
 
     static const STRING UsingDefaultResourceFile;
