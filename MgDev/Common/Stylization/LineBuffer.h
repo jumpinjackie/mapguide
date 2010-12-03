@@ -142,6 +142,7 @@ public:
     STYLIZATION_API void SetDrawingScale(double drawingScale);
 
     STYLIZATION_API double PolygonArea(int cntr) const;
+    STYLIZATION_API double PolygonSignedArea(int cntr) const;
     STYLIZATION_API double PolylineLength(int cntr) const;
     STYLIZATION_API double PolylineLengthSqr(int cntr) const;
 

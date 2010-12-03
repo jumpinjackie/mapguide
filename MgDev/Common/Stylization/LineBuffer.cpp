@@ -2271,8 +2271,7 @@ double LineBuffer::PolylineLengthSqr(int cntr) const
     return len;
 }
 
-
-double LineBuffer::PolygonArea(int cntr) const
+double LineBuffer::PolygonSignedArea(int cntr) const
 {
     // pointer arithmetic looks ugly, and can be difficult to follow
     // but it produces tighter asm and this routine is called a lot
@@ -2296,7 +2295,13 @@ double LineBuffer::PolygonArea(int cntr) const
 
     // make sure we add the close segment
     sum += (*i)*pts[1] - (*(i+1))*pts[0];
-    return 0.5*fabs(sum);
+    return 0.5*sum;
+}
+
+
+double LineBuffer::PolygonArea(int cntr) const
+{
+    return fabs(PolygonSignedArea(cntr));
 }
 
 
