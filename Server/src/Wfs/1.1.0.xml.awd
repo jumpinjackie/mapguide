@@ -220,7 +220,7 @@
       <ows:DCP>
         <ows:HTTP>
           <ows:Get xlink:href="&URL.GetFeature;?"/>
-          <!--ows:Post xlink:href="&URL.GetFeature;"/ -->
+          <ows:Post xlink:href="&URL.GetFeature;"/>
         </ows:HTTP>
       </ows:DCP>
       <ows:Parameter name="resultType">
