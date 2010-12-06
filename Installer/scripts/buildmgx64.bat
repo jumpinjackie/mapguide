@@ -16,7 +16,7 @@ svn info svn://svn.bld.mgproto.net/mapguide/branches/2.2/MgDev | perl revnum.pl 
 set /p REVISION= < revision.txt
 
 svn export -r %REVISION% svn://svn.bld.mgproto.net/mapguide/branches/2.2/MgDev %MGSOURCE%
-svn export svn://svn.bld.mgproto.net/mapguide/trunk/Installer %MGINSTALL% 
+svn export svn://svn.bld.mgproto.net/mapguide/branches/2.2/Installer %MGINSTALL% 
 
 cd %MGSOURCE%
 cscript updateversion.vbs /major:2 /minor:2 /point:0 /build:%REVISION%
@@ -46,6 +46,6 @@ call build64.bat -a=install
 cd %MGINSTALL%
 call build64.bat -source=%INSTALLROOT% -a=prepare
 call build64.bat -source=%INSTALLROOT% -a=generate
-call build64.bat -source=%INSTALLROOT% -version=2.2.0.%REVISION% -name=MapGuideOpenSource-2.2.0.%REVISION%-RC1-x64 -title="MapGuide Open Source 2.2 x64 RC1"
+call build64.bat -source=%INSTALLROOT% -version=2.2.0.%REVISION% -name=MapGuideOpenSource-2.2.0.%REVISION%-RC2-x64 -title="MapGuide Open Source 2.2 x64 RC2"
 
 cd %STARTDIR%
