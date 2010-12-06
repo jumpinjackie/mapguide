@@ -84,16 +84,20 @@ void MgHttpWfsDescribeFeatureType::Execute(MgHttpResponse& hResponse)
         featureTypeList = MgStringCollection::ParseCollection(sFeatureTypes, L",");
     }
 
-    // Determine required output format
-    CPSZ pszOutputFormat = Wfs.RequestParameter(MgHttpResourceStrings::reqWfsOutputFormat.c_str());
-    STRING sOutputFormat = pszOutputFormat? pszOutputFormat : _("");
-
     Ptr<MgResourceService> pResourceService = (MgResourceService*)(CreateService(MgServiceType::ResourceService));
     Ptr<MgFeatureService> pFeatureService = (MgFeatureService*)(CreateService(MgServiceType::FeatureService));
 
     // Retrieve feature definitions
-    MgWfsFeatureDefinitions oFeatureTypes(pResourceService,pFeatureService,featureTypeList);
-    Wfs.SetFeatureDefinitions(&oFeatureTypes);
+    auto_ptr<MgWfsFeatureDefinitions> pFeatureTypes;
+    if(NULL == featureTypeList)
+    {
+        pFeatureTypes.reset(new MgWfsFeatureDefinitions(pResourceService,pFeatureService));
+    }
+    else
+    {
+        pFeatureTypes.reset(new MgWfsFeatureDefinitions(pResourceService,pFeatureService,featureTypeList));
+    }
+    Wfs.SetFeatureDefinitions(pFeatureTypes.get());
 
     // In order to validate request we have to invoke the ProcessRequest
     if(!Wfs.ProcessRequest(this))
@@ -106,44 +110,84 @@ void MgHttpWfsDescribeFeatureType::Execute(MgHttpResponse& hResponse)
         return;
     }
 
-    // This is a comma-sep a list.  If empty, == all.
-    // If it's just one feature (no comma sep found) let's do
-    // a single response, else let's recursively enumerate the features.
-    if(sFeatureTypes.length() > 0 && sFeatureTypes.find(_(",")) == STRING::npos) {
-        // TODO: assumes that this is GML type.
-        //STRING sOutputFormat = origReqParams->GetParameterValue(_("OUTPUTFORMAT"));
+    // Determine required output format
+    // This part must behind the Wfs.ProcessRequest, where parameters have been validated.
+    CPSZ pszOutputFormat = Wfs.RequestParameter(MgHttpResourceStrings::reqWfsOutputFormat.c_str());
+    STRING sOutputFormat = pszOutputFormat? pszOutputFormat : _("");
+    if(sOutputFormat.empty())
+    {
+        sOutputFormat = Wfs.GetDefaultDescribeFeatureTypeOutputFormat(STRING(Wfs.RequestParameter(MgHttpResourceStrings::reqWfsVersion.c_str())));
+    }
 
-        STRING::size_type iPos = sFeatureTypes.find(_(":")); //NOXLATE
-        if(iPos != STRING::npos) {
-            STRING sPrefix = sFeatureTypes.substr(0,iPos);
-            STRING sClass = sFeatureTypes.substr(iPos+1);
-            STRING sSchemaHash;
-            STRING sResource; // TODO: look for this in arg, since POST may put it there to save us trouble.
+    if(pFeatureTypes->InSameNamespace()) 
+    {
+        STRING sPrefix = L"";
+        STRING sUrl = L"";
+        STRING sResource = L""; // TODO: look for this in arg, since POST may put it there to save us trouble.
+        STRING sSchemaHash = L"";
+        Ptr<MgResourceIdentifier> idResource;
+        Ptr<MgStringCollection> pFeatureClasses = new MgStringCollection();
 
-            if(oFeatureTypes.PrefixToFeatureSource(sPrefix, sResource, sSchemaHash)) {
-                MgResourceIdentifier idResource(sResource);
-                Ptr<MgStringCollection> pFeatureClasses = new MgStringCollection();
-                pFeatureClasses->Add(((sSchemaHash.size()==0) ? sClass : sSchemaHash + _(":") + sClass)); //NOXLATE
-
-                Ptr<MgByteReader> response  = pFeatureService->DescribeWfsFeatureType(&idResource, pFeatureClasses, sPrefix, oFeatureTypes.GetNamespaceUrl());
-
-                // Set the result
-                hResult->SetResultObject(response, response->GetMimeType());
+        while(pFeatureTypes->ReadNext())
+        {
+            STRING sClassFullName = pFeatureTypes->GetClassFullName();
+            
+            if(!sFeatureTypes.empty() && STRING::npos == sFeatureTypes.find(sClassFullName))
+            {
+                continue;
             }
-            else
+
+            STRING::size_type iPos = sClassFullName.find(_(":")); //NOXLATE
+            if(iPos != STRING::npos)
+            {
+                if(sPrefix.empty())
+                {
+                    sPrefix = sClassFullName.substr(0,iPos);
+                }
+
+                STRING sClass = sClassFullName.substr(iPos+1);
+
+                sUrl = pFeatureTypes->GetNamespaceUrl();
+
+                if(NULL == idResource)
+                {
+                    if(pFeatureTypes->PrefixToFeatureSource(sPrefix, sResource, sSchemaHash)) {
+                        idResource = new MgResourceIdentifier(sResource);
+                    }
+                    else
+                    {
+                        // Badly formed feature type?  Throw an exception.
+                        GenerateTypeNameException(hResult,sFeatureTypes);
+                        return;
+                    }
+                }
+
+                pFeatureClasses->Add(((sSchemaHash.size()==0) ? sClass : sSchemaHash + _(":") + sClass)); //NOXLATE
+            }
+            else {
                 // Badly formed feature type?  Throw an exception.
                 GenerateTypeNameException(hResult,sFeatureTypes);
+                return;
+            }
         }
-        else {
+
+        if(pFeatureClasses->GetCount() == 0)
+        {
             // Badly formed feature type?  Throw an exception.
             GenerateTypeNameException(hResult,sFeatureTypes);
+            return;
         }
+
+        Ptr<MgByteReader> response  = pFeatureService->DescribeWfsFeatureType(idResource, pFeatureClasses, sPrefix, sUrl);
+
+        // Set the result
+        hResult->SetResultObject(response, sOutputFormat);
     }
     else {
         // There's more than one feature, so we need to enumerate
         // them and have each get imported.
         //
-        if(!oFeatureTypes.SubsetFeatureList(sFeatureTypes.c_str()))
+        if(!pFeatureTypes->SubsetFeatureList(sFeatureTypes.c_str()))
             GenerateTypeNameException(hResult,sFeatureTypes);
         else {
 

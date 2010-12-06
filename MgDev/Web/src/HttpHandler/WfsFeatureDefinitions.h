@@ -28,7 +28,15 @@ public:
     MgWfsFeatureDefinitions(MgResourceService* pResourceService,MgFeatureService* pFeatureService,MgStringCollection* pFeatureTypes);
     ~MgWfsFeatureDefinitions();
 
+    // NOTE: This method doesn't move the cursor of m_pXmlInput
     bool Next();
+
+    // NOTE: Read to the next feature type
+    bool ReadNext();
+
+    // Resets the enumerator.
+    void Reset();
+
 
     // Used by the enumerator to create dictionary entries
     // for the features in question.
@@ -55,6 +63,13 @@ public:
     bool PrefixToFeatureSource(STRING sPrefix, REFSTRING sFeatureSource, REFSTRING sSchemaName);
 
     STRING GetNamespaceUrl();
+
+    STRING GetNamespacePrefix();
+
+    STRING GetClassFullName();
+
+    // Return true if all typenames have the same namespace
+    bool InSameNamespace();
 private:
     bool   SkipElement(MgXmlParser& Input,CPSZ pszElementName);
     bool   GetElementContents(MgXmlParser& Input,CPSZ pszElementName,STRING& sValue);
@@ -74,6 +89,15 @@ private:
 
     STRING m_sSourcesAndClasses;
     STRING m_sSubsetOfTypes;
+
+    STRING m_sCurrentPrefix;
+    STRING m_sCurrentUrl;
+    STRING m_sCurrentClassName;
+
+    // Prefix:Schema 
+    //Mapping for prefix and schema, just used for OGC certification 
+    STRING m_sPrefixSchemaMapping;
+
     bool m_bOk;
 
 

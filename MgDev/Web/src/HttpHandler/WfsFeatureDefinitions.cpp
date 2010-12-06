@@ -134,6 +134,70 @@ bool MgWfsFeatureDefinitions::Next()
     return m_bOk;
 }
 
+
+
+bool MgWfsFeatureDefinitions::ReadNext()
+{
+    // Let's only do work if we enter with
+    // any expectation of success.
+    m_bOk = this->Next();
+
+    // Clear previous feature type's members
+    m_sCurrentPrefix = _("");
+    m_sCurrentClassName = _("");
+    m_sCurrentUrl = _("");
+    
+    if(m_bOk)
+    {
+       MgXmlSynchronizeOnElement oFeatureClass(*m_pXmlInput,_("FeatureClass"));
+        if(oFeatureClass.AtBegin()) {
+            // Spin through all of the things in our feature class...
+            while(!oFeatureClass.AtEnd()) {
+                // ... which should just be a sequence of <Define> elements
+                MgXmlSynchronizeOnElement oDefine(*m_pXmlInput,_("Define"));
+                MgXmlBeginElement* pBegin;
+                if(oDefine.AtBegin(&pBegin)) {
+                    STRING sName;
+                    pBegin->GetAttribute(_("item"),sName);
+
+                    // Done with the begin element; advance into its contents.
+                    m_pXmlInput->Next(); pBegin = NULL;
+
+                    // Spin through and slurp out the entire contents of the
+                    // definition.
+                    STRING sValue;
+                    while(!oDefine.AtEnd()) {
+                        sValue += m_pXmlInput->Current().Contents();
+                        m_pXmlInput->Next();
+                    }
+
+                    // Whatever we find, let's add it to that great dictionary out there.
+                    if(L"Feature.Prefix" == sName)
+                    {
+                        m_sCurrentPrefix = sValue;
+                    }
+                    else if(L"Feature.FullName" == sName)
+                    {
+                        m_sCurrentClassName = sValue;
+                    }
+                    else if(L"Feature.Url" == sName)
+                    {
+                        m_sCurrentUrl = sValue;
+                    }
+                }
+            }
+        }
+
+    }
+
+    return m_bOk;
+}
+void MgWfsFeatureDefinitions::Reset()
+{
+    m_pXmlInput->Reset();
+    m_bOk = m_pXmlInput->Next();
+}
+
 void MgWfsFeatureDefinitions::GenerateDefinitions(MgUtilDictionary& Dictionary)
 {
     STRING sClass;
@@ -165,6 +229,32 @@ void MgWfsFeatureDefinitions::GenerateDefinitions(MgUtilDictionary& Dictionary)
                 Dictionary.AddDefinition(sName,sValue);
             }
         }
+
+        //// OGC Certification 
+        //// Feature type sf:EntitéGénérique causes schema invalid
+        //// Using Url encoding sf%3aEntit%c3%a9G%c3%a9n%c3%a9rique instead 
+        //if(NULL != Dictionary[L"Feature.FullName"])
+        //{
+        //    string strFullName = MgUtil::WideCharToMultiByte(Dictionary[L"Feature.FullName"]);
+        //    string strUrlEncodedName;
+        //    MgUtil::EscapeUrl(strFullName.c_str(), strUrlEncodedName);    
+        //    STRING sValue = MgUtil::MultiByteToWideChar(strUrlEncodedName);
+        //    Dictionary.AddDefinition(L"Feature.UrlEncodedName",sValue);
+        //}
+        //
+        //// OGC Certification 
+        //// DescribeFeatureType response with multiple schemas should include schema attribute in import elements
+        //// <import namespace="http://fdo.osgeo.org/schemas/feature/ns183299621" schemaLocation="http://xxx.xxx.xxx.xxx/mapguide/mapagent/mapagent.fcgi?request=DescribeFeatureType&service=WFS&version=1.1.0&typeName=ns183299621%3aHydrographicPolygons">
+        //if(NULL != Dictionary[L"Feature.Url"])
+        //{
+        //    Dictionary.AddDefinition(L"Feature.namespace",Dictionary[L"Feature.Url"]);
+        //}
+        //else
+        //{
+        //    STRING value = L"http://fdo.osgeo.org/schemas/feature/";
+        //    value += Dictionary[L"Feature.Prefix"];
+        //    Dictionary.AddDefinition(L"Feature.namespace",value);
+        //}
     }
 }
 
@@ -463,6 +553,19 @@ void MgWfsFeatureDefinitions::Initialize()
                         sHashSchemaName = _("sn")+ sHashSchemaName;
                     }
 
+                    // For OGC certification
+                    // Hash prefix is not accepted by OGC certification 
+                    if(sPrefix.find(_("ns")) != 0 && pSchemas->GetCount() == 1)
+                    {
+                        MgUtil::Int32ToString(StringHasher(sSchemaName.c_str()),sHashSchemaName);
+                        sHashSchemaName = _("sn")+ sHashSchemaName;
+                        m_sPrefixSchemaMapping = sPrefix + _(":") + sHashSchemaName;
+
+                        // Let's clear the sHashSchemaName then the newPrefix will not be changed.
+                        sHashSchemaName = _("");
+                    }
+                    // End of OGC certification
+
                     STRING newPrefix = sPrefix + sHashSchemaName;
                     // TODO: STALE?
                     // And what OGC wants to call a Name is really the internal
@@ -604,6 +707,19 @@ bool MgWfsFeatureDefinitions::PrefixToFeatureSource(STRING sPrefix, REFSTRING sF
         if(iPosNs != STRING::npos)
             sSchemaName = sPrefix.substr(iPosNs); // get the value in case we have it
     }
+
+    // For OGC certification
+    // convert prefix to Hash schema.
+    if(sPrefix.find(_("ns")) != 0 && sSchemaName.empty() && !m_sPrefixSchemaMapping.empty())
+    {
+        STRING::size_type iPosColon = m_sPrefixSchemaMapping.find(_(":")); //NOXLATE
+        if(iPosColon != STRING::npos)
+        {
+            sSchemaName = m_sPrefixSchemaMapping.substr(iPosColon+1);
+        }
+    }
+    // End of OGC certification 
+
     STRING::size_type iPos = m_sSourcesAndClasses.find(sKey);
     if(iPos == STRING::npos && iPosNs != STRING::npos)
     {
@@ -649,19 +765,53 @@ unsigned MgWfsFeatureDefinitions::StringHasher(CPSZ pszString)
 
 STRING MgWfsFeatureDefinitions::GetNamespaceUrl()
 {
-    STRING sKey = _("<Define item='Feature.Url'>");
-    STRING::size_type iPos = m_sSourcesAndClasses.find(sKey);
-    STRING url = _("");
-
-    if(iPos != STRING::npos)
-    {
-        iPos += sKey.length(); // advance us past the key
-        STRING::size_type iEnd = m_sSourcesAndClasses.find(_("</Define>"),iPos); // NOXLATE
-        url = m_sSourcesAndClasses.substr(iPos,iEnd-iPos);
-    }
-
-    return url;
+    return m_sCurrentUrl;
 }
 
+STRING MgWfsFeatureDefinitions::GetNamespacePrefix()
+{
+    return m_sCurrentPrefix;
+}
 
+STRING MgWfsFeatureDefinitions::GetClassFullName()
+{
+    return m_sCurrentClassName;
+}
+
+bool MgWfsFeatureDefinitions::InSameNamespace()
+{
+    this->Reset();
+
+    bool bSameNamespace = true;
+    STRING sNamespace = L"";
+
+    while(this->ReadNext())
+    {
+        if(NULL != m_pFeatureTypes && !m_pFeatureTypes->Contains(this->GetClassFullName()))
+            continue;
+
+        // If the FeatureDefinition has namespaceURL defined, we can use the namespaceURL directly.
+        // Otherwise, the namespace would be "http://fdo.osgeo.org/schemas/feature/" + Prefix
+        STRING sCurrentNamespace = this->GetNamespaceUrl();
+        if(sCurrentNamespace.empty())
+        {
+            sCurrentNamespace = L"http://fdo.osgeo.org/schemas/feature/" + this->GetNamespacePrefix();
+        }
+
+        // Set current namespace to sNamespace as a criterion if sNamespace is empty.
+        // then Compare the current namespaces with the criterion
+        if(sNamespace.empty())
+        {
+            sNamespace = sCurrentNamespace;
+        }
+        else if(sNamespace != sCurrentNamespace)
+        {
+            bSameNamespace = false;
+            break;
+        }
+    }
+
+    this->Reset();
+    return bSameNamespace;
+}
 

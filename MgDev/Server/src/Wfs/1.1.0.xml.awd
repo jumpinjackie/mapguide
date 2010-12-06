@@ -71,7 +71,7 @@
  <!-- TODO: these will need to come from the full Feature metadata store -->
  <!-- for now, these are operating defaults. -->
  <Define item="Feature.namespace">http://fdo.osgeo.org/schemas</Define>
- <Define item="Feature.Abstract">Abstract for this layer</Define>
+ <Define item="Feature.Abstract"></Define>
  <Define item="Feature.DefaultSRS">urn:ogc:def:crs:EPSG::4326</Define>
  <!--Define item="Feature.OtherSRS"></Define-->
  <Define item="Feature.Bounds.north">90</Define>
@@ -129,13 +129,13 @@
     <!-- SERVICE IDENTIFICATION SECTION                                     -->
     <!-- ================================================================== -->
     <ows:ServiceIdentification>
-	<ows:Title>&Service.Title;</ows:Title>
-	<ows:Abstract>&Service.Abstract;</ows:Abstract>
+    <ows:Title>&Service.Title;</ows:Title>
+    <ows:Abstract>&Service.Abstract;</ows:Abstract>
     <ows:Keywords>
       <?Enum list="&Service.Keywords;" using="&Keywords.xml;"?>
     </ows:Keywords>
-	<ows:ServiceType>WFS</ows:ServiceType>
-	<?Enum list="&SupportedVersions;" using="&ServiceTypeVersion.xml;" item="Version"?>
+    <ows:ServiceType>WFS</ows:ServiceType>
+    <?Enum list="&SupportedVersions;" using="&ServiceTypeVersion.xml;" item="Version"?>
     <ows:Fees>&Service.Fees;</ows:Fees>
     <ows:AccessConstraints>&Service.AccessConstraints;</ows:AccessConstraints>
   </ows:ServiceIdentification>

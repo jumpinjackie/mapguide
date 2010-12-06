@@ -1262,15 +1262,32 @@ MgByteReader* MgServerFeatureService::DescribeWfsFeatureType(MgResourceIdentifie
             else
             {
                 STRING featureSourceHash;
+                bool bSchemaFound = false;
 
                 MgUtil::Int32ToString(StringHasher(featureSourceId->ToString().c_str()),featureSourceHash);
                 featureSourceHash = MG_FEATURE_SOURCE_HASH_PREFIX + featureSourceHash + schemaHash;
 
                 Ptr<MgFeatureSchema> schemaToAdd = new MgFeatureSchema(featureSourceHash, schemaFound->GetDescription());
-                Ptr<MgClassDefinitionCollection> classes = schemaToAdd->GetClasses();
+                
+                for(int i =0; i<dfsc->GetCount(); i++)
+                {
+                    Ptr<MgFeatureSchema> fSchema = dfsc->GetItem(i);
+                    if(fSchema->GetName() == schemaToAdd->GetName())
+                    {
+                        bSchemaFound = true;
+                        Ptr<MgClassDefinitionCollection> classes = fSchema->GetClasses();
+                        classes->Add(classFound);
+                        break;
+                    }
+                }
 
-                classes->Add(classFound);
-                dfsc->Add(schemaToAdd);
+                if(!bSchemaFound)
+                {
+                    Ptr<MgClassDefinitionCollection> classes = schemaToAdd->GetClasses();
+
+                    classes->Add(classFound);
+                    dfsc->Add(schemaToAdd);
+                }
             }
         }
 
@@ -1906,7 +1923,7 @@ MgByteReader* MgServerFeatureService::GetWfsFeature(MgResourceIdentifier* fs,
     }
     else if(L"text/xml; subtype=gml/3.1.1" == outputFormat)
     {
-        flags->SetSchemaLocation(L"http://www.opengis.net/gml", L"http://schemas.opengis.net/gml/3.1.1/feature.xsd");
+        flags->SetSchemaLocation(L"http://www.opengis.net/gml", L"http://schemas.opengis.net/gml/3.1.1/base/feature.xsd");
         flags->SetGmlVersion(FdoGmlVersion_311);
     }
     else
@@ -1946,7 +1963,7 @@ MgByteReader* MgServerFeatureService::GetWfsFeature(MgResourceIdentifier* fs,
     }
     else if(L"1.1.0" == wfsVersion)
     {
-        flags->SetSchemaLocation(L"http://www.opengis.net/wfs", L"http://schemas.opengis.net/wfs/1.1.0/WFS-basic.xsd");
+        flags->SetSchemaLocation(L"http://www.opengis.net/wfs", L"http://schemas.opengis.net/wfs/1.1.0/wfs.xsd");
     }
     else
     {
