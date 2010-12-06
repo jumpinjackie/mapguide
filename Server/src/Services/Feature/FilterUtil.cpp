@@ -162,6 +162,17 @@ STRING MgOgcFilterUtil::process_element(DOMElement* root)
         if(pos != STRING::npos)
         {
             m_propName = MgUtil::ReplaceString(m_propName,L":",L"_");
+
+            // For OGC WFS Certification, we just ignore the position() function.
+            // TODO: Test wfs:wfs-1.1.0-Basic-GetFeature-tc30.2
+            // XPath 1.0 shall be used to address parts of an XML representation using ogc:PropertyName.
+            // Support for the AbbreviatedRelativeLocationPath construct is required.
+            // the position() function may appear in a predicate to refer to a child node by position relative to the context node.
+            pos = m_propName.find(L"[");
+            if(pos != STRING::npos)
+            {
+                m_propName = m_propName.substr(0,pos);
+            }
         }
         // For other elemnts, there will be a namespace prefix like "sf:". 
         // The prefix should be removed before passing to FDO.

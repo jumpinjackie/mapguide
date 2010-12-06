@@ -195,6 +195,9 @@ void MgHttpWfsGetFeature::AcquireResponseData(MgOgcServer* ogcServer)
 
                 for(int i = 0; i < featureTypeList->GetCount(); i++)
                 {
+                    // Enum to the proper feature type
+                    oFeatureTypes.ReadNext();
+
                     // Check to see if we've already retrieved the maximum
                     // number of features
                     if(maxFeatures > 0 && numFeaturesRetrieved >= maxFeatures)
