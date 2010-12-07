@@ -1706,7 +1706,7 @@ void MgSiteResourceContentManager::RevokeRoleMembershipsFromUsers(
         }
     }
 
-    //  iterate through roless, then remove every user from role
+    //  iterate through roles, then remove every user from role
     INT32 numRoles = roles->GetCount();
 
     for (INT32 i = 0; i < numRoles; ++i)
@@ -2024,9 +2024,12 @@ void MgSiteResourceContentManager::RemoveUserFromGroup(
 
     // Set up an XQuery.
 
-    string query = "delete nodes collection('";
+    string query = "delete nodes (collection('";
     query += m_container.getName();
     query += "')";
+    query += "//";
+    query += MgUtil::WideCharToMultiByte(groupRes->GetName());
+    query += ")";
     query += "/Group/Users/User[Name=\"";
     query += MgUtil::WideCharToMultiByte(userId);
     query += "\"]";
@@ -2135,9 +2138,12 @@ void MgSiteResourceContentManager::RemoveUserFromRole(
 
     // Set up an XQuery.
 
-    string query = "delete nodes collection('";
+    string query = "delete nodes (collection('";
     query += m_container.getName();
     query += "')";
+    query += "//";
+    query += MgUtil::WideCharToMultiByte(roleRes->GetName());
+    query += ")";
     query += "/Role/Users/User[Name=\"";
     query += MgUtil::WideCharToMultiByte(userId);
     query += "\"]";
@@ -2246,9 +2252,12 @@ void MgSiteResourceContentManager::RemoveGroupFromRole(
 
     // Set up an XQuery.
 
-    string query = "delete nodes collection('";
+    string query = "delete nodes (collection('";
     query += m_container.getName();
     query += "')";
+    query += "//";
+    query += MgUtil::WideCharToMultiByte(roleRes->GetName());
+    query += ")";
     query += "/Roles/Groups/Group[Name=\"";
     query += MgUtil::WideCharToMultiByte(groupId);
     query += "\"]";
