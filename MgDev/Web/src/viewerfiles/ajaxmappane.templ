@@ -962,10 +962,10 @@ function OnMouseDown(e)
                     StartToolFeedback(x, y, CIRCLE);
                     break;
                 case 6:
-            if((e.ctrlKey && !macOS) || (e.metaKey && macOS))
-            {
-            EndPolygonSelection(x, y);
-            }
+                    if((e.ctrlKey && !macOS) || (e.metaKey && macOS))
+                    {
+                        EndPolygonSelection(x, y);
+                    }
                     else
                     {
                         if(polySel.xs.length == 0)
@@ -987,6 +987,8 @@ function OnMouseDown(e)
 
 function EndPolygonSelection(x, y)
 {
+    if(polySel.xs.length == 0)
+        return;
     EndToolFeedback(x, y);
     ExecutePolygonTool();
 }
@@ -2931,7 +2933,7 @@ function QueryFeatureInfo(geom, append, maxfeatures, which)
     selRequest.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
     selRequest.send(reqParams);
 
-    if(selRequest.responseXML)
+    if(selRequest.status == 200 && selRequest.responseXML)
     {
         ProcessFeatureInfo(selRequest.responseXML.documentElement, append, which);
     }
