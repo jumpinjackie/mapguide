@@ -1458,7 +1458,7 @@ function ReleaseMapControls(e)
 function DragSlider(y)
 {
     sliderPos = CalcSliderPos(y);
-    document.getElementById("slider").style.top = sliderPos;
+    document.getElementById("slider").style.top = sliderPos + "px";
     scale = scales[ScaleIndexFromSliderPos(sliderPos)];
     if(!hasTiles)
     {
@@ -1506,7 +1506,7 @@ function ReleaseSlider(y)
 {
     HideScaleTip();
     slidery = CalcSliderPos(y);
-    document.getElementById("slider").style.top = slidery;
+    document.getElementById("slider").style.top = slidery + "px";
     scale = scales[ScaleIndexFromSliderPos(slidery)];
     HideMapImage();
     GotoView(extX1 + (extX2 - extX1) / 2, extY2 + (extY1 - extY2) / 2, scale, true, true);
@@ -1897,8 +1897,8 @@ function OnMapOverlayImageLoaded(e)
         img.style.visibility = "visible";
         img.style.width = mapDevW+"px";
         img.style.height = mapDevH+"px";
-        img.style.left = 0;
-        img.style.top = 0;
+        img.style.left = 0 + "px";
+        img.style.top = 0 + "px";
     }
     imgdiv.style.display = "block";
 
@@ -2328,8 +2328,8 @@ function PanFeedback(e)
             if(document.getElementById("tilegrid" + k) == null)
                 return;
             gs = document.getElementById("tilegrid" + k).style;
-            gs.left = offsX;
-            gs.top = offsY;
+            gs.left = offsX + "px";
+            gs.top = offsY + "px";
         }
         udiffx = curScale * diffx * metersPerPixel / metersPerUnit;
         udiffy = curScale * diffy * metersPerPixel / metersPerUnit;
@@ -2590,8 +2590,8 @@ function UpdateTilesAfterPan(prevtilex, prevtiley, nx1, ny1, nx2, ny2)
     {
         gs = document.getElementById("tilegrid" + k).style;
         gs.position = "absolute";
-        gs.left = gridOffsx;
-        gs.top = gridOffsy;
+        gs.left = gridOffsx + "px";
+        gs.top = gridOffsy + "px";
     }
 }
 
@@ -3511,9 +3511,9 @@ function BuildTilePlanes(nx1, ny1, nx2, ny2)
         visible = visBaseGroups.getItem(baseGroups[k]) != null;
         tileCode += '<table id="tilegrid' + k + '" cellpadding=0 cellspacing=0; border=0 style="position: absolute; left: ' + gridOffsx + 'px; top: ' + gridOffsy + 'px; display: ' + (visible? "block": "none")+ ';"><tbody id="gridbody' + k + '">';
         for(var i=0; i < GRIDCY; i ++) {
-            tileCode += '<tr height=' + TILECY + '>';
+            tileCode += '<tr height=' + TILECY + 'px>';
             for(var j=0; j < GRIDCX; j ++)
-                tileCode += '<td style="background-color: transparent" id="' + k + ':' + j + ':' + i + '" width=' + TILECX + ' loaded="0"><div style="width: ' + TILECX + 'px; height: ' + TILECY + '">&nbsp;</td>';
+                tileCode += '<td style="height: ' + TILECY + 'px;' + 'background-color: transparent;padding-top: 0px; padding-left: 0px; padding-bottom: 0px; padding-right: 0px;" id="' + k + ':' + j + ':' + i + '" width=' + TILECX + 'px loaded="0"><div style="width: ' + TILECX + 'px; height: ' + TILECY + 'px;"></td>';
             tileCode += '</tr>\n';
         }
         tileCode += '</tbody></table>\n';
@@ -3563,7 +3563,7 @@ function RequestTile(col, row, tilex, tiley)
             url += ('&TS=' + timestamp);
         }
         
-        tag = '<img id="' + (imgId) + '" width=' + TILECX + ' height=' + TILECY + ' border=0 vspace=0 hspace=0 src="' + url + '" style="visibility: hidden; width: ' + TILECX + 'px; height: ' + TILECY + 'px;" onload="OnTileLoaded(\'' + imgId + '\')">';
+        tag = '<img id="' + (imgId) + '" width=' + TILECX + ' height=' + TILECY + ' border=0 vspace=0 hspace=0 src="' + url + '" style="visibility: hidden; width: ' + TILECX + 'px; height: ' + TILECY + 'px; vertical-align: bottom;" onload="OnTileLoaded(\'' + imgId + '\')">';
         imgId ++;
         cell.innerHTML = tag;
     }
@@ -3619,7 +3619,7 @@ function ShowScaleTip(x, y, scale)
     tipText = document.getElementById("scaleTipText");
     tipText.innerHTML = "&nbsp;1:" + parent.FormatScale(scale) + "&nbsp;";
     w = tipText.offsetWidth;
-    tip.top = y; tip.left = x - w - 3;
+    tip.top = y + "px"; tip.left = x - w - 3 + "px";
 }
 
 function HideScaleTip(x, y, scale)
@@ -3717,8 +3717,8 @@ function DisplayHyperlinkTip(x,y)
     if(y + h >= mapDevH)
         y = mapDevH - h - 1;
     tip.style.visibility = "visible";
-    tip.style.top = y;
-    tip.style.left = x;
+    tip.style.top = y + "px";
+    tip.style.left = x + "px";
 }
 
 function HideHyperlinkTip()
@@ -3835,7 +3835,7 @@ function ShowSelectionTip(x, y, text, show)
         tip.visibility = "visible";
         tipText = document.getElementById("scaleTipText");
         tipText.innerHTML = "&nbsp;" + text + "&nbsp;";
-        tip.top = y; tip.left = x;
+        tip.top = y + "px"; tip.left = x + "px";
      }
      else
         tip.visibility = "hidden";
