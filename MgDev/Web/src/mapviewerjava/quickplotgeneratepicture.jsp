@@ -117,9 +117,10 @@ BufferedImage GenerateMap(Size<Integer> size) throws MgException, IOException
     // Get the map agent url
     // Get the correct http protocol
     StringBuilder mapAgent = new StringBuilder(mapAgentPath);
+    String encodeMapName = URLEncoder.encode(mapName,"UTF-8");
     mapAgent.append("?VERSION=1.0.0&OPERATION=GETMAPIMAGE")
             .append("&SESSION=").append(sessionId)
-            .append("&MAPNAME=").append(mapName)
+            .append("&MAPNAME=").append(encodeMapName)
             .append("&FORMAT=PNG")
             .append("&SETVIEWCENTERX=").append(center.GetX())
             .append("&SETVIEWCENTERY=").append(center.GetY())

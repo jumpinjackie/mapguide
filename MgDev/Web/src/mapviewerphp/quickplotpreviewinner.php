@@ -25,7 +25,7 @@
     $args = GetRequestMethod();
     GetParameters($args);
 
-    $templ = file_get_contents("../viewerfiles/QuickPlotPreviewInner.templ");
+    $templ = file_get_contents("../viewerfiles/quickplotpreviewinner.templ");
     SetLocalizedFilesPath(GetLocalizationPath());
 
     // Localize the page
