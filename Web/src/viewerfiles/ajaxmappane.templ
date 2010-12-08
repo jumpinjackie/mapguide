@@ -4355,31 +4355,31 @@ function ClearMapMessage()
         oncontextmenu = "return OnContextMenu(event)" onclick="return OnClick(event)" ondblclick="return OnDblClick(event)">
     <table id="tbMap" width="100%%" height="100%%" cellpadding="0" cellspacing="0" id="tb">
       <tr>
-       <td id="InfoBand" align="left" valign="top" width="1" bgcolor="white">
+       <td id="InfoBand" align="left" valign="top" width="1px" bgcolor="white">
        <div id="InfoDiv" style="visibility: hidden; display: none; width: 0px;">
          <div></div>
          <div class="legendCaption" id="LayerCaption">
            <table width="100%%" height="100%%" cellpadding="0" cellspacing="0">
              <tr id="LayerCell">
-               <td><span class="legendCaptionText" id="LayerText">__#VIEWERLAYERS#__</span></td><td width="20" onclick="ToggleLegend()"><img class="legendIcon" id="legendIcon" src="../stdicons/nav_band_contract.gif"></td>
+               <td><span class="legendCaptionText" id="LayerText">__#VIEWERLAYERS#__</span></td><td width="20px" onclick="ToggleLegend()"><img class="legendIcon" id="legendIcon" src="../stdicons/nav_band_contract.gif"></td>
              </tr>
            </table>
          </div>
          <div class="legendCtrl" id="LegendCtrlDiv"  style="visibility: hidden;">
-           <iframe id="LegendCtrl" name="LegendCtrl" src="%s?MAPNAME=%s&SESSION=%s&LOCALE=%s" frameborder="0" width="0">
+           <iframe id="LegendCtrl" name="LegendCtrl" src="%s?MAPNAME=%s&SESSION=%s&LOCALE=%s" frameborder="0" width="0px">
            </iframe>
          </div>
          <div class="legendCaption" id="PropertyCaption">
            <table width="100%%" height="100%%" cellpadding="0" cellspacing="0">
              <tr id="PropCell">
-               <td class="LegendResizer" id="LegendResizer"><span class="legendCaptionText" id="PropText">__#VIEWERPROPS#__</span></td><td width="20" onclick="ToggleProperties()"><img class="legendIcon" id="propIcon" src="../stdicons/nav_band_contract.gif"></td>
+               <td class="LegendResizer" id="LegendResizer"><span class="legendCaptionText" id="PropText">__#VIEWERPROPS#__</span></td><td width="20px" onclick="ToggleProperties()"><img class="legendIcon" id="propIcon" src="../stdicons/nav_band_contract.gif"></td>
              </tr>
            </table>
          </div>
          <div class="propertyCtrl" id="PropertyCtrlDiv"  style="visibility: hidden;">
            <div id="PropertyPaneToolbar" class="Toolbar" style="display:none">
-             <table width=100 height=30 border=0 cellpadding=0 cellspacing=0>
-               <tr height=30>
+             <table width=100px height=30px border=0 cellpadding=0 cellspacing=0>
+               <tr height=30px>
                  <td align=center valign=center>
                    <select id="selLayers" onchange="OnSelectedFeatureLayerChanged()" onmousedown="return OnPropertyPaneDropDownClick(event)"></select>
                  </td>
@@ -4388,18 +4388,18 @@ function ClearMapMessage()
                  </td>
                  <td align=right>
                    <span class="btn" id="btnZoomSelectedFeature" style="position: absolute; right: 2px;" onmouseover="HoverButton('btnZoomSelectedFeature', '')" onmouseout="LeaveButton('btnZoomSelectedFeature', '')" onclick="ZoomSelectedFeature()">
-                     <img class="btnImg" id="imgZoomFeature" title="" src="../stdicons/icon_zoomselect.gif" width=16 height=16>
+                     <img class="btnImg" id="imgZoomFeature" title="" src="../stdicons/icon_zoomselect.gif" width=16px height=16px>
                    </span>
                  </td>
                </tr>
              </table>
            </div>
-           <iframe id="PropertyCtrl" name="PropertyCtrl" src="%s?LOCALE=%s" frameborder="0" width="0">
+           <iframe id="PropertyCtrl" name="PropertyCtrl" src="%s?LOCALE=%s" frameborder="0" width="0px">
            </iframe>
          </div>
        </div>
        </td>
-       <td class="tbSplitter" id="tbSplitter" style="width: 5px;" width="5" bgcolor="#f0f0f0" onmousedown="return StartResizing(event)"></td>
+       <td class="tbSplitter" id="tbSplitter" style="width: 5px;" width="5px" bgcolor="#f0f0f0" onmousedown="return StartResizing(event)"></td>
        <td id="map" onmouseout="return ExitMap(event)" style="vertical-align: top;">
           <div>
             <div id="mapSpace">
@@ -4420,8 +4420,8 @@ function ClearMapMessage()
        </td>
       </tr>
     </table>
-    <div id="sliderscale" ><img id="sliderscaleimg" src="../stdicons/sliderscale.png" border=0 vspace=0 hspace=0 usemap="#scalemap" width="51" height="204" onload="OnSliderImageLoaded('sliderscaleimg')"></div>
-    <div id="slider"><img id="sliderimg" src="../stdicons/slider.png" border=0 vspace=0 hspace=0 usemap="#slidermap" width="31" height="14" onload="OnSliderImageLoaded('sliderimg')"></div>
+    <div id="sliderscale" ><img id="sliderscaleimg" src="../stdicons/sliderscale.png" border=0 vspace=0 hspace=0 usemap="#scalemap" width="51px" height="204px" onload="OnSliderImageLoaded('sliderscaleimg')"></div>
+    <div id="slider"><img id="sliderimg" src="../stdicons/slider.png" border=0 vspace=0 hspace=0 usemap="#slidermap" width="31px" height="14px" onload="OnSliderImageLoaded('sliderimg')"></div>
     <div id="scaleTip" class="tip"><span id="scaleTipText" class="tipText"></span></div>
     <div id="selTip" class="tip"><span id="selTipText" class="tipText"></span></div>
     <div id="hlph"></div>
