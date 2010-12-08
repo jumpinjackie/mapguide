@@ -1319,7 +1319,24 @@ STRING CCoordinateSystem::GetEllipsoidDescription()
 /// </summary>
 INT32 CCoordinateSystem::GetEpsgCode (void)
 {
-     return static_cast<INT32>(m_csprm.csdef.epsgNbr);
+    short sEpsg;
+    INT32 iEpsg;
+
+    sEpsg = m_csprm.csdef.epsgNbr;
+    if (sEpsg > 0)
+    {
+        iEpsg = sEpsg;
+    }
+    else if (sEpsg < 0)
+    {
+        sEpsg = -sEpsg;
+        iEpsg = 32768 + sEpsg;
+    }
+    else
+    {
+        iEpsg = 0;
+    }
+    return iEpsg;
 }
 /////////////////////////////////////////////////////////////////
 /// <summary>
@@ -1327,7 +1344,24 @@ INT32 CCoordinateSystem::GetEpsgCode (void)
 /// </summary>
 INT32 CCoordinateSystem::GetSridCode (void)
 {
-     return static_cast<INT32>(m_csprm.csdef.srid);
+    short sSrid;
+    INT32 iSrid;
+
+    sSrid = m_csprm.csdef.srid;
+    if (sSrid > 0)
+    {
+        iSrid = sSrid;
+    }
+    else if (sSrid < 0)
+    {
+        sSrid = -sSrid;
+        iSrid = 32768 + sSrid;
+    }
+    else
+    {
+        iSrid = 0;
+    }
+    return iSrid;
 }
 /////////////////////////////////////////////////////////////////
 /// <summary>
