@@ -127,7 +127,7 @@ void GenerateMap(Size size)
 
     mapAgent.Append("/mapagent/mapagent.fcgi?VERSION=1.0.0&OPERATION=GETMAPIMAGE")
             .AppendFormat("&SESSION={0}", sessionID)
-            .AppendFormat("&MAPNAME={0}", mapName)
+            .AppendFormat("&MAPNAME={0}", HttpUtility.UrlEncode(mapName))
             .Append("&FORMAT=PNG")
             .AppendFormat("&SETVIEWCENTERX={0}", center.GetX())
             .AppendFormat("&SETVIEWCENTERY={0}", center.GetY())

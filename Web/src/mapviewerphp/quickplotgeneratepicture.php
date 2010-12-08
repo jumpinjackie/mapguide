@@ -104,7 +104,7 @@
         $mapAgent .= substr($_SERVER["REQUEST_URI"], 0, strpos($_SERVER["REQUEST_URI"], "/", 1));
         $mapAgent .="/mapagent/mapagent.fcgi?VERSION=1.0.0&OPERATION=GETMAPIMAGE" .
                     "&SESSION=$sessionID" .
-                    "&MAPNAME=$mapName" .
+                    "&MAPNAME=" . rawurlencode($mapName) .
                     "&FORMAT=PNG" .
                     "&SETVIEWCENTERX=" . $center->GetX() .
                     "&SETVIEWCENTERY=" . $center->GetY() .
