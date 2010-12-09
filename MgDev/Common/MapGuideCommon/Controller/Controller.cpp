@@ -143,7 +143,7 @@ void MgController::ApplyMapViewCommands(MgMap* map, MgPropertyCollection* mapVie
             arguments.Add(sScale);
 
             throw new MgInvalidArgumentException(L"MgController.ApplyMapViewCommands",
-                __LINE__, __WFILE__, &arguments, L"MgValueCannotBeLessThanOrEqualToZero", NULL);
+                __LINE__, __WFILE__, &arguments, L"MgMapViewScaleCannotBeLessThanOrEqualToZero", NULL);
         }
 
         map->SetViewScale(scale);
@@ -178,7 +178,7 @@ void MgController::ApplyMapViewCommands(MgMap* map, MgPropertyCollection* mapVie
             arguments.Add(sDpi);
 
             throw new MgInvalidArgumentException(L"MgController.ApplyMapViewCommands",
-                __LINE__, __WFILE__, &arguments, L"MgValueCannotBeLessThanOrEqualToZero", NULL);
+                __LINE__, __WFILE__, &arguments, L"MgMapDisplayDpiCannotBeLessThanOrEqualToZero", NULL);
         }
 
         map->SetDisplayDpi(dpi);
@@ -210,7 +210,7 @@ void MgController::ApplyMapViewCommands(MgMap* map, MgPropertyCollection* mapVie
             arguments.Add(sWidth);
 
             throw new MgInvalidArgumentException(L"MgController.ApplyMapViewCommands",
-                __LINE__, __WFILE__, &arguments, L"MgValueCannotBeLessThanOrEqualToZero", NULL);
+                __LINE__, __WFILE__, &arguments, L"MgMapDisplayWidthCannotBeLessThanOrEqualToZero", NULL);
         }
 
         map->SetDisplayWidth(width);
@@ -242,7 +242,7 @@ void MgController::ApplyMapViewCommands(MgMap* map, MgPropertyCollection* mapVie
             arguments.Add(sHeight);
 
             throw new MgInvalidArgumentException(L"MgController.ApplyMapViewCommands",
-                __LINE__, __WFILE__, &arguments, L"MgValueCannotBeLessThanOrEqualToZero", NULL);
+                __LINE__, __WFILE__, &arguments, L"MgMapDisplayHeightCannotBeLessThanOrEqualToZero", NULL);
         }
 
         map->SetDisplayHeight(height);

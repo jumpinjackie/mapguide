@@ -322,8 +322,21 @@ MgByteReader* MgServerRenderingService::RenderDynamicOverlay(MgMap* map,
     int dpi              = map->GetDisplayDpi();
     double scale         = map->GetViewScale();
     double metersPerUnit = map->GetMetersPerUnit();
-    if (width <= 0 || height <= 0 || dpi <= 0 || scale <= 0.0 || metersPerUnit <= 0.0)
-        throw new MgInvalidArgumentException(L"MgServerRenderingService.RenderDynamicOverlay", __LINE__, __WFILE__, NULL, L"MgValueCannotBeLessThanOrEqualToZero", NULL);
+
+    if (width <= 0)
+        throw new MgInvalidArgumentException(L"MgServerRenderingService.RenderDynamicOverlay", __LINE__, __WFILE__, NULL, L"MgMapDisplayWidthCannotBeLessThanOrEqualToZero", NULL);
+
+    if (height <= 0)
+        throw new MgInvalidArgumentException(L"MgServerRenderingService.RenderDynamicOverlay", __LINE__, __WFILE__, NULL, L"MgMapDisplayHeightCannotBeLessThanOrEqualToZero", NULL);
+
+    if (dpi <= 0)
+        throw new MgInvalidArgumentException(L"MgServerRenderingService.RenderDynamicOverlay", __LINE__, __WFILE__, NULL, L"MgMapDisplayDpiCannotBeLessThanOrEqualToZero", NULL);
+
+    if (scale <= 0.0)
+        throw new MgInvalidArgumentException(L"MgServerRenderingService.RenderDynamicOverlay", __LINE__, __WFILE__, NULL, L"MgMapViewScaleCannotBeLessThanOrEqualToZero", NULL);
+
+    if (metersPerUnit <= 0.0)
+        throw new MgInvalidArgumentException(L"MgServerRenderingService.RenderDynamicOverlay", __LINE__, __WFILE__, NULL, L"MgMapMetersPerUnitCannotBeLessThanOrEqualToZero", NULL);
 
     // sanity check - number of image pixels cannot exceed MAX_PIXELS
     if (width * height > MAX_PIXELS)
@@ -463,8 +476,18 @@ MgByteReader* MgServerRenderingService::RenderMap(MgMap* map,
     // validate map view parameters
     int dpi              = map->GetDisplayDpi();
     double metersPerUnit = map->GetMetersPerUnit();
-    if (width <= 0 || height <= 0 || dpi <= 0 || metersPerUnit <= 0.0)
-        throw new MgInvalidArgumentException(L"MgServerRenderingService.RenderMap", __LINE__, __WFILE__, NULL, L"MgValueCannotBeLessThanOrEqualToZero", NULL);
+
+    if (width <= 0)
+        throw new MgInvalidArgumentException(L"MgServerRenderingService.RenderMap", __LINE__, __WFILE__, NULL, L"MgMapDisplayWidthCannotBeLessThanOrEqualToZero", NULL);
+
+    if (height <= 0)
+        throw new MgInvalidArgumentException(L"MgServerRenderingService.RenderMap", __LINE__, __WFILE__, NULL, L"MgMapDisplayHeightCannotBeLessThanOrEqualToZero", NULL);
+
+    if (dpi <= 0)
+        throw new MgInvalidArgumentException(L"MgServerRenderingService.RenderMap", __LINE__, __WFILE__, NULL, L"MgMapDisplayDpiCannotBeLessThanOrEqualToZero", NULL);
+
+    if (metersPerUnit <= 0.0)
+        throw new MgInvalidArgumentException(L"MgServerRenderingService.RenderMap", __LINE__, __WFILE__, NULL, L"MgMapMetersPerUnitCannotBeLessThanOrEqualToZero", NULL);
 
     // compute a view center and scale from the given extents
     // and pass on to the RenderMap that uses center and scale
@@ -595,8 +618,21 @@ MgByteReader* MgServerRenderingService::RenderMap(MgMap* map,
     // validate map view parameters
     int dpi              = map->GetDisplayDpi();
     double metersPerUnit = map->GetMetersPerUnit();
-    if (scale <= 0.0 || width <= 0 || height <= 0 || dpi <= 0 || metersPerUnit <= 0.0)
-        throw new MgInvalidArgumentException(L"MgServerRenderingService.RenderMap", __LINE__, __WFILE__, NULL, L"MgValueCannotBeLessThanOrEqualToZero", NULL);
+
+    if (width <= 0)
+        throw new MgInvalidArgumentException(L"MgServerRenderingService.RenderMap", __LINE__, __WFILE__, NULL, L"MgMapDisplayWidthCannotBeLessThanOrEqualToZero", NULL);
+
+    if (height <= 0)
+        throw new MgInvalidArgumentException(L"MgServerRenderingService.RenderMap", __LINE__, __WFILE__, NULL, L"MgMapDisplayHeightCannotBeLessThanOrEqualToZero", NULL);
+
+    if (dpi <= 0)
+        throw new MgInvalidArgumentException(L"MgServerRenderingService.RenderMap", __LINE__, __WFILE__, NULL, L"MgMapDisplayDpiCannotBeLessThanOrEqualToZero", NULL);
+
+    if (scale <= 0.0)
+        throw new MgInvalidArgumentException(L"MgServerRenderingService.RenderMap", __LINE__, __WFILE__, NULL, L"MgMapViewScaleCannotBeLessThanOrEqualToZero", NULL);
+
+    if (metersPerUnit <= 0.0)
+        throw new MgInvalidArgumentException(L"MgServerRenderingService.RenderMap", __LINE__, __WFILE__, NULL, L"MgMapMetersPerUnitCannotBeLessThanOrEqualToZero", NULL);
 
     // sanity check - number of image pixels cannot exceed MAX_PIXELS
     if (width * height > MAX_PIXELS)
@@ -1217,8 +1253,11 @@ MgByteReader* MgServerRenderingService::RenderMapLegend(MgMap* map,
         throw new MgNullArgumentException(L"MgServerRenderingService.RenderMapLegend", __LINE__, __WFILE__, NULL, L"", NULL);
 
     // validate map view parameters
-    if (width <= 0 || height <= 0)
-        throw new MgInvalidArgumentException(L"MgServerRenderingService.RenderMapLegend", __LINE__, __WFILE__, NULL, L"MgValueCannotBeLessThanOrEqualToZero", NULL);
+    if (width <= 0)
+        throw new MgInvalidArgumentException(L"MgServerRenderingService.RenderMapLegend", __LINE__, __WFILE__, NULL, L"MgMapDisplayWidthCannotBeLessThanOrEqualToZero", NULL);
+
+    if (height <= 0)
+        throw new MgInvalidArgumentException(L"MgServerRenderingService.RenderMapLegend", __LINE__, __WFILE__, NULL, L"MgMapDisplayHeightCannotBeLessThanOrEqualToZero", NULL);
 
     // sanity check - number of image pixels cannot exceed MAX_PIXELS
     if (width * height > MAX_PIXELS)
@@ -1337,8 +1376,21 @@ void MgServerRenderingService::RenderForSelection(MgMap* map,
     int dpi              = map->GetDisplayDpi();
     double scale         = map->GetViewScale();
     double metersPerUnit = map->GetMetersPerUnit();
-    if (width <= 0 || height <= 0 || dpi <= 0 || scale <= 0.0 || metersPerUnit <= 0.0)
-        throw new MgInvalidArgumentException(L"MgServerRenderingService.RenderForSelection", __LINE__, __WFILE__, NULL, L"MgValueCannotBeLessThanOrEqualToZero", NULL);
+
+    if (width <= 0)
+        throw new MgInvalidArgumentException(L"MgServerRenderingService.RenderForSelection", __LINE__, __WFILE__, NULL, L"MgMapDisplayWidthCannotBeLessThanOrEqualToZero", NULL);
+
+    if (height <= 0)
+        throw new MgInvalidArgumentException(L"MgServerRenderingService.RenderForSelection", __LINE__, __WFILE__, NULL, L"MgMapDisplayHeightCannotBeLessThanOrEqualToZero", NULL);
+
+    if (dpi <= 0)
+        throw new MgInvalidArgumentException(L"MgServerRenderingService.RenderForSelection", __LINE__, __WFILE__, NULL, L"MgMapDisplayDpiCannotBeLessThanOrEqualToZero", NULL);
+
+    if (scale <= 0.0)
+        throw new MgInvalidArgumentException(L"MgServerRenderingService.RenderForSelection", __LINE__, __WFILE__, NULL, L"MgMapViewScaleCannotBeLessThanOrEqualToZero", NULL);
+
+    if (metersPerUnit <= 0.0)
+        throw new MgInvalidArgumentException(L"MgServerRenderingService.RenderForSelection", __LINE__, __WFILE__, NULL, L"MgMapMetersPerUnitCannotBeLessThanOrEqualToZero", NULL);
 
     // compute map extent that corresponds to pixel extent
     Ptr<MgPoint> pt          = map->GetViewCenter();
