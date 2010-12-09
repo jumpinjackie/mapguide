@@ -4203,6 +4203,9 @@ function SetPropertyPaneToolbarVisibility(visible)
 {
     var tb = document.getElementById("PropertyPaneToolbar");
     tb.style.display = visible ? "block" : "none";
+    //in IE9, the display is not set as expected
+    //set again, as a workaround
+    tb.style.display = visible ? "block" : "none";
 }
 
 function OnResizeToolbar(e)
