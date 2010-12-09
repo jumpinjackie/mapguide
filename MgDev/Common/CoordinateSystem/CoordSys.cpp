@@ -1330,7 +1330,7 @@ INT32 CCoordinateSystem::GetEpsgCode (void)
     else if (sEpsg < 0)
     {
         sEpsg = -sEpsg;
-        iEpsg = 32768 + sEpsg;
+        iEpsg = 65536 - sEpsg;
     }
     else
     {
@@ -1355,7 +1355,7 @@ INT32 CCoordinateSystem::GetSridCode (void)
     else if (sSrid < 0)
     {
         sSrid = -sSrid;
-        iSrid = 32768 + sSrid;
+        iSrid = 65536 - sSrid;
     }
     else
     {
