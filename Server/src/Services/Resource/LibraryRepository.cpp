@@ -78,7 +78,8 @@ MgLibraryRepository::MgLibraryRepository() :
 
 MgLibraryRepository::~MgLibraryRepository()
 {
-    delete m_resourceHeaderContainer;
+    if(NULL != m_resourceHeaderContainer)
+        delete m_resourceHeaderContainer;
 }
 
 ///----------------------------------------------------------------------------

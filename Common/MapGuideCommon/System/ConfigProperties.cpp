@@ -352,6 +352,10 @@ const STRING MgConfigProperties::ResourceServicePropertyRetryAttempts           
 const INT32  MgConfigProperties::DefaultResourceServicePropertyRetryAttempts                    = 50;
 const STRING MgConfigProperties::ResourceServicePropertyRetryInterval                           = L"RetryInterval";             // for internal use only
 const INT32  MgConfigProperties::DefaultResourceServicePropertyRetryInterval                    = 25;
+const STRING MgConfigProperties::ResourceServicePropertySessionRepositoriesConfig               = L"SessionRepositoriesConfig";
+const STRING MgConfigProperties::DefaultResourceServicePropertySessionRepositoriesConfig        = L"FilePerSession";
+const STRING MgConfigProperties::ResourceServicePropertySessionRepositoriesLimit                = L"SessionRepositoriesLimit";
+const INT32  MgConfigProperties::DefaultResourceServicePropertySessionRepositoriesLimit         = 200;
 
 // ******************************************************************
 // Site Service Properties
@@ -655,6 +659,7 @@ const MgConfigValidationInfo MgConfigProperties::sm_cviResourceServiceProperties
     { MgConfigProperties::ResourceServicePropertyResourceValidationEnabled          , MgPropertyType::Boolean   , 0                                     , 1                                     , L""                                       },
     { MgConfigProperties::ResourceServicePropertyRetryAttempts                      , MgPropertyType::Int32     , 0                                     , 1000                                  , L""                                       },
     { MgConfigProperties::ResourceServicePropertyRetryInterval                      , MgPropertyType::Int32     , 0                                     , 60000                                 , L""                                       },
+    { MgConfigProperties::ResourceServicePropertySessionRepositoriesLimit           , MgPropertyType::Int32     , 0                                     , 60000                                 , L""                                       },
     { L""                                                                           , 0                         , 0.0                                   , 0.0                                   , L""                                       }
 };
 

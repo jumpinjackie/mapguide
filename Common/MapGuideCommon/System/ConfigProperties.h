@@ -457,6 +457,14 @@ INTERNAL_API:
     static const STRING ResourceServicePropertyRetryInterval;                   /// value("RetryInterval")
     static const INT32 DefaultResourceServicePropertyRetryInterval;             /// value(25)
 
+    /// Sets whether to use a single file session repository or a session repository file per session
+    static const STRING ResourceServicePropertySessionRepositoriesConfig;       /// value("SessionRepositoriesConfig")
+    static const STRING DefaultResourceServicePropertySessionRepositoriesConfig;/// value("FilePerSession")
+
+    /// Sets the maximum number of allowed active sessions
+    static const STRING ResourceServicePropertySessionRepositoriesLimit;        /// value("SessionRepositoriesLimit")
+    static const INT32 DefaultResourceServicePropertySessionRepositoriesLimit;  /// value(200)
+
 EXTERNAL_API:
 
     /// Sets the root of the session repository

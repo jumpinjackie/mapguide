@@ -27,6 +27,8 @@ const string MgRepository::LibraryResourceDataStreamDatabaseName = "MgLibraryRes
 const string MgRepository::SessionResourceContentContainerName   = "MgSessionResourceContents.dbxml";
 const string MgRepository::SessionResourceDataStreamDatabaseName = "MgSessionResourceData.db";
 const string MgRepository::SiteResourceContentContainerName      = "MgSiteResourceContents.dbxml";
+const string MgRepository::SessionResourceContentContainerExt    = ".dbxml";
+const string MgRepository::SessionResourceDataStreamDatabaseExt  = ".db";
 
 ///----------------------------------------------------------------------------
 /// <summary>
@@ -53,8 +55,11 @@ MgRepository::MgRepository() :
 
 MgRepository::~MgRepository()
 {
-    delete m_resourceContentContainer;
-    delete m_environment;
+    if(NULL != m_resourceContentContainer)
+        delete m_resourceContentContainer;
+
+    if(NULL != m_environment)
+        delete m_environment;
 }
 
 ///----------------------------------------------------------------------------

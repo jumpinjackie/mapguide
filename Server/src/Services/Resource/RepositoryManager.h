@@ -45,19 +45,7 @@ private:
 
 private:
 
-    static MgStringCollection* GetFiles(CREFSTRING repositoryType,
-        DbEnv& dbEnv, u_int32_t flags);
-
 public:
-
-    static MgStringCollection* GetDatabaseFiles(CREFSTRING repositoryType,
-        CREFSTRING repositoryPath, bool fullPath);
-    static MgStringCollection* GetDatabaseFiles(CREFSTRING repositoryType,
-        DbEnv& dbEnv, bool fullPath);
-    static MgStringCollection* GetLogFiles(CREFSTRING repositoryType,
-        DbEnv& dbEnv, bool fullPath);
-
-    static void CleanRepository(CREFSTRING repositoryType);
 
     void Initialize(bool transacted);
     void Terminate();

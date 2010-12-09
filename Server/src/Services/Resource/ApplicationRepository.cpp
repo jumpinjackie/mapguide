@@ -41,5 +41,6 @@ MgApplicationRepository::MgApplicationRepository() :
 
 MgApplicationRepository::~MgApplicationRepository()
 {
-    delete m_resourceDataStreamDatabase;
+    if(NULL != m_resourceDataStreamDatabase)
+        delete m_resourceDataStreamDatabase;
 }

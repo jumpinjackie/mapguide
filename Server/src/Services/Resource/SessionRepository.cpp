@@ -28,19 +28,18 @@
 /// </exceptions>
 ///----------------------------------------------------------------------------
 
-MgSessionRepository::MgSessionRepository()
+MgSessionRepository::MgSessionRepository(CREFSTRING name)
 {
     MG_RESOURCE_SERVICE_TRY()
 
     // Get the repositry and data file paths.
 
-    STRING repositoryPath;
     MgConfiguration* configuration = MgConfiguration::GetInstance();
 
     configuration->GetStringValue(
         MgConfigProperties::ResourceServicePropertiesSection,
         MgConfigProperties::ResourceServicePropertySessionRepositoryPath,
-        repositoryPath,
+        m_repositoryPath,
         MgConfigProperties::DefaultResourceServicePropertySessionRepositoryPath);
 
     configuration->GetStringValue(
@@ -49,18 +48,30 @@ MgSessionRepository::MgSessionRepository()
         m_resourceDataFilePath,
         MgConfigProperties::DefaultResourceServicePropertySessionResourceDataFilePath);
 
-    // Check to see whether or not it is safe to open the database.
+    m_sessionName = name;
 
-    m_dbVersion = VerifyAccess(repositoryPath, m_resourceDataFilePath);
+    // Check to see whether or not it is safe to open the database.
+    m_dbVersion = VerifyAccess(m_repositoryPath, m_resourceDataFilePath);
 
     // Open the repository.
-
     m_environment = new MgDbEnvironment(MgRepositoryType::Session,
-        MgUtil::WideCharToMultiByte(repositoryPath));
-    m_resourceContentContainer = new MgResourceContainer(*m_environment,
-        MgRepository::SessionResourceContentContainerName);
-    m_resourceDataStreamDatabase = new MgResourceDatabase(*m_environment,
-        MgRepository::SessionResourceDataStreamDatabaseName);
+        MgUtil::WideCharToMultiByte(m_repositoryPath));
+
+    if(m_sessionName.empty())
+    {
+        m_resourceContentContainer = new MgResourceContainer(*m_environment,
+            MgRepository::SessionResourceContentContainerName);
+        m_resourceDataStreamDatabase = new MgResourceDatabase(*m_environment,
+            MgRepository::SessionResourceDataStreamDatabaseName);
+    }
+    else
+    {
+        std::string containerName = MgUtil::WideCharToMultiByte(m_sessionName) + MgRepository::SessionResourceContentContainerExt;
+        m_resourceContentContainer = new MgResourceContainer(*m_environment, containerName);
+
+        std::string databaseName = MgUtil::WideCharToMultiByte(m_sessionName) + MgRepository::SessionResourceDataStreamDatabaseExt;
+        m_resourceDataStreamDatabase = new MgResourceDatabase(*m_environment, databaseName);
+    }
 
     MG_RESOURCE_SERVICE_CATCH_AND_THROW(L"MgSessionRepository.MgSessionRepository")
 }
@@ -73,6 +84,36 @@ MgSessionRepository::MgSessionRepository()
 
 MgSessionRepository::~MgSessionRepository()
 {
+
+    MG_RESOURCE_SERVICE_TRY()
+
+    delete m_resourceDataStreamDatabase;
+    m_resourceDataStreamDatabase = NULL;
+
+    delete m_resourceContentContainer;
+    m_resourceContentContainer = NULL;
+
+    delete m_environment;
+    m_environment = NULL;
+
+    // Now that the above have been deleted we can delete the associated files
+    STRING containerName = L"";
+    STRING databaseName = L"";
+    if(m_sessionName.empty())
+    {
+        containerName = m_repositoryPath + MgUtil::MultiByteToWideChar(MgRepository::SessionResourceContentContainerName);
+        databaseName = m_repositoryPath + MgUtil::MultiByteToWideChar(MgRepository::SessionResourceDataStreamDatabaseName);
+    }
+    else
+    {
+        containerName = m_repositoryPath + m_sessionName + MgUtil::MultiByteToWideChar(MgRepository::SessionResourceContentContainerExt);
+        databaseName = m_repositoryPath + m_sessionName + MgUtil::MultiByteToWideChar(MgRepository::SessionResourceDataStreamDatabaseExt);
+    }
+
+    MgFileUtil::DeleteFile(containerName);
+    MgFileUtil::DeleteFile(databaseName);
+
+    MG_RESOURCE_SERVICE_CATCH(L"MgSessionRepository.~MgSessionRepository")
 }
 
 ///----------------------------------------------------------------------------
@@ -86,13 +127,16 @@ int MgSessionRepository::VerifyAccess(CREFSTRING repositoryPath, CREFSTRING reso
     MgFileUtil::CreateDirectory(repositoryPath, false, true);
     MgFileUtil::CreateDirectory(resourceDataFilePath, false, true);
 
+    STRING containerName = m_sessionName + MgUtil::MultiByteToWideChar(MgRepository::SessionResourceContentContainerExt);
     int dbVersion = MgRepository::VerifyAccess(
         repositoryPath,
-        MgUtil::MultiByteToWideChar(MgRepository::SessionResourceContentContainerName),
+        containerName,
         true);
+
+    STRING databaseName = m_sessionName + MgUtil::MultiByteToWideChar(MgRepository::SessionResourceDataStreamDatabaseExt);
     MgRepository::VerifyAccess(
         repositoryPath,
-        MgUtil::MultiByteToWideChar(MgRepository::SessionResourceDataStreamDatabaseName),
+        databaseName,
         false);
 
     return dbVersion;

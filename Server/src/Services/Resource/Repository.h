@@ -69,6 +69,8 @@ class MgRepository
         static const string SessionResourceContentContainerName;
         static const string SessionResourceDataStreamDatabaseName;
         static const string SiteResourceContentContainerName;
+        static const string SessionResourceContentContainerExt;
+        static const string SessionResourceDataStreamDatabaseExt;
 
     protected:
 

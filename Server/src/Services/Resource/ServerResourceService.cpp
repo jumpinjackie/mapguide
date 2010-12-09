@@ -29,11 +29,14 @@
 #include "LogDetail.h"
 
 INT32 MgServerResourceService::sm_retryAttempts = 50;
+INT32 MgServerResourceService::sm_sessionRepositoriesLimit = MgConfigProperties::DefaultResourceServicePropertySessionRepositoriesLimit;
 ACE_Time_Value MgServerResourceService::sm_retryInterval;
 
 MgSiteRepository*    MgServerResourceService::sm_siteRepository    = NULL;
 MgSessionRepository* MgServerResourceService::sm_sessionRepository = NULL;
 MgLibraryRepository* MgServerResourceService::sm_libraryRepository = NULL;
+std::map<STRING, MgSessionRepository* > MgServerResourceService::sm_sessionRepositories;
+bool MgServerResourceService::sm_bSingleSessionRepository = false;
 
 ACE_Recursive_Thread_Mutex MgServerResourceService::sm_mutex;
 set<STRING> MgServerResourceService::sm_changedResources;
@@ -136,6 +139,8 @@ void MgServerResourceService::OpenRepositories()
     // Initialize performance tuning settings.
 
     INT32 retryInterval = 25; // in milliseconds
+    STRING sessionRepositoryPath;
+    STRING sessionRepositoriesConfig;
     MgConfiguration* configuration = MgConfiguration::GetInstance();
     assert(NULL != configuration);
 
@@ -151,16 +156,51 @@ void MgServerResourceService::OpenRepositories()
         retryInterval,
         MgConfigProperties::DefaultResourceServicePropertyRetryInterval);
 
+    configuration->GetStringValue(
+        MgConfigProperties::ResourceServicePropertiesSection,
+        MgConfigProperties::ResourceServicePropertySessionRepositoriesConfig,
+        sessionRepositoriesConfig,
+        MgConfigProperties::DefaultResourceServicePropertySessionRepositoriesConfig);
+
+    configuration->GetIntValue(
+        MgConfigProperties::ResourceServicePropertiesSection,
+        MgConfigProperties::ResourceServicePropertySessionRepositoriesLimit,
+        sm_sessionRepositoriesLimit,
+        MgConfigProperties::DefaultResourceServicePropertySessionRepositoriesLimit);
+
+    configuration->GetStringValue(
+        MgConfigProperties::ResourceServicePropertiesSection,
+        MgConfigProperties::ResourceServicePropertySessionRepositoryPath,
+        sessionRepositoryPath,
+        MgConfigProperties::DefaultResourceServicePropertySessionRepositoryPath);
+
     sm_retryInterval.msec((long)retryInterval);
 
+    // Set the session repository configuration
+    if(_wcsicmp(sessionRepositoriesConfig.c_str(), MgConfigProperties::DefaultResourceServicePropertySessionRepositoriesConfig.c_str()) == 0)
+    {
+        // FilePerSession
+        sm_bSingleSessionRepository = false;
+    }
+    else
+    {
+        // SingleFile
+        sm_bSingleSessionRepository = true;
+    }
+
     // Clean up the Session repository.
+    MgFileUtil::CleanDirectory(sessionRepositoryPath);
 
-    MgRepositoryManager::CleanRepository(MgRepositoryType::Session);
-
+    // The session repository configuration depends on the serverconfig.ini SessionRepositoriesConfig setting.
+    // If it is "SingleFile" then it uses a single file to hold all of the session information for all sessions.
+    // If it is "FilePerSession" then it uses a file per session.
     // Initialize the Session repository.
 
-    sm_sessionRepository = new MgSessionRepository();
-    sm_sessionRepository->Initialize();
+    if(sm_bSingleSessionRepository)
+    {
+        sm_sessionRepository = new MgSessionRepository(L"");
+        sm_sessionRepository->Initialize();
+    }
 
     // Initialize the Site repository.
 
@@ -201,11 +241,21 @@ void MgServerResourceService::CloseRepositories()
     delete sm_siteRepository;
     sm_siteRepository = NULL;
 
-    delete sm_sessionRepository;
-    sm_sessionRepository = NULL;
+    for (std::map<STRING, MgSessionRepository* >::iterator i = sm_sessionRepositories.begin();i != sm_sessionRepositories.end(); ++i)
+    {
+        MgSessionRepository* sessionRepository = i->second;
+        if(NULL != sessionRepository)
+        {
+            delete sessionRepository;
+            sessionRepository = NULL;
+        }
+    }
 
     delete sm_libraryRepository;
     sm_libraryRepository = NULL;
+
+    delete sm_sessionRepository;
+    sm_sessionRepository = NULL;
 }
 
 ///----------------------------------------------------------------------------
@@ -234,14 +284,101 @@ MgByteReader* MgServerResourceService::EnumerateRepositories(
             __LINE__, __WFILE__, NULL, L"", NULL);
     }
 
-    auto_ptr<MgSessionRepositoryManager> repositoryMan(
-        new MgSessionRepositoryManager(*sm_sessionRepository));
+    string list = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
 
-    MG_RESOURCE_SERVICE_BEGIN_OPERATION()
+    list += "<RepositoryList xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:noNamespaceSchemaLocation=\"RepositoryList-1.0.0.xsd\">\n";
 
-    byteReader = repositoryMan->EnumerateRepositories();
+    if(sm_bSingleSessionRepository)
+    {
+        auto_ptr<MgSessionRepositoryManager> repositoryMan(
+            new MgSessionRepositoryManager(*sm_sessionRepository));
 
-    MG_RESOURCE_SERVICE_END_OPERATION(sm_retryAttempts)
+        MG_RESOURCE_SERVICE_BEGIN_OPERATION()
+
+        byteReader = repositoryMan->EnumerateRepositories();
+
+        MG_RESOURCE_SERVICE_END_OPERATION(sm_retryAttempts)
+
+        // Need to combine the results from all of the session repositories
+        STRING sessionContents = byteReader->ToString();
+        string content;
+        MgUtil::WideCharToMultiByte(sessionContents, content);
+        list += content;
+    }
+    else
+    {
+        if(0 == sm_sessionRepositories.size())
+        {
+            // Since there are no sessions yet we will need to check access rights ourselves
+            auto_ptr<MgSecurityManager> securityMan;
+            securityMan.reset(new MgSecurityManager());
+
+            Ptr<MgUserInformation> currUserInfo = MgUserInformation::GetCurrentUserInfo();
+            assert(NULL != currUserInfo);
+            STRING sessionId = currUserInfo->GetMgSessionId();
+            STRING userName = currUserInfo->GetUserName();
+            STRING password = currUserInfo->GetPassword();
+
+            if (!sessionId.empty())
+            {
+                if (userName.empty())
+                {
+                    userName = securityMan->GetUserName(sessionId);
+                    password = securityMan->GetPassword(userName);
+                }
+            }
+
+            if (userName.empty())
+            {
+                MG_LOG_AUTHENTICATION_ENTRY(MgResources::UnauthorizedAccess.c_str());
+
+                throw new MgUnauthorizedAccessException(
+                    L"MgServerResourceService.EnumerateRepositories",
+                    __LINE__, __WFILE__, NULL, L"", NULL);
+            }
+
+            if (!securityMan->IsUserAnAdministrator(userName))
+            {
+                MG_LOG_AUTHENTICATION_ENTRY(MgResources::UnauthorizedAccess.c_str());
+
+                throw new MgUnauthorizedAccessException(
+                    L"MgServerResourceService.EnumerateRepositories",
+                    __LINE__, __WFILE__, NULL, L"", NULL);
+            }
+        }
+
+        for (std::map<STRING, MgSessionRepository* >::iterator i = sm_sessionRepositories.begin();i != sm_sessionRepositories.end(); ++i)
+        {
+            MgSessionRepository* sessionRepository = i->second;
+            if(NULL != sessionRepository)
+            {
+                auto_ptr<MgSessionRepositoryManager> repositoryMan(
+                    new MgSessionRepositoryManager(*sessionRepository));
+
+                MG_RESOURCE_SERVICE_BEGIN_OPERATION()
+
+                byteReader = repositoryMan->EnumerateRepositories();
+
+                MG_RESOURCE_SERVICE_END_OPERATION(sm_retryAttempts)
+
+                // Need to combine the results from all of the session repositories
+                STRING sessionContents = byteReader->ToString();
+                string content;
+                MgUtil::WideCharToMultiByte(sessionContents, content);
+                list += content;
+            }
+        }
+    }
+
+    list += "</RepositoryList>";
+
+    // Create a byte reader.
+
+    Ptr<MgByteSource> byteSource = new MgByteSource(
+        (unsigned char*)list.c_str(), (INT32)list.length());
+
+    byteSource->SetMimeType(MgMimeType::Xml);
+    byteReader = byteSource->GetReader();
 
     MG_RESOURCE_SERVICE_CATCH_AND_THROW(L"MgServerResourceService.EnumerateRepositories")
 
@@ -279,32 +416,127 @@ void MgServerResourceService::CreateRepository(MgResourceIdentifier* resource,
             L"MgServerResourceService.CreateRepository", __LINE__, __WFILE__, NULL, L"", NULL);
     }
 
-    ACE_ASSERT(!resource->GetRepositoryName().empty());
-    auto_ptr<MgSessionRepositoryManager> repositoryMan(
-        new MgSessionRepositoryManager(*sm_sessionRepository));
-    int maxRetries = sm_retryAttempts;
-
-    if ((NULL != content && !content->IsRewindable())
-     || (NULL != header  && !header->IsRewindable()))
+    if(sm_bSingleSessionRepository)
     {
-        maxRetries = 0;
+        auto_ptr<MgSessionRepositoryManager> repositoryMan(
+            new MgSessionRepositoryManager(*sm_sessionRepository));
+        int maxRetries = sm_retryAttempts;
+
+        if ((NULL != content && !content->IsRewindable())
+         || (NULL != header  && !header->IsRewindable()))
+        {
+            maxRetries = 0;
+        }
+
+        MG_RESOURCE_SERVICE_BEGIN_OPERATION()
+
+        if (NULL != content && content->IsRewindable())
+        {
+            content->Rewind();
+        }
+
+        if (NULL != header && header->IsRewindable())
+        {
+            header->Rewind();
+        }
+
+        repositoryMan->CreateRepository(resource, content, header);
+
+        MG_RESOURCE_SERVICE_END_OPERATION(maxRetries)
     }
-
-    MG_RESOURCE_SERVICE_BEGIN_OPERATION()
-
-    if (NULL != content && content->IsRewindable())
+    else
     {
-        content->Rewind();
+        auto_ptr<MgSecurityManager> securityMan;
+        securityMan.reset(new MgSecurityManager());
+
+        Ptr<MgUserInformation> currUserInfo = MgUserInformation::GetCurrentUserInfo();
+        assert(NULL != currUserInfo);
+        STRING sessionId = currUserInfo->GetMgSessionId();
+        STRING userName = currUserInfo->GetUserName();
+        STRING password = currUserInfo->GetPassword();
+
+        if (!sessionId.empty())
+        {
+            if (userName.empty())
+            {
+                userName = securityMan->GetUserName(sessionId);
+                password = securityMan->GetPassword(userName);
+            }
+        }
+
+        if (userName.empty())
+        {
+            MG_LOG_AUTHENTICATION_ENTRY(MgResources::UnauthorizedAccess.c_str());
+
+            throw new MgUnauthorizedAccessException(
+                L"MgServerResourceService.CreateRepository",
+                __LINE__, __WFILE__, NULL, L"", NULL);
+        }
+
+        ACE_ASSERT(!resource->GetRepositoryName().empty());
+        STRING name = resource->GetRepositoryName();
+        std::map<STRING, MgSessionRepository* >::iterator iter = sm_sessionRepositories.find(name);
+        if(sm_sessionRepositories.end() == iter)
+        {
+    //        ACE_DEBUG((LM_INFO, ACE_TEXT("CreateRepository: %W\n"), name.c_str()));
+            MgSessionRepository* sessionRepository = NULL;
+
+            // Check to see if there is room. If not we need to throw an exception.
+            if(sm_sessionRepositories.size() >= sm_sessionRepositoriesLimit)
+            {
+                MgStringCollection arguments;
+                arguments.Add(resource->ToString());
+
+                throw new MgRepositoryCreationFailedException(
+                    L"MgServerResourceService.CreateRepository", __LINE__, __WFILE__, &arguments, L"", NULL);
+            }
+
+            sessionRepository = new MgSessionRepository(name);
+            if(NULL != sessionRepository)
+            {
+                // Add this NEW session repository to the map
+                sm_sessionRepositories.insert(std::pair<STRING, MgSessionRepository* >(name, sessionRepository));
+                ACE_DEBUG((LM_INFO, ACE_TEXT("%d/%d ++ %W\n"), sm_sessionRepositories.size(), sm_sessionRepositoriesLimit, name.c_str()));
+
+                // Initialize the session repository
+                sessionRepository->Initialize();
+
+                auto_ptr<MgSessionRepositoryManager> repositoryMan(
+                    new MgSessionRepositoryManager(*sessionRepository));
+                int maxRetries = sm_retryAttempts;
+
+                if ((NULL != content && !content->IsRewindable())
+                 || (NULL != header  && !header->IsRewindable()))
+                {
+                    maxRetries = 0;
+                }
+
+                MG_RESOURCE_SERVICE_BEGIN_OPERATION()
+
+                if (NULL != content && content->IsRewindable())
+                {
+                    content->Rewind();
+                }
+
+                if (NULL != header && header->IsRewindable())
+                {
+                    header->Rewind();
+                }
+
+                repositoryMan->CreateRepository(resource, content, header);
+
+                MG_RESOURCE_SERVICE_END_OPERATION(maxRetries)
+            }
+        }
+        else
+        {
+            MgStringCollection arguments;
+            arguments.Add(resource->ToString());
+
+            throw new MgDuplicateRepositoryException(
+                L"MgServerResourceService.CreateRepository", __LINE__, __WFILE__, &arguments, L"", NULL);
+        }
     }
-
-    if (NULL != header && header->IsRewindable())
-    {
-        header->Rewind();
-    }
-
-    repositoryMan->CreateRepository(resource, content, header);
-
-    MG_RESOURCE_SERVICE_END_OPERATION(maxRetries)
 
     MG_RESOURCE_SERVICE_CATCH_AND_THROW(L"MgServerResourceService.CreateRepository")
 }
@@ -339,18 +571,85 @@ void MgServerResourceService::DeleteRepository(MgResourceIdentifier* resource)
             L"MgServerResourceService.DeleteRepository", __LINE__, __WFILE__, NULL, L"", NULL);
     }
 
-    ACE_ASSERT(!resource->GetRepositoryName().empty());
-    auto_ptr<MgSessionRepositoryManager> repositoryMan(
-        new MgSessionRepositoryManager(*sm_sessionRepository));
+    auto_ptr<MgSecurityManager> securityMan;
+    securityMan.reset(new MgSecurityManager());
 
-    MG_RESOURCE_SERVICE_BEGIN_OPERATION()
+    Ptr<MgUserInformation> currUserInfo = MgUserInformation::GetCurrentUserInfo();
+    assert(NULL != currUserInfo);
+    STRING sessionId = currUserInfo->GetMgSessionId();
+    STRING userName = currUserInfo->GetUserName();
+    STRING password = currUserInfo->GetPassword();
 
-    repositoryMan->DeleteRepository(resource);
+    if (!sessionId.empty())
+    {
+        if (userName.empty())
+        {
+            userName = securityMan->GetUserName(sessionId);
+            password = securityMan->GetPassword(userName);
+        }
+    }
 
-    MG_RESOURCE_SERVICE_END_OPERATION(sm_retryAttempts)
+    if (userName.empty())
+    {
+        MG_LOG_AUTHENTICATION_ENTRY(MgResources::UnauthorizedAccess.c_str());
 
-    // Update the current set of changed resources.
-    UpdateChangedResources(repositoryMan->GetChangedResources());
+        throw new MgUnauthorizedAccessException(
+            L"MgServerResourceService.CreateRepository",
+            __LINE__, __WFILE__, NULL, L"", NULL);
+    }
+
+    if(sm_bSingleSessionRepository)
+    {
+        auto_ptr<MgSessionRepositoryManager> repositoryMan(
+            new MgSessionRepositoryManager(*sm_sessionRepository));
+
+        MG_RESOURCE_SERVICE_BEGIN_OPERATION()
+
+        repositoryMan->DeleteRepository(resource);
+
+        MG_RESOURCE_SERVICE_END_OPERATION(sm_retryAttempts)
+
+        // Update the current set of changed resources.
+        UpdateChangedResources(repositoryMan->GetChangedResources());
+    }
+    else
+    {
+        ACE_ASSERT(!resource->GetRepositoryName().empty());
+        STRING name = resource->GetRepositoryName();
+        std::map<STRING, MgSessionRepository* >::iterator iter = sm_sessionRepositories.find(name);
+        if(sm_sessionRepositories.end() != iter)
+        {
+            ACE_DEBUG((LM_INFO, ACE_TEXT("%d/%d -- %W\n"), sm_sessionRepositories.size(), sm_sessionRepositoriesLimit, name.c_str()));
+            MgSessionRepository* sessionRepository = iter->second;
+            if(NULL != sessionRepository)
+            {
+                auto_ptr<MgSessionRepositoryManager> repositoryMan(
+                    new MgSessionRepositoryManager(*sessionRepository));
+
+                MG_RESOURCE_SERVICE_BEGIN_OPERATION()
+
+                repositoryMan->DeleteRepository(resource);
+
+                MG_RESOURCE_SERVICE_END_OPERATION(sm_retryAttempts)
+
+                // Update the current set of changed resources.
+                UpdateChangedResources(repositoryMan->GetChangedResources());
+
+                sm_sessionRepositories.erase(iter);
+                delete sessionRepository;
+                sessionRepository = NULL;
+            }
+        }
+        else
+        {
+            MgStringCollection arguments;
+            arguments.Add(name);
+
+            throw new MgRepositoryNotFoundException(
+                L"MgServerResourceService.DeleteRepository",
+                __LINE__, __WFILE__, &arguments, L"", NULL);
+        }
+    }
 
     MG_RESOURCE_SERVICE_CATCH_AND_THROW(L"MgServerResourceService.DeleteRepository")
 }
@@ -1197,12 +1496,31 @@ MgSerializableCollection* MgServerResourceService::EnumerateParentMapDefinitions
             libraryRepositoryMan.Terminate();
         }
 
-        MgSessionRepositoryManager sessionRepositoryMan(*sm_sessionRepository);
+        if(sm_bSingleSessionRepository)
+        {
+            MgSessionRepositoryManager sessionRepositoryMan(*sm_sessionRepository);
 
-        sessionRepositoryMan.Initialize(true);
-        sessionRepositoryMan.EnumerateParentMapDefinitions(childResources,
-            parentResources);
-        sessionRepositoryMan.Terminate();
+            sessionRepositoryMan.Initialize(true);
+            sessionRepositoryMan.EnumerateParentMapDefinitions(childResources,
+                parentResources);
+            sessionRepositoryMan.Terminate();
+        }
+        else
+        {
+            for (std::map<STRING, MgSessionRepository* >::iterator i = sm_sessionRepositories.begin();i != sm_sessionRepositories.end(); ++i)
+            {
+                MgSessionRepository* sessionRepository = i->second;
+                if(NULL != sessionRepository)
+                {
+                    MgSessionRepositoryManager sessionRepositoryMan(*sessionRepository);
+
+                    sessionRepositoryMan.Initialize(true);
+                    sessionRepositoryMan.EnumerateParentMapDefinitions(childResources,
+                        parentResources);
+                    sessionRepositoryMan.Terminate();
+                }
+            }
+        }
     }
 
     if (!parentResources.empty())
@@ -1580,7 +1898,34 @@ MgApplicationRepositoryManager* MgServerResourceService::CreateApplicationReposi
     else if (MgRepositoryType::Session == repositoryType)
     {
         ACE_ASSERT(!resource->GetRepositoryName().empty());
-        repositoryMan.reset(new MgSessionRepositoryManager(*sm_sessionRepository));
+
+        if(sm_bSingleSessionRepository)
+        {
+            repositoryMan.reset(new MgSessionRepositoryManager(*sm_sessionRepository));
+        }
+        else
+        {
+            // Find the session repository associated with this resource
+            STRING name = resource->GetRepositoryName();
+            std::map<STRING, MgSessionRepository* >::iterator iter = sm_sessionRepositories.find(name);
+            if(sm_sessionRepositories.end() != iter)
+            {
+                MgSessionRepository* sessionRepository = iter->second;
+                if(NULL != sessionRepository)
+                {
+                    repositoryMan.reset(new MgSessionRepositoryManager(*sessionRepository));
+                }
+            }
+            else
+            {
+                MgStringCollection arguments;
+                arguments.Add(name);
+
+                throw new MgRepositoryNotFoundException(
+                    L"MgServerResourceService.CreateApplicationRepositoryManager",
+                    __LINE__, __WFILE__, &arguments, L"", NULL);
+            }
+        }
     }
     else
     {
@@ -2286,6 +2631,18 @@ void MgServerResourceService::PerformRepositoryCheckpoints(UINT32 flags)
     if (NULL != sm_sessionRepository)
     {
         sm_sessionRepository->PerformCheckpoint(flags);
+    }
+
+    if (0 > sm_sessionRepositories.size())
+    {
+        for (std::map<STRING, MgSessionRepository* >::iterator i = sm_sessionRepositories.begin();i != sm_sessionRepositories.end(); ++i)
+        {
+            MgSessionRepository* sessionRepository = i->second;
+            if(NULL != sessionRepository)
+            {
+                sessionRepository->PerformCheckpoint(flags);
+            }
+        }
     }
 
     MG_RESOURCE_SERVICE_CATCH_AND_THROW(L"MgServerResourceService.PerformCheckpoint")
