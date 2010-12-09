@@ -80,8 +80,8 @@ void MgTileCache::Initialize()
             format,
             MgConfigProperties::DefaultTileServicePropertyImageFormat);
 
-        // Only allow PNG, PNG8 and JPG as tile formats
-        if (format == MgImageFormats::Png || format == MgImageFormats::Png8 || format == MgImageFormats::Jpeg)
+        // Only allow GIF, PNG, PNG8 and JPG as tile formats
+        if (format == MgImageFormats::Png || format == MgImageFormats::Png8 || format == MgImageFormats::Jpeg || format == MgImageFormats::Gif)
         {
             MgTileParameters::tileFormat = format;
         }
@@ -121,6 +121,10 @@ void MgTileCache::GeneratePathnames(MgResourceIdentifier* mapDef, int scaleIndex
     {
         tilePathname += L"jpg";
     }
+    else if (MgTileParameters::tileFormat == MgImageFormats::Gif)
+    {
+        tilePathname += L"gif";
+    }
     else
     {
         tilePathname += L"png";
@@ -154,6 +158,10 @@ MgByteReader* MgTileCache::Get(CREFSTRING tilePathname)
         if (MgTileParameters::tileFormat == MgImageFormats::Jpeg)
         {
             byteSource->SetMimeType(MgMimeType::Jpeg);
+        }
+        else if (MgTileParameters::tileFormat == MgImageFormats::Gif)
+        {
+            byteSource->SetMimeType(MgMimeType::Gif);
         }
         else
         {
