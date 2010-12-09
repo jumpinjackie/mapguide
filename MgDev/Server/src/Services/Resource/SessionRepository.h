@@ -26,7 +26,7 @@ class MgSessionRepository : public MgApplicationRepository
 
     public:
 
-        MgSessionRepository();
+        MgSessionRepository(CREFSTRING name);
         virtual ~MgSessionRepository();
 
     private:
@@ -40,7 +40,7 @@ class MgSessionRepository : public MgApplicationRepository
 
     public:
 
-        static int VerifyAccess(CREFSTRING repositoryPath, CREFSTRING resourceDataFilePath);
+        int VerifyAccess(CREFSTRING repositoryPath, CREFSTRING resourceDataFilePath);
         virtual void Initialize();
 
     private:
@@ -50,7 +50,8 @@ class MgSessionRepository : public MgApplicationRepository
 /// Data Members
 
     private:
-
+        STRING m_sessionName;
+        STRING m_repositoryPath;
 };
 
 #endif

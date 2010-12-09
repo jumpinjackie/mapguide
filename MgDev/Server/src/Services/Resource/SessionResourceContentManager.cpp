@@ -82,9 +82,7 @@ MgByteReader* MgSessionResourceContentManager::EnumerateRepositories()
 
     // this XML follows the RepositoryList-1.0.0.xsd schema
     XmlValue xmlValue;
-    string list = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
-
-    list += "<RepositoryList xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:noNamespaceSchemaLocation=\"RepositoryList-1.0.0.xsd\">\n";
+    string list;
 
     while (results.next(xmlValue)) // TODO: Need an XML writer
     {
@@ -122,8 +120,6 @@ MgByteReader* MgSessionResourceContentManager::EnumerateRepositories()
 
         list += "\t</Repository>\n";
     }
-
-    list += "</RepositoryList>";
 
     // Create a byte reader.
 

@@ -193,9 +193,12 @@ private:
     static MgSiteRepository*    sm_siteRepository;
     static MgSessionRepository* sm_sessionRepository;
     static MgLibraryRepository* sm_libraryRepository;
+    static std::map<STRING, MgSessionRepository* > sm_sessionRepositories;
+    static INT32 sm_sessionRepositoriesLimit;
 
     static ACE_Recursive_Thread_Mutex sm_mutex;
     static set<STRING> sm_changedResources;
+    static bool sm_bSingleSessionRepository;
 };
 
 #endif

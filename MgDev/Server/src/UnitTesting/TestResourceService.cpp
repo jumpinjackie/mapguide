@@ -1650,6 +1650,7 @@ struct ResourceThreadData
     INT32 command;
     bool success;
     bool done;
+    STRING session;
 };
 
 // the method which gets executed by the ACE worker thread
@@ -1659,6 +1660,8 @@ ACE_THR_FUNC_RETURN RepositoryWorker(void* param)
     ResourceThreadData* threadData = (ResourceThreadData*)param;
     INT32 threadId = threadData->threadId;
     INT32 command = threadData->command;
+    STRING session = threadData->session;
+
     ACE_DEBUG((LM_INFO, ACE_TEXT("> thread %d started\n"), threadId));
 
     try
@@ -1666,6 +1669,7 @@ ACE_THR_FUNC_RETURN RepositoryWorker(void* param)
         // set user info
         Ptr<MgUserInformation> userInfo = new MgUserInformation(L"Administrator", L"admin");
         userInfo->SetLocale(TEST_LOCALE);
+        userInfo->SetMgSessionId(session);
         MgUserInformation::SetCurrentUserInfo(userInfo);
 
         // get the tile service instance
@@ -1674,12 +1678,16 @@ ACE_THR_FUNC_RETURN RepositoryWorker(void* param)
             serviceManager->RequestService(MgServiceType::ResourceService));
         assert(svcResource != NULL);
 
+        STRING resource = L"Session:";
+        resource += session;
+        resource += L"//UnitTests/Data/test-1.FeatureSource";
+        Ptr<MgResourceIdentifier> resId = new MgResourceIdentifier(resource);
+
         switch (command)
         {
         case 0:
             {
             //Set the resource
-            Ptr<MgResourceIdentifier> resId = new MgResourceIdentifier(L"Library://UnitTests/Data/test-1.FeatureSource");
             Ptr<MgByteSource> contentSource = new MgByteSource(resourceContentFileName);
             Ptr<MgByteReader> contentReader = contentSource->GetReader();
             svcResource->SetResource(resId, contentReader, NULL);
@@ -1687,7 +1695,6 @@ ACE_THR_FUNC_RETURN RepositoryWorker(void* param)
         case 1:
             {
             //Set the resource data
-            Ptr<MgResourceIdentifier> resId = new MgResourceIdentifier(L"Library://UnitTests/Data/test-1.FeatureSource");
             Ptr<MgByteSource> dataSource = new MgByteSource(dataFileName);
             Ptr<MgByteReader> dataReader = dataSource->GetReader();
             svcResource->SetResourceData(resId, resourceDataName, L"File", dataReader);
@@ -1741,21 +1748,38 @@ void TestResourceService::TestCase_RepositoryBusy()
         userInfo->SetLocale(TEST_LOCALE);
         MgUserInformation::SetCurrentUserInfo(userInfo);
 
-        // Initialize the resource
-        Ptr<MgResourceIdentifier> resId = new MgResourceIdentifier(L"Library://UnitTests/Data/test-1.FeatureSource");
-        Ptr<MgByteSource> contentSource = new MgByteSource(resourceContentFileName);
-        Ptr<MgByteReader> contentReader = contentSource->GetReader();
-        svcResource->SetResource(resId, contentReader, NULL);
-
         // need a thread manager
         ACE_Thread_Manager* manager = ACE_Thread_Manager::instance();
 
         // initialize the thread data
         for (INT32 i=0; i<numThreads; i++)
         {
+            // Initialize the resource
+            wchar_t wszBuffer[255];
+            swprintf(wszBuffer, 255, L"48cb0286-%04d-1000-8001-005056c00008_en_6F7A8590045708AE0D05", i);
+
+            // Session format: 48cb0286-0000-1000-8001-005056c00008_en_6F7A8590045708AE0D05
+            STRING session = wszBuffer;
+            STRING resource = L"Session:";
+            resource += session;
+            resource += L"//";
+
+            // Create session resource
+            Ptr<MgResourceIdentifier> resIdSession = new MgResourceIdentifier(resource);
+            svcResource->CreateRepository(resIdSession, NULL, NULL);
+
+            // Create feature source resource
+            resource += L"UnitTests/Data/test-1.FeatureSource";
+            Ptr<MgResourceIdentifier> resId = new MgResourceIdentifier(resource);
+            Ptr<MgByteSource> contentSource = new MgByteSource(resourceContentFileName);
+            Ptr<MgByteReader> contentReader = contentSource->GetReader();
+            svcResource->SetResource(resId, contentReader, NULL);
+
+            // Set the thread specific data
             threadData[i].threadId = i;
             threadData[i].success  = false;
             threadData[i].done     = true;
+            threadData[i].session  = session;
         }
 
         ACE_DEBUG((LM_INFO, ACE_TEXT("\nTestCase_RepositoryBusy\nThreads: %d  Requests: %d\n\n"), numThreads, TESTREQUESTS));
