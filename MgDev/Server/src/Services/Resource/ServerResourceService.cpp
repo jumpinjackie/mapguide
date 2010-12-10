@@ -496,7 +496,7 @@ void MgServerResourceService::CreateRepository(MgResourceIdentifier* resource,
             {
                 // Add this NEW session repository to the map
                 sm_sessionRepositories.insert(std::pair<STRING, MgSessionRepository* >(name, sessionRepository));
-                ACE_DEBUG((LM_INFO, ACE_TEXT("%d/%d ++ %W\n"), sm_sessionRepositories.size(), sm_sessionRepositoriesLimit, name.c_str()));
+//                ACE_DEBUG((LM_INFO, ACE_TEXT("%d/%d ++ %W\n"), sm_sessionRepositories.size(), sm_sessionRepositoriesLimit, name.c_str()));
 
                 // Initialize the session repository
                 sessionRepository->Initialize();
