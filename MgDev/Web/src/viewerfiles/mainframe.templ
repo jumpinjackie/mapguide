@@ -908,7 +908,17 @@ function MakeUrl(url, index)
         url += "WIDTH=400";
     else
         url += "WIDTH=" + taskWidth;
-    url += "&LOCALE=" + locale + "&SESSION=" + GetMapFrame().GetSessionId() + "&MAPNAME=" + encodeURIComponent(GetMapFrame().GetMapName()) + "&TGT=" + cmd.targetType + "&POPUP=" + (popup?1:0) + "&CMDINDEX=" + index;
+
+    // Don't append duplicate locale and session infomation for help cmd
+    // Seems other parameters are also useless, just keep them for compatibility
+    if(33 == cmd.action)
+    {
+        url += "&MAPNAME=" + encodeURIComponent(GetMapFrame().GetMapName()) + "&TGT=" + cmd.targetType + "&POPUP=" + (popup?1:0) + "&CMDINDEX=" + index;
+    }
+    else
+    {
+        url += "&LOCALE=" + locale + "&SESSION=" + GetMapFrame().GetSessionId() + "&MAPNAME=" + encodeURIComponent(GetMapFrame().GetMapName()) + "&TGT=" + cmd.targetType + "&POPUP=" + (popup?1:0) + "&CMDINDEX=" + index;
+    }
     return url;
 }
 
