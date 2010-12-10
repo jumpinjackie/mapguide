@@ -144,12 +144,12 @@ function BuildLayersAndGroups(node)
     var isGroup = node.type == 0;
     var item = '<div id="' + node.objectId + '"><table border=0 cellspacing="0" cellpadding="0"><tr height=17>';
     //expand/collapse icon
-    item += '<td width=16 id="Ex_' + node.objectId + '">' + (isGroup? MakeExpandCode(node) : '') + '</td>';
-    if(isGroup || !node.base)
+    item += '<td width=16 id="Ex_' + node.objectId + '">' + ((isGroup == true)? MakeExpandCode(node) : '') + '</td>';
+    if(isGroup == true || node.base == false)
     {
         //checkbox
         item += '<td width=16 id="Chk_' + node.objectId + '">' + MakeCheckCode(node) + '</td>';
-        if(node.code == "L" && node.selectable)
+        if(node.code == "L" && node.selectable == true)
         {
           item += '<td width=16 id="Sel_' + node.objectId + '">' + MakeSelectableCode(node) + '</td>';
         }
