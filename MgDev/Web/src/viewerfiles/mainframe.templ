@@ -657,7 +657,7 @@ function DisplayMapSize()
     var mpu = GetMapFrame().GetMetersPerUnits();
     var w = GetMapFrame().GetMapWidth() * mpu;
     var h = GetMapFrame().GetMapHeight() * mpu;
-    if(usEnglish) {
+    if(usEnglish == true) {
         w *= 3.28083988128;
         h *= 3.28083988128;
         if(w >= 5279.7552 && h >= 5279.7552)

@@ -57,7 +57,7 @@ function InitDocument()
         document.onmousedown = OnMouseDown;
 
     var parentRef = ParentRef();
-    if(parentRef.GetMapFrame().IsEnglishUnits())
+    if(parentRef.GetMapFrame().IsEnglishUnits() == true)
         document.getElementById("USEnglish").checked = true;
     else
         document.getElementById("Metric").checked = true;
