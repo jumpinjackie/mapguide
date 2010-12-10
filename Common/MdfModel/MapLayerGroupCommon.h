@@ -19,6 +19,7 @@
 #define MAPLAYERGROUPCOMMON_H_
 
 #include "MdfModel.h"
+#include "MdfRootObject.h"
 
 BEGIN_NAMESPACE_MDFMODEL
 
@@ -28,7 +29,7 @@ BEGIN_NAMESPACE_MDFMODEL
     // It defines the set of common properties that are available for layer
     // groups.
     //---------------------------------------------------------------------
-    class MDFMODEL_API MapLayerGroupCommon
+    class MDFMODEL_API MapLayerGroupCommon: public MdfRootObject
     {
     public:
         // Construction, destruction, initialization

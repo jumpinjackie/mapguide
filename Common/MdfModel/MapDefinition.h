@@ -19,6 +19,7 @@
 #define MAPDEFINITION_H_
 
 #include "MdfModel.h"
+#include "MdfRootObject.h"
 #include "Box2D.h"
 #include "MapLayer.h"
 #include "MapLayerGroup.h"
@@ -33,7 +34,7 @@ BEGIN_NAMESPACE_MDFMODEL
     // The MapDefinition class is the root document node of the MdfModel. Through its
     // interface, one can get access to all the data in the MapDefinition.
     //------------------------------------------------------------------------
-    class MDFMODEL_API MapDefinition
+    class MDFMODEL_API MapDefinition : public MdfRootObject
     {
     public:
         // Construction, destruction, initialization.

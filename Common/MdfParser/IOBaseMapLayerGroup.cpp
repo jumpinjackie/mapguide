@@ -18,10 +18,21 @@
 #include "stdafx.h"
 #include "IOBaseMapLayerGroup.h"
 #include "IOBaseMapLayer.h"
+#include "IOUnknown.h"
 
 using namespace XERCES_CPP_NAMESPACE;
 using namespace MDFMODEL_NAMESPACE;
 using namespace MDFPARSER_NAMESPACE;
+
+CREATE_ELEMENT_MAP;
+ELEM_MAP_ENTRY(1, BaseMapLayerGroup);
+ELEM_MAP_ENTRY(2, Name);
+ELEM_MAP_ENTRY(3, Visible);
+ELEM_MAP_ENTRY(4, ShowInLegend);
+ELEM_MAP_ENTRY(5, ExpandInLegend);
+ELEM_MAP_ENTRY(6, LegendLabel);
+ELEM_MAP_ENTRY(7, BaseMapLayer);
+ELEM_MAP_ENTRY(8, ExtendedData1);
 
 
 IOBaseMapLayerGroup::IOBaseMapLayerGroup(Version& version) : IOMapLayerGroupCommon(version)
@@ -42,20 +53,31 @@ IOBaseMapLayerGroup::~IOBaseMapLayerGroup()
 void IOBaseMapLayerGroup::StartElement(const wchar_t* name, HandlerStack* handlerStack)
 {
     this->m_currElemName = name;
-    if (this->m_currElemName == L"BaseMapLayerGroup") // NOXLATE
+    this->m_currElemId = _ElementIdFromName(name);
+
+    switch (this->m_currElemId)
     {
+    case eBaseMapLayerGroup:
         this->m_startElemName = name;
         this->m_layerGroup = new BaseMapLayerGroup(L"");
-    }
-    else
-    {
-        if (this->m_currElemName == L"BaseMapLayer") // NOXLATE
+        break;
+
+    case eBaseMapLayer:
         {
             BaseMapLayerGroup* baseMapLayerGroup = static_cast<BaseMapLayerGroup*>(this->m_layerGroup);
             IOBaseMapLayer* IO = new IOBaseMapLayer(baseMapLayerGroup->GetLayers(), this->m_version);
             handlerStack->push(IO);
             IO->StartElement(name, handlerStack);
         }
+        break;
+
+    case eExtendedData1:
+        this->m_procExtData = true;
+        break;
+
+    case eUnknown:
+        ParseUnknownXml(name, handlerStack);
+        break;
     }
 }
 
@@ -64,6 +86,7 @@ void IOBaseMapLayerGroup::EndElement(const wchar_t* name, HandlerStack* handlerS
 {
     if (this->m_startElemName == name)
     {
+        this->m_layerGroup->SetUnknownXml(this->m_unknownXml);
         this->m_map->GetBaseMapLayerGroups()->Adopt(static_cast<BaseMapLayerGroup*>(this->m_layerGroup));
         this->m_map = NULL;
         this->m_layerGroup = NULL;
@@ -71,12 +94,16 @@ void IOBaseMapLayerGroup::EndElement(const wchar_t* name, HandlerStack* handlerS
         handlerStack->pop();
         delete this;
     }
+    else if (eExtendedData1 == _ElementIdFromName(name))
+    {
+        this->m_procExtData = false;
+    }
 }
 
 
 void IOBaseMapLayerGroup::Write(MdfStream& fd, BaseMapLayerGroup* baseMapLayerGroup, Version* version)
 {
-    fd << tab() << "<BaseMapLayerGroup>" << std::endl; // NOXLATE
+    fd << tab() << startStr(sBaseMapLayerGroup) << std::endl;
     inctab();
 
     IOMapLayerGroupCommon::Write(fd, baseMapLayerGroup, version);
@@ -86,6 +113,10 @@ void IOBaseMapLayerGroup::Write(MdfStream& fd, BaseMapLayerGroup* baseMapLayerGr
     for (int i=0; i<baseMapLayers->GetCount(); ++i)
         IOBaseMapLayer::Write(fd, static_cast<BaseMapLayer*>(baseMapLayers->GetAt(i)), version);
 
+    // Write any unknown XML / extended data
+    if (!version || (*version >= Version(2, 3, 0)))
+        IOUnknown::Write(fd, baseMapLayerGroup->GetUnknownXml(), version);
+
     dectab();
-    fd << tab() << "</BaseMapLayerGroup>" << std::endl; // NOXLATE
+    fd << tab() << endStr(sBaseMapLayerGroup) << std::endl;
 }
