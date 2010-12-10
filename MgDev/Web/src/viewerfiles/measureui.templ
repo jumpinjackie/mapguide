@@ -75,6 +75,7 @@ function ClearMeasure()
     GetParent().ClearMeasure();
     var url = "%s?MAPNAME=" + encodeURIComponent(mapName) + "&LOCALE=" + locale + "&SESSION=" + sessionId + "&CLEAR=&TGT=" + target + "&POPUP=" + popup;
     document.location.href = url;
+    GetParent().ResumeMeasure();
 }
 
 function ResumeStopMeasure()
