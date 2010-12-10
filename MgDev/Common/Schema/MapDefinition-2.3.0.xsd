@@ -150,7 +150,7 @@
   </xs:complexType>
   <xs:complexType name="BaseMapLayerGroupType">
     <xs:annotation>
-      <xs:documentation>BaseMapLayerGroupCommonType encapsulates the properties of a BaseMapLayerGroup. It extends MapLayerGroupCommonType by holding the layers in the group.  The base map layer groups defines what layers are used to render a tile set in the HTML viewer.</xs:documentation>
+      <xs:documentation>BaseMapLayerGroupType encapsulates the properties of a BaseMapLayerGroup.  It extends MapLayerGroupCommonType by holding the layers in the group.  The base map layer groups defines what layers are used to render a tile set in the HTML viewer.</xs:documentation>
     </xs:annotation>
     <xs:complexContent>
       <xs:extension base="MapLayerGroupCommonType">
