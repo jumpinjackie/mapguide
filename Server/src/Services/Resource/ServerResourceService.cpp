@@ -619,7 +619,7 @@ void MgServerResourceService::DeleteRepository(MgResourceIdentifier* resource)
         std::map<STRING, MgSessionRepository* >::iterator iter = sm_sessionRepositories.find(name);
         if(sm_sessionRepositories.end() != iter)
         {
-            ACE_DEBUG((LM_INFO, ACE_TEXT("%d/%d -- %W\n"), sm_sessionRepositories.size(), sm_sessionRepositoriesLimit, name.c_str()));
+//            ACE_DEBUG((LM_INFO, ACE_TEXT("%d/%d -- %W\n"), sm_sessionRepositories.size(), sm_sessionRepositoriesLimit, name.c_str()));
             MgSessionRepository* sessionRepository = iter->second;
             if(NULL != sessionRepository)
             {
