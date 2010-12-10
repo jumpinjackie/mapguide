@@ -19,6 +19,7 @@
 #define BASEMAPLAYER_H_
 
 #include "MdfModel.h"
+#include "MdfRootObject.h"
 #include "MdfOwnerCollection.h"
 #include "LayerDefinition.h"
 
@@ -37,7 +38,7 @@ BEGIN_NAMESPACE_MDFMODEL
     // BaseMapLayer is also the base class of MapLayer.  BaseMapLayers are part of
     // BaseMapLayerGroups, whereas MapLayers are part of the main Map.
     //---------------------------------------------------------------------
-    class MDFMODEL_API BaseMapLayer
+    class MDFMODEL_API BaseMapLayer: public MdfRootObject
     {
     public:
         // Construction, destruction, initialization

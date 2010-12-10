@@ -23,11 +23,25 @@
 #include "IOMapLayerGroup.h"
 #include "IOWatermarkInstance.h"
 #include "IOBaseMapDefinition.h"
+#include "IOUnknown.h"
 
 using namespace XERCES_CPP_NAMESPACE;
 using namespace MDFMODEL_NAMESPACE;
 using namespace MDFPARSER_NAMESPACE;
 
+CREATE_ELEMENT_MAP;
+ELEM_MAP_ENTRY(1, MapDefinition);
+ELEM_MAP_ENTRY(2, Name);
+ELEM_MAP_ENTRY(3, CoordinateSystem);
+ELEM_MAP_ENTRY(4, Extents);
+ELEM_MAP_ENTRY(5, BackgroundColor);
+ELEM_MAP_ENTRY(6, Metadata);
+ELEM_MAP_ENTRY(7, MapLayer);
+ELEM_MAP_ENTRY(8, MapLayerGroup);
+ELEM_MAP_ENTRY(9, BaseMapDefinition);
+ELEM_MAP_ENTRY(10, Watermarks);
+ELEM_MAP_ENTRY(11, Watermark);
+ELEM_MAP_ENTRY(12, ExtendedData1);
 
 IOMapDefinition::IOMapDefinition(Version& version) : SAX2ElementHandler(version)
 {
@@ -49,32 +63,47 @@ IOMapDefinition::~IOMapDefinition()
 void IOMapDefinition::StartElement(const wchar_t* name, HandlerStack* handlerStack)
 {
     this->m_currElemName = name;
+    this->m_currElemId = _ElementIdFromName(name);
 
-    if (this->m_currElemName == L"MapDefinition") // NOXLATE
+    switch (this->m_currElemId)
     {
+    case eMapDefinition:
         this->m_startElemName = name;
-    }
-    else
-    {
-        if (this->m_currElemName == L"Extents") // NOXLATE
+        break;
+
+    case eExtents:
         {
             IOExtra* IO = new IOExtra(this->m_map, this->m_version);
             handlerStack->push(IO);
             IO->StartElement(name, handlerStack);
         }
-        else if (this->m_currElemName == L"MapLayer") // NOXLATE
+        break;
+
+    case eMapLayer:
         {
             IOMapLayer* IO = new IOMapLayer(this->m_map, this->m_version);
             handlerStack->push(IO);
             IO->StartElement(name, handlerStack);
         }
-        else if (this->m_currElemName == L"MapLayerGroup") // NOXLATE
+        break;
+
+    case eMapLayerGroup:
         {
             IOMapLayerGroup* IO = new IOMapLayerGroup(this->m_map, this->m_version);
             handlerStack->push(IO);
             IO->StartElement(name, handlerStack);
         }
-        else if (this->m_currElemName == L"Watermark") // NOXLATE
+        break;
+
+    case eBaseMapDefinition:
+        {
+            IOBaseMapDefinition* IO = new IOBaseMapDefinition(this->m_map, this->m_version);
+            handlerStack->push(IO);
+            IO->StartElement(name, handlerStack);
+        }
+        break;
+
+    case eWatermark:
         {
             Version wdVersion;
             if (!IOMapDefinition::GetWatermarkDefinitionVersion(&this->m_version, wdVersion))
@@ -86,26 +115,39 @@ void IOMapDefinition::StartElement(const wchar_t* name, HandlerStack* handlerSta
             handlerStack->push(IO);
             IO->StartElement(name, handlerStack);
         }
-        else if (this->m_currElemName == L"BaseMapDefinition") // NOXLATE
-        {
-            IOBaseMapDefinition* IO = new IOBaseMapDefinition(this->m_map, this->m_version);
-            handlerStack->push(IO);
-            IO->StartElement(name, handlerStack);
-        }
+        break;
+
+    case eExtendedData1:
+        this->m_procExtData = true;
+        break;
+
+    case eUnknown:
+        ParseUnknownXml(name, handlerStack);
+        break;
     }
 }
 
 
 void IOMapDefinition::ElementChars(const wchar_t* ch)
 {
-    if (this->m_currElemName == L"Name") // NOXLATE
+    switch (this->m_currElemId)
+    {
+    case eName:
         this->m_map->SetName(ch);
-    else if (this->m_currElemName == L"CoordinateSystem") // NOXLATE
+        break;
+
+    case eCoordinateSystem:
         this->m_map->SetCoordinateSystem(ch);
-    else if (this->m_currElemName == L"BackgroundColor") // NOXLATE
+        break;
+
+    case eBackgroundColor:
         this->m_map->SetBackgroundColor(ch);
-    else if (this->m_currElemName == L"Metadata") // NOXLATE
+        break;
+
+    case eMetadata:
         this->m_map->SetMetadata(ch);
+        break;
+    }
 }
 
 
@@ -113,10 +155,15 @@ void IOMapDefinition::EndElement(const wchar_t* name, HandlerStack* handlerStack
 {
     if (this->m_startElemName == name)
     {
+        this->m_map->SetUnknownXml(this->m_unknownXml);
         this->m_map = NULL;
         this->m_startElemName = L"";
         handlerStack->pop();
         delete this;
+    }
+    else if (eExtendedData1 == _ElementIdFromName(name))
+    {
+        this->m_procExtData = false;
     }
 }
 
@@ -163,29 +210,29 @@ void IOMapDefinition::Write(MdfStream& fd, MapDefinition* map, Version* version)
     inctab();
 
     // Property: Name
-    fd << tab() << "<Name>"; // NOXLATE
+    fd << tab() << startStr(sName);
     fd << EncodeString(map->GetName());
-    fd << "</Name>" << std::endl; // NOXLATE
+    fd << endStr(sName) << std::endl;
 
     // Property: CoordinateSystem
-    fd << tab() << "<CoordinateSystem>"; // NOXLATE
+    fd << tab() << startStr(sCoordinateSystem);
     fd << EncodeString(map->GetCoordinateSystem());
-    fd << "</CoordinateSystem>" << std::endl; // NOXLATE
+    fd << endStr(sCoordinateSystem) << std::endl;
 
     // Property: Extents
     IOExtra::WriteBox2D(fd, map->GetExtents(), false, version);
 
     // Property: BackgroundColor
-    fd << tab() << "<BackgroundColor>"; // NOXLATE
+    fd << tab() << startStr(sBackgroundColor);
     fd << EncodeString(map->GetBackgroundColor());
-    fd << "</BackgroundColor>" << std::endl; // NOXLATE
+    fd << endStr(sBackgroundColor) << std::endl;
 
     // Property: Metadata
     if (!map->GetMetadata().empty())
     {
-        fd << tab() << "<Metadata>"; // NOXLATE
+        fd << tab() << startStr(sMetadata);
         fd << EncodeString(map->GetMetadata());
-        fd << "</Metadata>" << std::endl; // NOXLATE
+        fd << endStr(sMetadata) << std::endl;
     }
 
     // Property: MapLayer
@@ -207,14 +254,18 @@ void IOMapDefinition::Write(MdfStream& fd, MapDefinition* map, Version* version)
         // only write Watermarks if the MDF version is 2.3.0 or greater
         if (!version || (*version >= Version(2, 3, 0)))
         {
-            fd << tab() << startStr("Watermarks") << std::endl; // NOXLATE
+            fd << tab() << startStr(sWatermarks) << std::endl;
             inctab();
             for (int i=0; i<watermarkCount; ++i)
                 IOWatermarkInstance::Write(fd, map->GetWatermarks()->GetAt(i), version);
             dectab();
-            fd << tab() << endStr("Watermarks") << std::endl; // NOXLATE
+            fd << tab() << endStr(sWatermarks) << std::endl;
         }
     }
+
+    // Write any unknown XML / extended data
+    if (!version || (*version >= Version(2, 3, 0)))
+        IOUnknown::Write(fd, map->GetUnknownXml(), version);
 
     dectab();
     fd << tab() << "</MapDefinition>" << std::endl; // NOXLATE

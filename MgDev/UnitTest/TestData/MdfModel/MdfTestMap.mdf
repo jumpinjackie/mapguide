@@ -18,6 +18,12 @@
     <ExpandInLegend>false</ExpandInLegend>
     <Visible>true</Visible>
     <Group></Group>
+    <ExtendedData1>
+      <NewElementA>
+        <SubElement>DataA</SubElement>
+      </NewElementA>
+      <NewElementB>DataB</NewElementB>
+    </ExtendedData1>
   </MapLayer>
   <BaseMapDefinition>
     <FiniteDisplayScale>200000</FiniteDisplayScale>
@@ -43,6 +49,12 @@
         <ShowInLegend>true</ShowInLegend>
         <LegendLabel>Parcels</LegendLabel>
         <ExpandInLegend>false</ExpandInLegend>
+        <ExtendedData1>
+          <NewElementA>
+            <SubElement>DataA</SubElement>
+          </NewElementA>
+          <NewElementB>DataB</NewElementB>
+        </ExtendedData1>
       </BaseMapLayer>
       <BaseMapLayer>
         <Name>VotingDistricts</Name>
@@ -51,7 +63,19 @@
         <ShowInLegend>true</ShowInLegend>
         <LegendLabel>Voting Districts</LegendLabel>
         <ExpandInLegend>false</ExpandInLegend>
+        <ExtendedData1>
+          <NewElementA>
+            <SubElement>DataA</SubElement>
+          </NewElementA>
+          <NewElementB>DataB</NewElementB>
+        </ExtendedData1>
       </BaseMapLayer>
+      <ExtendedData1>
+        <NewElementA>
+          <SubElement>DataA</SubElement>
+        </NewElementA>
+        <NewElementB>DataB</NewElementB>
+      </ExtendedData1>
     </BaseMapLayerGroup>
   </BaseMapDefinition>
   <Watermarks>
