@@ -1,3 +1,6 @@
+
+
+
 // GeometryConsoleTest.cpp : Defines the entry point for the console application.
 //
 
@@ -12,7 +15,94 @@
 int _tmain(int argc, _TCHAR* argv[])
 {
 #ifndef __SKIP__
+
+    // This test tests some problematical WKT strings which produced a
+    // regression in Reeses.
+
+    STRING codeOne;
+    STRING codeTwo;
+    STRING codeThree;
+    STRING codeFour;
+ 
+    STRING wktOne   (L"PROJCS[\"DHDN / Gauss-Kruger zone 5\",GEOGCS[\"DHDN\",DATUM[\"Deutsches_Hauptdreiecksnetz\",SPHEROID[\"Bessel 1841\",6377397.155,299.1528128,AUTHORITY[\"EPSG\",\"7004\"]],AUTHORITY[\"EPSG\",\"6314\"]],PRIMEM[\"Greenwich\",0,AUTHORITY[\"EPSG\",\"8901\"]],UNIT[\"degree\",0.01745329251994328,AUTHORITY[\"EPSG\",\"9122\"]],AUTHORITY[\"EPSG\",\"4314\"]],UNIT[\"metre\",1,AUTHORITY[\"EPSG\",\"9001\"]],PROJECTION[\"Transverse_Mercator\"],PARAMETER[\"latitude_of_origin\",0],PARAMETER[\"central_meridian\",15],PARAMETER[\"scale_factor\",1],PARAMETER[\"false_easting\",5500000],PARAMETER[\"false_northing\",0],AUTHORITY[\"EPSG\",\"31469\"]]");
+    STRING wktTwo   (L"GEOGCS[\"LL84\",DATUM[\"WGS84\",SPHEROID[\"WGS84\",6378137.000,298.25722293]],PRIMEM[\"Greenwich\",0],UNIT[\"Degree\",0.01745329251994]]");
+    STRING wktThree (L"PROJCS[\"NAD83 / California zone 3 (ftUS)\",GEOGCS[\"NAD83\",DATUM[\"North_American_Datum_1983\",SPHEROID[\"GRS 1980\",6378137,298.257222101,AUTHORITY[\"EPSG\",\"7019\"]],AUTHORITY[\"EPSG\",\"6269\"]],PRIMEM[\"Greenwich\",0,AUTHORITY[\"EPSG\",\"8901\"]],UNIT[\"degree\",0.01745329251994328,AUTHORITY[\"EPSG\",\"9122\"]],AUTHORITY[\"EPSG\",\"4269\"]],UNIT[\"US survey foot\",0.3048006096012192,AUTHORITY[\"EPSG\",\"9003\"]],PROJECTION[\"Lambert_Conformal_Conic_2SP\"],PARAMETER[\"standard_parallel_1\",38.43333333333333],PARAMETER[\"standard_parallel_2\",37.06666666666667],PARAMETER[\"latitude_of_origin\",36.5],PARAMETER[\"central_meridian\",-120.5],PARAMETER[\"false_easting\",6561666.667],PARAMETER[\"false_northing\",1640416.667],AUTHORITY[\"EPSG\",\"2227\"],AXIS[\"X\",EAST],AXIS[\"Y\",NORTH]]");
+    STRING wktFour  (L"PROJCS[\"DHDN.Berlin/Cassini\",GEOGCS[\"DHDN.LL\",DATUM[\"DHDN\",SPHEROID[\"BESSEL\",6377397.155,299.15281535],TOWGS84[582.0000,105.0000,414.0000,-1.040000,-0.350000,3.080000,8.30000000]],PRIMEM[\"Greenwich\",0],UNIT[\"Degree\",0.017453292519943295]],PROJECTION[\"Cassini-Soldner\"],PARAMETER[\"false_easting\",40000.000],PARAMETER[\"false_northing\",10000.000],PARAMETER[\"central_meridian\",13.62720366666667],PARAMETER[\"latitude_of_origin\",52.41864827777778],UNIT[\"Meter\",1.00000000000000]]");
+
+    MgCoordinateSystemFactory factory;
+    MgCoordinateSystemCatalog* catalog;
+    MgCoordinateSystemDictionary* coordsysDict;
+    MgCoordinateSystemEnum* coordsysEnum;
+    MgStringCollection* stringCollection;
+    MgCoordinateSystem* coordsysOne;
+    MgCoordinateSystem* coordsysTwo;
+    MgCoordinateSystem* coordsysThree;
+    MgCoordinateSystem* coordsysFour;
+    MgCoordinateSystemTransform* xfrmOne;
+    MgCoordinateSystemTransform* xfrmThree;
+    MgCoordinateSystemTransform* xfrmFour;
+
+    catalog = factory.GetCatalog ();
+    coordsysDict = catalog->GetCoordinateSystemDictionary ();
+    coordsysEnum = coordsysDict->GetEnum ();
+
+    codeOne   = factory.ConvertWktToCoordinateSystemCode(wktOne);
+    codeTwo   = factory.ConvertWktToCoordinateSystemCode(wktOne);
+    codeThree = factory.ConvertWktToCoordinateSystemCode(wktOne);
+    codeFour  = factory.ConvertWktToCoordinateSystemCode(wktOne);
+
+    coordsysOne   = factory.CreateFromCode (codeOne);
+    coordsysTwo   = factory.CreateFromCode (codeTwo);
+    coordsysThree = factory.CreateFromCode (codeThree);
+    coordsysFour  = factory.CreateFromCode (codeFour);
+
+    xfrmOne   = factory.GetTransform(coordsysOne,coordsysTwo);
+    xfrmThree = factory.GetTransform(coordsysThree,coordsysTwo);
+    xfrmFour  = factory.GetTransform(coordsysFour,coordsysTwo);
+
+    xfrmFour->Release ();
+    xfrmThree->Release ();
+    xfrmOne->Release ();
+
+    coordsysFour->Release ();
+    coordsysThree->Release ();
+    coordsysTwo->Release ();
+    coordsysOne->Release ();
+
+    coordsysEnum->Release ();
+    coordsysDict->Release ();
+    catalog->Release (); 
+     
+#endif
+#ifdef __SKIP__
     // Some Catalog/Dictionary testing and timing.
+    MgCoordinateSystemFactory factory;
+    MgCoordinateSystemCatalog* catalog;
+
+    MgCoordinateSystemDictionary* coordsysDict;
+    MgCoordinateSystemEnum* coordsysEnum;
+
+    MgStringCollection* stringCollection;
+
+    catalog = factory.GetCatalog ();
+    coordsysDict = catalog->GetCoordinateSystemDictionary ();
+    coordsysEnum = coordsysDict->GetEnum ();
+
+    do
+    {
+        stringCollection = coordsysEnum->NextName (1);
+        if (stringCollection->GetCount () > 0)
+        {
+            STRING code = stringCollection->GetItem (0);
+            Ptr<MgCoordinateSystem> coordSysPtr = factory.CreateFromCode (code);
+            printf ("Code = %S, EPSG = %d, SRID = %d\n",(coordSysPtr->GetCsCode()).c_str (),coordSysPtr->GetEpsgCode (),coordSysPtr->GetSridCode ());
+        }
+    } while (stringCollection->GetCount () > 0);
+#endif
+#ifdef __SKIP__
+    // Some Catalog/Dictionary testing and timing.
+    bool isValid;
+   
     clock_t startTime;
     clock_t endTime;
 
@@ -63,6 +153,7 @@ int _tmain(int argc, _TCHAR* argv[])
 
     Ptr<MgCoordinateSystemGeodeticTransformDef> xformDef;
     xformDef = xformDict->GetGeodeticTransformationDef (L"NAD83_to_HPGN");
+    isValid = xformDef->IsValid ();
     Ptr<MgCoordinateSystemGeodeticInterpolationTransformDefParams>interpParms;
     interpParms = static_cast<MgCoordinateSystemGeodeticInterpolationTransformDefParams*>(xformDef->GetParameters ());
     Ptr<MgDisposableCollection>gridFiles = interpParms->GetGridFiles ();
@@ -75,9 +166,8 @@ int _tmain(int argc, _TCHAR* argv[])
     endTime = clock ();
     printf ("Dictionary enumeration time = %ld milliseconds.\n",endTime - startTime);
 #endif
-
 #ifdef __SKIP__
-    // testing a special WKT string for proer operation.
+    // testing a special WKT string for proper operation.
     clock_t startTime;
     clock_t endTime;
 
@@ -90,7 +180,6 @@ int _tmain(int argc, _TCHAR* argv[])
     endTime = clock ();
     printf ("ConvertWktToEpsgCode time = %ld milliseconds.\n",endTime - startTime);
 #endif
-
 #ifdef __SKIP__
     // Test/Debug bed for the MGRS Grid functionality.
 
@@ -283,6 +372,5 @@ int _tmain(int argc, _TCHAR* argv[])
 
     pGridSpecification->Release ();
 #endif 
-
     return 0;
 }
