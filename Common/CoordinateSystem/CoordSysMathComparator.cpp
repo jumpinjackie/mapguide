@@ -316,6 +316,7 @@ bool CCoordinateSystemMathComparator::SameCoordinateSystem(MgCoordinateSystem *p
 
     if (def1.dat_knm [0] != '\0' && def2.dat_knm [0] != '\0')
     {
+        //both systems reference a datum - make sure, these are equal
         Ptr<MgCoordinateSystemDatum> pDatum1 = pDefinition1->GetDatumDefinition ();
         Ptr<MgCoordinateSystemDatum> pDatum2 = pDefinition2->GetDatumDefinition ();
         if (!SameDatum (pDatum1,pDatum2))
@@ -326,6 +327,7 @@ bool CCoordinateSystemMathComparator::SameCoordinateSystem(MgCoordinateSystem *p
     else if ((def1.dat_knm [0] == '\0' && def2.dat_knm [0] == '\0') &&
              (def1.elp_knm [0] != '\0' && def2.elp_knm [0] != '\0'))
     {
+        //else: both systems reference an ellipsoid - make sure, these are equal
         Ptr<MgCoordinateSystemEllipsoid> pEllipsoid1 = pDefinition1->GetEllipsoidDefinition ();
         Ptr<MgCoordinateSystemEllipsoid> pEllipsoid2 = pDefinition2->GetEllipsoidDefinition ();
         if (!SameEllipsoid (pEllipsoid1,pEllipsoid2))
@@ -335,8 +337,21 @@ bool CCoordinateSystemMathComparator::SameCoordinateSystem(MgCoordinateSystem *p
     }
     else
     {
-        // Type of reference differs.
-        return false;
+        if (! ((def1.dat_knm [0] == '\0' && def2.dat_knm [0] == '\0') &&
+            (def1.elp_knm [0] == '\0' && def2.elp_knm [0] == '\0')))
+        {
+            //mishmash... don't compare
+            // Type of reference differs.
+            return false;
+        }
+
+        //else: both neither reference a datum nor an ellipsoid (all key names have been '\0')
+        //we only allow them to be of projection type "Non-earth" then
+        if (MgCoordinateSystemProjectionCode::Nerth != pDefinition1->GetProjectionCode()
+            || MgCoordinateSystemProjectionCode::Nerth != pDefinition2->GetProjectionCode())
+        {
+            return false;
+        }
     }
 
     //??// It is true that the unitsmust always match, but not necessarily
