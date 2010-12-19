@@ -2399,6 +2399,12 @@ void CCoordinateSystem::SetLonLatBounds(double dLonMin, double dLatMin, double d
     m_csprm.max_ll[0] = dLonMax - m_csprm.cent_mer;
     m_csprm.max_ll[1] = dLatMax;
 
+    m_csprm.csdef.ll_min[0] = m_csprm.min_ll[0];
+    m_csprm.csdef.ll_min[1] = m_csprm.min_ll[1];
+    
+    m_csprm.csdef.ll_max[0] = m_csprm.max_ll[0];
+    m_csprm.csdef.ll_max[1] = m_csprm.max_ll[1];
+
     MG_CATCH_AND_THROW(L"MgCoordinateSystem.SetLonLatBounds")
 }
 
@@ -2415,6 +2421,8 @@ void CCoordinateSystem::CancelLonLatBounds()
         throw new MgCoordinateSystemInitializationFailedException(L"MgCoordinateSystem.CancelLonLatBounds", __LINE__, __WFILE__, NULL, L"MgCoordinateSystemProtectedException", NULL);
     }
 
+    //it will only be set on CsMap's transformation struct, i.e.
+    //not on [m_csprm.csdef.ll_*]
     m_csprm.min_ll[0] = 0.0;
     m_csprm.min_ll[1] = 0.0;
     m_csprm.max_ll[0] = 0.0;
