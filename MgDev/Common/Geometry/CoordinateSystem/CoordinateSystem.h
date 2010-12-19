@@ -24,6 +24,9 @@ class MgCoordinateSystemEllipsoid;
 class MgCoordinateSystemMeasure;
 class MgCoordinateSystemEnumInteger32;
 
+/// \defgroup MgCoordinateSystem MgCoordinateSystem
+/// \ingroup Coordinate_System_classes
+/// \{
 class MgCoordinateSystem : public MgGuardDisposable
 {
     DECLARE_CLASSNAME(MgCoordinateSystem)
@@ -112,12 +115,83 @@ PUBLISHED_API:
     virtual double GetZeroX()=0;
     virtual double GetZeroY()=0;
     virtual void SetZeroes(double dXZero, double dYZero)=0;
+    
+    
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Returns this system's minimum longitude value in degrees. If not set in the dictionary, 
+    /// the value returned here has been calculated by the underlying coordinate system
+    /// transformation engine. 
+    /// \return
+    /// Returns this system's minimum longitude value in degrees. Only returns 0 (if it's not the
+    /// actual value) if explicitely set via SetLonLatBounds or CancelLonLatBounds.
     virtual double GetLonMin()=0;
+    
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Returns this system's maximum longitude value in degrees. If not set in the dictionary, 
+    /// the value returned here has been calculated by the underlying coordinate system
+    /// transformation engine. 
+    /// \return
+    /// Returns this system's minimum longitude value in degrees. Only returns 0 (if it's not the
+    /// actual value) if explicitely set via SetLonLatBounds or CancelLonLatBounds.
     virtual double GetLonMax()=0;
+    
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Returns this system's minimum latitude value in degrees. If not set in the dictionary, 
+    /// the value returned here has been calculated by the underlying coordinate system
+    /// transformation engine. 
+    /// \return
+    /// Returns this system's minimum longitude value in degrees. Only returns 0 (if it's not the
+    /// actual value) if explicitely set via SetLonLatBounds or CancelLonLatBounds.
     virtual double GetLatMin()=0;
+    
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Returns this system's maximum latitude value in degrees. If not set in the dictionary, 
+    /// the value returned here has been calculated by the underlying coordinate system
+    /// transformation engine. 
+    /// \return
+    /// Returns this system's minimum longitude value in degrees. Only returns 0 (if it's not the
+    /// actual value) if explicitely set via SetLonLatBounds or CancelLonLatBounds.
     virtual double GetLatMax()=0;
+    
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Allows to set the min/max longitude and latitude values in degrees this coordinate system is valid in.
+    /// This method must only be called on systems that are not protected.
+    /// When setting these values, the coordinate system API will perform the following actions:
+    ///
+    /// \li (Re-)enable valid range checking: When converting coordinates, the values are checked to fall
+    ///     in the valid range as specified here
+    /// \li Save the values for later storage: When eventually writing this coordinate system to the
+    ///     dictionary, the values will be written, too.
+    ///
+    /// \param dLonMin
+    /// The minimum longitude value
+    /// \param dLatMin
+    /// The minimum latitude value
+    /// \param dLonMax
+    /// The maximum longitude value
+    /// \param dLatMax
+    /// The maximum latitude value
+    ///    
+    /// \return
+    /// Nothing
     virtual void SetLonLatBounds(double dLonMin, double dLatMin, double dLonMax, double dLatMax)=0;
+    
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Cancels only the range checking for coordinate transformations, if it has been enabled
+    /// via SetLonLatBounds before. Specifically, calling this method does not reset the
+    /// min/max values on the coordinate system definition itself. That is, when eventually writing
+    /// this object to the dictionary, the min/max values will be written, too.
+    ///
+    /// \return
+    /// Nothing
     virtual void CancelLonLatBounds()=0;
+    
     virtual void SetXYBounds(double dXMin, double dYMin, double dXMax, double dYMax)=0;
     virtual void CancelXYBounds()=0;
     virtual INT16 GetQuadrant()=0;
@@ -265,5 +339,7 @@ protected:
 CLASS_ID:
     static const INT32 m_cls_id = CoordinateSystem_CoordinateSystem;
 };
+
+/// \}
 
 #endif //_MGCOORDINATESYSTEM_H_
