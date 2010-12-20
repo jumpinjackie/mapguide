@@ -535,25 +535,25 @@ void KmlRenderer::WriteStyle(RS_FillStyle& fill)
         m_styleContent->WriteString(buffer);
 
         //outline
-        m_styleContent->WriteString("<LineStyle>");
-        m_styleContent->WriteString("<color>");
+        m_styleContent->WriteString("<LineStyle>",false);
+        m_styleContent->WriteString("<color>",false);
         RS_Color color = fill.outline().color();
         sprintf(buffer, "%.2X%.2X%.2X%.2X", color.alpha(), color.blue(), color.green(), color.red());
-        m_styleContent->WriteString(buffer);
-        m_styleContent->WriteString("</color>");
-        m_styleContent->WriteString("<width>");
+        m_styleContent->WriteString(buffer,false);
+        m_styleContent->WriteString("</color>",false);
+        m_styleContent->WriteString("<width>",false);
         sprintf(buffer, "%f", key.m_lineWidth);
-        m_styleContent->WriteString(buffer);
-        m_styleContent->WriteString("</width>");
+        m_styleContent->WriteString(buffer,false);
+        m_styleContent->WriteString("</width>",false);
         m_styleContent->WriteString("</LineStyle>");
 
         //fill
-        m_styleContent->WriteString("<PolyStyle>");
-        m_styleContent->WriteString("<color>");
+        m_styleContent->WriteString("<PolyStyle>",false);
+        m_styleContent->WriteString("<color>",false);
         color = fill.color();
         sprintf(buffer, "%.2X%.2X%.2X%.2X", color.alpha(), color.blue(), color.green(), color.red());
-        m_styleContent->WriteString(buffer);
-        m_styleContent->WriteString("</color>");
+        m_styleContent->WriteString(buffer,false);
+        m_styleContent->WriteString("</color>",false);
         m_styleContent->WriteString("</PolyStyle>");
 
         //icon
@@ -597,16 +597,16 @@ void KmlRenderer::WriteStyle(RS_LineStroke& lsym)
         m_styleContent->WriteString(buffer);
 
         //line style
-        m_styleContent->WriteString("<LineStyle>");
-        m_styleContent->WriteString("<color>");
+        m_styleContent->WriteString("<LineStyle>",false);
+        m_styleContent->WriteString("<color>",false);
         RS_Color color = lsym.color();
         sprintf(buffer, "%.2X%.2X%.2X%.2X", color.alpha(), color.blue(), color.green(), color.red());
-        m_styleContent->WriteString(buffer);
-        m_styleContent->WriteString("</color>");
-        m_styleContent->WriteString("<width>");
+        m_styleContent->WriteString(buffer,false);
+        m_styleContent->WriteString("</color>",false);
+        m_styleContent->WriteString("<width>",false);
         sprintf(buffer, "%f", key.m_width);
         m_styleContent->WriteString(buffer);
-        m_styleContent->WriteString("</width>");
+        m_styleContent->WriteString("</width>",false);
         m_styleContent->WriteString("</LineStyle>");
 
         m_styleContent->WriteString("</Style>");
