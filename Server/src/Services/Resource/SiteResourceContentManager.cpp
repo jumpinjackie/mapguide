@@ -2024,15 +2024,15 @@ void MgSiteResourceContentManager::RemoveUserFromGroup(
 
     // Set up an XQuery.
 
-    string query = "delete nodes (collection('";
+    string query = "delete nodes collection('";
     query += m_container.getName();
     query += "')";
-    query += "//";
-    query += MgUtil::WideCharToMultiByte(groupRes->GetName());
-    query += ")";
     query += "/Group/Users/User[Name=\"";
     query += MgUtil::WideCharToMultiByte(userId);
     query += "\"]";
+    query += "/*[starts-with(dbxml:metadata('dbxml:name'),'Site://Groups/";
+    query += MgUtil::WideCharToMultiByte(groupRes->GetName());
+    query += ".Group')]/..";
 
     // Execute the XQuery.
 
@@ -2138,15 +2138,15 @@ void MgSiteResourceContentManager::RemoveUserFromRole(
 
     // Set up an XQuery.
 
-    string query = "delete nodes (collection('";
+    string query = "delete nodes collection('";
     query += m_container.getName();
     query += "')";
-    query += "//";
-    query += MgUtil::WideCharToMultiByte(roleRes->GetName());
-    query += ")";
     query += "/Role/Users/User[Name=\"";
     query += MgUtil::WideCharToMultiByte(userId);
     query += "\"]";
+    query += "/*[starts-with(dbxml:metadata('dbxml:name'),'Site://Roles/";
+    query += MgUtil::WideCharToMultiByte(roleRes->GetName());
+    query += ".Role')]/..";
 
     // Execute the XQuery.
 
@@ -2251,16 +2251,16 @@ void MgSiteResourceContentManager::RemoveGroupFromRole(
     XmlValue docValue(xmlDoc);
 
     // Set up an XQuery.
-
-    string query = "delete nodes (collection('";
+  
+    string query = "delete nodes collection('";
     query += m_container.getName();
     query += "')";
-    query += "//";
-    query += MgUtil::WideCharToMultiByte(roleRes->GetName());
-    query += ")";
-    query += "/Roles/Groups/Group[Name=\"";
+    query += "/Role/Groups/Group[Name=\"";
     query += MgUtil::WideCharToMultiByte(groupId);
     query += "\"]";
+    query += "/*[starts-with(dbxml:metadata('dbxml:name'),'Site://Roles/";
+    query += MgUtil::WideCharToMultiByte(roleRes->GetName());
+    query += ".Role')]/..";
 
     // Execute the XQuery.
 
