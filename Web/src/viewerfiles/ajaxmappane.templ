@@ -528,7 +528,7 @@ function InitDocument()
     {
         document.getElementById("InfoDiv").style.display = "block";
     }
-    catch(e)
+    catch(ex)
     {
     }
     if((orgExtX1 - orgExtX2) == 0 || (orgExtY1 - orgExtY2) == 0)
@@ -576,7 +576,7 @@ function delayedInit()
         if(!GetLegendCtrl().InternalStateComplete())
             return;
     }
-    catch(e)
+    catch(ex)
     {
         return;
     }
@@ -918,11 +918,11 @@ function OnMouseDown(e)
     
     try
     {
-      e.stopPropagation();
+        e.stopPropagation();
     }
-    catch(e)
+    catch(ex)
     {
-    e.cancelBubble = true;
+        e.cancelBubble = true;
     }
 
 
@@ -1016,11 +1016,11 @@ function OnContextMenu(e)
     //e.cancelBubble = true;
     try
     {
-      e.stopPropagation();
+        e.stopPropagation();
     }
-    catch(e)
+    catch(ex)
     {
-      e.cancelBubble = true;
+        e.cancelBubble = true;
     }
     
     return false;
@@ -1198,17 +1198,17 @@ function StartResizing(e)
     {
         document.getElementById("mapSpace").setCapture();
     }
-    catch(e)
+    catch(ex)
     {
     }
         
     try
     {
-      e.stopPropagation();
+        e.stopPropagation();
     }
-    catch(e)
+    catch(ex)
     {
-      e.cancelBubble = true;
+        e.cancelBubble = true;
     }
         
     return false;
@@ -1224,7 +1224,7 @@ function OnMouseMove(e)
     }
     lastposx = x; lastposy = y;
 
-    try { parent.OnCursorPosChanged(x, y); } catch(e) {}
+    try { parent.OnCursorPosChanged(x, y); } catch(ex) {}
 
     if(digitizing)
     {
@@ -1284,11 +1284,11 @@ function OnMouseUp(e)
     var y = e.clientY;
     try
     {
-      e.stopPropagation();
+        e.stopPropagation();
     }
-    catch(e)
+    catch(ex)
     {
-    e.cancelBubble = true;
+        e.cancelBubble = true;
     }
 
     if(digitizing)
@@ -1313,7 +1313,7 @@ function OnMouseUp(e)
         {
             document.getElementById("mapSpace").releaseCapture();
         }
-        catch(e)
+        catch(ex)
         {
         }
         return true;
@@ -1382,7 +1382,7 @@ function ResizeTo(x)
     {
         ShowChildren(infoDiv, "block");
     }
-    catch(e)
+    catch(ex)
     {
         ShowChildren(infoDiv, "visible");
     }
@@ -1403,7 +1403,7 @@ function ShowChildren(elt, state)
         {
             elt.style.visibility = state;
         }
-        catch(e)
+        catch(ex)
         {
             elt.style.display = state;//for msie
         }
@@ -1869,11 +1869,11 @@ function OnMapOverlayImageLoaded(e)
 
     try
     {
-      e.stopPropagation();
+        e.stopPropagation();
     }
-    catch(e)
+    catch(ex)
     {
-    e.cancelBubble = true;
+        e.cancelBubble = true;
     }
     
     var overlayimg = document.getElementById("mapImage");
@@ -1939,11 +1939,11 @@ function OnSelectionOverlayImageLoaded(e)
 {
     try
     {
-      e.stopPropagation();
+        e.stopPropagation();
     }
-    catch(e)
+    catch(ex)
     {
-    e.cancelBubble = true;
+        e.cancelBubble = true;
     }
     
     var selectionOverlayImg = document.getElementById("selectionImage");
@@ -2157,11 +2157,11 @@ function ZoomCloser(e)
 {
     try
     {
-      e.stopPropagation();
+        e.stopPropagation();
     }
-    catch(e)
+    catch(ex)
     {
-    e.cancelBubble = true;
+        e.cancelBubble = true;
     }
     
     if(sci == 0)
@@ -2174,11 +2174,11 @@ function ZoomFurther(e)
 {
     try
     {
-      e.stopPropagation();
+        e.stopPropagation();
     }
-    catch(e)
+    catch(ex)
     {
-    e.cancelBubble = true;
+        e.cancelBubble = true;
     }
             
     if(sci == scales.length - 1)
@@ -3018,7 +3018,7 @@ function ProcessFeatureInfo(xmlIn, append, which)
                     selection.layers.removeItem(layerId);
             }
         }
-        catch(e) {}
+        catch(ex) {}
 
         if(selectionChanged || prevCount != selection.count)
         {
@@ -3058,7 +3058,7 @@ function ProcessFeatureInfo(xmlIn, append, which)
             if(hlinkElt != null)
                 hlData.url = hlinkElt.childNodes[0].nodeValue;
         }
-        catch(e)
+        catch(ex)
         {
             hlData.url = "";
         }
@@ -3068,7 +3068,7 @@ function ProcessFeatureInfo(xmlIn, append, which)
             if(ttipElt != null)
                 hlData.ttip = ttipElt.childNodes[0].nodeValue;
         }
-        catch(e) {}
+        catch(ex) {}
     }
 }
 
@@ -3174,7 +3174,7 @@ function ParseEnvelope(xmlRoot)
         env.upperRight.Y = parseFloat(ys[1].childNodes[0].nodeValue);
         return env;
     }
-    catch(e) {}
+    catch(ex) {}
     return null;
 }
 
@@ -3233,12 +3233,12 @@ function StartResizingLegend(e)
     
     try
     {
-      e.stopPropagation();
+        e.stopPropagation();
     }
-    catch(e)
+    catch(ex)
     {
-      e.cancelBubble = true;
-      document.getElementById("LegendResizer").setCapture();
+        e.cancelBubble = true;
+        document.getElementById("LegendResizer").setCapture();
     }
     
     return false;
@@ -3262,11 +3262,11 @@ function ScaleSliding(e)
     
     try
     {
-      e.stopPropagation();
+        e.stopPropagation();
     }
-    catch(e)
+    catch(ex)
     {
-      e.cancelBubble = true;
+        e.cancelBubble = true;
     }
     return false;
 }
@@ -3275,11 +3275,11 @@ function OnPan(e, dir)
 {
     try
     {
-      e.stopPropagation();
+        e.stopPropagation();
     }
-    catch(e)
+    catch(ex)
     {
-      e.cancelBubble = true;
+        e.cancelBubble = true;
     }
     switch(dir)
     {
@@ -3297,11 +3297,11 @@ function ClickSliderScale(e)
     y = (msie?event.clientY: e.clientY);
     try
     {
-      e.stopPropagation();
+        e.stopPropagation();
     }
-    catch(e)
+    catch(ex)
     {
-      e.cancelBubble = true;
+        e.cancelBubble = true;
     }
 
     moveType = DRAGGINGCTRL;
@@ -3669,7 +3669,7 @@ function RequestHyperLinkData(id, x, y, exec)
     reqParams = "OPERATION=QUERYMAPFEATURES&VERSION=1.0.0&PERSIST=0&MAPNAME=" + encodeURIComponent(mapName) + "&SESSION=" + sessionId + "&SEQ=" + Math.random() + "&LAYERNAMES=" + encodeURIComponent(GetVisLayers()) + "&GEOMETRY=" + geom + "&SELECTIONVARIANT=INTERSECTS&MAXFEATURES=1&LAYERATTRIBUTEFILTER=5" + "&CLIENTAGENT=" + encodeURIComponent(clientAgent);
     obj = new HlRequest(id, x, y, req, exec);
     req.onreadystatechange = obj.OnHl;
-    try { req.send(reqParams); } catch(e) {}
+    try { req.send(reqParams); } catch(ex) {}
 }
 
 function ProcessHyperLinkdata(id, x, y, exec, xml)
@@ -4225,11 +4225,11 @@ function OnPropertyPaneDropDownClick(e)
 {
     try
     {
-      e.stopPropagation();
+        e.stopPropagation();
     }
-    catch(e)
+    catch(ex)
     {
-      e.cancelBubble = true;
+        e.cancelBubble = true;
     }
     return true;
 }
