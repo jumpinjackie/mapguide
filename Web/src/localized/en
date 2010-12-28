@@ -103,6 +103,7 @@ BUFFERERRORZERODISTANCE         = Please enter a nonzero distance.
 BUFFERERRORNOLAYERNAME          = Please enter a layer name.
 BUFFERERRORNEGATIVETHICKNESS    = Please enter positive or null thickness.
 BUFFERERRORNOSELECTION          = Please select feature(s) to calculate a buffer around.
+BUFFERINPUTWARNNING             = Input should be Numeric!
 
 # ColorPicker
 COLORPICKERDLGTITLE             = Select a color

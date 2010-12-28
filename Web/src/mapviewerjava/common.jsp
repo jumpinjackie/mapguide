@@ -53,7 +53,10 @@ int GetIntParameter(HttpServletRequest request, String name)
     String strval = GetParameter(request, name);
     if(strval.equals(""))
         return 0;
-    return Integer.parseInt(strval);
+    if(Pattern.matches("^[0-9]*$", strval))
+        return Integer.parseInt(strval);
+    else
+        return 0;
 }
 
 double GetDoubleParameter(HttpServletRequest request, String name)
@@ -61,7 +64,10 @@ double GetDoubleParameter(HttpServletRequest request, String name)
     String strval = GetParameter(request, name);
     if(strval.equals(""))
         return 0;
-    return Double.parseDouble(strval);
+    if(Pattern.matches("^(\d+)([.]{0,1})(\d*)$", strval))
+        return Double.parseDouble(strval);
+    else
+        return 0;
 }
 
 double GetLocalizedDoubleParameter(HttpServletRequest request, String name, String locale)

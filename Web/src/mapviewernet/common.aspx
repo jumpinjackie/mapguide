@@ -83,7 +83,10 @@ int GetIntParameter(NameValueCollection parameters, String name)
     String strval = GetParameter(parameters, name);
     if ("" == strval)
         return 0;
-    return Convert.ToInt32(strval);
+    if(System.Text.RegularExpressions.Regex.IsMatch(strval,@"^[0-9]*$"))
+        return Convert.ToInt32(strval);
+    else
+        return 0;
 }
 
 double GetDoubleParameter(NameValueCollection parameters, String name)
@@ -91,7 +94,10 @@ double GetDoubleParameter(NameValueCollection parameters, String name)
     String strval = GetParameter(parameters, name);
     if ("" == strval)
         return 0;
-    return Convert.ToDouble(strval, NumberFormatInfo.InvariantInfo);
+    if(System.Text.RegularExpressions.Regex.IsMatch(strval,@"^(\d+)([.]{0,1})(\d*)$"))
+        return Convert.ToDouble(strval, NumberFormatInfo.InvariantInfo);
+    else
+        return 0;
 
 }
 
