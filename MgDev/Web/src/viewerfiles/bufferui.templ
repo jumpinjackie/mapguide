@@ -219,6 +219,15 @@ function OnCancel()
     mf.GotoHomePage();
 }
 
+function ValidateInput(id)
+{
+    var input = document.getElementById(id);
+    if(isNaN(input.value))
+    {
+        alert("__#BUFFERINPUTWARNNING#__");
+    }
+}
+
 </script>
 </head>
 <body onload="InitDocument()" marginwidth=5 marginheight=5 leftmargin=5 topmargin=5 bottommargin=5 rightmargin=5>
@@ -234,7 +243,7 @@ function OnCancel()
         </td></tr>
         <tr><td height="6"></td></tr>
         <tr><td >__#BUFFERDISTANCE#__</td></tr>
-        <tr><td><input type="edit" name="DISTANCE" id="distance" value="1" size="5" class="Ctrl">
+        <tr><td><input type="edit" name="DISTANCE" id="distance" value="1" size="5" class="Ctrl" onkeyup="ValidateInput('distance')">
           <select name="UNITS" class="Ctrl">
             <option value="mi" %s>__#DISTANCEMILES#__</option>
             <option value="ki" %s>__#DISTANCEKILOMETERS#__</option>
@@ -286,7 +295,7 @@ function OnCancel()
                 <input type="button" value="..." style="width: 22px;" onclick="PickColor(1,false,false)" class="Ctrl"></td></tr>
               <tr><td height="6"></td></tr>
               <tr><td>__#BUFFERTRANSPARENCY#__</td></tr>
-              <tr><td><input type="text" name="FORETRANS" size="4" value="50" class="Ctrl"> %%</td></tr>
+              <tr><td><input type="text" id="foretrans" name="FORETRANS" size="4" value="50" class="Ctrl" onkeyup="ValidateInput('foretrans');"> %%</td></tr>
               <tr><td height="6"></td></tr>
               <tr><td>__#BUFFERBACKGROUNDCOLOR#__</td></tr>
               <tr><td><span class="BufferSwatch" id="fbcolorswtach" >&nbsp;__#TRANSPARENT#__&nbsp;</span>&nbsp;&nbsp;
@@ -317,7 +326,7 @@ function OnCancel()
                 <input type="button" value="..." style="width: 22px;" onclick="PickColor(0, false,false)" class="Ctrl"></td></tr>
               <tr><td height="6"></td></tr>
               <tr><td>__#BUFFERBORDERLINETHICKNESS#__</td></tr>
-              <tr><td><input type="edit" name="THICKNESS" id="thickness" value="1" size="10" class="Ctrl"></td></tr>
+              <tr><td><input type="edit" name="THICKNESS" id="thickness" value="1" size="10" class="Ctrl" onkeyup="ValidateInput('thickness')"></td></tr>
               <tr><td> </td></tr>
             </table>
           </td></tr>
