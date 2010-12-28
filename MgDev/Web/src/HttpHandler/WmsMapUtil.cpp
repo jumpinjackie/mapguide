@@ -471,7 +471,7 @@ MgStringCollection* MgWmsMapUtil::GetWMSlayerBoundingbox(STRING sSrs, STRING lay
     // Example: <Bounds SRS="EPSG:4326" west="-87.74" south="43.68" east="-87.69" north="43.815"/>
     Ptr<MgStringCollection> bounds = new MgStringCollection();
     int pos = 0;
-    while(layerBounds.find(L"<Bounds",pos) != STRING::npos)
+    while((pos = layerBounds.find(L"<Bounds",pos)) != STRING::npos)
     {
         pos += 7; // pos+7 to the first character after <Bounds
         int endPos = layerBounds.find(L"/>",pos); 
