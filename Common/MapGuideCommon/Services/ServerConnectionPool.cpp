@@ -60,7 +60,7 @@ MgServerConnectionPool::~MgServerConnectionPool()
         delete iter->second;
         iter->second = NULL;
 
-        iter++;
+        ++iter;
     }
 
     pool.clear();

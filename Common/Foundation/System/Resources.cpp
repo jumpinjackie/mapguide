@@ -182,7 +182,7 @@ MgResources::~MgResources()
     // Clean up the resource cache
     ResourceCache::iterator iterator;
 
-    for(iterator = m_resourceCache.begin(); iterator != m_resourceCache.end(); iterator++)
+    for(iterator = m_resourceCache.begin(); iterator != m_resourceCache.end(); ++iterator)
     {
         DeleteResourceFile(iterator->second);
         iterator->second = NULL;
@@ -487,7 +487,7 @@ STRING MgResources::FormatMessage(CREFSTRING stringResource, MgStringCollection*
 
 void MgResources::DeleteResourceFile(ResourceFile* file)
 {
-    for (ResourceFile::iterator iter = file->begin(); iter != file->end(); iter++)
+    for (ResourceFile::iterator iter = file->begin(); iter != file->end(); ++iter)
     {
         if (NULL != iter->second)
         {

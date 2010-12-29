@@ -38,7 +38,7 @@ GeometryAdapter::~GeometryAdapter()
 {
     // free up cached fdo filters
     for (std::map<const void*, FdoFilter*>::iterator iter = m_hFilterCache.begin();
-        iter != m_hFilterCache.end(); iter++)
+        iter != m_hFilterCache.end(); ++iter)
     {
         if (iter->second)
             iter->second->Release();
@@ -48,7 +48,7 @@ GeometryAdapter::~GeometryAdapter()
 
     // free up cached fdo expressions
     for (std::map<const void*, FdoExpression*>::iterator iter = m_hExpressionCache.begin();
-        iter != m_hExpressionCache.end(); iter++)
+        iter != m_hExpressionCache.end(); ++iter)
     {
         if (iter->second)
             iter->second->Release();

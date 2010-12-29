@@ -262,7 +262,7 @@ void ObservationMesh::ComputeNewFaces(std::vector<int>& face_indices)
     int p0i=-1;
 
     for (std::map<int, std::vector<HullEdge> >::iterator iter = edges.begin();
-        iter != edges.end(); iter++)
+        iter != edges.end(); ++iter)
     {
         std::vector<HullEdge>& ei = iter->second;
         for (unsigned j=0; j<ei.size(); j++)

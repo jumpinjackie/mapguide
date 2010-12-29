@@ -69,7 +69,7 @@ MgByteReader* MgDwfController::GetMap(MgResourceIdentifier* mapDefinition,
 
     //save the map state in the session repository
     Ptr<MgResourceIdentifier> resId = new MgResourceIdentifier(L"Session:" + sessionId + L"//" + mapDefinition->GetName() + L"." + MgResourceType::Map);
-    map->Save((MgResourceService*)resourceService, (MgResourceIdentifier*)resId);
+    map->Save(resourceService.p, resId.p);
 
     Ptr<MgDwfVersion> dwfv = new MgDwfVersion(dwfVersion, eMapVersion);
 

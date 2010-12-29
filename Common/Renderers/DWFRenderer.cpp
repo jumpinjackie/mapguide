@@ -333,25 +333,25 @@ void DWFRenderer::StartMap(RS_MapUIInfo* mapInfo,
 void DWFRenderer::EndMap()
 {
     for (stream_list::iterator iter = m_lLayerStreams.begin();
-        iter != m_lLayerStreams.end(); iter++)
+        iter != m_lLayerStreams.end(); ++iter)
     {
         DWFCORE_FREE_OBJECT(*iter);
     }
 
     for (stream_list::iterator iter = m_lLabelStreams.begin();
-        iter != m_lLabelStreams.end(); iter++)
+        iter != m_lLabelStreams.end(); ++iter)
     {
         DWFCORE_FREE_OBJECT(*iter);
     }
 
     for (stream_list::iterator iter = m_lLayoutStreams.begin();
-        iter != m_lLayoutStreams.end(); iter++)
+        iter != m_lLayoutStreams.end(); ++iter)
     {
         DWFCORE_FREE_OBJECT(*iter);
     }
 
     for (stream_list::iterator iter = m_lLayoutLabelStreams.begin();
-        iter != m_lLayoutLabelStreams.end(); iter++)
+        iter != m_lLayoutLabelStreams.end(); ++iter)
     {
         DWFCORE_FREE_OBJECT(*iter);
     }

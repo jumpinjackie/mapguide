@@ -125,7 +125,7 @@ MgDisposableCollection* CCoordinateSystemEnum::Next(UINT32 ulCount)
     }
 
     //default behavior - read each entry one by one and add it to the list to be returned
-    for (; m_iter != m_pmapSystemNameDescription->end(); m_iter++)
+    for (; m_iter != m_pmapSystemNameDescription->end(); ++m_iter)
     {
         if (pOutput->GetCount() == ulCount)
         {
@@ -175,7 +175,7 @@ MgStringCollection* CCoordinateSystemEnum::NextName(UINT32 ulCount)
     {
         throw new MgOutOfMemoryException(L"MgCoordinateSystemEnum.NextName", __LINE__, __WFILE__, NULL, L"", NULL);
     }
-    for (; m_iter != m_pmapSystemNameDescription->end(); m_iter++)
+    for (; m_iter != m_pmapSystemNameDescription->end(); ++m_iter)
     {
         if (pOutput->GetCount() == ulCount)
         {
@@ -210,7 +210,7 @@ MgStringCollection* CCoordinateSystemEnum::NextDescription(UINT32 ulCount)
     {
         throw new MgOutOfMemoryException(L"MgCoordinateSystemEnum.NextDescription", __LINE__, __WFILE__, NULL, L"", NULL);
     }
-    for (; m_iter != m_pmapSystemNameDescription->end(); m_iter++)
+    for (; m_iter != m_pmapSystemNameDescription->end(); ++m_iter)
     {
         if (pOutput->GetCount() == ulCount)
         {
@@ -244,7 +244,7 @@ void CCoordinateSystemEnum::Skip(UINT32 ulSkipCount)
     MG_TRY()
 
     UINT32 ulSkipped;
-    for (ulSkipped=0; m_iter != m_pmapSystemNameDescription->end(); m_iter++)
+    for (ulSkipped=0; m_iter != m_pmapSystemNameDescription->end(); ++m_iter)
     {
         if (ulSkipped == ulSkipCount)
         {

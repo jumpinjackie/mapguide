@@ -102,7 +102,7 @@ MgDisposableCollection* CCoordinateSystemEnumCoordinateSystemInCategory::Next(UI
     }
 
     wchar_t* pstr;
-    for (; m_iter != m_kpListCoordinateSystemNames->end(); m_iter++)
+    for (; m_iter != m_kpListCoordinateSystemNames->end(); ++m_iter)
     {
         if (pOutput->GetCount() == ulCount)
         {
@@ -156,7 +156,7 @@ MgStringCollection* CCoordinateSystemEnumCoordinateSystemInCategory::NextName(UI
         throw new MgOutOfMemoryException(L"MgCoordinateSystemEnum.NextName", __LINE__, __WFILE__, NULL, L"", NULL);
     }
     wchar_t* pstr;
-    for (; m_iter != m_kpListCoordinateSystemNames->end(); m_iter++)
+    for (; m_iter != m_kpListCoordinateSystemNames->end(); ++m_iter)
     {
         if (pOutput->GetCount() == ulCount)
         {
@@ -205,7 +205,7 @@ MgStringCollection* CCoordinateSystemEnumCoordinateSystemInCategory::NextDescrip
     }
 
     wchar_t* pstr;
-    for (; m_iter != m_kpListCoordinateSystemNames->end(); m_iter++)
+    for (; m_iter != m_kpListCoordinateSystemNames->end(); ++m_iter)
     {
         if (pOutput->GetCount() == ulCount)
         {
@@ -256,7 +256,7 @@ void CCoordinateSystemEnumCoordinateSystemInCategory::Skip(UINT32 ulSkipCount)
 {
     MG_TRY()
     UINT32 ulSkipped;
-    for (ulSkipped=0; m_iter != m_kpListCoordinateSystemNames->end(); m_iter++)
+    for (ulSkipped=0; m_iter != m_kpListCoordinateSystemNames->end(); ++m_iter)
     {
         if (ulSkipped == ulSkipCount)
         {
@@ -309,7 +309,7 @@ bool CCoordinateSystemEnumCoordinateSystemInCategory::IsFilteredOut(const char *
     {
         throw new MgOutOfMemoryException(L"MgCoordinateSystemEnum.IsFilteredOut", __LINE__, __WFILE__, NULL, L"", NULL);
     }
-    bool bIsFiltered=IsFilteredOut(pStr);
+    bIsFiltered=IsFilteredOut(pStr);
     delete[] pStr;
     MG_CATCH_AND_THROW(L"MgCoordinateSystemEnum.IsFilteredOut")
     return bIsFiltered;

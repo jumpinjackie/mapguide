@@ -121,7 +121,6 @@ void MgDateTimeProperty::ToXml(string &str, bool includeType, string rootElmName
     if (!this->IsNull())
     {
         str += "<Value>";
-        char buf[128]; buf[0] = 0;
         Ptr<MgDateTime> dtPtr = this->GetValue();
         if (dtPtr != NULL)
         {

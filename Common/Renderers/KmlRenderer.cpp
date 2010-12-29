@@ -106,7 +106,7 @@ void KmlRenderer::EndLayer()
     m_kmlContent = m_mainContent;
 
     //write out the features for each theme
-    for (ThemeMap::iterator iter = m_themeMap.begin(); iter != m_themeMap.end(); iter++)
+    for (ThemeMap::iterator iter = m_themeMap.begin(); iter != m_themeMap.end(); ++iter)
     {
         m_kmlContent->WriteString("<Folder>");
         m_kmlContent->WriteString("<name><![CDATA[", false);
@@ -242,7 +242,7 @@ void KmlRenderer::ProcessPolygon(LineBuffer* lb, RS_FillStyle& fill)
             WriteElevationSettings();
             PolygonUtils::SORTEDRINGS rings;
             PolygonUtils::DetermineInteriorAndExteriorPolygons(lb, rings);
-            for (PolygonUtils::SORTEDRINGS::iterator sIter = rings.begin(); sIter != rings.end(); sIter++)
+            for (PolygonUtils::SORTEDRINGS::iterator sIter = rings.begin(); sIter != rings.end(); ++sIter)
             {
                 RingData* pRingData = sIter->second;
 
@@ -498,7 +498,7 @@ void KmlRenderer::AddDWFContent(RS_InputStream*   /*in*/,
 
 void KmlRenderer::ClearThemes()
 {
-    for (ThemeMap::iterator iter = m_themeMap.begin(); iter != m_themeMap.end(); iter++)
+    for (ThemeMap::iterator iter = m_themeMap.begin(); iter != m_themeMap.end(); ++iter)
     {
         delete (*iter).second;
     }

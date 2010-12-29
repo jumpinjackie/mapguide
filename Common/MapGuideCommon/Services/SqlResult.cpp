@@ -49,7 +49,7 @@ MgParameterCollection * MgSqlResult::GetParameters()
 
 MgSqlDataReader * MgSqlResult::GetReader()
 {
-    return SAFE_ADDREF((MgSqlDataReader *)m_reader);
+    return SAFE_ADDREF(m_reader.p);
 }
 
 void MgSqlResult::Serialize(MgStream *stream)

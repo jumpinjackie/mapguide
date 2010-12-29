@@ -163,7 +163,7 @@ void EMapRenderer::AddScaleRange(double min,
     if (uiGraphics)
     {
         std::list<RS_UIGraphic>::iterator iter = uiGraphics->begin();
-        for (; iter != uiGraphics->end(); iter++)
+        for (; iter != uiGraphics->end(); ++iter)
         {
             // no need to correlate the UIGraphic object ID with any other object ID
             DWFUIGraphic* pGraphic = DWFCORE_ALLOC_OBJECT(
@@ -200,7 +200,7 @@ void EMapRenderer::EndMap()
     //parents' uuids. This is done as post-processing step
     //so that we know all groups are defined first
     for (layerinfo_map::iterator iter = m_hGroups.begin();
-        iter != m_hGroups.end(); iter++)
+        iter != m_hGroups.end(); ++iter)
     {
         RS_LayerUIInfo layerinfo = iter->second;
 

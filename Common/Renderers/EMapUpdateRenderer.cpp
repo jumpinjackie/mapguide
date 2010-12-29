@@ -132,7 +132,7 @@ void EMapUpdateRenderer::EndMap()
     objdefres_list::iterator oditer = m_lAttributeResources.begin();
     layerinfo_list::iterator iditer = m_lLayerInfos.begin();
     for (stream_list::iterator iter = m_lLayerStreams.begin();
-        iter != m_lLayerStreams.end(); iter++, iditer++, oditer++)
+        iter != m_lLayerStreams.end(); ++iter, ++iditer, ++oditer)
     {
         std::wstring layerid = (*iditer).guid();
         if (m_bFirst)
@@ -164,7 +164,7 @@ void EMapUpdateRenderer::EndMap()
 
     iditer = m_lLayerInfos.begin();
     for (stream_list::iterator iter = m_lLabelStreams.begin();
-        iter != m_lLabelStreams.end(); iter++, iditer++)
+        iter != m_lLabelStreams.end(); ++iter, ++iditer)
     {
         if (*iter)
         {
@@ -549,7 +549,7 @@ void EMapUpdateRenderer::AddScaleRange(RS_String& layerGuid,
     if (uiGraphics)
     {
         std::list<RS_UIGraphic>::iterator iter = uiGraphics->begin();
-        for (; iter != uiGraphics->end(); iter++)
+        for (; iter != uiGraphics->end(); ++iter)
         {
             // no need to correlate the UIGraphic object ID with any other object ID
             DWFUIGraphic* pGraphic = DWFCORE_ALLOC_OBJECT(

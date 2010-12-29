@@ -33,7 +33,7 @@ PointAdapter::~PointAdapter()
 {
     //free up cached point styles
     for (std::map<void*, RS_MarkerDef*>::iterator iter = m_hPointSymCache.begin();
-        iter != m_hPointSymCache.end(); iter++)
+        iter != m_hPointSymCache.end(); ++iter)
     {
         delete iter->second;
     }

@@ -75,16 +75,16 @@ public:
     // Renderer implementation
     //
     RENDERERS_API virtual void StartMap(RS_MapUIInfo* mapInfo,
-                                          RS_Bounds&    extents,
-                                          double        mapScale,
-                                          double        dpi,
-                                          double        metersPerUnit,
-                                          CSysTransformer* xformToLL = NULL);
+                                        RS_Bounds&    extents,
+                                        double        mapScale,
+                                        double        dpi,
+                                        double        metersPerUnit,
+                                        CSysTransformer* xformToLL = NULL);
 
     RENDERERS_API virtual void EndMap();
 
     RENDERERS_API virtual void StartLayer(RS_LayerUIInfo*      legendInfo,
-                                            RS_FeatureClassInfo* classInfo);
+                                          RS_FeatureClassInfo* classInfo);
 
     RENDERERS_API virtual void EndLayer();
 
@@ -158,20 +158,20 @@ public:
     RENDERERS_API void SetWorldToScreenTransform(SE_Matrix& xform);
 
     RENDERERS_API void DrawString(const RS_String& s,
-                    double           x,
-                    double           y,
-                    double           width,
-                    double           height,
-                    const RS_Font*   font,
-                    RS_Color&  color,
-                    double           angle);
+                                  double           x,
+                                  double           y,
+                                  double           width,
+                                  double           height,
+                                  const RS_Font*   font,
+                                  RS_Color&  color,
+                                  double           angle);
 
     RENDERERS_API void MeasureString(const RS_String& s,
-                       double           height,
-                       const RS_Font*   font,
-                       double           angleRad,
-                       RS_F_Point*      res,
-                       float*           offsets);
+                                     double           height,
+                                     const RS_Font*   font,
+                                     double           angleRad,
+                                     RS_F_Point*      res,
+                                     float*           offsets);
 
     RENDERERS_API const RS_Font* FindFont(RS_FontDef& def);
 

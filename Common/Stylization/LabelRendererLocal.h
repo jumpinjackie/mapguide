@@ -30,7 +30,7 @@ struct SE_RenderStyle;
 // of them on top of geometry in the end.
 struct LabelInfoLocal
 {
-    LabelInfoLocal(double x, double y, const RS_String& text, const RS_TextDef tdef)
+    LabelInfoLocal(double x, double y, const RS_String& text, const RS_TextDef& tdef)
         : m_x(x),
           m_y(y),
           m_text(text),

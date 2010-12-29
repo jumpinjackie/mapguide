@@ -639,8 +639,6 @@ const MgConfigValidationInfo* MgConfiguration::GetConfigValidationInfo(
 
     if (NULL != validationInfoList)
     {
-        int i = 0;
-
         while (!validationInfoList->m_propertyName.empty())
         {
             if (validationInfoList->m_propertyName == property)

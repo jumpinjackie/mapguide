@@ -276,7 +276,7 @@ void EPlotRenderer::EndMap()
         //////////////////////////////////////////////////////////////////////
         objdefres_list::iterator oditer = m_lAttributeResources.begin();
         stream_list::iterator iter = m_lLayerStreams.begin();
-        for ( ; iter != m_lLayerStreams.end(); iter++, oditer++)
+        for ( ; iter != m_lLayerStreams.end(); iter++, ++oditer)
         {
             if (m_bFirst)
             {
@@ -311,7 +311,7 @@ void EPlotRenderer::EndMap()
         //////////////////////////////////////////////////////////////////////
 
         for (stream_list::iterator iter = m_lLabelStreams.begin();
-            iter != m_lLabelStreams.end(); iter++)
+            iter != m_lLabelStreams.end(); ++iter)
         {
             if (*iter)
             {
@@ -329,7 +329,7 @@ void EPlotRenderer::EndMap()
         //////////////////////////////////////////////////////////////////////
 
         for (stream_list::iterator iter = m_lLayoutStreams.begin();
-            iter != m_lLayoutStreams.end(); iter++)
+            iter != m_lLayoutStreams.end(); ++iter)
         {
             AddW2DResource( *iter,
                 NULL,
@@ -340,7 +340,7 @@ void EPlotRenderer::EndMap()
         }
 
         for (stream_list::iterator iter = m_lLayoutLabelStreams.begin();
-            iter != m_lLayoutLabelStreams.end(); iter++)
+            iter != m_lLayoutLabelStreams.end(); ++iter)
         {
             if (NULL != *iter)
             {
@@ -377,25 +377,25 @@ void EPlotRenderer::EndMap()
     //////////////////////////////////////////////////////////////////////
 
     for (stream_list::iterator iter = m_lLayerStreams.begin();
-        iter != m_lLayerStreams.end(); iter++)
+        iter != m_lLayerStreams.end(); ++iter)
     {
         m_lSectionStreams.push_back(*iter);
     }
 
     for (stream_list::iterator iter = m_lLabelStreams.begin();
-        iter != m_lLabelStreams.end(); iter++)
+        iter != m_lLabelStreams.end(); ++iter)
     {
         m_lSectionLabelStreams.push_back(*iter);
     }
 
     for (stream_list::iterator iter = m_lLayoutStreams.begin();
-        iter != m_lLayoutStreams.end(); iter++)
+        iter != m_lLayoutStreams.end(); ++iter)
     {
         m_lSectionLayoutStreams.push_back(*iter);
     }
 
     for (stream_list::iterator iter = m_lLayoutLabelStreams.begin();
-        iter != m_lLayoutLabelStreams.end(); iter++)
+        iter != m_lLayoutLabelStreams.end(); ++iter)
     {
         m_lSectionLayoutLabelStreams.push_back(*iter);
     }
@@ -453,25 +453,25 @@ void EPlotRenderer::Done()
     // now that we've created written out the map, we can clean up
     // all the streams
     for (stream_list::iterator iter = m_lSectionStreams.begin();
-        iter != m_lSectionStreams.end(); iter++)
+        iter != m_lSectionStreams.end(); ++iter)
     {
         DWFCORE_FREE_OBJECT ( *iter);
     }
 
     for (stream_list::iterator iter = m_lSectionLabelStreams.begin();
-        iter != m_lSectionLabelStreams.end(); iter++)
+        iter != m_lSectionLabelStreams.end(); ++iter)
     {
         DWFCORE_FREE_OBJECT ( *iter);
     }
 
     for (stream_list::iterator iter = m_lSectionLayoutStreams.begin();
-        iter != m_lSectionLayoutStreams.end(); iter++)
+        iter != m_lSectionLayoutStreams.end(); ++iter)
     {
         DWFCORE_FREE_OBJECT( *iter );
     }
 
     for (stream_list::iterator iter = m_lSectionLayoutLabelStreams.begin();
-        iter != m_lSectionLayoutLabelStreams.end(); iter++)
+        iter != m_lSectionLayoutLabelStreams.end(); ++iter)
     {
         DWFCORE_FREE_OBJECT( *iter );
     }

@@ -35,14 +35,11 @@ MgByte *MgDumpFFGF::GetFGF( MgGeometry* pGeom )
 
     BYTE bytes[1024];
     int nRead = 0;
-    int nTotalRead = 0;
     do
     {
         nRead = byteReader->Read(bytes, 1024);
         if (nRead > 0)
             spBytes->Append(bytes, nRead);
-
-        nTotalRead += nRead;
     }
     while (nRead > 0);
 
@@ -96,8 +93,6 @@ void MgDumpFFGF::writeFile( FILE *ffgfFile, FloatTransform* transform, int featn
 {
     try
     {
-        int feat_num = featnum;
-
         MgCoordinateCollection* coordinates = new MgCoordinateCollection();
         MgGeometryFactory factory;
 
@@ -125,8 +120,6 @@ void MgDumpFFGF::writeFile( FILE *ffgfFile, FloatTransform* transform, int featn
 {
     try
     {
-        int feat_num = featnum;
-
         MgCoordinateCollection* coordinates = new MgCoordinateCollection();
         MgGeometryFactory factory;
 
@@ -155,12 +148,6 @@ void MgDumpFFGF::writeFile( FILE *ffgfFile, FloatTransform* transform, int featn
 {
     try
     {
-        int feat_num = featnum;
-
-        MgCoordinateCollection* coordinates = new MgCoordinateCollection();
-        MgGeometryFactory factory;
-
-
         OpsFloatPoint pt(x, y);
 
         // Create a point

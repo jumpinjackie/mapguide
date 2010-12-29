@@ -541,9 +541,7 @@ STRING MgProxyDataReader::GetString(INT32 index)
 MgByteReader* MgProxyDataReader::GetBLOB(CREFSTRING propertyName)
 {
     Ptr<MgBlobProperty> ptrProp = (MgBlobProperty*)GetProperty(propertyName, MgPropertyType::Blob);
-    Ptr<MgByteReader> retVal = ptrProp->GetValue();
-
-    return SAFE_ADDREF((MgByteReader*)retVal);
+    return ptrProp->GetValue();
 }
 
 //////////////////////////////////////////////////////////////////
@@ -556,9 +554,7 @@ MgByteReader* MgProxyDataReader::GetBLOB(CREFSTRING propertyName)
 MgByteReader* MgProxyDataReader::GetBLOB(INT32 index)
 {
     Ptr<MgBlobProperty> ptrProp = (MgBlobProperty*)GetProperty(index, MgPropertyType::Blob);
-    Ptr<MgByteReader> retVal = ptrProp->GetValue();
-
-    return SAFE_ADDREF((MgByteReader*)retVal);
+    return ptrProp->GetValue();
 }
 
 //////////////////////////////////////////////////////////////////
@@ -571,9 +567,7 @@ MgByteReader* MgProxyDataReader::GetBLOB(INT32 index)
 MgByteReader* MgProxyDataReader::GetCLOB(CREFSTRING propertyName)
 {
     Ptr<MgClobProperty> ptrProp = (MgClobProperty*)GetProperty(propertyName, MgPropertyType::Clob);
-    Ptr<MgByteReader> retVal = ptrProp->GetValue();
-
-    return SAFE_ADDREF((MgByteReader*)retVal);
+    return ptrProp->GetValue();
 }
 
 //////////////////////////////////////////////////////////////////
@@ -586,9 +580,7 @@ MgByteReader* MgProxyDataReader::GetCLOB(CREFSTRING propertyName)
 MgByteReader* MgProxyDataReader::GetCLOB(INT32 index)
 {
     Ptr<MgClobProperty> ptrProp = (MgClobProperty*)GetProperty(index, MgPropertyType::Clob);
-    Ptr<MgByteReader> retVal = ptrProp->GetValue();
-
-    return SAFE_ADDREF((MgByteReader*)retVal);
+    return ptrProp->GetValue();
 }
 
 //////////////////////////////////////////////////////////////////
@@ -601,9 +593,7 @@ MgByteReader* MgProxyDataReader::GetCLOB(INT32 index)
 MgByteReader* MgProxyDataReader::GetGeometry(CREFSTRING propertyName)
 {
     Ptr<MgGeometryProperty> ptrProp = (MgGeometryProperty*)GetProperty(propertyName, MgPropertyType::Geometry);
-    Ptr<MgByteReader> retVal = ptrProp->GetValue();
-
-    return SAFE_ADDREF((MgByteReader*)retVal);
+    return ptrProp->GetValue();
 }
 
 //////////////////////////////////////////////////////////////////
@@ -616,9 +606,7 @@ MgByteReader* MgProxyDataReader::GetGeometry(CREFSTRING propertyName)
 MgByteReader* MgProxyDataReader::GetGeometry(INT32 index)
 {
     Ptr<MgGeometryProperty> ptrProp = (MgGeometryProperty*)GetProperty(index, MgPropertyType::Geometry);
-    Ptr<MgByteReader> retVal = ptrProp->GetValue();
-
-    return SAFE_ADDREF((MgByteReader*)retVal);
+    return ptrProp->GetValue();
 }
 
 //////////////////////////////////////////////////////////////////
@@ -685,8 +673,7 @@ MgByteReader* MgProxyDataReader::ToXml()
     Ptr<MgByteSource> byteSource = new MgByteSource((BYTE_ARRAY_IN)xmlStr.c_str(), (INT32)xmlStr.length());
     byteSource->SetMimeType(MgMimeType::Xml);
 
-    Ptr<MgByteReader> byteReader = byteSource->GetReader();
-    return SAFE_ADDREF((MgByteReader*)byteReader);
+    return byteSource->GetReader();
 }
 
 void MgProxyDataReader::ToXml(string &str)

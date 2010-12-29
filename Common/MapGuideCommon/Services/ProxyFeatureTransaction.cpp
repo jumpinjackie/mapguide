@@ -85,7 +85,7 @@ void MgProxyFeatureTransaction::Serialize(MgStream* stream)
 
     if (operationCompleted)
     {
-        stream->WriteObject((MgResourceIdentifier*)m_resourceId);
+        stream->WriteObject(m_resourceId.p);
         stream->WriteString(m_transactionId); // Get the transaction ID so we can use it
     }
 }

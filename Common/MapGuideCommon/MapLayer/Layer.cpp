@@ -173,7 +173,7 @@ void MgLayer::Serialize(MgStream* stream)
     helper->WriteUINT32(scaleValueCount);
     if(scaleValueCount > 0)
     {
-        for(SCALERANGES::const_iterator it = m_scaleRanges.begin(); it != m_scaleRanges.end(); it++)
+        for(SCALERANGES::const_iterator it = m_scaleRanges.begin(); it != m_scaleRanges.end(); ++it)
             helper->WriteBytes((const unsigned char*)&(*it), sizeof(double));
     }
     helper->WriteString(m_featureSourceId);
@@ -183,7 +183,7 @@ void MgLayer::Serialize(MgStream* stream)
     helper->WriteString(m_geometry);
 
     helper->WriteUINT32((UINT32)m_idProps.size());
-    for (IdPropertyList::iterator ids = m_idProps.begin(); ids != m_idProps.end(); ids++)
+    for (IdPropertyList::iterator ids = m_idProps.begin(); ids != m_idProps.end(); ++ids)
     {
         helper->WriteUINT16(ids->type);
         helper->WriteString(ids->name);

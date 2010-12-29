@@ -308,8 +308,6 @@ INT8 CCoordinateSystemMgrs::GetLetteringScheme()
 void CCoordinateSystemMgrs::InitMgrsSpecification (MgCoordinateSystemGridSpecification* pSpecification,
                                                    INT32 mgrsGridLevel)
 {
-    double gridIncrement;
-
     MG_TRY ()
         // Initialize the standard stuff.
         pSpecification->SetGridBase (0.0,0.0);
@@ -330,6 +328,7 @@ void CCoordinateSystemMgrs::InitMgrsSpecification (MgCoordinateSystemGridSpecifi
         else if (mgrsGridLevel >= MgCoordinateSystemMgrsGridLevel::Mgrs100Km &&
                  mgrsGridLevel <= MgCoordinateSystemMgrsGridLevel::Mgrs1m)
         {
+            double gridIncrement;
             switch (mgrsGridLevel) {
             case MgCoordinateSystemMgrsGridLevel::Mgrs100Km:
                 gridIncrement = 100000.0;

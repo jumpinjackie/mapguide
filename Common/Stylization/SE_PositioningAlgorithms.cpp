@@ -779,8 +779,7 @@ void SE_PositioningAlgorithms::MultipleHighwaysShields(SE_ApplyContext*  applyCt
     for (shieldIndex=0; shieldIndex<shieldCount; ++shieldIndex)
     {
         for (SE_RenderPrimitiveList::iterator iter = symbolVectors[shieldIndex].begin();
-             iter != symbolVectors[shieldIndex].end();
-             iter++)
+             iter != symbolVectors[shieldIndex].end(); ++iter)
         {
             // necessary since destructor of SE_RenderPrimitive is not virtual
             switch ((*iter)->type)

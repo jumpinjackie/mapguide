@@ -1339,7 +1339,7 @@ MgStringCollection* MgSite::Authenticate(MgUserInformation* userInformation,
 
     MG_SITE_TRY()
 
-    CHECKARGUMENTNULL((MgUserInformation*)userInformation, L"MgSite.Authenticate")
+    CHECKARGUMENTNULL(userInformation, L"MgSite.Authenticate")
 
     assert(m_connProp == NULL);
     MgSiteManager* siteManager = MgSiteManager::GetInstance();

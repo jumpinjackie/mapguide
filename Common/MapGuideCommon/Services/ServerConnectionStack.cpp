@@ -85,7 +85,7 @@ MgServerConnectionStack::~MgServerConnectionStack()
     {
         (*iter)->SetStack(NULL);
         SAFE_RELEASE((*iter));
-        iter++;
+        ++iter;
     }
     m_inUse->clear();
     delete m_inUse;

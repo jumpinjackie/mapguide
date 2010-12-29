@@ -33,7 +33,7 @@ PolygonAdapter::~PolygonAdapter()
 {
     //free up cached area styles
     for (std::map<void*, RS_FillStyle*>::iterator iter = m_hAreaSymCache.begin();
-        iter != m_hAreaSymCache.end(); iter++)
+        iter != m_hAreaSymCache.end(); ++iter)
     {
         delete iter->second;
     }
