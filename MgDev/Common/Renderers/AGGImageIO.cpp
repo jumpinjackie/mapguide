@@ -870,7 +870,7 @@ static gdImagePtr CreateGdImageWithPalette(gdImagePtr img24, RS_ColorVector* bas
     {
         // add colors from the colorpalette (duplicate color entries make the used palette less than 256)
         RS_ColorVector::iterator it;
-        for (it = baseColorPalette->begin();it != baseColorPalette->end(); it++)
+        for (it = baseColorPalette->begin();it != baseColorPalette->end(); ++it)
         {
             gdImageColorAllocate(gdPPalette, (*it).red(), (*it).green(), (*it).blue());
         }

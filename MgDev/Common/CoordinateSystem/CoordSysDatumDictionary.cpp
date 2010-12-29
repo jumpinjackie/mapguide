@@ -267,6 +267,7 @@ cs_Dtdef_ * CCoordinateSystemDatumDictionary::dtdef(const char *kpName) const
     csFILE *pFile=CS_fopen(kpName, szMode);
     if (!pFile)
     {
+        delete [] pBuf;
         return NULL;
     }
     int nResult = CS_bins(

@@ -186,7 +186,7 @@ struct SE_RenderStyle
 
     ~SE_RenderStyle()
     {
-        for (SE_RenderPrimitiveList::iterator iter = symbol.begin(); iter != symbol.end(); iter++)
+        for (SE_RenderPrimitiveList::iterator iter = symbol.begin(); iter != symbol.end(); ++iter)
         {
             // necessary since destructor of SE_RenderPrimitive is not virtual
             switch ((*iter)->type)
@@ -208,7 +208,8 @@ struct SE_RenderStyle
                     break;
 
                 default:
-                    throw; // means there is a bug
+                    _ASSERT(false); // means there is a bug
+                    break;
             }
         }
     }

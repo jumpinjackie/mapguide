@@ -140,11 +140,11 @@ void MgMultiCurveString::Deserialize(MgStream* stream)
 
     //Deserialize from AGF format
     INT32 type;
-    ((MgStreamReader*)stream)->GetInt32(type);
+    reader->GetInt32(type);
     assert(type == MgGeometryType::MultiCurveString);
 
     INT32 numCurveStrings;
-    ((MgStreamReader*)stream)->GetInt32(numCurveStrings);
+    reader->GetInt32(numCurveStrings);
 
     m_curveStrings = new MgCurveStringCollection();
     for(INT32 i = 0; i < numCurveStrings; i++)

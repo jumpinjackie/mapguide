@@ -53,11 +53,11 @@ MgSelectionBase::~MgSelectionBase()
 {
     // Delete selection manually instead of relying on deep template deletion
     SelectionMap::iterator lIter;
-    for (lIter = m_selections.begin(); lIter != m_selections.end(); lIter++)
+    for (lIter = m_selections.begin(); lIter != m_selections.end(); ++lIter)
     {
         SelectedClassMap* clsmap = lIter->second;
         SelectedClassMap::iterator cIter;
-        for (cIter = clsmap->begin(); cIter != clsmap->end(); cIter++)
+        for (cIter = clsmap->begin(); cIter != clsmap->end(); ++cIter)
         {
             SelectionList* list = cIter->second;
             cIter->second = NULL;
@@ -200,14 +200,14 @@ STRING MgSelectionBase::ToXml(bool withXmlDecl)
     xml.append(L"<FeatureSet xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:noNamespaceSchemaLocation=\"FeatureSet-1.0.0.xsd\">");
 
     SelectionMap::iterator lIter;
-    for (lIter = m_selections.begin(); lIter != m_selections.end(); lIter++)
+    for (lIter = m_selections.begin(); lIter != m_selections.end(); ++lIter)
     {
         xml.append(L" <Layer id=\"");
         xml.append(lIter->first);
         xml.append(L"\">");
 
         SelectedClassMap::iterator cIter;
-        for (cIter = lIter->second->begin(); cIter != lIter->second->end(); cIter++)
+        for (cIter = lIter->second->begin(); cIter != lIter->second->end(); ++cIter)
         {
             xml.append(L"  <Class id=\"");
             xml.append(cIter->first);
@@ -223,7 +223,7 @@ STRING MgSelectionBase::ToXml(bool withXmlDecl)
             }
 
             SelectionList::iterator sIter;
-            for (sIter = cIter->second->begin(); sIter != cIter->second->end(); sIter++)
+            for (sIter = cIter->second->begin(); sIter != cIter->second->end(); ++sIter)
             {
                 selXml.append(L"   <ID>");
                 selXml.append(*sIter);
@@ -262,7 +262,7 @@ void MgSelectionBase::AddFeatures(MgLayerBase* layer, MgFeatureReader* featureRe
     {
         m_stream->Clear();
         MgLayerBase::IdPropertyList propList = layer->GetIdPropertyList();
-        for (MgLayerBase::IdPropertyList::iterator idIter = propList.begin(); idIter != propList.end(); idIter++)
+        for (MgLayerBase::IdPropertyList::iterator idIter = propList.begin(); idIter != propList.end(); ++idIter)
         {
             switch (idIter->type)
             {
@@ -311,7 +311,7 @@ void MgSelectionBase::AddFeatureIds(MgLayerBase* layer, CREFSTRING className, Mg
 
     MgLayerBase::IdPropertyList propList = layer->GetIdPropertyList();
     MgLayerBase::IdPropertyList::iterator idIter;
-    for (idIter = propList.begin(); idIter != propList.end(); idIter++)
+    for (idIter = propList.begin(); idIter != propList.end(); ++idIter)
     {
         Ptr<MgProperty> prop = props->GetItem(idIter->name);
         switch (idIter->type)
@@ -473,7 +473,7 @@ MgStringCollection* MgSelectionBase::GetClasses(CREFSTRING layer)
     {
         SelectedClassMap* classMap = lIter->second;
         SelectedClassMap::iterator cIter;
-        for (cIter = classMap->begin(); cIter != classMap->end(); cIter++)
+        for (cIter = classMap->begin(); cIter != classMap->end(); ++cIter)
         {
             strColl->Add(cIter->first);
         }
@@ -535,7 +535,7 @@ MgStringCollection* MgSelectionBase::GenerateFilters(MgLayerBase* layer,
         bool bFirstSel = true;
 
         SelectionList::iterator sIter;
-        for (sIter = selList->begin(); sIter != selList->end(); sIter++)
+        for (sIter = selList->begin(); sIter != selList->end(); ++sIter)
         {
             m_stream->FromBase64(*sIter);
 
@@ -543,7 +543,7 @@ MgStringCollection* MgSelectionBase::GenerateFilters(MgLayerBase* layer,
 
             bool bFirstProp = true;
             MgLayerBase::IdPropertyList::iterator idIter;
-            for (idIter = idList.begin(); idIter != idList.end(); idIter++)
+            for (idIter = idList.begin(); idIter != idList.end(); ++idIter)
             {
                 if (!bFirstProp)
                 {
@@ -945,17 +945,17 @@ void MgSelectionBase::SetMap(MgMapBase* map)
 void MgSelectionBase::Serialize(MgStream* stream)
 {
     stream->WriteInt32((INT32)m_selections.size());
-    for(SelectionMap::iterator lIter = m_selections.begin(); lIter != m_selections.end(); lIter++)
+    for(SelectionMap::iterator lIter = m_selections.begin(); lIter != m_selections.end(); ++lIter)
     {
         stream->WriteString(lIter->first);
         SelectedClassMap* classMap = lIter->second;
         stream->WriteInt32((INT32)classMap->size());
-        for(SelectedClassMap::iterator cIter = classMap->begin(); cIter != classMap->end(); cIter++)
+        for(SelectedClassMap::iterator cIter = classMap->begin(); cIter != classMap->end(); ++cIter)
         {
             stream->WriteString(cIter->first);
             SelectionList* selectionList = cIter->second;
             stream->WriteInt32((INT32)selectionList->size());
-            for(SelectionList::iterator sIter = selectionList->begin(); sIter != selectionList->end(); sIter++)
+            for(SelectionList::iterator sIter = selectionList->begin(); sIter != selectionList->end(); ++sIter)
                 stream->WriteString(*sIter);
         }
     }

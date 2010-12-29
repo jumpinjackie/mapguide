@@ -1357,7 +1357,7 @@ void StylizationEngine::ClearCache()
 {
     std::map<CompositeTypeStyle*, SE_Rule*>::iterator iter = m_rules.begin();
 
-    for (; iter != m_rules.end(); iter++)
+    for (; iter != m_rules.end(); ++iter)
         delete [] iter->second;
 
     m_rules.clear();

@@ -93,7 +93,7 @@ class MDFPARSER_API SAX2ElementHandler
     {                                                                           \
         std::vector<std::wstring>::const_iterator iter = _elementMap.begin();   \
         int id = 1;                                                             \
-        for (iter++; iter != _elementMap.end(); iter++)                         \
+        for (++iter; iter != _elementMap.end(); ++iter)                         \
         {                                                                       \
             if (0 == ::wcscmp(iter->c_str(), name))                             \
                 return id;                                                      \

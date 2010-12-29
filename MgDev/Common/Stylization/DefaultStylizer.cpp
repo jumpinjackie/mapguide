@@ -525,7 +525,7 @@ void DefaultStylizer::ClearAdapters()
     std::map<int, GeometryAdapter*>::iterator sgiter = m_hGeomStylizers.begin();
 
     // free the stylizer objects
-    for (; sgiter!=m_hGeomStylizers.end(); sgiter++)
+    for (; sgiter!=m_hGeomStylizers.end(); ++sgiter)
     {
         delete sgiter->second;
     }

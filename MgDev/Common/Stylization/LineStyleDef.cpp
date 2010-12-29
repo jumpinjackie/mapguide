@@ -822,7 +822,7 @@ std::vector<std::wstring> LineStyleDef::GetLineStyleNames()
 
     // add the user-defined names
     CUSTOMSTYLES::iterator iter = s_customStyles.begin();
-    for (; iter != s_customStyles.end(); iter++)
+    for (; iter != s_customStyles.end(); ++iter)
     {
         std::wstring name = iter->first;
         names.push_back(name);

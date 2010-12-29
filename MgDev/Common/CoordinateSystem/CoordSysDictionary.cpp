@@ -267,6 +267,7 @@ cs_Csdef_ * CCoordinateSystemDictionary::csdef(const char *kpName)
     csFILE *pFile=CS_fopen(kpName, szMode);
     if (!pFile)
     {
+        delete [] pBuf;
         return NULL;
     }
     int nResult = CS_bins(

@@ -56,7 +56,7 @@ MgStreamData::MgStreamData( ACE_HANDLE handle, MgStreamHelper* pStreamHelper ) :
 //  </summary>
 //
 //  <param name = "copy">
-//  The MgStreamData objec to copy for the new object.
+//  The MgStreamData object to copy for the new object.
 //  </param>
 MgStreamData::MgStreamData( MgStreamData &copy ) :
     m_Handle( copy.m_Handle ),
@@ -67,7 +67,7 @@ MgStreamData::MgStreamData( MgStreamData &copy ) :
     m_bError( copy.m_bError )
 {
     ACE_ASSERT( m_Handle != 0 );
-    ACE_ASSERT( NULL != (MgStreamHelper*) m_pStreamHelper );
+    ACE_ASSERT( NULL != m_pStreamHelper.p );
 };
 
 ///////////////////////////////////////////////////////////////////////////

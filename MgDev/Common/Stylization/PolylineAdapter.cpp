@@ -33,7 +33,7 @@ PolylineAdapter::~PolylineAdapter()
 {
     //free up cached line styles
     for (std::map<void*, RS_LineStroke*>::iterator iter = m_hLineSymCache.begin();
-        iter != m_hLineSymCache.end(); iter++)
+        iter != m_hLineSymCache.end(); ++iter)
     {
         delete iter->second;
     }

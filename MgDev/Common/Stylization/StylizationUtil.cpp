@@ -587,7 +587,7 @@ void StylizationUtil::RenderCompositeSymbolization(CompositeSymbolization* csym,
     // step 4 - re-evaluate and draw all the symbol instances
     //-------------------------------------------------------
 
-    for (std::vector<SE_SymbolInstance*>::const_iterator iter = symbolInstances.begin(); iter != symbolInstances.end(); iter++)
+    for (std::vector<SE_SymbolInstance*>::const_iterator iter = symbolInstances.begin(); iter != symbolInstances.end(); ++iter)
     {
         // one per symbol instance
         SE_SymbolInstance* sym = *iter;
@@ -641,7 +641,7 @@ void StylizationUtil::RenderCompositeSymbolization(CompositeSymbolization* csym,
         applyCtx.xform = &xform;
         applyCtx.sizeContext = sym->sizeContext;
 
-        for (std::vector<SE_Style*>::const_iterator siter = sym->styles.begin(); siter != sym->styles.end(); siter++)
+        for (std::vector<SE_Style*>::const_iterator siter = sym->styles.begin(); siter != sym->styles.end(); ++siter)
         {
             // have one style per simple symbol definition
             SE_Style* style = *siter;
@@ -768,7 +768,7 @@ void StylizationUtil::RenderCompositeSymbolization(CompositeSymbolization* csym,
     // step 5 - final clean up
     //-------------------------------------------------------
 
-    for (std::vector<SE_SymbolInstance*>::iterator iter = symbolInstances.begin(); iter != symbolInstances.end(); iter++)
+    for (std::vector<SE_SymbolInstance*>::iterator iter = symbolInstances.begin(); iter != symbolInstances.end(); ++iter)
         delete *iter;
 
     symbolInstances.clear();
@@ -796,7 +796,7 @@ void StylizationUtil::GetCompositeSymbolizationPreviewBounds(std::vector<SE_Symb
 
     RS_Bounds fullBounds(DBL_MAX, DBL_MAX, -DBL_MAX, -DBL_MAX);
 
-    for (std::vector<SE_SymbolInstance*>::const_iterator iter = symbolInstances.begin(); iter != symbolInstances.end(); iter++)
+    for (std::vector<SE_SymbolInstance*>::const_iterator iter = symbolInstances.begin(); iter != symbolInstances.end(); ++iter)
     {
         // one per symbol instance
         SE_SymbolInstance* sym = *iter;
@@ -826,7 +826,7 @@ void StylizationUtil::GetCompositeSymbolizationPreviewBounds(std::vector<SE_Symb
         evalCtx.xform = &xformScale;
         evalCtx.resources = sman;
 
-        for (std::vector<SE_Style*>::const_iterator siter = sym->styles.begin(); siter != sym->styles.end(); siter++)
+        for (std::vector<SE_Style*>::const_iterator siter = sym->styles.begin(); siter != sym->styles.end(); ++siter)
         {
             // have one style per simple symbol definition
             SE_Style* style = *siter;
@@ -962,7 +962,7 @@ RS_Bounds StylizationUtil::GetCompositeSymbolizationBounds(CompositeSymbolizatio
     GetCompositeSymbolizationBoundsInternal(symbolInstances, pSERenderer, sman, exec, symBounds);
 
     // clean up
-    for (std::vector<SE_SymbolInstance*>::iterator iter = symbolInstances.begin(); iter != symbolInstances.end(); iter++)
+    for (std::vector<SE_SymbolInstance*>::iterator iter = symbolInstances.begin(); iter != symbolInstances.end(); ++iter)
         delete *iter;
 
     symbolInstances.clear();
@@ -989,7 +989,7 @@ void StylizationUtil::GetCompositeSymbolizationBoundsInternal(std::vector<SE_Sym
     double mm2sud = pSERenderer->GetScreenUnitsPerMillimeterDevice();
     double mm2suw = pSERenderer->GetScreenUnitsPerMillimeterWorld();
 
-    for (std::vector<SE_SymbolInstance*>::const_iterator iter = symbolInstances.begin(); iter != symbolInstances.end(); iter++)
+    for (std::vector<SE_SymbolInstance*>::const_iterator iter = symbolInstances.begin(); iter != symbolInstances.end(); ++iter)
     {
         // one per symbol instance
         SE_SymbolInstance* sym = *iter;
@@ -1019,7 +1019,7 @@ void StylizationUtil::GetCompositeSymbolizationBoundsInternal(std::vector<SE_Sym
         evalCtx.xform = &xformScale;
         evalCtx.resources = sman;
 
-        for (std::vector<SE_Style*>::const_iterator siter = sym->styles.begin(); siter != sym->styles.end(); siter++)
+        for (std::vector<SE_Style*>::const_iterator siter = sym->styles.begin(); siter != sym->styles.end(); ++siter)
         {
             // have one style per simple symbol definition
             SE_Style* style = *siter;

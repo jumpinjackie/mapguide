@@ -140,11 +140,11 @@ void MgMultiLineString::Deserialize(MgStream* stream)
 
     //Deserialize from AGF format
     INT32 type;
-    ((MgStreamReader*)stream)->GetInt32(type);
+    reader->GetInt32(type);
     assert(type == MgGeometryType::MultiLineString);
 
     INT32 numLineStrings;
-    ((MgStreamReader*)stream)->GetInt32(numLineStrings);
+    reader->GetInt32(numLineStrings);
 
     m_lineStrings = new MgLineStringCollection();
     for(INT32 i = 0; i < numLineStrings; i++)

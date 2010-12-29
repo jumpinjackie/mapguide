@@ -1423,8 +1423,6 @@ BOOL PlaneSweep::TraverseBoundary(WingedEdge *wEdge, WingedEdge::EdgeSide side,
     // marked as interior (all the edge-sides must be exterior in order for
     // the boundary to qualify for output)
 
-    int j = 0;
-
     do {
         assert(!wEdge->EdgeDeleted());
 

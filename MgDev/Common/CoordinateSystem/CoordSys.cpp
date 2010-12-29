@@ -737,7 +737,7 @@ MgCoordinateSystemEnumInteger32* CCoordinateSystem::GetErrors()
     assert(nNumErrs > 0);
 
     //Make an array of integers to hold the error codes.
-    int *pErrs = new int[nNumErrs];
+    pErrs = new int[nNumErrs];
     if (NULL == pErrs)
     {
         throw new MgOutOfMemoryException(L"MgCoordinateSystem.GetErrors", __LINE__, __WFILE__, NULL, L"", NULL);
@@ -3264,12 +3264,8 @@ void CCoordinateSystem::ConvertPoint(chkfunc check, llcsfunc convert, double dSo
         throw new MgCoordinateSystemInitializationFailedException(L"MgCoordinateSystem.ConvertPoint", __LINE__, __WFILE__, NULL, L"MgCoordinateSystemNotReadyException", NULL);
     }
 
-    //If range checking is turned on, find out whether
-    //we'll need to warn the caller later on.
-    bool bWarn = false;
-    int nResult;
-
     //Do the conversion.
+    int nResult;
     double dCoords[3] = { dSourceCoord1, dSourceCoord2, dSourceCoord3 };
     CriticalClass.Enter();
     nResult = convert(&m_csprm, dCoords, dCoords);

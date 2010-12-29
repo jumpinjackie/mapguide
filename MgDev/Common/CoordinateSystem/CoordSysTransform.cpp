@@ -938,7 +938,6 @@ MgLineString* CCoordinateSystemTransform::GridLine (MgCoordinate* fromPnt,MgCoor
     double delX, delX2, delY, delY2;
     double dist2, chord2, maxChord;
 
-    double wrkPntX, wrkPntY;
     double midSrcX, midSrcY;
     double midTrgX, midTrgY;
 
@@ -950,8 +949,8 @@ MgLineString* CCoordinateSystemTransform::GridLine (MgCoordinate* fromPnt,MgCoor
         segList = new rx_Linseg_;
         segList->next = NULL;
 
-        wrkPntX = segList->srcX = segList->trgX = fromPnt->GetX ();
-        wrkPntY = segList->srcY = segList->trgY = fromPnt->GetY ();
+        segList->srcX = segList->trgX = fromPnt->GetX ();
+        segList->srcY = segList->trgY = fromPnt->GetY ();
         Transform (&segList->trgX,&segList->trgY);
 
         // Allocate and populate the last point in the segment list.
@@ -959,8 +958,8 @@ MgLineString* CCoordinateSystemTransform::GridLine (MgCoordinate* fromPnt,MgCoor
         curPtr->next = NULL;
         segList->next = curPtr;
 
-        wrkPntX = curPtr->srcX = curPtr->trgX = toPnt->GetX ();
-        wrkPntY = curPtr->srcY = curPtr->trgY = toPnt->GetY ();
+        curPtr->srcX = curPtr->trgX = toPnt->GetX ();
+        curPtr->srcY = curPtr->trgY = toPnt->GetY ();
         Transform (&curPtr->trgX,&curPtr->trgY);
 
         // We now have the two end points of the line in the segment list.  Start a
@@ -1317,7 +1316,6 @@ inline void CCoordinateSystemTransform::TransformPointInternal(double& x, double
     //If range checking is turned on, find out whether
     //we'll need to warn the caller later on.
     double z=0.;
-    bool bWarn = false;
     int nResult = cs_CNVRT_NRML;
     if (pdZ)
     {

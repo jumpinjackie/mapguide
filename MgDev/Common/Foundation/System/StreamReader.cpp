@@ -572,7 +572,7 @@ MgObject* MgStreamReader::GetObject()
 
     Ptr<MgSerializable> obj = (MgSerializable*)MgUtil::CreateMgObject(classId); // throws NullPointerException
     //deserialize the object
-    (obj)->Deserialize((MgStream*)this);
+    obj->Deserialize((MgStream*)this);
 
     return obj.Detach();
 }
@@ -583,7 +583,7 @@ MgObject* MgStreamReader::GetObject()
 ///
 MgStreamHelper* MgStreamReader::GetStreamHelper()
 {
-    return SAFE_ADDREF((MgStreamHelper*)m_sHelper);
+    return SAFE_ADDREF(m_sHelper.p);
 }
 
 ///<summary>

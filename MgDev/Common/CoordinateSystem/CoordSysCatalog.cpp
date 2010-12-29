@@ -303,7 +303,6 @@ void CCoordinateSystemCatalog::SetDictionaryDir(CREFSTRING sDirPath)
     wchar_t szFname[_MAX_FNAME] = {0};
     wchar_t szExt[_MAX_EXT] = {0};
     _tsplitpath(sDirPath.c_str(), szDrive, szDir, szFname, szExt);
-    wchar_t* pNewDir=NULL;
     if ((_tcslen(szFname) > 0) || (_tcslen(szExt) > 0))
     {
         //ABA: don't understand: if a filename or an extension has been found,

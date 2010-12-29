@@ -80,7 +80,7 @@ void MgPrintLayout::Create(MgResourceService* resourceService, MgResourceIdentif
 
     // Get the PrintLayout contents
     byteReader = resourceService->GetResourceContent(layoutDefinition);
-    Ptr<MgByteSink> byteSink = new MgByteSink((MgByteReader*)byteReader);
+    Ptr<MgByteSink> byteSink = new MgByteSink(byteReader.p);
     string resourceContent;
     byteSink->ToStringUtf8(resourceContent);
 
@@ -149,7 +149,7 @@ void MgPrintLayout::SetPlotCenter(MgCoordinate* center)
 //
 MgPlotSpecification* MgPrintLayout::GetPlotSize()
 {
-    return SAFE_ADDREF((MgPlotSpecification*)m_plotSpec);
+    return SAFE_ADDREF(m_plotSpec.p);
 }
 
 
@@ -197,7 +197,7 @@ void MgPrintLayout::GetLayoutPropertiesFromXml(MgXmlUtil* pXmlUtil)
     DOMElement* root = pXmlUtil->GetRootNode();
     CHECKNULL(root, L"MgPrintLayout.GetLayoutProperitesFromXml()");
 
-    DOMElement* pageProperties = pXmlUtil->GetElementNode(root, "PageProperties");
+//  DOMElement* pageProperties = pXmlUtil->GetElementNode(root, "PageProperties");
 
     DOMElement* backgroundColor = pXmlUtil->GetElementNode(root, "BackgroundColor");
 
@@ -409,7 +409,7 @@ void MgPrintLayout::Serialize(MgStream* stream)
     if (customLogosCount > 0)
     {
         for (MgCustomLogoInfoVector::iterator iter = m_logos.begin();
-            iter != m_logos.end(); iter++)
+            iter != m_logos.end(); ++iter)
         {
             MgCustomLogoInfo logoInfo = (MgCustomLogoInfo)(*iter);
 
@@ -430,7 +430,7 @@ void MgPrintLayout::Serialize(MgStream* stream)
     if (customTextCount > 0)
     {
         for (MgCustomTextInfoVector::iterator iter = m_text.begin();
-            iter != m_text.end(); iter++)
+            iter != m_text.end(); ++iter)
         {
             MgCustomTextInfo textInfo = (MgCustomTextInfo)(*iter);
 

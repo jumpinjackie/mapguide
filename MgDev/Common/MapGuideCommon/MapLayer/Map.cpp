@@ -99,7 +99,7 @@ MgService* MgMap::GetService(INT32 serviceType)
     if (MgServiceType::ResourceService == serviceType)
     {
         InitializeResourceService(NULL);
-        return SAFE_ADDREF((MgResourceService*)m_resourceService);
+        return SAFE_ADDREF(m_resourceService.p);
     }
     else
     {
@@ -234,7 +234,7 @@ void MgMap::Create(MgResourceService* resourceService, MgResourceIdentifier* map
     if(unresolvedGroupLinks.size() > 0)
     {
         map<MgLayerGroup*, STRING>::const_iterator itUnres;
-        for(itUnres = unresolvedGroupLinks.begin(); itUnres != unresolvedGroupLinks.end(); itUnres++)
+        for(itUnres = unresolvedGroupLinks.begin(); itUnres != unresolvedGroupLinks.end(); ++itUnres)
         {
             itKg = knownGroups.find(itUnres->second);
             assert(itKg != knownGroups.end());
@@ -438,7 +438,7 @@ void MgMap::Create(MgResourceService* resourceService, MgResourceIdentifier* map
     }
 
     // load the sorted scales into the vector
-    for (SORTEDSCALES::iterator sIter = sortedScales.begin(); sIter != sortedScales.end(); sIter++)
+    for (SORTEDSCALES::iterator sIter = sortedScales.begin(); sIter != sortedScales.end(); ++sIter)
         m_finiteDisplayScales.push_back(sIter->second);
 
     m_trackChangesDisabled = false;
@@ -872,7 +872,7 @@ void MgMap::Serialize(MgStream* stream)
     stream->WriteInt32(scaleCount);
     if (scaleCount > 0)
     {
-        for (FINITESCALES::const_iterator it = m_finiteDisplayScales.begin(); it != m_finiteDisplayScales.end(); it++)
+        for (FINITESCALES::const_iterator it = m_finiteDisplayScales.begin(); it != m_finiteDisplayScales.end(); ++it)
             stream->WriteDouble(*it);
     }
 
@@ -1086,7 +1086,7 @@ void MgMap::BulkLoadIdentityProperties(MgFeatureService* featureService)
         }
     }
 
-    for (LayerFeatureSourceMap::iterator fsIter = fsMap.begin(); fsIter != fsMap.end(); fsIter++)
+    for (LayerFeatureSourceMap::iterator fsIter = fsMap.begin(); fsIter != fsMap.end(); ++fsIter)
     {
         // Assumption:  feature source is only referencing one schema
         STRING featureSource = fsIter->first;
@@ -1094,7 +1094,7 @@ void MgMap::BulkLoadIdentityProperties(MgFeatureService* featureService)
         Ptr<MgResourceIdentifier> resId = new MgResourceIdentifier(featureSource);
         LayerClassMap& classList = fsIter->second;
         Ptr<MgStringCollection> classNames = new MgStringCollection();
-        for (LayerClassMap::iterator cIter = classList.begin(); cIter != classList.end(); cIter++)
+        for (LayerClassMap::iterator cIter = classList.begin(); cIter != classList.end(); ++cIter)
         {
             classNames->Add(cIter->first);
         }
@@ -1109,7 +1109,7 @@ void MgMap::BulkLoadIdentityProperties(MgFeatureService* featureService)
                 STRING className = def->GetName();
 
                 LayerList& layers = fsMap[featureSource][className];
-                for (LayerList::iterator lIter = layers.begin(); lIter != layers.end(); lIter++)
+                for (LayerList::iterator lIter = layers.begin(); lIter != layers.end(); ++lIter)
                 {
                     (*lIter)->PopulateIdentityProperties(def);
                 }
@@ -1148,7 +1148,7 @@ void MgMap::AddColorsToPalette(ColorStringList& newColorPalette)
     if (!newColorPalette.empty())
     {
         ColorStringList::iterator it = newColorPalette.begin();
-        for (; it != newColorPalette.end(); it++)
+        for (; it != newColorPalette.end(); ++it)
         {
             if (*it != L"")    // filter empty strings
             {

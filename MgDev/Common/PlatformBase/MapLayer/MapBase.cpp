@@ -743,7 +743,7 @@ INT32 MgMapBase::FindNearestFiniteDisplayScaleIndex(double scale)
     {
         INT32 count = 0;
         double minDiff = -1.0;
-        for (FINITESCALES::const_iterator it = m_finiteDisplayScales.begin(); it != m_finiteDisplayScales.end(); it++)
+        for (FINITESCALES::const_iterator it = m_finiteDisplayScales.begin(); it != m_finiteDisplayScales.end(); ++it)
         {
             double displayScale = *it;
             double diff = fabs(scale - displayScale);

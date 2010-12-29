@@ -69,7 +69,7 @@ FontManager::~FontManager()
     AutoMutexLocker autoLocker(sm_mutex);
 
     // free up font map entries
-    for (FontMapIterator fmi = m_fontAliases.begin(); fmi != m_fontAliases.end(); fmi++)
+    for (FontMapIterator fmi = m_fontAliases.begin(); fmi != m_fontAliases.end(); ++fmi)
     {
         delete (*fmi).first;
         delete (*fmi).second;
@@ -433,7 +433,7 @@ const RS_Font* FontManager::FindFont(const wstring& sfontname, bool bold, bool i
     const wchar_t* fontname = sfontname.c_str();
 
     // if there is an alias for the font use that instead
-    for (FontMapIterator fmi = m_fontAliases.begin(); fmi != m_fontAliases.end(); fmi++)
+    for (FontMapIterator fmi = m_fontAliases.begin(); fmi != m_fontAliases.end(); ++fmi)
     {
         const wchar_t* alias = (*fmi).first->c_str();
         if (wcscmp(alias, fontname) == 0)

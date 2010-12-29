@@ -193,5 +193,5 @@ void MgConnectionProperties::Deserialize(MgStream* stream)
 ///
 MgUserInformation* MgConnectionProperties::GetUserInfo()
 {
-    return SAFE_ADDREF((MgUserInformation*)m_userInfo);
+    return SAFE_ADDREF(m_userInfo.p);
 }

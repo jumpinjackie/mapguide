@@ -112,7 +112,7 @@ void CCoordinateSystemCategory::SaveToFstream(csFILE *pFile, UINT32 ulMinSize)
 
     //Coordinate system names.
     CSystemNameList::const_iterator iter;
-    for (iter=m_listCoordinateSystemNames.begin(); iter!=m_listCoordinateSystemNames.end(); iter++)
+    for (iter=m_listCoordinateSystemNames.begin(); iter!=m_listCoordinateSystemNames.end(); ++iter)
     {
         CS_fwrite((*iter).Name(), sizeof(char), cs_KEYNM_DEF, pFile);
     }
@@ -559,7 +559,7 @@ MgStringCollection* CCoordinateSystemCategory::GetCoordinateSystems()
     }
 
     CSystemNameList::const_iterator iter;
-    for (iter=m_listCoordinateSystemNames.begin(); iter!=m_listCoordinateSystemNames.end(); iter++)
+    for (iter=m_listCoordinateSystemNames.begin(); iter!=m_listCoordinateSystemNames.end(); ++iter)
     {
         wchar_t *pName = Convert_Ascii_To_Wide((*iter).Name());    //need to delete [] pName
         if (NULL == pName)

@@ -200,7 +200,6 @@ void CCoordinateSystemCategoryDictionary::RewriteFile(const char *kpDefName, CCo
     CriticalClass.Enter();
     MG_TRY()
     assert(NULL != kpDefName);
-    bool bReplace = (NULL != pDef);
     STRING tempName;
     STRING strPath=GetPath();
 
@@ -246,7 +245,6 @@ void CCoordinateSystemCategoryDictionary::RewriteFile(const char *kpDefName, CCo
     CCoordinateSystemCategory curDef(m_pCatalog);
     CCoordinateSystemCategory *pDefToWrite;
     bool bFound = false;
-    bool bEndOfFileReached=false;
     while (!feof(pFile))
     {
         //Get def from original file
@@ -863,7 +861,7 @@ void CCoordinateSystemCategoryDictionary::Rename(CREFSTRING sOldName, CREFSTRING
         throw new MgOutOfMemoryException(L"MgCoordinateSystemCategoryDictionary.Rename", __LINE__, __WFILE__, NULL, L"", NULL);
     }
     CCategoryNameList::iterator iterList;
-    for (iterList = List().begin(); iterList != List().end(); iterList++)
+    for (iterList = List().begin(); iterList != List().end(); ++iterList)
     {
         if (oldCategory == *iterList)
         {

@@ -43,7 +43,7 @@ void PolygonUtils::DetermineInteriorAndExteriorPolygons(LineBuffer* lineBuffer, 
 void PolygonUtils::Cleanup(SORTEDRINGS& rings)
 {
     // cleanup
-    for (SORTEDRINGS::iterator sIter = rings.begin(); sIter != rings.end(); sIter++)
+    for (SORTEDRINGS::iterator sIter = rings.begin(); sIter != rings.end(); ++sIter)
     {
         RingData* pRingData = sIter->second;
         delete pRingData;
@@ -157,7 +157,7 @@ void PolygonUtils::ProcessRings(SORTEDRINGS& sortedRings)
     RINGVECTOR processedRings;
 
     // loop over the sorted list
-    for (SORTEDRINGS::iterator sIter = sortedRings.begin(); sIter != sortedRings.end(); sIter++)
+    for (SORTEDRINGS::iterator sIter = sortedRings.begin(); sIter != sortedRings.end(); ++sIter)
     {
         // ring A is the one we're going to process
         RingData* pRingDataA = sIter->second;

@@ -207,6 +207,7 @@ cs_Eldef_ * CCoordinateSystemEllipsoidDictionary::eldef(const char *kpName) cons
     csFILE *pFile=CS_fopen(kpName, szMode);
     if (!pFile)
     {
+        delete [] pBuf;
         return NULL;
     }
     int nResult = CS_bins(

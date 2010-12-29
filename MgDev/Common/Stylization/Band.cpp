@@ -842,7 +842,11 @@ bool Band::GetNearByDoubleValues(unsigned int i, unsigned int j,
         if (memcmp(&fbottom, &m_nullValue, 4) == 0)
             fbottom = fcenter;
 #else
-    // Linux implementation
+        // TODO: Linux implementation
+        fleft = 0.0f;
+        fright = 0.0f;
+        ftop = 0.0f;
+        fbottom = 0.0f;
 #endif
 
         left = fleft;

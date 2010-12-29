@@ -271,7 +271,7 @@ struct SE_SymbolInstance
 
     ~SE_SymbolInstance()
     {
-        for (std::vector<SE_Style*>::iterator iter = styles.begin(); iter != styles.end(); iter++)
+        for (std::vector<SE_Style*>::iterator iter = styles.begin(); iter != styles.end(); ++iter)
             delete *iter;
 
         styles.clear();
@@ -294,7 +294,7 @@ struct SE_Rule
         if (filter)
             filter->Release();
 
-        for (std::vector<SE_SymbolInstance*>::iterator iter = symbolInstances.begin(); iter != symbolInstances.end(); iter++)
+        for (std::vector<SE_SymbolInstance*>::iterator iter = symbolInstances.begin(); iter != symbolInstances.end(); ++iter)
             delete *iter;
 
         symbolInstances.clear();

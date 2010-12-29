@@ -222,7 +222,7 @@ MgStreamHelper* MgServerConnection::GetMgStreamHelper()
     {
         stream = new MgAceStreamHelper(handle);
     }
-    return SAFE_ADDREF((MgStreamHelper*)stream);
+    return SAFE_ADDREF(stream.p);
 }
 
 //////////////////////////////////////////////////////////////////
@@ -243,7 +243,7 @@ MgStream* MgServerConnection::GetStream()
         m_stream->SetConnection(this);
     }
 
-    return SAFE_ADDREF((MgStream*)m_stream);
+    return SAFE_ADDREF(m_stream.p);
 }
 
 
@@ -286,7 +286,7 @@ ACE_Time_Value* MgServerConnection::LastUsed()
 MgServerConnection* MgServerConnection::Acquire(MgUserInformation* userInformation,
                                                 MgConnectionProperties* connProp)
 {
-    CHECKNULL((MgUserInformation*)userInformation, L"MgServerConnection.Acquire");
+    CHECKNULL(userInformation, L"MgServerConnection.Acquire");
     CHECKNULL((MgConnectionProperties*)connProp, L"MgServerConnection.Acquire");
 
     MgServerConnectionPool* connectionPool = MgServerConnectionPool::GetInstance();

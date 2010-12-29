@@ -169,7 +169,7 @@ void MgSiteManager::ClearSiteInfo()
     ACE_MT(ACE_GUARD(ACE_Recursive_Thread_Mutex, ace_mon, m_mutex));
 
     for (MgSiteVector::iterator iter = m_sites.begin();
-        iter != m_sites.end(); iter++)
+        iter != m_sites.end(); ++iter)
     {
         SAFE_RELEASE(*iter);
     }

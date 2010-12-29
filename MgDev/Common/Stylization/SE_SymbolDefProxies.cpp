@@ -65,7 +65,7 @@ static double GetHalfWeightMargin(const SE_LineStroke& lineStroke)
 ///////////////////////////////////////////////////////////////////////////////
 SE_Style::~SE_Style()
 {
-    for (SE_PrimitiveList::iterator iter = symbol.begin(); iter != symbol.end(); iter++)
+    for (SE_PrimitiveList::iterator iter = symbol.begin(); iter != symbol.end(); ++iter)
         delete *iter;
 
     delete rstyle;
@@ -590,7 +590,7 @@ void SE_Style::evaluate(SE_EvalContext* ctx)
         maxy0 = maxy1 = rs_max(ptAy, ptBy);
     }
 
-    for (SE_PrimitiveList::const_iterator src = symbol.begin(); src != symbol.end(); src++)
+    for (SE_PrimitiveList::const_iterator src = symbol.begin(); src != symbol.end(); ++src)
     {
         SE_Primitive* sym = *src;
 
@@ -688,7 +688,7 @@ void SE_Style::evaluate(SE_EvalContext* ctx)
         SE_Matrix totalxf(*ctx->xform);
         totalxf.premultiply(growxf);
 
-        for (SE_RenderPrimitiveList::iterator rs = rstyle->symbol.begin(); rs != rstyle->symbol.end(); rs++)
+        for (SE_RenderPrimitiveList::iterator rs = rstyle->symbol.begin(); rs != rstyle->symbol.end(); ++rs)
         {
             SE_RenderPrimitive* rsym = *rs;
             if (rsym->resizeControl == SE_ResizeControl_AdjustToResizeBox)

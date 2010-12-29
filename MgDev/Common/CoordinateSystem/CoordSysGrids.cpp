@@ -247,8 +247,6 @@ double CCoordinateSystemGridSpecification::GetCurvePrecision (MgCoordinateSystem
 {
     double precisionInCsUnits (1.0);
     double precisionInMeters (1.0);
-    double toMeters;
-    double toDegrees;
 
     Ptr<MgCoordinateSystemCatalog> catalogPtr = gridCS->GetCatalog ();
     Ptr<MgCoordinateSystemUnitInformation> unitInfoPtr = catalogPtr->GetUnitInformation ();
@@ -265,13 +263,14 @@ double CCoordinateSystemGridSpecification::GetCurvePrecision (MgCoordinateSystem
     }
     else
     {
+        double toMeters;
         if (m_UnitType == MgCoordinateSystemUnitType::Linear)
         {
             toMeters = unitInfoPtr->GetLinearUnitScale (m_UnitCode);
         }
         else
         {
-            toDegrees = unitInfoPtr->GetAngularUnitScale (m_UnitCode);
+            double toDegrees = unitInfoPtr->GetAngularUnitScale (m_UnitCode);
             toMeters = (6378137.0 * M_PI * 2.0 / 360.0) / toDegrees;
         }
         precisionInMeters = m_CurvePrecision * toMeters;
