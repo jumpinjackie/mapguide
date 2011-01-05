@@ -64,7 +64,7 @@ double GetDoubleParameter(HttpServletRequest request, String name)
     String strval = GetParameter(request, name);
     if(strval.equals(""))
         return 0;
-    if(Pattern.matches("^(\d+)([.]{0,1})(\d*)$", strval))
+    if(Pattern.matches("^(\\d+)([.]{0,1})(\\d*)$", strval))
         return Double.parseDouble(strval);
     else
         return 0;
