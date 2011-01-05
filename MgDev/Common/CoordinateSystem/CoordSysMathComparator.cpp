@@ -346,9 +346,19 @@ bool CCoordinateSystemMathComparator::SameCoordinateSystem(MgCoordinateSystem *p
         }
 
         //else: both neither reference a datum nor an ellipsoid (all key names have been '\0')
-        //we only allow them to be of projection type "Non-earth" then
-        if (MgCoordinateSystemProjectionCode::Nerth != pDefinition1->GetProjectionCode()
-            || MgCoordinateSystemProjectionCode::Nerth != pDefinition2->GetProjectionCode())
+        //we only allow them to be of projection type "Non-earth (with scale and rotation)" then
+        const INT32 projectionCode1 = pDefinition1->GetProjectionCode();
+        const INT32 projectionCode2 = pDefinition2->GetProjectionCode();
+
+        const bool isNonEarth1 = MgCoordinateSystemProjectionCode::Nerth == projectionCode1 ||
+            MgCoordinateSystemProjectionCode::Nrthsrt == projectionCode1;
+
+        const bool isNonEarth2 = MgCoordinateSystemProjectionCode::Nerth == projectionCode2 ||
+            MgCoordinateSystemProjectionCode::Nrthsrt == projectionCode2;
+
+        //if one was Nerth and the other was Nrthsrt, we don't return false here for now;
+        //it will be checked below for it's projection code; this will fail if they aren't the same
+        if (!isNonEarth1 || !isNonEarth2) //don't accept if at least one is not "non-earth"
         {
             return false;
         }
