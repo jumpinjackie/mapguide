@@ -550,7 +550,14 @@ MgStringCollection* MgSelectionBase::GenerateFilters(MgLayerBase* layer,
                     selText.append(L" AND ");
                 }
 
-                selText.append(idIter->name);
+                if(idIter->name.find(L" ") != STRING::npos)
+                {
+                    selText.append(L"\"" + idIter->name + L"\"");
+                }
+                else
+                {
+                    selText.append(idIter->name);
+                }
                 selText.append(L"=");
 
                 switch (idIter->type)
