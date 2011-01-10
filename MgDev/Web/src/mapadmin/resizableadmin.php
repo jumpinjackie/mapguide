@@ -19,14 +19,14 @@
 
     define( 'SITE_ADMINISTRATOR_VERSION', "2.1.0.0" );
 
-    define( 'APP_TITLE',        "MapGuide Site Administrator" );
+    define( 'APP_TITLE',        "Infrastructure Map Server - Site Administrator" );
     define( 'APP_LOGO',         "" );
 
-    define( 'BANNER_TITLE1',    "MapGuide Site Administrator" );
+    define( 'BANNER_TITLE1',    "Infrastructure Map Server - Site Administrator" );
     define( 'BANNER_TITLE2',    "" );
     define( 'BANNER_CLASS',     "bannerDarkBlue" );
 
-    define( 'SERVER_TITLE',     "MapGuide Server" );
+    define( 'SERVER_TITLE',     "Infrastructure Map Server" );
 
     define( 'ABOUT_TEXT',       '<br>This product is made available subject to the terms of GNU Lesser General Public License Version 2.1 ("LGPL").  A copy of the LGPL, as well as additional copyright notices and license terms applicable to portions of this product are set forth in the <a href="license.htm">license</a> file.<br><br>All trademarks and registered trademarks mentioned herein are the property of their respective owners.<br><br>Copyright 2006-2010 by Autodesk, Inc.<br>' );
 
