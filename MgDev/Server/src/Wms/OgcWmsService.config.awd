@@ -17,9 +17,9 @@
  <!-- These are edited by the Site Administration tool, though you
       could modify them by any UTF-8-enabled editor.               -->
  <Define item="Service.Name">OGC:WMS</Define> <!-- Generally should stay OGC:WMS -->
- <Define item="Service.Title">Infrastructure Map Server - Web Map Service</Define>
+ <Define item="Service.Title">MapGuide WMS Server</Define>
  <Define item="Service.Fees">none</Define>
- <Define item="Service.Abstract">Infrastructure Map Server - Web Map Service</Define>
+ <Define item="Service.Abstract">MapGuide WMS Server</Define>
  <Define item="Service.AccessConstraints">none</Define>
  <!-- Who to contact -->
  <Define item="Service.Contact.Name"></Define>

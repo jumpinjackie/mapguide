@@ -61,7 +61,7 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html>
     <head>
-        <title>About Infrastructure Map Server - Site Administrator</title>
+        <title>About MapGuide Site Administrator</title>
 
         <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
         <meta http-equiv="content-script-type" content="text/javascript" />
@@ -79,7 +79,7 @@
             <td>
                 <table class="titleBar">
                     <tr>
-                        <td class="pageTitle">About Infrastructure Map Server - Site Administrator</td>
+                        <td class="pageTitle">About MapGuide Site Administrator</td>
                         <td class="resizableButton">
                             <div align="right"><input class="resizableButton" type="button" value="Close" onClick="self.close();"></div>
                         </td>
