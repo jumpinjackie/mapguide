@@ -758,7 +758,7 @@ MgFeatureInformation* MgServerRenderingService::QueryFeatures(MgMap* map,
 
     #ifdef _DEBUG
     Ptr<MgReadOnlyLayerCollection> selLayers = sel->GetLayers();
-    ACE_DEBUG((LM_ERROR, ACE_TEXT("MgServerRenderingService::QueryFeatures() Selection Size:%d\n"), selLayers.p? selLayers->GetCount() : 0));
+    ACE_DEBUG((LM_INFO, ACE_TEXT("(%t) MgServerRenderingService::QueryFeatures() Selection Size:%d\n"), selLayers.p? selLayers->GetCount() : 0));
     #endif
 
     MG_CATCH_AND_THROW(L"MgServerRenderingService.QueryFeatures")
@@ -1347,7 +1347,7 @@ void MgServerRenderingService::RenderForSelection(MgMap* map,
 
     MG_TRY()
 
-    ACE_DEBUG ((LM_DEBUG, ACE_TEXT("RenderForSelection(): ** START **\n")));
+    ACE_DEBUG ((LM_DEBUG, ACE_TEXT("(%t) RenderForSelection(): ** START **\n")));
     if (NULL == map || (NULL == geometry && featureFilter.empty()))
         throw new MgNullArgumentException(L"MgServerRenderingService.RenderForSelection", __LINE__, __WFILE__, NULL, L"", NULL);
 
@@ -1432,7 +1432,7 @@ void MgServerRenderingService::RenderForSelection(MgMap* map,
         //find the layer we need to select features from
         Ptr<MgLayerBase> layer = layers->GetItem(p);
 
-        ACE_DEBUG ((LM_DEBUG, ACE_TEXT("RenderForSelection(): Layer: %W  Selectable:%W  Visible: %W\n"), layer->GetName().c_str(), layer->GetSelectable()? L"True" : L"False", layer->IsVisibleAtScale(scale)? L"True" : L"False"));
+        ACE_DEBUG ((LM_DEBUG, ACE_TEXT("(%t) RenderForSelection(): Layer: %W  Selectable:%W  Visible: %W\n"), layer->GetName().c_str(), layer->GetSelectable()? L"True" : L"False", layer->IsVisibleAtScale(scale)? L"True" : L"False"));
 
         //do this first - this check is fast
         if (bOnlySelectableLayers && !layer->GetSelectable())
@@ -1468,7 +1468,7 @@ void MgServerRenderingService::RenderForSelection(MgMap* map,
         //we can only do geometric query selection for vector layers
         if (vl)
         {
-            ACE_DEBUG ((LM_DEBUG, ACE_TEXT("RenderForSelection(): Layer: %W  Vector Layer\n"), layer->GetName().c_str()));
+            ACE_DEBUG ((LM_DEBUG, ACE_TEXT("(%t) RenderForSelection(): Layer: %W  Vector Layer\n"), layer->GetName().c_str()));
 
             //check to see if we want even layers that aren't visible at the current scale
             if (!bOnlyVisibleLayers)
@@ -1509,7 +1509,7 @@ void MgServerRenderingService::RenderForSelection(MgMap* map,
                 #ifdef _DEBUG
                 // Output the selection geometry
                 STRING geomText = queryGeom->ToAwkt(true);
-                ACE_DEBUG((LM_ERROR, ACE_TEXT("SELECTION FILTER:\n%W\n\n"), geomText.c_str()));
+                ACE_DEBUG((LM_INFO, ACE_TEXT("(%t) SELECTION FILTER:\n%W\n\n"), geomText.c_str()));
                 #endif
 
                 //set the spatial filter for the selection
@@ -1679,7 +1679,7 @@ void MgServerRenderingService::RenderForSelection(MgMap* map,
                 //do our own geometry math.
                 #ifdef _DEBUG
                 STRING error = e->GetExceptionMessage();
-                ACE_DEBUG((LM_ERROR, ACE_TEXT("RenderForSelection() - Error: %S\n"), error.c_str()));
+                ACE_DEBUG((LM_INFO, ACE_TEXT("(%t) RenderForSelection() - Error: %S\n"), error.c_str()));
                 #endif
 
                 // Let's throw the exception here, so that it can be recorded in the error log.
@@ -1689,7 +1689,7 @@ void MgServerRenderingService::RenderForSelection(MgMap* map,
     }
 
     selRenderer->EndMap();
-    ACE_DEBUG ((LM_DEBUG, ACE_TEXT("RenderForSelection(): ** END **\n")));
+    ACE_DEBUG ((LM_DEBUG, ACE_TEXT("(%t) RenderForSelection(): ** END **\n")));
 
     MG_CATCH(L"MgServerRenderingService.RenderForSelection")
 

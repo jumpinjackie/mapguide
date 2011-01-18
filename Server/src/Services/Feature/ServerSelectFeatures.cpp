@@ -430,7 +430,7 @@ void MgServerSelectFeatures::ApplyFilter()
         {
             FdoPtr<FdoIGeometry> geometry = geometryFactory->CreateGeometryFromFgf(byteArray);
             STRING geomText = geometry->GetText();
-            ACE_DEBUG((LM_ERROR, ACE_TEXT("SPATIAL FILTER:\n%W\n\n"), geomText.c_str()));
+            ACE_DEBUG((LM_INFO, ACE_TEXT("(%t) SPATIAL FILTER:\n%W\n\n"), geomText.c_str()));
         }
         #endif
 
