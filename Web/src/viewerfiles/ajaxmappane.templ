@@ -2817,12 +2817,12 @@ function ExecuteRectangleTool()
         pt1 = ScreenToMapUnits(x1, y1);
         pt2 = ScreenToMapUnits(x2, y2);
 
-        mcsW = pt2.X - pt1.X;
-        mcsH = pt2.Y - pt1.Y;
+        mcsW = Math.abs(pt2.X - pt1.X);
+        mcsH = Math.abs(pt2.Y - pt1.Y);
         scale = CalculateScale1(mcsW, mcsH, mapDevW, mapDevH);
         scale = finscale? GetNearestFiniteScale(scale): NormalizeScale(scale);
         HideMapImage();
-        GotoView(pt1.X + mcsW/2, pt1.Y + mcsH/2, scale, true, false);
+        GotoView(pt1.X + (pt2.X - pt1.X)/2, pt1.Y + (pt2.Y - pt1.Y)/2, scale, true, false);
     }
     else if(tool == 0)
     {
