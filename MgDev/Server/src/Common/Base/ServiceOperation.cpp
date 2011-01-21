@@ -18,7 +18,6 @@
 #include "MapGuideCommon.h"
 #include "ServiceOperation.h"
 #include "Connection.h"
-#include "LicenseManager.h"
 #include "LogManager.h"
 #include "ServiceManager.h"
 #include "ServerSiteService.h"
@@ -684,18 +683,8 @@ void MgServiceOperation::AuthenticateCurrentUser()
 
 void MgServiceOperation::CheckLicense()
 {
-    // Perform the license validation.
-    if (!IsOverheadOperation())
-    {
-        // The license does not need to be checked for ServerAdmin and Site operations
-        // to allow processing of operations, such as viewing error logs, when license check fails.
-        MgLicenseManager* licenseManager = MgLicenseManager::GetInstance();
-
-        if (NULL != licenseManager)
-        {
-            licenseManager->CheckLicense();
-        }
-    }
+    // Add your common per operation license checking code here or override this 
+    // method for a specific operation to perform per operation licensing.
 }
 
 

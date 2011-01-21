@@ -31,6 +31,7 @@ class MgOpCreateSession : public MgSiteOperation
 
     protected:
         virtual MgStringCollection* GetRoles() const;
+        virtual void CheckLicense();
 };
 
 #endif

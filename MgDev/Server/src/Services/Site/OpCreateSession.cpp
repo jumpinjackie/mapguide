@@ -19,6 +19,7 @@
 #include "OpCreateSession.h"
 #include "SiteServiceUtil.h"
 #include "LogManager.h"
+#include "LicenseManager.h"
 
 
 ///----------------------------------------------------------------------------
@@ -120,4 +121,14 @@ void MgOpCreateSession::Execute()
     MG_LOG_OPERATION_MESSAGE_ACCESS_ENTRY();
 
     MG_SITE_SERVICE_THROW()
+}
+
+void MgOpCreateSession::CheckLicense()
+{
+    // Perform the license validation.
+    MgLicenseManager* licenseManager = MgLicenseManager::GetInstance();
+    if (NULL != licenseManager)
+    {
+        licenseManager->CheckLicense();
+    }
 }
