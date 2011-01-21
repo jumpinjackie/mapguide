@@ -83,4 +83,5 @@ MgStringCollection* MgSiteOperation::GetRoles() const
 void MgSiteOperation::Validate()
 {
     AuthenticateCurrentUser();
+    CheckLicense();
 }

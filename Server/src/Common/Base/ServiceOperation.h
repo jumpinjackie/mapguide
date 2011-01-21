@@ -52,7 +52,7 @@ public:
 protected:
 
     virtual void Validate() = 0;
-    void CheckLicense();
+    virtual void CheckLicense();
     void AuthenticateCurrentUser();
 
     MgStringCollection* GetAdministratorRole() const;
