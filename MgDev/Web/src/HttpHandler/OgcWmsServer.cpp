@@ -333,10 +333,15 @@ bool MgOgcWmsServer::ValidateGetCapabilitiesParameters()
     CPSZ pService = RequestParameter(kpszQueryStringService);
     if(pService == NULL || SZ_NEI(pService,kpszQueryValueWms))
     {
-        // TODO: verify that kpszOperationNotSupported is the right one to send back.
-        ServiceExceptionReportResponse(MgOgcWmsException(MgOgcWmsException::kpszOperationNotSupported,
-                                                         kpszExceptionMessageMissingServiceWms));
-        bValid = false;
+        // SERVICE=WMS is an optional parameter for version 1.0.0
+        STRING version = GetRequestVersion();
+        if(version != _("1.0.0"))
+        {
+            // TODO: verify that kpszOperationNotSupported is the right one to send back.
+            ServiceExceptionReportResponse(MgOgcWmsException(MgOgcWmsException::kpszOperationNotSupported,
+                                                             kpszExceptionMessageMissingServiceWms));
+            bValid = false;
+        }
     }
 
     return bValid;
