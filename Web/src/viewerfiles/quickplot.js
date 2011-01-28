@@ -641,7 +641,7 @@ MapCapturer.prototype =
     
     getScreenOffset : function()
     {
-        return this.getContentPosition(this.mapWindow.$("img1"));
+        return this.getContentPosition(this.mapWindow.$("mapImage1"));
     },
     
     getContentPosition: function(element)
