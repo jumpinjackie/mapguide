@@ -131,6 +131,10 @@ MgMap* MgWmsMapUtil::GetMap(MgOgcWmsServer& oWms,
     // Add the requested layers
     if (NULL != layerDefIds && layerDefIds->GetCount() > 0)
     {
+        Ptr<MgCoordinateSystemFactory> factory = new MgCoordinateSystemFactory();
+        Ptr<MgCoordinateSystem> mapCs = factory->Create(sWKT);
+        Ptr<MgCoordinateSystemTransform> csTrans;
+
         Ptr<MgLayerCollection> mapLayers = map->GetLayers();
 
         for (INT32 i = layerDefIds->GetCount() - 1; i >= 0; --i)
@@ -171,18 +175,13 @@ MgMap* MgWmsMapUtil::GetMap(MgOgcWmsServer& oWms,
                     sMaxY = L"0";
                 }
 
-                Ptr<MgCoordinate> lowerLeftCoord = extents->GetLowerLeftCoordinate();
-                Ptr<MgCoordinate> upperRightCoord = extents->GetUpperRightCoordinate();
-                double mapMinX = lowerLeftCoord->GetX();
-                double mapMinY = lowerLeftCoord->GetY();
-                double mapMaxX = upperRightCoord->GetX();
-                double mapMaxY = upperRightCoord->GetX();
+                // User defined Boundingbox under map CS
+                Ptr<MgEnvelope> wmsLayerExtent = new MgEnvelope(MgUtil::StringToDouble(sMinX), MgUtil::StringToDouble(sMinY), MgUtil::StringToDouble(sMaxX), MgUtil::StringToDouble(sMaxY));
 
                 // Optimization...
                 // If the request boundingbox (map boundingbox) within the user defined boundingbox (wms layer boundingbox),
                 // spatial query on the layer should be ignored. Just reuse the original layer's layer definition
-                if(mapMinX >= MgUtil::StringToDouble(sMinX) && mapMinY >= MgUtil::StringToDouble(sMinY)
-                    && mapMaxX <= MgUtil::StringToDouble(sMaxX) && mapMaxY <= MgUtil::StringToDouble(sMaxY))
+                if(wmsLayerExtent->Contains(extents))
                 {
                     wmsLayerResId = resId;
                 }
@@ -208,8 +207,35 @@ MgMap* MgWmsMapUtil::GetMap(MgOgcWmsServer& oWms,
                         filter = gl->GetFilter();
                     }
 
-                    
                     Ptr<MgResourceIdentifier> fsId = new MgResourceIdentifier(mgLayer->GetFeatureSourceId());
+
+                    //Get the layer CS
+                    Ptr<MgSpatialContextReader> scReader = featureService->GetSpatialContexts(fsId, false);
+                    if(scReader.p != NULL)
+                    {
+                        if(scReader->ReadNext())
+                        {
+                            STRING layerCoordSysWkt = scReader->GetCoordinateSystemWkt();
+                            Ptr<MgCoordinateSystem> layerCs = (layerCoordSysWkt.empty()) ? NULL : factory->Create(layerCoordSysWkt);
+                            if(layerCs != NULL)
+                            {   
+                                csTrans = factory->GetTransform(mapCs,layerCs);
+                                csTrans->IgnoreDatumShiftWarning(true);
+                                csTrans->IgnoreOutsideDomainWarning(true);
+                            }
+                        }
+                        scReader->Close();
+                    }
+
+                    // Transform user defined boundingbox to layer CS
+                    Ptr<MgEnvelope> layerCsExtent = csTrans->Transform(wmsLayerExtent);
+                    Ptr<MgCoordinate> layerCsLowerLeftCoordinate = layerCsExtent->GetLowerLeftCoordinate();
+                    Ptr<MgCoordinate> layerCsUpperRightCoordinate = layerCsExtent->GetUpperRightCoordinate();
+                    MgUtil::DoubleToString(layerCsLowerLeftCoordinate->GetX(),sMinX);
+                    MgUtil::DoubleToString(layerCsLowerLeftCoordinate->GetY(),sMinY);
+                    MgUtil::DoubleToString(layerCsUpperRightCoordinate->GetX(),sMaxX);
+                    MgUtil::DoubleToString(layerCsUpperRightCoordinate->GetY(),sMaxY);
+
                     STRING qualifiedName = mgLayer->GetFeatureClassName();
 
                     int pos = qualifiedName.find(L":");
