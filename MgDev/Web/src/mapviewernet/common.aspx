@@ -94,7 +94,7 @@ double GetDoubleParameter(NameValueCollection parameters, String name)
     String strval = GetParameter(parameters, name);
     if ("" == strval)
         return 0;
-    if(System.Text.RegularExpressions.Regex.IsMatch(strval,@"^(\d+)([.]{0,1})(\d*)$"))
+    if(System.Text.RegularExpressions.Regex.IsMatch(strval,@"^([-]{0,1})(\d+)([.]{0,1})(\d*)$"))
         return Convert.ToDouble(strval, NumberFormatInfo.InvariantInfo);
     else
         return 0;
