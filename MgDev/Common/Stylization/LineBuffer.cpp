@@ -903,13 +903,14 @@ void LineBuffer::LoadFromAgf(unsigned char* RESTRICT data, int /*sz*/, CSysTrans
             {
                 // skip past geometry type of subgeometry
                 // we know it is LineString or Polygon or Point respectively
-                if (is_multi) *ireader++;
+                if (is_multi)
+                    *ireader++;
 
                 // read cordinate typeB
                 FdoDimensionality dim = (FdoDimensionality)*ireader++;
 
                 // ensure that all dimensionalities of each geometry are the same
-                _ASSERT(q==0 || m_dimensionality == dim);
+                _ASSERT(q==0 || m_dimensionality == (dim & ~FdoDimensionality_M));
 
                 m_dimensionality = dim & ~FdoDimensionality_M; //LineBuffer doesn't support M
                 m_bProcessZ = (m_dimensionality & FdoDimensionality_Z) && !m_bIgnoreZ;
