@@ -118,10 +118,13 @@ void MgCacheManager::ClearCaches()
 {
     // The mutex usage and the method call order here are important
     // because they ensure all the caches are in sync.
-    ACE_MT(ACE_GUARD(ACE_Recursive_Thread_Mutex, ace_mon, m_featureServiceCache.m_mutex));
+    ACE_MT(ACE_GUARD(ACE_Recursive_Thread_Mutex, ace_mon, m_fdoConnectionManager->sm_mutex));
+    {
+        ACE_MT(ACE_GUARD(ACE_Recursive_Thread_Mutex, ace_mon, m_featureServiceCache.m_mutex));
 
-    m_fdoConnectionManager->ClearCache();
-    m_featureServiceCache.Clear();
+        m_fdoConnectionManager->ClearCache();
+        m_featureServiceCache.Clear();
+    }
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -157,10 +160,13 @@ void MgCacheManager::NotifyResourceChanged(CREFSTRING resource)
     {
         // The mutex usage and the method call order here are important
         // because they ensure all the caches are in sync.
-        ACE_MT(ACE_GUARD(ACE_Recursive_Thread_Mutex, ace_mon, m_featureServiceCache.m_mutex));
+        ACE_MT(ACE_GUARD(ACE_Recursive_Thread_Mutex, ace_mon, m_fdoConnectionManager->sm_mutex));
+        {
+            ACE_MT(ACE_GUARD(ACE_Recursive_Thread_Mutex, ace_mon, m_featureServiceCache.m_mutex));
 
-        m_fdoConnectionManager->RemoveCachedFdoConnection(resource);
-        m_featureServiceCache.RemoveEntry(resource);
+            m_fdoConnectionManager->RemoveCachedFdoConnection(resource);
+            m_featureServiceCache.RemoveEntry(resource);
+        }
     }
 }
 
@@ -174,10 +180,13 @@ void MgCacheManager::NotifyResourceChanged(MgResourceIdentifier* resource)
     {
         // The mutex usage and the method call order here are important
         // because they ensure all the caches are in sync.
-        ACE_MT(ACE_GUARD(ACE_Recursive_Thread_Mutex, ace_mon, m_featureServiceCache.m_mutex));
+       ACE_MT(ACE_GUARD(ACE_Recursive_Thread_Mutex, ace_mon, m_fdoConnectionManager->sm_mutex));
+        {
+            ACE_MT(ACE_GUARD(ACE_Recursive_Thread_Mutex, ace_mon, m_featureServiceCache.m_mutex));
 
-        m_fdoConnectionManager->RemoveCachedFdoConnection(resource);
-        m_featureServiceCache.RemoveEntry(resource);
+            m_fdoConnectionManager->RemoveCachedFdoConnection(resource);
+            m_featureServiceCache.RemoveEntry(resource);
+        }
     }
 }
 
