@@ -1,6 +1,6 @@
 # *****************************************************************************
 # MapGuide Resource File
-# Copyright (C) 2004-2010 by Autodesk, Inc.
+# Copyright (C) 2004-2011 by Autodesk, Inc.
 #
 # WARNING: DO NOT MODIFY THIS FILE
 #
