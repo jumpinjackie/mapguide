@@ -10,7 +10,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Autodesk, Inc.")]
 [assembly: AssemblyProduct("DotNetWrappers")]
-[assembly: AssemblyCopyright("Copyright (C) 2008-2010 by Autodesk, Inc.")]
+[assembly: AssemblyCopyright("Copyright (C) 2008-2011 by Autodesk, Inc.")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
