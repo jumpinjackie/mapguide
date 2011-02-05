@@ -1,21 +1,29 @@
 #!/bin/bash
-BUILDNUM=2.2.0
+APIVERSION=2.3
+BUILDNUM=${APIVERSION}.0
 BUILDROOT=`pwd`
 INSTALLROOT=/usr/local/mapguideopensource-${BUILDNUM}
 LOCKFILEDIR=/var/lock/mgserver
 MGSOURCE=${BUILDROOT}/mgdev
+VERFILE=${MGSOURCE}/Common/ProductVersion.h
 SVNROOT="svn://svn.bld.mgproto.net"
 #SVNROOT="http://svn.osgeo.org"
 
 rm -rf ${MGSOURCE}
 rm -rf ${INSTALLROOT}
 
-REVISION=`svn info ${SVNROOT}/mapguide/branches/2.2/MgDev | perl revnum.pl`
+REVISION=`svn info ${SVNROOT}/mapguide/trunk/MgDev | perl revnum.pl`
 echo ${REVISION} > revnum.txt
 echo "Building Revision ${BUILDNUM}.${REVISION}" 
-svn export -r ${REVISION} ${SVNROOT}/mapguide/branches/2.2/MgDev ${MGSOURCE}
+svn export -q -r ${REVISION} ${SVNROOT}/mapguide/trunk/MgDev ${MGSOURCE}
 
 cd ${MGSOURCE}
+
+echo "#ifndef PRODUCTVERSION_H_" > ${VERFILE}
+echo "#define PRODUCTVERSION_H_" >> ${VERFILE}
+echo 'const STRING ProductVersion = L"'${BUILDNUM}'.'${REVISION}'";' >> ${VERFILE}
+echo 'const STRING ApiVersion     = L"'${APIVERSION}'";' >> ${VERFILE}
+echo '#endif' >> ${VERFILE}
 
 pushd ${MGSOURCE}/Oem/LinuxApt
 ./build_apt.sh --prefix ${INSTALLROOT} --with-tomcat
