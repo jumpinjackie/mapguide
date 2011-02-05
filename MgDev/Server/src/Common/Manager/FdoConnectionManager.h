@@ -200,6 +200,8 @@ typedef std::pair<STRING, ProviderInfo*> ProviderInfoCacheEntry_Pair;
 
 class MG_SERVER_MANAGER_API MgFdoConnectionManager : public MgGuardDisposable
 {
+    friend class MgCacheManager;
+
     DECLARE_CLASSNAME(MgFdoConnectionManager)
 
 public:
