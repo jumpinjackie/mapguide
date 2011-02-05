@@ -46,6 +46,6 @@ call build.bat -a=install
 cd %MGINSTALL%
 call build.bat -source=%INSTALLROOT% -a=prepare
 call build.bat -source=%INSTALLROOT% -a=generate 
-call build.bat -source=%INSTALLROOT% -version=2.2.0.%REVISION% -name=MapGuideOpenSource-2.2.0.%REVISION%-RC2 -title="MapGuide Open Source 2.2 RC2"
+call build.bat -source=%INSTALLROOT% -version=2.2.0.%REVISION% -name=MapGuideOpenSource-2.2.0.%REVISION%-RC3 -title="MapGuide Open Source 2.2 RC3"
 
 cd %STARTDIR%
