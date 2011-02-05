@@ -1070,9 +1070,9 @@ void LineBuffer::LoadFromAgf(unsigned char* RESTRICT data, int /*sz*/, CSysTrans
                 FdoDimensionality dim = (FdoDimensionality)*ireader++;
 
                 // ensure that all dimensionalities of each geometry are the same
-                _ASSERT(q==0 || m_dimensionality == dim);
+                _ASSERT(q==0 || m_dimensionality == (dim & ~FdoDimensionality_M));
 
-                m_dimensionality = dim;
+                m_dimensionality = dim & ~FdoDimensionality_M; //LineBuffer doesn't support M
                 m_bProcessZ = (m_dimensionality & FdoDimensionality_Z) && !m_bIgnoreZ;
 
                 skip = 0;
