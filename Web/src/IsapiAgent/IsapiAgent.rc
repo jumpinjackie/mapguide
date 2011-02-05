@@ -72,7 +72,7 @@ BEGIN
             VALUE "FileDescription", "MapGuide mapagent extension for IIS"
             VALUE "FileVersion", "2, 3, 0, 0"
             VALUE "InternalName", "isapi_MapAgent.dll"
-            VALUE "LegalCopyright", "Copyright (C) 2006-2010 by Autodesk, Inc."
+            VALUE "LegalCopyright", "Copyright (C) 2006-2011 by Autodesk, Inc."
             VALUE "OriginalFilename", "isapi_MapAgent.dll"
             VALUE "ProductName", "MapGuide Open Source"
             VALUE "ProductVersion", "2, 3, 0, 0"
