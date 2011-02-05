@@ -9,8 +9,6 @@
 // written non-disclosure agreement, expressly prescribing the scope and
 // manner of such use.
 //
-// $Header: /Components/Internal/DWF Toolkit/v7.1/develop/global/src/dwf/w3dtk/BPolyhedron.h 3     8/18/05 8:46p Gopalas $
-//
 #ifndef BBINFILETK_POLYHEDRON
 #define BBINFILETK_POLYHEDRON
 

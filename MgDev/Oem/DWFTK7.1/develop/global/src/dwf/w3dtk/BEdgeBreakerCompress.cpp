@@ -9,8 +9,6 @@
  * written non-disclosure agreement, expressly prescribing the scope and
  * manner of such use.
  *
- * $Header: /Components/Internal/DWF Toolkit/v7.1/develop/global/src/dwf/w3dtk/BEdgeBreakerCompress.cpp 5     10/17/05 1:11a Gopalas $
- *
  * This file implements Jarek Rossignac's edgebreaker paper.
  * Variations from his algorithm are as follows:
  *    marks to indicate loops are associated with vertices only

@@ -10,27 +10,21 @@
 // manner of such use.
 //
 //
-//  Copyright (C) 2004-2010 by Autodesk, Inc.
+//  Copyright (C) 2004-2011 by Autodesk, Inc.
 //
 //  By using this code, you are agreeing to the terms and conditions of
 //  the License Agreement included in the documentation for this code.
 //
-//  AUTODESK MAKES NO WARRANTIES, EXPRESSED OR IMPLIED,
-//  AS TO THE CORRECTNESS OF THIS CODE OR ANY DERIVATIVE
-//  WORKS WHICH INCORPORATE IT.
-//
-//  AUTODESK PROVIDES THE CODE ON AN "AS-IS" BASIS
-//  AND EXPLICITLY DISCLAIMS ANY LIABILITY, INCLUDING
-//  CONSEQUENTIAL AND INCIDENTAL DAMAGES FOR ERRORS,
+//  AUTODESK MAKES NO WARRANTIES, EXPRESS OR IMPLIED, AS TO THE CORRECTNESS
+//  OF THIS CODE OR ANY DERIVATIVE WORKS WHICH INCORPORATE IT. AUTODESK
+//  PROVIDES THE CODE ON AN "AS-IS" BASIS AND EXPLICITLY DISCLAIMS ANY
+//  LIABILITY, INCLUDING CONSEQUENTIAL AND INCIDENTAL DAMAGES FOR ERRORS,
 //  OMISSIONS, AND OTHER PROBLEMS IN THE CODE.
 //
 //  Use, duplication, or disclosure by the U.S. Government is subject to
 //  restrictions set forth in FAR 52.227-19 (Commercial Computer Software
 //  Restricted Rights) and DFAR 252.227-7013(c)(1)(ii) (Rights in Technical
 //  Data and Computer Software), as applicable.
-//
-//
-// $Header: /Components/Internal/DWF Toolkit/v7.1/develop/global/src/dwf/w3dtk/BStreamFileToolkit.cpp 6     8/18/05 8:47p Gopalas $
 //
 
 #define CREATE_FILE_FORMAT_HISTORY_TABLE

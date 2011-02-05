@@ -1,4 +1,5 @@
-//  Copyright (C) 1996-2010 by Autodesk, Inc.
+//
+//  Copyright (C) 1996-2011 by Autodesk, Inc.
 //
 //  By using this code, you are agreeing to the terms and conditions of
 //  the License Agreement included in the documentation for this code.
@@ -14,7 +15,6 @@
 //  Restricted Rights) and DFAR 252.227-7013(c)(1)(ii) (Rights in Technical
 //  Data and Computer Software), as applicable.
 //
-// $Header: /Components/Internal/DWF Toolkit/v7.1/develop/global/src/dwf/whiptk/viewport.cpp 6     5/09/05 12:41a Evansg $
 
 #include "whiptk/pch.h"
 
