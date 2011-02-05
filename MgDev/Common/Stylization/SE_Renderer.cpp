@@ -407,8 +407,9 @@ void SE_Renderer::DrawSymbol(SE_RenderPrimitiveList& symbol,
                              bool excludeRegion)
 {
     RS_Bounds extents(DBL_MAX, DBL_MAX, DBL_MAX, -DBL_MAX, -DBL_MAX, -DBL_MAX);
+    unsigned int nprims = symbol.size();
 
-    for (unsigned i=0; i<symbol.size(); ++i)
+    for (unsigned int i=0; i<nprims; ++i)
     {
         SE_RenderPrimitive* primitive = symbol[i];
 
@@ -490,14 +491,25 @@ void SE_Renderer::DrawSymbol(SE_RenderPrimitiveList& symbol,
         }
     }
 
-    // always compute the last symbol extent
-    xform.transform(extents.minx, extents.miny, m_lastSymbolExtent[0].x, m_lastSymbolExtent[0].y);
-    xform.transform(extents.maxx, extents.miny, m_lastSymbolExtent[1].x, m_lastSymbolExtent[1].y);
-    xform.transform(extents.maxx, extents.maxy, m_lastSymbolExtent[2].x, m_lastSymbolExtent[2].y);
-    xform.transform(extents.minx, extents.maxy, m_lastSymbolExtent[3].x, m_lastSymbolExtent[3].y);
+    if (nprims > 0)
+    {
+        // always compute the last symbol extent
+        xform.transform(extents.minx, extents.miny, m_lastSymbolExtent[0].x, m_lastSymbolExtent[0].y);
+        xform.transform(extents.maxx, extents.miny, m_lastSymbolExtent[1].x, m_lastSymbolExtent[1].y);
+        xform.transform(extents.maxx, extents.maxy, m_lastSymbolExtent[2].x, m_lastSymbolExtent[2].y);
+        xform.transform(extents.minx, extents.maxy, m_lastSymbolExtent[3].x, m_lastSymbolExtent[3].y);
 
-    if (excludeRegion)
-        AddExclusionRegion(m_lastSymbolExtent, 4);
+        if (excludeRegion)
+            AddExclusionRegion(m_lastSymbolExtent, 4);
+    }
+    else
+    {
+        // symbol contains no primitives - update last symbol extent assuming
+        // zero symbol extent, but don't add any exclusion region
+        xform.transform(0.0, 0.0, m_lastSymbolExtent[0].x, m_lastSymbolExtent[0].y);
+        m_lastSymbolExtent[1].x = m_lastSymbolExtent[2].x = m_lastSymbolExtent[3].x = m_lastSymbolExtent[0].x;
+        m_lastSymbolExtent[1].y = m_lastSymbolExtent[2].y = m_lastSymbolExtent[3].y = m_lastSymbolExtent[0].y;
+    }
 }
 
 
