@@ -21,6 +21,7 @@
 #include "LogManager.h"
 #include "LongTransactionManager.h"
 #include "CacheManager.h"
+#include "LogDetail.h"
 
 ACE_Recursive_Thread_Mutex ProviderInfo::sm_mutex;
 ACE_Recursive_Thread_Mutex MgFdoConnectionManager::sm_mutex;
@@ -224,6 +225,10 @@ FdoIConnection* MgFdoConnectionManager::Open(MgResourceIdentifier* resourceIdent
 
     MG_FDOCONNECTION_MANAGER_TRY()
 
+    MgLogDetail logDetail(MgServiceType::FeatureService, MgLogDetail::InternalTrace, L"MgFdoConnectionManager.Open", mgStackParams);
+    logDetail.AddResourceIdentifier(L"Resource", resourceIdentifier);
+    logDetail.Create();
+
     ACE_TRACE ("MgFdoConnectionManager::Open");
 
     MgCacheManager* cacheManager = MgCacheManager::GetInstance();
@@ -322,13 +327,18 @@ FdoIConnection* MgFdoConnectionManager::Open(MgResourceIdentifier* resourceIdent
 }
 
 FdoIConnection* MgFdoConnectionManager::Open(CREFSTRING provider, CREFSTRING connectionString)
-{
-    ACE_MT(ACE_GUARD_RETURN(ACE_Recursive_Thread_Mutex, ace_mon, sm_mutex, NULL));
-
+{    
     FdoPtr<FdoIConnection> pFdoConnection;
     ProviderInfo* providerInfo = NULL;
 
     MG_FDOCONNECTION_MANAGER_TRY()
+
+    MgLogDetail logDetail(MgServiceType::FeatureService, MgLogDetail::InternalTrace, L"MgFdoConnectionManager.Open", mgStackParams);
+    logDetail.AddString(L"Provider", provider);
+    logDetail.AddString(L"Connection", connectionString);
+    logDetail.Create();
+
+    ACE_MT(ACE_GUARD_RETURN(ACE_Recursive_Thread_Mutex, ace_mon, sm_mutex, NULL));
 
     ACE_TRACE ("MgFdoConnectionManager::Open");
 
@@ -438,11 +448,16 @@ FdoIConnection* MgFdoConnectionManager::Open(CREFSTRING provider, CREFSTRING con
 
 void MgFdoConnectionManager::Close(FdoIConnection* pFdoConnection)
 {
-    ACE_MT(ACE_GUARD(ACE_Recursive_Thread_Mutex, ace_mon, sm_mutex));
-
     CHECKNULL((FdoIConnection*)pFdoConnection, L"MgFdoConnectionManager.Close()");
 
     MG_FDOCONNECTION_MANAGER_TRY()
+
+    MgLogDetail logDetail(MgServiceType::FeatureService, MgLogDetail::InternalTrace, L"MgFdoConnectionManager.Close", mgStackParams);
+    logDetail.AddInt64(L"FdoConnection", (INT64) pFdoConnection);
+    logDetail.Create();
+
+    ACE_MT(ACE_GUARD(ACE_Recursive_Thread_Mutex, ace_mon, sm_mutex));
+
 
     ACE_TRACE ("MgFdoConnectionManager::Close");
 
@@ -453,10 +468,13 @@ void MgFdoConnectionManager::Close(FdoIConnection* pFdoConnection)
 }
 
 void MgFdoConnectionManager::RemoveExpiredFdoConnections()
-{
-    ACE_MT(ACE_GUARD(ACE_Recursive_Thread_Mutex, ace_mon, sm_mutex));
-
+{  
     MG_FDOCONNECTION_MANAGER_TRY()
+
+    MgLogDetail logDetail(MgServiceType::FeatureService, MgLogDetail::InternalTrace, L"MgFdoConnectionManager.RemoveExpiredFdoConnections", mgStackParams);
+    logDetail.Create();
+
+    ACE_MT(ACE_GUARD(ACE_Recursive_Thread_Mutex, ace_mon, sm_mutex));
 
     ACE_Time_Value now = ACE_OS::gettimeofday();
 
@@ -622,11 +640,17 @@ FdoIConnection* MgFdoConnectionManager::FindFdoConnection(CREFSTRING provider, C
 
 FdoIConnection* MgFdoConnectionManager::SearchFdoConnectionCache(CREFSTRING provider, CREFSTRING key, CREFSTRING ltName)
 {
-    ACE_MT(ACE_GUARD_RETURN(ACE_Recursive_Thread_Mutex, ace_mon, sm_mutex, NULL));
-
     FdoPtr<FdoIConnection> pFdoConnection;
 
     MG_FDOCONNECTION_MANAGER_TRY()
+
+    MgLogDetail logDetail(MgServiceType::FeatureService, MgLogDetail::InternalTrace, L"MgFdoConnectionManager.SearchFdoConnectionCache", mgStackParams);
+    logDetail.AddString(L"Provider", provider);
+    logDetail.AddString(L"Key", key);
+    logDetail.AddString(L"LTName", ltName);
+    logDetail.Create();
+
+    ACE_MT(ACE_GUARD_RETURN(ACE_Recursive_Thread_Mutex, ace_mon, sm_mutex, NULL));
 
     // Loop all of the providers to get the FDO connection caches
     ProviderInfoCollection::iterator iterProviderInfoCollection = m_ProviderInfoCollection.find(provider);
@@ -918,6 +942,12 @@ bool MgFdoConnectionManager::SupportsCommand(FdoIConnection* pFdoConnection, INT
 
 void MgFdoConnectionManager::Open(FdoIConnection* pFdoConnection)
 {
+    MG_FDOCONNECTION_MANAGER_TRY()
+
+    MgLogDetail logDetail(MgServiceType::FeatureService, MgLogDetail::InternalTrace, L"MgFdoConnectionManager.Open", mgStackParams);
+    logDetail.AddInt64(L"FdoConnection",(INT64) pFdoConnection);
+    logDetail.Create();
+
     try
     {
         // Open the connection to the FDO provider
@@ -952,6 +982,8 @@ void MgFdoConnectionManager::Open(FdoIConnection* pFdoConnection)
         throw new MgConnectionFailedException(L"MgFdoConnectionManager.Open",
             __LINE__, __WFILE__, NULL, L"", NULL);
     }
+
+    MG_FDOCONNECTION_MANAGER_CATCH_AND_THROW(L"MgFdoConnectionManager.CacheFdoConnection")
 }
 
 STRING MgFdoConnectionManager::UpdateProviderName(CREFSTRING provider)
@@ -980,13 +1012,19 @@ STRING MgFdoConnectionManager::UpdateProviderName(CREFSTRING provider)
 
 bool MgFdoConnectionManager::RemoveCachedFdoConnection(CREFSTRING resource, bool strict)
 {
-    ACE_MT(ACE_GUARD_RETURN(ACE_Recursive_Thread_Mutex, ace_mon, sm_mutex, false));
-
     bool success = false;
-    INT32 connections = 0;
-    INT32 connectionsRemoved = 0;
 
     MG_FDOCONNECTION_MANAGER_TRY()
+
+    MgLogDetail logDetail(MgServiceType::FeatureService, MgLogDetail::InternalTrace, L"MgFdoConnectionManager.RemoveCachedFdoConnection", mgStackParams);
+    logDetail.AddString(L"Resource",resource);
+    logDetail.AddBool(L"Strict", strict);
+    logDetail.Create();
+
+    ACE_MT(ACE_GUARD_RETURN(ACE_Recursive_Thread_Mutex, ace_mon, sm_mutex, false));
+
+    INT32 connections = 0;
+    INT32 connectionsRemoved = 0;
 
     if (resource.empty())
     {
@@ -1130,6 +1168,12 @@ void MgFdoConnectionManager::CacheFdoConnection(FdoIConnection* pFdoConnection, 
 {
     MG_FDOCONNECTION_MANAGER_TRY()
 
+    MgLogDetail logDetail(MgServiceType::FeatureService, MgLogDetail::InternalTrace, L"MgFdoConnectionManager.CacheFdoConnection", mgStackParams);
+    logDetail.AddString(L"Provider", provider);
+    logDetail.AddString(L"Key", key);
+    logDetail.AddString(L"LTName", ltName);
+    logDetail.Create();
+
     // Protect the cache
     ACE_MT(ACE_GUARD(ACE_Recursive_Thread_Mutex, ace_mon, sm_mutex));
 
@@ -1193,6 +1237,10 @@ bool MgFdoConnectionManager::UpdateFdoConnectionCache(CREFSTRING provider)
     bool bCacheFull = false;
 
     MG_FDOCONNECTION_MANAGER_TRY()
+
+    MgLogDetail logDetail(MgServiceType::FeatureService, MgLogDetail::InternalTrace, L"MgFdoConnectionManager.UpdateFdoConnectionCache", mgStackParams);
+    logDetail.AddString(L"Provider", provider);
+    logDetail.Create();
 
     // Protect the cache
     ACE_MT(ACE_GUARD_RETURN(ACE_Recursive_Thread_Mutex, ace_mon, sm_mutex, false));
@@ -1288,6 +1336,10 @@ ProviderInfo* MgFdoConnectionManager::AcquireFdoConnection(CREFSTRING provider)
 
     MG_FDOCONNECTION_MANAGER_TRY()
 
+    MgLogDetail logDetail(MgServiceType::FeatureService, MgLogDetail::InternalTrace, L"MgFdoConnectionManager.AcquireFdoConnection", mgStackParams);
+    logDetail.AddString(L"Provider", provider);
+    logDetail.Create();
+
     // Protect the cache
     ACE_MT(ACE_GUARD_RETURN(ACE_Recursive_Thread_Mutex, ace_mon, sm_mutex, NULL));
 
@@ -1322,6 +1374,11 @@ ProviderInfo* MgFdoConnectionManager::AcquireFdoConnection(CREFSTRING provider)
 
 void MgFdoConnectionManager::ClearCache()
 {
+    MG_FDOCONNECTION_MANAGER_TRY()
+
+    MgLogDetail logDetail(MgServiceType::FeatureService, MgLogDetail::InternalTrace, L"MgFdoConnectionManager.ClearCache", mgStackParams);
+    logDetail.Create();
+
     ACE_MT(ACE_GUARD(ACE_Recursive_Thread_Mutex, ace_mon, sm_mutex));
 
 #ifdef _DEBUG_FDOCONNECTION_MANAGER
@@ -1433,14 +1490,18 @@ void MgFdoConnectionManager::ClearCache()
     ACE_DEBUG ((LM_DEBUG, ACE_TEXT("MgFdoConnectionManager::ClearCache - FDO cache AFTER\n")));
     ShowCache();
 #endif
+    MG_FDOCONNECTION_MANAGER_CATCH_AND_THROW(L"MgFdoConnectionManager.ClearCache")
 }
 
 
 void MgFdoConnectionManager::ShowCache()
 {
-    ACE_MT(ACE_GUARD(ACE_Recursive_Thread_Mutex, ace_mon, sm_mutex));
-
     MG_FDOCONNECTION_MANAGER_TRY()
+
+    MgLogDetail logDetail(MgServiceType::FeatureService, MgLogDetail::InternalTrace, L"MgFdoConnectionManager.ShowCache", mgStackParams);
+    logDetail.Create();
+
+    ACE_MT(ACE_GUARD(ACE_Recursive_Thread_Mutex, ace_mon, sm_mutex));
 
     size_t cacheCollectionSize = m_ProviderInfoCollection.size();
     ACE_DEBUG ((LM_DEBUG, ACE_TEXT("MgFdoConnectionManager::ShowCache()\n")));
@@ -1499,9 +1560,15 @@ bool MgFdoConnectionManager::IsExcludedProvider(CREFSTRING provider)
 
 ProviderInfo* MgFdoConnectionManager::GetProviderInformation(CREFSTRING provider)
 {
-    ACE_MT(ACE_GUARD_RETURN(ACE_Recursive_Thread_Mutex, ace_mon, sm_mutex, NULL));
-
     ProviderInfo* providerInfo = NULL;
+
+    MG_FDOCONNECTION_MANAGER_TRY()
+    
+    MgLogDetail logDetail(MgServiceType::FeatureService, MgLogDetail::InternalTrace, L"MgFdoConnectionManager.GetProviderInformation", mgStackParams);
+    logDetail.AddString(L"Provider", provider);
+    logDetail.Create();
+
+    ACE_MT(ACE_GUARD_RETURN(ACE_Recursive_Thread_Mutex, ace_mon, sm_mutex, NULL));
 
     ProviderInfoCollection::iterator iter = m_ProviderInfoCollection.find(provider);
     if(iter != m_ProviderInfoCollection.end())
@@ -1519,14 +1586,20 @@ ProviderInfo* MgFdoConnectionManager::GetProviderInformation(CREFSTRING provider
         }
     }
 
+    
+    MG_FDOCONNECTION_MANAGER_CATCH_AND_THROW(L"MgFdoConnectionManager.GetProviderInformation")
+
     return providerInfo;
 }
 
 void MgFdoConnectionManager::ShowProviderInfoCache()
 {
-    ACE_MT(ACE_GUARD(ACE_Recursive_Thread_Mutex, ace_mon, sm_mutex));
-
     MG_FDOCONNECTION_MANAGER_TRY()
+
+    MgLogDetail logDetail(MgServiceType::FeatureService, MgLogDetail::InternalTrace, L"MgFdoConnectionManager.ShowProviderInfoCache", mgStackParams);
+    logDetail.Create();
+
+    ACE_MT(ACE_GUARD(ACE_Recursive_Thread_Mutex, ace_mon, sm_mutex));
 
     size_t cacheCollectionSize = m_ProviderInfoCollection.size();
     ACE_DEBUG ((LM_INFO, ACE_TEXT("MgFdoConnectionManager::ShowProviderInfoCache()\n")));
@@ -1582,9 +1655,13 @@ void MgFdoConnectionManager::ShowProviderInfoCache()
 
 void MgFdoConnectionManager::MakeFdoConnectionAvailable(FdoIConnection* connection)
 {
-    ACE_MT(ACE_GUARD(ACE_Recursive_Thread_Mutex, ace_mon, sm_mutex));
-
     MG_FDOCONNECTION_MANAGER_TRY()
+
+    MgLogDetail logDetail(MgServiceType::FeatureService, MgLogDetail::InternalTrace, L"MgFdoConnectionManager.MakeFdoConnectionAvailable", mgStackParams);
+    logDetail.AddInt64(L"FdoConnection", (INT64) connection);
+    logDetail.Create();
+
+    ACE_MT(ACE_GUARD(ACE_Recursive_Thread_Mutex, ace_mon, sm_mutex));
 
 #ifdef _DEBUG_FDOCONNECTION_MANAGER
     ACE_DEBUG((LM_INFO, ACE_TEXT("MgFdoConnectionManager::MakeFdoConnectionAvailable - Provider Info Cache Before\n")));
@@ -1705,6 +1782,12 @@ ProviderInfo* MgFdoConnectionManager::TryAcquireFdoConnection(CREFSTRING provide
     ProviderInfo* providerInfo = NULL;
     bool bConnectionAvailable = false;
 
+    MG_FDOCONNECTION_MANAGER_TRY()
+
+    MgLogDetail logDetail(MgServiceType::FeatureService, MgLogDetail::InternalTrace, L"MgFdoConnectionManager.TryAcquireFdoConnection", mgStackParams);
+    logDetail.AddString(L"Provider", provider);
+    logDetail.Create();
+
     // The code segment below needs to be guarded
     {
         ACE_MT(ACE_GUARD_RETURN(ACE_Recursive_Thread_Mutex, ace_mon, sm_mutex, NULL));
@@ -1780,6 +1863,8 @@ ProviderInfo* MgFdoConnectionManager::TryAcquireFdoConnection(CREFSTRING provide
         providerInfo = NULL;
     }
 
+    MG_FDOCONNECTION_MANAGER_CATCH_AND_THROW(L"MgFdoConnectionManager.TryAcquireFdoConnection")
+
     return providerInfo;
 }
 
@@ -1787,6 +1872,11 @@ STRING MgFdoConnectionManager::GetFdoCacheInfo()
 {
     STRING info = L"";
     wchar_t buffer[255];
+
+    MG_FDOCONNECTION_MANAGER_TRY()
+
+    MgLogDetail logDetail(MgServiceType::FeatureService, MgLogDetail::InternalTrace, L"MgFdoConnectionManager.GetFdoCacheInfo", mgStackParams);
+    logDetail.Create();
 
     ACE_MT(ACE_GUARD_RETURN(ACE_Recursive_Thread_Mutex, ace_mon, sm_mutex, L""));
 
@@ -1850,8 +1940,6 @@ STRING MgFdoConnectionManager::GetFdoCacheInfo()
     info += L"</DataConnectionTimeout>\n";
 
     info += L"</ConfigurationSettings>";
-
-    MG_FDOCONNECTION_MANAGER_TRY()
 
     // Show the contents of the provider info cache collection
     INT32 nIndex = 1;
@@ -1993,9 +2081,9 @@ STRING MgFdoConnectionManager::GetFdoCacheInfo()
         info += L"</Provider>\n";
     }
 
-    MG_FDOCONNECTION_MANAGER_CATCH(L"MgFdoConnectionManager.GetFdoCacheInfo")
-
     info += L"</FdoCacheInformation>\n";
+
+    MG_FDOCONNECTION_MANAGER_CATCH(L"MgFdoConnectionManager.GetFdoCacheInfo")
 
     return info;
 }
@@ -2059,11 +2147,15 @@ void MgFdoConnectionManager::ScrambleConnectionTags(REFSTRING connectionStr)
 
 bool MgFdoConnectionManager::SetCachedFdoConnectionAsInvalid(MgResourceIdentifier* resource)
 {
-    ACE_MT(ACE_GUARD_RETURN(ACE_Recursive_Thread_Mutex, ace_mon, sm_mutex, false));
-
     bool success = false;
 
     MG_FDOCONNECTION_MANAGER_TRY()
+
+    MgLogDetail logDetail(MgServiceType::FeatureService, MgLogDetail::InternalTrace, L"MgFdoConnectionManager.SetCachedFdoConnectionAsInvalid", mgStackParams);
+    logDetail.AddResourceIdentifier(L"Resource", resource);
+    logDetail.Create();
+
+    ACE_MT(ACE_GUARD_RETURN(ACE_Recursive_Thread_Mutex, ace_mon, sm_mutex, false));
 
     STRING resId;
 
