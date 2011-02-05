@@ -260,7 +260,7 @@ void SE_Renderer::ProcessLineOverlapWrap(LineBuffer* geometry, SE_RenderLineStyl
         int maxChoppedSize = 0;
         choppedBuffers = (LineBuffer**)alloca(prims.size() * sizeof(LineBuffer*));
         memset(choppedBuffers, 0, prims.size() * sizeof(LineBuffer*));
-        for (unsigned cur_prim=0; cur_prim<prims.size(); ++cur_prim)
+        for (unsigned int cur_prim=0; cur_prim<prims.size(); ++cur_prim)
         {
             SE_RenderPrimitive* primitive = prims[cur_prim];
 
@@ -451,7 +451,7 @@ void SE_Renderer::ProcessLineOverlapWrap(LineBuffer* geometry, SE_RenderLineStyl
                     double last_angleRad = 0.0;
 
                     // loop over the symbol's primitive elements - we will handle them one by one
-                    for (unsigned cur_prim=0; cur_prim<prims.size(); ++cur_prim)
+                    for (unsigned int cur_prim=0; cur_prim<prims.size(); ++cur_prim)
                     {
                         SE_RenderPrimitive* primitive = prims[cur_prim];
 
@@ -989,7 +989,7 @@ void SE_Renderer::ProcessLineOverlapWrap(LineBuffer* geometry, SE_RenderLineStyl
     // free the chopped line buffers
     if (choppedBuffers)
     {
-        for (unsigned cur_prim=0; cur_prim<prims.size(); ++cur_prim)
+        for (unsigned int cur_prim=0; cur_prim<prims.size(); ++cur_prim)
         {
             if (choppedBuffers[cur_prim] != NULL)
                 LineBufferPool::FreeLineBuffer(lbp, choppedBuffers[cur_prim]);
