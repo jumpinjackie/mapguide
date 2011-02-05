@@ -9,8 +9,6 @@
 // written non-disclosure agreement, expressly prescribing the scope and
 // manner of such use.
 //
-// $Header: /NewRoot/DWF Toolkit/v6/develop/global/src/dwf/w3dtk/BCompress.h 1     9/12/04 8:46p Evansg $
-//
 // This file declares all of the external symbols (functions and lookup tables)
 // used in the various compression algorithms in HOOPS/stream
 //

@@ -1,5 +1,5 @@
 //
-//  Copyright (C) 2004-2010 by Autodesk, Inc.
+//  Copyright (C) 2004-2011 by Autodesk, Inc.
 //
 //  By using this code, you are agreeing to the terms and conditions of
 //  the License Agreement included in the documentation for this code.
@@ -15,9 +15,6 @@
 //  Restricted Rights) and DFAR 252.227-7013(c)(1)(ii) (Rights in Technical
 //  Data and Computer Software), as applicable.
 //
-// $Header: /Components/Internal/DWF Toolkit/v7.1/develop/global/src/dwf/package/reader/EPlotSectionDescriptorReader.cpp 7     8/11/05 7:57p K $
-//
-
 
 
 #include "dwf/package/Constants.h"

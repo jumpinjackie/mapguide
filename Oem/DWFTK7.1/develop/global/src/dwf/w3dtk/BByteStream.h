@@ -9,8 +9,6 @@
 // written non-disclosure agreement, expressly prescribing the scope and
 // manner of such use.
 //
-// $Header: /Components/Internal/DWF Toolkit/v7.1/develop/global/src/dwf/w3dtk/BByteStream.h 4     10/17/05 1:11a Gopalas $
-//
 // This header file is a completely self-contained class that defines all of the
 // member functions that it needs inside the declaration.  It is just a utility class
 // to stuff unaligned data values into bytes.

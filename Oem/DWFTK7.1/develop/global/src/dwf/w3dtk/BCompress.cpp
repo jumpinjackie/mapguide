@@ -9,8 +9,6 @@
 // written non-disclosure agreement, expressly prescribing the scope and
 // manner of such use.
 //
-// $Header: /Components/Internal/DWF Toolkit/v7.1/develop/global/src/dwf/w3dtk/BCompress.cpp 4     8/18/05 8:46p Gopalas $
-//
 // This file contains the required functions and lookup tables to implement the
 // some of the compression algorithms.  The algorithm is so named because it
 // is based on quantization to a set of vectors that were the output of a point

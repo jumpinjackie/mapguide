@@ -9,8 +9,6 @@
 // written non-disclosure agreement, expressly prescribing the scope and
 // manner of such use.
 //
-// $Header: /Components/Internal/DWF Toolkit/v7.1/develop/global/src/dwf/w3dtk/BPolyhedron.cpp 8     10/17/05 1:11a Gopalas $
-//
 
 #include "dwf/w3dtk/BStream.h"
 #include "dwf/w3dtk/BOpcodeShell.h"
@@ -18,7 +16,6 @@
 #include "dwf/w3dtk/BInternal.h"
 #include <math.h>
 #define ASSERT(x)
-
 
 
 

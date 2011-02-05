@@ -10,8 +10,7 @@
 // manner of such use.
 //
 //
-//
-//  Copyright (C) 1996-2010 by Autodesk, Inc.
+//  Copyright (C) 1996-2011 by Autodesk, Inc.
 //
 //  By using this code, you are agreeing to the terms and conditions of
 //  the License Agreement included in the documentation for this code.
@@ -29,9 +28,6 @@
 //  restrictions set forth in FAR 52.227-19 (Commercial Computer Software
 //  Restricted Rights) and DFAR 252.227-7013(c)(1)(ii) (Rights in Technical
 //  Data and Computer Software), as applicable.
-//
-//
-// $Header: /Components/Internal/DWF Toolkit/v7.1/develop/global/src/dwf/w3dtk/BStreamFileToolkit.h 4     8/18/05 8:47p Gopalas $
 //
 
 #ifndef BBINFILETK_TOOLKIT

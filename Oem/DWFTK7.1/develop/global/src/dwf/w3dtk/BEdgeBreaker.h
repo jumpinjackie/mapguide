@@ -9,10 +9,7 @@
  * written non-disclosure agreement, expressly prescribing the scope and
  * manner of such use.
  *
- * $Header: /NewRoot/DWF Toolkit/v6/develop/global/src/dwf/w3dtk/BEdgeBreaker.h 1     9/12/04 8:47p Evansg $
- *
- *
- *
+  *
  * HEdgeBreaker.h
  *
  * This file describes the public interface to the edgebreaker module, plus some internal 

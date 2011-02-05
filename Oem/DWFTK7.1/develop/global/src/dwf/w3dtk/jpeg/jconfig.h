@@ -9,8 +9,6 @@
 // written non-disclosure agreement, expressly prescribing the scope and
 // manner of such use.
 //
-// $Header: /NewRoot/DWF Toolkit/v6/develop/global/src/dwf/w3dtk/jpeg/jconfig.h 1     9/12/04 8:49p Evansg $
-//
 // This file contains the required functions and lookup tables to implement the
 // some of the compression algorithms.  The algorithm is so named because it
 // is based on quantization to a set of vectors that were the output of a point
