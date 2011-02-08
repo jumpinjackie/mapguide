@@ -28,18 +28,15 @@ class MG_FOUNDATION_API MgByte : public MgDisposable
 
 public:
     /// \brief
-    /// Maximum size of an MgByte array.
+    /// Maximum size of an MgByte array created by the MgStreamReader.
     ///
     /// \remarks
-    /// This is a hard limitation
-    /// intended to stop any "piggy" algorithms that allocate too much data
-    /// around in one chunk.  If you need to allocate more than 16 megs
-    /// of memory for a byte array then there is probably a better way to do
-    /// what your are intending.
+    /// This value is only used by MgStreamReader to control when a
+    /// file based stream should be used instead of a memory based one.
     ///
     /// \todo
     /// This parameter should be tunable from the configuration file
-    static const INT64 MaxSize = 16*1024*1024;
+    static const INT64 MaxSize = 64*1024*1024;
 
     /////////////////////////////////////////////////////////////////
     /// \brief

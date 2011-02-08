@@ -29,7 +29,7 @@ MgByte::MgByte()
 MgByte::MgByte(BYTE_ARRAY_IN bytes, INT32 len, AllocatorType allocator)
 : m_allocType(allocator)
 {
-    if (len > MgByte::MaxSize && allocator != MgByte::None)
+    if (allocator != MgByte::None)
     {
         throw new MgArgumentOutOfRangeException(L"MgByte.MgByte", __LINE__, __WFILE__, NULL, L"", NULL);
     }
@@ -97,11 +97,6 @@ void MgByte::Append(BYTE_ARRAY_IN bytes, INT32 len)
     if (MgByte::Internal != m_allocType)
     {
         throw new MgInvalidOperationException(L"MgByte.Append", __LINE__, __WFILE__, NULL, L"", NULL);
-    }
-
-    if (len+m_len > MgByte::MaxSize)
-    {
-        throw new MgArgumentOutOfRangeException(L"MgByte.Append", __LINE__, __WFILE__, NULL, L"", NULL);
     }
 
     if (len+m_len > m_allocLen)
