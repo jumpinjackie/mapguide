@@ -148,12 +148,6 @@ MgByte* MgByteSink::ToBuffer()
             __LINE__, __WFILE__, NULL, L"", NULL);
     }
 
-    if (m_reader->GetLength() > MgByte::MaxSize)
-    {
-        throw new MgArgumentOutOfRangeException(L"MgByteSink.ToBuffer",
-            __LINE__, __WFILE__, NULL, L"", NULL);
-    }
-
     Ptr<MgByte> bytes;
 
     // See if we are sourced from an MgByte.  If we are, just pass it back.
