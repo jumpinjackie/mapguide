@@ -29,11 +29,6 @@ MgByte::MgByte()
 MgByte::MgByte(BYTE_ARRAY_IN bytes, INT32 len, AllocatorType allocator)
 : m_allocType(allocator)
 {
-    if (allocator != MgByte::None)
-    {
-        throw new MgArgumentOutOfRangeException(L"MgByte.MgByte", __LINE__, __WFILE__, NULL, L"", NULL);
-    }
-
     // Basic initialization
     m_bytes = NULL;
     m_len = 0;
