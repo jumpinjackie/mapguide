@@ -197,7 +197,9 @@ void MgHttpWmsGetMap::Execute(MgHttpResponse& hResponse)
             // Set the result
             STRING sMimeType = mapImage->GetMimeType();
             hResult->SetResultObject(mapImage, sMimeType.length() > 0 ? sMimeType : m_format);
-            
+
+            // Destroy the session now that we are done
+            site->DestroySession(session);
         }
         else
         {

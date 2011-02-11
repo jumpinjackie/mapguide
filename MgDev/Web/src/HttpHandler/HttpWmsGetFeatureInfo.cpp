@@ -217,6 +217,9 @@ void MgHttpWmsGetFeatureInfo::AcquireResponseData(MgOgcServer* ogcServer)
 
         // The WMS Server takes ownership of the feature info
         wmsServer->SetFeatureInfo(wmsFeatureInfo);
+
+        // Destroy the session now that we are done
+        site->DestroySession(session);
     }
 }
 
