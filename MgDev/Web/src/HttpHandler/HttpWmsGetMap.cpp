@@ -33,6 +33,7 @@ extern CPSZ kpszDefineSupportedFormats; // borrowed. TODO: publish as member var
 //                                          |                 |                  |           //
 #define CATCH_MGEXCEPTION_HANDLE_AS_OGC_WMS(mg_exception_type,ogc_exception_code,ogc_server)  \
         catch (mg_exception_type* e) {                                                        \
+            MgHttpUtil::LogException(e);                                                      \
             STRING sReport = e->GetExceptionMessage();                                        \
             sReport += _("<details>");                                                        \
             sReport += e->GetDetails();                                                       \
@@ -47,11 +48,13 @@ extern CPSZ kpszDefineSupportedFormats; // borrowed. TODO: publish as member var
 ///////////////////////////////////////////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
-//                                       MgOgcWmsException::kpsz...                          //
-//                                       |                  OgcServer&                       //
-//                                       |                  |                                //
-#define CATCH_ANYTHING_HANDLE_AS_OGC_WMS(ogc_exception_code,ogc_server)                       \
+//                                                   MgOgcWmsException::kpsz...              //
+//                                                   |                  OgcServer&           //
+//                                                   |                  |                    //
+#define CATCH_ANYTHING_HANDLE_AS_OGC_WMS(methodName, ogc_exception_code,ogc_server)           \
         catch (...) {                                                                         \
+            Ptr<MgUnclassifiedException> mgException = new MgUnclassifiedException(methodName, __LINE__, __WFILE__, NULL, L"", NULL); \
+            MgHttpUtil::LogException(mgException);                                            \
             ogc_server.ServiceExceptionReportResponse(                                        \
                 MgOgcWmsException(MgOgcWmsException::kpszInternalError,                       \
                                   _("Unexpected exception was thrown.  No additional details available.")));\
@@ -157,6 +160,10 @@ void MgHttpWmsGetMap::Execute(MgHttpResponse& hResponse)
     // Create the WMS handler
     MgHttpResponseStream responseStream;
     MgOgcWmsServer wms(requestParams, responseStream);
+
+    Ptr<MgSite> site;
+    STRING session = L"";
+
     try
     {
         if(wms.ProcessRequest(this))
@@ -174,8 +181,8 @@ void MgHttpWmsGetMap::Execute(MgHttpResponse& hResponse)
 
             // Create session
             Ptr<MgUserInformation> userInfo = m_siteConn->GetUserInfo();
-            Ptr<MgSite> site = m_siteConn->GetSite();
-            STRING session = site->CreateSession();
+            site = m_siteConn->GetSite();
+            session = site->CreateSession();
             userInfo->SetMgSessionId(session);
 
             // Get a map object corresponding to the request parameters
@@ -197,9 +204,6 @@ void MgHttpWmsGetMap::Execute(MgHttpResponse& hResponse)
             // Set the result
             STRING sMimeType = mapImage->GetMimeType();
             hResult->SetResultObject(mapImage, sMimeType.length() > 0 ? sMimeType : m_format);
-
-            // Destroy the session now that we are done
-            site->DestroySession(session);
         }
         else
         {
@@ -216,7 +220,12 @@ void MgHttpWmsGetMap::Execute(MgHttpResponse& hResponse)
     CATCH_MGEXCEPTION_HANDLE_AS_OGC_WMS(MgInvalidCoordinateSystemException,   kpszInvalidCRS,   wms)
     CATCH_MGEXCEPTION_HANDLE_AS_OGC_WMS(MgCoordinateSystemLoadFailedException,kpszInvalidCRS,   wms)
     CATCH_MGEXCEPTION_HANDLE_AS_OGC_WMS(MgException,                          kpszInternalError,wms)
-    CATCH_ANYTHING_HANDLE_AS_OGC_WMS(                                         kpszInternalError,wms)
+    CATCH_ANYTHING_HANDLE_AS_OGC_WMS(L"MgHttpWmsGetMap.Execute",              kpszInternalError,wms)
+
+    // Destroy the session now that we are done
+    if((NULL != site.p) && (!session.empty()))
+        site->DestroySession(session);
+
     MG_HTTP_HANDLER_CATCH_AND_THROW_EX(L"MgHttpWmsGetMap.Execute")
 }
 
