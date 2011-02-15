@@ -438,7 +438,7 @@ STRING CCoordinateSystemFormatConverter::CodeToWkt(INT32 nFormatSource, CREFSTRI
         throw new MgInvalidArgumentException(L"MgCoordinateSystemFormatConverter.CodeToWkt", __LINE__, __WFILE__, NULL, L"", NULL);
     }
 
-    const char* szMsiName=NULL;
+    std::string szMsiName;
     std::string strName;
 
     //if input is EPSG
@@ -467,8 +467,10 @@ STRING CCoordinateSystemFormatConverter::CodeToWkt(INT32 nFormatSource, CREFSTRI
             //viewed from the outside of public API
             //The mapping from Adsk name to Msi is done internally inside
             //the method CSepsg2adskCS
+            CriticalClass.Enter();
             szMsiName=CSepsg2adskCS(lEpsg);
-            if (!szMsiName)
+            CriticalClass.Leave();
+            if (szMsiName.empty())
             {
                 return L"";
             }
@@ -484,8 +486,8 @@ STRING CCoordinateSystemFormatConverter::CodeToWkt(INT32 nFormatSource, CREFSTRI
         strName=pszCsSource;
         delete[] pszCsSource;
         ReformatOldArbitraryName(strName);
-        szMsiName=strName.c_str();
-        if (!szMsiName)
+        szMsiName=strName;
+        if (szMsiName.empty())
         {
             return L"";
         }
@@ -500,7 +502,7 @@ STRING CCoordinateSystemFormatConverter::CodeToWkt(INT32 nFormatSource, CREFSTRI
     char csWktBufr [2048];
 
     //is it an arbitrary system, one that uses NERTH projection?
-    wchar_t* wszMsiName=Convert_Ascii_To_Wide(szMsiName);
+    wchar_t* wszMsiName=Convert_Ascii_To_Wide(szMsiName.c_str());
     if (!wszMsiName)
     {
         throw new MgOutOfMemoryException(L"MgCoordinateSystemFormatConverter.CodeToWkt", __LINE__, __WFILE__, NULL, L"", NULL);
@@ -523,7 +525,7 @@ STRING CCoordinateSystemFormatConverter::CodeToWkt(INT32 nFormatSource, CREFSTRI
     else
     {
         SmartCriticalClass critical(true);
-        if (0==CS_cs2Wkt(csWktBufr,sizeof(csWktBufr),szMsiName,GetWktFlavor(nWktFlavor)))
+        if (0==CS_cs2Wkt(csWktBufr,sizeof(csWktBufr),szMsiName.c_str(),GetWktFlavor(nWktFlavor)))
         {
             wchar_t* wszWkt=Convert_Ascii_To_Wide(csWktBufr);
             if (!wszWkt)
