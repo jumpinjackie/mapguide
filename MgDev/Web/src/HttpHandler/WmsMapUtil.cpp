@@ -209,33 +209,6 @@ MgMap* MgWmsMapUtil::GetMap(MgOgcWmsServer& oWms,
 
                     Ptr<MgResourceIdentifier> fsId = new MgResourceIdentifier(mgLayer->GetFeatureSourceId());
 
-                    //Get the layer CS
-                    Ptr<MgSpatialContextReader> scReader = featureService->GetSpatialContexts(fsId, false);
-                    if(scReader.p != NULL)
-                    {
-                        if(scReader->ReadNext())
-                        {
-                            STRING layerCoordSysWkt = scReader->GetCoordinateSystemWkt();
-                            Ptr<MgCoordinateSystem> layerCs = (layerCoordSysWkt.empty()) ? NULL : factory->Create(layerCoordSysWkt);
-                            if(layerCs != NULL)
-                            {   
-                                csTrans = factory->GetTransform(mapCs,layerCs);
-                                csTrans->IgnoreDatumShiftWarning(true);
-                                csTrans->IgnoreOutsideDomainWarning(true);
-                            }
-                        }
-                        scReader->Close();
-                    }
-
-                    // Transform user defined boundingbox to layer CS
-                    Ptr<MgEnvelope> layerCsExtent = csTrans->Transform(wmsLayerExtent);
-                    Ptr<MgCoordinate> layerCsLowerLeftCoordinate = layerCsExtent->GetLowerLeftCoordinate();
-                    Ptr<MgCoordinate> layerCsUpperRightCoordinate = layerCsExtent->GetUpperRightCoordinate();
-                    MgUtil::DoubleToString(layerCsLowerLeftCoordinate->GetX(),sMinX);
-                    MgUtil::DoubleToString(layerCsLowerLeftCoordinate->GetY(),sMinY);
-                    MgUtil::DoubleToString(layerCsUpperRightCoordinate->GetX(),sMaxX);
-                    MgUtil::DoubleToString(layerCsUpperRightCoordinate->GetY(),sMaxY);
-
                     STRING qualifiedName = mgLayer->GetFeatureClassName();
 
                     int pos = qualifiedName.find(L":");
@@ -251,6 +224,51 @@ MgMap* MgWmsMapUtil::GetMap(MgOgcWmsServer& oWms,
                         Ptr<MgPropertyDefinition> prop = propDefCol->GetItem(i);
                         if(prop->GetPropertyType() == MgFeaturePropertyType::GeometricProperty)
                         {
+                            STRING spatialContextAssociation = L"";
+                            STRING layerCoordSysWkt = L"";
+                            
+                            //Get the layer CS
+                            MgGeometricPropertyDefinition* geomProp = static_cast<MgGeometricPropertyDefinition*>(prop.p);
+                            spatialContextAssociation = geomProp->GetSpatialContextAssociation();
+
+                            Ptr<MgSpatialContextReader> scReader = featureService->GetSpatialContexts(fsId, false);
+                            if(scReader.p != NULL)
+                            {
+                                while(scReader->ReadNext())
+                                {
+                                    STRING csrName = scReader->GetName();
+                                    if(!spatialContextAssociation.empty() &&  csrName == spatialContextAssociation)
+                                    {
+                                        layerCoordSysWkt = scReader->GetCoordinateSystemWkt();
+                                        break;
+                                    }
+                                    else if(layerCoordSysWkt.empty())
+                                    {
+                                        // This is the 1st spatial context returned
+                                        // This will be overwritten if we find the association
+                                        layerCoordSysWkt = scReader->GetCoordinateSystemWkt();
+                                    }
+                                }
+                                scReader->Close();
+                            }
+
+                            Ptr<MgCoordinateSystem> layerCs = (layerCoordSysWkt.empty()) ? NULL : factory->Create(layerCoordSysWkt);
+                            if(layerCs != NULL)
+                            {   
+                                csTrans = factory->GetTransform(mapCs,layerCs);
+                                csTrans->IgnoreDatumShiftWarning(true);
+                                csTrans->IgnoreOutsideDomainWarning(true);
+                            }
+
+                            // Transform user defined boundingbox to layer CS
+                            Ptr<MgEnvelope> layerCsExtent = csTrans->Transform(wmsLayerExtent);
+                            Ptr<MgCoordinate> layerCsLowerLeftCoordinate = layerCsExtent->GetLowerLeftCoordinate();
+                            Ptr<MgCoordinate> layerCsUpperRightCoordinate = layerCsExtent->GetUpperRightCoordinate();
+                            MgUtil::DoubleToString(layerCsLowerLeftCoordinate->GetX(),sMinX);
+                            MgUtil::DoubleToString(layerCsLowerLeftCoordinate->GetY(),sMinY);
+                            MgUtil::DoubleToString(layerCsUpperRightCoordinate->GetX(),sMaxX);
+                            MgUtil::DoubleToString(layerCsUpperRightCoordinate->GetY(),sMaxY);
+
                             STRING propName = prop->GetName();
                             
                             STRING boundingboxGeom = L"GeomFromText('POLYGON((" 
