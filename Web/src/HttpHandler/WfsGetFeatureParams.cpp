@@ -177,7 +177,7 @@ WfsGetFeatureParams::WfsGetFeatureParams(MgOgcWfsServer& oServer,CREFSTRING xmlR
 
             STRING sOutputFormat;
             if(pBegin->GetAttribute(_("outputFormat"), sOutputFormat) && sOutputFormat.length() > 0)
-                m_outputFormat = sOutputFormat;
+                m_outputFormat = oServer.ProcessArgumentAs(_("OutputFormat"),sOutputFormat.c_str());
 
 
             // We want to hang onto the namespaces that are
