@@ -292,31 +292,36 @@ rem =======================================================
 :install
 :install_sdk
 echo [install]: SDK
-if not exist "%MG_SDK_INC%\Fdo" mkdir "%MG_SDK_INC%\Fdo"
-if not exist "%MG_SDK_LIB%\Fdo" mkdir "%MG_SDK_LIB%\Fdo"
-if not exist "%MG_SDK_BIN%\Fdo" mkdir "%MG_SDK_BIN%\Fdo"
 if not exist "%MG_SDK_BIN%" mkdir "%MG_SDK_BIN%"
 if not exist "%MG_SDK_LIB%" mkdir "%MG_SDK_LIB%"
 if not exist "%MG_SDK_INC%" mkdir "%MG_SDK_INC%"
-echo [install]: SDK - Oem
+echo [install]: SDK - Oem (ACE)
 rem ACE
 copy /Y "%MG_OEM%\ACE\ACE_wrappers\lib\ACE.dll" "%MG_SDK_BIN%"
 copy /Y "%MG_OEM%\ACE\ACE_wrappers\lib\ACE.pdb" "%MG_SDK_BIN%"
 copy /Y "%MG_OEM%\ACE\ACE_wrappers\lib\ACE.lib" "%MG_SDK_LIB%"
-rem Due to hard dependency, we need the header files too
+rem Due to ACE headers being leaked out in public MG headers, we need these too
 %XCOPY% /S "%MG_OEM%\ACE\ACE_wrappers\ace\*.h" "%MG_SDK_INC%\ACE_wrappers\ACE" /EXCLUDE:svn_excludes.txt
 %XCOPY% /S "%MG_OEM%\ACE\ACE_wrappers\ace\*.inl" "%MG_SDK_INC%\ACE_wrappers\ACE" /EXCLUDE:svn_excludes.txt
 %XCOPY% /S "%MG_OEM%\ACE\ACE_wrappers\ace\*.cpp" "%MG_SDK_INC%\ACE_wrappers\ACE" /EXCLUDE:svn_excludes.txt
-rem GEOS
+echo [install]: SDK - Oem (GEOS)
+rem Same with GEOS
 copy /Y "%MG_OEM%\geos-2.2.0\VisualStudio\%TYPEBUILD%\GEOS.dll" "%MG_SDK_BIN%"
 copy /Y "%MG_OEM%\geos-2.2.0\VisualStudio\%TYPEBUILD%\GEOS.pdb" "%MG_SDK_BIN%"
-rem xerces
+echo [install]: SDK - Oem (xerces)
+rem Same with xerces
 copy /Y "%MG_OEM%\dbxml\xerces-c-src\Build\Win32\VC9\%TYPEBUILD%\xerces-c_3_1mg.dll" "%MG_SDK_BIN%"
 copy /Y "%MG_OEM%\dbxml\xerces-c-src\Build\Win32\VC9\%TYPEBUILD%\xerces-c_3_1mg.pdb" "%MG_SDK_BIN%"
 copy /Y "%MG_OEM%\dbxml\xerces-c-src\Build\Win32\VC9\%TYPEBUILD%\xerces-c_3mg.lib" "%MG_SDK_LIB%"
 %XCOPY% /S "%MG_OEM%\dbxml\xerces-c-src\src\*.h" "%MG_SDK_INC%\xerces" /EXCLUDE:svn_excludes.txt
 %XCOPY% /S "%MG_OEM%\dbxml\xerces-c-src\src\*.hpp" "%MG_SDK_INC%\xerces" /EXCLUDE:svn_excludes.txt
 %XCOPY% /S "%MG_OEM%\dbxml\xerces-c-src\src\*.c" "%MG_SDK_INC%\xerces" /EXCLUDE:svn_excludes.txt
+echo [install]: SDK - Oem (DWF Toolkit)
+rem DWF Toolkit isn't technically required, but it's hard to implement your own MgDrawingService without it
+%XCOPY% /S "%MG_OEM%\DWFTK7.1\develop\global\lib\static\%TYPEBUILD%\vc8.0\*.lib" "%MG_SDK_LIB%\dwftk"
+%XCOPY% /S "%MG_OEM%\DWFTK7.1\develop\global\src\dwf\*.*" "%MG_SDK_INC%\DWFTK7.1\dwf" /EXCLUDE:svn_excludes.txt
+%XCOPY% /S "%MG_OEM%\DWFTK7.1\develop\global\src\dwfcore\*.*" "%MG_SDK_INC%\DWFTK7.1\dwfcore" /EXCLUDE:svn_excludes.txt
+%XCOPY% /S "%MG_OEM%\DWFTK7.1\develop\global\src\dwfemap\*.*" "%MG_SDK_INC%\DWFTK7.1\dwfemap" /EXCLUDE:svn_excludes.txt
 echo [install]: SDK - FDO
 rem FDO SDK. Copy each subdir into each respective "Fdo" subdirectory to distinguish FDO files from MG files
 %XCOPY% "%MG_OEM%\FDO\bin\%TYPEBUILD%" "%MG_SDK_BIN%\Fdo"
@@ -358,24 +363,6 @@ rem Delete some stuff that should not be there
 pushd "%MG_SDK_BIN%"
 del GeometryConsoleTest.pdb
 popd
-echo [install]: SWIG wrappers
-copy /Y "%MG_WEB_BIN%\%TYPEBUILD%\OSGeo.MapGuide.Foundation.dll" "%MG_SDK_BIN%"
-copy /Y "%MG_WEB_BIN%\%TYPEBUILD%\OSGeo.MapGuide.Geometry.dll" "%MG_SDK_BIN%"
-copy /Y "%MG_WEB_BIN%\%TYPEBUILD%\OSGeo.MapGuide.MapGuideCommon.dll" "%MG_SDK_BIN%"
-copy /Y "%MG_WEB_BIN%\%TYPEBUILD%\OSGeo.MapGuide.PlatformBase.dll" "%MG_SDK_BIN%"
-copy /Y "%MG_WEB_BIN%\%TYPEBUILD%\OSGeo.MapGuide.Foundation.pdb" "%MG_SDK_BIN%"
-copy /Y "%MG_WEB_BIN%\%TYPEBUILD%\OSGeo.MapGuide.Geometry.pdb" "%MG_SDK_BIN%"
-copy /Y "%MG_WEB_BIN%\%TYPEBUILD%\OSGeo.MapGuide.MapGuideCommon.pdb" "%MG_SDK_BIN%"
-copy /Y "%MG_WEB_BIN%\%TYPEBUILD%\OSGeo.MapGuide.PlatformBase.pdb" "%MG_SDK_BIN%"
-rem The unmanaged glue
-copy /Y "%MG_WEB_BIN%\%TYPEBUILD%\FoundationUnmanagedApi.dll" "%MG_SDK_BIN%"
-copy /Y "%MG_WEB_BIN%\%TYPEBUILD%\GeometryUnmanagedApi.dll" "%MG_SDK_BIN%"
-copy /Y "%MG_WEB_BIN%\%TYPEBUILD%\MapGuideCommonUnmanagedApi.dll" "%MG_SDK_BIN%"
-copy /Y "%MG_WEB_BIN%\%TYPEBUILD%\PlatformBaseUnmanagedApi.dll" "%MG_SDK_BIN%"
-copy /Y "%MG_WEB_BIN%\%TYPEBUILD%\FoundationUnmanagedApi.pdb" "%MG_SDK_BIN%"
-copy /Y "%MG_WEB_BIN%\%TYPEBUILD%\GeometryUnmanagedApi.pdb" "%MG_SDK_BIN%"
-copy /Y "%MG_WEB_BIN%\%TYPEBUILD%\MapGuideCommonUnmanagedApi.pdb" "%MG_SDK_BIN%"
-copy /Y "%MG_WEB_BIN%\%TYPEBUILD%\PlatformBaseUnmanagedApi.pdb" "%MG_SDK_BIN%"
 goto quit
 
 :error
