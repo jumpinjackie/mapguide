@@ -39,6 +39,7 @@ private:
     FILE* fp;
     std::string interfaces;
     std::string code;
+    std::string attributes;
     bool parsed;
 
     void ReadString(std::string& str, FILE* fp)
@@ -58,8 +59,19 @@ private:
             string buf;
             ReadString(buf, fp);
             
-            std::string::size_type pos = buf.find("INTERFACE");
+            std::string::size_type pos = buf.find("ATTRIBUTE");
             std::string::size_type pos2 = 0;
+
+            while (pos != buf.npos)
+            {
+                pos += strlen("ATTRIBUTE");
+                pos2 = buf.find("\n", pos);
+                if (!attributes.empty()) { attributes.append(","); }
+                attributes.append(buf.substr(pos, pos2-pos));
+                pos = buf.find("ATTRIBUTE", pos2);
+            }
+
+            pos = buf.find("INTERFACE");
             while (pos != buf.npos)
             {
                 pos += strlen("INTERFACE");
@@ -101,6 +113,11 @@ public:
             fclose(fp);
             fp = NULL;
         }
+    }
+
+    String* getAttributes()
+    {
+        return NewString(parsed ? attributes.c_str() : "");
     }
 
     String *getInterfaces()
@@ -1342,12 +1359,14 @@ class CSHARP : public Language {
 
     // Pure C# interfaces
     const String *pure_interfaces = typemapLookup(derived ? "csinterfaces_derived" : "csinterfaces", typemap_lookup_type, WARN_NONE);
+    const String *attributeTags = NewString("");
 
     // Custom proxy code defined in external files
     if (proxyDir != NULL)
     {
         CustomFile customFile(proxyDir, c_classname);
         pure_interfaces = customFile.getInterfaces();
+        attributeTags = customFile.getAttributes();
     }
 
     if(!isRootException)
@@ -1366,6 +1385,16 @@ class CSHARP : public Language {
                 namespaceName,
                 "\n",
                 "{\n",
+                NIL);
+        }
+
+        //Add attribute
+        if(*Char(attributeTags))
+        {
+            Printv(proxy_class_def, 
+                "[",
+                attributeTags,
+                "]\n",
                 NIL);
         }
 
@@ -1424,6 +1453,16 @@ class CSHARP : public Language {
                 namespaceName,
                 "\n",
                 "{\n",
+                NIL);
+        }
+
+        //Add attribute
+        if(*Char(attributeTags))
+        {
+            Printv(proxy_class_def, 
+                "[",
+                attributeTags,
+                "]\n",
                 NIL);
         }
 
