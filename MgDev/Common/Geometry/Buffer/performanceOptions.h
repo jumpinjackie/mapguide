@@ -43,7 +43,7 @@
 #define PERF_TRACE_BOTH_SIDES       false
 
 // Process the entire geometry (polygons with rings, multi geometries) together
-#define PERF_MERGE_ENTIRE_GEOMETRY  false
+#define PERF_MERGE_ENTIRE_GEOMETRY  true //false - TODO: fix the algorithm for interior rings
 
 // Add the start vertex at the end of the loop. This will simplify tracing and get rid of the last arc.
 #define PERF_ADD_START_POINT_TO_LOOP true
