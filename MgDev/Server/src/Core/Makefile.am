@@ -274,7 +274,6 @@ UnitTesting :
 	@echo "#!/bin/sh" > unittest.sh
 	@echo "export MENTOR_DICTIONARY_PATH=$(mentor_dict_install_dir)" >> unittest.sh
 	@echo "echo MENTOR_DICTIONARY_PATH=\$$MENTOR_DICTIONARY_PATH" >> unittest.sh
-	@echo "ulimit -s 1024" >> unittest.sh
 	@echo "./mgserver test" >> unittest.sh
 	@chmod a+x unittest.sh
 
@@ -408,7 +407,6 @@ install-data-hook:
 	@echo '' >> ${prefix}/bin/mgserver.sh
 	@echo 'export MENTOR_DICTIONARY_PATH=$(mentor_dict_install_dir)' >> ${prefix}/bin/mgserver.sh
 	@echo 'export LD_LIBRARY_PATH=$(fdodir):"$$LD_LIBRARY_PATH"' >> ${prefix}/bin/mgserver.sh
-	@echo 'ulimit -s 1024' >> ${prefix}/bin/mgserver.sh
 	@echo 'pushd ${prefix}/bin' >> ${prefix}/bin/mgserver.sh
 	@cp -f ${prefix}/bin/mgserver.sh ${prefix}/bin/mgserverd.sh
 	@echo './mgserver run' >> ${prefix}/bin/mgserver.sh
