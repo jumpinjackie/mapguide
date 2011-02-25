@@ -116,27 +116,27 @@ void IOTileWatermarkPosition::EndElement(const wchar_t* name, HandlerStack* hand
 }
 
 
-void IOTileWatermarkPosition::Write(MdfStream& fd, TileWatermarkPosition* position, Version* version)
+void IOTileWatermarkPosition::Write(MdfStream& fd, TileWatermarkPosition* position, Version* version, MgTab& tab)
 {
-    fd << tab() << startStr(sTilePosition) << std::endl;
-    inctab();
+    fd << tab.tab() << startStr(sTilePosition) << std::endl;
+    tab.inctab();
 
     // Property: TileWidth
-    fd << tab() << startStr(sTileWidth);
+    fd << tab.tab() << startStr(sTileWidth);
     fd << DoubleToStr(position->GetTileWidth());
     fd << endStr(sTileWidth) << std::endl;
 
     // Property: TileHeight
-    fd << tab() << startStr(sTileHeight);
+    fd << tab.tab() << startStr(sTileHeight);
     fd << DoubleToStr(position->GetTileHeight());
     fd << endStr(sTileHeight) << std::endl;
 
     // Property: HorizontalPosition
-    IOWatermarkXOffset::Write(fd, position->GetHorizontalPosition(), sHorizontalPosition, version);
+    IOWatermarkXOffset::Write(fd, position->GetHorizontalPosition(), sHorizontalPosition, version, tab);
 
     // Property: VerticalPosition
-    IOWatermarkYOffset::Write(fd, position->GetVerticalPosition(), sVerticalPosition, version);
+    IOWatermarkYOffset::Write(fd, position->GetVerticalPosition(), sVerticalPosition, version, tab);
 
-    dectab();
-    fd << tab() << endStr(sTilePosition) << std::endl;
+    tab.dectab();
+    fd << tab.tab() << endStr(sTilePosition) << std::endl;
 }

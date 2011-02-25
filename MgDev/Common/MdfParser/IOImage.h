@@ -37,7 +37,7 @@ class IOImage : public IOGraphicElement
         virtual void StartElement(const wchar_t* name, HandlerStack* handlerStack);
         virtual void ElementChars(const wchar_t* ch);
 
-        static void Write(MdfStream& fd, Image* image, Version* version);
+        static void Write(MdfStream& fd, Image* image, Version* version, MgTab& tab);
 };
 
 END_NAMESPACE_MDFPARSER

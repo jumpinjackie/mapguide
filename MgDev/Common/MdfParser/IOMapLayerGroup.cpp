@@ -99,22 +99,22 @@ void IOMapLayerGroup::EndElement(const wchar_t* name, HandlerStack* handlerStack
 }
 
 
-void IOMapLayerGroup::Write(MdfStream& fd, MapLayerGroup* mapLayerGroup, Version* version)
+void IOMapLayerGroup::Write(MdfStream& fd, MapLayerGroup* mapLayerGroup, Version* version, MgTab& tab)
 {
-    fd << tab() << startStr(sMapLayerGroup) << std::endl;
-    inctab();
+    fd << tab.tab() << startStr(sMapLayerGroup) << std::endl;
+    tab.inctab();
 
-    IOMapLayerGroupCommon::Write(fd, mapLayerGroup, version);
+    IOMapLayerGroupCommon::Write(fd, mapLayerGroup, version, tab);
 
     // Property: Group
-    fd << tab() << startStr(sGroup);
+    fd << tab.tab() << startStr(sGroup);
     fd << EncodeString(mapLayerGroup->GetGroup());
     fd << endStr(sGroup) << std::endl;
 
     // Write any unknown XML / extended data
     if (!version || (*version >= Version(2, 3, 0)))
-        IOUnknown::Write(fd, mapLayerGroup->GetUnknownXml(), version);
+        IOUnknown::Write(fd, mapLayerGroup->GetUnknownXml(), version, tab);
 
-    dectab();
-    fd << tab() << endStr(sMapLayerGroup) << std::endl;
+    tab.dectab();
+    fd << tab.tab() << endStr(sMapLayerGroup) << std::endl;
 }

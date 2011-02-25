@@ -39,7 +39,7 @@ class IOMapLayer : public IOMapLayerCommon
         virtual void ElementChars(const wchar_t* ch);
         virtual void EndElement(const wchar_t* name, HandlerStack* handlerStack);
 
-        static void Write(MdfStream& fd, MapLayer* mapLayer, Version* version);
+        static void Write(MdfStream& fd, MapLayer* mapLayer, Version* version, MgTab& tab);
 
     private:
         MapDefinition* m_map;

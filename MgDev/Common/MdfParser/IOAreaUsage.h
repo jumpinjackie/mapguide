@@ -37,7 +37,7 @@ class IOAreaUsage : public SAX2ElementHandler
         virtual void ElementChars(const wchar_t* ch);
         virtual void EndElement(const wchar_t* name, HandlerStack* handlerStack);
 
-        static void Write(MdfStream& fd, AreaUsage* areaUsage, Version* version);
+        static void Write(MdfStream& fd, AreaUsage* areaUsage, Version* version, MgTab& tab);
 
     private:
         SimpleSymbolDefinition* m_symbolDefinition;

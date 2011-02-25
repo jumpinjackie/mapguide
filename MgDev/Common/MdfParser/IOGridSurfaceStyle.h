@@ -39,7 +39,7 @@ class IOGridSurfaceStyle : public SAX2ElementHandler
         virtual void ElementChars(const wchar_t* ch);
         virtual void EndElement(const wchar_t* name, HandlerStack* handlerStack);
 
-        static void Write(MdfStream& fd, GridSurfaceStyle* surfaceStyle, Version* version);
+        static void Write(MdfStream& fd, GridSurfaceStyle* surfaceStyle, Version* version, MgTab& tab);
 
     private:
         GridSurfaceStyle* m_surfaceStyle;

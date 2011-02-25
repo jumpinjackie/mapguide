@@ -113,25 +113,25 @@ void IORelateProperty::EndElement(const wchar_t* name, HandlerStack* handlerStac
 }
 
 
-void IORelateProperty::Write(MdfStream& fd, RelateProperty* relateProperty, Version* version)
+void IORelateProperty::Write(MdfStream& fd, RelateProperty* relateProperty, Version* version, MgTab& tab)
 {
-    fd << tab() << startStr(sRelateProperty) << std::endl;
-    inctab();
+    fd << tab.tab() << startStr(sRelateProperty) << std::endl;
+    tab.inctab();
 
     // Property: FeatureClassProperty
-    fd << tab() << startStr(sFeatureClassProperty);
+    fd << tab.tab() << startStr(sFeatureClassProperty);
     // use false parameter to get the complete property name with the prefix
     fd << EncodeString(relateProperty->GetFeatureClassProperty(false));
     fd << endStr(sFeatureClassProperty) << std::endl;
 
     // Property: AttributeClassProperty
-    fd << tab() << startStr(sAttributeClassProperty);
+    fd << tab.tab() << startStr(sAttributeClassProperty);
     fd << EncodeString(relateProperty->GetAttributeClassProperty());
     fd << endStr(sAttributeClassProperty) << std::endl;
 
     // Write any unknown XML / extended data
-    IOUnknown::Write(fd, relateProperty->GetUnknownXml(), version);
+    IOUnknown::Write(fd, relateProperty->GetUnknownXml(), version, tab);
 
-    dectab();
-    fd << tab() << endStr(sRelateProperty) << std::endl;
+    tab.dectab();
+    fd << tab.tab() << endStr(sRelateProperty) << std::endl;
 }

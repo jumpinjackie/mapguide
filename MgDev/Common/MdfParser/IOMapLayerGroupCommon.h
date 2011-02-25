@@ -39,7 +39,7 @@ class IOMapLayerGroupCommon : public SAX2ElementHandler
 
         virtual void ElementChars(const wchar_t* ch);
 
-        static void Write(MdfStream& fd, MapLayerGroupCommon* layerGroup, Version* version);
+        static void Write(MdfStream& fd, MapLayerGroupCommon* layerGroup, Version* version, MgTab& tab);
 
     protected:
         MapLayerGroupCommon* m_layerGroup;

@@ -127,34 +127,34 @@ void IOGridColorRule::EndElement(const wchar_t* name, HandlerStack* handlerStack
 }
 
 
-void IOGridColorRule::Write(MdfStream& fd, GridColorRule* colorRule, Version* version)
+void IOGridColorRule::Write(MdfStream& fd, GridColorRule* colorRule, Version* version, MgTab& tab)
 {
-    fd << tab() << startStr(sColorRule) << std::endl;
-    inctab();
+    fd << tab.tab() << startStr(sColorRule) << std::endl;
+    tab.inctab();
 
     // Property: Legend Lable
-    fd << tab() << startStr(sLegendLabel);
+    fd << tab.tab() << startStr(sLegendLabel);
     fd << EncodeString(colorRule->GetLegendLabel());
     fd << endStr(sLegendLabel) << std::endl;
 
     // Property: Filter
     if (!colorRule->GetFilter().empty())
     {
-        fd << tab() << startStr(sFilter);
+        fd << tab.tab() << startStr(sFilter);
         fd << EncodeString(colorRule->GetFilter());
         fd << endStr(sFilter) << std::endl;
     }
 
     // Property: Label
     if (colorRule->GetLabel())
-        IOLabel::Write(fd, colorRule->GetLabel(), version);
+        IOLabel::Write(fd, colorRule->GetLabel(), version, tab);
 
     // Property: GridColor
-    IOGridColor::Write(fd, colorRule->GetGridColor(), version);
+    IOGridColor::Write(fd, colorRule->GetGridColor(), version, tab);
 
     // Write any unknown XML / extended data
-    IOUnknown::Write(fd, colorRule->GetUnknownXml(), version);
+    IOUnknown::Write(fd, colorRule->GetUnknownXml(), version, tab);
 
-    dectab();
-    fd << tab() << endStr(sColorRule) << std::endl;
+    tab.dectab();
+    fd << tab.tab() << endStr(sColorRule) << std::endl;
 }

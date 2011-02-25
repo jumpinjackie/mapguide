@@ -127,34 +127,34 @@ void IOAreaRule::EndElement(const wchar_t* name, HandlerStack* handlerStack)
 }
 
 
-void IOAreaRule::Write(MdfStream& fd, AreaRule* areaRule, Version* version)
+void IOAreaRule::Write(MdfStream& fd, AreaRule* areaRule, Version* version, MgTab& tab)
 {
-    fd << tab() << startStr(sAreaRule) << std::endl;
-    inctab();
+    fd << tab.tab() << startStr(sAreaRule) << std::endl;
+    tab.inctab();
 
     // Property: LegendLabel
-    fd << tab() << startStr(sLegendLabel);
+    fd << tab.tab() << startStr(sLegendLabel);
     fd << EncodeString(areaRule->GetLegendLabel());
     fd << endStr(sLegendLabel) << std::endl;
 
     // Property: Filter
     if (!areaRule->GetFilter().empty())
     {
-        fd << tab() << startStr(sFilter);
+        fd << tab.tab() << startStr(sFilter);
         fd << EncodeString(areaRule->GetFilter());
         fd << endStr(sFilter) << std::endl;
     }
 
     // Property: Label
     if (areaRule->GetLabel() && areaRule->GetLabel()->GetSymbol())
-        IOLabel::Write(fd, areaRule->GetLabel(), version);
+        IOLabel::Write(fd, areaRule->GetLabel(), version, tab);
 
     // Property: Symbolization
-    IOAreaSymbolization2D::Write(fd, areaRule->GetSymbolization(), version);
+    IOAreaSymbolization2D::Write(fd, areaRule->GetSymbolization(), version, tab);
 
     // Write any unknown XML / extended data
-    IOUnknown::Write(fd, areaRule->GetUnknownXml(), version);
+    IOUnknown::Write(fd, areaRule->GetUnknownXml(), version, tab);
 
-    dectab();
-    fd << tab() << endStr(sAreaRule) << std::endl;
+    tab.dectab();
+    fd << tab.tab() << endStr(sAreaRule) << std::endl;
 }

@@ -38,10 +38,10 @@ WatermarkOffset::WatermarkOffsetUnit IOWatermarkOffsetUnit::ParseWatermarkOffset
 }
 
 
-void IOWatermarkOffsetUnit::Write(MdfStream& fd, WatermarkOffset::WatermarkOffsetUnit offsetUnit)
+void IOWatermarkOffsetUnit::Write(MdfStream& fd, WatermarkOffset::WatermarkOffsetUnit offsetUnit, MgTab& tab)
 {
     // Property: Unit
-    fd << tab() << startStr("Unit"); // NOXLATE
+    fd << tab.tab() << startStr("Unit"); // NOXLATE
     if (offsetUnit == WatermarkOffset::Inches)
         fd << "Inches"; // NOXLATE
     else if (offsetUnit == WatermarkOffset::Centimeters)

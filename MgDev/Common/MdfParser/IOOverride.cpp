@@ -90,16 +90,16 @@ void IOOverride::EndElement(const wchar_t* name, HandlerStack* handlerStack)
 }
 
 
-void IOOverride::Write(MdfStream& fd, Override* pOverride, Version* version)
+void IOOverride::Write(MdfStream& fd, Override* pOverride, Version* version, MgTab& tab)
 {
-    fd << tab() << "<Override>" << std::endl; // NOXLATE
-    inctab();
+    fd << tab.tab() << "<Override>" << std::endl; // NOXLATE
+    tab.inctab();
 
     MdfStringStream fdExtData;
 
-    EMIT_STRING_PROPERTY(fd, pOverride, SymbolName, false, NULL)
-    EMIT_STRING_PROPERTY(fd, pOverride, ParameterIdentifier, false, NULL)
-    EMIT_STRING_PROPERTY(fd, pOverride, ParameterValue, false, NULL)
+    EMIT_STRING_PROPERTY(fd, pOverride, SymbolName, false, NULL, tab)
+    EMIT_STRING_PROPERTY(fd, pOverride, ParameterIdentifier, false, NULL, tab)
+    EMIT_STRING_PROPERTY(fd, pOverride, ParameterValue, false, NULL, tab)
 
     ThemeLabel* themeLabel = pOverride->GetThemeLabel();
     if (themeLabel)
@@ -107,20 +107,20 @@ void IOOverride::Write(MdfStream& fd, Override* pOverride, Version* version)
         // only write ThemeLabel if the LDF version is 1.2.0 or greater
         if (!version || (*version >= Version(1, 2, 0)))
         {
-            IOThemeLabel::Write(fd, themeLabel, version);
+            IOThemeLabel::Write(fd, themeLabel, version, tab);
         }
         else if (*version >= Version(1, 0, 0))
         {
             // save ThemeLabel as extended data for LDF versions 1.0.0 and 1.1.0
-            inctab();
-            IOThemeLabel::Write(fdExtData, themeLabel, version);
-            dectab();
+            tab.inctab();
+            IOThemeLabel::Write(fdExtData, themeLabel, version, tab);
+            tab.dectab();
         }
     }
 
     // Write the unknown XML / extended data
-    IOUnknown::Write(fd, pOverride->GetUnknownXml(), fdExtData.str(), version);
+    IOUnknown::Write(fd, pOverride->GetUnknownXml(), fdExtData.str(), version, tab);
 
-    dectab();
-    fd << tab() << "</Override>" << std::endl; // NOXLATE
+    tab.dectab();
+    fd << tab.tab() << "</Override>" << std::endl; // NOXLATE
 }

@@ -89,19 +89,19 @@ void IOCompositeRule::EndElement(const wchar_t* name, HandlerStack* handlerStack
 }
 
 
-void IOCompositeRule::Write(MdfStream& fd, CompositeRule* compositeRule, Version* version)
+void IOCompositeRule::Write(MdfStream& fd, CompositeRule* compositeRule, Version* version, MgTab& tab)
 {
-    fd << tab() << "<CompositeRule>" << std::endl; // NOXLATE
-    inctab();
+    fd << tab.tab() << "<CompositeRule>" << std::endl; // NOXLATE
+    tab.inctab();
 
-    EMIT_STRING_PROPERTY(fd, compositeRule, LegendLabel, false, NULL)
-    EMIT_STRING_PROPERTY(fd, compositeRule, Filter, true, L"") // default is empty string
+    EMIT_STRING_PROPERTY(fd, compositeRule, LegendLabel, false, NULL, tab)
+    EMIT_STRING_PROPERTY(fd, compositeRule, Filter, true, L"", tab) // default is empty string
 
-    IOCompositeSymbolization::Write(fd, compositeRule->GetSymbolization(), version);
+    IOCompositeSymbolization::Write(fd, compositeRule->GetSymbolization(), version, tab);
 
     // Write any unknown XML / extended data
-    IOUnknown::Write(fd, compositeRule->GetUnknownXml(), version);
+    IOUnknown::Write(fd, compositeRule->GetUnknownXml(), version, tab);
 
-    dectab();
-    fd << tab() << "</CompositeRule>" << std::endl; // NOXLATE
+    tab.dectab();
+    fd << tab.tab() << "</CompositeRule>" << std::endl; // NOXLATE
 }

@@ -37,7 +37,7 @@ class IOText : public IOGraphicElement
         virtual void StartElement(const wchar_t* name, HandlerStack* handlerStack);
         virtual void ElementChars(const wchar_t* ch);
 
-        static void Write(MdfStream& fd, Text* text, Version* version);
+        static void Write(MdfStream& fd, Text* text, Version* version, MgTab& tab);
 };
 
 END_NAMESPACE_MDFPARSER

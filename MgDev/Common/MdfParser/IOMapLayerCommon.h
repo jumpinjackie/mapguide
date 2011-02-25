@@ -39,7 +39,7 @@ class IOMapLayerCommon : public SAX2ElementHandler
 
         virtual void ElementChars(const wchar_t* ch);
 
-        static void Write(MdfStream& fd, BaseMapLayer* baseMapLayer, Version* version);
+        static void Write(MdfStream& fd, BaseMapLayer* baseMapLayer, Version* version, MgTab& tab);
 
     protected:
         BaseMapLayer* m_mapLayerCommon;

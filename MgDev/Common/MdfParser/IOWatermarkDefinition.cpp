@@ -170,7 +170,7 @@ bool IOWatermarkDefinition::GetSymbolDefinitionVersion(Version* wdVersion, Versi
 }
 
 
-void IOWatermarkDefinition::Write(MdfStream& fd, WatermarkDefinition* watermark, Version* version)
+void IOWatermarkDefinition::Write(MdfStream& fd, WatermarkDefinition* watermark, Version* version, MgTab& tab)
 {
     // verify the WatermarkDefinition version
     MdfString strVersion;
@@ -195,12 +195,12 @@ void IOWatermarkDefinition::Write(MdfStream& fd, WatermarkDefinition* watermark,
         strVersion = L"2.3.0";
     }
 
-    fd << tab() << "<WatermarkDefinition xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:noNamespaceSchemaLocation=\"WatermarkDefinition-" << EncodeString(strVersion) << ".xsd\" version=\"" << EncodeString(strVersion) << "\">" << std::endl; // NOXLATE
-    inctab();
+    fd << tab.tab() << "<WatermarkDefinition xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:noNamespaceSchemaLocation=\"WatermarkDefinition-" << EncodeString(strVersion) << ".xsd\" version=\"" << EncodeString(strVersion) << "\">" << std::endl; // NOXLATE
+    tab.inctab();
 
     // Property: Content
-    fd << tab() << startStr(sContent) << std::endl;
-    inctab();
+    fd << tab.tab() << startStr(sContent) << std::endl;
+    tab.inctab();
 
     SymbolDefinition* symbol = watermark->GetContent();
     Version sdVersion;
@@ -210,36 +210,36 @@ void IOWatermarkDefinition::Write(MdfStream& fd, WatermarkDefinition* watermark,
         CompoundSymbolDefinition* compoundSymbol = dynamic_cast<CompoundSymbolDefinition*>(symbol);
 
         if (simpleSymbol)
-            IOSimpleSymbolDefinition::Write(fd, simpleSymbol, false, &sdVersion);
+            IOSimpleSymbolDefinition::Write(fd, simpleSymbol, false, &sdVersion, tab);
         else if (compoundSymbol)
-            IOCompoundSymbolDefinition::Write(fd, compoundSymbol, false, &sdVersion);
+            IOCompoundSymbolDefinition::Write(fd, compoundSymbol, false, &sdVersion, tab);
     }
 
-    dectab();
+    tab.dectab();
     fd << endStr(sContent) << std::endl;
 
     // Property: Appearance
-    IOWatermarkAppearance::Write(fd, watermark->GetAppearance(), version, sAppearance);
+    IOWatermarkAppearance::Write(fd, watermark->GetAppearance(), version, sAppearance, tab);
 
     // Property: Position
-    fd << tab() << startStr(sPosition) << std::endl;
-    inctab();
+    fd << tab.tab() << startStr(sPosition) << std::endl;
+    tab.inctab();
 
     WatermarkPosition* position = watermark->GetPosition();
     XYWatermarkPosition* xyPosition = dynamic_cast<XYWatermarkPosition*>(position);
     TileWatermarkPosition* tilePosition = dynamic_cast<TileWatermarkPosition*>(position);
 
     if (xyPosition)
-        IOXYWatermarkPosition::Write(fd, xyPosition, version);
+        IOXYWatermarkPosition::Write(fd, xyPosition, version, tab);
     else if (tilePosition)
-        IOTileWatermarkPosition::Write(fd, tilePosition, version);
+        IOTileWatermarkPosition::Write(fd, tilePosition, version, tab);
 
-    dectab();
+    tab.dectab();
     fd << endStr(sPosition) << std::endl;
 
     // Write any unknown XML / extended data
-    IOUnknown::Write(fd, watermark->GetUnknownXml(), version);
+    IOUnknown::Write(fd, watermark->GetUnknownXml(), version, tab);
 
-    dectab();
-    fd << tab() << "</WatermarkDefinition>" << std::endl; // NOXLATE
+    tab.dectab();
+    fd << tab.tab() << "</WatermarkDefinition>" << std::endl; // NOXLATE
 }

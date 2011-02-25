@@ -74,23 +74,23 @@ void IOSize2D::EndElement(const wchar_t* name, HandlerStack* handlerStack)
     }
 }
 
-void IOSize2D::Write(MdfStream& fd, Size2D* size, Version* version, const std::string& name)
+void IOSize2D::Write(MdfStream& fd, Size2D* size, Version* version, const std::string& name, MgTab& tab)
 {
     _ASSERT(NULL != size);
 
-    fd << tab() << startStr(name) << std::endl;
-    inctab();
+    fd << tab.tab() << startStr(name) << std::endl;
+    tab.inctab();
 
     // Property: Width
-    fd << tab() << startStr(sWidth);
+    fd << tab.tab() << startStr(sWidth);
     fd << DoubleToStr(size->GetWidth());
     fd << endStr(sWidth) << std::endl;
 
     // Property: Height
-    fd << tab() << startStr(sHeight);
+    fd << tab.tab() << startStr(sHeight);
     fd << DoubleToStr(size->GetHeight());
     fd << endStr(sHeight) << std::endl;
 
-    dectab();
-    fd << tab() << endStr(name) << std::endl;
+    tab.dectab();
+    fd << tab.tab() << endStr(name) << std::endl;
 }

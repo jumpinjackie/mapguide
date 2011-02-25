@@ -38,7 +38,7 @@ class IOCompositeRule : public SAX2ElementHandler
         virtual void ElementChars(const wchar_t* ch);
         virtual void EndElement(const wchar_t* name, HandlerStack* handlerStack);
 
-        static void Write(MdfStream& fd, CompositeRule* compositeRule, Version* version);
+        static void Write(MdfStream& fd, CompositeRule* compositeRule, Version* version, MgTab& tab);
 
     private:
         CompositeTypeStyle* m_compositeTypeStyle;

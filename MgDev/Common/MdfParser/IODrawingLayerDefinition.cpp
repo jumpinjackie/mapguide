@@ -150,7 +150,7 @@ bool IODrawingLayerDefinition::GetWatermarkDefinitionVersion(Version* ldfVersion
 }
 
 
-void IODrawingLayerDefinition::Write(MdfStream& fd, DrawingLayerDefinition* drawingLayer, Version* version)
+void IODrawingLayerDefinition::Write(MdfStream& fd, DrawingLayerDefinition* drawingLayer, Version* version, MgTab& tab)
 {
     // verify the LDF version
     MdfString strVersion;
@@ -180,23 +180,23 @@ void IODrawingLayerDefinition::Write(MdfStream& fd, DrawingLayerDefinition* draw
         strVersion = L"2.3.0";
     }
 
-    fd << tab() << "<LayerDefinition xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:noNamespaceSchemaLocation=\"LayerDefinition-" << EncodeString(strVersion) << ".xsd\" version=\"" << EncodeString(strVersion) << "\">" << std::endl; // NOXLATE
-    inctab();
+    fd << tab.tab() << "<LayerDefinition xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:noNamespaceSchemaLocation=\"LayerDefinition-" << EncodeString(strVersion) << ".xsd\" version=\"" << EncodeString(strVersion) << "\">" << std::endl; // NOXLATE
+    tab.inctab();
 
-    fd << tab() << startStr(sDrawingLayerDefinition) << std::endl;
-    inctab();
+    fd << tab.tab() << startStr(sDrawingLayerDefinition) << std::endl;
+    tab.inctab();
 
     MdfStringStream fdExtData;
 
     // Property: ResourceId
-    fd << tab() << startStr(sResourceId);
+    fd << tab.tab() << startStr(sResourceId);
     fd << EncodeString(drawingLayer->GetResourceID());
     fd << endStr(sResourceId) << std::endl;
 
     // Property: Opacity (optional)
     if (drawingLayer->GetOpacity() != 1.0)
     {
-        fd << tab() << startStr(sOpacity);
+        fd << tab.tab() << startStr(sOpacity);
         fd << DoubleToStr(drawingLayer->GetOpacity());
         fd << endStr(sOpacity) << std::endl;
     }
@@ -208,38 +208,38 @@ void IODrawingLayerDefinition::Write(MdfStream& fd, DrawingLayerDefinition* draw
         if (!version || (*version >= Version(2, 3, 0)))
         {
             // only write Watermarks if the LDF version is 2.3.0 or greater
-            fd << tab() << startStr(sWatermarks) << std::endl;
-            inctab();
+            fd << tab.tab() << startStr(sWatermarks) << std::endl;
+            tab.inctab();
             for (int i=0; i<watermarkCount; ++i)
-                IOWatermarkInstance::Write(fd, drawingLayer->GetWatermarks()->GetAt(i), version);
-            dectab();
-            fd << tab() << endStr(sWatermarks) << std::endl;
+                IOWatermarkInstance::Write(fd, drawingLayer->GetWatermarks()->GetAt(i), version, tab);
+            tab.dectab();
+            fd << tab.tab() << endStr(sWatermarks) << std::endl;
         }
         else if (*version >= Version(1, 0, 0))
         {
             // save Watermarks as extended data for LDF versions 1.0.0 - 1.3.0
-            inctab();
+            tab.inctab();
 
-            fdExtData << tab() << startStr(sWatermarks) << std::endl;
-            inctab();
+            fdExtData << tab.tab() << startStr(sWatermarks) << std::endl;
+            tab.inctab();
             for (int i=0; i<watermarkCount; ++i)
-                IOWatermarkInstance::Write(fdExtData, drawingLayer->GetWatermarks()->GetAt(i), version);
-            dectab();
-            fdExtData << tab() << endStr(sWatermarks) << std::endl;
+                IOWatermarkInstance::Write(fdExtData, drawingLayer->GetWatermarks()->GetAt(i), version, tab);
+            tab.dectab();
+            fdExtData << tab.tab() << endStr(sWatermarks) << std::endl;
 
-            dectab();
+            tab.dectab();
         }
     }
 
     // Property: Sheet
-    fd << tab() << startStr(sSheet);
+    fd << tab.tab() << startStr(sSheet);
     fd << EncodeString(drawingLayer->GetSheet());
     fd << endStr(sSheet) << std::endl;
 
     // Property: LayerFilter (optional)
     if (!drawingLayer->GetLayerFilter().empty())
     {
-        fd << tab() << startStr(sLayerFilter);
+        fd << tab.tab() << startStr(sLayerFilter);
         fd << EncodeString(drawingLayer->GetLayerFilter());
         fd << endStr(sLayerFilter) << std::endl;
     }
@@ -247,7 +247,7 @@ void IODrawingLayerDefinition::Write(MdfStream& fd, DrawingLayerDefinition* draw
     // Property: MinScale (optional)
     if (drawingLayer->GetMinScale() != 0.0)
     {
-        fd << tab() << startStr(sMinScale);
+        fd << tab.tab() << startStr(sMinScale);
         fd << DoubleToStr(drawingLayer->GetMinScale());
         fd << endStr(sMinScale) << std::endl;
     }
@@ -255,17 +255,17 @@ void IODrawingLayerDefinition::Write(MdfStream& fd, DrawingLayerDefinition* draw
     // Property: MaxScale (optional)
     if (drawingLayer->GetMaxScale() != VectorScaleRange::MAX_MAP_SCALE)
     {
-        fd << tab() << startStr(sMaxScale);
+        fd << tab.tab() << startStr(sMaxScale);
         fd << DoubleToStr(drawingLayer->GetMaxScale());
         fd << endStr(sMaxScale) << std::endl;
     }
 
     // Write any unknown XML / extended data
-    IOUnknown::Write(fd, drawingLayer->GetUnknownXml(), fdExtData.str(), version);
+    IOUnknown::Write(fd, drawingLayer->GetUnknownXml(), fdExtData.str(), version, tab);
 
-    dectab();
-    fd << tab() << endStr(sDrawingLayerDefinition) << std::endl;
+    tab.dectab();
+    fd << tab.tab() << endStr(sDrawingLayerDefinition) << std::endl;
 
-    dectab();
-    fd << tab() << "</LayerDefinition>" << std::endl; // NOXLATE
+    tab.dectab();
+    fd << tab.tab() << "</LayerDefinition>" << std::endl; // NOXLATE
 }

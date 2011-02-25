@@ -61,23 +61,23 @@ void IOStringObjectCollection::EndElement(const wchar_t* name, HandlerStack* han
     }
 }
 
-void IOStringObjectCollection::Write(MdfStream& fd, StringObjectCollection* strCol, Version* version, const std::string& colName, const std::string& strName)
+void IOStringObjectCollection::Write(MdfStream& fd, StringObjectCollection* strCol, Version* version, const std::string& colName, const std::string& strName, MgTab& tab)
 {
     _ASSERT(NULL != strCol);
 
-    fd << tab() << startStr(colName) << std::endl;
-    inctab();
+    fd << tab.tab() << startStr(colName) << std::endl;
+    tab.inctab();
 
     for (int i = 0; i < strCol->GetCount(); ++i)
     {
         StringObject* strObj = dynamic_cast<StringObject*>(strCol->GetAt(i));
         _ASSERT(NULL != strObj);
 
-        fd << tab() << startStr(strName);
+        fd << tab.tab() << startStr(strName);
         fd << EncodeString(strObj->GetString());
         fd << endStr(strName) << std::endl;
     }
 
-    dectab();
-    fd << tab() << endStr(colName) << std::endl;
+    tab.dectab();
+    fd << tab.tab() << endStr(colName) << std::endl;
 }

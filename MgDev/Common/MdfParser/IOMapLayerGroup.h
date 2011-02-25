@@ -39,7 +39,7 @@ class IOMapLayerGroup : public IOMapLayerGroupCommon
         virtual void ElementChars(const wchar_t* ch);
         virtual void EndElement(const wchar_t* name, HandlerStack* handlerStack);
 
-        static void Write(MdfStream& fd, MapLayerGroup* mapLayerGroup, Version* version);
+        static void Write(MdfStream& fd, MapLayerGroup* mapLayerGroup, Version* version, MgTab& tab);
 };
 
 END_NAMESPACE_MDFPARSER

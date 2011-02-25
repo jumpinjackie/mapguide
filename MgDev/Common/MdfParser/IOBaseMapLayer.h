@@ -39,7 +39,7 @@ class IOBaseMapLayer : public IOMapLayerCommon
         virtual void StartElement(const wchar_t* name, HandlerStack* handlerStack);
         virtual void EndElement(const wchar_t* name, HandlerStack* handlerStack);
 
-        static void Write(MdfStream& fd, BaseMapLayer* baseMapLayer, Version* version);
+        static void Write(MdfStream& fd, BaseMapLayer* baseMapLayer, Version* version, MgTab& tab);
 
     private:
         BaseMapLayerCollection* m_baseMapLayers;

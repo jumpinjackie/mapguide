@@ -127,35 +127,35 @@ void IOLineRule::EndElement(const wchar_t* name, HandlerStack* handlerStack)
 }
 
 
-void IOLineRule::Write(MdfStream& fd, LineRule* lineRule, Version* version)
+void IOLineRule::Write(MdfStream& fd, LineRule* lineRule, Version* version, MgTab& tab)
 {
-    fd << tab() << startStr(sLineRule) << std::endl;
-    inctab();
+    fd << tab.tab() << startStr(sLineRule) << std::endl;
+    tab.inctab();
 
     // Property: LegendLabel
-    fd << tab() << startStr(sLegendLabel);
+    fd << tab.tab() << startStr(sLegendLabel);
     fd << EncodeString(lineRule->GetLegendLabel());
     fd << endStr(sLegendLabel) << std::endl;
 
     // Property: Filter
     if (!lineRule->GetFilter().empty())
     {
-        fd << tab() << startStr(sFilter);
+        fd << tab.tab() << startStr(sFilter);
         fd << EncodeString(lineRule->GetFilter());
         fd << endStr(sFilter) << std::endl;
     }
 
     // Property: Label
     if (lineRule->GetLabel() && lineRule->GetLabel()->GetSymbol())
-        IOLabel::Write(fd, lineRule->GetLabel(), version);
+        IOLabel::Write(fd, lineRule->GetLabel(), version, tab);
 
     // Property: Symbolizations
     for (int i=0; i<lineRule->GetSymbolizations()->GetCount(); ++i)
-        IOLineSymbolization2D::Write(fd, lineRule->GetSymbolizations()->GetAt(i), version);
+        IOLineSymbolization2D::Write(fd, lineRule->GetSymbolizations()->GetAt(i), version, tab);
 
     // Write any unknown XML / extended data
-    IOUnknown::Write(fd, lineRule->GetUnknownXml(), version);
+    IOUnknown::Write(fd, lineRule->GetUnknownXml(), version, tab);
 
-    dectab();
-    fd << tab() << endStr(sLineRule) << std::endl;
+    tab.dectab();
+    fd << tab.tab() << endStr(sLineRule) << std::endl;
 }

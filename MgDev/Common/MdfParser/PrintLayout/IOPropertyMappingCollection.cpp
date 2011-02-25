@@ -102,43 +102,43 @@ void IOPropertyMappingCollection::EndElement(const wchar_t* name, HandlerStack* 
     }
 }
 
-void IOPropertyMappingCollection::Write(MdfStream& fd, PropertyMappingCollection* propMappings, Version* version, const std::string& name)
+void IOPropertyMappingCollection::Write(MdfStream& fd, PropertyMappingCollection* propMappings, Version* version, const std::string& name, MgTab& tab)
 {
     _ASSERT(NULL != propMappings);
 
-    fd << tab() << startStr(name) << std::endl;
-    inctab();
+    fd << tab.tab() << startStr(name) << std::endl;
+    tab.inctab();
 
     for (int i = 0; i < propMappings->GetCount(); ++i)
     {
-       fd << tab() << startStr(sPropertyMapping) << std::endl;
-       inctab();
+       fd << tab.tab() << startStr(sPropertyMapping) << std::endl;
+       tab.inctab();
 
         PropertyMapping* propMapping = dynamic_cast<PropertyMapping*>(propMappings->GetAt(i));
         _ASSERT(NULL != propMapping);
 
         // Property: TargetProperty
-        fd << tab() << startStr(sTargetProperty);
+        fd << tab.tab() << startStr(sTargetProperty);
         fd << EncodeString(propMapping->GetTargetProperty());
         fd << endStr(sTargetProperty) << std::endl;
 
         // Property: SourceProperty
-        fd << tab() << startStr(sSourceProperty);
+        fd << tab.tab() << startStr(sSourceProperty);
         fd << EncodeString(propMapping->GetSourceProperty());
         fd << endStr(sSourceProperty) << std::endl;
 
         // Property: SourceUnits
-        fd << tab() << startStr(sSourceUnits);
+        fd << tab.tab() << startStr(sSourceUnits);
         fd << EncodeString(propMapping->GetSourceUnits());
         fd << endStr(sSourceUnits) << std::endl;
 
         // Write any unknown XML / extended data
-        IOUnknown::Write(fd, propMapping->GetUnknownXml(), version);
+        IOUnknown::Write(fd, propMapping->GetUnknownXml(), version, tab);
 
-        dectab();
-        fd << tab() << endStr(sPropertyMapping) << std::endl;
+        tab.dectab();
+        fd << tab.tab() << endStr(sPropertyMapping) << std::endl;
     }
 
-    dectab();
-    fd << tab() << endStr(name) << std::endl;
+    tab.dectab();
+    fd << tab.tab() << endStr(name) << std::endl;
 }

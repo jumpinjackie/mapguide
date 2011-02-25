@@ -108,38 +108,38 @@ void IOLineTypeStyle::EndElement(const wchar_t* name, HandlerStack* handlerStack
 }
 
 
-void IOLineTypeStyle::Write(MdfStream& fd, LineTypeStyle* lineTypeStyle, Version* version)
+void IOLineTypeStyle::Write(MdfStream& fd, LineTypeStyle* lineTypeStyle, Version* version, MgTab& tab)
 {
-    fd << tab() << startStr(sLineTypeStyle) << std::endl;
-    inctab();
+    fd << tab.tab() << startStr(sLineTypeStyle) << std::endl;
+    tab.inctab();
 
     MdfStringStream fdExtData;
 
     // Property: Rules
     for (int i=0; i<lineTypeStyle->GetRules()->GetCount(); ++i)
-        IOLineRule::Write(fd, static_cast<LineRule*>(lineTypeStyle->GetRules()->GetAt(i)), version);
+        IOLineRule::Write(fd, static_cast<LineRule*>(lineTypeStyle->GetRules()->GetAt(i)), version, tab);
 
     // Property: ShowInLegend
     if (!version || (*version >= Version(1, 3, 0)))
     {
         // version 1.3.0 has a ShowInLegend Property
-        fd << tab() << startStr(sShowInLegend);
+        fd << tab.tab() << startStr(sShowInLegend);
         fd << BoolToStr(lineTypeStyle->IsShowInLegend());
         fd << endStr(sShowInLegend) << std::endl;
     }
     else if (*version >= Version(1, 0, 0))
     {
         // save ShowInLegend as extended data for LDF versions 1.0.0, 1.1.0, and 1.2.0
-        inctab();
-        fdExtData << tab() << startStr(sShowInLegend);
+        tab.inctab();
+        fdExtData << tab.tab() << startStr(sShowInLegend);
         fdExtData << BoolToStr(lineTypeStyle->IsShowInLegend());
         fdExtData << endStr(sShowInLegend) << std::endl;
-        dectab();
+        tab.dectab();
     }
 
     // Write any unknown XML / extended data
-    IOUnknown::Write(fd, lineTypeStyle->GetUnknownXml(), fdExtData.str(), version);
+    IOUnknown::Write(fd, lineTypeStyle->GetUnknownXml(), fdExtData.str(), version, tab);
 
-    dectab();
-    fd << tab() << endStr(sLineTypeStyle) << std::endl;
+    tab.dectab();
+    fd << tab.tab() << endStr(sLineTypeStyle) << std::endl;
 }

@@ -155,59 +155,59 @@ void IOPrintLayoutDefinition::EndElement(const wchar_t* name, HandlerStack* hand
     }
 }
 
-void IOPrintLayoutDefinition::Write(MdfStream& fd, PrintLayoutDefinition* layoutDef, Version* version)
+void IOPrintLayoutDefinition::Write(MdfStream& fd, PrintLayoutDefinition* layoutDef, Version* version, MgTab& tab)
 {
     _ASSERT(NULL != layoutDef);
 
     // Set the expected version
     MdfString strVersion = L"2.0.0";
 
-    fd << tab() << "<PrintLayoutDefinition xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:noNamespaceSchemaLocation=\"PrintLayoutDefinition-" << EncodeString(strVersion) << ".xsd\" version=\"" << EncodeString(strVersion) << "\">" << std::endl; // NOXLATE
-    inctab();
+    fd << tab.tab() << "<PrintLayoutDefinition xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:noNamespaceSchemaLocation=\"PrintLayoutDefinition-" << EncodeString(strVersion) << ".xsd\" version=\"" << EncodeString(strVersion) << "\">" << std::endl; // NOXLATE
+    tab.inctab();
 
     // Property: Name
-    fd << tab() << startStr(sName);
+    fd << tab.tab() << startStr(sName);
     fd << EncodeString(layoutDef->GetName());
     fd << endStr(sName) << std::endl;
 
     // Property: Extent
-    IOExtent3D::Write(fd, layoutDef->GetExtent(), version);
+    IOExtent3D::Write(fd, layoutDef->GetExtent(), version, tab);
 
     // Property: Elements
-    IOPrintLayoutElementCollection::Write(fd, layoutDef->GetElements(), version, sElements);
+    IOPrintLayoutElementCollection::Write(fd, layoutDef->GetElements(), version, sElements, tab);
 
     // Property: PaperSize
-    IOSize2D::Write(fd, layoutDef->GetPaperSize(), version, sPaperSize);
+    IOSize2D::Write(fd, layoutDef->GetPaperSize(), version, sPaperSize, tab);
 
     // Property: DeviceName
-    fd << tab() << startStr(sDeviceName);
+    fd << tab.tab() << startStr(sDeviceName);
     fd << EncodeString(layoutDef->GetDeviceName());
     fd << endStr(sDeviceName) << std::endl;
 
     // Property: MediaName
-    fd << tab() << startStr(sMediaName);
+    fd << tab.tab() << startStr(sMediaName);
     fd << EncodeString(layoutDef->GetMediaName());
     fd << endStr(sMediaName) << std::endl;
 
     // Property: Orientation
-    fd << tab() << startStr(sOrientation);
+    fd << tab.tab() << startStr(sOrientation);
     fd << EncodeString(layoutDef->GetOrientation());
     fd << endStr(sOrientation) << std::endl;
 
     // Property: PaperMargin
-    IOThickness::Write(fd, layoutDef->GetPaperMargin(), version, sPaperMargin);
+    IOThickness::Write(fd, layoutDef->GetPaperMargin(), version, sPaperMargin, tab);
 
     // Property: Units
-    fd << tab() << startStr(sUnits);
+    fd << tab.tab() << startStr(sUnits);
     fd << EncodeString(layoutDef->GetUnits());
     fd << endStr(sUnits) << std::endl;
 
     // Property: BackgroundColor
-    IOColor::Write(fd, layoutDef->GetBackgroundColor(), version, sBackgroundColor);
+    IOColor::Write(fd, layoutDef->GetBackgroundColor(), version, sBackgroundColor, tab);
 
     // Write any unknown XML / extended data
-    IOUnknown::Write(fd, layoutDef->GetUnknownXml(), version);
+    IOUnknown::Write(fd, layoutDef->GetUnknownXml(), version, tab);
 
-    dectab();
-    fd << tab() << endStr(sPrintLayoutDefinition) << std::endl;
+    tab.dectab();
+    fd << tab.tab() << endStr(sPrintLayoutDefinition) << std::endl;
 }

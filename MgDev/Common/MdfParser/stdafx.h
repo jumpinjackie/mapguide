@@ -56,7 +56,7 @@
 #include "MdfParser.h"
 #include "IOUtil.h"
 
-#define EMIT_BOOL_PROPERTY(stream, object, prop, optional, defaultVal)          \
+#define EMIT_BOOL_PROPERTY(stream, object, prop, optional, defaultVal, tabObj)  \
             bool emit##prop = true;                                             \
             const MdfString& str##prop = object->Get##prop();                   \
             if (optional)                                                       \
@@ -72,12 +72,12 @@
             }                                                                   \
             if (emit##prop)                                                     \
             {                                                                   \
-                stream << tab() << "<" #prop ">";                               \
+                stream << tabObj.tab() << "<" #prop ">";                        \
                 stream << EncodeString(str##prop);                              \
                 stream << "</" #prop ">" << std::endl;                          \
             }
 
-#define EMIT_DOUBLE_PROPERTY(stream, object, prop, optional, defaultVal)        \
+#define EMIT_DOUBLE_PROPERTY(stream, object, prop, optional, defaultVal, tabObj)\
             bool emit##prop = true;                                             \
             const MdfString& str##prop = object->Get##prop();                   \
             if (optional)                                                       \
@@ -93,12 +93,12 @@
             }                                                                   \
             if (emit##prop)                                                     \
             {                                                                   \
-                stream << tab() << "<" #prop ">";                               \
+                stream << tabObj.tab() << "<" #prop ">";                        \
                 stream << EncodeString(str##prop);                              \
                 stream << "</" #prop ">" << std::endl;                          \
             }
 
-#define EMIT_INTEGER_PROPERTY(stream, object, prop, optional, defaultVal)       \
+#define EMIT_INTEGER_PROPERTY(stream, object, prop, optional, defaultVal, tabObj)\
             bool emit##prop = true;                                             \
             const MdfString& str##prop = object->Get##prop();                   \
             if (optional)                                                       \
@@ -114,12 +114,12 @@
             }                                                                   \
             if (emit##prop)                                                     \
             {                                                                   \
-                stream << tab() << "<" #prop ">";                               \
+                stream << tabObj.tab() << "<" #prop ">";                        \
                 stream << EncodeString(str##prop);                              \
                 stream << "</" #prop ">" << std::endl;                          \
             }
 
-#define EMIT_STRING_PROPERTY(stream, object, prop, optional, defaultVal)        \
+#define EMIT_STRING_PROPERTY(stream, object, prop, optional, defaultVal, tabObj)\
             bool emit##prop = true;                                             \
             const MdfString& str##prop = object->Get##prop();                   \
             if (optional)                                                       \
@@ -131,12 +131,12 @@
             }                                                                   \
             if (emit##prop)                                                     \
             {                                                                   \
-                stream << tab() << "<" #prop ">";                               \
+                stream << tabObj.tab() << "<" #prop ">";                        \
                 stream << EncodeString(str##prop);                              \
                 stream << "</" #prop ">" << std::endl;                          \
             }
 
-#define EMIT_ENUM_2(stream, object, enumtype, prop, e1, e2, optIdx)             \
+#define EMIT_ENUM_2(stream, object, enumtype, prop, e1, e2, optIdx, tabObj)     \
             enumtype::prop propVal##prop = object->Get##prop();                 \
             bool emit##prop = true;                                             \
             switch (optIdx)                                                     \
@@ -150,7 +150,7 @@
             }                                                                   \
             if (emit##prop)                                                     \
             {                                                                   \
-                stream << tab() << "<" #prop ">";                               \
+                stream << tabObj.tab() << "<" #prop ">";                        \
                 switch (propVal##prop)                                          \
                 {                                                               \
                 case enumtype::e1:                                              \
@@ -163,7 +163,7 @@
                 stream << "</" #prop ">" << std::endl;                          \
             }
 
-#define EMIT_ENUM_3(stream, object, enumtype, prop, e1, e2, e3, optIdx)         \
+#define EMIT_ENUM_3(stream, object, enumtype, prop, e1, e2, e3, optIdx, tabObj) \
             enumtype::prop propVal##prop = object->Get##prop();                 \
             bool emit##prop = true;                                             \
             switch (optIdx)                                                     \
@@ -180,7 +180,7 @@
             }                                                                   \
             if (emit##prop)                                                     \
             {                                                                   \
-                stream << tab() << "<" #prop ">";                               \
+                stream << tabObj.tab() << "<" #prop ">";                        \
                 switch (propVal##prop)                                          \
                 {                                                               \
                 case enumtype::e1:                                              \
@@ -196,7 +196,7 @@
                 stream << "</" #prop ">" << std::endl;                          \
             }
 
-#define EMIT_ENUM_4(stream, object, enumtype, prop, e1, e2, e3, e4, optIdx)     \
+#define EMIT_ENUM_4(stream, object, enumtype, prop, e1, e2, e3, e4, optIdx, tabObj)\
             enumtype::prop propVal##prop = object->Get##prop();                 \
             bool emit##prop = true;                                             \
             switch (optIdx)                                                     \
@@ -216,7 +216,7 @@
             }                                                                   \
             if (emit##prop)                                                     \
             {                                                                   \
-                stream << tab() << "<" #prop ">";                               \
+                stream << tabObj.tab() << "<" #prop ">";                        \
                 switch (propVal##prop)                                          \
                 {                                                               \
                 case enumtype::e1:                                              \
@@ -235,7 +235,7 @@
                 stream << "</" #prop ">" << std::endl;                          \
             }
 
-#define EMIT_ENUM_5(stream, object, enumtype, prop, e1, e2, e3, e4, e5, optIdx) \
+#define EMIT_ENUM_5(stream, object, enumtype, prop, e1, e2, e3, e4, e5, optIdx, tabObj)\
             enumtype::prop propVal##prop = object->Get##prop();                 \
             bool emit##prop = true;                                             \
             switch (optIdx)                                                     \
@@ -258,7 +258,7 @@
             }                                                                   \
             if (emit##prop)                                                     \
             {                                                                   \
-                stream << tab() << "<" #prop ">";                               \
+                stream << tabObj.tab() << "<" #prop ">";                        \
                 switch (propVal##prop)                                          \
                 {                                                               \
                 case enumtype::e1:                                              \

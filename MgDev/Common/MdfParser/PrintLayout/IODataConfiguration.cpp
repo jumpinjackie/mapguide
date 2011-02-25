@@ -110,39 +110,39 @@ void IODataConfiguration::EndElement(const wchar_t* name, HandlerStack* handlerS
     }
 }
 
-void IODataConfiguration::Write(MdfStream& fd, DataConfiguration* dataConf, Version* version)
+void IODataConfiguration::Write(MdfStream& fd, DataConfiguration* dataConf, Version* version, MgTab& tab)
 {
     _ASSERT(NULL != dataConf);
 
-    fd << tab() << startStr(sData) << std::endl;
-    inctab();
+    fd << tab.tab() << startStr(sData) << std::endl;
+    tab.inctab();
 
     // Property: ResourceId
-    fd << tab() << startStr(sResourceId);
+    fd << tab.tab() << startStr(sResourceId);
     fd << EncodeString(dataConf->GetResourceId());
     fd << endStr(sResourceId) << std::endl;
 
     // Property: FeatureClass
-    fd << tab() << startStr(sFeatureClass);
+    fd << tab.tab() << startStr(sFeatureClass);
     fd << EncodeString(dataConf->GetFeatureClass());
     fd << endStr(sFeatureClass) << std::endl;
 
     // Property: Geometry
-    fd << tab() << startStr(sGeometry);
+    fd << tab.tab() << startStr(sGeometry);
     fd << EncodeString(dataConf->GetGeometry());
     fd << endStr(sGeometry) << std::endl;
 
     // Property: Filter
-    fd << tab() << startStr(sFilter);
+    fd << tab.tab() << startStr(sFilter);
     fd << EncodeString(dataConf->GetFilter());
     fd << endStr(sFilter) << std::endl;
 
     // Property: PropertyMappings
-    IOPropertyMappingCollection::Write(fd, dataConf->GetPropertyMappings(), version, sPropertyMappings);
+    IOPropertyMappingCollection::Write(fd, dataConf->GetPropertyMappings(), version, sPropertyMappings, tab);
 
     // Write any unknown XML / extended data
-    IOUnknown::Write(fd, dataConf->GetUnknownXml(), version);
+    IOUnknown::Write(fd, dataConf->GetUnknownXml(), version, tab);
 
-    dectab();
-    fd << tab() << endStr(sData) << std::endl;
+    tab.dectab();
+    fd << tab.tab() << endStr(sData) << std::endl;
 }

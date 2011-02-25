@@ -38,7 +38,7 @@ class IOWatermarkAppearance : public SAX2ElementHandler
         virtual void ElementChars(const wchar_t* ch);
         virtual void EndElement(const wchar_t* name, HandlerStack* handlerStack);
 
-        static void Write(MdfStream& fd, WatermarkAppearance* appearance, Version* version, const std::string& name);
+        static void Write(MdfStream& fd, WatermarkAppearance* appearance, Version* version, const std::string& name, MgTab& tab);
 
     private:
         WatermarkAppearance* m_appearance;

@@ -101,22 +101,22 @@ void IOBaseMapLayerGroup::EndElement(const wchar_t* name, HandlerStack* handlerS
 }
 
 
-void IOBaseMapLayerGroup::Write(MdfStream& fd, BaseMapLayerGroup* baseMapLayerGroup, Version* version)
+void IOBaseMapLayerGroup::Write(MdfStream& fd, BaseMapLayerGroup* baseMapLayerGroup, Version* version, MgTab& tab)
 {
-    fd << tab() << startStr(sBaseMapLayerGroup) << std::endl;
-    inctab();
+    fd << tab.tab() << startStr(sBaseMapLayerGroup) << std::endl;
+    tab.inctab();
 
-    IOMapLayerGroupCommon::Write(fd, baseMapLayerGroup, version);
+    IOMapLayerGroupCommon::Write(fd, baseMapLayerGroup, version, tab);
 
     // Property: Layers
     BaseMapLayerCollection* baseMapLayers = baseMapLayerGroup->GetLayers();
     for (int i=0; i<baseMapLayers->GetCount(); ++i)
-        IOBaseMapLayer::Write(fd, static_cast<BaseMapLayer*>(baseMapLayers->GetAt(i)), version);
+        IOBaseMapLayer::Write(fd, static_cast<BaseMapLayer*>(baseMapLayers->GetAt(i)), version, tab);
 
     // Write any unknown XML / extended data
     if (!version || (*version >= Version(2, 3, 0)))
-        IOUnknown::Write(fd, baseMapLayerGroup->GetUnknownXml(), version);
+        IOUnknown::Write(fd, baseMapLayerGroup->GetUnknownXml(), version, tab);
 
-    dectab();
-    fd << tab() << endStr(sBaseMapLayerGroup) << std::endl;
+    tab.dectab();
+    fd << tab.tab() << endStr(sBaseMapLayerGroup) << std::endl;
 }

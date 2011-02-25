@@ -133,18 +133,18 @@ void IOGridColorBands::EndElement(const wchar_t* name, HandlerStack* handlerStac
 }
 
 
-void IOGridColorBands::Write(MdfStream& fd, GridColorBands* colorBands, Version* version)
+void IOGridColorBands::Write(MdfStream& fd, GridColorBands* colorBands, Version* version, MgTab& tab)
 {
-    fd << tab() << startStr(sBands) << std::endl;
-    inctab();
+    fd << tab.tab() << startStr(sBands) << std::endl;
+    tab.inctab();
 
-    IOChannelBand::Write(fd, &(colorBands->GetRedBand()), sRedBand, version);
-    IOChannelBand::Write(fd, &(colorBands->GetGreenBand()), sGreenBand, version);
-    IOChannelBand::Write(fd, &(colorBands->GetBlueBand()), sBlueBand, version);
+    IOChannelBand::Write(fd, &(colorBands->GetRedBand()), sRedBand, version, tab);
+    IOChannelBand::Write(fd, &(colorBands->GetGreenBand()), sGreenBand, version, tab);
+    IOChannelBand::Write(fd, &(colorBands->GetBlueBand()), sBlueBand, version, tab);
 
     // Write any unknown XML / extended data
-    IOUnknown::Write(fd, colorBands->GetUnknownXml(), version);
+    IOUnknown::Write(fd, colorBands->GetUnknownXml(), version, tab);
 
-    dectab();
-    fd << tab() << endStr(sBands) << std::endl;
+    tab.dectab();
+    fd << tab.tab() << endStr(sBands) << std::endl;
 }

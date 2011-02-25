@@ -135,15 +135,15 @@ void IOGridScaleRange::EndElement(const wchar_t* name, HandlerStack* handlerStac
 }
 
 
-void IOGridScaleRange::Write(MdfStream& fd, GridScaleRange* scaleRange, Version* version)
+void IOGridScaleRange::Write(MdfStream& fd, GridScaleRange* scaleRange, Version* version, MgTab& tab)
 {
-    fd << tab() << startStr(sGridScaleRange) << std::endl;
-    inctab();
+    fd << tab.tab() << startStr(sGridScaleRange) << std::endl;
+    tab.inctab();
 
     // Property: MinScale (optional)
     if (scaleRange->GetMinScale() != 0.0)
     {
-        fd << tab() << startStr(sMinScale);
+        fd << tab.tab() << startStr(sMinScale);
         fd << DoubleToStr(scaleRange->GetMinScale());
         fd << endStr(sMinScale) << std::endl;
     }
@@ -151,7 +151,7 @@ void IOGridScaleRange::Write(MdfStream& fd, GridScaleRange* scaleRange, Version*
     // Property: MaxScale (optional)
     if (scaleRange->GetMaxScale() != VectorScaleRange::MAX_MAP_SCALE)
     {
-        fd << tab() << startStr(sMaxScale);
+        fd << tab.tab() << startStr(sMaxScale);
         fd << DoubleToStr(scaleRange->GetMaxScale());
         fd << endStr(sMaxScale) << std::endl;
     }
@@ -159,21 +159,21 @@ void IOGridScaleRange::Write(MdfStream& fd, GridScaleRange* scaleRange, Version*
     // Property : Surface Style
     GridSurfaceStyle* gridSurfaceStyle = scaleRange->GetSurfaceStyle();
     if (gridSurfaceStyle)
-        IOGridSurfaceStyle::Write(fd, gridSurfaceStyle, version);
+        IOGridSurfaceStyle::Write(fd, gridSurfaceStyle, version, tab);
 
     // Property : Color Style
     GridColorStyle* gridColorStyle = scaleRange->GetColorStyle();
     if (gridColorStyle)
-        IOGridColorStyle::Write(fd, gridColorStyle, version);
+        IOGridColorStyle::Write(fd, gridColorStyle, version, tab);
 
     // Property : RebuildFactor
-    fd << tab() << startStr(sRebuildFactor);
+    fd << tab.tab() << startStr(sRebuildFactor);
     fd << DoubleToStr(scaleRange->GetRebuildFactor());
     fd << endStr(sRebuildFactor) << std::endl;
 
     // Write any unknown XML / extended data
-    IOUnknown::Write(fd, scaleRange->GetUnknownXml(), version);
+    IOUnknown::Write(fd, scaleRange->GetUnknownXml(), version, tab);
 
-    dectab();
-    fd << tab() << endStr(sGridScaleRange) << std::endl;
+    tab.dectab();
+    fd << tab.tab() << endStr(sGridScaleRange) << std::endl;
 }

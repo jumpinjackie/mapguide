@@ -104,15 +104,15 @@ void IOCompositeTypeStyle::EndElement(const wchar_t* name, HandlerStack* handler
 }
 
 
-void IOCompositeTypeStyle::Write(MdfStream& fd, CompositeTypeStyle* compositeTypeStyle, Version* version)
+void IOCompositeTypeStyle::Write(MdfStream& fd, CompositeTypeStyle* compositeTypeStyle, Version* version, MgTab& tab)
 {
     // the schema currently requires at least one rule
     RuleCollection* ruleCollection = compositeTypeStyle->GetRules();
     int numElements = ruleCollection->GetCount();
     _ASSERT(numElements > 0);
 
-    fd << tab() << startStr(sCompositeTypeStyle) << std::endl;
-    inctab();
+    fd << tab.tab() << startStr(sCompositeTypeStyle) << std::endl;
+    tab.inctab();
 
     MdfStringStream fdExtData;
 
@@ -120,30 +120,30 @@ void IOCompositeTypeStyle::Write(MdfStream& fd, CompositeTypeStyle* compositeTyp
     {
         CompositeRule* compositeRule = dynamic_cast<CompositeRule*>(ruleCollection->GetAt(i));
         if (compositeRule)
-            IOCompositeRule::Write(fd, compositeRule, version);
+            IOCompositeRule::Write(fd, compositeRule, version, tab);
     }
 
     // Property: ShowInLegend
     if (!version || (*version >= Version(1, 3, 0)))
     {
         // version 1.3.0 has a ShowInLegend Property
-        fd << tab() << startStr(sShowInLegend);
+        fd << tab.tab() << startStr(sShowInLegend);
         fd << BoolToStr(compositeTypeStyle->IsShowInLegend());
         fd << endStr(sShowInLegend) << std::endl;
     }
     else if (*version >= Version(1, 0, 0))
     {
         // save ShowInLegend as extended data for LDF versions 1.0.0, 1.1.0, and 1.2.0
-        inctab();
-        fdExtData << tab() << startStr(sShowInLegend);
+        tab.inctab();
+        fdExtData << tab.tab() << startStr(sShowInLegend);
         fdExtData << BoolToStr(compositeTypeStyle->IsShowInLegend());
         fdExtData << endStr(sShowInLegend) << std::endl;
-        dectab();
+        tab.dectab();
     }
 
     // Write any unknown XML / extended data
-    IOUnknown::Write(fd, compositeTypeStyle->GetUnknownXml(), fdExtData.str(), version);
+    IOUnknown::Write(fd, compositeTypeStyle->GetUnknownXml(), fdExtData.str(), version, tab);
 
-    dectab();
-    fd << tab() << endStr(sCompositeTypeStyle) << std::endl;
+    tab.dectab();
+    fd << tab.tab() << endStr(sCompositeTypeStyle) << std::endl;
 }

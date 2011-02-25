@@ -30,7 +30,7 @@ class IOWatermarkOffsetUnit
     public:
         static WatermarkOffset::WatermarkOffsetUnit ParseWatermarkOffsetUnit(const wchar_t* ch);
 
-        static void Write(MdfStream& fd, WatermarkOffset::WatermarkOffsetUnit offsetUnit);
+        static void Write(MdfStream& fd, WatermarkOffset::WatermarkOffsetUnit offsetUnit, MgTab& tab);
 };
 
 END_NAMESPACE_MDFPARSER

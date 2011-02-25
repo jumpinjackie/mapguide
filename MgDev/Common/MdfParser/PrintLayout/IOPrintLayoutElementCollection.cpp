@@ -147,74 +147,74 @@ void IOPrintLayoutElementCollection::EndElement(const wchar_t* name, HandlerStac
     }
 }
 
-void IOPrintLayoutElementCollection::Write(MdfStream& fd, PrintLayoutElementCollection* layoutElems, Version* version, const std::string& name)
+void IOPrintLayoutElementCollection::Write(MdfStream& fd, PrintLayoutElementCollection* layoutElems, Version* version, const std::string& name, MgTab& tab)
 {
     _ASSERT(NULL != layoutElems);
 
-    fd << tab() << startStr(name) << std::endl;
-    inctab();
+    fd << tab.tab() << startStr(name) << std::endl;
+    tab.inctab();
 
     for (int i = 0; i < layoutElems->GetCount(); ++i)
     {
-       fd << tab() << startStr(sLayoutElement) << std::endl;
-       inctab();
+       fd << tab.tab() << startStr(sLayoutElement) << std::endl;
+       tab.inctab();
 
         PrintLayoutElement* layoutElem = dynamic_cast<PrintLayoutElement*>(layoutElems->GetAt(i));
         _ASSERT(NULL != layoutElem);
 
         // Property: Name
-        fd << tab() << startStr(sName);
+        fd << tab.tab() << startStr(sName);
         fd << EncodeString(layoutElem->GetName());
         fd << endStr(sName) << std::endl;
 
         // Property: ResourceId
-        fd << tab() << startStr(sResourceId);
+        fd << tab.tab() << startStr(sResourceId);
         fd << EncodeString(layoutElem->GetResourceId());
         fd << endStr(sResourceId) << std::endl;
 
         // Property: Center
-        IOPoint3D::Write(fd, layoutElem->GetCenter(), version, sCenter);
+        IOPoint3D::Write(fd, layoutElem->GetCenter(), version, sCenter, tab);
 
         // Property: Width
-        fd << tab() << startStr(sWidth);
+        fd << tab.tab() << startStr(sWidth);
         fd << DoubleToStr(layoutElem->GetWidth());
         fd << endStr(sWidth) << std::endl;
 
         // Property: Height
-        fd << tab() << startStr(sHeight);
+        fd << tab.tab() << startStr(sHeight);
         fd << DoubleToStr(layoutElem->GetHeight());
         fd << endStr(sHeight) << std::endl;
 
         // Property: Rotation
-        fd << tab() << startStr(sRotation);
+        fd << tab.tab() << startStr(sRotation);
         fd << DoubleToStr(layoutElem->GetRotation());
         fd << endStr(sRotation) << std::endl;
 
         // Property: Units
-        fd << tab() << startStr(sUnits);
+        fd << tab.tab() << startStr(sUnits);
         fd << EncodeString(layoutElem->GetUnits());
         fd << endStr(sUnits) << std::endl;
 
         // Property: Visible
-        fd << tab() << startStr(sVisible);
+        fd << tab.tab() << startStr(sVisible);
         fd << BoolToStr(layoutElem->GetIsVisible());
         fd << endStr(sVisible) << std::endl;
 
         // Property: Opacity
-        fd << tab() << startStr(sOpacity);
+        fd << tab.tab() << startStr(sOpacity);
         fd << DoubleToStr(layoutElem->GetOpacity());
         fd << endStr(sOpacity) << std::endl;
 
         // Property: References
-        IOStringObjectCollection::Write(fd, layoutElem->GetReferences(), version, sReferences, sName);
+        IOStringObjectCollection::Write(fd, layoutElem->GetReferences(), version, sReferences, sName, tab);
 
         // Write any unknown XML / extended data
-        IOUnknown::Write(fd, layoutElem->GetUnknownXml(), version);
+        IOUnknown::Write(fd, layoutElem->GetUnknownXml(), version, tab);
 
-        dectab();
-        fd << tab() << endStr(sLayoutElement) << std::endl;
+        tab.dectab();
+        fd << tab.tab() << endStr(sLayoutElement) << std::endl;
     }
 
-    dectab();
-    fd << tab() << endStr(name) << std::endl;
+    tab.dectab();
+    fd << tab.tab() << endStr(name) << std::endl;
 }

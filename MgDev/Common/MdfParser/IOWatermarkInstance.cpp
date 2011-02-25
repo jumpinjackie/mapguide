@@ -149,18 +149,18 @@ void IOWatermarkInstance::EndElement(const wchar_t* name, HandlerStack* handlerS
 }
 
 
-void IOWatermarkInstance::Write(MdfStream& fd, WatermarkInstance* watermark, Version* version)
+void IOWatermarkInstance::Write(MdfStream& fd, WatermarkInstance* watermark, Version* version, MgTab& tab)
 {
-    fd << tab() << startStr(sWatermark) << std::endl;
-    inctab();
+    fd << tab.tab() << startStr(sWatermark) << std::endl;
+    tab.inctab();
 
     // Property: Name
-    fd << tab() << startStr(sName);
+    fd << tab.tab() << startStr(sName);
     fd << EncodeString(watermark->GetName());
     fd << endStr(sName) << std::endl;
 
     // Property: ResourceId
-    fd << tab() << startStr(sResourceId);
+    fd << tab.tab() << startStr(sResourceId);
     fd << EncodeString(watermark->GetResourceId());
     fd << endStr(sResourceId) << std::endl;
 
@@ -168,7 +168,7 @@ void IOWatermarkInstance::Write(MdfStream& fd, WatermarkInstance* watermark, Ver
     WatermarkInstance::Usage usage = watermark->GetUsage();
     if (usage != WatermarkInstance::All)
     {
-        fd << tab() << startStr(sUsage);
+        fd << tab.tab() << startStr(sUsage);
         if (usage == WatermarkInstance::WMS)
             fd << "WMS"; // NOXLATE
         else if (usage == WatermarkInstance::Viewer)
@@ -179,30 +179,30 @@ void IOWatermarkInstance::Write(MdfStream& fd, WatermarkInstance* watermark, Ver
     // Property: AppearanceOverride (optional)
     WatermarkAppearance* appearanceOverride = watermark->GetAppearanceOverride();
     if (appearanceOverride)
-        IOWatermarkAppearance::Write(fd, appearanceOverride, version, sAppearanceOverride);
+        IOWatermarkAppearance::Write(fd, appearanceOverride, version, sAppearanceOverride, tab);
 
     // Property: PositionOverride (optional)
     WatermarkPosition* positionOverride = watermark->GetPositionOverride();
     if (positionOverride)
     {
-        fd << tab() << startStr(sPositionOverride) << std::endl;
-        inctab();
+        fd << tab.tab() << startStr(sPositionOverride) << std::endl;
+        tab.inctab();
 
         XYWatermarkPosition* xyPositionOverride = dynamic_cast<XYWatermarkPosition*>(positionOverride);
         TileWatermarkPosition* tilePositionOverride = dynamic_cast<TileWatermarkPosition*>(positionOverride);
 
         if (xyPositionOverride)
-            IOXYWatermarkPosition::Write(fd, xyPositionOverride, version);
+            IOXYWatermarkPosition::Write(fd, xyPositionOverride, version, tab);
         else if (tilePositionOverride)
-            IOTileWatermarkPosition::Write(fd, tilePositionOverride, version);
+            IOTileWatermarkPosition::Write(fd, tilePositionOverride, version, tab);
 
-        dectab();
+        tab.dectab();
         fd << endStr(sPositionOverride) << std::endl;
     }
 
     // Write any unknown XML / extended data
-    IOUnknown::Write(fd, watermark->GetUnknownXml(), version);
+    IOUnknown::Write(fd, watermark->GetUnknownXml(), version, tab);
 
-    dectab();
-    fd << tab() << endStr(sWatermark) << std::endl;
+    tab.dectab();
+    fd << tab.tab() << endStr(sWatermark) << std::endl;
 }

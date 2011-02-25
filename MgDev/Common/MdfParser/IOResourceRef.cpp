@@ -82,24 +82,24 @@ std::wstring IOResourceRef::GetItemName()
 }
 
 
-void IOResourceRef::Write(MdfStream& fd, std::string name, std::wstring resourceId, std::wstring itemName, bool mandatory, Version* version)
+void IOResourceRef::Write(MdfStream& fd, std::string name, std::wstring resourceId, std::wstring itemName, bool mandatory, Version* version, MgTab& tab)
 {
-    fd << tab() << startStr(name) << std::endl;
-    inctab();
+    fd << tab.tab() << startStr(name) << std::endl;
+    tab.inctab();
 
     // Property: ResourceId
-    fd << tab() << startStr(sResourceId);
+    fd << tab.tab() << startStr(sResourceId);
     fd << EncodeString(resourceId);
     fd << endStr(sResourceId) << std::endl;
 
     // Property: LibraryItemName
     if (!itemName.empty() || mandatory)
     {
-        fd << tab() << startStr(sLibraryItemName);
+        fd << tab.tab() << startStr(sLibraryItemName);
         fd << EncodeString(itemName);
         fd << endStr(sLibraryItemName) << std::endl;
     }
 
-    dectab();
-    fd << tab() << endStr(name) <<std::endl;
+    tab.dectab();
+    fd << tab.tab() << endStr(name) <<std::endl;
 }

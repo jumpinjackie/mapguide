@@ -104,17 +104,17 @@ void IOXYWatermarkPosition::EndElement(const wchar_t* name, HandlerStack* handle
 }
 
 
-void IOXYWatermarkPosition::Write(MdfStream& fd, XYWatermarkPosition* position, Version* version)
+void IOXYWatermarkPosition::Write(MdfStream& fd, XYWatermarkPosition* position, Version* version, MgTab& tab)
 {
-    fd << tab() << startStr(sXYPosition) << std::endl;
-    inctab();
+    fd << tab.tab() << startStr(sXYPosition) << std::endl;
+    tab.inctab();
 
     // Property: XPosition
-    IOWatermarkXOffset::Write(fd, position->GetXPosition(), sXPosition, version);
+    IOWatermarkXOffset::Write(fd, position->GetXPosition(), sXPosition, version, tab);
 
     // Property: YPosition
-    IOWatermarkYOffset::Write(fd, position->GetYPosition(), sYPosition, version);
+    IOWatermarkYOffset::Write(fd, position->GetYPosition(), sYPosition, version, tab);
 
-    dectab();
-    fd << tab() << endStr(sXYPosition) << std::endl;
+    tab.dectab();
+    fd << tab.tab() << endStr(sXYPosition) << std::endl;
 }

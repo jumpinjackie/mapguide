@@ -144,10 +144,10 @@ void IOPointSymbolization2D::EndElement(const wchar_t* name, HandlerStack* handl
 }
 
 
-void IOPointSymbolization2D::Write(MdfStream& fd, PointSymbolization2D* pointSymbolization2D, Version* version)
+void IOPointSymbolization2D::Write(MdfStream& fd, PointSymbolization2D* pointSymbolization2D, Version* version, MgTab& tab)
 {
-    fd << tab() << startStr(sPointSymbolization2D) << std::endl;
-    inctab();
+    fd << tab.tab() << startStr(sPointSymbolization2D) << std::endl;
+    tab.inctab();
 
     // Property: Symbol
     MarkSymbol* markSymbol = dynamic_cast<MarkSymbol*>(pointSymbolization2D->GetSymbol());
@@ -156,19 +156,19 @@ void IOPointSymbolization2D::Write(MdfStream& fd, PointSymbolization2D* pointSym
     W2DSymbol* w2DSymbol = dynamic_cast<W2DSymbol*>(pointSymbolization2D->GetSymbol());
     BlockSymbol* blockSymbol = dynamic_cast<BlockSymbol*>(pointSymbolization2D->GetSymbol());
     if (markSymbol)
-        IOMarkSymbol::Write(fd, markSymbol, version);
+        IOMarkSymbol::Write(fd, markSymbol, version, tab);
     else if (imageSymbol)
-        IOImageSymbol::Write(fd, imageSymbol, version);
+        IOImageSymbol::Write(fd, imageSymbol, version, tab);
     else if (fontSymbol)
-        IOFontSymbol::Write(fd, fontSymbol, version);
+        IOFontSymbol::Write(fd, fontSymbol, version, tab);
     else if (w2DSymbol)
-        IOW2DSymbol::Write(fd, w2DSymbol, version);
+        IOW2DSymbol::Write(fd, w2DSymbol, version, tab);
     else if (blockSymbol)
-        IOBlockSymbol::Write(fd, blockSymbol, version);
+        IOBlockSymbol::Write(fd, blockSymbol, version, tab);
 
     // Write any unknown XML / extended data
-    IOUnknown::Write(fd, pointSymbolization2D->GetUnknownXml(), version);
+    IOUnknown::Write(fd, pointSymbolization2D->GetUnknownXml(), version, tab);
 
-    dectab();
-    fd << tab() << endStr(sPointSymbolization2D) << std::endl;
+    tab.dectab();
+    fd << tab.tab() << endStr(sPointSymbolization2D) << std::endl;
 }

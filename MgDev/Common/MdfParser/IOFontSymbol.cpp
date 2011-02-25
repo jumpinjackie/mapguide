@@ -128,20 +128,20 @@ void IOFontSymbol::EndElement(const wchar_t* name, HandlerStack* handlerStack)
 }
 
 
-void IOFontSymbol::Write(MdfStream& fd, FontSymbol* symbol, Version* version)
+void IOFontSymbol::Write(MdfStream& fd, FontSymbol* symbol, Version* version, MgTab& tab)
 {
-    fd << tab() << startStr(sFont) << std::endl;
-    inctab();
+    fd << tab.tab() << startStr(sFont) << std::endl;
+    tab.inctab();
 
-    IOSymbol::Write(fd, symbol, version);
+    IOSymbol::Write(fd, symbol, version, tab);
 
     // Property: FontName
-    fd << tab() << startStr(sFontName);
+    fd << tab.tab() << startStr(sFontName);
     fd << EncodeString(symbol->GetFontName());
     fd << endStr(sFontName) << std::endl;
 
     // Property: Character
-    fd << tab() << startStr(sCharacter);
+    fd << tab.tab() << startStr(sCharacter);
     wchar_t c[2];
     c[0] = symbol->GetCharacter();
     c[1] = 0;
@@ -151,7 +151,7 @@ void IOFontSymbol::Write(MdfStream& fd, FontSymbol* symbol, Version* version)
     // Property: Bold
     if (wstrToBool(symbol->GetBold().c_str()))
     {
-        fd << tab() << startStr(sBold);
+        fd << tab.tab() << startStr(sBold);
         fd << EncodeString(symbol->GetBold());
         fd << endStr(sBold) << std::endl;
     }
@@ -159,7 +159,7 @@ void IOFontSymbol::Write(MdfStream& fd, FontSymbol* symbol, Version* version)
     // Property: Italic
     if (wstrToBool(symbol->GetItalic().c_str()))
     {
-        fd << tab() << startStr(sItalic);
+        fd << tab.tab() << startStr(sItalic);
         fd << EncodeString(symbol->GetItalic());
         fd << endStr(sItalic) << std::endl;
     }
@@ -167,19 +167,19 @@ void IOFontSymbol::Write(MdfStream& fd, FontSymbol* symbol, Version* version)
     // Property: Underlined
     if (wstrToBool(symbol->GetUnderlined().c_str()))
     {
-        fd << tab() << startStr(sUnderlined);
+        fd << tab.tab() << startStr(sUnderlined);
         fd << EncodeString(symbol->GetUnderlined());
         fd << endStr(sUnderlined) << std::endl;
     }
 
     // Property: ForegroundColor
-    fd << tab() << startStr(sForegroundColor);
+    fd << tab.tab() << startStr(sForegroundColor);
     fd << EncodeString(symbol->GetForegroundColor());
     fd << endStr(sForegroundColor) << std::endl;
 
     // Write any unknown XML / extended data
-    IOUnknown::Write(fd, symbol->GetUnknownXml(), version);
+    IOUnknown::Write(fd, symbol->GetUnknownXml(), version, tab);
 
-    dectab();
-    fd << tab() << endStr(sFont) << std::endl;
+    tab.dectab();
+    fd << tab.tab() << endStr(sFont) << std::endl;
 }

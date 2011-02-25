@@ -91,17 +91,17 @@ void IOBaseMapLayer::EndElement(const wchar_t* name, HandlerStack* handlerStack)
 }
 
 
-void IOBaseMapLayer::Write(MdfStream& fd, BaseMapLayer* baseMapLayer, Version* version)
+void IOBaseMapLayer::Write(MdfStream& fd, BaseMapLayer* baseMapLayer, Version* version, MgTab& tab)
 {
-    fd << tab() << startStr(sBaseMapLayer) << std::endl;
-    inctab();
+    fd << tab.tab() << startStr(sBaseMapLayer) << std::endl;
+    tab.inctab();
 
-    IOMapLayerCommon::Write(fd, baseMapLayer, version);
+    IOMapLayerCommon::Write(fd, baseMapLayer, version, tab);
 
     // Write any unknown XML / extended data
     if (!version || (*version >= Version(2, 3, 0)))
-        IOUnknown::Write(fd, baseMapLayer->GetUnknownXml(), version);
+        IOUnknown::Write(fd, baseMapLayer->GetUnknownXml(), version, tab);
 
-    dectab();
-    fd << tab() << endStr(sBaseMapLayer) << std::endl;
+    tab.dectab();
+    fd << tab.tab() << endStr(sBaseMapLayer) << std::endl;
 }

@@ -122,17 +122,17 @@ void IOParameter::EndElement(const wchar_t* name, HandlerStack* handlerStack)
 }
 
 
-void IOParameter::Write(MdfStream& fd, Parameter* parameter, Version* version)
+void IOParameter::Write(MdfStream& fd, Parameter* parameter, Version* version, MgTab& tab)
 {
-    fd << tab() << "<Parameter>" << std::endl; // NOXLATE
-    inctab();
+    fd << tab.tab() << "<Parameter>" << std::endl; // NOXLATE
+    tab.inctab();
 
     MdfStringStream fdExtData;
 
-    EMIT_STRING_PROPERTY(fd, parameter, Identifier, false, NULL)
-    EMIT_STRING_PROPERTY(fd, parameter, DefaultValue, false, NULL)
-    EMIT_STRING_PROPERTY(fd, parameter, DisplayName, true, L"")         // default is empty string
-    EMIT_STRING_PROPERTY(fd, parameter, Description, true, L"")         // default is empty string
+    EMIT_STRING_PROPERTY(fd, parameter, Identifier, false, NULL, tab)
+    EMIT_STRING_PROPERTY(fd, parameter, DefaultValue, false, NULL, tab)
+    EMIT_STRING_PROPERTY(fd, parameter, DisplayName, true, L"", tab)         // default is empty string
+    EMIT_STRING_PROPERTY(fd, parameter, Description, true, L"", tab)         // default is empty string
 
     Parameter::DataType dataType = parameter->GetDataType();
     if (dataType != Parameter::String)
@@ -142,7 +142,7 @@ void IOParameter::Write(MdfStream& fd, Parameter* parameter, Version* version)
             // with symbol definition version 1.1.0 and higher we can directly
             // save the new data type enumerations
 
-            fd << tab() << "<DataType>";                                                      // NOXLATE
+            fd << tab.tab() << "<DataType>";                                                      // NOXLATE
 
                  if (dataType == Parameter::Boolean)             fd << "Boolean";             // NOXLATE
             else if (dataType == Parameter::Integer)             fd << "Integer";             // NOXLATE
@@ -188,7 +188,7 @@ void IOParameter::Write(MdfStream& fd, Parameter* parameter, Version* version)
                 dataType == Parameter::Color)
             {
                 // older enumerated value - save directly
-                fd << tab() << "<DataType>";                                                      // NOXLATE
+                fd << tab.tab() << "<DataType>";                                                      // NOXLATE
 
                      if (dataType == Parameter::Boolean)             fd << "Boolean";             // NOXLATE
                 else if (dataType == Parameter::Integer)             fd << "Integer";             // NOXLATE
@@ -200,8 +200,8 @@ void IOParameter::Write(MdfStream& fd, Parameter* parameter, Version* version)
             else
             {
                 // newer enumerated value - save with extended data
-                inctab();
-                fdExtData << tab() << "<DataType>";                                                      // NOXLATE
+                tab.inctab();
+                fdExtData << tab.tab() << "<DataType>";                                                      // NOXLATE
 
                      if (dataType == Parameter::Angle)               fdExtData << "Angle";               // NOXLATE
                 else if (dataType == Parameter::FillColor)           fdExtData << "FillColor";           // NOXLATE
@@ -231,14 +231,14 @@ void IOParameter::Write(MdfStream& fd, Parameter* parameter, Version* version)
                 else if (dataType == Parameter::RepeatY)             fdExtData << "RepeatY";             // NOXLATE
 
                 fdExtData << "</DataType>" << std::endl;                                                 // NOXLATE
-                dectab();
+                tab.dectab();
             }
         }
     }
 
     // Write the unknown XML / extended data
-    IOUnknown::Write(fd, parameter->GetUnknownXml(), fdExtData.str(), version);
+    IOUnknown::Write(fd, parameter->GetUnknownXml(), fdExtData.str(), version, tab);
 
-    dectab();
-    fd << tab() << "</Parameter>" << std::endl; // NOXLATE
+    tab.dectab();
+    fd << tab.tab() << "</Parameter>" << std::endl; // NOXLATE
 }

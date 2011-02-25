@@ -157,17 +157,17 @@ void IOVectorScaleRange::EndElement(const wchar_t* name, HandlerStack* handlerSt
 }
 
 
-void IOVectorScaleRange::Write(MdfStream& fd, VectorScaleRange* scaleRange, Version* version)
+void IOVectorScaleRange::Write(MdfStream& fd, VectorScaleRange* scaleRange, Version* version, MgTab& tab)
 {
-    fd << tab() << startStr(sVectorScaleRange) << std::endl;
-    inctab();
+    fd << tab.tab() << startStr(sVectorScaleRange) << std::endl;
+    tab.inctab();
 
     MdfStringStream fdExtData;
 
     // Property: MinScale (optional)
     if (scaleRange->GetMinScale() != 0.0)
     {
-        fd << tab() << startStr(sMinScale);
+        fd << tab.tab() << startStr(sMinScale);
         fd << DoubleToStr(scaleRange->GetMinScale());
         fd << endStr(sMinScale) << std::endl;
     }
@@ -175,7 +175,7 @@ void IOVectorScaleRange::Write(MdfStream& fd, VectorScaleRange* scaleRange, Vers
     // Property: MaxScale (optional)
     if (scaleRange->GetMaxScale() != VectorScaleRange::MAX_MAP_SCALE)
     {
-        fd << tab() << startStr(sMaxScale);
+        fd << tab.tab() << startStr(sMaxScale);
         fd << DoubleToStr(scaleRange->GetMaxScale());
         fd << endStr(sMaxScale) << std::endl;
     }
@@ -187,29 +187,29 @@ void IOVectorScaleRange::Write(MdfStream& fd, VectorScaleRange* scaleRange, Vers
 
         if (dynamic_cast<AreaTypeStyle*>(fts) != 0)
         {
-            IOAreaTypeStyle::Write(fd, dynamic_cast<AreaTypeStyle*>(fts), version);
+            IOAreaTypeStyle::Write(fd, dynamic_cast<AreaTypeStyle*>(fts), version, tab);
         }
         else if (dynamic_cast<LineTypeStyle*>(fts) != 0)
         {
-            IOLineTypeStyle::Write(fd, dynamic_cast<LineTypeStyle*>(fts), version);
+            IOLineTypeStyle::Write(fd, dynamic_cast<LineTypeStyle*>(fts), version, tab);
         }
         else if (dynamic_cast<PointTypeStyle*>(fts) != 0)
         {
-            IOPointTypeStyle::Write(fd, dynamic_cast<PointTypeStyle*>(fts), version);
+            IOPointTypeStyle::Write(fd, dynamic_cast<PointTypeStyle*>(fts), version, tab);
         }
         else if (dynamic_cast<CompositeTypeStyle*>(fts) != 0)
         {
             // only write CompositeTypeStyle if the LDF version is 1.1.0 or greater
             if (!version || (*version >= Version(1, 1, 0)))
             {
-                IOCompositeTypeStyle::Write(fd, dynamic_cast<CompositeTypeStyle*>(fts), version);
+                IOCompositeTypeStyle::Write(fd, dynamic_cast<CompositeTypeStyle*>(fts), version, tab);
             }
             else if (*version == Version(1, 0, 0))
             {
                 // save CompositeTypeStyle as extended data for LDF version 1.0.0
-                inctab();
-                IOCompositeTypeStyle::Write(fdExtData, dynamic_cast<CompositeTypeStyle*>(fts), version);
-                dectab();
+                tab.inctab();
+                IOCompositeTypeStyle::Write(fdExtData, dynamic_cast<CompositeTypeStyle*>(fts), version, tab);
+                tab.dectab();
             }
         }
     }
@@ -221,20 +221,20 @@ void IOVectorScaleRange::Write(MdfStream& fd, VectorScaleRange* scaleRange, Vers
         // only write ElevationSettings if the LDF version is 1.1.0 or greater
         if (!version || (*version >= Version(1, 1, 0)))
         {
-            IOElevationSettings::Write(fd, elevationSettings, version);
+            IOElevationSettings::Write(fd, elevationSettings, version, tab);
         }
         else if (*version == Version(1, 0, 0))
         {
             // save ElevationSettings as extended data for LDF version 1.0.0
-            inctab();
-            IOElevationSettings::Write(fdExtData, elevationSettings, version);
-            dectab();
+            tab.inctab();
+            IOElevationSettings::Write(fdExtData, elevationSettings, version, tab);
+            tab.dectab();
         }
     }
 
     // Write the unknown XML / extended data
-    IOUnknown::Write(fd, scaleRange->GetUnknownXml(), fdExtData.str(), version);
+    IOUnknown::Write(fd, scaleRange->GetUnknownXml(), fdExtData.str(), version, tab);
 
-    dectab();
-    fd << tab() << endStr(sVectorScaleRange) << std::endl;
+    tab.dectab();
+    fd << tab.tab() << endStr(sVectorScaleRange) << std::endl;
 }

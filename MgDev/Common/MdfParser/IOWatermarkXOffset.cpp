@@ -108,21 +108,21 @@ void IOWatermarkXOffset::EndElement(const wchar_t* name, HandlerStack* handlerSt
 }
 
 
-void IOWatermarkXOffset::Write(MdfStream& fd, WatermarkXOffset* xOffset, const std::string& name, Version* version)
+void IOWatermarkXOffset::Write(MdfStream& fd, WatermarkXOffset* xOffset, const std::string& name, Version* version, MgTab& tab)
 {
-    fd << tab() << startStr(name) << std::endl;
-    inctab();
+    fd << tab.tab() << startStr(name) << std::endl;
+    tab.inctab();
 
     // Property: Offset
-    fd << tab() << startStr(sOffset);
+    fd << tab.tab() << startStr(sOffset);
     fd << DoubleToStr(xOffset->GetOffset());
     fd << endStr(sOffset) << std::endl;
 
     // Property: Unit
-    IOWatermarkOffsetUnit::Write(fd, xOffset->GetUnit());
+    IOWatermarkOffsetUnit::Write(fd, xOffset->GetUnit(), tab);
 
     // Property: Alignment
-    fd << tab() << startStr(sAlignment);
+    fd << tab.tab() << startStr(sAlignment);
     WatermarkXOffset::HorizontalAlignment alignment = xOffset->GetAlignment();
     if (alignment == WatermarkXOffset::Left)
         fd << "Left"; // NOXLATE
@@ -132,6 +132,6 @@ void IOWatermarkXOffset::Write(MdfStream& fd, WatermarkXOffset* xOffset, const s
         fd << "Center"; // NOXLATE
     fd << endStr(sAlignment) << std::endl;
 
-    dectab();
-    fd << tab() << endStr(name) << std::endl;
+    tab.dectab();
+    fd << tab.tab() << endStr(name) << std::endl;
 }

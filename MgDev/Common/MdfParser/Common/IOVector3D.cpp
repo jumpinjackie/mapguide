@@ -79,28 +79,28 @@ void IOVector3D::EndElement(const wchar_t* name, HandlerStack* handlerStack)
     }
 }
 
-void IOVector3D::Write(MdfStream& fd, Vector3D* vector, Version* version)
+void IOVector3D::Write(MdfStream& fd, Vector3D* vector, Version* version, MgTab& tab)
 {
     _ASSERT(NULL != vector);
 
-    fd << tab() << startStr(sViewDirection) << std::endl;
-    inctab();
+    fd << tab.tab() << startStr(sViewDirection) << std::endl;
+    tab.inctab();
 
     // Property: X
-    fd << tab() << startStr(sX);
+    fd << tab.tab() << startStr(sX);
     fd << DoubleToStr(vector->GetX());
     fd << endStr(sX) << std::endl;
 
     // Property: Y
-    fd << tab() << startStr(sY);
+    fd << tab.tab() << startStr(sY);
     fd << DoubleToStr(vector->GetY());
     fd << endStr(sY) << std::endl;
 
     // Property: Z
-    fd << tab() << startStr(sZ);
+    fd << tab.tab() << startStr(sZ);
     fd << DoubleToStr(vector->GetZ());
     fd << endStr(sZ) << std::endl;
 
-    dectab();
-    fd << tab() << endStr(sViewDirection) << std::endl;
+    tab.dectab();
+    fd << tab.tab() << endStr(sViewDirection) << std::endl;
 }

@@ -106,24 +106,24 @@ void IOCalculatedProperty::EndElement(const wchar_t* name, HandlerStack* handler
 }
 
 
-void IOCalculatedProperty::Write(MdfStream& fd, CalculatedProperty* calculatedProperty, Version* version)
+void IOCalculatedProperty::Write(MdfStream& fd, CalculatedProperty* calculatedProperty, Version* version, MgTab& tab)
 {
-    fd << tab() << startStr(sCalculatedProperty) << std::endl;
-    inctab();
+    fd << tab.tab() << startStr(sCalculatedProperty) << std::endl;
+    tab.inctab();
 
     // Property: Name
-    fd << tab() << startStr(sName);
+    fd << tab.tab() << startStr(sName);
     fd << EncodeString(calculatedProperty->GetName());
     fd << endStr(sName) << std::endl;
 
     // Property: Expression
-    fd << tab() << startStr(sExpression);
+    fd << tab.tab() << startStr(sExpression);
     fd << EncodeString(calculatedProperty->GetExpression());
     fd << endStr(sExpression) << std::endl;
 
     // Write any unknown XML / extended data
-    IOUnknown::Write(fd, calculatedProperty->GetUnknownXml(), version);
+    IOUnknown::Write(fd, calculatedProperty->GetUnknownXml(), version, tab);
 
-    dectab();
-    fd << tab() << endStr(sCalculatedProperty) << std::endl;
+    tab.dectab();
+    fd << tab.tab() << endStr(sCalculatedProperty) << std::endl;
 }

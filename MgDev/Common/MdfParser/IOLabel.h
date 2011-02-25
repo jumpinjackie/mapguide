@@ -39,7 +39,7 @@ class IOLabel : public SAX2ElementHandler
         virtual void ElementChars(const wchar_t* ch);
         virtual void EndElement(const wchar_t* name, HandlerStack* handlerStack);
 
-        static void Write(MdfStream& fd, Label* label, Version* version);
+        static void Write(MdfStream& fd, Label* label, Version* version, MgTab& tab);
 
     private:
         Label* m_label;

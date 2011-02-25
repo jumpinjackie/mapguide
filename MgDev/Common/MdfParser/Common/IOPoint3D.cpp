@@ -85,28 +85,28 @@ void IOPoint3D::EndElement(const wchar_t* name, HandlerStack* handlerStack)
     }
 }
 
-void IOPoint3D::Write(MdfStream& fd, Point3D* point, Version* version, const std::string& name)
+void IOPoint3D::Write(MdfStream& fd, Point3D* point, Version* version, const std::string& name, MgTab& tab)
 {
     _ASSERT(NULL != point);
 
-    fd << tab() << startStr(name) << std::endl;
-    inctab();
+    fd << tab.tab() << startStr(name) << std::endl;
+    tab.inctab();
 
     // Property: X
-    fd << tab() << startStr(sX);
+    fd << tab.tab() << startStr(sX);
     fd << DoubleToStr(point->GetX());
     fd << endStr(sX) << std::endl;
 
     // Property: Y
-    fd << tab() << startStr(sY);
+    fd << tab.tab() << startStr(sY);
     fd << DoubleToStr(point->GetY());
     fd << endStr(sY) << std::endl;
 
     // Property: Z
-    fd << tab() << startStr(sZ);
+    fd << tab.tab() << startStr(sZ);
     fd << DoubleToStr(point->GetZ());
     fd << endStr(sZ) << std::endl;
 
-    dectab();
-    fd << tab() << endStr(name) << std::endl;
+    tab.dectab();
+    fd << tab.tab() << endStr(name) << std::endl;
 }
