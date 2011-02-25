@@ -86,24 +86,24 @@ void IOSimpleSymbol::EndElement(const wchar_t* name, HandlerStack* handlerStack)
 }
 
 
-void IOSimpleSymbol::Write(MdfStream& fd, SimpleSymbol* simpleSymbol, Version* version)
+void IOSimpleSymbol::Write(MdfStream& fd, SimpleSymbol* simpleSymbol, Version* version, MgTab& tab)
 {
-    fd << tab() << "<SimpleSymbol>" << std::endl; // NOXLATE
-    inctab();
+    fd << tab.tab() << "<SimpleSymbol>" << std::endl; // NOXLATE
+    tab.inctab();
 
     // we must write either a symbol definition or reference, but not both
     if (simpleSymbol->GetSymbolDefinition())
-        IOSimpleSymbolDefinition::Write(fd, simpleSymbol->GetSymbolDefinition(), false, version);
+        IOSimpleSymbolDefinition::Write(fd, simpleSymbol->GetSymbolDefinition(), false, version, tab);
     else
     {
-        EMIT_STRING_PROPERTY(fd, simpleSymbol, ResourceId, false, NULL)
+        EMIT_STRING_PROPERTY(fd, simpleSymbol, ResourceId, false, NULL, tab)
     }
 
-    EMIT_INTEGER_PROPERTY(fd, simpleSymbol, RenderingPass, true, 0) // default is 0
+    EMIT_INTEGER_PROPERTY(fd, simpleSymbol, RenderingPass, true, 0, tab) // default is 0
 
     // Write any unknown XML / extended data
-    IOUnknown::Write(fd, simpleSymbol->GetUnknownXml(), version);
+    IOUnknown::Write(fd, simpleSymbol->GetUnknownXml(), version, tab);
 
-    dectab();
-    fd << tab() << "</SimpleSymbol>" << std::endl; // NOXLATE
+    tab.dectab();
+    fd << tab.tab() << "</SimpleSymbol>" << std::endl; // NOXLATE
 }

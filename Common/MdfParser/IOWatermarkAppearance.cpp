@@ -97,15 +97,15 @@ void IOWatermarkAppearance::EndElement(const wchar_t* name, HandlerStack* handle
 }
 
 
-void IOWatermarkAppearance::Write(MdfStream& fd, WatermarkAppearance* appearance, Version* version, const std::string& name)
+void IOWatermarkAppearance::Write(MdfStream& fd, WatermarkAppearance* appearance, Version* version, const std::string& name, MgTab& tab)
 {
-    fd << tab() << startStr(name) << std::endl;
-    inctab();
+    fd << tab.tab() << startStr(name) << std::endl;
+    tab.inctab();
 
     // Property: Transparency (optional)
     if (appearance->GetTransparency() != 0.0)
     {
-        fd << tab() << startStr(sTransparency);
+        fd << tab.tab() << startStr(sTransparency);
         fd << DoubleToStr(appearance->GetTransparency());
         fd << endStr(sTransparency) << std::endl;
     }
@@ -113,11 +113,11 @@ void IOWatermarkAppearance::Write(MdfStream& fd, WatermarkAppearance* appearance
     // Property: Rotation (optional)
     if (appearance->GetRotation() != 0.0)
     {
-        fd << tab() << startStr(sRotation);
+        fd << tab.tab() << startStr(sRotation);
         fd << DoubleToStr(appearance->GetRotation());
         fd << endStr(sRotation) << std::endl;
     }
 
-    dectab();
-    fd << tab() << endStr(name) << std::endl;
+    tab.dectab();
+    fd << tab.tab() << endStr(name) << std::endl;
 }

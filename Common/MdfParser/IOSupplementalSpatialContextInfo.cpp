@@ -111,24 +111,24 @@ void IOSupplementalSpatialContextInfo::EndElement(const wchar_t* name, HandlerSt
 }
 
 
-void IOSupplementalSpatialContextInfo::Write(MdfStream& fd, SupplementalSpatialContextInfo* ssContextInfo, Version* version)
+void IOSupplementalSpatialContextInfo::Write(MdfStream& fd, SupplementalSpatialContextInfo* ssContextInfo, Version* version, MgTab& tab)
 {
-    fd << tab() << startStr(sSupplementalSpatialContextInfo) << std::endl;
-    inctab();
+    fd << tab.tab() << startStr(sSupplementalSpatialContextInfo) << std::endl;
+    tab.inctab();
 
     // Property: Name
-    fd << tab() << startStr(sName);
+    fd << tab.tab() << startStr(sName);
     fd << EncodeString(ssContextInfo->GetName());
     fd << endStr(sName) << std::endl;
 
     // Property: CoordinateSystem
-    fd << tab() << startStr(sCoordinateSystem);
+    fd << tab.tab() << startStr(sCoordinateSystem);
     fd << EncodeString(ssContextInfo->GetCoordinateSystem());
     fd << endStr(sCoordinateSystem) << std::endl;
 
     // Write any unknown XML / extended data
-    IOUnknown::Write(fd, ssContextInfo->GetUnknownXml(), version);
+    IOUnknown::Write(fd, ssContextInfo->GetUnknownXml(), version, tab);
 
-    dectab();
-    fd << tab() << endStr(sSupplementalSpatialContextInfo) << std::endl;
+    tab.dectab();
+    fd << tab.tab() << endStr(sSupplementalSpatialContextInfo) << std::endl;
 }

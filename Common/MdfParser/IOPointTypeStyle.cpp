@@ -122,48 +122,48 @@ void IOPointTypeStyle::EndElement(const wchar_t* name, HandlerStack* handlerStac
 }
 
 
-void IOPointTypeStyle::Write(MdfStream& fd, PointTypeStyle* pointTypeStyle, Version* version)
+void IOPointTypeStyle::Write(MdfStream& fd, PointTypeStyle* pointTypeStyle, Version* version, MgTab& tab)
 {
-    fd << tab() << startStr(sPointTypeStyle) << std::endl;
-    inctab();
+    fd << tab.tab() << startStr(sPointTypeStyle) << std::endl;
+    tab.inctab();
 
     MdfStringStream fdExtData;
 
     // Property: DisplayAsText
-    fd << tab() << startStr(sDisplayAsText);
+    fd << tab.tab() << startStr(sDisplayAsText);
     fd << BoolToStr(pointTypeStyle->IsDisplayAsText());
     fd << endStr(sDisplayAsText) << std::endl;
 
     // Property: AllowOverpost
-    fd << tab() << startStr(sAllowOverpost);
+    fd << tab.tab() << startStr(sAllowOverpost);
     fd << BoolToStr(pointTypeStyle->IsAllowOverpost());
     fd << endStr(sAllowOverpost) << std::endl;
 
     // Property: Rules
     for (int i=0; i<pointTypeStyle->GetRules()->GetCount(); ++i)
-        IOPointRule::Write(fd, static_cast<PointRule*>(pointTypeStyle->GetRules()->GetAt(i)), version);
+        IOPointRule::Write(fd, static_cast<PointRule*>(pointTypeStyle->GetRules()->GetAt(i)), version, tab);
 
     // Property: ShowInLegend
     if (!version || (*version >= Version(1, 3, 0)))
     {
         // version 1.3.0 has a ShowInLegend Property
-        fd << tab() << startStr(sShowInLegend);
+        fd << tab.tab() << startStr(sShowInLegend);
         fd << BoolToStr(pointTypeStyle->IsShowInLegend());
         fd << endStr(sShowInLegend) << std::endl;
     }
     else if (*version >= Version(1, 0, 0))
     {
         // save ShowInLegend as extended data for LDF versions 1.0.0, 1.1.0, and 1.2.0
-        inctab();
-        fdExtData << tab() << startStr(sShowInLegend);
+        tab.inctab();
+        fdExtData << tab.tab() << startStr(sShowInLegend);
         fdExtData << BoolToStr(pointTypeStyle->IsShowInLegend());
         fdExtData << endStr(sShowInLegend) << std::endl;
-        dectab();
+        tab.dectab();
     }
 
     // Write any unknown XML / extended data
-    IOUnknown::Write(fd, pointTypeStyle->GetUnknownXml(), fdExtData.str(), version);
+    IOUnknown::Write(fd, pointTypeStyle->GetUnknownXml(), fdExtData.str(), version, tab);
 
-    dectab();
-    fd << tab() << endStr(sPointTypeStyle) << std::endl;
+    tab.dectab();
+    fd << tab.tab() << endStr(sPointTypeStyle) << std::endl;
 }

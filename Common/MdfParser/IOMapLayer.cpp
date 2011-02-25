@@ -106,27 +106,27 @@ void IOMapLayer::EndElement(const wchar_t* name, HandlerStack* handlerStack)
 }
 
 
-void IOMapLayer::Write(MdfStream& fd, MapLayer* mapLayer, Version* version)
+void IOMapLayer::Write(MdfStream& fd, MapLayer* mapLayer, Version* version, MgTab& tab)
 {
-    fd << tab() << startStr(sMapLayer) << std::endl;
-    inctab();
+    fd << tab.tab() << startStr(sMapLayer) << std::endl;
+    tab.inctab();
 
-    IOMapLayerCommon::Write(fd, mapLayer, version);
+    IOMapLayerCommon::Write(fd, mapLayer, version, tab);
 
     // Property: Visible
-    fd << tab() << startStr(sVisible);
+    fd << tab.tab() << startStr(sVisible);
     fd << BoolToStr(mapLayer->IsVisible());
     fd << endStr(sVisible) << std::endl;
 
     // Property: Group
-    fd << tab() << startStr(sGroup);
+    fd << tab.tab() << startStr(sGroup);
     fd << EncodeString(mapLayer->GetGroup());
     fd << endStr(sGroup) << std::endl;
 
     // Write any unknown XML / extended data
     if (!version || (*version >= Version(2, 3, 0)))
-        IOUnknown::Write(fd, mapLayer->GetUnknownXml(), version);
+        IOUnknown::Write(fd, mapLayer->GetUnknownXml(), version, tab);
 
-    dectab();
-    fd << tab() << endStr(sMapLayer) << std::endl; // NOXLATE
+    tab.dectab();
+    fd << tab.tab() << endStr(sMapLayer) << std::endl; // NOXLATE
 }

@@ -87,22 +87,22 @@ void IOCompositeSymbolization::EndElement(const wchar_t* name, HandlerStack* han
 }
 
 
-void IOCompositeSymbolization::Write(MdfStream& fd, CompositeSymbolization* compositeSymbolization, Version* version)
+void IOCompositeSymbolization::Write(MdfStream& fd, CompositeSymbolization* compositeSymbolization, Version* version, MgTab& tab)
 {
-    fd << tab() << "<CompositeSymbolization>" << std::endl; // NOXLATE
-    inctab();
+    fd << tab.tab() << "<CompositeSymbolization>" << std::endl; // NOXLATE
+    tab.inctab();
 
     SymbolInstanceCollection* instanceCollection = compositeSymbolization->GetSymbolCollection();
     int numInstances = instanceCollection->GetCount();
     for (int i=0; i<numInstances; ++i)
     {
         SymbolInstance* instance = instanceCollection->GetAt(i);
-        IOSymbolInstance::Write(fd, instance, version);
+        IOSymbolInstance::Write(fd, instance, version, tab);
     }
 
     // Write any unknown XML / extended data
-    IOUnknown::Write(fd, compositeSymbolization->GetUnknownXml(), version);
+    IOUnknown::Write(fd, compositeSymbolization->GetUnknownXml(), version, tab);
 
-    dectab();
-    fd << tab() << "</CompositeSymbolization>" << std::endl; // NOXLATE
+    tab.dectab();
+    fd << tab.tab() << "</CompositeSymbolization>" << std::endl; // NOXLATE
 }

@@ -90,10 +90,10 @@ void IOGraphicElementCollection::EndElement(const wchar_t* name, HandlerStack* h
 }
 
 
-void IOGraphicElementCollection::Write(MdfStream& fd, GraphicElementCollection* elementCollection, Version* version)
+void IOGraphicElementCollection::Write(MdfStream& fd, GraphicElementCollection* elementCollection, Version* version, MgTab& tab)
 {
-    fd << tab() << "<Graphics>" << std::endl; // NOXLATE
-    inctab();
+    fd << tab.tab() << "<Graphics>" << std::endl; // NOXLATE
+    tab.inctab();
 
     int numElements = elementCollection->GetCount();
     for (int i=0; i<numElements; ++i)
@@ -103,25 +103,25 @@ void IOGraphicElementCollection::Write(MdfStream& fd, GraphicElementCollection* 
         Path* path = dynamic_cast<Path*>(elem);
         if (path)
         {
-            IOPath::Write(fd, path, version);
+            IOPath::Write(fd, path, version, tab);
             continue;
         }
 
         Image* image = dynamic_cast<Image*>(elem);
         if (image)
         {
-            IOImage::Write(fd, image, version);
+            IOImage::Write(fd, image, version, tab);
             continue;
         }
 
         Text* text = dynamic_cast<Text*>(elem);
         if (text)
         {
-            IOText::Write(fd, text, version);
+            IOText::Write(fd, text, version, tab);
             continue;
         }
     }
 
-    dectab();
-    fd << tab() << "</Graphics>" << std::endl; // NOXLATE
+    tab.dectab();
+    fd << tab.tab() << "</Graphics>" << std::endl; // NOXLATE
 }

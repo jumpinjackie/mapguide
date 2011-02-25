@@ -39,7 +39,7 @@ class IOExtension : public SAX2ElementHandler
         virtual void ElementChars(const wchar_t* ch);
         virtual void EndElement(const wchar_t* name, HandlerStack* handlerStack);
 
-        static void Write(MdfStream& fd, Extension* extension, Version* version);
+        static void Write(MdfStream& fd, Extension* extension, Version* version, MgTab& tab);
 
     private:
         Extension* m_extension;

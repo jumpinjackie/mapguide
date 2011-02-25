@@ -127,35 +127,35 @@ void IOPointRule::EndElement(const wchar_t* name, HandlerStack* handlerStack)
 }
 
 
-void IOPointRule::Write(MdfStream& fd, PointRule* pointRule, Version* version)
+void IOPointRule::Write(MdfStream& fd, PointRule* pointRule, Version* version, MgTab& tab)
 {
-    fd << tab() << startStr(sPointRule) << std::endl;
-    inctab();
+    fd << tab.tab() << startStr(sPointRule) << std::endl;
+    tab.inctab();
 
     // Property: LegendLabel
-    fd << tab() << startStr(sLegendLabel);
+    fd << tab.tab() << startStr(sLegendLabel);
     fd << EncodeString(pointRule->GetLegendLabel());
     fd << endStr(sLegendLabel) << std::endl;
 
     // Property: Filter
     if (!pointRule->GetFilter().empty())
     {
-        fd << tab() << startStr(sFilter);
+        fd << tab.tab() << startStr(sFilter);
         fd << EncodeString(pointRule->GetFilter());
         fd << endStr(sFilter) << std::endl;
     }
     // Property: Label
     if (pointRule->GetLabel() && pointRule->GetLabel()->GetSymbol())
-        IOLabel::Write(fd, pointRule->GetLabel(), version);
+        IOLabel::Write(fd, pointRule->GetLabel(), version, tab);
 
     // Property: Symbolization
     PointSymbolization2D* symbolization2D = static_cast<PointSymbolization2D*>(pointRule->GetSymbolization());
     if (symbolization2D)
-        IOPointSymbolization2D::Write(fd, symbolization2D, version);
+        IOPointSymbolization2D::Write(fd, symbolization2D, version, tab);
 
     // Write any unknown XML / extended data
-    IOUnknown::Write(fd, pointRule->GetUnknownXml(), version);
+    IOUnknown::Write(fd, pointRule->GetUnknownXml(), version, tab);
 
-    dectab();
-    fd << tab() << endStr(sPointRule) << std::endl;
+    tab.dectab();
+    fd << tab.tab() << endStr(sPointRule) << std::endl;
 }

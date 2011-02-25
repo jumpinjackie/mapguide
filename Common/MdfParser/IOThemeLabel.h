@@ -38,7 +38,7 @@ class IOThemeLabel : public SAX2ElementHandler
         virtual void ElementChars(const wchar_t* ch);
         virtual void EndElement(const wchar_t* name, HandlerStack* handlerStack);
 
-        static void Write(MdfStream& fd, ThemeLabel* pThemeLabel, Version* version);
+        static void Write(MdfStream& fd, ThemeLabel* pThemeLabel, Version* version, MgTab& tab);
 
     private:
         Override* m_override;

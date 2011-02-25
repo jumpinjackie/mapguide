@@ -38,7 +38,7 @@ class IOVectorLayerDefinition : public SAX2ElementHandler
         virtual void ElementChars(const wchar_t* ch);
         virtual void EndElement(const wchar_t* name, HandlerStack* handlerStack);
 
-        static void Write(MdfStream& fd, VectorLayerDefinition* vectorLayer, Version* version);
+        static void Write(MdfStream& fd, VectorLayerDefinition* vectorLayer, Version* version, MgTab& tab);
 
     private:
         static bool GetWatermarkDefinitionVersion(Version* ldfVersion, Version& wdVersion);

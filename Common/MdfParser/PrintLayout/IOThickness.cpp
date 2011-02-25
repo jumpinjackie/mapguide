@@ -84,33 +84,33 @@ void IOThickness::EndElement(const wchar_t* name, HandlerStack* handlerStack)
     }
 }
 
-void IOThickness::Write(MdfStream& fd, Thickness* thickness, Version* version, const std::string& name)
+void IOThickness::Write(MdfStream& fd, Thickness* thickness, Version* version, const std::string& name, MgTab& tab)
 {
     _ASSERT(NULL != thickness);
 
-    fd << tab() << startStr(name) << std::endl;
-    inctab();
+    fd << tab.tab() << startStr(name) << std::endl;
+    tab.inctab();
 
     // Property: Left
-    fd << tab() << startStr(sLeft);
+    fd << tab.tab() << startStr(sLeft);
     fd << DoubleToStr(thickness->GetLeft());
     fd << endStr(sLeft) << std::endl;
 
     // Property: Top
-    fd << tab() << startStr(sTop);
+    fd << tab.tab() << startStr(sTop);
     fd << DoubleToStr(thickness->GetTop());
     fd << endStr(sTop) << std::endl;
 
     // Property: Right
-    fd << tab() << startStr(sRight);
+    fd << tab.tab() << startStr(sRight);
     fd << DoubleToStr(thickness->GetRight());
     fd << endStr(sRight) << std::endl;
 
     // Property: Bottom
-    fd << tab() << startStr(sBottom);
+    fd << tab.tab() << startStr(sBottom);
     fd << DoubleToStr(thickness->GetBottom());
     fd << endStr(sBottom) << std::endl;
 
-    dectab();
-    fd << tab() << endStr(name) << std::endl;
+    tab.dectab();
+    fd << tab.tab() << endStr(name) << std::endl;
 }

@@ -41,7 +41,7 @@ class IONameStringPair : public SAX2ElementHandler
         virtual void ElementChars(const wchar_t* ch);
         virtual void EndElement(const wchar_t* name, HandlerStack* handlerStack);
 
-        static void Write(MdfStream& fd, std::string name, NameStringPair* nameStringPair, Version* version);
+        static void Write(MdfStream& fd, std::string name, NameStringPair* nameStringPair, Version* version, MgTab& tab);
 
     private:
         NameStringPair* m_nameStringPair;

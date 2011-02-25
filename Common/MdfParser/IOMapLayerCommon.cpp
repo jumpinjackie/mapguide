@@ -51,35 +51,35 @@ void IOMapLayerCommon::ElementChars(const wchar_t* ch)
 }
 
 
-void IOMapLayerCommon::Write(MdfStream& fd, BaseMapLayer* baseMapLayer, Version* version)
+void IOMapLayerCommon::Write(MdfStream& fd, BaseMapLayer* baseMapLayer, Version* version, MgTab& tab)
 {
     // Property: Name
-    fd << tab() << "<Name>"; // NOXLATE
+    fd << tab.tab() << "<Name>"; // NOXLATE
     fd << EncodeString(baseMapLayer->GetName());
     fd << "</Name>" << std::endl; // NOXLATE
 
     // Property: ResourceId
-    fd << tab() << "<ResourceId>"; // NOXLATE
+    fd << tab.tab() << "<ResourceId>"; // NOXLATE
     fd << EncodeString(baseMapLayer->GetLayerResourceID());
     fd << "</ResourceId>" << std::endl; // NOXLATE
 
     // Property: Selectable
-    fd << tab() << "<Selectable>"; // NOXLATE
+    fd << tab.tab() << "<Selectable>"; // NOXLATE
     fd << BoolToStr(baseMapLayer->IsSelectable());
     fd << "</Selectable>" << std::endl; // NOXLATE
 
     // Property: ShowInLegend
-    fd << tab() << "<ShowInLegend>"; // NOXLATE
+    fd << tab.tab() << "<ShowInLegend>"; // NOXLATE
     fd << BoolToStr(baseMapLayer->IsShowInLegend());
     fd << "</ShowInLegend>" << std::endl; // NOXLATE
 
     // Property: LegendLabel
-    fd << tab() << "<LegendLabel>"; // NOXLATE
+    fd << tab.tab() << "<LegendLabel>"; // NOXLATE
     fd << EncodeString(baseMapLayer->GetLegendLabel());
     fd << "</LegendLabel>" << std::endl; // NOXLATE
 
     // Property: ExpandInLegend
-    fd << tab() << "<ExpandInLegend>"; // NOXLATE
+    fd << tab.tab() << "<ExpandInLegend>"; // NOXLATE
     fd << BoolToStr(baseMapLayer->IsExpandInLegend());
     fd << "</ExpandInLegend>" << std::endl; // NOXLATE
 }

@@ -68,7 +68,7 @@ void FSDSAX2Parser::Initialize()
 
 void FSDSAX2Parser::DisableTabs()
 {
-    disableTabs();
+    MgTab::disableTabs();
 }
 
 
@@ -178,11 +178,11 @@ void FSDSAX2Parser::WriteToFile(std::string name, FeatureSource* featureSource, 
     fd.open(name.c_str());
     if (fd.is_open())
     {
-        zerotab();
-        fd << tab() << "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" << std::endl; // NOXLATE
+        MgTab tab;
+        fd << tab.tab() << "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" << std::endl; // NOXLATE
 
         if (NULL != featureSource)
-            IOFeatureSource::Write(fd, featureSource, version);
+            IOFeatureSource::Write(fd, featureSource, version, tab);
     }
     fd.close();
 }
@@ -191,9 +191,10 @@ void FSDSAX2Parser::WriteToFile(std::string name, FeatureSource* featureSource, 
 std::string FSDSAX2Parser::SerializeToXML(FeatureSource* featureSource, Version* version)
 {
     MdfStringStream fd;
+    MgTab tab;
 
     if (NULL != featureSource)
-        IOFeatureSource::Write(fd, featureSource, version);
+        IOFeatureSource::Write(fd, featureSource, version, tab);
 
     return fd.str();
 }

@@ -39,7 +39,7 @@ class IOExtra : public SAX2ElementHandler
         virtual void ElementChars(const wchar_t* ch);
         virtual void EndElement(const wchar_t* name, HandlerStack* handlerStack);
 
-        static void WriteBox2D(MdfStream& fd, const Box2D& box2D, bool autoCorrect, Version* version);
+        static void WriteBox2D(MdfStream& fd, const Box2D& box2D, bool autoCorrect, Version* version, MgTab& tab);
 
     private:
         double m_minX;

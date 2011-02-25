@@ -178,7 +178,7 @@ bool IOMapDefinition::GetWatermarkDefinitionVersion(Version* mdfVersion, Version
 }
 
 
-void IOMapDefinition::Write(MdfStream& fd, MapDefinition* map, Version* version)
+void IOMapDefinition::Write(MdfStream& fd, MapDefinition* map, Version* version, MgTab& tab)
 {
     // verify the MDF version
     MdfString strVersion;
@@ -204,48 +204,48 @@ void IOMapDefinition::Write(MdfStream& fd, MapDefinition* map, Version* version)
     }
 
     if (!version || (*version > Version(1, 0, 0)))
-        fd << tab() << "<MapDefinition xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:noNamespaceSchemaLocation=\"MapDefinition-" << EncodeString(strVersion) << ".xsd\" version=\"" << EncodeString(strVersion) << "\">" << std::endl; // NOXLATE
+        fd << tab.tab() << "<MapDefinition xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:noNamespaceSchemaLocation=\"MapDefinition-" << EncodeString(strVersion) << ".xsd\" version=\"" << EncodeString(strVersion) << "\">" << std::endl; // NOXLATE
     else
-        fd << tab() << "<MapDefinition xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:noNamespaceSchemaLocation=\"MapDefinition-1.0.0.xsd\">" << std::endl; // NOXLATE
-    inctab();
+        fd << tab.tab() << "<MapDefinition xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:noNamespaceSchemaLocation=\"MapDefinition-1.0.0.xsd\">" << std::endl; // NOXLATE
+    tab.inctab();
 
     // Property: Name
-    fd << tab() << startStr(sName);
+    fd << tab.tab() << startStr(sName);
     fd << EncodeString(map->GetName());
     fd << endStr(sName) << std::endl;
 
     // Property: CoordinateSystem
-    fd << tab() << startStr(sCoordinateSystem);
+    fd << tab.tab() << startStr(sCoordinateSystem);
     fd << EncodeString(map->GetCoordinateSystem());
     fd << endStr(sCoordinateSystem) << std::endl;
 
     // Property: Extents
-    IOExtra::WriteBox2D(fd, map->GetExtents(), false, version);
+    IOExtra::WriteBox2D(fd, map->GetExtents(), false, version, tab);
 
     // Property: BackgroundColor
-    fd << tab() << startStr(sBackgroundColor);
+    fd << tab.tab() << startStr(sBackgroundColor);
     fd << EncodeString(map->GetBackgroundColor());
     fd << endStr(sBackgroundColor) << std::endl;
 
     // Property: Metadata
     if (!map->GetMetadata().empty())
     {
-        fd << tab() << startStr(sMetadata);
+        fd << tab.tab() << startStr(sMetadata);
         fd << EncodeString(map->GetMetadata());
         fd << endStr(sMetadata) << std::endl;
     }
 
     // Property: MapLayer
     for (int i=0; i<map->GetLayers()->GetCount(); ++i)
-        IOMapLayer::Write(fd, map->GetLayers()->GetAt(i), version);
+        IOMapLayer::Write(fd, map->GetLayers()->GetAt(i), version, tab);
 
     // Property: MapLayerGroup
     for (int i=0; i<map->GetLayerGroups()->GetCount(); ++i)
-        IOMapLayerGroup::Write(fd, map->GetLayerGroups()->GetAt(i), version);
+        IOMapLayerGroup::Write(fd, map->GetLayerGroups()->GetAt(i), version, tab);
 
     // Property: BaseMapDefinition
     if (map->GetFiniteDisplayScales()->GetCount() > 0)
-        IOBaseMapDefinition::Write(fd, map, version);
+        IOBaseMapDefinition::Write(fd, map, version, tab);
 
     // Property: Watermarks (optional)
     int watermarkCount = map->GetWatermarks()->GetCount();
@@ -254,19 +254,19 @@ void IOMapDefinition::Write(MdfStream& fd, MapDefinition* map, Version* version)
         // only write Watermarks if the MDF version is 2.3.0 or greater
         if (!version || (*version >= Version(2, 3, 0)))
         {
-            fd << tab() << startStr(sWatermarks) << std::endl;
-            inctab();
+            fd << tab.tab() << startStr(sWatermarks) << std::endl;
+            tab.inctab();
             for (int i=0; i<watermarkCount; ++i)
-                IOWatermarkInstance::Write(fd, map->GetWatermarks()->GetAt(i), version);
-            dectab();
-            fd << tab() << endStr(sWatermarks) << std::endl;
+                IOWatermarkInstance::Write(fd, map->GetWatermarks()->GetAt(i), version, tab);
+            tab.dectab();
+            fd << tab.tab() << endStr(sWatermarks) << std::endl;
         }
     }
 
     // Write any unknown XML / extended data
     if (!version || (*version >= Version(2, 3, 0)))
-        IOUnknown::Write(fd, map->GetUnknownXml(), version);
+        IOUnknown::Write(fd, map->GetUnknownXml(), version, tab);
 
-    dectab();
-    fd << tab() << "</MapDefinition>" << std::endl; // NOXLATE
+    tab.dectab();
+    fd << tab.tab() << "</MapDefinition>" << std::endl; // NOXLATE
 }

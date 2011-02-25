@@ -40,7 +40,7 @@ class IOGridColor : public SAX2ElementHandler
         virtual void ElementChars(const wchar_t* ch);
         virtual void EndElement(const wchar_t* name, HandlerStack* handlerStack);
 
-        static void Write(MdfStream& fd, GridColor* color, Version* version);
+        static void Write(MdfStream& fd, GridColor* color, Version* version, MgTab& tab);
 
     protected:
         GridColorRule* m_colorRule;
@@ -58,7 +58,7 @@ class IOGridColorBands : public IOGridColor
         virtual void ElementChars(const wchar_t* ch);
         virtual void EndElement(const wchar_t* name, HandlerStack* handlerStack);
 
-        static void Write(MdfStream& fd, GridColorBands* colorBands, Version* version);
+        static void Write(MdfStream& fd, GridColorBands* colorBands, Version* version, MgTab& tab);
 
     private:
         GridColorBands* m_colorBands;

@@ -110,26 +110,26 @@ void IOPrintLayoutElementDefinition::EndElement(const wchar_t* name, HandlerStac
     }
 }
 
-void IOPrintLayoutElementDefinition::Write(MdfStream& fd, PrintLayoutElementDefinition* layoutElemDef, Version* version)
+void IOPrintLayoutElementDefinition::Write(MdfStream& fd, PrintLayoutElementDefinition* layoutElemDef, Version* version, MgTab& tab)
 {
     _ASSERT(NULL != layoutElemDef);
 
     // Property: Description
-    fd << tab() << startStr(sDescription);
+    fd << tab.tab() << startStr(sDescription);
     fd << EncodeString(layoutElemDef->GetDescription());
     fd << endStr(sDescription) << std::endl;
 
     // Property: ResourceId
-    fd << tab() << startStr(sResourceId);
+    fd << tab.tab() << startStr(sResourceId);
     fd << EncodeString(layoutElemDef->GetResourceId());
     fd << endStr(sResourceId) << std::endl;
 
     // Property: Stylization
-    IOStylizationConfiguration::Write(fd, layoutElemDef->GetStylizationConfiguration(), version);
+    IOStylizationConfiguration::Write(fd, layoutElemDef->GetStylizationConfiguration(), version, tab);
 
     // Property: Data
-    IODataConfiguration::Write(fd, layoutElemDef->GetDataConfiguration(), version);
+    IODataConfiguration::Write(fd, layoutElemDef->GetDataConfiguration(), version, tab);
 
     // Write any unknown XML / extended data
-    IOUnknown::Write(fd, layoutElemDef->GetUnknownXml(), version);
+    IOUnknown::Write(fd, layoutElemDef->GetUnknownXml(), version, tab);
 }

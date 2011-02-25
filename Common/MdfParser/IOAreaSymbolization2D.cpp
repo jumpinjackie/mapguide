@@ -121,25 +121,25 @@ void IOAreaSymbolization2D::EndElement(const wchar_t* name, HandlerStack* handle
 }
 
 
-void IOAreaSymbolization2D::Write(MdfStream& fd, AreaSymbolization2D* areaSymbolization, Version* version)
+void IOAreaSymbolization2D::Write(MdfStream& fd, AreaSymbolization2D* areaSymbolization, Version* version, MgTab& tab)
 {
-    fd << tab() << startStr(sAreaSymbolization2D) << std::endl;
-    inctab();
+    fd << tab.tab() << startStr(sAreaSymbolization2D) << std::endl;
+    tab.inctab();
 
     if (areaSymbolization)
     {
         // Property: Fill
         if (areaSymbolization->GetFill())
-            IOFill::Write(fd, areaSymbolization->GetFill(), version);
+            IOFill::Write(fd, areaSymbolization->GetFill(), version, tab);
 
         // Property: Stroke
         if (areaSymbolization->GetEdge())
-            IOStroke::Write(fd, areaSymbolization->GetEdge(), sStroke, version);
+            IOStroke::Write(fd, areaSymbolization->GetEdge(), sStroke, version, tab);
 
         // Write any unknown XML / extended data
-        IOUnknown::Write(fd, areaSymbolization->GetUnknownXml(), version);
+        IOUnknown::Write(fd, areaSymbolization->GetUnknownXml(), version, tab);
     }
 
-    dectab();
-    fd << tab() << endStr(sAreaSymbolization2D) << std::endl;
+    tab.dectab();
+    fd << tab.tab() << endStr(sAreaSymbolization2D) << std::endl;
 }

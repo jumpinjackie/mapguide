@@ -36,12 +36,12 @@ class MDFPARSER_API IOUnknown : public SAX2ElementHandler
         virtual void ElementChars(const wchar_t* ch);
         virtual void EndElement(const wchar_t* name, HandlerStack* handlerStack);
 
-        static void Write(MdfStream& fd, const std::wstring& unkData, Version* version);
-        static void Write(MdfStream& fd, const std::wstring& unkData, const std::string& rawData, Version* version);
+        static void Write(MdfStream& fd, const std::wstring& unkData, Version* version, MgTab& tab);
+        static void Write(MdfStream& fd, const std::wstring& unkData, const std::string& rawData, Version* version, MgTab& tab);
 
     private:
         static void WriteRaw(MdfStream& fd, const std::string& rawData);
-        static void WriteUnknown(MdfStream& fd, const std::wstring& unkData);
+        static void WriteUnknown(MdfStream& fd, const std::wstring& unkData, MgTab& tab);
 
     private:
         std::wstring* m_xml;

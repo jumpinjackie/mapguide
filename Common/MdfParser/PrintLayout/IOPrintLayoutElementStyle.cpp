@@ -89,21 +89,21 @@ void IOPrintLayoutElementStyle::EndElement(const wchar_t* name, HandlerStack* ha
     }
 }
 
-void IOPrintLayoutElementStyle::Write(MdfStream& fd, PrintLayoutElementStyle* layoutElemStyle, Version* version, const std::string& name)
+void IOPrintLayoutElementStyle::Write(MdfStream& fd, PrintLayoutElementStyle* layoutElemStyle, Version* version, const std::string& name, MgTab& tab)
 {
     _ASSERT(NULL != layoutElemStyle);
 
-    fd << tab() << startStr(name) << std::endl;
-    inctab();
+    fd << tab.tab() << startStr(name) << std::endl;
+    tab.inctab();
 
     // Property: Name
-    fd << tab() << startStr(sName);
+    fd << tab.tab() << startStr(sName);
     fd << EncodeString(layoutElemStyle->GetName());
     fd << endStr(sName) << std::endl;
 
     // Write any unknown XML / extended data
-    IOUnknown::Write(fd, layoutElemStyle->GetUnknownXml(), version);
+    IOUnknown::Write(fd, layoutElemStyle->GetUnknownXml(), version, tab);
 
-    dectab();
-    fd << tab() << endStr(name) << std::endl;
+    tab.dectab();
+    fd << tab.tab() << endStr(name) << std::endl;
 }

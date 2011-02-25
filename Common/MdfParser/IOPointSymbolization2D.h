@@ -40,7 +40,7 @@ class IOPointSymbolization2D : public SAX2ElementHandler
         virtual void ElementChars(const wchar_t* ch);
         virtual void EndElement(const wchar_t* name, HandlerStack* handlerStack);
 
-        static void Write(MdfStream& fd, PointSymbolization2D* pointSymbolization2D, Version* version);
+        static void Write(MdfStream& fd, PointSymbolization2D* pointSymbolization2D, Version* version, MgTab& tab);
 
     private:
         PointSymbolization2D* m_pointSymbolization2D;

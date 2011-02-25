@@ -36,7 +36,7 @@ class IOImageSymbol : public IOSymbol
         virtual void ElementChars(const wchar_t* ch);
         virtual void EndElement(const wchar_t* name, HandlerStack* handlerStack);
 
-        static void Write(MdfStream& fd, ImageSymbol* imageSymbol, Version* version);
+        static void Write(MdfStream& fd, ImageSymbol* imageSymbol, Version* version, MgTab& tab);
 
     private:
         IOResourceRef* m_ioResourceRef;

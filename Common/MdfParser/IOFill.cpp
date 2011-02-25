@@ -107,29 +107,29 @@ void IOFill::EndElement(const wchar_t* name, HandlerStack* handlerStack)
 }
 
 
-void IOFill::Write(MdfStream& fd, Fill* fill, Version* version)
+void IOFill::Write(MdfStream& fd, Fill* fill, Version* version, MgTab& tab)
 {
-    fd << tab() << startStr(sFill) << std::endl;
-    inctab();
+    fd << tab.tab() << startStr(sFill) << std::endl;
+    tab.inctab();
 
     // Property: FillPattern
-    fd << tab() << startStr(sFillPattern);
+    fd << tab.tab() << startStr(sFillPattern);
     fd << EncodeString(fill->GetFillPattern());
     fd << endStr(sFillPattern) << std::endl;
 
     // Property: ForegroundColor
-    fd << tab() << startStr(sForegroundColor);
+    fd << tab.tab() << startStr(sForegroundColor);
     fd << EncodeString(fill->GetForegroundColor());
     fd << endStr(sForegroundColor) << std::endl;
 
     // Property: BackgroundColor
-    fd << tab() << startStr(sBackgroundColor);
+    fd << tab.tab() << startStr(sBackgroundColor);
     fd << EncodeString(fill->GetBackgroundColor());
     fd << endStr(sBackgroundColor) << std::endl;
 
     // Write any unknown XML / extended data
-    IOUnknown::Write(fd, fill->GetUnknownXml(), version);
+    IOUnknown::Write(fd, fill->GetUnknownXml(), version, tab);
 
-    dectab();
-    fd << tab() << endStr(sFill) << std::endl;
+    tab.dectab();
+    fd << tab.tab() << endStr(sFill) << std::endl;
 }

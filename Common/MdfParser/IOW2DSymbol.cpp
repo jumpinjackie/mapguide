@@ -135,20 +135,20 @@ void IOW2DSymbol::EndElement(const wchar_t* name, HandlerStack* handlerStack)
 }
 
 
-void IOW2DSymbol::Write(MdfStream& fd, W2DSymbol* symbol, Version* version)
+void IOW2DSymbol::Write(MdfStream& fd, W2DSymbol* symbol, Version* version, MgTab& tab)
 {
-    fd << tab() << startStr(sW2D) << std::endl;
-    inctab();
+    fd << tab.tab() << startStr(sW2D) << std::endl;
+    tab.inctab();
 
-    IOSymbol::Write(fd, symbol, version);
+    IOSymbol::Write(fd, symbol, version, tab);
 
     // Property: W2DSymbol
-    IOResourceRef::Write(fd, sW2DSymbol, symbol->GetSymbolLibrary(), symbol->GetSymbolName(), true, version);
+    IOResourceRef::Write(fd, sW2DSymbol, symbol->GetSymbolLibrary(), symbol->GetSymbolName(), true, version, tab);
 
     // Property: FillColor
     if (!symbol->GetFillColor().empty())
     {
-        fd << tab() << startStr(sFillColor);
+        fd << tab.tab() << startStr(sFillColor);
         fd << EncodeString(symbol->GetFillColor());
         fd << endStr(sFillColor) << std::endl;
     }
@@ -156,7 +156,7 @@ void IOW2DSymbol::Write(MdfStream& fd, W2DSymbol* symbol, Version* version)
     // Property: LineColor
     if (!symbol->GetLineColor().empty())
     {
-        fd << tab() << startStr(sLineColor);
+        fd << tab.tab() << startStr(sLineColor);
         fd << EncodeString(symbol->GetLineColor());
         fd << endStr(sLineColor) << std::endl;
     }
@@ -164,14 +164,14 @@ void IOW2DSymbol::Write(MdfStream& fd, W2DSymbol* symbol, Version* version)
     // Property: TextColor
     if (!symbol->GetTextColor().empty())
     {
-        fd << tab() << startStr(sTextColor);
+        fd << tab.tab() << startStr(sTextColor);
         fd << EncodeString(symbol->GetTextColor());
         fd << endStr(sTextColor) << std::endl;
     }
 
     // Write any unknown XML / extended data
-    IOUnknown::Write(fd, symbol->GetUnknownXml(), version);
+    IOUnknown::Write(fd, symbol->GetUnknownXml(), version, tab);
 
-    dectab();
-    fd << tab() << endStr(sW2D) << std::endl;
+    tab.dectab();
+    fd << tab.tab() << endStr(sW2D) << std::endl;
 }

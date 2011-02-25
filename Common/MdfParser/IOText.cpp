@@ -103,71 +103,71 @@ void IOText::ElementChars(const wchar_t* ch)
 }
 
 
-void IOText::Write(MdfStream& fd, Text* text, Version* version)
+void IOText::Write(MdfStream& fd, Text* text, Version* version, MgTab& tab)
 {
-    fd << tab() << "<Text>" << std::endl; // NOXLATE
-    inctab();
+    fd << tab.tab() << "<Text>" << std::endl; // NOXLATE
+    tab.inctab();
 
     MdfStringStream fdExtData;
 
-    IOGraphicElement::Write(fd, text, version);
+    IOGraphicElement::Write(fd, text, version, tab);
 
-    EMIT_STRING_PROPERTY(fd, text, Content, false, NULL)
-    EMIT_STRING_PROPERTY(fd, text, FontName, false, NULL)
-    EMIT_BOOL_PROPERTY(fd, text, Bold, true, false)                           // default is false
-    EMIT_BOOL_PROPERTY(fd, text, Italic, true, false)                         // default is false
-    EMIT_BOOL_PROPERTY(fd, text, Underlined, true, false)                     // default is false
+    EMIT_STRING_PROPERTY(fd, text, Content, false, NULL, tab)
+    EMIT_STRING_PROPERTY(fd, text, FontName, false, NULL, tab)
+    EMIT_BOOL_PROPERTY(fd, text, Bold, true, false, tab)                           // default is false
+    EMIT_BOOL_PROPERTY(fd, text, Italic, true, false, tab)                         // default is false
+    EMIT_BOOL_PROPERTY(fd, text, Underlined, true, false, tab)                     // default is false
 
     if (!version || (*version >= Version(1, 1, 0)))
     {
-        EMIT_BOOL_PROPERTY(fd, text, Overlined, true, false)                  // default is false
-        EMIT_DOUBLE_PROPERTY(fd, text, ObliqueAngle, true, 0.0)               // default is 0.0
-        EMIT_DOUBLE_PROPERTY(fd, text, TrackSpacing, true, 1.0)               // default is 1.0
+        EMIT_BOOL_PROPERTY(fd, text, Overlined, true, false, tab)                  // default is false
+        EMIT_DOUBLE_PROPERTY(fd, text, ObliqueAngle, true, 0.0, tab)               // default is 0.0
+        EMIT_DOUBLE_PROPERTY(fd, text, TrackSpacing, true, 1.0, tab)               // default is 1.0
     }
     else if (*version == Version(1, 0, 0))
     {
         // save new properties as extended data for symbol definition version 1.0.0
-        inctab();
+        tab.inctab();
 
-        EMIT_BOOL_PROPERTY(fdExtData, text, Overlined, true, false)           // default is false
-        EMIT_DOUBLE_PROPERTY(fdExtData, text, ObliqueAngle, true, 0.0)        // default is 0.0
-        EMIT_DOUBLE_PROPERTY(fdExtData, text, TrackSpacing, true, 1.0)        // default is 1.0
+        EMIT_BOOL_PROPERTY(fdExtData, text, Overlined, true, false, tab)           // default is false
+        EMIT_DOUBLE_PROPERTY(fdExtData, text, ObliqueAngle, true, 0.0, tab)        // default is 0.0
+        EMIT_DOUBLE_PROPERTY(fdExtData, text, TrackSpacing, true, 1.0, tab)        // default is 1.0
 
-        dectab();
+        tab.dectab();
     }
 
-    EMIT_DOUBLE_PROPERTY(fd, text, Height, true, 4.0)                         // default is 4.0
-    EMIT_BOOL_PROPERTY(fd, text, HeightScalable, true, true)                  // default is true
-    EMIT_DOUBLE_PROPERTY(fd, text, Angle, true, 0.0)                          // default is 0.0
-    EMIT_DOUBLE_PROPERTY(fd, text, PositionX, true, 0.0)                      // default is 0.0
-    EMIT_DOUBLE_PROPERTY(fd, text, PositionY, true, 0.0)                      // default is 0.0
-    EMIT_STRING_PROPERTY(fd, text, HorizontalAlignment, true, Text::sHAlignmentDefault)
-    EMIT_STRING_PROPERTY(fd, text, VerticalAlignment, true, Text::sVAlignmentDefault)
-    EMIT_STRING_PROPERTY(fd, text, Justification, true, Text::sJustificationDefault)
-    EMIT_DOUBLE_PROPERTY(fd, text, LineSpacing, true, 1.05)                   // default is 1.05
-    EMIT_STRING_PROPERTY(fd, text, TextColor, true, L"ff000000")              // default is ff000000
-    EMIT_STRING_PROPERTY(fd, text, GhostColor, true, L"")                     // default is empty string
+    EMIT_DOUBLE_PROPERTY(fd, text, Height, true, 4.0, tab)                         // default is 4.0
+    EMIT_BOOL_PROPERTY(fd, text, HeightScalable, true, true, tab)                  // default is true
+    EMIT_DOUBLE_PROPERTY(fd, text, Angle, true, 0.0, tab)                          // default is 0.0
+    EMIT_DOUBLE_PROPERTY(fd, text, PositionX, true, 0.0, tab)                      // default is 0.0
+    EMIT_DOUBLE_PROPERTY(fd, text, PositionY, true, 0.0, tab)                      // default is 0.0
+    EMIT_STRING_PROPERTY(fd, text, HorizontalAlignment, true, Text::sHAlignmentDefault, tab)
+    EMIT_STRING_PROPERTY(fd, text, VerticalAlignment, true, Text::sVAlignmentDefault, tab)
+    EMIT_STRING_PROPERTY(fd, text, Justification, true, Text::sJustificationDefault, tab)
+    EMIT_DOUBLE_PROPERTY(fd, text, LineSpacing, true, 1.05, tab)                   // default is 1.05
+    EMIT_STRING_PROPERTY(fd, text, TextColor, true, L"ff000000", tab)              // default is ff000000
+    EMIT_STRING_PROPERTY(fd, text, GhostColor, true, L"", tab)                     // default is empty string
 
     if (text->GetFrame())
-        IOTextFrame::Write(fd, text->GetFrame(), version);
+        IOTextFrame::Write(fd, text->GetFrame(), version, tab);
 
     if (!version || (*version >= Version(1, 1, 0)))
     {
-        EMIT_STRING_PROPERTY(fd, text, Markup, true, Text::sMarkupDefault)
+        EMIT_STRING_PROPERTY(fd, text, Markup, true, Text::sMarkupDefault, tab)
     }
     else if (*version == Version(1, 0, 0))
     {
         // save new property as extended data for symbol definition version 1.0.0
-        inctab();
+        tab.inctab();
 
-        EMIT_STRING_PROPERTY(fdExtData, text, Markup, true, Text::sMarkupDefault)
+        EMIT_STRING_PROPERTY(fdExtData, text, Markup, true, Text::sMarkupDefault, tab)
 
-        dectab();
+        tab.dectab();
     }
 
     // Write the unknown XML / extended data
-    IOUnknown::Write(fd, text->GetUnknownXml(), fdExtData.str(), version);
+    IOUnknown::Write(fd, text->GetUnknownXml(), fdExtData.str(), version, tab);
 
-    dectab();
-    fd << tab() << "</Text>" << std::endl; // NOXLATE
+    tab.dectab();
+    fd << tab.tab() << "</Text>" << std::endl; // NOXLATE
 }

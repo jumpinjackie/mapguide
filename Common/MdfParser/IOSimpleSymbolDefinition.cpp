@@ -115,7 +115,7 @@ void IOSimpleSymbolDefinition::EndElement(const wchar_t* name, HandlerStack* han
 }
 
 
-void IOSimpleSymbolDefinition::Write(MdfStream& fd, SimpleSymbolDefinition* symbolDefinition, bool writeAsRootElement, Version* version)
+void IOSimpleSymbolDefinition::Write(MdfStream& fd, SimpleSymbolDefinition* symbolDefinition, bool writeAsRootElement, Version* version, MgTab& tab)
 {
     if (writeAsRootElement)
     {
@@ -142,34 +142,34 @@ void IOSimpleSymbolDefinition::Write(MdfStream& fd, SimpleSymbolDefinition* symb
             strVersion = L"1.1.0";
         }
 
-        fd << tab() << "<SimpleSymbolDefinition xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:noNamespaceSchemaLocation=\"SymbolDefinition-" << EncodeString(strVersion) << ".xsd\" version=\"" << EncodeString(strVersion) << "\">" << std::endl; // NOXLATE
+        fd << tab.tab() << "<SimpleSymbolDefinition xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:noNamespaceSchemaLocation=\"SymbolDefinition-" << EncodeString(strVersion) << ".xsd\" version=\"" << EncodeString(strVersion) << "\">" << std::endl; // NOXLATE
     }
     else
-        fd << tab() << "<SimpleSymbolDefinition>" << std::endl; // NOXLATE
-    inctab();
+        fd << tab.tab() << "<SimpleSymbolDefinition>" << std::endl; // NOXLATE
+    tab.inctab();
 
-    EMIT_STRING_PROPERTY(fd, symbolDefinition, Name, false, NULL)
-    EMIT_STRING_PROPERTY(fd, symbolDefinition, Description, true, L"") // default is empty string
+    EMIT_STRING_PROPERTY(fd, symbolDefinition, Name, false, NULL, tab)
+    EMIT_STRING_PROPERTY(fd, symbolDefinition, Description, true, L"", tab) // default is empty string
 
-    IOGraphicElementCollection::Write(fd, symbolDefinition->GetGraphics(), version);
+    IOGraphicElementCollection::Write(fd, symbolDefinition->GetGraphics(), version, tab);
 
     if (symbolDefinition->GetResizeBox())
-        IOResizeBox::Write(fd, symbolDefinition->GetResizeBox(), version);
+        IOResizeBox::Write(fd, symbolDefinition->GetResizeBox(), version, tab);
 
     if (symbolDefinition->GetPointUsage())
-        IOPointUsage::Write(fd, symbolDefinition->GetPointUsage(), version);
+        IOPointUsage::Write(fd, symbolDefinition->GetPointUsage(), version, tab);
 
     if (symbolDefinition->GetLineUsage())
-        IOLineUsage::Write(fd, symbolDefinition->GetLineUsage(), version);
+        IOLineUsage::Write(fd, symbolDefinition->GetLineUsage(), version, tab);
 
     if (symbolDefinition->GetAreaUsage())
-        IOAreaUsage::Write(fd, symbolDefinition->GetAreaUsage(), version);
+        IOAreaUsage::Write(fd, symbolDefinition->GetAreaUsage(), version, tab);
 
-    IOParameterCollection::Write(fd, symbolDefinition->GetParameterDefinition(), version);
+    IOParameterCollection::Write(fd, symbolDefinition->GetParameterDefinition(), version, tab);
 
     // Write any unknown XML / extended data
-    IOUnknown::Write(fd, symbolDefinition->GetUnknownXml(), version);
+    IOUnknown::Write(fd, symbolDefinition->GetUnknownXml(), version, tab);
 
-    dectab();
-    fd << tab() << "</SimpleSymbolDefinition>" << std::endl; // NOXLATE
+    tab.dectab();
+    fd << tab.tab() << "</SimpleSymbolDefinition>" << std::endl; // NOXLATE
 }

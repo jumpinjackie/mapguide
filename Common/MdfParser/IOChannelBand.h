@@ -38,7 +38,7 @@ class IOChannelBand : public SAX2ElementHandler
         virtual void ElementChars(const wchar_t* ch);
         virtual void EndElement(const wchar_t* name, HandlerStack* handlerStack);
 
-        static void Write(MdfStream& fd, const ChannelBand* channel, std::string name, Version* version);
+        static void Write(MdfStream& fd, const ChannelBand* channel, std::string name, Version* version, MgTab& tab);
 
     private:
         ChannelBand* m_channel;

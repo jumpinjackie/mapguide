@@ -241,39 +241,39 @@ void IOLabel::EndElement(const wchar_t* name, HandlerStack* handlerStack)
 }
 
 
-void IOLabel::Write(MdfStream& fd, Label* label, Version* version)
+void IOLabel::Write(MdfStream& fd, Label* label, Version* version, MgTab& tab)
 {
     TextSymbol* symbol = label->GetSymbol();
 
     if (symbol)
     {
-        fd << tab() << startStr(sLabel) << std::endl;
-        inctab();
+        fd << tab.tab() << startStr(sLabel) << std::endl;
+        tab.inctab();
 
-        IOSymbol::Write(fd, symbol, version);
+        IOSymbol::Write(fd, symbol, version, tab);
 
         // Property: Text
-        fd << tab() << startStr(sText);
+        fd << tab.tab() << startStr(sText);
         fd << EncodeString(symbol->GetText());
         fd << endStr(sText) << std::endl;
 
         // Property: FontName
-        fd << tab() << startStr(sFontName);
+        fd << tab.tab() << startStr(sFontName);
         fd << EncodeString(symbol->GetFontName());
         fd << endStr(sFontName) << std::endl;
 
         // Property: ForegroundColor
-        fd << tab() << startStr(sForegroundColor);
+        fd << tab.tab() << startStr(sForegroundColor);
         fd << EncodeString(symbol->GetForegroundColor());
         fd << endStr(sForegroundColor) << std::endl;
 
         // Property: BackgroundColor
-        fd << tab() << startStr(sBackgroundColor);
+        fd << tab.tab() << startStr(sBackgroundColor);
         fd << EncodeString(symbol->GetBackgroundColor());
         fd << endStr(sBackgroundColor) << std::endl;
 
         // Property: BackgroundStyle
-        fd << tab() << startStr(sBackgroundStyle);
+        fd << tab.tab() << startStr(sBackgroundStyle);
         if (symbol->GetBackgroundStyle() == TextSymbol::Transparent)
             fd << "Transparent"; // NOXLATE
         else if (symbol->GetBackgroundStyle() == TextSymbol::Opaque)
@@ -285,7 +285,7 @@ void IOLabel::Write(MdfStream& fd, Label* label, Version* version)
         // Property: HorizontalAlignment
         if (symbol->GetHorizontalAlignment() != L"'Center'") // NOXLATE
         {
-            fd << tab() << startStr(sHorizontalAlignment);
+            fd << tab.tab() << startStr(sHorizontalAlignment);
             fd << EncodeString(symbol->GetHorizontalAlignment());
             fd << endStr(sHorizontalAlignment) << std::endl;
         }
@@ -293,7 +293,7 @@ void IOLabel::Write(MdfStream& fd, Label* label, Version* version)
         // Property: VerticalAlignment
         if (symbol->GetVerticalAlignment() != L"'Baseline'") // NOXLATE
         {
-            fd << tab() << startStr(sVerticalAlignment);
+            fd << tab.tab() << startStr(sVerticalAlignment);
             fd << EncodeString(symbol->GetVerticalAlignment());
             fd << endStr(sVerticalAlignment) << std::endl;
         }
@@ -301,7 +301,7 @@ void IOLabel::Write(MdfStream& fd, Label* label, Version* version)
         // Property: Bold
         if (wstrToBool(symbol->GetBold().c_str()))
         {
-            fd << tab() << startStr(sBold);
+            fd << tab.tab() << startStr(sBold);
             fd << BoolToStr(true);
             fd << endStr(sBold) << std::endl;
         }
@@ -309,7 +309,7 @@ void IOLabel::Write(MdfStream& fd, Label* label, Version* version)
         // Property: Italic
         if (wstrToBool(symbol->GetItalic().c_str()))
         {
-            fd << tab() << startStr(sItalic);
+            fd << tab.tab() << startStr(sItalic);
             fd << BoolToStr(true);
             fd << endStr(sItalic) << std::endl;
         }
@@ -317,24 +317,24 @@ void IOLabel::Write(MdfStream& fd, Label* label, Version* version)
         // Property: Underlined
         if (wstrToBool(symbol->GetUnderlined().c_str()))
         {
-            fd << tab() << startStr(sUnderlined);
+            fd << tab.tab() << startStr(sUnderlined);
             fd << BoolToStr(true);
             fd << endStr(sUnderlined) << std::endl;
         }
 
         // Property: AdvancedPlacement
-        fd << tab() << startStr(sAdvancedPlacement) << std::endl;
-        inctab();
-        fd << tab() << startStr(sScaleLimit);
+        fd << tab.tab() << startStr(sAdvancedPlacement) << std::endl;
+        tab.inctab();
+        fd << tab.tab() << startStr(sScaleLimit);
         fd << DoubleToStr(symbol->GetScaleLimit());
         fd << endStr(sScaleLimit) << std::endl;
-        dectab();
-        fd << tab() << endStr(sAdvancedPlacement) << std::endl;
+        tab.dectab();
+        fd << tab.tab() << endStr(sAdvancedPlacement) << std::endl;
 
         // Write any unknown XML / extended data
-        IOUnknown::Write(fd, label->GetUnknownXml(), version);
+        IOUnknown::Write(fd, label->GetUnknownXml(), version, tab);
 
-        dectab();
-        fd << tab() << endStr(sLabel) << std::endl;
+        tab.dectab();
+        fd << tab.tab() << endStr(sLabel) << std::endl;
     }
 }

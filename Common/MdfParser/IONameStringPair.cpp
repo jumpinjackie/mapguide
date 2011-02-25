@@ -141,24 +141,24 @@ void IONameStringPair::EndElement(const wchar_t* name, HandlerStack* handlerStac
 }
 
 
-void IONameStringPair::Write(MdfStream& fd, std::string name, NameStringPair* nameStringPair, Version* version)
+void IONameStringPair::Write(MdfStream& fd, std::string name, NameStringPair* nameStringPair, Version* version, MgTab& tab)
 {
-    fd << tab() << startStr(name) << std::endl;
-    inctab();
+    fd << tab.tab() << startStr(name) << std::endl;
+    tab.inctab();
 
     // Property: Name
-    fd << tab() << startStr(sName);
+    fd << tab.tab() << startStr(sName);
     fd << EncodeString(nameStringPair->GetName());
     fd << endStr(sName) << std::endl;
 
     // Property: Value
-    fd << tab() << startStr(sValue);
+    fd << tab.tab() << startStr(sValue);
     fd << EncodeString(nameStringPair->GetValue());
     fd << endStr(sValue) << std::endl;
 
     // Write any unknown XML / extended data
-    IOUnknown::Write(fd, nameStringPair->GetUnknownXml(), version);
+    IOUnknown::Write(fd, nameStringPair->GetUnknownXml(), version, tab);
 
-    dectab();
-    fd << tab() << endStr(name) << std::endl;
+    tab.dectab();
+    fd << tab.tab() << endStr(name) << std::endl;
 }
