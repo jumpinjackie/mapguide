@@ -214,7 +214,19 @@ void SE_PositioningAlgorithms::EightSurrounding(SE_ApplyContext* applyCtx,
     // TODO: remove this assumption
     const RS_F_Point* cfpts = se_renderer->GetLastSymbolExtent();
     RS_F_Point fpts[4];
-    memcpy(fpts, cfpts, 4*sizeof(RS_F_Point));
+    if(cfpts[0].x == 0 && cfpts[0].y == 0 &&
+        cfpts[1].x == 0 && cfpts[1].y == 0 &&
+        cfpts[2].x == 0 && cfpts[2].y == 0 &&
+        cfpts[3].x == 0 && cfpts[3].y == 0)
+    {
+        for (int i=0; i<4; ++i)
+        {
+            fpts[i].x = cx;
+            fpts[i].y = cy;
+        }
+    }
+    else
+        memcpy(fpts, cfpts, 4*sizeof(RS_F_Point));
 
     double dx = fpts[1].x - fpts[0].x;
     double dy = fpts[1].y - fpts[0].y;
