@@ -6,6 +6,7 @@
 MapGuide Developer's Guide
 ==========================
 
+*Version 2.0*
 
 Contents
 ========
@@ -13,6 +14,7 @@ Contents
 .. toctree::
    :maxdepth: 4
    
+   revision_history
    introduction
    mapguide_ajax_viewer
    interacting_with_layers
