@@ -12,3 +12,12 @@ Digitizing
 
 Redlining
 ---------
+
+Passing Coordinates
+^^^^^^^^^^^^^^^^^^^
+
+Creating a Feature Source
+^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Create a Layer
+^^^^^^^^^^^^^^

@@ -10,7 +10,7 @@ Introduction
 .. todo::
     Remove reference to DWF viewer. It is deprecated
 
-.. note::
+.. tip::
 
     The *Hello Viewer* sample, in the Developer's Guide samples, demonstrates
     concepts from this chapter.

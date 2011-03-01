@@ -11,7 +11,7 @@ Contents
 ========
 
 .. toctree::
-   :maxdepth: 3
+   :maxdepth: 4
    
    introduction
    mapguide_ajax_viewer
