@@ -189,7 +189,7 @@ it in the repository yourself. To do this, your page must
  
 For example, the following section of code creates an ``MgMap`` named ``Sheboygan.Map``, based on ``Sheboygan.MapDefinition``.
 
-PHP
+**PHP**
 
 .. highlight:: php
 .. code-block:: php
@@ -201,7 +201,7 @@ PHP
     $mapId = new MgResourceIdentifier("Session:$sessionId//$mapName." . MgResourceType::Map);
     $map->Save($resourceService, $mapId);
 
-.net (C#)
+**.net (C#)**
 
 .. highlight:: csharp
 .. code-block:: csharp
@@ -215,7 +215,7 @@ PHP
     MgResourceIdentifier mapId = new MgResourceIdentifier("Session:$sessionId//$mapName." + MgResourceType.Map);
     map.Save(resourceService, mapId);
     
-Java
+**Java**
     
 .. highlight:: java
 .. code-block:: java
@@ -278,7 +278,7 @@ The following example displays a web layout using the AJAX Viewer. It
 performs some basic initialization and creates a session, then displays a Viewer
 page using the session identifier and the web layout.
 
-PHP
+**PHP**
 
 .. highlight:: php
 .. code-block:: php
@@ -314,14 +314,14 @@ PHP
     </body>
     </html>
     
-.net (C#)
+**.net (C#)**
 
 .. highlight:: csharp
 .. code-block:: csharp
 
     Code sample coming soon!
 
-Java
+**Java**
 
 .. highlight:: java
 .. code-block:: java
@@ -441,7 +441,7 @@ in the Viewer.
     This sample is very similar to the ``Hello Map`` sample in the Developer's Guide
     samples.
 
-PHP
+**PHP**
 
 .. highlight:: php
 .. code-block:: php
@@ -500,14 +500,14 @@ PHP
         </body>
     </html>
 
-.net (C#)
+**.net (C#)**
 
 .. highlight:: csharp
 .. code-block:: csharp
 
     Code sample coming soon!
 
-Java
+**Java**
 
 .. highlight:: java
 .. code-block:: java
@@ -590,7 +590,7 @@ Before a page can use a service, it must open a site connection and create an
 instance of the necessary service type. The following example creates a resource
 service and a feature service:
 
-PHP
+**PHP**
 
 .. highlight:: php
 .. code-block:: php
@@ -601,7 +601,7 @@ PHP
     $resourceService = $siteConnection->CreateService(MgServiceType::ResourceService);
     $featureService = $siteConnection->CreateService(MgServiceType::FeatureService);
     
-.net (C#)
+**.net (C#)**
 
 .. highlight:: csharp
 .. code-block:: csharp
@@ -614,7 +614,7 @@ PHP
     MgResourceService resourceService = (MgResourceService)siteConnection.CreateService(MgServiceType.ResourceService);
     MgFeatureService featureService = (MgFeatureService)siteConnection.CreateService(MgServiceType.FeatureService);
 
-Java
+**Java**
 
 .. highlight:: java
 .. code-block:: java
