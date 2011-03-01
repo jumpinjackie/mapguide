@@ -7,16 +7,16 @@ Introduction
 What This Guide Covers
 ----------------------
 
-.. todo::
-    Update Web Studio references to MapGuide Maestro
-
 This guide describes how to use the MapGuide Open Source Web API and Viewer
 API.
 
 It assumes you have read the MapGuide Getting Started guide and are familiar
-with using Autodesk MapGuide or MapGuide Open Source Web Studio. Most
-examples also assume that you have installed the sample data and sample
-applications supplied with MapGuide.
+with using Autodesk MapGuide or MapGuide Maestro. Most examples also assume that you have installed the 
+sample data and sample applications supplied with MapGuide.
+
+.. note::
+    
+    MapGuide Maestro is a free and open source authoring tool for MapGuide. You can download the latest release `here <trac.osgeo.org/mapguide/wiki/maestro>`_
 
 This guide provides a high-level overview of the APIs. More detailed information
 is provided in the on-line MapGuide Web API Reference and MapGuide Viewer API
@@ -24,9 +24,6 @@ Reference.
 
 Essential Concepts
 ------------------
-
-.. todo::
-    Update Web Studio references to MapGuide Maestro
 
 Refer to the MapGuide Getting Started guide for details about the MapGuide
 architecture and components. It is important to understand the relationship
@@ -45,14 +42,6 @@ custom commands. Custom commands are a way of extending MapGuide to interact wit
 The custom commands are HTML pages, generated on the server using PHP, ASP.NET, or Java (JSP). These languages
 can use the Web API to retrieve, manipulate, and update mapping data.
 
-The current version of MapGuide Open Source Web Studio does not create or
-edit web layouts. It is possible, however, to create and edit web layouts using
-the Mapagent HTML pages at
-http://ServerAddress/mapguide/mapagent/index.html. Get an existing web
-layout, such as the web layout supplied with the sample applications, using
-the GetResourceContent and GetResourceHeader links. Edit the XML in a text
-editor, then save to the site repository using the SetResource link.
-
 Many custom commands run in the task area, a section of the Viewer that is
 designed for user input/output. For more details about the task area and how
 it integrates with the rest of the Viewer, see The MapGuide Viewer on page
@@ -60,9 +49,6 @@ it integrates with the rest of the Viewer, see The MapGuide Viewer on page
 
 Preparing to Run the Examples
 -----------------------------
-
-.. todo::
-    Update Web Studio references to MapGuide Maestro
 
 MapGuide includes a set of sample applications. Some of them correspond
 directly to chapters in this Developer's Guide. These samples are designed to 
@@ -72,18 +58,16 @@ Other sample applications are more full-featured. These are designed to show
 some of the capabilities of MapGuide. They are not discussed in detail in this
 guide, but they do build upon the basic concepts.
 
-The sample applications are available on the installation CD. See the manual
-Installing Sample Data and Viewer Sample Application for details.
+The sample applications are available on the `MapGuide Open Source Download Page <http://mapguide.osgeo.org/downloads.html>`_. See the manual
+Installing Sample Data and Viewer Sample Application also available on the download site for details.
 
-Complete examples are available from http://mapguide.osgeo.org/downloads.html.
+Complete examples are available from `MapGuide Open Source Download Page <http://mapguide.osgeo.org/downloads.html>`_.
 There are two required components: the source code and a package file for
 creating the web layouts. The Sheboygan sample data must also be installed.
 
 .. note::
 
-   The Web API supports .NET, Java, and PHP. For simplicity, the examples in
-   this guide use PHP. However, many of the sample applications are available in all
-   development languages.
+   The Web API supports .NET, Java, and PHP. Each code sample illustrated in this developer's guide will show the same code in all 3 lanugages
    
    To run the examples on a Linux installation, change any Windows-specific
    file paths to corresponding Linux paths.
@@ -91,13 +75,6 @@ creating the web layouts. The Sheboygan sample data must also be installed.
 This guide includes many code snippets. In most cases, the snippets are
 incomplete, lacking initialization and error-checking. For more complete
 versions, refer to the sample applications.
-
-The sample applications also include links to the MapGuide documentation,
-but the links only work if the documentation files are visible to the web server.
-By default, the installation program installs the documentation in the
-...\WebServerExtensions\Help folder. If you copy or move the Help folder to
-...\WebServerExtensions\www\Help the documentation will be available directly
-from the main page of the sample applications.
 
 Application Development
 -----------------------
@@ -118,7 +95,7 @@ Resources and Repositories
 --------------------------
 
 .. todo::
-    Update with newer resource types
+    Re-review for MGOS 2.3 as it introduces watermarks
 
 A MapGuide repository is a database that stores and manages the data for the
 site. The repository stores all data except data that is stored in external
@@ -126,13 +103,16 @@ databases. Data stored in a repository is a resource.
 
 Types of data stored in the repository:
 
- * Feature data from SHP and SDF files
- * Drawing data from DWF files
- * Map symbols
+ * Feature Sources
+ * Drawing Sources
  * Layer definitions
  * Map definitions
  * Web layouts
- * Connections to feature sources, including database credentials
+ * Flexible Web Layouts (aka. Application Definitions)
+ * Symbol Libraries
+ * Symbol Definitions
+ * Load Procedures
+ * Print Layouts
 
 Library and Session
 ^^^^^^^^^^^^^^^^^^^
@@ -155,8 +135,22 @@ followed by the session id. For example:
 
 ``Session:70ea89fe-0000-1000-8000-005056c00008_en//layer.LayerDefinition``
 
+.. note::
+    
+    Unless you have logged in with the Administrator login, security restrictions are generally imposed when reading/writing to the Library repository. 
+
+.. tip::
+
+    If you get "resource not found" errors on a session resource id when attempting to read/write resources to the session repository, chances 
+    are the MapGuide Server has determined the session has been idle for too long and has already destroyed the repository. To ensure the session
+    remains alive, you can tick the "Keep Connection Alive" Web Layout option in Autodesk MapGuide Studio. A similar option exists in MapGuide Maestro's
+    Web Layout editor.
+
 Maps
 ^^^^
+
+.. todo::
+    Update examples to not use blank MgMap() ctor. This is deprecated and a common cause of errors and mistakes
 
 A map (``MgMap`` object) is created from a map definition resource. The map definition contains 
 basic information about the map, including things like:
@@ -174,10 +168,14 @@ same session. You cannot save a map in the library repository.
 Map creation is handled by the Viewers. When a Viewer first loads, it creates
 a map in the session repository. 
 
-The map name is taken from the map
-definition name. For example, if a web layout references a map definition
-named ``Sheboygan.MapDefinition``, then the Viewer will create a map named
-``Sheboygan.Map``.
+The map name is taken from the map definition name. For example, if a web layout references a map definition
+named ``Sheboygan.MapDefinition``, then the Viewer will create a map named ``Sheboygan.Map``.
+
+.. note::
+    
+    ``Sheboygan.Map`` represents the internal state of the runtime instance of ``Sheboygan.MapDefinition`` and is 
+    read and written when you call ``Open()`` and ``Save()`` respectively on the ``MgMap`` object. Users are never allowed
+    direct access to this resource.
 
 If your application does not use a Viewer, you can create the map and store
 it in the repository yourself. To do this, your page must
@@ -232,21 +230,13 @@ For example, the following section of code creates an ``MgMap`` named ``Sheboyga
 Hello, Map - Displaying a Web Layout
 ------------------------------------
 
-.. todo::
-   Remove references to DWF viewer. It is deprecated
-
 A web layout describes how the map looks when it is displayed in a web
-browser. Using Studio or some other method to edit the web layout resource,
+browser. Using Studio, Maestro or some other method to edit the web layout resource,
 you can create and customize the layout, changing how it looks in a browser
 and what features are enabled.
 
-Displaying the web layout requires a compatible web browser and a MapGuide
-Viewer. There are two Viewers, depending on the needs of your site. The DWF
-Viewer runs as a control within the Internet Explorer browser. It requires that
-users install the Autodesk DWF Viewer.
-
 The AJAX Viewer does not require installing any additional software. It runs
-using most browsers, including Internet Explorer, Mozilla Firefox, and Safari.
+using most browsers, including Internet Explorer, Mozilla Firefox, Google Chrome and Safari.
 
 The simplest way to display a web layout is to pass its resource identifier as a
 GET parameter to the Viewer URL. For example, the following will display a
@@ -343,9 +333,6 @@ on one side and the MapGuide site on the other.
 Web Layouts and MapGuide Server Pages
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-.. todo::
-   Remove references to DWF viewer. It is deprecated
-
 A *MapGuide Server Page* is any PHP, ASP.NET, or JSP page that makes use of the
 MapGuide Web API. These pages are typically invoked by the MapGuide
 Viewer or browser and when processed result in HTML pages that are loaded
@@ -356,8 +343,8 @@ creating web services as a back-end to another mapping client or for batch
 processing of your data.
 
 Creating a MapGuide page requires initial setup, to make the proper
-connections between the Viewer, the page, and the MapGuide site. Much of
-this can be done using . Refer to the *MapGuide Studio Help* for details.
+connections between the Viewer, the page, and the MapGuide site. Refer 
+to the *MapGuide Studio Help* for details.
 
 One part of the initial setup is creating a web layout, which defines the
 appearance and available functions for the Viewer. When you define a web
@@ -366,10 +353,9 @@ repository. The full resource name looks something like this:
 
 ``Library://Samples/Layouts/SamplesPhp.WebLayout``
 
-When you open the web layout using a browser with either the AJAX Viewer
-or the DWF Viewer, the resource name is passed as part of the Viewer URL.
-Special characters in the resource name are URL-encoded, so the full URL
-would look something like this, (with line breaks removed):
+When you open the web layout using a browser with the AJAX Viewer the resource name 
+is passed as part of the Viewer URL. Special characters in the resource name are URL-encoded, 
+so the full URL would look something like this, (with line breaks removed):
 
 ``http://localhost/mapguide/mapviewerajax/?WEBLAYOUT=Library%3a%2f%2fSamples%2fSheboygan%2fLayouts%2fSheboyganPhp.WebLayout``
 
