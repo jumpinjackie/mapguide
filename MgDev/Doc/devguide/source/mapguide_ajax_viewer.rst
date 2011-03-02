@@ -471,3 +471,17 @@ parts of *main.php*.
             <frame src="/mapguide/mapviewerajax/?SESSION=<?= $sessionId ?>&WEBLAYOUT=<?= $webLayout ?>" name="ViewerFrame" />
         </frameset>
     </html>
+    
+**.net (C#)**
+
+.. highlight:: csharp
+.. code-block:: csharp
+
+    Code sample coming soon!
+
+**Java**
+    
+.. highlight:: java
+.. code-block:: java
+
+    Code sample coming soon!

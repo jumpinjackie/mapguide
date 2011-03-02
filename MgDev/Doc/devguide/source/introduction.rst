@@ -1,5 +1,5 @@
 .. index::
-   single: introduction
+   single: Introduction
 
 Introduction
 ============
@@ -21,6 +21,9 @@ sample data and sample applications supplied with MapGuide.
 This guide provides a high-level overview of the APIs. More detailed information
 is provided in the on-line MapGuide Web API Reference and MapGuide Viewer API
 Reference.
+
+.. index::
+    single: Essential Concepts
 
 Essential Concepts
 ------------------
@@ -76,6 +79,9 @@ This guide includes many code snippets. In most cases, the snippets are
 incomplete, lacking initialization and error-checking. For more complete
 versions, refer to the sample applications.
 
+.. index::
+    single: Application Development
+
 Application Development
 -----------------------
 
@@ -90,6 +96,10 @@ Use Firefox because of DOM Inspector, Error console, Venckman,
 
 Reading Apache log for PHP errors. Is there an equivalent for IIS? Other sources
 of log information?
+
+.. index::
+    single: Repositories
+    single: Resources
 
 Resources and Repositories
 --------------------------
@@ -113,6 +123,10 @@ Types of data stored in the repository:
  * Symbol Definitions
  * Load Procedures
  * Print Layouts
+
+.. index::
+    single: Repositories; Library Repositories
+    single: Repositories; Session Repositories
 
 Library and Session
 ^^^^^^^^^^^^^^^^^^^
@@ -145,6 +159,9 @@ followed by the session id. For example:
     are the MapGuide Server has determined the session has been idle for too long and has already destroyed the repository. To ensure the session
     remains alive, you can tick the "Keep Connection Alive" Web Layout option in Autodesk MapGuide Studio. A similar option exists in MapGuide Maestro's
     Web Layout editor.
+
+.. index::
+    single: MgMap; About
 
 Maps
 ^^^^
@@ -226,6 +243,9 @@ For example, the following section of code creates an ``MgMap`` named ``Sheboyga
     map.Create(resourceService, mapDefId, mapName);
     MgResourceIdentifier mapId = new MgResourceIdentifier("Session:$sessionId//$mapName." + MgResourceType.Map);
     map.Save(resourceService, mapId);
+
+.. index::
+    single: Web Layout; Displaying
 
 Hello, Map - Displaying a Web Layout
 ------------------------------------
@@ -318,6 +338,9 @@ page using the session identifier and the web layout.
 
     Code sample coming soon!
 
+.. index::
+    single: Web Layout; Adding a Custom Command
+
 Hello, Map 2 - Adding a Custom Command
 --------------------------------------
 
@@ -329,6 +352,9 @@ This next sample MapGuide page displays some basic information about a
 map. It does not do any complicated processing. Its purpose is to illustrate
 the steps required to create a MapGuide page and have it connect to a Viewer
 on one side and the MapGuide site on the other.
+
+.. index::
+    single: Web Layout; Server Pages
 
 Web Layouts and MapGuide Server Pages
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -558,6 +584,9 @@ get more complex information about the layers that make up the map.
     
     However, this function does not need to be called if you are only using the 
     Geometry and Coordinate System components of the MapGuide API
+
+.. index::
+    single: Services
 
 Understanding Services
 ----------------------
