@@ -1,6 +1,3 @@
-.. index::
-   single: layers
-   
 Interacting With Layers
 =======================
 
@@ -14,13 +11,15 @@ Overview of Layers
 Layers represent vector data, raster data, and drawing data in a map. Each type
 of layer has unique characteristics.
 
-
 .. note::
 
     The word layer has different meanings in different contexts. A layer can refer
     to the layer definition in the resource repository, and it can also refer to the map
     layer. For the purposes of the Web Tier, a layer refers to a map layer, and a layer
     definition refers to the layer definition in the resource repository.
+
+.. index::
+    single: Layers; Basic Properties
 
 Basic Layer Properties
 ^^^^^^^^^^^^^^^^^^^^^^
@@ -47,6 +46,9 @@ beginning of the collection. For example, using PHP syntax, if ``$layers`` is a
 collection containing the layers in a map, then ``$layers->GetItem(0)`` returns
 the top-most layer.
 
+.. index::
+    single: Layer Groups
+
 Layer Groups
 ^^^^^^^^^^^^
 
@@ -67,6 +69,9 @@ object that contains all the layer groups in the map.
 
 Each layer group in a map must have a unique name, even if it is nested within
 another group.
+
+.. index::
+    single: Base Layer Groups
 
 Base Layer Groups
 """""""""""""""""
@@ -99,6 +104,9 @@ visibility turned off.
     
     A layer can only belong to one group at a time. It cannot be part of both a base layer group and a regular group.
 
+.. index::
+    single: Layers; Styles
+
 Layer Style
 ^^^^^^^^^^^
 
@@ -114,6 +122,9 @@ Layer definitions can be modified using . They can also be created and modified
 dynamically using the Web Extensions API. See Modifying Maps and Layers
 on page 57 for details.
 
+.. index::
+    single: Layers; Visiblity
+
 Layer Visibility
 ^^^^^^^^^^^^^^^^
 
@@ -126,6 +137,9 @@ Whether a layer is visible in a given map depends on three criteria:
 In order for a layer to be visible, its layer visibility must be on, the visibility
 for any group containing the layer must be on, and the layer must have a style
 setting defined for the current map view scale.
+
+.. index::
+    single: Layers; Actual Visiblity
 
 Example: Actual Visibility
 """"""""""""""""""""""""""
@@ -148,6 +162,10 @@ view scale settings, and their effect on the actual layer visibility.
 +------------------+------------------+------------+------------------+
 | Off              | On               | 10000      | Off              |
 +------------------+------------------+------------+------------------+
+
+.. index::
+    single: Layers; Enumerating Map Layers
+    single: MgMap; Enumerating Layers
 
 Enumerating Map Layers
 ----------------------
@@ -239,6 +257,9 @@ the layer visibility setting.
     }
     response.getWriter().write("</p>");
 
+.. index::
+    single: Layers; Manipulation
+
 Manipulating Layers
 -------------------
 
@@ -249,6 +270,9 @@ Modifying basic layer properties and changing layer visibility settings can be
 done directly using API calls. More complex manipulation requires modifying
 layer resources in the repository. For details, see Modifying Maps and Layers
 on page 57.
+
+.. index::
+    single: Layers; Changing Basic Properties
 
 Changing Basic Properties
 ^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -343,6 +367,9 @@ Streets.
     // changes will not be applied
     // Also be sure to refresh the map on page load.
     map.Save(resourceService);
+
+.. index::
+    single: Layers; Changing Visibility
 
 Changing Visibility
 ^^^^^^^^^^^^^^^^^^^
