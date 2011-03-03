@@ -411,32 +411,31 @@ repository from it, and adds that layer resource to a map.
 .. highlight:: php
 .. code-block:: php
 
-    <?php
     require_once('../common/common.php');
-    ///////////////////////////////////////////////////////////
-    function add_layer_definition_to_map($layerDefinition,
-      $layerName, $layerLegendLabel, $mgSessionId,
-      $resourceService, &$map)
+
+    function add_layer_definition_to_map($layerDefinition, $layerName, $layerLegendLabel, $sessionId, $resourceService, &$map)
     // Adds the layer definition (XML) to the map.
     // Returns the layer.
     {
+        global $schemaDirectory;
+
         // Validate the XML.
         $domDocument = new DOMDocument;
         $domDocument->loadXML($layerDefinition);
-        if (! $domDocument->schemaValidate(
-           "$schemaDirectory\LayerDefinition-1.1.0.xsd") )
+        if (! $domDocument->schemaValidate($schemaDirectory . "LayerDefinition-1.3.0.xsd") ) // $schemaDirectory is defined in common.php
         {
-            echo "ERROR: The new XML document is invalid.
-              <BR>\n.";
+            echo "ERROR: The new XML document is invalid.<BR>\n.";
             return NULL;
-        }
-        // Save the new layer definition to the session
-        // repository
+        }    
+
+        // Save the new layer definition to the session repository  
         $byteSource = new MgByteSource($layerDefinition, strlen($layerDefinition));
         $byteSource->SetMimeType(MgMimeType::Xml);
-        $resourceID = new MgResourceIdentifier("Session:$mgSessionId//$layerName.LayerDefinition");
+        $resourceID = new MgResourceIdentifier("Session:$sessionId//$layerName.LayerDefinition");
         $resourceService->SetResource($resourceID, $byteSource->GetReader(), null);
+
         $newLayer = add_layer_resource_to_map($resourceID, $resourceService, $layerName, $layerLegendLabel, $map);
+
         return $newLayer;
     }
 
@@ -447,25 +446,26 @@ This function adds a layer resource to a map.
 .. highlight:: php
 .. code-block:: php
 
-    function add_layer_resource_to_map($layerResourceID,
-      $resourceService, $layerName, $layerLegendLabel, &$map)
-    // Adds a layer defition (which can be stored either in the
-    // Library or a session repository) to the map.
+    function add_layer_resource_to_map($layerResourceID, $resourceService, $layerName, $layerLegendLabel, &$map)
+    // Adds a layer defition (which can be stored either in the Library or a session
+    // repository) to the map.
     // Returns the layer.
     {
-        $newLayer = new MgLayer($layerResourceID, $resourceService);
+        $newLayer = new MgLayer($layerResourceID, $resourceService);  
+
         // Add the new layer to the map's layer collection
         $newLayer->SetName($layerName);
         $newLayer->SetVisible(true);
         $newLayer->SetLegendLabel($layerLegendLabel);
         $newLayer->SetDisplayInLegend(true);
-        $layerCollection = $map->GetLayers();
+        $layerCollection = $map->GetLayers(); 
         if (! $layerCollection->Contains($layerName) )
         {
-            // Insert the new layer at position 0 so it is at
-            // the top of the drawing order
-            $layerCollection->Insert(0, $newLayer);
+            // Insert the new layer at position 0 so it is at the top
+            // of the drawing order
+            $layerCollection->Insert(0, $newLayer); 
         }
+
         return $newLayer;
     }
 
@@ -476,11 +476,10 @@ This function adds a layer to a legend's layer group.
 .. highlight:: php
 .. code-block:: php
 
-    function add_layer_to_group($layer, $layerGroupName,
-      $layerGroupLegendLabel, &$map)
-    // Adds a layer to a layer group. If necessary, it creates
-    // the layer group.
+    function add_layer_to_group($layer, $layerGroupName, $layerGroupLegendLabel, &$map)
+    // Adds a layer to a layer group. If necessary, it creates the layer group.
     {
+      
         // Get the layer group
         $layerGroupCollection = $map->GetLayerGroups();
         if ($layerGroupCollection->Contains($layerGroupName))
@@ -490,15 +489,15 @@ This function adds a layer to a legend's layer group.
         else
         {
             // It does not exist, so create it
-            $layerGroup = new MgLayerGroup($layerGroupName);
+            $layerGroup = new MgLayerGroup($layerGroupName); 
             $layerGroup->SetVisible(true);
             $layerGroup->SetDisplayInLegend(true);
-          
             $layerGroup->SetLegendLabel($layerGroupLegendLabel);
-            $layerGroupCollection->Add($layerGroup);
+            $layerGroupCollection->Add($layerGroup); 
         }
+
         // Add the layer to the group
-        $layer->SetGroup($layerGroup);
+        $layer->SetGroup($layerGroup);  
     }
 
 .. index::
