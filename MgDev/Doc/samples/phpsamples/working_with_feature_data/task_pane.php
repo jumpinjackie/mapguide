@@ -32,7 +32,7 @@
       params = new Array("SESSION", parent.parent.mapFrame.GetSessionId(), 
         "MAPNAME", parent.parent.mapFrame.GetMapName(),
         "SELECTION", xmlSel);
-      pageUrl = "/mapguide/phpsamples/working_with_feature_data/listselection.php";
+      pageUrl = "../phpsamples/working_with_feature_data/listselection.php";
       parent.parent.formFrame.Submit(pageUrl, params, "taskPaneFrame");
     }
     </script>
