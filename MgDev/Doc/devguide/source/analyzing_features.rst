@@ -552,7 +552,9 @@ Feature commands can be one of the following:
 
 To execute the commands, call ``MgFeatureService::UpdateFeatures()``. The
 feature class name and property names in any of the feature commands must
-match the class name and property names in the feature source.
+match the class name and property names in the feature source. If you want to execute 
+feature commands against a ``MgLayer`` object, call ``MgLayer::UpdateFeatures()``. The
+feature class name and feature source id of the ``MgLayer`` object is used
 
 For example, to delete all features in a feature class with an identity property
 ``ID``, execute the following:
@@ -566,6 +568,12 @@ For example, to delete all features in a feature class with an identity property
     $deleteCommand = new MgDeleteFeatures($className, "ID like '%'");
     $commands->Add($deleteCommand);
     $featureService->UpdateFeatures($featureSource, $commands, false);
+    
+    //You can do this instead if you have a MgLayer object and want to delete features from it
+    $commands = new MgFeatureCommandCollection();
+    $deleteCommand = new MgDeleteFeatures($className, "ID like '%'");
+    $commands->Add($deleteCommand);
+    $layer->UpdateFeatures($commands);
 
 **.net (C#)**
 
@@ -577,6 +585,12 @@ For example, to delete all features in a feature class with an identity property
     MgDeleteFeature deleteCommand = new MgDeleteFeatures(className, "ID like '%'");
     commands.Add(deleteCommand);
     featureService.UpdateFeatures(featureSource, commands, false);
+    
+    //You can do this instead if you have a MgLayer object and want to delete features from it
+    MgFeatureCommandCollection commands = new MgFeatureCommandCollection();
+    MgDeleteFeature deleteCommand = new MgDeleteFeatures(className, "ID like '%'");
+    commands.Add(deleteCommand);
+    layer.UpdateFeatures(commands);
 
 **Java**
     
@@ -588,6 +602,12 @@ For example, to delete all features in a feature class with an identity property
     MgDeleteFeature deleteCommand = new MgDeleteFeatures(className, "ID like '%'");
     commands.Add(deleteCommand);
     featureService.UpdateFeatures(featureSource, commands, false);
+    
+    //You can do this instead if you have a MgLayer object and want to delete features from it
+    MgFeatureCommandCollection commands = new MgFeatureCommandCollection();
+    MgDeleteFeature deleteCommand = new MgDeleteFeatures(className, "ID like '%'");
+    commands.Add(deleteCommand);
+    layer.UpdateFeatures(commands);
 
 To insert features, create an ``MgPropertyCollection`` object that contains the
 properties of the new feature. Create an ``MgInsertFeatures`` object and add
@@ -611,6 +631,18 @@ the following:
     $commands->Add($insertCommand);
      
     $featureService->UpdateFeatures($featureSource, $commands, false);
+    
+    //You can do this instead if you have a MgLayer object and want to update features in it
+    $commands = new MgFeatureCommandCollection();
+    $properties = new MgPropertyCollection();
+    $agfByteStream = $agfReaderWriter->Write($geometry);
+    $geometryProperty = new MgGeometryProperty($propertyName, $agfByteStream);
+    $properties->Add($geometryProperty);
+     
+    $insertCommand = new MgInsertFeatures($className, $properties);
+    $commands->Add($insertCommand);
+     
+    $layer->UpdateFeatures($commands);
 
 **.net (C#)**
 
@@ -628,6 +660,17 @@ the following:
     commands.Add(insertCommand);
     
     featureService.UpdateFeatures(featureSource, commands, false);
+    
+    //You can do this instead if you have a MgLayer object and want to update features in it
+    MgFeatureCommandCollection commands = new MgFeatureCommandCollection();
+    MgPropertyCollection properties = new MgPropertyCollection();
+    MgByteReader agfByteStream = agfReaderWriter.Write(geometry);
+    MgGeometryProperty geometryProperty = new MgGeometryProperty(propertyName, agfByteStream);
+    properties.Add(geometryProperty);
+    
+    MgInsertFeatures insertCommand = new MgInsertFeatures(className, properties);
+    commands.Add(insertCommand);
+    layer.UpdateFeatures(commands);
 
 **Java**
     
@@ -645,6 +688,17 @@ the following:
     commands.Add(insertCommand);
     
     featureService.UpdateFeatures(featureSource, commands, false);
+    
+    //You can do this instead if you have a MgLayer object and want to update features in it
+    MgFeatureCommandCollection commands = new MgFeatureCommandCollection();
+    MgPropertyCollection properties = new MgPropertyCollection();
+    MgByteReader agfByteStream = agfReaderWriter.Write(geometry);
+    MgGeometryProperty geometryProperty = new MgGeometryProperty(propertyName, agfByteStream);
+    properties.Add(geometryProperty);
+    
+    MgInsertFeatures insertCommand = new MgInsertFeatures(className, properties);
+    commands.Add(insertCommand);
+    layer.UpdateFeatures(commands);
 
 To update existing features, create an MgPropertyCollection object that
 contains the new values for the properties and a filter expression that selects
@@ -774,11 +828,11 @@ To display the buffer in the map, perform the following steps:
  * Add the layer to the map and make it visible.
 
 To use the buffer as part of a query, create a spatial filter using the buffer
-geometry, and use this in a call to ``MgFeatureService::SelectFeatures()``. For
-example, the following code selects parcels inside the buffer area that are of
-type "MFG". You can use the ``MgFeatureReader`` to perform tasks like generating
-a report of the parcels, or creating a new layer that puts point markers on each
-parcel.
+geometry, and use this in a call to ``MgFeatureService::SelectFeatures()`` or 
+``MgLayer::SelectFeatures()``. For example, the following code selects parcels 
+inside the buffer area that are of type "MFG". You can use the ``MgFeatureReader`` 
+to perform tasks like generating a report of the parcels, or creating a new layer 
+that puts point markers on each parcel.
 
 **PHP**
 
@@ -788,8 +842,14 @@ parcel.
     $queryOptions = new MgFeatureQueryOptions();
     $queryOptions->SetFilter("RTYPE = 'MFG'");
     $queryOptions->SetSpatialFilter('SHPGEOM', $bufferGeometry, MgFeatureSpatialOperations::Inside);
+    /*
+    // Old way, pre MapGuide OS 2.0. Kept here for reference
     $featureResId = new MgResourceIdentifier("Library://Samples/Sheboygan/Data/Parcels.FeatureSource");
     $featureReader = $featureService->SelectFeatures($featureResId, "Parcels", $queryOptions);
+    */
+    
+    // New way, post MapGuide OS 2.0
+    $featureReader = $layer->SelectFeatures($queryOptions);
 
 **.net (C#)**
 
@@ -876,25 +936,48 @@ it deletes any existing features before creating the new buffer. The functions
     // If it does not exist, create a feature source and
     // a layer to hold the buffer.
 
+    /*
+    // Old way, pre MapGuide OS 2.0. Kept here for reference
     try
     {
-        $bufferLayer = $map->GetLayers()->GetItem('Buffer');
-        $bufferFeatureResId = new MgResourceIdentifier($bufferLayer->GetFeatureSourceId());
+      $bufferLayer = $map->GetLayers()->GetItem('Buffer');
+      $bufferFeatureResId = new MgResourceIdentifier($bufferLayer->GetFeatureSourceId());
 
-        $commands = new MgFeatureCommandCollection();
-        $commands->Add(new MgDeleteFeatures('BufferClass', "ID like '%'"));
+      $commands = new MgFeatureCommandCollection();
+      $commands->Add(new MgDeleteFeatures('BufferClass', "ID like '%'"));
 
-        $featureService->UpdateFeatures($bufferFeatureResId, $commands, false);
+      $featureService->UpdateFeatures($bufferFeatureResId, $commands, false);
     }
     catch (MgObjectNotFoundException $e)
     {
-        // When an MgObjectNotFoundException is thrown, the layer
-        // does not exist and must be created.
+      // When an MgObjectNotFoundException is thrown, the layer
+      // does not exist and must be created.
 
-        $bufferFeatureResId = new MgResourceIdentifier("Session:" . $mgSessionId . "//Buffer.FeatureSource");
+      $bufferFeatureResId = new MgResourceIdentifier("Session:" . $sessionId . "//Buffer.FeatureSource");
+      CreateBufferFeatureSource($featureService, $mapWktSrs, $bufferFeatureResId);
+      $bufferLayer = CreateBufferLayer($resourceService, $bufferFeatureResId, $sessionId);
+      $map->GetLayers()->Insert(0, $bufferLayer);
+    }
+    */
+    
+    // This is how things can be done now
+    $layerIndex = $map->GetLayers()->IndexOf('Buffer');
+    if ($layerIndex < 0)
+    {
+        // The layer does not exist and must be created.
+
+        $bufferFeatureResId = new MgResourceIdentifier("Session:" . $sessionId . "//Buffer.FeatureSource");
         CreateBufferFeatureSource($featureService, $mapWktSrs, $bufferFeatureResId);
-        $bufferLayer = CreateBufferLayer($resourceService, $bufferFeatureResId, $mgSessionId);
+        $bufferLayer = CreateBufferLayer($resourceService, $bufferFeatureResId, $sessionId);
         $map->GetLayers()->Insert(0, $bufferLayer);
+    }
+    else
+    {
+        $bufferLayer = $map->GetLayers()->GetItem($layerIndex);
+        $commands = new MgFeatureCommandCollection();
+        $commands->Add(new MgDeleteFeatures('BufferClass', "ID like '%'"));
+        
+        $bufferLayer->UpdateFeatures($commands);
     }
     
 **.net (C#)**
@@ -956,13 +1039,21 @@ the rings get progressively darker towards the center of the buffer area.
         $commands->Add(new MgInsertFeatures('BufferClass', $properties));
     }
 
-    $results = $featureService->UpdateFeatures($bufferFeatureResId,
-    $commands, false);
+    // Old way, pre MapGuide OS 2.0
+    //$results = $featureService->UpdateFeatures($bufferFeatureResId, $commands, false);
+    
+    // New way, post MapGuide OS 2.0
+    $results = $bufferLayer->UpdateFeatures($commands);
 
     $bufferLayer->SetVisible(true);
     $bufferLayer->ForceRefresh();
     $bufferLayer->SetDisplayInLegend(true);
-    $map->Save($resourceService);
+    
+    //If you created a MgMap using the empty constructor
+    //$map->Save($resourceService);
+    
+    //If you created a MgMap with a MgSiteConnection
+    $map->Save();
 
 **.net (C#)**
 
@@ -1106,23 +1197,29 @@ the selected parcels.
     // centroid.
     // Collect all the points into an MgFeatureCommandCollection,
     // so they can all be added in one operation.
-    $featureResId = new MgResourceIdentifier("Library://Samples/Sheboygan/Data/Parcels.FeatureSource");
-    $featureReader = $featureService->SelectFeatures($featureResId, "Parcels", $queryOptions);
+    
     $parcelMarkerCommands = new MgFeatureCommandCollection();
     while ($featureReader->ReadNext())
     {
         $byteReader = $featureReader->GetGeometry('SHPGEOM');
         $geometry = $agfReaderWriter->Read($byteReader);
         $point = $geometry->GetCentroid();
+
         // Create an insert command for this parcel.
         $properties = new MgPropertyCollection();
+
         $properties->Add(new MgGeometryProperty('ParcelLocation', $agfReaderWriter->Write($point)));
         $parcelMarkerCommands->Add(new MgInsertFeatures('ParcelMarkerClass', $properties));
     }
     $featureReader->Close();
+
     if ($parcelMarkerCommands->GetCount() > 0)
     {
-        $featureService->UpdateFeatures($parcelFeatureResId, $parcelMarkerCommands, false);
+        // Old way, pre MapGuide OS 2.0. Kept here for reference
+        //$featureService->UpdateFeatures($parcelFeatureResId, $parcelMarkerCommands, false);
+        
+        // New way, post MapGuide OS 2.0
+        $parcelMarkerLayer->UpdateFeatures($parcelMarkerCommands);
     }
     else
     {
