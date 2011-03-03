@@ -275,19 +275,14 @@ object.
             $parcelMarkerCommands = new MgFeatureCommandCollection();
             while ($featureReader->ReadNext())
             {
-
                 $byteReader = $featureReader->GetGeometry('SHPGEOM');
-
                 $geometry = $agfReaderWriter->Read($byteReader);
                 $point = $geometry->GetCentroid();
 
                 // Create an insert command for this parcel.
-
                 $properties = new MgPropertyCollection();
-
                 $properties->Add(new MgGeometryProperty('ParcelLocation', $agfReaderWriter->Write($point)));
                 $parcelMarkerCommands->Add(new MgInsertFeatures('ParcelMarkerClass', $properties));
-
             }
             $featureReader->Close();
 
@@ -301,7 +296,7 @@ object.
             }
             else
             {
-              echo '</p><p>No parcels within the buffer area match.';
+                echo '</p><p>No parcels within the buffer area match.';
             }
 
             // Create a feature in the buffer feature source to show the area covered by the buffer.
