@@ -69,8 +69,8 @@
 
     //---------------------------------------------------//
     // Open the map
-    $map = new MgMap();
-    $map->Open($resourceService, $mapName);
+    $map = new MgMap($siteConnection);
+    $map->Open($mapName);
 
     $layerName = "Lines";
     $layerLegendLabel = "New Lines";
