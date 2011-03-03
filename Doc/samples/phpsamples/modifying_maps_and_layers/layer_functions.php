@@ -25,7 +25,7 @@ function add_layer_definition_to_map($layerDefinition, $layerName, $layerLegendL
     // Validate the XML.
     $domDocument = new DOMDocument;
     $domDocument->loadXML($layerDefinition);
-  if (! $domDocument->schemaValidate($schemaDirectory . "LayerDefinition-1.1.0.xsd") ) // $schemaDirectory is defined in common.php
+  if (! $domDocument->schemaValidate($schemaDirectory . "LayerDefinition-1.3.0.xsd") ) // $schemaDirectory is defined in common.php
   {
     echo "ERROR: The new XML document is invalid.<BR>\n.";
     return NULL;
