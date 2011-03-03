@@ -67,31 +67,31 @@ void IOPath::ElementChars(const wchar_t* ch)
 }
 
 
-void IOPath::Write(MdfStream& fd, Path* path, Version* version)
+void IOPath::Write(MdfStream& fd, Path* path, Version* version, MgTab& tab)
 {
-    IOPath::Write(fd, path, "Path", version); // NOXLATE
+    IOPath::Write(fd, path, "Path", version, tab); // NOXLATE
 }
 
 
-void IOPath::Write(MdfStream& fd, Path* path, std::string name, Version* version)
+void IOPath::Write(MdfStream& fd, Path* path, std::string name, Version* version, MgTab& tab)
 {
-    fd << tab() << "<" << name << ">" << std::endl;
-    inctab();
+    fd << tab.tab() << "<" << name << ">" << std::endl;
+    tab.inctab();
 
-    IOGraphicElement::Write(fd, path, version);
+    IOGraphicElement::Write(fd, path, version, tab);
 
-    EMIT_STRING_PROPERTY(fd, path, Geometry, false, NULL)
-    EMIT_STRING_PROPERTY(fd, path, FillColor, true, L"")         // default is empty string
-    EMIT_STRING_PROPERTY(fd, path, LineColor, true, L"")         // default is empty string
-    EMIT_DOUBLE_PROPERTY(fd, path, LineWeight, true, 0.0)        // default is 0.0
-    EMIT_BOOL_PROPERTY(fd, path, LineWeightScalable, true, true) // default is true
-    EMIT_STRING_PROPERTY(fd, path, LineCap, true, Path::sLineCapDefault)
-    EMIT_STRING_PROPERTY(fd, path, LineJoin, true, Path::sLineJoinDefault)
-    EMIT_DOUBLE_PROPERTY(fd, path, LineMiterLimit, true, 5.0)    // default is 5.0
+    EMIT_STRING_PROPERTY(fd, path, Geometry, false, NULL, tab)
+    EMIT_STRING_PROPERTY(fd, path, FillColor, true, L"", tab)         // default is empty string
+    EMIT_STRING_PROPERTY(fd, path, LineColor, true, L"", tab)         // default is empty string
+    EMIT_DOUBLE_PROPERTY(fd, path, LineWeight, true, 0.0, tab)        // default is 0.0
+    EMIT_BOOL_PROPERTY(fd, path, LineWeightScalable, true, true, tab) // default is true
+    EMIT_STRING_PROPERTY(fd, path, LineCap, true, Path::sLineCapDefault, tab)
+    EMIT_STRING_PROPERTY(fd, path, LineJoin, true, Path::sLineJoinDefault, tab)
+    EMIT_DOUBLE_PROPERTY(fd, path, LineMiterLimit, true, 5.0, tab)    // default is 5.0
 
     // Write any unknown XML / extended data
-    IOUnknown::Write(fd, path->GetUnknownXml(), version);
+    IOUnknown::Write(fd, path->GetUnknownXml(), version, tab);
 
-    dectab();
-    fd << tab() << "</" << name << ">" << std::endl;
+    tab.dectab();
+    fd << tab.tab() << "</" << name << ">" << std::endl;
 }

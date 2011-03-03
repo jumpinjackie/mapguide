@@ -119,7 +119,7 @@ void SAX2Parser::Initialize()
 
 void SAX2Parser::DisableTabs()
 {
-    disableTabs();
+    MgTab::disableTabs();
 }
 
 
@@ -359,21 +359,21 @@ void SAX2Parser::WriteToFile(std::string name,
     fd.open(name.c_str());
     if (fd.is_open())
     {
-        zerotab();
-        fd << tab() << "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" << std::endl; // NOXLATE
+        MgTab tab;
+        fd << tab.tab() << "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" << std::endl; // NOXLATE
 
         if (NULL != map)
-            IOMapDefinition::Write(fd, map, version);
+            IOMapDefinition::Write(fd, map, version, tab);
         else if (NULL != vLayer)
-            IOVectorLayerDefinition::Write(fd, vLayer, version);
+            IOVectorLayerDefinition::Write(fd, vLayer, version, tab);
         else if (NULL != dLayer)
-            IODrawingLayerDefinition::Write(fd, dLayer, version);
+            IODrawingLayerDefinition::Write(fd, dLayer, version, tab);
         else if (NULL != gLayer)
-            IOGridLayerDefinition::Write(fd, gLayer, version);
+            IOGridLayerDefinition::Write(fd, gLayer, version, tab);
         else if (NULL != printLayout)
-            IOPrintLayoutDefinition::Write(fd, printLayout, version);
+            IOPrintLayoutDefinition::Write(fd, printLayout, version, tab);
         else if (NULL != mapViewport)
-            IOMapViewportDefinition::Write(fd, mapViewport, version);
+            IOMapViewportDefinition::Write(fd, mapViewport, version, tab);
     }
     fd.close();
 }
@@ -385,16 +385,16 @@ void SAX2Parser::WriteToFile(std::string name, SymbolDefinition* symbol, Version
     fd.open(name.c_str());
     if (fd.is_open())
     {
-        zerotab();
-        fd << tab() << "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" << std::endl; // NOXLATE
+        MgTab tab;
+        fd << tab.tab() << "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" << std::endl; // NOXLATE
 
         SimpleSymbolDefinition* simpleSymbol = dynamic_cast<SimpleSymbolDefinition*>(symbol);
         CompoundSymbolDefinition* compoundSymbol = dynamic_cast<CompoundSymbolDefinition*>(symbol);
 
         if (NULL != simpleSymbol)
-            IOSimpleSymbolDefinition::Write(fd, simpleSymbol, true, version);
+            IOSimpleSymbolDefinition::Write(fd, simpleSymbol, true, version, tab);
         else if (NULL != compoundSymbol)
-            IOCompoundSymbolDefinition::Write(fd, compoundSymbol, true, version);
+            IOCompoundSymbolDefinition::Write(fd, compoundSymbol, true, version, tab);
     }
     fd.close();
 }
@@ -403,9 +403,10 @@ void SAX2Parser::WriteToFile(std::string name, SymbolDefinition* symbol, Version
 std::string SAX2Parser::SerializeToXML(MapDefinition* map, Version* version)
 {
     MdfStringStream fd;
+    MgTab tab;
 
     if (NULL != map)
-        IOMapDefinition::Write(fd, map, version);
+        IOMapDefinition::Write(fd, map, version, tab);
 
     return fd.str();
 }
@@ -414,9 +415,10 @@ std::string SAX2Parser::SerializeToXML(MapDefinition* map, Version* version)
 std::string SAX2Parser::SerializeToXML(PrintLayoutDefinition* printLayout, Version* version)
 {
     MdfStringStream fd;
+    MgTab tab;
 
     if (NULL != printLayout)
-        IOPrintLayoutDefinition::Write(fd, printLayout, version);
+        IOPrintLayoutDefinition::Write(fd, printLayout, version, tab);
 
     return fd.str();
 }
@@ -425,11 +427,12 @@ std::string SAX2Parser::SerializeToXML(PrintLayoutDefinition* printLayout, Versi
 std::string SAX2Parser::SerializeToXML(PrintLayoutElementDefinition* printLayoutElem, Version* version)
 {
     MdfStringStream fd;
+    MgTab tab;
 
     MapViewportDefinition* mapViewport = dynamic_cast<MapViewportDefinition*>(printLayoutElem);
 
     if (NULL != mapViewport)
-        IOMapViewportDefinition::Write(fd, mapViewport, version);
+        IOMapViewportDefinition::Write(fd, mapViewport, version, tab);
 
     return fd.str();
 }
@@ -438,17 +441,18 @@ std::string SAX2Parser::SerializeToXML(PrintLayoutElementDefinition* printLayout
 std::string SAX2Parser::SerializeToXML(LayerDefinition* layer, Version* version)
 {
     MdfStringStream fd;
+    MgTab tab;
 
     VectorLayerDefinition* vectorLayer = dynamic_cast<VectorLayerDefinition*>(layer);
     DrawingLayerDefinition* drawingLayer = dynamic_cast<DrawingLayerDefinition*>(layer);
     GridLayerDefinition* gridLayer = dynamic_cast<GridLayerDefinition*>(layer);
 
     if (NULL != vectorLayer)
-        IOVectorLayerDefinition::Write(fd, vectorLayer, version);
+        IOVectorLayerDefinition::Write(fd, vectorLayer, version, tab);
     else if (NULL != drawingLayer)
-        IODrawingLayerDefinition::Write(fd, drawingLayer, version);
+        IODrawingLayerDefinition::Write(fd, drawingLayer, version, tab);
     else if (NULL != gridLayer)
-        IOGridLayerDefinition::Write(fd, gridLayer, version);
+        IOGridLayerDefinition::Write(fd, gridLayer, version, tab);
 
     return fd.str();
 }
@@ -457,14 +461,15 @@ std::string SAX2Parser::SerializeToXML(LayerDefinition* layer, Version* version)
 std::string SAX2Parser::SerializeToXML(SymbolDefinition* symbol, Version* version)
 {
     MdfStringStream fd;
+    MgTab tab;
 
     SimpleSymbolDefinition* simpleSymbol = dynamic_cast<SimpleSymbolDefinition*>(symbol);
     CompoundSymbolDefinition* compoundSymbol = dynamic_cast<CompoundSymbolDefinition*>(symbol);
 
     if (NULL != simpleSymbol)
-        IOSimpleSymbolDefinition::Write(fd, simpleSymbol, true, version);
+        IOSimpleSymbolDefinition::Write(fd, simpleSymbol, true, version, tab);
     else if (NULL != compoundSymbol)
-        IOCompoundSymbolDefinition::Write(fd, compoundSymbol, true, version);
+        IOCompoundSymbolDefinition::Write(fd, compoundSymbol, true, version, tab);
 
     return fd.str();
 }

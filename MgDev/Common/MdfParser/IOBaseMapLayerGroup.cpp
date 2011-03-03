@@ -74,18 +74,18 @@ void IOBaseMapLayerGroup::EndElement(const wchar_t* name, HandlerStack* handlerS
 }
 
 
-void IOBaseMapLayerGroup::Write(MdfStream& fd, BaseMapLayerGroup* baseMapLayerGroup, Version* version)
+void IOBaseMapLayerGroup::Write(MdfStream& fd, BaseMapLayerGroup* baseMapLayerGroup, Version* version, MgTab& tab)
 {
-    fd << tab() << "<BaseMapLayerGroup>" << std::endl; // NOXLATE
-    inctab();
+    fd << tab.tab() << "<BaseMapLayerGroup>" << std::endl; // NOXLATE
+    tab.inctab();
 
-    IOMapLayerGroupCommon::Write(fd, baseMapLayerGroup, version);
+    IOMapLayerGroupCommon::Write(fd, baseMapLayerGroup, version, tab);
 
     // Property: Layers
     BaseMapLayerCollection* baseMapLayers = baseMapLayerGroup->GetLayers();
     for (int i=0; i<baseMapLayers->GetCount(); ++i)
-        IOBaseMapLayer::Write(fd, static_cast<BaseMapLayer*>(baseMapLayers->GetAt(i)), version);
+        IOBaseMapLayer::Write(fd, static_cast<BaseMapLayer*>(baseMapLayers->GetAt(i)), version, tab);
 
-    dectab();
-    fd << tab() << "</BaseMapLayerGroup>" << std::endl; // NOXLATE
+    tab.dectab();
+    fd << tab.tab() << "</BaseMapLayerGroup>" << std::endl; // NOXLATE
 }

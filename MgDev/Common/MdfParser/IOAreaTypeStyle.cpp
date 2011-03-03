@@ -108,38 +108,38 @@ void IOAreaTypeStyle::EndElement(const wchar_t* name, HandlerStack* handlerStack
 }
 
 
-void IOAreaTypeStyle::Write(MdfStream& fd, AreaTypeStyle* areaTypeStyle, Version* version)
+void IOAreaTypeStyle::Write(MdfStream& fd, AreaTypeStyle* areaTypeStyle, Version* version, MgTab& tab)
 {
-    fd << tab() << startStr(sAreaTypeStyle) << std::endl;
-    inctab();
+    fd << tab.tab() << startStr(sAreaTypeStyle) << std::endl;
+    tab.inctab();
 
     MdfStringStream fdExtData;
 
     // Property: Rules
     for (int i=0; i<areaTypeStyle->GetRules()->GetCount(); ++i)
-        IOAreaRule::Write(fd, static_cast<AreaRule*>(areaTypeStyle->GetRules()->GetAt(i)), version);
+        IOAreaRule::Write(fd, static_cast<AreaRule*>(areaTypeStyle->GetRules()->GetAt(i)), version, tab);
 
     // Property: ShowInLegend
     if (!version || (*version >= Version(1, 3, 0)))
     {
         // version 1.3.0 has a ShowInLegend Property
-        fd << tab() << startStr(sShowInLegend);
+        fd << tab.tab() << startStr(sShowInLegend);
         fd << BoolToStr(areaTypeStyle->IsShowInLegend());
         fd << endStr(sShowInLegend) << std::endl;
     }
     else
     {
-        inctab();
+        tab.inctab();
         // earlier version - save ShowInLegend to ExtendedData1
-        fdExtData << tab() << startStr(sShowInLegend);
+        fdExtData << tab.tab() << startStr(sShowInLegend);
         fdExtData << BoolToStr(areaTypeStyle->IsShowInLegend());
         fdExtData << endStr(sShowInLegend) << std::endl;
-        dectab();
+        tab.dectab();
     }
 
     // Write any unknown XML / extended data
-    IOUnknown::Write(fd, areaTypeStyle->GetUnknownXml(), fdExtData.str(), version);
+    IOUnknown::Write(fd, areaTypeStyle->GetUnknownXml(), fdExtData.str(), version, tab);
 
-    dectab();
-    fd << tab() << endStr(sAreaTypeStyle) << std::endl;
+    tab.dectab();
+    fd << tab.tab() << endStr(sAreaTypeStyle) << std::endl;
 }

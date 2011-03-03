@@ -58,7 +58,7 @@ void IOGraphicElement::EndElement(const wchar_t* name, HandlerStack* handlerStac
 }
 
 
-void IOGraphicElement::Write(MdfStream& fd, GraphicElement* element, Version* version)
+void IOGraphicElement::Write(MdfStream& fd, GraphicElement* element, Version* version, MgTab& tab)
 {
-    EMIT_STRING_PROPERTY(fd, element, ResizeControl, true, GraphicElement::sResizeControlDefault)
+    EMIT_STRING_PROPERTY(fd, element, ResizeControl, true, GraphicElement::sResizeControlDefault, tab)
 }

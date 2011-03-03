@@ -84,24 +84,24 @@ void IOAreaUsage::EndElement(const wchar_t* name, HandlerStack* handlerStack)
 }
 
 
-void IOAreaUsage::Write(MdfStream& fd, AreaUsage* areaUsage, Version* version)
+void IOAreaUsage::Write(MdfStream& fd, AreaUsage* areaUsage, Version* version, MgTab& tab)
 {
-    fd << tab() << "<AreaUsage>" << std::endl; // NOXLATE
-    inctab();
+    fd << tab.tab() << "<AreaUsage>" << std::endl; // NOXLATE
+    tab.inctab();
 
-    EMIT_STRING_PROPERTY(fd, areaUsage, AngleControl, true, AreaUsage::sAngleControlDefault)
-    EMIT_STRING_PROPERTY(fd, areaUsage, OriginControl, true, AreaUsage::sOriginControlDefault)
-    EMIT_STRING_PROPERTY(fd, areaUsage, ClippingControl, true, AreaUsage::sClippingControlDefault)
-    EMIT_DOUBLE_PROPERTY(fd, areaUsage, Angle, true, 0.0)       // default is 0.0
-    EMIT_DOUBLE_PROPERTY(fd, areaUsage, OriginX, true, 0.0)     // default is 0.0
-    EMIT_DOUBLE_PROPERTY(fd, areaUsage, OriginY, true, 0.0)     // default is 0.0
-    EMIT_DOUBLE_PROPERTY(fd, areaUsage, RepeatX, true, 0.0)     // default is 0.0
-    EMIT_DOUBLE_PROPERTY(fd, areaUsage, RepeatY, true, 0.0)     // default is 0.0
-    EMIT_DOUBLE_PROPERTY(fd, areaUsage, BufferWidth, true, 0.0) // default is 0.0
+    EMIT_STRING_PROPERTY(fd, areaUsage, AngleControl, true, AreaUsage::sAngleControlDefault, tab)
+    EMIT_STRING_PROPERTY(fd, areaUsage, OriginControl, true, AreaUsage::sOriginControlDefault, tab)
+    EMIT_STRING_PROPERTY(fd, areaUsage, ClippingControl, true, AreaUsage::sClippingControlDefault, tab)
+    EMIT_DOUBLE_PROPERTY(fd, areaUsage, Angle, true, 0.0, tab)       // default is 0.0
+    EMIT_DOUBLE_PROPERTY(fd, areaUsage, OriginX, true, 0.0, tab)     // default is 0.0
+    EMIT_DOUBLE_PROPERTY(fd, areaUsage, OriginY, true, 0.0, tab)     // default is 0.0
+    EMIT_DOUBLE_PROPERTY(fd, areaUsage, RepeatX, true, 0.0, tab)     // default is 0.0
+    EMIT_DOUBLE_PROPERTY(fd, areaUsage, RepeatY, true, 0.0, tab)     // default is 0.0
+    EMIT_DOUBLE_PROPERTY(fd, areaUsage, BufferWidth, true, 0.0, tab) // default is 0.0
 
     // Write any unknown XML / extended data
-    IOUnknown::Write(fd, areaUsage->GetUnknownXml(), version);
+    IOUnknown::Write(fd, areaUsage->GetUnknownXml(), version, tab);
 
-    dectab();
-    fd << tab() << "</AreaUsage>" << std::endl; // NOXLATE
+    tab.dectab();
+    fd << tab.tab() << "</AreaUsage>" << std::endl; // NOXLATE
 }

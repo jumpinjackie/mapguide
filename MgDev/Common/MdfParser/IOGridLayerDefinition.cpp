@@ -127,7 +127,7 @@ void IOGridLayerDefinition::EndElement(const wchar_t* name, HandlerStack* handle
 }
 
 
-void IOGridLayerDefinition::Write(MdfStream& fd, GridLayerDefinition* gridLayer, Version* version)
+void IOGridLayerDefinition::Write(MdfStream& fd, GridLayerDefinition* gridLayer, Version* version, MgTab& tab)
 {
     // verify the LDF version
     MdfString strVersion;
@@ -157,53 +157,53 @@ void IOGridLayerDefinition::Write(MdfStream& fd, GridLayerDefinition* gridLayer,
         strVersion = L"1.3.0";
     }
 
-    fd << tab() << "<LayerDefinition xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:noNamespaceSchemaLocation=\"LayerDefinition-" << EncodeString(strVersion) << ".xsd\" version=\"" << EncodeString(strVersion) << "\">" << std::endl; // NOXLATE
-    inctab();
+    fd << tab.tab() << "<LayerDefinition xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:noNamespaceSchemaLocation=\"LayerDefinition-" << EncodeString(strVersion) << ".xsd\" version=\"" << EncodeString(strVersion) << "\">" << std::endl; // NOXLATE
+    tab.inctab();
 
-    fd << tab() << startStr(sGridLayerDefinition) << std::endl;
-    inctab();
+    fd << tab.tab() << startStr(sGridLayerDefinition) << std::endl;
+    tab.inctab();
 
     // Property: ResourceId
-    fd << tab() << startStr(sResourceId);
+    fd << tab.tab() << startStr(sResourceId);
     fd << EncodeString(gridLayer->GetResourceID());
     fd << endStr(sResourceId) << std::endl;
 
     // Property: Opacity (optional)
     if (gridLayer->GetOpacity() != 1.0)
     {
-        fd << tab() << startStr(sOpacity);
+        fd << tab.tab() << startStr(sOpacity);
         fd << DoubleToStr(gridLayer->GetOpacity());
         fd << endStr(sOpacity) << std::endl;
     }
 
     // Property: FeatureName
-    fd << tab() << startStr(sFeatureName);
+    fd << tab.tab() << startStr(sFeatureName);
     fd << EncodeString(gridLayer->GetFeatureName());
     fd << endStr(sFeatureName) << std::endl;
 
     // Property: Geometry
-    fd << tab() << startStr(sGeometry);
+    fd << tab.tab() << startStr(sGeometry);
     fd << EncodeString(gridLayer->GetGeometry());
     fd << endStr(sGeometry) << std::endl;
 
     // Property: Filter
     if (!gridLayer->GetFilter().empty())
     {
-        fd << tab() << startStr(sFilter);
+        fd << tab.tab() << startStr(sFilter);
         fd << EncodeString(gridLayer->GetFilter());
         fd << endStr(sFilter) << std::endl;
     }
 
     // Property: GridScaleRange
     for (int i=0; i<gridLayer->GetScaleRanges()->GetCount(); ++i)
-        IOGridScaleRange::Write(fd, gridLayer->GetScaleRanges()->GetAt(i), version);
+        IOGridScaleRange::Write(fd, gridLayer->GetScaleRanges()->GetAt(i), version, tab);
 
     // Write any unknown XML / extended data
-    IOUnknown::Write(fd, gridLayer->GetUnknownXml(), version);
+    IOUnknown::Write(fd, gridLayer->GetUnknownXml(), version, tab);
 
-    dectab();
-    fd << tab() << endStr(sGridLayerDefinition) << std::endl;
+    tab.dectab();
+    fd << tab.tab() << endStr(sGridLayerDefinition) << std::endl;
 
-    dectab();
-    fd << tab() << "</LayerDefinition>" << std::endl; // NOXLATE
+    tab.dectab();
+    fd << tab.tab() << "</LayerDefinition>" << std::endl; // NOXLATE
 }

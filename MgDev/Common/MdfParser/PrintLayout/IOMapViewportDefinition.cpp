@@ -108,45 +108,45 @@ void IOMapViewportDefinition::ElementChars(const wchar_t* ch)
     }
 }
 
-void IOMapViewportDefinition::Write(MdfStream& fd, MapViewportDefinition* mapViewportDef, Version* version)
+void IOMapViewportDefinition::Write(MdfStream& fd, MapViewportDefinition* mapViewportDef, Version* version, MgTab& tab)
 {
     _ASSERT(NULL != mapViewportDef);
 
     // Set the expected version
     MdfString strVersion = L"2.0.0";
 
-    fd << tab() << "<PrintLayoutElementDefinition xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:noNamespaceSchemaLocation=\"PrintLayoutDefinition-" << EncodeString(strVersion) << ".xsd\" version=\"" << EncodeString(strVersion) << "\">" << std::endl; // NOXLATE
-    inctab();
+    fd << tab.tab() << "<PrintLayoutElementDefinition xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:noNamespaceSchemaLocation=\"PrintLayoutDefinition-" << EncodeString(strVersion) << ".xsd\" version=\"" << EncodeString(strVersion) << "\">" << std::endl; // NOXLATE
+    tab.inctab();
 
-    fd << tab() << startStr(sMapViewportDefinition) << std::endl;
-    inctab();
+    fd << tab.tab() << startStr(sMapViewportDefinition) << std::endl;
+    tab.inctab();
 
-    IOPrintLayoutElementDefinition::Write(fd, mapViewportDef, version);
+    IOPrintLayoutElementDefinition::Write(fd, mapViewportDef, version, tab);
 
     // Property: MapName
-    fd << tab() << startStr(sMapName);
+    fd << tab.tab() << startStr(sMapName);
     fd << EncodeString(mapViewportDef->GetMapName());
     fd << endStr(sMapName) << std::endl;
 
     // Property: HiddenLayerNames
-    IOStringObjectCollection::Write(fd, mapViewportDef->GetHiddenLayerNames(), version, sHiddenLayerNames, sName);
+    IOStringObjectCollection::Write(fd, mapViewportDef->GetHiddenLayerNames(), version, sHiddenLayerNames, sName, tab);
 
     // Property: Locked
-    fd << tab() << startStr(sLocked);
+    fd << tab.tab() << startStr(sLocked);
     fd << BoolToStr(mapViewportDef->GetIsLocked());
     fd << endStr(sLocked) << std::endl;
 
     // Property: On
-    fd << tab() << startStr(sOn);
+    fd << tab.tab() << startStr(sOn);
     fd << BoolToStr(mapViewportDef->GetIsOn());
     fd << endStr(sOn) << std::endl;
 
     // Property: MapView
-    IOMapView::Write(fd, mapViewportDef->GetMapView(), version);
+    IOMapView::Write(fd, mapViewportDef->GetMapView(), version, tab);
 
-    dectab();
-    fd << tab() << endStr(sMapViewportDefinition) << std::endl;
+    tab.dectab();
+    fd << tab.tab() << endStr(sMapViewportDefinition) << std::endl;
 
-    dectab();
-    fd << tab() << "</PrintLayoutElementDefinition>" << std::endl; // NOXLATE
+    tab.dectab();
+    fd << tab.tab() << "</PrintLayoutElementDefinition>" << std::endl; // NOXLATE
 }

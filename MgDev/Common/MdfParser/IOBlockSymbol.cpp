@@ -118,27 +118,27 @@ void IOBlockSymbol::EndElement(const wchar_t* name, HandlerStack* handlerStack)
 }
 
 
-void IOBlockSymbol::Write(MdfStream& fd, BlockSymbol* symbol, Version* version)
+void IOBlockSymbol::Write(MdfStream& fd, BlockSymbol* symbol, Version* version, MgTab& tab)
 {
-    fd << tab() << startStr(sBlock) << std::endl;
-    inctab();
+    fd << tab.tab() << startStr(sBlock) << std::endl;
+    tab.inctab();
 
-    IOSymbol::Write(fd, symbol, version);
+    IOSymbol::Write(fd, symbol, version, tab);
 
     // Property: SymbolLibrary
-    fd << tab() << startStr(sDrawingName);
+    fd << tab.tab() << startStr(sDrawingName);
     fd << EncodeString(symbol->GetDrawingName());
     fd << endStr(sDrawingName) << std::endl;
 
     // Property: SymbolName
-    fd << tab() << startStr(sBlockName);
+    fd << tab.tab() << startStr(sBlockName);
     fd << EncodeString(symbol->GetBlockName());
     fd << endStr(sBlockName) << std::endl;
 
     // Property: BlockColor
     if (!symbol->GetBlockColor().empty())
     {
-        fd << tab() << startStr(sBlockColor);
+        fd << tab.tab() << startStr(sBlockColor);
         fd << EncodeString(symbol->GetBlockColor());
         fd << endStr(sBlockColor) << std::endl;
     }
@@ -146,14 +146,14 @@ void IOBlockSymbol::Write(MdfStream& fd, BlockSymbol* symbol, Version* version)
     // Property: LayerColor
     if (!symbol->GetLayerColor().empty())
     {
-        fd << tab() << startStr(sLayerColor);
+        fd << tab.tab() << startStr(sLayerColor);
         fd << EncodeString(symbol->GetLayerColor());
         fd << endStr(sLayerColor) << std::endl;
     }
 
     // Write any unknown XML / extended data
-    IOUnknown::Write(fd, symbol->GetUnknownXml(), version);
+    IOUnknown::Write(fd, symbol->GetUnknownXml(), version, tab);
 
-    dectab();
-    fd << tab() << endStr(sBlock) << std::endl;
+    tab.dectab();
+    fd << tab.tab() << endStr(sBlock) << std::endl;
 }

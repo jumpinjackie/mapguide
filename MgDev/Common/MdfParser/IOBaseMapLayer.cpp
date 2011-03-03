@@ -64,13 +64,13 @@ void IOBaseMapLayer::EndElement(const wchar_t* name, HandlerStack* handlerStack)
 }
 
 
-void IOBaseMapLayer::Write(MdfStream& fd, BaseMapLayer* baseMapLayer, Version* version)
+void IOBaseMapLayer::Write(MdfStream& fd, BaseMapLayer* baseMapLayer, Version* version, MgTab& tab)
 {
-    fd << tab() << "<BaseMapLayer>" << std::endl; // NOXLATE
-    inctab();
+    fd << tab.tab() << "<BaseMapLayer>" << std::endl; // NOXLATE
+    tab.inctab();
 
-    IOMapLayerCommon::Write(fd, baseMapLayer, version);
+    IOMapLayerCommon::Write(fd, baseMapLayer, version, tab);
 
-    dectab();
-    fd << tab() << "</BaseMapLayer>" << std::endl; // NOXLATE
+    tab.dectab();
+    fd << tab.tab() << "</BaseMapLayer>" << std::endl; // NOXLATE
 }

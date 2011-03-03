@@ -176,48 +176,48 @@ AttributeRelate::RelateType IOAttributeRelate::ReadType(const wchar_t* strType)
 }
 
 
-void IOAttributeRelate::Write(MdfStream& fd, AttributeRelate* attributeRelate, Version* version)
+void IOAttributeRelate::Write(MdfStream& fd, AttributeRelate* attributeRelate, Version* version, MgTab& tab)
 {
-    fd << tab() << startStr(sAttributeRelate) << std::endl;
-    inctab();
+    fd << tab.tab() << startStr(sAttributeRelate) << std::endl;
+    tab.inctab();
 
     // Property: RelateProperties
     for (int i=0; i<attributeRelate->GetRelateProperties()->GetCount(); ++i)
-        IORelateProperty::Write(fd, attributeRelate->GetRelateProperties()->GetAt(i), version);
+        IORelateProperty::Write(fd, attributeRelate->GetRelateProperties()->GetAt(i), version, tab);
 
     // Property: AttributeClass
-    fd << tab() << startStr(sAttributeClass);
+    fd << tab.tab() << startStr(sAttributeClass);
     fd << EncodeString(attributeRelate->GetAttributeClass());
     fd << endStr(sAttributeClass) << std::endl;
 
     // Property: ResourceId
-    fd << tab() << startStr(sResourceId);
+    fd << tab.tab() << startStr(sResourceId);
     fd << EncodeString(attributeRelate->GetResourceId());
     fd << endStr(sResourceId) << std::endl;
 
     // Property: Name
-    fd << tab() << startStr(sName);
+    fd << tab.tab() << startStr(sName);
     fd << EncodeString(attributeRelate->GetName());
     fd << endStr(sName) << std::endl;
 
     // Property: AttributeNameDelimiter
-    fd << tab() << startStr(sAttributeNameDelimiter);
+    fd << tab.tab() << startStr(sAttributeNameDelimiter);
     fd << EncodeString(attributeRelate->GetAttributeNameDelimiter());
     fd << endStr(sAttributeNameDelimiter) << std::endl;
 
     // Property: RelateType
-    fd << tab() << startStr(sRelateType);
+    fd << tab.tab() << startStr(sRelateType);
     IOAttributeRelate::WriteType(fd, attributeRelate);
     fd << endStr(sRelateType) << std::endl;
 
     // Property: ForceOneToOne
-    fd << tab() << startStr(sForceOneToOne);
+    fd << tab.tab() << startStr(sForceOneToOne);
     fd << BoolToStr(attributeRelate->GetForceOneToOne());
     fd << endStr(sForceOneToOne) << std::endl;
 
     // Write any unknown XML / extended data
-    IOUnknown::Write(fd, attributeRelate->GetUnknownXml(), version);
+    IOUnknown::Write(fd, attributeRelate->GetUnknownXml(), version, tab);
 
-    dectab();
-    fd << tab() << endStr(sAttributeRelate) << std::endl;
+    tab.dectab();
+    fd << tab.tab() << endStr(sAttributeRelate) << std::endl;
 }

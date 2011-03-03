@@ -73,30 +73,30 @@ void IOMapLayerGroupCommon::EndElement(const wchar_t* name, HandlerStack* handle
 }
 
 
-void IOMapLayerGroupCommon::Write(MdfStream& fd, MapLayerGroupCommon* layerGroup, Version* version)
+void IOMapLayerGroupCommon::Write(MdfStream& fd, MapLayerGroupCommon* layerGroup, Version* version, MgTab& tab)
 {
     // Property: Name
-    fd << tab() << "<Name>"; // NOXLATE
+    fd << tab.tab() << "<Name>"; // NOXLATE
     fd << EncodeString(layerGroup->GetName());
     fd << "</Name>" << std::endl; // NOXLATE
 
     // Property: Visible
-    fd << tab() << "<Visible>"; // NOXLATE
+    fd << tab.tab() << "<Visible>"; // NOXLATE
     fd << BoolToStr(layerGroup->IsVisible());
     fd << "</Visible>" << std::endl; // NOXLATE
 
     // Property: ShowInLegend
-    fd << tab() << "<ShowInLegend>"; // NOXLATE
+    fd << tab.tab() << "<ShowInLegend>"; // NOXLATE
     fd << BoolToStr(layerGroup->IsShowInLegend());
     fd << "</ShowInLegend>" << std::endl; // NOXLATE
 
     // Property: ExpandInLegend
-    fd << tab() << "<ExpandInLegend>"; // NOXLATE
+    fd << tab.tab() << "<ExpandInLegend>"; // NOXLATE
     fd << BoolToStr(layerGroup->IsExpandInLegend());
     fd << "</ExpandInLegend>" << std::endl; // NOXLATE
 
     // Property: LegendLabel
-    fd << tab() << "<LegendLabel>"; // NOXLATE
+    fd << tab.tab() << "<LegendLabel>"; // NOXLATE
     fd << EncodeString(layerGroup->GetLegendLabel());
     fd << "</LegendLabel>" << std::endl; // NOXLATE
 }

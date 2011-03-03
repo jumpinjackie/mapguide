@@ -35,7 +35,7 @@ class IOBlockSymbol : public IOSymbol
         virtual void ElementChars(const wchar_t* ch);
         virtual void EndElement(const wchar_t* name, HandlerStack* handlerStack);
 
-        static void Write(MdfStream& fd, BlockSymbol* blockSymbol, Version* version);
+        static void Write(MdfStream& fd, BlockSymbol* blockSymbol, Version* version, MgTab& tab);
 };
 
 END_NAMESPACE_MDFPARSER

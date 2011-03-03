@@ -132,19 +132,19 @@ void IOGridColorStyle::EndElement(const wchar_t* name, HandlerStack* handlerStac
 }
 
 
-void IOGridColorStyle::Write(MdfStream& fd, GridColorStyle* colorStyle, Version* version)
+void IOGridColorStyle::Write(MdfStream& fd, GridColorStyle* colorStyle, Version* version, MgTab& tab)
 {
-    fd << tab() << startStr(sColorStyle) << std::endl;
-    inctab();
+    fd << tab.tab() << startStr(sColorStyle) << std::endl;
+    tab.inctab();
 
     // Property: HillShade
     if (colorStyle->GetHillShade())
-        IOHillShade::Write(fd, colorStyle->GetHillShade(), version);
+        IOHillShade::Write(fd, colorStyle->GetHillShade(), version, tab);
 
     // Property: TransparencyColor (optional)
     if (!colorStyle->GetTransparencyColor().empty())
     {
-        fd << tab() << startStr(sTransparencyColor);
+        fd << tab.tab() << startStr(sTransparencyColor);
         fd << EncodeString(colorStyle->GetTransparencyColor());
         fd << endStr(sTransparencyColor) << std::endl;
     }
@@ -152,7 +152,7 @@ void IOGridColorStyle::Write(MdfStream& fd, GridColorStyle* colorStyle, Version*
     // Property: BrightnessFactor (optional)
     if (colorStyle->GetBrightnessFactor() != 0.0)
     {
-        fd << tab() << startStr(sBrightnessFactor);
+        fd << tab.tab() << startStr(sBrightnessFactor);
         fd << DoubleToStr(colorStyle->GetBrightnessFactor());
         fd << endStr(sBrightnessFactor) << std::endl;
     }
@@ -160,7 +160,7 @@ void IOGridColorStyle::Write(MdfStream& fd, GridColorStyle* colorStyle, Version*
     // Property: ContrastFactor (optional)
     if (colorStyle->GetContrastFactor() != 0.0)
     {
-        fd << tab() << startStr(sContrastFactor);
+        fd << tab.tab() << startStr(sContrastFactor);
         fd << DoubleToStr(colorStyle->GetContrastFactor());
         fd << endStr(sContrastFactor) << std::endl;
     }
@@ -171,12 +171,12 @@ void IOGridColorStyle::Write(MdfStream& fd, GridColorStyle* colorStyle, Version*
     {
         GridColorRule* colorRule = static_cast<GridColorRule*>(colorRules->GetAt(i));
         if (colorRule)
-            IOGridColorRule::Write(fd, colorRule, version);
+            IOGridColorRule::Write(fd, colorRule, version, tab);
     }
 
     // Write any unknown XML / extended data
-    IOUnknown::Write(fd, colorStyle->GetUnknownXml(), version);
+    IOUnknown::Write(fd, colorStyle->GetUnknownXml(), version, tab);
 
-    dectab();
-    fd << tab() << endStr(sColorStyle) << std::endl;
+    tab.dectab();
+    fd << tab.tab() << endStr(sColorStyle) << std::endl;
 }

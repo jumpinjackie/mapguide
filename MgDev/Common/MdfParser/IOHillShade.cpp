@@ -117,37 +117,37 @@ void IOHillShade::EndElement(const wchar_t* name, HandlerStack* handlerStack)
 }
 
 
-void IOHillShade::Write(MdfStream& fd, HillShade* hillShade, Version* version)
+void IOHillShade::Write(MdfStream& fd, HillShade* hillShade, Version* version, MgTab& tab)
 {
-    fd << tab() << startStr(sHillShade) << std::endl;
-    inctab();
+    fd << tab.tab() << startStr(sHillShade) << std::endl;
+    tab.inctab();
 
     // Property: Band
-    fd << tab() << startStr(sBand);
+    fd << tab.tab() << startStr(sBand);
     fd << EncodeString(hillShade->GetBand());
     fd << endStr(sBand) << std::endl;
 
     // Property : Azimuth
-    fd << tab() << startStr(sAzimuth);
+    fd << tab.tab() << startStr(sAzimuth);
     fd << hillShade->GetAzimuth();
     fd << endStr(sAzimuth) << std::endl;
 
     // Property : Altitude
-    fd << tab() << startStr(sAltitude);
+    fd << tab.tab() << startStr(sAltitude);
     fd << hillShade->GetAltitude();
     fd << endStr(sAltitude) << std::endl;
 
     // Property : ScaleFactor (optional)
     if (hillShade->GetScaleFactor() != 1.0)
     {
-        fd << tab() << startStr(sScaleFactor);
+        fd << tab.tab() << startStr(sScaleFactor);
         fd << hillShade->GetScaleFactor();
         fd << endStr(sScaleFactor) << std::endl;
     }
 
     // Write any unknown XML / extended data
-    IOUnknown::Write(fd, hillShade->GetUnknownXml(), version);
+    IOUnknown::Write(fd, hillShade->GetUnknownXml(), version, tab);
 
-    dectab();
-    fd << tab() << endStr(sHillShade) << std::endl;
+    tab.dectab();
+    fd << tab.tab() << endStr(sHillShade) << std::endl;
 }

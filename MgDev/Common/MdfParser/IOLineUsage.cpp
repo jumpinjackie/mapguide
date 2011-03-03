@@ -102,13 +102,13 @@ void IOLineUsage::EndElement(const wchar_t* name, HandlerStack* handlerStack)
 }
 
 
-void IOLineUsage::Write(MdfStream& fd, LineUsage* lineUsage, Version* version)
+void IOLineUsage::Write(MdfStream& fd, LineUsage* lineUsage, Version* version, MgTab& tab)
 {
-    fd << tab() << "<LineUsage>" << std::endl; // NOXLATE
-    inctab();
+    fd << tab.tab() << "<LineUsage>" << std::endl; // NOXLATE
+    tab.inctab();
 
-    EMIT_STRING_PROPERTY(fd, lineUsage, AngleControl, true, LineUsage::sAngleControlDefault)
-    EMIT_STRING_PROPERTY(fd, lineUsage, UnitsControl, true, LineUsage::sUnitsControlDefault)
+    EMIT_STRING_PROPERTY(fd, lineUsage, AngleControl, true, LineUsage::sAngleControlDefault, tab)
+    EMIT_STRING_PROPERTY(fd, lineUsage, UnitsControl, true, LineUsage::sUnitsControlDefault, tab)
 
     // Property: VertexControl
 
@@ -140,13 +140,13 @@ void IOLineUsage::Write(MdfStream& fd, LineUsage* lineUsage, Version* version)
 
     if (emitVertexControl)
     {
-        fd << tab() << "<VertexControl>";       // NOXLATE
+        fd << tab.tab() << "<VertexControl>";       // NOXLATE
         fd << EncodeString(strVertexControl);
         fd << "</VertexControl>" << std::endl;  // NOXLATE
     }
 
     // Property: Angle
-    EMIT_DOUBLE_PROPERTY(fd, lineUsage, Angle, true, 0.0)   // default is 0.0
+    EMIT_DOUBLE_PROPERTY(fd, lineUsage, Angle, true, 0.0, tab)   // default is 0.0
 
     // Property: StartOffset / EndOffset
     bool emitStartOffset = false;
@@ -189,29 +189,29 @@ void IOLineUsage::Write(MdfStream& fd, LineUsage* lineUsage, Version* version)
 
     if (emitStartOffset)
     {
-        fd << tab() << "<StartOffset>";         // NOXLATE
+        fd << tab.tab() << "<StartOffset>";         // NOXLATE
         fd << EncodeString(strStartOffset);
         fd << "</StartOffset>" << std::endl;    // NOXLATE
     }
 
     if (emitEndOffset)
     {
-        fd << tab() << "<EndOffset>";           // NOXLATE
+        fd << tab.tab() << "<EndOffset>";           // NOXLATE
         fd << EncodeString(strEndOffset);
         fd << "</EndOffset>" << std::endl;      // NOXLATE
     }
 
-    EMIT_DOUBLE_PROPERTY(fd, lineUsage, Repeat, true, 0.0)           // default is 0.0
-    EMIT_DOUBLE_PROPERTY(fd, lineUsage, VertexAngleLimit, true, 0.0) // default is 0.0
-    EMIT_STRING_PROPERTY(fd, lineUsage, VertexJoin, true, LineUsage::sVertexJoinDefault)
-    EMIT_DOUBLE_PROPERTY(fd, lineUsage, VertexMiterLimit, true, 5.0) // default is 5.0
+    EMIT_DOUBLE_PROPERTY(fd, lineUsage, Repeat, true, 0.0, tab)           // default is 0.0
+    EMIT_DOUBLE_PROPERTY(fd, lineUsage, VertexAngleLimit, true, 0.0, tab) // default is 0.0
+    EMIT_STRING_PROPERTY(fd, lineUsage, VertexJoin, true, LineUsage::sVertexJoinDefault, tab)
+    EMIT_DOUBLE_PROPERTY(fd, lineUsage, VertexMiterLimit, true, 5.0, tab) // default is 5.0
 
     if (lineUsage->GetDefaultPath())
-        IOPath::Write(fd, lineUsage->GetDefaultPath(), "DefaultPath", version);
+        IOPath::Write(fd, lineUsage->GetDefaultPath(), "DefaultPath", version, tab);
 
     // Write any unknown XML / extended data
-    IOUnknown::Write(fd, lineUsage->GetUnknownXml(), version);
+    IOUnknown::Write(fd, lineUsage->GetUnknownXml(), version, tab);
 
-    dectab();
-    fd << tab() << "</LineUsage>" << std::endl; // NOXLATE
+    tab.dectab();
+    fd << tab.tab() << "</LineUsage>" << std::endl; // NOXLATE
 }

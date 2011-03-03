@@ -36,7 +36,7 @@ class IOOverrideCollection : public SAX2ElementHandler
         virtual void ElementChars(const wchar_t* ch);
         virtual void EndElement(const wchar_t* name, HandlerStack* handlerStack);
 
-        static void Write(MdfStream& fd, OverrideCollection* overrideCollection, Version* version);
+        static void Write(MdfStream& fd, OverrideCollection* overrideCollection, Version* version, MgTab& tab);
 
     private:
         OverrideCollection* m_overrideCollection;

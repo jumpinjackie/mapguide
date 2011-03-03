@@ -175,10 +175,10 @@ bool IOSymbolInstance::GetSymbolDefinitionVersion(Version* ldfVersion, Version& 
 }
 
 
-void IOSymbolInstance::Write(MdfStream& fd, SymbolInstance* symbolInstance, Version* version)
+void IOSymbolInstance::Write(MdfStream& fd, SymbolInstance* symbolInstance, Version* version, MgTab& tab)
 {
-    fd << tab() << "<SymbolInstance>" << std::endl; // NOXLATE
-    inctab();
+    fd << tab.tab() << "<SymbolInstance>" << std::endl; // NOXLATE
+    tab.inctab();
 
     MdfStringStream fdExtData;
 
@@ -194,39 +194,39 @@ void IOSymbolInstance::Write(MdfStream& fd, SymbolInstance* symbolInstance, Vers
         CompoundSymbolDefinition* compoundSymbol = dynamic_cast<CompoundSymbolDefinition*>(symbol);
 
         if (simpleSymbol)
-            IOSimpleSymbolDefinition::Write(fd, simpleSymbol, false, &sdVersion);
+            IOSimpleSymbolDefinition::Write(fd, simpleSymbol, false, &sdVersion, tab);
         else if (compoundSymbol)
-            IOCompoundSymbolDefinition::Write(fd, compoundSymbol, false, &sdVersion);
+            IOCompoundSymbolDefinition::Write(fd, compoundSymbol, false, &sdVersion, tab);
     }
     else
     {
-        EMIT_STRING_PROPERTY(fd, symbolInstance, ResourceId, false, NULL)
+        EMIT_STRING_PROPERTY(fd, symbolInstance, ResourceId, false, NULL, tab)
     }
 
-    IOOverrideCollection::Write(fd, symbolInstance->GetParameterOverrides(), version);
+    IOOverrideCollection::Write(fd, symbolInstance->GetParameterOverrides(), version, tab);
 
-    EMIT_DOUBLE_PROPERTY(fd, symbolInstance, ScaleX, true, 1.0)                          // default is 1.0
-    EMIT_DOUBLE_PROPERTY(fd, symbolInstance, ScaleY, true, 1.0)                          // default is 1.0
-    EMIT_DOUBLE_PROPERTY(fd, symbolInstance, InsertionOffsetX, true, 0.0)                // default is 0.0
-    EMIT_DOUBLE_PROPERTY(fd, symbolInstance, InsertionOffsetY, true, 0.0)                // default is 0.0
-    EMIT_ENUM_2(fd, symbolInstance, MdfModel, SizeContext, DeviceUnits, MappingUnits, 1) // default is DeviceUnits
-    EMIT_BOOL_PROPERTY(fd, symbolInstance, DrawLast, true, false)                        // default is false
-    EMIT_BOOL_PROPERTY(fd, symbolInstance, CheckExclusionRegion, true, false)            // default is false
-    EMIT_BOOL_PROPERTY(fd, symbolInstance, AddToExclusionRegion, true, false)            // default is false
-    EMIT_STRING_PROPERTY(fd, symbolInstance, PositioningAlgorithm, true, SymbolInstance::sPositioningAlgorithmDefault)
+    EMIT_DOUBLE_PROPERTY(fd, symbolInstance, ScaleX, true, 1.0, tab)                          // default is 1.0
+    EMIT_DOUBLE_PROPERTY(fd, symbolInstance, ScaleY, true, 1.0, tab)                          // default is 1.0
+    EMIT_DOUBLE_PROPERTY(fd, symbolInstance, InsertionOffsetX, true, 0.0, tab)                // default is 0.0
+    EMIT_DOUBLE_PROPERTY(fd, symbolInstance, InsertionOffsetY, true, 0.0, tab)                // default is 0.0
+    EMIT_ENUM_2(fd, symbolInstance, MdfModel, SizeContext, DeviceUnits, MappingUnits, 1, tab) // default is DeviceUnits
+    EMIT_BOOL_PROPERTY(fd, symbolInstance, DrawLast, true, false, tab)                        // default is false
+    EMIT_BOOL_PROPERTY(fd, symbolInstance, CheckExclusionRegion, true, false, tab)            // default is false
+    EMIT_BOOL_PROPERTY(fd, symbolInstance, AddToExclusionRegion, true, false, tab)            // default is false
+    EMIT_STRING_PROPERTY(fd, symbolInstance, PositioningAlgorithm, true, SymbolInstance::sPositioningAlgorithmDefault, tab)
 
     if (!version || (*version >= Version(1, 2, 0)))
     {
         // write new version 1.2.0 properties
 
         // Property: RenderingPass
-        EMIT_INTEGER_PROPERTY(fd, symbolInstance, RenderingPass, true, 0)               // default is 0
+        EMIT_INTEGER_PROPERTY(fd, symbolInstance, RenderingPass, true, 0, tab)               // default is 0
 
         // Property: UsageContext
         SymbolInstance::UsageContext usageContext = symbolInstance->GetUsageContext();
         if (usageContext != SymbolInstance::ucUnspecified)
         {
-            fd << tab() << "<UsageContext>";         // NOXLATE
+            fd << tab.tab() << "<UsageContext>";         // NOXLATE
             if (usageContext == SymbolInstance::ucPoint)
                 fd << "Point";                       // NOXLATE
             else if (usageContext == SymbolInstance::ucLine)
@@ -240,7 +240,7 @@ void IOSymbolInstance::Write(MdfStream& fd, SymbolInstance* symbolInstance, Vers
         SymbolInstance::GeometryContext geomContext = symbolInstance->GetGeometryContext();
         if (geomContext != SymbolInstance::gcUnspecified)
         {
-            fd << tab() << "<GeometryContext>";      // NOXLATE
+            fd << tab.tab() << "<GeometryContext>";      // NOXLATE
             if (geomContext == SymbolInstance::gcPoint)
                 fd << "Point";                       // NOXLATE
             else if (geomContext == SymbolInstance::gcLineString)
@@ -253,16 +253,16 @@ void IOSymbolInstance::Write(MdfStream& fd, SymbolInstance* symbolInstance, Vers
     else if (*version >= Version(1, 0, 0))
     {
         // save new properties as extended data for LDF versions 1.0.0 and 1.1.0
-        inctab();
+        tab.inctab();
 
         // Property: RenderingPass
-        EMIT_INTEGER_PROPERTY(fdExtData, symbolInstance, RenderingPass, true, 0)        // default is 0
+        EMIT_INTEGER_PROPERTY(fdExtData, symbolInstance, RenderingPass, true, 0, tab)        // default is 0
 
         // Property: UsageContext
         SymbolInstance::UsageContext usageContext = symbolInstance->GetUsageContext();
         if (usageContext != SymbolInstance::ucUnspecified)
         {
-            fdExtData << tab() << "<UsageContext>";         // NOXLATE
+            fdExtData << tab.tab() << "<UsageContext>";         // NOXLATE
             if (usageContext == SymbolInstance::ucPoint)
                 fdExtData << "Point";                       // NOXLATE
             else if (usageContext == SymbolInstance::ucLine)
@@ -276,7 +276,7 @@ void IOSymbolInstance::Write(MdfStream& fd, SymbolInstance* symbolInstance, Vers
         SymbolInstance::GeometryContext geomContext = symbolInstance->GetGeometryContext();
         if (geomContext != SymbolInstance::gcUnspecified)
         {
-            fdExtData << tab() << "<GeometryContext>";      // NOXLATE
+            fdExtData << tab.tab() << "<GeometryContext>";      // NOXLATE
             if (geomContext == SymbolInstance::gcPoint)
                 fdExtData << "Point";                       // NOXLATE
             else if (geomContext == SymbolInstance::gcLineString)
@@ -286,12 +286,12 @@ void IOSymbolInstance::Write(MdfStream& fd, SymbolInstance* symbolInstance, Vers
             fdExtData << "</GeometryContext>" << std::endl; // NOXLATE
         }
 
-        dectab();
+        tab.dectab();
     }
 
     // Write the unknown XML / extended data
-    IOUnknown::Write(fd, symbolInstance->GetUnknownXml(), fdExtData.str(), version);
+    IOUnknown::Write(fd, symbolInstance->GetUnknownXml(), fdExtData.str(), version, tab);
 
-    dectab();
-    fd << tab() << "</SymbolInstance>" << std::endl; // NOXLATE
+    tab.dectab();
+    fd << tab.tab() << "</SymbolInstance>" << std::endl; // NOXLATE
 }

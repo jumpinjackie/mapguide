@@ -155,7 +155,7 @@ void IOVectorLayerDefinition::EndElement(const wchar_t* name, HandlerStack* hand
 }
 
 
-void IOVectorLayerDefinition::Write(MdfStream& fd, VectorLayerDefinition* vectorLayer, Version* version)
+void IOVectorLayerDefinition::Write(MdfStream& fd, VectorLayerDefinition* vectorLayer, Version* version, MgTab& tab)
 {
     // verify the LDF version
     MdfString strVersion;
@@ -185,32 +185,32 @@ void IOVectorLayerDefinition::Write(MdfStream& fd, VectorLayerDefinition* vector
         strVersion = L"1.3.0";
     }
 
-    fd << tab() << "<LayerDefinition xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:noNamespaceSchemaLocation=\"LayerDefinition-" << EncodeString(strVersion) << ".xsd\" version=\"" << EncodeString(strVersion) << "\">" << std::endl; // NOXLATE
-    inctab();
+    fd << tab.tab() << "<LayerDefinition xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:noNamespaceSchemaLocation=\"LayerDefinition-" << EncodeString(strVersion) << ".xsd\" version=\"" << EncodeString(strVersion) << "\">" << std::endl; // NOXLATE
+    tab.inctab();
 
-    fd << tab() << startStr(sVectorLayerDefinition) << std::endl;
-    inctab();
+    fd << tab.tab() << startStr(sVectorLayerDefinition) << std::endl;
+    tab.inctab();
 
     // Property: ResourceId
-    fd << tab() << startStr(sResourceId);
+    fd << tab.tab() << startStr(sResourceId);
     fd << EncodeString(vectorLayer->GetResourceID());
     fd << endStr(sResourceId) << std::endl;
 
     // Property: Opacity (optional)
     if (vectorLayer->GetOpacity() != 1.0)
     {
-        fd << tab() << startStr(sOpacity);
+        fd << tab.tab() << startStr(sOpacity);
         fd << DoubleToStr(vectorLayer->GetOpacity());
         fd << endStr(sOpacity) << std::endl;
     }
 
     // Property: FeatureName
-    fd << tab() << startStr(sFeatureName);
+    fd << tab.tab() << startStr(sFeatureName);
     fd << EncodeString(vectorLayer->GetFeatureName());
     fd << endStr(sFeatureName) << std::endl;
 
     // Property: FeatureNameType
-    fd << tab() << startStr(sFeatureNameType);
+    fd << tab.tab() << startStr(sFeatureNameType);
     if (vectorLayer->GetFeatureNameType() == VectorLayerDefinition::FeatureClass)
         fd << "FeatureClass"; // NOXLATE
     else
@@ -220,24 +220,24 @@ void IOVectorLayerDefinition::Write(MdfStream& fd, VectorLayerDefinition* vector
     // Property: Filter
     if (!vectorLayer->GetFilter().empty())
     {
-        fd << tab() << startStr(sFilter);
+        fd << tab.tab() << startStr(sFilter);
         fd << EncodeString(vectorLayer->GetFilter());
         fd << endStr(sFilter) << std::endl;
     }
 
     // Property: PropertyMappings
     for (int i=0; i<vectorLayer->GetPropertyMappings()->GetCount(); ++i)
-        IONameStringPair::Write(fd, sPropertyMapping, vectorLayer->GetPropertyMappings()->GetAt(i), version);
+        IONameStringPair::Write(fd, sPropertyMapping, vectorLayer->GetPropertyMappings()->GetAt(i), version, tab);
 
     // Property: Geometry
-    fd << tab() << startStr(sGeometry);
+    fd << tab.tab() << startStr(sGeometry);
     fd << EncodeString(vectorLayer->GetGeometry());
     fd << endStr(sGeometry) << std::endl;
 
     // Property: Url
     if (!vectorLayer->GetUrl().empty())
     {
-        fd << tab() << startStr(sUrl);
+        fd << tab.tab() << startStr(sUrl);
         fd << EncodeString(vectorLayer->GetUrl());
         fd << endStr(sUrl) << std::endl;
     }
@@ -245,21 +245,21 @@ void IOVectorLayerDefinition::Write(MdfStream& fd, VectorLayerDefinition* vector
     // Property: ToolTip
     if (!vectorLayer->GetToolTip().empty())
     {
-        fd << tab() << startStr(sToolTip);
+        fd << tab.tab() << startStr(sToolTip);
         fd << EncodeString(vectorLayer->GetToolTip());
         fd << endStr(sToolTip) << std::endl;
     }
 
     // Property: VectorScaleRange
     for (int i=0; i<vectorLayer->GetScaleRanges()->GetCount(); ++i)
-        IOVectorScaleRange::Write(fd, vectorLayer->GetScaleRanges()->GetAt(i), version);
+        IOVectorScaleRange::Write(fd, vectorLayer->GetScaleRanges()->GetAt(i), version, tab);
 
     // Write any unknown XML / extended data
-    IOUnknown::Write(fd, vectorLayer->GetUnknownXml(), version);
+    IOUnknown::Write(fd, vectorLayer->GetUnknownXml(), version, tab);
 
-    dectab();
-    fd << tab() << endStr(sVectorLayerDefinition) << std::endl;
+    tab.dectab();
+    fd << tab.tab() << endStr(sVectorLayerDefinition) << std::endl;
 
-    dectab();
-    fd << tab() << "</LayerDefinition>" << std::endl; // NOXLATE
+    tab.dectab();
+    fd << tab.tab() << "</LayerDefinition>" << std::endl; // NOXLATE
 }

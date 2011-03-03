@@ -125,32 +125,32 @@ void IOChannelBand::EndElement(const wchar_t* name, HandlerStack* handlerStack)
 }
 
 
-void IOChannelBand::Write(MdfStream& fd, const ChannelBand* channel, std::string name, Version* version)
+void IOChannelBand::Write(MdfStream& fd, const ChannelBand* channel, std::string name, Version* version, MgTab& tab)
 {
-    fd << tab() << startStr(name) << std::endl;
-    inctab();
+    fd << tab.tab() << startStr(name) << std::endl;
+    tab.inctab();
 
     // Property: Band
-    fd << tab() << startStr(sBand);
+    fd << tab.tab() << startStr(sBand);
     fd << EncodeString(channel->GetBand());
     fd << endStr(sBand) << std::endl;
 
     // Property: LowBand
     // TODO: this is optional - it defaults to the low value in the band
-    fd << tab() << startStr(sLowBand);
+    fd << tab.tab() << startStr(sLowBand);
     fd << DoubleToStr(channel->GetLowBand());
     fd << endStr(sLowBand) << std::endl;
 
     // Property: HighBand
     // TODO: this is optional - it defaults to the high value in the band
-    fd << tab() << startStr(sHighBand);
+    fd << tab.tab() << startStr(sHighBand);
     fd << DoubleToStr(channel->GetHighBand());
     fd << endStr(sHighBand) << std::endl;
 
     // Property: LowChannel (optional)
     if (channel->GetLowChannel() != 0)
     {
-        fd << tab() << startStr(sLowChannel);
+        fd << tab.tab() << startStr(sLowChannel);
         fd << DoubleToStr(channel->GetLowChannel());
         fd << endStr(sLowChannel) << std::endl;
     }
@@ -158,14 +158,14 @@ void IOChannelBand::Write(MdfStream& fd, const ChannelBand* channel, std::string
     // Property: HighChannel (optional)
     if (channel->GetHighChannel() != 255)
     {
-        fd << tab() << startStr(sHighChannel);
+        fd << tab.tab() << startStr(sHighChannel);
         fd << DoubleToStr(channel->GetHighChannel());
         fd << endStr(sHighChannel) << std::endl;
     }
 
     // Write any unknown XML / extended data
-    IOUnknown::Write(fd, channel->GetUnknownXml(), version);
+    IOUnknown::Write(fd, channel->GetUnknownXml(), version, tab);
 
-    dectab();
-    fd << tab() << endStr(name) << std::endl;
+    tab.dectab();
+    fd << tab.tab() << endStr(name) << std::endl;
 }

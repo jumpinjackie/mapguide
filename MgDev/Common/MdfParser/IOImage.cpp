@@ -69,37 +69,37 @@ void IOImage::ElementChars(const wchar_t* ch)
 }
 
 
-void IOImage::Write(MdfStream& fd, Image* image, Version* version)
+void IOImage::Write(MdfStream& fd, Image* image, Version* version, MgTab& tab)
 {
     // We must emit either the content or a reference, but
     // not both.  It's invalid for all strings to be empty,
     // but to ensure the XML is valid we still write an empty
     // reference.
-    fd << tab() << "<Image>" << std::endl; // NOXLATE
-    inctab();
+    fd << tab.tab() << "<Image>" << std::endl; // NOXLATE
+    tab.inctab();
 
-    IOGraphicElement::Write(fd, image, version);
+    IOGraphicElement::Write(fd, image, version, tab);
 
     if (image->GetContent().size() > 0)
     {
-        EMIT_STRING_PROPERTY(fd, image, Content, false, NULL)
+        EMIT_STRING_PROPERTY(fd, image, Content, false, NULL, tab)
     }
     else
     {
         _ASSERT(image->GetLibraryItemName().size() > 0);
-        IOResourceRef::Write(fd, "Reference", image->GetResourceId(), image->GetLibraryItemName(), true, version); // NOXLATE
+        IOResourceRef::Write(fd, "Reference", image->GetResourceId(), image->GetLibraryItemName(), true, version, tab); // NOXLATE
     }
 
-    EMIT_DOUBLE_PROPERTY(fd, image, SizeX, false, 1.0)
-    EMIT_DOUBLE_PROPERTY(fd, image, SizeY, false, 1.0)
-    EMIT_BOOL_PROPERTY(fd, image, SizeScalable, true, true) // default is true
-    EMIT_DOUBLE_PROPERTY(fd, image, Angle, true, 0.0)       // default is 0.0
-    EMIT_DOUBLE_PROPERTY(fd, image, PositionX, true, 0.0)   // default is 0.0
-    EMIT_DOUBLE_PROPERTY(fd, image, PositionY, true, 0.0)   // default is 0.0
+    EMIT_DOUBLE_PROPERTY(fd, image, SizeX, false, 1.0, tab)
+    EMIT_DOUBLE_PROPERTY(fd, image, SizeY, false, 1.0, tab)
+    EMIT_BOOL_PROPERTY(fd, image, SizeScalable, true, true, tab) // default is true
+    EMIT_DOUBLE_PROPERTY(fd, image, Angle, true, 0.0, tab)       // default is 0.0
+    EMIT_DOUBLE_PROPERTY(fd, image, PositionX, true, 0.0, tab)   // default is 0.0
+    EMIT_DOUBLE_PROPERTY(fd, image, PositionY, true, 0.0, tab)   // default is 0.0
 
     // Write any unknown XML / extended data
-    IOUnknown::Write(fd, image->GetUnknownXml(), version);
+    IOUnknown::Write(fd, image->GetUnknownXml(), version, tab);
 
-    dectab();
-    fd << tab() << "</Image>" << std::endl; // NOXLATE
+    tab.dectab();
+    fd << tab.tab() << "</Image>" << std::endl; // NOXLATE
 }

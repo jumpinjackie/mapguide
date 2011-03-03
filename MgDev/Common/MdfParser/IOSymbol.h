@@ -35,7 +35,7 @@ class IOSymbol : public SAX2ElementHandler
 
         Symbol* GetSymbol();
 
-        static void Write(MdfStream& fd, Symbol* symbol, Version* version);
+        static void Write(MdfStream& fd, Symbol* symbol, Version* version, MgTab& tab);
 
     protected:
         Symbol* m_symbol;

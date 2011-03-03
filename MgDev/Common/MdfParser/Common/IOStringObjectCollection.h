@@ -33,7 +33,7 @@ public:
     virtual void ElementChars(const wchar_t* ch);
     virtual void EndElement(const wchar_t* name, HandlerStack* handlerStack);
 
-    static void Write(MdfStream& fd, StringObjectCollection* strCol, Version* version, const std::string& colName, const std::string& strName);
+    static void Write(MdfStream& fd, StringObjectCollection* strCol, Version* version, const std::string& colName, const std::string& strName, MgTab& tab);
 
 private:
     // Hidden default/copy constructors and assignment operator.

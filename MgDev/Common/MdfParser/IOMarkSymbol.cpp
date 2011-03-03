@@ -143,15 +143,15 @@ void IOMarkSymbol::EndElement(const wchar_t* name, HandlerStack* handlerStack)
 }
 
 
-void IOMarkSymbol::Write(MdfStream& fd, MarkSymbol* markSymbol, Version* version)
+void IOMarkSymbol::Write(MdfStream& fd, MarkSymbol* markSymbol, Version* version, MgTab& tab)
 {
-    fd << tab() << startStr(sMark) << std::endl;
-    inctab();
+    fd << tab.tab() << startStr(sMark) << std::endl;
+    tab.inctab();
 
-    IOSymbol::Write(fd, markSymbol, version);
+    IOSymbol::Write(fd, markSymbol, version, tab);
 
     // Property: Shape
-    fd << tab() << startStr(sShape);
+    fd << tab.tab() << startStr(sShape);
     if (markSymbol->GetShape() == MarkSymbol::Square)
         fd << EncodeString(L"Square"); // NOXLATE
     else if (markSymbol->GetShape() == MarkSymbol::Circle)
@@ -168,15 +168,15 @@ void IOMarkSymbol::Write(MdfStream& fd, MarkSymbol* markSymbol, Version* version
 
     // Property: Fill
     if (markSymbol->GetFill())
-        IOFill::Write(fd, markSymbol->GetFill(), version);
+        IOFill::Write(fd, markSymbol->GetFill(), version, tab);
 
     // Property: Edge
     if (markSymbol->GetEdge())
-        IOStroke::Write(fd, markSymbol->GetEdge(), sEdge, version);
+        IOStroke::Write(fd, markSymbol->GetEdge(), sEdge, version, tab);
 
     // Write any unknown XML / extended data
-    IOUnknown::Write(fd, markSymbol->GetUnknownXml(), version);
+    IOUnknown::Write(fd, markSymbol->GetUnknownXml(), version, tab);
 
-    dectab();
-    fd << tab() << endStr(sMark) << std::endl;
+    tab.dectab();
+    fd << tab.tab() << endStr(sMark) << std::endl;
 }

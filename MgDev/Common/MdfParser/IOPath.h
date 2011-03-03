@@ -37,8 +37,8 @@ class IOPath : public IOGraphicElement
         virtual void StartElement(const wchar_t* name, HandlerStack* handlerStack);
         virtual void ElementChars(const wchar_t* ch);
 
-        static void Write(MdfStream& fd, Path* path, Version* version);
-        static void Write(MdfStream& fd, Path* path, std::string name, Version* version);
+        static void Write(MdfStream& fd, Path* path, Version* version, MgTab& tab);
+        static void Write(MdfStream& fd, Path* path, std::string name, Version* version, MgTab& tab);
 };
 
 END_NAMESPACE_MDFPARSER

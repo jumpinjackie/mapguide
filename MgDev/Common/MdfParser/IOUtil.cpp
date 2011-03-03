@@ -21,50 +21,7 @@
 
 BEGIN_NAMESPACE_MDFPARSER
 
-bool tabsEnabled = true;
-int tabcount = 0;
-
-
-std::string tab()
-{
-    std::string ret;
-    if (tabsEnabled)
-    {
-        ret.reserve(tabcount);
-        ret.append(tabcount, ' ');
-    }
-    return ret;
-}
-
-
-int gettabcount()
-{
-    return tabcount;
-}
-
-
-void inctab()
-{
-    tabcount++;
-}
-
-
-void dectab()
-{
-    tabcount--;
-}
-
-
-void zerotab()
-{
-    tabcount = 0;
-}
-
-
-void disableTabs()
-{
-    tabsEnabled = false;
-}
+bool MgTab::m_tabsEnabled = true;
 
 
 std::wstring toMdfString(const char* str)

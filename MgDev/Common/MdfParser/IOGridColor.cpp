@@ -120,15 +120,15 @@ void IOGridColor::EndElement(const wchar_t* name, HandlerStack* handlerStack)
 }
 
 
-void IOGridColor::Write(MdfStream& fd, GridColor* color, Version* version)
+void IOGridColor::Write(MdfStream& fd, GridColor* color, Version* version, MgTab& tab)
 {
-    fd << tab() << startStr(sColor) << std::endl;
-    inctab();
+    fd << tab.tab() << startStr(sColor) << std::endl;
+    tab.inctab();
 
     GridColorExplicit* colorExplicit = dynamic_cast<GridColorExplicit*>(color);
     if (colorExplicit)
     {
-        fd << tab() << startStr(sExplicitColor);
+        fd << tab.tab() << startStr(sExplicitColor);
         fd << EncodeString(colorExplicit->GetExplicitColor());
         fd << endStr(sExplicitColor) << std::endl;
     }
@@ -136,18 +136,18 @@ void IOGridColor::Write(MdfStream& fd, GridColor* color, Version* version)
     GridColorBand* colorBand = dynamic_cast<GridColorBand*>(color);
     if (colorBand)
     {
-        fd << tab() << startStr(sBand);
+        fd << tab.tab() << startStr(sBand);
         fd << EncodeString(colorBand->GetBand());
         fd << endStr(sBand) << std::endl;
     }
 
     GridColorBands* colorBands = dynamic_cast<GridColorBands*>(color);
     if (colorBands)
-        IOGridColorBands::Write(fd, colorBands, version);
+        IOGridColorBands::Write(fd, colorBands, version, tab);
 
     // Write any unknown XML / extended data
-    IOUnknown::Write(fd, color->GetUnknownXml(), version);
+    IOUnknown::Write(fd, color->GetUnknownXml(), version, tab);
 
-    dectab();
-    fd << tab() << endStr(sColor) << std::endl;
+    tab.dectab();
+    fd << tab.tab() << endStr(sColor) << std::endl;
 }

@@ -127,8 +127,8 @@ void IOLineSymbolization2D::EndElement(const wchar_t* name, HandlerStack* handle
 }
 
 
-void IOLineSymbolization2D::Write(MdfStream& fd, LineSymbolization2D* lineSymbolization, Version* version)
+void IOLineSymbolization2D::Write(MdfStream& fd, LineSymbolization2D* lineSymbolization, Version* version, MgTab& tab)
 {
     // a LineSymbolization2D is just a Stroke
-    IOStroke::Write(fd, lineSymbolization->GetStroke(), sLineSymbolization2D, version);
+    IOStroke::Write(fd, lineSymbolization->GetStroke(), sLineSymbolization2D, version, tab);
 }

@@ -82,17 +82,17 @@ void IOThemeLabel::EndElement(const wchar_t* name, HandlerStack* handlerStack)
 }
 
 
-void IOThemeLabel::Write(MdfStream& fd, ThemeLabel* pThemeLabel, Version* version)
+void IOThemeLabel::Write(MdfStream& fd, ThemeLabel* pThemeLabel, Version* version, MgTab& tab)
 {
-    fd << tab() << "<ThemeLabel>" << std::endl; // NOXLATE
-    inctab();
+    fd << tab.tab() << "<ThemeLabel>" << std::endl; // NOXLATE
+    tab.inctab();
 
-    EMIT_STRING_PROPERTY(fd, pThemeLabel, Description, false, NULL)
-    EMIT_STRING_PROPERTY(fd, pThemeLabel, CategoryFormat, false, NULL)
+    EMIT_STRING_PROPERTY(fd, pThemeLabel, Description, false, NULL, tab)
+    EMIT_STRING_PROPERTY(fd, pThemeLabel, CategoryFormat, false, NULL, tab)
 
     // Write any unknown XML / extended data
-    IOUnknown::Write(fd, pThemeLabel->GetUnknownXml(), version);
+    IOUnknown::Write(fd, pThemeLabel->GetUnknownXml(), version, tab);
 
-    dectab();
-    fd << tab() << "</ThemeLabel>" << std::endl; // NOXLATE
+    tab.dectab();
+    fd << tab.tab() << "</ThemeLabel>" << std::endl; // NOXLATE
 }

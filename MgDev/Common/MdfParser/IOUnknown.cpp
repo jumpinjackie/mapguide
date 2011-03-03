@@ -114,37 +114,37 @@ void IOUnknown::EndElement(const wchar_t* name, HandlerStack* handlerStack)
 
 
 // The supplied unknown data is assumed to not be tabbed.
-void IOUnknown::Write(MdfStream& fd, const std::wstring& unkData, Version* version)
+void IOUnknown::Write(MdfStream& fd, const std::wstring& unkData, Version* version, MgTab& tab)
 {
     if (unkData.empty())
         return;
 
     if (!version || (*version >= Version(1, 0, 0)))
     {
-        fd << tab() << "<ExtendedData1>" << std::endl; // NOXLATE
+        fd << tab.tab() << "<ExtendedData1>" << std::endl; // NOXLATE
 
-        WriteUnknown(fd, unkData);
+        WriteUnknown(fd, unkData, tab);
 
-        fd << tab() << "</ExtendedData1>" << std::endl; // NOXLATE
+        fd << tab.tab() << "</ExtendedData1>" << std::endl; // NOXLATE
     }
 }
 
 
 // The supplied unknown data is assumed to be unformatted,
 // while the raw data is assumed to be formatted.
-void IOUnknown::Write(MdfStream& fd, const std::wstring& unkData, const std::string& rawData, Version* version)
+void IOUnknown::Write(MdfStream& fd, const std::wstring& unkData, const std::string& rawData, Version* version, MgTab& tab)
 {
     if (unkData.empty() && rawData.empty())
         return;
 
     if (!version || (*version >= Version(1, 0, 0)))
     {
-        fd << tab() << "<ExtendedData1>" << std::endl; // NOXLATE
+        fd << tab.tab() << "<ExtendedData1>" << std::endl; // NOXLATE
 
         WriteRaw(fd, rawData);
-        WriteUnknown(fd, unkData);
+        WriteUnknown(fd, unkData, tab);
 
-        fd << tab() << "</ExtendedData1>" << std::endl; // NOXLATE
+        fd << tab.tab() << "</ExtendedData1>" << std::endl; // NOXLATE
     }
 }
 
@@ -167,13 +167,13 @@ void IOUnknown::WriteRaw(MdfStream& fd, const std::string& rawData)
 
 
 // The supplied data is assumed to be unformatted.
-void IOUnknown::WriteUnknown(MdfStream& fd, const std::wstring& unkData)
+void IOUnknown::WriteUnknown(MdfStream& fd, const std::wstring& unkData, MgTab& tab)
 {
     if (unkData.empty())
         return;
 
     // get the current tab count
-    int tabCount = gettabcount() + 1;
+    int tabCount = tab.gettabcount() + 1;
     std::wstring tabstr;
     tabstr.reserve(tabCount);
     tabstr.append(tabCount, L' ');

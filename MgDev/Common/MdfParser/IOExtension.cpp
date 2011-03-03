@@ -125,32 +125,32 @@ void IOExtension::EndElement(const wchar_t* name, HandlerStack* handlerStack)
 }
 
 
-void IOExtension::Write(MdfStream& fd, Extension* extension, Version* version)
+void IOExtension::Write(MdfStream& fd, Extension* extension, Version* version, MgTab& tab)
 {
-    fd << tab() << startStr(sExtension) << std::endl;
-    inctab();
+    fd << tab.tab() << startStr(sExtension) << std::endl;
+    tab.inctab();
 
     // Property: CalculatedProperties
     for (int i=0; i<extension->GetCalculatedProperties()->GetCount(); ++i)
-        IOCalculatedProperty::Write(fd, extension->GetCalculatedProperties()->GetAt(i), version);
+        IOCalculatedProperty::Write(fd, extension->GetCalculatedProperties()->GetAt(i), version, tab);
 
     // Property: AttributeRelate
     for (int i=0; i<extension->GetAttributeRelates()->GetCount(); ++i)
-        IOAttributeRelate::Write(fd, extension->GetAttributeRelates()->GetAt(i), version);
+        IOAttributeRelate::Write(fd, extension->GetAttributeRelates()->GetAt(i), version, tab);
 
     // Property: Name
-    fd << tab() << startStr(sName);
+    fd << tab.tab() << startStr(sName);
     fd << EncodeString(extension->GetName());
     fd << endStr(sName) << std::endl;
 
     // Property: FeatureClass
-    fd << tab() << startStr(sFeatureClass);
+    fd << tab.tab() << startStr(sFeatureClass);
     fd << EncodeString(extension->GetFeatureClass());
     fd << endStr(sFeatureClass) << std::endl;
 
     // Write any unknown XML / extended data
-    IOUnknown::Write(fd, extension->GetUnknownXml(), version);
+    IOUnknown::Write(fd, extension->GetUnknownXml(), version, tab);
 
-    dectab();
-    fd << tab() << endStr(sExtension) << std::endl;
+    tab.dectab();
+    fd << tab.tab() << endStr(sExtension) << std::endl;
 }

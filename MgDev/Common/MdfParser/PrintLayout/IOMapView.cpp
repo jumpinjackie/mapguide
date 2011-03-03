@@ -115,37 +115,37 @@ void IOMapView::EndElement(const wchar_t* name, HandlerStack* handlerStack)
     }
 }
 
-void IOMapView::Write(MdfStream& fd, MapView* mapView, Version* version)
+void IOMapView::Write(MdfStream& fd, MapView* mapView, Version* version, MgTab& tab)
 {
     _ASSERT(NULL != mapView);
 
-    fd << tab() << startStr(sMapView) << std::endl;
-    inctab();
+    fd << tab.tab() << startStr(sMapView) << std::endl;
+    tab.inctab();
 
     // Property: Center
-    IOPoint3D::Write(fd, mapView->GetCenter(), version, sCenter);
+    IOPoint3D::Write(fd, mapView->GetCenter(), version, sCenter, tab);
 
     // Property: Height
-    fd << tab() << startStr(sHeight);
+    fd << tab.tab() << startStr(sHeight);
     fd << DoubleToStr(mapView->GetHeight());
     fd << endStr(sHeight) << std::endl;
 
     // Property: Rotation
-    fd << tab() << startStr(sRotation);
+    fd << tab.tab() << startStr(sRotation);
     fd << DoubleToStr(mapView->GetRotation());
     fd << endStr(sRotation) << std::endl;
 
     // Property: ViewDirection
-    IOVector3D::Write(fd, mapView->GetViewDirection(), version);
+    IOVector3D::Write(fd, mapView->GetViewDirection(), version, tab);
 
     // Property: ModelUnits
-    fd << tab() << startStr(sModelUnits);
+    fd << tab.tab() << startStr(sModelUnits);
     fd << EncodeString(mapView->GetModelUnits());
     fd << endStr(sModelUnits) << std::endl;
 
     // Write any unknown XML / extended data
-    IOUnknown::Write(fd, mapView->GetUnknownXml(), version);
+    IOUnknown::Write(fd, mapView->GetUnknownXml(), version, tab);
 
-    dectab();
-    fd << tab() << endStr(sMapView) << std::endl;
+    tab.dectab();
+    fd << tab.tab() << endStr(sMapView) << std::endl;
 }

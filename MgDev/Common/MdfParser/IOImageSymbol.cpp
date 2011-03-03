@@ -127,29 +127,29 @@ void IOImageSymbol::EndElement(const wchar_t* name, HandlerStack* handlerStack)
 }
 
 
-void IOImageSymbol::Write(MdfStream& fd, ImageSymbol* symbol, Version* version)
+void IOImageSymbol::Write(MdfStream& fd, ImageSymbol* symbol, Version* version, MgTab& tab)
 {
-    fd << tab() << startStr(sImage) << std::endl;
-    inctab();
+    fd << tab.tab() << startStr(sImage) << std::endl;
+    tab.inctab();
 
-    IOSymbol::Write(fd, symbol, version);
+    IOSymbol::Write(fd, symbol, version, tab);
 
     if (!symbol->GetImageLibrary().empty())
     {
         // Property: Image
-        IOResourceRef::Write(fd, sImage, symbol->GetImageLibrary(), symbol->GetImageName(), false, version);
+        IOResourceRef::Write(fd, sImage, symbol->GetImageLibrary(), symbol->GetImageName(), false, version, tab);
     }
     else
     {
         // Property: Content
-        fd << tab() << startStr(sContent);
+        fd << tab.tab() << startStr(sContent);
         fd << EncodeString(symbol->GetContent());
         fd << endStr(sContent) << std::endl;
     }
 
     // Write any unknown XML / extended data
-    IOUnknown::Write(fd, symbol->GetUnknownXml(), version);
+    IOUnknown::Write(fd, symbol->GetUnknownXml(), version, tab);
 
-    dectab();
-    fd << tab() << endStr(sImage) << std::endl;
+    tab.dectab();
+    fd << tab.tab() << endStr(sImage) << std::endl;
 }

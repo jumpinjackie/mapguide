@@ -89,16 +89,16 @@ void IOBaseMapDefinition::EndElement(const wchar_t* name, HandlerStack* handlerS
 }
 
 
-void IOBaseMapDefinition::Write(MdfStream& fd, MapDefinition* map, Version* version)
+void IOBaseMapDefinition::Write(MdfStream& fd, MapDefinition* map, Version* version, MgTab& tab)
 {
-    fd << tab() << "<BaseMapDefinition>" << std::endl; // NOXLATE
-    inctab();
+    fd << tab.tab() << "<BaseMapDefinition>" << std::endl; // NOXLATE
+    tab.inctab();
 
     // Property: FiniteDisplayScales
     DisplayScaleCollection* finiteDisplayScales = map->GetFiniteDisplayScales();
     for (int i=0; i<finiteDisplayScales->GetCount(); ++i)
     {
-        fd << tab() << "<FiniteDisplayScale>"; // NOXLATE
+        fd << tab.tab() << "<FiniteDisplayScale>"; // NOXLATE
         fd << DoubleToStr((static_cast<DisplayScale*>(finiteDisplayScales->GetAt(i)))->GetValue());
         fd << "</FiniteDisplayScale>" << std::endl; // NOXLATE
     }
@@ -106,8 +106,8 @@ void IOBaseMapDefinition::Write(MdfStream& fd, MapDefinition* map, Version* vers
     // Property: BaseMapLayerGroups
     BaseMapLayerGroupCollection* baseMapGroups = map->GetBaseMapLayerGroups();
     for (int i=0; i<baseMapGroups->GetCount(); ++i)
-        IOBaseMapLayerGroup::Write(fd, static_cast<BaseMapLayerGroup*>(baseMapGroups->GetAt(i)), version);
+        IOBaseMapLayerGroup::Write(fd, static_cast<BaseMapLayerGroup*>(baseMapGroups->GetAt(i)), version, tab);
 
-    dectab();
-    fd << tab() << "</BaseMapDefinition>" << std::endl; // NOXLATE
+    tab.dectab();
+    fd << tab.tab() << "</BaseMapDefinition>" << std::endl; // NOXLATE
 }

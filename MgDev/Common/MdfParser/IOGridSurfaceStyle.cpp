@@ -117,20 +117,20 @@ void IOGridSurfaceStyle::EndElement(const wchar_t* name, HandlerStack* handlerSt
 }
 
 
-void IOGridSurfaceStyle::Write(MdfStream& fd, GridSurfaceStyle* surfaceStyle, Version* version)
+void IOGridSurfaceStyle::Write(MdfStream& fd, GridSurfaceStyle* surfaceStyle, Version* version, MgTab& tab)
 {
-    fd << tab() << startStr(sSurfaceStyle) << std::endl;
-    inctab();
+    fd << tab.tab() << startStr(sSurfaceStyle) << std::endl;
+    tab.inctab();
 
     // Property: Band
-    fd << tab() << startStr(sBand);
+    fd << tab.tab() << startStr(sBand);
     fd << EncodeString(surfaceStyle->GetBand());
     fd << endStr(sBand) << std::endl;
 
     // Property: ZeroValue (optional)
     if (surfaceStyle->GetZeroValue() != 0.0)
     {
-        fd << tab() << startStr(sZeroValue);
+        fd << tab.tab() << startStr(sZeroValue);
         fd << DoubleToStr(surfaceStyle->GetZeroValue());
         fd << endStr(sZeroValue) << std::endl;
     }
@@ -138,19 +138,19 @@ void IOGridSurfaceStyle::Write(MdfStream& fd, GridSurfaceStyle* surfaceStyle, Ve
     // Property: ScaleFactor (optional)
     if (surfaceStyle->GetScaleFactor() != 1.0)
     {
-        fd << tab() << startStr(sScaleFactor);
+        fd << tab.tab() << startStr(sScaleFactor);
         fd << DoubleToStr(surfaceStyle->GetScaleFactor());
         fd << endStr(sScaleFactor) << std::endl;
     }
 
     // Property: DefaultColor
-    fd << tab() << startStr(sDefaultColor);
+    fd << tab.tab() << startStr(sDefaultColor);
     fd << EncodeString(surfaceStyle->GetDefaultColor());
     fd << endStr(sDefaultColor) << std::endl;
 
     // Write any unknown XML / extended data
-    IOUnknown::Write(fd, surfaceStyle->GetUnknownXml(), version);
+    IOUnknown::Write(fd, surfaceStyle->GetUnknownXml(), version, tab);
 
-    dectab();
-    fd << tab() << endStr(sSurfaceStyle) << std::endl;
+    tab.dectab();
+    fd << tab.tab() << endStr(sSurfaceStyle) << std::endl;
 }

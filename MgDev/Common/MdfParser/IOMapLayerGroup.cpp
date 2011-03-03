@@ -72,18 +72,18 @@ void IOMapLayerGroup::EndElement(const wchar_t* name, HandlerStack* handlerStack
 }
 
 
-void IOMapLayerGroup::Write(MdfStream& fd, MapLayerGroup* mapLayerGroup, Version* version)
+void IOMapLayerGroup::Write(MdfStream& fd, MapLayerGroup* mapLayerGroup, Version* version, MgTab& tab)
 {
-    fd << tab() << "<MapLayerGroup>" << std::endl; // NOXLATE
-    inctab();
+    fd << tab.tab() << "<MapLayerGroup>" << std::endl; // NOXLATE
+    tab.inctab();
 
-    IOMapLayerGroupCommon::Write(fd, mapLayerGroup, version);
+    IOMapLayerGroupCommon::Write(fd, mapLayerGroup, version, tab);
 
     // Property: Group
-    fd << tab() << "<Group>"; // NOXLATE
+    fd << tab.tab() << "<Group>"; // NOXLATE
     fd << EncodeString(mapLayerGroup->GetGroup());
     fd << "</Group>" << std::endl; // NOXLATE
 
-    dectab();
-    fd << tab() << "</MapLayerGroup>" << std::endl; // NOXLATE
+    tab.dectab();
+    fd << tab.tab() << "</MapLayerGroup>" << std::endl; // NOXLATE
 }

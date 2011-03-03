@@ -108,48 +108,48 @@ void IOMapDefinition::EndElement(const wchar_t* name, HandlerStack* handlerStack
 }
 
 
-void IOMapDefinition::Write(MdfStream& fd, MapDefinition* map, Version* version)
+void IOMapDefinition::Write(MdfStream& fd, MapDefinition* map, Version* version, MgTab& tab)
 {
-    fd << tab() << "<MapDefinition xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:noNamespaceSchemaLocation=\"MapDefinition-1.0.0.xsd\">" << std::endl; // NOXLATE
-    inctab();
+    fd << tab.tab() << "<MapDefinition xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:noNamespaceSchemaLocation=\"MapDefinition-1.0.0.xsd\">" << std::endl; // NOXLATE
+    tab.inctab();
 
     // Property: Name
-    fd << tab() << "<Name>"; // NOXLATE
+    fd << tab.tab() << "<Name>"; // NOXLATE
     fd << EncodeString(map->GetName());
     fd << "</Name>" << std::endl; // NOXLATE
 
-    fd << tab() << "<CoordinateSystem>"; // NOXLATE
+    fd << tab.tab() << "<CoordinateSystem>"; // NOXLATE
     fd << EncodeString(map->GetCoordinateSystem());
     fd << "</CoordinateSystem>" << std::endl; // NOXLATE
 
     // Property: Extents
-    IOExtra::WriteBox2D(fd, map->GetExtents(), false, version);
+    IOExtra::WriteBox2D(fd, map->GetExtents(), false, version, tab);
 
     // Property: BackgroundColor
-    fd << tab() << "<BackgroundColor>"; // NOXLATE
+    fd << tab.tab() << "<BackgroundColor>"; // NOXLATE
     fd << EncodeString(map->GetBackgroundColor());
     fd << "</BackgroundColor>" << std::endl; // NOXLATE
 
     // Property: Metadata
     if (!map->GetMetadata().empty())
     {
-        fd << tab() << "<Metadata>"; // NOXLATE
+        fd << tab.tab() << "<Metadata>"; // NOXLATE
         fd << EncodeString(map->GetMetadata());
         fd << "</Metadata>" << std::endl; // NOXLATE
     }
 
     // Property: MapLayer
     for (int i=0; i<map->GetLayers()->GetCount(); ++i)
-        IOMapLayer::Write(fd, map->GetLayers()->GetAt(i), version);
+        IOMapLayer::Write(fd, map->GetLayers()->GetAt(i), version, tab);
 
     // Property: MapLayerGroup
     for (int i=0; i<map->GetLayerGroups()->GetCount(); ++i)
-        IOMapLayerGroup::Write(fd, map->GetLayerGroups()->GetAt(i), version);
+        IOMapLayerGroup::Write(fd, map->GetLayerGroups()->GetAt(i), version, tab);
 
     // Property: BaseMapDefinition
     if (map->GetFiniteDisplayScales()->GetCount() > 0)
-        IOBaseMapDefinition::Write(fd, map, version);
+        IOBaseMapDefinition::Write(fd, map, version, tab);
 
-    dectab();
-    fd << tab() << "</MapDefinition>" << std::endl; // NOXLATE
+    tab.dectab();
+    fd << tab.tab() << "</MapDefinition>" << std::endl; // NOXLATE
 }

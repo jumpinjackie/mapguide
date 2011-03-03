@@ -39,7 +39,7 @@ class IOAttributeRelate : public SAX2ElementHandler
         virtual void ElementChars(const wchar_t* ch);
         virtual void EndElement(const wchar_t* name, HandlerStack* handlerStack);
 
-        static void Write(MdfStream& fd, AttributeRelate* attributeRelate, Version* version);
+        static void Write(MdfStream& fd, AttributeRelate* attributeRelate, Version* version, MgTab& tab);
 
     private:
         static void WriteType(MdfStream& fd, AttributeRelate* attributeRelate);

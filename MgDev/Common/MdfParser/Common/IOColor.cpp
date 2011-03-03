@@ -84,33 +84,33 @@ void IOColor::EndElement(const wchar_t* name, HandlerStack* handlerStack)
     }
 }
 
-void IOColor::Write(MdfStream& fd, Color* color, Version* version, const std::string& name)
+void IOColor::Write(MdfStream& fd, Color* color, Version* version, const std::string& name, MgTab& tab)
 {
     _ASSERT(NULL != color);
 
-    fd << tab() << startStr(name) << std::endl;
-    inctab();
+    fd << tab.tab() << startStr(name) << std::endl;
+    tab.inctab();
 
     // Property: Red
-    fd << tab() << startStr(sRed);
+    fd << tab.tab() << startStr(sRed);
     fd << IntToStr(color->GetRed());
     fd << endStr(sRed) << std::endl;
 
     // Property: Green
-    fd << tab() << startStr(sGreen);
+    fd << tab.tab() << startStr(sGreen);
     fd << IntToStr(color->GetGreen());
     fd << endStr(sGreen) << std::endl;
 
     // Property: Blue
-    fd << tab() << startStr(sBlue);
+    fd << tab.tab() << startStr(sBlue);
     fd << IntToStr(color->GetBlue());
     fd << endStr(sBlue) << std::endl;
 
     // Property: Alpha
-    fd << tab() << startStr(sAlpha);
+    fd << tab.tab() << startStr(sAlpha);
     fd << IntToStr(color->GetAlpha());
     fd << endStr(sAlpha) << std::endl;
 
-    dectab();
-    fd << tab() << endStr(name) << std::endl;
+    tab.dectab();
+    fd << tab.tab() << endStr(name) << std::endl;
 }

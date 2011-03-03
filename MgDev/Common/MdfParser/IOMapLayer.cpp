@@ -77,23 +77,23 @@ void IOMapLayer::EndElement(const wchar_t* name, HandlerStack* handlerStack)
 }
 
 
-void IOMapLayer::Write(MdfStream& fd, MapLayer* mapLayer, Version* version)
+void IOMapLayer::Write(MdfStream& fd, MapLayer* mapLayer, Version* version, MgTab& tab)
 {
-    fd << tab() << "<MapLayer>" << std::endl; // NOXLATE
-    inctab();
+    fd << tab.tab() << "<MapLayer>" << std::endl; // NOXLATE
+    tab.inctab();
 
-    IOMapLayerCommon::Write(fd, mapLayer, version);
+    IOMapLayerCommon::Write(fd, mapLayer, version, tab);
 
     // Property: Visible
-    fd << tab() << "<Visible>"; // NOXLATE
+    fd << tab.tab() << "<Visible>"; // NOXLATE
     fd << BoolToStr(mapLayer->IsVisible());
     fd << "</Visible>" << std::endl; // NOXLATE
 
     // Property: Group
-    fd << tab() << "<Group>"; // NOXLATE
+    fd << tab.tab() << "<Group>"; // NOXLATE
     fd << EncodeString(mapLayer->GetGroup());
     fd << "</Group>" << std::endl; // NOXLATE
 
-    dectab();
-    fd << tab() << "</MapLayer>" << std::endl; // NOXLATE
+    tab.dectab();
+    fd << tab.tab() << "</MapLayer>" << std::endl; // NOXLATE
 }

@@ -78,23 +78,23 @@ void IOOverrideCollection::EndElement(const wchar_t* name, HandlerStack* handler
 }
 
 
-void IOOverrideCollection::Write(MdfStream& fd, OverrideCollection* overrideCollection, Version* version)
+void IOOverrideCollection::Write(MdfStream& fd, OverrideCollection* overrideCollection, Version* version, MgTab& tab)
 {
     // always write the element, even if it has 0 elements
     int numElements = overrideCollection->GetCount();
 
-    fd << tab() << "<ParameterOverrides>" << std::endl; // NOXLATE
-    inctab();
+    fd << tab.tab() << "<ParameterOverrides>" << std::endl; // NOXLATE
+    tab.inctab();
 
     for (int i=0; i<numElements; ++i)
     {
         Override* pOverride = overrideCollection->GetAt(i);
-        IOOverride::Write(fd, pOverride, version);
+        IOOverride::Write(fd, pOverride, version, tab);
     }
 
     // Write any unknown XML / extended data
-    IOUnknown::Write(fd, overrideCollection->GetUnknownXml(), version);
+    IOUnknown::Write(fd, overrideCollection->GetUnknownXml(), version, tab);
 
-    dectab();
-    fd << tab() << "</ParameterOverrides>" << std::endl; // NOXLATE
+    tab.dectab();
+    fd << tab.tab() << "</ParameterOverrides>" << std::endl; // NOXLATE
 }

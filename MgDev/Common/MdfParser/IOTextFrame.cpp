@@ -84,19 +84,19 @@ void IOTextFrame::EndElement(const wchar_t* name, HandlerStack* handlerStack)
 }
 
 
-void IOTextFrame::Write(MdfStream& fd, TextFrame* textFrame, Version* version)
+void IOTextFrame::Write(MdfStream& fd, TextFrame* textFrame, Version* version, MgTab& tab)
 {
-    fd << tab() << "<Frame>" << std::endl; // NOXLATE
-    inctab();
+    fd << tab.tab() << "<Frame>" << std::endl; // NOXLATE
+    tab.inctab();
 
-    EMIT_STRING_PROPERTY(fd, textFrame, LineColor, true, L"")   // empty string is default
-    EMIT_STRING_PROPERTY(fd, textFrame, FillColor, true, L"")   // empty string is default
-    EMIT_DOUBLE_PROPERTY(fd, textFrame, OffsetX, true, 0.0)     // 0.0 is default
-    EMIT_DOUBLE_PROPERTY(fd, textFrame, OffsetY, true, 0.0)     // 0.0 is default
+    EMIT_STRING_PROPERTY(fd, textFrame, LineColor, true, L"", tab)   // empty string is default
+    EMIT_STRING_PROPERTY(fd, textFrame, FillColor, true, L"", tab)   // empty string is default
+    EMIT_DOUBLE_PROPERTY(fd, textFrame, OffsetX, true, 0.0, tab)     // 0.0 is default
+    EMIT_DOUBLE_PROPERTY(fd, textFrame, OffsetY, true, 0.0, tab)     // 0.0 is default
 
     // Write any unknown XML / extended data
-    IOUnknown::Write(fd, textFrame->GetUnknownXml(), version);
+    IOUnknown::Write(fd, textFrame->GetUnknownXml(), version, tab);
 
-    dectab();
-    fd << tab() << "</Frame>" << std::endl; // NOXLATE
+    tab.dectab();
+    fd << tab.tab() << "</Frame>" << std::endl; // NOXLATE
 }

@@ -106,36 +106,36 @@ void IOExtra::EndElement(const wchar_t* name, HandlerStack* handlerStack)
 }
 
 
-void IOExtra::WriteBox2D(MdfStream& fd, const Box2D& box2D, bool autoCorrect, Version* version)
+void IOExtra::WriteBox2D(MdfStream& fd, const Box2D& box2D, bool autoCorrect, Version* version, MgTab& tab)
 {
     double x1 = autoCorrect? box2D.GetMinX() : box2D.GetX1();
     double x2 = autoCorrect? box2D.GetMaxX() : box2D.GetX2();
     double y1 = autoCorrect? box2D.GetMinY() : box2D.GetY1();
     double y2 = autoCorrect? box2D.GetMaxY() : box2D.GetY2();
 
-    fd << tab() << startStr(sExtents) << std::endl;
-    inctab();
+    fd << tab.tab() << startStr(sExtents) << std::endl;
+    tab.inctab();
 
     // Property: MinX
-    fd << tab() << startStr(sMinX);
+    fd << tab.tab() << startStr(sMinX);
     fd << DoubleToStr(x1);
     fd << endStr(sMinX) << std::endl;
 
     // Property: MaxX
-    fd << tab() << startStr(sMaxX);
+    fd << tab.tab() << startStr(sMaxX);
     fd << DoubleToStr(x2);
     fd << endStr(sMaxX) << std::endl;
 
     // Property: MinY
-    fd << tab() << startStr(sMinY);
+    fd << tab.tab() << startStr(sMinY);
     fd << DoubleToStr(y1);
     fd << endStr(sMinY) << std::endl;
 
     // Property: MaxY
-    fd << tab() << startStr(sMaxY);
+    fd << tab.tab() << startStr(sMaxY);
     fd << DoubleToStr(y2);
     fd << endStr(sMaxY) << std::endl;
 
-    dectab();
-    fd << tab() << endStr(sExtents) << std::endl;
+    tab.dectab();
+    fd << tab.tab() << endStr(sExtents) << std::endl;
 }

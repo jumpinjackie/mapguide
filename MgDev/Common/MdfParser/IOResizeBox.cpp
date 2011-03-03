@@ -85,20 +85,20 @@ void IOResizeBox::EndElement(const wchar_t* name, HandlerStack* handlerStack)
 }
 
 
-void IOResizeBox::Write(MdfStream& fd, ResizeBox* resizeBox, Version* version)
+void IOResizeBox::Write(MdfStream& fd, ResizeBox* resizeBox, Version* version, MgTab& tab)
 {
-    fd << tab() << "<ResizeBox>" << std::endl; // NOXLATE
-    inctab();
+    fd << tab.tab() << "<ResizeBox>" << std::endl; // NOXLATE
+    tab.inctab();
 
-    EMIT_DOUBLE_PROPERTY(fd, resizeBox, SizeX, false, 1.0)
-    EMIT_DOUBLE_PROPERTY(fd, resizeBox, SizeY, false, 1.0)
-    EMIT_DOUBLE_PROPERTY(fd, resizeBox, PositionX, false, 0.0)
-    EMIT_DOUBLE_PROPERTY(fd, resizeBox, PositionY, false, 0.0)
-    EMIT_STRING_PROPERTY(fd, resizeBox, GrowControl, false, NULL)
+    EMIT_DOUBLE_PROPERTY(fd, resizeBox, SizeX, false, 1.0, tab)
+    EMIT_DOUBLE_PROPERTY(fd, resizeBox, SizeY, false, 1.0, tab)
+    EMIT_DOUBLE_PROPERTY(fd, resizeBox, PositionX, false, 0.0, tab)
+    EMIT_DOUBLE_PROPERTY(fd, resizeBox, PositionY, false, 0.0, tab)
+    EMIT_STRING_PROPERTY(fd, resizeBox, GrowControl, false, NULL, tab)
 
     // Write any unknown XML / extended data
-    IOUnknown::Write(fd, resizeBox->GetUnknownXml(), version);
+    IOUnknown::Write(fd, resizeBox->GetUnknownXml(), version, tab);
 
-    dectab();
-    fd << tab() << "</ResizeBox>" << std::endl; // NOXLATE
+    tab.dectab();
+    fd << tab.tab() << "</ResizeBox>" << std::endl; // NOXLATE
 }

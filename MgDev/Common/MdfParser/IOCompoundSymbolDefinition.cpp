@@ -80,7 +80,7 @@ void IOCompoundSymbolDefinition::EndElement(const wchar_t* name, HandlerStack* h
 }
 
 
-void IOCompoundSymbolDefinition::Write(MdfStream& fd, CompoundSymbolDefinition* symbolDefinition, bool writeAsRootElement, Version* version)
+void IOCompoundSymbolDefinition::Write(MdfStream& fd, CompoundSymbolDefinition* symbolDefinition, bool writeAsRootElement, Version* version, MgTab& tab)
 {
     if (writeAsRootElement)
     {
@@ -107,23 +107,23 @@ void IOCompoundSymbolDefinition::Write(MdfStream& fd, CompoundSymbolDefinition* 
             strVersion = L"1.1.0";
         }
 
-        fd << tab() << "<CompoundSymbolDefinition xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:noNamespaceSchemaLocation=\"SymbolDefinition-" << EncodeString(strVersion) << ".xsd\" version=\"" << EncodeString(strVersion) << "\">" << std::endl; // NOXLATE
+        fd << tab.tab() << "<CompoundSymbolDefinition xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:noNamespaceSchemaLocation=\"SymbolDefinition-" << EncodeString(strVersion) << ".xsd\" version=\"" << EncodeString(strVersion) << "\">" << std::endl; // NOXLATE
     }
     else
-        fd << tab() << "<CompoundSymbolDefinition>" << std::endl; // NOXLATE
-    inctab();
+        fd << tab.tab() << "<CompoundSymbolDefinition>" << std::endl; // NOXLATE
+    tab.inctab();
 
-    EMIT_STRING_PROPERTY(fd, symbolDefinition, Name, false, NULL)
-    EMIT_STRING_PROPERTY(fd, symbolDefinition, Description, true, L"") // default is empty string
+    EMIT_STRING_PROPERTY(fd, symbolDefinition, Name, false, NULL, tab)
+    EMIT_STRING_PROPERTY(fd, symbolDefinition, Description, true, L"", tab) // default is empty string
 
     SimpleSymbolCollection* symbolCollection = symbolDefinition->GetSymbols();
     int numElements = symbolCollection->GetCount();
     for (int i=0; i<numElements; ++i)
-        IOSimpleSymbol::Write(fd, symbolCollection->GetAt(i), version);
+        IOSimpleSymbol::Write(fd, symbolCollection->GetAt(i), version, tab);
 
     // Write any unknown XML / extended data
-    IOUnknown::Write(fd, symbolDefinition->GetUnknownXml(), version);
+    IOUnknown::Write(fd, symbolDefinition->GetUnknownXml(), version, tab);
 
-    dectab();
-    fd << tab() << "</CompoundSymbolDefinition>" << std::endl; // NOXLATE
+    tab.dectab();
+    fd << tab.tab() << "</CompoundSymbolDefinition>" << std::endl; // NOXLATE
 }

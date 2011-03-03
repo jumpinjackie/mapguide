@@ -38,7 +38,7 @@ class IOFill : public SAX2ElementHandler
         virtual void ElementChars(const wchar_t* ch);
         virtual void EndElement(const wchar_t* name, HandlerStack* handlerStack);
 
-        static void Write(MdfStream& fd, Fill* fill, Version* version);
+        static void Write(MdfStream& fd, Fill* fill, Version* version, MgTab& tab);
 
     private:
         Fill* m_fill;

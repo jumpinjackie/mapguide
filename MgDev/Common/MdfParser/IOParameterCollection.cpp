@@ -78,23 +78,23 @@ void IOParameterCollection::EndElement(const wchar_t* name, HandlerStack* handle
 }
 
 
-void IOParameterCollection::Write(MdfStream& fd, ParameterCollection* parameterCollection, Version* version)
+void IOParameterCollection::Write(MdfStream& fd, ParameterCollection* parameterCollection, Version* version, MgTab& tab)
 {
     // always write the element, even if it has 0 elements
     int numElements = parameterCollection->GetCount();
 
-    fd << tab() << "<ParameterDefinition>" << std::endl; // NOXLATE
-    inctab();
+    fd << tab.tab() << "<ParameterDefinition>" << std::endl; // NOXLATE
+    tab.inctab();
 
     for (int i=0; i<numElements; ++i)
     {
         Parameter* parameter = parameterCollection->GetAt(i);
-        IOParameter::Write(fd, parameter, version);
+        IOParameter::Write(fd, parameter, version, tab);
     }
 
     // Write any unknown XML / extended data
-    IOUnknown::Write(fd, parameterCollection->GetUnknownXml(), version);
+    IOUnknown::Write(fd, parameterCollection->GetUnknownXml(), version, tab);
 
-    dectab();
-    fd << tab() << "</ParameterDefinition>" << std::endl; // NOXLATE
+    tab.dectab();
+    fd << tab.tab() << "</ParameterDefinition>" << std::endl; // NOXLATE
 }

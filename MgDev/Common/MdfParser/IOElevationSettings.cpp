@@ -121,23 +121,23 @@ void IOElevationSettings::EndElement(const wchar_t* name, HandlerStack* handlerS
 }
 
 
-void IOElevationSettings::Write(MdfStream& fd, ElevationSettings* elevationSettings, Version* version)
+void IOElevationSettings::Write(MdfStream& fd, ElevationSettings* elevationSettings, Version* version, MgTab& tab)
 {
-    fd << tab() << startStr(sElevationSettings) << std::endl;
-    inctab();
+    fd << tab.tab() << startStr(sElevationSettings) << std::endl;
+    tab.inctab();
 
     // Property: ZOffset
-    fd << tab() << startStr(sZOffset);
+    fd << tab.tab() << startStr(sZOffset);
     fd << EncodeString(elevationSettings->GetZOffsetExpression());
     fd << endStr(sZOffset) << std::endl;
 
     // Property: ZExtrusion
-    fd << tab() << startStr(sZExtrusion);
+    fd << tab.tab() << startStr(sZExtrusion);
     fd << EncodeString(elevationSettings->GetZExtrusionExpression());
     fd << endStr(sZExtrusion) << std::endl;
 
     // Property: ZOffsetType
-    fd << tab() << startStr(sZOffsetType);
+    fd << tab.tab() << startStr(sZOffsetType);
     if (elevationSettings->GetElevationType() == ElevationSettings::Absolute)
         fd << "Absolute"; // NOXLATE
     else
@@ -145,14 +145,14 @@ void IOElevationSettings::Write(MdfStream& fd, ElevationSettings* elevationSetti
     fd << endStr(sZOffsetType) << std::endl;
 
     // Property: Unit
-    fd << tab() << startStr(sUnit);
+    fd << tab.tab() << startStr(sUnit);
     std::auto_ptr<MdfString> str(LengthConverter::UnitToEnglish(elevationSettings->GetUnit()));
     fd << EncodeString(*str);
     fd << endStr(sUnit) << std::endl;
 
     // Write any unknown XML / extended data
-    IOUnknown::Write(fd, elevationSettings->GetUnknownXml(), version);
+    IOUnknown::Write(fd, elevationSettings->GetUnknownXml(), version, tab);
 
-    dectab();
-    fd << tab() << endStr(sElevationSettings) << std::endl;
+    tab.dectab();
+    fd << tab.tab() << endStr(sElevationSettings) << std::endl;
 }
