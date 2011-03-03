@@ -16,6 +16,12 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 -->
+<!--
+This sample has been updated to reflect simplified usage patterns enabled by convenience APIs
+introduced in MapGuide OS 2.0 by allowing you to query and insert features directly from 
+the MgLayer objects themselves and the ability to get a MgFeatureReader directly from the MgSelection
+object.
+-->
   <head>
     <title>Viewer Sample Application - Create Buffer</title>
     <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
@@ -58,8 +64,8 @@
       $featureService = $siteConnection->CreateService(MgServiceType::FeatureService);
       $queryOptions = new MgFeatureQueryOptions();
 
-      $map = new MgMap();
-      $map->Open($resourceService, $mapName);
+      $map = new MgMap($siteConnection);
+      $map->Open($mapName);
 
       // Check for selection data passed via HTTP POST
 
@@ -85,13 +91,15 @@
         $wktReaderWriter = new MgWktReaderWriter();
         $coordinateSystemFactory = new MgCoordinateSystemFactory();
         $srs = $coordinateSystemFactory->Create($mapWktSrs);
-        $srsMeasure = new MgCoordinateSystemMeasure($srs);
+        $srsMeasure = $srs->GetMeasure();
 
         // Check for a buffer layer. If it exists, delete
         // the current features.
         // If it does not exist, create a feature source and
         // a layer to hold the buffer.
 
+        /*
+        // Old way, pre MapGuide OS 2.0. Kept here for reference
         try
         {
           $bufferLayer = $map->GetLayers()->GetItem('Buffer');
@@ -112,7 +120,28 @@
           $bufferLayer = CreateBufferLayer($resourceService, $bufferFeatureResId, $sessionId);
           $map->GetLayers()->Insert(0, $bufferLayer);
         }
+        */
 
+        // New way, post MapGuide 2.0
+        $layerIndex = $map->GetLayers()->IndexOf('Buffer');
+        if ($layerIndex < 0)
+        {
+            // The layer does not exist and must be created.
+
+            $bufferFeatureResId = new MgResourceIdentifier("Session:" . $sessionId . "//Buffer.FeatureSource");
+            CreateBufferFeatureSource($featureService, $mapWktSrs, $bufferFeatureResId);
+            $bufferLayer = CreateBufferLayer($resourceService, $bufferFeatureResId, $sessionId);
+            $map->GetLayers()->Insert(0, $bufferLayer);
+        }
+        else
+        {
+            $bufferLayer = $map->GetLayers()->GetItem($layerIndex);
+            $commands = new MgFeatureCommandCollection();
+            $commands->Add(new MgDeleteFeatures('BufferClass', "ID like '%'"));
+            
+            $bufferLayer->UpdateFeatures($commands);
+        }
+        
         for ($i = 0; $i < $selectedLayers->GetCount(); $i++)
         {
           // Only check selected features in the Parcels layer.
@@ -121,7 +150,8 @@
 
           if ($layer->GetName() == 'Parcels')
           {
-
+            // Old way, pre MapGuide OS 2.0. Kept here for reference
+            /*
             // Create a filter containing the IDs of the selected features on this layer
 
             $layerClassName = $layer->GetFeatureClassName();
@@ -131,13 +161,13 @@
 
             $layerFeatureId = $layer->GetFeatureSourceId();
             $layerFeatureResource = new MgResourceIdentifier($layerFeatureId);
-
+        
             // Apply the filter to the feature resource for the selected layer. This returns
             // an MgFeatureReader of all the selected features.
 
             $queryOptions->SetFilter($selectionString);
             $featureReader = $featureService->SelectFeatures($layerFeatureResource, $layerClassName, $queryOptions);
-
+            
             // Process each item in the MgFeatureReader. Get the
             // geometries from all the selected features and
             // merge them into a single geometry.
@@ -175,12 +205,65 @@
             }
 
             $results = $featureService->UpdateFeatures($bufferFeatureResId, $commands, false);
-
+            
             $bufferLayer->SetVisible(true);
             $bufferLayer->ForceRefresh();
             $bufferLayer->SetDisplayInLegend(true);
             $map->Save($resourceService);
+            */
+            
+            // New way, post MapGuide 2.0
+            
+            // Get the selected features from the MgSelection object
+            $featureReader = $selection->GetSelectedFeatures($layer, $layer->GetFeatureClassName(), false);
+            
+            // Process each item in the MgFeatureReader. Get the
+            // geometries from all the selected features and
+            // merge them into a single geometry.
 
+            $inputGeometries = new MgGeometryCollection();
+            while ($featureReader->ReadNext())
+            {
+              $featureGeometryData = $featureReader->GetGeometry('SHPGEOM');
+              $featureGeometry = $agfReaderWriter->Read($featureGeometryData);
+
+              $inputGeometries->Add($featureGeometry);
+            }
+
+            $geometryFactory = new MgGeometryFactory();
+            $mergedGeometries = $geometryFactory->CreateMultiGeometry($inputGeometries);
+
+            // Add buffer features to the temporary feature source.
+            // Create multiple concentric buffers to show area.
+            // If the stylization for the layer draws the features
+            // partially transparent, the concentric rings will be
+            // progressively darker towards the center.
+            // The stylization is set in the layer template file, which
+            // is used in function CreateBufferLayer().
+
+            $commands = new MgFeatureCommandCollection();
+            for ($bufferRing = 0; $bufferRing < $bufferRingCount; $bufferRing++)
+            {
+              $bufferDist = $srs->ConvertMetersToCoordinateSystemUnits($bufferRingSize * ($bufferRing + 1));
+              $bufferGeometry = $mergedGeometries->Buffer($bufferDist, $srsMeasure);
+
+              $properties = new MgPropertyCollection();
+              $properties->Add(new MgGeometryProperty('BufferGeometry', $agfReaderWriter->Write($bufferGeometry)));
+
+              $commands->Add(new MgInsertFeatures('BufferClass', $properties));
+            }
+
+            // Old way, pre MapGuide OS 2.0
+            //$featureService->UpdateFeatures($bufferFeatureResId, $commands, false);
+            
+            // New way, post MapGuide OS 2.0
+            $bufferLayer->UpdateFeatures($commands);
+            
+            $bufferLayer->SetVisible(true);
+            $bufferLayer->ForceRefresh();
+            $bufferLayer->SetDisplayInLegend(true);
+            $map->Save();
+            
           }
         }
       }

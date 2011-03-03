@@ -54,7 +54,7 @@
     ?>
     <ul>
       <li>
-        <a href="#" onClick="submitBufferRequest('/mapguide/phpsamples/analyzing_features/createbuffer.php'); return false;">
+        <a href="#" onClick="submitBufferRequest('../phpsamples/analyzing_features/createbuffer.php'); return false;">
         Create buffer</a>
         <br/>Create a buffer around a selected parcel.
         <br/>
@@ -67,7 +67,7 @@
       </li>
 
       <li>
-        <a href="#" onClick="submitBufferRequest('/mapguide/phpsamples/analyzing_features/selectfeaturesinbuffer.php'); return false;">
+        <a href="#" onClick="submitBufferRequest('../phpsamples/analyzing_features/selectfeaturesinbuffer.php'); return false;">
         Find features in buffer</a>
         <br/>Create a buffer around a selected parcel, then mark parcels inside the buffer that are
         of type "MFG".

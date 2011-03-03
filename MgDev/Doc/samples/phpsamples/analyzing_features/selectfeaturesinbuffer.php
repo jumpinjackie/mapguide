@@ -15,6 +15,13 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 -->
+
+<!--
+This sample has been updated to reflect simplified usage patterns enabled by convenience APIs
+introduced in MapGuide OS 2.0 by allowing you to query and insert features directly from 
+the MgLayer objects themselves and the ability to get a MgFeatureReader directly from the MgSelection
+object.
+-->
 <html>
 
   <head>
@@ -58,8 +65,8 @@
       $featureService = $siteConnection->CreateService(MgServiceType::FeatureService);
       $queryOptions = new MgFeatureQueryOptions();
 
-      $map = new MgMap();
-      $map->Open($resourceService, $mapName);
+      $map = new MgMap($siteConnection);
+      $map->Open($mapName);
 
       // Check for selection data passed via HTTP POST
 
@@ -84,13 +91,15 @@
         $wktReaderWriter = new MgWktReaderWriter();
         $coordinateSystemFactory = new MgCoordinateSystemFactory();
         $srs = $coordinateSystemFactory->Create($mapWktSrs);
-        $srsMeasure = new MgCoordinateSystemMeasure($srs);
+        $srsMeasure = $srs->GetMeasure();
 
         // Check for a buffer layer. If it exists, delete
         // the current features.
         // If it does not exist, create a feature source and
         // a layer to hold the buffer.
 
+        /*
+        // Old way, pre MapGuide OS 2.0. Kept here for reference
         try
         {
           $bufferLayer = $map->GetLayers()->GetItem('Buffer');
@@ -111,12 +120,35 @@
           $bufferLayer = CreateBufferLayer($resourceService, $bufferFeatureResId, $sessionId);
           $map->GetLayers()->Insert(0, $bufferLayer);
         }
+        */
+        
+        // This is how things can be done now
+        $layerIndex = $map->GetLayers()->IndexOf('Buffer');
+        if ($layerIndex < 0)
+        {
+            // The layer does not exist and must be created.
+
+            $bufferFeatureResId = new MgResourceIdentifier("Session:" . $sessionId . "//Buffer.FeatureSource");
+            CreateBufferFeatureSource($featureService, $mapWktSrs, $bufferFeatureResId);
+            $bufferLayer = CreateBufferLayer($resourceService, $bufferFeatureResId, $sessionId);
+            $map->GetLayers()->Insert(0, $bufferLayer);
+        }
+        else
+        {
+            $bufferLayer = $map->GetLayers()->GetItem($layerIndex);
+            $commands = new MgFeatureCommandCollection();
+            $commands->Add(new MgDeleteFeatures('BufferClass', "ID like '%'"));
+            
+            $bufferLayer->UpdateFeatures($commands);
+        }
 
         // Check for a parcel marker layer. If it exists, delete
         // the current features.
         // If it does not exist, create a feature source and
         // a layer to hold the parcel markers.
 
+        /*
+        // Old way, pre MapGuide OS 2.0. Kept here for reference
         try
         {
           $parcelMarkerLayer = $map->GetLayers()->GetItem('ParcelMarker');
@@ -137,6 +169,25 @@
           $parcelMarkerLayer = CreateParcelMarkerLayer($resourceService, $parcelFeatureResId, $sessionId);
           $map->GetLayers()->Insert(0, $parcelMarkerLayer);
         }
+        */
+        
+        // New way, post MapGuide 2.0
+        $layerIndex = $map->GetLayers()->IndexOf('ParcelMarker');
+        if ($layerIndex < 0)
+        {
+            $parcelFeatureResId = new MgResourceIdentifier("Session:" . $sessionId . "//ParcelMarker.FeatureSource");
+            CreateParcelMarkerFeatureSource($featureService, $mapWktSrs, $parcelFeatureResId);
+            $parcelMarkerLayer = CreateParcelMarkerLayer($resourceService, $parcelFeatureResId, $sessionId);
+            $map->GetLayers()->Insert(0, $parcelMarkerLayer);
+        }
+        else
+        {
+            $parcelMarkerLayer = $map->GetLayers()->GetItem($layerIndex);
+            $commands = new MgFeatureCommandCollection();
+            $commands->Add(new MgDeleteFeatures('ParcelMarkerClass', "ID like '%'"));
+            
+            $parcelMarkerLayer->UpdateFeatures($commands);
+        }
 
         // Check each layer in the selection.
 
@@ -151,6 +202,9 @@
 
             echo 'Marking all parcels inside the buffer that are of type "MFG"';
 
+            /*
+            // Old way, pre MapGuide OS 2.0. Kept here for reference
+            
             // Create a filter containing the IDs of the selected features on this layer
 
             $layerClassName = $layer->GetFeatureClassName();
@@ -166,7 +220,13 @@
 
             $queryOptions->SetFilter($selectionString);
             $featureReader = $featureService->SelectFeatures($layerFeatureResource, $layerClassName, $queryOptions);
-
+            */
+            
+            // New way, post MapGuide 2.0
+            
+            $featureReader = $selection->GetSelectedFeatures($layer, $layer->GetFeatureClassName(), false);
+            
+            
             // Process each item in the MgFeatureReader. Get the
             // geometries from all the selected features and
             // merge them into a single geometry.
@@ -196,42 +256,47 @@
             $queryOptions->SetFilter("RTYPE = 'MFG'");
             $queryOptions->SetSpatialFilter('SHPGEOM', $bufferGeometry, MgFeatureSpatialOperations::Inside);
 
+            /*
+            // Old way, pre MapGuide OS 2.0. Kept here for reference
+            $featureResId = new MgResourceIdentifier("Library://Samples/Sheboygan/Data/Parcels.FeatureSource");
+            $featureReader = $featureService->SelectFeatures($featureResId, "Parcels", $queryOptions);
+            */
+            
+            // New way, post MapGuide OS 2.0
+            $featureReader = $layer->SelectFeatures($queryOptions);
+            
             // Get the features from the feature source,
             // determine the centroid of each selected feature, and
             // add a point to the ParcelMarker layer to mark the
             // centroid.
             // Collect all the points into an MgFeatureCommandCollection,
             // so they can all be added in one operation.
-
-            $featureResId = new MgResourceIdentifier("Library://Samples/Sheboygan/Data/Parcels.FeatureSource");
-            $featureReader = $featureService->SelectFeatures($featureResId, "Parcels", $queryOptions);
-
+            
             $parcelMarkerCommands = new MgFeatureCommandCollection();
             while ($featureReader->ReadNext())
             {
-
                 $byteReader = $featureReader->GetGeometry('SHPGEOM');
-
                 $geometry = $agfReaderWriter->Read($byteReader);
                 $point = $geometry->GetCentroid();
 
                 // Create an insert command for this parcel.
-
                 $properties = new MgPropertyCollection();
-
                 $properties->Add(new MgGeometryProperty('ParcelLocation', $agfReaderWriter->Write($point)));
                 $parcelMarkerCommands->Add(new MgInsertFeatures('ParcelMarkerClass', $properties));
-
             }
             $featureReader->Close();
 
             if ($parcelMarkerCommands->GetCount() > 0)
             {
-              $featureService->UpdateFeatures($parcelFeatureResId, $parcelMarkerCommands, false);
+                // Old way, pre MapGuide OS 2.0. Kept here for reference
+                //$featureService->UpdateFeatures($parcelFeatureResId, $parcelMarkerCommands, false);
+                
+                // New way, post MapGuide OS 2.0
+                $parcelMarkerLayer->UpdateFeatures($parcelMarkerCommands);
             }
             else
             {
-              echo '</p><p>No parcels within the buffer area match.';
+                echo '</p><p>No parcels within the buffer area match.';
             }
 
             // Create a feature in the buffer feature source to show the area covered by the buffer.
@@ -242,7 +307,11 @@
             $commands = new MgFeatureCommandCollection();
             $commands->Add(new MgInsertFeatures('BufferClass', $properties));
 
-            $featureService->UpdateFeatures($bufferFeatureResId, $commands, false);
+            // Old way, pre MapGuide OS 2.0
+            //$featureService->UpdateFeatures($bufferFeatureResId, $commands, false);
+            
+            // New way, post MapGuide OS 2.0
+            $bufferLayer->UpdateFeatures($commands);
 
             // Ensure that the buffer layer is visible and in the legend.
 
@@ -252,7 +321,7 @@
             $parcelMarkerLayer->SetVisible(true);
             $parcelMarkerLayer->ForceRefresh();
 
-            $map->Save($resourceService);
+            $map->Save();
 
           }
         }
