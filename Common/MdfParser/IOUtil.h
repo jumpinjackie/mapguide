@@ -108,15 +108,7 @@ private:
     MDFPARSER_API std::string IntToStr(int i);
     MDFPARSER_API std::string DoubleToStr(double d);
     MDFPARSER_API std::string BoolToStr(bool b);
-/*
-    MDFPARSER_API std::string tab.tab();
 
-    MDFPARSER_API int gettabcount();
-    MDFPARSER_API void tab.inctab();
-    MDFPARSER_API void tab.dectab();
-    MDFPARSER_API void zerotab();
-    MDFPARSER_API void disableTabs();
-*/
     MDFPARSER_API std::string startStr(const std::string& elementName);
     MDFPARSER_API std::string endStr(const std::string& elementName);
 
