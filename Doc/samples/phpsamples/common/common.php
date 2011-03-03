@@ -19,9 +19,9 @@
 // -----------------------------------------------------------------------------------
 // Use the following for Windows installations
 // -----------------------------------------------------------------------------------
-$webExtensionsDirectory = 'C:\Program Files\MapGuideOpenSource\WebServerExtensions\\';
+$webExtensionsDirectory = 'C:\Program Files\OSGeo\MapGuide\Web\\';
   
-$MapGuideServerDirectory = 'C:\Program Files\MapGuideOpenSource\Server\\';
+$MapGuideServerDirectory = 'C:\Program Files\OSGeo\MapGuide\Server\\';
   
 $viewerFilesDirectory = $webExtensionsDirectory . 'www\viewerfiles\\';
   
