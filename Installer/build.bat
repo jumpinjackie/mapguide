@@ -369,7 +369,7 @@ echo [generate]: Web - Help
 %PARAFFIN% -dir %MG_SOURCE%\Web\www\help -alias $(var.MgSource)\Web\www\help -custom HELPFILES -dirref WEBROOTLOCATION %WIX_INC_WEB%\incHelpFiles.wxs
 
 echo [generate]: Web - Developer's Guide Samples
-%PARAFFIN% -dir %MG_SOURCE%\Web\www\devguide -alias $(var.MgSource)\Web\www\devguide -custom DEVGUIDEFILES -dirref WEBROOTLOCATION %WIX_INC_WEB%\incDevGuideFiles.wxs
+%PARAFFIN% -dir %MG_SOURCE%\Web\www\phpsamples -alias $(var.MgSource)\Web\www\phpsamples -custom DEVGUIDEFILES -dirref WEBROOTLOCATION %WIX_INC_WEB%\incDevGuideFiles.wxs
 
 echo [generate]: Web - mapagent
 %PARAFFIN% -dir %MG_SOURCE%\Web\www\mapagent -alias $(var.MgSource)\Web\www\mapagent -custom MAPAGENTFILES -dirref WEBROOTLOCATION %WIX_INC_WEB%\incMapAgentFiles.wxs
