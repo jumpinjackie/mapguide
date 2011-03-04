@@ -1996,6 +1996,7 @@ MgByteReader* MgServerFeatureService::GetWfsFeature(MgResourceIdentifier* fs,
 
     FdoXmlFeatureSerializer::XmlSerialize(&maxFeatureReader, featWriter, flags);
 
+    mgfReader->Close();
     flags = NULL;
     featWriter = NULL;
     propWriter = NULL;
