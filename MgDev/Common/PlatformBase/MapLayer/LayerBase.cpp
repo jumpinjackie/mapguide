@@ -637,10 +637,33 @@ void MgLayerBase::GetLayerInfoFromDefinition(MgResourceService* resourceService)
     }
     else
     {
-        ldf.reset(MgLayerBase::GetLayerDefinition(resourceService, m_definition));
-        //cache the resource content
+        Ptr<MgResourceIdentifier> resourceId = MgLayerBase::GetLayerDefinition();
+        // get and parse the layer definition
+        Ptr<MgByteReader> reader = resourceService->GetResourceContent(resourceId, L"");
+        Ptr<MgByteSink> sink = new MgByteSink(reader);
+        Ptr<MgByte> bytes = sink->ToBuffer();
+
+        assert(bytes->GetLength() > 0);
+
         MdfParser::SAX2Parser parser;
-        std::string content = parser.SerializeToXML(ldf.get(), NULL);
+        parser.ParseString((const char*)bytes->Bytes(), bytes->GetLength());
+
+        if (!parser.GetSucceeded())
+        {
+            STRING errorMsg = parser.GetErrorMessage();
+            MgStringCollection arguments;
+            arguments.Add(errorMsg);
+            throw new MgInvalidLayerDefinitionException(L"MgLayerBase::GetLayerDefinition", __LINE__, __WFILE__, &arguments, L"", NULL);
+        }
+
+        MdfModel::LayerDefinition* ldef = parser.DetachLayerDefinition();
+        assert(ldef != NULL);
+    
+        ldf.reset(ldef);
+
+        //cache the resource content
+        std::string content;
+        content.assign((const char*) bytes->Bytes(), bytes->GetLength());
         MgUtil::MultiByteToWideChar(content, m_resourceContent);
     }
 
