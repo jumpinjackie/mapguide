@@ -437,7 +437,7 @@ if "%TYPECOMPONENT%"=="web" goto quit
 echo [install]: Documentation
 %XCOPY% "%MG_DOC_OUTPUT%" "%MG_OUTPUT_WEB%\www\help\webapi" /EXCLUDE:svn_excludes.txt+%TYPEBUILD%_excludes.txt
 echo [install]: Developer's Guide Sample Code
-%XCOPY% "%MG_DOC_DEVGUIDE_SAMPLES%" "%MG_OUTPUT_WEB%\www\devguide" /EXCLUDE:svn_excludes.txt+%TYPEBUILD%_excludes.txt
+%XCOPY% "%MG_DOC_DEVGUIDE_SAMPLES%" "%MG_OUTPUT_WEB%\www\phpsamples" /EXCLUDE:svn_excludes.txt+%TYPEBUILD%_excludes.txt
 echo [install]: Viewer API documentation
 %XCOPY% "%MG_DOC%\viewerapi" "%MG_OUTPUT_WEB%\www\help\viewerapi" /EXCLUDE:svn_excludes.txt+%TYPEBUILD%_excludes.txt
 
