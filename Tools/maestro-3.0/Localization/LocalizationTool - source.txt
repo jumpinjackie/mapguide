@@ -1,2 +1,0 @@
-LocalizationTool.exe is from the Duplicati project:
-http://code.google.com/p/duplicati
