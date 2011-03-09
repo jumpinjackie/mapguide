@@ -468,7 +468,16 @@ STRING CCoordinateSystemFormatConverter::CodeToWkt(INT32 nFormatSource, CREFSTRI
             //The mapping from Adsk name to Msi is done internally inside
             //the method CSepsg2adskCS
             CriticalClass.Enter();
-            szMsiName=CSepsg2adskCS(lEpsg);
+            const char* szMsiNameTemp=NULL;
+            szMsiNameTemp=CSepsg2adskCS(lEpsg);
+            if(NULL == szMsiNameTemp)
+            {
+                szMsiName = "";
+            }
+            else
+            {
+                szMsiName = szMsiNameTemp;
+            }
             CriticalClass.Leave();
             if (szMsiName.empty())
             {
