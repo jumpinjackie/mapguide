@@ -149,6 +149,39 @@ MgByteReader* MgProxyKmlService::GetFeaturesKml(
     return (MgByteReader*)cmd.GetReturnValue().val.m_obj;
 }
 
+// Retrieve feature geometries in KML format
+MgByteReader* MgProxyKmlService::GetFeaturesKml(
+    MgLayer* layer,
+    MgEnvelope* extents,
+    INT32 width,
+    INT32 height,
+    double dpi,
+    INT32 drawOrder,
+    CREFSTRING agentUri,
+    CREFSTRING format)
+{
+    MgCommand cmd;
+    cmd.ExecuteCommand(m_connProp,                                      // Connection
+                        MgCommand::knObject,                            // Return type expected
+                        MgKmlServiceOpId::GetFeaturesKml,               // Command Code
+                        8,                                              // No of arguments
+                        Kml_Service,                                    // Service Id
+                        BUILD_VERSION(1,0,0),                           // Operation version
+                        MgCommand::knObject, layer,                     // Argument#1
+                        MgCommand::knObject, extents,                   // Argument#2
+                        MgCommand::knInt32, width,                      // Argument#3
+                        MgCommand::knInt32, height,                     // Argument#4
+                        MgCommand::knDouble, dpi,                       // Argument#5
+                        MgCommand::knInt32, drawOrder,                  // Argument#6
+                        MgCommand::knString, &agentUri,                 // Argument#7
+                        MgCommand::knString, &format,                   // Argument#8
+                        MgCommand::knNone);                             // End of arguments
+
+    SetWarning(cmd.GetWarningObject());
+
+    return (MgByteReader*)cmd.GetReturnValue().val.m_obj;
+}
+
 //////////////////////////////////////////////////////////////////
 /// \brief
 /// Sets the connection properties for the Proxy Service.  This

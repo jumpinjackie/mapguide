@@ -61,6 +61,7 @@ private:
     double m_dpi;
     INT32 m_width;
     INT32 m_height;
+    STRING m_agentUri;
     INT32 m_drawOrder;
 };
 

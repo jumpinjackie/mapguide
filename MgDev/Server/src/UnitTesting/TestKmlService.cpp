@@ -385,10 +385,11 @@ void TestKmlService::TestCase_GetFeaturesKml()
         INT32 height = 717;
         double dpi = 96;
         INT32 drawOrder = 0;
+        STRING agentUri = L"http://myserver/mapguide/mapagent/mapagent.fcgi";
         STRING format = L"KML";
 
         //call GetLayerKml
-        Ptr<MgByteReader> reader = m_svcKml->GetFeaturesKml(layer, extents, width, height, dpi, drawOrder, format);
+        Ptr<MgByteReader> reader = m_svcKml->GetFeaturesKml(layer, extents, width, height, dpi, drawOrder, agentUri, format);
 
         STRING mimeType = reader->GetMimeType();
         CPPUNIT_ASSERT(mimeType.compare(MgMimeType::Kml) == 0);

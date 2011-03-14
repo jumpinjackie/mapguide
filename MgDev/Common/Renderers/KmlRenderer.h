@@ -29,6 +29,7 @@
 typedef std::map<RS_String, KmlContent*> ThemeMap;
 typedef std::map<KmlLineStyle, int> KmlLineStyleIdMap;
 typedef std::map<KmlPolyStyle, int> KmlPolyStyleIdMap;
+typedef std::map<KmlIconStyle, int> KmlIconStyleIdMap;
 
 class TransformMesh;
 
@@ -167,6 +168,7 @@ private:
     void ProcessOneMarker(double x, double y, RS_MarkerDef& mdef, bool allowOverpost);
     void WriteStyle(RS_FillStyle& fill);
     void WriteStyle(RS_LineStroke& lsym);
+    void WriteStyle(double scale, const std::wstring& href);
     void WriteLinearRing(LineBuffer* plb, int contour);
     void WriteLinearRing(LineBuffer* plb);
     void WriteCoordinates(LineBuffer* plb);
@@ -189,6 +191,7 @@ private:
     int m_styleId;
     KmlLineStyleIdMap m_lineStyleMap;
     KmlPolyStyleIdMap m_polyStyleMap;
+    KmlIconStyleIdMap m_iconStyleMap;
     double m_pixelSize;
     int m_drawOrder;
     double m_elevation;

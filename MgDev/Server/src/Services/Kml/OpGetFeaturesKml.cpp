@@ -94,6 +94,43 @@ void MgOpGetFeaturesKml::Execute()
 
         EndExecution(kml);
     }
+    else if (8 == m_packet.m_NumArguments)
+    {
+        Ptr<MgLayer> layer = (MgLayer*)m_stream->GetObject();
+        Ptr<MgResourceIdentifier> resource = layer->GetLayerDefinition();
+        Ptr<MgEnvelope> extents = (MgEnvelope*)m_stream->GetObject();
+        INT32 width;
+        m_stream->GetInt32(width);
+        INT32 height;
+        m_stream->GetInt32(height);
+        double dpi;
+        m_stream->GetDouble(dpi);
+        INT32 drawOrder;
+        m_stream->GetInt32(drawOrder);
+        STRING agentUri;
+        m_stream->GetString(agentUri);
+        STRING format;
+        m_stream->GetString(format);
+        BeginExecution();
+
+        MG_LOG_OPERATION_MESSAGE_PARAMETERS_START();
+        MG_LOG_OPERATION_MESSAGE_ADD_STRING((NULL == resource) ? L"MgResourceIdentifier" : resource->ToString().c_str());
+        MG_LOG_OPERATION_MESSAGE_ADD_STRING(L"MgEnvelope");
+        MG_LOG_OPERATION_MESSAGE_ADD_INT32(width);
+        MG_LOG_OPERATION_MESSAGE_ADD_INT32(height);
+        MG_LOG_OPERATION_MESSAGE_ADD_DOUBLE(dpi);
+        MG_LOG_OPERATION_MESSAGE_ADD_INT32(drawOrder);
+        MG_LOG_OPERATION_MESSAGE_ADD_STRING(agentUri.c_str());
+        MG_LOG_OPERATION_MESSAGE_ADD_STRING(format.c_str());
+        MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
+
+        Validate();
+
+        Ptr<MgByteReader> kml =
+            m_service->GetFeaturesKml(layer, extents, width, height, dpi, drawOrder, agentUri, format);
+
+        EndExecution(kml);
+    }
     else
     {
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_START();

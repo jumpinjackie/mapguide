@@ -153,6 +153,55 @@ PUBLISHED_API:
         INT32 drawOrder,
         CREFSTRING format) = 0;
 
+    /////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Returns a layer definition in KML format
+    ///
+    /// \param layer
+    /// Input
+    /// layer object for which to generate KML.
+    ///
+    /// \param extents
+    /// Input
+    /// required spatial data extents
+    ///
+    /// \param width
+    /// Input
+    /// map width in pixels
+    ///
+    /// \param height
+    /// Input
+    /// map height in pixels
+    ///
+    /// \param dpi
+    /// Input
+    /// resolution in dots per inch
+    ///
+    /// \param drawOrder
+    /// Input
+    /// the draw order for the layer containing these features
+    ///
+    /// \param agentUri
+    /// Input
+    /// URI of map agent that issued request
+    ///
+    /// \param format
+    /// Input
+    /// requested response format
+    ///
+    /// \return
+    /// A byte reader containing the generated KML.
+    ///
+    virtual MgByteReader* GetFeaturesKml(
+        MgLayer* layer,
+        MgEnvelope* extents,
+        INT32 width,
+        INT32 height,
+        double dpi,
+        INT32 drawOrder,
+        CREFSTRING agentUri,
+        CREFSTRING format) = 0;
+
 INTERNAL_API:
 
     //////////////////////////////////////////////////////////////////

@@ -36,6 +36,7 @@ libMgRenderers_la_SOURCES = \
   KmlContent.cpp \
   KmlLineStyle.cpp \
   KmlPolyStyle.cpp \
+  KmlIconStyle.cpp \
   KmlRenderer.cpp \
   ObservationMesh.cpp \
   RenderUtil.cpp \
@@ -65,6 +66,7 @@ noinst_HEADERS = \
   KmlContent.h \
   KmlLineStyle.h \
   KmlPolyStyle.h \
+  KmlIconStyle.h \
   KmlRenderer.h \
   ObservationMesh.h \
   Renderers.h \

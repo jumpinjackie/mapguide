@@ -501,6 +501,14 @@
 				>
 			</File>
 			<File
+				RelativePath=".\KmlIconStyle.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\KmlIconStyle.h"
+				>
+			</File>
+			<File
 				RelativePath=".\KmlLineStyle.cpp"
 				>
 			</File>

@@ -42,6 +42,9 @@ MgHttpKmlGetFeatures::MgHttpKmlGetFeatures(MgHttpRequest *hRequest)
     // Get the bounding box
     m_boundingBox = params->GetParameterValue(MgHttpResourceStrings::reqKmlBoundingBox);
 
+    // Get the map agent Uri
+    m_agentUri = hRequest->GetAgentUri();
+
     // Get the requested format
     m_format = params->GetParameterValue(MgHttpResourceStrings::reqKmlFormat);
 
@@ -117,7 +120,7 @@ void MgHttpKmlGetFeatures::Execute(MgHttpResponse& hResponse)
     Ptr<MgKmlService> kmlService = dynamic_cast<MgKmlService*>(CreateService(MgServiceType::KmlService));
 
     // Get the KML geometries
-    Ptr<MgByteReader> reader = kmlService->GetFeaturesKml(layer, extents, m_width, m_height, m_dpi, m_drawOrder, m_format);
+    Ptr<MgByteReader> reader = kmlService->GetFeaturesKml(layer, extents, m_width, m_height, m_dpi, m_drawOrder, m_agentUri, m_format);
 
     // Set the result
     hResult->SetResultObject(reader, reader->GetMimeType());

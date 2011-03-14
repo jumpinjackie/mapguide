@@ -22,6 +22,7 @@
 #include "RendererStyles.h"
 #include "KmlLineStyle.h"
 #include "KmlPolyStyle.h"
+#include "KmlIconStyle.h"
 #include <sstream>
 
 class KmlContent
