@@ -233,6 +233,12 @@ MgByteReader* MgServerKmlService::GetLayerKml(MgLayer* layer, MgEnvelope* extent
 MgByteReader* MgServerKmlService::GetFeaturesKml(MgLayer* layer, MgEnvelope* extents,
     INT32 width, INT32 height, double dpi, INT32 drawOrder, CREFSTRING format)
 {
+    return GetFeaturesKml(layer, extents, width, height, dpi, drawOrder, L"", format);
+}
+
+MgByteReader* MgServerKmlService::GetFeaturesKml(MgLayer* layer, MgEnvelope* extents, 
+    INT32 width, INT32 height, double dpi, INT32 drawOrder, CREFSTRING agentUri, CREFSTRING format)
+{
     Ptr<MgByteReader> byteReader;
 
     MG_TRY()
@@ -280,7 +286,8 @@ MgByteReader* MgServerKmlService::GetFeaturesKml(MgLayer* layer, MgEnvelope* ext
         KmlContent kmlContent;
         kmlContent.StartDocument();
         kmlContent.WriteString("<visibility>1</visibility>");
-        AppendFeatures(layer, ldf.get(), extents, scale, dpi, drawOrder, kmlContent);
+        STRING sessionId = GetSessionId();
+        AppendFeatures(layer, ldf.get(), extents, agentUri, scale, dpi, drawOrder, sessionId, kmlContent);
         kmlContent.EndDocument();
         Ptr<MgByteSource> byteSource = GetByteSource(kmlContent, format);
         if(byteSource != NULL)
@@ -424,17 +431,27 @@ void MgServerKmlService::AppendRasterScaleRange(MgLayer* layer,
 void MgServerKmlService::AppendFeatures(MgLayer* layer,
                                         MdfModel::LayerDefinition* layerDef,
                                         MgEnvelope* extents,
+                                        CREFSTRING agentUri,
                                         double scale,
                                         double dpi,
                                         INT32 drawOrder,
+                                        CREFSTRING sessionId,
                                         KmlContent& kmlContent)
 {
     MgCSTrans* csTrans = NULL;
     RSMgFeatureReader* rsReader = NULL;
+    char* legendImage = NULL;
 
     MG_TRY()
-
-    RS_UIGraphic uig(NULL, 0, layer->GetLegendLabel());
+    
+    if(!agentUri.empty())
+    {
+        STRING strLegendImage = GetPointStyleImageUrl(agentUri,layer,scale,sessionId);
+        legendImage = new char[4096];
+        wcstombs(legendImage, strLegendImage.c_str(), 4096 );
+    }
+    
+    RS_UIGraphic uig((unsigned char*)legendImage, 0, layer->GetLegendLabel());
     RS_LayerUIInfo layerInfo(layer->GetName(),
                              layer->GetObjectId(),
                              layer->GetSelectable(),
@@ -523,7 +540,7 @@ void MgServerKmlService::AppendFeatures(MgLayer* layer,
     }*/
 
     MG_CATCH(L"MgServerKmlService.AppendFeatures")
-
+    delete[] legendImage;
     delete rsReader;
     delete csTrans;
 
@@ -870,4 +887,85 @@ STRING MgServerKmlService::GetSessionId()
         }
     }
     return sessionId;
+}
+
+STRING MgServerKmlService::GetPointStyleImageUrl(STRING agentUri, MgLayer* layer, double scale, CREFSTRING sessionId)
+{
+    STRING strLegendImage = agentUri + L"?OPERATION=GetLegendImage&amp;LAYERDEFINITION="; 
+    strLegendImage += layer->GetLayerDefinition()->ToString();
+    strLegendImage += L"&amp;SCALE=" ;
+    
+    STRING strScale;
+    MgUtil::DoubleToString(scale,strScale);
+    strLegendImage += strScale;
+
+    STRING strGeomType;
+    STRING strCategoryIndex = L"-1";
+    //get layer definition
+    Ptr<MgResourceIdentifier> resId = layer->GetLayerDefinition();
+    auto_ptr<MdfModel::LayerDefinition> ldf(MgLayerBase::GetLayerDefinition(m_svcResource, resId));
+
+    MdfModel::VectorLayerDefinition* vl = dynamic_cast<MdfModel::VectorLayerDefinition*>(ldf.get());
+    if(vl != NULL)
+    {
+        //get the scale ranges
+        MdfModel::VectorScaleRangeCollection* scaleRanges = vl->GetScaleRanges();
+        MdfModel::VectorScaleRange* range = NULL;
+
+        for (int i = 0; i < scaleRanges->GetCount(); i++)
+        {
+            range = scaleRanges->GetAt(i);
+            double minScale = range->GetMinScale();
+            double maxScale = range->GetMaxScale();
+            if(scale > minScale && scale <= maxScale)
+            {
+                int categoryIndex = -1;
+                MdfModel::FeatureTypeStyleCollection* styleCollection = range->GetFeatureTypeStyles();
+                MdfModel::FeatureTypeStyle* style = NULL;
+                for (int j = 0; j < styleCollection->GetCount(); j++)
+                {
+                    style = styleCollection->GetAt(j);
+                    MdfModel::RuleCollection* ruleCollection = style->GetRules();
+                    for(int k = 0; k < ruleCollection->GetCount(); k++)
+                    {
+                        MdfModel::PointRule* pointRule = dynamic_cast<MdfModel::PointRule*>(ruleCollection->GetAt(k));
+                        MdfModel::CompositeRule* compositeRule = dynamic_cast<MdfModel::CompositeRule*>(ruleCollection->GetAt(k));
+                        
+                        if(NULL != pointRule)
+                        {
+                            strGeomType = L"1"; // FeatureTypeStyleVisitor::ftsPoint
+                        }
+                        else if(NULL != compositeRule)
+                        {
+                            strGeomType = L"4"; //FeatureTypeStyleVisitor::ftsComposite
+
+                            MdfModel::CompositeSymbolization* symbolization = compositeRule->GetSymbolization();
+                            MdfModel::SymbolInstanceCollection* symbolInstanceCollection = symbolization->GetSymbolCollection();
+                            for(int l = 0; l < symbolInstanceCollection->GetCount(); l++)
+                            {
+                                MdfModel::SymbolInstance* symbolInstance = symbolInstanceCollection->GetAt(l);
+                                if(symbolInstance->GetGeometryContext() == MdfModel::SymbolInstance::GeometryContext::gcPoint)
+                                {
+                                    MgUtil::Int32ToString(++categoryIndex,strCategoryIndex);
+                                }
+                                else
+                                {
+                                    ++categoryIndex;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+    strLegendImage += L"&amp;THEMECATEGORY=";
+    strLegendImage += strCategoryIndex;
+    strLegendImage += L"&amp;TYPE=";
+    strLegendImage += strGeomType;
+    strLegendImage += L"&amp;SESSION=";
+    strLegendImage += sessionId;
+    strLegendImage += L"&amp;VERSION=1";
+
+    return strLegendImage;
 }

@@ -368,6 +368,16 @@ void KmlRenderer::ProcessMarker(LineBuffer* srclb, RS_MarkerDef& mdef, bool allo
 
 void KmlRenderer::ProcessOneMarker(double x, double y, RS_MarkerDef& mdef, bool /*allowOverpost*/)
 {
+    //write style
+    RS_UIGraphic& uig = m_layerInfo->graphic();
+    unsigned char* data = uig.data();
+    if(NULL != data)
+    {
+        wchar_t * legendImage = new wchar_t[4096];
+        mbstowcs(legendImage,(const char*)data,4096);
+        WriteStyle(0.5,legendImage);
+    }
+
     char buffer[256];
     m_kmlContent->WriteString("<name><![CDATA[", false);
     m_kmlContent->WriteString(mdef.name(), false);
@@ -617,6 +627,49 @@ void KmlRenderer::WriteStyle(RS_LineStroke& lsym)
     m_kmlContent->WriteString(buffer);
 }
 
+void KmlRenderer::WriteStyle(double scale, const std::wstring& href)
+{
+    if (m_styleContent == NULL)
+    {
+        m_styleContent = new KmlContent();
+    }
+
+    char buffer[256];
+    int thisStyleId = 0;
+    KmlIconStyle key(1, href);
+    KmlIconStyleIdMap::iterator iter = m_iconStyleMap.find(key);
+    if (iter != m_iconStyleMap.end())
+    {
+        thisStyleId = (*iter).second;
+    }
+    else
+    {
+        thisStyleId = m_iconStyleMap[key] = m_styleId;
+
+        //write the style definitions into the style storage
+        sprintf(buffer, "<Style id=\"%d\">", m_styleId++);
+        m_styleContent->WriteString(buffer);
+
+        //line style
+        m_styleContent->WriteString("<IconStyle>",false);
+        m_styleContent->WriteString("<scale>",false);
+        sprintf(buffer, "%f", scale);
+        m_styleContent->WriteString(buffer,false);
+        m_styleContent->WriteString("</scale>",false);
+        m_styleContent->WriteString("<Icon>",false);
+        m_styleContent->WriteString("<href>",false);
+        m_styleContent->WriteString(href,false);
+        m_styleContent->WriteString("</href>",false);
+        m_styleContent->WriteString("</Icon>",false);
+        m_styleContent->WriteString("</IconStyle>");
+
+        m_styleContent->WriteString("</Style>");
+    }
+
+    //write a style reference into the main document
+    sprintf(buffer, "<styleUrl>#%d</styleUrl>", thisStyleId);
+    m_kmlContent->WriteString(buffer);
+}
 
 double KmlRenderer::_MeterToPixels(RS_Units unit, double number)
 {

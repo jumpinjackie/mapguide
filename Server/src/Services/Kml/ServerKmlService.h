@@ -70,6 +70,8 @@ public:
 
     virtual MgByteReader* GetFeaturesKml(MgLayer* layer, MgEnvelope* extents, INT32 width, INT32 height, double dpi, INT32 drawOrder, CREFSTRING format);
 
+    virtual MgByteReader* GetFeaturesKml(MgLayer* layer, MgEnvelope* extents, INT32 width, INT32 height, double dpi, INT32 drawOrder, CREFSTRING agentUri, CREFSTRING format);
+
 private:
 
     void AppendLayer(MgLayer* layer,
@@ -112,6 +114,16 @@ private:
         INT32 drawOrder,
         KmlContent& kmlContent);
 
+    void AppendFeatures(MgLayer* layer,
+        MdfModel::LayerDefinition* layerDef,
+        MgEnvelope* extents,
+        CREFSTRING agentUri,
+        double scale,
+        double dpi,
+        INT32 drawOrder,
+        CREFSTRING sessionId,
+        KmlContent& kmlContent);
+
     MgByteSource* GetByteSource(KmlContent& kmlContent, CREFSTRING format);
 
     void InitializeResourceService();
@@ -127,6 +139,8 @@ private:
     MgEnvelope* GetLayerExtent(MdfModel::LayerDefinition* layerDef, MgCoordinateSystem* destCs);
     double GetScale(MgEnvelope* llExtents, int width, int height, double dpi);
     STRING GetSessionId();
+
+    STRING GetPointStyleImageUrl(STRING agentUri, MgLayer* layer, double scale, CREFSTRING sessionId);
 
     Ptr<MgResourceService> m_svcResource;
     Ptr<MgFeatureService> m_svcFeature;
