@@ -1,5 +1,5 @@
 SET BUILDROOT=c:\builds\mg22win32
-SET FDOBUILD=c:\fdo32-5667
+SET FDOBUILD=C:\fdo\35rel\win32
 SET MGSOURCE=%BUILDROOT%\mgdev
 SET MGINSTALL=%BUILDROOT%\installer
 SET INSTALLROOT=%MGSOURCE%\Release
@@ -46,6 +46,6 @@ call build.bat -a=install
 cd %MGINSTALL%
 call build.bat -source=%INSTALLROOT% -a=prepare
 call build.bat -source=%INSTALLROOT% -a=generate 
-call build.bat -source=%INSTALLROOT% -version=2.2.0.%REVISION% -name=MapGuideOpenSource-2.2.0.%REVISION%-RC3 -title="MapGuide Open Source 2.2 RC3"
+call build.bat -source=%INSTALLROOT% -version=2.2.0.%REVISION% -name=MapGuideOpenSource-2.2.0.%REVISION%-RC4 -title="MapGuide Open Source 2.2 RC4"
 
 cd %STARTDIR%
