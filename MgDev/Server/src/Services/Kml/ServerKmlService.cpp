@@ -944,7 +944,7 @@ STRING MgServerKmlService::GetPointStyleImageUrl(STRING agentUri, MgLayer* layer
                             for(int l = 0; l < symbolInstanceCollection->GetCount(); l++)
                             {
                                 MdfModel::SymbolInstance* symbolInstance = symbolInstanceCollection->GetAt(l);
-                                if(symbolInstance->GetGeometryContext() == MdfModel::SymbolInstance::GeometryContext::gcPoint)
+                                if(symbolInstance->GetGeometryContext() == SymbolInstance::gcPoint)
                                 {
                                     MgUtil::Int32ToString(++categoryIndex,strCategoryIndex);
                                 }
