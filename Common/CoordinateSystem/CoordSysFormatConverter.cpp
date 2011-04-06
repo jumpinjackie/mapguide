@@ -812,7 +812,7 @@ MgCoordinateSystem* CCoordinateSystemFormatConverter::CodeToDefinition(INT32 nFo
         throw new MgOutOfMemoryException(L"MgCoordinateSystemFormatConverter.CodeToDefinition", __LINE__, __WFILE__, NULL, L"", NULL);
     }
 
-    const char* szMsiName=NULL;
+    std::string szMsiName;
 
     //if input is EPSG
     bool bResult=false;
@@ -826,8 +826,19 @@ MgCoordinateSystem* CCoordinateSystemFormatConverter::CodeToDefinition(INT32 nFo
             //viewed from the outside of the public API
             //The mapping from Adsk name to Msi is done internally inside
             //the method CSepsg2adskCS
-            szMsiName=CSepsg2adskCS(lEpsg);
-            if (szMsiName)
+            CriticalClass.Enter();
+            const char* szMsiNameTemp=NULL;
+            szMsiNameTemp=CSepsg2adskCS(lEpsg);
+            if(NULL == szMsiNameTemp)
+            {
+                szMsiName = "";
+            }
+            else
+            {
+                szMsiName = szMsiNameTemp;
+            }
+            CriticalClass.Leave();
+            if (!szMsiName.empty())
             {
                 bResult=true;
             }
@@ -847,9 +858,9 @@ MgCoordinateSystem* CCoordinateSystemFormatConverter::CodeToDefinition(INT32 nFo
     //now get the definition
     if (bResult)
     {
-        assert(szMsiName);
+        assert(!szMsiName.empty());
 
-        wchar_t* wszMsiName=Convert_Ascii_To_Wide(szMsiName);
+        wchar_t* wszMsiName=Convert_Ascii_To_Wide(szMsiName.c_str());
         if (!wszMsiName)
         {
             throw new MgOutOfMemoryException(L"MgCoordinateSystemFormatConverter.CodeToDefinition", __LINE__, __WFILE__, NULL, L"", NULL);
@@ -902,14 +913,26 @@ STRING CCoordinateSystemFormatConverter::CodeToCode(INT32 nFormatSource, CREFSTR
                 //viewed from the outside of the public API
                 //The mapping from Adsk name to Msi is done internally inside
                 //the method CSepsg2adskCS
-                const char* szMsiName=CSepsg2adskCS(lEpsg);
-                if (szMsiName)
+                std::string szMsiName;
+                CriticalClass.Enter();
+                const char* szMsiNameTemp=NULL;
+                szMsiNameTemp=CSepsg2adskCS(lEpsg);
+                if(NULL == szMsiNameTemp)
+                {
+                    szMsiName = "";
+                }
+                else
+                {
+                    szMsiName = szMsiNameTemp;
+                }
+                CriticalClass.Leave();
+                if (!szMsiName.empty())
                 {
                     //need to check if the system is in our dictionary
-                    bool bIsCoordinateSystem=IsCoordinateSystem(const_cast<char*>(szMsiName), NULL);
+                    bool bIsCoordinateSystem=IsCoordinateSystem(const_cast<char*>(szMsiName.c_str()), NULL);
                     if (bIsCoordinateSystem)
                     {
-                        wchar_t *pwszCsDestination=Convert_Ascii_To_Wide(szMsiName);
+                        wchar_t *pwszCsDestination=Convert_Ascii_To_Wide(szMsiName.c_str());
                         if (!pwszCsDestination)
                         {
                             throw new MgOutOfMemoryException(L"MgCoordinateSystemFormatConverter.CodeToCode", __LINE__, __WFILE__, NULL, L"", NULL);
@@ -991,8 +1014,20 @@ bool CCoordinateSystemFormatConverter::IsCodeInDictionary(INT32 nFormat, CREFSTR
             //viewed from the outside of the public API
             //The mapping from Adsk name to Msi is done internally inside
             //the method CSepsg2adskCS
-            const char* szMsiName=CSepsg2adskCS(lEpsg);
-            if (szMsiName)
+            std::string szMsiName;
+            CriticalClass.Enter();
+            const char* szMsiNameTemp=NULL;
+            szMsiNameTemp=CSepsg2adskCS(lEpsg);
+            if(NULL == szMsiNameTemp)
+            {
+                szMsiName = "";
+            }
+            else
+            {
+                szMsiName = szMsiNameTemp;
+            }
+            CriticalClass.Leave();
+            if (!szMsiName.empty())
             {
                 //we may have found an Msi name for a system
                 //but we still have to check if the system is in the dicionary
@@ -1002,7 +1037,7 @@ bool CCoordinateSystemFormatConverter::IsCodeInDictionary(INT32 nFormat, CREFSTR
                 //if the system is in the dictionary since it takes care
                 //of mapping an MSI name to a valid ADSK name
                 //We'll check the existence of the system for additional security
-                bIsPresent=IsCoordinateSystem(const_cast<char*>(szMsiName), NULL);
+                bIsPresent=IsCoordinateSystem(const_cast<char*>(szMsiName.c_str()), NULL);
             }
         }
     }
