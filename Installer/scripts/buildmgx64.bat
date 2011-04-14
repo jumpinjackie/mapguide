@@ -46,6 +46,6 @@ call build64.bat -a=install
 cd %MGINSTALL%
 call build64.bat -source=%INSTALLROOT% -a=prepare
 call build64.bat -source=%INSTALLROOT% -a=generate
-call build64.bat -source=%INSTALLROOT% -version=2.2.0.%REVISION% -name=MapGuideOpenSource-2.2.0.%REVISION%-RC4-x64 -title="MapGuide Open Source 2.2 x64 RC4"
+call build64.bat -source=%INSTALLROOT% -version=2.2.0.%REVISION% -name=MapGuideOpenSource-2.2.0.%REVISION%-Release-x64 -title="MapGuide Open Source 2.2 x64 Release"
 
 cd %STARTDIR%
