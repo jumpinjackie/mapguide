@@ -12,11 +12,16 @@ rmdir /S /Q %INSTALLROOT%
 
 call "C:\Program Files (x86)\Microsoft Visual Studio 9.0\VC\vcvarsall.bat" x86
 
-rem svn info svn://svn.bld.mgproto.net/mapguide/branches/2.2/MgDev | perl revnum.pl > revision.txt
 set /p REVISION= < revision.txt
 
-svn export -r %REVISION% svn://svn.bld.mgproto.net/mapguide/branches/2.2/MgDev %MGSOURCE%
-svn export svn://svn.bld.mgproto.net/mapguide/branches/2.2/Installer %MGINSTALL% 
+SET MGDEVREV=5624
+SET FUSIONREV=2366
+SET CSMAPREV=1964
+
+svn export --ignore-externals -r %MGDEVREV%  svn://svn.bld.mgproto.net/mapguide/branches/2.2/MgDev %MGSOURCE%
+svn export -r %FUSIONREV% svn://svn.bld.mgproto.net/fusion/branches/fusion-2.2 %MGSOURCE%/Oem/fusion
+svn export -r %CSMAPREV% svn://svn.bld.mgproto.net/metacrs/csmap/branches/12.02/CsMapDev %MGSOURCE%/Oem/CsMap
+svn export -r %REVISION% svn://svn.bld.mgproto.net/mapguide/branches/2.2/Installer %MGINSTALL%  
 
 cd %MGSOURCE%
 cscript updateversion.vbs /major:2 /minor:2 /point:0 /build:%REVISION%
