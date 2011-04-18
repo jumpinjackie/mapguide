@@ -166,11 +166,11 @@ class BBINFILETK_API Internal_Translator {
 
         // older forms:
         TK_Status   key_variant_offset (ID_Key key, int variant, int alter & offset) const {
-                        auto        int                 length, index;
+                                int                 length, index;
                         return key_variant_offset (key, variant, offset, length, index);
                     }
         TK_Status   key_variant_offset (ID_Key key, int variant, int alter & offset, int alter & length) const {
-                        auto        int                 index;
+                                int                 index;
                         return key_variant_offset (key, variant, offset, length, index);
                     }
 

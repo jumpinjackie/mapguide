@@ -186,7 +186,13 @@ Item::Ptr AnalyzeStringResult::next(DynamicContext *context)
 
       if(tokStart < matchStart) {
         const XMLCh *str = XPath2Utils::subString(input_, tokStart, matchStart - tokStart, mm);
+#if _MSC_VER == 1600
+        //for Visual Studio 2010
+        strings_.push_back(pair<const XMLCh*, Match*>(str, nullptr));
+#else
+        //for previous Visual Studio
         strings_.push_back(pair<const XMLCh*, Match*>(str, 0));
+#endif
       }
 
       const XMLCh *str = XPath2Utils::subString(input_, matchStart, matchEnd - matchStart, mm);
@@ -198,7 +204,13 @@ Item::Ptr AnalyzeStringResult::next(DynamicContext *context)
     if(tokStart < (int) length) {
       const XMLCh *str = XPath2Utils::subString(input_, tokStart,
                                                 (unsigned int)(length - tokStart), mm);
-      strings_.push_back(pair<const XMLCh*, Match*>(str, 0));
+#if _MSC_VER == 1600
+        //for Visual Studio 2010
+        strings_.push_back(pair<const XMLCh*, Match*>(str, nullptr));
+#else
+        //for previous Visual Studio
+        strings_.push_back(pair<const XMLCh*, Match*>(str, 0));
+#endif
     }
   }
 

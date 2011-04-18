@@ -23,7 +23,8 @@
 #include <inttypes.h>
 #endif
 
-
+#include <vector>
+#include <string>
 ///////////////////////////////////////////////////////////////////////////////
 //
 // Fast and portable UTF-8 conversion

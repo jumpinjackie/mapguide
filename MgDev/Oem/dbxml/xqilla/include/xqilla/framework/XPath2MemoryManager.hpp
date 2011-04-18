@@ -120,6 +120,14 @@ public:
   {
     _memMgr = o._memMgr;
   }
+
+  bool operator !=(const XQillaAllocator<_Tp>& o)
+  {
+      if (_memMgr == o._memMgr)
+          return true;
+      else
+          return false;
+  }
 #endif
   pointer allocate(size_t _n, const void* = 0)
   {
