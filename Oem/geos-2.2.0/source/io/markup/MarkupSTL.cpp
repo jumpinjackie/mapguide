@@ -336,7 +336,7 @@ int CMarkupSTL::x_ParseError( const char* szError, const char* szName )
 	if ( szName )
 	{
 		char szFormat[300];
-		sprintf( szFormat, szError, szName );
+		sprintf_s( szFormat, szError, szName );
 		m_strError = szFormat;
 	}
 	else

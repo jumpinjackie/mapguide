@@ -17,7 +17,8 @@
 
 #ifndef GWSCommon_H
 #define GWSCommon_H
-
+#include <string>
+#include <vector>
 #ifdef _WIN32
 #ifdef GWSCOMMON_EXPORTS
 #define GWS_COMMON_API __declspec(dllexport)
@@ -46,6 +47,7 @@
 #endif
 
 typedef std::wstring        WSTR;
+
 typedef std::vector<WSTR>   WSTRARRAY;
 
 // case insensitive comparison for wstrings to be used in stl map

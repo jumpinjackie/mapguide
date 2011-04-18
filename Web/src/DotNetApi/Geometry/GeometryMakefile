@@ -1,17 +1,9 @@
 cleandebug:
-  del /Q .\Mg*.cs
-  del /Q .\*Constants.cs
-  del /Q .\*PINVOKE.cs
-  del /Q .\*Api.cs
   if exist $(OUTDIR)\OSGeo.MapGuide.Geometry.dll del $(OUTDIR)\OSGeo.MapGuide.Geometry.dll
   if exist $(OUTDIR)\OSGeo.MapGuide.Geometry.pdb del $(OUTDIR)\OSGeo.MapGuide.Geometry.pdb
   if exist $(OUTDIR)\OSGeo.MapGuide.Geometry.Temp.dll del $(OUTDIR)\OSGeo.MapGuide.Geometry.Temp.dll
 
 cleanrelease:
-  del /Q .\Mg*.cs
-  del /Q .\*Constants.cs
-  del /Q .\*PINVOKE.cs
-  del /Q .\*Api.cs
   if exist $(OUTDIR)\OSGeo.MapGuide.Geometry.dll del $(OUTDIR)\OSGeo.MapGuide.Geometry.dll
   if exist $(OUTDIR)\OSGeo.MapGuide.Geometry.pdb del $(OUTDIR)\OSGeo.MapGuide.Geometry.pdb
 

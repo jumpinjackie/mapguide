@@ -36,6 +36,7 @@
 #include <dbxml/XmlNamespace.hpp>
 
 #include <xqilla/exceptions/XPath2TypeMatchException.hpp>
+#include <iterator>
 
 using namespace DbXml;
 using namespace std;

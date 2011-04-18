@@ -1,0 +1,977 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Buffer">
+      <UniqueIdentifier>{56bc0c4e-6931-49c4-97b5-fe957c164eba}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Exception">
+      <UniqueIdentifier>{47d9650a-b1ea-478c-94f5-afbd136dda2b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Parse">
+      <UniqueIdentifier>{9be50487-b080-45ca-9ee4-edd823e4210e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Spatial">
+      <UniqueIdentifier>{104b54a7-c160-499f-8988-d7edd0478ed1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="CoordinateSystemAPI">
+      <UniqueIdentifier>{96811639-6e38-41b1-babe-8dde8a89b2e1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="CoordinateSystem_IMP">
+      <UniqueIdentifier>{5b6c3b2e-33af-4a64-bda3-ec9bedd514c7}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Buffer\BorderWalker.cpp">
+      <Filter>Buffer</Filter>
+    </ClCompile>
+    <ClCompile Include="Buffer\bufrutil.cpp">
+      <Filter>Buffer</Filter>
+    </ClCompile>
+    <ClCompile Include="Buffer\eventarr.cpp">
+      <Filter>Buffer</Filter>
+    </ClCompile>
+    <ClCompile Include="Buffer\FloatTransform.cpp">
+      <Filter>Buffer</Filter>
+    </ClCompile>
+    <ClCompile Include="Buffer\GreatCircleBufferUtil.cpp">
+      <Filter>Buffer</Filter>
+    </ClCompile>
+    <ClCompile Include="Buffer\interlst.cpp">
+      <Filter>Buffer</Filter>
+    </ClCompile>
+    <ClCompile Include="Buffer\interprc.cpp">
+      <Filter>Buffer</Filter>
+    </ClCompile>
+    <ClCompile Include="Buffer\LatLonBorderWalker.cpp">
+      <Filter>Buffer</Filter>
+    </ClCompile>
+    <ClCompile Include="Buffer\MgBuffer.cpp">
+      <Filter>Buffer</Filter>
+    </ClCompile>
+    <ClCompile Include="Buffer\ogeomtry.cpp">
+      <Filter>Buffer</Filter>
+    </ClCompile>
+    <ClCompile Include="Buffer\oobject.cpp">
+      <Filter>Buffer</Filter>
+    </ClCompile>
+    <ClCompile Include="Buffer\opline.cpp">
+      <Filter>Buffer</Filter>
+    </ClCompile>
+    <ClCompile Include="Buffer\opolygon.cpp">
+      <Filter>Buffer</Filter>
+    </ClCompile>
+    <ClCompile Include="Buffer\oppolygn.cpp">
+      <Filter>Buffer</Filter>
+    </ClCompile>
+    <ClCompile Include="Buffer\oppolyln.cpp">
+      <Filter>Buffer</Filter>
+    </ClCompile>
+    <ClCompile Include="Buffer\orpplygn.cpp">
+      <Filter>Buffer</Filter>
+    </ClCompile>
+    <ClCompile Include="Buffer\ortree.cpp">
+      <Filter>Buffer</Filter>
+    </ClCompile>
+    <ClCompile Include="Buffer\planeswp.cpp">
+      <Filter>Buffer</Filter>
+    </ClCompile>
+    <ClCompile Include="Buffer\plgnbufr.cpp">
+      <Filter>Buffer</Filter>
+    </ClCompile>
+    <ClCompile Include="Buffer\plgnsbak.cpp">
+      <Filter>Buffer</Filter>
+    </ClCompile>
+    <ClCompile Include="Buffer\plinbufr.cpp">
+      <Filter>Buffer</Filter>
+    </ClCompile>
+    <ClCompile Include="Buffer\pobjbufr.cpp">
+      <Filter>Buffer</Filter>
+    </ClCompile>
+    <ClCompile Include="Buffer\ppgunion.cpp">
+      <Filter>Buffer</Filter>
+    </ClCompile>
+    <ClCompile Include="Buffer\progcbck.cpp">
+      <Filter>Buffer</Filter>
+    </ClCompile>
+    <ClCompile Include="Buffer\sedgaloc.cpp">
+      <Filter>Buffer</Filter>
+    </ClCompile>
+    <ClCompile Include="Buffer\sweepedg.cpp">
+      <Filter>Buffer</Filter>
+    </ClCompile>
+    <ClCompile Include="Buffer\tuplearr.cpp">
+      <Filter>Buffer</Filter>
+    </ClCompile>
+    <ClCompile Include="Buffer\vertaloc.cpp">
+      <Filter>Buffer</Filter>
+    </ClCompile>
+    <ClCompile Include="Buffer\wedgaloc.cpp">
+      <Filter>Buffer</Filter>
+    </ClCompile>
+    <ClCompile Include="Buffer\wedgearr.cpp">
+      <Filter>Buffer</Filter>
+    </ClCompile>
+    <ClCompile Include="Buffer\wingedge.cpp">
+      <Filter>Buffer</Filter>
+    </ClCompile>
+    <ClCompile Include="Buffer\worklist.cpp">
+      <Filter>Buffer</Filter>
+    </ClCompile>
+    <ClCompile Include="Buffer\xordtree.cpp">
+      <Filter>Buffer</Filter>
+    </ClCompile>
+    <ClCompile Include="Exception\CoordinateSystemComputationFailedException.cpp">
+      <Filter>Exception</Filter>
+    </ClCompile>
+    <ClCompile Include="Exception\CoordinateSystemConversionFailedException.cpp">
+      <Filter>Exception</Filter>
+    </ClCompile>
+    <ClCompile Include="Exception\CoordinateSystemInitializationFailedException.cpp">
+      <Filter>Exception</Filter>
+    </ClCompile>
+    <ClCompile Include="Exception\CoordinateSystemLoadFailedException.cpp">
+      <Filter>Exception</Filter>
+    </ClCompile>
+    <ClCompile Include="Exception\CoordinateSystemMeasureFailedException.cpp">
+      <Filter>Exception</Filter>
+    </ClCompile>
+    <ClCompile Include="Exception\CoordinateSystemTransformFailedException.cpp">
+      <Filter>Exception</Filter>
+    </ClCompile>
+    <ClCompile Include="Exception\GeometryException.cpp">
+      <Filter>Exception</Filter>
+    </ClCompile>
+    <ClCompile Include="Exception\InvalidCoordinateSystemException.cpp">
+      <Filter>Exception</Filter>
+    </ClCompile>
+    <ClCompile Include="Exception\InvalidCoordinateSystemTypeException.cpp">
+      <Filter>Exception</Filter>
+    </ClCompile>
+    <ClCompile Include="Exception\InvalidCoordinateSystemUnitsException.cpp">
+      <Filter>Exception</Filter>
+    </ClCompile>
+    <ClCompile Include="Parse\ArrayHelper.cpp">
+      <Filter>Parse</Filter>
+    </ClCompile>
+    <ClCompile Include="Parse\LexAwkt.cpp">
+      <Filter>Parse</Filter>
+    </ClCompile>
+    <ClCompile Include="Parse\ParseAwkt.cpp">
+      <Filter>Parse</Filter>
+    </ClCompile>
+    <ClCompile Include="Parse\ParseAwktUtil.cpp">
+      <Filter>Parse</Filter>
+    </ClCompile>
+    <ClCompile Include="Parse\StringUtility.cpp">
+      <Filter>Parse</Filter>
+    </ClCompile>
+    <ClCompile Include="Parse\yyAwkt.cpp">
+      <Filter>Parse</Filter>
+    </ClCompile>
+    <ClCompile Include="Spatial\MathUtility.cpp">
+      <Filter>Spatial</Filter>
+    </ClCompile>
+    <ClCompile Include="Spatial\SpatialUtility.cpp">
+      <Filter>Spatial</Filter>
+    </ClCompile>
+    <ClCompile Include="Spatial\SpatialUtilityCircularArc.cpp">
+      <Filter>Spatial</Filter>
+    </ClCompile>
+    <ClCompile Include="CoordinateSystem\CoordinateSystemCache.cpp">
+      <Filter>CoordinateSystemAPI</Filter>
+    </ClCompile>
+    <ClCompile Include="CoordinateSystem\CoordinateSystemFactory.cpp">
+      <Filter>CoordinateSystemAPI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\CoordinateSystem\ArbitraryCoordsys.cpp">
+      <Filter>CoordinateSystem_IMP</Filter>
+    </ClCompile>
+    <ClCompile Include="..\CoordinateSystem\CoordSys.cpp">
+      <Filter>CoordinateSystem_IMP</Filter>
+    </ClCompile>
+    <ClCompile Include="..\CoordinateSystem\CoordSysCatalog.cpp">
+      <Filter>CoordinateSystem_IMP</Filter>
+    </ClCompile>
+    <ClCompile Include="..\CoordinateSystem\CoordSysCategory.cpp">
+      <Filter>CoordinateSystem_IMP</Filter>
+    </ClCompile>
+    <ClCompile Include="..\CoordinateSystem\CoordSysCategoryDictionary.cpp">
+      <Filter>CoordinateSystem_IMP</Filter>
+    </ClCompile>
+    <ClCompile Include="..\CoordinateSystem\CoordSysDatum.cpp">
+      <Filter>CoordinateSystem_IMP</Filter>
+    </ClCompile>
+    <ClCompile Include="..\CoordinateSystem\CoordSysDatumDictionary.cpp">
+      <Filter>CoordinateSystem_IMP</Filter>
+    </ClCompile>
+    <ClCompile Include="..\CoordinateSystem\CoordSysDictionary.cpp">
+      <Filter>CoordinateSystem_IMP</Filter>
+    </ClCompile>
+    <ClCompile Include="..\CoordinateSystem\CoordSysDictionaryBase.cpp">
+      <Filter>CoordinateSystem_IMP</Filter>
+    </ClCompile>
+    <ClCompile Include="..\CoordinateSystem\CoordSysDictionaryUtility.cpp">
+      <Filter>CoordinateSystem_IMP</Filter>
+    </ClCompile>
+    <ClCompile Include="..\CoordinateSystem\CoordSysEllipsoid.cpp">
+      <Filter>CoordinateSystem_IMP</Filter>
+    </ClCompile>
+    <ClCompile Include="..\CoordinateSystem\CoordSysEllipsoidDictionary.cpp">
+      <Filter>CoordinateSystem_IMP</Filter>
+    </ClCompile>
+    <ClCompile Include="..\CoordinateSystem\CoordSysEnum.cpp">
+      <Filter>CoordinateSystem_IMP</Filter>
+    </ClCompile>
+    <ClCompile Include="..\CoordinateSystem\CoordSysEnumCategory.cpp">
+      <Filter>CoordinateSystem_IMP</Filter>
+    </ClCompile>
+    <ClCompile Include="..\CoordinateSystem\CoordSysEnumCoordinateSystemInCategory.cpp">
+      <Filter>CoordinateSystem_IMP</Filter>
+    </ClCompile>
+    <ClCompile Include="..\CoordinateSystem\CoordSysEnumDatum.cpp">
+      <Filter>CoordinateSystem_IMP</Filter>
+    </ClCompile>
+    <ClCompile Include="..\CoordinateSystem\CoordSysEnumEllipsoid.cpp">
+      <Filter>CoordinateSystem_IMP</Filter>
+    </ClCompile>
+    <ClCompile Include="..\CoordinateSystem\CoordSysEnumInteger32.cpp">
+      <Filter>CoordinateSystem_IMP</Filter>
+    </ClCompile>
+    <ClCompile Include="..\CoordinateSystem\CoordSysFormatConverter.cpp">
+      <Filter>CoordinateSystem_IMP</Filter>
+    </ClCompile>
+    <ClCompile Include="..\CoordinateSystem\CoordSysGeodeticAnalyticalTransformDefParams.cpp">
+      <Filter>CoordinateSystem_IMP</Filter>
+    </ClCompile>
+    <ClCompile Include="..\CoordinateSystem\CoordSysGeodeticInterpolationTransformDefParams.cpp">
+      <Filter>CoordinateSystem_IMP</Filter>
+    </ClCompile>
+    <ClCompile Include="..\CoordinateSystem\CoordSysGeodeticMultipleRegressionTransformDefParams.cpp">
+      <Filter>CoordinateSystem_IMP</Filter>
+    </ClCompile>
+    <ClCompile Include="..\CoordinateSystem\CoordSysGeodeticPath.cpp">
+      <Filter>CoordinateSystem_IMP</Filter>
+    </ClCompile>
+    <ClCompile Include="..\CoordinateSystem\CoordSysGeodeticPathDictionary.cpp">
+      <Filter>CoordinateSystem_IMP</Filter>
+    </ClCompile>
+    <ClCompile Include="..\CoordinateSystem\CoordSysGeodeticPathElement.cpp">
+      <Filter>CoordinateSystem_IMP</Filter>
+    </ClCompile>
+    <ClCompile Include="..\CoordinateSystem\CoordSysGeodeticStandaloneTransformDefParams.cpp">
+      <Filter>CoordinateSystem_IMP</Filter>
+    </ClCompile>
+    <ClCompile Include="..\CoordinateSystem\CoordSysGeodeticTransformation.cpp">
+      <Filter>CoordinateSystem_IMP</Filter>
+    </ClCompile>
+    <ClCompile Include="..\CoordinateSystem\CoordSysGeodeticTransformDef.cpp">
+      <Filter>CoordinateSystem_IMP</Filter>
+    </ClCompile>
+    <ClCompile Include="..\CoordinateSystem\CoordSysGeodeticTransformDefDictionary.cpp">
+      <Filter>CoordinateSystem_IMP</Filter>
+    </ClCompile>
+    <ClCompile Include="..\CoordinateSystem\CoordSysGeodeticTransformDefParams.cpp">
+      <Filter>CoordinateSystem_IMP</Filter>
+    </ClCompile>
+    <ClCompile Include="..\CoordinateSystem\CoordSysGeodeticTransformGridFile.cpp">
+      <Filter>CoordinateSystem_IMP</Filter>
+    </ClCompile>
+    <ClCompile Include="..\CoordinateSystem\CoordSysGridGeneric.cpp">
+      <Filter>CoordinateSystem_IMP</Filter>
+    </ClCompile>
+    <ClCompile Include="..\CoordinateSystem\CoordSysGrids.cpp">
+      <Filter>CoordinateSystem_IMP</Filter>
+    </ClCompile>
+    <ClCompile Include="..\CoordinateSystem\CoordSysMathComparator.cpp">
+      <Filter>CoordinateSystem_IMP</Filter>
+    </ClCompile>
+    <ClCompile Include="..\CoordinateSystem\CoordSysMeasure.cpp">
+      <Filter>CoordinateSystem_IMP</Filter>
+    </ClCompile>
+    <ClCompile Include="..\CoordinateSystem\CoordSysMgrs.cpp">
+      <Filter>CoordinateSystem_IMP</Filter>
+    </ClCompile>
+    <ClCompile Include="..\CoordinateSystem\CoordSysMgrsZone.cpp">
+      <Filter>CoordinateSystem_IMP</Filter>
+    </ClCompile>
+    <ClCompile Include="..\CoordinateSystem\CoordSysOneGrid.cpp">
+      <Filter>CoordinateSystem_IMP</Filter>
+    </ClCompile>
+    <ClCompile Include="..\CoordinateSystem\CoordSysProjectionInformation.cpp">
+      <Filter>CoordinateSystem_IMP</Filter>
+    </ClCompile>
+    <ClCompile Include="..\CoordinateSystem\CoordSysTransform.cpp">
+      <Filter>CoordinateSystem_IMP</Filter>
+    </ClCompile>
+    <ClCompile Include="..\CoordinateSystem\CoordSysUnitInformation.cpp">
+      <Filter>CoordinateSystem_IMP</Filter>
+    </ClCompile>
+    <ClCompile Include="..\CoordinateSystem\CoordSysUtil.cpp">
+      <Filter>CoordinateSystem_IMP</Filter>
+    </ClCompile>
+    <ClCompile Include="..\CoordinateSystem\CriticalSection.cpp">
+      <Filter>CoordinateSystem_IMP</Filter>
+    </ClCompile>
+    <ClCompile Include="..\CoordinateSystem\MentorDictionary.cpp">
+      <Filter>CoordinateSystem_IMP</Filter>
+    </ClCompile>
+    <ClCompile Include="..\CoordinateSystem\MentorUtil.cpp">
+      <Filter>CoordinateSystem_IMP</Filter>
+    </ClCompile>
+    <ClCompile Include="..\CoordinateSystem\namestruct.cpp">
+      <Filter>CoordinateSystem_IMP</Filter>
+    </ClCompile>
+    <ClCompile Include="..\CoordinateSystem\SmartCriticalClass.cpp">
+      <Filter>CoordinateSystem_IMP</Filter>
+    </ClCompile>
+    <ClCompile Include="AgfReaderWriter.cpp" />
+    <ClCompile Include="AgfStream.cpp" />
+    <ClCompile Include="AggregateGeometry.cpp" />
+    <ClCompile Include="ArcSegment.cpp" />
+    <ClCompile Include="Coordinate.cpp" />
+    <ClCompile Include="CoordinateCollection.cpp" />
+    <ClCompile Include="CoordinateIterator.cpp" />
+    <ClCompile Include="CoordinateXY.cpp" />
+    <ClCompile Include="CoordinateXYM.cpp" />
+    <ClCompile Include="CoordinateXYZ.cpp" />
+    <ClCompile Include="CoordinateXYZM.cpp" />
+    <ClCompile Include="..\CoordinateSystem\CoordSysMgrsMajorRegion.cpp" />
+    <ClCompile Include="..\CoordinateSystem\CoordSysWktFailureCache.cpp" />
+    <ClCompile Include="Curve.cpp" />
+    <ClCompile Include="CurvePolygon.cpp" />
+    <ClCompile Include="CurvePolygonCollection.cpp" />
+    <ClCompile Include="CurveRing.cpp" />
+    <ClCompile Include="CurveRingCollection.cpp" />
+    <ClCompile Include="CurveSegmentCollection.cpp" />
+    <ClCompile Include="CurveString.cpp" />
+    <ClCompile Include="CurveStringCollection.cpp" />
+    <ClCompile Include="Envelope.cpp" />
+    <ClCompile Include="GeometricEntity.cpp" />
+    <ClCompile Include="Geometry.cpp" />
+    <ClCompile Include="GeometryBuild.cpp" />
+    <ClCompile Include="GeometryClassFactory.cpp" />
+    <ClCompile Include="GeometryCollection.cpp" />
+    <ClCompile Include="GeometryFactory.cpp" />
+    <ClCompile Include="GeometryUtil.cpp" />
+    <ClCompile Include="GeosUtil.cpp" />
+    <ClCompile Include="LinearRing.cpp" />
+    <ClCompile Include="LinearRingCollection.cpp" />
+    <ClCompile Include="LinearSegment.cpp" />
+    <ClCompile Include="LineString.cpp" />
+    <ClCompile Include="LineStringCollection.cpp" />
+    <ClCompile Include="MultiCurvePolygon.cpp" />
+    <ClCompile Include="MultiCurveString.cpp" />
+    <ClCompile Include="MultiGeometry.cpp" />
+    <ClCompile Include="MultiLineString.cpp" />
+    <ClCompile Include="MultiPoint.cpp" />
+    <ClCompile Include="MultiPolygon.cpp" />
+    <ClCompile Include="Point.cpp" />
+    <ClCompile Include="PointCollection.cpp" />
+    <ClCompile Include="Polygon.cpp" />
+    <ClCompile Include="PolygonCollection.cpp" />
+    <ClCompile Include="Region.cpp" />
+    <ClCompile Include="Ring.cpp" />
+    <ClCompile Include="WktReaderWriter.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Buffer\BorderWalker.h">
+      <Filter>Buffer</Filter>
+    </ClInclude>
+    <ClInclude Include="Buffer\buffer.h">
+      <Filter>Buffer</Filter>
+    </ClInclude>
+    <ClInclude Include="Buffer\bufraloc.h">
+      <Filter>Buffer</Filter>
+    </ClInclude>
+    <ClInclude Include="Buffer\bufrsort.h">
+      <Filter>Buffer</Filter>
+    </ClInclude>
+    <ClInclude Include="Buffer\bufrutil.h">
+      <Filter>Buffer</Filter>
+    </ClInclude>
+    <ClInclude Include="Buffer\eventarr.h">
+      <Filter>Buffer</Filter>
+    </ClInclude>
+    <ClInclude Include="Buffer\eventint.h">
+      <Filter>Buffer</Filter>
+    </ClInclude>
+    <ClInclude Include="Buffer\FloatTransform.h">
+      <Filter>Buffer</Filter>
+    </ClInclude>
+    <ClInclude Include="Buffer\GreatCircleBufferUtil.h">
+      <Filter>Buffer</Filter>
+    </ClInclude>
+    <ClInclude Include="Buffer\interlst.h">
+      <Filter>Buffer</Filter>
+    </ClInclude>
+    <ClInclude Include="Buffer\interprc.h">
+      <Filter>Buffer</Filter>
+    </ClInclude>
+    <ClInclude Include="Buffer\LatLonBorderWalker.h">
+      <Filter>Buffer</Filter>
+    </ClInclude>
+    <ClInclude Include="Buffer\MgBuffer.h">
+      <Filter>Buffer</Filter>
+    </ClInclude>
+    <ClInclude Include="Buffer\oarray.h">
+      <Filter>Buffer</Filter>
+    </ClInclude>
+    <ClInclude Include="Buffer\oextent.h">
+      <Filter>Buffer</Filter>
+    </ClInclude>
+    <ClInclude Include="Buffer\ogeomtry.h">
+      <Filter>Buffer</Filter>
+    </ClInclude>
+    <ClInclude Include="Buffer\olinep.h">
+      <Filter>Buffer</Filter>
+    </ClInclude>
+    <ClInclude Include="Buffer\oobject.h">
+      <Filter>Buffer</Filter>
+    </ClInclude>
+    <ClInclude Include="Buffer\opline.h">
+      <Filter>Buffer</Filter>
+    </ClInclude>
+    <ClInclude Include="Buffer\opoint.h">
+      <Filter>Buffer</Filter>
+    </ClInclude>
+    <ClInclude Include="Buffer\opolygnp.h">
+      <Filter>Buffer</Filter>
+    </ClInclude>
+    <ClInclude Include="Buffer\opolygon.h">
+      <Filter>Buffer</Filter>
+    </ClInclude>
+    <ClInclude Include="Buffer\oppolygn.h">
+      <Filter>Buffer</Filter>
+    </ClInclude>
+    <ClInclude Include="Buffer\oppolyln.h">
+      <Filter>Buffer</Filter>
+    </ClInclude>
+    <ClInclude Include="Buffer\opsprimitive.h">
+      <Filter>Buffer</Filter>
+    </ClInclude>
+    <ClInclude Include="Buffer\orpplygn.h">
+      <Filter>Buffer</Filter>
+    </ClInclude>
+    <ClInclude Include="Buffer\ortree.h">
+      <Filter>Buffer</Filter>
+    </ClInclude>
+    <ClInclude Include="Buffer\performanceOptions.h">
+      <Filter>Buffer</Filter>
+    </ClInclude>
+    <ClInclude Include="Buffer\planeswp.h">
+      <Filter>Buffer</Filter>
+    </ClInclude>
+    <ClInclude Include="Buffer\plgnbufr.h">
+      <Filter>Buffer</Filter>
+    </ClInclude>
+    <ClInclude Include="Buffer\plgnsbak.h">
+      <Filter>Buffer</Filter>
+    </ClInclude>
+    <ClInclude Include="Buffer\plinbufr.h">
+      <Filter>Buffer</Filter>
+    </ClInclude>
+    <ClInclude Include="Buffer\pobjbufr.h">
+      <Filter>Buffer</Filter>
+    </ClInclude>
+    <ClInclude Include="Buffer\ppgunion.h">
+      <Filter>Buffer</Filter>
+    </ClInclude>
+    <ClInclude Include="Buffer\progcbck.h">
+      <Filter>Buffer</Filter>
+    </ClInclude>
+    <ClInclude Include="Buffer\sedgaloc.h">
+      <Filter>Buffer</Filter>
+    </ClInclude>
+    <ClInclude Include="Buffer\sweepedg.h">
+      <Filter>Buffer</Filter>
+    </ClInclude>
+    <ClInclude Include="Buffer\tuplearr.h">
+      <Filter>Buffer</Filter>
+    </ClInclude>
+    <ClInclude Include="Buffer\vertaloc.h">
+      <Filter>Buffer</Filter>
+    </ClInclude>
+    <ClInclude Include="Buffer\wedgaloc.h">
+      <Filter>Buffer</Filter>
+    </ClInclude>
+    <ClInclude Include="Buffer\wedgearr.h">
+      <Filter>Buffer</Filter>
+    </ClInclude>
+    <ClInclude Include="Buffer\wingedge.h">
+      <Filter>Buffer</Filter>
+    </ClInclude>
+    <ClInclude Include="Buffer\worklist.h">
+      <Filter>Buffer</Filter>
+    </ClInclude>
+    <ClInclude Include="Buffer\xordtree.h">
+      <Filter>Buffer</Filter>
+    </ClInclude>
+    <ClInclude Include="Exception\CoordinateSystemComputationFailedException.h">
+      <Filter>Exception</Filter>
+    </ClInclude>
+    <ClInclude Include="Exception\CoordinateSystemConversionFailedException.h">
+      <Filter>Exception</Filter>
+    </ClInclude>
+    <ClInclude Include="Exception\CoordinateSystemInitializationFailedException.h">
+      <Filter>Exception</Filter>
+    </ClInclude>
+    <ClInclude Include="Exception\CoordinateSystemLoadFailedException.h">
+      <Filter>Exception</Filter>
+    </ClInclude>
+    <ClInclude Include="Exception\CoordinateSystemMeasureFailedException.h">
+      <Filter>Exception</Filter>
+    </ClInclude>
+    <ClInclude Include="Exception\CoordinateSystemTransformFailedException.h">
+      <Filter>Exception</Filter>
+    </ClInclude>
+    <ClInclude Include="Exception\GeometryException.h">
+      <Filter>Exception</Filter>
+    </ClInclude>
+    <ClInclude Include="Exception\InvalidCoordinateSystemException.h">
+      <Filter>Exception</Filter>
+    </ClInclude>
+    <ClInclude Include="Exception\InvalidCoordinateSystemTypeException.h">
+      <Filter>Exception</Filter>
+    </ClInclude>
+    <ClInclude Include="Exception\InvalidCoordinateSystemUnitsException.h">
+      <Filter>Exception</Filter>
+    </ClInclude>
+    <ClInclude Include="Parse\Array.h">
+      <Filter>Parse</Filter>
+    </ClInclude>
+    <ClInclude Include="Parse\ArrayHelper.h">
+      <Filter>Parse</Filter>
+    </ClInclude>
+    <ClInclude Include="Parse\LexAwkt.h">
+      <Filter>Parse</Filter>
+    </ClInclude>
+    <ClInclude Include="Parse\ParseAwkt.h">
+      <Filter>Parse</Filter>
+    </ClInclude>
+    <ClInclude Include="Parse\ParseAwktUtil.h">
+      <Filter>Parse</Filter>
+    </ClInclude>
+    <ClInclude Include="Parse\StringUtility.h">
+      <Filter>Parse</Filter>
+    </ClInclude>
+    <ClInclude Include="Parse\yyAwkt.h">
+      <Filter>Parse</Filter>
+    </ClInclude>
+    <ClInclude Include="Spatial\MathUtility.h">
+      <Filter>Spatial</Filter>
+    </ClInclude>
+    <ClInclude Include="Spatial\SpatialUtility.h">
+      <Filter>Spatial</Filter>
+    </ClInclude>
+    <ClInclude Include="Spatial\SpatialUtilityCircularArc.h">
+      <Filter>Spatial</Filter>
+    </ClInclude>
+    <ClInclude Include="Spatial\SpatialUtilityStatus.h">
+      <Filter>Spatial</Filter>
+    </ClInclude>
+    <ClInclude Include="Spatial\SpatialUtilityVectorAngle.h">
+      <Filter>Spatial</Filter>
+    </ClInclude>
+    <ClInclude Include="CoordinateSystem\CoordinateSystem.h">
+      <Filter>CoordinateSystemAPI</Filter>
+    </ClInclude>
+    <ClInclude Include="CoordinateSystem\CoordinateSystemCache.h">
+      <Filter>CoordinateSystemAPI</Filter>
+    </ClInclude>
+    <ClInclude Include="CoordinateSystem\CoordinateSystemCatalog.h">
+      <Filter>CoordinateSystemAPI</Filter>
+    </ClInclude>
+    <ClInclude Include="CoordinateSystem\CoordinateSystemCategory.h">
+      <Filter>CoordinateSystemAPI</Filter>
+    </ClInclude>
+    <ClInclude Include="CoordinateSystem\CoordinateSystemCategoryDictionary.h">
+      <Filter>CoordinateSystemAPI</Filter>
+    </ClInclude>
+    <ClInclude Include="CoordinateSystem\CoordinateSystemCodeFormat.h">
+      <Filter>CoordinateSystemAPI</Filter>
+    </ClInclude>
+    <ClInclude Include="CoordinateSystem\CoordinateSystemCommon.h">
+      <Filter>CoordinateSystemAPI</Filter>
+    </ClInclude>
+    <ClInclude Include="CoordinateSystem\CoordinateSystemDatum.h">
+      <Filter>CoordinateSystemAPI</Filter>
+    </ClInclude>
+    <ClInclude Include="CoordinateSystem\CoordinateSystemDatumDictionary.h">
+      <Filter>CoordinateSystemAPI</Filter>
+    </ClInclude>
+    <ClInclude Include="CoordinateSystem\CoordinateSystemDictionary.h">
+      <Filter>CoordinateSystemAPI</Filter>
+    </ClInclude>
+    <ClInclude Include="CoordinateSystem\CoordinateSystemDictionaryBase.h">
+      <Filter>CoordinateSystemAPI</Filter>
+    </ClInclude>
+    <ClInclude Include="CoordinateSystem\CoordinateSystemDictionaryUtility.h">
+      <Filter>CoordinateSystemAPI</Filter>
+    </ClInclude>
+    <ClInclude Include="CoordinateSystem\CoordinateSystemEllipsoid.h">
+      <Filter>CoordinateSystemAPI</Filter>
+    </ClInclude>
+    <ClInclude Include="CoordinateSystem\CoordinateSystemEllipsoidDictionary.h">
+      <Filter>CoordinateSystemAPI</Filter>
+    </ClInclude>
+    <ClInclude Include="CoordinateSystem\CoordinateSystemEnum.h">
+      <Filter>CoordinateSystemAPI</Filter>
+    </ClInclude>
+    <ClInclude Include="CoordinateSystem\CoordinateSystemEnumInteger32.h">
+      <Filter>CoordinateSystemAPI</Filter>
+    </ClInclude>
+    <ClInclude Include="CoordinateSystem\CoordinateSystemErrorCode.h">
+      <Filter>CoordinateSystemAPI</Filter>
+    </ClInclude>
+    <ClInclude Include="CoordinateSystem\CoordinateSystemFactory.h">
+      <Filter>CoordinateSystemAPI</Filter>
+    </ClInclude>
+    <ClInclude Include="CoordinateSystem\CoordinateSystemFilter.h">
+      <Filter>CoordinateSystemAPI</Filter>
+    </ClInclude>
+    <ClInclude Include="CoordinateSystem\CoordinateSystemFilterInteger32.h">
+      <Filter>CoordinateSystemAPI</Filter>
+    </ClInclude>
+    <ClInclude Include="CoordinateSystem\CoordinateSystemFormatConverter.h">
+      <Filter>CoordinateSystemAPI</Filter>
+    </ClInclude>
+    <ClInclude Include="CoordinateSystem\CoordinateSystemGeodeticAnalyticalTransformationMethod.h">
+      <Filter>CoordinateSystemAPI</Filter>
+    </ClInclude>
+    <ClInclude Include="CoordinateSystem\CoordinateSystemGeodeticAnalyticalTransformDefParams.h">
+      <Filter>CoordinateSystemAPI</Filter>
+    </ClInclude>
+    <ClInclude Include="CoordinateSystem\CoordinateSystemGeodeticInterpolationTransformDefParams.h">
+      <Filter>CoordinateSystemAPI</Filter>
+    </ClInclude>
+    <ClInclude Include="CoordinateSystem\CoordinateSystemGeodeticMultipleRegressionTransformationMethod.h">
+      <Filter>CoordinateSystemAPI</Filter>
+    </ClInclude>
+    <ClInclude Include="CoordinateSystem\CoordinateSystemGeodeticMultipleRegressionTransformDefParams.h">
+      <Filter>CoordinateSystemAPI</Filter>
+    </ClInclude>
+    <ClInclude Include="CoordinateSystem\CoordinateSystemGeodeticPath.h">
+      <Filter>CoordinateSystemAPI</Filter>
+    </ClInclude>
+    <ClInclude Include="CoordinateSystem\CoordinateSystemGeodeticPathDictionary.h">
+      <Filter>CoordinateSystemAPI</Filter>
+    </ClInclude>
+    <ClInclude Include="CoordinateSystem\CoordinateSystemGeodeticPathElement.h">
+      <Filter>CoordinateSystemAPI</Filter>
+    </ClInclude>
+    <ClInclude Include="CoordinateSystem\CoordinateSystemGeodeticStandaloneTransformationMethod.h">
+      <Filter>CoordinateSystemAPI</Filter>
+    </ClInclude>
+    <ClInclude Include="CoordinateSystem\CoordinateSystemGeodeticStandaloneTransformDefParams.h">
+      <Filter>CoordinateSystemAPI</Filter>
+    </ClInclude>
+    <ClInclude Include="CoordinateSystem\CoordinateSystemGeodeticTransformation.h">
+      <Filter>CoordinateSystemAPI</Filter>
+    </ClInclude>
+    <ClInclude Include="CoordinateSystem\CoordinateSystemGeodeticTransformationMethod.h">
+      <Filter>CoordinateSystemAPI</Filter>
+    </ClInclude>
+    <ClInclude Include="CoordinateSystem\CoordinateSystemGeodeticTransformDef.h">
+      <Filter>CoordinateSystemAPI</Filter>
+    </ClInclude>
+    <ClInclude Include="CoordinateSystem\CoordinateSystemGeodeticTransformDefDictionary.h">
+      <Filter>CoordinateSystemAPI</Filter>
+    </ClInclude>
+    <ClInclude Include="CoordinateSystem\CoordinateSystemGeodeticTransformDefParams.h">
+      <Filter>CoordinateSystemAPI</Filter>
+    </ClInclude>
+    <ClInclude Include="CoordinateSystem\CoordinateSystemGeodeticTransformDefType.h">
+      <Filter>CoordinateSystemAPI</Filter>
+    </ClInclude>
+    <ClInclude Include="CoordinateSystem\CoordinateSystemGeodeticTransformGridFile.h">
+      <Filter>CoordinateSystemAPI</Filter>
+    </ClInclude>
+    <ClInclude Include="CoordinateSystem\CoordinateSystemGeodeticTransformGridFileFormat.h">
+      <Filter>CoordinateSystemAPI</Filter>
+    </ClInclude>
+    <ClInclude Include="CoordinateSystem\CoordinateSystemGridGeneric.h">
+      <Filter>CoordinateSystemAPI</Filter>
+    </ClInclude>
+    <ClInclude Include="CoordinateSystem\CoordinateSystemGridOrientation.h">
+      <Filter>CoordinateSystemAPI</Filter>
+    </ClInclude>
+    <ClInclude Include="CoordinateSystem\CoordinateSystemGrids.h">
+      <Filter>CoordinateSystemAPI</Filter>
+    </ClInclude>
+    <ClInclude Include="CoordinateSystem\CoordinateSystemGridSpecializationType.h">
+      <Filter>CoordinateSystemAPI</Filter>
+    </ClInclude>
+    <ClInclude Include="CoordinateSystem\CoordinateSystemMathComparator.h">
+      <Filter>CoordinateSystemAPI</Filter>
+    </ClInclude>
+    <ClInclude Include="CoordinateSystem\CoordinateSystemMeasure.h">
+      <Filter>CoordinateSystemAPI</Filter>
+    </ClInclude>
+    <ClInclude Include="CoordinateSystem\CoordinateSystemMgrs.h">
+      <Filter>CoordinateSystemAPI</Filter>
+    </ClInclude>
+    <ClInclude Include="CoordinateSystem\CoordinateSystemMgrsGridLevel.h">
+      <Filter>CoordinateSystemAPI</Filter>
+    </ClInclude>
+    <ClInclude Include="CoordinateSystem\CoordinateSystemMgrsGridSquarePosition.h">
+      <Filter>CoordinateSystemAPI</Filter>
+    </ClInclude>
+    <ClInclude Include="CoordinateSystem\CoordinateSystemMgrsLetteringScheme.h">
+      <Filter>CoordinateSystemAPI</Filter>
+    </ClInclude>
+    <ClInclude Include="CoordinateSystem\CoordinateSystemProjectionCode.h">
+      <Filter>CoordinateSystemAPI</Filter>
+    </ClInclude>
+    <ClInclude Include="CoordinateSystem\CoordinateSystemProjectionFormatType.h">
+      <Filter>CoordinateSystemAPI</Filter>
+    </ClInclude>
+    <ClInclude Include="CoordinateSystem\CoordinateSystemProjectionInformation.h">
+      <Filter>CoordinateSystemAPI</Filter>
+    </ClInclude>
+    <ClInclude Include="CoordinateSystem\CoordinateSystemProjectionLogicalType.h">
+      <Filter>CoordinateSystemAPI</Filter>
+    </ClInclude>
+    <ClInclude Include="CoordinateSystem\CoordinateSystemProjectionParameterType.h">
+      <Filter>CoordinateSystemAPI</Filter>
+    </ClInclude>
+    <ClInclude Include="CoordinateSystem\CoordinateSystemTransform.h">
+      <Filter>CoordinateSystemAPI</Filter>
+    </ClInclude>
+    <ClInclude Include="CoordinateSystem\CoordinateSystemType.h">
+      <Filter>CoordinateSystemAPI</Filter>
+    </ClInclude>
+    <ClInclude Include="CoordinateSystem\CoordinateSystemUnitCode.h">
+      <Filter>CoordinateSystemAPI</Filter>
+    </ClInclude>
+    <ClInclude Include="CoordinateSystem\CoordinateSystemUnitInformation.h">
+      <Filter>CoordinateSystemAPI</Filter>
+    </ClInclude>
+    <ClInclude Include="CoordinateSystem\CoordinateSystemUnitType.h">
+      <Filter>CoordinateSystemAPI</Filter>
+    </ClInclude>
+    <ClInclude Include="CoordinateSystem\CoordinateSystemWktFlavor.h">
+      <Filter>CoordinateSystemAPI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\CoordinateSystem\ArbitraryCoordsys.h">
+      <Filter>CoordinateSystem_IMP</Filter>
+    </ClInclude>
+    <ClInclude Include="..\CoordinateSystem\CoordSys.h">
+      <Filter>CoordinateSystem_IMP</Filter>
+    </ClInclude>
+    <ClInclude Include="..\CoordinateSystem\CoordSysCatalog.h">
+      <Filter>CoordinateSystem_IMP</Filter>
+    </ClInclude>
+    <ClInclude Include="..\CoordinateSystem\CoordSysCategory.h">
+      <Filter>CoordinateSystem_IMP</Filter>
+    </ClInclude>
+    <ClInclude Include="..\CoordinateSystem\CoordSysCategoryDictionary.h">
+      <Filter>CoordinateSystem_IMP</Filter>
+    </ClInclude>
+    <ClInclude Include="..\CoordinateSystem\CoordSysCommon.h">
+      <Filter>CoordinateSystem_IMP</Filter>
+    </ClInclude>
+    <ClInclude Include="..\CoordinateSystem\CoordSysDatum.h">
+      <Filter>CoordinateSystem_IMP</Filter>
+    </ClInclude>
+    <ClInclude Include="..\CoordinateSystem\CoordSysDatumDictionary.h">
+      <Filter>CoordinateSystem_IMP</Filter>
+    </ClInclude>
+    <ClInclude Include="..\CoordinateSystem\CoordSysDictionary.h">
+      <Filter>CoordinateSystem_IMP</Filter>
+    </ClInclude>
+    <ClInclude Include="..\CoordinateSystem\CoordSysDictionaryBase.h">
+      <Filter>CoordinateSystem_IMP</Filter>
+    </ClInclude>
+    <ClInclude Include="..\CoordinateSystem\CoordSysDictionaryUtility.h">
+      <Filter>CoordinateSystem_IMP</Filter>
+    </ClInclude>
+    <ClInclude Include="..\CoordinateSystem\CoordSysEllipsoid.h">
+      <Filter>CoordinateSystem_IMP</Filter>
+    </ClInclude>
+    <ClInclude Include="..\CoordinateSystem\CoordSysEllipsoidDictionary.h">
+      <Filter>CoordinateSystem_IMP</Filter>
+    </ClInclude>
+    <ClInclude Include="..\CoordinateSystem\CoordSysEnum.h">
+      <Filter>CoordinateSystem_IMP</Filter>
+    </ClInclude>
+    <ClInclude Include="..\CoordinateSystem\CoordSysEnumCategory.h">
+      <Filter>CoordinateSystem_IMP</Filter>
+    </ClInclude>
+    <ClInclude Include="..\CoordinateSystem\CoordSysEnumCoordinateSystemInCategory.h">
+      <Filter>CoordinateSystem_IMP</Filter>
+    </ClInclude>
+    <ClInclude Include="..\CoordinateSystem\CoordSysEnumDatum.h">
+      <Filter>CoordinateSystem_IMP</Filter>
+    </ClInclude>
+    <ClInclude Include="..\CoordinateSystem\CoordSysEnumEllipsoid.h">
+      <Filter>CoordinateSystem_IMP</Filter>
+    </ClInclude>
+    <ClInclude Include="..\CoordinateSystem\CoordSysEnumInteger32.h">
+      <Filter>CoordinateSystem_IMP</Filter>
+    </ClInclude>
+    <ClInclude Include="..\CoordinateSystem\CoordSysFormatConverter.h">
+      <Filter>CoordinateSystem_IMP</Filter>
+    </ClInclude>
+    <ClInclude Include="..\CoordinateSystem\CoordSysGeodeticAnalyticalTransformDefParams.h">
+      <Filter>CoordinateSystem_IMP</Filter>
+    </ClInclude>
+    <ClInclude Include="..\CoordinateSystem\CoordSysGeodeticInterpolationTransformDefParams.h">
+      <Filter>CoordinateSystem_IMP</Filter>
+    </ClInclude>
+    <ClInclude Include="..\CoordinateSystem\CoordSysGeodeticMultipleRegressionTransformDefParams.h">
+      <Filter>CoordinateSystem_IMP</Filter>
+    </ClInclude>
+    <ClInclude Include="..\CoordinateSystem\CoordSysGeodeticPath.h">
+      <Filter>CoordinateSystem_IMP</Filter>
+    </ClInclude>
+    <ClInclude Include="..\CoordinateSystem\CoordSysGeodeticPathDictionary.h">
+      <Filter>CoordinateSystem_IMP</Filter>
+    </ClInclude>
+    <ClInclude Include="..\CoordinateSystem\CoordSysGeodeticPathElement.h">
+      <Filter>CoordinateSystem_IMP</Filter>
+    </ClInclude>
+    <ClInclude Include="..\CoordinateSystem\CoordSysGeodeticStandaloneTransformDefParams.h">
+      <Filter>CoordinateSystem_IMP</Filter>
+    </ClInclude>
+    <ClInclude Include="..\CoordinateSystem\CoordSysGeodeticTransformation.h">
+      <Filter>CoordinateSystem_IMP</Filter>
+    </ClInclude>
+    <ClInclude Include="..\CoordinateSystem\CoordSysGeodeticTransformDef.h">
+      <Filter>CoordinateSystem_IMP</Filter>
+    </ClInclude>
+    <ClInclude Include="..\CoordinateSystem\CoordSysGeodeticTransformDefDictionary.h">
+      <Filter>CoordinateSystem_IMP</Filter>
+    </ClInclude>
+    <ClInclude Include="..\CoordinateSystem\CoordSysGeodeticTransformDefParams.h">
+      <Filter>CoordinateSystem_IMP</Filter>
+    </ClInclude>
+    <ClInclude Include="..\CoordinateSystem\CoordSysGeodeticTransformGridFile.h">
+      <Filter>CoordinateSystem_IMP</Filter>
+    </ClInclude>
+    <ClInclude Include="..\CoordinateSystem\CoordSysGridGeneric.h">
+      <Filter>CoordinateSystem_IMP</Filter>
+    </ClInclude>
+    <ClInclude Include="..\CoordinateSystem\CoordSysGrids.h">
+      <Filter>CoordinateSystem_IMP</Filter>
+    </ClInclude>
+    <ClInclude Include="..\CoordinateSystem\CoordSysMacro.h">
+      <Filter>CoordinateSystem_IMP</Filter>
+    </ClInclude>
+    <ClInclude Include="..\CoordinateSystem\CoordSysMathComparator.h">
+      <Filter>CoordinateSystem_IMP</Filter>
+    </ClInclude>
+    <ClInclude Include="..\CoordinateSystem\CoordSysMeasure.h">
+      <Filter>CoordinateSystem_IMP</Filter>
+    </ClInclude>
+    <ClInclude Include="..\CoordinateSystem\CoordSysMgrs.h">
+      <Filter>CoordinateSystem_IMP</Filter>
+    </ClInclude>
+    <ClInclude Include="..\CoordinateSystem\CoordSysMgrsZone.h">
+      <Filter>CoordinateSystem_IMP</Filter>
+    </ClInclude>
+    <ClInclude Include="..\CoordinateSystem\CoordSysOneGrid.h">
+      <Filter>CoordinateSystem_IMP</Filter>
+    </ClInclude>
+    <ClInclude Include="..\CoordinateSystem\CoordSysProjectionInformation.h">
+      <Filter>CoordinateSystem_IMP</Filter>
+    </ClInclude>
+    <ClInclude Include="..\CoordinateSystem\CoordSysTransform.h">
+      <Filter>CoordinateSystem_IMP</Filter>
+    </ClInclude>
+    <ClInclude Include="..\CoordinateSystem\CoordSysType.h">
+      <Filter>CoordinateSystem_IMP</Filter>
+    </ClInclude>
+    <ClInclude Include="..\CoordinateSystem\CoordSysUnitInformation.h">
+      <Filter>CoordinateSystem_IMP</Filter>
+    </ClInclude>
+    <ClInclude Include="..\CoordinateSystem\CoordSysUtil.h">
+      <Filter>CoordinateSystem_IMP</Filter>
+    </ClInclude>
+    <ClInclude Include="..\CoordinateSystem\CriticalSection.h">
+      <Filter>CoordinateSystem_IMP</Filter>
+    </ClInclude>
+    <ClInclude Include="..\CoordinateSystem\CsmapVersion.h">
+      <Filter>CoordinateSystem_IMP</Filter>
+    </ClInclude>
+    <ClInclude Include="..\CoordinateSystem\MentorDictionary.h">
+      <Filter>CoordinateSystem_IMP</Filter>
+    </ClInclude>
+    <ClInclude Include="..\CoordinateSystem\MentorUtil.h">
+      <Filter>CoordinateSystem_IMP</Filter>
+    </ClInclude>
+    <ClInclude Include="..\CoordinateSystem\namestruct.h">
+      <Filter>CoordinateSystem_IMP</Filter>
+    </ClInclude>
+    <ClInclude Include="..\CoordinateSystem\SmartCriticalClass.h">
+      <Filter>CoordinateSystem_IMP</Filter>
+    </ClInclude>
+    <ClInclude Include="AgfReaderWriter.h" />
+    <ClInclude Include="AgfStream.h" />
+    <ClInclude Include="AggregateGeometry.h" />
+    <ClInclude Include="ArcSegment.h" />
+    <ClInclude Include="CloseInstruction.h" />
+    <ClInclude Include="Coordinate.h" />
+    <ClInclude Include="CoordinateCollection.h" />
+    <ClInclude Include="CoordinateDimension.h" />
+    <ClInclude Include="CoordinateIterator.h" />
+    <ClInclude Include="CoordinateXY.h" />
+    <ClInclude Include="CoordinateXYM.h" />
+    <ClInclude Include="CoordinateXYZ.h" />
+    <ClInclude Include="CoordinateXYZM.h" />
+    <ClInclude Include="..\CoordinateSystem\CoordSysMgrsMajorRegion.h" />
+    <ClInclude Include="..\CoordinateSystem\CoordSysWktFailureCache.h" />
+    <ClInclude Include="Curve.h" />
+    <ClInclude Include="CurvePolygon.h" />
+    <ClInclude Include="CurvePolygonCollection.h" />
+    <ClInclude Include="CurveRing.h" />
+    <ClInclude Include="CurveRingCollection.h" />
+    <ClInclude Include="CurveSegment.h" />
+    <ClInclude Include="CurveSegmentCollection.h" />
+    <ClInclude Include="CurveString.h" />
+    <ClInclude Include="CurveStringCollection.h" />
+    <ClInclude Include="Envelope.h" />
+    <ClInclude Include="GeometricDimension.h" />
+    <ClInclude Include="GeometricEntity.h" />
+    <ClInclude Include="GeometricEntityType.h" />
+    <ClInclude Include="GeometricPathInstruction.h" />
+    <ClInclude Include="GeometricPathInstructionType.h" />
+    <ClInclude Include="GeometricPathIterator.h" />
+    <ClInclude Include="Geometry.h" />
+    <ClInclude Include="GeometryClassId.h" />
+    <ClInclude Include="GeometryCollection.h" />
+    <ClInclude Include="GeometryCommon.h" />
+    <ClInclude Include="GeometryComponent.h" />
+    <ClInclude Include="GeometryComponentType.h" />
+    <ClInclude Include="GeometryExceptionDef.h" />
+    <ClInclude Include="GeometryFactory.h" />
+    <ClInclude Include="GeometryType.h" />
+    <ClInclude Include="GeometryUtil.h" />
+    <ClInclude Include="GeosUtil.h" />
+    <ClInclude Include="LinearRing.h" />
+    <ClInclude Include="LinearRingCollection.h" />
+    <ClInclude Include="LinearSegment.h" />
+    <ClInclude Include="LineString.h" />
+    <ClInclude Include="LineStringCollection.h" />
+    <ClInclude Include="LineToInstruction.h" />
+    <ClInclude Include="Measure.h" />
+    <ClInclude Include="MoveToInstruction.h" />
+    <ClInclude Include="MultiCurvePolygon.h" />
+    <ClInclude Include="MultiCurveString.h" />
+    <ClInclude Include="MultiGeometry.h" />
+    <ClInclude Include="MultiLineString.h" />
+    <ClInclude Include="MultiPoint.h" />
+    <ClInclude Include="MultiPolygon.h" />
+    <ClInclude Include="Point.h" />
+    <ClInclude Include="PointCollection.h" />
+    <ClInclude Include="Polygon.h" />
+    <ClInclude Include="PolygonCollection.h" />
+    <ClInclude Include="QuadToInstruction.h" />
+    <ClInclude Include="Region.h" />
+    <ClInclude Include="Ring.h" />
+    <ClInclude Include="Transform.h" />
+    <ClInclude Include="WktReaderWriter.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="Geometry.rc" />
+  </ItemGroup>
+</Project>

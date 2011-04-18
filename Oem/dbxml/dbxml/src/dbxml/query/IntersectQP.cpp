@@ -21,6 +21,7 @@
 
 #include <sstream>
 #include <math.h>
+#include <iterator>
 
 using namespace DbXml;
 using namespace std;

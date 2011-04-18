@@ -54,12 +54,34 @@
 
 #include <string>
 
+//http://msdn.microsoft.com/en-us/library/b0084kay%28VS.80%29.aspx
+//Define for VS2010
+#if _MSC_VER >= 1600
+//http://connect.microsoft.com/VisualStudio/feedback/details/562448/std-string-npos-lnk2001-when-inheriting-a-dll-class-from-std-string
+//Fix wstring::npos link error
+const std::wstring::size_type std::wstring::npos = size_t(-1); 
+#endif
+
 BEGIN_NAMESPACE_MDFMODEL
 
     // the MdfString is a std::wstring.
     // It might be swapped out  at a later date for a const wchar_t* .
     typedef std::wstring MdfString; // wide string for unicode support
+        
+//http://msdn.microsoft.com/en-us/library/b0084kay%28VS.80%29.aspx
+//Define for VS2010
+#if _MSC_VER >= 1600
 
+    #ifdef _WIN32 
+    EXPIMP_TEMPLATE template class MDFMODEL_API std::allocator<wchar_t>;
+    EXPIMP_TEMPLATE template class MDFMODEL_API std::basic_string<wchar_t, std::char_traits<wchar_t>, std::allocator<wchar_t> >;    
+    #else
+    extern template class std::allocator<wchar_t>;
+    extern template class std::basic_string<wchar_t, std::char_traits<wchar_t>, std::allocator<wchar_t> >;
+    #endif
+
+#endif
+   
 END_NAMESPACE_MDFMODEL
 
 using namespace MDFMODEL_NAMESPACE;

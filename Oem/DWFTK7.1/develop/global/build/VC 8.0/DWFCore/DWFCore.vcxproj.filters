@@ -1,0 +1,427 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Source Files\ansi">
+      <UniqueIdentifier>{b4e805e6-a596-4d88-a079-a593c7e9d7a6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\win32">
+      <UniqueIdentifier>{6d00e40b-515b-47d9-b181-8623b564e15c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\x86">
+      <UniqueIdentifier>{2098234a-1488-4249-bff0-693d904b9552}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\zlib">
+      <UniqueIdentifier>{4073f242-ae72-477f-aaf3-3f1bf6451c2c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\zip">
+      <UniqueIdentifier>{adaae76e-8733-47e6-9d51-09a16d40d479}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\x64">
+      <UniqueIdentifier>{c3c44053-fa4f-4cf5-b196-60ea704fb97f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="Header Files\win32">
+      <UniqueIdentifier>{af55c1b4-e581-4d41-9d42-bd9768efd9cb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\ansi">
+      <UniqueIdentifier>{240b60aa-85ad-4b07-a2a5-31f91fdebe8c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\zlib">
+      <UniqueIdentifier>{1721a0f9-dc2e-4230-9c88-ab1145317f5f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\zip">
+      <UniqueIdentifier>{69cf71ff-158e-451e-bf03-92e956d9a10a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx</Extensions>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\..\src\dwfcore\BufferInputStream.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\dwfcore\BufferOutputStream.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\dwfcore\DecompressingInputStream.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\dwfcore\Exception.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\dwfcore\File.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\dwfcore\FileInputStream.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\dwfcore\FileOutputStream.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\dwfcore\MIME.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\dwfcore\MonitoredInputStream.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\dwfcore\Owner.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\dwfcore\ThreadPool.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\dwfcore\UnzippingInputStream.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\dwfcore\UTF8EncodingOutputStream.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\dwfcore\UUID.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\dwfcore\XMLEncodingOutputStream.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\dwfcore\ZipFileDescriptor.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\dwfcore\ZippingOutputStream.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\dwfcore\ansi\Core.cpp">
+      <Filter>Source Files\ansi</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\dwfcore\ansi\Mutex.cpp">
+      <Filter>Source Files\ansi</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\dwfcore\ansi\Semaphore.cpp">
+      <Filter>Source Files\ansi</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\dwfcore\ansi\Signal.cpp">
+      <Filter>Source Files\ansi</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\dwfcore\ansi\StandardFileDescriptor.cpp">
+      <Filter>Source Files\ansi</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\dwfcore\ansi\StreamFileDescriptor.cpp">
+      <Filter>Source Files\ansi</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\dwfcore\ansi\String.cpp">
+      <Filter>Source Files\ansi</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\dwfcore\ansi\TempFile.cpp">
+      <Filter>Source Files\ansi</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\dwfcore\ansi\Thread.cpp">
+      <Filter>Source Files\ansi</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\dwfcore\ansi\UUID.cpp">
+      <Filter>Source Files\ansi</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\dwfcore\win32\Core.cpp">
+      <Filter>Source Files\win32</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\dwfcore\win32\Mutex.cpp">
+      <Filter>Source Files\win32</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\dwfcore\win32\Semaphore.cpp">
+      <Filter>Source Files\win32</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\dwfcore\win32\Signal.cpp">
+      <Filter>Source Files\win32</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\dwfcore\win32\StandardFileDescriptor.cpp">
+      <Filter>Source Files\win32</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\dwfcore\win32\StreamFileDescriptor.cpp">
+      <Filter>Source Files\win32</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\dwfcore\win32\TempFile.cpp">
+      <Filter>Source Files\win32</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\dwfcore\win32\Thread.cpp">
+      <Filter>Source Files\win32</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\dwfcore\win32\UUID.cpp">
+      <Filter>Source Files\win32</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\dwfcore\x86\Core.cpp">
+      <Filter>Source Files\x86</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\dwfcore\x86\Timer.cpp">
+      <Filter>Source Files\x86</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\dwfcore\zlib\adler32.c">
+      <Filter>Source Files\zlib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\dwfcore\zlib\compress.c">
+      <Filter>Source Files\zlib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\dwfcore\zlib\crc32.c">
+      <Filter>Source Files\zlib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\dwfcore\zlib\deflate.c">
+      <Filter>Source Files\zlib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\dwfcore\zlib\gzio.c">
+      <Filter>Source Files\zlib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\dwfcore\zlib\infblock.c">
+      <Filter>Source Files\zlib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\dwfcore\zlib\infcodes.c">
+      <Filter>Source Files\zlib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\dwfcore\zlib\inffast.c">
+      <Filter>Source Files\zlib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\dwfcore\zlib\inflate.c">
+      <Filter>Source Files\zlib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\dwfcore\zlib\inftrees.c">
+      <Filter>Source Files\zlib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\dwfcore\zlib\infutil.c">
+      <Filter>Source Files\zlib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\dwfcore\zlib\trees.c">
+      <Filter>Source Files\zlib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\dwfcore\zlib\uncompr.c">
+      <Filter>Source Files\zlib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\dwfcore\zlib\zutil.c">
+      <Filter>Source Files\zlib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\dwfcore\zip\gvmat32c.cpp">
+      <Filter>Source Files\zip</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\dwfcore\zip\password.cpp">
+      <Filter>Source Files\zip</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\dwfcore\zip\unzip.cpp">
+      <Filter>Source Files\zip</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\dwfcore\zip\zip.cpp">
+      <Filter>Source Files\zip</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\dwfcore\x64\Core.cpp">
+      <Filter>Source Files\x64</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\dwfcore\x64\Timer.cpp">
+      <Filter>Source Files\x64</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\..\src\dwfcore\BufferInputStream.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\dwfcore\BufferOutputStream.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\dwfcore\Comparator.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\dwfcore\Core.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\dwfcore\CountedObject.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\dwfcore\DecompressingInputStream.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\dwfcore\Exception.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\dwfcore\File.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\dwfcore\FileDescriptor.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\dwfcore\FileInputStream.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\dwfcore\FileOutputStream.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\dwfcore\Hash.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\dwfcore\InputStream.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\dwfcore\Iterator.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\dwfcore\MIME.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\dwfcore\MonitoredInputStream.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\dwfcore\OutputStream.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\dwfcore\Owner.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\dwfcore\Pointer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\dwfcore\SkipList.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\dwfcore\STL.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\dwfcore\StreamFileDescriptor.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\dwfcore\String.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\dwfcore\Synchronization.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\dwfcore\TempFile.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\dwfcore\ThreadPool.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\dwfcore\Timer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\dwfcore\UnzippingInputStream.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\dwfcore\UTF8EncodingOutputStream.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\dwfcore\UUID.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\dwfcore\Version.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\dwfcore\XMLEncodingOutputStream.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\dwfcore\ZipFileDescriptor.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\dwfcore\ZippingOutputStream.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\dwfcore\win32\Core.h">
+      <Filter>Header Files\win32</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\dwfcore\win32\Mutex.h">
+      <Filter>Header Files\win32</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\dwfcore\win32\Semaphore.h">
+      <Filter>Header Files\win32</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\dwfcore\win32\Signal.h">
+      <Filter>Header Files\win32</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\dwfcore\win32\StandardFileDescriptor.h">
+      <Filter>Header Files\win32</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\dwfcore\win32\Thread.h">
+      <Filter>Header Files\win32</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\dwfcore\win32\Types.h">
+      <Filter>Header Files\win32</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\dwfcore\win32\UUID.h">
+      <Filter>Header Files\win32</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\dwfcore\ansi\Core.h">
+      <Filter>Header Files\ansi</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\dwfcore\ansi\Mutex.h">
+      <Filter>Header Files\ansi</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\dwfcore\ansi\Semaphore.h">
+      <Filter>Header Files\ansi</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\dwfcore\ansi\Signal.h">
+      <Filter>Header Files\ansi</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\dwfcore\ansi\StandardFileDescriptor.h">
+      <Filter>Header Files\ansi</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\dwfcore\ansi\Thread.h">
+      <Filter>Header Files\ansi</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\dwfcore\ansi\Types.h">
+      <Filter>Header Files\ansi</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\dwfcore\ansi\UUID.h">
+      <Filter>Header Files\ansi</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\dwfcore\zlib\deflate.h">
+      <Filter>Header Files\zlib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\dwfcore\zlib\infblock.h">
+      <Filter>Header Files\zlib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\dwfcore\zlib\infcodes.h">
+      <Filter>Header Files\zlib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\dwfcore\zlib\inffast.h">
+      <Filter>Header Files\zlib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\dwfcore\zlib\inffixed.h">
+      <Filter>Header Files\zlib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\dwfcore\zlib\inftrees.h">
+      <Filter>Header Files\zlib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\dwfcore\zlib\infutil.h">
+      <Filter>Header Files\zlib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\dwfcore\zlib\trees.h">
+      <Filter>Header Files\zlib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\dwfcore\zlib\zconf.h">
+      <Filter>Header Files\zlib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\dwfcore\zlib\zlib.h">
+      <Filter>Header Files\zlib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\dwfcore\zlib\zutil.h">
+      <Filter>Header Files\zlib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\dwfcore\zip\password.h">
+      <Filter>Header Files\zip</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\dwfcore\zip\unzip.h">
+      <Filter>Header Files\zip</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\dwfcore\zip\zip.h">
+      <Filter>Header Files\zip</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="..\..\..\rc\core\DWFCore.rc">
+      <Filter>Resource Files</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuildStep Include="..\..\..\src\dwfcore\win32\resource.h">
+      <Filter>Header Files\win32</Filter>
+    </CustomBuildStep>
+  </ItemGroup>
+</Project>

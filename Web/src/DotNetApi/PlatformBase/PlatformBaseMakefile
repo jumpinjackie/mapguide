@@ -1,17 +1,9 @@
 cleandebug:
-  del /Q .\Mg*.cs
-  del /Q .\*Constants.cs
-  del /Q .\*PINVOKE.cs
-  del /Q .\*Api.cs
   if exist $(OUTDIR)\OSGeo.MapGuide.PlatformBase.dll del $(OUTDIR)\OSGeo.MapGuide.PlatformBase.dll
   if exist $(OUTDIR)\OSGeo.MapGuide.PlatformBase.pdb del $(OUTDIR)\OSGeo.MapGuide.PlatformBase.pdb
   if exist $(OUTDIR)\OSGeo.MapGuide.PlatformBase.Temp.dll del $(OUTDIR)\OSGeo.MapGuide.PlatformBase.Temp.dll
 
 cleanrelease:
-  del /Q .\Mg*.cs
-  del /Q .\*Constants.cs
-  del /Q .\*PINVOKE.cs
-  del /Q .\*Api.cs
   if exist $(OUTDIR)\OSGeo.MapGuide.PlatformBase.dll del $(OUTDIR)\OSGeo.MapGuide.PlatformBase.dll
   if exist $(OUTDIR)\OSGeo.MapGuide.PlatformBase.pdb del $(OUTDIR)\OSGeo.MapGuide.PlatformBase.pdb
 
