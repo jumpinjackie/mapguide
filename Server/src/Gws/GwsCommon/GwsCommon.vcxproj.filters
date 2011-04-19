@@ -1,0 +1,60 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Inc">
+      <UniqueIdentifier>{cf1e766b-782d-457e-bb3d-cab197c6504d}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Inc\GwsCommonImp.h">
+      <Filter>Inc</Filter>
+    </ClInclude>
+    <ClInclude Include="Inc\GwsCommonUtils.h">
+      <Filter>Inc</Filter>
+    </ClInclude>
+    <ClInclude Include="Inc\GwsException.h">
+      <Filter>Inc</Filter>
+    </ClInclude>
+    <ClInclude Include="Inc\GwsFeatureIdSet.h">
+      <Filter>Inc</Filter>
+    </ClInclude>
+    <ClInclude Include="Inc\GwsObject.h">
+      <Filter>Inc</Filter>
+    </ClInclude>
+    <ClInclude Include="Inc\GwsObjectImpl.h">
+      <Filter>Inc</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\GwsOperationHandler.h">
+      <Filter>Inc</Filter>
+    </ClInclude>
+    <ClInclude Include="Inc\GwsResourceUtil.h">
+      <Filter>Inc</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\GwsStatus.h">
+      <Filter>Inc</Filter>
+    </ClInclude>
+    <ClInclude Include="Inc\GwsThreads.h">
+      <Filter>Inc</Filter>
+    </ClInclude>
+    <ClInclude Include="stdafx.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="GwsCommon.cpp" />
+    <ClCompile Include="GwsCommonFactories.cpp" />
+    <ClCompile Include="GwsCommonFdoUtils.cpp" />
+    <ClCompile Include="GwsCsName.cpp" />
+    <ClCompile Include="GwsDebugUtils.cpp" />
+    <ClCompile Include="GwsException.cpp" />
+    <ClCompile Include="GwsExtendedFeatureId.cpp" />
+    <ClCompile Include="GwsFeatureId.cpp" />
+    <ClCompile Include="GwsObjectImpl.cpp" />
+    <ClCompile Include="GwsQualifiedName.cpp" />
+    <ClCompile Include="GwsQualifiedNames.cpp" />
+    <ClCompile Include="GwsResourceUtil.cpp" />
+    <ClCompile Include="GwsXmlUtils.cpp" />
+    <ClCompile Include="IGwsException.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="GwsCommon.rc" />
+  </ItemGroup>
+</Project>
