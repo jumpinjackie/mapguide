@@ -1,0 +1,2778 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="include">
+      <UniqueIdentifier>{5ee0fe7a-5670-47e7-b7b1-1e247ba62fdf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ast">
+      <UniqueIdentifier>{224d2f79-f5ea-4ddb-9770-2f64dc317df6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="axis">
+      <UniqueIdentifier>{c981a1d4-b61f-4535-ba3d-9f59ee0ca834}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="context">
+      <UniqueIdentifier>{cbe7c6dd-c60f-427e-9af5-b9a4154ed1f3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="debug">
+      <UniqueIdentifier>{419ec973-bd98-43ec-96a7-9ca552727a34}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="dom-api">
+      <UniqueIdentifier>{d09b063d-72a3-485e-bd95-a2cd035b92d3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="events">
+      <UniqueIdentifier>{b6b059cb-935c-49ac-a9d0-03da798f307b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="exceptions">
+      <UniqueIdentifier>{ed1729ef-eb52-45d6-8c3d-c0bdd670e4f9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="fastxdm">
+      <UniqueIdentifier>{2ebd9992-2264-4826-9f37-f02949a95549}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="framework">
+      <UniqueIdentifier>{e090729a-3694-4564-bfa7-00dce1b803ea}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="fulltext">
+      <UniqueIdentifier>{1a9107b3-856f-4c14-ad15-1631388236b9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="functions">
+      <UniqueIdentifier>{20f6194b-90bc-4e0c-b8f0-c04d90dbf347}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="items">
+      <UniqueIdentifier>{fd67ccb5-2d47-40ab-91ed-6c06b9e43194}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="lexer">
+      <UniqueIdentifier>{a7eaad9e-c288-4e1d-864c-9b8425e53d62}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="mapm">
+      <UniqueIdentifier>{f3d1fe22-637a-471a-83d6-4fc1b264db44}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="operators">
+      <UniqueIdentifier>{42dbcc84-87ea-4f81-bbc1-c0c8fc765e47}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="optimizer">
+      <UniqueIdentifier>{20a64564-8583-4650-b8b8-ef72c126cadc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="parser">
+      <UniqueIdentifier>{4517256b-7bde-4fac-b4a4-90c88cb526be}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="runtime">
+      <UniqueIdentifier>{3b5d881c-44ef-4565-b221-2386db77d666}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="schema">
+      <UniqueIdentifier>{d5a6f7fa-7f2d-4c90-8b30-c2cae0373499}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="simple-api">
+      <UniqueIdentifier>{99d460b2-ee50-43ba-bc12-6cdb9b519829}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="update">
+      <UniqueIdentifier>{24f9cc63-62a6-48de-92d2-8cb54ab6a575}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="utils">
+      <UniqueIdentifier>{77c9e25f-4148-454c-a35d-b75481e8bda6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="xerces">
+      <UniqueIdentifier>{9e2e745f-6987-4b47-98f9-5a052531a6d4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="xqts">
+      <UniqueIdentifier>{f4d1ea5a-89cd-4c9c-8c32-fb992bbc9355}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="yajl">
+      <UniqueIdentifier>{1bb24cd0-e0c3-4188-8685-bc76900d0c66}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="xqc">
+      <UniqueIdentifier>{70f11e98-de81-4831-a038-c299d72a5030}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\include\xqilla\fulltext\AllMatches.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\operators\And.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\items\AnyAtomicType.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\schema\AnyAtomicTypeDatatypeValidator.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\operators\ArithmeticOperator.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\optimizer\ASTCopier.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\debug\ASTDebugHook.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\exceptions\ASTException.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\ast\ASTNode.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\ast\ASTNodeImpl.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\optimizer\ASTReleaser.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\optimizer\ASTVisitor.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\items\ATAnySimpleType.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\items\ATAnyURIOrDerived.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\items\ATBase64BinaryOrDerived.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\items\ATBooleanOrDerived.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\items\impl\ATBooleanOrDerivedImpl.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\items\ATDateOrDerived.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\items\impl\ATDateOrDerivedImpl.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\items\ATDateTimeOrDerived.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\items\impl\ATDateTimeOrDerivedImpl.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\items\ATDecimalOrDerived.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\items\impl\ATDecimalOrDerivedImpl.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\items\ATDoubleOrDerived.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\items\impl\ATDoubleOrDerivedImpl.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\items\ATDurationOrDerived.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\items\impl\ATDurationOrDerivedImpl.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\items\ATFloatOrDerived.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\items\impl\ATFloatOrDerivedImpl.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\items\ATGDayOrDerived.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\items\impl\ATGDayOrDerivedImpl.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\items\ATGMonthDayOrDerived.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\items\impl\ATGMonthDayOrDerivedImpl.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\items\ATGMonthOrDerived.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\items\impl\ATGMonthOrDerivedImpl.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\items\ATGYearMonthOrDerived.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\items\impl\ATGYearMonthOrDerivedImpl.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\items\ATGYearOrDerived.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\items\impl\ATGYearOrDerivedImpl.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\items\ATHexBinaryOrDerived.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\items\ATNotationOrDerived.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\items\ATQNameOrDerived.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\items\impl\ATQNameOrDerivedImpl.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\items\ATStringOrDerived.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\items\ATTimeOrDerived.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\items\impl\ATTimeOrDerivedImpl.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\items\ATUntypedAtomic.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\framework\BaseMemoryManager.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\runtime\ClosureResult.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\context\impl\CodepointCollation.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\context\Collation.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\context\impl\CollationImpl.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\operators\ComparisonOperator.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\ast\ConstantFoldingFunction.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\events\ContentSequenceFilter.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\exceptions\ContextException.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\context\ContextHelpers.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\ast\ContextTuple.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\utils\ContextUtils.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\ast\ConvertFunctionArg.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\items\DatatypeFactory.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\items\DatatypeLookup.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\items\DateOrTimeType.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\debug\DebugHookDecorator.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\debug\DebugListener.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\fulltext\DefaultTokenizer.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\fulltext\DefaultTokenStore.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\operators\Divide.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\schema\DocumentCache.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\schema\DocumentCacheImpl.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\context\DynamicContext.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\exceptions\DynamicErrorException.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\runtime\EmptyResult.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\operators\Equals.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\events\EventGenerator.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\events\EventHandler.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\events\EventSerializer.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\operators\Except.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\functions\ExternalFunction.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\context\ExternalFunctionResolver.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\fastxdm\FastXDMConfiguration.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\ast\ForTuple.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\fulltext\FTAnd.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\fulltext\FTContains.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\fulltext\FTContent.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\fulltext\FTDistance.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\fulltext\FTMildnot.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\fulltext\FTOption.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\fulltext\FTOr.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\fulltext\FTOrder.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\fulltext\FTRange.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\fulltext\FTScope.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\fulltext\FTSelection.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\fulltext\FTUnaryNot.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\fulltext\FTWindow.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\fulltext\FTWords.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\functions\FuncFactory.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\functions\FunctionAbs.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\functions\FunctionAdjustDateTimeToTimezone.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\functions\FunctionAdjustDateToTimezone.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\functions\FunctionAdjustTimeToTimezone.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\functions\FunctionAnalyzeString.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\functions\FunctionAvg.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\functions\FunctionBaseURI.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\functions\FunctionBoolean.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\functions\FunctionCeiling.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\functions\FunctionCodepointEqual.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\functions\FunctionCodepointsToString.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\functions\FunctionCollection.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\functions\FunctionCompare.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\functions\FunctionConcat.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\functions\FunctionConstructor.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\functions\FunctionContains.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\functions\FunctionCount.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\functions\FunctionCurrentDate.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\functions\FunctionCurrentDateTime.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\functions\FunctionCurrentTime.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\functions\FunctionData.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\functions\FunctionDateTime.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\functions\FunctionDayFromDate.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\functions\FunctionDayFromDateTime.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\functions\FunctionDaysFromDuration.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\functions\FunctionDeepEqual.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\functions\FunctionDefaultCollation.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\functions\FunctionDistinctValues.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\functions\FunctionDoc.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\functions\FunctionDocAvailable.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\functions\FunctionDocument.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\functions\FunctionDocumentURI.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\functions\FunctionEmpty.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\functions\FunctionEncodeForUri.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\functions\FunctionEndsWith.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\functions\FunctionError.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\functions\FunctionEscapeHtmlUri.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\functions\FunctionExactlyOne.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\exceptions\FunctionException.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\functions\FunctionExists.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\functions\FunctionFalse.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\functions\FunctionFloor.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\functions\FunctionFunctionArity.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\functions\FunctionFunctionName.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\functions\FunctionHoursFromDateTime.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\functions\FunctionHoursFromDuration.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\functions\FunctionHoursFromTime.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\functions\FunctionId.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\functions\FunctionIdref.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\functions\FunctionImplicitTimezone.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\functions\FunctionIndexOf.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\functions\FunctionInScopePrefixes.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\functions\FunctionInsertBefore.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\functions\FunctionIriToUri.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\functions\FunctionLang.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\functions\FunctionLast.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\functions\FunctionLocalname.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\functions\FunctionLocalNameFromQName.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\functions\FunctionLookup.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\functions\FunctionLowerCase.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\functions\FunctionMatches.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\functions\FunctionMax.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\functions\FunctionMin.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\functions\FunctionMinutesFromDateTime.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\functions\FunctionMinutesFromDuration.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\functions\FunctionMinutesFromTime.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\functions\FunctionMonthFromDate.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\functions\FunctionMonthFromDateTime.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\functions\FunctionMonthsFromDuration.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\functions\FunctionName.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\functions\FunctionNamespaceUri.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\functions\FunctionNamespaceURIForPrefix.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\functions\FunctionNamespaceURIFromQName.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\functions\FunctionNilled.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\functions\FunctionNodeName.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\functions\FunctionNormalizeSpace.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\functions\FunctionNormalizeUnicode.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\functions\FunctionNot.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\functions\FunctionNumber.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\functions\FunctionOneOrMore.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\functions\FunctionParseHTML.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\functions\FunctionParseJSON.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\functions\FunctionParseXML.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\functions\FunctionPartialApply.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\functions\FunctionPosition.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\functions\FunctionPrefixFromQName.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\update\FunctionPut.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\functions\FunctionQName.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\items\FunctionRef.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\functions\FunctionRegexGroup.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\functions\FunctionRemove.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\functions\FunctionReplace.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\functions\FunctionResolveQName.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\functions\FunctionResolveURI.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\functions\FunctionReverse.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\functions\FunctionRoot.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\functions\FunctionRound.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\functions\FunctionRoundHalfToEven.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\functions\FunctionSecondsFromDateTime.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\functions\FunctionSecondsFromDuration.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\functions\FunctionSecondsFromTime.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\functions\FunctionSerializeJSON.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\functions\FunctionStartsWith.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\functions\FunctionStaticBaseURI.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\functions\FunctionString.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\functions\FunctionStringJoin.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\functions\FunctionStringLength.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\functions\FunctionStringToCodepoints.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\functions\FunctionSubsequence.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\functions\FunctionSubstring.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\functions\FunctionSubstringAfter.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\functions\FunctionSubstringBefore.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\functions\FunctionSum.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\functions\FunctionTime.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\functions\FunctionTimezoneFromDate.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\functions\FunctionTimezoneFromDateTime.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\functions\FunctionTimezoneFromTime.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\functions\FunctionTokenize.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\functions\FunctionTrace.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\functions\FunctionTranslate.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\functions\FunctionTrue.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\functions\FunctionUnordered.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\functions\FunctionUnparsedText.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\functions\FunctionUpperCase.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\functions\FunctionYearFromDate.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\functions\FunctionYearFromDateTime.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\functions\FunctionYearsFromDuration.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\functions\FunctionZeroOrOne.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\operators\GeneralComp.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\operators\GreaterThan.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\operators\GreaterThanEqual.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\exceptions\IllegalArgumentException.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\debug\InputParser.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\operators\IntegerDivide.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\debug\InteractiveDebugger.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\operators\Intersect.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\items\Item.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\exceptions\ItemException.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\context\ItemFactory.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\context\impl\ItemFactoryImpl.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\runtime\LazySequenceResult.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\operators\LessThan.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\operators\LessThanEqual.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\ast\LetTuple.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\ast\LocationInfo.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\mapm\m_apm.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\fulltext\Match.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\context\MessageListener.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\operators\Minus.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\operators\Mod.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\context\ModuleResolver.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\operators\Multiply.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\exceptions\NamespaceLookupException.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\items\Node.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\operators\NodeComparison.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\axis\NodeTest.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\operators\NotEquals.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\events\NSFixupFilter.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\items\Numeric.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\ast\NumericFunction.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\utils\NumUtils.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\optimizer\Optimizer.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\operators\Or.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\ast\OrderByTuple.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\operators\OrderComparison.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\optimizer\PartialEvaluator.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\update\PendingUpdateList.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\operators\Plus.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\utils\PrintAST.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\framework\ProxyMemoryManager.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\parser\QName.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\exceptions\QueryInterruptedException.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\optimizer\QueryPathNode.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\events\QueryPathTreeFilter.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\optimizer\QueryPathTreeGenerator.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\exceptions\QueryTimeoutException.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\operators\Range.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\framework\ReferenceCounted.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\context\RegexGroupStore.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\runtime\Result.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\runtime\ResultBuffer.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\runtime\ResultBufferImpl.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\runtime\ResultImpl.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\schema\SchemaValidatorFilter.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\context\Scope.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\axis\SelfAxis.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\runtime\Sequence.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\events\SequenceBuilder.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\runtime\SequenceResult.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\schema\SequenceType.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\runtime\SingleResult.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\debug\StackFrame.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\ast\StaticAnalysis.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\context\StaticContext.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\exceptions\StaticErrorException.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\ast\StaticType.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\optimizer\StaticTyper.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\framework\StringPool.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\xqts\TestSuiteParser.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\xqts\TestSuiteResultListener.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\xqts\TestSuiteRunner.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\items\Timezone.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\fulltext\TokenInfo.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\fulltext\Tokenizer.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\fulltext\TokenStore.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\debug\TupleDebugHook.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\ast\TupleNode.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\runtime\TupleResult.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\exceptions\TypeErrorException.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\exceptions\TypeNotFoundException.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\update\UApplyUpdates.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\utils\UCANormalizer.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\update\UDelete.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\update\UInsertAfter.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\update\UInsertAsFirst.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\update\UInsertAsLast.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\update\UInsertBefore.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\update\UInsertInto.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\operators\UnaryMinus.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\operators\Union.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\context\UpdateFactory.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\update\URename.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\update\UReplace.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\update\UReplaceValueOf.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\context\URIResolver.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\utils\UTF8Str.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\update\UTransform.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\context\VarHashEntry.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\context\impl\VarHashEntryImpl.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\context\VariableStore.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\context\impl\VariableStoreTemplate.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\context\VariableTypeStore.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\context\impl\VarStoreImpl.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\ast\WhereTuple.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\xerces\XercesConfiguration.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\utils\XMLChCompare.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\exceptions\XMLParseException.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\ast\XPath1Compat.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\exceptions\XPath2ErrorException.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\framework\XPath2MemoryManager.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\framework\XPath2MemoryManagerImpl.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\utils\XPath2NSUtils.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\dom-api\XPath2Result.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\exceptions\XPath2TypeCastException.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\exceptions\XPath2TypeMatchException.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\utils\XPath2Utils.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\ast\XQAnalyzeString.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\ast\XQApplyTemplates.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\ast\XQAtomize.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\ast\XQAttributeConstructor.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqc.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\ast\XQCallTemplate.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\ast\XQCastableAs.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\ast\XQCastAs.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\ast\XQCommentConstructor.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\context\impl\XQContextImpl.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\ast\XQContextItem.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\ast\XQCopy.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\ast\XQCopyOf.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\ast\XQDocumentConstructor.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\ast\XQDocumentOrder.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\ast\XQDOMConstructor.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\context\impl\XQDynamicContextImpl.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\ast\XQEffectiveBooleanValue.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\ast\XQElementConstructor.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\exceptions\XQException.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\ast\XQFunction.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\ast\XQFunctionCall.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\ast\XQFunctionConversion.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\ast\XQFunctionDeref.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\ast\XQFunctionRef.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\ast\XQGlobalVariable.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\ast\XQIf.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\xqilla-dom3.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\xqilla-simple.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\xqilla-xqc.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\simple-api\XQilla.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\simple-api\XQillaConfiguration.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\exceptions\XQillaException.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\framework\XQillaExport.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\dom-api\XQillaExpression.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\functions\XQillaFunction.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\dom-api\XQillaNSResolver.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\dom-api\impl\XQillaNSResolverImpl.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\utils\XQillaPlatformUtils.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\ast\XQInlineFunction.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\ast\XQInstanceOf.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\ast\XQLiteral.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\ast\XQMap.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\ast\XQNamespaceBinding.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\ast\XQNamespaceConstructor.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\ast\XQNav.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\ast\XQOperator.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\ast\XQOrderingChange.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\ast\XQPIConstructor.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\ast\XQPredicate.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\ast\XQQuantified.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\simple-api\XQQuery.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\ast\XQReturn.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\ast\XQSequence.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\ast\XQStep.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\ast\XQTextConstructor.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\ast\XQTreatAs.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\ast\XQTypeswitch.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\functions\XQUserFunction.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\ast\XQValidate.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\ast\XQVariable.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\xqilla\utils\XStr.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\context\impl\VarTypeStoreImpl.hpp">
+      <Filter>context</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\dom-api\XPath2NodeSerializer.hpp">
+      <Filter>dom-api</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\dom-api\impl\XPath2ResultImpl.hpp">
+      <Filter>dom-api</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\dom-api\impl\XPathDocumentImpl.hpp">
+      <Filter>dom-api</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\dom-api\impl\XPathNamespaceImpl.hpp">
+      <Filter>dom-api</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\dom-api\impl\XQillaBuilderImpl.hpp">
+      <Filter>dom-api</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\dom-api\impl\XQillaDocumentImpl.hpp">
+      <Filter>dom-api</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\dom-api\impl\XQillaExpressionImpl.hpp">
+      <Filter>dom-api</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\dom-api\XQillaImplementation.hpp">
+      <Filter>dom-api</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\dom-api\impl\XQillaXMLGrammarPoolImpl.hpp">
+      <Filter>dom-api</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\events\NoInheritFilter.hpp">
+      <Filter>events</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\exceptions\InvalidLexicalSpaceException.hpp">
+      <Filter>exceptions</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\exceptions\MiscException.hpp">
+      <Filter>exceptions</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\fastxdm\FastXDMDocument.hpp">
+      <Filter>fastxdm</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\fastxdm\FastXDMNodeImpl.hpp">
+      <Filter>fastxdm</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\fastxdm\FastXDMSequenceBuilder.hpp">
+      <Filter>fastxdm</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\fastxdm\FastXDMUpdateFactory.hpp">
+      <Filter>fastxdm</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\functions\FuncFactoryTemplate.hpp">
+      <Filter>functions</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\items\impl\ATAnySimpleTypeImpl.hpp">
+      <Filter>items</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\items\impl\ATAnyURIOrDerivedImpl.hpp">
+      <Filter>items</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\items\impl\ATBase64BinaryOrDerivedImpl.hpp">
+      <Filter>items</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\items\impl\ATHexBinaryOrDerivedImpl.hpp">
+      <Filter>items</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\items\impl\ATNotationOrDerivedImpl.hpp">
+      <Filter>items</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\items\impl\ATStringOrDerivedImpl.hpp">
+      <Filter>items</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\items\impl\ATUntypedAtomicImpl.hpp">
+      <Filter>items</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\items\DatatypeFactoryTemplate.hpp">
+      <Filter>items</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\items\impl\FunctionRefImpl.hpp">
+      <Filter>items</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\lexer\FlexLexer.h">
+      <Filter>lexer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\lexer\XQLexer.hpp">
+      <Filter>lexer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\lexer\XSLT2Lexer.hpp">
+      <Filter>lexer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\mapm\m_apm_lc.h">
+      <Filter>mapm</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\parser\XQParser.hpp">
+      <Filter>parser</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\schema\FaxppDocumentCacheImpl.hpp">
+      <Filter>schema</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\utils\DateUtils.hpp">
+      <Filter>utils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\xerces\AncestorAxis.hpp">
+      <Filter>xerces</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\xerces\AncestorOrSelfAxis.hpp">
+      <Filter>xerces</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\xerces\AttributeAxis.hpp">
+      <Filter>xerces</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\xerces\Axis.hpp">
+      <Filter>xerces</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\xerces\ChildAxis.hpp">
+      <Filter>xerces</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\xerces\DescendantAxis.hpp">
+      <Filter>xerces</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\xerces\DescendantOrSelfAxis.hpp">
+      <Filter>xerces</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\xerces\FollowingAxis.hpp">
+      <Filter>xerces</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\xerces\FollowingSiblingAxis.hpp">
+      <Filter>xerces</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\xerces\NamespaceAxis.hpp">
+      <Filter>xerces</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\xerces\ParentAxis.hpp">
+      <Filter>xerces</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\xerces\PrecedingAxis.hpp">
+      <Filter>xerces</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\xerces\PrecedingSiblingAxis.hpp">
+      <Filter>xerces</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\xerces\XercesNodeImpl.hpp">
+      <Filter>xerces</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\xerces\XercesSequenceBuilder.hpp">
+      <Filter>xerces</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\xerces\XercesUpdateFactory.hpp">
+      <Filter>xerces</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\xerces\XercesURIResolver.hpp">
+      <Filter>xerces</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\yajl\yajl_buf.h">
+      <Filter>yajl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\yajl\yajl_common.h">
+      <Filter>yajl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\yajl\yajl_encode.h">
+      <Filter>yajl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\yajl\yajl_gen.h">
+      <Filter>yajl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\yajl\yajl_lex.h">
+      <Filter>yajl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\yajl\yajl_parse.h">
+      <Filter>yajl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\yajl\yajl_parser.h">
+      <Filter>yajl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\xqc\XQillaXQCDynamicContext.hpp">
+      <Filter>xqc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\xqc\XQillaXQCExpression.hpp">
+      <Filter>xqc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\xqc\XQillaXQCImplementation.hpp">
+      <Filter>xqc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\xqc\XQillaXQCInputStream.hpp">
+      <Filter>xqc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\xqc\XQillaXQCSequence.hpp">
+      <Filter>xqc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\xqc\XQillaXQCStaticContext.hpp">
+      <Filter>xqc</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\src\ast\ASTNodeImpl.cpp">
+      <Filter>ast</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\ast\ConstantFoldingFunction.cpp">
+      <Filter>ast</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\ast\ContextTuple.cpp">
+      <Filter>ast</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\ast\ConvertFunctionArg.cpp">
+      <Filter>ast</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\ast\ForTuple.cpp">
+      <Filter>ast</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\ast\LetTuple.cpp">
+      <Filter>ast</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\ast\NumericFunction.cpp">
+      <Filter>ast</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\ast\OrderByTuple.cpp">
+      <Filter>ast</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\ast\StaticAnalysis.cpp">
+      <Filter>ast</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\ast\StaticType.cpp">
+      <Filter>ast</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\ast\TupleNode.cpp">
+      <Filter>ast</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\ast\WhereTuple.cpp">
+      <Filter>ast</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\ast\XPath1Compat.cpp">
+      <Filter>ast</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\ast\XQAnalyzeString.cpp">
+      <Filter>ast</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\ast\XQApplyTemplates.cpp">
+      <Filter>ast</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\ast\XQAtomize.cpp">
+      <Filter>ast</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\ast\XQAttributeConstructor.cpp">
+      <Filter>ast</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\ast\XQCallTemplate.cpp">
+      <Filter>ast</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\ast\XQCastableAs.cpp">
+      <Filter>ast</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\ast\XQCastAs.cpp">
+      <Filter>ast</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\ast\XQCommentConstructor.cpp">
+      <Filter>ast</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\ast\XQContextItem.cpp">
+      <Filter>ast</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\ast\XQCopy.cpp">
+      <Filter>ast</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\ast\XQCopyOf.cpp">
+      <Filter>ast</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\ast\XQDocumentConstructor.cpp">
+      <Filter>ast</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\ast\XQDocumentOrder.cpp">
+      <Filter>ast</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\ast\XQDOMConstructor.cpp">
+      <Filter>ast</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\ast\XQEffectiveBooleanValue.cpp">
+      <Filter>ast</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\ast\XQElementConstructor.cpp">
+      <Filter>ast</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\ast\XQFunction.cpp">
+      <Filter>ast</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\ast\XQFunctionCall.cpp">
+      <Filter>ast</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\ast\XQFunctionConversion.cpp">
+      <Filter>ast</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\ast\XQFunctionDeref.cpp">
+      <Filter>ast</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\ast\XQFunctionRef.cpp">
+      <Filter>ast</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\ast\XQGlobalVariable.cpp">
+      <Filter>ast</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\ast\XQIf.cpp">
+      <Filter>ast</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\ast\XQInlineFunction.cpp">
+      <Filter>ast</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\ast\XQInstanceOf.cpp">
+      <Filter>ast</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\ast\XQLiteral.cpp">
+      <Filter>ast</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\ast\XQMap.cpp">
+      <Filter>ast</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\ast\XQNamespaceBinding.cpp">
+      <Filter>ast</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\ast\XQNamespaceConstructor.cpp">
+      <Filter>ast</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\ast\XQNav.cpp">
+      <Filter>ast</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\ast\XQOperator.cpp">
+      <Filter>ast</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\ast\XQOrderingChange.cpp">
+      <Filter>ast</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\ast\XQPIConstructor.cpp">
+      <Filter>ast</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\ast\XQPredicate.cpp">
+      <Filter>ast</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\ast\XQQuantified.cpp">
+      <Filter>ast</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\ast\XQReturn.cpp">
+      <Filter>ast</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\ast\XQSequence.cpp">
+      <Filter>ast</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\ast\XQStep.cpp">
+      <Filter>ast</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\ast\XQTextConstructor.cpp">
+      <Filter>ast</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\ast\XQTreatAs.cpp">
+      <Filter>ast</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\ast\XQTypeswitch.cpp">
+      <Filter>ast</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\ast\XQValidate.cpp">
+      <Filter>ast</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\ast\XQVariable.cpp">
+      <Filter>ast</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\axis\NodeTest.cpp">
+      <Filter>axis</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\axis\SelfAxis.cpp">
+      <Filter>axis</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\context\impl\CodepointCollation.cpp">
+      <Filter>context</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\context\impl\CollationImpl.cpp">
+      <Filter>context</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\context\impl\ItemFactoryImpl.cpp">
+      <Filter>context</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\context\UpdateFactory.cpp">
+      <Filter>context</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\context\impl\VarHashEntryImpl.cpp">
+      <Filter>context</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\context\impl\VarStoreImpl.cpp">
+      <Filter>context</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\context\impl\VarTypeStoreImpl.cpp">
+      <Filter>context</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\context\impl\XQContextImpl.cpp">
+      <Filter>context</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\context\impl\XQDynamicContextImpl.cpp">
+      <Filter>context</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\debug\ASTDebugHook.cpp">
+      <Filter>debug</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\debug\DebugHookDecorator.cpp">
+      <Filter>debug</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\debug\InputParser.cpp">
+      <Filter>debug</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\debug\InteractiveDebugger.cpp">
+      <Filter>debug</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\debug\StackFrame.cpp">
+      <Filter>debug</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\debug\TupleDebugHook.cpp">
+      <Filter>debug</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\dom-api\XPath2NodeSerializer.cpp">
+      <Filter>dom-api</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\dom-api\impl\XPath2ResultImpl.cpp">
+      <Filter>dom-api</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\dom-api\impl\XPathDocumentImpl.cpp">
+      <Filter>dom-api</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\dom-api\impl\XPathNamespaceImpl.cpp">
+      <Filter>dom-api</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\dom-api\impl\XQillaBuilderImpl.cpp">
+      <Filter>dom-api</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\dom-api\impl\XQillaDocumentImpl.cpp">
+      <Filter>dom-api</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\dom-api\impl\XQillaExpressionImpl.cpp">
+      <Filter>dom-api</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\dom-api\XQillaImplementation.cpp">
+      <Filter>dom-api</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\dom-api\impl\XQillaNSResolverImpl.cpp">
+      <Filter>dom-api</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\dom-api\impl\XQillaXMLGrammarPoolImpl.cpp">
+      <Filter>dom-api</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\events\ContentSequenceFilter.cpp">
+      <Filter>events</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\events\EventGenerator.cpp">
+      <Filter>events</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\events\EventSerializer.cpp">
+      <Filter>events</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\events\NoInheritFilter.cpp">
+      <Filter>events</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\events\NSFixupFilter.cpp">
+      <Filter>events</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\events\QueryPathTreeFilter.cpp">
+      <Filter>events</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\exceptions\XQException.cpp">
+      <Filter>exceptions</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\exceptions\XQillaException.cpp">
+      <Filter>exceptions</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\fastxdm\FastXDMConfiguration.cpp">
+      <Filter>fastxdm</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\fastxdm\FastXDMDocument.cpp">
+      <Filter>fastxdm</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\fastxdm\FastXDMNodeImpl.cpp">
+      <Filter>fastxdm</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\fastxdm\FastXDMSequenceBuilder.cpp">
+      <Filter>fastxdm</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\fastxdm\FastXDMUpdateFactory.cpp">
+      <Filter>fastxdm</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\framework\BaseMemoryManager.cpp">
+      <Filter>framework</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\framework\ProxyMemoryManager.cpp">
+      <Filter>framework</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\framework\ReferenceCounted.cpp">
+      <Filter>framework</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\framework\StringPool.cpp">
+      <Filter>framework</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\framework\XPath2MemoryManagerImpl.cpp">
+      <Filter>framework</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\fulltext\DefaultTokenizer.cpp">
+      <Filter>fulltext</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\fulltext\DefaultTokenStore.cpp">
+      <Filter>fulltext</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\fulltext\FTAnd.cpp">
+      <Filter>fulltext</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\fulltext\FTContains.cpp">
+      <Filter>fulltext</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\fulltext\FTContent.cpp">
+      <Filter>fulltext</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\fulltext\FTDistance.cpp">
+      <Filter>fulltext</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\fulltext\FTMildnot.cpp">
+      <Filter>fulltext</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\fulltext\FTOr.cpp">
+      <Filter>fulltext</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\fulltext\FTOrder.cpp">
+      <Filter>fulltext</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\fulltext\FTScope.cpp">
+      <Filter>fulltext</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\fulltext\FTUnaryNot.cpp">
+      <Filter>fulltext</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\fulltext\FTWindow.cpp">
+      <Filter>fulltext</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\fulltext\FTWords.cpp">
+      <Filter>fulltext</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\functions\ExternalFunction.cpp">
+      <Filter>functions</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\functions\FuncFactory.cpp">
+      <Filter>functions</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\functions\FunctionAbs.cpp">
+      <Filter>functions</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\functions\FunctionAdjustDateTimeToTimezone.cpp">
+      <Filter>functions</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\functions\FunctionAdjustDateToTimezone.cpp">
+      <Filter>functions</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\functions\FunctionAdjustTimeToTimezone.cpp">
+      <Filter>functions</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\functions\FunctionAnalyzeString.cpp">
+      <Filter>functions</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\functions\FunctionAvg.cpp">
+      <Filter>functions</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\functions\FunctionBaseURI.cpp">
+      <Filter>functions</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\functions\FunctionBoolean.cpp">
+      <Filter>functions</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\functions\FunctionCeiling.cpp">
+      <Filter>functions</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\functions\FunctionCodepointEqual.cpp">
+      <Filter>functions</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\functions\FunctionCodepointsToString.cpp">
+      <Filter>functions</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\functions\FunctionCollection.cpp">
+      <Filter>functions</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\functions\FunctionCompare.cpp">
+      <Filter>functions</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\functions\FunctionConcat.cpp">
+      <Filter>functions</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\functions\FunctionConstructor.cpp">
+      <Filter>functions</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\functions\FunctionContains.cpp">
+      <Filter>functions</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\functions\FunctionCount.cpp">
+      <Filter>functions</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\functions\FunctionCurrentDate.cpp">
+      <Filter>functions</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\functions\FunctionCurrentDateTime.cpp">
+      <Filter>functions</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\functions\FunctionCurrentTime.cpp">
+      <Filter>functions</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\functions\FunctionData.cpp">
+      <Filter>functions</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\functions\FunctionDateTime.cpp">
+      <Filter>functions</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\functions\FunctionDayFromDate.cpp">
+      <Filter>functions</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\functions\FunctionDayFromDateTime.cpp">
+      <Filter>functions</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\functions\FunctionDaysFromDuration.cpp">
+      <Filter>functions</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\functions\FunctionDeepEqual.cpp">
+      <Filter>functions</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\functions\FunctionDefaultCollation.cpp">
+      <Filter>functions</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\functions\FunctionDistinctValues.cpp">
+      <Filter>functions</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\functions\FunctionDoc.cpp">
+      <Filter>functions</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\functions\FunctionDocAvailable.cpp">
+      <Filter>functions</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\functions\FunctionDocument.cpp">
+      <Filter>functions</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\functions\FunctionDocumentURI.cpp">
+      <Filter>functions</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\functions\FunctionEmpty.cpp">
+      <Filter>functions</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\functions\FunctionEncodeForUri.cpp">
+      <Filter>functions</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\functions\FunctionEndsWith.cpp">
+      <Filter>functions</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\functions\FunctionError.cpp">
+      <Filter>functions</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\functions\FunctionEscapeHtmlUri.cpp">
+      <Filter>functions</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\functions\FunctionExactlyOne.cpp">
+      <Filter>functions</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\functions\FunctionExists.cpp">
+      <Filter>functions</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\functions\FunctionFalse.cpp">
+      <Filter>functions</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\functions\FunctionFloor.cpp">
+      <Filter>functions</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\functions\FunctionFunctionArity.cpp">
+      <Filter>functions</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\functions\FunctionFunctionName.cpp">
+      <Filter>functions</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\functions\FunctionHoursFromDateTime.cpp">
+      <Filter>functions</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\functions\FunctionHoursFromDuration.cpp">
+      <Filter>functions</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\functions\FunctionHoursFromTime.cpp">
+      <Filter>functions</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\functions\FunctionId.cpp">
+      <Filter>functions</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\functions\FunctionIdref.cpp">
+      <Filter>functions</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\functions\FunctionImplicitTimezone.cpp">
+      <Filter>functions</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\functions\FunctionIndexOf.cpp">
+      <Filter>functions</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\functions\FunctionInScopePrefixes.cpp">
+      <Filter>functions</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\functions\FunctionInsertBefore.cpp">
+      <Filter>functions</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\functions\FunctionIriToUri.cpp">
+      <Filter>functions</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\functions\FunctionLang.cpp">
+      <Filter>functions</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\functions\FunctionLast.cpp">
+      <Filter>functions</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\functions\FunctionLocalname.cpp">
+      <Filter>functions</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\functions\FunctionLocalNameFromQName.cpp">
+      <Filter>functions</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\functions\FunctionLookup.cpp">
+      <Filter>functions</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\functions\FunctionLowerCase.cpp">
+      <Filter>functions</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\functions\FunctionMatches.cpp">
+      <Filter>functions</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\functions\FunctionMax.cpp">
+      <Filter>functions</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\functions\FunctionMin.cpp">
+      <Filter>functions</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\functions\FunctionMinutesFromDateTime.cpp">
+      <Filter>functions</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\functions\FunctionMinutesFromDuration.cpp">
+      <Filter>functions</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\functions\FunctionMinutesFromTime.cpp">
+      <Filter>functions</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\functions\FunctionMonthFromDate.cpp">
+      <Filter>functions</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\functions\FunctionMonthFromDateTime.cpp">
+      <Filter>functions</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\functions\FunctionMonthsFromDuration.cpp">
+      <Filter>functions</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\functions\FunctionName.cpp">
+      <Filter>functions</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\functions\FunctionNamespaceUri.cpp">
+      <Filter>functions</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\functions\FunctionNamespaceURIForPrefix.cpp">
+      <Filter>functions</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\functions\FunctionNamespaceURIFromQName.cpp">
+      <Filter>functions</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\functions\FunctionNilled.cpp">
+      <Filter>functions</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\functions\FunctionNodeName.cpp">
+      <Filter>functions</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\functions\FunctionNormalizeSpace.cpp">
+      <Filter>functions</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\functions\FunctionNormalizeUnicode.cpp">
+      <Filter>functions</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\functions\FunctionNot.cpp">
+      <Filter>functions</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\functions\FunctionNumber.cpp">
+      <Filter>functions</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\functions\FunctionOneOrMore.cpp">
+      <Filter>functions</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\functions\FunctionParseHTML.cpp">
+      <Filter>functions</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\functions\FunctionParseJSON.cpp">
+      <Filter>functions</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\functions\FunctionParseXML.cpp">
+      <Filter>functions</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\functions\FunctionPartialApply.cpp">
+      <Filter>functions</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\functions\FunctionPosition.cpp">
+      <Filter>functions</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\functions\FunctionPrefixFromQName.cpp">
+      <Filter>functions</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\functions\FunctionQName.cpp">
+      <Filter>functions</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\functions\FunctionRegexGroup.cpp">
+      <Filter>functions</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\functions\FunctionRemove.cpp">
+      <Filter>functions</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\functions\FunctionReplace.cpp">
+      <Filter>functions</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\functions\FunctionResolveQName.cpp">
+      <Filter>functions</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\functions\FunctionResolveURI.cpp">
+      <Filter>functions</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\functions\FunctionReverse.cpp">
+      <Filter>functions</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\functions\FunctionRoot.cpp">
+      <Filter>functions</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\functions\FunctionRound.cpp">
+      <Filter>functions</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\functions\FunctionRoundHalfToEven.cpp">
+      <Filter>functions</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\functions\FunctionSecondsFromDateTime.cpp">
+      <Filter>functions</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\functions\FunctionSecondsFromDuration.cpp">
+      <Filter>functions</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\functions\FunctionSecondsFromTime.cpp">
+      <Filter>functions</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\functions\FunctionSerializeJSON.cpp">
+      <Filter>functions</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\functions\FunctionStartsWith.cpp">
+      <Filter>functions</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\functions\FunctionStaticBaseURI.cpp">
+      <Filter>functions</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\functions\FunctionString.cpp">
+      <Filter>functions</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\functions\FunctionStringJoin.cpp">
+      <Filter>functions</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\functions\FunctionStringLength.cpp">
+      <Filter>functions</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\functions\FunctionStringToCodepoints.cpp">
+      <Filter>functions</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\functions\FunctionSubsequence.cpp">
+      <Filter>functions</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\functions\FunctionSubstring.cpp">
+      <Filter>functions</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\functions\FunctionSubstringAfter.cpp">
+      <Filter>functions</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\functions\FunctionSubstringBefore.cpp">
+      <Filter>functions</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\functions\FunctionSum.cpp">
+      <Filter>functions</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\functions\FunctionTime.cpp">
+      <Filter>functions</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\functions\FunctionTimezoneFromDate.cpp">
+      <Filter>functions</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\functions\FunctionTimezoneFromDateTime.cpp">
+      <Filter>functions</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\functions\FunctionTimezoneFromTime.cpp">
+      <Filter>functions</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\functions\FunctionTokenize.cpp">
+      <Filter>functions</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\functions\FunctionTrace.cpp">
+      <Filter>functions</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\functions\FunctionTranslate.cpp">
+      <Filter>functions</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\functions\FunctionTrue.cpp">
+      <Filter>functions</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\functions\FunctionUnordered.cpp">
+      <Filter>functions</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\functions\FunctionUnparsedText.cpp">
+      <Filter>functions</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\functions\FunctionUpperCase.cpp">
+      <Filter>functions</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\functions\FunctionYearFromDate.cpp">
+      <Filter>functions</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\functions\FunctionYearFromDateTime.cpp">
+      <Filter>functions</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\functions\FunctionYearsFromDuration.cpp">
+      <Filter>functions</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\functions\FunctionZeroOrOne.cpp">
+      <Filter>functions</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\functions\XQillaFunction.cpp">
+      <Filter>functions</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\functions\XQUserFunction.cpp">
+      <Filter>functions</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\items\AnyAtomicType.cpp">
+      <Filter>items</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\items\impl\ATAnySimpleTypeImpl.cpp">
+      <Filter>items</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\items\impl\ATAnyURIOrDerivedImpl.cpp">
+      <Filter>items</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\items\impl\ATBase64BinaryOrDerivedImpl.cpp">
+      <Filter>items</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\items\impl\ATBooleanOrDerivedImpl.cpp">
+      <Filter>items</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\items\impl\ATDateOrDerivedImpl.cpp">
+      <Filter>items</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\items\impl\ATDateTimeOrDerivedImpl.cpp">
+      <Filter>items</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\items\impl\ATDecimalOrDerivedImpl.cpp">
+      <Filter>items</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\items\impl\ATDoubleOrDerivedImpl.cpp">
+      <Filter>items</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\items\ATDurationOrDerived.cpp">
+      <Filter>items</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\items\impl\ATDurationOrDerivedImpl.cpp">
+      <Filter>items</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\items\impl\ATFloatOrDerivedImpl.cpp">
+      <Filter>items</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\items\impl\ATGDayOrDerivedImpl.cpp">
+      <Filter>items</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\items\impl\ATGMonthDayOrDerivedImpl.cpp">
+      <Filter>items</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\items\impl\ATGMonthOrDerivedImpl.cpp">
+      <Filter>items</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\items\impl\ATGYearMonthOrDerivedImpl.cpp">
+      <Filter>items</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\items\impl\ATGYearOrDerivedImpl.cpp">
+      <Filter>items</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\items\impl\ATHexBinaryOrDerivedImpl.cpp">
+      <Filter>items</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\items\impl\ATNotationOrDerivedImpl.cpp">
+      <Filter>items</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\items\impl\ATQNameOrDerivedImpl.cpp">
+      <Filter>items</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\items\impl\ATStringOrDerivedImpl.cpp">
+      <Filter>items</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\items\impl\ATTimeOrDerivedImpl.cpp">
+      <Filter>items</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\items\ATUntypedAtomic.cpp">
+      <Filter>items</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\items\impl\ATUntypedAtomicImpl.cpp">
+      <Filter>items</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\items\DatatypeFactory.cpp">
+      <Filter>items</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\items\DatatypeLookup.cpp">
+      <Filter>items</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\items\DateOrTimeType.cpp">
+      <Filter>items</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\items\impl\FunctionRefImpl.cpp">
+      <Filter>items</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\items\Item.cpp">
+      <Filter>items</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\items\Node.cpp">
+      <Filter>items</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\items\Numeric.cpp">
+      <Filter>items</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\items\Timezone.cpp">
+      <Filter>items</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\lexer\XQLexer.cpp">
+      <Filter>lexer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\lexer\XQLexer2.cpp">
+      <Filter>lexer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\lexer\XSLT2Lexer.cpp">
+      <Filter>lexer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\mapm\m_apm.cpp">
+      <Filter>mapm</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\mapm\mapm5sin.c">
+      <Filter>mapm</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\mapm\mapm_add.c">
+      <Filter>mapm</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\mapm\mapm_cpi.c">
+      <Filter>mapm</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\mapm\mapm_div.c">
+      <Filter>mapm</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\mapm\mapm_exp.c">
+      <Filter>mapm</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\mapm\mapm_fam.c">
+      <Filter>mapm</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\mapm\mapm_fft.c">
+      <Filter>mapm</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\mapm\mapm_flr.c">
+      <Filter>mapm</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\mapm\mapm_fpf.c">
+      <Filter>mapm</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\mapm\mapm_gcd.c">
+      <Filter>mapm</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\mapm\mapm_lg2.c">
+      <Filter>mapm</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\mapm\mapm_lg3.c">
+      <Filter>mapm</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\mapm\mapm_log.c">
+      <Filter>mapm</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\mapm\mapm_mt.cpp">
+      <Filter>mapm</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\mapm\mapm_mul.c">
+      <Filter>mapm</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\mapm\mapm_pow.c">
+      <Filter>mapm</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\mapm\mapm_rcp.c">
+      <Filter>mapm</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\mapm\mapm_rnd.c">
+      <Filter>mapm</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\mapm\mapm_set.c">
+      <Filter>mapm</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\mapm\mapm_sin.c">
+      <Filter>mapm</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\mapm\mapmasin.c">
+      <Filter>mapm</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\mapm\mapmasn0.c">
+      <Filter>mapm</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\mapm\mapmcbrt.c">
+      <Filter>mapm</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\mapm\mapmcnst.c">
+      <Filter>mapm</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\mapm\mapmfact.c">
+      <Filter>mapm</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\mapm\mapmfmul.c">
+      <Filter>mapm</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\mapm\mapmgues.c">
+      <Filter>mapm</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\mapm\mapmhasn.c">
+      <Filter>mapm</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\mapm\mapmhsin.c">
+      <Filter>mapm</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\mapm\mapmipwr.c">
+      <Filter>mapm</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\mapm\mapmistr.c">
+      <Filter>mapm</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\mapm\mapmpwr2.c">
+      <Filter>mapm</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\mapm\mapmrsin.c">
+      <Filter>mapm</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\mapm\mapmsqrt.c">
+      <Filter>mapm</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\mapm\mapmstck.c">
+      <Filter>mapm</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\mapm\mapmutil.c">
+      <Filter>mapm</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\mapm\mapmutl2.c">
+      <Filter>mapm</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\operators\And.cpp">
+      <Filter>operators</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\operators\ArithmeticOperator.cpp">
+      <Filter>operators</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\operators\ComparisonOperator.cpp">
+      <Filter>operators</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\operators\Divide.cpp">
+      <Filter>operators</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\operators\Equals.cpp">
+      <Filter>operators</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\operators\Except.cpp">
+      <Filter>operators</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\operators\GeneralComp.cpp">
+      <Filter>operators</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\operators\GreaterThan.cpp">
+      <Filter>operators</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\operators\GreaterThanEqual.cpp">
+      <Filter>operators</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\operators\IntegerDivide.cpp">
+      <Filter>operators</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\operators\Intersect.cpp">
+      <Filter>operators</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\operators\LessThan.cpp">
+      <Filter>operators</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\operators\LessThanEqual.cpp">
+      <Filter>operators</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\operators\Minus.cpp">
+      <Filter>operators</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\operators\Mod.cpp">
+      <Filter>operators</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\operators\Multiply.cpp">
+      <Filter>operators</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\operators\NodeComparison.cpp">
+      <Filter>operators</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\operators\NotEquals.cpp">
+      <Filter>operators</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\operators\Or.cpp">
+      <Filter>operators</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\operators\OrderComparison.cpp">
+      <Filter>operators</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\operators\Plus.cpp">
+      <Filter>operators</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\operators\Range.cpp">
+      <Filter>operators</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\operators\UnaryMinus.cpp">
+      <Filter>operators</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\operators\Union.cpp">
+      <Filter>operators</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\optimizer\ASTCopier.cpp">
+      <Filter>optimizer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\optimizer\ASTReleaser.cpp">
+      <Filter>optimizer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\optimizer\ASTVisitor.cpp">
+      <Filter>optimizer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\optimizer\Optimizer.cpp">
+      <Filter>optimizer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\optimizer\PartialEvaluator.cpp">
+      <Filter>optimizer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\optimizer\QueryPathNode.cpp">
+      <Filter>optimizer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\optimizer\QueryPathTreeGenerator.cpp">
+      <Filter>optimizer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\optimizer\StaticTyper.cpp">
+      <Filter>optimizer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\parser\QName.cpp">
+      <Filter>parser</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\parser\XQParser.cpp">
+      <Filter>parser</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\runtime\ClosureResult.cpp">
+      <Filter>runtime</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\runtime\EmptyResult.cpp">
+      <Filter>runtime</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\runtime\LazySequenceResult.cpp">
+      <Filter>runtime</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\runtime\Result.cpp">
+      <Filter>runtime</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\runtime\ResultBuffer.cpp">
+      <Filter>runtime</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\runtime\ResultBufferImpl.cpp">
+      <Filter>runtime</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\runtime\ResultImpl.cpp">
+      <Filter>runtime</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\runtime\Sequence.cpp">
+      <Filter>runtime</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\runtime\SequenceResult.cpp">
+      <Filter>runtime</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\runtime\SingleResult.cpp">
+      <Filter>runtime</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\schema\AnyAtomicTypeDatatypeValidator.cpp">
+      <Filter>schema</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\schema\DocumentCacheImpl.cpp">
+      <Filter>schema</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\schema\FaxppDocumentCacheImpl.cpp">
+      <Filter>schema</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\schema\SchemaValidatorFilter.cpp">
+      <Filter>schema</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\schema\SequenceType.cpp">
+      <Filter>schema</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\simple-api\XQilla.cpp">
+      <Filter>simple-api</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\simple-api\XQQuery.cpp">
+      <Filter>simple-api</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\update\FunctionPut.cpp">
+      <Filter>update</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\update\PendingUpdateList.cpp">
+      <Filter>update</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\update\UApplyUpdates.cpp">
+      <Filter>update</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\update\UDelete.cpp">
+      <Filter>update</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\update\UInsertAfter.cpp">
+      <Filter>update</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\update\UInsertAsFirst.cpp">
+      <Filter>update</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\update\UInsertAsLast.cpp">
+      <Filter>update</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\update\UInsertBefore.cpp">
+      <Filter>update</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\update\UInsertInto.cpp">
+      <Filter>update</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\update\URename.cpp">
+      <Filter>update</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\update\UReplace.cpp">
+      <Filter>update</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\update\UReplaceValueOf.cpp">
+      <Filter>update</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\update\UTransform.cpp">
+      <Filter>update</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\utils\ContextUtils.cpp">
+      <Filter>utils</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\utils\DateUtils.cpp">
+      <Filter>utils</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\utils\NumUtils.cpp">
+      <Filter>utils</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\utils\PrintAST.cpp">
+      <Filter>utils</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\utils\UCANormalizer.cpp">
+      <Filter>utils</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\utils\UCANormalizer1.cpp">
+      <Filter>utils</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\utils\UCANormalizer2.cpp">
+      <Filter>utils</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\utils\UCANormalizer3.cpp">
+      <Filter>utils</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\utils\UCANormalizer4.cpp">
+      <Filter>utils</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\utils\UTF8Str.cpp">
+      <Filter>utils</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\utils\XMLChCompare.cpp">
+      <Filter>utils</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\utils\XPath2NSUtils.cpp">
+      <Filter>utils</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\utils\XPath2Utils.cpp">
+      <Filter>utils</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\utils\XQillaPlatformUtils.cpp">
+      <Filter>utils</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\utils\XStr.cpp">
+      <Filter>utils</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\xerces\AncestorAxis.cpp">
+      <Filter>xerces</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\xerces\AncestorOrSelfAxis.cpp">
+      <Filter>xerces</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\xerces\AttributeAxis.cpp">
+      <Filter>xerces</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\xerces\Axis.cpp">
+      <Filter>xerces</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\xerces\ChildAxis.cpp">
+      <Filter>xerces</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\xerces\DescendantAxis.cpp">
+      <Filter>xerces</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\xerces\DescendantOrSelfAxis.cpp">
+      <Filter>xerces</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\xerces\FollowingAxis.cpp">
+      <Filter>xerces</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\xerces\FollowingSiblingAxis.cpp">
+      <Filter>xerces</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\xerces\NamespaceAxis.cpp">
+      <Filter>xerces</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\xerces\ParentAxis.cpp">
+      <Filter>xerces</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\xerces\PrecedingAxis.cpp">
+      <Filter>xerces</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\xerces\PrecedingSiblingAxis.cpp">
+      <Filter>xerces</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\xerces\XercesConfiguration.cpp">
+      <Filter>xerces</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\xerces\XercesNodeImpl.cpp">
+      <Filter>xerces</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\xerces\XercesSequenceBuilder.cpp">
+      <Filter>xerces</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\xerces\XercesUpdateFactory.cpp">
+      <Filter>xerces</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\xerces\XercesURIResolver.cpp">
+      <Filter>xerces</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\xqts\TestSuiteParser.cpp">
+      <Filter>xqts</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\xqts\TestSuiteResultListener.cpp">
+      <Filter>xqts</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\xqts\TestSuiteRunner.cpp">
+      <Filter>xqts</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\yajl\yajl.c">
+      <Filter>yajl</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\yajl\yajl_buf.c">
+      <Filter>yajl</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\yajl\yajl_encode.c">
+      <Filter>yajl</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\yajl\yajl_gen.c">
+      <Filter>yajl</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\yajl\yajl_lex.c">
+      <Filter>yajl</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\yajl\yajl_parser.c">
+      <Filter>yajl</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\xqc\XQillaXQCDynamicContext.cpp">
+      <Filter>xqc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\xqc\XQillaXQCExpression.cpp">
+      <Filter>xqc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\xqc\XQillaXQCImplementation.cpp">
+      <Filter>xqc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\xqc\XQillaXQCSequence.cpp">
+      <Filter>xqc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\xqc\XQillaXQCStaticContext.cpp">
+      <Filter>xqc</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>
