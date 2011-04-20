@@ -173,7 +173,7 @@
     </ClCompile>
     <Link>
       <AdditionalOptions>/machine:x86 %(AdditionalOptions)</AdditionalOptions>
-      <AdditionalDependencies>libdb48d.lib;xqilla24d.lib;xerces-c_3mgD.lib;zlibd.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(OutDir)libdbxml25d.dll</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <AdditionalLibraryDirectories>$(OutDir);../../db-4.8.26/build_windows/$(Configuration)32;../../xqilla/build/windows/vc8/$(Configuration)32;../../xerces-c-src/Build/$(Platform)/VC9/$(Configuration);../../../gd/lpng/projects/visualc8/Win32_LIB_Debug/ZLib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
@@ -305,7 +305,7 @@ installProj.bat libdbxml25 dll $(OutDir) release copyLib
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>libdb48.lib;xqilla24.lib;xerces-c_3mg.lib;zlib.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(OutDir)libdbxml25.dll</OutputFile>
       <AdditionalLibraryDirectories>$(OutDir);../../db-4.8.26/build_windows/$(Configuration)64;../../xqilla/build/windows/vc8/$(Configuration)64;../../xerces-c-src/Build/$(Platform)/VC9/$(Configuration);../../../gd/lpng/projects/visualc8/Win64_LIB_Release/ZLib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
