@@ -504,7 +504,7 @@
     </ClCompile>
     <Link>
       <AdditionalOptions>/machine:x64 %(AdditionalOptions)</AdditionalOptions>
-      <AdditionalDependencies>xerces-c_3mg.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(OutDir)xqilla24.dll</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <AdditionalLibraryDirectories>../../../xerces-c-src/Build/$(Platform)/VC9/$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
