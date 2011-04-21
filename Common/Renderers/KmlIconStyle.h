@@ -31,4 +31,4 @@ public:
     bool operator<(const KmlIconStyle& other) const;
 };
 
-#endif KML_ICONSTYLE_H
+#endif //KML_ICONSTYLE_H
