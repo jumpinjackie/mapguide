@@ -1,8 +1,8 @@
 #!/bin/bash
 TEMPDIR=/tmp/build_mapguide
-URL="http://download.osgeo.org/mapguide/releases/2.2.0/RC3/ubuntu9"
+URL="http://download.osgeo.org/mapguide/releases/2.2.0/Release/ubuntu9"
 FDOVER=3.5.0-5667_i386
-MGVER=2.2.0-5518_i386
+MGVER=2.2.0-5703_i386
 #MAESTROVER=2.0.0-4650_i386
 # Create temporary download directory
 mkdir -p ${TEMPDIR}
