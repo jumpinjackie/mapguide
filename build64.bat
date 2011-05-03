@@ -269,7 +269,7 @@ if "%TYPECOMPONENT%"=="doc" goto clean_doc
 echo [clean]: Clean Oem
 %MSBUILD_CLEAN% %MG_OEM%\Oem.sln
 echo [clean]: Clean Oem - CS-Map
-%MSBUILD_CLEAN% %MG_OEM%\CSMap\OpenSource.sln
+%MSBUILD_CLEAN% %MG_OEM%\CSMap\VC90\OpenSource.sln
 if not "%TYPECOMPONENT%"=="all" goto quit
 
 :clean_common
@@ -318,7 +318,7 @@ echo [build]: Building Oem
 if "%errorlevel%"=="1" goto error
 rem CsMap is not in Oem.sln, so we need to build that separately
 echo [build]: Building Oem - CSMap
-%MSBUILD% %MG_OEM%\CsMap\OpenSource.sln
+%MSBUILD% %MG_OEM%\CsMap\VC90\OpenSource.sln
 if "%errorlevel%"=="1" goto error
 if "%TYPECOMPONENT%"=="oem" 	goto quit
 if "%TYPECOMPONENT%"=="common" 	goto quit
