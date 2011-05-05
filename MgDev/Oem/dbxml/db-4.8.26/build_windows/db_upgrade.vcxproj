@@ -134,7 +134,7 @@
     </ClCompile>
     <Link>
       <AdditionalOptions>/machine:x86 %(AdditionalOptions)</AdditionalOptions>
-      <AdditionalDependencies>libdb48d.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(OutDir)db_upgrade.exe</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <AdditionalLibraryDirectories>$(OutDir);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
@@ -169,7 +169,7 @@
     </ClCompile>
     <Link>
       <AdditionalOptions>/machine:x64 %(AdditionalOptions)</AdditionalOptions>
-      <AdditionalDependencies>libdb48d.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(OutDir)db_upgrade.exe</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <AdditionalLibraryDirectories>$(OutDir);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
@@ -205,7 +205,7 @@
     </ClCompile>
     <Link>
       <AdditionalOptions>/machine:x86 %(AdditionalOptions)</AdditionalOptions>
-      <AdditionalDependencies>libdb48.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(OutDir)db_upgrade.exe</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <AdditionalLibraryDirectories>$(OutDir);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
@@ -241,7 +241,7 @@
     </ClCompile>
     <Link>
       <AdditionalOptions>/machine:x64 %(AdditionalOptions)</AdditionalOptions>
-      <AdditionalDependencies>libdb48.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(OutDir)db_upgrade.exe</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <AdditionalLibraryDirectories>$(OutDir);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
@@ -259,6 +259,10 @@
       <Project>{96c27024-6dee-45ed-bcc3-a731949131fa}</Project>
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\clib\getopt.c" />
+    <ClCompile Include="..\db_upgrade\db_upgrade.c" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
