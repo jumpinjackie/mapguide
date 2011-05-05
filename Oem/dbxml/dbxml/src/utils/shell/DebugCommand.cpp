@@ -16,6 +16,10 @@
 using namespace DbXml;
 using namespace std;
 
+#if defined(_MSC_VER) && (_MSC_VER >= 1300)
+	template class __declspec(dllexport) AutoReset<const XmlStackFrame *>;
+#endif
+
 string DbXml::DebugCommand::getCommandName() const
 {
 	return "debug";
@@ -94,9 +98,7 @@ public:
 	}
 
 private:
-#if defined(_MSC_VER) && (_MSC_VER >= 1300)
-	template class __declspec(dllexport) AutoReset<const XmlStackFrame *>;
-#endif
+
 
 	virtual void enter(const XmlStackFrame *stack)
 	{
