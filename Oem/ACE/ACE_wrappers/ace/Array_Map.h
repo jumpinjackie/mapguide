@@ -16,6 +16,7 @@
  */
 //=============================================================================
 
+#pragma once
 
 #ifndef ACE_ARRAY_MAP_H
 #define ACE_ARRAY_MAP_H

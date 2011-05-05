@@ -104,6 +104,13 @@ struct unicode_traits
     copy(char_type* __s1, const char_type* __s2, size_t __n)
     {  return static_cast<char_type*>(memcpy(__s1, __s2, __n*sizeof(char_type))); }
 
+    static size_t 
+    _Copy_s(char_type* __dest, size_t __dest_count, const char_type* _off, size_t _Count)
+    {
+        copy(__dest, _off, _Count);
+        return length(__dest);
+    }
+
     static char_type*
     assign(char_type* __s, size_t __n, char_type __a)
     {
