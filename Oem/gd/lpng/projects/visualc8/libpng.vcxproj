@@ -289,6 +289,24 @@
     <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='LIB Release|x64'">AllRules.ruleset</CodeAnalysisRuleSet>
     <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='LIB Release|x64'" />
     <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='LIB Release|x64'" />
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='LIB ASM Debug|Win32'">libpngd</TargetName>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='LIB ASM Debug|x64'">libpngd</TargetName>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='DLL ASM Debug|x64'">libpng13d</TargetName>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='DLL ASM Debug|Win32'">libpng13d</TargetName>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='DLL ASM Release|Win32'">libpng13</TargetName>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='DLL ASM Release|x64'">libpng13</TargetName>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='DLL Debug|x64'">libpng13d</TargetName>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='DLL Debug|Win32'">libpng13d</TargetName>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='DLL Release|x64'">libpng13</TargetName>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='DLL Release|Win32'">libpng13</TargetName>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='DLL VB|Win32'">libpng13vb</TargetName>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='DLL VB|x64'">libpng13vb</TargetName>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='LIB ASM Release|x64'">libpng</TargetName>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='LIB ASM Release|Win32'">libpng</TargetName>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='LIB Debug|Win32'">libpngd</TargetName>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='LIB Debug|x64'">libpngd</TargetName>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='LIB Release|x64'">libpng</TargetName>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='LIB Release|Win32'">libpng</TargetName>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='DLL Release|Win32'">
     <ClCompile>
