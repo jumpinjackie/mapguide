@@ -85,7 +85,7 @@
     <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">MgPlatformBased</TargetName>
     <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">MgPlatformBased</TargetName>
     <TargetName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">MgPlatformBase</TargetName>
-    <TargetName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">MgPlatformBased</TargetName>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">MgPlatformBase</TargetName>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>

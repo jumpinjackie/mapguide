@@ -85,7 +85,7 @@
     <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">MgMdfModeld</TargetName>
     <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">MgMdfModeld</TargetName>
     <TargetName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">MgMdfModel</TargetName>
-    <TargetName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">MgMdfModeld</TargetName>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">MgMdfModel</TargetName>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
