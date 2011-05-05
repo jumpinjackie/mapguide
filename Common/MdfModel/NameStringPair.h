@@ -22,6 +22,10 @@
 #include "MdfOwnerCollection.h"
 #include "MdfRootObject.h"
 
+// exporting of template classes for collections
+// suppresses MS specific (non-ANSI) code warning
+#pragma warning(disable: 4231)
+
 BEGIN_NAMESPACE_MDFMODEL
 
     //-------------------------------------------------------------------------

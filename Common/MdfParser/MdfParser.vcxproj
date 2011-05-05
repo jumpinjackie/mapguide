@@ -104,7 +104,7 @@
     <Link>
       <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(OutDir)MgMdfParserd.dll</OutputFile>
-      <AdditionalLibraryDirectories>..\..\Oem\dbxml\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <ProgramDatabaseFile>$(OutDir)MgMdfParserd.pdb</ProgramDatabaseFile>
       <SubSystem>Windows</SubSystem>
@@ -152,7 +152,7 @@
     <Link>
       <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(OutDir)MgMdfParser.dll</OutputFile>
-      <AdditionalLibraryDirectories>..\..\Oem\dbxml\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <ProgramDatabaseFile>$(OutDir)MgMdfParser.pdb</ProgramDatabaseFile>
       <SubSystem>Windows</SubSystem>
@@ -178,7 +178,7 @@
     <Link>
       <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(OutDir)MgMdfParser.dll</OutputFile>
-      <AdditionalLibraryDirectories>..\..\Oem\dbxml\lib64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <ProgramDatabaseFile>$(OutDir)MgMdfParser.pdb</ProgramDatabaseFile>
       <SubSystem>Windows</SubSystem>

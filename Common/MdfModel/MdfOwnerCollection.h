@@ -18,6 +18,9 @@
 #ifndef _MDFOWNERCOLLECTION_H_
 #define _MDFOWNERCOLLECTION_H_
 
+// ignore warning about needing to have dll-interface to be used by clients export
+#pragma warning(disable: 4251)
+
 BEGIN_NAMESPACE_MDFMODEL
 
     //---------------------------------------------------------------------
