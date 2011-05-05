@@ -81,6 +81,10 @@
     <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Release|x64'">AllRules.ruleset</CodeAnalysisRuleSet>
     <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Release|x64'" />
     <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Release|x64'" />
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">cppunitd</TargetName>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">cppunitd</TargetName>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">cppunit</TargetName>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">cppunit</TargetName>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -112,8 +116,8 @@
     <PostBuildEvent>
       <Message>Copying target to lib/</Message>
       <Command>if not exist ..\..\lib mkdir ..\..\lib
-copy "$(TargetPath)" ..\..\lib\"$(TargetName)".lib
-copy "$(TargetDir)""$(TargetName)".pdb ..\..\lib\"$(TargetName)".pdb
+xcopy /y "$(TargetDir)$(TargetName).lib" "..\..\lib\$(TargetName).lib"
+xcopy /y "$(TargetDir)$(TargetName).pdb" "..\..\lib\$(TargetName).pdb"
 </Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
@@ -149,9 +153,9 @@ copy "$(TargetDir)""$(TargetName)".pdb ..\..\lib\"$(TargetName)".pdb
     </Lib>
     <PostBuildEvent>
       <Message>Copying target to lib64/</Message>
-      <Command>if not exist ..\..\lib64 mkdir ..\..\lib64
-copy "$(TargetPath)" ..\..\lib64\"$(TargetName)".lib
-copy "$(TargetDir)""$(TargetName)".pdb ..\..\lib64\"$(TargetName)".pdb
+      <Command>if not exist ..\..\lib mkdir ..\..\lib
+xcopy /y "$(TargetDir)$(TargetName).lib" "..\..\lib\$(TargetName).lib"
+xcopy /y "$(TargetDir)$(TargetName).pdb" "..\..\lib\$(TargetName).pdb"
 </Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
@@ -186,7 +190,7 @@ copy "$(TargetDir)""$(TargetName)".pdb ..\..\lib64\"$(TargetName)".pdb
     <PostBuildEvent>
       <Message>Copying target to lib/</Message>
       <Command>if not exist ..\..\lib mkdir ..\..\lib
-copy "$(TargetPath)" ..\..\lib\"$(TargetName)".lib
+xcopy /y "$(TargetDir)$(TargetName).lib" "..\..\lib\$(TargetName).lib"
 </Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
@@ -223,8 +227,8 @@ copy "$(TargetPath)" ..\..\lib\"$(TargetName)".lib
     </Lib>
     <PostBuildEvent>
       <Message>Copying target to lib64/</Message>
-      <Command>if not exist ..\..\lib64 mkdir ..\..\lib64
-copy "$(TargetPath)" ..\..\lib64\"$(TargetName)".lib
+      <Command>if not exist ..\..\lib mkdir ..\..\lib
+xcopy /y "$(TargetDir)$(TargetName).lib" "..\..\lib\$(TargetName).lib"
 </Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
