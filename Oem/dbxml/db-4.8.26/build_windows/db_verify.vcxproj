@@ -271,8 +271,8 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\..\..\..\..\MgDev_bak\OS\Oem\dbxml\db-4.8.26\clib\getopt.c" />
-    <ClCompile Include="..\..\..\..\..\..\MgDev_bak\OS\Oem\dbxml\db-4.8.26\db_verify\db_verify.c" />
+    <ClCompile Include="..\clib\getopt.c" />
+    <ClCompile Include="..\db_verify\db_verify.c" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
