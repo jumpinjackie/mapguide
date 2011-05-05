@@ -102,7 +102,7 @@
     <Link>
       <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(OutDir)MgFoundationd.dll</OutputFile>
-      <AdditionalLibraryDirectories>..\..\Oem\ACE\ACE_wrappers\lib;..\..\Oem\dbxml\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <ProgramDatabaseFile>$(OutDir)MgFoundationd.pdb</ProgramDatabaseFile>
       <SubSystem>Windows</SubSystem>
@@ -128,7 +128,7 @@
     <Link>
       <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(OutDir)MgFoundationd.dll</OutputFile>
-      <AdditionalLibraryDirectories>..\..\Oem\ACE\ACE_wrappers\lib64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <ProgramDatabaseFile>$(OutDir)MgFoundationd.pdb</ProgramDatabaseFile>
       <SubSystem>Windows</SubSystem>
@@ -175,7 +175,7 @@
     <Link>
       <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(OutDir)MgFoundation.dll</OutputFile>
-      <AdditionalLibraryDirectories>..\..\Oem\ACE\ACE_wrappers\lib64;..\..\Oem\dbxml\lib64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <ProgramDatabaseFile>$(OutDir)MgFoundation.pdb</ProgramDatabaseFile>
       <SubSystem>Windows</SubSystem>

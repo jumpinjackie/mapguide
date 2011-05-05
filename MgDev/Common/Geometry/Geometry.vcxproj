@@ -99,9 +99,9 @@
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>ACEd.lib;GEOSd.lib;csmapd.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>csmapd.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(OutDir)MgGeometryd.dll</OutputFile>
-      <AdditionalLibraryDirectories>..\..\Oem\ACE\ACE_wrappers\lib;..\..\Oem\geos-2.2.0\VisualStudio\Debug;..\..\Oem\CsMap\lib100\Debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>..\..\Oem\CsMap\lib100\Debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Windows</SubSystem>
       <RandomizedBaseAddress>false</RandomizedBaseAddress>
@@ -124,9 +124,9 @@
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>ACEd.lib;GEOSd.lib;csmapd.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>csmapd.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(OutDir)MgGeometryd.dll</OutputFile>
-      <AdditionalLibraryDirectories>..\..\Oem\ACE\ACE_Wrappers\lib64;..\..\Oem\geos-2.2.0\VisualStudio\Debug64;..\..\Oem\CsMap\lib100\Debug64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>..\..\Oem\CsMap\lib100\Debug64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Windows</SubSystem>
       <ImportLibrary>..\lib\debug64\MgGeometryd.lib</ImportLibrary>
@@ -144,9 +144,9 @@
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>ACE.lib;GEOS.lib;csmap.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>csmap.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(OutDir)MgGeometry.dll</OutputFile>
-      <AdditionalLibraryDirectories>..\..\Oem\ACE\ACE_wrappers\lib;..\..\Oem\geos-2.2.0\VisualStudio\Release;..\..\Oem\CsMap\lib100\Release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>..\..\Oem\CsMap\lib100\Release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Windows</SubSystem>
       <OptimizeReferences>true</OptimizeReferences>
@@ -169,9 +169,9 @@
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>ACE.lib;GEOS.lib;csmap.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>csmap.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(OutDir)MgGeometry.dll</OutputFile>
-      <AdditionalLibraryDirectories>..\..\Oem\ACE\ACE_Wrappers\lib64;..\..\Oem\geos-2.2.0\VisualStudio\Release64;..\..\Oem\CsMap\lib100\Release64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>..\..\Oem\CsMap\lib100\Release64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Windows</SubSystem>
       <OptimizeReferences>true</OptimizeReferences>
@@ -1075,6 +1075,9 @@
     <ResourceCompile Include="Geometry.rc" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\Oem\ACE\ACE_wrappers\ace\ACE.vcxproj">
+      <Project>{bd537c9a-feca-1bad-6757-8a6363336a1c}</Project>
+    </ProjectReference>
     <ProjectReference Include="..\..\Oem\geos-2.2.0\VisualStudio\GEOS.vcxproj">
       <Project>{1b9196bf-c194-47bc-846a-d9bbb134f2b3}</Project>
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>

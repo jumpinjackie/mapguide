@@ -181,16 +181,16 @@
     <OutDir Condition="'$(Configuration)|$(Platform)'=='ICU Release|x64'">.\..\..\..\..\..\Build\Win64\VC10\$(Configuration)\</OutDir>
     <IntDir Condition="'$(Configuration)|$(Platform)'=='ICU Release|x64'">$(OutDir)obj\$(ProjectName)\</IntDir>
     <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='ICU Release|x64'">false</LinkIncremental>
-    <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">xerces-c_3_1D</TargetName>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">xerces-c_3_1mgD</TargetName>
     <TargetName Condition="'$(Configuration)|$(Platform)'=='ICU Debug|Win32'">xerces-c_3_1D</TargetName>
     <TargetName Condition="'$(Configuration)|$(Platform)'=='ICU Release|Win32'">xerces-c_3_1</TargetName>
-    <TargetName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">xerces-c_3_1</TargetName>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">xerces-c_3_1mg</TargetName>
     <TargetName Condition="'$(Configuration)|$(Platform)'=='Static Debug|Win32'">xerces-c_static_3D</TargetName>
     <TargetName Condition="'$(Configuration)|$(Platform)'=='Static Release|Win32'">xerces-c_static_3</TargetName>
-    <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">xerces-c_3_1D</TargetName>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">xerces-c_3_1mgD</TargetName>
     <TargetName Condition="'$(Configuration)|$(Platform)'=='ICU Debug|x64'">xerces-c_3_1D</TargetName>
     <TargetName Condition="'$(Configuration)|$(Platform)'=='ICU Release|x64'">xerces-c_3_1</TargetName>
-    <TargetName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">xerces-c_3_1</TargetName>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">xerces-c_3_1mg</TargetName>
     <TargetName Condition="'$(Configuration)|$(Platform)'=='Static Debug|x64'">xerces-c_static_3D</TargetName>
     <TargetName Condition="'$(Configuration)|$(Platform)'=='Static Release|x64'">xerces-c_static_3</TargetName>
   </PropertyGroup>
@@ -225,7 +225,7 @@
     <Link>
       <AdditionalOptions>%(AdditionalOptions)</AdditionalOptions>
       <AdditionalDependencies>ws2_32.lib;advapi32.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <OutputFile>$(TargetPath)</OutputFile>
+      <OutputFile>$(OutDir)\xerces-c_3_1mg.dll</OutputFile>
       <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <ProgramDatabaseFile>$(OutDir)xerces-c_3_1.fullpdb</ProgramDatabaseFile>
@@ -239,7 +239,7 @@
       <RandomizedBaseAddress>false</RandomizedBaseAddress>
       <DataExecutionPrevention>
       </DataExecutionPrevention>
-      <ImportLibrary>$(OutDir)xerces-c_3.lib</ImportLibrary>
+      <ImportLibrary>$(OutDir)\xerces-c_3mg.lib</ImportLibrary>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -271,7 +271,7 @@
     </ResourceCompile>
     <Link>
       <AdditionalDependencies>ws2_32.lib;advapi32.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <OutputFile>$(TargetPath)</OutputFile>
+      <OutputFile>$(OutDir)\xerces-c_3_1mg.dll</OutputFile>
       <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <ProgramDatabaseFile>$(OutDir)xerces-c_3_1.fullpdb</ProgramDatabaseFile>
@@ -285,7 +285,7 @@
       <RandomizedBaseAddress>false</RandomizedBaseAddress>
       <DataExecutionPrevention>
       </DataExecutionPrevention>
-      <ImportLibrary>$(OutDir)xerces-c_3.lib</ImportLibrary>
+      <ImportLibrary>$(OutDir)\xerces-c_3mg.lib</ImportLibrary>
       <TargetMachine>MachineX64</TargetMachine>
     </Link>
   </ItemDefinitionGroup>
@@ -318,7 +318,7 @@
     <Link>
       <AdditionalOptions>%(AdditionalOptions)</AdditionalOptions>
       <AdditionalDependencies>ws2_32.lib;advapi32.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <OutputFile>$(TargetPath)</OutputFile>
+      <OutputFile>$(OutDir)\xerces-c_3_1mgD.dll</OutputFile>
       <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <ProgramDatabaseFile>$(OutDir)xerces-c_3_1D.pdb</ProgramDatabaseFile>
@@ -328,7 +328,7 @@
       <RandomizedBaseAddress>false</RandomizedBaseAddress>
       <DataExecutionPrevention>
       </DataExecutionPrevention>
-      <ImportLibrary>$(OutDir)xerces-c_3D.lib</ImportLibrary>
+      <ImportLibrary>$(OutDir)\xerces-c_3mgD.lib</ImportLibrary>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -358,7 +358,7 @@
     </ResourceCompile>
     <Link>
       <AdditionalDependencies>ws2_32.lib;advapi32.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <OutputFile>$(TargetPath)</OutputFile>
+      <OutputFile>$(OutDir)\xerces-c_3_1mgD.dll</OutputFile>
       <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <ProgramDatabaseFile>$(OutDir)xerces-c_3_1D.pdb</ProgramDatabaseFile>
@@ -368,7 +368,7 @@
       <RandomizedBaseAddress>false</RandomizedBaseAddress>
       <DataExecutionPrevention>
       </DataExecutionPrevention>
-      <ImportLibrary>$(OutDir)xerces-c_3D.lib</ImportLibrary>
+      <ImportLibrary>$(OutDir)\xerces-c_3mgD.lib</ImportLibrary>
       <TargetMachine>MachineX64</TargetMachine>
     </Link>
   </ItemDefinitionGroup>
