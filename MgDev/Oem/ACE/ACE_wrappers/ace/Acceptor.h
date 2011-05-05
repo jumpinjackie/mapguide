@@ -10,6 +10,8 @@
  */
 //=============================================================================
 
+#pragma once
+
 #ifndef ACE_ACCEPTOR_H
 #define ACE_ACCEPTOR_H
 
