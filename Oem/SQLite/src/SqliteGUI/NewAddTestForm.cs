@@ -757,7 +757,7 @@ namespace SqliteGUI
         //Validates parameters before storing them in the database
         //Silent validation is done when the form is closing. If the parameters are valid they will be
         //stored else changes will be lost
-        private bool Validate(bool silentValidation)
+        private new bool Validate(bool silentValidation)
         {
             bool valid = true;
 
