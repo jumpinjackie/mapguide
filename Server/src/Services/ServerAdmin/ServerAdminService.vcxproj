@@ -456,6 +456,10 @@
     <ResourceCompile Include="ServerAdminService.rc" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\..\..\..\Server\src\Common\Manager\ServerManager.vcxproj">
+      <Project>{adbf25e2-c629-4832-b315-f12abde05632}</Project>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+    </ProjectReference>
     <ProjectReference Include="..\..\..\..\Common\Foundation\Foundation.vcxproj">
       <Project>{a82adc7d-4da4-42f2-9bf6-df5dcfb44425}</Project>
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
