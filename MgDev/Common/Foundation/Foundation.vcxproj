@@ -908,6 +908,10 @@
     <ResourceCompile Include="Foundation.rc" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\..\Server\src\PreBuild\PreBuild_Mentor.vcxproj">
+      <Project>{a621c011-61bf-43a8-9d80-bc35858ddcfa}</Project>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+    </ProjectReference>
     <ProjectReference Include="..\..\Oem\ACE\ACE_wrappers\ace\ACE.vcxproj">
       <Project>{bd537c9a-feca-1bad-6757-8a6363336a1c}</Project>
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
