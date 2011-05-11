@@ -1,0 +1,97 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Ops">
+      <UniqueIdentifier>{5bf7b79c-c3ce-4240-a167-c4a8f900e8cc}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="MappingOperation.cpp">
+      <Filter>Ops</Filter>
+    </ClCompile>
+    <ClCompile Include="MappingOperationFactory.cpp">
+      <Filter>Ops</Filter>
+    </ClCompile>
+    <ClCompile Include="OpGenerateLegendImage.cpp">
+      <Filter>Ops</Filter>
+    </ClCompile>
+    <ClCompile Include="OpGenerateLegendPlot.cpp">
+      <Filter>Ops</Filter>
+    </ClCompile>
+    <ClCompile Include="OpGenerateMap.cpp">
+      <Filter>Ops</Filter>
+    </ClCompile>
+    <ClCompile Include="OpGenerateMapUpdate.cpp">
+      <Filter>Ops</Filter>
+    </ClCompile>
+    <ClCompile Include="OpGenerateMultiPlot.cpp">
+      <Filter>Ops</Filter>
+    </ClCompile>
+    <ClCompile Include="OpGeneratePlot.cpp">
+      <Filter>Ops</Filter>
+    </ClCompile>
+    <ClCompile Include="OpQueryFeatures.cpp">
+      <Filter>Ops</Filter>
+    </ClCompile>
+    <ClCompile Include="OpQueryFeaturesWms.cpp">
+      <Filter>Ops</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Common\Dll.cpp" />
+    <ClCompile Include="LegendPlotUtil.cpp" />
+    <ClCompile Include="MappingServiceHandler.cpp" />
+    <ClCompile Include="MappingUtil.cpp" />
+    <ClCompile Include="RSMgFeatureReader.cpp" />
+    <ClCompile Include="RSMgRaster.cpp" />
+    <ClCompile Include="RSMgSymbolManager.cpp" />
+    <ClCompile Include="SEMgSymbolManager.cpp" />
+    <ClCompile Include="ServerMappingService.cpp" />
+    <ClCompile Include="ServerMappingServiceBuild.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="MappingOperation.h">
+      <Filter>Ops</Filter>
+    </ClInclude>
+    <ClInclude Include="MappingOperationFactory.h">
+      <Filter>Ops</Filter>
+    </ClInclude>
+    <ClInclude Include="OpGenerateLegendImage.h">
+      <Filter>Ops</Filter>
+    </ClInclude>
+    <ClInclude Include="OpGenerateLegendPlot.h">
+      <Filter>Ops</Filter>
+    </ClInclude>
+    <ClInclude Include="OpGenerateMap.h">
+      <Filter>Ops</Filter>
+    </ClInclude>
+    <ClInclude Include="OpGenerateMapUpdate.h">
+      <Filter>Ops</Filter>
+    </ClInclude>
+    <ClInclude Include="OpGenerateMultiPlot.h">
+      <Filter>Ops</Filter>
+    </ClInclude>
+    <ClInclude Include="OpGeneratePlot.h">
+      <Filter>Ops</Filter>
+    </ClInclude>
+    <ClInclude Include="OpQueryFeatures.h">
+      <Filter>Ops</Filter>
+    </ClInclude>
+    <ClInclude Include="OpQueryFeaturesWms.h">
+      <Filter>Ops</Filter>
+    </ClInclude>
+    <ClInclude Include="icons.h" />
+    <ClInclude Include="LegendPlotUtil.h" />
+    <ClInclude Include="MappingServiceHandler.h" />
+    <ClInclude Include="MappingUtil.h" />
+    <ClInclude Include="RSMgFeatureReader.h" />
+    <ClInclude Include="RSMgInputStream.h" />
+    <ClInclude Include="RSMgRaster.h" />
+    <ClInclude Include="RSMgSymbolManager.h" />
+    <ClInclude Include="SEMgSymbolManager.h" />
+    <ClInclude Include="ServerMappingDllExport.h" />
+    <ClInclude Include="ServerMappingService.h" />
+    <ClInclude Include="ServerMappingServiceDefs.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="ServerMappingService.rc" />
+  </ItemGroup>
+</Project>

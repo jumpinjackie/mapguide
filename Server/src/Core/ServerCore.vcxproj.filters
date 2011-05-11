@@ -1,0 +1,106 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="TimedEventHandlers">
+      <UniqueIdentifier>{73580568-ac7b-4016-8439-2059bd65dc97}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="ConnectionTimeoutEventHandler.cpp">
+      <Filter>TimedEventHandlers</Filter>
+    </ClCompile>
+    <ClCompile Include="DataConnectionTimeoutEventHandler.cpp">
+      <Filter>TimedEventHandlers</Filter>
+    </ClCompile>
+    <ClCompile Include="DataTransactionTimeoutEventHandler.cpp">
+      <Filter>TimedEventHandlers</Filter>
+    </ClCompile>
+    <ClCompile Include="EventTimer.cpp">
+      <Filter>TimedEventHandlers</Filter>
+    </ClCompile>
+    <ClCompile Include="EventTimerManager.cpp">
+      <Filter>TimedEventHandlers</Filter>
+    </ClCompile>
+    <ClCompile Include="FeatureServiceCacheTimeLimitEventHandler.cpp">
+      <Filter>TimedEventHandlers</Filter>
+    </ClCompile>
+    <ClCompile Include="PerformanceLoggingEventHandler.cpp">
+      <Filter>TimedEventHandlers</Filter>
+    </ClCompile>
+    <ClCompile Include="RepositoryCheckpointEventHandler.cpp">
+      <Filter>TimedEventHandlers</Filter>
+    </ClCompile>
+    <ClCompile Include="ResourceChangeEventHandler.cpp">
+      <Filter>TimedEventHandlers</Filter>
+    </ClCompile>
+    <ClCompile Include="ServiceRegistrationEventHandler.cpp">
+      <Filter>TimedEventHandlers</Filter>
+    </ClCompile>
+    <ClCompile Include="SessionTimeoutEventHandler.cpp">
+      <Filter>TimedEventHandlers</Filter>
+    </ClCompile>
+    <ClCompile Include="TimedEvent.cpp">
+      <Filter>TimedEventHandlers</Filter>
+    </ClCompile>
+    <ClCompile Include="TimedEventHandler.cpp">
+      <Filter>TimedEventHandlers</Filter>
+    </ClCompile>
+    <ClCompile Include="ClientAcceptor.cpp" />
+    <ClCompile Include="main.cpp" />
+    <ClCompile Include="OperationThread.cpp" />
+    <ClCompile Include="Server.cpp" />
+    <ClCompile Include="ServerCoreBuild.cpp" />
+    <ClCompile Include="ServerFactory.cpp" />
+    <ClCompile Include="ServiceHandlerFactory.cpp" />
+    <ClCompile Include="SignalHandler.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="ConnectionTimeoutEventHandler.h">
+      <Filter>TimedEventHandlers</Filter>
+    </ClInclude>
+    <ClInclude Include="DataConnectionTimeoutEventHandler.h">
+      <Filter>TimedEventHandlers</Filter>
+    </ClInclude>
+    <ClInclude Include="DataTransactionTimeoutEventHandler.h">
+      <Filter>TimedEventHandlers</Filter>
+    </ClInclude>
+    <ClInclude Include="EventTimer.h">
+      <Filter>TimedEventHandlers</Filter>
+    </ClInclude>
+    <ClInclude Include="EventTimerManager.h">
+      <Filter>TimedEventHandlers</Filter>
+    </ClInclude>
+    <ClInclude Include="FeatureServiceCacheTimeLimitEventHandler.h">
+      <Filter>TimedEventHandlers</Filter>
+    </ClInclude>
+    <ClInclude Include="PerformanceLoggingEventHandler.h">
+      <Filter>TimedEventHandlers</Filter>
+    </ClInclude>
+    <ClInclude Include="RepositoryCheckpointEventHandler.h">
+      <Filter>TimedEventHandlers</Filter>
+    </ClInclude>
+    <ClInclude Include="ResourceChangeEventHandler.h">
+      <Filter>TimedEventHandlers</Filter>
+    </ClInclude>
+    <ClInclude Include="ServiceRegistrationEventHandler.h">
+      <Filter>TimedEventHandlers</Filter>
+    </ClInclude>
+    <ClInclude Include="SessionTimeoutEventHandler.h">
+      <Filter>TimedEventHandlers</Filter>
+    </ClInclude>
+    <ClInclude Include="TimedEvent.h">
+      <Filter>TimedEventHandlers</Filter>
+    </ClInclude>
+    <ClInclude Include="TimedEventHandler.h">
+      <Filter>TimedEventHandlers</Filter>
+    </ClInclude>
+    <ClInclude Include="ClientAcceptor.h" />
+    <ClInclude Include="OperationThread.h" />
+    <ClInclude Include="Server.h" />
+    <ClInclude Include="ServiceHandlerFactory.h" />
+    <ClInclude Include="SignalHandler.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="ServerCore.rc" />
+  </ItemGroup>
+</Project>
