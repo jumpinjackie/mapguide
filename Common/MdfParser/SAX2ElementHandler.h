@@ -29,6 +29,9 @@ using namespace XERCES_CPP_NAMESPACE;
 using namespace MDFMODEL_NAMESPACE;
 using namespace MDFPARSER_NAMESPACE;
 
+// ignore warning about needing to have dll-interface to be used by clients export
+#pragma warning(disable: 4251)
+
 BEGIN_NAMESPACE_MDFPARSER
 
 // SAX2ElementHandler is the custom interface that all the IO classes
