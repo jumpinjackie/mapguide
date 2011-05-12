@@ -576,7 +576,7 @@ STRING MgUtil::EncodeXss(CREFSTRING str)
 /// \brief
 /// Replace an existing text pattern with a new text pattern in a string.
 ///
-STRING MgUtil::ReplaceString(CREFSTRING str, const wchar_t* oldValue, const wchar_t* newValue)
+STRING MgUtil::ReplaceString(STRING str, const wchar_t* oldValue, const wchar_t* newValue)
 {
     if (NULL == oldValue || NULL == newValue)
     {
@@ -584,7 +584,7 @@ STRING MgUtil::ReplaceString(CREFSTRING str, const wchar_t* oldValue, const wcha
             __LINE__, __WFILE__, NULL, L"", NULL);
     }
 
-    STRING newStr = str;
+    STRING newStr = str.c_str();
 
     ReplaceString(oldValue, newValue, newStr, -1);
 
