@@ -207,7 +207,7 @@ double MgConnection::GetConnectionTime() const
 
 void MgConnection::SetClientAgent(CREFSTRING agent)
 {
-    m_clientAgent = agent;
+    m_clientAgent = agent.c_str();
 }
 
 void MgConnection::SetClientIp(CREFSTRING ip)
@@ -216,19 +216,19 @@ void MgConnection::SetClientIp(CREFSTRING ip)
     // Note that MgIpUtil::ValidateAddress is not used here because
     // an IP look up will affect peformance.
     MgUtil::CheckXss(ip);
-    m_clientIp = ip;
+    m_clientIp = ip.c_str();
 }
 
 void MgConnection::SetUserName(CREFSTRING user)
 {
     MgUtil::CheckXss(user);
-    m_userName = user;
+    m_userName = user.c_str();
 }
 
 void MgConnection::SetSessionId(CREFSTRING sessionId)
 {
     MgUtil::CheckXss(sessionId);
-    m_sessionId = sessionId;
+    m_sessionId = sessionId.c_str();
 }
 
 ///////////////////////////////////////////////////////////////////////////////

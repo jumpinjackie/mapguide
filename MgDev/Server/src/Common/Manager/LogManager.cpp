@@ -345,7 +345,7 @@ STRING MgLogManager::ValidateLogFileName(CREFSTRING filename)
             __LINE__, __WFILE__, &arguments, L"MgStringContainsReservedCharacters", &whyArguments);
     }
 
-    return filename;
+    return (STRING)filename.c_str();
 }
 
 void MgLogManager::SetAccessLogInfo(bool bEnabled, CREFSTRING filename, CREFSTRING parameters)
@@ -395,7 +395,7 @@ STRING MgLogManager::GetAccessLogFileName()
 {
     ACE_MT (ACE_GUARD_RETURN (ACE_Recursive_Thread_Mutex, ace_mon, m_mutex, STRING(L"")));
 
-    return m_AccessLogFileName;
+    return (STRING)m_AccessLogFileName.c_str();
 }
 
 void MgLogManager::SetAccessLogFileName(CREFSTRING filename)
@@ -411,7 +411,7 @@ STRING MgLogManager::GetAccessLogParameters()
 {
     ACE_MT (ACE_GUARD_RETURN (ACE_Recursive_Thread_Mutex, ace_mon, m_mutex, STRING(L"")));
 
-    return m_AccessLogParameters;
+    return (STRING)m_AccessLogParameters.c_str();
 }
 
 void MgLogManager::SetAccessLogParameters(CREFSTRING parameters)
@@ -424,7 +424,7 @@ void MgLogManager::SetAccessLogParameters(CREFSTRING parameters)
     {
         ArchiveLog(mltAccess);
     }
-    m_AccessLogParameters = parameters;
+    m_AccessLogParameters = parameters.c_str();
 
     MG_LOGMANAGER_CATCH_AND_THROW(L"MgLogManager.SetAccessLogParameters")
 }
@@ -566,7 +566,7 @@ STRING MgLogManager::GetAdminLogFileName()
 {
     ACE_MT (ACE_GUARD_RETURN (ACE_Recursive_Thread_Mutex, ace_mon, m_mutex, STRING(L"")));
 
-    return m_AdminLogFileName;
+    return (STRING)m_AdminLogFileName.c_str();
 }
 
 void MgLogManager::SetAdminLogFileName(CREFSTRING filename)
@@ -582,7 +582,7 @@ STRING MgLogManager::GetAdminLogParameters()
 {
     ACE_MT (ACE_GUARD_RETURN (ACE_Recursive_Thread_Mutex, ace_mon, m_mutex, STRING(L"")));
 
-    return m_AdminLogParameters;
+    return (STRING)m_AdminLogParameters.c_str();
 }
 
 void MgLogManager::SetAdminLogParameters(CREFSTRING parameters)
@@ -595,7 +595,7 @@ void MgLogManager::SetAdminLogParameters(CREFSTRING parameters)
     {
         ArchiveLog(mltAdmin);
     }
-    m_AdminLogParameters = parameters;
+    m_AdminLogParameters = parameters.c_str();
 
     MG_LOGMANAGER_CATCH_AND_THROW(L"MgLogManager.SetAdminLogParameters")
 }
@@ -737,7 +737,7 @@ STRING MgLogManager::GetAuthenticationLogFileName()
 {
     ACE_MT (ACE_GUARD_RETURN (ACE_Recursive_Thread_Mutex, ace_mon, m_mutex, STRING(L"")));
 
-    return m_AuthenticationLogFileName;
+    return (STRING)m_AuthenticationLogFileName.c_str();
 }
 
 void MgLogManager::SetAuthenticationLogFileName(CREFSTRING filename)
@@ -753,7 +753,7 @@ STRING MgLogManager::GetAuthenticationLogParameters()
 {
     ACE_MT (ACE_GUARD_RETURN (ACE_Recursive_Thread_Mutex, ace_mon, m_mutex, STRING(L"")));
 
-    return m_AuthenticationLogParameters;
+    return (STRING)m_AuthenticationLogParameters.c_str();
 }
 
 void MgLogManager::SetAuthenticationLogParameters(CREFSTRING parameters)
@@ -766,7 +766,7 @@ void MgLogManager::SetAuthenticationLogParameters(CREFSTRING parameters)
     {
         ArchiveLog(mltAuthentication);
     }
-    m_AuthenticationLogParameters = parameters;
+    m_AuthenticationLogParameters = parameters.c_str();
 
     MG_LOGMANAGER_CATCH_AND_THROW(L"MgLogManager.SetAuthenticationLogParameters")
 }
@@ -909,7 +909,7 @@ STRING MgLogManager::GetErrorLogFileName()
 {
     ACE_MT (ACE_GUARD_RETURN (ACE_Recursive_Thread_Mutex, ace_mon, m_mutex, STRING(L"")));
 
-    return m_ErrorLogFileName;
+    return (STRING)m_ErrorLogFileName.c_str();
 }
 
 void MgLogManager::SetErrorLogFileName(CREFSTRING filename)
@@ -925,7 +925,7 @@ STRING MgLogManager::GetErrorLogParameters()
 {
     ACE_MT (ACE_GUARD_RETURN (ACE_Recursive_Thread_Mutex, ace_mon, m_mutex, STRING(L"")));
 
-    return m_ErrorLogParameters;
+    return (STRING)m_ErrorLogParameters.c_str();
 }
 
 void MgLogManager::SetErrorLogParameters(CREFSTRING parameters)
@@ -938,7 +938,7 @@ void MgLogManager::SetErrorLogParameters(CREFSTRING parameters)
     {
         ArchiveLog(mltError);
     }
-    m_ErrorLogParameters = parameters;
+    m_ErrorLogParameters = parameters.c_str();
 
     MG_LOGMANAGER_CATCH_AND_THROW(L"MgLogManager.SetErrorLogParameters")
 }
@@ -1080,7 +1080,7 @@ STRING MgLogManager::GetPerformanceLogFileName()
 {
     ACE_MT (ACE_GUARD_RETURN (ACE_Recursive_Thread_Mutex, ace_mon, m_mutex, STRING(L"")));
 
-    return m_PerformanceLogFileName;
+    return (STRING)m_PerformanceLogFileName.c_str();
 }
 
 void MgLogManager::SetPerformanceLogFileName(CREFSTRING filename)
@@ -1096,7 +1096,7 @@ STRING MgLogManager::GetPerformanceLogParameters()
 {
     ACE_MT (ACE_GUARD_RETURN (ACE_Recursive_Thread_Mutex, ace_mon, m_mutex, STRING(L"")));
 
-    return m_PerformanceLogParameters;
+    return (STRING)m_PerformanceLogParameters.c_str();
 }
 
 void MgLogManager::SetPerformanceLogParameters(CREFSTRING parameters)
@@ -1109,7 +1109,7 @@ void MgLogManager::SetPerformanceLogParameters(CREFSTRING parameters)
     {
         ArchiveLog(mltPerformance);
     }
-    m_PerformanceLogParameters = parameters;
+    m_PerformanceLogParameters = parameters.c_str();
 
     MG_LOGMANAGER_CATCH_AND_THROW(L"MgLogManager.SetPerformanceLogParameters")
 }
@@ -1251,7 +1251,7 @@ STRING MgLogManager::GetSessionLogFileName()
 {
     ACE_MT (ACE_GUARD_RETURN (ACE_Recursive_Thread_Mutex, ace_mon, m_mutex, STRING(L"")));
 
-    return m_SessionLogFileName;
+    return (STRING)m_SessionLogFileName.c_str();
 }
 
 void MgLogManager::SetSessionLogFileName(CREFSTRING filename)
@@ -1267,7 +1267,7 @@ STRING MgLogManager::GetSessionLogParameters()
 {
     ACE_MT (ACE_GUARD_RETURN (ACE_Recursive_Thread_Mutex, ace_mon, m_mutex, STRING(L"")));
 
-    return m_SessionLogParameters;
+    return (STRING)m_SessionLogParameters.c_str();
 }
 
 void MgLogManager::SetSessionLogParameters(CREFSTRING parameters)
@@ -1280,7 +1280,7 @@ void MgLogManager::SetSessionLogParameters(CREFSTRING parameters)
     {
         ArchiveLog(mltSession);
     }
-    m_SessionLogParameters = parameters;
+    m_SessionLogParameters = parameters.c_str();
 
     MG_LOGMANAGER_CATCH_AND_THROW(L"MgLogManager.SetSessionLogParameters")
 }
@@ -1422,7 +1422,7 @@ STRING MgLogManager::GetTraceLogFileName()
 {
     ACE_MT (ACE_GUARD_RETURN (ACE_Recursive_Thread_Mutex, ace_mon, m_mutex, STRING(L"")));
 
-    return m_TraceLogFileName;
+    return (STRING)m_TraceLogFileName.c_str();
 }
 
 void MgLogManager::SetTraceLogFileName(CREFSTRING filename)
@@ -1438,7 +1438,7 @@ STRING MgLogManager::GetTraceLogParameters()
 {
     ACE_MT (ACE_GUARD_RETURN (ACE_Recursive_Thread_Mutex, ace_mon, m_mutex, STRING(L"")));
 
-    return m_TraceLogParameters;
+    return(STRING) m_TraceLogParameters.c_str();
 }
 
 void MgLogManager::SetTraceLogParameters(CREFSTRING parameters)
@@ -1451,7 +1451,7 @@ void MgLogManager::SetTraceLogParameters(CREFSTRING parameters)
     {
         ArchiveLog(mltTrace);
     }
-    m_TraceLogParameters = parameters;
+    m_TraceLogParameters = parameters.c_str();
 
     MG_LOGMANAGER_CATCH_AND_THROW(L"MgLogManager.SetTraceLogParameters")
 }
@@ -2359,7 +2359,7 @@ void MgLogManager::DeleteLog(CREFSTRING fileName)
         DisableLog(logType);
     }
 
-    MgFileUtil::DeleteFile(m_path+fileName);
+    MgFileUtil::DeleteFile((STRING)m_path.c_str()+(STRING)fileName.c_str());
 
     if(bInUse)
     {
@@ -3250,12 +3250,12 @@ STRING MgLogManager::BuildFileName(CREFSTRING filename)
 
     newFilename = RemoveArchiveFrequencySpecifier(newFilename);
 
-    return (m_path + newFilename);
+    return ((STRING)m_path.c_str() + (STRING)newFilename.c_str());
 }
 
 STRING MgLogManager::BuildFileNameFromDateTime(CREFSTRING filename, MgDateTime* date)
 {
-    STRING newFilename = filename;
+    STRING newFilename = filename.c_str();
     STRING replacer;
     wchar_t buff[3];
 
@@ -3302,7 +3302,7 @@ STRING MgLogManager::BuildFileNameFromDateTime(CREFSTRING filename, MgDateTime* 
     }
     newFilename = MgUtil::ReplaceString(newFilename, L"%d", replacer.c_str());
 
-    return (m_path + newFilename);
+    return ((STRING)m_path.c_str() + (STRING)newFilename.c_str());
 }
 
 bool MgLogManager::IsMoreThan24HourDiff(MgDateTime* fromDate, MgDateTime* toDate)
@@ -3546,19 +3546,19 @@ void MgLogManager::AddInt32(REFSTRING entry, INT32 value)
 void MgLogManager::AddString(REFSTRING entry, CREFSTRING value)
 {
     AddDelimiter(entry);
-    entry += value;
+    entry += value.c_str();
 }
 
 void MgLogManager::AddClient(REFSTRING entry, CREFSTRING client)
 {
     AddDelimiter(entry);
-    entry += client;
+    entry += client.c_str();
 }
 
 void MgLogManager::AddClientIp(REFSTRING entry, CREFSTRING clientIp)
 {
     AddDelimiter(entry);
-    entry += clientIp;
+    entry += clientIp.c_str();
 }
 
 void MgLogManager::AddError(REFSTRING entry, CREFSTRING error, CREFSTRING type)
@@ -3637,7 +3637,7 @@ void MgLogManager::AddStackTrace(REFSTRING entry, CREFSTRING stackTrace)
 void MgLogManager::AddInfo(REFSTRING entry, CREFSTRING info)
 {
     AddDelimiter(entry);
-    entry += info;
+    entry += info.c_str();
 }
 
 void MgLogManager::AddOpId(REFSTRING entry, CREFSTRING opId)
@@ -3659,7 +3659,7 @@ void MgLogManager::AddThreadId(REFSTRING entry)
 void MgLogManager::AddUserName(REFSTRING entry, CREFSTRING userName)
 {
     AddDelimiter(entry);
-    entry += userName;
+    entry += userName.c_str();
 }
 
 bool MgLogManager::IsMaxSizeExceeded(CREFSTRING logFileName)

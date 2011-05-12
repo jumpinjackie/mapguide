@@ -411,7 +411,7 @@ INTERNAL_API:
     /// \return
     /// Modified string
     ///
-    static STRING ReplaceString(CREFSTRING str, const wchar_t* oldValue, const wchar_t* newValue);
+    static STRING ReplaceString(STRING str, const wchar_t* oldValue, const wchar_t* newValue);
 
     ///////////////////////////////////////////////////////////////////////////
     /// \brief
