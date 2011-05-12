@@ -42,12 +42,23 @@ MgDbEnvironment::MgDbEnvironment(CREFSTRING repositoryType, const string& home,
     m_dbEnv.set_error_stream(&std::cerr);
 #endif
 
-    m_dbEnv.set_cachesize(0, MG_CACHE_SIZE, 1);
-    m_dbEnv.set_lg_bsize(MG_LOG_BUF_SIZE);
+    // Set the cache size based on the repository type
+    if(MgRepositoryType::Session == repositoryType)
+    {
+        // Session repository
+        m_dbEnv.set_cachesize(0, MG_SESSION_CACHE_SIZE, 1);
+        m_dbEnv.set_lg_bsize(MG_SESSION_LOG_BUF_SIZE);
+    }
+    else
+    {
+        // Library repository
+        m_dbEnv.set_cachesize(0, MG_LIBRARY_CACHE_SIZE, 1);
+        m_dbEnv.set_lg_bsize(MG_LIBRARY_LOG_BUF_SIZE);
+    }
+
     m_dbEnv.set_timeout(MG_DB_ENV_TIMEOUT, DB_SET_LOCK_TIMEOUT);
     m_dbEnv.set_timeout(MG_DB_ENV_TIMEOUT, DB_SET_TXN_TIMEOUT);
     m_dbEnv.set_tx_max(MG_MAX_TRANSACTIONS);
-    m_dbEnv.set_tx_max(40); // Set maximum number of allowed transactions. Default is 20
 
     u_int32_t containerFlags = DB_CREATE|DB_THREAD|DBXML_NO_INDEX_NODES;
     u_int32_t environmentFlags = DB_CREATE|DB_THREAD|DB_INIT_MPOOL;
