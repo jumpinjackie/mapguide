@@ -116,9 +116,8 @@
     <PostBuildEvent>
       <Message>Copying target to lib/</Message>
       <Command>if not exist ..\..\lib mkdir ..\..\lib
-xcopy /y "$(TargetDir)$(TargetName).lib" "..\..\lib\$(TargetName).lib"
-xcopy /y "$(TargetDir)$(TargetName).pdb" "..\..\lib\$(TargetName).pdb"
-</Command>
+copy "$(TargetPath)" ..\..\lib\"$(TargetName)".lib
+copy "$(TargetDir)""$(TargetName)".pdb ..\..\lib\"$(TargetName)".pdb</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -154,8 +153,8 @@ xcopy /y "$(TargetDir)$(TargetName).pdb" "..\..\lib\$(TargetName).pdb"
     <PostBuildEvent>
       <Message>Copying target to lib64/</Message>
       <Command>if not exist ..\..\lib mkdir ..\..\lib
-xcopy /y "$(TargetDir)$(TargetName).lib" "..\..\lib\$(TargetName).lib"
-xcopy /y "$(TargetDir)$(TargetName).pdb" "..\..\lib\$(TargetName).pdb"
+copy "$(TargetPath)" ..\..\lib\"$(TargetName)".lib
+copy "$(TargetDir)""$(TargetName)".pdb ..\..\lib\"$(TargetName)".pdb
 </Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
@@ -190,7 +189,8 @@ xcopy /y "$(TargetDir)$(TargetName).pdb" "..\..\lib\$(TargetName).pdb"
     <PostBuildEvent>
       <Message>Copying target to lib/</Message>
       <Command>if not exist ..\..\lib mkdir ..\..\lib
-xcopy /y "$(TargetDir)$(TargetName).lib" "..\..\lib\$(TargetName).lib"
+copy "$(TargetPath)" ..\..\lib\"$(TargetName)".lib
+
 </Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
@@ -228,7 +228,7 @@ xcopy /y "$(TargetDir)$(TargetName).lib" "..\..\lib\$(TargetName).lib"
     <PostBuildEvent>
       <Message>Copying target to lib64/</Message>
       <Command>if not exist ..\..\lib mkdir ..\..\lib
-xcopy /y "$(TargetDir)$(TargetName).lib" "..\..\lib\$(TargetName).lib"
+copy "$(TargetPath)" ..\..\lib\"$(TargetName)".lib
 </Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
