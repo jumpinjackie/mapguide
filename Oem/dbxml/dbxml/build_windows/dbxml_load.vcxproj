@@ -104,10 +104,10 @@
     </ClCompile>
     <Link>
       <AdditionalOptions>/machine:x86 %(AdditionalOptions)</AdditionalOptions>
-      <AdditionalDependencies>libdbxml25d.lib;libdb48d.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(OutDir)dbxml_load.exe</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
-      <AdditionalLibraryDirectories>$(OutDir);../../db-4.8.26/build_windows/$(Configuration)32;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <ProgramDatabaseFile>$(OutDir)dbxml_load.pdb</ProgramDatabaseFile>
       <OptimizeReferences>false</OptimizeReferences>
@@ -128,9 +128,9 @@
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>libdbxml25d.lib;libdb48d.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(OutDir)dbxml_load.exe</OutputFile>
-      <AdditionalLibraryDirectories>$(OutDir);../../db-4.8.26/build_windows/$(Configuration)64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <ProgramDatabaseFile>$(OutDir)dbxml_load.pdb</ProgramDatabaseFile>
       <RandomizedBaseAddress>false</RandomizedBaseAddress>
@@ -166,10 +166,10 @@
     </ClCompile>
     <Link>
       <AdditionalOptions>/machine:x86 %(AdditionalOptions)</AdditionalOptions>
-      <AdditionalDependencies>libdbxml25.lib;libdb48.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(OutDir)dbxml_load.exe</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
-      <AdditionalLibraryDirectories>$(OutDir);../../db-4.8.26/build_windows/$(Configuration)32;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <ProgramDatabaseFile>$(OutDir)dbxml_load.pdb</ProgramDatabaseFile>
       <OptimizeReferences>true</OptimizeReferences>
@@ -188,9 +188,9 @@
       <AdditionalIncludeDirectories>.;../include;../src/dbxml;../../db-4.8.26/build_windows;../../db-4.8.26/include;../../db-4.8.26/dbinc;../../xerces-c-src/include;../../xerces-c-src/src;../../xqilla/include;../src/common;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>libdbxml25.lib;libdb48.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(OutDir)dbxml_load.exe</OutputFile>
-      <AdditionalLibraryDirectories>$(OutDir);../../db-4.8.26/build_windows/$(Configuration)64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <ProgramDatabaseFile>$(OutDir)dbxml_load.pdb</ProgramDatabaseFile>
       <RandomizedBaseAddress>false</RandomizedBaseAddress>
@@ -210,12 +210,11 @@
     <ClCompile Include="..\src\common\SigBlock.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\db-4.8.26\build_windows\db_dll.vcxproj">
+      <Project>{96c27024-6dee-45ed-bcc3-a731949131fa}</Project>
+    </ProjectReference>
     <ProjectReference Include="dbxml.vcxproj">
       <Project>{0047edfc-c26d-49d0-9559-029fa38b3839}</Project>
-      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
-    </ProjectReference>
-    <ProjectReference Include="dbxml_dump.vcxproj">
-      <Project>{3d50c9c1-88b9-4323-b656-97e1f9c1376b}</Project>
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
     </ProjectReference>
   </ItemGroup>
