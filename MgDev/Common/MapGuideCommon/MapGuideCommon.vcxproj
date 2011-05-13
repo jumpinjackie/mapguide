@@ -1031,10 +1031,6 @@
     <ResourceCompile Include="MapGuideCommon.rc" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\Common\Security\Security.vcxproj">
-      <Project>{7c1c5695-c51c-4017-abef-bc3032cbaf3b}</Project>
-      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
-    </ProjectReference>
     <ProjectReference Include="..\Foundation\Foundation.vcxproj">
       <Project>{a82adc7d-4da4-42f2-9bf6-df5dcfb44425}</Project>
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
