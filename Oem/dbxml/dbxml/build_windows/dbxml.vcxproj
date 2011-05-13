@@ -176,7 +176,7 @@
       <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(OutDir)libdbxml25d.dll</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
-      <AdditionalLibraryDirectories>$(OutDir);../../db-4.8.26/build_windows/$(Configuration)32;../../xqilla/build/windows/vc8/$(Configuration)32;../../xerces-c-src/Build/$(Platform)/VC9/$(Configuration);../../../gd/lpng/projects/visualc8/Win32_LIB_Debug/ZLib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <ProgramDatabaseFile>$(OutDir)libdbxml25d.pdb</ProgramDatabaseFile>
       <OptimizeReferences>false</OptimizeReferences>
@@ -281,7 +281,7 @@ installProj_win64.bat libdbxml25 dll $(OutDir) debug copyLib
       <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(OutDir)libdbxml25.dll</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
-      <AdditionalLibraryDirectories>$(OutDir);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <ProgramDatabaseFile>$(OutDir)libdbxml25.pdb</ProgramDatabaseFile>
       <OptimizeReferences>true</OptimizeReferences>
@@ -307,7 +307,7 @@ installProj.bat libdbxml25 dll $(OutDir) release copyLib
     <Link>
       <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(OutDir)libdbxml25.dll</OutputFile>
-      <AdditionalLibraryDirectories>$(OutDir);../../db-4.8.26/build_windows/$(Configuration)64;../../xqilla/build/windows/vc8/$(Configuration)64;../../xerces-c-src/Build/$(Platform)/VC9/$(Configuration);../../../gd/lpng/projects/visualc8/Win64_LIB_Release/ZLib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <ProgramDatabaseFile>$(OutDir)libdbxml25.pdb</ProgramDatabaseFile>
       <RandomizedBaseAddress>false</RandomizedBaseAddress>
