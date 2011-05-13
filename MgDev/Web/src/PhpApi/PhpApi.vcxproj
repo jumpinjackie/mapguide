@@ -111,7 +111,7 @@ copy .\php.i .\language.i
     <Link>
       <AdditionalDependencies>ACEd.lib;xerces-c_3mgD.lib;php5ts.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(OutDir)php_MapGuideApid.dll</OutputFile>
-      <AdditionalLibraryDirectories>..\..\..\Oem\ACE\ACE_wrappers\lib;..\..\..\Oem\dbxml\lib;..\..\..\Oem\php\Release_TS;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>..\..\..\Oem\ACE\ACE_wrappers\lib;..\..\..\Oem\dbxml\xerces-c-src\Build\Win32\VC10\Debug;..\..\..\Oem\php\Release_TS;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <ProgramDatabaseFile>$(OutDir)php_MapGuideApid.pdb</ProgramDatabaseFile>
       <SubSystem>Windows</SubSystem>
@@ -146,7 +146,7 @@ copy .\php.i .\language.i
     <Link>
       <AdditionalDependencies>ACEd.lib;xerces-c_3mgD.lib;php5ts.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(OutDir)php_MapGuideApid.dll</OutputFile>
-      <AdditionalLibraryDirectories>..\..\..\Oem\ACE\ACE_wrappers\lib64;..\..\..\Oem\dbxml\lib64;..\..\..\Oem\php\x64\Release_TS;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>..\..\..\Oem\ACE\ACE_wrappers\lib64;..\..\..\Oem\dbxml\xerces-c-src\Build\Win64\VC10\Debug;..\..\..\Oem\php\x64\Release_TS;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <ProgramDatabaseFile>$(OutDir)php_MapGuideApid.pdb</ProgramDatabaseFile>
       <SubSystem>Windows</SubSystem>
@@ -179,7 +179,7 @@ copy .\php.i .\language.i
     <Link>
       <AdditionalDependencies>ACE.lib;xerces-c_3mg.lib;php5ts.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(OutDir)php_MapGuideApi.dll</OutputFile>
-      <AdditionalLibraryDirectories>..\..\..\Oem\ACE\ACE_wrappers\lib;..\..\..\Oem\dbxml\lib;..\..\..\Oem\php\Release_TS;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>..\..\..\Oem\ACE\ACE_wrappers\lib;..\..\..\Oem\dbxml\xerces-c-src\Build\Win32\VC10\Release;..\..\..\Oem\php\Release_TS;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <ProgramDatabaseFile>$(OutDir)php_MapGuideApi.pdb</ProgramDatabaseFile>
       <SubSystem>Windows</SubSystem>
@@ -214,7 +214,7 @@ copy .\php.i .\language.i
     <Link>
       <AdditionalDependencies>ACE.lib;xerces-c_3mg.lib;php5ts.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(OutDir)php_MapGuideApi.dll</OutputFile>
-      <AdditionalLibraryDirectories>..\..\..\Oem\ACE\ACE_wrappers\lib64;..\..\..\Oem\dbxml\lib64;..\..\..\Oem\php\x64\Release_TS;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>..\..\..\Oem\ACE\ACE_wrappers\lib64;..\..\..\Oem\dbxml\xerces-c-src\Build\Win64\VC10\Release;..\..\..\Oem\php\x64\Release_TS;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <ProgramDatabaseFile>$(OutDir)php_MapGuideApi.pdb</ProgramDatabaseFile>
       <SubSystem>Windows</SubSystem>
