@@ -102,7 +102,7 @@
     <Link>
       <AdditionalDependencies>ACEd.lib;xerces-c_3mgD.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(OutDir)MgFoundationd.dll</OutputFile>
-      <AdditionalLibraryDirectories>..\..\Oem\ACE\ACE_wrappers\lib;..\..\Oem\dbxml\xerces-c-src\Build\Win32\VC10\Debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>..\..\Oem\ACE\ACE_wrappers\lib;..\..\Oem\dbxml\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <ProgramDatabaseFile>$(OutDir)MgFoundationd.pdb</ProgramDatabaseFile>
       <SubSystem>Windows</SubSystem>
@@ -128,7 +128,7 @@
     <Link>
       <AdditionalDependencies>ACEd.lib;xerces-c_3mgD.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(OutDir)MgFoundationd.dll</OutputFile>
-      <AdditionalLibraryDirectories>..\..\Oem\ACE\ACE_wrappers\lib64;..\..\Oem\dbxml\xerces-c-src\Build\Win64\VC10\Debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>..\..\Oem\ACE\ACE_wrappers\lib64;..\..\Oem\dbxml\lib64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <ProgramDatabaseFile>$(OutDir)MgFoundationd.pdb</ProgramDatabaseFile>
       <SubSystem>Windows</SubSystem>
@@ -149,7 +149,7 @@
     <Link>
       <AdditionalDependencies>ACE.lib;xerces-c_3mg.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(OutDir)MgFoundation.dll</OutputFile>
-      <AdditionalLibraryDirectories>..\..\Oem\ACE\ACE_wrappers\lib;..\..\Oem\dbxml\xerces-c-src\Build\Win32\VC10\Release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>..\..\Oem\ACE\ACE_wrappers\lib;..\..\Oem\dbxml\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <ProgramDatabaseFile>$(OutDir)MgFoundation.pdb</ProgramDatabaseFile>
       <SubSystem>Windows</SubSystem>
@@ -175,7 +175,7 @@
     <Link>
       <AdditionalDependencies>ACE.lib;xerces-c_3mg.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(OutDir)MgFoundation.dll</OutputFile>
-      <AdditionalLibraryDirectories>..\..\Oem\ACE\ACE_wrappers\lib64;..\..\Oem\dbxml\xerces-c-src\Build\Win64\VC10\Release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>..\..\Oem\ACE\ACE_wrappers\lib64;..\..\Oem\dbxml\lib64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <ProgramDatabaseFile>$(OutDir)MgFoundation.pdb</ProgramDatabaseFile>
       <SubSystem>Windows</SubSystem>
