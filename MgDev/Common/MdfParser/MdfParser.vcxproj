@@ -104,7 +104,7 @@
     <Link>
       <AdditionalDependencies>xerces-c_3mgD.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(OutDir)MgMdfParserd.dll</OutputFile>
-      <AdditionalLibraryDirectories>..\..\Oem\dbxml\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>..\..\Oem\dbxml\xerces-c-src\Build\Win32\VC10\Debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <ProgramDatabaseFile>$(OutDir)MgMdfParserd.pdb</ProgramDatabaseFile>
       <SubSystem>Windows</SubSystem>
@@ -131,7 +131,7 @@
     <Link>
       <AdditionalDependencies>xerces-c_3mgD.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(OutDir)MgMdfParserd.dll</OutputFile>
-      <AdditionalLibraryDirectories>..\..\Oem\dbxml\lib64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>..\..\Oem\dbxml\xerces-c-src\Build\x64\VC10\Debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <ProgramDatabaseFile>$(OutDir)MgMdfParserd.pdb</ProgramDatabaseFile>
       <SubSystem>Windows</SubSystem>
@@ -152,7 +152,7 @@
     <Link>
       <AdditionalDependencies>xerces-c_3mg.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(OutDir)MgMdfParser.dll</OutputFile>
-      <AdditionalLibraryDirectories>..\..\Oem\dbxml\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>..\..\Oem\dbxml\xerces-c-src\Build\Win32\VC10\Release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <ProgramDatabaseFile>$(OutDir)MgMdfParser.pdb</ProgramDatabaseFile>
       <SubSystem>Windows</SubSystem>
@@ -178,7 +178,7 @@
     <Link>
       <AdditionalDependencies>xerces-c_3mg.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(OutDir)MgMdfParser.dll</OutputFile>
-      <AdditionalLibraryDirectories>..\..\Oem\dbxml\lib64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>..\..\Oem\dbxml\xerces-c-src\Build\x64\VC10\Release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <ProgramDatabaseFile>$(OutDir)MgMdfParser.pdb</ProgramDatabaseFile>
       <SubSystem>Windows</SubSystem>
