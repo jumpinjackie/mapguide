@@ -188,7 +188,7 @@
     </Link>
     <PostBuildEvent>
       <Message>Copying libraries to install directory</Message>
-      <Command>copyFiles7.bat $(Platform)
+      <Command>copyFiles10.bat $(Platform)
 installProj.bat libdbxml25 dll $(OutDir) debug copyLib
 </Command>
     </PostBuildEvent>
@@ -215,7 +215,7 @@ installProj.bat libdbxml25 dll $(OutDir) debug copyLib
     </Link>
     <PostBuildEvent>
       <Message>Copying libraries to install directory</Message>
-      <Command>copyFiles7_win64.bat
+      <Command>copyFiles10_win64.bat
 installProj_win64.bat libdbxml25 dll $(OutDir) debug copyLib
 </Command>
     </PostBuildEvent>
@@ -293,7 +293,7 @@ installProj_win64.bat libdbxml25 dll $(OutDir) debug copyLib
     </Link>
     <PostBuildEvent>
       <Message>Copying libraries to install directory</Message>
-      <Command>copyFiles7.bat $(Platform)
+      <Command>copyFiles10.bat $(Platform)
 installProj.bat libdbxml25 dll $(OutDir) release copyLib
 </Command>
     </PostBuildEvent>
@@ -318,7 +318,7 @@ installProj.bat libdbxml25 dll $(OutDir) release copyLib
     </Link>
     <PostBuildEvent>
       <Message>Copying libraries to install directory</Message>
-      <Command>copyFiles7_win64.bat $(Platform)
+      <Command>copyFiles10_win64.bat $(Platform)
 installProj.bat libdbxml25 dll $(OutDir) release copyLib
 </Command>
     </PostBuildEvent>
