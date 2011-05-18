@@ -1,15 +1,15 @@
 
-DllExport int getClassId(void* ptrObj)
+DllExport int SWIGSTDCALL  getClassId(void* ptrObj)
 {
   return ((MgObject*)ptrObj)->GetClassId();
 }
 
-DllExport char* getClassName(void* ptrObj)
+DllExport char* SWIGSTDCALL  getClassName(void* ptrObj)
 {
   return ((MgObject*)ptrObj)->GetMultiByteClassName();
 }
 
-DllExport char* getNameSpace(void* ptrObj)
+DllExport char* SWIGSTDCALL  getNameSpace(void* ptrObj)
 {
   return ((MgObject*)ptrObj)->GetNameSpace();
 }
