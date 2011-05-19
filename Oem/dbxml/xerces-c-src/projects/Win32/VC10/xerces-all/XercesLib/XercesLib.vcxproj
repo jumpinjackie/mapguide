@@ -228,10 +228,10 @@
       <OutputFile>$(OutDir)\xerces-c_3_1mg.dll</OutputFile>
       <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <ProgramDatabaseFile>$(OutDir)xerces-c_3_1.fullpdb</ProgramDatabaseFile>
-      <StripPrivateSymbols>$(OutDir)xerces-c_3_1.pdb</StripPrivateSymbols>
+      <ProgramDatabaseFile>$(OutDir)xerces-c_3_1mg.fullpdb</ProgramDatabaseFile>
+      <StripPrivateSymbols>$(OutDir)xerces-c_3_1mg.pdb</StripPrivateSymbols>
       <GenerateMapFile>true</GenerateMapFile>
-      <MapFileName>$(IntDir)xerces-c_3_1.map</MapFileName>
+      <MapFileName>$(IntDir)xerces-c_3_1mg.map</MapFileName>
       <SubSystem>Windows</SubSystem>
       <OptimizeReferences>true</OptimizeReferences>
       <SetChecksum>true</SetChecksum>
@@ -274,10 +274,10 @@
       <OutputFile>$(OutDir)\xerces-c_3_1mg.dll</OutputFile>
       <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <ProgramDatabaseFile>$(OutDir)xerces-c_3_1.fullpdb</ProgramDatabaseFile>
-      <StripPrivateSymbols>$(OutDir)xerces-c_3_1.pdb</StripPrivateSymbols>
+      <ProgramDatabaseFile>$(OutDir)xerces-c_3_1mg.fullpdb</ProgramDatabaseFile>
+      <StripPrivateSymbols>$(OutDir)xerces-c_3_1mg.pdb</StripPrivateSymbols>
       <GenerateMapFile>true</GenerateMapFile>
-      <MapFileName>$(IntDir)xerces-c_3_1.map</MapFileName>
+      <MapFileName>$(IntDir)xerces-c_3_1mg.map</MapFileName>
       <SubSystem>Windows</SubSystem>
       <OptimizeReferences>true</OptimizeReferences>
       <SetChecksum>true</SetChecksum>
@@ -321,7 +321,7 @@
       <OutputFile>$(OutDir)\xerces-c_3_1mgD.dll</OutputFile>
       <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <ProgramDatabaseFile>$(OutDir)xerces-c_3_1D.pdb</ProgramDatabaseFile>
+      <ProgramDatabaseFile>$(OutDir)xerces-c_3_1mgD.pdb</ProgramDatabaseFile>
       <SubSystem>Windows</SubSystem>
       <SetChecksum>false</SetChecksum>
       <BaseAddress>0x12000000</BaseAddress>
@@ -361,7 +361,7 @@
       <OutputFile>$(OutDir)\xerces-c_3_1mgD.dll</OutputFile>
       <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <ProgramDatabaseFile>$(OutDir)xerces-c_3_1D.pdb</ProgramDatabaseFile>
+      <ProgramDatabaseFile>$(OutDir)xerces-c_3_1mgD.pdb</ProgramDatabaseFile>
       <SubSystem>Windows</SubSystem>
       <SetChecksum>false</SetChecksum>
       <BaseAddress>0x12000000</BaseAddress>
