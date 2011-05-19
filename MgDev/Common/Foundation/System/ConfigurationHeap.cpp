@@ -64,7 +64,7 @@ bool MgConfigurationHeap::ImportConfig(CREFSTRING fileName)
         wstring mbLine = Trim(MG_TCHAR_TO_WCHAR(buffer)); // remove extra spaces at beginning and end of line
 
         // Blank line
-        if (mbLine[0] == L'\0')
+        if (mbLine.size() <= 0 || mbLine[0] == L'\0')
         {
             continue;
         }
@@ -113,7 +113,7 @@ bool MgConfigurationHeap::ImportConfig(CREFSTRING fileName)
         wstring propertyName = Trim(mbLine.substr(0, pos).c_str());
         wstring value = Trim(mbLine.substr(pos+1, (mbLine.size()-pos-1)).c_str());
         // Remove any quotes that may be present at ends of value
-        if (value[0] == L'\"' && value[value.length()-1] == L'\"')
+        if (value.size() > 0 && value[0] == L'\"' && value[value.length()-1] == L'\"')
         {
             value = value.substr(1,value.length()-2);
         }
