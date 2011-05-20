@@ -131,7 +131,7 @@
     <Link>
       <AdditionalDependencies>dwfcore_wt.1.1.1.lib;dwftk_wt.7.1.1.lib;whiptk_wt.7.7.601.lib;emaptk_wt.1.0.0.lib;gd.lib;freetype235_D.lib;libpngd.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(OutDir)MgRenderersd.dll</OutputFile>
-      <AdditionalLibraryDirectories>..\..\Oem\DWFTK7.1\develop\global\lib\static\debug64\vc8.0;..\..\Oem\gd\build\win32\gd\Debug64;..\..\Oem\gd\freetype\objs64;..\..\Oem\gd\lpng\projects\visualc8\Win64_LIB_Debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>..\..\Oem\DWFTK7.1\develop\global\lib\static\debug64\vc8.0;..\..\Oem\gd\build\win32\gd\Debug64;..\..\Oem\gd\freetype\objs64\debug64;..\..\Oem\gd\lpng\projects\visualc8\Win64_LIB_Debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <ProgramDatabaseFile>$(OutDir)MgRenderersd.pdb</ProgramDatabaseFile>
       <SubSystem>Windows</SubSystem>
