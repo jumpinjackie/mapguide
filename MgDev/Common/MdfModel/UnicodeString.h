@@ -157,14 +157,6 @@ struct unicode_traits
 typedef basic_string<XMLCh, unicode_traits<XMLCh> > xstring;
 typedef basic_string<LCh, unicode_traits<LCh> > lstring;
 
-#ifdef _WIN32
-EXPIMP_TEMPLATE template class MDFMODEL_API basic_string<XMLCh, unicode_traits<XMLCh> >;
-EXPIMP_TEMPLATE template class MDFMODEL_API basic_string<LCh, unicode_traits<LCh> >;
-#else
-extern template class basic_string<XMLCh, unicode_traits<XMLCh> >;
-extern template class basic_string<LCh, unicode_traits<LCh> >;
-#endif
-
 // Unicode byte code conversion class.  This class contains static methods to convert
 // between UTF-8, UTF-16, and UTF-32.  It requires no additional libraries to function and
 // uses stl::basic_string functionality w/ help from the template defined above.
