@@ -136,6 +136,7 @@
             this.chkInstallServices.TabIndex = 7;
             this.chkInstallServices.Text = "Install Services";
             this.chkInstallServices.UseVisualStyleBackColor = true;
+            this.chkInstallServices.Visible = false;
             this.chkInstallServices.CheckedChanged += new System.EventHandler(this.chkInstallServices_CheckedChanged);
             // 
             // button1

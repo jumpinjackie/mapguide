@@ -36,16 +36,16 @@
             this.label2 = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.txtServiceName = new System.Windows.Forms.TextBox();
+            this.label7 = new System.Windows.Forms.Label();
             this.numHttpdPort = new System.Windows.Forms.NumericUpDown();
             this.label6 = new System.Windows.Forms.Label();
             this.txtVirtualDirectory = new System.Windows.Forms.TextBox();
             this.label4 = new System.Windows.Forms.Label();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
+            this.chkEnableJava = new System.Windows.Forms.CheckBox();
             this.numTomcatPort = new System.Windows.Forms.NumericUpDown();
             this.label5 = new System.Windows.Forms.Label();
-            this.chkEnableJava = new System.Windows.Forms.CheckBox();
-            this.txtServiceName = new System.Windows.Forms.TextBox();
-            this.label7 = new System.Windows.Forms.Label();
             this.groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numSitePort)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numClientPort)).BeginInit();
@@ -156,6 +156,25 @@
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "General";
             // 
+            // txtServiceName
+            // 
+            this.txtServiceName.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.txtServiceName.Location = new System.Drawing.Point(154, 77);
+            this.txtServiceName.Name = "txtServiceName";
+            this.txtServiceName.Size = new System.Drawing.Size(236, 20);
+            this.txtServiceName.TabIndex = 11;
+            this.txtServiceName.TextChanged += new System.EventHandler(this.txtServiceName_TextChanged);
+            // 
+            // label7
+            // 
+            this.label7.AutoSize = true;
+            this.label7.Location = new System.Drawing.Point(23, 80);
+            this.label7.Name = "label7";
+            this.label7.Size = new System.Drawing.Size(74, 13);
+            this.label7.TabIndex = 10;
+            this.label7.Text = "Service Name";
+            // 
             // numHttpdPort
             // 
             this.numHttpdPort.Location = new System.Drawing.Point(154, 51);
@@ -211,6 +230,17 @@
             this.groupBox3.TabIndex = 2;
             this.groupBox3.TabStop = false;
             // 
+            // chkEnableJava
+            // 
+            this.chkEnableJava.AutoSize = true;
+            this.chkEnableJava.Location = new System.Drawing.Point(6, 0);
+            this.chkEnableJava.Name = "chkEnableJava";
+            this.chkEnableJava.Size = new System.Drawing.Size(85, 17);
+            this.chkEnableJava.TabIndex = 0;
+            this.chkEnableJava.Text = "Enable Java";
+            this.chkEnableJava.UseVisualStyleBackColor = true;
+            this.chkEnableJava.CheckedChanged += new System.EventHandler(this.chkEnableJava_CheckedChanged);
+            // 
             // numTomcatPort
             // 
             this.numTomcatPort.Location = new System.Drawing.Point(154, 29);
@@ -232,35 +262,6 @@
             this.label5.Size = new System.Drawing.Size(105, 13);
             this.label5.TabIndex = 6;
             this.label5.Text = "Tomcat Port Number";
-            // 
-            // chkEnableJava
-            // 
-            this.chkEnableJava.AutoSize = true;
-            this.chkEnableJava.Location = new System.Drawing.Point(6, 0);
-            this.chkEnableJava.Name = "chkEnableJava";
-            this.chkEnableJava.Size = new System.Drawing.Size(85, 17);
-            this.chkEnableJava.TabIndex = 0;
-            this.chkEnableJava.Text = "Enable Java";
-            this.chkEnableJava.UseVisualStyleBackColor = true;
-            // 
-            // txtServiceName
-            // 
-            this.txtServiceName.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
-            this.txtServiceName.Location = new System.Drawing.Point(154, 77);
-            this.txtServiceName.Name = "txtServiceName";
-            this.txtServiceName.Size = new System.Drawing.Size(236, 20);
-            this.txtServiceName.TabIndex = 11;
-            this.txtServiceName.TextChanged += new System.EventHandler(this.txtServiceName_TextChanged);
-            // 
-            // label7
-            // 
-            this.label7.AutoSize = true;
-            this.label7.Location = new System.Drawing.Point(23, 80);
-            this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(74, 13);
-            this.label7.TabIndex = 10;
-            this.label7.Text = "Service Name";
             // 
             // ApacheConfigCtrl
             // 

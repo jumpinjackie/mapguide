@@ -94,5 +94,10 @@ namespace InstantSetup
         {
             ApacheConfig.HttpdServiceName = txtServiceName.Text;
         }
+
+        private void chkEnableJava_CheckedChanged(object sender, EventArgs e)
+        {
+            ApacheConfig.EnableJava = chkEnableJava.Checked;
+        }
     }
 }

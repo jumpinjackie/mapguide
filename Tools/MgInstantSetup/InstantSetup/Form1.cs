@@ -77,7 +77,9 @@ namespace InstantSetup
             try
             {
                 _apacheConf.Config.Execute();
-                MessageBox.Show("Configured");
+                if (!chkInstallServices.Checked)
+                    MessageBox.Show("Batch scripts saved to " + _apacheConf.Config.BatchFileOutputDirectory);
+                //Service install not implemented
             }
             catch (Exception ex)
             {
