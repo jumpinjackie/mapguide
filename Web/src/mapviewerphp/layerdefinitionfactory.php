@@ -21,14 +21,20 @@ class LayerDefinitionFactory
 {
     //Creates Area Rule
     //Parameters:
-    //$foreGroundColor - color code for the foreground color
     //$legendLabel - string for the legend label
     //$filterText - filter string
-    //$textSymbol - use textsymbol.templ to create it
-    static function CreateAreaRule($legendLabel, $filterText, $foreGroundColor)
+    //$fillPattern - fill pattern (ex: Solid)
+    //$foreGroundColor - color code for the foreground color
+    //$backGroundColor - color code for the background color
+    //$lineStyle - line style (ex: Solid)
+    //$lineThickness - line thickness
+    //$lineColor - color code for the line
+    //$lineUnit - line units (ex: Points)
+    //$lineSizeContext - line size context (ex: DeviceUnits)
+    static function CreateAreaRule($legendLabel, $filterText, $fillPattern, $foreGroundColor, $backGroundColor, $lineStyle, $lineThickness, $lineColor, $lineUnit, $lineSizeContext)
     {
         $areaRule = file_get_contents("../viewerfiles/arearule.templ");
-        $areaRule = sprintf($areaRule, $legendLabel, $filterText, $foreGroundColor);
+        $areaRule = sprintf($areaRule, $legendLabel, $filterText, $fillPattern, $foreGroundColor, $backGroundColor, $lineStyle, $lineThickness, $lineColor, $lineUnit, $lineSizeContext);
         return $areaRule;
     }
 
@@ -44,13 +50,17 @@ class LayerDefinitionFactory
 
     //Creates line rule
     //Parameters:
-    //$color - color code for the line
     //$legendLabel - string for the legend label
     //$filter - filter string
-    static function CreateLineRule($legendLabel, $filter, $color)
+    //$lineStyle - line style (ex: Solid)
+    //$lineThickness - line thickness
+    //$lineColor - color code for the line
+    //$lineUnit - line units (ex: Points)
+    //$lineSizeContext - line size context (ex: DeviceUnits)
+    static function CreateLineRule($legendLabel, $filter, $lineStyle, $lineThickness, $lineColor, $lineUnit, $lineSizeContext)
     {
         $lineRule = file_get_contents("../viewerfiles/linerule.templ");
-        $lineRule = sprintf($lineRule, $legendLabel, $filter, $color);
+        $lineRule = sprintf($lineRule, $legendLabel, $filter, $lineStyle, $lineThickness, $lineColor, $lineUnit, $lineSizeContext);
         return $lineRule;
     }
 
