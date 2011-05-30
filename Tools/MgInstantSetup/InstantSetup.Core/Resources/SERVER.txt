@@ -1,0 +1,4 @@
+SET MENTOR_DICTIONARY_PATH={0}
+pushd {1}
+mgserver.exe run
+popd
