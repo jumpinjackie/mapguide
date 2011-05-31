@@ -75,7 +75,7 @@ function SetProperties(count, properties)
     {
         code = '<table id="Grid" cellspacing=0 cellpadding=0 border=0><tr class="Header"><td id="Name" class="Name" width=65><span style="font-family: __#@font#__; font-size: __#@fontsize#__;">&nbsp;__#PROPERTIESNAME#__</span></td><td class="CellSplitter" width=1 onmousedown="StartResizing()"></td><td class="Value"><span style="font-family: __#@font#__; font-size: __#@fontsize#__;">&nbsp;__#PROPERTIESVALUE#__</span></td></tr>';
         for(var i=0; i < properties.length; i++)
-            code += '<tr class="GridCell"><td><span style="font-family: __#@font#__; font-size: __#@fontsize#__;">&nbsp;' + properties[i].name + '</span></td><td></td><td><span style="font-family: __#@font#__; font-size: __#@fontsize#__;">' + properties[i].value + '</span></td></tr>';
+            code += '<tr class="GridCell"><td><span style="font-family: __#@font#__; font-size: __#@fontsize#__;">&nbsp;' + properties[i].name + '</span></td><td></td><td><span style="font-family: __#@font#__; font-size: __#@fontsize#__;">' + HtmlDecode(properties[i].value) + '</span></td></tr>';
         code += '</table>';
         GetMapFrame().SetPropertyPaneToolbarVisibility(true);
     }
@@ -95,6 +95,17 @@ function SetContent(html)
     var content = document.getElementById("Content");
     content.innerHTML = html; //SAFARI
     OnResizeGrid();
+}
+
+var _el = null; //Our "parser" element
+
+function HtmlDecode(input)
+{
+    if (_el == null)
+        _el = document.createElement('div');
+
+    _el.innerHTML = input;
+    return _el.childNodes[0].nodeValue;
 }
 
 function InitDocument()
