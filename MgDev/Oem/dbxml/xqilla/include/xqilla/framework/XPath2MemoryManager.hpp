@@ -131,8 +131,10 @@ public:
 #endif
   pointer allocate(size_t _n, const void* = 0)
   {
+#if _MSC_VER < 1600 || NDEBUG //for VS2010 Release or VS2008
     if(_n==1)
       return (pointer)_singleton;
+#endif
     //std::cout << "XQillaAllocator::allocate(" << _n << ")" << std::endl;
     if(_memMgr)
       return _n != 0 ? static_cast<pointer>(_memMgr->allocate(_n*sizeof(_Tp))) : 0;
@@ -143,14 +145,23 @@ public:
   void deallocate(void* _p, size_t _n)
   {
     //std::cout << "XQillaAllocator::deallocate(" << _n << ")" << std::endl;
-    if(_p) {
-      if(_p!=_singleton) {
-        if(_memMgr)
-          _memMgr->deallocate(_p);
-        else
-          free(_p);
-      }
-  }
+    #if _MSC_VER < 1600 || NDEBUG //for VS2010 Release or VS2008
+        if(_p) {
+          if(_p!=_singleton) {
+            if(_memMgr)
+              _memMgr->deallocate(_p);
+            else
+              free(_p);
+          }
+        }
+    #else //for VS2010 Debug
+        if(_p) {
+            if(_memMgr)
+                _memMgr->deallocate(_p);
+            else
+                free(_p);
+        }
+    #endif
   }
 
   void construct(pointer _p, const_reference _v)
@@ -173,7 +184,10 @@ public:
     return 0xFFFFFFFF;
   }
 
+  #if _MSC_VER < 1600 || NDEBUG //for VS2010 Release or VS2008
   char _singleton[sizeof(_Tp)];
+  #endif
+
   XERCES_CPP_NAMESPACE_QUALIFIER MemoryManager* _memMgr;
 };
 
