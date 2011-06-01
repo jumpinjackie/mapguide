@@ -79,6 +79,17 @@ var iconGroup = '<img width="16" height ="16" src="../stdicons/lc_group.gif" />'
 
 var clientAgent = 'Ajax Viewer';
 
+var legendTextNoWrap = true;
+if(legendTextNoWrap)
+{
+  iconExpand = "../stdicons/lc_expand_16.gif";
+  iconCollapse = "../stdicons/lc_collapse_16.gif";
+  iconNoExpand = "../stdicons/lc_noexpand.gif";
+  iconChecked = "../stdicons/lc_checked_16.gif";
+  iconUnchecked = "../stdicons/lc_unchecked_16.gif";
+}
+
+
 function GroupStats()
 {
     this.lyrgrpCount = 0;
@@ -143,19 +154,27 @@ function BuildLayersAndGroups(node)
 {
     var isGroup = node.type == 0;
     var item = '<div id="' + node.objectId + '"><table border=0 cellspacing="0" cellpadding="0"><tr height=17>';
+    
     //expand/collapse icon
-    item += '<td width=16 id="Ex_' + node.objectId + '">' + ((isGroup == true)? MakeExpandCode(node) : '') + '</td>';
-    if(isGroup == true || node.base == false)
+    item += '<td width=16 id="Ex_' + node.objectId + '">' + (isGroup? MakeExpandCode(node) : MakeBlankCode()) + '</td>';
+    if(isGroup || !node.base)
     {
         //checkbox
         item += '<td width=16 id="Chk_' + node.objectId + '">' + MakeCheckCode(node) + '</td>';
-        if(node.code == "L" && node.selectable == true)
+        if(node.code == "L" && node.selectable)
         {
           item += '<td width=16 id="Sel_' + node.objectId + '">' + MakeSelectableCode(node) + '</td>';
         }
     }
     //icon
-    item += '<td width=23 id="' + GetIconId(node) + '">';
+    if(legendTextNoWrap)
+    {
+      item += '<td width=16 id="' + GetIconId(node) + '">';
+    }
+    else
+    {
+      item += '<td width=23 id="' + GetIconId(node) + '">';
+    }
     if(isGroup)
     {
         item += iconGroup;
@@ -166,13 +185,39 @@ function BuildLayersAndGroups(node)
     }
     item += '</td>';
     //legend text
-    item += '<td id="Lg_' + node.objectId +'">' + node.legend + '</td>';
+    if(legendTextNoWrap)
+    {
+      item += '<td width=7><img width=7 height=16 src="../stdicons/transparentpixel.gif"></td>';
+      item += '<td id="Lg_' + node.objectId + '" style="white-space:nowrap">' + node.legend + '</td>';
+    }
+    else
+    {
+      item += '<td id="Lg_' + node.objectId + '">' + node.legend + '</td>';
+    }
+    
     item += '</tr></table>';
-    item += '<div id="ChildrenOf_' + node.objectId + '" style="margin-left: ' + (isGroup? 20: 32) + 'px; display:';
+    if(legendTextNoWrap)
+    {
+      var strWidth = "";
+      if(msie)
+      {
+        strWidth = "width:auto;";
+      }
+      else
+      {
+        strWidth = "width:10;";
+      }
+
+      item += '<div id="ChildrenOf_' + node.objectId + '" style="position:relative;' + strWidth + 'left: ' + (isGroup? 20: 32) + 'px; display:';
+    }
+    else
+    {
+      item += '<div id="ChildrenOf_' + node.objectId + '" style="margin-left: ' + (isGroup? 20: 32) + 'px; display:';
+    }
     item += node.expanded? 'block">' : 'none">';
     if(isGroup && node.children != null && node.children.length > 0)
     {
-        for(var i=0; i < node.children.length; i++)
+       for(var i=0; i < node.children.length; i++)
             item += BuildLayersAndGroups(node.children[i]);
     }
     item += '</div>';
@@ -257,10 +302,21 @@ function SetLayerStyles(layer)
                 var iconImg = RequestThemeStyleIconImg(layer, scale, node.catindex, node.geomtype, iconId);
 
                 code += '<table border=0 cellspacing="0" cellpadding="0"><tr height=17>';
-                //icon
-                code += '<td width=23 id="' + iconId + '">' + iconImg + '</td>';
-                //legend text
-                code += '<td>' + node.legend + '</td>';
+                if(legendTextNoWrap)
+                {
+                  //icon
+                  code += '<td width=16 id="' + iconId + '">' + iconImg + '</td>';
+                  //legend text
+                  code += '<td width=7><img width=7 height=16 src="../stdicons/transparentpixel.gif"></td>';
+                  code += '<td style="white-space:nowrap">' + node.legend + '</td>';
+                }
+                else
+                {
+                  //icon
+                  code += '<td width=23 id="' + iconId + '">' + iconImg + '</td>';
+                  //legend text
+                  code += '<td>' + node.legend + '</td>';
+                }
                 code += '</tr></table>';
 
                 if(!sc.showlongtheme && styles.length > 10)
@@ -318,25 +374,58 @@ function SetLayerExpandBox(layer, show)
     if(expElt != null)
     {
         if(!show)
-            expElt.innerHTML = '';
+            expElt.innerHTML = MakeBlankCode();
         else
             expElt.innerHTML = MakeExpandCode(layer);
     }
 }
 
+function MakeBlankCode()
+{
+  if(legendTextNoWrap)
+  {
+    return '<img width=16 height=9 src="../stdicons/transparentpixel.gif">';
+  }
+  else
+  {
+    return '';
+  }
+}
+
 function MakeExpandCode(node)
 {
+  if(legendTextNoWrap)
+  {
+    return '<img width=16 height=9 src="' + (node.expanded? iconCollapse: iconExpand) + '" onclick="Toggle(\'' + node.objectId +'\')">';
+  }
+  else
+  {
     return '<img width=9 height=9 src="' + (node.expanded? iconCollapse: iconExpand) + '" onclick="Toggle(\'' + node.objectId +'\')">';
+  }
 }
 
 function MakeCheckCode(node)
 {
+  if(legendTextNoWrap)
+  {
+    return '<img width=16 height=13 src="' + (node.visible? iconChecked: iconUnchecked) + '" onClick="ChangeVisibility(\'' + node.objectId +'\')">';
+  }
+  else
+  {
     return '<img width=13 height=13 src="' + (node.visible? iconChecked: iconUnchecked) + '" onClick="ChangeVisibility(\'' + node.objectId +'\')">';
+  }
 }
 
 function MakeSelectableCode(node)
 {
+  if(legendTextNoWrap)
+  {
+    return '<img width=16 height=13 src="' + (node.selectable? iconSelectable: iconUnselectable) + '" onClick="ChangeSelectability(\'' + node.objectId +'\',0)">';
+  }
+  else
+  {
     return '<img width=13 height=13 src="' + (node.selectable? iconSelectable: iconUnselectable) + '" onClick="ChangeSelectability(\'' + node.objectId +'\',0)">';
+  }
 }
 
 function UpdateGroupLayerCheck(node)
