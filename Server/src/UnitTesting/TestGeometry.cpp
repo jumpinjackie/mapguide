@@ -18,7 +18,7 @@
 #include "MapGuideCommon.h"
 #include "TestGeometry.h"
 #include "CppUnitExtensions.h"
-
+#include "FoundationDefs.h"
 
 const STRING ArbitraryWkt  = L"LOCAL_CS [ \"Non-Earth (Mile)\", LOCAL_DATUM [\"Local Datum\", 0], UNIT [\"Mile_US\", 1609.344], AXIS [\"X\", EAST], AXIS[\"Y\", NORTH]]";
 const STRING GeographicWkt = L"GEOGCS[\"LL84\",DATUM[\"WGS84\",SPHEROID[\"WGS84\",6378137.000,298.25722293]],PRIMEM[\"Greenwich\",0],UNIT[\"Degree\",0.017453292519943295]]";

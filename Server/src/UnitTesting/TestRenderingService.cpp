@@ -23,7 +23,7 @@
 #include "../Common/Manager/FdoConnectionManager.h"
 //#include "GDRenderer.h"
 //#include "AGGRenderer.h"
-
+#include "FoundationDefs.h"
 const STRING TEST_LOCALE = L"en";
 
 CPPUNIT_TEST_SUITE_NAMED_REGISTRATION(TestRenderingService, "TestRenderingService");

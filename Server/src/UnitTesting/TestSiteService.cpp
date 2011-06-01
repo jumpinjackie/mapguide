@@ -20,7 +20,7 @@
 #include "ServerSiteService.h"
 #include "TestSiteService.h"
 #include "CppUnitExtensions.h"
-
+#include "FoundationDefs.h"
 CPPUNIT_TEST_SUITE_NAMED_REGISTRATION(TestSiteService, "TestSiteService");
 
 const STRING adminName = L"Administrator";

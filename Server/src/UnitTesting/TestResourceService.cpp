@@ -22,7 +22,7 @@
 #include "CppUnitExtensions.h"
 #include "SecurityCache.h"
 #include "../Common/Manager/FdoConnectionManager.h"
-
+#include "FoundationDefs.h"
 CPPUNIT_TEST_SUITE_NAMED_REGISTRATION(TestResourceService, "TestResourceService");
 
 // define thread group for tiling tests

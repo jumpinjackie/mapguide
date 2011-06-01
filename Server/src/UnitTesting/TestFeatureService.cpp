@@ -23,7 +23,7 @@
 #include "Services/FeatureService.h"
 #include "ServerFeatureService.h"
 #include "Fdo.h"
-
+#include "FoundationDefs.h"
 
 const STRING TEST_LOCALE = L"en";
 

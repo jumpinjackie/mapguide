@@ -22,6 +22,7 @@
 #include "TransformMesh.h"
 #include "MgCSTrans.h"
 #include "Bounds.h"
+#include "FoundationDefs.h"
 
 
 const STRING GeographicWkt      = L"GEOGCS[\"LL84\",DATUM[\"WGS84\",SPHEROID[\"WGS84\",6378137.000,298.25722293]],PRIMEM[\"Greenwich\",0],UNIT[\"Degree\",0.01745329251994]]";

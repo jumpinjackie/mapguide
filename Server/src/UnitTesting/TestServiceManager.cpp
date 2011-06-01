@@ -18,7 +18,7 @@
 #include "MapGuideCommon.h"
 #include "ServiceManager.h"
 #include "TestServiceManager.h"
-
+#include "FoundationDefs.h"
 CPPUNIT_TEST_SUITE_NAMED_REGISTRATION(TestServiceManager, "TestServiceManager");
 
 void TestServiceManager::setUp()

@@ -152,9 +152,9 @@ copy "$(TargetDir)""$(TargetName)".pdb ..\..\lib\"$(TargetName)".pdb</Command>
     </Lib>
     <PostBuildEvent>
       <Message>Copying target to lib64/</Message>
-      <Command>if not exist ..\..\lib mkdir ..\..\lib
-copy "$(TargetPath)" ..\..\lib\"$(TargetName)".lib
-copy "$(TargetDir)""$(TargetName)".pdb ..\..\lib\"$(TargetName)".pdb
+      <Command>if not exist ..\..\lib64 mkdir ..\..\lib64
+copy "$(TargetPath)" ..\..\lib64\"$(TargetName)".lib
+copy "$(TargetDir)""$(TargetName)".pdb ..\..\lib64\"$(TargetName)".pdb
 </Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
@@ -227,8 +227,8 @@ copy "$(TargetPath)" ..\..\lib\"$(TargetName)".lib
     </Lib>
     <PostBuildEvent>
       <Message>Copying target to lib64/</Message>
-      <Command>if not exist ..\..\lib mkdir ..\..\lib
-copy "$(TargetPath)" ..\..\lib\"$(TargetName)".lib
+      <Command>if not exist ..\..\lib64 mkdir ..\..\lib64
+copy "$(TargetPath)" ..\..\lib64\"$(TargetName)".lib
 </Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>

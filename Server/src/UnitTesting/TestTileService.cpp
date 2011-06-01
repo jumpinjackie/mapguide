@@ -21,7 +21,7 @@
 #include "ServiceManager.h"
 #include "ServerSiteService.h"
 #include "../Common/Manager/FdoConnectionManager.h"
-
+#include "FoundationDefs.h"
 #define PATH_LEN 512
 
 // determines the number of requests to make, as a factor of the number of tiles

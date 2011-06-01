@@ -17,7 +17,7 @@
 
 #include "MapGuideCommon.h"
 #include "TestSiteManager.h"
-
+#include "FoundationDefs.h"
 const STRING TEST_SESSION_ID = L"48cb0286-0000-1000-8001-005056c00008_en_6F7A8590045708AE0D05";
 const STRING TEST_TARGET = L"111.122.133.144";
 const STRING TEST_SUPPORT_SERVER = L"144.133.122.111";
