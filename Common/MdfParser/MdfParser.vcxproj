@@ -396,9 +396,6 @@
     <ResourceCompile Include="MdfParser.rc" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\Oem\dbxml\xerces-c-src\projects\Win32\VC10\xerces-all\XercesLib\XercesLib.vcxproj">
-      <Project>{152ce948-f659-4206-a50a-1d2b9658ef96}</Project>
-    </ProjectReference>
     <ProjectReference Include="..\MdfModel\MdfModel.vcxproj">
       <Project>{c50254f2-654a-48de-af5b-20605aef8d10}</Project>
     </ProjectReference>
