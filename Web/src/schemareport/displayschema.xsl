@@ -21,6 +21,7 @@
 <xsl:param name="stringHasElevation"/>
 <xsl:param name="stringNoGeometry"/>
 <xsl:param name="stringNoData"/>
+<xsl:param name="stringSrsName"/>
 
 
 <xsl:template match="/">
@@ -120,6 +121,7 @@
                                 <tr><td class="heading"><xsl:value-of select="$stringPropertyType"/></td></tr>
                                 <tr><td class="heading"><xsl:value-of select="$stringHasMeasures"/></td></tr>
                                 <tr><td class="heading"><xsl:value-of select="$stringHasElevation"/></td></tr>
+                                <tr><td class="heading"><xsl:value-of select="$stringSrsName"/></td></tr>
                                 </table>
                             </td>
                             <!--apply template to elements-->
@@ -182,6 +184,7 @@
                     <tr><td><xsl:value-of select="@fdo:geometricTypes"/></td></tr>
                     <tr><td><xsl:value-of select="@fdo:hasMeasure"/></td></tr>
                     <tr><td><xsl:value-of select="@fdo:hasElevation"/></td></tr>
+                    <tr><td><xsl:value-of select="@fdo:srsName"/></td></tr>
                     </table>
                 </td>
             </xsl:if>
