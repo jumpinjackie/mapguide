@@ -542,7 +542,7 @@ NameValueCollection cmds = null;
     }
     catch (Exception ne)
     {
-        String errorMsg = EscapeForHtml(ne.Message);
+        String errorMsg = EscapeForHtml(ne.ToString());
         Response.Write(errorMsg);
     }
 %>
