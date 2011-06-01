@@ -65,7 +65,7 @@ String sessionId = "";
 boolean summary = false;
 int layerCount = 0;
 int intermediateVar = 0;
-String output = "\nvar layerData = new Array();\n";
+StringBuffer output = new StringBuffer("\nvar layerData = new Array();\n");
 
 %>
 
@@ -76,9 +76,6 @@ PrintWriter writer = response.getWriter();
 
 try
 {
-    output = "\nvar layerData = new Array();\n";
-    intermediateVar = 0;
-
     // Initialize web tier with the site configuration file.
     InitializeWebTier();
 
@@ -129,7 +126,7 @@ try
     //load html template code and format it
     //
     String templ = LoadTemplate("/viewerfiles/legendupdate.templ");
-    String vals[] = { String.valueOf(updateType), output, GetSurroundVirtualPath(request) + "legend.jsp"};
+    String vals[] = { String.valueOf(updateType), output.toString(), GetSurroundVirtualPath(request) + "legend.jsp"};
     String outputString = Substitute(templ, vals);
 
     writer.write(outputString);
@@ -282,7 +279,7 @@ void BuildClientSideTree(ArrayList tree, TreeItem parent, String parentName, boo
                     if(node.children != null)
                     {
                         arrChildName = "c" + (intermediateVar++);
-                        output = output + "var " + arrChildName + " = new Array();\n";
+                        output.append("var " + arrChildName + " = new Array();\n");
                     }
                     else
                         arrChildName = "null";
@@ -290,7 +287,7 @@ void BuildClientSideTree(ArrayList tree, TreeItem parent, String parentName, boo
                     MgLayerGroup rtLayerGroup = (MgLayerGroup)node.rtObject;
                     if(fulldata)
                     {
-                        output = output + String.format("var %s = new GroupItem(\"%s\", %s, %s, %s, %s, \"%s\", \"%s\", %s);\n",
+                        output.append(String.format("var %s = new GroupItem(\"%s\", %s, %s, %s, %s, \"%s\", \"%s\", %s);\n",
                                                            new Object[] {groupName,
                                                            StrEscape(rtLayerGroup.GetLegendLabel()),
                                                            rtLayerGroup.GetExpandInLegend()? "true": "false",
@@ -299,24 +296,24 @@ void BuildClientSideTree(ArrayList tree, TreeItem parent, String parentName, boo
                                                            rtLayerGroup.GetDisplayInLegend()? "true": "false",
                                                            rtLayerGroup.GetObjectId(),
                                                            StrEscape(rtLayerGroup.GetName()),
-                                                           rtLayerGroup.GetLayerGroupType() == MgLayerGroupType.BaseMap? "true": "false"});
+                                                           rtLayerGroup.GetLayerGroupType() == MgLayerGroupType.BaseMap? "true": "false"}));
                     }
                     else
                     {
-                        output = output + String.format("var %s = new GroupSummary(\"%s\", \"%s\", %s, %s);\n",
+                        output.append(String.format("var %s = new GroupSummary(\"%s\", \"%s\", %s, %s);\n",
                                                            new Object[] {groupName,
                                                            StrEscape(rtLayerGroup.GetName()),
                                                            rtLayerGroup.GetObjectId(),
                                                            arrChildName,
-                                                           parentName});
+                                                           parentName}));
                     }
-                    output = output + String.format("%s[%d] = %s;\n", new Object[] {container, Integer.valueOf(treeIndex), groupName});
+                    output.append(String.format("%s[%d] = %s;\n", new Object[] {container, Integer.valueOf(treeIndex), groupName}));
                     ++treeIndex;
 
                     if(node.children != null)
                     {
                         BuildClientSideTree(node.children, node, groupName, fulldata, arrChildName, resSrvc, null);
-                        output = output + String.format("%s.children = %s;\n", new Object[] {groupName, arrChildName});
+                        output.append(String.format("%s.children = %s;\n", new Object[] {groupName, arrChildName}));
                     }
                 }
             }
@@ -331,7 +328,7 @@ void BuildClientSideTree(ArrayList tree, TreeItem parent, String parentName, boo
                         String layerData = node.layerData;
                         String layerName = "lyr" + (intermediateVar++);
                         String objectId = rtLayer.GetObjectId();
-                        output = output + String.format("var %s = new LayerItem(\"%s\", \"%s\", %s, %s, %s, %s, %s, \"%s\", \"%s\", %s);\n",
+                        output.append(String.format("var %s = new LayerItem(\"%s\", \"%s\", %s, %s, %s, %s, %s, \"%s\", \"%s\", %s);\n",
                                                            new Object[] {layerName,
                                                            StrEscape(rtLayer.GetLegendLabel()),
                                                            rtLayer.GetName(),
@@ -342,12 +339,12 @@ void BuildClientSideTree(ArrayList tree, TreeItem parent, String parentName, boo
                                                            rtLayer.GetSelectable()? "true": "false",
                                                            resId.ToString(),
                                                            objectId,
-                                                           rtLayer.GetLayerType() == MgLayerType.BaseMap? "true": "false"});
+                                                           rtLayer.GetLayerType() == MgLayerType.BaseMap? "true": "false"}));
 
-                        output = output + String.format("%s[%d] = %s;\n",
+                        output.append(String.format("%s[%d] = %s;\n",
                                                            new Object[] {container,
                                                            Integer.valueOf(treeIndex),
-                                                           layerName});
+                                                           layerName}));
                         ++treeIndex;
 
                         if(layerMap == null || !layerMap.containsKey(objectId))
@@ -357,12 +354,12 @@ void BuildClientSideTree(ArrayList tree, TreeItem parent, String parentName, boo
                     }
                     else
                     {
-                        output = output + String.format("%s[%d] = new LayerSummary(\"%s\", \"%s\", \"%s\");\n",
+                        output.append(String.format("%s[%d] = new LayerSummary(\"%s\", \"%s\", \"%s\");\n",
                                                             new Object[] {container,
                                                             Integer.valueOf(i),
                                                             StrEscape(rtLayer.GetName()),
                                                             rtLayer.GetObjectId(),
-                                                            rtLayer.GetLayerDefinition().ToString()});
+                                                            rtLayer.GetLayerDefinition().ToString()}));
                     }
                 }
             }
@@ -410,12 +407,12 @@ void BuildLayerDefinitionData(String layerData, String layerVarName)
                 minScale = minElt.item(0).getChildNodes().item(0).getNodeValue().toString();
             if(maxElt.getLength() > 0)
                 maxScale = maxElt.item(0).getChildNodes().item(0).getNodeValue().toString();
-            output = output + String.format("var %s = new ScaleRangeItem(%s, %s, %s);\n",
+            output.append(String.format("var %s = new ScaleRangeItem(%s, %s, %s);\n",
                                         new Object[]{scaleRangeVarName,
                                         minScale,
                                         maxScale,
-                                        layerVarName});
-            output = output + String.format("%s.children[%d] = %s;\n", new Object[] {layerVarName, Integer.valueOf(sc), scaleRangeVarName});
+                                        layerVarName}));
+            output.append(String.format("%s.children[%d] = %s;\n", new Object[] {layerVarName, Integer.valueOf(sc), scaleRangeVarName}));
 
             if(type != 0)
                 break;
@@ -455,18 +452,18 @@ void BuildLayerDefinitionData(String layerData, String layerVarName)
                                 filterText = subItems2.item(0).getNodeValue();
                         }
 
-                        output = output + String.format("%s.children[%d] = new StyleItem(\"%s\", \"%s\", %d, %d);\n",
+                        output.append(String.format("%s.children[%d] = new StyleItem(\"%s\", \"%s\", %d, %d);\n",
                                                     new Object[]{scaleRangeVarName,
                                                     Integer.valueOf(styleIndex++),
                                                     StrEscape(labelText.trim()),
                                                     StrEscape(filterText.trim()),
                                                     ts+1,
-                                                    catIndex++});
+                                                    catIndex++}));
                     }
                 }
             }
         }
-        output = output + String.format("%s.lyrtype = %d;\n", new Object[]{layerVarName, new Integer(type) });
+        output.append(String.format("%s.lyrtype = %d;\n", new Object[]{layerVarName, new Integer(type) }));
     }
     catch(Exception e)
     {
