@@ -20,6 +20,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 <%@ Import Namespace="System.Collections" %>
 <%@ Import Namespace="System.Collections.Specialized" %>
 <%@ Import Namespace="System.Web" %>
+<%@ Import Namespace="System.Text" %>
 <%@ Import Namespace="System.Globalization" %>
 <%@ Import Namespace="System.Xml" %>
 <%@ Import Namespace="OSGeo.MapGuide" %>
@@ -64,7 +65,7 @@ String sessionId = "";
 bool summary = false;
 int layerCount = 0;
 int intermediateVar = 0;
-String output = "\nvar layerData = new Array();\n";
+StringBuilder output = new StringBuilder("\nvar layerData = new Array();\n");
 </script>
 
 <%
@@ -122,7 +123,7 @@ String output = "\nvar layerData = new Array();\n";
         //
         String templ = LoadTemplate(Request, "../viewerfiles/legendupdate.templ");
         String[] vals = { updateType.ToString(NumberFormatInfo.InvariantInfo),
-            output,
+            output.ToString(),
             GetSurroundVirtualPath(Request) + "legend.aspx"};
         String outputString = Substitute(templ, vals);
 
@@ -282,7 +283,7 @@ void BuildClientSideTree(ArrayList tree, TreeItem parent, String parentName, boo
                     if(node.children != null)
                     {
                         arrChildName = "c" + (intermediateVar++);
-                        output = output + "var " + arrChildName + " = new Array();\n";
+                        output.Append("var " + arrChildName + " = new Array();\n");
                     }
                     else
                     {
@@ -292,7 +293,7 @@ void BuildClientSideTree(ArrayList tree, TreeItem parent, String parentName, boo
                     MgLayerGroup rtLayerGroup = (MgLayerGroup)node.rtObject;
                     if(fulldata)
                     {
-                        output = output + String.Format("var {0} = new GroupItem(\"{1}\", {2}, {3}, {4},{5}, \"{6}\", \"{7}\", {8});\n",
+                        output.Append(String.Format("var {0} = new GroupItem(\"{1}\", {2}, {3}, {4},{5}, \"{6}\", \"{7}\", {8});\n",
                                                         groupName,
                                                         StrEscape(rtLayerGroup.GetLegendLabel()),
                                                         rtLayerGroup.GetExpandInLegend()? "true": "false",
@@ -301,24 +302,24 @@ void BuildClientSideTree(ArrayList tree, TreeItem parent, String parentName, boo
                                                         rtLayerGroup.GetDisplayInLegend() ? "true" : "false",
                                                         rtLayerGroup.GetObjectId(),
                                                         StrEscape(rtLayerGroup.GetName()),
-                                                        rtLayerGroup.GetLayerGroupType() == MgLayerGroupType.BaseMap? "true": "false");
+                                                        rtLayerGroup.GetLayerGroupType() == MgLayerGroupType.BaseMap? "true": "false"));
                     }
                     else
                     {
-                        output = output + String.Format("var {0} = new GroupSummary(\"{1}\", \"{2}\", {3}, {4});\n",
+                        output.Append(String.Format("var {0} = new GroupSummary(\"{1}\", \"{2}\", {3}, {4});\n",
                                                         groupName,
                                                         StrEscape(rtLayerGroup.GetName()),
                                                         rtLayerGroup.GetObjectId(),
                                                         arrChildName,
-                                                        parentName);
+                                                        parentName));
                     }
-                    output = output + String.Format("{0}[{1}] = {2};\n", container, treeIndex, groupName);
+                    output.Append(String.Format("{0}[{1}] = {2};\n", container, treeIndex, groupName));
                     ++treeIndex;
 
                     if(node.children != null)
                     {
                         BuildClientSideTree(node.children, node, groupName, fulldata, arrChildName, resSrvc, null);
-                        output = output + String.Format("{0}.children = {1};\n", groupName, arrChildName);
+                        output.Append(String.Format("{0}.children = {1};\n", groupName, arrChildName));
                     }
                 }
             }
@@ -333,7 +334,7 @@ void BuildClientSideTree(ArrayList tree, TreeItem parent, String parentName, boo
                         String layerData = node.layerData;
                         String layerName = "lyr" + (intermediateVar++);
                         String objectId = rtLayer.GetObjectId();
-                        output = output + String.Format("var {0} = new LayerItem(\"{1}\", \"{2}\", {3}, {4}, {5}, {6}, {7}, \"{8}\", \"{9}\", {10});\n",
+                        output.Append(String.Format("var {0} = new LayerItem(\"{1}\", \"{2}\", {3}, {4}, {5}, {6}, {7}, \"{8}\", \"{9}\", {10});\n",
                                                         layerName,
                                                         rtLayer.GetLegendLabel(),
                                                         StrEscape(rtLayer.GetName()),
@@ -344,12 +345,12 @@ void BuildClientSideTree(ArrayList tree, TreeItem parent, String parentName, boo
                                                         rtLayer.GetSelectable() ? "true" : "false",
                                                         resId.ToString(),
                                                         objectId,
-                                                        rtLayer.GetLayerType() == MgLayerType.BaseMap? "true": "false");
+                                                        rtLayer.GetLayerType() == MgLayerType.BaseMap? "true": "false"));
 
-                        output = output + String.Format("{0}[{1}] = {2};\n",
+                        output.Append(String.Format("{0}[{1}] = {2};\n",
                                                         container,
                                                         treeIndex,
-                                                        layerName);
+                                                        layerName));
                         ++treeIndex;
 
                         if(layerMap == null || !layerMap.ContainsKey(objectId))
@@ -359,12 +360,12 @@ void BuildClientSideTree(ArrayList tree, TreeItem parent, String parentName, boo
                     }
                     else
                     {
-                        output = output + String.Format("{0}[{1}] = new LayerSummary(\"{2}\", \"{3}\", \"{4}\");\n",
+                        output.Append(String.Format("{0}[{1}] = new LayerSummary(\"{2}\", \"{3}\", \"{4}\");\n",
                                                             container,
                                                             i,
                                                             rtLayer.GetName(),
                                                             rtLayer.GetObjectId(),
-                                                            rtLayer.GetLayerDefinition().ToString());
+                                                            rtLayer.GetLayerDefinition().ToString()));
                     }
                 }
             }
@@ -410,12 +411,12 @@ void BuildLayerDefinitionData(String layerData, String layerVarName)
             if(maxElt.Count > 0)
                 maxScale = maxElt[0].ChildNodes[0].Value;
             String scaleRangeVarName = "sc" + (intermediateVar++);
-            output = output + String.Format("var {0} = new ScaleRangeItem({1}, {2}, {3});\n",
+            output.Append(String.Format("var {0} = new ScaleRangeItem({1}, {2}, {3});\n",
                                         scaleRangeVarName,
                                         minScale,
                                         maxScale,
-                                        layerVarName);
-            output = output + String.Format("{0}.children[{1}] = {2};\n", layerVarName, sc, scaleRangeVarName);
+                                        layerVarName));
+            output.Append(String.Format("{0}.children[{1}] = {2};\n", layerVarName, sc, scaleRangeVarName));
 
             if(type != 0)
                 break;
@@ -447,18 +448,18 @@ void BuildLayerDefinitionData(String layerData, String layerVarName)
                         if(filter != null && filter.Count > 0 && filter[0].ChildNodes.Count > 0)
                             filterText = filter[0].ChildNodes[0].Value;
 
-                        output = output + String.Format("{0}.children[{1}] = new StyleItem(\"{2}\", \"{3}\", {4}, {5});\n",
+                        output.Append(String.Format("{0}.children[{1}] = new StyleItem(\"{2}\", \"{3}\", {4}, {5});\n",
                                                     scaleRangeVarName,
                                                     styleIndex++,
                                                     StrEscape(labelText.Trim()),
                                                     StrEscape(filterText.Trim()),
                                                     ts+1,
-                                                    catIndex++);
+                                                    catIndex++));
                     }
                 }
             }
         }
-        output = output + String.Format("{0}.lyrtype = {1};\n", layerVarName, type.ToString(NumberFormatInfo.InvariantInfo) );
+        output.Append(String.Format("{0}.lyrtype = {1};\n", layerVarName, type.ToString(NumberFormatInfo.InvariantInfo) ));
     }
     catch(Exception e)
     {
