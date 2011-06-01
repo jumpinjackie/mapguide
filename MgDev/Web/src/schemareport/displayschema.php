@@ -116,6 +116,7 @@
                 $proc->setParameter('', 'stringHasElevation', XslStrings::HasElevation);
                 $proc->setParameter('', 'stringNoGeometry', XslStrings::NoGeometry);
                 $proc->setParameter('', 'stringNoData', XslStrings::NoData);
+                $proc->setParameter('', 'stringSrsName', XslStrings::SrsName);
 
                 $html = $proc->transformToXML($xml_object);
 
