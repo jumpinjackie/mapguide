@@ -18,7 +18,7 @@
 #include "MapGuideCommon.h"
 #include "ServerManager.h"
 #include "TestServerManager.h"
-
+#include "FoundationDefs.h"
 const STRING TEST_LOCALE = L"en";
 
 CPPUNIT_TEST_SUITE_NAMED_REGISTRATION(TestServerManager, "TestServerManager");

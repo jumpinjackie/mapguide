@@ -19,7 +19,7 @@
 #include "TestMdfModel.h"
 #include "ServiceManager.h"
 #include "SAX2Parser.h"
-
+#include "FoundationDefs.h"
 const STRING TEST_LOCALE = L"en";
 
 CPPUNIT_TEST_SUITE_NAMED_REGISTRATION(TestMdfModel, "TestMdfModel");

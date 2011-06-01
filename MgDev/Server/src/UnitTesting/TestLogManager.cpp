@@ -20,7 +20,7 @@
 #include "CppUnitExtensions.h"
 #include "LogManager.h"
 #include "TestLogManagerThread.h"
-
+#include "FoundationDefs.h"
 CPPUNIT_TEST_SUITE_NAMED_REGISTRATION(TestLogManager, "TestLogManager");
 
 const wchar_t TestName[] = L"TestName.log";

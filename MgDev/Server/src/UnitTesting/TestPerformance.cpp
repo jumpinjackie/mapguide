@@ -23,7 +23,7 @@
 #include "Services/FeatureService.h"
 #include "ServerFeatureService.h"
 #include "Fdo.h"
-
+#include "FoundationDefs.h"
 // **************************************** PLEASE READ ****************************************
 // Note: The resources used here require that the following packages are installed:
 //       1) PerformanceTest.mgp

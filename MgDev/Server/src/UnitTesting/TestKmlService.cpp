@@ -21,7 +21,7 @@
 #include "ServerResourceService.h"
 #include "ServerSiteService.h"
 #include "../Common/Manager/FdoConnectionManager.h"
-
+#include "FoundationDefs.h"
 const STRING TEST_LOCALE = L"en";
 
 CPPUNIT_TEST_SUITE_NAMED_REGISTRATION(TestKmlService, "TestKmlService");

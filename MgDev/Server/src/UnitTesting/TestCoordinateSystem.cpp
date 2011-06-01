@@ -18,6 +18,7 @@
 #include "MapGuideCommon.h"
 #include "TestCoordinateSystem.h"
 #include "CppUnitExtensions.h"
+#include "FoundationDefs.h"
 
 #ifndef _WIN32
 #define stricmp strcasecmp

@@ -22,7 +22,7 @@
 #include <cppunit/XmlOutputter.h>
 #include <cppunit/extensions/TestFactoryRegistry.h>
 #include <cppunit/ui/text/TestRunner.h>
-
+#include "FoundationDefs.h"
 int Execute(CREFSTRING fileName, CREFSTRING test)
 {
     int nResult = 0;

@@ -21,7 +21,7 @@
 #include "ServerAdminService.h"
 #include "TestServerAdminService.h"
 #include "CppUnitExtensions.h"
-
+#include "FoundationDefs.h"
 CPPUNIT_TEST_SUITE_NAMED_REGISTRATION(TestServerAdminService, "TestServerAdminService");
 
 const STRING adminName = L"Administrator";

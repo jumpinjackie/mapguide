@@ -23,7 +23,7 @@
 #include "ServerSiteService.h"
 #include "../Common/Manager/FdoConnectionManager.h"
 #include "CppUnitExtensions.h"
-
+#include "FoundationDefs.h"
 const STRING TEST_LOCALE = L"en";
 
 CPPUNIT_TEST_SUITE_NAMED_REGISTRATION(TestMappingService, "TestMappingService");
