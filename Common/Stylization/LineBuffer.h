@@ -23,10 +23,6 @@
 #include "Bounds.h"
 #include "DataValueStack.h"
 #include "Matrix3D.h"
-#pragma warning(push)
-#pragma warning(disable: 4201)
-#include "Fdo.h"
-#pragma warning(pop)
 
 #ifndef RESTRICT
 #ifdef _WIN32
@@ -90,7 +86,44 @@ public:
         ctAGF   = 4
     };
 
-    STYLIZATION_API LineBuffer(int size, int dimensionality = FdoDimensionality_XY, bool bIgnoreZ = true);
+    //Matches the FGF enumeration FdoDimensionality
+    enum Dimensionality
+    {
+        /// X and Y dimensions are present.
+        Dimensionality_XY = 0,
+        /// Z dimension is present.
+        Dimensionality_Z  = 1,
+        /// M ('measure') dimension is present.
+        Dimensionality_M  = 2
+    };
+
+    //Matches the FGF enumeration FdoGeometryType
+    enum GeometryType
+    {
+        GeometryType_None = 0,
+        GeometryType_Point = 1,
+        GeometryType_LineString = 2,
+        GeometryType_Polygon = 3,
+        GeometryType_MultiPoint = 4,
+        GeometryType_MultiLineString = 5,
+        GeometryType_MultiPolygon = 6,
+        GeometryType_MultiGeometry = 7,
+        GeometryType_CurveString = 10,
+        GeometryType_CurvePolygon = 11,
+        GeometryType_MultiCurveString = 12,
+        GeometryType_MultiCurvePolygon = 13
+    };
+
+    //Matches FdoGeometryComponentType
+    enum GeometryComponentType
+    {
+        GeometryComponentType_LinearRing = 129,
+        GeometryComponentType_CircularArcSegment = 130,
+        GeometryComponentType_LineStringSegment = 131,
+        GeometryComponentType_Ring = 132
+    };
+
+    STYLIZATION_API LineBuffer(int size, int dimensionality = Dimensionality_XY, bool bIgnoreZ = true);
     STYLIZATION_API virtual ~LineBuffer();
 
     // rudimentary stuff
@@ -120,14 +153,14 @@ public:
     STYLIZATION_API void Centroid(GeomOperationType type, double* x, double * y, double* slope) const;
 
     // clears the buffer for reuse
-    STYLIZATION_API void Reset(int dimensionality = FdoDimensionality_XY, bool bIgnoreZ = true);
+    STYLIZATION_API void Reset(int dimensionality = Dimensionality_XY, bool bIgnoreZ = true);
     STYLIZATION_API void SetGeometryType(int geomType);
 
     // computes the bounds of the line buffer's geometry
     STYLIZATION_API void ComputeBounds(RS_Bounds& bounds);
 
     // attributes
-    STYLIZATION_API FdoDimensionality dimensionality() const;
+    STYLIZATION_API int dimensionality() const;
     STYLIZATION_API bool hasZ() const;
     STYLIZATION_API bool ignoreZ() const;
 
@@ -267,7 +300,7 @@ public:
     STYLIZATION_API LineBufferPool();
     STYLIZATION_API virtual ~LineBufferPool();
 
-    STYLIZATION_API static LineBuffer* NewLineBuffer(LineBufferPool* pool, int requestSize, int dimensionality = FdoDimensionality_XY, bool bIgnoreZ = true);
+    STYLIZATION_API static LineBuffer* NewLineBuffer(LineBufferPool* pool, int requestSize, int dimensionality = LineBuffer::Dimensionality_XY, bool bIgnoreZ = true);
     STYLIZATION_API static void FreeLineBuffer(LineBufferPool* pool, LineBuffer* lb);
 
 private:

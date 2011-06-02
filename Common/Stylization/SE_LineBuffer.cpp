@@ -301,7 +301,7 @@ void SE_LineBuffer::PopulateXFBuffer()
         }
     }
 
-    m_xf_buf->SetGeometryType(FdoGeometryType_LineString);
+    m_xf_buf->SetGeometryType(LineBuffer::GeometryType_LineString);
 }
 
 

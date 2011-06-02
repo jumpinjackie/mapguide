@@ -21,6 +21,7 @@
 #include "LineBuffer.h"
 #include "CSysTransformer.h"
 #include "RS_Raster.h"
+#include <Fdo.h>
 
 // Defines a feature data reader interface.
 class RS_FeatureReader

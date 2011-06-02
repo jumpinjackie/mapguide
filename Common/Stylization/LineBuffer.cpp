@@ -65,7 +65,7 @@ LineBuffer::LineBuffer(int size, int dimensionality, bool bIgnoreZ) :
     ResizeContours(4);
     m_dimensionality = dimensionality;
     m_bIgnoreZ = bIgnoreZ;
-    m_bProcessZ = (m_dimensionality & FdoDimensionality_Z) && !m_bIgnoreZ;
+    m_bProcessZ = (m_dimensionality & Dimensionality_Z) && !m_bIgnoreZ;
     m_bTransform2DPoints = false;
     m_num_geomcntrs_len = m_cntrs_len;
     m_num_geomcntrs = new int[m_num_geomcntrs_len];
@@ -94,7 +94,7 @@ LineBuffer::LineBuffer() :
     m_closeseg(NULL),
     m_cur_closeseg(-1),
     m_drawingScale(0.0),
-    m_dimensionality(FdoDimensionality_XY),
+    m_dimensionality(Dimensionality_XY),
     m_bIgnoreZ(true),
     m_bProcessZ(false),
     m_bTransform2DPoints(false),
@@ -123,7 +123,7 @@ void LineBuffer::Reset(int dimensionality, bool bIgnoreZ)
 
     m_bIgnoreZ = bIgnoreZ;
     m_dimensionality = dimensionality;
-    m_bProcessZ = (m_dimensionality & FdoDimensionality_Z) && !m_bIgnoreZ;
+    m_bProcessZ = (m_dimensionality & Dimensionality_Z) && !m_bIgnoreZ;
     m_bTransform2DPoints = false;
     m_cur_geom = -1;
     m_num_geomcntrs[0] = 0;
@@ -867,7 +867,7 @@ void LineBuffer::LoadFromAgf(unsigned char* RESTRICT data, int /*sz*/, CSysTrans
     int* ireader = (int*)data;
 
     // the geometry type
-    m_geom_type = (FdoGeometryType)*ireader++;
+    m_geom_type = (GeometryType)*ireader++;
 
     double last_z = 0.0;
     bool use_last_z = false;
@@ -876,16 +876,16 @@ void LineBuffer::LoadFromAgf(unsigned char* RESTRICT data, int /*sz*/, CSysTrans
     switch (m_geom_type)
     {
         // all the linear types...
-        case FdoGeometryType_MultiLineString:
-        case FdoGeometryType_MultiPolygon:
-        case FdoGeometryType_MultiPoint:
-        case FdoGeometryType_LineString:
-        case FdoGeometryType_Polygon:
-        case FdoGeometryType_Point:
+        case GeometryType_MultiLineString:
+        case GeometryType_MultiPolygon:
+        case GeometryType_MultiPoint:
+        case GeometryType_LineString:
+        case GeometryType_Polygon:
+        case GeometryType_Point:
         {
-            bool is_multi = (m_geom_type == FdoGeometryType_MultiLineString)
-                || (m_geom_type == FdoGeometryType_MultiPolygon
-                || (m_geom_type == FdoGeometryType_MultiPoint));
+            bool is_multi = (m_geom_type == GeometryType_MultiLineString)
+                || (m_geom_type == GeometryType_MultiPolygon
+                || (m_geom_type == GeometryType_MultiPoint));
 
             // the coordinate type
             int skip = 0; //0=XY, 1=XYZ or XYM, 2 = XYZM
@@ -907,23 +907,23 @@ void LineBuffer::LoadFromAgf(unsigned char* RESTRICT data, int /*sz*/, CSysTrans
                     *ireader++;
 
                 // read cordinate typeB
-                FdoDimensionality dim = (FdoDimensionality)*ireader++;
+                Dimensionality dim = (Dimensionality)*ireader++;
 
                 // ensure that all dimensionalities of each geometry are the same
-                _ASSERT(q==0 || m_dimensionality == (dim & ~FdoDimensionality_M));
+                _ASSERT(q==0 || m_dimensionality == (dim & ~Dimensionality_M));
 
-                m_dimensionality = dim & ~FdoDimensionality_M; //LineBuffer doesn't support M
-                m_bProcessZ = (m_dimensionality & FdoDimensionality_Z) && !m_bIgnoreZ;
+                m_dimensionality = dim & ~Dimensionality_M; //LineBuffer doesn't support M
+                m_bProcessZ = (m_dimensionality & Dimensionality_Z) && !m_bIgnoreZ;
 
                 skip = 0;
-                if ((dim & FdoDimensionality_Z) && m_bIgnoreZ) skip++;
-                if (dim & FdoDimensionality_M) skip++;
+                if ((dim & Dimensionality_Z) && m_bIgnoreZ) skip++;
+                if (dim & Dimensionality_M) skip++;
 
                 // the number of contours in current polygon/linestring
                 int contour_count = 1; //for linestrings
 
-                if (m_geom_type == FdoGeometryType_Polygon ||
-                    m_geom_type == FdoGeometryType_MultiPolygon)
+                if (m_geom_type == GeometryType_Polygon ||
+                    m_geom_type == GeometryType_MultiPolygon)
                     contour_count = *ireader++;
 
                 for (int i=0; i<contour_count; ++i)
@@ -932,8 +932,8 @@ void LineBuffer::LoadFromAgf(unsigned char* RESTRICT data, int /*sz*/, CSysTrans
 
                     // point geoms do not have a point count, since
                     // each piece is just one point each
-                    if (m_geom_type != FdoGeometryType_MultiPoint &&
-                        m_geom_type != FdoGeometryType_Point)
+                    if (m_geom_type != GeometryType_MultiPoint &&
+                        m_geom_type != GeometryType_Point)
                         point_count = *ireader++;
 
                     //*** ireader not valid from here down
@@ -950,8 +950,8 @@ void LineBuffer::LoadFromAgf(unsigned char* RESTRICT data, int /*sz*/, CSysTrans
                         // if current contour is just a point, add a second point
                         // for easier time in the line style algorithm
                         // but only do this for line and polygons, not points!!!!!
-                        if (m_geom_type != FdoGeometryType_MultiPoint &&
-                            m_geom_type != FdoGeometryType_Point)
+                        if (m_geom_type != GeometryType_MultiPoint &&
+                            m_geom_type != GeometryType_Point)
                             LineTo(x, y, z);
                     }
                     else
@@ -1019,10 +1019,10 @@ void LineBuffer::LoadFromAgf(unsigned char* RESTRICT data, int /*sz*/, CSysTrans
         }
 
         // all the non-linear types...
-        case FdoGeometryType_CurveString:
-        case FdoGeometryType_CurvePolygon:
-        case FdoGeometryType_MultiCurveString:
-        case FdoGeometryType_MultiCurvePolygon:
+        case GeometryType_CurveString:
+        case GeometryType_CurvePolygon:
+        case GeometryType_MultiCurveString:
+        case GeometryType_MultiCurvePolygon:
         {
             bool is_multi = false;
 
@@ -1031,18 +1031,18 @@ void LineBuffer::LoadFromAgf(unsigned char* RESTRICT data, int /*sz*/, CSysTrans
             // change geometry type over to flattened type
             switch (m_geom_type)
             {
-                case FdoGeometryType_CurveString:
-                    m_geom_type = FdoGeometryType_LineString;
+                case GeometryType_CurveString:
+                    m_geom_type = GeometryType_LineString;
                     break;
-                case FdoGeometryType_CurvePolygon:
-                    m_geom_type = FdoGeometryType_Polygon;
+                case GeometryType_CurvePolygon:
+                    m_geom_type = GeometryType_Polygon;
                     break;
-                case FdoGeometryType_MultiCurveString:
-                    m_geom_type = FdoGeometryType_MultiLineString;
+                case GeometryType_MultiCurveString:
+                    m_geom_type = GeometryType_MultiLineString;
                     is_multi = true;
                     break;
-                case FdoGeometryType_MultiCurvePolygon:
-                    m_geom_type = FdoGeometryType_MultiPolygon;
+                case GeometryType_MultiCurvePolygon:
+                    m_geom_type = GeometryType_MultiPolygon;
                     is_multi = true;
                     break;
             }
@@ -1067,23 +1067,23 @@ void LineBuffer::LoadFromAgf(unsigned char* RESTRICT data, int /*sz*/, CSysTrans
                     *ireader++;
 
                 // read cordinate typeB
-                FdoDimensionality dim = (FdoDimensionality)*ireader++;
+                Dimensionality dim = (Dimensionality)*ireader++;
 
                 // ensure that all dimensionalities of each geometry are the same
-                _ASSERT(q==0 || m_dimensionality == (dim & ~FdoDimensionality_M));
+                _ASSERT(q==0 || m_dimensionality == (dim & ~Dimensionality_M));
 
-                m_dimensionality = dim & ~FdoDimensionality_M; //LineBuffer doesn't support M
-                m_bProcessZ = (m_dimensionality & FdoDimensionality_Z) && !m_bIgnoreZ;
+                m_dimensionality = dim & ~Dimensionality_M; //LineBuffer doesn't support M
+                m_bProcessZ = (m_dimensionality & Dimensionality_Z) && !m_bIgnoreZ;
 
                 skip = 0;
-                if ((dim & FdoDimensionality_Z) && m_bIgnoreZ) skip++;
-                if (dim & FdoDimensionality_M) skip++;
+                if ((dim & Dimensionality_Z) && m_bIgnoreZ) skip++;
+                if (dim & Dimensionality_M) skip++;
 
                 // the number of contours in current polygon/linestring
                 int contour_count = 1; //for linestrings, no rings, just one
 
-                if (real_geom_type == FdoGeometryType_CurvePolygon ||
-                    real_geom_type == FdoGeometryType_MultiCurvePolygon)
+                if (real_geom_type == GeometryType_CurvePolygon ||
+                    real_geom_type == GeometryType_MultiCurvePolygon)
                     contour_count = *ireader++; // # rings for polygons
 
                 for (int i=0; i<contour_count; ++i)
@@ -1105,7 +1105,7 @@ void LineBuffer::LoadFromAgf(unsigned char* RESTRICT data, int /*sz*/, CSysTrans
 
                         switch (seg_type)
                         {
-                        case FdoGeometryComponentType_CircularArcSegment:
+                        case GeometryComponentType_CircularArcSegment:
 
                             // circular arc: read midpont and endpoint
                             // first point was either the start point or
@@ -1129,7 +1129,7 @@ void LineBuffer::LoadFromAgf(unsigned char* RESTRICT data, int /*sz*/, CSysTrans
                             ireader = (int*)dreader;
                             break;
 
-                        case FdoGeometryComponentType_LineStringSegment:
+                        case GeometryComponentType_LineStringSegment:
 
                             // line string segment - just read the points and do LineTos
                             int num_pts = *ireader++;
@@ -1146,8 +1146,8 @@ void LineBuffer::LoadFromAgf(unsigned char* RESTRICT data, int /*sz*/, CSysTrans
                         }
                     }
 
-                    if (m_geom_type == FdoGeometryType_Polygon ||
-                        m_geom_type == FdoGeometryType_MultiPolygon)
+                    if (m_geom_type == GeometryType_Polygon ||
+                        m_geom_type == GeometryType_MultiPolygon)
                     {
                         Close();
                     }
@@ -1156,7 +1156,7 @@ void LineBuffer::LoadFromAgf(unsigned char* RESTRICT data, int /*sz*/, CSysTrans
             break;
         }
 
-        case FdoGeometryType_MultiGeometry:
+        case GeometryType_MultiGeometry:
         {
             // can't do that yet
             break;
@@ -1183,19 +1183,19 @@ void LineBuffer::ToAgf(RS_OutputStream* os)
     switch (m_geom_type)
     {
         // all the linear types...
-        case FdoGeometryType_MultiLineString:
-        case FdoGeometryType_MultiPolygon:
-        case FdoGeometryType_MultiPoint:
-        case FdoGeometryType_LineString:
-        case FdoGeometryType_Polygon:
-        case FdoGeometryType_Point:
+        case GeometryType_MultiLineString:
+        case GeometryType_MultiPolygon:
+        case GeometryType_MultiPoint:
+        case GeometryType_LineString:
+        case GeometryType_Polygon:
+        case GeometryType_Point:
         {
             // write geometry type
             WRITE_INT(os, m_geom_type);
 
-            bool is_multi = (m_geom_type == FdoGeometryType_MultiLineString ||
-                             m_geom_type == FdoGeometryType_MultiPolygon ||
-                             m_geom_type == FdoGeometryType_MultiPoint);
+            bool is_multi = (m_geom_type == GeometryType_MultiLineString ||
+                             m_geom_type == GeometryType_MultiPolygon ||
+                             m_geom_type == GeometryType_MultiPoint);
 
             // the coordinate type
 //          int skip = 0; //0=XY, 1=XYZ or XYM, 2 = XYZM
@@ -1208,8 +1208,8 @@ void LineBuffer::ToAgf(RS_OutputStream* os)
             int num_geoms = m_cur_geom + 1;
             if (is_multi)
             {
-                if (   m_geom_type == FdoGeometryType_MultiPoint 
-                    || m_geom_type == FdoGeometryType_MultiLineString )
+                if (   m_geom_type == GeometryType_MultiPoint 
+                    || m_geom_type == GeometryType_MultiLineString )
                 {
                     //write number of geometries -- for multipoint/linestring the
                     //number of contours (i.e. MoveTos) is equal to the
@@ -1232,14 +1232,14 @@ void LineBuffer::ToAgf(RS_OutputStream* os)
                 {
                     switch (m_geom_type)
                     {
-                    case FdoGeometryType_MultiLineString:
-                        WRITE_INT(os, FdoGeometryType_LineString);
+                    case GeometryType_MultiLineString:
+                        WRITE_INT(os, GeometryType_LineString);
                         break;
-                    case FdoGeometryType_MultiPolygon:
-                        WRITE_INT(os, FdoGeometryType_Polygon);
+                    case GeometryType_MultiPolygon:
+                        WRITE_INT(os, GeometryType_Polygon);
                         break;
-                    case FdoGeometryType_MultiPoint:
-                        WRITE_INT(os, FdoGeometryType_Point);
+                    case GeometryType_MultiPoint:
+                        WRITE_INT(os, GeometryType_Point);
                         break;
                     }
                 }
@@ -1247,21 +1247,21 @@ void LineBuffer::ToAgf(RS_OutputStream* os)
                 // write cordinate type
                 // If user specifies ignored Z, then we don't have Z values
                 // even though m_dimensionality indicates we do.
-                // Write out FdoDimensionality_XY in this case.
+                // Write out Dimensionality_XY in this case.
                 if (m_bProcessZ)
                 {
                     WRITE_INT(os, m_dimensionality);
                 }
                 else
                 {
-                    WRITE_INT(os, FdoDimensionality_XY);
+                    WRITE_INT(os, Dimensionality_XY);
                 }
 
                 // the number of contours in current polygon/linestring
                 int contour_count = 1; //for linestrings
 
-                if (m_geom_type == FdoGeometryType_MultiPolygon ||
-                    m_geom_type == FdoGeometryType_Polygon )
+                if (m_geom_type == GeometryType_MultiPolygon ||
+                    m_geom_type == GeometryType_Polygon )
                 {
                     contour_count = m_num_geomcntrs[q];
                     WRITE_INT(os, contour_count);
@@ -1273,8 +1273,8 @@ void LineBuffer::ToAgf(RS_OutputStream* os)
 
                     // point geoms do not have a point count, since
                     // each piece is just one point each
-                    if ((m_geom_type != FdoGeometryType_MultiPoint)
-                        && (m_geom_type != FdoGeometryType_Point))
+                    if ((m_geom_type != GeometryType_MultiPoint)
+                        && (m_geom_type != GeometryType_Point))
                     {
                         point_count = m_cntrs[i];
                         WRITE_INT(os, point_count);
@@ -1316,10 +1316,10 @@ void LineBuffer::ToAgf(RS_OutputStream* os)
             break;
         }
 
-        case FdoGeometryType_CurveString:
-        case FdoGeometryType_CurvePolygon:
-        case FdoGeometryType_MultiCurveString:
-        case FdoGeometryType_MultiCurvePolygon:
+        case GeometryType_CurveString:
+        case GeometryType_CurvePolygon:
+        case GeometryType_MultiCurveString:
+        case GeometryType_MultiCurvePolygon:
         {
             // TODO: the LineBuffer is already tessellated, so in case of these
             // we need to actually use a tessellated type, i.e. the code above
@@ -1467,7 +1467,7 @@ LineBuffer* LineBuffer::Clip(RS_Bounds& b, GeomOperationType clipType, LineBuffe
         || m_bounds.maxy < b.miny)
         return NULL;
 
-    std::auto_ptr<LineBuffer> spLB(LineBufferPool::NewLineBuffer(lbp, m_cur_types, (FdoDimensionality)m_dimensionality, m_bIgnoreZ));
+    std::auto_ptr<LineBuffer> spLB(LineBufferPool::NewLineBuffer(lbp, m_cur_types, m_dimensionality, m_bIgnoreZ));
 
     if (clipType == ctArea)
     {
@@ -1488,20 +1488,20 @@ LineBuffer* LineBuffer::Clip(RS_Bounds& b, GeomOperationType clipType, LineBuffe
     {
         switch (m_geom_type)
         {
-            case FdoGeometryType_MultiPolygon:
-            case FdoGeometryType_Polygon:
+            case GeometryType_MultiPolygon:
+            case GeometryType_Polygon:
             {
                 ClipPolygon(b, spLB.get());
                 return spLB.release();
             }
-            case FdoGeometryType_MultiLineString:
-            case FdoGeometryType_LineString:
+            case GeometryType_MultiLineString:
+            case GeometryType_LineString:
             {
                 ClipPolyline(b, spLB.get());
                 return spLB.release();
             }
-            case FdoGeometryType_Point:
-            case FdoGeometryType_MultiPoint:
+            case GeometryType_Point:
+            case GeometryType_MultiPoint:
             {
                 ClipPoints(b, spLB.get());
                 return spLB.release();
@@ -2548,9 +2548,9 @@ bool LineBuffer::ignoreZ() const
 }
 
 
-FdoDimensionality LineBuffer::dimensionality() const
+int LineBuffer::dimensionality() const
 {
-    return (FdoDimensionality)m_dimensionality;
+    return m_dimensionality;
 }
 
 
