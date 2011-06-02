@@ -19,6 +19,7 @@
 #define POLYGONUTILS_H_
 
 #include "LineBuffer.h"
+#include <map>
 
 ////////////////////////////////////////////////////////////////////////////////
 // Used with overlapping contour computations.
