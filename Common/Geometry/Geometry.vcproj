@@ -43,6 +43,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
+				AdditionalOptions="/MP"
 				Optimization="0"
 				AdditionalIncludeDirectories="..\CoordinateSystem;..\Foundation;..\Geometry;..\..\Oem\ACE\ACE_wrappers;&quot;..\..\Oem\geos-2.2.0\source\headers&quot;;..\..\Oem\CsMap\Include"
 				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL;GEOMETRY_EXPORTS"
@@ -120,6 +121,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
+				AdditionalOptions="/MP"
 				Optimization="0"
 				AdditionalIncludeDirectories="..\CoordinateSystem;..\Foundation;..\Geometry;..\..\Oem\ACE\ACE_wrappers;&quot;..\..\Oem\geos-2.2.0\source\headers&quot;;..\..\Oem\CsMap\Include"
 				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL;GEOMETRY_EXPORTS"
@@ -195,6 +197,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
+				AdditionalOptions="/MP"
 				Optimization="2"
 				AdditionalIncludeDirectories="..\CoordinateSystem;..\Foundation;..\Geometry;..\..\Oem\ACE\ACE_wrappers;&quot;..\..\Oem\geos-2.2.0\source\headers&quot;;..\..\Oem\CsMap\Include"
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;GEOMETRY_EXPORTS"
@@ -272,6 +275,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
+				AdditionalOptions="/MP"
 				Optimization="2"
 				AdditionalIncludeDirectories="..\CoordinateSystem;..\Foundation;..\Geometry;..\..\Oem\ACE\ACE_wrappers;&quot;..\..\Oem\geos-2.2.0\source\headers&quot;;..\..\Oem\CsMap\Include"
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;GEOMETRY_EXPORTS"
