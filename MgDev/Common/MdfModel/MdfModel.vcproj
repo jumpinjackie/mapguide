@@ -43,7 +43,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
-				AdditionalOptions="$(USRCFLAGS)"
+				AdditionalOptions="$(USRCFLAGS) /MP"
 				Optimization="0"
 				AdditionalIncludeDirectories="&quot;..\..\Oem\dbxml\xerces-c-src\src&quot;"
 				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL;MDFMODEL_EXPORTS;_CRT_SECURE_NO_DEPRECATE"
@@ -122,7 +122,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
-				AdditionalOptions="$(USRCFLAGS)"
+				AdditionalOptions="$(USRCFLAGS) /MP"
 				Optimization="0"
 				AdditionalIncludeDirectories="&quot;..\..\Oem\dbxml\xerces-c-src\src&quot;"
 				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL;MDFMODEL_EXPORTS;_CRT_SECURE_NO_DEPRECATE"
@@ -199,7 +199,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
-				AdditionalOptions="$(USRCFLAGS)"
+				AdditionalOptions="$(USRCFLAGS) /MP"
 				Optimization="2"
 				InlineFunctionExpansion="1"
 				OmitFramePointers="true"
@@ -281,7 +281,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
-				AdditionalOptions="$(USRCFLAGS)"
+				AdditionalOptions="$(USRCFLAGS) /MP"
 				Optimization="2"
 				InlineFunctionExpansion="1"
 				OmitFramePointers="true"
