@@ -43,6 +43,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
+				AdditionalOptions="/MP"
 				Optimization="0"
 				AdditionalIncludeDirectories="..\Common;..\Common\Cache;..\Common\Manager;..\Services\Feature;..\Services\Kml;..\Services\Mapping;..\Services\Rendering;..\Services\Resource;..\Services\ServerAdmin;..\Services\Site;..\Services\Tile;..\..\..\Common\Foundation;..\..\..\Common\Geometry;..\..\..\Common\PlatformBase;..\..\..\Common\MapGuideCommon;..\..\..\Common\MdfModel;..\..\..\Common\MdfParser;..\..\..\Common\Stylization;..\..\..\Oem\ACE\ACE_wrappers;&quot;..\..\..\Oem\CppUnit-1.9.14\include&quot;;&quot;..\..\..\Oem\dbxml\xerces-c-src\src&quot;;..\..\..\Oem\FDO\inc"
 				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL"
@@ -122,6 +123,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
+				AdditionalOptions="/MP"
 				Optimization="0"
 				AdditionalIncludeDirectories="..\Common;..\Common\Cache;..\Common\Manager;..\Services\Feature;..\Services\Kml;..\Services\Mapping;..\Services\Rendering;..\Services\Resource;..\Services\ServerAdmin;..\Services\Site;..\Services\Tile;..\..\..\Common\Foundation;..\..\..\Common\Geometry;..\..\..\Common\PlatformBase;..\..\..\Common\MapGuideCommon;..\..\..\Common\MdfModel;..\..\..\Common\MdfParser;..\..\..\Common\Stylization;..\..\..\Oem\ACE\ACE_wrappers;&quot;..\..\..\Oem\CppUnit-1.9.14\include&quot;;&quot;..\..\..\Oem\dbxml\xerces-c-src\src&quot;;..\..\..\Oem\FDO\inc"
 				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL"
@@ -201,6 +203,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
+				AdditionalOptions="/MP"
 				Optimization="2"
 				AdditionalIncludeDirectories="..\Common;..\Common\Cache;..\Common\Manager;..\Services\Feature;..\Services\Kml;..\Services\Mapping;..\Services\Rendering;..\Services\Resource;..\Services\ServerAdmin;..\Services\Site;..\Services\Tile;..\..\..\Common\Foundation;..\..\..\Common\Geometry;..\..\..\Common\PlatformBase;..\..\..\Common\MapGuideCommon;..\..\..\Common\MdfModel;..\..\..\Common\MdfParser;..\..\..\Common\Stylization;..\..\..\Oem\ACE\ACE_wrappers;&quot;..\..\..\Oem\CppUnit-1.9.14\include&quot;;&quot;..\..\..\Oem\dbxml\xerces-c-src\src&quot;;..\..\..\Oem\FDO\inc"
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL"
@@ -280,6 +283,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
+				AdditionalOptions="/MP"
 				Optimization="2"
 				AdditionalIncludeDirectories="..\Common;..\Common\Cache;..\Common\Manager;..\Services\Feature;..\Services\Kml;..\Services\Mapping;..\Services\Rendering;..\Services\Resource;..\Services\ServerAdmin;..\Services\Site;..\Services\Tile;..\..\..\Common\Foundation;..\..\..\Common\Geometry;..\..\..\Common\PlatformBase;..\..\..\Common\MapGuideCommon;..\..\..\Common\MdfModel;..\..\..\Common\MdfParser;..\..\..\Common\Stylization;..\..\..\Oem\ACE\ACE_wrappers;&quot;..\..\..\Oem\CppUnit-1.9.14\include&quot;;&quot;..\..\..\Oem\dbxml\xerces-c-src\src&quot;;..\..\..\Oem\FDO\inc"
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL"
