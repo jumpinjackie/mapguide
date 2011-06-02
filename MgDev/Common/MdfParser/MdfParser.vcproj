@@ -43,6 +43,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
+				AdditionalOptions="/MP"
 				Optimization="0"
 				AdditionalIncludeDirectories="..\MdfModel;&quot;..\..\Oem\dbxml\xerces-c-src\src&quot;"
 				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL;MDFPARSER_EXPORTS;_CRT_SECURE_NO_DEPRECATE"
@@ -123,6 +124,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
+				AdditionalOptions="/MP"
 				Optimization="0"
 				AdditionalIncludeDirectories="..\MdfModel;&quot;..\..\Oem\dbxml\xerces-c-src\src&quot;"
 				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL;MDFPARSER_EXPORTS;_CRT_SECURE_NO_DEPRECATE"
@@ -202,6 +204,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
+				AdditionalOptions="/MP"
 				Optimization="2"
 				AdditionalIncludeDirectories="..\MdfModel;&quot;..\..\Oem\dbxml\xerces-c-src\src&quot;"
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;MDFPARSER_EXPORTS;_CRT_SECURE_NO_DEPRECATE"
@@ -281,6 +284,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
+				AdditionalOptions="/MP"
 				Optimization="2"
 				AdditionalIncludeDirectories="..\MdfModel;&quot;..\..\Oem\dbxml\xerces-c-src\src&quot;"
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;MDFPARSER_EXPORTS;_CRT_SECURE_NO_DEPRECATE"
