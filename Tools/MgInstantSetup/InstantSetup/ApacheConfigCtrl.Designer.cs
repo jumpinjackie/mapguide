@@ -46,6 +46,9 @@
             this.chkEnableJava = new System.Windows.Forms.CheckBox();
             this.numTomcatPort = new System.Windows.Forms.NumericUpDown();
             this.label5 = new System.Windows.Forms.Label();
+            this.groupBox4 = new System.Windows.Forms.GroupBox();
+            this.rdJava = new System.Windows.Forms.RadioButton();
+            this.rdPhp = new System.Windows.Forms.RadioButton();
             this.groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numSitePort)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numClientPort)).BeginInit();
@@ -54,6 +57,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.numHttpdPort)).BeginInit();
             this.groupBox3.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numTomcatPort)).BeginInit();
+            this.groupBox4.SuspendLayout();
             this.SuspendLayout();
             // 
             // groupBox1
@@ -162,7 +166,7 @@
                         | System.Windows.Forms.AnchorStyles.Right)));
             this.txtServiceName.Location = new System.Drawing.Point(154, 77);
             this.txtServiceName.Name = "txtServiceName";
-            this.txtServiceName.Size = new System.Drawing.Size(236, 20);
+            this.txtServiceName.Size = new System.Drawing.Size(229, 20);
             this.txtServiceName.TabIndex = 11;
             this.txtServiceName.TextChanged += new System.EventHandler(this.txtServiceName_TextChanged);
             // 
@@ -203,7 +207,7 @@
                         | System.Windows.Forms.AnchorStyles.Right)));
             this.txtVirtualDirectory.Location = new System.Drawing.Point(154, 25);
             this.txtVirtualDirectory.Name = "txtVirtualDirectory";
-            this.txtVirtualDirectory.Size = new System.Drawing.Size(236, 20);
+            this.txtVirtualDirectory.Size = new System.Drawing.Size(229, 20);
             this.txtVirtualDirectory.TabIndex = 1;
             this.txtVirtualDirectory.TextChanged += new System.EventHandler(this.txtVirtualDirectory_TextChanged);
             // 
@@ -224,9 +228,9 @@
             this.groupBox3.Controls.Add(this.chkEnableJava);
             this.groupBox3.Controls.Add(this.numTomcatPort);
             this.groupBox3.Controls.Add(this.label5);
-            this.groupBox3.Location = new System.Drawing.Point(4, 246);
+            this.groupBox3.Location = new System.Drawing.Point(4, 303);
             this.groupBox3.Name = "groupBox3";
-            this.groupBox3.Size = new System.Drawing.Size(440, 106);
+            this.groupBox3.Size = new System.Drawing.Size(440, 66);
             this.groupBox3.TabIndex = 2;
             this.groupBox3.TabStop = false;
             // 
@@ -263,15 +267,53 @@
             this.label5.TabIndex = 6;
             this.label5.Text = "Tomcat Port Number";
             // 
+            // groupBox4
+            // 
+            this.groupBox4.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.groupBox4.Controls.Add(this.rdJava);
+            this.groupBox4.Controls.Add(this.rdPhp);
+            this.groupBox4.Location = new System.Drawing.Point(4, 247);
+            this.groupBox4.Name = "groupBox4";
+            this.groupBox4.Size = new System.Drawing.Size(440, 50);
+            this.groupBox4.TabIndex = 3;
+            this.groupBox4.TabStop = false;
+            this.groupBox4.Text = "Preferred Default Viewer";
+            // 
+            // rdJava
+            // 
+            this.rdJava.AutoSize = true;
+            this.rdJava.Location = new System.Drawing.Point(111, 19);
+            this.rdJava.Name = "rdJava";
+            this.rdJava.Size = new System.Drawing.Size(48, 17);
+            this.rdJava.TabIndex = 1;
+            this.rdJava.TabStop = true;
+            this.rdJava.Text = "Java";
+            this.rdJava.UseVisualStyleBackColor = true;
+            this.rdJava.CheckedChanged += new System.EventHandler(this.defaultViewerCheckedChanged);
+            // 
+            // rdPhp
+            // 
+            this.rdPhp.AutoSize = true;
+            this.rdPhp.Location = new System.Drawing.Point(26, 19);
+            this.rdPhp.Name = "rdPhp";
+            this.rdPhp.Size = new System.Drawing.Size(47, 17);
+            this.rdPhp.TabIndex = 0;
+            this.rdPhp.TabStop = true;
+            this.rdPhp.Text = "PHP";
+            this.rdPhp.UseVisualStyleBackColor = true;
+            this.rdPhp.CheckedChanged += new System.EventHandler(this.defaultViewerCheckedChanged);
+            // 
             // ApacheConfigCtrl
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.Controls.Add(this.groupBox4);
             this.Controls.Add(this.groupBox3);
             this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.groupBox1);
             this.Name = "ApacheConfigCtrl";
-            this.Size = new System.Drawing.Size(447, 355);
+            this.Size = new System.Drawing.Size(447, 372);
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numSitePort)).EndInit();
@@ -283,6 +325,8 @@
             this.groupBox3.ResumeLayout(false);
             this.groupBox3.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numTomcatPort)).EndInit();
+            this.groupBox4.ResumeLayout(false);
+            this.groupBox4.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -307,5 +351,8 @@
         private System.Windows.Forms.Label label6;
         private System.Windows.Forms.TextBox txtServiceName;
         private System.Windows.Forms.Label label7;
+        private System.Windows.Forms.GroupBox groupBox4;
+        private System.Windows.Forms.RadioButton rdJava;
+        private System.Windows.Forms.RadioButton rdPhp;
     }
 }

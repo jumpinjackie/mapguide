@@ -47,7 +47,7 @@
             // btnConfigure
             // 
             this.btnConfigure.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnConfigure.Location = new System.Drawing.Point(465, 464);
+            this.btnConfigure.Location = new System.Drawing.Point(465, 509);
             this.btnConfigure.Name = "btnConfigure";
             this.btnConfigure.Size = new System.Drawing.Size(75, 23);
             this.btnConfigure.TabIndex = 0;
@@ -64,7 +64,7 @@
             this.tabControl1.Location = new System.Drawing.Point(13, 87);
             this.tabControl1.Name = "tabControl1";
             this.tabControl1.SelectedIndex = 0;
-            this.tabControl1.Size = new System.Drawing.Size(527, 371);
+            this.tabControl1.Size = new System.Drawing.Size(527, 416);
             this.tabControl1.TabIndex = 1;
             // 
             // TAB_APACHE
@@ -72,7 +72,7 @@
             this.TAB_APACHE.Location = new System.Drawing.Point(4, 22);
             this.TAB_APACHE.Name = "TAB_APACHE";
             this.TAB_APACHE.Padding = new System.Windows.Forms.Padding(3);
-            this.TAB_APACHE.Size = new System.Drawing.Size(519, 345);
+            this.TAB_APACHE.Size = new System.Drawing.Size(519, 390);
             this.TAB_APACHE.TabIndex = 1;
             this.TAB_APACHE.Text = "Apache";
             this.TAB_APACHE.UseVisualStyleBackColor = true;
@@ -130,7 +130,7 @@
             // 
             this.chkInstallServices.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.chkInstallServices.AutoSize = true;
-            this.chkInstallServices.Location = new System.Drawing.Point(13, 468);
+            this.chkInstallServices.Location = new System.Drawing.Point(13, 513);
             this.chkInstallServices.Name = "chkInstallServices";
             this.chkInstallServices.Size = new System.Drawing.Size(97, 17);
             this.chkInstallServices.TabIndex = 7;
@@ -173,7 +173,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(552, 499);
+            this.ClientSize = new System.Drawing.Size(552, 544);
             this.Controls.Add(this.button1);
             this.Controls.Add(this.txtBatchOutput);
             this.Controls.Add(this.label3);

@@ -98,6 +98,24 @@ namespace InstantSetup
         private void chkEnableJava_CheckedChanged(object sender, EventArgs e)
         {
             ApacheConfig.EnableJava = chkEnableJava.Checked;
+
+            if (chkEnableJava.Checked)
+            {
+                rdJava.Enabled = true;
+            }
+            else 
+            {
+                rdJava.Enabled = false;
+                rdPhp.Checked = true;
+            }
+        }
+
+        private void defaultViewerCheckedChanged(object sender, EventArgs e)
+        {
+            if (rdJava.Checked)
+                this.Config.DefaultViewer = ApiType.Java;
+            else if (rdPhp.Checked)
+                this.Config.DefaultViewer = ApiType.Php;
         }
     }
 }

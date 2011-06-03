@@ -57,6 +57,11 @@ namespace InstantSetup.Core
             }
         }
 
+        public virtual string WebTierTomcatDir
+        {
+            get { return Path.Combine(this.WebTierRootDir, "Tomcat"); }
+        }
+
         protected override void ValidateConfigSettings()
         {
 
@@ -88,24 +93,42 @@ namespace InstantSetup.Core
             if (this.EnableJava)
             {
                 httpdBuffer.Replace("%MG_INCLUDE_TOMCAT%", "Include conf/tomcat.conf");
-                httpdBuffer.Replace("%MG_PHP_API%", "#");
-                httpdBuffer.Replace("%MG_JAVA_API%", "");
-
-                var tomcatConf = Path.Combine(this.WebTierApacheDir, "conf\\tomcat.conf");
-                var tomcatBuffer = new StringBuilder(File.ReadAllText(tomcatConf));
-
-                tomcatBuffer.Replace("%MG_WEB_APACHE%", Apachify(this.WebTierApacheDir));
-                tomcatBuffer.Replace("%MG_VIRTUAL_DIR%", this.VirtualDirectoryName);
-
-                File.WriteAllText(tomcatConf, tomcatBuffer.ToString());
             }
             else
             {
                 httpdBuffer.Replace("%MG_INCLUDE_TOMCAT%", "#Uncomment to enable the Java API\n#Include conf/tomcat.conf");
+            }
+
+            if (this.DefaultViewer == ApiType.Java)
+            {
+                httpdBuffer.Replace("%MG_PHP_API%", "#");
+                httpdBuffer.Replace("%MG_JAVA_API%", "");
+            }
+            else if (this.DefaultViewer == ApiType.Php)
+            {
                 httpdBuffer.Replace("%MG_PHP_API%", "");
                 httpdBuffer.Replace("%MG_JAVA_API%", "#");
             }
+            else
+            {
+                throw new InvalidOperationException(".net viewer is not supported in the Apache configuration");
+            }
 
+
+            //Do the tomcat substitutions anyway
+            var tomcatConf = Path.Combine(this.WebTierApacheDir, "conf\\tomcat.conf");
+            var tomcatBuffer = new StringBuilder(File.ReadAllText(tomcatConf));
+
+            tomcatBuffer.Replace("%MG_WEB_APACHE%", Apachify(this.WebTierApacheDir));
+            tomcatBuffer.Replace("%MG_VIRTUAL_DIR%", this.VirtualDirectoryName);
+
+            var catalinaConf = Path.Combine(this.WebTierTomcatDir, "conf\\Catalina\\localhost\\mapguide.xml");
+            var catalinaBuffer = new StringBuilder(File.ReadAllText(catalinaConf));
+
+            catalinaBuffer.Replace("%MG_WEB_ROOT%", this.WebTierPublicDir);
+
+            File.WriteAllText(catalinaConf, catalinaBuffer.ToString());
+            File.WriteAllText(tomcatConf, tomcatBuffer.ToString());
             File.WriteAllText(httpdConf, httpdBuffer.ToString());
         }
 
@@ -117,7 +140,7 @@ namespace InstantSetup.Core
         protected override void WriteAdditionalBatchFiles()
         {
             //Write httpd batch file
-            string httpdText = string.Format(Properties.Resources.APACHE_WEB, Path.Combine(this.WebTierApacheDir, "bin"));
+            string httpdText = string.Format(Properties.Resources.APACHE_WEB, this.CsMapDictionaryDir, Path.Combine(this.WebTierApacheDir, "bin"));
             File.WriteAllText(Path.Combine(this.BatchFileOutputDirectory, "mgwebtier.bat"), httpdText);
         }
     }

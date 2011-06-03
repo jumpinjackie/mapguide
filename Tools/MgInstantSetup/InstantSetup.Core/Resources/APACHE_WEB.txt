@@ -1,3 +1,4 @@
-pushd {0}
+SET MENTOR_DICTIONARY_PATH={0}
+pushd {1}
 httpd.exe
 popd

@@ -39,6 +39,7 @@ namespace InstantSetup.Core
         protected AbstractSetupConfigurationProcess()
         {
             this.EnablePhp = true;
+            this.DefaultViewer = ApiType.Php;
 
             //Port numbers specified not to intentionally clash with an existing 
             //MGOS installation
@@ -150,6 +151,11 @@ namespace InstantSetup.Core
         /// </summary>
         public int ServerSitePort { get; set; }
 
+        /// <summary>
+        /// The default viewer that mapviewerajax will resolve to
+        /// </summary>
+        public ApiType DefaultViewer { get; set; }
+
         private IniFile _serverConfig;
         private IniFile _webConfig;
         private IniFile _phpConfig;
@@ -218,6 +224,7 @@ namespace InstantSetup.Core
         private void SetPhpConfigProperties()
         {
             _phpConfig.IniWriteValue("PHP", "extension_dir", Path.Combine(this.WebTierPhpDir, "ext"));
+            _phpConfig.IniWriteValue("Session", "session.save_path", Path.Combine(this.WebTierRootDir, "Temp"));
         }
 
         private void SetWebConfigProperties()
@@ -228,13 +235,13 @@ namespace InstantSetup.Core
             _webConfig.IniWriteValue("SiteConnectionProperties","Port",this.ServerSitePort.ToString(CultureInfo.InvariantCulture));
 
             _webConfig.IniWriteValue("GeneralProperties","ResourcesPath",Path.Combine(this.WebTierMapAgentDir, "Resources"));
-            _webConfig.IniWriteValue("GeneralProperties","TempPath",Path.Combine(this.WebTierRootDir, "Logs"));
+            _webConfig.IniWriteValue("GeneralProperties","TempPath",Path.Combine(this.WebTierRootDir, "Temp"));
 
             _webConfig.IniWriteValue("SiteConnectionProperties","IpAddress","127.0.0.1");
 
-            _webConfig.IniWriteValue("WebApplicationProperties","TemplateRootFolder",Path.Combine(this.WebTierRootDir, "fusion\\templates\\mapguide"));
-            _webConfig.IniWriteValue("WebApplicationProperties","WidgetInfoFolder",Path.Combine(this.WebTierRootDir, "fusion\\widgets\\widgetinfo"));
-            _webConfig.IniWriteValue("WebApplicationProperties", "ContainerInfoFolder", Path.Combine(this.WebTierRootDir, "fusion\\containerinfo"));
+            _webConfig.IniWriteValue("WebApplicationProperties","TemplateRootFolder",Path.Combine(this.WebTierPublicDir, "fusion\\templates\\mapguide"));
+            _webConfig.IniWriteValue("WebApplicationProperties", "WidgetInfoFolder", Path.Combine(this.WebTierPublicDir, "fusion\\widgets\\widgetinfo"));
+            _webConfig.IniWriteValue("WebApplicationProperties", "ContainerInfoFolder", Path.Combine(this.WebTierPublicDir, "fusion\\containerinfo"));
         }
 
         private void SetServerConfigProperties()
