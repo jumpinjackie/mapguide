@@ -603,21 +603,24 @@ function OnSelectionChanged()
                 var layers = cmd.layerConstraints;
                 if(layers.length > 0)
                 {
-                    var disable = false;
+                    var foundLayer = false;
                     var selLayers = GetMapFrame().GetSelectedLayers();
-                    for(var k=0; k < selLayers.length && !disable; k++)
+                    for(var k=0; k < selLayers.length; k++)
                     {
                         var selLayer = selLayers[k];
                         for(var j = 0; j < layers.length; j++)
                         {
-                            if(selLayer.name != layers[j])
+                            if(selLayer.name == layers[j])
                             {
-                                disable = true;
+                                foundLayer = true;
                                 break;
                             }
                         }
+                        
+                        if (foundLayer)
+                            break;
                     }
-                    if(disable)
+                    if(!foundLayer)
                     {
                         if(EnableCommand(cmd, false))
                             stateChanged = true;
