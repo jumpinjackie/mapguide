@@ -60,10 +60,12 @@
         }
     }
 
-    class ZoomPoint
+    class ZoomBox
     {
-        public double X;
-        public double Y;
+        public double MinX;
+        public double MinY;
+        public double MaxX;
+        public double MaxY;
     }
 
     class FeatureProperty
@@ -75,7 +77,7 @@
     class Feature
     {
         public String LayerName;
-        public ZoomPoint Zoom;
+        public ZoomBox Zoom;
 
         private HashMap<String, FeatureProperty> _properties;
 
@@ -290,7 +292,7 @@
                 if (feat.Zoom == null)
                     sb.append("null");
                 else
-                    sb.append(String.format(Locale.ROOT, "{\"x\" : %f, \"y\" : %f }", feat.Zoom.X, feat.Zoom.Y));
+                    sb.append(String.format(Locale.ROOT, "{\"minx\" : %f, \"miny\" : %f, \"maxx\" : %f, \"maxy\" : %f }", feat.Zoom.MinX, feat.Zoom.MinY, feat.Zoom.MaxX, feat.Zoom.MaxY));
                 //end zoom
                 //end feature
                 sb.append("}");
@@ -373,7 +375,7 @@
                 while (reader.ReadNext())
                 {
                     Feature feat = new Feature(layerName);
-                    ZoomPoint zoom = null;
+                    ZoomBox zoom = null;
 
                     for (int k = 0; k < props.GetCount(); k++)
                     {
@@ -395,9 +397,11 @@
                                     MgCoordinate ll = env.GetLowerLeftCoordinate();
                                     MgCoordinate ur = env.GetUpperRightCoordinate();
 
-                                    zoom = new ZoomPoint();
-                                    zoom.X = (ll.GetX() + ur.GetX()) / 2;
-                                    zoom.Y = (ll.GetY() + ur.GetY()) / 2;
+                                    zoom = new ZoomBox();
+                                    zoom.MinX = ll.GetX();
+                                    zoom.MinY = ll.GetY();
+                                    zoom.MaxX = ur.GetX();
+                                    zoom.MaxY = ur.GetY();
 
                                     feat.Zoom = zoom;
                                 }
