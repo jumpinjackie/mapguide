@@ -101,6 +101,9 @@ var _el = null; //Our "parser" element
 
 function HtmlDecode(input)
 {
+    if (input == null || input == "")
+        return input;
+
     if (_el == null)
         _el = document.createElement('div');
 
