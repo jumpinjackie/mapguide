@@ -236,17 +236,16 @@ NameValueCollection cmds = null;
                 String layers = "var layers" + navCmdIndex + " = new Array();\n";
                 if (invokeUrlCmd.GetParameterCount() > 0)
                 {
-                    int j = 0;
-                    for (j = 0; j < invokeUrlCmd.GetParameterCount(); j++)
+                    for (int j = 0; j < invokeUrlCmd.GetParameterCount(); j++)
                     {
                         String param = String.Format("navParams{0}[{1}] = new NavParam(\"{2}\", \"{3}\");\n", navCmdIndex, j, invokeUrlCmd.GetParameterNameAt(j), invokeUrlCmd.GetParameterValueAt(j));
                         parameters = parameters + param;
                     }
-                    for (j = 0; j < invokeUrlCmd.GetLayerCount(); j++)
-                    {
-                        String layer = String.Format("layers{0}[{1}] = \"{2}\";\n", navCmdIndex, j, invokeUrlCmd.GetLayerNameAt(j));
-                        layers = layers + layer;
-                    }
+                }
+                for (int j = 0; j < invokeUrlCmd.GetLayerCount(); j++)
+                {
+                    String layer = String.Format("layers{0}[{1}] = \"{2}\";\n", navCmdIndex, j, invokeUrlCmd.GetLayerNameAt(j));
+                    layers = layers + layer;
                 }
                 cmdObjects = cmdObjects + parameters + layers;
 
