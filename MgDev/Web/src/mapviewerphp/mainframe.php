@@ -251,11 +251,11 @@ function BuildViewer($forDwf = true)
                         $param = sprintf("navParams%d[%d] = new NavParam(\"%s\", \"%s\");\n", $navCmdIndex, $j, $cmd->GetParameterNameAt($j), $cmd->GetParameterValueAt($j));
                         $params = $params . $param;
                     }
-                    for($j = 0; $j < $cmd->GetLayerCount(); $j++)
-                    {
-                        $layer = sprintf("layers%d[%d] = \"%s\";\n", $navCmdIndex, $j, $cmd->GetLayerNameAt($j));
-                        $layers = $layers . $layer;
-                    }
+                }
+                for($j = 0; $j < $cmd->GetLayerCount(); $j++)
+                {
+                    $layer = sprintf("layers%d[%d] = \"%s\";\n", $navCmdIndex, $j, $cmd->GetLayerNameAt($j));
+                    $layers = $layers . $layer;
                 }
                 $cmdObjects = $cmdObjects . $params . $layers;
                 if($cmd->DisabledIfSelectionEmpty() || $cmd->GetLayerCount() > 0)

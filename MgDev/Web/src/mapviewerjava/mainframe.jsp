@@ -238,12 +238,12 @@ try
                     String param = MessageFormat.format("navParams{0,number,integer}[{1,number,integer}] = new NavParam(\"{2}\", \"{3}\");\n", formatArgs);
                     paramObjs = paramObjs + param;
                 }
-                for( int j = 0;  j < invokeUrlCmd.GetLayerCount(); j++ )
-                {
-                    Object[] formatArgs = { new Integer(navCmdIndex), new Integer(j), invokeUrlCmd.GetLayerNameAt(j) };
-                    String layer = MessageFormat.format("layers{0,number,integer}[{1,number,integer}] = \"{2}\";\n", formatArgs);
-                    layers = layers + layer;
-                }
+            }
+            for( int j = 0;  j < invokeUrlCmd.GetLayerCount(); j++ )
+            {
+                Object[] formatArgs = { new Integer(navCmdIndex), new Integer(j), invokeUrlCmd.GetLayerNameAt(j) };
+                String layer = MessageFormat.format("layers{0,number,integer}[{1,number,integer}] = \"{2}\";\n", formatArgs);
+                layers = layers + layer;
             }
             cmdObjects = cmdObjects + paramObjs + layers;
 
