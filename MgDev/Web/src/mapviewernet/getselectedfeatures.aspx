@@ -41,10 +41,12 @@
         }
     }
 
-    class ZoomPoint
+    class ZoomBox
     {
-        public double X;
-        public double Y;
+        public double MinX;
+        public double MinY;
+        public double MaxX;
+        public double MaxY;
     }
 
     class FeatureProperty
@@ -56,7 +58,7 @@
     class Feature
     {
         public String LayerName;
-        public ZoomPoint Zoom;
+        public ZoomBox Zoom;
 
         private Dictionary<string, FeatureProperty> _properties;
 
@@ -228,7 +230,7 @@
                 if (feat.Zoom == null)
                     sb.Append("null");
                 else
-                    sb.Append("{" + String.Format(CultureInfo.InvariantCulture, "\"x\" : {0}, \"y\" : {1} ", feat.Zoom.X, feat.Zoom.Y) + "}");
+                    sb.Append("{" + String.Format(CultureInfo.InvariantCulture, "\"minx\" : {0}, \"miny\" : {1}, \"maxx\": {2}, \"maxy\": {3}", feat.Zoom.MinX, feat.Zoom.MinY, feat.Zoom.MaxX, feat.Zoom.MaxY) + "}");
                 //end zoom
                 //end feature
                 sb.Append("}");
@@ -318,7 +320,7 @@
                 while (reader.ReadNext())
                 {
                     Feature feat = new Feature(layerName);
-                    ZoomPoint zoom = null;
+                    ZoomBox zoom = null;
 
                     for (int k = 0; k < props.Count; k++)
                     {
@@ -340,9 +342,11 @@
                                     MgCoordinate ll = env.GetLowerLeftCoordinate();
                                     MgCoordinate ur = env.GetUpperRightCoordinate();
 
-                                    zoom = new ZoomPoint();
-                                    zoom.X = (ll.X + ur.X) / 2;
-                                    zoom.Y = (ll.Y + ur.Y) / 2;
+                                    zoom = new ZoomBox();
+                                    zoom.MinX = ll.X;
+                                    zoom.MinY = ll.Y;
+                                    zoom.MaxX = ur.X;
+                                    zoom.MaxY = ur.Y;
 
                                     feat.Zoom = zoom;
                                 }

@@ -53,10 +53,12 @@ class SelectionSet
     }
 }
 
-class ZoomPoint
+class ZoomBox
 {
-    public $x;
-    public $y;
+    public $minx;
+    public $miny;
+    public $maxx;
+    public $maxy;
 }
 
 //
@@ -196,9 +198,11 @@ class Feature
                                     $ll = $env->GetLowerLeftCoordinate();
                                     $ur = $env->GetUpperRightCoordinate();
 
-                                    $zoom = new ZoomPoint();
-                                    $zoom->x = ($ll->GetX() + $ur->GetX()) / 2;
-                                    $zoom->y = ($ll->GetY() + $ur->GetY()) / 2;
+                                    $zoom = new ZoomBox();
+                                    $zoom->minx = $ll->GetX();
+                                    $zoom->miny = $ll->GetY();
+                                    $zoom->maxx = $ur->GetX();
+                                    $zoom->maxy = $ur->GetY();
                                     
                                     $feat->zoom = $zoom;
                                     //FB::log("zoom: (".$zoom->x.",".$zoom->y.")");
@@ -317,9 +321,11 @@ function GetJson($selectionSet)
                     //Add JSONified feature
                     if($feat->zoom != null)
                     {
-                        $xstr = number_format($feat->zoom->x, 8, '.','');
-                        $ystr = number_format($feat->zoom->y, 8, '.','');
-                        array_push($totalFeaturesOnLayer, "{\"values\" : [".join(",", $featureProperties)."], \"zoom\" : { \"x\": $xstr, \"y\": $ystr } }");
+                        $minxstr = number_format($feat->zoom->minx, 8, '.','');
+                        $minystr = number_format($feat->zoom->miny, 8, '.','');
+                        $maxxstr = number_format($feat->zoom->maxx, 8, '.','');
+                        $maxystr = number_format($feat->zoom->maxy, 8, '.','');
+                        array_push($totalFeaturesOnLayer, "{\"values\" : [".join(",", $featureProperties)."], \"zoom\" : { \"minx\": $minxstr, \"miny\": $minystr,  \"maxx\": $maxxstr, \"maxy\": $maxystr } }");
                     }
                     else
                         array_push($totalFeaturesOnLayer, "{\"values\" : [".join(",", $featureProperties)."], \"zoom\" : null }");

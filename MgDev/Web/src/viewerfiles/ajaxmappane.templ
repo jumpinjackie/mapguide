@@ -4049,7 +4049,14 @@ function ZoomSelectedFeature()
     
     //Get the zoom component of the selected feature, and zoom to that view
     if (feat.zoom)
-        ZoomToView(feat.zoom.x, feat.zoom.y, GetFeatureZoomLevel(), true);
+    {
+        var mcsW = feat.zoom.maxx - feat.zoom.minx;
+        var mcsH = feat.zoom.maxy - feat.zoom.miny;
+        var centerX = feat.zoom.minx + mcsW / 2;
+        var centerY = feat.zoom.miny + mcsH / 2;
+        var scale = CalculateScale1(mcsW*2, mcsH*2, mapDevW, mapDevH);
+        GotoView(centerX, centerY, scale, true, true);
+    }
 }
 
 function HoverButton(eltId, description)
