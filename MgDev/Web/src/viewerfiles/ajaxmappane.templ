@@ -1102,13 +1102,22 @@ function InitContextMenu(items)
 function OpenFlyout(xpos, tbItemIndex)
 {
     var tbItem = parent.toolbarItems[tbItemIndex];
-    tbMenu = new MenuData(tbItem.htmlElt, 20, 21, 50, 150,
+    var commands = parent.commands;
+    var items = tbItem.subItems;
+    var width = 150;
+    for(var i = 0; i < items.length; i++)
+    {
+        var item = items[i];
+        var cmd = commands[item.cmdIndex];
+        var hasIcon = (cmd.icon != null);
+        var w = parent.tbFrame.MeasureText(item.name) + (hasIcon? 42: 26);
+        if (w > width)
+            width = w;
+    }
+    tbMenu = new MenuData(tbItem.htmlElt, 20, 21, 50, width,
                         "../stdicons/icon_popupscrollup.gif", "../stdicons/icon_popupscrollup_disabled.gif", "../stdicons/icon_popupscrolldown.gif", "../stdicons/icon_popupscrolldown_disabled.gif",
                         parent, false, "#f0f0f0");
     startBuildMenuContent(tbMenu);
-
-    var commands = parent.commands;
-    var items = tbItem.subItems;
     for(var i = 0; i < items.length; i++)
     {
         var item = items[i];
