@@ -92,7 +92,7 @@
         // Get the map agent url
         // Get the correct http protocal
         $mapAgent = "http";
-        if ($_SERVER["HTTPS"] == "on")
+        if (isset($_SERVER["HTTPS"]) && $_SERVER["HTTPS"] == "on")
         {
             $mapAgent .= "s";
         }
@@ -113,7 +113,7 @@
                     "&SETDISPLAYWIDTH=$toSize->width" .
                     "&SETDISPLAYHEIGHT=$toSize->height" .
                     "&CLIP=0";
-
+        
         $image = imagecreatefrompng($mapAgent);
         // Rotate the picture back to be normalized
         $normalizedImg = imagerotate($image, -$rotation, 0);
