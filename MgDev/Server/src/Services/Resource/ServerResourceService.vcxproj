@@ -111,7 +111,8 @@
       </DataExecutionPrevention>
       <ImportLibrary>..\..\..\lib\debug\MgServerResourceServiced.lib</ImportLibrary>
       <TargetMachine>MachineX86</TargetMachine>
-      <ForceFileOutput>MultiplyDefinedSymbolOnly</ForceFileOutput>
+      <ForceFileOutput>
+      </ForceFileOutput>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -138,7 +139,8 @@
       </DataExecutionPrevention>
       <ImportLibrary>..\..\..\lib\debug64\MgServerResourceServiced.lib</ImportLibrary>
       <TargetMachine>MachineX64</TargetMachine>
-      <ForceFileOutput>MultiplyDefinedSymbolOnly</ForceFileOutput>
+      <ForceFileOutput>
+      </ForceFileOutput>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -165,7 +167,8 @@
       </DataExecutionPrevention>
       <ImportLibrary>..\..\..\lib\release\MgServerResourceService.lib</ImportLibrary>
       <TargetMachine>MachineX86</TargetMachine>
-      <ForceFileOutput>MultiplyDefinedSymbolOnly</ForceFileOutput>
+      <ForceFileOutput>
+      </ForceFileOutput>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -192,7 +195,8 @@
       </DataExecutionPrevention>
       <ImportLibrary>..\..\..\lib\release64\MgServerResourceService.lib</ImportLibrary>
       <TargetMachine>MachineX64</TargetMachine>
-      <ForceFileOutput>MultiplyDefinedSymbolOnly</ForceFileOutput>
+      <ForceFileOutput>
+      </ForceFileOutput>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
