@@ -112,7 +112,8 @@
       </DataExecutionPrevention>
       <ImportLibrary>..\..\..\lib\debug\MgServerFeatureServiced.lib</ImportLibrary>
       <TargetMachine>MachineX86</TargetMachine>
-      <ForceFileOutput>MultiplyDefinedSymbolOnly</ForceFileOutput>
+      <ForceFileOutput>
+      </ForceFileOutput>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -140,7 +141,8 @@
       </DataExecutionPrevention>
       <ImportLibrary>..\..\..\lib\debug64\MgServerFeatureServiced.lib</ImportLibrary>
       <TargetMachine>MachineX64</TargetMachine>
-      <ForceFileOutput>MultiplyDefinedSymbolOnly</ForceFileOutput>
+      <ForceFileOutput>
+      </ForceFileOutput>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -168,7 +170,8 @@
       </DataExecutionPrevention>
       <ImportLibrary>..\..\..\lib\release\MgServerFeatureService.lib</ImportLibrary>
       <TargetMachine>MachineX86</TargetMachine>
-      <ForceFileOutput>MultiplyDefinedSymbolOnly</ForceFileOutput>
+      <ForceFileOutput>
+      </ForceFileOutput>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -197,7 +200,8 @@
       </DataExecutionPrevention>
       <ImportLibrary>..\..\..\lib\release64\MgServerFeatureService.lib</ImportLibrary>
       <TargetMachine>MachineX64</TargetMachine>
-      <ForceFileOutput>MultiplyDefinedSymbolOnly</ForceFileOutput>
+      <ForceFileOutput>
+      </ForceFileOutput>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>

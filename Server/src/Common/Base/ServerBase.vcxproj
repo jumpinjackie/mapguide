@@ -241,9 +241,6 @@
       <Project>{5287a594-4d4f-43fe-a281-e279ab708cf1}</Project>
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
     </ProjectReference>
-    <ProjectReference Include="..\..\..\..\Common\MdfModel\MDFModel.vcxproj">
-      <Project>{c50254f2-654a-48de-af5b-20605aef8d10}</Project>
-    </ProjectReference>
     <ProjectReference Include="..\..\..\..\Common\PlatformBase\PlatformBase.vcxproj">
       <Project>{f7334b1b-0efa-47e3-8e66-df158e61b7e4}</Project>
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
