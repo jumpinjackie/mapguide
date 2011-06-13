@@ -109,7 +109,8 @@
       </DataExecutionPrevention>
       <ImportLibrary>..\lib\debug\MgGeometryd.lib</ImportLibrary>
       <TargetMachine>MachineX86</TargetMachine>
-      <ForceFileOutput>MultiplyDefinedSymbolOnly</ForceFileOutput>
+      <ForceFileOutput>
+      </ForceFileOutput>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -131,7 +132,8 @@
       <SubSystem>Windows</SubSystem>
       <ImportLibrary>..\lib\debug64\MgGeometryd.lib</ImportLibrary>
       <TargetMachine>MachineX64</TargetMachine>
-      <ForceFileOutput>MultiplyDefinedSymbolOnly</ForceFileOutput>
+      <ForceFileOutput>
+      </ForceFileOutput>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -156,7 +158,8 @@
       </DataExecutionPrevention>
       <ImportLibrary>..\lib\release\MgGeometry.lib</ImportLibrary>
       <TargetMachine>MachineX86</TargetMachine>
-      <ForceFileOutput>MultiplyDefinedSymbolOnly</ForceFileOutput>
+      <ForceFileOutput>
+      </ForceFileOutput>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -178,7 +181,8 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <ImportLibrary>..\lib\release64\MgGeometry.lib</ImportLibrary>
       <TargetMachine>MachineX64</TargetMachine>
-      <ForceFileOutput>MultiplyDefinedSymbolOnly</ForceFileOutput>
+      <ForceFileOutput>
+      </ForceFileOutput>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
