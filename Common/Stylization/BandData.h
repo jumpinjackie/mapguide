@@ -17,7 +17,7 @@
 
 #ifndef BANDDATA_H_
 #define BANDDATA_H_
-
+#include "Foundation.h"
 #include <assert.h>
 
 //////////////////////////////////////////////////////////////////////////

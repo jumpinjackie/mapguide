@@ -19,6 +19,7 @@
 #define MATHHELPER_H_
 
 #include <math.h>
+#include "Foundation.h"
 #include <assert.h>
 
 const double EPSILON = 1e-10;
