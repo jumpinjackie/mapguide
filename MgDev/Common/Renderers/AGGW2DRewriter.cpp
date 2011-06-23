@@ -367,9 +367,9 @@ WT_Result agr_process_filledEllipse(WT_Filled_Ellipse & filledEllipse, WT_File &
             color = override;
     }
 
-    WT_Logical_Point oldpos = filledEllipse.position();
+    WT_Logical_Point center = filledEllipse.position();
 
-    LineBuffer* dstpts = rewriter->ProcessW2DPoints(file, (WT_Logical_Point*)&oldpos, 1, false);
+    LineBuffer* dstpts = rewriter->ProcessW2DPoints(file, (WT_Logical_Point*)&center, 1, false);
     std::auto_ptr<LineBuffer> spDstLB(dstpts);
 
     if (!dstpts)
@@ -378,15 +378,24 @@ WT_Result agr_process_filledEllipse(WT_Filled_Ellipse & filledEllipse, WT_File &
     double major = rewriter->ScaleW2DNumber(file, filledEllipse.major());
     double minor = rewriter->ScaleW2DNumber(file, filledEllipse.minor());
 
-    double start = filledEllipse.start_degree() * (M_PI / 180.0);
-    double end = filledEllipse.end_degree() * (M_PI / 180.0);
+    double start = filledEllipse.start_radian(); 
+ 	double end = filledEllipse.end_radian(); 
+ 	double tilt = filledEllipse.tilt_radian(); 
+ 		 
+ 	// compute start point 
+ 	double rcos = cos(tilt); 
+ 	double rsin = sin(tilt); 
+ 	double tx = major * cos(start); 
+ 	double ty = minor * sin(start); 
+ 	double startX = dstpts->x_coord(0) + tx*rcos - ty*rsin; 
+ 	double startY = dstpts->y_coord(0) + ty*rcos + tx*rsin; 
 
     LineBuffer* ell = LineBufferPool::NewLineBuffer(rewriter->GetBufferPool(), 20);
     std::auto_ptr<LineBuffer> spEllLB(ell);
 
     ell->SetDrawingScale(1.0);
-    ell->MoveTo(dstpts->x_coord(0) + major * cos(start), dstpts->y_coord(0) + minor * sin(start));
-    ell->ArcTo(dstpts->x_coord(0), dstpts->y_coord(0), major, minor, start, end);
+    ell->MoveTo(startX, startY);
+    ell->ArcTo(dstpts->x_coord(0), dstpts->y_coord(0), major, minor, start, end, tilt);
 
     AGGRenderer::DrawScreenPolygon((agg_context*)rewriter->GetW2DTargetImage(), ell, NULL, color.argb());
 
@@ -419,9 +428,9 @@ WT_Result agr_process_outlineEllipse(WT_Outline_Ellipse & outlineEllipse, WT_Fil
             color = override;
     }
 
-    WT_Logical_Point oldpos = outlineEllipse.position();
+    WT_Logical_Point center = outlineEllipse.position();
 
-    LineBuffer* dstpts = rewriter->ProcessW2DPoints(file, (WT_Logical_Point*)&oldpos, 1, false);
+    LineBuffer* dstpts = rewriter->ProcessW2DPoints(file, (WT_Logical_Point*)&center, 1, false);
     std::auto_ptr<LineBuffer> spDstLB(dstpts);
 
     if (!dstpts)
@@ -430,19 +439,28 @@ WT_Result agr_process_outlineEllipse(WT_Outline_Ellipse & outlineEllipse, WT_Fil
     double major = rewriter->ScaleW2DNumber(file, outlineEllipse.major());
     double minor = rewriter->ScaleW2DNumber(file, outlineEllipse.minor());
 
-    double start = outlineEllipse.start_degree() * (M_PI / 180.0);
-    double end = outlineEllipse.end_degree() * (M_PI / 180.0);
+    double start = outlineEllipse.start_radian(); 
+ 	double end = outlineEllipse.end_radian(); 
+ 	double tilt = outlineEllipse.tilt_radian(); 
+ 		 
+ 	// compute start point 
+ 	double rcos = cos(tilt); 
+ 	double rsin = sin(tilt); 
+ 	double tx = major * cos(start); 
+ 	double ty = minor * sin(start); 
+ 	double startX = dstpts->x_coord(0) + tx*rcos - ty*rsin; 
+ 	double startY = dstpts->y_coord(0) + ty*rcos + tx*rsin; 
+ 		 
+ 	LineBuffer* ell = LineBufferPool::NewLineBuffer(rewriter->GetBufferPool(), 20); 
+ 	std::auto_ptr<LineBuffer> spEllLB(ell); 
+ 		 
+ 	ell->SetDrawingScale(1.0); 
+ 	ell->MoveTo(startX, startY); 
+ 	ell->ArcTo(dstpts->x_coord(0), dstpts->y_coord(0), major, minor, start, end, tilt); 
 
     //get W2D line weight
     double weightpx = rewriter->ScaleW2DNumber(file, file.rendition().line_weight().weight_value());
     weightpx = rs_max(1.0, weightpx);
-
-    LineBuffer* ell = LineBufferPool::NewLineBuffer(rewriter->GetBufferPool(), 20);
-    std::auto_ptr<LineBuffer> spEllLB(ell);
-
-    ell->SetDrawingScale(1.0);
-    ell->MoveTo(dstpts->x_coord(0) + major * cos(start), dstpts->y_coord(0) + minor * sin(start));
-    ell->ArcTo(dstpts->x_coord(0), dstpts->y_coord(0), major, minor, start, end);
 
     SE_LineStroke lineStroke(color.argb(), weightpx);
     AGGRenderer::DrawScreenPolyline((agg_context*)rewriter->GetW2DTargetImage(), ell, NULL, lineStroke);

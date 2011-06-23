@@ -286,7 +286,8 @@ public:
                                                                   int               numpts,
                                                                   bool              checkInBounds);
 
-    /*Do not export from DLL*/  double ScaleW2DNumber(WT_File& file, long number);
+    /*Do not export from DLL*/ double ScaleW2DNumber(WT_File& file, long number);
+    /*Do not export from DLL*/ const RS_D_Point* FillPointBuffer(LineBuffer* lb);
 
 private:
     void AddW2DContent(RS_InputStream* in, CSysTransformer* xformer, const RS_String& w2dfilter);
