@@ -834,6 +834,8 @@ MgByteReader* MgProxyFeatureReader::ToXml()
     this->ToXml(xmlStr);
 
     Ptr<MgByteSource> byteSource = new MgByteSource((BYTE_ARRAY_IN)xmlStr.c_str(), (INT32)xmlStr.length());
+    byteSource->SetMimeType(MgMimeType::Xml);
+
     Ptr<MgByteReader> byteReader = byteSource->GetReader();
     return SAFE_ADDREF((MgByteReader*)byteReader);
 }

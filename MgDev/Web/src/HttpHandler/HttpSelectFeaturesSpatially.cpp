@@ -114,7 +114,12 @@ void MgHttpSelectFeaturesSpatially::Execute(MgHttpResponse& hResponse)
     }
 
     Ptr<MgDataReader> dataReader = service->SelectAggregate(&resId, m_className, qryOptions);
-    hResult->SetResultObject(dataReader, MgMimeType::Xml);
+    Ptr<MgByteReader> byteReader = dataReader->ToXml();
+    
+    //Convert to alternate response format, if necessary
+    ProcessFormatConversion(byteReader);
+
+    hResult->SetResultObject(byteReader, byteReader->GetMimeType());
 
     MG_HTTP_HANDLER_CATCH_AND_THROW_EX(L"MgHttpSelectFeaturesSpatially.Execute")
 }
