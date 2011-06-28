@@ -47,14 +47,19 @@ MgServerSelectFeatures::MgServerSelectFeatures()
     // Set a default join query batch size
     m_nJoinQueryBatchSize = MgConfigProperties::DefaultFeatureServicePropertyJoinQueryBatchSize;
 
-    // Get the join batch size
     MgConfiguration* config = MgConfiguration::GetInstance();
     if(config)
     {
+        // Get the join batch size
         config->GetIntValue(MgConfigProperties::FeatureServicePropertiesSection,
                             MgConfigProperties::FeatureServicePropertyJoinQueryBatchSize,
                             m_nJoinQueryBatchSize,
                             MgConfigProperties::DefaultFeatureServicePropertyJoinQueryBatchSize);
+        // Get data cache size
+        config->GetIntValue(MgConfigProperties::FeatureServicePropertiesSection,
+                            MgConfigProperties::FeatureServicePropertyDataCacheSize,
+                            m_nDataCacheSize,
+                            MgConfigProperties::DefaultFeatureServicePropertyDataCacheSize);
     }
 }
 
@@ -370,10 +375,11 @@ void MgServerSelectFeatures::ApplyComputedProperties()
 // Fetch size
 void MgServerSelectFeatures::ApplyFetchSize()
 {
-    CHECKNULL(m_options, L"MgServerSelectFeatures.ApplyFetchSize");
     CHECKNULL(m_command, L"MgServerSelectFeatures.ApplyFetchSize");
-
-    m_command->SetFetchSize(m_options->GetFetchSize());
+    if(m_options)
+        m_command->SetFetchSize(m_options->GetFetchSize());
+    else
+        m_command->SetFetchSize(m_nDataCacheSize);
 }
 
 // Spatial Filter

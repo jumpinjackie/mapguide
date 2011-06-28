@@ -1044,6 +1044,8 @@ private:
     void FeatureSourceToString(MgResourceIdentifier* resource, string& resourceContent);
     //This method just used for OGC WFS certification
     STRING SchemaToXml(MgFeatureSchemaCollection* schema, CREFSTRING namespacePrefix, CREFSTRING namespaceUrl);
+
+    INT32 m_nDataCacheSize;
 };
 
 #endif
