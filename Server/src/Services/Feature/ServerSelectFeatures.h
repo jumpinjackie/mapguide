@@ -89,6 +89,8 @@ private:
 
     // This setting limits the batch size used by the join query algorithm
     INT32 m_nJoinQueryBatchSize;
+
+    INT32 m_nDataCacheSize;
 };
 
 #endif

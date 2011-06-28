@@ -62,6 +62,15 @@ IMPLEMENT_CREATE_SERVICE(MgServerFeatureService)
 /// </summary>
 MgServerFeatureService::MgServerFeatureService() : MgFeatureService()
 {
+    // Get data cache size
+    MgConfiguration* config = MgConfiguration::GetInstance();
+    if(config)
+    {
+        config->GetIntValue(MgConfigProperties::FeatureServicePropertiesSection,
+                            MgConfigProperties::FeatureServicePropertyDataCacheSize,
+                            m_nDataCacheSize,
+                            MgConfigProperties::DefaultFeatureServicePropertyDataCacheSize);
+    }
 }
 
 
@@ -738,8 +747,7 @@ MgSqlDataReader* MgServerFeatureService::ExecuteSqlQuery(MgResourceIdentifier* r
 {
     MG_LOG_TRACE_ENTRY(L"MgServerFeatureService::ExecuteSqlQuery()");
 
-    MgServerSqlCommand sqlCommand;
-    return sqlCommand.ExecuteQuery(resource, sqlStatement, NULL, NULL);
+    return ExecuteSqlQuery(resource, sqlStatement, NULL, NULL);
 }
 
 
@@ -785,8 +793,7 @@ MgSqlDataReader* MgServerFeatureService::ExecuteSqlQuery(MgResourceIdentifier* r
 {
     MG_LOG_TRACE_ENTRY(L"MgServerFeatureService::ExecuteSqlQuery()");
 
-    MgServerSqlCommand sqlCommand;
-    return sqlCommand.ExecuteQuery(resource, sqlStatement, params, transaction);
+    return ExecuteSqlQuery(resource, sqlStatement, params, transaction, m_nDataCacheSize);
 }
 
 
