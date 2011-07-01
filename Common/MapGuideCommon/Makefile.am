@@ -90,6 +90,8 @@ include_SOURCES = \
   Services/PackageStatusInformation.cpp \
   Services/PlotSpecification.cpp \
   Services/PrintLayout.cpp \
+  Services/ProfilingDefs.cpp \
+  Services/ProfilingService.cpp \
   Services/ProxyDataReader.cpp \
   Services/ProxyDrawingService.cpp \
   Services/ProxyFeatureReader.cpp \
@@ -102,6 +104,7 @@ include_SOURCES = \
   Services/ProxySqlDataReader.cpp \
   Services/ProxyTileService.cpp \
   Services/ProxyFeatureTransaction.cpp \
+  Services/ProxyProfilingService.cpp \
   Services/RenderingDefs.cpp \
   Services/RenderingOptions.cpp \
   Services/RenderingService.cpp \
@@ -213,6 +216,8 @@ noinst_HEADERS = $(include_SOURCES) \
   Services/PackageStatusInformation.h \
   Services/PlotSpecification.h \
   Services/PrintLayout.h \
+  Services/ProfilingDefs.h \
+  Services/ProfilingService.h \
   Services/ProxyDataReader.h \
   Services/ProxyDrawingService.h \
   Services/ProxyFeatureReader.h \
@@ -225,6 +230,7 @@ noinst_HEADERS = $(include_SOURCES) \
   Services/ProxySqlDataReader.h \
   Services/ProxyTileService.h \
   Services/ProxyFeatureTransaction.h \
+  Services/ProxyProfilingService.h \
   Services/RenderingDefs.h \
   Services/RenderingOptions.h \
   Services/RenderingService.h \

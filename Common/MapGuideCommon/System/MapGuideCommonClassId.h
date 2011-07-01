@@ -29,6 +29,7 @@
 #define MAPGUIDE_RESOURCESERVICE_ID     31100
 #define MAPGUIDE_TILESERVICE_ID         31200
 #define MAPGUIDE_KMLSERVICE_ID          31300
+#define MAPGUIDE_PROFILINGSERVICE_ID    31400
 
 
 // MapGuide Exceptions
@@ -135,7 +136,9 @@
 // Tile Service
 #define MapGuide_TileService_TileService                            MAPGUIDE_TILESERVICE_ID+0
 
-// Tile Service
+// KML Service
 #define MapGuide_KmlService_KmlService                              MAPGUIDE_KMLSERVICE_ID+0
 
+// Profiling Service
+#define MapGuide_ProfilingService_ProfilingService                  MAPGUIDE_PROFILINGSERVICE_ID+0
 #endif

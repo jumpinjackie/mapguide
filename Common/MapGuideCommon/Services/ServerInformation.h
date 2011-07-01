@@ -67,6 +67,10 @@ INTERNAL_API:
     ////////////////////////////////////////////////////////////////
     /// Site Service
     static const INT32 SiteService          = 0x00000100;
+
+    ////////////////////////////////////////////////////////////////
+    /// Profiling Service
+    static const INT32 ProfilingService     = 0x00000200;
 };
 
 /// \cond INTERNAL
@@ -397,7 +401,7 @@ public:
     /// NOTES: The numeric values of all the service types are also used by
     ///        sequential containers for fast indexed-based lookups.
 
-    static const INT32 sm_knMaxNumberServices = 9;
+    static const INT32 sm_knMaxNumberServices = 10;
 
 private:
 

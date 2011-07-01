@@ -121,6 +121,7 @@ bool InitializeStaticData()
     registry->RegisterService(MgServiceType::ResourceService, MgProxyResourceService::CreateService, sctRemoteServerToServer);
     registry->RegisterService(MgServiceType::TileService, MgProxyTileService::CreateService, sctRemoteServerToServer);
     registry->RegisterService(MgServiceType::KmlService, MgProxyKmlService::CreateService, sctRemoteServerToServer);
+    registry->RegisterService(MgServiceType::ProfilingService, MgProxyProfilingService::CreateService, sctRemoteServerToServer);
 
     return true;
 }

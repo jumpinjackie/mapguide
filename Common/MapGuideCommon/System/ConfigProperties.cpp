@@ -235,7 +235,8 @@ const STRING MgConfigProperties::HostPropertySiteService                        
 const bool   MgConfigProperties::DefaultHostPropertySiteService                             = false;
 const STRING MgConfigProperties::HostPropertyTileService                                    = L"TileService";
 const bool   MgConfigProperties::DefaultHostPropertyTileService                             = false;
-
+const STRING MgConfigProperties::HostPropertyProfilingService                               = L"ProfilingService";
+const bool   MgConfigProperties::DefaultHostPropertyProfilingService                        = false;
 // ******************************************************************
 // Drawing Service Properties
 // ******************************************************************

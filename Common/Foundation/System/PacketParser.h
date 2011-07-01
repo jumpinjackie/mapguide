@@ -61,7 +61,8 @@ class MG_FOUNDATION_API MgPacketParser
             msiSite              =   0x1111FE08,
             msiTile              =   0x1111FE09,
             msiKml               =   0x1111FE0A,
-            msiEND               =   0x1111FE0B
+            msiProfiling         =   0x1111FE0B,
+            msiEND               =   0x1111FE0C
 
         };
 

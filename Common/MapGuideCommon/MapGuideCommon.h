@@ -146,6 +146,8 @@ extern long GetTickCount();
 #include "Services/TileDefs.h"
 #include "Services/TileService.h"
 #include "Services/KmlService.h"
+#include "Services/ProfilingDefs.h"
+#include "Services/ProfilingService.h"
 
 #include "Services/PackageStatusInformation.h"
 #include "Services/ProxyDataReader.h"
@@ -160,6 +162,7 @@ extern long GetTickCount();
 #include "Services/ProxySqlDataReader.h"
 #include "Services/ProxyTileService.h"
 #include "Services/ProxyFeatureTransaction.h"
+#include "Services/ProxyProfilingService.h"
 #include "Services/ServerAdmin.h"
 #include "Services/ServerAdminDefs.h"
 #include "Services/ServerConnection.h"

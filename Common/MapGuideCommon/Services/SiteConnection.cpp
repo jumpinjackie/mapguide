@@ -309,7 +309,8 @@ bool MgSiteConnection::IsServer()
          IsServiceLocal(MgServiceType::RenderingService) ||
          IsServiceLocal(MgServiceType::ResourceService)  ||
          IsServiceLocal(MgServiceType::TileService)      ||
-         IsServiceLocal(MgServiceType::KmlService) )
+         IsServiceLocal(MgServiceType::KmlService)       ||
+         IsServiceLocal(MgServiceType::ProfilingService))
     {
         isServer = true;
     }
@@ -405,6 +406,12 @@ bool MgSiteConnection::IsServiceLocal(INT32 serviceType)
                                     MgConfigProperties::HostPropertyKmlService,
                                     isHosting,
                                     MgConfigProperties::DefaultHostPropertyKmlService);
+                 break;
+            case MgServiceType::ProfilingService:
+                 m_config->GetBoolValue(MgConfigProperties::HostPropertiesSection,
+                                    MgConfigProperties::HostPropertyProfilingService,
+                                    isHosting,
+                                    MgConfigProperties::DefaultHostPropertyProfilingService);
                  break;
             case MgServiceType::ServerAdminService:
                 if (IsServer())
