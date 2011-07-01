@@ -252,6 +252,10 @@ EXTERNAL_API:
     static const STRING HostPropertyResourceService;                    /// value("ResourceService")
     static const bool DefaultHostPropertyResourceService;               /// value(false)
 
+    /// Enables/disables the Profiling Service
+    static const STRING HostPropertyProfilingService;                   /// value("ProfilingService")
+    static const bool DefaultHostPropertyProfilingService;              /// value(false)
+
 INTERNAL_API:
 
     /// Enables/disables the ServerAdmin Service (for internal use only).

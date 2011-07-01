@@ -42,6 +42,7 @@ const MgServerInformation::MgServiceInfoMap MgServerInformation::sm_serviceInfoM
     { MgServiceType::KmlService        , L"KmlService"        , MgServiceFlag::KmlService         },
     { MgServiceType::ServerAdminService, L"ServerAdminService", MgServiceFlag::ServerAdminService },
     { MgServiceType::SiteService       , L"SiteService"       , MgServiceFlag::SiteService        },
+    { MgServiceType::ProfilingService  , L"ProfilingService"  , MgServiceFlag::ProfilingService   },
 };
 
 //////////////////////////////////////////////////////////////

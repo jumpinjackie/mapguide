@@ -382,6 +382,15 @@
       <Filter>Util</Filter>
     </ClCompile>
     <ClCompile Include="MapGuideCommonBuild.cpp" />
+    <ClCompile Include="Services\ProxyProfilingService.cpp">
+      <Filter>Services</Filter>
+    </ClCompile>
+    <ClCompile Include="Services\ProfilingDefs.cpp">
+      <Filter>Services</Filter>
+    </ClCompile>
+    <ClCompile Include="Services\ProfilingService.cpp">
+      <Filter>Services</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="MapLayer\Layer.h">
@@ -745,6 +754,15 @@
       <Filter>Util</Filter>
     </ClInclude>
     <ClInclude Include="MapGuideCommon.h" />
+    <ClInclude Include="Services\ProfilingService.h">
+      <Filter>Services</Filter>
+    </ClInclude>
+    <ClInclude Include="Services\ProxyProfilingService.h">
+      <Filter>Services</Filter>
+    </ClInclude>
+    <ClInclude Include="Services\ProfilingDefs.h">
+      <Filter>Services</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="MapGuideCommon.rc" />

@@ -61,6 +61,9 @@ PUBLISHED_API:
     /// Kml Service
     static const INT16 KmlService           = 6;
 
+    ////////////////////////////////////////////////////////////////
+    /// Profiling Service
+    static const INT16 ProfilingService     = 10;
 
 INTERNAL_API:
     /// NOTES: The numeric values of all the service types are also used by

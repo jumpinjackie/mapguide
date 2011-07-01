@@ -337,6 +337,7 @@ using System.Runtime.CompilerServices;
 [assembly: TypeForwardedTo(typeof(OSGeo.MapGuide.MgPolygonCollection))]
 [assembly: TypeForwardedTo(typeof(OSGeo.MapGuide.MgPortNotAvailableException))]
 [assembly: TypeForwardedTo(typeof(OSGeo.MapGuide.MgPrintToScaleModeNotSelectedException))]
+[assembly: TypeForwardedTo(typeof(OSGeo.MapGuide.MgProfilingService))]
 [assembly: TypeForwardedTo(typeof(OSGeo.MapGuide.MgPropertyCollection))]
 [assembly: TypeForwardedTo(typeof(OSGeo.MapGuide.MgPropertyDefinitionCollection))]
 [assembly: TypeForwardedTo(typeof(OSGeo.MapGuide.MgRaster))]

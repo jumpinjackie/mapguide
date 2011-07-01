@@ -263,6 +263,7 @@ INTERNAL_API:
     static const STRING SiteService;
     static const STRING TileService;
     static const STRING KmlService;
+    static const STRING ProfilingService;
 
     // Other
     static const STRING Stylization;

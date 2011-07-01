@@ -402,6 +402,7 @@ MgApi_wrap.cpp : \
     ../../../Common/MapGuideCommon/Services/MapPlotCollection.h \
     ../../../Common/MapGuideCommon/Services/PackageStatusInformation.h \
     ../../../Common/MapGuideCommon/Services/PlotSpecification.h \
+    ../../../Common/MapGuideCommon/Services/ProfilingService.h \
     ../../../Common/MapGuideCommon/Services/RenderingOptions.h \
     ../../../Common/MapGuideCommon/Services/RenderingService.h \
     ../../../Common/MapGuideCommon/Services/ServerAdmin.h \

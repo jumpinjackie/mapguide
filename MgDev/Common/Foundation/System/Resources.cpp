@@ -156,6 +156,7 @@ const STRING MgResources::ServerAdminService            = L"ServerAdminService";
 const STRING MgResources::SiteService                   = L"SiteService"; // Do not translate
 const STRING MgResources::TileService                   = L"TileService"; // Do not translate
 const STRING MgResources::KmlService                    = L"KmlService"; // Do not translate
+const STRING MgResources::ProfilingService              = L"ProfilingService"; // Do not translate
 
 // Other
 const STRING MgResources::Stylization                   = L"Stylization"; // Do not translate
