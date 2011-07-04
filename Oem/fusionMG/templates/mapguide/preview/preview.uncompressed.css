@@ -285,6 +285,11 @@ a.jxButtonEditCombo input {
   cursor: default; 
 }
 
+.jxBarTop .jxBarControls,
+.jxBarBottom .jxBarControls{
+  display: none;
+}
+
 /* ==================== */
 /* OVERRIDE TREE STYLES */
 /* ==================== */
