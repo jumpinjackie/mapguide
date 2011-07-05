@@ -172,6 +172,56 @@ bool MgServerFeatureTransactionPool::RollbackTransaction(CREFSTRING transactionI
     return RemoveTransaction(transactionId);
 }
 
+STRING MgServerFeatureTransactionPool::AddSavePoint(CREFSTRING transactionId, CREFSTRING suggestName)
+{
+    Ptr<MgServerFeatureTransaction> tran = GetTransaction(transactionId);
+    STRING resultName;
+    if (NULL != tran.p)
+    {
+        resultName = tran->AddSavePoint(suggestName);
+    }
+
+    return resultName;
+}
+
+bool MgServerFeatureTransactionPool::RollbackSavePoint(CREFSTRING transactionId, CREFSTRING savePointName)
+{
+    Ptr<MgServerFeatureTransaction> tran = GetTransaction(transactionId);
+    bool bResult = false;
+
+    MG_FEATURE_SERVICE_TRY()
+    if (NULL != tran.p)
+    {
+        tran->Rollback(savePointName);
+    }
+    MG_FEATURE_SERVICE_CATCH(L"MgServerFeatureTransactionPool.RollbackSavePoint")
+
+    if(mgException == NULL)
+    {
+        bResult = true;   
+    }
+    return bResult;
+}
+
+bool MgServerFeatureTransactionPool::ReleaseSavePoint(CREFSTRING transactionId, CREFSTRING savePointName)
+{
+    Ptr<MgServerFeatureTransaction> tran = GetTransaction(transactionId);
+    bool bResult = false;
+
+    MG_FEATURE_SERVICE_TRY()
+    if (NULL != tran.p)
+    {
+        tran->ReleaseSavePoint(savePointName);
+    }
+    MG_FEATURE_SERVICE_CATCH(L"MgServerFeatureTransactionPool.ReleaseSavePoint")
+
+    if(mgException == NULL)
+    {
+        bResult = true;   
+    }
+    return bResult;
+}
+
 STRING MgServerFeatureTransactionPool::AddTransaction(MgServerFeatureTransaction* featTransaction)
 {
     ACE_MT (ACE_GUARD_RETURN (ACE_Recursive_Thread_Mutex, ace_mon, sm_mutex, L""));

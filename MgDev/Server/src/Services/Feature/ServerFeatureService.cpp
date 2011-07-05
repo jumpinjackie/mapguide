@@ -2126,6 +2126,61 @@ bool MgServerFeatureService::RollbackTransaction(CREFSTRING transactionId)
     return bResult;
 }
 
+///////////////////////////////////////////////////////////////////////////
+STRING MgServerFeatureService::AddSavePoint(CREFSTRING transactionId, CREFSTRING suggestName)
+{
+    MG_LOG_TRACE_ENTRY(L"MgServerFeatureService::AddSavePoint()");
+
+    STRING resultName;
+
+    MG_FEATURE_SERVICE_TRY()
+
+    MgServerFeatureTransactionPool* transactionPool = MgServerFeatureTransactionPool::GetInstance();
+    CHECKNULL(transactionPool, L"MgServerFeatureService.AddSavePoint");
+
+    resultName = transactionPool->AddSavePoint(transactionId, suggestName);
+    MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgServerFeatureService.AddSavePoint")
+
+    return resultName;
+}
+
+bool MgServerFeatureService::RollbackSavePoint(CREFSTRING transactionId, CREFSTRING savePointName)
+{
+    MG_LOG_TRACE_ENTRY(L"MgServerFeatureService::RollbackSavePoint()");
+
+    bool bResult = false;
+
+    MG_FEATURE_SERVICE_TRY()
+
+    MgServerFeatureTransactionPool* transactionPool = MgServerFeatureTransactionPool::GetInstance();
+    CHECKNULL(transactionPool, L"MgServerFeatureService.RollbackSavePoint");
+
+    bResult = transactionPool->RollbackSavePoint(transactionId, savePointName);
+
+    MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgServerFeatureService.RollbackSavePoint")
+
+    return bResult;
+}
+
+///////////////////////////////////////////////////////////////////////////
+bool MgServerFeatureService::ReleaseSavePoint(CREFSTRING transactionId, CREFSTRING savePointName)
+{
+   MG_LOG_TRACE_ENTRY(L"MgServerFeatureService::ReleaseSavePoint()");
+
+    bool bResult = false;
+
+    MG_FEATURE_SERVICE_TRY()
+
+    MgServerFeatureTransactionPool* transactionPool = MgServerFeatureTransactionPool::GetInstance();
+    CHECKNULL(transactionPool, L"MgServerFeatureService.ReleaseSavePoint");
+
+    bResult = transactionPool->ReleaseSavePoint(transactionId, savePointName);
+
+    MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgServerFeatureService.ReleaseSavePoint")
+
+    return bResult;
+}
+
 
 //////////////////////////////////////////////////////////////////
 /// <summary>

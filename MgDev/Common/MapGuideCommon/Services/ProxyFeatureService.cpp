@@ -1840,3 +1840,60 @@ bool MgProxyFeatureService::RollbackTransaction(CREFSTRING transactionId)
 
     return (bool)cmd.GetReturnValue().val.m_i8;
 }
+
+//////////////////////////////////////////////////////////////////
+STRING MgProxyFeatureService::AddSavePoint(CREFSTRING transactionId, CREFSTRING suggestName)
+{
+    MgCommand cmd;
+    cmd.ExecuteCommand(m_connProp,                            // Connection
+                       MgCommand::knString,                   // Return type expected
+                       MgFeatureServiceOpId::AddSavePoint_Id, // Command Code
+                       2,                                     // No of arguments
+                       Feature_Service,                       // Service Id
+                       BUILD_VERSION(1,0,0),                  // Operation version
+                       MgCommand::knString, &transactionId,   // Argument#1
+                       MgCommand::knString, &suggestName,     // Argument#2
+                       MgCommand::knNone);                    // End of argument
+
+    SetWarning(cmd.GetWarningObject());
+    STRING retVal = *(cmd.GetReturnValue().val.m_str);
+
+    delete cmd.GetReturnValue().val.m_str;
+    return retVal;
+}
+
+//////////////////////////////////////////////////////////////////
+bool MgProxyFeatureService::RollbackSavePoint(CREFSTRING transactionId, CREFSTRING savePointName)
+{
+    MgCommand cmd;
+    cmd.ExecuteCommand(m_connProp,                                 // Connection
+                       MgCommand::knInt8,                          // Return type expected
+                       MgFeatureServiceOpId::RollbackSavePoint_Id, // Command Code
+                       2,                                          // No of arguments
+                       Feature_Service,                            // Service Id
+                       BUILD_VERSION(1,0,0),                       // Operation version
+                       MgCommand::knString, &transactionId,        // Argument#1
+                       MgCommand::knString, &savePointName,        // Argument#2
+                       MgCommand::knNone);                         // End of argument
+
+    SetWarning(cmd.GetWarningObject());
+    return cmd.GetReturnValue().val.m_i8;
+}
+
+//////////////////////////////////////////////////////////////////
+bool MgProxyFeatureService::ReleaseSavePoint(CREFSTRING transactionId, CREFSTRING savePointName)
+{
+    MgCommand cmd;
+    cmd.ExecuteCommand(m_connProp,                                  // Connection
+                       MgCommand::knInt8,                          // Return type expected
+                       MgFeatureServiceOpId::ReleaseSavePoint_Id,  // Command Code
+                       2,                                          // No of arguments
+                       Feature_Service,                            // Service Id
+                       BUILD_VERSION(1,0,0),                       // Operation version
+                       MgCommand::knString, &transactionId,        // Argument#1
+                       MgCommand::knString, &savePointName,        // Argument#2
+                       MgCommand::knNone);                         // End of argument
+
+    SetWarning(cmd.GetWarningObject());
+    return cmd.GetReturnValue().val.m_i8;
+}
