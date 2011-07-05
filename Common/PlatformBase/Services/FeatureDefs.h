@@ -74,7 +74,9 @@ INTERNAL_API:
     static const int UpdateFeaturesWithTransaction_Id     = 0x1111ED2B;
     static const int ExecuteSqlNonQueryWithTransaction_Id = 0x1111ED2C;
     static const int ExecuteSqlQueryWithTransaction_Id    = 0x1111ED2D;
-
+    static const int AddSavePoint_Id                      = 0x1111ED2E;
+    static const int RollbackSavePoint_Id                 = 0x1111ED2F;
+    static const int ReleaseSavePoint_Id                  = 0x1111ED30;
 };
 /// \endcond
 

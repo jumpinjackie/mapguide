@@ -36,6 +36,7 @@ include_SOURCES = \
   FeatureOperationFactory.cpp \
   FeatureServiceHandler.cpp \
   GwsConnectionPool.cpp \
+  OpAddSavePoint.cpp \
   OpApplySchema.cpp \
   OpCreateFeatureSource.cpp \
   OpDescribeSchema.cpp \
@@ -47,6 +48,8 @@ include_SOURCES = \
   OpGetFdoCacheInfo.cpp \
   OpGetFeatureProviders.cpp \
   OpGetIdentityProperties.cpp \
+  OpReleaseSavePoint.cpp \
+  OpRollbackSavePoint.cpp \
   OpGetSpatialContexts.cpp \
   OpSelectFeatures.cpp \
   OpSelectFeaturesSpatial.cpp \
@@ -127,6 +130,7 @@ noinst_HEADERS = $(include_SOURCES) \
   FeatureServiceHandler.h \
   ServerFeatureService.h \
   GwsConnectionPool.h \
+  OpAddSavePoint.h \
   OpApplySchema.h \
   OpCreateFeatureSource.h \
   OpDescribeSchema.h \
@@ -139,6 +143,8 @@ noinst_HEADERS = $(include_SOURCES) \
   OpGetFeatureProviders.h \
   OpGetSpatialContexts.h \
   OpGetIdentityProperties.h \
+  OpReleaseSavePoint.h \
+  OpRollbackSavePoint.h  \
   OpSelectFeatures.h \
   OpSelectFeaturesSpatial.h \
   OpTestConnection.h \

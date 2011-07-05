@@ -12,6 +12,9 @@
     <ClCompile Include="FeatureOperationFactory.cpp">
       <Filter>Ops</Filter>
     </ClCompile>
+    <ClCompile Include="OpAddSavePoint.cpp">
+      <Filter>Ops</Filter>
+    </ClCompile>
     <ClCompile Include="OpApplySchema.cpp">
       <Filter>Ops</Filter>
     </ClCompile>
@@ -97,6 +100,12 @@
       <Filter>Ops</Filter>
     </ClCompile>
     <ClCompile Include="OpGetWfsFeature.cpp">
+      <Filter>Ops</Filter>
+    </ClCompile>
+    <ClCompile Include="OpReleaseSavePoint.cpp">
+      <Filter>Ops</Filter>
+    </ClCompile>
+    <ClCompile Include="OpRollbackSavePoint.cpp">
       <Filter>Ops</Filter>
     </ClCompile>
     <ClCompile Include="OpRollbackTransaction.cpp">
@@ -186,6 +195,9 @@
     <ClInclude Include="FeatureOperationFactory.h">
       <Filter>Ops</Filter>
     </ClInclude>
+    <ClInclude Include="OpAddSavePoint.h">
+      <Filter>Ops</Filter>
+    </ClInclude>
     <ClInclude Include="OpApplySchema.h">
       <Filter>Ops</Filter>
     </ClInclude>
@@ -271,6 +283,12 @@
       <Filter>Ops</Filter>
     </ClInclude>
     <ClInclude Include="OpGetWfsFeature.h">
+      <Filter>Ops</Filter>
+    </ClInclude>
+    <ClInclude Include="OpRollbackSavePoint.h">
+      <Filter>Ops</Filter>
+    </ClInclude>
+    <ClInclude Include="OpReleaseSavePoint.h">
       <Filter>Ops</Filter>
     </ClInclude>
     <ClInclude Include="OpRollbackTransaction.h">

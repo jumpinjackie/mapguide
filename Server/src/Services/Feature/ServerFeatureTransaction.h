@@ -37,6 +37,36 @@ EXTERNAL_API:
     ///
     virtual void Commit();
 
+        /// \brief
+    ///  Create a save point in this transaction.
+    /// 
+    /// \param suggestName
+    /// Suggested save point name.
+    /// 
+    /// \returns 
+    /// The actual name used
+    virtual STRING AddSavePoint(CREFSTRING suggestName);
+
+    /// \brief
+    ///  Release a specific save point.
+    /// 
+    /// \param savePointName 
+    /// Save point name.
+    /// 
+    /// \returns 
+    /// Returns nothing
+    virtual void ReleaseSavePoint(CREFSTRING savePointName);
+    
+    /// \brief
+    ///  Rollback the transaction to a specified save point.
+    /// 
+    /// \param savePointName 
+    /// Save point name.
+    /// 
+    /// \returns 
+    /// Returns nothing 
+    virtual void Rollback(CREFSTRING savePointName);
+
     /// \brief
     /// Rollback the transaction.
     ///

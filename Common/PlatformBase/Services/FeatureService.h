@@ -1756,6 +1756,15 @@ INTERNAL_API:
     // Rollback the transaction specified by the transaction id.
     virtual bool RollbackTransaction(CREFSTRING transactionId) = 0;
 
+    //Add save point
+    virtual STRING AddSavePoint(CREFSTRING transactionId, CREFSTRING suggestName) = 0;
+
+    //Roll back to a save point
+    virtual bool RollbackSavePoint(CREFSTRING transactionId, CREFSTRING savePointName) = 0;
+
+    //Release a save point
+    virtual bool ReleaseSavePoint(CREFSTRING transactionId, CREFSTRING savePointName) = 0;
+
     ////////////////////////////////////////////////////////////////////////////////////////////////
     /// \brief
     /// Executes the SQL SELECT statement on the specified feature

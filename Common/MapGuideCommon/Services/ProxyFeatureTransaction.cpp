@@ -70,6 +70,24 @@ void MgProxyFeatureTransaction::Rollback()
     m_service->RollbackTransaction(m_transactionId);
 }
 
+STRING MgProxyFeatureTransaction::AddSavePoint(CREFSTRING suggestName)
+{
+    CHECKNULL(m_service, L"MgProxyFeatureTransaction.AddSavePoint");
+	return m_service->AddSavePoint(m_transactionId, suggestName);
+}
+
+void MgProxyFeatureTransaction::ReleaseSavePoint(CREFSTRING savePointName)
+{
+    CHECKNULL(m_service, L"MgProxyFeatureTransaction.ReleaseSavePoint");
+    m_service->ReleaseSavePoint(m_transactionId, savePointName);
+}
+
+void MgProxyFeatureTransaction::Rollback(CREFSTRING savePointName)
+{
+    CHECKNULL(m_service, L"MgProxyFeatureTransaction.Rollback");
+    m_service->ReleaseSavePoint(m_transactionId, savePointName);
+}
+
 //////////////////////////////////////////////////////////////////
 ///<summary>
 /// Serialize data to TCP/IP stream

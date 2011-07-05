@@ -19,6 +19,7 @@
 #include "FeatureOperationFactory.h"
 #include "FeatureOperation.h"
 
+#include "OpAddSavePoint.h"
 #include "OpApplySchema.h"
 #include "OpDescribeSchema.h"
 #include "OpDescribeSchemaAsXml.h"
@@ -28,6 +29,8 @@
 #include "OpGetConnectionPropertyValues.h"
 #include "OpGetFeatureProviders.h"
 #include "OpGetSpatialContexts.h"
+#include "OpRollbackSavePoint.h"
+#include "OpReleaseSavePoint.h"
 #include "OpSelectFeatures.h"
 #include "OpSelectFeaturesSpatial.h"
 #include "OpTestConnection.h"
@@ -602,6 +605,42 @@ IMgOperationHandler* MgFeatureOperationFactory::GetOperation(
         {
         case VERSION_SUPPORTED(1,0):
             handler.reset(new MgOpRollbackTransaction());
+            break;
+        default:
+            throw new MgInvalidOperationVersionException(
+                L"MgFeatureOperationFactory.GetOperation", __LINE__, __WFILE__, NULL, L"", NULL);
+        }
+        break;
+
+	case MgFeatureServiceOpId::AddSavePoint_Id:
+		switch (VERSION_NO_PHASE(operationVersion))
+        {
+        case VERSION_SUPPORTED(1,0):
+			handler.reset(new MgOpAddSavePoint());
+            break;
+        default:
+            throw new MgInvalidOperationVersionException(
+                L"MgFeatureOperationFactory.GetOperation", __LINE__, __WFILE__, NULL, L"", NULL);
+        }
+        break;
+
+    case MgFeatureServiceOpId::RollbackSavePoint_Id:
+        switch (VERSION_NO_PHASE(operationVersion))
+        {
+        case VERSION_SUPPORTED(1,0):
+	        handler.reset(new MgOpRollbackSavePoint());
+            break;
+        default:
+            throw new MgInvalidOperationVersionException(
+                L"MgFeatureOperationFactory.GetOperation", __LINE__, __WFILE__, NULL, L"", NULL);
+        }
+        break;
+
+    case MgFeatureServiceOpId::ReleaseSavePoint_Id:
+		switch (VERSION_NO_PHASE(operationVersion))
+        {
+        case VERSION_SUPPORTED(1,0):
+            handler.reset(new MgOpReleaseSavePoint());
             break;
         default:
             throw new MgInvalidOperationVersionException(

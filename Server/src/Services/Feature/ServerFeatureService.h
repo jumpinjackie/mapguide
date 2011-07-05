@@ -1035,6 +1035,15 @@ public:
     // Rollback the transaction specified by the transaction id.
     bool RollbackTransaction(CREFSTRING transactionId);
 
+    //Add save point
+    STRING AddSavePoint(CREFSTRING transactionId, CREFSTRING suggestName);
+
+    //Roll back to a save point
+    bool RollbackSavePoint(CREFSTRING transactionId, CREFSTRING savePointName);
+
+    //Release a save point
+    bool ReleaseSavePoint(CREFSTRING transactionId, CREFSTRING savePointName);
+
 private:
 
     unsigned StringHasher(FdoString* pszString);

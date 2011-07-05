@@ -67,6 +67,12 @@ public:
 
     void ValidateTimeout(CREFSTRING transactionId);
 
+    STRING AddSavePoint(CREFSTRING transactionId, CREFSTRING suggestName);
+
+    bool RollbackSavePoint(CREFSTRING transactionId, CREFSTRING savePointName);
+
+    bool ReleaseSavePoint(CREFSTRING transactionId, CREFSTRING savePointName);
+
 private:
 
     MgServerFeatureTransactionPool();

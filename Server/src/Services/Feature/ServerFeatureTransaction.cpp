@@ -70,6 +70,43 @@ void MgServerFeatureTransaction::Rollback()
     Close();
 }
 
+STRING MgServerFeatureTransaction::AddSavePoint(CREFSTRING suggestName)
+{
+    if (m_bIsClosed) // Has already been closed through Commit, Rollback or SetTimeout.
+    {
+        return L"";
+    }
+
+    CHECKNULL(m_fdoTransaction, L"MgServerFeatureTransaction.AddSavePoint")
+
+    STRING retStr = m_fdoTransaction->AddSavePoint(suggestName.c_str());
+    return retStr;
+}
+
+void MgServerFeatureTransaction::ReleaseSavePoint(CREFSTRING savePointName)
+{
+     if (m_bIsClosed) // Has already been closed through Commit, Rollback or SetTimeout.
+    {
+        return;
+    }
+
+    CHECKNULL(m_fdoTransaction, L"MgServerFeatureTransaction.AddSavePoint")
+
+    m_fdoTransaction->ReleaseSavePoint(savePointName.c_str());
+}
+
+void MgServerFeatureTransaction::Rollback(CREFSTRING savePointName)
+{
+    if (m_bIsClosed) // Has already been closed through Commit, Rollback or SetTimeout.
+    {
+        return;
+    }
+
+    CHECKNULL(m_fdoTransaction, L"MgServerFeatureTransaction.AddSavePoint")
+
+    m_fdoTransaction->Rollback(savePointName.c_str());
+}
+
 void MgServerFeatureTransaction::Serialize(MgStream* stream)
 {
     bool operationCompleted = false;

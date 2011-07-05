@@ -44,6 +44,37 @@ PUBLISHED_API:
     ///
     virtual MgResourceIdentifier* GetFeatureSource() = 0;
 
+     /// \brief
+    ///  Create a save point in this transaction.
+    /// 
+    /// \param suggestName
+    /// Suggested save point name.
+    /// 
+    /// \returns 
+    /// The actual name used
+    virtual STRING AddSavePoint(CREFSTRING suggestName) = 0;
+
+    /// \brief
+    ///  Release a specific save point.
+    /// 
+    /// \param savePointName 
+    /// Save point name.
+    /// 
+    /// \returns 
+    /// Returns nothing
+ 
+    virtual void ReleaseSavePoint(CREFSTRING savePointName) = 0;
+    
+    /// \brief
+    ///  Rollback the transaction to a specified save point.
+    /// 
+    /// \param savePointName 
+    /// Save point name.
+    /// 
+    /// \returns 
+    /// Returns nothing 
+    virtual void Rollback(CREFSTRING savePointName) = 0;
+
 protected:
 
     /////////////////////////////////////////////////////////////////
