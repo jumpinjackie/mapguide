@@ -1895,3 +1895,11 @@ cleanrelease64:
 ..\..\bin\UnitTestFiles\UT_Annotation3.mdf : "..\..\..\UnitTest\TestData\Symbology\UT_Annotation3.mdf"
     if NOT EXIST ..\..\bin\UnitTestFiles\nul mkdir ..\..\bin\UnitTestFiles
     if EXIST "..\..\..\UnitTest\TestData\Symbology\UT_Annotation3.mdf" xcopy /r /d /y "..\..\..\UnitTest\TestData\Symbology\UT_Annotation3.mdf" ..\..\bin\UnitTestFiles\
+
+..\..\bin\UnitTestFiles\SavePointTest.sqlite : "..\..\..\UnitTest\TestData\FeatureService\SQLite\SavePointTest.sqlite"
+    if NOT EXIST ..\..\bin\UnitTestFiles\nul mkdir ..\..\bin\UnitTestFiles
+    if EXIST "..\..\..\UnitTest\TestData\FeatureService\SQLite\SavePointTest.sqlite" xcopy /r /d /y "..\..\..\UnitTest\TestData\FeatureService\SQLite\SavePointTest.sqlite" ..\..\bin\UnitTestFiles\
+
+..\..\bin\UnitTestFiles\SavePointTest.FeatureSource : "..\..\..\UnitTest\TestData\FeatureService\SQLite\SavePointTest.FeatureSource"
+    if NOT EXIST ..\..\bin\UnitTestFiles\nul mkdir ..\..\bin\UnitTestFiles
+    if EXIST "..\..\..\UnitTest\TestData\FeatureService\SQLite\SavePointTest.FeatureSource" xcopy /r /d /y "..\..\..\UnitTest\TestData\FeatureService\SQLite\SavePointTest.FeatureSource" ..\..\bin\UnitTestFiles\
