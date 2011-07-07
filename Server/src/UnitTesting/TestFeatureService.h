@@ -57,6 +57,7 @@ class TestFeatureService : public CppUnit::TestFixture
     CPPUNIT_TEST(TestCase_CreateFeatureSource);
     CPPUNIT_TEST(TestCase_BenchmarkSelectFeatures);
     CPPUNIT_TEST(TestCase_ConcurrentAccess);
+    CPPUNIT_TEST(TestCase_SavePoint);
 
     CPPUNIT_TEST(TestEnd); // This must be the very last unit test
     CPPUNIT_TEST_SUITE_END();
@@ -99,6 +100,7 @@ public:
     void TestCase_CreateFeatureSource();
     void TestCase_BenchmarkSelectFeatures();
     void TestCase_ConcurrentAccess();
+    void TestCase_SavePoint();
 };
 
 #endif // _TESTFEATURESERVICE_H

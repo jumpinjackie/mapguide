@@ -81,6 +81,7 @@ void TestFeatureService::TestStart()
             MgResourceIdentifier resourceIdentifier4(L"Library://UnitTests/Data/Sheboygan_VotingDistricts.FeatureSource");
             MgResourceIdentifier resourceIdentifier5(L"Library://UnitTests/Data/TestChainedInner1ToManyJoin.FeatureSource");
             MgResourceIdentifier resourceIdentifier6(L"Library://UnitTests/Data/Empty.FeatureSource");
+            MgResourceIdentifier resourceIdentifier7(L"Library://UnitTests/Data/SavePointTest.FeatureSource");
 #ifdef _WIN32
             STRING resourceContentFileName1 = L"..\\UnitTestFiles\\Sheboygan_Parcels.FeatureSource";
             STRING resourceContentFileName2 = L"..\\UnitTestFiles\\Redding_Parcels.FeatureSource";
@@ -88,6 +89,7 @@ void TestFeatureService::TestStart()
             STRING resourceContentFileName4 = L"..\\UnitTestFiles\\Sheboygan_VotingDistricts.FeatureSource";
             STRING resourceContentFileName5=  L"..\\UnitTestFiles\\TESTChainedInner1ToManyJoin.FeatureSource";
             STRING resourceContentFileName6=  L"..\\UnitTestFiles\\Empty.FeatureSource";
+            STRING resourceContentFileName7=  L"..\\UnitTestFiles\\SavePointTest.FeatureSource";
             STRING dataFileName1 = L"..\\UnitTestFiles\\Sheboygan_Parcels.sdf";
             STRING dataFileName2 = L"..\\UnitTestFiles\\Redding_Parcels.shp";
             STRING dataFileName3 = L"..\\UnitTestFiles\\Redding_Parcels.dbf";
@@ -95,6 +97,7 @@ void TestFeatureService::TestStart()
             STRING dataFileName5 = L"..\\UnitTestFiles\\Sheboygan_BuildingOutlines.sdf";
             STRING dataFileName6 = L"..\\UnitTestFiles\\Sheboygan_VotingDistricts.sdf";
             STRING dataFileName7 = L"..\\UnitTestFiles\\Empty.sdf";
+            STRING dataFileName8 = L"..\\UnitTestFiles\\SavePointTest.sqlite";
 #else
             STRING resourceContentFileName1 = L"../UnitTestFiles/Sheboygan_Parcels.FeatureSource";
             STRING resourceContentFileName2 = L"../UnitTestFiles/Redding_Parcels.FeatureSource";
@@ -109,6 +112,7 @@ void TestFeatureService::TestStart()
             STRING dataFileName5 = L"../UnitTestFiles/Sheboygan_BuildingOutlines.sdf";
             STRING dataFileName6 = L"../UnitTestFiles/Sheboygan_VotingDistricts.sdf";
             STRING dataFileName7 = L"../UnitTestFiles/Empty.sdf";
+             STRING dataFileName8 = L"../UnitTestFiles/SavePointTest.sqlite";
 #endif
 
             //Add a new resource
@@ -135,6 +139,10 @@ void TestFeatureService::TestStart()
             Ptr<MgByteSource> contentSource6 = new MgByteSource(resourceContentFileName6);
             Ptr<MgByteReader> contentReader6 = contentSource6->GetReader();
             pService->SetResource(&resourceIdentifier6, contentReader6, NULL);
+
+            Ptr<MgByteSource> contentSource7 = new MgByteSource(resourceContentFileName7);
+            Ptr<MgByteReader> contentReader7 = contentSource7->GetReader();
+            pService->SetResource(&resourceIdentifier7, contentReader7, NULL);
 
             //Set the resource data
             Ptr<MgByteSource> dataSource1 = new MgByteSource(dataFileName1);
@@ -168,6 +176,10 @@ void TestFeatureService::TestStart()
             Ptr<MgByteSource> dataSource8 = new MgByteSource(dataFileName7);
             Ptr<MgByteReader> dataReader8 = dataSource8->GetReader();
             pService->SetResourceData(&resourceIdentifier6, L"Empty.sdf", L"File", dataReader8);
+
+            Ptr<MgByteSource> dataSource9 = new MgByteSource(dataFileName8);
+            Ptr<MgByteReader> dataReader9 = dataSource9->GetReader();
+            pService->SetResourceData(&resourceIdentifier7, L"SavePointTest.sqlite", L"File", dataReader9);
         }
     }
     catch(MgException* e)
@@ -2242,4 +2254,102 @@ void TestFeatureService::TestCase_ConcurrentAccess()
     }
 
     featureReaders.clear();
+}
+
+void TestFeatureService::TestCase_SavePoint()
+{
+     try
+    {
+        MgServiceManager* serviceManager = MgServiceManager::GetInstance();
+        if(serviceManager == 0)
+        {
+            throw new MgNullReferenceException(L"TestFeatureService.TestCase_SavePoint", __LINE__, __WFILE__, NULL, L"", NULL);
+        }
+
+        Ptr<MgFeatureService> pService = dynamic_cast<MgFeatureService*>(serviceManager->RequestService(MgServiceType::FeatureService));
+        if (pService == 0)
+        {
+            throw new MgServiceNotAvailableException(L"TestFeatureService.TestCase_SavePoint", __LINE__, __WFILE__, NULL, L"", NULL);
+        }
+
+        Ptr<MgResourceIdentifier> featureSource = new MgResourceIdentifier(L"Library://UnitTests/Data/SavePointTest.FeatureSource");
+        Ptr<MgTransaction> pTransaction = pService->BeginTransaction(featureSource);
+        if(pTransaction != NULL)
+        {
+            Ptr<MgFeatureCommandCollection> commands = new MgFeatureCommandCollection();
+            Ptr<MgProperty> prop;
+            Ptr<MgPropertyCollection> properties1 = new MgPropertyCollection();
+            
+            prop = new MgInt32Property(L"ID", 1);
+            properties1->Add(prop);
+            prop = new MgStringProperty(L"Name", L"Sam");
+            properties1->Add(prop);
+            prop = new MgStringProperty(L"Key", L"Test1");
+            properties1->Add(prop);
+            
+            Ptr<MgPropertyCollection> properties2 = new MgPropertyCollection();
+
+            prop = new MgInt32Property(L"ID", 2);
+            properties2->Add(prop);
+            prop = new MgStringProperty(L"Name", L"Leaf");
+            properties2->Add(prop);
+            prop = new MgStringProperty(L"Key", L"Test2");
+            properties2->Add(prop);
+
+            Ptr<MgBatchPropertyCollection> propCollection = new MgBatchPropertyCollection();
+            propCollection->Add(properties1);
+            propCollection->Add(properties2);
+            Ptr<MgInsertFeatures> insertCommand1 = new MgInsertFeatures(L"DaKlass", propCollection);
+            
+            commands->Add(insertCommand1);
+            pService->UpdateFeatures(featureSource, commands, pTransaction);
+            
+            STRING sp = pTransaction->AddSavePoint(L"test");
+            STRING sp1 = pTransaction->AddSavePoint(L"test");
+
+            CPPUNIT_ASSERT(sp != sp1);
+
+            commands->Clear();
+            Ptr<MgPropertyCollection> properties3 = new MgPropertyCollection();
+            prop = new MgInt32Property(L"ID", 3);
+            properties3->Add(prop);
+            prop = new MgStringProperty(L"Name", L"Evan");
+            properties3->Add(prop);
+            prop = new MgStringProperty(L"Key", L"Test3");
+            properties3->Add(prop);
+            Ptr<MgInsertFeatures> insertCommand2 = new MgInsertFeatures(L"DaKlass", properties3);
+            commands->Add(insertCommand2);
+            pService->UpdateFeatures(featureSource, commands, pTransaction);
+
+            pTransaction->Rollback(sp);
+            pTransaction->Commit();
+
+            Ptr<MgFeatureQueryOptions> options = new MgFeatureQueryOptions();
+            options->AddFeatureProperty(L"ID");
+            options->AddFeatureProperty(L"Name");
+            options->AddFeatureProperty(L"Key");
+            Ptr<MgFeatureReader> reader = pService->SelectFeatures(featureSource, L"DaKlass", options);
+            int count = 0;
+            while(reader->ReadNext())
+            {
+                count++;
+            }
+            CPPUNIT_ASSERT(count == 2);
+        }
+    }
+    catch(MgException* e)
+    {
+        STRING message = e->GetDetails(TEST_LOCALE);
+        SAFE_RELEASE(e);
+        CPPUNIT_FAIL(MG_WCHAR_TO_CHAR(message.c_str()));
+    }
+    catch(FdoException* e)
+    {
+        FDO_SAFE_RELEASE(e);
+        CPPUNIT_FAIL("FdoException occurred");
+    }
+    catch(...)
+    {
+        throw;
+    }
 }
