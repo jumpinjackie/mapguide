@@ -105,6 +105,7 @@ void TestFeatureService::TestStart()
             STRING resourceContentFileName4 = L"../UnitTestFiles/Sheboygan_VotingDistricts.FeatureSource";
             STRING resourceContentFileName5 = L"../UnitTestFiles/TESTChainedInner1ToManyJoin.FeatureSource";
             STRING resourceContentFileName6 = L"../UnitTestFiles/Empty.FeatureSource";
+            STRING resourceContentFileName7 = L"../UnitTestFiles/SavePointTest.FeatureSource";
             STRING dataFileName1 = L"../UnitTestFiles/Sheboygan_Parcels.sdf";
             STRING dataFileName2 = L"../UnitTestFiles/Redding_Parcels.shp";
             STRING dataFileName3 = L"../UnitTestFiles/Redding_Parcels.dbf";
