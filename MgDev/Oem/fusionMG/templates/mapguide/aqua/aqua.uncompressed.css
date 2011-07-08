@@ -449,6 +449,7 @@ a.jxButtonEditCombo input {
 }
 
 .jxDialogContentContainer {
+  margin: 0px 18px 19px 27px;
   border: none;
 }
 
