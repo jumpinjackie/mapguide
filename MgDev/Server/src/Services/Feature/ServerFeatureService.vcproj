@@ -466,6 +466,7 @@
 			<File
 				RelativePath=".\OpApplySchema.h"
 				>
+ 			</File>               
 			<File
 				RelativePath=".\OpAddSavePoint.cpp"
 				>
@@ -1665,6 +1666,7 @@
 			<File
 				RelativePath=".\OpReleaseSavePoint.h"
 				>
+			</File>             
 			<File
 				RelativePath=".\OpRollbackSavePoint.cpp"
 				>
