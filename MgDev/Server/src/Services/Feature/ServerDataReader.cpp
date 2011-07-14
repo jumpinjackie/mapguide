@@ -1682,10 +1682,6 @@ void MgServerDataReader::AddRows(INT32 count)
 
     INT32 desiredFeatures = 0;
 
-    // Access the property definition collection
-    Ptr<MgPropertyDefinitionCollection> propDefCol = GetColumnDefinitions();
-    CHECKNULL((MgPropertyDefinitionCollection*)propDefCol, L"MgServerDataReader.AddRows");
-
     bool found = false;
 
     // FDO throws exception on ReadNext() which is not correct.
@@ -1706,7 +1702,7 @@ void MgServerDataReader::AddRows(INT32 count)
 
     while (found)
     {
-        AddRow((MgPropertyDefinitionCollection*)propDefCol);
+        AddCurrentRow();
         if (count > 0)
         {
             desiredFeatures++;
@@ -1731,6 +1727,31 @@ void MgServerDataReader::AddRows(INT32 count)
             found = false;
         }
     }
+}
+
+void MgServerDataReader::AddCurrentRow()
+{
+    // Access the property definition collection
+    Ptr<MgPropertyDefinitionCollection> propDefCol = GetColumnDefinitions();
+    Ptr<MgPropertyCollection> propCol = new MgPropertyCollection();
+    INT32 cnt = propDefCol->GetCount();
+
+    for (INT32 i=0; i < cnt; i++)
+    {
+        // Access the property definition
+        Ptr<MgPropertyDefinition> propDef = propDefCol->GetItem(i);
+        // Get the name of property
+        STRING propName = propDef->GetName();
+        INT16 type = propDef->GetPropertyType();
+
+        Ptr<MgProperty> prop = MgServerFeatureUtil::GetMgProperty(this, i, propName, type);
+        if (prop != NULL)
+        {
+            propCol->Add(prop);
+        }
+    }
+
+    m_bpCol->Add(propCol);
 }
 
 

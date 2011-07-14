@@ -1484,13 +1484,9 @@ void MgServerSqlDataReader::AddRows(INT32 count)
 
     INT32 desiredFeatures = 0;
 
-    // Access the property definition collection
-    Ptr<MgPropertyDefinitionCollection> propDefCol = GetColumnDefinitions();
-    CHECKNULL((MgPropertyDefinitionCollection*)propDefCol, L"MgServerSqlDataReader.AddRows");
-
     while (m_sqlReader->ReadNext())
     {
-        AddRow((MgPropertyDefinitionCollection*)propDefCol);
+        AddCurrentRow();
         if (count > 0)
         {
             desiredFeatures++;
@@ -1504,6 +1500,30 @@ void MgServerSqlDataReader::AddRows(INT32 count)
             continue;
         }
     }
+}
+
+void MgServerSqlDataReader::AddCurrentRow()
+{
+    // Access the property definition
+    Ptr<MgPropertyDefinitionCollection> propDefCol = GetColumnDefinitions();
+    Ptr<MgPropertyCollection> propCol = new MgPropertyCollection();
+    INT32 cnt = propDefCol->GetCount();
+
+    for (INT32 i=0; i < cnt; i++)
+    {
+        // Access the property definition
+        Ptr<MgPropertyDefinition> propDef = propDefCol->GetItem(i);
+        // Get the name of property
+        STRING propName = propDef->GetName();
+        INT16 type = propDef->GetPropertyType();
+
+        Ptr<MgProperty> prop = MgServerFeatureUtil::GetMgProperty(this, i, propName, type);
+        if (prop != NULL)
+        {
+            propCol->Add(prop);
+        }
+    }
+    m_bpCol->Add(propCol);
 }
 
 void MgServerSqlDataReader::AddRow(MgPropertyDefinitionCollection* propDefCol)
@@ -1548,7 +1568,7 @@ MgPropertyDefinitionCollection* MgServerSqlDataReader::GetColumnDefinitions()
         for (INT32 i = 0; i < cnt; i++)
         {
             STRING colName = GetPropertyName(i);
-            INT32 colType = GetPropertyType(colName);
+            INT32 colType = GetPropertyType(i);
             Ptr<MgPropertyDefinition> propDef = new MgPropertyDefinition(colName, colType);
             m_propDefCol->Add(propDef);
         }

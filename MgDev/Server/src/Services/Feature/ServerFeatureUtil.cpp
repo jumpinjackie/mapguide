@@ -180,7 +180,7 @@ MgPropertyDefinitionCollection* MgServerFeatureUtil::GetPropertyDefinitions(MgRe
     for (INT32 i = 0; i < cnt; i++)
     {
         STRING propName = reader->GetPropertyName(i);
-        INT32 propType = reader->GetPropertyType(propName);
+        INT32 propType = reader->GetPropertyType(i);
         Ptr<MgPropertyDefinition> propDef = new MgPropertyDefinition(propName, propType);
         propDefCol->Add(propDef);
     }
@@ -2004,6 +2004,253 @@ MgProperty* MgServerFeatureUtil::GetMgProperty(MgReader* reader, CREFSTRING qual
             if (!reader->IsNull(qualifiedPropName.c_str()))
             {
                 val = reader->GetRaster(qualifiedPropName.c_str());
+                isNull = false;
+            }
+
+            prop = new MgRasterProperty(qualifiedPropName, val);
+            prop->SetNull(isNull);
+            break;
+        }
+    }
+
+    return prop.Detach();
+}
+
+
+MgProperty* MgServerFeatureUtil::GetMgProperty(MgReader* reader, INT32 index, CREFSTRING qualifiedPropName, INT16 type)
+{
+    // Null Reader is invalid
+    CHECKNULL(reader, L"MgServerFeatureUtil.GetMgProperty");
+
+    Ptr<MgNullableProperty> prop;
+
+    switch(type)
+    {
+        case MgPropertyType::Boolean: /// Boolean true/false value
+        {
+            bool val = false;
+            bool isNull = true;
+
+            if (!reader->IsNull(index))
+            {
+                val = reader->GetBoolean(index);
+                isNull = false;
+            }
+
+            prop = new MgBooleanProperty(qualifiedPropName, val);
+            prop->SetNull(isNull);
+            break;
+        }
+        case MgPropertyType::Byte: /// Unsigned 8 bit value
+        {
+            FdoByte val = 0;
+            bool isNull = true;
+
+            if (!reader->IsNull(index))
+            {
+                val = reader->GetByte(index);
+                isNull = false;
+            }
+
+            prop = new MgByteProperty(qualifiedPropName, (BYTE)val);
+            prop->SetNull(isNull);
+            break;
+        }
+        case MgPropertyType::DateTime: /// DateTime object
+        {
+            Ptr<MgDateTime> dateTime;
+            bool isNull = true;
+
+            if (!reader->IsNull(index))
+            {
+                dateTime = reader->GetDateTime(index);
+                isNull = false;
+            }
+
+            prop = new MgDateTimeProperty(qualifiedPropName, dateTime);
+            prop->SetNull(isNull);
+            break;
+        }
+        case MgPropertyType::Single: /// Single precision floating point value
+        {
+            float val = 0.0f;
+            bool isNull = true;
+
+            if (!reader->IsNull(index))
+            {
+                val = reader->GetSingle(index);
+                isNull = false;
+            }
+
+            prop = new MgSingleProperty(qualifiedPropName, (float)val);
+            prop->SetNull(isNull);
+            break;
+        }
+        case MgPropertyType::Double: /// Double precision floating point value
+        {
+            double val = 0.0;
+            bool isNull = true;
+
+            if (!reader->IsNull(index))
+            {
+                val = reader->GetDouble(index);
+                isNull = false;
+            }
+
+            prop = new MgDoubleProperty(qualifiedPropName, (double)val);
+            prop->SetNull(isNull);
+            break;
+        }
+        case MgPropertyType::Int16: /// 16 bit signed integer value
+        {
+            FdoInt16 val = 0;
+            bool isNull = true;
+
+            if (!reader->IsNull(index))
+            {
+                val = reader->GetInt16(index);
+                isNull = false;
+            }
+
+            prop = new MgInt16Property(qualifiedPropName, (INT16)val);
+            prop->SetNull(isNull);
+            break;
+        }
+        case MgPropertyType::Int32: // 32 bit signed integer value
+        {
+            FdoInt32 val = 0;
+            bool isNull = true;
+
+            if (!reader->IsNull(index))
+            {
+                val = reader->GetInt32(index);
+                isNull = false;
+            }
+
+            prop = new MgInt32Property(qualifiedPropName, (INT32)val);
+            prop->SetNull(isNull);
+            break;
+        }
+        case MgPropertyType::Int64: // 64 bit signed integer value
+        {
+            FdoInt64 val = 0;
+            bool isNull = true;
+
+            if (!reader->IsNull(index))
+            {
+                val = reader->GetInt64(index);
+                isNull = false;
+            }
+
+            prop = new MgInt64Property(qualifiedPropName, (INT64)val);
+            prop->SetNull(isNull);
+            break;
+        }
+        case MgPropertyType::String: // String MgProperty
+        {
+            STRING val = L"";
+            bool isNull = true;
+
+            if (!reader->IsNull(index))
+            {
+                // A try/catch block is used here for case where the FDO computed
+                // property field is used.  When the property value is null, the computed
+                // property isNull flag is not set  which causes the IsNull() test to fail, and
+                // leading to GetString() to result in an exception.
+                // Instead, it will be handled by catching the exception and setting the isNull flag.
+                try
+                {
+                    val = reader->GetString(index);
+                    isNull = false;
+                }
+                catch (FdoException* e)
+                {
+                    isNull = true;
+                    FDO_SAFE_RELEASE(e);
+                }
+                catch (MgException* e)
+                {
+                    isNull = true;
+                    SAFE_RELEASE(e);
+                }
+                catch (...)
+                {
+                    isNull = true;
+                }
+            }
+
+            prop = new MgStringProperty(qualifiedPropName, val);
+            prop->SetNull(isNull);
+            break;
+        }
+        case MgPropertyType::Blob: // BLOB
+        {
+            Ptr<MgByteReader> val;
+            bool isNull = true;
+
+            if (!reader->IsNull(index))
+            {
+                isNull = false;
+                val = reader->GetBLOB(index);
+            }
+
+            prop = new MgBlobProperty(qualifiedPropName, val);
+            prop->SetNull(isNull);
+            break;
+        }
+        case MgPropertyType::Clob: // CLOB
+        {
+            Ptr<MgByteReader> val;
+            bool isNull = true;
+
+            if (!reader->IsNull(index))
+            {
+                isNull = false;
+                val = reader->GetCLOB(index);
+            }
+
+            prop = new MgClobProperty(qualifiedPropName, val);
+            prop->SetNull(isNull);
+            break;
+        }
+        case MgPropertyType::Feature: // Feature object
+        {
+            Ptr<MgFeatureReader> val;
+            bool isNull = true;
+
+            if (!reader->IsNull(index))
+            {
+                isNull = false;
+                val = ((MgFeatureReader*)(reader))->GetFeatureObject(index);
+            }
+
+            prop = new MgFeatureProperty(qualifiedPropName, val);
+            prop->SetNull(isNull);
+            break;
+        }
+        case MgPropertyType::Geometry: // Geometry object
+        {
+            Ptr<MgByteReader> val;
+            bool isNull = true;
+
+            if (!reader->IsNull(index))
+            {
+                val = reader->GetGeometry(index);
+                isNull = false;
+            }
+
+            prop = new MgGeometryProperty(qualifiedPropName, val);
+            prop->SetNull(isNull);
+            break;
+        }
+        case MgPropertyType::Raster: // Raster object
+        {
+            Ptr<MgRaster> val;
+            bool isNull = true;
+
+            if (!reader->IsNull(index))
+            {
+                val = reader->GetRaster(index);
                 isNull = false;
             }
 
