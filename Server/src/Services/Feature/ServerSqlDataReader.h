@@ -453,6 +453,7 @@ private:
     STRING m_providerName;
     Ptr<MgBatchPropertyCollection>       m_bpCol;
     Ptr<MgPropertyDefinitionCollection>  m_propDefCol;
+    void AddCurrentRow();
 
 CLASS_ID:
     static const INT32 m_cls_id = PlatformBase_FeatureService_SqlDataReader;

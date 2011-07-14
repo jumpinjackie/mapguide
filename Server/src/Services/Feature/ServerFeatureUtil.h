@@ -98,6 +98,7 @@ public:
     static MgObjectPropertyDefinition* GetObjectPropertyDefinition(FdoObjectPropertyDefinition* fdoPropDef);
     static MgGeometricPropertyDefinition* GetGeometricPropertyDefinition(FdoGeometricPropertyDefinition* fdoPropDef);
     static MgRasterPropertyDefinition* GetRasterPropertyDefinition(FdoRasterPropertyDefinition* fdoPropDef);
+    static MgProperty* GetMgProperty(MgReader* reader, INT32 index, CREFSTRING qualifiedPropName, INT16 type);
     static MgProperty* GetMgProperty(MgReader* reader, CREFSTRING qualifiedPropName, INT16 type);
 
     static FdoFeatureSchemaCollection* GetFdoFeatureSchemaCollection(MgFeatureSchemaCollection* mgSchemaCol);
