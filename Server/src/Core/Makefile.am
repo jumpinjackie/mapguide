@@ -21,6 +21,7 @@ INCLUDES = \
   -I../Services/Feature \
   -I../Services/Kml \
   -I../Services/Mapping \
+  -I../Services/Profiling \
   -I../Services/Rendering \
   -I../Services/Resource \
   -I../Services/ServerAdmin \
@@ -114,6 +115,7 @@ mgserver_LDADD = \
   -lMgServerKmlService \
   -lMgServerManager \
   -lMgServerMappingService \
+  -lMgServerProfilingService \
   -lMgServerRenderingService \
   -lMgServerResourceService \
   -lMgServerSiteService \
@@ -149,6 +151,7 @@ mgserver_LDFLAGS = \
   -R$(map_srcdir)/Server/src/Services/Feature/.libs \
   -R$(map_srcdir)/Server/src/Services/Kml/.libs \
   -R$(map_srcdir)/Server/src/Services/Mapping/.libs \
+  -R$(map_srcdir)/Server/src/Services/Profiling/.libs \
   -R$(map_srcdir)/Server/src/Services/Rendering/.libs \
   -R$(map_srcdir)/Server/src/Services/Resource/.libs \
   -R$(map_srcdir)/Server/src/Services/ServerAdmin/.libs \
@@ -178,6 +181,7 @@ mgserver_LDFLAGS = \
   -L../Services/Feature \
   -L../Services/Kml \
   -L../Services/Mapping \
+  -L../Services/Profiling \
   -L../Services/Rendering \
   -L../Services/Resource \
   -L../Services/ServerAdmin \

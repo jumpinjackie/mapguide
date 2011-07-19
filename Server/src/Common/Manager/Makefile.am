@@ -20,6 +20,7 @@ INCLUDES = \
   -I../../Services/Feature \
   -I../../Services/Kml \
   -I../../Services/Mapping \
+  -I../../Services/Profiling \
   -I../../Services/Rendering \
   -I../../Services/Resource \
   -I../../Services/ServerAdmin \

@@ -89,7 +89,7 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>..\Common;..\Common\Base;..\Common\Cache;..\Common\Manager;..\Common\Thread;..\Services\Drawing;..\Services\Feature;..\Services\Kml;..\Services\Mapping;..\Services\Rendering;..\Services\Resource;..\Services\ServerAdmin;..\Services\Site;..\Services\Tile;..\..\..\Common;..\..\..\Common\Foundation;..\..\..\Common\Geometry;..\..\..\Common\PlatformBase;..\..\..\Common\MapGuideCommon;..\..\..\Common\MdfModel;..\..\..\Common\MdfParser;..\..\..\Common\Renderers;..\..\..\Common\Stylization;..\..\..\Oem\ACE\ACE_wrappers;..\..\..\Oem\dbxml\xerces-c-src\src;..\..\..\Oem\gd\freetype\include;..\..\..\Oem\FDO\inc;..\..\..\Oem\FDO\inc\ExpressionEngine;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\Common;..\Common\Base;..\Common\Cache;..\Common\Manager;..\Common\Thread;..\Services\Drawing;..\Services\Feature;..\Services\Kml;..\Services\Mapping;..\Services\Profiling;..\Services\Rendering;..\Services\Resource;..\Services\ServerAdmin;..\Services\Site;..\Services\Tile;..\..\..\Common;..\..\..\Common\Foundation;..\..\..\Common\Geometry;..\..\..\Common\PlatformBase;..\..\..\Common\MapGuideCommon;..\..\..\Common\MdfModel;..\..\..\Common\MdfParser;..\..\..\Common\Renderers;..\..\..\Common\Stylization;..\..\..\Oem\ACE\ACE_wrappers;..\..\..\Oem\dbxml\xerces-c-src\src;..\..\..\Oem\gd\freetype\include;..\..\..\Oem\FDO\inc;..\..\..\Oem\FDO\inc\ExpressionEngine;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;ACE_HAS_SVC_DLL=1;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MinimalRebuild>true</MinimalRebuild>
       <ExceptionHandling>Async</ExceptionHandling>
@@ -118,7 +118,7 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>..\Common;..\Common\Base;..\Common\Cache;..\Common\Manager;..\Common\Thread;..\Services\Drawing;..\Services\Feature;..\Services\Kml;..\Services\Mapping;..\Services\Rendering;..\Services\Resource;..\Services\ServerAdmin;..\Services\Site;..\Services\Tile;..\..\..\Common;..\..\..\Common\Foundation;..\..\..\Common\Geometry;..\..\..\Common\PlatformBase;..\..\..\Common\MapGuideCommon;..\..\..\Common\MdfModel;..\..\..\Common\MdfParser;..\..\..\Common\Renderers;..\..\..\Common\Stylization;..\..\..\Oem\ACE\ACE_wrappers;..\..\..\Oem\dbxml\xerces-c-src\src;..\..\..\Oem\gd\freetype\include;..\..\..\Oem\FDO\inc;..\..\..\Oem\FDO\inc\ExpressionEngine;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\Common;..\Common\Base;..\Common\Cache;..\Common\Manager;..\Common\Thread;..\Services\Drawing;..\Services\Feature;..\Services\Kml;..\Services\Mapping;..\Services\Profiling;..\Services\Rendering;..\Services\Resource;..\Services\ServerAdmin;..\Services\Site;..\Services\Tile;..\..\..\Common;..\..\..\Common\Foundation;..\..\..\Common\Geometry;..\..\..\Common\PlatformBase;..\..\..\Common\MapGuideCommon;..\..\..\Common\MdfModel;..\..\..\Common\MdfParser;..\..\..\Common\Renderers;..\..\..\Common\Stylization;..\..\..\Oem\ACE\ACE_wrappers;..\..\..\Oem\dbxml\xerces-c-src\src;..\..\..\Oem\gd\freetype\include;..\..\..\Oem\FDO\inc;..\..\..\Oem\FDO\inc\ExpressionEngine;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;ACE_HAS_SVC_DLL=1;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MinimalRebuild>true</MinimalRebuild>
       <ExceptionHandling>Async</ExceptionHandling>
@@ -148,7 +148,7 @@
     <ClCompile>
       <Optimization>MaxSpeed</Optimization>
       <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
-      <AdditionalIncludeDirectories>..\Common;..\Common\Base;..\Common\Cache;..\Common\Manager;..\Common\Thread;..\Services\Drawing;..\Services\Feature;..\Services\Kml;..\Services\Mapping;..\Services\Rendering;..\Services\Resource;..\Services\ServerAdmin;..\Services\Site;..\Services\Tile;..\..\..\Common;..\..\..\Common\Foundation;..\..\..\Common\Geometry;..\..\..\Common\PlatformBase;..\..\..\Common\MapGuideCommon;..\..\..\Common\MdfModel;..\..\..\Common\MdfParser;..\..\..\Common\Renderers;..\..\..\Common\Stylization;..\..\..\Oem\ACE\ACE_wrappers;..\..\..\Oem\dbxml\xerces-c-src\src;..\..\..\Oem\gd\freetype\include;..\..\..\Oem\FDO\inc;..\..\..\Oem\FDO\inc\ExpressionEngine;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\Common;..\Common\Base;..\Common\Cache;..\Common\Manager;..\Common\Thread;..\Services\Drawing;..\Services\Feature;..\Services\Kml;..\Services\Mapping;..\Services\Profiling;..\Services\Rendering;..\Services\Resource;..\Services\ServerAdmin;..\Services\Site;..\Services\Tile;..\..\..\Common;..\..\..\Common\Foundation;..\..\..\Common\Geometry;..\..\..\Common\PlatformBase;..\..\..\Common\MapGuideCommon;..\..\..\Common\MdfModel;..\..\..\Common\MdfParser;..\..\..\Common\Renderers;..\..\..\Common\Stylization;..\..\..\Oem\ACE\ACE_wrappers;..\..\..\Oem\dbxml\xerces-c-src\src;..\..\..\Oem\gd\freetype\include;..\..\..\Oem\FDO\inc;..\..\..\Oem\FDO\inc\ExpressionEngine;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;ACE_HAS_SVC_DLL=1;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <StringPooling>true</StringPooling>
       <ExceptionHandling>Async</ExceptionHandling>
@@ -179,7 +179,7 @@
     <ClCompile>
       <Optimization>MaxSpeed</Optimization>
       <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
-      <AdditionalIncludeDirectories>..\Common;..\Common\Base;..\Common\Cache;..\Common\Manager;..\Common\Thread;..\Services\Drawing;..\Services\Feature;..\Services\Kml;..\Services\Mapping;..\Services\Rendering;..\Services\Resource;..\Services\ServerAdmin;..\Services\Site;..\Services\Tile;..\..\..\Common;..\..\..\Common\Foundation;..\..\..\Common\Geometry;..\..\..\Common\PlatformBase;..\..\..\Common\MapGuideCommon;..\..\..\Common\MdfModel;..\..\..\Common\MdfParser;..\..\..\Common\Renderers;..\..\..\Common\Stylization;..\..\..\Oem\ACE\ACE_wrappers;..\..\..\Oem\dbxml\xerces-c-src\src;..\..\..\Oem\gd\freetype\include;..\..\..\Oem\FDO\inc;..\..\..\Oem\FDO\inc\ExpressionEngine;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\Common;..\Common\Base;..\Common\Cache;..\Common\Manager;..\Common\Thread;..\Services\Drawing;..\Services\Feature;..\Services\Kml;..\Services\Mapping;..\Services\Profiling;..\Services\Rendering;..\Services\Resource;..\Services\ServerAdmin;..\Services\Site;..\Services\Tile;..\..\..\Common;..\..\..\Common\Foundation;..\..\..\Common\Geometry;..\..\..\Common\PlatformBase;..\..\..\Common\MapGuideCommon;..\..\..\Common\MdfModel;..\..\..\Common\MdfParser;..\..\..\Common\Renderers;..\..\..\Common\Stylization;..\..\..\Oem\ACE\ACE_wrappers;..\..\..\Oem\dbxml\xerces-c-src\src;..\..\..\Oem\gd\freetype\include;..\..\..\Oem\FDO\inc;..\..\..\Oem\FDO\inc\ExpressionEngine;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;ACE_HAS_SVC_DLL=1;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <StringPooling>true</StringPooling>
       <ExceptionHandling>Async</ExceptionHandling>
@@ -416,6 +416,9 @@
     <ProjectReference Include="..\Services\Mapping\ServerMappingService.vcxproj">
       <Project>{561f38ee-e22f-481a-8efb-dc0aa25b4c1f}</Project>
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+    </ProjectReference>
+    <ProjectReference Include="..\Services\Profiling\ServerProfilingService.vcxproj">
+      <Project>{899e41f5-a58f-4c93-a623-666dce6c1536}</Project>
     </ProjectReference>
     <ProjectReference Include="..\Services\Rendering\ServerRenderingService.vcxproj">
       <Project>{561f38ee-e22f-481a-8efb-dc0aa25b4c20}</Project>
