@@ -20888,6 +20888,7 @@ do
   "Server/src/Services/Resource/Makefile" ) CONFIG_FILES="$CONFIG_FILES Server/src/Services/Resource/Makefile" ;;
   "Server/src/Services/Site/Makefile" ) CONFIG_FILES="$CONFIG_FILES Server/src/Services/Site/Makefile" ;;
   "Server/src/Services/Drawing/Makefile" ) CONFIG_FILES="$CONFIG_FILES Server/src/Services/Drawing/Makefile" ;;
+  "Server/src/Services/Profiling/Makefile" ) CONFIG_FILES="$CONFIG_FILES Server/src/Services/Profiling/Makefile" ;;
   "Server/src/Services/Rendering/Makefile" ) CONFIG_FILES="$CONFIG_FILES Server/src/Services/Rendering/Makefile" ;;
   "Server/src/Services/ServerAdmin/Makefile" ) CONFIG_FILES="$CONFIG_FILES Server/src/Services/ServerAdmin/Makefile" ;;
   "Server/src/Services/Tile/Makefile" ) CONFIG_FILES="$CONFIG_FILES Server/src/Services/Tile/Makefile" ;;

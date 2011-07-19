@@ -58,6 +58,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "PostBuild", "src\PostBuild\
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ServerCache", "src\Common\Cache\ServerCache.vcxproj", "{531778C6-C340-40F2-B403-9B58B8121AAB}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ServerProfilingService", "src\Services\Profiling\ServerProfilingService.vcxproj", "{899E41F5-A58F-4C93-A623-666DCE6C1536}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -295,6 +297,14 @@ Global
 		{531778C6-C340-40F2-B403-9B58B8121AAB}.Release|Win32.Build.0 = Release|Win32
 		{531778C6-C340-40F2-B403-9B58B8121AAB}.Release|x64.ActiveCfg = Release|x64
 		{531778C6-C340-40F2-B403-9B58B8121AAB}.Release|x64.Build.0 = Release|x64
+		{899E41F5-A58F-4C93-A623-666DCE6C1536}.Debug|Win32.ActiveCfg = Debug|Win32
+		{899E41F5-A58F-4C93-A623-666DCE6C1536}.Debug|Win32.Build.0 = Debug|Win32
+		{899E41F5-A58F-4C93-A623-666DCE6C1536}.Debug|x64.ActiveCfg = Debug|x64
+		{899E41F5-A58F-4C93-A623-666DCE6C1536}.Debug|x64.Build.0 = Debug|x64
+		{899E41F5-A58F-4C93-A623-666DCE6C1536}.Release|Win32.ActiveCfg = Release|Win32
+		{899E41F5-A58F-4C93-A623-666DCE6C1536}.Release|Win32.Build.0 = Release|Win32
+		{899E41F5-A58F-4C93-A623-666DCE6C1536}.Release|x64.ActiveCfg = Release|x64
+		{899E41F5-A58F-4C93-A623-666DCE6C1536}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

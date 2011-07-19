@@ -226,6 +226,7 @@ AC_CONFIG_FILES([Server/Makefile \
         Server/src/Services/Resource/Makefile \
         Server/src/Services/Site/Makefile \
         Server/src/Services/Drawing/Makefile \
+        Server/src/Services/Profiling/Makefile \
         Server/src/Services/Rendering/Makefile \
         Server/src/Services/ServerAdmin/Makefile \
         Server/src/Services/Tile/Makefile \

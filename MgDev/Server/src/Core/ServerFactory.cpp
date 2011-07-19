@@ -25,6 +25,7 @@
 #include "ServerSiteService.h"
 #include "ServerTileService.h"
 #include "ServerKmlService.h"
+#include "ServerProfilingService.h"
 
 static bool InitializeStaticData();
 
@@ -43,6 +44,7 @@ bool InitializeStaticData()
     registry->RegisterService(MgServiceType::KmlService, MgServerKmlService::CreateService, sctLocalInProc);
     registry->RegisterService(MgServiceType::ServerAdminService, MgServerAdminService::CreateService, sctLocalInProc);
     registry->RegisterService(MgServiceType::SiteService, MgServerSiteService::CreateService, sctLocalInProc);
+    registry->RegisterService(MgServiceType::ProfilingService, MgServerProfilingService::CreateService, sctLocalInProc);
 
     return true;
 }

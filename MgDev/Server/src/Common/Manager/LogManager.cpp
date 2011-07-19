@@ -259,6 +259,7 @@ void MgLogManager::LoadConfigurationProperties()
     ParseLogService(MgServiceType::KmlService, logDetail);
     ParseLogService(MgServiceType::ServerAdminService, logDetail);
     ParseLogService(MgServiceType::SiteService, logDetail);
+    ParseLogService(MgServiceType::ProfilingService, logDetail);
 
     // Access Log
     pConfiguration->GetBoolValue(MgConfigProperties::AccessLogPropertiesSection, MgConfigProperties::AccessLogPropertyEnabled, bLogEnabled, MgConfigProperties::DefaultAccessLogPropertyEnabled);
@@ -4768,6 +4769,9 @@ void MgLogManager::ParseLogService(INT16 serviceType, CREFSTRING configString)
         break;
     case MgServiceType::SiteService:
         serviceString = MgResources::SiteService;
+        break;
+    case MgServiceType::ProfilingService:
+        serviceString = MgResources::ProfilingService;
         break;
     default:
         break;
