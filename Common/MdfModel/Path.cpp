@@ -47,6 +47,8 @@ Path::Path()
     this->m_sLineCap            = Path::sLineCapDefault;
     this->m_sLineJoin           = Path::sLineJoinDefault;
     this->m_sLineMiterLimit     = L"5.0";  // NOXLATE
+    this->m_sScaleX             = L"1.0";  // NOXLATE
+    this->m_sScaleY             = L"1.0";  // NOXLATE
 }
 
 //-------------------------------------------------------------------------
@@ -199,6 +201,42 @@ const MdfString& Path::GetLineMiterLimit() const
 void Path::SetLineMiterLimit(const MdfString& lineMiterLimit)
 {
     this->m_sLineMiterLimit = lineMiterLimit;
+}
+
+//-------------------------------------------------------------------------
+// PURPOSE:
+// PARAMETERS:
+//-------------------------------------------------------------------------
+const MdfString& Path::GetScaleX() const
+{
+    return this->m_sScaleX;
+}
+
+//-------------------------------------------------------------------------
+// PURPOSE:
+// PARAMETERS:
+//-------------------------------------------------------------------------
+void Path::SetScaleX(const MdfString& scaleX)
+{
+    this->m_sScaleX = scaleX;
+}
+
+//-------------------------------------------------------------------------
+// PURPOSE:
+// PARAMETERS:
+//-------------------------------------------------------------------------
+const MdfString& Path::GetScaleY() const
+{
+    return this->m_sScaleY;
+}
+
+//-------------------------------------------------------------------------
+// PURPOSE:
+// PARAMETERS:
+//-------------------------------------------------------------------------
+void Path::SetScaleY(const MdfString& scaleY)
+{
+    this->m_sScaleY = scaleY;
 }
 
 //-------------------------------------------------------------------------

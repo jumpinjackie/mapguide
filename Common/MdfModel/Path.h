@@ -64,6 +64,12 @@ BEGIN_NAMESPACE_MDFMODEL
         const MdfString& GetLineMiterLimit() const;
         void SetLineMiterLimit(const MdfString& lineMiterLimit);
 
+        const MdfString& GetScaleX() const;
+        void SetScaleX(const MdfString& scaleX);
+
+        const MdfString& GetScaleY() const;
+        void SetScaleY(const MdfString& scaleY);
+
         virtual void AcceptVisitor(IGraphicElementVisitor& igeVisitor);
 
     private:
@@ -80,6 +86,8 @@ BEGIN_NAMESPACE_MDFMODEL
         MdfString m_sLineCap;
         MdfString m_sLineJoin;
         MdfString m_sLineMiterLimit;
+        MdfString m_sScaleX;
+        MdfString m_sScaleY;
     };
 
 END_NAMESPACE_MDFMODEL

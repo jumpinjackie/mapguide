@@ -149,9 +149,22 @@ SE_RenderPrimitive* SE_Polyline::evaluate(SE_EvalContext* ctx)
     else // default is Round
         ret->lineStroke.join = SE_LineJoin_Round;
 
-    // populate the line buffer
-    ret->geometry->Transform(*ctx->xform, CalcTolerance(ctx));
+    double dScaleX = scaleX.evaluate(ctx->exec);
+    double dScaleY = scaleY.evaluate(ctx->exec);
 
+    // populate the line buffer
+    if(dScaleX != 1.0 || dScaleY != 1.0)
+    {
+        // combine the path scaling with the style transform
+        SE_Matrix xform(dScaleX, 0.0, 0.0, 0.0, dScaleY, 0.0);
+        xform.premultiply(*ctx->xform);
+        ret->geometry->Transform(xform, CalcTolerance(ctx));
+    }
+    else
+    {
+        ret->geometry->Transform(*ctx->xform, CalcTolerance(ctx));
+    }
+    
     // If the line buffer contains dots (zero-length segments) then replace them
     // with very short horizontal lines.  When the symbol gets applied to the
     // geometry these segments will then have the correct orientation, and this
@@ -266,7 +279,20 @@ SE_RenderPrimitive* SE_Polygon::evaluate(SE_EvalContext* ctx)
         ret->lineStroke.join = SE_LineJoin_Round;
 
     // populate the line buffer
-    ret->geometry->Transform(*ctx->xform, CalcTolerance(ctx));
+    double dScaleX = scaleX.evaluate(ctx->exec);
+    double dScaleY = scaleY.evaluate(ctx->exec);
+
+    if(dScaleX != 1.0 || dScaleY != 1.0)
+    {
+        // combine the path scaling with the style transform
+        SE_Matrix xform(dScaleX, 0.0, 0.0, 0.0, dScaleY, 0.0);
+        xform.premultiply(*ctx->xform);
+        ret->geometry->Transform(xform, CalcTolerance(ctx));
+    }
+    else
+    {
+        ret->geometry->Transform(*ctx->xform, CalcTolerance(ctx));
+    }
 
     // TODO: here we would implement a rotating calipers algorithm to get a tighter
     //       oriented box, but for now just get the axis-aligned bounds of the path

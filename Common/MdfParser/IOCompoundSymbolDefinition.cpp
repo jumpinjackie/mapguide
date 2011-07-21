@@ -88,7 +88,7 @@ void IOCompoundSymbolDefinition::Write(MdfStream& fd, CompoundSymbolDefinition* 
         MdfString strVersion;
         if (version)
         {
-            if ((*version >= Version(1, 0, 0)) && (*version <= Version(1, 1, 0)))
+            if ((*version >= Version(1, 0, 0)) && (*version <= Version(2, 4, 0)))
             {
                 // SymbolDefinition in MapGuide 2008 - current
                 strVersion = version->ToString();
@@ -104,7 +104,7 @@ void IOCompoundSymbolDefinition::Write(MdfStream& fd, CompoundSymbolDefinition* 
         else
         {
             // use the current highest version
-            strVersion = L"1.1.0";
+            strVersion = L"2.4.0";
         }
 
         fd << tab.tab() << "<CompoundSymbolDefinition xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:noNamespaceSchemaLocation=\"SymbolDefinition-" << EncodeString(strVersion) << ".xsd\" version=\"" << EncodeString(strVersion) << "\">" << std::endl; // NOXLATE

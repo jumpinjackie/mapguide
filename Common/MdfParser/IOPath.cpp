@@ -40,7 +40,47 @@ void IOPath::StartPathElement(const wchar_t* name, HandlerStack* handlerStack)
 void IOPath::StartElement(const wchar_t* name, HandlerStack* handlerStack)
 {
     this->m_currElemName = name;
-    if (this->m_currElemName == L"ExtendedData1") // NOXLATE
+    if (this->m_currElemName == L"Geometry")
+    {
+        // value read in ElementChars
+    }
+    else if (this->m_currElemName == L"FillColor")
+    {
+        // value read in ElementChars
+    }
+    else if (this->m_currElemName == L"LineColor")
+    {
+        // value read in ElementChars
+    }
+    else if (this->m_currElemName == L"LineWeight")
+    {
+        // value read in ElementChars
+    }
+    else if (this->m_currElemName == L"LineWeightScalable")
+    {
+        // value read in ElementChars
+    }
+    else if (this->m_currElemName == L"LineCap")
+    {
+        // value read in ElementChars
+    }
+    else if (this->m_currElemName == L"LineJoin")
+    {
+        // value read in ElementChars
+    }
+    else if (this->m_currElemName == L"LineMiterLimit")
+    {
+        // value read in ElementChars
+    }
+    else if (this->m_currElemName == L"ScaleX")
+    {
+        // value read in ElementChars
+    }
+    else if (this->m_currElemName == L"ScaleY")
+    {
+        // value read in ElementChars
+    }
+    else if (this->m_currElemName == L"ExtendedData1") // NOXLATE
     {
         this->m_procExtData = true;
     }
@@ -63,6 +103,8 @@ void IOPath::ElementChars(const wchar_t* ch)
     else IF_STRING_PROPERTY(this->m_currElemName, path, LineCap, ch)
     else IF_STRING_PROPERTY(this->m_currElemName, path, LineJoin, ch)
     else IF_STRING_PROPERTY(this->m_currElemName, path, LineMiterLimit, ch)
+    else IF_STRING_PROPERTY(this->m_currElemName, path, ScaleX, ch)
+    else IF_STRING_PROPERTY(this->m_currElemName, path, ScaleY, ch)
     else IOGraphicElement::ElementChars(ch);
 }
 
@@ -78,9 +120,28 @@ void IOPath::Write(MdfStream& fd, Path* path, std::string name, Version* version
     fd << tab.tab() << "<" << name << ">" << std::endl;
     tab.inctab();
 
+    MdfStringStream fdExtData;
+
     IOGraphicElement::Write(fd, path, version, tab);
 
     EMIT_STRING_PROPERTY(fd, path, Geometry, false, NULL, tab)
+
+    if (!version || (*version >= Version(2, 4, 0)))
+    {
+        EMIT_DOUBLE_PROPERTY(fd, path, ScaleX, true, 1.0, tab)    // default is 1.0
+        EMIT_DOUBLE_PROPERTY(fd, path, ScaleY, true, 1.0, tab)    // default is 1.0
+    }
+    else
+    {
+        // save new property as extended data for symbol definition version <= 1.1.0
+        tab.inctab();
+
+        EMIT_DOUBLE_PROPERTY(fdExtData, path, ScaleX, true, 1.0, tab)    // default is 1.0
+        EMIT_DOUBLE_PROPERTY(fdExtData, path, ScaleY, true, 1.0, tab)    // default is 1.0
+
+        tab.dectab();
+    }
+
     EMIT_STRING_PROPERTY(fd, path, FillColor, true, L"", tab)         // default is empty string
     EMIT_STRING_PROPERTY(fd, path, LineColor, true, L"", tab)         // default is empty string
     EMIT_DOUBLE_PROPERTY(fd, path, LineWeight, true, 0.0, tab)        // default is 0.0
@@ -90,7 +151,7 @@ void IOPath::Write(MdfStream& fd, Path* path, std::string name, Version* version
     EMIT_DOUBLE_PROPERTY(fd, path, LineMiterLimit, true, 5.0, tab)    // default is 5.0
 
     // Write any unknown XML / extended data
-    IOUnknown::Write(fd, path->GetUnknownXml(), version, tab);
+    IOUnknown::Write(fd, path->GetUnknownXml(), fdExtData.str(), version, tab);
 
     tab.dectab();
     fd << tab.tab() << "</" << name << ">" << std::endl;

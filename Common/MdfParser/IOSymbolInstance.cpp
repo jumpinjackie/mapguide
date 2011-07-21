@@ -154,13 +154,16 @@ void IOSymbolInstance::EndElement(const wchar_t* name, HandlerStack* handlerStac
 
 // Determine which SymbolDefinition schema version to use based
 // on the supplied LDF version:
+// * LDF version == 2.4.0  =>  SD version 2.4.0
 // * LDF version == 2.3.0  =>  SD version 1.1.0
 // * LDF version == 1.3.0  =>  SD version 1.1.0
 // * LDF version == 1.2.0  =>  SD version 1.1.0
 // * LDF version <= 1.1.0  =>  SD version 1.0.0
 bool IOSymbolInstance::GetSymbolDefinitionVersion(Version* ldfVersion, Version& sdVersion)
 {
-    if (!ldfVersion || *ldfVersion >= Version(1, 2, 0))
+    if(!ldfVersion || *ldfVersion >= Version(2, 4, 0))
+        sdVersion = Version(2, 4, 0);
+    else if (*ldfVersion >= Version(1, 2, 0))
         sdVersion = Version(1, 1, 0);
     else if (*ldfVersion <= Version(1, 1, 0))
         sdVersion = Version(1, 0, 0);

@@ -171,9 +171,17 @@ void IOMapDefinition::EndElement(const wchar_t* name, HandlerStack* handlerStack
 // Determine which WatermarkDefinition schema version to use based
 // on the supplied MDF version:
 // * MDF version <= 2.3.0  =>  WD version 2.3.0
+// * else                  =>  WD version 2.4.0
 bool IOMapDefinition::GetWatermarkDefinitionVersion(Version* mdfVersion, Version& wdVersion)
 {
-    wdVersion = Version(2, 3, 0);
+    if(mdfVersion && *mdfVersion <= Version(2, 3, 0))
+    {
+        wdVersion = Version(2, 3, 0);
+    }
+    else
+    {
+        wdVersion = Version(2, 4, 0);
+    }
     return true;
 }
 
@@ -184,7 +192,7 @@ void IOMapDefinition::Write(MdfStream& fd, MapDefinition* map, Version* version,
     MdfString strVersion;
     if (version)
     {
-        if ((*version >= Version(1, 0, 0)) && (*version <= Version(2, 3, 0)))
+        if ((*version >= Version(1, 0, 0)) && (*version <= Version(2, 4, 0)))
         {
             // MDF in MapGuide 2006 - current
             strVersion = version->ToString();
@@ -200,7 +208,7 @@ void IOMapDefinition::Write(MdfStream& fd, MapDefinition* map, Version* version,
     else
     {
         // use the current highest version
-        strVersion = L"2.3.0";
+        strVersion = L"2.4.0";
     }
 
     if (!version || (*version > Version(1, 0, 0)))

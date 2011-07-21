@@ -485,6 +485,8 @@ void SE_StyleVisitor::VisitPath(Path& path)
         ParseStringExpression(path.GetLineCap(), primitive->cap, Path::sLineCapDefault, Path::sLineCapValues);
         ParseStringExpression(path.GetLineJoin(), primitive->join, Path::sLineJoinDefault, Path::sLineJoinValues);
         ParseDoubleExpression(path.GetLineMiterLimit(), primitive->miterLimit, 5.0);
+        ParseDoubleExpression(path.GetScaleX(), primitive->scaleX, 1.0);
+        ParseDoubleExpression(path.GetScaleY(), primitive->scaleY, 1.0);
         ParseStringExpression(path.GetResizeControl(), primitive->resizeControl, GraphicElement::sResizeControlDefault, GraphicElement::sResizeControlValues);
 
         // if the color is transparent there's no point in drawing this
@@ -498,7 +500,9 @@ void SE_StyleVisitor::VisitPath(Path& path)
                               || primitive->cap.expression
                               || primitive->join.expression
                               || primitive->miterLimit.expression
-                              || primitive->resizeControl.expression);
+                              || primitive->resizeControl.expression
+                              || primitive->scaleX.expression
+                              || primitive->scaleY.expression);
     }
     else
     {
@@ -513,6 +517,8 @@ void SE_StyleVisitor::VisitPath(Path& path)
         ParseStringExpression(path.GetLineCap(), primitive->cap, Path::sLineCapDefault, Path::sLineCapValues);
         ParseStringExpression(path.GetLineJoin(), primitive->join, Path::sLineJoinDefault, Path::sLineJoinValues);
         ParseDoubleExpression(path.GetLineMiterLimit(), primitive->miterLimit, 5.0);
+        ParseDoubleExpression(path.GetScaleX(), primitive->scaleX, 1.0);
+        ParseDoubleExpression(path.GetScaleY(), primitive->scaleY, 1.0);
         ParseStringExpression(path.GetResizeControl(), primitive->resizeControl, GraphicElement::sResizeControlDefault, GraphicElement::sResizeControlValues);
 
         primitive->cacheable = !(primitive->weight.expression
@@ -522,7 +528,9 @@ void SE_StyleVisitor::VisitPath(Path& path)
                               || primitive->cap.expression
                               || primitive->join.expression
                               || primitive->miterLimit.expression
-                              || primitive->resizeControl.expression);
+                              || primitive->resizeControl.expression
+                              || primitive->scaleX.expression
+                              || primitive->scaleY.expression);
     }
 }
 
