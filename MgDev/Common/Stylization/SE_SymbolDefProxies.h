@@ -86,6 +86,8 @@ struct SE_Polyline : public SE_Primitive
     SE_String join;
     SE_String cap;
     SE_Double miterLimit;
+    SE_Double scaleX;
+    SE_Double scaleY;
 
     SE_INLINE SE_Polyline()
     {}

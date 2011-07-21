@@ -143,9 +143,17 @@ void IODrawingLayerDefinition::EndElement(const wchar_t* name, HandlerStack* han
 // Determine which WatermarkDefinition schema version to use based
 // on the supplied LDF version:
 // * LDF version <= 2.3.0  =>  WD version 2.3.0
+// * LDF version == 2.4.0  =>  WD version 2.4.0
 bool IODrawingLayerDefinition::GetWatermarkDefinitionVersion(Version* ldfVersion, Version& wdVersion)
 {
-    wdVersion = Version(2, 3, 0);
+    if(ldfVersion && *ldfVersion <= Version(2, 3, 0))
+    {
+        wdVersion = Version(2, 3, 0);
+    }
+    else
+    {
+        wdVersion = Version(2, 4, 0);
+    }
     return true;
 }
 
@@ -161,7 +169,7 @@ void IODrawingLayerDefinition::Write(MdfStream& fd, DrawingLayerDefinition* draw
             // LDF in MapGuide 2006
             strVersion = L"1.0.0";
         }
-        else if ((*version >= Version(1, 0, 0)) && (*version <= Version(2, 3, 0)))
+        else if ((*version >= Version(1, 0, 0)) && (*version <= Version(2, 4, 0)))
         {
             // LDF in MapGuide 2007 - current
             strVersion = version->ToString();
@@ -177,7 +185,7 @@ void IODrawingLayerDefinition::Write(MdfStream& fd, DrawingLayerDefinition* draw
     else
     {
         // use the current highest version
-        strVersion = L"2.3.0";
+        strVersion = L"2.4.0";
     }
 
     fd << tab.tab() << "<LayerDefinition xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:noNamespaceSchemaLocation=\"LayerDefinition-" << EncodeString(strVersion) << ".xsd\" version=\"" << EncodeString(strVersion) << "\">" << std::endl; // NOXLATE
