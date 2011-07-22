@@ -161,7 +161,7 @@ void IOSymbolInstance::EndElement(const wchar_t* name, HandlerStack* handlerStac
 // * LDF version <= 1.1.0  =>  SD version 1.0.0
 bool IOSymbolInstance::GetSymbolDefinitionVersion(Version* ldfVersion, Version& sdVersion)
 {
-    if(!ldfVersion || *ldfVersion >= Version(2, 4, 0))
+    if (!ldfVersion || *ldfVersion >= Version(2, 4, 0))
         sdVersion = Version(2, 4, 0);
     else if (*ldfVersion >= Version(1, 2, 0))
         sdVersion = Version(1, 1, 0);

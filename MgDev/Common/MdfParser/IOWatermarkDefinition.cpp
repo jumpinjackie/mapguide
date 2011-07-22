@@ -161,19 +161,16 @@ void IOWatermarkDefinition::EndElement(const wchar_t* name, HandlerStack* handle
 
 
 // Determine which SymbolDefinition schema version to use based
-// on the supplied WaterDefinition version:
+// on the supplied WatermarkDefinition version:
 // * WD version == 2.4.0  =>  SD version 2.4.0
 // * WD version <= 2.3.0  =>  SD version 1.1.0
 bool IOWatermarkDefinition::GetSymbolDefinitionVersion(Version* wdVersion, Version& sdVersion)
 {
-    if(wdVersion && *wdVersion <= Version(2, 3, 0))
-    {
-        sdVersion = Version(1, 1, 0);
-    }
-    else
-    {
+    if (!wdVersion || *wdVersion >= Version(2, 4, 0))
         sdVersion = Version(2, 4, 0);
-    }
+    else if (*wdVersion <= Version(2, 3, 0))
+        sdVersion = Version(1, 1, 0);
+
     return true;
 }
 

@@ -169,19 +169,16 @@ void IOMapDefinition::EndElement(const wchar_t* name, HandlerStack* handlerStack
 
 
 // Determine which WatermarkDefinition schema version to use based
-// on the supplied MDF version:
+// on the supplied MapDefinition version:
+// * MDF version == 2.4.0  =>  WD version 2.4.0
 // * MDF version <= 2.3.0  =>  WD version 2.3.0
-// * else                  =>  WD version 2.4.0
 bool IOMapDefinition::GetWatermarkDefinitionVersion(Version* mdfVersion, Version& wdVersion)
 {
-    if(mdfVersion && *mdfVersion <= Version(2, 3, 0))
-    {
-        wdVersion = Version(2, 3, 0);
-    }
-    else
-    {
+    if (!mdfVersion || *mdfVersion >= Version(2, 4, 0))
         wdVersion = Version(2, 4, 0);
-    }
+    else if (*mdfVersion <= Version(2, 3, 0))
+        wdVersion = Version(2, 3, 0);
+
     return true;
 }
 

@@ -145,19 +145,16 @@ void IOGridLayerDefinition::EndElement(const wchar_t* name, HandlerStack* handle
 
 
 // Determine which WatermarkDefinition schema version to use based
-// on the supplied LDF version:
+// on the supplied LayerDefinition version:
+// * LDF version == 2.4.0  =>  WD version 2.4.0
 // * LDF version <= 2.3.0  =>  WD version 2.3.0
-// * else                  =>  WD version 2.4.0
 bool IOGridLayerDefinition::GetWatermarkDefinitionVersion(Version* ldfVersion, Version& wdVersion)
 {
-    if(ldfVersion && *ldfVersion <= Version(2, 3, 0))
-    {
-        wdVersion = Version(2, 3, 0);
-    }
-    else
-    {
+    if (!ldfVersion || *ldfVersion >= Version(2, 4, 0))
         wdVersion = Version(2, 4, 0);
-    }
+    else if (*ldfVersion <= Version(2, 3, 0))
+        wdVersion = Version(2, 3, 0);
+
     return true;
 }
 

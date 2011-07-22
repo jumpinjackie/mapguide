@@ -147,29 +147,21 @@ void TestMdfModel::TestCase_Serialization()
         Ptr<MgResourceIdentifier> ldfresV = new MgResourceIdentifier(L"Library://UnitTests/MdfModel/MdfTestDummy.LayerDefinition");
         Ptr<MgResourceIdentifier> mdfresV = new MgResourceIdentifier(L"Library://UnitTests/MdfModel/MdfTestDummy.MapDefinition");
 
-        //symbol definition schema versions
-        const int SYMBOL_SCHEMA_COUNT = 2 + 1;      //2 for 1.x.x and 1 for 2.x.x
-        std::vector<Version> symbolVersions(SYMBOL_SCHEMA_COUNT);
-        //symbol 1.0.0 - MapGuide 2007
-        symbolVersions[0].SetMajor(1);
-        symbolVersions[0].SetMinor(0);
-        symbolVersions[0].SetRevision(0);
-        //symbol 1.1.0 - MapGuide 2008
-        symbolVersions[1].SetMajor(1);
-        symbolVersions[1].SetMinor(1);
-        symbolVersions[1].SetRevision(0);
-        //symbol 2.4.0 - MapGuide 2012
-        symbolVersions[2].SetMajor(2);
-        symbolVersions[2].SetMinor(4);
-        symbolVersions[2].SetRevision(0);
+        // define the symbol definition schema versions
+        std::vector<Version> symbolDefVersions(3);
+        symbolDefVersions[0] = Version(1, 0, 0); // SD version 1.0.0 - MapGuide 2008
+        symbolDefVersions[1] = Version(1, 1, 0); // SD version 1.1.0 - MapGuide 2009
+        symbolDefVersions[2] = Version(2, 4, 0); // SD version 2.4.0 - MapGuide 2013
 
         // ------------------------------------------------------
         // process symbol #1 - a simple symbol definition
         // ------------------------------------------------------
 
         // iterate over the symbol definition schema versions
-        for (auto iter = symbolVersions.begin(); iter != symbolVersions.end(); iter ++)
+        for (vector<Version>::size_type symbolDefVersionIndex = 0; symbolDefVersionIndex != symbolDefVersions.size(); ++symbolDefVersionIndex)
         {
+            Version &symbolDefVersion = symbolDefVersions[symbolDefVersionIndex];
+
             Ptr<MgResourceIdentifier> sdres = new MgResourceIdentifier(L"Library://UnitTests/MdfModel/MdfTestSimpleSymbol.SymbolDefinition");
 
             // parse the symbol - this exercises MdfParser deserialization
@@ -185,7 +177,7 @@ void TestMdfModel::TestCase_Serialization()
             auto_ptr<SymbolDefinition> symbolDef1(parser.DetachSymbolDefinition());
             CPPUNIT_ASSERT(symbolDef1.get() != NULL);
 
-            parser.WriteToFile("../UnitTestFiles/MdfTestSimpleSymbol_Copy1.sd", symbolDef1.get(), &*iter);
+            parser.WriteToFile("../UnitTestFiles/MdfTestSimpleSymbol_Copy1.sd", symbolDef1.get(), &symbolDefVersion);
             CPPUNIT_ASSERT(MgFileUtil::IsFile(L"../UnitTestFiles/MdfTestSimpleSymbol_Copy1.sd"));
 
             // parse and resave the newly written file
@@ -197,7 +189,7 @@ void TestMdfModel::TestCase_Serialization()
             auto_ptr<SymbolDefinition> symbolDef2(parser.DetachSymbolDefinition());
             CPPUNIT_ASSERT(symbolDef2.get() != NULL);
 
-            parser.WriteToFile("../UnitTestFiles/MdfTestSimpleSymbol_Copy2.sd", symbolDef2.get(), &*iter);
+            parser.WriteToFile("../UnitTestFiles/MdfTestSimpleSymbol_Copy2.sd", symbolDef2.get(), &symbolDefVersion);
             CPPUNIT_ASSERT(MgFileUtil::IsFile(L"../UnitTestFiles/MdfTestSimpleSymbol_Copy2.sd"));
 
             // compare the two files
@@ -221,8 +213,11 @@ void TestMdfModel::TestCase_Serialization()
         // process symbol #2 - a compound symbol definition
         // ------------------------------------------------------
 
-        for (auto iter = symbolVersions.begin(); iter != symbolVersions.end(); iter ++)
+        // iterate over the symbol definition schema versions
+        for (vector<Version>::size_type symbolDefVersionIndex = 0; symbolDefVersionIndex != symbolDefVersions.size(); ++symbolDefVersionIndex)
         {
+            Version &symbolDefVersion = symbolDefVersions[symbolDefVersionIndex];
+
             Ptr<MgResourceIdentifier> sdres = new MgResourceIdentifier(L"Library://UnitTests/MdfModel/MdfTestCompoundSymbol.SymbolDefinition");
 
             // parse the symbol - this exercises MdfParser deserialization
@@ -238,7 +233,7 @@ void TestMdfModel::TestCase_Serialization()
             auto_ptr<SymbolDefinition> symbolDef1(parser.DetachSymbolDefinition());
             CPPUNIT_ASSERT(symbolDef1.get() != NULL);
 
-            parser.WriteToFile("../UnitTestFiles/MdfTestCompoundSymbol_Copy1.sd", symbolDef1.get(), &*iter);
+            parser.WriteToFile("../UnitTestFiles/MdfTestCompoundSymbol_Copy1.sd", symbolDef1.get(), &symbolDefVersion);
             CPPUNIT_ASSERT(MgFileUtil::IsFile(L"../UnitTestFiles/MdfTestCompoundSymbol_Copy1.sd"));
 
             // parse and resave the newly written file
@@ -250,7 +245,7 @@ void TestMdfModel::TestCase_Serialization()
             auto_ptr<SymbolDefinition> symbolDef2(parser.DetachSymbolDefinition());
             CPPUNIT_ASSERT(symbolDef2.get() != NULL);
 
-            parser.WriteToFile("../UnitTestFiles/MdfTestCompoundSymbol_Copy2.sd", symbolDef2.get(), &*iter);
+            parser.WriteToFile("../UnitTestFiles/MdfTestCompoundSymbol_Copy2.sd", symbolDef2.get(), &symbolDefVersion);
             CPPUNIT_ASSERT(MgFileUtil::IsFile(L"../UnitTestFiles/MdfTestCompoundSymbol_Copy2.sd"));
 
             // compare the two files
@@ -274,37 +269,19 @@ void TestMdfModel::TestCase_Serialization()
         // process layer definition with type styles
         // ------------------------------------------------------
 
-        // iterate over the layer definition schema versions
-        const int LAYER_SCHEMA_COUNT = 4 + 2;      //4 for 1.x.x and 2 for 2.x.x
-        std::vector<Version> layerVersions(LAYER_SCHEMA_COUNT);
-        //layer 1.0.0 - MapGuide 2007
-        layerVersions[0].SetMajor(1);
-        layerVersions[0].SetMinor(0);
-        layerVersions[0].SetRevision(0);
-        //layer 1.1.0 - MapGuide 2008
-        layerVersions[1].SetMajor(1);
-        layerVersions[1].SetMinor(1);
-        layerVersions[1].SetRevision(0);
-        //layer 1.2.0 - MapGuide 2009
-        layerVersions[2].SetMajor(1);
-        layerVersions[2].SetMinor(2);
-        layerVersions[2].SetRevision(0);
-        //layer 1.3.0 - MapGuide 2010
-        layerVersions[3].SetMajor(1);
-        layerVersions[3].SetMinor(3);
-        layerVersions[3].SetRevision(0);
-        //layer 2.3.0 - MapGuide 2012
-        layerVersions[4].SetMajor(2);
-        layerVersions[4].SetMinor(3);
-        layerVersions[4].SetRevision(0);
-        //layer 2.4.0 - MapGuide 2013
-        layerVersions[5].SetMajor(2);
-        layerVersions[5].SetMinor(4);
-        layerVersions[5].SetRevision(0);
+        // define the layer definition schema versions
+        std::vector<Version> layerDefVersions(6);
+        layerDefVersions[0] = Version(1, 0, 0); // LDF version 1.0.0 - MapGuide 2007
+        layerDefVersions[1] = Version(1, 1, 0); // LDF version 1.1.0 - MapGuide 2008
+        layerDefVersions[2] = Version(1, 2, 0); // LDF version 1.2.0 - MapGuide 2009
+        layerDefVersions[3] = Version(1, 3, 0); // LDF version 1.3.0 - MapGuide 2010
+        layerDefVersions[4] = Version(2, 3, 0); // LDF version 2.3.0 - MapGuide 2012
+        layerDefVersions[5] = Version(2, 4, 0); // LDF version 2.4.0 - MapGuide 2013
 
-        for (vector<Version>::size_type layerVersionIndex = 0; layerVersionIndex != layerVersions.size(); ++layerVersionIndex)
+        // iterate over the layer definition schema versions
+        for (vector<Version>::size_type layerDefVersionIndex = 0; layerDefVersionIndex != layerDefVersions.size(); ++layerDefVersionIndex)
         {
-            Version &layerDefVersion = layerVersions[layerVersionIndex];
+            Version &layerDefVersion = layerDefVersions[layerDefVersionIndex];
 
             Ptr<MgResourceIdentifier> ldfres = new MgResourceIdentifier(L"Library://UnitTests/MdfModel/MdfTestTypeStyles.LayerDefinition");
 
@@ -354,30 +331,20 @@ void TestMdfModel::TestCase_Serialization()
         MgFileUtil::DeleteFile(L"../UnitTestFiles/MdfTestTypeStyles_Copy1.ldf", true);
         MgFileUtil::DeleteFile(L"../UnitTestFiles/MdfTestTypeStyles_Copy2.ldf", true);
 
-        
         // ------------------------------------------------------
         // process map definition with type styles
         // ------------------------------------------------------
 
-        // iterate over the map definition schema versions
-        const int MAP_SCHEMA_COUNT = 1 + 2;      //1 for 1.x.x and 2 for 2.x.x
-        std::vector<Version> mapVersions(MAP_SCHEMA_COUNT);
-        //map 1.0.0 - MapGuide before 2012
-        mapVersions[0].SetMajor(1);
-        mapVersions[0].SetMinor(0);
-        mapVersions[0].SetRevision(0);
-        //map 2.3.0 - MapGuide 2012
-        mapVersions[1].SetMajor(2);
-        mapVersions[1].SetMinor(3);
-        mapVersions[1].SetRevision(0);
-        //map 2.4.0 - MapGuide 2013
-        mapVersions[2].SetMajor(2);
-        mapVersions[2].SetMinor(4);
-        mapVersions[2].SetRevision(0);
+        // define the map definition schema versions
+        std::vector<Version> mapDefVersions(3);
+        mapDefVersions[0] = Version(1, 0, 0); // MDF version 1.0.0 - MapGuide 2006
+        mapDefVersions[1] = Version(2, 3, 0); // MDF version 2.3.0 - MapGuide 2012
+        mapDefVersions[2] = Version(2, 4, 0); // MDF version 2.4.0 - MapGuide 2013
 
-        for (vector<Version>::size_type mapVersionIndex = 0; mapVersionIndex != mapVersions.size(); ++mapVersionIndex)
+        // iterate over the map definition schema versions
+        for (vector<Version>::size_type mapDefVersionIndex = 0; mapDefVersionIndex != mapDefVersions.size(); ++mapDefVersionIndex)
         {
-            Version &mapDefVersion = mapVersions[mapVersionIndex];
+            Version &mapDefVersion = mapDefVersions[mapDefVersionIndex];
 
             Ptr<MgResourceIdentifier> mdfres = new MgResourceIdentifier(L"Library://UnitTests/MdfModel/MdfTestMap.MapDefinition");
 
@@ -879,9 +846,13 @@ void TestMdfModel::TestCase_Versioning()
         MgFileUtil::DeleteFile(L"../UnitTestFiles/MdfTestTypeStyles_v24_Copy3e.ldf", true);
         MgFileUtil::DeleteFile(L"../UnitTestFiles/MdfTestTypeStyles_v24_Copy3f.ldf", true);
 
-        // As MapDefinition 1.0.0 doesn't take extension into consideration, if a MDF 2.3 is
-        // stored into 1.0.0, there will be some information missing. So no test code about
-        // version.
+        // ------------------------------------------------------
+        // process map definition
+        // ------------------------------------------------------
+
+        // Since MapDefinition 1.0.0 doesn't take extended data into consideration, if
+        // a MDF 2.3.0 or higher document is saved as version 1.0.0 there will be some
+        // information missing.  So here we don't test versioning for map definition.
     }
     catch (MgException* e)
     {
