@@ -2461,9 +2461,28 @@ FdoClassDefinition* MgServerFeatureUtil::GetFdoClassDefinition(
 
     if (!geomName.empty())
     {
-        FdoPtr<FdoGeometricPropertyDefinition> defaultGeom = (FdoGeometricPropertyDefinition*)fdoPropDefCol->GetItem(geomName.c_str());
-        FdoPtr<FdoFeatureClass> ffClass = FDO_SAFE_ADDREF((FdoFeatureClass*)((FdoClassDefinition*)fdoClassDef));
-        ffClass->SetGeometryProperty(defaultGeom);
+        FdoPtr<FdoGeometricPropertyDefinition> defaultGeom = (FdoGeometricPropertyDefinition*)fdoPropDefCol->FindItem(geomName.c_str());
+        if(defaultGeom.p == NULL)
+        {
+            FdoPtr<FdoReadOnlyPropertyDefinitionCollection> fdoBasePropDefCol = fdoClassDef->GetBaseProperties();
+            if(fdoBasePropDefCol.p != NULL)
+            {
+                for(FdoInt32 ix = 0; ix < fdoBasePropDefCol->GetCount(); ix++)
+                {
+                    FdoPtr<FdoPropertyDefinition> propCandidate = fdoBasePropDefCol->GetItem(ix);
+                    if(wcscmp(propCandidate->GetName(), geomName.c_str()) == 0)
+                    {
+                        defaultGeom = (FdoGeometricPropertyDefinition*) propCandidate.Detach();
+                        break;
+                    }
+                }
+            }
+        }
+        if(defaultGeom.p != NULL)
+        {
+            FdoPtr<FdoFeatureClass> ffClass = FDO_SAFE_ADDREF((FdoFeatureClass*)((FdoClassDefinition*)fdoClassDef));
+            ffClass->SetGeometryProperty(defaultGeom);
+        }
     }
 
     MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgServerFeatureUtil.GetFdoClassDefinition")
