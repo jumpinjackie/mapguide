@@ -196,6 +196,9 @@ void MgServerGetProviderCapabilities::CreateConnectionCapabilities()
     bool supportsTransactions = ficc->SupportsTransactions();
     m_xmlCap->AddTextNode(connNode, "SupportsTransactions", supportsTransactions);
 
+    bool supportsSavePoint = ficc->SupportsSavePoint();
+    m_xmlCap->AddTextNode(connNode, "SupportsSavePoint", supportsSavePoint);
+
     bool supportsLongTransactions = ficc->SupportsLongTransactions();
     m_xmlCap->AddTextNode(connNode, "SupportsLongTransactions", supportsLongTransactions);
 
