@@ -909,6 +909,7 @@ void MgFdoConnectionManager::SetConfiguration(CREFSTRING provider, FdoIConnectio
     {
         FdoIoMemoryStreamP stream = FdoIoMemoryStream::Create();
         stream->Write((FdoByte*)bytes->Bytes(), (FdoSize)bytes->GetLength());
+        stream->Reset();
         pFdoConnection->SetConfiguration(stream);
     }
 }
