@@ -1645,13 +1645,13 @@ void MgServerRenderingService::RenderForSelection(MgMap* map,
                             Ptr<MgLinearRing> extentRing = new MgLinearRing(extentCoords);
                             Ptr<MgPolygon> extentPolygon = new MgPolygon(extentRing, NULL);
 
-                            Ptr<MgGeometricEntity> QueryExtentPolygon;
+                            Ptr<MgGeometricEntity> queryExtentPolygon = extentPolygon;
                             if (trans)
                             {
                                 //get selection geometry in layer space
-                                QueryExtentPolygon = extentPolygon->Transform(trans);
+                                queryExtentPolygon = extentPolygon->Transform(trans);
                             }
-                            Ptr<MgGeometry> intersectPolygon = polygon->Intersection((MgPolygon *)QueryExtentPolygon.p);
+                            Ptr<MgGeometry> intersectPolygon = polygon->Intersection((MgPolygon *)queryExtentPolygon.p);
 
                             if (intersectPolygon != NULL)
                             {
