@@ -30,13 +30,13 @@
         // Not necessary to validate the parameters
         $sessionID   = $args["session_id"];
         $mapName     = $args["map_name"];
-        $rotation    = floatval($args["rotation"]);
+        $rotation    = ParseLocaleDouble($args["rotation"]);
         $printDpi    = intval($args["print_dpi"]);
 
         $scaleDenominator = intval($args["scale_denominator"]);
 
         $array       = explode(",", $args["paper_size"]);
-        $paperSize   = new Size(floatval($array[0]), floatval($array[1]));
+        $paperSize   = new Size(ParseLocaleDouble($array[0]), ParseLocaleDouble($array[1]));
         $printSize   = new Size($paperSize->width / 25.4 * $printDpi, $paperSize->height / 25.4 * $printDpi);
 
         $array       = explode(",", $args["box"]);
@@ -54,11 +54,11 @@
 
         for ($index = 0; $index < count($coordinates); ++$index)
         {
-            $coordinate = $geometryFactory->CreateCoordinateXY(floatval($coordinates[$index]), floatval($coordinates[++$index]));
+            $coordinate = $geometryFactory->CreateCoordinateXY(ParseLocaleDouble($coordinates[$index]), ParseLocaleDouble($coordinates[++$index]));
             $coordinateCollection->Add($coordinate);
         }
 
-        $coordinateCollection->Add($geometryFactory->CreateCoordinateXY(floatval($coordinates[0]), floatval($coordinates[1])));
+        $coordinateCollection->Add($geometryFactory->CreateCoordinateXY(ParseLocaleDouble($coordinates[0]), ParseLocaleDouble($coordinates[1])));
 
         $linearRingCollection = $geometryFactory->CreateLinearRing($coordinateCollection);
         $captureBox           = $geometryFactory->CreatePolygon($linearRingCollection, null);
@@ -92,7 +92,7 @@
         // Get the map agent url
         // Get the correct http protocal
         $mapAgent = "http";
-        if (isset($_SERVER["HTTPS"]) && $_SERVER["HTTPS"] == "on")
+        if ($_SERVER["HTTPS"] == "on")
         {
             $mapAgent .= "s";
         }
@@ -113,7 +113,7 @@
                     "&SETDISPLAYWIDTH=$toSize->width" .
                     "&SETDISPLAYHEIGHT=$toSize->height" .
                     "&CLIP=0";
-        
+
         $image = imagecreatefrompng($mapAgent);
         // Rotate the picture back to be normalized
         $normalizedImg = imagerotate($image, -$rotation, 0);
@@ -165,6 +165,12 @@
         imagedestroy($rotatedNa);
     }
 
+    function ParseLocaleDouble($stringValue)
+    {
+        $lc = localeconv();
+        $result = str_replace(".", $lc["decimal_point"], $stringValue);
+        return doubleval($result);
+    }
 ?>
 
 <?php

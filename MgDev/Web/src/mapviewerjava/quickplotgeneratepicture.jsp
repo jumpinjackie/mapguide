@@ -46,24 +46,25 @@ String naPath = "";
 %>
 
 <%
-
     GetRequestParameters(request);
     response.setContentType("image/png");
     ImageIO.write(GenerateMap(printSize), "png", response.getOutputStream());
-
 %>
 
 <%!
-void GetRequestParameters(HttpServletRequest request) throws MgException
+void GetRequestParameters(HttpServletRequest request) throws MgException, ParseException
 {
+    NumberFormat numberFormat = NumberFormat.getInstance(Locale.ENGLISH);
+
     sessionId = ValidateSessionId(GetParameter(request, "session_id"));
     mapName   = ValidateMapName(GetParameter(request, "map_name"));
-    rotation  = GetDoubleParameter(request, "rotation");
+    rotation  = numberFormat.parse(request.getParameter("rotation")).doubleValue();
     printDpi  = GetIntParameter(request, "print_dpi");
     scaleDenominator = GetIntParameter(request, "scale_denominator");
 
     String[] a = GetParameter(request, "paper_size").split(",");
-    paperSize  = new Size<Double>(Double.parseDouble(a[0]), Double.parseDouble(a[1]));
+
+    paperSize  = new Size<Double>(numberFormat.parse(a[0]).doubleValue(), numberFormat.parse(a[1]).doubleValue());
     printSize  = new Size<Integer>((int) (paperSize.width / 25.4 * printDpi), (int) (paperSize.height / 25.4 * printDpi));
 
     a = GetParameter(request, "box").split(",");
@@ -76,17 +77,18 @@ void GetRequestParameters(HttpServletRequest request) throws MgException
     naPath = getServletContext().getRealPath("viewerfiles/quickplotnortharrow.png");
 }
 
-MgPolygon CreatePolygon(String[] coordinates) throws MgException
+MgPolygon CreatePolygon(String[] coordinates) throws MgException, ParseException
 {
     MgGeometryFactory geometryFactory = new MgGeometryFactory();
     MgCoordinateCollection coordinateCollection = new MgCoordinateCollection();
+    NumberFormat numberFormat = NumberFormat.getInstance(Locale.ENGLISH);
 
     for (int i = 0; i < coordinates.length; ++i)
     {
-        coordinateCollection.Add(geometryFactory.CreateCoordinateXY(Double.parseDouble(coordinates[i]), Double.parseDouble(coordinates[++i])));
+        coordinateCollection.Add(geometryFactory.CreateCoordinateXY(numberFormat.parse(coordinates[i]).doubleValue(), numberFormat.parse(coordinates[++i]).doubleValue()));
     }
 
-    coordinateCollection.Add(geometryFactory.CreateCoordinateXY(Double.parseDouble(coordinates[0]), Double.parseDouble(coordinates[1])));
+    coordinateCollection.Add(geometryFactory.CreateCoordinateXY(numberFormat.parse(coordinates[0]).doubleValue(), numberFormat.parse(coordinates[1]).doubleValue()));
     MgLinearRing linearRing = geometryFactory.CreateLinearRing(coordinateCollection);
 
     return geometryFactory.CreatePolygon(linearRing, null);

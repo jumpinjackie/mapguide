@@ -23,6 +23,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 <%@ Import Namespace="OSGeo.MapGuide" %>
 <%@ Import Namespace="System.Net" %>
 <%@ Import Namespace="System.Drawing.Drawing2D" %>
+<%@ Import Namespace="System.Globalization" %>
 
 <!-- #Include File="common.aspx -->
 
@@ -41,6 +42,7 @@ SizeF paperSize = new SizeF(0.0f, 0.0f);
 
 <%
     Response.Charset = "utf-8";
+
     GetRequestParameters();
     GenerateMap(printSize);
 %>
@@ -65,7 +67,7 @@ void GetParameters(NameValueCollection parameters)
     scaleDenominator = GetIntParameter(parameters, "scale_denominator");
 
     string[] a = parameters["paper_size"].Split(',');
-    paperSize  = new SizeF(float.Parse(a[0]), float.Parse(a[1]));
+    paperSize  = new SizeF(float.Parse(a[0], CultureInfo.InvariantCulture), float.Parse(a[1], CultureInfo.InvariantCulture));
     printSize  = new Size((int) (paperSize.Width / 25.4 * printDpi), (int) (paperSize.Height / 25.4 * printDpi));
 
     a = parameters["box"].Split(',');
@@ -82,10 +84,10 @@ MgPolygon CreatePolygon(string[] coordinates)
 
     for (int i = 0; i < coordinates.Length; ++i)
     {
-        coordinateCollection.Add(geometryFactory.CreateCoordinateXY(double.Parse(coordinates[i]), double.Parse(coordinates[++i])));
+        coordinateCollection.Add(geometryFactory.CreateCoordinateXY(double.Parse(coordinates[i], CultureInfo.InvariantCulture), double.Parse(coordinates[++i], CultureInfo.InvariantCulture)));
     }
 
-    coordinateCollection.Add(geometryFactory.CreateCoordinateXY(double.Parse(coordinates[0]), double.Parse(coordinates[1])));
+    coordinateCollection.Add(geometryFactory.CreateCoordinateXY(double.Parse(coordinates[0], CultureInfo.InvariantCulture), double.Parse(coordinates[1], CultureInfo.InvariantCulture)));
     MgLinearRing linearRing = geometryFactory.CreateLinearRing(coordinateCollection);
 
     return geometryFactory.CreatePolygon(linearRing, null);
