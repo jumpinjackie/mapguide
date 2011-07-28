@@ -1492,6 +1492,7 @@ void MgServerRenderingService::RenderForSelection(MgMap* map,
             Ptr<MgCoordinateSystem> mapCs = srs.empty()? NULL : m_pCSFactory->Create(srs);
             TransformCache* item = TransformCache::GetLayerToMapTransform(transformCache, vl->GetFeatureName(), featResId, mapCs, m_pCSFactory, m_svcFeature);
             Ptr<MgCoordinateSystemTransform> trans = item? item->GetMgTransform() : NULL;
+            MgCSTrans* xformer = item? item->GetTransform() : NULL;
 
             Ptr<MgFeatureQueryOptions> options = new MgFeatureQueryOptions();
             Ptr<MgGeometricEntity> queryGeom;
@@ -1643,7 +1644,14 @@ void MgServerRenderingService::RenderForSelection(MgMap* map,
                             extentCoords->Add(c1);
                             Ptr<MgLinearRing> extentRing = new MgLinearRing(extentCoords);
                             Ptr<MgPolygon> extentPolygon = new MgPolygon(extentRing, NULL);
-                            Ptr<MgGeometry> intersectPolygon = polygon->Intersection(extentPolygon);
+
+                            Ptr<MgGeometricEntity> QueryExtentPolygon;
+                            if (trans)
+                            {
+                                //get selection geometry in layer space
+                                QueryExtentPolygon = extentPolygon->Transform(trans);
+                            }
+                            Ptr<MgGeometry> intersectPolygon = polygon->Intersection((MgPolygon *)QueryExtentPolygon.p);
 
                             if (intersectPolygon != NULL)
                             {
@@ -1652,7 +1660,7 @@ void MgServerRenderingService::RenderForSelection(MgMap* map,
                                 rdr = m_svcFeature->SelectFeatures(featResId, vl->GetFeatureName(), options);
                                 rsrdr.reset(new RSMgFeatureReader(rdr, m_svcFeature, featResId, options, vl->GetGeometry()));
                                 selRenderer->PointTest(true);
-                                ds.StylizeVectorLayer(vl, selRenderer, rsrdr.get(), NULL, scale, StylizeThatMany, selRenderer);
+                                ds.StylizeVectorLayer(vl, selRenderer, rsrdr.get(), xformer, scale, StylizeThatMany, selRenderer);
 
                                 // Clear the readers
                                 rdr = NULL;
