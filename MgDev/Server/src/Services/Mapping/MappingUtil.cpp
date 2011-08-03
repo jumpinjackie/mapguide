@@ -375,10 +375,12 @@ void MgMappingUtil::StylizeLayers(MgResourceService* svcResource,
     // stylization operation.
     TransformCacheMap transformCache;
 
-    Ptr<MgStringCollection> layerIds = new MgStringCollection();
     // Get the layers' resource content in a single request by adding them to a collection
     for (int i = layers->GetCount()-1; i >= 0; i--)
     {
+        auto_ptr<MdfModel::LayerDefinition> ldf;
+        RSMgFeatureReader* rsReader = NULL;
+
         Ptr<MgLayerBase> mapLayer = layers->GetItem(i);
 
         //don't send data if layer is not currently visible
@@ -399,55 +401,26 @@ void MgMappingUtil::StylizeLayers(MgResourceService* svcResource,
                 continue;
         }
 
-        Ptr<MgResourceIdentifier> mapLayerId = mapLayer->GetLayerDefinition();
-        layerIds->Add(mapLayerId->ToString());
-    }
-
-    // request the collection from resource service and add ResourceContent to the individual layers
-    if(layerIds->GetCount() != 0)
-    {
-        Ptr<MgStringCollection> layerContents = svcResource->GetResourceContents(layerIds, NULL);
-        for(int i = 0; i < layerIds->GetCount(); i ++)
-        {
-            for(int j = 0; j < layers->GetCount(); j ++)
-            {
-                Ptr<MgLayerBase> mapLayer = layers->GetItem(j);
-                Ptr<MgResourceIdentifier> mapLayerId = mapLayer->GetLayerDefinition();
-                if(mapLayerId->ToString() == layerIds->GetItem(i))
-                {
-                    mapLayer->SetLayerResourceContent(layerContents->GetItem(i));
-                    break;
-                }
-            }
-        }
-    }
-
-    // cycle over the layers and do stylization
-    for (int i = layers->GetCount()-1; i >= 0; i--)
-    {
-        auto_ptr<MdfModel::LayerDefinition> ldf;
-        RSMgFeatureReader* rsReader = NULL;
-
-        Ptr<MgLayerBase> mapLayer = layers->GetItem(i);
 
         #ifdef _DEBUG
         long dwLayerStart = GetTickCount();
         ACE_DEBUG((LM_INFO, L"(%t)  StylizeLayers(%d) **LAYERSTART** Name:%W  VAS:%W\n", i, (mapLayer->GetName()).c_str(), mapLayer->IsVisibleAtScale(scale)? L"True" : L"False"));
         #endif
 
-        if(mapLayer->GetLayerResourceContent() == L"")
-            continue;
+
 
         MG_SERVER_MAPPING_SERVICE_TRY()
 
-            // get layer definition using SAX XML Parser
-            ldf.reset(MgLayerBase::GetLayerDefinition(mapLayer->GetLayerResourceContent()));
+
+            //get layer definition
+            Ptr<MgResourceIdentifier> layerid = mapLayer->GetLayerDefinition();
+            ldf.reset(MgLayerBase::GetLayerDefinition(svcResource, layerid));
 
             Ptr<MgLayerGroup> group = mapLayer->GetGroup();
 
             MgLogDetail logDetail(MgServiceType::MappingService, MgLogDetail::InternalTrace, L"MgMappingUtil.StylizeLayers", mgStackParams);
             logDetail.AddString(L"Map",map->GetName());
-            Ptr<MgResourceIdentifier> layerid = mapLayer->GetLayerDefinition();
+
             logDetail.AddResourceIdentifier(L"LayerId",layerid);
             logDetail.Create();
 
