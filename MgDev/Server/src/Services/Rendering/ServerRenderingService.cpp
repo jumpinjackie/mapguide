@@ -1577,7 +1577,7 @@ void MgServerRenderingService::RenderForSelection(MgMap* map,
 
                     //extract hyperlink and tooltip info
                     if (!vl->GetToolTip().empty()) layerinfo.hastooltips() = true;
-                    if (!vl->GetUrl().empty()) layerinfo.hashyperlinks() = true;
+                    if (!vl->GetUrlData()->GetUrlContent().empty()) layerinfo.hashyperlinks() = true;
 
                     //set up the property name mapping -- it tells us what
                     //string the viewer should be displaying as the name of each

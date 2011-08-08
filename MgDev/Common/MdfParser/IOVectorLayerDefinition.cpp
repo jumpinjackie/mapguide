@@ -20,6 +20,7 @@
 #include "IONameStringPair.h"
 #include "IOVectorScaleRange.h"
 #include "IOWatermarkInstance.h"
+#include "IOURLData.h"
 #include "IOUnknown.h"
 
 using namespace XERCES_CPP_NAMESPACE;
@@ -41,6 +42,7 @@ ELEM_MAP_ENTRY(11, VectorScaleRange);
 ELEM_MAP_ENTRY(12, ExtendedData1);
 ELEM_MAP_ENTRY(13, Watermarks);
 ELEM_MAP_ENTRY(14, Watermark);
+ELEM_MAP_ENTRY(15, UrlData);
 
 
 IOVectorLayerDefinition::IOVectorLayerDefinition(Version& version) : SAX2ElementHandler(version)
@@ -93,6 +95,14 @@ void IOVectorLayerDefinition::StartElement(const wchar_t* name, HandlerStack* ha
         }
         break;
 
+    case eUrlData:
+        {
+            IOURLData* IO = new IOURLData(this->m_layer, this->m_version);
+            handlerStack->push(IO);
+            IO->StartElement(name, handlerStack);
+        }
+        break;
+
     case eVectorScaleRange:
         {
             IOVectorScaleRange* IO = new IOVectorScaleRange(this->m_layer, this->m_version);
@@ -139,12 +149,22 @@ void IOVectorLayerDefinition::ElementChars(const wchar_t* ch)
         this->m_layer->SetFilter(ch);
         break;
 
-    case eGeometry:
-        this->m_layer->SetGeometry(ch);
+    case eUrl:
+        //Handle layer definition <= 2.3.0
+        if(m_version < Version(2, 4, 0))
+        {
+            URLData* urlData =  this->m_layer->GetUrlData();
+            if(!urlData)
+            {
+                urlData = new URLData();
+            }
+            urlData->SetUrlContent(ch);
+            this->m_layer->AdoptUrlData(urlData);
+        }
         break;
 
-    case eUrl:
-        this->m_layer->SetUrl(ch);
+    case eGeometry:
+        this->m_layer->SetGeometry(ch);
         break;
 
     case eToolTip:
@@ -299,11 +319,27 @@ void IOVectorLayerDefinition::Write(MdfStream& fd, VectorLayerDefinition* vector
     fd << endStr(sGeometry) << std::endl;
 
     // Property: Url
-    if (!vectorLayer->GetUrl().empty())
+    URLData* urlData = vectorLayer->GetUrlData();
+    if(urlData)
     {
-        fd << tab.tab() << startStr(sUrl);
-        fd << EncodeString(vectorLayer->GetUrl());
-        fd << endStr(sUrl) << std::endl;
+        if(!version || (*version >= Version(2, 4, 0)))
+        {
+            IOURLData::Write(fd, urlData, version, tab);
+        }
+        else
+        {
+            // For layer definition version <= 2.3.0
+            if(!urlData->GetUrlContent().empty())
+            {
+                fd << tab.tab() << startStr(sUrl);
+                fd << EncodeString(urlData->GetUrlContent());
+                fd << endStr(sUrl) << std::endl;
+            }
+            //In extended data
+            tab.inctab();
+            IOURLData::Write(fdExtData, urlData, version, tab);
+            tab.dectab();
+        }
     }
 
     // Property: ToolTip

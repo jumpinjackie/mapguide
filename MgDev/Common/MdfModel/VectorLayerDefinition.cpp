@@ -37,6 +37,7 @@ VectorLayerDefinition::VectorLayerDefinition(const MdfString& strDataResourceID,
 {
     // default values
     this->m_featureNameType = FeatureClass;
+    this->m_urlData = NULL;
 }
 
 //-------------------------------------------------------------------------
@@ -44,6 +45,10 @@ VectorLayerDefinition::VectorLayerDefinition(const MdfString& strDataResourceID,
 //-------------------------------------------------------------------------
 VectorLayerDefinition::~VectorLayerDefinition()
 {
+    if(m_urlData != NULL)
+    {
+        delete this->m_urlData;
+    }
 }
 
 //-------------------------------------------------------------------------
@@ -120,20 +125,23 @@ void VectorLayerDefinition::SetGeometry(const MdfString&  strGeometry)
 }
 
 //-------------------------------------------------------------------------
-// PURPOSE: Accessor method for the Url property.
-// RETURNS: A string representing the Url.
+// PURPOSE: Retrieves the URL data for this layer definition
+// RETURNS: A pointer to the URLData object
 //-------------------------------------------------------------------------
-const MdfString& VectorLayerDefinition::GetUrl() const
+URLData* VectorLayerDefinition::GetUrlData()
 {
-    return this->m_strUrl;
+    return this->m_urlData;
 }
 
 //-------------------------------------------------------------------------
-// PURPOSE: Accessor method for the Url property.
+// PURPOSE: Method to adopt an URLData object
+// PARAMETERS:
+//      Input:
+//         urlData - A pointer to the URLData object
 //-------------------------------------------------------------------------
-void VectorLayerDefinition::SetUrl(const MdfString&  strUrl)
+void VectorLayerDefinition::AdoptUrlData(URLData* urlData)
 {
-    this->m_strUrl = strUrl;
+    this->m_urlData = urlData;
 }
 
 //-------------------------------------------------------------------------

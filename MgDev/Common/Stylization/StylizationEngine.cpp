@@ -78,7 +78,7 @@ void StylizationEngine::StylizeVectorLayer(MdfModel::VectorLayerDefinition* laye
     if (se_renderer->SupportsTooltips())
         m_visitor->ParseStringExpression(layer->GetToolTip(), seTip, L"");
     if (se_renderer->SupportsHyperlinks())
-        m_visitor->ParseStringExpression(layer->GetUrl(), seUrl, L"");
+        m_visitor->ParseStringExpression(layer->GetUrlData() ? layer->GetUrlData()->GetUrlContent(): L"", seUrl, L"");
 
     // extract all the composite styles once
     MdfModel::FeatureTypeStyleCollection* ftsc = range->GetFeatureTypeStyles();

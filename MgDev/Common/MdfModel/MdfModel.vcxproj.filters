@@ -117,6 +117,9 @@
     <ClCompile Include="VectorScaleRange.cpp">
       <Filter>VectorLayer</Filter>
     </ClCompile>
+	<ClCompile Include="URLData.cpp">
+		<Filter>VectorLayer</Filter>
+    </ClCompile>
     <ClCompile Include="AttributeRelate.cpp">
       <Filter>VectorLayer\Joins</Filter>
     </ClCompile>
@@ -399,6 +402,9 @@
     <ClInclude Include="VectorScaleRange.h">
       <Filter>VectorLayer</Filter>
     </ClInclude>
+	<ClInclude Include="URLData.h">
+		<Filter>VectorLayer</Filter>
+    </ClInclude>
     <ClInclude Include="AttributeRelate.h">
       <Filter>VectorLayer\Joins</Filter>
     </ClInclude>
@@ -614,6 +620,9 @@
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="UnicodeString.h" />
     <ClInclude Include="Version.h" />
+    <ClInclude Include="URLData.h">
+      <Filter>VectorLayer</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="MdfModel.rc" />

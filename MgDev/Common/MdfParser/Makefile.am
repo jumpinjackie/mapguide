@@ -95,6 +95,7 @@ libMgMdfParser_la_SOURCES = \
   IOThemeLabel.cpp \
   IOTileWatermarkPosition.cpp \
   IOUnknown.cpp \
+  IOURLData.cpp \
   IOUtil.cpp \
   IOVectorLayerDefinition.cpp \
   IOVectorScaleRange.cpp \
@@ -196,6 +197,7 @@ noinst_HEADERS = \
   IOThemeLabel.h \
   IOTileWatermarkPosition.h \
   IOUnknown.h \
+  IOURLData.h \
   IOUtil.h \
   IOVectorLayerDefinition.h \
   IOVectorScaleRange.h \

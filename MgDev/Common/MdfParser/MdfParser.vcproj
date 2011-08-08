@@ -1033,6 +1033,14 @@
 			>
 		</File>
 		<File
+			RelativePath=".\IOURLData.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\IOURLData.h"
+			>
+		</File>
+		<File
 			RelativePath=".\IOUtil.cpp"
 			>
 		</File>

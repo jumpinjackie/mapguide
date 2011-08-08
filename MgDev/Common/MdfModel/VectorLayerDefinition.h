@@ -21,6 +21,7 @@
 #include "LayerDefinition.h"
 #include "VectorScaleRange.h"
 #include "NameStringPair.h"
+#include "URLData.h"
 
 BEGIN_NAMESPACE_MDFMODEL
 
@@ -61,8 +62,8 @@ BEGIN_NAMESPACE_MDFMODEL
         void SetGeometry(const MdfString&  strGeometry);
 
         // Property : Url
-        const MdfString& GetUrl() const;
-        void SetUrl(const MdfString&  strUrl);
+        URLData* GetUrlData();
+        void AdoptUrlData(URLData* urlData);
 
         // Property : ToolTip
         const MdfString& GetToolTip() const;
@@ -100,7 +101,7 @@ BEGIN_NAMESPACE_MDFMODEL
         MdfString m_strGeometry;
 
         // Url
-        MdfString m_strUrl;
+        URLData* m_urlData;
 
         // ToolTip
         MdfString m_strToolTip;

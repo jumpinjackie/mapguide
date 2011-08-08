@@ -134,9 +134,9 @@
               <xs:documentation>Specifies the geometry property that should be used to get the geometries.</xs:documentation>
             </xs:annotation>
           </xs:element>
-          <xs:element name="Url" type="xs:string" minOccurs="0">
+          <xs:element name="UrlData" type="URLDataType" minOccurs="0">
             <xs:annotation>
-              <xs:documentation>An optional URL associated with each feature.  This is a string FDO expression.</xs:documentation>
+              <xs:documentation>The optional URL information associated with each feature.</xs:documentation>
             </xs:annotation>
           </xs:element>
           <xs:element name="ToolTip" type="xs:string" minOccurs="0">
@@ -163,6 +163,34 @@
       <xs:enumeration value="NamedExtension"/>
     </xs:restriction>
   </xs:simpleType>
+  <xs:complexType name="URLDataType">
+    <xs:annotation>
+      <xs:documentation>URL information for features.</xs:documentation>
+    </xs:annotation>
+    <xs:sequence>
+      <xs:element name="Content" type="xs:string" minOccurs="0">
+        <xs:annotation>
+          <xs:documentation>The real address of the URL. This can be a string FDO expression.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="Description" type="xs:string" minOccurs="0">
+        <xs:annotation>
+          <xs:documentation>The description of the URL. This can be a string FDO expression.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="ContentOverride" type="xs:string" minOccurs="0">
+        <xs:annotation>
+          <xs:documentation>Specify the the override of URL content for a specific feature which can be a string FDO expression.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="DescriptionOverride" type="xs:string" minOccurs="0">
+        <xs:annotation>
+          <xs:documentation>Specify the override of URL description for a specific feature which can be a string FDO expression.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="ExtendedData1" type="ExtendedDataType" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
   <xs:complexType name="VectorScaleRangeType">
     <xs:annotation>
       <xs:documentation>The stylization to be applied to the vector features for a given scale range.</xs:documentation>

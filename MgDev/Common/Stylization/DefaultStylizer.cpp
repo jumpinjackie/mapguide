@@ -274,9 +274,13 @@ int DefaultStylizer::StylizeVLHelper(MdfModel::VectorLayerDefinition* layer,
     }
     if (renderer->SupportsHyperlinks())
     {
-        const MdfModel::MdfString& mdfUrl = layer->GetUrl();
-        if (!mdfUrl.empty())
-            lrUrl = &mdfUrl;
+        MdfModel::URLData* urlData = layer->GetUrlData();
+        if(urlData)
+        {
+            const MdfModel::MdfString& mdfUrl = urlData->GetUrlContent();
+            if (!mdfUrl.empty())
+                lrUrl = &mdfUrl;
+        }
     }
 
     // elevation settings - also invariant
