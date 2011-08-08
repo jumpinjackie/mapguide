@@ -216,6 +216,7 @@
     <ClCompile Include="HillShade.cpp" />
     <ClCompile Include="FeatureSource.cpp" />
     <ClCompile Include="SupplementalSpatialContextInfo.cpp" />
+    <ClCompile Include="URLData.cpp" />
     <ClCompile Include="VectorLayerDefinition.cpp" />
     <ClCompile Include="VectorScaleRange.cpp" />
     <ClCompile Include="AttributeRelate.cpp" />
@@ -320,6 +321,7 @@
     <ClInclude Include="HillShade.h" />
     <ClInclude Include="FeatureSource.h" />
     <ClInclude Include="SupplementalSpatialContextInfo.h" />
+    <ClInclude Include="URLData.h" />
     <ClInclude Include="VectorLayerDefinition.h" />
     <ClInclude Include="VectorScaleRange.h" />
     <ClInclude Include="AttributeRelate.h" />

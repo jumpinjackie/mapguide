@@ -195,6 +195,7 @@
     <ClCompile Include="Common\IOSize2D.cpp" />
     <ClCompile Include="Common\IOStringObjectCollection.cpp" />
     <ClCompile Include="Common\IOVector3D.cpp" />
+    <ClCompile Include="IOURLData.cpp" />
     <ClCompile Include="PrintLayout\IODataConfiguration.cpp" />
     <ClCompile Include="PrintLayout\IOMapView.cpp" />
     <ClCompile Include="PrintLayout\IOMapViewportDefinition.cpp" />
@@ -297,6 +298,7 @@
     <ClInclude Include="Common\IOSize2D.h" />
     <ClInclude Include="Common\IOStringObjectCollection.h" />
     <ClInclude Include="Common\IOVector3D.h" />
+    <ClInclude Include="IOURLData.h" />
     <ClInclude Include="PrintLayout\IODataConfiguration.h" />
     <ClInclude Include="PrintLayout\IOMapView.h" />
     <ClInclude Include="PrintLayout\IOMapViewportDefinition.h" />

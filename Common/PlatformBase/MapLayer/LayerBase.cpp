@@ -680,7 +680,8 @@ void MgLayerBase::GetLayerInfoFromDefinition(MgResourceService* resourceService)
             //does the layer have tooltips?
             //we include layers with hyperlinks, since the presence of a hyperlink
             //results in a tooltip
-            m_hasTooltips = (!vl->GetToolTip().empty()) || (!vl->GetUrl().empty());
+            bool hasUrl = vl->GetUrlData() && (!vl->GetUrlData()->GetUrlContent().empty());
+            m_hasTooltips = (!vl->GetToolTip().empty()) || hasUrl;
 
             //store the scale ranges
             MdfModel::VectorScaleRangeCollection* scaleRanges = vl->GetScaleRanges();

@@ -94,6 +94,7 @@ libMgMdfModel_la_SOURCES = \
   ThemeLabel.cpp \
   TileWatermarkPosition.cpp \
   UnicodeString.cpp \
+  URLData.cpp \
   VectorLayerDefinition.cpp \
   VectorScaleRange.cpp \
   Version.cpp \
@@ -204,6 +205,7 @@ noinst_HEADERS = \
   ThemeLabel.h \
   TileWatermarkPosition.h \
   UnicodeString.h \
+  URLData.h \
   VectorLayerDefinition.h \
   VectorScaleRange.h \
   Version.h \

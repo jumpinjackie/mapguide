@@ -594,6 +594,14 @@
 				RelativePath=".\VectorScaleRange.h"
 				>
 			</File>
+			<File
+				RelativePath=".\URLData.h"
+				>
+			</File>
+			<File
+				RelativePath=".\URLData.cpp"
+				>
+			</File>
 			<Filter
 				Name="Joins"
 				>

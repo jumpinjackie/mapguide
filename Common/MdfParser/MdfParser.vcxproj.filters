@@ -141,6 +141,7 @@
     <ClCompile Include="MdfParser.cpp" />
     <ClCompile Include="SAX2ElementHandler.cpp" />
     <ClCompile Include="SAX2Parser.cpp" />
+    <ClCompile Include="IOURLData.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Common\IOColor.h">
@@ -275,6 +276,7 @@
     <ClInclude Include="SAX2ElementHandler.h" />
     <ClInclude Include="SAX2Parser.h" />
     <ClInclude Include="stdafx.h" />
+    <ClInclude Include="IOURLData.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="MdfParser.rc" />
