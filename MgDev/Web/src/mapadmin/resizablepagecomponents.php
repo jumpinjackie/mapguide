@@ -61,6 +61,9 @@
     define( 'CONFIGURE_WFS_MENU_ITEM', "Configure WFS" );
     $wfsMenuGroup[ CONFIGURE_WFS_MENU_ITEM ] = 'wfsproperties.php';
 
+    define('PERFORMANCE_REPORT_MENU_ITEM',"Performance Report");
+    $performanceMenuGroup[PERFORMANCE_REPORT_MENU_ITEM]='performanceReport.php';
+
     define( 'ADD_SERVER_TITLE',                 "Add Server" );
     define( 'CONFIGURE_SERVER_TITLE',           "Configure Server" );
     define( 'CONFIGURE_LOGS_TITLE',             "Configure Logs" );
@@ -374,6 +377,7 @@
         global $usersMenuGroup;
         global $rolesMenuGroup;
         global $packagesMenuGroup;
+        global $performanceMenuGroup;
         global $wmsMenuGroup;
         global $wfsMenuGroup;
         global $unmanagedDataMenuGroup;
@@ -390,6 +394,8 @@
         DisplayMenuGroup( $currMenuItem, ASSIGN_ROLES_MENU_ITEM, $rolesMenuGroup );
         echo "<tr><td><hr></td></tr>\n";
         DisplayMenuGroup( $currMenuItem, PACKAGE_MANAGEMENT_MENU_ITEM, $packagesMenuGroup );
+        echo "<tr><td><hr></td></tr>\n";
+        DisplayMenuGroup( $currMenuItem, PERFORMANCE_REPORT_MENU_ITEM, $performanceMenuGroup);
         echo "<tr><td><hr></td></tr>\n";
         DisplayMenuGroup( $currMenuItem, CONFIGURE_WMS_MENU_ITEM, $wmsMenuGroup );
         echo "<tr><td><hr></td></tr>\n";
@@ -2154,5 +2160,108 @@
         echo '          </a>',"\n";
         echo '      </td>',"\n";
     }
+
+
+    class DisplayProfileResultManager
+    {
+        public $mapProfileResult;
+
+        public function OutputMapDefinitionData()
+        {
+            //TODO: will be implemented in part2
+        }
+
+        public function OutputLayerDefinitionData()
+        {
+            $rowNumber=1;
+            foreach ($this->mapProfileResult->LayerProfileData->LayerProfileDataCollection as $layerProfileData)
+            {
+                if(0 == $rowNumber%2)
+                {
+                    echo '<tr class="even" onmouseover="HighlightRow(this);" onmouseout="UnhighlightRow(this);">',"\n";
+                }
+                else
+                {
+                    echo '<tr class="odd" onmouseover="HighlightRow(this);" onmouseout="UnhighlightRow(this);">',"\n";
+                }
+
+                echo "<td style='width:20%;'>".$layerProfileData->GetLayerName()."</td>","\n";
+                echo "<td style='width:20%;'>".$layerProfileData->TotalRenderTime."</td>","\n";
+                echo "<td style='width:20%;'>"."Class Info Goes here"."</td>","\n";
+                echo "<td style='width:20%;'>".$layerProfileData->CoordinateSystem."</td>","\n";
+                echo "<td style='width:20%;'>".$layerProfileData->LayerType."</td>","\n";
+                echo "</tr>","\n";
+
+                $rowNumber++;
+            }
+        }
+
+        public function OutputLayerDetailData()
+        {
+            $layerDetail=$this->mapProfileResult->LayerProfileData->LayerProfileDataCollection["Library://Buildings.LayerDefinition"];
+
+            echo '<div style="padding-bottom: 8px; padding-top: 7px; width: 80%;">' . $layerDetail->GetLayerName() . '</div>', "\n";
+            echo '<div style=" border: 1px solid #cccccc; width: 80%">';
+            echo '<div style="padding: 10px;">';
+            echo "<b>Filter</b>";
+            echo "<br/><br/>";
+            echo $layerDetail->Filters;
+            echo "</div>";
+            echo '<div style=" background-color: #EEEEEE;padding: 10px;">';
+            echo "<b>Scale Range</b>";
+            echo "<br/><br/>";
+            echo $layerDetail->ScaleRange;
+            echo "</div>", "\n";
+            echo "</div>", "\n";
+        }
+
+        public function OutputMapRenderTimeGraph()
+        {
+            echo "<tr style='height: 25px;'>","\n";
+            
+            echo '<td style="width:'.$this->mapProfileResult->MapProfileData->GetLayerRenderPercent() .'%; background-color: #E4C7AE;font-size:80%;">',"\n";
+            echo $this->mapProfileResult->MapProfileData->TotalLayerRenderTime."&nbsp;ms&nbsp;";
+            echo "(" . $this->mapProfileResult->MapProfileData->GetLayerRenderPercent() . "%)","\n";
+            echo '</td>',"\n";
+
+            echo '<td style="width: '.$this->mapProfileResult->MapProfileData->GetLabelRenderPercent().'%; background-color: #AECBE4;font-size:80%;">',"\n";
+            echo $this->mapProfileResult->MapProfileData->TotalLabelRenderTime."&nbsp;ms&nbsp;";
+            echo "(".$this->mapProfileResult->MapProfileData->GetLabelRenderPercent()."%)","\n";
+            echo "</td>","\n";
+
+            echo '<td style="width: '.$this->mapProfileResult->MapProfileData->GetWartermarkRenderPercent().'%; background-color: #E79661;font-size:80%;">',"\n";
+            echo $this->mapProfileResult->MapProfileData->TotalWatermarkRenderTime."&nbsp;ms&nbsp;";
+            echo "(".$this->mapProfileResult->MapProfileData->GetWartermarkRenderPercent()."%)","\n";
+            echo "</td>","\n";
+
+            echo '<td style="width: '.$this->mapProfileResult->MapProfileData->GetImageRenderPercent().'%; background-color: #BE76EE;font-size:80%;">',"\n";
+            echo $this->mapProfileResult->MapProfileData->TotalImageRenderTime."&nbsp;ms&nbsp;";
+            echo "(".$this->mapProfileResult->MapProfileData->GetImageRenderPercent()."%)","\n";
+            echo "</td>","\n";
+
+            echo '<td style="width: '.$this->mapProfileResult->MapProfileData->GetOthersRenderPercent().'%; background-color: #999999;font-size:80%;">',"\n";
+            //for "Other" we don't need the text, because the width of the td is always too small for the text
+            //echo $this->mapProfileResult->MapProfileData->GetOtherRenderTime()."&nbsp;ms&nbsp;";
+            //echo "(".$this->mapProfileResult->MapProfileData->GetOthersRenderPercent()."%)","\n";
+            echo "</td>","\n";
+
+            echo "</tr>","\n";
+        }
+
+        public function OutputMapResourceNameWithToolTip($mapResourceID)
+        {
+            $tempMapName = strrchr($mapResourceID, '/');
+            $tempMapName = substr($tempMapName, 1, strlen($tempMapName) - 15);
+            $toolTipDivId="toolTip_".$tempMapName;
+            
+            echo '<span onMouseOver="ShowToopTip(this,\''.$toolTipDivId.'\',event);" onmousemove="ShowToopTip(this,\''.$toolTipDivId.'\',event);" onmouseout="HideToolTop(\''.$toolTipDivId.'\');" class="mapNameStyle">';
+            echo "<b>".$tempMapName."</b></span>";
+
+            echo '<div id="'.$toolTipDivId.'" class="hideTooltip">',"\n";
+            echo $mapResourceID;
+            echo '</div>',"\n";
+        }
+    }
+
 
 ?>
