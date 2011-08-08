@@ -2292,4 +2292,219 @@
         }
     }
 
+    class LayerDefinitionProfileData
+    {
+        public $LayerName;
+        public $LayerResuorceId;
+        public $TotalRenderTime;
+        public $FeatureClass;
+        public $CoordinateSystem;
+        public $LayerType;
+        public $Filters;
+        public $ScaleRange;
+
+        public function GetLayerName()
+        {
+            $shortLayerName = strrchr($this->LayerResuorceId, '/');
+            $shortLayerName = substr($shortLayerName, 1, strlen($shortLayerName) - 17);
+            return $shortLayerName;
+        }
+    }
+
+    class LayerDefinitionProfileResults
+    {
+        public $LayerProfileDataCollection;
+
+        public function Sort($columnName,$sortOrder)
+        {
+            //TODO: will be implemented in part2
+        }
+
+        public function Page()
+        {
+            //TODO: will be implemented in part2
+        }
+    }
+
+    class MapDefinitionProfileData
+    {
+        public $TotalLayerRenderTime;
+        public $TotalLabelRenderTime;
+        public $TotalWatermarkRenderTime;
+        public $TotalImageRenderTime;
+        public $TotalMapRenderTime;
+
+        public $MapResourceId;
+        public $BaseLayerCount;
+        public $LayerCount;
+        public $ImageFormat;
+        public $CenterPoint;
+        public $DataExtents;
+        public $CoordinateSystem;
+        public $Scale;
+        public $RenderType;
+
+        public function GetTotalRenderTime()
+        {
+            return $this->TotalLayerRenderTime+$this->TotalLabelRenderTime
+                    +$this->TotalImageRenderTime+$this->TotalWatermarkRenderTime;
+        }
+
+        public function GetLayerRenderPercent()
+        {
+            return number_format($this->TotalLayerRenderTime/$this->TotalMapRenderTime*100,1);
+        }
+
+        public function GetLabelRenderPercent()
+        {
+            return number_format($this->TotalLabelRenderTime/$this->TotalMapRenderTime*100,1);
+        }
+
+        public function GetWartermarkRenderPercent()
+        {
+            return number_format($this->TotalWatermarkRenderTime/$this->TotalMapRenderTime*100,1);
+        }
+
+        public function GetImageRenderPercent()
+        {
+            return number_format($this->TotalImageRenderTime/$this->TotalMapRenderTime*100,1);
+        }
+
+        public function GetOtherRenderTime()
+        {
+            return $this->TotalMapRenderTime-$this->TotalLayerRenderTime-$this->TotalLabelRenderTime-$this->TotalWatermarkRenderTime-$this->TotalImageRenderTime;
+        }
+
+        public function GetOthersRenderPercent()
+        {
+            $other= $this->TotalMapRenderTime-$this->TotalLayerRenderTime-$this->TotalLabelRenderTime-$this->TotalWatermarkRenderTime-$this->TotalImageRenderTime;
+
+            return number_format($other/$this->TotalMapRenderTime*100,1);
+        }
+    }
+
+    class MapProfileResult
+    {
+        public $MapProfileData;
+        public $LayerProfileData;
+
+        public function ReadFromXML($resultSource)
+        {
+            $this->MapProfileData = new MapDefinitionProfileData();
+            $mapResultList = $resultSource->documentElement->getElementsByTagName("ProfileRenderMap");
+            $profileRenderMap = $mapResultList->item(0);
+            if ($profileRenderMap->hasChildNodes()) 
+            {
+                foreach ($profileRenderMap->childNodes as $node)
+                {
+                    if (1 == $node->nodeType)
+                    {
+                        switch ($node->nodeName)
+                        {
+                            case "ResourceId":
+                                $this->MapProfileData->MapResourceId = $node->nodeValue;
+                                break;
+                            case "CoordinateSystem":
+                                $this->MapProfileData->CoordinateSystem = $node->nodeValue;
+                                break;
+                            case "Extent":
+                                $this->MapProfileData->DataExtents = $node->nodeValue;
+                                break;
+                            case "Scale":
+                                $this->MapProfileData->Scale = $node->nodeValue;
+                                break;
+                            case "ImageFormat":
+                                $this->MapProfileData->ImageFormat = $node->nodeValue;
+                                break;
+                            case "RendererType":
+                                $this->MapProfileData->RenderType = $node->nodeValue;
+                                break;
+                            case "RenderTime":
+                                $this->MapProfileData->TotalMapRenderTime = $node->nodeValue;
+                                break;
+                            case "CreateImageTime":
+                                $this->MapProfileData->TotalImageRenderTime = $node->nodeValue;
+                                break;
+                            case "ProfileRenderLabels":
+                                foreach ($node->childNodes as $labelNode)
+                                {
+                                    if ($labelNode->nodeType == 1 && $labelNode->nodeName == "RenderTime")
+                                    {
+                                        $this->MapProfileData->TotalLabelRenderTime = $labelNode->nodeValue;
+                                    }
+                                }
+                                break;
+                            case "ProfileRenderLayers":
+                                foreach ($node->childNodes as $layerNode)
+                                {
+                                    if (1 == $layerNode->nodeType && "RenderTime" == $layerNode->nodeName)
+                                    {
+                                        $this->MapProfileData->TotalLayerRenderTime = $layerNode->nodeValue;
+                                    }
+                                }
+                                $this->ParseLayerResult($node);
+                                break;
+                            case "ProfileRenderWatermarks":
+                                foreach ($node->childNodes as $watermarkNode)
+                                {
+                                    if (1 == $watermarkNode->nodeType && "RenderTime" == $watermarkNode->nodeName)
+                                    {
+                                        $this->MapProfileData->TotalWatermarkRenderTime = $watermarkNode->nodeValue;
+                                    }
+                                }
+                                break;
+                            default: break;
+                        }
+                    }
+                }
+            }
+        }
+
+        private function ParseLayerResult($LayerNodeList)
+        {
+            $this->LayerProfileData=new LayerDefinitionProfileResults();
+            $this->LayerProfileData->LayerProfileDataCollection=array();
+
+            foreach ($LayerNodeList->childNodes as $layerNode) {
+                if (1 == $layerNode->nodeType && "ProfileRenderLayer" == $layerNode->nodeName) {
+
+                    $tempLayerProfileData = new LayerDefinitionProfileData();
+
+                    foreach ($layerNode->childNodes as $node) {
+                        if (1 == $node->nodeType) {
+                            switch ($node->nodeName) {
+                                case "ResourceId":
+                                    $tempLayerProfileData->LayerResuorceId = $node->nodeValue;
+                                    break;
+                                case "LayerType":
+                                    $tempLayerProfileData->LayerType = $node->nodeValue;
+                                    break;
+                                case "CoordinateSystem":
+                                    $tempLayerProfileData->CoordinateSystem = $node->nodeValue;
+                                    break;
+                                case "RenderTime":
+                                    $tempLayerProfileData->TotalRenderTime = $node->nodeValue;
+                                    break;
+                                case "ScaleRange":
+                                    $tempLayerProfileData->ScaleRange= $node->nodeValue;
+                                    break;
+                                case "Filter":
+                                    $tempLayerProfileData->Filters= $node->nodeValue;
+                                    break;
+                                default:break;
+                            }
+                        }
+                    }
+                    $this->LayerProfileData->LayerProfileDataCollection[$tempLayerProfileData->LayerResuorceId]=$tempLayerProfileData;
+                }
+            }
+        }
+
+        public function SaveAsCSV()
+        {
+            //TODO: will be implemented in part2
+        }
+    }
+
+    
 ?>
