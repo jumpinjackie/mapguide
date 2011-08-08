@@ -124,7 +124,7 @@ const FdoByte * MgServerFdoFeatureReader::GetGeometry(FdoString* propertyName, F
                 __LINE__, __WFILE__, &arguments, L"", NULL);
         }
         else
-            throw ;
+            throw;
     }
 }
 
@@ -264,6 +264,8 @@ FdoIFeatureReader* MgServerFdoFeatureReader::GetFeatureObject(FdoString* propert
             throw new MgNullPropertyValueException(L"MgServerFdoFeatureReader.GetFeatureObject",
                 __LINE__, __WFILE__, &arguments, L"", NULL);
         }
+        else
+            throw;
     }
 }
 
