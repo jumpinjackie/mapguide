@@ -149,22 +149,22 @@ void IOVectorLayerDefinition::ElementChars(const wchar_t* ch)
         this->m_layer->SetFilter(ch);
         break;
 
-    case eUrl:
-        //Handle layer definition <= 2.3.0
-        if(m_version < Version(2, 4, 0))
-        {
-            URLData* urlData =  this->m_layer->GetUrlData();
-            if(!urlData)
-            {
-                urlData = new URLData();
-            }
-            urlData->SetUrlContent(ch);
-            this->m_layer->AdoptUrlData(urlData);
-        }
-        break;
-
     case eGeometry:
         this->m_layer->SetGeometry(ch);
+        break;
+
+    case eUrl:
+        // Handle layer definition <= 2.3.0
+        if (m_version <= Version(2, 3, 0))
+        {
+            URLData* urlData = this->m_layer->GetUrlData();
+            if (!urlData)
+            {
+                urlData = new URLData();
+                this->m_layer->AdoptUrlData(urlData);
+            }
+            urlData->SetUrlContent(ch);
+        }
         break;
 
     case eToolTip:
@@ -318,24 +318,26 @@ void IOVectorLayerDefinition::Write(MdfStream& fd, VectorLayerDefinition* vector
     fd << EncodeString(vectorLayer->GetGeometry());
     fd << endStr(sGeometry) << std::endl;
 
-    // Property: Url
+    // Property: Url / UrlData
     URLData* urlData = vectorLayer->GetUrlData();
-    if(urlData)
+    if (urlData)
     {
-        if(!version || (*version >= Version(2, 4, 0)))
+        if (!version || (*version >= Version(2, 4, 0)))
         {
+            // write new version 2.4.0 property
             IOURLData::Write(fd, urlData, version, tab);
         }
         else
         {
-            // For layer definition version <= 2.3.0
-            if(!urlData->GetUrlContent().empty())
+            // save original url property for LDF versions <= 2.3.0
+            if (!urlData->GetUrlContent().empty())
             {
                 fd << tab.tab() << startStr(sUrl);
                 fd << EncodeString(urlData->GetUrlContent());
                 fd << endStr(sUrl) << std::endl;
             }
-            //In extended data
+
+            // save new property as extended data for LDF versions <= 2.3.0
             tab.inctab();
             IOURLData::Write(fdExtData, urlData, version, tab);
             tab.dectab();

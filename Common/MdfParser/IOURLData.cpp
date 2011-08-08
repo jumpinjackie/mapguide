@@ -1,5 +1,5 @@
 //
-//  Copyright (C) 2007-2011 by Autodesk, Inc.
+//  Copyright (C) 2011 by Autodesk, Inc.
 //
 //  This library is free software; you can redistribute it and/or
 //  modify it under the terms of version 2.1 of the GNU Lesser
@@ -14,6 +14,7 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
+
 #include "stdafx.h"
 #include "IOURLData.h"
 #include "IOUnknown.h"
@@ -29,6 +30,7 @@ ELEM_MAP_ENTRY(3, ContentOverride);
 ELEM_MAP_ENTRY(4, Description);
 ELEM_MAP_ENTRY(5, DescriptionOverride);
 ELEM_MAP_ENTRY(6, ExtendedData1);
+
 
 IOURLData::IOURLData(Version& version) : SAX2ElementHandler(version)
 {
@@ -131,20 +133,20 @@ void IOURLData::Write(MdfStream& fd, URLData* urlData, Version* version, MgTab& 
         fd << endStr(sContent) << std::endl;
     }
 
-    // Property: Content Override
-    if(!urlData->GetUrlContentOverride().empty())
-    {
-        fd << tab.tab() << startStr(sContent);
-        fd << EncodeString(urlData->GetUrlContentOverride());
-        fd << endStr(sContentOverride) << std::endl;
-    }
-
     // Property: Description
     if(!urlData->GetUrlDescription().empty())
     {
         fd << tab.tab() << startStr(sDescription);
         fd << EncodeString(urlData->GetUrlDescription());
         fd << endStr(sDescription) << std::endl;
+    }
+
+    // Property: Content Override
+    if(!urlData->GetUrlContentOverride().empty())
+    {
+        fd << tab.tab() << startStr(sContent);
+        fd << EncodeString(urlData->GetUrlContentOverride());
+        fd << endStr(sContentOverride) << std::endl;
     }
 
     // Property: Description Override

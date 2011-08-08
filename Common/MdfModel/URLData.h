@@ -1,3 +1,6 @@
+//
+//  Copyright (C) 2011 by Autodesk, Inc.
+//
 //  This library is free software; you can redistribute it and/or
 //  modify it under the terms of version 2.1 of the GNU Lesser
 //  General Public License as published by the Free Software Foundation.
@@ -19,12 +22,13 @@
 #include "MdfRootObject.h"
 
 BEGIN_NAMESPACE_MDFMODEL
+
     //-------------------------------------------------------------------------
     // DESCRIPTION:
     // The URLData class is used by a layer to provide URL information for each 
     // feature.
     //-------------------------------------------------------------------------
-class MDFMODEL_API URLData : public MdfRootObject
+    class MDFMODEL_API URLData : public MdfRootObject
     {
         public:
             // Construction, destruction, initialization
@@ -65,6 +69,6 @@ class MDFMODEL_API URLData : public MdfRootObject
             //URL description override
             MdfString m_strUrlDescriptionOverride;
     };
+
 END_NAMESPACE_MDFMODEL
 #endif
-

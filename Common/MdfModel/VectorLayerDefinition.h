@@ -54,6 +54,10 @@ BEGIN_NAMESPACE_MDFMODEL
         FeatureNameType GetFeatureNameType() const;
         void SetFeatureNameType(FeatureNameType featureNameType);
 
+        // Property : Filter
+        const MdfString& GetFilter() const;
+        void SetFilter(const MdfString& strFilter);
+
         // Property : Properties
         NameStringPairCollection* GetPropertyMappings();
 
@@ -61,17 +65,13 @@ BEGIN_NAMESPACE_MDFMODEL
         const MdfString& GetGeometry() const;
         void SetGeometry(const MdfString&  strGeometry);
 
-        // Property : Url
+        // Property : UrlData
         URLData* GetUrlData();
         void AdoptUrlData(URLData* urlData);
 
         // Property : ToolTip
         const MdfString& GetToolTip() const;
         void SetToolTip(const MdfString&  strToolTip);
-
-        // Property : Filter
-        const MdfString& GetFilter() const;
-        void SetFilter(const MdfString& strFilter);
 
         // Property : VectorScaleRanges
         VectorScaleRangeCollection* GetScaleRanges();
@@ -94,13 +94,10 @@ BEGIN_NAMESPACE_MDFMODEL
         // Stores an SQL Where clause for returning the appropriate feature.
         MdfString m_strFilter;
 
-        // Key
-        MdfString m_strKey;
-
         // Geometry
         MdfString m_strGeometry;
 
-        // Url
+        // UrlData
         URLData* m_urlData;
 
         // ToolTip

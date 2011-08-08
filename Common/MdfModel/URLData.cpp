@@ -1,5 +1,5 @@
 //
-//  Copyright (C) 2004-2011 by Autodesk, Inc.
+//  Copyright (C) 2011 by Autodesk, Inc.
 //
 //  This library is free software; you can redistribute it and/or
 //  modify it under the terms of version 2.1 of the GNU Lesser
@@ -19,6 +19,7 @@
 // DESCRIPTION:
 // The URLData class implementation.
 //-------------------------------------------------------------------------
+
 #include "stdafx.h"
 #include "URLData.h"
 
@@ -104,4 +105,3 @@ void URLData::SetUrlDescriptionOverrride(const MdfString& urlDescriptionOverride
 {
     this->m_strUrlDescriptionOverride = urlDescriptionOverride;
 }
-
