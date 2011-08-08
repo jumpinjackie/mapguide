@@ -45,10 +45,7 @@ VectorLayerDefinition::VectorLayerDefinition(const MdfString& strDataResourceID,
 //-------------------------------------------------------------------------
 VectorLayerDefinition::~VectorLayerDefinition()
 {
-    if(m_urlData != NULL)
-    {
-        delete this->m_urlData;
-    }
+    delete this->m_urlData;
 }
 
 //-------------------------------------------------------------------------
@@ -141,7 +138,11 @@ URLData* VectorLayerDefinition::GetUrlData()
 //-------------------------------------------------------------------------
 void VectorLayerDefinition::AdoptUrlData(URLData* urlData)
 {
-    this->m_urlData = urlData;
+    if (this->m_urlData != urlData)
+    {
+        delete this->m_urlData;
+        this->m_urlData = urlData;
+    }
 }
 
 //-------------------------------------------------------------------------
