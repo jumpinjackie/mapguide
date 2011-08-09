@@ -8,6 +8,7 @@
 #ifndef ACE_CONFIG_LINUX_H
 #define ACE_CONFIG_LINUX_H
 #include /**/ "ace/pre.h"
+#define ACE_HAS_IPV6
 
 #define ACE_PLATFORM_CONFIG config-linux.h
 

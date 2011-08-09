@@ -15,6 +15,7 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 #include "MapGuideCommon.h"
+#include "Base64.h"
 
 MG_IMPL_DYNCREATE(MgSiteInfo);
 
@@ -60,22 +61,30 @@ MgSiteInfo::MgSiteInfo(CREFSTRING hexString) :
     m_adminPort(0),
     m_target(L""),
     m_status(Uninitialized)
-{
-    if(hexString.length() >= HexStringLength)
     {
-        UINT32 n1, n2, n3, n4;
+        // Compose a format string to extract the target address and the ports from the hexstring
+        INT32 targetlen = (INT32) hexString.length() - HexPortsStringLength;
+        wchar_t format[20] = {0};
+        swprintf(format, 20, L"%%%ds%%4X%%4X%%4X", targetlen);
 
-        // Read the IP parts into their variables
-        if(::swscanf(hexString.c_str(), L"%2X%2X%2X%2X%4X%4X%4X", &n1, &n2, &n3, &n4, &m_sitePort, &m_clientPort, &m_adminPort) == 7)
+        wchar_t targetHex[100] = {0};
+        if (::swscanf(hexString.c_str(), format, targetHex, &m_sitePort, &m_clientPort, &m_adminPort) == 4)
         {
-            // Write the 4 'n' values into an IP string
-            wchar_t buffer[20];
-            swprintf(buffer, 20, L"%u.%u.%u.%u", n1, n2, n3, n4);
-            m_target = buffer;
+            char buffer[100] = {0};
+            INT32 hexLength = targetlen;
+            STRING targetHexOriginal = targetHex;
+            // There were alignment "=" removed. They should be appended back to do decoding
+            if (0 != targetlen % 4)
+            {
+                targetHexOriginal.append(L"===");
+                hexLength = 4 * (targetlen / 4 + 1);
+            }
+
+            Base64::Decode((unsigned char*)buffer, ACE_Wide_To_Ascii(targetHexOriginal.c_str()).char_rep(), hexLength);
+            m_target = ACE_Ascii_To_Wide(buffer).wchar_rep();
             m_status = Ok;
         }
     }
-}
 
 ///----------------------------------------------------------------------------
 /// <summary>
@@ -141,15 +150,20 @@ void MgSiteInfo::Deserialize(MgStream* stream)
 /// </summary>
 STRING MgSiteInfo::ToHexString()
 {
-    STRING hexString;
-    UINT32 n1, n2, n3, n4;
-    wchar_t buffer[30];
-    if (4 == ::swscanf(m_target.c_str(), L"%u.%u.%u.%u", &n1, &n2, &n3, &n4))
+    char buf[100] = {0};
+    Base64::Encode(buf, (unsigned char*)ACE_Wide_To_Ascii(m_target.c_str()).char_rep(), (unsigned long) m_target.length());
+    
+    // Remove the alignment "="
+    STRING targetHex = ACE_Ascii_To_Wide(buf).wchar_rep();
+    if (targetHex.find(L"=") != targetHex.npos)
     {
-        swprintf(buffer, 30, L"%.2X%.2X%.2X%.2X%.4X%.4X%.4X", n1, n2, n3, n4, m_sitePort, m_clientPort, m_adminPort);
-        hexString = buffer;
+        targetHex = targetHex.substr(0, targetHex.find(L"="));
     }
-    return hexString;
+    
+    wchar_t buffer[100] = {0};	
+    swprintf(buffer, 100, L"%s%.4X%.4X%.4X", targetHex.c_str(), m_sitePort, m_clientPort, m_adminPort);
+
+    return STRING(buffer);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -206,5 +220,6 @@ void MgSiteInfo::SetStatus(MgSiteStatus status)
 {
     m_status = status;
 }
+
 
 

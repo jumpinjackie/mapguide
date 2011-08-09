@@ -18,6 +18,7 @@
 #ifndef ACE_CONFIG_WIN32_H
 #define ACE_CONFIG_WIN32_H
 #include /**/ "ace/pre.h"
+#define ACE_HAS_IPV6
 
 // NOTE: Please do not add anything besides #include's here.  Put other stuff
 //       (definitions, etc.) in the included headers

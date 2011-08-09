@@ -42,9 +42,18 @@ SizeF paperSize = new SizeF(0.0f, 0.0f);
 
 <%
     Response.Charset = "utf-8";
-
-    GetRequestParameters();
-    GenerateMap(printSize);
+    
+    try
+    {
+        GetRequestParameters();
+        GenerateMap(printSize);
+    }
+    catch (MgException e)
+    {
+        Response.ContentType = "text/html";
+        Response.Write(string.Format("ERROR: {0} <br />", e.GetExceptionMessage()));
+        Response.Write(string.Format("{0} <br />", e.GetStackTrace()));
+    }
 %>
 
 <script runat="server">
@@ -95,6 +104,8 @@ MgPolygon CreatePolygon(string[] coordinates)
 
 void GenerateMap(Size size)
 {
+    InitializeWebTier();
+    
     MgUserInformation userInfo = new MgUserInformation(sessionID);
     MgSiteConnection siteConnection = new MgSiteConnection();
     siteConnection.Open(userInfo);
@@ -115,65 +126,54 @@ void GenerateMap(Size size)
     SizeF toSize = new SizeF(size1.Width / size2.Width * size.Width, size1.Height / size2.Height * size.Height);
     MgCoordinate center = captureBox.GetCentroid().GetCoordinate();
 
-    // Get the map agent url
-    // Get the correct http protocol
-    StringBuilder mapAgent = new StringBuilder(Request.IsSecureConnection ? "https://" : "http://");
-    // Get the correct port number
-    // Just use the 127.0.0.1 specificly to point to localhost. Because the WebExtension will
-    // be always on the same server with map agent.
-    mapAgent.Append("127.0.0.1").Append(":").Append(Request.ServerVariables["SERVER_PORT"]);
+    map.SetDisplayDpi(printDpi);
+    string colorString = map.GetBackgroundColor();
+    // The returned color string is in AARRGGBB format. But the constructor of MgColor needs a string in RRGGBBAA format
+    colorString = string.Format("{0}{1}", colorString.Substring(2, 6), colorString.Substring(0, 2));
+    MgColor color = new MgColor(colorString);
 
-    // Get the correct virtual directory
-    string url = Request.ServerVariables["URL"];
-    mapAgent.Append(url.Substring(0, url.IndexOf("/", 1)));
+    MgByteReader mgReader = renderingService.RenderMap(map,
+                                                        selection,
+                                                        center,
+                                                        scaleDenominator,
+                                                        (int) toSize.Width,
+                                                        (int) toSize.Height,
+                                                        color,
+                                                        "PNG",
+                                                        false);
 
-    mapAgent.Append("/mapagent/mapagent.fcgi?VERSION=1.0.0&OPERATION=GETMAPIMAGE")
-            .AppendFormat("&SESSION={0}", sessionID)
-            .AppendFormat("&MAPNAME={0}", HttpUtility.UrlEncode(mapName))
-            .Append("&FORMAT=PNG")
-            .AppendFormat("&SETVIEWCENTERX={0}", center.GetX())
-            .AppendFormat("&SETVIEWCENTERY={0}", center.GetY())
-            .AppendFormat("&SETVIEWSCALE={0}", scaleDenominator)
-            .AppendFormat("&SETDISPLAYDPI={0}", printDpi)
-            .AppendFormat("&SETDISPLAYWIDTH={0}", toSize.Width)
-            .AppendFormat("&SETDISPLAYHEIGHT={0}", toSize.Height)
-            .Append("&CLIP=0");
+    string tempImage = Path.GetTempFileName();
+    mgReader.ToFile(tempImage);
 
-    WebRequest request = WebRequest.Create(mapAgent.ToString());
-
-    using (HttpWebResponse response = request.GetResponse() as HttpWebResponse)
+    using (System.Drawing.Image image = Bitmap.FromFile(tempImage))
     {
-        if (response.StatusCode == HttpStatusCode.OK)
+        using (System.Drawing.Image result = Math.Abs(rotation) > double.Epsilon ? new Bitmap(size.Width, size.Height) : image)
         {
-            using (Bitmap image = new Bitmap(response.GetResponseStream()))
+            using (Graphics graphics = Graphics.FromImage(result))
             {
-                using (Bitmap result = Math.Abs(rotation) > double.Epsilon ? new Bitmap(size.Width, size.Height) : image)
+                if (Math.Abs(rotation) > double.Epsilon)
                 {
-                    using (Graphics graphics = Graphics.FromImage(result))
-                    {
-                        if (Math.Abs(rotation) > double.Epsilon)
-                        {
-                            graphics.TranslateTransform(size.Width / 2, size.Height / 2);
-                            graphics.RotateTransform((float)rotation);
-                            graphics.DrawImage(image, -image.Width / 2, -image.Height / 2);
-                        }
-                    }
-
-                    DrawNorthArrow(result);
-
-                    using (MemoryStream stream = new MemoryStream())
-                    {
-                        result.Save(stream, System.Drawing.Imaging.ImageFormat.Png);
-                        Response.ContentType = "image/png";
-                        Response.BinaryWrite(stream.ToArray());
-                    }
+                    graphics.TranslateTransform(size.Width / 2, size.Height / 2);
+                    graphics.RotateTransform((float)rotation);
+                    graphics.DrawImage(image, -image.Width / 2, -image.Height / 2);
                 }
+            }
+
+            DrawNorthArrow(result);
+
+            using (MemoryStream stream = new MemoryStream())
+            {
+                result.Save(stream, System.Drawing.Imaging.ImageFormat.Png);
+                Response.ContentType = "image/png";
+                Response.BinaryWrite(stream.ToArray());
             }
         }
     }
+        
+    File.Delete(tempImage);
 }
 
-void DrawNorthArrow(Bitmap image)
+void DrawNorthArrow(System.Drawing.Image image)
 {
     // The north arrow image is created under this dpi
     int naDpi = 300;

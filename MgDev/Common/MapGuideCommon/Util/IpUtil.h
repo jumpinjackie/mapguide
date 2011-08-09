@@ -51,12 +51,41 @@ INTERNAL_API:
     /// Flag indicating if the specified address must be looked up.
     ///
     /// \exception MgNullArgumentException
-    /// \exception MgInvalidArgumentException
     /// \exception MgInvalidIpAddressException
     ///
     ///
 
     static bool IsIpAddress(CREFSTRING address, bool strict = true);
+
+    ///////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Determines whether or not the specified host is an IP address in IPv4 format.
+    ///
+    /// \param address
+    /// IP address (or host name).
+    /// \param strict
+    /// Flag indicating if the specified address must be looked up.
+    /// \exception MgNullArgumentException
+    /// \exception MgInvalidIpAddressException
+    ///
+    ///
+
+    static bool IsIpv4Address(CREFSTRING address, bool strict = true);
+
+    ///////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Determines whether or not the specified host is an IP address in IPv6 format.
+    ///
+    /// \param address
+    /// IP address (or host name).
+    /// \param strict
+    /// Flag indicating if the specified address must be looked up.
+    /// \exception MgNullArgumentException
+    /// \exception MgInvalidIpAddressException
+    ///
+    ///
+
+    static bool IsIpv6Address(CREFSTRING address, bool strict = true);
 
     ///////////////////////////////////////////////////////////////////////////
     /// \brief
