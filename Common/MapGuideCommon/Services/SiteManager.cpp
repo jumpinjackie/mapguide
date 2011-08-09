@@ -322,23 +322,19 @@ MgConnectionProperties* MgSiteManager::GetConnectionProperties(
     {
         size_t length = sessionId.length();
 
-        if (length > MgSiteInfo::HexStringLength)
+        STRING siteHexString = sessionId.substr(sessionId.rfind(L"_") + 1);
+        Ptr<MgSiteInfo> siteInfo = GetSiteInfo(siteHexString);
+
+        if ((NULL != siteInfo.p) && (MgSiteInfo::Ok == siteInfo->GetStatus()))
         {
-            STRING siteHexString = sessionId.substr(
-                length - MgSiteInfo::HexStringLength, MgSiteInfo::HexStringLength);
-            Ptr<MgSiteInfo> siteInfo = GetSiteInfo(siteHexString);
+            connProps = GetConnectionProperties(userInfo, siteInfo, portType);
+        }
+        else
+        {
+            // This site is not currently working
 
-            if ((NULL != siteInfo.p) && (MgSiteInfo::Ok == siteInfo->GetStatus()))
-            {
-                connProps = GetConnectionProperties(userInfo, siteInfo, portType);
-            }
-            else
-            {
-                // This site is not currently working
-
-                // We have a session, but it will not exist on any other machine so we force the session exception
-                throw new MgSessionExpiredException(L"MgSiteManager.GetConnectionProperties",__LINE__,__WFILE__, NULL, L"", NULL);
-            }
+            // We have a session, but it will not exist on any other machine so we force the session exception
+            throw new MgSessionExpiredException(L"MgSiteManager.GetConnectionProperties",__LINE__,__WFILE__, NULL, L"", NULL);
         }
     }
     else
@@ -503,35 +499,44 @@ MgSiteInfo* MgSiteManager::GetSiteInfo(CREFSTRING hexString)
 {
     Ptr<MgSiteInfo> matchingSiteInfo;
 
-    if(hexString.length() >= MgSiteInfo::HexStringLength)
-    {
-        UINT32 n1, n2, n3, n4;
-        INT32 sitePort, clientPort, adminPort;
-        STRING target;
+    INT32 sitePort, clientPort, adminPort;
+    STRING target;
 
-        // Read the IP parts into their variables
-        if(::swscanf(hexString.c_str(), L"%2X%2X%2X%2X%4X%4X%4X", &n1, &n2, &n3, &n4, &sitePort, &clientPort, &adminPort) == 7)
+    // Compose a format string to extract the target address and the ports from the hexstring
+    INT32 targetlen = (INT32) hexString.length() - MgSiteInfo::HexPortsStringLength;
+    wchar_t format[20] = {0};
+    swprintf(format, 20, L"%%%ds%%4X%%4X%%4X", targetlen);
+
+    wchar_t targetHex[100] = {0};
+    if (::swscanf(hexString.c_str(), format, targetHex, &sitePort, &clientPort, &adminPort) == 4)
+    {
+        char buffer[100] = {0};
+        INT32 hexLength = targetlen;
+        STRING targetHexOriginal = targetHex;
+        // There were alignment "=" removed during encoding. They should be appended back to do decoding
+        if (0 != targetlen % 4)
         {
-            // Write the 4 'n' values into an IP string
-            wchar_t buffer[20];
-            swprintf(buffer, 20, L"%u.%u.%u.%u", n1, n2, n3, n4);
-            target = buffer;
+            targetHexOriginal.append(L"===");
+            hexLength = 4 * (targetlen / 4 + 1);
         }
 
-        ACE_MT(ACE_GUARD_RETURN(ACE_Recursive_Thread_Mutex, ace_mon, m_mutex, NULL));
+        Base64::Decode((unsigned char*)buffer, ACE_Wide_To_Ascii(targetHexOriginal.c_str()).char_rep(), hexLength);
+        target = ACE_Ascii_To_Wide(buffer).wchar_rep();
+    }
 
-        for (INT32 i = 0; i < (INT32)m_sites.size(); i++)
+    ACE_MT(ACE_GUARD_RETURN(ACE_Recursive_Thread_Mutex, ace_mon, m_mutex, NULL));
+
+    for (INT32 i = 0; i < (INT32)m_sites.size(); i++)
+    {
+        MgSiteInfo* siteInfo = m_sites.at(i);
+
+        if (siteInfo->GetTarget() == target
+            && (siteInfo->GetPort(MgSiteInfo::Site)   == sitePort ||
+            siteInfo->GetPort(MgSiteInfo::Client) == clientPort ||
+            siteInfo->GetPort(MgSiteInfo::Admin)  == adminPort))
         {
-            MgSiteInfo* siteInfo = m_sites.at(i);
-
-            if (siteInfo->GetTarget() == target
-                && (siteInfo->GetPort(MgSiteInfo::Site)   == sitePort ||
-                    siteInfo->GetPort(MgSiteInfo::Client) == clientPort ||
-                    siteInfo->GetPort(MgSiteInfo::Admin)  == adminPort))
-            {
-                matchingSiteInfo = SAFE_ADDREF(siteInfo);
-                break;
-            }
+            matchingSiteInfo = SAFE_ADDREF(siteInfo);
+            break;
         }
     }
 

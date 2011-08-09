@@ -150,7 +150,7 @@ MgSessionInfo* MgSessionCache::GetSessionInfo(CREFSTRING session,
     // Session Affinity: Check that the session was created by this server
     if(!session.empty())
     {
-        STRING hexString = session.substr(session.length() - MgSiteInfo::HexStringLength);
+        STRING hexString = session.substr(session.rfind(L"_") + 1); 
         Ptr<MgSiteInfo> sessionSiteInfo = new MgSiteInfo(hexString);
         if(sessionSiteInfo->GetStatus() == MgSiteInfo::Ok)
         {

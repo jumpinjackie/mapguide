@@ -42,7 +42,7 @@ MgIpUtil::~MgIpUtil()
 
 ///----------------------------------------------------------------------------
 /// <summary>
-/// Detemines whether or not the specified host is an IP address.
+/// Determines whether or not the specified host is an IP address.
 /// </summary>
 ///
 /// <param name="address">
@@ -55,17 +55,200 @@ MgIpUtil::~MgIpUtil()
 ///
 /// EXCEPTIONS:
 /// MgNullArgumentException
-/// MgInvalidArgumentException
 /// MgInvalidIpAddressException
 ///----------------------------------------------------------------------------
 
 bool MgIpUtil::IsIpAddress(CREFSTRING address, bool strict)
 {
-    ValidateAddress(address, strict);
+    return IsIpv4Address(address, strict) || IsIpv6Address(address, strict);
+}
+
+///----------------------------------------------------------------------------
+/// <summary>
+/// Determines whether or not the specified host is an IP address in IPv4 format.
+/// </summary>
+///
+/// <param name="address">
+/// IP address (or host name).
+/// </param>
+/// </param>
+/// <param name="strict">
+/// Flag indicating if the specified address must be looked up.
+/// </param>
+///
+/// EXCEPTIONS:
+/// MgNullArgumentException
+/// MgInvalidIpAddressException
+///----------------------------------------------------------------------------
+
+bool MgIpUtil::IsIpv4Address(CREFSTRING address, bool strict)
+{
+    if (address.empty())
+    {
+        throw new MgNullArgumentException(L"MgIpUtil.IsIpv4Address",
+            __LINE__, __WFILE__, NULL, L"", NULL);
+    }
 
     unsigned int n1, n2, n3, n4;
+    bool isv4Address = 4 == ::swscanf(address.c_str(), L"%u.%u.%u.%u", &n1, &n2, &n3, &n4);
 
-    return (4 == ::swscanf(address.c_str(), L"%u.%u.%u.%u", &n1, &n2, &n3, &n4));
+    if (isv4Address && strict)
+    {
+        ACE_INET_Addr inetAddr;
+
+        if (0 != inetAddr.set((u_short)0, address.c_str()) ||
+            NULL == inetAddr.get_host_name())
+        {
+            MgStringCollection arguments;
+            arguments.Add(address);
+
+            throw new MgInvalidIpAddressException(L"MgIpUtil.IsIpv4Address",
+                __LINE__, __WFILE__, &arguments, L"", NULL);
+        }
+
+        isv4Address = AF_INET == inetAddr.get_type();
+    }
+
+    return isv4Address;
+}
+
+///----------------------------------------------------------------------------
+/// <summary>
+/// Determines whether or not the specified host is an IP address in IPv6 format.
+/// </summary>
+///
+/// <param name="address">
+/// IP address (or host name).
+/// </param>
+/// </param>
+/// <param name="strict">
+/// Flag indicating if the specified address must be looked up.
+/// </param>
+///
+/// EXCEPTIONS:
+/// MgNullArgumentException
+/// MgInvalidIpAddressException
+///----------------------------------------------------------------------------
+
+bool MgIpUtil::IsIpv6Address(CREFSTRING address, bool strict)
+{
+    if (address.empty())
+    {
+        throw new MgNullArgumentException(L"MgIpUtil.IsIpv6Address",
+            __LINE__, __WFILE__, NULL, L"", NULL);
+    }
+
+    // An valid IPv6 address must have ":"
+    bool isv6Address = address.find(L":") != -1;
+
+    if (isv6Address)
+    {
+        // Check if the address is expressed
+        int expressed = (int) address.find(L"::");
+        if (address.rfind(L"::") != expressed)
+        {
+            // There are more than 1 "::", it's an invalid address
+            return false;
+        }
+        expressed = expressed == -1 ? 0 : 1;
+
+        int conlonNumber = 0;
+        const wchar_t *addr = address.c_str();
+        int len = (int) wcslen(addr);
+
+        if (addr[len] == L':')
+        {
+            // If the last char is :, it's an invalid address
+            return false;
+        }
+
+        if (addr[0] == L':' && addr[1] != L':')
+        {
+            // Single ":" cannot be the leading character for an valid IPv6 address
+            return false;
+        }
+
+        // Check how many ":" the address has
+        for (int i = 0; i < len; ++i)
+        {
+            if (addr[i] == L':')
+            {
+                ++conlonNumber;
+            }
+        }
+        
+        if (conlonNumber > 7 || conlonNumber < 1)
+        {
+            // If there are more than 8 groups or less than 1 group, it's an invalid address
+            return false;
+        }
+
+        int totalGroups = 8;
+        // Get how many groups are expressed as ::
+        // It's possible that "::" is the leading character, then 1 more group is expressed
+        int compressedGroups = totalGroups - conlonNumber + (addr[0] == L':' ? 1 : 0);
+
+        wchar_t fullAddress[40] = {0};
+        wcscpy(fullAddress, L"0000:0000:0000:0000:0000:0000:0000:0000");
+
+        int digits = 0;
+        int index = (int) wcslen(fullAddress) - 1;
+        wchar_t lastChar = L' ';
+        for (int i = len - 1; i >= 0 && index >= 0; --i, --index)
+        {
+            if (addr[i] == L':')
+            {
+                if (lastChar == L':')
+                {
+                    // Restore the compressed groups
+                    index -= compressedGroups * 5 - 1;
+                }
+                else
+                {
+                    // Restore the addtional leading 0s
+                    index -= 4 - digits;
+                }
+
+                // A new group will start, then reset the digits counter
+                digits = 0;
+            }
+            else
+            {
+                fullAddress[index] = addr[i];
+
+                // The max number of digits in a group is 4
+                if (++digits > 4)
+                {
+                    return false;
+                }
+            }
+
+            lastChar = addr[i];
+        }
+
+        // Check if the digits in each group are valid hex numbers
+        int n1, n2, n3, n4, n5, n6, n7, n8;
+        isv6Address = 8 == ::swscanf(fullAddress, L"%4X:%4X:%4X:%4X:%4X:%4X:%4X:%4X:", &n1, &n2, &n3, &n4, &n5, &n6, &n7, &n8);
+
+        if (isv6Address & strict)
+        {
+            ACE_INET_Addr inetAddr;
+
+            if (0 != inetAddr.set((u_short)0, address.c_str()) ||
+                NULL == inetAddr.get_host_name())
+            {
+                MgStringCollection arguments;
+                arguments.Add(address);
+
+                throw new MgInvalidIpAddressException(L"MgIpUtil.IsIpv6Address",
+                    __LINE__, __WFILE__, &arguments, L"", NULL);
+            }
+
+            isv6Address = AF_INET6 == inetAddr.get_type();
+        }
+    }
+
+    return isv6Address;
 }
 
 ///----------------------------------------------------------------------------
@@ -90,7 +273,8 @@ bool MgIpUtil::IsLocalHost(CREFSTRING address, bool strict)
     bool isLocalHost = false;
 
     if (0 == ::wcscmp(address.c_str(), L"127.0.0.1")
-     || 0 == _wcsnicmp(address.c_str(), L"localhost", ::wcslen(L"localhost")))
+        || 0 == ::wcscmp(address.c_str(), L"::1")
+        || 0 == _wcsnicmp(address.c_str(), L"localhost", ::wcslen(L"localhost")))
     {
         isLocalHost = true;
     }
@@ -217,7 +401,6 @@ STRING MgIpUtil::GetLocalHostAddress()
 ///
 /// EXCEPTIONS:
 /// MgNullArgumentException
-/// MgInvalidArgumentException
 /// MgInvalidIpAddressException
 ///----------------------------------------------------------------------------
 
@@ -227,20 +410,6 @@ void MgIpUtil::ValidateAddress(CREFSTRING address, bool strict)
     {
         throw new MgNullArgumentException(L"MgIpUtil.ValidateAddress",
             __LINE__, __WFILE__, NULL, L"", NULL);
-    }
-
-    if (STRING::npos != address.rfind(L':'))
-    {
-        MgStringCollection arguments;
-        arguments.Add(L"1");
-        arguments.Add(address);
-
-        MgStringCollection whyArguments;
-        whyArguments.Add(L":");
-
-        throw new MgInvalidArgumentException(L"MgIpUtil.ValidateAddress",
-            __LINE__, __WFILE__, &arguments,
-            L"MgStringContainsReservedCharacters", &whyArguments);
     }
 
     if (strict)
@@ -469,12 +638,6 @@ int MgIpUtil::CompareAddresses(CREFSTRING address1, CREFSTRING address2)
         ValidateAddress(address1, !IsLocalHost(address1, false));
         ValidateAddress(address2, !IsLocalHost(address2, false));
     }
-    else if (IsIpAddress(address1, false) && IsIpAddress(address2, false) &&
-            !IsLocalHost(address1, false) && !IsLocalHost(address2, false))
-    {
-        ValidateAddress(address1);
-        ValidateAddress(address2);
-    }
     else
     {
         ACE_INET_Addr inetAddr1((u_short)0, address1.c_str());
@@ -508,6 +671,32 @@ int MgIpUtil::CompareAddresses(CREFSTRING address1, CREFSTRING address2)
             if (IsLocalHost(address1) && IsLocalHost(address2))
             {
                 compareFlag = 0;
+            }
+            // If one of the addresses is IPv6 and the other one is IPv4, then even the two addresses 
+            // are for a same host, inetAddr1 == inetAddr2 is still false.
+            // And the case of both addresses are IPv6 and for a same host are already handled before
+            else if (inetAddr1.get_type() == AF_INET6 || inetAddr2.get_type() == AF_INET6)
+            {
+                // Convert them to addresses first then convert them to names.
+                // This is a workaround for the special case where the domain and the
+                // DNS suffix are different, e.g.:
+                //      name1 = calpc220.amer.ads.autodesk.com
+                //      name2 = calpc220.ads.autodesk.com
+                STRING addr1, addr2;
+                if (HostNameToAddress(address1, addr1) &&
+                    HostNameToAddress(address2, addr2))
+                {
+                    STRING name1, name2;
+
+                    if (HostAddressToName(addr1, name1) &&
+                        HostAddressToName(addr2, name2))
+                    {
+                        compareFlag = _wcsnicmp(name1.c_str(), name2.c_str(),
+                                                ACE_MIN(name1.length(), name2.length()));
+                    }
+                    // else, MgInvalidIpAddressException will be thrown
+                }
+                // else, MgInvalidIpAddressException will be thrown
             }
             else if (inetAddr1 < inetAddr2)
             {

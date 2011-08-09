@@ -160,10 +160,11 @@ function GetClientAgent()
 
 function ValidateSessionId($proposedSessionId)
 {
-    // 00000000-0000-0000-0000-000000000000_aa_00000000000000000000
+    // 00000000-0000-0000-0000-000000000000_aa_[aaaaaaaaaaaaa]000000000000
+    // the [aaaaaaaaaaaaa] is a based64 string and in variant length
     $validSessionId = "";
     if($proposedSessionId != null &&
-        preg_match('/^[A-Fa-f0-9]{8}-[A-Fa-f0-9]{4}-[A-Fa-f0-9]{4}-[A-Fa-f0-9]{4}-[A-Fa-f0-9]{12}_[A-Za-z]{2}_[A-Fa-f0-9]{20}$/', $proposedSessionId))
+        preg_match('/^[A-Fa-f0-9]{8}-[A-Fa-f0-9]{4}-[A-Fa-f0-9]{4}-[A-Fa-f0-9]{4}-[A-Fa-f0-9]{12}_[A-Za-z]{2}_\\w+[A-Fa-f0-9]{12}$/', $proposedSessionId))
     {
         $validSessionId = $proposedSessionId;
     }

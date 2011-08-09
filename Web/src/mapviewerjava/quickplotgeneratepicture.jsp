@@ -46,9 +46,18 @@ String naPath = "";
 %>
 
 <%
-    GetRequestParameters(request);
-    response.setContentType("image/png");
-    ImageIO.write(GenerateMap(printSize), "png", response.getOutputStream());
+    try
+    {
+        GetRequestParameters(request);
+        response.setContentType("image/png");
+        ImageIO.write(GenerateMap(printSize), "png", response.getOutputStream());
+    }
+    catch (MgException e)
+    {
+        response.setContentType("text/html");
+        out.write ("ERROR:" + e.GetExceptionMessage() + "<br />");
+        out.write (e.GetStackTrace() + "<br />");
+    }
 %>
 
 <%!
@@ -96,6 +105,8 @@ MgPolygon CreatePolygon(String[] coordinates) throws MgException, ParseException
 
 BufferedImage GenerateMap(Size<Integer> size) throws MgException, IOException
 {
+    InitializeWebTier();
+    
     MgUserInformation userInfo = new MgUserInformation(sessionId);
     MgSiteConnection siteConnection = new MgSiteConnection();
     siteConnection.Open(userInfo);
@@ -116,23 +127,26 @@ BufferedImage GenerateMap(Size<Integer> size) throws MgException, IOException
     Size<Double> toSize = new Size<Double>(size1.width / size2.width * size.width, size1.height / size2.height * size.height);
     MgCoordinate center = captureBox.GetCentroid().GetCoordinate();
 
-    // Get the map agent url
-    // Get the correct http protocol
-    StringBuilder mapAgent = new StringBuilder(mapAgentPath);
-    String encodeMapName = URLEncoder.encode(mapName,"UTF-8");
-    mapAgent.append("?VERSION=1.0.0&OPERATION=GETMAPIMAGE")
-            .append("&SESSION=").append(sessionId)
-            .append("&MAPNAME=").append(encodeMapName)
-            .append("&FORMAT=PNG")
-            .append("&SETVIEWCENTERX=").append(center.GetX())
-            .append("&SETVIEWCENTERY=").append(center.GetY())
-            .append("&SETVIEWSCALE=").append(scaleDenominator)
-            .append("&SETDISPLAYDPI=").append(printDpi)
-            .append("&SETDISPLAYWIDTH=").append(String.valueOf(toSize.width))
-            .append("&SETDISPLAYHEIGHT=").append(String.valueOf(toSize.height))
-            .append("&CLIP=0");
-
-    BufferedImage image  = ImageIO.read(new URL(mapAgent.toString()));
+    map.SetDisplayDpi(printDpi);
+    String colorString = map.GetBackgroundColor();
+    // The returned color string is in AARRGGBB format. But the constructor of MgColor needs a string in RRGGBBAA format
+    colorString = colorString.substring(2, 8) + colorString.substring(0, 2);
+    MgColor color = new MgColor(colorString);
+    
+    MgByteReader mgReader = renderingService.RenderMap(map,
+                                                    selection,
+                                                    center,
+                                                    scaleDenominator,
+                                                    (int) Math.ceil(toSize.width),
+                                                    (int) Math.ceil(toSize.height),
+                                                    color,
+                                                    "PNG",
+                                                    false);
+    File tempImage = File.createTempFile(UUID.randomUUID().toString(), "png");
+    mgReader.ToFile(tempImage.getAbsolutePath());
+    BufferedImage image = ImageIO.read(tempImage);
+    tempImage.delete();
+    
     BufferedImage result = Math.abs(rotation) > Double.MIN_VALUE ? new BufferedImage(size.width, size.height, BufferedImage.TYPE_INT_RGB) : image;
     Graphics2D graphics  = result.createGraphics();
 

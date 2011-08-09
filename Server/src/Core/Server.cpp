@@ -523,9 +523,12 @@ int MgServer::svc()
                 pServerManager->SetClientMessageQueue(clientThreads.msg_queue_);
                 pServerManager->SetSiteMessageQueue(siteThreads.msg_queue_);
 
-                ACE_INET_Addr clientAddr((u_short)pServerManager->GetClientPort());
-                ACE_INET_Addr adminAddr((u_short)pServerManager->GetAdminPort());
-                ACE_INET_Addr siteAddr((u_short)pServerManager->GetSitePort());
+                // For IPv4, always listen to 0.0.0.0 so that the server could be connected through any valid v4 addresess
+                // For IPv6, always listen to :: so that the server could be connected through any valid v6 addresess
+                STRING listenToAddress = MgIpUtil::IsIpv4Address(pServerManager->GetLocalServerAddress()) ? L"0.0.0.0" : L"::";
+                ACE_INET_Addr clientAddr((u_short)pServerManager->GetClientPort(), listenToAddress.c_str());
+                ACE_INET_Addr adminAddr((u_short)pServerManager->GetAdminPort(), listenToAddress.c_str());
+                ACE_INET_Addr siteAddr((u_short)pServerManager->GetSitePort(), listenToAddress.c_str());
 
                 MgClientAcceptor clientAcceptor(clientAddr, ACE_Reactor::instance(), clientThreads.msg_queue_);
                 nResult = clientAcceptor.Initialize();

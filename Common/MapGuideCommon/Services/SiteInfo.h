@@ -15,6 +15,7 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 #include "MapGuideCommon.h"
+#include "Base64.h"
 
 #ifndef MG_SITEINFO_H_
 #define MG_SITEINFO_H_
@@ -81,7 +82,8 @@ INTERNAL_API:
     // Retrieve a hex string that encodes the site info connection params
     STRING ToHexString();
 
-    static const INT32 HexStringLength = 20;
+    // The length of the hexstring where the port numbers of admin, client and site are encoded
+    static const INT32 HexPortsStringLength = 12;
 
 protected:
 

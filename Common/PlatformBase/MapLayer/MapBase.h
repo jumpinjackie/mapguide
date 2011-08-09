@@ -440,7 +440,27 @@ PUBLISHED_API:
     /// \return
     /// Returns the number of dots per inch of the map display.
     ///
-    virtual INT32 GetDisplayDpi();  /// __get
+    virtual INT32 GetDisplayDpi();  /// __get, __set
+
+    //////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Sets the number of dots per inch of the map display.
+    ///
+    /// <!-- Syntax in .Net, Java, and PHP -->
+    /// \htmlinclude DotNetSyntaxTop.html
+    /// void SetDisplayDpi(int dpi);
+    /// \htmlinclude SyntaxBottom.html
+    /// \htmlinclude JavaSyntaxTop.html
+    /// void SetDisplayDpi(int dpi);
+    /// \htmlinclude SyntaxBottom.html
+    /// \htmlinclude PHPSyntaxTop.html
+    /// void SetDisplayDpi(int dpi);
+    /// \htmlinclude SyntaxBottom.html
+    ///
+    /// \param dpi (int)
+    /// Number of dots per inch of the map display
+    ///
+    virtual void SetDisplayDpi(INT32 dpi);
 
     //////////////////////////////////////////////////////////////////
     /// \brief
@@ -540,16 +560,27 @@ PUBLISHED_API:
     ///
     virtual double GetFiniteDisplayScaleAt(INT32 index);
 
-EXTERNAL_API:
-
     //////////////////////////////////////////////////////////////////
     /// \brief
     /// Returns the background color for the map
+    ///
+    /// <!-- Syntax in .Net, Java, and PHP -->
+    /// \htmlinclude DotNetSyntaxTop.html
+    /// string GetBackgroundColor();
+    /// \htmlinclude SyntaxBottom.html
+    /// \htmlinclude JavaSyntaxTop.html
+    /// string GetBackgroundColor();
+    /// \htmlinclude SyntaxBottom.html
+    /// \htmlinclude PHPSyntaxTop.html
+    /// string GetBackgroundColor();
+    /// \htmlinclude SyntaxBottom.html
     ///
     /// \return
     /// Background color.
     ///
     virtual STRING GetBackgroundColor();
+
+EXTERNAL_API:
 
 INTERNAL_API:
 
@@ -634,15 +665,6 @@ INTERNAL_API:
     /// Data extent
     ///
     virtual void SetDataExtent(MgEnvelope* extent);
-
-    /// \brief
-    /// Sets the number of dots per inch of the map display
-    /// This method is for use by the viewers and should not be called directly
-    ///
-    /// \param dpi
-    /// Number of dots per inch of the map display
-    ///
-    virtual void SetDisplayDpi(INT32 dpi);
 
     /// \brief
     /// Sets the current width of the map display in pixels
