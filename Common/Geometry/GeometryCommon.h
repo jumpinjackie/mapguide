@@ -115,6 +115,7 @@
 #include "CoordinateSystem/CoordinateSystemGeodeticAnalyticalTransformDefParams.h"
 #include "CoordinateSystem/CoordinateSystemGeodeticStandaloneTransformDefParams.h"
 #include "CoordinateSystem/CoordinateSystemGeodeticTransformDefType.h"
+#include "CoordinateSystem/CoordinateSystemGeodeticDirection.h"
 #include "CoordinateSystem/CoordinateSystemGeodeticStandaloneTransformationMethod.h"
 #include "CoordinateSystem/CoordinateSystemGeodeticAnalyticalTransformationMethod.h"
 #include "CoordinateSystem/CoordinateSystemGeodeticMultipleRegressionTransformationMethod.h"
