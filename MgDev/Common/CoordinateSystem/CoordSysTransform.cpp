@@ -943,7 +943,7 @@ MgCoordinateSystemGeodeticTransformDef* CCoordinateSystemTransform::GetGeodeticT
 }
 INT32 CCoordinateSystemTransform::GetGeodeticTransformationDirection (INT32 index)
 {
-   	INT32 direction (GeodeticDirectionError);
+   	INT32 direction (MgCoordinateSystemGeodeticDirection::GeodeticDirectionError);
     cs_GxXform_ *xfrmPtr;
    
     MgCoordinateSystemFactory csFactory;
@@ -957,15 +957,15 @@ INT32 CCoordinateSystemTransform::GetGeodeticTransformationDirection (INT32 inde
         {
             if (xfrmPtr->userDirection == cs_DTCDIR_NONE)
             {
-                direction = GeodeticDirectionNone;
+                direction = MgCoordinateSystemGeodeticDirection::GeodeticDirectionNone;
             }
             else if (xfrmPtr->userDirection == cs_DTCDIR_FWD)
             {
-                direction = GeodeticDirectionForward;
+                direction = MgCoordinateSystemGeodeticDirection::GeodeticDirectionForward;
             }
             else if (xfrmPtr->userDirection == cs_DTCDIR_INV)
             {
-                direction = GeodeticDirectionInverse;
+                direction = MgCoordinateSystemGeodeticDirection::GeodeticDirectionInverse;
             }
         }
      }
@@ -2185,7 +2185,7 @@ int CCoordinateSystemTransform::TransformInverse (double& xx,double& yy)
                                       I/O error or something equally rare
                                       for this to happen.
 */
-int CCoordinateSystemTransform::TransformPoint2D (double point[3])
+INT32 CCoordinateSystemTransform::TransformPoint2D (double point[3])
 {
     int srcStatus;
     int dtmStatus (0);
@@ -2224,7 +2224,7 @@ int CCoordinateSystemTransform::TransformPoint2D (double point[3])
 }
 /* The function that follows is identical to the previous function with the
    exception that the 3D conversion methods are called. */
-int CCoordinateSystemTransform::TransformPoint3D (double point [3])
+INT32 CCoordinateSystemTransform::TransformPoint3D (double point [3])
 {
     int srcStatus;
     int dtmStatus (0);
