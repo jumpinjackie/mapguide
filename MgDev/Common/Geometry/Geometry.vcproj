@@ -4222,6 +4222,10 @@
 			>
 		</File>
 		<File
+			RelativePath=".\GeometryConsoleTest\GeometryConsoleTest.vcproj"
+			>
+		</File>
+		<File
 			RelativePath=".\GeometryExceptionDef.h"
 			>
 		</File>

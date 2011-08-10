@@ -12,6 +12,9 @@
 		<Platform
 			Name="Win32"
 		/>
+		<Platform
+			Name="x64"
+		/>
 	</Platforms>
 	<ToolFiles>
 	</ToolFiles>
@@ -19,7 +22,7 @@
 		<Configuration
 			Name="Debug|Win32"
 			OutputDirectory="..\..\..\Common\bin\$(ConfigurationName)"
-			IntermediateDirectory="$(ProjectDir)$(ConfigurationName)"
+			IntermediateDirectory="$(ProjectDir)../../obj/$(ConfigurationName)/Geometry/$(ProjectName)"
 			ConfigurationType="1"
 			CharacterSet="1"
 			DeleteExtensionsOnClean="*.obj;*.pch;*.sbr;*.ilk;*.tlb;*.tli;*.tlh;*.tmp;*.rsp;*.pgc;*.pgd;*.meta;$(TargetPath)"
@@ -42,12 +45,17 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="&quot;..\..\..\Common\Geometry&quot;;&quot;..\..\..\Common\Foundation&quot;;&quot;..\..\..\CommonGeometry\CoordinateSystem&quot;;&quot;..\..\..\Oem\ACE\ACE_wrappers&quot;"
+				AdditionalIncludeDirectories="..\..\..\Common\Geometry\GeometryConsoleTest\inc;..\..\..\Oem\CsMap\Include;..\..\..\Common\Geometry\CoordinateSystem;..\..\..\Common\Foundation;..\..\..\Common\Geometry;..\..\..\Oem\ACE\ACE_wrappers"
 				PreprocessorDefinitions="WIN32;_DEBUG;_CONSOLE;_CRT_SECURE_NO_DEPRECATE"
+				StringPooling="true"
 				MinimalRebuild="false"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
-				WarningLevel="3"
+				FloatingPointExceptions="true"
+				UsePrecompiledHeader="0"
+				PrecompiledHeaderThrough="GeometryCommon.h"
+				ProgramDataBaseFileName="$(IntDir)\$(ProjectName).pdb"
+				WarningLevel="4"
 				DebugInformationFormat="4"
 			/>
 			<Tool
@@ -63,7 +71,7 @@
 				Name="VCLinkerTool"
 				AdditionalDependencies="MgGeometryd.lib MgFoundationd.lib CsMapd.lib ACEd.lib"
 				LinkIncremental="1"
-				AdditionalLibraryDirectories="&quot;$(ProjectDir)$(ConfigurationName)&quot;;&quot;..\..\..\Common\lib\$(ConfigurationName)&quot;;&quot;..\..\..\Oem\CsMap\lib80\$(ConfigurationName)&quot;;&quot;..\..\..\Oem\ACE\ACE_wrappers\lib&quot;"
+				AdditionalLibraryDirectories="&quot;$(ProjectDir)$(ConfigurationName)&quot;;&quot;..\..\..\Common\lib\$(ConfigurationName)&quot;;&quot;..\..\..\Oem\CsMap\lib90\$(ConfigurationName)&quot;;..\..\..\Oem\ACE\ACE_wrappers\lib"
 				GenerateDebugInformation="true"
 				SubSystem="1"
 				TargetMachine="1"
@@ -91,11 +99,92 @@
 			/>
 		</Configuration>
 		<Configuration
-			Name="Release|Win32"
-			OutputDirectory="..\..\..\Common\bin\$(ConfigurationName)"
-			IntermediateDirectory="$(ProjectDir)$(ConfigurationName)"
+			Name="Debug|x64"
+			OutputDirectory="..\..\..\Common\bin\$(ConfigurationName)64"
+			IntermediateDirectory="$(ProjectDir)../../obj/$(ConfigurationName)64/Geometry/$(ProjectName)"
 			ConfigurationType="1"
 			CharacterSet="1"
+			DeleteExtensionsOnClean="*.obj;*.pch;*.sbr;*.ilk;*.tlb;*.tli;*.tlh;*.tmp;*.rsp;*.pgc;*.pgd;*.meta;$(TargetPath)"
+			>
+			<Tool
+				Name="VCPreBuildEventTool"
+			/>
+			<Tool
+				Name="VCCustomBuildTool"
+			/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"
+			/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"
+			/>
+			<Tool
+				Name="VCMIDLTool"
+				TargetEnvironment="3"
+			/>
+			<Tool
+				Name="VCCLCompilerTool"
+				Optimization="0"
+				AdditionalIncludeDirectories="..\..\..\Oem\CsMap\Include;..\..\..\Common\Geometry\GeometryConsoleTest\inc;..\..\..\Common\Geometry\CoordinateSystem;..\..\..\Common\Foundation;..\..\..\Common\Geometry;..\..\..\Oem\ACE\ACE_wrappers"
+				PreprocessorDefinitions="WIN32;_DEBUG;_CONSOLE;_CRT_SECURE_NO_DEPRECATE"
+				StringPooling="true"
+				MinimalRebuild="false"
+				BasicRuntimeChecks="3"
+				RuntimeLibrary="3"
+				FloatingPointExceptions="true"
+				UsePrecompiledHeader="0"
+				PrecompiledHeaderThrough="GeometryCommon.h"
+				ProgramDataBaseFileName="$(IntDir)\$(ProjectName).pdb"
+				WarningLevel="4"
+				DebugInformationFormat="3"
+			/>
+			<Tool
+				Name="VCManagedResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCPreLinkEventTool"
+			/>
+			<Tool
+				Name="VCLinkerTool"
+				AdditionalDependencies="MgGeometryd.lib MgFoundationd.lib CsMapd.lib ACEd.lib"
+				LinkIncremental="1"
+				AdditionalLibraryDirectories="&quot;$(ProjectDir)$(ConfigurationName)64&quot;;&quot;..\..\..\Common\lib\$(ConfigurationName)64&quot;;&quot;..\..\..\Oem\CsMap\lib90\$(ConfigurationName)64&quot;;..\..\..\Oem\ACE\ACE_wrappers\lib64"
+				GenerateDebugInformation="true"
+				SubSystem="1"
+				TargetMachine="17"
+			/>
+			<Tool
+				Name="VCALinkTool"
+			/>
+			<Tool
+				Name="VCManifestTool"
+			/>
+			<Tool
+				Name="VCXDCMakeTool"
+			/>
+			<Tool
+				Name="VCBscMakeTool"
+			/>
+			<Tool
+				Name="VCFxCopTool"
+			/>
+			<Tool
+				Name="VCAppVerifierTool"
+			/>
+			<Tool
+				Name="VCPostBuildEventTool"
+			/>
+		</Configuration>
+		<Configuration
+			Name="Release|Win32"
+			OutputDirectory="..\..\..\Common\bin\$(ConfigurationName)"
+			IntermediateDirectory="$(ProjectDir)../../obj/$(ConfigurationName)/Geometry/$(ProjectName)"
+			ConfigurationType="1"
+			CharacterSet="1"
+			DeleteExtensionsOnClean="*.obj;*.pch;*.sbr;*.ilk;*.tlb;*.tli;*.tlh;*.tmp;*.rsp;*.pgc;*.pgd;*.meta;$(TargetPath)"
 			WholeProgramOptimization="1"
 			>
 			<Tool
@@ -117,11 +206,16 @@
 				Name="VCCLCompilerTool"
 				Optimization="2"
 				EnableIntrinsicFunctions="true"
-				AdditionalIncludeDirectories="&quot;..\..\..\Common\Geometry&quot;;&quot;..\..\..\Common\Foundation&quot;;&quot;..\..\..\CommonGeometry\CoordinateSystem&quot;;&quot;..\..\..\Oem\ACE\ACE_wrappers&quot;"
+				AdditionalIncludeDirectories="..\..\..\Common\Geometry\GeometryConsoleTest\inc;..\..\..\Oem\CsMap\Include;..\..\..\Common\Geometry;..\..\..\Common\Foundation;..\..\..\CommonGeometry\CoordinateSystem;..\..\..\Oem\ACE\ACE_wrappers"
 				PreprocessorDefinitions="WIN32;NDEBUG;_CONSOLE;_CRT_SECURE_NO_DEPRECATE"
+				StringPooling="true"
 				RuntimeLibrary="2"
 				EnableFunctionLevelLinking="true"
-				WarningLevel="3"
+				FloatingPointExceptions="true"
+				UsePrecompiledHeader="0"
+				PrecompiledHeaderThrough="GeometryCommon.h"
+				ProgramDataBaseFileName="$(IntDir)\$(ProjectName).pdb"
+				WarningLevel="4"
 				DebugInformationFormat="3"
 			/>
 			<Tool
@@ -137,12 +231,95 @@
 				Name="VCLinkerTool"
 				AdditionalDependencies="MgGeometry.lib MgFoundation.lib CsMap.lib ACE.lib"
 				LinkIncremental="1"
-				AdditionalLibraryDirectories="&quot;$(ProjectDir)$(ConfigurationName)&quot;;&quot;..\..\..\Common\lib\$(ConfigurationName)&quot;;&quot;..\..\..\Oem\CsMap\lib80\$(ConfigurationName)&quot;;&quot;..\..\..\Oem\ACE\ACE_wrappers\lib&quot;"
+				AdditionalLibraryDirectories="&quot;$(ProjectDir)$(ConfigurationName)&quot;;&quot;..\..\..\Common\lib\$(ConfigurationName)&quot;;&quot;..\..\..\Oem\CsMap\lib90\$(ConfigurationName)&quot;;..\..\..\Oem\ACE\ACE_wrappers\lib"
 				GenerateDebugInformation="true"
 				SubSystem="1"
 				OptimizeReferences="2"
 				EnableCOMDATFolding="2"
 				TargetMachine="1"
+			/>
+			<Tool
+				Name="VCALinkTool"
+			/>
+			<Tool
+				Name="VCManifestTool"
+			/>
+			<Tool
+				Name="VCXDCMakeTool"
+			/>
+			<Tool
+				Name="VCBscMakeTool"
+			/>
+			<Tool
+				Name="VCFxCopTool"
+			/>
+			<Tool
+				Name="VCAppVerifierTool"
+			/>
+			<Tool
+				Name="VCPostBuildEventTool"
+			/>
+		</Configuration>
+		<Configuration
+			Name="Release|x64"
+			OutputDirectory="..\..\..\Common\bin\$(ConfigurationName)64"
+			IntermediateDirectory="$(ProjectDir)../../obj/$(ConfigurationName)64/Geometry/$(ProjectName)"
+			ConfigurationType="1"
+			CharacterSet="1"
+			DeleteExtensionsOnClean="*.obj;*.pch;*.sbr;*.ilk;*.tlb;*.tli;*.tlh;*.tmp;*.rsp;*.pgc;*.pgd;*.meta;$(TargetPath)"
+			WholeProgramOptimization="1"
+			>
+			<Tool
+				Name="VCPreBuildEventTool"
+			/>
+			<Tool
+				Name="VCCustomBuildTool"
+			/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"
+			/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"
+			/>
+			<Tool
+				Name="VCMIDLTool"
+				TargetEnvironment="3"
+			/>
+			<Tool
+				Name="VCCLCompilerTool"
+				Optimization="2"
+				EnableIntrinsicFunctions="true"
+				AdditionalIncludeDirectories="..\..\..\Oem\CsMap\Include;..\..\..\Common\Geometry\GeometryConsoleTest\inc;..\..\..\Common\Geometry;..\..\..\Common\Foundation;..\..\..\CommonGeometry\CoordinateSystem;..\..\..\Oem\ACE\ACE_wrappers"
+				PreprocessorDefinitions="WIN32;NDEBUG;_CONSOLE;_CRT_SECURE_NO_DEPRECATE"
+				StringPooling="true"
+				RuntimeLibrary="2"
+				EnableFunctionLevelLinking="true"
+				FloatingPointExceptions="true"
+				UsePrecompiledHeader="0"
+				PrecompiledHeaderThrough="GeometryCommon.h"
+				ProgramDataBaseFileName="$(IntDir)\$(ProjectName).pdb"
+				WarningLevel="4"
+				DebugInformationFormat="3"
+			/>
+			<Tool
+				Name="VCManagedResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCPreLinkEventTool"
+			/>
+			<Tool
+				Name="VCLinkerTool"
+				AdditionalDependencies="MgGeometry.lib MgFoundation.lib CsMap.lib ACE.lib"
+				LinkIncremental="1"
+				AdditionalLibraryDirectories="&quot;$(ProjectDir)$(ConfigurationName)64&quot;;&quot;..\..\..\Common\lib\$(ConfigurationName)64&quot;;&quot;..\..\..\Oem\CsMap\lib90\$(ConfigurationName)64&quot;;..\..\..\Oem\ACE\ACE_wrappers\lib64"
+				GenerateDebugInformation="true"
+				SubSystem="1"
+				OptimizeReferences="2"
+				EnableCOMDATFolding="2"
+				TargetMachine="17"
 			/>
 			<Tool
 				Name="VCALinkTool"
@@ -176,11 +353,63 @@
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
 			>
 			<File
-				RelativePath=".\GeometryConsoleTest.cpp"
+				RelativePath=".\src\GctOsGeoTestFile.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\stdafx.cpp"
+				RelativePath=".\src\GctTest1.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\GctTest2.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\GctTest3.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\GctTest4.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\GctTest5.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\GctTest6.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\GctTest7.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\GctTest8.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\GctTest9.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\GctTestA.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\GctTestParameters.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\GctTestSupport.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\GctTestT.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\GeometryConsoleTest.cpp"
 				>
 			</File>
 		</Filter>
@@ -190,11 +419,19 @@
 			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}"
 			>
 			<File
-				RelativePath=".\stdafx.h"
+				RelativePath=".\inc\GctOsGeoTestFile.h"
 				>
 			</File>
 			<File
-				RelativePath=".\targetver.h"
+				RelativePath=".\inc\GctTestParameters.h"
+				>
+			</File>
+			<File
+				RelativePath=".\inc\GctTestSupport.h"
+				>
+			</File>
+			<File
+				RelativePath=".\inc\GeometryConsoleTest.h"
 				>
 			</File>
 		</Filter>

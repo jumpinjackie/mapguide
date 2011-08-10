@@ -37,10 +37,16 @@ using namespace CSLibrary;
 CCoordinateSystemTransform::CCoordinateSystemTransform(
     MgCoordinateSystem* pSource, MgCoordinateSystem* pTarget) :
     m_pDtcprm(NULL),
+    m_bSrcIsGeographic(false),
+    m_bDatumXfrmIsNull(false),
+    m_bIsReentrant(false),
     m_bIgnoreDatumShiftWarning(false),
     m_bIgnoreOutsideDomainWarning(false),
     m_bSourceTargetSame(false),
-    m_nTransformStatus(TransformOk)
+    m_nTransformStatus(TransformOk),
+    m_nSourceCount(0),
+    m_nDatumCount(0),
+    m_nTargetCount(0)
 {
     memset(&m_src, 0, sizeof(m_src));
     memset(&m_dst, 0, sizeof(m_dst));
@@ -80,49 +86,21 @@ void CCoordinateSystemTransform::Uninitialize()
     }
     m_pCsSource = NULL;
     m_pCsTarget = NULL;
+
+   	m_bSrcIsGeographic   = false;
+    m_bDatumXfrmIsNull   = false;
+    m_bIsReentrant = false;
+
     memset(&m_src, 0, sizeof(m_src));
     memset(&m_dst, 0, sizeof(m_dst));
     assert(!IsInitialized());
-}
-
-//Convert an individual point from source to destination coordinate
-//system.  Should only be called when the object has already been
-//initialized.
-void CCoordinateSystemTransform::TransformPoint(double& x, double& y, double *pdZ)
-{
-    MG_TRY()
-
-    m_nTransformStatus = TransformOk;
-
-    // Optimization
-    if(m_bSourceTargetSame)
-    {
-        return;
-    }
-
-    assert(IsInitialized());
-    if (!IsInitialized())
-    {
-        throw new MgCoordinateSystemInitializationFailedException(L"MgCoordinateSystemTransform.TransformPoint", __LINE__, __WFILE__, NULL, L"MgCoordinateSystemNotReadyException", NULL);
-    }
-
-    bool isGeographic = MgCoordinateSystemType::Geographic == m_pCsSource->GetType();
-
-    double lonMin = m_pCsSource->GetLonMin();
-    double lonMax = m_pCsSource->GetLonMax();
-    double latMin = m_pCsSource->GetLatMin();
-    double latMax = m_pCsSource->GetLatMax();
-
-    TransformPointInternal(x, y, pdZ, isGeographic, lonMin, lonMax, latMin, latMax);
-
-    //Return success
-    MG_CATCH_AND_THROW(L"MgCoordinateSystemTransform.TransformPoint")
 }
 
 //-----------------------------------------------------------------------------
 bool CCoordinateSystemTransform::IsValidPoint(cs_Csprm_& csprm, double x, double y, double z)
 {
     bool bIsValid = true;
+    int nResult;
 
     MG_TRY()
 
@@ -134,9 +112,17 @@ bool CCoordinateSystemTransform::IsValidPoint(cs_Csprm_& csprm, double x, double
 
     //Test the point
     double dCoords3d[3] = { x, y, z };
-    CriticalClass.Enter();
-    int nResult = CS_xychk(&csprm, 1, &dCoords3d);
-    CriticalClass.Leave();
+    
+    if (CS_isCsPrmReentrant (&csprm))
+    {
+        nResult = CS_xychk(&csprm, 1, &dCoords3d);
+    }
+    else
+    {
+        CriticalClass.Enter();
+        nResult = CS_xychk(&csprm, 1, &dCoords3d);
+        CriticalClass.Leave();
+    }
 
     //Decide on a result
     if (nResult & cs_CNVRT_DOMN)
@@ -168,9 +154,46 @@ MgCoordinate* CCoordinateSystemTransform::Transform(double x, double y)
 {
     MgCoordinate* pCoordinate = NULL;
     MG_TRY()
-    double dX(x), dY(y);
-    TransformPoint(dX, dY, NULL);
-    pCoordinate = new MgCoordinateXY(dX, dY);
+
+    //Convert the point
+    INT32 status;
+    double dCoords [3] = {x, y, 0.0};
+
+    // Optimization
+    if(m_bSourceTargetSame)
+    {
+        status = TransformOk;
+    }
+    else
+    {
+        if (m_bIgnoreOutsideDomainWarning && m_bSrcIsGeographic)
+        {
+            GeographicAdjust (dCoords);
+        }
+        if (m_bIsReentrant)
+        {
+            status = TransformPoint2D (dCoords);
+        }
+        else
+        {
+            CriticalClass.Enter();
+            status = TransformPoint2D (dCoords);
+            CriticalClass.Leave();
+        }
+    }
+    m_nTransformStatus = status;
+
+    /* Make sure we throw any exception that needs to be thrown before we
+       allocate the new MgCoordinate object. */
+    if (TransformOk != status)
+    {
+        InterpretStatus (status);
+    }
+
+    /* OK, construct the converted coordinate in MgCoordinate form.
+       Note that user will own this point and need to delete/release it,
+       whatever it is you do with MgCoordinate objects. */
+    pCoordinate = new MgCoordinateXY(dCoords [0], dCoords [1]);
     if (!pCoordinate)
     {
         throw new MgOutOfMemoryException(L"MgCoordinateSystemTransform.Transform", __LINE__, __WFILE__, NULL, L"", NULL);
@@ -199,18 +222,50 @@ MgCoordinate* CCoordinateSystemTransform::TransformM(double x, double y, double 
 {
     MgCoordinate* pCoordinate = NULL;
     MG_TRY()
-    double dX(x), dY(y);
-    TransformPoint(dX, dY, NULL);
-    if (!m_pCsSource || !m_pCsTarget)
+
+    //Convert the point
+    INT32 status;
+    double lclM (m);
+    double dCoords [3] = {x, y, 0.0};
+
+    // Optimization
+    if(m_bSourceTargetSame)
     {
-        throw new MgCoordinateSystemInitializationFailedException(L"MgCoordinateSystemTransform.TransformM", __LINE__, __WFILE__, NULL, L"MgCoordinateSystemNotReadyException", NULL);
+        status = TransformOk;
     }
-    double dM = (m)*(m_pCsSource->GetUnitScale() / m_pCsTarget->GetUnitScale());
-    pCoordinate = new MgCoordinateXYM(dX, dY, dM);
+    else
+    {
+        if (m_bIgnoreOutsideDomainWarning && m_bSrcIsGeographic)
+        {
+            GeographicAdjust (dCoords);
+        }
+        if (m_bIsReentrant)
+        {
+            status = TransformPoint2D (dCoords);
+        }
+        else
+        {
+            CriticalClass.Enter();
+            status = TransformPoint2D (dCoords);
+            CriticalClass.Leave();
+        }
+        lclM *= (m_pCsSource->GetUnitScale() / m_pCsTarget->GetUnitScale());
+    }
+    m_nTransformStatus = status;
+
+    /* Make sure we throw any exception that needs to be thrown before we
+       allocate the new MgCoordinate object. */
+    if (TransformOk != status)
+    {
+        InterpretStatus (status);
+    }
+
+    pCoordinate = new MgCoordinateXYM(dCoords [0], dCoords [1], lclM);
     if (!pCoordinate)
     {
         throw new MgOutOfMemoryException(L"MgCoordinateSystemTransform.TransformM", __LINE__, __WFILE__, NULL, L"", NULL);
     }
+
     MG_CATCH_AND_THROW(L"MgCoordinateSystemTransform.TransformM")
     return pCoordinate;
 }
@@ -235,13 +290,48 @@ MgCoordinate* CCoordinateSystemTransform::Transform(double x, double y, double z
 {
     MgCoordinate* pCoordinate = NULL;
     MG_TRY()
-    double dX(x), dY(y), dZ(z);
-    TransformPoint(dX, dY, &dZ);
-    pCoordinate = new MgCoordinateXYZ(dX, dY, dZ);
+
+    //Convert the point
+    INT32 status;
+    double dCoords [3] = {x, y, z};
+
+    // Optimization
+    if(m_bSourceTargetSame)
+    {
+        status = TransformOk;
+    }
+    else
+    {
+        if (m_bIgnoreOutsideDomainWarning && m_bSrcIsGeographic)
+        {
+            GeographicAdjust (dCoords);
+        }
+        if (m_bIsReentrant)
+        {
+            status = TransformPoint3D (dCoords);
+        }
+        else
+        {
+            CriticalClass.Enter();
+            status = TransformPoint3D (dCoords);
+            CriticalClass.Leave();
+        }
+    }
+    m_nTransformStatus = status;
+
+    /* Make sure we throw any exception that needs to be thrown before we
+       allocate the new MgCoordinate object. */
+    if (TransformOk != status)
+    {
+        InterpretStatus (status);
+    }
+
+    pCoordinate = new MgCoordinateXYZ(dCoords [0], dCoords [1], dCoords [2]);
     if (!pCoordinate)
     {
         throw new MgOutOfMemoryException(L"MgCoordinateSystemTransform.Transform", __LINE__, __WFILE__, NULL, L"", NULL);
     }
+
     MG_CATCH_AND_THROW(L"MgCoordinateSystemTransform.Transform")
     return pCoordinate;
 }
@@ -269,10 +359,43 @@ MgCoordinate* CCoordinateSystemTransform::TransformM(double x, double y, double 
 {
     MgCoordinate* pCoordinate = NULL;
     MG_TRY()
-    double dX(x), dY(y), dZ(z);
-    TransformPoint(dX, dY, &dZ);
-    double dM = (m)*(m_pCsSource->GetUnitScale() / m_pCsTarget->GetUnitScale());
-    pCoordinate = new MgCoordinateXYZM(dX, dY, dZ, dM);
+    INT32 status;
+    double lclM (m);
+    double dCoords [3] = {x, y, z};
+
+    // Optimization
+    if(m_bSourceTargetSame)
+    {
+        status = TransformOk;
+    }
+    else
+    {
+        if (m_bIgnoreOutsideDomainWarning && m_bSrcIsGeographic)
+        {
+            GeographicAdjust (dCoords);
+        }
+        if (m_bIsReentrant)
+        {
+            status = TransformPoint3D (dCoords);
+        }
+        else
+        {
+            CriticalClass.Enter();
+            status = TransformPoint3D (dCoords);
+            CriticalClass.Leave();
+        }
+        lclM *= (m_pCsSource->GetUnitScale() / m_pCsTarget->GetUnitScale());
+    }
+    m_nTransformStatus = status;
+
+    /* Make sure we throw any exception that needs to be thrown before we
+       allocate the new MgCoordinate object. */
+    if (TransformOk != status)
+    {
+        InterpretStatus (status);
+    }
+
+    pCoordinate = new MgCoordinateXYZM(dCoords [0], dCoords [1], dCoords [2], lclM);
     if (!pCoordinate)
     {
         throw new MgOutOfMemoryException(L"MgCoordinateSystemTransform.TransformM", __LINE__, __WFILE__, NULL, L"", NULL);
@@ -295,61 +418,121 @@ MgCoordinate* CCoordinateSystemTransform::TransformM(double x, double y, double 
 ///</returns>
 void CCoordinateSystemTransform::TransformCoordinate(MgCoordinate* coordinate)
 {
+    INT32 status;
+    double m;
+    double dCoords [3];
+
     MG_TRY()
 
     if(NULL == coordinate)
     {
         throw new MgNullArgumentException(L"MgCoordinateSystemTransform.TransformCoordinate", __LINE__, __WFILE__, NULL, L"", NULL);
     }
+
+    m_nTransformStatus = TransformOk;           // until we know different
+
+    // Since we're converting inplace, if the source and destination are the
+    // same systems, we have nothing to do.  Let's do nothing, very fast.
+    if (m_bSourceTargetSame)
+    {
+        return;
+    }
+
     // Need to determine type of coordinate to transform
+    status = TransformTotalFailure;             // until we know different.
     if(coordinate->GetDimension() == MgCoordinateDimension::XY)
     {
-        // 2D transform
-        double x=coordinate->GetX();
-        double y=coordinate->GetY();
-        Transform(&x, &y);
-        coordinate->SetX(x);
-        coordinate->SetY(y);
-    }
-    else if(coordinate->GetDimension() == (MgCoordinateDimension::XY | MgCoordinateDimension::M))
-    {
-        // 2D transform + measure
-        double x=coordinate->GetX();
-        double y=coordinate->GetY();
-        double m=coordinate->GetM();
-        TransformM(&x, &y, &m);
-        coordinate->SetX(x);
-        coordinate->SetY(y);
-        coordinate->SetM(m);
+        // 2D transform -- As this is, perhaps, the most frequent, we do
+        // this option first.
+        dCoords [0] = coordinate->GetX();
+        dCoords [1] = coordinate->GetY();
+        dCoords [2] = 0.0;
+        if (m_bIsReentrant)
+        {
+            status = TransformPoint2D (dCoords);
+        }
+        else
+        {
+            CriticalClass.Enter();
+            status = TransformPoint2D (dCoords);
+            CriticalClass.Leave();
+        }
+        coordinate->SetX(dCoords [0]);
+        coordinate->SetY(dCoords [1]);
     }
     else if(coordinate->GetDimension() == MgCoordinateDimension::XYZ)
     {
-        // 3D transform
-        double x=coordinate->GetX();
-        double y=coordinate->GetY();
-        double z=coordinate->GetZ();
-        Transform(&x, &y, &z);
-        coordinate->SetX(x);
-        coordinate->SetY(y);
-        coordinate->SetZ(z);
+        // 3D transform -- Second most frequent, perhaps, so we do this second.
+        dCoords [0] = coordinate->GetX();
+        dCoords [1] = coordinate->GetY();
+        dCoords [2] = coordinate->GetZ();
+        if (m_bIsReentrant)
+        {
+            status = TransformPoint3D (dCoords);
+        }
+        else
+        {
+            CriticalClass.Enter();
+            status = TransformPoint3D (dCoords);
+            CriticalClass.Leave();
+        }
+        coordinate->SetX(dCoords [0]);
+        coordinate->SetY(dCoords [0]);
+        coordinate->SetZ(dCoords [0]);
+    }
+    else if(coordinate->GetDimension() == (MgCoordinateDimension::XY | MgCoordinateDimension::M))
+    {
+        // 2D transform + measure -- Rarely used
+        dCoords [0] = coordinate->GetX();
+        dCoords [1] = coordinate->GetY();
+        dCoords [2] = 0.0;
+        m = coordinate->GetM();
+        if (m_bIsReentrant)
+        {
+            status = TransformPoint2D (dCoords);
+        }
+        else
+        {
+            CriticalClass.Enter();
+            status = TransformPoint2D (dCoords);
+            CriticalClass.Leave();
+        }
+        m *= (m_pCsSource->GetUnitScale() / m_pCsTarget->GetUnitScale());
+        coordinate->SetX(dCoords [0]);
+        coordinate->SetY(dCoords [1]);
+        coordinate->SetM(m);
     }
     else if(coordinate->GetDimension() == (MgCoordinateDimension::XYZ | MgCoordinateDimension::M))
     {
-        // 3D transform + measure
-        double x=coordinate->GetX();
-        double y=coordinate->GetY();
-        double z=coordinate->GetZ();
-        double m=coordinate->GetM();
-        TransformM(&x, &y, &z, &m);
-        coordinate->SetX(x);
-        coordinate->SetY(y);
-        coordinate->SetZ(z);
+        // 3D transform + measure --  Rarely used
+        dCoords [0] = coordinate->GetX();
+        dCoords [1] = coordinate->GetY();
+        dCoords [2] = coordinate->GetZ();
+        m = coordinate->GetM();
+        if (m_bIsReentrant)
+        {
+            status = TransformPoint3D (dCoords);
+        }
+        else
+        {
+            CriticalClass.Enter();
+            status = TransformPoint3D (dCoords);
+            CriticalClass.Leave();
+        }
+        m *= (m_pCsSource->GetUnitScale() / m_pCsTarget->GetUnitScale());
+        coordinate->SetX(dCoords [0]);
+        coordinate->SetY(dCoords [1]);
+        coordinate->SetZ(dCoords [2]);
         coordinate->SetM(m);
     }
     else
     {
         // What dimension is this?
         throw new MgInvalidArgumentException(L"MgCoordinateSystemTransform.TransformCoordinate", __LINE__, __WFILE__, NULL, L"", NULL);
+    }
+    if (status != TransformOk)
+    {
+        InterpretStatus (status);
     }
     MG_CATCH_AND_THROW(L"MgCoordinateSystemTransform.TransformCoordinate")
 }
@@ -670,7 +853,7 @@ void CCoordinateSystemTransform::SetSourceAndTarget(MgCoordinateSystem* pSource,
 
     //Attempt to set up a datum conversion.
     CriticalClass.Enter();
-    cs_Dtcprm_ *pDtcprm = CS_dtcsu(&srcCsprm, &dstCsprm, 0, cs_DTCFLG_BLK_W);
+    cs_Dtcprm_ *pDtcprm = CS_dtcsu(&srcCsprm, &dstCsprm, cs_DTCFLG_DAT_W, cs_DTCFLG_BLK_W);
     CriticalClass.Leave();
     if (NULL == pDtcprm)
     {
@@ -690,14 +873,126 @@ void CCoordinateSystemTransform::SetSourceAndTarget(MgCoordinateSystem* pSource,
     m_pDtcprm = pDtcprm;
     m_src = srcCsprm;
     m_dst = dstCsprm;
+
     assert(IsInitialized());
 
     // Optimization
     // If the source and target coordinate systems are the same then the transformation methods should just return
     m_bSourceTargetSame = m_pCsSource->IsSameAs(m_pCsTarget);
+    m_bSrcIsGeographic = m_pCsSource->GetType() == MgCoordinateSystemType::Geographic;
+    m_bDatumXfrmIsNull = (0 == pDtcprm->xfrmCount) ||
+                         (1 == pDtcprm->xfrmCount && NULL != pDtcprm->xforms[0] && cs_DTCMTH_NULLX == pDtcprm->xforms[0]->methodCode);
+    m_bIsReentrant = (CS_isCsPrmReentrant (&m_src) != 0) && (CS_isDtXfrmReentrant (m_pDtcprm) != 0) && (CS_isCsPrmReentrant (&m_dst) != 0);
+
+    // Status Accumulator;
+    m_nSourceCount = 0;
+    m_nDatumCount  = 0;
+    m_nTargetCount = 0;
 
     //And return success!
     MG_CATCH_AND_THROW(L"MgCoordinateSystemTransform.SetSourceAndTarget")
+}
+
+// Geodetic Transformation Information
+INT32 CCoordinateSystemTransform::NumberOfGeodeticTransformations ()
+{
+    INT32 rtnValue;
+    
+    rtnValue = m_pDtcprm->xfrmCount;
+    return rtnValue;
+}
+MgCoordinateSystemGeodeticTransformDef* CCoordinateSystemTransform::GetGeodeticTransformation (INT32 index)
+{
+    STRING xfrmDefName;
+    cs_GxXform_ *xfrmPtr;
+   	cs_GeodeticTransform_* xfrmDefPtr;
+   	Ptr<MgCoordinateSystemCatalog> pCatalog;
+    Ptr<MgCoordinateSystemGeodeticTransformDef> rtnValue;
+    Ptr<MgCoordinateSystemGeodeticTransformDefDictionary> pGxDefDict;
+    
+    MgCoordinateSystemFactory csFactory;
+
+    xfrmDefName [0] = '\0';
+    if (index >= 0 && index < m_pDtcprm->xfrmCount)
+    {
+        // indexparameter is valid, get a pointer to the appropriate
+        // CS-MAP transformation object.
+        xfrmPtr = m_pDtcprm->xforms [index];
+        if (xfrmPtr != NULL)
+        {
+            xfrmDefPtr = &xfrmPtr->gxDef;
+            if (xfrmDefPtr != NULL)
+            {
+                // Extract the name of the transformation.
+                wchar_t* pwszDtName = Convert_Ascii_To_Wide (xfrmDefPtr->xfrmName);
+                xfrmDefName = pwszDtName;
+                delete[] pwszDtName;
+            }
+         }
+     }
+     if (!xfrmDefName.empty ())
+     {
+        // We have a treansformation name.  Get a copy of the named
+        // transformation from the dictionary.
+        pCatalog = csFactory.GetCatalog();
+        pGxDefDict = pCatalog->GetGeodeticTransformDefDictionary ();
+        MgDisposable* tmpPtr = pGxDefDict.p->Get(xfrmDefName);
+        rtnValue = dynamic_cast<MgCoordinateSystemGeodeticTransformDef*>(tmpPtr);
+    }
+    return rtnValue.Detach ();
+}
+INT32 CCoordinateSystemTransform::GetGeodeticTransformationDirection (INT32 index)
+{
+   	INT32 direction (GeodeticDirectionError);
+    cs_GxXform_ *xfrmPtr;
+   
+    MgCoordinateSystemFactory csFactory;
+
+    if (index >= 0 && index < m_pDtcprm->xfrmCount)
+    {
+        // indexparameter is valid, get a pointer to the appropriate
+        // CS-MAP transformation object.
+        xfrmPtr = m_pDtcprm->xforms [index];
+        if (xfrmPtr != NULL)
+        {
+            if (xfrmPtr->userDirection == cs_DTCDIR_NONE)
+            {
+                direction = GeodeticDirectionNone;
+            }
+            else if (xfrmPtr->userDirection == cs_DTCDIR_FWD)
+            {
+                direction = GeodeticDirectionForward;
+            }
+            else if (xfrmPtr->userDirection == cs_DTCDIR_INV)
+            {
+                direction = GeodeticDirectionInverse;
+            }
+        }
+     }
+     return direction;
+}
+MgCoordinateSystemGeodeticPath* CCoordinateSystemTransform::GetExplicitGeodeticPath()
+{
+    STRING pathDefName;
+   	Ptr<MgCoordinateSystemCatalog> pCatalog;
+    Ptr<MgCoordinateSystemGeodeticPath> rtnValue;
+    Ptr<MgCoordinateSystemGeodeticPathDictionary> pGpDefDict;
+    
+    MgCoordinateSystemFactory csFactory;
+
+    // index parameter is valid, get a pointer to the appropriate
+    // CS-MAP transformation object.
+    if (m_pDtcprm->pathName [0] != '\0')
+    {
+        wchar_t* pwszDtName = Convert_Ascii_To_Wide (m_pDtcprm->pathName);
+        pathDefName = pwszDtName;
+        delete[] pwszDtName;
+        pCatalog = csFactory.GetCatalog();
+        pGpDefDict = pCatalog->GetGeodeticPathDictionary ();
+        MgDisposable* tmpPtr = pGpDefDict.p->Get(pathDefName);
+        rtnValue = dynamic_cast<MgCoordinateSystemGeodeticPath*>(tmpPtr);
+    }
+    return rtnValue.Detach ();
 }
 
 //Tests the specified X,Y point for validity in the source coordinate
@@ -747,8 +1042,37 @@ void CCoordinateSystemTransform::Transform(double* x, double* y)
         throw new MgNullArgumentException(L"MgCoordinateSystemTransform.Transform", __LINE__, __WFILE__, NULL, L"", NULL);
     }
 
+    // Optimization
+    if(m_bSourceTargetSame)
+    {
+        return;
+    }
+
     //Convert the point
-    TransformPoint(*x, *y, NULL);
+    INT32 status;
+    double dCoords [3] = {*x, *y, 0.0};
+    if (m_bIgnoreOutsideDomainWarning && m_bSrcIsGeographic)
+    {
+        GeographicAdjust (dCoords);
+    }
+    if (m_bIsReentrant)
+    {
+        status = TransformPoint2D (dCoords);
+    }
+    else
+    {
+        CriticalClass.Enter();
+        status = TransformPoint2D (dCoords);
+        CriticalClass.Leave();
+    }
+    *x = dCoords [0];
+    *y = dCoords [1];
+    m_nTransformStatus = status;
+
+    if (TransformOk != status)
+    {
+        InterpretStatus (status);
+    }
 
     //And return.
     MG_CATCH_AND_THROW(L"MgCoordinateSystemTransform.Transform")
@@ -757,6 +1081,11 @@ void CCoordinateSystemTransform::Transform(double* x, double* y)
 ///////////////////////////////////////////////////////////////////////////
 void CCoordinateSystemTransform::Transform(double x[], double y[], int arraySize)
 {
+    int idx;
+    INT32 status;
+
+    double dCoords [3];
+
     MG_TRY()
 
     assert(NULL != x);
@@ -778,16 +1107,53 @@ void CCoordinateSystemTransform::Transform(double x[], double y[], int arraySize
         throw new MgCoordinateSystemInitializationFailedException(L"MgCoordinateSystemTransform.Transform", __LINE__, __WFILE__, NULL, L"MgCoordinateSystemNotReadyException", NULL);
     }
 
-    bool isGeographic = MgCoordinateSystemType::Geographic == m_pCsSource->GetType();
-
-    double lonMin = m_pCsSource->GetLonMin();
-    double lonMax = m_pCsSource->GetLonMax();
-    double latMin = m_pCsSource->GetLatMin();
-    double latMax = m_pCsSource->GetLatMax();
-
-    for(int i=0;i<arraySize;i++)
+    dCoords [2] = 0.0;
+    m_nTransformStatus = TransformOk;
+    if (!m_bIsReentrant)
     {
-        TransformPointInternal(x[i], y[i], NULL, isGeographic, lonMin, lonMax, latMin, latMax);
+        CriticalClass.Enter();
+    }
+
+    /* Loop for each point.  In the normal case, pretty straight forward.
+       If we get a non-normal status return, we capture the worst status
+       that we encounter and keep trucking.  This represents a departure
+       from the previous code, which upon an exception being thrown, would
+       leave the provided arrays in a "half" converted, and "half" unconverted
+       state.  Also, the previous code would (assuming that the warning
+       exceptions were turned off, would simply return the last status.  This
+       code will now return the "worst" status which was encountered in the
+       conversion. Again, a slight departure from the previous code. */
+    for (idx = 0;idx < arraySize;idx++)
+    {
+        dCoords [0] = x [idx];
+        dCoords [1] = y [idx];
+
+        if (m_bIgnoreOutsideDomainWarning && m_bSrcIsGeographic)
+        {
+            GeographicAdjust (dCoords);
+        }
+        status = TransformPoint2D (dCoords);
+        x [idx] = dCoords [0];
+        y [idx] = dCoords [1];
+        if (TransformOk != status)
+        {
+            if (status > m_nTransformStatus)
+            {
+                m_nTransformStatus = status;
+            }
+        }
+    }
+    if (!m_bIsReentrant)
+    {
+        CriticalClass.Leave();
+    }
+
+    /* Now that we have done all of the points and the provided
+       array is in a consistent state, we InterpretStatus which
+       will cause an exception to be thrown if appropriate. */
+    if (TransformOk != m_nTransformStatus)
+    {
+        InterpretStatus (m_nTransformStatus);
     }
 
     //And return.
@@ -798,40 +1164,139 @@ void CCoordinateSystemTransform::Transform(double x[], double y[], int arraySize
 void CCoordinateSystemTransform::TransformM(double* x, double* y, double* m)
 {
     MG_TRY()
+
     assert(NULL != x);
     assert(NULL != y);
-    assert(NULL != m);
-    if (NULL == x || NULL == y || NULL == m)
+    if (NULL == x || NULL == y)
     {
-        throw new MgNullArgumentException(L"MgCoordinateSystemTransform.TransformM", __LINE__, __WFILE__, NULL, L"", NULL);
+        throw new MgNullArgumentException(L"MgCoordinateSystemTransform.Transform", __LINE__, __WFILE__, NULL, L"", NULL);
     }
-    TransformPoint(*x, *y, NULL);
+
+    // Optimization
+    if(m_bSourceTargetSame)
+    {
+        return;
+    }
+
+    //Convert the point
+    INT32 status;
+    double dCoords [3] = {*x, *y, 0.0};
+    if (m_bIgnoreOutsideDomainWarning && m_bSrcIsGeographic)
+    {
+        GeographicAdjust (dCoords);
+    }
+    if (m_bIsReentrant)
+    {
+        status = TransformPoint2D (dCoords);
+    }
+    else
+    {
+        CriticalClass.Enter();
+        status = TransformPoint2D (dCoords);
+        CriticalClass.Leave();
+    }
+    *x = dCoords [0];
+    *y = dCoords [1];
     *m = (*m)*(m_pCsSource->GetUnitScale() / m_pCsTarget->GetUnitScale());
-    MG_CATCH_AND_THROW(L"MgCoordinateSystemTransform.TransformM")
+    m_nTransformStatus = status;
+    if (TransformOk != status)
+    {
+        InterpretStatus (status);
+    }
+
+    //And return.
+    MG_CATCH_AND_THROW(L"MgCoordinateSystemTransform.Transform")
 }
 
 ///////////////////////////////////////////////////////////////////////////
 void CCoordinateSystemTransform::TransformM(double x[], double y[], double m[], int arraySize)
 {
+    int idx;
+    INT32 status;
+
+    double dCoords [3];
+
     MG_TRY()
+
     assert(NULL != x);
     assert(NULL != y);
     assert(NULL != m);
     if (NULL == x || NULL == y || NULL == m)
     {
-        throw new MgNullArgumentException(L"MgCoordinateSystemTransform.TransformM", __LINE__, __WFILE__, NULL, L"", NULL);
+        throw new MgNullArgumentException(L"MgCoordinateSystemTransform.Transform", __LINE__, __WFILE__, NULL, L"", NULL);
     }
-    for(int i=0;i<arraySize;i++)
+
+    // Optimization
+    if(m_bSourceTargetSame)
     {
-        TransformPoint(x[i], y[i], NULL);
-        m[i] = (m[i])*(m_pCsSource->GetUnitScale() / m_pCsTarget->GetUnitScale());
+        return;
     }
-    MG_CATCH_AND_THROW(L"MgCoordinateSystemTransform.TransformM")
+
+    assert(IsInitialized());
+    if (!IsInitialized())
+    {
+        throw new MgCoordinateSystemInitializationFailedException(L"MgCoordinateSystemTransform.Transform", __LINE__, __WFILE__, NULL, L"MgCoordinateSystemNotReadyException", NULL);
+    }
+
+    dCoords [2] = 0.0;
+    m_nTransformStatus = TransformOk;
+    if (!m_bIsReentrant)
+    {
+        CriticalClass.Enter();
+    }
+
+    /* Loop for each point.  In the normal case, pretty straight forward.
+       If we get a non-normal status return, we capture the worst status
+       that we encounter and keep trucking.  This represents a departure
+       from the previous code, which upon an exception being thrown, would
+       leave the provided arrays in a "half" converted, and "half" unconverted
+       state.  Also, the previous code would (assuming that the warning
+       exceptions were turned off, would simply return the last status.  This
+       code will now return the "worst" status which was encountered in the
+       conversion. Again, a slight departure from the previous code. */
+    for (idx = 0;idx < arraySize;idx++)
+    {
+        dCoords [0] = x [idx];
+        dCoords [1] = y [idx];
+
+        if (m_bIgnoreOutsideDomainWarning && m_bSrcIsGeographic)
+        {
+            GeographicAdjust (dCoords);
+        }
+        status = TransformPoint2D (dCoords);
+        x [idx] = dCoords [0];
+        y [idx] = dCoords [1];
+        m[idx] = (m[idx])*(m_pCsSource->GetUnitScale() / m_pCsTarget->GetUnitScale());
+        if (TransformOk != status)
+        {
+            if (status > m_nTransformStatus)
+            {
+                m_nTransformStatus = status;
+            }
+        }
+    }
+    if (!m_bIsReentrant)
+    {
+        CriticalClass.Leave();
+    }
+
+    /* Now that we have done all of the points and the provided
+       array is in a consistent state, we InterpretStatus which
+       will cause an exception to be thrown if appropriate. */
+    if (TransformOk != m_nTransformStatus)
+    {
+        InterpretStatus (m_nTransformStatus);
+    }
+
+    //And return.
+    MG_CATCH_AND_THROW(L"MgCoordinateSystemTransform.Transform")
 }
 
 ///////////////////////////////////////////////////////////////////////////
 void CCoordinateSystemTransform::Transform(double* x, double* y, double* z)
 {
+    INT32 status;
+
     MG_TRY()
 
     assert(NULL != x);
@@ -842,8 +1307,37 @@ void CCoordinateSystemTransform::Transform(double* x, double* y, double* z)
         throw new MgNullArgumentException(L"MgCoordinateSystemTransform.Transform", __LINE__, __WFILE__, NULL, L"", NULL);
     }
 
+    // Optimization
+    if(m_bSourceTargetSame)
+    {
+        return;
+    }
+
     //Convert the point
-    TransformPoint(*x, *y, z);
+    double dCoords [3] = {*x, *y, *z};
+    if (m_bIgnoreOutsideDomainWarning && m_bSrcIsGeographic)
+    {
+        GeographicAdjust (dCoords);
+    }
+    if (m_bIsReentrant)
+    {
+        status = TransformPoint3D (dCoords);
+    }
+    else
+    {
+        CriticalClass.Enter();
+        status = TransformPoint3D (dCoords);
+        CriticalClass.Leave();
+    }
+    *x = dCoords [0];
+    *y = dCoords [1];
+    *z = dCoords [2];
+    m_nTransformStatus = status;
+
+    if (TransformOk != status)
+    {
+        InterpretStatus (status);
+    }
 
     //And return.
     MG_CATCH_AND_THROW(L"MgCoordinateSystemTransform.Transform")
@@ -852,6 +1346,11 @@ void CCoordinateSystemTransform::Transform(double* x, double* y, double* z)
 ///////////////////////////////////////////////////////////////////////////
 void CCoordinateSystemTransform::Transform(double x[], double y[], double z[], int arraySize)
 {
+    int idx;
+    INT32 status;
+
+    double dCoords [3];
+
     MG_TRY()
 
     assert(NULL != x);
@@ -862,10 +1361,66 @@ void CCoordinateSystemTransform::Transform(double x[], double y[], double z[], i
         throw new MgNullArgumentException(L"MgCoordinateSystemTransform.Transform", __LINE__, __WFILE__, NULL, L"", NULL);
     }
 
-    for(int i=0;i<arraySize;i++)
+    // Optimization
+    if(m_bSourceTargetSame)
     {
-        //Convert the point
-        TransformPoint(x[i], y[i], &z[i]);
+        return;
+    }
+
+    assert(IsInitialized());
+    if (!IsInitialized())
+    {
+        throw new MgCoordinateSystemInitializationFailedException(L"MgCoordinateSystemTransform.Transform", __LINE__, __WFILE__, NULL, L"MgCoordinateSystemNotReadyException", NULL);
+    }
+
+    m_nTransformStatus = TransformOk;
+    if (!m_bIsReentrant)
+    {
+        CriticalClass.Enter();
+    }
+
+    /* Loop for each point.  In the normal case, pretty straight forward.
+       If we get a non-normal status return, we capture the worst status
+       that we encounter and keep trucking.  This represents a departure
+       from the previous code, which upon an exception being thrown, would
+       leave the provided arrays in a "half" converted, and "half" unconverted
+       state.  Also, the previous code would (assuming that the warning
+       exceptions were turned off, would simply return the last status.  This
+       code will now return the "worst" status which was encountered in the
+       conversion. Again, a slight departure from the previous code. */
+    for (idx = 0;idx < arraySize;idx++)
+    {
+        dCoords [0] = x [idx];
+        dCoords [1] = y [idx];
+        dCoords [2] = z [idx];
+
+        if (m_bIgnoreOutsideDomainWarning && m_bSrcIsGeographic)
+        {
+            GeographicAdjust (dCoords);
+        }
+        status = TransformPoint2D (dCoords);
+        x [idx] = dCoords [0];
+        y [idx] = dCoords [1];
+        z [idx] = dCoords [2];
+        if (TransformOk != status)
+        {
+            if (status > m_nTransformStatus)
+            {
+                m_nTransformStatus = status;
+            }
+        }
+    }
+    if (!m_bIsReentrant)
+    {
+        CriticalClass.Leave();
+    }
+
+    /* Now that we have done all of the points and the provided
+       array is in a consistent state, we InterpretStatus which
+       will cause an exception to be thrown if appropriate. */
+    if (TransformOk != m_nTransformStatus)
+    {
+        InterpretStatus (m_nTransformStatus);
     }
 
     //And return.
@@ -875,6 +1430,8 @@ void CCoordinateSystemTransform::Transform(double x[], double y[], double z[], i
 ///////////////////////////////////////////////////////////////////////////
 void CCoordinateSystemTransform::TransformM(double* x, double* y, double* z, double* m)
 {
+    INT32 status;
+
     MG_TRY()
     assert(NULL != x);
     assert(NULL != y);
@@ -884,14 +1441,51 @@ void CCoordinateSystemTransform::TransformM(double* x, double* y, double* z, dou
     {
         throw new MgNullArgumentException(L"MgCoordinateSystemTransform.TransformM", __LINE__, __WFILE__, NULL, L"", NULL);
     }
-    TransformPoint(*x, *y, z);
+
+    // Optimization
+    if(m_bSourceTargetSame)
+    {
+        return;
+    }
+
+    //Convert the point
+    double dCoords [3] = {*x, *y, *z};
+    if (m_bIgnoreOutsideDomainWarning && m_bSrcIsGeographic)
+    {
+        GeographicAdjust (dCoords);
+    }
+    if (m_bIsReentrant)
+    {
+        status = TransformPoint2D (dCoords);
+    }
+    else
+    {
+        CriticalClass.Enter();
+        status = TransformPoint2D (dCoords);
+        CriticalClass.Leave();
+    }
+    *x = dCoords [0];
+    *y = dCoords [1];
+    *z = dCoords [2];
     *m = (*m)*(m_pCsSource->GetUnitScale() / m_pCsTarget->GetUnitScale());
+
+    m_nTransformStatus = status;
+    if (TransformOk != status)
+    {
+        InterpretStatus (status);
+    }
+
     MG_CATCH_AND_THROW(L"MgCoordinateSystemTransform.TransformM")
 }
 
 ///////////////////////////////////////////////////////////////////////////
 void CCoordinateSystemTransform::TransformM(double x[], double y[], double z[], double m[], int arraySize)
 {
+    int idx;
+    INT32 status;
+
+    double dCoords [3];
+
     MG_TRY()
     assert(NULL != x);
     assert(NULL != y);
@@ -901,12 +1495,208 @@ void CCoordinateSystemTransform::TransformM(double x[], double y[], double z[], 
     {
         throw new MgNullArgumentException(L"MgCoordinateSystemTransform.TransformM", __LINE__, __WFILE__, NULL, L"", NULL);
     }
-    for(int i=0;i<arraySize;i++)
+
+    // Optimization
+    if(m_bSourceTargetSame)
     {
-        TransformPoint(x[i], y[i], &z[i]);
-        m[i] = (m[i])*(m_pCsSource->GetUnitScale() / m_pCsTarget->GetUnitScale());
+        return;
     }
+
+    assert(IsInitialized());
+    if (!IsInitialized())
+    {
+        throw new MgCoordinateSystemInitializationFailedException(L"MgCoordinateSystemTransform.Transform", __LINE__, __WFILE__, NULL, L"MgCoordinateSystemNotReadyException", NULL);
+    }
+
+    m_nTransformStatus = TransformOk;
+    if (!m_bIsReentrant)
+    {
+        CriticalClass.Enter();
+    }
+
+    /* Loop for each point.  In the normal case, pretty straight forward.
+       If we get a non-normal status return, we capture the worst status
+       that we encounter and keep trucking.  This represents a departure
+       from the previous code, which upon an exception being thrown, would
+       leave the provided arrays in a "half" converted, and "half" unconverted
+       state.  Also, the previous code would (assuming that the warning
+       exceptions were turned off, would simply return the last status.  This
+       code will now return the "worst" status which was encountered in the
+       conversion. Again, a slight departure from the previous code. */
+    for (idx = 0;idx < arraySize;idx++)
+    {
+        dCoords [0] = x [idx];
+        dCoords [1] = y [idx];
+        dCoords [2] = z [idx];
+
+        if (m_bIgnoreOutsideDomainWarning && m_bSrcIsGeographic)
+        {
+            GeographicAdjust (dCoords);
+        }
+
+        status = TransformPoint2D (dCoords);
+        x [idx] = dCoords [0];
+        y [idx] = dCoords [1];
+        z [idx] = dCoords [2];
+        m[idx]    = (m[idx])*(m_pCsSource->GetUnitScale() / m_pCsTarget->GetUnitScale());
+        if (TransformOk != status)
+        {
+            if (status > m_nTransformStatus)
+            {
+                m_nTransformStatus = status;
+            }
+        }
+    }
+    if (!m_bIsReentrant)
+    {
+        CriticalClass.Leave();
+    }
+
+    /* Now that we have done all of the points and the provided
+       array is in a consistent state, we InterpretStatus which
+       will cause an exception to be thrown if appropriate. */
+    if (TransformOk != m_nTransformStatus)
+    {
+        InterpretStatus (m_nTransformStatus);
+    }
+
     MG_CATCH_AND_THROW(L"MgCoordinateSystemTransform.TransformM")
+}
+
+void CCoordinateSystemTransform::Transform2D (double xy[][2],INT32 pointCount)
+{
+    int idx;
+    INT32 status;
+
+    double* pDblXY;
+
+    assert(NULL != xy);
+    if (NULL == xy)
+    {
+        throw new MgNullArgumentException(L"MgCoordinateSystemTransform.Transform", __LINE__, __WFILE__, NULL, L"", NULL);
+    }
+    assert(pointCount > 0);
+    if (0 >= pointCount)
+    {
+        throw new MgNullArgumentException(L"MgCoordinateSystemTransform.Transform", __LINE__, __WFILE__, NULL, L"", NULL);
+    }
+    assert(IsInitialized());
+    if (!IsInitialized())
+    {
+        throw new MgCoordinateSystemInitializationFailedException(L"MgCoordinateSystemTransform.Transform", __LINE__, __WFILE__, NULL, L"MgCoordinateSystemNotReadyException", NULL);
+    }
+
+    // Optimization
+    if(m_bSourceTargetSame)
+    {
+        return;
+    }
+
+    if (!m_bIsReentrant)
+    {
+        CriticalClass.Enter();
+    }
+
+    // Loop for each point.  TransformPoint2D will accumulate the status for
+    // us. We need only concern ourselves with a "TotalFailure".
+    pDblXY = xy [0];
+    for (idx = 0;idx < pointCount;idx++)
+    {
+        if (m_bIgnoreOutsideDomainWarning && m_bSrcIsGeographic)
+        {
+            GeographicAdjust (pDblXY);
+        }
+        status = TransformPoint2D (pDblXY);
+        
+        // Warning status values will have already been counted.  We only need
+        // to check for a total failure.  The "disable exeception" conditions
+        // are considered to be on by default for this function.
+        if (TransformTotalFailure <= status)
+        {
+            m_nTransformStatus = TransformTotalFailure;
+            break;
+        }
+       
+        // On to the next point.
+        pDblXY += 2;
+    }
+    if (!m_bIsReentrant)
+    {
+        CriticalClass.Leave();
+    }
+    if (TransformTotalFailure <= status)
+    {
+        throw new MgCoordinateSystemConversionFailedException(L"MgCoordinateSystemTransform.InterpretStatus", __LINE__, __WFILE__, NULL, L"MgCoordinateSystemNoConversionDone", NULL);
+    }
+    return;
+}
+
+void CCoordinateSystemTransform::Transform3D (double xyz[][3],INT32 pointCount)
+{
+    int idx;
+    INT32 status;
+
+    double* pDblXYZ;
+
+    assert(NULL != xyz);
+    if (NULL == xyz)
+    {
+        throw new MgNullArgumentException(L"MgCoordinateSystemTransform.Transform", __LINE__, __WFILE__, NULL, L"", NULL);
+    }
+    assert(pointCount > 0);
+    if (0 >= pointCount)
+    {
+        throw new MgNullArgumentException(L"MgCoordinateSystemTransform.Transform", __LINE__, __WFILE__, NULL, L"", NULL);
+    }
+    assert(IsInitialized());
+    if (!IsInitialized())
+    {
+        throw new MgCoordinateSystemInitializationFailedException(L"MgCoordinateSystemTransform.Transform", __LINE__, __WFILE__, NULL, L"MgCoordinateSystemNotReadyException", NULL);
+    }
+
+    // Optimization
+    if(m_bSourceTargetSame)
+    {
+        return;
+    }
+
+    if (!m_bIsReentrant)
+    {
+        CriticalClass.Enter();
+    }
+
+    // Loop for each point.  TransformPoint2D will accumulate the status for
+    // us. We need only concern ourselves with a "TotalFailure".
+    pDblXYZ = xyz [0];
+    for (idx = 0;idx < pointCount;idx++)
+    {
+        if (m_bIgnoreOutsideDomainWarning && m_bSrcIsGeographic)
+        {
+            GeographicAdjust (pDblXYZ);
+        }
+        status = TransformPoint3D (pDblXYZ);
+        
+        // Warning status values will have already been counted.  We only need
+        // to check for a total failure.  The "disable exeception" conditions
+        // are considered to be on by default for this function.
+        if (TransformTotalFailure <= status)
+        {
+            m_nTransformStatus = TransformTotalFailure;
+            break;
+        }
+        
+        // On to the next point.
+        pDblXYZ += 3;
+    }
+    if (!m_bIsReentrant)
+    {
+        CriticalClass.Leave();
+    }
+    if (TransformTotalFailure <= status)
+    {
+        throw new MgCoordinateSystemConversionFailedException(L"MgCoordinateSystemTransform.InterpretStatus", __LINE__, __WFILE__, NULL, L"MgCoordinateSystemNoConversionDone", NULL);
+    }
+    return;
 }
 
 ///////////////////////////////////////////////////////////////////////////
@@ -1292,7 +2082,18 @@ void CCoordinateSystemTransform::IgnoreOutsideDomainWarning(bool bIgnoreOutsideD
 {
     m_bIgnoreOutsideDomainWarning = bIgnoreOutsideDomainWarning;
 }
-
+INT32 CCoordinateSystemTransform::GetSourceWarningCount (void)
+{
+    return m_nSourceCount;
+}
+INT32 CCoordinateSystemTransform::GetdatumWarningCount (void)
+{
+    return m_nDatumCount;
+}
+INT32 CCoordinateSystemTransform::GetTargetWarningCount (void)
+{
+    return m_nTargetCount;
+}
 bool CCoordinateSystemTransform::IsIgnoreOutsideDomainWarning()
 {
     return m_bIgnoreOutsideDomainWarning;
@@ -1306,128 +2107,24 @@ INT32 CCoordinateSystemTransform::GetLastTransformStatus()
 void CCoordinateSystemTransform::ResetLastTransformStatus()
 {
     m_nTransformStatus = TransformOk;
+
+   // Status Accumulator;
+    m_nSourceCount = 0;
+    m_nDatumCount  = 0;
+    m_nTargetCount = 0;
 }
-
-inline void CCoordinateSystemTransform::TransformPointInternal(double& x, double& y, double *pdZ, bool isGeographic,
-                                                               double lonMin, double lonMax, double latMin, double latMax)
+bool CCoordinateSystemTransform::IsReentrant()
 {
-    m_nTransformStatus = TransformOk;
+    bool isReentrant (false);
 
-    //If range checking is turned on, find out whether
-    //we'll need to warn the caller later on.
-    double z=0.;
-    int nResult = cs_CNVRT_NRML;
-    if (pdZ)
-    {
-        z=*pdZ;
-    }
-
-    //Do the conversion to lat/long
-    double dCoords[3] = { x, y, z };
-
-    // Is the coordinate system geographic?
-    if((m_bIgnoreOutsideDomainWarning) && isGeographic)
-    {
-        // If so, adjust the coordinates that are outside the legal extents because Mentor automatically
-        // adjusts them which ends up clipping data.
-        if(dCoords[0] > lonMax)
-        {
-            dCoords[0] = lonMax;
-        }
-
-        if(dCoords[0] < lonMin)
-        {
-            dCoords[0] = lonMin;
-        }
-
-        if(dCoords[1] > latMax)
-        {
-            dCoords[1] = latMax;
-        }
-
-        if(dCoords[1] < latMin)
-        {
-            dCoords[1] = latMin;
-        }
-    }
-
-    if (!pdZ)
-    {
-        nResult = CS_cs2ll(&m_src, dCoords, dCoords);
-    }
-    else
-    {
-        nResult = CS_cs3ll(&m_src, dCoords, dCoords);
-    }
-
-    if(cs_CNVRT_NRML != nResult)
-    {
-        m_nTransformStatus = TransformOutsideDomainWarning;
-    }
-
-    //dCoords[] now contains the point converted from the
-    //source coordinate system to lat/longs, but still in
-    //the source coordinate system's datum.  Shift it to
-    //the destination coordinate system's datum.
-    assert(NULL != m_pDtcprm);
-    INT32 nResultShift = GeodeticTransformationPoint(m_pDtcprm, dCoords[0], dCoords[1], pdZ?&dCoords[2]:NULL);
-    if (1==nResultShift)
-    {
-        //partial failure
-        m_nTransformStatus = TransformDatumShiftWarning;
-    }
-    else if (-1==nResultShift)
-    {
-        //total failure
-        m_nTransformStatus = TransformTotalFailure;
-    }
-
-    // Check for total failure
-    if(TransformTotalFailure != m_nTransformStatus)
-    {
-        //dCoords[] now contains a lat/long point in the destination
-        //datum.  Convert it to the destination coordinate system.
-        if (!pdZ)
-        {
-            nResult = CS_ll2cs(&m_dst, dCoords, dCoords);
-        }
-        else
-        {
-            nResult = CS_ll3cs(&m_dst, dCoords, dCoords);
-        }
-
-        if(cs_CNVRT_NRML != nResult)
-        {
-            m_nTransformStatus = TransformOutsideDomainWarning;
-        }
-
-        //dCoords[] now contains the completely converted point.
-        //Copy it into our output parameters.
-        x = dCoords[0];
-        y = dCoords[1];
-        if (pdZ)
-        {
-            *pdZ=dCoords[2];
-        }
-    }
-
-    // Check status in order of severity
-    // Check if warnings are ignored
-    // Throw the exception if needed
-    if(TransformTotalFailure == m_nTransformStatus)
-    {
-        throw new MgCoordinateSystemConversionFailedException(L"MgCoordinateSystemTransform.TransformPointInternal", __LINE__, __WFILE__, NULL, L"MgCoordinateSystemNoConversionDone", NULL);
-    }
-
-    if((TransformDatumShiftWarning == m_nTransformStatus) && (!m_bIgnoreDatumShiftWarning))
-    {
-        throw new MgCoordinateSystemConversionFailedException(L"MgCoordinateSystemTransform.TransformPointInternal", __LINE__, __WFILE__, NULL, L"MgCoordinateSystemConversionWarningException", NULL);
-    }
-
-    if((TransformOutsideDomainWarning == m_nTransformStatus) && (!m_bIgnoreOutsideDomainWarning))
-    {
-        throw new MgCoordinateSystemConversionFailedException(L"MgCoordinateSystemTransform.TransformPointInternal", __LINE__, __WFILE__, NULL, L"MgCoordinateSystemConversionExtentException", NULL);
-    }
+    //MG_TRY()
+    ////Make sure we're initialized
+    //if (!IsInitialized())
+    //{
+    //    throw new MgCoordinateSystemInitializationFailedException(L"MgCoordinateSystemTransform.IsValidPoint", __LINE__, __WFILE__, NULL, L"MgCoordinateSystemNotReadyException", NULL);
+    //}
+    //MG_CATCH_AND_THROW(L"MgCoordinateSystemTransform.IsReentrant")
+    return m_bIsReentrant;
 }
 
 // Essentially the inverse of the Transform (double& xx,double& yy) function.
@@ -1443,16 +2140,22 @@ int CCoordinateSystemTransform::TransformInverse (double& xx,double& yy)
     xy [1] = yy;
     xy [2] = 0.0;
 
+    if (!m_bIsReentrant)
+    {
+        CriticalClass.Enter();
+    }
     st = CS_cs2ll (&m_dst,ll,xy);
     if (st >= 0)
     {
-        CriticalClass.Enter();
         st = CS_dtcvt(m_pDtcprm,ll,ll);
-        CriticalClass.Leave();
         if (st >= 0)
         {
             st = CS_ll2cs (&m_src,xy,ll);
         }
+    }
+    if (!m_bIsReentrant)
+    {
+        CriticalClass.Leave();
     }
     if (st >= 0)
     {
@@ -1460,4 +2163,157 @@ int CCoordinateSystemTransform::TransformInverse (double& xx,double& yy)
         yy = xy [1];
     }
     return st;
+}
+/* Two dimensional point conversion _without_ a critical section.  No
+   exceptions thrown or handled, status return only.  Full conversion
+   always calulcated and returned regardless of intermediary status.
+
+   Status return is one of the following:
+   
+                      TransformOk --> Perfectly normal
+    TransformOutsideDomainWarning --> Outside useful range or domain error
+                                      on either of the projective phases.
+                                      This is quite normal if the frequency
+                                      of occurence is low.
+       TransformDatumShiftWarning --> Outside the coverage of the datum
+                                      transformation.  Results could be
+                                      unshifted, or calculated using the
+                                      fallback method.  Again, quite normal
+                                      if the frequency of occurence is low.
+            TransformTotalFailure --> Shouldn't ever happen.  It would be
+                                      necessary to have a hard core physical
+                                      I/O error or something equally rare
+                                      for this to happen.
+*/
+int CCoordinateSystemTransform::TransformPoint2D (double point[3])
+{
+    int srcStatus;
+    int dtmStatus (0);
+    int trgStatus;
+
+    INT32 status (TransformOk);
+
+    double lclLL [3];
+
+    srcStatus = CS_cs2ll (&m_src,lclLL,point);
+    if (!m_bDatumXfrmIsNull)
+    {
+        dtmStatus = CS_dtcvt(m_pDtcprm,lclLL,lclLL);
+    }
+    trgStatus = CS_ll2cs (&m_dst,point,lclLL);
+
+    if ((srcStatus | dtmStatus | trgStatus) != 0)
+    {
+        if (srcStatus != 0)
+        {
+            ++m_nSourceCount;
+            status = TransformOutsideDomainWarning;
+        }
+        if (trgStatus != 0)
+        {
+            ++m_nTargetCount;
+            status = TransformOutsideDomainWarning;
+        }
+        if (dtmStatus != 0)
+        {
+            status = (dtmStatus < 0) ? TransformTotalFailure : TransformDatumShiftWarning;
+            ++m_nDatumCount;
+        }
+    }
+    return status;
+}
+/* The function that follows is identical to the previous function with the
+   exception that the 3D conversion methods are called. */
+int CCoordinateSystemTransform::TransformPoint3D (double point [3])
+{
+    int srcStatus;
+    int dtmStatus (0);
+    int dstStatus;
+
+    INT32 status (TransformOk);
+
+    double lclLL [3];
+
+    srcStatus = CS_cs3ll (&m_src,lclLL,point);
+    if (!m_bDatumXfrmIsNull)
+    {
+        dtmStatus = CS_dtcvt3D (m_pDtcprm,lclLL,lclLL);
+    }
+    dstStatus = CS_ll3cs (&m_dst,point,lclLL);
+    if ((srcStatus | dtmStatus | dstStatus) != 0)
+    {
+        if (srcStatus != 0)
+        {
+            ++m_nSourceCount;
+            status = TransformOutsideDomainWarning;
+        }
+        if (dstStatus != 0)
+        {
+            ++m_nTargetCount;
+            status = TransformOutsideDomainWarning;
+        }
+        if (dtmStatus != 0)
+        {
+            status = (dtmStatus < 0) ? TransformTotalFailure : TransformDatumShiftWarning;
+            ++m_nDatumCount;
+        }
+    }
+    return status;
+}
+/* Not sure that I understand why this is here.  It was in previous code,
+   so we keep it to eliminate possible regressions. */
+void CCoordinateSystemTransform::GeographicAdjust (double dCoords[3])
+{
+    if(dCoords[0] < m_src.cent_mer + m_src.min_ll[0])
+    {
+        dCoords[0] = m_src.cent_mer + m_src.min_ll[0];
+    }
+
+    if(dCoords[0] > m_src.cent_mer + m_src.max_ll[0])
+    {
+        dCoords[0] = m_src.cent_mer + m_src.max_ll[0];
+    }
+
+    if(dCoords[1] > m_src.max_ll[1])
+    {
+        dCoords[1] = m_src.max_ll[1];
+    }
+
+    if(dCoords[1] < m_src.min_ll[1])
+    {
+        dCoords[1] = m_src.max_ll[1];
+    }
+}
+// For performance reasons, this function is, usually, called only in the event
+// of a non-zero status value.  Note that exceptions are usually thrown should
+// status be non-zero.
+void CCoordinateSystemTransform::InterpretStatus (INT32 status)
+{
+    if (status == TransformTotalFailure)
+    {
+        m_nTransformStatus = TransformTotalFailure;
+        throw new MgCoordinateSystemConversionFailedException(L"MgCoordinateSystemTransform.InterpretStatus", __LINE__, __WFILE__, NULL, L"MgCoordinateSystemNoConversionDone", NULL);
+    }
+    else if (status == TransformDatumShiftWarning)
+    {
+        if (m_nTransformStatus <= TransformOutsideDomainWarning)
+        {
+            m_nTransformStatus = TransformDatumShiftWarning;
+        }
+        if (!m_bIgnoreDatumShiftWarning)
+        {
+            throw new MgCoordinateSystemConversionFailedException(L"MgCoordinateSystemTransform.InterpretStatus", __LINE__, __WFILE__, NULL, L"MgCoordinateSystemConversionWarningException", NULL);
+        }
+    }
+    else if (status != TransformOk)
+    {
+        if (m_nTransformStatus <= TransformOk)
+        {
+            m_nTransformStatus = TransformOutsideDomainWarning;
+        }
+        if(!m_bIgnoreOutsideDomainWarning)
+        {
+            throw new MgCoordinateSystemConversionFailedException(L"MgCoordinateSystemTransform.InterpretStatus", __LINE__, __WFILE__, NULL, L"MgCoordinateSystemConversionExtentException", NULL);
+        }
+    }
 }
