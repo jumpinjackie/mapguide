@@ -45,12 +45,24 @@ public:
     virtual MgCoordinateSystem* GetTarget();
     virtual void SetSourceAndTarget(MgCoordinateSystem* pSource, MgCoordinateSystem* pTarget);
 
+    // Geodetic Transformation Information
+    virtual INT32 NumberOfGeodeticTransformations();
+    virtual MgCoordinateSystemGeodeticTransformDef* GetGeodeticTransformation (INT32 index);
+    virtual INT32 GetGeodeticTransformationDirection (INT32 index);
+    virtual MgCoordinateSystemGeodeticPath* GetExplicitGeodeticPath();
+
     virtual void IgnoreDatumShiftWarning(bool bIgnoreDatumShiftWarning);
     virtual bool IsIgnoreDatumShiftWarning();
     virtual void IgnoreOutsideDomainWarning(bool bIgnoreOutsideDomainWarning);
     virtual bool IsIgnoreOutsideDomainWarning();
+
+    virtual INT32 GetSourceWarningCount (void);
+    virtual INT32 GetdatumWarningCount (void);
+    virtual INT32 GetTargetWarningCount (void);
+
     virtual INT32 GetLastTransformStatus();
     virtual void ResetLastTransformStatus();
+    virtual bool IsReentrant();
 
 INTERNAL_API:
     ///////////////////////////////////////////////////////////////////////////
@@ -191,6 +203,54 @@ INTERNAL_API:
 
     ///////////////////////////////////////////////////////////////////////////
     /// \brief
+    /// Transform 2D conversion on an array of 2D XY points.
+    ///
+    /// \param xy
+    /// The array of 2D XY points to be converted.
+    /// \param pointCount
+    /// The number of 2D points in the array which are to be converted.
+    /// \return
+    /// Nothing.
+    /// \remark
+    /// Use the Get...WarningCount functions above to determine the status of
+    /// the conversion.  A conversion of all points will be attemted regardless
+    /// of the status of any specific point conversion.  Warning counts will
+    /// accumulate on successive calls to this function unless the
+    /// ResetLastTransformStatus member function is called.  This function
+    /// will throw an exception only in the case of what is considered a
+    /// total failure.  That is, a condition which suggests that there is a
+    /// a problem with the conversion process (i.e. a physical I>O error on
+    /// disk) that is not related to the data being converted.  In the case of
+    /// this function, GetConversionStatus will return the most serious (i.e.
+    /// highest value) warning condition encountered.
+    virtual void Transform2D (double xy[][2],INT32 pointCount);
+
+    ///////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Transforms a 3D conversion on an array of 3D XYZ points.
+    ///
+    /// \param xy
+    /// The array of 3D XYZ points to be converted.
+    /// \param pointCount
+    /// The number of 3D points in the array which are to be converted.
+    /// \return
+    /// Nothing.
+    /// \remark
+    /// Use the Get...WarningCount functions above to determine the status of
+    /// the conversion.  A conversion of all points will be attemted regardless
+    /// of the status of any specific point conversion.  Warning counts will
+    /// accumulate on successive calls to this function unless the
+    /// ResetLastTransformStatus member function is called.  This function
+    /// will throw an exception only in the case of what is considered a
+    /// total failure.  That is, a condition which suggests that there is a
+    /// a problem with the conversion process (i.e. a physical I>O error on
+    /// disk) that is not related to the data being converted.  In the case of
+    /// this function, GetConversionStatus will return the most serious (i.e.
+    /// highest value) warning condition encountered.
+    virtual void Transform3D (double xy[][3],INT32 pointCount);
+
+    ///////////////////////////////////////////////////////////////////////////
+    /// \brief
     /// Generates a MgCoordinateCollection which represents in the target
     /// coordinate system the linear line segment provided in the source
     /// coordinate system.
@@ -274,16 +334,23 @@ protected:
     cs_Csprm_ m_src;
     cs_Csprm_ m_dst;
 
+    bool m_bSrcIsGeographic;
+    bool m_bDatumXfrmIsNull;
+    bool m_bIsReentrant;
     bool m_bIgnoreDatumShiftWarning;
     bool m_bIgnoreOutsideDomainWarning;
     bool m_bSourceTargetSame;
     INT32 m_nTransformStatus;
 
+    // Status Accumulation
+    INT32 m_nSourceCount;
+    INT32 m_nDatumCount;
+    INT32 m_nTargetCount;
+
     //Private member functions
     void SetCatalog(MgCoordinateSystemCatalog *pCatalog);
     bool IsInitialized();
     void Uninitialize();
-    void TransformPoint(double& x, double& y, double *pdZ);
     bool IsValidPoint(cs_Csprm_& csprm, double x, double y, double z);
 
 private:
@@ -291,11 +358,12 @@ private:
     CCoordinateSystemTransform(const CCoordinateSystemTransform&);
     CCoordinateSystemTransform& operator=(const CCoordinateSystemTransform&);
 
-    inline void TransformPointInternal(double& x, double& y, double *pdZ, bool isGeographic,
-        double lonMin, double lonMax, double latMin, double latMax);
-
     // Private function required to support the PositionOfValue function.
     int TransformInverse (double& xx,double& yy);
+    INT32 TransformPoint2D (double dCoords [3]);        /* 2D conversion without Critical Section */
+    INT32 TransformPoint3D (double dCoords [3]);        /* 3D conversion without Critical Section */
+    void GeographicAdjust (double dCoords [3]);
+    void InterpretStatus (INT32 status);
 };
 
 } // End of namespace
