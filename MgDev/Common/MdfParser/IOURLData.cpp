@@ -144,7 +144,7 @@ void IOURLData::Write(MdfStream& fd, URLData* urlData, Version* version, MgTab& 
     // Property: Content Override
     if(!urlData->GetUrlContentOverride().empty())
     {
-        fd << tab.tab() << startStr(sContent);
+        fd << tab.tab() << startStr(sContentOverride);
         fd << EncodeString(urlData->GetUrlContentOverride());
         fd << endStr(sContentOverride) << std::endl;
     }
