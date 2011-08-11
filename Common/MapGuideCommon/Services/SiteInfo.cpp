@@ -161,9 +161,9 @@ STRING MgSiteInfo::ToHexString()
     }
     
     wchar_t buffer[100] = {0};	
-    swprintf(buffer, 100, L"%s%.4X%.4X%.4X", targetHex.c_str(), m_sitePort, m_clientPort, m_adminPort);
+    swprintf(buffer, 100, L"%.4X%.4X%.4X", m_sitePort, m_clientPort, m_adminPort);
 
-    return STRING(buffer);
+    return targetHex.append(buffer);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
