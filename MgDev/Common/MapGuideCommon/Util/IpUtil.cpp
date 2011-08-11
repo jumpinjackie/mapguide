@@ -139,7 +139,7 @@ bool MgIpUtil::IsIpv6Address(CREFSTRING address, bool strict)
     }
 
     // An valid IPv6 address must have ":"
-    bool isv6Address = address.find(L":") != -1;
+    bool isv6Address = wstring::npos != address.find(L":");
 
     if (isv6Address)
     {
