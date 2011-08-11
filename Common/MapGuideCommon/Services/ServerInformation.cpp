@@ -270,7 +270,7 @@ void MgServerInformation::CheckAddress(CREFSTRING address)
             __LINE__, __WFILE__, NULL, L"", NULL);
     }
 
-    if (wstring::npos != address.find_first_of(L"[]=:"))
+    if (wstring::npos != address.find_first_of(L"[]="))
     {
         MgStringCollection arguments;
         arguments.Add(address);
