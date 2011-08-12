@@ -328,13 +328,16 @@ function SetLayerStyles(layer)
                     code += '<td>...</td>';
                     code += '</tr></table>';
                     j = styles.length - 2;
+                    sc.iconWasRequested = false; //not all icons are requested, so mark false
                 }
             }
-            if(styles.length <= 10)
+            if(styles.length <= 10) {
                 sc.showlongtheme = true;
+            }
+            if(sc.showlongtheme) {
+                sc.iconWasRequested = true;
+            }
             layerChildren.innerHTML = code;
-
-            sc.iconWasRequested = true;
         }
 
         layerIconImg = iconThemeLayer;
@@ -700,6 +703,9 @@ function ExecuteCommand(option)
             layer = FindNode(tree, objectId);
             layer.children[layer.curScale].showlongtheme = true;
             SetLayerStyles(layer);
+            // Better way to refresh and request icons?
+            ExpandNodes([layer], false);
+            ExpandNodes([layer], true);
             break;
         case 7:
             SetSelectability(tree,true)
