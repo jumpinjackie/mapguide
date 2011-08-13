@@ -62,25 +62,30 @@ MgSiteInfo::MgSiteInfo(CREFSTRING hexString) :
     m_target(L""),
     m_status(Uninitialized)
     {
-        // Compose a format string to extract the target address and the ports from the hexstring
-        INT32 targetlen = (INT32) hexString.length() - HexPortsStringLength;
-        wchar_t format[20] = {0};
-        swprintf(format, 20, L"%%%ds%%4X%%4X%%4X", targetlen);
+        // The length of the Base64 encoded target string
+        INT32 targetlen = (INT32) hexString.length() - MgSiteInfo::HexPortsStringLength;
+        // Get the encoded target
+        STRING targetHex = hexString.substr(0, targetlen);
+        // Get the hexed port numbers
+        STRING portHex = hexString.substr(targetlen, MgSiteInfo::HexPortsStringLength); 
 
-        wchar_t targetHex[100] = {0};
-        if (::swscanf(hexString.c_str(), format, targetHex, &m_sitePort, &m_clientPort, &m_adminPort) == 4)
+        if (3 == ::swscanf (portHex.c_str(), L"%4X%4X%4X", &m_sitePort, &m_clientPort, &m_adminPort))
         {
-            char buffer[100] = {0};
             INT32 hexLength = targetlen;
-            STRING targetHexOriginal = targetHex;
             // There were alignment "=" removed. They should be appended back to do decoding
             if (0 != targetlen % 4)
             {
-                targetHexOriginal.append(L"===");
+                targetHex.append(L"===");
+                // Get the length of the string which has the alignment "=" restored.
+                // Please note that targetHex.length() >= hexLength.
+                // Suppose targetHex is "abcdefg", then the new version targetHex which has 3 "=" appended is "abcdefg==="
+                // And the length of the original base64 string is 8. When doing Base64::Decode() below, 
+                // only the first 8 chars of "abcdefg===" is considered.
                 hexLength = 4 * (targetlen / 4 + 1);
             }
 
-            Base64::Decode((unsigned char*)buffer, ACE_Wide_To_Ascii(targetHexOriginal.c_str()).char_rep(), hexLength);
+            char buffer[100] = {0};
+            Base64::Decode((unsigned char*)buffer, ACE_Wide_To_Ascii(targetHex.c_str()).char_rep(), hexLength);
             m_target = ACE_Ascii_To_Wide(buffer).wchar_rep();
             m_status = Ok;
         }
