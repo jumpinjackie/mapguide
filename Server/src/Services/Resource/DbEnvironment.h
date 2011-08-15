@@ -24,17 +24,7 @@
 // TODO: Determine the best sizes to improve the Server performance.
 static const u_int32_t MG_KB                   = 1024;
 static const u_int32_t MG_MB                   = 1048576; // 1024^2
-static const u_int32_t MG_LIBRARY_CACHE_SIZE   = 32 * MG_MB;
-static const u_int32_t MG_SESSION_CACHE_SIZE   = 2 * MG_MB;
-static const u_int32_t MG_DB_PAGE_SIZE         = 32 * MG_KB;
-static const u_int32_t MG_DBXML_PAGE_SIZE      = 32 * MG_KB;
-static const u_int32_t MG_LIBRARY_LOG_BUF_SIZE = 12 * MG_MB;
-static const u_int32_t MG_SESSION_LOG_BUF_SIZE = 1 * MG_MB;
-static const u_int32_t MG_MAX_TRANSACTIONS     = 1000;
-static const u_int32_t MG_SESS_DB_PAGE_SIZE    = 2 * MG_KB;
-static const u_int32_t MG_SESS_DBXML_PAGE_SIZE = 512;
-// Set lock and transaction timeout to 0.2 seconds
-static const u_int32_t MG_DB_ENV_TIMEOUT       = 200000;
+static const u_int32_t MG_MICROSECOND          = 1000000;
 
 class MgDatabase;
 
@@ -69,6 +59,9 @@ class MgDbEnvironment
         void PerformCheckpoint(UINT32 flags = 0);
         void ResetDatabase(MgDatabase& database);
 
+        INT32 getDBPageSize();
+        INT32 getSessionDBPageSize();
+
 /// Data Members
 
     private:
@@ -78,6 +71,19 @@ class MgDbEnvironment
         DbEnv m_dbEnv;
         XmlManager m_xmlMan;
         MgXmlSchemaResolver m_schemaResolver;
+
+        //configurable settings
+        INT32 MG_LIBRARY_CACHE_SIZE; //32 * MG_MB by default
+        INT32 MG_SESSION_CACHE_SIZE; //2 * MG_MB by default
+        INT32 MG_DB_PAGE_SIZE;  //32 * MG_KB by default
+        INT32 MG_DBXML_PAGE_SIZE;  //32 * MG_KB by default
+        INT32 MG_LIBRARY_LOG_BUF_SIZE;  //12 * MG_MB by default
+        INT32 MG_SESSION_LOG_BUF_SIZE;  //1 * MG_MB by default
+        INT32 MG_MAX_TRANSACTIONS;  //1000 by default
+        INT32 MG_SESS_DB_PAGE_SIZE;  //2 * MG_KB by default
+        double MG_SESS_DBXML_PAGE_SIZE;   //512 by default
+        double MG_DB_ENV_TIMEOUT;  //0.2 * MG_MICROSECOND by default
+        INT32 MG_MAX_LOCKS;   //1000 by default
 };
 
 /// Inline Methods
@@ -100,6 +106,16 @@ inline XmlManager& MgDbEnvironment::GetXmlManager()
 inline MgXmlSchemaResolver& MgDbEnvironment::GetXmlSchemaResolver()
 {
     return m_schemaResolver;
+}
+
+INT32 MgDbEnvironment::getDBPageSize()
+{
+    return MG_DB_PAGE_SIZE;
+}
+        
+INT32 MgDbEnvironment::getSessionDBPageSize()
+{
+    return MG_SESS_DB_PAGE_SIZE;
 }
 
 #endif

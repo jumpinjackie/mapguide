@@ -42,6 +42,100 @@ MgDbEnvironment::MgDbEnvironment(CREFSTRING repositoryType, const string& home,
     m_dbEnv.set_error_stream(&std::cerr);
 #endif
 
+    // read sizes from config file
+    MgConfiguration* configuration = MgConfiguration::GetInstance();
+    ACE_ASSERT(NULL != configuration);
+    INT32 libraryCacheSize = MgConfigProperties::DefaultLibraryCacheSizeParameters;   // MG_LIBRARY_CACHE_SIZE   = 32 * MG_MB;
+    INT32 sessionCacheSize = MgConfigProperties::DefaultSessionCacheSizeParamters;   // MG_SESSION_CACHE_SIZE   = 2 * MG_MB;
+    INT32 dbPageSize = MgConfigProperties::DefaultDBPageSizeParameters;   //MG_DB_PAGE_SIZE         = 32 * MG_KB;
+    INT32 dbXMLPageSize = MgConfigProperties::DefaultDBXMLPageSizeParameters;   //MG_DBXML_PAGE_SIZE      = 32 * MG_KB;
+    INT32 libraryLogBufSize = MgConfigProperties::DefaultLibraryLogBufferSizeParameters;   // MG_LIBRARY_LOG_BUF_SIZE = 12 * MG_MB;
+    INT32 sessionLogBufSize = MgConfigProperties::DefaultSessionLogBufferSizeParameters;  //MG_SESSION_LOG_BUF_SIZE = 1 * MG_MB;
+    INT32 maxTransaction = MgConfigProperties::DefaultDBMaxTransactionsParamters;  //MG_MAX_TRANSACTIONS     = 1000;
+    INT32 sessionDBPageSize = MgConfigProperties::DefaultSessionDBPageSizeParameters;  //MG_SESS_DB_PAGE_SIZE    = 2 * MG_KB;
+    double sessionDBXMLPageSize = MgConfigProperties::DefaultSessionDBXMLPageSizeParameters;  //MG_SESS_DBXML_PAGE_SIZE = 512;
+    double timeout = MgConfigProperties::DefaultDBTimeoutParameters;  // MG_DB_ENV_TIMEOUT       = 0.2 * MG_MICROSECOND;
+    INT32 maxLocker = MgConfigProperties::DefaultDBMaxLockersParameters;
+    if (NULL != configuration)
+    {
+        configuration->GetIntValue(
+            MgConfigProperties::DBEnvironmentPropertiesSection,
+            MgConfigProperties::LibraryCacheSizeParameters,
+            libraryCacheSize,
+            MgConfigProperties::DefaultLibraryCacheSizeParameters);
+
+        configuration->GetIntValue(
+            MgConfigProperties::DBEnvironmentPropertiesSection,
+            MgConfigProperties::SessionCacheSizeParamters,
+            sessionCacheSize,
+            MgConfigProperties::DefaultSessionCacheSizeParamters);
+
+        configuration->GetIntValue(
+            MgConfigProperties::DBEnvironmentPropertiesSection,
+            MgConfigProperties::DBPageSizeParameters,
+            dbPageSize,
+            MgConfigProperties::DefaultDBPageSizeParameters);
+
+        configuration->GetIntValue(
+            MgConfigProperties::DBEnvironmentPropertiesSection,
+            MgConfigProperties::DBXMLPageSizeParameters,
+            dbXMLPageSize,
+            MgConfigProperties::DefaultDBXMLPageSizeParameters);
+
+        configuration->GetIntValue(
+            MgConfigProperties::DBEnvironmentPropertiesSection,
+            MgConfigProperties::LibraryLogBufferSizeParameters,
+            libraryLogBufSize,
+            MgConfigProperties::DefaultLibraryLogBufferSizeParameters);
+
+        configuration->GetIntValue(
+            MgConfigProperties::DBEnvironmentPropertiesSection,
+            MgConfigProperties::SessionLogBufferSizeParameters,
+            sessionLogBufSize,
+            MgConfigProperties::DefaultSessionLogBufferSizeParameters);
+
+        configuration->GetIntValue(
+            MgConfigProperties::DBEnvironmentPropertiesSection,
+            MgConfigProperties::DBMaxTransactionsParamters,
+            maxTransaction,
+            MgConfigProperties::DefaultDBMaxTransactionsParamters);
+
+        configuration->GetIntValue(
+            MgConfigProperties::DBEnvironmentPropertiesSection,
+            MgConfigProperties::SessionDBPageSizeParameters,
+            sessionDBPageSize,
+            MgConfigProperties::DefaultSessionDBPageSizeParameters);
+
+        configuration->GetDoubleValue(
+            MgConfigProperties::DBEnvironmentPropertiesSection,
+            MgConfigProperties::SessionDBXMLPageSizeParameters,
+            sessionDBXMLPageSize,
+            MgConfigProperties::DefaultSessionDBXMLPageSizeParameters);
+
+        configuration->GetDoubleValue(
+            MgConfigProperties::DBEnvironmentPropertiesSection,
+            MgConfigProperties::DBTimeoutParameters,
+            timeout,
+            MgConfigProperties::DefaultDBTimeoutParameters);
+
+        configuration->GetIntValue(
+            MgConfigProperties::DBEnvironmentPropertiesSection,
+            MgConfigProperties::DBMaxLockersParameters,
+            maxLocker,
+            MgConfigProperties::DefaultDBMaxLockersParameters);
+    }
+    MG_LIBRARY_CACHE_SIZE = libraryCacheSize * MG_MB; //32 * MG_MB by default
+    MG_SESSION_CACHE_SIZE = sessionCacheSize * MG_MB; //2 * MG_MB by default
+    MG_DB_PAGE_SIZE = dbPageSize * MG_KB;  //32 * MG_KB by default
+    MG_DBXML_PAGE_SIZE = dbXMLPageSize * MG_KB;  //32 * MG_KB by default
+    MG_LIBRARY_LOG_BUF_SIZE = libraryLogBufSize * MG_MB;  //12 * MG_MB by default
+    MG_SESSION_LOG_BUF_SIZE = sessionLogBufSize * MG_MB;  //1 * MG_MB by default
+    MG_MAX_TRANSACTIONS = maxTransaction;  //1000 by default
+    MG_SESS_DB_PAGE_SIZE = sessionDBPageSize * MG_KB;  //2 * MG_KB by default
+    MG_SESS_DBXML_PAGE_SIZE = sessionDBXMLPageSize * MG_KB;   //512 by default
+    MG_DB_ENV_TIMEOUT = timeout * MG_MICROSECOND;  //0.2 * MG_MICROSECOND by default
+    MG_MAX_LOCKS = maxLocker;   //1000 by default
+
     // Set the cache size based on the repository type
     if(MgRepositoryType::Session == repositoryType)
     {
@@ -59,6 +153,9 @@ MgDbEnvironment::MgDbEnvironment(CREFSTRING repositoryType, const string& home,
     m_dbEnv.set_timeout(MG_DB_ENV_TIMEOUT, DB_SET_LOCK_TIMEOUT);
     m_dbEnv.set_timeout(MG_DB_ENV_TIMEOUT, DB_SET_TXN_TIMEOUT);
     m_dbEnv.set_tx_max(MG_MAX_TRANSACTIONS);
+    m_dbEnv.set_lk_max_lockers(MG_MAX_LOCKS);
+    m_dbEnv.set_lk_max_locks(MG_MAX_LOCKS);
+    m_dbEnv.set_lk_max_objects(MG_MAX_LOCKS);
 
     u_int32_t containerFlags = DB_CREATE|DB_THREAD|DBXML_NO_INDEX_NODES;
     u_int32_t environmentFlags = DB_CREATE|DB_THREAD|DB_INIT_MPOOL;
