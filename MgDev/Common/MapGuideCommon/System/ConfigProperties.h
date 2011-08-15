@@ -808,6 +808,55 @@ EXTERNAL_API:
     static const STRING TraceLogPropertyParameters;                 /// value("Parameters")
     static const STRING DefaultTraceLogPropertyParameters;          /// value("")
 
+    /// DB Environment PROPERTIES SECTION -------------------------------------------------------------------------------
+
+    /// DB Environment properties. This is for setting DB Environment.
+    static const STRING DBEnvironmentPropertiesSection;             /// value("DBEnvironmentProperties")
+
+    /// The size for library cache size in MB
+    static const STRING LibraryCacheSizeParameters;                 /// value("LibraryCacheSize")
+    static const INT32 DefaultLibraryCacheSizeParameters;           /// value(32)
+
+    /// The size for session cache size in MB
+    static const STRING SessionCacheSizeParamters;                  /// value("SessionCacheSize")
+    static const INT32 DefaultSessionCacheSizeParamters;            /// value(2)
+         
+    /// The size for library DB page in KB
+    static const STRING DBPageSizeParameters;                       /// value("DBPageSize")
+    static const INT32 DefaultDBPageSizeParameters;                 /// value(32)
+          
+    /// The size for library DBXML page in KB
+    static const STRING DBXMLPageSizeParameters;                    /// value("DBXMLPageSize")
+    static const INT32 DefaultDBXMLPageSizeParameters;              /// value(32)
+
+    /// The size for library log buffer in MB
+    static const STRING LibraryLogBufferSizeParameters;             /// value("LibraryLogBufferSize")
+    static const INT32 DefaultLibraryLogBufferSizeParameters;       /// value(12)
+
+    /// The size for session log buffer in MB
+    static const STRING SessionLogBufferSizeParameters;             /// value("SessionLogBufferSize")
+    static const INT32 DefaultSessionLogBufferSizeParameters;       /// value(1)
+
+    /// The max number of DB transactions
+    static const STRING DBMaxTransactionsParamters;                 /// value("DBMaxTransactions")
+    static const INT32 DefaultDBMaxTransactionsParamters;           /// value(1000)
+
+    /// The size for session DB page in KB
+    static const STRING SessionDBPageSizeParameters;                // value("SessionDBPageSize")
+    static const INT32 DefaultSessionDBPageSizeParameters;          // value(2)
+
+    /// The size for session DBXML page in KB
+    static const STRING SessionDBXMLPageSizeParameters;             // value("SessionDBXMLPageSize")
+    static const double DefaultSessionDBXMLPageSizeParameters;      // value(0.5)
+
+    /// The time out for lock and transaction in second
+    static const STRING DBTimeoutParameters;                        // value("DBTimeout")
+    static const double DefaultDBTimeoutParameters;                 // value(0.2)
+
+    /// The max number of DB lockers
+    static const STRING DBMaxLockersParameters;                     // value("DBMaxLockers")
+    static const INT32 DefaultDBMaxLockersParameters;               // value(1000)
+
 INTERNAL_API:
 
     /// SUPPORT SERVERS SECTION -----------------------------------------------------------------------------------------
@@ -931,6 +980,7 @@ public:
     static const MgConfigValidationInfo sm_cviPerformanceLogProperties[];
     static const MgConfigValidationInfo sm_cviSessionLogProperties[];
     static const MgConfigValidationInfo sm_cviTraceLogProperties[];
+    static const MgConfigValidationInfo sm_cviDBEnvironmentProperties[];
 
     // Web Configuration Validation Information Maps
     static const MgConfigValidationInfo sm_cviAgentProperties[];

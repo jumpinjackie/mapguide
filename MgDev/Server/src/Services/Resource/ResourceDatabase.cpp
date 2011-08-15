@@ -44,11 +44,11 @@ MgResourceDatabase::MgResourceDatabase(MgDbEnvironment& environment,
 
     if (fileName.find(MG_WCHAR_TO_CHAR(MgRepositoryType::Session)) == fileName.npos)
     {
-        m_db.set_pagesize(MG_DB_PAGE_SIZE);
+        m_db.set_pagesize(environment.getDBPageSize());
     }
     else
     {
-        m_db.set_pagesize(MG_SESS_DB_PAGE_SIZE);
+        m_db.set_pagesize(environment.getSessionDBPageSize());
     }
 
     if (m_environment.IsTransacted())

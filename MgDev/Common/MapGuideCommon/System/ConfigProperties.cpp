@@ -472,6 +472,33 @@ const STRING MgConfigProperties::TraceLogPropertyParameters                     
 const STRING MgConfigProperties::DefaultTraceLogPropertyParameters                          = L"";
 
 // ******************************************************************
+// DB Environment Properties
+// ******************************************************************
+const STRING MgConfigProperties::DBEnvironmentPropertiesSection                             = L"DBEnvironmentProperties";
+const STRING MgConfigProperties::LibraryCacheSizeParameters                                 = L"LibraryCacheSize";
+const INT32 MgConfigProperties::DefaultLibraryCacheSizeParameters                           = 32;
+const STRING MgConfigProperties::SessionCacheSizeParamters                                  = L"SessionCacheSize";
+const INT32 MgConfigProperties::DefaultSessionCacheSizeParamters                            = 2;
+const STRING MgConfigProperties::DBPageSizeParameters                                       = L"DBPageSize";
+const INT32 MgConfigProperties::DefaultDBPageSizeParameters                                 = 32;
+const STRING MgConfigProperties::DBXMLPageSizeParameters                                    = L"DBXMLPageSize";
+const INT32 MgConfigProperties::DefaultDBXMLPageSizeParameters                              = 32;
+const STRING MgConfigProperties::LibraryLogBufferSizeParameters                             = L"LibraryLogBufferSize";      
+const INT32 MgConfigProperties::DefaultLibraryLogBufferSizeParameters                       = 12;
+const STRING MgConfigProperties::SessionLogBufferSizeParameters                             = L"SessionLogBufferSize";
+const INT32 MgConfigProperties::DefaultSessionLogBufferSizeParameters                       = 1;
+const STRING MgConfigProperties::DBMaxTransactionsParamters                                 = L"DBMaxTransactions";
+const INT32 MgConfigProperties::DefaultDBMaxTransactionsParamters                           = 1000;
+const STRING MgConfigProperties::SessionDBPageSizeParameters                                = L"SessionDBPageSize";
+const INT32 MgConfigProperties::DefaultSessionDBPageSizeParameters                          = 2;
+const STRING MgConfigProperties::SessionDBXMLPageSizeParameters                             = L"SessionDBXMLPageSize";
+const double MgConfigProperties::DefaultSessionDBXMLPageSizeParameters                      = 0.5;
+const STRING MgConfigProperties::DBTimeoutParameters                                        = L"DBTimeout";
+const double MgConfigProperties::DefaultDBTimeoutParameters                                 = 0.2;
+const STRING MgConfigProperties::DBMaxLockersParameters                                     = L"DBMaxLockers";
+const INT32 MgConfigProperties::DefaultDBMaxLockersParameters                               = 1000;
+
+// ******************************************************************
 // Support Servers section
 // ******************************************************************
 const STRING MgConfigProperties::SupportServersSection                                     = L"SupportServers";
@@ -741,6 +768,21 @@ const MgConfigValidationInfo MgConfigProperties::sm_cviTraceLogProperties[] =
     { MgConfigProperties::TraceLogPropertyFilename                                  , MgPropertyType::String    , MG_CONFIG_MIN_FILE_NAME_LENGTH        , MG_CONFIG_MAX_FILE_NAME_LENGTH        , MG_CONFIG_FILE_NAME_RESERVED_CHARACTERS   },
     { MgConfigProperties::TraceLogPropertyParameters                                , MgPropertyType::String    , MG_CONFIG_MIN_LOG_PARAMETERS_LENGTH   , MG_CONFIG_MAX_LOG_PARAMETERS_LENGTH   , L""                                       },
     { L""                                                                           , 0                         , 0.0                                   , 0.0                                   , L""                                       }
+};
+
+const MgConfigValidationInfo MgConfigProperties::sm_cviDBEnvironmentProperties[] = 
+{
+    { MgConfigProperties::LibraryCacheSizeParameters                                , MgPropertyType::Int32     , 1                                     , 1024                                  , L""                                       },
+    { MgConfigProperties::SessionCacheSizeParamters                                 , MgPropertyType::Int32     , 1                                     , 1024                                  , L""                                       },
+    { MgConfigProperties::DBPageSizeParameters                                      , MgPropertyType::Int32     , 1                                     , 1024                                  , L""                                       },
+    { MgConfigProperties::DBXMLPageSizeParameters                                   , MgPropertyType::Int32     , 1                                     , 1024                                  , L""                                       },
+    { MgConfigProperties::LibraryLogBufferSizeParameters                            , MgPropertyType::Int32     , 1                                     , 1024                                  , L""                                       },
+    { MgConfigProperties::SessionLogBufferSizeParameters                            , MgPropertyType::Int32     , 1                                     , 1024                                  , L""                                       },
+    { MgConfigProperties::DBMaxTransactionsParamters                                , MgPropertyType::Int32     , 1                                     , 1000000                               , L""                                       },
+    { MgConfigProperties::SessionDBPageSizeParameters                               , MgPropertyType::Int32     , 1                                     , 1024                                  , L""                                       },
+    { MgConfigProperties::SessionDBXMLPageSizeParameters                            , MgPropertyType::Double    , 0.0                                   , 0.0                                   , L""                                       },
+    { MgConfigProperties::DBTimeoutParameters                                       , MgPropertyType::Double    , 0.0                                   , 0.0                                   , L""                                       },
+    { MgConfigProperties::DBMaxLockersParameters                                    , MgPropertyType::Int32     , 1                                     , 1000000                               , L""                                       },
 };
 
 ///////////////////////////////////////////////////////////////////////////////
