@@ -24,7 +24,7 @@
 // TODO: Determine the best sizes to improve the Server performance.
 static const u_int32_t MG_KB                   = 1024;
 static const u_int32_t MG_MB                   = 1048576; // 1024^2
-static const u_int32_t MG_MICROSECOND          = 1000000;
+static const u_int32_t MG_SECOND          = 1000000;
 
 class MgDatabase;
 
