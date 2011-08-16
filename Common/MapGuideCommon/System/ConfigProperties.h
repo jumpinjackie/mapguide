@@ -842,20 +842,20 @@ EXTERNAL_API:
     static const INT32 DefaultDBMaxTransactionsParamters;           /// value(1000)
 
     /// The size for session DB page in KB
-    static const STRING SessionDBPageSizeParameters;                // value("SessionDBPageSize")
-    static const INT32 DefaultSessionDBPageSizeParameters;          // value(2)
+    static const STRING SessionDBPageSizeParameters;                /// value("SessionDBPageSize")
+    static const INT32 DefaultSessionDBPageSizeParameters;          /// value(2)
 
     /// The size for session DBXML page in KB
-    static const STRING SessionDBXMLPageSizeParameters;             // value("SessionDBXMLPageSize")
-    static const double DefaultSessionDBXMLPageSizeParameters;      // value(0.5)
+    static const STRING SessionDBXMLPageSizeParameters;             /// value("SessionDBXMLPageSize")
+    static const double DefaultSessionDBXMLPageSizeParameters;      /// value(0.5)
 
     /// The time out for lock and transaction in second
-    static const STRING DBTimeoutParameters;                        // value("DBTimeout")
-    static const double DefaultDBTimeoutParameters;                 // value(0.2)
+    static const STRING DBTimeoutParameters;                        /// value("DBTimeout")
+    static const double DefaultDBTimeoutParameters;                 /// value(0.2)
 
     /// The max number of DB lockers
-    static const STRING DBMaxLockersParameters;                     // value("DBMaxLockers")
-    static const INT32 DefaultDBMaxLockersParameters;               // value(1000)
+    static const STRING DBMaxLockersParameters;                     /// value("DBMaxLockers")
+    static const INT32 DefaultDBMaxLockersParameters;               /// value(1000)
 
 INTERNAL_API:
 
