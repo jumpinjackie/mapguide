@@ -133,7 +133,7 @@ MgDbEnvironment::MgDbEnvironment(CREFSTRING repositoryType, const string& home,
     MG_MAX_TRANSACTIONS = maxTransaction;  //1000 by default
     MG_SESS_DB_PAGE_SIZE = sessionDBPageSize * MG_KB;  //2 * MG_KB by default
     MG_SESS_DBXML_PAGE_SIZE = sessionDBXMLPageSize * MG_KB;   //512 by default
-    MG_DB_ENV_TIMEOUT = timeout * MG_MICROSECOND;  //0.2 * MG_MICROSECOND by default
+    MG_DB_ENV_TIMEOUT = timeout * MG_SECOND;  //0.2 * MG_SECOND by default
     MG_MAX_LOCKS = maxLocker;   //1000 by default
 
     // Set the cache size based on the repository type
