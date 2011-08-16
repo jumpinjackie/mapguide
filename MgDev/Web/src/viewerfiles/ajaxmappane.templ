@@ -344,6 +344,14 @@ var featureRequestUrl = '%s';
 %s
 var isAlertShow = false;
 
+var simulateCirclePoints = [];
+var simulateCircleHalfPointNumber = 40;
+(function () {
+    for (var index = 0; index < 2 * simulateCircleHalfPointNumber + 1; index++) {
+        simulateCirclePoints[2 * index] = Math.cos(Math.PI * index / simulateCircleHalfPointNumber);
+        simulateCirclePoints[2 * index + 1] = Math.sin(Math.PI * index / simulateCircleHalfPointNumber);
+    }
+})();
 
 // public functions -----------------------------------------------
 //
@@ -2742,14 +2750,14 @@ function ShowCircle(show)
         var dx = rcx2 - rcx1, dy = rcy2 - rcy1;
         var r = Math.sqrt(dx*dx + dy*dy);
 
-        x1 = rcx1 - r;
-        w = 2 * r;
-        y1 = rcy1 - r;
-        h = w;
-
         shape.clear();
         shape.setColor("#cdcdff");
-        shape.fillEllipse(x1, y1, w, h);
+        var xs = [], ys = [];
+        for (var index = 0; index < 2 * simulateCircleHalfPointNumber + 1; index++) {
+            xs.push(rcx1 + r * simulateCirclePoints[2 * index]);
+            ys.push(rcy1 + r * simulateCirclePoints[2 * index + 1]);
+        }
+        shape.fillPolygon(xs, ys);
         shape.paint();
     }
     else
@@ -2907,7 +2915,17 @@ function RequestRectSelection(x1, y1, x2, y2, append)
 
 function RequestCircleSelection(x, y, r, append)
 {  
-    QueryFeatureInfo("CURVEPOLYGON ((" + (x - r) + " " + y + " (CIRCULARARCSEGMENT (" + x + " " + (y - r) + ", " + (x + r) + " " + y + "), CIRCULARARCSEGMENT (" + x + " " + (y + r) + ", " + (x - r) + " " + y + "))))", append, 0, 7);
+    var fgfText = "POLYGON ((";
+    for (var index = 0; index < 2 * simulateCircleHalfPointNumber + 1; index++) {
+        if (index != 0) {
+            fgfText += ", "
+        }
+        fgfText += (x + r * simulateCirclePoints[2 * index]);
+        fgfText += " ";
+        fgfText += (y + r * simulateCirclePoints[2 * index + 1]);
+    }
+    fgfText += "))";
+    QueryFeatureInfo(fgfText, append, 0, 7);
 }
 
 function RequestPolygonSelection(xs, ys, append)
