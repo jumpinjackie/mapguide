@@ -41,10 +41,33 @@ MgFeatureDistribution::~MgFeatureDistribution()
 MgFeatureDistribution* MgFeatureDistribution::CreateDistributionFunction(MgReader* reader, FdoFunction* customFunction, CREFSTRING propertyAlias)
 {
     STRING propName;
-
     Ptr<MgFeatureDistribution> featDist;
 
-    INT32 propType = MgServerFeatureUtil::GetPropertyDefinition(reader, propName);
+    INT32 propType;
+    if(1 == reader->GetPropertyCount())
+    {
+        propType = MgServerFeatureUtil::GetPropertyDefinition(reader, propName);
+    }
+    else
+    {
+        // Only get the property needed
+        FdoPtr<FdoExpressionCollection> exprCol = customFunction->GetArguments();
+        FdoInt32 cnt = exprCol->GetCount();
+        FdoPtr<FdoExpression> expr;
+        if(cnt == 1)
+        {
+            expr = exprCol->GetItem(0);
+            FdoIdentifier* propIdentifier = dynamic_cast<FdoIdentifier*>(expr.p);
+            CHECKNULL(propIdentifier, L"MgFeatureDistribution.CreateDistributionFunction");
+            propName = propIdentifier->GetName();
+            propType = reader->GetPropertyType(propName);
+        }
+        else
+        {
+            // Throw original exception
+            propType = MgServerFeatureUtil::GetPropertyDefinition(reader, propName);
+        }
+    }
 
     switch(propType)
     {

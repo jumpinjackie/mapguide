@@ -41,10 +41,33 @@ MgFeatureGeometricFunctions::MgFeatureGeometricFunctions(MgReader* reader, FdoFu
 
 void MgFeatureGeometricFunctions::Initialize(MgReader* reader, FdoFunction* customFunction, CREFSTRING propertyAlias)
 {
-    CHECKNULL((MgReader*)reader, L"MgFeatureDistribution.Initialize");
-    CHECKNULL((FdoFunction*)customFunction, L"MgFeatureDistribution.Initialize");
+    CHECKNULL((MgReader*)reader, L"MgFeatureGeometricFunctions.Initialize");
+    CHECKNULL((FdoFunction*)customFunction, L"MgFeatureGeometricFunctions.Initialize");
 
-    m_type = MgServerFeatureUtil::GetPropertyDefinition(reader, m_propertyName);
+    if(1 == reader->GetPropertyCount())
+    {
+        m_type = MgServerFeatureUtil::GetPropertyDefinition(reader, m_propertyName);
+    }
+    else
+    {
+        // Only get the property needed
+        FdoPtr<FdoExpressionCollection> exprCol = customFunction->GetArguments();
+        FdoInt32 cnt = exprCol->GetCount();
+        FdoPtr<FdoExpression> expr;
+        if(cnt == 1)
+        {
+            expr = exprCol->GetItem(0);
+            FdoIdentifier* propName = dynamic_cast<FdoIdentifier*>(expr.p);
+            CHECKNULL(propName, L"MgFeatureGeometricFunctions.Initialize");
+            m_propertyName = propName->GetName();
+            m_type = reader->GetPropertyType(m_propertyName);
+        }
+        else
+        {
+            // Throw original exception
+            m_type = MgServerFeatureUtil::GetPropertyDefinition(reader, m_propertyName);
+        }
+    }
 
     // TODO: Should we really check this, may be we can ignore ??
     // because we can only come to here if property type is numeric
