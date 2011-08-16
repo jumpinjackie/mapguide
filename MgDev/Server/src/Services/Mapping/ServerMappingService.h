@@ -140,6 +140,9 @@ class MG_SERVER_MAPPING_API MgServerMappingService : public MgMappingService
         INT32 m_rasterGridSizeForPlot;
         INT32 m_minRasterGridSizeForPlot;
         double m_rasterGridSizeOverrideRatioForPlot;
+
+        INT32 m_maxRasterImageWidth;
+        INT32 m_maxRasterImageHeight;
 };
 
 #endif

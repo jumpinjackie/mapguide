@@ -104,6 +104,16 @@ MgServerMappingService::MgServerMappingService() :
                           MgConfigProperties::RenderingServicePropertyRasterGridSizeOverrideRatioForPlot,
                           m_rasterGridSizeOverrideRatioForPlot,
                           MgConfigProperties::DefaultRenderingServicePropertyRasterGridSizeOverrideRatioForPlot);
+
+    pConf->GetIntValue(MgConfigProperties::RenderingServicePropertiesSection,
+                          MgConfigProperties::RenderingServicePropertyMaxRasterImageWidth,
+                          m_maxRasterImageWidth,
+                          MgConfigProperties::DefaultRenderingServicePropertyMaxRasterImageWidth);
+
+    pConf->GetIntValue(MgConfigProperties::RenderingServicePropertiesSection,
+                          MgConfigProperties::RenderingServicePropertyMaxRasterImageHeight,
+                          m_maxRasterImageHeight,
+                          MgConfigProperties::DefaultRenderingServicePropertyMaxRasterImageHeight);
 }
 
 
@@ -184,6 +194,8 @@ MgByteReader* MgServerMappingService::GenerateMap(MgMap* map,
     dr.SetRasterGridSize(m_rasterGridSize);
     dr.SetMinRasterGridSize(m_minRasterGridSize);
     dr.SetRasterGridSizeOverrideRatio(m_rasterGridSizeOverrideRatio);
+    dr.SetMaxRasterImageWidth(m_maxRasterImageWidth);
+    dr.SetMaxRasterImageHeight(m_maxRasterImageHeight);
 
     //get the coordinate system unit scale
     MdfModel::MdfString srs = map->GetMapSRS();
@@ -478,6 +490,8 @@ MgByteReader* MgServerMappingService::GenerateMapUpdate(MgMap* map,
     dr.SetRasterGridSize(m_rasterGridSize);
     dr.SetMinRasterGridSize(m_minRasterGridSize);
     dr.SetRasterGridSizeOverrideRatio(m_rasterGridSizeOverrideRatio);
+    dr.SetMaxRasterImageWidth(m_maxRasterImageWidth);
+    dr.SetMaxRasterImageHeight(m_maxRasterImageHeight);
 
     RSMgSymbolManager mgr(m_svcResource);
     dr.SetSymbolManager(&mgr);
@@ -953,6 +967,8 @@ MgByteReader* MgServerMappingService::GenerateMultiPlot(
     dr.SetRasterGridSize(m_rasterGridSizeForPlot);
     dr.SetMinRasterGridSize(m_minRasterGridSizeForPlot);
     dr.SetRasterGridSizeOverrideRatio(m_rasterGridSizeOverrideRatioForPlot);
+    dr.SetMaxRasterImageWidth(m_maxRasterImageWidth);
+    dr.SetMaxRasterImageHeight(m_maxRasterImageHeight);
 
     RSMgSymbolManager mgr(m_svcResource);
     dr.SetSymbolManager(&mgr);
@@ -1377,6 +1393,8 @@ MgByteReader* MgServerMappingService::GenerateLegendPlot(
     dr.SetRasterGridSize(m_rasterGridSize);
     dr.SetMinRasterGridSize(m_minRasterGridSize);
     dr.SetRasterGridSizeOverrideRatio(m_rasterGridSizeOverrideRatio);
+    dr.SetMaxRasterImageWidth(m_maxRasterImageWidth);
+    dr.SetMaxRasterImageHeight(m_maxRasterImageHeight);
 
     RSMgSymbolManager mgr(m_svcResource);
     dr.SetSymbolManager(&mgr);
