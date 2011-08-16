@@ -483,7 +483,7 @@ const STRING MgConfigProperties::DBPageSizeParameters                           
 const INT32 MgConfigProperties::DefaultDBPageSizeParameters                                 = 32;
 const STRING MgConfigProperties::DBXMLPageSizeParameters                                    = L"DBXMLPageSize";
 const INT32 MgConfigProperties::DefaultDBXMLPageSizeParameters                              = 32;
-const STRING MgConfigProperties::LibraryLogBufferSizeParameters                             = L"LibraryLogBufferSize";      
+const STRING MgConfigProperties::LibraryLogBufferSizeParameters                             = L"LibraryLogBufferSize";
 const INT32 MgConfigProperties::DefaultLibraryLogBufferSizeParameters                       = 12;
 const STRING MgConfigProperties::SessionLogBufferSizeParameters                             = L"SessionLogBufferSize";
 const INT32 MgConfigProperties::DefaultSessionLogBufferSizeParameters                       = 1;
