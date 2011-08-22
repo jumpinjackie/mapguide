@@ -7,6 +7,9 @@
     <Filter Include="PrintLayout">
       <UniqueIdentifier>{8ae0d67c-c670-4d12-aec1-b77dddc09dcf}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ProfileResult">
+      <UniqueIdentifier>{ba1fc980-0d34-4134-8059-68b42135be47}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Common\IOColor.cpp">
@@ -142,6 +145,33 @@
     <ClCompile Include="SAX2ElementHandler.cpp" />
     <ClCompile Include="SAX2Parser.cpp" />
     <ClCompile Include="IOURLData.cpp" />
+    <ClCompile Include="IOScaleRange.cpp">
+      <Filter>ProfileResult</Filter>
+    </ClCompile>
+    <ClCompile Include="IOProfileRenderWatermarkResult.cpp">
+      <Filter>ProfileResult</Filter>
+    </ClCompile>
+    <ClCompile Include="IOProfileRenderLayerResult.cpp">
+      <Filter>ProfileResult</Filter>
+    </ClCompile>
+    <ClCompile Include="IOProfileRenderWatermarksResult.cpp">
+      <Filter>ProfileResult</Filter>
+    </ClCompile>
+    <ClCompile Include="IOProfileRenderLayersResult.cpp">
+      <Filter>ProfileResult</Filter>
+    </ClCompile>
+    <ClCompile Include="IOProfileRenderSelectionResult.cpp">
+      <Filter>ProfileResult</Filter>
+    </ClCompile>
+    <ClCompile Include="IOProfileRenderLabelsResult.cpp">
+      <Filter>ProfileResult</Filter>
+    </ClCompile>
+    <ClCompile Include="IOProfileRenderMapResult.cpp">
+      <Filter>ProfileResult</Filter>
+    </ClCompile>
+    <ClCompile Include="IOProfileResult.cpp">
+      <Filter>ProfileResult</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Common\IOColor.h">
@@ -277,6 +307,33 @@
     <ClInclude Include="SAX2Parser.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="IOURLData.h" />
+    <ClInclude Include="IOScaleRange.h">
+      <Filter>ProfileResult</Filter>
+    </ClInclude>
+    <ClInclude Include="IOProfileRenderLabelsResult.h">
+      <Filter>ProfileResult</Filter>
+    </ClInclude>
+    <ClInclude Include="IOProfileRenderLayerResult.h">
+      <Filter>ProfileResult</Filter>
+    </ClInclude>
+    <ClInclude Include="IOProfileRenderWatermarkResult.h">
+      <Filter>ProfileResult</Filter>
+    </ClInclude>
+    <ClInclude Include="IOProfileRenderLayersResult.h">
+      <Filter>ProfileResult</Filter>
+    </ClInclude>
+    <ClInclude Include="IOProfileRenderSelectionResult.h">
+      <Filter>ProfileResult</Filter>
+    </ClInclude>
+    <ClInclude Include="IOProfileRenderWatermarksResult.h">
+      <Filter>ProfileResult</Filter>
+    </ClInclude>
+    <ClInclude Include="IOProfileRenderMapResult.h">
+      <Filter>ProfileResult</Filter>
+    </ClInclude>
+    <ClInclude Include="IOProfileResult.h">
+      <Filter>ProfileResult</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="MdfParser.rc" />

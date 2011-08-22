@@ -24,6 +24,15 @@ libMgMdfParser_la_SOURCES = \
   PrintLayout/IOPrintLayoutElementStyle.cpp \
   PrintLayout/IOPropertyMappingCollection.cpp \
   PrintLayout/IOStylizationConfiguration.cpp \
+  ProfileResult/IOProfileRenderLabelsResult.cpp \
+  ProfileResult/IOProfileRenderLayerResult.cpp \
+  ProfileResult/IOProfileRenderLayersResult.cpp \
+  ProfileResult/IOProfileRenderMapResult.cpp \
+  ProfileResult/IOProfileRenderSelectionResult.cpp \
+  ProfileResult/IOProfileRenderWatermarkResult.cpp \
+  ProfileResult/IOProfileRenderWatermarksResult.cpp \
+  ProfileResult/IOProfileResult.cpp \
+  ProfileResult/IOScaleRange.cpp \
   PrintLayout/IOThickness.cpp \
   FSDSAX2Parser.cpp \
   IOAreaRule.cpp \
@@ -128,6 +137,15 @@ noinst_HEADERS = \
   PrintLayout/IOPropertyMappingCollection.h \
   PrintLayout/IOStylizationConfiguration.h \
   PrintLayout/IOThickness.h \
+  ProfileResult/IOProfileRenderLabelsResult.h \
+  ProfileResult/IOProfileRenderLayerResult.h \
+  ProfileResult/IOProfileRenderLayersResult.h \
+  ProfileResult/IOProfileRenderMapResult.h \
+  ProfileResult/IOProfileRenderSelectionResult.h \
+  ProfileResult/IOProfileRenderWatermarkResult.h \
+  ProfileResult/IOProfileRenderWatermarksResult.h \
+  ProfileResult/IOProfileResult.h \
+  ProfileResult/IOScaleRange.h \
   FSDSAX2Parser.h \
   IOAreaRule.h \
   IOAreaSymbolization2D.h \
