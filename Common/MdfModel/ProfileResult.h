@@ -1,5 +1,5 @@
 //
-//  Copyright (C) 2010-2011 by Autodesk, Inc.
+//  Copyright (C) 2011 by Autodesk, Inc.
 //
 //  This library is free software; you can redistribute it and/or
 //  modify it under the terms of version 2.1 of the GNU Lesser
@@ -25,8 +25,8 @@ BEGIN_NAMESPACE_MDFMODEL
 
     //-------------------------------------------------------------------------
     // DESCRIPTION:
-    // The ProfileResult class is the root document node of the MdfModel. Through its
-    // interface, one can get access to all the data in the ProfileResult.
+    // The ProfileResult class is a root document node of the MdfModel. Through
+    // its interface, one can get access to all the data in the ProfileResult.
     //------------------------------------------------------------------------
     class MDFMODEL_API ProfileResult : public MdfRootObject
     {
@@ -64,4 +64,4 @@ BEGIN_NAMESPACE_MDFMODEL
     };
 
 END_NAMESPACE_MDFMODEL
-#endif // PROFILERSULT_H_
+#endif // PROFILERESULT_H_

@@ -42,7 +42,6 @@ ProfileRenderWatermarkResult::~ProfileRenderWatermarkResult()
 
 //-------------------------------------------------------------------------
 // PURPOSE: Accessor method for the ResourceId property.
-//          
 // RETURNS: The resource identifier of the watermark.
 //-------------------------------------------------------------------------
 const MdfString& ProfileRenderWatermarkResult::GetResourceId() const
@@ -63,7 +62,6 @@ void ProfileRenderWatermarkResult::SetResourceId(const MdfString& pstrResourceId
 
 //-------------------------------------------------------------------------
 // PURPOSE: Accessor method for the PositionType property.
-//          
 // RETURNS: The position type (XY or Tile) of the watermark.
 //-------------------------------------------------------------------------
 const MdfString& ProfileRenderWatermarkResult::GetPositionType() const
@@ -84,7 +82,6 @@ void ProfileRenderWatermarkResult::SetPositionType(const MdfString& pstrPosition
 
 //-------------------------------------------------------------------------
 // PURPOSE: Accessor method for the RenderTime property.
-//          
 // RETURNS: The time of stylizing a paricular watermark in the map.
 //-------------------------------------------------------------------------
 const double ProfileRenderWatermarkResult::GetRenderTime() const
@@ -103,7 +100,9 @@ void ProfileRenderWatermarkResult::SetRenderTime(const double& dRenderTime)
     this->m_dRenderTime = dRenderTime;
 }
 
-
+//-------------------------------------------------------------------------
+// PURPOSE: For memory leak testing.
+//-------------------------------------------------------------------------
 #ifdef _WIN32
 #ifdef _DEBUG
 int ProfileRenderWatermarkResult::DumpMemoryLeaks()

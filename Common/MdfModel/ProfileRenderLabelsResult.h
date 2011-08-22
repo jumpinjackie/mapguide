@@ -1,5 +1,5 @@
 //
-//  Copyright (C) 2010-2011 by Autodesk, Inc.
+//  Copyright (C) 2011 by Autodesk, Inc.
 //
 //  This library is free software; you can redistribute it and/or
 //  modify it under the terms of version 2.1 of the GNU Lesser
@@ -25,8 +25,8 @@ BEGIN_NAMESPACE_MDFMODEL
 
     //-------------------------------------------------------------------------
     // DESCRIPTION:
-    // The ProfileRenderLabelsResult is the profiling result which records 
-    // information during labels rendering procsses.
+    // The ProfileRenderLabelsResult is the profiling result which records
+    // information during label rendering processes.
     //------------------------------------------------------------------------
     class MDFMODEL_API ProfileRenderLabelsResult : public MdfRootObject
     {

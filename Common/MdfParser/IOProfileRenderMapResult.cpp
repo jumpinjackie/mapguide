@@ -1,5 +1,5 @@
 //
-//  Copyright (C) 2004-2011 by Autodesk, Inc.
+//  Copyright (C) 2011 by Autodesk, Inc.
 //
 //  This library is free software; you can redistribute it and/or
 //  modify it under the terms of version 2.1 of the GNU Lesser
@@ -46,6 +46,7 @@ ELEM_MAP_ENTRY(14, ProfileRenderLabelsResult);
 ELEM_MAP_ENTRY(15, CreateImageTime);
 ELEM_MAP_ENTRY(16, ExtendedData1);
 
+
 IOProfileRenderMapResult::IOProfileRenderMapResult(Version& version) : SAX2ElementHandler(version)
 {
     this->m_profileRenderMapResult = NULL;
@@ -84,7 +85,7 @@ void IOProfileRenderMapResult::EndElement(const wchar_t* name, HandlerStack* han
 void IOProfileRenderMapResult::Write(MdfStream& fd, ProfileRenderMapResult* profileRenderMapResult, Version* version, MgTab& tab)
 {
     ProfileResult::ProfileResultType type = profileRenderMapResult->GetProfileResultType();
-    if(ProfileResult::ProfileRenderMap)
+    if (ProfileResult::ProfileRenderMap)
         fd << tab.tab() << startStr(sProfileRenderMapResult) << std::endl;
     else //ProfileResult::ProfileRenderDynamicOverlay
         fd << tab.tab() << startStr(sProfileRenderDynamicOverlayResult) << std::endl;
@@ -130,22 +131,22 @@ void IOProfileRenderMapResult::Write(MdfStream& fd, ProfileRenderMapResult* prof
 
     // Property: ProfileRenderLayersResult
     ProfileRenderLayersResult* pProfileRenderLayersResult = profileRenderMapResult->GetProfileRenderLayersResult();
-    if(pProfileRenderLayersResult)
+    if (pProfileRenderLayersResult)
         IOProfileRenderLayersResult::Write(fd, pProfileRenderLayersResult, version, tab);
-    
+
     // Property: ProfileRenderSelectionResult
     ProfileRenderSelectionResult* pProfileRenderSelectionResult = profileRenderMapResult->GetProfileRenderSelectionResult();
-    if(pProfileRenderSelectionResult)
+    if (pProfileRenderSelectionResult)
         IOProfileRenderSelectionResult::Write(fd, pProfileRenderSelectionResult, version, tab);
 
     // Property: ProfileRenderWatermarksResult
     ProfileRenderWatermarksResult* pProfileRenderWatermarksResult = profileRenderMapResult->GetProfileRenderWatermarksResult();
-    if(pProfileRenderWatermarksResult)
+    if (pProfileRenderWatermarksResult)
         IOProfileRenderWatermarksResult::Write(fd, pProfileRenderWatermarksResult, version, tab);
 
     // Property: ProfileRenderLabelsResult
     ProfileRenderLabelsResult* pProfileRenderLabelsResult = profileRenderMapResult->GetProfileRenderLabelsResult();
-    if(pProfileRenderLabelsResult)
+    if (pProfileRenderLabelsResult)
         IOProfileRenderLabelsResult::Write(fd, pProfileRenderLabelsResult, version, tab);
 
     // Property: CreateImageTime
@@ -157,7 +158,7 @@ void IOProfileRenderMapResult::Write(MdfStream& fd, ProfileRenderMapResult* prof
     IOUnknown::Write(fd, profileRenderMapResult->GetUnknownXml(), version, tab);
 
     tab.dectab();
-    if(ProfileResult::ProfileRenderMap)
+    if (ProfileResult::ProfileRenderMap)
         fd << tab.tab() << endStr(sProfileRenderMapResult) << std::endl;
     else //ProfileResult::ProfileRenderDynamicOverlay
         fd << tab.tab() << endStr(sProfileRenderDynamicOverlayResult) << std::endl;

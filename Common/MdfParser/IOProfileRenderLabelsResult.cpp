@@ -1,5 +1,5 @@
 //
-//  Copyright (C) 2004-2011 by Autodesk, Inc.
+//  Copyright (C) 2011 by Autodesk, Inc.
 //
 //  This library is free software; you can redistribute it and/or
 //  modify it under the terms of version 2.1 of the GNU Lesser
@@ -27,6 +27,7 @@ CREATE_ELEMENT_MAP;
 ELEM_MAP_ENTRY(1, ProfileRenderLabelsResult);
 ELEM_MAP_ENTRY(2, RenderTime);
 ELEM_MAP_ENTRY(3, ExtendedData1);
+
 
 IOProfileRenderLabelsResult::IOProfileRenderLabelsResult(Version& version) : SAX2ElementHandler(version)
 {
@@ -72,7 +73,7 @@ void IOProfileRenderLabelsResult::Write(MdfStream& fd, ProfileRenderLabelsResult
     fd << tab.tab() << startStr(sRenderTime);
     fd << DoubleToStr(profileRenderLabelsResult->GetRenderTime());
     fd << endStr(sRenderTime) << std::endl;
-    
+
     // Write any unknown XML / extended data
     IOUnknown::Write(fd, profileRenderLabelsResult->GetUnknownXml(), version, tab);
 

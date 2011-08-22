@@ -1,5 +1,5 @@
 //
-//  Copyright (C) 2004-2011 by Autodesk, Inc.
+//  Copyright (C) 2011 by Autodesk, Inc.
 //
 //  This library is free software; you can redistribute it and/or
 //  modify it under the terms of version 2.1 of the GNU Lesser
@@ -29,6 +29,7 @@ ELEM_MAP_ENTRY(1, ProfileRenderLayersResult);
 ELEM_MAP_ENTRY(2, RenderTime);
 ELEM_MAP_ENTRY(3, ProfileRenderLayerResult);
 ELEM_MAP_ENTRY(4, ExtendedData1);
+
 
 IOProfileRenderLayersResult::IOProfileRenderLayersResult(Version& version) : SAX2ElementHandler(version)
 {

@@ -1,5 +1,5 @@
 //
-//  Copyright (C) 2004-2011 by Autodesk, Inc.
+//  Copyright (C) 2011 by Autodesk, Inc.
 //
 //  This library is free software; you can redistribute it and/or
 //  modify it under the terms of version 2.1 of the GNU Lesser
@@ -35,6 +35,7 @@ ELEM_MAP_ENTRY(7, ScaleRange);
 ELEM_MAP_ENTRY(8, Filter);
 ELEM_MAP_ENTRY(9, RenderTime);
 ELEM_MAP_ENTRY(10, ExtendedData1);
+
 
 IOProfileRenderLayerResult::IOProfileRenderLayerResult(Version& version) : SAX2ElementHandler(version)
 {
@@ -80,7 +81,7 @@ void IOProfileRenderLayerResult::Write(MdfStream& fd, ProfileRenderLayerResult* 
     fd << tab.tab() << startStr(sResourceId);
     fd << EncodeString(profileRenderLayerResult->GetResourceId());
     fd << endStr(sResourceId) << std::endl;
-    
+
     // Property: LayerName
     fd << tab.tab() << startStr(sLayerName);
     fd << EncodeString(profileRenderLayerResult->GetLayerName());
@@ -103,7 +104,7 @@ void IOProfileRenderLayerResult::Write(MdfStream& fd, ProfileRenderLayerResult* 
 
     // Property: ScaleRange
     ScaleRange* scaleRange = profileRenderLayerResult->GetScaleRange();
-    if(scaleRange)
+    if (scaleRange)
         IOScaleRange::Write(fd, scaleRange, version, tab);
 
     // Property: Filter
@@ -115,7 +116,7 @@ void IOProfileRenderLayerResult::Write(MdfStream& fd, ProfileRenderLayerResult* 
     fd << tab.tab() << startStr(sRenderTime);
     fd << DoubleToStr(profileRenderLayerResult->GetRenderTime());
     fd << endStr(sRenderTime) << std::endl;
-    
+
     // Write any unknown XML / extended data
     IOUnknown::Write(fd, profileRenderLayerResult->GetUnknownXml(), version, tab);
 
