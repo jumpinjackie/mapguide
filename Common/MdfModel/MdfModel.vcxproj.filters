@@ -37,6 +37,9 @@
     <Filter Include="WatermarkDefinition">
       <UniqueIdentifier>{e53f17be-958d-40bb-882d-aa1ef9f538bc}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ProfileResult">
+      <UniqueIdentifier>{e2817956-7222-40f0-93fd-d3fc5ad63418}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AreaUsage.cpp">
@@ -322,6 +325,33 @@
     <ClCompile Include="NameStringPair.cpp" />
     <ClCompile Include="UnicodeString.cpp" />
     <ClCompile Include="Version.cpp" />
+    <ClCompile Include="ScaleRange.cpp">
+      <Filter>ProfileResult</Filter>
+    </ClCompile>
+    <ClCompile Include="ProfileRenderLabelsResult.cpp">
+      <Filter>ProfileResult</Filter>
+    </ClCompile>
+    <ClCompile Include="ProfileRenderLayerResult.cpp">
+      <Filter>ProfileResult</Filter>
+    </ClCompile>
+    <ClCompile Include="ProfileRenderLayersResult.cpp">
+      <Filter>ProfileResult</Filter>
+    </ClCompile>
+    <ClCompile Include="ProfileRenderMapResult.cpp">
+      <Filter>ProfileResult</Filter>
+    </ClCompile>
+    <ClCompile Include="ProfileRenderSelectionResult.cpp">
+      <Filter>ProfileResult</Filter>
+    </ClCompile>
+    <ClCompile Include="ProfileRenderWatermarkResult.cpp">
+      <Filter>ProfileResult</Filter>
+    </ClCompile>
+    <ClCompile Include="ProfileRenderWatermarksResult.cpp">
+      <Filter>ProfileResult</Filter>
+    </ClCompile>
+    <ClCompile Include="ProfileResult.cpp">
+      <Filter>ProfileResult</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AreaUsage.h">
@@ -622,6 +652,33 @@
     <ClInclude Include="Version.h" />
     <ClInclude Include="URLData.h">
       <Filter>VectorLayer</Filter>
+    </ClInclude>
+    <ClInclude Include="ProfileResult.h">
+      <Filter>ProfileResult</Filter>
+    </ClInclude>
+    <ClInclude Include="ProfileRenderMapResult.h">
+      <Filter>ProfileResult</Filter>
+    </ClInclude>
+    <ClInclude Include="ProfileRenderLayersResult.h">
+      <Filter>ProfileResult</Filter>
+    </ClInclude>
+    <ClInclude Include="ProfileRenderLayerResult.h">
+      <Filter>ProfileResult</Filter>
+    </ClInclude>
+    <ClInclude Include="ProfileRenderSelectionResult.h">
+      <Filter>ProfileResult</Filter>
+    </ClInclude>
+    <ClInclude Include="ProfileRenderWatermarksResult.h">
+      <Filter>ProfileResult</Filter>
+    </ClInclude>
+    <ClInclude Include="ProfileRenderWatermarkResult.h">
+      <Filter>ProfileResult</Filter>
+    </ClInclude>
+    <ClInclude Include="ScaleRange.h">
+      <Filter>ProfileResult</Filter>
+    </ClInclude>
+    <ClInclude Include="ProfileRenderLabelsResult.h">
+      <Filter>ProfileResult</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

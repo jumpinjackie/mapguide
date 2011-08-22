@@ -21,6 +21,15 @@ libMgMdfModel_la_SOURCES = \
   PrintLayout/PropertyMapping.cpp \
   PrintLayout/StylizationConfiguration.cpp \
   PrintLayout/Thickness.cpp \
+  ProfileResult/ProfileRenderLabelsResult.cpp \
+  ProfileResult/ProfileRenderLayerResult.cpp \
+  ProfileResult/ProfileRenderLayersResult.cpp \
+  ProfileResult/ProfileRenderMapResult.cpp \
+  ProfileResult/ProfileRenderSelectionResult.cpp \
+  ProfileResult/ProfileRenderWatermarkResult.cpp \
+  ProfileResult/ProfileRenderWatermarksResult.cpp \
+  ProfileResult/ProfileResult.cpp \
+  ProfileResult/ScaleRange.cpp \
   AreaRule.cpp \
   AreaSymbolization2D.cpp \
   AreaTypeStyle.cpp \
@@ -124,6 +133,15 @@ noinst_HEADERS = \
   PrintLayout/PropertyMapping.h \
   PrintLayout/StylizationConfiguration.h \
   PrintLayout/Thickness.h \
+  ProfileResult/ProfileRenderLabelsResult.h \
+  ProfileResult/ProfileRenderLayerResult.h \
+  ProfileResult/ProfileRenderLayersResult.h \
+  ProfileResult/ProfileRenderMapResult.h \
+  ProfileResult/ProfileRenderSelectionResult.h \
+  ProfileResult/ProfileRenderWatermarkResult.h \
+  ProfileResult/ProfileRenderWatermarksResult.h \
+  ProfileResult/ProfileResult.h \
+  ProfileResult/ScaleRange.h \
   AreaRule.h \
   AreaSymbolization2D.h \
   AreaTypeStyle.h \
