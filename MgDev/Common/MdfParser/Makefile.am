@@ -24,15 +24,6 @@ libMgMdfParser_la_SOURCES = \
   PrintLayout/IOPrintLayoutElementStyle.cpp \
   PrintLayout/IOPropertyMappingCollection.cpp \
   PrintLayout/IOStylizationConfiguration.cpp \
-  ProfileResult/IOProfileRenderLabelsResult.cpp \
-  ProfileResult/IOProfileRenderLayerResult.cpp \
-  ProfileResult/IOProfileRenderLayersResult.cpp \
-  ProfileResult/IOProfileRenderMapResult.cpp \
-  ProfileResult/IOProfileRenderSelectionResult.cpp \
-  ProfileResult/IOProfileRenderWatermarkResult.cpp \
-  ProfileResult/IOProfileRenderWatermarksResult.cpp \
-  ProfileResult/IOProfileResult.cpp \
-  ProfileResult/IOScaleRange.cpp \
   PrintLayout/IOThickness.cpp \
   FSDSAX2Parser.cpp \
   IOAreaRule.cpp \
@@ -90,9 +81,18 @@ libMgMdfParser_la_SOURCES = \
   IOPointSymbolization2D.cpp \
   IOPointTypeStyle.cpp \
   IOPointUsage.cpp \
+  IOProfileRenderLabelsResult.cpp \
+  IOProfileRenderLayerResult.cpp \
+  IOProfileRenderLayersResult.cpp \
+  IOProfileRenderMapResult.cpp \
+  IOProfileRenderSelectionResult.cpp \
+  IOProfileRenderWatermarkResult.cpp \
+  IOProfileRenderWatermarksResult.cpp \
+  IOProfileResult.cpp \
   IORelateProperty.cpp \
   IOResizeBox.cpp \
   IOResourceRef.cpp \
+  IOScaleRange.cpp \
   IOSimpleSymbol.cpp \
   IOSimpleSymbolDefinition.cpp \
   IOStroke.cpp \
@@ -137,15 +137,6 @@ noinst_HEADERS = \
   PrintLayout/IOPropertyMappingCollection.h \
   PrintLayout/IOStylizationConfiguration.h \
   PrintLayout/IOThickness.h \
-  ProfileResult/IOProfileRenderLabelsResult.h \
-  ProfileResult/IOProfileRenderLayerResult.h \
-  ProfileResult/IOProfileRenderLayersResult.h \
-  ProfileResult/IOProfileRenderMapResult.h \
-  ProfileResult/IOProfileRenderSelectionResult.h \
-  ProfileResult/IOProfileRenderWatermarkResult.h \
-  ProfileResult/IOProfileRenderWatermarksResult.h \
-  ProfileResult/IOProfileResult.h \
-  ProfileResult/IOScaleRange.h \
   FSDSAX2Parser.h \
   IOAreaRule.h \
   IOAreaSymbolization2D.h \
@@ -201,9 +192,18 @@ noinst_HEADERS = \
   IOPointSymbolization2D.h \
   IOPointTypeStyle.h \
   IOPointUsage.h \
+  IOProfileRenderLabelsResult.h \
+  IOProfileRenderLayerResult.h \
+  IOProfileRenderLayersResult.h \
+  IOProfileRenderMapResult.h \
+  IOProfileRenderSelectionResult.h \
+  IOProfileRenderWatermarkResult.h \
+  IOProfileRenderWatermarksResult.h \
+  IOProfileResult.h \
   IORelateProperty.h \
   IOResizeBox.h \
   IOResourceRef.h \
+  IOScaleRange.h \
   IOSimpleSymbol.h \
   IOSimpleSymbolDefinition.h \
   IOStroke.h \

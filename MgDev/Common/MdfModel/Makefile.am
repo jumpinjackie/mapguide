@@ -21,15 +21,6 @@ libMgMdfModel_la_SOURCES = \
   PrintLayout/PropertyMapping.cpp \
   PrintLayout/StylizationConfiguration.cpp \
   PrintLayout/Thickness.cpp \
-  ProfileResult/ProfileRenderLabelsResult.cpp \
-  ProfileResult/ProfileRenderLayerResult.cpp \
-  ProfileResult/ProfileRenderLayersResult.cpp \
-  ProfileResult/ProfileRenderMapResult.cpp \
-  ProfileResult/ProfileRenderSelectionResult.cpp \
-  ProfileResult/ProfileRenderWatermarkResult.cpp \
-  ProfileResult/ProfileRenderWatermarksResult.cpp \
-  ProfileResult/ProfileResult.cpp \
-  ProfileResult/ScaleRange.cpp \
   AreaRule.cpp \
   AreaSymbolization2D.cpp \
   AreaTypeStyle.cpp \
@@ -86,9 +77,18 @@ libMgMdfModel_la_SOURCES = \
   PointSymbolization2D.cpp \
   PointTypeStyle.cpp \
   PointUsage.cpp \
+  ProfileRenderLabelsResult.cpp \
+  ProfileRenderLayerResult.cpp \
+  ProfileRenderLayersResult.cpp \
+  ProfileRenderMapResult.cpp \
+  ProfileRenderSelectionResult.cpp \
+  ProfileRenderWatermarkResult.cpp \
+  ProfileRenderWatermarksResult.cpp \
+  ProfileResult.cpp \
   RelateProperty.cpp \
   ResizeBox.cpp \
   Rule.cpp \
+  ScaleRange.cpp \
   SimpleSymbol.cpp \
   SimpleSymbolDefinition.cpp \
   Stroke.cpp \
@@ -133,15 +133,6 @@ noinst_HEADERS = \
   PrintLayout/PropertyMapping.h \
   PrintLayout/StylizationConfiguration.h \
   PrintLayout/Thickness.h \
-  ProfileResult/ProfileRenderLabelsResult.h \
-  ProfileResult/ProfileRenderLayerResult.h \
-  ProfileResult/ProfileRenderLayersResult.h \
-  ProfileResult/ProfileRenderMapResult.h \
-  ProfileResult/ProfileRenderSelectionResult.h \
-  ProfileResult/ProfileRenderWatermarkResult.h \
-  ProfileResult/ProfileRenderWatermarksResult.h \
-  ProfileResult/ProfileResult.h \
-  ProfileResult/ScaleRange.h \
   AreaRule.h \
   AreaSymbolization2D.h \
   AreaTypeStyle.h \
@@ -205,9 +196,18 @@ noinst_HEADERS = \
   PointSymbolization2D.h \
   PointTypeStyle.h \
   PointUsage.h \
+  ProfileRenderLabelsResult.h \
+  ProfileRenderLayerResult.h \
+  ProfileRenderLayersResult.h \
+  ProfileRenderMapResult.h \
+  ProfileRenderSelectionResult.h \
+  ProfileRenderWatermarkResult.h \
+  ProfileRenderWatermarksResult.h \
+  ProfileResult.h \
   RelateProperty.h \
   ResizeBox.h \
   Rule.h \
+  ScaleRange.h \
   SimpleSymbol.h \
   SimpleSymbolDefinition.h \
   SizeContexts.h \
