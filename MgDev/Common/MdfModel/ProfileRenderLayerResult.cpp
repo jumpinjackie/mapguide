@@ -1,5 +1,5 @@
 //
-//  Copyright (C) 2010-2011 by Autodesk, Inc.
+//  Copyright (C) 2011 by Autodesk, Inc.
 //
 //  This library is free software; you can redistribute it and/or
 //  modify it under the terms of version 2.1 of the GNU Lesser
@@ -44,7 +44,6 @@ ProfileRenderLayerResult::~ProfileRenderLayerResult()
 
 //-------------------------------------------------------------------------
 // PURPOSE: Accessor method for the ResourceId property.
-//          
 // RETURNS: The resource identifier of the layer.
 //-------------------------------------------------------------------------
 const MdfString& ProfileRenderLayerResult::GetResourceId() const
@@ -65,7 +64,6 @@ void ProfileRenderLayerResult::SetResourceId(const MdfString& pstrResourceId)
 
 //-------------------------------------------------------------------------
 // PURPOSE: Accessor method for the LayerName property.
-//          
 // RETURNS: The name of the layer.
 //-------------------------------------------------------------------------
 const MdfString& ProfileRenderLayerResult::GetLayerName() const
@@ -86,7 +84,6 @@ void ProfileRenderLayerResult::SetLayerName(const MdfString& pstrLayerName)
 
 //-------------------------------------------------------------------------
 // PURPOSE: Accessor method for the LayerType property.
-//          
 // RETURNS: The type (vector or raster) of the layer.
 //-------------------------------------------------------------------------
 const MdfString& ProfileRenderLayerResult::GetLayerType() const
@@ -107,7 +104,6 @@ void ProfileRenderLayerResult::SetLayerType(const MdfString& pstrLayerType)
 
 //-------------------------------------------------------------------------
 // PURPOSE: Accessor method for the FeatureClassName property.
-//          
 // RETURNS: The name of the feature class referenced by the layer.
 //-------------------------------------------------------------------------
 const MdfString& ProfileRenderLayerResult::GetFeatureClassName() const
@@ -128,7 +124,6 @@ void ProfileRenderLayerResult::SetFeatureClassName(const MdfString& pstrFeatureC
 
 //-------------------------------------------------------------------------
 // PURPOSE: Accessor method for the CoordinateSystem property.
-//          
 // RETURNS: The coordinate system as WKT used by the layer.
 //-------------------------------------------------------------------------
 const MdfString& ProfileRenderLayerResult::GetCoordinateSystem() const
@@ -149,7 +144,6 @@ void ProfileRenderLayerResult::SetCoordinateSystem(const MdfString& pstrCoordina
 
 //-------------------------------------------------------------------------
 // PURPOSE: Accessor method for the ScaleRange property.
-//          
 // RETURNS: The current scale range of the layer in the map.
 //-------------------------------------------------------------------------
 const ScaleRange* ProfileRenderLayerResult::GetScaleRange() const
@@ -159,7 +153,6 @@ const ScaleRange* ProfileRenderLayerResult::GetScaleRange() const
 
 //-------------------------------------------------------------------------
 // PURPOSE: Accessor method for the ScaleRange property.
-//          
 // RETURNS: The current scale range of the layer in the map.
 //-------------------------------------------------------------------------
 ScaleRange* ProfileRenderLayerResult::GetScaleRange()
@@ -196,7 +189,6 @@ ScaleRange* ProfileRenderLayerResult::OrphanScaleRange()
 
 //-------------------------------------------------------------------------
 // PURPOSE: Accessor method for the Filter property.
-//          
 // RETURNS: A boolean FDO expression that specifies which features to return.
 //-------------------------------------------------------------------------
 const MdfString& ProfileRenderLayerResult::GetFilter() const
@@ -217,7 +209,6 @@ void ProfileRenderLayerResult::SetFilter(const MdfString& pstrFilter)
 
 //-------------------------------------------------------------------------
 // PURPOSE: Accessor method for the RenderTime property.
-//          
 // RETURNS: The time of stylizing the layer in the map.
 //-------------------------------------------------------------------------
 const double ProfileRenderLayerResult::GetRenderTime() const
@@ -236,7 +227,9 @@ void ProfileRenderLayerResult::SetRenderTime(const double& dRenderTime)
     this->m_dRenderTime = dRenderTime;
 }
 
-
+//-------------------------------------------------------------------------
+// PURPOSE: For memory leak testing.
+//-------------------------------------------------------------------------
 #ifdef _WIN32
 #ifdef _DEBUG
 int ProfileRenderLayerResult::DumpMemoryLeaks()

@@ -1,5 +1,5 @@
 //
-//  Copyright (C) 2004-2011 by Autodesk, Inc.
+//  Copyright (C) 2011 by Autodesk, Inc.
 //
 //  This library is free software; you can redistribute it and/or
 //  modify it under the terms of version 2.1 of the GNU Lesser
@@ -17,7 +17,7 @@
 
 //-------------------------------------------------------------------------
 // DESCRIPTION:
-// The ScaleRange class implementation.
+// The ProfileResult class implementation.
 //-------------------------------------------------------------------------
 
 #include "stdafx.h"
@@ -47,7 +47,7 @@ ProfileResult::ProfileResultType ProfileResult::GetProfileResultType() const
 {
     return this->m_eProfileResultType;
 }
-   
+
 //-------------------------------------------------------------------------
 // PURPOSE: Accessor method for the ProfileResultType attribute.
 // PARAMETERS:
@@ -59,6 +59,9 @@ void ProfileResult::SetProfileResultType(ProfileResult::ProfileResultType type)
     this->m_eProfileResultType = type;
 }
 
+//-------------------------------------------------------------------------
+// PURPOSE: For memory leak testing.
+//-------------------------------------------------------------------------
 #ifdef _WIN32
 #ifdef _DEBUG
 int ProfileResult::DumpMemoryLeaks()

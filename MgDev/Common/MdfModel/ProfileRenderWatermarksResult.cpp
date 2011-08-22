@@ -1,5 +1,5 @@
 //
-//  Copyright (C) 2010-2011 by Autodesk, Inc.
+//  Copyright (C) 2011 by Autodesk, Inc.
 //
 //  This library is free software; you can redistribute it and/or
 //  modify it under the terms of version 2.1 of the GNU Lesser
@@ -31,7 +31,6 @@ using namespace MDFMODEL_NAMESPACE;
 ProfileRenderWatermarksResult::ProfileRenderWatermarksResult()
 {
     this->m_dRenderTime = 0.0;
-
 }
 
 //-------------------------------------------------------------------------
@@ -43,7 +42,6 @@ ProfileRenderWatermarksResult::~ProfileRenderWatermarksResult()
 
 //-------------------------------------------------------------------------
 // PURPOSE: Accessor method for the RenderTime property.
-//          
 // RETURNS: The time of stylizing all watermarks in the map.
 //-------------------------------------------------------------------------
 const double ProfileRenderWatermarksResult::GetRenderTime() const
@@ -64,7 +62,6 @@ void ProfileRenderWatermarksResult::SetRenderTime(const double& dRenderTime)
 
 //-------------------------------------------------------------------------
 // PURPOSE: Accessor method for the ProfileRenderWatermarkResults property.
-//          
 // RETURNS: A collection of ProfileRenderWatermarkResult.
 //-------------------------------------------------------------------------
 ProfileRenderWatermarkResultCollection* ProfileRenderWatermarksResult::GetProfileRenderWatermarkResults()
@@ -72,6 +69,9 @@ ProfileRenderWatermarkResultCollection* ProfileRenderWatermarksResult::GetProfil
     return &this->m_profileRenderWatermarkResults;
 }
 
+//-------------------------------------------------------------------------
+// PURPOSE: For memory leak testing.
+//-------------------------------------------------------------------------
 #ifdef _WIN32
 #ifdef _DEBUG
 int ProfileRenderWatermarksResult::DumpMemoryLeaks()

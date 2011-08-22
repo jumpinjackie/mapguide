@@ -1,5 +1,5 @@
 //
-//  Copyright (C) 2010-2011 by Autodesk, Inc.
+//  Copyright (C) 2011 by Autodesk, Inc.
 //
 //  This library is free software; you can redistribute it and/or
 //  modify it under the terms of version 2.1 of the GNU Lesser
@@ -17,7 +17,7 @@
 
 //-------------------------------------------------------------------------
 // DESCRIPTION:
-// The ProfileRenderLayersResult class implementation.
+// The ProfileRenderLabelsResult class implementation.
 //-------------------------------------------------------------------------
 
 #include "stdafx.h"
@@ -31,7 +31,6 @@ using namespace MDFMODEL_NAMESPACE;
 ProfileRenderLabelsResult::ProfileRenderLabelsResult()
 {
     this->m_dRenderTime = 0.0;
-
 }
 
 //-------------------------------------------------------------------------
@@ -43,7 +42,6 @@ ProfileRenderLabelsResult::~ProfileRenderLabelsResult()
 
 //-------------------------------------------------------------------------
 // PURPOSE: Accessor method for the RenderTime property.
-//          
 // RETURNS: The time of stylizing all labels in the map.
 //-------------------------------------------------------------------------
 const double ProfileRenderLabelsResult::GetRenderTime() const
@@ -62,6 +60,9 @@ void ProfileRenderLabelsResult::SetRenderTime(const double& dRenderTime)
     this->m_dRenderTime = dRenderTime;
 }
 
+//-------------------------------------------------------------------------
+// PURPOSE: For memory leak testing.
+//-------------------------------------------------------------------------
 #ifdef _WIN32
 #ifdef _DEBUG
 int ProfileRenderLabelsResult::DumpMemoryLeaks()

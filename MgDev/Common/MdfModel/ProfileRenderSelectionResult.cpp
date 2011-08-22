@@ -1,5 +1,5 @@
 //
-//  Copyright (C) 2010-2011 by Autodesk, Inc.
+//  Copyright (C) 2011 by Autodesk, Inc.
 //
 //  This library is free software; you can redistribute it and/or
 //  modify it under the terms of version 2.1 of the GNU Lesser
@@ -17,7 +17,7 @@
 
 //-------------------------------------------------------------------------
 // DESCRIPTION:
-// The ProfileRenderLayersResult class implementation.
+// The ProfileRenderSelectionResult class implementation.
 //-------------------------------------------------------------------------
 
 #include "stdafx.h"
@@ -41,7 +41,6 @@ ProfileRenderSelectionResult::~ProfileRenderSelectionResult()
 
 //-------------------------------------------------------------------------
 // PURPOSE: Accessor method for the RenderTime property.
-//          
 // RETURNS: The time of stylizing all selected layers in the map.
 //-------------------------------------------------------------------------
 const double ProfileRenderSelectionResult::GetRenderTime() const
@@ -62,7 +61,6 @@ void ProfileRenderSelectionResult::SetRenderTime(const double& dRenderTime)
 
 //-------------------------------------------------------------------------
 // PURPOSE: Accessor method for the Filter property.
-//          
 // RETURNS: A boolean FDO expression that specifies which features to return.
 //-------------------------------------------------------------------------
 const MdfString& ProfileRenderSelectionResult::GetFilter() const
@@ -83,7 +81,6 @@ void ProfileRenderSelectionResult::SetFilter(const MdfString& pstrFilter)
 
 //-------------------------------------------------------------------------
 // PURPOSE: Accessor method for the ProfileRenderLayerResults property.
-//          
 // RETURNS: A collection of ProfileRenderLayerResult.
 //-------------------------------------------------------------------------
 ProfileRenderLayerResultCollection* ProfileRenderSelectionResult::GetProfileRenderSelectedLayerResults()

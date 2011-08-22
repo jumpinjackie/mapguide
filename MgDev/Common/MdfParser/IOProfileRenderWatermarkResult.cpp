@@ -1,5 +1,5 @@
 //
-//  Copyright (C) 2004-2011 by Autodesk, Inc.
+//  Copyright (C) 2011 by Autodesk, Inc.
 //
 //  This library is free software; you can redistribute it and/or
 //  modify it under the terms of version 2.1 of the GNU Lesser
@@ -29,6 +29,7 @@ ELEM_MAP_ENTRY(2, ResourceId);
 ELEM_MAP_ENTRY(3, PositionType);
 ELEM_MAP_ENTRY(4, RenderTime);
 ELEM_MAP_ENTRY(5, ExtendedData1);
+
 
 IOProfileRenderWatermarkResult::IOProfileRenderWatermarkResult(Version& version) : SAX2ElementHandler(version)
 {
@@ -74,7 +75,7 @@ void IOProfileRenderWatermarkResult::Write(MdfStream& fd, ProfileRenderWatermark
     fd << tab.tab() << startStr(sResourceId);
     fd << EncodeString(profileRenderWatermarkResult->GetResourceId());
     fd << endStr(sResourceId) << std::endl;
-    
+
     // Property: PositionType
     fd << tab.tab() << startStr(sPositionType);
     fd << EncodeString(profileRenderWatermarkResult->GetPositionType());
@@ -84,7 +85,7 @@ void IOProfileRenderWatermarkResult::Write(MdfStream& fd, ProfileRenderWatermark
     fd << tab.tab() << startStr(sRenderTime);
     fd << DoubleToStr(profileRenderWatermarkResult->GetRenderTime());
     fd << endStr(sRenderTime) << std::endl;
-    
+
     // Write any unknown XML / extended data
     IOUnknown::Write(fd, profileRenderWatermarkResult->GetUnknownXml(), version, tab);
 

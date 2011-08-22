@@ -1,5 +1,5 @@
 //
-//  Copyright (C) 2010-2011 by Autodesk, Inc.
+//  Copyright (C) 2011 by Autodesk, Inc.
 //
 //  This library is free software; you can redistribute it and/or
 //  modify it under the terms of version 2.1 of the GNU Lesser
@@ -43,7 +43,6 @@ ProfileRenderLayersResult::~ProfileRenderLayersResult()
 
 //-------------------------------------------------------------------------
 // PURPOSE: Accessor method for the RenderTime property.
-//          
 // RETURNS: The time of stylizing all layers in the map.
 //-------------------------------------------------------------------------
 const double ProfileRenderLayersResult::GetRenderTime() const
@@ -64,7 +63,6 @@ void ProfileRenderLayersResult::SetRenderTime(const double& dRenderTime)
 
 //-------------------------------------------------------------------------
 // PURPOSE: Accessor method for the ProfileRenderLayerResults property.
-//          
 // RETURNS: A collection of ProfileRenderLayerResult.
 //-------------------------------------------------------------------------
 ProfileRenderLayerResultCollection* ProfileRenderLayersResult::GetProfileRenderLayerResults()
@@ -72,6 +70,9 @@ ProfileRenderLayerResultCollection* ProfileRenderLayersResult::GetProfileRenderL
     return &this->m_profileRenderLayerResults;
 }
 
+//-------------------------------------------------------------------------
+// PURPOSE: For memory leak testing.
+//-------------------------------------------------------------------------
 #ifdef _WIN32
 #ifdef _DEBUG
 int ProfileRenderLayersResult::DumpMemoryLeaks()

@@ -1,5 +1,5 @@
 //
-//  Copyright (C) 2010-2011 by Autodesk, Inc.
+//  Copyright (C) 2011 by Autodesk, Inc.
 //
 //  This library is free software; you can redistribute it and/or
 //  modify it under the terms of version 2.1 of the GNU Lesser
@@ -33,7 +33,8 @@ BEGIN_NAMESPACE_MDFMODEL
     //-------------------------------------------------------------------------
     // DESCRIPTION:
     // The ProfileRenderMapResult class is one concrete implementation of ProfileResult.
-    // It's a profiling result which records information during RenderMap or RenderDynamicOverlay procsses.
+    // It's a profiling result which records information during RenderMap or
+    // RenderDynamicOverlay processes.
     //------------------------------------------------------------------------
     class MDFMODEL_API ProfileRenderMapResult : public ProfileResult
     {
@@ -85,28 +86,28 @@ BEGIN_NAMESPACE_MDFMODEL
         void SetRenderTime(const double& dRenderTime);
 
         // Property: ProfileRenderLayersResult
-        // Profiling result which records information during layers rendering procsses.
+        // Profiling result which records information during layer rendering processes.
         const  ProfileRenderLayersResult* GetProfileRenderLayersResult() const;
         ProfileRenderLayersResult* GetProfileRenderLayersResult();
         void AdoptProfileRenderLayersResult(ProfileRenderLayersResult* pProfileRenderLayersResult);
         ProfileRenderLayersResult* OrphanProfileRenderLayersResult();
 
         // Property: ProfileRenderSelectionResult
-        // Profiling result which records information during selection rendering procsses.
+        // Profiling result which records information during selection rendering processes.
         const  ProfileRenderSelectionResult* GetProfileRenderSelectionResult() const;
         ProfileRenderSelectionResult* GetProfileRenderSelectionResult();
         void AdoptProfileRenderSelectionResult(ProfileRenderSelectionResult* pProfileRenderSelectionResult);
         ProfileRenderSelectionResult* OrphanProfileRenderSelectionResult();
 
         // Property: ProfileRenderWatermarksResult
-        // Profiling result which records information during watermarks rendering procsses.
+        // Profiling result which records information during watermark rendering processes.
         const  ProfileRenderWatermarksResult* GetProfileRenderWatermarksResult() const;
         ProfileRenderWatermarksResult* GetProfileRenderWatermarksResult();
         void AdoptProfileRenderWatermarksResult(ProfileRenderWatermarksResult* pProfileRenderWatermarksResult);
         ProfileRenderWatermarksResult* OrphanProfileRenderWatermarksResult();
 
         // Property: ProfileRenderLabelsResult
-        // Profiling result which records information during labels rendering procsses.
+        // Profiling result which records information during label rendering processes.
         const  ProfileRenderLabelsResult* GetProfileRenderLabelsResult() const;
         ProfileRenderLabelsResult* GetProfileRenderLabelsResult();
         void AdoptProfileRenderLabelsResult(ProfileRenderLabelsResult* pProfileRenderLabelsResult);

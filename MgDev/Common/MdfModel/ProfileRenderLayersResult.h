@@ -1,5 +1,5 @@
 //
-//  Copyright (C) 2010-2011 by Autodesk, Inc.
+//  Copyright (C) 2011 by Autodesk, Inc.
 //
 //  This library is free software; you can redistribute it and/or
 //  modify it under the terms of version 2.1 of the GNU Lesser
@@ -27,8 +27,8 @@ BEGIN_NAMESPACE_MDFMODEL
 
     //-------------------------------------------------------------------------
     // DESCRIPTION:
-    // The ProfileRenderLayersResult is a profiling result which records information 
-    // during layers rendering procsses.
+    // The ProfileRenderLayersResult is a profiling result which records
+    // information during layer rendering processes.
     //------------------------------------------------------------------------
     class MDFMODEL_API ProfileRenderLayersResult : public MdfRootObject
     {

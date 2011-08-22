@@ -1,5 +1,5 @@
 //
-//  Copyright (C) 2004-2011 by Autodesk, Inc.
+//  Copyright (C) 2011 by Autodesk, Inc.
 //
 //  This library is free software; you can redistribute it and/or
 //  modify it under the terms of version 2.1 of the GNU Lesser
@@ -28,6 +28,7 @@ ELEM_MAP_ENTRY(1, ScaleRange);
 ELEM_MAP_ENTRY(2, MinScale);
 ELEM_MAP_ENTRY(3, MaxScale);
 ELEM_MAP_ENTRY(4, ExtendedData1);
+
 
 IOScaleRange::IOScaleRange(Version& version) : SAX2ElementHandler(version)
 {
@@ -73,13 +74,12 @@ void IOScaleRange::Write(MdfStream& fd, ScaleRange* scaleRange, Version* version
     fd << tab.tab() << startStr(sMinScale);
     fd << DoubleToStr(scaleRange->GetMinScale());
     fd << endStr(sMinScale) << std::endl;
-    
 
     // Property: MaxScale
     fd << tab.tab() << startStr(sMaxScale);
     fd << DoubleToStr(scaleRange->GetMaxScale());
     fd << endStr(sMaxScale) << std::endl;
-    
+
     // Write any unknown XML / extended data
     IOUnknown::Write(fd, scaleRange->GetUnknownXml(), version, tab);
 

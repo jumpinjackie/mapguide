@@ -30,7 +30,7 @@
   </xs:complexType>
   <xs:complexType name="ProfileRenderMapType">
     <xs:annotation>
-      <xs:documentation>Profiling result which records information during RenderMap or RenderDynamicOverlay procsses.</xs:documentation>
+      <xs:documentation>Profiling result which records information during RenderMap or RenderDynamicOverlay processes.</xs:documentation>
     </xs:annotation>
     <xs:sequence>
       <xs:element name="ResourceId" type="xs:string">
@@ -75,22 +75,22 @@
       </xs:element>
       <xs:element name="ProfileRenderLayers" type="ProfileRenderLayersType">
         <xs:annotation>
-          <xs:documentation>Profiling result which records information during layers rendering procsses.</xs:documentation>
+          <xs:documentation>Profiling result which records information during layer rendering processes.</xs:documentation>
         </xs:annotation>
       </xs:element>
       <xs:element name="ProfileRenderSelection" type="ProfileRenderSelectionType" minOccurs="0" maxOccurs="1">
         <xs:annotation>
-          <xs:documentation>Profiling result which records information during selection rendering procsses.</xs:documentation>
+          <xs:documentation>Profiling result which records information during selection rendering processes.</xs:documentation>
         </xs:annotation>
       </xs:element>
       <xs:element name="ProfileRenderWatermarks" type="ProfileRenderWatermarksType" minOccurs="0" maxOccurs="1">
         <xs:annotation>
-          <xs:documentation>Profiling result which records information during watermarks rendering procsses.</xs:documentation>
+          <xs:documentation>Profiling result which records information during watermark rendering processes.</xs:documentation>
         </xs:annotation>
       </xs:element>
       <xs:element name="ProfileRenderLabels" type="ProfileRenderLabelsType" minOccurs="0" maxOccurs="1">
         <xs:annotation>
-          <xs:documentation>Profiling result which records information during labels rendering procsses.</xs:documentation>
+          <xs:documentation>Profiling result which records information during label rendering processes.</xs:documentation>
         </xs:annotation>
       </xs:element>
       <xs:element name="CreateImageTime" type="xs:double">
@@ -103,7 +103,7 @@
   </xs:complexType>
   <xs:complexType name="ProfileRenderLayersType">
     <xs:annotation>
-      <xs:documentation>Profiling result which records information during layers rendering procsses.</xs:documentation>
+      <xs:documentation>Profiling result which records information during layer rendering processes.</xs:documentation>
     </xs:annotation>
     <xs:sequence>
       <xs:element name="RenderTime" type="xs:double">
@@ -113,7 +113,7 @@
       </xs:element>
       <xs:element name="ProfileRenderLayer" type="ProfileRenderLayerType" minOccurs="0" maxOccurs="unbounded">
         <xs:annotation>
-          <xs:documentation>Profiling result which records information during a particular layer rendering procsses.</xs:documentation>
+          <xs:documentation>Profiling result which records information for a particular layer rendering process.</xs:documentation>
         </xs:annotation>
       </xs:element>
       <xs:element name="ExtendedData1" type="ExtendedDataType" minOccurs="0"/>
@@ -121,7 +121,7 @@
   </xs:complexType>
   <xs:complexType name="ProfileRenderSelectionType">
     <xs:annotation>
-      <xs:documentation>Profiling result which records information during selected layers rendering procsses.</xs:documentation>
+      <xs:documentation>Profiling result which records information during selected layer rendering processes.</xs:documentation>
     </xs:annotation>
     <xs:sequence>
       <xs:element name="RenderTime" type="xs:double">
@@ -136,7 +136,7 @@
       </xs:element>
       <xs:element name="ProfileSelectedRenderLayer" type="ProfileRenderLayerType" minOccurs="0" maxOccurs="unbounded">
         <xs:annotation>
-          <xs:documentation>Profiling result which records information during a particular selected layer rendering procsses.</xs:documentation>
+          <xs:documentation>Profiling result which records information for a particular selected layer rendering process.</xs:documentation>
         </xs:annotation>
       </xs:element>
       <xs:element name="ExtendedData1" type="ExtendedDataType" minOccurs="0"/>
@@ -144,7 +144,7 @@
   </xs:complexType>
   <xs:complexType name="ProfileRenderWatermarksType">
     <xs:annotation>
-      <xs:documentation>Profiling result which records information during watermarks rendering procsses.</xs:documentation>
+      <xs:documentation>Profiling result which records information during watermark rendering processes.</xs:documentation>
     </xs:annotation>
     <xs:sequence>
       <xs:element name="RenderTime" type="xs:double">
@@ -154,7 +154,7 @@
       </xs:element>
       <xs:element name="ProfileRenderWatermark" type="ProfileRenderWatermarkType" minOccurs="0" maxOccurs="unbounded">
         <xs:annotation>
-          <xs:documentation>Profiling result which records information during a particular watermark rendering procsses.</xs:documentation>
+          <xs:documentation>Profiling result which records information for a particular watermark rendering process.</xs:documentation>
         </xs:annotation>
       </xs:element>
       <xs:element name="ExtendedData1" type="ExtendedDataType" minOccurs="0"/>
@@ -162,7 +162,7 @@
   </xs:complexType>
   <xs:complexType name="ProfileRenderLabelsType">
     <xs:annotation>
-      <xs:documentation>Profiling result which records information during labels rendering procsses.</xs:documentation>
+      <xs:documentation>Profiling result which records information during label rendering processes.</xs:documentation>
     </xs:annotation>
     <xs:sequence>
       <xs:element name="RenderTime" type="xs:double">
@@ -175,7 +175,7 @@
   </xs:complexType>
   <xs:complexType name="ProfileRenderLayerType">
     <xs:annotation>
-      <xs:documentation>Profiling result which records information during a particular layer rendering procsses.</xs:documentation>
+      <xs:documentation>Profiling result which records information for a particular layer rendering process.</xs:documentation>
     </xs:annotation>
     <xs:sequence>
       <xs:element name="ResourceId" type="xs:string">
@@ -223,7 +223,7 @@
   </xs:complexType>
   <xs:complexType name="ProfileRenderWatermarkType">
     <xs:annotation>
-      <xs:documentation>Profiling result which records information during a particular watermark rendering procsses.</xs:documentation>
+      <xs:documentation>Profiling result which records information for a particular watermark rendering process.</xs:documentation>
     </xs:annotation>
     <xs:sequence>
       <xs:element name="ResourceId" type="xs:string">

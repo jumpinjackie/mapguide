@@ -1,5 +1,5 @@
 //
-//  Copyright (C) 2004-2011 by Autodesk, Inc.
+//  Copyright (C) 2011 by Autodesk, Inc.
 //
 //  This library is free software; you can redistribute it and/or
 //  modify it under the terms of version 2.1 of the GNU Lesser
@@ -25,9 +25,9 @@ BEGIN_NAMESPACE_MDFMODEL
 
     //-------------------------------------------------------------------------
     // DESCRIPTION:
-    // ScaleRange describes a range includes the min and max scales of a particular layer.
+    // ScaleRange describes the min and max scales for a layer's scale range.
     //-------------------------------------------------------------------------
-class MDFMODEL_API ScaleRange : public MdfRootObject
+    class MDFMODEL_API ScaleRange : public MdfRootObject
     {
     public:
         // Represents the maximum value for the map scale.

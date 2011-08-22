@@ -1,5 +1,5 @@
 //
-//  Copyright (C) 2010-2011 by Autodesk, Inc.
+//  Copyright (C) 2011 by Autodesk, Inc.
 //
 //  This library is free software; you can redistribute it and/or
 //  modify it under the terms of version 2.1 of the GNU Lesser
@@ -27,8 +27,8 @@ BEGIN_NAMESPACE_MDFMODEL
 
     //-------------------------------------------------------------------------
     // DESCRIPTION:
-    // The ProfileRenderWatermarksResult is a profiling result which records information 
-    // during watermarks rendering procsses.
+    // The ProfileRenderWatermarksResult is a profiling result which records
+    // information during watermark rendering processes.
     //------------------------------------------------------------------------
     class MDFMODEL_API ProfileRenderWatermarksResult : public MdfRootObject
     {
@@ -44,12 +44,9 @@ BEGIN_NAMESPACE_MDFMODEL
         const double GetRenderTime() const;
         void SetRenderTime(const double& dRenderTime);
 
-          
         // Property: ProfileRenderWatermarkResults
         // A collection of ProfileRenderWatermarkResult.
         ProfileRenderWatermarkResultCollection* GetProfileRenderWatermarkResults();
-       
-
 
 //#ifdef _WIN32
 #if _DEBUG

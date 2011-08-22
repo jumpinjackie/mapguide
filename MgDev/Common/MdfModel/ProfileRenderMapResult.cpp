@@ -1,5 +1,5 @@
 //
-//  Copyright (C) 2010-2011 by Autodesk, Inc.
+//  Copyright (C) 2011 by Autodesk, Inc.
 //
 //  This library is free software; you can redistribute it and/or
 //  modify it under the terms of version 2.1 of the GNU Lesser
@@ -53,7 +53,6 @@ ProfileRenderMapResult::~ProfileRenderMapResult()
 
 //-------------------------------------------------------------------------
 // PURPOSE: Accessor method for the ResourceId property.
-//          
 // RETURNS: The resource identifier of the map.
 //-------------------------------------------------------------------------
 const MdfString& ProfileRenderMapResult::GetResourceId() const
@@ -74,7 +73,6 @@ void ProfileRenderMapResult::SetResourceId(const MdfString& pstrResourceId)
 
 //-------------------------------------------------------------------------
 // PURPOSE: Accessor method for the CoordinateSystem property.
-//          
 // RETURNS: The coordinate system as WKT used by the map.
 //-------------------------------------------------------------------------
 const MdfString& ProfileRenderMapResult::GetCoordinateSystem() const
@@ -115,7 +113,6 @@ void ProfileRenderMapResult::SetExtents(const Box2D& boxExtents)
 
 //-------------------------------------------------------------------------
 // PURPOSE: Accessor method for the Scale property.
-//          
 // RETURNS: The initial display scale of the map.
 //-------------------------------------------------------------------------
 const double ProfileRenderMapResult::GetScale() const
@@ -136,7 +133,6 @@ void ProfileRenderMapResult::SetScale(const double& dScale)
 
 //-------------------------------------------------------------------------
 // PURPOSE: Accessor method for the LayerCount property.
-//          
 // RETURNS: The number of layers in the map.
 //-------------------------------------------------------------------------
 const int ProfileRenderMapResult::GetLayerCount() const
@@ -157,7 +153,6 @@ void ProfileRenderMapResult::SetLayerCount(const int& iLayerCount)
 
 //-------------------------------------------------------------------------
 // PURPOSE: Accessor method for the ImageFormat property.
-//          
 // RETURNS: The format of the map image.
 //-------------------------------------------------------------------------
 const MdfString& ProfileRenderMapResult::GetImageFormat() const
@@ -178,7 +173,6 @@ void ProfileRenderMapResult::SetImageFormat(const MdfString& pstrImageFormat)
 
 //-------------------------------------------------------------------------
 // PURPOSE: Accessor method for the RendererType property.
-//          
 // RETURNS: The renderer used in the image rendering process.
 //-------------------------------------------------------------------------
 const MdfString& ProfileRenderMapResult::GetRendererType() const
@@ -199,7 +193,6 @@ void ProfileRenderMapResult::SetRendererType(const MdfString& pstrRendererType)
 
 //-------------------------------------------------------------------------
 // PURPOSE: Accessor method for the RenderTime property.
-//          
 // RETURNS: The total render time to generate the map image.
 //-------------------------------------------------------------------------
 const double ProfileRenderMapResult::GetRenderTime() const
@@ -401,9 +394,9 @@ ProfileRenderLabelsResult* ProfileRenderMapResult::OrphanProfileRenderLabelsResu
     this->m_profileRenderLabelsResult = NULL;
     return pRet;
 }
+
 //-------------------------------------------------------------------------
 // PURPOSE: Accessor method for the CreateImageTime property.
-//          
 // RETURNS: The time of rendering stylized map to an image.
 //-------------------------------------------------------------------------
 const double ProfileRenderMapResult::GetCreateImageTime() const
@@ -422,6 +415,9 @@ void ProfileRenderMapResult::SetCreateImageTime(const double& dCreateImageTime)
     this->m_dCreateImageTime = dCreateImageTime;
 }
 
+//-------------------------------------------------------------------------
+// PURPOSE: For memory leak testing.
+//-------------------------------------------------------------------------
 #ifdef _WIN32
 #ifdef _DEBUG
 int ProfileRenderMapResult::DumpMemoryLeaks()

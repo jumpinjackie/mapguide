@@ -1,5 +1,5 @@
 //
-//  Copyright (C) 2010-2011 by Autodesk, Inc.
+//  Copyright (C) 2011 by Autodesk, Inc.
 //
 //  This library is free software; you can redistribute it and/or
 //  modify it under the terms of version 2.1 of the GNU Lesser
@@ -27,8 +27,8 @@ BEGIN_NAMESPACE_MDFMODEL
 
     //-------------------------------------------------------------------------
     // DESCRIPTION:
-    // The ProfileRenderSelectionResult is a profiling result which records information 
-    // during selected layers rendering procsses.
+    // The ProfileRenderSelectionResult is a profiling result which records
+    // information during selected layer rendering processes.
     //------------------------------------------------------------------------
     class MDFMODEL_API ProfileRenderSelectionResult : public MdfRootObject
     {
@@ -49,7 +49,6 @@ BEGIN_NAMESPACE_MDFMODEL
         const MdfString& GetFilter() const;
         void SetFilter(const MdfString& pstrFilter);
 
-        
         // Property: ProfileRenderSelectedLayerResults
         // A collection of ProfileRenderSelectedLayerResult.
         ProfileRenderLayerResultCollection* GetProfileRenderSelectedLayerResults();
