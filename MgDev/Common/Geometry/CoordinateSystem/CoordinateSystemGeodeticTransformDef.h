@@ -174,6 +174,11 @@ PUBLISHED_API:
     /// is reponsible for disposing the object being returned.
     virtual MgCoordinateSystemGeodeticTransformation* CreateTransformation(bool createInverse) = 0;
 
+INTERNAL_API:
+    virtual UINT8* SerializeFrom(UINT8* pStream)=0;
+    virtual UINT8* SerializeTo(UINT8* pStream)=0;
+    virtual UINT32 GetSizeSerialized()=0;
+
 protected:
     /////////////////////////////////////////////////////////////////
     /// \brief
