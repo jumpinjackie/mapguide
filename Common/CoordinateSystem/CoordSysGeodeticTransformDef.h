@@ -96,6 +96,10 @@ public:
 
     MgCoordinateSystemGeodeticTransformation* CreateTransformation(bool createInverse);
 
+    virtual UINT8* SerializeFrom(UINT8* pStream);
+    virtual UINT8* SerializeTo(UINT8* pStream);
+    virtual UINT32 GetSizeSerialized();
+
     //helper - don't delete
     virtual bool IsEncrypted();
 
@@ -112,6 +116,11 @@ private:
     INT32 transformationDefType;
     cs_GeodeticTransform_* transformDefinition;
     Ptr<MgCoordinateSystemCatalog> catalog;
+    
+    enum CCoordinateSystemGeodeticPathObjectVersions
+    {
+        kGxRelease0  = 0   // Initial Release
+    };
 };
 
 } //namespace CSLibrary

@@ -18,6 +18,15 @@
 #include "GeometryCommon.h"
 #include "GeometryConsoleTest.h"
 
+#include "CoordSysGeodeticTransformation.h"
+#include "CoordSysGeodeticTransformDefParams.h"
+#include "CoordSysGeodeticStandaloneTransformDefParams.h"
+#include "CoordSysGeodeticAnalyticalTransformDefParams.h"
+#include "CoordSysGeodeticInterpolationTransformDefParams.h"
+#include "CoordSysGeodeticMultipleRegressionTransformDefParams.h"
+#include "CoordSysGeodeticTransformDef.h"
+#include "CoordSysGeodeticPath.h"
+
 static wchar_t moduleName [] = L"GctTestT.cpp";
 
 INT32 GctTestT (MgGctTestParameters& cmdLineParms)
@@ -33,6 +42,10 @@ INT32 GctTestT (MgGctTestParameters& cmdLineParms)
     Ptr<MgCoordinateSystem> ptrSourceCRS;
     Ptr<MgCoordinateSystem> ptrTargetCRS;
     Ptr<MgCoordinateSystemTransform> crsTransform;
+    Ptr<MgCoordinateSystemGeodeticTransformDefDictionary> ptrTransformDictionary;
+    Ptr<MgCoordinateSystemGeodeticPathDictionary> ptrPathDictionary;
+    Ptr<MgCoordinateSystemGeodeticTransformDef> ptrTransformDef;
+    Ptr<MgCoordinateSystemGeodeticPath> ptrPath;
 
     MgGeometryFactory mgFactory;
     MgCoordinateSystemFactory csFactory;
@@ -53,6 +66,10 @@ INT32 GctTestT (MgGctTestParameters& cmdLineParms)
         // Get some basic pointers.
         ptrCatalog = csFactory.GetCatalog ();
         ptrDictionary = ptrCatalog->GetCoordinateSystemDictionary ();
+        ptrTransformDictionary = ptrCatalog->GetGeodeticTransformDefDictionary ();
+        ptrPathDictionary = ptrCatalog->GetGeodeticPathDictionary ();
+ 
+ #ifdef __SKIP__
         ptrSourceCRS = ptrDictionary->GetCoordinateSystem (L"LL-ATS77");
         ptrTargetCRS = ptrDictionary->GetCoordinateSystem (L"LL84");
         crsTransform = csFactory.GetTransform (ptrSourceCRS.p,ptrTargetCRS.p);
@@ -66,6 +83,29 @@ INT32 GctTestT (MgGctTestParameters& cmdLineParms)
             Ptr<MgCoordinateSystemGeodeticPath> pathDefPtr;
             pathDefPtr = crsTransform->GetExplicitGeodeticPath ();
         }
+#endif
+#ifdef __SKIP__
+
+        ptrTransformDef.p = ptrTransformDictionary->GetGeodeticTransformationDef (L"ABIDJAN-87_to_WGS84");
+        CSLibrary::CCoordinateSystemGeodeticTransformDef* xfrmDefOld = dynamic_cast<CSLibrary::CCoordinateSystemGeodeticTransformDef*>(ptrTransformDef.p);
+        INT32 transformSize = xfrmDefOld->GetSizeSerialized();
+        UINT8* bufr = new UINT8 [transformSize];
+        xfrmDefOld->SerializeTo (bufr);
+
+        MgCoordinateSystemGeodeticTransformDef* ptrXfrmDefNewMg = ptrTransformDictionary->NewGeodeticTransformationDef(MgCoordinateSystemGeodeticTransformDefType::Standalone);
+        CSLibrary::CCoordinateSystemGeodeticTransformDef* xfrmDefNew = dynamic_cast<CSLibrary::CCoordinateSystemGeodeticTransformDef*>(ptrXfrmDefNewMg);
+        xfrmDefNew->SerializeFrom (bufr);
+#endif
+
+        ptrPath.p = ptrPathDictionary->GetGeodeticPath (L"ASTRLA66-Grid_to_WGS84");
+        CSLibrary::CCoordinateSystemGeodeticPath* pathDefOld = dynamic_cast<CSLibrary::CCoordinateSystemGeodeticPath*>(ptrPath.p);
+        INT32 pathSize = pathDefOld->GetSizeSerialized();
+        UINT8* bufr = new UINT8 [pathSize];
+        pathDefOld->SerializeTo (bufr);
+
+        MgCoordinateSystemGeodeticPath* ptrPathDefNewMg = ptrPathDictionary->NewGeodeticPath();
+        CSLibrary::CCoordinateSystemGeodeticPath* pathDefNew = dynamic_cast<CSLibrary::CCoordinateSystemGeodeticPath*>(ptrPathDefNewMg);
+        pathDefNew->SerializeFrom (bufr);
     }
     catch (...)
     {
@@ -80,4 +120,3 @@ INT32 GctTestT (MgGctTestParameters& cmdLineParms)
     // All done.
     return errorCount;
 }
-

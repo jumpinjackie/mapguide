@@ -207,3 +207,78 @@ DEFINE_GET_SET_NUMERIC(CCoordinateSystemGeodeticPath,Accuracy,double,this->pathD
 DEFINE_GET_SET_NUMERIC(CCoordinateSystemGeodeticPath,IsReversible,bool,this->pathDefinition->reversible)
 DEFINE_GET_SET_NUMERIC(CCoordinateSystemGeodeticPath,EpsgCode,INT32,this->pathDefinition->epsgCode)
 DEFINE_GET_SET_NUMERIC(CCoordinateSystemGeodeticPath,EpsgVariant,INT32,this->pathDefinition->variant)
+
+//*****************************************************************************
+UINT8* CCoordinateSystemGeodeticPath::SerializeFrom(UINT8* pStream)
+{
+    UINT8* pStreamOut=pStream;
+
+    MG_TRY()
+    assert(NULL != pStream);
+    if (!pStream)
+    {
+        throw new MgInvalidArgumentException(L"MgCoordinateSystemGeodeticPath.SerializeFrom", __LINE__, __WFILE__, NULL, L"", NULL);
+    }
+
+    UINT8 nVersion=pStreamOut[0];
+
+    if (kGpRelease0==nVersion)
+    {
+        pStreamOut++;
+
+        //Read the def from the stream
+        cs_GeodeticPath_* previousPathPtr = this->pathDefinition;
+        this->pathDefinition = (cs_GeodeticPath_*)CS_malc(sizeof(cs_GeodeticPath_));
+        if (pathDefinition == NULL)
+        {
+            this->pathDefinition = previousPathPtr;
+            throw new MgOutOfMemoryException (L"MgCoordinateSystemGeodeticPath.SerializeFrom", __LINE__, __WFILE__, NULL, L"", NULL);
+        }
+        memcpy(pathDefinition, pStreamOut, sizeof(cs_GeodeticPath_));
+        pStreamOut = pStreamOut + sizeof(cs_GeodeticPath_);
+        
+        //Make sure it's valid.  This function does not throw.
+        if (!IsValid())
+        {
+            CS_free (this->pathDefinition);
+            this->pathDefinition = previousPathPtr;
+            throw new MgInvalidArgumentException(L"MgCoordinateSystemGeodeticPath.SerializeFrom", __LINE__, __WFILE__, NULL, L"", NULL);
+        }
+        CS_free (previousPathPtr);
+    }
+
+    MG_CATCH_AND_THROW(L"MgCoordinateSystemGeodeticPath.SerializeFrom")
+    return pStreamOut;
+}
+
+//*****************************************************************************
+UINT8* CCoordinateSystemGeodeticPath::SerializeTo(UINT8* pStream)
+{
+    UINT8* pStreamOut=pStream;
+
+    MG_TRY()
+    assert(NULL != pStream);
+    if (!pStream)
+    {
+        throw new MgInvalidArgumentException(L"MgCoordinateSystemGeodeticPath.SerializeTo", __LINE__, __WFILE__, NULL, L"", NULL);
+    }
+
+    //save the version
+    pStreamOut[0]=kGpRelease0;
+    pStreamOut++;
+
+    char *pBuf = reinterpret_cast<char *>(this->pathDefinition);
+    memcpy(pStreamOut, pBuf, sizeof(*this->pathDefinition));
+    pStreamOut = pStreamOut + sizeof(*this->pathDefinition);
+
+    MG_CATCH_AND_THROW(L"MgCoordinateSystemGeodeticPath.SerializeTo")
+    return pStreamOut;
+}
+
+//*****************************************************************************
+UINT32 CCoordinateSystemGeodeticPath::GetSizeSerialized()
+{
+    //size of the structure and the verison number
+    size_t size=sizeof(cs_GeodeticPath_) + sizeof(UINT8);
+    return static_cast<UINT32>(size);
+}

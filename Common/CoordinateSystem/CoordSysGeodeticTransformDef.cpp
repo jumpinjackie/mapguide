@@ -371,3 +371,110 @@ DEFINE_GET_SET_NUMERIC(CCoordinateSystemGeodeticTransformDef,RangeMinLongitude,d
 DEFINE_GET_SET_NUMERIC(CCoordinateSystemGeodeticTransformDef,RangeMaxLongitude,double,this->transformDefinition->rangeMaxLng)
 DEFINE_GET_SET_NUMERIC(CCoordinateSystemGeodeticTransformDef,RangeMinLatitude,double,this->transformDefinition->rangeMinLat)
 DEFINE_GET_SET_NUMERIC(CCoordinateSystemGeodeticTransformDef,RangeMaxLatitude,double,this->transformDefinition->rangeMaxLat)
+
+//*****************************************************************************
+UINT8* CCoordinateSystemGeodeticTransformDef::SerializeFrom(UINT8* pStream)
+{
+    UINT8* pStreamIn=pStream;
+    char *pBuf;
+
+    assert(NULL != pStream);
+    if (!pStream)
+    {
+        throw new MgInvalidArgumentException(L"MgCoordinateSystemGeodeticTransformDef.SerializeFrom", __LINE__, __WFILE__, NULL, L"", NULL);
+    }
+
+    // In case an exception gets thrown.
+    INT32 previousType = this->transformationDefType;
+    cs_GeodeticTransform_* previousTransformPtr = this->transformDefinition;
+
+    MG_TRY()
+
+    UINT8 nVersion=pStreamIn[0];
+
+    if (kGxRelease0==nVersion)
+    {
+        pStreamIn++;
+
+        //Read the def from the stream
+        this->transformDefinition = (cs_GeodeticTransform_*)CS_malc(sizeof(cs_GeodeticTransform_));
+        if (transformDefinition == NULL)
+        {
+            this->transformDefinition = previousTransformPtr;
+            previousTransformPtr = 0;
+            throw new MgOutOfMemoryException (L"MgCoordinateSystemGeodeticTransformDef.SerializeFrom", __LINE__, __WFILE__, NULL, L"", NULL);
+        }
+        pBuf = reinterpret_cast<char *>(this->transformDefinition);
+        memcpy(pBuf, pStreamIn, sizeof(cs_GeodeticTransform_));
+        pStreamIn = pStreamIn + sizeof(cs_GeodeticTransform_);
+        // The following function nwill throw if the mthodCode is not one known to the function.
+        this->transformationDefType = GetTransformationDefType(this->transformDefinition->methodCode);
+ 
+        // Verify the validity of the result.
+        if (IsValid())
+        {
+            // Yup! its OK.  Release the copy of the previous definition.
+            CS_free (previousTransformPtr);
+            previousTransformPtr = 0;
+        }
+        else
+        {
+            // Nope!  It's not valid, but not valid in such a way that would cause
+            // an exception to be thrown.  transformationDefinition cannot be
+            // NULL at this point.
+            CS_free (this->transformDefinition);
+            this->transformationDefType = previousType;
+            this->transformDefinition = previousTransformPtr;
+            throw new MgInvalidArgumentException(L"MgCoordinateSystemGeodeticTransformDef.SerializeFrom", __LINE__, __WFILE__, NULL, L"", NULL);
+        }
+    }
+
+    MG_CATCH (L"MgCoordinateSystemGeodeticTransformDef.SerializeFrom")
+    if (mgException != NULL)
+    {
+        // Here if an exception was thrown.
+        // transformationDefinition can indeed be NULL here.
+        if (this->transformDefinition != NULL)
+        {
+            CS_free (this->transformDefinition);
+        }
+        this->transformationDefType = previousType;
+        this->transformDefinition = previousTransformPtr;
+    }
+    MG_THROW ()
+
+    return pStreamIn;
+}
+
+//*****************************************************************************
+UINT8* CCoordinateSystemGeodeticTransformDef::SerializeTo(UINT8* pStream)
+{
+    char *pBuf;
+    UINT8* pStreamOut=pStream;
+
+    MG_TRY()
+    assert(NULL != pStream);
+    if (!pStream)
+    {
+        throw new MgInvalidArgumentException(L"MgCoordinateSystemGeodeticTransformDef.SerializeTo", __LINE__, __WFILE__, NULL, L"", NULL);
+    }
+
+    //save the version
+    pStreamOut[0]=kGxRelease0;
+    pStreamOut++;
+
+    pBuf = reinterpret_cast<char *>(this->transformDefinition);
+    memcpy(pStreamOut, pBuf, sizeof(*this->transformDefinition));
+    pStreamOut = pStreamOut + sizeof(*this->transformDefinition);
+
+    MG_CATCH_AND_THROW(L"MgCoordinateSystemGeodeticTransformDef.SerializeTo")
+    return pStreamOut;
+}
+
+//*****************************************************************************
+UINT32 CCoordinateSystemGeodeticTransformDef::GetSizeSerialized()
+{
+    //size of the structure and the verison number
+    size_t size=sizeof(cs_GeodeticTransform_) + sizeof(UINT8);
+    return static_cast<UINT32>(size);
+}

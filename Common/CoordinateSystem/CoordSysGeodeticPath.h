@@ -70,6 +70,10 @@ namespace CSLibrary
         virtual MgDisposableCollection* GetPathElements();
         virtual void SetPathElements(MgDisposableCollection* pathElements);
 
+        virtual UINT8* SerializeFrom(UINT8* pStream);
+        virtual UINT8* SerializeTo(UINT8* pStream);
+        virtual UINT32 GetSizeSerialized();
+
         //helper - don't delete
         virtual bool IsEncrypted();
 
@@ -84,6 +88,11 @@ namespace CSLibrary
     private:
         cs_GeodeticPath_* pathDefinition;
         Ptr<MgCoordinateSystemCatalog> catalog;
+       
+        enum CCoordinateSystemGeodeticPathObjectVersions
+        {
+            kGpRelease0  = 0   // Initial Release
+        };
     };
 
 } //namespace CSLibrary
