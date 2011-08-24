@@ -2113,19 +2113,6 @@ void CCoordinateSystemTransform::ResetLastTransformStatus()
     m_nDatumCount  = 0;
     m_nTargetCount = 0;
 }
-bool CCoordinateSystemTransform::IsReentrant()
-{
-    bool isReentrant (false);
-
-    //MG_TRY()
-    ////Make sure we're initialized
-    //if (!IsInitialized())
-    //{
-    //    throw new MgCoordinateSystemInitializationFailedException(L"MgCoordinateSystemTransform.IsValidPoint", __LINE__, __WFILE__, NULL, L"MgCoordinateSystemNotReadyException", NULL);
-    //}
-    //MG_CATCH_AND_THROW(L"MgCoordinateSystemTransform.IsReentrant")
-    return m_bIsReentrant;
-}
 
 // Essentially the inverse of the Transform (double& xx,double& yy) function.
 // This is a private function used to greatly enhance the performance of the

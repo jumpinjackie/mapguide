@@ -304,9 +304,7 @@ void MgCrsThreadTestDataEntry::Initialize (void)
     m_pTransformInv->IgnoreOutsideDomainWarning (true);
 
     m_sTransformName = m_pSrcCrsCode + L" to " + m_pTrgCrsCode;
-    m_bIsReentrant = (m_pTransformFwd->IsReentrant () &&
-                      m_pTransformInv->IsReentrant ());
-    
+   
     m_dToleranceXY = m_pSrcCRS->ConvertMetersToCoordinateSystemUnits (0.003);
     if (m_pSrcCRS->GetProjectionCode() == MgCoordinateSystemProjectionCode::LL)
     {
@@ -321,10 +319,6 @@ void MgCrsThreadTestDataEntry::Initialize (void)
     }
 
     m_pSrcPoints = CreateCoordinateCollection (m_RandomSeed,m_pSrcCRS,m_nPointCount,m_bThreeD);
-}
-bool MgCrsThreadTestDataEntry::IsReentrant (void)
-{
-    return m_bIsReentrant;
 }
 STRING MgCrsThreadTestDataEntry::GetTransformName (void)
 {

@@ -489,7 +489,6 @@ PUBLISHED_API:
 
     virtual INT32 GetLastTransformStatus()=0;
     virtual void ResetLastTransformStatus()=0;
-    virtual bool IsReentrant()=0;
 
 INTERNAL_API:
     ///////////////////////////////////////////////////////////////////////////
