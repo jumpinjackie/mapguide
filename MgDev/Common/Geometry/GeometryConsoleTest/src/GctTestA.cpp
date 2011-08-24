@@ -136,19 +136,6 @@ INT32 GctTestA (MgGctTestParameters& cmdLineParms)
         nextTestPtr = new MgCrsThreadTestDataEntry (L"TOKYO.UTM-51N",L"JGD2000.UTM-51N");
         threadTestVector.push_back (nextTestPtr);
 
-        MgCrsThreadTestDataItr threadTestItr;
-        for (threadTestItr = threadTestVector.begin();threadTestItr != threadTestVector.end();threadTestItr++)
-        {
-            MgCrsThreadTestDataEntry* testPtr = *threadTestItr;
-            if (!testPtr->IsReentrant () && !cmdLineParms.Silent ())
-            {
-                rptStrm << L"\tWARNING: Transform named "
-                        << testPtr->GetTransformName ()
-                        << L" is _NOT_ known to be reentrant."
-                        << std::endl;
-            }
-        }
-
         sThreadParams.m_pTestData = &threadTestVector;
         sThreadParams.m_cmdLineParms = &cmdLineParms;
 

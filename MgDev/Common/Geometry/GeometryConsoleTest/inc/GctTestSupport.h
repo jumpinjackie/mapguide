@@ -35,7 +35,6 @@ public:
     virtual ~MgCrsThreadTestDataEntry (void);
 
     void Initialize (void);
-    bool IsReentrant (void);
     STRING GetTransformName (void);
 
     MgCoordinateSystemTransform* GetForwardTransform (void);
@@ -45,7 +44,6 @@ public:
 
 private:
     bool m_bThreeD;
-    bool m_bIsReentrant;
     double m_dToleranceXY;
     double m_dToleranceZ;
     STRING m_pSrcCrsCode;

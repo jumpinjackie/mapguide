@@ -62,7 +62,6 @@ public:
 
     virtual INT32 GetLastTransformStatus();
     virtual void ResetLastTransformStatus();
-    virtual bool IsReentrant();
 
 INTERNAL_API:
     ///////////////////////////////////////////////////////////////////////////
