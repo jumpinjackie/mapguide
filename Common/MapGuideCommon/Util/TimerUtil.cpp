@@ -67,6 +67,7 @@ double MgTimerUtil::GetTime()
 #endif
 }
 
+#ifdef WIN32
 ///----------------------------------------------------------------------------
 /// <summary>
 /// Invoke the QueryPerformanceFrequency to initialize class member frequency.
@@ -78,3 +79,4 @@ void MgTimerUtil::GetFrequency(LARGE_INTEGER* pFrequency)
     if(!QueryPerformanceFrequency(pFrequency))
         throw new MgUnclassifiedException(L"MgTimerUtil.GetFrequency", __LINE__, __WFILE__, NULL, L"", NULL);
 }
+#endif

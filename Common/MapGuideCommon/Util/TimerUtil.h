@@ -67,6 +67,7 @@ private:
 
     /// Helper Methods
 
+#ifdef WIN32
     ///////////////////////////////////////////////////////////////////////////
     /// \brief
     /// Invoke the QueryPerformanceFrequency to initialize frequency.
@@ -75,6 +76,7 @@ private:
     ///
 
     static void GetFrequency(LARGE_INTEGER* pFrequency);
+#endif
 
 private:
 
