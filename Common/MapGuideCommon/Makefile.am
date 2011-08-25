@@ -129,7 +129,8 @@ include_SOURCES = \
   System/MapGuideStream.cpp \
   System/UserInformation.cpp  \
   System/CryptographyManager.cpp \
-  Util/IpUtil.cpp
+  Util/IpUtil.cpp \
+  Util/TimerUtil.cpp
 
 noinst_HEADERS = $(include_SOURCES) \
   MapGuideCommon.h \
@@ -255,7 +256,8 @@ noinst_HEADERS = $(include_SOURCES) \
   System/MapGuideStream.h \
   System/UserInformation.h  \
   System/CryptographyManager.h \
-  Util/IpUtil.h
+  Util/IpUtil.h \
+  Util/TimerUtil.h
 
 INCLUDES = \
   -I../PlatformBase \

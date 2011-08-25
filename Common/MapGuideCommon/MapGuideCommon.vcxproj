@@ -925,6 +925,12 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="MapGuideCommonBuild.cpp" />
+    <ClCompile Include="Util\TimerUtil.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="MapLayer\Layer.h" />
@@ -1051,6 +1057,7 @@
     <ClInclude Include="System\UserInformation.h" />
     <ClInclude Include="Util\IpUtil.h" />
     <ClInclude Include="MapGuideCommon.h" />
+    <ClInclude Include="Util\TimerUtil.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="MapGuideCommon.rc" />

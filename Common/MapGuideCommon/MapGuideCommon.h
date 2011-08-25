@@ -56,6 +56,7 @@ extern long GetTickCount();
 #include "System/MapGuideStream.h"
 #include "System/CryptographyManager.h"
 #include "Util/IpUtil.h"
+#include "Util/TimerUtil.h"
 
 #include "MapLayer/Layer.h"
 #include "MapLayer/Map.h"
