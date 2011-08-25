@@ -262,6 +262,9 @@ FdoIConnection* MgFdoConnectionManager::Open(MgResourceIdentifier* resourceIdent
             // Create a new connection
             pFdoConnection = m_connManager->CreateConnection(provider.c_str());
 
+            // Check if the connection support timeout setting
+            SetConnectionTimeout(pFdoConnection);
+
             // Check if we have thread model
             if((FdoThreadCapability)-1 == providerInfo->GetThreadModel())
             {
@@ -380,6 +383,9 @@ FdoIConnection* MgFdoConnectionManager::Open(CREFSTRING provider, CREFSTRING con
         {
             // Create a new connection and add it to the cache
             pFdoConnection = m_connManager->CreateConnection(providerNoVersion.c_str());
+
+            // Check if the connection support timeout setting
+            SetConnectionTimeout(pFdoConnection);
 
             // Check if we have thread model
             if((FdoThreadCapability)-1 == providerInfo->GetThreadModel())
@@ -777,6 +783,29 @@ void MgFdoConnectionManager::SetConnectionProperties(FdoIConnection *pFdoConnect
                 }
             }
         }
+}
+
+void MgFdoConnectionManager::SetConnectionTimeout(FdoIConnection* pFdoConnection)
+{
+    FdoPtr<FdoIConnectionCapabilities> connectionCapabilities = pFdoConnection->GetConnectionCapabilities();
+    if(connectionCapabilities->SupportsTimeout())
+    {
+        MgConfiguration* configuration = MgConfiguration::GetInstance();
+        ACE_ASSERT(NULL != configuration);
+        INT32 timeout = MgConfigProperties::DefaultFeatureServicePropertyFDOConnectionTimeout;
+        if (NULL != configuration)
+        {
+            configuration->GetIntValue(
+                MgConfigProperties::FeatureServicePropertiesSection,
+                MgConfigProperties::FeatureServicePropertyFDOConnectionTimeout,
+                timeout,
+                MgConfigProperties::DefaultFeatureServicePropertyFDOConnectionTimeout);
+        }
+        if(timeout > 0)
+        {
+            pFdoConnection->SetConnectionTimeout(timeout);
+        }
+    }
 }
 
 void MgFdoConnectionManager::ActivateSpatialContext(FdoIConnection* pFdoConnection, STRING& spatialContextName)
