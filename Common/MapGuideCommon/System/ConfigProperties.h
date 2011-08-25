@@ -339,6 +339,10 @@ EXTERNAL_API:
     static const STRING FeatureServicePropertyDataTransactionTimerInterval;      /// value("DataTransactionTimerInterval")
     static const INT32 DefaultFeatureServicePropertyDataTransactionTimerInterval;/// value(60)
 
+    /// Set the time duration in seconds for an FDO connection
+    static const STRING FeatureServicePropertyFDOConnectionTimeout;              /// value("FDOConnectionTimeout")
+    static const INT32 DefaultFeatureServicePropertyFDOConnectionTimeout;        /// value(120)
+
     /// MAPPING SERVICE PROPERTIES SECTION -------------------------------------------------------------------------------
 
     /// Mapping Service properties

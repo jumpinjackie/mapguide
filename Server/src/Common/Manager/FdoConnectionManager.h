@@ -253,6 +253,8 @@ private:
     void SetConfiguration(CREFSTRING provider, FdoIConnection* pFdoConnection, MgResourceIdentifier* resourceIdentifier, STRING& configDataName);
     void SetConnectionProperties(FdoIConnection* pFdoConnection, MdfModel::FeatureSource* pFeatureSource);
 
+    void SetConnectionTimeout(FdoIConnection* pFdoConnection);
+
     void ActivateSpatialContext(FdoIConnection* pFdoConnection, STRING& spatialContextName);
     void ActivateLongTransaction(FdoIConnection* pFdoConnection, STRING& longTransactionName);
     bool SupportsConfiguration(FdoIConnection* pFdoConnection);
