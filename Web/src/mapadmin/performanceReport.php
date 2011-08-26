@@ -144,10 +144,10 @@ catch ( Exception $e )
                 {
                     text-align:center;
                     padding:.5em;
-                    width: 20%;
-                    border:1px solid #CCCCCC;
+                    border-top:1px solid #CCCCCC;
                     background-color:#EEEEEE;
                     border-bottom: none;
+                    cursor:  default;
                 }
 
                 .layerResultsStyle table,.layerResultsStyle td
@@ -203,10 +203,11 @@ catch ( Exception $e )
 
                 #layerBody
                 {
-                     Height:    200px;
+                     Height:    300px;
                      margin:    0px;
                      padding:   0px;
                      overFlow:  auto;
+                     cursor: pointer;
                 }
                 
                 .mapDefinitionResultTableStyle tr
@@ -304,70 +305,73 @@ catch ( Exception $e )
         
             <script type="text/javascript">
                 var Common = {
-                        getItself: function(id)
-                        {
-                            return "string" == typeof id ? document.getElementById(id) : id;
-                        },
-                        getEvent: function()
-                        {
-                            if (document.all)
-                            {
-                                return window.event;
-                            }
-                            func = getEvent.caller;
-                            while (func != null)
-                            {
-                                var arg0 = func.arguments[0];
-                                if (arg0)
-                                {
-                                    if ((arg0.constructor == Event || arg0.constructor == MouseEvent) || (typeof (arg0) == "object" && arg0.preventDefault && arg0.stopPropagation))
-                                    {
-                                        return arg0;
-                                    }
-                                }
-                                func = func.caller;
-                            }
-                            return null;
-                        },
-                        getMousePos: function(ev)
-                        {
-                            if (!ev)
-                            {
-                                ev = this.getEvent();
-                            }
-                            if (ev.pageX || ev.pageY)
-                            {
-                                return {x: ev.pageX , y: ev.pageY};
-                            }
+                    getItself: function(id)
+                    {
+                        return "string" == typeof id ? document.getElementById(id) : id;
+                    },
 
-                            if (document.documentElement.scrollLeft && document.documentElement.scrollTop)
-                            {
-                                return {
-                                    x: ev.clientX + document.documentElement.scrollLeft - document.documentElement.clientLeft,
-                                    y: ev.clientY + document.documentElement.scrollTop - document.documentElement.clientTop
-                                };
-                            }
-                            else if (document.body)
-                            {
-                                return {
-                                    x: ev.clientX + document.body.scrollLeft - document.body.clientLeft,
-                                    y: ev.clientY + document.body.scrollTop - document.body.clientTop
-                                };
-                            }
-                        },
-                        getElementPos: function(el)
+                    getEvent: function()
+                    {
+                        if (document.all)
                         {
-                            el = this.getItself(el);
-                            var _x = 0, _y = 0;
-                            do
-                            {
-                                _x += el.offsetLeft;
-                                _y += el.offsetTop;
-                            } while ((el = el.offsetParent));
-
-                            return { x: _x, y: _y };
+                            return window.event;
                         }
+                        func = getEvent.caller;
+                        while (func != null)
+                        {
+                            var arg0 = func.arguments[0];
+                            if (arg0)
+                            {
+                                if ((arg0.constructor == Event || arg0.constructor == MouseEvent) || (typeof (arg0) == "object" && arg0.preventDefault && arg0.stopPropagation))
+                                {
+                                    return arg0;
+                                }
+                            }
+                            func = func.caller;
+                        }
+                        return null;
+                    },
+
+                    getMousePos: function(ev)
+                    {
+                        if (!ev)
+                        {
+                            ev = this.getEvent();
+                        }
+                        if (ev.pageX || ev.pageY)
+                        {
+                            return {x: ev.pageX , y: ev.pageY};
+                        }
+
+                        if (document.documentElement.scrollLeft && document.documentElement.scrollTop)
+                        {
+                            return {
+                                x: ev.clientX + document.documentElement.scrollLeft - document.documentElement.clientLeft,
+                                y: ev.clientY + document.documentElement.scrollTop - document.documentElement.clientTop
+                            };
+                        }
+                        else if (document.body)
+                        {
+                            return {
+                                x: ev.clientX + document.body.scrollLeft - document.body.clientLeft,
+                                y: ev.clientY + document.body.scrollTop - document.body.clientTop
+                            };
+                        }
+                    },
+                    
+                    getElementPos: function(el)
+                    {
+                        el = this.getItself(el);
+                        var xValue = 0, yValue = 0;
+                        do
+                        {
+                            xValue += el.offsetLeft;
+                            yValue += el.offsetTop;
+                        } while ((el = el.offsetParent));
+
+                        return { x: xValue, y: yValue };
                     }
+                }
 
                 function CollapsibleTabClick(tabId,contentId)
                 {
@@ -377,13 +381,13 @@ catch ( Exception $e )
                     if (collapseImage.alt == "down")
                     {
                         collapseImage.alt = "left";
-                        collapseImage.src = "images/testImages/left_18.jpg";
+                        collapseImage.src = "images/arrow_left.png";
                         content.style.display = "none";
                     }
                     else
                     {
                         collapseImage.alt = "down";
-                        collapseImage.src = "images/testImages/down_17.jpg";
+                        collapseImage.src = "images/arrow_down.png";
                         content.style.display = "block";
                     }
                 }
@@ -394,14 +398,14 @@ catch ( Exception $e )
                     var content = document.getElementById("settingsContent");
 
                     collapseImage.alt = "left";
-                    collapseImage.src = "images/testImages/left_18.jpg";
+                    collapseImage.src = "images/arrow_left.png";
 
                     content.style.display = "none";
                 }
 
                 function SetResultNotMatchWarningMsg(visible)
                 {
-                    var wrnMsg=document.getElementById("ResultNotMatchWrn");
+                    var wrnMsg = document.getElementById("ResultNotMatchWrn");
                     if(visible)
                     {
                         wrnMsg.style.display = "block";
@@ -414,7 +418,7 @@ catch ( Exception $e )
 
                 function ShowReportWarningMsg()
                 {
-                    var reportTab=document.getElementById("resultsTab");
+                    var reportTab = document.getElementById("resultsTab");
                     if(reportTab.style.display=="block")
                     {
                         SetResultNotMatchWarningMsg(true);
@@ -449,7 +453,7 @@ catch ( Exception $e )
                     }
 
                     //show the map definition ID by the side of the map selector
-                    if(mapDefinitonSelector.selectedIndex>=0)
+                    if(mapDefinitonSelector.selectedIndex >= 0)
                     {
                         tipDiv.innerHTML=mapDefinitonSelector.options[mapDefinitonSelector.selectedIndex].value;
                         //clear warning message
@@ -488,8 +492,8 @@ catch ( Exception $e )
                 {
                     var result=false;
                    
-                    var scale=document.getElementById("txtScale");
-                    var scaleWarnMsg=document.getElementById("scaleWarnMessage");
+                    var scale = document.getElementById("txtScale");
+                    var scaleWarnMsg = document.getElementById("scaleWarnMessage");
                     var scaleValue=RemoveSpace(scale.value);
 
                     if("" == scaleValue)
@@ -526,11 +530,11 @@ catch ( Exception $e )
 
                 function ValidateCenterPoint(needFormat)
                 {
-                    var result=false;
+                    var result = false;
 
-                    var centerPoint=document.getElementById("txtCenterPoint");
-                    var centerPointWarnMsg=document.getElementById("centerPointWarnMessage");
-                    var centerPointValue=RemoveSpace(centerPoint.value);
+                    var centerPoint = document.getElementById("txtCenterPoint");
+                    var centerPointWarnMsg = document.getElementById("centerPointWarnMessage");
+                    var centerPointValue = RemoveSpace(centerPoint.value);
 
                     if("" == centerPointValue)
                     {
@@ -590,7 +594,7 @@ catch ( Exception $e )
 
                     if(visible)
                     {
-                        var mapDefinitonSelector=document.getElementById("mapSelector_DO_NOT_PERSIST");
+                        var mapDefinitonSelector = document.getElementById("mapSelector_DO_NOT_PERSIST");
                         if(mapDefinitonSelector.selectedIndex>=0)
                         {
                             visible=ValidateCenterPoint(false);
@@ -610,7 +614,7 @@ catch ( Exception $e )
 
                     if(visible)
                     {
-                        var mapDefinitonSelector=document.getElementById("mapSelector_DO_NOT_PERSIST");
+                        var mapDefinitonSelector = document.getElementById("mapSelector_DO_NOT_PERSIST");
                         if(mapDefinitonSelector.selectedIndex>=0)
                         {
                             visible=ValidateScale(false);
@@ -626,7 +630,7 @@ catch ( Exception $e )
 
                 function ScaleFocus()
                 {
-                    var scale=document.getElementById("txtScale");
+                    var scale = document.getElementById("txtScale");
 
                     if( scale.value=="Enter scale")
                     {
@@ -636,7 +640,7 @@ catch ( Exception $e )
 
                 function CenterPointFocus()
                 {
-                    var centerPoint=document.getElementById("txtCenterPoint");
+                    var centerPoint = document.getElementById("txtCenterPoint");
 
                     if( centerPoint.value=="Enter center point")
                     {
@@ -647,15 +651,15 @@ catch ( Exception $e )
                 var checkMapFrameLoadedInterval = null;
                 function SelectMapSettings()
                 {
-                    var mapFrame=document.getElementById("mapViewerFrame");
-                    var mapDefinitonSelector=document.getElementById("mapSelector_DO_NOT_PERSIST");
+                    var mapFrame = document.getElementById("mapViewerFrame");
+                    var mapDefinitonSelector = document.getElementById("mapSelector_DO_NOT_PERSIST");
                     if(mapDefinitonSelector.selectedIndex>=0)
                     {
                         mapFrame.src="performanceReport_MapViewer.php?mapDefinition="+mapDefinitonSelector.options[mapDefinitonSelector.selectedIndex].value;
                     }
 
-                    var bgDiv=document.getElementById("bgDiv");
-                    var mapViewerDiv=document.getElementById("mapViewerDialog");
+                    var bgDiv = document.getElementById("bgDiv");
+                    var mapViewerDiv = document.getElementById("mapViewerDialog");
 
                     bgDiv.style.display = "block";
                     SetBgDivSize(bgDiv);
@@ -699,14 +703,14 @@ catch ( Exception $e )
 
                 function WindowResized()
                 {
-                    var mapViewerDiv=document.getElementById("mapViewerDialog");
+                    var mapViewerDiv = document.getElementById("mapViewerDialog");
 
                     if("block" == mapViewerDiv.style.display.toLowerCase())
                     {
                         SetMapViewerLoaction(mapViewerDiv);
                     }
 
-                    var bgDiv=document.getElementById("bgDiv");
+                    var bgDiv = document.getElementById("bgDiv");
                     if("block" == bgDiv.style.display.toLowerCase())
                     {
                         SetBgDivSize(bgDiv);
@@ -740,15 +744,15 @@ catch ( Exception $e )
 
                 function CloseMapViewer()
                 {
-                    var bgDiv=document.getElementById("bgDiv");
-                    var msgDiv=document.getElementById("mapViewerDialog");
+                    var bgDiv = document.getElementById("bgDiv");
+                    var msgDiv = document.getElementById("mapViewerDialog");
 
                     bgDiv.style.display = "none";
                     msgDiv.style.display="none";
 
                     //must destory the old page, if not, the CheckMapFrameLoaded
                     //will get the old page's frame and then the buttons will not be displayed in new page
-                    var mapFrame=document.getElementById("mapViewerFrame");
+                    var mapFrame = document.getElementById("mapViewerFrame");
                     mapFrame.src="";
                 }
 
@@ -765,7 +769,7 @@ catch ( Exception $e )
                     //use setInterval to make sure that the message div has been created.
                     messageShorterInterval = window.setInterval(function(){ makeMessageShorter(mapFrame); }, 100);
 
-                    mapSpace = mapFrameDocument.getElementById("mapSpace");
+                    var mapSpace = mapFrameDocument.getElementById("mapSpace");
                     var buttonPanel = mapFrameDocument.createElement('div');
                     buttonPanel.style.backgroundColor="transparent";
                     buttonPanel.style.padding="0px";
@@ -803,18 +807,18 @@ catch ( Exception $e )
                    var center = mapFrame.GetCenter();
                    var scale = mapFrame.GetScale();
 
-                   var centerPoint=document.getElementById("txtCenterPoint");
+                   var centerPoint = document.getElementById("txtCenterPoint");
                    centerPoint.value=center.X+"*"+center.Y;
                    var centerPointValidate=ValidateCenterPoint(true);
 
-                   var txtScale=document.getElementById("txtScale");
-                   txtScale.value=scale;
+                   var scaleInput = document.getElementById("txtScale");
+                   scaleInput.value=scale;
                    var scaleValidate=ValidateScale(true);
 
                    var visible=centerPointValidate&&scaleValidate;
                    if(visible)
                    {
-                       var mapDefinitonSelector=document.getElementById("mapSelector_DO_NOT_PERSIST");
+                       var mapDefinitonSelector = document.getElementById("mapSelector_DO_NOT_PERSIST");
                        if(mapDefinitonSelector.selectedIndex>=0)
                        {
                            visible=true;
@@ -840,6 +844,26 @@ catch ( Exception $e )
                     mapFrame.mapMessage.container.style.padding="1px";
                 }
 
+                //remove the space at the begin and end of a string
+                function Trim(str)
+                {
+                    var returnedStr="";
+
+                    var i = 0;
+                    for(; i < str.length && str.charAt(i)==" "; i++);
+
+                    var j = str.length;
+                    for(; j>0 && str.charAt(j-1)==" " ; j--);
+
+                    if(i<=j)
+                    {
+                        returnedStr = str.substring(i,j);
+                    }
+
+                    return returnedStr;
+                }
+
+                //remove all the space inside a string
                 function RemoveSpace(str)
                 {
                     var i=0,strWithoutSpace="";
@@ -871,7 +895,8 @@ catch ( Exception $e )
 
                    var t = "";
 
-                   for(i = 0; i < l.length; i ++ )
+                   var i=0;
+                   for(; i < l.length; i ++ )
                    {
                       t += l[i] + ((i + 1) % 3 == 0 && (i + 1) != l.length ? " " : "");
                    }
@@ -928,7 +953,8 @@ catch ( Exception $e )
                   if ("" == str)
                     return true;
 
-                  for(var i = 0; i < str.length;i++)
+                  var i = 0;
+                  for(; i < str.length;i++)
                   {
                      var oneNum = str.substring(i,i+1);
                      if (oneNum < "0" || oneNum > "9")
@@ -955,7 +981,8 @@ catch ( Exception $e )
                         len=str.length;
                     }
 
-                    for(var i = 0;i < len;i++)
+                    var i = 0;
+                    for(;i < len;i++)
                     {
                         var oneNum = str.substring(i,i+1);
 
@@ -977,7 +1004,8 @@ catch ( Exception $e )
 
                 function HighlightRow(tableRow)
                 {
-                    for (var i = 0; i < tableRow.childNodes.length; i++)
+                    var i = 0;
+                    for (; i < tableRow.childNodes.length; i++)
                     {
                         var obj = tableRow.childNodes[i];
                         obj.className = "over";
@@ -986,7 +1014,8 @@ catch ( Exception $e )
 
                 function UnhighlightRow(tableRow)
                 {
-                    for (var i = 0;i < tableRow.childNodes.length;i++)
+                    var i = 0;
+                    for (;i < tableRow.childNodes.length;i++)
                     {
                         var obj = tableRow.childNodes[i];
                         obj.className = "";
@@ -1048,11 +1077,11 @@ catch ( Exception $e )
 
                 function GetResult()
                 {
-                    var mapDefinitonSelector=document.getElementById("mapSelector_DO_NOT_PERSIST");
+                    var mapDefinitonSelector = document.getElementById("mapSelector_DO_NOT_PERSIST");
 
                     if(mapDefinitonSelector.selectedIndex<0)
                     {
-                        var mapResourceWarningMessage=document.getElementById("selectMapResourceWarningMessage");
+                        var mapResourceWarningMessage = document.getElementById("selectMapResourceWarningMessage");
                         mapResourceWarningMessage.innerHTML="A map resource was not selected.";
                         return false;
                     }
@@ -1065,13 +1094,13 @@ catch ( Exception $e )
 
                     SetResultNotMatchWarningMsg(false);
 
-                    var ajax_loading_img=document.getElementById("ajax_loading_img");
-                    ajax_loading_img.style.display="inline";
+                    var loadingImg = document.getElementById("ajax_loading_img");
+                    loadingImg.style.display="inline";
 
-                    var btnClear=document.getElementById("btnClearSpan");
+                    var btnClear = document.getElementById("btnClearSpan");
                     btnClear.style.display="none";
 
-                    var runButton=document.getElementById("runBtn");
+                    var runButton = document.getElementById("runBtn");
                     runButton.setAttribute("disabled", "disabled");
 
                     xmlHttp=GetXmlHttpObject();
@@ -1081,42 +1110,72 @@ catch ( Exception $e )
                        return;
                     }
 
-                    var scale=document.getElementById("txtScale");
-                    var mapSelector=document.getElementById("mapSelector_DO_NOT_PERSIST");
+                    var scale = document.getElementById("txtScale");
+                    var centerPoint = document.getElementById("txtCenterPoint");
+                    var mapSelector = document.getElementById("mapSelector_DO_NOT_PERSIST");
                     var url="performanceReport_GetResult.php";
 
-                    url+="?scale="+scale.value;
-                    url+="&mapDefinition="+mapSelector.value;
+                    url+="?scale="+encodeURIComponent(scale.value);
+                    url+="&centerPoint="+encodeURIComponent(centerPoint.value);
+                    url+="&mapDefinition="+encodeURIComponent(mapSelector.value);
                     url+="&sid="+Math.random();
-                    xmlHttp.onreadystatechange=stateChanged;
+                    xmlHttp.onreadystatechange=StateChanged;
                     xmlHttp.open("POST",url,true);
                     xmlHttp.send(null);
                 }
 
-                function stateChanged()
+                function StateChanged()
                 {
                     if ((4 == xmlHttp.readyState || "complete" == xmlHttp.readyState)&& 200 == xmlHttp.status)
-                     {
-                        var profileResult=document.getElementById("resultsTab");
+                    {
+                        var profileResult = document.getElementById("resultsTab");
                         profileResult.innerHTML=xmlHttp.responseText;
 
-                        var btnClear=document.getElementById("btnClearSpan");
+                        var btnClear = document.getElementById("btnClearSpan");
                         btnClear.style.display="inline";
 
-                        var ajax_loading_img=document.getElementById("ajax_loading_img");
-                        ajax_loading_img.style.display="none";
+                        var loadingImg = document.getElementById("ajax_loading_img");
+                        loadingImg.style.display="none";
                         
                         CollapseSettingTab();
                         ExpandResultsTab();
                         SetRunButtonState(true);
-                     }
+
+                        // the js in the ajax returned content will not be executed and recognized,
+                        // so we get the js content and append it to the <head>
+                        if(document.getElementById('layerDetailsJsArray'))
+                        {
+                            //get js content in the hidden span
+                            var innerScript = document.getElementById('layerDetailsJsArray').innerHTML;
+                            innerScript=innerScript.replace(/\\n/,'');
+
+                            //check to remove the script if it already exists
+                            var insertScript = document.getElementById("layerDetailsJs");
+                            if(insertScript)
+                            {
+                                document.getElementsByTagName("head").item(0).removeChild(insertScript);
+                            }
+
+                            //every new execute should generate new js array data
+                            insertScript = document.createElement("script");
+                            insertScript.type = "text/javascript";
+                            insertScript.id = "layerDetailsJs";
+                            insertScript.text=innerScript;
+
+                            document.getElementsByTagName("head").item(0).appendChild(insertScript);
+                        }
+                    }
                 }
                 
                 //End AJAX part
 
-                function exportCSV()
+                function ExportCSV()
                 {
-                    var form=document.getElementById("getCSVFileForm");
+                    var url="performanceReport_Export.php";
+                    var centerPoint = document.getElementById("txtCenterPoint");
+                    url+="?centerPoint="+encodeURIComponent(centerPoint.value);
+                    var form = document.getElementById("getCSVFileForm");
+                    form.action=url;
                     form.submit();
                 }
 
@@ -1125,7 +1184,7 @@ catch ( Exception $e )
                     //When Clear button clicked, removes the settings from
                     //map selector, scale textbox and center point textbox.
                     //Also removes any validation messages that are visible.
-                    var mapDefinitonSelector=document.getElementById("mapSelector_DO_NOT_PERSIST");
+                    var mapDefinitonSelector = document.getElementById("mapSelector_DO_NOT_PERSIST");
 
                     if(mapDefinitonSelector.selectedIndex>=0)
                     {
@@ -1138,7 +1197,7 @@ catch ( Exception $e )
                     //Also removes any validation messages that are visible.
                     ClearWrnMsg();
 
-                    var mapSelectorWarnMsg=document.getElementById("selectMapResourceWarningMessage");
+                    var mapSelectorWarnMsg = document.getElementById("selectMapResourceWarningMessage");
                     mapSelectorWarnMsg.innerHTML = "";
                  
                     SetRunButtonState(false);
@@ -1146,22 +1205,22 @@ catch ( Exception $e )
 
                 function ClearWrnMsg()
                 {
-                    var scale=document.getElementById("txtScale");
+                    var scale = document.getElementById("txtScale");
                     scale.className="";
 
-                    var centerPoint=document.getElementById("txtCenterPoint");
+                    var centerPoint = document.getElementById("txtCenterPoint");
                     centerPoint.className="";
 
-                    var scaleWarnMsg=document.getElementById("scaleWarnMessage");
+                    var scaleWarnMsg = document.getElementById("scaleWarnMessage");
                     scaleWarnMsg.innerHTML = "";
 
-                    var centerPointWarnMsg=document.getElementById("centerPointWarnMessage");
+                    var centerPointWarnMsg = document.getElementById("centerPointWarnMessage");
                     centerPointWarnMsg.innerHTML = "";
                 }
 
                 function SetRunButtonState(visible)
                 {                 
-                    var runButton=document.getElementById("runBtn");
+                    var runButton = document.getElementById("runBtn");
 
                     if(visible)
                     {
@@ -1171,17 +1230,301 @@ catch ( Exception $e )
                     {
                         runButton.setAttribute("disabled", "disabled");
                     }
-                }     
+                }
+
+                //when the layer info row click find the corresponding layer detail info and display it on the UI
+                function LayerDataTableRowClicked(layerName)
+                {
+                    var layerCount=layerDetailValues.length;
+
+                    var i = 0;
+                    for(; i < layerCount; i++)
+                    {
+                        if( Trim(layerName) == Trim(layerDetailValues[i][0]) )
+                        {
+                            DisplayLayerDetail(layerDetailValues[i]);
+                            break;
+                        }
+                    }
+                }
+
+                //the detail info of a layer is on the left of the layer info table
+                //this method will display the selected layer detail info on the UI with designed style
+                //Note: when use document.getElementById, make sure the variable name is not the same with the "ID"
+                //like this: layerInfoDetail =document.getElementById("layerInfoDetail");
+                //it will cause problem under IE9 quirks mode, layerInfoDetail is already a built-in object of the document.
+                //two way to solve this problem
+                //1) make the variable name different with the "ID", layerDetail =document.getElementById("layerInfoDetail");
+                //2) add "var" before the varibale name, var layerInfoDetail =document.getElementById("layerInfoDetail");
+                function DisplayLayerDetail(layerDetail)
+                {                    
+                    var layerDetailContent='<div style="padding-bottom: 8px; padding-top: 7px; width: 80%;">' + layerDetail[0] + '</div>'+ "\n";
+                    layerDetailContent+='<div style=" border: 1px solid #cccccc; width: 80%">';
+                    layerDetailContent+='<div style="padding: 10px;">';
+                    layerDetailContent+="<b>Filter</b>";
+                    layerDetailContent+="<br/><br/>";
+                    layerDetailContent+=layerDetail[1];
+                    layerDetailContent+="</div>";
+                    layerDetailContent+='<div style=" background-color: #EEEEEE;padding: 10px;">';
+                    layerDetailContent+="<b>Scale Range</b>";
+                    layerDetailContent+="<br/><br/>";
+                    layerDetailContent+=layerDetail[2];
+                    layerDetailContent+="</div>"+ "\n";
+                    layerDetailContent+="</div>"+"\n";
+
+                    //remove the layer detail info if it already exist
+                    var layerInfo = document.getElementById("layerDetailContentDiv");
+
+                    if (layerInfo)
+                    {
+                        layerInfo.parentNode.removeChild(layerInfo);
+                    }
+
+                    var layerDetailDiv = document.createElement("div");
+                    layerDetailDiv.id="layerDetailContentDiv";
+                    layerDetailDiv.innerHTML = layerDetailContent;
+
+                    //the placeholder for the layer detail info
+                    var layerInfoDetail =document.getElementById("layerInfoDetail");
+                    layerInfoDetail.appendChild(layerDetailDiv);
+                }
+
+                //sort layers information table part
+                var SortLayers = {
+                    //reverse the table rows
+                    reverse: function(tBody)
+                    {
+                        // reverse the rows in a tbody
+                        newRows = [];
+                        var i = 0;
+                        for (; i < tBody.rows.length; i++)
+                        {
+                            newRows[i] = tBody.rows[i];
+                        }
+
+                        var j=1;
+
+                        i = newRows.length - 1;
+                        for (; i >= 0; i--)
+                        {
+                            tBody.appendChild(newRows[i]);
+
+                            if(0 == j%2)
+                            {
+                                newRows[i].className="even";
+                            }
+                            else
+                            {
+                                newRows[i].className="odd";
+                            }
+
+                            j++;
+                        }
+                        delete newRows;
+                    },
+
+                    sortByColumn: function(headerColumn)
+                    {
+                        //get the table body of the layers information table
+                        var layersTBody = document.getElementById("layerResultsTable").tBodies[0];
+
+                        if (headerColumn.className.search(/\blayersSorted\b/) != -1)
+                        {
+                            // if we're already sorted by this column, just reverse the table
+                            SortLayers.reverse(layersTBody);
+                            headerColumn.className = headerColumn.className.replace("layersSorted","layersSortedReverse");
+
+                            headerColumn.removeChild(document.getElementById('layersSortDown'));
+
+                            layersSortUp = document.createElement("span");
+                            layersSortUp.id = "layersSortUp";
+                            layersSortUp.innerHTML =  "&nbsp;<image src='images/arrow_up.png' alt='&#x25B4;'/>";
+                            headerColumn.appendChild(layersSortUp);
+
+                            return;
+                        }
+
+                        if (headerColumn.className.search(/\blayersSortedReverse\b/) != -1)
+                        {
+                            // if we're already sorted by this column, just reverse the table
+                            SortLayers.reverse(layersTBody);
+                            headerColumn.className = headerColumn.className.replace("layersSortedReverse","layersSorted");
+
+                            headerColumn.removeChild(document.getElementById('layersSortUp'));
+                            
+                            layersSortDown = document.createElement('span');
+                            layersSortDown.id = "layersSortDown";
+                            layersSortDown.innerHTML = "&nbsp;<image src='images/arrow_down.png' alt='&#x25BE;'/>";
+                            headerColumn.appendChild(layersSortDown);
+
+                            return;
+                        }
+
+                        // remove layersSorted classes
+                        layerHeadRow = headerColumn.parentNode;
+                        var i = 0;
+                        for( ; i < layerHeadRow.childNodes.length; i++)
+                        {
+                            cell = layerHeadRow.childNodes[i];
+                            if (cell.nodeType == 1)// an element
+                            {   
+                                cell.className = cell.className.replace('layersSortedReverse', '');
+                                cell.className = cell.className.replace('layersSorted', '');
+                            }
+                        }
+
+                        //remove the icon sort down or up if it already exist
+                        var layersSortDown = document.getElementById('layersSortDown');
+
+                        if (layersSortDown)
+                        {
+                            layersSortDown.parentNode.removeChild(layersSortDown);
+                        }
+
+                        var layersSortUp = document.getElementById('layersSortUp');
+
+                        if (layersSortUp)
+                        {
+                            layersSortUp.parentNode.removeChild(layersSortUp);
+                        }
+
+                        //by default, we sort the talbe by ASC
+                        headerColumn.className = "layersSorted";
+                        layersSortDown = document.createElement('span');
+                        layersSortDown.id = "layersSortDown";
+                        layersSortDown.innerHTML = "&nbsp;<image src='images/arrow_down.png' alt='&#x25BE;'/>";
+                        headerColumn.appendChild(layersSortDown);
+
+                        //get the content need to be sorted into a 2-D array
+                        rowArray = [];
+                        //TODO: it has problem under IE9 quirks mode, will fix it in part 3
+                        colIndex = headerColumn.attributes["columnindex"].value-1;
+                        rows = layersTBody.rows;
+                        var j = 0;
+                        for (; j < rows.length; j++)
+                        {
+                            rowArray[rowArray.length] = [SortLayers.getInnerText(rows[j].cells[colIndex]), rows[j]];
+                        }
+
+                        //only the second column needs to be sorted by numeric, others are all by alpha
+                        if(1==colIndex)
+                        {
+                            rowArray.sort(SortLayers.sortByNumeric);
+                        }
+                        else
+                        {
+                            rowArray.sort(SortLayers.sortByAlpha);
+                        }                     
+
+                        //reset the row alternate color after sorting
+                        tableBody = layersTBody;
+                        for (j = 0; j < rowArray.length; j++)
+                        {
+                            tableBody.appendChild(rowArray[j][1]);
+
+                            if(0 == j%2)
+                            {
+                                rowArray[j][1].className="odd";
+                            }
+                            else
+                            {
+                                rowArray[j][1].className="even";
+                            }
+                        }
+
+                        delete rowArray;
+                    },
+
+                    getInnerText: function(node)
+                    {
+                        // gets the text we want to use for sorting for a cell.
+                        // strips leading and trailing whitespace.
+
+                        if (node.getAttribute("sortKey") != null)
+                        {
+                            return node.getAttribute("sortKey");
+                        }
+                        else if (typeof node.textContent != 'undefined')
+                        {
+                            return node.textContent.replace(/^\s+|\s+$/g, '');
+                        }
+                        else if (typeof node.innerText != 'undefined')
+                        {
+                            return node.innerText.replace(/^\s+|\s+$/g, '');
+                        }
+                        else if (typeof node.text != 'undefined')
+                        {
+                            return node.text.replace(/^\s+|\s+$/g, '');
+                        }
+                        else
+                        {
+                            switch (node.nodeType)
+                            {
+                                case 4:
+                                    return node.nodeValue.replace(/^\s+|\s+$/g, '');
+                                    break;
+                                case 1:
+                                case 11:
+                                    var innerText = '';
+                                    var i = 0;
+                                    for (; i < node.childNodes.length; i++) {
+                                        innerText += SortLayers.getInnerText(node.childNodes[i]);
+                                    }
+                                    return innerText.replace(/^\s+|\s+$/g, '');
+                                    break;
+                                default:
+                                    return '';
+                            }
+                        }
+                    },
+
+                    // sort functions
+                    // a is an array with two elements, so as b
+                    // so you are comparing a[0] and b[0]
+                    sortByNumeric: function(a, b)
+                    {
+                        a0 = parseFloat(a[0].replace(/[^0-9.-]/g, ''));
+                        if (isNaN(a0))
+                        {
+                            a0 = 0;
+                        }
+
+                        b0 = parseFloat(b[0].replace(/[^0-9.-]/g, ''));
+                        if (isNaN(b0))
+                        {
+                            b0 = 0;
+                        }
+
+                        return a0 - b0;
+                    },
+
+                    //Making sorttable sort your columns case-insensitive
+                    sortByAlpha: function(a,b)
+                    {
+                        if (a[0].toLowerCase() == b[0].toLowerCase())
+                        {
+                            return 0;                               
+                        }
+       
+                        if (a[0].toLowerCase() < b[0].toLowerCase())
+                        {
+                            return -1;
+                        }
+
+                        return 1;
+                    }
+                }
+
             </script>
 
             <div id="settingsTitle">
              <table>
                  <tr>
-                     <td style=" width: 20px;">
-                         <img src="images/testImages/down_17.jpg" alt="down" style="cursor:pointer;"
+                     <td style=" width: 8px;">
+                         <img src="images/arrow_down.png" alt="down" style="cursor:pointer;"
                               id="settings_CollapseImage_ID" onclick="CollapsibleTabClick('settings_CollapseImage_ID','settingsContent')"/>
                      </td>
-                     <td style=" font-size:22px; color: orange; text-align: left;"  >
+                     <td style=" font-size:18px;  font-weight: bold; text-align: left;"  >
                          <span style="cursor:pointer;" onclick="CollapsibleTabClick('settings_CollapseImage_ID','settingsContent')">Settings</span>
                      </td>
                  </tr>
@@ -1247,7 +1590,7 @@ catch ( Exception $e )
                                                             <div style=" margin-bottom: 5px;">
                                                                 Choose a center point and scale from the map viewer or enter the values manually.
                                                             </div>
-                                                            <input type="button" id="mapViewerBtn" value="Select Settings" onClick="SelectMapSettings();"  disabled="disabled" style="width:160px; height: 28px;font-weight: bold;">
+                                                            <input type="button" id="mapViewerBtn" value="Select Settings..." onClick="SelectMapSettings();"  disabled="disabled" style="width:160px; height: 28px;font-weight: bold;">
                                                             <div id="mapViewerDialog" align="center" class="mapViewerDialogStyle">
                                                                 <table width="100%" style="margin:0px; padding: 0px;" cellspacing="0" cellpadding="0">
                                                                     <tr>
@@ -1312,7 +1655,8 @@ catch ( Exception $e )
                                                     </td>
                                                     <td>
                                                         <span id="ajax_loading_img" style="display:none;">
-                                                            <input type="image" src="images/ajax_loading.gif"></span>
+                                                            <img src="images/ajax_loading.gif" alt="loading"/>
+                                                        </span>
                                                     </td>
                                                     <td>
                                                         <span style="margin-left: 25px;" id="btnClearSpan">
@@ -1382,10 +1726,15 @@ catch ( Exception $e )
                     </tr>
                 </table>
             </div>
+            
             <div id="resultsTab" style=" display: none;">
             </div>        
             <?php EndContentArea( true, $formName, "" ); ?>
             <!-- End of Contents Area -->
+            <!-- This form is used to export the profiling results as .csv file -->
+            <!-- If we put the form inside the innerHTML and inside another form, the Chrome and safari will ignore this form-->
+            <form id="getCSVFileForm" action="performanceReport_Export.php" method="post" >
+            </form>
         </tr>
     </table>
 </body>

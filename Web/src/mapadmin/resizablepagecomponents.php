@@ -2168,51 +2168,70 @@
 
         public function OutputMapDefinitionData()
         {
-            //TODO: will be implemented in part2
+            //TODO: will be implemented in part 3
         }
 
+        //Output the layer profiling information to the webpage as table rows
+        //TODO: will refine in part 3, when there's no data
         public function OutputLayerDefinitionData()
         {
             $rowNumber=1;
             foreach ($this->mapProfileResult->LayerProfileData->LayerProfileDataCollection as $layerProfileData)
             {
+                //set different colors for alternate rows and when mouse move over the row it will change color
                 if(0 == $rowNumber%2)
                 {
-                    echo '<tr class="even" onmouseover="HighlightRow(this);" onmouseout="UnhighlightRow(this);">',"\n";
+                    echo '<tr class="even" onmouseover="HighlightRow(this);" onmouseout="UnhighlightRow(this);" onclick="LayerDataTableRowClicked(\''.$layerProfileData->LayerName.'\');">',"\n";
                 }
                 else
                 {
-                    echo '<tr class="odd" onmouseover="HighlightRow(this);" onmouseout="UnhighlightRow(this);">',"\n";
+                    echo '<tr class="odd" onmouseover="HighlightRow(this);" onmouseout="UnhighlightRow(this);" onclick="LayerDataTableRowClicked(\''.$layerProfileData->LayerName.'\');">',"\n";
                 }
 
-                echo "<td style='width:20%;'>".$layerProfileData->GetLayerName()."</td>","\n";
-                echo "<td style='width:20%;'>".$layerProfileData->TotalRenderTime."</td>","\n";
-                echo "<td style='width:20%;'>"."Class Info Goes here"."</td>","\n";
-                echo "<td style='width:20%;'>".$layerProfileData->CoordinateSystem."</td>","\n";
-                echo "<td style='width:20%;'>".$layerProfileData->LayerType."</td>","\n";
+                //output the layer profiling information by each column,
+                //for the render time column, we set the sort key as the original number, which will be used as client sort
+                echo "<td style='width:15%;'>".$layerProfileData->LayerName."</td>","\n";
+                echo "<td style='width:20%;' sortKey='".$layerProfileData->TotalRenderTime."'>".$layerProfileData->TotalRenderTime."&nbsp;ms (15%)</td>","\n";
+                echo "<td style='width:25%;'>".$layerProfileData->FeatureClass."</td>","\n";
+                echo "<td style='width:25%;'>".$layerProfileData->CoordinateSystem."</td>","\n";
+                echo "<td style='width:15%;'>".$layerProfileData->LayerType."</td>","\n";
                 echo "</tr>","\n";
 
                 $rowNumber++;
             }
         }
 
+        //Convert the php array of layer detail information as js array
+        //and output to the webpage
         public function OutputLayerDetailData()
         {
-            $layerDetail=$this->mapProfileResult->LayerProfileData->LayerProfileDataCollection["Library://Buildings.LayerDefinition"];
+            //get the layer profiling data from the LayerProfileData
+            $layerDetails=$this->mapProfileResult->LayerProfileData->LayerProfileDataCollection;
+            $layerDetailCount=count($layerDetails);
 
-            echo '<div style="padding-bottom: 8px; padding-top: 7px; width: 80%;">' . $layerDetail->GetLayerName() . '</div>', "\n";
-            echo '<div style=" border: 1px solid #cccccc; width: 80%">';
-            echo '<div style="padding: 10px;">';
-            echo "<b>Filter</b>";
-            echo "<br/><br/>";
-            echo $layerDetail->Filters;
-            echo "</div>";
-            echo '<div style=" background-color: #EEEEEE;padding: 10px;">';
-            echo "<b>Scale Range</b>";
-            echo "<br/><br/>";
-            echo $layerDetail->ScaleRange;
-            echo "</div>", "\n";
-            echo "</div>", "\n";
+            //if there's no layer, return
+            if($layerDetailCount<=0)
+            {
+                return;
+            }
+
+            // create script string to append to content.
+            // create 2-D JS array to contain the values for LayerName, Filters, ScaleRange.
+            $script = "var layerDetailValues = new Array(".$layerDetailCount.");";
+
+            $i=0;
+            foreach ($layerDetails as $key => $value)
+            {
+                $script = $script." layerDetailValues[".$i."]=new Array(3); ";
+                $script = $script." layerDetailValues[".$i."][0]='".$value->LayerName."'; ";
+                $script = $script." layerDetailValues[".$i."][1]='".$value->Filters."'; ";
+                $script = $script." layerDetailValues[".$i."][2]='".$value->ScaleRange."'; ";
+               
+                $i++;
+            }
+
+            //out put to UI
+            echo $script;
         }
 
         public function OutputMapRenderTimeGraph()
@@ -2262,6 +2281,5 @@
             echo '</div>',"\n";
         }
     }
-
-
+    
 ?>
