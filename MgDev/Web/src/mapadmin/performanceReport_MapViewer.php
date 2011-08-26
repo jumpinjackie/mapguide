@@ -18,7 +18,8 @@
     // get contents of a file into a string
     try
     {
-        $filename = "profilingmapxml\\MapViewerTemplate.xml";
+        //under Liunx, we should use '/' instead of '\\'
+        $filename = "profilingmapxml/MapViewerTemplate.xml";
         $handle = fopen($filename, "r");
         $contents = fread($handle, filesize($filename));
         fclose($handle);

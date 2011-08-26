@@ -16,8 +16,6 @@ try
     $confirmationMsg = "";
     $errorMsg = "";
     $mapProfileResult=new MapProfileResult();
-    $mapResources;
-    $mapResourceShortNames;
     $displayManager= new DisplayProfileResultManager();
 
     function GetProfilingResults()
@@ -25,17 +23,16 @@ try
         global $mapProfileResult;
         $resultSource=new DOMDocument();
         //As the profiling API is not finished, now we just use a temp xml file to simulate it.
-        //we will change it in part 2.
+        //we will change it in part 3.
         $resultSource->load("profilingmapxml/profileResults.xml");
         $mapProfileResult->ReadFromXML($resultSource);
+        $mapProfileResult->GetBaseLayerCount();
     }
 
     GetProfilingResults();
 
     $displayManager->mapProfileResult=$mapProfileResult;
 
-    //TODO: remove this in part 2
-    sleep(3);
 }
 catch ( MgException $e )
 {
@@ -50,19 +47,17 @@ catch ( Exception $e )
 
 <table style="width: 70%;">
     <tr>
-        <td colspan="2" style=" padding-left: 18px;">
+        <td colspan="2" style=" padding-left: 14px;">
             <br>
-            <span style=" font-size: large; font-weight: bold;">Results</span>
+            <span style=" font-size: 18px; font-weight: bold; ">Results</span>
         </td>
     </tr>
     <tr>
-        <td style=" padding-left: 18px;">
+        <td style=" padding-left: 15px;">
             <span><?php echo date("F d ,Y h:i:s A"); ?></span>
         </td>
         <td style=" text-align: right;">
-            <input type="button" value="Export" style="width:80px; font-weight: bold;height: 28px;" onclick="exportCSV();" />
-            <form id="getCSVFileForm" action="performanceReport_Export.php" method="post" >
-            </form>
+            <input type="button" value="Export" style="width:80px; font-weight: bold;height: 28px;" onclick="ExportCSV();" />
         </td>
     </tr>
     <tr>
@@ -73,7 +68,7 @@ catch ( Exception $e )
                         <td style="width:22%; font-weight: bold;">Resource Name:</td>
                         <td style="width:32%;">
                             <?php
-                            $displayManager->OutputMapResourceNameWithToolTip($mapProfileResult->MapProfileData->MapResourceId);
+                                $displayManager->OutputMapResourceNameWithToolTip($mapProfileResult->MapProfileData->MapResourceId);
                             ?>
                         </td>
                         <td style="width:18%;font-weight: bold;">
@@ -90,7 +85,11 @@ catch ( Exception $e )
                     </tr>
                     <tr>
                         <td style=" font-weight: bold;">Base Layers:</td>
-                        <td>12</td>
+                        <td>
+                            <?php
+                                echo $mapProfileResult->MapProfileData->BaseLayerCount;
+                            ?>
+                        </td>
                         <td style=" font-weight: bold;">Image Format:</td>
                         <td>
                             <?php
@@ -101,12 +100,21 @@ catch ( Exception $e )
                     <tr>
                         <td style=" font-weight: bold;">Center Point:</td>
                         <td>
-                            X:23423.343E2
-                            <br/>
-                            Y:23423.23E5
+                            <?php
+                                list($x, $y) = explode("*", $_REQUEST["centerPoint"]);
+                                $x = trim($x);
+                                $y = trim($y);
+                                echo "X:&nbsp;" . $x;
+                                echo "<br/>";
+                                echo "Y:&nbsp;" . $y;
+                            ?>
                         </td>
                         <td style=" font-weight: bold;">Layers:</td>
-                        <td>56</td>
+                        <td>
+                            <?php
+                                echo $mapProfileResult->MapProfileData->LayerCount;
+                            ?>
+                        </td>
                     </tr>
                     <tr>
                         <td style=" font-weight: bold;">Coordinate System:</td>
@@ -149,9 +157,9 @@ catch ( Exception $e )
         <td colspan="2">
             <div>
                 <table style="width:100%; padding: 0px; text-align: center;" cellspacing="0" cellpadding="0">
-                <?php
-                    $displayManager->OutputMapRenderTimeGraph();
-                ?>
+                    <?php
+                        $displayManager->OutputMapRenderTimeGraph();
+                    ?>
                     <tr style="height:35px;">
                         <td colspan="4" style=" text-align: center;">
                             <span style="width: 11px; height: 11px; background-color:#E4C7AE; margin-right: 5px;">
@@ -176,19 +184,26 @@ catch ( Exception $e )
         </td>
     </tr>
 </table>
+<span id="layerDetailsJsArray" style="display:none;">
+    <?php
+        $displayManager->OutputLayerDetailData();
+    ?>
+</span>
 <div id="LayersResult">
     <table style=" width:100%;">
         <tr>
             <td style="width:70%; padding-top: 15px;">
                 <div id="layerHeader" class="layerResultsHeaderStyle" style="margin:0px; padding: 0px;">
-                    <table>
+                    <table id="layerHeaderTable">
                         <thead>
+                            <!--the table head is in a different div so when the table scrolls, the head will be fixed -->
+                            <!--Also, the table head columns are set with some customer attribute to help to sort the table data from the client site-->
                             <tr>
-                                <th>Layer</th>
-                                <th>Render Time</th>
-                                <th>Feature Class</th>
-                                <th>Coordinate System</th>
-                                <th>Type</th>
+                                <th style="width:15%;border-left:1px solid #CCCCCC;" columnIndex="1" onClick="SortLayers.sortByColumn(this);">Layer</th>
+                                <th style="width:20%;" columnIndex="2" onClick="SortLayers.sortByColumn(this);">Render Time</th>
+                                <th style="width:25%;" columnIndex="3" onClick="SortLayers.sortByColumn(this);">Feature Class</th>
+                                <th style="width:25%;" columnIndex="4" onClick="SortLayers.sortByColumn(this);">Coordinate System</th>
+                                <th style="width:15%;border-right:1px solid #CCCCCC;" columnIndex="5" onClick="SortLayers.sortByColumn(this);">Type</th>
                             </tr>
                         </thead>
                     </table>
@@ -204,9 +219,8 @@ catch ( Exception $e )
                 </div>
             </td>
             <td style="width:30%; padding-left:15px; vertical-align: top; padding-top: 15px;">
-                <?php
-                    $displayManager->OutputLayerDetailData();
-                ?>
+                <div id="layerInfoDetail">         
+                </div>
             </td>
         </tr>
     </table>

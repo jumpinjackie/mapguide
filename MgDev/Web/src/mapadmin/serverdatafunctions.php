@@ -2302,28 +2302,11 @@
         public $LayerType;
         public $Filters;
         public $ScaleRange;
-
-        public function GetLayerName()
-        {
-            $shortLayerName = strrchr($this->LayerResuorceId, '/');
-            $shortLayerName = substr($shortLayerName, 1, strlen($shortLayerName) - 17);
-            return $shortLayerName;
-        }
     }
 
     class LayerDefinitionProfileResults
     {
         public $LayerProfileDataCollection;
-
-        public function Sort($columnName,$sortOrder)
-        {
-            //TODO: will be implemented in part2
-        }
-
-        public function Page()
-        {
-            //TODO: will be implemented in part2
-        }
     }
 
     class MapDefinitionProfileData
@@ -2410,6 +2393,9 @@
                             case "Extent":
                                 $this->MapProfileData->DataExtents = $node->nodeValue;
                                 break;
+                            case "LayerCount":
+                                $this->MapProfileData->LayerCount = $node->nodeValue;
+                                break;
                             case "Scale":
                                 $this->MapProfileData->Scale = $node->nodeValue;
                                 break;
@@ -2473,11 +2459,17 @@
                     foreach ($layerNode->childNodes as $node) {
                         if (1 == $node->nodeType) {
                             switch ($node->nodeName) {
+                                case "LayerName":
+                                    $tempLayerProfileData->LayerName = $node->nodeValue;
+                                    break;
                                 case "ResourceId":
                                     $tempLayerProfileData->LayerResuorceId = $node->nodeValue;
                                     break;
                                 case "LayerType":
                                     $tempLayerProfileData->LayerType = $node->nodeValue;
+                                    break;
+                                case "FeatureClassName":
+                                    $tempLayerProfileData->FeatureClass = $node->nodeValue;
                                     break;
                                 case "CoordinateSystem":
                                     $tempLayerProfileData->CoordinateSystem = $node->nodeValue;
@@ -2495,16 +2487,66 @@
                             }
                         }
                     }
-                    $this->LayerProfileData->LayerProfileDataCollection[$tempLayerProfileData->LayerResuorceId]=$tempLayerProfileData;
+                    $this->LayerProfileData->LayerProfileDataCollection[$tempLayerProfileData->LayerName]=$tempLayerProfileData;
                 }
             }
         }
 
         public function SaveAsCSV()
         {
-            //TODO: will be implemented in part2
+            //TODO: will be implemented in part3
         }
-    }
 
-    
+        //Get the base map layer count of the specified map resource
+        //The base map layer count is not provided by the profiling report
+        //but we need it on UI
+        public function GetBaseLayerCount()
+        {
+            try
+            {
+                //site and userInfo are saved in the session
+                global $site;
+                global $userInfo;
+                $mapResourceContent = "";
+                $resourceID = $this->MapProfileData->MapResourceId;
+
+                //connect to the site and get a resource service instance
+                $siteConn = new MgSiteConnection();
+                $siteConn->Open($userInfo);
+                $resourceService = $siteConn->CreateService(MgServiceType::ResourceService);
+                //get the map resource content from the server
+                $mgResourceID = new MgResourceIdentifier($resourceID);
+                $byteReader = $resourceService->GetResourceContent($mgResourceID);
+
+                //read the content into a string
+                $chunk = "";
+                do
+                {
+                    $chunkSize = $byteReader->Read($chunk, 4096);
+                    $mapResourceContent = $mapResourceContent . $chunk;
+                } while ($chunkSize != 0);
+
+                //parse the xml data use DOMDocument
+                $resourceContent = new DOMDocument();
+                $resourceContent->loadXML($mapResourceContent);
+
+                //get all the elements with the element name "BaseMapLayer"
+                $baseLayers = $resourceContent->documentElement->getElementsByTagName("BaseMapLayer");
+
+                //set the base map layer count
+                $this->MapProfileData->BaseLayerCount= $baseLayers->length;
+            }
+            catch (Exception $exc)
+            {
+                //Exceptions:
+                //MgInvalidRepositoryTypeException
+                //MgInvalidRepositoryNameException
+                //MgInvalidResourcePathException
+                //MgInvalidResourceNameException
+                //MgInvalidResourceTypeException
+                $errorMsg = $exc->getMessage();
+            }
+        }
+
+    }
 ?>
