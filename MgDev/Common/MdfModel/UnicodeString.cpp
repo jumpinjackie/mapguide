@@ -25,6 +25,8 @@
         str.clear();\
         return;\
     }\
+    if ( !str.empty() )\
+        str.clear();\
 \
     size_t size = 0;\
 \
