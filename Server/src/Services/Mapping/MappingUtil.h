@@ -21,6 +21,9 @@
 #include "ServerMappingDllExport.h"
 #include "MapGuideCommon.h"
 
+//For profiling
+#include "ProfileRenderLayersResult.h"
+
 //fwd declare
 class MgResourceService;
 class MgFeatureService;
@@ -35,6 +38,7 @@ class MgCoordinateSystem;
 class RSMgFeatureReader;
 class TransformCache;
 class SE_SymbolManager;
+
 namespace MdfModel
 {
     class SymbolDefinition;
@@ -60,7 +64,8 @@ public:
                               bool checkRefreshFlag,
                               double scale,
                               bool selection = false,
-                              bool extractColors = false);
+                              bool extractColors = false,
+                              ProfileRenderLayersResultBase* = NULL);
 
     static RSMgFeatureReader* ExecuteFeatureQuery(MgFeatureService* svcFeature,
                                                  RS_Bounds& extent,

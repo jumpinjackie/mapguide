@@ -15,29 +15,38 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
-#ifndef PROFILERENDERSELECTIONRESULT_H_
-#define PROFILERENDERSELECTIONRESULT_H_
+#ifndef PROFILERENDERLAYERSRESULTBASE_H_
+#define PROFILERENDERLAYERSRESULTBASE_H_
 
 #include "MdfModel.h"
 #include "MdfRootObject.h"
-#include "ProfileRenderLayersResultBase.h"
+#include "ProfileRenderLayerResult.h"
 
 
 BEGIN_NAMESPACE_MDFMODEL
 
     //-------------------------------------------------------------------------
     // DESCRIPTION:
-    // The ProfileRenderSelectionResult is a profiling result which records
-    // information during selected layer rendering processes.
+    // The ProfileRenderLayersResultBase is a base class which records
+    // information during layer rendering processes.
     //------------------------------------------------------------------------
-    class MDFMODEL_API ProfileRenderSelectionResult : public ProfileRenderLayersResultBase
+    class MDFMODEL_API ProfileRenderLayersResultBase : public MdfRootObject
     {
     public:
         // Construction, destruction, initialization.
-        ProfileRenderSelectionResult();
-        virtual ~ProfileRenderSelectionResult();
+        ProfileRenderLayersResultBase();
+        virtual ~ProfileRenderLayersResultBase();
 
         // Operations
+
+        // Property: RenderTime
+        // The time of stylizing all layers.
+        virtual const double GetRenderTime() const;
+        virtual void SetRenderTime(const double& dRenderTime);
+
+        // Property: ProfileRenderLayerResults
+        // A collection of ProfileRenderLayerResult.
+        virtual ProfileRenderLayerResultCollection* GetProfileRenderLayerResults();
 
 //#ifdef _WIN32
 #if _DEBUG
@@ -47,12 +56,15 @@ BEGIN_NAMESPACE_MDFMODEL
 //#endif
 
     private:
-        // Hidden ProfileRenderSelectionResult copy constructor and assignment operator.
-        ProfileRenderSelectionResult(const ProfileRenderSelectionResult&);
-        ProfileRenderSelectionResult& operator=(const ProfileRenderSelectionResult&);
+        // Hidden ProfileRenderLayersResult copy constructor and assignment operator.
+        ProfileRenderLayersResultBase(const ProfileRenderLayersResultBase&);
+        ProfileRenderLayersResultBase& operator=(const ProfileRenderLayersResultBase&);
 
         // Data members
+        // See corresponding properties for descriptions
+        double m_dRenderTime;
+        ProfileRenderLayerResultCollection m_profileRenderLayerResults;
     };
 
 END_NAMESPACE_MDFMODEL
-#endif // PROFILERENDERSELECTIONRESULT_H_
+#endif // PROFILERENDERLAYERSRESULTBASE_H_

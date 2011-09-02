@@ -80,6 +80,7 @@ libMgMdfModel_la_SOURCES = \
   ProfileRenderLabelsResult.cpp \
   ProfileRenderLayerResult.cpp \
   ProfileRenderLayersResult.cpp \
+  ProfileRenderLayersResultBase.cpp \
   ProfileRenderMapResult.cpp \
   ProfileRenderSelectionResult.cpp \
   ProfileRenderWatermarkResult.cpp \
@@ -199,6 +200,7 @@ noinst_HEADERS = \
   ProfileRenderLabelsResult.h \
   ProfileRenderLayerResult.h \
   ProfileRenderLayersResult.h \
+  ProfileRenderLayersResultBase.h \
   ProfileRenderMapResult.h \
   ProfileRenderSelectionResult.h \
   ProfileRenderWatermarkResult.h \

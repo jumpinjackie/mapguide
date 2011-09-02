@@ -24,6 +24,11 @@ class SE_Renderer;
 class FeatureInfoRenderer;
 class MgFeatureInformation;
 
+namespace MdfModel
+{
+    class ProfileRenderMapResult;
+}
+
 class MG_SERVER_RENDERING_API MgServerRenderingService : public MgRenderingService
 {
     DECLARE_CLASSNAME(MgServerRenderingService)
@@ -53,6 +58,11 @@ public:
     virtual MgByteReader* RenderDynamicOverlay(MgMap* map,
                                                MgSelection* selection,
                                                MgRenderingOptions* options);
+
+    virtual MgByteReader* RenderDynamicOverlay(MgMap* map,
+                                               MgSelection* selection,
+                                               MgRenderingOptions* options,
+                                               ProfileRenderMapResult* pPRMResult);
 
     virtual MgByteReader* RenderMap(MgMap* map,
                                     MgSelection* selection,
@@ -178,7 +188,8 @@ private:
                                     RS_Bounds& b,
                                     bool expandExtents,
                                     bool bKeepSelection,
-                                    bool renderWatermark);
+                                    bool renderWatermark,
+                                    ProfileRenderMapResult* pPRMResult = NULL);
 
     MgByteReader* RenderMapInternal(MgMap* map,
                                     MgSelection* selection,
@@ -192,7 +203,8 @@ private:
                                     RS_Bounds& b,
                                     bool expandExtents,
                                     MgRenderingOptions* options,
-                                    bool renderWatermark);
+                                    bool renderWatermark,
+                                    ProfileRenderMapResult* pPRMResult = NULL);
 
     void RenderForSelection(MgMap* map,
                          MgStringCollection* layerNames,

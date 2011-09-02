@@ -28,6 +28,11 @@
 #include "MappingUtil.h"
 #include "LegendPlotUtil.h"
 #include "TransformCache.h"
+#include "Box2D.h"
+
+// Profile
+#include "ProfileRenderMapResult.h"
+
 
 
 // the maximum number of allowed pixels for rendered images
@@ -305,9 +310,23 @@ MgByteReader* MgServerRenderingService::RenderDynamicOverlay(MgMap* map,
 
 ///////////////////////////////////////////////////////////////////////////////
 // called from API (first call of AjaxPgPViewerSampleApplication)
+// default arg pPRMResult = NULL
 MgByteReader* MgServerRenderingService::RenderDynamicOverlay(MgMap* map,
                                                              MgSelection* selection,
                                                              MgRenderingOptions* options)
+{
+    // Call updated RenderDynamicOverlay API 
+    return RenderDynamicOverlay(map, selection, options, NULL);
+}
+
+
+///////////////////////////////////////////////////////////////////////////////
+// Non-published RenderDynamicOverlay API with profile result parameter
+// pPRMResult - a pointer points to Profile Render Map Result.
+MgByteReader* MgServerRenderingService::RenderDynamicOverlay(MgMap* map,
+                                                             MgSelection* selection,
+                                                             MgRenderingOptions* options,
+                                                             ProfileRenderMapResult* pPRMResult)
 {
     Ptr<MgByteReader> ret;
 
@@ -373,14 +392,23 @@ MgByteReader* MgServerRenderingService::RenderDynamicOverlay(MgMap* map,
             roLayers->Add(layer);
     }
 
+    if(NULL != pPRMResult)
+    {
+        Ptr<MgResourceIdentifier> mapResId = map->GetResourceId();
+        pPRMResult->SetResourceId(mapResId ? mapResId->ToString() : L"");
+        pPRMResult->SetScale(scale);
+        pPRMResult->SetExtents(Box2D(extent.minx, extent.miny, extent.maxx, extent.maxy));
+        pPRMResult->SetLayerCount(layers->GetCount());
+        pPRMResult->SetCoordinateSystem(map->GetMapSRS());
+    }
+
     // call the internal helper API to do all the stylization overhead work
-    ret = RenderMapInternal(map, selection, roLayers, dr.get(), width, height, width, height, scale, extent, false, options, true);
+    ret = RenderMapInternal(map, selection, roLayers, dr.get(), width, height, width, height, scale, extent, false, options, true, pPRMResult);
 
     MG_CATCH_AND_THROW(L"MgServerRenderingService.RenderDynamicOverlay")
 
     return ret.Detach();
 }
-
 
 ///////////////////////////////////////////////////////////////////////////////
 // default arg bKeepSelection = true
@@ -826,7 +854,8 @@ MgByteReader* MgServerRenderingService::RenderMapInternal(MgMap* map,
                                                           RS_Bounds& b,
                                                           bool expandExtents,
                                                           bool bKeepSelection,
-                                                          bool renderWatermark)
+                                                          bool renderWatermark,
+                                                          ProfileRenderMapResult* pPRMResult)
 {
     MgRenderingOptions options(format, MgRenderingOptions::RenderSelection |
         MgRenderingOptions::RenderLayers | (bKeepSelection? MgRenderingOptions::KeepSelection : 0), NULL);
@@ -853,7 +882,8 @@ MgByteReader* MgServerRenderingService::RenderMapInternal(MgMap* map,
                                                           RS_Bounds& b,
                                                           bool expandExtents,
                                                           MgRenderingOptions* options,
-                                                          bool renderWatermark)
+                                                          bool renderWatermark,
+                                                          ProfileRenderMapResult* pPRMResult)
 {
     // set the map scale to the requested scale
     map->SetViewScale(scale);
@@ -917,14 +947,45 @@ MgByteReader* MgServerRenderingService::RenderMapInternal(MgMap* map,
         INT32 behavior = options->GetBehavior();
         if (behavior & MgRenderingOptions::RenderLayers)    // this is for tiles so observer colormaps
         {
+            ProfileRenderLayersResult* pPRLsResult = NULL; // pointer points to Profile Render Layers Result
+
+            if(NULL != pPRMResult)
+            {
+                pPRLsResult = new ProfileRenderLayersResult();
+                pPRMResult->AdoptProfileRenderLayersResult(pPRLsResult);
+                
+                // Set the start time of stylizing layers
+                pPRLsResult->SetRenderTime(MgTimerUtil::GetTime());
+            }
+
             MgMappingUtil::StylizeLayers(m_svcResource, m_svcFeature, m_svcDrawing, m_pCSFactory, map,
                                          tempLayers, NULL, &ds, dr, dstCs, expandExtents, false, scale,
-                                         false, hasColorMap(format));
+                                         false, hasColorMap(format), pPRLsResult);
+
+            if(NULL != pPRMResult)
+            {
+                pPRLsResult = pPRMResult->GetProfileRenderLayersResult();
+
+                // Calculate the time spent on stylizing layers
+                double stylizeLayersTime = MgTimerUtil::GetTime() - pPRLsResult->GetRenderTime();
+                pPRLsResult->SetRenderTime(stylizeLayersTime);
+            }
         }
 
         // now we need to stylize the selection on top (this is not for tiles!)
         if (selection && (behavior & MgRenderingOptions::RenderSelection))
         {
+            ProfileRenderSelectionResult* pPRSResult = NULL; // pointer points to Profile Render Selection Result
+
+            if(NULL != pPRMResult)
+            {
+                pPRSResult = new ProfileRenderSelectionResult();
+                pPRMResult->AdoptProfileRenderSelectionResult(pPRSResult);
+                
+                // Set the start time of stylizing selected layers
+                pPRSResult->SetRenderTime(MgTimerUtil::GetTime());
+            }
+
             Ptr<MgReadOnlyLayerCollection> selLayers = selection->GetLayers();
 
             #ifdef _DEBUG
@@ -972,15 +1033,35 @@ MgByteReader* MgServerRenderingService::RenderMapInternal(MgMap* map,
                 }
 
                 MgMappingUtil::StylizeLayers(m_svcResource, m_svcFeature, m_svcDrawing, m_pCSFactory, map,
-                    modLayers, overrideFilters, &ds, dr, dstCs, false, false, scale, (behavior & MgRenderingOptions::KeepSelection) != 0);
+                    modLayers, overrideFilters, &ds, dr, dstCs, false, false, scale, (behavior & MgRenderingOptions::KeepSelection) != 0,false,pPRSResult);
 
                 // Set selection mode to false to avoid affecting following code
                 dr->SetRenderSelectionMode(false);
+            }
+
+            if(NULL != pPRMResult)
+            {
+                pPRSResult = pPRMResult->GetProfileRenderSelectionResult();
+
+                // Calculate the time spent on stylizing selected layers
+                double stylizeSelectionTime = MgTimerUtil::GetTime() - pPRSResult->GetRenderTime();
+                pPRSResult->SetRenderTime(stylizeSelectionTime);
             }
         }
 
         if (renderWatermark && (behavior & MgRenderingOptions::RenderLayers) && map->GetWatermarkUsage() != 0)
         {
+            ProfileRenderWatermarksResult* pPRWsResult = NULL; // pointer points to Profile Render Watermarks Result
+
+            if(NULL != pPRMResult)
+            {
+                pPRWsResult = new ProfileRenderWatermarksResult();
+                pPRMResult->AdoptProfileRenderWatermarksResult(pPRWsResult);
+                
+                // Set the start time of stylizing watermarks
+                pPRWsResult->SetRenderTime(MgTimerUtil::GetTime());
+            }
+
             // Rendering watermark only when:
             //      1. rendering layers
             //      2. not set renderWatermark to false (not render tile)
@@ -1087,6 +1168,18 @@ MgByteReader* MgServerRenderingService::RenderMapInternal(MgMap* map,
                             break;
                         }
                     }
+
+                    if(NULL != pPRWsResult)
+                    {
+                        ProfileRenderWatermarkResult* pPRWResult = new ProfileRenderWatermarkResult(); // pointer points to Render Watermark Result
+                        
+                        // Set the start time of stylizing watermark
+                        pPRWResult->SetRenderTime(MgTimerUtil::GetTime());
+
+                        ProfileRenderWatermarkResultCollection* pPRWResultColl = pPRWsResult->GetProfileRenderWatermarkResults();
+                        pPRWResultColl->Adopt(pPRWResult);
+                    }
+
                     if(wdef == NULL)
                     {
                         Ptr<MgResourceIdentifier> resId = new MgResourceIdentifier(resourceId);
@@ -1107,6 +1200,28 @@ MgByteReader* MgServerRenderingService::RenderMapInternal(MgMap* map,
                     }
                     ds.StylizeWatermark(dr, wdef, drawWidth, drawHeight, saveWidth, saveHeight);
                 
+                    if(NULL != pPRWsResult)
+                    {
+                        ProfileRenderWatermarkResultCollection* pPRWResultColl = pPRWsResult->GetProfileRenderWatermarkResults();
+                        ProfileRenderWatermarkResult* pPRWResult = pPRWResultColl->GetAt(pPRWResultColl->GetCount()-1); // TODO: check index
+
+                        // Calculate the time spent on stylizing watermark
+                        double stylizeWatermarkTime = MgTimerUtil::GetTime() - pPRWResult->GetRenderTime();
+                        pPRWResult->SetRenderTime(stylizeWatermarkTime);
+
+                        pPRWResult->SetResourceId(resourceId);
+
+                        WatermarkPosition* position = wdef->GetPosition();
+                        if(NULL != dynamic_cast<XYWatermarkPosition*>(position))
+                        {
+                            pPRWResult->SetPositionType(L"XY");
+                        }
+                        else // No other position types
+                        {
+                            pPRWResult->SetPositionType(L"Tile");
+                        }
+                    }
+
                 MG_CATCH(L"MgServerRenderingService.RenderMapInternal")
                 if(mgException.p)
                 {
@@ -1149,11 +1264,37 @@ MgByteReader* MgServerRenderingService::RenderMapInternal(MgMap* map,
                     }
                 }
             }
+
+            if(NULL != pPRWsResult)
+            {
+                // Calculate the time spent on stylizing watermarks
+                double stylizeRenderWatermarksTime = MgTimerUtil::GetTime() - pPRWsResult->GetRenderTime();
+                pPRWsResult->SetRenderTime(stylizeRenderWatermarksTime);
+            }
         }
 
     MG_CATCH(L"MgServerRenderingService.RenderMapInternal")
 
+    if(NULL != pPRMResult)
+    {
+        ProfileRenderLabelsResult* pPRLablesResult = new ProfileRenderLabelsResult(); // pointer points to Render Labels Result
+        
+        // Set the start time of stylizing labels
+        pPRLablesResult->SetRenderTime(MgTimerUtil::GetTime());
+
+        pPRMResult->AdoptProfileRenderLabelsResult(pPRLablesResult);
+    }
+
     dr->EndMap();
+
+    if(NULL != pPRMResult)
+    {
+        ProfileRenderLabelsResult* pPRLablesResult = pPRMResult->GetProfileRenderLabelsResult();
+
+        // Calculate the time spent on stylizing labels
+        double stylizeLabelsTime = MgTimerUtil::GetTime() - pPRLablesResult->GetRenderTime();
+        pPRLablesResult->SetRenderTime(stylizeLabelsTime);
+    }
 
     MG_THROW()  // to skip a faulty tile we need to rethrow the exception which could be thrown in StylizeLayers
 /*
@@ -1177,6 +1318,13 @@ MgByteReader* MgServerRenderingService::RenderMapInternal(MgMap* map,
     dr->ProcessPolyline(&lb, ls);
     //-------------------------------------------------------
 */
+
+    if(NULL != pPRMResult)
+    {
+        // Set the start time of creating map image
+        pPRMResult->SetCreateImageTime(MgTimerUtil::GetTime());
+    }
+
     Ptr<MgByteReader> ret;
 
     // get a byte representation of the image
@@ -1233,6 +1381,16 @@ MgByteReader* MgServerRenderingService::RenderMapInternal(MgMap* map,
     }
     else
         throw new MgNullReferenceException(L"MgServerRenderingService.RenderMapInternal", __LINE__, __WFILE__, NULL, L"MgNoDataFromRenderer", NULL);
+    
+    if(NULL != pPRMResult)
+    {
+        // Calculate the time spent on stylizing labels
+        double createImageTime = MgTimerUtil::GetTime() - pPRMResult->GetCreateImageTime();
+        pPRMResult->SetCreateImageTime(createImageTime);
+
+        pPRMResult->SetImageFormat(format);
+        pPRMResult->SetRendererType(m_rendererName);
+    }
 
     return ret.Detach();
 }

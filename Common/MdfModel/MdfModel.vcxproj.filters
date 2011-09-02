@@ -120,8 +120,8 @@
     <ClCompile Include="VectorScaleRange.cpp">
       <Filter>VectorLayer</Filter>
     </ClCompile>
-	<ClCompile Include="URLData.cpp">
-		<Filter>VectorLayer</Filter>
+    <ClCompile Include="URLData.cpp">
+      <Filter>VectorLayer</Filter>
     </ClCompile>
     <ClCompile Include="AttributeRelate.cpp">
       <Filter>VectorLayer\Joins</Filter>
@@ -334,13 +334,7 @@
     <ClCompile Include="ProfileRenderLayerResult.cpp">
       <Filter>ProfileResult</Filter>
     </ClCompile>
-    <ClCompile Include="ProfileRenderLayersResult.cpp">
-      <Filter>ProfileResult</Filter>
-    </ClCompile>
     <ClCompile Include="ProfileRenderMapResult.cpp">
-      <Filter>ProfileResult</Filter>
-    </ClCompile>
-    <ClCompile Include="ProfileRenderSelectionResult.cpp">
       <Filter>ProfileResult</Filter>
     </ClCompile>
     <ClCompile Include="ProfileRenderWatermarkResult.cpp">
@@ -350,6 +344,15 @@
       <Filter>ProfileResult</Filter>
     </ClCompile>
     <ClCompile Include="ProfileResult.cpp">
+      <Filter>ProfileResult</Filter>
+    </ClCompile>
+    <ClCompile Include="ProfileRenderLayersResultBase.cpp">
+      <Filter>ProfileResult</Filter>
+    </ClCompile>
+    <ClCompile Include="ProfileRenderLayersResult.cpp">
+      <Filter>ProfileResult</Filter>
+    </ClCompile>
+    <ClCompile Include="ProfileRenderSelectionResult.cpp">
       <Filter>ProfileResult</Filter>
     </ClCompile>
   </ItemGroup>
@@ -432,8 +435,8 @@
     <ClInclude Include="VectorScaleRange.h">
       <Filter>VectorLayer</Filter>
     </ClInclude>
-	<ClInclude Include="URLData.h">
-		<Filter>VectorLayer</Filter>
+    <ClInclude Include="URLData.h">
+      <Filter>VectorLayer</Filter>
     </ClInclude>
     <ClInclude Include="AttributeRelate.h">
       <Filter>VectorLayer\Joins</Filter>
@@ -678,6 +681,9 @@
       <Filter>ProfileResult</Filter>
     </ClInclude>
     <ClInclude Include="ProfileRenderLabelsResult.h">
+      <Filter>ProfileResult</Filter>
+    </ClInclude>
+    <ClInclude Include="ProfileRenderLayersResultBase.h">
       <Filter>ProfileResult</Filter>
     </ClInclude>
   </ItemGroup>

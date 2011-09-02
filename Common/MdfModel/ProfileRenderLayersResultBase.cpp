@@ -17,26 +17,57 @@
 
 //-------------------------------------------------------------------------
 // DESCRIPTION:
-// The ProfileRenderLayersResult class implementation.
+// The ProfileRenderLayersResultBase class implementation.
 //-------------------------------------------------------------------------
 
 #include "stdafx.h"
-#include "ProfileRenderLayersResult.h"
+#include "ProfileRenderLayersResultBase.h"
 
 using namespace MDFMODEL_NAMESPACE;
 
 //-------------------------------------------------------------------------
-// PURPOSE: Construct and initialize an instance of the ProfileRenderLayersResult class.
+// PURPOSE: Construct and initialize an instance of the ProfileRenderLayersResultBase class.
 //-------------------------------------------------------------------------
-ProfileRenderLayersResult::ProfileRenderLayersResult()
+ProfileRenderLayersResultBase::ProfileRenderLayersResultBase()
 {
+    this->m_dRenderTime = 0.0;
+
 }
 
 //-------------------------------------------------------------------------
 // PURPOSE: Destructor. Release any dynamically allocated resources.
 //-------------------------------------------------------------------------
-ProfileRenderLayersResult::~ProfileRenderLayersResult()
+ProfileRenderLayersResultBase::~ProfileRenderLayersResultBase()
 {
+}
+
+//-------------------------------------------------------------------------
+// PURPOSE: Accessor method for the RenderTime property.
+// RETURNS: The time of stylizing all layers.
+//-------------------------------------------------------------------------
+const double ProfileRenderLayersResultBase::GetRenderTime() const
+{
+    return this->m_dRenderTime;
+}
+
+//-------------------------------------------------------------------------
+// PURPOSE: Accessor method to the RenderTime property.
+// PARAMETERS:
+//      Input:
+//          dRenderTime - The time of stylizing all layers.
+//-------------------------------------------------------------------------
+void ProfileRenderLayersResultBase::SetRenderTime(const double& dRenderTime)
+{
+    this->m_dRenderTime = dRenderTime;
+}
+
+//-------------------------------------------------------------------------
+// PURPOSE: Accessor method for the ProfileRenderLayerResults property.
+// RETURNS: A collection of ProfileRenderLayerResult.
+//-------------------------------------------------------------------------
+ProfileRenderLayerResultCollection* ProfileRenderLayersResultBase::GetProfileRenderLayerResults()
+{
+    return &this->m_profileRenderLayerResults;
 }
 
 //-------------------------------------------------------------------------
@@ -44,7 +75,7 @@ ProfileRenderLayersResult::~ProfileRenderLayersResult()
 //-------------------------------------------------------------------------
 #ifdef _WIN32
 #ifdef _DEBUG
-int ProfileRenderLayersResult::DumpMemoryLeaks()
+int ProfileRenderLayersResultBase::DumpMemoryLeaks()
 {
     return _CrtDumpMemoryLeaks();
 }

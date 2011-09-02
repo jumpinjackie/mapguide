@@ -129,11 +129,6 @@
           <xs:documentation>The time of stylizing all selected layers in the map.</xs:documentation>
         </xs:annotation>
       </xs:element>
-      <xs:element name="Filter" type="xs:string">
-        <xs:annotation>
-          <xs:documentation>A boolean FDO expression that specifies which features to return.  No filter means pass all features through.</xs:documentation>
-        </xs:annotation>
-      </xs:element>
       <xs:element name="ProfileSelectedRenderLayer" type="ProfileRenderLayerType" minOccurs="0" maxOccurs="unbounded">
         <xs:annotation>
           <xs:documentation>Profiling result which records information for a particular selected layer rendering process.</xs:documentation>
