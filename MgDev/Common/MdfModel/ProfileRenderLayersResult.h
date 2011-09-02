@@ -20,7 +20,7 @@
 
 #include "MdfModel.h"
 #include "MdfRootObject.h"
-#include "ProfileRenderLayerResult.h"
+#include "ProfileRenderLayersResultBase.h"
 
 
 BEGIN_NAMESPACE_MDFMODEL
@@ -30,7 +30,7 @@ BEGIN_NAMESPACE_MDFMODEL
     // The ProfileRenderLayersResult is a profiling result which records
     // information during layer rendering processes.
     //------------------------------------------------------------------------
-    class MDFMODEL_API ProfileRenderLayersResult : public MdfRootObject
+    class MDFMODEL_API ProfileRenderLayersResult : public ProfileRenderLayersResultBase
     {
     public:
         // Construction, destruction, initialization.
@@ -38,15 +38,6 @@ BEGIN_NAMESPACE_MDFMODEL
         virtual ~ProfileRenderLayersResult();
 
         // Operations
-
-        // Property: RenderTime
-        // The time of stylizing all layers in the map.
-        const double GetRenderTime() const;
-        void SetRenderTime(const double& dRenderTime);
-
-        // Property: ProfileRenderLayerResults
-        // A collection of ProfileRenderLayerResult.
-        ProfileRenderLayerResultCollection* GetProfileRenderLayerResults();
 
 //#ifdef _WIN32
 #if _DEBUG
@@ -61,9 +52,6 @@ BEGIN_NAMESPACE_MDFMODEL
         ProfileRenderLayersResult& operator=(const ProfileRenderLayersResult&);
 
         // Data members
-        // See corresponding properties for descriptions
-        double m_dRenderTime;
-        ProfileRenderLayerResultCollection m_profileRenderLayerResults;
     };
 
 END_NAMESPACE_MDFMODEL

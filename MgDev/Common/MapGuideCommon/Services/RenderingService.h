@@ -26,6 +26,11 @@ class MgByteReader;
 class MgMap;
 class MgRenderingOptions;
 
+namespace MdfModel
+{
+    class ProfileRenderMapResult;
+}
+
 /// \brief
 /// This class provides services to render a map into an image
 class MG_MAPGUIDE_API MgRenderingService : public MgService
@@ -581,6 +586,36 @@ INTERNAL_API:
     /// Construct an MgRenderingService object.
     ///
     MgRenderingService();
+
+        /////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Renders all dynamic layers in the specified MgMap to a dynamic overlay image
+    /// with a transparent background. The center, scale, size, and layers to be
+    /// rendered are defined by the specified map instance.  The format parameter
+    /// must be set to an image format that supports transparency. Profile result will
+    /// be recorded.
+    ///
+    /// \param map
+    /// Input
+    /// map object containing current state of map.
+    /// \param selection
+    /// Input
+    /// map feature selection. Specifies the selected features on the map
+    /// \param options
+    /// Input
+    /// rendering options
+    /// \param profileRenderMapResult
+    /// Input&Output
+    /// profile result of rendering dynamic overlay
+    ///
+    /// \return
+    /// A byte reader containing the rendered image
+    ///
+    virtual MgByteReader* RenderDynamicOverlay(
+        MgMap* map,
+        MgSelection* selection,
+        MgRenderingOptions* options,
+        ProfileRenderMapResult* profileRenderMapResult) = 0;
 
 protected:
 

@@ -1209,6 +1209,14 @@
 				>
 			</File>
 			<File
+				RelativePath=".\ProfileRenderLayersResultBase.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ProfileRenderLayersResultBase.h"
+				>
+			</File>
+			<File
 				RelativePath=".\ProfileRenderMapResult.cpp"
 				>
 			</File>

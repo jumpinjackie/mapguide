@@ -28,6 +28,7 @@
 #include "PrintLayout/IOPrintLayoutElementDefinition.h"
 #include "PrintLayout/IOMapViewportDefinition.h"
 #include "IOWatermarkDefinition.h"
+#include "IOProfileResult.h"
 
 using namespace XERCES_CPP_NAMESPACE;
 using namespace MDFMODEL_NAMESPACE;
@@ -76,6 +77,7 @@ SAX2Parser::~SAX2Parser()
     delete m_printLayout;
     delete m_mapViewport;
     delete m_watermark;
+    delete m_profileResult;
 }
 
 
@@ -91,6 +93,7 @@ void SAX2Parser::Flush()
     m_printLayout = NULL;
     m_mapViewport = NULL;
     m_watermark = NULL;
+    m_profileResult = NULL;
     m_succeeded = false;
 }
 
@@ -253,6 +256,14 @@ WatermarkDefinition* SAX2Parser::DetachWatermarkDefinition()
     return ret;
 }
 
+// Returns a reference to the parser's profile result
+// After this call the parser no longer owns the object.
+ProfileResult* SAX2Parser::DetachProfileResult()
+{
+    ProfileResult* ret = m_profileResult;
+    m_profileResult = NULL;
+    return ret;
+}
 
 bool SAX2Parser::GetSucceeded() const
 {
@@ -419,6 +430,20 @@ void SAX2Parser::WriteToFile(std::string name, WatermarkDefinition* watermark, V
     fd.close();
 }
 
+void SAX2Parser::WriteToFile(std::string name, ProfileResult* profileResult, Version* version)
+{
+    std::ofstream fd;
+    fd.open(name.c_str());
+    if (fd.is_open())
+    {
+        MgTab tab;
+        fd << tab.tab() << "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" << std::endl; // NOXLATE
+
+        if (NULL != profileResult)
+            IOProfileResult::Write(fd, profileResult, version, tab);
+    }
+    fd.close();
+}
 
 std::string SAX2Parser::SerializeToXML(MapDefinition* map, Version* version)
 {
@@ -506,6 +531,16 @@ std::string SAX2Parser::SerializeToXML(WatermarkDefinition* watermark, Version* 
     return fd.str();
 }
 
+std::string SAX2Parser::SerializeToXML(ProfileResult* profileResult, Version* version)
+{
+    MdfStringStream fd;
+    MgTab tab;
+
+    if (NULL != profileResult)
+        IOProfileResult::Write(fd, profileResult, version, tab);
+
+    return fd.str();
+}
 
 void SAX2Parser::startElement(const XMLCh* const uri,
                               const XMLCh* const localname,
@@ -825,6 +860,30 @@ void SAX2Parser::SetWatermarkDefinitionVersion(const Attributes& attributes)
     }
 }
 
+void SAX2Parser::SetProfileResultVersion(const Attributes& attributes)
+{
+    // Although right now we only have 1.0.0 here, this function is still
+    // needed for future expansion.
+
+    // check for a version attribute
+    int index = attributes.getIndex(W2X(L"version"));
+    const XMLCh* verValue = (index >= 0)? attributes.getValue(index) : NULL;
+
+    // according to the schema watermark definition elements require a version
+    // attribute, but users may generate XML which is missing this attribute
+    if (verValue)
+    {
+        std::wstring version = X2W(verValue);
+
+        if (_wcsicmp(version.c_str(), L"2.4.0") == 0)
+            m_version = MdfModel::Version(2, 4, 0);
+    }
+    else
+    {
+        // assume the latest version if the attribute is missing
+        m_version = MdfModel::Version(2, 4, 0);
+    }
+}
 
 MapDefinition* SAX2Parser::CreateClone(MapDefinition* map)
 {
@@ -913,4 +972,18 @@ WatermarkDefinition* SAX2Parser::CreateClone(WatermarkDefinition* watermark)
     parser.ParseString(xmlOfWD.c_str(), xmlOfWD.size());
 
     return parser.DetachWatermarkDefinition();
+}
+
+ProfileResult* SAX2Parser::CreateClone(ProfileResult* profileResult)
+{
+    _ASSERT(NULL != profileResult);
+    if (NULL == profileResult)
+        return NULL;
+
+    SAX2Parser parser;
+    std::string xmlOfWD("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");   // NOXLATE
+    xmlOfWD.append(parser.SerializeToXML(profileResult, NULL));
+    parser.ParseString(xmlOfWD.c_str(), xmlOfWD.size());
+
+    return parser.DetachProfileResult();
 }

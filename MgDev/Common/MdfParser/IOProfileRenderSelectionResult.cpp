@@ -27,9 +27,8 @@ using namespace MDFPARSER_NAMESPACE;
 CREATE_ELEMENT_MAP;
 ELEM_MAP_ENTRY(1, ProfileRenderSelectionResult);
 ELEM_MAP_ENTRY(2, RenderTime);
-ELEM_MAP_ENTRY(3, Filter);
-ELEM_MAP_ENTRY(4, ProfileRenderLayerResult);
-ELEM_MAP_ENTRY(5, ExtendedData1);
+ELEM_MAP_ENTRY(3, ProfileRenderLayerResult);
+ELEM_MAP_ENTRY(4, ExtendedData1);
 
 
 IOProfileRenderSelectionResult::IOProfileRenderSelectionResult(Version& version) : SAX2ElementHandler(version)
@@ -78,8 +77,8 @@ void IOProfileRenderSelectionResult::Write(MdfStream& fd, ProfileRenderSelection
     fd << endStr(sRenderTime) << std::endl;
 
     // Property: ProfileRenderLayerResult
-    for (int i=0; i<profileRenderSelectionResult->GetProfileRenderSelectedLayerResults()->GetCount(); ++i)
-        IOProfileRenderLayerResult::Write(fd, profileRenderSelectionResult->GetProfileRenderSelectedLayerResults()->GetAt(i), version, tab);
+    for (int i=0; i<profileRenderSelectionResult->GetProfileRenderLayerResults()->GetCount(); ++i)
+        IOProfileRenderLayerResult::Write(fd, profileRenderSelectionResult->GetProfileRenderLayerResults()->GetAt(i), version, tab);
 
     // Write any unknown XML / extended data
     IOUnknown::Write(fd, profileRenderSelectionResult->GetUnknownXml(), version, tab);

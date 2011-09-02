@@ -815,3 +815,51 @@ void MgProxyRenderingService::SetConnectionProperties(MgConnectionProperties* co
 {
     m_connProp = SAFE_ADDREF(connProp);
 }
+
+/////////////////////////////////////////////////////////////////
+/// \brief
+/// Renders all dynamic layers in the specified MgMap to a dynamic overlay image
+/// with a transparent background. The center, scale, size, and layers to be
+/// rendered are defined by the specified map instance.  The format parameter
+/// must be set to an image format that supports transparency. Profile result will
+/// be recorded.
+///
+/// \param map
+/// Input
+/// map object containing current state of map.
+/// \param selection
+/// Input
+/// map feature selection. Specifies the selected features on the map
+/// \param options
+/// Input
+/// rendering options
+/// \param profileRenderMapResult
+/// Input&Output
+/// profile result of rendering dynamic overlay
+///
+/// \return
+/// A byte reader containing the rendered image
+///
+MgByteReader* MgProxyRenderingService::RenderDynamicOverlay(
+    MgMap* map,
+    MgSelection* selection,
+    MgRenderingOptions* options,
+    ProfileRenderMapResult* profileRenderMapResult)
+{
+    MgCommand cmd;
+    cmd.ExecuteCommand(m_connProp,                                      // Connection
+                        MgCommand::knObject,                            // Return type expected
+                        MgRenderingServiceOpId::RenderDynamicOverlay,   // Command Code
+                        4,                                              // No of arguments
+                        Rendering_Service,                              // Service Id
+                        BUILD_VERSION(2,1,0),                           // Operation version
+                        MgCommand::knObject, map,                       // Argument#1
+                        MgCommand::knObject, selection,                 // Argument#2
+                        MgCommand::knObject, options,                   // Argument#3
+                        MgCommand::knObject, profileRenderMapResult,    // Argument#4
+                        MgCommand::knNone);                             // End of arguments
+
+    SetWarning(cmd.GetWarningObject());
+
+    return (MgByteReader*)cmd.GetReturnValue().val.m_obj;
+}

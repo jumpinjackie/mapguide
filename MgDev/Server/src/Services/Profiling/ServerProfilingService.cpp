@@ -17,8 +17,9 @@
 
 #include "MapGuideCommon.h"
 #include "ServerProfilingService.h"
-//#include "MapProfileResult.h"
-#include "SAX2Parser.h"
+#include "ProfileResult.h"
+#include "ProfileRenderMapResult.h"
+#include "SAX2Parser.h" 
 
 
 IMPLEMENT_CREATE_SERVICE(MgServerProfilingService)
@@ -54,14 +55,32 @@ MgByteReader* MgServerProfilingService::ProfileRenderDynamicOverlay(MgMap* map,
                                                              MgRenderingOptions* options)
 {
     Ptr<MgByteReader> ret;
+    
+    MG_TRY()
 
-    /*MG_TRY()
-
-    if (NULL == map)
+    // selection is an optional and nullable parameter
+    if (NULL == map || NULL == options)
         throw new MgNullArgumentException(L"MgServerProfilingService.ProfileRenderDynamicOverlay", __LINE__, __WFILE__, NULL, L"", NULL);
 
+    auto_ptr<ProfileRenderMapResult> pPRMResult; // a pointer points to Profile Render Map Result
+    pPRMResult.reset(new ProfileRenderMapResult());
 
-    MG_CATCH_AND_THROW(L"MgServerProfilingService.ProfileRenderDynamicOverlay")*/
+    // Start to profile the RenderDynamicOverlay process
+    double renderMapStart = MgTimerUtil::GetTime(); 
+    m_svcRendering->RenderDynamicOverlay(map, selection, options, pPRMResult.get());
+    double renderMapEnd = MgTimerUtil::GetTime();
+
+    pPRMResult->SetRenderTime(renderMapEnd - renderMapStart);
+    pPRMResult->SetProfileResultType(ProfileResult::ProfileRenderDynamicOverlay);
+
+    // Serialize the ProfileRenderMapResult to xml
+    MdfParser::SAX2Parser parser;
+    auto_ptr<Version> version;
+    version.reset(new Version(2,4,0));
+    string content = parser.SerializeToXML(pPRMResult.get(),version.get());
+    ret = new MgByteReader(MgUtil::MultiByteToWideChar(content), MgMimeType::Xml);
+
+    MG_CATCH_AND_THROW(L"MgServerProfilingService.ProfileRenderDynamicOverlay")
 
     return ret.Detach();
 }
@@ -91,23 +110,6 @@ MgByteReader* MgServerProfilingService::ProfileRenderMap(MgMap* map,
 
     return ret.Detach();
 }
-
-///////////////////////////////////////////////////////////////////////////////
-// Profile RenderMapLegend API
-//MgByteReader* MgServerProfilingService::ProfileRenderMapLegend(MgMap* map,
-//                                                        INT32 width,
-//                                                        INT32 height,
-//                                                        MgColor* backgroundColor,
-//                                                        CREFSTRING format)
-//{
-//    Ptr<MgByteReader> ret;
-//
-//    MG_TRY()
-//
-//    
-//    MG_CATCH_AND_THROW(L"MgServerRenderingService.RenderMapLegend")
-//    return ret.Detach();
-//}
 
 
 ///////////////////////////////////////////////////////////////////////////////

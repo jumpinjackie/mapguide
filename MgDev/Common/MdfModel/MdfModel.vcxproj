@@ -203,6 +203,7 @@
     <ClCompile Include="ProfileRenderLabelsResult.cpp" />
     <ClCompile Include="ProfileRenderLayerResult.cpp" />
     <ClCompile Include="ProfileRenderLayersResult.cpp" />
+    <ClCompile Include="ProfileRenderLayersResultBase.cpp" />
     <ClCompile Include="ProfileRenderMapResult.cpp" />
     <ClCompile Include="ProfileRenderSelectionResult.cpp" />
     <ClCompile Include="ProfileRenderWatermarkResult.cpp" />
@@ -316,6 +317,7 @@
     <ClInclude Include="PointUsage.h" />
     <ClInclude Include="ProfileRenderLayerResult.h" />
     <ClInclude Include="ProfileRenderLayersResult.h" />
+    <ClInclude Include="ProfileRenderLayersResultBase.h" />
     <ClInclude Include="ProfileRenderMapResult.h" />
     <ClInclude Include="ProfileRenderLabelsResult.h" />
     <ClInclude Include="ProfileRenderSelectionResult.h" />

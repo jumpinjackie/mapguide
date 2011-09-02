@@ -91,6 +91,41 @@ void MgOpRenderDynamicOverlay::Execute()
         Ptr<MgByteReader> byteReader = m_service->RenderDynamicOverlay(map, selection, options);
         EndExecution(byteReader);
     }
+    else if (4 == m_packet.m_NumArguments)
+    {
+        Ptr<MgMap> map = (MgMap*)m_stream->GetObject();
+        Ptr<MgResourceIdentifier> resource = map->GetResourceId();
+        map->SetDelayedLoadResourceService(m_resourceService);
+
+        Ptr<MgSelection> selection = (MgSelection*)m_stream->GetObject();
+        if(selection)
+            selection->SetMap(map);
+
+        Ptr<MgRenderingOptions> options = (MgRenderingOptions*)m_stream->GetObject();
+
+        auto_ptr<ProfileRenderMapResult> pProfileRenderMapResult;
+        pProfileRenderMapResult.reset((ProfileRenderMapResult*)m_stream->GetObject());
+        BeginExecution();
+
+        MG_LOG_OPERATION_MESSAGE_PARAMETERS_START();
+        MG_LOG_OPERATION_MESSAGE_ADD_STRING((NULL == resource) ? L"MgResourceIdentifier" : resource->ToString().c_str());
+        MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
+        MG_LOG_OPERATION_MESSAGE_ADD_STRING(L"MgSelection");
+        MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
+        MG_LOG_OPERATION_MESSAGE_ADD_STRING(options->GetImageFormat().c_str());
+        MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
+        MG_LOG_OPERATION_MESSAGE_ADD_INT32(options->GetBehavior());
+        MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
+        MG_LOG_OPERATION_MESSAGE_ADD_STRING(L"MgColor");
+        MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
+        MG_LOG_OPERATION_MESSAGE_ADD_STRING(L"ProfileRenderMapResult");
+        MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
+
+        Validate();
+
+        Ptr<MgByteReader> byteReader = m_service->RenderDynamicOverlay(map, selection, options, pProfileRenderMapResult.get());
+        EndExecution(byteReader);
+    }
     else
     {
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_START();

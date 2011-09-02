@@ -40,50 +40,13 @@ ProfileRenderSelectionResult::~ProfileRenderSelectionResult()
 }
 
 //-------------------------------------------------------------------------
-// PURPOSE: Accessor method for the RenderTime property.
-// RETURNS: The time of stylizing all selected layers in the map.
+// PURPOSE: For memory leak testing.
 //-------------------------------------------------------------------------
-const double ProfileRenderSelectionResult::GetRenderTime() const
+#ifdef _WIN32
+#ifdef _DEBUG
+int ProfileRenderSelectionResult::DumpMemoryLeaks()
 {
-    return this->m_dRenderTime;
+    return _CrtDumpMemoryLeaks();
 }
-
-//-------------------------------------------------------------------------
-// PURPOSE: Accessor method to the RenderTime property.
-// PARAMETERS:
-//      Input:
-//          dRenderTime - The time of stylizing all selected layers in the map.
-//-------------------------------------------------------------------------
-void ProfileRenderSelectionResult::SetRenderTime(const double& dRenderTime)
-{
-    this->m_dRenderTime = dRenderTime;
-}
-
-//-------------------------------------------------------------------------
-// PURPOSE: Accessor method for the Filter property.
-// RETURNS: A boolean FDO expression that specifies which features to return.
-//-------------------------------------------------------------------------
-const MdfString& ProfileRenderSelectionResult::GetFilter() const
-{
-    return this->m_strFilter;
-}
-
-//-------------------------------------------------------------------------
-// PURPOSE: Accessor method to the Filter property.
-// PARAMETERS:
-//      Input:
-//          pstrFilter - A boolean FDO expression that specifies which features to return.
-//-------------------------------------------------------------------------
-void ProfileRenderSelectionResult::SetFilter(const MdfString& pstrFilter)
-{
-    this->m_strFilter = pstrFilter;
-}
-
-//-------------------------------------------------------------------------
-// PURPOSE: Accessor method for the ProfileRenderLayerResults property.
-// RETURNS: A collection of ProfileRenderLayerResult.
-//-------------------------------------------------------------------------
-ProfileRenderLayerResultCollection* ProfileRenderSelectionResult::GetProfileRenderSelectedLayerResults()
-{
-    return &this->m_profileRenderSelectedLayerResults;
-}
+#endif
+#endif
