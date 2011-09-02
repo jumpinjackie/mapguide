@@ -340,8 +340,8 @@ EXTERNAL_API:
     static const INT32 DefaultFeatureServicePropertyDataTransactionTimerInterval;/// value(60)
 
     /// Set the time duration in seconds for an FDO connection
-    static const STRING FeatureServicePropertyFDOConnectionTimeout;              /// value("FDOConnectionTimeout")
-    static const INT32 DefaultFeatureServicePropertyFDOConnectionTimeout;        /// value(120)
+    static const STRING FeatureServicePropertyFDOConnectionTimeoutCustom;        /// value("FDOConnectionTimeoutCustom")
+    static const STRING DefaultFeatureServicePropertyFDOConnectionTimeoutCustom; /// value("OSGeo.WMS:120")
 
     /// MAPPING SERVICE PROPERTIES SECTION -------------------------------------------------------------------------------
 

@@ -263,7 +263,7 @@ FdoIConnection* MgFdoConnectionManager::Open(MgResourceIdentifier* resourceIdent
             pFdoConnection = m_connManager->CreateConnection(provider.c_str());
 
             // Check if the connection support timeout setting
-            SetConnectionTimeout(pFdoConnection);
+            SetConnectionTimeout(pFdoConnection, provider);
 
             // Check if we have thread model
             if((FdoThreadCapability)-1 == providerInfo->GetThreadModel())
@@ -385,7 +385,7 @@ FdoIConnection* MgFdoConnectionManager::Open(CREFSTRING provider, CREFSTRING con
             pFdoConnection = m_connManager->CreateConnection(providerNoVersion.c_str());
 
             // Check if the connection support timeout setting
-            SetConnectionTimeout(pFdoConnection);
+            SetConnectionTimeout(pFdoConnection, providerNoVersion);
 
             // Check if we have thread model
             if((FdoThreadCapability)-1 == providerInfo->GetThreadModel())
@@ -785,25 +785,49 @@ void MgFdoConnectionManager::SetConnectionProperties(FdoIConnection *pFdoConnect
         }
 }
 
-void MgFdoConnectionManager::SetConnectionTimeout(FdoIConnection* pFdoConnection)
+void MgFdoConnectionManager::SetConnectionTimeout(FdoIConnection* pFdoConnection, STRING providerName)
 {
     FdoPtr<FdoIConnectionCapabilities> connectionCapabilities = pFdoConnection->GetConnectionCapabilities();
     if(connectionCapabilities->SupportsTimeout())
     {
         MgConfiguration* configuration = MgConfiguration::GetInstance();
         ACE_ASSERT(NULL != configuration);
-        INT32 timeout = MgConfigProperties::DefaultFeatureServicePropertyFDOConnectionTimeout;
+        STRING timeoutCustom = MgConfigProperties::DefaultFeatureServicePropertyFDOConnectionTimeoutCustom;
         if (NULL != configuration)
         {
-            configuration->GetIntValue(
+            configuration->GetStringValue(
                 MgConfigProperties::FeatureServicePropertiesSection,
-                MgConfigProperties::FeatureServicePropertyFDOConnectionTimeout,
-                timeout,
-                MgConfigProperties::DefaultFeatureServicePropertyFDOConnectionTimeout);
+                MgConfigProperties::FeatureServicePropertyFDOConnectionTimeoutCustom,
+                timeoutCustom,
+                MgConfigProperties::DefaultFeatureServicePropertyFDOConnectionTimeoutCustom);
         }
-        if(timeout > 0)
+        if(timeoutCustom.length() > 0)
         {
-            pFdoConnection->SetConnectionTimeout(timeout);
+            Ptr<MgStringCollection> fdoTimeoutCol = MgStringCollection::ParseCollection(timeoutCustom, L",");  // NOXLATE
+            // Update the fdo connection timeout value
+            if (fdoTimeoutCol.p)
+            {
+                for(INT32 i=0;i<fdoTimeoutCol->GetCount();i++)
+                {
+                    STRING fdoTimeoutCustom = fdoTimeoutCol->GetItem(i);
+                    STRING provider = L"";  // NOXLATE
+                    INT32 timeoutVal = 120;
+                    // Parse the format: provider:timeoutVal
+                    // Example: OSGeo.WMS:120
+                    Ptr<MgStringCollection> customCol = MgStringCollection::ParseCollection(fdoTimeoutCustom, L":");  // NOXLATE
+                    if(customCol->GetCount() == 2)
+                    {
+                        provider = customCol->GetItem(0);
+                        STRING value = customCol->GetItem(1);
+                        timeoutVal = MgUtil::StringToInt32(value);
+                    }                    
+                    if(provider.find(providerName) != STRING::npos && timeoutVal > 0)
+                    {
+                        pFdoConnection->SetConnectionTimeout(timeoutVal);
+                        break;
+                    }
+                }
+            }
         }
     }
 }
