@@ -256,6 +256,7 @@ WatermarkDefinition* SAX2Parser::DetachWatermarkDefinition()
     return ret;
 }
 
+
 // Returns a reference to the parser's profile result
 // After this call the parser no longer owns the object.
 ProfileResult* SAX2Parser::DetachProfileResult()
@@ -264,6 +265,7 @@ ProfileResult* SAX2Parser::DetachProfileResult()
     m_profileResult = NULL;
     return ret;
 }
+
 
 bool SAX2Parser::GetSucceeded() const
 {
@@ -430,6 +432,7 @@ void SAX2Parser::WriteToFile(std::string name, WatermarkDefinition* watermark, V
     fd.close();
 }
 
+
 void SAX2Parser::WriteToFile(std::string name, ProfileResult* profileResult, Version* version)
 {
     std::ofstream fd;
@@ -444,6 +447,7 @@ void SAX2Parser::WriteToFile(std::string name, ProfileResult* profileResult, Ver
     }
     fd.close();
 }
+
 
 std::string SAX2Parser::SerializeToXML(MapDefinition* map, Version* version)
 {
@@ -531,6 +535,7 @@ std::string SAX2Parser::SerializeToXML(WatermarkDefinition* watermark, Version* 
     return fd.str();
 }
 
+
 std::string SAX2Parser::SerializeToXML(ProfileResult* profileResult, Version* version)
 {
     MdfStringStream fd;
@@ -541,6 +546,7 @@ std::string SAX2Parser::SerializeToXML(ProfileResult* profileResult, Version* ve
 
     return fd.str();
 }
+
 
 void SAX2Parser::startElement(const XMLCh* const uri,
                               const XMLCh* const localname,
@@ -835,9 +841,6 @@ void SAX2Parser::SetPrintLayoutElementDefinitionVersion(const Attributes& attrib
 
 void SAX2Parser::SetWatermarkDefinitionVersion(const Attributes& attributes)
 {
-    // Although right now we only have 1.0.0 here, this function is still
-    // needed for future expansion.
-
     // check for a version attribute
     int index = attributes.getIndex(W2X(L"version"));
     const XMLCh* verValue = (index >= 0)? attributes.getValue(index) : NULL;
@@ -860,16 +863,17 @@ void SAX2Parser::SetWatermarkDefinitionVersion(const Attributes& attributes)
     }
 }
 
+
 void SAX2Parser::SetProfileResultVersion(const Attributes& attributes)
 {
-    // Although right now we only have 1.0.0 here, this function is still
+    // Although right now we only have 2.4.0 here, this function is still
     // needed for future expansion.
 
     // check for a version attribute
     int index = attributes.getIndex(W2X(L"version"));
     const XMLCh* verValue = (index >= 0)? attributes.getValue(index) : NULL;
 
-    // according to the schema watermark definition elements require a version
+    // according to the schema profile result elements require a version
     // attribute, but users may generate XML which is missing this attribute
     if (verValue)
     {
@@ -884,6 +888,7 @@ void SAX2Parser::SetProfileResultVersion(const Attributes& attributes)
         m_version = MdfModel::Version(2, 4, 0);
     }
 }
+
 
 MapDefinition* SAX2Parser::CreateClone(MapDefinition* map)
 {
@@ -973,6 +978,7 @@ WatermarkDefinition* SAX2Parser::CreateClone(WatermarkDefinition* watermark)
 
     return parser.DetachWatermarkDefinition();
 }
+
 
 ProfileResult* SAX2Parser::CreateClone(ProfileResult* profileResult)
 {

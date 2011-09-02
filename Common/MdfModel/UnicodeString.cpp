@@ -20,13 +20,11 @@
 #include "ConvertUTF.h"
 
 #define UTFCONVERT(FROMCHARSET,TOCHARSET) \
+    if (!str.empty())\
+        str.clear();\
+\
     if (uniChar == NULL)\
-    {\
-        str.clear();\
         return;\
-    }\
-    if ( !str.empty() )\
-        str.clear();\
 \
     size_t size = 0;\
 \
