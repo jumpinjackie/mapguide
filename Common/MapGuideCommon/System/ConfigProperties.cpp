@@ -274,8 +274,8 @@ const STRING MgConfigProperties::FeatureServicePropertyDataTransactionTimeout   
 const INT32  MgConfigProperties::DefaultFeatureServicePropertyDataTransactionTimeout        = 360;
 const STRING MgConfigProperties::FeatureServicePropertyDataTransactionTimerInterval         = L"DataTransactionTimerInterval";
 const INT32  MgConfigProperties::DefaultFeatureServicePropertyDataTransactionTimerInterval  = 60;
-const STRING MgConfigProperties::FeatureServicePropertyFDOConnectionTimeout                 = L"FDOConnectionTimeout";
-const INT32  MgConfigProperties::DefaultFeatureServicePropertyFDOConnectionTimeout          = 120;
+const STRING MgConfigProperties::FeatureServicePropertyFDOConnectionTimeoutCustom           = L"FDOConnectionTimeoutCustom";
+const STRING MgConfigProperties::DefaultFeatureServicePropertyFDOConnectionTimeoutCustom    = L"OSGeo.WMS:120";
 
 // ******************************************************************
 // Mapping Service Properties
@@ -649,7 +649,7 @@ const MgConfigValidationInfo MgConfigProperties::sm_cviFeatureServiceProperties[
     { MgConfigProperties::FeatureServicePropertyDataConnectionUseLimit              , MgPropertyType::String    , MG_CONFIG_MIN_FS_CP_EXCLUDED_LENGTH   , MG_CONFIG_MAX_FS_CP_EXCLUDED_LENGTH   , L""                                       },
     { MgConfigProperties::FeatureServicePropertyDataTransactionTimeout              , MgPropertyType::Int32     , MG_CONFIG_MIN_TIMEOUT                 , MG_CONFIG_MAX_TIMEOUT                 , L""                                       },
     { MgConfigProperties::FeatureServicePropertyDataTransactionTimerInterval        , MgPropertyType::Int32     , MG_CONFIG_MIN_TIMER_INTERVAL          , MG_CONFIG_MAX_TIMER_INTERVAL          , L""                                       },
-    { MgConfigProperties::FeatureServicePropertyFDOConnectionTimeout                , MgPropertyType::Int32     , 1                                     , 600                                   , L""                                       },
+    { MgConfigProperties::FeatureServicePropertyFDOConnectionTimeoutCustom          , MgPropertyType::String    , MG_CONFIG_MIN_FS_CP_EXCLUDED_LENGTH   , MG_CONFIG_MAX_FS_CP_EXCLUDED_LENGTH   , L""                                       },
     { L""                                                                           , 0                         , 0.0                                   , 0.0                                   , L""                                       }
 };
 
