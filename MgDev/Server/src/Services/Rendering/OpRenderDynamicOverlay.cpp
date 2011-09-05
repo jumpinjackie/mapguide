@@ -105,6 +105,7 @@ void MgOpRenderDynamicOverlay::Execute()
 
         auto_ptr<ProfileRenderMapResult> pProfileRenderMapResult;
         pProfileRenderMapResult.reset((ProfileRenderMapResult*)m_stream->GetObject());
+
         BeginExecution();
 
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_START();

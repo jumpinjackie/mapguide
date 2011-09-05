@@ -85,6 +85,17 @@ IMgOperationHandler* MgRenderingOperationFactory::GetOperation(
                 L"MgRenderingOperationFactory.GetOperation", __LINE__, __WFILE__, NULL, L"", NULL);
         }
         break;
+    case MgRenderingServiceOpId::RenderDynamicOverlay2:
+        switch (VERSION_NO_PHASE(operationVersion))
+        {
+        case VERSION_SUPPORTED(2,4):
+            handler.reset(new MgOpRenderDynamicOverlay());
+            break;
+        default:
+            throw new MgInvalidOperationVersionException(
+                L"MgRenderingOperationFactory.GetOperation", __LINE__, __WFILE__, NULL, L"", NULL);
+        }
+        break;
 
     case MgRenderingServiceOpId::RenderMap1:
         switch (VERSION_NO_PHASE(operationVersion))
@@ -127,6 +138,18 @@ IMgOperationHandler* MgRenderingOperationFactory::GetOperation(
         {
             // TODO: Should this only be supported in VERSION (2,0)? -ez
         case VERSION_SUPPORTED(1,0):
+            handler.reset(new MgOpRenderMap());
+            break;
+        default:
+            throw new MgInvalidOperationVersionException(
+                L"MgRenderingOperationFactory.GetOperation", __LINE__, __WFILE__, NULL, L"", NULL);
+        }
+        break;
+
+    case MgRenderingServiceOpId::RenderMap5:
+        switch (VERSION_NO_PHASE(operationVersion))
+        {
+        case VERSION_SUPPORTED(2,4):
             handler.reset(new MgOpRenderMap());
             break;
         default:

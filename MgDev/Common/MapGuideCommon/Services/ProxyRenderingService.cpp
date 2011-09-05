@@ -849,14 +849,89 @@ MgByteReader* MgProxyRenderingService::RenderDynamicOverlay(
     MgCommand cmd;
     cmd.ExecuteCommand(m_connProp,                                      // Connection
                         MgCommand::knObject,                            // Return type expected
-                        MgRenderingServiceOpId::RenderDynamicOverlay,   // Command Code
+                        MgRenderingServiceOpId::RenderDynamicOverlay2,  // Command Code
                         4,                                              // No of arguments
                         Rendering_Service,                              // Service Id
-                        BUILD_VERSION(2,1,0),                           // Operation version
+                        BUILD_VERSION(2,4,0),                           // Operation version
                         MgCommand::knObject, map,                       // Argument#1
                         MgCommand::knObject, selection,                 // Argument#2
                         MgCommand::knObject, options,                   // Argument#3
                         MgCommand::knObject, profileRenderMapResult,    // Argument#4
+                        MgCommand::knNone);                             // End of arguments
+
+    SetWarning(cmd.GetWarningObject());
+
+    return (MgByteReader*)cmd.GetReturnValue().val.m_obj;
+}
+
+/////////////////////////////////////////////////////////////////
+/// \brief
+/// Renders the specified MgMap with specified parameters.
+/// Profile result will be recorded.
+///
+/// \param map
+/// Input
+/// map object containing current state of map.
+/// \param selection
+/// Input
+/// map feature selection. Specifies the selected features on the map
+/// \param center
+/// Input
+/// map center point. Specifies the center point for the map
+/// \param scale
+/// Input
+/// map scale. Specifies the scale for the map
+/// \param width
+/// Input
+/// image width. Specifies the image width in pixels
+/// \param height
+/// Input
+/// image height. Specifies the image height in pixels
+/// \param backgroundColor
+/// Input
+/// background color. Specifies the map background color
+/// \param format
+/// Input
+/// image format. Defines the format of the resulting image
+/// \param bKeepSelection
+/// Input
+/// true if you want to keep the selection
+/// \param profileRenderMapResult
+/// Input&Output
+/// profile result of rendering map
+///
+/// \return
+/// A byte reader containing the rendered image
+///
+MgByteReader* MgProxyRenderingService::RenderMap(
+    MgMap* map,
+    MgSelection* selection,
+    MgCoordinate* center,
+    double scale,
+    INT32 width,
+    INT32 height,
+    MgColor* backgroundColor,
+    CREFSTRING format,
+    bool bKeepSelection,
+    ProfileRenderMapResult* profileRenderMapResult)
+{
+    MgCommand cmd;
+    cmd.ExecuteCommand(m_connProp,                                      // Connection
+                        MgCommand::knObject,                            // Return type expected
+                        MgRenderingServiceOpId::RenderMap5,             // Command Code
+                        10,                                             // No of arguments
+                        Rendering_Service,                              // Service Id
+                        BUILD_VERSION(2,4,0),                           // Operation version
+                        MgCommand::knObject, map,                       // Argument#1
+                        MgCommand::knObject, selection,                 // Argument#2
+                        MgCommand::knObject, center,                    // Argument#3
+                        MgCommand::knDouble, scale,                     // Argument#4
+                        MgCommand::knInt32, width,                      // Argument#5
+                        MgCommand::knInt32, height,                     // Argument#6
+                        MgCommand::knObject, backgroundColor,           // Argument#7
+                        MgCommand::knString, &format,                   // Argument#8
+                        MgCommand::knInt8, (INT8)bKeepSelection,        // Argument#9
+                        MgCommand::knObject, profileRenderMapResult,    // Argument#10
                         MgCommand::knNone);                             // End of arguments
 
     SetWarning(cmd.GetWarningObject());
