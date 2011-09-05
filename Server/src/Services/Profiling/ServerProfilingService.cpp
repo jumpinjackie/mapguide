@@ -58,14 +58,13 @@ MgByteReader* MgServerProfilingService::ProfileRenderDynamicOverlay(MgMap* map,
     
     MG_TRY()
 
-    // selection is an optional and nullable parameter
-    if (NULL == map || NULL == options)
+    if (NULL == map)
         throw new MgNullArgumentException(L"MgServerProfilingService.ProfileRenderDynamicOverlay", __LINE__, __WFILE__, NULL, L"", NULL);
 
     auto_ptr<ProfileRenderMapResult> pPRMResult; // a pointer points to Profile Render Map Result
     pPRMResult.reset(new ProfileRenderMapResult());
 
-    // Start to profile the RenderDynamicOverlay process
+    // Start to profile the ProfileRenderDynamicOverlay process
     double renderMapStart = MgTimerUtil::GetTime(); 
     m_svcRendering->RenderDynamicOverlay(map, selection, options, pPRMResult.get());
     double renderMapEnd = MgTimerUtil::GetTime();
@@ -97,16 +96,31 @@ MgByteReader* MgServerProfilingService::ProfileRenderMap(MgMap* map,
                                                   bool bKeepSelection)
 {
     Ptr<MgByteReader> ret;
+    
+    MG_TRY()
 
-    //MG_TRY()
-    //MapProfileResult* mapProfileResult = new MapProfileResult();
-    //m_svcRendering->SetProfileResult(mapProfileResult);
-    //ret = m_svcRendering->RenderMap(map,selection,center,scale,width,height,backgroundColor,format,bKeepSelection);
-    //
-    //Version mapProfileResultVersion23(2, 3, 0); // MapGuide 2012
-    //MdfParser::SAX2Parser parser;
-    //parser.WriteToFile("c:\\map.xml",mapProfileResult,&mapProfileResultVersion23);
-    //MG_CATCH_AND_THROW(L"MgServerProfilingService.ProfileRenderMap")
+    if (NULL == map)
+        throw new MgNullArgumentException(L"MgServerProfilingService.ProfileRenderMap", __LINE__, __WFILE__, NULL, L"", NULL);
+
+    auto_ptr<ProfileRenderMapResult> pPRMResult; // a pointer points to Profile Render Map Result
+    pPRMResult.reset(new ProfileRenderMapResult());
+
+    // Start to profile the ProfileRenderMap process
+    double renderMapStart = MgTimerUtil::GetTime(); 
+    m_svcRendering->RenderMap(map, selection, center, scale, width, height, backgroundColor, format, bKeepSelection, pPRMResult.get());
+    double renderMapEnd = MgTimerUtil::GetTime();
+
+    pPRMResult->SetRenderTime(renderMapEnd - renderMapStart);
+    pPRMResult->SetProfileResultType(ProfileResult::ProfileRenderMap);
+
+    // Serialize the ProfileRenderMapResult to xml
+    MdfParser::SAX2Parser parser;
+    auto_ptr<Version> version;
+    version.reset(new Version(2,4,0));
+    string content = parser.SerializeToXML(pPRMResult.get(),version.get());
+    ret = new MgByteReader(MgUtil::MultiByteToWideChar(content), MgMimeType::Xml);
+
+    MG_CATCH_AND_THROW(L"MgServerProfilingService.ProfileRenderMap")
 
     return ret.Detach();
 }

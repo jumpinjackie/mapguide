@@ -85,7 +85,7 @@ void IOProfileRenderMapResult::EndElement(const wchar_t* name, HandlerStack* han
 void IOProfileRenderMapResult::Write(MdfStream& fd, ProfileRenderMapResult* profileRenderMapResult, Version* version, MgTab& tab)
 {
     ProfileResult::ProfileResultType type = profileRenderMapResult->GetProfileResultType();
-    if (ProfileResult::ProfileRenderMap)
+    if (ProfileResult::ProfileRenderMap == type)
         fd << tab.tab() << startStr(sProfileRenderMapResult) << std::endl;
     else //ProfileResult::ProfileRenderDynamicOverlay
         fd << tab.tab() << startStr(sProfileRenderDynamicOverlayResult) << std::endl;

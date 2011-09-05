@@ -618,6 +618,57 @@ INTERNAL_API:
         MgRenderingOptions* options,
         ProfileRenderMapResult* profileRenderMapResult);
 
+    /////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Renders the specified MgMap with specified parameters.
+    /// Profile result will be recorded.
+    ///
+    /// \param map
+    /// Input
+    /// map object containing current state of map.
+    /// \param selection
+    /// Input
+    /// map feature selection. Specifies the selected features on the map
+    /// \param center
+    /// Input
+    /// map center point. Specifies the center point for the map
+    /// \param scale
+    /// Input
+    /// map scale. Specifies the scale for the map
+    /// \param width
+    /// Input
+    /// image width. Specifies the image width in pixels
+    /// \param height
+    /// Input
+    /// image height. Specifies the image height in pixels
+    /// \param backgroundColor
+    /// Input
+    /// background color. Specifies the map background color
+    /// \param format
+    /// Input
+    /// image format. Defines the format of the resulting image
+    /// \param bKeepSelection
+    /// Input
+    /// true if you want to keep the selection
+    /// \param profileRenderMapResult
+    /// Input&Output
+    /// profile result of rendering map
+    ///
+    /// \return
+    /// A byte reader containing the rendered image
+    ///
+    virtual MgByteReader* RenderMap(
+        MgMap* map,
+        MgSelection* selection,
+        MgCoordinate* center,
+        double scale,
+        INT32 width,
+        INT32 height,
+        MgColor* backgroundColor,
+        CREFSTRING format,
+        bool bKeepSelection,
+        ProfileRenderMapResult* profileRenderMapResult);
+
 protected:
 
     //////////////////////////////////////////////////////////////////

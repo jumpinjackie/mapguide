@@ -124,7 +124,19 @@ public:
                                     MgColor* backgroundColor,
                                     CREFSTRING format,
                                     bool bKeepSelection,
-                                    bool bClip);
+                                    ProfileRenderMapResult* pPRMResult);
+
+    virtual MgByteReader* RenderMap(MgMap* map,
+                                    MgSelection* selection,
+                                    MgCoordinate* center,
+                                    double scale,
+                                    INT32 width,
+                                    INT32 height,
+                                    MgColor* backgroundColor,
+                                    CREFSTRING format,
+                                    bool bKeepSelection,
+                                    bool bClip,
+                                    ProfileRenderMapResult* pPRMResult = NULL);
 
     virtual MgByteReader* RenderMapLegend(MgMap* map,
                                           INT32 width,
