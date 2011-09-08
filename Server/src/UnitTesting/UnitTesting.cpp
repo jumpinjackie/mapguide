@@ -56,6 +56,7 @@ int Execute(CREFSTRING fileName, CREFSTRING test)
             runner.addTest(CppUnit::TestFactoryRegistry::getRegistry("TestRenderingService").makeTest());
             runner.addTest(CppUnit::TestFactoryRegistry::getRegistry("TestResourceService").makeTest());
             runner.addTest(CppUnit::TestFactoryRegistry::getRegistry("TestTileService").makeTest());
+            runner.addTest(CppUnit::TestFactoryRegistry::getRegistry("TestProfilingService").makeTest());
             runner.addTest(CppUnit::TestFactoryRegistry::getRegistry("TestServerAdminService").makeTest());
             runner.addTest(CppUnit::TestFactoryRegistry::getRegistry("TestServerManager").makeTest());
             runner.addTest(CppUnit::TestFactoryRegistry::getRegistry("TestServiceManager").makeTest());
@@ -90,6 +91,7 @@ int Execute(CREFSTRING fileName, CREFSTRING test)
             ACE_OS::printf("  SiteManager\n");
             ACE_OS::printf("  SiteService\n");
             ACE_OS::printf("  TileService\n");
+            ACE_OS::printf("  ProfilingService\n");
             ACE_OS::printf("  TransformMesh\n");
             ACE_OS::printf("\n");
 
@@ -175,6 +177,11 @@ int Execute(CREFSTRING fileName, CREFSTRING test)
             ACE_DEBUG((LM_INFO, ACE_TEXT(">>>>> Running only Tile Service tests. <<<<<\n\n")));
             runner.addTest(CppUnit::TestFactoryRegistry::getRegistry("TestTileService").makeTest());
         }
+        else if(ACE_OS::strcasecmp(MG_WCHAR_TO_TCHAR(test), ACE_LIB_TEXT("ProfilingService")) == 0)
+        {
+            ACE_DEBUG((LM_INFO, ACE_TEXT(">>>>> Running only Profiling Service tests. <<<<<\n\n")));
+            runner.addTest(CppUnit::TestFactoryRegistry::getRegistry("TestProfilingService").makeTest());
+        }
         else if(ACE_OS::strcasecmp(MG_WCHAR_TO_TCHAR(test), ACE_LIB_TEXT("TransformMesh")) == 0)
         {
             ACE_DEBUG((LM_INFO, ACE_TEXT(">>>>> Running only Transform Mesh tests. <<<<<\n\n")));
@@ -205,6 +212,7 @@ int Execute(CREFSTRING fileName, CREFSTRING test)
         runner.addTest(CppUnit::TestFactoryRegistry::getRegistry("TestRenderingService").makeTest());
         runner.addTest(CppUnit::TestFactoryRegistry::getRegistry("TestResourceService").makeTest());
         runner.addTest(CppUnit::TestFactoryRegistry::getRegistry("TestTileService").makeTest());
+        runner.addTest(CppUnit::TestFactoryRegistry::getRegistry("TestProfilingService").makeTest());
         runner.addTest(CppUnit::TestFactoryRegistry::getRegistry("TestServerAdminService").makeTest());
         runner.addTest(CppUnit::TestFactoryRegistry::getRegistry("TestServerManager").makeTest());
         runner.addTest(CppUnit::TestFactoryRegistry::getRegistry("TestServiceManager").makeTest());

@@ -418,6 +418,14 @@
 			>
 		</File>
 		<File
+			RelativePath=".\TestProfilingService.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\TestProfilingService.h"
+			>
+		</File>
+		<File
 			RelativePath=".\TestRenderingService.cpp"
 			>
 		</File>
