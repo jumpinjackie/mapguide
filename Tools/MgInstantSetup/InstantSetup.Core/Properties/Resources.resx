@@ -121,7 +121,19 @@
   <data name="APACHE_WEB" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\APACHE_WEB.txt;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
   </data>
+  <data name="APACHE_WEB_INSTALL" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\APACHE_WEB_INSTALL.txt;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
+  </data>
+  <data name="APACHE_WEB_UNINSTALL" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\APACHE_WEB_UNINSTALL.txt;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
+  </data>
   <data name="SERVER" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\SERVER.txt;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
+  </data>
+  <data name="SERVER_INSTALL" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\SERVER_INSTALL.txt;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
+  </data>
+  <data name="SERVER_UNINSTALL" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\SERVER_UNINSTALL.txt;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
   </data>
 </root>

@@ -1,0 +1,3 @@
+pushd {0}
+httpd.exe -k uninstall -n "{1}"
+popd

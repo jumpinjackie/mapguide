@@ -142,6 +142,14 @@ namespace InstantSetup.Core
             //Write httpd batch file
             string httpdText = string.Format(Properties.Resources.APACHE_WEB, this.CsMapDictionaryDir, Path.Combine(this.WebTierApacheDir, "bin"));
             File.WriteAllText(Path.Combine(this.BatchFileOutputDirectory, "mgwebtier.bat"), httpdText);
+
+            //Write service installer batch file
+            httpdText = string.Format(Properties.Resources.APACHE_WEB_INSTALL, Path.Combine(this.WebTierApacheDir, "bin"), this.HttpdServiceName);
+            File.WriteAllText(Path.Combine(this.BatchFileOutputDirectory, "mgapacheinstall.bat"), httpdText);
+
+            //Write service uninstaller batch file
+            httpdText = string.Format(Properties.Resources.APACHE_WEB_UNINSTALL, Path.Combine(this.WebTierApacheDir, "bin"), this.HttpdServiceName);
+            File.WriteAllText(Path.Combine(this.BatchFileOutputDirectory, "mgapacheuninstall.bat"), httpdText);
         }
     }
 }

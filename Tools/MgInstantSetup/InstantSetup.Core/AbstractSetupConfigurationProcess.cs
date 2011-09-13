@@ -211,6 +211,14 @@ namespace InstantSetup.Core
                 string serverText = string.Format(Properties.Resources.SERVER, this.CsMapDictionaryDir, this.ServerBinDir);
                 File.WriteAllText(Path.Combine(this.BatchFileOutputDirectory, "mgserver.bat"), serverText);
 
+                //Write service install batch file
+                serverText = string.Format(Properties.Resources.SERVER_INSTALL, this.CsMapDictionaryDir, this.ServerBinDir, this.MapGuideServiceName);
+                File.WriteAllText(Path.Combine(this.BatchFileOutputDirectory, "mgserverinstall.bat"), serverText);
+
+                //Write service uninstall batch file
+                serverText = string.Format(Properties.Resources.SERVER_UNINSTALL, this.CsMapDictionaryDir, this.ServerBinDir, this.MapGuideServiceName);
+                File.WriteAllText(Path.Combine(this.BatchFileOutputDirectory, "mgserveruninstall.bat"), serverText);
+
                 WriteAdditionalBatchFiles();
             }
         }
@@ -262,12 +270,12 @@ namespace InstantSetup.Core
             _serverConfig.IniWriteValue("ResourceServiceProperties","PackagesPath",Path.Combine(ServerRootDir, "Packages"));
 
             _serverConfig.IniWriteValue("ResourceServiceProperties","LibraryRepositoryPath",Path.Combine(ServerRootDir, "Repositories\\Library"));
-            _serverConfig.IniWriteValue("ResourceServiceProperties","LibraryResourcesDataFilePath",Path.Combine(ServerRootDir, "Repositories\\DataFiles"));
+            _serverConfig.IniWriteValue("ResourceServiceProperties","LibraryResourceDataFilePath", Path.Combine(ServerRootDir, "Repositories\\DataFiles"));
             _serverConfig.IniWriteValue("ResourceServiceProperties","SessionRepositoryPath",Path.Combine(ServerRootDir, "Repositories\\Session"));
-            _serverConfig.IniWriteValue("ResourceServiceProperties","SessionResourceDataPath",Path.Combine(ServerRootDir, "Repositories\\Session\\DataFiles"));
+            _serverConfig.IniWriteValue("ResourceServiceProperties","SessionResourceDataFilePath", Path.Combine(ServerRootDir, "Repositories\\Session\\DataFiles"));
             _serverConfig.IniWriteValue("ResourceServiceProperties","SiteRepositoryPath",Path.Combine(ServerRootDir, "Repositories\\Site"));
-            _serverConfig.IniWriteValue("ResourceServiceProperties","TileCachePath",Path.Combine(ServerRootDir, "Repositories\\TileCache"));
-            _serverConfig.IniWriteValue("ResourceServiceProperties", "ResourceSchemaFilePath", Path.Combine(ServerRootDir, "Schema"));
+            _serverConfig.IniWriteValue("TileServiceProperties", "TileCachePath", Path.Combine(ServerRootDir, "Repositories\\TileCache"));
+            _serverConfig.IniWriteValue("ResourceServiceProperties","ResourceSchemaFilePath", Path.Combine(ServerRootDir, "Schema"));
         }
 
         protected abstract void DoBackupConfigFiles();

@@ -1,0 +1,3 @@
+pushd {0}
+httpd.exe -k install -n "{1}"
+popd
