@@ -210,7 +210,7 @@ goto custom_error
 :get_component
 SET TYPECOMPONENT=%2
 if "%2"=="oem" goto next_param
-if "%2"=="common" goto next_param
+REM if "%2"=="common" goto next_param
 if "%2"=="server" goto next_param
 if "%2"=="web" goto next_param
 if "%2"=="doc" goto next_param
@@ -261,7 +261,6 @@ if "%TYPEACTION%"=="install" goto install
 
 :clean
 if "%TYPECOMPONENT%"=="oem" goto clean_oem
-if "%TYPECOMPONENT%"=="common" goto clean_common
 if "%TYPECOMPONENT%"=="server" goto clean_server
 if "%TYPECOMPONENT%"=="web" goto clean_web
 if "%TYPECOMPONENT%"=="doc" goto clean_doc
@@ -271,11 +270,6 @@ echo [clean]: Clean Oem
 %MSBUILD_CLEAN% %MG_OEM%\Oem.sln
 echo [clean]: Clean Oem - CS-Map
 %MSBUILD_CLEAN% %MG_OEM%\CSMap\VC90\OpenSource.sln
-if not "%TYPECOMPONENT%"=="all" goto quit
-
-:clean_common
-echo [clean]: Clean Common
-%MSBUILD_CLEAN% %MG_COMMON%\Common.sln
 if not "%TYPECOMPONENT%"=="all" goto quit
 
 :clean_server
@@ -302,7 +296,6 @@ rem =======================================================
 
 :build
 if "%TYPECOMPONENT%"=="oem" goto build_oem
-if "%TYPECOMPONENT%"=="common" goto build_common
 if "%TYPECOMPONENT%"=="server" goto build_server
 if "%TYPECOMPONENT%"=="web" goto build_web
 if "%TYPECOMPONENT%"=="doc" goto build_doc
@@ -327,22 +320,11 @@ if "%TYPECOMPONENT%"=="server" 	goto quit
 if "%TYPECOMPONENT%"=="web" 	goto quit
 if "%TYPECOMPONENT%"=="doc" 	goto quit
 
-:build_common
-echo [build]: Building Common
-%MSBUILD% %MG_COMMON%\Common.sln
-if "%errorlevel%"=="1" goto error
-if "%TYPECOMPONENT%"=="oem" 	goto quit
-if "%TYPECOMPONENT%"=="common" 	goto quit
-if "%TYPECOMPONENT%"=="server" 	goto quit
-if "%TYPECOMPONENT%"=="web" 	goto quit
-if "%TYPECOMPONENT%"=="doc" 	goto quit
-
 :build_server
 echo [build]: Building Server
 %MSBUILD% %MG_SERVER%\Server.sln
 if "%errorlevel%"=="1" goto error
 if "%TYPECOMPONENT%"=="oem" 	goto quit
-if "%TYPECOMPONENT%"=="common" 	goto quit
 if "%TYPECOMPONENT%"=="server" 	goto quit
 if "%TYPECOMPONENT%"=="web" 	goto quit
 if "%TYPECOMPONENT%"=="doc" 	goto quit
@@ -352,7 +334,6 @@ echo [build]: Building Web Tier
 %MSBUILD% %MG_WEB_SRC%\WebTier.sln
 if "%errorlevel%"=="1" goto error
 if "%TYPECOMPONENT%"=="oem" 	 goto quit
-if "%TYPECOMPONENT%"=="common" 	 goto quit
 if "%TYPECOMPONENT%"=="server" 	 goto quit
 if "%TYPECOMPONENT%"=="web" 	 goto quit
 if "%TYPECOMPONENT%"=="doc" 	 goto quit
@@ -499,7 +480,6 @@ echo                                  install,
 echo                                  clean,
 echo Component:             -w[ith]=all(default),
 echo                                oem,
-echo                                common,
 echo                                server,
 echo                                web,
 echo                                doc
