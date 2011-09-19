@@ -171,6 +171,7 @@ static bool InitCmdCodes()
     cmdCodes["2e0f"] = MgWebActions::Buffer;
     cmdCodes["2e0e"] = MgWebActions::Measure;
     cmdCodes["2e0d"] = MgWebActions::Search;
+    cmdCodes["2e0c"] = MgWebActions::MapTip;
     return true;
 }
 

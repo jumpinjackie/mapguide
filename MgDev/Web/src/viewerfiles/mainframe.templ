@@ -42,7 +42,6 @@ var commands = new Array();
 var toolbarItems = new Array();
 var taskItems = new Array();
 var ctxMenuItems = new Array();
-
 var intervalID;
 var pingServerFailTime;
 
@@ -294,7 +293,7 @@ function ExecuteCommand(index)
     {
         OpenTaskBar();
     }
-    if(action >= 1 && action <= 22)
+    if((action >= 1 && action <= 22)||(action == 34))
         ExecuteMapAction(action);
     else if(cmd.action == 23)
         ExecutePrintCommand(index);
@@ -432,6 +431,7 @@ function FormatScale(scale)
 function OnMapLoaded()
 {
     ExecuteMapAction(15);
+    ExecuteMapAction(34);
     RestoreView();
     OnSelectionChanged();
     DisplayMapSize();

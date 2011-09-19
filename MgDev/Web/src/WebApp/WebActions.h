@@ -57,6 +57,7 @@ PUBLISHED_API:
     static const INT32 InvokeScript     = 31;
     static const INT32 SelectWithin     = 32;
     static const INT32 Help             = 33;
+    static const INT32 MapTip           = 34;
 };
 
 #endif // _MGWEBACTIONS_H_

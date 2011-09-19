@@ -323,6 +323,7 @@ var requestTiles = false;
 var setSelScript = '%s';
 var hlData;
 var moveTimer = 0, mapInit = false;
+var haveTooltip = false;
 var ovoffsx = 0, ovoffsy = 0;
 var finscale = true;
 var slidercourse = 78;
@@ -832,6 +833,9 @@ function ExecuteMapAction(action)
         case 22:
             About();
             break;
+        case 34:
+            MapTip();
+            break;
     }
 }
 
@@ -1275,7 +1279,7 @@ function OnMouseMove(e)
             {
                 if(!parent.InMeasure())
                 {
-                    if(x >= 0)
+                    if(x >= 0 && haveTooltip)
                     {
                         hlData.curx = x;
                         hlData.cury = y;
@@ -2208,6 +2212,33 @@ function ZoomToScale(scale)
 {
     HideMapImage();
     GotoView(extX1 + (extX2 - extX1) / 2, extY2 + (extY1 - extY2) / 2, scale, true, true);
+}
+
+function MapTip()
+{
+    var maptipBtn = parent.tbFrame.document.getElementById(14)
+    if(!haveTooltip)
+    {
+        haveTooltip = true;
+        //The tooltip is enabled.
+        //highlight the maptip button via change the background and the border color
+        if(maptipBtn)
+        {
+            maptipBtn.style.border = "solid #a0a0a0 1px";
+            maptipBtn.style.background = "#dcdcdc";
+        }
+    }
+    else
+    {
+        haveTooltip = false;
+        //disable the tooltip
+        //change back the background and border color
+        if(maptipBtn)
+        {
+            maptipBtn.style.border = "solid #f0f0f0 1px";
+            maptipBtn.style.background = "#f0f0f0";
+        }
+    }
 }
 
 function StartToolFeedback(x, y, type)

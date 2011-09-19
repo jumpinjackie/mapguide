@@ -1089,6 +1089,8 @@ INT32 MgWebLayout::ValidateAction(CREFSTRING action)
         return MgWebActions::Buffer;
     else if (action == L"Measure") // NOXLATE
         return MgWebActions::Measure;
+    else if (action == L"MapTip") // NOXLATE
+        return MgWebActions::MapTip;
     else if (action == L"ViewOptions") // NOXLATE
         return MgWebActions::ViewOptions;
     else if (action == L"InvokeScript") // NOXLATE
