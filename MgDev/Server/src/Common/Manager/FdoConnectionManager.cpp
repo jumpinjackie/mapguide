@@ -823,7 +823,8 @@ void MgFdoConnectionManager::SetConnectionTimeout(FdoIConnection* pFdoConnection
                     }                    
                     if(provider.find(providerName) != STRING::npos && timeoutVal > 0)
                     {
-                        pFdoConnection->SetConnectionTimeout(timeoutVal);
+                        //FDOConnectionTimeoutCustom is second, and FdoConnectionTimeout is millisecond.
+                        pFdoConnection->SetConnectionTimeout(timeoutVal * 1000);
                         break;
                     }
                 }
