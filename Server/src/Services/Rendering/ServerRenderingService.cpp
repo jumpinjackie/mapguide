@@ -394,12 +394,11 @@ MgByteReader* MgServerRenderingService::RenderDynamicOverlay(MgMap* map,
 
     if(NULL != pPRMResult)
     {
-        Ptr<MgResourceIdentifier> mapResId = map->GetResourceId();
+        Ptr<MgResourceIdentifier> mapResId = map->GetMapDefinition();
         pPRMResult->SetResourceId(mapResId ? mapResId->ToString() : L"");
         pPRMResult->SetScale(scale);
         pPRMResult->SetExtents(Box2D(extent.minx, extent.miny, extent.maxx, extent.maxy));
         pPRMResult->SetLayerCount(layers->GetCount());
-        pPRMResult->SetCoordinateSystem(map->GetMapSRS());
     }
 
     // call the internal helper API to do all the stylization overhead work
@@ -703,13 +702,12 @@ MgByteReader* MgServerRenderingService::RenderMap(MgMap* map,
 
     if(NULL != pPRMResult)
     {
-        Ptr<MgResourceIdentifier> mapResId = map->GetResourceId();
+        Ptr<MgResourceIdentifier> mapResId = map->GetMapDefinition();
         pPRMResult->SetResourceId(mapResId ? mapResId->ToString() : L"");
         pPRMResult->SetScale(scale);
         pPRMResult->SetExtents(Box2D(b.minx, b.miny, b.maxx, b.maxy));
         Ptr<MgLayerCollection> layers = map->GetLayers();
         pPRMResult->SetLayerCount(layers->GetCount());
-        pPRMResult->SetCoordinateSystem(map->GetMapSRS());
     }
 
     // call the internal helper API to do all the stylization overhead work
@@ -972,341 +970,32 @@ MgByteReader* MgServerRenderingService::RenderMapInternal(MgMap* map,
         }
 
         INT32 behavior = options->GetBehavior();
+
         if (behavior & MgRenderingOptions::RenderLayers)    // this is for tiles so observer colormaps
         {
-            ProfileRenderLayersResult* pPRLsResult = NULL; // pointer points to Profile Render Layers Result
-
-            if(NULL != pPRMResult)
-            {
-                pPRLsResult = new ProfileRenderLayersResult();
-                pPRMResult->AdoptProfileRenderLayersResult(pPRLsResult);
-                
-                // Set the start time of stylizing layers
-                pPRLsResult->SetRenderTime(MgTimerUtil::GetTime());
-            }
-
-            MgMappingUtil::StylizeLayers(m_svcResource, m_svcFeature, m_svcDrawing, m_pCSFactory, map,
-                                         tempLayers, NULL, &ds, dr, dstCs, expandExtents, false, scale,
-                                         false, hasColorMap(format), pPRLsResult);
-
-            if(NULL != pPRMResult)
-            {
-                pPRLsResult = pPRMResult->GetProfileRenderLayersResult();
-
-                // Calculate the time spent on stylizing layers
-                double stylizeLayersTime = MgTimerUtil::GetTime() - pPRLsResult->GetRenderTime();
-                pPRLsResult->SetRenderTime(stylizeLayersTime);
-            }
+            RenderLayers(map, tempLayers, &ds, dr, dstCs, expandExtents, scale, format, pPRMResult);
         }
 
         // now we need to stylize the selection on top (this is not for tiles!)
         if (selection && (behavior & MgRenderingOptions::RenderSelection))
         {
-            ProfileRenderSelectionResult* pPRSResult = NULL; // pointer points to Profile Render Selection Result
-
-            if(NULL != pPRMResult)
-            {
-                pPRSResult = new ProfileRenderSelectionResult();
-                pPRMResult->AdoptProfileRenderSelectionResult(pPRSResult);
-                
-                // Set the start time of stylizing selected layers
-                pPRSResult->SetRenderTime(MgTimerUtil::GetTime());
-            }
-
-            Ptr<MgReadOnlyLayerCollection> selLayers = selection->GetLayers();
-
-            #ifdef _DEBUG
-            printf("MgServerRenderingService::RenderMapInternal() - Layers:%d  Selection Layers:%d\n", tempLayers.p? tempLayers->GetCount() : 0, selLayers.p? selLayers->GetCount() : 0);
-            #endif
-
-            if (selLayers.p && selLayers->GetCount() > 0)
-            {
-                // tell the renderer to override draw styles with the ones
-                // we use for selection
-                MgColor *selectionColor = options->GetSelectionColor();
-                if (selectionColor == NULL)
-                {
-                    dr->SetRenderSelectionMode(true);
-                }
-                else
-                {
-                    dr->SetRenderSelectionMode(true,
-                        selectionColor->GetRed() << 24 |
-                        selectionColor->GetGreen() << 16 |
-                        selectionColor->GetBlue() << 8 |
-                        selectionColor->GetAlpha());
-                }
-                SAFE_RELEASE(selectionColor);
-
-                // prepare a collection of temporary MgLayers which have the right
-                // FDO filters that will fetch only the selected features from FDO
-                Ptr<MgReadOnlyLayerCollection> modLayers = new MgReadOnlyLayerCollection();
-                Ptr<MgStringCollection> overrideFilters = new MgStringCollection();
-
-                for (int s=0; s<selLayers->GetCount(); s++)
-                {
-                    Ptr<MgLayerBase> selLayer = selLayers->GetItem(s);
-
-                    // generate a filter for the selected features
-                    Ptr<MgStringCollection> filters = selection->GenerateFilters(
-                    selLayer, selLayer->GetFeatureClassName(), m_renderSelectionBatchSize);
-                    INT32 numFilter = (NULL == filters)? 0 : filters->GetCount();
-
-                    for (INT32 i = 0; i < numFilter; ++i)
-                    {
-                        overrideFilters->Add(filters->GetItem(i));
-                        modLayers->Add(selLayer);
-                    }
-                }
-
-                MgMappingUtil::StylizeLayers(m_svcResource, m_svcFeature, m_svcDrawing, m_pCSFactory, map,
-                    modLayers, overrideFilters, &ds, dr, dstCs, false, false, scale, (behavior & MgRenderingOptions::KeepSelection) != 0,false,pPRSResult);
-
-                // Set selection mode to false to avoid affecting following code
-                dr->SetRenderSelectionMode(false);
-            }
-
-            if(NULL != pPRMResult)
-            {
-                pPRSResult = pPRMResult->GetProfileRenderSelectionResult();
-
-                // Calculate the time spent on stylizing selected layers
-                double stylizeSelectionTime = MgTimerUtil::GetTime() - pPRSResult->GetRenderTime();
-                pPRSResult->SetRenderTime(stylizeSelectionTime);
-            }
+            RenderSelection(map, selection, tempLayers, options, &ds, dr, dstCs, scale, behavior, pPRMResult);
         }
 
         if (renderWatermark && (behavior & MgRenderingOptions::RenderLayers) && map->GetWatermarkUsage() != 0)
         {
-            // Rendering watermark only when:
-            //      1. rendering layers
-            //      2. not set renderWatermark to false (not render tile)
-            //      3. Map's watermark usage is not 0, which means watermark usage is WMS and / or Viewer.
-            WatermarkInstanceCollection watermarkInstances;   //Watermark list to render
-            WatermarkInstanceCollection tempWatermarkInstances;    //Used to reverse list
-            auto_ptr<WatermarkInstance> tempInstance;
-
-            // Get watermark instance in map
-            Ptr<MgResourceIdentifier> mapId = map->GetMapDefinition();
-            if (mapId.p)
-            {
-                auto_ptr<MapDefinition> mdef(MgMapBase::GetMapDefinition(m_svcResource, mapId));
-                WatermarkInstanceCollection* mapWatermarks = mdef->GetWatermarks();
-                for (int i=mapWatermarks->GetCount()-1; i>=0; i--)
-                    tempWatermarkInstances.Adopt(mapWatermarks->OrphanAt(i));
-                for (int i=tempWatermarkInstances.GetCount()-1; i>=0; i--)
-                {
-                    tempInstance.reset(tempWatermarkInstances.OrphanAt(i));
-                    if (!tempInstance.get())
-                        continue;
-                    if (((map->GetWatermarkUsage() & MgMap::Viewer) != 0
-                        && (tempInstance->GetUsage() & WatermarkInstance::Viewer) == 0)
-                        || ((map->GetWatermarkUsage() & MgMap::WMS) != 0
-                        && (tempInstance->GetUsage() & WatermarkInstance::WMS) == 0))
-                        continue;
-                    bool alreadyInList = false;
-                    for (int j=watermarkInstances.GetCount()-1; j >=0; j--)
-                    {
-                        if (tempInstance->Equals(watermarkInstances.GetAt(j)))
-                        {
-                            alreadyInList = true;
-                            break;
-                        }
-                    }
-
-                    if (!alreadyInList)
-                    {
-                        watermarkInstances.Adopt(tempInstance.release());
-                    }
-                }
-            }
-
-            // Get watermark instance in layer
-            const int layerCount = tempLayers->GetCount();
-            auto_ptr<LayerDefinition> ldf;
-            for (int i=0; i<layerCount; ++i)
-            {
-                Ptr<MgLayerBase> mapLayer(tempLayers->GetItem(i));
-
-                // the layer resource content should be set during stylization if visible
-                if (mapLayer->GetLayerResourceContent() == L"")
-                    continue;
-
-                ldf.reset(MgLayerBase::GetLayerDefinition(mapLayer->GetLayerResourceContent()));
-
-                WatermarkInstanceCollection* layerWatermarks = ldf->GetWatermarks();
-                for (int j=layerWatermarks->GetCount()-1; j>=0; j--)
-                    tempWatermarkInstances.Adopt(layerWatermarks->OrphanAt(j));
-                for (int j=tempWatermarkInstances.GetCount()-1; j>=0; j--)
-                {
-                    tempInstance.reset(tempWatermarkInstances.OrphanAt(j));
-                    if (!tempInstance.get())
-                        continue;
-                    if (((map->GetWatermarkUsage() & MgMap::Viewer) != 0
-                        && (tempInstance->GetUsage() & WatermarkInstance::Viewer) == 0)
-                        || ((map->GetWatermarkUsage() & MgMap::WMS) != 0
-                        && (tempInstance->GetUsage() & WatermarkInstance::WMS) == 0))
-                        continue;
-
-                    bool alreadyInList = false;
-                    for (int k=watermarkInstances.GetCount()-1; k>=0; k--)
-                    {
-                        if (tempInstance->Equals(watermarkInstances.GetAt(k)))
-                        {
-                            alreadyInList = true;
-                            break;
-                        }
-                    }
-
-                    if (!alreadyInList)
-                    {
-                        watermarkInstances.Adopt(tempInstance.release());
-                    }
-                }
-            }
-            assert(tempWatermarkInstances.GetCount() == 0);
-
-            MgStringCollection watermarkIds;            // ID list of loaded watermark definition
-            MgStringCollection watermarkDefinitions;    // Loaded watermark definition
-            MgStringCollection failLoadedIds;           // ID list of failed in loading resource
-
-            if(0 != watermarkInstances.GetCount())
-            {
-                ProfileRenderWatermarksResult* pPRWsResult = NULL; // pointer points to Profile Render Watermarks Result
-
-                if(NULL != pPRMResult)
-                {
-                    pPRWsResult = new ProfileRenderWatermarksResult();
-                    pPRMResult->AdoptProfileRenderWatermarksResult(pPRWsResult);
-                
-                    // Set the start time of stylizing watermarks
-                    pPRWsResult->SetRenderTime(MgTimerUtil::GetTime());
-                }
-
-                for (int i=watermarkInstances.GetCount()-1; i>=0; i--)
-                {
-                    WatermarkInstance* instance = watermarkInstances.GetAt(i);
-                    STRING resourceId = instance->GetResourceId();
-                    WatermarkDefinition* wdef = NULL;
-                    MG_TRY()
-                        for(int j = 0; j < watermarkIds.GetCount(); j++)
-                        {
-                            if(resourceId == watermarkIds.GetItem(j))
-                            {
-                                wdef = MgWatermark::GetWatermarkDefinition(watermarkDefinitions.GetItem(j));
-                                break;
-                            }
-                        }
-
-                        if(NULL != pPRWsResult)
-                        {
-                            ProfileRenderWatermarkResult* pPRWResult = new ProfileRenderWatermarkResult(); // pointer points to Render Watermark Result
-                        
-                            // Set the start time of stylizing watermark
-                            pPRWResult->SetRenderTime(MgTimerUtil::GetTime());
-
-                            ProfileRenderWatermarkResultCollection* pPRWResultColl = pPRWsResult->GetProfileRenderWatermarkResults();
-                            pPRWResultColl->Adopt(pPRWResult);
-                        }
-
-                        if(wdef == NULL)
-                        {
-                            Ptr<MgResourceIdentifier> resId = new MgResourceIdentifier(resourceId);
-                            Ptr<MgByteReader> reader = m_svcResource->GetResourceContent(resId);
-                            STRING content = reader->ToString();
-                            watermarkIds.Add(resourceId);
-                            watermarkDefinitions.Add(content);
-                            wdef = MgWatermark::GetWatermarkDefinition(content);
-                        }
-                        assert(wdef != NULL);
-                        if (instance->GetPositionOverride())
-                        {
-                            wdef->AdoptPosition(instance->OrphanPositionOverride());
-                        }
-                        if (instance->GetAppearanceOverride())
-                        {
-                            wdef->AdoptAppearance(instance->OrphanAppearanceOverride());
-                        }
-                        ds.StylizeWatermark(dr, wdef, drawWidth, drawHeight, saveWidth, saveHeight);
-                
-                        if(NULL != pPRWsResult)
-                        {
-                            ProfileRenderWatermarkResultCollection* pPRWResultColl = pPRWsResult->GetProfileRenderWatermarkResults();
-                            ProfileRenderWatermarkResult* pPRWResult = pPRWResultColl->GetAt(pPRWResultColl->GetCount()-1); // TODO: check index
-
-                            // Calculate the time spent on stylizing watermark
-                            double stylizeWatermarkTime = MgTimerUtil::GetTime() - pPRWResult->GetRenderTime();
-                            pPRWResult->SetRenderTime(stylizeWatermarkTime);
-
-                            pPRWResult->SetResourceId(resourceId);
-
-                            WatermarkPosition* position = wdef->GetPosition();
-                            if(NULL != dynamic_cast<XYWatermarkPosition*>(position))
-                            {
-                                pPRWResult->SetPositionType(L"XY");
-                            }
-                            else // No other position types
-                            {
-                                pPRWResult->SetPositionType(L"Tile");
-                            }
-                        }
-
-                    MG_CATCH(L"MgServerRenderingService.RenderMapInternal")
-                    if(mgException.p)
-                    {
-                        // Do not do anything if fail in resource loading and has logged error.
-                        bool isExceptionLogged = false;
-                        if(wdef == NULL) // Fail in resource loading
-                        { 
-                            for(int i = 0; i < failLoadedIds.GetCount(); i++)
-                            {
-                                if(resourceId == failLoadedIds.GetItem(i))
-                                {
-                                    isExceptionLogged = true;
-                                    break;
-                                }
-                            }
-                        }
-                        if(!isExceptionLogged)
-                        {
-                            // TODO: Eventually this should be used to indicate visually to the client what
-                            //       layer failed in addition to logging the error.
-                            MgServerManager* serverManager = MgServerManager::GetInstance();
-                            STRING locale = (NULL == serverManager)? MgResources::DefaultMessageLocale : serverManager->GetDefaultMessageLocale();
-                            MG_LOG_EXCEPTION_ENTRY(mgException->GetExceptionMessage(locale).c_str(), mgException->GetStackTrace(locale).c_str());
-
-    #if defined(_DEBUG) || defined(_DEBUG_PNG8)
-                            STRING details = mgException->GetDetails(locale);
-
-                            wstring err = L"\n %t Error during stylization of watermark:";
-                            err += instance->GetName();
-                            err += L"\n";
-                            err += L"Details: ";
-                            err += details;
-                            err += L"\n";
-                            ACE_DEBUG( (LM_DEBUG, err.c_str()) );
-    #endif
-                            if(wdef == NULL)            // Failed in resource loading
-                            {
-                                failLoadedIds.Add(resourceId);
-                            }
-                        }
-                    }
-                }
-
-                if(NULL != pPRWsResult)
-                {
-                    // Calculate the time spent on stylizing watermarks
-                    double stylizeRenderWatermarksTime = MgTimerUtil::GetTime() - pPRWsResult->GetRenderTime();
-                    pPRWsResult->SetRenderTime(stylizeRenderWatermarksTime);
-                }
-            }
+            RenderWatermarks(map,tempLayers,&ds, dr,drawWidth, drawHeight, saveWidth, saveHeight, pPRMResult);
         }
 
     MG_CATCH(L"MgServerRenderingService.RenderMapInternal")
 
     if(NULL != pPRMResult)
     {
+        if(NULL != dstCs)
+        {
+            pPRMResult->SetCoordinateSystem(dstCs->GetCsCode());
+        }
+
         ProfileRenderLabelsResult* pPRLablesResult = new ProfileRenderLabelsResult(); // pointer points to Render Labels Result
         
         // Set the start time of stylizing labels
@@ -1327,100 +1016,8 @@ MgByteReader* MgServerRenderingService::RenderMapInternal(MgMap* map,
     }
 
     MG_THROW()  // to skip a faulty tile we need to rethrow the exception which could be thrown in StylizeLayers
-/*
-    //-------------------------------------------------------
-    // draw a border around the tile - used for debugging
-    RS_LineStroke ls;
-    ls.color() = RS_Color(128, 128, 128, 64);
 
-    LineBuffer lb(5);
-    double mcsMinX = b.minx;
-    double mcsMaxX = b.maxx;
-    double mcsMinY = b.miny;
-    double mcsMaxY = b.maxy;
-    double incX = (mcsMaxX - mcsMinX) / saveWidth  / 10.0;
-    double incY = (mcsMaxY - mcsMinY) / saveHeight / 10.0;
-    lb.MoveTo(mcsMinX + incX, mcsMinY + incY);
-    lb.LineTo(mcsMaxX - incX, mcsMinY + incY);
-    lb.LineTo(mcsMaxX - incX, mcsMaxY - incY);
-    lb.LineTo(mcsMinX + incX, mcsMaxY - incY);
-    lb.LineTo(mcsMinX + incX, mcsMinY + incY);
-    dr->ProcessPolyline(&lb, ls);
-    //-------------------------------------------------------
-*/
-
-    if(NULL != pPRMResult)
-    {
-        // Set the start time of creating map image
-        pPRMResult->SetCreateImageTime(MgTimerUtil::GetTime());
-    }
-
-    Ptr<MgByteReader> ret;
-
-    // get a byte representation of the image
-    auto_ptr<RS_ByteData> data;
-
-    try
-    {
-        // call the image renderer to create the image
-        if (wcscmp(m_rendererName.c_str(), L"AGG") == 0)
-        {
-            //-------------------------------------------------------
-            /// RFC60 code to correct colormaps by UV
-            //-------------------------------------------------------
-            // We examine the expressions collected from xml definitions of all layers.
-            // The map object has a list from all color entries found in the most recent
-            // layer stylization.
-            // * TODO - currently they are interpreted as ffffffff 32-bit RGBA string values
-            // * adding expresssions and other interpretations should be done in ParseColorStrings
-            // * the color Palette for the renderer is a vector<RS_Color>
-            if (hasColorMap(format))
-            {
-                RS_ColorVector tileColorPalette;
-                MgMappingUtil::ParseColorStrings(&tileColorPalette, map);
-//              printf("<<<<<<<<<<<<<<<<<<<<< MgServerRenderingService::ColorPalette->size(): %d\n", tileColorPalette.size());
-                data.reset(((AGGRenderer*)dr)->Save(format, saveWidth, saveHeight, &tileColorPalette));
-            }
-            else
-                data.reset(((AGGRenderer*)dr)->Save(format, saveWidth, saveHeight, NULL));
-        }
-        else
-            data.reset(((GDRenderer*)dr)->Save(format, saveWidth, saveHeight));
-    }
-    catch (exception e)
-    {
-        ACE_DEBUG((LM_DEBUG, L"(%t) %w caught in RenderingService ColorPaletteGeneration\n", e.what()));
-        throw e;
-    }
-
-    if (NULL != data.get())
-    {
-        // put this into a byte source
-        Ptr<MgByteSource> bs = new MgByteSource(data->GetBytes(), data->GetNumBytes());
-
-        if (format == MgImageFormats::Gif)
-            bs->SetMimeType(MgMimeType::Gif);
-        else if (format == MgImageFormats::Jpeg)
-            bs->SetMimeType(MgMimeType::Jpeg);
-        else if (format == MgImageFormats::Png || format == MgImageFormats::Png8)
-            bs->SetMimeType(MgMimeType::Png);
-        else if (format == MgImageFormats::Tiff)
-            bs->SetMimeType(MgMimeType::Tiff);
-
-        ret = bs->GetReader();
-    }
-    else
-        throw new MgNullReferenceException(L"MgServerRenderingService.RenderMapInternal", __LINE__, __WFILE__, NULL, L"MgNoDataFromRenderer", NULL);
-    
-    if(NULL != pPRMResult)
-    {
-        // Calculate the time spent on stylizing labels
-        double createImageTime = MgTimerUtil::GetTime() - pPRMResult->GetCreateImageTime();
-        pPRMResult->SetCreateImageTime(createImageTime);
-
-        pPRMResult->SetImageFormat(format);
-        pPRMResult->SetRendererType(m_rendererName);
-    }
+    Ptr<MgByteReader> ret = CreateImage(map, dr, saveWidth, saveHeight, format, pPRMResult);
 
     return ret.Detach();
 }
@@ -1928,4 +1525,466 @@ SE_Renderer* MgServerRenderingService::CreateRenderer(int width,
     }
 
     return renderer;
+}
+
+///////////////////////////////////////////////////////////////////////////////
+inline void MgServerRenderingService::RenderLayers(MgMap* map,
+                                                   MgReadOnlyLayerCollection* layers,
+                                                   Stylizer* ds,
+                                                   Renderer* dr,
+                                                   MgCoordinateSystem* dstCs,
+                                                   bool expandExtents,
+                                                   double scale,
+                                                   CREFSTRING format,
+                                                   ProfileRenderMapResult* pPRMResult)
+{
+    ProfileRenderLayersResult* pPRLsResult = NULL; // pointer points to Profile Render Layers Result
+
+    if(NULL != pPRMResult)
+    {
+        pPRLsResult = new ProfileRenderLayersResult();
+        pPRMResult->AdoptProfileRenderLayersResult(pPRLsResult);
+                
+        // Set the start time of stylizing layers
+        pPRLsResult->SetRenderTime(MgTimerUtil::GetTime());
+    }
+
+    MgMappingUtil::StylizeLayers(m_svcResource, m_svcFeature, m_svcDrawing, m_pCSFactory, map,
+                                    layers, NULL, ds, dr, dstCs, expandExtents, false, scale,
+                                    false, hasColorMap(format), pPRLsResult);
+
+    if(NULL != pPRMResult)
+    {
+        pPRLsResult = pPRMResult->GetProfileRenderLayersResult();
+
+        // Calculate the time spent on stylizing layers
+        double stylizeLayersTime = MgTimerUtil::GetTime() - pPRLsResult->GetRenderTime();
+        pPRLsResult->SetRenderTime(stylizeLayersTime);
+    }
+}
+
+///////////////////////////////////////////////////////////////////////////////
+inline void MgServerRenderingService::RenderSelection(MgMap* map,
+                                                      MgSelection* selection,
+                                                      MgReadOnlyLayerCollection* layers,
+                                                      MgRenderingOptions* options,
+                                                      Stylizer* ds,
+                                                      Renderer* dr,
+                                                      MgCoordinateSystem* dstCs,
+                                                      double scale,
+                                                      INT32 behavior,
+                                                      ProfileRenderMapResult* pPRMResult)
+{
+    SE_Renderer* renderer = dynamic_cast<SE_Renderer*>(dr);
+
+    ProfileRenderSelectionResult* pPRSResult = NULL; // pointer points to Profile Render Selection Result
+
+    if(NULL != pPRMResult)
+    {
+        pPRSResult = new ProfileRenderSelectionResult();
+        pPRMResult->AdoptProfileRenderSelectionResult(pPRSResult);
+                
+        // Set the start time of stylizing selected layers
+        pPRSResult->SetRenderTime(MgTimerUtil::GetTime());
+    }
+
+    Ptr<MgReadOnlyLayerCollection> selLayers = selection->GetLayers();
+
+    #ifdef _DEBUG
+    printf("MgServerRenderingService::RenderSelection() - Layers:%d  Selection Layers:%d\n", layers? layers->GetCount() : 0, selLayers.p? selLayers->GetCount() : 0);
+    #endif
+
+    if (selLayers.p && selLayers->GetCount() > 0)
+    {
+        // tell the renderer to override draw styles with the ones
+        // we use for selection
+        MgColor *selectionColor = options->GetSelectionColor();
+        if (selectionColor == NULL)
+        {
+            renderer->SetRenderSelectionMode(true);
+        }
+        else
+        {
+            renderer->SetRenderSelectionMode(true,
+                selectionColor->GetRed() << 24 |
+                selectionColor->GetGreen() << 16 |
+                selectionColor->GetBlue() << 8 |
+                selectionColor->GetAlpha());
+        }
+        SAFE_RELEASE(selectionColor);
+
+        // prepare a collection of temporary MgLayers which have the right
+        // FDO filters that will fetch only the selected features from FDO
+        Ptr<MgReadOnlyLayerCollection> modLayers = new MgReadOnlyLayerCollection();
+        Ptr<MgStringCollection> overrideFilters = new MgStringCollection();
+
+        for (int s=0; s<selLayers->GetCount(); s++)
+        {
+            Ptr<MgLayerBase> selLayer = selLayers->GetItem(s);
+
+            // generate a filter for the selected features
+            Ptr<MgStringCollection> filters = selection->GenerateFilters(
+            selLayer, selLayer->GetFeatureClassName(), m_renderSelectionBatchSize);
+            INT32 numFilter = (NULL == filters)? 0 : filters->GetCount();
+
+            for (INT32 i = 0; i < numFilter; ++i)
+            {
+                overrideFilters->Add(filters->GetItem(i));
+                modLayers->Add(selLayer);
+            }
+        }
+
+        MgMappingUtil::StylizeLayers(m_svcResource, m_svcFeature, m_svcDrawing, m_pCSFactory, map,
+            modLayers, overrideFilters, ds, renderer, dstCs, false, false, scale, (behavior & MgRenderingOptions::KeepSelection) != 0,false,pPRSResult);
+
+        // Set selection mode to false to avoid affecting following code
+        renderer->SetRenderSelectionMode(false);
+    }
+
+    if(NULL != pPRMResult)
+    {
+        pPRSResult = pPRMResult->GetProfileRenderSelectionResult();
+
+        // Calculate the time spent on stylizing selected layers
+        double stylizeSelectionTime = MgTimerUtil::GetTime() - pPRSResult->GetRenderTime();
+        pPRSResult->SetRenderTime(stylizeSelectionTime);
+    }
+}
+///////////////////////////////////////////////////////////////////////////////
+inline void MgServerRenderingService::RenderWatermarks(MgMap* map,
+                                                       MgReadOnlyLayerCollection* layers,
+                                                       Stylizer* ds,
+                                                       Renderer* dr,
+                                                       int drawWidth,
+                                                       int drawHeight,
+                                                       INT32 saveWidth,
+                                                       INT32 saveHeight,
+                                                       ProfileRenderMapResult* pPRMResult)
+{
+    // Rendering watermark only when:
+    // 1. rendering layers
+    // 2. not set renderWatermark to false (not render tile)
+    // 3. Map's watermark usage is not 0, which means watermark usage is WMS and / or Viewer.
+    WatermarkInstanceCollection watermarkInstances;   //Watermark list to render
+    WatermarkInstanceCollection tempWatermarkInstances;    //Used to reverse list
+    auto_ptr<WatermarkInstance> tempInstance;
+
+    // Get watermark instance in map
+    Ptr<MgResourceIdentifier> mapId = map->GetMapDefinition();
+    if (mapId.p)
+    {
+        auto_ptr<MapDefinition> mdef(MgMapBase::GetMapDefinition(m_svcResource, mapId));
+        WatermarkInstanceCollection* mapWatermarks = mdef->GetWatermarks();
+        for (int i=mapWatermarks->GetCount()-1; i>=0; i--)
+            tempWatermarkInstances.Adopt(mapWatermarks->OrphanAt(i));
+        for (int i=tempWatermarkInstances.GetCount()-1; i>=0; i--)
+        {
+            tempInstance.reset(tempWatermarkInstances.OrphanAt(i));
+            if (!tempInstance.get())
+                continue;
+            if (((map->GetWatermarkUsage() & MgMap::Viewer) != 0
+                && (tempInstance->GetUsage() & WatermarkInstance::Viewer) == 0)
+                || ((map->GetWatermarkUsage() & MgMap::WMS) != 0
+                && (tempInstance->GetUsage() & WatermarkInstance::WMS) == 0))
+                continue;
+            bool alreadyInList = false;
+            for (int j=watermarkInstances.GetCount()-1; j >=0; j--)
+            {
+                if (tempInstance->Equals(watermarkInstances.GetAt(j)))
+                {
+                    alreadyInList = true;
+                    break;
+                }
+            }
+
+            if (!alreadyInList)
+            {
+                watermarkInstances.Adopt(tempInstance.release());
+            }
+        }
+    }
+
+    // Get watermark instance in layer
+    const int layerCount = layers->GetCount();
+    auto_ptr<LayerDefinition> ldf;
+    for (int i=0; i<layerCount; ++i)
+    {
+        Ptr<MgLayerBase> mapLayer(layers->GetItem(i));
+
+        // the layer resource content should be set during stylization if visible
+        if (mapLayer->GetLayerResourceContent() == L"")
+            continue;
+
+        ldf.reset(MgLayerBase::GetLayerDefinition(mapLayer->GetLayerResourceContent()));
+
+        WatermarkInstanceCollection* layerWatermarks = ldf->GetWatermarks();
+        for (int j=layerWatermarks->GetCount()-1; j>=0; j--)
+            tempWatermarkInstances.Adopt(layerWatermarks->OrphanAt(j));
+        for (int j=tempWatermarkInstances.GetCount()-1; j>=0; j--)
+        {
+            tempInstance.reset(tempWatermarkInstances.OrphanAt(j));
+            if (!tempInstance.get())
+                continue;
+            if (((map->GetWatermarkUsage() & MgMap::Viewer) != 0
+                && (tempInstance->GetUsage() & WatermarkInstance::Viewer) == 0)
+                || ((map->GetWatermarkUsage() & MgMap::WMS) != 0
+                && (tempInstance->GetUsage() & WatermarkInstance::WMS) == 0))
+                continue;
+
+            bool alreadyInList = false;
+            for (int k=watermarkInstances.GetCount()-1; k>=0; k--)
+            {
+                if (tempInstance->Equals(watermarkInstances.GetAt(k)))
+                {
+                    alreadyInList = true;
+                    break;
+                }
+            }
+
+            if (!alreadyInList)
+            {
+                watermarkInstances.Adopt(tempInstance.release());
+            }
+        }
+    }
+    assert(tempWatermarkInstances.GetCount() == 0);
+
+    MgStringCollection watermarkIds;            // ID list of loaded watermark definition
+    MgStringCollection watermarkDefinitions;    // Loaded watermark definition
+    MgStringCollection failLoadedIds;           // ID list of failed in loading resource
+
+    if(0 != watermarkInstances.GetCount())
+    {
+        ProfileRenderWatermarksResult* pPRWsResult = NULL; // pointer points to Profile Render Watermarks Result
+
+        if(NULL != pPRMResult)
+        {
+            pPRWsResult = new ProfileRenderWatermarksResult();
+            pPRMResult->AdoptProfileRenderWatermarksResult(pPRWsResult);
+                
+            // Set the start time of stylizing watermarks
+            pPRWsResult->SetRenderTime(MgTimerUtil::GetTime());
+        }
+
+        for (int i=watermarkInstances.GetCount()-1; i>=0; i--)
+        {
+            WatermarkInstance* instance = watermarkInstances.GetAt(i);
+            STRING resourceId = instance->GetResourceId();
+            WatermarkDefinition* wdef = NULL;
+            MG_TRY()
+                for(int j = 0; j < watermarkIds.GetCount(); j++)
+                {
+                    if(resourceId == watermarkIds.GetItem(j))
+                    {
+                        wdef = MgWatermark::GetWatermarkDefinition(watermarkDefinitions.GetItem(j));
+                        break;
+                    }
+                }
+
+                if(NULL != pPRWsResult)
+                {
+                    ProfileRenderWatermarkResult* pPRWResult = new ProfileRenderWatermarkResult(); // pointer points to Render Watermark Result
+                        
+                    // Set the start time of stylizing watermark
+                    pPRWResult->SetRenderTime(MgTimerUtil::GetTime());
+
+                    ProfileRenderWatermarkResultCollection* pPRWResultColl = pPRWsResult->GetProfileRenderWatermarkResults();
+                    pPRWResultColl->Adopt(pPRWResult);
+                }
+
+                if(wdef == NULL)
+                {
+                    Ptr<MgResourceIdentifier> resId = new MgResourceIdentifier(resourceId);
+                    Ptr<MgByteReader> reader = m_svcResource->GetResourceContent(resId);
+                    STRING content = reader->ToString();
+                    watermarkIds.Add(resourceId);
+                    watermarkDefinitions.Add(content);
+                    wdef = MgWatermark::GetWatermarkDefinition(content);
+                }
+                assert(wdef != NULL);
+                if (instance->GetPositionOverride())
+                {
+                    wdef->AdoptPosition(instance->OrphanPositionOverride());
+                }
+                if (instance->GetAppearanceOverride())
+                {
+                    wdef->AdoptAppearance(instance->OrphanAppearanceOverride());
+                }
+                ds->StylizeWatermark(dr, wdef, drawWidth, drawHeight, saveWidth, saveHeight);
+                
+                if(NULL != pPRWsResult)
+                {
+                    ProfileRenderWatermarkResultCollection* pPRWResultColl = pPRWsResult->GetProfileRenderWatermarkResults();
+                    ProfileRenderWatermarkResult* pPRWResult = pPRWResultColl->GetAt(pPRWResultColl->GetCount()-1); // TODO: check index
+
+                    // Calculate the time spent on stylizing watermark
+                    double stylizeWatermarkTime = MgTimerUtil::GetTime() - pPRWResult->GetRenderTime();
+                    pPRWResult->SetRenderTime(stylizeWatermarkTime);
+
+                    pPRWResult->SetResourceId(resourceId);
+
+                    WatermarkPosition* position = wdef->GetPosition();
+                    if(NULL != dynamic_cast<XYWatermarkPosition*>(position))
+                    {
+                        pPRWResult->SetPositionType(L"XY");
+                    }
+                    else // No other position types
+                    {
+                        pPRWResult->SetPositionType(L"Tile");
+                    }
+                }
+
+            MG_CATCH(L"MgServerRenderingService.RenderWatermarks")
+            if(mgException.p)
+            {
+                // Do not do anything if fail in resource loading and has logged error.
+                bool isExceptionLogged = false;
+                if(wdef == NULL) // Fail in resource loading
+                { 
+                    for(int i = 0; i < failLoadedIds.GetCount(); i++)
+                    {
+                        if(resourceId == failLoadedIds.GetItem(i))
+                        {
+                            isExceptionLogged = true;
+                            break;
+                        }
+                    }
+                }
+                if(!isExceptionLogged)
+                {
+                    // TODO: Eventually this should be used to indicate visually to the client what
+                    //       layer failed in addition to logging the error.
+                    MgServerManager* serverManager = MgServerManager::GetInstance();
+                    STRING locale = (NULL == serverManager)? MgResources::DefaultMessageLocale : serverManager->GetDefaultMessageLocale();
+                    MG_LOG_EXCEPTION_ENTRY(mgException->GetExceptionMessage(locale).c_str(), mgException->GetStackTrace(locale).c_str());
+
+#if defined(_DEBUG) || defined(_DEBUG_PNG8)
+                    STRING details = mgException->GetDetails(locale);
+
+                    wstring err = L"\n %t Error during stylization of watermark:";
+                    err += instance->GetName();
+                    err += L"\n";
+                    err += L"Details: ";
+                    err += details;
+                    err += L"\n";
+                    ACE_DEBUG( (LM_DEBUG, err.c_str()) );
+#endif
+                    if(wdef == NULL)            // Failed in resource loading
+                    {
+                        failLoadedIds.Add(resourceId);
+                    }
+                }
+            }
+        }
+
+        if(NULL != pPRWsResult)
+        {
+            // Calculate the time spent on stylizing watermarks
+            double stylizeRenderWatermarksTime = MgTimerUtil::GetTime() - pPRWsResult->GetRenderTime();
+            pPRWsResult->SetRenderTime(stylizeRenderWatermarksTime);
+        }
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////
+inline MgByteReader* MgServerRenderingService::CreateImage(MgMap* map,
+                                                           Renderer* dr,
+                                                           INT32 saveWidth,
+                                                           INT32 saveHeight,
+                                                           CREFSTRING format,
+                                                           ProfileRenderMapResult* pPRMResult)
+{
+    if(NULL != pPRMResult)
+    {
+        // Set the start time of creating map image
+        pPRMResult->SetCreateImageTime(MgTimerUtil::GetTime());
+    }
+
+/*
+    //-------------------------------------------------------
+    // draw a border around the tile - used for debugging
+    RS_LineStroke ls;
+    ls.color() = RS_Color(128, 128, 128, 64);
+
+    LineBuffer lb(5);
+    double mcsMinX = b.minx;
+    double mcsMaxX = b.maxx;
+    double mcsMinY = b.miny;
+    double mcsMaxY = b.maxy;
+    double incX = (mcsMaxX - mcsMinX) / saveWidth  / 10.0;
+    double incY = (mcsMaxY - mcsMinY) / saveHeight / 10.0;
+    lb.MoveTo(mcsMinX + incX, mcsMinY + incY);
+    lb.LineTo(mcsMaxX - incX, mcsMinY + incY);
+    lb.LineTo(mcsMaxX - incX, mcsMaxY - incY);
+    lb.LineTo(mcsMinX + incX, mcsMaxY - incY);
+    lb.LineTo(mcsMinX + incX, mcsMinY + incY);
+    dr->ProcessPolyline(&lb, ls);
+    //-------------------------------------------------------
+*/
+
+    // get a byte representation of the image
+    auto_ptr<RS_ByteData> data;
+    Ptr<MgByteSource> bs;
+
+    try
+    {
+        // call the image renderer to create the image
+        if (wcscmp(m_rendererName.c_str(), L"AGG") == 0)
+        {
+            //-------------------------------------------------------
+            /// RFC60 code to correct colormaps by UV
+            //-------------------------------------------------------
+            // We examine the expressions collected from xml definitions of all layers.
+            // The map object has a list from all color entries found in the most recent
+            // layer stylization.
+            // * TODO - currently they are interpreted as ffffffff 32-bit RGBA string values
+            // * adding expresssions and other interpretations should be done in ParseColorStrings
+            // * the color Palette for the renderer is a vector<RS_Color>
+            if (hasColorMap(format))
+            {
+                RS_ColorVector tileColorPalette;
+                MgMappingUtil::ParseColorStrings(&tileColorPalette, map);
+//              printf("<<<<<<<<<<<<<<<<<<<<< MgServerRenderingService::ColorPalette->size(): %d\n", tileColorPalette.size());
+                data.reset(((AGGRenderer*)dr)->Save(format, saveWidth, saveHeight, &tileColorPalette));
+            }
+            else
+                data.reset(((AGGRenderer*)dr)->Save(format, saveWidth, saveHeight, NULL));
+        }
+        else
+            data.reset(((GDRenderer*)dr)->Save(format, saveWidth, saveHeight));
+    }
+    catch (exception e)
+    {
+        ACE_DEBUG((LM_DEBUG, L"(%t) %w caught in RenderingService ColorPaletteGeneration\n", e.what()));
+        throw e;
+    }
+
+    if (NULL != data.get())
+    {
+        // put this into a byte source
+        bs = new MgByteSource(data->GetBytes(), data->GetNumBytes());
+
+        if (format == MgImageFormats::Gif)
+            bs->SetMimeType(MgMimeType::Gif);
+        else if (format == MgImageFormats::Jpeg)
+            bs->SetMimeType(MgMimeType::Jpeg);
+        else if (format == MgImageFormats::Png || format == MgImageFormats::Png8)
+            bs->SetMimeType(MgMimeType::Png);
+        else if (format == MgImageFormats::Tiff)
+            bs->SetMimeType(MgMimeType::Tiff);
+    }
+    else
+        throw new MgNullReferenceException(L"MgServerRenderingService.CreateImage", __LINE__, __WFILE__, NULL, L"MgNoDataFromRenderer", NULL);
+    
+    if(NULL != pPRMResult)
+    {
+        // Calculate the time spent on stylizing labels
+        double createImageTime = MgTimerUtil::GetTime() - pPRMResult->GetCreateImageTime();
+        pPRMResult->SetCreateImageTime(createImageTime);
+
+        pPRMResult->SetImageFormat(format);
+        pPRMResult->SetRendererType(m_rendererName);
+    }
+
+    return bs->GetReader();
 }

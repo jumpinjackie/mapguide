@@ -73,7 +73,7 @@ void ProfileRenderMapResult::SetResourceId(const MdfString& pstrResourceId)
 
 //-------------------------------------------------------------------------
 // PURPOSE: Accessor method for the CoordinateSystem property.
-// RETURNS: The coordinate system as WKT used by the map.
+// RETURNS: The coordinate system code used by the map.
 //-------------------------------------------------------------------------
 const MdfString& ProfileRenderMapResult::GetCoordinateSystem() const
 {
@@ -84,7 +84,7 @@ const MdfString& ProfileRenderMapResult::GetCoordinateSystem() const
 // PURPOSE: Accessor method to the CoordinateSystem property.
 // PARAMETERS:
 //      Input:
-//          pstrCoordinateSystem - The coordinate system as WKT used by the map.
+//          pstrCoordinateSystem - The coordinate system code used by the map.
 //-------------------------------------------------------------------------
 void ProfileRenderMapResult::SetCoordinateSystem(const MdfString& pstrCoordinateSystem)
 {

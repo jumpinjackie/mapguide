@@ -51,7 +51,7 @@ BEGIN_NAMESPACE_MDFMODEL
         void SetResourceId(const MdfString& pstrResourceId);
 
         // Property: CoordinateSystem
-        // The coordinate system as WKT used by the map.
+        // The coordinate system code used by the map.
         const MdfString& GetCoordinateSystem() const;
         void SetCoordinateSystem(const MdfString& pstrCoordinateSystem);
 

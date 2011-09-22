@@ -837,13 +837,13 @@ void MgMappingUtil::StylizeLayers(MgResourceService* svcResource,
                 
                 pPRLResult->SetFeatureClassName(mapLayer->GetFeatureClassName());
 
-                STRING layerCSWkt = L"";
+                STRING layerCsCode = L"";
                 if(NULL != TCForProfile)
                 {
                     Ptr<MgCoordinateSystem> layerCS = TCForProfile->GetCoordSys();
-                    layerCSWkt = csFactory->ConvertCoordinateSystemCodeToWkt(layerCS->GetCsCode());
+                    layerCsCode = layerCS->GetCsCode();
                 }
-                pPRLResult->SetCoordinateSystem(layerCSWkt);
+                pPRLResult->SetCoordinateSystem(layerCsCode);
 
                 ScaleRange* pScaleRange = new ScaleRange();
                 pScaleRange->SetMinScale(minScale_Profile);
