@@ -2166,16 +2166,19 @@
     {
         public $mapProfileResult;
 
-        public function OutputMapDefinitionData()
-        {
-            //TODO: will be implemented in part 3
-        }
-
         //Output the layer profiling information to the webpage as table rows
-        //TODO: will refine in part 3, when there's no data
         public function OutputLayerDefinitionData()
         {
-            $rowNumber=1;
+            $layerCount = count($this->mapProfileResult->LayerProfileData->LayerProfileDataCollection);
+
+            if(0 == $layerCount)
+            {
+                echo "<tr class='odd'><td colspan='5' style='height:150px;text-align:center; vertical-align:middle;font-size:15px;'>The selected map resource does not contain any layers.</td></tr>","\n";
+                return;
+            }
+
+            $rowNumber = 1;
+            $sumofRenderTime = $this->mapProfileResult->LayerProfileData->GetSumOfLayerRenderTime();
             foreach ($this->mapProfileResult->LayerProfileData->LayerProfileDataCollection as $layerProfileData)
             {
                 //set different colors for alternate rows and when mouse move over the row it will change color
@@ -2191,9 +2194,12 @@
                 //output the layer profiling information by each column,
                 //for the render time column, we set the sort key as the original number, which will be used as client sort
                 echo "<td style='width:15%;'>".$layerProfileData->LayerName."</td>","\n";
-                echo "<td style='width:20%;' sortKey='".$layerProfileData->TotalRenderTime."'>".$layerProfileData->TotalRenderTime."&nbsp;ms (15%)</td>","\n";
+                echo "<td style='width:20%;' sortKey='".number_format($layerProfileData->TotalRenderTime,2)."'>".
+                        number_format($layerProfileData->TotalRenderTime,2)."&nbsp;ms&nbsp;(".
+                        $layerProfileData->GetRenderTimePercentage($sumofRenderTime)."%)&nbsp;</td>","\n";
                 echo "<td style='width:25%;'>".$layerProfileData->FeatureClass."</td>","\n";
-                echo "<td style='width:25%;'>".$layerProfileData->CoordinateSystem."</td>","\n";
+                //TODO: Waiting:Test on new build CoordinateSystem Length
+                echo "<td style='width:25%;'>".substr($layerProfileData->CoordinateSystem,0,25)."</td>","\n";
                 echo "<td style='width:15%;'>".$layerProfileData->LayerType."</td>","\n";
                 echo "</tr>","\n";
 
@@ -2206,11 +2212,11 @@
         public function OutputLayerDetailData()
         {
             //get the layer profiling data from the LayerProfileData
-            $layerDetails=$this->mapProfileResult->LayerProfileData->LayerProfileDataCollection;
-            $layerDetailCount=count($layerDetails);
+            $layerDetails = $this->mapProfileResult->LayerProfileData->LayerProfileDataCollection;
+            $layerDetailCount = count($layerDetails);
 
             //if there's no layer, return
-            if($layerDetailCount<=0)
+            if($layerDetailCount <= 0)
             {
                 return;
             }
@@ -2222,9 +2228,17 @@
             $i=0;
             foreach ($layerDetails as $key => $value)
             {
+                // Order of replacement
+                // Processes \r\n's first so they aren't converted twice.
+                $order = array("\r\n", "\n", "\r");
+
+                $str = trim($value->Filters);
+                $replace = "<br/>";
+                $newFilters = str_replace($order, $replace, $str);
+
                 $script = $script." layerDetailValues[".$i."]=new Array(3); ";
                 $script = $script." layerDetailValues[".$i."][0]='".$value->LayerName."'; ";
-                $script = $script." layerDetailValues[".$i."][1]='".$value->Filters."'; ";
+                $script = $script." layerDetailValues[".$i."][1]='".$newFilters."'; ";
                 $script = $script." layerDetailValues[".$i."][2]='".$value->ScaleRange."'; ";
                
                 $i++;
@@ -2239,22 +2253,22 @@
             echo "<tr style='height: 25px;'>","\n";
             
             echo '<td style="width:'.$this->mapProfileResult->MapProfileData->GetLayerRenderPercent() .'%; background-color: #E4C7AE;font-size:80%;">',"\n";
-            echo $this->mapProfileResult->MapProfileData->TotalLayerRenderTime."&nbsp;ms&nbsp;";
+            echo number_format($this->mapProfileResult->MapProfileData->TotalLayerRenderTime,2)."&nbsp;ms&nbsp;";
             echo "(" . $this->mapProfileResult->MapProfileData->GetLayerRenderPercent() . "%)","\n";
             echo '</td>',"\n";
 
             echo '<td style="width: '.$this->mapProfileResult->MapProfileData->GetLabelRenderPercent().'%; background-color: #AECBE4;font-size:80%;">',"\n";
-            echo $this->mapProfileResult->MapProfileData->TotalLabelRenderTime."&nbsp;ms&nbsp;";
+            echo number_format($this->mapProfileResult->MapProfileData->TotalLabelRenderTime,2)."&nbsp;ms&nbsp;";
             echo "(".$this->mapProfileResult->MapProfileData->GetLabelRenderPercent()."%)","\n";
             echo "</td>","\n";
 
             echo '<td style="width: '.$this->mapProfileResult->MapProfileData->GetWartermarkRenderPercent().'%; background-color: #E79661;font-size:80%;">',"\n";
-            echo $this->mapProfileResult->MapProfileData->TotalWatermarkRenderTime."&nbsp;ms&nbsp;";
+            echo number_format($this->mapProfileResult->MapProfileData->TotalWatermarkRenderTime,2)."&nbsp;ms&nbsp;";
             echo "(".$this->mapProfileResult->MapProfileData->GetWartermarkRenderPercent()."%)","\n";
             echo "</td>","\n";
 
             echo '<td style="width: '.$this->mapProfileResult->MapProfileData->GetImageRenderPercent().'%; background-color: #BE76EE;font-size:80%;">',"\n";
-            echo $this->mapProfileResult->MapProfileData->TotalImageRenderTime."&nbsp;ms&nbsp;";
+            echo number_format($this->mapProfileResult->MapProfileData->TotalImageRenderTime,2)."&nbsp;ms&nbsp;";
             echo "(".$this->mapProfileResult->MapProfileData->GetImageRenderPercent()."%)","\n";
             echo "</td>","\n";
 
@@ -2267,18 +2281,87 @@
             echo "</tr>","\n";
         }
 
-        public function OutputMapResourceNameWithToolTip($mapResourceID)
+        public function OutputMapResourceNameWithToolTip($mapResourceID,$IsSetting)
         {
+            $mapResourceID = trim($mapResourceID);
             $tempMapName = strrchr($mapResourceID, '/');
             $tempMapName = substr($tempMapName, 1, strlen($tempMapName) - 15);
-            $toolTipDivId="toolTip_".$tempMapName;
+
+            $toolTipDivId = "toolTip_".rand()."_".$tempMapName;
+
+            if($IsSetting)
+            {
+                $toolTipDivId = "settings_".$toolTipDivId;
+            }
             
             echo '<span onMouseOver="ShowToopTip(this,\''.$toolTipDivId.'\',event);" onmousemove="ShowToopTip(this,\''.$toolTipDivId.'\',event);" onmouseout="HideToolTop(\''.$toolTipDivId.'\');" class="mapNameStyle">';
-            echo "<b>".$tempMapName."</b></span>";
+            echo $tempMapName."</span>";
 
             echo '<div id="'.$toolTipDivId.'" class="hideTooltip">',"\n";
             echo $mapResourceID;
             echo '</div>',"\n";
+        }
+
+        public function OutputSettingsJsArray($recentSettings)
+        {
+            $settingsCount = count($recentSettings);
+
+            //if there's no setting, return
+            if($settingsCount <= 0)
+            {
+                return;
+            }
+
+            // create script string to append to content.
+            $script = "var recentSettings = new Array(".$settingsCount.");";
+
+            $i = 0;
+            foreach ($recentSettings as $setting)
+            {
+                $script = $script." recentSettings[".$i."]=new Array(4); ";
+                $script = $script." recentSettings[".$i."][0]='".$setting->SettingId."'; ";
+                $script = $script." recentSettings[".$i."][1]='".$setting->MapResourceId."'; ";
+                $script = $script." recentSettings[".$i."][2]='".$setting->CenterPoint."'; ";
+                $script = $script." recentSettings[".$i."][3]='".$setting->Scale."'; ";
+                $i++;
+            }
+
+            //output to UI
+            echo $script;
+        }
+
+        public function OutputRecentSettings($recentSettings)
+        {
+            for($i = 0; $i < count($recentSettings) && $i < 10; $i++)
+            {
+                $currentSetting = $recentSettings[$i];
+
+                $dTime = new DateTime(trim($currentSetting->ModifyTime));
+
+                echo '<table style="padding: 0px; width: 100%;" cellspacing="0" cellpadding="0">',"\n";
+                echo "<tr style='cursor:pointer;' onClick='RecentSettingClicked(\"".$currentSetting->SettingId."\");'>","\n";
+                if(0 == $i%2)
+                {
+                    echo "<td>","\n";
+                }
+                else
+                {
+                    echo "<td style=' background-color: #EEEEEE;'>","\n";
+                }
+
+                echo "<table style='padding: 3px; width: 100%;'>","\n";
+                echo "<tr>","\n";
+                echo "<td colspan='2' style='font-weight:bold; padding-bottom: 5px;'>","\n";
+                $this->OutputMapResourceNameWithToolTip($currentSetting->MapResourceId,true);
+                echo "</td></tr><tr>","\n";
+                echo "<td style='width:50%;text-align: left;'>","\n";
+                echo $dTime->format("M d,Y");
+                echo "</td>","\n";
+                echo "<td style='width:50%;text-align: right;'>","\n";
+                echo $dTime->format("H:m:s");
+                echo "</td>","\n";
+                echo "</tr></table></td></tr></table>","\n";
+            }
         }
     }
     

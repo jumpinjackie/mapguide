@@ -40,7 +40,8 @@ try
     $mapProfileResult=new MapProfileResult();
     $mapResources;
     $mapResourceShortNames;
-    $displayManager= new DisplayProfileResultManager();
+    $displayManager = new DisplayProfileResultManager();
+    $recentSettings = new RecentSettings();
 
     function GetAllMapResources()
     {
@@ -82,7 +83,9 @@ try
                 $mapResourceShortNames[$i] = $shortMapName;
             }
 
-            array_multisort($mapResourceShortNames, $mapResources);
+            //Case insensitive sorting
+            $mapResourceShortNames_Lower = array_map("strtolower", $mapResourceShortNames);
+            array_multisort($mapResourceShortNames_Lower, SORT_ASC, SORT_STRING,$mapResources,$mapResourceShortNames);
         }
         catch (Exception $exc)
         {
@@ -91,6 +94,8 @@ try
     }
 
     GetAllMapResources();
+
+    $recentSettings->GetRecentSettings();    
 }
 catch ( MgException $e )
 {
@@ -248,7 +253,7 @@ catch ( Exception $e )
 
                 .mapNameStyle
                 {
-                    background: #EEEEEE url('images/mapDefinitionNameInfo.png') no-repeat right;
+                    background: transparent url('images/mapDefinitionNameInfo.png') no-repeat right;
                     padding-right: 20px;
                     cursor:default;
                 }
@@ -299,6 +304,16 @@ catch ( Exception $e )
                     line-height:25px;
                     top: 400px;
                     left: 400px;
+                }
+
+                #ResultNotMatchWrn
+                {
+                    border: 2px solid #CCCCCC;
+                    background: #FFFEBB url('images/warning.png') no-repeat left top;
+                    margin-top: 25px;
+                    padding-left: 30px;
+                    display: none;
+                    width: auto;
                 }
 
             </style>
@@ -403,6 +418,8 @@ catch ( Exception $e )
                     content.style.display = "none";
                 }
 
+                //As soon as the user changed the settings,
+                //an inline alert message is displayed between the Action buttons and the “Results” title
                 function SetResultNotMatchWarningMsg(visible)
                 {
                     var wrnMsg = document.getElementById("ResultNotMatchWrn");
@@ -416,13 +433,87 @@ catch ( Exception $e )
                     }
                 }
 
+                //Determine whether to show the "settings changed" inline warning message or not
                 function ShowReportWarningMsg()
                 {
-                    var reportTab = document.getElementById("resultsTab");
-                    if(reportTab.style.display=="block")
+                    var scale = document.getElementById("txtScale");
+                    var centerPoint = document.getElementById("txtCenterPoint");
+                    var mapSelector = document.getElementById("mapSelector_DO_NOT_PERSIST");
+
+                    var mapIdLastRun = document.getElementById("lastRunMapId");
+                    var centerPointLastRun = document.getElementById("lastRunCenterPoint");
+                    var scaleLastRun = document.getElementById("lastRunScale");
+
+                    var currentMapIdValue = RemoveSpace(mapSelector.value);
+                    var currentCenterPointValue = RemoveSpace(centerPoint.value);
+                    var currentScaleValue = RemoveSpace(scale.value);
+
+                    //if the value of the mapIdLastRun textbox is not empty,
+                    //then the performance report has been ran at least once
+                    if(mapIdLastRun.value != "")
                     {
-                        SetResultNotMatchWarningMsg(true);
+                        //if the map resource ID is not match then show the warning message
+                        if(currentMapIdValue != mapIdLastRun.value)
+                        {
+                            SetResultNotMatchWarningMsg(true);
+                            return;
+                        }
+
+                        //if the center point is not match then show the warning message
+                        if(ValidateCenterPoint(false))
+                        {
+                            var point = currentCenterPointValue.split("*");
+                            var x = point[0];
+                            var y = point[1];
+
+                            currentCenterPointValue = RemoveSpace( FormatCenterPoint(x,y,2) );
+
+                            if(currentCenterPointValue != centerPointLastRun.value)
+                            {
+                                SetResultNotMatchWarningMsg(true);
+                                return;
+                            }
+                        }
+                        else
+                        {
+                            SetResultNotMatchWarningMsg(true);
+                            return;
+                        }
+
+                        //if the scale is not match then show the warning message
+                        if(ValidateScale(false))
+                        {
+                            currentScaleValue = RemoveSpace( FormatNumber(currentScaleValue,2) );
+
+                            if(currentScaleValue != scaleLastRun.value)
+                            {
+                               SetResultNotMatchWarningMsg(true);
+                               return;
+                            }
+                        }
+                        else 
+                        {
+                            SetResultNotMatchWarningMsg(true);
+                            return;
+                        }
+
+                        SetResultNotMatchWarningMsg(false);
                     }
+                }
+
+                function SaveLastRunSettings()
+                {
+                    var scale = document.getElementById("txtScale");
+                    var centerPoint = document.getElementById("txtCenterPoint");
+                    var mapSelector = document.getElementById("mapSelector_DO_NOT_PERSIST");
+
+                    var mapIdLastRun = document.getElementById("lastRunMapId");
+                    var centerPointLastRun = document.getElementById("lastRunCenterPoint");
+                    var scaleLastRun = document.getElementById("lastRunScale");
+
+                    mapIdLastRun.value = RemoveSpace(mapSelector.value);
+                    centerPointLastRun.value = RemoveSpace(centerPoint.value);
+                    scaleLastRun.value = RemoveSpace(scale.value);
                 }
 
                 function ExpandResultsTab()
@@ -433,31 +524,31 @@ catch ( Exception $e )
 
                 function MapResoucesNameSelectChange()
                 {
-                    var tipDiv=document.getElementById("mapResourceNameTip");
-                    var mapDefinitonSelector=document.getElementById("mapSelector_DO_NOT_PERSIST");
+                    var tipDiv = document.getElementById("mapResourceNameTip");
+                    var mapDefinitonSelector = document.getElementById("mapSelector_DO_NOT_PERSIST");
 
-                    var settingsBtn=document.getElementById("mapViewerBtn");
-                    var centerPoint=document.getElementById("txtCenterPoint");
-                    var scale=document.getElementById("txtScale");
+                    var settingsBtn = document.getElementById("mapViewerBtn");
+                    var centerPoint = document.getElementById("txtCenterPoint");
+                    var scale = document.getElementById("txtScale");
 
                     //If another map is selected, then the center point and scale should be cleared of values,
                     //that is return to default values “enter center point”  and “enter scale”.
-                    if(centerPoint.value!="Enter center point")
+                    if(centerPoint.value != "Enter center point")
                     {
-                        centerPoint.value="Enter center point";
+                        centerPoint.value = "Enter center point";
                     }
 
-                    if( scale.value!="Enter scale")
+                    if(scale.value != "Enter scale")
                     {
-                        scale.value="Enter scale";
+                        scale.value = "Enter scale";
                     }
 
                     //show the map definition ID by the side of the map selector
                     if(mapDefinitonSelector.selectedIndex >= 0)
                     {
-                        tipDiv.innerHTML=mapDefinitonSelector.options[mapDefinitonSelector.selectedIndex].value;
+                        tipDiv.innerHTML = mapDefinitonSelector.options[mapDefinitonSelector.selectedIndex].value;
                         //clear warning message
-                        var mapSelectorWarnMsg=document.getElementById("selectMapResourceWarningMessage");
+                        var mapSelectorWarnMsg = document.getElementById("selectMapResourceWarningMessage");
                         mapSelectorWarnMsg.innerHTML = "";
 
                         //text input Controls in Step 2 are enabled once a map resource is selected in Step 1.
@@ -465,17 +556,17 @@ catch ( Exception $e )
                         scale.removeAttribute("disabled");
                         settingsBtn.removeAttribute("disabled");
 
-                        var visible=ValidateScale(false);
+                        var visible = ValidateScale(false);
                         if(visible)
                         {
-                           visible=ValidateCenterPoint(false);
+                           visible = ValidateCenterPoint(false);
                         }
 
                         SetRunButtonState(visible);
                     }
                     else
                     {
-                        tipDiv.innerHTML="";
+                        tipDiv.innerHTML = "";
                         //when user clear the settings, the mapselector is not seleced and the text area is disabled
                         settingsBtn.setAttribute("disabled","disabled");
                         centerPoint.setAttribute("disabled", "disabled");
@@ -484,21 +575,38 @@ catch ( Exception $e )
                         SetRunButtonState(false);
                     }
 
-                    ClearWrnMsg();
                     ShowReportWarningMsg();
+
+                    ClearWrnMsg();
                 }
 
+                function ClearWrnMsg()
+                {
+                    var scale = document.getElementById("txtScale");
+                    scale.className="";
+
+                    var centerPoint = document.getElementById("txtCenterPoint");
+                    centerPoint.className="";
+
+                    var scaleWarnMsg = document.getElementById("scaleWarnMessage");
+                    scaleWarnMsg.innerHTML = "";
+
+                    var centerPointWarnMsg = document.getElementById("centerPointWarnMessage");
+                    centerPointWarnMsg.innerHTML = "";
+                }
+
+                //check the value for the scale is resonable or not
                 function ValidateScale(needFormat)
                 {
-                    var result=false;
+                    var result = false;
                    
                     var scale = document.getElementById("txtScale");
                     var scaleWarnMsg = document.getElementById("scaleWarnMessage");
-                    var scaleValue=RemoveSpace(scale.value);
+                    var scaleValue = RemoveSpace(scale.value);
 
                     if("" == scaleValue)
                     {
-                        result=false;
+                        result = false;
                         scaleWarnMsg.innerHTML = "A map scale was not entered.";
                         scale.className="warnMsgStyle";
                     }
@@ -517,17 +625,18 @@ catch ( Exception $e )
                         {
                             if(needFormat)
                             {
-                                scale.value=formatNumber(scaleValue,2);
+                                scale.value = FormatNumber(scaleValue,2);
                             }
-                                
 
                             scaleWarnMsg.innerHTML = "";
                             scale.className="";
                         }
                     }
+
                     return result;
                 }
 
+                //check the value for the center point is resonable or not
                 function ValidateCenterPoint(needFormat)
                 {
                     var result = false;
@@ -538,27 +647,27 @@ catch ( Exception $e )
 
                     if("" == centerPointValue)
                     {
-                        result=false;
+                        result = false;
                         centerPointWarnMsg.innerHTML = "A center point was not entered.";
-                        centerPoint.className="warnMsgStyle";
+                        centerPoint.className = "warnMsgStyle";
                     }
                     else
                     {
                         try
                         {
-                            var point=centerPointValue.split("*");
-                            if(point.length!=2)
+                            var point = centerPointValue.split("*");
+                            if(point.length != 2)
                             {
-                                result=false;
+                                result = false;
                                 centerPointWarnMsg.innerHTML = "Not a valid center point.";
-                                centerPoint.className="warnMsgStyle";
+                                centerPoint.className = "warnMsgStyle";
                             }
                             else
                             {
-                                var x=point[0];
-                                var y=point[1];
+                                var x = point[0];
+                                var y = point[1];
                               
-                                result=!(IsNotFloat(x)||IsNotFloat(y));
+                                result = !(IsNotFloat(x)||IsNotFloat(y));
 
                                 if(!result)
                                 {
@@ -569,19 +678,19 @@ catch ( Exception $e )
                                 {
                                     if(needFormat)
                                     {
-                                        centerPoint.value=formatCenterPoint(x,y,2);
+                                        centerPoint.value = FormatCenterPoint(x,y,2);
                                     }
                                         
                                     centerPointWarnMsg.innerHTML = "";
-                                    centerPoint.className="";
+                                    centerPoint.className = "";
                                 }
                             }
                         }
                         catch(e)
                         {
-                            result=false;
+                            result = false;
                             centerPointWarnMsg.innerHTML = "Not a valid center point.";
-                            centerPoint.className="warnMsgStyle";
+                            centerPoint.className = "warnMsgStyle";
                         }
                     }
 
@@ -590,14 +699,17 @@ catch ( Exception $e )
 
                 function ScaleTxtKeyUp()
                 {
-                    var visible=ValidateScale(false);
+                    //when the scale textbox has new input
+                    //get the new value and check if the input is resonable
+                    var visible = ValidateScale(false);
 
+                    //check other settings to see if it is reasonable
                     if(visible)
                     {
                         var mapDefinitonSelector = document.getElementById("mapSelector_DO_NOT_PERSIST");
-                        if(mapDefinitonSelector.selectedIndex>=0)
+                        if(mapDefinitonSelector.selectedIndex >= 0)
                         {
-                            visible=ValidateCenterPoint(false);
+                            visible = ValidateCenterPoint(false);
                         }
                         else
                         {
@@ -606,18 +718,22 @@ catch ( Exception $e )
                     }
 
                     SetRunButtonState(visible);
+
+                    //show the "settings changed" inline warning message depends on new setting
+                    ShowReportWarningMsg();
                 }
 
                 function CenterPointTxtKeyUp()
                 {
                     var visible=ValidateCenterPoint(false);
 
+                    //check other settings to see if it is reasonable
                     if(visible)
                     {
                         var mapDefinitonSelector = document.getElementById("mapSelector_DO_NOT_PERSIST");
-                        if(mapDefinitonSelector.selectedIndex>=0)
+                        if(mapDefinitonSelector.selectedIndex >= 0)
                         {
-                            visible=ValidateScale(false);
+                            visible = ValidateScale(false);
                         }
                         else
                         {
@@ -626,6 +742,9 @@ catch ( Exception $e )
                     }
 
                     SetRunButtonState(visible);
+
+                    //show the "settings changed" inline warning message depends on new setting
+                    ShowReportWarningMsg();
                 }
 
                 function ScaleFocus()
@@ -653,9 +772,9 @@ catch ( Exception $e )
                 {
                     var mapFrame = document.getElementById("mapViewerFrame");
                     var mapDefinitonSelector = document.getElementById("mapSelector_DO_NOT_PERSIST");
-                    if(mapDefinitonSelector.selectedIndex>=0)
+                    if(mapDefinitonSelector.selectedIndex >= 0)
                     {
-                        mapFrame.src="performanceReport_MapViewer.php?mapDefinition="+mapDefinitonSelector.options[mapDefinitonSelector.selectedIndex].value;
+                        mapFrame.src = "performanceReport_MapViewer.php?mapDefinition=" + mapDefinitonSelector.options[mapDefinitonSelector.selectedIndex].value;
                     }
 
                     var bgDiv = document.getElementById("bgDiv");
@@ -667,7 +786,32 @@ catch ( Exception $e )
                     mapViewerDiv.style.display = "block";
                     SetMapViewerLoaction(mapViewerDiv);
 
+                    //make the textbox focused
+                    var autoFoucsTxt = document.getElementById("mapViewerAutoFocusTxt");
+                    autoFoucsTxt.focus();
+
                     checkMapFrameLoadedInterval = setInterval(CheckMapFrameLoaded, 100);
+                }
+
+                //when the map viewer dialogue is displayed, user press "Enter",
+                //it will cause the page reload, so we add a textbox here,
+                //and make it focus when the map viewer is shown.
+                //add the event handler for the "keyUp", when user press the key "Enter",
+                //make it the same with press button "OK".
+                //Here is an issue, to make the input invisible but can focus,
+                //we set the width and height as 0, and border as none,
+                //it works well in IE9 and firefox, but in chrome and safari,
+                //if the border set as none, this event will not be fired.
+                //TODO:Multiple Browsers:Safari and Chrome not work
+                function MapViewerKeyUp(event)
+                {
+                    if(event.keyCode == 13)
+                    {
+                        if(!IsMapFrameLoaded())
+                            return;
+
+                        MapViewerBtnOKClicked();
+                    }
                 }
 
                 function SetBgDivSize(bgDiv)
@@ -676,8 +820,9 @@ catch ( Exception $e )
                     bgDiv.style.width = document.body.offsetWidth+"px";
                 }
 
-                var mapViewerWidth=800;
-                var mapViewerHeight=600;
+                //default map viewer width and height
+                var mapViewerWidth = 800;
+                var mapViewerHeight = 600;
                 function SetMapViewerLoaction(mapViewerDiv)
                 {
                     if(document.body.clientHeight > mapViewerHeight)
@@ -699,7 +844,7 @@ catch ( Exception $e )
                     }
                 }
 
-                window.onresize=WindowResized;
+                window.onresize = WindowResized;
 
                 function WindowResized()
                 {
@@ -757,17 +902,21 @@ catch ( Exception $e )
                 }
 
                 var messageShorterInterval = null;
+
+                var zoomToViewInterval = null;
                 
                 function CreateButtons()
                 {
-                    var mapViewerFrame=window.frames["mapViewerFrame"];
+                    var mapViewerFrame = window.frames["mapViewerFrame"];
                     
                     var mapFrame = mapViewerFrame.GetMapFrame();
-                    var mapFrameDocument=mapFrame.document;
+                    var mapFrameDocument = mapFrame.document;
 
                     mapFrame.ShowMapMessage("Use the map controls in the toolbar above to specify the center point and scale.", "info");
                     //use setInterval to make sure that the message div has been created.
                     messageShorterInterval = window.setInterval(function(){ makeMessageShorter(mapFrame); }, 100);
+
+                    zoomToViewInterval = window.setInterval(function(){ ZoomToPreviousView(mapFrame); }, 100);
 
                     var mapSpace = mapFrameDocument.getElementById("mapSpace");
                     var buttonPanel = mapFrameDocument.createElement('div');
@@ -802,36 +951,49 @@ catch ( Exception $e )
 
                 function MapViewerBtnOKClicked()
                 {
-                   var mapViewerFrame=window.frames["mapViewerFrame"];
+                   var mapViewerFrame = window.frames["mapViewerFrame"];
                    var mapFrame = mapViewerFrame.GetMapFrame();
                    var center = mapFrame.GetCenter();
                    var scale = mapFrame.GetScale();
 
                    var centerPoint = document.getElementById("txtCenterPoint");
-                   centerPoint.value=center.X+"*"+center.Y;
-                   var centerPointValidate=ValidateCenterPoint(true);
+                   centerPoint.value = center.X + "*" + center.Y;
+                   var centerPointValidate = ValidateCenterPoint(true);
 
                    var scaleInput = document.getElementById("txtScale");
-                   scaleInput.value=scale;
-                   var scaleValidate=ValidateScale(true);
+                   scaleInput.value = scale;
+                   var scaleValidate = ValidateScale(true);
 
-                   var visible=centerPointValidate&&scaleValidate;
+                   var visible = centerPointValidate && scaleValidate;
                    if(visible)
                    {
                        var mapDefinitonSelector = document.getElementById("mapSelector_DO_NOT_PERSIST");
-                       if(mapDefinitonSelector.selectedIndex>=0)
+                       if(mapDefinitonSelector.selectedIndex >= 0)
                        {
-                           visible=true;
+                           visible = true;
+                           SaveCurrentSelect(mapDefinitonSelector.options[mapDefinitonSelector.selectedIndex].value,center,scale);
                        }
                        else
                        {
-                           visible=false;
+                           visible = false;
                        }
                    }
 
                    SetRunButtonState(visible);
 
                    CloseMapViewer();
+                }
+
+                function SaveCurrentSelect(mapId,center,scale)
+                {
+                    var mapIdSaved = document.getElementById("mapViewerLastOpenMapId");
+                    mapIdSaved.value = mapId;
+
+                    var centerPointSaved = document.getElementById("mapViewerLastOpenCenterPoint");
+                    centerPointSaved.value = center.X + "*" + center.Y;
+
+                    var scaleSaved = document.getElementById("mapViewerLastOpenScale");
+                    scaleSaved.value = scale;
                 }
 
                 function makeMessageShorter(mapFrame)
@@ -841,7 +1003,34 @@ catch ( Exception $e )
                     
                     window.clearInterval(messageShorterInterval);
                     // make it shorter
-                    mapFrame.mapMessage.container.style.padding="1px";
+                    mapFrame.mapMessage.container.style.padding = "1px";
+                }
+
+                function ZoomToPreviousView(mapFrame)
+                {
+                    if(!mapFrame.mapLoading)
+                        return;
+
+                    window.clearInterval(zoomToViewInterval);
+
+                    var mapViewerFrame = window.frames["mapViewerFrame"];
+                    var mapFrame = mapViewerFrame.GetMapFrame();
+
+                    var mapIdSaved = document.getElementById("mapViewerLastOpenMapId");
+                    var mapDefinitonSelector = document.getElementById("mapSelector_DO_NOT_PERSIST");
+                    var selectMapId = mapDefinitonSelector.options[mapDefinitonSelector.selectedIndex].value;
+
+                    if(("" != mapIdSaved.value) && (mapIdSaved.value === selectMapId))
+                    {
+                        var centerPointSaved = document.getElementById("mapViewerLastOpenCenterPoint");
+                        var scaleSaved = document.getElementById("mapViewerLastOpenScale");
+
+                        var point = centerPointSaved.value.split("*");
+                        if(2 == point.length)
+                        {
+                            mapFrame.ZoomToView( parseFloat(point[0]), parseFloat(point[1]), parseFloat(scaleSaved.value), true);
+                        }
+                    }
                 }
 
                 //remove the space at the begin and end of a string
@@ -885,7 +1074,7 @@ catch ( Exception $e )
                     return strWithoutSpace;
                 }
 
-                function formatNumber(s, n)
+                function FormatNumber(s, n)
                 {
                    var n = n > 0 && n <= 20 ? n : 2;
 
@@ -904,9 +1093,9 @@ catch ( Exception $e )
                    return t.split("").reverse().join("") + "." + r;
                 }
 
-                function formatCenterPoint(x,y,fractionDigits)
+                function FormatCenterPoint(x,y,fractionDigits)
                 {
-                    return parseFloat(x).toExponential(fractionDigits)+"*"+parseFloat(y).toExponential(fractionDigits);
+                     return parseFloat(x).toExponential(fractionDigits) + "*" + parseFloat(y).toExponential(fractionDigits);
                 }
 
                 function IsNotFloat(str)
@@ -1079,10 +1268,10 @@ catch ( Exception $e )
                 {
                     var mapDefinitonSelector = document.getElementById("mapSelector_DO_NOT_PERSIST");
 
-                    if(mapDefinitonSelector.selectedIndex<0)
+                    if(mapDefinitonSelector.selectedIndex < 0)
                     {
                         var mapResourceWarningMessage = document.getElementById("selectMapResourceWarningMessage");
-                        mapResourceWarningMessage.innerHTML="A map resource was not selected.";
+                        mapResourceWarningMessage.innerHTML = "A map resource was not selected.";
                         return false;
                     }
 
@@ -1092,34 +1281,46 @@ catch ( Exception $e )
                     if(!ValidateScale(true))
                         return false;
 
+                    //when a new report is run, the inline message disappears
                     SetResultNotMatchWarningMsg(false);
 
                     var loadingImg = document.getElementById("ajax_loading_img");
-                    loadingImg.style.display="inline";
+                    loadingImg.style.display = "inline";
 
                     var btnClear = document.getElementById("btnClearSpan");
-                    btnClear.style.display="none";
+                    btnClear.style.display = "none";
 
                     var runButton = document.getElementById("runBtn");
                     runButton.setAttribute("disabled", "disabled");
 
-                    xmlHttp=GetXmlHttpObject();
-                    if (xmlHttp==null)
+                    xmlHttp = GetXmlHttpObject();
+                    if (xmlHttp == null)
                     {
                        alert ("Browser does not support HTTP Request!");
                        return;
                     }
 
+                    //the profiling map API requires the image width and height
+                    var imageWidth = document.body.clientWidth?document.body.clientWidth:1280;
+                    var imageHeight = document.body.clientHeight?document.body.clientHeight:1024;
+
+                    //get the parameters for map resource ID, center point, scale
                     var scale = document.getElementById("txtScale");
                     var centerPoint = document.getElementById("txtCenterPoint");
                     var mapSelector = document.getElementById("mapSelector_DO_NOT_PERSIST");
+
+                    //pass the parameters through the URL query string
                     var url="performanceReport_GetResult.php";
 
-                    url+="?scale="+encodeURIComponent(scale.value);
-                    url+="&centerPoint="+encodeURIComponent(centerPoint.value);
-                    url+="&mapDefinition="+encodeURIComponent(mapSelector.value);
-                    url+="&sid="+Math.random();
-                    xmlHttp.onreadystatechange=StateChanged;
+                    url+= "?scale=" + encodeURIComponent(RemoveSpace(scale.value));
+                    url+= "&centerPoint=" + encodeURIComponent(RemoveSpace(centerPoint.value));
+                    url+= "&mapDefinition=" + encodeURIComponent(mapSelector.value);
+                    url+= "&imageWidth=" + imageWidth;
+                    url+= "&imageHeight=" + imageHeight;
+                    url+= "&sid="+Math.random();
+
+                    //send the ajax request
+                    xmlHttp.onreadystatechange = StateChanged;
                     xmlHttp.open("POST",url,true);
                     xmlHttp.send(null);
                 }
@@ -1129,44 +1330,108 @@ catch ( Exception $e )
                     if ((4 == xmlHttp.readyState || "complete" == xmlHttp.readyState)&& 200 == xmlHttp.status)
                     {
                         var profileResult = document.getElementById("resultsTab");
-                        profileResult.innerHTML=xmlHttp.responseText;
+                        profileResult.innerHTML = xmlHttp.responseText;
 
                         var btnClear = document.getElementById("btnClearSpan");
-                        btnClear.style.display="inline";
+                        btnClear.style.display = "inline";
 
                         var loadingImg = document.getElementById("ajax_loading_img");
-                        loadingImg.style.display="none";
+                        loadingImg.style.display = "none";
                         
                         CollapseSettingTab();
                         ExpandResultsTab();
                         SetRunButtonState(true);
 
-                        // the js in the ajax returned content will not be executed and recognized,
-                        // so we get the js content and append it to the <head>
-                        if(document.getElementById('layerDetailsJsArray'))
-                        {
-                            //get js content in the hidden span
-                            var innerScript = document.getElementById('layerDetailsJsArray').innerHTML;
-                            innerScript=innerScript.replace(/\\n/,'');
+                        SetLayerJsArray();
+                        SetRecentSettingJsArray();
 
-                            //check to remove the script if it already exists
-                            var insertScript = document.getElementById("layerDetailsJs");
-                            if(insertScript)
-                            {
-                                document.getElementsByTagName("head").item(0).removeChild(insertScript);
-                            }
+                        SetRecentSettingsContent();
 
-                            //every new execute should generate new js array data
-                            insertScript = document.createElement("script");
-                            insertScript.type = "text/javascript";
-                            insertScript.id = "layerDetailsJs";
-                            insertScript.text=innerScript;
-
-                            document.getElementsByTagName("head").item(0).appendChild(insertScript);
-                        }
+                        SaveLastRunSettings();
                     }
                 }
-                
+
+                // the js in the ajax returned content will not be executed and recognized,
+                // so we get the js content and append it to the <head>
+                function SetLayerJsArray()
+                {
+                    var tempLayersJsArray = document.getElementById("layerDetailsJsArray");
+                    if(tempLayersJsArray)
+                    {
+                        //get js content in the hidden span
+                        var innerScript = tempLayersJsArray.innerHTML;
+                        innerScript = innerScript.replace(/\\n/,'');
+
+                        //check to remove the script if it already exists
+                        var insertScript = document.getElementById("layerDetailsJs");
+                        if(insertScript)
+                        {
+                            document.getElementsByTagName("head").item(0).removeChild(insertScript);
+                        }
+
+                        //every new execute should generate new js array data
+                        insertScript = document.createElement("script");
+                        insertScript.type = "text/javascript";
+                        insertScript.id = "layerDetailsJs";
+                        insertScript.text=innerScript;
+
+                        document.getElementsByTagName("head").item(0).appendChild(insertScript);
+                        tempLayersJsArray.parentNode.removeChild(tempLayersJsArray);
+                    }
+                }
+
+                function SetRecentSettingJsArray()
+                {
+                    var tempSettingJsArray = document.getElementById("tempRecentSettingsJsArray");
+
+                    if(tempSettingJsArray)
+                    {
+                        //get js content in the hidden span
+                        var innerScript = tempSettingJsArray.innerHTML;
+                        innerScript = innerScript.replace(/\\n/,'');
+
+                        //check to remove the script if it already exists
+                        var insertScript = document.getElementById("recentSettingsJs");
+                        if(insertScript)
+                        {
+                            document.getElementsByTagName("head").item(0).removeChild(insertScript);
+                        }
+
+                        //every new execute should generate new js array data
+                        insertScript = document.createElement("script");
+                        insertScript.type = "text/javascript";
+                        insertScript.id = "recentSettingsJs";
+                        insertScript.text = innerScript;
+
+                        document.getElementsByTagName("head").item(0).appendChild(insertScript);
+
+                        tempSettingJsArray.parentNode.removeChild(tempSettingJsArray);
+                    }
+                }
+
+                function SetRecentSettingsContent()
+                {
+                    //remove the layer detail info if it already exist
+                    var tempRecentSettings = document.getElementById("tempRecentSettingDiv");
+                    var settingsTab= document.getElementById("settingsDiv");
+                    var settingsContentDiv = document.getElementById("recentSettingsDiv");
+
+                    if (settingsContentDiv)
+                    {
+                        settingsContentDiv.parentNode.removeChild(settingsContentDiv);
+                    }
+
+                    settingsContentDiv = document.createElement("div");
+                    settingsContentDiv.id = "recentSettingsDiv";
+                    settingsContentDiv.innerHTML = tempRecentSettings.innerHTML;
+
+                    if (tempRecentSettings)
+                    {
+                        tempRecentSettings.parentNode.removeChild(tempRecentSettings);
+                    }
+
+                    settingsTab.appendChild(settingsContentDiv);
+                }
                 //End AJAX part
 
                 function ExportCSV()
@@ -1186,9 +1451,9 @@ catch ( Exception $e )
                     //Also removes any validation messages that are visible.
                     var mapDefinitonSelector = document.getElementById("mapSelector_DO_NOT_PERSIST");
 
-                    if(mapDefinitonSelector.selectedIndex>=0)
+                    if(mapDefinitonSelector.selectedIndex >= 0)
                     {
-                        mapDefinitonSelector.selectedIndex=-1;
+                        mapDefinitonSelector.selectedIndex = -1;
                         //change the selectedIndex valule by the js will not fire the event "onchange",
                         //so we manually do it.
                         MapResoucesNameSelectChange();
@@ -1201,21 +1466,6 @@ catch ( Exception $e )
                     mapSelectorWarnMsg.innerHTML = "";
                  
                     SetRunButtonState(false);
-                }
-
-                function ClearWrnMsg()
-                {
-                    var scale = document.getElementById("txtScale");
-                    scale.className="";
-
-                    var centerPoint = document.getElementById("txtCenterPoint");
-                    centerPoint.className="";
-
-                    var scaleWarnMsg = document.getElementById("scaleWarnMessage");
-                    scaleWarnMsg.innerHTML = "";
-
-                    var centerPointWarnMsg = document.getElementById("centerPointWarnMessage");
-                    centerPointWarnMsg.innerHTML = "";
                 }
 
                 function SetRunButtonState(visible)
@@ -1397,7 +1647,7 @@ catch ( Exception $e )
 
                         //get the content need to be sorted into a 2-D array
                         rowArray = [];
-                        //TODO: it has problem under IE9 quirks mode, will fix it in part 3
+                        //TODO:Multiple Browsers:It has problem under IE9 quirks mode, will fix it in part 3
                         colIndex = headerColumn.attributes["columnindex"].value-1;
                         rows = layersTBody.rows;
                         var j = 0;
@@ -1407,7 +1657,7 @@ catch ( Exception $e )
                         }
 
                         //only the second column needs to be sorted by numeric, others are all by alpha
-                        if(1==colIndex)
+                        if(1 == colIndex)
                         {
                             rowArray.sort(SortLayers.sortByNumeric);
                         }
@@ -1515,6 +1765,109 @@ catch ( Exception $e )
                     }
                 }
 
+                //recent Settings
+                window.onload = LoadRecentSettings;
+
+                function LoadRecentSettings()
+                {
+                    var tempSettingJs = document.getElementById("recentSettingsJsArray");
+
+                    if(tempSettingJs)
+                    {
+                        //get js content in the hidden span
+                        var innerScript = tempSettingJs.innerHTML;
+                        innerScript = innerScript.replace(/\\n/,'');
+
+                        //check to remove the script if it already exists
+                        var insertScript = document.getElementById("recentSettingsJs");
+                        if(insertScript)
+                        {
+                            document.getElementsByTagName("head").item(0).removeChild(insertScript);
+                        }
+
+                        //every new execute should generate new js array data
+                        insertScript = document.createElement("script");
+                        insertScript.type = "text/javascript";
+                        insertScript.id = "recentSettingsJs";
+                        insertScript.text = innerScript;
+
+                        document.getElementsByTagName("head").item(0).appendChild(insertScript);
+
+                        tempSettingJs.parentNode.removeChild(tempSettingJs);
+                    }
+
+                    SetSettingsWithCookie();
+                }
+
+                function SetSettingsWithCookie()
+                {
+                    var mapIdCookie = document.getElementById("cookieMapId");
+                    var centerPointCookie = document.getElementById("cookieCenterPoint");
+                    var scaleCookie = document.getElementById("cookieScale");
+
+                    if(mapIdCookie)
+                    {
+                        var centerPoint = document.getElementById("txtCenterPoint");
+                        centerPoint.value = centerPointCookie.value;
+
+                        var scaleInput = document.getElementById("txtScale");
+                        scaleInput.value = FormatNumber(scaleCookie.value,2);
+
+                        var mapDefinitonSelector = document.getElementById("mapSelector_DO_NOT_PERSIST");
+                        mapDefinitonSelector.value = Trim(mapIdCookie.value);
+
+                        var tipDiv = document.getElementById("mapResourceNameTip");
+                        tipDiv.innerHTML = mapDefinitonSelector.value;
+
+                        var settingsBtn = document.getElementById("mapViewerBtn");
+                        centerPoint.removeAttribute("disabled");
+                        scaleInput.removeAttribute("disabled");
+                        settingsBtn.removeAttribute("disabled");
+                        SetRunButtonState(true);
+                    }
+                }
+
+                function RecentSettingClicked(settingId)
+                {
+                    var settingsCount = recentSettings.length;
+                    var selectSetting = null;
+
+                    var i = 0;
+                    for(; i < settingsCount; i++)
+                    {
+                        if( Trim(settingId) == Trim(recentSettings[i][0]) )
+                        {
+                            selectSetting = recentSettings[i];
+                            break;
+                        }
+                    }
+
+                    //TODO: Excepions: what if the map is removed
+                    if(null != selectSetting)
+                    {
+                        var centerPoint = document.getElementById("txtCenterPoint");
+                        centerPoint.value = selectSetting[2];
+
+                        var scaleInput = document.getElementById("txtScale");
+                        scaleInput.value = FormatNumber(selectSetting[3],2);
+                        
+                        var mapDefinitonSelector = document.getElementById("mapSelector_DO_NOT_PERSIST");
+                        mapDefinitonSelector.value = Trim(selectSetting[1]);
+
+                        var tipDiv = document.getElementById("mapResourceNameTip");
+                        tipDiv.innerHTML = mapDefinitonSelector.value;
+
+                        var settingsBtn = document.getElementById("mapViewerBtn");
+
+                        centerPoint.removeAttribute("disabled");
+                        scaleInput.removeAttribute("disabled");
+                        settingsBtn.removeAttribute("disabled");
+
+                        SetRunButtonState(true);
+
+                        ShowReportWarningMsg();
+                    }
+                }
             </script>
 
             <div id="settingsTitle">
@@ -1524,12 +1877,23 @@ catch ( Exception $e )
                          <img src="images/arrow_down.png" alt="down" style="cursor:pointer;"
                               id="settings_CollapseImage_ID" onclick="CollapsibleTabClick('settings_CollapseImage_ID','settingsContent')"/>
                      </td>
-                     <td style=" font-size:18px;  font-weight: bold; text-align: left;"  >
+                     <td style="font-size:18px;  font-weight: bold; text-align: left;"  >
                          <span style="cursor:pointer;" onclick="CollapsibleTabClick('settings_CollapseImage_ID','settingsContent')">Settings</span>
                      </td>
                  </tr>
              </table>
             </div>
+            <?php
+                //get settings in cookie
+                if(isset($_COOKIE['c_mapResourceId'],$_COOKIE['c_centerPoint'],$_COOKIE['c_scale']))
+                {
+                    echo "<span style='display:none;'>";
+                    echo '<input type="hidden" id="cookieMapId" value="'.$_COOKIE['c_mapResourceId'].'"/>';
+                    echo '<input type="hidden" id="cookieCenterPoint" value="'.$_COOKIE['c_centerPoint'].'"/>';
+                    echo '<input type="hidden" id="cookieScale" value="'.$_COOKIE['c_scale'].'"/>';
+                    echo "</span>";
+                }
+            ?>
             <div id="settingsContent">
                 <table style="width:100%;">
                     <tr>
@@ -1574,6 +1938,9 @@ catch ( Exception $e )
                                                                 </div>
                                                                 <div id="selectMapResourceWarningMessage" style="color:#F03136;">
                                                                 </div>
+                                                                <input type="hidden" id="lastRunMapId" value=""/>
+                                                                <input type="hidden" id="lastRunCenterPoint" value=""/>
+                                                                <input type="hidden" id="lastRunScale" value=""/>
                                                             </td>
                                                         </tr>
                                                     </table>
@@ -1599,8 +1966,9 @@ catch ( Exception $e )
                                                                             Select a Center Point and Map Scale
                                                                             </span>
                                                                         </td>
-                                                                        <td style=" text-align: right;border-bottom:1px solid #000000;">
+                                                                        <td style=" text-align: right;border-bottom:1px solid #000000; cursor: default;">
                                                                             <img alt="Close" src="images/close.png" onclick="CloseMapViewer();"/>
+                                                                            <input type="text" id="mapViewerAutoFocusTxt" style="width:0px; height:0px; border: none; cursor:default;" onKeyUp="MapViewerKeyUp(event);"/>
                                                                         </td>
                                                                     </tr>
                                                                     <tr>
@@ -1610,8 +1978,14 @@ catch ( Exception $e )
                                                                             </iframe>
                                                                         </td>
                                                                     </tr>
-                                                                </table> 
+                                                                </table>
                                                             </div>
+                                                            <!--System should load map by the previous center point and scale-->
+                                                            <!--if this map was opened by 'Select Settings' before-->
+                                                            <!--So these inputs are used to save the settings of last open-->
+                                                            <input type="hidden" id="mapViewerLastOpenMapId" value=""/>
+                                                            <input type="hidden" id="mapViewerLastOpenCenterPoint" value=""/>
+                                                            <input type="hidden" id="mapViewerLastOpenScale" value=""/>
                                                         </td>
                                                     </tr>
                                                     <tr>
@@ -1646,8 +2020,8 @@ catch ( Exception $e )
                                         </td>
                                     </tr>
                                     <tr>
-                                        <td style=" padding-top: 80px;">
-                                            <table>
+                                        <td style="padding-top: 80px;">
+                                            <table style="margin: 0px; padding: 0px;" cellspacing="0" cellpadding="0">
                                                 <tr>
                                                     <td style="padding-right:5px;">
                                                         <input id="runBtn" type="button" value="Run" style="width:80px; font-weight: bold;height: 28px;"
@@ -1670,58 +2044,33 @@ catch ( Exception $e )
                                     </tr>
                                     <tr>
                                         <td>
-                                            <div id="ResultNotMatchWrn"
-                                                 style="border: 3px solid #CCCCCC;background: #FFFEBB url('images/warning.png') no-repeat left top;padding:0px 0px 10px 20px; margin-top: 10px;display: none;">
+                                            <div id="ResultNotMatchWrn" >
                                                 <span style="font-size:12pt; font-weight: bold;">
                                                     The performance report results no longer match the settings found in Steps 1 and 2.
                                                 </span>
-                                                <br/>
-                                                Return the settings found in Steps 1 and 2 to the previous settings or run a new performance report.
+                                                <p style="padding-left: 3px; margin-bottom: 8px; margin-top: 6px">
+                                                    Return the settings found in Steps 1 and 2 to the previous settings or run a new performance report.
+                                                </p>
                                             </div>
                                         </td>
                                     </tr>
                                 </table>
                             </div>
                         </td>
-                        <td style=" vertical-align: top; width: 30%;">
-                            <h2>Recent Settings</h2>
-                            <table style="padding: 5px;">
-                                <tr>
-                                    <td>
-                                        CEVEK
-                                        <br>
-                                        MAY 12,2012&nbsp;&nbsp;&nbsp;&nbsp;11:35:52
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td style=" background-color: #EEEEEE;">
-                                        CEVEK
-                                        <br>
-                                        MAY 12,2012&nbsp;&nbsp;&nbsp;&nbsp;11:35:52
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        CEVEK
-                                        <br>
-                                        MAY 12,2012&nbsp;&nbsp;&nbsp;&nbsp;11:35:52
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td style=" background-color: #EEEEEE;">
-                                        CEVEK
-                                        <br>
-                                        MAY 12,2012&nbsp;&nbsp;&nbsp;&nbsp;11:35:52
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        CEVEK
-                                        <br>
-                                        MAY 12,2012&nbsp;&nbsp;&nbsp;&nbsp;11:35:52
-                                    </td>
-                                </tr>
-                            </table>
+                        <td style=" vertical-align: top; width: 30%; padding-left: 15px;">
+                            <span id="recentSettingsJsArray" style="display:none;">
+                                <?php
+                                    $displayManager->OutputSettingsJsArray($recentSettings->recentSettings);
+                                ?>
+                            </span>
+                            <div style="font-size:18px;  font-weight: bold; text-align: left;">Recent Settings</div>
+                            <div style="border: 1px solid #CCCCCC; width: 100%; margin-top: 15px;" id="settingsDiv">
+                                <div id="recentSettingsDiv">
+                                    <?php
+                                        $displayManager->OutputRecentSettings($recentSettings->recentSettings);
+                                    ?>
+                                </div>
+                            </div>
                         </td>
                     </tr>
                 </table>
