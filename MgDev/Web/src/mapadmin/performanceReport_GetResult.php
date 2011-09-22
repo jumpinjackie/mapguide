@@ -15,24 +15,161 @@ try
     // Define Local values
     $confirmationMsg = "";
     $errorMsg = "";
-    $mapProfileResult=new MapProfileResult();
-    $displayManager= new DisplayProfileResultManager();
+    $mapProfileResult = new MapProfileResult();
+    $displayManager = new DisplayProfileResultManager();
+    $mapResourceId = $_REQUEST["mapDefinition"];
+    $centerPoint = $_REQUEST["centerPoint"];
+    $scale = $_REQUEST["scale"];
+    $clientWidth = $_REQUEST["imageWidth"];
+    $clientHeigth = $_REQUEST["imageHeight"];
+
+    //get the background color of the given map resource id
+    function GetBackGroundColor($resourceID)
+    {
+        $bgc;
+
+        try
+        {
+            //site and userInfo are saved in the session
+            global $userInfo;
+            $mapResourceContent = "";
+
+            //connect to the site and get a resource service instance
+            $siteConn = new MgSiteConnection();
+            $siteConn->Open($userInfo);
+            $resourceService = $siteConn->CreateService(MgServiceType::ResourceService);
+            //get the map resource content from the server
+            $mgResourceID = new MgResourceIdentifier($resourceID);
+            $byteReader = $resourceService->GetResourceContent($mgResourceID);
+
+            //read the content into a string
+            $chunk = "";
+            do
+            {
+                $chunkSize = $byteReader->Read($chunk, 4096);
+                $mapResourceContent = $mapResourceContent . $chunk;
+            } while ($chunkSize != 0);
+
+            //parse the xml data use DOMDocument
+            $resourceContent = new DOMDocument();
+            $resourceContent->loadXML($mapResourceContent);
+
+            //get all the elements with the element name "BackgroundColor"
+            $backgroundColor = $resourceContent->documentElement->getElementsByTagName("BackgroundColor");
+
+            //if there's no "BackgroundColor" node
+            if(0 == $backgroundColor->length)
+            {
+                $bgc = new MgColor(255, 255, 255, 255);
+            }
+            else
+            {
+                //the background color is saved as hex format string
+                $tempBackgroundColor = $backgroundColor->item(0)->nodeValue;
+                $red    = hexdec(substr($tempBackgroundColor, 0,2));
+                $green  = hexdec(substr($tempBackgroundColor, 2,2));
+                $blue   = hexdec(substr($tempBackgroundColor, 4,2));
+                $alpha  = hexdec(substr($tempBackgroundColor, 6,2));
+
+                $bgc = new MgColor($red, $green, $blue, $alpha);
+            }
+        }
+        catch (Exception $exc)
+        {
+            $errorMsg = $exc->getMessage();
+            $bgc = new MgColor(255, 255, 255, 255);
+        }
+
+        return $bgc;
+    }
 
     function GetProfilingResults()
     {
+        //profiling map parameters
+        global $mapResourceId;
         global $mapProfileResult;
-        $resultSource=new DOMDocument();
-        //As the profiling API is not finished, now we just use a temp xml file to simulate it.
-        //we will change it in part 3.
-        $resultSource->load("profilingmapxml/profileResults.xml");
+        global $scale;
+        global $centerPoint;
+        global $clientWidth;
+        global $clientHeigth;
+
+        list($x, $y) = explode("*", $centerPoint);
+        $x = trim($x);
+        $y = trim($y);
+
+        $geometryFactory = new MgGeometryFactory();
+        //[centerPoint]
+        $coordNewCenter = $geometryFactory->CreateCoordinateXY($x,$y);
+
+        //[backgroundColor]
+        $bgc = GetBackGroundColor($mapResourceId);
+
+        //[imageFormat]
+        $imageFormat = "PNG";
+        
+        //userInfo are saved in the session
+        global $userInfo;
+
+        //connect to the site and get a resource service instance
+        //create profiling service too
+        $siteConn = new MgSiteConnection();
+        $siteConn->Open($userInfo);
+
+        $resourceService = $siteConn->CreateService(MgServiceType::ResourceService);
+        $profilingService = $siteConn->CreateService(MgServiceType::ProfilingService);
+
+        //the profiling result is saved as xml file, the file name is unique
+        //the format is like this "YYYYMMDDHHMMSS10"
+        $newXmlFileId = date("YmdHis") . rand(10, 99);
+
+        $resourceID = new MgResourceIdentifier($mapResourceId);
+        // Get a runtime map from a map definition
+        $map = new MgMap();
+        $map->Create($resourceService, $resourceID, $newXmlFileId);
+
+        //get the profiling map result
+        $byteReader = $profilingService->ProfileRenderMap($map, NULL, $coordNewCenter, $scale, $clientWidth, $clientHeigth, $bgc, $imageFormat, false);
+
+        //read the content into a string
+        $profilingResourceContent = "";
+        $chunk = "";
+        do
+        {
+            $chunkSize = $byteReader->Read($chunk, 4096);
+            $profilingResourceContent = $profilingResourceContent . $chunk;
+        } while ($chunkSize != 0);
+
+        //save the file on the server
+        $newXmlFileName = "profilingmapxml/".$newXmlFileId.".xml";
+        $fp = fopen($newXmlFileName, "w");
+        fwrite($fp, $profilingResourceContent);
+        fclose($fp);
+
+        //put the file name in the session
+        $_SESSION["ProfilingResultFile"] = $newXmlFileName;
+
+        //read the result into the DOM
+        $resultSource = new DOMDocument();
+        $resultSource->load($newXmlFileName);
         $mapProfileResult->ReadFromXML($resultSource);
         $mapProfileResult->GetBaseLayerCount();
     }
 
     GetProfilingResults();
 
-    $displayManager->mapProfileResult=$mapProfileResult;
+    $displayManager->mapProfileResult = $mapProfileResult;
 
+    $recentSettings = new RecentSettings();
+
+    $recentSettings->SaveRecentSettings($mapResourceId,$centerPoint,$scale);
+    
+    //set cookie
+    //save the recent setting in the cookie, so next time the user open 
+    //the page will restore the last time setting
+    //it will expire in 1 month
+    setcookie("c_mapResourceId", $mapResourceId, time()+60*60*24*30);
+    setcookie("c_centerPoint", $centerPoint, time()+60*60*24*30);
+    setcookie("c_scale", $scale, time()+60*60*24*30);
 }
 catch ( MgException $e )
 {
@@ -66,9 +203,9 @@ catch ( Exception $e )
                 <table style="width:100%;" class="mapDefinitionResultTableStyle">
                     <tr>
                         <td style="width:22%; font-weight: bold;">Resource Name:</td>
-                        <td style="width:32%;">
+                        <td style="width:32%; font-weight: bold;">
                             <?php
-                                $displayManager->OutputMapResourceNameWithToolTip($mapProfileResult->MapProfileData->MapResourceId);
+                                $displayManager->OutputMapResourceNameWithToolTip($mapProfileResult->MapProfileData->MapResourceId,false);
                             ?>
                         </td>
                         <td style="width:18%;font-weight: bold;">
@@ -76,10 +213,36 @@ catch ( Exception $e )
                         </td>
                         <td style="width:27%;">
                             <?php
+                                //Data extents can be displayed in many different ways depending on the coordinate system used.
+                                //Scientific E Notation is used to create a shorter and more managable string length.
+                                function FormatDataExtents($value)
+                                {
+                                    if(strlen($value) > 10)
+                                    {
+                                        //numfmt_create("en", NumberFormatter::SCIENTIFIC, "");
+                                        //$fmt = new NumberFormatter("en", NumberFormatter::SCIENTIFIC, "");
+                                        //$value = $fmt->format($value);
+
+                                        $pos = strpos($value, ".");
+
+                                        if( ( strlen($value) - $pos ) > 7)
+                                        {
+                                           $value = number_format($value,4);
+                                        }
+                                    }
+                                    else
+                                    {
+                                        $value = number_format($value,4);
+                                    }
+
+                                    return $value;
+                                }
+
                                 list($x1, $y1, $x2, $y2) = explode(",", $mapProfileResult->MapProfileData->DataExtents);
-                                echo "X:" . $x1 . "&nbsp;&nbsp;&nbsp;Y:" . $y1;
+
+                                echo "X:" . FormatDataExtents($x1) . "&nbsp;&nbsp;&nbsp;Y:" . FormatDataExtents($y1);
                                 echo "<br/>";
-                                echo "X:" . $x2 . "&nbsp;&nbsp;&nbsp;Y:" . $y2;
+                                echo "X:" . FormatDataExtents($x2) . "&nbsp;&nbsp;&nbsp;Y:" . FormatDataExtents($y2);
                             ?>
                         </td>
                     </tr>
@@ -101,7 +264,7 @@ catch ( Exception $e )
                         <td style=" font-weight: bold;">Center Point:</td>
                         <td>
                             <?php
-                                list($x, $y) = explode("*", $_REQUEST["centerPoint"]);
+                                list($x, $y) = explode("*", $centerPoint);
                                 $x = trim($x);
                                 $y = trim($y);
                                 echo "X:&nbsp;" . $x;
@@ -119,9 +282,12 @@ catch ( Exception $e )
                     <tr>
                         <td style=" font-weight: bold;">Coordinate System:</td>
                         <td>
+                            <span style="width:50px; overflow:hidden;">
                             <?php
-                                echo $mapProfileResult->MapProfileData->CoordinateSystem;
+                                //TODO: Waiting:Test on new build
+                                echo substr($mapProfileResult->MapProfileData->CoordinateSystem,0,25);
                             ?>
+                            </span>
                         </td>
                         <td  style=" font-weight: bold;">Renderer Type:</td>
                         <td>
@@ -148,7 +314,7 @@ catch ( Exception $e )
         <td colspan="2" style="padding-top:20px; padding-left: 15px;">
             <?php
                 echo "<span>";
-                echo "Total Generation Time:&nbsp;" . $mapProfileResult->MapProfileData->TotalMapRenderTime . "&nbsp;ms";
+                echo "Total Generation Time:&nbsp;" . number_format($mapProfileResult->MapProfileData->TotalMapRenderTime,2) . "&nbsp;ms";
                 echo "</span>";
             ?>
         </td>
@@ -161,7 +327,7 @@ catch ( Exception $e )
                         $displayManager->OutputMapRenderTimeGraph();
                     ?>
                     <tr style="height:35px;">
-                        <td colspan="4" style=" text-align: center;">
+                        <td colspan="5" style=" text-align: center;">
                             <span style="width: 11px; height: 11px; background-color:#E4C7AE; margin-right: 5px;">
                                 &nbsp;&nbsp;&nbsp;&nbsp;</span>
                             <span style=" font-size: small; margin-right: 20px;">Layers</span>
@@ -225,5 +391,15 @@ catch ( Exception $e )
         </tr>
     </table>
 </div>
-
+<div id="tempRecentSettingDiv" style="display:none;">
+    <?php
+        $recentSettings->GetRecentSettings();
+        $displayManager->OutputRecentSettings($recentSettings->recentSettings);
+    ?>
+</div>
+<span id="tempRecentSettingsJsArray" style="display:none;">
+    <?php
+        $displayManager->OutputSettingsJsArray($recentSettings->recentSettings);
+    ?>
+</span>
 

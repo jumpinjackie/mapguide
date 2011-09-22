@@ -2292,6 +2292,257 @@
         }
     }
 
+
+    //represent on setting of Performance report
+    class RecentSetting
+    {
+        public $SettingId;
+        public $MapResourceId;
+        public $CreateTime;
+        public $ModifyTime;
+        public $CenterPoint;
+        public $Scale;
+    }
+
+    //A class which contains a list of recentSetting
+    //and some methods to manipulate the recent settings
+    class RecentSettings
+    {
+        public $recentSettings;
+
+        public function GetRecentSettings()
+        {
+            $recentSettingsDoc = new DOMDocument();
+            $recentSettingsFile = "profilingmapxml/RecentSettings.xml";
+
+            if(file_exists($recentSettingsFile))
+            {
+                $recentSettingsDoc->load($recentSettingsFile);
+                $settingList = $recentSettingsDoc->documentElement->getElementsByTagName("Setting");
+
+                //only fetch latest 10 records
+                for($i = 0; $i < $settingList->length && $i < 10; $i++)
+                {
+                    $SettingNode = $settingList->item($i);
+                    $recentSetting = new RecentSetting();
+
+                    foreach ($SettingNode->childNodes as $cNode)
+                    {
+                        if(1 == $cNode->nodeType)
+                        {
+                            switch ($cNode->nodeName)
+                            {
+                                case "mapResourceId":
+                                    $recentSetting->MapResourceId = $cNode->nodeValue;
+                                    break;
+                                case "createTime":
+                                    $recentSetting->CreateTime = $cNode->nodeValue;
+                                    break;
+                                case "modifyTime":
+                                    $recentSetting->ModifyTime = $cNode->nodeValue;
+                                    break;
+                                case "centerPoint":
+                                    $recentSetting->CenterPoint = $cNode->nodeValue;
+                                    break;
+                                case "scale":
+                                    $recentSetting->Scale = $cNode->nodeValue;
+                                    break;
+                                default :break;
+                            }
+                        }
+                    }
+
+                    $recentSetting->SettingId = $SettingNode->getAttribute("ID");
+                    $this->recentSettings[$i] = $recentSetting;
+                }
+            }
+        }
+
+        //when a new setting is run, save the setting to the xml file
+        public function SaveRecentSettings($mapResourceId, $centerPoint, $scale)
+        {
+            $mapResourceId = trim($mapResourceId);
+            $centerPoint = trim($centerPoint);
+            $scale = trim($scale);
+            
+            //required parameters are null or empty then ignore this setting
+            //TODO: Excepions: we can ignore this setting, but we need to send signal not to update the original part
+            if( (!isset($mapResourceId,$centerPoint,$scale)) || ("" == trim($mapResourceId)) || ("" == trim($centerPoint)) || ("" == trim($scale)) )
+            {
+                return;
+            }
+
+            $recentSettingsDoc = new DOMDocument();
+            $recentSettingsFile = "profilingmapxml/RecentSettings.xml";
+            $rootElement;
+            $settingElement;
+
+            //get the root element <RecentSettings>
+            //if the file already exists, get the documentElement
+            //if not exists, create new element and append to the DOMDocument
+            if(file_exists($recentSettingsFile))
+            {
+                $recentSettingsDoc->load($recentSettingsFile);
+                $rootElement = $recentSettingsDoc->documentElement;
+                
+                //search the xml doc to see if the same setting is existed
+                $settingElement = $this->GetExistedSetting($rootElement, $mapResourceId, $centerPoint, $scale);
+                
+                if(!isset ($settingElement))
+                {
+                    //if not existed, create the new one
+                    $settingElement = $this->CreateNewSettting($recentSettingsDoc, $mapResourceId, $centerPoint, $scale);
+                }
+                else
+                {
+                    //if existed, update the modify time
+                    $settingElement->getElementsByTagName("modifyTime")->item(0)->nodeValue = date(DATE_W3C);
+                }
+            }
+            else
+            {
+                $rootElement = $recentSettingsDoc->createElement("RecentSettings");
+                $recentSettingsDoc->appendChild($rootElement);
+                
+                $settingElement = $this->CreateNewSettting($recentSettingsDoc, $mapResourceId, $centerPoint, $scale);
+            }
+
+            //add the setting node at the top
+            if($rootElement->hasChildNodes())
+            {
+                $firstSetting = $rootElement->firstChild;
+               
+                //if the found one is the first one, do noting
+                if($settingElement === $firstSetting)
+                {
+                    ;
+                }
+                else
+                {
+                    $firstSetting->parentNode->insertBefore($settingElement, $firstSetting);
+                }
+            }
+            else
+            {
+                $rootElement->appendChild($settingElement);
+            }
+
+            $recentSettingsDoc = $this->DeleteSettings($recentSettingsDoc);
+            //save the setting to the file
+            $recentSettingsDoc->save($recentSettingsFile);
+        }
+        
+        //find the setting that has already existed in the xml file
+        public function GetExistedSetting($rootElement, $mapResourceId, $centerPoint, $scale)
+        {
+            $foundElement = null;
+            $settingList = $rootElement->getElementsByTagName("Setting");
+            
+            foreach($settingList as $settingNode)
+            {
+                $mapIdValue = trim($settingNode->getElementsByTagName("mapResourceId")->item(0)->nodeValue);
+                $centerPointValue = trim($settingNode->getElementsByTagName("centerPoint")->item(0)->nodeValue);
+                $scaleValue = trim($settingNode->getElementsByTagName("scale")->item(0)->nodeValue);
+
+                if( ($mapResourceId == $mapIdValue) && ($centerPoint == $centerPointValue) && ($scale == $scaleValue) )
+                {
+                    $foundElement = $settingNode;
+                    break;
+                }
+            }
+            
+            return $foundElement;
+        }
+        
+        //create new element for the setting 
+        public function CreateNewSettting($recentSettingsDoc, $mapResourceId, $centerPoint, $scale)
+        {
+            $newSettingElement = $recentSettingsDoc->createElement("Setting");
+            //use settingId to identify the unique setting
+            $settingId = date("YmdHis") . rand(10, 99);
+            $newSettingElement->setAttribute("ID", $settingId);
+
+            $mapResourceIdElement = $recentSettingsDoc->createElement("mapResourceId", $mapResourceId);
+            $newSettingElement->appendChild($mapResourceIdElement);
+
+            $centerPointElement = $recentSettingsDoc->createElement("centerPoint", $centerPoint);
+            $newSettingElement->appendChild($centerPointElement);
+
+            $scaleElement = $recentSettingsDoc->createElement("scale", $scale);
+            $newSettingElement->appendChild($scaleElement);
+
+            $createDate = date(DATE_W3C);
+            $createTimeElement = $recentSettingsDoc->createElement("modifyTime", $createDate);
+            $newSettingElement->appendChild($createTimeElement);
+
+            //when create new setting, the create Time and the modify time is the same
+            $modifyTimeElement = $recentSettingsDoc->createElement("createTime", $createDate);
+            $newSettingElement->appendChild($modifyTimeElement);
+            
+            return $newSettingElement;
+        }
+
+        //To avoid the recent file to be too large, we will remove the old settings 
+        //if the total records exceed 1000
+        public function DeleteSettings($recentSettingsDoc)
+        {
+            $newXMLDoc;
+            $settingElements = $recentSettingsDoc->documentElement->getElementsByTagName("Setting");
+            $settingCount = $settingElements->length;
+            
+            if($settingCount >= 1000)
+            {
+                $newXMLDoc = new DOMDocument();
+                $rootElement1 = $newXMLDoc->createElement("RecentSettings");
+                $newXMLDoc->appendChild($rootElement1);
+                
+                for($i = 0; $i < 10; $i++)
+                {
+                    $tempNode = $this->CopyNode($newXMLDoc,$settingElements->item($i));
+                    $rootElement1->appendChild($tempNode);
+                }
+            }
+            else
+            {
+                $newXMLDoc = $recentSettingsDoc;
+            }
+            
+            return $newXMLDoc;
+        }
+
+        //copy the existed nodes to the new xml document
+        private function CopyNode($doc, $oldNode)
+        {
+            $nd = $doc->createElement("Setting");
+            
+            $settingIdValue = trim( $oldNode->getAttribute("ID") );
+            $mapIdValue = trim( $oldNode->getElementsByTagName("mapResourceId")->item(0)->nodeValue );
+            $centerPointValue = trim( $oldNode->getElementsByTagName("centerPoint")->item(0)->nodeValue );
+            $scaleValue = trim( $oldNode->getElementsByTagName("scale")->item(0)->nodeValue );
+            $createTimeValue = trim( $oldNode->getElementsByTagName("createTime")->item(0)->nodeValue );
+            $modifyTimeValue = trim( $oldNode->getElementsByTagName("modifyTime")->item(0)->nodeValue );
+
+            $nd->setAttribute("ID", $settingIdValue);
+
+            $mapResourceIdElement = $doc->createElement("mapResourceId", $mapIdValue);
+            $nd->appendChild($mapResourceIdElement);
+
+            $centerPointElement = $doc->createElement("centerPoint", $centerPointValue);
+            $nd->appendChild($centerPointElement);
+
+            $scaleElement = $doc->createElement("scale", $scaleValue);
+            $nd->appendChild($scaleElement);
+
+            $createTimeElement = $doc->createElement("modifyTime", $createTimeValue);
+            $nd->appendChild($createTimeElement);
+
+            $modifyTimeElement = $doc->createElement("createTime", $modifyTimeValue);
+            $nd->appendChild($modifyTimeElement);
+            
+            return $nd;
+         }
+    }
+
     class LayerDefinitionProfileData
     {
         public $LayerName;
@@ -2302,11 +2553,39 @@
         public $LayerType;
         public $Filters;
         public $ScaleRange;
+
+        public function GetRenderTimePercentage($sumofRenderTime)
+        {
+            $percentage = 0.0;
+
+            if($sumofRenderTime > 0.0)
+            {
+                $percentage = $this->TotalRenderTime/$sumofRenderTime;
+            }
+
+            return number_format($percentage*100,1);
+        }
     }
 
     class LayerDefinitionProfileResults
     {
+        // an array of LayerDefinitionProfileData,
+        // which consist the profiling map layers info
         public $LayerProfileDataCollection;
+
+        //get the sum of each layer render time
+        //note that this sum can be different with the $TotalLayerRenderTime
+        public function GetSumOfLayerRenderTime()
+        {
+            $sum = 0.0;
+
+            foreach ($this->LayerProfileDataCollection as $layerProfileData)
+            {
+                $sum = $sum + $layerProfileData->TotalRenderTime;
+            }
+
+            return $sum;
+        }
     }
 
     class MapDefinitionProfileData
@@ -2374,8 +2653,16 @@
         public function ReadFromXML($resultSource)
         {
             $this->MapProfileData = new MapDefinitionProfileData();
-            $mapResultList = $resultSource->documentElement->getElementsByTagName("ProfileRenderMap");
+            $mapResultList = $resultSource->documentElement->getElementsByTagName("ProfileRenderMapResult");
             $profileRenderMap = $mapResultList->item(0);
+
+            //if the map has no watermark, then the returned results will not contain the node ProfileRenderWatermarksResult
+            $watermarkNodeList = $profileRenderMap->getElementsByTagName("ProfileRenderWatermarksResult");
+            if(0 == $watermarkNodeList->length)
+            {
+                $this->MapProfileData->TotalWatermarkRenderTime = 0.00;
+            }
+
             if ($profileRenderMap->hasChildNodes()) 
             {
                 foreach ($profileRenderMap->childNodes as $node)
@@ -2390,8 +2677,13 @@
                             case "CoordinateSystem":
                                 $this->MapProfileData->CoordinateSystem = $node->nodeValue;
                                 break;
-                            case "Extent":
-                                $this->MapProfileData->DataExtents = $node->nodeValue;
+                            case "Extents":
+                                $minX = $node->getElementsByTagName("MinX")->item(0)->nodeValue;
+                                $maxX = $node->getElementsByTagName("MaxX")->item(0)->nodeValue;
+                                $minY = $node->getElementsByTagName("MinY")->item(0)->nodeValue;
+                                $maxY = $node->getElementsByTagName("MaxY")->item(0)->nodeValue;
+
+                                $this->MapProfileData->DataExtents = $minX.",".$minY.",".$maxX.",".$maxY;
                                 break;
                             case "LayerCount":
                                 $this->MapProfileData->LayerCount = $node->nodeValue;
@@ -2411,7 +2703,7 @@
                             case "CreateImageTime":
                                 $this->MapProfileData->TotalImageRenderTime = $node->nodeValue;
                                 break;
-                            case "ProfileRenderLabels":
+                            case "ProfileRenderLabelsResult":
                                 foreach ($node->childNodes as $labelNode)
                                 {
                                     if ($labelNode->nodeType == 1 && $labelNode->nodeName == "RenderTime")
@@ -2420,7 +2712,7 @@
                                     }
                                 }
                                 break;
-                            case "ProfileRenderLayers":
+                            case "ProfileRenderLayersResult":
                                 foreach ($node->childNodes as $layerNode)
                                 {
                                     if (1 == $layerNode->nodeType && "RenderTime" == $layerNode->nodeName)
@@ -2430,7 +2722,7 @@
                                 }
                                 $this->ParseLayerResult($node);
                                 break;
-                            case "ProfileRenderWatermarks":
+                            case "ProfileRenderWatermarksResult":
                                 foreach ($node->childNodes as $watermarkNode)
                                 {
                                     if (1 == $watermarkNode->nodeType && "RenderTime" == $watermarkNode->nodeName)
@@ -2448,11 +2740,11 @@
 
         private function ParseLayerResult($LayerNodeList)
         {
-            $this->LayerProfileData=new LayerDefinitionProfileResults();
-            $this->LayerProfileData->LayerProfileDataCollection=array();
+            $this->LayerProfileData = new LayerDefinitionProfileResults();
+            $this->LayerProfileData->LayerProfileDataCollection = array();
 
             foreach ($LayerNodeList->childNodes as $layerNode) {
-                if (1 == $layerNode->nodeType && "ProfileRenderLayer" == $layerNode->nodeName) {
+                if (1 == $layerNode->nodeType && "ProfileRenderLayerResult" == $layerNode->nodeName) {
 
                     $tempLayerProfileData = new LayerDefinitionProfileData();
 
@@ -2478,7 +2770,9 @@
                                     $tempLayerProfileData->TotalRenderTime = $node->nodeValue;
                                     break;
                                 case "ScaleRange":
-                                    $tempLayerProfileData->ScaleRange= $node->nodeValue;
+                                    $minScale = $node->getElementsByTagName("MinScale")->item(0)->nodeValue;
+                                    $maxScale = $node->getElementsByTagName("MaxScale")->item(0)->nodeValue;
+                                    $tempLayerProfileData->ScaleRange= $minScale." - ".$maxScale;
                                     break;
                                 case "Filter":
                                     $tempLayerProfileData->Filters= $node->nodeValue;
@@ -2487,14 +2781,9 @@
                             }
                         }
                     }
-                    $this->LayerProfileData->LayerProfileDataCollection[$tempLayerProfileData->LayerName]=$tempLayerProfileData;
+                    $this->LayerProfileData->LayerProfileDataCollection[$tempLayerProfileData->LayerName] = $tempLayerProfileData;
                 }
             }
-        }
-
-        public function SaveAsCSV()
-        {
-            //TODO: will be implemented in part3
         }
 
         //Get the base map layer count of the specified map resource

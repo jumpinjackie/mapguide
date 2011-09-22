@@ -36,8 +36,9 @@
     $content_byteReader = $content_byteSource->GetReader();
 
     $resourceSrvc->SetResource($webLayOutId, $content_byteReader, null);
-    
-    $webLayoutUrl="../mapviewerajax/?WEBLAYOUT=".urlencode($webLayoutName)."&LOCALE=en";
+
+    //pass the seesion ID with the url, so when the map viewer is opened, there is no need to re-enter the password
+    $webLayoutUrl="../mapviewerajax/?WEBLAYOUT=".urlencode($webLayoutName)."&LOCALE=en&SESSION=".$site->GetCurrentSession();
 
     header('Location:'. $webLayoutUrl);
 ?>

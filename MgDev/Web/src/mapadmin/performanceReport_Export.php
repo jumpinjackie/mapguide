@@ -12,15 +12,30 @@
     // Define Local values
     $mapProfileResult=new MapProfileResult();
 
+    function ReplaceCSVSpecialChar($value)
+    {
+        $newValue = str_replace("\"", "\"\"", $value);
+        return "\"".$newValue."\"";
+    }
+
     function GetProfilingResults()
     {
-        global $mapProfileResult;
-        $resultSource=new DOMDocument();
-        //As the profiling API is not finished, now we just use a temp xml file to simulate it.
-        //we will change it in part 3.
-        $resultSource->load("profilingmapxml/profileResults.xml");
-        $mapProfileResult->ReadFromXML($resultSource);
-        $mapProfileResult->GetBaseLayerCount();
+        $profilingResultFile = $_SESSION["ProfilingResultFile"];
+
+        if (isset($profilingResultFile))
+        {
+            global $mapProfileResult;
+            $resultSource = new DOMDocument();
+            $resultSource->load($profilingResultFile);
+            $mapProfileResult->ReadFromXML($resultSource);
+            $mapProfileResult->GetBaseLayerCount();
+        }
+        else
+        {
+            //TODO: Excepions: more user friendly hint
+            //should give some warning message about "No profiling result file found, please re-generate it!"
+            throw $e;
+        }
     }
 
     GetProfilingResults();
@@ -31,7 +46,7 @@
     //output the basic information of the map resource
     //get the extent display string
     list($x1, $y1, $x2, $y2) = explode(",", $mapProfileResult->MapProfileData->DataExtents);
-    $extents= '"X1:' . $x1 . '    Y1:' . $y1.'    X2:' . $x2 . '    Y2:' . $y2.'"';
+    $extents= '"MinX:' . $x1 . '    MinY:' . $y1.'    MaxX:' . $x2 . '    MaxY:' . $y2.'"';
 
     //get the scale display string
     $scale= "1:" . number_format($mapProfileResult->MapProfileData->Scale,0,"."," ");
@@ -47,7 +62,7 @@
     echo $mapProfileResult->MapProfileData->ImageFormat,"\n";
     echo '"Center Point",'.$centerPoint.',Layers,';
     echo $mapProfileResult->MapProfileData->LayerCount,"\n";
-    echo '"Coordinate System",'.$mapProfileResult->MapProfileData->CoordinateSystem;
+    echo '"Coordinate System",'.ReplaceCSVSpecialChar($mapProfileResult->MapProfileData->CoordinateSystem);
     echo ',"Render Type",'.$mapProfileResult->MapProfileData->RenderType,"\n";
     echo 'Scale,'.$scale,"\n";
 
@@ -84,10 +99,10 @@
     {
         echo '"'.$layerProfileData->LayerName.'",' ;
         echo '"'.$layerProfileData->TotalRenderTime.' ms",' ;
-        echo '"'.$layerProfileData->FeatureClass .'",';
-        echo '"'.$layerProfileData->CoordinateSystem .'",';
+        echo ReplaceCSVSpecialChar($layerProfileData->FeatureClass) .',';
+        echo ReplaceCSVSpecialChar($layerProfileData->CoordinateSystem) .',';
         echo '"'.$layerProfileData->LayerType.'",' ;
-        echo '"'.$layerProfileData->Filters.'",' ;
+        echo ReplaceCSVSpecialChar($layerProfileData->Filters).',' ;
         echo '"'.$layerProfileData->ScaleRange.'"' ;
         echo "\n";
     }
