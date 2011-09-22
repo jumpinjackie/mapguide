@@ -124,7 +124,7 @@ void ProfileRenderLayerResult::SetFeatureClassName(const MdfString& pstrFeatureC
 
 //-------------------------------------------------------------------------
 // PURPOSE: Accessor method for the CoordinateSystem property.
-// RETURNS: The coordinate system as WKT used by the layer.
+// RETURNS: The coordinate system code used by the layer.
 //-------------------------------------------------------------------------
 const MdfString& ProfileRenderLayerResult::GetCoordinateSystem() const
 {
@@ -135,7 +135,7 @@ const MdfString& ProfileRenderLayerResult::GetCoordinateSystem() const
 // PURPOSE: Accessor method to the CoordinateSystem property.
 // PARAMETERS:
 //      Input:
-//          pstrCoordinateSystem - The coordinate system as WKT used by the layer.
+//          pstrCoordinateSystem - The coordinate system code used by the layer.
 //-------------------------------------------------------------------------
 void ProfileRenderLayerResult::SetCoordinateSystem(const MdfString& pstrCoordinateSystem)
 {

@@ -40,7 +40,7 @@
       </xs:element>
       <xs:element name="CoordinateSystem" type="xs:string">
         <xs:annotation>
-          <xs:documentation>The coordinate system as WKT used by the map.</xs:documentation>
+          <xs:documentation>The coordinate system code used by the map.</xs:documentation>
         </xs:annotation>
       </xs:element>
       <xs:element name="Extents" type="Box2DType">
@@ -195,7 +195,7 @@
       </xs:element>
       <xs:element name="CoordinateSystem" type="xs:string">
         <xs:annotation>
-          <xs:documentation>The coordinate system as WKT used by the layer.</xs:documentation>
+          <xs:documentation>The coordinate system code used by the layer.</xs:documentation>
         </xs:annotation>
       </xs:element>
       <xs:element name="ScaleRange" type="ScaleRangeType">

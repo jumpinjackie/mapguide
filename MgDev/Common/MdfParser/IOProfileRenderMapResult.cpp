@@ -158,7 +158,7 @@ void IOProfileRenderMapResult::Write(MdfStream& fd, ProfileRenderMapResult* prof
     IOUnknown::Write(fd, profileRenderMapResult->GetUnknownXml(), version, tab);
 
     tab.dectab();
-    if (ProfileResult::ProfileRenderMap)
+    if (ProfileResult::ProfileRenderMap == type)
         fd << tab.tab() << endStr(sProfileRenderMapResult) << std::endl;
     else //ProfileResult::ProfileRenderDynamicOverlay
         fd << tab.tab() << endStr(sProfileRenderDynamicOverlayResult) << std::endl;

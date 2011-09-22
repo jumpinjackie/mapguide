@@ -60,7 +60,7 @@ BEGIN_NAMESPACE_MDFMODEL
         void SetFeatureClassName(const MdfString& pstrFeatureClassName);
 
         // Property: CoordinateSystem
-        // The coordinate system as WKT used by the layer.
+        // The coordinate system code used by the layer.
         const MdfString& GetCoordinateSystem() const;
         void SetCoordinateSystem(const MdfString& pstrCoordinateSystem);
 

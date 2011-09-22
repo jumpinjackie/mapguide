@@ -23,6 +23,7 @@
 class SE_Renderer;
 class FeatureInfoRenderer;
 class MgFeatureInformation;
+class Stylizer;
 
 namespace MdfModel
 {
@@ -233,6 +234,44 @@ private:
                                 bool requiresClipping,
                                 bool localOverposting = false,
                                 double tileExtentOffset = 0.0);
+
+    void RenderLayers(MgMap* map,
+                      MgReadOnlyLayerCollection* layers,
+                      Stylizer* ds,
+                      Renderer* dr,
+                      MgCoordinateSystem* dstCs,
+                      bool expandExtents,
+                      double scale,
+                      CREFSTRING format,
+                      ProfileRenderMapResult* pPRMResult);
+
+    void RenderSelection(MgMap* map,
+                         MgSelection* selection,
+                         MgReadOnlyLayerCollection* layers,
+                         MgRenderingOptions* options,
+                         Stylizer* ds,
+                         Renderer* dr,
+                         MgCoordinateSystem* dstCs,
+                         double scale,
+                         INT32 behavior,
+                         ProfileRenderMapResult* pPRMResult);
+
+    void RenderWatermarks(MgMap* map,
+                          MgReadOnlyLayerCollection* layers,
+                          Stylizer* ds,
+                          Renderer* dr,
+                          int drawWidth,
+                          int drawHeight,
+                          INT32 saveWidth,
+                          INT32 saveHeight,
+                          ProfileRenderMapResult* pPRMResult);
+
+    MgByteReader* CreateImage(MgMap* map,
+                              Renderer* dr,
+                              INT32 saveWidth,
+                              INT32 saveHeight,
+                              CREFSTRING format,
+                              ProfileRenderMapResult* pPRMResult);
 
     // member data
     Ptr<MgFeatureService> m_svcFeature;
