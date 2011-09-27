@@ -38,7 +38,12 @@
     $resourceSrvc->SetResource($webLayOutId, $content_byteReader, null);
 
     //pass the seesion ID with the url, so when the map viewer is opened, there is no need to re-enter the password
-    $webLayoutUrl="../mapviewerajax/?WEBLAYOUT=".urlencode($webLayoutName)."&LOCALE=en&SESSION=".$site->GetCurrentSession();
+    $ajaxViewerFolder = "mapviewerajax/?";
+
+    //uncomment this line for Java API.
+    //$ajaxViewerFolder = "mapviewerjava/ajaxviewer.jsp?";
+    
+    $webLayoutUrl="../".$ajaxViewerFolder."WEBLAYOUT=".urlencode($webLayoutName)."&LOCALE=en&SESSION=".$site->GetCurrentSession();
 
     header('Location:'. $webLayoutUrl);
 ?>
