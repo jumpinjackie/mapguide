@@ -194,12 +194,15 @@ void LabelRenderer::ProcessLabelGroup(SE_LabelInfo*    labels,
         SE_LabelInfo* info = &labels[i];
 
         // label is in device space
-        LabelInfo lrinfo(info->x, info->y, info->symbol);
+        LabelInfo lrinfo(info->x, info->y, info->style);
 
         // TODO: HACK -- well somewhat of a hack -- store the angle in the tdef
         lrinfo.m_tdef.rotation() = info->anglerad * M_180PI;
 
         m_labelGroups.back().m_labels.push_back(lrinfo);
+
+        // label renderer now owns the cloned render style
+        info->style = NULL;
     }
 
     EndOverpostGroup();

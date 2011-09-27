@@ -2860,7 +2860,7 @@ void DWFRenderer::ProcessSELabelGroup(SE_LabelInfo*   labels,
         BeginMacro(file, i+1, scale);
 
             m_w2dActive = file;
-            DrawSymbol(info->symbol->symbol, m, info->anglerad);
+            DrawSymbol(info->style->symbol, m, info->anglerad);
             m_w2dActive = NULL;
 
         EndMacro(file, i+1);
