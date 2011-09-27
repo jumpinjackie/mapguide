@@ -8,7 +8,7 @@ require_once('skipifconnectfailure.inc');
 ?>
 --FILE--
 <?php
-	include "connect.inc";
+	require_once("connect.inc");
 
 	$tmp    = NULL;
 	$link   = NULL;
@@ -45,7 +45,9 @@ require_once('skipifconnectfailure.inc');
 		printf("[005] Expecting NULL, got %s/%s\n", gettype($tmp), $tmp);
 
 	$stmt->prepare("SELECT * FROM test");
+
 	mt_srand(microtime(true));
+
 	for ($i = -100; $i < 1000; $i++) {
 		if (in_array($i, $valid_attr))
 			continue;
@@ -55,13 +57,12 @@ require_once('skipifconnectfailure.inc');
 		}
 	}
 
-	for ($i = 0; $i < 10; $i++) {
+	for ($i = 0; $i < 2; $i++) {
 		do {
 			$invalid_attr = mt_rand(-1 * (min(4294967296, PHP_INT_MAX) + 1), min(4294967296, PHP_INT_MAX));
 		} while (in_array($invalid_attr, $valid_attr));
 		if (false !== ($tmp = @mysqli_stmt_attr_set($stmt, $invalid_attr, 0))) {
-			/* Although it may be desired to get false neither the MySQL Client Library nor mysqlnd are supposed to detect invalid codes */
-			printf("[006b] Expecting boolean/true for attribute %d, got %s/%s\n", $invalid_attr, gettype($tmp), $tmp);
+			printf("[006b] Expecting boolean/false for attribute %d, got %s/%s\n", $invalid_attr, gettype($tmp), $tmp);
 		}
 	}
 	$stmt->close();
@@ -91,6 +92,9 @@ require_once('skipifconnectfailure.inc');
 	$stmt = mysqli_stmt_init($link);
 	$stmt->prepare("SELECT label FROM test");
 	$stmt->attr_set(MYSQLI_STMT_ATTR_UPDATE_MAX_LENGTH, 1);
+	$res = $stmt->attr_get(MYSQLI_STMT_ATTR_UPDATE_MAX_LENGTH);
+	if ($res !== 1)
+		printf("[007.1] max_length should be 1, got %s\n", $res);
 	$stmt->execute();
 	$stmt->store_result();
 	$res = $stmt->result_metadata();
@@ -108,6 +112,9 @@ require_once('skipifconnectfailure.inc');
 	$stmt = mysqli_stmt_init($link);
 	$stmt->prepare("SELECT label FROM test");
 	$stmt->attr_set(MYSQLI_STMT_ATTR_UPDATE_MAX_LENGTH, 0);
+	$res = $stmt->attr_get(MYSQLI_STMT_ATTR_UPDATE_MAX_LENGTH);
+	if ($res !== 0)
+		printf("[008.1] max_length should be 0, got %s\n", $res);
 	$stmt->execute();
 	$stmt->store_result();
 	$res = $stmt->result_metadata();

@@ -2,7 +2,7 @@
    +----------------------------------------------------------------------+
    | PHP Version 5                                                        |
    +----------------------------------------------------------------------+
-   | Copyright (c) 1997-2009 The PHP Group                                |
+   | Copyright (c) 1997-2011 The PHP Group                                |
    +----------------------------------------------------------------------+
    | This source file is subject to version 3.01 of the PHP license,      |
    | that is bundled with this package in the file LICENSE, and is        |
@@ -18,7 +18,7 @@
    +----------------------------------------------------------------------+
 */
 
-/* $Id: html.c 272370 2008-12-31 11:15:49Z sebastian $ */
+/* $Id: html.c 306939 2011-01-01 02:19:59Z felipe $ */
 
 /*
  * HTML entity resources:
@@ -144,7 +144,7 @@ static entity_table_t ent_uni_greek[] = {
 	NULL, NULL, NULL, NULL, NULL, NULL, NULL,
 	"thetasym", "upsih",
 	NULL, NULL, NULL,
-	"piv" 
+	"piv"
 };
 
 static entity_table_t ent_uni_punct[] = {
@@ -154,7 +154,7 @@ static entity_table_t ent_uni_punct[] = {
 	NULL, NULL, NULL, "ndash", "mdash", NULL, NULL, NULL,
 	/* 8216 */
 	"lsquo", "rsquo", "sbquo", NULL, "ldquo", "rdquo", "bdquo", NULL,
-	"dagger", "Dagger",	"bull", NULL, NULL, NULL, "hellip",
+	"dagger", "Dagger", "bull", NULL, NULL, NULL, "hellip",
 	NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, "permil", NULL,
 	/* 8242 */
 	"prime", "Prime", NULL, NULL, NULL, NULL, NULL, "lsaquo", "rsaquo", NULL,
@@ -194,39 +194,39 @@ static entity_table_t ent_uni_8592_9002[] = {
 	NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL,
 	NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL,
 	/* 8656 (0x21d0) */
-	"lArr", "uArr", "rArr", "dArr", "hArr", "vArr", NULL, NULL,
-	NULL, NULL, "lAarr", "rAarr", NULL, "rarrw", NULL, NULL,
+	"lArr", "uArr", "rArr", "dArr", "hArr", NULL, NULL, NULL,
+	NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL,
 	/* 8672 (0x21e0) */
 	NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL,
 	NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL,
 	NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL,
 	NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL,
 	/* 8704 (0x2200) */
-	"forall", "comp", "part", "exist", "nexist", "empty", NULL, "nabla",
-	"isin", "notin", "epsis", "ni", "notni", "bepsi", NULL, "prod",
+	"forall", NULL, "part", "exist", NULL, "empty", NULL, "nabla",
+	"isin", "notin", NULL, "ni", NULL, NULL, NULL, "prod",
 	/* 8720 (0x2210) */
-	"coprod", "sum", "minus", "mnplus", "plusdo", NULL, "setmn", "lowast",
-	"compfn", NULL, "radic", NULL, NULL, "prop", "infin", "ang90",
+	NULL, "sum", "minus", NULL, NULL, NULL, NULL, "lowast",
+	NULL, NULL, "radic", NULL, NULL, "prop", "infin", NULL,
 	/* 8736 (0x2220) */
-	"ang", "angmsd", "angsph", "mid", "nmid", "par", "npar", "and",
-	"or", "cap", "cup", "int", NULL, NULL, "conint", NULL,
+	"ang", NULL, NULL, NULL, NULL, NULL, NULL, "and",
+	"or", "cap", "cup", "int", NULL, NULL, NULL, NULL,
 	/* 8752 (0x2230) */
-	NULL, NULL, NULL, NULL, "there4", "becaus", NULL, NULL,
-	NULL, NULL, NULL, NULL, "sim", "bsim", NULL, NULL,
+	NULL, NULL, NULL, NULL, "there4", NULL, NULL, NULL,
+	NULL, NULL, NULL, NULL, "sim", NULL, NULL, NULL,
 	/* 8768 (0x2240) */
-	"wreath", "nsim", NULL, "sime", "nsime", "cong", NULL, "ncong",
-	"asymp", "nap", "ape", NULL, "bcong", "asymp", "bump", "bumpe",
+	NULL, NULL, NULL, NULL, NULL, "cong", NULL, NULL,
+	"asymp", NULL, NULL, NULL, NULL, NULL, NULL, NULL,
 	/* 8784 (0x2250) */
 	NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL,
 	NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL,
 	/* 8800 (0x2260) */
-	"ne", "equiv", NULL, NULL, "le", "ge", "lE", "gE",
-	"lnE", "gnE", "Lt", "Gt", "twixt", NULL, "nlt", "ngt",
+	"ne", "equiv", NULL, NULL, "le", "ge", NULL, NULL,
+	NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL,
 	/* 8816 (0x2270) */
-	"nles", "nges", "lsim", "gsim", NULL, NULL, "lg", "gl",
-	NULL, NULL, "pr", "sc", "cupre", "sscue", "prsim", "scsim",
+	NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL,
+	NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL,
 	/* 8832 (0x2280) */
-	"npr", "nsc", "sub", "sup", "nsub", "nsup", "sube", "supe",
+	NULL, NULL, "sub", "sup", "nsub", NULL, "sube", "supe",
 	NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL,
 	/* 8848 (0x2290) */
 	NULL, NULL, NULL, NULL, NULL, "oplus", NULL, "otimes",
@@ -380,8 +380,8 @@ static entity_table_t ent_macroman[] = {
 
 struct html_entity_map {
 	enum entity_charset charset;	/* charset identifier */
-	unsigned short basechar;			/* char code at start of table */
-	unsigned short endchar;			/* last char code in the table */
+	unsigned int basechar;			/* char code at start of table */
+	unsigned int endchar;			/* last char code in the table */
 	entity_table_t *table;			/* the table of mappings */
 };
 
@@ -483,16 +483,31 @@ struct basic_entities_dec {
 			}                        \
 			mbseq[mbpos++] = (mbchar); }
 
+/* skip one byte and return */
+#define MB_FAILURE(pos) do { \
+	*newpos = pos + 1; \
+	*status = FAILURE; \
+	return 0; \
+} while (0)
+
 #define CHECK_LEN(pos, chars_need)			\
-	if((str_len - (pos)) < chars_need) {	\
-		*newpos = pos;						\
-		*status = FAILURE;					\
-		return 0;							\
+	if (chars_need < 1) {						\
+		if((str_len - (pos)) < chars_need) {	\
+			*newpos = pos;						\
+			*status = FAILURE;					\
+			return 0;							\
+		}										\
+	} else {									\
+		if((str_len - (pos)) < chars_need) {	\
+			*newpos = pos + 1;					\
+			*status = FAILURE;					\
+			return 0;							\
+		}										\
 	}
 
 /* {{{ get_next_char
  */
-inline static unsigned short get_next_char(enum entity_charset charset,
+inline static unsigned int get_next_char(enum entity_charset charset,
 		unsigned char * str,
 		int str_len,
 		int * newpos,
@@ -503,206 +518,191 @@ inline static unsigned short get_next_char(enum entity_charset charset,
 	int pos = *newpos;
 	int mbpos = 0;
 	int mbspace = *mbseqlen;
-	unsigned short this_char = str[pos++];
+	unsigned int this_char = 0;
 	unsigned char next_char;
 
 	*status = SUCCESS;
-	
+
 	if (mbspace <= 0) {
 		*mbseqlen = 0;
-		return this_char;
+		CHECK_LEN(pos, 1);
+		*newpos = pos + 1;
+		return str[pos];
 	}
-	
-	MB_WRITE((unsigned char)this_char);
-	
+
 	switch (charset) {
 		case cs_utf_8:
 			{
-				unsigned long utf = 0;
-				int stat = 0;
-				int more = 1;
-
-				/* unpack utf-8 encoding into a wide char.
-				 * Code stolen from the mbstring extension */
-
-				do {
+				unsigned char c;
+				CHECK_LEN(pos, 1);
+				c = str[pos];
+				if (c < 0x80) {
+					MB_WRITE(c);
+					this_char = c;
+					pos++;
+				} else if (c < 0xc2) {
+					MB_FAILURE(pos);
+				} else if (c < 0xe0) {
+					CHECK_LEN(pos, 2);
+					if (str[pos + 1] < 0x80 || str[pos + 1] > 0xbf) {
+						MB_FAILURE(pos);
+					}
+					this_char = ((c & 0x1f) << 6) | (str[pos + 1] & 0x3f);
 					if (this_char < 0x80) {
-						more = 0;
-						if(stat) {
-							/* we didn't finish the UTF sequence correctly */
-							--pos;
-							*status = FAILURE;
-						}
-						break;
-					} else if (this_char < 0xc0) {
-						switch (stat) {
-							case 0x10:	/* 2, 2nd */
-							case 0x21:	/* 3, 3rd */
-							case 0x32:	/* 4, 4th */
-							case 0x43:	/* 5, 5th */
-							case 0x54:	/* 6, 6th */
-								/* last byte in sequence */
-								more = 0;
-								utf |= (this_char & 0x3f);
-								this_char = (unsigned short)utf;
-								break;
-							case 0x20:	/* 3, 2nd */
-							case 0x31:	/* 4, 3rd */
-							case 0x42:	/* 5, 4th */
-							case 0x53:	/* 6, 5th */
-								/* penultimate char */
-								utf |= ((this_char & 0x3f) << 6);
-								stat++;
-								break;
-							case 0x30:	/* 4, 2nd */
-							case 0x41:	/* 5, 3rd */
-							case 0x52:	/* 6, 4th */
-								utf |= ((this_char & 0x3f) << 12);
-								stat++;
-								break;
-							case 0x40:	/* 5, 2nd */
-							case 0x51:
-								utf |= ((this_char & 0x3f) << 18);
-								stat++;
-								break;
-							case 0x50:	/* 6, 2nd */
-								utf |= ((this_char & 0x3f) << 24);
-								stat++;
-								break;
-							default:
-								/* invalid */
-								*status = FAILURE;
-								more = 0;
-						}
+						MB_FAILURE(pos);
 					}
-					/* lead byte */
-					else if (this_char < 0xe0) {
-						stat = 0x10;	/* 2 byte */
-						utf = (this_char & 0x1f) << 6;
-						CHECK_LEN(pos, 1);
-					} else if (this_char < 0xf0) {
-						stat = 0x20;	/* 3 byte */
-						utf = (this_char & 0xf) << 12;
-						CHECK_LEN(pos, 2);
-					} else if (this_char < 0xf8) {
-						stat = 0x30;	/* 4 byte */
-						utf = (this_char & 0x7) << 18;
-						CHECK_LEN(pos, 3);
-					} else if (this_char < 0xfc) {
-						stat = 0x40;	/* 5 byte */
-						utf = (this_char & 0x3) << 24;
-						CHECK_LEN(pos, 4);
-					} else if (this_char < 0xfe) {
-						stat = 0x50;	/* 6 byte */
-						utf = (this_char & 0x1) << 30;
-						CHECK_LEN(pos, 5);
-					} else {
-						/* invalid; bail */
-						more = 0;
-						*status = FAILURE;
-						break;
+					MB_WRITE((unsigned char)c);
+					MB_WRITE((unsigned char)str[pos + 1]);
+					pos += 2;
+				} else if (c < 0xf0) {
+					CHECK_LEN(pos, 3);
+					if (str[pos + 1] < 0x80 || str[pos + 1] > 0xbf) {
+						MB_FAILURE(pos);
 					}
-
-					if (more) {
-						this_char = str[pos++];
-						MB_WRITE((unsigned char)this_char);
+					if (str[pos + 2] < 0x80 || str[pos + 2] > 0xbf) {
+						MB_FAILURE(pos);
 					}
-				} while (more);
+					this_char = ((c & 0x0f) << 12) | ((str[pos + 1] & 0x3f) << 6) | (str[pos + 2] & 0x3f);
+					if (this_char < 0x800) {
+						MB_FAILURE(pos);
+					} else if (this_char >= 0xd800 && this_char <= 0xdfff) {
+						MB_FAILURE(pos);
+					}
+					MB_WRITE((unsigned char)c);
+					MB_WRITE((unsigned char)str[pos + 1]);
+					MB_WRITE((unsigned char)str[pos + 2]);
+					pos += 3;
+				} else if (c < 0xf5) {
+					CHECK_LEN(pos, 4);
+					if (str[pos + 1] < 0x80 || str[pos + 1] > 0xbf) {
+						MB_FAILURE(pos);
+					}
+					if (str[pos + 2] < 0x80 || str[pos + 2] > 0xbf) {
+						MB_FAILURE(pos);
+					}
+					if (str[pos + 3] < 0x80 || str[pos + 3] > 0xbf) {
+						MB_FAILURE(pos);
+					}
+					this_char = ((c & 0x07) << 18) | ((str[pos + 1] & 0x3f) << 12) | ((str[pos + 2] & 0x3f) << 6) | (str[pos + 3] & 0x3f);
+					if (this_char < 0x10000 || this_char > 0x10FFFF) {
+						MB_FAILURE(pos);
+					}
+					MB_WRITE((unsigned char)c);
+					MB_WRITE((unsigned char)str[pos + 1]);
+					MB_WRITE((unsigned char)str[pos + 2]);
+					MB_WRITE((unsigned char)str[pos + 3]);
+					pos += 4;
+				} else {
+					MB_FAILURE(pos);
+				}
 			}
 			break;
 		case cs_big5:
 		case cs_gb2312:
 		case cs_big5hkscs:
 			{
+				CHECK_LEN(pos, 1);
+				this_char = str[pos++];
 				/* check if this is the first of a 2-byte sequence */
-				if (this_char >= 0xa1 && this_char <= 0xfe) {
+				if (this_char >= 0x81 && this_char <= 0xfe) {
 					/* peek at the next char */
 					CHECK_LEN(pos, 1);
-					next_char = str[pos];
+					next_char = str[pos++];
 					if ((next_char >= 0x40 && next_char <= 0x7e) ||
 							(next_char >= 0xa1 && next_char <= 0xfe)) {
 						/* yes, this a wide char */
-						this_char <<= 8;
+						MB_WRITE(this_char);
 						MB_WRITE(next_char);
-						this_char |= next_char;
-						pos++;
+						this_char = (this_char << 8) | next_char;
+					} else {
+						MB_FAILURE(pos);
 					}
-					
+				} else {
+					MB_WRITE(this_char);
 				}
-				break;
 			}
+			break;
 		case cs_sjis:
 			{
+				CHECK_LEN(pos, 1);
+				this_char = str[pos++];
 				/* check if this is the first of a 2-byte sequence */
-				if ( (this_char >= 0x81 && this_char <= 0x9f) ||
-					 (this_char >= 0xe0 && this_char <= 0xef)
-					) {
+				if ((this_char >= 0x81 && this_char <= 0x9f) ||
+					(this_char >= 0xe0 && this_char <= 0xfc)) {
 					/* peek at the next char */
 					CHECK_LEN(pos, 1);
-					next_char = str[pos];
+					next_char = str[pos++];
 					if ((next_char >= 0x40 && next_char <= 0x7e) ||
 						(next_char >= 0x80 && next_char <= 0xfc))
 					{
 						/* yes, this a wide char */
-						this_char <<= 8;
+						MB_WRITE(this_char);
 						MB_WRITE(next_char);
-						this_char |= next_char;
-						pos++;
+						this_char = (this_char << 8) | next_char;
+					} else {
+						MB_FAILURE(pos);
 					}
-					
+				} else {
+					MB_WRITE(this_char);
 				}
 				break;
 			}
 		case cs_eucjp:
 			{
+				CHECK_LEN(pos, 1);
+				this_char = str[pos++];
 				/* check if this is the first of a multi-byte sequence */
 				if (this_char >= 0xa1 && this_char <= 0xfe) {
 					/* peek at the next char */
 					CHECK_LEN(pos, 1);
-					next_char = str[pos];
+					next_char = str[pos++];
 					if (next_char >= 0xa1 && next_char <= 0xfe) {
 						/* yes, this a jis kanji char */
-						this_char <<= 8;
+						MB_WRITE(this_char);
 						MB_WRITE(next_char);
-						this_char |= next_char;
-						pos++;
+						this_char = (this_char << 8) | next_char;
+					} else {
+						MB_FAILURE(pos);
 					}
-					
 				} else if (this_char == 0x8e) {
 					/* peek at the next char */
 					CHECK_LEN(pos, 1);
-					next_char = str[pos];
+					next_char = str[pos++];
 					if (next_char >= 0xa1 && next_char <= 0xdf) {
 						/* JIS X 0201 kana */
-						this_char <<= 8;
+						MB_WRITE(this_char);
 						MB_WRITE(next_char);
-						this_char |= next_char;
-						pos++;
+						this_char = (this_char << 8) | next_char;
+					} else {
+						MB_FAILURE(pos);
 					}
-					
 				} else if (this_char == 0x8f) {
 					/* peek at the next two char */
 					unsigned char next2_char;
 					CHECK_LEN(pos, 2);
 					next_char = str[pos];
-					next2_char = str[pos+1];
+					next2_char = str[pos + 1];
+					pos += 2;
 					if ((next_char >= 0xa1 && next_char <= 0xfe) &&
 						(next2_char >= 0xa1 && next2_char <= 0xfe)) {
 						/* JIS X 0212 hojo-kanji */
-						this_char <<= 8;
+						MB_WRITE(this_char);
 						MB_WRITE(next_char);
-						this_char |= next_char;
-						pos++;
-						this_char <<= 8;
 						MB_WRITE(next2_char);
-						this_char |= next2_char;
-						pos++;
+						this_char = (this_char << 16) | (next_char << 8) | next2_char;
+					} else {
+						MB_FAILURE(pos);
 					}
-					
+				} else {
+					MB_WRITE(this_char);
 				}
 				break;
 			}
 		default:
+			/* single-byte charsets */
+			CHECK_LEN(pos, 1);
+			this_char = str[pos++];
+			MB_WRITE(this_char);
 			break;
 	}
 	MB_RETURN;
@@ -741,8 +741,8 @@ static enum entity_charset determine_charset(char *charset_hint TSRMLS_DC)
 			return cs_eucjp;
 
 		case mbfl_no_encoding_sjis:
-		case mbfl_no_encoding_sjis_win:
-		case mbfl_no_encoding_sjis_mac:
+		case mbfl_no_encoding_sjis_open:
+		case mbfl_no_encoding_cp932:
 			return cs_sjis;
 
 		case mbfl_no_encoding_cp1252:
@@ -867,7 +867,7 @@ det_charset:
 /* }}} */
 
 /* {{{ php_utf32_utf8 */
-size_t php_utf32_utf8(unsigned char *buf, int k)
+size_t php_utf32_utf8(unsigned char *buf, unsigned k)
 {
 	size_t retval = 0;
 
@@ -1020,7 +1020,12 @@ PHPAPI char *php_unescape_html_entities(unsigned char *old, int oldlen, int *new
 						code = strtol(p + 2, &next, 10);
 					}
 
-					if (next != NULL && *next == ';') {
+					if (code == '\'' && !(quote_style & ENT_HTML_QUOTE_SINGLE) ||
+						code == '"' && !(quote_style & ENT_HTML_QUOTE_DOUBLE)) {
+						invalid_code = 1;
+					}
+
+					if (next != NULL && *next == ';' && !invalid_code) {
 						switch (charset) {
 							case cs_utf_8:
 								q += php_utf32_utf8(q, code);
@@ -1032,11 +1037,7 @@ PHPAPI char *php_unescape_html_entities(unsigned char *old, int oldlen, int *new
 								if ((code >= 0x80 && code < 0xa0) || code > 0xff) {
 									invalid_code = 1;
 								} else {
-									if (code == 39 || !quote_style) {
-										invalid_code = 1;
-									} else {
-										*(q++) = code;
-									}
+									*(q++) = code;
 								}
 								break;
 
@@ -1133,7 +1134,7 @@ PHPAPI char *php_escape_html_entities_ex(unsigned char *old, int oldlen, int *ne
 		unsigned char mbsequence[16];	/* allow up to 15 characters in a multibyte sequence */
 		int mbseqlen = sizeof(mbsequence);
 		int status = SUCCESS;
-		unsigned short this_char = get_next_char(charset, old, oldlen, &i, mbsequence, &mbseqlen, &status);
+		unsigned int this_char = get_next_char(charset, old, oldlen, &i, mbsequence, &mbseqlen, &status);
 
 		if(status == FAILURE) {
 			/* invalid MB sequence */
@@ -1407,54 +1408,86 @@ PHP_FUNCTION(htmlentities)
 }
 /* }}} */
 
-/* {{{ proto array get_html_translation_table([int table [, int quote_style]])
+/* {{{ proto array get_html_translation_table([int table [, int quote_style [, string charset_hint]]])
    Returns the internal translation table used by htmlspecialchars and htmlentities */
 PHP_FUNCTION(get_html_translation_table)
 {
 	long which = HTML_SPECIALCHARS, quote_style = ENT_COMPAT;
-	int i, j;
-	char ind[2];
-	enum entity_charset charset = determine_charset(NULL TSRMLS_CC);
+	unsigned int i;
+	int j;
+	unsigned char ind[5]; /* max # of 8-bit code units (4; for UTF-8) + 1 for \0 */
+	void *dummy;
+	char *charset_hint = NULL;
+	int charset_hint_len;
+	enum entity_charset charset;
 
-	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "|ll", &which, &quote_style) == FAILURE) {
+	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "|lls",
+			&which, &quote_style, &charset_hint, &charset_hint_len) == FAILURE) {
 		return;
 	}
 
+	charset = determine_charset(charset_hint TSRMLS_CC);
+
 	array_init(return_value);
 
-	ind[1] = 0;
-
 	switch (which) {
-		case HTML_ENTITIES:
-			for (j=0; entity_map[j].charset != cs_terminator; j++) {
-				if (entity_map[j].charset != charset)
+	case HTML_ENTITIES:
+		for (j = 0; entity_map[j].charset != cs_terminator; j++) {
+			if (entity_map[j].charset != charset)
+				continue;
+			for (i = 0; i <= entity_map[j].endchar - entity_map[j].basechar; i++) {
+				char buffer[16];
+				unsigned k;
+				size_t written;
+
+				if (entity_map[j].table[i] == NULL)
 					continue;
-				for (i = 0; i <= entity_map[j].endchar - entity_map[j].basechar; i++) {
-					char buffer[16];
+					
+				k = i + entity_map[j].basechar;
 
-					if (entity_map[j].table[i] == NULL)
-						continue;
-					/* what about wide chars here ?? */
-					ind[0] = i + entity_map[j].basechar;
-					snprintf(buffer, sizeof(buffer), "&%s;", entity_map[j].table[i]);
-					add_assoc_string(return_value, ind, buffer, 1);
+				switch (charset) {
+				case cs_utf_8:
+					written = php_utf32_utf8(ind, k);
+					ind[written] = '\0';
+					break;
+				case cs_big5:
+				case cs_gb2312:
+				case cs_big5hkscs:
+				case cs_sjis:
+					/* we have no mappings for these, but if we had... */
+					/* break through */
+				default: /* one byte */
+					written = 1;
+					ind[0] = (unsigned char)k;
+					ind[1] = '\0';
+					break;
+				}
 
+				snprintf(buffer, sizeof(buffer), "&%s;", entity_map[j].table[i]);
+				if (zend_hash_find(Z_ARRVAL_P(return_value), (const char*)ind, written+1, &dummy) == FAILURE) {
+					/* in case of the single quote, which is repeated, the first one wins,
+						* so don't replace the existint mapping */
+					add_assoc_string(return_value, (const char*)ind, buffer, 1);
 				}
 			}
-			/* break thru */
+		}
+		/* break thru */
 
-		case HTML_SPECIALCHARS:
-			for (j = 0; basic_entities[j].charcode != 0; j++) {
-
-				if (basic_entities[j].flags && (quote_style & basic_entities[j].flags) == 0)
-					continue;
+	case HTML_SPECIALCHARS:
+		add_assoc_stringl(return_value, "&", "&amp;", sizeof("&amp;") - 1, 1);
+		for (j = 0; basic_entities[j].charcode != 0; j++) {
+			if (basic_entities[j].flags && (quote_style & basic_entities[j].flags) == 0)
+				continue;
 				
-				ind[0] = (unsigned char)basic_entities[j].charcode;
-				add_assoc_stringl(return_value, ind, basic_entities[j].entity, basic_entities[j].entitylen, 1);
+			ind[0] = (unsigned char)basic_entities[j].charcode;
+			ind[1] = '\0';
+			if (zend_hash_find(Z_ARRVAL_P(return_value), (const char*)ind, 2, &dummy) == FAILURE) {
+				add_assoc_stringl(return_value, ind, basic_entities[j].entity,
+					basic_entities[j].entitylen, 1);
 			}
-			add_assoc_stringl(return_value, "&", "&amp;", sizeof("&amp;") - 1, 1);
+		}
 
-			break;
+		break;
 	}
 }
 /* }}} */

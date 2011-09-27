@@ -2,7 +2,7 @@
    +----------------------------------------------------------------------+
    | PHP Version 5                                                        |
    +----------------------------------------------------------------------+
-   | Copyright (c) 1997-2009 The PHP Group                                |
+   | Copyright (c) 1997-2011 The PHP Group                                |
    +----------------------------------------------------------------------+
    | This source file is subject to version 3.01 of the PHP license,      |
    | that is bundled with this package in the file LICENSE, and is        |
@@ -21,7 +21,7 @@
    +----------------------------------------------------------------------+
 */
 
-/* $Id: array.c 287275 2009-08-14 06:20:21Z dmitry $ */
+/* $Id: array.c 309986 2011-04-06 10:23:06Z aharvey $ */
 
 #include "php.h"
 #include "php_ini.h"
@@ -606,7 +606,7 @@ static int php_array_user_compare(const void *a, const void *b TSRMLS_DC) /* {{{
 
 	/* Clear FCI cache otherwise : for example the same or other array with
 	 * (partly) the same key values has been sorted with uasort() or
-	 * other sorting function the comparison is cached, however the the name
+	 * other sorting function the comparison is cached, however the name
 	 * of the function for comparison is not respected. see bug #28739 AND #33295
 	 *
 	 * Following defines will assist in backup / restore values. */
@@ -640,7 +640,7 @@ PHP_FUNCTION(usort)
 	}
 
 	/* Clear the is_ref flag, so the attemts to modify the array in user
-	 * comaprison function will create a copy of array and won't affect the
+	 * comparison function will create a copy of array and won't affect the
 	 * original array. The fact of modification is detected using refcount
 	 * comparison. The result of sorting in such case is undefined and the
 	 * function returns FALSE.
@@ -768,6 +768,7 @@ static int php_array_user_key_compare(const void *a, const void *b TSRMLS_DC) /*
 PHP_FUNCTION(uksort)
 {
 	zval *array;
+	int refcount;
 	PHP_ARRAY_CMP_FUNC_VARS;
 
 	PHP_ARRAY_CMP_FUNC_BACKUP();
@@ -777,13 +778,31 @@ PHP_FUNCTION(uksort)
 		return;
 	}
 
+	/* Clear the is_ref flag, so the attemts to modify the array in user
+	 * comaprison function will create a copy of array and won't affect the
+	 * original array. The fact of modification is detected using refcount
+	 * comparison. The result of sorting in such case is undefined and the
+	 * function returns FALSE.
+	 */
+	Z_UNSET_ISREF_P(array);
+	refcount = Z_REFCOUNT_P(array);
+
 	if (zend_hash_sort(Z_ARRVAL_P(array), zend_qsort, php_array_user_key_compare, 0 TSRMLS_CC) == FAILURE) {
-		PHP_ARRAY_CMP_FUNC_RESTORE();
-		RETURN_FALSE;
+		RETVAL_FALSE;
+	} else {
+		if (refcount > Z_REFCOUNT_P(array)) {
+			php_error_docref(NULL TSRMLS_CC, E_WARNING, "Array was modified by the user comparison function");
+			RETVAL_FALSE;
+		} else {
+			RETVAL_TRUE;
+		}
+	}
+
+	if (Z_REFCOUNT_P(array) > 1) {
+		Z_SET_ISREF_P(array);
 	}
 
 	PHP_ARRAY_CMP_FUNC_RESTORE();
-	RETURN_TRUE;
 }
 /* }}} */
 
@@ -1038,6 +1057,9 @@ static int php_array_walk(HashTable *target_hash, zval **userdata, int recursive
 	/* Set up known arguments */
 	args[1] = &key;
 	args[2] = userdata;
+	if (userdata) {
+		Z_ADDREF_PP(userdata);
+	}
 
 	zend_hash_internal_pointer_reset_ex(target_hash, &pos);
 
@@ -1057,6 +1079,9 @@ static int php_array_walk(HashTable *target_hash, zval **userdata, int recursive
 			thash = Z_ARRVAL_PP(args[0]);
 			if (thash->nApplyCount > 1) {
 				php_error_docref(NULL TSRMLS_CC, E_WARNING, "recursion detected");
+				if (userdata) {
+					zval_ptr_dtor(userdata);
+				}
 				return 0;
 			}
 
@@ -1107,6 +1132,9 @@ static int php_array_walk(HashTable *target_hash, zval **userdata, int recursive
 		zend_hash_move_forward_ex(target_hash, &pos);
 	}
 
+	if (userdata) {
+		zval_ptr_dtor(userdata);
+	}
 	return 0;
 }
 /* }}} */
@@ -1361,7 +1389,10 @@ PHP_FUNCTION(extract)
 
 			case EXTR_OVERWRITE:
 				/* GLOBALS protection */
-				if (var_exists && var_name_len == sizeof("GLOBALS") && !strcmp(var_name, "GLOBALS")) {
+				if (var_exists && var_name_len == sizeof("GLOBALS")-1 && !strcmp(var_name, "GLOBALS")) {
+					break;
+				}
+				if (var_exists && var_name_len == sizeof("this")-1  && !strcmp(var_name, "this") && EG(scope) && EG(scope)->name_length != 0) {
 					break;
 				}
 				ZVAL_STRINGL(&final_name, var_name, var_name_len, 1);
@@ -1445,9 +1476,7 @@ static void php_compact_var(HashTable *eg_active_symbol_table, zval *return_valu
 		if (zend_hash_find(eg_active_symbol_table, Z_STRVAL_P(entry), Z_STRLEN_P(entry) + 1, (void **)&value_ptr) != FAILURE) {
 			value = *value_ptr;
 			ALLOC_ZVAL(data);
-			*data = *value;
-			zval_copy_ctor(data);
-			INIT_PZVAL(data);
+			MAKE_COPY_ZVAL(&value, data);
 
 			zend_hash_update(Z_ARRVAL_P(return_value), Z_STRVAL_P(entry), Z_STRLEN_P(entry) + 1, &data, sizeof(zval *), NULL);
 		}
@@ -1659,28 +1688,32 @@ PHP_FUNCTION(range)
 		}
 
 	} else if (Z_TYPE_P(zlow) == IS_DOUBLE || Z_TYPE_P(zhigh) == IS_DOUBLE || is_step_double) {
-		double low, high;
+		double low, high, value;
+		long i;
 double_str:
 		convert_to_double(zlow);
 		convert_to_double(zhigh);
 		low = Z_DVAL_P(zlow);
 		high = Z_DVAL_P(zhigh);
+		i = 0;
 
 		if (low > high) { 		/* Negative steps */
 			if (low - high < step || step <= 0) {
 				err = 1;
 				goto err;
 			}
-			for (; low >= (high - DOUBLE_DRIFT_FIX); low -= step) {
-				add_next_index_double(return_value, low);
+
+			for (value = low; value >= (high - DOUBLE_DRIFT_FIX); value = low - (++i * step)) {
+				add_next_index_double(return_value, value);
 			}
 		} else if (high > low) { 	/* Positive steps */
 			if (high - low < step || step <= 0) {
 				err = 1;
 				goto err;
 			}
-			for (; low <= (high + DOUBLE_DRIFT_FIX); low += step) {
-				add_next_index_double(return_value, low);
+
+			for (value = low; value <= (high + DOUBLE_DRIFT_FIX); value = low + (++i * step)) {
+				add_next_index_double(return_value, value);
 			}
 		} else {
 			add_next_index_double(return_value, low);
@@ -3528,8 +3561,8 @@ static void php_array_diff(INTERNAL_FUNCTION_PARAMETERS, int behavior, int data_
 		for (i = 1; i < arr_argc; i++) {
 			Bucket **ptr = ptrs[i];
 			if (behavior == DIFF_NORMAL) {
-				while (*ptr && (0 < (c = diff_data_compare_func(ptrs[0], ptr TSRMLS_CC)))) {
-					ptr++;
+				while (*ptrs[i] && (0 < (c = diff_data_compare_func(ptrs[0], ptrs[i] TSRMLS_CC)))) {
+					ptrs[i]++;
 				}
 			} else if (behavior & DIFF_ASSOC) { /* triggered also when DIFF_KEY */
 				while (*ptr && (0 != (c = diff_key_compare_func(ptrs[0], ptr TSRMLS_CC)))) {
@@ -4019,10 +4052,10 @@ PHP_FUNCTION(array_product)
 		return;
 	}
 
-	if (!zend_hash_num_elements(Z_ARRVAL_P(input))) {
-		RETURN_LONG(0);
-	}
 	ZVAL_LONG(return_value, 1);
+	if (!zend_hash_num_elements(Z_ARRVAL_P(input))) {
+		return;
+	}
 
 	for (zend_hash_internal_pointer_reset_ex(Z_ARRVAL_P(input), &pos);
 		zend_hash_get_current_data_ex(Z_ARRVAL_P(input), (void **)&entry, &pos) == SUCCESS;
@@ -4070,9 +4103,7 @@ PHP_FUNCTION(array_reduce)
 
 	if (ZEND_NUM_ARGS() > 2) {
 		ALLOC_ZVAL(result);
-		*result = *initial;
-		zval_copy_ctor(result);
-		INIT_PZVAL(result);
+		MAKE_COPY_ZVAL(&initial, result);
 	} else {
 		MAKE_STD_ZVAL(result);
 		ZVAL_NULL(result);

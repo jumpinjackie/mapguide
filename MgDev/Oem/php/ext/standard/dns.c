@@ -2,7 +2,7 @@
    +----------------------------------------------------------------------+
    | PHP Version 5                                                        |
    +----------------------------------------------------------------------+
-   | Copyright (c) 1997-2008 The PHP Group                                |
+   | Copyright (c) 1997-2011 The PHP Group                                |
    +----------------------------------------------------------------------+
    | This source file is subject to version 3.01 of the PHP license,      |
    | that is bundled with this package in the file LICENSE, and is        |
@@ -18,7 +18,7 @@
    +----------------------------------------------------------------------+
  */
 
-/* $Id: dns.c 287120 2009-08-11 22:07:35Z scottmac $ */
+/* $Id: dns.c 314766 2011-08-10 17:40:56Z rasmus $ */
 
 /* {{{ includes */
 #include "php.h"
@@ -44,10 +44,10 @@
 #undef T_UNSPEC
 #endif
 #if HAVE_ARPA_NAMESER_H
-#include <arpa/nameser.h>
+#ifdef DARWIN
+# define BIND_8_COMPAT 1
 #endif
-#if HAVE_ARPA_NAMESER_COMPAT_H
-#include <arpa/nameser_compat.h>
+#include <arpa/nameser.h>
 #endif
 #if HAVE_RESOLV_H
 #include <resolv.h>
@@ -60,6 +60,16 @@
 /* Borrowed from SYS/SOCKET.H */
 #if defined(NETWARE) && defined(USE_WINSOCK)
 #define AF_INET 2   /* internetwork: UDP, TCP, etc. */
+#endif
+
+#ifndef MAXHOSTNAMELEN
+#define MAXHOSTNAMELEN 255
+#endif
+
+/* For the local hostname obtained via gethostname which is different from the
+   dns-related MAXHOSTNAMELEN constant above */
+#ifndef HOST_NAME_MAX
+#define HOST_NAME_MAX 255
 #endif
 
 #include "php_dns.h"
@@ -118,7 +128,7 @@ static char *php_gethostbyname(char *name);
    Get the host name of the current machine */
 PHP_FUNCTION(gethostname)
 {
-	char buf[4096];
+	char buf[HOST_NAME_MAX];
 
 	if (zend_parse_parameters_none() == FAILURE) {
 		return;
@@ -697,7 +707,6 @@ PHP_FUNCTION(dns_get_record)
 	int hostname_len;
 	long type_param = PHP_DNS_ANY;
 	zval *authns = NULL, *addtl = NULL;
-	int addtl_recs = 0;
 	int type_to_fetch;
 #if defined(HAVE_DNS_SEARCH)
 	struct sockaddr_storage from;
@@ -724,7 +733,6 @@ PHP_FUNCTION(dns_get_record)
 	if (addtl) {
 		zval_dtor(addtl);
 		array_init(addtl);
-		addtl_recs = 1;
 	}
 
 	if (type_param & ~PHP_DNS_ALL && type_param != PHP_DNS_ANY) {
@@ -742,7 +750,7 @@ PHP_FUNCTION(dns_get_record)
 	 * - In case of PHP_DNS_ANY we use the directly fetch DNS_T_ANY. (step NUMTYPES+1 )
 	 */
 	for (type = (type_param == PHP_DNS_ANY ? (PHP_DNS_NUM_TYPES + 1) : 0);
-		type < (addtl_recs ? (PHP_DNS_NUM_TYPES + 2) : PHP_DNS_NUM_TYPES) || first_query;
+		type < (addtl ? (PHP_DNS_NUM_TYPES + 2) : PHP_DNS_NUM_TYPES) || first_query;
 		type++
 	) {
 		first_query = 0;
@@ -796,12 +804,14 @@ PHP_FUNCTION(dns_get_record)
 #if defined(HAVE_DNS_SEARCH)
 			handle = dns_open(NULL);
 			if (handle == NULL) {
+				zval_dtor(return_value);
 				RETURN_FALSE;
 			}
 #elif defined(HAVE_RES_NSEARCH)
 		    memset(&state, 0, sizeof(state));
 		    if (res_ninit(handle)) {
-					RETURN_FALSE;
+		    	zval_dtor(return_value);
+				RETURN_FALSE;
 			}
 #else
 			res_init();
@@ -810,14 +820,8 @@ PHP_FUNCTION(dns_get_record)
 			n = php_dns_search(handle, hostname, C_IN, type_to_fetch, answer.qb2, sizeof answer);
 
 			if (n < 0) {
-				if (php_dns_errno(handle) == NO_DATA) {
-					php_dns_free_handle(handle);
-					continue;
-				}
-
 				php_dns_free_handle(handle);
-				zval_dtor(return_value);
-				RETURN_FALSE;
+				continue;
 			}
 
 			cp = answer.qb2 + HFIXEDSZ;
@@ -864,7 +868,7 @@ PHP_FUNCTION(dns_get_record)
 				}
 			}
 
-			if (addtl_recs && addtl) {
+			if (addtl) {
 				/* Additional records associated with authoritative name servers */
 				while (ar-- > 0 && cp && cp < end) {
 					zval *retval = NULL;

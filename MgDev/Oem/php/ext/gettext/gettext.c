@@ -2,7 +2,7 @@
    +----------------------------------------------------------------------+
    | PHP Version 5                                                        |
    +----------------------------------------------------------------------+
-   | Copyright (c) 1997-2009 The PHP Group                                |
+   | Copyright (c) 1997-2011 The PHP Group                                |
    +----------------------------------------------------------------------+
    | This source file is subject to version 3.01 of the PHP license,      |
    | that is bundled with this package in the file LICENSE, and is        |
@@ -16,7 +16,7 @@
    +----------------------------------------------------------------------+
  */
 
-/* $Id: gettext.c 272370 2008-12-31 11:15:49Z sebastian $ */
+/* $Id: gettext.c 313665 2011-07-25 11:42:53Z felipe $ */
 
 #ifdef HAVE_CONFIG_H
 #include "config.h"
@@ -112,7 +112,7 @@ const zend_function_entry php_gettext_functions[] = {
 #if HAVE_BIND_TEXTDOMAIN_CODESET
 	PHP_NAMED_FE(bind_textdomain_codeset,	zif_bind_textdomain_codeset,	arginfo_bind_textdomain_codeset)
 #endif
-    {NULL, NULL, NULL}
+    PHP_FE_END
 };
 /* }}} */
 

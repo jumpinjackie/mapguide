@@ -2,7 +2,7 @@
    +----------------------------------------------------------------------+
    | PHP Version 5                                                        |
    +----------------------------------------------------------------------+
-   | Copyright (c) 1997-2009 The PHP Group                                |
+   | Copyright (c) 1997-2011 The PHP Group                                |
    +----------------------------------------------------------------------+
    | This source file is subject to version 3.01 of the PHP license,      |
    | that is bundled with this package in the file LICENSE, and is        |
@@ -16,7 +16,7 @@
    +----------------------------------------------------------------------+
  */
 
-/* $Id: dba_flatfile.c 272370 2008-12-31 11:15:49Z sebastian $ */
+/* $Id: dba_flatfile.c 309341 2011-03-17 11:43:05Z felipe $ */
 
 #ifdef HAVE_CONFIG_H
 #include "config.h"
@@ -96,7 +96,7 @@ DBA_UPDATE_FUNC(flatfile)
 		return SUCCESS;
 	case 1:
 		php_error_docref1(NULL TSRMLS_CC, key, E_WARNING, "Key already exists");
-		return SUCCESS;
+		return FAILURE;
 	}
 }
 

@@ -1,8 +1,8 @@
 /*
   +----------------------------------------------------------------------+
-  | PHP Version 6                                                        |
+  | PHP Version 5                                                        |
   +----------------------------------------------------------------------+
-  | Copyright (c) 2006-2009 The PHP Group                                |
+  | Copyright (c) 2006-2011 The PHP Group                                |
   +----------------------------------------------------------------------+
   | This source file is subject to version 3.01 of the PHP license,      |
   | that is bundled with this package in the file LICENSE, and is        |
@@ -18,7 +18,7 @@
   +----------------------------------------------------------------------+
 */
 
-/* $Id: php_mysqlnd.c 289630 2009-10-14 13:51:25Z johannes $ */
+/* $Id: php_mysqlnd.c 314376 2011-08-06 14:47:44Z felipe $ */
 #include "php.h"
 #include "php_ini.h"
 #include "mysqlnd.h"
@@ -31,13 +31,13 @@
  * Every user visible function must have an entry in mysqlnd_functions[].
  */
 static zend_function_entry mysqlnd_functions[] = {
-	{NULL, NULL, NULL}	/* Must be the last line in mysqlnd_functions[] */
+	PHP_FE_END
 };
 /* }}} */
 
 
 /* {{{ mysqlnd_minfo_print_hash */
-#if PHP_MAJOR_VERSION >= 6
+#if MYSQLND_UNICODE
 PHPAPI void mysqlnd_minfo_print_hash(zval *values)
 {
 	zval **values_entry;
@@ -45,14 +45,14 @@ PHPAPI void mysqlnd_minfo_print_hash(zval *values)
 
 	zend_hash_internal_pointer_reset_ex(Z_ARRVAL_P(values), &pos_values);
 	while (zend_hash_get_current_data_ex(Z_ARRVAL_P(values),
-										(void **)&values_entry, &pos_values) == SUCCESS) {
-		TSRMLS_FETCH();
+		(void **)&values_entry, &pos_values) == SUCCESS) {
 		zstr	string_key;
 		uint	string_key_len;
 		ulong	num_key;
-		int     s_len;
-		char 	*s = NULL;
+		int		s_len;
+		char	*s = NULL;
 
+		TSRMLS_FETCH();
 		zend_hash_get_current_key_ex(Z_ARRVAL_P(values), &string_key, &string_key_len, &num_key, 0, &pos_values);
 
 		convert_to_string(*values_entry);
@@ -69,7 +69,7 @@ PHPAPI void mysqlnd_minfo_print_hash(zval *values)
 	}
 }
 #else
-void mysqlnd_minfo_print_hash(zval *values)
+PHPAPI void mysqlnd_minfo_print_hash(zval *values)
 {
 	zval **values_entry;
 	HashPosition pos_values;
@@ -102,6 +102,18 @@ PHP_MINFO_FUNCTION(mysqlnd)
 	php_info_print_table_start();
 	php_info_print_table_header(2, "mysqlnd", "enabled");
 	php_info_print_table_row(2, "Version", mysqlnd_get_client_info());
+	php_info_print_table_row(2, "Compression",
+#ifdef MYSQLND_COMPRESSION_ENABLED
+								"supported");
+#else
+								"not supported");
+#endif
+	php_info_print_table_row(2, "SSL",
+#ifdef MYSQLND_SSL_SUPPORTED
+								"supported");
+#else
+								"not supported");
+#endif
 	snprintf(buf, sizeof(buf), "%ld", MYSQLND_G(net_cmd_buffer_size));
 	php_info_print_table_row(2, "Command buffer size", buf);
 	snprintf(buf, sizeof(buf), "%ld", MYSQLND_G(net_read_buffer_size));
@@ -110,6 +122,8 @@ PHP_MINFO_FUNCTION(mysqlnd)
 	php_info_print_table_row(2, "Read timeout", buf);
 	php_info_print_table_row(2, "Collecting statistics", MYSQLND_G(collect_statistics)? "Yes":"No");
 	php_info_print_table_row(2, "Collecting memory statistics", MYSQLND_G(collect_memory_statistics)? "Yes":"No");
+
+	php_info_print_table_row(2, "Tracing", MYSQLND_G(debug)? MYSQLND_G(debug):"n/a");
 	php_info_print_table_end();
 
 	/* Print client stats */
@@ -124,7 +138,7 @@ PHP_MINFO_FUNCTION(mysqlnd)
 /* }}} */
 
 
-ZEND_DECLARE_MODULE_GLOBALS(mysqlnd);
+PHPAPI ZEND_DECLARE_MODULE_GLOBALS(mysqlnd)
 
 
 /* {{{ PHP_GINIT_FUNCTION
@@ -139,6 +153,13 @@ static PHP_GINIT_FUNCTION(mysqlnd)
 	mysqlnd_globals->net_read_buffer_size = 32768;
 	mysqlnd_globals->net_read_timeout = 31536000;
 	mysqlnd_globals->log_mask = 0;
+	mysqlnd_globals->mempool_default_size = 16000;
+	mysqlnd_globals->debug_emalloc_fail_threshold = -1;
+	mysqlnd_globals->debug_ecalloc_fail_threshold = -1;
+	mysqlnd_globals->debug_erealloc_fail_threshold = -1;
+	mysqlnd_globals->debug_malloc_fail_threshold = -1;
+	mysqlnd_globals->debug_calloc_fail_threshold = -1;
+	mysqlnd_globals->debug_realloc_fail_threshold = -1;
 }
 /* }}} */
 
@@ -164,6 +185,17 @@ PHP_INI_BEGIN()
 	STD_PHP_INI_ENTRY("mysqlnd.net_read_buffer_size",	"32768",PHP_INI_ALL,	OnUpdateLong,	net_read_buffer_size,	zend_mysqlnd_globals,		mysqlnd_globals)
 	STD_PHP_INI_ENTRY("mysqlnd.net_read_timeout",	"31536000",	PHP_INI_SYSTEM, OnUpdateLong,	net_read_timeout, zend_mysqlnd_globals, mysqlnd_globals)
 	STD_PHP_INI_ENTRY("mysqlnd.log_mask",				"0", 	PHP_INI_ALL,	OnUpdateLong,	log_mask, zend_mysqlnd_globals, mysqlnd_globals)
+	STD_PHP_INI_ENTRY("mysqlnd.mempool_default_size","16000",   PHP_INI_ALL,	OnUpdateLong,	mempool_default_size,	zend_mysqlnd_globals,		mysqlnd_globals)
+
+#ifdef PHP_DEBUG
+	STD_PHP_INI_ENTRY("mysqlnd.debug_emalloc_fail_threshold","-1",   PHP_INI_SYSTEM,	OnUpdateLong,	debug_emalloc_fail_threshold,	zend_mysqlnd_globals,		mysqlnd_globals)
+	STD_PHP_INI_ENTRY("mysqlnd.debug_ecalloc_fail_threshold","-1",   PHP_INI_SYSTEM,	OnUpdateLong,	debug_ecalloc_fail_threshold,	zend_mysqlnd_globals,		mysqlnd_globals)
+	STD_PHP_INI_ENTRY("mysqlnd.debug_erealloc_fail_threshold","-1",   PHP_INI_SYSTEM,	OnUpdateLong,	debug_erealloc_fail_threshold,	zend_mysqlnd_globals,		mysqlnd_globals)
+
+	STD_PHP_INI_ENTRY("mysqlnd.debug_malloc_fail_threshold","-1",   PHP_INI_SYSTEM,	OnUpdateLong,	debug_malloc_fail_threshold,	zend_mysqlnd_globals,		mysqlnd_globals)
+	STD_PHP_INI_ENTRY("mysqlnd.debug_calloc_fail_threshold","-1",   PHP_INI_SYSTEM,	OnUpdateLong,	debug_calloc_fail_threshold,	zend_mysqlnd_globals,		mysqlnd_globals)
+	STD_PHP_INI_ENTRY("mysqlnd.debug_realloc_fail_threshold","-1",   PHP_INI_SYSTEM,	OnUpdateLong,	debug_realloc_fail_threshold,	zend_mysqlnd_globals,		mysqlnd_globals)
+#endif
 PHP_INI_END()
 /* }}} */
 
@@ -192,23 +224,20 @@ static PHP_MSHUTDOWN_FUNCTION(mysqlnd)
 /* }}} */
 
 
-#if defined(PHP_DEBUG) || defined(MYSQLND_THREADED)
+#if defined(PHP_DEBUG)
 /* {{{ PHP_RINIT_FUNCTION
  */
 static PHP_RINIT_FUNCTION(mysqlnd)
 {
 #if defined(PHP_DEBUG)
 	if (MYSQLND_G(debug)) {
-		MYSQLND_DEBUG *dbg = mysqlnd_debug_init(TSRMLS_C);
+		MYSQLND_DEBUG *dbg = mysqlnd_debug_init(mysqlnd_debug_std_no_trace_funcs TSRMLS_CC);
 		if (!dbg) {
 			return FAILURE;
 		}
 		dbg->m->set_mode(dbg, MYSQLND_G(debug));
 		MYSQLND_G(dbg) = dbg;
 	}
-#endif
-#ifdef MYSQLND_THREADED
-	MYSQLND_G(thread_id) = tsrm_thread_id();
 #endif
 	return SUCCESS;
 }
@@ -234,15 +263,23 @@ static PHP_RSHUTDOWN_FUNCTION(mysqlnd)
 #endif
 
 
+
+static const zend_module_dep mysqlnd_deps[] = {
+	ZEND_MOD_REQUIRED("standard")
+	ZEND_MOD_END
+};
+
 /* {{{ mysqlnd_module_entry
  */
 zend_module_entry mysqlnd_module_entry = {
-	STANDARD_MODULE_HEADER,
+	STANDARD_MODULE_HEADER_EX,
+	NULL,
+	mysqlnd_deps,
 	"mysqlnd",
 	mysqlnd_functions,
 	PHP_MINIT(mysqlnd),
 	PHP_MSHUTDOWN(mysqlnd),
-#if defined(PHP_DEBUG) || defined(MYSQLND_THREADED)
+#if defined(PHP_DEBUG)
 	PHP_RINIT(mysqlnd),
 #else
 	NULL,

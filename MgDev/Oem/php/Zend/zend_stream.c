@@ -2,7 +2,7 @@
    +----------------------------------------------------------------------+
    | Zend Engine                                                          |
    +----------------------------------------------------------------------+
-   | Copyright (c) 1998-2009 Zend Technologies Ltd. (http://www.zend.com) |
+   | Copyright (c) 1998-2011 Zend Technologies Ltd. (http://www.zend.com) |
    +----------------------------------------------------------------------+
    | This source file is subject to version 2.00 of the Zend license,     |
    | that is bundled with this package in the file LICENSE, and is        |
@@ -19,7 +19,7 @@
    +----------------------------------------------------------------------+
 */
 
-/* $Id: zend_stream.c 277834 2009-03-26 17:28:49Z dmitry $ */
+/* $Id: zend_stream.c 306939 2011-01-01 02:19:59Z felipe $ */
 
 
 #include "zend.h"
@@ -269,7 +269,9 @@ ZEND_API int zend_stream_fixup(zend_file_handle *file_handle, char **buf, size_t
 		memset(file_handle->handle.stream.mmap.buf + file_handle->handle.stream.mmap.len, 0, ZEND_MMAP_AHEAD);
 	}
 
+#if HAVE_MMAP
 return_mapped:
+#endif
 	file_handle->type = ZEND_HANDLE_MAPPED;
 	file_handle->handle.stream.mmap.pos        = 0;
 	file_handle->handle.stream.mmap.old_handle = file_handle->handle.stream.handle;

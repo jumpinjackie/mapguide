@@ -5,24 +5,25 @@ ocidefinebyname()
 --FILE--
 <?php
 
-require dirname(__FILE__)."/connect.inc";
-require dirname(__FILE__)."/create_table.inc";
+require(dirname(__FILE__)."/connect.inc");
 
-$insert_sql = "INSERT INTO ".$schema.$table_name." (string) VALUES ('some')";
+// Initialize
 
-if (!($s = ociparse($c, $insert_sql))) {
-        die("oci_parse(insert) failed!\n");
-}
+$stmtarray = array(
+    "drop table define_old_tab",
+    "create table define_old_tab (string varchar(10))",
+    "insert into define_old_tab (string) values ('some')",
+);
 
-if (!ociexecute($s)) {
-        die("oci_execute(insert) failed!\n");
-}
+oci8_test_sql_execute($c, $stmtarray);
 
-$stmt = ociparse($c, "SELECT string FROM ".$table_name."");
+// Run test
+
+$stmt = ociparse($c, "select string from define_old_tab");
 
 /* the define MUST be done BEFORE ociexecute! */
 
-$strong = '';
+$string = '';
 ocidefinebyname($stmt, "STRING", $string, 20);
 
 ociexecute($stmt);
@@ -31,11 +32,17 @@ while (ocifetch($stmt)) {
 	var_dump($string);
 }
 
-require dirname(__FILE__)."/drop_table.inc";
+// Cleanup
+
+$stmtarray = array(
+    "drop table define_old_tab"
+);
+
+oci8_test_sql_execute($c, $stmtarray);
 
 echo "Done\n";
 
 ?>
---EXPECT--
-string(4) "some"
+--EXPECTF--
+%unicode|string%(4) "some"
 Done

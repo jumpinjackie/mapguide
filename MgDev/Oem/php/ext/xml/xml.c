@@ -2,7 +2,7 @@
    +----------------------------------------------------------------------+
    | PHP Version 5                                                        |
    +----------------------------------------------------------------------+
-   | Copyright (c) 1997-2009 The PHP Group                                |
+   | Copyright (c) 1997-2011 The PHP Group                                |
    +----------------------------------------------------------------------+
    | This source file is subject to version 3.01 of the PHP license,      |
    | that is bundled with this package in the file LICENSE, and is        |
@@ -18,7 +18,7 @@
    +----------------------------------------------------------------------+
  */
 
-/* $Id: xml.c 287790 2009-08-27 05:05:42Z rasmus $ */
+/* $Id: xml.c 314641 2011-08-09 12:16:58Z laruence $ */
 
 #define IS_EXT_MODULE
 
@@ -237,13 +237,13 @@ const zend_function_entry xml_functions[] = {
 	PHP_FE(xml_parser_get_option,				arginfo_xml_parser_get_option)
 	PHP_FE(utf8_encode, 						arginfo_utf8_encode)
 	PHP_FE(utf8_decode, 						arginfo_utf8_decode)
-	{NULL, NULL, NULL}
+	PHP_FE_END
 };
 
 #ifdef LIBXML_EXPAT_COMPAT
 static const zend_module_dep xml_deps[] = {
 	ZEND_MOD_REQUIRED("libxml")
-	{NULL, NULL, NULL}
+	ZEND_MOD_END
 };
 #endif
 
@@ -659,10 +659,111 @@ PHPAPI char *xml_utf8_encode(const char *s, int len, int *newlen, const XML_Char
 }
 /* }}} */
 
+/* copied from trunk's implementation of get_next_char in ext/standard/html.c */
+#define MB_FAILURE(pos, advance) do { \
+	*cursor = pos + (advance); \
+	*status = FAILURE; \
+	return 0; \
+} while (0)
+
+#define CHECK_LEN(pos, chars_need) ((str_len - (pos)) >= (chars_need))
+#define utf8_lead(c)  ((c) < 0x80 || ((c) >= 0xC2 && (c) <= 0xF4))
+#define utf8_trail(c) ((c) >= 0x80 && (c) <= 0xBF)
+
+/* {{{ php_next_utf8_char
+ */
+static inline unsigned int php_next_utf8_char(
+		const unsigned char *str,
+		size_t str_len,
+		size_t *cursor,
+		int *status)
+{
+	size_t pos = *cursor;
+	unsigned int this_char = 0;
+	unsigned char c;
+
+	*status = SUCCESS;
+
+	if (!CHECK_LEN(pos, 1))
+		MB_FAILURE(pos, 1);
+
+	/* We'll follow strategy 2. from section 3.6.1 of UTR #36:
+		* "In a reported illegal byte sequence, do not include any
+		*  non-initial byte that encodes a valid character or is a leading
+		*  byte for a valid sequence.» */
+	c = str[pos];
+	if (c < 0x80) {
+		this_char = c;
+		pos++;
+	} else if (c < 0xc2) {
+		MB_FAILURE(pos, 1);
+	} else if (c < 0xe0) {
+		if (!CHECK_LEN(pos, 2))
+			MB_FAILURE(pos, 1);
+
+		if (!utf8_trail(str[pos + 1])) {
+			MB_FAILURE(pos, utf8_lead(str[pos + 1]) ? 1 : 2);
+		}
+		this_char = ((c & 0x1f) << 6) | (str[pos + 1] & 0x3f);
+		if (this_char < 0x80) { /* non-shortest form */
+			MB_FAILURE(pos, 2);
+		}
+		pos += 2;
+	} else if (c < 0xf0) {
+		size_t avail = str_len - pos;
+
+		if (avail < 3 ||
+				!utf8_trail(str[pos + 1]) || !utf8_trail(str[pos + 2])) {
+			if (avail < 2 || utf8_lead(str[pos + 1]))
+				MB_FAILURE(pos, 1);
+			else if (avail < 3 || utf8_lead(str[pos + 2]))
+				MB_FAILURE(pos, 2);
+			else
+				MB_FAILURE(pos, 3);
+		}
+
+		this_char = ((c & 0x0f) << 12) | ((str[pos + 1] & 0x3f) << 6) | (str[pos + 2] & 0x3f);
+		if (this_char < 0x800) { /* non-shortest form */
+			MB_FAILURE(pos, 3);
+		} else if (this_char >= 0xd800 && this_char <= 0xdfff) { /* surrogate */
+			MB_FAILURE(pos, 3);
+		}
+		pos += 3;
+	} else if (c < 0xf5) {
+		size_t avail = str_len - pos;
+
+		if (avail < 4 ||
+				!utf8_trail(str[pos + 1]) || !utf8_trail(str[pos + 2]) ||
+				!utf8_trail(str[pos + 3])) {
+			if (avail < 2 || utf8_lead(str[pos + 1]))
+				MB_FAILURE(pos, 1);
+			else if (avail < 3 || utf8_lead(str[pos + 2]))
+				MB_FAILURE(pos, 2);
+			else if (avail < 4 || utf8_lead(str[pos + 3]))
+				MB_FAILURE(pos, 3);
+			else
+				MB_FAILURE(pos, 4);
+		}
+				
+		this_char = ((c & 0x07) << 18) | ((str[pos + 1] & 0x3f) << 12) | ((str[pos + 2] & 0x3f) << 6) | (str[pos + 3] & 0x3f);
+		if (this_char < 0x10000 || this_char > 0x10FFFF) { /* non-shortest form or outside range */
+			MB_FAILURE(pos, 4);
+		}
+		pos += 4;
+	} else {
+		MB_FAILURE(pos, 1);
+	}
+	
+	*cursor = pos;
+	return this_char;
+}
+/* }}} */
+
+
 /* {{{ xml_utf8_decode */
 PHPAPI char *xml_utf8_decode(const XML_Char *s, int len, int *newlen, const XML_Char *encoding)
 {
-	int pos = len;
+	size_t pos = 0;
 	char *newbuf = emalloc(len + 1);
 	unsigned int c;
 	char (*decoder)(unsigned short) = NULL;
@@ -681,36 +782,15 @@ PHPAPI char *xml_utf8_decode(const XML_Char *s, int len, int *newlen, const XML_
 		newbuf[*newlen] = '\0';
 		return newbuf;
 	}
-	while (pos > 0) {
-		c = (unsigned char)(*s);
-		if (c >= 0xf0) { /* four bytes encoded, 21 bits */
-			if(pos-4 >= 0) {
-				c = ((s[0]&7)<<18) | ((s[1]&63)<<12) | ((s[2]&63)<<6) | (s[3]&63);
-			} else {
-				c = '?';	
-			}
-			s += 4;
-			pos -= 4;
-		} else if (c >= 0xe0) { /* three bytes encoded, 16 bits */
-			if(pos-3 >= 0) {
-				c = ((s[0]&63)<<12) | ((s[1]&63)<<6) | (s[2]&63);
-			} else {
-				c = '?';
-			}
-			s += 3;
-			pos -= 3;
-		} else if (c >= 0xc0) { /* two bytes encoded, 11 bits */
-			if(pos-2 >= 0) {
-				c = ((s[0]&63)<<6) | (s[1]&63);
-			} else {
-				c = '?';
-			}
-			s += 2;
-			pos -= 2;
-		} else {
-			s++;
-			pos--;
+
+	while (pos < (size_t)len) {
+		int status = FAILURE;
+		c = php_next_utf8_char((const unsigned char*)s, (size_t) len, &pos, &status);
+
+		if (status == FAILURE || c > 0xFFU) {
+			c = '?';
 		}
+
 		newbuf[*newlen] = decoder ? decoder(c) : c;
 		++*newlen;
 	}
@@ -804,7 +884,7 @@ void _xml_startElementHandler(void *userData, const XML_Char *name, const XML_Ch
 
 		if (parser->startElementHandler) {
 			args[0] = _xml_resource_zval(parser->index);
-			args[1] = _xml_string_zval(tag_name);
+			args[1] = _xml_string_zval(((char *) tag_name) + parser->toffset);
 			MAKE_STD_ZVAL(args[2]);
 			array_init(args[2]);
 
@@ -884,7 +964,7 @@ void _xml_endElementHandler(void *userData, const XML_Char *name)
 
 		if (parser->endElementHandler) {
 			args[0] = _xml_resource_zval(parser->index);
-			args[1] = _xml_string_zval(tag_name);
+			args[1] = _xml_string_zval(((char *) tag_name) + parser->toffset);
 
 			if ((retval = xml_call_handler(parser, parser->endElementHandler, parser->endElementPtr, 2, args))) {
 				zval_ptr_dtor(&retval);
@@ -970,7 +1050,7 @@ void _xml_characterDataHandler(void *userData, const XML_Char *s, int len)
 					if (zend_hash_find(Z_ARRVAL_PP(parser->ctag),"value",sizeof("value"),(void **) &myval) == SUCCESS) {
 						int newlen = Z_STRLEN_PP(myval) + decoded_len;
 						Z_STRVAL_PP(myval) = erealloc(Z_STRVAL_PP(myval),newlen+1);
-						strcpy(Z_STRVAL_PP(myval) + Z_STRLEN_PP(myval),decoded_value);
+						strncpy(Z_STRVAL_PP(myval) + Z_STRLEN_PP(myval), decoded_value, decoded_len + 1);
 						Z_STRLEN_PP(myval) += decoded_len;
 						efree(decoded_value);
 					} else {
@@ -990,7 +1070,7 @@ void _xml_characterDataHandler(void *userData, const XML_Char *s, int len)
 								if (zend_hash_find(Z_ARRVAL_PP(curtag),"value",sizeof("value"),(void **) &myval) == SUCCESS) {
 									int newlen = Z_STRLEN_PP(myval) + decoded_len;
 									Z_STRVAL_PP(myval) = erealloc(Z_STRVAL_PP(myval),newlen+1);
-									strcpy(Z_STRVAL_PP(myval) + Z_STRLEN_PP(myval),decoded_value);
+									strncpy(Z_STRVAL_PP(myval) + Z_STRLEN_PP(myval), decoded_value, decoded_len + 1);
 									Z_STRLEN_PP(myval) += decoded_len;
 									efree(decoded_value);
 									return;
@@ -1270,9 +1350,7 @@ PHP_FUNCTION(xml_set_object)
 #endif */
 
 	ALLOC_ZVAL(parser->object);
-	*parser->object = *mythis;
-	zval_copy_ctor(parser->object);
-	INIT_PZVAL(parser->object);
+	MAKE_COPY_ZVAL(&mythis, parser->object);
 
 	RETVAL_TRUE;
 }

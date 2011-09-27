@@ -5,8 +5,18 @@ oci_num_*() family
 --FILE--
 <?php
 
-require dirname(__FILE__)."/connect.inc";
-require dirname(__FILE__).'/create_table.inc';
+require(dirname(__FILE__)."/connect.inc");
+
+// Initialize
+
+$stmtarray = array(
+    "drop table num_tab",
+    "create table num_tab (id number, value number)",
+);
+
+oci8_test_sql_execute($c, $stmtarray);
+
+// Run Test
 
 echo "Test 1\n";
 var_dump(ocirowcount());
@@ -14,13 +24,12 @@ var_dump(oci_num_rows());
 var_dump(ocinumcols());
 var_dump(oci_num_fields());
 
-$insert_sql = "INSERT INTO ".$schema.$table_name." (id, value) VALUES (1,1)";
-
+echo "Test 2\n";
+$insert_sql = "insert into num_tab (id, value) values (1,1)";
 if (!($s = oci_parse($c, $insert_sql))) {
-  die("oci_parse(insert) failed!\n");
+    die("oci_parse(insert) failed!\n");
 }
 
-echo "Test 2\n";
 var_dump(ocirowcount($s));
 var_dump(oci_num_rows($s));
 var_dump(ocinumcols($s));
@@ -49,7 +58,7 @@ var_dump(ocinumcols($s));
 var_dump(oci_num_fields($s));
 
 // All rows
-$select_sql = "SELECT * FROM ".$schema.$table_name."";
+$select_sql = "select * from num_tab";
 
 if (!($s = oci_parse($c, $select_sql))) {
   die("oci_parse(select) failed!\n");
@@ -83,7 +92,7 @@ var_dump(ocinumcols($s));
 var_dump(oci_num_fields($s));
 
 // One row
-$select_sql = "SELECT id, value FROM ".$schema.$table_name." WHERE ROWNUM < 2";
+$select_sql = "SELECT id, value FROM num_tab WHERE ROWNUM < 2";
 
 if (!($s = oci_parse($c, $select_sql))) {
   die("oci_parse(select) failed!\n");
@@ -104,7 +113,7 @@ var_dump(ocinumcols($s));
 var_dump(oci_num_fields($s));
 
 // No rows
-$select_sql = "SELECT id FROM ".$schema.$table_name." WHERE 1=0";
+$select_sql = "select id from num_tab where 1=0";
 
 if (!($s = oci_parse($c, $select_sql))) {
   die("oci_parse(select) failed!\n");
@@ -124,7 +133,7 @@ var_dump(oci_num_rows($s));
 var_dump(ocinumcols($s));
 var_dump(oci_num_fields($s));
 
-$delete_sql = "DELETE FROM ".$schema.$table_name."";
+$delete_sql = "delete from num_tab";
 
 if (!($s = oci_parse($c, $delete_sql))) {
     die("oci_parse(delete) failed!\n");
@@ -149,7 +158,14 @@ var_dump(oci_num_rows($s));
 var_dump(ocinumcols($s));
 var_dump(oci_num_fields($s));
 
-require dirname(__FILE__).'/drop_table.inc';
+
+// Cleanup
+
+$stmtarray = array(
+    "drop table num_tab"
+);
+
+oci8_test_sql_execute($c, $stmtarray);
 
 echo "Done\n";
 
@@ -191,13 +207,13 @@ int(0)
 Test 5b
 int(0)
 int(0)
-int(5)
-int(5)
+int(2)
+int(2)
 Test 5c
 int(3)
 int(3)
-int(5)
-int(5)
+int(2)
+int(2)
 Test 6
 int(1)
 int(1)

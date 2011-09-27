@@ -2,7 +2,7 @@
   +----------------------------------------------------------------------+
   | PHP Version 5                                                        |
   +----------------------------------------------------------------------+
-  | Copyright (c) 1997-2009 The PHP Group                                |
+  | Copyright (c) 1997-2011 The PHP Group                                |
   +----------------------------------------------------------------------+
   | This source file is subject to version 3.01 of the PHP license,      |
   | that is bundled with this package in the file LICENSE, and is        |
@@ -16,7 +16,7 @@
   +----------------------------------------------------------------------+
 */
 
-/* $Id: var_unserializer.re 277374 2009-03-17 23:07:40Z felipe $ */
+/* $Id: var_unserializer.re 306939 2011-01-01 02:19:59Z felipe $ */
 
 #include "php.h"
 #include "ext/standard/php_var.h"
@@ -54,7 +54,7 @@ static inline void var_push(php_unserialize_data_t *var_hashx, zval **rval)
 	var_hash->data[var_hash->used_slots++] = *rval;
 }
 
-static inline void var_push_dtor(php_unserialize_data_t *var_hashx, zval **rval)
+PHPAPI void var_push_dtor(php_unserialize_data_t *var_hashx, zval **rval)
 {
 	var_entries *var_hash = var_hashx->first_dtor, *prev = NULL;
 
@@ -216,7 +216,7 @@ static inline long parse_iv2(const unsigned char *p, const unsigned char **q)
 	while (1) {
 		cursor = (char)*p;
 		if (cursor >= '0' && cursor <= '9') {
-			result = result * 10 + cursor - '0';
+			result = result * 10 + (size_t)(cursor - (unsigned char)'0');
 		} else {
 			break;
 		}

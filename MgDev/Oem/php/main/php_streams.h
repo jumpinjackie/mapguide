@@ -2,7 +2,7 @@
    +----------------------------------------------------------------------+
    | PHP Version 5                                                        |
    +----------------------------------------------------------------------+
-   | Copyright (c) 1997-2009 The PHP Group                                |
+   | Copyright (c) 1997-2011 The PHP Group                                |
    +----------------------------------------------------------------------+
    | This source file is subject to version 3.01 of the PHP license,      |
    | that is bundled with this package in the file LICENSE, and is        |
@@ -16,7 +16,7 @@
    +----------------------------------------------------------------------+
  */
 
-/* $Id: php_streams.h 279002 2009-04-19 17:10:35Z lbarnaud $ */
+/* $Id: php_streams.h 306939 2011-01-01 02:19:59Z felipe $ */
 
 #ifndef PHP_STREAMS_H
 #define PHP_STREAMS_H
@@ -292,7 +292,12 @@ PHPAPI size_t _php_stream_write(php_stream *stream, const char *buf, size_t coun
 #define php_stream_write_string(stream, str)	_php_stream_write(stream, str, strlen(str) TSRMLS_CC)
 #define php_stream_write(stream, buf, count)	_php_stream_write(stream, (buf), (count) TSRMLS_CC)
 
-PHPAPI size_t _php_stream_printf(php_stream *stream TSRMLS_DC, const char *fmt, ...);
+#ifdef ZTS
+PHPAPI size_t _php_stream_printf(php_stream *stream TSRMLS_DC, const char *fmt, ...) PHP_ATTRIBUTE_FORMAT(printf, 3, 4);
+#else
+PHPAPI size_t _php_stream_printf(php_stream *stream TSRMLS_DC, const char *fmt, ...) PHP_ATTRIBUTE_FORMAT(printf, 2, 3);
+#endif
+
 /* php_stream_printf macro & function require TSRMLS_CC */
 #define php_stream_printf _php_stream_printf
 
@@ -416,8 +421,8 @@ END_EXTERN_C()
 #define PHP_STREAM_OPTION_RETURN_ERR		-1 /* problem setting option */
 #define PHP_STREAM_OPTION_RETURN_NOTIMPL	-2 /* underlying stream does not implement; streams can handle it instead */
 
-/* copy up to maxlen bytes from src to dest.  If maxlen is PHP_STREAM_COPY_ALL, copy until eof(src).
- * Uses mmap if the src is a plain file and at offset 0 */
+/* copy up to maxlen bytes from src to dest.  If maxlen is PHP_STREAM_COPY_ALL,
+ * copy until eof(src). */
 #define PHP_STREAM_COPY_ALL		((size_t)-1)
 
 BEGIN_EXTERN_C()
@@ -428,8 +433,8 @@ PHPAPI size_t _php_stream_copy_to_stream_ex(php_stream *src, php_stream *dest, s
 #define php_stream_copy_to_stream_ex(src, dest, maxlen, len)	_php_stream_copy_to_stream_ex((src), (dest), (maxlen), (len) STREAMS_CC TSRMLS_CC)
 
 
-/* read all data from stream and put into a buffer. Caller must free buffer when done.
- * The copy will use mmap if available. */
+/* read all data from stream and put into a buffer. Caller must free buffer
+ * when done. */
 PHPAPI size_t _php_stream_copy_to_mem(php_stream *src, char **buf, size_t maxlen,
 		int persistent STREAMS_DC TSRMLS_DC);
 #define php_stream_copy_to_mem(src, buf, maxlen, persistent) _php_stream_copy_to_mem((src), (buf), (maxlen), (persistent) STREAMS_CC TSRMLS_CC)
@@ -548,8 +553,11 @@ PHPAPI char *php_stream_locate_eol(php_stream *stream, char *buf, size_t buf_len
 			php_stream_open_wrapper_ex(Z_STRVAL_PP((zstream)), (mode), (options), (opened), (context)) : NULL
 
 /* pushes an error message onto the stack for a wrapper instance */
-PHPAPI void php_stream_wrapper_log_error(php_stream_wrapper *wrapper, int options TSRMLS_DC, const char *fmt, ...);
-
+#ifdef ZTS
+PHPAPI void php_stream_wrapper_log_error(php_stream_wrapper *wrapper, int options TSRMLS_DC, const char *fmt, ...) PHP_ATTRIBUTE_FORMAT(printf, 4, 5);
+#else
+PHPAPI void php_stream_wrapper_log_error(php_stream_wrapper *wrapper, int options TSRMLS_DC, const char *fmt, ...) PHP_ATTRIBUTE_FORMAT(printf, 3, 4);
+#endif
 
 #define PHP_STREAM_UNCHANGED	0 /* orig stream was seekable anyway */
 #define PHP_STREAM_RELEASED		1 /* newstream should be used; origstream is no longer valid */

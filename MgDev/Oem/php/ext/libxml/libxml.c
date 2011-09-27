@@ -2,7 +2,7 @@
    +----------------------------------------------------------------------+
    | PHP Version 5                                                        |
    +----------------------------------------------------------------------+
-   | Copyright (c) 1997-2009 The PHP Group                                |
+   | Copyright (c) 1997-2011 The PHP Group                                |
    +----------------------------------------------------------------------+
    | This source file is subject to version 3.01 of the PHP license,      |
    | that is bundled with this package in the file LICENSE, and is        |
@@ -17,7 +17,7 @@
    +----------------------------------------------------------------------+
  */
 
-/* $Id: libxml.c 282654 2009-06-23 13:44:24Z bjori $ */
+/* $Id: libxml.c 313665 2011-07-25 11:42:53Z felipe $ */
 
 #define IS_EXT_MODULE
 
@@ -119,7 +119,7 @@ static const zend_function_entry libxml_functions[] = {
 	PHP_FE(libxml_clear_errors, arginfo_libxml_clear_errors)
 	PHP_FE(libxml_get_errors, arginfo_libxml_get_errors)
 	PHP_FE(libxml_disable_entity_loader, arginfo_libxml_disable_entity_loader)
-	{NULL, NULL, NULL}
+	PHP_FE_END
 };
 
 zend_module_entry libxml_module_entry = {
@@ -222,6 +222,7 @@ static void php_libxml_node_free_list(xmlNodePtr node TSRMLS_DC)
 			switch (node->type) {
 				/* Skip property freeing for the following types */
 				case XML_NOTATION_NODE:
+				case XML_ENTITY_DECL:
 					break;
 				case XML_ENTITY_REF_NODE:
 					php_libxml_node_free_list((xmlNodePtr) node->properties TSRMLS_CC);
@@ -233,7 +234,6 @@ static void php_libxml_node_free_list(xmlNodePtr node TSRMLS_DC)
 				case XML_ATTRIBUTE_DECL:
 				case XML_DTD_NODE:
 				case XML_DOCUMENT_TYPE_NODE:
-				case XML_ENTITY_DECL:
 				case XML_NAMESPACE_DECL:
 				case XML_TEXT_NODE:
 					php_libxml_node_free_list(node->children TSRMLS_CC);
@@ -310,9 +310,7 @@ static void *php_libxml_streams_IO_open_wrapper(const char *filename, const char
 		}
 	}
 
-	if (LIBXML(stream_context)) {
-		context = zend_fetch_resource(&LIBXML(stream_context) TSRMLS_CC, -1, "Stream-Context", NULL, 1, php_le_stream_context());
-	}
+	context = php_stream_context_from_zval(LIBXML(stream_context), 0);
 
 	ret_val = php_stream_open_wrapper_ex(path_to_open, (char *)mode, ENFORCE_SAFE_MODE|REPORT_ERRORS, NULL, context);
 	if (isescaped) {
@@ -621,6 +619,9 @@ static PHP_MINIT_FUNCTION(libxml)
 #if LIBXML_VERSION >= 20621
 	REGISTER_LONG_CONSTANT("LIBXML_COMPACT",	XML_PARSE_COMPACT,		CONST_CS | CONST_PERSISTENT);
 	REGISTER_LONG_CONSTANT("LIBXML_NOXMLDECL",	XML_SAVE_NO_DECL,		CONST_CS | CONST_PERSISTENT);
+#endif
+#if LIBXML_VERSION >= 20703
+	REGISTER_LONG_CONSTANT("LIBXML_PARSEHUGE",	XML_PARSE_HUGE,			CONST_CS | CONST_PERSISTENT);
 #endif
 	REGISTER_LONG_CONSTANT("LIBXML_NOEMPTYTAG",	LIBXML_SAVE_NOEMPTYTAG,	CONST_CS | CONST_PERSISTENT);
 

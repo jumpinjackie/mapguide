@@ -2,7 +2,7 @@
   +----------------------------------------------------------------------+
   | PHP Version 5                                                        |
   +----------------------------------------------------------------------+
-  | Copyright (c) 1997-2009 The PHP Group                                |
+  | Copyright (c) 1997-2011 The PHP Group                                |
   +----------------------------------------------------------------------+
   | This source file is subject to version 3.01 of the PHP license,      |
   | that is bundled with this package in the file LICENSE, and is        |
@@ -16,7 +16,7 @@
   +----------------------------------------------------------------------+
 */
 
-/* $Id: firebird_driver.c 278929 2009-04-18 18:56:11Z felipe $ */
+/* $Id: firebird_driver.c 312225 2011-06-17 02:00:20Z felipe $ */
 
 #ifdef HAVE_CONFIG_H
 #include "config.h"
@@ -232,6 +232,7 @@ static long firebird_handle_doer(pdo_dbh_t *dbh, const char *sql, long sql_len T
 	/* TODO no placeholders in exec() for now */
 	in_sqlda.version = out_sqlda.version = PDO_FB_SQLDA_VERSION;
 	in_sqlda.sqld = out_sqlda.sqld = 0;
+	out_sqlda.sqln = 1;
 	
 	/* allocate and prepare statement */
 	if (!firebird_alloc_prepare_stmt(dbh, sql, sql_len, &out_sqlda, &stmt, 0 TSRMLS_CC)) {
@@ -547,7 +548,7 @@ static int firebird_handle_get_attribute(pdo_dbh_t *dbh, long attr, zval *val TS
 	pdo_firebird_db_handle *H = (pdo_firebird_db_handle *)dbh->driver_data;
 
 	switch (attr) {
-		char tmp[200];
+		char tmp[512];
 		
 		case PDO_ATTR_AUTOCOMMIT:
 			ZVAL_LONG(val,dbh->auto_commit);
@@ -590,6 +591,10 @@ static int firebird_handle_get_attribute(pdo_dbh_t *dbh, long attr, zval *val TS
 				ZVAL_STRING(val,tmp,1);
 				return 1;
 			}
+			
+		case PDO_ATTR_FETCH_TABLE_NAMES:
+			ZVAL_BOOL(val, H->fetch_table_names);
+			return 1;
 	}
 	return 0;
 }       
@@ -691,7 +696,7 @@ static int pdo_firebird_handle_factory(pdo_dbh_t *dbh, zval *driver_options TSRM
 		char errmsg[512];
 		ISC_STATUS *s = H->isc_status;
 		isc_interprete(errmsg, &s);
-		zend_throw_exception_ex(php_pdo_get_exception(), 0 TSRMLS_CC, "SQLSTATE[%s] [%d] %s",
+		zend_throw_exception_ex(php_pdo_get_exception(), H->isc_status[1] TSRMLS_CC, "SQLSTATE[%s] [%d] %s",
 				"HY000", H->isc_status[1], errmsg);
 	}
 

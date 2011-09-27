@@ -2,7 +2,7 @@
   +----------------------------------------------------------------------+
   | PHP Version 5                                                        |
   +----------------------------------------------------------------------+
-  | Copyright (c) 1997-2009 The PHP Group                                |
+  | Copyright (c) 1997-2011 The PHP Group                                |
   +----------------------------------------------------------------------+
   | This source file is subject to version 3.01 of the PHP license,      |
   | that is bundled with this package in the file LICENSE, and is        |
@@ -16,7 +16,7 @@
   +----------------------------------------------------------------------+
 */
 
-/* $Id: sqlite_driver.c 272370 2008-12-31 11:15:49Z sebastian $ */
+/* $Id: sqlite_driver.c 314451 2011-08-08 00:07:54Z iliaa $ */
 
 #ifdef HAVE_CONFIG_H
 #include "config.h"
@@ -47,38 +47,38 @@ int _pdo_sqlite_error(pdo_dbh_t *dbh, pdo_stmt_t *stmt, const char *file, int li
 		}
 		einfo->errmsg = pestrdup((char*)sqlite3_errmsg(H->db), dbh->is_persistent);
 	} else { /* no error */
-		strcpy(*pdo_err, PDO_ERR_NONE);
+		strncpy(*pdo_err, PDO_ERR_NONE, sizeof(PDO_ERR_NONE));
 		return 0;
 	}
 	switch (einfo->errcode) {
 		case SQLITE_NOTFOUND:
-			strcpy(*pdo_err, "42S02");
+			strncpy(*pdo_err, "42S02", sizeof("42S02"));
 			break;	
 
 		case SQLITE_INTERRUPT:
-			strcpy(*pdo_err, "01002");
+			strncpy(*pdo_err, "01002", sizeof("01002"));
 			break;
 
 		case SQLITE_NOLFS:
-			strcpy(*pdo_err, "HYC00");
+			strncpy(*pdo_err, "HYC00", sizeof("HYC00"));
 			break;
 
 		case SQLITE_TOOBIG:
-			strcpy(*pdo_err, "22001");
+			strncpy(*pdo_err, "22001", sizeof("22001"));
 			break;
 	
 		case SQLITE_CONSTRAINT:
-			strcpy(*pdo_err, "23000");
+			strncpy(*pdo_err, "23000", sizeof("23000"));
 			break;
 
 		case SQLITE_ERROR:
 		default:
-			strcpy(*pdo_err, "HY000");
+			strncpy(*pdo_err, "HY000", sizeof("HY000"));
 			break;
 	}
 
 	if (!dbh->methods) {
-		zend_throw_exception_ex(php_pdo_get_exception(), 0 TSRMLS_CC, "SQLSTATE[%s] [%d] %s",
+		zend_throw_exception_ex(php_pdo_get_exception(), einfo->errcode TSRMLS_CC, "SQLSTATE[%s] [%d] %s",
 				*pdo_err, einfo->errcode, einfo->errmsg);
 	}
 	
@@ -496,9 +496,7 @@ static PHP_METHOD(SQLite, sqliteCreateFunction)
 		func->funcname = estrdup(func_name);
 		
 		MAKE_STD_ZVAL(func->func);
-		*(func->func) = *callback;
-		zval_copy_ctor(func->func);
-		INIT_PZVAL(func->func);
+		MAKE_COPY_ZVAL(&callback, func->func);
 		
 		func->argc = argc;
 
@@ -575,14 +573,10 @@ static PHP_METHOD(SQLite, sqliteCreateAggregate)
 		func->funcname = estrdup(func_name);
 		
 		MAKE_STD_ZVAL(func->step);
-		*(func->step) = *step_callback;
-		zval_copy_ctor(func->step);
-		INIT_PZVAL(func->step);
+		MAKE_COPY_ZVAL(&step_callback, func->step);
 
 		MAKE_STD_ZVAL(func->fini);
-		*(func->fini) = *fini_callback;
-		zval_copy_ctor(func->fini);
-		INIT_PZVAL(func->fini);
+		MAKE_COPY_ZVAL(&fini_callback, func->fini);
 		
 		func->argc = argc;
 
@@ -599,7 +593,7 @@ static PHP_METHOD(SQLite, sqliteCreateAggregate)
 static const zend_function_entry dbh_methods[] = {
 	PHP_ME(SQLite, sqliteCreateFunction, NULL, ZEND_ACC_PUBLIC)
 	PHP_ME(SQLite, sqliteCreateAggregate, NULL, ZEND_ACC_PUBLIC)
-	{NULL, NULL, NULL}
+	PHP_FE_END
 };
 
 static const zend_function_entry *get_driver_methods(pdo_dbh_t *dbh, int kind TSRMLS_DC)
@@ -642,7 +636,7 @@ static struct pdo_dbh_methods sqlite_methods = {
 
 static char *make_filename_safe(const char *filename TSRMLS_DC)
 {
-	if (strncmp(filename, ":memory:", sizeof(":memory:")-1)) {
+	if (*filename && strncmp(filename, ":memory:", sizeof(":memory:")-1)) {
 		char *fullpath = expand_filepath(filename, NULL TSRMLS_CC);
 
 		if (!fullpath) {

@@ -2,7 +2,7 @@
   +----------------------------------------------------------------------+
   | PHP Version 5                                                        |
   +----------------------------------------------------------------------+
-  | Copyright (c) 1997-2009 The PHP Group                                |
+  | Copyright (c) 1997-2011 The PHP Group                                |
   +----------------------------------------------------------------------+
   | This source file is subject to version 3.01 of the PHP license,      |
   | that is bundled with this package in the file LICENSE, and is        |
@@ -17,7 +17,7 @@
   |          Dmitry Stogov <dmitry@zend.com>                             |
   +----------------------------------------------------------------------+
 */
-/* $Id: php_encoding.c 282177 2009-06-15 17:31:02Z felipe $ */
+/* $Id: php_encoding.c 314737 2011-08-10 13:44:48Z dmitry $ */
 
 #include <time.h>
 
@@ -110,6 +110,26 @@ static void set_ns_and_type(xmlNodePtr node, encodeTypePtr type);
 			if (null) { \
 				ZVAL_NULL(zval); \
 				return zval; \
+			} \
+		} \
+	}
+
+#define CHECK_XML_NULL(xml) \
+	{ \
+		xmlAttrPtr null; \
+		if (!xml) { \
+			zval *ret; \
+			ALLOC_INIT_ZVAL(ret); \
+			ZVAL_NULL(ret); \
+			return ret; \
+		} \
+		if (xml->properties) { \
+			null = get_attribute(xml->properties, "nil"); \
+			if (null) { \
+				zval *ret; \
+				ALLOC_INIT_ZVAL(ret); \
+				ZVAL_NULL(ret); \
+				return ret; \
 			} \
 		} \
 	}
@@ -338,6 +358,19 @@ static zend_bool soap_check_zval_ref(zval *data, xmlNodePtr node TSRMLS_DC) {
 	return 0;
 }
 
+static zval* soap_find_xml_ref(xmlNodePtr node TSRMLS_DC)
+{
+	zval **data_ptr;
+
+	if (SOAP_GLOBAL(ref_map) && 
+	    zend_hash_index_find(SOAP_GLOBAL(ref_map), (ulong)node, (void**)&data_ptr) == SUCCESS) {
+		Z_SET_ISREF_PP(data_ptr);
+		Z_ADDREF_PP(data_ptr);
+		return *data_ptr;
+	}
+	return NULL;
+}
+
 static zend_bool soap_check_xml_ref(zval **data, xmlNodePtr node TSRMLS_DC)
 {
 	zval **data_ptr;
@@ -373,7 +406,7 @@ static xmlNodePtr master_to_xml_int(encodePtr encode, zval *data, int style, xml
 		HashTable *ht = Z_OBJPROP_P(data);
 
 		if (zend_hash_find(ht, "enc_type", sizeof("enc_type"), (void **)&ztype) == FAILURE) {
-			soap_error0(E_ERROR, "Encoding: SoapVar hasn't 'enc_type' propery");
+			soap_error0(E_ERROR, "Encoding: SoapVar has no 'enc_type' property");
 		}
 
 		if (zend_hash_find(ht, "enc_stype", sizeof("enc_stype"), (void **)&zstype) == SUCCESS) {
@@ -1513,6 +1546,11 @@ static zval *to_zval_object_ex(encodeTypePtr type, xmlNodePtr data, zend_class_e
 			    sdlType->encode->details.sdl_type->kind != XSD_TYPEKIND_LIST &&
 			    sdlType->encode->details.sdl_type->kind != XSD_TYPEKIND_UNION) {
 
+				CHECK_XML_NULL(data);
+				if ((ret = soap_find_xml_ref(data TSRMLS_CC)) != NULL) {
+					return ret;
+				}
+
 			    if (ce != ZEND_STANDARD_CLASS_DEF_PTR &&
 			        sdlType->encode->to_zval == sdl_guess_convert_zval &&
 			        sdlType->encode->details.sdl_type != NULL &&
@@ -1526,7 +1564,6 @@ static zval *to_zval_object_ex(encodeTypePtr type, xmlNodePtr data, zend_class_e
 			    } else {
 					ret = master_to_zval_int(sdlType->encode, data);
 				}
-				FIND_XML_NULL(data, ret);
 				if (soap_check_xml_ref(&ret, data TSRMLS_CC)) {
 					return ret;
 				}
@@ -1562,8 +1599,13 @@ static zval *to_zval_object_ex(encodeTypePtr type, xmlNodePtr data, zend_class_e
 			}
 			model_to_zval_object(ret, sdlType->model, data, sdl TSRMLS_CC);
 			if (redo_any) {
-				if (get_zval_property(ret, "any" TSRMLS_CC) == NULL) {
+				zval *tmp = get_zval_property(ret, "any" TSRMLS_CC);
+
+				if (tmp == NULL) {
 					model_to_zval_any(ret, data->children TSRMLS_CC);
+				} else if (Z_REFCOUNT_P(tmp) == 0) {
+					zval_dtor(tmp);
+					efree(tmp);
 				}
 				zval_ptr_dtor(&redo_any);
 			}
@@ -1746,7 +1788,7 @@ static int model_to_xml_object(xmlNodePtr node, sdlContentModelPtr model, zval *
 				return 2;
 			} else {
 				if (strict) {
-					soap_error1(E_ERROR,  "Encoding: object hasn't '%s' property", model->u.element->name);
+					soap_error1(E_ERROR,  "Encoding: object has no '%s' property", model->u.element->name);
 				}
 				return 0;
 			}
@@ -1779,7 +1821,7 @@ static int model_to_xml_object(xmlNodePtr node, sdlContentModelPtr model, zval *
 				return 2;
 			} else {
 				if (strict) {
-					soap_error0(E_ERROR,  "Encoding: object hasn't 'any' property");
+					soap_error0(E_ERROR,  "Encoding: object has no 'any' property");
 				}
 				return 0;
 			}
@@ -2979,6 +3021,9 @@ static xmlNodePtr to_xml_datetime_ex(encodeTypePtr type, zval *data, char *forma
 		timestamp = Z_LVAL_P(data);
 		ta = php_localtime_r(&timestamp, &tmbuf);
 		/*ta = php_gmtime_r(&timestamp, &tmbuf);*/
+		if (!ta) {
+			soap_error1(E_ERROR, "Encoding: Invalid timestamp %ld", Z_LVAL_P(data));
+		}
 
 		buf = (char *) emalloc(buf_len);
 		while ((real_len = strftime(buf, buf_len, format, ta)) == buf_len || real_len == 0) {
@@ -3627,7 +3672,7 @@ static encodePtr get_array_type(xmlNodePtr node, zval *array, smart_str *type TS
 			zval **ztype;
 
 			if (zend_hash_find(Z_OBJPROP_PP(tmp), "enc_type", sizeof("enc_type"), (void **)&ztype) == FAILURE) {
-				soap_error0(E_ERROR,  "Encoding: SoapVar hasn't 'enc_type' property");
+				soap_error0(E_ERROR,  "Encoding: SoapVar has no 'enc_type' property");
 			}
 			cur_type = Z_LVAL_PP(ztype);
 

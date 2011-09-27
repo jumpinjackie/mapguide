@@ -22,7 +22,7 @@ $db = MySQLPDOTest::factory();
 		if (1 != $db->getAttribute(PDO::MYSQL_ATTR_DIRECT_QUERY))
 			printf("[002] Unable to turn on emulated prepared statements\n");
 
-		$stmt = $db->prepare('SELECT id, label, "?" as foo FROM test');
+		$stmt = $db->prepare("SELECT id, label, '?' as foo FROM test");
 		$stmt->execute();
 		var_dump($stmt->columnCount());
 
@@ -40,7 +40,7 @@ $db = MySQLPDOTest::factory();
 		if (0 != $db->getAttribute(PDO::MYSQL_ATTR_DIRECT_QUERY))
 			printf("[004] Unable to turn off emulated prepared statements\n");
 
-		$stmt = $db->prepare('SELECT id, label, "?" as foo, "TODO - Stored Procedure" as bar FROM test');
+		$stmt = $db->prepare("SELECT id, label, '?' as foo, 'TODO - Stored Procedure' as bar FROM test");
 		$stmt->execute();
 		var_dump($stmt->columnCount());
 
@@ -52,8 +52,12 @@ $db = MySQLPDOTest::factory();
 			$e->getMessage(), $db->errorCode(), implode(' ', $db->errorInfo()));
 	}
 
-	$db->exec('DROP TABLE IF EXISTS test');
 	print "done!";
+?>
+--CLEAN--
+<?php
+require dirname(__FILE__) . '/mysql_pdo_test.inc';
+MySQLPDOTest::dropTestTable();
 ?>
 --EXPECTF--
 Testing emulated PS...

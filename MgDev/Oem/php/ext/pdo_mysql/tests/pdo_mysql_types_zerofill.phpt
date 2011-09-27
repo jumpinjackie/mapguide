@@ -91,9 +91,14 @@ MySQLPDOTest::skip();
 	$db->setAttribute(PDO::ATTR_EMULATE_PREPARES, false);
 	$db->setAttribute(PDO::ATTR_STRINGIFY_FETCHES, false);
 
+	$stmt = $db->prepare('SELECT @@sql_mode AS _mode');
+	$stmt->execute();
+	$row = $stmt->fetch(PDO::FETCH_ASSOC);
+	$real_as_float = (false === stristr($row['_mode'], "REAL_AS_FLOAT")) ? false : true;
+
 	test_type($db, 100, 'REAL ZEROFILL', -1.01, NULL, '/^[0]*0$/');
-	test_type($db, 110, 'REAL ZEROFILL', 1.01, NULL, '/^[0]*1\.01$/');
-	test_type($db, 120, 'REAL UNSIGNED ZEROFILL', 1.01, NULL, '/^[0]*1\.01$/');
+	test_type($db, 110, 'REAL ZEROFILL', 1.01, NULL, ($real_as_float) ? '/^[0]*1\.0.*$/' : '/^[0]*1\.01$/');
+	test_type($db, 120, 'REAL UNSIGNED ZEROFILL', 1.01, NULL, ($real_as_float) ? '/^[0]*1\..*$/' : '/^[0]*1\.01$/');
 
 	test_type($db, 130, 'DOUBLE ZEROFILL', -1.01, NULL, '/^[0]*0$/');
 	test_type($db, 140, 'DOUBLE ZEROFILL', 1.01, NULL, '/^[0]*1\.01$/');
@@ -112,6 +117,12 @@ MySQLPDOTest::skip();
 	test_type($db, 240, 'NUMERIC UNSIGNED ZEROFILL', 1.01, NULL, '/^[0]*1$/');
 
 	echo "done!\n";
+?>
+--CLEAN--
+<?php
+require dirname(__FILE__) . '/mysql_pdo_test.inc';
+$db = MySQLPDOTest::factory();
+$db->exec('DROP TABLE IF EXISTS test');
 ?>
 --EXPECTF--
 done!

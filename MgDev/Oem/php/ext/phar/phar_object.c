@@ -2,7 +2,7 @@
   +----------------------------------------------------------------------+
   | phar php single-file executable PHP extension                        |
   +----------------------------------------------------------------------+
-  | Copyright (c) 2005-2009 The PHP Group                                |
+  | Copyright (c) 2005-2011 The PHP Group                                |
   +----------------------------------------------------------------------+
   | This source file is subject to version 3.01 of the PHP license,      |
   | that is bundled with this package in the file LICENSE, and is        |
@@ -17,7 +17,7 @@
   +----------------------------------------------------------------------+
 */
 
-/* $Id: phar_object.c 286518 2009-07-29 16:17:57Z felipe $ */
+/* $Id: phar_object.c 314653 2011-08-09 14:11:56Z iliaa $ */
 
 #include "phar_internal.h"
 #include "func_interceptors.h"
@@ -307,7 +307,7 @@ static int phar_file_action(phar_archive_data *phar, phar_entry_info *info, char
 				char *error;
 				if (!phar_open_jit(phar, info, &error TSRMLS_CC)) {
 					if (error) {
-						zend_throw_exception_ex(phar_ce_PharException, 0 TSRMLS_CC, error);
+						zend_throw_exception_ex(phar_ce_PharException, 0 TSRMLS_CC, "%s", error);
 						efree(error);
 					}
 					return -1;
@@ -628,7 +628,7 @@ carry_on:
 		}
 
 		return;
-	} else if (SUCCESS == zend_hash_find(&(PHAR_GLOBALS->phar_fname_map), fname, fname_len, (void **)&pphar)) {
+	} else if (PHAR_GLOBALS->phar_fname_map.arBuckets && SUCCESS == zend_hash_find(&(PHAR_GLOBALS->phar_fname_map), fname, fname_len, (void **)&pphar)) {
 		goto carry_on;
 	} else if (PHAR_G(manifest_cached) && SUCCESS == zend_hash_find(&cached_phars, fname, fname_len, (void **)&pphar)) {
 		if (SUCCESS == phar_copy_on_write(pphar TSRMLS_CC)) {
@@ -661,7 +661,7 @@ PHP_METHOD(Phar, webPhar)
 	char *fname, *basename, *path_info, *mime_type = NULL, *entry, *pt;
 	int fname_len, entry_len, code, index_php_len = 0, not_cgi;
 	phar_archive_data *phar = NULL;
-	phar_entry_info *info;
+	phar_entry_info *info = NULL;
 
 	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "|s!s!saz", &alias, &alias_len, &index_php, &index_php_len, &f404, &f404_len, &mimeoverride, &rewrite) == FAILURE) {
 		return;
@@ -673,7 +673,7 @@ PHP_METHOD(Phar, webPhar)
 
 	if (phar_open_executed_filename(alias, alias_len, &error TSRMLS_CC) != SUCCESS) {
 		if (error) {
-			zend_throw_exception_ex(phar_ce_PharException, 0 TSRMLS_CC, error);
+			zend_throw_exception_ex(phar_ce_PharException, 0 TSRMLS_CC, "%s", error);
 			efree(error);
 		}
 		return;
@@ -888,7 +888,7 @@ PHP_METHOD(Phar, webPhar)
 
 			zend_bailout();
 		} else {
-			char *tmp, sa;
+			char *tmp = NULL, sa = '\0';
 			sapi_header_line ctr = {0};
 			ctr.response_code = 301;
 			ctr.line_len = sizeof("HTTP/1.1 301 Moved Permanently")+1;
@@ -1073,6 +1073,9 @@ PHP_METHOD(Phar, mungServer)
  */
 PHP_METHOD(Phar, interceptFileFuncs)
 {
+	if (zend_parse_parameters_none() == FAILURE) {
+		return;
+	}
 	phar_intercept_functions(TSRMLS_C);
 }
 /* }}} */
@@ -1095,7 +1098,7 @@ PHP_METHOD(Phar, createDefaultStub)
 	stub = phar_create_default_stub(index, webindex, &stub_len, &error TSRMLS_CC);
 
 	if (error) {
-		zend_throw_exception_ex(phar_ce_PharException, 0 TSRMLS_CC, error);
+		zend_throw_exception_ex(phar_ce_PharException, 0 TSRMLS_CC, "%s", error);
 		efree(error);
 		return;
 	}
@@ -1120,7 +1123,7 @@ PHP_METHOD(Phar, mapPhar)
 	RETVAL_BOOL(phar_open_executed_filename(alias, alias_len, &error TSRMLS_CC) == SUCCESS);
 
 	if (error) {
-		zend_throw_exception_ex(phar_ce_PharException, 0 TSRMLS_CC, error);
+		zend_throw_exception_ex(phar_ce_PharException, 0 TSRMLS_CC, "%s", error);
 		efree(error);
 	}
 } /* }}} */
@@ -1141,7 +1144,7 @@ PHP_METHOD(Phar, loadPhar)
 	RETVAL_BOOL(phar_open_from_filename(fname, fname_len, alias, alias_len, REPORT_ERRORS, NULL, &error TSRMLS_CC) == SUCCESS);
 
 	if (error) {
-		zend_throw_exception_ex(phar_ce_PharException, 0 TSRMLS_CC, error);
+		zend_throw_exception_ex(phar_ce_PharException, 0 TSRMLS_CC, "%s", error);
 		efree(error);
 	}
 } /* }}} */
@@ -1150,6 +1153,9 @@ PHP_METHOD(Phar, loadPhar)
  * Returns the api version */
 PHP_METHOD(Phar, apiVersion)
 {
+	if (zend_parse_parameters_none() == FAILURE) {
+		return;
+	}
 	RETURN_STRINGL(PHP_PHAR_API_VERSION, sizeof(PHP_PHAR_API_VERSION)-1, 1);
 }
 /* }}}*/
@@ -1192,6 +1198,9 @@ PHP_METHOD(Phar, canCompress)
  * Returns whether phar extension supports writing and creating phars */
 PHP_METHOD(Phar, canWrite)
 {
+	if (zend_parse_parameters_none() == FAILURE) {
+		return;
+	}
 	RETURN_BOOL(!PHAR_G(readonly));
 }
 /* }}} */
@@ -1251,8 +1260,12 @@ static spl_other_handler phar_spl_foreign_handler = {
 
 /* {{{ proto void Phar::__construct(string fname [, int flags [, string alias]])
  * Construct a Phar archive object
- * {{{ proto void PharData::__construct(string fname [[, int flags [, string alias]], int file format = Phar::TAR])
+ *
+ * proto void PharData::__construct(string fname [[, int flags [, string alias]], int file format = Phar::TAR])
  * Construct a PharData archive object
+ *
+ * This function is used as the constructor for both the Phar and PharData
+ * classes, hence the two prototypes above.
  */
 PHP_METHOD(Phar, __construct)
 {
@@ -1395,6 +1408,10 @@ PHP_METHOD(Phar, __construct)
  */
 PHP_METHOD(Phar, getSupportedSignatures)
 {
+	if (zend_parse_parameters_none() == FAILURE) {
+		return;
+	}
+	
 	array_init(return_value);
 
 	add_next_index_stringl(return_value, "MD5", 3, 1);
@@ -1418,6 +1435,10 @@ PHP_METHOD(Phar, getSupportedSignatures)
  */
 PHP_METHOD(Phar, getSupportedCompression)
 {
+	if (zend_parse_parameters_none() == FAILURE) {
+		return;
+	}
+	
 	array_init(return_value);
 	phar_request_initialize(TSRMLS_C);
 
@@ -1643,11 +1664,14 @@ static int phar_build(zend_object_iterator *iter, void *puser TSRMLS_DC) /* {{{ 
 						}
 
 						test = expand_filepath(fname, NULL TSRMLS_CC);
+						efree(fname);
 
 						if (test) {
-							efree(fname);
 							fname = test;
 							fname_len = strlen(fname);
+						} else {
+							zend_throw_exception_ex(spl_ce_UnexpectedValueException, 0 TSRMLS_CC, "Could not resolve file path");
+							return ZEND_HASH_APPLY_STOP;
 						}
 
 						save = fname;
@@ -1673,6 +1697,11 @@ static int phar_build(zend_object_iterator *iter, void *puser TSRMLS_DC) /* {{{ 
 #else
 						fname = expand_filepath(intern->file_name, NULL TSRMLS_CC);
 #endif
+						if (!fname) {
+							zend_throw_exception_ex(spl_ce_UnexpectedValueException, 0 TSRMLS_CC, "Could not resolve file path");
+							return ZEND_HASH_APPLY_STOP;
+						}
+
 						fname_len = strlen(fname);
 						save = fname;
 						goto phar_spl_fileinfo;
@@ -1690,6 +1719,14 @@ static int phar_build(zend_object_iterator *iter, void *puser TSRMLS_DC) /* {{{ 
 phar_spl_fileinfo:
 	if (base_len) {
 		temp = expand_filepath(base, NULL TSRMLS_CC);
+		if (!temp) {
+			zend_throw_exception_ex(spl_ce_UnexpectedValueException, 0 TSRMLS_CC, "Could not resolve file path");
+			if (save) {
+				efree(save);
+			}
+			return ZEND_HASH_APPLY_STOP;
+		}
+		
 		base = temp;
 		base_len = strlen(base);
 
@@ -1754,7 +1791,7 @@ phar_spl_fileinfo:
 			return ZEND_HASH_APPLY_STOP;
 		}
 	}
-#if PHP_MAJOR_VERSION < 6
+#if PHP_API_VERSION < 20100412
 	if (PG(safe_mode) && (!php_checkuid(fname, NULL, CHECKUID_ALLOW_ONLY_FILE))) {
 		zend_throw_exception_ex(spl_ce_UnexpectedValueException, 0 TSRMLS_CC, "Iterator %v returned a path \"%s\" that safe mode prevents opening", ce->name, fname);
 
@@ -2003,7 +2040,7 @@ PHP_METHOD(Phar, buildFromDirectory)
 		phar_flush(phar_obj->arc.archive, 0, 0, 0, &error TSRMLS_CC);
 
 		if (error) {
-			zend_throw_exception_ex(phar_ce_PharException, 0 TSRMLS_CC, error);
+			zend_throw_exception_ex(phar_ce_PharException, 0 TSRMLS_CC, "%s", error);
 			efree(error);
 		}
 
@@ -2066,7 +2103,7 @@ PHP_METHOD(Phar, buildFromIterator)
 		phar_obj->arc.archive->ufp = pass.fp;
 		phar_flush(phar_obj->arc.archive, 0, 0, 0, &error TSRMLS_CC);
 		if (error) {
-			zend_throw_exception_ex(phar_ce_PharException, 0 TSRMLS_CC, error);
+			zend_throw_exception_ex(phar_ce_PharException, 0 TSRMLS_CC, "%s", error);
 			efree(error);
 		}
 	} else {
@@ -2081,6 +2118,10 @@ PHP_METHOD(Phar, buildFromIterator)
 PHP_METHOD(Phar, count)
 {
 	PHAR_ARCHIVE_OBJECT();
+	
+	if (zend_parse_parameters_none() == FAILURE) {
+		return;
+	}
 
 	RETURN_LONG(zend_hash_num_elements(&phar_obj->arc.archive->manifest));
 }
@@ -2323,7 +2364,7 @@ its_ok:
 	phar_flush(phar, 0, 0, 1, &error TSRMLS_CC);
 
 	if (error) {
-		zend_throw_exception_ex(spl_ce_BadMethodCallException, 0 TSRMLS_CC, error);
+		zend_throw_exception_ex(spl_ce_BadMethodCallException, 0 TSRMLS_CC, "%s", error);
 		efree(error);
 		efree(oldpath);
 		return NULL;
@@ -2703,6 +2744,10 @@ PHP_METHOD(Phar, convertToData)
 PHP_METHOD(Phar, isCompressed)
 {
 	PHAR_ARCHIVE_OBJECT();
+	
+	if (zend_parse_parameters_none() == FAILURE) {
+		return;
+	}
 
 	if (phar_obj->arc.archive->flags & PHAR_FILE_COMPRESSED_GZ) {
 		RETURN_LONG(PHAR_ENT_COMPRESSED_GZ);
@@ -2723,6 +2768,10 @@ PHP_METHOD(Phar, isWritable)
 {
 	php_stream_statbuf ssb;
 	PHAR_ARCHIVE_OBJECT();
+	
+	if (zend_parse_parameters_none() == FAILURE) {
+		return;
+	}
 
 	if (!phar_obj->arc.archive->is_writeable) {
 		RETURN_FALSE;
@@ -2783,7 +2832,7 @@ PHP_METHOD(Phar, delete)
 
 	phar_flush(phar_obj->arc.archive, NULL, 0, 0, &error TSRMLS_CC);
 	if (error) {
-		zend_throw_exception_ex(phar_ce_PharException, 0 TSRMLS_CC, error);
+		zend_throw_exception_ex(phar_ce_PharException, 0 TSRMLS_CC, "%s", error);
 		efree(error);
 	}
 
@@ -2797,6 +2846,10 @@ PHP_METHOD(Phar, delete)
 PHP_METHOD(Phar, getAlias)
 {
 	PHAR_ARCHIVE_OBJECT();
+	
+	if (zend_parse_parameters_none() == FAILURE) {
+		return;
+	}
 
 	if (phar_obj->arc.archive->alias && phar_obj->arc.archive->alias != phar_obj->arc.archive->fname) {
 		RETURN_STRINGL(phar_obj->arc.archive->alias, phar_obj->arc.archive->alias_len, 1);
@@ -2810,6 +2863,10 @@ PHP_METHOD(Phar, getAlias)
 PHP_METHOD(Phar, getPath)
 {
 	PHAR_ARCHIVE_OBJECT();
+	
+	if (zend_parse_parameters_none() == FAILURE) {
+		return;
+	}
 
 	RETURN_STRINGL(phar_obj->arc.archive->fname, phar_obj->arc.archive->fname_len, 1);
 }
@@ -2858,7 +2915,7 @@ PHP_METHOD(Phar, setAlias)
 				efree(error);
 				goto valid_alias;
 			}
-			zend_throw_exception_ex(phar_ce_PharException, 0 TSRMLS_CC, error);
+			zend_throw_exception_ex(phar_ce_PharException, 0 TSRMLS_CC, "%s", error);
 			efree(error);
 			RETURN_FALSE;
 		}
@@ -2895,7 +2952,7 @@ valid_alias:
 			phar_obj->arc.archive->alias = oldalias;
 			phar_obj->arc.archive->alias_len = oldalias_len;
 			phar_obj->arc.archive->is_temporary_alias = old_temp;
-			zend_throw_exception_ex(phar_ce_PharException, 0 TSRMLS_CC, error);
+			zend_throw_exception_ex(phar_ce_PharException, 0 TSRMLS_CC, "%s", error);
 			if (readd) {
 				zend_hash_add(&(PHAR_GLOBALS->phar_alias_map), oldalias, oldalias_len, (void*)&(phar_obj->arc.archive), sizeof(phar_archive_data*), NULL);
 			}
@@ -2922,6 +2979,10 @@ valid_alias:
 PHP_METHOD(Phar, getVersion)
 {
 	PHAR_ARCHIVE_OBJECT();
+	
+	if (zend_parse_parameters_none() == FAILURE) {
+		return;
+	}
 
 	RETURN_STRING(phar_obj->arc.archive->version, 1);
 }
@@ -2933,6 +2994,10 @@ PHP_METHOD(Phar, getVersion)
 PHP_METHOD(Phar, startBuffering)
 {
 	PHAR_ARCHIVE_OBJECT();
+	
+	if (zend_parse_parameters_none() == FAILURE) {
+		return;
+	}
 
 	phar_obj->arc.archive->donotflush = 1;
 }
@@ -2944,8 +3009,12 @@ PHP_METHOD(Phar, startBuffering)
 PHP_METHOD(Phar, isBuffering)
 {
 	PHAR_ARCHIVE_OBJECT();
+	
+	if (zend_parse_parameters_none() == FAILURE) {
+		return;
+	}
 
-	RETURN_BOOL(!phar_obj->arc.archive->donotflush);
+	RETURN_BOOL(phar_obj->arc.archive->donotflush);
 }
 /* }}} */
 
@@ -2957,6 +3026,10 @@ PHP_METHOD(Phar, stopBuffering)
 	char *error;
 
 	PHAR_ARCHIVE_OBJECT();
+	
+	if (zend_parse_parameters_none() == FAILURE) {
+		return;
+	}
 
 	if (PHAR_G(readonly) && !phar_obj->arc.archive->is_data) {
 		zend_throw_exception_ex(spl_ce_UnexpectedValueException, 0 TSRMLS_CC,
@@ -2968,7 +3041,7 @@ PHP_METHOD(Phar, stopBuffering)
 	phar_flush(phar_obj->arc.archive, 0, 0, 0, &error TSRMLS_CC);
 
 	if (error) {
-		zend_throw_exception_ex(phar_ce_PharException, 0 TSRMLS_CC, error);
+		zend_throw_exception_ex(phar_ce_PharException, 0 TSRMLS_CC, "%s", error);
 		efree(error);
 	}
 }
@@ -3017,7 +3090,7 @@ PHP_METHOD(Phar, setStub)
 			}
 			phar_flush(phar_obj->arc.archive, (char *) &zstub, len, 0, &error TSRMLS_CC);
 			if (error) {
-				zend_throw_exception_ex(phar_ce_PharException, 0 TSRMLS_CC, error);
+				zend_throw_exception_ex(phar_ce_PharException, 0 TSRMLS_CC, "%s", error);
 				efree(error);
 			}
 			RETURN_TRUE;
@@ -3033,7 +3106,7 @@ PHP_METHOD(Phar, setStub)
 		phar_flush(phar_obj->arc.archive, stub, stub_len, 0, &error TSRMLS_CC);
 
 		if (error) {
-			zend_throw_exception_ex(phar_ce_PharException, 0 TSRMLS_CC, error);
+			zend_throw_exception_ex(phar_ce_PharException, 0 TSRMLS_CC, "%s", error);
 			efree(error);
 		}
 
@@ -3094,7 +3167,7 @@ PHP_METHOD(Phar, setDefaultStub)
 		stub = phar_create_default_stub(index, webindex, &stub_len, &error TSRMLS_CC);
 
 		if (error) {
-			zend_throw_exception_ex(spl_ce_UnexpectedValueException, 0 TSRMLS_CC, error);
+			zend_throw_exception_ex(spl_ce_UnexpectedValueException, 0 TSRMLS_CC, "%s", error);
 			efree(error);
 			if (stub) {
 				efree(stub);
@@ -3116,7 +3189,7 @@ PHP_METHOD(Phar, setDefaultStub)
 	}
 
 	if (error) {
-		zend_throw_exception_ex(phar_ce_PharException, 0 TSRMLS_CC, error);
+		zend_throw_exception_ex(phar_ce_PharException, 0 TSRMLS_CC, "%s", error);
 		efree(error);
 		RETURN_FALSE;
 	}
@@ -3171,7 +3244,7 @@ PHP_METHOD(Phar, setSignatureAlgorithm)
 
 			phar_flush(phar_obj->arc.archive, 0, 0, 0, &error TSRMLS_CC);
 			if (error) {
-				zend_throw_exception_ex(phar_ce_PharException, 0 TSRMLS_CC, error);
+				zend_throw_exception_ex(phar_ce_PharException, 0 TSRMLS_CC, "%s", error);
 				efree(error);
 			}
 			break;
@@ -3188,6 +3261,10 @@ PHP_METHOD(Phar, setSignatureAlgorithm)
 PHP_METHOD(Phar, getSignature)
 {
 	PHAR_ARCHIVE_OBJECT();
+	
+	if (zend_parse_parameters_none() == FAILURE) {
+		return;
+	}
 
 	if (phar_obj->arc.archive->signature) {
 		char *unknown;
@@ -3228,6 +3305,10 @@ PHP_METHOD(Phar, getSignature)
 PHP_METHOD(Phar, getModified)
 {
 	PHAR_ARCHIVE_OBJECT();
+	
+	if (zend_parse_parameters_none() == FAILURE) {
+		return;
+	}
 
 	RETURN_BOOL(phar_obj->arc.archive->is_modified);
 }
@@ -3473,7 +3554,7 @@ PHP_METHOD(Phar, compressFiles)
 	phar_flush(phar_obj->arc.archive, 0, 0, 0, &error TSRMLS_CC);
 
 	if (error) {
-		zend_throw_exception_ex(spl_ce_BadMethodCallException, 0 TSRMLS_CC, error);
+		zend_throw_exception_ex(spl_ce_BadMethodCallException, 0 TSRMLS_CC, "%s", error);
 		efree(error);
 	}
 }
@@ -3486,6 +3567,10 @@ PHP_METHOD(Phar, decompressFiles)
 {
 	char *error;
 	PHAR_ARCHIVE_OBJECT();
+	
+	if (zend_parse_parameters_none() == FAILURE) {
+		return;
+	}
 
 	if (PHAR_G(readonly) && !phar_obj->arc.archive->is_data) {
 		zend_throw_exception_ex(spl_ce_BadMethodCallException, 0 TSRMLS_CC,
@@ -3513,7 +3598,7 @@ PHP_METHOD(Phar, decompressFiles)
 	phar_flush(phar_obj->arc.archive, 0, 0, 0, &error TSRMLS_CC);
 
 	if (error) {
-		zend_throw_exception_ex(spl_ce_BadMethodCallException, 0 TSRMLS_CC, error);
+		zend_throw_exception_ex(spl_ce_BadMethodCallException, 0 TSRMLS_CC, "%s", error);
 		efree(error);
 	}
 
@@ -3613,7 +3698,7 @@ PHP_METHOD(Phar, copy)
 		if (FAILURE == phar_copy_entry_fp(oldentry, &newentry, &error TSRMLS_CC)) {
 			efree(newentry.filename);
 			php_stream_close(newentry.fp);
-			zend_throw_exception_ex(phar_ce_PharException, 0 TSRMLS_CC, error);
+			zend_throw_exception_ex(phar_ce_PharException, 0 TSRMLS_CC, "%s", error);
 			efree(error);
 			return;
 		}
@@ -3624,7 +3709,7 @@ PHP_METHOD(Phar, copy)
 	phar_flush(phar_obj->arc.archive, 0, 0, 0, &error TSRMLS_CC);
 
 	if (error) {
-		zend_throw_exception_ex(phar_ce_PharException, 0 TSRMLS_CC, error);
+		zend_throw_exception_ex(phar_ce_PharException, 0 TSRMLS_CC, "%s", error);
 		efree(error);
 	}
 
@@ -3770,7 +3855,7 @@ static void phar_add_file(phar_archive_data **pphar, char *filename, int filenam
 		phar_flush(*pphar, 0, 0, 0, &error TSRMLS_CC);
 
 		if (error) {
-			zend_throw_exception_ex(phar_ce_PharException, 0 TSRMLS_CC, error);
+			zend_throw_exception_ex(phar_ce_PharException, 0 TSRMLS_CC, "%s", error);
 			efree(error);
 		}
 	}
@@ -3806,7 +3891,7 @@ static void phar_mkdir(phar_archive_data **pphar, char *dirname, int dirname_len
 		phar_flush(*pphar, 0, 0, 0, &error TSRMLS_CC);
 
 		if (error) {
-			zend_throw_exception_ex(phar_ce_PharException, 0 TSRMLS_CC, error);
+			zend_throw_exception_ex(phar_ce_PharException, 0 TSRMLS_CC, "%s", error);
 			efree(error);
 		}
 	}
@@ -3824,7 +3909,7 @@ PHP_METHOD(Phar, offsetSet)
 	PHAR_ARCHIVE_OBJECT();
 
 	if (PHAR_G(readonly) && !phar_obj->arc.archive->is_data) {
-		zend_throw_exception_ex(spl_ce_BadMethodCallException, 0 TSRMLS_CC, "Write operations disabled by INI setting");
+		zend_throw_exception_ex(spl_ce_BadMethodCallException, 0 TSRMLS_CC, "Write operations disabled by the php.ini setting phar.readonly");
 		return;
 	}
 
@@ -3863,7 +3948,7 @@ PHP_METHOD(Phar, offsetUnset)
 	PHAR_ARCHIVE_OBJECT();
 
 	if (PHAR_G(readonly) && !phar_obj->arc.archive->is_data) {
-		zend_throw_exception_ex(spl_ce_BadMethodCallException, 0 TSRMLS_CC, "Write operations disabled by INI setting");
+		zend_throw_exception_ex(spl_ce_BadMethodCallException, 0 TSRMLS_CC, "Write operations disabled by the php.ini setting phar.readonly");
 		return;
 	}
 
@@ -3892,7 +3977,7 @@ PHP_METHOD(Phar, offsetUnset)
 			phar_flush(phar_obj->arc.archive, 0, 0, 0, &error TSRMLS_CC);
 
 			if (error) {
-				zend_throw_exception_ex(phar_ce_PharException, 0 TSRMLS_CC, error);
+				zend_throw_exception_ex(phar_ce_PharException, 0 TSRMLS_CC, "%s", error);
 				efree(error);
 			}
 
@@ -3943,7 +4028,7 @@ PHP_METHOD(Phar, addFile)
 		return;
 	}
 
-#if PHP_MAJOR_VERSION < 6
+#if PHP_API_VERSION < 20100412
 	if (PG(safe_mode) && (!php_checkuid(fname, NULL, CHECKUID_ALLOW_ONLY_FILE))) {
 		zend_throw_exception_ex(spl_ce_RuntimeException, 0 TSRMLS_CC, "phar error: unable to open file \"%s\" to add to phar archive, safe_mode restrictions prevent this", fname);
 		return;
@@ -4003,6 +4088,10 @@ PHP_METHOD(Phar, getStub)
 	phar_entry_info *stub;
 
 	PHAR_ARCHIVE_OBJECT();
+	
+	if (zend_parse_parameters_none() == FAILURE) {
+		return;
+	}
 
 	if (phar_obj->arc.archive->is_tar || phar_obj->arc.archive->is_zip) {
 
@@ -4010,7 +4099,10 @@ PHP_METHOD(Phar, getStub)
 			if (phar_obj->arc.archive->fp && !phar_obj->arc.archive->is_brandnew && !(stub->flags & PHAR_ENT_COMPRESSION_MASK)) {
 				fp = phar_obj->arc.archive->fp;
 			} else {
-				fp = php_stream_open_wrapper(phar_obj->arc.archive->fname, "rb", 0, NULL);
+				if (!(fp = php_stream_open_wrapper(phar_obj->arc.archive->fname, "rb", 0, NULL))) {
+					zend_throw_exception_ex(spl_ce_UnexpectedValueException, 0 TSRMLS_CC, "phar error: unable to open phar \"%s\"", phar_obj->arc.archive->fname);
+					return;
+				}
 				if (stub->flags & PHAR_ENT_COMPRESSION_MASK) {
 					char *filter_name;
 
@@ -4099,6 +4191,10 @@ PHP_METHOD(Phar, hasMetadata)
 PHP_METHOD(Phar, getMetadata)
 {
 	PHAR_ARCHIVE_OBJECT();
+	
+	if (zend_parse_parameters_none() == FAILURE) {
+		return;
+	}
 
 	if (phar_obj->arc.archive->metadata) {
 		if (phar_obj->arc.archive->is_persistent) {
@@ -4125,7 +4221,7 @@ PHP_METHOD(Phar, setMetadata)
 	PHAR_ARCHIVE_OBJECT();
 
 	if (PHAR_G(readonly) && !phar_obj->arc.archive->is_data) {
-		zend_throw_exception_ex(spl_ce_BadMethodCallException, 0 TSRMLS_CC, "Write operations disabled by INI setting");
+		zend_throw_exception_ex(spl_ce_BadMethodCallException, 0 TSRMLS_CC, "Write operations disabled by the php.ini setting phar.readonly");
 		return;
 	}
 
@@ -4148,7 +4244,7 @@ PHP_METHOD(Phar, setMetadata)
 	phar_flush(phar_obj->arc.archive, 0, 0, 0, &error TSRMLS_CC);
 
 	if (error) {
-		zend_throw_exception_ex(phar_ce_PharException, 0 TSRMLS_CC, error);
+		zend_throw_exception_ex(phar_ce_PharException, 0 TSRMLS_CC, "%s", error);
 		efree(error);
 	}
 }
@@ -4164,7 +4260,7 @@ PHP_METHOD(Phar, delMetadata)
 	PHAR_ARCHIVE_OBJECT();
 
 	if (PHAR_G(readonly) && !phar_obj->arc.archive->is_data) {
-		zend_throw_exception_ex(spl_ce_BadMethodCallException, 0 TSRMLS_CC, "Write operations disabled by INI setting");
+		zend_throw_exception_ex(spl_ce_BadMethodCallException, 0 TSRMLS_CC, "Write operations disabled by the php.ini setting phar.readonly");
 		return;
 	}
 
@@ -4175,7 +4271,7 @@ PHP_METHOD(Phar, delMetadata)
 		phar_flush(phar_obj->arc.archive, 0, 0, 0, &error TSRMLS_CC);
 
 		if (error) {
-			zend_throw_exception_ex(phar_ce_PharException, 0 TSRMLS_CC, error);
+			zend_throw_exception_ex(phar_ce_PharException, 0 TSRMLS_CC, "%s", error);
 			efree(error);
 			RETURN_FALSE;
 		} else {
@@ -4187,11 +4283,11 @@ PHP_METHOD(Phar, delMetadata)
 	}
 }
 /* }}} */
-#if (PHP_MAJOR_VERSION < 6)
-#define OPENBASEDIR_CHECKPATH(filename) \
+#if PHP_API_VERSION < 20100412
+#define PHAR_OPENBASEDIR_CHECKPATH(filename) \
 	(PG(safe_mode) && (!php_checkuid(filename, NULL, CHECKUID_CHECK_FILE_AND_DIR))) || php_check_open_basedir(filename TSRMLS_CC)
 #else
-#define OPENBASEDIR_CHECKPATH(filename) \
+#define PHAR_OPENBASEDIR_CHECKPATH(filename) \
 	php_check_open_basedir(filename TSRMLS_CC)
 #endif
 
@@ -4235,7 +4331,7 @@ static int phar_extract_file(zend_bool overwrite, phar_entry_info *entry, char *
 		return FAILURE;
 	}
 
-	if (OPENBASEDIR_CHECKPATH(fullpath)) {
+	if (PHAR_OPENBASEDIR_CHECKPATH(fullpath)) {
 		spprintf(error, 4096, "Cannot extract \"%s\" to \"%s\", openbasedir/safe mode restrictions in effect", entry->filename, fullpath);
 		efree(fullpath);
 		return FAILURE;
@@ -4285,7 +4381,11 @@ static int phar_extract_file(zend_bool overwrite, phar_entry_info *entry, char *
 		return SUCCESS;
 	}
 
+#if PHP_API_VERSION < 20100412
 	fp = php_stream_open_wrapper(fullpath, "w+b", REPORT_ERRORS|ENFORCE_SAFE_MODE, NULL);
+#else
+	fp = php_stream_open_wrapper(fullpath, "w+b", REPORT_ERRORS, NULL);
+#endif
 
 	if (!fp) {
 		spprintf(error, 4096, "Cannot extract \"%s\", could not open for writing \"%s\"", entry->filename, fullpath);
@@ -4586,6 +4686,10 @@ PHP_METHOD(PharFileInfo, __destruct)
 PHP_METHOD(PharFileInfo, getCompressedSize)
 {
 	PHAR_ENTRY_OBJECT();
+	
+	if (zend_parse_parameters_none() == FAILURE) {
+		return;
+	}
 
 	RETURN_LONG(entry_obj->ent.entry->compressed_filesize);
 }
@@ -4624,6 +4728,10 @@ PHP_METHOD(PharFileInfo, isCompressed)
 PHP_METHOD(PharFileInfo, getCRC32)
 {
 	PHAR_ENTRY_OBJECT();
+	
+	if (zend_parse_parameters_none() == FAILURE) {
+		return;
+	}
 
 	if (entry_obj->ent.entry->is_dir) {
 		zend_throw_exception_ex(spl_ce_BadMethodCallException, 0 TSRMLS_CC, \
@@ -4646,6 +4754,10 @@ PHP_METHOD(PharFileInfo, getCRC32)
 PHP_METHOD(PharFileInfo, isCRCChecked)
 {
 	PHAR_ENTRY_OBJECT();
+	
+	if (zend_parse_parameters_none() == FAILURE) {
+		return;
+	}
 
 	RETURN_BOOL(entry_obj->ent.entry->is_crc_checked);
 }
@@ -4657,6 +4769,10 @@ PHP_METHOD(PharFileInfo, isCRCChecked)
 PHP_METHOD(PharFileInfo, getPharFlags)
 {
 	PHAR_ENTRY_OBJECT();
+	
+	if (zend_parse_parameters_none() == FAILURE) {
+		return;
+	}
 
 	RETURN_LONG(entry_obj->ent.entry->flags & ~(PHAR_ENT_PERM_MASK|PHAR_ENT_COMPRESSION_MASK));
 }
@@ -4719,7 +4835,7 @@ PHP_METHOD(PharFileInfo, chmod)
 	phar_flush(entry_obj->ent.entry->phar, 0, 0, 0, &error TSRMLS_CC);
 
 	if (error) {
-		zend_throw_exception_ex(phar_ce_PharException, 0 TSRMLS_CC, error);
+		zend_throw_exception_ex(phar_ce_PharException, 0 TSRMLS_CC, "%s", error);
 		efree(error);
 	}
 }
@@ -4731,6 +4847,10 @@ PHP_METHOD(PharFileInfo, chmod)
 PHP_METHOD(PharFileInfo, hasMetadata)
 {
 	PHAR_ENTRY_OBJECT();
+	
+	if (zend_parse_parameters_none() == FAILURE) {
+		return;
+	}
 
 	RETURN_BOOL(entry_obj->ent.entry->metadata != NULL);
 }
@@ -4742,6 +4862,10 @@ PHP_METHOD(PharFileInfo, hasMetadata)
 PHP_METHOD(PharFileInfo, getMetadata)
 {
 	PHAR_ENTRY_OBJECT();
+	
+	if (zend_parse_parameters_none() == FAILURE) {
+		return;
+	}
 
 	if (entry_obj->ent.entry->metadata) {
 		if (entry_obj->ent.entry->is_persistent) {
@@ -4768,7 +4892,7 @@ PHP_METHOD(PharFileInfo, setMetadata)
 	PHAR_ENTRY_OBJECT();
 
 	if (PHAR_G(readonly) && !entry_obj->ent.entry->phar->is_data) {
-		zend_throw_exception_ex(spl_ce_BadMethodCallException, 0 TSRMLS_CC, "Write operations disabled by phar.readonly INI setting");
+		zend_throw_exception_ex(spl_ce_BadMethodCallException, 0 TSRMLS_CC, "Write operations disabled by the php.ini setting phar.readonly");
 		return;
 	}
 
@@ -4805,7 +4929,7 @@ PHP_METHOD(PharFileInfo, setMetadata)
 	phar_flush(entry_obj->ent.entry->phar, 0, 0, 0, &error TSRMLS_CC);
 
 	if (error) {
-		zend_throw_exception_ex(phar_ce_PharException, 0 TSRMLS_CC, error);
+		zend_throw_exception_ex(phar_ce_PharException, 0 TSRMLS_CC, "%s", error);
 		efree(error);
 	}
 }
@@ -4819,9 +4943,13 @@ PHP_METHOD(PharFileInfo, delMetadata)
 	char *error;
 
 	PHAR_ENTRY_OBJECT();
+	
+	if (zend_parse_parameters_none() == FAILURE) {
+		return;
+	}
 
 	if (PHAR_G(readonly) && !entry_obj->ent.entry->phar->is_data) {
-		zend_throw_exception_ex(spl_ce_BadMethodCallException, 0 TSRMLS_CC, "Write operations disabled by phar.readonly INI setting");
+		zend_throw_exception_ex(spl_ce_BadMethodCallException, 0 TSRMLS_CC, "Write operations disabled by the php.ini setting phar.readonly");
 		return;
 	}
 
@@ -4850,7 +4978,7 @@ PHP_METHOD(PharFileInfo, delMetadata)
 		phar_flush(entry_obj->ent.entry->phar, 0, 0, 0, &error TSRMLS_CC);
 
 		if (error) {
-			zend_throw_exception_ex(phar_ce_PharException, 0 TSRMLS_CC, error);
+			zend_throw_exception_ex(phar_ce_PharException, 0 TSRMLS_CC, "%s", error);
 			efree(error);
 			RETURN_FALSE;
 		} else {
@@ -4873,6 +5001,10 @@ PHP_METHOD(PharFileInfo, getContent)
 	phar_entry_info *link;
 
 	PHAR_ENTRY_OBJECT();
+	
+	if (zend_parse_parameters_none() == FAILURE) {
+		return;
+	}
 
 	if (entry_obj->ent.entry->is_dir) {
 		zend_throw_exception_ex(spl_ce_BadMethodCallException, 0 TSRMLS_CC,
@@ -5032,7 +5164,7 @@ PHP_METHOD(PharFileInfo, compress)
 	phar_flush(entry_obj->ent.entry->phar, 0, 0, 0, &error TSRMLS_CC);
 
 	if (error) {
-		zend_throw_exception_ex(phar_ce_PharException, 0 TSRMLS_CC, error);
+		zend_throw_exception_ex(phar_ce_PharException, 0 TSRMLS_CC, "%s", error);
 		efree(error);
 	}
 
@@ -5047,6 +5179,10 @@ PHP_METHOD(PharFileInfo, decompress)
 {
 	char *error;
 	PHAR_ENTRY_OBJECT();
+	
+	if (zend_parse_parameters_none() == FAILURE) {
+		return;
+	}
 
 	if (entry_obj->ent.entry->is_dir) {
 		zend_throw_exception_ex(spl_ce_BadMethodCallException, 0 TSRMLS_CC, \
@@ -5107,7 +5243,7 @@ PHP_METHOD(PharFileInfo, decompress)
 	phar_flush(entry_obj->ent.entry->phar, 0, 0, 0, &error TSRMLS_CC);
 
 	if (error) {
-		zend_throw_exception_ex(phar_ce_PharException, 0 TSRMLS_CC, error);
+		zend_throw_exception_ex(phar_ce_PharException, 0 TSRMLS_CC, "%s", error);
 		efree(error);
 	}
 	RETURN_TRUE;
@@ -5129,6 +5265,17 @@ PHAR_ARG_INFO
 ZEND_BEGIN_ARG_INFO_EX(arginfo_phar_createDS, 0, 0, 0)
 	ZEND_ARG_INFO(0, index)
 	ZEND_ARG_INFO(0, webindex)
+ZEND_END_ARG_INFO()
+
+PHAR_ARG_INFO
+ZEND_BEGIN_ARG_INFO_EX(arginfo_phar_cancompress, 0, 0, 0)
+	ZEND_ARG_INFO(0, method)
+ZEND_END_ARG_INFO()
+
+PHAR_ARG_INFO
+ZEND_BEGIN_ARG_INFO_EX(arginfo_phar_isvalidpharfilename, 0, 0, 1)
+	ZEND_ARG_INFO(0, filename)
+	ZEND_ARG_INFO(0, executable)
 ZEND_END_ARG_INFO()
 
 PHAR_ARG_INFO
@@ -5287,6 +5434,11 @@ ZEND_BEGIN_ARG_INFO_EX(arginfo_phar_isff, 0, 0, 1)
 	ZEND_ARG_INFO(0, fileformat)
 ZEND_END_ARG_INFO()
 
+PHAR_ARG_INFO
+ZEND_BEGIN_ARG_INFO(arginfo_phar__void, 0)
+ZEND_END_ARG_INFO()
+
+
 #endif /* HAVE_SPL */
 
 zend_function_entry php_archive_methods[] = {
@@ -5294,35 +5446,35 @@ zend_function_entry php_archive_methods[] = {
 	PHP_ME(Phar, __construct,           arginfo_phar___construct,  ZEND_ACC_PRIVATE)
 #else
 	PHP_ME(Phar, __construct,           arginfo_phar___construct,  ZEND_ACC_PUBLIC)
-	PHP_ME(Phar, __destruct,            NULL,                      ZEND_ACC_PUBLIC)
+	PHP_ME(Phar, __destruct,            arginfo_phar__void,        ZEND_ACC_PUBLIC)
 	PHP_ME(Phar, addEmptyDir,           arginfo_phar_emptydir,     ZEND_ACC_PUBLIC)
 	PHP_ME(Phar, addFile,               arginfo_phar_addfile,      ZEND_ACC_PUBLIC)
 	PHP_ME(Phar, addFromString,         arginfo_phar_fromstring,   ZEND_ACC_PUBLIC)
 	PHP_ME(Phar, buildFromDirectory,    arginfo_phar_fromdir,      ZEND_ACC_PUBLIC)
 	PHP_ME(Phar, buildFromIterator,     arginfo_phar_build,        ZEND_ACC_PUBLIC)
 	PHP_ME(Phar, compressFiles,         arginfo_phar_comp,         ZEND_ACC_PUBLIC)
-	PHP_ME(Phar, decompressFiles,       NULL,                      ZEND_ACC_PUBLIC)
+	PHP_ME(Phar, decompressFiles,       arginfo_phar__void,        ZEND_ACC_PUBLIC)
 	PHP_ME(Phar, compress,              arginfo_phar_comps,        ZEND_ACC_PUBLIC)
 	PHP_ME(Phar, decompress,            arginfo_phar_decomp,       ZEND_ACC_PUBLIC)
 	PHP_ME(Phar, convertToExecutable,   arginfo_phar_conv,         ZEND_ACC_PUBLIC)
 	PHP_ME(Phar, convertToData,         arginfo_phar_conv,         ZEND_ACC_PUBLIC)
 	PHP_ME(Phar, copy,                  arginfo_phar_copy,         ZEND_ACC_PUBLIC)
-	PHP_ME(Phar, count,                 NULL,                      ZEND_ACC_PUBLIC)
+	PHP_ME(Phar, count,                 arginfo_phar__void,        ZEND_ACC_PUBLIC)
 	PHP_ME(Phar, delete,                arginfo_phar_delete,       ZEND_ACC_PUBLIC)
-	PHP_ME(Phar, delMetadata,           NULL,                      ZEND_ACC_PUBLIC)
+	PHP_ME(Phar, delMetadata,           arginfo_phar__void,        ZEND_ACC_PUBLIC)
 	PHP_ME(Phar, extractTo,             arginfo_phar_extract,      ZEND_ACC_PUBLIC)
-	PHP_ME(Phar, getAlias,              NULL,                      ZEND_ACC_PUBLIC)
-	PHP_ME(Phar, getPath,               NULL,                      ZEND_ACC_PUBLIC)
-	PHP_ME(Phar, getMetadata,           NULL,                      ZEND_ACC_PUBLIC)
-	PHP_ME(Phar, getModified,           NULL,                      ZEND_ACC_PUBLIC)
-	PHP_ME(Phar, getSignature,          NULL,                      ZEND_ACC_PUBLIC)
-	PHP_ME(Phar, getStub,               NULL,                      ZEND_ACC_PUBLIC)
-	PHP_ME(Phar, getVersion,            NULL,                      ZEND_ACC_PUBLIC)
-	PHP_ME(Phar, hasMetadata,           NULL,                      ZEND_ACC_PUBLIC)
-	PHP_ME(Phar, isBuffering,           NULL,                      ZEND_ACC_PUBLIC)
-	PHP_ME(Phar, isCompressed,          NULL,                      ZEND_ACC_PUBLIC)
+	PHP_ME(Phar, getAlias,              arginfo_phar__void,        ZEND_ACC_PUBLIC)
+	PHP_ME(Phar, getPath,               arginfo_phar__void,        ZEND_ACC_PUBLIC)
+	PHP_ME(Phar, getMetadata,           arginfo_phar__void,        ZEND_ACC_PUBLIC)
+	PHP_ME(Phar, getModified,           arginfo_phar__void,        ZEND_ACC_PUBLIC)
+	PHP_ME(Phar, getSignature,          arginfo_phar__void,        ZEND_ACC_PUBLIC)
+	PHP_ME(Phar, getStub,               arginfo_phar__void,        ZEND_ACC_PUBLIC)
+	PHP_ME(Phar, getVersion,            arginfo_phar__void,        ZEND_ACC_PUBLIC)
+	PHP_ME(Phar, hasMetadata,           arginfo_phar__void,        ZEND_ACC_PUBLIC)
+	PHP_ME(Phar, isBuffering,           arginfo_phar__void,        ZEND_ACC_PUBLIC)
+	PHP_ME(Phar, isCompressed,          arginfo_phar__void,        ZEND_ACC_PUBLIC)
 	PHP_ME(Phar, isFileFormat,          arginfo_phar_isff,         ZEND_ACC_PUBLIC)
-	PHP_ME(Phar, isWritable,            NULL,                      ZEND_ACC_PUBLIC)
+	PHP_ME(Phar, isWritable,            arginfo_phar__void,        ZEND_ACC_PUBLIC)
 	PHP_ME(Phar, offsetExists,          arginfo_phar_offsetExists, ZEND_ACC_PUBLIC)
 	PHP_ME(Phar, offsetGet,             arginfo_phar_offsetExists, ZEND_ACC_PUBLIC)
 	PHP_ME(Phar, offsetSet,             arginfo_phar_offsetSet,    ZEND_ACC_PUBLIC)
@@ -5332,18 +5484,18 @@ zend_function_entry php_archive_methods[] = {
 	PHP_ME(Phar, setMetadata,           arginfo_phar_setMetadata,  ZEND_ACC_PUBLIC)
 	PHP_ME(Phar, setSignatureAlgorithm, arginfo_phar_setSigAlgo,   ZEND_ACC_PUBLIC)
 	PHP_ME(Phar, setStub,               arginfo_phar_setStub,      ZEND_ACC_PUBLIC)
-	PHP_ME(Phar, startBuffering,        NULL,                      ZEND_ACC_PUBLIC)
-	PHP_ME(Phar, stopBuffering,         NULL,                      ZEND_ACC_PUBLIC)
+	PHP_ME(Phar, startBuffering,        arginfo_phar__void,        ZEND_ACC_PUBLIC)
+	PHP_ME(Phar, stopBuffering,         arginfo_phar__void,        ZEND_ACC_PUBLIC)
 #endif
 	/* static member functions */
-	PHP_ME(Phar, apiVersion,            NULL,                      ZEND_ACC_PUBLIC|ZEND_ACC_STATIC|ZEND_ACC_FINAL)
-	PHP_ME(Phar, canCompress,           NULL,                      ZEND_ACC_PUBLIC|ZEND_ACC_STATIC|ZEND_ACC_FINAL)
-	PHP_ME(Phar, canWrite,              NULL,                      ZEND_ACC_PUBLIC|ZEND_ACC_STATIC|ZEND_ACC_FINAL)
+	PHP_ME(Phar, apiVersion,            arginfo_phar__void,        ZEND_ACC_PUBLIC|ZEND_ACC_STATIC|ZEND_ACC_FINAL)
+	PHP_ME(Phar, canCompress,           arginfo_phar_cancompress,  ZEND_ACC_PUBLIC|ZEND_ACC_STATIC|ZEND_ACC_FINAL)
+	PHP_ME(Phar, canWrite,              arginfo_phar__void,        ZEND_ACC_PUBLIC|ZEND_ACC_STATIC|ZEND_ACC_FINAL)
 	PHP_ME(Phar, createDefaultStub,     arginfo_phar_createDS,     ZEND_ACC_PUBLIC|ZEND_ACC_STATIC|ZEND_ACC_FINAL)
-	PHP_ME(Phar, getSupportedCompression,NULL,                     ZEND_ACC_PUBLIC|ZEND_ACC_STATIC|ZEND_ACC_FINAL)
-	PHP_ME(Phar, getSupportedSignatures,NULL,                      ZEND_ACC_PUBLIC|ZEND_ACC_STATIC|ZEND_ACC_FINAL)
-	PHP_ME(Phar, interceptFileFuncs,    NULL,                      ZEND_ACC_PUBLIC|ZEND_ACC_STATIC|ZEND_ACC_FINAL)
-	PHP_ME(Phar, isValidPharFilename,   NULL,                      ZEND_ACC_PUBLIC|ZEND_ACC_STATIC|ZEND_ACC_FINAL)
+	PHP_ME(Phar, getSupportedCompression,arginfo_phar__void,       ZEND_ACC_PUBLIC|ZEND_ACC_STATIC|ZEND_ACC_FINAL)
+	PHP_ME(Phar, getSupportedSignatures,arginfo_phar__void,        ZEND_ACC_PUBLIC|ZEND_ACC_STATIC|ZEND_ACC_FINAL)
+	PHP_ME(Phar, interceptFileFuncs,    arginfo_phar__void,        ZEND_ACC_PUBLIC|ZEND_ACC_STATIC|ZEND_ACC_FINAL)
+	PHP_ME(Phar, isValidPharFilename,   arginfo_phar_isvalidpharfilename, ZEND_ACC_PUBLIC|ZEND_ACC_STATIC|ZEND_ACC_FINAL)
 	PHP_ME(Phar, loadPhar,              arginfo_phar_loadPhar,     ZEND_ACC_PUBLIC|ZEND_ACC_STATIC|ZEND_ACC_FINAL)
 	PHP_ME(Phar, mapPhar,               arginfo_phar_mapPhar,      ZEND_ACC_PUBLIC|ZEND_ACC_STATIC|ZEND_ACC_FINAL)
 	PHP_ME(Phar, running,               arginfo_phar_running,      ZEND_ACC_PUBLIC|ZEND_ACC_STATIC|ZEND_ACC_FINAL)
@@ -5351,7 +5503,7 @@ zend_function_entry php_archive_methods[] = {
 	PHP_ME(Phar, mungServer,            arginfo_phar_mungServer,   ZEND_ACC_PUBLIC|ZEND_ACC_STATIC|ZEND_ACC_FINAL)
 	PHP_ME(Phar, unlinkArchive,         arginfo_phar_ua,           ZEND_ACC_PUBLIC|ZEND_ACC_STATIC|ZEND_ACC_FINAL)
 	PHP_ME(Phar, webPhar,               arginfo_phar_webPhar,      ZEND_ACC_PUBLIC|ZEND_ACC_STATIC|ZEND_ACC_FINAL)
-	{NULL, NULL, NULL}
+	PHP_FE_END
 };
 
 #if HAVE_SPL
@@ -5367,26 +5519,26 @@ ZEND_END_ARG_INFO()
 
 zend_function_entry php_entry_methods[] = {
 	PHP_ME(PharFileInfo, __construct,        arginfo_entry___construct,  ZEND_ACC_PUBLIC)
-	PHP_ME(PharFileInfo, __destruct,         NULL,                       ZEND_ACC_PUBLIC)
+	PHP_ME(PharFileInfo, __destruct,         arginfo_phar__void,         ZEND_ACC_PUBLIC)
 	PHP_ME(PharFileInfo, chmod,              arginfo_entry_chmod,        ZEND_ACC_PUBLIC)
 	PHP_ME(PharFileInfo, compress,           arginfo_phar_comp,          ZEND_ACC_PUBLIC)
-	PHP_ME(PharFileInfo, decompress,         NULL,                       ZEND_ACC_PUBLIC)
-	PHP_ME(PharFileInfo, delMetadata,        NULL,                       ZEND_ACC_PUBLIC)
-	PHP_ME(PharFileInfo, getCompressedSize,  NULL,                       ZEND_ACC_PUBLIC)
-	PHP_ME(PharFileInfo, getCRC32,           NULL,                       ZEND_ACC_PUBLIC)
-	PHP_ME(PharFileInfo, getContent,         NULL,                       ZEND_ACC_PUBLIC)
-	PHP_ME(PharFileInfo, getMetadata,        NULL,                       ZEND_ACC_PUBLIC)
-	PHP_ME(PharFileInfo, getPharFlags,       NULL,                       ZEND_ACC_PUBLIC)
-	PHP_ME(PharFileInfo, hasMetadata,        NULL,                       ZEND_ACC_PUBLIC)
+	PHP_ME(PharFileInfo, decompress,         arginfo_phar__void,         ZEND_ACC_PUBLIC)
+	PHP_ME(PharFileInfo, delMetadata,        arginfo_phar__void,         ZEND_ACC_PUBLIC)
+	PHP_ME(PharFileInfo, getCompressedSize,  arginfo_phar__void,         ZEND_ACC_PUBLIC)
+	PHP_ME(PharFileInfo, getCRC32,           arginfo_phar__void,         ZEND_ACC_PUBLIC)
+	PHP_ME(PharFileInfo, getContent,         arginfo_phar__void,         ZEND_ACC_PUBLIC)
+	PHP_ME(PharFileInfo, getMetadata,        arginfo_phar__void,         ZEND_ACC_PUBLIC)
+	PHP_ME(PharFileInfo, getPharFlags,       arginfo_phar__void,         ZEND_ACC_PUBLIC)
+	PHP_ME(PharFileInfo, hasMetadata,        arginfo_phar__void,         ZEND_ACC_PUBLIC)
 	PHP_ME(PharFileInfo, isCompressed,       arginfo_phar_compo,         ZEND_ACC_PUBLIC)
-	PHP_ME(PharFileInfo, isCRCChecked,       NULL,                       ZEND_ACC_PUBLIC)
+	PHP_ME(PharFileInfo, isCRCChecked,       arginfo_phar__void,         ZEND_ACC_PUBLIC)
 	PHP_ME(PharFileInfo, setMetadata,        arginfo_phar_setMetadata,   ZEND_ACC_PUBLIC)
-	{NULL, NULL, NULL}
+	PHP_FE_END
 };
 #endif /* HAVE_SPL */
 
 zend_function_entry phar_exception_methods[] = {
-	{NULL, NULL, NULL}
+	PHP_FE_END
 };
 /* }}} */
 

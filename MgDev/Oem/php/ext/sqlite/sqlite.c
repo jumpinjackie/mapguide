@@ -2,7 +2,7 @@
    +----------------------------------------------------------------------+
    | PHP Version 5                                                        |
    +----------------------------------------------------------------------+
-   | Copyright (c) 1997-2009 The PHP Group                                |
+   | Copyright (c) 1997-2011 The PHP Group                                |
    +----------------------------------------------------------------------+
    | This source file is subject to version 3.01 of the PHP license,      |
    | that is bundled with this package in the file LICENSE, and is        |
@@ -17,7 +17,7 @@
    |          Marcus Boerger <helly@php.net>                              |
    +----------------------------------------------------------------------+
 
-   $Id: sqlite.c 289598 2009-10-12 22:37:52Z pajoye $
+   $Id: sqlite.c 306939 2011-01-01 02:19:59Z felipe $
 */
 
 #ifdef HAVE_CONFIG_H
@@ -1458,7 +1458,7 @@ PHP_MINFO_FUNCTION(sqlite)
 {
 	php_info_print_table_start();
 	php_info_print_table_header(2, "SQLite support", "enabled");
-	php_info_print_table_row(2, "PECL Module version", PHP_SQLITE_MODULE_VERSION " $Id: sqlite.c 289598 2009-10-12 22:37:52Z pajoye $");
+	php_info_print_table_row(2, "PECL Module version", PHP_SQLITE_MODULE_VERSION " $Id: sqlite.c 306939 2011-01-01 02:19:59Z felipe $");
 	php_info_print_table_row(2, "SQLite Library", sqlite_libversion());
 	php_info_print_table_row(2, "SQLite Encoding", sqlite_libencoding());
 	php_info_print_table_end();
@@ -1560,6 +1560,9 @@ PHP_FUNCTION(sqlite_popen)
 		ZVAL_NULL(errmsg);
 	}
 
+	if (strlen(filename) != filename_len) {
+		RETURN_FALSE;
+	}
 	if (strncmp(filename, ":memory:", sizeof(":memory:") - 1)) {
 		/* resolve the fully-qualified path name to use as the hash key */
 		if (!(fullpath = expand_filepath(filename, NULL TSRMLS_CC))) {
@@ -1637,6 +1640,11 @@ PHP_FUNCTION(sqlite_open)
 		ZVAL_NULL(errmsg);
 	}
 
+	if (strlen(filename) != filename_len) {
+		zend_restore_error_handling(&error_handling TSRMLS_CC);
+		RETURN_FALSE;
+	}
+
 	if (strncmp(filename, ":memory:", sizeof(":memory:") - 1)) {
 		/* resolve the fully-qualified path name to use as the hash key */
 		if (!(fullpath = expand_filepath(filename, NULL TSRMLS_CC))) {
@@ -1688,6 +1696,11 @@ PHP_FUNCTION(sqlite_factory)
 	if (errmsg) {
 		zval_dtor(errmsg);
 		ZVAL_NULL(errmsg);
+	}
+
+	if (strlen(filename) != filename_len) {
+		zend_restore_error_handling(&error_handling TSRMLS_CC);
+		RETURN_FALSE;
 	}
 
 	if (strncmp(filename, ":memory:", sizeof(":memory:") - 1)) {
@@ -2508,7 +2521,7 @@ PHP_FUNCTION(sqlite_array_query)
 		return;
 	}
 
-	rres = (struct php_sqlite_result *)emalloc(sizeof(*rres));
+	rres = (struct php_sqlite_result *)ecalloc(1, sizeof(*rres));
 	sqlite_query(NULL, db, sql, sql_len, (int)mode, 0, NULL, &rres, NULL TSRMLS_CC);
 	if (db->last_err_code != SQLITE_OK) {
 		if (rres) {
@@ -2624,7 +2637,7 @@ PHP_FUNCTION(sqlite_single_query)
 		return;
 	}
 
-	rres = (struct php_sqlite_result *)emalloc(sizeof(*rres));
+	rres = (struct php_sqlite_result *)ecalloc(1, sizeof(*rres));
 	sqlite_query(NULL, db, sql, sql_len, PHPSQLITE_NUM, 0, NULL, &rres, NULL TSRMLS_CC);
 	if (db->last_err_code != SQLITE_OK) {
 		if (rres) {

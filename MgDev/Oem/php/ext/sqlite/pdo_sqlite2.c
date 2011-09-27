@@ -2,7 +2,7 @@
   +----------------------------------------------------------------------+
   | PHP Version 5                                                        |
   +----------------------------------------------------------------------+
-  | Copyright (c) 1997-2009 The PHP Group                                |
+  | Copyright (c) 1997-2011 The PHP Group                                |
   +----------------------------------------------------------------------+
   | This source file is subject to version 3.01 of the PHP license,      |
   | that is bundled with this package in the file LICENSE, and is        |
@@ -16,7 +16,7 @@
   +----------------------------------------------------------------------+
 */
 
-/* $Id: pdo_sqlite2.c 272370 2008-12-31 11:15:49Z sebastian $ */
+/* $Id: pdo_sqlite2.c 306939 2011-01-01 02:19:59Z felipe $ */
 #ifdef HAVE_CONFIG_H
 #include "config.h"
 #endif
@@ -515,7 +515,7 @@ static struct pdo_dbh_methods sqlite2_methods = {
 
 static char *make_filename_safe(const char *filename TSRMLS_DC)
 {
-	if (strncmp(filename, ":memory:", sizeof(":memory:")-1)) {
+	if (*filename && strncmp(filename, ":memory:", sizeof(":memory:")-1)) {
 		char *fullpath = expand_filepath(filename, NULL TSRMLS_CC);
 
 		if (!fullpath) {
@@ -594,6 +594,7 @@ static int pdo_sqlite2_handle_factory(pdo_dbh_t *dbh, zval *driver_options TSRML
 	efree(filename);
 
 	if (!H->db) {
+		H->einfo.errcode = SQLITE_ERROR;
 		pdo_sqlite2_error(errmsg, dbh);
 		goto cleanup;
 	}

@@ -7,7 +7,7 @@ require_once('skipifconnectfailure.inc');
 ?>
 --FILE--
 <?php
-	include "connect.inc";
+	require_once("connect.inc");
 
 	/*** test mysqli_connect 127.0.0.1 ***/
 	$link = my_mysqli_connect($host, $user, $passwd, $db, $port, $socket);
@@ -20,11 +20,11 @@ require_once('skipifconnectfailure.inc');
 	mysqli_query($link, "INSERT INTO test_affected VALUES (1),(2),(3),(4),(5)");
 
 	$stmt = mysqli_prepare($link, "DELETE FROM test_affected WHERE foo=?");
-	mysqli_bind_param($stmt, "i", $c1);
+	mysqli_stmt_bind_param($stmt, "i", $c1);
 
 	$c1 = 2;
 
-	mysqli_execute($stmt);
+	mysqli_stmt_execute($stmt);
 	$x = mysqli_stmt_affected_rows($stmt);
 
 	mysqli_stmt_close($stmt);
@@ -36,7 +36,7 @@ require_once('skipifconnectfailure.inc');
 ?>
 --CLEAN--
 <?php
-include "connect.inc";
+require_once("connect.inc");
 if (!$link = my_mysqli_connect($host, $user, $passwd, $db, $port, $socket))
    printf("[c001] [%d] %s\n", mysqli_connect_errno(), mysqli_connect_error());
 

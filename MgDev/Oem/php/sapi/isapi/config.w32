@@ -8,10 +8,6 @@ if (PHP_ISAPI == "yes") {
 		WARNING("ISAPI module requires an --enable-zts build of PHP");
 	} else {
 		SAPI('isapi', 'php5isapi.c', 'php' + PHP_VERSION + 'isapi.dll', '/D PHP5ISAPI_EXPORTS');
-		if (X64) {
-			ADD_FLAG('LDFLAGS_ISAPI', '/DEF:sapi\\isapi\\php5isapi.def sapi\\isapi\\x64\\movit.lib');
-		} else {
-			ADD_FLAG('LDFLAGS_ISAPI', '/DEF:sapi\\isapi\\php5isapi.def');
-		}		
+		ADD_FLAG('LDFLAGS_ISAPI', '/DEF:sapi\\isapi\\php5isapi.def');
 	}
 }

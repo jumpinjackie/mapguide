@@ -2,7 +2,7 @@
    +----------------------------------------------------------------------+
    | PHP Version 5                                                        |
    +----------------------------------------------------------------------+
-   | Copyright (c) 1997-2009 The PHP Group                                |
+   | Copyright (c) 1997-2011 The PHP Group                                |
    +----------------------------------------------------------------------+
    | This source file is subject to version 3.01 of the PHP license,      |
    | that is bundled with this package in the file LICENSE, and is        |
@@ -13,13 +13,13 @@
    | license@php.net so we can mail you a copy immediately.               |
    +----------------------------------------------------------------------+
    | Authors: Jim Winstead <jimw@php.net>                                 |
-   |          Stig Sæther Bakken <ssb@php.net>                            |
+   |          Stig SÃ¦ther Bakken <ssb@php.net>                            |
    |          Zeev Suraski <zeev@zend.com>                                |
    | PHP 4.0 patches by Thies C. Arntzen <thies@thieso.net>               |
    +----------------------------------------------------------------------+
 */
 
-/* $Id: math.c 277398 2009-03-18 10:18:10Z dmitry $ */
+/* $Id: math.c 312074 2011-06-12 00:56:18Z cataphract $ */
 
 #include "php.h"
 #include "php_math.h"
@@ -28,6 +28,8 @@
 #include <math.h>
 #include <float.h>
 #include <stdlib.h>
+
+#include "basic_functions.h"
 
 /* {{{ php_intlog10abs
    Returns floor(log10(fabs(val))), uses fast binary search */
@@ -90,6 +92,18 @@ static inline double php_intpow10(int power) {
 }
 /* }}} */
 
+/* {{{ php_math_is_finite */
+static inline int php_math_is_finite(double value) {
+#if defined(PHP_WIN32)
+	return _finite(value);
+#elif defined(isfinite)
+	return isfinite(value);
+#else
+	return value == value && (value == 0. || value * 2. != value);
+#endif
+}
+/* }}} */
+
 /* {{{ php_round_helper
        Actually performs the rounding of a value to integer in a certain mode */
 static inline double php_round_helper(double value, int mode) {
@@ -127,6 +141,10 @@ PHPAPI double _php_math_round(double value, int places, int mode) {
 	double tmp_value;
 	int precision_places;
 
+	if (!php_math_is_finite(value)) {
+		return value;
+	}
+	
 	precision_places = 14 - php_intlog10abs(value);
 
 	f1 = php_intpow10(abs(places));
@@ -690,7 +708,11 @@ PHP_FUNCTION(log)
 		php_error_docref(NULL TSRMLS_CC, E_WARNING, "base must be greater than 0");				
 		RETURN_FALSE;
 	}
-	RETURN_DOUBLE(log(num) / log(base));
+	if (base == 1) {
+		RETURN_DOUBLE(php_get_nan());
+	} else {
+		RETURN_DOUBLE(log(num) / log(base));
+	}
 }
 /* }}} */
 

@@ -2,7 +2,7 @@
    +----------------------------------------------------------------------+
    | PHP Version 5                                                        |
    +----------------------------------------------------------------------+
-   | Copyright (c) 1997-2009 The PHP Group                                |
+   | Copyright (c) 1997-2011 The PHP Group                                |
    +----------------------------------------------------------------------+
    | This source file is subject to version 3.01 of the PHP license,      |
    | that is bundled with this package in the file LICENSE, and is        |
@@ -16,7 +16,7 @@
    +----------------------------------------------------------------------+
  */
 
-/* $Id: com_persist.c 280806 2009-05-19 17:38:29Z kalle $ */
+/* $Id: com_persist.c 313665 2011-07-25 11:42:53Z felipe $ */
 
 /* Infrastructure for working with persistent COM objects.
  * Implements: IStream* wrapper for PHP streams.
@@ -389,6 +389,9 @@ CPH_METHOD(SaveToFile)
 		}
 
 		if (filename) {
+			if (strlen(filename) != filename_len) {
+				RETURN_FALSE;
+			}
 			fullpath = expand_filepath(filename, NULL TSRMLS_CC);
 			if (!fullpath) {
 				RETURN_FALSE;
@@ -451,6 +454,10 @@ CPH_METHOD(LoadFromFile)
 					&filename, &filename_len, &flags)) {
 			php_com_throw_exception(E_INVALIDARG, "Invalid arguments" TSRMLS_CC);
 			return;
+		}
+
+		if (strlen(filename) != filename_len) {
+			RETURN_FALSE;
 		}
 
 		if (!(fullpath = expand_filepath(filename, NULL TSRMLS_CC))) {
@@ -690,7 +697,7 @@ static const zend_function_entry com_persist_helper_methods[] = {
 	CPH_ME(InitNew, NULL)
 	CPH_ME(LoadFromStream, NULL)
 	CPH_ME(SaveToStream, NULL)
-	{NULL, NULL, NULL}
+	PHP_FE_END
 };
 
 static void helper_free_storage(void *obj TSRMLS_DC)

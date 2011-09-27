@@ -2,7 +2,7 @@
    +----------------------------------------------------------------------+
    | Zend Engine                                                          |
    +----------------------------------------------------------------------+
-   | Copyright (c) 1998-2009 Zend Technologies Ltd. (http://www.zend.com) |
+   | Copyright (c) 1998-2011 Zend Technologies Ltd. (http://www.zend.com) |
    +----------------------------------------------------------------------+
    | This source file is subject to version 2.00 of the Zend license,     |
    | that is bundled with this package in the file LICENSE, and is        |
@@ -17,7 +17,7 @@
    +----------------------------------------------------------------------+
 */
 
-/* $Id: zend_compile.h 281737 2009-06-05 23:20:59Z shire $ */
+/* $Id: zend_compile.h 312076 2011-06-12 01:43:10Z felipe $ */
 
 #ifndef ZEND_COMPILE_H
 #define ZEND_COMPILE_H
@@ -39,6 +39,7 @@
 #define INC_BPC(op_array)	if (op_array->fn_flags & ZEND_ACC_INTERACTIVE) { ((op_array)->backpatch_count++); }
 #define DEC_BPC(op_array)	if (op_array->fn_flags & ZEND_ACC_INTERACTIVE) { ((op_array)->backpatch_count--); }
 #define HANDLE_INTERACTIVE()  if (CG(active_op_array)->fn_flags & ZEND_ACC_INTERACTIVE) { execute_new_code(TSRMLS_C); }
+#define DO_TICKS()            if (Z_LVAL(CG(declarables).ticks)) { zend_do_ticks(TSRMLS_C); }
 
 #define RESET_DOC_COMMENT()        \
     {                              \
@@ -687,9 +688,9 @@ int zendlex(znode *zendlval TSRMLS_DC);
 #define ZEND_CT	(1<<0)
 #define ZEND_RT (1<<1)
 
-#define ZEND_FETCH_STANDARD		0
-#define ZEND_FETCH_ADD_LOCK		(1<<0)
-#define ZEND_FETCH_MAKE_REF		(1<<1)
+#define ZEND_FETCH_STANDARD	    0x00000000
+#define ZEND_FETCH_ADD_LOCK	    0x08000000
+#define ZEND_FETCH_MAKE_REF	    0x04000000
 
 #define ZEND_FE_FETCH_BYREF	1
 #define ZEND_FE_FETCH_WITH_KEY	2

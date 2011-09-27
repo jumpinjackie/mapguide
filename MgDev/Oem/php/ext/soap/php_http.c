@@ -2,7 +2,7 @@
   +----------------------------------------------------------------------+
   | PHP Version 5                                                        |
   +----------------------------------------------------------------------+
-  | Copyright (c) 1997-2009 The PHP Group                                |
+  | Copyright (c) 1997-2011 The PHP Group                                |
   +----------------------------------------------------------------------+
   | This source file is subject to version 3.01 of the PHP license,      |
   | that is bundled with this package in the file LICENSE, and is        |
@@ -17,7 +17,7 @@
   |          Dmitry Stogov <dmitry@zend.com>                             |
   +----------------------------------------------------------------------+
 */
-/* $Id: php_http.c 281589 2009-06-03 12:39:50Z iliaa $ */
+/* $Id: php_http.c 306939 2011-01-01 02:19:59Z felipe $ */
 
 #include "php_soap.h"
 #include "ext/standard/base64.h"
@@ -137,6 +137,13 @@ static php_stream* http_connect(zval* this_ptr, php_url *phpurl, int use_ssl, ph
 		smart_str_appendc(&soap_headers, ':');
 		smart_str_append_unsigned(&soap_headers, phpurl->port);
 		smart_str_append_const(&soap_headers, " HTTP/1.1\r\n");
+		smart_str_append_const(&soap_headers, "Host: ");
+		smart_str_appends(&soap_headers, phpurl->host);
+		if (phpurl->port != 80) {
+			smart_str_appendc(&soap_headers, ':');
+			smart_str_append_unsigned(&soap_headers, phpurl->port);
+		}
+		smart_str_append_const(&soap_headers, "\r\n");
 		proxy_authentication(this_ptr, &soap_headers TSRMLS_CC);
 		smart_str_append_const(&soap_headers, "\r\n");
 		if (php_stream_write(stream, soap_headers.c, soap_headers.len) != soap_headers.len) {
@@ -207,10 +214,14 @@ int make_http_soap_request(zval  *this_ptr,
 	int http_1_1;
 	int http_status;
 	int content_type_xml = 0;
+	long redirect_max = 20;
 	char *content_encoding;
 	char *http_msg = NULL;
 	zend_bool old_allow_url_fopen;
 	php_stream_context *context = NULL;
+	zend_bool has_authorization = 0;
+	zend_bool has_proxy_authorization = 0;
+	zend_bool has_cookies = 0;
 
 	if (this_ptr == NULL || Z_TYPE_P(this_ptr) != IS_OBJECT) {
 		return FALSE;
@@ -281,6 +292,14 @@ int make_http_soap_request(zval  *this_ptr,
 	if (SUCCESS == zend_hash_find(Z_OBJPROP_P(this_ptr),
 			"_stream_context", sizeof("_stream_context"), (void**)&tmp)) {
 		context = php_stream_context_from_zval(*tmp, 0);
+	}
+
+	if (context && 
+		php_stream_context_get_option(context, "http", "max_redirects", &tmp) == SUCCESS) {
+		if (Z_TYPE_PP(tmp) != IS_STRING || !is_numeric_string(Z_STRVAL_PP(tmp), Z_STRLEN_PP(tmp), &redirect_max, NULL, 1)) {
+			if (Z_TYPE_PP(tmp) == IS_LONG)
+				redirect_max = Z_LVAL_PP(tmp);
+		}
 	}
 
 try_again:
@@ -471,6 +490,7 @@ try_again:
 		    Z_TYPE_PP(login) == IS_STRING) {
 			zval **digest;
 
+			has_authorization = 1;
 			if (zend_hash_find(Z_OBJPROP_P(this_ptr), "_digest", sizeof("_digest"), (void **)&digest) == SUCCESS) {
 				if (Z_TYPE_PP(digest) == IS_ARRAY) {
 					char          HA1[33], HA2[33], response[33], cnonce[33], nc[9];
@@ -642,6 +662,7 @@ try_again:
 
 		/* Proxy HTTP Authentication */
 		if (use_proxy && !use_ssl) {
+			has_proxy_authorization = 1;
 			proxy_authentication(this_ptr, &soap_headers TSRMLS_CC);
 		}
 
@@ -651,6 +672,7 @@ try_again:
 			char *key;
 			int i, n;
 
+			has_cookies = 1;
 			n = zend_hash_num_elements(Z_ARRVAL_PP(cookies));
 			if (n > 0) {
 				zend_hash_internal_pointer_reset(Z_ARRVAL_PP(cookies));
@@ -725,11 +747,14 @@ try_again:
 					     strncasecmp(s, "content-length", sizeof("content-length")-1) != 0) &&
 					    (name_len != sizeof("content-type")-1 ||
 					     strncasecmp(s, "content-type", sizeof("content-type")-1) != 0) &&
-					    (name_len != sizeof("cookie")-1 ||
+					    (!has_cookies ||
+					     name_len != sizeof("cookie")-1 ||
 					     strncasecmp(s, "cookie", sizeof("cookie")-1) != 0) &&
-					    (name_len != sizeof("authorization")-1 ||
+					    (!has_authorization ||
+					     name_len != sizeof("authorization")-1 ||
 					     strncasecmp(s, "authorization", sizeof("authorization")-1) != 0) &&
-					    (name_len != sizeof("proxy-authorization")-1 ||
+					    (!has_proxy_authorization ||
+					     name_len != sizeof("proxy-authorization")-1 ||
 					     strncasecmp(s, "proxy-authorization", sizeof("proxy-authorization")-1) != 0)) {
 					    /* add header */
 						smart_str_appendl(&soap_headers, s, p-s);
@@ -752,16 +777,15 @@ try_again:
 		err = php_stream_write(stream, soap_headers.c, soap_headers.len);
 		if (err != soap_headers.len) {
 			if (request != buf) {efree(request);}
-			smart_str_free(&soap_headers);
 			php_stream_close(stream);
 			zend_hash_del(Z_OBJPROP_P(this_ptr), "httpurl", sizeof("httpurl"));
 			zend_hash_del(Z_OBJPROP_P(this_ptr), "httpsocket", sizeof("httpsocket"));
 			zend_hash_del(Z_OBJPROP_P(this_ptr), "_use_proxy", sizeof("_use_proxy"));
 			add_soap_fault(this_ptr, "HTTP", "Failed Sending HTTP SOAP request", NULL, NULL TSRMLS_CC);
+			smart_str_free(&soap_headers_z);
 			return FALSE;
 		}
 		smart_str_free(&soap_headers);
-
 	} else {
 		add_soap_fault(this_ptr, "HTTP", "Failed to create stream??", NULL, NULL TSRMLS_CC);
 		smart_str_free(&soap_headers_z);
@@ -990,12 +1014,20 @@ try_again:
 					new_url->host = phpurl->host ? estrdup(phpurl->host) : NULL;
 					new_url->port = phpurl->port;
 					if (new_url->path && new_url->path[0] != '/') {
-						char *t = phpurl->path;
-						char *p = strrchr(t, '/');
-						if (p) {
-							char *s = emalloc((p - t) + strlen(new_url->path) + 2);
-							strncpy(s, t, (p - t) + 1);
-							s[(p - t) + 1] = 0;
+						if (phpurl->path) {
+							char *t = phpurl->path;
+							char *p = strrchr(t, '/');
+							if (p) {
+								char *s = emalloc((p - t) + strlen(new_url->path) + 2);
+								strncpy(s, t, (p - t) + 1);
+								s[(p - t) + 1] = 0;
+								strcat(s, new_url->path);
+								efree(new_url->path);
+								new_url->path = s;
+							} 
+						} else {
+							char *s = emalloc(strlen(new_url->path) + 2);
+							s[0] = '/'; s[1] = 0;
 							strcat(s, new_url->path);
 							efree(new_url->path);
 							new_url->path = s;
@@ -1003,6 +1035,12 @@ try_again:
 					}
 				}
 				phpurl = new_url;
+
+				if (--redirect_max < 1) {
+					add_soap_fault(this_ptr, "HTTP", "Redirection limit reached, aborting", NULL, NULL TSRMLS_CC);
+					smart_str_free(&soap_headers_z);
+					return FALSE;
+				}
 
 				goto try_again;
 			}

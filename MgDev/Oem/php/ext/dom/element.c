@@ -2,7 +2,7 @@
    +----------------------------------------------------------------------+
    | PHP Version 5                                                        |
    +----------------------------------------------------------------------+
-   | Copyright (c) 1997-2009 The PHP Group                                |
+   | Copyright (c) 1997-2011 The PHP Group                                |
    +----------------------------------------------------------------------+
    | This source file is subject to version 3.01 of the PHP license,      |
    | that is bundled with this package in the file LICENSE, and is        |
@@ -17,7 +17,7 @@
    +----------------------------------------------------------------------+
 */
 
-/* $Id: element.c 272370 2008-12-31 11:15:49Z sebastian $ */
+/* $Id: element.c 313665 2011-07-25 11:42:53Z felipe $ */
 
 #ifdef HAVE_CONFIG_H
 #include "config.h"
@@ -146,7 +146,7 @@ const zend_function_entry php_dom_element_class_functions[] = { /* {{{ */
 	PHP_FALIAS(setIdAttributeNS, dom_element_set_id_attribute_ns, arginfo_dom_element_set_id_attribute_ns)
 	PHP_FALIAS(setIdAttributeNode, dom_element_set_id_attribute_node, arginfo_dom_element_set_id_attribute_node)
 	PHP_ME(domelement, __construct, arginfo_dom_element_construct, ZEND_ACC_PUBLIC)
-	{NULL, NULL, NULL}
+	PHP_FE_END
 };
 /* }}} */
 
@@ -777,9 +777,15 @@ PHP_FUNCTION(dom_element_set_attribute_ns)
 				node_list_unlink(nodep->children TSRMLS_CC);
 			}
 
-			if (xmlStrEqual((xmlChar *) prefix, (xmlChar *)"xmlns") && xmlStrEqual((xmlChar *) uri, (xmlChar *)DOM_XMLNS_NAMESPACE)) {
+			if ((xmlStrEqual((xmlChar *) prefix, (xmlChar *)"xmlns") || 
+				(prefix == NULL && xmlStrEqual((xmlChar *) localname, (xmlChar *)"xmlns"))) && 
+				xmlStrEqual((xmlChar *) uri, (xmlChar *)DOM_XMLNS_NAMESPACE)) {
 				is_xmlns = 1;
-				nsptr = dom_get_nsdecl(elemp, (xmlChar *)localname);
+				if (prefix == NULL) {
+					nsptr = dom_get_nsdecl(elemp, NULL);
+				} else {
+					nsptr = dom_get_nsdecl(elemp, (xmlChar *)localname);
+				}
 			} else {
 				nsptr = xmlSearchNsByHref(elemp->doc, elemp, (xmlChar *)uri);
 				if (nsptr && nsptr->prefix == NULL) {
@@ -802,7 +808,12 @@ PHP_FUNCTION(dom_element_set_attribute_ns)
 
 			if (nsptr == NULL) {
 				if (prefix == NULL) {
-					errorcode = NAMESPACE_ERR;
+					if (is_xmlns == 1) {
+						xmlNewNs(elemp, (xmlChar *)value, NULL);
+						xmlReconciliateNs(elemp->doc, elemp);
+					} else {
+						errorcode = NAMESPACE_ERR;
+					}
 				} else {
 					if (is_xmlns == 1) {
 						xmlNewNs(elemp, (xmlChar *)value, (xmlChar *)localname);

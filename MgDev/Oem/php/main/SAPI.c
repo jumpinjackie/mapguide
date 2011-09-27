@@ -2,7 +2,7 @@
    +----------------------------------------------------------------------+
    | PHP Version 5                                                        |
    +----------------------------------------------------------------------+
-   | Copyright (c) 1997-2009 The PHP Group                                |
+   | Copyright (c) 1997-2011 The PHP Group                                |
    +----------------------------------------------------------------------+
    | This source file is subject to version 3.01 of the PHP license,      |
    | that is bundled with this package in the file LICENSE, and is        |
@@ -18,7 +18,7 @@
    +----------------------------------------------------------------------+
 */
 
-/* $Id: SAPI.c 287423 2009-08-17 17:30:32Z jani $ */
+/* $Id: SAPI.c 309319 2011-03-16 23:54:14Z pajoye $ */
 
 #include <ctype.h>
 #include <sys/stat.h>
@@ -78,6 +78,9 @@ SAPI_API void sapi_startup(sapi_module_struct *sf)
 
 #ifdef ZTS
 	ts_allocate_id(&sapi_globals_id, sizeof(sapi_globals_struct), (ts_allocate_ctor) sapi_globals_ctor, (ts_allocate_dtor) sapi_globals_dtor);
+# ifdef PHP_WIN32
+	_configthreadlocale(_ENABLE_PER_THREAD_LOCALE);
+# endif
 #else
 	sapi_globals_ctor(&sapi_globals);
 #endif
@@ -194,7 +197,7 @@ SAPI_API SAPI_POST_READER_FUNC(sapi_read_standard_form_data)
 	int read_bytes;
 	int allocated_bytes=SAPI_POST_BLOCK_SIZE+1;
 
-	if (SG(request_info).content_length > SG(post_max_size)) {
+	if ((SG(post_max_size) > 0) && (SG(request_info).content_length > SG(post_max_size))) {
 		php_error_docref(NULL TSRMLS_CC, E_WARNING, "POST Content-Length of %ld bytes exceeds the limit of %ld bytes",
 					SG(request_info).content_length, SG(post_max_size));
 		return;
@@ -207,7 +210,7 @@ SAPI_API SAPI_POST_READER_FUNC(sapi_read_standard_form_data)
 			break;
 		}
 		SG(read_post_bytes) += read_bytes;
-		if (SG(read_post_bytes) > SG(post_max_size)) {
+		if ((SG(post_max_size) > 0) && (SG(read_post_bytes) > SG(post_max_size))) {
 			php_error_docref(NULL TSRMLS_CC, E_WARNING, "Actual POST length does not match Content-Length, and exceeds %ld bytes", SG(post_max_size));
 			break;
 		}

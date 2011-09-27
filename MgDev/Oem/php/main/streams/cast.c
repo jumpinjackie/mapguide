@@ -2,7 +2,7 @@
    +----------------------------------------------------------------------+
    | PHP Version 5                                                        |
    +----------------------------------------------------------------------+
-   | Copyright (c) 1997-2009 The PHP Group                                |
+   | Copyright (c) 1997-2011 The PHP Group                                |
    +----------------------------------------------------------------------+
    | This source file is subject to version 3.01 of the PHP license,      |
    | that is bundled with this package in the file LICENSE, and is        |
@@ -16,7 +16,7 @@
    +----------------------------------------------------------------------+
  */
 
-/* $Id: cast.c 279036 2009-04-20 08:28:44Z pajoye $ */
+/* $Id: cast.c 307611 2011-01-20 06:32:59Z pajoye $ */
 
 #define _GNU_SOURCE
 #include "php.h"
@@ -30,7 +30,7 @@
 #include "php_streams_int.h"
 
 /* Under BSD, emulate fopencookie using funopen */
-#if HAVE_FUNOPEN
+#if defined(HAVE_FUNOPEN) && !defined(HAVE_FOPENCOOKIE)
 typedef struct {
 	int (*reader)(void *, char *, int);
 	int (*writer)(void *, const char *, int);
@@ -43,18 +43,20 @@ FILE *fopencookie(void *cookie, const char *mode, COOKIE_IO_FUNCTIONS_T *funcs)
 	return funopen(cookie, funcs->reader, funcs->writer, funcs->seeker, funcs->closer);
 }
 # define HAVE_FOPENCOOKIE 1
+# define PHP_EMULATE_FOPENCOOKIE 1
 # define PHP_STREAM_COOKIE_FUNCTIONS	&stream_cookie_functions
-#elif HAVE_FOPENCOOKIE
+#elif defined(HAVE_FOPENCOOKIE)
 # define PHP_STREAM_COOKIE_FUNCTIONS	stream_cookie_functions
 #endif
 
 /* {{{ STDIO with fopencookie */
-#if HAVE_FUNOPEN
+#if defined(PHP_EMULATE_FOPENCOOKIE)
 /* use our fopencookie emulation */
 static int stream_cookie_reader(void *cookie, char *buffer, int size)
 {
 	int ret;
 	TSRMLS_FETCH();
+
 	ret = php_stream_read((php_stream*)cookie, buffer, size);
 	return ret;
 }
@@ -62,12 +64,14 @@ static int stream_cookie_reader(void *cookie, char *buffer, int size)
 static int stream_cookie_writer(void *cookie, const char *buffer, int size)
 {
 	TSRMLS_FETCH();
+
 	return php_stream_write((php_stream *)cookie, (char *)buffer, size);
 }
 
 static fpos_t stream_cookie_seeker(void *cookie, off_t position, int whence)
 {
 	TSRMLS_FETCH();
+
 	return (fpos_t)php_stream_seek((php_stream *)cookie, position, whence);
 }
 
@@ -80,12 +84,12 @@ static int stream_cookie_closer(void *cookie)
 	stream->fclose_stdiocast = PHP_STREAM_FCLOSE_NONE;
 	return php_stream_close(stream);
 }
-
-#elif HAVE_FOPENCOOKIE
+#elif defined(HAVE_FOPENCOOKIE)
 static ssize_t stream_cookie_reader(void *cookie, char *buffer, size_t size)
 {
 	ssize_t ret;
 	TSRMLS_FETCH();
+
 	ret = php_stream_read(((php_stream *)cookie), buffer, size);
 	return ret;
 }
@@ -93,27 +97,30 @@ static ssize_t stream_cookie_reader(void *cookie, char *buffer, size_t size)
 static ssize_t stream_cookie_writer(void *cookie, const char *buffer, size_t size)
 {
 	TSRMLS_FETCH();
+
 	return php_stream_write(((php_stream *)cookie), (char *)buffer, size);
 }
 
-#ifdef COOKIE_SEEKER_USES_OFF64_T
+# ifdef COOKIE_SEEKER_USES_OFF64_T
 static int stream_cookie_seeker(void *cookie, __off64_t *position, int whence)
 {
 	TSRMLS_FETCH();
 
 	*position = php_stream_seek((php_stream *)cookie, (off_t)*position, whence);
 
-	if (*position == -1)
+	if (*position == -1) {
 		return -1;
+	}
 	return 0;
 }
-#else
+# else
 static int stream_cookie_seeker(void *cookie, off_t position, int whence)
 {
 	TSRMLS_FETCH();
+
 	return php_stream_seek((php_stream *)cookie, position, whence);
 }
-#endif
+# endif
 
 static int stream_cookie_closer(void *cookie)
 {
@@ -124,7 +131,7 @@ static int stream_cookie_closer(void *cookie)
 	stream->fclose_stdiocast = PHP_STREAM_FCLOSE_NONE;
 	return php_stream_close(stream);
 }
-#endif /* elif HAVE_FOPENCOOKIE */
+#endif /* elif defined(HAVE_FOPENCOOKIE) */
 
 #if HAVE_FOPENCOOKIE
 static COOKIE_IO_FUNCTIONS_T stream_cookie_functions =
@@ -135,6 +142,50 @@ static COOKIE_IO_FUNCTIONS_T stream_cookie_functions =
 #else
 /* TODO: use socketpair() to emulate fopencookie, as suggested by Hartmut ? */
 #endif
+/* }}} */
+
+/* {{{ php_stream_mode_sanitize_fdopen_fopencookie
+ * Result should have at least size 5, e.g. to write wbx+\0 */
+void php_stream_mode_sanitize_fdopen_fopencookie(php_stream *stream, char *result)
+{
+	/* replace modes not supported by fdopen and fopencookie, but supported 
+	 * by PHP's fread(), so that their calls won't fail */
+	const char *cur_mode = stream->mode;
+	int         has_plus = 0,
+		        has_bin  = 0,
+				i,
+				res_curs = 0;
+
+	if (cur_mode[0] == 'r' || cur_mode[0] == 'w' || cur_mode[0] == 'a') {
+		result[res_curs++] = cur_mode[0];
+	} else {
+		/* assume cur_mode[0] is 'c' or 'x'; substitute by 'w', which should not
+		 * truncate anything in fdopen/fopencookie */
+		result[res_curs++] = 'w';
+
+		/* x is allowed (at least by glibc & compat), but not as the 1st mode
+		 * as in PHP and in any case is (at best) ignored by fdopen and fopencookie */
+	}
+	
+	/* assume current mode has at most length 4 (e.g. wbn+) */
+	for (i = 1; i < 4 && cur_mode[i] != '\0'; i++) {
+		if (cur_mode[i] == 'b') {
+			has_bin = 1;
+		} else if (cur_mode[i] == '+') {
+			has_plus = 1;
+		}
+		/* ignore 'n', 't' or other stuff */
+	}
+
+	if (has_bin) {
+		result[res_curs++] = 'b';
+	}
+	if (has_plus) {
+		result[res_curs++] = '+';
+	}
+
+	result[res_curs] = '\0';
+}
 /* }}} */
 
 /* {{{ php_stream_cast */
@@ -153,9 +204,9 @@ PHPAPI int _php_stream_cast(php_stream *stream, int castas, void **ret, int show
 			stream->readpos = stream->writepos = 0;
 		}
 	}
-	
+
 	/* filtered streams can only be cast as stdio, and only when fopencookie is present */
-	
+
 	if (castas == PHP_STREAM_AS_STDIO) {
 		if (stream->stdiocast) {
 			if (ret) {
@@ -167,31 +218,37 @@ PHPAPI int _php_stream_cast(php_stream *stream, int castas, void **ret, int show
 		/* if the stream is a stdio stream let's give it a chance to respond
 		 * first, to avoid doubling up the layers of stdio with an fopencookie */
 		if (php_stream_is(stream, PHP_STREAM_IS_STDIO) &&
-				stream->ops->cast &&
-				!php_stream_is_filtered(stream) &&
-				stream->ops->cast(stream, castas, ret TSRMLS_CC) == SUCCESS)
-		{
+			stream->ops->cast &&
+			!php_stream_is_filtered(stream) &&
+			stream->ops->cast(stream, castas, ret TSRMLS_CC) == SUCCESS
+		) {
 			goto exit_success;
 		}
-		
+
 #if HAVE_FOPENCOOKIE
 		/* if just checking, say yes we can be a FILE*, but don't actually create it yet */
-		if (ret == NULL)
+		if (ret == NULL) {
 			goto exit_success;
+		}
 
-		*(FILE**)ret = fopencookie(stream, stream->mode, PHP_STREAM_COOKIE_FUNCTIONS);
+		{
+			char fixed_mode[5];
+			php_stream_mode_sanitize_fdopen_fopencookie(stream, fixed_mode);
+			*(FILE**)ret = fopencookie(stream, fixed_mode, PHP_STREAM_COOKIE_FUNCTIONS);
+		}
 
 		if (*ret != NULL) {
 			off_t pos;
-			
+
 			stream->fclose_stdiocast = PHP_STREAM_FCLOSE_FOPENCOOKIE;
 
 			/* If the stream position is not at the start, we need to force
 			 * the stdio layer to believe it's real location. */
 			pos = php_stream_tell(stream);
-			if (pos > 0)
+			if (pos > 0) {
 				fseek(*ret, pos, SEEK_SET);
-			
+			}
+
 			goto exit_success;
 		}
 
@@ -214,16 +271,17 @@ PHPAPI int _php_stream_cast(php_stream *stream, int castas, void **ret, int show
 
 			newstream = php_stream_fopen_tmpfile();
 			if (newstream) {
-				int ret = php_stream_copy_to_stream_ex(stream, newstream, PHP_STREAM_COPY_ALL, NULL);
+				int retval = php_stream_copy_to_stream_ex(stream, newstream, PHP_STREAM_COPY_ALL, NULL);
 
 				if (ret != SUCCESS) {
 					php_stream_close(newstream);
 				} else {
-					int retcode = php_stream_cast(newstream, castas | flags, (void**)ret, show_err);
+					int retcode = php_stream_cast(newstream, castas | flags, (void **)ret, show_err);
 
-					if (retcode == SUCCESS)
-						rewind(*(FILE**)ret);
-					
+					if (retcode == SUCCESS) {
+						rewind(*(FILE**)retval);
+					}
+
 					/* do some specialized cleanup */
 					if ((flags & PHP_STREAM_CAST_RELEASE)) {
 						php_stream_free(stream, PHP_STREAM_FREE_CLOSE_CASTED);
@@ -245,13 +303,13 @@ PHPAPI int _php_stream_cast(php_stream *stream, int castas, void **ret, int show
 	if (show_err) {
 		/* these names depend on the values of the PHP_STREAM_AS_XXX defines in php_streams.h */
 		static const char *cast_names[4] = {
-			"STDIO FILE*", "File Descriptor", "Socket Descriptor", "select()able descriptor"
+			"STDIO FILE*",
+			"File Descriptor",
+			"Socket Descriptor",
+			"select()able descriptor"
 		};
 
-		php_error_docref(NULL TSRMLS_CC, E_WARNING, "cannot represent a stream of type %s as a %s",
-			stream->ops->label,
-			cast_names[castas]
-			);
+		php_error_docref(NULL TSRMLS_CC, E_WARNING, "cannot represent a stream of type %s as a %s", stream->ops->label, cast_names[castas]);
 	}
 
 	return FAILURE;
@@ -259,20 +317,20 @@ PHPAPI int _php_stream_cast(php_stream *stream, int castas, void **ret, int show
 exit_success:
 
 	if ((stream->writepos - stream->readpos) > 0 &&
-			stream->fclose_stdiocast != PHP_STREAM_FCLOSE_FOPENCOOKIE &&
-			(flags & PHP_STREAM_CAST_INTERNAL) == 0) {
+		stream->fclose_stdiocast != PHP_STREAM_FCLOSE_FOPENCOOKIE &&
+		(flags & PHP_STREAM_CAST_INTERNAL) == 0
+	) {
 		/* the data we have buffered will be lost to the third party library that
 		 * will be accessing the stream.  Emit a warning so that the end-user will
 		 * know that they should try something else */
-		
-		php_error_docref(NULL TSRMLS_CC, E_WARNING,
-				"%ld bytes of buffered data lost during stream conversion!",
-				(long)(stream->writepos - stream->readpos));
+
+		php_error_docref(NULL TSRMLS_CC, E_WARNING, "%ld bytes of buffered data lost during stream conversion!", (long)(stream->writepos - stream->readpos));
 	}
-	
-	if (castas == PHP_STREAM_AS_STDIO && ret)
+
+	if (castas == PHP_STREAM_AS_STDIO && ret) {
 		stream->stdiocast = *(FILE**)ret;
-	
+	}
+
 	if (flags & PHP_STREAM_CAST_RELEASE) {
 		php_stream_free(stream, PHP_STREAM_FREE_CLOSE_CASTED);
 	}
@@ -290,15 +348,15 @@ PHPAPI FILE * _php_stream_open_wrapper_as_file(char *path, char *mode, int optio
 
 	stream = php_stream_open_wrapper_rel(path, mode, options|STREAM_WILL_CAST, opened_path);
 
-	if (stream == NULL)
+	if (stream == NULL) {
 		return NULL;
-	
-	if (php_stream_cast(stream, PHP_STREAM_AS_STDIO|PHP_STREAM_CAST_TRY_HARD|PHP_STREAM_CAST_RELEASE,
-				(void**)&fp, REPORT_ERRORS) == FAILURE)
-	{
+	}
+
+	if (php_stream_cast(stream, PHP_STREAM_AS_STDIO|PHP_STREAM_CAST_TRY_HARD|PHP_STREAM_CAST_RELEASE, (void**)&fp, REPORT_ERRORS) == FAILURE) {
 		php_stream_close(stream);
-		if (opened_path && *opened_path)
+		if (opened_path && *opened_path) {
 			efree(*opened_path);
+		}
 		return NULL;
 	}
 	return fp;
@@ -308,24 +366,27 @@ PHPAPI FILE * _php_stream_open_wrapper_as_file(char *path, char *mode, int optio
 /* {{{ php_stream_make_seekable */
 PHPAPI int _php_stream_make_seekable(php_stream *origstream, php_stream **newstream, int flags STREAMS_DC TSRMLS_DC)
 {
-	assert(newstream != NULL);
-
+	if (newstream == NULL) {
+		return PHP_STREAM_FAILED;
+	}
 	*newstream = NULL;
-	
+
 	if (((flags & PHP_STREAM_FORCE_CONVERSION) == 0) && origstream->ops->seek != NULL) {
 		*newstream = origstream;
 		return PHP_STREAM_UNCHANGED;
 	}
-	
+
 	/* Use a tmpfile and copy the old streams contents into it */
 
-	if (flags & PHP_STREAM_PREFER_STDIO)
+	if (flags & PHP_STREAM_PREFER_STDIO) {
 		*newstream = php_stream_fopen_tmpfile();
-	else
+	} else {
 		*newstream = php_stream_temp_new();
+	}
 
-	if (*newstream == NULL)
+	if (*newstream == NULL) {
 		return PHP_STREAM_FAILED;
+	}
 
 #if ZEND_DEBUG
 	(*newstream)->open_filename = origstream->open_filename;
@@ -340,7 +401,7 @@ PHPAPI int _php_stream_make_seekable(php_stream *origstream, php_stream **newstr
 
 	php_stream_close(origstream);
 	php_stream_seek(*newstream, 0, SEEK_SET);
-	
+
 	return PHP_STREAM_RELEASED;
 }
 /* }}} */

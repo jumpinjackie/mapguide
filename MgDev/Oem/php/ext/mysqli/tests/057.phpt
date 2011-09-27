@@ -1,5 +1,5 @@
 --TEST--
-mysqli_get_metadata
+mysqli_stmt_result_metadata
 --SKIPIF--
 <?php
 require_once('skipif.inc');
@@ -7,7 +7,7 @@ require_once('skipifconnectfailure.inc');
 ?>
 --FILE--
 <?php
-	include "connect.inc";
+	require_once("connect.inc");
 
 	/*** test mysqli_connect 127.0.0.1 ***/
 	$link = my_mysqli_connect($host, $user, $passwd, $db, $port, $socket);
@@ -20,7 +20,7 @@ require_once('skipifconnectfailure.inc');
 	mysqli_query($link, "INSERT INTO test_store_result VALUES (1),(2),(3)");
 
 	$stmt = mysqli_prepare($link, "SELECT * FROM test_store_result");
-	mysqli_execute($stmt);
+	mysqli_stmt_execute($stmt);
 
 	/* this should produce an out of sync error */
 	if ($result = mysqli_query($link, "SELECT * FROM test_store_result")) {
@@ -31,20 +31,20 @@ require_once('skipifconnectfailure.inc');
 
 	/* now we should try mysqli_stmt_reset() */
 	$stmt = mysqli_prepare($link, "SELECT * FROM test_store_result");
-	var_dump(mysqli_execute($stmt));
+	var_dump(mysqli_stmt_execute($stmt));
 	var_dump(mysqli_stmt_reset($stmt));
 
 	var_dump($stmt = mysqli_prepare($link, "SELECT * FROM test_store_result"));
 	if ($IS_MYSQLND && $stmt->affected_rows !== -1)
 			printf("[001] Expecting -1, got %d\n", $stmt->affected_rows);
 
-	var_dump(mysqli_execute($stmt));
+	var_dump(mysqli_stmt_execute($stmt));
 	var_dump($stmt = @mysqli_prepare($link, "SELECT * FROM test_store_result"), mysqli_error($link));
 	var_dump(mysqli_stmt_reset($stmt));
 
 	$stmt = mysqli_prepare($link, "SELECT * FROM test_store_result");
-	mysqli_execute($stmt);
-	$result1 = mysqli_get_metadata($stmt);
+	mysqli_stmt_execute($stmt);
+	$result1 = mysqli_stmt_result_metadata($stmt);
 	mysqli_stmt_store_result($stmt);
 
 	printf ("Rows: %d\n", mysqli_stmt_affected_rows($stmt));
@@ -64,7 +64,7 @@ require_once('skipifconnectfailure.inc');
 ?>
 --CLEAN--
 <?php
-include "connect.inc";
+require_once("connect.inc");
 if (!$link = my_mysqli_connect($host, $user, $passwd, $db, $port, $socket))
    printf("[c001] [%d] %s\n", mysqli_connect_errno(), mysqli_connect_error());
 

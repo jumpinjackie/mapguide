@@ -4,12 +4,14 @@ SELECT oci_bind_by_name with SQLT_AFC aka CHAR
 <?php
 if (!extension_loaded('oci8')) die ("skip no oci8 extension");
 require(dirname(__FILE__)."/connect.inc");
-$sv = oci_server_version($c);
-$sv = preg_match('/11.1/', $sv, $matches);
-if ($sv !== 1) {
-	die ("skip expected output only valid when using Oracle 11g database");
+if (preg_match('/Release 1[01]\.2\./', oci_server_version($c), $matches) !== 1) {
+	die("skip expected output only valid when using Oracle 10gR2 or 11gR2 databases");
+} else if (preg_match('/^11\./', oci_client_version()) != 1) {
+    die("skip test expected to work only with Oracle 11g or greater version of client");
 }
 ?>
+--ENV--
+NLS_LANG=
 --FILE--
 <?php
 
@@ -25,10 +27,7 @@ $stmtarray = array(
 	"insert into bind_char_tab values (3, NULL, 'abc       ')"
 );
 						 
-foreach ($stmtarray as $stmt) {
-	$s = oci_parse($c, $stmt);
-	@oci_execute($s);
-}
+oci8_test_sql_execute($c, $stmtarray);
 
 // Run Test
 
@@ -198,12 +197,7 @@ $stmtarray = array(
 	"drop table bind_char_tab"
 );
 						 
-foreach ($stmtarray as $stmt) {
-	$s = oci_parse($c, $stmt);
-	oci_execute($s);
-}
-
-oci_close($c);
+oci8_test_sql_execute($c, $stmtarray);
 
 echo "Done\n";
 
@@ -219,7 +213,9 @@ Test 1.2: Type: AFC.  Length: default
     ::
 Test 1.3: Type: AFC:  Length: 0
   Querying:
-    Oci_execute error ORA-1460 Exiting Query
+    :1:
+    :abc       :
+    ::
 Test 1.4: Type: AFC:  Length: strlen
   Querying:
     :1:
@@ -227,7 +223,9 @@ Test 1.4: Type: AFC:  Length: strlen
     ::
 Test 1.5: Type: AFC.  Length: strlen-1
   Querying:
-    Oci_execute error ORA-1460 Exiting Query
+    :1:
+    :abc       :
+    ::
 Test 1.6: Type: AFC.  Length: strlen+1
   Querying:
     :1:
@@ -263,7 +261,9 @@ Test 3.2: Type: AFC.  Length: default
     :abc:
 Test 3.3: Type: AFC:  Length: 0
   Querying:
-    Oci_execute error ORA-1460 Exiting Query
+    :2:
+    ::
+    :abc:
 Test 3.4: Type: AFC:  Length: strlen
   Querying:
     :2:
@@ -271,7 +271,9 @@ Test 3.4: Type: AFC:  Length: strlen
     :abc:
 Test 3.5: Type: AFC.  Length: strlen-1
   Querying:
-    Oci_execute error ORA-1460 Exiting Query
+    :2:
+    ::
+    :abc:
 Test 3.6: Type: AFC.  Length: strlen+1
   Querying:
     :2:

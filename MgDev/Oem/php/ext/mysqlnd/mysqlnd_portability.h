@@ -12,6 +12,8 @@ This file is public domain and comes with NO WARRANTY of any kind */
 #ifndef MYSQLND_PORTABILITY_H
 #define MYSQLND_PORTABILITY_H
 
+
+
 /* Comes from global.h as OFFSET, renamed to STRUCT_OFFSET */
 #define STRUCT_OFFSET(t, f)   ((size_t)(char *)&((t *)0)->f)
 
@@ -37,6 +39,12 @@ This file is public domain and comes with NO WARRANTY of any kind */
 #else 
 #  include <ext/mysqlnd/php_mysqlnd_config.h>
 #endif /* _WIN32... */
+
+#if __STDC_VERSION__ < 199901L && !defined(atoll)
+  /* "inline" is a keyword */
+  #define atoll atol
+#endif
+
 
 #ifdef HAVE_SYS_TYPES_H
 #include <sys/types.h>
@@ -235,47 +243,44 @@ typedef unsigned long long uint64_t;
 #define uint1korr(A)	(*(((uint8_t*)(A))))
 
 /* Bit values are sent in reverted order of bytes, compared to normal !!! */
-#define bit_uint2korr(A) ((uint16_t) (((uint16_t) (((zend_uchar*) (A))[1])) +\
-									((uint16_t) (((zend_uchar*) (A))[0]) << 8)))
-#define bit_uint3korr(A) ((uint32_t) (((uint32_t) (((zend_uchar*) (A))[2])) +\
-									(((uint32_t) (((zend_uchar*) (A))[1])) << 8) +\
-									(((uint32_t) (((zend_uchar*) (A))[0])) << 16)))
-
-#define bit_uint4korr(A) ((uint32_t) (((uint32_t) (((zend_uchar*) (A))[3])) +\
-									(((uint32_t) (((zend_uchar*) (A))[2])) << 8) +\
-									(((uint32_t) (((zend_uchar*) (A))[1])) << 16) +\
-									(((uint32_t) (((zend_uchar*) (A))[0])) << 24)))
-
-#define bit_uint5korr(A)  ((uint64_t)(((uint32_t) ((zend_uchar) (A)[4])) +\
-                                  (((uint32_t) ((zend_uchar) (A)[3])) << 8) +\
-                                  (((uint32_t) ((zend_uchar) (A)[2])) << 16) +\
-                                  (((uint32_t) ((zend_uchar) (A)[1])) << 24)) +\
-                               (((uint64_t) ((zend_uchar) (A)[0])) << 32))
-
-#define bit_uint6korr(A)	((uint64_t)(((uint32_t) (((zend_uchar*) (A))[5])) +\
-									(((uint32_t) (((zend_uchar*) (A))[4])) << 8) +\
-									(((uint32_t) (((zend_uchar*) (A))[3])) << 16) +\
-									(((uint32_t) (((zend_uchar*) (A))[2])) << 24)) +\
-									(((uint64_t) (((uint32_t) (((zend_uchar*) (A))[1])) +\
-									(((uint32_t) (((zend_uchar*) (A))[0]) << 8)))) << 32))
-
-#define bit_uint7korr(A)	((uint64_t)(((uint32_t) (((zend_uchar*) (A))[6])) +\
-									(((uint32_t) (((zend_uchar*) (A))[5])) << 8) +\
-									(((uint32_t) (((zend_uchar*) (A))[4])) << 16) +\
-									(((uint32_t) (((zend_uchar*) (A))[3])) << 24)) +\
-									(((uint64_t) (((uint32_t) (((zend_uchar*) (A))[2])) +\
-									(((uint32_t) (((zend_uchar*) (A))[1])) << 8) +\
-									(((uint32_t) (((zend_uchar*) (A))[0])) << 16))) << 32))
-
-
-#define bit_uint8korr(A) ((uint64_t)(((uint32_t) (((zend_uchar*) (A))[7])) +\
-									(((uint32_t) (((zend_uchar*) (A))[6])) << 8) +\
-									(((uint32_t) (((zend_uchar*) (A))[5])) << 16) +\
-									(((uint32_t) (((zend_uchar*) (A))[4])) << 24)) +\
-									(((uint64_t) (((uint32_t) (((zend_uchar*) (A))[3])) +\
-									(((uint32_t) (((zend_uchar*) (A))[2])) << 8) +\
-									(((uint32_t) (((zend_uchar*) (A))[1])) << 16) +\
-									(((uint32_t) (((zend_uchar*) (A))[0])) << 24))) << 32))
+#define bit_uint2korr(A) ((uint16_t) (((uint16_t) (((unsigned char*) (A))[1])) +\
+                                   ((uint16_t) (((unsigned char*) (A))[0]) << 8)))
+#define bit_uint3korr(A) ((uint32_t) (((uint32_t) (((unsigned char*) (A))[2])) +\
+                                   (((uint32_t) (((unsigned char*) (A))[1])) << 8) +\
+                                   (((uint32_t) (((unsigned char*) (A))[0])) << 16)))
+#define bit_uint4korr(A) ((uint32_t) (((uint32_t) (((unsigned char*) (A))[3])) +\
+                                   (((uint32_t) (((unsigned char*) (A))[2])) << 8) +\
+                                   (((uint32_t) (((unsigned char*) (A))[1])) << 16) +\
+                                   (((uint32_t) (((unsigned char*) (A))[0])) << 24)))
+#define bit_uint5korr(A) ((uint64_t)(((uint32_t) (((unsigned char*) (A))[4])) +\
+                                    (((uint32_t) (((unsigned char*) (A))[3])) << 8) +\
+                                    (((uint32_t) (((unsigned char*) (A))[2])) << 16) +\
+                                   (((uint32_t) (((unsigned char*) (A))[1])) << 24)) +\
+                                    (((uint64_t) (((unsigned char*) (A))[0])) << 32))
+#define bit_uint6korr(A) ((uint64_t)(((uint32_t) (((unsigned char*) (A))[5])) +\
+                                    (((uint32_t) (((unsigned char*) (A))[4])) << 8) +\
+                                    (((uint32_t) (((unsigned char*) (A))[3])) << 16) +\
+                                    (((uint32_t) (((unsigned char*) (A))[2])) << 24)) +\
+                        (((uint64_t) (((uint32_t) (((unsigned char*) (A))[1])) +\
+                                    (((uint32_t) (((unsigned char*) (A))[0]) << 8)))) <<\
+                                     32))
+#define bit_uint7korr(A) ((uint64_t)(((uint32_t) (((unsigned char*) (A))[6])) +\
+                                    (((uint32_t) (((unsigned char*) (A))[5])) << 8) +\
+                                    (((uint32_t) (((unsigned char*) (A))[4])) << 16) +\
+                                   (((uint32_t) (((unsigned char*) (A))[3])) << 24)) +\
+                        (((uint64_t) (((uint32_t) (((unsigned char*) (A))[2])) +\
+                                    (((uint32_t) (((unsigned char*) (A))[1])) << 8) +\
+                                    (((uint32_t) (((unsigned char*) (A))[0])) << 16))) <<\
+                                     32))
+#define bit_uint8korr(A) ((uint64_t)(((uint32_t) (((unsigned char*) (A))[7])) +\
+                                    (((uint32_t) (((unsigned char*) (A))[6])) << 8) +\
+                                    (((uint32_t) (((unsigned char*) (A))[5])) << 16) +\
+                                    (((uint32_t) (((unsigned char*) (A))[4])) << 24)) +\
+                        (((uint64_t) (((uint32_t) (((unsigned char*) (A))[3])) +\
+                                    (((uint32_t) (((unsigned char*) (A))[2])) << 8) +\
+                                    (((uint32_t) (((unsigned char*) (A))[1])) << 16) +\
+                                    (((uint32_t) (((unsigned char*) (A))[0])) << 24))) <<\
+                                    32))
 
 
 /*
@@ -371,16 +376,6 @@ typedef union {
                                (((uint32_t) ((zend_uchar) (A)[1])) << 8) +\
                                (((uint32_t) ((zend_uchar) (A)[2])) << 16) +\
                                (((uint32_t) ((zend_uchar) (A)[3])) << 24))
-
-
-#define bit_uint8korr(A) ((uint64_t)(((uint32_t) (((zend_uchar*) (A))[7])) +\
-									(((uint32_t) (((zend_uchar*) (A))[6])) << 8) +\
-									(((uint32_t) (((zend_uchar*) (A))[5])) << 16) +\
-									(((uint32_t) (((zend_uchar*) (A))[4])) << 24)) +\
-									(((uint64_t) (((uint32_t) (((zend_uchar*) (A))[3])) +\
-									(((uint32_t) (((zend_uchar*) (A))[2])) << 8) +\
-									(((uint32_t) (((zend_uchar*) (A))[1])) << 16) +\
-									(((uint32_t) (((zend_uchar*) (A))[0])) << 24))) << 32))
 
 #define uint8korr(A)	((uint64_t)(((uint32_t) ((zend_uchar) (A)[0])) +\
 									(((uint32_t) ((zend_uchar) (A)[1])) << 8) +\
@@ -486,19 +481,17 @@ typedef union {
    short/long to/from some place in memory V should be a (not
    register) variable, M is a pointer to byte */
 
-#ifdef WORDS_BIGENDIAN
+#ifndef float8get
 
+#ifdef WORDS_BIGENDIAN
 #define float8get(V,M)		memcpy((char*) &(V),(char*)  (M), sizeof(double))
 #define float8store(T,V)	memcpy((char*)  (T),(char*) &(V), sizeof(double))
-
 #else
-
-#ifndef float8get
 #define float8get(V,M)    memcpy((char*) &(V),(char*) (M),sizeof(double))
 #define float8store(T,V)  memcpy((char*) (T),(char*) &(V),sizeof(double))
-#endif /* float8get */
-
 #endif /* WORDS_BIGENDIAN */
+
+#endif /* float8get */
 
 #endif /* MYSQLND_PORTABILITY_H */
 

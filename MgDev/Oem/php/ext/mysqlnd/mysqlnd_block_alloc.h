@@ -1,8 +1,8 @@
 /*
   +----------------------------------------------------------------------+
-  | PHP Version 6                                                        |
+  | PHP Version 5                                                        |
   +----------------------------------------------------------------------+
-  | Copyright (c) 2006-2009 The PHP Group                                |
+  | Copyright (c) 2006-2011 The PHP Group                                |
   +----------------------------------------------------------------------+
   | This source file is subject to version 3.01 of the PHP license,      |
   | that is bundled with this package in the file LICENSE, and is        |
@@ -18,13 +18,13 @@
   +----------------------------------------------------------------------+
 */
 
-/* $Id: mysqlnd_block_alloc.h 282779 2009-06-25 19:03:52Z johannes $ */
+/* $Id: mysqlnd_block_alloc.h 306939 2011-01-01 02:19:59Z felipe $ */
 
 #ifndef MYSQLND_BLOCK_ALLOC_H
 #define MYSQLND_BLOCK_ALLOC_H
 
-MYSQLND_MEMORY_POOL *	mysqlnd_mempool_create(size_t arena_size TSRMLS_DC);
-void 					mysqlnd_mempool_destroy(MYSQLND_MEMORY_POOL * pool TSRMLS_DC);
+PHPAPI MYSQLND_MEMORY_POOL *	mysqlnd_mempool_create(size_t arena_size TSRMLS_DC);
+PHPAPI void 					mysqlnd_mempool_destroy(MYSQLND_MEMORY_POOL * pool TSRMLS_DC);
 
 #endif	/* MYSQLND_BLOCK_ALLOC_H */
 

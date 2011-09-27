@@ -1,4 +1,4 @@
-// $Id: config.w32 259731 2008-05-14 03:13:17Z auroraeosrose $
+// $Id: config.w32 307880 2011-01-31 12:47:28Z kalle $
 // vim:ft=javascript
 
 ARG_WITH("mysqlnd", "Mysql Native Client Driver", "yes");
@@ -11,15 +11,21 @@ if (PHP_MYSQLND != "no") {
 			"mysqlnd_charset.c " +
 			"mysqlnd_debug.c " +
 			"mysqlnd_loaddata.c " +
-			"mysqlnd_palloc.c " +
+			"mysqlnd_net.c " +
 			"mysqlnd_ps.c " +
 			"mysqlnd_ps_codec.c " +
-			"mysqlnd_qcache.c " +
 			"mysqlnd_result.c " +
 			"mysqlnd_result_meta.c " +
 			"mysqlnd_statistics.c " +
 			"mysqlnd_wireprotocol.c " +
 			"php_mysqlnd.c";
 		EXTENSION("mysqlnd", mysqlnd_source, false);
+		if (((PHP_ZLIB=="no") && (CHECK_LIB("zlib_a.lib;zlib.lib", "mysqlnd", PHP_MYSQLND))) || 
+			(PHP_ZLIB_SHARED && CHECK_LIB("zlib.lib", "mysqlnd", PHP_MYSQLND)) || (PHP_ZLIB == "yes" && (!PHP_ZLIB_SHARED)))
+		{
+			AC_DEFINE("MYSQLND_COMPRESSION_ENABLED", 1, "Compression support");
+			AC_DEFINE("MYSQLND_SSL_SUPPORTED", 1, "SSL support");
+		}
+		PHP_INSTALL_HEADERS("", "ext/mysqlnd");
 	}
 }

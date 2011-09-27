@@ -5,78 +5,67 @@ ocifetchinto()
 --FILE--
 <?php
 
-require dirname(__FILE__)."/connect.inc";
-require dirname(__FILE__).'/create_table.inc';
+require(dirname(__FILE__)."/connect.inc");
 
-$insert_sql = "INSERT INTO ".$schema."".$table_name." (id, value) VALUES (1,1)";
+// Initialize
 
-if (!($s = oci_parse($c, $insert_sql))) {
-	die("oci_parse(insert) failed!\n");
-}
+$stmtarray = array(
+    "drop table fetch_into_tab",
+    "create table fetch_into_tab (id number, value number)",
+    "insert into fetch_into_tab (id, value) values (1,1)",
+    "insert into fetch_into_tab (id, value) values (1,1)",
+    "insert into fetch_into_tab (id, value) values (1,1)",
+);
 
-for ($i = 0; $i<3; $i++) {
-	if (!oci_execute($s)) {
-		die("oci_execute(insert) failed!\n");
-	}
-}
+oci8_test_sql_execute($c, $stmtarray);
 
-if (!oci_commit($c)) {
-	die("oci_commit() failed!\n");
-}
+// Run Test
 
-$select_sql = "SELECT * FROM ".$schema."".$table_name."";
-
-if (!($s = oci_parse($c, $select_sql))) {
+if (!($s = oci_parse($c, "select * from fetch_into_tab"))) {
 	die("oci_parse(select) failed!\n");
 }
 
-/* oci_fetch_all */
+/* ocifetchinto */
 if (!oci_execute($s)) {
 	die("oci_execute(select) failed!\n");
 }
 var_dump(ocifetchinto($s, $all));
 var_dump($all);
 
-/* oci_fetch_all */
+/* ocifetchinto */
 if (!oci_execute($s)) {
 	die("oci_execute(select) failed!\n");
 }
 var_dump(ocifetchinto($s, $all, OCI_NUM+OCI_ASSOC+OCI_RETURN_NULLS+OCI_RETURN_LOBS));
 var_dump($all);
 
-require dirname(__FILE__).'/drop_table.inc';
-	
+// Cleanup
+
+$stmtarray = array(
+    "drop table fetch_into_tab"
+);
+
+oci8_test_sql_execute($c, $stmtarray);
+
 echo "Done\n";
 ?>
---EXPECT--
-int(5)
+--EXPECTF--
+int(2)
 array(2) {
   [0]=>
-  string(1) "1"
+  %unicode|string%(1) "1"
   [1]=>
-  string(1) "1"
+  %unicode|string%(1) "1"
 }
-int(5)
-array(10) {
+int(2)
+array(4) {
   [0]=>
-  string(1) "1"
-  ["ID"]=>
-  string(1) "1"
+  %unicode|string%(1) "1"
+  [%u|b%"ID"]=>
+  %unicode|string%(1) "1"
   [1]=>
-  string(1) "1"
-  ["VALUE"]=>
-  string(1) "1"
-  [2]=>
-  NULL
-  ["BLOB"]=>
-  NULL
-  [3]=>
-  NULL
-  ["CLOB"]=>
-  NULL
-  [4]=>
-  NULL
-  ["STRING"]=>
-  NULL
+  %unicode|string%(1) "1"
+  [%u|b%"VALUE"]=>
+  %unicode|string%(1) "1"
 }
 Done

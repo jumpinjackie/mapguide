@@ -2,7 +2,7 @@
    +----------------------------------------------------------------------+
    | PHP Version 5                                                        |
    +----------------------------------------------------------------------+
-   | Copyright (c) 1997-2009 The PHP Group                                |
+   | Copyright (c) 1997-2011 The PHP Group                                |
    +----------------------------------------------------------------------+
    | This source file is subject to version 3.01 of the PHP license,      |
    | that is bundled with this package in the file LICENSE, and is        |
@@ -17,7 +17,7 @@
    +----------------------------------------------------------------------+
 */
 
-/* $Id: domimplementation.c 272370 2008-12-31 11:15:49Z sebastian $ */
+/* $Id: domimplementation.c 313665 2011-07-25 11:42:53Z felipe $ */
 
 #ifdef HAVE_CONFIG_H
 #include "config.h"
@@ -61,7 +61,7 @@ const zend_function_entry php_dom_domimplementation_class_functions[] = {
 	PHP_ME(domimplementation, hasFeature, arginfo_dom_implementation_has_feature, ZEND_ACC_PUBLIC|ZEND_ACC_ALLOW_STATIC)
 	PHP_ME(domimplementation, createDocumentType, arginfo_dom_implementation_create_documenttype, ZEND_ACC_PUBLIC|ZEND_ACC_ALLOW_STATIC)
 	PHP_ME(domimplementation, createDocument, arginfo_dom_implementation_create_document, ZEND_ACC_PUBLIC|ZEND_ACC_ALLOW_STATIC)
-	{NULL, NULL, NULL}
+	PHP_FE_END
 };
 
 /* {{{ proto boolean dom_domimplementation_has_feature(string feature, string version);

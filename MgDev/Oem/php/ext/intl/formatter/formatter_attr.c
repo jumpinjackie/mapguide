@@ -233,7 +233,9 @@ PHP_FUNCTION( numfmt_set_text_attribute )
 
 	/* Actually set new attribute value. */
 	unum_setTextAttribute(FORMATTER_OBJECT(nfo), attribute, svalue, slength, &INTL_DATA_ERROR_CODE(nfo));
-	efree(svalue);
+	if (svalue) {
+		efree(svalue);
+	}
 	INTL_METHOD_CHECK_STATUS( nfo, "Error setting text attribute" );
 
 	RETURN_TRUE;
@@ -250,7 +252,7 @@ PHP_FUNCTION( numfmt_get_symbol )
 	long symbol;
 	UChar value_buf[4];
 	UChar *value = value_buf;
-	int length = USIZE(value);
+	int length = USIZE(value_buf);
 	FORMATTER_METHOD_INIT_VARS;
 
 	/* Parse parameters. */
@@ -262,12 +264,17 @@ PHP_FUNCTION( numfmt_get_symbol )
 
 		RETURN_FALSE;
 	}
+	
+	if(symbol >= UNUM_FORMAT_SYMBOL_COUNT || symbol < 0) {
+		intl_error_set( NULL, U_ILLEGAL_ARGUMENT_ERROR,	"numfmt_get_symbol: invalid symbol value", 0 TSRMLS_CC );
+		RETURN_FALSE;
+	}
 
 	/* Fetch the object. */
 	FORMATTER_METHOD_FETCH_OBJECT;
 
 	length = unum_getSymbol(FORMATTER_OBJECT(nfo), symbol, value_buf, length, &INTL_DATA_ERROR_CODE(nfo));
-	if(INTL_DATA_ERROR_CODE(nfo) == U_BUFFER_OVERFLOW_ERROR && length >= USIZE( value )) {
+	if(INTL_DATA_ERROR_CODE(nfo) == U_BUFFER_OVERFLOW_ERROR && length >= USIZE( value_buf )) {
 		++length; /* to avoid U_STRING_NOT_TERMINATED_WARNING */
 		INTL_DATA_ERROR_CODE(nfo) = U_ZERO_ERROR;
 		value = eumalloc(length);
@@ -306,6 +313,11 @@ PHP_FUNCTION( numfmt_set_symbol )
 
 		RETURN_FALSE;
 	}
+	
+	if (symbol >= UNUM_FORMAT_SYMBOL_COUNT || symbol < 0) {
+		intl_error_set( NULL, U_ILLEGAL_ARGUMENT_ERROR,	"numfmt_set_symbol: invalid symbol value", 0 TSRMLS_CC );
+		RETURN_FALSE;
+	}
 
 	/* Fetch the object. */
 	FORMATTER_METHOD_FETCH_OBJECT;
@@ -316,7 +328,9 @@ PHP_FUNCTION( numfmt_set_symbol )
 
 	/* Actually set the symbol. */
 	unum_setSymbol(FORMATTER_OBJECT(nfo), symbol, svalue, slength, &INTL_DATA_ERROR_CODE(nfo));
-	efree(svalue);
+	if (svalue) {
+		efree(svalue);
+	}
 	INTL_METHOD_CHECK_STATUS( nfo, "Error setting symbol value" );
 
 	RETURN_TRUE;
@@ -396,7 +410,9 @@ PHP_FUNCTION( numfmt_set_pattern )
 
 	/* TODO: add parse error information */
 	unum_applyPattern(FORMATTER_OBJECT(nfo), 0, svalue, slength, NULL, &INTL_DATA_ERROR_CODE(nfo));
-	efree(svalue);
+	if (svalue) {
+		efree(svalue);
+	}
 	INTL_METHOD_CHECK_STATUS( nfo, "Error setting pattern value" );
 
 	RETURN_TRUE;

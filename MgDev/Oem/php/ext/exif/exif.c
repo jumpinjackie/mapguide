@@ -2,7 +2,7 @@
    +----------------------------------------------------------------------+
    | PHP Version 5                                                        |
    +----------------------------------------------------------------------+
-   | Copyright (c) 1997-2009 The PHP Group                                |
+   | Copyright (c) 1997-2011 The PHP Group                                |
    +----------------------------------------------------------------------+
    | This source file is subject to version 3.01 of the PHP license,      |
    | that is bundled with this package in the file LICENSE, and is        |
@@ -17,7 +17,7 @@
    +----------------------------------------------------------------------+
  */
 
-/* $Id: exif.c 287372 2009-08-16 14:32:32Z iliaa $ */
+/* $Id: exif.c 314376 2011-08-06 14:47:44Z felipe $ */
 
 /*  ToDos
  *
@@ -39,6 +39,16 @@
 
 #include "php.h"
 #include "ext/standard/file.h"
+
+#ifdef HAVE_STDINT_H
+# include <stdint.h>
+#endif
+#ifdef HAVE_INTTYPES_H
+# include <inttypes.h>
+#endif
+#ifdef PHP_WIN32
+# include "win32/php_stdint.h"
+#endif
 
 #if HAVE_EXIF
 
@@ -134,11 +144,11 @@ const zend_function_entry exif_functions[] = {
 	PHP_FE(exif_tagname, arginfo_exif_tagname)
 	PHP_FE(exif_thumbnail, arginfo_exif_thumbnail)
 	PHP_FE(exif_imagetype, arginfo_exif_imagetype)
-	{NULL, NULL, NULL}
+	PHP_FE_END
 };
 /* }}} */
 
-#define EXIF_VERSION "1.4 $Id: exif.c 287372 2009-08-16 14:32:32Z iliaa $"
+#define EXIF_VERSION "1.4 $Id: exif.c 314376 2011-08-06 14:47:44Z felipe $"
 
 /* {{{ PHP_MINFO_FUNCTION
  */
@@ -244,7 +254,7 @@ static const zend_module_dep exif_module_deps[] = {
 #if EXIF_USE_MBSTRING
 	ZEND_MOD_REQUIRED("mbstring")
 #endif
-	{NULL, NULL, NULL}
+	ZEND_MOD_END
 };
 /* }}} */
 
@@ -2821,6 +2831,7 @@ static int exif_process_IFD_TAG(image_info_type *ImageInfo, char *dir_entry, cha
 	int tag, format, components;
 	char *value_ptr, tagname[64], cbuf[32], *outside=NULL;
 	size_t byte_count, offset_val, fpos, fgot;
+	int64_t byte_count_signed;
 	xp_field_type *tmp_xp;
 #ifdef EXIF_DEBUG
 	char *dump_data;
@@ -2845,12 +2856,19 @@ static int exif_process_IFD_TAG(image_info_type *ImageInfo, char *dir_entry, cha
 		/*return TRUE;*/
 	}
 
-	byte_count = components * php_tiff_bytes_per_format[format];
-
-	if ((ssize_t)byte_count < 0) {
-		exif_error_docref("exif_read_data#error_ifd" EXIFERR_CC, ImageInfo, E_WARNING, "Process tag(x%04X=%s): Illegal byte_count(%ld)", tag, exif_get_tagname(tag, tagname, -12, tag_table TSRMLS_CC), byte_count);
+	if (components < 0) {
+		exif_error_docref("exif_read_data#error_ifd" EXIFERR_CC, ImageInfo, E_WARNING, "Process tag(x%04X=%s): Illegal components(%ld)", tag, exif_get_tagname(tag, tagname, -12, tag_table TSRMLS_CC), components);
 		return FALSE;
 	}
+
+	byte_count_signed = (int64_t)components * php_tiff_bytes_per_format[format];
+
+	if (byte_count_signed < 0 || (byte_count_signed > INT32_MAX)) {
+		exif_error_docref("exif_read_data#error_ifd" EXIFERR_CC, ImageInfo, E_WARNING, "Process tag(x%04X=%s): Illegal byte_count", tag, exif_get_tagname(tag, tagname, -12, tag_table TSRMLS_CC));
+		return FALSE;
+	}
+
+	byte_count = (size_t)byte_count_signed;
 
 	if (byte_count > 4) {
 		offset_val = php_ifd_get32u(dir_entry+8, ImageInfo->motorola_intel);
@@ -2891,7 +2909,7 @@ static int exif_process_IFD_TAG(image_info_type *ImageInfo, char *dir_entry, cha
 			fgot = php_stream_tell(ImageInfo->infile);
 			if (fgot!=offset_val) {
 				EFREE_IF(outside);
-				exif_error_docref(NULL EXIFERR_CC, ImageInfo, E_WARNING, "Wrong file pointer: 0x%08X != 0x08X", fgot, offset_val);
+				exif_error_docref(NULL EXIFERR_CC, ImageInfo, E_WARNING, "Wrong file pointer: 0x%08X != 0x%08X", fgot, offset_val);
 				return FALSE;
 			}
 			fgot = php_stream_read(ImageInfo->infile, value_ptr, byte_count);
@@ -2916,6 +2934,7 @@ static int exif_process_IFD_TAG(image_info_type *ImageInfo, char *dir_entry, cha
 		efree(dump_data);
 	}
 #endif
+
 	if (section_index==SECTION_THUMBNAIL) {
 		if (!ImageInfo->Thumbnail.data) {
 			switch(tag) {
@@ -3876,11 +3895,7 @@ static int exif_read_file(image_info_type *ImageInfo, char *FileName, int read_t
 			}
 
 			/* Store file date/time. */
-#ifdef NETWARE
-			ImageInfo->FileDateTime = st.st_mtime.tv_sec;
-#else
 			ImageInfo->FileDateTime = st.st_mtime;
-#endif
 			ImageInfo->FileSize = st.st_size;
 			/*exif_error_docref(NULL EXIFERR_CC, ImageInfo, E_NOTICE, "Opened stream is file: %d", ImageInfo->FileSize);*/
 		}

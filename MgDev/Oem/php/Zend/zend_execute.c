@@ -2,7 +2,7 @@
    +----------------------------------------------------------------------+
    | Zend Engine                                                          |
    +----------------------------------------------------------------------+
-   | Copyright (c) 1998-2009 Zend Technologies Ltd. (http://www.zend.com) |
+   | Copyright (c) 1998-2011 Zend Technologies Ltd. (http://www.zend.com) |
    +----------------------------------------------------------------------+
    | This source file is subject to version 2.00 of the Zend license,     |
    | that is bundled with this package in the file LICENSE, and is        |
@@ -17,7 +17,7 @@
    +----------------------------------------------------------------------+
 */
 
-/* $Id: zend_execute.c 281670 2009-06-04 18:20:45Z mattwil $ */
+/* $Id: zend_execute.c 309342 2011-03-17 11:49:18Z johannes $ */
 
 #define ZEND_INTENSIVE_DEBUGGING 0
 
@@ -536,10 +536,22 @@ static inline void zend_assign_to_object(znode *result, zval **object_ptr, zval 
 		    (Z_TYPE_P(object) == IS_BOOL && Z_LVAL_P(object) == 0) ||
 		    (Z_TYPE_P(object) == IS_STRING && Z_STRLEN_P(object) == 0)) {
 			SEPARATE_ZVAL_IF_NOT_REF(object_ptr);
-			zval_dtor(*object_ptr);
-			object_init(*object_ptr);
 			object = *object_ptr;
+			Z_ADDREF_P(object);
 			zend_error(E_STRICT, "Creating default object from empty value");
+			if (Z_REFCOUNT_P(object) == 1) {
+				/* object was removed by error handler, nothing to assign to */
+				zval_ptr_dtor(&object);
+				if (retval) {
+					*retval = &EG(uninitialized_zval);
+					PZVAL_LOCK(*retval);
+				}
+				FREE_OP(free_value);
+				return;
+			}
+			Z_DELREF_P(object);
+			zval_dtor(object);
+			object_init(object);
 		} else {
 			zend_error(E_WARNING, "Attempt to assign property of non-object");
 			if (!RETURN_VALUE_UNUSED(result)) {
@@ -708,13 +720,14 @@ static inline zval* zend_assign_to_variable(zval **variable_ptr_ptr, zval *value
 				return variable_ptr;
 			}
 		} else { /* we need to split */
+			GC_ZVAL_CHECK_POSSIBLE_ROOT(*variable_ptr_ptr);
 			if (!is_tmp_var) {
 				if (PZVAL_IS_REF(value) && Z_REFCOUNT_P(value) > 0) {
 					ALLOC_ZVAL(variable_ptr);
 					*variable_ptr_ptr = variable_ptr;
 					*variable_ptr = *value;
-					zval_copy_ctor(variable_ptr);
 					Z_SET_REFCOUNT_P(variable_ptr, 1);
+					zval_copy_ctor(variable_ptr);
 				} else {
 					*variable_ptr_ptr = value;
 					Z_ADDREF_P(value);
@@ -1066,7 +1079,7 @@ static void zend_fetch_dimension_address_read(temp_variable *result, zval **cont
 					dim = &tmp;
 				}
 				if (result) {
-					if (Z_LVAL_P(dim) < 0 || Z_STRLEN_P(container) <= Z_LVAL_P(dim)) {
+					if ((Z_LVAL_P(dim) < 0 || Z_STRLEN_P(container) <= Z_LVAL_P(dim)) && type != BP_VAR_IS) {
 						zend_error(E_NOTICE, "Uninitialized string offset: %ld", Z_LVAL_P(dim));
 					}
 					result->str_offset.str = container;
@@ -1232,6 +1245,10 @@ static int zend_check_symbol(zval **pz TSRMLS_DC)
 {
 	if (Z_TYPE_PP(pz) > 9) {
 		fprintf(stderr, "Warning!  %x has invalid type!\n", *pz);
+/* See http://support.microsoft.com/kb/190351 */
+#ifdef PHP_WIN32
+		fflush(stderr);
+#endif
 	} else if (Z_TYPE_PP(pz) == IS_ARRAY) {
 		zend_hash_apply(Z_ARRVAL_PP(pz), (apply_func_t) zend_check_symbol TSRMLS_CC);
 	} else if (Z_TYPE_PP(pz) == IS_OBJECT) {

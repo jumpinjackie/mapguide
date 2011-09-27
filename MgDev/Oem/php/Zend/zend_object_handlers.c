@@ -2,7 +2,7 @@
    +----------------------------------------------------------------------+
    | Zend Engine                                                          |
    +----------------------------------------------------------------------+
-   | Copyright (c) 1998-2009 Zend Technologies Ltd. (http://www.zend.com) |
+   | Copyright (c) 1998-2011 Zend Technologies Ltd. (http://www.zend.com) |
    +----------------------------------------------------------------------+
    | This source file is subject to version 2.00 of the Zend license,     |
    | that is bundled with this package in the file LICENSE, and is        |
@@ -17,7 +17,7 @@
    +----------------------------------------------------------------------+
 */
 
-/* $Id: zend_object_handlers.c 282413 2009-06-19 03:29:47Z scottmac $ */
+/* $Id: zend_object_handlers.c 310009 2011-04-07 13:35:27Z dmitry $ */
 
 #include "zend.h"
 #include "zend_globals.h"
@@ -340,13 +340,16 @@ zval *zend_std_read_property(zval *object, zval *member, int type TSRMLS_DC) /* 
 	property_info = zend_get_property_info(zobj->ce, member, (zobj->ce->__get != NULL) TSRMLS_CC);
 
 	if (!property_info || zend_hash_quick_find(zobj->properties, property_info->name, property_info->name_length+1, property_info->h, (void **) &retval) == FAILURE) {
-		zend_guard *guard;
+		zend_guard *guard = NULL;
 
 		if (zobj->ce->__get &&
 		    zend_get_property_guard(zobj, property_info, member, &guard) == SUCCESS &&
 		    !guard->in_get) {
 			/* have getter - try with it! */
 			Z_ADDREF_P(object);
+			if (PZVAL_IS_REF(object)) {
+				SEPARATE_ZVAL(&object);
+			}
 			guard->in_get = 1; /* prevent circular getting */
 			rv = zend_std_call_getter(object, member TSRMLS_CC);
 			guard->in_get = 0;
@@ -371,8 +374,21 @@ zval *zend_std_read_property(zval *object, zval *member, int type TSRMLS_DC) /* 
 			} else {
 				retval = &EG(uninitialized_zval_ptr);
 			}
-			zval_ptr_dtor(&object);
+			if (EXPECTED(*retval != object)) {
+				zval_ptr_dtor(&object);
+			} else {
+				Z_DELREF_P(object);
+			}
 		} else {
+			if (zobj->ce->__get && guard && guard->in_get == 1) {
+				if (Z_STRVAL_P(member)[0] == '\0') {
+					if (Z_STRLEN_P(member) == 0) {
+						zend_error(E_ERROR, "Cannot access empty property");
+					} else {
+						zend_error(E_ERROR, "Cannot access property started with '\\0'");
+					}
+				}
+			}
 			if (!silent) {
 				zend_error(E_NOTICE,"Undefined property: %s::$%s", zobj->ce->name, Z_STRVAL_P(member));
 			}
@@ -436,22 +452,22 @@ static void zend_std_write_property(zval *object, zval *member, zval *value TSRM
 			}
 		}
 	} else {
-		int setter_done = 0;
-		zend_guard *guard;
+		zend_guard *guard = NULL;
 
 		if (zobj->ce->__set &&
 		    zend_get_property_guard(zobj, property_info, member, &guard) == SUCCESS &&
 		    !guard->in_set) {
 			Z_ADDREF_P(object);
+			if (PZVAL_IS_REF(object)) {
+				SEPARATE_ZVAL(&object);
+			}
 			guard->in_set = 1; /* prevent circular setting */
 			if (zend_std_call_setter(object, member, value TSRMLS_CC) != SUCCESS) {
 				/* for now, just ignore it - __set should take care of warnings, etc. */
 			}
-			setter_done = 1;
 			guard->in_set = 0;
 			zval_ptr_dtor(&object);
-		}
-		if (!setter_done && property_info) {
+		} else if (property_info) {
 			zval **foo;
 
 			/* if we assign referenced variable, we should separate it */
@@ -460,6 +476,14 @@ static void zend_std_write_property(zval *object, zval *member, zval *value TSRM
 				SEPARATE_ZVAL(&value);
 			}
 			zend_hash_quick_update(zobj->properties, property_info->name, property_info->name_length+1, property_info->h, &value, sizeof(zval *), (void **) &foo);
+		} else if (zobj->ce->__set && guard && guard->in_set == 1) {
+			if (Z_STRVAL_P(member)[0] == '\0') {
+				if (Z_STRLEN_P(member) == 0) {
+					zend_error(E_ERROR, "Cannot access empty property");
+				} else {
+					zend_error(E_ERROR, "Cannot access property started with '\\0'");
+				}
+			}
 		}
 	}
 
@@ -619,17 +643,28 @@ static void zend_std_unset_property(zval *object, zval *member TSRMLS_DC) /* {{{
 	property_info = zend_get_property_info(zobj->ce, member, (zobj->ce->__unset != NULL) TSRMLS_CC);
 
 	if (!property_info || zend_hash_quick_del(zobj->properties, property_info->name, property_info->name_length+1, property_info->h) == FAILURE) {
-		zend_guard *guard;
+		zend_guard *guard = NULL;
 
 		if (zobj->ce->__unset &&
 		    zend_get_property_guard(zobj, property_info, member, &guard) == SUCCESS &&
 		    !guard->in_unset) {
 			/* have unseter - try with it! */
 			Z_ADDREF_P(object);
+			if (PZVAL_IS_REF(object)) {
+				SEPARATE_ZVAL(&object);
+			}
 			guard->in_unset = 1; /* prevent circular unsetting */
 			zend_std_call_unsetter(object, member TSRMLS_CC);
 			guard->in_unset = 0;
 			zval_ptr_dtor(&object);
+		} else if (zobj->ce->__unset && guard && guard->in_unset == 1) {
+			if (Z_STRVAL_P(member)[0] == '\0') {
+				if (Z_STRLEN_P(member) == 0) {
+					zend_error(E_ERROR, "Cannot access empty property");
+				} else {
+					zend_error(E_ERROR, "Cannot access property started with '\\0'");
+				}
+			}
 		}
 	}
 
@@ -945,7 +980,7 @@ ZEND_API zend_function *zend_std_get_static_method(zend_class_entry *ce, char *f
 		/* Only change the method to the constructor if the constructor isn't called __construct
 		 * we check for __ so we can be binary safe for lowering, we should use ZEND_CONSTRUCTOR_FUNC_NAME
 		 */
-		if (!memcmp(lc_class_name, function_name_strval, function_name_strlen) && memcmp(ce->constructor->common.function_name, "__", sizeof("__") - 1)) {
+		if (!memcmp(lc_class_name, lc_function_name, function_name_strlen) && memcmp(ce->constructor->common.function_name, "__", sizeof("__") - 1)) {
 			fbc = ce->constructor;
 		}
 		efree(lc_class_name);
@@ -1144,6 +1179,9 @@ static int zend_std_has_property(zval *object, zval *member, int has_set_exists 
 
 			/* have issetter - try with it! */
 			Z_ADDREF_P(object);
+			if (PZVAL_IS_REF(object)) {
+				SEPARATE_ZVAL(&object);
+			}
 			guard->in_isset = 1; /* prevent circular getting */
 			rv = zend_std_call_issetter(object, member TSRMLS_CC);
 			if (rv) {

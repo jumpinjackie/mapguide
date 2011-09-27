@@ -2,7 +2,7 @@
    +----------------------------------------------------------------------+
    | PHP Version 5                                                        |
    +----------------------------------------------------------------------+
-   | Copyright (c) 1997-2009 The PHP Group                                |
+   | Copyright (c) 1997-2011 The PHP Group                                |
    +----------------------------------------------------------------------+
    | This source file is subject to version 3.01 of the PHP license,      |
    | that is bundled with this package in the file LICENSE, and is        |
@@ -18,7 +18,7 @@
    |          Wez Furlong               <wez@thebrainroom.com>            |
    +----------------------------------------------------------------------+
  */
-/* $Id: calendar.c 272370 2008-12-31 11:15:49Z sebastian $ */
+/* $Id: calendar.c 313665 2011-07-25 11:42:53Z felipe $ */
 
 #ifdef HAVE_CONFIG_H
 #include "config.h"
@@ -148,7 +148,7 @@ const zend_function_entry calendar_functions[] = {
 	PHP_FE(cal_from_jd, arginfo_cal_from_jd)
 	PHP_FE(cal_days_in_month, arginfo_cal_days_in_month)
 	PHP_FE(cal_info, arginfo_cal_info)
-	{NULL, NULL, NULL}
+	PHP_FE_END
 };
 
 
@@ -348,8 +348,15 @@ PHP_FUNCTION(cal_days_in_month)
 	sdn_next = calendar->to_jd(year, 1 + month, 1);
 
 	if (sdn_next == 0) {
-/* if invalid, try first month of the next year... */
-		sdn_next = calendar->to_jd(year + 1, 1, 1);
+		/* If the next month is invalid, then we need to try the first month of
+		 * the next year, bearing in mind that the next year after 1 BCE is
+		 * actually 1 AD and not 0. */
+		if (year == -1) {
+			sdn_next = calendar->to_jd(1, 1, 1);
+		}
+		else {
+			sdn_next = calendar->to_jd(year + 1, 1, 1);
+		}
 	}
 
 	RETURN_LONG(sdn_next - sdn_start);

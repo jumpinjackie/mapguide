@@ -2,7 +2,7 @@
    +----------------------------------------------------------------------+
    | PHP Version 5                                                        |
    +----------------------------------------------------------------------+
-   | Copyright (c) 1997-2009 The PHP Group                                |
+   | Copyright (c) 1997-2010 The PHP Group                                |
    +----------------------------------------------------------------------+
    | This source file is subject to version 3.01 of the PHP license,      |
    | that is bundled with this package in the file LICENSE, and is        |
@@ -16,7 +16,7 @@
    +----------------------------------------------------------------------+
  */
 
-/* $Id: timelib_structs.h 282169 2009-06-15 15:08:12Z pajoye $ */
+/* $Id: timelib_structs.h 307038 2011-01-03 19:24:04Z scottmac $ */
 
 #ifndef __TIMELIB_STRUCTS_H__
 #define __TIMELIB_STRUCTS_H__
@@ -218,6 +218,6 @@ typedef struct _timelib_tzdb {
 
 #define timelib_is_leap(y) ((y) % 4 == 0 && ((y) % 100 != 0 || (y) % 400 == 0))
 
-#define DEBUG(s)  if (0) { s }
+#define TIMELIB_DEBUG(s)  if (0) { s }
 
 #endif

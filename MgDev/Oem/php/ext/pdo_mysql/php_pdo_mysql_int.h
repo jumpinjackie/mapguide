@@ -2,7 +2,7 @@
   +----------------------------------------------------------------------+
   | PHP Version 5                                                        |
   +----------------------------------------------------------------------+
-  | Copyright (c) 1997-2009 The PHP Group                                |
+  | Copyright (c) 1997-2011 The PHP Group                                |
   +----------------------------------------------------------------------+
   | This source file is subject to version 3.01 of the PHP license,      |
   | that is bundled with this package in the file LICENSE, and is        |
@@ -18,19 +18,22 @@
   +----------------------------------------------------------------------+
 */
 
-/* $Id: php_pdo_mysql_int.h 289630 2009-10-14 13:51:25Z johannes $ */
+/* $Id: php_pdo_mysql_int.h 310850 2011-05-09 11:34:17Z johannes $ */
 
 #ifndef PHP_PDO_MYSQL_INT_H
 #define PHP_PDO_MYSQL_INT_H
 
 #if defined(PDO_USE_MYSQLND)
 #	include "ext/mysqlnd/mysqlnd.h"
-#	include "ext/mysql/mysql_mysqlnd.h"
 #	include "ext/mysqlnd/mysqlnd_libmysql_compat.h"
 #	define PDO_MYSQL_PARAM_BIND MYSQLND_PARAM_BIND
 #else
 #	include <mysql.h>
 #	define PDO_MYSQL_PARAM_BIND MYSQL_BIND
+#endif
+
+#if (MYSQL_VERSION_ID >= 40113 && MYSQL_VERSION_ID < 50000) || MYSQL_VERSION_ID >= 50007 || defined(MYSQL_USE_MYSQLND)
+# define PDO_MYSQL_HAS_CHARSET
 #endif
 
 #if defined(PDO_USE_MYSQLND) && PHP_DEBUG && !defined(PHP_WIN32)
@@ -41,8 +44,8 @@
 #define PDO_DBG_INF_FMT(...) do { if (dbg_skip_trace == FALSE) PDO_MYSQL_G(dbg)->m->log_va(PDO_MYSQL_G(dbg), __LINE__, __FILE__, -1, "info : ", __VA_ARGS__); } while (0)
 #define PDO_DBG_ERR_FMT(...) do { if (dbg_skip_trace == FALSE) PDO_MYSQL_G(dbg)->m->log_va(PDO_MYSQL_G(dbg), __LINE__, __FILE__, -1, "error: ", __VA_ARGS__); } while (0)
 #define PDO_DBG_ENTER(func_name) zend_bool dbg_skip_trace = TRUE; if (PDO_MYSQL_G(dbg)) dbg_skip_trace = !PDO_MYSQL_G(dbg)->m->func_enter(PDO_MYSQL_G(dbg), __LINE__, __FILE__, func_name, strlen(func_name));
-#define PDO_DBG_RETURN(value)	do { if (PDO_MYSQL_G(dbg)) PDO_MYSQL_G(dbg)->m->func_leave(PDO_MYSQL_G(dbg), __LINE__, __FILE__); return (value); } while (0)
-#define PDO_DBG_VOID_RETURN		do { if (PDO_MYSQL_G(dbg)) PDO_MYSQL_G(dbg)->m->func_leave(PDO_MYSQL_G(dbg), __LINE__, __FILE__); return; } while (0)
+#define PDO_DBG_RETURN(value)	do { if (PDO_MYSQL_G(dbg)) PDO_MYSQL_G(dbg)->m->func_leave(PDO_MYSQL_G(dbg), __LINE__, __FILE__, 0); return (value); } while (0)
+#define PDO_DBG_VOID_RETURN		do { if (PDO_MYSQL_G(dbg)) PDO_MYSQL_G(dbg)->m->func_leave(PDO_MYSQL_G(dbg), __LINE__, __FILE__, 0); return; } while (0)
 
 #else
 #define PDO_DBG_ENABLED 0
@@ -61,10 +64,7 @@ static inline void PDO_DBG_ENTER(char *func_name) {}
 #include "ext/mysqlnd/mysqlnd_debug.h"
 #endif
 
-#ifdef PDO_USE_MYSQLND
 ZEND_BEGIN_MODULE_GLOBALS(pdo_mysql)
-	MYSQLND_THD_ZVAL_PCACHE *mysqlnd_thd_zval_cache;
-	long          cache_size;
 #ifndef PHP_WIN32
 	char          *default_socket;
 #endif
@@ -72,10 +72,15 @@ ZEND_BEGIN_MODULE_GLOBALS(pdo_mysql)
 	char          *debug; /* The actual string */
 	MYSQLND_DEBUG *dbg;	/* The DBG object */
 #endif
+#if defined(PHP_WIN32) && !PDO_DBG_ENABLED
+	/* dummy member so we get at least one member in the struct
+	 * and avoids build errors.
+	 */
+	void *dummymemmber;
+#endif
 ZEND_END_MODULE_GLOBALS(pdo_mysql)
 
-ZEND_EXTERN_MODULE_GLOBALS(pdo_mysql);
-#endif
+ZEND_EXTERN_MODULE_GLOBALS(pdo_mysql)
 
 #ifdef ZTS
 #define PDO_MYSQL_G(v) TSRMG(pdo_mysql_globals_id, zend_pdo_mysql_globals *, v)
@@ -162,7 +167,12 @@ enum {
 #endif
 	PDO_MYSQL_ATTR_DIRECT_QUERY,
 	PDO_MYSQL_ATTR_FOUND_ROWS,
-	PDO_MYSQL_ATTR_IGNORE_SPACE
+	PDO_MYSQL_ATTR_IGNORE_SPACE,
+	PDO_MYSQL_ATTR_SSL_KEY,
+	PDO_MYSQL_ATTR_SSL_CERT,
+	PDO_MYSQL_ATTR_SSL_CA,
+	PDO_MYSQL_ATTR_SSL_CAPATH,
+	PDO_MYSQL_ATTR_SSL_CIPHER
 };
 
 #endif

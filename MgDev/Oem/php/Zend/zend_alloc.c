@@ -2,7 +2,7 @@
    +----------------------------------------------------------------------+
    | Zend Engine                                                          |
    +----------------------------------------------------------------------+
-   | Copyright (c) 1998-2009 Zend Technologies Ltd. (http://www.zend.com) |
+   | Copyright (c) 1998-2011 Zend Technologies Ltd. (http://www.zend.com) |
    +----------------------------------------------------------------------+
    | This source file is subject to version 2.00 of the Zend license,     |
    | that is bundled with this package in the file LICENSE, and is        |
@@ -18,7 +18,7 @@
    +----------------------------------------------------------------------+
 */
 
-/* $Id: zend_alloc.c 287992 2009-09-03 14:33:11Z dmitry $ */
+/* $Id: zend_alloc.c 308090 2011-02-07 10:25:34Z pajoye $ */
 
 #include "zend.h"
 #include "zend_alloc.h"
@@ -84,6 +84,10 @@ static void zend_mm_panic(const char *message) __attribute__ ((noreturn));
 static void zend_mm_panic(const char *message)
 {
 	fprintf(stderr, "%s\n", message);
+/* See http://support.microsoft.com/kb/190351 */
+#ifdef PHP_WIN32
+	fflush(stderr);
+#endif
 #if ZEND_DEBUG && defined(HAVE_KILL) && defined(HAVE_GETPID)
 	kill(getpid(), SIGSEGV);
 #endif
@@ -237,6 +241,10 @@ static zend_mm_storage* zend_mm_mem_win32_init(void *params)
 		return NULL;
 	}
 	storage = (zend_mm_storage*)malloc(sizeof(zend_mm_storage));
+	if (storage == NULL) {
+		HeapDestroy(heap);
+		return NULL;
+	}
 	storage->data = (void*) heap;
 	return storage;
 }
@@ -940,15 +948,27 @@ static void zend_mm_free_cache(zend_mm_heap *heap)
 #endif
 
 #if ZEND_MM_HEAP_PROTECTION || ZEND_MM_COOKIES
-static void zend_mm_random(unsigned char *buf, size_t size)
+static void zend_mm_random(unsigned char *buf, size_t size) /* {{{ */
 {
 	size_t i = 0;
 	unsigned char t;
 
 #ifdef ZEND_WIN32
 	HCRYPTPROV   hCryptProv;
+	int has_context = 0;
 
-	if (CryptAcquireContext(&hCryptProv, NULL, NULL, PROV_RSA_FULL, 0)) {
+	if (!CryptAcquireContext(&hCryptProv, NULL, NULL, PROV_RSA_FULL, 0)) {
+		/* Could mean that the key container does not exist, let try 
+		   again by asking for a new one */
+		if (GetLastError() == NTE_BAD_KEYSET) {
+			if (CryptAcquireContext(&hCryptProv, NULL, NULL, PROV_RSA_FULL, CRYPT_NEWKEYSET)) {
+				has_context = 1;
+			}
+		}
+	} else {
+		has_context = 1;
+	}
+	if (has_context) {
 		do {
 			BOOL ret = CryptGenRandom(hCryptProv, size, buf);
 			CryptReleaseContext(hCryptProv, 0);
@@ -957,7 +977,7 @@ static void zend_mm_random(unsigned char *buf, size_t size)
 					i++;
 				}
 				if (i == size) {
-				    return;
+					return;
 				}
 		   }
 		} while (0);
@@ -986,6 +1006,7 @@ static void zend_mm_random(unsigned char *buf, size_t size)
 		t = buf[i++] << 1;
     }
 }
+/* }}} */
 #endif
 
 /* Notes:
@@ -1031,17 +1052,31 @@ ZEND_API zend_mm_heap *zend_mm_startup_ex(const zend_mm_mem_handlers *handlers, 
 
 	if (zend_mm_low_bit(block_size) != zend_mm_high_bit(block_size)) {
 		fprintf(stderr, "'block_size' must be a power of two\n");
+/* See http://support.microsoft.com/kb/190351 */
+#ifdef PHP_WIN32
+		fflush(stderr);
+#endif
 		exit(255);
 	}
 	storage = handlers->init(params);
 	if (!storage) {
 		fprintf(stderr, "Cannot initialize zend_mm storage [%s]\n", handlers->name);
+/* See http://support.microsoft.com/kb/190351 */
+#ifdef PHP_WIN32
+		fflush(stderr);
+#endif
 		exit(255);
 	}
 	storage->handlers = handlers;
 
 	heap = malloc(sizeof(struct _zend_mm_heap));
-
+	if (heap == NULL) {
+		fprintf(stderr, "Cannot allocate heap for zend_mm storage [%s]\n", handlers->name);
+#ifdef PHP_WIN32
+		fflush(stderr);
+#endif
+		exit(255);
+	}
 	heap->storage = storage;
 	heap->block_size = block_size;
 	heap->compact_size = 0;
@@ -1090,7 +1125,7 @@ ZEND_API zend_mm_heap *zend_mm_startup_ex(const zend_mm_mem_handlers *handlers, 
 				mm_heap->large_free_buckets[i]->parent = &mm_heap->large_free_buckets[i];
 			}
 		}
-		mm_heap->rest_buckets[0]->next_free_block = mm_heap->rest_buckets[1]->prev_free_block = ZEND_MM_REST_BUCKET(mm_heap);
+		mm_heap->rest_buckets[0] = mm_heap->rest_buckets[1] = ZEND_MM_REST_BUCKET(mm_heap);
 
 		free(heap);
 		heap = mm_heap;
@@ -1118,9 +1153,17 @@ ZEND_API zend_mm_heap *zend_mm_startup(void)
 		if (!mem_handlers[i].name) {
 			fprintf(stderr, "Wrong or unsupported zend_mm storage type '%s'\n", mem_type);
 			fprintf(stderr, "  supported types:\n");
+/* See http://support.microsoft.com/kb/190351 */
+#ifdef PHP_WIN32
+			fflush(stderr);
+#endif
 			for (i = 0; mem_handlers[i].name; i++) {
 				fprintf(stderr, "    '%s'\n", mem_handlers[i].name);
 			}
+/* See http://support.microsoft.com/kb/190351 */
+#ifdef PHP_WIN32
+			fflush(stderr);
+#endif
 			exit(255);
 		}
 	}
@@ -1131,9 +1174,17 @@ ZEND_API zend_mm_heap *zend_mm_startup(void)
 		seg_size = zend_atoi(tmp, 0);
 		if (zend_mm_low_bit(seg_size) != zend_mm_high_bit(seg_size)) {
 			fprintf(stderr, "ZEND_MM_SEG_SIZE must be a power of two\n");
+/* See http://support.microsoft.com/kb/190351 */
+#ifdef PHP_WIN32
+			fflush(stderr);
+#endif
 			exit(255);
 		} else if (seg_size < ZEND_MM_ALIGNED_SEGMENT_SIZE + ZEND_MM_ALIGNED_HEADER_SIZE) {
 			fprintf(stderr, "ZEND_MM_SEG_SIZE is too small\n");
+/* See http://support.microsoft.com/kb/190351 */
+#ifdef PHP_WIN32
+			fflush(stderr);
+#endif
 			exit(255);
 		}
 	} else {
@@ -1672,6 +1723,10 @@ static void zend_mm_safe_error(zend_mm_heap *heap,
 					size);
 				fprintf(stderr, " in %s on line %d\n", error_filename, error_lineno);
 			}
+/* See http://support.microsoft.com/kb/190351 */
+#ifdef PHP_WIN32
+			fflush(stderr);
+#endif
 		} zend_end_try();
 	} else {
 		heap->overflow = 2;

@@ -2,7 +2,7 @@
    +----------------------------------------------------------------------+
    | PHP Version 5                                                        |
    +----------------------------------------------------------------------+
-   | Copyright (c) 1997-2009 The PHP Group                                |
+   | Copyright (c) 1997-2011 The PHP Group                                |
    +----------------------------------------------------------------------+
    | This source file is subject to version 3.01 of the PHP license,      |
    | that is bundled with this package in the file LICENSE, and is        |
@@ -15,7 +15,7 @@
    | Author: Jim Winstead <jimw@php.net>                                  |
    +----------------------------------------------------------------------+
  */
-/* $Id: url.c 272370 2008-12-31 11:15:49Z sebastian $ */
+/* $Id: url.c 314783 2011-08-11 13:01:52Z iliaa $ */
 
 #include <stdlib.h>
 #include <string.h>
@@ -176,19 +176,31 @@ PHPAPI php_url *php_url_parse_ex(char const *str, int length)
 				}	
 			}
 		}	
-	} else if (e) { /* no scheme, look for port */
+	} else if (e) { /* no scheme; starts with colon: look for port */
 		parse_port:
 		p = e + 1;
 		pp = p;
-		
+
 		while (pp-p < 6 && isdigit(*pp)) {
 			pp++;
 		}
-		
-		if (pp-p < 6 && (*pp == '/' || *pp == '\0')) {
-			memcpy(port_buf, p, (pp-p));
-			port_buf[pp-p] = '\0';
-			ret->port = atoi(port_buf);
+
+		if (pp - p > 0 && pp - p < 6 && (*pp == '/' || *pp == '\0')) {
+			long port;
+			memcpy(port_buf, p, (pp - p));
+			port_buf[pp - p] = '\0';
+			port = strtol(port_buf, NULL, 10);
+			if (port > 0 && port <= 65535) {
+				ret->port = (unsigned short) port;
+			} else {
+				STR_FREE(ret->scheme);
+				efree(ret);
+				return NULL;
+			}
+		} else if (p == pp && *pp == '\0') {
+			STR_FREE(ret->scheme);
+			efree(ret);
+			return NULL;
 		} else {
 			goto just_path;
 		}
@@ -201,10 +213,21 @@ PHPAPI php_url *php_url_parse_ex(char const *str, int length)
 	e = ue;
 	
 	if (!(p = memchr(s, '/', (ue - s)))) {
-		if ((p = memchr(s, '?', (ue - s)))) {
-			e = p;
-		} else if ((p = memchr(s, '#', (ue - s)))) {
-			e = p;
+		char *query, *fragment;
+
+		query = memchr(s, '?', (ue - s));
+		fragment = memchr(s, '#', (ue - s));
+
+		if (query && fragment) {
+			if (query > fragment) {
+				p = e = fragment;
+			} else {
+				p = e = query;
+			}
+		} else if (query) {
+			p = e = query;
+		} else if (fragment) {
+			p = e = fragment;
 		}
 	} else {
 		e = p;
@@ -253,9 +276,19 @@ PHPAPI php_url *php_url_parse_ex(char const *str, int length)
 				efree(ret);
 				return NULL;
 			} else if (e - p > 0) {
-				memcpy(port_buf, p, (e-p));
-				port_buf[e-p] = '\0';
-				ret->port = atoi(port_buf);
+				long port;
+				memcpy(port_buf, p, (e - p));
+				port_buf[e - p] = '\0';
+				port = strtol(port_buf, NULL, 10);
+				if (port > 0 && port <= 65535) {
+					ret->port = (unsigned short)port;
+				} else {
+					STR_FREE(ret->scheme);
+					STR_FREE(ret->user);
+					STR_FREE(ret->pass);
+					efree(ret);
+					return NULL;
+				}
 			}
 			p--;
 		}	
@@ -285,10 +318,14 @@ PHPAPI php_url *php_url_parse_ex(char const *str, int length)
 	
 	if ((p = memchr(s, '?', (ue - s)))) {
 		pp = strchr(s, '#');
-		
+
 		if (pp && pp < p) {
+			if (pp - s) {
+				ret->path = estrndup(s, (pp-s));
+				php_replace_controlchars_ex(ret->path, (pp - s));
+			}
 			p = pp;
-			pp = strchr(pp+2, '#');
+			goto label_parse;
 		}
 	
 		if (p - s) {
@@ -344,7 +381,7 @@ PHP_FUNCTION(parse_url)
 
 	resource = php_url_parse_ex(str, str_len);
 	if (resource == NULL) {
-		php_error_docref1(NULL TSRMLS_CC, str, E_WARNING, "Unable to parse URL");
+		/* @todo Find a method to determine why php_url_parse_ex() failed */
 		RETURN_FALSE;
 	}
 
@@ -574,7 +611,7 @@ PHPAPI char *php_raw_url_encode(char const *s, int len, int *new_length)
 			str[y++] = hexchars[(unsigned char) s[x] >> 4];
 			str[y] = hexchars[(unsigned char) s[x] & 15];
 #else /*CHARSET_EBCDIC*/
-		if (!isalnum(str[y]) && strchr("_-.", str[y]) != NULL) {
+		if (!isalnum(str[y]) && strchr("_-.~", str[y]) != NULL) {
 			str[y++] = '%';
 			str[y++] = hexchars[os_toascii[(unsigned char) s[x]] >> 4];
 			str[y] = hexchars[os_toascii[(unsigned char) s[x]] & 15];

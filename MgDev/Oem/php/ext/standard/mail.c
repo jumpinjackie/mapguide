@@ -2,7 +2,7 @@
    +----------------------------------------------------------------------+
    | PHP Version 5                                                        |
    +----------------------------------------------------------------------+
-   | Copyright (c) 1997-2009 The PHP Group                                |
+   | Copyright (c) 1997-2011 The PHP Group                                |
    +----------------------------------------------------------------------+
    | This source file is subject to version 3.01 of the PHP license,      |
    | that is bundled with this package in the file LICENSE, and is        |
@@ -16,7 +16,7 @@
    +----------------------------------------------------------------------+
  */
 
-/* $Id: mail.c 282504 2009-06-21 15:29:16Z iliaa $ */
+/* $Id: mail.c 306939 2011-01-01 02:19:59Z felipe $ */
 
 #include <stdlib.h>
 #include <ctype.h>
@@ -41,6 +41,7 @@
 
 #include "php_mail.h"
 #include "php_ini.h"
+#include "php_string.h"
 #include "safe_mode.h"
 #include "exec.h"
 
@@ -97,7 +98,7 @@ PHP_FUNCTION(ezmlm_hash)
    Send an email message */
 PHP_FUNCTION(mail)
 {
-	char *to=NULL, *message=NULL, *headers=NULL;
+	char *to=NULL, *message=NULL, *headers=NULL, *headers_trimmed=NULL;
 	char *subject=NULL, *extra_cmd=NULL;
 	int to_len, message_len, headers_len = 0;
 	int subject_len, extra_cmd_len = 0, i;
@@ -122,6 +123,7 @@ PHP_FUNCTION(mail)
 	MAIL_ASCIIZ_CHECK(message, message_len);
 	if (headers) {
 		MAIL_ASCIIZ_CHECK(headers, headers_len);
+		headers_trimmed = php_trim(headers, headers_len, NULL, 0, NULL, 2 TSRMLS_CC);
 	}
 	if (extra_cmd) {
 		MAIL_ASCIIZ_CHECK(extra_cmd, extra_cmd_len);
@@ -173,10 +175,14 @@ PHP_FUNCTION(mail)
 		extra_cmd = php_escape_shell_cmd(extra_cmd);
 	}
 
-	if (php_mail(to_r, subject_r, message, headers, extra_cmd TSRMLS_CC)) {
+	if (php_mail(to_r, subject_r, message, headers_trimmed, extra_cmd TSRMLS_CC)) {
 		RETVAL_TRUE;
 	} else {
 		RETVAL_FALSE;
+	}
+
+	if (headers_trimmed) {
+		efree(headers_trimmed);
 	}
 
 	if (extra_cmd) {
@@ -215,7 +221,7 @@ PHPAPI int php_mail(char *to, char *subject, char *message, char *headers, char 
 	}	\
 	return val;	\
 
-	if (mail_log) {
+	if (mail_log && *mail_log) {
 		char *tmp;
 		int l = spprintf(&tmp, 0, "mail() on [%s:%d]: To: %s -- Headers: %s\n", zend_get_executed_filename(TSRMLS_C), zend_get_executed_lineno(TSRMLS_C), to, hdr ? hdr : "");
 		php_stream *stream = php_stream_open_wrapper(mail_log, "a", IGNORE_URL_WIN | REPORT_ERRORS | STREAM_DISABLE_OPEN_BASEDIR, NULL);
@@ -241,7 +247,7 @@ PHPAPI int php_mail(char *to, char *subject, char *message, char *headers, char 
 		php_basename(tmp, strlen(tmp), NULL, 0,&f, &f_len TSRMLS_CC);
 
 		if (headers != NULL) {
-			spprintf(&hdr, 0, "X-PHP-Originating-Script: %ld:%s\r\n%s", php_getuid(), f, headers);
+			spprintf(&hdr, 0, "X-PHP-Originating-Script: %ld:%s\n%s", php_getuid(), f, headers);
 		} else {
 			spprintf(&hdr, 0, "X-PHP-Originating-Script: %ld:%s\n", php_getuid(), f);
 		}

@@ -2,7 +2,7 @@
   +----------------------------------------------------------------------+
   | PHP Version 5                                                        |
   +----------------------------------------------------------------------+
-  | Copyright (c) 1997-2009 The PHP Group                                |
+  | Copyright (c) 1997-2011 The PHP Group                                |
   +----------------------------------------------------------------------+
   | This source file is subject to version 3.01 of the PHP license,      |
   | that is bundled with this package in the file LICENSE, and is        |
@@ -17,7 +17,7 @@
   +----------------------------------------------------------------------+
 */
 
-/* $Id: pdo_dblib.c 280855 2009-05-20 10:18:51Z kalle $ */
+/* $Id: pdo_dblib.c 314376 2011-08-06 14:47:44Z felipe $ */
 
 #ifdef HAVE_CONFIG_H
 # include "config.h"
@@ -36,13 +36,13 @@ ZEND_DECLARE_MODULE_GLOBALS(dblib)
 static PHP_GINIT_FUNCTION(dblib);
 
 const zend_function_entry pdo_dblib_functions[] = {
-	{NULL, NULL, NULL}
+	PHP_FE_END
 };
 
 #if ZEND_MODULE_API_NO >= 20050922
 static const zend_module_dep pdo_dblib_deps[] = {
 	ZEND_MOD_REQUIRED("pdo")
-	{NULL, NULL, NULL}
+	ZEND_MOD_END
 };
 #endif
 

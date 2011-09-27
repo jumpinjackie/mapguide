@@ -2,7 +2,7 @@
    +----------------------------------------------------------------------+
    | PHP Version 5                                                        |
    +----------------------------------------------------------------------+
-   | Copyright (c) 1997-2009 The PHP Group                                |
+   | Copyright (c) 1997-2011 The PHP Group                                |
    +----------------------------------------------------------------------+
    | This source file is subject to version 3.01 of the PHP license,      |
    | that is bundled with this package in the file LICENSE, and is        |
@@ -16,7 +16,7 @@
    +----------------------------------------------------------------------+
 */
 
-/* $Id: readline.c 274222 2009-01-22 14:40:20Z iliaa $ */
+/* $Id: readline.c 313831 2011-07-28 10:42:45Z pajoye $ */
 
 /* {{{ includes & prototypes */
 
@@ -33,8 +33,10 @@
 #define rl_completion_matches completion_matches
 #endif
 
+#ifdef HAVE_LIBEDIT
+#include <editline/readline.h>
+#else
 #include <readline/readline.h>
-#ifndef HAVE_LIBEDIT
 #include <readline/history.h>
 #endif
 
@@ -141,7 +143,7 @@ static const zend_function_entry php_readline_functions[] = {
 	PHP_FE(readline_redisplay, arginfo_readline_redisplay)
 	PHP_FE(readline_on_new_line, arginfo_readline_on_new_line)
 #endif
-	{NULL, NULL, NULL}
+	PHP_FE_END
 };
 
 zend_module_entry readline_module_entry = { 
@@ -194,7 +196,7 @@ PHP_FUNCTION(readline)
 	int prompt_len;
 	char *result;
 
-	if (FAILURE == zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "s!", &prompt, &prompt_len)) {
+	if (FAILURE == zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "|s!", &prompt, &prompt_len)) {
 		RETURN_FALSE;
 	}
 
@@ -463,6 +465,9 @@ static char **_readline_completion_cb(const char *text, int start, int end)
 				matches = rl_completion_matches(text,_readline_command_generator);
 			} else {
 				matches = malloc(sizeof(char *) * 2);
+				if (!matches) {
+					return NULL;
+				}
 				matches[0] = strdup("");
 				matches[1] = '\0';
 			}
@@ -503,7 +508,10 @@ PHP_FUNCTION(readline_completion_function)
 	zval_copy_ctor(_readline_completion);
 
 	rl_attempted_completion_function = _readline_completion_cb;
-
+	if (rl_attempted_completion_function == NULL) {
+		efree(name);
+		RETURN_FALSE;
+	}
 	RETURN_TRUE;
 }
 

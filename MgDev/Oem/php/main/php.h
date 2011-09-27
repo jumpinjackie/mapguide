@@ -2,7 +2,7 @@
    +----------------------------------------------------------------------+
    | PHP Version 5                                                        |
    +----------------------------------------------------------------------+
-   | Copyright (c) 1997-2009 The PHP Group                                |
+   | Copyright (c) 1997-2011 The PHP Group                                |
    +----------------------------------------------------------------------+
    | This source file is subject to version 3.01 of the PHP license,      |
    | that is bundled with this package in the file LICENSE, and is        |
@@ -17,7 +17,7 @@
    +----------------------------------------------------------------------+
  */
 
-/* $Id: php.h 282827 2009-06-26 15:44:19Z johannes $ */
+/* $Id: php.h 313662 2011-07-25 11:30:53Z felipe $ */
 
 #ifndef PHP_H
 #define PHP_H
@@ -309,6 +309,9 @@ PHPAPI void php_error_docref1(const char *docref TSRMLS_DC, const char *param1, 
 	PHP_ATTRIBUTE_FORMAT(printf, PHP_ATTR_FMT_OFFSET + 4, PHP_ATTR_FMT_OFFSET + 5);
 PHPAPI void php_error_docref2(const char *docref TSRMLS_DC, const char *param1, const char *param2, int type, const char *format, ...)
 	PHP_ATTRIBUTE_FORMAT(printf, PHP_ATTR_FMT_OFFSET + 5, PHP_ATTR_FMT_OFFSET + 6);
+#ifdef PHP_WIN32
+PHPAPI void php_win32_docref2_from_error(DWORD error, const char *param1, const char *param2 TSRMLS_DC);
+#endif
 END_EXTERN_C()
 
 #define php_error_docref php_error_docref0
@@ -348,6 +351,7 @@ END_EXTERN_C()
 #define PHP_MALIAS      ZEND_MALIAS
 #define PHP_ABSTRACT_ME ZEND_ABSTRACT_ME
 #define PHP_ME_MAPPING  ZEND_ME_MAPPING
+#define PHP_FE_END      ZEND_FE_END
 
 #define PHP_MODULE_STARTUP_N	ZEND_MODULE_STARTUP_N
 #define PHP_MODULE_SHUTDOWN_N	ZEND_MODULE_SHUTDOWN_N

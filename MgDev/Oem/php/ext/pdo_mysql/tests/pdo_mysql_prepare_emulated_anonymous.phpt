@@ -20,7 +20,7 @@ $db = MySQLPDOTest::factory();
 		$db->exec('DROP TABLE IF EXISTS test');
 		$db->exec(sprintf('CREATE TABLE test(id INT, label CHAR(255)) ENGINE=%s', PDO_MYSQL_TEST_ENGINE));
 
-		$stmt = $db->prepare('INSERT INTO test(id, label) VALUES(1, "?")');
+		$stmt = $db->prepare("INSERT INTO test(id, label) VALUES(1, '?')");
 		// you can bind as many values as you want no matter if they can be replaced or not
 		$stmt->execute(array('first row'));
 		if ('00000' !== $stmt->errorCode())
@@ -39,7 +39,7 @@ $db = MySQLPDOTest::factory();
 			printf("[004] Unable to switch off emulated prepared statements, test will fail\n");
 
 		$db->exec('DELETE FROM test');
-		$stmt = $db->prepare('INSERT INTO test(id, label) VALUES(1, "?")');
+		$stmt = $db->prepare("INSERT INTO test(id, label) VALUES(1, '?')");
 		// you can bind as many values as you want no matter if they can be replaced or not
 		$stmt->execute(array('first row'));
 		if ('00000' !== $stmt->errorCode())
@@ -56,17 +56,22 @@ $db = MySQLPDOTest::factory();
 			$e->getMessage(), $db->errorCode(), implode(' ', $db->errorInfo()));
 	}
 
-	$db->exec('DROP TABLE IF EXISTS test');
 	print "done!";
+?>
+--CLEAN--
+<?php
+require dirname(__FILE__) . '/mysql_pdo_test.inc';
+$db = MySQLPDOTest::factory();
+$db->exec('DROP TABLE IF EXISTS test');
 ?>
 --EXPECTF--
 array(1) {
   [0]=>
   array(2) {
-    ["id"]=>
-    string(1) "1"
-    ["label"]=>
-    string(1) "?"
+    [%u|b%"id"]=>
+    %unicode|string%(1) "1"
+    [%u|b%"label"]=>
+    %unicode|string%(1) "?"
   }
 }
 now the same with native PS

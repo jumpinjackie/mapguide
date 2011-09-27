@@ -2,7 +2,7 @@
    +----------------------------------------------------------------------+
    | PHP Version 5                                                        |
    +----------------------------------------------------------------------+
-   | Copyright (c) 1997-2009 The PHP Group                                |
+   | Copyright (c) 1997-2011 The PHP Group                                |
    +----------------------------------------------------------------------+
    | This source file is subject to version 3.01 of the PHP license,      |
    | that is bundled with this package in the file LICENSE, and is        |
@@ -16,7 +16,7 @@
    +----------------------------------------------------------------------+
 */
 
-/* $Id: assert.c 284153 2009-07-15 23:55:50Z stas $ */
+/* $Id: assert.c 311451 2011-05-26 18:17:43Z iliaa $ */
 
 /* {{{ includes */
 #include "php.h"
@@ -253,8 +253,8 @@ PHP_FUNCTION(assert_options)
 	case ASSERT_ACTIVE:
 		oldint = ASSERTG(active);
 		if (ac == 2) {
-			convert_to_long_ex(value);
-			ASSERTG(active) = Z_LVAL_PP(value);
+			convert_to_string_ex(value);
+			zend_alter_ini_entry_ex("assert.active", sizeof("assert.active"), Z_STRVAL_PP(value), Z_STRLEN_PP(value), PHP_INI_USER, PHP_INI_STAGE_RUNTIME, 0 TSRMLS_CC);
 		}
 		RETURN_LONG(oldint);
 		break;
@@ -262,8 +262,8 @@ PHP_FUNCTION(assert_options)
 	case ASSERT_BAIL:
 		oldint = ASSERTG(bail);
 		if (ac == 2) {
-			convert_to_long_ex(value);
-			ASSERTG(bail) = Z_LVAL_PP(value);
+			convert_to_string_ex(value);
+			zend_alter_ini_entry_ex("assert.bail", sizeof("assert.bail"), Z_STRVAL_PP(value), Z_STRLEN_PP(value), PHP_INI_USER, PHP_INI_STAGE_RUNTIME, 0 TSRMLS_CC);
 		}
 		RETURN_LONG(oldint);
 		break;
@@ -271,8 +271,8 @@ PHP_FUNCTION(assert_options)
 	case ASSERT_QUIET_EVAL:
 		oldint = ASSERTG(quiet_eval);
 		if (ac == 2) {
-			convert_to_long_ex(value);
-			ASSERTG(quiet_eval) = Z_LVAL_PP(value);
+			convert_to_string_ex(value);
+			zend_alter_ini_entry_ex("assert.quiet_eval", sizeof("assert.quiet_eval"), Z_STRVAL_PP(value), Z_STRLEN_PP(value), PHP_INI_USER, PHP_INI_STAGE_RUNTIME, 0 TSRMLS_CC);
 		}
 		RETURN_LONG(oldint);
 		break;
@@ -280,8 +280,8 @@ PHP_FUNCTION(assert_options)
 	case ASSERT_WARNING:
 		oldint = ASSERTG(warning);
 		if (ac == 2) {
-			convert_to_long_ex(value);
-			ASSERTG(warning) = Z_LVAL_PP(value);
+			convert_to_string_ex(value);
+			zend_alter_ini_entry_ex("assert.warning", sizeof("assert.warning"), Z_STRVAL_PP(value), Z_STRLEN_PP(value), PHP_INI_USER, PHP_INI_STAGE_RUNTIME, 0 TSRMLS_CC);
 		}
 		RETURN_LONG(oldint);
 		break;

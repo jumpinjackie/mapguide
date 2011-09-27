@@ -2,7 +2,7 @@
    +----------------------------------------------------------------------+
    | PHP Version 5                                                        |
    +----------------------------------------------------------------------+
-   | Copyright (c) 1997-2009 The PHP Group                                |
+   | Copyright (c) 1997-2011 The PHP Group                                |
    +----------------------------------------------------------------------+
    | This source file is subject to version 3.01 of the PHP license,      |
    | that is bundled with this package in the file LICENSE, and is        |
@@ -16,7 +16,7 @@
    +----------------------------------------------------------------------+
  */
 
-/* $Id: posix.c 289424 2009-10-09 14:46:48Z pajoye $ */
+/* $Id: posix.c 313665 2011-07-25 11:42:53Z felipe $ */
 
 #ifdef HAVE_CONFIG_H
 #include "config.h"
@@ -295,13 +295,13 @@ const zend_function_entry posix_functions[] = {
 #endif
 
 	PHP_FE(posix_get_last_error,					arginfo_posix_get_last_error)
-	PHP_FALIAS(posix_errno, posix_get_last_error,	NULL)
+	PHP_FALIAS(posix_errno, posix_get_last_error,	arginfo_posix_get_last_error)
 	PHP_FE(posix_strerror,							arginfo_posix_strerror)
 #ifdef HAVE_INITGROUPS
 	PHP_FE(posix_initgroups,	arginfo_posix_initgroups)
 #endif
 
-	{NULL, NULL, NULL}
+	PHP_FE_END
 };
 /* }}} */
 
@@ -310,7 +310,7 @@ const zend_function_entry posix_functions[] = {
 static PHP_MINFO_FUNCTION(posix)
 {
 	php_info_print_table_start();
-	php_info_print_table_row(2, "Revision", "$Revision: 289424 $");
+	php_info_print_table_row(2, "Revision", "$Revision: 313665 $");
 	php_info_print_table_end();
 }
 /* }}} */
@@ -703,7 +703,9 @@ static int php_posix_stream_get_fd(zval *zfp, int *fd TSRMLS_DC) /* {{{ */
 		php_error_docref(NULL TSRMLS_CC, E_WARNING, "expects argument 1 to be a valid stream resource");
 		return 0;
 	}
-	if (php_stream_can_cast(stream, PHP_STREAM_AS_FD) == SUCCESS) {
+	if (php_stream_can_cast(stream, PHP_STREAM_AS_FD_FOR_SELECT) == SUCCESS) {
+		php_stream_cast(stream, PHP_STREAM_AS_FD_FOR_SELECT, (void*)fd, 0);
+	} else if (php_stream_can_cast(stream, PHP_STREAM_AS_FD) == SUCCESS) {
 		php_stream_cast(stream, PHP_STREAM_AS_FD, (void*)fd, 0);
 	} else {
 		php_error_docref(NULL TSRMLS_CC, E_WARNING, "could not use stream of type '%s'", 
@@ -840,6 +842,10 @@ PHP_FUNCTION(posix_mkfifo)
 		RETURN_FALSE;
 	}
 
+	if (strlen(path) != path_len) {
+		RETURN_FALSE;
+	}
+
 	if (php_check_open_basedir_ex(path, 0 TSRMLS_CC) ||
 			(PG(safe_mode) && (!php_checkuid(path, NULL, CHECKUID_ALLOW_ONLY_DIR)))) {
 		RETURN_FALSE;
@@ -872,6 +878,10 @@ PHP_FUNCTION(posix_mknod)
 
 	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "sl|ll", &path, &path_len,
 			&mode, &major, &minor) == FAILURE) {
+		RETURN_FALSE;
+	}
+
+	if (strlen(path) != path_len) {
 		RETURN_FALSE;
 	}
 
@@ -952,6 +962,10 @@ PHP_FUNCTION(posix_access)
 	char *filename, *path;
 
 	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "s|l", &filename, &filename_len, &mode) == FAILURE) {
+		RETURN_FALSE;
+	}
+
+	if (strlen(filename) != filename_len) {
 		RETURN_FALSE;
 	}
 

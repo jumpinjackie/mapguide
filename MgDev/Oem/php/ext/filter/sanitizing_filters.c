@@ -2,7 +2,7 @@
   +----------------------------------------------------------------------+
   | PHP Version 5                                                        |
   +----------------------------------------------------------------------+
-  | Copyright (c) 1997-2009 The PHP Group                                |
+  | Copyright (c) 1997-2011 The PHP Group                                |
   +----------------------------------------------------------------------+
   | This source file is subject to version 3.01 of the PHP license,      |
   | that is bundled with this package in the file LICENSE, and is        |
@@ -16,7 +16,7 @@
   +----------------------------------------------------------------------+
 */
 
-/* $Id: sanitizing_filters.c 289438 2009-10-09 17:50:17Z pajoye $ */
+/* $Id: sanitizing_filters.c 309920 2011-04-03 16:30:31Z iliaa $ */
 
 #include "php_filter.h"
 #include "filter_private.h"
@@ -123,6 +123,7 @@ static void php_filter_strip(zval *value, long flags)
 	for (i = 0; i < Z_STRLEN_P(value); i++) {
 		if ((str[i] > 127) && (flags & FILTER_FLAG_STRIP_HIGH)) {
 		} else if ((str[i] < 32) && (flags & FILTER_FLAG_STRIP_LOW)) {
+		} else if ((str[i] == '`') && (flags & FILTER_FLAG_STRIP_BACKTICK)) {
 		} else {
 			buf[c] = str[i];
 			++c;
@@ -204,7 +205,11 @@ void php_filter_string(PHP_INPUT_FILTER_PARAM_DECL)
 
 	if (new_len == 0) {
 		zval_dtor(value);
-		ZVAL_EMPTY_STRING(value);
+		if (flags & FILTER_FLAG_EMPTY_STRING_NULL) {
+			ZVAL_NULL(value);
+		} else {
+			ZVAL_EMPTY_STRING(value);			
+		}
 		return;
 	}
 }
@@ -241,6 +246,24 @@ void php_filter_special_chars(PHP_INPUT_FILTER_PARAM_DECL)
 }
 /* }}} */
 
+/* {{{ php_filter_full_special_chars */
+void php_filter_full_special_chars(PHP_INPUT_FILTER_PARAM_DECL)
+{
+	char *buf;
+	int   len, quotes;
+	
+	if (!(flags & FILTER_FLAG_NO_ENCODE_QUOTES)) {
+		quotes = ENT_QUOTES;
+	} else {
+		quotes = ENT_NOQUOTES;
+	}
+	buf = php_escape_html_entities_ex(Z_STRVAL_P(value), Z_STRLEN_P(value), &len, 1, quotes, SG(default_charset), 0 TSRMLS_CC);
+	efree(Z_STRVAL_P(value));
+	Z_STRVAL_P(value) = buf;
+	Z_STRLEN_P(value) = len;
+}
+/* }}} */
+
 /* {{{ php_filter_unsafe_raw */
 void php_filter_unsafe_raw(PHP_INPUT_FILTER_PARAM_DECL)
 {
@@ -261,9 +284,14 @@ void php_filter_unsafe_raw(PHP_INPUT_FILTER_PARAM_DECL)
 		}
 
 		php_filter_encode_html(value, enc);	
+	} else if (flags & FILTER_FLAG_EMPTY_STRING_NULL && Z_STRLEN_P(value) == 0) {
+		zval_dtor(value);
+		ZVAL_NULL(value);
 	}
 }
 /* }}} */
+
+
 
 /* {{{ php_filter_email */
 #define SAFE        "$-_.+"

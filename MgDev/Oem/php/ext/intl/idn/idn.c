@@ -15,7 +15,7 @@
    | Author: Pierre A. Joye <pierre@php.net>                              |
    +----------------------------------------------------------------------+
  */
-/* $Id: idn.c 283618 2009-07-06 23:48:27Z stas $ */
+/* $Id: idn.c 314218 2011-08-04 00:59:43Z felipe $ */
 
 /* {{{ includes */
 #ifdef HAVE_CONFIG_H
@@ -84,8 +84,10 @@ static void php_intl_idn_to(INTERNAL_FUNCTION_PARAMETERS, int mode)
 		intl_error_set_code(NULL, status TSRMLS_CC);
 
 		/* Set error messages. */
-		intl_error_set_custom_msg( NULL, "Error converting input string to UTF-16", 1 TSRMLS_CC );
-		efree(ustring);
+		intl_error_set_custom_msg( NULL, "Error converting input string to UTF-16", 0 TSRMLS_CC );
+		if (ustring) {
+			efree(ustring);
+		}
 		RETURN_FALSE;
 	} else {
 		UParseError parse_error;
@@ -111,7 +113,7 @@ static void php_intl_idn_to(INTERNAL_FUNCTION_PARAMETERS, int mode)
 			intl_error_set_code(NULL, status TSRMLS_CC);
 
 			/* Set error messages. */
-			intl_error_set_custom_msg( NULL, "Error converting output string to UTF-8", 1 TSRMLS_CC );
+			intl_error_set_custom_msg( NULL, "Error converting output string to UTF-8", 0 TSRMLS_CC );
 			efree(converted_utf8);
 			RETURN_FALSE;
 		}

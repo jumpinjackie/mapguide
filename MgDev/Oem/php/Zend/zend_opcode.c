@@ -2,7 +2,7 @@
    +----------------------------------------------------------------------+
    | Zend Engine                                                          |
    +----------------------------------------------------------------------+
-   | Copyright (c) 1998-2009 Zend Technologies Ltd. (http://www.zend.com) |
+   | Copyright (c) 1998-2011 Zend Technologies Ltd. (http://www.zend.com) |
    +----------------------------------------------------------------------+
    | This source file is subject to version 2.00 of the Zend license,     |
    | that is bundled with this package in the file LICENSE, and is        | 
@@ -17,7 +17,7 @@
    +----------------------------------------------------------------------+
 */
 
-/* $Id: zend_opcode.c 281737 2009-06-05 23:20:59Z shire $ */
+/* $Id: zend_opcode.c 306939 2011-01-01 02:19:59Z felipe $ */
 
 #include <stdio.h>
 
@@ -159,7 +159,10 @@ ZEND_API int zend_cleanup_class_data(zend_class_entry **pce TSRMLS_DC)
 		/* Note that only run-time accessed data need to be cleaned up, pre-defined data can
 		   not contain objects and thus are not probelmatic */
 		zend_hash_apply(&(*pce)->function_table, (apply_func_t) zend_cleanup_function_data_full TSRMLS_CC);
-		(*pce)->static_members = NULL;
+		if ((*pce)->static_members) {
+			zend_hash_clean((*pce)->static_members);
+			(*pce)->static_members = NULL;
+		}
 	} else if (CE_STATIC_MEMBERS(*pce)) {
 		zend_hash_destroy(CE_STATIC_MEMBERS(*pce));
 		FREE_HASHTABLE(CE_STATIC_MEMBERS(*pce));

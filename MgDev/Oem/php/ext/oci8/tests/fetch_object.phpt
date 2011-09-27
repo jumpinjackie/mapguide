@@ -1,82 +1,123 @@
 --TEST--
 oci_fetch_object()
 --SKIPIF--
-<?php if (!extension_loaded('oci8')) die("skip no oci8 extension"); ?>
+<?php
+$target_dbs = array('oracledb' => true, 'timesten' => false);  // test runs on these DBs
+require(dirname(__FILE__).'/skipif.inc');
+?> 
 --FILE--
 <?php
 
-require dirname(__FILE__)."/connect.inc";
-require dirname(__FILE__).'/create_table.inc';
+require(dirname(__FILE__).'/connect.inc');
 
-$insert_sql = "INSERT INTO ".$schema."".$table_name." (id, value) VALUES (1,1)";
+// Initialization
 
-if (!($s = oci_parse($c, $insert_sql))) {
-	die("oci_parse(insert) failed!\n");
-}
+$stmtarray = array(
+    "drop table fetch_object_tab",
+    "create table fetch_object_tab (\"caseSensitive\" number, secondcol varchar2(20), anothercol char(15))",
+    "insert into fetch_object_tab values (123, '1st row col2 string', '1 more text')",
+    "insert into fetch_object_tab values (456, '2nd row col2 string', '2 more text')",
+    "insert into fetch_object_tab values (789, '3rd row col2 string', '3 more text')",
+);
 
-for ($i = 0; $i<3; $i++) {
-	if (!oci_execute($s)) {
-		die("oci_execute(insert) failed!\n");
-	}
-}
+oci8_test_sql_execute($c, $stmtarray);
 
-if (!oci_commit($c)) {
-	die("oci_commit() failed!\n");
-}
+// Run Test
 
-$select_sql = "SELECT * FROM ".$schema."".$table_name."";
+echo "Test 1\n";
 
-if (!($s = oci_parse($c, $select_sql))) {
-	die("oci_parse(select) failed!\n");
+if (!($s = oci_parse($c, 'select * from fetch_object_tab'))) {
+    die("oci_parse(select) failed!\n");
 }
 
 if (!oci_execute($s)) {
-	die("oci_execute(select) failed!\n");
+    die("oci_execute(select) failed!\n");
 }
+
 while ($row = oci_fetch_object($s)) {
-	var_dump($row);
+    var_dump($row);
 }
 
-require dirname(__FILE__).'/drop_table.inc';
+echo "Test 2\n";
 
-echo "Done\n";
+if (!($s = oci_parse($c, 'select * from fetch_object_tab'))) {
+    die("oci_parse(select) failed!\n");
+}
+
+if (!oci_execute($s)) {
+    die("oci_execute(select) failed!\n");
+}
+
+while ($row = oci_fetch_object($s)) {
+    echo $row->caseSensitive . "\n";
+    echo $row->SECONDCOL . "\n";
+    echo $row->ANOTHERCOL . "\n";
+}
+
+echo "Test 3\n";
+
+if (!($s = oci_parse($c, 'select * from fetch_object_tab where rownum < 2 order by "caseSensitive"'))) {
+    die("oci_parse(select) failed!\n");
+}
+
+if (!oci_execute($s)) {
+    die("oci_execute(select) failed!\n");
+}
+
+$row = oci_fetch_object($s);
+echo $row->caseSensitive . "\n";
+echo $row->CASESENSITIVE . "\n";
+
+// Clean up
+
+$stmtarray = array(
+    "drop table fetch_object_tab"
+);
+
+oci8_test_sql_execute($c, $stmtarray);
 
 ?>
+===DONE===
+<?php exit(0); ?>
 --EXPECTF--
-object(stdClass)#%d (5) {
-  ["ID"]=>
-  string(1) "1"
-  ["VALUE"]=>
-  string(1) "1"
-  ["BLOB"]=>
-  NULL
-  ["CLOB"]=>
-  NULL
-  ["STRING"]=>
-  NULL
+Test 1
+object(stdClass)#1 (3) {
+  [%u|b%"caseSensitive"]=>
+  %unicode|string%(3) "123"
+  [%u|b%"SECONDCOL"]=>
+  %unicode|string%(19) "1st row col2 string"
+  [%u|b%"ANOTHERCOL"]=>
+  %unicode|string%(15) "1 more text    "
 }
-object(stdClass)#%d (5) {
-  ["ID"]=>
-  string(1) "1"
-  ["VALUE"]=>
-  string(1) "1"
-  ["BLOB"]=>
-  NULL
-  ["CLOB"]=>
-  NULL
-  ["STRING"]=>
-  NULL
+object(stdClass)#2 (3) {
+  [%u|b%"caseSensitive"]=>
+  %unicode|string%(3) "456"
+  [%u|b%"SECONDCOL"]=>
+  %unicode|string%(19) "2nd row col2 string"
+  [%u|b%"ANOTHERCOL"]=>
+  %unicode|string%(15) "2 more text    "
 }
-object(stdClass)#%d (5) {
-  ["ID"]=>
-  string(1) "1"
-  ["VALUE"]=>
-  string(1) "1"
-  ["BLOB"]=>
-  NULL
-  ["CLOB"]=>
-  NULL
-  ["STRING"]=>
-  NULL
+object(stdClass)#1 (3) {
+  [%u|b%"caseSensitive"]=>
+  %unicode|string%(3) "789"
+  [%u|b%"SECONDCOL"]=>
+  %unicode|string%(19) "3rd row col2 string"
+  [%u|b%"ANOTHERCOL"]=>
+  %unicode|string%(15) "3 more text    "
 }
-Done
+Test 2
+123
+1st row col2 string
+1 more text    
+456
+2nd row col2 string
+2 more text    
+789
+3rd row col2 string
+3 more text    
+Test 3
+123
+
+Notice: Undefined property: stdClass::$CASESENSITIVE in %sfetch_object.php on line %d
+
+===DONE===

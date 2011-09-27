@@ -1,5 +1,5 @@
 --TEST--
-mysqli_get_metadata
+mysqli_stmt_result_metadata
 --SKIPIF--
 <?php
 require_once('skipif.inc');
@@ -7,7 +7,7 @@ require_once('skipifconnectfailure.inc');
 ?>
 --FILE--
 <?php
-	include "connect.inc";
+	require_once("connect.inc");
 
 	/*** test mysqli_connect 127.0.0.1 ***/
 	$link = my_mysqli_connect($host, $user, $passwd, $db, $port, $socket);
@@ -20,8 +20,8 @@ require_once('skipifconnectfailure.inc');
 	mysqli_query($link, "INSERT INTO test_affected VALUES (1, 'Zak'),(2, 'Greant')");
 
 	$stmt = mysqli_prepare($link, "SELECT * FROM test_affected");
-	mysqli_execute($stmt);
-	$result = mysqli_get_metadata($stmt);
+	mysqli_stmt_execute($stmt);
+	$result = mysqli_stmt_result_metadata($stmt);
 
 	echo "\n=== fetch_fields ===\n";
 	var_dump(mysqli_fetch_fields($result));
@@ -47,7 +47,7 @@ require_once('skipifconnectfailure.inc');
 ?>
 --CLEAN--
 <?php
-include "connect.inc";
+require_once("connect.inc");
 if (!$link = my_mysqli_connect($host, $user, $passwd, $db, $port, $socket))
    printf("[c001] [%d] %s\n", mysqli_connect_errno(), mysqli_connect_error());
 
@@ -60,7 +60,7 @@ mysqli_close($link);
 === fetch_fields ===
 array(2) {
   [0]=>
-  object(stdClass)#5 (11) {
+  object(stdClass)#5 (13) {
     [%u|b%"name"]=>
     %unicode|string%(3) "foo"
     [%u|b%"orgname"]=>
@@ -71,6 +71,10 @@ array(2) {
     %unicode|string%(13) "test_affected"
     [%u|b%"def"]=>
     %unicode|string%(0) ""
+    [%u|b%"db"]=>
+    %unicode|string%(%d) "%s"
+    [%u|b%"catalog"]=>
+    %unicode|string%(%d) "%s"
     [%u|b%"max_length"]=>
     int(0)
     [%u|b%"length"]=>
@@ -85,7 +89,7 @@ array(2) {
     int(0)
   }
   [1]=>
-  object(stdClass)#6 (11) {
+  object(stdClass)#6 (13) {
     [%u|b%"name"]=>
     %unicode|string%(3) "bar"
     [%u|b%"orgname"]=>
@@ -96,6 +100,10 @@ array(2) {
     %unicode|string%(13) "test_affected"
     [%u|b%"def"]=>
     %unicode|string%(0) ""
+    [%u|b%"db"]=>
+    %unicode|string%(%d) "%s"
+    [%u|b%"catalog"]=>
+    %unicode|string%(%d) "%s"
     [%u|b%"max_length"]=>
     int(0)
     [%u|b%"length"]=>
@@ -112,7 +120,7 @@ array(2) {
 }
 
 === fetch_field_direct ===
-object(stdClass)#6 (11) {
+object(stdClass)#6 (13) {
   [%u|b%"name"]=>
   %unicode|string%(3) "foo"
   [%u|b%"orgname"]=>
@@ -123,6 +131,10 @@ object(stdClass)#6 (11) {
   %unicode|string%(13) "test_affected"
   [%u|b%"def"]=>
   %unicode|string%(0) ""
+  [%u|b%"db"]=>
+  %unicode|string%(%d) "%s"
+  [%u|b%"catalog"]=>
+  %unicode|string%(%d) "%s"
   [%u|b%"max_length"]=>
   int(0)
   [%u|b%"length"]=>
@@ -136,7 +148,7 @@ object(stdClass)#6 (11) {
   [%u|b%"decimals"]=>
   int(0)
 }
-object(stdClass)#6 (11) {
+object(stdClass)#6 (13) {
   [%u|b%"name"]=>
   %unicode|string%(3) "bar"
   [%u|b%"orgname"]=>
@@ -147,6 +159,10 @@ object(stdClass)#6 (11) {
   %unicode|string%(13) "test_affected"
   [%u|b%"def"]=>
   %unicode|string%(0) ""
+  [%u|b%"db"]=>
+  %unicode|string%(%d) "%s"
+  [%u|b%"catalog"]=>
+  %unicode|string%(%d) "%s"
   [%u|b%"max_length"]=>
   int(0)
   [%u|b%"length"]=>
@@ -162,7 +178,7 @@ object(stdClass)#6 (11) {
 }
 
 === fetch_field ===
-object(stdClass)#6 (11) {
+object(stdClass)#6 (13) {
   [%u|b%"name"]=>
   %unicode|string%(3) "foo"
   [%u|b%"orgname"]=>
@@ -173,6 +189,10 @@ object(stdClass)#6 (11) {
   %unicode|string%(13) "test_affected"
   [%u|b%"def"]=>
   %unicode|string%(0) ""
+  [%u|b%"db"]=>
+  %unicode|string%(%d) "%s"
+  [%u|b%"catalog"]=>
+  %unicode|string%(%d) "%s"
   [%u|b%"max_length"]=>
   int(0)
   [%u|b%"length"]=>
@@ -186,7 +206,7 @@ object(stdClass)#6 (11) {
   [%u|b%"decimals"]=>
   int(0)
 }
-object(stdClass)#5 (11) {
+object(stdClass)#5 (13) {
   [%u|b%"name"]=>
   %unicode|string%(3) "bar"
   [%u|b%"orgname"]=>
@@ -197,6 +217,10 @@ object(stdClass)#5 (11) {
   %unicode|string%(13) "test_affected"
   [%u|b%"def"]=>
   %unicode|string%(0) ""
+  [%u|b%"db"]=>
+  %unicode|string%(%d) "%s"
+  [%u|b%"catalog"]=>
+  %unicode|string%(%d) "%s"
   [%u|b%"max_length"]=>
   int(0)
   [%u|b%"length"]=>

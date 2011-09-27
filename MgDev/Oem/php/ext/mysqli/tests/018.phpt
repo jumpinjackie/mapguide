@@ -7,7 +7,7 @@ require_once('skipifconnectfailure.inc');
 ?>
 --FILE--
 <?php
-	include "connect.inc";
+	require_once("connect.inc");
 
 	/*** test mysqli_connect 127.0.0.1 ***/
 	$link = my_mysqli_connect($host, $user, $passwd, $db, $port, $socket);
@@ -18,10 +18,10 @@ require_once('skipifconnectfailure.inc');
 	if (!$stmt = mysqli_prepare($link, "SELECT @@autocommit"))
 		printf("[001] [%d] %s\n", mysqli_errno($link), mysqli_error($link));
 
-	mysqli_bind_result($stmt, $c0);
-	mysqli_execute($stmt);
+	mysqli_stmt_bind_result($stmt, $c0);
+	mysqli_stmt_execute($stmt);
 
-	mysqli_fetch($stmt);
+	mysqli_stmt_fetch($stmt);
 
 	var_dump($c0);
 

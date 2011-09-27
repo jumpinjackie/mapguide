@@ -2,7 +2,7 @@
    +----------------------------------------------------------------------+
    | PHP Version 5                                                        |
    +----------------------------------------------------------------------+
-   | Copyright (c) 1997-2009 The PHP Group                                |
+   | Copyright (c) 1997-2011 The PHP Group                                |
    +----------------------------------------------------------------------+
    | This source file is subject to version 3.01 of the PHP license,      |
    | that is bundled with this package in the file LICENSE, and is        |
@@ -25,7 +25,7 @@
    +----------------------------------------------------------------------+
 */
 
-/* $Id: oci8_statement.c 277003 2009-03-11 16:47:14Z sixd $ */
+/* $Id: oci8_statement.c 313754 2011-07-27 00:04:23Z sixd $ */
 
 
 #ifdef HAVE_CONFIG_H
@@ -93,10 +93,11 @@ php_oci_statement *php_oci_statement_create (php_oci_connection *connection, cha
 
 	statement->connection = connection;
 	statement->has_data = 0;
+	statement->has_descr = 0;
 	statement->parent_stmtid = 0;
 	zend_list_addref(statement->connection->rsrc_id);
 
-	if (OCI_G(default_prefetch) > 0) {
+	if (OCI_G(default_prefetch) >= 0) {
 		php_oci_statement_set_prefetch(statement, OCI_G(default_prefetch) TSRMLS_CC);
 	}
 	
@@ -114,8 +115,8 @@ int php_oci_statement_set_prefetch(php_oci_statement *statement, long size TSRML
 {
 	ub4 prefetch = size;
 
-	if (size < 1) {
-		php_error_docref(NULL TSRMLS_CC, E_WARNING, "Number of rows has to be greater than or equal to 1");
+	if (size < 0) {
+		php_error_docref(NULL TSRMLS_CC, E_WARNING, "Number of rows to be prefetched has to be greater than or equal to 0");
 		return 1;
 	}
 	
@@ -131,6 +132,40 @@ int php_oci_statement_set_prefetch(php_oci_statement *statement, long size TSRML
 }
 /* }}} */
 
+/* {{{ php_oci_cleanup_pre_fetch()
+   Helper function to cleanup ref-cursors and descriptors from the previous row */
+int php_oci_cleanup_pre_fetch(void *data TSRMLS_DC)
+{
+	php_oci_out_column *outcol = data;
+
+	if (!outcol->is_descr && !outcol->is_cursor)
+		return ZEND_HASH_APPLY_KEEP;
+
+	switch(outcol->data_type) {
+		case SQLT_CLOB:
+		case SQLT_BLOB:
+		case SQLT_RDD:
+		case SQLT_BFILE:
+			if (outcol->descid) {
+				zend_list_delete(outcol->descid);
+				outcol->descid = 0;
+			}
+			break;
+		case SQLT_RSET:
+			if (outcol->stmtid) {
+				zend_list_delete(outcol->stmtid);
+				outcol->stmtid = 0;
+				outcol->nested_statement = NULL;
+			}
+			break;
+		default:
+			break;
+	}
+	return ZEND_HASH_APPLY_KEEP;
+
+} /* }}} */
+
+
 /* {{{ php_oci_statement_fetch()
  Fetch a row from the statement */
 int php_oci_statement_fetch(php_oci_statement *statement, ub4 nrows TSRMLS_DC)
@@ -142,6 +177,10 @@ int php_oci_statement_fetch(php_oci_statement *statement, ub4 nrows TSRMLS_DC)
 	zend_bool piecewisecols = 0;
 
 	php_oci_out_column *column;
+
+	if (statement->has_descr && statement->columns) {
+		zend_hash_apply(statement->columns, (apply_func_t) php_oci_cleanup_pre_fetch TSRMLS_CC);
+    }
 
 	PHP_OCI_CALL_RETURN(statement->errcode, OCIStmtFetch, (statement->stmt, statement->err, nrows, OCI_FETCH_NEXT, OCI_DEFAULT));
 
@@ -297,9 +336,9 @@ php_oci_out_column *php_oci_statement_get_column(php_oci_statement *statement, l
 sb4 php_oci_define_callback(dvoid *ctx, OCIDefine *define, ub4 iter, dvoid **bufpp, ub4 **alenpp, ub1 *piecep, dvoid **indpp, ub2 **rcpp)
 {
 	php_oci_out_column *outcol = (php_oci_out_column *)ctx;
+	TSRMLS_FETCH();
 
 	if (!outcol) {
-		TSRMLS_FETCH();
 		
 		php_error_docref(NULL TSRMLS_CC, E_WARNING, "Invalid context pointer value");
 		return OCI_ERROR;
@@ -308,7 +347,6 @@ sb4 php_oci_define_callback(dvoid *ctx, OCIDefine *define, ub4 iter, dvoid **buf
 	switch(outcol->data_type) {
 		case SQLT_RSET: {
 				php_oci_statement *nested_stmt;
-				TSRMLS_FETCH();
 
 				nested_stmt = php_oci_statement_create(outcol->statement->connection, NULL, 0 TSRMLS_CC);
 				if (!nested_stmt) {
@@ -333,7 +371,6 @@ sb4 php_oci_define_callback(dvoid *ctx, OCIDefine *define, ub4 iter, dvoid **buf
 		case SQLT_BFILE: {
 				php_oci_descriptor *descr;
 				int dtype;
-				TSRMLS_FETCH();
 
 				if (outcol->data_type == SQLT_BFILE) {
 					dtype = OCI_DTYPE_FILE;
@@ -413,7 +450,11 @@ int php_oci_statement_execute(php_oci_statement *statement, ub4 mode TSRMLS_DC)
 		   we don't want to execute!!! */
 
 		if (statement->binds) {
-			zend_hash_apply(statement->binds, (apply_func_t) php_oci_bind_pre_exec TSRMLS_CC);
+			int result = 0;
+			zend_hash_apply_with_argument(statement->binds, (apply_func_arg_t) php_oci_bind_pre_exec, (void *)&result TSRMLS_CC);
+			if (result) {
+				return 1;
+			}
 		}
 
 		/* execute statement */
@@ -566,6 +607,7 @@ int php_oci_statement_execute(php_oci_statement *statement, ub4 mode TSRMLS_DC)
 
 					define_type = SQLT_RSET;
 					outcol->is_cursor = 1;
+					outcol->statement->has_descr = 1;
 					outcol->storage_size4 = -1;
 					outcol->retlen = -1;
 					dynamic = OCI_DYNAMIC_FETCH;
@@ -579,6 +621,7 @@ int php_oci_statement_execute(php_oci_statement *statement, ub4 mode TSRMLS_DC)
 
 					define_type = outcol->data_type;
 					outcol->is_descr = 1;
+					outcol->statement->has_descr = 1;
 					outcol->storage_size4 = -1;
 					dynamic = OCI_DYNAMIC_FETCH;
 					break;
@@ -763,12 +806,60 @@ void php_oci_statement_free(php_oci_statement *statement TSRMLS_DC)
 
 /* {{{ php_oci_bind_pre_exec()
  Helper function */
-int php_oci_bind_pre_exec(void *data TSRMLS_DC)
+int php_oci_bind_pre_exec(void *data, void *result TSRMLS_DC)
 {
 	php_oci_bind *bind = (php_oci_bind *) data;
 
-	/* reset all bind stuff to a normal state..-. */
+	*(int *)result = 0;
 
+	if (Z_TYPE_P(bind->zval) == IS_ARRAY) {
+		/* These checks are currently valid for oci_bind_by_name, not
+		 * oci_bind_array_by_name.  Also bind->type and
+		 * bind->indicator are not used for oci_bind_array_by_name.
+		 */
+		return 0;
+	}	
+	switch (bind->type) {
+		case SQLT_NTY:
+		case SQLT_BFILEE:
+		case SQLT_CFILEE:
+		case SQLT_CLOB:
+		case SQLT_BLOB:
+		case SQLT_RDD:
+			if (Z_TYPE_P(bind->zval) != IS_OBJECT) {
+				php_error_docref(NULL TSRMLS_CC, E_WARNING, "Invalid variable used for bind");
+				*(int *)result = 1;
+			}
+			break;
+			
+		case SQLT_INT:
+		case SQLT_NUM:
+			if (Z_TYPE_P(bind->zval) == IS_RESOURCE || Z_TYPE_P(bind->zval) == IS_OBJECT) {
+				php_error_docref(NULL TSRMLS_CC, E_WARNING, "Invalid variable used for bind");
+				*(int *)result = 1;
+			}
+			break;
+			
+		case SQLT_LBI:
+		case SQLT_BIN:
+		case SQLT_LNG:
+		case SQLT_AFC:
+		case SQLT_CHR:
+			if (Z_TYPE_P(bind->zval) == IS_RESOURCE || Z_TYPE_P(bind->zval) == IS_OBJECT) {
+				php_error_docref(NULL TSRMLS_CC, E_WARNING, "Invalid variable used for bind");
+				*(int *)result = 1;
+			}
+			break;
+
+		case SQLT_RSET:
+			if (Z_TYPE_P(bind->zval) != IS_RESOURCE) {
+				php_error_docref(NULL TSRMLS_CC, E_WARNING, "Invalid variable used for bind");
+				*(int *)result = 1;
+			}
+			break;
+	}
+
+	/* reset all bind stuff to a normal state..-. */
 	bind->indicator = 0;
 
 	return 0;
@@ -789,7 +880,15 @@ int php_oci_bind_post_exec(void *data TSRMLS_DC)
 		}
 		zval_dtor(val);
 		ZVAL_NULL(val);
-	} else if (Z_TYPE_P(bind->zval) == IS_STRING && Z_STRLEN_P(bind->zval) > 0) {
+	} else if (Z_TYPE_P(bind->zval) == IS_STRING
+			   && Z_STRLEN_P(bind->zval) > 0
+			   && Z_STRVAL_P(bind->zval)[ Z_STRLEN_P(bind->zval) ] != '\0') {
+		/* The post- PHP 5.3 feature for "interned" strings disallows
+		 * their reallocation but (i) any IN binds either interned or
+		 * not should already be null terminated and (ii) for OUT
+		 * binds, php_oci_bind_out_callback() should have allocated a
+		 * new string that we can modify here.
+		 */
 		Z_STRVAL_P(bind->zval) = erealloc(Z_STRVAL_P(bind->zval), Z_STRLEN_P(bind->zval)+1);
 		Z_STRVAL_P(bind->zval)[ Z_STRLEN_P(bind->zval) ] = '\0';
 	} else if (Z_TYPE_P(bind->zval) == IS_ARRAY) {
@@ -942,6 +1041,10 @@ int php_oci_bind_by_name(php_oci_statement *statement, char *name, int name_len,
 			
 		case SQLT_INT:
 		case SQLT_NUM:
+			if (Z_TYPE_P(var) == IS_RESOURCE || Z_TYPE_P(var) == IS_OBJECT) {
+				php_error_docref(NULL TSRMLS_CC, E_WARNING, "Invalid variable used for bind");
+				return 1;
+			}
 			convert_to_long(var);
 			bind_data = (ub4 *)&Z_LVAL_P(var);
 			value_sz = sizeof(ub4);
@@ -953,6 +1056,10 @@ int php_oci_bind_by_name(php_oci_statement *statement, char *name, int name_len,
 		case SQLT_LNG:
 		case SQLT_AFC:
 		case SQLT_CHR: /* SQLT_CHR is the default value when type was not specified */
+			if (Z_TYPE_P(var) == IS_RESOURCE || Z_TYPE_P(var) == IS_OBJECT) {
+				php_error_docref(NULL TSRMLS_CC, E_WARNING, "Invalid variable used for bind");
+				return 1;
+			}
 			if (Z_TYPE_P(var) != IS_NULL) {
 				convert_to_string(var);
 			}
@@ -964,6 +1071,10 @@ int php_oci_bind_by_name(php_oci_statement *statement, char *name, int name_len,
 			break;
 
 		case SQLT_RSET:
+			if (Z_TYPE_P(var) != IS_RESOURCE) {
+				php_error_docref(NULL TSRMLS_CC, E_WARNING, "Invalid variable used for bind");
+				return 1;
+			}
 			PHP_OCI_ZVAL_TO_STATEMENT_EX(var, bind_statement);
 			value_sz = sizeof(void*);
 
@@ -1003,6 +1114,7 @@ int php_oci_bind_by_name(php_oci_statement *statement, char *name, int name_len,
 	bindp->statement = oci_stmt;
 	bindp->parent_statement = statement;
 	bindp->zval = var;
+	bindp->type = type;
 	zval_add_ref(&var);
 	
 	PHP_OCI_CALL_RETURN(statement->errcode,
@@ -1353,6 +1465,9 @@ int php_oci_bind_array_by_name(php_oci_statement *statement, char *name, int nam
 	bindp->bind = NULL;
 	bindp->zval = var;
 	bindp->array.type = type;
+	bindp->indicator = 0;  		/* not used for array binds */
+	bindp->type = 0; 			/* not used for array binds */
+
 	zval_add_ref(&var);
 
 	PHP_OCI_CALL_RETURN(statement->errcode,
@@ -1365,7 +1480,7 @@ int php_oci_bind_array_by_name(php_oci_statement *statement, char *name, int nam
 								name_len,
 								(dvoid *) bindp->array.elements,
 								(sb4) bind->array.max_length,
-								type,
+								(ub2)type,
 								(dvoid *)bindp->array.indicators,
 								(ub2 *)bind->array.element_lengths,
 								(ub2 *)0, /* bindp->array.retcodes, */

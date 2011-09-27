@@ -17,6 +17,9 @@
 	$socket    = getenv("MYSQL_TEST_SOCKET")   ? getenv("MYSQL_TEST_SOCKET") : null;
 	$skip_on_connect_failure  = getenv("MYSQL_TEST_SKIP_CONNECT_FAILURE") ? getenv("MYSQL_TEST_SKIP_CONNECT_FAILURE") : true;
 	$connect_flags = getenv("MYSQL_TEST_CONNECT_FLAGS") ? (int)getenv("MYSQL_TEST_CONNECT_FLAGS") : 0;
+	if ($socket) {
+		ini_set('mysqli.default_socket', $socket);
+	}
 
 	/* Development setting: test experimal features and/or feature requests that never worked before? */
 	$TEST_EXPERIMENTAL = (in_array(getenv("MYSQL_TEST_EXPERIMENTAL"), array(0, 1))) ?
@@ -74,53 +77,152 @@
 		}
 	}
 
-	/**
-	* Whenever possible, please use this wrapper to make testing ot MYSQLI_CLIENT_COMPRESS (and potentially SSL) possible
-	*
-	* @param enable_env_flags Enable setting of connection flags through env(MYSQL_TEST_CONNECT_FLAGS)?
-	*/
-	function my_mysqli_connect($host, $user, $passwd, $db, $port, $socket, $enable_env_flags = true) {
-		global $connect_flags;
+	if (!function_exists('my_mysqli_connect')) {
 
-		$flags = ($enable_env_flags) ? $connect_flags : false;
-
-		if ($flags !== false) {
-			$link = mysqli_init();
-			if (!mysqli_real_connect($link, $host, $user, $passwd, $db, $port, $socket, $flags))
-				$link = false;
-		} else {
-			$link = mysqli_connect($host, $user, $passwd, $db, $port, $socket);
-		}
-
-		return $link;
-	}
-
-	/**
-	* Whenever possible, please use this wrapper to make testing ot MYSQLI_CLIENT_COMPRESS (and potentially SSL) possible
-	*
-	* @param enable_env_flags Enable setting of connection flags through env(MYSQL_TEST_CONNECT_FLAGS)
-	*/
-	function my_mysqli_real_connect($link, $host, $user, $passwd, $db, $port, $socket, $flags = 0, $enable_env_flags = true) {
-		global $connect_flags;
-
-		if ($enable_env_flags)
-			$flags & $connect_flags;
-
-		return mysqli_real_connect($link, $host, $user, $passwd, $db, $port, $socket, $flags);
-	}
-
-	class my_mysqli extends mysqli {
-		public function __construct($host, $user, $passwd, $db, $port, $socket, $enable_env_flags = true) {
+		/**
+		* Whenever possible, please use this wrapper to make testing ot MYSQLI_CLIENT_COMPRESS (and potentially SSL) possible
+		*
+		* @param enable_env_flags Enable setting of connection flags through 	env(MYSQL_TEST_CONNECT_FLAGS)?
+		*/
+		function my_mysqli_connect($host, $user, $passwd, $db, $port, $socket, $enable_env_flags = true) {
 			global $connect_flags;
 
 			$flags = ($enable_env_flags) ? $connect_flags : false;
 
 			if ($flags !== false) {
-				parent::init();
-				$this->real_connect($host, $user, $passwd, $db, $port, $socket, $flags);
+				$link = mysqli_init();
+				if (!mysqli_real_connect($link, $host, $user, $passwd, $db, $port, $socket, $flags))
+					$link = false;
 			} else {
-				parent::__construct($host, $user, $passwd, $db, $port, $socket);
+				$link = mysqli_connect($host, $user, $passwd, $db, $port, $socket);
+			}
+
+			return $link;
+		}
+
+		/**
+		* Whenever possible, please use this wrapper to make testing ot MYSQLI_CLIENT_COMPRESS (and potentially SSL) possible
+		*
+		* @param enable_env_flags Enable setting of connection flags through env(MYSQL_TEST_CONNECT_FLAGS)
+		*/
+		function my_mysqli_real_connect($link, $host, $user, $passwd, $db, $port, $socket, $flags = 0, $enable_env_flags = true) {
+			global $connect_flags;
+
+			if ($enable_env_flags)
+				$flags & $connect_flags;
+
+			return mysqli_real_connect($link, $host, $user, $passwd, $db, $port, $socket, $flags);
+		}
+
+		class my_mysqli extends mysqli {
+			public function __construct($host, $user, $passwd, $db, $port, $socket, $enable_env_flags = true) {
+				global $connect_flags;
+
+				$flags = ($enable_env_flags) ? $connect_flags : false;
+
+				if ($flags !== false) {
+					parent::init();
+					$this->real_connect($host, $user, $passwd, $db, $port, $socket, $flags);
+				} else {
+					parent::__construct($host, $user, $passwd, $db, $port, $socket);
+				}
 			}
 		}
+
+		function my_get_charsets($link) {
+
+			/* Those tree are set by SET NAMES */
+			$charsets = array(
+				'client' 		=> NULL,
+				'results'		=> NULL,
+				'connection'	=> NULL,
+			);
+
+			if (!($res = mysqli_query($link, "SHOW VARIABLES LIKE '%character%'"))) {
+				printf("[%d] %s\n", mysqli_errno($link), mysqli_error($link));
+				return $charsets;
+			}
+
+			$names = array();
+			while ($row = mysqli_fetch_assoc($res)) {
+				$names[$row['Variable_name']] = $row['Value'];
+			}
+			mysqli_free_result($res);
+
+			if (!($res = mysqli_query($link, sprintf("SHOW CHARACTER SET LIKE '%s'", $names['character_set_client']))) ||
+				!($details = mysqli_fetch_assoc($res))) {
+				printf("[%d] %s\n", mysqli_errno($link), mysqli_error($link));
+				return $charsets;
+			}
+			mysqli_free_result($res);
+
+			$charsets['client'] = array(
+				'charset' 	=> $details['Charset'],
+				'desc'		=> $details['Description'],
+				'collation'	=> $details['Default collation'],
+				'maxlen'	=> $details['Maxlen'],
+				'nr'		=> NULL,
+			);
+
+			if (!($res = mysqli_query($link, sprintf("SHOW COLLATION LIKE '%s'", $details['Default collation']))) ||
+				!($collation = mysqli_fetch_assoc($res))) {
+				printf("[%d] %s\n", mysqli_errno($link), mysqli_error($link));
+				return $charsets;
+			}
+			mysqli_free_result($res);
+			$charsets['client']['nr'] = $collation['Id'];
+
+			if (!($res = mysqli_query($link, sprintf("SHOW CHARACTER SET LIKE '%s'", $names['character_set_results']))) ||
+				!($details = mysqli_fetch_assoc($res))) {
+				printf("[%d] %s\n", mysqli_errno($link), mysqli_error($link));
+				return $charsets;
+			}
+			mysqli_free_result($res);
+
+			$charsets['results'] = array(
+				'charset' 	=> $details['Charset'],
+				'desc'		=> $details['Description'],
+				'collation'	=> $details['Default collation'],
+				'maxlen'	=> $details['Maxlen'],
+				'nr'		=> NULL,
+			);
+
+			if (!($res = mysqli_query($link, sprintf("SHOW COLLATION LIKE '%s'", $details['Default collation']))) ||
+				!($collation = mysqli_fetch_assoc($res))) {
+				printf("[%d] %s\n", mysqli_errno($link), mysqli_error($link));
+				return $charsets;
+			}
+			mysqli_free_result($res);
+			$charsets['results']['nr'] = $collation['Id'];
+
+
+			if (!($res = mysqli_query($link, sprintf("SHOW CHARACTER SET LIKE '%s'", $names['character_set_connection']))) ||
+				!($details = mysqli_fetch_assoc($res))) {
+				printf("[%d] %s\n", mysqli_errno($link), mysqli_error($link));
+				return $charsets;
+			}
+			mysqli_free_result($res);
+
+			$charsets['connection'] = array(
+				'charset' 	=> $details['Charset'],
+				'desc'		=> $details['Description'],
+				'collation'	=> $details['Default collation'],
+				'maxlen'	=> $details['Maxlen'],
+				'nr'		=> NULL,
+			);
+
+			if (!($res = mysqli_query($link, sprintf("SHOW COLLATION LIKE '%s'", $details['Default collation']))) ||
+				!($collation = mysqli_fetch_assoc($res))) {
+				printf("[%d] %s\n", mysqli_errno($link), mysqli_error($link));
+				return $charsets;
+			}
+			mysqli_free_result($res);
+			$charsets['connection']['nr'] = $collation['Id'];
+
+			return $charsets;
+		}
+
+	} else {
+		printf("skip Eeeek/BUG/FIXME - connect.inc included twice! skipif bug?\n");
 	}
 ?>

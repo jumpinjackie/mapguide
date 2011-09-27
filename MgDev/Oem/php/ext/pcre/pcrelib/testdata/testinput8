@@ -1,6 +1,6 @@
-/-- Do not use the \x{} construct except with patterns that have the --/
-/-- /8 option set, because PCRE doesn't recognize them as UTF-8 unless --/
-/-- that option is set. However, the latest Perls recognize them always. --/
+/-- This set of tests checks UTF-8 support with the DFA matching functionality
+    of pcre_dfa_exec(). The -dfa flag must be used with pcretest when running 
+    it. --/
 
 /\x{100}ab/8
   \x{100}ab
@@ -63,6 +63,9 @@
     ร
     รรร
     รรร\?
+    \xe1\x88 
+    \P\xe1\x88 
+    \P\P\xe1\x88 
 
 /a.b/8
     acb
@@ -667,4 +670,34 @@
 /X/8f<any> 
     A\x{1ec5}ABCXYZ
 
-/ End of testinput 8 / 
+/abcd*/8
+    xxxxabcd\P
+    xxxxabcd\P\P
+
+/abcd*/i8
+    xxxxabcd\P
+    xxxxabcd\P\P
+    XXXXABCD\P
+    XXXXABCD\P\P
+
+/abc\d*/8
+    xxxxabc1\P
+    xxxxabc1\P\P
+
+/abc[de]*/8
+    xxxxabcde\P
+    xxxxabcde\P\P
+
+/\bthe cat\b/8
+    the cat\P
+    the cat\P\P
+
+/a+/8
+    a\x{123}aa\>1
+    a\x{123}aa\>2
+    a\x{123}aa\>3
+    a\x{123}aa\>4
+    a\x{123}aa\>5
+    a\x{123}aa\>6
+
+/-- End of testinput8 --/ 

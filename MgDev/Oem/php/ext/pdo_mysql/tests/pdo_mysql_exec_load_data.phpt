@@ -57,7 +57,7 @@ if (($tmp[1] !== 'localhost') && ($tmp[1] !== '127.0.0.1'))
 		exec_and_count(2, $db, 'DROP TABLE IF EXISTS test', 0);
 		exec_and_count(3, $db, sprintf('CREATE TABLE test(id INT NOT NULL PRIMARY KEY, col1 CHAR(10)) ENGINE=%s', PDO_MYSQL_TEST_ENGINE), 0);
 
-		$stmt = $db->query('SHOW VARIABLES LIKE "secure_file_priv"');
+		$stmt = $db->query("SHOW VARIABLES LIKE 'secure_file_priv'");
 		if (($row = $stmt->fetch(PDO::FETCH_ASSOC)) && ($row['value'] != '')) {
 			$filename = $row['value'] . DIRECTORY_SEPARATOR  . "pdo_mysql_exec_load_data.csv";
 		} else {
@@ -96,7 +96,13 @@ if (($tmp[1] !== 'localhost') && ($tmp[1] !== '127.0.0.1'))
 			$db->errorCode(), implode(' ', $db->errorInfo()));
 	}
 
-	$db->exec('DROP TABLE IF EXISTS test');
 	print "done!";
+?>
+--CLEAN--
+<?php
+require dirname(__FILE__) . '/mysql_pdo_test.inc';
+$db = MySQLPDOTest::factory();
+$db->exec('DROP TABLE IF EXISTS test');
+?>
 --EXPECTF--
 done!

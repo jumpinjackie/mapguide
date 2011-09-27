@@ -2,7 +2,7 @@
   +----------------------------------------------------------------------+
   | PHP Version 5                                                        |
   +----------------------------------------------------------------------+
-  | Copyright (c) 1997-2009 The PHP Group                                |
+  | Copyright (c) 1997-2011 The PHP Group                                |
   +----------------------------------------------------------------------+
   | This source file is subject to version 3.0 of the PHP license,       |
   | that is bundled with this package in the file LICENSE, and is        |
@@ -16,7 +16,7 @@
   +----------------------------------------------------------------------+
 */
 
-/* $Id: pdo_odbc.c 272370 2008-12-31 11:15:49Z sebastian $ */
+/* $Id: pdo_odbc.c 314376 2011-08-06 14:47:44Z felipe $ */
 
 #ifdef HAVE_CONFIG_H
 #include "config.h"
@@ -40,7 +40,7 @@ const function_entry pdo_odbc_functions[] = {
 #if ZEND_MODULE_API_NO >= 20050922
 static const zend_module_dep pdo_odbc_deps[] = {
 	ZEND_MOD_REQUIRED("pdo")
-	{NULL, NULL, NULL}
+	ZEND_MOD_END
 };
 #endif
 /* }}} */
@@ -98,6 +98,9 @@ PHP_MINIT_FUNCTION(pdo_odbc)
 		char *instance = INI_STR("pdo_odbc.db2_instance_name");
 		if (instance) {
 			char *env = malloc(sizeof("DB2INSTANCE=") + strlen(instance));
+			if (!env) {
+				return FAILURE;
+			}
 			strcpy(env, "DB2INSTANCE=");
 			strcat(env, instance);
 			putenv(env);

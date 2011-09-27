@@ -2,7 +2,7 @@
   +----------------------------------------------------------------------+
   | PHP Version 5                                                        |
   +----------------------------------------------------------------------+
-  | Copyright (c) 1997-2009 The PHP Group                                |
+  | Copyright (c) 1997-2011 The PHP Group                                |
   +----------------------------------------------------------------------+
   | This source file is subject to version 3.01 of the PHP license,      |
   | that is bundled with this package in the file LICENSE, and is        |
@@ -16,7 +16,7 @@
   +----------------------------------------------------------------------+
 */
 
-/* $Id: filter_private.h 272370 2008-12-31 11:15:49Z sebastian $ */
+/* $Id: filter_private.h 307670 2011-01-23 09:46:06Z pajoye $ */
 
 #ifndef FILTER_PRIVATE_H
 #define FILTER_PRIVATE_H
@@ -39,6 +39,7 @@
 #define FILTER_FLAG_ENCODE_AMP              0x0040
 #define FILTER_FLAG_NO_ENCODE_QUOTES        0x0080
 #define FILTER_FLAG_EMPTY_STRING_NULL       0x0100
+#define FILTER_FLAG_STRIP_BACKTICK          0x0200
 
 #define FILTER_FLAG_ALLOW_FRACTION          0x1000
 #define FILTER_FLAG_ALLOW_THOUSAND          0x2000
@@ -77,7 +78,8 @@
 #define FILTER_SANITIZE_NUMBER_INT    0x0207
 #define FILTER_SANITIZE_NUMBER_FLOAT  0x0208
 #define FILTER_SANITIZE_MAGIC_QUOTES  0x0209
-#define FILTER_SANITIZE_LAST          0x0209
+#define FILTER_SANITIZE_FULL_SPECIAL_CHARS 0x020a
+#define FILTER_SANITIZE_LAST          0x020a
 
 #define FILTER_SANITIZE_ALL           0x0200
 
@@ -112,10 +114,10 @@
 
 #define PHP_FILTER_GET_LONG_OPT(zv, opt) { \
 	if (Z_TYPE_PP(zv) != IS_LONG) {                                                                      \
-		zval tmp = **zv;                                                                                 \
-		zval_copy_ctor(&tmp);                                                                                    \
-		convert_to_long(&tmp);                                                                                   \
-		opt = Z_LVAL(tmp);                                                                                  \
+		zval ___tmp = **zv;                                                                                 \
+		zval_copy_ctor(&___tmp);                                                                                    \
+		convert_to_long(&___tmp);                                                                                   \
+		opt = Z_LVAL(___tmp);                                                                                  \
 	} else {                                                                                                     \
 		opt = Z_LVAL_PP(zv);                                                                        \
 	}                                                                                                            \

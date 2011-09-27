@@ -1,4 +1,4 @@
-dnl $Id: config.m4 273413 2009-01-13 02:50:54Z scottmac $
+dnl $Id: config.m4 311041 2011-05-15 05:49:34Z rasmus $
 dnl config.m4 for extension pdo_sqlite
 dnl vim:et:sw=2:ts=2:
 

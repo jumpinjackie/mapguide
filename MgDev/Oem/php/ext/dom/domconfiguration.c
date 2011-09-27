@@ -2,7 +2,7 @@
    +----------------------------------------------------------------------+
    | PHP Version 5                                                        |
    +----------------------------------------------------------------------+
-   | Copyright (c) 1997-2009 The PHP Group                                |
+   | Copyright (c) 1997-2011 The PHP Group                                |
    +----------------------------------------------------------------------+
    | This source file is subject to version 3.01 of the PHP license,      |
    | that is bundled with this package in the file LICENSE, and is        |
@@ -17,7 +17,7 @@
    +----------------------------------------------------------------------+
 */
 
-/* $Id: domconfiguration.c 272370 2008-12-31 11:15:49Z sebastian $ */
+/* $Id: domconfiguration.c 313665 2011-07-25 11:42:53Z felipe $ */
 
 #ifdef HAVE_CONFIG_H
 #include "config.h"
@@ -54,7 +54,7 @@ const zend_function_entry php_dom_domconfiguration_class_functions[] = {
 	PHP_FALIAS(setParameter, dom_domconfiguration_set_parameter, arginfo_dom_configuration_set_parameter)
 	PHP_FALIAS(getParameter, dom_domconfiguration_get_parameter, arginfo_dom_configuration_get_parameter)
 	PHP_FALIAS(canSetParameter, dom_domconfiguration_can_set_parameter, arginfo_dom_configuration_can_set_parameter)
-	{NULL, NULL, NULL}
+	PHP_FE_END
 };
 
 /* {{{ attribute protos, not implemented yet */

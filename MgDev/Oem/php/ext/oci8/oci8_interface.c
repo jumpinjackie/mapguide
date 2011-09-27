@@ -2,7 +2,7 @@
    +----------------------------------------------------------------------+
    | PHP Version 5                                                        |
    +----------------------------------------------------------------------+
-   | Copyright (c) 1997-2009 The PHP Group                                |
+   | Copyright (c) 1997-2011 The PHP Group                                |
    +----------------------------------------------------------------------+
    | This source file is subject to version 3.01 of the PHP license,      |
    | that is bundled with this package in the file LICENSE, and is        |
@@ -25,7 +25,7 @@
    +----------------------------------------------------------------------+
 */
 
-/* $Id: oci8_interface.c 276933 2009-03-09 20:20:07Z sixd $ */
+/* $Id: oci8_interface.c 312017 2011-06-10 17:38:07Z sixd $ */
 
 #ifdef HAVE_CONFIG_H
 #include "config.h"
@@ -233,21 +233,37 @@ PHP_FUNCTION(oci_lob_import)
 	int filename_len;
 
 	if (getThis()) {
+#if (PHP_MAJOR_VERSION == 5 && PHP_MINOR_VERSION > 3) || (PHP_MAJOR_VERSION > 5)
+		if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "p", &filename, &filename_len) == FAILURE) {
+#else
 		if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "s", &filename, &filename_len) == FAILURE) {
+#endif
 			return;
 		}
 	}
 	else {
+#if (PHP_MAJOR_VERSION == 5 && PHP_MINOR_VERSION > 3) || (PHP_MAJOR_VERSION > 5)
+		if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "Op", &z_descriptor, oci_lob_class_entry_ptr, &filename, &filename_len) == FAILURE) {
+#else
 		if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "Os", &z_descriptor, oci_lob_class_entry_ptr, &filename, &filename_len) == FAILURE) {
+#endif
 			return;
 		}	
 	}
-	
+
+#if (PHP_MAJOR_VERSION == 5 && PHP_MINOR_VERSION < 4) || (PHP_MAJOR_VERSION < 5)
+	/* The "p" parsing parameter handles this case in PHP 5.4+ */
+	if (strlen(filename) != filename_len) {
+		php_error_docref(NULL TSRMLS_CC, E_WARNING, "Filename cannot contain null bytes");
+		RETURN_FALSE;  
+	}
+#endif
+
 	if (zend_hash_find(Z_OBJPROP_P(z_descriptor), "descriptor", sizeof("descriptor"), (void **)&tmp) == FAILURE) {
 		php_error_docref(NULL TSRMLS_CC, E_WARNING, "Unable to find descriptor property");
 		RETURN_FALSE;
 	}
-	
+
 	PHP_OCI_ZVAL_TO_DESCRIPTOR(*tmp, descriptor);
 
 	if (php_oci_lob_import(descriptor, filename TSRMLS_CC)) {
@@ -636,12 +652,12 @@ PHP_FUNCTION(oci_lob_erase)
 		if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "|ll", &offset, &length) == FAILURE) {
 			return;
 		}
-	
+
 		if (ZEND_NUM_ARGS() > 0 && offset < 0) {
 			php_error_docref(NULL TSRMLS_CC, E_WARNING, "Offset must be greater than or equal to 0");
 			RETURN_FALSE;
 		}
-		
+
 		if (ZEND_NUM_ARGS() > 1 && length < 0) {
 			php_error_docref(NULL TSRMLS_CC, E_WARNING, "Length must be greater than or equal to 0");
 			RETURN_FALSE;
@@ -651,7 +667,7 @@ PHP_FUNCTION(oci_lob_erase)
 		if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "O|ll", &z_descriptor, oci_lob_class_entry_ptr, &offset, &length) == FAILURE) {
 			return;
 		}
-			
+
 		if (ZEND_NUM_ARGS() > 1 && offset < 0) {
 			php_error_docref(NULL TSRMLS_CC, E_WARNING, "Offset must be greater than or equal to 0");
 			RETURN_FALSE;
@@ -662,14 +678,14 @@ PHP_FUNCTION(oci_lob_erase)
 			RETURN_FALSE;
 		}
 	}
-	
+
 	if (zend_hash_find(Z_OBJPROP_P(z_descriptor), "descriptor", sizeof("descriptor"), (void **)&tmp) == FAILURE) {
 		php_error_docref(NULL TSRMLS_CC, E_WARNING, "Unable to find descriptor property");
 		RETURN_FALSE;
 	}
 
 	PHP_OCI_ZVAL_TO_DESCRIPTOR(*tmp, descriptor);
-	
+
 	if (php_oci_lob_erase(descriptor, offset, length, &bytes_erased TSRMLS_CC)) {
 		RETURN_FALSE;
 	}
@@ -867,7 +883,11 @@ PHP_FUNCTION(oci_lob_export)
 	ub4 lob_length;
 
 	if (getThis()) {
+#if (PHP_MAJOR_VERSION == 5 && PHP_MINOR_VERSION > 3) || (PHP_MAJOR_VERSION > 5)
+		if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "p|ll", &filename, &filename_len, &start, &length) == FAILURE) {
+#else
 		if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "s|ll", &filename, &filename_len, &start, &length) == FAILURE) {
+#endif
 			return;
 		}
 	
@@ -881,7 +901,11 @@ PHP_FUNCTION(oci_lob_export)
 		}
 	}
 	else {
+#if (PHP_MAJOR_VERSION == 5 && PHP_MINOR_VERSION > 3) || (PHP_MAJOR_VERSION > 5)
+		if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "Op|ll", &z_descriptor, oci_lob_class_entry_ptr, &filename, &filename_len, &start, &length) == FAILURE) {
+#else
 		if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "Os|ll", &z_descriptor, oci_lob_class_entry_ptr, &filename, &filename_len, &start, &length) == FAILURE) {
+#endif
 			return;
 		}
 			
@@ -894,7 +918,15 @@ PHP_FUNCTION(oci_lob_export)
 			RETURN_FALSE;
 		}
 	}
-	
+
+#if (PHP_MAJOR_VERSION == 5 && PHP_MINOR_VERSION < 4) || (PHP_MAJOR_VERSION < 5)
+	/* The "p" parsing parameter handles this case in PHP 5.4+ */
+	if (strlen(filename) != filename_len) {
+		php_error_docref(NULL TSRMLS_CC, E_WARNING, "Filename cannot contain null bytes");
+		RETURN_FALSE;  
+	}
+#endif
+
 	if (zend_hash_find(Z_OBJPROP_P(z_descriptor), "descriptor", sizeof("descriptor"), (void **)&tmp) == FAILURE) {
 		php_error_docref(NULL TSRMLS_CC, E_WARNING, "Unable to find descriptor property");
 		RETURN_FALSE;
@@ -918,16 +950,23 @@ PHP_FUNCTION(oci_lob_export)
 		/* nothing to write, fail silently */
 		RETURN_FALSE;
 	}
-	
+
+#if (PHP_MAJOR_VERSION == 5 && PHP_MINOR_VERSION < 4) || (PHP_MAJOR_VERSION < 5)
+	/* Safe mode has been removed in PHP 5.4 */
 	if (PG(safe_mode) && (!php_checkuid(filename, NULL, CHECKUID_CHECK_FILE_AND_DIR))) {
 		RETURN_FALSE;
 	}
+#endif
 
 	if (php_check_open_basedir(filename TSRMLS_CC)) {
 		RETURN_FALSE;
 	}
 
+#if (PHP_MAJOR_VERSION == 5 && PHP_MINOR_VERSION > 3) || (PHP_MAJOR_VERSION > 5)
+	stream = php_stream_open_wrapper_ex(filename, "w", REPORT_ERRORS, NULL, NULL);
+#else
 	stream = php_stream_open_wrapper_ex(filename, "w", ENFORCE_SAFE_MODE | REPORT_ERRORS, NULL, NULL);
+#endif
 
 	block_length = PHP_OCI_LOB_BUFFER_SIZE;
 	if (block_length > length) {
@@ -1066,9 +1105,7 @@ PHP_FUNCTION(oci_rollback)
 	PHP_OCI_ZVAL_TO_CONNECTION(z_connection, connection);
 
 	if (connection->descriptors) {
-		zend_hash_destroy(connection->descriptors);
-		efree(connection->descriptors);
-		connection->descriptors = NULL;
+		php_oci_connection_descriptors_free(connection TSRMLS_CC);
 	}
 
 	if (php_oci_connection_rollback(connection TSRMLS_CC)) {
@@ -1092,9 +1129,7 @@ PHP_FUNCTION(oci_commit)
 	PHP_OCI_ZVAL_TO_CONNECTION(z_connection, connection);
 
 	if (connection->descriptors) {
-		zend_hash_destroy(connection->descriptors);
-		efree(connection->descriptors);
-		connection->descriptors = NULL;
+		php_oci_connection_descriptors_free(connection TSRMLS_CC);
 	}
 	
 	if (php_oci_connection_commit(connection TSRMLS_CC)) {
@@ -1584,7 +1619,7 @@ PHP_FUNCTION(oci_pconnect)
    Return the last error of stmt|connection|global. If no error happened returns false. */
 PHP_FUNCTION(oci_error)
 {
-	zval *arg;
+	zval *arg = NULL;
 	php_oci_statement *statement;
 	php_oci_connection *connection;
 	text *errbuf;
@@ -1670,8 +1705,8 @@ PHP_FUNCTION(oci_num_fields)
 }
 /* }}} */
 
-/* {{{ proto resource oci_parse(resource connection, string query)
-   Parse a query and return a statement */
+/* {{{ proto resource oci_parse(resource connection, string statement)
+   Parse a SQL or PL/SQL statement and return a statement resource */
 PHP_FUNCTION(oci_parse)
 {
 	zval *z_connection;
@@ -1716,20 +1751,172 @@ PHP_FUNCTION(oci_set_prefetch)
 }
 /* }}} */
 
+/* {{{ proto bool oci_set_client_identifier(resource connection, string value)
+  Sets the client identifier attribute on the connection */
+PHP_FUNCTION(oci_set_client_identifier)
+{
+	zval *z_connection;
+	php_oci_connection *connection;
+	char *client_id;
+	int client_id_len;
+
+	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "rs", &z_connection, &client_id, &client_id_len) == FAILURE) {
+		return;
+	}
+
+	PHP_OCI_ZVAL_TO_CONNECTION(z_connection, connection);
+
+	PHP_OCI_CALL_RETURN(OCI_G(errcode), OCIAttrSet, ((dvoid *) connection->session, (ub4) OCI_HTYPE_SESSION, (dvoid *) client_id, (ub4) client_id_len, (ub4) OCI_ATTR_CLIENT_IDENTIFIER, OCI_G(err)));
+
+	if (OCI_G(errcode) != OCI_SUCCESS) {
+		php_oci_error(OCI_G(err), OCI_G(errcode) TSRMLS_CC);
+		RETURN_FALSE;
+	}
+
+	RETURN_TRUE;
+}
+/* }}} */
+
+/* {{{ proto bool oci_set_edition(string value)
+  Sets the edition attribute for all subsequent connections created */
+PHP_FUNCTION(oci_set_edition)
+{
+#if ((OCI_MAJOR_VERSION > 11) || ((OCI_MAJOR_VERSION == 11) && (OCI_MINOR_VERSION >= 2)))
+	char *edition;
+	int edition_len;
+
+	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "s", &edition, &edition_len) == FAILURE) {
+		return;
+	}
+
+	if (OCI_G(edition)) {
+		efree(OCI_G(edition));
+		OCI_G(edition) = NULL;
+	}
+
+	if (edition) {
+		OCI_G(edition) = (char *)safe_emalloc(edition_len+1, sizeof(text), 0);
+		memcpy(OCI_G(edition), edition, edition_len);
+		OCI_G(edition)[edition_len] = '\0';
+	}
+
+	RETURN_TRUE;
+#else
+	php_error_docref(NULL TSRMLS_CC, E_NOTICE, "Unsupported attribute type");
+	RETURN_FALSE;
+#endif
+}
+/* }}} */
+
+/* {{{ proto bool oci_set_module_name(resource connection, string value)
+  Sets the module attribute on the connection */
+PHP_FUNCTION(oci_set_module_name)
+{
+#if (OCI_MAJOR_VERSION >= 10)
+	zval *z_connection;
+	php_oci_connection *connection;
+	char *module;
+	int module_len;
+
+	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "rs", &z_connection, &module, &module_len) == FAILURE) {
+		return;
+	}
+
+	PHP_OCI_ZVAL_TO_CONNECTION(z_connection, connection);
+
+	PHP_OCI_CALL_RETURN(OCI_G(errcode), OCIAttrSet, ((dvoid *) connection->session, (ub4) OCI_HTYPE_SESSION, (dvoid *) module, (ub4) module_len, (ub4) OCI_ATTR_MODULE, OCI_G(err)));
+
+	if (OCI_G(errcode) != OCI_SUCCESS) {
+		php_oci_error(OCI_G(err), OCI_G(errcode) TSRMLS_CC);
+		RETURN_FALSE;
+	}
+
+	RETURN_TRUE;
+#else
+	php_error_docref(NULL TSRMLS_CC, E_NOTICE, "Unsupported attribute type");
+	RETURN_FALSE;
+#endif
+}
+/* }}} */
+
+/* {{{ proto bool oci_set_action(resource connection, string value)
+  Sets the action attribute on the connection */
+PHP_FUNCTION(oci_set_action)
+{
+#if (OCI_MAJOR_VERSION >= 10)
+	zval *z_connection;
+	php_oci_connection *connection;
+	char *action;
+	int action_len;
+
+	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "rs", &z_connection, &action, &action_len) == FAILURE) {
+		return;
+	}
+
+	PHP_OCI_ZVAL_TO_CONNECTION(z_connection, connection);
+
+	PHP_OCI_CALL_RETURN(OCI_G(errcode), OCIAttrSet, ((dvoid *) connection->session, (ub4) OCI_HTYPE_SESSION, (dvoid *) action, (ub4) action_len, (ub4) OCI_ATTR_ACTION, OCI_G(err)));
+
+	if (OCI_G(errcode) != OCI_SUCCESS) {
+		php_oci_error(OCI_G(err), OCI_G(errcode) TSRMLS_CC);
+		RETURN_FALSE;
+	}
+
+	RETURN_TRUE;
+#else
+	php_error_docref(NULL TSRMLS_CC, E_NOTICE, "Unsupported attribute type");
+	RETURN_FALSE;
+#endif
+}
+/* }}} */
+
+/* {{{ proto bool oci_set_client_info(resource connection, string value)
+  Sets the client info attribute on the connection */
+PHP_FUNCTION(oci_set_client_info)
+{
+#if (OCI_MAJOR_VERSION >= 10)
+	zval *z_connection;
+	php_oci_connection *connection;
+	char *client_info;
+	int client_info_len;
+
+	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "rs", &z_connection, &client_info, &client_info_len) == FAILURE) {
+		return;
+	}
+
+	PHP_OCI_ZVAL_TO_CONNECTION(z_connection, connection);
+
+	PHP_OCI_CALL_RETURN(OCI_G(errcode), OCIAttrSet, ((dvoid *) connection->session, (ub4) OCI_HTYPE_SESSION, (dvoid *) client_info, (ub4) client_info_len, (ub4) OCI_ATTR_CLIENT_INFO, OCI_G(err)));
+
+	if (OCI_G(errcode) != OCI_SUCCESS) {
+		php_oci_error(OCI_G(err), OCI_G(errcode) TSRMLS_CC);
+		RETURN_FALSE;
+	}
+
+	RETURN_TRUE;
+#else
+	php_error_docref(NULL TSRMLS_CC, E_NOTICE, "Unsupported attribute type");
+	RETURN_FALSE;
+#endif
+}
+/* }}} */
+
 /* {{{ proto bool oci_password_change(resource connection, string username, string old_password, string new_password)
   Changes the password of an account */
 PHP_FUNCTION(oci_password_change)
 {
 	zval *z_connection;
-	text *user, *pass_old, *pass_new, *dbname;
+	char *user, *pass_old, *pass_new, *dbname;
 	int user_len, pass_old_len, pass_new_len, dbname_len;
 	php_oci_connection *connection;
 
-	/*	Disable in Safe Mode  */
+#if (PHP_MAJOR_VERSION == 5 && PHP_MINOR_VERSION < 4) || (PHP_MAJOR_VERSION < 5)
+	/* Safe mode has been removed in PHP 5.4 */
 	if (PG(safe_mode)) {
 		php_error_docref(NULL TSRMLS_CC, E_WARNING, "is disabled in Safe Mode");
 		RETURN_FALSE;
 	}
+#endif
 
 	if (zend_parse_parameters_ex(ZEND_PARSE_PARAMS_QUIET, ZEND_NUM_ARGS() TSRMLS_CC, "rsss", &z_connection, &user, &user_len, &pass_old, &pass_old_len, &pass_new, &pass_new_len) == SUCCESS) {
 		PHP_OCI_ZVAL_TO_CONNECTION(z_connection, connection);
@@ -1747,7 +1934,7 @@ PHP_FUNCTION(oci_password_change)
 			RETURN_FALSE;
 		}
 
-		if (php_oci_password_change(connection, (char *)user, user_len, (char *)pass_old, pass_old_len, (char *)pass_new, pass_new_len TSRMLS_CC)) {
+		if (php_oci_password_change(connection, user, user_len, pass_old, pass_old_len, pass_new, pass_new_len TSRMLS_CC)) {
 			RETURN_FALSE;
 		}
 		RETURN_TRUE;
@@ -1766,7 +1953,7 @@ PHP_FUNCTION(oci_password_change)
 			RETURN_FALSE;
 		}
 
-		connection = php_oci_do_connect_ex((char *)user, user_len, (char *)pass_old, pass_old_len, (char *)pass_new, pass_new_len, (char *)dbname, dbname_len, NULL, OCI_DEFAULT, 0, 0 TSRMLS_CC);
+		connection = php_oci_do_connect_ex(user, user_len, pass_old, pass_old_len, pass_new, pass_new_len, dbname, dbname_len, NULL, OCI_DEFAULT, 0, 0 TSRMLS_CC);
 		if (!connection) {
 			RETURN_FALSE;
 		}
@@ -1812,6 +1999,17 @@ PHP_FUNCTION(oci_result)
 	else {
 		RETURN_FALSE;
 	}
+}
+/* }}} */
+
+/* {{{ proto string oci_client_version()
+   Return a string containing runtime client library version information */
+PHP_FUNCTION(oci_client_version)
+{
+	char *version = NULL;
+
+	php_oci_client_get_version(&version TSRMLS_CC);
+	RETURN_STRING(version, 0);
 }
 /* }}} */
 

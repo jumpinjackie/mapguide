@@ -16,7 +16,7 @@
   +----------------------------------------------------------------------+
 */
 
-/* $Id: win95nt.h 272370 2008-12-31 11:15:49Z sebastian $ */
+/* $Id: win95nt.h 306939 2011-01-01 02:19:59Z felipe $ */
 
 /* Defines and types for Windows 95/NT */
 #define HAVE_DECLARED_TIMEZONE
@@ -37,19 +37,14 @@ typedef int uid_t;
 #if !defined (ACE_LACKS_GID_T)
 typedef int gid_t;
 #endif
-
 typedef char * caddr_t;
-#define lstat(x, y) stat(x, y)
+#define lstat(x, y) php_sys_lstat(x, y)
 #define		_IFIFO	0010000	/* fifo */
 #define		_IFBLK	0060000	/* block special */
 #define		_IFLNK	0120000	/* symbolic link */
 #define S_IFIFO		_IFIFO
 #define S_IFBLK		_IFBLK
-
-#if !defined (S_IFLNK)
 #define	S_IFLNK		_IFLNK
-#endif
-
 #ifndef S_ISREG 
 #define S_ISREG(m) (((m) & S_IFMT) == S_IFREG)
 #endif
@@ -57,7 +52,7 @@ typedef char * caddr_t;
 #define mkdir(a, b)	_mkdir(a)
 #define rmdir(a)	_rmdir(a)
 #define getpid		_getpid
-#define php_sleep(t)	Sleep(t*1000)
+#define php_sleep(t)	SleepEx(t*1000, TRUE)
 #ifndef getcwd
 # define getcwd(a, b)		_getcwd(a, b)
 #endif

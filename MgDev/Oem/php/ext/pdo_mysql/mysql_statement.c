@@ -2,7 +2,7 @@
   +----------------------------------------------------------------------+
   | PHP Version 5                                                        |
   +----------------------------------------------------------------------+
-  | Copyright (c) 1997-2009 The PHP Group                                |
+  | Copyright (c) 1997-2011 The PHP Group                                |
   +----------------------------------------------------------------------+
   | This source file is subject to version 3.01 of the PHP license,      |
   | that is bundled with this package in the file LICENSE, and is        |
@@ -18,7 +18,7 @@
   +----------------------------------------------------------------------+
 */
 
-/* $Id: mysql_statement.c 280838 2009-05-20 08:30:12Z kalle $ */
+/* $Id: mysql_statement.c 311088 2011-05-16 15:37:39Z johannes $ */
 
 #ifdef HAVE_CONFIG_H
 #include "config.h"
@@ -111,7 +111,7 @@ static int pdo_mysql_stmt_dtor(pdo_stmt_t *stmt TSRMLS_DC) /* {{{ */
 #endif /* HAVE_MYSQL_NEXT_RESULT || PDO_USE_MYSQLND */
 #if PDO_USE_MYSQLND
 	if (!S->stmt && S->current_data) {
-		free(S->current_data);
+		mnd_free(S->current_data);
 	}
 #endif /* PDO_USE_MYSQLND */
 
@@ -120,7 +120,7 @@ static int pdo_mysql_stmt_dtor(pdo_stmt_t *stmt TSRMLS_DC) /* {{{ */
 }
 /* }}} */
 
-static void pdo_mysql_stmt_set_row_count(pdo_stmt_t *stmt) /* {{{ */
+static void pdo_mysql_stmt_set_row_count(pdo_stmt_t *stmt TSRMLS_DC) /* {{{ */
 {
 	long row_count;
 	pdo_mysql_stmt *S = stmt->driver_data;
@@ -142,8 +142,7 @@ static int pdo_mysql_stmt_execute_prepared_libmysql(pdo_stmt_t *stmt TSRMLS_DC) 
 	/* (re)bind the parameters */
 	if (mysql_stmt_bind_param(S->stmt, S->params) || mysql_stmt_execute(S->stmt)) {
 		if (S->params) {
-			efree(S->params);
-			S->params = 0;
+			memset(S->params, 0, S->num_params * sizeof(MYSQL_BIND));
 		}
 		pdo_mysql_error_stmt(stmt);
 		if (mysql_stmt_errno(S->stmt) == 2057) {
@@ -237,7 +236,7 @@ static int pdo_mysql_stmt_execute_prepared_libmysql(pdo_stmt_t *stmt TSRMLS_DC) 
 		}
 	}
 	
-	pdo_mysql_stmt_set_row_count(stmt);
+	pdo_mysql_stmt_set_row_count(stmt TSRMLS_CC);
 	PDO_DBG_RETURN(1);
 }
 /* }}} */
@@ -264,7 +263,7 @@ static int pdo_mysql_stmt_execute_prepared_mysqlnd(pdo_stmt_t *stmt TSRMLS_DC) /
 	}
 
 	/* for SHOW/DESCRIBE and others the column/field count is not available before execute */
-	stmt->column_count = S->stmt->field_count;
+	stmt->column_count = mysql_stmt_field_count(S->stmt);
 	for (i = 0; i < stmt->column_count; i++) {
 		mysqlnd_stmt_bind_one_result(S->stmt, i);
 	}
@@ -280,7 +279,7 @@ static int pdo_mysql_stmt_execute_prepared_mysqlnd(pdo_stmt_t *stmt TSRMLS_DC) /
 		}
 	}
 	
-	pdo_mysql_stmt_set_row_count(stmt);
+	pdo_mysql_stmt_set_row_count(stmt TSRMLS_CC);
 	PDO_DBG_RETURN(1);
 }
 /* }}} */
@@ -376,7 +375,7 @@ static int pdo_mysql_stmt_next_rowset(pdo_stmt_t *stmt TSRMLS_DC) /* {{{ */
 			/* for SHOW/DESCRIBE and others the column/field count is not available before execute */
 			int i;
 
-			stmt->column_count = S->stmt->field_count;
+			stmt->column_count = mysql_stmt_field_count(S->stmt);
 			for (i = 0; i < stmt->column_count; i++) {
 				mysqlnd_stmt_bind_one_result(S->stmt, i);
 			}
@@ -652,12 +651,16 @@ static int pdo_mysql_stmt_fetch(pdo_stmt_t *stmt,
 	}
 #if PDO_USE_MYSQLND
 	if (!S->stmt && S->current_data) {
-		free(S->current_data);
+		mnd_free(S->current_data);
 	}
 #endif /* PDO_USE_MYSQLND */
 
 	if ((S->current_data = mysql_fetch_row(S->result)) == NULL) {
-		if (mysql_errno(S->H->server)) {
+#if PDO_USE_MYSQLND
+		if (S->result->unbuf && !S->result->unbuf->eof_reached && mysql_errno(S->H->server)) {
+#else
+		if (!S->result->eof && mysql_errno(S->H->server)) {
+#endif
 			pdo_mysql_error_stmt(stmt);
 		}
 		PDO_DBG_RETURN(0);
@@ -745,8 +748,8 @@ static int pdo_mysql_stmt_get_col(pdo_stmt_t *stmt, int colno, char **ptr, unsig
 	}
 #if PDO_USE_MYSQLND
 	if (S->stmt) {
-		Z_ADDREF_P(S->stmt->result_bind[colno].zv);
-		*ptr = (char*)&S->stmt->result_bind[colno].zv;
+		Z_ADDREF_P(S->stmt->data->result_bind[colno].zv);
+		*ptr = (char*)&S->stmt->data->result_bind[colno].zv;
 		*len = sizeof(zval);
 		PDO_DBG_RETURN(1);
 	}
@@ -886,7 +889,7 @@ static int pdo_mysql_stmt_col_meta(pdo_stmt_t *stmt, long colno, zval *return_va
 #endif
 	
 	add_assoc_zval(return_value, "flags", flags);
-	add_assoc_string(return_value, "table",(F->table?F->table:""), 1);
+	add_assoc_string(return_value, "table",(char *) (F->table?F->table:""), 1);
 	PDO_DBG_RETURN(SUCCESS);
 } /* }}} */
 

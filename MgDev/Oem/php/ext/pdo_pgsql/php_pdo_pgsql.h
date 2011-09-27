@@ -2,7 +2,7 @@
   +----------------------------------------------------------------------+
   | PHP Version 5                                                        |
   +----------------------------------------------------------------------+
-  | Copyright (c) 1997-2009 The PHP Group                                |
+  | Copyright (c) 1997-2011 The PHP Group                                |
   +----------------------------------------------------------------------+
   | This source file is subject to version 3.01 of the PHP license,      |
   | that is bundled with this package in the file LICENSE, and is        |
@@ -16,7 +16,7 @@
   +----------------------------------------------------------------------+
 */
 
-/* $Id: php_pdo_pgsql.h 272370 2008-12-31 11:15:49Z sebastian $ */
+/* $Id: php_pdo_pgsql.h 311631 2011-05-31 08:59:32Z iliaa $ */
 
 #ifndef PHP_PDO_PGSQL_H
 #define PHP_PDO_PGSQL_H
@@ -32,8 +32,6 @@ extern zend_module_entry pdo_pgsql_module_entry;
 
 PHP_MINIT_FUNCTION(pdo_pgsql);
 PHP_MSHUTDOWN_FUNCTION(pdo_pgsql);
-PHP_RINIT_FUNCTION(pdo_pgsql);
-PHP_RSHUTDOWN_FUNCTION(pdo_pgsql);
 PHP_MINFO_FUNCTION(pdo_pgsql);
 
 #endif	/* PHP_PDO_PGSQL_H */

@@ -2,7 +2,7 @@
    +----------------------------------------------------------------------+
    | PHP Version 5                                                        |
    +----------------------------------------------------------------------+
-   | Copyright (c) 1997-2009 The PHP Group                                |
+   | Copyright (c) 1997-2011 The PHP Group                                |
    +----------------------------------------------------------------------+
    | This source file is subject to version 3.01 of the PHP license,      |
    | that is bundled with this package in the file LICENSE, and is        |
@@ -16,7 +16,7 @@
    +----------------------------------------------------------------------+
  */
 
-/* $Id: php_open_temporary_file.c 283130 2009-06-30 12:20:35Z iliaa $ */
+/* $Id: php_open_temporary_file.c 309792 2011-03-28 16:43:49Z pajoye $ */
 
 #include "php.h"
 
@@ -113,6 +113,13 @@ static int php_do_open_temporary_file(const char *path, const char *pfx, char **
 		return -1;
 	}
 
+#ifdef PHP_WIN32
+	if (!php_win32_check_trailing_space(pfx, (const int)strlen(pfx))) {
+		SetLastError(ERROR_INVALID_NAME);
+		return -1;
+	}
+#endif
+
 	if (!VCWD_GETCWD(cwd, MAXPATHLEN)) {
 		cwd[0] = '\0';
 	}
@@ -138,12 +145,18 @@ static int php_do_open_temporary_file(const char *path, const char *pfx, char **
 	}
 
 #ifdef PHP_WIN32
+
 	if (GetTempFileName(new_state.cwd, pfx, 0, opened_path)) {
 		/* Some versions of windows set the temp file to be read-only,
 		 * which means that opening it will fail... */
-		VCWD_CHMOD(opened_path, 0600);
+		if (VCWD_CHMOD(opened_path, 0600)) {
+			efree(opened_path);
+			free(new_state.cwd);
+			return -1;
+		}
 		fd = VCWD_OPEN_MODE(opened_path, open_flags, 0600);
 	}
+
 #elif defined(HAVE_MKSTEMP)
 	fd = mkstemp(opened_path);
 #else
@@ -151,6 +164,7 @@ static int php_do_open_temporary_file(const char *path, const char *pfx, char **
 		fd = VCWD_OPEN(opened_path, open_flags);
 	}
 #endif
+
 	if (fd == -1 || !opened_path_p) {
 		efree(opened_path);
 	} else {
@@ -190,9 +204,13 @@ PHPAPI const char* php_get_temporary_directory(void)
 	 */
 	{
 		char sTemp[MAX_PATH];
-		DWORD n = GetTempPath(sizeof(sTemp),sTemp);
-		assert(0 < n);  /* should *never* fail! */
-		temporary_directory = strdup(sTemp);
+		DWORD len = GetTempPath(sizeof(sTemp),sTemp);
+		assert(0 < len);  /* should *never* fail! */
+		if (sTemp[len - 1] == DEFAULT_SLASH) {
+			temporary_directory = zend_strndup(sTemp, len - 1);
+		} else {
+			temporary_directory = zend_strndup(sTemp, len);
+		}
 		return temporary_directory;
 	}
 #else

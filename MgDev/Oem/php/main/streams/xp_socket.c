@@ -2,7 +2,7 @@
   +----------------------------------------------------------------------+
   | PHP Version 5                                                        |
   +----------------------------------------------------------------------+
-  | Copyright (c) 1997-2009 The PHP Group                                |
+  | Copyright (c) 1997-2011 The PHP Group                                |
   +----------------------------------------------------------------------+
   | This source file is subject to version 3.01 of the PHP license,      |
   | that is bundled with this package in the file LICENSE, and is        |
@@ -16,7 +16,7 @@
   +----------------------------------------------------------------------+
 */
 
-/* $Id: xp_socket.c 289416 2009-10-09 14:20:17Z pajoye $ */
+/* $Id: xp_socket.c 306939 2011-01-01 02:19:59Z felipe $ */
 
 #include "php.h"
 #include "ext/standard/file.h"
@@ -223,7 +223,11 @@ static int php_sockop_flush(php_stream *stream TSRMLS_DC)
 static int php_sockop_stat(php_stream *stream, php_stream_statbuf *ssb TSRMLS_DC)
 {
 	php_netstream_data_t *sock = (php_netstream_data_t*)stream->abstract;
+#if ZEND_WIN32
+	return 0;
+#else
 	return fstat(sock->socket, &ssb->sb);
+#endif
 }
 
 static inline int sock_sendto(php_netstream_data_t *sock, char *buf, size_t buflen, int flags,
@@ -320,7 +324,7 @@ static int php_sockop_set_option(php_stream *stream, int option, int value, void
 
 			switch (xparam->op) {
 				case STREAM_XPORT_OP_LISTEN:
-					xparam->outputs.returncode = (listen(sock->socket, 5) == 0) ?  0: -1;
+					xparam->outputs.returncode = (listen(sock->socket, xparam->inputs.backlog) == 0) ?  0: -1;
 					return PHP_STREAM_OPTION_RETURN_OK;
 
 				case STREAM_XPORT_OP_GET_NAME:
@@ -396,6 +400,10 @@ static int php_sockop_set_option(php_stream *stream, int option, int value, void
 				}
 #endif
 				
+				case PHP_STREAM_OPTION_WRITE_BUFFER:
+					php_stream_set_chunk_size(stream, (ptrparam ? *(size_t *)ptrparam : PHP_SOCK_CHUNK_SIZE));
+					return PHP_STREAM_OPTION_RETURN_OK;
+
 				default:
 					return PHP_STREAM_OPTION_RETURN_NOTIMPL;
 			}

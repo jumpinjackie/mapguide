@@ -2,7 +2,7 @@
    +----------------------------------------------------------------------+
    | PHP Version 5                                                        |
    +----------------------------------------------------------------------+
-   | Copyright (c) 1997-2009 The PHP Group                                |
+   | Copyright (c) 1997-2011 The PHP Group                                |
    +----------------------------------------------------------------------+
    | This source file is subject to version 3.01 of the PHP license,      |
    | that is bundled with this package in the file LICENSE, and is        |
@@ -27,7 +27,7 @@
    +----------------------------------------------------------------------+
  */
 
-/* $Id: php_imap.h 279937 2009-05-05 01:22:44Z jani $ */
+/* $Id: php_imap.h 307691 2011-01-24 03:52:00Z stas $ */
 
 #ifndef PHP_IMAP_H
 #define PHP_IMAP_H
@@ -114,6 +114,7 @@ PHP_FUNCTION(imap_rfc822_parse_headers);
 PHP_FUNCTION(imap_body);
 PHP_FUNCTION(imap_fetchstructure);
 PHP_FUNCTION(imap_fetchbody);
+PHP_FUNCTION(imap_fetchmime);
 PHP_FUNCTION(imap_savebody);
 PHP_FUNCTION(imap_gc);
 PHP_FUNCTION(imap_expunge);

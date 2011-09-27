@@ -2,7 +2,7 @@
   +----------------------------------------------------------------------+
   | PHP Version 5                                                        |
   +----------------------------------------------------------------------+
-  | Copyright (c) 1997-2009 The PHP Group                                |
+  | Copyright (c) 1997-2011 The PHP Group                                |
   +----------------------------------------------------------------------+
   | This source file is subject to version 3.01 of the PHP license,      |
   | that is bundled with this package in the file LICENSE, and is        |
@@ -16,7 +16,7 @@
   +----------------------------------------------------------------------+
 */
 
-/* $Id: pdo_firebird.c 284399 2009-07-19 23:33:50Z felipe $ */
+/* $Id: pdo_firebird.c 314376 2011-08-06 14:47:44Z felipe $ */
 
 #ifdef HAVE_CONFIG_H
 #include "config.h"
@@ -31,7 +31,7 @@
 #include "php_pdo_firebird_int.h"
 
 const zend_function_entry pdo_firebird_functions[] = { /* {{{ */
-	{NULL, NULL, NULL}
+	PHP_FE_END
 };
 /* }}} */
 
@@ -40,7 +40,7 @@ const zend_function_entry pdo_firebird_functions[] = { /* {{{ */
 #if ZEND_MODULE_API_NO >= 20050922
 static const zend_module_dep pdo_firebird_deps[] = {
 	ZEND_MOD_REQUIRED("pdo")
-	{NULL, NULL, NULL}
+	ZEND_MOD_END
 };
 #endif
 /* }}} */

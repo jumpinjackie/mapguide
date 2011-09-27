@@ -7,7 +7,7 @@ require_once('skipifconnectfailure.inc');
 ?>
 --FILE--
 <?php
-	include "connect.inc";
+	require_once("connect.inc");
 
 	/*** test mysqli_connect 127.0.0.1 ***/
 	$link = my_mysqli_connect($host, $user, $passwd, $db, $port, $socket);
@@ -19,29 +19,29 @@ require_once('skipifconnectfailure.inc');
 
 	$stmt = mysqli_prepare($link, "INSERT INTO mbind VALUES (?,?)");
 
-	mysqli_bind_param($stmt, "is", $a, $b);
+	mysqli_stmt_bind_param($stmt, "is", $a, $b);
 
 	$a = 1;
 	$b = "foo";
 
-	mysqli_execute($stmt);
+	mysqli_stmt_execute($stmt);
 
-	mysqli_bind_param($stmt, "is", $c, $d);
+	mysqli_stmt_bind_param($stmt, "is", $c, $d);
 
 	$c = 2;
 	$d = "bar";
 
-	mysqli_execute($stmt);
+	mysqli_stmt_execute($stmt);
 	mysqli_stmt_close($stmt);
 
 	$stmt = mysqli_prepare($link, "SELECT * FROM mbind");
-	mysqli_execute($stmt);
+	mysqli_stmt_execute($stmt);
 
-	mysqli_bind_result($stmt, $e, $f);
-	mysqli_fetch($stmt);
+	mysqli_stmt_bind_result($stmt, $e, $f);
+	mysqli_stmt_fetch($stmt);
 
-	mysqli_bind_result($stmt, $g, $h);
-	mysqli_fetch($stmt);
+	mysqli_stmt_bind_result($stmt, $g, $h);
+	mysqli_stmt_fetch($stmt);
 
 	var_dump((array($e,$f,$g,$h)));
 
@@ -50,7 +50,7 @@ require_once('skipifconnectfailure.inc');
 ?>
 --CLEAN--
 <?php
-include "connect.inc";
+require_once("connect.inc");
 if (!$link = my_mysqli_connect($host, $user, $passwd, $db, $port, $socket))
    printf("[c001] [%d] %s\n", mysqli_connect_errno(), mysqli_connect_error());
 

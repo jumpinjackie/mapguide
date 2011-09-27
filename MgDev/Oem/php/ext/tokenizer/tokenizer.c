@@ -2,7 +2,7 @@
    +----------------------------------------------------------------------+
    | PHP Version 5                                                        |
    +----------------------------------------------------------------------+
-   | Copyright (c) 1997-2009 The PHP Group                                |
+   | Copyright (c) 1997-2011 The PHP Group                                |
    +----------------------------------------------------------------------+
    | This source file is subject to version 3.01 of the PHP license,      |
    | that is bundled with this package in the file LICENSE, and is        |
@@ -16,7 +16,7 @@
    +----------------------------------------------------------------------+
 */
 
-/* $Id: tokenizer.c 277761 2009-03-25 15:23:58Z dmitry $ */
+/* $Id: tokenizer.c 313665 2011-07-25 11:42:53Z felipe $ */
 
 #ifdef HAVE_CONFIG_H
 #include "config.h"
@@ -52,7 +52,7 @@ ZEND_END_ARG_INFO()
 const zend_function_entry tokenizer_functions[] = {
 	PHP_FE(token_get_all,	arginfo_token_get_all)
 	PHP_FE(token_name,		arginfo_token_name)
-	{NULL, NULL, NULL}	/* Must be the last line in tokenizer_functions[] */
+	PHP_FE_END
 };
 /* }}} */
 
@@ -151,6 +151,10 @@ static void tokenize(zval *return_value TSRMLS_DC)
 		ZVAL_NULL(&token);
 
 		token_line = CG(zend_lineno);
+
+		if (token_type == T_HALT_COMPILER) {
+			break;
+		}
 	}
 }
 
