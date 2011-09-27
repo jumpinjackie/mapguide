@@ -2,7 +2,7 @@
    +----------------------------------------------------------------------+
    | Zend Engine                                                          |
    +----------------------------------------------------------------------+
-   | Copyright (c) 1998-2009 Zend Technologies Ltd. (http://www.zend.com) |
+   | Copyright (c) 1998-2011 Zend Technologies Ltd. (http://www.zend.com) |
    +----------------------------------------------------------------------+
    | This source file is subject to version 2.00 of the Zend license,     |
    | that is bundled with this package in the file LICENSE, and is        | 
@@ -17,7 +17,7 @@
    +----------------------------------------------------------------------+
 */
 
-/* $Id: zend_variables.c 272370 2008-12-31 11:15:49Z sebastian $ */
+/* $Id: zend_variables.c 306939 2011-01-01 02:19:59Z felipe $ */
 
 #include <stdio.h>
 #include "zend.h"
@@ -151,16 +151,30 @@ ZEND_API int zend_print_variable(zval *var)
 }
 
 
+ZEND_API void _zval_dtor_wrapper(zval *zvalue)
+{
+	TSRMLS_FETCH();
+
+	GC_REMOVE_ZVAL_FROM_BUFFER(zvalue);
+	zval_dtor(zvalue);
+}
+
+ZEND_API void zval_property_ctor(zval **p) /* {{{ */
+{
+	zval *orig_ptr = *p;
+
+	ALLOC_ZVAL(*p);
+	**p = *orig_ptr;
+	zval_copy_ctor(*p);
+	Z_SET_REFCOUNT_PP(p, 1);
+	Z_UNSET_ISREF_PP(p);
+}
+/* }}} */
+
 #if ZEND_DEBUG
 ZEND_API void _zval_copy_ctor_wrapper(zval *zvalue)
 {
 	zval_copy_ctor(zvalue);
-}
-
-
-ZEND_API void _zval_dtor_wrapper(zval *zvalue)
-{
-	zval_dtor(zvalue);
 }
 
 

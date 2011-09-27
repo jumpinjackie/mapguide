@@ -3,7 +3,7 @@
    +----------------------------------------------------------------------+
    | Zend Engine                                                          |
    +----------------------------------------------------------------------+
-   | Copyright (c) 1998-2009 Zend Technologies Ltd. (http://www.zend.com) |
+   | Copyright (c) 1998-2011 Zend Technologies Ltd. (http://www.zend.com) |
    +----------------------------------------------------------------------+
    | This source file is subject to version 2.00 of the Zend license,     |
    | that is bundled with this package in the file LICENSE, and is        |
@@ -18,7 +18,7 @@
    +----------------------------------------------------------------------+
 */
 
-/* $Id: zend_language_parser.y 277815 2009-03-26 12:37:54Z dmitry $ */
+/* $Id: zend_language_parser.y 312076 2011-06-12 01:43:10Z felipe $ */
 
 /*
  * LALR shift/reduce conflicts and how they are resolved:
@@ -211,7 +211,7 @@ inner_statement:
 
 
 statement:
-		unticked_statement { zend_do_ticks(TSRMLS_C); }
+		unticked_statement { DO_TICKS(); }
 	|	T_STRING ':' { zend_do_label(&$1 TSRMLS_CC); }
 ;
 
@@ -291,11 +291,11 @@ unset_variable:
 ;
 
 function_declaration_statement:
-		unticked_function_declaration_statement	{ zend_do_ticks(TSRMLS_C); }
+		unticked_function_declaration_statement	{ DO_TICKS(); }
 ;
 
 class_declaration_statement:
-		unticked_class_declaration_statement	{ zend_do_ticks(TSRMLS_C); }
+		unticked_class_declaration_statement	{ DO_TICKS(); }
 ;
 
 

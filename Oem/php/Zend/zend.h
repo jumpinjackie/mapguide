@@ -2,7 +2,7 @@
    +----------------------------------------------------------------------+
    | Zend Engine                                                          |
    +----------------------------------------------------------------------+
-   | Copyright (c) 1998-2009 Zend Technologies Ltd. (http://www.zend.com) |
+   | Copyright (c) 1998-2011 Zend Technologies Ltd. (http://www.zend.com) |
    +----------------------------------------------------------------------+
    | This source file is subject to version 2.00 of the Zend license,     |
    | that is bundled with this package in the file LICENSE, and is        | 
@@ -17,7 +17,7 @@
    +----------------------------------------------------------------------+
 */
 
-/* $Id: zend.h 286859 2009-08-06 01:33:54Z scottmac $ */
+/* $Id: zend.h 307522 2011-01-16 20:39:22Z stas $ */
 
 #ifndef ZEND_H
 #define ZEND_H
@@ -166,7 +166,7 @@ char *alloca ();
 # define ZEND_ATTRIBUTE_DEPRECATED
 #endif
 
-#if defined(__GNUC__) && ZEND_GCC_VERSION >= 3400 && defined(__i386__)
+#if defined(__GNUC__) && ZEND_GCC_VERSION >= 3004 && defined(__i386__)
 # define ZEND_FASTCALL __attribute__((fastcall))
 #elif defined(_MSC_VER) && defined(_M_IX86)
 # define ZEND_FASTCALL __fastcall
@@ -174,7 +174,7 @@ char *alloca ();
 # define ZEND_FASTCALL
 #endif
 
-#if defined(__GNUC__) && ZEND_GCC_VERSION >= 3400
+#if defined(__GNUC__) && ZEND_GCC_VERSION >= 3004
 #else
 # define __restrict__
 #endif
@@ -710,6 +710,11 @@ END_EXTERN_C()
 		FREE_ZVAL(pzv);						\
 	}										\
 	INIT_PZVAL(&(zv));
+	
+#define MAKE_COPY_ZVAL(ppzv, pzv) \
+	*(pzv) = **(ppzv);            \
+	zval_copy_ctor((pzv));        \
+	INIT_PZVAL((pzv));
 
 #define REPLACE_ZVAL_VALUE(ppzv_dest, pzv_src, copy) {	\
 	int is_ref, refcount;						\
@@ -765,6 +770,9 @@ typedef struct {
 ZEND_API void zend_save_error_handling(zend_error_handling *current TSRMLS_DC);
 ZEND_API void zend_replace_error_handling(zend_error_handling_t error_handling, zend_class_entry *exception_class, zend_error_handling *current TSRMLS_DC);
 ZEND_API void zend_restore_error_handling(zend_error_handling *saved TSRMLS_DC);
+
+#define DEBUG_BACKTRACE_PROVIDE_OBJECT (1<<0)
+#define DEBUG_BACKTRACE_IGNORE_ARGS    (1<<1)
 
 #endif /* ZEND_H */
 

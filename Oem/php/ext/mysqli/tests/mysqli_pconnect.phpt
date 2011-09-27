@@ -5,13 +5,10 @@ mysqli_pconnect()
 require_once('skipif.inc');
 require_once('skipifemb.inc');
 require_once('skipifconnectfailure.inc');
-
-if (!stristr(mysqli_get_client_info(), 'mysqlnd'))
-	die("skip: only available in mysqlnd");
 ?>
 --FILE--
 <?php
-	include "connect.inc";
+	require_once("connect.inc");
 
 	$host = 'p:' . $host;
 	if (!$link = my_mysqli_connect($host, $user, $passwd, $db, $port, $socket))

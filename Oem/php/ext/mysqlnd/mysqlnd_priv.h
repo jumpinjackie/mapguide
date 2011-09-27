@@ -1,8 +1,8 @@
 /*
   +----------------------------------------------------------------------+
-  | PHP Version 6                                                        |
+  | PHP Version 5                                                        |
   +----------------------------------------------------------------------+
-  | Copyright (c) 2006-2009 The PHP Group                                |
+  | Copyright (c) 2006-2011 The PHP Group                                |
   +----------------------------------------------------------------------+
   | This source file is subject to version 3.01 of the PHP license,      |
   | that is bundled with this package in the file LICENSE, and is        |
@@ -18,7 +18,7 @@
   +----------------------------------------------------------------------+
 */
 
-/* $Id: mysqlnd_priv.h 289630 2009-10-14 13:51:25Z johannes $ */
+/* $Id: mysqlnd_priv.h 311643 2011-05-31 10:35:07Z andrey $ */
 
 #ifndef MYSQLND_PRIV_H
 #define MYSQLND_PRIV_H
@@ -33,16 +33,14 @@
 #define Z_DELREF_PP(ppz)			Z_DELREF_P(*(ppz))
 #endif
 
+#if PHP_MAJOR_VERSION >= 6
+#define MYSQLND_UNICODE 1
+#else
+#define MYSQLND_UNICODE 0
+#endif
+
 #ifdef ZTS
 #include "TSRM.h"
-#endif
-
-#ifndef TRUE
-#define TRUE 1
-#endif
-
-#ifndef FALSE
-#define FALSE 0
 #endif
 
 #ifndef pestrndup
@@ -50,28 +48,36 @@
 #endif
 
 #define MYSQLND_CLASS_METHOD_TABLE_NAME(class) mysqlnd_##class##_methods
-#define MYSQLND_CLASS_METHODS_START(class) static \
-									 struct st_##class##_methods MYSQLND_CLASS_METHOD_TABLE_NAME(class) = {
-#define MYSQLND_CLASS_METHODS_END  				}							 
+#define MYSQLND_CLASS_METHODS_START(class)	struct st_##class##_methods MYSQLND_CLASS_METHOD_TABLE_NAME(class) = {
+#define MYSQLND_CLASS_METHODS_END			}
 
-#if PHP_MAJOR_VERSION < 6
-#define mysqlnd_array_init(arg, field_count) \
-{ \
-	ALLOC_HASHTABLE_REL(Z_ARRVAL_P(arg));\
-	zend_hash_init(Z_ARRVAL_P(arg), (field_count), NULL, ZVAL_PTR_DTOR, 0); \
-	Z_TYPE_P(arg) = IS_ARRAY;\
-}
-#else
+#if MYSQLND_UNICODE
 #define mysqlnd_array_init(arg, field_count) \
 { \
 	ALLOC_HASHTABLE_REL(Z_ARRVAL_P(arg));\
 	zend_u_hash_init(Z_ARRVAL_P(arg), (field_count), NULL, ZVAL_PTR_DTOR, 0, 0);\
 	Z_TYPE_P(arg) = IS_ARRAY;\
 }
+#else
+#define mysqlnd_array_init(arg, field_count) \
+{ \
+	ALLOC_HASHTABLE_REL(Z_ARRVAL_P(arg));\
+	zend_hash_init(Z_ARRVAL_P(arg), (field_count), NULL, ZVAL_PTR_DTOR, 0); \
+	Z_TYPE_P(arg) = IS_ARRAY;\
+}
 #endif
 
 
-
+#define MYSQLND_DEBUG_DUMP_TIME				1
+#define MYSQLND_DEBUG_DUMP_TRACE			2
+#define MYSQLND_DEBUG_DUMP_PID				4
+#define MYSQLND_DEBUG_DUMP_LINE				8
+#define MYSQLND_DEBUG_DUMP_FILE				16
+#define MYSQLND_DEBUG_DUMP_LEVEL			32
+#define MYSQLND_DEBUG_APPEND				64
+#define MYSQLND_DEBUG_FLUSH					128
+#define MYSQLND_DEBUG_TRACE_MEMORY_CALLS	256
+#define MYSQLND_DEBUG_PROFILE_CALLS			512
 
 
 /* Client Error codes */
@@ -102,12 +108,12 @@
 #define SET_NEW_MESSAGE(buf, buf_len, message, len, persistent) \
 	{\
 		if ((buf)) { \
-			pefree((buf), (persistent)); \
+			mnd_pefree((buf), (persistent)); \
 		} \
 		if ((message)) { \
-			(buf) = pestrndup((message), (len), (persistent)); \
+			(buf) = mnd_pestrndup((message), (len), (persistent)); \
 		} else { \
-			buf = NULL; \
+			(buf) = NULL; \
 		} \
 		(buf_len) = (len); \
 	}
@@ -115,7 +121,7 @@
 #define SET_EMPTY_MESSAGE(buf, buf_len, persistent) \
 	{\
 		if ((buf)) { \
-			pefree((buf), (persistent)); \
+			mnd_pefree((buf), (persistent)); \
 			(buf) = NULL; \
 		} \
 		(buf_len) = 0; \
@@ -124,27 +130,30 @@
 
 #define SET_EMPTY_ERROR(error_info) \
 	{ \
-		error_info.error_no = 0; \
-		error_info.error[0] = '\0'; \
-		strlcpy(error_info.sqlstate, "00000", sizeof(error_info.sqlstate)); \
+		(error_info).error_no = 0; \
+		(error_info).error[0] = '\0'; \
+		strlcpy((error_info).sqlstate, "00000", sizeof((error_info).sqlstate)); \
 	}
 
 #define SET_CLIENT_ERROR(error_info, a, b, c) \
 	{ \
-		error_info.error_no = (a); \
-		strlcpy(error_info.sqlstate, (b), sizeof(error_info.sqlstate)); \
-		strlcpy(error_info.error, (c), sizeof(error_info.error)); \
+		(error_info).error_no = (a); \
+		strlcpy((error_info).sqlstate, (b), sizeof((error_info).sqlstate)); \
+		strlcpy((error_info).error, (c), sizeof((error_info).error)); \
 	}
 
-#define SET_STMT_ERROR(stmt, a, b, c)	SET_CLIENT_ERROR(stmt->error_info, a, b, c)
+#define SET_OOM_ERROR(error_info) SET_CLIENT_ERROR((error_info), CR_OUT_OF_MEMORY, UNKNOWN_SQLSTATE, mysqlnd_out_of_memory)
+
+
+#define SET_STMT_ERROR(stmt, a, b, c)	SET_CLIENT_ERROR((stmt)->error_info, a, b, c)
 
 
 #ifdef ZTS
 #define CONN_GET_STATE(c)		(c)->m->get_state((c) TSRMLS_CC)
 #define CONN_SET_STATE(c, s)	(c)->m->set_state((c), (s) TSRMLS_CC)
 #else
-#define CONN_GET_STATE(c)		(c)->state
-#define CONN_SET_STATE(c, s)	(c)->state = s
+#define CONN_GET_STATE(c)		((c)->state)
+#define CONN_SET_STATE(c, s)	((c)->state = (s))
 #endif
 
 
@@ -163,9 +172,10 @@ struct st_mysqlnd_perm_bind {
 
 extern struct st_mysqlnd_perm_bind mysqlnd_ps_fetch_functions[MYSQL_TYPE_LAST + 1];
 
-extern const char * const mysqlnd_old_passwd;
-extern const char * const mysqlnd_out_of_sync;
-extern const char * const mysqlnd_server_gone;
+PHPAPI extern const char * const mysqlnd_old_passwd;
+PHPAPI extern const char * const mysqlnd_out_of_sync;
+PHPAPI extern const char * const mysqlnd_server_gone;
+PHPAPI extern const char * const mysqlnd_out_of_memory;
 
 enum_func_status mysqlnd_handle_local_infile(MYSQLND *conn, const char *filename, zend_bool *is_warning TSRMLS_DC);
 
@@ -178,9 +188,6 @@ void ps_fetch_from_1_to_8_bytes(zval *zv, const MYSQLND_FIELD * const field,
 								unsigned int pack_len, zend_uchar **row, zend_bool as_unicode,
 								unsigned int byte_count TSRMLS_DC);
 
-
-
-int mysqlnd_set_sock_no_delay(php_stream *stream);
 #endif	/* MYSQLND_PRIV_H */
 
 

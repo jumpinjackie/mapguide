@@ -1,5 +1,5 @@
 dnl
-dnl $Id: acinclude.m4 287126 2009-08-11 23:45:35Z srinatar $
+dnl $Id: acinclude.m4 311223 2011-05-19 05:43:48Z scottmac $
 dnl
 dnl This file contains local autoconf functions.
 dnl
@@ -711,10 +711,7 @@ ifelse([$2],,,[AC_MSG_CHECKING([$2])])
 AC_ARG_WITH($1,[$3],$5=[$]withval,
 [
   $5=ifelse($4,,no,$4)
-
-  if test "$PHP_ENABLE_ALL" && test "$6" = "yes"; then
-    $5=$PHP_ENABLE_ALL
-  fi
+  ifelse($6,yes,[test "$PHP_ENABLE_ALL" && $5=$PHP_ENABLE_ALL])
 ])
 PHP_ARG_ANALYZE($5,[$2],$6)
 ])
@@ -739,10 +736,7 @@ ifelse([$2],,,[AC_MSG_CHECKING([$2])])
 AC_ARG_ENABLE($1,[$3],$5=[$]enableval,
 [
   $5=ifelse($4,,no,$4)
-
-  if test "$PHP_ENABLE_ALL" && test "$6" = "yes"; then
-    $5=$PHP_ENABLE_ALL
-  fi
+  ifelse($6,yes,[test "$PHP_ENABLE_ALL" && $5=$PHP_ENABLE_ALL])
 ])
 PHP_ARG_ANALYZE($5,[$2],$6)
 ])
@@ -884,6 +878,17 @@ dnl and optionally also the source-files for the SAPI-specific
 dnl objects.
 dnl
 AC_DEFUN([PHP_SELECT_SAPI],[
+  if test "$PHP_SAPI" != "default"; then
+AC_MSG_ERROR([
++--------------------------------------------------------------------+
+|                        *** ATTENTION ***                           |
+|                                                                    |
+| You've configured multiple SAPIs to be build. You can build only   |
+| one SAPI module and CLI binary at the same time.                   |
++--------------------------------------------------------------------+
+])
+  fi
+
   PHP_SAPI=$1
   
   case "$2" in
@@ -1095,7 +1100,7 @@ ifelse([$5],[],,[else $5])
 dnl
 dnl PHP_CHECK_SIZEOF(type, cross-value, extra-headers)
 dnl
-AC_DEFUN(PHP_CHECK_SIZEOF, [
+AC_DEFUN([PHP_CHECK_SIZEOF], [
   AC_MSG_CHECKING([size of $1])
   _PHP_CHECK_SIZEOF($1, $2, $3, [
     AC_DEFINE_UNQUOTED([SIZEOF_]translit($1,a-z,A-Z_), [$]php_cv_sizeof_[]$1, [Size of $1])
@@ -1688,7 +1693,7 @@ dnl PHP_BROKEN_GLIBC_FOPEN_APPEND
 dnl
 AC_DEFUN([PHP_BROKEN_GLIBC_FOPEN_APPEND], [
   AC_MSG_CHECKING([for broken libc stdio])
-  AC_CACHE_VAL(have_broken_glibc_fopen_append,[
+  AC_CACHE_VAL(_cv_have_broken_glibc_fopen_append,[
   AC_TRY_RUN([
 #include <stdio.h>
 int main(int argc, char *argv[])
@@ -1714,8 +1719,8 @@ int main(int argc, char *argv[])
   return 0;
 }
 ],
-[have_broken_glibc_fopen_append=no],
-[have_broken_glibc_fopen_append=yes ],
+[_cv_have_broken_glibc_fopen_append=no],
+[_cv_have_broken_glibc_fopen_append=yes ],
 AC_TRY_COMPILE([
 #include <features.h>
 ],[
@@ -1723,11 +1728,11 @@ AC_TRY_COMPILE([
 choke me
 #endif
 ],
-[have_broken_glibc_fopen_append=yes],
-[have_broken_glibc_fopen_append=no ])
+[_cv_have_broken_glibc_fopen_append=yes],
+[_cv_have_broken_glibc_fopen_append=no ])
 )])
 
-  if test "$have_broken_glibc_fopen_append" = "yes"; then
+  if test "$_cv_have_broken_glibc_fopen_append" = "yes"; then
     AC_MSG_RESULT(yes)
     AC_DEFINE(HAVE_BROKEN_GLIBC_FOPEN_APPEND,1, [Define if your glibc borks on fopen with mode a+])
   else
@@ -2223,6 +2228,7 @@ AC_DEFUN([PHP_SETUP_ICU],[
       AC_MSG_ERROR([ICU version 3.4 or later is required])
     fi
 
+    ICU_VERSION=$icu_version
     ICU_INCS=`$ICU_CONFIG --cppflags-searchpath`
     ICU_LIBS=`$ICU_CONFIG --ldflags --ldflags-icuio`
     PHP_EVAL_INCLINE($ICU_INCS)
@@ -2392,6 +2398,7 @@ AC_DEFUN([PHP_SETUP_OPENSSL],[
     ])
     LIBS=$old_LIBS
     PHP_ADD_LIBRARY(ssl,,$1)
+    PHP_ADD_LIBRARY(crypto,,$1)
 
     PHP_ADD_LIBPATH($OPENSSL_LIBDIR, $1)
   fi
@@ -2424,6 +2431,7 @@ AC_DEFUN([PHP_SETUP_ICONV], [
   echo > ext/iconv/php_have_libiconv.h
   echo > ext/iconv/php_have_iconv.h
   echo > ext/iconv/php_php_iconv_impl.h
+  echo > ext/iconv/php_iconv_aliased_libiconv.h
   echo > ext/iconv/php_php_iconv_h_path.h
   echo > ext/iconv/php_iconv_supports_errno.h
 
@@ -2471,6 +2479,8 @@ AC_DEFUN([PHP_SETUP_ICONV], [
         found_iconv=yes
         PHP_DEFINE(HAVE_LIBICONV,1,[ext/iconv])
         AC_DEFINE(HAVE_LIBICONV,1,[ ])
+        PHP_DEFINE([ICONV_ALIASED_LIBICONV],1,[ext/iconv])
+        AC_DEFINE([ICONV_ALIASED_LIBICONV],1,[iconv() is aliased to libiconv() in -liconv])
       ], [
         PHP_CHECK_LIBRARY($iconv_lib_name, iconv, [
           found_iconv=yes
@@ -2582,7 +2592,7 @@ dnl This macro is used to get a comparable
 dnl version for apache1/2.
 dnl
 AC_DEFUN([PHP_AP_EXTRACT_VERSION],[
-  ac_output=`$1 -v 2>&1 | grep version`
+  ac_output=`$1 -v 2>&1 | grep version | $SED -e 's/Oracle-HTTP-//'`
   ac_IFS=$IFS
 IFS="- /.
 "
@@ -2658,13 +2668,13 @@ EOF
   for arg in $ac_configure_args; do
      if test `expr -- $arg : "'.*"` = 0; then
         if test `expr -- $arg : "--.*"` = 0; then
-       	  break;
+          break;
         fi
         echo "'[$]arg' \\" >> $1
         CONFIGURE_OPTIONS="$CONFIGURE_OPTIONS '[$]arg'"
      else
         if test `expr -- $arg : "'--.*"` = 0; then
-       	  break;
+          break;
         fi
         echo "[$]arg \\" >> $1
         CONFIGURE_OPTIONS="$CONFIGURE_OPTIONS [$]arg"
@@ -2684,19 +2694,19 @@ AC_DEFUN([PHP_CHECK_CONFIGURE_OPTIONS],[
   for arg in $ac_configure_args; do
     case $arg in
       --with-*[)]
-      	arg_name="`echo [$]arg | $SED -e 's/--with-/with-/g' -e 's/=.*//g'`"
+        arg_name="`echo [$]arg | $SED -e 's/--with-/with-/g' -e 's/=.*//g'`"
         ;;
       --without-*[)]
-      	arg_name="`echo [$]arg | $SED -e 's/--without-/with-/g' -e 's/=.*//g'`"
+        arg_name="`echo [$]arg | $SED -e 's/--without-/with-/g' -e 's/=.*//g'`"
         ;;
       --enable-*[)]
-      	arg_name="`echo [$]arg | $SED -e 's/--enable-/enable-/g' -e 's/=.*//g'`"
+        arg_name="`echo [$]arg | $SED -e 's/--enable-/enable-/g' -e 's/=.*//g'`"
         ;;
       --disable-*[)]
-      	arg_name="`echo [$]arg | $SED -e 's/--disable-/enable-/g' -e 's/=.*//g'`"
+        arg_name="`echo [$]arg | $SED -e 's/--disable-/enable-/g' -e 's/=.*//g'`"
         ;;
       *[)]
-      	continue
+        continue
         ;;
     esac
     case $arg_name in

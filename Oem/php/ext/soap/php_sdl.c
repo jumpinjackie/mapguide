@@ -2,7 +2,7 @@
   +----------------------------------------------------------------------+
   | PHP Version 5                                                        |
   +----------------------------------------------------------------------+
-  | Copyright (c) 1997-2009 The PHP Group                                |
+  | Copyright (c) 1997-2011 The PHP Group                                |
   +----------------------------------------------------------------------+
   | This source file is subject to version 3.01 of the PHP license,      |
   | that is bundled with this package in the file LICENSE, and is        |
@@ -17,7 +17,7 @@
   |          Dmitry Stogov <dmitry@zend.com>                             |
   +----------------------------------------------------------------------+
 */
-/* $Id: php_sdl.c 287425 2009-08-17 18:23:48Z dmitry $ */
+/* $Id: php_sdl.c 306939 2011-01-01 02:19:59Z felipe $ */
 
 #include "php_soap.h"
 #include "ext/libxml/php_libxml.h"
@@ -373,7 +373,7 @@ static void load_wsdl_ex(zval *this_ptr, char *struri, sdlCtx *ctx, int include 
 					soap_error1(E_ERROR, "Parsing WSDL: <message> '%s' already defined", name->children->content);
 				}
 			} else {
-				soap_error0(E_ERROR, "Parsing WSDL: <message> hasn't name attribute");
+				soap_error0(E_ERROR, "Parsing WSDL: <message> has no name attribute");
 			}
 
 		} else if (node_is_equal(trav,"portType")) {
@@ -383,7 +383,7 @@ static void load_wsdl_ex(zval *this_ptr, char *struri, sdlCtx *ctx, int include 
 					soap_error1(E_ERROR, "Parsing WSDL: <portType> '%s' already defined", name->children->content);
 				}
 			} else {
-				soap_error0(E_ERROR, "Parsing WSDL: <portType> hasn't name attribute");
+				soap_error0(E_ERROR, "Parsing WSDL: <portType> has no name attribute");
 			}
 
 		} else if (node_is_equal(trav,"binding")) {
@@ -393,7 +393,7 @@ static void load_wsdl_ex(zval *this_ptr, char *struri, sdlCtx *ctx, int include 
 					soap_error1(E_ERROR, "Parsing WSDL: <binding> '%s' already defined", name->children->content);
 				}
 			} else {
-				soap_error0(E_ERROR, "Parsing WSDL: <binding> hasn't name attribute");
+				soap_error0(E_ERROR, "Parsing WSDL: <binding> has no name attribute");
 			}
 
 		} else if (node_is_equal(trav,"service")) {
@@ -403,7 +403,7 @@ static void load_wsdl_ex(zval *this_ptr, char *struri, sdlCtx *ctx, int include 
 					soap_error1(E_ERROR, "Parsing WSDL: <service> '%s' already defined", name->children->content);
 				}
 			} else {
-				soap_error0(E_ERROR, "Parsing WSDL: <service> hasn't name attribute");
+				soap_error0(E_ERROR, "Parsing WSDL: <service> has no name attribute");
 			}
 		} else if (!node_is_equal(trav,"documentation")) {
 			soap_error1(E_ERROR, "Parsing WSDL: Unexpected WSDL element <%s>", trav->name);
@@ -832,7 +832,12 @@ static sdlPtr load_wsdl(zval *this_ptr, char *struri TSRMLS_DC)
 							if (strncmp((char*)tmp->children->content, WSDL_HTTP_TRANSPORT, sizeof(WSDL_HTTP_TRANSPORT)) == 0) {
 								soapBinding->transport = SOAP_TRANSPORT_HTTP;
 							} else {
-								soap_error1(E_ERROR, "Parsing WSDL: PHP-SOAP doesn't support transport '%s'", tmp->children->content);
+								/* try the next binding */
+								efree(soapBinding);
+								efree(tmpbinding->location);
+								efree(tmpbinding);
+								trav = trav->next;
+								continue;
 							}
 						}
 					}
@@ -1126,6 +1131,10 @@ static sdlPtr load_wsdl(zval *this_ptr, char *struri TSRMLS_DC)
 		}
 	} else {
 		soap_error0(E_ERROR, "Parsing WSDL: Couldn't bind to service");
+	}
+
+	if (ctx.sdl->bindings == NULL || ctx.sdl->bindings->nNumOfElements == 0) {
+		soap_error0(E_ERROR, "Parsing WSDL: Could not find any usable binding services in WSDL.");
 	}
 
 	zend_hash_destroy(&ctx.messages);
@@ -3241,10 +3250,13 @@ sdlPtr get_sdl(zval *this_ptr, char *uri, long cache_wsdl TSRMLS_DC)
 		php_stream_context_set_option(context, "http", "proxy", str_proxy);
 		zval_ptr_dtor(&str_proxy);
 
-		MAKE_STD_ZVAL(str_proxy);
-		ZVAL_BOOL(str_proxy, 1);
-		php_stream_context_set_option(context, "http", "request_fulluri", str_proxy);
-		zval_ptr_dtor(&str_proxy);
+		if (uri_len < sizeof("https://")-1 ||
+		    strncasecmp(uri, "https://", sizeof("https://")-1) != 0) {
+			MAKE_STD_ZVAL(str_proxy);
+			ZVAL_BOOL(str_proxy, 1);
+			php_stream_context_set_option(context, "http", "request_fulluri", str_proxy);
+			zval_ptr_dtor(&str_proxy);
+		}
 
 		proxy_authentication(this_ptr, &headers TSRMLS_CC);
 	}

@@ -29,6 +29,7 @@
 #include <unicode/ucol.h>
 
 zend_class_entry *Collator_ce_ptr = NULL;
+static zend_object_handlers Collator_handlers;
 
 /*
  * Auxiliary functions needed by objects of 'Collator' class
@@ -73,7 +74,7 @@ zend_object_value Collator_object_create(
 		(zend_objects_free_object_storage_t)Collator_objects_free,
 		NULL TSRMLS_CC );
 
-	retval.handlers = zend_get_std_object_handlers();
+	retval.handlers = &Collator_handlers;
 
 	return retval;
 }
@@ -125,7 +126,8 @@ function_entry Collator_class_functions[] = {
 	PHP_NAMED_FE( getLocale, ZEND_FN( collator_get_locale ), collator_1_arg )
 	PHP_NAMED_FE( getErrorCode, ZEND_FN( collator_get_error_code ), collator_0_args )
 	PHP_NAMED_FE( getErrorMessage, ZEND_FN( collator_get_error_message ), collator_0_args )
-	{ NULL, NULL, NULL }
+	PHP_NAMED_FE( getSortKey, ZEND_FN( collator_get_sort_key ), collator_2_args )
+	PHP_FE_END
 };
 /* }}} */
 
@@ -140,6 +142,12 @@ void collator_register_Collator_class( TSRMLS_D )
 	INIT_CLASS_ENTRY( ce, "Collator", Collator_class_functions );
 	ce.create_object = Collator_object_create;
 	Collator_ce_ptr = zend_register_internal_class( &ce TSRMLS_CC );
+
+	memcpy(&Collator_handlers, zend_get_std_object_handlers(),
+		sizeof Collator_handlers);
+	/* Collator has no usable clone semantics - ucol_cloneBinary/ucol_openBinary require binary buffer 
+	   for which we don't have the place to keep */	
+	Collator_handlers.clone_obj = NULL; 
 
 	/* Declare 'Collator' class properties. */
 	if( !Collator_ce_ptr )

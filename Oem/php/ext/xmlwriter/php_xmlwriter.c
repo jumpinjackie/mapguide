@@ -2,7 +2,7 @@
   +----------------------------------------------------------------------+
   | PHP Version 5                                                        |
   +----------------------------------------------------------------------+
-  | Copyright (c) 1997-2009 The PHP Group                                |
+  | Copyright (c) 1997-2011 The PHP Group                                |
   +----------------------------------------------------------------------+
   | This source file is subject to version 3.01 of the PHP license,      |
   | that is bundled with this package in the file LICENSE, and is        |
@@ -17,7 +17,7 @@
   +----------------------------------------------------------------------+
 */
 
-/* $Id: php_xmlwriter.c 281145 2009-05-26 08:10:49Z pajoye $ */
+/* $Id: php_xmlwriter.c 313665 2011-07-25 11:42:53Z felipe $ */
 
 #ifdef HAVE_CONFIG_H
 #include "config.h"
@@ -528,7 +528,7 @@ static const zend_function_entry xmlwriter_functions[] = {
 #endif
 	PHP_FE(xmlwriter_output_memory,		arginfo_xmlwriter_output_memory)
 	PHP_FE(xmlwriter_flush,				arginfo_xmlwriter_flush)
-	{NULL, NULL, NULL}
+	PHP_FE_END
 };
 /* }}} */
 

@@ -2,7 +2,7 @@
    +----------------------------------------------------------------------+
    | PHP Version 5                                                        |
    +----------------------------------------------------------------------+
-   | Copyright (c) 1997-2009 The PHP Group                                |
+   | Copyright (c) 1997-2011 The PHP Group                                |
    +----------------------------------------------------------------------+
    | This source file is subject to version 3.01 of the PHP license,      |
    | that is bundled with this package in the file LICENSE, and is        |
@@ -17,7 +17,7 @@
    +----------------------------------------------------------------------+
  */
 
-/* $Id: mbstring.c 281226 2009-05-27 13:42:17Z tony2001 $ */
+/* $Id: mbstring.c 313665 2011-07-25 11:42:53Z felipe $ */
 
 /*
  * PHP 4 Multibyte String module "mbstring"
@@ -196,7 +196,7 @@ static const struct mb_overload_def mb_ovld[] = {
 	{MB_OVERLOAD_STRING, "strpos", "mb_strpos", "mb_orig_strpos"},
 	{MB_OVERLOAD_STRING, "strrpos", "mb_strrpos", "mb_orig_strrpos"},
 	{MB_OVERLOAD_STRING, "stripos", "mb_stripos", "mb_orig_stripos"},
-	{MB_OVERLOAD_STRING, "strripos", "mb_strripos", "mb_orig_stripos"},
+	{MB_OVERLOAD_STRING, "strripos", "mb_strripos", "mb_orig_strripos"},
 	{MB_OVERLOAD_STRING, "strstr", "mb_strstr", "mb_orig_strstr"},
 	{MB_OVERLOAD_STRING, "strrchr", "mb_strrchr", "mb_orig_strrchr"},
 	{MB_OVERLOAD_STRING, "stristr", "mb_stristr", "mb_orig_stristr"},
@@ -557,7 +557,7 @@ const zend_function_entry mbstring_functions[] = {
 #if HAVE_MBREGEX
 	PHP_MBREGEX_FUNCTION_ENTRIES
 #endif
-	{ NULL, NULL, NULL }
+	PHP_FE_END
 };
 /* }}} */
 
@@ -2665,10 +2665,6 @@ PHP_FUNCTION(mb_strcut)
 		RETURN_FALSE;
 	}
 
-	if (((unsigned int)from + (unsigned int)len) > string.len) {
-		len = string.len - from;
-	}
-
 	ret = mbfl_strcut(&string, &result, from, len);
 	if (ret == NULL) {
 		RETURN_FALSE;
@@ -4048,7 +4044,7 @@ PHP_FUNCTION(mb_send_mail)
 	}
 
 	/* other headers */
-#define PHP_MBSTR_MAIL_MIME_HEADER1 "Mime-Version: 1.0"
+#define PHP_MBSTR_MAIL_MIME_HEADER1 "MIME-Version: 1.0"
 #define PHP_MBSTR_MAIL_MIME_HEADER2 "Content-Type: text/plain"
 #define PHP_MBSTR_MAIL_MIME_HEADER3 "; charset="
 #define PHP_MBSTR_MAIL_MIME_HEADER4 "Content-Transfer-Encoding: "
@@ -4061,8 +4057,10 @@ PHP_FUNCTION(mb_send_mail)
 		}
 	}
 
-	mbfl_memory_device_strncat(&device, PHP_MBSTR_MAIL_MIME_HEADER1, sizeof(PHP_MBSTR_MAIL_MIME_HEADER1) - 1);
-	mbfl_memory_device_strncat(&device, "\n", 1);
+	if (!zend_hash_exists(&ht_headers, "MIME-VERSION", sizeof("MIME-VERSION") - 1)) {
+		mbfl_memory_device_strncat(&device, PHP_MBSTR_MAIL_MIME_HEADER1, sizeof(PHP_MBSTR_MAIL_MIME_HEADER1) - 1);
+		mbfl_memory_device_strncat(&device, "\n", 1);
+	}
 
 	if (!suppressed_hdrs.cnt_type) {
 		mbfl_memory_device_strncat(&device, PHP_MBSTR_MAIL_MIME_HEADER2, sizeof(PHP_MBSTR_MAIL_MIME_HEADER2) - 1);

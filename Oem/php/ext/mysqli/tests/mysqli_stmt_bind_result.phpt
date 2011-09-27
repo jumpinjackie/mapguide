@@ -8,7 +8,7 @@ require_once('skipifconnectfailure.inc');
 ?>
 --FILE--
 <?php
-	include "connect.inc";
+	require_once("connect.inc");
 
 	$hint_str_or_unicode = (version_compare(PHP_VERSION, '5.9.9', '>') == 1) ? "unicode":"string";
 
@@ -294,9 +294,12 @@ require_once('skipifconnectfailure.inc');
 	func_mysqli_stmt_bind_result($link, $engine, "s", "SET('a', 'b')", "a", 1740, $hint_str_or_unicode);
 	func_mysqli_stmt_bind_result($link, $engine, "s", "SET('a', 'b')", NULL, 1760, $hint_str_or_unicode);
 
+	if (mysqli_get_server_version($link) >= 50600)
+		func_mysqli_stmt_bind_result($link, $engine, "s", "TIME", "13:31:34.123456", 1770, "13:31:34");
+
 	/* Check that the function alias exists. It's a deprecated function,
 	but we have not announce the removal so far, therefore we need to check for it */
-	if (!is_null($tmp = @mysqli_bind_result()))
+	if (!is_null($tmp = @mysqli_stmt_bind_result()))
 		printf("[3000] Expecting NULL, got %s/%s\n", gettype($tmp), $tmp);
 
 	$stmt = mysqli_stmt_init($link);

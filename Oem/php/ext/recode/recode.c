@@ -2,7 +2,7 @@
    +----------------------------------------------------------------------+
    | PHP Version 5                                                        |
    +----------------------------------------------------------------------+
-   | Copyright (c) 1997-2009 The PHP Group                                |
+   | Copyright (c) 1997-2011 The PHP Group                                |
    +----------------------------------------------------------------------+
    | This source file is subject to version 3.01 of the PHP license,      |
    | that is bundled with this package in the file LICENSE, and is        |
@@ -16,7 +16,7 @@
    +----------------------------------------------------------------------+
  */
  
-/* $Id: recode.c 272370 2008-12-31 11:15:49Z sebastian $ */
+/* $Id: recode.c 313665 2011-07-25 11:42:53Z felipe $ */
 
 /* {{{ includes & prototypes */
 
@@ -84,7 +84,7 @@ static const zend_function_entry php_recode_functions[] = {
 	PHP_FE(recode_string, 	arginfo_recode_string)
 	PHP_FE(recode_file, 	arginfo_recode_file)
 	PHP_FALIAS(recode, recode_string, arginfo_recode_string)
-	{NULL, NULL, NULL}
+	PHP_FE_END
 };
 
 zend_module_entry recode_module_entry = {
@@ -135,7 +135,7 @@ PHP_MINFO_FUNCTION(recode)
 {
 	php_info_print_table_start();
 	php_info_print_table_row(2, "Recode Support", "enabled");
-	php_info_print_table_row(2, "Revision", "$Revision: 272370 $");
+	php_info_print_table_row(2, "Revision", "$Revision: 313665 $");
 	php_info_print_table_end();
 }
 

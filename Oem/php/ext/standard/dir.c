@@ -2,7 +2,7 @@
    +----------------------------------------------------------------------+
    | PHP Version 5                                                        |
    +----------------------------------------------------------------------+
-   | Copyright (c) 1997-2009 The PHP Group                                |
+   | Copyright (c) 1997-2011 The PHP Group                                |
    +----------------------------------------------------------------------+
    | This source file is subject to version 3.01 of the PHP license,      |
    | that is bundled with this package in the file LICENSE, and is        |
@@ -16,7 +16,7 @@
    +----------------------------------------------------------------------+
  */
 
-/* $Id: dir.c 286555 2009-07-30 12:06:40Z felipe $ */
+/* $Id: dir.c 306939 2011-01-01 02:19:59Z felipe $ */
 
 /* {{{ includes/startup/misc */
 
@@ -94,11 +94,17 @@ static zend_class_entry *dir_class_entry_ptr;
 		if (!dirp) \
 			RETURN_FALSE; \
 	} 
+	
+/* {{{ arginfo */
+ZEND_BEGIN_ARG_INFO_EX(arginfo_dir, 0, 0, 0)
+	ZEND_ARG_INFO(0, dir_handle)
+ZEND_END_ARG_INFO()
+/* }}} */
 
 static const zend_function_entry php_dir_class_functions[] = {
-	PHP_FALIAS(close,	closedir,	NULL)
-	PHP_FALIAS(rewind,	rewinddir,	NULL)
-	PHP_NAMED_FE(read,  php_if_readdir, NULL)
+	PHP_FALIAS(close,	closedir,		arginfo_dir)
+	PHP_FALIAS(rewind,	rewinddir,		arginfo_dir)
+	PHP_NAMED_FE(read,  php_if_readdir, arginfo_dir)
 	{NULL, NULL, NULL}
 };
 
@@ -319,6 +325,10 @@ PHP_FUNCTION(chdir)
 		RETURN_FALSE;
 	}
 
+	if (strlen(str) != str_len) {
+		RETURN_FALSE;
+	}
+
 	if ((PG(safe_mode) && !php_checkuid(str, NULL, CHECKUID_CHECK_FILE_AND_DIR)) || php_check_open_basedir(str TSRMLS_CC)) {
 		RETURN_FALSE;
 	}
@@ -428,6 +438,10 @@ PHP_FUNCTION(glob)
 
 	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "s|l", &pattern, &pattern_len, &flags) == FAILURE) {
 		return;
+	}
+
+	if (strlen(pattern) != pattern_len) {
+		RETURN_FALSE;
 	}
 
 	if (pattern_len >= MAXPATHLEN) {
@@ -549,6 +563,10 @@ PHP_FUNCTION(scandir)
 
 	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "s|lr", &dirn, &dirn_len, &flags, &zcontext) == FAILURE) {
 		return;
+	}
+
+	if (strlen(dirn) != dirn_len) {
+		RETURN_FALSE;
 	}
 
 	if (dirn_len < 1) {

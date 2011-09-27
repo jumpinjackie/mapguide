@@ -4,7 +4,7 @@
    +----------------------------------------------------------------------+
    | PHP Version 5, 6                                                     |
    +----------------------------------------------------------------------+
-   | Copyright (c) 1997-2009 The PHP Group                                |
+   | Copyright (c) 1997-2010 The PHP Group                                |
    +----------------------------------------------------------------------+
    | This source file is subject to version 3.01 of the PHP license,      |
    | that is bundled with this package in the file LICENSE, and is        |
@@ -24,7 +24,7 @@
    +----------------------------------------------------------------------+
  */
 
-/* $Id: run-tests.php 286503 2009-07-29 10:06:55Z cellog $ */
+/* $Id: run-tests.php 314690 2011-08-09 21:53:44Z nlopess $ */
 
 /* Sanity check to ensure that pcre extension needed by this script is available.
  * In the event it is not, print a nice error message indicating that this script will
@@ -77,7 +77,14 @@ if (PHP_VERSION_ID < 50300) {
 	// FILE_BINARY is available from 5.2.7
 	if (PHP_VERSION_ID < 50207) {
 		define('FILE_BINARY', 0);
-	}	
+	}
+}
+
+// (unicode) is available from 6.0.0
+if (PHP_VERSION_ID < 60000) {
+	define('STRING_TYPE', 'string');
+} else {
+	define('STRING_TYPE', 'unicode');
 }
 
 // If timezone is not set, use UTC.
@@ -190,7 +197,7 @@ function verify_config()
 if (getenv('TEST_PHP_LOG_FORMAT')) {
 	$log_format = strtoupper(getenv('TEST_PHP_LOG_FORMAT'));
 } else {
-	$log_format = 'LEOD';
+	$log_format = 'LEODS';
 }
 
 // Check whether a detailed log is wanted.
@@ -305,6 +312,7 @@ VALGRIND    : " . ($leak_check ? $valgrind_header : 'Not used') . "
 
 define('PHP_QA_EMAIL', 'qa-reports@lists.php.net');
 define('QA_SUBMISSION_PAGE', 'http://qa.php.net/buildtest-process.php');
+define('QA_REPORTS_PAGE', 'http://qa.php.net/reports');
 
 function save_or_mail_results()
 {
@@ -317,9 +325,11 @@ function save_or_mail_results()
 		if ($sum_results['FAILED'] || $sum_results['BORKED'] || $sum_results['WARNED'] || $sum_results['LEAKED'] || $sum_results['XFAILED']) {
 			echo "\nYou may have found a problem in PHP.";
 		}
-		echo "\nWe would like to send this report automatically to the\n";
-		echo "PHP QA team, to give us a better understanding of how\nthe test cases are doing. If you don't want to send it\n";
-		echo "immediately, you can choose \"s\" to save the report to\na file that you can send us later.\n";
+		echo "\nThis report can be automatically sent to the PHP QA team at\n";
+		echo QA_REPORTS_PAGE . " and http://news.php.net/php.qa.reports\n";
+		echo "This gives us a better understanding of PHP's behavior.\n";
+		echo "If you don't want to send the report immediately you can choose\n";
+		echo "option \"s\" to save it.	You can then email it to ". PHP_QA_EMAIL . " later.\n";
 		echo "Do you want to send this report now? [Yns]: ";
 		flush();
 
@@ -355,8 +365,8 @@ function save_or_mail_results()
 			if ($sum_results['FAILED']) {
 				foreach ($PHP_FAILED_TESTS['FAILED'] as $test_info) {
 					$failed_tests_data .= $sep . $test_info['name'] . $test_info['info'];
-					$failed_tests_data .= $sep . file_get_contents(realpath($test_info['output']));
-					$failed_tests_data .= $sep . file_get_contents(realpath($test_info['diff']));
+					$failed_tests_data .= $sep . file_get_contents(realpath($test_info['output']), FILE_BINARY);
+					$failed_tests_data .= $sep . file_get_contents(realpath($test_info['diff']), FILE_BINARY);
 					$failed_tests_data .= $sep . "\n\n";
 				}
 				$status = "failed";
@@ -479,7 +489,7 @@ if (getenv('TEST_PHP_ARGS')) {
 		$argv = array(__FILE__);
 	}
 
-	$argv = array_merge($argv, split(' ', getenv('TEST_PHP_ARGS')));
+	$argv = array_merge($argv, explode(' ', getenv('TEST_PHP_ARGS')));
 	$argc = count($argv);
 }
 
@@ -560,12 +570,12 @@ if (isset($argc) && $argc > 1) {
 				case 'm':
 					$leak_check = true;
 					$valgrind_cmd = "valgrind --version";
-					$valgrind_header = system_with_timeout($valgrind_cmd);
+					$valgrind_header = system_with_timeout($valgrind_cmd, $environment);
 					$replace_count = 0;
 					if (!$valgrind_header) {
 						error("Valgrind returned no version info, cannot proceed.\nPlease check if Valgrind is installed.");
 					} else {
-						$valgrind_version = preg_replace("/valgrind-([0-9])\.([0-9])\.([0-9]+)([.-]\w+)?(\s+)/", '$1$2$3', $valgrind_header, 1, $replace_count);
+						$valgrind_version = preg_replace("/valgrind-([0-9])\.([0-9])\.([0-9]+)([.-\w]+)?(\s+)/", '$1$2$3', $valgrind_header, 1, $replace_count);
 						if ($replace_count != 1 || !is_numeric($valgrind_version)) {
 							error("Valgrind returned invalid version info (\"$valgrind_header\"), cannot proceed.");
 						}
@@ -634,7 +644,7 @@ if (isset($argc) && $argc > 1) {
 					$html_output = is_resource($html_file);
 					break;
 				case '--version':
-					echo '$Revision: 286503 $' . "\n";
+					echo '$Revision: 314690 $' . "\n";
 					exit(1);
 
 				default:
@@ -930,7 +940,7 @@ if ($html_output) {
 }
 
 save_or_mail_results();
- 
+
 if (getenv('REPORT_EXIT_STATUS') == 1 and $sum_results['FAILED']) {
 	exit(1);
 }
@@ -944,14 +954,24 @@ function mail_qa_team($data, $compression, $status = false)
 {
 	$url_bits = parse_url(QA_SUBMISSION_PAGE);
 
-	if (empty($url_bits['port'])) {
-		$url_bits['port'] = 80;
-	}
+    if (($proxy = getenv('http_proxy'))) {
+        $proxy = parse_url($proxy);
+        $path = $url_bits['host'].$url_bits['path'];
+        $host = $proxy['host'];
+        if (empty($proxy['port'])) {
+            $proxy['port'] = 80;
+        }
+        $port = $proxy['port'];
+    } else {
+        $path = $url_bits['path'];
+        $host = $url_bits['host'];
+        $port = empty($url_bits['port']) ? 80 : $port = $url_bits['port'];
+    }
 
 	$data = "php_test_data=" . urlencode(base64_encode(str_replace("\00", '[0x0]', $data)));
 	$data_length = strlen($data);
 
-	$fs = fsockopen($url_bits['host'], $url_bits['port'], $errno, $errstr, 10);
+	$fs = fsockopen($host, $port, $errno, $errstr, 10);
 
 	if (!$fs) {
 		return false;
@@ -959,9 +979,9 @@ function mail_qa_team($data, $compression, $status = false)
 
 	$php_version = urlencode(TESTED_PHP_VERSION);
 
-	echo "\nPosting to {$url_bits['host']} {$url_bits['path']}\n";
-	fwrite($fs, "POST " . $url_bits['path'] . "?status=$status&version=$php_version HTTP/1.1\r\n");
-	fwrite($fs, "Host: " . $url_bits['host'] . "\r\n");
+	echo "\nPosting to ". QA_SUBMISSION_PAGE . "\n";
+	fwrite($fs, "POST " . $path . "?status=$status&version=$php_version HTTP/1.1\r\n");
+	fwrite($fs, "Host: " . $host . "\r\n");
 	fwrite($fs, "User-Agent: QA Browser 0.1\r\n");
 	fwrite($fs, "Content-Type: application/x-www-form-urlencoded\r\n");
 	fwrite($fs, "Content-Length: " . $data_length . "\r\n\r\n");
@@ -970,7 +990,7 @@ function mail_qa_team($data, $compression, $status = false)
 	fclose($fs);
 
 	return 1;
-} 
+}
 
 
 //
@@ -994,7 +1014,7 @@ function save_text($filename, $text, $filename_copy = null)
 	if (1 < $DETAILED) echo "
 FILE $filename {{{
 $text
-}}} 
+}}}
 ";
 }
 
@@ -1002,7 +1022,7 @@ $text
 //  Write an error in a format recognizable to Emacs or MSVC.
 //
 
-function error_report($testname, $logname, $tested) 
+function error_report($testname, $logname, $tested)
 {
 	$testname = realpath($testname);
 	$logname  = realpath($logname);
@@ -1044,7 +1064,7 @@ function system_with_timeout($commandline, $env = null, $stdin = null)
 		fwrite($pipes[0], (binary) $stdin);
 	}
 	fclose($pipes[0]);
-	
+
 	$timeout = $leak_check ? 300 : (isset($env['TEST_TIMEOUT']) ? $env['TEST_TIMEOUT'] : 60);
 
 	while (true) {
@@ -1060,7 +1080,7 @@ function system_with_timeout($commandline, $env = null, $stdin = null)
 		} else if ($n === 0) {
 			/* timed out */
 			$data .= b"\n ** ERROR: process timed out **\n";
-			proc_terminate($proc);
+			proc_terminate($proc, 9);
 			return $data;
 		} else if ($n > 0) {
 			$line = (binary) fread($pipes[1], 8192);
@@ -1130,6 +1150,21 @@ function show_file_block($file, $block, $section = null)
 	}
 }
 
+function binary_section($section)
+{
+	return PHP_MAJOR_VERSION < 6 ||
+		(
+			$section == 'FILE'			||
+	        $section == 'FILEEOF'		||
+			$section == 'EXPECT'		||
+			$section == 'EXPECTF'		||
+			$section == 'EXPECTREGEX'	||
+			$section == 'EXPECTHEADERS'	||
+			$section == 'SKIPIF'		||
+			$section == 'CLEAN'
+		);
+}
+
 //
 //  Run an individual test case.
 //
@@ -1159,7 +1194,7 @@ TEST $file
 	// Load the sections of the test file.
 	$section_text = array('TEST' => '');
 
-	$fp = fopen($file, "rt") or error("Cannot open test file: $file");
+	$fp = fopen($file, "rb") or error("Cannot open test file: $file");
 
 	$borked = false;
 	$bork_info = '';
@@ -1187,19 +1222,33 @@ TEST $file
 	while (!feof($fp)) {
 		$line = fgets($fp);
 
+		if ($line === false) {
+			break;
+		}
+
 		// Match the beginning of a section.
-		if (preg_match('/^--([_A-Z]+)--/', $line, $r)) {
+		if (preg_match(b'/^--([_A-Z]+)--/', $line, $r)) {
 			$section = $r[1];
+			settype($section, STRING_TYPE);
 
 			if (isset($section_text[$section])) {
 				$bork_info = "duplicated $section section";
 				$borked    = true;
 			}
 
-			$section_text[$section] = '';
+			$section_text[$section] = binary_section($section) ? b'' : '';
 			$secfile = $section == 'FILE' || $section == 'FILEEOF' || $section == 'FILE_EXTERNAL';
 			$secdone = false;
 			continue;
+		}
+
+		if (!binary_section($section)) {
+			$line = unicode_decode($line, "utf-8");
+			if ($line == false) {
+				$bork_info = "cannot read test";
+				$borked = true;
+				break;
+			}
 		}
 
 		// Add to the section text.
@@ -1208,7 +1257,7 @@ TEST $file
 		}
 
 		// End of actual test?
-		if ($secfile && preg_match('/^===DONE===\s*$/', $line)) {
+		if ($secfile && preg_match(b'/^===DONE===\s*$/', $line)) {
 			$secdone = true;
 		}
 	}
@@ -1233,7 +1282,7 @@ TEST $file
 			}
 
 			if (@count($section_text['FILEEOF']) == 1) {
-				$section_text['FILE'] = preg_replace("/[\r\n]+$/", '', $section_text['FILEEOF']);
+				$section_text['FILE'] = preg_replace(b"/[\r\n]+$/", b'', $section_text['FILEEOF']);
 				unset($section_text['FILEEOF']);
 			}
 
@@ -1242,7 +1291,7 @@ TEST $file
 				$section_text['FILE_EXTERNAL'] = dirname($file) . '/' . trim(str_replace('..', '', $section_text['FILE_EXTERNAL']));
 
 				if (file_exists($section_text['FILE_EXTERNAL'])) {
-					$section_text['FILE'] = file_get_contents($section_text['FILE_EXTERNAL']);
+					$section_text['FILE'] = file_get_contents($section_text['FILE_EXTERNAL'], FILE_BINARY);
 					unset($section_text['FILE_EXTERNAL']);
 				} else {
 					$bork_info = "could not load --FILE_EXTERNAL-- " . dirname($file) . '/' . trim($section_text['FILE_EXTERNAL']);
@@ -1316,6 +1365,7 @@ TEST $file
 	$exp_filename      = $temp_dir . DIRECTORY_SEPARATOR . $main_file_name . 'exp';
 	$output_filename   = $temp_dir . DIRECTORY_SEPARATOR . $main_file_name . 'out';
 	$memcheck_filename = $temp_dir . DIRECTORY_SEPARATOR . $main_file_name . 'mem';
+	$sh_filename       = $temp_dir . DIRECTORY_SEPARATOR . $main_file_name . 'sh';
 	$temp_file         = $temp_dir . DIRECTORY_SEPARATOR . $main_file_name . 'php';
 	$test_file         = $test_dir . DIRECTORY_SEPARATOR . $main_file_name . 'php';
 	$temp_skipif       = $temp_dir . DIRECTORY_SEPARATOR . $main_file_name . 'skip.php';
@@ -1346,6 +1396,7 @@ TEST $file
 			'exp'  => $exp_filename,
 			'out'  => $output_filename,
 			'mem'  => $memcheck_filename,
+			'sh'   => $sh_filename,
 			'php'  => $temp_file,
 			'skip' => $temp_skipif,
 			'clean'=> $temp_clean);
@@ -1362,6 +1413,7 @@ TEST $file
 	@unlink($exp_filename);
 	@unlink($output_filename);
 	@unlink($memcheck_filename);
+	@unlink($sh_filename);
 	@unlink($temp_file);
 	@unlink($test_file);
 	@unlink($temp_skipif);
@@ -1426,7 +1478,7 @@ TEST $file
 				$env['USE_ZEND_ALLOC'] = '1';
 			}
 
-			$output = system_with_timeout("$extra $php $pass_options -q $ini_settings $test_skipif", $env);
+			$output = system_with_timeout("$extra $php $pass_options -q $ini_settings -d display_errors=0 $test_skipif", $env);
 
 			if (!$cfg['keep']['skip']) {
 				@unlink($test_skipif);
@@ -1776,11 +1828,13 @@ COMMAND $cmd
 				// quote a non re portion of the string
 				$temp = $temp . preg_quote(substr($wanted_re, $startOffset, ($start - $startOffset)),  b'/');
 				// add the re unquoted.
-				$temp = $temp . b'(' . substr($wanted_re, $start+2, ($end - $start-2)). b')';
+				if ($end > $start) {
+					$temp = $temp . b'(' . substr($wanted_re, $start+2, ($end - $start-2)). b')';
+				}
 				$startOffset = $end + 2;
 			}
 			$wanted_re = $temp;
-		
+
 			$wanted_re = str_replace(
 				array(b'%binary_string_optional%'),
 				version_compare(PHP_VERSION, '6.0.0-dev') == -1 ? b'string' : b'binary string',
@@ -1894,6 +1948,7 @@ COMMAND $cmd
 	if (!$passed) {
 		if (isset($section_text['XFAIL'])) {
 			$restype[] = 'XFAIL';
+			$info = '  XFAIL REASON: ' . $section_text['XFAIL'];
 		} else {
 			$restype[] = 'FAIL';
 		}
@@ -1920,6 +1975,15 @@ COMMAND $cmd
 		if (strpos($log_format, 'D') !== false && file_put_contents($diff_filename, (binary) $diff, FILE_BINARY) === false) {
 			error("Cannot create test diff - $diff_filename");
 		}
+
+		// write .sh
+		if (strpos($log_format, 'S') !== false && file_put_contents($sh_filename, b"#!/bin/sh
+
+{$cmd}
+", FILE_BINARY) === false) {
+			error("Cannot create test shell script - $sh_filename");
+		}
+		chmod($sh_filename, 0755);
 
 		// write .log
 		if (strpos($log_format, 'L') !== false && file_put_contents($log_filename, b"
@@ -1956,7 +2020,7 @@ $output
 function comp_line($l1, $l2, $is_reg)
 {
 	if ($is_reg) {
-		return preg_match((binary) "/^$l1$/s", (binary) $l2);
+		return preg_match(b'/^'. (binary) $l1 . b'$/s', (binary) $l2);
 	} else {
 		return !strcmp((binary) $l1, (binary) $l2);
 	}
@@ -2093,7 +2157,7 @@ function settings2array($settings, &$ini_settings)
 
 		if (strpos($setting, '=') !== false) {
 			$setting = explode("=", $setting, 2);
-			$name = trim(strtolower($setting[0]));
+			$name = trim($setting[0]);
 			$value = trim($setting[1]);
 
 			if ($name == 'extension') {
@@ -2123,7 +2187,17 @@ function settings2params(&$ini_settings)
 				$settings .= " -d \"$name=$val\"";
 			}
 		} else {
-			$value = addslashes($value);
+			if (substr(PHP_OS, 0, 3) == "WIN" && !empty($value) && $value{0} == '"') {
+				$len = strlen($value);
+
+				if ($value{$len - 1} == '"') {
+					$value{0} = "'";
+					$value{$len - 1} = "'";
+				}
+			} else {
+				$value = addslashes($value);
+			}
+
 			$settings .= " -d \"$name=$value\"";
 		}
 	}
@@ -2180,7 +2254,7 @@ function get_summary($show_ext_summary, $show_html)
 	if ($show_html) {
 		$summary .= "<pre>\n";
 	}
-	
+
 	if ($show_ext_summary) {
 		$summary .= '
 =====================================================================
@@ -2397,12 +2471,12 @@ function show_result($result, $tested, $tested_file, $extra = '', $temp_filename
 			$mem = "&nbsp;";
 		}
 
-		fwrite($html_file, 
+		fwrite($html_file,
 			"<tr>" .
 			"<td>$result</td>" .
 			"<td>$tested</td>" .
 			"<td>$extra</td>" .
-			"<td>$diff</td>" . 
+			"<td>$diff</td>" .
 			"<td>$mem</td>" .
 			"</tr>\n");
 	}

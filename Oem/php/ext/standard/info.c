@@ -2,7 +2,7 @@
    +----------------------------------------------------------------------+
    | PHP Version 5                                                        |
    +----------------------------------------------------------------------+
-   | Copyright (c) 1997-2009 The PHP Group                                |
+   | Copyright (c) 1997-2011 The PHP Group                                |
    +----------------------------------------------------------------------+
    | This source file is subject to version 3.01 of the PHP license,      |
    | that is bundled with this package in the file LICENSE, and is        |
@@ -18,7 +18,7 @@
    +----------------------------------------------------------------------+
 */
 
-/* $Id: info.c 289430 2009-10-09 17:15:46Z pajoye $ */
+/* $Id: info.c 313538 2011-07-21 14:49:55Z pajoye $ */
 
 #include "php.h"
 #include "php_ini.h"
@@ -281,11 +281,22 @@ char* php_get_windows_name()
 	}
 
 	if (VER_PLATFORM_WIN32_NT==osvi.dwPlatformId && osvi.dwMajorVersion > 4 ) {
-		if (osvi.dwMajorVersion == 6 && osvi.dwMinorVersion == 0 )	{
-			if (osvi.wProductType == VER_NT_WORKSTATION) {
-				major = "Windows Vista";
+		if (osvi.dwMajorVersion == 6) {
+			if( osvi.dwMinorVersion == 0 ) {
+				if( osvi.wProductType == VER_NT_WORKSTATION ) {
+					major = "Windows Vista";
+				} else {
+					major = "Windows Server 2008";
+				}
+			} else
+			if ( osvi.dwMinorVersion == 1 ) {
+				if( osvi.wProductType == VER_NT_WORKSTATION )  {
+					major = "Windows 7";
+				} else {
+					major = "Windows Server 2008 R2";
+				}
 			} else {
-				major = "Windows Server 2008";
+				major = "Unknow Windows version";
 			}
 
 			pGPI = (PGPI) GetProcAddress(GetModuleHandle("kernel32.dll"), "GetProductInfo");

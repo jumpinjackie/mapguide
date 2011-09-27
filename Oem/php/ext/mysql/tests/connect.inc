@@ -19,30 +19,40 @@ if (!function_exists('sys_get_temp_dir')) {
 	}
 }
 
-/* wrapper to simplify test porting */
-function my_mysql_connect($host, $user, $passwd, $db, $port, $socket, $flags = NULL) {
-	global $connect_flags;
+if (!function_exists('my_mysql_connect')) {
+	/* wrapper to simplify test porting */
+	function my_mysql_connect($host, $user, $passwd, $db, $port, $socket, $flags = NULL, $persistent = false) {
+		global $connect_flags;
 
-	$flags = ($flags === NULL) ? $connect_flags : $flags;
+		$flags = ($flags === NULL) ? $connect_flags : $flags;
 
-	if ($socket)
-		$host = sprintf("%s:%s", $host, $socket);
-	else if ($port)
-		$host = sprintf("%s:%s", $host, $port);
+		if ($socket)
+			$host = sprintf("%s:%s", $host, $socket);
+		else if ($port)
+			$host = sprintf("%s:%s", $host, $port);
 
-	if (!$link = mysql_connect($host, $user, $passwd, true, $flags)) {
-		printf("[000-a] Cannot connect using host '%s', user '%s', password '****', [%d] %s\n",
-			$host, $user, $passwd,
-			mysql_errno(), mysql_error());
-		return false;
+		if ($persistent) {
+			$link = mysql_pconnect($host, $user, $passwd, $flags);
+		} else {
+			 $link = mysql_connect($host, $user, $passwd, true, $flags);
+		}
+
+		if (!$link) {
+			printf("[000-a] Cannot connect using host '%s', user '%s', password '****', persistent = %d, [%d] %s\n",
+				$host, $user, ($persistent) ? 1 : 0,
+				mysql_errno(), mysql_error());
+			return false;
+		}
+
+		if (!mysql_select_db($db, $link)) {
+			printf("[000-b] [%d] %s\n", mysql_errno($link), mysql_error($link));
+			return false;
+		}
+
+		return $link;
 	}
-
-	if (!mysql_select_db($db, $link)) {
-		printf("[000-b] [%d] %s\n", mysql_errno($link), mysql_error($link));
-		return false;
-	}
-
-	return $link;
+} else {
+	printf("skip Eeeek/BUG/FIXME - connect.inc included twice! skipif bug?\n");
 }
 
 /*
@@ -59,7 +69,9 @@ $engine	= getenv("MYSQL_TEST_ENGINE")	? getenv("MYSQL_TEST_ENGINE")	: "MyISAM";
 $socket	= getenv("MYSQL_TEST_SOCKET")	? getenv("MYSQL_TEST_SOCKET")	: null;
 $skip_on_connect_failure  = getenv("MYSQL_TEST_SKIP_CONNECT_FAILURE") ? getenv("MYSQL_TEST_SKIP_CONNECT_FAILURE") : true;
 $connect_flags = getenv("MYSQL_TEST_CONNECT_FLAGS") ? (int)getenv("MYSQL_TEST_CONNECT_FLAGS") : 0;
-
+if ($socket) {
+	ini_set('mysql.default_user', $socket);
+}
 /* Development setting: test experimal features and/or feature requests that never worked before? */
 $TEST_EXPERIMENTAL = (in_array(getenv("MYSQL_TEST_EXPERIMENTAL"), array(0, 1))) ?
 	((1 == getenv("MYSQL_TEST_EXPERIMENTAL")) ? true : false) :

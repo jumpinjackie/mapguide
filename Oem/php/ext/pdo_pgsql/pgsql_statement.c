@@ -2,7 +2,7 @@
   +----------------------------------------------------------------------+
   | PHP Version 5                                                        |
   +----------------------------------------------------------------------+
-  | Copyright (c) 1997-2009 The PHP Group                                |
+  | Copyright (c) 1997-2011 The PHP Group                                |
   +----------------------------------------------------------------------+
   | This source file is subject to version 3.01 of the PHP license,      |
   | that is bundled with this package in the file LICENSE, and is        |
@@ -18,7 +18,7 @@
   +----------------------------------------------------------------------+
 */
 
-/* $Id: pgsql_statement.c 281107 2009-05-25 19:41:13Z kalle $ */
+/* $Id: pgsql_statement.c 306939 2011-01-01 02:19:59Z felipe $ */
 
 #ifdef HAVE_CONFIG_H
 #include "config.h"
@@ -184,8 +184,8 @@ stmt_retry:
 					 * chance to DEALLOCATE the prepared statements it has created. so, if we hit a 42P05 we 
 					 * deallocate it and retry ONCE (thies 2005.12.15)
 					 */
-					if (!strcmp(sqlstate, "42P05")) {
-						char buf[100]; /* stmt_name == "pdo_crsr_%016lx" */
+					if (sqlstate && !strcmp(sqlstate, "42P05")) {
+						char buf[100]; /* stmt_name == "pdo_crsr_%08x" */
 						PGresult *res;
 						snprintf(buf, sizeof(buf), "DEALLOCATE %s", S->stmt_name);
 						res = PQexec(H->server, buf);

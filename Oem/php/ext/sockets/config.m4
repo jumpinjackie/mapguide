@@ -1,5 +1,5 @@
 dnl
-dnl $Id: config.m4 240160 2007-07-22 22:18:41Z jani $
+dnl $Id: config.m4 292683 2009-12-27 01:00:50Z mkoppanen $
 dnl
 
 PHP_ARG_ENABLE(sockets, whether to enable sockets support,
@@ -29,4 +29,5 @@ if test "$PHP_SOCKETS" != "no"; then
   AC_DEFINE([HAVE_SOCKETS], 1, [ ])
 
   PHP_NEW_EXTENSION([sockets], [sockets.c], [$ext_shared])
+  PHP_INSTALL_HEADERS([ext/sockets/], [php_sockets.h])
 fi

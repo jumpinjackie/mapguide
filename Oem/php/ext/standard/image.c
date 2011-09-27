@@ -2,7 +2,7 @@
    +----------------------------------------------------------------------+
    | PHP Version 5                                                        |
    +----------------------------------------------------------------------+
-   | Copyright (c) 1997-2009 The PHP Group                                |
+   | Copyright (c) 1997-2011 The PHP Group                                |
    +----------------------------------------------------------------------+
    | This source file is subject to version 3.01 of the PHP license,      |
    | that is bundled with this package in the file LICENSE, and is        |
@@ -17,7 +17,7 @@
    +----------------------------------------------------------------------+
  */
 
-/* $Id: image.c 277324 2009-03-17 03:25:57Z scottmac $ */
+/* $Id: image.c 310980 2011-05-13 05:06:48Z scottmac $ */
 
 #include "php.h"
 #include <stdio.h>
@@ -51,7 +51,7 @@ PHPAPI const char php_sig_jp2[12] = {(char)0x00, (char)0x00, (char)0x00, (char)0
                                      (char)0x6a, (char)0x50, (char)0x20, (char)0x20,
                                      (char)0x0d, (char)0x0a, (char)0x87, (char)0x0a};
 PHPAPI const char php_sig_iff[4] = {'F','O','R','M'};
-PHPAPI const char php_sig_ico[3] = {(char)0x00, (char)0x00, (char)0x01};
+PHPAPI const char php_sig_ico[4] = {(char)0x00, (char)0x00, (char)0x01, (char)0x00};
 
 /* REMEMBER TO ADD MIME-TYPE TO FUNCTION php_image_type_to_mime_type */
 /* PCX must check first 64bytes and byte 0=0x0a and byte2 < 0x06 */
@@ -402,12 +402,7 @@ static unsigned int php_next_marker(php_stream * stream, int last_marker, int co
 				last_marker = M_PSEUDO; /* stop skipping non 0xff for M_COM */
 			}
 		}
-		if (++a > 25)
-		{
-			/* who knows the maxim amount of 0xff? though 7 */
-			/* but found other implementations              */
-			return M_EOI;
-		}
+		a++;
 	} while (marker == 0xff);
 	if (a < 2)
 	{
@@ -1270,7 +1265,7 @@ PHPAPI int php_getimagetype(php_stream * stream, char *filetype TSRMLS_DC)
 		return IMAGE_FILETYPE_TIFF_MM;
 	} else if (!memcmp(filetype, php_sig_iff, 4)) {
 		return IMAGE_FILETYPE_IFF;
-	} else if (!memcmp(filetype, php_sig_ico, 3)) {
+	} else if (!memcmp(filetype, php_sig_ico, 4)) {
 		return IMAGE_FILETYPE_ICO;
 	}
 

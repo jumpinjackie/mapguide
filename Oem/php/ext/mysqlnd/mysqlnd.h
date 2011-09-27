@@ -1,8 +1,8 @@
 /*
   +----------------------------------------------------------------------+
-  | PHP Version 6                                                        |
+  | PHP Version 5                                                        |
   +----------------------------------------------------------------------+
-  | Copyright (c) 2006-2009 The PHP Group                                |
+  | Copyright (c) 2006-2011 The PHP Group                                |
   +----------------------------------------------------------------------+
   | This source file is subject to version 3.01 of the PHP license,      |
   | that is bundled with this package in the file LICENSE, and is        |
@@ -17,16 +17,17 @@
   |          Ulf Wendel <uwendel@mysql.com>                              |
   +----------------------------------------------------------------------+
 */
-/* $Id: mysqlnd.h 289630 2009-10-14 13:51:25Z johannes $ */
+/* $Id: mysqlnd.h 310735 2011-05-03 09:37:53Z andrey $ */
 
 #ifndef MYSQLND_H
 #define MYSQLND_H
 
-#define MYSQLND_VERSION "mysqlnd 5.0.5-dev - 081106 - $Revision: 289630 $"
-#define MYSQLND_VERSION_ID 50005
+#define MYSQLND_VERSION "mysqlnd 5.0.8-dev - 20102224 - $Revision: 310735 $"
+#define MYSQLND_VERSION_ID 50008
 
 /* This forces inlining of some accessor functions */
 #define MYSQLND_USE_OPTIMISATIONS 0
+#define AUTOCOMMIT_TX_COMMIT_ROLLBACK
 
 #define MYSQLND_STRING_TO_INT_CONVERSION
 /*
@@ -40,14 +41,18 @@
   on production systems, if of course measured performance degradation is not
   minimal.
 */
-#if PHP_DEBUG
+#if A0 && PHP_DEBUG
 #define MYSQLND_DO_WIRE_CHECK_BEFORE_COMMAND 1
 #endif
 
-#if PHP_DEBUG && !defined(PHP_WIN32)
+#if PHP_DEBUG
 #define MYSQLND_DBG_ENABLED 1
 #else
 #define MYSQLND_DBG_ENABLED 0
+#endif
+
+#if defined(MYSQLND_COMPRESSION_WANTED) && defined(HAVE_ZLIB)
+#define MYSQLND_COMPRESSION_ENABLED 1
 #endif
 
 #ifdef ZTS
@@ -59,11 +64,24 @@
 #include "mysqlnd_structs.h"
 
 
-
-
 /* Library related */
-void mysqlnd_library_init(TSRMLS_D);
-void mysqlnd_library_end(TSRMLS_D);
+PHPAPI void mysqlnd_library_init(TSRMLS_D);
+PHPAPI void mysqlnd_library_end(TSRMLS_D);
+
+PHPAPI unsigned int mysqlnd_plugin_register();
+PHPAPI unsigned int mysqlnd_plugin_count();
+PHPAPI void ** _mysqlnd_plugin_get_plugin_connection_data(const MYSQLND * conn, unsigned int plugin_id TSRMLS_DC);
+#define mysqlnd_plugin_get_plugin_connection_data(c, p_id) _mysqlnd_plugin_get_plugin_connection_data((c), (p_id) TSRMLS_CC)
+
+PHPAPI void ** _mysqlnd_plugin_get_plugin_result_data(const MYSQLND_RES * result, unsigned int plugin_id TSRMLS_DC);
+#define mysqlnd_plugin_get_plugin_result_data(r, p_id) _mysqlnd_plugin_get_plugin_result_data((r), (p_id) TSRMLS_CC)
+
+PHPAPI void ** _mysqlnd_plugin_get_plugin_stmt_data(const MYSQLND_STMT * stmt, unsigned int plugin_id TSRMLS_DC);
+#define mysqlnd_plugin_get_plugin_stmt_data(s, p_id) _mysqlnd_plugin_get_plugin_stmt_data((s), (p_id) TSRMLS_CC)
+
+PHPAPI void ** _mysqlnd_plugin_get_plugin_protocol_data(const MYSQLND_PROTOCOL * protocol, unsigned int plugin_id TSRMLS_DC);
+#define mysqlnd_plugin_get_plugin_protocol_data(p, p_id) _mysqlnd_plugin_get_plugin_protocol_data((p), (p_id) TSRMLS_CC)
+
 
 PHPAPI struct st_mysqlnd_conn_methods * mysqlnd_conn_get_methods();
 PHPAPI void mysqlnd_conn_set_methods(struct st_mysqlnd_conn_methods *methods);
@@ -72,10 +90,8 @@ PHPAPI struct st_mysqlnd_stmt_methods * mysqlnd_stmt_get_methods();
 PHPAPI void mysqlnd_stmt_set_methods(struct st_mysqlnd_stmt_methods *methods);
 
 
-#define mysqlnd_restart_psession(conn, cache) _mysqlnd_restart_psession((conn), (cache) TSRMLS_CC)
-PHPAPI void _mysqlnd_restart_psession(MYSQLND *conn, MYSQLND_THD_ZVAL_PCACHE *cache TSRMLS_DC);
-#define mysqlnd_end_psession(conn) _mysqlnd_end_psession((conn) TSRMLS_CC)
-PHPAPI void _mysqlnd_end_psession(MYSQLND *conn TSRMLS_DC);
+#define mysqlnd_restart_psession(conn)	(conn)->m->restart_psession((conn) TSRMLS_CC)
+#define mysqlnd_end_psession(conn)		(conn)->m->end_psession((conn) TSRMLS_CC)
 PHPAPI void mysqlnd_minfo_print_hash(zval *values);
 #define mysqlnd_thread_safe()	TRUE
 
@@ -91,12 +107,11 @@ PHPAPI MYSQLND * mysqlnd_connect(MYSQLND *conn,
 						  const char *passwd, unsigned int passwd_len,
 						  const char *db, unsigned int db_len,
 						  unsigned int port,
-						  const char *socket,
-						  unsigned int mysql_flags,
-						  MYSQLND_THD_ZVAL_PCACHE *zval_cache
+						  const char *socket_or_pipe,
+						  unsigned int mysql_flags
 						  TSRMLS_DC);
 
-#define mysqlnd_change_user(conn, user, passwd, db)		(conn)->m->change_user((conn), (user), (passwd), (db) TSRMLS_CC)
+#define mysqlnd_change_user(conn, user, passwd, db, silent)		(conn)->m->change_user((conn), (user), (passwd), (db), (silent) TSRMLS_CC)
 
 #define mysqlnd_debug(x)								_mysqlnd_debug((x) TSRMLS_CC)
 PHPAPI void _mysqlnd_debug(const char *mode TSRMLS_DC);
@@ -120,92 +135,38 @@ PHPAPI enum_func_status _mysqlnd_poll(MYSQLND **r_array, MYSQLND **e_array, MYSQ
 
 #define mysqlnd_use_result(conn)		(conn)->m->use_result((conn) TSRMLS_CC)
 #define mysqlnd_store_result(conn)		(conn)->m->store_result((conn) TSRMLS_CC)
-#define mysqlnd_bg_store_result(conn) 	(conn)->m->background_store_result((conn) TSRMLS_CC)
 #define mysqlnd_next_result(conn)		(conn)->m->next_result((conn) TSRMLS_CC)
 #define mysqlnd_more_results(conn)		(conn)->m->more_results((conn) TSRMLS_CC)
 #define mysqlnd_free_result(r,e_or_i)	((MYSQLND_RES*)r)->m.free_result(((MYSQLND_RES*)(r)), (e_or_i) TSRMLS_CC)
 #define mysqlnd_data_seek(result, row)	(result)->m.seek_data((result), (row) TSRMLS_CC)
 
-/*****************************************************************************************************/
-#if defined(MYSQLND_USE_OPTIMISATIONS) && MYSQLND_USE_OPTIMISATIONS == 1
-
 /* Errors */
-#define mysqlnd_errno(conn)				(conn)->error_info.error_no
-#define mysqlnd_error(conn)				(conn)->error_info.error
-#define mysqlnd_sqlstate(conn)  		((conn)->error_info.sqlstate[0] ? conn->error_info.sqlstate:MYSQLND_SQLSTATE_NULL)
+#define mysqlnd_errno(conn)				(conn)->m->get_error_no((conn) TSRMLS_CC)
+#define mysqlnd_error(conn)				(conn)->m->get_error_str((conn) TSRMLS_CC)
+#define mysqlnd_sqlstate(conn)  		(conn)->m->get_sqlstate((conn) TSRMLS_CC)
 
 /* Charset */
-#define mysqlnd_character_set_name(conn) (conn)->charset->name
+#define mysqlnd_character_set_name(conn) (conn)->m->charset_name((conn) TSRMLS_CC)
 
 /* Simple metadata */
-#define mysqlnd_field_count(conn)		(conn)->field_count
-#define mysqlnd_insert_id(conn)			(conn)->upsert_status.last_insert_id
-#define mysqlnd_affected_rows(conn)		(conn)->upsert_status.affected_rows
-#define mysqlnd_warning_count(conn)		(conn)->upsert_status.warning_count
-#define mysqlnd_info(conn)  			(conn)->last_message
-#define mysqlnd_get_server_info(conn)	(conn)->server_version
-#define mysqlnd_get_host_info(conn)		(conn)->host_info
-#define mysqlnd_get_proto_info(conn)	(conn)->protocol_version
-#define mysqlnd_thread_id(conn)			(conn)->thread_id
+#define mysqlnd_field_count(conn)		(conn)->m->get_field_count((conn) TSRMLS_CC)
+#define mysqlnd_insert_id(conn)			(conn)->m->get_last_insert_id((conn) TSRMLS_CC)
+#define mysqlnd_affected_rows(conn)		(conn)->m->get_affected_rows((conn) TSRMLS_CC)
+#define mysqlnd_warning_count(conn)		(conn)->m->get_warning_count((conn) TSRMLS_CC)
+#define mysqlnd_info(conn)				(conn)->m->get_last_message((conn) TSRMLS_CC)
+#define mysqlnd_get_server_info(conn)	(conn)->m->get_server_information((conn) TSRMLS_CC)
+#define mysqlnd_get_host_info(conn)		(conn)->m->get_host_information((conn) TSRMLS_CC)
+#define mysqlnd_get_proto_info(conn)	(conn)->m->get_protocol_information((conn) TSRMLS_CC)
+#define mysqlnd_thread_id(conn)			(conn)->m->get_thread_id((conn) TSRMLS_CC)
 
-#define mysqlnd_num_rows(result)		((result)->stored_data? (result)->stored_data->row_count:0)
-#define mysqlnd_num_fields(result)		(result)->field_count
+#define mysqlnd_num_rows(result)		(result)->m.num_rows((result) TSRMLS_CC)
+#define mysqlnd_num_fields(result)		(result)->m.num_fields((result) TSRMLS_CC)
 
-#define mysqlnd_fetch_lengths(result)	((result)->m.fetch_lengths? (result)->m.fetch_lengths((result)):NULL)
+#define mysqlnd_fetch_lengths(result)	_mysqlnd_fetch_lengths((result) TSRMLS_CC)
+PHPAPI unsigned long * _mysqlnd_fetch_lengths(MYSQLND_RES * const result  TSRMLS_DC);
 
-#define mysqlnd_field_seek(result, ofs)			(result)->m.seek_field((result), (ofs))
-#define mysqlnd_field_tell(result)				((result)->meta? (result)->meta->current_field:0)
-#define mysqlnd_fetch_field(result)				(result)->m.fetch_field((result) TSRMLS_CC)
-#define mysqlnd_fetch_field_direct(result,fnr)	(result)->m.fetch_field_direct((result), (fnr) TSRMLS_CC)
-#define mysqlnd_fetch_fields(result)			(result)->m.fetch_fields((result) TSRMLS_CC)
-
-/* mysqlnd metadata */
-#define mysqlnd_get_client_info()		MYSQLND_VERSION
-#define mysqlnd_get_client_version()	MYSQLND_VERSION_ID
-
-/* PS */
-#define mysqlnd_stmt_insert_id(stmt)		(stmt)->upsert_status.last_insert_id
-#define mysqlnd_stmt_affected_rows(stmt)	(stmt)->upsert_status.affected_rows
-#define mysqlnd_stmt_num_rows(stmt)			(stmt)->result? mysqlnd_num_rows((stmt)->result):0
-#define mysqlnd_stmt_param_count(stmt)		(stmt)->param_count
-#define mysqlnd_stmt_field_count(stmt)		(stmt)->field_count
-#define mysqlnd_stmt_warning_count(stmt)	(stmt)->upsert_status.warning_count
-#define mysqlnd_stmt_errno(stmt)			(stmt)->error_info.error_no
-#define mysqlnd_stmt_error(stmt)			(stmt)->error_info.error
-#define mysqlnd_stmt_sqlstate(stmt)			((stmt)->error_info.sqlstate[0] ? (stmt)->error_info.sqlstate:MYSQLND_SQLSTATE_NULL)
-
-
-
-/*****************************************************************************************************/
-#else /* Using plain functions */
-/*****************************************************************************************************/
-
-/* Errors */
-#define mysqlnd_errno(conn)				(conn)->m->get_error_no((conn))
-#define mysqlnd_error(conn)				(conn)->m->get_error_str((conn))
-#define mysqlnd_sqlstate(conn)  		(conn)->m->get_sqlstate((conn))
-
-/* Charset */
-#define mysqlnd_character_set_name(conn) (conn)->m->charset_name((conn))
-
-/* Simple metadata */
-#define mysqlnd_field_count(conn)		(conn)->m->get_field_count((conn))
-#define mysqlnd_insert_id(conn)			(conn)->m->get_last_insert_id((conn))
-#define mysqlnd_affected_rows(conn)		(conn)->m->get_affected_rows((conn))
-#define mysqlnd_warning_count(conn)		(conn)->m->get_warning_count((conn))
-#define mysqlnd_info(conn)				(conn)->m->get_last_message((conn))
-#define mysqlnd_get_server_info(conn)	(conn)->m->get_server_information((conn))
-#define mysqlnd_get_host_info(conn)		(conn)->m->get_host_information((conn))
-#define mysqlnd_get_proto_info(conn)	(conn)->m->get_protocol_information((conn))
-#define mysqlnd_thread_id(conn)			(conn)->m->get_thread_id((conn))
-
-#define mysqlnd_num_rows(result)		(result)->m.num_rows((result))
-#define mysqlnd_num_fields(result)		(result)->m.num_fields((result))
-
-PHPAPI unsigned long * mysqlnd_fetch_lengths(MYSQLND_RES * const result);
-
-#define mysqlnd_field_seek(result, ofs)			(result)->m.seek_field((result), (ofs))
-#define mysqlnd_field_tell(result)				(result)->m.field_tell((result))
+#define mysqlnd_field_seek(result, ofs)			(result)->m.seek_field((result), (ofs) TSRMLS_CC)
+#define mysqlnd_field_tell(result)				(result)->m.field_tell((result) TSRMLS_CC)
 #define mysqlnd_fetch_field(result)				(result)->m.fetch_field((result) TSRMLS_CC)
 #define mysqlnd_fetch_field_direct(result,fnr)	(result)->m.fetch_field_direct((result), (fnr) TSRMLS_CC)
 #define mysqlnd_fetch_fields(result)			(result)->m.fetch_fields((result) TSRMLS_CC)
@@ -214,22 +175,25 @@ PHPAPI unsigned long * mysqlnd_fetch_lengths(MYSQLND_RES * const result);
 PHPAPI const char *	mysqlnd_get_client_info();
 PHPAPI unsigned int	mysqlnd_get_client_version();
 
+#define mysqlnd_ssl_set(conn, key, cert, ca, capath, cipher) (conn)->m->ssl_set((conn), (key), (cert), (ca), (capath), (cipher) TSRMLS_CC)
+
 /* PS */
-#define mysqlnd_stmt_insert_id(stmt)		(stmt)->m->get_last_insert_id((stmt))
-#define mysqlnd_stmt_affected_rows(stmt)	(stmt)->m->get_affected_rows((stmt))
-#define mysqlnd_stmt_num_rows(stmt)			(stmt)->m->get_num_rows((stmt))
-#define mysqlnd_stmt_param_count(stmt)		(stmt)->m->get_param_count((stmt))
-#define mysqlnd_stmt_field_count(stmt)		(stmt)->m->get_field_count((stmt))
-#define mysqlnd_stmt_warning_count(stmt)	(stmt)->m->get_warning_count((stmt))
-#define mysqlnd_stmt_errno(stmt)			(stmt)->m->get_error_no((stmt))
-#define mysqlnd_stmt_error(stmt)			(stmt)->m->get_error_str((stmt))
-#define mysqlnd_stmt_sqlstate(stmt)			(stmt)->m->get_sqlstate((stmt))
-#endif /* MYSQLND_USE_OPTIMISATIONS */
-/*****************************************************************************************************/
+#define mysqlnd_stmt_insert_id(stmt)		(stmt)->m->get_last_insert_id((stmt) TSRMLS_CC)
+#define mysqlnd_stmt_affected_rows(stmt)	(stmt)->m->get_affected_rows((stmt) TSRMLS_CC)
+#define mysqlnd_stmt_num_rows(stmt)			(stmt)->m->get_num_rows((stmt) TSRMLS_CC)
+#define mysqlnd_stmt_param_count(stmt)		(stmt)->m->get_param_count((stmt) TSRMLS_CC)
+#define mysqlnd_stmt_field_count(stmt)		(stmt)->m->get_field_count((stmt) TSRMLS_CC)
+#define mysqlnd_stmt_warning_count(stmt)	(stmt)->m->get_warning_count((stmt) TSRMLS_CC)
+#define mysqlnd_stmt_server_status(stmt)	(stmt)->m->get_server_status((stmt) TSRMLS_CC)
+#define mysqlnd_stmt_errno(stmt)			(stmt)->m->get_error_no((stmt) TSRMLS_CC)
+#define mysqlnd_stmt_error(stmt)			(stmt)->m->get_error_str((stmt) TSRMLS_CC)
+#define mysqlnd_stmt_sqlstate(stmt)			(stmt)->m->get_sqlstate((stmt) TSRMLS_CC)
 
 
 PHPAPI void mysqlnd_efree_param_bind_dtor(MYSQLND_PARAM_BIND * param_bind TSRMLS_DC);
 PHPAPI void mysqlnd_efree_result_bind_dtor(MYSQLND_RESULT_BIND * result_bind TSRMLS_DC);
+PHPAPI void mysqlnd_free_param_bind_dtor(MYSQLND_PARAM_BIND * param_bind TSRMLS_DC);
+PHPAPI void mysqlnd_free_result_bind_dtor(MYSQLND_RESULT_BIND * result_bind TSRMLS_DC);
 
 
 PHPAPI const char * mysqlnd_field_type_name(enum mysqlnd_field_types field_type);
@@ -239,9 +203,15 @@ PHPAPI void mysqlnd_local_infile_default(MYSQLND *conn);
 PHPAPI void mysqlnd_set_local_infile_handler(MYSQLND * const conn, const char * const funcname);
 
 /* Simple commands */
+#ifdef AUTOCOMMIT_TX_COMMIT_ROLLBACK
+#define mysqlnd_autocommit(conn, mode)		(conn)->m->set_autocommit((conn), (mode) TSRMLS_CC)
+#define mysqlnd_commit(conn)				(conn)->m->tx_commit((conn) TSRMLS_CC)
+#define mysqlnd_rollback(conn)				(conn)->m->tx_rollback((conn) TSRMLS_CC)
+#else
 #define mysqlnd_autocommit(conn, mode)		(conn)->m->query((conn),(mode) ? "SET AUTOCOMMIT=1":"SET AUTOCOMMIT=0", 16 TSRMLS_CC)
 #define mysqlnd_commit(conn)				(conn)->m->query((conn), "COMMIT", sizeof("COMMIT")-1 TSRMLS_CC)
 #define mysqlnd_rollback(conn)				(conn)->m->query((conn), "ROLLBACK", sizeof("ROLLBACK")-1 TSRMLS_CC)
+#endif
 #define mysqlnd_list_dbs(conn, wild)		(conn)->m->list_method((conn), wild? "SHOW DATABASES LIKE %s":"SHOW DATABASES", (wild), NULL TSRMLS_CC)
 #define mysqlnd_list_fields(conn, tab,wild)	(conn)->m->list_fields((conn), (tab), (wild) TSRMLS_CC)
 #define mysqlnd_list_processes(conn)		(conn)->m->list_method((conn), "SHOW PROCESSLIST", NULL, NULL TSRMLS_CC)
@@ -252,7 +222,7 @@ PHPAPI void mysqlnd_set_local_infile_handler(MYSQLND * const conn, const char * 
 #define mysqlnd_kill(conn, pid)				(conn)->m->kill_connection((conn), (pid) TSRMLS_CC)
 #define mysqlnd_refresh(conn, options)		(conn)->m->refresh_server((conn), (options) TSRMLS_CC)
 #define mysqlnd_shutdown(conn, level)		(conn)->m->shutdown_server((conn), (level) TSRMLS_CC)
-#define mysqlnd_get_server_version(conn)	(conn)->m->get_server_version((conn))
+#define mysqlnd_get_server_version(conn)	(conn)->m->get_server_version((conn) TSRMLS_CC)
 #define mysqlnd_set_character_set(conn, cs)	(conn)->m->set_charset((conn), (cs) TSRMLS_CC)
 #define mysqlnd_stat(conn, msg, msg_len)	(conn)->m->get_server_statistics((conn), (msg), (msg_len) TSRMLS_CC)
 #define mysqlnd_options(conn, opt, value)	(conn)->m->set_client_option((conn), (opt), (value) TSRMLS_CC)
@@ -270,23 +240,24 @@ PHPAPI ulong mysqlnd_old_escape_string(char *newstr, const char *escapestr, size
 /* PS */
 #define mysqlnd_stmt_init(conn)				(conn)->m->stmt_init((conn) TSRMLS_CC)
 #define mysqlnd_stmt_store_result(stmt)		(!mysqlnd_stmt_field_count((stmt)) ? PASS:((stmt)->m->store_result((stmt) TSRMLS_CC)? PASS:FAIL))
-#define mysqlnd_stmt_bg_store_result(stmt)	(!mysqlnd_stmt_field_count((stmt)) ? PASS:((stmt)->m->background_store_result((stmt) TSRMLS_CC)? PASS:FAIL))
 #define mysqlnd_stmt_get_result(stmt)		(stmt)->m->get_result((stmt) TSRMLS_CC)
 #define mysqlnd_stmt_more_results(stmt)		(stmt)->m->more_results((stmt) TSRMLS_CC)
 #define mysqlnd_stmt_next_result(stmt)		(stmt)->m->next_result((stmt) TSRMLS_CC)
 #define mysqlnd_stmt_data_seek(stmt, row)	(stmt)->m->seek_data((stmt), (row) TSRMLS_CC)
 #define mysqlnd_stmt_prepare(stmt, q, qlen)	(stmt)->m->prepare((stmt), (q), (qlen) TSRMLS_CC)
 #define mysqlnd_stmt_execute(stmt) 			(stmt)->m->execute((stmt) TSRMLS_CC)
-#define mysqlnd_stmt_send_long_data(s,p,d,l) (s)->m->send_long_data((s), (p), (d), (l) TSRMLS_CC)
-#define mysqlnd_stmt_bind_param(stmt,bind)	(stmt)->m->bind_parameters((stmt), (bind) TSRMLS_CC)
-#define mysqlnd_stmt_bind_one_param(s,n,z,t)	(s)->m->bind_one_parameter((s), (n), (z), (t) TSRMLS_CC)
-#define mysqlnd_stmt_refresh_bind_param(s)	(s)->m->refresh_bind_param((s) TSRMLS_CC)
-#define mysqlnd_stmt_set_param_bind_dtor(s,d)	(s)->m->set_param_bind_dtor((s), (d) TSRMLS_CC)
-#define mysqlnd_stmt_bind_result(stmt,bind)	(stmt)->m->bind_result((stmt), (bind) TSRMLS_CC)
-#define mysqlnd_stmt_bind_one_result(s,no)	(s)->m->bind_one_result((s), (no) TSRMLS_CC)
-#define mysqlnd_stmt_set_result_bind_dtor(s,d)	(s)->m->set_result_bind_dtor((s), (d) TSRMLS_CC)
-#define mysqlnd_stmt_param_metadata(stmt)	(stmt)->m->get_parameter_metadata((stmt))
-#define mysqlnd_stmt_result_metadata(stmt)	(stmt)->m->get_result_metadata((stmt) TSRMLS_CC)
+#define mysqlnd_stmt_send_long_data(stmt,p,d,l) 	(stmt)->m->send_long_data((stmt), (p), (d), (l) TSRMLS_CC)
+#define mysqlnd_stmt_alloc_param_bind(stmt)			(stmt)->m->alloc_parameter_bind((stmt) TSRMLS_CC)
+#define mysqlnd_stmt_free_param_bind(stmt,bind)		(stmt)->m->free_parameter_bind((stmt), (bind) TSRMLS_CC)
+#define mysqlnd_stmt_bind_param(stmt,bind)			(stmt)->m->bind_parameters((stmt), (bind) TSRMLS_CC)
+#define mysqlnd_stmt_bind_one_param(stmt,n,z,t)		(stmt)->m->bind_one_parameter((stmt), (n), (z), (t) TSRMLS_CC)
+#define mysqlnd_stmt_refresh_bind_param(s)			(s)->m->refresh_bind_param((s) TSRMLS_CC)
+#define mysqlnd_stmt_alloc_result_bind(stmt)		(stmt)->m->alloc_result_bind((stmt) TSRMLS_CC)
+#define mysqlnd_stmt_free_result_bind(stmt,bind)	(stmt)->m->free_result_bind((stmt), (bind) TSRMLS_CC)
+#define mysqlnd_stmt_bind_result(stmt,bind)			(stmt)->m->bind_result((stmt), (bind) TSRMLS_CC)
+#define mysqlnd_stmt_bind_one_result(s,no)			(s)->m->bind_one_result((s), (no) TSRMLS_CC)
+#define mysqlnd_stmt_param_metadata(stmt)			(stmt)->m->get_parameter_metadata((stmt))
+#define mysqlnd_stmt_result_metadata(stmt)			(stmt)->m->get_result_metadata((stmt) TSRMLS_CC)
 
 #define	mysqlnd_stmt_free_result(stmt)		(stmt)->m->free_result((stmt) TSRMLS_CC)
 #define	mysqlnd_stmt_close(stmt, implicit)	(stmt)->m->dtor((stmt), (implicit) TSRMLS_CC)
@@ -302,63 +273,6 @@ PHPAPI ulong mysqlnd_old_escape_string(char *newstr, const char *escapestr, size
 /* Performance statistics */
 PHPAPI void			_mysqlnd_get_client_stats(zval *return_value TSRMLS_DC ZEND_FILE_LINE_DC);
 
-/* Persistent caching zval allocator */
-#define mysqlnd_palloc_init_cache(size)		_mysqlnd_palloc_init_cache((size) TSRMLS_CC)
-#define mysqlnd_palloc_free_cache(cache)	_mysqlnd_palloc_free_cache((cache) TSRMLS_CC)
-PHPAPI MYSQLND_ZVAL_PCACHE*		_mysqlnd_palloc_init_cache(unsigned int cache_size TSRMLS_DC);
-PHPAPI void 					_mysqlnd_palloc_free_cache(MYSQLND_ZVAL_PCACHE *cache TSRMLS_DC);
-PHPAPI void						mysqlnd_palloc_stats(const MYSQLND_ZVAL_PCACHE * const cache,
-													 zval *return_value);
-
-#define mysqlnd_palloc_rinit(cache)		_mysqlnd_palloc_rinit((cache) TSRMLS_CC)
-#define mysqlnd_palloc_rshutdown(cache)	_mysqlnd_palloc_rshutdown((cache) TSRMLS_CC)
-PHPAPI MYSQLND_THD_ZVAL_PCACHE * _mysqlnd_palloc_rinit(MYSQLND_ZVAL_PCACHE * cache TSRMLS_DC);
-PHPAPI void						 _mysqlnd_palloc_rshutdown(MYSQLND_THD_ZVAL_PCACHE * cache TSRMLS_DC);
-
-
-#define mysqlnd_palloc_init_thd_cache(cache) 			_mysqlnd_palloc_init_thd_cache((cache) TSRMLS_CC)
-#define mysqlnd_palloc_free_thd_cache_reference(cache)	_mysqlnd_palloc_free_thd_cache_reference((cache) TSRMLS_CC)
-#define mysqlnd_palloc_get_thd_cache_reference(cache)	_mysqlnd_palloc_get_thd_cache_reference((cache) TSRMLS_CC)
-
-PHPAPI MYSQLND_THD_ZVAL_PCACHE*	_mysqlnd_palloc_init_thd_cache(MYSQLND_ZVAL_PCACHE * const cache TSRMLS_DC);
-MYSQLND_THD_ZVAL_PCACHE*		_mysqlnd_palloc_get_thd_cache_reference(MYSQLND_THD_ZVAL_PCACHE * const cache TSRMLS_DC);
-PHPAPI void						_mysqlnd_palloc_free_thd_cache_reference(MYSQLND_THD_ZVAL_PCACHE **cache TSRMLS_DC);
-
-
-/* There two should not be used from outside */
-void *	mysqlnd_palloc_get_zval(MYSQLND_THD_ZVAL_PCACHE * const cache, zend_bool *allocated TSRMLS_DC);
-void	mysqlnd_palloc_zval_ptr_dtor(zval **zv, MYSQLND_THD_ZVAL_PCACHE * const cache,
-									 enum_mysqlnd_res_type type, zend_bool *copy_ctor_called TSRMLS_DC);
-
-
-
-/* ---------------------- QUERY CACHE ---------------*/
-struct st_mysqlnd_qcache {
-	HashTable		*ht;
-	unsigned int	references;
-#ifdef ZTS
-	MUTEX_T		LOCK_access;
-#endif
-};
-
-
-typedef struct st_mysqlnd_qcache_element {
-	MYSQLND_RES_BUFFERED *data;
-	MYSQLND_RES_METADATA *meta;
-	const char * query;
-	size_t	query_len;
-} MYSQLND_QCACHE_ELEMENT;
-
-
-PHPAPI MYSQLND_QCACHE *	mysqlnd_qcache_init_cache();
-PHPAPI MYSQLND_QCACHE *	mysqlnd_qcache_get_cache_reference(MYSQLND_QCACHE * const cache);
-PHPAPI void				mysqlnd_qcache_free_cache_reference(MYSQLND_QCACHE **cache);
-PHPAPI void				mysqlnd_qcache_stats(const MYSQLND_QCACHE * const cache, zval *return_value);
-MYSQLND_RES * 		mysqlnd_qcache_get(MYSQLND_QCACHE * const cache, const char * query,
-									   size_t query_len);
-void				mysqlnd_qcache_put(MYSQLND_QCACHE * const cache, char * query, size_t query_len,
-									   MYSQLND_RES_BUFFERED * const result, MYSQLND_RES_METADATA * const meta);
-
 /* double check the class name to avoid naming conflicts when using these: */
 #define MYSQLND_METHOD(class, method) php_##class##_##method##_pub
 #define MYSQLND_METHOD_PRIVATE(class, method) php_##class##_##method##_priv
@@ -371,13 +285,17 @@ ZEND_BEGIN_MODULE_GLOBALS(mysqlnd)
 	long			net_cmd_buffer_size;
 	long			net_read_buffer_size;
 	long			log_mask;
-#ifdef MYSQLND_THREADED
-	THREAD_T		thread_id;
-#endif
 	long			net_read_timeout;
+	long			mempool_default_size;
+	long			debug_emalloc_fail_threshold;
+	long			debug_ecalloc_fail_threshold;
+	long			debug_erealloc_fail_threshold;
+	long			debug_malloc_fail_threshold;
+	long			debug_calloc_fail_threshold;
+	long			debug_realloc_fail_threshold;
 ZEND_END_MODULE_GLOBALS(mysqlnd)
 
-ZEND_EXTERN_MODULE_GLOBALS(mysqlnd);
+PHPAPI ZEND_EXTERN_MODULE_GLOBALS(mysqlnd)
 
 #ifdef ZTS
 #define MYSQLND_G(v) TSRMG(mysqlnd_globals_id, zend_mysqlnd_globals *, v)
@@ -385,6 +303,8 @@ ZEND_EXTERN_MODULE_GLOBALS(mysqlnd);
 #define MYSQLND_G(v) (mysqlnd_globals.v)
 #endif
 
+
+PHPAPI void mysqlnd_minfo_print_hash(zval *values);
 
 #endif	/* MYSQLND_H */
 

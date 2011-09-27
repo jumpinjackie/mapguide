@@ -34,17 +34,25 @@
 #include "file.h"
 
 #ifndef	lint
-FILE_RCSID("@(#)$File: apprentice.c,v 1.132 2008/03/28 18:19:30 christos Exp $")
+FILE_RCSID("@(#)$File: apprentice.c,v 1.151 2009/03/18 15:19:23 christos Exp $")
 #endif	/* lint */
 
 #include "magic.h"
 #include "patchlevel.h"
 #include <stdlib.h>
 
+#if defined(__hpux) && !defined(HAVE_STRTOULL)
+#if SIZEOF_LONG == 8
+# define strtoull strtoul
+#else
+# define strtoull __strtoull
+#endif
+#endif
+
 #ifdef PHP_WIN32
 #include "win32/unistd.h"
 #if _MSC_VER <= 1300
-#include "win32/php_strtoi64.h"
+# include "win32/php_strtoi64.h"
 #endif
 #define strtoull _strtoui64
 #else
@@ -55,7 +63,9 @@ FILE_RCSID("@(#)$File: apprentice.c,v 1.132 2008/03/28 18:19:30 christos Exp $")
 #include <assert.h>
 #include <ctype.h>
 #include <fcntl.h>
-
+#ifndef PHP_WIN32
+#include <dirent.h>
+#endif
 
 #define	EATAB {while (isascii((unsigned char) *l) && \
 		      isspace((unsigned char) *l))  ++l;}
@@ -595,7 +605,7 @@ load_1(struct magic_set *ms, int action, const char *fn, int *errs,
 
 	TSRMLS_FETCH();
 
-#if (PHP_MAJOR_VERSION < 6)
+#if PHP_API_VERSION < 20100412
 	stream = php_stream_open_wrapper((char *)fn, "rb", REPORT_ERRORS|ENFORCE_SAFE_MODE, NULL);
 #else
 	stream = php_stream_open_wrapper((char *)fn, "rb", REPORT_ERRORS, NULL);
@@ -609,7 +619,11 @@ load_1(struct magic_set *ms, int action, const char *fn, int *errs,
 	} else {
 
 		/* read and parse this file */
+#if (PHP_MAJOR_VERSION < 6)
 		for (ms->line = 1; (line = php_stream_get_line(stream, buffer , BUFSIZ, &line_len)) != NULL; ms->line++) {
+#else		
+		for (ms->line = 1; (line = php_stream_get_line(stream, ZSTR(buffer), BUFSIZ, &line_len)) != NULL; ms->line++) {
+#endif
 			if (line_len == 0) /* null line, garbage, etc */
 				continue;
 
@@ -851,9 +865,9 @@ file_signextend(struct magic_set *ms, struct magic *m, uint64_t v)
 		case FILE_INDIRECT:
 			break;
 		default:
-			if (ms->flags & MAGIC_CHECK) {
-			    file_magwarn(ms, "cannot happen: m->type=%d\n", m->type);
-			}
+			if (ms->flags & MAGIC_CHECK)
+			    file_magwarn(ms, "cannot happen: m->type=%d\n",
+				    m->type);
 			return ~0U;
 		}
 	}
@@ -1669,7 +1683,7 @@ check_format(struct magic_set *ms, struct magic *m)
 		 */
 		file_magwarn(ms, "Printf format `%c' is not valid for type "
 		    "`%s' in description `%s'", *ptr ? *ptr : '?',
-            file_names[m->type], m->desc);
+		    file_names[m->type], m->desc);
 		return -1;
 	}
 	
@@ -2035,7 +2049,7 @@ apprentice_map(struct magic_set *ms, struct magic **magicp, uint32_t *nmagicp,
 	if (dbname == NULL)
 		goto error2;
 
-#if (PHP_MAJOR_VERSION < 6)
+#if PHP_API_VERSION < 20100412
 		stream = php_stream_open_wrapper((char *)fn, "rb", REPORT_ERRORS|ENFORCE_SAFE_MODE, NULL);
 #else
 		stream = php_stream_open_wrapper((char *)fn, "rb", REPORT_ERRORS, NULL);
@@ -2114,7 +2128,7 @@ internal_loaded:
 	}
 
 	if (dbname) {
-		free(dbname);
+		efree(dbname);
 	}
 	return ret;
 
@@ -2131,7 +2145,7 @@ error1:
 	}
 error2:
 	if (dbname) {
-		free(dbname);
+		efree(dbname);
 	}
 	return -1;
 }
@@ -2159,7 +2173,7 @@ apprentice_compile(struct magic_set *ms, struct magic **magicp,
 	}
 
 /* wb+ == O_WRONLY|O_CREAT|O_TRUNC|O_BINARY */
-#if (PHP_MAJOR_VERSION < 6)
+#if PHP_API_VERSION < 20100412
 	stream = php_stream_open_wrapper((char *)fn, "wb+", REPORT_ERRORS|ENFORCE_SAFE_MODE, NULL);
 #else
 	stream = php_stream_open_wrapper((char *)fn, "wb+", REPORT_ERRORS, NULL);
@@ -2189,7 +2203,7 @@ apprentice_compile(struct magic_set *ms, struct magic **magicp,
 
 	rv = 0;
 out:
-	free(dbname);
+	efree(dbname);
 	return rv;
 }
 
@@ -2202,6 +2216,7 @@ mkdbname(struct magic_set *ms, const char *fn, int strip)
 {
 	const char *p, *q;
 	char *buf;
+	TSRMLS_FETCH();
 
 	if (strip) {
 		if ((p = strrchr(fn, '/')) != NULL)
@@ -2223,14 +2238,14 @@ mkdbname(struct magic_set *ms, const char *fn, int strip)
 	q++;
 	/* Compatibility with old code that looked in .mime */
 	if (ms->flags & MAGIC_MIME) {
-		asprintf(&buf, "%.*s.mime%s", (int)(q - fn), fn, ext);
-		if (access(buf, R_OK) != -1) {
+		spprintf(&buf, MAXPATHLEN, "%.*s.mime%s", (int)(q - fn), fn, ext);
+		if (VCWD_ACCESS(buf, R_OK) != -1) {
 			ms->flags &= MAGIC_MIME_TYPE;
 			return buf;
 		}
-		free(buf);
+		efree(buf);
 	}
-	asprintf(&buf, "%.*s%s", (int)(q - fn), fn, ext);
+	spprintf(&buf, MAXPATHLEN, "%.*s%s", (int)(q - fn), fn, ext);
 
 	/* Compatibility with old code that looked in .mime */
 	if (strstr(p, ".mime") != NULL)

@@ -2,7 +2,7 @@
    +----------------------------------------------------------------------+
    | PHP Version 5                                                        |
    +----------------------------------------------------------------------+
-   | Copyright (c) 1997-2009 The PHP Group                                |
+   | Copyright (c) 1997-2011 The PHP Group                                |
    +----------------------------------------------------------------------+
    | This source file is subject to version 3.01 of the PHP license,      |
    | that is bundled with this package in the file LICENSE, and is        |
@@ -16,7 +16,7 @@
    +----------------------------------------------------------------------+
  */
 
-/* $Id: ibase_query.c 286330 2009-07-25 23:37:47Z kalle $ */
+/* $Id: ibase_query.c 313447 2011-07-19 20:25:51Z mariuz $ */
 
 #ifdef HAVE_CONFIG_H
 #include "config.h"
@@ -672,14 +672,7 @@ static int _php_ibase_bind(XSQLDA *sqlda, zval ***b_vars, BIND_BUF *buf, /* {{{ 
 				if (! force_null) break;
 
 			case IS_NULL:
-
-				/* complain if this field doesn't allow NULL values */
-				if (! (var->sqltype & 1)) {
-					_php_ibase_module_error("Parameter %d: non-empty value required" TSRMLS_CC, i+1);
-					rv = FAILURE;
-				} else {
 					buf[i].sqlind = -1;
-				}
 
 				if (var->sqltype & SQL_ARRAY) ++array_cnt;
 

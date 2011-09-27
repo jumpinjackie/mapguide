@@ -2,7 +2,7 @@
    +----------------------------------------------------------------------+
    | PHP Version 5                                                        |
    +----------------------------------------------------------------------+
-   | Copyright (c) 1997-2009 The PHP Group                                |
+   | Copyright (c) 1997-2011 The PHP Group                                |
    +----------------------------------------------------------------------+
    | This source file is subject to version 3.01 of the PHP license,      |
    | that is bundled with this package in the file LICENSE, and is        |
@@ -16,7 +16,7 @@
    +----------------------------------------------------------------------+
  */
 
-/* $Id: gd_ctx.c 272370 2008-12-31 11:15:49Z sebastian $ */
+/* $Id: gd_ctx.c 306939 2011-01-01 02:19:59Z felipe $ */
 
 #include "php_gd.h"
 
@@ -76,7 +76,7 @@ static void _php_image_output_ctx(INTERNAL_FUNCTION_PARAMETERS, int image_type, 
 		 * PHP_GDIMG_TYPE_WBM */
 		if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "r|s!ll", &imgind, &file, &file_len, &quality, &basefilter) == FAILURE) {
 			return;
-		}		
+		}
 	}
 
 	ZEND_FETCH_RESOURCE(im, gdImagePtr, &imgind, -1, "Image", phpi_get_le_gd());
@@ -91,6 +91,9 @@ static void _php_image_output_ctx(INTERNAL_FUNCTION_PARAMETERS, int image_type, 
 	}
 
 	if (argc > 1 && file_len) {
+		if (strlen(file) != file_len) {
+			RETURN_FALSE;
+		}
 		PHP_GD_CHECK_OPEN_BASEDIR(file, "Invalid filename");
 
 		fp = VCWD_FOPEN(file, "wb");

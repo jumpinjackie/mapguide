@@ -2,7 +2,7 @@
    +----------------------------------------------------------------------+
    | PHP Version 5                                                        |
    +----------------------------------------------------------------------+
-   | Copyright (c) 1997-2009 The PHP Group                                |
+   | Copyright (c) 1997-2011 The PHP Group                                |
    +----------------------------------------------------------------------+
    | This source file is subject to version 3.01 of the PHP license,      |
    | that is bundled with this package in the file LICENSE, and is        |
@@ -17,7 +17,7 @@
    +----------------------------------------------------------------------+
  */
 
-/* $Id: dba_db4.c 286636 2009-08-01 23:10:11Z felipe $ */
+/* $Id: dba_db4.c 312540 2011-06-27 22:58:59Z sixd $ */
 
 #ifdef HAVE_CONFIG_H
 #include "config.h"
@@ -37,13 +37,26 @@
 #endif
 
 static void php_dba_db4_errcall_fcn(
-#if (DB_VERSION_MAJOR == 4 && DB_VERSION_MINOR >= 3)
+#if (DB_VERSION_MAJOR > 4 || (DB_VERSION_MAJOR == 4 && DB_VERSION_MINOR >= 3))
 	const DB_ENV *dbenv, 
 #endif
 	const char *errpfx, const char *msg)
 {
 	TSRMLS_FETCH();
-	
+
+#if (DB_VERSION_MAJOR == 5 || (DB_VERSION_MAJOR == 4 && DB_VERSION_MINOR == 8))
+/* Bug 51086, Berkeley DB 4.8.26 */
+/* This code suppresses a BDB 4.8+ error message, thus keeping PHP test compatibility */
+	{
+		char *function = get_active_function_name(TSRMLS_C);
+		if (function && (!strcmp(function,"dba_popen") || !strcmp(function,"dba_open"))
+			&& (!strncmp(msg, "fop_read_meta", sizeof("fop_read_meta")-1)
+				|| !strncmp(msg, "BDB0004 fop_read_meta", sizeof("BDB0004 fop_read_meta")-1))) {
+			return;
+		}
+	}
+#endif
+
 	php_error_docref(NULL TSRMLS_CC, E_NOTICE, "%s%s", errpfx?errpfx:"", msg);
 }
 
@@ -67,6 +80,7 @@ DBA_OPEN_FUNC(db4)
 	struct stat check_stat;
 	int s = VCWD_STAT(info->path, &check_stat);
 
+#if (DB_VERSION_MAJOR == 4 && DB_VERSION_MINOR <= 7)  /* Bug 51086 */
 	if (!s && !check_stat.st_size) {
 		info->mode = DBA_TRUNC; /* force truncate */
 	}
@@ -80,6 +94,20 @@ DBA_OPEN_FUNC(db4)
 		(info->mode == DBA_CREAT && !s) ? 0 :
 		info->mode == DBA_WRITER ? 0         : 
 		info->mode == DBA_TRUNC ? DB_CREATE | DB_TRUNCATE : -1;
+#else
+	if (!s && !check_stat.st_size) {
+		info->mode = DBA_CREAT; /* force creation */
+	}
+
+	type = info->mode == DBA_READER ? DB_UNKNOWN :
+		(info->mode == DBA_TRUNC || info->mode == DBA_CREAT) ? DB_BTREE :
+		s ? DB_BTREE : DB_UNKNOWN;
+	  
+	gmode = info->mode == DBA_READER ? DB_RDONLY :
+		info->mode == DBA_CREAT ? DB_CREATE : 
+		info->mode == DBA_WRITER ? 0         : 
+		info->mode == DBA_TRUNC ? DB_CREATE | DB_TRUNCATE : -1;
+#endif
 
 	if (gmode == -1) {
 		return FAILURE; /* not possible */
@@ -97,7 +125,7 @@ DBA_OPEN_FUNC(db4)
 	if ((err=db_create(&dbp, NULL, 0)) == 0) {
 	    dbp->set_errcall(dbp, php_dba_db4_errcall_fcn);
 	    if (
-#if (DB_VERSION_MAJOR == 4 && DB_VERSION_MINOR >= 1)
+#if (DB_VERSION_MAJOR > 4 || (DB_VERSION_MAJOR == 4 && DB_VERSION_MINOR >= 1))
 			(err=dbp->open(dbp, 0, info->path, NULL, type, gmode, filemode)) == 0) {
 #else
 			(err=dbp->open(dbp, info->path, NULL, type, gmode, filemode)) == 0) {

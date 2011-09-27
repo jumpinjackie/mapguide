@@ -2,7 +2,7 @@
   +----------------------------------------------------------------------+
   | ZIP archive support for Phar                                         |
   +----------------------------------------------------------------------+
-  | Copyright (c) 2007-2009 The PHP Group                                |
+  | Copyright (c) 2007-2011 The PHP Group                                |
   +----------------------------------------------------------------------+
   | This source file is subject to version 3.01 of the PHP license,      |
   | that is bundled with this package in the file LICENSE, and is        |
@@ -411,6 +411,9 @@ foundit:
 			now = php_stream_tell(fp);
 			pefree(entry.filename, entry.is_persistent);
 			sigfile = php_stream_fopen_tmpfile();
+			if (!sigfile) {
+				PHAR_ZIP_FAIL("couldn't open temporary file");
+			}
 
 			php_stream_seek(fp, 0, SEEK_SET);
 			/* copy file contents + local headers and zip comment, if any, to be hashed for signature */
@@ -1167,6 +1170,9 @@ int phar_zip_flush(phar_archive_data *phar, char *user_stub, long len, int defau
 	char *pos;
 	smart_str main_metadata_str = {0};
 	static const char newstub[] = "<?php // zip-based phar archive stub file\n__HALT_COMPILER();";
+	char halt_stub[] = "__HALT_COMPILER();";
+	char *tmp;
+	
 	php_stream *stubfile, *oldfile;
 	php_serialize_data_t metadata_hash;
 	int free_user_stub, closeoldfile = 0;
@@ -1261,8 +1267,9 @@ int phar_zip_flush(phar_archive_data *phar, char *user_stub, long len, int defau
 			free_user_stub = 0;
 		}
 
-		if ((pos = strstr(user_stub, "__HALT_COMPILER();")) == NULL)
-		{
+		tmp = estrndup(user_stub, len);
+		if ((pos = php_stristr(tmp, halt_stub, len, sizeof(halt_stub) - 1)) == NULL) {
+			efree(tmp);
 			if (error) {
 				spprintf(error, 0, "illegal stub for zip-based phar \"%s\"", phar->fname);
 			}
@@ -1271,6 +1278,8 @@ int phar_zip_flush(phar_archive_data *phar, char *user_stub, long len, int defau
 			}
 			return EOF;
 		}
+		pos = user_stub + (pos - tmp);
+		efree(tmp);
 
 		len = pos - user_stub + 18;
 		entry.fp = php_stream_fopen_tmpfile();
@@ -1428,9 +1437,9 @@ nocentralerror:
 	php_stream_seek(pass.centralfp, 0, SEEK_SET);
 
 	{
-		size_t len;
-		int ret = phar_stream_copy_to_stream(pass.centralfp, pass.filefp, PHP_STREAM_COPY_ALL, &len);
-		if (SUCCESS != ret || len != cdir_size) {
+		size_t clen;
+		int ret = phar_stream_copy_to_stream(pass.centralfp, pass.filefp, PHP_STREAM_COPY_ALL, &clen);
+		if (SUCCESS != ret || clen != cdir_size) {
 			if (error) {
 				spprintf(error, 4096, "phar zip flush of \"%s\" failed: unable to write central-directory", phar->fname);
 			}

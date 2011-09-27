@@ -6,14 +6,9 @@ require_once('skipif.inc');
 require_once('skipifemb.inc');
 require_once('skipifconnectfailure.inc');
 require_once('connect.inc');
+
 if (!$IS_MYSQLND) {
-	if (!$link = my_mysqli_connect($host, $user, $passwd, $db, $port, $socket))
-		die("skip Can't test server version, might hit known bugs http://bugs.mysql.com/bug.php?id=30472, http://bugs.mysql.com/bug.php?id=45184");
-	if (mysqli_get_client_version($link) <= 50135)
-		/* TODO - check wich version got the patch */
-		die(sprintf("skip libmysql %s should have bugs http://bugs.mysql.com/bug.php?id=30472, http://bugs.mysql.com/bug.php?id=45184",
-	 mysqli_get_client_version($link)));
-	mysqli_close($link);
+	die("skip Might hit known and open bugs http://bugs.mysql.com/bug.php?id=30472, http://bugs.mysql.com/bug.php?id=45184");
 }
 ?>
 --FILE--

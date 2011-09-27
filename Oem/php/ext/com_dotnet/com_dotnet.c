@@ -2,7 +2,7 @@
    +----------------------------------------------------------------------+
    | PHP Version 5                                                        |
    +----------------------------------------------------------------------+
-   | Copyright (c) 1997-2009 The PHP Group                                |
+   | Copyright (c) 1997-2011 The PHP Group                                |
    +----------------------------------------------------------------------+
    | This source file is subject to version 3.01 of the PHP license,      |
    | that is bundled with this package in the file LICENSE, and is        |
@@ -16,7 +16,7 @@
    +----------------------------------------------------------------------+
  */
 
-/* $Id: com_dotnet.c 272370 2008-12-31 11:15:49Z sebastian $ */
+/* $Id: com_dotnet.c 313827 2011-07-28 10:34:16Z pajoye $ */
 
 #ifdef HAVE_CONFIG_H
 #include "config.h"
@@ -129,6 +129,9 @@ static HRESULT dotnet_init(char **p_where TSRMLS_DC)
 	char *where = "";
 
 	stuff = malloc(sizeof(*stuff));
+	if (!stuff) {
+		return S_FALSE;
+	}
 	memset(stuff, 0, sizeof(*stuff));
 
 	where = "CoCreateInstance";

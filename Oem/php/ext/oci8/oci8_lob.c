@@ -2,7 +2,7 @@
    +----------------------------------------------------------------------+
    | PHP Version 5                                                        |
    +----------------------------------------------------------------------+
-   | Copyright (c) 1997-2009 The PHP Group                                |
+   | Copyright (c) 1997-2011 The PHP Group                                |
    +----------------------------------------------------------------------+
    | This source file is subject to version 3.01 of the PHP license,      |
    | that is bundled with this package in the file LICENSE, and is        |
@@ -25,7 +25,7 @@
    +----------------------------------------------------------------------+
 */
 
-/* $Id: oci8_lob.c 272370 2008-12-31 11:15:49Z sebastian $ */
+/* $Id: oci8_lob.c 313754 2011-07-27 00:04:23Z sixd $ */
 
 
 
@@ -95,9 +95,17 @@ php_oci_descriptor *php_oci_lob_create (php_oci_connection *connection, long typ
 		if (!connection->descriptors) {
 			ALLOC_HASHTABLE(connection->descriptors);
 			zend_hash_init(connection->descriptors, 0, NULL, php_oci_descriptor_flush_hash_dtor, 0);
+			connection->descriptor_count = 0;
+		}
+		
+		descriptor->index = (connection->descriptor_count)++;
+		if (connection->descriptor_count == LONG_MAX) {
+			php_error_docref(NULL TSRMLS_CC, E_WARNING, "Internal descriptor counter has reached limit");
+			php_oci_connection_descriptors_free(connection TSRMLS_CC);
+			return NULL;
 		}
 
-		zend_hash_next_index_insert(connection->descriptors,&descriptor,sizeof(php_oci_descriptor *),NULL);
+		zend_hash_index_update(connection->descriptors,descriptor->index,&descriptor,sizeof(php_oci_descriptor *),NULL);
 	}
 	return descriptor;
 
@@ -669,7 +677,25 @@ void php_oci_lob_free (php_oci_descriptor *descriptor TSRMLS_DC)
 
 	if (descriptor->connection->descriptors) {
 		/* delete descriptor from the hash */
-		zend_hash_apply_with_argument(descriptor->connection->descriptors, php_oci_descriptor_delete_from_hash, (void *)&descriptor->id TSRMLS_CC);
+		zend_hash_index_del(descriptor->connection->descriptors, descriptor->index);
+		if (zend_hash_num_elements(descriptor->connection->descriptors) == 0) {
+			descriptor->connection->descriptor_count = 0;
+		} else {
+			if (descriptor->index + 1 == descriptor->connection->descriptor_count) {
+				/* If the descriptor being freed is the end-most one
+				 * allocated, then the descriptor_count is reduced so
+				 * a future descriptor can reuse the hash table index.
+				 * This can prevent the hash index range increasing in
+				 * the common case that each descriptor is
+				 * allocated/used/freed before another descriptor is
+				 * needed.  However it is possible that a script frees
+				 * descriptors in arbitrary order which would prevent
+				 * descriptor_count ever being reduced to zero until
+				 * zend_hash_num_elements() returns 0.
+				 */
+				descriptor->connection->descriptor_count--;
+			}
+		}
 	}
 	
 	/* flushing Lobs & Files with buffering enabled */
@@ -698,7 +724,12 @@ int php_oci_lob_import (php_oci_descriptor *descriptor, char *filename TSRMLS_DC
 	char buf[8192];
 	ub4 offset = 1;
 	
+#if (PHP_MAJOR_VERSION == 5 && PHP_MINOR_VERSION > 3) || (PHP_MAJOR_VERSION > 5)
+	/* Safe mode has been removed in PHP 5.4 */
+	if (php_check_open_basedir(filename TSRMLS_CC)) {
+#else
 	if ((PG(safe_mode) && (!php_checkuid(filename, NULL, CHECKUID_CHECK_FILE_AND_DIR))) || php_check_open_basedir(filename TSRMLS_CC)) {
+#endif
 		return 1;
 	}
 	
@@ -862,7 +893,7 @@ int php_oci_lob_is_equal (php_oci_descriptor *descriptor_first, php_oci_descript
 
 /* {{{ php_oci_lob_write_tmp()
  Create temporary LOB and write data to it */
-int php_oci_lob_write_tmp (php_oci_descriptor *descriptor, ub1 type, char *data, int data_len TSRMLS_DC)
+int php_oci_lob_write_tmp (php_oci_descriptor *descriptor, long type, char *data, int data_len TSRMLS_DC)
 {
 	php_oci_connection *connection = descriptor->connection;
 	OCILobLocator *lob		   = descriptor->descriptor;
@@ -874,7 +905,7 @@ int php_oci_lob_write_tmp (php_oci_descriptor *descriptor, ub1 type, char *data,
 			/* only these two are allowed */
 			break;
 		default:
-			php_error_docref(NULL TSRMLS_CC, E_WARNING, "Invalid temporary lob type: %d", type);
+			php_error_docref(NULL TSRMLS_CC, E_WARNING, "Invalid temporary lob type: %ld", type);
 			return 1;
 			break;
 	}
@@ -890,7 +921,7 @@ int php_oci_lob_write_tmp (php_oci_descriptor *descriptor, ub1 type, char *data,
 			 lob,
 			 OCI_DEFAULT,
 			 OCI_DEFAULT,
-			 type,
+			 (ub1)type,
 			 OCI_ATTR_NOCACHE,
 			 OCI_DURATION_SESSION
 			)

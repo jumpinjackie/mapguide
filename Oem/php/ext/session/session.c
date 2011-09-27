@@ -2,7 +2,7 @@
    +----------------------------------------------------------------------+
    | PHP Version 5                                                        |
    +----------------------------------------------------------------------+
-   | Copyright (c) 1997-2009 The PHP Group                                |
+   | Copyright (c) 1997-2011 The PHP Group                                |
    +----------------------------------------------------------------------+
    | This source file is subject to version 3.01 of the PHP license,      |
    | that is bundled with this package in the file LICENSE, and is        |
@@ -17,7 +17,7 @@
    +----------------------------------------------------------------------+
  */
 
-/* $Id: session.c 286443 2009-07-28 08:54:23Z tony2001 $ */
+/* $Id: session.c 314376 2011-08-06 14:47:44Z felipe $ */
 
 #ifdef HAVE_CONFIG_H
 #include "config.h"
@@ -26,7 +26,8 @@
 #include "php.h"
 
 #ifdef PHP_WIN32
-#include "win32/time.h"
+# include "win32/winutil.h"
+# include "win32/time.h"
 #else
 #include <sys/time.h>
 #endif
@@ -60,12 +61,6 @@ PHPAPI ZEND_DECLARE_MODULE_GLOBALS(ps);
 /* ***********
    * Helpers *
    *********** */
-
-#ifdef NETWARE
-# define SESS_SB_MTIME(sb)	((sb).st_mtime.tv_sec)
-#else
-# define SESS_SB_MTIME(sb)	((sb).st_mtime)
-#endif
 
 #define IF_SESSION_VARS() \
 	if (PS(http_session_vars) && PS(http_session_vars)->type == IS_ARRAY)
@@ -408,6 +403,27 @@ PHPAPI char *php_session_create_id(PS_CREATE_SID_ARGS) /* {{{ */
 	efree(buf);
 
 	if (PS(entropy_length) > 0) {
+#ifdef PHP_WIN32
+		unsigned char rbuf[2048];
+		size_t toread = PS(entropy_length);
+
+		if (php_win32_get_random_bytes(rbuf, (size_t) toread) == SUCCESS){
+
+			switch (PS(hash_func)) {
+				case PS_HASH_FUNC_MD5:
+					PHP_MD5Update(&md5_context, rbuf, toread);
+					break;
+				case PS_HASH_FUNC_SHA1:
+					PHP_SHA1Update(&sha1_context, rbuf, toread);
+					break;
+# if defined(HAVE_HASH_EXT) && !defined(COMPILE_DL_HASH)
+				case PS_HASH_FUNC_OTHER:
+					PS(hash_ops)->hash_update(hash_context, rbuf, toread);
+					break;
+# endif /* HAVE_HASH_EXT */
+			}
+		}
+#else
 		int fd;
 
 		fd = VCWD_OPEN(PS(entropy_file), O_RDONLY);
@@ -437,6 +453,7 @@ PHPAPI char *php_session_create_id(PS_CREATE_SID_ARGS) /* {{{ */
 			}
 			close(fd);
 		}
+#endif
 	}
 
 	digest = emalloc(digest_len + 1);
@@ -462,8 +479,8 @@ PHPAPI char *php_session_create_id(PS_CREATE_SID_ARGS) /* {{{ */
 		php_error_docref(NULL TSRMLS_CC, E_WARNING, "The ini setting hash_bits_per_character is out of range (should be 4, 5, or 6) - using 4 for now");
 	}
 	
-	outid = emalloc((digest_len + 2) * ((8.0f / PS(hash_bits_per_character)) + 0.5));
-	j = (int) (bin_to_readable((char *)digest, digest_len, outid, PS(hash_bits_per_character)) - outid);
+	outid = emalloc((size_t)((digest_len + 2) * ((8.0f / PS(hash_bits_per_character)) + 0.5)));
+	j = (int) (bin_to_readable((char *)digest, digest_len, outid, (char)PS(hash_bits_per_character)) - outid);
 	efree(digest);
 
 	if (newlen) {
@@ -693,17 +710,22 @@ static PHP_INI_MH(OnUpdateSaveDir) /* {{{ */
 			return FAILURE;
 		}
 
-		if ((p = zend_memrchr(new_value, ';', new_value_length))) {
+		/* we do not use zend_memrchr() since path can contain ; itself */
+		if ((p = strchr(new_value, ';'))) {
+			char *p2;
 			p++;
+			if ((p2 = strchr(p, ';'))) {
+				p = p2 + 1;
+			}
 		} else {
 			p = new_value;
 		}
 
-		if (PG(safe_mode) && (!php_checkuid(p, NULL, CHECKUID_CHECK_FILE_AND_DIR))) {
+		if (PG(safe_mode) && *p && (!php_checkuid(p, NULL, CHECKUID_CHECK_FILE_AND_DIR))) {
 			return FAILURE;
 		}
 
-		if (PG(open_basedir) && php_check_open_basedir(p TSRMLS_CC)) {
+		if (PG(open_basedir) && *p && php_check_open_basedir(p TSRMLS_CC)) {
 			return FAILURE;
 		}
 	}
@@ -896,7 +918,7 @@ PS_SERIALIZER_ENCODE_FUNC(php) /* {{{ */
 
 	PS_ENCODE_LOOP(
 			smart_str_appendl(&buf, key, key_length);
-			if (memchr(key, PS_DELIMITER, key_length)) {
+			if (memchr(key, PS_DELIMITER, key_length) || memchr(key, PS_UNDEF_MARKER, key_length)) {
 				PHP_VAR_SERIALIZE_DESTROY(var_hash);
 				smart_str_free(&buf);
 				return FAILURE;
@@ -1095,7 +1117,7 @@ static inline void last_modified(TSRMLS_D) /* {{{ */
 
 #define LAST_MODIFIED "Last-Modified: "
 		memcpy(buf, LAST_MODIFIED, sizeof(LAST_MODIFIED) - 1);
-		strcpy_gmt(buf + sizeof(LAST_MODIFIED) - 1, &SESS_SB_MTIME(sb));
+		strcpy_gmt(buf + sizeof(LAST_MODIFIED) - 1, &sb.st_mtime);
 		ADD_HEADER(buf);
 	}
 }
@@ -1344,7 +1366,11 @@ PHPAPI void php_session_start(TSRMLS_D) /* {{{ */
 	int nrand;
 	int lensess;
 
-	PS(apply_trans_sid) = PS(use_trans_sid);
+	if (PS(use_only_cookies)) {
+		PS(apply_trans_sid) = 0;
+	} else {
+		PS(apply_trans_sid) = PS(use_trans_sid);
+	}
 
 	switch (PS(session_status)) {
 		case php_session_active:
@@ -1446,7 +1472,7 @@ PHPAPI void php_session_start(TSRMLS_D) /* {{{ */
 		efree(PS(id));
 		PS(id) = NULL;
 		PS(send_cookie) = 1;
-		if (PS(use_trans_sid)) {
+		if (PS(use_trans_sid) && !PS(use_only_cookies)) {
 			PS(apply_trans_sid) = 1;
 		}
 	}
@@ -1454,7 +1480,7 @@ PHPAPI void php_session_start(TSRMLS_D) /* {{{ */
 	php_session_initialize(TSRMLS_C);
 
 	if (!PS(use_cookies) && PS(send_cookie)) {
-		if (PS(use_trans_sid)) {
+		if (PS(use_trans_sid) && !PS(use_only_cookies)) {
 			PS(apply_trans_sid) = 1;
 		}
 		PS(send_cookie) = 0;
@@ -1888,7 +1914,10 @@ static PHP_FUNCTION(session_unset)
 	}
 
 	IF_SESSION_VARS() {
-		HashTable *ht = Z_ARRVAL_P(PS(http_session_vars));
+		HashTable *ht_sess_var;
+
+		SEPARATE_ZVAL_IF_NOT_REF(&PS(http_session_vars));
+		ht_sess_var = Z_ARRVAL_P(PS(http_session_vars));
 
 		if (PG(register_globals)) {
 			uint str_len;
@@ -1896,16 +1925,16 @@ static PHP_FUNCTION(session_unset)
 			ulong num_key;
 			HashPosition pos;
 
-			zend_hash_internal_pointer_reset_ex(ht, &pos);
+			zend_hash_internal_pointer_reset_ex(ht_sess_var, &pos);
 
-			while (zend_hash_get_current_key_ex(ht, &str, &str_len, &num_key, 0, &pos) == HASH_KEY_IS_STRING) {
+			while (zend_hash_get_current_key_ex(ht_sess_var, &str, &str_len, &num_key, 0, &pos) == HASH_KEY_IS_STRING) {
 				zend_delete_global_variable(str, str_len - 1 TSRMLS_CC);
-				zend_hash_move_forward_ex(ht, &pos);
+				zend_hash_move_forward_ex(ht_sess_var, &pos);
 			}
 		}
 
 		/* Clean $_SESSION. */
-		zend_hash_clean(ht);
+		zend_hash_clean(ht_sess_var);
 	}
 }
 /* }}} */
@@ -1966,7 +1995,10 @@ static PHP_FUNCTION(session_unregister)
 		return;
 	}
 
-	PS_DEL_VARL(p_name, p_name_len);
+	IF_SESSION_VARS() {
+		SEPARATE_ZVAL_IF_NOT_REF(&PS(http_session_vars));
+		PS_DEL_VARL(p_name, p_name_len);
+	}
 
 	RETURN_TRUE;
 }
@@ -2087,7 +2119,7 @@ static const zend_function_entry session_functions[] = {
 	PHP_FE(session_get_cookie_params, arginfo_session_void)
 	PHP_FE(session_write_close,       arginfo_session_void)
 	PHP_FALIAS(session_commit, session_write_close, arginfo_session_void)
-	{NULL, NULL, NULL}
+	PHP_FE_END
 };
 /* }}} */
 
@@ -2250,7 +2282,8 @@ static PHP_MINFO_FUNCTION(session) /* {{{ */
 
 static const zend_module_dep session_deps[] = { /* {{{ */
 	ZEND_MOD_OPTIONAL("hash")
-	{NULL, NULL, NULL}
+	ZEND_MOD_REQUIRED("spl")
+	ZEND_MOD_END
 };
 /* }}} */
 

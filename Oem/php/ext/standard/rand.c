@@ -2,7 +2,7 @@
    +----------------------------------------------------------------------+
    | PHP Version 5                                                        |
    +----------------------------------------------------------------------+
-   | Copyright (c) 1997-2009 The PHP Group                                |
+   | Copyright (c) 1997-2011 The PHP Group                                |
    +----------------------------------------------------------------------+
    | This source file is subject to version 3.01 of the PHP license,      |
    | that is bundled with this package in the file LICENSE, and is        |
@@ -23,7 +23,7 @@
    |                     Shawn Cokus <Cokus@math.washington.edu>          |
    +----------------------------------------------------------------------+
  */
-/* $Id: rand.c 272370 2008-12-31 11:15:49Z sebastian $ */
+/* $Id: rand.c 306939 2011-01-01 02:19:59Z felipe $ */
 
 #include <stdlib.h>
 
@@ -315,8 +315,14 @@ PHP_FUNCTION(mt_rand)
 	long number;
 	int  argc = ZEND_NUM_ARGS();
 
-	if (argc != 0 && zend_parse_parameters(argc TSRMLS_CC, "ll", &min, &max) == FAILURE)
-		return;
+	if (argc != 0) {
+		if (zend_parse_parameters(argc TSRMLS_CC, "ll", &min, &max) == FAILURE) {
+			return;
+		} else if (max < min) {
+			php_error_docref(NULL TSRMLS_CC, E_WARNING, "max(%ld) is smaller than min(%ld)", max, min);
+			RETURN_FALSE;
+		}
+	}
 
 	if (!BG(mt_rand_is_seeded)) {
 		php_mt_srand(GENERATE_SEED() TSRMLS_CC);

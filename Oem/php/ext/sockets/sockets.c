@@ -2,7 +2,7 @@
    +----------------------------------------------------------------------+
    | PHP Version 5                                                        |
    +----------------------------------------------------------------------+
-   | Copyright (c) 1997-2009 The PHP Group                                |
+   | Copyright (c) 1997-2011 The PHP Group                                |
    +----------------------------------------------------------------------+
    | This source file is subject to version 3.01 of the PHP license,      |
    | that is bundled with this package in the file LICENSE, and is        |
@@ -19,7 +19,7 @@
    +----------------------------------------------------------------------+
  */
 
-/* $Id: sockets.c 289417 2009-10-09 14:22:29Z pajoye $ */
+/* $Id: sockets.c 313665 2011-07-25 11:42:53Z felipe $ */
 
 #ifdef HAVE_CONFIG_H
 #include "config.h"
@@ -41,6 +41,12 @@
 # include "php_sockets.h"
 # include "win32/sockets.h"
 # define IS_INVALID_SOCKET(a)	(a->bsd_socket == INVALID_SOCKET)
+# ifdef EPROTONOSUPPORT
+#  undef EPROTONOSUPPORT
+# endif
+# ifdef ECONNRESET
+#  undef ECONNRESET
+# endif
 # define EPROTONOSUPPORT	WSAEPROTONOSUPPORT
 # define ECONNRESET		WSAECONNRESET
 # ifdef errno
@@ -104,7 +110,7 @@ static char *php_strerror(int error TSRMLS_DC);
 						php_error_docref(NULL TSRMLS_CC, E_WARNING, "%s [%d]: %s", msg, errn, php_strerror(errn TSRMLS_CC))
 
 static int le_socket;
-#define le_socket_name "Socket"
+#define le_socket_name php_sockets_le_socket_name
 
 /* {{{ arginfo */
 ZEND_BEGIN_ARG_INFO_EX(arginfo_socket_select, 0, 0, 4)
@@ -294,7 +300,7 @@ const zend_function_entry sockets_functions[] = {
 	PHP_FALIAS(socket_getopt, socket_get_option, arginfo_socket_get_option)
 	PHP_FALIAS(socket_setopt, socket_set_option, arginfo_socket_set_option)
 
-	{NULL, NULL, NULL}
+	PHP_FE_END
 };
 /* }}} */
 
@@ -388,22 +394,23 @@ static int php_open_listen_sock(php_socket **php_sock, int port, int backlog TSR
 }
 /* }}} */
 
-static int php_accept_connect(php_socket *in_sock, php_socket **new_sock, struct sockaddr *la TSRMLS_DC) /* {{{ */
+static int php_accept_connect(php_socket *in_sock, php_socket **new_sock, struct sockaddr *la, socklen_t *la_len TSRMLS_DC) /* {{{ */
 {
-	socklen_t	salen;
 	php_socket	*out_sock = (php_socket*)emalloc(sizeof(php_socket));
 
 	*new_sock = out_sock;
-	salen = sizeof(*la);
-	out_sock->blocking = 1;
 
-	out_sock->bsd_socket = accept(in_sock->bsd_socket, la, &salen);
+	out_sock->bsd_socket = accept(in_sock->bsd_socket, la, la_len);
 
 	if (IS_INVALID_SOCKET(out_sock)) {
 		PHP_SOCKET_ERROR(out_sock, "unable to accept incoming connection", errno);
 		efree(out_sock);
 		return 0;
 	}
+
+	out_sock->error = 0;
+	out_sock->blocking = 1;
+	out_sock->type = la->sa_family;
 
 	return 1;
 }
@@ -874,9 +881,10 @@ PHP_FUNCTION(socket_create_listen)
    Accepts a connection on the listening socket fd */
 PHP_FUNCTION(socket_accept)
 {
-	zval				*arg1;
-	php_socket			*php_sock, *new_sock;
-	struct sockaddr_in	sa;
+	zval				 *arg1;
+	php_socket			 *php_sock, *new_sock;
+	php_sockaddr_storage sa;
+	socklen_t			 sa_len = sizeof(sa);
 
 	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "r", &arg1) == FAILURE) {
 		return;
@@ -884,12 +892,9 @@ PHP_FUNCTION(socket_accept)
 
 	ZEND_FETCH_RESOURCE(php_sock, php_socket *, &arg1, -1, le_socket_name, le_socket);
 
-	if (!php_accept_connect(php_sock, &new_sock, (struct sockaddr *) &sa TSRMLS_CC)) {
+	if (!php_accept_connect(php_sock, &new_sock, (struct sockaddr*)&sa, &sa_len TSRMLS_CC)) {
 		RETURN_FALSE;
 	}
-
-	new_sock->error = 0;
-	new_sock->blocking = 1;
 
 	ZEND_REGISTER_RESOURCE(return_value, new_sock, le_socket);
 }
@@ -911,8 +916,10 @@ PHP_FUNCTION(socket_set_nonblock)
 	if (php_set_sock_blocking(php_sock->bsd_socket, 0 TSRMLS_CC) == SUCCESS) {
 		php_sock->blocking = 0;
 		RETURN_TRUE;
+	} else {
+		PHP_SOCKET_ERROR(php_sock, "unable to set nonblocking mode", errno);
+		RETURN_FALSE;
 	}
-	RETURN_FALSE;
 }
 /* }}} */
 
@@ -932,8 +939,10 @@ PHP_FUNCTION(socket_set_block)
 	if (php_set_sock_blocking(php_sock->bsd_socket, 1 TSRMLS_CC) == SUCCESS) {
 		php_sock->blocking = 1;
 		RETURN_TRUE;
+	} else {
+		PHP_SOCKET_ERROR(php_sock, "unable to set blocking mode", errno);
+		RETURN_FALSE;
 	}
-	RETURN_FALSE;
 }
 /* }}} */
 
@@ -1327,6 +1336,11 @@ PHP_FUNCTION(socket_connect)
 			break;
 
 		case AF_UNIX:
+			if (addr_len >= sizeof(s_un.sun_path)) {
+				php_error_docref(NULL TSRMLS_CC, E_WARNING, "Path too long");
+				RETURN_FALSE;
+			}
+				
 			memset(&s_un, 0, sizeof(struct sockaddr_un));
 
 			s_un.sun_family = AF_UNIX;

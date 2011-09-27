@@ -5,26 +5,25 @@ ocisetprefetch()
 --FILE--
 <?php
 
-require dirname(__FILE__)."/connect.inc";
-require dirname(__FILE__).'/create_table.inc';
+require(dirname(__FILE__)."/connect.inc");
 
-$insert_sql = "INSERT INTO ".$schema.$table_name." (id, value) VALUES (1,1)";
+$stmtarray = array(
+    "drop table prefetch_old_tab",
+    "create table prefetch_old_tab (id number, value number)",
+    "insert into prefetch_old_tab (id, value) values (1,1)",
+    "insert into prefetch_old_tab (id, value) values (1,1)",
+    "insert into prefetch_old_tab (id, value) values (1,1)",
+);
 
-if (!($s = ociparse($c, $insert_sql))) {
-	die("ociparse(insert) failed!\n");
-}
+oci8_test_sql_execute($c, $stmtarray);
 
-for ($i = 0; $i<3; $i++) {
-	if (!ociexecute($s)) {
-		die("ociexecute(insert) failed!\n");
-	}
-}
+// Run Test
 
 if (!ocicommit($c)) {
 	die("ocicommit() failed!\n");
 }
 
-$select_sql = "SELECT * FROM ".$schema.$table_name."";
+$select_sql = "select * from prefetch_old_tab";
 
 if (!($s = ociparse($c, $select_sql))) {
 	die("ociparse(select) failed!\n");
@@ -37,10 +36,16 @@ if (!ociexecute($s)) {
 }
 
 var_dump(ocifetch($s));
-
 var_dump(ocirowcount($s));
 
-require dirname(__FILE__).'/drop_table.inc';
+
+// Cleanup
+
+$stmtarray = array(
+    "drop table prefetch_old_tab"
+);
+
+oci8_test_sql_execute($c, $stmtarray);
 	
 echo "Done\n";
 ?>

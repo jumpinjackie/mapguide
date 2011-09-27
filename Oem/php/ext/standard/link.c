@@ -2,7 +2,7 @@
    +----------------------------------------------------------------------+
    | PHP Version 5                                                        |
    +----------------------------------------------------------------------+
-   | Copyright (c) 1997-2009 The PHP Group                                |
+   | Copyright (c) 1997-2011 The PHP Group                                |
    +----------------------------------------------------------------------+
    | This source file is subject to version 3.01 of the PHP license,      |
    | that is bundled with this package in the file LICENSE, and is        |
@@ -16,7 +16,7 @@
    +----------------------------------------------------------------------+
  */
 
-/* $Id: link.c 272370 2008-12-31 11:15:49Z sebastian $ */
+/* $Id: link.c 306939 2011-01-01 02:19:59Z felipe $ */
 
 #include "php.h"
 #include "php_filestat.h"
@@ -64,6 +64,10 @@ PHP_FUNCTION(readlink)
 		return;
 	}
 
+	if (strlen(link) != link_len) {
+		RETURN_FALSE;
+	}
+
 	if (PG(safe_mode) && !php_checkuid(link, NULL, CHECKUID_CHECK_FILE_AND_DIR)) {
 		RETURN_FALSE;
 	}
@@ -72,7 +76,7 @@ PHP_FUNCTION(readlink)
 		RETURN_FALSE;
 	}
 
-	ret = readlink(link, buff, MAXPATHLEN-1);
+	ret = php_sys_readlink(link, buff, MAXPATHLEN-1);
 
 	if (ret == -1) {
 		php_error_docref(NULL TSRMLS_CC, E_WARNING, "%s", strerror(errno));
@@ -122,6 +126,14 @@ PHP_FUNCTION(symlink)
 
 	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "ss", &topath, &topath_len, &frompath, &frompath_len) == FAILURE) {
 		return;
+	}
+
+	if (strlen(topath) != topath_len) {
+		RETURN_FALSE;
+	}
+
+	if (strlen(frompath) != frompath_len) {
+		RETURN_FALSE;
 	}
 	
 	if (!expand_filepath(frompath, source_p TSRMLS_CC)) {
@@ -186,6 +198,14 @@ PHP_FUNCTION(link)
 
 	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "ss", &topath, &topath_len, &frompath, &frompath_len) == FAILURE) {
 		return;
+	}
+
+	if (strlen(topath) != topath_len) {
+		RETURN_FALSE;
+	}
+
+	if (strlen(frompath) != frompath_len) {
+		RETURN_FALSE;
 	}
 
 	if (!expand_filepath(frompath, source_p TSRMLS_CC) || !expand_filepath(topath, dest_p TSRMLS_CC)) {

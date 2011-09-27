@@ -2,7 +2,7 @@
    +----------------------------------------------------------------------+
    | PHP Version 5                                                        |
    +----------------------------------------------------------------------+
-   | Copyright (c) 1997-2009 The PHP Group                                |
+   | Copyright (c) 1997-2011 The PHP Group                                |
    +----------------------------------------------------------------------+
    | This source file is subject to version 3.01 of the PHP license,      |
    | that is bundled with this package in the file LICENSE, and is        |
@@ -16,7 +16,7 @@
    +----------------------------------------------------------------------+
  */
 
-/* $Id: php_spl.c 283179 2009-06-30 17:14:37Z cseiler $ */
+/* $Id: php_spl.c 313665 2011-07-25 11:42:53Z felipe $ */
 
 #ifdef HAVE_CONFIG_H
 #include "config.h"
@@ -231,6 +231,17 @@ static int spl_autoload(const char *class_name, const char * lc_name, int class_
 
 	class_file_len = spprintf(&class_file, 0, "%s%s", lc_name, file_extension);
 
+#if DEFAULT_SLASH != '\\'
+	{
+		char *ptr = class_file;
+		char *end = ptr + class_file_len;
+		
+		while ((ptr = memchr(ptr, '\\', (end - ptr))) != NULL) {
+			*ptr = DEFAULT_SLASH;
+		}
+	}
+#endif
+
 	ret = php_stream_open_for_zend_ex(class_file, &file_handle, ENFORCE_SAFE_MODE|USE_PATH|STREAM_OPEN_FOR_INCLUDE TSRMLS_CC);
 
 	if (ret == SUCCESS) {
@@ -328,14 +339,13 @@ PHP_FUNCTION(spl_autoload)
  Register and return default file extensions for spl_autoload */
 PHP_FUNCTION(spl_autoload_extensions)
 {
-	char *file_exts;
+	char *file_exts = NULL;
 	int file_exts_len;
 
-	if (ZEND_NUM_ARGS() > 0) {
-		if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "s", &file_exts, &file_exts_len) == FAILURE) {
-			return;
-		}
-	
+	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "|s", &file_exts, &file_exts_len) == FAILURE) {
+		return;
+	}
+	if (file_exts) {
 		if (SPL_G(autoload_extensions)) {
 			efree(SPL_G(autoload_extensions));
 		}
@@ -658,6 +668,10 @@ PHP_FUNCTION(spl_autoload_functions)
 	HashPosition function_pos;
 	autoload_func_info *alfi;
 
+	if (zend_parse_parameters_none() == FAILURE) {
+		return;
+	}
+	
 	if (!EG(autoload_func)) {
 		if (zend_hash_find(EG(function_table), ZEND_AUTOLOAD_FUNC_NAME, sizeof(ZEND_AUTOLOAD_FUNC_NAME), (void **) &fptr) == SUCCESS) {
 			array_init(return_value);
@@ -863,7 +877,7 @@ const zend_function_entry spl_functions[] = {
 	PHP_FE(iterator_count,          arginfo_iterator)
 	PHP_FE(iterator_apply,          arginfo_iterator_apply)
 #endif /* SPL_ITERATORS_H */
-	{NULL, NULL, NULL}
+	PHP_FE_END
 };
 /* }}} */
 

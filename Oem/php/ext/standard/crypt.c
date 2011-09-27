@@ -2,7 +2,7 @@
    +----------------------------------------------------------------------+
    | PHP Version 5                                                        |
    +----------------------------------------------------------------------+
-   | Copyright (c) 1997-2009 The PHP Group                                |
+   | Copyright (c) 1997-2011 The PHP Group                                |
    +----------------------------------------------------------------------+
    | This source file is subject to version 3.01 of the PHP license,      |
    | that is bundled with this package in the file LICENSE, and is        |
@@ -15,10 +15,11 @@
    | Authors: Stig Bakken <ssb@php.net>                                   |
    |          Zeev Suraski <zeev@zend.com>                                |
    |          Rasmus Lerdorf <rasmus@php.net>                             |
+   |          Pierre Joye <pierre@php.net>                                |
    +----------------------------------------------------------------------+
 */
 
-/* $Id: crypt.c 272370 2008-12-31 11:15:49Z sebastian $ */
+/* $Id: crypt.c 314641 2011-08-09 12:16:58Z laruence $ */
 
 #include <stdlib.h>
 
@@ -28,7 +29,7 @@
 #if HAVE_UNISTD_H
 #include <unistd.h>
 #endif
-#ifdef PHP_USE_PHP_CRYPT_R
+#if PHP_USE_PHP_CRYPT_R
 # include "php_crypt_r.h"
 # include "crypt_freesec.h"
 #else
@@ -82,6 +83,12 @@
 #define PHP_MAX_SALT_LEN 60
 #endif
 
+#if PHP_SHA512_CRYPT
+#undef PHP_MAX_SALT_LEN
+#define PHP_MAX_SALT_LEN 123
+#endif
+
+
 /* If the configure-time checks fail, we provide DES.
  * XXX: This is a hack. Fix the real problem! */
 
@@ -101,7 +108,15 @@ PHP_MINIT_FUNCTION(crypt) /* {{{ */
 	REGISTER_LONG_CONSTANT("CRYPT_MD5", PHP_MD5_CRYPT, CONST_CS | CONST_PERSISTENT);
 	REGISTER_LONG_CONSTANT("CRYPT_BLOWFISH", PHP_BLOWFISH_CRYPT, CONST_CS | CONST_PERSISTENT);
 
-#ifdef PHP_USE_PHP_CRYPT_R
+#ifdef PHP_SHA256_CRYPT
+   REGISTER_LONG_CONSTANT("CRYPT_SHA256", PHP_SHA256_CRYPT, CONST_CS | CONST_PERSISTENT);
+#endif
+
+#ifdef PHP_SHA512_CRYPT
+   REGISTER_LONG_CONSTANT("CRYPT_SHA512", PHP_SHA512_CRYPT, CONST_CS | CONST_PERSISTENT);
+#endif
+
+#if PHP_USE_PHP_CRYPT_R
 	php_init_crypt_r();
 #endif
 
@@ -111,7 +126,7 @@ PHP_MINIT_FUNCTION(crypt) /* {{{ */
 
 PHP_MSHUTDOWN_FUNCTION(crypt) /* {{{ */
 {
-#ifdef PHP_USE_PHP_CRYPT_R
+#if PHP_USE_PHP_CRYPT_R
 	php_shutdown_crypt_r();
 #endif
 
@@ -137,7 +152,7 @@ PHP_FUNCTION(crypt)
 	char salt[PHP_MAX_SALT_LEN + 1];
 	char *str, *salt_in = NULL;
 	int str_len, salt_in_len = 0;
-
+	char *crypt_res;
 	salt[0] = salt[PHP_MAX_SALT_LEN] = '\0';
 
 	/* This will produce suitable results if people depend on DES-encryption
@@ -155,14 +170,17 @@ PHP_FUNCTION(crypt)
 	/* The automatic salt generation covers standard DES, md5-crypt and Blowfish (simple) */
 	if (!*salt) {
 #if PHP_MD5_CRYPT
-		strcpy(salt, "$1$");
+		strncpy(salt, "$1$", PHP_MAX_SALT_LEN);
 		php_to64(&salt[3], PHP_CRYPT_RAND, 4);
 		php_to64(&salt[7], PHP_CRYPT_RAND, 4);
-		strcpy(&salt[11], "$");
+		strncpy(&salt[11], "$", PHP_MAX_SALT_LEN - 11);
 #elif PHP_STD_DES_CRYPT
 		php_to64(&salt[0], PHP_CRYPT_RAND, 2);
 		salt[2] = '\0';
 #endif
+		salt_in_len = strlen(salt);
+	} else {
+		salt_in_len = MIN(PHP_MAX_SALT_LEN, salt_in_len);
 	}
 
 /* Windows (win32/crypt) has a stripped down version of libxcrypt and 
@@ -175,10 +193,56 @@ PHP_FUNCTION(crypt)
 			char output[MD5_HASH_MAX_LEN];
 
 			RETURN_STRING(php_md5_crypt_r(str, salt, output), 1);
-		} else  if (
+		} else if (salt[0]=='$' && salt[1]=='6' && salt[2]=='$') {
+			const char sha512_salt_prefix[] = "$6$";
+			const char sha512_rounds_prefix[] = "rounds=";
+			char *output;
+			int needed = (sizeof(sha512_salt_prefix) - 1
+						+ sizeof(sha512_rounds_prefix) + 9 + 1
+						+ strlen(salt) + 1 + 43 + 1);
+			output = emalloc(needed * sizeof(char *));
+			salt[salt_in_len] = '\0';
+
+			crypt_res = php_sha512_crypt_r(str, salt, output, needed);
+			if (!crypt_res) {
+				if (salt[0]=='*' && salt[1]=='0') {
+					RETVAL_STRING("*1", 1);
+				} else {
+					RETVAL_STRING("*0", 1);
+				}
+			} else {
+				RETVAL_STRING(output, 1);
+			}
+
+			memset(output, 0, PHP_MAX_SALT_LEN + 1);
+			efree(output);
+		} else if (salt[0]=='$' && salt[1]=='5' && salt[2]=='$') {
+			const char sha256_salt_prefix[] = "$5$";
+			const char sha256_rounds_prefix[] = "rounds=";
+			char *output;
+			int needed = (sizeof(sha256_salt_prefix) - 1
+						+ sizeof(sha256_rounds_prefix) + 9 + 1
+						+ strlen(salt) + 1 + 43 + 1);
+			output = emalloc(needed * sizeof(char *));
+			salt[salt_in_len] = '\0';
+
+			crypt_res = php_sha256_crypt_r(str, salt, output, needed);
+			if (!crypt_res) {
+				if (salt[0]=='*' && salt[1]=='0') {
+					RETVAL_STRING("*1", 1);
+				} else {
+					RETVAL_STRING("*0", 1);
+				}
+			} else {
+				RETVAL_STRING(output, 1);
+			}
+
+			memset(output, 0, PHP_MAX_SALT_LEN + 1);
+			efree(output);
+		} else if (
 				salt[0] == '$' &&
 				salt[1] == '2' &&
-				salt[2] == 'a' &&
+				salt[2] >= 'a' && salt[2] <= 'z' &&
 				salt[3] == '$' &&
 				salt[4] >= '0' && salt[4] <= '3' &&
 				salt[5] >= '0' && salt[5] <= '9' &&
@@ -186,14 +250,33 @@ PHP_FUNCTION(crypt)
 			char output[PHP_MAX_SALT_LEN + 1];
 
 			memset(output, 0, PHP_MAX_SALT_LEN + 1);
-			php_crypt_blowfish_rn(str, salt, output, sizeof(output));
 
-			RETVAL_STRING(output, 1);
+			crypt_res = php_crypt_blowfish_rn(str, salt, output, sizeof(output));
+			if (!crypt_res) {
+				if (salt[0]=='*' && salt[1]=='0') {
+					RETVAL_STRING("*1", 1);
+				} else {
+					RETVAL_STRING("*0", 1);
+				}
+			} else {
+				RETVAL_STRING(output, 1);
+			}
+
 			memset(output, 0, PHP_MAX_SALT_LEN + 1);
 		} else {
 			memset(&buffer, 0, sizeof(buffer));
 			_crypt_extended_init_r();
-			RETURN_STRING(_crypt_extended_r(str, salt, &buffer), 1);
+
+			crypt_res = _crypt_extended_r(str, salt, &buffer);
+			if (!crypt_res) {
+				if (salt[0]=='*' && salt[1]=='0') {
+					RETURN_STRING("*1", 1);
+				} else {
+					RETURN_STRING("*0", 1);
+				}
+			} else {
+				RETURN_STRING(crypt_res, 1);
+			}
 		}
 	}
 #else
@@ -208,8 +291,16 @@ PHP_FUNCTION(crypt)
 #  else
 #    error Data struct used by crypt_r() is unknown. Please report.
 #  endif
-
-		RETURN_STRING(crypt_r(str, salt, &buffer), 1);
+		crypt_res = crypt_r(str, salt, &buffer);
+		if (!crypt_res) {
+				if (salt[0]=='*' && salt[1]=='0') {
+					RETURN_STRING("*1", 1);
+				} else {
+					RETURN_STRING("*0", 1);
+				}
+		} else {
+			RETURN_STRING(crypt_res, 1);
+		}
 	}
 # endif
 #endif

@@ -2,7 +2,7 @@
    +----------------------------------------------------------------------+
    | Zend Engine                                                          |
    +----------------------------------------------------------------------+
-   | Copyright (c) 1998-2009 Zend Technologies Ltd. (http://www.zend.com) |
+   | Copyright (c) 1998-2011 Zend Technologies Ltd. (http://www.zend.com) |
    +----------------------------------------------------------------------+
    | This source file is subject to version 2.00 of the Zend license,     |
    | that is bundled with this package in the file LICENSE, and is        |
@@ -17,7 +17,7 @@
    +----------------------------------------------------------------------+
 */
 
-/* $Id: zend_execute_API.c 287466 2009-08-18 20:51:49Z stas $ */
+/* $Id: zend_execute_API.c 310938 2011-05-11 06:58:33Z dmitry $ */
 
 #include <stdio.h>
 #include <signal.h>
@@ -74,6 +74,10 @@ static void zend_handle_sigsegv(int dummy) /* {{{ */
 				get_active_function_name(TSRMLS_C),
 				zend_get_executed_filename(TSRMLS_C),
 				zend_get_executed_lineno(TSRMLS_C));
+/* See http://support.microsoft.com/kb/190351 */
+#ifdef PHP_WIN32
+		fflush(stderr);
+#endif
 	}
 	if (original_sigsegv_handler!=zend_handle_sigsegv) {
 		original_sigsegv_handler(dummy);
@@ -292,7 +296,9 @@ void shutdown_executor(TSRMLS_D) /* {{{ */
 			zend_hash_reverse_apply(EG(function_table), (apply_func_t) zend_cleanup_function_data TSRMLS_CC);
 		}
 		zend_hash_apply(EG(class_table), (apply_func_t) zend_cleanup_class_data TSRMLS_CC);
+	} zend_end_try();
 
+	zend_try {
 		zend_vm_stack_destroy(TSRMLS_C);
 
 		zend_objects_store_free_object_storage(&EG(objects_store) TSRMLS_CC);
@@ -407,6 +413,10 @@ ZEND_API char *zend_get_executed_filename(TSRMLS_D) /* {{{ */
 
 ZEND_API uint zend_get_executed_lineno(TSRMLS_D) /* {{{ */
 {
+	if(EG(exception) && EG(opline_ptr) && active_opline->opcode == ZEND_HANDLE_EXCEPTION && 
+		active_opline->lineno == 0 && EG(opline_before_exception)) {
+		return EG(opline_before_exception)->lineno;
+	}
 	if (EG(opline_ptr)) {
 		return active_opline->lineno;
 	} else {
@@ -423,26 +433,28 @@ ZEND_API zend_bool zend_is_executing(TSRMLS_D) /* {{{ */
 
 ZEND_API void _zval_ptr_dtor(zval **zval_ptr ZEND_FILE_LINE_DC) /* {{{ */
 {
+	zval *zv = *zval_ptr;
+
 #if DEBUG_ZEND>=2
 	printf("Reducing refcount for %x (%x): %d->%d\n", *zval_ptr, zval_ptr, Z_REFCOUNT_PP(zval_ptr), Z_REFCOUNT_PP(zval_ptr) - 1);
 #endif
-	Z_DELREF_PP(zval_ptr);
-	if (Z_REFCOUNT_PP(zval_ptr) == 0) {
+	Z_DELREF_P(zv);
+	if (Z_REFCOUNT_P(zv) == 0) {
 		TSRMLS_FETCH();
 
-		if (*zval_ptr != &EG(uninitialized_zval)) {
-			GC_REMOVE_ZVAL_FROM_BUFFER(*zval_ptr);
-			zval_dtor(*zval_ptr);
-			efree_rel(*zval_ptr);
+		if (zv != &EG(uninitialized_zval)) {
+			GC_REMOVE_ZVAL_FROM_BUFFER(zv);
+			zval_dtor(zv);
+			efree_rel(zv);
 		}
 	} else {
 		TSRMLS_FETCH();
 
-		if (Z_REFCOUNT_PP(zval_ptr) == 1) {
-			Z_UNSET_ISREF_PP(zval_ptr);
+		if (Z_REFCOUNT_P(zv) == 1) {
+			Z_UNSET_ISREF_P(zv);
 		}
 
-		GC_ZVAL_CHECK_POSSIBLE_ROOT(*zval_ptr);
+		GC_ZVAL_CHECK_POSSIBLE_ROOT(zv);
 	}
 }
 /* }}} */
@@ -676,10 +688,22 @@ ZEND_API int zval_update_constant_ex(zval **pp, void *arg, zend_class_entry *sco
 			}
 			zval_dtor(&const_value);
 		}
-		zend_hash_apply_with_argument(Z_ARRVAL_P(p), (apply_func_arg_t) zval_update_constant, (void *) 1 TSRMLS_CC);
+		zend_hash_apply_with_argument(Z_ARRVAL_P(p), (apply_func_arg_t) zval_update_constant_inline_change, (void *) scope TSRMLS_CC);
 		zend_hash_internal_pointer_reset(Z_ARRVAL_P(p));
 	}
 	return 0;
+}
+/* }}} */
+
+ZEND_API int zval_update_constant_inline_change(zval **pp, void *scope TSRMLS_DC) /* {{{ */
+{
+	return zval_update_constant_ex(pp, (void*)1, scope TSRMLS_CC);
+}
+/* }}} */
+
+ZEND_API int zval_update_constant_no_inline_change(zval **pp, void *scope TSRMLS_DC) /* {{{ */
+{
+	return zval_update_constant_ex(pp, (void*)0, scope TSRMLS_CC);
 }
 /* }}} */
 
@@ -837,7 +861,8 @@ int zend_call_function(zend_fcall_info *fci, zend_fcall_info_cache *fci_cache TS
 	for (i=0; i<fci->param_count; i++) {
 		zval *param;
 
-        	if(EX(function_state).function->type == ZEND_INTERNAL_FUNCTION 
+		if (EX(function_state).function->type == ZEND_INTERNAL_FUNCTION 
+			&& (EX(function_state).function->common.fn_flags & ZEND_ACC_CALL_VIA_HANDLER) == 0 
 			&& !ARG_SHOULD_BE_SENT_BY_REF(EX(function_state).function, i + 1)
 			&& PZVAL_IS_REF(*fci->params[i])) {
 			SEPARATE_ZVAL(fci->params[i]);
@@ -849,7 +874,8 @@ int zend_call_function(zend_fcall_info *fci, zend_fcall_info_cache *fci_cache TS
 			if (Z_REFCOUNT_PP(fci->params[i]) > 1) {
 				zval *new_zval;
 
-				if (fci->no_separation) {
+				if (fci->no_separation &&
+				    !ARG_MAY_BE_SENT_BY_REF(EX(function_state).function, i + 1)) {
 					if(i) {
 						/* hack to clean up the stack */
 						zend_vm_stack_push_nocheck((void *) (zend_uintptr_t)i TSRMLS_CC);
@@ -1071,7 +1097,11 @@ ZEND_API int zend_lookup_class_ex(const char *name, int name_length, int use_aut
 
 	ALLOC_ZVAL(class_name_ptr);
 	INIT_PZVAL(class_name_ptr);
-	ZVAL_STRINGL(class_name_ptr, name, name_length, 1);
+	if (name[0] == '\\') {
+		ZVAL_STRINGL(class_name_ptr, name+1, name_length-1, 1);
+	} else {
+		ZVAL_STRINGL(class_name_ptr, name, name_length, 1);
+	}
 
 	args[0] = &class_name_ptr;
 
@@ -1481,7 +1511,7 @@ void zend_unset_timeout(TSRMLS_D) /* {{{ */
 	}
 #else
 #	ifdef HAVE_SETITIMER
-	{
+	if (EG(timeout_seconds)) {
 		struct itimerval no_timeout;
 
 		no_timeout.it_value.tv_sec = no_timeout.it_value.tv_usec = no_timeout.it_interval.tv_sec = no_timeout.it_interval.tv_usec = 0;

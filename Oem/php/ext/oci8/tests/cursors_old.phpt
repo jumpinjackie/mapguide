@@ -1,30 +1,30 @@
 --TEST--
 fetching cursor from a statement
 --SKIPIF--
-<?php if (!extension_loaded('oci8')) die("skip no oci8 extension"); ?>
+<?php
+$target_dbs = array('oracledb' => true, 'timesten' => false);  // test runs on these DBs
+require(dirname(__FILE__).'/skipif.inc');
+?> 
 --FILE--
 <?php
 
-require dirname(__FILE__)."/connect.inc";
-require dirname(__FILE__)."/create_table.inc";
+require(dirname(__FILE__)."/connect.inc");
 
-$insert_sql = "INSERT INTO ".$schema.$table_name." (id, value) VALUES (1,1)";
+// Initialize
 
-if (!($s = ociparse($c, $insert_sql))) {
-	die("ociparse(insert) failed!\n");
-}
+$stmtarray = array(
+    "drop table cursors_old_tab",
+    "create table cursors_old_tab (id number, value number)",
+    "insert into cursors_old_tab (id, value) values (1,1)",
+    "insert into cursors_old_tab (id, value) values (1,1)",
+    "insert into cursors_old_tab (id, value) values (1,1)",
+);
 
-for ($i = 0; $i<3; $i++) {
-	if (!ociexecute($s)) {
-		die("ociexecute(insert) failed!\n");
-	}
-}
+oci8_test_sql_execute($c, $stmtarray);
 
-if (!ocicommit($c)) {
-	die("ocicommit() failed!\n");
-}
+// Run Test
 
-$sql = "select CURSOR(select * from ".$schema.$table_name.") as curs FROM dual";
+$sql = "select cursor(select * from cursors_old_tab) as curs from dual";
 $stmt = ociparse($c, $sql);
 
 ociexecute($stmt);
@@ -39,26 +39,32 @@ while ($result = ocifetchinto($stmt, $data, OCI_ASSOC)) {
 	var_dump(ocicancel($data["CURS"]));
 }
 
-require dirname(__FILE__)."/drop_table.inc";
+// Cleanup
+
+$stmtarray = array(
+    "drop table cursors_old_tab"
+);
+
+oci8_test_sql_execute($c, $stmtarray);
 
 echo "Done\n";
 
 ?>
 --EXPECTF--
 array(2) {
-  ["ID"]=>
-  string(1) "1"
-  ["VALUE"]=>
-  string(1) "1"
+  [%u|b%"ID"]=>
+  %unicode|string%(1) "1"
+  [%u|b%"VALUE"]=>
+  %unicode|string%(1) "1"
 }
 bool(true)
 
-Warning: ocifetchinto():%sORA-01002: fetch out of sequence in %scursors_old.php on line %d
+Warning: ocifetchinto():%sORA-01002: %s in %scursors_old.php on line %d
 array(2) {
-  ["ID"]=>
-  string(1) "1"
-  ["VALUE"]=>
-  string(1) "1"
+  [%u|b%"ID"]=>
+  %unicode|string%(1) "1"
+  [%u|b%"VALUE"]=>
+  %unicode|string%(1) "1"
 }
 bool(true)
 Done

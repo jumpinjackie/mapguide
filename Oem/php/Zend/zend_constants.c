@@ -2,7 +2,7 @@
    +----------------------------------------------------------------------+
    | Zend Engine                                                          |
    +----------------------------------------------------------------------+
-   | Copyright (c) 1998-2009 Zend Technologies Ltd. (http://www.zend.com) |
+   | Copyright (c) 1998-2011 Zend Technologies Ltd. (http://www.zend.com) |
    +----------------------------------------------------------------------+
    | This source file is subject to version 2.00 of the Zend license,     |
    | that is bundled with this package in the file LICENSE, and is        | 
@@ -17,7 +17,7 @@
    +----------------------------------------------------------------------+
 */
 
-/* $Id: zend_constants.c 273405 2009-01-12 21:54:37Z stas $ */
+/* $Id: zend_constants.c 307522 2011-01-16 20:39:22Z stas $ */
 
 #include "zend.h"
 #include "zend_constants.h"
@@ -113,6 +113,8 @@ void zend_register_standard_constants(TSRMLS_D)
 
 	REGISTER_MAIN_LONG_CONSTANT("E_ALL", E_ALL, CONST_PERSISTENT | CONST_CS);
 
+	REGISTER_MAIN_LONG_CONSTANT("DEBUG_BACKTRACE_PROVIDE_OBJECT", DEBUG_BACKTRACE_PROVIDE_OBJECT, CONST_PERSISTENT | CONST_CS);
+	REGISTER_MAIN_LONG_CONSTANT("DEBUG_BACKTRACE_IGNORE_ARGS", DEBUG_BACKTRACE_IGNORE_ARGS, CONST_PERSISTENT | CONST_CS);
 	/* true/false constants */
 	{
 		zend_constant c;
@@ -434,8 +436,16 @@ ZEND_API int zend_register_constant(zend_constant *c TSRMLS_DC)
 		}
 	}
 
-	if ((strncmp(name, "__COMPILER_HALT_OFFSET__", sizeof("__COMPILER_HALT_OFFSET__") - 1) == 0) ||
-			zend_hash_add(EG(zend_constants), name, c->name_len, (void *) c, sizeof(zend_constant), NULL)==FAILURE) {
+	/* Check if the user is trying to define the internal pseudo constant name __COMPILER_HALT_OFFSET__ */
+	if ((c->name_len == sizeof("__COMPILER_HALT_OFFSET__")
+		&& !memcmp(name, "__COMPILER_HALT_OFFSET__", sizeof("__COMPILER_HALT_OFFSET__")-1))
+		|| zend_hash_add(EG(zend_constants), name, c->name_len, (void *) c, sizeof(zend_constant), NULL)==FAILURE) {
+		
+		/* The internal __COMPILER_HALT_OFFSET__ is prefixed by NULL byte */
+		if (c->name[0] == '\0' && c->name_len > sizeof("\0__COMPILER_HALT_OFFSET__")
+			&& memcmp(name, "\0__COMPILER_HALT_OFFSET__", sizeof("\0__COMPILER_HALT_OFFSET__")) == 0) {
+			name++;
+		}
 		zend_error(E_NOTICE,"Constant %s already defined", name);
 		free(c->name);
 		if (!(c->flags & CONST_PERSISTENT)) {

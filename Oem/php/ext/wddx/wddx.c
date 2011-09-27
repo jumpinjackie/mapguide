@@ -2,7 +2,7 @@
    +----------------------------------------------------------------------+
    | PHP Version 5                                                        |
    +----------------------------------------------------------------------+
-   | Copyright (c) 1997-2009 The PHP Group                                |
+   | Copyright (c) 1997-2011 The PHP Group                                |
    +----------------------------------------------------------------------+
    | This source file is subject to version 3.01 of the PHP license,      |
    | that is bundled with this package in the file LICENSE, and is        |
@@ -16,7 +16,7 @@
    +----------------------------------------------------------------------+
  */
 
-/* $Id: wddx.c 282200 2009-06-16 02:54:26Z felipe $ */
+/* $Id: wddx.c 313665 2011-07-25 11:42:53Z felipe $ */
 
 #ifdef HAVE_CONFIG_H
 #include "config.h"
@@ -141,7 +141,7 @@ const zend_function_entry wddx_functions[] = {
 	PHP_FE(wddx_packet_end,		arginfo_wddx_packet_end)
 	PHP_FE(wddx_add_vars,		arginfo_wddx_add_vars)
 	PHP_FE(wddx_deserialize,	arginfo_wddx_deserialize)
-	{NULL, NULL, NULL}
+	PHP_FE_END
 };
 /* }}} */
 
@@ -785,6 +785,7 @@ static void php_wddx_push_element(void *user_data, const XML_Char *name, const X
 		ALLOC_ZVAL(ent.data);
 		INIT_PZVAL(ent.data);
 		Z_TYPE_P(ent.data) = IS_LONG;
+		Z_LVAL_P(ent.data) = 0;
 		wddx_stack_push((wddx_stack *)stack, &ent, sizeof(st_entry));
 	} else if (!strcmp(name, EL_BOOLEAN)) {
 		int i;

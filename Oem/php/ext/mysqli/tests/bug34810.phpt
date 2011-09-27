@@ -10,7 +10,7 @@ require_once('skipifconnectfailure.inc');
 
 class DbConnection {
 	public function connect() {
-		include "connect.inc";
+		require_once("connect.inc");
 
 		$link = my_mysqli_connect($host, $user, $passwd, $db, $port, $socket);
 		var_dump($link);
@@ -24,7 +24,24 @@ class DbConnection {
 		$mysql->query("CREATE TABLE test_warnings (a int not null)");
 		$mysql->query("SET sql_mode=''");
 		$mysql->query("INSERT INTO test_warnings VALUES (1),(2),(NULL)");
-		var_dump($mysql->get_warnings());
+
+		$warning = $mysql->get_warnings();
+		if (!$warning)
+			printf("[001] No warning!\n");
+
+		if ($warning->errno == 1048 || $warning->errno == 1253) {
+			/* 1048 - Column 'a' cannot be null, 1263 - Data truncated; NULL supplied to NOT NULL column 'a' at row */
+			if ("HY000" != $warning->sqlstate)
+				printf("[003] Wrong sql state code: %s\n", $warning->sqlstate);
+
+			if ("" == $warning->message)
+				printf("[004] Message string must not be empty\n");
+
+
+		} else {
+			printf("[002] Empty error message!\n");
+			var_dump($warning);
+		}
 	}
 }
 
@@ -35,7 +52,7 @@ echo "Done\n";
 ?>
 --CLEAN--
 <?php
-include "connect.inc";
+require_once("connect.inc");
 if (!$link = my_mysqli_connect($host, $user, $passwd, $db, $port, $socket))
    printf("[c001] [%d] %s\n", mysqli_connect_errno(), mysqli_connect_error());
 
@@ -55,7 +72,7 @@ object(mysqli)#%d (%d) {
   [%u|b%"connect_errno"]=>
   int(0)
   [%u|b%"connect_error"]=>
-  %unicode|string%(0) ""
+  NULL
   [%u|b%"errno"]=>
   int(0)
   [%u|b%"error"]=>
@@ -91,7 +108,7 @@ object(mysqli)#%d (%d) {
   [%u|b%"connect_errno"]=>
   int(0)
   [%u|b%"connect_error"]=>
-  %unicode|string%(0) ""
+  NULL
   [%u|b%"errno"]=>
   int(0)
   [%u|b%"error"]=>
@@ -116,13 +133,5 @@ object(mysqli)#%d (%d) {
   NULL
   [%u|b%"warning_count"]=>
   NULL
-}
-object(mysqli_warning)#%d (%d) {
-  [%u|b%"message"]=>
-  %unicode|string%(25) "Column 'a' cannot be null"
-  [%u|b%"sqlstate"]=>
-  %unicode|string%(5) "HY000"
-  [%u|b%"errno"]=>
-  int(1048)
 }
 Done

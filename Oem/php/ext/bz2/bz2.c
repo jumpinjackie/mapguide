@@ -2,7 +2,7 @@
   +----------------------------------------------------------------------+
   | PHP Version 5                                                        |
   +----------------------------------------------------------------------+
-  | Copyright (c) 1997-2009 The PHP Group                                |
+  | Copyright (c) 1997-2011 The PHP Group                                |
   +----------------------------------------------------------------------+
   | This source file is subject to version 3.01 of the PHP license,      |
   | that is bundled with this package in the file LICENSE, and is        |
@@ -16,7 +16,7 @@
   +----------------------------------------------------------------------+
 */
  
-/* $Id: bz2.c 280600 2009-05-15 17:28:08Z kalle $ */
+/* $Id: bz2.c 313665 2011-07-25 11:42:53Z felipe $ */
 
 #ifdef HAVE_CONFIG_H
 #include "config.h"
@@ -85,20 +85,29 @@ ZEND_BEGIN_ARG_INFO_EX(arginfo_bzdecompress, 0, 0, 1)
 	ZEND_ARG_INFO(0, small)
 ZEND_END_ARG_INFO()
 
+ZEND_BEGIN_ARG_INFO_EX(arginfo_bzwrite, 0, 0, 2)
+	ZEND_ARG_INFO(0, fp)
+	ZEND_ARG_INFO(0, str)
+	ZEND_ARG_INFO(0, length)
+ZEND_END_ARG_INFO()
+
+ZEND_BEGIN_ARG_INFO(arginfo_bzflush, 0)
+	ZEND_ARG_INFO(0, fp)
+ZEND_END_ARG_INFO()
 /* }}} */
 
 static const zend_function_entry bz2_functions[] = {
 	PHP_FE(bzopen,       arginfo_bzopen)
 	PHP_FE(bzread,       arginfo_bzread)
-	PHP_FALIAS(bzwrite,   fwrite,		NULL)
-	PHP_FALIAS(bzflush,   fflush,		NULL)
-	PHP_FALIAS(bzclose,   fclose,		NULL)
+	PHP_FALIAS(bzwrite,   fwrite,		arginfo_bzwrite)
+	PHP_FALIAS(bzflush,   fflush,		arginfo_bzflush)
+	PHP_FALIAS(bzclose,   fclose,		arginfo_bzflush)
 	PHP_FE(bzerrno,      arginfo_bzerrno)
 	PHP_FE(bzerrstr,     arginfo_bzerrstr)
 	PHP_FE(bzerror,      arginfo_bzerror)
 	PHP_FE(bzcompress,   arginfo_bzcompress)
 	PHP_FE(bzdecompress, arginfo_bzdecompress)
-	{NULL, NULL, NULL}
+	PHP_FE_END
 };
 
 zend_module_entry bz2_module_entry = {
@@ -308,7 +317,7 @@ static PHP_MINFO_FUNCTION(bz2)
 {
 	php_info_print_table_start();
 	php_info_print_table_row(2, "BZip2 Support", "Enabled");
-	php_info_print_table_row(2, "Stream Wrapper support", "compress.bz2://");
+	php_info_print_table_row(2, "Stream Wrapper support", "compress.bzip2://");
 	php_info_print_table_row(2, "Stream Filter support", "bzip2.decompress, bzip2.compress");
 	php_info_print_table_row(2, "BZip2 Version", (char *) BZ2_bzlibVersion());
 	php_info_print_table_end();
@@ -378,6 +387,9 @@ static PHP_FUNCTION(bzopen)
 	if (Z_TYPE_PP(file) == IS_STRING) {
 		convert_to_string_ex(file);
 
+		if (strlen(Z_STRVAL_PP(file)) != Z_STRLEN_PP(file)) {
+			RETURN_FALSE;
+		}
 		if (Z_STRLEN_PP(file) == 0) {
 			php_error_docref(NULL TSRMLS_CC, E_WARNING, "filename cannot be empty");
 			RETURN_FALSE;

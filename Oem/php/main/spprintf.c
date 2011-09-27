@@ -2,7 +2,7 @@
    +----------------------------------------------------------------------+
    | PHP Version 5                                                        |
    +----------------------------------------------------------------------+
-   | Copyright (c) 1997-2009 The PHP Group                                |
+   | Copyright (c) 1997-2011 The PHP Group                                |
    +----------------------------------------------------------------------+
    | This source file is subject to version 3.01 of the PHP license,      |
    | that is bundled with this package in the file LICENSE, and is        |
@@ -16,7 +16,7 @@
    +----------------------------------------------------------------------+
 */
 
-/* $Id: spprintf.c 272370 2008-12-31 11:15:49Z sebastian $ */
+/* $Id: spprintf.c 314581 2011-08-09 02:37:02Z pierrick $ */
 
 /* This is the spprintf implementation.
  * It has emerged from apache snprintf. See original header:
@@ -119,8 +119,11 @@
  * NUM_BUF_SIZE is the size of the buffer used for arithmetic conversions
  *
  * XXX: this is a magic number; do not decrease it
+ * Emax = 1023
+ * NDIG = 320
+ * NUM_BUF_SIZE >= strlen("-") + Emax + strlrn(".") + NDIG + strlen("E+1023") + 1;
  */
-#define NUM_BUF_SIZE    512
+#define NUM_BUF_SIZE    2048
 
 /*
  * The INS_CHAR macro inserts a character in the buffer.
@@ -195,7 +198,6 @@ static size_t strnlen(const char *s, size_t maxlen) {
 static void xbuf_format_converter(smart_str *xbuf, const char *fmt, va_list ap) /* {{{ */
 {
 	char *s = NULL;
-	char *q;
 	int s_len, free_zcopy;
 	zval *zvp, zcopy;
 
@@ -285,10 +287,6 @@ static void xbuf_format_converter(smart_str *xbuf, const char *fmt, va_list ap) 
 
 				/*
 				 * Check if a precision was specified
-				 *
-				 * XXX: an unreasonable amount of precision may be specified
-				 * resulting in overflow of num_buf. Currently we
-				 * ignore this possibility.
 				 */
 				if (*fmt == '.') {
 					adjust_precision = YES;
@@ -302,6 +300,10 @@ static void xbuf_format_converter(smart_str *xbuf, const char *fmt, va_list ap) 
 							precision = 0;
 					} else
 						precision = 0;
+					
+					if (precision > FORMAT_CONV_MAX_PRECISION) {
+						precision = FORMAT_CONV_MAX_PRECISION;
+					}
 				} else
 					adjust_precision = NO;
 			} else
@@ -676,7 +678,7 @@ static void xbuf_format_converter(smart_str *xbuf, const char *fmt, va_list ap) 
 
 					s_len = strlen(s);
 
-					if (alternate_form && (q = strchr(s, '.')) == NULL)
+					if (alternate_form && (strchr(s, '.')) == NULL)
 						s[s_len++] = '.';
 					break;
 

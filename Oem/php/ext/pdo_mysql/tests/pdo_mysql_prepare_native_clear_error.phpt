@@ -23,7 +23,7 @@ $db = MySQLPDOTest::factory();
 			printf("[002] Unable to turn on emulated prepared statements\n");
 
 		// INSERT a single row
-		$db->exec('INSERT INTO test(id, label) VALUES (1, "row1")');
+		$db->exec("INSERT INTO test(id, label) VALUES (1, 'row1')");
 
 		$stmt = $db->prepare('SELECT unknown_column FROM test WHERE id > :placeholder ORDER BY id ASC');
 		$stmt->execute(array(':placeholder' => 0));
@@ -66,8 +66,13 @@ $db = MySQLPDOTest::factory();
 			$e->getMessage(), $db->errorCode(), implode(' ', $db->errorInfo()));
 	}
 
-	$db->exec('DROP TABLE IF EXISTS test');
 	print "done!";
+?>
+--CLEAN--
+<?php
+require dirname(__FILE__) . '/mysql_pdo_test.inc';
+$db = MySQLPDOTest::factory();
+$db->exec('DROP TABLE IF EXISTS test');
 ?>
 --EXPECTF--
 Warning: PDOStatement::execute(): SQLSTATE[42S22]: Column not found: 1054 Unknown column 'unknown_column' in 'field list' in %s on line %d

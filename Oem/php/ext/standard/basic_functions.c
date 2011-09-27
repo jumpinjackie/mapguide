@@ -2,7 +2,7 @@
    +----------------------------------------------------------------------+
    | PHP Version 5                                                        |
    +----------------------------------------------------------------------+
-   | Copyright (c) 1997-2008 The PHP Group                                |
+   | Copyright (c) 1997-2011 The PHP Group                                |
    +----------------------------------------------------------------------+
    | This source file is subject to version 3.01 of the PHP license,      |
    | that is bundled with this package in the file LICENSE, and is        |
@@ -17,7 +17,7 @@
    +----------------------------------------------------------------------+
  */
 
-/* $Id: basic_functions.c 289669 2009-10-15 14:10:03Z pajoye $ */
+/* $Id: basic_functions.c 314452 2011-08-08 00:47:40Z laruence $ */
 
 #include "php.h"
 #include "php_streams.h"
@@ -1209,9 +1209,11 @@ ZEND_END_ARG_INFO()
 ZEND_BEGIN_ARG_INFO(arginfo_fstat, 0)
 	ZEND_ARG_INFO(0, fp)
 ZEND_END_ARG_INFO()
-ZEND_BEGIN_ARG_INFO(arginfo_copy, 0)
+
+ZEND_BEGIN_ARG_INFO_EX(arginfo_copy, 0, 0, 2)
 	ZEND_ARG_INFO(0, source_file)
 	ZEND_ARG_INFO(0, destination_file)
+	ZEND_ARG_INFO(0, context)
 ZEND_END_ARG_INFO()
 
 ZEND_BEGIN_ARG_INFO(arginfo_fread, 0)
@@ -1231,6 +1233,7 @@ ZEND_BEGIN_ARG_INFO_EX(arginfo_fgetcsv, 0, 0, 1)
 	ZEND_ARG_INFO(0, length)
 	ZEND_ARG_INFO(0, delimiter)
 	ZEND_ARG_INFO(0, enclosure)
+	ZEND_ARG_INFO(0, escape)
 ZEND_END_ARG_INFO()
 
 #if (!defined(__BEOS__) && !defined(NETWARE) && HAVE_REALPATH) || defined(ZTS)
@@ -1299,6 +1302,12 @@ ZEND_END_ARG_INFO()
 ZEND_BEGIN_ARG_INFO_EX(arginfo_clearstatcache, 0, 0, 0)
 	ZEND_ARG_INFO(0, clear_realpath_cache)
 	ZEND_ARG_INFO(0, filename)
+ZEND_END_ARG_INFO()
+
+ZEND_BEGIN_ARG_INFO(arginfo_realpath_cache_size, 0)
+ZEND_END_ARG_INFO()
+
+ZEND_BEGIN_ARG_INFO(arginfo_realpath_cache_get, 0)
 ZEND_END_ARG_INFO()
 
 ZEND_BEGIN_ARG_INFO(arginfo_fileperms, 0)
@@ -2004,6 +2013,10 @@ ZEND_END_ARG_INFO()
 ZEND_BEGIN_ARG_INFO(arginfo_stream_get_wrappers, 0)
 ZEND_END_ARG_INFO()
 
+ZEND_BEGIN_ARG_INFO(arginfo_stream_resolve_include_path, 0)
+	ZEND_ARG_INFO(0, filename)
+ZEND_END_ARG_INFO()
+
 ZEND_BEGIN_ARG_INFO(arginfo_stream_is_local, 0)
 	ZEND_ARG_INFO(0, stream)
 ZEND_END_ARG_INFO()
@@ -2089,6 +2102,11 @@ ZEND_BEGIN_ARG_INFO(arginfo_stream_set_timeout, 0)
 	ZEND_ARG_INFO(0, microseconds)
 ZEND_END_ARG_INFO()
 #endif
+
+ZEND_BEGIN_ARG_INFO(arginfo_stream_set_read_buffer, 0)
+	ZEND_ARG_INFO(0, fp)
+	ZEND_ARG_INFO(0, buffer)
+ZEND_END_ARG_INFO()
 
 ZEND_BEGIN_ARG_INFO(arginfo_stream_set_write_buffer, 0)
 	ZEND_ARG_INFO(0, fp)
@@ -3094,6 +3112,7 @@ const zend_function_entry basic_functions[] = { /* {{{ */
 	PHP_FE(fputcsv,															arginfo_fputcsv)
 	PHP_FE(flock,															arginfo_flock)
 	PHP_FE(get_meta_tags,													arginfo_get_meta_tags)
+	PHP_FE(stream_set_read_buffer,											arginfo_stream_set_read_buffer)
 	PHP_FE(stream_set_write_buffer,											arginfo_stream_set_write_buffer)
 	PHP_FALIAS(set_file_buffer, stream_set_write_buffer,					arginfo_stream_set_write_buffer)
 
@@ -3109,6 +3128,7 @@ const zend_function_entry basic_functions[] = { /* {{{ */
 	PHP_FE(stream_wrapper_restore,											arginfo_stream_wrapper_restore)
 	PHP_FE(stream_get_wrappers,												arginfo_stream_get_wrappers)
 	PHP_FE(stream_get_transports,											arginfo_stream_get_transports)
+	PHP_FE(stream_resolve_include_path,										arginfo_stream_resolve_include_path)
 	PHP_FE(stream_is_local,												arginfo_stream_is_local)
 	PHP_FE(get_headers,														arginfo_get_headers)
 
@@ -3198,6 +3218,8 @@ const zend_function_entry basic_functions[] = { /* {{{ */
 	PHP_FE(disk_total_space,												arginfo_disk_total_space)
 	PHP_FE(disk_free_space,													arginfo_disk_free_space)
 	PHP_FALIAS(diskfreespace,		disk_free_space,						arginfo_disk_free_space)
+	PHP_FE(realpath_cache_size,												arginfo_realpath_cache_size)
+	PHP_FE(realpath_cache_get,												arginfo_realpath_cache_get)
 
 	/* functions from mail.c */
 	PHP_FE(mail,															arginfo_mail)
@@ -3338,7 +3360,7 @@ const zend_function_entry basic_functions[] = { /* {{{ */
 
 	PHP_FE(sys_get_temp_dir,												arginfo_sys_get_temp_dir)
 
-	{NULL, NULL, NULL}
+	PHP_FE_END
 };
 /* }}} */
 
@@ -3379,7 +3401,7 @@ PHP_INI_END()
 
 static const zend_module_dep standard_deps[] = { /* {{{ */
 	ZEND_MOD_OPTIONAL("session")
-	{NULL, NULL, NULL}
+	ZEND_MOD_END
 };
 /* }}} */
 
@@ -3627,7 +3649,9 @@ PHP_MINIT_FUNCTION(basic) /* {{{ */
 
 	php_register_url_stream_wrapper("php", &php_stream_php_wrapper TSRMLS_CC);
 	php_register_url_stream_wrapper("file", &php_plain_files_wrapper TSRMLS_CC);
+#ifdef HAVE_GLOB
 	php_register_url_stream_wrapper("glob", &php_glob_stream_wrapper TSRMLS_CC);
+#endif
 	php_register_url_stream_wrapper("data", &php_stream_rfc2397_wrapper TSRMLS_CC);
 #ifndef PHP_CURL_URL_WRAPPERS
 	php_register_url_stream_wrapper("http", &php_stream_http_wrapper TSRMLS_CC);
@@ -3779,6 +3803,7 @@ PHP_RSHUTDOWN_FUNCTION(basic) /* {{{ */
 	}
 
 	PHP_RSHUTDOWN(user_filters)(SHUTDOWN_FUNC_ARGS_PASSTHRU);
+	PHP_RSHUTDOWN(browscap)(SHUTDOWN_FUNC_ARGS_PASSTHRU);
 
  	BG(page_uid) = -1;
  	BG(page_gid) = -1;
@@ -3807,7 +3832,7 @@ PHP_FUNCTION(constant)
 		return;
 	}
 
-	if (!zend_get_constant_ex(const_name, const_name_len, return_value, NULL, 0 TSRMLS_CC)) {
+	if (!zend_get_constant_ex(const_name, const_name_len, return_value, NULL, ZEND_FETCH_CLASS_SILENT TSRMLS_CC)) {
 		php_error_docref(NULL TSRMLS_CC, E_WARNING, "Couldn't find constant %s", const_name);
 		RETURN_NULL();
 	}
@@ -4043,7 +4068,7 @@ PHP_FUNCTION(putenv)
 		pe.key_len = strlen(pe.key);
 #ifdef PHP_WIN32
 		if (equals) {
-			if (pe.key_len < setting_len - 2) {
+			if (pe.key_len < setting_len - 1) {
 				value = p + 1;
 			} else {
 				/* empty string*/
@@ -4233,7 +4258,8 @@ PHP_FUNCTION(getopt)
 	/* Get argv from the global symbol table. We calculate argc ourselves
 	 * in order to be on the safe side, even though it is also available
 	 * from the symbol table. */
-	if ((zend_hash_find(HASH_OF(PG(http_globals)[TRACK_VARS_SERVER]), "argv", sizeof("argv"), (void **) &args) != FAILURE ||
+	if (PG(http_globals)[TRACK_VARS_SERVER] &&
+		(zend_hash_find(HASH_OF(PG(http_globals)[TRACK_VARS_SERVER]), "argv", sizeof("argv"), (void **) &args) != FAILURE ||
 		zend_hash_find(&EG(symbol_table), "argv", sizeof("argv"), (void **) &args) != FAILURE) && Z_TYPE_PP(args) == IS_ARRAY
 	) {
 		int pos = 0;
@@ -4291,10 +4317,6 @@ PHP_FUNCTION(getopt)
 		opts += len;
 
 		memset(opts, 0, count * sizeof(opt_struct));
-
-		if (!opts) {
-			RETURN_FALSE;
-		}
 
 		/* Reset the array indexes. */
 		zend_hash_internal_pointer_reset(Z_ARRVAL_P(p_longopts));
@@ -4652,7 +4674,13 @@ PHP_FUNCTION(error_log)
 		opt_err = erropt;
 	}
 
-	if (_php_error_log(opt_err, message, opt, headers TSRMLS_CC) == FAILURE) {
+	if (opt_err == 3 && opt) {
+		if (strlen(opt) != opt_len) {
+			RETURN_FALSE;
+		}
+	}
+
+	if (_php_error_log_ex(opt_err, message, message_len, opt, headers TSRMLS_CC) == FAILURE) {
 		RETURN_FALSE;
 	}
 
@@ -4660,17 +4688,22 @@ PHP_FUNCTION(error_log)
 }
 /* }}} */
 
+/* For BC (not binary-safe!) */
 PHPAPI int _php_error_log(int opt_err, char *message, char *opt, char *headers TSRMLS_DC) /* {{{ */
+{
+	return _php_error_log_ex(opt_err, message, (opt_err == 3) ? strlen(message) : 0, opt, headers TSRMLS_CC);
+}
+/* }}} */
+
+PHPAPI int _php_error_log_ex(int opt_err, char *message, int message_len, char *opt, char *headers TSRMLS_DC) /* {{{ */
 {
 	php_stream *stream = NULL;
 
-	switch (opt_err) {
-
+	switch (opt_err)
+	{
 		case 1:		/*send an email */
-			{
-				if (!php_mail(opt, "PHP error_log message", message, headers, NULL TSRMLS_CC)) {
-					return FAILURE;
-				}
+			if (!php_mail(opt, "PHP error_log message", message, headers, NULL TSRMLS_CC)) {
+				return FAILURE;
 			}
 			break;
 
@@ -4681,11 +4714,13 @@ PHPAPI int _php_error_log(int opt_err, char *message, char *opt, char *headers T
 
 		case 3:		/*save to a file */
 			stream = php_stream_open_wrapper(opt, "a", IGNORE_URL_WIN | ENFORCE_SAFE_MODE | REPORT_ERRORS, NULL);
-			if (!stream)
+			if (!stream) {
 				return FAILURE;
-			php_stream_write(stream, message, strlen(message));
+			}
+			php_stream_write(stream, message, message_len);
 			php_stream_close(stream);
 			break;
+
 		case 4: /* send to SAPI */
 			if (sapi_module.log_message) {
 				sapi_module.log_message(message);
@@ -4693,6 +4728,7 @@ PHPAPI int _php_error_log(int opt_err, char *message, char *opt, char *headers T
 				return FAILURE;
 			}
 			break;
+
 		default:
 			php_log_err(message TSRMLS_CC);
 			break;
@@ -5132,6 +5168,10 @@ PHP_FUNCTION(highlight_file)
 		RETURN_FALSE;
 	}
 
+	if (strlen(filename) != filename_len) {
+		RETURN_FALSE;
+	}
+
 	if (i) {
 		php_start_ob_buffer (NULL, 0, 1 TSRMLS_CC);
 	}
@@ -5175,6 +5215,10 @@ PHP_FUNCTION(php_strip_whitespace)
 	zend_file_handle file_handle = {0};
 
 	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "s", &filename, &filename_len) == FAILURE) {
+		RETURN_FALSE;
+	}
+
+	if (strlen(filename) != filename_len) {
 		RETURN_FALSE;
 	}
 
@@ -5438,6 +5482,11 @@ PHP_FUNCTION(set_include_path)
 		return;
 	}
 
+	/* No nulls allowed in paths */
+	if (strlen(new_value) != new_value_len) {
+		RETURN_FALSE;
+	}
+
 	old_value = zend_ini_string("include_path", sizeof("include_path"), 0);
 	/* copy to return here, because alter might free it! */
 	if (old_value) {
@@ -5560,6 +5609,15 @@ PHP_FUNCTION(getservbyname)
 	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "ss", &name, &name_len, &proto, &proto_len) == FAILURE) {
 		return;
 	}
+
+
+/* empty string behaves like NULL on windows implementation of 
+   getservbyname. Let be portable instead. */
+#ifdef PHP_WIN32
+	if (proto_len == 0) {
+		RETURN_FALSE;
+	}
+#endif
 
 	serv = getservbyname(name, proto);
 
@@ -5739,6 +5797,10 @@ PHP_FUNCTION(is_uploaded_file)
 		return;
 	}
 
+	if (strlen(path) != path_len) {
+		RETURN_FALSE;
+	}
+
 	if (zend_hash_exists(SG(rfc1867_uploaded_files), path, path_len + 1)) {
 		RETURN_TRUE;
 	} else {
@@ -5776,6 +5838,14 @@ PHP_FUNCTION(move_uploaded_file)
 	}
 
 	if (php_check_open_basedir(new_path TSRMLS_CC)) {
+		RETURN_FALSE;
+	}
+
+	if (strlen(path) != path_len) {
+		RETURN_FALSE;
+	}
+
+	if (strlen(new_path) != new_path_len) {
 		RETURN_FALSE;
 	}
 
@@ -5821,9 +5891,7 @@ static void php_simple_ini_parser_cb(zval *arg1, zval *arg2, zval *arg3, int cal
 				break;
 			}
 			ALLOC_ZVAL(element);
-			*element = *arg2;
-			zval_copy_ctor(element);
-			INIT_PZVAL(element);
+			MAKE_COPY_ZVAL(&arg2, element);
 			zend_symtable_update(Z_ARRVAL_P(arr), Z_STRVAL_P(arg1), Z_STRLEN_P(arg1) + 1, &element, sizeof(zval *), NULL);
 			break;
 
@@ -5866,9 +5934,7 @@ static void php_simple_ini_parser_cb(zval *arg1, zval *arg2, zval *arg3, int cal
 			}
 
 			ALLOC_ZVAL(element);
-			*element = *arg2;
-			zval_copy_ctor(element);
-			INIT_PZVAL(element);
+			MAKE_COPY_ZVAL(&arg2, element);
 
 			if (arg3 && Z_STRLEN_P(arg3) > 0) {
 				add_assoc_zval_ex(hash, Z_STRVAL_P(arg3), Z_STRLEN_P(arg3) + 1, element);
@@ -5923,6 +5989,10 @@ PHP_FUNCTION(parse_ini_file)
 
 	if (filename_len == 0) {
 		php_error_docref(NULL TSRMLS_CC, E_WARNING, "Filename cannot be empty!");
+		RETURN_FALSE;
+	}
+
+	if (strlen(filename) != filename_len) {
 		RETURN_FALSE;
 	}
 

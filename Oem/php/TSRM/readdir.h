@@ -26,6 +26,7 @@ struct dirent {
 };
 #endif
 
+
 /* typedef DIR - not the same as Unix */
 typedef struct {
 	HANDLE handle;				/* _findfirst/_findnext handle */

@@ -2,7 +2,7 @@
    +----------------------------------------------------------------------+
    | PHP Version 5                                                        |
    +----------------------------------------------------------------------+
-   | Copyright (c) 1997-2009 The PHP Group                                |
+   | Copyright (c) 1997-2011 The PHP Group                                |
    +----------------------------------------------------------------------+
    | This source file is subject to version 3.01 of the PHP license,      |
    | that is bundled with this package in the file LICENSE, and is        |
@@ -17,7 +17,7 @@
    +----------------------------------------------------------------------+
 */
 
-/* $Id: text.c 272370 2008-12-31 11:15:49Z sebastian $ */
+/* $Id: text.c 313665 2011-07-25 11:42:53Z felipe $ */
 
 #ifdef HAVE_CONFIG_H
 #include "config.h"
@@ -58,7 +58,7 @@ const zend_function_entry php_dom_text_class_functions[] = {
 	PHP_FALIAS(isElementContentWhitespace, dom_text_is_whitespace_in_element_content, arginfo_dom_text_is_whitespace_in_element_content)
 	PHP_FALIAS(replaceWholeText, dom_text_replace_whole_text, arginfo_dom_text_replace_whole_text)
 	PHP_ME(domtext, __construct, arginfo_dom_text_construct, ZEND_ACC_PUBLIC)
-	{NULL, NULL, NULL}
+	PHP_FE_END
 };
 
 /* {{{ proto void DOMText::__construct([string value]); */
@@ -160,7 +160,7 @@ PHP_FUNCTION(dom_text_split_text)
 	}
 	DOM_GET_OBJ(node, id, xmlNodePtr, intern);
 
-	if (node->type != XML_TEXT_NODE) {
+	if (node->type != XML_TEXT_NODE && node->type != XML_CDATA_SECTION_NODE) {
 		RETURN_FALSE;
 	}
 

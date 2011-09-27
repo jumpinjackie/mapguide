@@ -98,12 +98,12 @@ $db = MySQLPDOTest::factory();
 
 		prepex(5, $db, 'DROP TABLE IF EXISTS test');
 		prepex(6, $db, sprintf('CREATE TABLE test(id INT, label CHAR(255)) ENGINE=%s', PDO_MYSQL_TEST_ENGINE));
-		prepex(7, $db, 'INSERT INTO test(id, label) VALUES(1, ":placeholder")');
+		prepex(7, $db, "INSERT INTO test(id, label) VALUES(1, ':placeholder')");
 		$stmt = prepex(8, $db, 'SELECT label FROM test');
 		var_dump($stmt->fetchAll(PDO::FETCH_ASSOC));
 
 		prepex(9, $db, 'DELETE FROM test');
-		prepex(10, $db, 'INSERT INTO test(id, label) VALUES(1, ":placeholder")',
+		prepex(10, $db, "INSERT INTO test(id, label) VALUES(1, ':placeholder')",
 			array(':placeholder' => 'first row'));
 		$stmt = prepex(11, $db, 'SELECT label FROM test');
 
@@ -200,12 +200,12 @@ $db = MySQLPDOTest::factory();
 		// and now, the same with anonymous placeholders...
 		prepex(45, $db, 'DROP TABLE IF EXISTS test');
 		prepex(46, $db, sprintf('CREATE TABLE test(id INT, label CHAR(255)) ENGINE=%s', PDO_MYSQL_TEST_ENGINE));
-		prepex(47, $db, 'INSERT INTO test(id, label) VALUES(1, "?")');
+		prepex(47, $db, "INSERT INTO test(id, label) VALUES(1, '?')");
 		$stmt = prepex(48, $db, 'SELECT label FROM test');
 		var_dump($stmt->fetchAll(PDO::FETCH_ASSOC));
 
 		prepex(49, $db, 'DELETE FROM test');
-		prepex(50, $db, 'INSERT INTO test(id, label) VALUES(1, "?")',
+		prepex(50, $db, "INSERT INTO test(id, label) VALUES(1, '?')",
 			array('first row'));
 		$stmt = prepex(51, $db, 'SELECT label FROM test');
 
@@ -316,99 +316,104 @@ $db = MySQLPDOTest::factory();
 			$e->getMessage(), $db->errorCode(), implode(' ', $db->errorInfo()));
 	}
 
-	$db->exec('DROP TABLE IF EXISTS test');
 	print "done!";
+?>
+--CLEAN--
+<?php
+require dirname(__FILE__) . '/mysql_pdo_test.inc';
+$db = MySQLPDOTest::factory();
+$db->exec('DROP TABLE IF EXISTS test');
 ?>
 --XFAIL--
 PDO's PS parser has some problems with invalid SQL and crashes from time to time
 (check with valgrind...)
 --EXPECTF--
 array(1) {
-  ["one"]=>
-  string(1) "1"
+  [%u|b%"one"]=>
+  %unicode|string%(1) "1"
 }
 array(1) {
   [0]=>
   array(1) {
-    ["label"]=>
-    string(12) ":placeholder"
-  }
-}
-array(1) {
-  [0]=>
-  array(1) {
-    ["label"]=>
-    string(12) ":placeholder"
-  }
-}
-array(2) {
-  [0]=>
-  array(1) {
-    ["label"]=>
-    string(9) "first row"
-  }
-  [1]=>
-  array(1) {
-    ["label"]=>
-    string(10) "second row"
-  }
-}
-array(2) {
-  [0]=>
-  array(2) {
-    ["id"]=>
-    string(1) "1"
-    ["label"]=>
-    string(3) "row"
-  }
-  [1]=>
-  array(2) {
-    ["id"]=>
-    string(1) "2"
-    ["label"]=>
-    string(3) "row"
+    [%u|b%"label"]=>
+    %unicode|string%(12) ":placeholder"
   }
 }
 array(1) {
   [0]=>
   array(1) {
-    ["label"]=>
-    string(1) "?"
+    [%u|b%"label"]=>
+    %unicode|string%(12) ":placeholder"
+  }
+}
+array(2) {
+  [0]=>
+  array(1) {
+    [%u|b%"label"]=>
+    %unicode|string%(9) "first row"
+  }
+  [1]=>
+  array(1) {
+    [%u|b%"label"]=>
+    %unicode|string%(10) "second row"
+  }
+}
+array(2) {
+  [0]=>
+  array(2) {
+    [%u|b%"id"]=>
+    %unicode|string%(1) "1"
+    [%u|b%"label"]=>
+    %unicode|string%(3) "row"
+  }
+  [1]=>
+  array(2) {
+    [%u|b%"id"]=>
+    %unicode|string%(1) "2"
+    [%u|b%"label"]=>
+    %unicode|string%(3) "row"
   }
 }
 array(1) {
   [0]=>
   array(1) {
-    ["label"]=>
-    string(1) "?"
+    [%u|b%"label"]=>
+    %unicode|string%(1) "?"
+  }
+}
+array(1) {
+  [0]=>
+  array(1) {
+    [%u|b%"label"]=>
+    %unicode|string%(1) "?"
   }
 }
 array(2) {
   [0]=>
   array(1) {
-    ["label"]=>
-    string(9) "first row"
+    [%u|b%"label"]=>
+    %unicode|string%(9) "first row"
   }
   [1]=>
   array(1) {
-    ["label"]=>
-    string(10) "second row"
+    [%u|b%"label"]=>
+    %unicode|string%(10) "second row"
   }
 }
 array(2) {
   [0]=>
   array(2) {
-    ["id"]=>
-    string(1) "1"
-    ["label"]=>
-    string(3) "row"
+    [%u|b%"id"]=>
+    %unicode|string%(1) "1"
+    [%u|b%"label"]=>
+    %unicode|string%(3) "row"
   }
   [1]=>
   array(2) {
-    ["id"]=>
-    string(1) "2"
-    ["label"]=>
-    string(3) "row"
+    [%u|b%"id"]=>
+    %unicode|string%(1) "2"
+    [%u|b%"label"]=>
+    %unicode|string%(3) "row"
   }
 }
 done!

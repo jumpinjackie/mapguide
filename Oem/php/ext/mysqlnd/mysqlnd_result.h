@@ -1,8 +1,8 @@
 /*
   +----------------------------------------------------------------------+
-  | PHP Version 6                                                        |
+  | PHP Version 5                                                        |
   +----------------------------------------------------------------------+
-  | Copyright (c) 2006-2009 The PHP Group                                |
+  | Copyright (c) 2006-2011 The PHP Group                                |
   +----------------------------------------------------------------------+
   | This source file is subject to version 3.01 of the PHP license,      |
   | that is bundled with this package in the file LICENSE, and is        |
@@ -18,31 +18,16 @@
   +----------------------------------------------------------------------+
 */
 
-/* $Id: mysqlnd_result.h 272370 2008-12-31 11:15:49Z sebastian $ */
+/* $Id: mysqlnd_result.h 306939 2011-01-01 02:19:59Z felipe $ */
 
 #ifndef MYSQLND_RESULT_H
 #define MYSQLND_RESULT_H
 
-MYSQLND_RES *mysqlnd_result_init(unsigned int field_count, MYSQLND_THD_ZVAL_PCACHE *cache TSRMLS_DC);
+PHPAPI MYSQLND_RES * mysqlnd_result_init(unsigned int field_count, zend_bool persistent TSRMLS_DC);
+PHPAPI struct st_mysqlnd_res_methods * mysqlnd_result_get_methods();
 
-void mysqlnd_unbuffered_free_last_data(MYSQLND_RES *result TSRMLS_DC);
+enum_func_status mysqlnd_query_read_result_set_header(MYSQLND * conn, MYSQLND_STMT * stmt TSRMLS_DC);
 
-enum_func_status
-mysqlnd_store_result_fetch_data(MYSQLND * const conn, MYSQLND_RES *result,
-								MYSQLND_RES_METADATA *meta,
-								zend_bool binary_protocol,
-								zend_bool to_cache TSRMLS_DC);
-
-enum_func_status mysqlnd_query_read_result_set_header(MYSQLND *conn, MYSQLND_STMT *stmt TSRMLS_DC);
-
-void mysqlnd_res_initialize_result_set_rest(MYSQLND_RES * const result TSRMLS_DC);
-
-
-#ifdef MYSQLND_THREADED
-void * mysqlnd_fetch_thread(void *arg);
-#endif
-
-enum_func_status mysqlnd_background_store_result_fetch_data(MYSQLND_RES *result TSRMLS_DC);
 #endif /* MYSQLND_RESULT_H */
 
 /*

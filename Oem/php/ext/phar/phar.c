@@ -2,7 +2,7 @@
   +----------------------------------------------------------------------+
   | phar php single-file executable PHP extension                        |
   +----------------------------------------------------------------------+
-  | Copyright (c) 2005-2009 The PHP Group                                |
+  | Copyright (c) 2005-2011 The PHP Group                                |
   +----------------------------------------------------------------------+
   | This source file is subject to version 3.01 of the PHP license,      |
   | that is bundled with this package in the file LICENSE, and is        |
@@ -17,7 +17,7 @@
   +----------------------------------------------------------------------+
 */
 
-/* $Id: phar.c 286338 2009-07-26 01:03:47Z cellog $ */
+/* $Id: phar.c 314419 2011-08-07 11:13:27Z laruence $ */
 
 #define PHAR_MAIN 1
 #include "phar_internal.h"
@@ -512,7 +512,7 @@ void phar_entry_remove(phar_entry_data *idata, char **error TSRMLS_DC) /* {{{ */
 	(buffer) += 2
 #else
 # define PHAR_GET_32(buffer, var) \
-	var = *(php_uint32*)(buffer); \
+	memcpy(&var, buffer, sizeof(var)); \
 	buffer += 4
 # define PHAR_GET_16(buffer, var) \
 	var = *(php_uint16*)(buffer); \
@@ -667,7 +667,7 @@ static int phar_parse_pharfile(php_stream *fp, char *fname, int fname_len, char 
 	php_uint32 manifest_len, manifest_count, manifest_flags, manifest_index, tmp_len, sig_flags;
 	php_uint16 manifest_ver;
 	long offset;
-	int register_alias, sig_len, temp_alias = 0;
+	int sig_len, register_alias = 0, temp_alias = 0;
 	char *signature = NULL;
 
 	if (pphar) {
@@ -1265,7 +1265,7 @@ int phar_open_or_create_filename(char *fname, int fname_len, char *alias, int al
 			if (ext_len == -2) {
 				spprintf(error, 0, "Cannot create a phar archive from a URL like \"%s\". Phar objects can only be created from local files", fname);
 			} else {
-				spprintf(error, 0, "Cannot create phar '%s', file extension (or combination) not recognised", fname);
+				spprintf(error, 0, "Cannot create phar '%s', file extension (or combination) not recognised or the directory does not exist", fname);
 			}
 		}
 		return FAILURE;
@@ -1327,7 +1327,7 @@ int phar_create_or_parse_filename(char *fname, int fname_len, char *alias, int a
 	if (!pphar) {
 		pphar = &mydata;
 	}
-#if PHP_MAJOR_VERSION < 6
+#if PHP_API_VERSION < 20100412
 	if (PG(safe_mode) && (!php_checkuid(fname, NULL, CHECKUID_ALLOW_ONLY_FILE))) {
 		return FAILURE;
 	}
@@ -1369,7 +1369,7 @@ int phar_create_or_parse_filename(char *fname, int fname_len, char *alias, int a
 	if (PHAR_G(readonly) && !is_data) {
 		if (options & REPORT_ERRORS) {
 			if (error) {
-				spprintf(error, 0, "creating archive \"%s\" disabled by INI setting", fname);
+				spprintf(error, 0, "creating archive \"%s\" disabled by the php.ini setting phar.readonly", fname);
 			}
 		}
 		return FAILURE;
@@ -1491,7 +1491,7 @@ int phar_open_from_filename(char *fname, int fname_len, char *alias, int alias_l
 	} else if (error && *error) {
 		return FAILURE;
 	}
-#if PHP_MAJOR_VERSION < 6
+#if PHP_API_VERSION < 20100412
 	if (PG(safe_mode) && (!php_checkuid(fname, NULL, CHECKUID_ALLOW_ONLY_FILE))) {
 		return FAILURE;
 	}
@@ -2359,7 +2359,7 @@ int phar_open_executed_filename(char *alias, int alias_len, char **error TSRMLS_
 
 	FREE_ZVAL(halt_constant);
 
-#if PHP_MAJOR_VERSION < 6
+#if PHP_API_VERSION < 20100412
 	if (PG(safe_mode) && (!php_checkuid(fname, NULL, CHECKUID_ALLOW_ONLY_FILE))) {
 		return FAILURE;
 	}
@@ -2491,7 +2491,7 @@ static inline void phar_set_32(char *buffer, int var) /* {{{ */
 	*((buffer) + 1) = (unsigned char) (((var) >> 8) & 0xFF);
 	*((buffer) + 0) = (unsigned char) ((var) & 0xFF);
 #else
-	*(php_uint32 *)(buffer) = (php_uint32)(var);
+	 memcpy(buffer, &var, sizeof(var));
 #endif
 } /* }}} */
 
@@ -2563,8 +2563,8 @@ char *phar_create_default_stub(const char *index_php, const char *web_index, siz
  */
 int phar_flush(phar_archive_data *phar, char *user_stub, long len, int convert, char **error TSRMLS_DC) /* {{{ */
 {
-/*	static const char newstub[] = "<?php __HALT_COMPILER(); ?>\r\n"; */
-	char *newstub;
+	char halt_stub[] = "__HALT_COMPILER();";
+	char *newstub, *tmp;
 	phar_entry_info *entry, *newentry;
 	int halt_offset, restore_alias_len, global_flags = 0, closeoldfile;
 	char *pos, has_dirs = 0;
@@ -2665,8 +2665,9 @@ int phar_flush(phar_archive_data *phar, char *user_stub, long len, int convert, 
 		} else {
 			free_user_stub = 0;
 		}
-		if ((pos = strstr(user_stub, "__HALT_COMPILER();")) == NULL)
-		{
+		tmp = estrndup(user_stub, len);
+		if ((pos = php_stristr(tmp, halt_stub, len, sizeof(halt_stub) - 1)) == NULL) {
+			efree(tmp);
 			if (closeoldfile) {
 				php_stream_close(oldfile);
 			}
@@ -2679,6 +2680,8 @@ int phar_flush(phar_archive_data *phar, char *user_stub, long len, int convert, 
 			}
 			return EOF;
 		}
+		pos = user_stub + (pos - tmp);
+		efree(tmp);
 		len = pos - user_stub + 18;
 		if ((size_t)len != php_stream_write(newfile, user_stub, len)
 		||			  5 != php_stream_write(newfile, " ?>\r\n", 5)) {
@@ -3289,8 +3292,8 @@ ZEND_GET_MODULE(phar)
  *
  * Every user visible function must have an entry in phar_functions[].
  */
-function_entry phar_functions[] = {
-	{NULL, NULL, NULL} /* Must be the last line in phar_functions[] */
+zend_function_entry phar_functions[] = {
+	PHP_FE_END
 };
 /* }}}*/
 
@@ -3390,6 +3393,7 @@ static zend_op_array *phar_compile_file(zend_file_handle *file_handle, int type 
 		res = phar_orig_compile_file(file_handle, type TSRMLS_CC);
 	} zend_catch {
 		failed = 1;
+		res = NULL;
 	} zend_end_try();
 
 	if (name) {
@@ -3665,7 +3669,7 @@ PHP_MINFO_FUNCTION(phar) /* {{{ */
 	php_info_print_table_header(2, "Phar: PHP Archive support", "enabled");
 	php_info_print_table_row(2, "Phar EXT version", PHP_PHAR_VERSION);
 	php_info_print_table_row(2, "Phar API version", PHP_PHAR_API_VERSION);
-	php_info_print_table_row(2, "CVS revision", "$Revision: 286338 $");
+	php_info_print_table_row(2, "SVN revision", "$Revision: 314419 $");
 	php_info_print_table_row(2, "Phar-based phar archives", "enabled");
 	php_info_print_table_row(2, "Tar-based phar archives", "enabled");
 	php_info_print_table_row(2, "ZIP-based phar archives", "enabled");
@@ -3706,7 +3710,7 @@ PHP_MINFO_FUNCTION(phar) /* {{{ */
 
 /* {{{ phar_module_entry
  */
-static zend_module_dep phar_deps[] = {
+static const zend_module_dep phar_deps[] = {
 	ZEND_MOD_OPTIONAL("apc")
 	ZEND_MOD_OPTIONAL("bz2")
 	ZEND_MOD_OPTIONAL("openssl")
@@ -3718,7 +3722,7 @@ static zend_module_dep phar_deps[] = {
 #if HAVE_SPL
 	ZEND_MOD_REQUIRED("spl")
 #endif
-	{NULL, NULL, NULL}
+	ZEND_MOD_END
 };
 
 zend_module_entry phar_module_entry = {

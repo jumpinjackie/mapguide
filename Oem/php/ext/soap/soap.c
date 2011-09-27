@@ -2,7 +2,7 @@
   +----------------------------------------------------------------------+
   | PHP Version 5                                                        |
   +----------------------------------------------------------------------+
-  | Copyright (c) 1997-2009 The PHP Group                                |
+  | Copyright (c) 1997-2011 The PHP Group                                |
   +----------------------------------------------------------------------+
   | This source file is subject to version 3.01 of the PHP license,      |
   | that is bundled with this package in the file LICENSE, and is        |
@@ -17,7 +17,7 @@
   |          Dmitry Stogov <dmitry@zend.com>                             |
   +----------------------------------------------------------------------+
 */
-/* $Id: soap.c 287746 2009-08-26 14:05:48Z dmitry $ */
+/* $Id: soap.c 313665 2011-07-25 11:42:53Z felipe $ */
 
 #ifdef HAVE_CONFIG_H
 #include "config.h"
@@ -279,6 +279,9 @@ PHP_METHOD(SoapHeader, SoapHeader);
 
 /* {{{ arginfo */
 #ifdef ZEND_ENGINE_2
+ZEND_BEGIN_ARG_INFO(arginfo_soap__void, 0)
+ZEND_END_ARG_INFO()
+
 ZEND_BEGIN_ARG_INFO_EX(arginfo_soapparam_soapparam, 0, 0, 2)
 	ZEND_ARG_INFO(0, data)
 	ZEND_ARG_INFO(0, name)
@@ -457,15 +460,15 @@ unsigned char arginfo_soapclient___soapcall[] = { 5, BYREF_NONE, BYREF_NONE, BYR
 static const zend_function_entry soap_functions[] = {
 	PHP_FE(use_soap_error_handler, 	arginfo_soap_use_soap_error_handler)
 	PHP_FE(is_soap_fault, 			arginfo_soap_is_soap_fault)
-	{NULL, NULL, NULL}
+	PHP_FE_END
 };
 
 static const zend_function_entry soap_fault_functions[] = {
 	SOAP_CTOR(SoapFault, SoapFault, arginfo_soapfault_soapfault, 0)
 #ifdef ZEND_ENGINE_2
-	PHP_ME(SoapFault, __toString, NULL, 0)
+	PHP_ME(SoapFault, __toString, arginfo_soap__void, 0)
 #endif
-	{NULL, NULL, NULL}
+	PHP_FE_END
 };
 
 static const zend_function_entry soap_server_functions[] = {
@@ -478,7 +481,7 @@ static const zend_function_entry soap_server_functions[] = {
 	PHP_ME(SoapServer, handle, 			arginfo_soapserver_handle, 0)
 	PHP_ME(SoapServer, fault, 			arginfo_soapserver_fault, 0)
 	PHP_ME(SoapServer, addSoapHeader, 	arginfo_soapserver_addsoapheader, 0)
-	{NULL, NULL, NULL}
+	PHP_FE_END
 };
 
 static const zend_function_entry soap_client_functions[] = {
@@ -495,22 +498,22 @@ static const zend_function_entry soap_client_functions[] = {
 	PHP_ME(SoapClient, __setCookie, 				arginfo_soapclient___setcookie, 0)
 	PHP_ME(SoapClient, __setLocation, 				arginfo_soapclient___setlocation, 0)
 	PHP_ME(SoapClient, __setSoapHeaders, 			arginfo_soapclient___setsoapheaders, 0)
-	{NULL, NULL, NULL}
+	PHP_FE_END
 };
 
 static const zend_function_entry soap_var_functions[] = {
 	SOAP_CTOR(SoapVar, SoapVar, arginfo_soapvar_soapvar, 0)
-	{NULL, NULL, NULL}
+	PHP_FE_END
 };
 
 static const zend_function_entry soap_param_functions[] = {
 	SOAP_CTOR(SoapParam, SoapParam, arginfo_soapparam_soapparam, 0)
-	{NULL, NULL, NULL}
+	PHP_FE_END
 };
 
 static const zend_function_entry soap_header_functions[] = {
 	SOAP_CTOR(SoapHeader, SoapHeader, arginfo_soapheader_soapheader, 0)
-	{NULL, NULL, NULL}
+	PHP_FE_END
 };
 
 zend_module_entry soap_module_entry = {
@@ -1213,9 +1216,11 @@ PHP_METHOD(SoapServer, SoapServer)
 		zval **tmp;
 
 		if (zend_hash_find(ht, "soap_version", sizeof("soap_version"), (void**)&tmp) == SUCCESS) {
-			if (Z_TYPE_PP(tmp) == IS_LONG ||
-			    (Z_LVAL_PP(tmp) == SOAP_1_1 && Z_LVAL_PP(tmp) == SOAP_1_2)) {
+			if (Z_TYPE_PP(tmp) == IS_LONG &&
+			    (Z_LVAL_PP(tmp) == SOAP_1_1 || Z_LVAL_PP(tmp) == SOAP_1_2)) {
 				version = Z_LVAL_PP(tmp);
+			} else {
+				php_error_docref(NULL TSRMLS_CC, E_ERROR, "'soap_version' option must be SOAP_1_1 or SOAP_1_2");
 			}
 		}
 
@@ -1416,9 +1421,7 @@ PHP_METHOD(SoapServer, setObject)
 	service->type = SOAP_OBJECT;
 
 	MAKE_STD_ZVAL(service->soap_object);
-	*service->soap_object = *obj;
-	zval_copy_ctor(service->soap_object);
-	INIT_PZVAL(service->soap_object);
+	MAKE_COPY_ZVAL(&obj, service->soap_object);
 
 	SOAP_SERVER_END_CODE();
 }
@@ -1701,6 +1704,7 @@ PHP_METHOD(SoapServer, handle)
 				doc_request = soap_xmlParseMemory(post_data, post_data_length);
 			}
 		} else {
+			zval_ptr_dtor(&retval);
 			return;
 		}
 	} else {
@@ -1875,6 +1879,7 @@ PHP_METHOD(SoapServer, handle)
 			soapHeader *h = header;
 
 			header = header->next;
+#if 0
 			if (service->sdl && !h->function && !h->hdr) {
 				if (h->mustUnderstand) {
 					soap_server_fault("MustUnderstand","Header not understood", NULL, NULL, NULL TSRMLS_CC);
@@ -1882,7 +1887,7 @@ PHP_METHOD(SoapServer, handle)
 					continue;
 				}
 			}
-
+#endif
 			fn_name = estrndup(Z_STRVAL(h->function_name),Z_STRLEN(h->function_name));
 			if (zend_hash_exists(function_table, php_strtolower(fn_name, Z_STRLEN(h->function_name)), Z_STRLEN(h->function_name) + 1) ||
 			    ((service->type == SOAP_CLASS || service->type == SOAP_OBJECT) &&
@@ -2282,7 +2287,7 @@ static void soap_error_handler(int error_num, const char *error_filename, const 
 	_old_http_response_code = SG(sapi_headers).http_response_code;
 	_old_http_status_line = SG(sapi_headers).http_status_line;
 
-	if (!SOAP_GLOBAL(use_soap_error_handler)) {
+	if (!SOAP_GLOBAL(use_soap_error_handler) || !EG(objects_store).object_buckets) {
 		call_old_error_handler(error_num, error_filename, error_lineno, format, args);
 		return;
 	}
@@ -2335,9 +2340,7 @@ static void soap_error_handler(int error_num, const char *error_filename, const 
 			}
 			fault = add_soap_fault(SOAP_GLOBAL(error_object), code, buffer, NULL, NULL TSRMLS_CC);
 			MAKE_STD_ZVAL(exception);
-			*exception = *fault;
-			zval_copy_ctor(exception);
-			INIT_PZVAL(exception);
+			MAKE_COPY_ZVAL(&fault, exception);
 			zend_throw_exception_object(exception TSRMLS_CC);
 
 			old_objects = EG(objects_store).object_buckets;
@@ -2623,9 +2626,7 @@ PHP_METHOD(SoapClient, SoapClient)
 			zval *class_map;
 
 			MAKE_STD_ZVAL(class_map);
-			*class_map = **tmp;
-			INIT_PZVAL(class_map);
-			zval_copy_ctor(class_map);
+			MAKE_COPY_ZVAL(tmp, class_map);
 #ifdef ZEND_ENGINE_2
 			Z_DELREF_P(class_map);
 #endif
@@ -2955,9 +2956,7 @@ static void do_soap_call(zval* this_ptr,
 		zval *exception;
 
 		MAKE_STD_ZVAL(exception);
-		*exception = *return_value;
-		zval_copy_ctor(exception);
-		INIT_PZVAL(exception);
+		MAKE_COPY_ZVAL(&return_value, exception);
 		zend_throw_exception_object(exception TSRMLS_CC);
 	}
 #endif
@@ -3012,18 +3011,18 @@ PHP_METHOD(SoapClient, __call)
 	}
 
 	if (options) {
-		HashTable *ht = Z_ARRVAL_P(options);
-		if (zend_hash_find(ht, "location", sizeof("location"), (void**)&tmp) == SUCCESS &&
+		HashTable *hto = Z_ARRVAL_P(options);
+		if (zend_hash_find(hto, "location", sizeof("location"), (void**)&tmp) == SUCCESS &&
 			Z_TYPE_PP(tmp) == IS_STRING) {
 			location = Z_STRVAL_PP(tmp);
 		}
 
-		if (zend_hash_find(ht, "soapaction", sizeof("soapaction"), (void**)&tmp) == SUCCESS &&
+		if (zend_hash_find(hto, "soapaction", sizeof("soapaction"), (void**)&tmp) == SUCCESS &&
 			Z_TYPE_PP(tmp) == IS_STRING) {
 			soap_action = Z_STRVAL_PP(tmp);
 		}
 
-		if (zend_hash_find(ht, "uri", sizeof("uri"), (void**)&tmp) == SUCCESS &&
+		if (zend_hash_find(hto, "uri", sizeof("uri"), (void**)&tmp) == SUCCESS &&
 			Z_TYPE_PP(tmp) == IS_STRING) {
 			uri = Z_STRVAL_PP(tmp);
 		}
@@ -3051,10 +3050,10 @@ PHP_METHOD(SoapClient, __call)
 		HashTable *default_headers = Z_ARRVAL_P(*tmp);
 		if (soap_headers) {
 			if (!free_soap_headers) {
-				HashTable *tmp =  emalloc(sizeof(HashTable));
-				zend_hash_init(tmp, 0, NULL, ZVAL_PTR_DTOR, 0);
-				zend_hash_copy(tmp, soap_headers, (copy_ctor_func_t) zval_add_ref, NULL, sizeof(zval *));
-				soap_headers = tmp;
+				HashTable *t =  emalloc(sizeof(HashTable));
+				zend_hash_init(t, 0, NULL, ZVAL_PTR_DTOR, 0);
+				zend_hash_copy(t, soap_headers, (copy_ctor_func_t) zval_add_ref, NULL, sizeof(zval *));
+				soap_headers = t;
 				free_soap_headers = 1;
 			}
 			zend_hash_internal_pointer_reset(default_headers);
@@ -3428,12 +3427,12 @@ static void set_soap_fault(zval *obj, char *fault_code_ns, char *fault_code, cha
 	if (Z_TYPE_P(obj) != IS_OBJECT) {
 		object_init_ex(obj, soap_fault_class_entry);
 	}
-	if (fault_string != NULL) {
-		add_property_string(obj, "faultstring", fault_string, 1);
+	
+	add_property_string(obj, "faultstring", fault_string ? fault_string : "", 1);
 #ifdef ZEND_ENGINE_2
-		zend_update_property_string(zend_exception_get_default(TSRMLS_C), obj, "message", sizeof("message")-1, fault_string TSRMLS_CC);
+	zend_update_property_string(zend_exception_get_default(TSRMLS_C), obj, "message", sizeof("message")-1, (fault_string ? fault_string : "") TSRMLS_CC);
 #endif
-	}
+	
 	if (fault_code != NULL) {
 		int soap_version = SOAP_GLOBAL(soap_version);
 
@@ -3762,7 +3761,6 @@ static sdlFunctionPtr deserialize_function_call(sdlPtr sdl, xmlDocPtr request, c
 		while (trav != NULL) {
 			if (trav->type == XML_ELEMENT_NODE) {
 				xmlNodePtr hdr_func = trav;
-				xmlAttrPtr attr;
 				int mustUnderstand = 0;
 
 				if (*version == SOAP_1_1) {
@@ -4008,7 +4006,6 @@ static xmlDocPtr serialize_response_call(sdlFunctionPtr function, char *function
 
 		if (headers &&
 		    zend_hash_find(prop, "headerfault", sizeof("headerfault"), (void**)&tmp) == SUCCESS) {
-			xmlNodePtr head;
 			encodePtr hdr_enc = NULL;
 			int hdr_use = SOAP_LITERAL;
 			zval *hdr_ret  = *tmp;
@@ -4019,7 +4016,6 @@ static xmlDocPtr serialize_response_call(sdlFunctionPtr function, char *function
 			if (Z_TYPE_P(hdr_ret) == IS_OBJECT &&
 			    instanceof_function(Z_OBJCE_P(hdr_ret), soap_header_class_entry TSRMLS_CC)) {
 				HashTable* ht = Z_OBJPROP_P(hdr_ret);
-				zval **tmp;
 				sdlSoapBindingFunctionHeaderPtr *hdr;
 				smart_str key = {0};
 
@@ -4208,7 +4204,7 @@ static xmlDocPtr serialize_response_call(sdlFunctionPtr function, char *function
 					}
 				} else {
 					if (sparam->element) {
-						xmlNsPtr ns = encode_add_ns(x, sparam->element->namens);
+						ns = encode_add_ns(x, sparam->element->namens);
 						xmlNodeSetName(x, BAD_CAST(sparam->element->name));
 						xmlSetNs(x, ns);
 					}

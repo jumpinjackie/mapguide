@@ -2,7 +2,7 @@
    +----------------------------------------------------------------------+
    | PHP Version 5                                                        |
    +----------------------------------------------------------------------+
-   | Copyright (c) 1997-2006 The PHP Group                                |
+   | Copyright (c) 1997-2010 The PHP Group                                |
    +----------------------------------------------------------------------+
    | This source file is subject to version 3.01 of the PHP license,      |
    | that is bundled with this package in the file LICENSE, and is        |
@@ -16,12 +16,14 @@
    +----------------------------------------------------------------------+
  */
 
-/* $Id: parse_date.re 286515 2009-07-29 15:34:59Z derick $ */
+/* $Id: parse_date.re 311831 2011-06-05 13:30:01Z bjori $ */
 
 #include "timelib.h"
 
 #include <stdio.h>
 #include <ctype.h>
+#include <math.h>
+#include <assert.h>
 
 #ifdef HAVE_STDLIB_H
 #include <stdlib.h>
@@ -88,6 +90,8 @@
 
 #define TIMELIB_ERROR          999
 
+/* Some compilers like AIX, defines uchar in sys/types.h */
+#undef uchar
 typedef unsigned char uchar;
 
 #define   BSIZE	   8192
@@ -236,6 +240,7 @@ static timelib_lookup_table const timelib_reltext_lookup[] = {
 	{ "sixth",    0,  6 },
 	{ "seventh",  0,  7 },
 	{ "eight",    0,  8 },
+	{ "eighth",   0,  8 },
 	{ "ninth",    0,  9 },
 	{ "tenth",    0, 10 },
 	{ "eleventh", 0, 11 },
@@ -522,7 +527,7 @@ static long timelib_parse_tz_cor(char **ptr)
 	char *begin = *ptr, *end;
 	long  tmp;
 
-	while (**ptr != '\0') {
+	while (isdigit(**ptr) || **ptr == ':') {
 		++*ptr;
 	}
 	end = *ptr;
@@ -714,6 +719,25 @@ const static timelib_tz_lookup_table* zone_search(const char *word, long gmtoffs
 		return first_found_elem;
 	}
 
+	for (tp = timelib_timezone_lookup; tp->name; tp++) {
+		if (tp->full_tz_name && strcasecmp(word, tp->full_tz_name) == 0) {
+			if (!first_found) {
+				first_found = 1;
+				first_found_elem = tp;
+				if (gmtoffset == -1) {
+					return tp;
+				}
+			}
+			if (tp->gmtoffset == gmtoffset) {
+				return tp;
+			}
+		}
+	}
+	if (first_found) {
+		return first_found_elem;
+	}
+
+
 	/* Still didn't find anything, let's find the zone solely based on
 	 * offset/isdst then */
 	for (fmp = timelib_timezone_fallbackmap; fmp->name; fmp++) {
@@ -853,7 +877,7 @@ minutelz = [0-5][0-9];
 second = minute | "60";
 secondlz = minutelz | "60";
 meridian = ([AaPp] "."? [Mm] "."?) [\000\t ];
-tz = "("? [A-Za-z]{1,6} ")"? | [A-Z][a-z]+([_/][A-Z][a-z]+)+;
+tz = "("? [A-Za-z]{1,6} ")"? | [A-Z][a-z]+([_/-][A-Za-z]+)+;
 tzcorrection = "GMT"? [+-] hour24 ":"? minute?;
 
 daysuf = "st" | "nd" | "rd" | "th";
@@ -930,8 +954,8 @@ mssqltime        = hour12 ":" minutelz ":" secondlz [:.] [0-9]+ meridian;
 isoweekday       = year4 "-"? "W" weekofyear "-"? [0-7];
 isoweek          = year4 "-"? "W" weekofyear;
 exif             = year4 ":" monthlz ":" daylz " " hour24lz ":" minutelz ":" secondlz;
-firstdayof       = 'first day' ' of'?;
-lastdayof        = 'last day' ' of'?;
+firstdayof       = 'first day of'?;
+lastdayof        = 'last day of'?;
 backof           = 'back of ' hour24 space? meridian?;
 frontof          = 'front of ' hour24 space? meridian?;
 
@@ -951,7 +975,7 @@ dateshortwithtimelongtz = datenoyear iso8601normtz;
 /*
  * Relative regexps
  */
-reltextnumber = 'first'|'second'|'third'|'fourth'|'fifth'|'sixth'|'seventh'|'eight'|'ninth'|'tenth'|'eleventh'|'twelfth';
+reltextnumber = 'first'|'second'|'third'|'fourth'|'fifth'|'sixth'|'seventh'|'eight'|'eighth'|'ninth'|'tenth'|'eleventh'|'twelfth';
 reltexttext = 'next'|'last'|'previous'|'this';
 reltextunit = (('sec'|'second'|'min'|'minute'|'hour'|'day'|'fortnight'|'forthnight'|'month'|'year') 's'?) | 'weeks' | daytext;
 
@@ -1794,6 +1818,10 @@ timelib_time* timelib_strtotime(char *s, int len, struct timelib_error_container
 #endif
 	} while(t != EOI);
 
+	/* do funky checking whether the parsed time was valid time */
+	if (in.time->have_time && !timelib_valid_time( in.time->h, in.time->i, in.time->s)) {
+		add_warning(&in, "The parsed time was invalid");
+	}
 	/* do funky checking whether the parsed date was valid date */
 	if (in.time->have_date && !timelib_valid_date( in.time->y, in.time->m, in.time->d)) {
 		add_warning(&in, "The parsed date was invalid");
@@ -1814,6 +1842,30 @@ timelib_time* timelib_strtotime(char *s, int len, struct timelib_error_container
 			add_pbf_error(s, "Unexpected data found.", string, begin); \
 		}
 
+static void timelib_time_reset_fields(timelib_time *time)
+{
+	assert(time != NULL);
+
+	time->y = 1970;
+	time->m = 1;
+	time->d = 1;
+	time->h = time->i = time->s = 0;
+	time->f = 0.0;
+	time->tz_info = NULL;
+}
+
+static void timelib_time_reset_unset_fields(timelib_time *time)
+{
+	assert(time != NULL);
+
+	if (time->y == TIMELIB_UNSET ) time->y = 1970;
+	if (time->m == TIMELIB_UNSET ) time->m = 1;
+	if (time->d == TIMELIB_UNSET ) time->d = 1;
+	if (time->h == TIMELIB_UNSET ) time->h = 0;
+	if (time->i == TIMELIB_UNSET ) time->i = 0;
+	if (time->s == TIMELIB_UNSET ) time->s = 0;
+	if (time->f == TIMELIB_UNSET ) time->f = 0.0;
+}
 
 timelib_time *timelib_parse_from_format(char *format, char *string, int len, timelib_error_container **errors, const timelib_tzdb *tzdb)
 {
@@ -1943,17 +1995,17 @@ timelib_time *timelib_parse_from_format(char *format, char *string, int len, tim
 					add_pbf_error(s, "A two digit second could not be found", string, begin);
 				}
 				break;
-			case 'u': /* six digit millisecond */
+			case 'u': /* up to six digit millisecond */
 				{
 					double f;
 					char *tptr;
 
 					TIMELIB_CHECK_NUMBER;
 					tptr = ptr;
-					if ((f = timelib_get_nr((char **) &ptr, 6)) == TIMELIB_UNSET || ptr - tptr != 6) {
+					if ((f = timelib_get_nr((char **) &ptr, 6)) == TIMELIB_UNSET || (ptr - tptr < 1)) {
 						add_pbf_error(s, "A six digit millisecond could not be found", string, begin);
 					} else {
-						s->time->f = (f / 1000000);
+						s->time->f = (f / pow(10, (ptr - tptr)));
 					}
 				}
 				break;
@@ -1989,7 +2041,7 @@ timelib_time *timelib_parse_from_format(char *format, char *string, int len, tim
 				break;
 
 			case '#': /* separation symbol */
-				if (*ptr == ';' || *ptr == ':' || *ptr == '/' || *ptr == '.' || *ptr == ',' || *ptr == '-') {
+				if (*ptr == ';' || *ptr == ':' || *ptr == '/' || *ptr == '.' || *ptr == ',' || *ptr == '-' || *ptr == '(' || *ptr == ')') {
 					++ptr;
 				} else {
 					add_pbf_error(s, "The separation symbol ([;:/.,-]) could not be found", string, begin);
@@ -2002,6 +2054,8 @@ timelib_time *timelib_parse_from_format(char *format, char *string, int len, tim
 			case '.':
 			case ',':
 			case '-':
+			case '(':
+			case ')':
 				if (*ptr == *fptr) {
 					++ptr;
 				} else {
@@ -2010,23 +2064,11 @@ timelib_time *timelib_parse_from_format(char *format, char *string, int len, tim
 				break;
 
 			case '!': /* reset all fields to default */
-				s->time->y = 1970;
-				s->time->m = 1;
-				s->time->d = 1;
-				s->time->h = s->time->i = s->time->s = 0;
-				s->time->f = 0.0;
-				s->time->tz_info = NULL;
+				timelib_time_reset_fields(s->time);
 				break; /* break intentionally not missing */
 
 			case '|': /* reset all fields to default when not set */
-				if (s->time->y == TIMELIB_UNSET ) s->time->y = 1970;
-				if (s->time->m == TIMELIB_UNSET ) s->time->m = 1;
-				if (s->time->d == TIMELIB_UNSET ) s->time->d = 1;
-				if (s->time->h == TIMELIB_UNSET ) s->time->h = 0;
-				if (s->time->i == TIMELIB_UNSET ) s->time->i = 0;
-				if (s->time->s == TIMELIB_UNSET ) s->time->s = 0;
-				if (s->time->f == TIMELIB_UNSET ) s->time->f = 0.0;
-				
+				timelib_time_reset_unset_fields(s->time);
 				break; /* break intentionally not missing */
 
 			case '?': /* random char */
@@ -2058,7 +2100,21 @@ timelib_time *timelib_parse_from_format(char *format, char *string, int len, tim
 		add_pbf_error(s, "Trailing data", string, ptr);
 	}
 	if (*fptr) {
-		add_pbf_error(s, "Data missing", string, ptr);
+		/* Trailing | and ! specifiers are valid. */
+		while (*fptr) {
+			switch (*fptr++) {
+				case '!': /* reset all fields to default */
+					timelib_time_reset_fields(s->time);
+					break;
+
+				case '|': /* reset all fields to default when not set */
+					timelib_time_reset_unset_fields(s->time);
+					break;
+
+				default:
+					add_pbf_error(s, "Data missing", string, ptr);
+			}
+		}
 	}
 
 	/* clean up a bit */

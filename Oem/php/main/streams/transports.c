@@ -2,7 +2,7 @@
   +----------------------------------------------------------------------+
   | PHP Version 5                                                        |
   +----------------------------------------------------------------------+
-  | Copyright (c) 1997-2009 The PHP Group                                |
+  | Copyright (c) 1997-2011 The PHP Group                                |
   +----------------------------------------------------------------------+
   | This source file is subject to version 3.01 of the PHP license,      |
   | that is bundled with this package in the file LICENSE, and is        |
@@ -16,7 +16,7 @@
   +----------------------------------------------------------------------+
 */
 
-/* $Id: transports.c 272370 2008-12-31 11:15:49Z sebastian $ */
+/* $Id: transports.c 306939 2011-01-01 02:19:59Z felipe $ */
 
 #include "php.h"
 #include "php_streams_int.h"
@@ -134,7 +134,7 @@ PHPAPI php_stream *_php_stream_xport_create(const char *name, long namelen, int 
 			context STREAMS_REL_CC TSRMLS_CC);
 
 	if (stream) {
-		stream->context = context;
+		php_stream_context_set(stream, context);
 
 		if ((flags & STREAM_XPORT_SERVER) == 0) {
 			/* client */
@@ -157,7 +157,20 @@ PHPAPI php_stream *_php_stream_xport_create(const char *name, long namelen, int 
 					ERR_RETURN(error_string, error_text, "bind() failed: %s");
 					failed = 1;
 				} else if (flags & STREAM_XPORT_LISTEN) {
-					if (0 != php_stream_xport_listen(stream, 5, &error_text TSRMLS_CC)) {
+					zval **zbacklog = NULL;
+					int backlog = 32;
+					
+					if (stream->context && php_stream_context_get_option(stream->context, "socket", "backlog", &zbacklog) == SUCCESS) {
+						zval *ztmp = *zbacklog;
+						
+						convert_to_long_ex(&ztmp);
+						backlog = Z_LVAL_P(ztmp);
+						if (ztmp != *zbacklog) {
+							zval_ptr_dtor(&ztmp);
+						}
+					}
+					
+					if (0 != php_stream_xport_listen(stream, backlog, &error_text TSRMLS_CC)) {
 						ERR_RETURN(error_string, error_text, "listen() failed: %s");
 						failed = 1;
 					}

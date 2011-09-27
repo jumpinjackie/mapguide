@@ -70,7 +70,7 @@ MySQLPDOTest::skip();
 			printf("[011] Unable to turn off emulated prepared statements\n");
 
 		$native_support = 'no';
-		if ($db->exec('PREPARE mystmt FROM "DESCRIBE test id"')) {
+		if ($db->exec("PREPARE mystmt FROM 'DESCRIBE test id'")) {
 			$native_support = 'yes';
 			$db->exec('DEALLOCATE PREPARE mystmt');
 		}
@@ -104,7 +104,7 @@ MySQLPDOTest::skip();
 
 
 		$native_support = 'no';
-		if ($db->exec('PREPARE mystmt FROM "SHOW ENGINES"')) {
+		if ($db->exec("PREPARE mystmt FROM 'SHOW ENGINES'")) {
 			$native_support = 'yes';
 			$db->exec('DEALLOCATE PREPARE mystmt');
 		}
@@ -137,7 +137,7 @@ MySQLPDOTest::skip();
 				var_export($show_native, true));
 
 		$native_support = 'no';
-		if ($db->exec('PREPARE mystmt FROM "EXPLAIN SELECT id FROM test"')) {
+		if ($db->exec("PREPARE mystmt FROM 'EXPLAIN SELECT id FROM test'")) {
 			$native_support = 'yes';
 			$db->exec('DEALLOCATE PREPARE mystmt');
 		}
@@ -180,8 +180,12 @@ MySQLPDOTest::skip();
 			$e->getMessage(), $db->errorCode(), implode(' ', $db->errorInfo()));
 	}
 
-	$db->exec('DROP TABLE IF EXISTS test');
 	print "done!\n";
+?>
+--CLEAN--
+<?php
+require dirname(__FILE__) . '/mysql_pdo_test.inc';
+MySQLPDOTest::dropTestTable();
 ?>
 --EXPECTF--
 done!

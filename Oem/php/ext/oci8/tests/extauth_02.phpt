@@ -4,6 +4,8 @@ Test External Authentication errors with oci_new_connect
 <?php
 if (!extension_loaded('oci8')) die ("skip no oci8 extension");
 if (substr(PHP_OS, 0, 3) == 'WIN') die("skip feature not available on Windows platforms");
+require(dirname(__FILE__).'/details.inc');
+if ($stress_test !== true) die ('skip Slow test not run when $stress_test is FALSE');
 ?>
 --INI--
 oci8.privileged_connect=1
@@ -139,12 +141,12 @@ bool(false)
 bool(false)
 Test 7
 
-Warning: oci_new_connect(): ORA-12154: TNS:could not resolve the connect identifier specified in %s on line %d
+Warning: oci_new_connect(): ORA-12154: %s in %s on line %d
 array(4) {
   [%u|b%"code"]=>
   int(12154)
   [%u|b%"message"]=>
-  %unicode|string%(65) "ORA-12154: %s"
+  %unicode|string%(%d) "ORA-12154: %s"
   [%u|b%"offset"]=>
   int(0)
   [%u|b%"sqltext"]=>
@@ -153,12 +155,12 @@ array(4) {
 bool(false)
 Test 8
 
-Warning: oci_new_connect(): ORA-12154: TNS:could not resolve the connect identifier specified in %s on line %d
+Warning: oci_new_connect(): ORA-12154: %s in %s on line %d
 array(4) {
   [%u|b%"code"]=>
   int(12154)
   [%u|b%"message"]=>
-  %unicode|string%(65) "ORA-12154: %s"
+  %unicode|string%(%d) "ORA-12154: %s"
   [%u|b%"offset"]=>
   int(0)
   [%u|b%"sqltext"]=>

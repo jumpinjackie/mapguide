@@ -60,7 +60,7 @@ if (($tmp[1] !== 'localhost') && ($tmp[1] !== '127.0.0.1'))
 		exec_and_count(2, $db, 'DROP TABLE IF EXISTS test', 0);
 		exec_and_count(3, $db, sprintf('CREATE TABLE test(id INT NOT NULL PRIMARY KEY, col1 CHAR(10)) ENGINE=%s', PDO_MYSQL_TEST_ENGINE), 0);
 
-		$stmt = $db->query('SHOW VARIABLES LIKE "secure_file_priv"');
+		$stmt = $db->query("SHOW VARIABLES LIKE 'secure_file_priv'");
 		if (($row = $stmt->fetch(PDO::FETCH_ASSOC)) && ($row['value'] != '')) {
 			$filename = $row['value'] . DIRECTORY_SEPARATOR  . "pdo_mysql_exec_load_data.csv";
 		} else {
@@ -82,7 +82,7 @@ if (($tmp[1] !== 'localhost') && ($tmp[1] !== '127.0.0.1'))
 		}
 
 		// Check the line
-		$stmt = $db->query('SELECT 1 as "one"');
+		$stmt = $db->query("SELECT 1 as 'one'");
 		if ($stmt->errorCode() != '0000') {
 			printf("[005] [%d] %s\n", $stmt->errorCode(), var_export($stmt->errorInfo(), true));
 		} else {
@@ -101,8 +101,13 @@ if (($tmp[1] !== 'localhost') && ($tmp[1] !== '127.0.0.1'))
 			(isset($stmt)) ? implode(' ', $stmt->errorInfo()) : 'N/A');
 	}
 
-	// $db->exec('DROP TABLE IF EXISTS test');
 	print "done!";
+?>
+--CLEAN--
+<?php
+require dirname(__FILE__) . '/mysql_pdo_test.inc';
+MySQLPDOTest::dropTestTable();
+?>
 --EXPECTF--
 Warning: PDOStatement::execute(): SQLSTATE[HY000]: General error: %s in %s on line %d
 [004] [0] array (

@@ -2,7 +2,7 @@
    +----------------------------------------------------------------------+
    | Zend Engine                                                          |
    +----------------------------------------------------------------------+
-   | Copyright (c) 1998-2009 Zend Technologies Ltd. (http://www.zend.com) |
+   | Copyright (c) 1998-2011 Zend Technologies Ltd. (http://www.zend.com) |
    +----------------------------------------------------------------------+
    | This source file is subject to version 2.00 of the Zend license,     |
    | that is bundled with this package in the file LICENSE, and is        | 
@@ -18,7 +18,7 @@
    +----------------------------------------------------------------------+
 */
 
-/* $Id: zend_closures.c 287043 2009-08-10 15:18:13Z colder $ */
+/* $Id: zend_closures.c 310389 2011-04-20 12:59:18Z dmitry $ */
 
 #include "zend.h"
 #include "zend_API.h"
@@ -152,7 +152,9 @@ static zval **zend_closure_get_property_ptr_ptr(zval *object, zval *member TSRML
 
 static int zend_closure_has_property(zval *object, zval *member, int has_set_exists TSRMLS_DC) /* {{{ */
 {
-	ZEND_CLOSURE_PROPERTY_ERROR();
+	if (has_set_exists != 2) {
+		ZEND_CLOSURE_PROPERTY_ERROR();
+	}
 	return 0;
 }
 /* }}} */
@@ -321,6 +323,7 @@ static int zval_copy_static_var(zval **p TSRMLS_DC, int num_args, va_list args, 
 {
 	HashTable *target = va_arg(args, HashTable*);
 	zend_bool is_ref;
+	zval *tmp;
 
 	if (Z_TYPE_PP(p) & (IS_LEXICAL_VAR|IS_LEXICAL_REF)) {
 		is_ref = Z_TYPE_PP(p) & IS_LEXICAL_REF;
@@ -330,25 +333,32 @@ static int zval_copy_static_var(zval **p TSRMLS_DC, int num_args, va_list args, 
 		}
 		if (zend_hash_quick_find(EG(active_symbol_table), key->arKey, key->nKeyLength, key->h, (void **) &p) == FAILURE) {
 			if (is_ref) {
-				zval *tmp;
-
 				ALLOC_INIT_ZVAL(tmp);
 				Z_SET_ISREF_P(tmp);
 				zend_hash_quick_add(EG(active_symbol_table), key->arKey, key->nKeyLength, key->h, &tmp, sizeof(zval*), (void**)&p);
 			} else {
-				p = &EG(uninitialized_zval_ptr);
+				tmp = EG(uninitialized_zval_ptr);
 				zend_error(E_NOTICE,"Undefined variable: %s", key->arKey);
 			}
 		} else {
 			if (is_ref) {
 				SEPARATE_ZVAL_TO_MAKE_IS_REF(p);
+				tmp = *p;
 			} else if (Z_ISREF_PP(p)) {
-				SEPARATE_ZVAL(p);
+				ALLOC_INIT_ZVAL(tmp);
+				*tmp = **p;
+				zval_copy_ctor(tmp);
+				Z_SET_REFCOUNT_P(tmp, 0);
+				Z_UNSET_ISREF_P(tmp);
+			} else {
+				tmp = *p;
 			}
 		}
+	} else {
+		tmp = *p;
 	}
-	if (zend_hash_quick_add(target, key->arKey, key->nKeyLength, key->h, p, sizeof(zval*), NULL) == SUCCESS) {
-		Z_ADDREF_PP(p);
+	if (zend_hash_quick_add(target, key->arKey, key->nKeyLength, key->h, &tmp, sizeof(zval*), NULL) == SUCCESS) {
+		Z_ADDREF_P(tmp);
 	}
 	return ZEND_HASH_APPLY_KEEP;
 }
@@ -363,6 +373,7 @@ ZEND_API void zend_create_closure(zval *res, zend_function *func TSRMLS_DC) /* {
 	closure = (zend_closure *)zend_object_store_get_object(res TSRMLS_CC);
 
 	closure->func = *func;
+	closure->func.common.prototype = NULL;
 
 	if (closure->func.type == ZEND_USER_FUNCTION) {
 		if (closure->func.op_array.static_variables) {

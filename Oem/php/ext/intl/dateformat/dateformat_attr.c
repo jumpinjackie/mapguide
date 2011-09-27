@@ -276,7 +276,9 @@ PHP_FUNCTION( datefmt_set_pattern )
 
 	udat_applyPattern(DATE_FORMAT_OBJECT(dfo), (UBool)is_pattern_localized, svalue, slength);
 
-	efree(svalue);
+	if (svalue) {
+		efree(svalue);
+	}
 	INTL_METHOD_CHECK_STATUS(dfo, "Error setting symbol value");
 
 	RETURN_TRUE;
@@ -309,6 +311,7 @@ PHP_FUNCTION( datefmt_get_locale )
 	DATE_FORMAT_METHOD_FETCH_OBJECT;
 
 	loc = (char *)udat_getLocaleByType(DATE_FORMAT_OBJECT(dfo), loc_type,&INTL_DATA_ERROR_CODE(dfo));
+	INTL_METHOD_CHECK_STATUS(dfo, "Error getting locale");
 	RETURN_STRING(loc, 1);
 }
 /* }}} */

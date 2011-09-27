@@ -2,7 +2,7 @@
    +----------------------------------------------------------------------+
    | PHP Version 5                                                        |
    +----------------------------------------------------------------------+
-   | Copyright (c) 1997-2009 The PHP Group                                |
+   | Copyright (c) 1997-2011 The PHP Group                                |
    +----------------------------------------------------------------------+
    | This source file is subject to version 3.01 of the PHP license,      |
    | that is bundled with this package in the file LICENSE, and is        |
@@ -20,7 +20,7 @@
    +----------------------------------------------------------------------+
 */
 
-/* $Id: filters.c 284646 2009-07-23 12:18:40Z iliaa $ */
+/* $Id: filters.c 311407 2011-05-24 23:49:26Z felipe $ */
 
 #include "php.h"
 #include "php_globals.h"
@@ -1050,20 +1050,16 @@ static php_conv_err_t php_conv_qprint_decode_convert(php_conv_qprint_decode *ins
 				}
 			} /* break is missing intentionally */
 
-			case 2: {
-				unsigned int nbl;
-	
+			case 2: {	
 				if (icnt <= 0) {
 					goto out;
 				}
-				nbl = (*ps >= 'A' ? *ps - 0x37 : *ps - 0x30);
 
-				if (nbl > 15) {
+				if (!isxdigit((int) *ps)) {
 					err = PHP_CONV_ERR_INVALID_SEQ;
 					goto out;
 				}
-				next_char = (next_char << 4) | nbl;
-
+				next_char = (next_char << 4) | (*ps >= 'A' ? *ps - 0x37 : *ps - 0x30);
 				scan_stat++;
 				ps++, icnt--;
 				if (scan_stat != 3) {
@@ -1914,7 +1910,7 @@ typedef enum _php_chunked_filter_state {
 
 typedef struct _php_chunked_filter_data {
 	php_chunked_filter_state state;
-	int chunk_size;
+	size_t chunk_size;
 	int persistent;
 } php_chunked_filter_data;
 
@@ -1991,7 +1987,7 @@ static int php_dechunk(char *buf, int len, php_chunked_filter_data *data)
 					continue;
 				}
 			case CHUNK_BODY:
-				if (end - p >= data->chunk_size) {
+				if ((size_t) (end - p) >= data->chunk_size) {
 					if (p != out) {
 						memmove(out, p, data->chunk_size);
 					}

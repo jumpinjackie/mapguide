@@ -13,7 +13,7 @@ require_once('skipifconnectfailure.inc');
 	mysqli_stmt_bind_result.phpt already. Restrict
 	this test case to the basics.
 	*/
-	include "connect.inc";
+	require_once("connect.inc");
 
 	$tmp    = NULL;
 	$link   = NULL;
@@ -80,7 +80,7 @@ require_once('skipifconnectfailure.inc');
 
 	/* Check that the function alias exists. It's a deprecated function,
 	but we have not announce the removal so far, therefore we need to check for it */
-	if (!is_null($tmp = @mysqli_fetch()))
+	if (!is_null($tmp = @mysqli_stmt_fetch()))
 		printf("[017] Expecting NULL, got %s/%s\n", gettype($tmp), $tmp);
 
 	print "done!";

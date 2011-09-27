@@ -1,10 +1,10 @@
-dnl $Id: acinclude.m4 275828 2009-02-14 21:08:02Z rasmus $
+dnl $Id: acinclude.m4 312109 2011-06-12 17:26:45Z felipe $
 dnl
 dnl This file contains local autoconf functions.
 
 AC_DEFUN([LIBZEND_BISON_CHECK],[
   # we only support certain bison versions
-  bison_version_list="1.28 1.35 1.75 1.875 2.0 2.1 2.2 2.3 2.4 2.4.1"
+  bison_version_list="1.28 1.35 1.75 1.875 2.0 2.1 2.2 2.3 2.4 2.4.1 2.4.2 2.4.3 2.5"
 
   # for standalone build of Zend Engine
   test -z "$SED" && SED=sed

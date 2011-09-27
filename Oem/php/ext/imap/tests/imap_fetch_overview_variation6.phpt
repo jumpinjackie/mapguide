@@ -22,30 +22,13 @@ require_once(dirname(__FILE__).'/imap_include.inc');
 $stream_id = setup_test_mailbox('', 0, $mailbox); // setup temp mailbox
 create_multipart_message($stream_id, $mailbox);
 
-//Set mandatory response fields
-$mandatoryFields = array(
-                    'size',
-                    'uid',
-                    'msgno',
-                    'recent',
-                    'flagged',
-                    'answered',
-                    'deleted',
-                    'seen',
-                    'draft',
-                   );
-
 // refresh msg numbers
 imap_check($stream_id);
 $msg_no = 1;
 
 $a = imap_fetch_overview($stream_id, $msg_no);
 echo "\n--> Object #1\n";
-foreach ($mandatoryFields as $mf)
-{
-  $z = $a[0]->$mf;
-  echo "$mf is $z\n";
-}
+displayOverviewFields($a[0]);
 
 
 
@@ -110,7 +93,7 @@ require_once(dirname(__FILE__).'/clean.inc');
 --EXPECTF--
 *** Testing imap_fetch_overview() : usage variations ***
 Create a temporary mailbox and add 0 msgs
-.. mailbox '{localhost/norsh}INBOX.phpttest' created
+.. mailbox '{%s}%s' created
 
 --> Object #1
 size is %d
@@ -122,4 +105,5 @@ answered is 0
 deleted is 0
 seen is 0
 draft is 0
+udate is OK
 ===DONE===

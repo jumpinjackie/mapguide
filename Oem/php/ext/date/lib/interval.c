@@ -2,7 +2,7 @@
    +----------------------------------------------------------------------+
    | PHP Version 5                                                        |
    +----------------------------------------------------------------------+
-   | Copyright (c) 1997-2009 The PHP Group                                |
+   | Copyright (c) 1997-2010 The PHP Group                                |
    +----------------------------------------------------------------------+
    | This source file is subject to version 3.01 of the PHP license,      |
    | that is bundled with this package in the file LICENSE, and is        |
@@ -16,7 +16,7 @@
    +----------------------------------------------------------------------+
  */
 
-/* $Id: interval.c 272370 2008-12-31 11:15:49Z sebastian $ */
+/* $Id: interval.c 312235 2011-06-17 16:38:23Z derick $ */
 
 #include "timelib.h"
 
@@ -25,6 +25,7 @@ timelib_rel_time *timelib_diff(timelib_time *one, timelib_time *two)
 	timelib_rel_time *rt;
 	timelib_time *swp;
 	timelib_sll dst_h_corr = 0, dst_m_corr = 0;
+	timelib_time one_backup, two_backup;
 
 	rt = timelib_rel_time_ctor();
 	rt->invert = 0;
@@ -45,6 +46,10 @@ timelib_rel_time *timelib_diff(timelib_time *one, timelib_time *two)
 		dst_m_corr = ((two->z - one->z) % 3600) / 60;
 	}
 
+	/* Save old TZ info */
+	memcpy(&one_backup, one, sizeof(one_backup));
+	memcpy(&two_backup, two, sizeof(two_backup));
+
     timelib_apply_localtime(one, 0);
     timelib_apply_localtime(two, 0);
 
@@ -56,10 +61,11 @@ timelib_rel_time *timelib_diff(timelib_time *one, timelib_time *two)
 	rt->s = two->s - one->s;
 	rt->days = abs(floor((one->sse - two->sse - (dst_h_corr * 3600) - (dst_m_corr * 60)) / 86400));
 
-	timelib_do_rel_normalize(one, rt);
+	timelib_do_rel_normalize(rt->invert ? one : two, rt);
 
-    timelib_apply_localtime(one, 1);
-    timelib_apply_localtime(two, 1);
+	/* Restore old TZ info */
+	memcpy(one, &one_backup, sizeof(one_backup));
+	memcpy(two, &two_backup, sizeof(two_backup));
 
 	return rt;
 }

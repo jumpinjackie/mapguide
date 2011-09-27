@@ -2,7 +2,7 @@
    +----------------------------------------------------------------------+
    | PHP Version 5                                                        |
    +----------------------------------------------------------------------+
-   | Copyright (c) 1997-2009 The PHP Group                                |
+   | Copyright (c) 1997-2011 The PHP Group                                |
    +----------------------------------------------------------------------+
    | This source file is subject to version 3.01 of the PHP license,      |
    | that is bundled with this package in the file LICENSE, and is        |
@@ -280,7 +280,7 @@ const zend_function_entry gmp_functions[] = {
 	ZEND_FE(gmp_popcount, arginfo_gmp_popcount)
 	ZEND_FE(gmp_hamdist, arginfo_gmp_hamdist)
 	ZEND_FE(gmp_nextprime, arginfo_gmp_nextprime)
-	{NULL, NULL, NULL}	/* Must be the last line in gmp_functions[] */
+	PHP_FE_END
 };
 /* }}} */
 
@@ -315,6 +315,14 @@ static void _php_gmpnum_free(zend_rsrc_list_entry *rsrc TSRMLS_DC);
 #define GMP_ROUND_ZERO      0
 #define GMP_ROUND_PLUSINF   1
 #define GMP_ROUND_MINUSINF  2
+
+/* The maximum base for input and output conversions is 62 from GMP 4.2
+ * onwards. */
+#if (__GNU_MP_VERSION >= 5) || (__GNU_MP_VERSION >= 4 && __GNU_MP_VERSION_MINOR >= 2)
+#	define MAX_BASE 62
+#else
+#	define MAX_BASE 36
+#endif
 
 /* {{{ gmp_emalloc
  */
@@ -356,6 +364,9 @@ ZEND_MODULE_STARTUP_D(gmp)
 	REGISTER_LONG_CONSTANT("GMP_ROUND_ZERO", GMP_ROUND_ZERO, CONST_CS | CONST_PERSISTENT);
 	REGISTER_LONG_CONSTANT("GMP_ROUND_PLUSINF", GMP_ROUND_PLUSINF, CONST_CS | CONST_PERSISTENT);
 	REGISTER_LONG_CONSTANT("GMP_ROUND_MINUSINF", GMP_ROUND_MINUSINF, CONST_CS | CONST_PERSISTENT);
+#ifdef mpir_version
+	REGISTER_STRING_CONSTANT("GMP_MPIR_VERSION", (char *)mpir_version, CONST_CS | CONST_PERSISTENT);
+#endif
 	REGISTER_STRING_CONSTANT("GMP_VERSION", (char *)gmp_version, CONST_CS | CONST_PERSISTENT);
 
 	mp_set_memory_functions(gmp_emalloc, gmp_erealloc, gmp_efree);
@@ -383,7 +394,11 @@ ZEND_MODULE_INFO_D(gmp)
 {
 	php_info_print_table_start();
 	php_info_print_table_row(2, "gmp support", "enabled");
+#ifdef mpir_version
+	php_info_print_table_row(2, "MPIR version", mpir_version);
+#else
 	php_info_print_table_row(2, "GMP version", gmp_version);
+#endif
 	php_info_print_table_end();
 }
 /* }}} */
@@ -477,8 +492,8 @@ typedef void (*gmp_binary_op2_t)(mpz_ptr, mpz_ptr, mpz_srcptr, mpz_srcptr);
 typedef unsigned long (*gmp_binary_ui_op2_t)(mpz_ptr, mpz_ptr, mpz_srcptr, unsigned long);
 /* }}} */
 
-#define gmp_zval_binary_ui_op(r, a, b, o, u) gmp_zval_binary_ui_op_ex(r, a, b, o, u, 0, 0 TSRMLS_CC)
-#define gmp_zval_binary_ui_op2(r, a, b, o, u) gmp_zval_binary_ui_op2_ex(r, a, b, o, u, 0, 0 TSRMLS_CC)
+#define gmp_zval_binary_ui_op(r, a, b, o, u) gmp_zval_binary_ui_op_ex(r, a, b, o, u, 0, 0, 0 TSRMLS_CC)
+#define gmp_zval_binary_ui_op2(r, a, b, o, u) gmp_zval_binary_ui_op2_ex(r, a, b, o, u, 0, 0, 0 TSRMLS_CC)
 
 #define gmp_binary_ui_op(op, uop) _gmp_binary_ui_op(INTERNAL_FUNCTION_PARAM_PASSTHRU, op, uop)
 #define gmp_binary_op(op)         _gmp_binary_ui_op(INTERNAL_FUNCTION_PARAM_PASSTHRU, op, NULL)
@@ -493,7 +508,7 @@ typedef unsigned long (*gmp_binary_ui_op2_t)(mpz_ptr, mpz_ptr, mpz_srcptr, unsig
    Execute GMP binary operation.
    May return GMP resource or long if operation allows this
 */
-static inline void gmp_zval_binary_ui_op_ex(zval *return_value, zval **a_arg, zval **b_arg, gmp_binary_op_t gmp_op, gmp_binary_ui_op_t gmp_ui_op, int allow_ui_return, int check_b_zero TSRMLS_DC) 
+static inline void gmp_zval_binary_ui_op_ex(zval *return_value, zval **a_arg, zval **b_arg, gmp_binary_op_t gmp_op, gmp_binary_ui_op_t gmp_ui_op, int allow_ui_return, int check_b_zero, int use_sign TSRMLS_DC) 
 {
 	mpz_t *gmpnum_a, *gmpnum_b, *gmpnum_result;
 	unsigned long long_result = 0;
@@ -529,7 +544,7 @@ static inline void gmp_zval_binary_ui_op_ex(zval *return_value, zval **a_arg, zv
 	if (use_ui && gmp_ui_op) {
 		if (allow_ui_return) {
 			long_result = gmp_ui_op(*gmpnum_result, *gmpnum_a, (unsigned long)Z_LVAL_PP(b_arg));
-			if (mpz_sgn(*gmpnum_a) == -1) {
+			if (use_sign && mpz_sgn(*gmpnum_a) == -1) {
 				long_result = -long_result;
 			}
 		} else {
@@ -746,8 +761,8 @@ ZEND_FUNCTION(gmp_init)
 		return;
 	}
 
-	if (base && (base < 2 || base > 36)) {
-		php_error_docref(NULL TSRMLS_CC, E_WARNING, "Bad base for conversion: %ld (should be between 2 and 36)", base);
+	if (base && (base < 2 || base > MAX_BASE)) {
+		php_error_docref(NULL TSRMLS_CC, E_WARNING, "Bad base for conversion: %ld (should be between 2 and %d)", base, MAX_BASE);
 		RETURN_FALSE;
 	}
 
@@ -796,14 +811,21 @@ ZEND_FUNCTION(gmp_strval)
 		return;
 	}
 
-	if (base < 2 || base > 36) {
-		php_error_docref(NULL TSRMLS_CC, E_WARNING, "Bad base for conversion: %ld", base);
+#if MAX_BASE == 62
+	/* Although the maximum base in general in GMP >= 4.2 is 62, mpz_get_str()
+	 * is explicitly limited to -36 when dealing with negative bases. */
+	if ((base < 2 && base > -2) || base > MAX_BASE || base < -36) {
+		php_error_docref(NULL TSRMLS_CC, E_WARNING, "Bad base for conversion: %ld (should be between 2 and %d or -2 and -36)", base, MAX_BASE);
+#else
+	if (base < 2 || base > MAX_BASE) {
+		php_error_docref(NULL TSRMLS_CC, E_WARNING, "Bad base for conversion: %ld (should be between 2 and %d)", base, MAX_BASE);
+#endif
 		RETURN_FALSE;
 	}
 
 	FETCH_GMP_ZVAL(gmpnum, gmpnumber_arg, temp_a);
 
-	num_len = mpz_sizeinbase(*gmpnum, base);
+	num_len = mpz_sizeinbase(*gmpnum, abs(base));
 	out_string = emalloc(num_len+2);
 	if (mpz_sgn(*gmpnum) < 0) {
 		num_len++;
@@ -892,13 +914,13 @@ ZEND_FUNCTION(gmp_div_r)
 
 	switch (round) {
 	case GMP_ROUND_ZERO:
-		gmp_zval_binary_ui_op_ex(return_value, a_arg, b_arg, mpz_tdiv_r, (gmp_binary_ui_op_t)mpz_tdiv_r_ui, 1, 1 TSRMLS_CC);
+		gmp_zval_binary_ui_op_ex(return_value, a_arg, b_arg, mpz_tdiv_r, (gmp_binary_ui_op_t)mpz_tdiv_r_ui, 1, 1, 1 TSRMLS_CC);
 		break;
 	case GMP_ROUND_PLUSINF:
-		gmp_zval_binary_ui_op_ex(return_value, a_arg, b_arg, mpz_cdiv_r, (gmp_binary_ui_op_t)mpz_cdiv_r_ui, 1, 1 TSRMLS_CC);
+		gmp_zval_binary_ui_op_ex(return_value, a_arg, b_arg, mpz_cdiv_r, (gmp_binary_ui_op_t)mpz_cdiv_r_ui, 1, 1, 1 TSRMLS_CC);
 		break;
 	case GMP_ROUND_MINUSINF:
-		gmp_zval_binary_ui_op_ex(return_value, a_arg, b_arg, mpz_fdiv_r, (gmp_binary_ui_op_t)mpz_fdiv_r_ui, 1, 1 TSRMLS_CC);
+		gmp_zval_binary_ui_op_ex(return_value, a_arg, b_arg, mpz_fdiv_r, (gmp_binary_ui_op_t)mpz_fdiv_r_ui, 1, 1, 1 TSRMLS_CC);
 		break;
 	}
 }
@@ -917,13 +939,13 @@ ZEND_FUNCTION(gmp_div_q)
 
 	switch (round) {
 	case GMP_ROUND_ZERO:
-		gmp_zval_binary_ui_op_ex(return_value, a_arg, b_arg, mpz_tdiv_q, (gmp_binary_ui_op_t)mpz_tdiv_q_ui, 0, 1 TSRMLS_CC);
+		gmp_zval_binary_ui_op_ex(return_value, a_arg, b_arg, mpz_tdiv_q, (gmp_binary_ui_op_t)mpz_tdiv_q_ui, 0, 1, 1 TSRMLS_CC);
 		break;
 	case GMP_ROUND_PLUSINF:
-		gmp_zval_binary_ui_op_ex(return_value, a_arg, b_arg, mpz_cdiv_q, (gmp_binary_ui_op_t)mpz_cdiv_q_ui, 0, 1 TSRMLS_CC);
+		gmp_zval_binary_ui_op_ex(return_value, a_arg, b_arg, mpz_cdiv_q, (gmp_binary_ui_op_t)mpz_cdiv_q_ui, 0, 1, 1 TSRMLS_CC);
 		break;
 	case GMP_ROUND_MINUSINF:
-		gmp_zval_binary_ui_op_ex(return_value, a_arg, b_arg, mpz_fdiv_q, (gmp_binary_ui_op_t)mpz_fdiv_q_ui, 0, 1 TSRMLS_CC);
+		gmp_zval_binary_ui_op_ex(return_value, a_arg, b_arg, mpz_fdiv_q, (gmp_binary_ui_op_t)mpz_fdiv_q_ui, 0, 1, 1 TSRMLS_CC);
 		break;
 	}
 							   
@@ -940,7 +962,7 @@ ZEND_FUNCTION(gmp_mod)
 		return;
 	}
 
-	gmp_zval_binary_ui_op_ex(return_value, a_arg, b_arg, mpz_mod, (gmp_binary_ui_op_t)mpz_mod_ui, 1, 1 TSRMLS_CC);
+	gmp_zval_binary_ui_op_ex(return_value, a_arg, b_arg, mpz_mod, (gmp_binary_ui_op_t)mpz_mod_ui, 1, 1, 0 TSRMLS_CC);
 }
 /* }}} */
 
@@ -954,7 +976,7 @@ ZEND_FUNCTION(gmp_divexact)
 		return;
 	}
 	
-	gmp_zval_binary_ui_op_ex(return_value, a_arg, b_arg, mpz_divexact, NULL, 0, 1 TSRMLS_CC);
+	gmp_zval_binary_ui_op_ex(return_value, a_arg, b_arg, mpz_divexact, NULL, 0, 1, 1 TSRMLS_CC);
 }
 /* }}} */
 
@@ -1202,7 +1224,7 @@ ZEND_FUNCTION(gmp_gcd)
 		return;
 	}
 
-	gmp_zval_binary_ui_op_ex(return_value, a_arg, b_arg, mpz_gcd, (gmp_binary_ui_op_t)mpz_gcd_ui, 0, 0 TSRMLS_CC);
+	gmp_zval_binary_ui_op_ex(return_value, a_arg, b_arg, mpz_gcd, (gmp_binary_ui_op_t)mpz_gcd_ui, 0, 0, 1 TSRMLS_CC);
 }
 /* }}} */
 
@@ -1359,8 +1381,11 @@ ZEND_FUNCTION(gmp_random)
 
 		GMPG(rand_initialized) = 1;
 	}
+#ifdef GMP_LIMB_BITS
+	mpz_urandomb(*gmpnum_result, GMPG(rand_state), GMP_ABS (limiter) * GMP_LIMB_BITS);
+#else
 	mpz_urandomb(*gmpnum_result, GMPG(rand_state), GMP_ABS (limiter) * __GMP_BITS_PER_MP_LIMB);
-
+#endif
 	ZEND_REGISTER_RESOURCE(return_value, gmpnum_result, le_gmp);
 }
 /* }}} */

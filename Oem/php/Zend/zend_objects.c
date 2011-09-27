@@ -2,7 +2,7 @@
    +----------------------------------------------------------------------+
    | Zend Engine                                                          |
    +----------------------------------------------------------------------+
-   | Copyright (c) 1998-2009 Zend Technologies Ltd. (http://www.zend.com) |
+   | Copyright (c) 1998-2011 Zend Technologies Ltd. (http://www.zend.com) |
    +----------------------------------------------------------------------+
    | This source file is subject to version 2.00 of the Zend license,     |
    | that is bundled with this package in the file LICENSE, and is        |
@@ -17,7 +17,7 @@
    +----------------------------------------------------------------------+
 */
 
-/* $Id: zend_objects.c 289775 2009-10-19 21:43:34Z johannes $ */
+/* $Id: zend_objects.c 306939 2011-01-01 02:19:59Z felipe $ */
 
 #include "zend.h"
 #include "zend_globals.h"
@@ -52,6 +52,7 @@ ZEND_API void zend_objects_destroy_object(zend_object *object, zend_object_handl
 	zend_function *destructor = object ? object->ce->destructor : NULL;
 
 	if (destructor) {
+		zval *old_exception;
 		zval *obj;
 		zend_object_store_bucket *obj_bucket;
 
@@ -99,12 +100,23 @@ ZEND_API void zend_objects_destroy_object(zend_object *object, zend_object_handl
 		 * For example, if an exception was thrown in a function and when the function's
 		 * local variable destruction results in a destructor being called.
 		 */
-		if (EG(exception) && Z_OBJ_HANDLE_P(EG(exception)) == handle) {
-			zend_error(E_ERROR, "Attempt to destruct pending exception");
+		old_exception = NULL;
+		if (EG(exception)) {
+			if (Z_OBJ_HANDLE_P(EG(exception)) == handle) {
+				zend_error(E_ERROR, "Attempt to destruct pending exception");
+			} else {
+				old_exception = EG(exception);
+				EG(exception) = NULL;
+			}
 		}
-		zend_exception_save(TSRMLS_C);
 		zend_call_method_with_0_params(&obj, object->ce, &destructor, ZEND_DESTRUCTOR_FUNC_NAME, NULL);
-		zend_exception_restore(TSRMLS_C);
+		if (old_exception) {
+			if (EG(exception)) {
+				zend_exception_set_previous(EG(exception), old_exception TSRMLS_CC);
+			} else {
+				EG(exception) = old_exception;
+			}
+		}
 		zval_ptr_dtor(&obj);
 	}
 }
@@ -134,7 +146,7 @@ ZEND_API zend_object *zend_objects_get_address(const zval *zobject TSRMLS_DC)
 
 ZEND_API void zend_objects_clone_members(zend_object *new_object, zend_object_value new_obj_val, zend_object *old_object, zend_object_handle handle TSRMLS_DC)
 {
-	zend_hash_copy(new_object->properties, old_object->properties, (copy_ctor_func_t) zval_add_ref, (void *) NULL /* Not used anymore */, sizeof(zval *));
+	zend_hash_copy(new_object->properties, old_object->properties, zval_copy_property_ctor(old_object->ce), (void *) NULL /* Not used anymore */, sizeof(zval *));
 
 	if (old_object->ce->clone) {
 		zval *new_obj;

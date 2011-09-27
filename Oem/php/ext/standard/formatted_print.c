@@ -2,7 +2,7 @@
    +----------------------------------------------------------------------+
    | PHP Version 5                                                        |
    +----------------------------------------------------------------------+
-   | Copyright (c) 1997-2009 The PHP Group                                |
+   | Copyright (c) 1997-2011 The PHP Group                                |
    +----------------------------------------------------------------------+
    | This source file is subject to version 3.01 of the PHP license,      |
    | that is bundled with this package in the file LICENSE, and is        |
@@ -16,7 +16,7 @@
    +----------------------------------------------------------------------+
  */
 
-/* $Id: formatted_print.c 284649 2009-07-23 14:54:04Z jani $ */
+/* $Id: formatted_print.c 306939 2011-01-01 02:19:59Z felipe $ */
 
 #include <math.h>				/* modf() */
 #include "php.h"
@@ -41,7 +41,7 @@
 #define FLOAT_DIGITS 6
 #define FLOAT_PRECISION 6
 #define MAX_FLOAT_DIGITS 38
-#define MAX_FLOAT_PRECISION 40
+#define MAX_FLOAT_PRECISION 53
 
 #if 0
 /* trick to control varargs functions through cpp */
@@ -232,14 +232,14 @@ php_sprintf_appenddouble(char **buffer, int *pos,
 	if (zend_isnan(number)) {
 		is_negative = (number<0);
 		php_sprintf_appendstring(buffer, pos, size, "NaN", 3, 0, padding,
-								 alignment, precision, is_negative, 0, always_sign);
+								 alignment, 3, is_negative, 0, always_sign);
 		return;
 	}
 
 	if (zend_isinf(number)) {
 		is_negative = (number<0);
 		php_sprintf_appendstring(buffer, pos, size, "INF", 3, 0, padding,
-								 alignment, precision, is_negative, 0, always_sign);
+								 alignment, 3, is_negative, 0, always_sign);
 		return;
 	}
 

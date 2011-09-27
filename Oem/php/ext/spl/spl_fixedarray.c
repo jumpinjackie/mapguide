@@ -2,7 +2,7 @@
   +----------------------------------------------------------------------+
   | PHP Version 5                                                        |
   +----------------------------------------------------------------------+
-  | Copyright (c) 1997-2009 The PHP Group                                |
+  | Copyright (c) 1997-2011 The PHP Group                                |
   +----------------------------------------------------------------------+
   | This source file is subject to version 3.01 of the PHP license,      |
   | that is bundled with this package in the file LICENSE, and is        |
@@ -17,7 +17,7 @@
   +----------------------------------------------------------------------+
 */
 
-/* $Id: spl_fixedarray.c 283486 2009-07-04 20:31:27Z felipe $ */
+/* $Id: spl_fixedarray.c 313665 2011-07-25 11:42:53Z felipe $ */
 
 #ifdef HAVE_CONFIG_H
 #include "config.h"
@@ -152,7 +152,9 @@ static HashTable* spl_fixedarray_object_get_properties(zval *obj TSRMLS_DC) /* {
 	spl_fixedarray_object *intern  = (spl_fixedarray_object*)zend_object_store_get_object(obj TSRMLS_CC);
 	int  i = 0;
 
-	if (intern->array) {
+	if (intern->array && !GC_G(gc_active)) {
+		int j = zend_hash_num_elements(intern->std.properties);
+
 		for (i = 0; i < intern->array->size; i++) {
 			if (intern->array->elements[i]) {
 				zend_hash_index_update(intern->std.properties, i, (void *)&intern->array->elements[i], sizeof(zval *), NULL);
@@ -160,6 +162,11 @@ static HashTable* spl_fixedarray_object_get_properties(zval *obj TSRMLS_DC) /* {
 			} else {
 				zend_hash_index_update(intern->std.properties, i, (void *)&EG(uninitialized_zval_ptr), sizeof(zval *), NULL);
 				Z_ADDREF_P(EG(uninitialized_zval_ptr));
+			}
+		}
+		if (j > intern->array->size) {
+			for (i = intern->array->size; i < j; ++i) {
+				zend_hash_index_del(intern->std.properties, i);
 			}
 		}
 	}
@@ -406,7 +413,11 @@ static void spl_fixedarray_object_write_dimension(zval *object, zval *offset, zv
 	intern = (spl_fixedarray_object *)zend_object_store_get_object(object TSRMLS_CC);
 
 	if (intern->fptr_offset_set) {
-		SEPARATE_ARG_IF_REF(offset);
+		if (!offset) {
+			ALLOC_INIT_ZVAL(offset);
+		} else {
+			SEPARATE_ARG_IF_REF(offset);
+		}
 		SEPARATE_ARG_IF_REF(value);
 		zend_call_method_with_2_params(&object, intern->std.ce, &intern->fptr_offset_set, "offsetSet", NULL, offset, value);
 		zval_ptr_dtor(&value);
@@ -1062,7 +1073,7 @@ static zend_function_entry spl_funcs_SplFixedArray[] = { /* {{{ */
 	SPL_ME(SplFixedArray, key,             arginfo_splfixedarray_void,     ZEND_ACC_PUBLIC)
 	SPL_ME(SplFixedArray, next,            arginfo_splfixedarray_void,     ZEND_ACC_PUBLIC)
 	SPL_ME(SplFixedArray, valid,           arginfo_splfixedarray_void,     ZEND_ACC_PUBLIC)
-	{NULL, NULL, NULL}
+	PHP_FE_END
 };
 /* }}} */
 

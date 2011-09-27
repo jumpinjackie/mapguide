@@ -317,7 +317,7 @@ unserialize_callback_func =
 ; When floats & doubles are serialized store serialize_precision significant
 ; digits after the floating point. The default value ensures that when floats
 ; are decoded with unserialize, the data will remain the same.
-serialize_precision = 100
+serialize_precision = 17
 
 ; This directive allows you to enable and disable warnings which PHP will issue
 ; if you pass a value by reference at function call time. Passing values by
@@ -621,13 +621,13 @@ html_errors = Off
 ; this setting blank.
 ; http://php.net/error-prepend-string
 ; Example:
-;error_prepend_string = "<font color=#ff0000>"
+;error_prepend_string = "<span style='color: #ff0000'>"
 
 ; String to output after an error message. PHP's default behavior is to leave
 ; this setting blank.
 ; http://php.net/error-append-string
 ; Example:
-;error_append_string = "</font>"
+;error_append_string = "</span>"
 
 ; Log errors to specified file. PHP's default behavior is to leave this value
 ; empty.
@@ -946,10 +946,8 @@ default_socket_timeout = 60
 ;
 ;extension=php_bz2.dll
 ;extension=php_curl.dll
-;extension=php_dba.dll
-;extension=php_exif.dll
 ;extension=php_fileinfo.dll
-extension=php_gd2.dll
+;extension=php_gd2.dll
 ;extension=php_gettext.dll
 ;extension=php_gmp.dll
 ;extension=php_intl.dll
@@ -957,8 +955,7 @@ extension=php_gd2.dll
 ;extension=php_interbase.dll
 ;extension=php_ldap.dll
 ;extension=php_mbstring.dll
-;extension=php_ming.dll
-;extension=php_mssql.dll
+;extension=php_exif.dll      ; Must be after mbstring as it depends on it
 ;extension=php_mysql.dll
 ;extension=php_mysqli.dll
 ;extension=php_oci8.dll      ; Use with Oracle 10gR2 Instant Client
@@ -972,10 +969,13 @@ extension=php_gd2.dll
 ;extension=php_pdo_pgsql.dll
 ;extension=php_pdo_sqlite.dll
 ;extension=php_pgsql.dll
-;extension=php_phar.dll
 ;extension=php_pspell.dll
 ;extension=php_shmop.dll
+
+; The MIBS data available in the PHP distribution must be installed. 
+; See http://www.php.net/manual/en/snmp.installation.php 
 ;extension=php_snmp.dll
+
 ;extension=php_soap.dll
 ;extension=php_sockets.dll
 ;extension=php_sqlite.dll
@@ -1101,7 +1101,8 @@ smtp_port = 25
 ; Add X-PHP-Originating-Script: that will include uid of the script followed by the filename
 mail.add_x_header = On
 
-; Log all mail() calls including the full path of the script, line #, to address and headers
+; The path to a log file that will log all mail() calls. Log entries include
+; the full path of the script, line number, To address and headers.
 ;mail.log =
 
 [SQL]
@@ -1389,7 +1390,7 @@ pgsql.max_links = -1
 ; http://php.net/pgsql.ignore-notice
 pgsql.ignore_notice = 0
 
-; Log PostgreSQL backends Noitce message or not.
+; Log PostgreSQL backends Notice message or not.
 ; Unless pgsql.ignore_notice=0, module cannot log notice message.
 ; http://php.net/pgsql.log-notice
 pgsql.log_notice = 0
@@ -1555,7 +1556,7 @@ session.gc_maxlifetime = 1440
 ;       collection through a shell script, cron entry, or some other method.
 ;       For example, the following script would is the equivalent of
 ;       setting session.gc_maxlifetime to 1440 (1440 seconds = 24 minutes):
-;          cd /path/to/sessions; find -cmin +24 | xargs rm
+;          find /path/to/sessions -cmin +24 | xargs rm
 
 ; PHP 4.2 and less have an undocumented feature/bug that allows you to
 ; to initialize a session variable in the global scope, even when register_globals
@@ -1594,11 +1595,10 @@ session.entropy_length = 0
 
 ; Specified here to create the session id.
 ; http://php.net/session.entropy-file
+; On systems that don't have /dev/urandom /dev/arandom can be used
+; On windows, setting the entropy_length setting will activate the 
+; Windows random source (using the CryptoAPI)
 ;session.entropy_file = /dev/urandom
-session.entropy_file =
-
-; http://php.net/session.entropy-length
-;session.entropy_length = 16
 
 ; Set to {nocache,private,public,} to determine HTTP caching aspects
 ; or leave this empty to avoid sending anti-caching headers.
@@ -1626,7 +1626,7 @@ session.use_trans_sid = 0
 ;   0  (MD5 128 bits)
 ;   1  (SHA-1 160 bits)
 ; This option may also be set to the name of any hash function supported by
-; the hash extension. A list of available hashes is returned by the hash_alogs()
+; the hash extension. A list of available hashes is returned by the hash_algos()
 ; function.
 ; http://php.net/session.hash-function
 session.hash_function = 0

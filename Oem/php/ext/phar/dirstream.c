@@ -2,7 +2,7 @@
   +----------------------------------------------------------------------+
   | phar:// stream wrapper support                                       |
   +----------------------------------------------------------------------+
-  | Copyright (c) 2005-2009 The PHP Group                                |
+  | Copyright (c) 2005-2011 The PHP Group                                |
   +----------------------------------------------------------------------+
   | This source file is subject to version 3.01 of the PHP license,      |
   | that is bundled with this package in the file LICENSE, and is        |
@@ -360,7 +360,7 @@ php_stream *phar_wrapper_open_dir(php_stream_wrapper *wrapper, char *path, char 
 
 	if (FAILURE == phar_get_archive(&phar, resource->host, host_len, NULL, 0, &error TSRMLS_CC)) {
 		if (error) {
-			php_stream_wrapper_log_error(wrapper, options TSRMLS_CC, error);
+			php_stream_wrapper_log_error(wrapper, options TSRMLS_CC, "%s", error);
 			efree(error);
 		} else {
 			php_stream_wrapper_log_error(wrapper, options TSRMLS_CC, "phar file \"%s\" is unknown", resource->host);
@@ -503,7 +503,7 @@ int phar_wrapper_mkdir(php_stream_wrapper *wrapper, char *url_from, int mode, in
 		return 0;
 	}
 
-	if ((e = phar_get_entry_info_dir(phar, resource->path + 1, strlen(resource->path + 1), 0, &error, 1 TSRMLS_CC))) {
+	if (phar_get_entry_info_dir(phar, resource->path + 1, strlen(resource->path + 1), 0, &error, 1 TSRMLS_CC)) {
 		/* entry exists as a file */
 		php_stream_wrapper_log_error(wrapper, options TSRMLS_CC, "phar error: cannot create directory \"%s\" in phar \"%s\", file already exists", resource->path+1, resource->host);
 		php_url_free(resource);

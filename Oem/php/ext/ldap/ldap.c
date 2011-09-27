@@ -2,7 +2,7 @@
    +----------------------------------------------------------------------+
    | PHP Version 5                                                        |
    +----------------------------------------------------------------------+
-   | Copyright (c) 1997-2009 The PHP Group                                |
+   | Copyright (c) 1997-2011 The PHP Group                                |
    +----------------------------------------------------------------------+
    | This source file is subject to version 3.01 of the PHP license,      |
    | that is bundled with this package in the file LICENSE, and is        |
@@ -23,7 +23,7 @@
    +----------------------------------------------------------------------+
  */
  
-/* $Id: ldap.c 287897 2009-08-30 15:33:59Z iliaa $ */
+/* $Id: ldap.c 313665 2011-07-25 11:42:53Z felipe $ */
 #define IS_EXT_MODULE
 
 #ifdef HAVE_CONFIG_H
@@ -46,6 +46,7 @@
 
 #ifdef PHP_WIN32
 #include <string.h>
+#include "config.w32.h"
 #if HAVE_NSLDAP
 #include <winsock2.h>
 #endif
@@ -225,7 +226,7 @@ PHP_MINFO_FUNCTION(ldap)
 
 	php_info_print_table_start();
 	php_info_print_table_row(2, "LDAP Support", "enabled");
-	php_info_print_table_row(2, "RCS Version", "$Id: ldap.c 287897 2009-08-30 15:33:59Z iliaa $");
+	php_info_print_table_row(2, "RCS Version", "$Id: ldap.c 313665 2011-07-25 11:42:53Z felipe $");
 
 	if (LDAPG(max_links) == -1) {
 		snprintf(tmp, 31, "%ld/unlimited", LDAPG(num_links));
@@ -936,21 +937,21 @@ PHP_FUNCTION(ldap_get_entries)
 	ldap = ld->link;
 	num_entries = ldap_count_entries(ldap, ldap_result);
 
-	if (num_entries == 0) {
-		RETURN_NULL();
-	}
-	num_entries = 0;
-	
-	ldap_result_entry = ldap_first_entry(ldap, ldap_result);
-	if (ldap_result_entry == NULL) {
-		RETURN_FALSE;
-	}
-
 	array_init(return_value);
 	add_assoc_long(return_value, "count", num_entries);
 
-	while (ldap_result_entry != NULL) {
+	if (num_entries == 0) {
+		return;
+	}
+	
+	ldap_result_entry = ldap_first_entry(ldap, ldap_result);
+	if (ldap_result_entry == NULL) {
+		zval_dtor(return_value);
+		RETURN_FALSE;
+	}
 
+	num_entries = 0;
+	while (ldap_result_entry != NULL) {
 		MAKE_STD_ZVAL(tmp1);
 		array_init(tmp1);
 
@@ -1583,14 +1584,17 @@ PHP_FUNCTION(ldap_get_option)
 #ifdef LDAP_OPT_NETWORK_TIMEOUT
 	case LDAP_OPT_NETWORK_TIMEOUT:
 		{
-			struct timeval *timeout;
+			struct timeval *timeout = NULL;
 
 			if (ldap_get_option(ld->link, LDAP_OPT_NETWORK_TIMEOUT, (void *) &timeout)) {
 				if (timeout) {
 					ldap_memfree(timeout);
 				}
 				RETURN_FALSE;
-			}		       
+			}		    
+			if (!timeout) {
+				RETURN_FALSE;
+			}
 			zval_dtor(retval);
 			ZVAL_LONG(retval, timeout->tv_sec);
 			ldap_memfree(timeout);
@@ -1908,6 +1912,7 @@ PHP_FUNCTION(ldap_first_reference)
 		resultentry->id = Z_LVAL_P(result);
 		zend_list_addref(resultentry->id);
 		resultentry->data = entry;
+		resultentry->ber = NULL;
 	}
 }
 /* }}} */
@@ -1936,6 +1941,7 @@ PHP_FUNCTION(ldap_next_reference)
 		resultentry_next->id = resultentry->id;
 		zend_list_addref(resultentry->id);
 		resultentry_next->data = entry_next;
+		resultentry_next->ber = NULL;
 	}
 }
 /* }}} */
@@ -2500,7 +2506,7 @@ const zend_function_entry ldap_functions[] = {
 	PHP_FE(ldap_8859_to_t61,							arginfo_ldap_8859_to_t61)
 #endif
 
-	{NULL, NULL, NULL}
+	PHP_FE_END
 };
 /* }}} */
 

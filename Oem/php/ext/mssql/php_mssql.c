@@ -2,7 +2,7 @@
    +----------------------------------------------------------------------+
    | PHP Version 5                                                        |
    +----------------------------------------------------------------------+
-   | Copyright (c) 1997-2009 The PHP Group                                |
+   | Copyright (c) 1997-2011 The PHP Group                                |
    +----------------------------------------------------------------------+
    | This source file is subject to version 3.01 of the PHP license,      |
    | that is bundled with this package in the file LICENSE, and is        |
@@ -16,7 +16,7 @@
    +----------------------------------------------------------------------+
  */
 
-/* $Id: php_mssql.c 284145 2009-07-15 19:09:15Z rasmus $ */
+/* $Id: php_mssql.c 313835 2011-07-28 11:01:04Z pajoye $ */
 
 #ifdef COMPILE_DL_MSSQL
 #define HAVE_MSSQL 1
@@ -178,7 +178,7 @@ const zend_function_entry mssql_functions[] = {
  	PHP_FE(mssql_execute,				arginfo_mssql_execute)
 	PHP_FE(mssql_free_statement,		arginfo_mssql_free_statement)
  	PHP_FE(mssql_guid_string,			arginfo_mssql_guid_string)
-	{NULL, NULL, NULL}
+	PHP_FE_END
 };
 /* }}} */
 
@@ -539,7 +539,7 @@ PHP_MINFO_FUNCTION(mssql)
 static void php_mssql_do_connect(INTERNAL_FUNCTION_PARAMETERS, int persistent)
 {
 	char *host = NULL, *user = NULL, *passwd = NULL;
-	int host_len, user_len, passwd_len;
+	int host_len = 0, user_len = 0, passwd_len = 0;
 	zend_bool new_link = 0;
 	char *hashed_details;
 	int hashed_details_length;
@@ -685,6 +685,13 @@ static void php_mssql_do_connect(INTERNAL_FUNCTION_PARAMETERS, int persistent)
 
 			/* hash it up */
 			mssql_ptr = (mssql_link *) malloc(sizeof(mssql_link));
+			if (!mssql_ptr) {
+				efree(hashed_details);
+				dbfreelogin(mssql.login);
+				dbclose(mssql.link);
+				RETURN_FALSE;
+			}
+
 			memcpy(mssql_ptr, &mssql, sizeof(mssql_link));
 			Z_TYPE(new_le) = le_plink;
 			new_le.ptr = mssql_ptr;
@@ -1059,6 +1066,14 @@ static void php_mssql_get_column_content_without_type(mssql_link *mssql_ptr,int 
 		unsigned char *res_buf;
 		int res_length = dbdatlen(mssql_ptr->link, offset);
 
+		if (res_length == 0) {
+			ZVAL_NULL(result);
+			return;
+		} else if (res_length < 0) {
+			ZVAL_FALSE(result);
+			return;
+		}
+
 		res_buf = (unsigned char *) emalloc(res_length+1);
 		bin = ((DBBINARY *)dbdata(mssql_ptr->link, offset));
 		res_buf[res_length] = '\0';
@@ -1311,6 +1326,7 @@ PHP_FUNCTION(mssql_query)
 	mssql_result *result;
 	int id = -1;
 
+	dbsettime(MS_SQL_G(timeout));
 	batchsize = MS_SQL_G(batchsize);
 
 	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "s|rl", &query, &query_len, &mssql_link_index, &zbatchsize) == FAILURE) {

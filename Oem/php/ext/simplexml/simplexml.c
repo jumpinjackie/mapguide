@@ -2,7 +2,7 @@
   +----------------------------------------------------------------------+
   | PHP Version 5                                                        |
   +----------------------------------------------------------------------+
-  | Copyright (c) 1997-2009 The PHP Group                                |
+  | Copyright (c) 1997-2011 The PHP Group                                |
   +----------------------------------------------------------------------+
   | This source file is subject to version 3.01 of the PHP license,      |
   | that is bundled with this package in the file LICENSE, and is        |
@@ -18,7 +18,7 @@
   +----------------------------------------------------------------------+
 */
 
-/* $Id: simplexml.c 281953 2009-06-11 09:41:15Z bjori $ */
+/* $Id: simplexml.c 314376 2011-08-06 14:47:44Z felipe $ */
 
 #ifdef HAVE_CONFIG_H
 #include "config.h"
@@ -988,9 +988,14 @@ static void sxe_dimension_delete(zval *object, zval *offset TSRMLS_DC)
 static inline char * sxe_xmlNodeListGetString(xmlDocPtr doc, xmlNodePtr list, int inLine) /* {{{ */
 {
 	xmlChar *tmp = xmlNodeListGetString(doc, list, inLine);
-	char    *res = estrdup((char*)tmp);
-
-	xmlFree(tmp);
+	char    *res;
+	
+	if (tmp) {
+		res = estrdup((char*)tmp);
+		xmlFree(tmp);
+	} else {
+		res = STR_EMPTY_ALLOC();
+	}
 
 	return res;
 }
@@ -1078,6 +1083,9 @@ static HashTable * sxe_get_prop_hash(zval *object, int is_debug TSRMLS_DC) /* {{
 		zend_hash_clean(sxe->properties);
 		rv = sxe->properties;
 	} else {
+		if (GC_G(gc_active)) {
+			return NULL;
+		}
 		ALLOC_HASHTABLE(rv);
 		zend_hash_init(rv, 0, NULL, ZVAL_PTR_DTOR, 0);
 		sxe->properties = rv;
@@ -1091,22 +1099,24 @@ static HashTable * sxe_get_prop_hash(zval *object, int is_debug TSRMLS_DC) /* {{
 		if (sxe->iter.type == SXE_ITER_ELEMENT) {
 			node = php_sxe_get_first_node(sxe, node TSRMLS_CC);
 		}
-		attr = node ? (xmlAttrPtr)node->properties : NULL;
-		zattr = NULL;
-		test = sxe->iter.name && sxe->iter.type == SXE_ITER_ATTRLIST;
-		while (attr) {
-			if ((!test || !xmlStrcmp(attr->name, sxe->iter.name)) && match_ns(sxe, (xmlNodePtr)attr, sxe->iter.nsprefix, sxe->iter.isprefix)) {
-				MAKE_STD_ZVAL(value);
-				ZVAL_STRING(value, sxe_xmlNodeListGetString((xmlDocPtr) sxe->document->ptr, attr->children, 1), 0);
-				namelen = xmlStrlen(attr->name) + 1;
-				if (!zattr) {
-					MAKE_STD_ZVAL(zattr);
-					array_init(zattr);
-					sxe_properties_add(rv, "@attributes", sizeof("@attributes"), zattr TSRMLS_CC);
+		if (!node || node->type != XML_ENTITY_DECL) {
+			attr = node ? (xmlAttrPtr)node->properties : NULL;
+			zattr = NULL;
+			test = sxe->iter.name && sxe->iter.type == SXE_ITER_ATTRLIST;
+			while (attr) {
+				if ((!test || !xmlStrcmp(attr->name, sxe->iter.name)) && match_ns(sxe, (xmlNodePtr)attr, sxe->iter.nsprefix, sxe->iter.isprefix)) {
+					MAKE_STD_ZVAL(value);
+					ZVAL_STRING(value, sxe_xmlNodeListGetString((xmlDocPtr) sxe->document->ptr, attr->children, 1), 0);
+					namelen = xmlStrlen(attr->name) + 1;
+					if (!zattr) {
+						MAKE_STD_ZVAL(zattr);
+						array_init(zattr);
+						sxe_properties_add(rv, "@attributes", sizeof("@attributes"), zattr TSRMLS_CC);
+					}
+					add_assoc_zval_ex(zattr, (char*)attr->name, namelen, value);
 				}
-				add_assoc_zval_ex(zattr, (char*)attr->name, namelen, value);
+				attr = attr->next;
 			}
-			attr = attr->next;
 		}
 	}
 
@@ -1253,32 +1263,31 @@ SXE_METHOD(xpath)
 	}
 
 	result = retval->nodesetval;
-	if (!result) {
-		xmlXPathFreeObject(retval);
-		RETURN_FALSE;
-	}
 
-	array_init(return_value);
+	if (result != NULL) {
+		array_init(return_value);
+		for (i = 0; i < result->nodeNr; ++i) {
+			nodeptr = result->nodeTab[i];
+			if (nodeptr->type == XML_TEXT_NODE || nodeptr->type == XML_ELEMENT_NODE || nodeptr->type == XML_ATTRIBUTE_NODE) {
+				MAKE_STD_ZVAL(value);
+				/**
+				 * Detect the case where the last selector is text(), simplexml
+				 * always accesses the text() child by default, therefore we assign
+				 * to the parent node.
+				 */
+				if (nodeptr->type == XML_TEXT_NODE) {
+					_node_as_zval(sxe, nodeptr->parent, value, SXE_ITER_NONE, NULL, NULL, 0 TSRMLS_CC);
+				} else if (nodeptr->type == XML_ATTRIBUTE_NODE) {
+					_node_as_zval(sxe, nodeptr->parent, value, SXE_ITER_ATTRLIST, (char*)nodeptr->name, nodeptr->ns ? (xmlChar *)nodeptr->ns->href : NULL, 0 TSRMLS_CC);
+				} else {
+					_node_as_zval(sxe, nodeptr, value, SXE_ITER_NONE, NULL, NULL, 0 TSRMLS_CC);
+				}
 
-	for (i = 0; i < result->nodeNr; ++i) {
-		nodeptr = result->nodeTab[i];
-		if (nodeptr->type == XML_TEXT_NODE || nodeptr->type == XML_ELEMENT_NODE || nodeptr->type == XML_ATTRIBUTE_NODE) {
-			MAKE_STD_ZVAL(value);
-			/**
-			 * Detect the case where the last selector is text(), simplexml
-			 * always accesses the text() child by default, therefore we assign
-			 * to the parent node.
-			 */
-			if (nodeptr->type == XML_TEXT_NODE) {
-				_node_as_zval(sxe, nodeptr->parent, value, SXE_ITER_NONE, NULL, NULL, 0 TSRMLS_CC);
-			} else if (nodeptr->type == XML_ATTRIBUTE_NODE) {
-				_node_as_zval(sxe, nodeptr->parent, value, SXE_ITER_ATTRLIST, (char*)nodeptr->name, nodeptr->ns ? (xmlChar *)nodeptr->ns->href : NULL, 0 TSRMLS_CC);
-			} else {
-				_node_as_zval(sxe, nodeptr, value, SXE_ITER_NONE, NULL, NULL, 0 TSRMLS_CC);
+				add_next_index_zval(return_value, value);
 			}
-
-			add_next_index_zval(return_value, value);
 		}
+	} else {
+		RETVAL_FALSE;
 	}
 
 	xmlXPathFreeObject(retval);
@@ -1863,12 +1872,16 @@ static int sxe_count_elements(zval *object, long *count TSRMLS_DC) /* {{{ */
 }
 /* }}} */
 
-/* {{{ proto int SimpleXMLIterator::count()
+/* {{{ proto int SimpleXMLElement::count()
  Get number of child elements */
 SXE_METHOD(count)
 {
 	long count = 0;
 	php_sxe_object *sxe = php_sxe_fetch_object(getThis() TSRMLS_CC);
+
+	if (zend_parse_parameters_none() == FAILURE) {
+		return;
+	}
 
 	php_sxe_count_elements_helper(sxe, &count TSRMLS_CC);
 	
@@ -2458,20 +2471,59 @@ ZEND_BEGIN_ARG_INFO_EX(arginfo_simplexml_import_dom, 0, 0, 1)
 	ZEND_ARG_INFO(0, node)
 	ZEND_ARG_INFO(0, class_name)
 ZEND_END_ARG_INFO()
+
+ZEND_BEGIN_ARG_INFO_EX(arginfo_simplexmlelement_xpath, 0, 0, 1)
+	ZEND_ARG_INFO(0, path)
+ZEND_END_ARG_INFO()
+
+ZEND_BEGIN_ARG_INFO_EX(arginfo_simplexmlelement_registerxpathnamespace, 0, 0, 2)
+	ZEND_ARG_INFO(0, prefix)
+	ZEND_ARG_INFO(0, ns)
+ZEND_END_ARG_INFO()
+
+ZEND_BEGIN_ARG_INFO_EX(arginfo_simplexmlelement_asxml, 0, 0, 0)
+	ZEND_ARG_INFO(0, filename)
+ZEND_END_ARG_INFO()
+
+ZEND_BEGIN_ARG_INFO_EX(arginfo_simplexmlelement_getnamespaces, 0, 0, 0)
+	ZEND_ARG_INFO(0, recursve)
+ZEND_END_ARG_INFO()
+
+ZEND_BEGIN_ARG_INFO_EX(arginfo_simplexmlelement_children, 0, 0, 0)
+	ZEND_ARG_INFO(0, ns)
+	ZEND_ARG_INFO(0, is_prefix)
+ZEND_END_ARG_INFO()
+
+ZEND_BEGIN_ARG_INFO_EX(arginfo_simplexmlelement__construct, 0, 0, 1)
+	ZEND_ARG_INFO(0, data)
+	ZEND_ARG_INFO(0, options)
+	ZEND_ARG_INFO(0, data_is_url)
+	ZEND_ARG_INFO(0, ns)
+	ZEND_ARG_INFO(0, is_prefix)
+ZEND_END_ARG_INFO()
+
+ZEND_BEGIN_ARG_INFO(arginfo_simplexmlelement__void, 0)
+ZEND_END_ARG_INFO()
+
+ZEND_BEGIN_ARG_INFO_EX(arginfo_simplexmlelement_addchild, 0, 0, 1)
+	ZEND_ARG_INFO(0, name)
+	ZEND_ARG_INFO(0, value)
+	ZEND_ARG_INFO(0, ns)
+ZEND_END_ARG_INFO()
 /* }}} */
 
 const zend_function_entry simplexml_functions[] = { /* {{{ */
 	PHP_FE(simplexml_load_file, 	arginfo_simplexml_load_file)
 	PHP_FE(simplexml_load_string,	arginfo_simplexml_load_string)
 	PHP_FE(simplexml_import_dom,	arginfo_simplexml_import_dom)
-	{NULL, NULL, NULL}
+	PHP_FE_END
 };
 /* }}} */
 
 static const zend_module_dep simplexml_deps[] = { /* {{{ */
 	ZEND_MOD_REQUIRED("libxml")
 	ZEND_MOD_REQUIRED("spl")
-	{NULL, NULL, NULL}
+	ZEND_MOD_END
 };
 /* }}} */
 
@@ -2497,21 +2549,21 @@ ZEND_GET_MODULE(simplexml)
 /* the method table */
 /* each method can have its own parameters and visibility */
 static const zend_function_entry sxe_functions[] = { /* {{{ */
-	SXE_ME(__construct,            NULL, ZEND_ACC_PUBLIC|ZEND_ACC_FINAL) /* must be called */
-	SXE_ME(asXML,                  NULL, ZEND_ACC_PUBLIC)
-	SXE_MALIAS(saveXML, asXML,	   NULL, ZEND_ACC_PUBLIC)
-	SXE_ME(xpath,                  NULL, ZEND_ACC_PUBLIC)
-	SXE_ME(registerXPathNamespace, NULL, ZEND_ACC_PUBLIC)
-	SXE_ME(attributes,             NULL, ZEND_ACC_PUBLIC)
-	SXE_ME(children,               NULL, ZEND_ACC_PUBLIC)
-	SXE_ME(getNamespaces,          NULL, ZEND_ACC_PUBLIC)
-	SXE_ME(getDocNamespaces,       NULL, ZEND_ACC_PUBLIC)
-	SXE_ME(getName,                NULL, ZEND_ACC_PUBLIC)
-	SXE_ME(addChild,               NULL, ZEND_ACC_PUBLIC)
-	SXE_ME(addAttribute,           NULL, ZEND_ACC_PUBLIC)
-	SXE_ME(__toString,             NULL, ZEND_ACC_PUBLIC)
-	SXE_ME(count,                  NULL, ZEND_ACC_PUBLIC)
-	{NULL, NULL, NULL}
+	SXE_ME(__construct,            arginfo_simplexmlelement__construct, ZEND_ACC_PUBLIC|ZEND_ACC_FINAL) /* must be called */
+	SXE_ME(asXML,                  arginfo_simplexmlelement_asxml, ZEND_ACC_PUBLIC)
+	SXE_MALIAS(saveXML, asXML,	   arginfo_simplexmlelement_asxml, ZEND_ACC_PUBLIC)
+	SXE_ME(xpath,                  arginfo_simplexmlelement_xpath, ZEND_ACC_PUBLIC)
+	SXE_ME(registerXPathNamespace, arginfo_simplexmlelement_registerxpathnamespace, ZEND_ACC_PUBLIC)
+	SXE_ME(attributes,             arginfo_simplexmlelement_children, ZEND_ACC_PUBLIC)
+	SXE_ME(children,               arginfo_simplexmlelement_children, ZEND_ACC_PUBLIC)
+	SXE_ME(getNamespaces,          arginfo_simplexmlelement_getnamespaces, ZEND_ACC_PUBLIC)
+	SXE_ME(getDocNamespaces,       arginfo_simplexmlelement_getnamespaces, ZEND_ACC_PUBLIC)
+	SXE_ME(getName,                arginfo_simplexmlelement__void, ZEND_ACC_PUBLIC)
+	SXE_ME(addChild,               arginfo_simplexmlelement_addchild, ZEND_ACC_PUBLIC)
+	SXE_ME(addAttribute,           arginfo_simplexmlelement_addchild, ZEND_ACC_PUBLIC)
+	SXE_ME(__toString,             arginfo_simplexmlelement__void, ZEND_ACC_PUBLIC)
+	SXE_ME(count,                  arginfo_simplexmlelement__void, ZEND_ACC_PUBLIC)
+	PHP_FE_END
 };
 /* }}} */
 
@@ -2531,7 +2583,8 @@ PHP_MINIT_FUNCTION(simplexml)
 	sxe_object_handlers.get_constructor = zend_get_std_object_handlers()->get_constructor;
 	sxe_object_handlers.get_class_entry = zend_get_std_object_handlers()->get_class_entry;
 	sxe_object_handlers.get_class_name = zend_get_std_object_handlers()->get_class_name;
-
+	sxe_class_entry->serialize = zend_class_serialize_deny;
+	sxe_class_entry->unserialize = zend_class_unserialize_deny;
 
 	php_libxml_register_export(sxe_class_entry, simplexml_export_node);
 
@@ -2556,7 +2609,7 @@ PHP_MINFO_FUNCTION(simplexml)
 {
 	php_info_print_table_start();
 	php_info_print_table_header(2, "Simplexml support", "enabled");
-	php_info_print_table_row(2, "Revision", "$Revision: 281953 $");
+	php_info_print_table_row(2, "Revision", "$Revision: 314376 $");
 	php_info_print_table_row(2, "Schema support",
 #ifdef LIBXML_SCHEMAS_ENABLED
 		"enabled");

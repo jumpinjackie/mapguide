@@ -38,14 +38,14 @@ MySQLPDOTest::skip();
 
 		exec_and_count(2, $db, 'DROP TABLE IF EXISTS test', 0);
 		exec_and_count(3, $db, sprintf('CREATE TABLE test(id INT NOT NULL PRIMARY KEY, col1 CHAR(10)) ENGINE=%s', PDO_MYSQL_TEST_ENGINE), 0);
-		exec_and_count(4, $db, 'INSERT INTO test(id, col1) VALUES (1, "a")', 1);
-		exec_and_count(5, $db, 'INSERT INTO test(id, col1) VALUES (2, "b"), (3, "c")', 2);
-		exec_and_count(6, $db, 'UPDATE test SET id = 4 WHERE id = 3', 1);
-		exec_and_count(7, $db, 'INSERT INTO test(id, col1) VALUES (1, "d") ON DUPLICATE KEY UPDATE id = 3', 2);
-		exec_and_count(8, $db, 'UPDATE test SET id = 5 WHERE id = 5', 0);
-		exec_and_count(9, $db, 'INSERT INTO test(id, col1) VALUES (5, "e") ON DUPLICATE KEY UPDATE id = 6', 1);
-		exec_and_count(10, $db, 'REPLACE INTO test(id, col1) VALUES (5, "f")', 2);
-		exec_and_count(11, $db, 'REPLACE INTO test(id, col1) VALUES (6, "g")', 1);
+		exec_and_count(4, $db, "INSERT INTO test(id, col1) VALUES (1, 'a')", 1);
+		exec_and_count(5, $db, "INSERT INTO test(id, col1) VALUES (2, 'b'), (3, 'c')", 2);
+		exec_and_count(6, $db, "UPDATE test SET id = 4 WHERE id = 3", 1);
+		exec_and_count(7, $db, "INSERT INTO test(id, col1) VALUES (1, 'd') ON DUPLICATE KEY UPDATE id = 3", 2);
+		exec_and_count(8, $db, "UPDATE test SET id = 5 WHERE id = 5", 0);
+		exec_and_count(9, $db, "INSERT INTO test(id, col1) VALUES (5, 'e') ON DUPLICATE KEY UPDATE id = 6", 1);
+		exec_and_count(10, $db, "REPLACE INTO test(id, col1) VALUES (5, 'f')", 2);
+		exec_and_count(11, $db, "REPLACE INTO test(id, col1) VALUES (6, 'g')", 1);
 		exec_and_count(12, $db, 'DELETE FROM test WHERE id > 2', 4);
 		exec_and_count(13, $db, 'DROP TABLE test', 0);
 		exec_and_count(14, $db, 'SET @myvar = 1', 0);
@@ -54,7 +54,7 @@ MySQLPDOTest::skip();
 		printf("[016] [%s] %s\n", $db->errorCode(), implode(' ', $db->errorInfo()));
 
 		exec_and_count(36, $db, sprintf('CREATE TABLE test(id INT NOT NULL PRIMARY KEY, col1 CHAR(10)) ENGINE=%s', PDO_MYSQL_TEST_ENGINE), 0);
-		exec_and_count(37, $db, 'INSERT INTO test(id, col1) VALUES (1, "a")', 1);
+		exec_and_count(37, $db, "INSERT INTO test(id, col1) VALUES (1, 'a')", 1);
 		// Results may vary. Typically you will get 1. But the MySQL 5.1 manual states: Truncation operations do not return the number of deleted rows.
 		// Don't rely on any return value!
 		exec_and_count(38, $db, 'TRUNCATE TABLE test', NULL);
@@ -170,8 +170,14 @@ MySQLPDOTest::skip();
 	}
 	$db->setAttribute(PDO::ATTR_EMULATE_PREPARES, 0);
 
-	@$db->exec('DROP TABLE IF EXISTS test');
 	print "done!";
+?>
+--CLEAN--
+<?php
+require dirname(__FILE__) . '/mysql_pdo_test.inc';
+$db = MySQLPDOTest::factory();
+@$db->exec('DROP TABLE IF EXISTS test');
+?>
 --EXPECTF--
 Warning: PDO::exec(): SQLSTATE[42000]: Syntax error or access violation: 1064 You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'THIS IS NOT VALID SQL, I HOPE' at line 1 in %s on line %d
 [016] [42000] 42000 1064 You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'THIS IS NOT VALID SQL, I HOPE' at line %d

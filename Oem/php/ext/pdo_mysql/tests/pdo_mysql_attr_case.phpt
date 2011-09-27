@@ -26,7 +26,7 @@ $db = MySQLPDOTest::factory();
 		var_dump($known[$default]);
 
 	// lets see what the default is...
-	if (!is_object($stmt = $db->query('SELECT id, id AS "ID_UPPER", label FROM test ORDER BY id ASC LIMIT 2')))
+	if (!is_object($stmt = $db->query("SELECT id, id AS 'ID_UPPER', label FROM test ORDER BY id ASC LIMIT 2")))
 		printf("[002] %s - %s\n",
 			var_export($db->errorInfo(), true), var_export($db->errorCode(), true));
 
@@ -48,7 +48,7 @@ $db = MySQLPDOTest::factory();
 		printf("[006] Cannot add column %s - %s\n",
 			var_export($db->errorInfo(), true), var_export($db->errorCode(), true));
 
-	if (!is_object($stmt = $db->query('SELECT id, id AS "ID_UPPER", label, MiXeD, MYUPPER FROM test ORDER BY id ASC LIMIT 2')))
+	if (!is_object($stmt = $db->query("SELECT id, id AS 'ID_UPPER', label, MiXeD, MYUPPER FROM test ORDER BY id ASC LIMIT 2")))
 		printf("[007] %s - %s\n",
 			var_export($db->errorInfo(), true), var_export($db->errorCode(), true));
 
@@ -62,7 +62,7 @@ $db = MySQLPDOTest::factory();
 		printf("[009] getAttribute(PDO::ATTR_CASE) returns wrong value '%s'\n",
 			var_export($tmp, true));
 
-	if (!is_object($stmt = $db->query('SELECT id, label, MiXeD, MYUPPER, MYUPPER AS "lower" FROM test ORDER BY id ASC LIMIT 1')))
+	if (!is_object($stmt = $db->query("SELECT id, label, MiXeD, MYUPPER, MYUPPER AS 'lower' FROM test ORDER BY id ASC LIMIT 1")))
 		printf("[010] %s - %s\n",
 			var_export($db->errorInfo(), true), var_export($db->errorCode(), true));
 
@@ -76,91 +76,96 @@ $db = MySQLPDOTest::factory();
 		printf("[012] getAttribute(PDO::ATTR_CASE) returns wrong value '%s'\n",
 			var_export($tmp, true));
 
-	if (!is_object($stmt = $db->query('SELECT id, label, MiXeD, MYUPPER, id AS "ID" FROM test ORDER BY id ASC LIMIT 1')))
+	if (!is_object($stmt = $db->query("SELECT id, label, MiXeD, MYUPPER, id AS 'ID' FROM test ORDER BY id ASC LIMIT 1")))
 		printf("[013] %s - %s\n",
 			var_export($db->errorInfo(), true), var_export($db->errorCode(), true));
 
 	var_dump($stmt->fetchAll(PDO::FETCH_BOTH));
 
-	$db->exec(sprintf('DROP TABLE IF EXISTS test'));
 	print "done!";
+?>
+--CLEAN--
+<?php
+require dirname(__FILE__) . '/mysql_pdo_test.inc';
+MySQLPDOTest::dropTestTable();
+?>
 --EXPECTF--
-string(15) "PDO::CASE_LOWER"
+%unicode|string%(15) "PDO::CASE_LOWER"
 array(2) {
   [0]=>
   array(6) {
-    ["id"]=>
-    string(1) "1"
+    [%u|b%"id"]=>
+    %unicode|string%(1) "1"
     [0]=>
-    string(1) "1"
-    ["id_upper"]=>
-    string(1) "1"
+    %unicode|string%(1) "1"
+    [%u|b%"id_upper"]=>
+    %unicode|string%(1) "1"
     [1]=>
-    string(1) "1"
-    ["label"]=>
-    string(1) "a"
+    %unicode|string%(1) "1"
+    [%u|b%"label"]=>
+    %unicode|string%(1) "a"
     [2]=>
-    string(1) "a"
+    %unicode|string%(1) "a"
   }
   [1]=>
   array(6) {
-    ["id"]=>
-    string(1) "2"
+    [%u|b%"id"]=>
+    %unicode|string%(1) "2"
     [0]=>
-    string(1) "2"
-    ["id_upper"]=>
-    string(1) "2"
+    %unicode|string%(1) "2"
+    [%u|b%"id_upper"]=>
+    %unicode|string%(1) "2"
     [1]=>
-    string(1) "2"
-    ["label"]=>
-    string(1) "b"
+    %unicode|string%(1) "2"
+    [%u|b%"label"]=>
+    %unicode|string%(1) "b"
     [2]=>
-    string(1) "b"
+    %unicode|string%(1) "b"
   }
 }
 array(2) {
   [0]=>
   array(10) {
-    ["id"]=>
-    string(1) "1"
+    [%u|b%"id"]=>
+    %unicode|string%(1) "1"
     [0]=>
-    string(1) "1"
-    ["id_upper"]=>
-    string(1) "1"
+    %unicode|string%(1) "1"
+    [%u|b%"id_upper"]=>
+    %unicode|string%(1) "1"
     [1]=>
-    string(1) "1"
-    ["label"]=>
-    string(1) "a"
+    %unicode|string%(1) "1"
+    [%u|b%"label"]=>
+    %unicode|string%(1) "a"
     [2]=>
-    string(1) "a"
-    ["mixed"]=>
+    %unicode|string%(1) "a"
+    [%u|b%"mixed"]=>
     NULL
     [3]=>
     NULL
-    ["myupper"]=>
+    [%u|b%"myupper"]=>
     NULL
     [4]=>
     NULL
   }
   [1]=>
   array(10) {
-    ["id"]=>
-    string(1) "2"
+    [%u|b%"id"]=>
+    %unicode|string%(1) "2"
     [0]=>
-    string(1) "2"
-    ["id_upper"]=>
-    string(1) "2"
+    %unicode|string%(1) "2"
+    [%u|b%"id_upper"]=>
+    %unicode|string%(1) "2"
     [1]=>
-    string(1) "2"
-    ["label"]=>
-    string(1) "b"
+    %unicode|string%(1) "2"
+    [%u|b%"label"]=>
+    %unicode|string%(1) "b"
     [2]=>
-    string(1) "b"
-    ["mixed"]=>
+    %unicode|string%(1) "b"
+    [%u|b%"mixed"]=>
     NULL
     [3]=>
     NULL
-    ["myupper"]=>
+    [%u|b%"myupper"]=>
     NULL
     [4]=>
     NULL
@@ -169,23 +174,23 @@ array(2) {
 array(1) {
   [0]=>
   array(10) {
-    ["ID"]=>
-    string(1) "1"
+    [%u|b%"ID"]=>
+    %unicode|string%(1) "1"
     [0]=>
-    string(1) "1"
-    ["LABEL"]=>
-    string(1) "a"
+    %unicode|string%(1) "1"
+    [%u|b%"LABEL"]=>
+    %unicode|string%(1) "a"
     [1]=>
-    string(1) "a"
-    ["MIXED"]=>
+    %unicode|string%(1) "a"
+    [%u|b%"MIXED"]=>
     NULL
     [2]=>
     NULL
-    ["MYUPPER"]=>
+    [%u|b%"MYUPPER"]=>
     NULL
     [3]=>
     NULL
-    ["LOWER"]=>
+    [%u|b%"LOWER"]=>
     NULL
     [4]=>
     NULL
@@ -194,26 +199,26 @@ array(1) {
 array(1) {
   [0]=>
   array(10) {
-    ["id"]=>
-    string(1) "1"
+    [%u|b%"id"]=>
+    %unicode|string%(1) "1"
     [0]=>
-    string(1) "1"
-    ["label"]=>
-    string(1) "a"
+    %unicode|string%(1) "1"
+    [%u|b%"label"]=>
+    %unicode|string%(1) "a"
     [1]=>
-    string(1) "a"
-    ["MiXeD"]=>
+    %unicode|string%(1) "a"
+    [%u|b%"MiXeD"]=>
     NULL
     [2]=>
     NULL
-    ["MYUPPER"]=>
+    [%u|b%"MYUPPER"]=>
     NULL
     [3]=>
     NULL
-    ["ID"]=>
-    string(1) "1"
+    [%u|b%"ID"]=>
+    %unicode|string%(1) "1"
     [4]=>
-    string(1) "1"
+    %unicode|string%(1) "1"
   }
 }
 done!

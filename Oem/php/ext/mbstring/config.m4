@@ -1,5 +1,5 @@
 dnl
-dnl $Id: config.m4 279059 2009-04-20 15:39:48Z jani $
+dnl $Id: config.m4 296101 2010-03-12 04:55:37Z moriyoshi $
 dnl
 
 AC_DEFUN([PHP_MBSTRING_ADD_SOURCES], [
@@ -74,7 +74,7 @@ AC_DEFUN([PHP_MBSTRING_SETUP_MBREGEX], [
         AC_DEFINE([USE_COMBINATION_EXPLOSION_CHECK],1,[whether to check multibyte regex backtrack])
       fi
 
-      AC_CACHE_CHECK(for variable length prototypes and stdarg.h, cv_php_mbstring_stdarg, [
+      AC_CACHE_CHECK(for variable length prototypes and stdarg.h, php_cv_mbstring_stdarg, [
         AC_TRY_RUN([
 #include <stdarg.h>
 int foo(int x, ...) {
@@ -86,14 +86,14 @@ int foo(int x, ...) {
 	return 0;
 }
 int main() { return foo(10, "", 3.14); }
-        ], [cv_php_mbstring_stdarg=yes], [cv_php_mbstring_stdarg=no], [
+        ], [php_cv_mbstring_stdarg=yes], [php_cv_mbstring_stdarg=no], [
           dnl cross-compile needs something here
           case $host_alias in
           *netware*)
-          cv_php_mbstring_stdarg=yes
+          php_cv_mbstring_stdarg=yes
           ;;
           *)
-          cv_php_mbstring_stdarg=no
+          php_cv_mbstring_stdarg=no
           ;;
           esac
         ])
@@ -229,17 +229,20 @@ AC_DEFUN([PHP_MBSTRING_SETUP_LIBMBFL], [
      libmbfl/filters/mbfilter_cp1251.c
      libmbfl/filters/mbfilter_cp1252.c
      libmbfl/filters/mbfilter_cp1254.c
+     libmbfl/filters/mbfilter_cp5022x.c
+     libmbfl/filters/mbfilter_cp51932.c
+     libmbfl/filters/mbfilter_cp850.c
      libmbfl/filters/mbfilter_cp866.c
      libmbfl/filters/mbfilter_cp932.c
      libmbfl/filters/mbfilter_cp936.c
      libmbfl/filters/mbfilter_euc_cn.c
      libmbfl/filters/mbfilter_euc_jp.c
      libmbfl/filters/mbfilter_euc_jp_win.c
-     libmbfl/filters/mbfilter_cp51932.c
      libmbfl/filters/mbfilter_euc_kr.c
      libmbfl/filters/mbfilter_euc_tw.c
      libmbfl/filters/mbfilter_htmlent.c
      libmbfl/filters/mbfilter_hz.c
+     libmbfl/filters/mbfilter_iso2022_jp_ms.c
      libmbfl/filters/mbfilter_iso2022_kr.c
      libmbfl/filters/mbfilter_iso8859_1.c
      libmbfl/filters/mbfilter_iso8859_10.c
@@ -256,11 +259,12 @@ AC_DEFUN([PHP_MBSTRING_SETUP_LIBMBFL], [
      libmbfl/filters/mbfilter_iso8859_8.c
      libmbfl/filters/mbfilter_iso8859_9.c
      libmbfl/filters/mbfilter_jis.c
-     libmbfl/filters/mbfilter_iso2022_jp_ms.c
      libmbfl/filters/mbfilter_koi8r.c
      libmbfl/filters/mbfilter_armscii8.c
      libmbfl/filters/mbfilter_qprint.c
      libmbfl/filters/mbfilter_sjis.c
+     libmbfl/filters/mbfilter_sjis_open.c
+     libmbfl/filters/mbfilter_tl_jisx0201_jisx0208.c
      libmbfl/filters/mbfilter_ucs2.c
      libmbfl/filters/mbfilter_ucs4.c
      libmbfl/filters/mbfilter_uhc.c
@@ -271,7 +275,6 @@ AC_DEFUN([PHP_MBSTRING_SETUP_LIBMBFL], [
      libmbfl/filters/mbfilter_utf8.c
      libmbfl/filters/mbfilter_uuencode.c
      libmbfl/filters/mbfilter_koi8u.c
-     libmbfl/filters/mbfilter_cp850.c
      libmbfl/mbfl/mbfilter.c
      libmbfl/mbfl/mbfilter_8bit.c
      libmbfl/mbfl/mbfilter_pass.c

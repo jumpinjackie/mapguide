@@ -33,11 +33,11 @@ require_once('skipifconnectfailure.inc');
 		printf("[006] [%d] string\n", mysqli_errno($link), mysqli_error($link));
 
 	$stmt = mysqli_prepare($link, "SELECT * FROM test_bind_fetch ORDER BY c1");
-	mysqli_bind_result($stmt, $c1, $c2);
-	mysqli_execute($stmt);
+	mysqli_stmt_bind_result($stmt, $c1, $c2);
+	mysqli_stmt_execute($stmt);
 	$i = 4;
 	while ($i--) {
-		mysqli_fetch($stmt);
+		mysqli_stmt_fetch($stmt);
 		$test = array($c1, $c2);
 		var_dump($test);
 	}
@@ -49,7 +49,7 @@ require_once('skipifconnectfailure.inc');
 ?>
 --CLEAN--
 <?php
-include "connect.inc";
+require_once("connect.inc");
 if (!$link = my_mysqli_connect($host, $user, $passwd, $db, $port, $socket))
    printf("[c001] [%d] %s\n", mysqli_connect_errno(), mysqli_connect_error());
 

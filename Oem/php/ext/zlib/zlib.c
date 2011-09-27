@@ -2,7 +2,7 @@
    +----------------------------------------------------------------------+
    | PHP Version 5                                                        |
    +----------------------------------------------------------------------+
-   | Copyright (c) 1997-2009 The PHP Group                                |
+   | Copyright (c) 1997-2011 The PHP Group                                |
    +----------------------------------------------------------------------+
    | This source file is subject to version 3.01 of the PHP license,      |
    | that is bundled with this package in the file LICENSE, and is        |
@@ -19,7 +19,7 @@
    +----------------------------------------------------------------------+
  */
 
-/* $Id: zlib.c 287423 2009-08-17 17:30:32Z jani $ */
+/* $Id: zlib.c 313665 2011-07-25 11:42:53Z felipe $ */
 
 #ifdef HAVE_CONFIG_H
 #include "config.h"
@@ -155,25 +155,57 @@ ZEND_BEGIN_ARG_INFO_EX(arginfo_ob_gzhandler, 0, 0, 2)
 	ZEND_ARG_INFO(0, str)
 	ZEND_ARG_INFO(0, mode)
 ZEND_END_ARG_INFO()
+
+ZEND_BEGIN_ARG_INFO_EX(arginfo_gzputs, 0, 0, 2)
+	ZEND_ARG_INFO(0, fp)
+	ZEND_ARG_INFO(0, str)
+	ZEND_ARG_INFO(0, length)
+ZEND_END_ARG_INFO()
+
+ZEND_BEGIN_ARG_INFO(arginfo_gzpassthru, 0)
+	ZEND_ARG_INFO(0, fp)
+ZEND_END_ARG_INFO()
+
+ZEND_BEGIN_ARG_INFO_EX(arginfo_gzseek, 0, 0, 2)
+	ZEND_ARG_INFO(0, fp)
+	ZEND_ARG_INFO(0, offset)
+	ZEND_ARG_INFO(0, whence)
+ZEND_END_ARG_INFO()
+
+ZEND_BEGIN_ARG_INFO(arginfo_gzread, 0)
+	ZEND_ARG_INFO(0, fp)
+	ZEND_ARG_INFO(0, length)
+ZEND_END_ARG_INFO()
+
+ZEND_BEGIN_ARG_INFO_EX(arginfo_gzgetss, 0, 0, 1)
+	ZEND_ARG_INFO(0, fp)
+	ZEND_ARG_INFO(0, length)
+	ZEND_ARG_INFO(0, allowable_tags)
+ZEND_END_ARG_INFO()
+
+ZEND_BEGIN_ARG_INFO_EX(arginfo_gzgets, 0, 0, 1)
+	ZEND_ARG_INFO(0, fp)
+	ZEND_ARG_INFO(0, length)
+ZEND_END_ARG_INFO()
 /* }}} */
 
 /* {{{ php_zlib_functions[]
  */
 static const zend_function_entry php_zlib_functions[] = {
 	PHP_FE(readgzfile,						arginfo_readgzfile)
-	PHP_FALIAS(gzrewind,	rewind,			NULL)
-	PHP_FALIAS(gzclose,		fclose,			NULL)
-	PHP_FALIAS(gzeof,		feof,			NULL)
-	PHP_FALIAS(gzgetc,		fgetc,			NULL)
-	PHP_FALIAS(gzgets,		fgets,			NULL)
-	PHP_FALIAS(gzgetss,		fgetss,			NULL)
-	PHP_FALIAS(gzread,		fread,			NULL)
+	PHP_FALIAS(gzrewind,	rewind,			arginfo_gzpassthru)
+	PHP_FALIAS(gzclose,		fclose,			arginfo_gzpassthru)
+	PHP_FALIAS(gzeof,		feof,			arginfo_gzpassthru)
+	PHP_FALIAS(gzgetc,		fgetc,			arginfo_gzpassthru)
+	PHP_FALIAS(gzgets,		fgets,			arginfo_gzgets)
+	PHP_FALIAS(gzgetss,		fgetss,			arginfo_gzgetss)
+	PHP_FALIAS(gzread,		fread,			arginfo_gzread)
 	PHP_FE(gzopen,							arginfo_gzopen)
-	PHP_FALIAS(gzpassthru,	fpassthru,		NULL)
-	PHP_FALIAS(gzseek,		fseek,			NULL)
-	PHP_FALIAS(gztell,		ftell,			NULL)
-	PHP_FALIAS(gzwrite,		fwrite,			NULL)
-	PHP_FALIAS(gzputs,		fwrite,			NULL)
+	PHP_FALIAS(gzpassthru,	fpassthru,		arginfo_gzpassthru)
+	PHP_FALIAS(gzseek,		fseek,			arginfo_gzseek)
+	PHP_FALIAS(gztell,		ftell,			arginfo_gzpassthru)
+	PHP_FALIAS(gzwrite,		fwrite,			arginfo_gzputs)
+	PHP_FALIAS(gzputs,		fwrite,			arginfo_gzputs)
 	PHP_FE(gzfile,							arginfo_gzfile)
 	PHP_FE(gzcompress,						arginfo_gzcompress)
 	PHP_FE(gzuncompress,					arginfo_gzuncompress)
@@ -182,7 +214,7 @@ static const zend_function_entry php_zlib_functions[] = {
 	PHP_FE(gzencode,						arginfo_gzencode)
 	PHP_FE(ob_gzhandler,					arginfo_ob_gzhandler)
 	PHP_FE(zlib_get_coding_type,			arginfo_zlib_get_coding_type)
-	{NULL, NULL, NULL}
+	PHP_FE_END
 };
 /* }}} */
 
@@ -1046,16 +1078,23 @@ static void php_gzip_output_handler(char *output, uint output_len, char **handle
 		do_start = (mode & PHP_OUTPUT_HANDLER_START ? 1 : 0);
 		do_end = (mode & PHP_OUTPUT_HANDLER_END ? 1 : 0);
 
-		if (do_start && !SG(headers_sent) && !SG(request_info).no_headers) {
-			switch (ZLIBG(compression_coding)) {
-				case CODING_GZIP:
-					sapi_add_header_ex(ZEND_STRL("Content-Encoding: gzip"), 1, 1 TSRMLS_CC);
-					break;
-				case CODING_DEFLATE:
-					sapi_add_header_ex(ZEND_STRL("Content-Encoding: deflate"), 1, 1 TSRMLS_CC);
-					break;
+		if (do_start) {
+			if (!SG(headers_sent) && !SG(request_info).no_headers) {
+				switch (ZLIBG(compression_coding)) {
+					case CODING_GZIP:
+						sapi_add_header_ex(ZEND_STRL("Content-Encoding: gzip"), 1, 1 TSRMLS_CC);
+						break;
+					case CODING_DEFLATE:
+						sapi_add_header_ex(ZEND_STRL("Content-Encoding: deflate"), 1, 1 TSRMLS_CC);
+						break;
+				}
+				sapi_add_header_ex(ZEND_STRL("Vary: Accept-Encoding"), 1, 0 TSRMLS_CC);
+			} else {
+				/* Disable compression if headers can not be set (Fix for bug #49816) */
+				ZLIBG(output_compression) = 0;
+				*handled_output = NULL;
+				return;
 			}
-			sapi_add_header_ex(ZEND_STRL("Vary: Accept-Encoding"), 1, 1 TSRMLS_CC);
 		}
 
 		if (php_deflate_string(output, output_len, handled_output, handled_output_len, do_start, do_end TSRMLS_CC) != SUCCESS) {

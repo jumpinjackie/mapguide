@@ -2,7 +2,7 @@
    +----------------------------------------------------------------------+
    | PHP Version 5                                                        |
    +----------------------------------------------------------------------+
-   | Copyright (c) 1997-2009 The PHP Group                                |
+   | Copyright (c) 1997-2011 The PHP Group                                |
    +----------------------------------------------------------------------+
    | This source file is subject to version 3.01 of the PHP license,      |
    | that is bundled with this package in the file LICENSE, and is        |
@@ -17,7 +17,7 @@
    +----------------------------------------------------------------------+
 */
 
-/* $Id: document.c 282119 2009-06-14 13:13:35Z iliaa $ */
+/* $Id: document.c 313665 2011-07-25 11:42:53Z felipe $ */
 
 #ifdef HAVE_CONFIG_H
 #include "config.h"
@@ -229,7 +229,7 @@ const zend_function_entry php_dom_document_class_functions[] = { /* {{{ */
 	PHP_FALIAS(relaxNGValidateSource, dom_document_relaxNG_validate_xml, arginfo_dom_document_relaxNG_validate_xml)
 #endif
 	PHP_ME(domdocument, registerNodeClass, arginfo_dom_document_registernodeclass, ZEND_ACC_PUBLIC)
-	{NULL, NULL, NULL}
+	PHP_FE_END
 };
 /* }}} */
 
@@ -1203,7 +1203,18 @@ PHP_FUNCTION(dom_document_import_node)
 		if (!retnodep) {
 			RETURN_FALSE;
 		}
-		
+
+		if ((retnodep->type == XML_ATTRIBUTE_NODE) && (nodep->ns != NULL)) {
+			xmlNsPtr nsptr = NULL;
+			xmlNodePtr root = xmlDocGetRootElement(docp);
+
+			nsptr = xmlSearchNsByHref (nodep->doc, root, nodep->ns->href);
+			if (nsptr == NULL) {
+				int errorcode;
+				nsptr = dom_get_ns(root, nodep->ns->href, &errorcode, nodep->ns->prefix);
+			}
+			xmlSetNs(retnodep, nsptr);
+		}
 	}
 
 	DOM_RET_OBJ(rv, (xmlNodePtr) retnodep, &ret, intern);
@@ -1531,7 +1542,7 @@ char *_dom_get_valid_file_path(char *source, char *resolved_path, int resolved_p
 }
 /* }}} */
 
-static xmlDocPtr dom_document_parser(zval *id, int mode, char *source, int options TSRMLS_DC) /* {{{ */
+static xmlDocPtr dom_document_parser(zval *id, int mode, char *source, int source_len, int options TSRMLS_DC) /* {{{ */
 {
     xmlDocPtr ret;
     xmlParserCtxtPtr ctxt = NULL;
@@ -1568,7 +1579,7 @@ static xmlDocPtr dom_document_parser(zval *id, int mode, char *source, int optio
 		}
 		
 	} else {
-		ctxt = xmlCreateDocParserCtxt(source);
+		ctxt = xmlCreateMemoryParserCtxt(source, source_len);
 	}
 
 	if (ctxt == NULL) {
@@ -1671,7 +1682,7 @@ static void dom_parse_document(INTERNAL_FUNCTION_PARAMETERS, int mode) {
 		RETURN_FALSE;
 	}
 
-	newdoc = dom_document_parser(id, mode, source, options TSRMLS_CC);
+	newdoc = dom_document_parser(id, mode, source, source_len, options TSRMLS_CC);
 
 	if (!newdoc)
 		RETURN_FALSE;
@@ -2241,6 +2252,7 @@ PHP_FUNCTION(dom_document_save_html_file)
 	dom_object *intern;
 	dom_doc_propsptr doc_props;
 	char *file;
+	const char *encoding;
 
 	if (zend_parse_method_parameters(ZEND_NUM_ARGS() TSRMLS_CC, getThis(), "Os", &id, dom_document_class_entry, &file, &file_len) == FAILURE) {
 		return;
@@ -2253,11 +2265,12 @@ PHP_FUNCTION(dom_document_save_html_file)
 
 	DOM_GET_OBJ(docp, id, xmlDocPtr, intern);
 
-	/* encoding handled by property on doc */
+
+	encoding = (const char *) htmlGetMetaEncoding(docp);
 
 	doc_props = dom_get_doc_props(intern->document);
 	format = doc_props->formatoutput;
-	bytes = htmlSaveFileFormat(file, docp, NULL, format);
+	bytes = htmlSaveFileFormat(file, docp, encoding, format);
 
 	if (bytes == -1) {
 		RETURN_FALSE;
@@ -2271,26 +2284,68 @@ Convenience method to output as html
 */
 PHP_FUNCTION(dom_document_save_html)
 {
-	zval *id;
+	zval *id, *nodep = NULL;
 	xmlDoc *docp;
-	dom_object *intern;
-	xmlChar *mem;
-	int size;
+	xmlNode *node;
+	xmlBufferPtr buf;
+	dom_object *intern, *nodeobj;
+	xmlChar *mem = NULL;
+	int size, format;
+	dom_doc_propsptr doc_props;
 
-	if (zend_parse_method_parameters(ZEND_NUM_ARGS() TSRMLS_CC, getThis(), "O", &id, dom_document_class_entry) == FAILURE) {
+	if (zend_parse_method_parameters(ZEND_NUM_ARGS() TSRMLS_CC, getThis(),
+		"O|O!", &id, dom_document_class_entry, &nodep, dom_node_class_entry)
+		== FAILURE) {
 		return;
 	}
 
 	DOM_GET_OBJ(docp, id, xmlDocPtr, intern);
 
-	htmlDocDumpMemory(docp, &mem, &size);
-	if (!size) {
+	doc_props = dom_get_doc_props(intern->document);
+	format = doc_props->formatoutput;
+
+	if (nodep != NULL) {
+		/* Dump contents of Node */
+		DOM_GET_OBJ(node, nodep, xmlNodePtr, nodeobj);
+		if (node->doc != docp) {
+			php_dom_throw_error(WRONG_DOCUMENT_ERR, dom_get_strict_error(intern->document) TSRMLS_CC);
+			RETURN_FALSE;
+		}
+		
+		buf = xmlBufferCreate();
+		if (!buf) {
+			php_error_docref(NULL TSRMLS_CC, E_WARNING, "Could not fetch buffer");
+			RETURN_FALSE;
+		}
+		
+		size = htmlNodeDump(buf, docp, node);
+		if (size >= 0) {
+			mem = (xmlChar*) xmlBufferContent(buf);
+			if (!mem) {
+				RETVAL_FALSE;
+			} else {
+				RETVAL_STRINGL((const char*) mem, size, 1);
+			}
+		} else {
+			php_error_docref(NULL TSRMLS_CC, E_WARNING, "Error dumping HTML node");
+			RETVAL_FALSE;
+		}
+		xmlBufferFree(buf);
+	} else {
+#if LIBXML_VERSION >= 20623
+		htmlDocDumpMemoryFormat(docp, &mem, &size, format);
+#else
+		htmlDocDumpMemory(docp, &mem, &size);
+#endif
+		if (!size) {
+			RETVAL_FALSE;
+		} else {
+			RETVAL_STRINGL((const char*) mem, size, 1);
+		}
 		if (mem)
 			xmlFree(mem);
-		RETURN_FALSE;
 	}
-	RETVAL_STRINGL(mem, size, 1);
-	xmlFree(mem);
+
 }
 /* }}} end dom_document_save_html */
 

@@ -2,7 +2,7 @@
    +----------------------------------------------------------------------+
    | PHP Version 5                                                        |
    +----------------------------------------------------------------------+
-   | Copyright (c) 1997-2009 The PHP Group                                |
+   | Copyright (c) 1997-2011 The PHP Group                                |
    +----------------------------------------------------------------------+
    | This source file is subject to version 3.01 of the PHP license,      |
    | that is bundled with this package in the file LICENSE, and is        |
@@ -16,7 +16,7 @@
    +----------------------------------------------------------------------+
 */
 
-/* $Id: pspell.c 272370 2008-12-31 11:15:49Z sebastian $ */
+/* $Id: pspell.c 313665 2011-07-25 11:42:53Z felipe $ */
 
 #define IS_EXT_MODULE
 
@@ -198,7 +198,7 @@ static const zend_function_entry pspell_functions[] = {
 	PHP_FE(pspell_config_data_dir,		arginfo_pspell_config_data_dir)
 	PHP_FE(pspell_config_repl,			arginfo_pspell_config_repl)
 	PHP_FE(pspell_config_save_repl,		arginfo_pspell_config_save_repl)
-	{NULL, NULL, NULL} 
+	PHP_FE_END
 };
 /* }}} */
 
@@ -401,6 +401,11 @@ static PHP_FUNCTION(pspell_new_personal)
 		}
 	}
 #endif
+
+	if (strlen(personal) != personal_len) {
+		delete_pspell_config(config);
+		RETURN_FALSE;
+	}
 
 	if (PG(safe_mode) && (!php_checkuid(personal, NULL, CHECKUID_CHECK_FILE_AND_DIR))) {
 		delete_pspell_config(config);
@@ -834,6 +839,10 @@ static void pspell_config_path(INTERNAL_FUNCTION_PARAMETERS, char *option)
 		return;
 	}
 
+	if (strlen(value) != value_len) {
+		RETURN_FALSE;
+	}
+
 	PSPELL_FETCH_CONFIG;
 
 	if (PG(safe_mode) && (!php_checkuid(value, NULL, CHECKUID_CHECK_FILE_AND_DIR))) {
@@ -890,6 +899,10 @@ static PHP_FUNCTION(pspell_config_repl)
 	PSPELL_FETCH_CONFIG;
 
 	pspell_config_replace(config, "save-repl", "true");
+
+	if (strlen(repl) != repl_len) {
+		RETURN_FALSE;
+	}
 
 	if (PG(safe_mode) && (!php_checkuid(repl, NULL, CHECKUID_CHECK_FILE_AND_DIR))) {
 		RETURN_FALSE;

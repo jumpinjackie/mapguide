@@ -1,9 +1,9 @@
-/* $Id: php_crypt_r.c 290154 2009-11-02 20:46:52Z pajoye $ */
+/* $Id: php_crypt_r.c 315338 2011-08-23 08:09:55Z johannes $ */
 /*
    +----------------------------------------------------------------------+
    | PHP Version 5                                                        |
    +----------------------------------------------------------------------+
-   | Copyright (c) 1997-2009 The PHP Group                                |
+   | Copyright (c) 1997-2011 The PHP Group                                |
    +----------------------------------------------------------------------+
    | This source file is subject to version 3.01 of the PHP license,      |
    | that is bundled with this package in the file LICENSE, and is        |
@@ -42,7 +42,11 @@
 # include <Wincrypt.h>
 #endif
 
-#include <signal.h>
+#ifdef HAVE_ATOMIC_H /* Solaris 10 defines atomic API within */
+# include <atomic.h>
+#else
+# include <signal.h>
+#endif
 #include "php_crypt_r.h"
 #include "crypt_freesec.h"
 
@@ -75,17 +79,29 @@ void php_shutdown_crypt_r()
 
 void _crypt_extended_init_r(void)
 {
+#ifdef PHP_WIN32
+	LONG volatile initialized = 0;
+#elif defined(HAVE_ATOMIC_H) /* Solaris 10 defines atomic API within */
+	volatile unsigned int initialized = 0;
+#else
 	static volatile sig_atomic_t initialized = 0;
+#endif
 
 #ifdef ZTS
 	tsrm_mutex_lock(php_crypt_extended_init_lock);
 #endif
 
-	if (initialized) {
-		return;
-	} else {
+	if (!initialized) {
+#ifdef PHP_WIN32
+		InterlockedIncrement(&initialized);
+#elif (defined(__GNUC__) && !defined(__hpux) && (__GNUC__ > 4 || \
+    (__GNUC__ == 4 && (__GNUC_MINOR__ > 1 || (__GNUC_MINOR__ == 1 && __GNUC_PATCHLEVEL__ > 1)))))
+		__sync_fetch_and_add(&initialized, 1);
+#elif defined(HAVE_ATOMIC_H) /* Solaris 10 defines atomic API within */
+		membar_producer();
+		atomic_add_int(&initialized, 1);
+#endif
 		_crypt_extended_init();
-		initialized = 1;
 	}
 #ifdef ZTS
 	tsrm_mutex_unlock(php_crypt_extended_init_lock);
@@ -182,7 +198,7 @@ char * php_md5_crypt_r(const char *pw, const char *salt, char *out) {
 		goto _destroyCtx1;
 	}
 
-	dwHashLen = pwl + sl + pwl;
+	dwHashLen = 16;
 	CryptGetHashParam(ctx1, HP_HASHVAL, final, &dwHashLen, 0);
 	/*  MD5(pw,salt,pw). Valid. */
 
@@ -212,9 +228,7 @@ char * php_md5_crypt_r(const char *pw, const char *salt, char *out) {
 	strcat_s(passwd, MD5_HASH_MAX_LEN, "$");
 #else
 	/* VC6 version doesn't have strcat_s or strncpy_s */
-	if (strncpy(passwd + MD5_MAGIC_LEN, sp, sl + 1) < sl) {
-		goto _destroyCtx1;
-	}
+	strncpy(passwd + MD5_MAGIC_LEN, sp, sl + 1);
 	strcat(passwd, "$");
 #endif
 	dwHashLen = 16;

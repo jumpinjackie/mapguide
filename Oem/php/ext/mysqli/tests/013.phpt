@@ -7,7 +7,7 @@ require_once('skipifconnectfailure.inc');
 ?>
 --FILE--
 <?php
-	include "connect.inc";
+	require_once("connect.inc");
 
 	/*** test mysqli_connect 127.0.0.1 ***/
 	$link = my_mysqli_connect($host, $user, $passwd, $db, $port, $socket);
@@ -31,10 +31,10 @@ require_once('skipifconnectfailure.inc');
 	$stmt = mysqli_prepare($link, "SELECT * FROM test_bind_result");
 
 	$c = array(0,0,0,0,0,0,0,0);
-	$b_res= mysqli_bind_result($stmt, $c[0], $c[1], $c[2], $c[3], $c[4], $c[5], $c[6], $c[7]);
-	mysqli_execute($stmt);
-	mysqli_fetch($stmt);
-	mysqli_fetch($stmt);
+	$b_res= mysqli_stmt_bind_result($stmt, $c[0], $c[1], $c[2], $c[3], $c[4], $c[5], $c[6], $c[7]);
+	mysqli_stmt_execute($stmt);
+	mysqli_stmt_fetch($stmt);
+	mysqli_stmt_fetch($stmt);
 	mysqli_stmt_close($stmt);
 
 	$result = mysqli_query($link, "select * from test_bind_result");
@@ -58,7 +58,7 @@ require_once('skipifconnectfailure.inc');
 ?>
 --CLEAN--
 <?php
-include "connect.inc";
+require_once("connect.inc");
 if (!$link = my_mysqli_connect($host, $user, $passwd, $db, $port, $socket))
    printf("[c001] [%d] %s\n", mysqli_connect_errno(), mysqli_connect_error());
 

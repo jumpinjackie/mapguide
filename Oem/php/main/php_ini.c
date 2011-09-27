@@ -2,7 +2,7 @@
    +----------------------------------------------------------------------+
    | PHP Version 5                                                        |
    +----------------------------------------------------------------------+
-   | Copyright (c) 1997-2009 The PHP Group                                |
+   | Copyright (c) 1997-2011 The PHP Group                                |
    +----------------------------------------------------------------------+
    | This source file is subject to version 3.01 of the PHP license,      |
    | that is bundled with this package in the file LICENSE, and is        |
@@ -16,7 +16,7 @@
    +----------------------------------------------------------------------+
  */
 
-/* $Id: php_ini.c 289668 2009-10-15 13:28:55Z pajoye $ */
+/* $Id: php_ini.c 314383 2011-08-06 21:10:29Z rasmus $ */
 
 #include "php.h"
 #include "ext/standard/info.h"
@@ -201,6 +201,7 @@ PHPAPI void config_zval_dtor(zval *zvalue)
 /* Reset / free active_ini_sectin global */
 #define RESET_ACTIVE_INI_HASH() do { \
 	active_ini_hash = NULL;          \
+	is_special_section = 0;          \
 } while (0)
 /* }}} */
 
@@ -346,7 +347,9 @@ static void php_ini_parser_cb(zval *arg1, zval *arg2, zval *arg3, int callback_t
  */
 static void php_load_php_extension_cb(void *arg TSRMLS_DC)
 {
+#ifdef HAVE_LIBDL
 	php_load_extension(*((char **) arg), MODULE_PERSISTENT, 0 TSRMLS_CC);
+#endif
 }
 /* }}} */
 
@@ -396,13 +399,39 @@ int php_init_config(TSRMLS_D)
 		static const char paths_separator[] = { ZEND_PATHS_SEPARATOR, 0 };
 #ifdef PHP_WIN32
 		char *reg_location;
+		char phprc_path[MAXPATHLEN];
 #endif
 
 		env_location = getenv("PHPRC");
+
+#ifdef PHP_WIN32
+		if (!env_location) {
+			char dummybuf;
+			int size;
+
+			SetLastError(0);
+
+			/*If the given bugger is not large enough to hold the data, the return value is 
+			the buffer size,  in characters, required to hold the string and its terminating 
+			null character. We use this return value to alloc the final buffer. */
+			size = GetEnvironmentVariableA("PHPRC", &dummybuf, 0);
+			if (GetLastError() == ERROR_ENVVAR_NOT_FOUND) {
+				/* The environment variable doesn't exist. */
+				env_location = "";
+			} else {
+				if (size == 0) {
+					env_location = "";
+				} else {
+					size = GetEnvironmentVariableA("PHPRC", phprc_path, size);
+					env_location = phprc_path;
+				}
+			}
+		}
+#else
 		if (!env_location) {
 			env_location = "";
 		}
-
+#endif
 		/*
 		 * Prepare search path
 		 */
@@ -457,7 +486,7 @@ int php_init_config(TSRMLS_D)
 
 				if ((envpath = getenv("PATH")) != NULL) {
 					char *search_dir, search_path[MAXPATHLEN];
-					char *last;
+					char *last = NULL;
 
 					path = estrdup(envpath);
 					search_dir = php_strtok_r(path, ":", &last);
@@ -621,17 +650,14 @@ int php_init_config(TSRMLS_D)
 		struct stat sb;
 		char ini_file[MAXPATHLEN];
 		char *p;
-		zend_file_handle fh;
+		zend_file_handle fh2;
 		zend_llist scanned_ini_list;
 		zend_llist_element *element;
 		int l, total_l = 0;
 
-		/* Reset active ini section */
-		RESET_ACTIVE_INI_HASH();
-
 		if ((ndir = php_scandir(php_ini_scanned_path, &namelist, 0, php_alphasort)) > 0) {
 			zend_llist_init(&scanned_ini_list, sizeof(char *), (llist_dtor_func_t) free_estring, 1);
-			memset(&fh, 0, sizeof(fh));
+			memset(&fh2, 0, sizeof(fh2));
 
 			for (i = 0; i < ndir; i++) {
 
@@ -640,6 +666,9 @@ int php_init_config(TSRMLS_D)
 					free(namelist[i]);
 					continue;
 				}
+				/* Reset active ini section */
+				RESET_ACTIVE_INI_HASH();
+
 				if (IS_SLASH(php_ini_scanned_path[php_ini_scanned_path_len - 1])) {
 					snprintf(ini_file, MAXPATHLEN, "%s%s", php_ini_scanned_path, namelist[i]->d_name);
 				} else {
@@ -647,11 +676,11 @@ int php_init_config(TSRMLS_D)
 				}
 				if (VCWD_STAT(ini_file, &sb) == 0) {
 					if (S_ISREG(sb.st_mode)) {
-						if ((fh.handle.fp = VCWD_FOPEN(ini_file, "r"))) {
-							fh.filename = ini_file;
-							fh.type = ZEND_HANDLE_FP;
+						if ((fh2.handle.fp = VCWD_FOPEN(ini_file, "r"))) {
+							fh2.filename = ini_file;
+							fh2.type = ZEND_HANDLE_FP;
 
-							if (zend_parse_ini_file(&fh, 1, ZEND_INI_SCANNER_NORMAL, (zend_ini_parser_cb_t) php_ini_parser_cb, &configuration_hash TSRMLS_CC) == SUCCESS) {
+							if (zend_parse_ini_file(&fh2, 1, ZEND_INI_SCANNER_NORMAL, (zend_ini_parser_cb_t) php_ini_parser_cb, &configuration_hash TSRMLS_CC) == SUCCESS) {
 								/* Here, add it to the list of ini files read */
 								l = strlen(ini_file);
 								total_l += l + 2;
@@ -790,11 +819,18 @@ PHPAPI int php_ini_has_per_dir_config(void)
  */
 PHPAPI void php_ini_activate_per_dir_config(char *path, uint path_len TSRMLS_DC)
 {
-	zval *tmp;
+	zval *tmp2;
 	char *ptr;
 
 #if PHP_WIN32
 	char path_bak[MAXPATHLEN];
+#endif
+
+	if (path_len > MAXPATHLEN) {
+		return;
+	}
+
+#if PHP_WIN32
 	memcpy(path_bak, path, path_len);
 	path_bak[path_len] = 0;
 	TRANSLATE_SLASHES_LOWER(path_bak);
@@ -807,8 +843,8 @@ PHPAPI void php_ini_activate_per_dir_config(char *path, uint path_len TSRMLS_DC)
 		while ((ptr = strchr(ptr, '/')) != NULL) {
 			*ptr = 0;
 			/* Search for source array matching the path from configuration_hash */
-			if (zend_hash_find(&configuration_hash, path, path_len, (void **) &tmp) == SUCCESS) {
-				php_ini_activate_config(Z_ARRVAL_P(tmp), PHP_INI_SYSTEM, PHP_INI_STAGE_ACTIVATE TSRMLS_CC);
+			if (zend_hash_find(&configuration_hash, path, strlen(path) + 1, (void **) &tmp2) == SUCCESS) {
+				php_ini_activate_config(Z_ARRVAL_P(tmp2), PHP_INI_SYSTEM, PHP_INI_STAGE_ACTIVATE TSRMLS_CC);
 			}
 			*ptr = '/';
 			ptr++;

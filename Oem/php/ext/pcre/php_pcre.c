@@ -2,7 +2,7 @@
    +----------------------------------------------------------------------+
    | PHP Version 5                                                        |
    +----------------------------------------------------------------------+
-   | Copyright (c) 1997-2009 The PHP Group                                |
+   | Copyright (c) 1997-2011 The PHP Group                                |
    +----------------------------------------------------------------------+
    | This source file is subject to version 3.01 of the PHP license,      |
    | that is bundled with this package in the file LICENSE, and is        |
@@ -16,7 +16,7 @@
    +----------------------------------------------------------------------+
  */
 
-/* $Id: php_pcre.c 289418 2009-10-09 14:25:51Z pajoye $ */
+/* $Id: php_pcre.c 314349 2011-08-05 22:39:40Z rasmus $ */
 
 #include "php.h"
 #include "php_ini.h"
@@ -115,7 +115,7 @@ static PHP_GSHUTDOWN_FUNCTION(pcre) /* {{{ */
 /* }}} */
 
 PHP_INI_BEGIN()
-	STD_PHP_INI_ENTRY("pcre.backtrack_limit", "100000", PHP_INI_ALL, OnUpdateLong, backtrack_limit, zend_pcre_globals, pcre_globals)
+	STD_PHP_INI_ENTRY("pcre.backtrack_limit", "1000000", PHP_INI_ALL, OnUpdateLong, backtrack_limit, zend_pcre_globals, pcre_globals)
 	STD_PHP_INI_ENTRY("pcre.recursion_limit", "100000", PHP_INI_ALL, OnUpdateLong, recursion_limit, zend_pcre_globals, pcre_globals)
 PHP_INI_END()
 
@@ -350,7 +350,14 @@ PHPAPI pcre_cache_entry* pcre_get_compiled_regex_cache(char *regex, int regex_le
 			case 'S':	do_study  = 1;					break;
 			case 'U':	coptions |= PCRE_UNGREEDY;		break;
 			case 'X':	coptions |= PCRE_EXTRA;			break;
-			case 'u':	coptions |= PCRE_UTF8;			break;
+			case 'u':	coptions |= PCRE_UTF8;
+	/* In  PCRE,  by  default, \d, \D, \s, \S, \w, and \W recognize only ASCII
+       characters, even in UTF-8 mode. However, this can be changed by setting
+       the PCRE_UCP option. */
+#ifdef PCRE_UCP
+						coptions |= PCRE_UCP;
+#endif			
+				break;
 
 			/* Custom preg options */
 			case 'e':	poptions |= PREG_REPLACE_EVAL;	break;
@@ -637,6 +644,7 @@ PHPAPI void php_pcre_match_impl(pcre_cache_entry *pce, char *subject, int subjec
 				if (pcre_get_substring_list(subject, offsets, count, &stringlist) < 0) {
 					efree(subpat_names);
 					efree(offsets);
+					if (match_sets) efree(match_sets);
 					php_error_docref(NULL TSRMLS_CC, E_WARNING, "Get subpatterns list failed");
 					RETURN_FALSE;
 				}
@@ -747,7 +755,12 @@ PHPAPI void php_pcre_match_impl(pcre_cache_entry *pce, char *subject, int subjec
 	efree(offsets);
 	efree(subpat_names);
 
-	RETVAL_LONG(matched);
+	/* Did we encounter an error? */
+	if (PCRE_G(error_code) == PHP_PCRE_NO_ERROR) {
+		RETVAL_LONG(matched);
+	} else {
+		RETVAL_FALSE;
+	}
 }
 /* }}} */
 
@@ -1314,9 +1327,7 @@ static void preg_replace_impl(INTERNAL_FUNCTION_PARAMETERS, int is_callable_repl
 		if (!zend_is_callable(*replace, 0, &callback_name TSRMLS_CC)) {
 			php_error_docref(NULL TSRMLS_CC, E_WARNING, "Requires argument 2, '%s', to be a valid callback", callback_name);
 			efree(callback_name);
-			*return_value = **subject;
-			zval_copy_ctor(return_value);
-			INIT_PZVAL(return_value);
+			MAKE_COPY_ZVAL(subject, return_value);
 			return;
 		}
 		efree(callback_name);
@@ -1884,7 +1895,7 @@ static const zend_function_entry pcre_functions[] = {
 	PHP_FE(preg_quote,				arginfo_preg_quote)
 	PHP_FE(preg_grep,				arginfo_preg_grep)
 	PHP_FE(preg_last_error,			arginfo_preg_last_error)
-	{NULL, 		NULL,				NULL}
+	PHP_FE_END
 };
 
 zend_module_entry pcre_module_entry = {

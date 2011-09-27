@@ -84,7 +84,12 @@ recurse('pcrelib');
 
 $dirorig = scandir('pcrelib/testdata');
 $k = array_search('CVS', $dirorig);
-unset($dirorig[$k]);
+if ($k !== false)
+	unset($dirorig[$k]);
+
+$k = array_search('.svn', $dirorig);
+if ($k !== false)
+	unset($dirorig[$k]);
 
 $dirnew = scandir("$newpcre/testdata");
 $diff   = array_diff($dirorig, $dirnew);
@@ -98,6 +103,11 @@ foreach ($diff as $file) {
 // the config.h needs special care
 $prepend_config_h = '
 #include <php_compat.h>
+
+#ifndef PHP_WIN32
+# include <php_config.h>
+#endif
+
 #undef PACKAGE_NAME
 #undef PACKAGE_VERSION
 #undef PACKAGE_TARNAME

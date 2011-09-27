@@ -2,7 +2,7 @@
    +----------------------------------------------------------------------+
    | PHP Version 5                                                        |
    +----------------------------------------------------------------------+
-   | Copyright (c) 1997-2009 The PHP Group                                |
+   | Copyright (c) 1997-2011 The PHP Group                                |
    +----------------------------------------------------------------------+
    | This source file is subject to version 3.01 of the PHP license,      |
    | that is bundled with this package in the file LICENSE, and is        |
@@ -18,7 +18,7 @@
    +----------------------------------------------------------------------+
  */
 
-/* $Id: gd.c 282455 2009-06-19 22:15:28Z kalle $ */
+/* $Id: gd.c 313665 2011-07-25 11:42:53Z felipe $ */
 
 /* gd 1.2 is copyright 1994, 1995, Quest Protein Database Center,
    Cold Spring Harbor Labs. */
@@ -1045,7 +1045,7 @@ const zend_function_entry gd_functions[] = {
 	PHP_FE(imagefilter,     						arginfo_imagefilter)
 	PHP_FE(imageconvolution,						arginfo_imageconvolution)
 
-	{NULL, NULL, NULL}
+	PHP_FE_END
 };
 /* }}} */
 
@@ -2642,6 +2642,9 @@ static void _php_image_output(INTERNAL_FUNCTION_PARAMETERS, int image_type, char
 	}
 
 	if (argc >= 2 && file_len) {
+		if (strlen(file) != file_len) {
+			RETURN_FALSE;
+		}
 		PHP_GD_CHECK_OPEN_BASEDIR(fn, "Invalid filename");
 
 		fp = VCWD_FOPEN(fn, "wb");
@@ -3427,7 +3430,10 @@ static void php_imagepolygon(INTERNAL_FUNCTION_PARAMETERS, int filled)
 		php_error_docref(NULL TSRMLS_CC, E_WARNING, "You must have at least 3 points in your array");
 		RETURN_FALSE;
 	}
-
+	if (npoints <= 0) {
+		php_error_docref(NULL TSRMLS_CC, E_WARNING, "You must give a positive number of points");
+		RETURN_FALSE;
+	}
 	if (nelem < npoints * 2) {
 		php_error_docref(NULL TSRMLS_CC, E_WARNING, "Trying to use %d points in array with only %d points", npoints, nelem/2);
 		RETURN_FALSE;
@@ -3880,7 +3886,7 @@ static void php_imagettftext_common(INTERNAL_FUNCTION_PARAMETERS, int mode, int 
 	long col = -1, x = -1, y = -1;
 	int str_len, fontname_len, i, brect[8];
 	double ptsize, angle;
-	unsigned char *str = NULL, *fontname = NULL;
+	char *str = NULL, *fontname = NULL;
 	char *error = NULL;
 	int argc = ZEND_NUM_ARGS();
 #if HAVE_GD_STRINGFTEX
@@ -3942,28 +3948,24 @@ static void php_imagettftext_common(INTERNAL_FUNCTION_PARAMETERS, int mode, int 
 	{
 		char tmp_font_path[MAXPATHLEN];
 
-		if (VCWD_REALPATH((char *)fontname, tmp_font_path)) {
-			fontname = (unsigned char *) fontname;
-		} else {
+		if (!VCWD_REALPATH(fontname, tmp_font_path)) {
 			fontname = NULL;
 		}
 	}
-#else
-	fontname = (unsigned char *) fontname;
 #endif
 
-	PHP_GD_CHECK_OPEN_BASEDIR((char *)fontname, "Invalid font filename");
+	PHP_GD_CHECK_OPEN_BASEDIR(fontname, "Invalid font filename");
 	
 #ifdef USE_GD_IMGSTRTTF
 # if HAVE_GD_STRINGFTEX
 	if (extended) {
-		error = gdImageStringFTEx(im, brect, col, (char *)fontname, ptsize, angle, x, y, (char *)str, &strex);
+		error = gdImageStringFTEx(im, brect, col, fontname, ptsize, angle, x, y, str, &strex);
 	}
 	else
 # endif
 
 # if HAVE_GD_STRINGFT
-	error = gdImageStringFT(im, brect, col, (char *)fontname, ptsize, angle, x, y, (char *)str);
+	error = gdImageStringFT(im, brect, col, fontname, ptsize, angle, x, y, str);
 # elif HAVE_GD_STRINGTTF
 	error = gdImageStringTTF(im, brect, col, fontname, ptsize, angle, x, y, str);
 # endif
@@ -4139,7 +4141,7 @@ PHP_FUNCTION(imagepsencodefont)
 	T1_DeleteAllSizes(*f_ind);
 	if (T1_ReencodeFont(*f_ind, enc_vector)) {
 		T1_DeleteEncoding(enc_vector);
-		php_error_docref(NULL TSRMLS_CC, E_WARNING, "Couldn't reencode font");
+		php_error_docref(NULL TSRMLS_CC, E_WARNING, "Couldn't re-encode font");
 		RETURN_FALSE;
 	}
 
@@ -4224,6 +4226,11 @@ PHP_FUNCTION(imagepstext)
 
 	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "rsrlllll|lldl", &img, &str, &str_len, &fnt, &size, &_fg, &_bg, &x, &y, &space, &width, &angle, &aa_steps) == FAILURE) {
 		return;
+	}
+
+	if (aa_steps != 4 && aa_steps != 16) {
+		php_error_docref(NULL TSRMLS_CC, E_WARNING, "Antialias steps must be 4 or 16");
+		RETURN_FALSE;
 	}
 
 	ZEND_FETCH_RESOURCE(bg_img, gdImagePtr, &img, -1, "Image", le_gd);
@@ -4552,6 +4559,14 @@ static void _php_image_convert(INTERNAL_FUNCTION_PARAMETERS, int image_type )
 	dest_height = height;
 	dest_width = width;
 	int_threshold = threshold;
+
+	if (strlen(f_org) != f_org_len) {
+		RETURN_FALSE;
+	}
+
+	if (strlen(f_dest) != f_dest_len) {
+		RETURN_FALSE;
+	}
 
 	/* Check threshold value */
 	if (int_threshold < 0 || int_threshold > 8) {

@@ -2,7 +2,7 @@
    +----------------------------------------------------------------------+
    | PHP Version 5                                                        |
    +----------------------------------------------------------------------+
-   | Copyright (c) 1997-2009 The PHP Group                                |
+   | Copyright (c) 1997-2011 The PHP Group                                |
    +----------------------------------------------------------------------+
    | This source file is subject to version 3.01 of the PHP license,      |
    | that is bundled with this package in the file LICENSE, and is        |
@@ -20,7 +20,7 @@
    +----------------------------------------------------------------------+
 */
 
-/* $Id: php_odbc.c 280531 2009-05-14 17:24:42Z felipe $ */
+/* $Id: php_odbc.c 313665 2011-07-25 11:42:53Z felipe $ */
 
 #ifdef HAVE_CONFIG_H
 #include "config.h"
@@ -383,7 +383,7 @@ const zend_function_entry odbc_functions[] = {
 #endif
 	PHP_FALIAS(odbc_do, odbc_exec, arginfo_odbc_exec)
 	PHP_FALIAS(odbc_field_precision, odbc_field_len, arginfo_odbc_field_len)
-	{ NULL, NULL, NULL }
+	PHP_FE_END
 };
 /* }}} */
 
@@ -981,6 +981,10 @@ int odbc_bindcols(odbc_result *result TSRMLS_DC)
 									NULL, 0, NULL, &displaysize);
 				displaysize = displaysize <= result->longreadlen ? displaysize : 
 								result->longreadlen;
+				/* Workaround for Oracle ODBC Driver bug (#50162) when fetching TIMESTAMP column */
+				if (result->values[i].coltype == SQL_TIMESTAMP) {
+					displaysize += 3;
+				}
 				result->values[i].value = (char *)emalloc(displaysize + 1);
 				rc = SQLBindCol(result->stmt, (SQLUSMALLINT)(i+1), SQL_C_CHAR, result->values[i].value,
 							displaysize + 1, &result->values[i].vallen);
@@ -1176,13 +1180,7 @@ PHP_FUNCTION(odbc_prepare)
 			/* Try to set CURSOR_TYPE to dynamic. Driver will replace this with other
 			   type if not possible.
 			*/
-			int cursortype = ODBCG(default_cursortype);
-			if (SQLSetStmtOption(result->stmt, SQL_CURSOR_TYPE, cursortype) == SQL_ERROR) {
-				odbc_sql_error(conn, result->stmt, " SQLSetStmtOption");
-				SQLFreeStmt(result->stmt, SQL_DROP);
-				efree(result);
-				RETURN_FALSE;
-			}
+			SQLSetStmtOption(result->stmt, SQL_CURSOR_TYPE, ODBCG(default_cursortype));
 		}
 	} else {
 		result->fetch_abs = 0;
@@ -1264,11 +1262,19 @@ PHP_FUNCTION(odbc_execute)
 
 		zend_hash_internal_pointer_reset(Z_ARRVAL_P(pv_param_arr));
 		params = (params_t *)safe_emalloc(sizeof(params_t), result->numparams, 0);
+		for(i = 0; i < result->numparams; i++) {
+			params[i].fp = -1;
+		}
 		
 		for(i = 1; i <= result->numparams; i++) {
 			if (zend_hash_get_current_data(Z_ARRVAL_P(pv_param_arr), (void **) &tmp) == FAILURE) {
 				php_error_docref(NULL TSRMLS_CC, E_WARNING,"Error getting parameter");
 				SQLFreeStmt(result->stmt,SQL_RESET_PARAMS);
+				for (i = 0; i < result->numparams; i++) {
+					if (params[i].fp != -1) {
+						close(params[i].fp);
+					}
+				}
 				efree(params);
 				RETURN_FALSE;
 			}
@@ -1278,13 +1284,29 @@ PHP_FUNCTION(odbc_execute)
 			if (Z_TYPE_PP(tmp) != IS_STRING) {
 				php_error_docref(NULL TSRMLS_CC, E_WARNING,"Error converting parameter");
 				SQLFreeStmt(result->stmt, SQL_RESET_PARAMS);
+				for (i = 0; i < result->numparams; i++) {
+					if (params[i].fp != -1) {
+						close(params[i].fp);
+					}
+				}
 				efree(params);
 				RETURN_FALSE;
 			}
 			
-			SQLDescribeParam(result->stmt, (SQLUSMALLINT)i, &sqltype, &precision, &scale, &nullable);
+			rc = SQLDescribeParam(result->stmt, (SQLUSMALLINT)i, &sqltype, &precision, &scale, &nullable);
 			params[i-1].vallen = Z_STRLEN_PP(tmp);
 			params[i-1].fp = -1;
+			if (rc == SQL_ERROR) {
+				odbc_sql_error(result->conn_ptr, result->stmt, "SQLDescribeParameter");	
+				SQLFreeStmt(result->stmt, SQL_RESET_PARAMS);
+				for (i = 0; i < result->numparams; i++) {
+					if (params[i].fp != -1) {
+						close(params[i].fp);
+					}
+				}
+				efree(params);
+				RETURN_FALSE;
+			}
 
 			if (IS_SQL_BINARY(sqltype)) {
 				ctype = SQL_C_BINARY;
@@ -1295,8 +1317,11 @@ PHP_FUNCTION(odbc_execute)
 			if (Z_STRLEN_PP(tmp) > 2 &&
 				Z_STRVAL_PP(tmp)[0] == '\'' &&
 				Z_STRVAL_PP(tmp)[Z_STRLEN_PP(tmp) - 1] == '\'') {
+				if (strlen(tmp) != Z_STRLEN_PP(tmp)) {
+					RETURN_FALSE;
+				}
+
 				filename = estrndup(&Z_STRVAL_PP(tmp)[1], Z_STRLEN_PP(tmp) - 2);
-				filename[strlen(filename)] = '\0';
 
 				/* Check for safe mode. */
 				if (PG(safe_mode) && (!php_checkuid(filename, NULL, CHECKUID_CHECK_FILE_AND_DIR))) {
@@ -1308,6 +1333,12 @@ PHP_FUNCTION(odbc_execute)
 				/* Check the basedir */
 				if (php_check_open_basedir(filename TSRMLS_CC)) {
 					efree(filename);
+					SQLFreeStmt(result->stmt, SQL_RESET_PARAMS);
+					for (i = 0; i < result->numparams; i++) {
+						if (params[i].fp != -1) {
+							close(params[i].fp);
+						}
+					}
 					efree(params);
 					RETURN_FALSE;
 				}
@@ -1315,7 +1346,7 @@ PHP_FUNCTION(odbc_execute)
 				if ((params[i-1].fp = open(filename,O_RDONLY)) == -1) {
 					php_error_docref(NULL TSRMLS_CC, E_WARNING,"Can't open file %s", filename);
 					SQLFreeStmt(result->stmt, SQL_RESET_PARAMS);
-					for(i = 0; i < result->numparams; i++) {
+					for (i = 0; i < result->numparams; i++) {
 						if (params[i].fp != -1) {
 							close(params[i].fp);
 						}
@@ -1345,6 +1376,17 @@ PHP_FUNCTION(odbc_execute)
 									  ctype, sqltype, precision, scale,
 									  Z_STRVAL_PP(tmp), 0,
 									  &params[i-1].vallen);
+			}
+			if (rc == SQL_ERROR) {
+				odbc_sql_error(result->conn_ptr, result->stmt, "SQLBindParameter");	
+				SQLFreeStmt(result->stmt, SQL_RESET_PARAMS);
+				for (i = 0; i < result->numparams; i++) {
+					if (params[i].fp != -1) {
+						close(params[i].fp);
+					}
+				}
+				efree(params);
+				RETURN_FALSE;
 			}
 			zend_hash_move_forward(Z_ARRVAL_P(pv_param_arr));
 		}
@@ -1572,13 +1614,7 @@ PHP_FUNCTION(odbc_exec)
 			/* Try to set CURSOR_TYPE to dynamic. Driver will replace this with other
 			   type if not possible.
 			 */
-			int cursortype = ODBCG(default_cursortype);
-			if (SQLSetStmtOption(result->stmt, SQL_CURSOR_TYPE, cursortype) == SQL_ERROR) {
-				odbc_sql_error(conn, result->stmt, " SQLSetStmtOption");
-				SQLFreeStmt(result->stmt, SQL_DROP);
-				efree(result);
-				RETURN_FALSE;
-			}
+			SQLSetStmtOption(result->stmt, SQL_CURSOR_TYPE, ODBCG(default_cursortype));
 		}
 	} else {
 		result->fetch_abs = 0;
@@ -2872,7 +2908,7 @@ PHP_FUNCTION(odbc_autocommit)
 
 	ZEND_FETCH_RESOURCE2(conn, odbc_connection *, &pv_conn, -1, "ODBC-Link", le_conn, le_pconn);
 	
-	if (pv_onoff) {
+	if (ZEND_NUM_ARGS() > 1) {
 		rc = SQLSetConnectOption(conn->hdbc, SQL_AUTOCOMMIT, (pv_onoff) ? SQL_AUTOCOMMIT_ON : SQL_AUTOCOMMIT_OFF);
 		if (rc != SQL_SUCCESS && rc != SQL_SUCCESS_WITH_INFO) {
 			odbc_sql_error(conn, SQL_NULL_HSTMT, "Set autocommit");

@@ -4,7 +4,7 @@
   +----------------------------------------------------------------------+
   | TAR archive support for Phar                                         |
   +----------------------------------------------------------------------+
-  | Copyright (c) 2005-2009 The PHP Group                                |
+  | Copyright (c) 2005-2011 The PHP Group                                |
   +----------------------------------------------------------------------+
   | This source file is subject to version 3.01 of the PHP license,      |
   | that is bundled with this package in the file LICENSE, and is        |
@@ -24,8 +24,10 @@
 # define PHAR_TAR_PACK
 #elif defined(__sgi)
 # define PHAR_TAR_PACK
-#else
+#elif defined(__GNUC__)
 # define PHAR_TAR_PACK __attribute__((__packed__))
+#else
+# define PHAR_TAR_PACK
 #endif
 
 #if defined(__sgi)

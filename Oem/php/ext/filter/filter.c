@@ -2,7 +2,7 @@
   +----------------------------------------------------------------------+
   | PHP Version 5                                                        |
   +----------------------------------------------------------------------+
-  | Copyright (c) 1997-2009 The PHP Group                                |
+  | Copyright (c) 1997-2011 The PHP Group                                |
   +----------------------------------------------------------------------+
   | This source file is subject to version 3.01 of the PHP license,      |
   | that is bundled with this package in the file LICENSE, and is        |
@@ -19,7 +19,7 @@
   +----------------------------------------------------------------------+
 */
 
-/* $Id: filter.c 289434 2009-10-09 17:32:53Z pajoye $ */
+/* $Id: filter.c 313665 2011-07-25 11:42:53Z felipe $ */
 
 #ifdef HAVE_CONFIG_H
 #include "config.h"
@@ -52,6 +52,7 @@ static const filter_list_entry filter_list[] = {
 	{ "stripped",        FILTER_SANITIZE_STRING,        php_filter_string          },
 	{ "encoded",         FILTER_SANITIZE_ENCODED,       php_filter_encoded         },
 	{ "special_chars",   FILTER_SANITIZE_SPECIAL_CHARS, php_filter_special_chars   },
+	{ "full_special_chars",   FILTER_SANITIZE_FULL_SPECIAL_CHARS, php_filter_full_special_chars   },
 	{ "unsafe_raw",      FILTER_UNSAFE_RAW,             php_filter_unsafe_raw      },
 	{ "email",           FILTER_SANITIZE_EMAIL,         php_filter_email           },
 	{ "url",             FILTER_SANITIZE_URL,           php_filter_url             },
@@ -95,11 +96,13 @@ ZEND_END_ARG_INFO()
 ZEND_BEGIN_ARG_INFO_EX(arginfo_filter_input_array, 0, 0, 1)
 	ZEND_ARG_INFO(0, type)
 	ZEND_ARG_INFO(0, definition)
+	ZEND_ARG_INFO(0, add_empty)
 ZEND_END_ARG_INFO()
 
 ZEND_BEGIN_ARG_INFO_EX(arginfo_filter_var_array, 0, 0, 1)
 	ZEND_ARG_INFO(0, data)
 	ZEND_ARG_INFO(0, definition)
+	ZEND_ARG_INFO(0, add_empty)
 ZEND_END_ARG_INFO()
 
 ZEND_BEGIN_ARG_INFO(arginfo_filter_list, 0)
@@ -125,7 +128,7 @@ static const zend_function_entry filter_functions[] = {
 	PHP_FE(filter_list,		arginfo_filter_list)
 	PHP_FE(filter_has_var,		arginfo_filter_has_var)
 	PHP_FE(filter_id,		arginfo_filter_id)
-	{NULL, NULL, NULL}
+	PHP_FE_END
 };
 /* }}} */
 
@@ -238,6 +241,7 @@ PHP_MINIT_FUNCTION(filter)
 	REGISTER_LONG_CONSTANT("FILTER_SANITIZE_STRIPPED", FILTER_SANITIZE_STRING, CONST_CS | CONST_PERSISTENT);
 	REGISTER_LONG_CONSTANT("FILTER_SANITIZE_ENCODED", FILTER_SANITIZE_ENCODED, CONST_CS | CONST_PERSISTENT);
 	REGISTER_LONG_CONSTANT("FILTER_SANITIZE_SPECIAL_CHARS", FILTER_SANITIZE_SPECIAL_CHARS, CONST_CS | CONST_PERSISTENT);
+	REGISTER_LONG_CONSTANT("FILTER_SANITIZE_FULL_SPECIAL_CHARS", FILTER_SANITIZE_SPECIAL_CHARS, CONST_CS | CONST_PERSISTENT);
 	REGISTER_LONG_CONSTANT("FILTER_SANITIZE_EMAIL", FILTER_SANITIZE_EMAIL, CONST_CS | CONST_PERSISTENT);
 	REGISTER_LONG_CONSTANT("FILTER_SANITIZE_URL", FILTER_SANITIZE_URL, CONST_CS | CONST_PERSISTENT);
 	REGISTER_LONG_CONSTANT("FILTER_SANITIZE_NUMBER_INT", FILTER_SANITIZE_NUMBER_INT, CONST_CS | CONST_PERSISTENT);
@@ -251,6 +255,7 @@ PHP_MINIT_FUNCTION(filter)
 
 	REGISTER_LONG_CONSTANT("FILTER_FLAG_STRIP_LOW", FILTER_FLAG_STRIP_LOW, CONST_CS | CONST_PERSISTENT);
 	REGISTER_LONG_CONSTANT("FILTER_FLAG_STRIP_HIGH", FILTER_FLAG_STRIP_HIGH, CONST_CS | CONST_PERSISTENT);
+	REGISTER_LONG_CONSTANT("FILTER_FLAG_STRIP_BACKTICK", FILTER_FLAG_STRIP_BACKTICK, CONST_CS | CONST_PERSISTENT);
 	REGISTER_LONG_CONSTANT("FILTER_FLAG_ENCODE_LOW", FILTER_FLAG_ENCODE_LOW, CONST_CS | CONST_PERSISTENT);
 	REGISTER_LONG_CONSTANT("FILTER_FLAG_ENCODE_HIGH", FILTER_FLAG_ENCODE_HIGH, CONST_CS | CONST_PERSISTENT);
 	REGISTER_LONG_CONSTANT("FILTER_FLAG_ENCODE_AMP", FILTER_FLAG_ENCODE_AMP, CONST_CS | CONST_PERSISTENT);
@@ -313,7 +318,7 @@ PHP_MINFO_FUNCTION(filter)
 {
 	php_info_print_table_start();
 	php_info_print_table_row( 2, "Input Validation and Filtering", "enabled" );
-	php_info_print_table_row( 2, "Revision", "$Revision: 289434 $");
+	php_info_print_table_row( 2, "Revision", "$Revision: 313665 $");
 	php_info_print_table_end();
 
 	DISPLAY_INI_ENTRIES();
@@ -391,9 +396,7 @@ static void php_zval_filter(zval **value, long filter, long flags, zval *options
 	) {
 		zval **tmp; 
 		if (zend_hash_find(HASH_OF(options), "default", sizeof("default"), (void **)&tmp) == SUCCESS) {
-			**value = **tmp;
-			zval_copy_ctor(*value);
-			INIT_PZVAL(*value);
+			MAKE_COPY_ZVAL(tmp, *value);
 		}
 	}
 }
@@ -558,7 +561,7 @@ static zval *php_filter_get_storage(long arg TSRMLS_DC)/* {{{ */
 			if (jit_initialization) {
 				zend_is_auto_global("_ENV", sizeof("_ENV")-1 TSRMLS_CC);
 			}
-			array_ptr = IF_G(env_array);
+			array_ptr = IF_G(env_array) ? IF_G(env_array) : PG(http_globals)[TRACK_VARS_ENV];
 			break;
 		case PARSE_SESSION:
 			/* FIXME: Implement session source */
@@ -678,9 +681,7 @@ static void php_filter_call(zval **filtered, long filter, zval **filter_args, co
 		zval *tmp;
 
 		ALLOC_ZVAL(tmp);
-		*tmp = **filtered;
-		zval_copy_ctor(tmp);
-		INIT_PZVAL(tmp);
+		MAKE_COPY_ZVAL(filtered, tmp);
 
 		zval_dtor(*filtered);
 
@@ -690,7 +691,7 @@ static void php_filter_call(zval **filtered, long filter, zval **filter_args, co
 }
 /* }}} */
 
-static void php_filter_array_handler(zval *input, zval **op, zval *return_value TSRMLS_DC) /* {{{ */
+static void php_filter_array_handler(zval *input, zval **op, zval *return_value, zend_bool add_empty TSRMLS_DC) /* {{{ */
 {
 	char *arg_key;
 	uint arg_key_len;
@@ -700,15 +701,11 @@ static void php_filter_array_handler(zval *input, zval **op, zval *return_value 
 
 	if (!op) {
 		zval_dtor(return_value);
-		*return_value = *input;
-		zval_copy_ctor(return_value);
-		INIT_PZVAL(return_value);
+		MAKE_COPY_ZVAL(&input, return_value);
 		php_filter_call(&return_value, FILTER_DEFAULT, NULL, 0, FILTER_REQUIRE_ARRAY TSRMLS_CC);
 	} else if (Z_TYPE_PP(op) == IS_LONG) {
 		zval_dtor(return_value);
-		*return_value = *input;
-		zval_copy_ctor(return_value);
-		INIT_PZVAL(return_value);
+		MAKE_COPY_ZVAL(&input, return_value);
 		php_filter_call(&return_value, Z_LVAL_PP(op), NULL, 0, FILTER_REQUIRE_ARRAY TSRMLS_CC);
 	} else if (Z_TYPE_PP(op) == IS_ARRAY) {
 		array_init(return_value);
@@ -729,14 +726,14 @@ static void php_filter_array_handler(zval *input, zval **op, zval *return_value 
 				RETURN_FALSE;
 			}
 			if (zend_hash_find(Z_ARRVAL_P(input), arg_key, arg_key_len, (void **)&tmp) != SUCCESS) {
-				add_assoc_null_ex(return_value, arg_key, arg_key_len);
+				if (add_empty) {
+					add_assoc_null_ex(return_value, arg_key, arg_key_len);
+				}
 			} else {
 				zval *nval;
 
 				ALLOC_ZVAL(nval);
-				*nval = **tmp;
-				zval_copy_ctor(nval);
-				INIT_PZVAL(nval);
+				MAKE_COPY_ZVAL(tmp, nval);
 
 				php_filter_call(&nval, -1, arg_elm, 0, FILTER_REQUIRE_SCALAR TSRMLS_CC);
 				add_assoc_zval_ex(return_value, arg_key, arg_key_len, nval);
@@ -777,17 +774,22 @@ PHP_FUNCTION(filter_input)
 				filter_flags = Z_LVAL_PP(filter_args);
 			} else if (Z_TYPE_PP(filter_args) == IS_ARRAY && zend_hash_find(HASH_OF(*filter_args), "flags", sizeof("flags"), (void **)&option) == SUCCESS) {
 				PHP_FILTER_GET_LONG_OPT(option, filter_flags);
-			} else if (Z_TYPE_PP(filter_args) == IS_ARRAY && 
+			}
+			if (Z_TYPE_PP(filter_args) == IS_ARRAY && 
 				zend_hash_find(HASH_OF(*filter_args), "options", sizeof("options"), (void **)&opt) == SUCCESS &&
 				Z_TYPE_PP(opt) == IS_ARRAY &&
 				zend_hash_find(HASH_OF(*opt), "default", sizeof("default"), (void **)&def) == SUCCESS
 			) {
-				*return_value = **def;
-				zval_copy_ctor(return_value);
-				INIT_PZVAL(return_value);
+				MAKE_COPY_ZVAL(def, return_value);
 				return;
 			}
 		}
+
+		/* The FILTER_NULL_ON_FAILURE flag inverts the usual return values of
+		 * the function: normally when validation fails false is returned, and
+		 * when the input value doesn't exist NULL is returned. With the flag
+		 * set, NULL and false should be returned, respectively. Ergo, although
+		 * the code below looks incorrect, it's actually right. */
 		if (filter_flags & FILTER_NULL_ON_FAILURE) {
 			RETURN_FALSE;
 		} else {
@@ -795,9 +797,7 @@ PHP_FUNCTION(filter_input)
 		}
 	}
 
-	*return_value = **tmp;
-	zval_copy_ctor(return_value);  /* Watch out for empty strings */
-	INIT_PZVAL(return_value);
+	MAKE_COPY_ZVAL(tmp, return_value);
 
 	php_filter_call(&return_value, filter, filter_args, 1, FILTER_REQUIRE_SCALAR TSRMLS_CC);
 }
@@ -819,23 +819,22 @@ PHP_FUNCTION(filter_var)
 		RETURN_FALSE;
 	}
 
-	*return_value = *data;
-	zval_copy_ctor(data);
-	INIT_PZVAL(return_value);
+	MAKE_COPY_ZVAL(&data, return_value);
 
 	php_filter_call(&return_value, filter, filter_args, 1, FILTER_REQUIRE_SCALAR TSRMLS_CC);
 }
 /* }}} */
 
-/* {{{ proto mixed filter_input_array(constant type, [, mixed options]])
+/* {{{ proto mixed filter_input_array(constant type, [, mixed options [, bool add_empty]]])
  * Returns an array with all arguments defined in 'definition'.
  */
 PHP_FUNCTION(filter_input_array)
 {
 	long    fetch_from;
 	zval   *array_input = NULL, **op = NULL;
+	zend_bool add_empty = 1;
 
-	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "l|Z",  &fetch_from, &op) == FAILURE) {
+	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "l|Zb",  &fetch_from, &op, &add_empty) == FAILURE) {
 		return;
 	}
 
@@ -858,6 +857,12 @@ PHP_FUNCTION(filter_input_array)
 				PHP_FILTER_GET_LONG_OPT(option, filter_flags);
 			}
 		}
+
+		/* The FILTER_NULL_ON_FAILURE flag inverts the usual return values of
+		 * the function: normally when validation fails false is returned, and
+		 * when the input value doesn't exist NULL is returned. With the flag
+		 * set, NULL and false should be returned, respectively. Ergo, although
+		 * the code below looks incorrect, it's actually right. */
 		if (filter_flags & FILTER_NULL_ON_FAILURE) {
 			RETURN_FALSE;
 		} else {
@@ -865,18 +870,19 @@ PHP_FUNCTION(filter_input_array)
 		}
 	}
 
-	php_filter_array_handler(array_input, op, return_value TSRMLS_CC);
+	php_filter_array_handler(array_input, op, return_value, add_empty TSRMLS_CC);
 }
 /* }}} */
 
-/* {{{ proto mixed filter_var_array(array data, [, mixed options]])
+/* {{{ proto mixed filter_var_array(array data, [, mixed options [, bool add_empty]]])
  * Returns an array with all arguments defined in 'definition'.
  */
 PHP_FUNCTION(filter_var_array)
 {
 	zval *array_input = NULL, **op = NULL;
+	zend_bool add_empty = 1;
 
-	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "a|Z",  &array_input, &op) == FAILURE) {
+	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "a|Zb",  &array_input, &op, &add_empty) == FAILURE) {
 		return;
 	}
 
@@ -887,7 +893,7 @@ PHP_FUNCTION(filter_var_array)
 		RETURN_FALSE;
 	}
 
-	php_filter_array_handler(array_input, op, return_value TSRMLS_CC);
+	php_filter_array_handler(array_input, op, return_value, add_empty TSRMLS_CC);
 }
 /* }}} */
 

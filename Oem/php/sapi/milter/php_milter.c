@@ -2,7 +2,7 @@
    +----------------------------------------------------------------------+
    | PHP Version 5                                                        |
    +----------------------------------------------------------------------+
-   | Copyright (c) 1997-2009 The PHP Group                                |
+   | Copyright (c) 1997-2011 The PHP Group                                |
    +----------------------------------------------------------------------+
    | This source file is subject to version 3.01 of the PHP license,      |
    | that is bundled with this package in the file LICENSE, and is        |
@@ -18,7 +18,7 @@
    +----------------------------------------------------------------------+
 */
 
-/* $Id: php_milter.c 272370 2008-12-31 11:15:49Z sebastian $ */
+/* $Id: php_milter.c 314352 2011-08-06 01:22:27Z felipe $ */
 
 #include "php.h"
 #include "php_globals.h"
@@ -92,7 +92,7 @@ extern char *ap_php_optarg;
 extern int ap_php_optind;
 
 static int flag_debug=0;
-static char *filename;
+static char *filename = NULL;
 
 /* per thread */
 ZEND_BEGIN_MODULE_GLOBALS(milter)
@@ -127,6 +127,11 @@ static int mlfi_init()
 	/* disable headers */
 	SG(headers_sent) = 1;
 	SG(request_info).no_headers = 1;
+	 
+	if (filename == NULL) {
+		php_printf("No input file specified");
+		return SMFIS_TEMPFAIL;
+	}
 
 	if (!(file_handle.handle.fp = VCWD_FOPEN(filename, "rb"))) {
 		php_printf("Could not open input file: %s\n", filename);
@@ -188,6 +193,11 @@ static sfsistat	mlfi_connect(SMFICTX *ctx, char *hostname, _SOCK_ADDR *hostaddr)
 	/* disable headers */
 	SG(headers_sent) = 1;
 	SG(request_info).no_headers = 1;
+	
+	if (filename == NULL) {
+		php_printf("No input file specified");
+		return SMFIS_TEMPFAIL;
+	}
 	
 	if (!(file_handle.handle.fp = VCWD_FOPEN(filename, "rb"))) {
 		php_printf("Could not open input file: %s\n", filename);
@@ -823,7 +833,7 @@ const static zend_function_entry milter_functions[] = {
 	PHP_FE(smfi_addrcpt, 		arginfo_smfi_addrcpt)
 	PHP_FE(smfi_delrcpt, 		arginfo_smfi_delrcpt)
 	PHP_FE(smfi_replacebody, 	arginfo_smfi_replacebody)
-	{ NULL, NULL, NULL }
+	PHP_FE_END
 };
 /* }}} */
 
@@ -939,7 +949,6 @@ static void php_milter_usage(char *argv0)
 	}
 
 	printf(     "Usage: %s [options] [-f] <file> [args...]\n"
-	            "       %s [options] -r <code> [args...]\n"
 	            "       %s [options] [-- args...]\n"
 				"  -a               Run interactively\n"
 				"  -c <path>|<file> Look for php.ini file in this directory\n"
@@ -955,7 +964,7 @@ static void php_milter_usage(char *argv0)
 				"  -z <file>        Load Zend extension <file>.\n"
 				"  args...          Arguments passed to script. Use -- args when first argument \n"
 				"                   starts with - or script is read from stdin\n"
-				, prog, prog, prog);
+				, prog, prog);
 }
 /* }}} */
 
@@ -1102,7 +1111,7 @@ int main(int argc, char *argv[])
 				}
 				SG(headers_sent) = 1;
 				SG(request_info).no_headers = 1;
-				php_printf("PHP %s (%s) (built: %s %s)\nCopyright (c) 1997-2009 The PHP Group\n%s", PHP_VERSION, sapi_module.name, __DATE__, __TIME__, get_zend_version());
+				php_printf("PHP %s (%s) (built: %s %s)\nCopyright (c) 1997-2011 The PHP Group\n%s", PHP_VERSION, sapi_module.name, __DATE__, __TIME__, get_zend_version());
 				php_end_ob_buffers(1 TSRMLS_CC);
 				exit(1);
 				break;

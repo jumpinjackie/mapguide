@@ -2,7 +2,7 @@
   +----------------------------------------------------------------------+
   | PHP Version 5                                                        |
   +----------------------------------------------------------------------+
-  | Copyright (c) 1997-2009 The PHP Group                                |
+  | Copyright (c) 1997-2011 The PHP Group                                |
   +----------------------------------------------------------------------+
   | This source file is subject to version 3.01 of the PHP license,      |
   | that is bundled with this package in the file LICENSE, and is        |
@@ -18,7 +18,7 @@
   +----------------------------------------------------------------------+
 */
 
-/* $Id: mysql_driver.c 289630 2009-10-14 13:51:25Z johannes $ */
+/* $Id: mysql_driver.c 310239 2011-04-15 14:24:40Z rrichards $ */
 
 #ifdef HAVE_CONFIG_H
 #include "config.h"
@@ -127,7 +127,7 @@ int _pdo_mysql_error(pdo_dbh_t *dbh, pdo_stmt_t *stmt, const char *file, int lin
 
 	if (!dbh->methods) {
 		PDO_DBG_INF("Throwing exception");
-		zend_throw_exception_ex(php_pdo_get_exception(), 0 TSRMLS_CC, "SQLSTATE[%s] [%d] %s",
+		zend_throw_exception_ex(php_pdo_get_exception(), einfo->errcode TSRMLS_CC, "SQLSTATE[%s] [%d] %s",
 				*pdo_err, einfo->errcode, einfo->errmsg);
 	}
 
@@ -462,7 +462,7 @@ static int pdo_mysql_get_attribute(pdo_dbh_t *dbh, long attr, zval *return_value
 		case PDO_ATTR_SERVER_INFO: {
 			char *tmp;
 #if PDO_USE_MYSQLND
-			int tmp_len;
+			unsigned int tmp_len;
 
 			if (mysqlnd_stat(H->server, &tmp, &tmp_len) == PASS) {
 				ZVAL_STRINGL(return_value, tmp, tmp_len, 0);
@@ -625,6 +625,9 @@ static int pdo_mysql_handle_factory(pdo_dbh_t *dbh, zval *driver_options TSRMLS_
 		char *default_file = NULL, *default_group = NULL;
 		long compress = 0;
 #endif
+#if HAVE_MYSQL_STMT_PREPARE || PDO_USE_MYSLQND
+		char *ssl_key = NULL, *ssl_cert = NULL, *ssl_ca = NULL, *ssl_capath = NULL, *ssl_cipher = NULL;
+#endif
 		H->buffered = pdo_attr_lval(driver_options, PDO_MYSQL_ATTR_USE_BUFFERED_QUERY, 1 TSRMLS_CC);
 
 		H->emulate_prepare = pdo_attr_lval(driver_options,
@@ -649,7 +652,7 @@ static int pdo_mysql_handle_factory(pdo_dbh_t *dbh, zval *driver_options TSRMLS_
 			goto cleanup;
 		}
 
-#if PHP_MAJOR_VERSION < 6
+#if PHP_API_VERSION < 20100412
 		if ((PG(open_basedir) && PG(open_basedir)[0] != '\0') || PG(safe_mode))
 #else
 		if (PG(open_basedir) && PG(open_basedir)[0] != '\0') 
@@ -709,7 +712,40 @@ static int pdo_mysql_handle_factory(pdo_dbh_t *dbh, zval *driver_options TSRMLS_
 			}
 		}
 #endif
+#if HAVE_MYSQL_STMT_PREPARE || PDO_USE_MYSLQND
+		ssl_key = pdo_attr_strval(driver_options, PDO_MYSQL_ATTR_SSL_KEY, NULL TSRMLS_CC);
+		ssl_cert = pdo_attr_strval(driver_options, PDO_MYSQL_ATTR_SSL_CERT, NULL TSRMLS_CC);
+		ssl_ca = pdo_attr_strval(driver_options, PDO_MYSQL_ATTR_SSL_CA, NULL TSRMLS_CC);
+		ssl_capath = pdo_attr_strval(driver_options, PDO_MYSQL_ATTR_SSL_CAPATH, NULL TSRMLS_CC);
+		ssl_cipher = pdo_attr_strval(driver_options, PDO_MYSQL_ATTR_SSL_CIPHER, NULL TSRMLS_CC);
+		
+		if (ssl_key || ssl_cert || ssl_ca || ssl_capath || ssl_cipher) {
+			mysql_ssl_set(H->server, ssl_key, ssl_cert, ssl_ca, ssl_capath, ssl_cipher);
+			if (ssl_key) {
+				efree(ssl_key);
+			}
+			if (ssl_cert) {
+				efree(ssl_cert);
+			}
+			if (ssl_ca) {
+				efree(ssl_ca);
+			}
+			if (ssl_capath) {
+				efree(ssl_capath);
+			}
+			if (ssl_cipher) {
+				efree(ssl_cipher);
+			}
+		}
+#endif
 	}
+
+#ifdef PDO_MYSQL_HAS_CHARSET
+	if (vars[0].optval && mysql_options(H->server, MYSQL_SET_CHARSET_NAME, vars[0].optval)) {
+		pdo_mysql_error(dbh);
+		goto cleanup;
+	}
+#endif
 
 	dbname = vars[1].optval;
 	host = vars[2].optval;	
@@ -731,7 +767,7 @@ static int pdo_mysql_handle_factory(pdo_dbh_t *dbh, zval *driver_options TSRMLS_
 	}
 
 	if (mysqlnd_connect(H->server, host, dbh->username, dbh->password, password_len, dbname, dbname_len,
-						port, unix_socket, connect_opts, PDO_MYSQL_G(mysqlnd_thd_zval_cache) TSRMLS_CC) == NULL) {
+						port, unix_socket, connect_opts TSRMLS_CC) == NULL) {
 #else
 	if (mysql_real_connect(H->server, host, dbh->username, dbh->password, dbname, port, unix_socket, connect_opts) == NULL) {
 #endif

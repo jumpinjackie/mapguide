@@ -33,6 +33,10 @@ function bug_44454($db) {
 			}
 		}
 
+		$db->exec('DROP TABLE IF EXISTS test');
+		$db->exec('CREATE TABLE test(a INT, b INT, UNIQUE KEY idx_ab (a, b))');
+		$db->exec('INSERT INTO test(a, b) VALUES (1, 1)');
+
 	} catch (Exception $e) {
 		printf("... While error %s\n", $e->getMessage()); ;
 	}
@@ -63,9 +67,15 @@ bug_44454($db);
 
 print "done!";
 ?>
+--CLEAN--
+<?php
+require dirname(__FILE__) . '/mysql_pdo_test.inc';
+$db = MySQLPDOTest::factory();
+$db->exec('DROP TABLE IF EXISTS test');
+?>
 --XFAIL--
 For some reason the exception gets thrown at the wrong place
---EXPECT--
+--EXPECTF--
 Native Prepared Statements
 ... SELECT has returned 1 row...
 ... INSERT should fail...
@@ -73,7 +83,7 @@ Native Prepared Statements
 ... PDO  - array (
   0 => '23000',
   1 => 1062,
-  2 => 'Duplicate entry \'1-1\' for key 1',
+  2 => 'Duplicate entry \'1-1\' for key %s',
 )
 ... SELECT has returned 1 row...
 ... INSERT should fail...
@@ -81,7 +91,7 @@ Native Prepared Statements
 ... PDO  - array (
   0 => '23000',
   1 => 1062,
-  2 => 'Duplicate entry \'1-1\' for key 1',
+  2 => 'Duplicate entry \'1-1\' for key %s',
 )
 
 Emulated Prepared Statements
@@ -91,7 +101,7 @@ Emulated Prepared Statements
 ... PDO  - array (
   0 => '23000',
   1 => 1062,
-  2 => 'Duplicate entry \'1-1\' for key 1',
+  2 => 'Duplicate entry \'1-1\' for key %s',
 )
 ... SELECT has returned 1 row...
 ... INSERT should fail...
@@ -99,6 +109,6 @@ Emulated Prepared Statements
 ... PDO  - array (
   0 => '23000',
   1 => 1062,
-  2 => 'Duplicate entry \'1-1\' for key 1',
+  2 => 'Duplicate entry \'1-1\' for key %s',
 )
 done!

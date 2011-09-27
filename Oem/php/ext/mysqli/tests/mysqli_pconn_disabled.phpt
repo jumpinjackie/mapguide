@@ -6,9 +6,6 @@ require_once('skipif.inc');
 require_once('skipifemb.inc');
 require_once('skipifconnectfailure.inc');
 
-if (!stristr(mysqli_get_client_info(), 'mysqlnd'))
-	die("skip: only available in mysqlnd");
-
 die("skip TODO - we need to add a user level way to check if CHANGE_USER gets called by pconnect");
 ?>
 --INI--
@@ -17,7 +14,7 @@ mysqli.max_persistent=2
 mysqli.max_links=2
 --FILE--
 <?php
-	include "connect.inc";
+	require_once("connect.inc");
 
 	$host = 'p:' . $host;
 	if (!$link1 = my_mysqli_connect($host, $user, $passwd, $db, $port, $socket)) {

@@ -2,7 +2,7 @@
    +----------------------------------------------------------------------+
    | PHP Version 5                                                        |
    +----------------------------------------------------------------------+
-   | Copyright (c) 1997-2009 The PHP Group                                |
+   | Copyright (c) 1997-2011 The PHP Group                                |
    +----------------------------------------------------------------------+
    | This source file is subject to version 3.01 of the PHP license,      |
    | that is bundled with this package in the file LICENSE, and is        |
@@ -20,7 +20,7 @@
    +----------------------------------------------------------------------+
  */
 
-/* $Id: snmp.c 287430 2009-08-17 22:15:18Z stas $ */
+/* $Id: snmp.c 313665 2011-07-25 11:42:53Z felipe $ */
 
 #ifdef HAVE_CONFIG_H
 #include "config.h"
@@ -331,7 +331,7 @@ const zend_function_entry snmp_functions[] = {
 	PHP_FE(snmp_get_valueretrieval, arginfo_snmp_get_valueretrieval)
 
 	PHP_FE(snmp_read_mib, 			arginfo_snmp_read_mib)
-	{NULL,NULL,NULL}
+	PHP_FE_END
 };
 /* }}} */
 
@@ -689,7 +689,7 @@ retry:
 					}
 				}	
 			} else {
-				if (st != SNMP_CMD_WALK || response->errstat != SNMP_ERR_NOSUCHNAME) {
+				if ((st != SNMP_CMD_WALK && st != SNMP_CMD_REALWALK) || response->errstat != SNMP_ERR_NOSUCHNAME) {
 					php_error_docref(NULL TSRMLS_CC, E_WARNING, "Error in packet: %s", snmp_errstring(response->errstat));
 					if (response->errstat == SNMP_ERR_NOSUCHNAME) {
 						for (count=1, vars = response->variables; vars && count != response->errindex;
@@ -981,7 +981,6 @@ static int netsnmp_session_set_sec_level(struct snmp_session *s, char *level TSR
 			s->securityLevel = SNMP_SEC_LEVEL_AUTHPRIV;
 			return (0);
 		}
-		php_error_docref(NULL TSRMLS_CC, E_WARNING, "Invalid security level: %s", level);
 	}
 	return (-1);
 }
@@ -1000,8 +999,6 @@ static int netsnmp_session_set_auth_protocol(struct snmp_session *s, char *prot 
 			s->securityAuthProto = usmHMACSHA1AuthProtocol;
 			s->securityAuthProtoLen = OIDSIZE(usmHMACSHA1AuthProtocol);
 			return (0);
-		} else if (strlen(prot)) {
-			php_error_docref(NULL TSRMLS_CC, E_WARNING, "Invalid authentication protocol: %s", prot);
 		}
 	}
 	return (-1);
@@ -1053,8 +1050,6 @@ static int netsnmp_session_set_sec_protocol(struct snmp_session *s, char *prot T
 			return (0);
 #endif
 #endif
-		} else if (strlen(prot)) {
-			php_error_docref(NULL TSRMLS_CC, E_WARNING, "Invalid privacy protocol: %s", prot);
 		}
 	}
 	return (-1);
@@ -1165,7 +1160,7 @@ PHP_FUNCTION(snmp2_set)
 /* {{{ proto void php_snmpv3(INTERNAL_FUNCTION_PARAMETERS, int st)
 *
 * Generic SNMPv3 object fetcher
-* From here is passed on the the common internal object fetcher.
+* From here is passed on the common internal object fetcher.
 *
 * st=SNMP_CMD_GET   snmp3_get() - query an agent and return a single value.
 * st=SNMP_CMD_GETNEXT   snmp3_getnext() - query an agent and return the next single value.

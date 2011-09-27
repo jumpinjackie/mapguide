@@ -2,7 +2,7 @@
   +----------------------------------------------------------------------+
   | PHP Version 5                                                        |
   +----------------------------------------------------------------------+
-  | Copyright (c) 1997-2009 The PHP Group                                |
+  | Copyright (c) 1997-2011 The PHP Group                                |
   +----------------------------------------------------------------------+
   | This source file is subject to version 3.01 of the PHP license,      |
   | that is bundled with this package in the file LICENSE, and is        |
@@ -17,7 +17,7 @@
   +----------------------------------------------------------------------+
 */
 
-/* $Id: logical_filters.c 284212 2009-07-16 23:29:36Z felipe $ */
+/* $Id: logical_filters.c 311403 2011-05-24 22:34:07Z felipe $ */
 
 #include "php_filter.h"
 #include "filter_private.h"
@@ -68,7 +68,7 @@
 
 static int php_filter_parse_int(const char *str, unsigned int str_len, long *ret TSRMLS_DC) { /* {{{ */
 	long ctx_value;
-	int sign = 0;
+	int sign = 0, digit = 0;
 	const char *end = str + str_len;
 
 	switch (*str) {
@@ -82,31 +82,30 @@ static int php_filter_parse_int(const char *str, unsigned int str_len, long *ret
 
 	/* must start with 1..9*/
 	if (str < end && *str >= '1' && *str <= '9') {
-		ctx_value = ((*(str++)) - '0');
+		ctx_value = ((sign)?-1:1) * ((*(str++)) - '0');
 	} else {
 		return -1;
 	}
 
 	if ((end - str > MAX_LENGTH_OF_LONG - 1) /* number too long */
-	 || (SIZEOF_LONG == 4 && end - str == MAX_LENGTH_OF_LONG - 1 && *str > '2')) {
+	 || (SIZEOF_LONG == 4 && (end - str == MAX_LENGTH_OF_LONG - 1) && *str > '2')) {
 		/* overflow */
 		return -1;
 	}
 
 	while (str < end) {
 		if (*str >= '0' && *str <= '9') {
-			ctx_value = (ctx_value * 10) + (*(str++) - '0');
+			digit = (*(str++) - '0');
+			if ( (!sign) && ctx_value <= (LONG_MAX-digit)/10 ) {
+				ctx_value = (ctx_value * 10) + digit;
+			} else if ( sign && ctx_value >= (LONG_MIN+digit)/10) {
+				ctx_value = (ctx_value * 10) - digit;
+			} else {
+				return -1;
+			}
 		} else {
 			return -1;
 		}
-	}
-	if (sign) {
-		ctx_value = -ctx_value;
-		if (ctx_value > 0) { /* overflow */
-			return -1;
-		}
-	} else if (ctx_value < 0) { /* overflow */
-		return -1;
 	}
 
 	*ret = ctx_value;
@@ -456,12 +455,40 @@ void php_filter_validate_url(PHP_INPUT_FILTER_PARAM_DECL) /* {{{ */
 		RETURN_VALIDATION_FAILED
 	}
 
+	if (url->scheme != NULL && (!strcasecmp(url->scheme, "http") || !strcasecmp(url->scheme, "https"))) {
+		char *e, *s;
+
+		if (url->host == NULL) {
+			goto bad_url;
+		}
+
+		e = url->host + strlen(url->host);
+		s = url->host;
+
+		/* First char of hostname must be alphanumeric */
+		if(!isalnum((int)*(unsigned char *)s)) { 
+			goto bad_url;
+		}
+
+		while (s < e) {
+			if (!isalnum((int)*(unsigned char *)s) && *s != '-' && *s != '.') {
+				goto bad_url;
+			}
+			s++;
+		}
+
+		if (*(e - 1) == '.') {
+			goto bad_url;
+		}
+	}
+
 	if (
 		url->scheme == NULL || 
 		/* some schemas allow the host to be empty */
 		(url->host == NULL && (strcmp(url->scheme, "mailto") && strcmp(url->scheme, "news") && strcmp(url->scheme, "file"))) ||
 		((flags & FILTER_FLAG_PATH_REQUIRED) && url->path == NULL) || ((flags & FILTER_FLAG_QUERY_REQUIRED) && url->query == NULL)
 	) {
+bad_url:
 		php_url_free(url);
 		RETURN_VALIDATION_FAILED
 	}
@@ -471,8 +498,31 @@ void php_filter_validate_url(PHP_INPUT_FILTER_PARAM_DECL) /* {{{ */
 
 void php_filter_validate_email(PHP_INPUT_FILTER_PARAM_DECL) /* {{{ */
 {
-	/* From http://cvs.php.net/co.php/pear/HTML_QuickForm/QuickForm/Rule/Email.php?r=1.4 */
-	const char regexp[] = "/^((\\\"[^\\\"\\f\\n\\r\\t\\b]+\\\")|([A-Za-z0-9_][A-Za-z0-9_\\!\\#\\$\\%\\&\\'\\*\\+\\-\\~\\/\\^\\`\\|\\{\\}]*(\\.[A-Za-z0-9_\\!\\#\\$\\%\\&\\'\\*\\+\\-\\~\\/\\^\\`\\|\\{\\}]*)*))@((\\[(((25[0-5])|(2[0-4][0-9])|([0-1]?[0-9]?[0-9]))\\.((25[0-5])|(2[0-4][0-9])|([0-1]?[0-9]?[0-9]))\\.((25[0-5])|(2[0-4][0-9])|([0-1]?[0-9]?[0-9]))\\.((25[0-5])|(2[0-4][0-9])|([0-1]?[0-9]?[0-9])))\\])|(((25[0-5])|(2[0-4][0-9])|([0-1]?[0-9]?[0-9]))\\.((25[0-5])|(2[0-4][0-9])|([0-1]?[0-9]?[0-9]))\\.((25[0-5])|(2[0-4][0-9])|([0-1]?[0-9]?[0-9]))\\.((25[0-5])|(2[0-4][0-9])|([0-1]?[0-9]?[0-9])))|((([A-Za-z0-9])(([A-Za-z0-9\\-])*([A-Za-z0-9]))?(\\.(?=[A-Za-z0-9\\-]))?)+[A-Za-z]+))$/D";
+	/*
+	 * The regex below is based on a regex by Michael Rushton.
+	 * However, it is not identical.  I changed it to only consider routeable
+	 * addresses as valid.  Michael's regex considers a@b a valid address
+	 * which conflicts with section 2.3.5 of RFC 5321 which states that:
+	 *
+	 *   Only resolvable, fully-qualified domain names (FQDNs) are permitted
+	 *   when domain names are used in SMTP.  In other words, names that can
+	 *   be resolved to MX RRs or address (i.e., A or AAAA) RRs (as discussed
+	 *   in Section 5) are permitted, as are CNAME RRs whose targets can be
+	 *   resolved, in turn, to MX or address RRs.  Local nicknames or
+	 *   unqualified names MUST NOT be used.
+	 *
+	 * This regex does not handle comments and folding whitespace.  While
+	 * this is technically valid in an email address, these parts aren't
+	 * actually part of the address itself.
+	 *
+	 * Michael's regex carries this copyright:
+	 *
+	 * Copyright © Michael Rushton 2009-10
+	 * http://squiloople.com/
+	 * Feel free to use and redistribute this code. But please keep this copyright notice.
+	 *
+	 */
+	const char regexp[] = "/^(?!(?:(?:\\x22?\\x5C[\\x00-\\x7E]\\x22?)|(?:\\x22?[^\\x5C\\x22]\\x22?)){255,})(?!(?:(?:\\x22?\\x5C[\\x00-\\x7E]\\x22?)|(?:\\x22?[^\\x5C\\x22]\\x22?)){65,}@)(?:(?:[\\x21\\x23-\\x27\\x2A\\x2B\\x2D\\x2F-\\x39\\x3D\\x3F\\x5E-\\x7E]+)|(?:\\x22(?:[\\x01-\\x08\\x0B\\x0C\\x0E-\\x1F\\x21\\x23-\\x5B\\x5D-\\x7F]|(?:\\x5C[\\x00-\\x7F]))*\\x22))(?:\\.(?:(?:[\\x21\\x23-\\x27\\x2A\\x2B\\x2D\\x2F-\\x39\\x3D\\x3F\\x5E-\\x7E]+)|(?:\\x22(?:[\\x01-\\x08\\x0B\\x0C\\x0E-\\x1F\\x21\\x23-\\x5B\\x5D-\\x7F]|(?:\\x5C[\\x00-\\x7F]))*\\x22)))*@(?:(?:(?!.*[^.]{64,})(?:(?:(?:xn--)?[a-z0-9]+(?:-[a-z0-9]+)*\\.){1,126}){1,}(?:(?:[a-z][a-z0-9]*)|(?:(?:xn--)[a-z0-9]+))(?:-[a-z0-9]+)*)|(?:\\[(?:(?:IPv6:(?:(?:[a-f0-9]{1,4}(?::[a-f0-9]{1,4}){7})|(?:(?!(?:.*[a-f0-9][:\\]]){7,})(?:[a-f0-9]{1,4}(?::[a-f0-9]{1,4}){0,5})?::(?:[a-f0-9]{1,4}(?::[a-f0-9]{1,4}){0,5})?)))|(?:(?:IPv6:(?:(?:[a-f0-9]{1,4}(?::[a-f0-9]{1,4}){5}:)|(?:(?!(?:.*[a-f0-9]:){5,})(?:[a-f0-9]{1,4}(?::[a-f0-9]{1,4}){0,3})?::(?:[a-f0-9]{1,4}(?::[a-f0-9]{1,4}){0,3}:)?)))?(?:(?:25[0-5])|(?:2[0-4][0-9])|(?:1[0-9]{2})|(?:[1-9]?[0-9]))(?:\\.(?:(?:25[0-5])|(?:2[0-4][0-9])|(?:1[0-9]{2})|(?:[1-9]?[0-9]))){3}))\\]))$/iD";
 
 	pcre       *re = NULL;
 	pcre_extra *pcre_extra = NULL;
@@ -480,6 +530,11 @@ void php_filter_validate_email(PHP_INPUT_FILTER_PARAM_DECL) /* {{{ */
 	int         ovector[150]; /* Needs to be a multiple of 3 */
 	int         matches;
 
+
+	/* The maximum length of an e-mail address is 320 octets, per RFC 2821. */
+	if (Z_STRLEN_P(value) > 320) {
+		RETURN_VALIDATION_FAILED
+	}
 
 	re = pcre_get_compiled_regex((char *)regexp, &pcre_extra, &preg_options TSRMLS_CC);
 	if (!re) {
@@ -502,9 +557,11 @@ static int _php_filter_validate_ipv4(char *str, int str_len, int *ip) /* {{{ */
 	int n = 0;
 
 	while (str < end) {
+		int leading_zero;
 		if (*str < '0' || *str > '9') {
 			return 0;
 		}
+		leading_zero = (*str == '0');
 		m = 1;
 		num = ((*(str++)) - '0');
 		while (str < end && (*str >= '0' && *str <= '9')) {
@@ -513,6 +570,10 @@ static int _php_filter_validate_ipv4(char *str, int str_len, int *ip) /* {{{ */
 				return 0;
 			}
 		}
+		/* don't allow a leading 0; that introduces octal numbers,
+		 * which we don't support */
+		if (leading_zero && (num != 0 || m > 1))
+			return 0;
 		ip[n++] = num;
 		if (n == 4) {
 			return str == end;
@@ -527,7 +588,7 @@ static int _php_filter_validate_ipv4(char *str, int str_len, int *ip) /* {{{ */
 static int _php_filter_validate_ipv6(char *str, int str_len TSRMLS_DC) /* {{{ */
 {
 	int compressed = 0;
-	int blocks = 8;
+	int blocks = 0;
 	int n;
 	char *ipv4;
 	char *end;
@@ -548,32 +609,40 @@ static int _php_filter_validate_ipv6(char *str, int str_len TSRMLS_DC) /* {{{ */
 		if (!_php_filter_validate_ipv4(ipv4, (str_len - (ipv4 - str)), ip4elm)) {
 			return 0;
 		}
-		str_len = (ipv4 - str) - 1;
-		if (str_len == 1) {
-			return *str == ':';
+
+		str_len = ipv4 - str; /* length excluding ipv4 */
+		if (str_len < 2) {
+			return 0;
 		}
-		blocks = 6;
+
+		if (ipv4[-2] != ':') {
+			/* don't include : before ipv4 unless it's a :: */
+			str_len--;
+		}
+
+		blocks = 2;
 	}
 
 	end = str + str_len;
 
 	while (str < end) {
 		if (*str == ':') {
-			if (--blocks == 0) {
-				return 0;
-			}			
 			if (++str >= end) {
+				/* cannot end in : without previous : */
 				return 0;
 			}
 			if (*str == ':') {
-				if (compressed || --blocks == 0) {
+				if (compressed) {
 					return 0;
-				}			
-				if (++str == end) {
-					return 1;
 				}
+				blocks++; /* :: means 1 or more 16-bit 0 blocks */
 				compressed = 1;
+
+				if (++str == end) {
+					return (blocks <= 8);
+				}
 			} else if ((str - 1) == s) {
+				/* dont allow leading : without another : following */
 				return 0;
 			}				
 		}
@@ -588,8 +657,10 @@ static int _php_filter_validate_ipv6(char *str, int str_len TSRMLS_DC) /* {{{ */
 		if (n < 1 || n > 4) {
 			return 0;
 		}
+		if (++blocks > 8)
+			return 0;
 	}
-	return (compressed || blocks == 1);
+	return ((compressed && blocks <= 8) || blocks == 8);
 }
 /* }}} */
 
@@ -611,7 +682,7 @@ void php_filter_validate_ip(PHP_INPUT_FILTER_PARAM_DECL) /* {{{ */
 		RETURN_VALIDATION_FAILED
 	}
 
-	if (flags & (FILTER_FLAG_IPV4 || FILTER_FLAG_IPV6)) {
+	if ((flags & FILTER_FLAG_IPV4) && (flags & FILTER_FLAG_IPV6)) {
 		/* Both formats are cool */
 	} else if ((flags & FILTER_FLAG_IPV4) && mode == FORMAT_IPV6) {
 		RETURN_VALIDATION_FAILED
@@ -639,8 +710,11 @@ void php_filter_validate_ip(PHP_INPUT_FILTER_PARAM_DECL) /* {{{ */
 			if (flags & FILTER_FLAG_NO_RES_RANGE) {
 				if (
 					(ip[0] == 0) ||
+					(ip[0] == 128 && ip[1] == 0) ||
+					(ip[0] == 191 && ip[1] == 255) ||
 					(ip[0] == 169 && ip[1] == 254) ||
 					(ip[0] == 192 && ip[1] == 0 && ip[2] == 2) ||
+					(ip[0] == 127 && ip[1] == 0 && ip[2] == 0 && ip[3] == 1) ||
 					(ip[0] >= 224 && ip[0] <= 255)
 				) {
 					RETURN_VALIDATION_FAILED
@@ -659,6 +733,41 @@ void php_filter_validate_ip(PHP_INPUT_FILTER_PARAM_DECL) /* {{{ */
 				if (flags & FILTER_FLAG_NO_PRIV_RANGE) {
 					if (Z_STRLEN_P(value) >=2 && (!strncasecmp("FC", Z_STRVAL_P(value), 2) || !strncasecmp("FD", Z_STRVAL_P(value), 2))) {
 						RETURN_VALIDATION_FAILED
+					}
+				}
+				if (flags & FILTER_FLAG_NO_RES_RANGE) {
+					switch (Z_STRLEN_P(value)) {
+						case 1: case 0:
+							break;
+						case 2:
+							if (!strcmp("::", Z_STRVAL_P(value))) {
+								RETURN_VALIDATION_FAILED
+							}
+							break;
+						case 3:
+							if (!strcmp("::1", Z_STRVAL_P(value)) || !strcmp("5f:", Z_STRVAL_P(value))) {
+								RETURN_VALIDATION_FAILED
+							}
+							break;
+						default:
+							if (Z_STRLEN_P(value) >= 5) {
+								if (
+									!strncasecmp("fe8", Z_STRVAL_P(value), 3) ||
+									!strncasecmp("fe9", Z_STRVAL_P(value), 3) ||
+									!strncasecmp("fea", Z_STRVAL_P(value), 3) ||
+									!strncasecmp("feb", Z_STRVAL_P(value), 3)
+								) {
+									RETURN_VALIDATION_FAILED
+								}
+							}
+							if (
+								(Z_STRLEN_P(value) >= 9 &&  !strncasecmp("2001:0db8", Z_STRVAL_P(value), 9)) ||
+								(Z_STRLEN_P(value) >= 2 &&  !strncasecmp("5f", Z_STRVAL_P(value), 2)) ||
+								(Z_STRLEN_P(value) >= 4 &&  !strncasecmp("3ff3", Z_STRVAL_P(value), 4)) ||
+								(Z_STRLEN_P(value) >= 8 &&  !strncasecmp("2001:001", Z_STRVAL_P(value), 8))
+							) {
+								RETURN_VALIDATION_FAILED
+							}
 					}
 				}
 			}

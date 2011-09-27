@@ -1,5 +1,5 @@
 --TEST--
-mysqli_bind_param (UPDATE)
+mysqli_stmt_bind_param (UPDATE)
 --SKIPIF--
 <?php
 require_once('skipif.inc');
@@ -7,7 +7,7 @@ require_once('skipifconnectfailure.inc');
 ?>
 --FILE--
 <?php
-	include "connect.inc";
+	require_once("connect.inc");
 
 	/*** test mysqli_connect 127.0.0.1 ***/
 	$link = my_mysqli_connect($host, $user, $passwd, $db, $port, $socket);
@@ -21,13 +21,13 @@ require_once('skipifconnectfailure.inc');
 	mysqli_query($link, "INSERT INTO test_update VALUES ('foo', 2)");
 
 	$stmt = mysqli_prepare($link, "UPDATE test_update SET a=?,b=? WHERE b=?");
-	mysqli_bind_param($stmt, "sii", $c1, $c2, $c3);
+	mysqli_stmt_bind_param($stmt, "sii", $c1, $c2, $c3);
 
 	$c1 = "Rasmus";
 	$c2 = 1;
 	$c3 = 2;
 
-	mysqli_execute($stmt);
+	mysqli_stmt_execute($stmt);
 	mysqli_stmt_close($stmt);
 
 	$result = mysqli_query($link, "SELECT concat(a, ' is No. ', b) FROM test_update");
@@ -42,7 +42,7 @@ require_once('skipifconnectfailure.inc');
 ?>
 --CLEAN--
 <?php
-include "connect.inc";
+require_once("connect.inc");
 if (!$link = my_mysqli_connect($host, $user, $passwd, $db, $port, $socket))
    printf("[c001] [%d] %s\n", mysqli_connect_errno(), mysqli_connect_error());
 

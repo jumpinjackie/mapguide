@@ -16,7 +16,7 @@
   +----------------------------------------------------------------------+
 */
 
-/* $Id: url_scanner_ex.re 286379 2009-07-26 23:20:34Z jani $ */
+/* $Id: url_scanner_ex.re 313832 2011-07-28 10:52:45Z pajoye $ */
 
 #include "php.h"
 
@@ -55,9 +55,13 @@ static PHP_INI_MH(OnUpdateTags)
 	
 	if (ctx->tags)
 		zend_hash_destroy(ctx->tags);
-	else
+	else {
 		ctx->tags = malloc(sizeof(HashTable));
-	
+		if (!ctx->tags) {
+			return FAILURE;
+		}
+	}
+
 	zend_hash_init(ctx->tags, 0, NULL, NULL, 1);
 	
 	for (key = php_strtok_r(tmp, ",", &lasts);

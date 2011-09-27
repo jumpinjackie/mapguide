@@ -2,7 +2,7 @@
    +----------------------------------------------------------------------+
    | Zend Engine                                                          |
    +----------------------------------------------------------------------+
-   | Copyright (c) 1998-2009 Zend Technologies Ltd. (http://www.zend.com) |
+   | Copyright (c) 1998-2011 Zend Technologies Ltd. (http://www.zend.com) |
    +----------------------------------------------------------------------+
    | This source file is subject to version 2.00 of the Zend license,     |
    | that is bundled with this package in the file LICENSE, and is        |
@@ -21,7 +21,7 @@
    +----------------------------------------------------------------------+
 */
 
-/* $Id: zend_language_scanner.l 279941 2009-05-05 01:35:44Z mattwil $ */
+/* $Id: zend_language_scanner.l 307028 2011-01-03 14:39:48Z iliaa $ */
 
 #if 0
 # define YYDEBUG(s, c) printf("state: %d char: %c\n", s, c)
@@ -139,8 +139,10 @@ static void yy_pop_state(TSRMLS_D)
 static void yy_scan_buffer(char *str, unsigned int len TSRMLS_DC)
 {
 	YYCURSOR       = (YYCTYPE*)str;
-	SCNG(yy_start) = YYCURSOR;
 	YYLIMIT        = YYCURSOR + len;
+	if (!SCNG(yy_start)) {
+		SCNG(yy_start) = YYCURSOR;
+	}
 }
 
 void startup_scanner(TSRMLS_D)
@@ -225,6 +227,12 @@ ZEND_API void zend_restore_lexical_state(zend_lex_state *lex_state TSRMLS_DC)
 	SCNG(script_encoding) = lex_state->script_encoding;
 	SCNG(internal_encoding) = lex_state->internal_encoding;
 #endif /* ZEND_MULTIBYTE */
+
+	if (CG(heredoc)) {
+		efree(CG(heredoc));
+		CG(heredoc) = NULL;
+		CG(heredoc_len) = 0;
+	}
 }
 
 ZEND_API void zend_destroy_file_handle(zend_file_handle *file_handle TSRMLS_DC)
@@ -241,7 +249,14 @@ ZEND_API void zend_destroy_file_handle(zend_file_handle *file_handle TSRMLS_DC)
 ZEND_API int open_file_for_scanning(zend_file_handle *file_handle TSRMLS_DC)
 {
 	char *file_path = NULL, *buf;
-	size_t size;
+	size_t size, offset = 0;
+	
+	/* The shebang line was read, get the current position to obtain the buffer start */
+	if (CG(start_lineno) == 2 && file_handle->type == ZEND_HANDLE_FP && file_handle->handle.fp) {
+		if ((offset = ftell(file_handle->handle.fp)) == -1) {
+			offset = 0;
+		}
+	}
 
 	if (zend_stream_fixup(file_handle, &buf, &size TSRMLS_CC) == FAILURE) {
 		return FAILURE;
@@ -257,6 +272,7 @@ ZEND_API int open_file_for_scanning(zend_file_handle *file_handle TSRMLS_DC)
 
 	/* Reset the scanner for scanning the new file */
 	SCNG(yy_in) = file_handle;
+	SCNG(yy_start) = NULL;
 
 	if (size != -1) {
 #ifdef ZEND_MULTIBYTE
@@ -274,10 +290,15 @@ ZEND_API int open_file_for_scanning(zend_file_handle *file_handle TSRMLS_DC)
 			SCNG(script_filtered_size) = SCNG(script_org_size);
 		} else {
 			SCNG(input_filter)(&SCNG(script_filtered), &SCNG(script_filtered_size), SCNG(script_org), SCNG(script_org_size) TSRMLS_CC);
+			if (SCNG(script_filtered) == NULL) {
+				zend_error_noreturn(E_COMPILE_ERROR, "Could not convert the script from the detected "
+						"encoding \"%s\" to a compatible encoding", LANG_SCNG(script_encoding)->name);
+			}
 		}
-
+		SCNG(yy_start) = SCNG(script_filtered) - offset;
 		yy_scan_buffer((char *)SCNG(script_filtered), SCNG(script_filtered_size) TSRMLS_CC);
 #else /* !ZEND_MULTIBYTE */
+		SCNG(yy_start) = buf - offset;
 		yy_scan_buffer(buf, size TSRMLS_CC);
 #endif /* ZEND_MULTIBYTE */
 	} else {
@@ -413,6 +434,7 @@ ZEND_API int zend_prepare_string_for_scanning(zval *str, char *filename TSRMLS_D
 	memset(str->value.str.val + str->value.str.len, 0, ZEND_MMAP_AHEAD);
 
 	SCNG(yy_in)=NULL;
+	SCNG(yy_start) = NULL;
 
 #ifdef ZEND_MULTIBYTE
 	SCNG(script_org) = (unsigned char *)estrdup(str->value.str.val);
@@ -683,12 +705,12 @@ ZEND_API int zend_multibyte_read_script(unsigned char *buf, size_t n TSRMLS_DC)
 {
 	if (SCNG(script_org)) {
 		efree(SCNG(script_org));
+		SCNG(script_org) = NULL;
 	}
-	SCNG(script_org_size) = n;
-	SCNG(script_org) = (unsigned char*)erealloc(SCNG(script_org), SCNG(script_org_size));
-	memcpy(SCNG(script_org) + SCNG(script_org_size) - n, buf, n);
+	SCNG(script_org_size) = n;	
 	
-	SCNG(script_org) = (unsigned char*)erealloc(SCNG(script_org), SCNG(script_org_size) + 1);
+	SCNG(script_org) = (unsigned char*)emalloc(SCNG(script_org_size) + 1);
+	memcpy(SCNG(script_org), buf, n);
 	*(SCNG(script_org)+SCNG(script_org_size)) = '\0';
 
 	return 0;

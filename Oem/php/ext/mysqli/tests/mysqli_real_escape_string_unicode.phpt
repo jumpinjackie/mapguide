@@ -1,14 +1,14 @@
 --TEST--
 mysqli_real_escape_string()
 --SKIPIF--
-<?php 
+<?php
 require_once('skipif.inc');
-require_once('skipifemb.inc'); 
+require_once('skipifemb.inc');
 require_once('skipifconnectfailure.inc');
 ?>
 --FILE--
 <?php
-	include "connect.inc";
+	require_once("connect.inc");
 
 	$tmp	= NULL;
 	$link	= NULL;
@@ -78,6 +78,10 @@ require_once('skipifconnectfailure.inc');
 		printf("[018] Expecting NULL, got %s/%s\n", gettype($tmp), $tmp);
 
 	print "done!";
+?>
+--CLEAN--
+<?php
+	require_once("clean_table.inc");
 ?>
 --EXPECTF--
 Warning: mysqli_real_escape_string(): Couldn't fetch mysqli in %s on line %d
