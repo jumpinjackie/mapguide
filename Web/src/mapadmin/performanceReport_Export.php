@@ -10,7 +10,7 @@
     CheckForCancel( 'performanceReport.php' );
 
     // Define Local values
-    $mapProfileResult=new MapProfileResult();
+    $mapProfileResult = new MapProfileResult();
 
     function ReplaceCSVSpecialChar($value)
     {
@@ -32,13 +32,20 @@
         }
         else
         {
-            //TODO: Excepions: more user friendly hint
-            //should give some warning message about "No profiling result file found, please re-generate it!"
-            throw $e;
+            throw new Exception("The temp result file may be deleted or corrupted, Please regenerate the performance report and try again!");
         }
     }
 
-    GetProfilingResults();
+    try
+    {
+        GetProfilingResults();
+    }
+    catch (Exception $e)
+    {
+        echo $e->getMessage();
+        header("Content-type:text/plain");
+        exit(0);
+    }
 
     //add one line gap
     echo "\n";

@@ -31,7 +31,7 @@ try
     // Define Local values
     $menuCategory = PERFORMANCE_REPORT_MENU_ITEM;
     $pageTitle = PERFORMANCE_REPORT_MENU_ITEM;
-    $helpPage = 'HelpDocs/performanceReport.htm';
+    $helpPage = 'HelpDocs/performance_report.htm';
     $pageName = 'PerformanceReportPage';
     $formName = 'PerformanceReportForm';
     $homePage = NULL;
@@ -786,10 +786,6 @@ catch ( Exception $e )
                     mapViewerDiv.style.display = "block";
                     SetMapViewerLoaction(mapViewerDiv);
 
-                    //make the textbox focused
-                    var autoFoucsTxt = document.getElementById("mapViewerAutoFocusTxt");
-                    autoFoucsTxt.focus();
-
                     checkMapFrameLoadedInterval = setInterval(CheckMapFrameLoaded, 100);
                 }
 
@@ -802,7 +798,7 @@ catch ( Exception $e )
                 //we set the width and height as 0, and border as none,
                 //it works well in IE9 and firefox, but in chrome and safari,
                 //if the border set as none, this event will not be fired.
-                //TODO:Multiple Browsers:Safari and Chrome not work
+                //TODO:Multiple Browsers:Safari and Chrome not work,So this event handler is not registered
                 function MapViewerKeyUp(event)
                 {
                     if(event.keyCode == 13)
@@ -868,7 +864,11 @@ catch ( Exception $e )
                         return;
                     
                     clearInterval(checkMapFrameLoadedInterval);
-                    
+
+                    //make the textbox focused
+                    var autoFoucsTxt = document.getElementById("mapViewerAutoFocusTxt");
+                    autoFoucsTxt.focus();
+
                     CreateButtons();
                 }
 
@@ -932,7 +932,7 @@ catch ( Exception $e )
                     var buttonPanelInnerHtml="<table>";
                     buttonPanelInnerHtml+="<tr>";
                     buttonPanelInnerHtml+="<td>";
-                    buttonPanelInnerHtml+='<button type="button" style="width: 57px; height: 22px; border-style:none;border: 1px solid #000000;" onclick="window.parent.parent.MapViewerBtnOKClicked()">OK</button>';
+                    buttonPanelInnerHtml+='<button type="button" id="mapViewerAutoFocusBtn" style="width: 57px; height: 22px; border-style:none;border: 1px solid #000000;" onclick="window.parent.parent.MapViewerBtnOKClicked()">OK</button>';
                     buttonPanelInnerHtml+="</td>";
                     buttonPanelInnerHtml+="<td>";
                     buttonPanelInnerHtml+='<button type="button" style="width: 57px; height: 22px; border-style:none;border: 1px solid #000000;margin-left:10px;" onclick="window.parent.parent.MapViewerBtnCloseClicked()">Cancel</button>';
@@ -1330,12 +1330,22 @@ catch ( Exception $e )
                     if ((4 == xmlHttp.readyState || "complete" == xmlHttp.readyState)&& 200 == xmlHttp.status)
                     {
                         var profileResult = document.getElementById("resultsTab");
-                        profileResult.innerHTML = xmlHttp.responseText;
-
+                        var result = xmlHttp.responseText;
                         var btnClear = document.getElementById("btnClearSpan");
-                        btnClear.style.display = "inline";
-
                         var loadingImg = document.getElementById("ajax_loading_img");
+
+                        if(Trim(result) == "mapNotExist")
+                        {
+                            alert("The selected map resource is longer available. Select a different map resource to continue.");
+                            btnClear.style.display = "inline";
+                            loadingImg.style.display = "none";
+                            SetRunButtonState(true);
+                            return;
+                        }
+
+                        profileResult.innerHTML = xmlHttp.responseText;
+                        
+                        btnClear.style.display = "inline";
                         loadingImg.style.display = "none";
                         
                         CollapseSettingTab();
@@ -1647,8 +1657,8 @@ catch ( Exception $e )
 
                         //get the content need to be sorted into a 2-D array
                         rowArray = [];
-                        //TODO:Multiple Browsers:It has problem under IE9 quirks mode, will fix it in part 3
-                        colIndex = headerColumn.attributes["columnindex"].value-1;
+                        
+                        colIndex = parseInt(headerColumn.getAttribute("columnindex")) - 1;
                         rows = layersTBody.rows;
                         var j = 0;
                         for (; j < rows.length; j++)
@@ -1842,18 +1852,36 @@ catch ( Exception $e )
                         }
                     }
 
-                    //TODO: Excepions: what if the map is removed
                     if(null != selectSetting)
                     {
+                        var mapDefinitonSelector = document.getElementById("mapSelector_DO_NOT_PERSIST");
+                        var i = 0;
+                        var found = false;
+                        for(;i < mapDefinitonSelector.options.length;i++)
+                        {
+                            var mapId = Trim(mapDefinitonSelector.options[i].value);
+                            if(Trim(selectSetting[1]) == mapId)
+                            {
+                                found =  true;
+                            }
+                        }
+
+                        if(found)
+                        {
+                            mapDefinitonSelector.value = Trim(selectSetting[1]);
+                        }
+                        else
+                        {
+                            alert("The selected map resource is longer available. Select a different map resource to continue.");
+                            return;
+                        }
+
                         var centerPoint = document.getElementById("txtCenterPoint");
                         centerPoint.value = selectSetting[2];
 
                         var scaleInput = document.getElementById("txtScale");
                         scaleInput.value = FormatNumber(selectSetting[3],2);
                         
-                        var mapDefinitonSelector = document.getElementById("mapSelector_DO_NOT_PERSIST");
-                        mapDefinitonSelector.value = Trim(selectSetting[1]);
-
                         var tipDiv = document.getElementById("mapResourceNameTip");
                         tipDiv.innerHTML = mapDefinitonSelector.value;
 
@@ -1968,7 +1996,7 @@ catch ( Exception $e )
                                                                         </td>
                                                                         <td style=" text-align: right;border-bottom:1px solid #000000; cursor: default;">
                                                                             <img alt="Close" src="images/close.png" onclick="CloseMapViewer();"/>
-                                                                            <input type="text" id="mapViewerAutoFocusTxt" style="width:0px; height:0px; border: none; cursor:default;" onKeyUp="MapViewerKeyUp(event);"/>
+                                                                            <input type="text" id="mapViewerAutoFocusTxt" style="width: 0px; height:0px; border: none; cursor:default;"/>
                                                                         </td>
                                                                     </tr>
                                                                     <tr>

@@ -2366,7 +2366,6 @@
             $scale = trim($scale);
             
             //required parameters are null or empty then ignore this setting
-            //TODO: Excepions: we can ignore this setting, but we need to send signal not to update the original part
             if( (!isset($mapResourceId,$centerPoint,$scale)) || ("" == trim($mapResourceId)) || ("" == trim($centerPoint)) || ("" == trim($scale)) )
             {
                 return;

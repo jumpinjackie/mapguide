@@ -23,6 +23,64 @@ try
     $clientWidth = $_REQUEST["imageWidth"];
     $clientHeigth = $_REQUEST["imageHeight"];
 
+    function CheckMapExist()
+    {
+        global $mapResourceId;
+        $mapNotExist = true;
+
+        if(isset($mapResourceId))
+        {
+            try
+            {
+                global $userInfo;
+                global $mapResources;
+                $mapResourcesXml = "";
+
+                // Enumerates all maps in the library
+                $resourceID = new MgResourceIdentifier("Library://");
+                //connect to the site and get a resource service instance
+                $siteConn = new MgSiteConnection();
+                $siteConn->Open($userInfo);
+                $resourceService = $siteConn->CreateService(MgServiceType::ResourceService);
+
+                $byteReader = $resourceService->EnumerateResources($resourceID, -1, "MapDefinition");
+
+                $chunk = "";
+                do
+                {
+                    $chunkSize = $byteReader->Read($chunk, 4096);
+                    $mapResourcesXml = $mapResourcesXml . $chunk;
+                } while ($chunkSize != 0);
+
+                $resourceList = new DOMDocument();
+                $resourceList->loadXML($mapResourcesXml);
+
+                $resourceIdNodeList = $resourceList->documentElement->getElementsByTagName("ResourceId");
+
+                for ($i = 0; $i < $resourceIdNodeList->length; $i++)
+                {
+                    $mapResourceID = $resourceIdNodeList->item($i)->nodeValue;
+
+                    if(trim($mapResourceId) == trim($mapResourceID))
+                    {
+                        $mapNotExist = false;
+                        break;
+                    }
+                }
+            }
+            catch (Exception $exc)
+            {
+                //true again
+            }
+        }
+
+        if($mapNotExist)
+        {
+            echo "mapNotExist";
+            exit(0);
+        }
+    }
+
     //get the background color of the given map resource id
     function GetBackGroundColor($resourceID)
     {
@@ -106,7 +164,7 @@ try
 
         //[imageFormat]
         $imageFormat = "PNG";
-        
+
         //userInfo are saved in the session
         global $userInfo;
 
@@ -155,6 +213,7 @@ try
         $mapProfileResult->GetBaseLayerCount();
     }
 
+    CheckMapExist();
     GetProfilingResults();
 
     $displayManager->mapProfileResult = $mapProfileResult;
@@ -219,20 +278,21 @@ catch ( Exception $e )
                                 {
                                     if(strlen($value) > 10)
                                     {
-                                        //numfmt_create("en", NumberFormatter::SCIENTIFIC, "");
-                                        //$fmt = new NumberFormatter("en", NumberFormatter::SCIENTIFIC, "");
-                                        //$value = $fmt->format($value);
-
+                                        $value = sprintf("%+F",$value);
                                         $pos = strpos($value, ".");
 
-                                        if( ( strlen($value) - $pos ) > 7)
+                                        if ($pos >= 6 )
                                         {
-                                           $value = number_format($value,4);
+                                           $value = sprintf("%0.4E", $value);
+                                        }
+                                        else
+                                        {
+                                            $value = number_format($value, 4,'.',' ');
                                         }
                                     }
                                     else
                                     {
-                                        $value = number_format($value,4);
+                                        $value = number_format($value, 4,'.',' ');
                                     }
 
                                     return $value;
