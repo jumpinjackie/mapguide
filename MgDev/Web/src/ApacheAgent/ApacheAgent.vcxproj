@@ -94,15 +94,15 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <PreBuildEvent>
       <Command>cd ..\..\..\Oem\LinuxApt
-if NOT EXIST httpd-2.2.17.tar ..\..\BuildTools\WebTools\7-Zip\7z.exe x httpd-2.2.17.tar.gz
-if NOT EXIST httpd-2.2.17 ..\..\BuildTools\WebTools\7-Zip\7z.exe x httpd-2.2.17.tar
-type .\httpd-2.2.17\srclib\apr\include\apr.hw &gt; .\httpd-2.2.17\srclib\apr\include\apr.h
-type .\httpd-2.2.17\srclib\apr-util\include\apu.hw &gt; .\httpd-2.2.17\srclib\apr-util\include\apu.h
+if NOT EXIST httpd-2.2.21.tar ..\..\BuildTools\WebTools\7-Zip\7z.exe x httpd-2.2.21.tar.gz
+if NOT EXIST httpd-2.2.21 ..\..\BuildTools\WebTools\7-Zip\7z.exe x httpd-2.2.21.tar
+type .\httpd-2.2.21\srclib\apr\include\apr.hw &gt; .\httpd-2.2.21\srclib\apr\include\apr.h
+type .\httpd-2.2.21\srclib\apr-util\include\apu.hw &gt; .\httpd-2.2.21\srclib\apr-util\include\apu.h
 </Command>
     </PreBuildEvent>
     <ClCompile>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>..\..\..\Oem\ACE\ACE_wrappers;..\..\..\Oem\LinuxApt\httpd-2.2.17\include;..\..\..\Oem\LinuxApt\httpd-2.2.17\srclib\apr\include;..\..\..\Oem\LinuxApt\httpd-2.2.17\srclib\apr-util\include;..\..\..\Oem\LinuxApt\httpd-2.2.17\os\win32;..\..\..\Common\MapGuideCommon;..\..\..\Common\PlatformBase;..\..\..\Common\Geometry;..\..\..\Common\Foundation;..\..\..\Common\MdfModel;..\WebSupport;..\HttpHandler;..\MapAgentCommon;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\..\Oem\ACE\ACE_wrappers;..\..\..\Oem\LinuxApt\httpd-2.2.21\include;..\..\..\Oem\LinuxApt\httpd-2.2.21\srclib\apr\include;..\..\..\Oem\LinuxApt\httpd-2.2.21\srclib\apr-util\include;..\..\..\Oem\LinuxApt\httpd-2.2.21\os\win32;..\..\..\Common\MapGuideCommon;..\..\..\Common\PlatformBase;..\..\..\Common\Geometry;..\..\..\Common\Foundation;..\..\..\Common\MdfModel;..\WebSupport;..\HttpHandler;..\MapAgentCommon;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_USRDLL;APACHEAGENT_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MinimalRebuild>true</MinimalRebuild>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
@@ -113,7 +113,7 @@ type .\httpd-2.2.17\srclib\apr-util\include\apu.hw &gt; .\httpd-2.2.17\srclib\ap
     <Link>
       <AdditionalDependencies>libhttpd.lib;libapr-1.lib;libaprutil-1.lib;ACEd.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(OutDir)mod_mgmapagent.so</OutputFile>
-      <AdditionalLibraryDirectories>..\..\..\Oem\LinuxApt\httpd-2.2.17\lib;..\..\..\Oem\ACE\ACE_wrappers\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>..\..\..\Oem\LinuxApt\httpd-2.2.21\lib;..\..\..\Oem\ACE\ACE_wrappers\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <ProgramDatabaseFile>$(OutDir)mod_mgmapagent.pdb</ProgramDatabaseFile>
       <SubSystem>Windows</SubSystem>
@@ -158,15 +158,15 @@ if NOT EXIST httpd-2.2-x64 ..\..\BuildTools\WebTools\7-Zip\7z.exe x httpd-2.2-x6
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <PreBuildEvent>
       <Command>cd ..\..\..\Oem\LinuxApt
-if NOT EXIST httpd-2.2.17.tar ..\..\BuildTools\WebTools\7-Zip\7z.exe x httpd-2.2.17.tar.gz
-if NOT EXIST httpd-2.2.17 ..\..\BuildTools\WebTools\7-Zip\7z.exe x httpd-2.2.17.tar
-type .\httpd-2.2.17\srclib\apr\include\apr.hw &gt; .\httpd-2.2.17\srclib\apr\include\apr.h
-type .\httpd-2.2.17\srclib\apr-util\include\apu.hw &gt; .\httpd-2.2.17\srclib\apr-util\include\apu.h
+if NOT EXIST httpd-2.2.21.tar ..\..\BuildTools\WebTools\7-Zip\7z.exe x httpd-2.2.21.tar.gz
+if NOT EXIST httpd-2.2.21 ..\..\BuildTools\WebTools\7-Zip\7z.exe x httpd-2.2.21.tar
+type .\httpd-2.2.21\srclib\apr\include\apr.hw &gt; .\httpd-2.2.21\srclib\apr\include\apr.h
+type .\httpd-2.2.21\srclib\apr-util\include\apu.hw &gt; .\httpd-2.2.21\srclib\apr-util\include\apu.h
 </Command>
     </PreBuildEvent>
     <ClCompile>
       <Optimization>MaxSpeed</Optimization>
-      <AdditionalIncludeDirectories>..\..\..\Oem\ACE\ACE_wrappers;..\..\..\Oem\LinuxApt\httpd-2.2.17\include;..\..\..\Oem\LinuxApt\httpd-2.2.17\srclib\apr\include;..\..\..\Oem\LinuxApt\httpd-2.2.17\srclib\apr-util\include;..\..\..\Oem\LinuxApt\httpd-2.2.17\os\win32;..\..\..\Common\MapGuideCommon;..\..\..\Common\PlatformBase;..\..\..\Common\Geometry;..\..\..\Common\Foundation;..\..\..\Common\MdfModel;..\WebSupport;..\HttpHandler;..\MapAgentCommon;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\..\Oem\ACE\ACE_wrappers;..\..\..\Oem\LinuxApt\httpd-2.2.21\include;..\..\..\Oem\LinuxApt\httpd-2.2.21\srclib\apr\include;..\..\..\Oem\LinuxApt\httpd-2.2.21\srclib\apr-util\include;..\..\..\Oem\LinuxApt\httpd-2.2.21\os\win32;..\..\..\Common\MapGuideCommon;..\..\..\Common\PlatformBase;..\..\..\Common\Geometry;..\..\..\Common\Foundation;..\..\..\Common\MdfModel;..\WebSupport;..\HttpHandler;..\MapAgentCommon;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USRDLL;APACHEAGENT_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <WarningLevel>Level3</WarningLevel>
@@ -175,7 +175,7 @@ type .\httpd-2.2.17\srclib\apr-util\include\apu.hw &gt; .\httpd-2.2.17\srclib\ap
     <Link>
       <AdditionalDependencies>libhttpd.lib;libapr-1.lib;libaprutil-1.lib;ACE.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(OutDir)mod_mgmapagent.so</OutputFile>
-      <AdditionalLibraryDirectories>..\..\..\Oem\LinuxApt\httpd-2.2.17\lib;..\..\..\Oem\ACE\ACE_wrappers\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>..\..\..\Oem\LinuxApt\httpd-2.2.21\lib;..\..\..\Oem\ACE\ACE_wrappers\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <ProgramDatabaseFile>$(OutDir)mod_mgmapagent.pdb</ProgramDatabaseFile>
       <SubSystem>Windows</SubSystem>
