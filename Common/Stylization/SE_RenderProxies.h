@@ -292,22 +292,36 @@ public:
           y(0.0),
           anglerad(0.0),
           dunits(RS_Units_Device),
-          symbol(NULL)
+          style(NULL)
     {}
 
-    SE_INLINE SE_LabelInfo(double _x, double _y, RS_Units _dunits, double _anglerad, SE_RenderStyle* _symbol)
+    SE_INLINE SE_LabelInfo(double _x, double _y, RS_Units _dunits, double _anglerad, SE_RenderStyle* _style)
         : x(_x),
           y(_y),
           anglerad(_anglerad),
           dunits(_dunits),
-          symbol(_symbol)
+          style(_style)
     {}
+
+    SE_INLINE void Set(double _x, double _y, RS_Units _dunits, double _anglerad, SE_RenderStyle* _style)
+    {
+        x = _x;
+        y = _y;
+        anglerad = _anglerad;
+        dunits = _dunits;
+        style = _style;
+    }
+
+    ~SE_LabelInfo()
+    {
+        delete style;
+    }
 
     double x;
     double y;
     double anglerad; // radians CCW
     RS_Units dunits;
-    SE_RenderStyle* symbol;
+    SE_RenderStyle* style;
 };
 
 #endif

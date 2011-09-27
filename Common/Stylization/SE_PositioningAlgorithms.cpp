@@ -369,42 +369,42 @@ void SE_PositioningAlgorithms::EightSurrounding(SE_ApplyContext* applyCtx,
         ((SE_RenderText*)st0->symbol[0])->tdef.halign() = RS_HAlignment_Left;
         ((SE_RenderText*)st0->symbol[0])->tdef.valign() = RS_VAlignment_Half;
         UpdateStyleBounds(st0, se_renderer);
-        candidates[0] = SE_LabelInfo(cx + op_pts[ 0], cy + op_pts[ 1]*yScale, RS_Units_Device, angleRad, st0);
+        candidates[0].Set(cx + op_pts[ 0], cy + op_pts[ 1]*yScale, RS_Units_Device, angleRad, st0);
 
         SE_RenderStyle* st1 = se_renderer->CloneRenderStyle(st0);
         ((SE_RenderText*)st1->symbol[0])->tdef.valign() = RS_VAlignment_Descent;
         UpdateStyleBounds(st1, se_renderer);
-        candidates[1] = SE_LabelInfo(cx + op_pts[ 2], cy + op_pts[ 3]*yScale, RS_Units_Device, angleRad, st1);
+        candidates[1].Set(cx + op_pts[ 2], cy + op_pts[ 3]*yScale, RS_Units_Device, angleRad, st1);
 
         SE_RenderStyle* st2 = se_renderer->CloneRenderStyle(st1);
         ((SE_RenderText*)st2->symbol[0])->tdef.halign() = RS_HAlignment_Center;
         UpdateStyleBounds(st2, se_renderer);
-        candidates[2] = SE_LabelInfo(cx + op_pts[ 4], cy + op_pts[ 5]*yScale, RS_Units_Device, angleRad, st2);
+        candidates[2].Set(cx + op_pts[ 4], cy + op_pts[ 5]*yScale, RS_Units_Device, angleRad, st2);
 
         SE_RenderStyle* st3 = se_renderer->CloneRenderStyle(st2);
         ((SE_RenderText*)st3->symbol[0])->tdef.halign() = RS_HAlignment_Right;
         UpdateStyleBounds(st3, se_renderer);
-        candidates[3] = SE_LabelInfo(cx + op_pts[ 6], cy + op_pts[ 7]*yScale, RS_Units_Device, angleRad, st3);
+        candidates[3].Set(cx + op_pts[ 6], cy + op_pts[ 7]*yScale, RS_Units_Device, angleRad, st3);
 
         SE_RenderStyle* st4 = se_renderer->CloneRenderStyle(st3);
         ((SE_RenderText*)st4->symbol[0])->tdef.valign() = RS_VAlignment_Half;
         UpdateStyleBounds(st4, se_renderer);
-        candidates[4] = SE_LabelInfo(cx + op_pts[ 8], cy + op_pts[ 9]*yScale, RS_Units_Device, angleRad, st4);
+        candidates[4].Set(cx + op_pts[ 8], cy + op_pts[ 9]*yScale, RS_Units_Device, angleRad, st4);
 
         SE_RenderStyle* st5 = se_renderer->CloneRenderStyle(st4);
         ((SE_RenderText*)st5->symbol[0])->tdef.valign() = RS_VAlignment_Ascent;
         UpdateStyleBounds(st5, se_renderer);
-        candidates[5] = SE_LabelInfo(cx + op_pts[10], cy + op_pts[11]*yScale, RS_Units_Device, angleRad, st5);
+        candidates[5].Set(cx + op_pts[10], cy + op_pts[11]*yScale, RS_Units_Device, angleRad, st5);
 
         SE_RenderStyle* st6 = se_renderer->CloneRenderStyle(st5);
         ((SE_RenderText*)st6->symbol[0])->tdef.halign() = RS_HAlignment_Center;
         UpdateStyleBounds(st6, se_renderer);
-        candidates[6] = SE_LabelInfo(cx + op_pts[12], cy + op_pts[13]*yScale, RS_Units_Device, angleRad, st6);
+        candidates[6].Set(cx + op_pts[12], cy + op_pts[13]*yScale, RS_Units_Device, angleRad, st6);
 
         SE_RenderStyle* st7 = se_renderer->CloneRenderStyle(st6);
         ((SE_RenderText*)st7->symbol[0])->tdef.halign() = RS_HAlignment_Left;
         UpdateStyleBounds(st7, se_renderer);
-        candidates[7] = SE_LabelInfo(cx + op_pts[14], cy + op_pts[15]*yScale, RS_Units_Device, angleRad, st7);
+        candidates[7].Set(cx + op_pts[14], cy + op_pts[15]*yScale, RS_Units_Device, angleRad, st7);
     }
     else
     {
@@ -421,28 +421,28 @@ void SE_PositioningAlgorithms::EightSurrounding(SE_ApplyContext* applyCtx,
         double labelCtrY = 0.5*(labelMinY + labelMaxY);
 
         SE_RenderStyle* st0 = se_renderer->CloneRenderStyle(rpstyle);
-        candidates[0] = SE_LabelInfo(cx + op_pts[ 0] - labelMinX, cy + (op_pts[ 1] - labelCtrY)*yScale, RS_Units_Device, angleRad, st0);
+        candidates[0].Set(cx + op_pts[ 0] - labelMinX, cy + (op_pts[ 1] - labelCtrY)*yScale, RS_Units_Device, angleRad, st0);
 
         SE_RenderStyle* st1 = se_renderer->CloneRenderStyle(st0);
-        candidates[1] = SE_LabelInfo(cx + op_pts[ 2] - labelMinX, cy + (op_pts[ 3] - labelMinY)*yScale, RS_Units_Device, angleRad, st1);
+        candidates[1].Set(cx + op_pts[ 2] - labelMinX, cy + (op_pts[ 3] - labelMinY)*yScale, RS_Units_Device, angleRad, st1);
 
         SE_RenderStyle* st2 = se_renderer->CloneRenderStyle(st1);
-        candidates[2] = SE_LabelInfo(cx + op_pts[ 4] - labelCtrX, cy + (op_pts[ 5] - labelMinY)*yScale, RS_Units_Device, angleRad, st2);
+        candidates[2].Set(cx + op_pts[ 4] - labelCtrX, cy + (op_pts[ 5] - labelMinY)*yScale, RS_Units_Device, angleRad, st2);
 
         SE_RenderStyle* st3 = se_renderer->CloneRenderStyle(st2);
-        candidates[3] = SE_LabelInfo(cx + op_pts[ 6] - labelMaxX, cy + (op_pts[ 7] - labelMinY)*yScale, RS_Units_Device, angleRad, st3);
+        candidates[3].Set(cx + op_pts[ 6] - labelMaxX, cy + (op_pts[ 7] - labelMinY)*yScale, RS_Units_Device, angleRad, st3);
 
         SE_RenderStyle* st4 = se_renderer->CloneRenderStyle(st3);
-        candidates[4] = SE_LabelInfo(cx + op_pts[ 8] - labelMaxX, cy + (op_pts[ 9] - labelCtrY)*yScale, RS_Units_Device, angleRad, st4);
+        candidates[4].Set(cx + op_pts[ 8] - labelMaxX, cy + (op_pts[ 9] - labelCtrY)*yScale, RS_Units_Device, angleRad, st4);
 
         SE_RenderStyle* st5 = se_renderer->CloneRenderStyle(st4);
-        candidates[5] = SE_LabelInfo(cx + op_pts[10] - labelMaxX, cy + (op_pts[11] - labelMaxY)*yScale, RS_Units_Device, angleRad, st5);
+        candidates[5].Set(cx + op_pts[10] - labelMaxX, cy + (op_pts[11] - labelMaxY)*yScale, RS_Units_Device, angleRad, st5);
 
         SE_RenderStyle* st6 = se_renderer->CloneRenderStyle(st5);
-        candidates[6] = SE_LabelInfo(cx + op_pts[12] - labelCtrX, cy + (op_pts[13] - labelMaxY)*yScale, RS_Units_Device, angleRad, st6);
+        candidates[6].Set(cx + op_pts[12] - labelCtrX, cy + (op_pts[13] - labelMaxY)*yScale, RS_Units_Device, angleRad, st6);
 
         SE_RenderStyle* st7 = se_renderer->CloneRenderStyle(st6);
-        candidates[7] = SE_LabelInfo(cx + op_pts[14] - labelMinX, cy + (op_pts[15] - labelMaxY)*yScale, RS_Units_Device, angleRad, st7);
+        candidates[7].Set(cx + op_pts[14] - labelMinX, cy + (op_pts[15] - labelMaxY)*yScale, RS_Units_Device, angleRad, st7);
     }
 
     se_renderer->ProcessSELabelGroup(candidates, 8, RS_OverpostType_FirstFit, true, NULL);
