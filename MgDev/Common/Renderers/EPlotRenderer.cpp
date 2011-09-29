@@ -483,6 +483,14 @@ void EPlotRenderer::Done()
 }
 
 
+// Disable this optimization for EPlots.  When the plotted DWF is
+// zoomed in using the DWF viewer, we want to see text and not lines.
+bool EPlotRenderer::OptimizeGeometry()
+{
+    return false;
+}
+
+
 //TODO: fold this function and its twin residing in EMapUpdateRenderer
 //into DWFRenderer.
 void EPlotRenderer::AddW2DResource(DWFCore::DWFBufferOutputStream* w2dStream,

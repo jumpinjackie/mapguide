@@ -129,9 +129,11 @@ public:
     // helper method
     void ProcessLineLabels(LineBuffer* geometry, SE_RenderLineStyle* style);
 
-    // Indicates whether rendering optimization is used by this renderer.  For example, we are rendering text and
-    // optimization is turned on, then text is rendered as a simple line when it is very small.
-    // By default, optimization is turned on.  For other behavior, this method must be overridden.
+    // Indicates whether rendering optimization is used by this renderer.  For
+    // example, if we are rendering text and optimization is turned on, then
+    // text is rendered as a simple line when it is very small.  By default,
+    // optimization is turned on.  For other behavior, this method must be
+    // overridden.
     STYLIZATION_API virtual bool OptimizeGeometry();
 
 private:
