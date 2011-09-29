@@ -28,7 +28,7 @@
 			>
 			<Tool
 				Name="VCPreBuildEventTool"
-				CommandLine="cd ..\..\..\Oem\LinuxApt&#x0D;&#x0A;if NOT EXIST httpd-2.2.17.tar ..\..\BuildTools\WebTools\7-Zip\7z.exe x httpd-2.2.17.tar.gz&#x0D;&#x0A;if NOT EXIST httpd-2.2.17 ..\..\BuildTools\WebTools\7-Zip\7z.exe x httpd-2.2.17.tar&#x0D;&#x0A;type .\httpd-2.2.17\srclib\apr\include\apr.hw &gt; .\httpd-2.2.17\srclib\apr\include\apr.h&#x0D;&#x0A;type .\httpd-2.2.17\srclib\apr-util\include\apu.hw &gt; .\httpd-2.2.17\srclib\apr-util\include\apu.h&#x0D;&#x0A;"
+				CommandLine="cd ..\..\..\Oem\LinuxApt&#x0D;&#x0A;if NOT EXIST httpd-2.2.21.tar ..\..\BuildTools\WebTools\7-Zip\7z.exe x httpd-2.2.21.tar.gz&#x0D;&#x0A;if NOT EXIST httpd-2.2.21 ..\..\BuildTools\WebTools\7-Zip\7z.exe x httpd-2.2.21.tar&#x0D;&#x0A;type .\httpd-2.2.21\srclib\apr\include\apr.hw &gt; .\httpd-2.2.21\srclib\apr\include\apr.h&#x0D;&#x0A;type .\httpd-2.2.21\srclib\apr-util\include\apu.hw &gt; .\httpd-2.2.21\srclib\apr-util\include\apu.h&#x0D;&#x0A;"
 			/>
 			<Tool
 				Name="VCCustomBuildTool"
@@ -45,7 +45,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="..\..\..\Oem\ACE\ACE_wrappers;&quot;..\..\..\Oem\LinuxApt\httpd-2.2.17\include&quot;;&quot;..\..\..\Oem\LinuxApt\httpd-2.2.17\srclib\apr\include&quot;;&quot;..\..\..\Oem\LinuxApt\httpd-2.2.17\srclib\apr-util\include&quot;;&quot;..\..\..\Oem\LinuxApt\httpd-2.2.17\os\win32&quot;;..\..\..\Common\MapGuideCommon;..\..\..\Common\PlatformBase;..\..\..\Common\Geometry;..\..\..\Common\Foundation;..\..\..\Common\MdfModel;..\WebSupport;..\HttpHandler;..\MapAgentCommon"
+				AdditionalIncludeDirectories="..\..\..\Oem\ACE\ACE_wrappers;&quot;..\..\..\Oem\LinuxApt\httpd-2.2.21\include&quot;;&quot;..\..\..\Oem\LinuxApt\httpd-2.2.21\srclib\apr\include&quot;;&quot;..\..\..\Oem\LinuxApt\httpd-2.2.21\srclib\apr-util\include&quot;;&quot;..\..\..\Oem\LinuxApt\httpd-2.2.21\os\win32&quot;;..\..\..\Common\MapGuideCommon;..\..\..\Common\PlatformBase;..\..\..\Common\Geometry;..\..\..\Common\Foundation;..\..\..\Common\MdfModel;..\WebSupport;..\HttpHandler;..\MapAgentCommon"
 				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL;APACHEAGENT_EXPORTS"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
@@ -67,7 +67,7 @@
 				AdditionalDependencies="libhttpd.lib libapr-1.lib libaprutil-1.lib ACEd.lib"
 				OutputFile="$(OutDir)/mod_mgmapagent.so"
 				LinkIncremental="2"
-				AdditionalLibraryDirectories="&quot;..\..\..\Oem\LinuxApt\httpd-2.2.17\lib&quot;;..\..\..\Oem\ACE\ACE_wrappers\lib"
+				AdditionalLibraryDirectories="&quot;..\..\..\Oem\LinuxApt\httpd-2.2.21\lib&quot;;..\..\..\Oem\ACE\ACE_wrappers\lib"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="$(OutDir)/mod_mgmapagent.pdb"
 				SubSystem="2"
@@ -184,7 +184,7 @@
 			>
 			<Tool
 				Name="VCPreBuildEventTool"
-				CommandLine="cd ..\..\..\Oem\LinuxApt&#x0D;&#x0A;if NOT EXIST httpd-2.2.17.tar ..\..\BuildTools\WebTools\7-Zip\7z.exe x httpd-2.2.17.tar.gz&#x0D;&#x0A;if NOT EXIST httpd-2.2.17 ..\..\BuildTools\WebTools\7-Zip\7z.exe x httpd-2.2.17.tar&#x0D;&#x0A;type .\httpd-2.2.17\srclib\apr\include\apr.hw &gt; .\httpd-2.2.17\srclib\apr\include\apr.h&#x0D;&#x0A;type .\httpd-2.2.17\srclib\apr-util\include\apu.hw &gt; .\httpd-2.2.17\srclib\apr-util\include\apu.h&#x0D;&#x0A;"
+				CommandLine="cd ..\..\..\Oem\LinuxApt&#x0D;&#x0A;if NOT EXIST httpd-2.2.21.tar ..\..\BuildTools\WebTools\7-Zip\7z.exe x httpd-2.2.21.tar.gz&#x0D;&#x0A;if NOT EXIST httpd-2.2.21 ..\..\BuildTools\WebTools\7-Zip\7z.exe x httpd-2.2.21.tar&#x0D;&#x0A;type .\httpd-2.2.21\srclib\apr\include\apr.hw &gt; .\httpd-2.2.21\srclib\apr\include\apr.h&#x0D;&#x0A;type .\httpd-2.2.21\srclib\apr-util\include\apu.hw &gt; .\httpd-2.2.21\srclib\apr-util\include\apu.h&#x0D;&#x0A;"
 			/>
 			<Tool
 				Name="VCCustomBuildTool"
@@ -201,7 +201,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="2"
-				AdditionalIncludeDirectories="..\..\..\Oem\ACE\ACE_wrappers;&quot;..\..\..\Oem\LinuxApt\httpd-2.2.17\include&quot;;&quot;..\..\..\Oem\LinuxApt\httpd-2.2.17\srclib\apr\include&quot;;&quot;..\..\..\Oem\LinuxApt\httpd-2.2.17\srclib\apr-util\include&quot;;&quot;..\..\..\Oem\LinuxApt\httpd-2.2.17\os\win32&quot;;..\..\..\Common\MapGuideCommon;..\..\..\Common\PlatformBase;..\..\..\Common\Geometry;..\..\..\Common\Foundation;..\..\..\Common\MdfModel;..\WebSupport;..\HttpHandler;..\MapAgentCommon"
+				AdditionalIncludeDirectories="..\..\..\Oem\ACE\ACE_wrappers;&quot;..\..\..\Oem\LinuxApt\httpd-2.2.21\include&quot;;&quot;..\..\..\Oem\LinuxApt\httpd-2.2.21\srclib\apr\include&quot;;&quot;..\..\..\Oem\LinuxApt\httpd-2.2.21\srclib\apr-util\include&quot;;&quot;..\..\..\Oem\LinuxApt\httpd-2.2.21\os\win32&quot;;..\..\..\Common\MapGuideCommon;..\..\..\Common\PlatformBase;..\..\..\Common\Geometry;..\..\..\Common\Foundation;..\..\..\Common\MdfModel;..\WebSupport;..\HttpHandler;..\MapAgentCommon"
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;APACHEAGENT_EXPORTS"
 				RuntimeLibrary="2"
 				WarningLevel="3"
@@ -221,7 +221,7 @@
 				AdditionalDependencies="libhttpd.lib libapr-1.lib libaprutil-1.lib ACE.lib"
 				OutputFile="$(OutDir)/mod_mgmapagent.so"
 				LinkIncremental="1"
-				AdditionalLibraryDirectories="&quot;..\..\..\Oem\LinuxApt\httpd-2.2.17\lib&quot;;..\..\..\Oem\ACE\ACE_wrappers\lib"
+				AdditionalLibraryDirectories="&quot;..\..\..\Oem\LinuxApt\httpd-2.2.21\lib&quot;;..\..\..\Oem\ACE\ACE_wrappers\lib"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="$(OutDir)/mod_mgmapagent.pdb"
 				SubSystem="2"
