@@ -67,6 +67,11 @@ public:
 
     RENDERERS_API virtual void Done();
 
+    ////////////////////////////////////////////////
+    // SE_Renderer overloads
+    //
+    virtual bool OptimizeGeometry(); 
+
     ///////////////////////////////////////////////////////////////////
     // EPlot specific stuff
     //
