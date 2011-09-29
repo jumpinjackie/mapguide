@@ -180,11 +180,18 @@
 #define CONFIGURE_COMMAND "cscript /nologo configure.js  \"--enable-snapshot-build\" \"--disable-isapi\"" " \"--without-enchant\""
 
 /* Detected compiler version */
+#if !defined(_WIN64)
 #define COMPILER "MSVC9 (Visual C++ 2008)"
+#else
+#define COMPILER "MSVC10 (Visual C++ 2010)"
+#endif
 
 /* Compiler compatibility ID */
+#if !defined(_WIN64)
 #define PHP_COMPILER_ID "VC9"
-
+#else
+#define PHP_COMPILER_ID "VC10"
+#endif
 /* Detected compiler architecture */
 #define ARCHITECTURE "x86"
 
