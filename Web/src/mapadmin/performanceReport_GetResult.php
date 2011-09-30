@@ -343,9 +343,8 @@ catch ( Exception $e )
                         <td style=" font-weight: bold;">Coordinate System:</td>
                         <td>
                             <span style="width:50px; overflow:hidden;">
-                            <?php
-                                //TODO: Waiting:Test on new build
-                                echo substr($mapProfileResult->MapProfileData->CoordinateSystem,0,25);
+                            <?php                         
+                                echo $mapProfileResult->MapProfileData->CoordinateSystem;
                             ?>
                             </span>
                         </td>
