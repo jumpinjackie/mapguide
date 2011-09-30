@@ -23,6 +23,28 @@ try
     $clientWidth = $_REQUEST["imageWidth"];
     $clientHeigth = $_REQUEST["imageHeight"];
 
+    function RemoveBaseLayers(& $map)
+    {
+        $layerCollection = $map->GetLayers();
+        $n = 0;
+        $bLayers;
+        for ($i = 0; $i < $layerCollection->GetCount(); $i++)
+        {
+             $layer = $layerCollection->GetItem($i);
+             $layerType = $layer->GetLayerType();
+
+             if (MgLayerType::BaseMap == $layerType)
+             {
+                $bLayers[$n++] = $layer;
+             }
+        }
+
+        for($j = 0; $j < count($bLayers); $j++)
+        {
+            $layerCollection->Remove($bLayers[$j]);
+        }
+    }
+
     function CheckMapExist()
     {
         global $mapResourceId;
@@ -185,6 +207,8 @@ try
         $map = new MgMap();
         $map->Create($resourceService, $resourceID, $newXmlFileId);
 
+        //The result will not show base layers
+        RemoveBaseLayers($map);
         //get the profiling map result
         $byteReader = $profilingService->ProfileRenderMap($map, NULL, $coordNewCenter, $scale, $clientWidth, $clientHeigth, $bgc, $imageFormat, false);
 
