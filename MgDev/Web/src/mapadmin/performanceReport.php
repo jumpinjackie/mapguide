@@ -483,7 +483,7 @@ catch ( Exception $e )
                         //if the scale is not match then show the warning message
                         if(ValidateScale(false))
                         {
-                            currentScaleValue = RemoveSpace( FormatNumber(currentScaleValue,2) );
+                            currentScaleValue = RemoveSpace( FormatNumber(currentScaleValue,0) );
 
                             if(currentScaleValue != scaleLastRun.value)
                             {
@@ -619,13 +619,13 @@ catch ( Exception $e )
                         if(!result)
                         {
                             scaleWarnMsg.innerHTML = "Not a valid map scale.";
-                            scale.className="warnMsgStyle";
+                            scale.className = "warnMsgStyle";
                         }
                         else
                         {
                             if(needFormat)
                             {
-                                scale.value = FormatNumber(scaleValue,2);
+                                scale.value = FormatNumber(scaleValue,0);
                             }
 
                             scaleWarnMsg.innerHTML = "";
@@ -1076,21 +1076,35 @@ catch ( Exception $e )
 
                 function FormatNumber(s, n)
                 {
-                   var n = n > 0 && n <= 20 ? n : 2;
+                   var n = n >= 0 && n <= 20 ? n : 2;
 
                    var s = parseFloat((s + "").replace(/[^\d\.-]/g, "")).toFixed(n) + "";
 
-                   var l = s.split(".")[0].split("").reverse() , r = s.split(".")[1];
+                   var l = s.split(".")[0].split("").reverse()
 
-                   var t = "";
-
-                   var i=0;
-                   for(; i < l.length; i ++ )
+                   if(n > 0)
                    {
-                      t += l[i] + ((i + 1) % 3 == 0 && (i + 1) != l.length ? " " : "");
-                   }
+                       var r = s.split(".")[1];
+                       var t = "";
+                       var i=0;
+                       for(; i < l.length; i ++ )
+                       {
+                          t += l[i] + ((i + 1) % 3 == 0 && (i + 1) != l.length ? " " : "");
+                       }
 
-                   return t.split("").reverse().join("") + "." + r;
+                       return t.split("").reverse().join("") + "." + r;
+                   }
+                   else
+                   {
+                       var t = "";
+                       var i=0;
+                       for(; i < l.length; i ++ )
+                       {
+                          t += l[i] + ((i + 1) % 3 == 0 && (i + 1) != l.length ? " " : "");
+                       }
+
+                       return t.split("").reverse().join("");
+                   }
                 }
 
                 function FormatCenterPoint(x,y,fractionDigits)
@@ -1821,7 +1835,7 @@ catch ( Exception $e )
                         centerPoint.value = centerPointCookie.value;
 
                         var scaleInput = document.getElementById("txtScale");
-                        scaleInput.value = FormatNumber(scaleCookie.value,2);
+                        scaleInput.value = FormatNumber(scaleCookie.value,0);
 
                         var mapDefinitonSelector = document.getElementById("mapSelector_DO_NOT_PERSIST");
                         mapDefinitonSelector.value = Trim(mapIdCookie.value);
@@ -1880,7 +1894,7 @@ catch ( Exception $e )
                         centerPoint.value = selectSetting[2];
 
                         var scaleInput = document.getElementById("txtScale");
-                        scaleInput.value = FormatNumber(selectSetting[3],2);
+                        scaleInput.value = FormatNumber(selectSetting[3],0);
                         
                         var tipDiv = document.getElementById("mapResourceNameTip");
                         tipDiv.innerHTML = mapDefinitonSelector.value;

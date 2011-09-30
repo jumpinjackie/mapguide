@@ -2198,8 +2198,7 @@
                         number_format($layerProfileData->TotalRenderTime,2)."&nbsp;ms&nbsp;(".
                         $layerProfileData->GetRenderTimePercentage($sumofRenderTime)."%)&nbsp;</td>","\n";
                 echo "<td style='width:25%;'>".$layerProfileData->FeatureClass."</td>","\n";
-                //TODO: Waiting:Test on new build CoordinateSystem Length
-                echo "<td style='width:25%;'>".substr($layerProfileData->CoordinateSystem,0,25)."</td>","\n";
+                echo "<td style='width:25%;'>".$layerProfileData->CoordinateSystem."</td>","\n";
                 echo "<td style='width:15%;'>".$layerProfileData->LayerType."</td>","\n";
                 echo "</tr>","\n";
 
@@ -2358,7 +2357,7 @@
                 echo $dTime->format("M d,Y");
                 echo "</td>","\n";
                 echo "<td style='width:50%;text-align: right;'>","\n";
-                echo $dTime->format("H:m:s");
+                echo $dTime->format("h:m:s A");
                 echo "</td>","\n";
                 echo "</tr></table></td></tr></table>","\n";
             }
