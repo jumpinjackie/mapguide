@@ -46,7 +46,7 @@ public:
     virtual void SetSourceAndTarget(MgCoordinateSystem* pSource, MgCoordinateSystem* pTarget);
 
     // Geodetic Transformation Information
-    virtual INT32 NumberOfGeodeticTransformations();
+    virtual INT32 GetGeodeticTransformationCount();
     virtual MgCoordinateSystemGeodeticTransformDef* GetGeodeticTransformation (INT32 index);
     virtual INT32 GetGeodeticTransformationDirection (INT32 index);
     virtual MgCoordinateSystemGeodeticPath* GetExplicitGeodeticPath();

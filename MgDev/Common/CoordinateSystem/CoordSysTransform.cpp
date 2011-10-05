@@ -894,52 +894,66 @@ void CCoordinateSystemTransform::SetSourceAndTarget(MgCoordinateSystem* pSource,
 }
 
 // Geodetic Transformation Information
-INT32 CCoordinateSystemTransform::NumberOfGeodeticTransformations ()
+INT32 CCoordinateSystemTransform::GetGeodeticTransformationCount ()
 {
-    INT32 rtnValue;
-    
-    rtnValue = m_pDtcprm->xfrmCount;
-    return rtnValue;
+    //see the ctor - when passing in NULL for either the source or the target, this guy here
+    //won't get initialized
+    if (NULL == this->m_pDtcprm) 
+        return 0;
+
+    return m_pDtcprm->xfrmCount;
 }
 MgCoordinateSystemGeodeticTransformDef* CCoordinateSystemTransform::GetGeodeticTransformation (INT32 index)
 {
-    STRING xfrmDefName;
-    cs_GxXform_ *xfrmPtr;
-   	cs_GeodeticTransform_* xfrmDefPtr;
-   	Ptr<MgCoordinateSystemCatalog> pCatalog;
-    Ptr<MgCoordinateSystemGeodeticTransformDef> rtnValue;
-    Ptr<MgCoordinateSystemGeodeticTransformDefDictionary> pGxDefDict;
-    
-    MgCoordinateSystemFactory csFactory;
+    if (index < 0 || index >= this->GetGeodeticTransformationCount())
+        throw new MgArgumentOutOfRangeException(L"GetGeodeticTransformation.GetGeodeticTransformation",__LINE__,__WFILE__, NULL, L"", NULL);
 
-    xfrmDefName [0] = '\0';
-    if (index >= 0 && index < m_pDtcprm->xfrmCount)
-    {
-        // indexparameter is valid, get a pointer to the appropriate
-        // CS-MAP transformation object.
-        xfrmPtr = m_pDtcprm->xforms [index];
-        if (xfrmPtr != NULL)
+    // indexparameter is valid, get a pointer to the appropriate
+    // CS-MAP transformation object.
+    cs_GxXform_ *xfrmPtr = m_pDtcprm->xforms [index];
+    if (NULL == xfrmPtr)
+        throw new MgCoordinateSystemInitializationFailedException(L"GetGeodeticTransformation.GetGeodeticTransformation",__LINE__,__WFILE__, NULL, L"", NULL);
+
+    cs_GeodeticTransform_* xfrmDefPtr = &xfrmPtr->gxDef;
+    if (NULL == xfrmDefPtr)
+        throw new MgCoordinateSystemInitializationFailedException(L"GetGeodeticTransformation.GetGeodeticTransformation",__LINE__,__WFILE__, NULL, L"", NULL);
+
+    // Extract the name of the transformation.
+    Ptr<MgCoordinateSystemGeodeticTransformDef> catalogTransformationDef;
+    wchar_t* pDefinitionName = NULL;
+
+    MG_TRY()
+
+        //actually, CSMAP automatically sets a name up for the transformation
+        //presumably, [xfrmName] is never empty
+        pDefinitionName = Convert_Ascii_To_Wide (xfrmDefPtr->xfrmName);
+        bool hasCatalogDef = (NULL != pDefinitionName && L'\0' != pDefinitionName[0]);
+        if (hasCatalogDef)
         {
-            xfrmDefPtr = &xfrmPtr->gxDef;
-            if (xfrmDefPtr != NULL)
-            {
-                // Extract the name of the transformation.
-                wchar_t* pwszDtName = Convert_Ascii_To_Wide (xfrmDefPtr->xfrmName);
-                xfrmDefName = pwszDtName;
-                delete[] pwszDtName;
-            }
-         }
-     }
-     if (!xfrmDefName.empty ())
-     {
-        // We have a treansformation name.  Get a copy of the named
-        // transformation from the dictionary.
-        pCatalog = csFactory.GetCatalog();
-        pGxDefDict = pCatalog->GetGeodeticTransformDefDictionary ();
-        MgDisposable* tmpPtr = pGxDefDict.p->Get(xfrmDefName);
-        rtnValue = dynamic_cast<MgCoordinateSystemGeodeticTransformDef*>(tmpPtr);
-    }
-    return rtnValue.Detach ();
+            // We have a transformation name.  Get a copy of the named
+            // transformation from the dictionary.
+            MgCoordinateSystemFactory csFactory;
+            Ptr<MgCoordinateSystemCatalog> pCatalog = csFactory.GetCatalog();
+            Ptr<MgCoordinateSystemGeodeticTransformDefDictionary> transformationDictionary = pCatalog->GetGeodeticTransformDefDictionary();
+            catalogTransformationDef = transformationDictionary->GetGeodeticTransformationDef((STRING)pDefinitionName);
+        }
+
+        //this can happen (at least) in the following case:
+        //the datum dictionary contains a datum which carries geocentric transformation information with it, e.g. molodensky
+        //but the transformation dictionary does not contain that guy
+        //in this case, CSMAP returns a [xfrmDefPtr] but the actual (explicit) transformation definition
+        //doesn't exist in the dictionaries
+        if (NULL == catalogTransformationDef)
+            throw new MgCoordinateSystemLoadFailedException(L"GetGeodeticTransformation.GetGeodeticTransformation",__LINE__,__WFILE__, NULL, L"", NULL);
+
+    MG_CATCH(L"GetGeodeticTransformation.GetGeodeticTransformation")
+
+    delete[] pDefinitionName;
+    pDefinitionName = NULL;
+
+    MG_THROW()
+
+    return catalogTransformationDef.Detach ();
 }
 INT32 CCoordinateSystemTransform::GetGeodeticTransformationDirection (INT32 index)
 {
