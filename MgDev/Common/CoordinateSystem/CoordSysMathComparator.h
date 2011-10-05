@@ -43,10 +43,16 @@ public:
     virtual bool SameDatum(MgCoordinateSystemDatum *pDefinition1, MgCoordinateSystemDatum *pDefinition2);
     virtual bool SameCoordinateSystem(MgCoordinateSystem *pDefinition1, MgCoordinateSystem *pDefinition2);
 
+    virtual void SetCompareInternalDatumOldParameters(bool);
+    virtual bool GetCompareInternalDatumOldParameters();
+
 protected:
 //    INT32 GetClassId();
     //from MgDisposable
     virtual void Dispose();
+
+private:
+    bool m_bCompareDatumOldParameters;
 };
 
 } // End of namespace

@@ -32,6 +32,21 @@ PUBLISHED_API:
     virtual bool SameDatum(MgCoordinateSystemDatum *pDefinition1, MgCoordinateSystemDatum *pDefinition2)=0;
     virtual bool SameCoordinateSystem(MgCoordinateSystem *pDefinition1, MgCoordinateSystem *pDefinition2)=0;
 
+    /////////////////////////////////////////////////////////////
+    /// \brief
+    /// Disables or enables the comparison of any integral geodetic transformation information
+    /// when comparing datums. By default, this class compares any geodetic transformation
+    /// information it finds. If set to false, the \link SameDatum method 
+    /// only compares ellipsoid information and any other, non-transformation related, properties.
+    virtual void SetCompareInternalDatumOldParameters(bool) = 0;
+
+    /////////////////////////////////////////////////////////////
+    /// \brief
+    /// Returns the current comparison behavior for datums of this MgCoordinateSystemMathComparator
+    /// object. If true (default), this comparator compares geodetic transformation information
+    /// it might find for a datum object. If false, this comparison step is skipped.
+    virtual bool GetCompareInternalDatumOldParameters() = 0;
+
 protected:
     /////////////////////////////////////////////////////////////////
     /// \brief
