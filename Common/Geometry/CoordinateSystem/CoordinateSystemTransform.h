@@ -405,29 +405,48 @@ PUBLISHED_API:
     ///////////////////////////////////////////////////////////////////////////
     /// \brief
     /// Returns the number of geodetic transformations used in the implicit or
-    /// explicit path used to convert the source datum to the target datum.
+    /// explicit path used to convert the source to the target coordinate system.
+    /// For a geodetic transformation to take place, both the source and the target
+    /// coordinate systems have to be referenced to a datum.
     /// \return
-    /// Returns the number of geodetic transformations in the path.  Zero is
-    /// an indication of the null transformation.  A non-zero return value
-    /// should not be taken as meaning the transformation is not null.  One
-    /// or transformation definitions of the null type may also exist thus
-    /// yielding a null transformation with a non-zero transformation count.
+    /// Returns the number of geodetic transformations in the path as described above.
+    /// Returns 0, if no geodetic transformation will have to be done when converting from
+    /// the source coordinate system to the target coordinate system. In 
+    /// particular, this method returns 0 in the following cases:
+    /// \li The source and the target coordinate system is referenced to the same datum
+    /// \li Either the source or the target coordinate system is not referenced
+    ///     to a datum
+    /// \li This transformation object transforms between arbitrary coordinate systems.
     ///
-    virtual INT32 NumberOfGeodeticTransformations()=0;
+    /// \remarks
+    /// This method returns a non-zero geodetic transformation count even if a geodetic transformation
+    /// doesn't perform any calculations but simply assumes the datum the source coordinate system is referenced to,
+    /// to be equivalent to that datum the target coordinate system is referenced to.
+    virtual INT32 GetGeodeticTransformationCount()=0;
 
     ///////////////////////////////////////////////////////////////////////////
     /// \brief
-    /// Returns a pointer to the geodetic transformation definition indicated
+    /// Returns a pointer to the catalog-resident(!) geodetic transformation definition indicated
     /// by the index parameter.
     /// \param index
     /// A zero based index indicating the specific transformation definition
     /// which is to be returned.
     /// \return
     /// Returns a disposable pointer to the geodetic transformation definition
-    /// indicated by the index parameter.  A null pointer is returned if the
-    /// index parameter is zero.
-    /// \remarks
-    /// No exceptions are thrown.
+    /// indicated by the index parameter. The \link MgCoordinateSystemGeodeticTransformDef
+    /// instance is guaranteed to exist in the geodetic transformation definition
+    /// dictionary.
+    /// \exception  MgIndexOutOfRangeException if index is out of range. See \link
+    ///             GetGeodeticTransformationCount.
+    /// \exception  MgCoordinateSystemLoadFailedException if the geodetic transformation
+    ///             denoted by the index is not contained in the dictionries
+    ///             but has been created in-memory only. Note though, that this will only
+    ///             in very rare circumstances.
+    /// \exception  MgCoordinateSystemInitializationFailedException if the 
+    ///             the transformation definition object could not be setup.
+    /// \exception  MgException if the dictionaries could not be accessed or
+    ///             any other error condition has been encountered.
+    /// \see GetGeodeticTransformationCount
     ///
     virtual MgCoordinateSystemGeodeticTransformDef* GetGeodeticTransformation (INT32 index)=0;
 
