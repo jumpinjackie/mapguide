@@ -39,6 +39,7 @@ const double CCoordinateSystemMathComparator::kdEpsilon            = 1.0E-13;   
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 CCoordinateSystemMathComparator::CCoordinateSystemMathComparator()
+    : m_bCompareDatumOldParameters(true)
 {
 }
 
@@ -50,6 +51,16 @@ CCoordinateSystemMathComparator::~CCoordinateSystemMathComparator()
 void CCoordinateSystemMathComparator::Dispose()
 {
     delete this;
+}
+
+void CCoordinateSystemMathComparator::SetCompareInternalDatumOldParameters(bool bCompareDatumOldParameters)
+{
+    this->m_bCompareDatumOldParameters = bCompareDatumOldParameters;
+}
+
+bool CCoordinateSystemMathComparator::GetCompareInternalDatumOldParameters()
+{
+    return this->m_bCompareDatumOldParameters;
 }
 
 // Returns whether the two defs are the same, mathematically.
@@ -164,6 +175,9 @@ bool CCoordinateSystemMathComparator::SameDatum(MgCoordinateSystemDatum *pDefini
     Ptr<MgCoordinateSystemEllipsoid> pEllipsoid1 = pDefinition1->GetEllipsoidDefinition ();
     Ptr<MgCoordinateSystemEllipsoid> pEllipsoid2 = pDefinition2->GetEllipsoidDefinition ();
     if (!SameEllipsoid (pEllipsoid1,pEllipsoid2)) return false;
+
+    if (!this->m_bCompareDatumOldParameters)
+        return true;
 
     // Determine if the two definitions are both the null transformation.
     orgDeltaZeroCount  = (def1.delta_X == 0.0);
