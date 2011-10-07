@@ -477,8 +477,8 @@ void CCoordinateSystemTransform::TransformCoordinate(MgCoordinate* coordinate)
             CriticalClass.Leave();
         }
         coordinate->SetX(dCoords [0]);
-        coordinate->SetY(dCoords [0]);
-        coordinate->SetZ(dCoords [0]);
+        coordinate->SetY(dCoords [1]);
+        coordinate->SetZ(dCoords [2]);
     }
     else if(coordinate->GetDimension() == (MgCoordinateDimension::XY | MgCoordinateDimension::M))
     {
