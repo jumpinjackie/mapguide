@@ -388,6 +388,8 @@ UINT8* CCoordinateSystemGeodeticTransformDef::SerializeFrom(UINT8* pStream)
     INT32 previousType = this->transformationDefType;
     cs_GeodeticTransform_* previousTransformPtr = this->transformDefinition;
 
+    cs_GeodeticTransform_* allocatedBlock = NULL;
+
     MG_TRY()
 
     UINT8 nVersion=pStreamIn[0];
@@ -397,13 +399,12 @@ UINT8* CCoordinateSystemGeodeticTransformDef::SerializeFrom(UINT8* pStream)
         pStreamIn++;
 
         //Read the def from the stream
-        this->transformDefinition = (cs_GeodeticTransform_*)CS_malc(sizeof(cs_GeodeticTransform_));
-        if (transformDefinition == NULL)
-        {
-            this->transformDefinition = previousTransformPtr;
-            previousTransformPtr = 0;
+        allocatedBlock = (cs_GeodeticTransform_*)CS_malc(sizeof(cs_GeodeticTransform_));
+        if (NULL == allocatedBlock)
             throw new MgOutOfMemoryException (L"MgCoordinateSystemGeodeticTransformDef.SerializeFrom", __LINE__, __WFILE__, NULL, L"", NULL);
-        }
+
+        this->transformDefinition = allocatedBlock;
+
         pBuf = reinterpret_cast<char *>(this->transformDefinition);
         memcpy(pBuf, pStreamIn, sizeof(cs_GeodeticTransform_));
         pStreamIn = pStreamIn + sizeof(cs_GeodeticTransform_);
@@ -422,9 +423,6 @@ UINT8* CCoordinateSystemGeodeticTransformDef::SerializeFrom(UINT8* pStream)
             // Nope!  It's not valid, but not valid in such a way that would cause
             // an exception to be thrown.  transformationDefinition cannot be
             // NULL at this point.
-            CS_free (this->transformDefinition);
-            this->transformationDefType = previousType;
-            this->transformDefinition = previousTransformPtr;
             throw new MgInvalidArgumentException(L"MgCoordinateSystemGeodeticTransformDef.SerializeFrom", __LINE__, __WFILE__, NULL, L"", NULL);
         }
     }
@@ -432,12 +430,11 @@ UINT8* CCoordinateSystemGeodeticTransformDef::SerializeFrom(UINT8* pStream)
     MG_CATCH (L"MgCoordinateSystemGeodeticTransformDef.SerializeFrom")
     if (mgException != NULL)
     {
-        // Here if an exception was thrown.
-        // transformationDefinition can indeed be NULL here.
-        if (this->transformDefinition != NULL)
-        {
-            CS_free (this->transformDefinition);
-        }
+        //in case an exception was thrown, we simply free the allocated block
+        //and reset what we had before; no matter whether this had been valid or not
+        CS_free (allocatedBlock);
+        allocatedBlock = NULL;
+
         this->transformationDefType = previousType;
         this->transformDefinition = previousTransformPtr;
     }
