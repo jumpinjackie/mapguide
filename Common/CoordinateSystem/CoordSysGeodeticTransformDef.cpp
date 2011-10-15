@@ -341,7 +341,7 @@ bool CCoordinateSystemGeodeticTransformDef::IsValid()
         return false;
 
     CriticalClass.Enter();
-    int nNumErrs = CS_gxchk(this->transformDefinition,cs_GXCHK_DATUM, NULL, 0);
+    int nNumErrs = CS_gxchk(this->transformDefinition, 0, NULL, 0);
     CriticalClass.Leave();
 
     return (0 == nNumErrs);

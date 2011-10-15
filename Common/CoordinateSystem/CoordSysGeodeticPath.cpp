@@ -120,8 +120,8 @@ bool CCoordinateSystemGeodeticPath::IsValid()
     if (NULL == this->pathDefinition)
         return false;
 
-	int errorCount = CS_gpchk (this->pathDefinition,(cs_GPCHK_DATUM | cs_GPCHK_XFORM),NULL,0);
-	
+    int errorCount = CS_gpchk (this->pathDefinition, 0, NULL, 0);
+
     return (errorCount == 0);
 }
 
