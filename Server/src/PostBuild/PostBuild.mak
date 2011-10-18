@@ -241,6 +241,8 @@ debug : ..\..\bin\debug\MgFoundationd.dll \
         ..\..\bin\UnitTestFiles\UT_Annotation2.mdf \
         ..\..\bin\UnitTestFiles\UT_Annotation3.ldf \
         ..\..\bin\UnitTestFiles\UT_Annotation3.mdf \
+        ..\..\bin\UnitTestFiles\SavePointTest.sqlite \
+        ..\..\bin\UnitTestFiles\SavePointTest.FeatureSource \
         CopyFdoComponentsDebug \
         CopyFdoProvidersDebug \
         CopySchemaDebug \
@@ -492,6 +494,8 @@ debug64 : ..\..\bin\debug64\MgFoundationd.dll \
         ..\..\bin\UnitTestFiles\UT_Annotation2.mdf \
         ..\..\bin\UnitTestFiles\UT_Annotation3.ldf \
         ..\..\bin\UnitTestFiles\UT_Annotation3.mdf \
+        ..\..\bin\UnitTestFiles\SavePointTest.sqlite \
+        ..\..\bin\UnitTestFiles\SavePointTest.FeatureSource \
         CopyFdoComponentsDebug64 \
         CopyFdoProvidersDebug64 \
         CopySchemaDebug64 \
@@ -743,6 +747,8 @@ release : ..\..\bin\release\MgFoundation.dll \
           ..\..\bin\UnitTestFiles\UT_Annotation2.mdf \
           ..\..\bin\UnitTestFiles\UT_Annotation3.ldf \
           ..\..\bin\UnitTestFiles\UT_Annotation3.mdf \
+          ..\..\bin\UnitTestFiles\SavePointTest.sqlite \
+          ..\..\bin\UnitTestFiles\SavePointTest.FeatureSource \
           CopyFdoComponentsRelease \
           CopyFdoProvidersRelease \
           CopySchemaRelease \
@@ -994,6 +1000,8 @@ release64 : ..\..\bin\release64\MgFoundation.dll \
           ..\..\bin\UnitTestFiles\UT_Annotation2.mdf \
           ..\..\bin\UnitTestFiles\UT_Annotation3.ldf \
           ..\..\bin\UnitTestFiles\UT_Annotation3.mdf \
+          ..\..\bin\UnitTestFiles\SavePointTest.sqlite \
+          ..\..\bin\UnitTestFiles\SavePointTest.FeatureSource \
           CopyFdoComponentsRelease64 \
           CopyFdoProvidersRelease64 \
           CopySchemaRelease64 \
@@ -1118,6 +1126,8 @@ cleandebug:
     if EXIST ..\..\bin\UnitTestFiles\UT_Annotation2.mdf             del /F ..\..\bin\UnitTestFiles\UT_Annotation2.mdf
     if EXIST ..\..\bin\UnitTestFiles\UT_Annotation3.ldf             del /F ..\..\bin\UnitTestFiles\UT_Annotation3.ldf
     if EXIST ..\..\bin\UnitTestFiles\UT_Annotation3.mdf             del /F ..\..\bin\UnitTestFiles\UT_Annotation3.mdf
+    if EXIST ..\..\bin\UnitTestFiles\SavePointTest.sqlite           del /F ..\..\bin\UnitTestFiles\SavePointTest.sqlite
+    if EXIST ..\..\bin\UnitTestFiles\SavePointTest.FeatureSource    del /F ..\..\bin\UnitTestFiles\SavePointTest.FeatureSource
     del /F   ..\..\bin\debug\*.ilk
 
 
@@ -1237,6 +1247,8 @@ cleandebug64:
     if EXIST ..\..\bin\UnitTestFiles\UT_Annotation2.mdf             del /F ..\..\bin\UnitTestFiles\UT_Annotation2.mdf
     if EXIST ..\..\bin\UnitTestFiles\UT_Annotation3.ldf             del /F ..\..\bin\UnitTestFiles\UT_Annotation3.ldf
     if EXIST ..\..\bin\UnitTestFiles\UT_Annotation3.mdf             del /F ..\..\bin\UnitTestFiles\UT_Annotation3.mdf
+    if EXIST ..\..\bin\UnitTestFiles\SavePointTest.sqlite           del /F ..\..\bin\UnitTestFiles\SavePointTest.sqlite
+    if EXIST ..\..\bin\UnitTestFiles\SavePointTest.FeatureSource    del /F ..\..\bin\UnitTestFiles\SavePointTest.FeatureSource
     del /F   ..\..\bin\debug64\*.ilk
 
 
@@ -1356,6 +1368,8 @@ cleanrelease:
     if EXIST ..\..\bin\UnitTestFiles\UT_Annotation2.mdf             del /F ..\..\bin\UnitTestFiles\UT_Annotation2.mdf
     if EXIST ..\..\bin\UnitTestFiles\UT_Annotation3.ldf             del /F ..\..\bin\UnitTestFiles\UT_Annotation3.ldf
     if EXIST ..\..\bin\UnitTestFiles\UT_Annotation3.mdf             del /F ..\..\bin\UnitTestFiles\UT_Annotation3.mdf
+    if EXIST ..\..\bin\UnitTestFiles\SavePointTest.sqlite           del /F ..\..\bin\UnitTestFiles\SavePointTest.sqlite
+    if EXIST ..\..\bin\UnitTestFiles\SavePointTest.FeatureSource    del /F ..\..\bin\UnitTestFiles\SavePointTest.FeatureSource
 
 
 cleanrelease64:
@@ -1474,6 +1488,8 @@ cleanrelease64:
     if EXIST ..\..\bin\UnitTestFiles\UT_Annotation2.mdf             del /F ..\..\bin\UnitTestFiles\UT_Annotation2.mdf
     if EXIST ..\..\bin\UnitTestFiles\UT_Annotation3.ldf             del /F ..\..\bin\UnitTestFiles\UT_Annotation3.ldf
     if EXIST ..\..\bin\UnitTestFiles\UT_Annotation3.mdf             del /F ..\..\bin\UnitTestFiles\UT_Annotation3.mdf
+    if EXIST ..\..\bin\UnitTestFiles\SavePointTest.sqlite           del /F ..\..\bin\UnitTestFiles\SavePointTest.sqlite
+    if EXIST ..\..\bin\UnitTestFiles\SavePointTest.FeatureSource    del /F ..\..\bin\UnitTestFiles\SavePointTest.FeatureSource
 
 
 "..\..\..\UnitTest\TestData\ResourceService\LibraryRepositoryContent.xml" :
