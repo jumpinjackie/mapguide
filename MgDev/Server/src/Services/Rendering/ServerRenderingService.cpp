@@ -1711,11 +1711,8 @@ inline void MgServerRenderingService::RenderWatermarks(MgMap* map,
     {
         Ptr<MgLayerBase> mapLayer(layers->GetItem(i));
 
-        // the layer resource content should be set during stylization if visible
-        if (mapLayer->GetLayerResourceContent() == L"")
-            continue;
-
-        ldf.reset(MgLayerBase::GetLayerDefinition(mapLayer->GetLayerResourceContent()));
+        Ptr<MgResourceIdentifier> layerid = mapLayer->GetLayerDefinition();
+        ldf.reset(MgLayerBase::GetLayerDefinition(m_svcResource, layerid));
 
         WatermarkInstanceCollection* layerWatermarks = ldf->GetWatermarks();
         for (int j=layerWatermarks->GetCount()-1; j>=0; j--)
