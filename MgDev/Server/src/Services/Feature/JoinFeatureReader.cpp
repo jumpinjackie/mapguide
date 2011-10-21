@@ -66,22 +66,17 @@ bool MgJoinFeatureReader::GetBoolean(FdoString* propertyName)
     m_reader->DeterminePropertyFeatureSource(propertyName, &gwsFeatureIter, parsedPropertyName);
     CHECKNULL(gwsFeatureIter, L"MgJoinFeatureReader.GetBoolean");
 
-    try
+    if(gwsFeatureIter->IsNull(parsedPropertyName.c_str()))
+    {
+        MgStringCollection arguments;
+        arguments.Add(propertyName);
+
+        throw new MgNullPropertyValueException(L"MgJoinFeatureReader.GetBoolean",
+            __LINE__, __WFILE__, &arguments, L"", NULL);
+    }
+    else
     {
         retVal = gwsFeatureIter->GetBoolean(parsedPropertyName.c_str());
-    }
-    catch(...)
-    {
-        if(gwsFeatureIter->IsNull(parsedPropertyName.c_str()))
-        {
-            MgStringCollection arguments;
-            arguments.Add(propertyName);
-
-            throw new MgNullPropertyValueException(L"MgJoinFeatureReader.GetBoolean",
-                __LINE__, __WFILE__, &arguments, L"", NULL);
-        }
-        else
-            throw;
     }
 
     MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgJoinFeatureReader.GetBoolean");
@@ -101,23 +96,16 @@ FdoByte MgJoinFeatureReader::GetByte(FdoString* propertyName)
     m_reader->DeterminePropertyFeatureSource(propertyName, &gwsFeatureIter, parsedPropertyName);
     CHECKNULL(gwsFeatureIter, L"MgJoinFeatureReader.GetByte");
 
-    try
+    if(gwsFeatureIter->IsNull(parsedPropertyName.c_str()))
     {
-        retVal = gwsFeatureIter->GetByte(parsedPropertyName.c_str());
-    }
-    catch(...)
-    {
-        if(gwsFeatureIter->IsNull(parsedPropertyName.c_str()))
-        {
-            MgStringCollection arguments;
-            arguments.Add(propertyName);
+        MgStringCollection arguments;
+        arguments.Add(propertyName);
 
-            throw new MgNullPropertyValueException(L"MgJoinFeatureReader.GetByte",
-                __LINE__, __WFILE__, &arguments, L"", NULL);
-        }
-        else
-            throw;
+        throw new MgNullPropertyValueException(L"MgJoinFeatureReader.GetByte",
+            __LINE__, __WFILE__, &arguments, L"", NULL);
     }
+    else
+        retVal = gwsFeatureIter->GetByte(parsedPropertyName.c_str());
 
     MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgJoinFeatureReader.GetByte");
 
@@ -136,23 +124,16 @@ FdoDateTime MgJoinFeatureReader::GetDateTime(FdoString* propertyName)
     m_reader->DeterminePropertyFeatureSource(propertyName, &gwsFeatureIter, parsedPropertyName);
     CHECKNULL(gwsFeatureIter, L"MgJoinFeatureReader.GetDateTime");
 
-    try
+    if(gwsFeatureIter->IsNull(parsedPropertyName.c_str()))
     {
-        val = gwsFeatureIter->GetDateTime(parsedPropertyName.c_str());
-    }
-    catch(...)
-    {
-        if(gwsFeatureIter->IsNull(parsedPropertyName.c_str()))
-        {
-            MgStringCollection arguments;
-            arguments.Add(propertyName);
+        MgStringCollection arguments;
+        arguments.Add(propertyName);
 
-            throw new MgNullPropertyValueException(L"MgJoinFeatureReader.GetDateTime",
-                __LINE__, __WFILE__, &arguments, L"", NULL);
-        }
-        else
-            throw;
+        throw new MgNullPropertyValueException(L"MgJoinFeatureReader.GetDateTime",
+            __LINE__, __WFILE__, &arguments, L"", NULL);
     }
+    else
+        val = gwsFeatureIter->GetDateTime(parsedPropertyName.c_str());
 
     MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgJoinFeatureReader.GetDateTime");
 
@@ -171,23 +152,16 @@ double MgJoinFeatureReader::GetDouble(FdoString* propertyName)
     m_reader->DeterminePropertyFeatureSource(propertyName, &gwsFeatureIter, parsedPropertyName);
     CHECKNULL(gwsFeatureIter, L"MgJoinFeatureReader.GetDouble");
 
-    try
+    if(gwsFeatureIter->IsNull(parsedPropertyName.c_str()))
     {
-        retVal = gwsFeatureIter->GetDouble(parsedPropertyName.c_str());
-    }
-    catch(...)
-    {
-        if(gwsFeatureIter->IsNull(parsedPropertyName.c_str()))
-        {
-            MgStringCollection arguments;
-            arguments.Add(propertyName);
+        MgStringCollection arguments;
+        arguments.Add(propertyName);
 
-            throw new MgNullPropertyValueException(L"MgJoinFeatureReader.GetDouble",
-                __LINE__, __WFILE__, &arguments, L"", NULL);
-        }
-        else
-            throw;
+        throw new MgNullPropertyValueException(L"MgJoinFeatureReader.GetDouble",
+            __LINE__, __WFILE__, &arguments, L"", NULL);
     }
+    else
+        retVal = gwsFeatureIter->GetDouble(parsedPropertyName.c_str());
 
     MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgJoinFeatureReader.GetDouble");
 
@@ -206,23 +180,16 @@ FdoInt16 MgJoinFeatureReader::GetInt16(FdoString* propertyName)
     m_reader->DeterminePropertyFeatureSource(propertyName, &gwsFeatureIter, parsedPropertyName);
     CHECKNULL(gwsFeatureIter, L"MgJoinFeatureReader.GetInt16");
 
-    try
+    if(gwsFeatureIter->IsNull(parsedPropertyName.c_str()))
     {
-        retVal = (INT16)gwsFeatureIter->GetInt16(parsedPropertyName.c_str());
-    }
-    catch(...)
-    {
-        if(gwsFeatureIter->IsNull(parsedPropertyName.c_str()))
-        {
-            MgStringCollection arguments;
-            arguments.Add(propertyName);
+        MgStringCollection arguments;
+        arguments.Add(propertyName);
 
-            throw new MgNullPropertyValueException(L"MgJoinFeatureReader.GetInt16",
-                __LINE__, __WFILE__, &arguments, L"", NULL);
-        }
-        else
-            throw;
+        throw new MgNullPropertyValueException(L"MgJoinFeatureReader.GetInt16",
+            __LINE__, __WFILE__, &arguments, L"", NULL);
     }
+    else
+        retVal = (INT16)gwsFeatureIter->GetInt16(parsedPropertyName.c_str());
 
     MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgJoinFeatureReader.GetInt16");
 
@@ -241,23 +208,16 @@ FdoInt32 MgJoinFeatureReader::GetInt32(FdoString* propertyName)
     m_reader->DeterminePropertyFeatureSource(propertyName, &gwsFeatureIter, parsedPropertyName);
     CHECKNULL(gwsFeatureIter, L"MgJoinFeatureReader.GetInt32");
 
-    try
+    if(gwsFeatureIter->IsNull(parsedPropertyName.c_str()))
     {
-        retVal = (INT32)gwsFeatureIter->GetInt32(parsedPropertyName.c_str());
-    }
-    catch(...)
-    {
-        if(gwsFeatureIter->IsNull(parsedPropertyName.c_str()))
-        {
-            MgStringCollection arguments;
-            arguments.Add(propertyName);
+        MgStringCollection arguments;
+        arguments.Add(propertyName);
 
-            throw new MgNullPropertyValueException(L"MgJoinFeatureReader.GetInt32",
-                __LINE__, __WFILE__, &arguments, L"", NULL);
-        }
-        else
-            throw;
+        throw new MgNullPropertyValueException(L"MgJoinFeatureReader.GetInt32",
+            __LINE__, __WFILE__, &arguments, L"", NULL);
     }
+    else
+        retVal = (INT32)gwsFeatureIter->GetInt32(parsedPropertyName.c_str());
 
     MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgJoinFeatureReader.GetInt32");
 
@@ -276,23 +236,16 @@ FdoInt64 MgJoinFeatureReader::GetInt64(FdoString* propertyName)
     m_reader->DeterminePropertyFeatureSource(propertyName, &gwsFeatureIter, parsedPropertyName);
     CHECKNULL(gwsFeatureIter, L"MgJoinFeatureReader.GetInt64");
 
-    try
+    if(gwsFeatureIter->IsNull(parsedPropertyName.c_str()))
     {
-        retVal = (INT64)gwsFeatureIter->GetInt64(parsedPropertyName.c_str());
-    }
-    catch(...)
-    {
-        if(gwsFeatureIter->IsNull(parsedPropertyName.c_str()))
-        {
-            MgStringCollection arguments;
-            arguments.Add(propertyName);
+        MgStringCollection arguments;
+        arguments.Add(propertyName);
 
-            throw new MgNullPropertyValueException(L"MgJoinFeatureReader.GetInt64",
-                __LINE__, __WFILE__, &arguments, L"", NULL);
-        }
-        else
-            throw;
+        throw new MgNullPropertyValueException(L"MgJoinFeatureReader.GetInt64",
+            __LINE__, __WFILE__, &arguments, L"", NULL);
     }
+    else
+        retVal = (INT64)gwsFeatureIter->GetInt64(parsedPropertyName.c_str());
 
     MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgJoinFeatureReader.GetInt64");
 
@@ -311,23 +264,16 @@ float MgJoinFeatureReader::GetSingle(FdoString* propertyName)
     m_reader->DeterminePropertyFeatureSource(propertyName, &gwsFeatureIter, parsedPropertyName);
     CHECKNULL(gwsFeatureIter, L"MgJoinFeatureReader.GetSingle");
 
-    try
+    if(gwsFeatureIter->IsNull(parsedPropertyName.c_str()))
     {
-        retVal = gwsFeatureIter->GetSingle(parsedPropertyName.c_str());
-    }
-    catch(...)
-    {
-        if(gwsFeatureIter->IsNull(parsedPropertyName.c_str()))
-        {
-            MgStringCollection arguments;
-            arguments.Add(propertyName);
+        MgStringCollection arguments;
+        arguments.Add(propertyName);
 
-            throw new MgNullPropertyValueException(L"MgJoinFeatureReader.GetSingle",
-                __LINE__, __WFILE__, &arguments, L"", NULL);
-        }
-        else
-            throw;
-        }
+        throw new MgNullPropertyValueException(L"MgJoinFeatureReader.GetSingle",
+            __LINE__, __WFILE__, &arguments, L"", NULL);
+    }
+    else
+        retVal = gwsFeatureIter->GetSingle(parsedPropertyName.c_str());
 
     MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgJoinFeatureReader.GetSingle");
 
@@ -346,23 +292,16 @@ FdoString* MgJoinFeatureReader::GetString(FdoString* propertyName)
     m_reader->DeterminePropertyFeatureSource(propertyName, &gwsFeatureIter, parsedPropertyName);
     CHECKNULL(gwsFeatureIter, L"MgJoinFeatureReader.GetString");
 
-    try
+    if(gwsFeatureIter->IsNull(parsedPropertyName.c_str()))
     {
-        retVal = gwsFeatureIter->GetString(parsedPropertyName.c_str());
-    }
-    catch(...)
-    {
-        if(gwsFeatureIter->IsNull(parsedPropertyName.c_str()))
-        {
-            MgStringCollection arguments;
-            arguments.Add(propertyName);
+        MgStringCollection arguments;
+        arguments.Add(propertyName);
 
-            throw new MgNullPropertyValueException(L"MgJoinFeatureReader.GetString",
-                __LINE__, __WFILE__, &arguments, L"", NULL);
-        }
-        else
-            throw;
+        throw new MgNullPropertyValueException(L"MgJoinFeatureReader.GetString",
+            __LINE__, __WFILE__, &arguments, L"", NULL);
     }
+    else
+        retVal = gwsFeatureIter->GetString(parsedPropertyName.c_str());
 
     MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgJoinFeatureReader.GetString");
 
@@ -381,23 +320,16 @@ FdoLOBValue* MgJoinFeatureReader::GetLOB(FdoString* propertyName)
     m_reader->DeterminePropertyFeatureSource(propertyName, &gwsFeatureIter, parsedPropertyName);
     CHECKNULL(gwsFeatureIter, L"MgJoinFeatureReader.GetString");
 
-    try
+    if(gwsFeatureIter->IsNull(parsedPropertyName.c_str()))
     {
-        retVal = gwsFeatureIter->GetLOB(parsedPropertyName.c_str());
-    }
-    catch(...)
-    {
-        if(gwsFeatureIter->IsNull(parsedPropertyName.c_str()))
-        {
-            MgStringCollection arguments;
-            arguments.Add(propertyName);
+        MgStringCollection arguments;
+        arguments.Add(propertyName);
 
-            throw new MgNullPropertyValueException(L"MgJoinFeatureReader.GetLOB",
-                __LINE__, __WFILE__, &arguments, L"", NULL);
-        }
-        else
-            throw;
+        throw new MgNullPropertyValueException(L"MgJoinFeatureReader.GetLOB",
+            __LINE__, __WFILE__, &arguments, L"", NULL);
     }
+    else
+        retVal = gwsFeatureIter->GetLOB(parsedPropertyName.c_str());
 
     MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgJoinFeatureReader.GetLOB");
 
