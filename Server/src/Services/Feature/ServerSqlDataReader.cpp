@@ -297,22 +297,17 @@ bool MgServerSqlDataReader::GetBoolean(CREFSTRING propertyName)
 
     MG_FEATURE_SERVICE_TRY()
 
-    try
+    if(m_sqlReader->IsNull(propertyName.c_str()))
+    {
+        MgStringCollection arguments;
+        arguments.Add(propertyName);
+
+        throw new MgNullPropertyValueException(L"MgServerSqlDataReader.GetBoolean",
+            __LINE__, __WFILE__, &arguments, L"", NULL);
+    }
+    else
     {
         retVal = m_sqlReader->GetBoolean(propertyName.c_str());
-    }
-    catch(...)
-    {
-        if(m_sqlReader->IsNull(propertyName.c_str()))
-        {
-            MgStringCollection arguments;
-            arguments.Add(propertyName);
-
-            throw new MgNullPropertyValueException(L"MgServerSqlDataReader.GetBoolean",
-                __LINE__, __WFILE__, &arguments, L"", NULL);
-        }
-        else
-            throw;
     }
 
     MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgServerSqlDataReader.GetBoolean");
@@ -335,25 +330,20 @@ bool MgServerSqlDataReader::GetBoolean(INT32 index)
 
     MG_FEATURE_SERVICE_TRY()
 
-    try
+    if(m_sqlReader->IsNull(index))
+    {
+        STRING buffer;
+        MgUtil::Int32ToString(index, buffer);
+
+        MgStringCollection arguments;
+        arguments.Add(buffer);
+
+        throw new MgNullPropertyValueException(L"MgServerSqlDataReader.GetBoolean",
+            __LINE__, __WFILE__, &arguments, L"", NULL);
+    }
+    else
     {
         retVal = m_sqlReader->GetBoolean(index);
-    }
-    catch(...)
-    {
-        if(m_sqlReader->IsNull(index))
-        {
-            STRING buffer;
-            MgUtil::Int32ToString(index, buffer);
-
-            MgStringCollection arguments;
-            arguments.Add(buffer);
-
-            throw new MgNullPropertyValueException(L"MgServerSqlDataReader.GetBoolean",
-                __LINE__, __WFILE__, &arguments, L"", NULL);
-        }
-        else
-            throw;
     }
 
     MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgServerSqlDataReader.GetBoolean");
@@ -376,22 +366,17 @@ BYTE MgServerSqlDataReader::GetByte(CREFSTRING propertyName)
 
     MG_FEATURE_SERVICE_TRY()
 
-    try
+    if(m_sqlReader->IsNull(propertyName.c_str()))
+    {
+        MgStringCollection arguments;
+        arguments.Add(propertyName);
+
+        throw new MgNullPropertyValueException(L"MgServerSqlDataReader.GetByte",
+            __LINE__, __WFILE__, &arguments, L"", NULL);
+    }
+    else
     {
         retVal = (BYTE)m_sqlReader->GetByte(propertyName.c_str());
-    }
-    catch(...)
-    {
-        if(m_sqlReader->IsNull(propertyName.c_str()))
-        {
-            MgStringCollection arguments;
-            arguments.Add(propertyName);
-
-            throw new MgNullPropertyValueException(L"MgServerSqlDataReader.GetByte",
-                __LINE__, __WFILE__, &arguments, L"", NULL);
-        }
-        else
-            throw;
     }
 
     MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgServerSqlDataReader.GetByte");
@@ -414,25 +399,20 @@ BYTE MgServerSqlDataReader::GetByte(INT32 index)
 
     MG_FEATURE_SERVICE_TRY()
 
-    try
+    if(m_sqlReader->IsNull(index))
+    {
+        STRING buffer;
+        MgUtil::Int32ToString(index, buffer);
+
+        MgStringCollection arguments;
+        arguments.Add(buffer);
+
+        throw new MgNullPropertyValueException(L"MgServerSqlDataReader.GetByte",
+            __LINE__, __WFILE__, &arguments, L"", NULL);
+    }
+    else
     {
         retVal = (BYTE)m_sqlReader->GetByte(index);
-    }
-    catch(...)
-    {
-        if(m_sqlReader->IsNull(index))
-        {
-            STRING buffer;
-            MgUtil::Int32ToString(index, buffer);
-
-            MgStringCollection arguments;
-            arguments.Add(buffer);
-
-            throw new MgNullPropertyValueException(L"MgServerSqlDataReader.GetByte",
-                __LINE__, __WFILE__, &arguments, L"", NULL);
-        }
-        else
-            throw;
     }
 
     MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgServerSqlDataReader.GetByte");
@@ -455,24 +435,19 @@ MgDateTime* MgServerSqlDataReader::GetDateTime(CREFSTRING propertyName)
 
     MG_FEATURE_SERVICE_TRY()
 
-    try
+    if(m_sqlReader->IsNull(propertyName.c_str()))
+    {
+        MgStringCollection arguments;
+        arguments.Add(propertyName);
+
+        throw new MgNullPropertyValueException(L"MgServerSqlDataReader.GetDateTime",
+            __LINE__, __WFILE__, &arguments, L"", NULL);
+    }
+    else
     {
         FdoDateTime val = m_sqlReader->GetDateTime(propertyName.c_str());
         retVal = new MgDateTime((INT16)val.year, (INT8)val.month, (INT8)val.day,
                                 (INT8)val.hour, (INT8)val.minute, val.seconds);
-    }
-    catch(...)
-    {
-        if(m_sqlReader->IsNull(propertyName.c_str()))
-        {
-            MgStringCollection arguments;
-            arguments.Add(propertyName);
-
-            throw new MgNullPropertyValueException(L"MgServerSqlDataReader.GetDateTime",
-                __LINE__, __WFILE__, &arguments, L"", NULL);
-        }
-        else
-            throw;
     }
 
     MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgServerSqlDataReader.GetDateTime");
@@ -495,27 +470,22 @@ MgDateTime* MgServerSqlDataReader::GetDateTime(INT32 index)
 
     MG_FEATURE_SERVICE_TRY()
 
-    try
+    if(m_sqlReader->IsNull(index))
+    {
+        STRING buffer;
+        MgUtil::Int32ToString(index, buffer);
+
+        MgStringCollection arguments;
+        arguments.Add(buffer);
+
+        throw new MgNullPropertyValueException(L"MgServerSqlDataReader.GetDateTime",
+            __LINE__, __WFILE__, &arguments, L"", NULL);
+    }
+    else
     {
         FdoDateTime val = m_sqlReader->GetDateTime(index);
         retVal = new MgDateTime((INT16)val.year, (INT8)val.month, (INT8)val.day,
                                 (INT8)val.hour, (INT8)val.minute, val.seconds);
-    }
-    catch(...)
-    {
-        if(m_sqlReader->IsNull(index))
-        {
-            STRING buffer;
-            MgUtil::Int32ToString(index, buffer);
-
-            MgStringCollection arguments;
-            arguments.Add(buffer);
-
-            throw new MgNullPropertyValueException(L"MgServerSqlDataReader.GetDateTime",
-                __LINE__, __WFILE__, &arguments, L"", NULL);
-        }
-        else
-            throw;
     }
 
     MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgServerSqlDataReader.GetDateTime");
@@ -539,22 +509,17 @@ float MgServerSqlDataReader::GetSingle(CREFSTRING propertyName)
 
     MG_FEATURE_SERVICE_TRY()
 
-    try
+    if(m_sqlReader->IsNull(propertyName.c_str()))
+    {
+        MgStringCollection arguments;
+        arguments.Add(propertyName);
+
+        throw new MgNullPropertyValueException(L"MgServerSqlDataReader.GetSingle",
+            __LINE__, __WFILE__, &arguments, L"", NULL);
+    }
+    else
     {
         retVal = m_sqlReader->GetSingle(propertyName.c_str());
-    }
-    catch(...)
-    {
-        if(m_sqlReader->IsNull(propertyName.c_str()))
-        {
-            MgStringCollection arguments;
-            arguments.Add(propertyName);
-
-            throw new MgNullPropertyValueException(L"MgServerSqlDataReader.GetSingle",
-                __LINE__, __WFILE__, &arguments, L"", NULL);
-        }
-        else
-            throw;
     }
 
     MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgServerSqlDataReader.GetSingle");
@@ -577,25 +542,20 @@ float MgServerSqlDataReader::GetSingle(INT32 index)
 
     MG_FEATURE_SERVICE_TRY()
 
-    try
+    if(m_sqlReader->IsNull(index))
+    {
+        STRING buffer;
+        MgUtil::Int32ToString(index, buffer);
+
+        MgStringCollection arguments;
+        arguments.Add(buffer);
+
+        throw new MgNullPropertyValueException(L"MgServerSqlDataReader.GetSingle",
+            __LINE__, __WFILE__, &arguments, L"", NULL);
+    }
+    else
     {
         retVal = m_sqlReader->GetSingle(index);
-    }
-    catch(...)
-    {
-        if(m_sqlReader->IsNull(index))
-        {
-            STRING buffer;
-            MgUtil::Int32ToString(index, buffer);
-
-            MgStringCollection arguments;
-            arguments.Add(buffer);
-
-            throw new MgNullPropertyValueException(L"MgServerSqlDataReader.GetSingle",
-                __LINE__, __WFILE__, &arguments, L"", NULL);
-        }
-        else
-            throw;
     }
 
     MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgServerSqlDataReader.GetSingle");
@@ -618,22 +578,17 @@ double MgServerSqlDataReader::GetDouble(CREFSTRING propertyName)
 
     MG_FEATURE_SERVICE_TRY()
 
-    try
+    if(m_sqlReader->IsNull(propertyName.c_str()))
+    {
+        MgStringCollection arguments;
+        arguments.Add(propertyName);
+
+        throw new MgNullPropertyValueException(L"MgServerSqlDataReader.GetDouble",
+            __LINE__, __WFILE__, &arguments, L"", NULL);
+    }
+    else
     {
         retVal = m_sqlReader->GetDouble(propertyName.c_str());
-    }
-    catch(...)
-    {
-        if(m_sqlReader->IsNull(propertyName.c_str()))
-        {
-            MgStringCollection arguments;
-            arguments.Add(propertyName);
-
-            throw new MgNullPropertyValueException(L"MgServerSqlDataReader.GetDouble",
-                __LINE__, __WFILE__, &arguments, L"", NULL);
-        }
-        else
-            throw;
     }
 
     MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgServerSqlDataReader.GetDouble");
@@ -656,25 +611,20 @@ double MgServerSqlDataReader::GetDouble(INT32 index)
 
     MG_FEATURE_SERVICE_TRY()
 
-    try
+    if(m_sqlReader->IsNull(index))
+    {
+        STRING buffer;
+        MgUtil::Int32ToString(index, buffer);
+
+        MgStringCollection arguments;
+        arguments.Add(buffer);
+
+        throw new MgNullPropertyValueException(L"MgServerSqlDataReader.GetDouble",
+            __LINE__, __WFILE__, &arguments, L"", NULL);
+    }
+    else
     {
         retVal = m_sqlReader->GetDouble(index);
-    }
-    catch(...)
-    {
-        if(m_sqlReader->IsNull(index))
-        {
-            STRING buffer;
-            MgUtil::Int32ToString(index, buffer);
-
-            MgStringCollection arguments;
-            arguments.Add(buffer);
-
-            throw new MgNullPropertyValueException(L"MgServerSqlDataReader.GetDouble",
-                __LINE__, __WFILE__, &arguments, L"", NULL);
-        }
-        else
-            throw;
     }
 
     MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgServerSqlDataReader.GetDouble");
@@ -697,22 +647,17 @@ INT16 MgServerSqlDataReader::GetInt16(CREFSTRING propertyName)
 
     MG_FEATURE_SERVICE_TRY()
 
-    try
+    if(m_sqlReader->IsNull(propertyName.c_str()))
+    {
+        MgStringCollection arguments;
+        arguments.Add(propertyName);
+
+        throw new MgNullPropertyValueException(L"MgServerSqlDataReader.GetInt16",
+            __LINE__, __WFILE__, &arguments, L"", NULL);
+    }
+    else
     {
         retVal = (INT16)m_sqlReader->GetInt16(propertyName.c_str());
-    }
-    catch(...)
-    {
-        if(m_sqlReader->IsNull(propertyName.c_str()))
-        {
-            MgStringCollection arguments;
-            arguments.Add(propertyName);
-
-            throw new MgNullPropertyValueException(L"MgServerSqlDataReader.GetInt16",
-                __LINE__, __WFILE__, &arguments, L"", NULL);
-        }
-        else
-            throw;
     }
 
     MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgServerSqlDataReader.GetInt16");
@@ -735,25 +680,20 @@ INT16 MgServerSqlDataReader::GetInt16(INT32 index)
 
     MG_FEATURE_SERVICE_TRY()
 
-    try
+    if(m_sqlReader->IsNull(index))
+    {
+        STRING buffer;
+        MgUtil::Int32ToString(index, buffer);
+
+        MgStringCollection arguments;
+        arguments.Add(buffer);
+
+        throw new MgNullPropertyValueException(L"MgServerSqlDataReader.GetInt16",
+            __LINE__, __WFILE__, &arguments, L"", NULL);
+    }
+    else
     {
         retVal = (INT16)m_sqlReader->GetInt16(index);
-    }
-    catch(...)
-    {
-        if(m_sqlReader->IsNull(index))
-        {
-            STRING buffer;
-            MgUtil::Int32ToString(index, buffer);
-
-            MgStringCollection arguments;
-            arguments.Add(buffer);
-
-            throw new MgNullPropertyValueException(L"MgServerSqlDataReader.GetInt16",
-                __LINE__, __WFILE__, &arguments, L"", NULL);
-        }
-        else
-            throw;
     }
 
     MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgServerSqlDataReader.GetInt16");
@@ -776,22 +716,17 @@ INT32 MgServerSqlDataReader::GetInt32(CREFSTRING propertyName)
 
     MG_FEATURE_SERVICE_TRY()
 
-    try
+    if(m_sqlReader->IsNull(propertyName.c_str()))
+    {
+        MgStringCollection arguments;
+        arguments.Add(propertyName);
+
+        throw new MgNullPropertyValueException(L"MgServerSqlDataReader.GetInt32",
+            __LINE__, __WFILE__, &arguments, L"", NULL);
+    }
+    else
     {
         retVal = (INT32)m_sqlReader->GetInt32(propertyName.c_str());
-    }
-    catch(...)
-    {
-        if(m_sqlReader->IsNull(propertyName.c_str()))
-        {
-            MgStringCollection arguments;
-            arguments.Add(propertyName);
-
-            throw new MgNullPropertyValueException(L"MgServerSqlDataReader.GetInt32",
-                __LINE__, __WFILE__, &arguments, L"", NULL);
-        }
-        else
-            throw;
     }
 
     MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgServerSqlDataReader.GetInt32");
@@ -814,25 +749,20 @@ INT32 MgServerSqlDataReader::GetInt32(INT32 index)
 
     MG_FEATURE_SERVICE_TRY()
 
-    try
+    if(m_sqlReader->IsNull(index))
+    {
+        STRING buffer;
+        MgUtil::Int32ToString(index, buffer);
+
+        MgStringCollection arguments;
+        arguments.Add(buffer);
+
+        throw new MgNullPropertyValueException(L"MgServerSqlDataReader.GetInt32",
+            __LINE__, __WFILE__, &arguments, L"", NULL);
+    }
+    else
     {
         retVal = (INT32)m_sqlReader->GetInt32(index);
-    }
-    catch(...)
-    {
-        if(m_sqlReader->IsNull(index))
-        {
-            STRING buffer;
-            MgUtil::Int32ToString(index, buffer);
-
-            MgStringCollection arguments;
-            arguments.Add(buffer);
-
-            throw new MgNullPropertyValueException(L"MgServerSqlDataReader.GetInt32",
-                __LINE__, __WFILE__, &arguments, L"", NULL);
-        }
-        else
-            throw;
     }
 
     MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgServerSqlDataReader.GetInt32");
@@ -857,22 +787,17 @@ INT64 MgServerSqlDataReader::GetInt64(CREFSTRING propertyName)
 
     MG_FEATURE_SERVICE_TRY()
 
-    try
+    if(m_sqlReader->IsNull(propertyName.c_str()))
+    {
+        MgStringCollection arguments;
+        arguments.Add(propertyName);
+
+        throw new MgNullPropertyValueException(L"MgServerSqlDataReader.GetInt64",
+            __LINE__, __WFILE__, &arguments, L"", NULL);
+    }
+    else
     {
         retVal = (INT64)m_sqlReader->GetInt64(propertyName.c_str());
-    }
-    catch(...)
-    {
-        if(m_sqlReader->IsNull(propertyName.c_str()))
-        {
-            MgStringCollection arguments;
-            arguments.Add(propertyName);
-
-            throw new MgNullPropertyValueException(L"MgServerSqlDataReader.GetInt64",
-                __LINE__, __WFILE__, &arguments, L"", NULL);
-        }
-        else
-            throw;
     }
 
     MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgServerSqlDataReader.GetInt64");
@@ -897,25 +822,20 @@ INT64 MgServerSqlDataReader::GetInt64(INT32 index)
 
     MG_FEATURE_SERVICE_TRY()
 
-    try
+    if(m_sqlReader->IsNull(index))
+    {
+        STRING buffer;
+        MgUtil::Int32ToString(index, buffer);
+
+        MgStringCollection arguments;
+        arguments.Add(buffer);
+
+        throw new MgNullPropertyValueException(L"MgServerSqlDataReader.GetInt64",
+            __LINE__, __WFILE__, &arguments, L"", NULL);
+    }
+    else
     {
         retVal = (INT64)m_sqlReader->GetInt64(index);
-    }
-    catch(...)
-    {
-        if(m_sqlReader->IsNull(index))
-        {
-            STRING buffer;
-            MgUtil::Int32ToString(index, buffer);
-
-            MgStringCollection arguments;
-            arguments.Add(buffer);
-
-            throw new MgNullPropertyValueException(L"MgServerSqlDataReader.GetInt64",
-                __LINE__, __WFILE__, &arguments, L"", NULL);
-        }
-        else
-            throw;
     }
 
     MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgServerSqlDataReader.GetInt64");
@@ -938,7 +858,15 @@ STRING MgServerSqlDataReader::GetString(CREFSTRING propertyName)
 
     MG_FEATURE_SERVICE_TRY()
 
-    try
+    if(m_sqlReader->IsNull(propertyName.c_str()))
+    {
+        MgStringCollection arguments;
+        arguments.Add(propertyName);
+
+        throw new MgNullPropertyValueException(L"MgServerSqlDataReader.GetString",
+            __LINE__, __WFILE__, &arguments, L"", NULL);
+    }
+    else
     {
         INT32 length = 0;
         const wchar_t* str = this->GetString(propertyName.c_str(), length);
@@ -946,19 +874,6 @@ STRING MgServerSqlDataReader::GetString(CREFSTRING propertyName)
         {
             retVal = str;
         }
-    }
-    catch(...)
-    {
-        if(m_sqlReader->IsNull(propertyName.c_str()))
-        {
-            MgStringCollection arguments;
-            arguments.Add(propertyName);
-
-            throw new MgNullPropertyValueException(L"MgServerSqlDataReader.GetString",
-                __LINE__, __WFILE__, &arguments, L"", NULL);
-        }
-        else
-            throw;
     }
 
     MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgServerSqlDataReader.GetString");
@@ -981,7 +896,18 @@ STRING MgServerSqlDataReader::GetString(INT32 index)
 
     MG_FEATURE_SERVICE_TRY()
 
-    try
+    if(m_sqlReader->IsNull(index))
+    {
+        STRING buffer;
+        MgUtil::Int32ToString(index, buffer);
+
+        MgStringCollection arguments;
+        arguments.Add(buffer);
+
+        throw new MgNullPropertyValueException(L"MgServerSqlDataReader.GetString",
+            __LINE__, __WFILE__, &arguments, L"", NULL);
+    }
+    else
     {
         INT32 length = 0;
         const wchar_t* str = this->GetString(index, length);
@@ -989,22 +915,6 @@ STRING MgServerSqlDataReader::GetString(INT32 index)
         {
             retVal = str;
         }
-    }
-    catch(...)
-    {
-        if(m_sqlReader->IsNull(index))
-        {
-            STRING buffer;
-            MgUtil::Int32ToString(index, buffer);
-
-            MgStringCollection arguments;
-            arguments.Add(buffer);
-
-            throw new MgNullPropertyValueException(L"MgServerSqlDataReader.GetString",
-                __LINE__, __WFILE__, &arguments, L"", NULL);
-        }
-        else
-            throw;
     }
 
     MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgServerSqlDataReader.GetString");
@@ -1027,22 +937,17 @@ MgByteReader* MgServerSqlDataReader::GetBLOB(CREFSTRING propertyName)
 
     MG_FEATURE_SERVICE_TRY()
 
-    try
+    if(m_sqlReader->IsNull(propertyName.c_str()))
+    {
+        MgStringCollection arguments;
+        arguments.Add(propertyName);
+
+        throw new MgNullPropertyValueException(L"MgServerSqlDataReader.GetBLOB",
+            __LINE__, __WFILE__, &arguments, L"", NULL);
+    }
+    else
     {
         byteReader = this->GetLOB(propertyName);
-    }
-    catch(...)
-    {
-        if(m_sqlReader->IsNull(propertyName.c_str()))
-        {
-            MgStringCollection arguments;
-            arguments.Add(propertyName);
-
-            throw new MgNullPropertyValueException(L"MgServerSqlDataReader.GetBLOB",
-                __LINE__, __WFILE__, &arguments, L"", NULL);
-        }
-        else
-            throw;
     }
 
     MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgServerSqlDataReader.GetBLOB");
@@ -1065,25 +970,20 @@ MgByteReader* MgServerSqlDataReader::GetBLOB(INT32 index)
 
     MG_FEATURE_SERVICE_TRY()
 
-    try
+    if(m_sqlReader->IsNull(index))
+    {
+        STRING buffer;
+        MgUtil::Int32ToString(index, buffer);
+
+        MgStringCollection arguments;
+        arguments.Add(buffer);
+
+        throw new MgNullPropertyValueException(L"MgServerSqlDataReader.GetBLOB",
+            __LINE__, __WFILE__, &arguments, L"", NULL);
+    }
+    else
     {
         byteReader = this->GetLOB(index);
-    }
-    catch(...)
-    {
-        if(m_sqlReader->IsNull(index))
-        {
-            STRING buffer;
-            MgUtil::Int32ToString(index, buffer);
-
-            MgStringCollection arguments;
-            arguments.Add(buffer);
-
-            throw new MgNullPropertyValueException(L"MgServerSqlDataReader.GetBLOB",
-                __LINE__, __WFILE__, &arguments, L"", NULL);
-        }
-        else
-            throw;
     }
 
     MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgServerSqlDataReader.GetBLOB");
@@ -1106,22 +1006,17 @@ MgByteReader* MgServerSqlDataReader::GetCLOB(CREFSTRING propertyName)
 
     MG_FEATURE_SERVICE_TRY()
 
-    try
+    if(m_sqlReader->IsNull(propertyName.c_str()))
+    {
+        MgStringCollection arguments;
+        arguments.Add(propertyName);
+
+        throw new MgNullPropertyValueException(L"MgServerSqlDataReader.GetCLOB",
+            __LINE__, __WFILE__, &arguments, L"", NULL);
+    }
+    else
     {
         byteReader = this->GetLOB(propertyName);
-    }
-    catch(...)
-    {
-        if(m_sqlReader->IsNull(propertyName.c_str()))
-        {
-            MgStringCollection arguments;
-            arguments.Add(propertyName);
-
-            throw new MgNullPropertyValueException(L"MgServerSqlDataReader.GetCLOB",
-                __LINE__, __WFILE__, &arguments, L"", NULL);
-        }
-        else
-            throw;
     }
 
     MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgServerSqlDataReader.GetCLOB");
@@ -1144,25 +1039,20 @@ MgByteReader* MgServerSqlDataReader::GetCLOB(INT32 index)
 
     MG_FEATURE_SERVICE_TRY()
 
-    try
+    if(m_sqlReader->IsNull(index))
+    {
+        STRING buffer;
+        MgUtil::Int32ToString(index, buffer);
+
+        MgStringCollection arguments;
+        arguments.Add(buffer);
+
+        throw new MgNullPropertyValueException(L"MgServerSqlDataReader.GetCLOB",
+            __LINE__, __WFILE__, &arguments, L"", NULL);
+    }
+    else
     {
         byteReader = this->GetLOB(index);
-    }
-    catch(...)
-    {
-        if(m_sqlReader->IsNull(index))
-        {
-            STRING buffer;
-            MgUtil::Int32ToString(index, buffer);
-
-            MgStringCollection arguments;
-            arguments.Add(buffer);
-
-            throw new MgNullPropertyValueException(L"MgServerSqlDataReader.GetCLOB",
-                __LINE__, __WFILE__, &arguments, L"", NULL);
-        }
-        else
-            throw;
     }
 
     MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgServerSqlDataReader.GetCLOB");
@@ -1276,7 +1166,15 @@ MgByteReader* MgServerSqlDataReader::GetLOB(CREFSTRING propertyName)
 
     Ptr<MgByteReader> byteReader;
 
-    try
+    if(m_sqlReader->IsNull(propertyName.c_str()))
+    {
+        MgStringCollection arguments;
+        arguments.Add(propertyName);
+
+        throw new MgNullPropertyValueException(L"MgServerSqlDataReader.GetLOB",
+            __LINE__, __WFILE__, &arguments, L"", NULL);
+    }
+    else
     {
         // TODO: We need to switch to FdoIStreamReader when we have streaming capability in MgByteReader
         FdoPtr<FdoLOBValue> fdoVal = m_sqlReader->GetLOB(propertyName.c_str());
@@ -1295,19 +1193,6 @@ MgByteReader* MgServerSqlDataReader::GetLOB(CREFSTRING propertyName)
             }
         }
     }
-    catch(...)
-    {
-        if(m_sqlReader->IsNull(propertyName.c_str()))
-        {
-            MgStringCollection arguments;
-            arguments.Add(propertyName);
-
-            throw new MgNullPropertyValueException(L"MgServerSqlDataReader.GetLOB",
-                __LINE__, __WFILE__, &arguments, L"", NULL);
-        }
-        else
-            throw;
-    }
     return byteReader.Detach();
 }
 
@@ -1317,7 +1202,18 @@ MgByteReader* MgServerSqlDataReader::GetLOB(INT32 index)
 
     Ptr<MgByteReader> byteReader;
 
-    try
+    if(m_sqlReader->IsNull(index))
+    {
+        STRING buffer;
+        MgUtil::Int32ToString(index, buffer);
+
+        MgStringCollection arguments;
+        arguments.Add(buffer);
+
+        throw new MgNullPropertyValueException(L"MgServerSqlDataReader.GetLOB",
+            __LINE__, __WFILE__, &arguments, L"", NULL);
+    }
+    else
     {
         // TODO: We need to switch to FdoIStreamReader when we have streaming capability in MgByteReader
         FdoPtr<FdoLOBValue> fdoVal = m_sqlReader->GetLOB(index);
@@ -1335,22 +1231,6 @@ MgByteReader* MgServerSqlDataReader::GetLOB(INT32 index)
                 byteReader = byteSource->GetReader();
             }
         }
-    }
-    catch(...)
-    {
-        if(m_sqlReader->IsNull(index))
-        {
-            STRING buffer;
-            MgUtil::Int32ToString(index, buffer);
-
-            MgStringCollection arguments;
-            arguments.Add(buffer);
-
-            throw new MgNullPropertyValueException(L"MgServerSqlDataReader.GetLOB",
-                __LINE__, __WFILE__, &arguments, L"", NULL);
-        }
-        else
-            throw;
     }
     return byteReader.Detach();
 }
@@ -1510,26 +1390,21 @@ const wchar_t* MgServerSqlDataReader::GetString(CREFSTRING propertyName, INT32& 
 
     MG_FEATURE_SERVICE_TRY()
 
-    try
+    if(m_sqlReader->IsNull(propertyName.c_str()))
+    {
+        MgStringCollection arguments;
+        arguments.Add(propertyName);
+
+        throw new MgNullPropertyValueException(L"MgServerSqlDataReader.GetString",
+            __LINE__, __WFILE__, &arguments, L"", NULL);
+    }
+    else
     {
         retVal = m_sqlReader->GetString(propertyName.c_str());
         if (retVal != NULL)
         {
             length = (INT32)wcslen((const wchar_t*)retVal);
         }
-    }
-    catch(...)
-    {
-        if(m_sqlReader->IsNull(propertyName.c_str()))
-        {
-            MgStringCollection arguments;
-            arguments.Add(propertyName);
-
-            throw new MgNullPropertyValueException(L"MgServerSqlDataReader.GetString",
-                __LINE__, __WFILE__, &arguments, L"", NULL);
-        }
-        else
-            throw;
     }
 
     MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgServerDataReader.GetString");
@@ -1552,29 +1427,24 @@ const wchar_t* MgServerSqlDataReader::GetString(INT32 index, INT32& length)
 
     MG_FEATURE_SERVICE_TRY()
 
-    try
+    if(m_sqlReader->IsNull(index))
+    {
+        STRING buffer;
+        MgUtil::Int32ToString(index, buffer);
+
+        MgStringCollection arguments;
+        arguments.Add(buffer);
+
+        throw new MgNullPropertyValueException(L"MgServerSqlDataReader.GetString",
+            __LINE__, __WFILE__, &arguments, L"", NULL);
+    }
+    else
     {
         retVal = m_sqlReader->GetString(index);
         if (retVal != NULL)
         {
             length = (INT32)wcslen((const wchar_t*)retVal);
         }
-    }
-    catch(...)
-    {
-        if(m_sqlReader->IsNull(index))
-        {
-            STRING buffer;
-            MgUtil::Int32ToString(index, buffer);
-
-            MgStringCollection arguments;
-            arguments.Add(buffer);
-
-            throw new MgNullPropertyValueException(L"MgServerSqlDataReader.GetString",
-                __LINE__, __WFILE__, &arguments, L"", NULL);
-        }
-        else
-            throw;
     }
 
     MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgServerDataReader.GetString");
