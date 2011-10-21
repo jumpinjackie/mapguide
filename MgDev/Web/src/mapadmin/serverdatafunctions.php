@@ -2395,7 +2395,7 @@
                 else
                 {
                     //if existed, update the modify time
-                    $settingElement->getElementsByTagName("modifyTime")->item(0)->nodeValue = date(DATE_W3C);
+                    $settingElement->getElementsByTagName("modifyTime")->item(0)->nodeValue = date("F d ,Y h:i:s A");
                 }
             }
             else
@@ -2470,7 +2470,7 @@
             $scaleElement = $recentSettingsDoc->createElement("scale", $scale);
             $newSettingElement->appendChild($scaleElement);
 
-            $createDate = date(DATE_W3C);
+            $createDate = date("F d ,Y h:i:s A");
             $createTimeElement = $recentSettingsDoc->createElement("modifyTime", $createDate);
             $newSettingElement->appendChild($createTimeElement);
 
@@ -2771,6 +2771,10 @@
                                 case "ScaleRange":
                                     $minScale = $node->getElementsByTagName("MinScale")->item(0)->nodeValue;
                                     $maxScale = $node->getElementsByTagName("MaxScale")->item(0)->nodeValue;
+                                    if($maxScale === "1000000000000")
+                                    {
+                                        $maxScale = "Infinity";
+                                    }
                                     $tempLayerProfileData->ScaleRange= $minScale." - ".$maxScale;
                                     break;
                                 case "Filter":
