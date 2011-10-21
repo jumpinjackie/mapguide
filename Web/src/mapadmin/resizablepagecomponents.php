@@ -2235,6 +2235,9 @@
                 $replace = "<br/>";
                 $newFilters = str_replace($order, $replace, $str);
 
+                //the js script should not contain special char will will break the code
+                $newFilters = str_replace("'", "\'", $newFilters);
+
                 $script = $script." layerDetailValues[".$i."]=new Array(3); ";
                 $script = $script." layerDetailValues[".$i."][0]='".$value->LayerName."'; ";
                 $script = $script." layerDetailValues[".$i."][1]='".$newFilters."'; ";
@@ -2251,34 +2254,44 @@
         {
             echo "<tr style='height: 25px;'>","\n";
             
-            echo '<td style="width:'.$this->mapProfileResult->MapProfileData->GetLayerRenderPercent() .'%; background-color: #E4C7AE;font-size:80%;">',"\n";
-            echo number_format($this->mapProfileResult->MapProfileData->TotalLayerRenderTime,2)."&nbsp;ms&nbsp;";
-            echo "(" . $this->mapProfileResult->MapProfileData->GetLayerRenderPercent() . "%)","\n";
-            echo '</td>',"\n";
-
-            echo '<td style="width: '.$this->mapProfileResult->MapProfileData->GetLabelRenderPercent().'%; background-color: #AECBE4;font-size:80%;">',"\n";
-            echo number_format($this->mapProfileResult->MapProfileData->TotalLabelRenderTime,2)."&nbsp;ms&nbsp;";
-            echo "(".$this->mapProfileResult->MapProfileData->GetLabelRenderPercent()."%)","\n";
-            echo "</td>","\n";
-
-            echo '<td style="width: '.$this->mapProfileResult->MapProfileData->GetWartermarkRenderPercent().'%; background-color: #E79661;font-size:80%;">',"\n";
-            echo number_format($this->mapProfileResult->MapProfileData->TotalWatermarkRenderTime,2)."&nbsp;ms&nbsp;";
-            echo "(".$this->mapProfileResult->MapProfileData->GetWartermarkRenderPercent()."%)","\n";
-            echo "</td>","\n";
-
-            echo '<td style="width: '.$this->mapProfileResult->MapProfileData->GetImageRenderPercent().'%; background-color: #BE76EE;font-size:80%;">',"\n";
-            echo number_format($this->mapProfileResult->MapProfileData->TotalImageRenderTime,2)."&nbsp;ms&nbsp;";
-            echo "(".$this->mapProfileResult->MapProfileData->GetImageRenderPercent()."%)","\n";
-            echo "</td>","\n";
-
-            echo '<td style="width: '.$this->mapProfileResult->MapProfileData->GetOthersRenderPercent().'%; background-color: #999999;font-size:80%;">',"\n";
-            //for "Other" we don't need the text, because the width of the td is always too small for the text
-            //echo $this->mapProfileResult->MapProfileData->GetOtherRenderTime()."&nbsp;ms&nbsp;";
-            //echo "(".$this->mapProfileResult->MapProfileData->GetOthersRenderPercent()."%)","\n";
-            echo "</td>","\n";
+            $this->OutputMapRenderTimeGraphItem($this->mapProfileResult->MapProfileData->GetLayerRenderPercent(),$this->mapProfileResult->MapProfileData->TotalLayerRenderTime,"#E4C7AE");
+            $this->OutputMapRenderTimeGraphItem($this->mapProfileResult->MapProfileData->GetLabelRenderPercent(),$this->mapProfileResult->MapProfileData->TotalLabelRenderTime,"#AECBE4");
+            $this->OutputMapRenderTimeGraphItem($this->mapProfileResult->MapProfileData->GetWartermarkRenderPercent(),$this->mapProfileResult->MapProfileData->TotalWatermarkRenderTime,"#E79661");
+            $this->OutputMapRenderTimeGraphItem($this->mapProfileResult->MapProfileData->GetImageRenderPercent(),$this->mapProfileResult->MapProfileData->TotalImageRenderTime,"BE76EE");
+            $this->OutputMapRenderTimeGraphItem($this->mapProfileResult->MapProfileData->GetOthersRenderPercent(),$this->mapProfileResult->MapProfileData->GetOtherRenderTime(),"#999999");
 
             echo "</tr>","\n";
         }
+
+        public function OutputMapRenderTimeGraphItem($percent,$TotalTime,$bgColor)
+        {
+            $tipDivId = "timeGraphTipDiv".rand(0, 99);
+
+            //if the percent if too small, then column will not big enough to show text, so we need the tip, also we should set the minmun width as 20px
+            if(0.01<= $percent && $percent <= 2.29)
+            {
+                echo '<td style="width:20px; background-color: '.$bgColor.';font-size:80%; overflow:hidden;text-overflow:ellipsis; cursor:default;"';
+                echo ' onmouseout="HideToolTop(\''.$tipDivId.'\');" onmousemove="ShowToopTip(this,\''.$tipDivId.'\',event);" onmouseover="ShowToopTip(this,\''.$tipDivId.'\',event);"';
+                echo '>',"\n";
+            }
+            else
+            {
+                echo '<td style="width:'.$percent.'%; background-color: '.$bgColor.';font-size:80%; overflow:hidden;text-overflow:ellipsis; cursor:default;"';
+                echo ' onmouseout="HideToolTop(\''.$tipDivId.'\');" onmousemove="ShowToopTip(this,\''.$tipDivId.'\',event);" onmouseover="ShowToopTip(this,\''.$tipDivId.'\',event);"';
+                echo '>',"\n";
+            }
+
+            echo '<div id="'.$tipDivId.'" class="hideTooltip">',"\n";
+            echo $TotalTime."&nbsp;ms&nbsp;";
+            echo "(" . $percent . "%)","\n";
+            echo '</div>',"\n";
+
+            echo number_format($TotalTime,2)."&nbsp;ms&nbsp;";
+            echo "(" . $percent . "%)","\n";
+
+            echo '</td>',"\n";
+        }
+
 
         public function OutputMapResourceNameWithToolTip($mapResourceID,$IsSetting)
         {
@@ -2354,10 +2367,10 @@
                 $this->OutputMapResourceNameWithToolTip($currentSetting->MapResourceId,true);
                 echo "</td></tr><tr>","\n";
                 echo "<td style='width:50%;text-align: left;'>","\n";
-                echo $dTime->format("M d,Y");
+                echo $dTime->format("F d,Y");
                 echo "</td>","\n";
                 echo "<td style='width:50%;text-align: right;'>","\n";
-                echo $dTime->format("h:m:s A");
+                echo $dTime->format("h:i:s A");
                 echo "</td>","\n";
                 echo "</tr></table></td></tr></table>","\n";
             }

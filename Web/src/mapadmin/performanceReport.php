@@ -39,9 +39,80 @@ try
     $errorMsg = "";
     $mapProfileResult=new MapProfileResult();
     $mapResources;
-    $mapResourceShortNames;
     $displayManager = new DisplayProfileResultManager();
     $recentSettings = new RecentSettings();
+
+    //this user-defined sort function is according to the design
+    function CompareMapName($a, $b)
+    {
+        $strA = $a["ShortNames"];
+        $strB = $b["ShortNames"];
+
+        $strALength = strlen($strA);
+        $strBLength = strlen($strB);
+        $length = 0;
+
+        if($strALength >= $strBLength)
+        {
+            $length = $strBLength;
+        }
+        else
+        {
+            $length = $strALength;
+        }
+
+        if(0 == $strALength)
+        {
+            return 0;
+        }
+
+        for($i = 0; $i < $length; $i++)
+        {
+            $strALower = strtolower($strA[$i]);
+            $strBLower = strtolower($strB[$i]);
+
+            if($strALower == $strBLower)
+            {
+                if($strA[$i] == $strB[$i])
+                {
+                    continue;
+                }
+
+                if(strtoupper($strA[$i]) == $strB[$i])
+                {
+                    return -1;
+                }
+
+                if(strtolower($strA[$i]) == $strB[$i])
+                {
+                    return 1;
+                }
+            }
+            else if($strALower < $strBLower)
+            {
+                return -1;
+            }
+            else
+            {
+                return 1;
+            }
+        }
+
+        if($strALength == $strBLength)
+        {
+            return 0;
+        }
+
+        if($strALength > $strBLength)
+        {
+            return 1;
+        }
+
+        if($strALength < $strBLength)
+        {
+            return -1;
+        }
+    }
 
     function GetAllMapResources()
     {
@@ -50,7 +121,6 @@ try
             global $site;
             global $userInfo;
             global $mapResources;
-            global $mapResourceShortNames;
             $mapResourcesXml = "";
 
             // Enumerates all maps in the library
@@ -79,13 +149,11 @@ try
                 $mapResourceID = $resourceIdNodeList->item($i)->nodeValue;
                 $shortMapName = strrchr($mapResourceID, '/');
                 $shortMapName = substr($shortMapName, 1, strlen($shortMapName) - 15);
-                $mapResources[$i] = $mapResourceID;
-                $mapResourceShortNames[$i] = $shortMapName;
+                $mapResources[$i]["FullNames"] = $mapResourceID;
+                $mapResources[$i]["ShortNames"] = $shortMapName;
             }
 
-            //Case insensitive sorting
-            $mapResourceShortNames_Lower = array_map("strtolower", $mapResourceShortNames);
-            array_multisort($mapResourceShortNames_Lower, SORT_ASC, SORT_STRING,$mapResources,$mapResourceShortNames);
+            usort($mapResources, "CompareMapName");
         }
         catch (Exception $exc)
         {
@@ -994,6 +1062,9 @@ catch ( Exception $e )
 
                     var scaleSaved = document.getElementById("mapViewerLastOpenScale");
                     scaleSaved.value = scale;
+
+                    //when the user set the new value from the mapviewer, the warning info should be shown
+                    ShowReportWarningMsg();
                 }
 
                 function makeMessageShorter(mapFrame)
@@ -1350,7 +1421,7 @@ catch ( Exception $e )
 
                         if(Trim(result) == "mapNotExist")
                         {
-                            alert("The selected map resource is longer available. Select a different map resource to continue.");
+                            alert("The selected map resource is no longer available. Select a different map resource to continue.");
                             btnClear.style.display = "inline";
                             loadingImg.style.display = "none";
                             SetRunButtonState(true);
@@ -1372,6 +1443,10 @@ catch ( Exception $e )
                         SetRecentSettingsContent();
 
                         SaveLastRunSettings();
+
+                        //make the layer table default sorting
+                        var layerTableHeader = document.getElementById("layerHeaderTable");
+                        SortLayers.sortByColumn(layerTableHeader.tHead.rows[0].children[0]);
                     }
                 }
 
@@ -1886,7 +1961,7 @@ catch ( Exception $e )
                         }
                         else
                         {
-                            alert("The selected map resource is longer available. Select a different map resource to continue.");
+                            alert("The selected map resource is no longer available. Select a different map resource to continue.");
                             return;
                         }
 
@@ -1966,10 +2041,10 @@ catch ( Exception $e )
                                                                        //<option value="Library://Samples/Sheboygan/Maps/Sheboygan.MapDefinition">Sheboygan</option>
                                                                        for ($i = 0; $i < count($mapResources); $i++)
                                                                        {
-                                                                            echo "<option value=";
-                                                                            echo "'$mapResources[$i]'";
-                                                                            echo ">";
-                                                                            echo $mapResourceShortNames[$i];
+                                                                            echo "<option value='";
+                                                                            echo $mapResources[$i]["FullNames"];
+                                                                            echo "'>";
+                                                                            echo $mapResources[$i]["ShortNames"];
                                                                             echo "</option>";
                                                                        }
                                                                    ?>

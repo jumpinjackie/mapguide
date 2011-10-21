@@ -405,7 +405,7 @@ catch ( Exception $e )
     <tr>
         <td colspan="2">
             <div>
-                <table style="width:100%; padding: 0px; text-align: center;" cellspacing="0" cellpadding="0">
+                <table style="width:100%; padding: 0px; text-align: center; table-layout: fixed;" cellspacing="0" cellpadding="0">
                     <?php
                         $displayManager->OutputMapRenderTimeGraph();
                     ?>
