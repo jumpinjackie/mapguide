@@ -157,14 +157,14 @@ function BuildLayersAndGroups(node)
     
     //expand/collapse icon
     item += '<td width=16 id="Ex_' + node.objectId + '">' + (isGroup? MakeExpandCode(node) : MakeBlankCode()) + '</td>';
-    if(isGroup || !node.base)
+    if(!node.base||isGroup)
     {
         //checkbox
         item += '<td width=16 id="Chk_' + node.objectId + '">' + MakeCheckCode(node) + '</td>';
-        if(node.code == "L" && node.selectable)
-        {
-          item += '<td width=16 id="Sel_' + node.objectId + '">' + MakeSelectableCode(node) + '</td>';
-        }
+    }
+    if(node.code == "L" && node.selectable)
+    {
+        item += '<td width=16 id="Sel_' + node.objectId + '">' + MakeSelectableCode(node) + '</td>';
     }
     //icon
     if(legendTextNoWrap)
