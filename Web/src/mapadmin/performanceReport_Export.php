@@ -56,7 +56,7 @@
     $extents= '"MinX:' . $x1 . '    MinY:' . $y1.'    MaxX:' . $x2 . '    MaxY:' . $y2.'"';
 
     //get the scale display string
-    $scale= "1:" . number_format($mapProfileResult->MapProfileData->Scale,0,"."," ");
+    $scale= "1:" . number_format($mapProfileResult->MapProfileData->Scale,4,"."," ");
 
     //get the center point display string
     list($centerPointX, $centerPointY) = explode("*", $_REQUEST["centerPoint"]);

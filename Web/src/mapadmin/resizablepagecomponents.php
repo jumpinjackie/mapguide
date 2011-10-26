@@ -2184,11 +2184,11 @@
                 //set different colors for alternate rows and when mouse move over the row it will change color
                 if(0 == $rowNumber%2)
                 {
-                    echo '<tr class="even" onmouseover="HighlightRow(this);" onmouseout="UnhighlightRow(this);" onclick="LayerDataTableRowClicked(\''.$layerProfileData->LayerName.'\');">',"\n";
+                    echo '<tr class="even" rowselected="false" onclick="LayerDataTableRowClicked(\''.$layerProfileData->LayerName.'\',this);">',"\n";
                 }
                 else
                 {
-                    echo '<tr class="odd" onmouseover="HighlightRow(this);" onmouseout="UnhighlightRow(this);" onclick="LayerDataTableRowClicked(\''.$layerProfileData->LayerName.'\');">',"\n";
+                    echo '<tr class="odd" rowselected="false" onclick="LayerDataTableRowClicked(\''.$layerProfileData->LayerName.'\',this);">',"\n";
                 }
 
                 //output the layer profiling information by each column,

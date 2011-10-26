@@ -385,7 +385,7 @@ catch ( Exception $e )
                         <td style=" font-weight: bold;">Scale:</td>
                         <td>
                             <?php
-                                echo "1:" . number_format($mapProfileResult->MapProfileData->Scale,0,"."," ");
+                                echo "1:" . number_format($mapProfileResult->MapProfileData->Scale,4,"."," ");
                             ?>
                         </td>
                     </tr>
