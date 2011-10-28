@@ -181,6 +181,7 @@ INTERNAL_API:
     static const STRING FormatExceptionLocationMethods;
     static const STRING FormatExceptionLocationLines;
     static const STRING FormatExceptionLocationFiles;
+    static const STRING MentorDictionaryPath;
     static const STRING ServerStarting;
     static const STRING ServerShuttingDown;
     static const STRING ServerStarted;

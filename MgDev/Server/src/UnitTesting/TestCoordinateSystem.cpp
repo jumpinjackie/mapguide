@@ -82,6 +82,10 @@ void TestCoordinateSystem::tearDown()
 void TestCoordinateSystem::TestStart()
 {
     ACE_DEBUG((LM_INFO, ACE_TEXT("\nRunning Coordinate System tests. (Mentor)\n")));
+    Ptr<MgCoordinateSystemFactory> csFactory = new MgCoordinateSystemFactory();
+    Ptr<MgCoordinateSystemCatalog> csCatalog = csFactory->GetCatalog();
+    STRING dictPath = csCatalog->GetDictionaryDir();
+    ACE_DEBUG((LM_INFO, ACE_TEXT("\nCoordinate System Dictionary Path is: %W\n"), dictPath.c_str()));
 //    memset(&state, 0, sizeof(_CrtMemState));
 //    _CrtMemCheckpoint(&state);
 }

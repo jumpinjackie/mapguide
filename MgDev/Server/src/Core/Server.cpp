@@ -720,6 +720,7 @@ int MgServer::open(void *args)
     ACE_DEBUG ((LM_DEBUG, ACE_TEXT("(%t) MgServer::open()\n")));
     ACE_UNUSED_ARG(args);
     int nResult = 0;
+    STRING mentorDictPath;
 
     MG_TRY()
     {
@@ -864,6 +865,7 @@ int MgServer::open(void *args)
         {
             // Check Coordinate System initialization, if the following fails it should throw an exception
             ACE_DEBUG((LM_DEBUG, ACE_TEXT("(%t) MgServer::open() - Initializing Coordinate System Library.\n")));
+            
             Ptr<MgCoordinateSystemFactory> csFactory = new MgCoordinateSystemFactory();
             Ptr<MgCoordinateSystemCatalog> csCatalog = csFactory->GetCatalog();
 
@@ -872,6 +874,20 @@ int MgServer::open(void *args)
             {
                 throw new MgCoordinateSystemInitializationFailedException(
                     L"MgServer.open", __LINE__, __WFILE__, NULL, L"", NULL);
+            }
+
+            // Update the dictionary path with our configured value
+            pConfiguration->GetStringValue(MgConfigProperties::GeneralPropertiesSection, MgConfigProperties::GeneralPropertyMentorDictionaryPath, mentorDictPath, MgConfigProperties::DefaultGeneralPropertyMentorDictionaryPath);
+            if (!mentorDictPath.empty())
+            {
+                // Check if path ends with a '/' if not, add one if needed
+                MgFileUtil::AppendSlashToEndOfPath(mentorDictPath);
+                csCatalog->SetDictionaryDir(mentorDictPath);
+            }
+            else
+            {
+                mentorDictPath = L"";
+                ACE_DEBUG((LM_INFO, ACE_TEXT("(%t) Warning - No configured dictionary path found. Defaulting to MENTOR_DICTIONARY_PATH environment variable.\n")));
             }
 
             // Did we successfully initialize the coordinate system library?
@@ -1197,7 +1213,20 @@ int MgServer::open(void *args)
 
         // Identify the coordinate system base library
         Ptr<MgCoordinateSystemFactory> csFactory = new MgCoordinateSystemFactory();
-        message = csFactory->GetBaseLibrary();
+        if (!mentorDictPath.empty())
+        {
+            MgStringCollection fmtArgs;
+            fmtArgs.Add(csFactory->GetBaseLibrary());
+            fmtArgs.Add(mentorDictPath);
+            message = pResources->FormatMessage(MgResources::MentorDictionaryPath, &fmtArgs);
+        }
+        else
+        {
+            MgStringCollection fmtArgs;
+            fmtArgs.Add(csFactory->GetBaseLibrary());
+            fmtArgs.Add(L"MENTOR_DICTIONARY_PATH");
+            message = pResources->FormatMessage(MgResources::MentorDictionaryPath, &fmtArgs);
+        }
         ACE_DEBUG ((LM_INFO, ACE_TEXT("(%t) %W\n"), message.c_str()));
 
         // Start the service execution thread

@@ -64,10 +64,10 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="ACEd.lib"
+				AdditionalDependencies="ACEd.lib MgGeometryd.lib"
 				OutputFile="$(OutDir)\MgWebSupportd.dll"
 				LinkIncremental="2"
-				AdditionalLibraryDirectories="..\..\..\Oem\ACE\ACE_wrappers\lib"
+				AdditionalLibraryDirectories="..\..\..\Oem\ACE\ACE_wrappers\lib;..\..\..\Common\lib\debug"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="$(OutDir)\MgWebSupportd.pdb"
 				SubSystem="2"
@@ -143,10 +143,10 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="ACEd.lib"
+				AdditionalDependencies="ACEd.lib MgGeometryd.lib"
 				OutputFile="$(OutDir)\MgWebSupportd.dll"
 				LinkIncremental="2"
-				AdditionalLibraryDirectories="..\..\..\Oem\ACE\ACE_wrappers\lib64"
+				AdditionalLibraryDirectories="..\..\..\Oem\ACE\ACE_wrappers\lib64;..\..\..\Common\lib\debug64"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="$(OutDir)\MgWebSupportd.pdb"
 				SubSystem="2"
@@ -221,10 +221,10 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="ACE.lib"
+				AdditionalDependencies="ACE.lib MgGeometry.lib"
 				OutputFile="$(OutDir)\MgWebSupport.dll"
 				LinkIncremental="1"
-				AdditionalLibraryDirectories="..\..\..\Oem\ACE\ACE_wrappers\lib"
+				AdditionalLibraryDirectories="..\..\..\Oem\ACE\ACE_wrappers\lib;..\..\..\Common\lib\release"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="$(OutDir)\MgWebSupport.pdb"
 				SubSystem="2"
@@ -301,10 +301,10 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="ACE.lib"
+				AdditionalDependencies="ACE.lib MgGeometry.lib"
 				OutputFile="$(OutDir)\MgWebSupport.dll"
 				LinkIncremental="1"
-				AdditionalLibraryDirectories="..\..\..\Oem\ACE\ACE_wrappers\lib64"
+				AdditionalLibraryDirectories="..\..\..\Oem\ACE\ACE_wrappers\lib64;..\..\..\Common\lib\release64"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="$(OutDir)\MgWebSupport.pdb"
 				SubSystem="2"
