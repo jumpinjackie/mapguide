@@ -344,6 +344,7 @@ void CCoordinateSystemCatalog::SetDictionaryDir(CREFSTRING sDirPath)
     }
 
     m_sDir = szPath;
+    m_libraryStatus = lsInitializationFailed; 
 
     //initializes Mentor
     char* pszPath=Convert_Wide_To_Ascii(szPath);
@@ -369,6 +370,8 @@ void CCoordinateSystemCatalog::SetDictionaryDir(CREFSTRING sDirPath)
     m_pCtDict->SetFileName(sCt);
     m_pGpDict->SetFileName(sGp);
     m_pGxDict->SetFileName(sGx);
+
+    m_libraryStatus = lsInitialized; 
 
     MG_CATCH_AND_THROW(L"MgCoordinateSystemCatalog.SetDictionaryDir")
 }

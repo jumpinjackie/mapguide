@@ -70,6 +70,10 @@ EXTERNAL_API:
     static const STRING GeneralPropertyFdoPath;                         /// value("FdoPath")
     static const STRING DefaultGeneralPropertyFdoPath;                  /// value("")
 
+    /// Mentor Dictionary Path
+    static const STRING GeneralPropertyMentorDictionaryPath;            /// value("MentorDictionaryPath")
+    static const STRING DefaultGeneralPropertyMentorDictionaryPath;     /// value("")
+
     /// Path of the license server
     static const STRING GeneralPropertyLicenseServerPath;               /// value("LicenseServerPath")
     static const STRING DefaultGeneralPropertyLicenseServerPath;        /// value("");

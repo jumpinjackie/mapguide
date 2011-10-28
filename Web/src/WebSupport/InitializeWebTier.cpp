@@ -70,6 +70,33 @@ void MgInitializeWebTierInternal(CREFSTRING configFile)
         ACE_OS::mkdir(MG_WCHAR_TO_TCHAR(path));
     }
 
+    Ptr<MgCoordinateSystemFactory> csFactory = new MgCoordinateSystemFactory();
+    Ptr<MgCoordinateSystemCatalog> csCatalog = csFactory->GetCatalog();
+
+    STRING mentorDictPath;
+    config->GetStringValue(MgConfigProperties::GeneralPropertiesSection, MgConfigProperties::GeneralPropertyMentorDictionaryPath, mentorDictPath, MgConfigProperties::DefaultGeneralPropertyMentorDictionaryPath);
+
+    //Check catalog
+    if (NULL == csCatalog.p)
+    {
+        throw new MgCoordinateSystemInitializationFailedException(
+            L"MgInitializeWebTierInternal", __LINE__, __WFILE__, NULL, L"", NULL);
+    }
+
+    if (!mentorDictPath.empty())
+    {
+        MgFileUtil::AppendSlashToEndOfPath(mentorDictPath);
+        csCatalog->SetDictionaryDir(mentorDictPath);
+    }
+    
+    //Check lib status
+    LibraryStatus status = csCatalog->GetLibraryStatus();
+    if(lsInitialized != status)
+    {
+        throw new MgCoordinateSystemInitializationFailedException(
+            L"MgInitializeWebTierInternal", __LINE__, __WFILE__, NULL, L"", NULL);
+    }
+
     m_bInitialized = true;
 
     MG_CATCH_AND_THROW(L"MgInitializeWebTierInternal")

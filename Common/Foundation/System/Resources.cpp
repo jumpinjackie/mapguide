@@ -33,6 +33,7 @@ const STRING MgResources::FailedToRetrieveMessage       = L"Failed to retrieve m
 const STRING MgResources::FormatExceptionLocationMethods = L"- ";
 const STRING MgResources::FormatExceptionLocationLines  = L" line ";
 const STRING MgResources::FormatExceptionLocationFiles  = L" file ";
+const STRING MgResources::MentorDictionaryPath          = L"%1 (using path: %2)";
 const STRING MgResources::ServerStarting                = L"Server starting...";
 const STRING MgResources::ServerShuttingDown            = L"Server shutting down...";
 const STRING MgResources::ServerStarted                 = L"Server started.";
