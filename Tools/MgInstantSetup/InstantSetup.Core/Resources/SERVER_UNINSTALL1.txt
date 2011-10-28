@@ -1,0 +1,3 @@
+pushd {0}
+mgserver uninstall "{1}"
+popd

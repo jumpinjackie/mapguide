@@ -41,6 +41,7 @@
             this.button1 = new System.Windows.Forms.Button();
             this.txtBatchOutput = new System.Windows.Forms.TextBox();
             this.label3 = new System.Windows.Forms.Label();
+            this.chkWriteMentorDictPath = new System.Windows.Forms.CheckBox();
             this.tabControl1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -169,11 +170,23 @@
             this.label3.TabIndex = 8;
             this.label3.Text = "Batch File Output Directory";
             // 
+            // chkWriteMentorDictPath
+            // 
+            this.chkWriteMentorDictPath.AutoSize = true;
+            this.chkWriteMentorDictPath.Location = new System.Drawing.Point(116, 513);
+            this.chkWriteMentorDictPath.Name = "chkWriteMentorDictPath";
+            this.chkWriteMentorDictPath.Size = new System.Drawing.Size(271, 17);
+            this.chkWriteMentorDictPath.TabIndex = 11;
+            this.chkWriteMentorDictPath.Text = "Write MENTOR_DICTIONARY_PATH to batch files";
+            this.chkWriteMentorDictPath.UseVisualStyleBackColor = true;
+            this.chkWriteMentorDictPath.CheckedChanged += new System.EventHandler(this.chkWriteMentorDictPath_CheckedChanged);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(552, 544);
+            this.Controls.Add(this.chkWriteMentorDictPath);
             this.Controls.Add(this.button1);
             this.Controls.Add(this.txtBatchOutput);
             this.Controls.Add(this.label3);
@@ -208,6 +221,7 @@
         private System.Windows.Forms.Button button1;
         private System.Windows.Forms.TextBox txtBatchOutput;
         private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.CheckBox chkWriteMentorDictPath;
     }
 }
 

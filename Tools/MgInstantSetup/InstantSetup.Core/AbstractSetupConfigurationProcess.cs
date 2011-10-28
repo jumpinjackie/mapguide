@@ -39,6 +39,7 @@ namespace InstantSetup.Core
         protected AbstractSetupConfigurationProcess()
         {
             this.EnablePhp = true;
+            this.WriteMentorDictionaryPath = false;
             this.DefaultViewer = ApiType.Php;
 
             //Port numbers specified not to intentionally clash with an existing 
@@ -47,6 +48,8 @@ namespace InstantSetup.Core
             this.ServerClientPort = 2821;
             this.ServerSitePort = 2822;
         }
+
+        public bool WriteMentorDictionaryPath { get; set; }
 
         public string BatchFileOutputDirectory { get; set; }
 
@@ -207,18 +210,34 @@ namespace InstantSetup.Core
             }
             else
             {
-                //Write server batch file
-                string serverText = string.Format(Properties.Resources.SERVER, this.CsMapDictionaryDir, this.ServerBinDir);
-                File.WriteAllText(Path.Combine(this.BatchFileOutputDirectory, "mgserver.bat"), serverText);
+                if (this.WriteMentorDictionaryPath)
+                {
+                    //Write server batch file
+                    string serverText = string.Format(Properties.Resources.SERVER, this.CsMapDictionaryDir, this.ServerBinDir);
+                    File.WriteAllText(Path.Combine(this.BatchFileOutputDirectory, "mgserver.bat"), serverText);
 
-                //Write service install batch file
-                serverText = string.Format(Properties.Resources.SERVER_INSTALL, this.CsMapDictionaryDir, this.ServerBinDir, this.MapGuideServiceName);
-                File.WriteAllText(Path.Combine(this.BatchFileOutputDirectory, "mgserverinstall.bat"), serverText);
+                    //Write service install batch file
+                    serverText = string.Format(Properties.Resources.SERVER_INSTALL, this.CsMapDictionaryDir, this.ServerBinDir, this.MapGuideServiceName);
+                    File.WriteAllText(Path.Combine(this.BatchFileOutputDirectory, "mgserverinstall.bat"), serverText);
 
-                //Write service uninstall batch file
-                serverText = string.Format(Properties.Resources.SERVER_UNINSTALL, this.CsMapDictionaryDir, this.ServerBinDir, this.MapGuideServiceName);
-                File.WriteAllText(Path.Combine(this.BatchFileOutputDirectory, "mgserveruninstall.bat"), serverText);
+                    //Write service uninstall batch file
+                    serverText = string.Format(Properties.Resources.SERVER_UNINSTALL, this.CsMapDictionaryDir, this.ServerBinDir, this.MapGuideServiceName);
+                    File.WriteAllText(Path.Combine(this.BatchFileOutputDirectory, "mgserveruninstall.bat"), serverText);
+                }
+                else //Post RFC 122
+                {
+                    //Write server batch file
+                    string serverText = string.Format(Properties.Resources.SERVER_NO_MENTOR, this.ServerBinDir);
+                    File.WriteAllText(Path.Combine(this.BatchFileOutputDirectory, "mgserver.bat"), serverText);
 
+                    //Write service install batch file
+                    serverText = string.Format(Properties.Resources.SERVER_INSTALL_NO_MENTOR, this.ServerBinDir, this.MapGuideServiceName);
+                    File.WriteAllText(Path.Combine(this.BatchFileOutputDirectory, "mgserverinstall.bat"), serverText);
+
+                    //Write service uninstall batch file
+                    serverText = string.Format(Properties.Resources.SERVER_UNINSTALL_NO_MENTOR, this.ServerBinDir, this.MapGuideServiceName);
+                    File.WriteAllText(Path.Combine(this.BatchFileOutputDirectory, "mgserveruninstall.bat"), serverText);
+                }
                 WriteAdditionalBatchFiles();
             }
         }
@@ -245,6 +264,10 @@ namespace InstantSetup.Core
             _webConfig.IniWriteValue("GeneralProperties","ResourcesPath",Path.Combine(this.WebTierMapAgentDir, "Resources"));
             _webConfig.IniWriteValue("GeneralProperties","TempPath",Path.Combine(this.WebTierRootDir, "Temp"));
 
+            //Post RFC 122
+            if (!this.WriteMentorDictionaryPath)
+                _webConfig.IniWriteValue("GeneralProperties", "MentorDictionaryPath", this.CsMapDictionaryDir);
+
             _webConfig.IniWriteValue("SiteConnectionProperties","IpAddress","127.0.0.1");
 
             _webConfig.IniWriteValue("WebApplicationProperties","TemplateRootFolder",Path.Combine(this.WebTierPublicDir, "fusion\\templates\\mapguide"));
@@ -266,6 +289,10 @@ namespace InstantSetup.Core
             _serverConfig.IniWriteValue("GeneralProperties","WfsDocumentPath",Path.Combine(ServerRootDir, "Wfs"));
             _serverConfig.IniWriteValue("GeneralProperties","WmsDocumentPath",Path.Combine(ServerRootDir, "Wms"));
             _serverConfig.IniWriteValue("GeneralProperties","FdoPath",Path.Combine(ServerRootDir, "Fdo"));
+
+            //Post RFC 122
+            if (!this.WriteMentorDictionaryPath)
+                _serverConfig.IniWriteValue("GeneralProperties", "MentorDictionaryPath", this.CsMapDictionaryDir);
             
             _serverConfig.IniWriteValue("ResourceServiceProperties","PackagesPath",Path.Combine(ServerRootDir, "Packages"));
 

@@ -74,6 +74,18 @@
   <ItemGroup>
     <None Include="Resources\APACHE_WEB_UNINSTALL.txt" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\APACHE_WEB1.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\SERVER1.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\SERVER_INSTALL1.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\SERVER_UNINSTALL1.txt" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

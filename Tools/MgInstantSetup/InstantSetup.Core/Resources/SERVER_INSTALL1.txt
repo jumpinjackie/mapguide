@@ -1,0 +1,3 @@
+pushd {0}
+mgserver install "{1}"
+popd

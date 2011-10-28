@@ -72,6 +72,11 @@ namespace InstantSetup
             _apacheConf.Config.InstallServices = chkInstallServices.Checked;
         }
 
+        private void chkWriteMentorDictPath_CheckedChanged(object sender, EventArgs e)
+        {
+            _apacheConf.Config.WriteMentorDictionaryPath = chkWriteMentorDictPath.Checked;
+        }
+
         private void btnConfigure_Click(object sender, EventArgs e)
         {
             try

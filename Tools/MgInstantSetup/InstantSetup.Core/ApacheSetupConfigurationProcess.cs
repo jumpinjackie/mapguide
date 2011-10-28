@@ -139,9 +139,19 @@ namespace InstantSetup.Core
 
         protected override void WriteAdditionalBatchFiles()
         {
-            //Write httpd batch file
-            string httpdText = string.Format(Properties.Resources.APACHE_WEB, this.CsMapDictionaryDir, Path.Combine(this.WebTierApacheDir, "bin"));
-            File.WriteAllText(Path.Combine(this.BatchFileOutputDirectory, "mgwebtier.bat"), httpdText);
+            string httpdText = "";
+            if (this.WriteMentorDictionaryPath)
+            {
+                //Write httpd batch file
+                httpdText = string.Format(Properties.Resources.APACHE_WEB, this.CsMapDictionaryDir, Path.Combine(this.WebTierApacheDir, "bin"));
+                File.WriteAllText(Path.Combine(this.BatchFileOutputDirectory, "mgwebtier.bat"), httpdText);
+            }
+            else //Post RFC 122
+            {
+                //Write httpd batch file
+                httpdText = string.Format(Properties.Resources.APACHE_WEB_NO_MENTOR, Path.Combine(this.WebTierApacheDir, "bin"));
+                File.WriteAllText(Path.Combine(this.BatchFileOutputDirectory, "mgwebtier.bat"), httpdText);
+            }
 
             //Write service installer batch file
             httpdText = string.Format(Properties.Resources.APACHE_WEB_INSTALL, Path.Combine(this.WebTierApacheDir, "bin"), this.HttpdServiceName);
