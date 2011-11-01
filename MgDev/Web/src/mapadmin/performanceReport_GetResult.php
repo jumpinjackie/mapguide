@@ -12,6 +12,9 @@ try
     // Are we cancelling?  If so, there is nothing to do.
     CheckForCancel( 'performanceReport.php' );
 
+    //sometimes the profiling map API needs a long time to response
+    set_time_limit(900);
+
     // Define Local values
     $confirmationMsg = "";
     $errorMsg = "";
@@ -448,17 +451,17 @@ catch ( Exception $e )
                             <!--the table head is in a different div so when the table scrolls, the head will be fixed -->
                             <!--Also, the table head columns are set with some customer attribute to help to sort the table data from the client site-->
                             <tr>
-                                <th style="width:15%;border-left:1px solid #CCCCCC;" columnIndex="1" onClick="SortLayers.sortByColumn(this);">Layer</th>
-                                <th style="width:20%;" columnIndex="2" onClick="SortLayers.sortByColumn(this);">Render Time</th>
-                                <th style="width:25%;" columnIndex="3" onClick="SortLayers.sortByColumn(this);">Feature Class</th>
-                                <th style="width:25%;" columnIndex="4" onClick="SortLayers.sortByColumn(this);">Coordinate System</th>
-                                <th style="width:15%;border-right:1px solid #CCCCCC;" columnIndex="5" onClick="SortLayers.sortByColumn(this);">Type</th>
+                                <th style="width:20%;border-left:1px solid #CCCCCC;" columnIndex="1" onClick="SortLayers.sortByColumn(this);">Layer</th>
+                                <th style="width:15%;" columnIndex="2" onClick="SortLayers.sortByColumn(this);">Render Time</th>
+                                <th style="width:30%;" columnIndex="3" onClick="SortLayers.sortByColumn(this);">Feature Class</th>
+                                <th style="width:22%;" columnIndex="4" onClick="SortLayers.sortByColumn(this);">Coordinate System</th>
+                                <th style="width:13%;border-right:1px solid #CCCCCC;" columnIndex="5" onClick="SortLayers.sortByColumn(this);">Type</th>
                             </tr>
                         </thead>
                     </table>
                 </div>
                 <div id="layerBody" class="layerResultsStyle">
-                    <table style="width:100%; text-align: center;margin:0px; padding: 0px;" id="layerResultsTable">
+                    <table style="width:100%; text-align: center;margin:0px; padding: 0px; table-layout: fixed;" id="layerResultsTable">
                         <tbody>
                             <?php
                                 $displayManager->OutputLayerDefinitionData();

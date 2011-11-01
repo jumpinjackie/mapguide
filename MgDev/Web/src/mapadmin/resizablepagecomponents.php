@@ -2181,6 +2181,10 @@
             $sumofRenderTime = $this->mapProfileResult->LayerProfileData->GetSumOfLayerRenderTime();
             foreach ($this->mapProfileResult->LayerProfileData->LayerProfileDataCollection as $layerProfileData)
             {
+                //TODO:workaround for FDO read layer Exception
+                if(trim($layerProfileData->LayerName) == "")
+                    continue;
+
                 //set different colors for alternate rows and when mouse move over the row it will change color
                 if(0 == $rowNumber%2)
                 {
@@ -2193,13 +2197,13 @@
 
                 //output the layer profiling information by each column,
                 //for the render time column, we set the sort key as the original number, which will be used as client sort
-                echo "<td style='width:15%;'>".$layerProfileData->LayerName."</td>","\n";
-                echo "<td style='width:20%;' sortKey='".number_format($layerProfileData->TotalRenderTime,2)."'>".
+                echo "<td style='width:20%;'>".$layerProfileData->LayerName."</td>","\n";
+                echo "<td style='width:15%;' sortKey='".number_format($layerProfileData->TotalRenderTime,2)."'>".
                         number_format($layerProfileData->TotalRenderTime,2)."&nbsp;ms&nbsp;(".
                         $layerProfileData->GetRenderTimePercentage($sumofRenderTime)."%)&nbsp;</td>","\n";
-                echo "<td style='width:25%;'>".$layerProfileData->FeatureClass."</td>","\n";
-                echo "<td style='width:25%;'>".$layerProfileData->CoordinateSystem."</td>","\n";
-                echo "<td style='width:15%;'>".$layerProfileData->LayerType."</td>","\n";
+                echo "<td style='width:30%;'>".$layerProfileData->FeatureClass."</td>","\n";
+                echo "<td style='width:22%;'>".$layerProfileData->CoordinateSystem."</td>","\n";
+                echo "<td style='width:13%;'>".$layerProfileData->LayerType."</td>","\n";
                 echo "</tr>","\n";
 
                 $rowNumber++;

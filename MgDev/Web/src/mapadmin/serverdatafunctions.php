@@ -2784,6 +2784,11 @@
                             }
                         }
                     }
+
+                    //TODO:workaround for FDO read layer Exception
+                    if(trim($tempLayerProfileData->LayerName) === "")
+                        continue;
+
                     $this->LayerProfileData->LayerProfileDataCollection[$tempLayerProfileData->LayerName] = $tempLayerProfileData;
                 }
             }
