@@ -221,8 +221,10 @@ catch ( Exception $e )
         .layerResultsStyle th,.layerResultsStyle td
         {
             text-align:left;
-            padding:.5em;
+            padding:6px 3px;
             border:1px solid #CCCCCC;
+            word-wrap:break-word;
+            overflow:hidden;
         }
 
         .layerResultsStyle th
@@ -306,9 +308,9 @@ catch ( Exception $e )
 
         .bgDivStyle
         {
-            position:fixed;
-            left:0;
-            top:0;
+            position:absolute;
+            left:0px;
+            top:0px;
             background-color:#777777;
             filter:alpha(Opacity=30);
             opacity:0.6;
@@ -858,7 +860,7 @@ catch ( Exception $e )
                     return;
 
                 MapViewerBtnOKClicked();
-            }
+             }
         }
 
         function SetBgDivSize(bgDiv)
@@ -911,6 +913,27 @@ catch ( Exception $e )
 
         function CheckMapFrameLoaded()
         {
+            //if the session is time out, the whole page should redirect to the login page
+            var mapViewerDocumentElement = null;
+
+            try
+            {
+                mapViewerDocumentElement = document.getElementById("mapViewerFrame").contentDocument.documentElement;
+            }
+            catch(e)
+            {
+                //For IE
+                mapViewerDocumentElement = document.getElementById("mapViewerFrame").contentWindow.document.documentElement;
+            }
+
+            if(mapViewerDocumentElement.innerHTML.indexOf("MapGuide Site Administrator - Login") > 1)
+            {
+                if(mapViewerDocumentElement.innerHTML.indexOf("login.php") > 1)
+                {
+                    window.location.href="login.php?ErrorMsg=Fatal error encountered! Please login again.";
+                }
+            }
+
             if(!IsMapFrameLoaded())
                 return;
 
@@ -1274,7 +1297,7 @@ catch ( Exception $e )
             //set tooltip position
             toolTip.style.top = elPos.y + linkObj.offsetHeight+ downMouseTop+ "px";
             toolTip.style.left = mosPos.x + downMouseLeft + "px";
-
+            
             toolTip.style.display = "block";
             toolTip.className = "showTooltip";
         }
@@ -1377,39 +1400,50 @@ catch ( Exception $e )
         {
             if ((4 == xmlHttp.readyState || "complete" == xmlHttp.readyState)&& 200 == xmlHttp.status)
             {
-                var profileResult = document.getElementById("resultsTab");
-                var result = xmlHttp.responseText;
-                var btnClear = document.getElementById("btnClearSpan");
-                var loadingImg = document.getElementById("ajax_loading_img");
-
-                if(Trim(result) == "mapNotExist")
+                //if the session is time out, the whole page should redirect to the login page
+                if(xmlHttp.responseText.indexOf("MapGuide Site Administrator - Login") > 1)
                 {
-                    alert("The selected map resource is no longer available. Select a different map resource to continue.");
+                    if(xmlHttp.responseText.indexOf("login.php") > 1)
+                        {
+                            window.location.href="login.php?ErrorMsg=Fatal error encountered! Please login again.";
+                        }
+                }
+                else
+                {
+                    var profileResult = document.getElementById("resultsTab");
+                    var result = xmlHttp.responseText;
+                    var btnClear = document.getElementById("btnClearSpan");
+                    var loadingImg = document.getElementById("ajax_loading_img");
+
+                    if(Trim(result) == "mapNotExist")
+                    {
+                        alert("The selected map resource is no longer available. Select a different map resource to continue.");
+                        btnClear.style.display = "inline";
+                        loadingImg.style.display = "none";
+                        SetRunButtonState(true);
+                        return;
+                    }
+
+                    profileResult.innerHTML = xmlHttp.responseText;
+
                     btnClear.style.display = "inline";
                     loadingImg.style.display = "none";
+
+                    CollapseSettingTab();
+                    ExpandResultsTab();
                     SetRunButtonState(true);
-                    return;
+
+                    SetLayerJsArray();
+                    SetRecentSettingJsArray();
+
+                    SetRecentSettingsContent();
+
+                    SaveLastRunSettings();
+
+                    //make the layer table default sorting
+                    var layerTableHeader = document.getElementById("layerHeaderTable");
+                    SortLayers.sortByColumn(layerTableHeader.tHead.rows[0].children[0]);
                 }
-
-                profileResult.innerHTML = xmlHttp.responseText;
-
-                btnClear.style.display = "inline";
-                loadingImg.style.display = "none";
-
-                CollapseSettingTab();
-                ExpandResultsTab();
-                SetRunButtonState(true);
-
-                SetLayerJsArray();
-                SetRecentSettingJsArray();
-
-                SetRecentSettingsContent();
-
-                SaveLastRunSettings();
-
-                //make the layer table default sorting
-                var layerTableHeader = document.getElementById("layerHeaderTable");
-                SortLayers.sortByColumn(layerTableHeader.tHead.rows[0].children[0]);
             }
         }
 
@@ -2100,7 +2134,7 @@ catch ( Exception $e )
                                                                 Choose a center point and scale from the map viewer or enter the values manually.
                                                             </div>
                                                             <input type="button" id="mapViewerBtn" value="Select Settings..." onClick="SelectMapSettings();"  disabled="disabled" style="width:160px; height: 28px;font-weight: bold;">
-                                                            <div id="mapViewerDialog" align="center" class="mapViewerDialogStyle">
+                                                            <div id="mapViewerDialog" align="center" class="mapViewerDialogStyle" onkeydown="MapViewerKeyUp(event);">
                                                                 <table width="100%" style="margin:0px; padding: 0px;" cellspacing="0" cellpadding="0">
                                                                     <tr>
                                                                         <td style="border-bottom:1px solid #000000; " >
