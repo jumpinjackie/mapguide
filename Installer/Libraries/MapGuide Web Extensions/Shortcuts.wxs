@@ -11,7 +11,7 @@
   <Fragment>
     <DirectoryRef Id="ProgramMenuFolder">
       <!-- HACK: For some reason the MG_VERSION_MAJOR_MINOR property doesn't evaluate, so hardcode it for now -->
-      <Directory Id="MapGuideOpenSourceMenuLocation" Name="MapGuide Open Source 2.2">
+      <Directory Id="MapGuideOpenSourceMenuLocation" Name="MapGuide Open Source 2.4">
         <Component Id="GenericShortcutComponent" Win64="$(var.Win64)" Guid="243CE0F3-D6BC-476B-910E-6F34DA54A2E2">
           <CreateFolder />
           <RegistryKey Root="HKCU" Key="$(var.MgRegKey)\GenericShortcut">

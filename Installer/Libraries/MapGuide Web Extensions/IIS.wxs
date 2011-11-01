@@ -12,7 +12,7 @@
 	<!-- isapi_MapAgent.dll -->
     <?define FCGI_MAP = "[!file_MAPAGENTFILES_100]" ?>
 	<!-- php5isapi.dll -->
-    <?define PHP_MAP = "[!file_PHPFILES_43]" ?>
+    <?define PHP_MAP = "[WindowsFolder]\system32\inetsrv\fcgiext.dll" ?>
     <Fragment>
         <Property Id="FRAMEWORKDIR">
             <RegistrySearch
@@ -67,12 +67,15 @@
                     </iis:WebApplication>
                     <iis:WebVirtualDir Id="IIS5MapAgentVDir" Alias="mapagent" Directory="dir_mapagent_0" >
                         <iis:WebDirProperties Id="IIS5MapAgentProperties" DefaultDocuments="index.html" AnonymousAccess="yes" BasicAuthentication="no" WindowsAuthentication="no"/>
+                        <!-- Moving to WiX 3.5 broke this. So we'll disable for now -->
+                        <!-- 
                         <iis:WebError ErrorCode="401" SubCode="0" />
                         <iis:WebError ErrorCode="401" SubCode="1" />
                         <iis:WebError ErrorCode="401" SubCode="2" />
                         <iis:WebError ErrorCode="401" SubCode="3" />
                         <iis:WebError ErrorCode="401" SubCode="4" />
                         <iis:WebError ErrorCode="401" SubCode="5" />
+                        -->
                         <iis:WebApplication Id="IIS5MapAgentWebApp" Name="mapagent" >
                             <iis:WebApplicationExtension Extension="fcgi" Script="yes" Verbs="GET,POST" CheckPath="no" Executable="$(var.FCGI_MAP)" />
                             <iis:WebApplicationExtension Extension="php" Script="yes" Verbs="GET,POST" CheckPath="no" Executable="$(var.PHP_MAP)" />
@@ -129,12 +132,15 @@
                     </iis:WebApplication>
                     <iis:WebVirtualDir Id="IIS6MapAgentVDir" Alias="mapagent" Directory="dir_mapagent_0" >
                         <iis:WebDirProperties Id="IIS6MapAgentProperties" DefaultDocuments="index.html" AnonymousAccess="yes" BasicAuthentication="no" WindowsAuthentication="no" />
+                        <!-- Moving to WiX 3.5 broke this. So we'll disable for now -->
+                        <!-- 
                         <iis:WebError ErrorCode="401" SubCode="0"/>
                         <iis:WebError ErrorCode="401" SubCode="1" />
                         <iis:WebError ErrorCode="401" SubCode="2" />
                         <iis:WebError ErrorCode="401" SubCode="3" />
                         <iis:WebError ErrorCode="401" SubCode="4" />
                         <iis:WebError ErrorCode="401" SubCode="5" />
+                        -->
                         <iis:WebApplication Id="IIS6MapAgentWebApp" Name="mapagent" WebAppPool="IIS6MapGuideAppPool">
                             <iis:WebApplicationExtension Extension="fcgi" Script="yes" Verbs="GET,POST" CheckPath="no" Executable="$(var.FCGI_MAP)" />
                             <iis:WebApplicationExtension Extension="php" Script="yes" Verbs="GET,POST" CheckPath="no" Executable="$(var.PHP_MAP)" />

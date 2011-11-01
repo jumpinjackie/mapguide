@@ -340,6 +340,9 @@ UpdateApacheConfig(MSIHANDLE hMSI)
 			fout.close();
 		}
 
+        //Even if the java option is not the active API, perform these substitutions
+        //anyway on these files should they get installed.
+
 		szFileName = szApacheDir + "\\conf\\tomcat.conf";
 		const char* szTomcatConf = szFileName.c_str();
 
@@ -365,6 +368,31 @@ UpdateApacheConfig(MSIHANDLE hMSI)
 			fout << buffer;
 			fout.close();
 		}
+        
+        szFileName = szWebExtDir + "\\Tomcat\\conf\\Catalina\\localhost\\mapguide.xml";
+        const char* szMapGuideXml = szFileName.c_str();
+        
+        if (FileExists(szMapGuideXml))
+        {
+            std::ifstream fin(szTomcatConf);
+			
+			std::string buffer;
+			std::string line;
+			while(!fin.eof())
+			{
+				std::getline(fin, line);
+
+				//Process this line
+				FindAndReplace(line, "%MG_WEB_ROOT%", szWebRootDir);
+
+				buffer += line + "\n";
+			}
+			fin.close();
+
+			std::ofstream fout(szMapGuideXml);
+			fout << buffer;
+			fout.close();
+        }
 	}
 	return ERROR_SUCCESS;
 }

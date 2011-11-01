@@ -12,13 +12,20 @@
       <Directory Id="CSMAPLOCATION" Name="CS-Map">
         <Component Id="CsMapComponent" Win64="$(var.Win64)" Guid="552EAF5E-2420-4C2A-A52C-62B456EE1F64">
           <CreateFolder />
-          <Environment Id="CsMapEnvVar"
-             Action="set"
-             Part="all"
-             Name="MENTOR_DICTIONARY_PATH"
-             Permanent="no"
-             System="yes"
-             Value="[dir_Dictionaries_0]" />
+          <IniFile Id="INISETSERVERDICTPATH"
+                   Action="addLine"
+                   Directory="SERVERBINLOCATION"
+                   Key="MentorDictionaryPath"
+                   Name="serverconfig.ini"
+                   Section="GeneralProperties"
+                   Value="[dir_Dictionaries_0]"/>
+          <IniFile Id="INISETWEBDICTPATH"
+                   Action="addLine"
+                   Directory="WEBROOTLOCATION"
+                   Key="MentorDictionaryPath"
+                   Name="webconfig.ini"
+                   Section="GeneralProperties"
+                   Value="[dir_Dictionaries_0]"/>
         </Component>
       </Directory>
     </DirectoryRef>

@@ -3,47 +3,50 @@
 
 #include "stdafx.h"
 
-// usage: FdoRegUtil.exe [/r|/u] <provider name> <display name> <provider description> <version> <fdo version> <provider dll path>
+// usage: FdoRegUtil.exe [-r] <provider dll>
+//        FdoRegUtil.exe [-u] <provider name>
 
 int _tmain(int argc, _TCHAR* argv[])
 {
 	int ret = 0;
 	if (argc == 3)
 	{
-		if(wcscmp(argv[1], L"-u") != 0)
-			goto usage;
-
-		ret = Unregister(argv[2]);
-		goto exit;
+		if(wcscmp(argv[1], L"-u") == 0)
+			ret = Unregister(argv[2]);
+        else if(wcscmp(argv[1], L"-r") == 0)
+			ret = Register(argv[2]);
+        else
+            Usage();
 	}
-	else if (argc == 8)
-	{
-		if(wcscmp(argv[1], L"-r") != 0)
-			goto usage;
-
-		ret = Register(argv[2], argv[3], argv[4], argv[5], argv[6], argv[7]);
-		goto exit;
-	}
-usage:
-	Usage();
-exit:
 	return ret;
 }
 
 void Usage()
 {
 	printf("usage\n");
-	printf("registering: FdoRegUtil.exe -r <provider name> <display name> <provider description> <version> <fdo version> <provider dll path>\n");
+	printf("registering: FdoRegUtil.exe -r <provider dll path>\n");
 	printf("unregistering: FdoRegUtil.exe -u <provider name>\n");
 }
 
-int Register(_TCHAR* name, _TCHAR* displayName, _TCHAR* description, _TCHAR* version, _TCHAR* fdoVersion, _TCHAR* path)
+int Register(_TCHAR* path)
 {
 	int ret = 0;
-	FdoPtr<IProviderRegistry> prvReg = FdoFeatureAccessManager::GetProviderRegistry();
+	FdoPtr<IProviderRegistry> provReg = FdoFeatureAccessManager::GetProviderRegistry();
+    FdoPtr<IConnectionManager> connMgr = FdoFeatureAccessManager::GetConnectionManager();
 	try 
 	{
-		prvReg->RegisterProvider(name, displayName, description, version, fdoVersion, path, false);
+        //As of FDO 3.6 this supports FDO dll paths
+        FdoPtr<FdoIConnection> conn = connMgr->CreateConnection(path);
+        FdoPtr<FdoIConnectionInfo> connInfo = conn->GetConnectionInfo();
+
+        //FDO connections already have this information!
+        provReg->RegisterProvider(connInfo->GetProviderName(),
+                                  connInfo->GetProviderDisplayName(),
+                                  connInfo->GetProviderDescription(),
+                                  connInfo->GetProviderVersion(),
+                                  connInfo->GetFeatureDataObjectsVersion(),
+                                  path,
+                                  false);
 	}
 	catch(FdoException* ex)
 	{

@@ -239,6 +239,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\resources.rc"
+				>
+			</File>
+			<File
 				RelativePath="StdAfx.cpp"
 				>
 				<FileConfiguration
@@ -266,6 +270,10 @@
 			>
 			<File
 				RelativePath="apache_actions.h"
+				>
+			</File>
+			<File
+				RelativePath=".\resource.h"
 				>
 			</File>
 			<File

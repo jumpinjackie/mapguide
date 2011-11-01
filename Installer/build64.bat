@@ -45,10 +45,11 @@ SET TYPEBUILD=Release64
 SET CONFIGURATION=Release
 SET PLATFORM=x64
 SET CULTURE=en-US
-SET INSTALLER_VERSION_MAJOR_MINOR_REV=2.3.0
+SET INSTALLER_VERSION_MAJOR_MINOR=2.4
+SET INSTALLER_VERSION_MAJOR_MINOR_REV=%INSTALLER_VERSION_MAJOR_MINOR%.0
 SET INSTALLER_NAME=MapGuideOpenSource-%INSTALLER_VERSION_MAJOR_MINOR_REV%-Trunk-%CULTURE%-%TYPEBUILD%-%PLATFORM%
 SET INSTALLER_VERSION=%INSTALLER_VERSION_MAJOR_MINOR_REV%.0
-SET INSTALLER_TITLE="MapGuide Open Source 2.3 Trunk (%TYPEBUILD%)"
+SET INSTALLER_TITLE="MapGuide Open Source %INSTALLER_VERSION_MAJOR_MINOR% Trunk (%TYPEBUILD%)"
 SET MG_REG_KEY=Software\OSGeo\MapGuide\%INSTALLER_VERSION_MAJOR_MINOR_REV%
 SET MG_SOURCE=%CD%\..\MgDev\%TYPEBUILD%
 SET MG_SOURCE_INC=
@@ -250,6 +251,15 @@ echo [prepare] Php
 %XCOPY% "%INSTALLER_DEV%\Support\Web\%PLATFORM%\Php" "%MG_SOURCE%\Web\Php" /EXCLUDE:svn_excludes.txt
 echo [prepare] Apache2
 %XCOPY% "%INSTALLER_DEV%\Support\Web\%PLATFORM%\Apache2" "%MG_SOURCE%\Web\Apache2" /EXCLUDE:svn_excludes.txt
+rem copy template configs on top
+echo [prepare] Tomcat config
+%XCOPY% "%INSTALLER_DEV%\Support\Web\%PLATFORM%\configs\Tomcat" "%MG_SOURCE%\Web\Tomcat" /EXCLUDE:svn_excludes.txt
+echo [prepare] Php config
+%XCOPY% "%INSTALLER_DEV%\Support\Web\%PLATFORM%\configs\Php" "%MG_SOURCE%\Web\Php" /EXCLUDE:svn_excludes.txt
+echo [prepare] Apache2 config
+%XCOPY% "%INSTALLER_DEV%\Support\Web\%PLATFORM%\configs\Apache2" "%MG_SOURCE%\Web\Apache2" /EXCLUDE:svn_excludes.txt
+echo [prepare] FDO providers.xml
+copy /Y "%INSTALLER_DEV%\Support\Web\%PLATFORM%\configs\FDO\providers.xml" "%MG_SOURCE%\Server\FDO\"
 
 goto quit
 
