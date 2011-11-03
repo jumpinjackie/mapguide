@@ -416,6 +416,26 @@ void ProfileRenderMapResult::SetCreateImageTime(const double& dCreateImageTime)
 }
 
 //-------------------------------------------------------------------------
+// PURPOSE: Accessor method for the Error property.
+// RETURNS: The error message which describes map rendering failure.
+//-------------------------------------------------------------------------
+const MdfString& ProfileRenderMapResult::GetError() const
+{
+    return this->m_strError;
+}
+
+//-------------------------------------------------------------------------
+// PURPOSE: Accessor method to the Error property.
+// PARAMETERS:
+//      Input:
+//          pstrError - The error message which describes map rendering failure.
+//-------------------------------------------------------------------------
+void ProfileRenderMapResult::SetError(const MdfString& pstrError)
+{
+    this->m_strError = pstrError;
+}
+
+//-------------------------------------------------------------------------
 // PURPOSE: For memory leak testing.
 //-------------------------------------------------------------------------
 #ifdef _WIN32

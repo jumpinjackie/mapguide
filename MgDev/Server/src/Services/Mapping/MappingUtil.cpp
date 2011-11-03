@@ -897,6 +897,25 @@ void MgMappingUtil::StylizeLayers(MgResourceService* svcResource,
 #endif
             // TODO could throw here depending on a serverconfig setting (RFC64)
 //          throw exception;
+
+
+            if(NULL != pPRLsResult)
+            {
+                ProfileRenderLayerResultCollection* pPRLResultColl = pPRLsResult->GetProfileRenderLayerResults();
+                
+                // Get current ProfileRenderLayerResult
+                ProfileRenderLayerResult* pPRLResult = pPRLResultColl->GetAt(pPRLResultColl->GetCount()-1); //TODO: check index
+                
+                // Calculate the time spent on stylizing layer
+                double stylizeLayerTime = MgTimerUtil::GetTime() - pPRLResult->GetRenderTime();
+                pPRLResult->SetRenderTime(stylizeLayerTime);
+
+                Ptr<MgResourceIdentifier> layerid = mapLayer->GetLayerDefinition();
+                pPRLResult->SetResourceId(layerid->ToString());
+                pPRLResult->SetLayerName(mapLayer->GetName());
+
+                pPRLResult->SetError(message);
+            }
         } // if exception
     } // for all layers
 

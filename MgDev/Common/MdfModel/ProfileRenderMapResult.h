@@ -118,6 +118,11 @@ BEGIN_NAMESPACE_MDFMODEL
         const double GetCreateImageTime() const;
         void SetCreateImageTime(const double& dCreateImageTime);
 
+        // Property: Error
+        // Error message if rendering map failed.
+        const MdfString& GetError() const;
+        void SetError(const MdfString& pstrError);
+
 //#ifdef _WIN32
 #if _DEBUG
         // for memory leak testing
@@ -145,6 +150,7 @@ BEGIN_NAMESPACE_MDFMODEL
         ProfileRenderWatermarksResult* m_profileRenderWatermarksResult;
         ProfileRenderLabelsResult* m_profileRenderLabelsResult;
         double m_dCreateImageTime;
+        MdfString m_strError;
     };
 
 END_NAMESPACE_MDFMODEL

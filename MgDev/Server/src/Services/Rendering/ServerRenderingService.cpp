@@ -404,7 +404,23 @@ MgByteReader* MgServerRenderingService::RenderDynamicOverlay(MgMap* map,
     // call the internal helper API to do all the stylization overhead work
     ret = RenderMapInternal(map, selection, roLayers, dr.get(), width, height, width, height, scale, extent, false, options, true, pPRMResult);
 
-    MG_CATCH_AND_THROW(L"MgServerRenderingService.RenderDynamicOverlay")
+    MG_CATCH(L"MgServerRenderingService.RenderDynamicOverlay")
+    if (mgException.p)
+    {
+        if(NULL != pPRMResult)
+        {
+            MgServerManager* serverManager = MgServerManager::GetInstance();
+            STRING locale = (NULL == serverManager)? MgResources::DefaultMessageLocale : serverManager->GetDefaultMessageLocale();
+
+            Ptr<MgResourceIdentifier> mapResId = map->GetMapDefinition();
+            pPRMResult->SetResourceId(mapResId ? mapResId->ToString() : L"");
+
+            STRING message = mgException->GetExceptionMessage(locale);
+            pPRMResult->SetError(message);
+        }
+
+        MG_THROW()
+    }
 
     return ret.Detach();
 }
@@ -713,8 +729,23 @@ MgByteReader* MgServerRenderingService::RenderMap(MgMap* map,
     // call the internal helper API to do all the stylization overhead work
     ret = RenderMapInternal(map, selection, NULL, dr.get(), width, height, width, height, format, scale, b, false, bKeepSelection, true, pPRMResult);
 
-    MG_CATCH_AND_THROW(L"MgServerRenderingService.RenderMap")
+    MG_CATCH(L"MgServerRenderingService.RenderMap")
+    if (mgException.p)
+    {
+        if(NULL != pPRMResult)
+        {
+            MgServerManager* serverManager = MgServerManager::GetInstance();
+            STRING locale = (NULL == serverManager)? MgResources::DefaultMessageLocale : serverManager->GetDefaultMessageLocale();
 
+            Ptr<MgResourceIdentifier> mapResId = map->GetMapDefinition();
+            pPRMResult->SetResourceId(mapResId ? mapResId->ToString() : L"");
+
+            STRING message = mgException->GetExceptionMessage(locale);
+            pPRMResult->SetError(message);
+        }
+
+        MG_THROW()
+    }
     return ret.Detach();
 }
 
@@ -1285,7 +1316,7 @@ void MgServerRenderingService::RenderForSelection(MgMap* map,
             {
                 //if we have a valid transform, get the request geom in layer's space
                 queryGeom = SAFE_ADDREF(geometry);
-
+                STRING geomTextSource = queryGeom->ToAwkt(true);
                 if (trans)
                 {
                     //get selection geometry in layer space
@@ -1869,6 +1900,21 @@ inline void MgServerRenderingService::RenderWatermarks(MgMap* map,
                     if(wdef == NULL)            // Failed in resource loading
                     {
                         failLoadedIds.Add(resourceId);
+                    }
+
+                    if(NULL != pPRWsResult)
+                    {
+                        ProfileRenderWatermarkResultCollection* pPRWResultColl = pPRWsResult->GetProfileRenderWatermarkResults();
+                        ProfileRenderWatermarkResult* pPRWResult = pPRWResultColl->GetAt(pPRWResultColl->GetCount()-1); // TODO: check index
+
+                        // Calculate the time spent on stylizing watermark
+                        double stylizeWatermarkTime = MgTimerUtil::GetTime() - pPRWResult->GetRenderTime();
+                        pPRWResult->SetRenderTime(stylizeWatermarkTime);
+
+                        pPRWResult->SetResourceId(resourceId);
+
+                        STRING message = mgException->GetExceptionMessage(locale);
+                        pPRWResult->SetError(message);
                     }
                 }
             }

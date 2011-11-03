@@ -42,6 +42,11 @@ BEGIN_NAMESPACE_MDFMODEL
         const double GetRenderTime() const;
         void SetRenderTime(const double& dRenderTime);
 
+        // Property: Error
+        // Error message if rendering labels failed.
+        const MdfString& GetError() const;
+        void SetError(const MdfString& pstrError);
+
 //#ifdef _WIN32
 #if _DEBUG
         // for memory leak testing
@@ -57,6 +62,7 @@ BEGIN_NAMESPACE_MDFMODEL
         // Data members
         // See corresponding properties for descriptions
         double m_dRenderTime;
+        MdfString m_strError;
     };
 
 END_NAMESPACE_MDFMODEL

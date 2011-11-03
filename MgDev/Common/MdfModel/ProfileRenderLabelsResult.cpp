@@ -61,6 +61,26 @@ void ProfileRenderLabelsResult::SetRenderTime(const double& dRenderTime)
 }
 
 //-------------------------------------------------------------------------
+// PURPOSE: Accessor method for the Error property.
+// RETURNS: The error message which describes labels rendering failure.
+//-------------------------------------------------------------------------
+const MdfString& ProfileRenderLabelsResult::GetError() const
+{
+    return this->m_strError;
+}
+
+//-------------------------------------------------------------------------
+// PURPOSE: Accessor method to the Error property.
+// PARAMETERS:
+//      Input:
+//          pstrError - The error message which describes labels rendering failure.
+//-------------------------------------------------------------------------
+void ProfileRenderLabelsResult::SetError(const MdfString& pstrError)
+{
+    this->m_strError = pstrError;
+}
+
+//-------------------------------------------------------------------------
 // PURPOSE: For memory leak testing.
 //-------------------------------------------------------------------------
 #ifdef _WIN32

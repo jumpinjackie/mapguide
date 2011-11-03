@@ -54,6 +54,11 @@ BEGIN_NAMESPACE_MDFMODEL
         const double GetRenderTime() const;
         void SetRenderTime(const double& dRenderTime);
 
+        // Property: Error
+        // Error message if rendering watermark failed.
+        const MdfString& GetError() const;
+        void SetError(const MdfString& pstrError);
+
 //#ifdef _WIN32
 #if _DEBUG
         // for memory leak testing
@@ -71,6 +76,7 @@ BEGIN_NAMESPACE_MDFMODEL
         MdfString m_strResourceId;
         MdfString m_strPositionType;
         double m_dRenderTime;
+        MdfString m_strError;
     };
 
     typedef MdfOwnerCollection<ProfileRenderWatermarkResult> ProfileRenderWatermarkResultCollection;

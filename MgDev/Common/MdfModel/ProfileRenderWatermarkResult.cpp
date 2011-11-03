@@ -101,6 +101,26 @@ void ProfileRenderWatermarkResult::SetRenderTime(const double& dRenderTime)
 }
 
 //-------------------------------------------------------------------------
+// PURPOSE: Accessor method for the Error property.
+// RETURNS: The error message which describes watermark rendering failure.
+//-------------------------------------------------------------------------
+const MdfString& ProfileRenderWatermarkResult::GetError() const
+{
+    return this->m_strError;
+}
+
+//-------------------------------------------------------------------------
+// PURPOSE: Accessor method to the Error property.
+// PARAMETERS:
+//      Input:
+//          pstrError - The error message which describes watermark rendering failure.
+//-------------------------------------------------------------------------
+void ProfileRenderWatermarkResult::SetError(const MdfString& pstrError)
+{
+    this->m_strError = pstrError;
+}
+
+//-------------------------------------------------------------------------
 // PURPOSE: For memory leak testing.
 //-------------------------------------------------------------------------
 #ifdef _WIN32

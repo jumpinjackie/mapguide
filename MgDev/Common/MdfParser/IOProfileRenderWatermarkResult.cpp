@@ -28,7 +28,8 @@ ELEM_MAP_ENTRY(1, ProfileRenderWatermarkResult);
 ELEM_MAP_ENTRY(2, ResourceId);
 ELEM_MAP_ENTRY(3, PositionType);
 ELEM_MAP_ENTRY(4, RenderTime);
-ELEM_MAP_ENTRY(5, ExtendedData1);
+ELEM_MAP_ENTRY(5, Error);
+ELEM_MAP_ENTRY(6, ExtendedData1);
 
 
 IOProfileRenderWatermarkResult::IOProfileRenderWatermarkResult(Version& version) : SAX2ElementHandler(version)
@@ -85,6 +86,14 @@ void IOProfileRenderWatermarkResult::Write(MdfStream& fd, ProfileRenderWatermark
     fd << tab.tab() << startStr(sRenderTime);
     fd << DoubleToStr(profileRenderWatermarkResult->GetRenderTime());
     fd << endStr(sRenderTime) << std::endl;
+
+    // Property: Error
+    if(!profileRenderWatermarkResult->GetError().empty())
+    {
+        fd << tab.tab() << startStr(sError);
+        fd << EncodeString(profileRenderWatermarkResult->GetError());
+        fd << endStr(sError) << std::endl;
+    }
 
     // Write any unknown XML / extended data
     IOUnknown::Write(fd, profileRenderWatermarkResult->GetUnknownXml(), version, tab);
