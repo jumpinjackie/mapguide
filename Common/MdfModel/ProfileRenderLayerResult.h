@@ -81,6 +81,11 @@ BEGIN_NAMESPACE_MDFMODEL
         const double GetRenderTime() const;
         void SetRenderTime(const double& dRenderTime);
 
+        // Property: Error
+        // Error message if render layer failed.
+        const MdfString& GetError() const;
+        void SetError(const MdfString& pstrError);
+
 //#ifdef _WIN32
 #if _DEBUG
         // for memory leak testing
@@ -103,6 +108,7 @@ BEGIN_NAMESPACE_MDFMODEL
         ScaleRange* m_scaleRange;
         MdfString m_strFilter;
         double m_dRenderTime;
+        MdfString m_strError;
     };
 
     typedef MdfOwnerCollection<ProfileRenderLayerResult> ProfileRenderLayerResultCollection;

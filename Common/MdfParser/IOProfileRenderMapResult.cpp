@@ -44,7 +44,8 @@ ELEM_MAP_ENTRY(13, ProfileRenderSelectionResult);
 ELEM_MAP_ENTRY(13, ProfileRenderWatermarksResult);
 ELEM_MAP_ENTRY(14, ProfileRenderLabelsResult);
 ELEM_MAP_ENTRY(15, CreateImageTime);
-ELEM_MAP_ENTRY(16, ExtendedData1);
+ELEM_MAP_ENTRY(16, Error);
+ELEM_MAP_ENTRY(17, ExtendedData1);
 
 
 IOProfileRenderMapResult::IOProfileRenderMapResult(Version& version) : SAX2ElementHandler(version)
@@ -153,6 +154,14 @@ void IOProfileRenderMapResult::Write(MdfStream& fd, ProfileRenderMapResult* prof
     fd << tab.tab() << startStr(sCreateImageTime);
     fd << DoubleToStr(profileRenderMapResult->GetCreateImageTime());
     fd << endStr(sCreateImageTime) << std::endl;
+
+    // Property: Error
+    if(!profileRenderMapResult->GetError().empty())
+    {
+        fd << tab.tab() << startStr(sError);
+        fd << EncodeString(profileRenderMapResult->GetError());
+        fd << endStr(sError) << std::endl;
+    }
 
     // Write any unknown XML / extended data
     IOUnknown::Write(fd, profileRenderMapResult->GetUnknownXml(), version, tab);

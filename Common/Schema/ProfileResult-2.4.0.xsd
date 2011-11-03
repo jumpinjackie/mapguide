@@ -98,6 +98,11 @@
           <xs:documentation>The time of rendering stylized map to an image.</xs:documentation>
         </xs:annotation>
       </xs:element>
+      <xs:element name="Error" type="xs:string" minOccurs="0">
+        <xs:annotation>
+          <xs:documentation>Error message if rendering map failed.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
       <xs:element name="ExtendedData1" type="ExtendedDataType" minOccurs="0"/>
     </xs:sequence>
   </xs:complexType>
@@ -165,6 +170,11 @@
           <xs:documentation>The time of stylizing labels in the map.</xs:documentation>
         </xs:annotation>
       </xs:element>
+      <xs:element name="Error" type="xs:string" minOccurs="0">
+        <xs:annotation>
+          <xs:documentation>Error message if rendering labels failed.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
       <xs:element name="ExtendedData1" type="ExtendedDataType" minOccurs="0"/>
     </xs:sequence>
   </xs:complexType>
@@ -213,6 +223,11 @@
           <xs:documentation>The time of stylizing a paricular layer in the map.</xs:documentation>
         </xs:annotation>
       </xs:element>
+      <xs:element name="Error" type="xs:string" minOccurs="0">
+        <xs:annotation>
+          <xs:documentation>Error message if rendering layer failed.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
       <xs:element name="ExtendedData1" type="ExtendedDataType" minOccurs="0"/>
     </xs:sequence>
   </xs:complexType>
@@ -234,6 +249,11 @@
       <xs:element name="RenderTime" type="xs:double">
         <xs:annotation>
           <xs:documentation>The time of stylizing a paricular watermark in the map.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="Error" type="xs:string" minOccurs="0">
+        <xs:annotation>
+          <xs:documentation>Error message if rendering watermark failed.</xs:documentation>
         </xs:annotation>
       </xs:element>
       <xs:element name="ExtendedData1" type="ExtendedDataType" minOccurs="0"/>

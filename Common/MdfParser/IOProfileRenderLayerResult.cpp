@@ -34,7 +34,8 @@ ELEM_MAP_ENTRY(6, CoordinateSystem);
 ELEM_MAP_ENTRY(7, ScaleRange);
 ELEM_MAP_ENTRY(8, Filter);
 ELEM_MAP_ENTRY(9, RenderTime);
-ELEM_MAP_ENTRY(10, ExtendedData1);
+ELEM_MAP_ENTRY(10, Error);
+ELEM_MAP_ENTRY(11, ExtendedData1);
 
 
 IOProfileRenderLayerResult::IOProfileRenderLayerResult(Version& version) : SAX2ElementHandler(version)
@@ -116,6 +117,14 @@ void IOProfileRenderLayerResult::Write(MdfStream& fd, ProfileRenderLayerResult* 
     fd << tab.tab() << startStr(sRenderTime);
     fd << DoubleToStr(profileRenderLayerResult->GetRenderTime());
     fd << endStr(sRenderTime) << std::endl;
+
+    // Property: Error
+    if(!profileRenderLayerResult->GetError().empty())
+    {
+        fd << tab.tab() << startStr(sError);
+        fd << EncodeString(profileRenderLayerResult->GetError());
+        fd << endStr(sError) << std::endl;
+    }
 
     // Write any unknown XML / extended data
     IOUnknown::Write(fd, profileRenderLayerResult->GetUnknownXml(), version, tab);
