@@ -3971,6 +3971,7 @@ function ProcessSelectedFeatureSet(resp)
 
 function IsPropertyCtrlVisible()
 {
+    if (!isProperties) return false;
     return GetPropertyCtrl().width > 0;
 }
 
