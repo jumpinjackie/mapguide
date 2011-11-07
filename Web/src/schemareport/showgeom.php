@@ -75,11 +75,59 @@
                 $geomProp = $classDef->GetProperties()->GetItem($geomName);
                 $spatialContext = $geomProp->GetSpatialContextAssociation();
 
-                $featureReader = $featureSrvc->SelectFeatures($featuresId, $featureName, null);
-                while($featureReader->ReadNext())
-                    $totalEntries++;
-                $featureReader->Close();
-
+                //Try the SelectAggregate shortcut. This is faster than raw spinning a feature reader
+                //
+                //NOTE: If MapGuide supported scrollable readers like FDO, we'd have also tried 
+                //that as well.
+                $canCount = false;
+                $gotCount = false;
+                $fsBr = $resourceSrvc->GetResourceContent($featuresId);
+                $fsXml = $fsBr->ToString();
+                $fsDoc = DOMDocument::loadXML($fsXml);
+                $providerNodeList = $fsDoc->getElementsByTagName("Provider");
+                $providerName = $providerNodeList->item(0)->nodeValue;
+                $capsBr = $featureSrvc->GetCapabilities($providerName);
+                $capsXml = $capsBr->ToString();
+                //This should be good enough to find out if Count() is supported
+                $canCount = !(strstr($capsXml, "<Name>Count</Name>") === false);
+                
+                if ($canCount) {
+                    $clsDef = $featureSrvc->GetClassDefinition($featuresId, $schemaName, $className);
+                    $idProps = $clsDef->GetIdentityProperties();
+                    if ($idProps->GetCount() > 0)
+                    {
+                        $pd = $idProps->GetItem(0);
+                        $expr = "COUNT(" .$pd->GetName(). ")";
+                        $query = new MgFeatureAggregateOptions();
+                        $query->AddComputedProperty("TotalCount", $expr);
+                        $dataReader = $featureSrvc->SelectAggregate($featuresId, $featureName, $query);
+                        if ($dataReader->ReadNext())
+                        {
+                            $ptype = $dataReader->GetPropertyType("TotalCount");
+                            switch ($ptype)
+                            {
+                                case MgPropertyType::Int32:
+                                    $totalEntries = $dataReader->GetInt32("TotalCount");
+                                    $gotCount = true;
+                                    break;
+                                case MgPropertyType::Int64:
+                                    $totalEntries = $dataReader->GetInt64("TotalCount");
+                                    $gotCount = true;
+                                    break;
+                            }
+                            $dataReader->Close();
+                        }
+                    }
+                }
+                
+                if ($gotCount == false)
+                {
+                    $featureReader = $featureSrvc->SelectFeatures($featuresId, $featureName, null);
+                    while($featureReader->ReadNext())
+                        $totalEntries++;
+                    $featureReader->Close();
+                }
+                
                 // Create a layer definition
                 $layerfactory = new LayerDefinitionFactory();
                 $layerDefinition = CreateLayerDef($layerfactory, $resName, $featureName, $geomName, $geomType);
@@ -199,6 +247,7 @@
             {
                 $validSession = 0;
                 echo $mge->GetExceptionMessage();
+                echo $mge->GetStackTrace();
             }
             catch (Exception $e)
             {
