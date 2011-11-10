@@ -28,18 +28,39 @@ using System;
 /// </summary>
 namespace OSGeo.MapGuide
 {
-
+    [Serializable]
     public class ManagedException : Exception
     {
+        private bool mIsWrapper;
+        private string mMessage;
+        private string mStackTrace;
+
         public ManagedException()
         {
+            mIsWrapper = true;
+            mMessage = string.Empty;
+            mStackTrace = string.Empty;
+        }
+
+        protected ManagedException(System.Runtime.Serialization.SerializationInfo info, System.Runtime.Serialization.StreamingContext context) : base(info, context)
+        {
+            mIsWrapper = false;
+            mMessage = info.GetString("ManagedException.Message");
+            mStackTrace = info.GetString("ManagedException.StackTrace");
+        }
+
+        public override void GetObjectData(System.Runtime.Serialization.SerializationInfo info, System.Runtime.Serialization.StreamingContext context)
+        {
+            base.GetObjectData(info, context);
+            info.AddValue("ManagedException.Message", Message);
+            info.AddValue("ManagedException.StackTrace", StackTrace);
         }
 
         public override string Message
         {
             get
             {
-                return ((MgException)this).GetExceptionMessage();
+                return mIsWrapper ? ((MgException)this).GetExceptionMessage() : mMessage;
             }
         }
 
@@ -47,7 +68,7 @@ namespace OSGeo.MapGuide
         {
             get
             {
-                return ((MgException)this).GetStackTrace();
+                return mIsWrapper ? ((MgException)this).GetStackTrace() : mStackTrace;
             }
         }
 
