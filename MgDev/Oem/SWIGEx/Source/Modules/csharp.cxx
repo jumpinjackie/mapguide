@@ -40,6 +40,8 @@ private:
     std::string interfaces;
     std::string code;
     std::string attributes;
+    std::string deserializationCode;
+    bool isDeserializable;
     bool parsed;
 
     void ReadString(std::string& str, FILE* fp)
@@ -61,11 +63,17 @@ private:
             
             std::string::size_type pos = buf.find("ATTRIBUTE");
             std::string::size_type pos2 = 0;
+            std::string::size_type pos3 = 0;
 
             while (pos != buf.npos)
             {
                 pos += strlen("ATTRIBUTE");
                 pos2 = buf.find("\n", pos);
+                pos3 = buf.find_first_not_of(" ", pos, pos2 - pos);
+                if(buf.npos != pos3)
+                {
+                    pos = pos3;
+                }
                 if (!attributes.empty()) { attributes.append(","); }
                 attributes.append(buf.substr(pos, pos2-pos));
                 pos = buf.find("ATTRIBUTE", pos2);
@@ -76,9 +84,25 @@ private:
             {
                 pos += strlen("INTERFACE");
                 pos2 = buf.find("\n", pos);
+                pos3 = buf.find_first_not_of(" ", pos, pos2 - pos);
+                if(buf.npos != pos3)
+                {
+                    pos = pos3;
+                }
                 if (!interfaces.empty()) { interfaces.append(","); }
                 interfaces.append(buf.substr(pos, pos2-pos));
                 pos = buf.find("INTERFACE", pos2);
+            }
+
+            pos = buf.find("DESERIALIZATION");
+            while (pos != buf.npos)
+            {
+                isDeserializable = true;
+                pos += strlen("DESERIALIZATION");
+                pos2 = buf.find("\n", pos);
+                if (!deserializationCode.empty()) { deserializationCode.append("\n"); }
+                deserializationCode.append(buf.substr(pos, pos2-pos));
+                pos = buf.find("DESERIALIZATION", pos2);
             }
 
             code = buf.substr(pos2);
@@ -90,6 +114,7 @@ public:
     CustomFile(String* proxyDir, String* className)
     :
     parsed(false),
+    isDeserializable(false),
     fp(NULL)
     {
         std::string fname = (char*) DohData(proxyDir);
@@ -123,6 +148,16 @@ public:
     String *getInterfaces()
     {
         return NewString(parsed ? interfaces.c_str() : "");
+    }
+
+    String *getDeserializationCode()
+    {
+        return NewString(parsed ? deserializationCode.c_str() : "");
+    }
+
+    bool getIsDeserializable()
+    {
+        return isDeserializable;
     }
 
     const char *getCustomCode()
@@ -1360,6 +1395,8 @@ class CSHARP : public Language {
     // Pure C# interfaces
     const String *pure_interfaces = typemapLookup(derived ? "csinterfaces_derived" : "csinterfaces", typemap_lookup_type, WARN_NONE);
     const String *attributeTags = NewString("");
+    bool isDeserializable = false;
+    const String *deserializationCode = NewString("");
 
     // Custom proxy code defined in external files
     if (proxyDir != NULL)
@@ -1367,6 +1404,8 @@ class CSHARP : public Language {
         CustomFile customFile(proxyDir, c_classname);
         pure_interfaces = customFile.getInterfaces();
         attributeTags = customFile.getAttributes();
+        isDeserializable = customFile.getIsDeserializable();
+        deserializationCode = customFile.getDeserializationCode();
     }
 
     if(!isRootException)
@@ -1395,6 +1434,14 @@ class CSHARP : public Language {
                 "[",
                 attributeTags,
                 "]\n",
+                NIL);
+        }
+
+        //Add serializable attribute
+        if(isDeserializable)
+        {
+            Printv(proxy_class_def,
+                "[Serializable]\n",
                 NIL);
         }
 
@@ -1434,6 +1481,20 @@ class CSHARP : public Language {
             NIL);
         }
 
+        if(isDeserializable)
+        {
+            Printv(proxy_class_def,
+                "\n",
+                "  protected $csclassname(System.Runtime.Serialization.SerializationInfo info, System.Runtime.Serialization.StreamingContext context) : base(info, context) {\n",
+                "    swigCPtr = IntPtr.Zero;\n",
+                derived ? 
+                "" : 
+                "    swigCMemOwn = false;\n",
+                deserializationCode,
+                "  }\n",
+                NIL);
+        }
+
     }
     else
     {
@@ -1466,6 +1527,14 @@ class CSHARP : public Language {
                 NIL);
         }
 
+        //Add serializable attribute
+        if(isDeserializable)
+        {
+            Printv(proxy_class_def,
+                "[Serializable]\n",
+                NIL);
+        }
+
         Printv(proxy_class_def,
             typemapLookup("csclassmodifiers", typemap_lookup_type, WARN_CSHARP_TYPEMAP_CLASSMOD_UNDEF), // Class modifiers
             " class $csclassname",       // Class name and bases
@@ -1481,6 +1550,18 @@ class CSHARP : public Language {
             "    swigCPtr = cPtr;\n",
             "  }\n",
             NIL);
+
+        if(isDeserializable)
+        {
+            Printv(proxy_class_def,
+                "\n",
+                "  protected $csclassname(System.Runtime.Serialization.SerializationInfo info, System.Runtime.Serialization.StreamingContext context) : base(info, context) {\n",
+                "    swigCPtr = IntPtr.Zero;\n",
+                "    swigCMemOwn = false;\n",
+                deserializationCode,
+                "  }\n",
+                NIL);
+        }
     }
 
     // C++ destructor is wrapped by the Dispose method
