@@ -72,7 +72,7 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "WebSupport", "..\..\..\Web\
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "DotNetApi", "DotNetApi", "{0DA219E2-DCC0-47DA-B36E-029D5C240CD1}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "NotNetUnmanagedApi", "NotNetUnmanagedApi", "{93905A31-736B-462B-9816-5184AADAA689}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "DotNetUnmanagedApi", "DotNetUnmanagedApi", "{93905A31-736B-462B-9816-5184AADAA689}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "FoundationApi", "..\..\..\Web\src\DotNetUnmanagedApi\Foundation\FoundationApi.vcproj", "{A8D4FED3-0AA1-4AE6-B734-A4499A4BB4F2}"
 	ProjectSection(ProjectDependencies) = postProject
