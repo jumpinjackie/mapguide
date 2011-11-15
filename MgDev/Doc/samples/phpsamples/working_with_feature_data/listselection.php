@@ -48,11 +48,10 @@
       $siteConnection = new MgSiteConnection();
       $siteConnection->Open($userInfo);
 
-      $resourceService = $siteConnection->CreateService(MgServiceType::ResourceService);
       $featureService = $siteConnection->CreateService(MgServiceType::FeatureService);
 
-      $map = new MgMap();
-      $map->Open($resourceService, $mapName);
+      $map = new MgMap($siteConnection);
+      $map->Open($mapName);
 
       // ----------------------------------------------------------
       // Use the following code for AJAX or DWF Viewers
