@@ -1,0 +1,1 @@
+Copy all the dlls from mapviewernet/bin into this directory

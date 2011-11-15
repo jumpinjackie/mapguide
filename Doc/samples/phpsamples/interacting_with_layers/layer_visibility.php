@@ -41,13 +41,8 @@
       $siteConnection = new MgSiteConnection();
       $siteConnection->Open($userInfo);
   
-      // Get an instance of the required service(s).
-      
-      $resourceService = $siteConnection->
-      CreateService(MgServiceType::ResourceService);
-  
-      $map = new MgMap();
-      $map->Open($resourceService, $mapName);
+      $map = new MgMap($siteConnection);
+      $map->Open($mapName);
       
       $layers = $map->GetLayers(); // Get layer collection
       echo "<p>Layers, in draw order:</p>";

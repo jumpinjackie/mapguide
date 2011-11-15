@@ -62,8 +62,8 @@
       
       // Query the spatial reference system used for the map.
       
-      $map = new MgMap();
-      $map->Open($resourceService, $mapName);
+      $map = new MgMap($siteConnection);
+      $map->Open($mapName);
       $srs = $map->GetMapSRS();
       
       // Format it and display it in the task pane.

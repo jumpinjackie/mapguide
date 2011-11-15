@@ -54,11 +54,8 @@
       $siteConnection = new MgSiteConnection();
       $siteConnection->Open($userInfo);
 
-      $resourceService =
-      $siteConnection->CreateService(MgServiceType::ResourceService);
-
-      $map = new MgMap();
-      $map->Open($resourceService, $mgMapName);
+      $map = new MgMap($siteConnection);
+      $map->Open($mgMapName);
 
       $layers = $map->GetLayers();
 
@@ -74,7 +71,7 @@
       // You must save the updated map or the
       // changes will not be applied
       // Also be sure to refresh the map on page load.
-      $map->Save($resourceService);
+      $map->Save();
 
       echo "<p>Layer label has been changed to $newLabel.</p>";
 
