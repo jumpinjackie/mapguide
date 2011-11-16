@@ -674,10 +674,8 @@ function jsGraphics(cnv, wnd)
 
 	this.drawPolyline = this.drawPolyLine = function(x, y)
 	{
-		for (var i=x.length - 1; i;)
-		{--i;
+		for (var i=0 ; i<x.length-1 ; i++ ) 
 			this.drawLine(x[i], y[i], x[i+1], y[i+1]);
-		}
 	};
 
 	this.fillRect = function(x, y, w, h)
