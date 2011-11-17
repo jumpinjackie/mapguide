@@ -2552,6 +2552,9 @@
         public $LayerType;
         public $Filters;
         public $ScaleRange;
+        //if exception happened when profiling layer, the error mesage will be saved here,
+        //if the $ErrorMessage is empty or null, it means no error happened
+        public $ErrorMessage;
 
         public function GetRenderTimePercentage($sumofRenderTime)
         {
@@ -2571,6 +2574,8 @@
         // an array of LayerDefinitionProfileData,
         // which consist the profiling map layers info
         public $LayerProfileDataCollection;
+
+        public $HasErrors;
 
         //get the sum of each layer render time
         //note that this sum can be different with the $TotalLayerRenderTime
@@ -2604,6 +2609,10 @@
         public $CoordinateSystem;
         public $Scale;
         public $RenderType;
+
+        public $LabelsErrorMessage;
+        public $WatermarksErrorMessage;
+        public $MapErrorMessage;
 
         public function GetTotalRenderTime()
         {
@@ -2652,6 +2661,11 @@
         public function ReadFromXML($resultSource)
         {
             $this->MapProfileData = new MapDefinitionProfileData();
+
+            $this->MapProfileData->MapErrorMessage = null;
+            $this->MapProfileData->LabelsErrorMessage = null;
+            $this->MapProfileData->WatermarksErrorMessage = null;
+
             $mapResultList = $resultSource->documentElement->getElementsByTagName("ProfileRenderMapResult");
             $profileRenderMap = $mapResultList->item(0);
 
@@ -2709,6 +2723,11 @@
                                     {
                                         $this->MapProfileData->TotalLabelRenderTime = $labelNode->nodeValue;
                                     }
+                                    //if profiling labels has exception, save the error message here
+                                    if ($labelNode->nodeType == 1 && $labelNode->nodeName == "Error")
+                                    {
+                                        $this->MapProfileData->LabelsErrorMessage = $labelNode->nodeValue;
+                                    }
                                 }
                                 break;
                             case "ProfileRenderLayersResult":
@@ -2728,7 +2747,18 @@
                                     {
                                         $this->MapProfileData->TotalWatermarkRenderTime = $watermarkNode->nodeValue;
                                     }
+                                    if (1 == $watermarkNode->nodeType && "ProfileRenderWatermarkResult" == $watermarkNode->nodeName)
+                                    {
+                                        foreach ($watermarkNode->childNodes as $watermarkItemNode) {
+                                            if (1 == $watermarkItemNode->nodeType && "Error" == $watermarkItemNode->nodeName) {
+                                                 $this->MapProfileData->WatermarksErrorMessage.= $watermarkItemNode->nodeValue . "\n";
+                                            }
+                                        }
+                                    }
                                 }
+                                break;
+                            case "Error":
+                                $this->MapProfileData->MapErrorMessage = $node->nodeValue;
                                 break;
                             default: break;
                         }
@@ -2741,11 +2771,13 @@
         {
             $this->LayerProfileData = new LayerDefinitionProfileResults();
             $this->LayerProfileData->LayerProfileDataCollection = array();
+            $this->LayerProfileData->HasErrors = 0;
 
             foreach ($LayerNodeList->childNodes as $layerNode) {
                 if (1 == $layerNode->nodeType && "ProfileRenderLayerResult" == $layerNode->nodeName) {
 
                     $tempLayerProfileData = new LayerDefinitionProfileData();
+                    $tempLayerProfileData->ErrorMessage = null;
 
                     foreach ($layerNode->childNodes as $node) {
                         if (1 == $node->nodeType) {
@@ -2780,15 +2812,14 @@
                                 case "Filter":
                                     $tempLayerProfileData->Filters= $node->nodeValue;
                                     break;
+                                case "Error":
+                                    $this->LayerProfileData->HasErrors++;
+                                    $tempLayerProfileData->ErrorMessage = $node->nodeValue;
+                                    break;
                                 default:break;
                             }
                         }
                     }
-
-                    //TODO:workaround for FDO read layer Exception
-                    if(trim($tempLayerProfileData->LayerName) === "")
-                        continue;
-
                     $this->LayerProfileData->LayerProfileDataCollection[$tempLayerProfileData->LayerName] = $tempLayerProfileData;
                 }
             }
