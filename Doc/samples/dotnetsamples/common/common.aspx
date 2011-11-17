@@ -32,6 +32,11 @@ public class Constants
         get { return Path.Combine(RootDirectory, "Server"); }
     }
     
+    public static string SchemaDirectory 
+    {
+        get { return Path.Combine(MapGuideServerDirectory, "Schema"); }
+    }
+    
     public static string WebExtensionsDirectory
     {
         get { return Path.Combine(RootDirectory, "Web"); }
@@ -45,6 +50,38 @@ public class Constants
     public static string WebConfigPath
     {
         get { return Path.Combine(WebExtensionsDirectory, "www\\webconfig.ini"); }
+    }
+}
+
+public class TemplateUtil
+{
+    public static String Substitute(String templ, params String[] vals)
+    {
+        StringBuilder res = new StringBuilder();
+        int index = 0, val = 0;
+        bool found;
+        do
+        {
+            found = false;
+            int i = templ.IndexOf('%', index);
+            if(i != -1)
+            {
+                found = true;
+                res.Append(templ.Substring(index, i - index));
+                if(i < templ.Length - 1)
+                {
+                    if(templ[i+1] == '%')
+                        res.Append('%');
+                    else if(templ[i+1] == 's')
+                        res.Append(vals[val ++]);
+                    else
+                        res.Append('@');    //add a character illegal in jscript so we know the template was incorrect
+                    index = i + 2;
+                }
+            }
+        } while(found);
+        res.Append(templ.Substring(index));
+        return res.ToString();
     }
 }
 
