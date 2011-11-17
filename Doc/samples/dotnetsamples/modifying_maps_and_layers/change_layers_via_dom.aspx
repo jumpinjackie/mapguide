@@ -23,7 +23,6 @@
 String sessionId;
 String mapName;
 </script>
-<!-- #Include File="../common/common.aspx" -->
 <!-- #Include File="layer_functions.aspx" -->
 <html>
 

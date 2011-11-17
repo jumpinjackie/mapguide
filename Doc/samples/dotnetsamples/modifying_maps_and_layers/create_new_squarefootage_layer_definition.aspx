@@ -18,7 +18,6 @@
 <%@ Import Namespace="System" %>
 <%@ Import Namespace="System.Xml" %>
 <%@ Import Namespace="OSGeo.MapGuide" %>
-<!-- #Include File="../common/common.aspx" -->
 <!-- #Include File="layer_functions.aspx" -->
 <script runat="server">
 String sessionId;
