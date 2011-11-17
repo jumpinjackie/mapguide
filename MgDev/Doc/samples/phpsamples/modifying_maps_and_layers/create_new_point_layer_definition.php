@@ -54,8 +54,8 @@ try
 
     //---------------------------------------------------//
     // Open the map
-    $map = new MgMap();
-    $map->Open($resourceService, $mapName);
+    $map = new MgMap($siteConnection);
+    $map->Open($mapName);
 
     //---------------------------------------------------//
     // Create a feature source with point data.
@@ -166,7 +166,7 @@ try
 
     // Create a point type style.
     $pointTypeStyle = $factory->
-      CreatepointTypeStyle($pointRule);
+      CreatePointTypeStyle($pointRule);
 
     // Create a scale range.
     $minScale = '0';
@@ -200,10 +200,7 @@ try
 
     //---------------------------------------------------//
     //  Save the map back to the session repository
-    $sessionIdName = "Session:$sessionId//$mapName.Map";
-    $sessionResourceID = new MgResourceIdentifier($sessionIdName);
-    $sessionResourceID->Validate();
-    $map->Save($resourceService, $sessionResourceID);
+    $map->Save();
 
     //---------------------------------------------------//
 }
