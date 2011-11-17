@@ -300,7 +300,7 @@ catch ( Exception $e )
             padding-right: 20px;
             cursor:default;
         }
-
+        
         .warnMsgStyle
         {
             border-color: red;
@@ -348,7 +348,7 @@ catch ( Exception $e )
             top: 400px;
             left: 400px;
         }
-
+        
         #ResultNotMatchWrn
         {
             border: 2px solid #CCCCCC;
@@ -358,6 +358,26 @@ catch ( Exception $e )
             display: none;
             width: auto;
         }
+
+        .errorMessage
+        {
+            border: 2px solid #CCCCCC;
+            background: #FFFEBB url('images/warning.png') no-repeat 1px 1px;
+            margin-top: 20px;
+            padding: 4px 5px 5px 32px;
+            width: auto;
+        }
+
+        .wrnMessage
+        {
+            padding:5px 15px 5px 15px;
+            display:none;
+            filter: progid:DXImageTransform.Microsoft.gradient(startColorstr=\'#EEEEEE\', endColorstr=\'#BBBBBB\');
+            background: #CCCCCC;
+            background: -moz-linear-gradient(top, #EEEEEE, #BBBBBB);
+            background: -webkit-gradient(linear, left top, left bottom, from(#EEEEEE), to(#BBBBBB));
+        }
+
     </style>
     </div>
     <script type="text/javascript">
@@ -851,7 +871,6 @@ catch ( Exception $e )
         //we set the width and height as 0, and border as none,
         //it works well in IE9 and firefox, but in chrome and safari,
         //if the border set as none, this event will not be fired.
-        //TODO:Multiple Browsers:Safari and Chrome not work,So this event handler is not registered
         function MapViewerKeyUp(event)
         {
             if(event.keyCode == 13)
@@ -1442,7 +1461,8 @@ catch ( Exception $e )
 
                     //make the layer table default sorting
                     var layerTableHeader = document.getElementById("layerHeaderTable");
-                    SortLayers.sortByColumn(layerTableHeader.tHead.rows[0].children[0]);
+                    SortLayers.sortByColumn(layerTableHeader.tHead.rows[0].children[1]);
+                    SortLayers.sortByColumn(layerTableHeader.tHead.rows[0].children[1]);
                 }
             }
         }
@@ -1594,10 +1614,22 @@ catch ( Exception $e )
             }
             
             var j = 0;
-            for (;j < tableRow.cells.length; j++)
+            var errorStatus = tableRow.getAttribute("errorstatus");
+            if(errorStatus == "0")
             {
-                var obj = tableRow.cells[j];
-                obj.style.backgroundColor = "#b4c6de";
+                for (;j < tableRow.cells.length; j++)
+                {
+                    var obj = tableRow.cells[j];
+                    obj.style.backgroundColor = "#b4c6de";
+                }
+            }
+            else
+            {
+                for (;j < tableRow.cells.length; j++)
+                {
+                    var obj = tableRow.cells[j];
+                    obj.style.backgroundColor = "red";
+                }
             }
 
             var layersTable = document.getElementById("layerResultsTable");
@@ -1617,10 +1649,22 @@ catch ( Exception $e )
                     }
                     
                     var m = 0;
-                    for (;m < lastSelectedRow.cells.length; m++)
+                    var errorStatus = lastSelectedRow.getAttribute("errorstatus");
+                    if(errorStatus == "0")
                     {
-                        var obj = lastSelectedRow.cells[m];
-                        obj.style.backgroundColor = "";
+                        for (;m < lastSelectedRow.cells.length; m++)
+                        {
+                            var obj = lastSelectedRow.cells[m];
+                            obj.style.backgroundColor = "";
+                        }
+                    }
+                    else
+                    {
+                        for (;m < lastSelectedRow.cells.length; m++)
+                        {
+                            var obj = lastSelectedRow.cells[m];
+                            obj.style.backgroundColor = "#FFFEBB";
+                        }
                     }
                     
                     lastSelectedRow.setAttribute("rowselected","false");
@@ -1640,11 +1684,21 @@ catch ( Exception $e )
         //2) add "var" before the varibale name, var layerInfoDetail =document.getElementById("layerInfoDetail");
         function DisplayLayerDetail(layerDetail)
         {                    
-            var layerDetailContent='<div style="padding-bottom: 8px; padding-top: 7px; width: 80%;">' + layerDetail[0] + '</div>'+ "\n";
-            layerDetailContent+='<div style=" border: 1px solid #cccccc; width: 80%">';
-            layerDetailContent+='<div style="padding: 10px;">';
-            layerDetailContent+="<b>Filter</b>";
-            layerDetailContent+="<br/><br/>";
+            var layerDetailContent = '<div style="padding-bottom: 8px; padding-top: 7px; width: 80%;">' + layerDetail[0] + '</div>'+ "\n";
+            layerDetailContent += '<div style=" border: 1px solid #cccccc; width: 80%">';
+
+            if( "" != Trim(layerDetail[3]) )
+            {
+                layerDetailContent += '<div style="padding: 10px; background-color:#FFFEBB;">';
+                layerDetailContent += "<span style='font-weight:bold;'>Details</span>";
+                layerDetailContent += "<br/><br/>";
+                layerDetailContent += layerDetail[3];
+                layerDetailContent += "</div>";
+            }
+
+            layerDetailContent += '<div style="padding: 10px;">';
+            layerDetailContent += "<span style='font-weight:bold;'>Filter</span>";
+            layerDetailContent += "<br/><br/>";
 
             //If no filter was applied, then "No filter was applied to this layer." is displayed.
             if( "" == Trim(layerDetail[1]) )
@@ -1656,13 +1710,13 @@ catch ( Exception $e )
                 layerDetailContent += layerDetail[1];
             }
 
-            layerDetailContent+="</div>";
-            layerDetailContent+='<div style=" background-color: #EEEEEE;padding: 10px;">';
-            layerDetailContent+="<b>Scale Range</b>";
-            layerDetailContent+="<br/><br/>";
-            layerDetailContent+=layerDetail[2];
-            layerDetailContent+="</div>"+ "\n";
-            layerDetailContent+="</div>"+"\n";
+            layerDetailContent += "</div>";
+            layerDetailContent += '<div style=" background-color: #EEEEEE;padding: 10px;">';
+            layerDetailContent += "<span style='font-weight:bold;'>Scale Range</span>";
+            layerDetailContent += "<br/><br/>";
+            layerDetailContent += layerDetail[2];
+            layerDetailContent += "</div>" + "\n";
+            layerDetailContent += "</div>" + "\n";
 
             //remove the layer detail info if it already exist
             var layerInfo = document.getElementById("layerDetailContentDiv");
@@ -2010,9 +2064,11 @@ catch ( Exception $e )
 
                 var centerPoint = document.getElementById("txtCenterPoint");
                 centerPoint.value = selectSetting[2];
+                ValidateCenterPoint(false);
 
                 var scaleInput = document.getElementById("txtScale");
                 scaleInput.value = FormatNumber(selectSetting[3],4);
+                ValidateScale(false);
 
                 var tipDiv = document.getElementById("mapResourceNameTip");
                 tipDiv.innerHTML = mapDefinitonSelector.value;
@@ -2070,6 +2126,8 @@ catch ( Exception $e )
                     echo "</span>";
                 }
             ?>
+        <div>
+        </div>
             <div id="settingsContent">
                 <table style="width:100%;">
                     <tr>

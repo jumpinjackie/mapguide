@@ -397,6 +397,14 @@ catch ( Exception $e )
         </td>
     </tr>
     <tr>
+        <td colspan="2">
+            <?php
+                $displayManager->OutputErrorMessage();
+            ?>
+            
+        </td>
+    </tr>
+    <tr>
         <td colspan="2" style="padding-top:20px; padding-left: 15px;">
             <?php
                 echo "<span>";
@@ -444,7 +452,7 @@ catch ( Exception $e )
 <div id="LayersResult">
     <table style=" width:100%;">
         <tr>
-            <td style="width:70%; padding-top: 15px;">
+            <td style="width:70%; padding-top: 15px; vertical-align: top;">
                 <div id="layerHeader" class="layerResultsHeaderStyle" style="margin:0px; padding: 0px;">
                     <table id="layerHeaderTable">
                         <thead>
@@ -452,10 +460,10 @@ catch ( Exception $e )
                             <!--Also, the table head columns are set with some customer attribute to help to sort the table data from the client site-->
                             <tr>
                                 <th style="width:20%;border-left:1px solid #CCCCCC;" columnIndex="1" onClick="SortLayers.sortByColumn(this);">Layer</th>
-                                <th style="width:15%;" columnIndex="2" onClick="SortLayers.sortByColumn(this);">Render Time</th>
+                                <th style="width:17%;" columnIndex="2" onClick="SortLayers.sortByColumn(this);">Render Time</th>
                                 <th style="width:30%;" columnIndex="3" onClick="SortLayers.sortByColumn(this);">Feature Class</th>
-                                <th style="width:22%;" columnIndex="4" onClick="SortLayers.sortByColumn(this);">Coordinate System</th>
-                                <th style="width:13%;border-right:1px solid #CCCCCC;" columnIndex="5" onClick="SortLayers.sortByColumn(this);">Type</th>
+                                <th style="width:21%;" columnIndex="4" onClick="SortLayers.sortByColumn(this);">Coordinate System</th>
+                                <th style="width:12%;border-right:1px solid #CCCCCC;" columnIndex="5" onClick="SortLayers.sortByColumn(this);">Type</th>
                             </tr>
                         </thead>
                     </table>

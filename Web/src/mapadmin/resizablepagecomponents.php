@@ -2181,29 +2181,43 @@
             $sumofRenderTime = $this->mapProfileResult->LayerProfileData->GetSumOfLayerRenderTime();
             foreach ($this->mapProfileResult->LayerProfileData->LayerProfileDataCollection as $layerProfileData)
             {
-                //TODO:workaround for FDO read layer Exception
-                if(trim($layerProfileData->LayerName) == "")
-                    continue;
+                $backgroundColor="";
 
                 //set different colors for alternate rows and when mouse move over the row it will change color
                 if(0 == $rowNumber%2)
                 {
-                    echo '<tr class="even" rowselected="false" onclick="LayerDataTableRowClicked(\''.$layerProfileData->LayerName.'\',this);">',"\n";
+                    if(trim($layerProfileData->ErrorMessage) != "")
+                    {
+                       echo '<tr rowselected="false"  errorstatus="1"  onclick="LayerDataTableRowClicked(\''.$layerProfileData->LayerName.'\',this);">',"\n";
+                       $backgroundColor = "background-color:#FFFEBB;";
+                    }
+                    else
+                    {
+                        echo '<tr class="even" rowselected="false"  errorstatus="0"  onclick="LayerDataTableRowClicked(\''.$layerProfileData->LayerName.'\',this);">',"\n";
+                    }
                 }
                 else
                 {
-                    echo '<tr class="odd" rowselected="false" onclick="LayerDataTableRowClicked(\''.$layerProfileData->LayerName.'\',this);">',"\n";
+                    if(trim($layerProfileData->ErrorMessage) != "")
+                    {
+                        echo '<tr rowselected="false" errorstatus="1" onclick="LayerDataTableRowClicked(\''.$layerProfileData->LayerName.'\',this);">',"\n";
+                        $backgroundColor = "background-color:#FFFEBB;";
+                    }
+                    else
+                    {
+                        echo '<tr class="odd" rowselected="false"  errorstatus="0"  onclick="LayerDataTableRowClicked(\''.$layerProfileData->LayerName.'\',this);">',"\n";
+                    }
                 }
 
                 //output the layer profiling information by each column,
                 //for the render time column, we set the sort key as the original number, which will be used as client sort
-                echo "<td style='width:20%;'>".$layerProfileData->LayerName."</td>","\n";
-                echo "<td style='width:15%;' sortKey='".number_format($layerProfileData->TotalRenderTime,2)."'>".
+                echo "<td style='width:20%;$backgroundColor'>".$layerProfileData->LayerName."</td>","\n";
+                echo "<td style='width:17%;$backgroundColor' sortKey='".number_format($layerProfileData->TotalRenderTime,2)."'>".
                         number_format($layerProfileData->TotalRenderTime,2)."&nbsp;ms&nbsp;(".
                         $layerProfileData->GetRenderTimePercentage($sumofRenderTime)."%)&nbsp;</td>","\n";
-                echo "<td style='width:30%;'>".$layerProfileData->FeatureClass."</td>","\n";
-                echo "<td style='width:22%;'>".$layerProfileData->CoordinateSystem."</td>","\n";
-                echo "<td style='width:13%;'>".$layerProfileData->LayerType."</td>","\n";
+                echo "<td style='width:30%;$backgroundColor'>".$layerProfileData->FeatureClass."</td>","\n";
+                echo "<td style='width:21%;$backgroundColor'>".$layerProfileData->CoordinateSystem."</td>","\n";
+                echo "<td style='width:12%;$backgroundColor'>".$layerProfileData->LayerType."</td>","\n";
                 echo "</tr>","\n";
 
                 $rowNumber++;
@@ -2242,11 +2256,19 @@
                 //the js script should not contain special char will will break the code
                 $newFilters = str_replace("'", "\'", $newFilters);
 
-                $script = $script." layerDetailValues[".$i."]=new Array(3); ";
-                $script = $script." layerDetailValues[".$i."][0]='".$value->LayerName."'; ";
-                $script = $script." layerDetailValues[".$i."][1]='".$newFilters."'; ";
-                $script = $script." layerDetailValues[".$i."][2]='".$value->ScaleRange."'; ";
-               
+                $newErrorMessage = "";
+                if($value->ErrorMessage != null)
+                {
+                    $str = trim($value->ErrorMessage);
+                    $newErrorMessage = str_replace($order, $replace, $str);
+                    $newErrorMessage = str_replace("'", "\'", $newErrorMessage);
+                }
+
+                $script .= " layerDetailValues[$i]=new Array(3); ";
+                $script .= " layerDetailValues[$i][0]='$value->LayerName'; ";
+                $script .= " layerDetailValues[$i][1]='$newFilters'; ";
+                $script .= " layerDetailValues[$i][2]='$value->ScaleRange'; ";
+                $script .= " layerDetailValues[$i][3]='$newErrorMessage'; ";
                 $i++;
             }
 
@@ -2295,7 +2317,6 @@
 
             echo '</td>',"\n";
         }
-
 
         public function OutputMapResourceNameWithToolTip($mapResourceID,$IsSetting)
         {
@@ -2377,6 +2398,74 @@
                 echo $dTime->format("h:i:s A");
                 echo "</td>","\n";
                 echo "</tr></table></td></tr></table>","\n";
+            }
+        }
+
+        public function OutputErrorMessage()
+        {
+            $hasError = false;
+            $onlyLayerError = true;
+            $errorMessage;
+            $errorDetail;
+
+            if(isset($this->mapProfileResult->MapProfileData->MapErrorMessage))
+            {
+                $hasError = true;
+                $onlyLayerError = false;
+                $errorMessage.="Errors occurred while rendering the map.<br/>";
+                $errorDetail.= "Map:".$this->mapProfileResult->MapProfileData->MapErrorMessage."<br/>";
+            }
+
+            if(isset($this->mapProfileResult->MapProfileData->WatermarksErrorMessage))
+            {
+                $hasError = true;
+                $onlyLayerError = false;
+                $errorMessage.="Errors occurred while rendering watermarks.<br/>";
+                $errorDetail.= "Watermarks:".$this->mapProfileResult->MapProfileData->WatermarksErrorMessage."<br/>";
+            }
+
+            if(isset($this->mapProfileResult->MapProfileData->LabelsErrorMessage))
+            {
+                $hasError = true;
+                $onlyLayerError = false;
+                $errorMessage.="Errors occurred while rendering labels.<br/>";
+                $errorDetail.= "Labels:".$this->mapProfileResult->MapProfileData->LabelsErrorMessage."<br/>";
+            }
+
+            if($this->mapProfileResult->LayerProfileData->HasErrors > 0)
+            {
+                $hasError = true;
+                $errorMessage.= 'Errors occurred while rendering layers. The layers that failed are highlighted in the table below.<br/>';
+            }
+            
+            if($hasError)
+            {
+               echo '<div class="errorMessage">';
+               echo '<span style="font-size:10pt; font-weight: bold;">';
+               echo $errorMessage."Check the details in the server log.<br/>";
+               echo '</span>';
+               
+               if(!$onlyLayerError)
+               {
+                   echo '<div id="errorMessageCaption">';
+                   echo '<table>';
+                   echo '<tr>';
+                   echo '<td style=" width: 8px;">';
+                   echo '<img src="images/arrow_left.png" alt="left" style="cursor:pointer;"';
+                   echo 'id="errors_CollapseImage_ID" onclick="CollapsibleTabClick(\'errors_CollapseImage_ID\',\'errorsContent\')"/>';
+                   echo '</td>';
+                   echo '<td style="font-size:10pt; font-weight:bold; color:#000000; text-align: left;"  >';
+                   echo '<span style="cursor:pointer;" onclick="CollapsibleTabClick(\'errors_CollapseImage_ID\',\'errorsContent\')">Details</span>';
+                   echo '</td>';
+                   echo  '</tr>';
+                   echo '</table>';
+                   echo '</div>';
+                   echo '<div id="errorsContent" class="wrnMessage">';
+                   echo $errorDetail;
+                   echo '</div>';
+               }
+
+               echo '</div>';
             }
         }
     }

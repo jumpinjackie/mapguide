@@ -40,8 +40,14 @@
     //pass the seesion ID with the url, so when the map viewer is opened, there is no need to re-enter the password
     $ajaxViewerFolder = "mapviewerajax/?";
 
-    //uncomment this line for Java API.
-    //$ajaxViewerFolder = "mapviewerjava/ajaxviewer.jsp?";
+    //when user installed the ajax java viewer, the apache will add a redict
+    //from mapviewerajax to mapviewerjava, and change the relative path to absolute path
+    //which casues the cross-domain problem
+    //now we check if we install the ajax java, then use the "mapviewerjava/ajaxviewer.jsp?" directly to avoid this problem
+    if(file_exists("../mapviewerjava/ajaxviewer.jsp"))
+    {
+        $ajaxViewerFolder = "mapviewerjava/ajaxviewer.jsp?";
+    }
     
     $webLayoutUrl="../".$ajaxViewerFolder."WEBLAYOUT=".urlencode($webLayoutName)."&LOCALE=en&SESSION=".$site->GetCurrentSession();
 
