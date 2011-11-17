@@ -55,8 +55,8 @@ try
 
     // --------------------------------------------------//
     // Open the map
-    $map = new MgMap();
-    $map->Open($resourceService, $mapName);
+    $map = new MgMap($siteConnection);
+    $map->Open($mapName);
 
 
 	// ...
@@ -122,10 +122,7 @@ try
 
     //---------------------------------------------------//
     //  Save the map back to the session repository
-    $sessionIdName = "Session:$sessionId//$mapName.Map";
-    $sessionResourceID = new MgResourceIdentifier($sessionIdName);
-    $sessionResourceID->Validate();
-    $map->Save($resourceService, $sessionResourceID);
+    $map->Save($sessionResourceID);
 
     //---------------------------------------------------//
 }
