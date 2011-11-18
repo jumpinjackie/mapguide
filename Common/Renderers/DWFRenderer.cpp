@@ -56,6 +56,8 @@
 #include "SLDSymbols.h"
 #include "RS_Font.h"
 
+#include "RS_FeatureReader.h"
+
 #include "FontManager.h"
 
 //GD headers

@@ -57,6 +57,7 @@
 
 #include "SymbolTrans.h"
 #include "RenderUtil.h"
+#include "SE_SymbolDefProxies.h"
 
 using namespace DWFToolkit;
 using namespace DWFCore;

@@ -22,6 +22,7 @@
 #include "SLDSymbols.h"
 #include "UnicodeString.h"
 #include "PolygonUtils.h"
+#include "SE_SymbolDefProxies.h"
 
 #include "RenderUtil.h"
 

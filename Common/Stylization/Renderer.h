@@ -23,12 +23,13 @@
 #include "RendererStyles.h"
 #include "RS_InputStream.h"
 #include "RS_SymbolManager.h"
-#include "RS_FeatureReader.h"
+
 
 class LineBuffer;
 class CSysTransformer;
 class TransformMesh;
 class SE_BufferPool;
+class RS_FeatureReader;
 
 ///<summary>
 /// Base class for all Renderers. Renderers take stylization output and

@@ -29,6 +29,8 @@
 #include "ExpressionFunctionLookup.h"
 #include "ExpressionFunctionRange.h"
 
+#include "RS_FeatureReader.h"
+
 
 const RS_String s_Empty(L"");
 
