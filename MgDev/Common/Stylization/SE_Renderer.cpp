@@ -19,6 +19,7 @@
 #include "SE_Renderer.h"
 #include "SE_AreaPositioning.h"
 #include "RS_FontEngine.h"
+#include "SE_SymbolDefProxies.h"
 
 using namespace MDFMODEL_NAMESPACE;
 

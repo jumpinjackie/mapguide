@@ -62,6 +62,8 @@
 #include "DWFRSInputStream.h"
 #include "RSDWFInputStream.h"
 
+#include "SE_SymbolDefProxies.h"
+
 #include "RenderUtil.h"
 
 using namespace DWFToolkit;

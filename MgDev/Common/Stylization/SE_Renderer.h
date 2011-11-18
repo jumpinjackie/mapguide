@@ -20,12 +20,12 @@
 
 #include "Renderer.h"
 #include "SE_BufferPool.h"
-#include "SE_SymbolDefProxies.h"
 #include "SE_RenderProxies.h"
 
 // forward declare
 class RS_FontEngine;
 struct HotSpot;
+class SE_ApplyContext;
 
 
 class SE_Renderer : public Renderer
