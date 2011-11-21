@@ -187,6 +187,8 @@
     <ClCompile Include="ServerUpdateCommand.cpp" />
     <ClCompile Include="ServerUpdateFeatures.cpp" />
     <ClCompile Include="TransformCache.cpp" />
+    <ClCompile Include="ExtendedSelectCommand.cpp" />
+    <ClCompile Include="FdoForcedOneToOneFeatureReader.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="FeatureOperation.h">
@@ -383,6 +385,8 @@
     <ClInclude Include="StringDataReaderCreator.h" />
     <ClInclude Include="TransformCache.h" />
     <ClInclude Include="UniqueFunction.h" />
+    <ClInclude Include="ExtendedSelectCommand.h" />
+    <ClInclude Include="FdoForcedOneToOneFeatureReader.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="ServerFeatureService.rc" />
