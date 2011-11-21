@@ -59,17 +59,17 @@ window.onload = function() {
     /* create dynamic content */
     tabbox1 = new Jx.TabBox({parent: splitter2.elements[0]});
 
-    tab1 = new Jx.Button.Tab({
+    tab1 = new Jx.Tab({
         label: OpenLayers.i18n('taskPaneTitle'),
         contentId: 'TaskPane'
     });
 
-    tab2 = new Jx.Button.Tab({
+    tab2 = new Jx.Tab({
         label: OpenLayers.i18n('legendTitle'),
         contentId: 'Legend'
     });
 
-    tab3 = new Jx.Button.Tab({
+    tab3 = new Jx.Tab({
         label: OpenLayers.i18n('selectionPanelTitle'),
         contentId: 'SelectionPanel'
     });
@@ -78,7 +78,7 @@ window.onload = function() {
 
   var tabbox2 = new Jx.TabBox({parent: splitter2.elements[1]});
 
-  var tab4 = new Jx.Button.Tab({
+  var tab4 = new Jx.Tab({
       label: OpenLayers.i18n('ovmapTitle'),
       contentId: 'OverviewMap'});
 
