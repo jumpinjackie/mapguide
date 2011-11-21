@@ -82,14 +82,18 @@ void TestFeatureService::TestStart()
             MgResourceIdentifier resourceIdentifier5(L"Library://UnitTests/Data/TestChainedInner1ToManyJoin.FeatureSource");
             MgResourceIdentifier resourceIdentifier6(L"Library://UnitTests/Data/Empty.FeatureSource");
             MgResourceIdentifier resourceIdentifier7(L"Library://UnitTests/Data/SavePointTest.FeatureSource");
+            MgResourceIdentifier resourceIdentifier8(L"Library://UnitTests/Data/ParcelsJoinTestSQLite.FeatureSource");
+            MgResourceIdentifier resourceIdentifier9(L"Library://UnitTests/Data/FdoJoin.FeatureSource");
 #ifdef _WIN32
             STRING resourceContentFileName1 = L"..\\UnitTestFiles\\Sheboygan_Parcels.FeatureSource";
             STRING resourceContentFileName2 = L"..\\UnitTestFiles\\Redding_Parcels.FeatureSource";
             STRING resourceContentFileName3 = L"..\\UnitTestFiles\\Sheboygan_BuildingOutlines.FeatureSource";
             STRING resourceContentFileName4 = L"..\\UnitTestFiles\\Sheboygan_VotingDistricts.FeatureSource";
-            STRING resourceContentFileName5=  L"..\\UnitTestFiles\\TESTChainedInner1ToManyJoin.FeatureSource";
-            STRING resourceContentFileName6=  L"..\\UnitTestFiles\\Empty.FeatureSource";
-            STRING resourceContentFileName7=  L"..\\UnitTestFiles\\SavePointTest.FeatureSource";
+            STRING resourceContentFileName5 = L"..\\UnitTestFiles\\TESTChainedInner1ToManyJoin.FeatureSource";
+            STRING resourceContentFileName6 = L"..\\UnitTestFiles\\Empty.FeatureSource";
+            STRING resourceContentFileName7 = L"..\\UnitTestFiles\\SavePointTest.FeatureSource";
+            STRING resourceContentFileName8 = L"..\\UnitTestFiles\\UT_Parcels_SQLite_Join.FeatureSource";
+            STRING resourceContentFileName9 = L"..\\UnitTestFiles\\UT_FdoJoin.FeatureSource";
             STRING dataFileName1 = L"..\\UnitTestFiles\\Sheboygan_Parcels.sdf";
             STRING dataFileName2 = L"..\\UnitTestFiles\\Redding_Parcels.shp";
             STRING dataFileName3 = L"..\\UnitTestFiles\\Redding_Parcels.dbf";
@@ -98,6 +102,8 @@ void TestFeatureService::TestStart()
             STRING dataFileName6 = L"..\\UnitTestFiles\\Sheboygan_VotingDistricts.sdf";
             STRING dataFileName7 = L"..\\UnitTestFiles\\Empty.sdf";
             STRING dataFileName8 = L"..\\UnitTestFiles\\SavePointTest.sqlite";
+            STRING dataFileName9 = L"..\\UnitTestFiles\\JoinTest.sqlite";
+            STRING dataFileName10 = L"..\\UnitTestFiles\\ParcelsJoinTest.sqlite";
 #else
             STRING resourceContentFileName1 = L"../UnitTestFiles/Sheboygan_Parcels.FeatureSource";
             STRING resourceContentFileName2 = L"../UnitTestFiles/Redding_Parcels.FeatureSource";
@@ -106,6 +112,8 @@ void TestFeatureService::TestStart()
             STRING resourceContentFileName5 = L"../UnitTestFiles/TESTChainedInner1ToManyJoin.FeatureSource";
             STRING resourceContentFileName6 = L"../UnitTestFiles/Empty.FeatureSource";
             STRING resourceContentFileName7 = L"../UnitTestFiles/SavePointTest.FeatureSource";
+            STRING resourceContentFileName8 = L"../UnitTestFiles/UT_Parcels_SQLite_Join.FeatureSource";
+            STRING resourceContentFileName9 = L"../UnitTestFiles/UT_FdoJoin.FeatureSource";
             STRING dataFileName1 = L"../UnitTestFiles/Sheboygan_Parcels.sdf";
             STRING dataFileName2 = L"../UnitTestFiles/Redding_Parcels.shp";
             STRING dataFileName3 = L"../UnitTestFiles/Redding_Parcels.dbf";
@@ -113,7 +121,9 @@ void TestFeatureService::TestStart()
             STRING dataFileName5 = L"../UnitTestFiles/Sheboygan_BuildingOutlines.sdf";
             STRING dataFileName6 = L"../UnitTestFiles/Sheboygan_VotingDistricts.sdf";
             STRING dataFileName7 = L"../UnitTestFiles/Empty.sdf";
-             STRING dataFileName8 = L"../UnitTestFiles/SavePointTest.sqlite";
+            STRING dataFileName8 = L"../UnitTestFiles/SavePointTest.sqlite";
+            STRING dataFileName9 = L"../UnitTestFiles/JoinTest.sqlite";
+            STRING dataFileName10 = L"../UnitTestFiles/ParcelsJoinTest.sqlite";
 #endif
 
             //Add a new resource
@@ -144,6 +154,14 @@ void TestFeatureService::TestStart()
             Ptr<MgByteSource> contentSource7 = new MgByteSource(resourceContentFileName7);
             Ptr<MgByteReader> contentReader7 = contentSource7->GetReader();
             pService->SetResource(&resourceIdentifier7, contentReader7, NULL);
+
+            Ptr<MgByteSource> contentSource8 = new MgByteSource(resourceContentFileName8);
+            Ptr<MgByteReader> contentReader8 = contentSource8->GetReader();
+            pService->SetResource(&resourceIdentifier8, contentReader8, NULL);
+
+            Ptr<MgByteSource> contentSource9 = new MgByteSource(resourceContentFileName9);
+            Ptr<MgByteReader> contentReader9 = contentSource9->GetReader();
+            pService->SetResource(&resourceIdentifier9, contentReader9, NULL);
 
             //Set the resource data
             Ptr<MgByteSource> dataSource1 = new MgByteSource(dataFileName1);
@@ -181,6 +199,14 @@ void TestFeatureService::TestStart()
             Ptr<MgByteSource> dataSource9 = new MgByteSource(dataFileName8);
             Ptr<MgByteReader> dataReader9 = dataSource9->GetReader();
             pService->SetResourceData(&resourceIdentifier7, L"SavePointTest.sqlite", L"File", dataReader9);
+
+            Ptr<MgByteSource> dataSource10 = new MgByteSource(dataFileName9);
+            Ptr<MgByteReader> dataReader10 = dataSource10->GetReader();
+            pService->SetResourceData(&resourceIdentifier9, L"JoinTest.sqlite", L"File", dataReader10);
+
+            Ptr<MgByteSource> dataSource11 = new MgByteSource(dataFileName10);
+            Ptr<MgByteReader> dataReader11 = dataSource11->GetReader();
+            pService->SetResourceData(&resourceIdentifier8, L"ParcelsJoinTest.sqlite", L"File", dataReader11);
         }
     }
     catch(MgException* e)
@@ -233,6 +259,12 @@ void TestFeatureService::TestEnd()
 
         Ptr<MgResourceIdentifier> fsres6 = new MgResourceIdentifier(L"Library://UnitTests/Data/Empty.FeatureSource");
         pService->DeleteResource(fsres6);
+
+        Ptr<MgResourceIdentifier> fsres7 = new MgResourceIdentifier(L"Library://UnitTests/Data/FdoJoin.FeatureSource");
+        pService->DeleteResource(fsres7);
+
+        Ptr<MgResourceIdentifier> fsres8 = new MgResourceIdentifier(L"Library://UnitTests/Data/ParcelsJoinTestSQLite.FeatureSource");
+        pService->DeleteResource(fsres8);
 
         #ifdef _DEBUG
         ACE_DEBUG((LM_INFO, ACE_TEXT("TestFeatureService::TestEnd()\n")));
@@ -2348,6 +2380,303 @@ void TestFeatureService::TestCase_SavePoint()
     {
         FDO_SAFE_RELEASE(e);
         CPPUNIT_FAIL("FdoException occurred");
+    }
+    catch(...)
+    {
+        throw;
+    }
+}
+
+///----------------------------------------------------------------------------
+/// Test Case Description:
+///
+/// This test case exercises the FDO join optimization
+///----------------------------------------------------------------------------
+void TestFeatureService::TestCase_JoinFdoFeatures()
+{
+    try
+    {
+        
+        MgServiceManager* serviceManager = MgServiceManager::GetInstance();
+        if(serviceManager == 0)
+        {
+            throw new MgNullReferenceException(L"TestFeatureService.TestCase_JoinFdoFeatures", __LINE__, __WFILE__, NULL, L"", NULL);
+        }
+
+        Ptr<MgFeatureService> pService = dynamic_cast<MgFeatureService*>(serviceManager->RequestService(MgServiceType::FeatureService));
+        if (pService == 0)
+        {
+            throw new MgServiceNotAvailableException(L"TestFeatureService.TestCase_JoinFdoFeatures", __LINE__, __WFILE__, NULL, L"", NULL);
+        }
+
+        Ptr<MgResourceIdentifier> lFeatureSource = new MgResourceIdentifier(L"Library://UnitTests/Data/FdoJoin.FeatureSource");
+
+        Ptr<MgFeatureReader> reader = pService->SelectFeatures(lFeatureSource, L"CitiesCountries", NULL);
+
+        INT32 count1 = 0;
+        while(reader->ReadNext())
+        {
+            CPPUNIT_ASSERT(reader->IsNull(L"ID") == false);
+            CPPUNIT_ASSERT(reader->IsNull(L"CountryCode") == false);
+            CPPUNIT_ASSERT(reader->IsNull(L"StateCode") == false);
+            CPPUNIT_ASSERT(reader->IsNull(L"Name") == false);
+            CPPUNIT_ASSERT(reader->IsNull(L"Population") == false);
+            CPPUNIT_ASSERT(reader->IsNull(L"CNT_CountryCode") == false);
+            CPPUNIT_ASSERT(reader->IsNull(L"CNT_Name") == false);
+            count1++;
+        }
+        reader->Close();
+        CPPUNIT_ASSERT(10 == count1);
+
+        Ptr<MgFeatureReader> reader2 = pService->SelectFeatures(lFeatureSource, L"CitiesStates", NULL);
+
+        INT32 count2 = 0;
+        while(reader2->ReadNext())
+        {
+            CPPUNIT_ASSERT(reader2->IsNull(L"ID") == false);
+            CPPUNIT_ASSERT(reader2->IsNull(L"CountryCode") == false);
+            CPPUNIT_ASSERT(reader2->IsNull(L"StateCode") == false);
+            CPPUNIT_ASSERT(reader2->IsNull(L"Name") == false);
+            CPPUNIT_ASSERT(reader2->IsNull(L"Population") == false);
+            CPPUNIT_ASSERT(reader2->IsNull(L"ST_ID") == false);
+            CPPUNIT_ASSERT(reader2->IsNull(L"ST_CountryCode") == false);
+            CPPUNIT_ASSERT(reader2->IsNull(L"ST_StateCode") == false);
+            CPPUNIT_ASSERT(reader2->IsNull(L"ST_Name") == false);
+            count2++;
+        }
+        reader2->Close();
+        CPPUNIT_ASSERT(10 == count2);
+
+        Ptr<MgFeatureReader> reader3 = pService->SelectFeatures(lFeatureSource, L"CitiesStatesOneToOne", NULL);
+        INT32 count3 = 0;
+        while(reader3->ReadNext())
+        {
+            count3++;
+        }
+        reader3->Close();
+        CPPUNIT_ASSERT(10 == count3);
+    }
+    catch(MgException* e)
+    {
+        STRING message = e->GetDetails(TEST_LOCALE);
+        SAFE_RELEASE(e);
+        CPPUNIT_FAIL(MG_WCHAR_TO_CHAR(message.c_str()));
+    }
+    catch(FdoException* e)
+    {
+        STRING message = L"FdoException occurred: ";
+        message += e->GetExceptionMessage();
+        FDO_SAFE_RELEASE(e);
+        CPPUNIT_FAIL(MG_WCHAR_TO_CHAR(message.c_str()));
+    }
+    catch(...)
+    {
+        throw;
+    }
+}
+
+void TestFeatureService::TestCase_BenchmarkSqliteJoin()
+{
+    try
+    {
+        MgServiceManager* serviceManager = MgServiceManager::GetInstance();
+        if(serviceManager == 0)
+        {
+            throw new MgNullReferenceException(L"TestFeatureService.TestCase_BenchmarkSqliteJoin", __LINE__, __WFILE__, NULL, L"", NULL);
+        }
+
+        Ptr<MgResourceService> pService = dynamic_cast<MgResourceService*>(serviceManager->RequestService(MgServiceType::ResourceService));
+        if (pService == 0)
+        {
+            throw new MgServiceNotAvailableException(L"TestFeatureService.TestCase_BenchmarkSqliteJoin", __LINE__, __WFILE__, NULL, L"", NULL);
+        }
+
+        Ptr<MgFeatureService> featSvc = dynamic_cast<MgFeatureService*>(serviceManager->RequestService(MgServiceType::FeatureService));
+        if (featSvc == 0)
+        {
+            throw new MgServiceNotAvailableException(L"TestFeatureService.TestCase_BenchmarkSqliteJoin",
+                __LINE__, __WFILE__, NULL, L"", NULL);
+        }
+
+        Ptr<MgResourceIdentifier> fsId = new MgResourceIdentifier(L"Library://UnitTests/Data/ParcelsJoinTestSQLite.FeatureSource");
+        CPPUNIT_ASSERT(featSvc->TestConnection(fsId));
+        Ptr<MgFeatureReader> reader;
+
+        // ----- Start the tests ------- //
+        ACE_DEBUG((LM_INFO, ACE_TEXT("\nTestFeatureService::TestCase_BenchmarkSqliteJoin() - Inner Join \n")));
+        long lStart = GetTickCount();
+        long total = 0L;
+
+        reader = featSvc->SelectFeatures(fsId, L"ParcelsInner", NULL);
+        while(reader->ReadNext())
+        {
+            total++;
+        }
+        reader->Close();
+
+        ACE_DEBUG((LM_INFO, ACE_TEXT("  Execution Time (%d results): = %6.4f (s)\n"), total, ((GetTickCount()-lStart)/1000.0) ));
+        ACE_DEBUG((LM_INFO, ACE_TEXT("\nTestFeatureService::TestCase_BenchmarkSqliteJoin() - Left Outer Join \n")));
+        lStart = GetTickCount();
+        total = 0L;
+
+        reader = featSvc->SelectFeatures(fsId, L"ParcelsLeftOuter", NULL);
+        while(reader->ReadNext())
+        {
+            total++;
+        }
+        reader->Close();
+
+        ACE_DEBUG((LM_INFO, ACE_TEXT("  Execution Time (%d results): = %6.4f (s)\n"), total, ((GetTickCount()-lStart)/1000.0) ));
+        ACE_DEBUG((LM_INFO, ACE_TEXT("\nTestFeatureService::TestCase_BenchmarkSqliteJoin() - Inner Join (Forced 1:1) \n")));
+        lStart = GetTickCount();
+        total = 0L;
+
+        reader = featSvc->SelectFeatures(fsId, L"ParcelsInnerOneToOne", NULL);
+        while(reader->ReadNext())
+        {
+            total++;
+        }
+        reader->Close();
+
+        ACE_DEBUG((LM_INFO, ACE_TEXT("  Execution Time (%d results): = %6.4f (s)\n"), total, ((GetTickCount()-lStart)/1000.0) ));
+        ACE_DEBUG((LM_INFO, ACE_TEXT("\nTestFeatureService::TestCase_BenchmarkSqliteJoin() - Left Outer Join (Forced 1:1) \n")));
+        lStart = GetTickCount();
+        total = 0L;
+
+        reader = featSvc->SelectFeatures(fsId, L"ParcelsLeftOuterOneToOne", NULL);
+        while(reader->ReadNext())
+        {
+            total++;
+        }
+        reader->Close();
+
+        ACE_DEBUG((LM_INFO, ACE_TEXT("  Execution Time (%d results): = %6.4f (s)\n"), total, ((GetTickCount()-lStart)/1000.0) ));
+    }
+    catch(MgException* e)
+    {
+        STRING message = e->GetDetails(TEST_LOCALE);
+        SAFE_RELEASE(e);
+        CPPUNIT_FAIL(MG_WCHAR_TO_CHAR(message.c_str()));
+    }
+    catch(FdoException* e)
+    {
+        STRING message = L"FdoException occurred: ";
+        message += e->GetExceptionMessage();
+        FDO_SAFE_RELEASE(e);
+        CPPUNIT_FAIL(MG_WCHAR_TO_CHAR(message.c_str()));
+    }
+    catch(...)
+    {
+        throw;
+    }
+}
+
+void TestFeatureService::TestCase_BenchmarkSqliteAggregateJoin()
+{
+    try
+    {
+        MgServiceManager* serviceManager = MgServiceManager::GetInstance();
+        if(serviceManager == 0)
+        {
+            throw new MgNullReferenceException(L"TestFeatureService.TestCase_BenchmarkSqliteAggregateJoin", __LINE__, __WFILE__, NULL, L"", NULL);
+        }
+
+        Ptr<MgResourceService> pService = dynamic_cast<MgResourceService*>(serviceManager->RequestService(MgServiceType::ResourceService));
+        if (pService == 0)
+        {
+            throw new MgServiceNotAvailableException(L"TestFeatureService.TestCase_BenchmarkSqliteAggregateJoin", __LINE__, __WFILE__, NULL, L"", NULL);
+        }
+
+        Ptr<MgFeatureService> featSvc = dynamic_cast<MgFeatureService*>(serviceManager->RequestService(MgServiceType::FeatureService));
+        if (featSvc == 0)
+        {
+            throw new MgServiceNotAvailableException(L"TestFeatureService.TestCase_BenchmarkSqliteAggregateJoin",
+                __LINE__, __WFILE__, NULL, L"", NULL);
+        }
+
+        Ptr<MgResourceIdentifier> fsId = new MgResourceIdentifier(L"Library://UnitTests/Data/ParcelsJoinTestSQLite.FeatureSource");
+        CPPUNIT_ASSERT(featSvc->TestConnection(fsId));
+        Ptr<MgDataReader> reader;
+
+        // ----- Start the tests ------- //
+        Ptr<MgFeatureAggregateOptions> aggOpts = new MgFeatureAggregateOptions();
+        aggOpts->AddComputedProperty(L"Extents", L"SpatialExtents(Geometry)");
+        aggOpts->AddComputedProperty(L"TotalCount", L"Count(SdfId)");
+
+        ACE_DEBUG((LM_INFO, ACE_TEXT("\nTestFeatureService::TestCase_BenchmarkSqliteAggregateJoin() - Inner Join \n")));
+        long lStart = GetTickCount();
+        long total = 0L;
+        int iterations = 0;
+
+        reader = featSvc->SelectAggregate(fsId, L"ParcelsInner", aggOpts);
+        while(reader->ReadNext())
+        {
+            Ptr<MgByteReader> br = reader->GetGeometry(L"Extents");
+            total = reader->GetInt64(L"TotalCount");
+            iterations++;
+        }
+        reader->Close();
+        CPPUNIT_ASSERT(iterations == 1);
+
+        ACE_DEBUG((LM_INFO, ACE_TEXT("  Execution Time (%d results): = %6.4f (s)\n"), total, ((GetTickCount()-lStart)/1000.0) ));
+        ACE_DEBUG((LM_INFO, ACE_TEXT("\nTestFeatureService::TestCase_BenchmarkSqliteAggregateJoin() - Left Outer Join \n")));
+        lStart = GetTickCount();
+        iterations = 0L;
+
+        reader = featSvc->SelectAggregate(fsId, L"ParcelsLeftOuter", aggOpts);
+        while(reader->ReadNext())
+        {
+            Ptr<MgByteReader> br = reader->GetGeometry(L"Extents");
+            total = reader->GetInt64(L"TotalCount");
+            iterations++;
+        }
+        reader->Close();
+        CPPUNIT_ASSERT(iterations == 1L);
+
+        ACE_DEBUG((LM_INFO, ACE_TEXT("  Execution Time (%d results): = %6.4f (s)\n"), total, ((GetTickCount()-lStart)/1000.0) ));
+        ACE_DEBUG((LM_INFO, ACE_TEXT("\nTestFeatureService::TestCase_BenchmarkSqliteAggregateJoin() - Inner Join (Forced 1:1) \n")));
+        lStart = GetTickCount();
+        iterations = 0L;
+
+        reader = featSvc->SelectAggregate(fsId, L"ParcelsInnerOneToOne", aggOpts);
+        while(reader->ReadNext())
+        {
+            Ptr<MgByteReader> br = reader->GetGeometry(L"Extents");
+            total = reader->GetInt64(L"TotalCount");
+            iterations++;
+        }
+        reader->Close();
+        CPPUNIT_ASSERT(iterations == 1L);
+
+        ACE_DEBUG((LM_INFO, ACE_TEXT("  Execution Time (%d results): = %6.4f (s)\n"), total, ((GetTickCount()-lStart)/1000.0) ));
+        ACE_DEBUG((LM_INFO, ACE_TEXT("\nTestFeatureService::TestCase_BenchmarkSqliteAggregateJoin() - Left Outer Join (Forced 1:1) \n")));
+        lStart = GetTickCount();
+        iterations = 0L;
+
+        reader = featSvc->SelectAggregate(fsId, L"ParcelsLeftOuterOneToOne", aggOpts);
+        while(reader->ReadNext())
+        {
+            Ptr<MgByteReader> br = reader->GetGeometry(L"Extents");
+            total = reader->GetInt64(L"TotalCount");
+            iterations++;
+        }
+        reader->Close();
+        CPPUNIT_ASSERT(iterations == 1L);
+
+        ACE_DEBUG((LM_INFO, ACE_TEXT("  Execution Time (%d results): = %6.4f (s)\n"), total, ((GetTickCount()-lStart)/1000.0) ));
+    }
+    catch(MgException* e)
+    {
+        STRING message = e->GetDetails(TEST_LOCALE);
+        SAFE_RELEASE(e);
+        CPPUNIT_FAIL(MG_WCHAR_TO_CHAR(message.c_str()));
+    }
+    catch(FdoException* e)
+    {
+        STRING message = L"FdoException occurred: ";
+        message += e->GetExceptionMessage();
+        FDO_SAFE_RELEASE(e);
+        CPPUNIT_FAIL(MG_WCHAR_TO_CHAR(message.c_str()));
     }
     catch(...)
     {

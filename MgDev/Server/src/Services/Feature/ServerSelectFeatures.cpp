@@ -24,6 +24,7 @@
 #include "ServerFeatureUtil.h"
 #include "FeatureServiceCommand.h"
 #include "SelectCommand.h"
+#include "ExtendedSelectCommand.h"
 #include "SelectAggregateCommand.h"
 #include "FeatureDistribution.h"
 #include "ServerGwsFeatureReader.h"
@@ -34,6 +35,9 @@
 #include "GwsQuery.h"
 #include "FdoExpressionEngineCopyFilter.h"
 #include "CacheManager.h"
+
+//Uncomment for extra console chatter to debug FDO joins
+//#define DEBUG_FDO_JOIN
 
 MgServerSelectFeatures::MgServerSelectFeatures()
 {
@@ -88,24 +92,57 @@ MgReader* MgServerSelectFeatures::SelectFeatures(MgResourceIdentifier* resource,
         m_featureSourceCacheItem = cacheManager->GetFeatureSourceCacheItem(resource);
     }
 
+    // Set options (NULL is a valid value)
+    m_options = SAFE_ADDREF(options);
     // Check if a feature join is to be performed by inspecting the resource for join properties
     bool bFeatureJoinProperties = FindFeatureJoinProperties(resource, className);
     // Check if a feature join is only a calculation
     bool bFeatureCalculation = FindFeatureCalculation(resource, className);
+    //Test for the FDO join optimization, because performance is **substantially** better
+    bool bSupportsFdoJoin = SupportsFdoJoin(resource, className, isSelectAggregate);
+#ifdef DEBUG_FDO_JOIN
+    STRING fsIdStr = resource->ToString();
+    ACE_DEBUG((LM_INFO, ACE_TEXT("\n(%t) Testing Feature Source (%W, %W) for FDO join optimization"), fsIdStr.c_str(), className.c_str()));
+#endif  
     if (!isSelectAggregate && bFeatureJoinProperties)
     {
-        // Get the FdoFilter from the options
-        // Create Command
-        CreateCommand(resource, isSelectAggregate);
-        // Set options (NULL is a valid value)
-        m_options = SAFE_ADDREF(options);
-        // Apply options to FDO command
-        ApplyQueryOptions(isSelectAggregate);
+        if (bSupportsFdoJoin)
+        {
+#ifdef DEBUG_FDO_JOIN
+            ACE_DEBUG((LM_INFO, ACE_TEXT("\n(%t) Feature Source (%W) supports FDO join optimization"), fsIdStr.c_str()));
+#endif
+            m_command = MgFeatureServiceCommand::CreateCommand(resource, FdoCommandType_ExtendedSelect);
+            mgReader = SelectFdoJoin(resource, className, false);
+        }
+        else 
+        {
+#ifdef DEBUG_FDO_JOIN
+            ACE_DEBUG((LM_INFO, ACE_TEXT("\n(%t) Feature Source (%W) does not support the FDO join optimization. Using GwsQueryEngine"), fsIdStr.c_str()));
+#endif
+            // Get the FdoFilter from the options
+            // Create Command
+            CreateCommand(resource, isSelectAggregate);
 
-        FdoPtr<FdoFilter> filter = m_command->GetFilter();
-
-        // Perform feature join
-        mgReader = JoinFeatures(resource, className, filter);
+            // Apply options to FDO command
+            ApplyQueryOptions(isSelectAggregate);
+            FdoPtr<FdoFilter> filter = m_command->GetFilter();
+            // Perform feature join
+            mgReader = JoinFeatures(resource, className, filter);
+        }
+    }
+    else if (isSelectAggregate && bFeatureJoinProperties && bSupportsFdoJoin)
+    {
+        // NOTE: If this is FDO join capable, but contains functions over prefixed secondary properties
+        // We have to go through the GWS Query Engine because we haven't implemented reverse mapping
+        // of prefixed secondary class properties. Fortunately, the common case for this is distict value
+        // queries (eg. Generating themeable values), and GWS Query Engine is surprisingly performant in this case
+#ifdef DEBUG_FDO_JOIN
+        ACE_DEBUG((LM_INFO, ACE_TEXT("\n(%t) Feature Source (%W) supports aggregate FDO join optimization"), fsIdStr.c_str()));
+#endif
+        // Perform the same select query as above, but route this through the FDO expression engine
+        // Slow maybe, but anything is faster than going via the GWS query engine.
+        m_command = MgFeatureServiceCommand::CreateCommand(resource, FdoCommandType_ExtendedSelect);
+        mgReader = SelectFdoJoin(resource, className, true);
     }
     else
     {
@@ -140,14 +177,11 @@ MgReader* MgServerSelectFeatures::SelectFeatures(MgResourceIdentifier* resource,
             m_command->SetFeatureClassName((FdoString*)className.c_str());
         }
 
-        // Set options (NULL is a valid value)
-        m_options = SAFE_ADDREF(options);
-
         // Apply options to FDO command
         ApplyQueryOptions(isSelectAggregate);
 
         // Check if the specified className is an extension (join) in the feature source
-        if (bFeatureJoinProperties)
+        if (bFeatureJoinProperties && !bSupportsFdoJoin)
         {
             // Perform feature join to obtain the joined properties
             // Note: this gwsFeatureReader is just for temporary use. it will not be returned
@@ -273,6 +307,7 @@ MgReader* MgServerSelectFeatures::SelectFeatures(MgResourceIdentifier* resource,
     return mgReader.Detach();
 }
 
+
 void MgServerSelectFeatures::ApplyQueryOptions(bool isSelectAggregate)
 {
     CHECKNULL(m_command, L"MgServerSelectFeatures.ApplyQueryOptions");
@@ -304,6 +339,9 @@ void MgServerSelectFeatures::ApplyClassProperties()
     if (cnt <= 0)
         return; // Nothing to do
 
+    //TODO: Need to check if FDO join optimization is supported, and whether this contains prefixed
+    //secondary properties.
+
     FdoPtr<FdoIdentifierCollection> fic = m_command->GetPropertyNames();
     CHECKNULL((FdoIdentifierCollection*)fic, L"MgServerSelectFeatures.ApplyClassProperties");
 
@@ -333,6 +371,9 @@ void MgServerSelectFeatures::ApplyComputedProperties()
     INT32 cnt = properties->GetCount();
     if (cnt <= 0)
         return; // Nothing to do
+
+    //TODO: Need to check if FDO join optimization is supported, and whether this contains prefixed
+    //secondary properties in any expressions
 
     // TODO: Add support for custom functions
 
@@ -1489,4 +1530,670 @@ MgResourceIdentifier* MgServerSelectFeatures::GetSecondaryResourceIdentifier(MgR
     }
 
     return secResId.Detach();
+}
+
+bool MgServerSelectFeatures::SupportsFdoJoin(MgResourceIdentifier* featureSourceId, CREFSTRING extensionName, bool isAggregate)
+{
+    bool bSupported = false;
+
+    MG_FEATURE_SERVICE_TRY()
+
+    //This could be qualified, so parse it to be sure
+    STRING schemaName;
+    STRING extName;
+    MgUtil::ParseQualifiedClassName(extensionName, schemaName, extName);
+
+    CHECKNULL(m_featureSourceCacheItem.p, L"MgServerSelectFeatures.SupportsFdoJoin");
+    MdfModel::FeatureSource* featureSource = m_featureSourceCacheItem->Get();
+    MdfModel::ExtensionCollection* extensions = featureSource->GetExtensions();
+    CHECKNULL(extensions, L"MgServerSelectFeatures.SupportsFdoJoin");
+
+    MdfModel::Extension* extension = NULL;
+    for (INT32 i = 0; i < extensions->GetCount(); i++) 
+    {
+        MdfModel::Extension* ext = extensions->GetAt(i);
+        if (ext->GetName() == extName)
+        {
+            extension = ext;
+            break;
+        }
+    }
+
+    if (NULL == extension) //Extension in question not found
+    {
+#ifdef DEBUG_FDO_JOIN
+        ACE_DEBUG((LM_INFO, ACE_TEXT("\n\t(%t) [FDO Join Test] Could not find extension named: %W"), extensionName.c_str()));
+#endif
+        return false;
+    }
+
+    Ptr<MgServerFeatureConnection> conn = new MgServerFeatureConnection(featureSourceId);
+    {
+        if (!conn->IsConnectionOpen())
+        {
+            throw new MgConnectionFailedException(L"MgServerSelectFeatures.SupportsFdoJoin", __LINE__, __WFILE__, NULL, L"", NULL);
+        }
+
+        FdoPtr<FdoIConnection> fdoConn = conn->GetConnection();
+        FdoPtr<FdoIConnectionCapabilities> connCaps = fdoConn->GetConnectionCapabilities();
+        
+        MdfModel::AttributeRelateCollection* relates = extension->GetAttributeRelates();
+
+        //Get the easy checks out of the way
+        if (!connCaps->SupportsJoins())
+        {
+#ifdef DEBUG_FDO_JOIN
+            ACE_DEBUG((LM_INFO, ACE_TEXT("\n\t(%t) [FDO Join Test] The provider does not support the FDO join APIs")));
+#endif
+            return false;
+        }
+
+        FdoJoinType jtypes = (FdoJoinType)connCaps->GetJoinTypes();
+
+        //Now ascertain if all participating feature classes originate from the same feature source
+        
+        //We've yet to figure out chained joins. TODO: Revisit later
+        if (relates->GetCount() > 1)
+        {
+#ifdef DEBUG_FDO_JOIN
+            ACE_DEBUG((LM_INFO, ACE_TEXT("\n\t(%t) [FDO Join Test] Chained/Multiple FDO Joins not supported yet")));
+#endif
+            return false;
+        }
+
+        //Need to check the filter here to see if it involves secondary class properties and/or
+        //expressions involving such properties. We don't support this yet
+        if (m_options != NULL)
+        {
+            MdfModel::AttributeRelate* relate = relates->GetAt(0);
+            STRING filterText = m_options->GetFilter();
+            STRING qualifiedName = relate->GetAttributeClass();
+            STRING schemaName;
+            STRING clsName;
+            MgUtil::ParseQualifiedClassName(qualifiedName, schemaName, clsName);
+            if (FilterContainsSecondaryProperties(featureSourceId, filterText, schemaName, clsName, relate->GetName()))
+            {
+    #ifdef DEBUG_FDO_JOIN
+                ACE_DEBUG((LM_INFO, ACE_TEXT("\n\t(%t) [FDO Join Test] Filter contains secondary class properties")));
+    #endif
+                return false;
+            }
+        }
+
+        for (INT32 i = 0; i < relates->GetCount(); i++)
+        {
+            MdfModel::AttributeRelate* relate = relates->GetAt(i);
+            const MdfModel::MdfString& fsId = relate->GetResourceId();
+
+            //Different feature sources
+            if (featureSourceId->ToString() != fsId)
+            {
+#ifdef DEBUG_FDO_JOIN
+                ACE_DEBUG((LM_INFO, ACE_TEXT("\n\t(%t) [FDO Join Test] The extension does not join with another class from the same data store")));
+#endif
+                return false;
+            }
+
+            //TODO: Review when we lift the one join limit
+            if (NULL != (MgFeatureQueryOptions*)m_options)
+            {
+                //Is this costly? Should we cache it?
+                //FdoPtr<FdoFunctionDefinitionCollection> functions = FdoExpressionEngine::GetStandardFunctions();
+                Ptr<MgStringPropertyCollection> expressions = m_options->GetComputedProperties();
+                for (INT32 i = 0; i < expressions->GetCount(); i++)
+                {
+                    Ptr<MgStringProperty> compProp = expressions->GetItem(i);
+                    STRING exprText = compProp->GetValue();
+                    FdoPtr<FdoExpression> fdoExpr = FdoExpression::Parse(exprText.c_str());
+
+                    if (fdoExpr->GetExpressionType() == FdoExpressionItemType_Function)
+                    {
+                        FdoFunction* func = static_cast<FdoFunction*>(fdoExpr.p);
+                        FdoString* funcName = func->GetName();
+
+                        // We don't support functions on prefixed secondary properties (yet)
+                        // so we have to check these functions to ensure they are only operating on the 
+                        // primary side properties
+                        STRING primarySchemaName;
+                        STRING primaryClassName;
+                        MgUtil::ParseQualifiedClassName(extension->GetFeatureClass(), primarySchemaName, primaryClassName);
+                        bool bValidFunction = IsFunctionOnPrimaryProperty(func, fdoConn, primarySchemaName, primaryClassName);
+                        if (!bValidFunction)
+                        {
+#ifdef DEBUG_FDO_JOIN
+                            ACE_DEBUG((LM_INFO, ACE_TEXT("\n\t(%t) [FDO Join Test] FDO Function %W contains a non-primary or unrecognised identifier"), funcName));
+#endif
+                            return false;
+                        }
+                    }
+                }
+            }
+
+            MdfModel::RelatePropertyCollection* relProps = relate->GetRelateProperties();
+
+            //Check if the join type is supported. Given FDO exposes more join types than
+            //the ones specified here, the chances are real good that we'll have a match
+            MdfModel::AttributeRelate::RelateType rtype = relate->GetRelateType();
+            switch(rtype)
+            {
+            case MdfModel::AttributeRelate::Inner:
+                if ((jtypes & FdoJoinType_Inner) != FdoJoinType_Inner)
+                {
+#ifdef DEBUG_FDO_JOIN
+                    ACE_DEBUG((LM_INFO, ACE_TEXT("\n\t(%t) [FDO Join Test] The provider does not support Inner Join")));
+#endif
+                    return false;
+                }
+                break;
+            case MdfModel::AttributeRelate::LeftOuter:
+                if ((jtypes & FdoJoinType_LeftOuter) != FdoJoinType_LeftOuter)
+                {
+#ifdef DEBUG_FDO_JOIN
+                    ACE_DEBUG((LM_INFO, ACE_TEXT("\n\t(%t) [FDO Join Test] The provider does not support Left Outer Join")));
+#endif
+                    return false;
+                }
+                break;
+            case MdfModel::AttributeRelate::RightOuter:
+                if ((jtypes & FdoJoinType_RightOuter) != FdoJoinType_RightOuter)
+                {
+#ifdef DEBUG_FDO_JOIN
+                    ACE_DEBUG((LM_INFO, ACE_TEXT("\n\t(%t) [FDO Join Test] The provider does not support Right Outer Join")));
+#endif
+                    return false;
+                }
+                break;
+            default:
+                {
+#ifdef DEBUG_FDO_JOIN
+                    ACE_DEBUG((LM_INFO, ACE_TEXT("\n\t(%t) [FDO Join Test] The join type is not recognised")));
+#endif
+                    return false;
+                }
+            }
+        }
+
+        //Still here? You pass the test
+        bSupported = true;
+    }
+
+    MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgServerSelectFeatures.SupportsFdoJoin")
+
+    return bSupported;
+}
+
+bool MgServerSelectFeatures::IsFunctionOnPrimaryProperty(FdoFunction* function, FdoIConnection* fdoConn, CREFSTRING schemaName, CREFSTRING className)
+{
+    FdoPtr<FdoIdentifierCollection> identifiers = MgServerFeatureUtil::ExtractIdentifiers(function);
+    if (identifiers->GetCount() == 0)
+        return true; //Inconsequential
+
+    FdoPtr<FdoIDescribeSchema> descSchema = dynamic_cast<FdoIDescribeSchema*>(fdoConn->CreateCommand(FdoCommandType_DescribeSchema));
+    CHECKNULL((FdoIDescribeSchema*)descSchema, L"MgServerSelectFeatures.SelectFdoJoin");
+
+    if (!schemaName.empty())
+    {
+        descSchema->SetSchemaName(schemaName.c_str());
+    }
+    if (!className.empty())
+    {
+        FdoPtr<FdoStringCollection> classNames = FdoStringCollection::Create();
+        classNames->Add(className.c_str());
+        descSchema->SetClassNames(classNames);
+    }
+
+    FdoPtr<FdoClassDefinition> classDef;
+    FdoPtr<FdoFeatureSchemaCollection> schemas = descSchema->Execute();
+    for (FdoInt32 i = 0; i < schemas->GetCount(); i++)
+    {
+        FdoPtr<FdoFeatureSchema> schema = schemas->GetItem(i);
+        if (wcscmp(schema->GetName(), schemaName.c_str()) == 0) 
+        {
+            FdoPtr<FdoClassCollection> classes = schema->GetClasses();
+            for (FdoInt32 j = 0; j < classes->GetCount(); j++) 
+            {
+                FdoPtr<FdoClassDefinition> klassDef = classes->GetItem(j);
+                if (wcscmp(klassDef->GetName(), className.c_str()) == 0)
+                {
+                    classDef = SAFE_ADDREF(klassDef.p);
+                    break;
+                }
+            }
+        }
+    }
+
+    if (NULL == (FdoClassDefinition*)classDef)
+    {
+        //TODO: Refine message if available
+        throw new MgClassNotFoundException(L"MgServerSelectFeatures.SelectFdoJoin", __LINE__, __WFILE__, NULL, L"", NULL);
+    }
+
+    FdoPtr<FdoPropertyDefinitionCollection> properties = classDef->GetProperties();
+    for (FdoInt32 i = 0; i < identifiers->GetCount(); i++)
+    {
+        FdoPtr<FdoIdentifier> identifier = identifiers->GetItem(i);
+        FdoString* name = identifier->GetName();
+        if (properties->IndexOf(name) < 0) //Not in primary class or not recognised
+        {
+#ifdef DEBUG_FDO_JOIN
+            FdoString* funcName = function->GetName();
+            ACE_DEBUG((LM_INFO, ACE_TEXT("\n\t(%t) [FDO Join Test] The aggregate function %W contains an unknown or non-primary identifier: %W"), funcName, name));
+#endif
+            return false;
+        }
+    }
+
+    return true;
+}
+
+bool MgServerSelectFeatures::FilterContainsSecondaryProperties(MgResourceIdentifier* featureSourceId, CREFSTRING filter, STRING secondarySchema, STRING secondaryClassName, STRING secondaryPrefix)
+{
+    if (filter.empty())
+        return false;
+
+    //TODO: There's probably a more efficient way to do this without needing to fetch the secondary
+    //class definition. But we're aiming for functionality and simplicity first.
+    Ptr<MgServerFeatureConnection> conn = new MgServerFeatureConnection(featureSourceId);
+    {
+        if (!conn->IsConnectionOpen())
+        {
+            throw new MgConnectionFailedException(L"MgServerSelectFeatures.SupportsFdoJoin", __LINE__, __WFILE__, NULL, L"", NULL);
+        }
+
+        FdoPtr<FdoIConnection> fdoConn = conn->GetConnection();
+
+        FdoPtr<FdoIDescribeSchema> descSchema = dynamic_cast<FdoIDescribeSchema*>(fdoConn->CreateCommand(FdoCommandType_DescribeSchema));
+        CHECKNULL((FdoIDescribeSchema*)descSchema, L"MgServerSelectFeatures.SelectFdoJoin");
+
+        if (!secondarySchema.empty())
+        {
+            descSchema->SetSchemaName(secondarySchema.c_str());
+        }
+        if (!secondaryClassName.empty())
+        {
+            FdoPtr<FdoStringCollection> classNames = FdoStringCollection::Create();
+            classNames->Add(secondaryClassName.c_str());
+            descSchema->SetClassNames(classNames);
+        }
+
+        FdoPtr<FdoClassDefinition> classDef;
+        FdoPtr<FdoFeatureSchemaCollection> schemas = descSchema->Execute();
+        for (FdoInt32 i = 0; i < schemas->GetCount(); i++)
+        {
+            FdoPtr<FdoFeatureSchema> schema = schemas->GetItem(i);
+            if (wcscmp(schema->GetName(), secondarySchema.c_str()) == 0) 
+            {
+                FdoPtr<FdoClassCollection> classes = schema->GetClasses();
+                for (FdoInt32 j = 0; j < classes->GetCount(); j++) 
+                {
+                    FdoPtr<FdoClassDefinition> klassDef = classes->GetItem(j);
+                    if (wcscmp(klassDef->GetName(), secondaryClassName.c_str()) == 0)
+                    {
+                        classDef = SAFE_ADDREF(klassDef.p);
+                        break;
+                    }
+                }
+            }
+        }
+
+        if (NULL == (FdoClassDefinition*)classDef)
+        {
+            //TODO: Refine message if available
+            throw new MgClassNotFoundException(L"MgServerSelectFeatures.SelectFdoJoin", __LINE__, __WFILE__, NULL, L"", NULL);
+        }
+
+        FdoPtr<FdoPropertyDefinitionCollection> propDefs = classDef->GetProperties();
+        for (INT32 i = 0; i < propDefs->GetCount(); i++)
+        {
+            FdoPtr<FdoPropertyDefinition> propDef = propDefs->GetItem(i);
+            STRING findStr = secondaryPrefix;
+            findStr += propDef->GetName();
+
+            if (filter.find(findStr) != STRING::npos)
+                return true; //The filter string contains this extended feature class property
+        }
+    }
+    return false;
+}
+
+MgReader* MgServerSelectFeatures::SelectFdoJoin(MgResourceIdentifier* featureSourceId, CREFSTRING extensionName, bool isAggregate)
+{
+    // TODO: This does not handle filters on the secondary side (yet)
+    // Can GwsQueryEngine do this?
+
+    Ptr<MgReader> ret;
+
+    MG_FEATURE_SERVICE_TRY()
+
+    //This could be qualified, so parse it to be sure
+    STRING schemaName;
+    STRING extName;
+    MgUtil::ParseQualifiedClassName(extensionName, schemaName, extName);
+
+    CHECKNULL(m_featureSourceCacheItem.p, L"MgServerSelectFeatures.SelectFdoJoin");
+    MdfModel::FeatureSource* featureSource = m_featureSourceCacheItem->Get();
+    MdfModel::ExtensionCollection* extensions = featureSource->GetExtensions();
+    CHECKNULL(extensions, L"MgServerSelectFeatures.SelectFdoJoin");
+
+    MdfModel::Extension* extension = NULL;
+    for (INT32 i = 0; i < extensions->GetCount(); i++) 
+    {
+        MdfModel::Extension* ext = extensions->GetAt(i);
+        if (ext->GetName() == extName)
+        {
+            extension = ext;
+            break;
+        }
+    }
+
+    CHECKNULL(extension, L"MgServerSelectFeatures.SelectFdoJoin");
+    m_command->SetFeatureClassName(extension->GetFeatureClass().c_str());
+    MdfModel::AttributeRelateCollection* relates = extension->GetAttributeRelates();
+    CHECKNULL(relates, L"MgServerSelectFeatures.SelectFdoJoin");
+    MdfModel::AttributeRelate* relate = relates->GetAt(0);
+
+    const MdfModel::MdfString& prefix = relate->GetName();
+
+    STRING primaryAlias = L"primary";
+    STRING secondaryAlias = L"secondary";
+
+    FdoPtr<FdoJoinCriteriaCollection> joinCriteria;
+    if (isAggregate)
+    {
+        MgSelectAggregateCommand* cmd = static_cast<MgSelectAggregateCommand*>(m_command.p);
+        cmd->SetAlias(primaryAlias.c_str());
+        joinCriteria = cmd->GetJoinCriteria();
+    }
+    else
+    {
+        MgExtendedSelectCommand* cmd = static_cast<MgExtendedSelectCommand*>(m_command.p);
+        cmd->SetAlias(primaryAlias.c_str());
+        joinCriteria = cmd->GetJoinCriteria();
+    }
+
+    Ptr<MgStringCollection> idPropNames = new MgStringCollection();
+    Ptr<MgServerFeatureConnection> conn = new MgServerFeatureConnection(featureSourceId);
+    {
+        if (!conn->IsConnectionOpen())
+        {
+            throw new MgConnectionFailedException(L"MgServerSelectFeatures.SelectFdoJoin", __LINE__, __WFILE__, NULL, L"", NULL);
+        }
+
+        CHECKNULL(m_command, L"MgServerSelectFeatures.SelectFdoJoin");
+        FdoPtr<FdoIConnection> fdoConn = conn->GetConnection();
+
+        bool bAppliedProperties = false;
+        if (m_options != NULL)
+        {
+            //ApplyClassProperties();
+            ApplyComputedProperties();
+            // TODO: We need to find out if there are any filters involving the secondary side
+            ApplyFilter();
+            // ApplySpatialFilter();
+            ApplyOrderingOptions();
+            // We don't apply aggregate options here because these go through the FDO Expression Engine
+            ApplyAggregateOptions(isAggregate);
+            ApplyFetchSize();
+
+            //If an explicit list is specified, we assume the caller knows about prefixed
+            //extended feature class properties.
+            Ptr<MgStringCollection> props = m_options->GetClassProperties();
+            if (props->GetCount() > 0)
+            {
+                ApplyClassProperties();
+                bAppliedProperties = true;
+            }
+        }
+
+        //We need to fetch full class definitions of primary and secondary classes
+        if (!bAppliedProperties)
+        {
+            //Add primary class properties
+            STRING primaryClass = extension->GetFeatureClass();
+            STRING primarySchemaName;
+            STRING primaryClassName;
+            MgUtil::ParseQualifiedClassName(primaryClass, primarySchemaName, primaryClassName);
+
+            ApplyClassProperties(fdoConn, primarySchemaName, primaryClassName, idPropNames, primaryAlias);
+
+            if (!isAggregate)
+            {
+                //Add secondary class properties
+                STRING joinClass = relate->GetAttributeClass();
+                STRING joinSchemaName;
+                STRING joinClassName;
+                MgUtil::ParseQualifiedClassName(joinClass, joinSchemaName, joinClassName);
+
+                ApplyClassProperties(fdoConn, joinSchemaName, joinClassName, NULL, secondaryAlias, prefix); 
+            }
+        }
+    }
+
+    //Set join type
+    FdoJoinType jtype = FdoJoinType_None;
+    switch(relate->GetRelateType())
+    {
+    case MdfModel::AttributeRelate::Inner:
+        jtype = FdoJoinType_Inner;
+        break;
+    case MdfModel::AttributeRelate::LeftOuter:
+        jtype = FdoJoinType_LeftOuter;
+        break;
+    case MdfModel::AttributeRelate::RightOuter:
+        jtype = FdoJoinType_RightOuter;
+        break;
+    }
+
+    bool bForceOneToOne = relate->GetForceOneToOne();
+    //Set filter for this join
+    STRING secondaryClass = relate->GetAttributeClass();
+    STRING filterText;
+    MdfModel::RelatePropertyCollection* relProps = relate->GetRelateProperties();
+    for (INT32 i = 0; i < relProps->GetCount(); i++)
+    {
+        MdfModel::RelateProperty* prop = relProps->GetAt(i);
+        if (!filterText.empty())
+        {
+            filterText += L" AND ";
+        }
+
+        //[primaryAlias].[PropertyName] = [secondaryAlias].[PropertyName]
+        filterText += primaryAlias;
+        filterText += L".";
+        filterText += prop->GetFeatureClassProperty();
+        filterText += L" = ";
+        filterText += secondaryAlias;
+        filterText += L".";
+        filterText += prop->GetAttributeClassProperty();
+    }
+
+    FdoPtr<FdoJoinCriteria> criteria;
+    FdoPtr<FdoIdentifier> idJoinClass = FdoIdentifier::Create(secondaryClass.c_str());
+    FdoPtr<FdoFilter> filter = FdoFilter::Parse(filterText.c_str());
+    if (prefix.empty())
+        criteria = FdoJoinCriteria::Create(idJoinClass, jtype, filter);
+    else
+        criteria = FdoJoinCriteria::Create(secondaryAlias.c_str(), idJoinClass, jtype, filter);
+
+    joinCriteria->Add(criteria);
+
+    if (isAggregate)
+        ret = ((MgSelectAggregateCommand*)m_command.p)->ExecuteJoined(idPropNames, bForceOneToOne);
+    else
+        ret = ((MgExtendedSelectCommand*)m_command.p)->ExecuteJoined(idPropNames, bForceOneToOne);
+
+    MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgServerSelectFeatures.SelectFdoJoin")
+
+    return ret.Detach();
+}
+
+void MgServerSelectFeatures::ApplyAggregateCommandJoinFilterAndCriteria(MgResourceIdentifier* featureSourceId, CREFSTRING extensionName)
+{
+#ifdef DEBUG_FDO_JOIN
+    ACE_DEBUG((LM_INFO, ACE_TEXT("\n\t(%t) Applying FDO join criteria and filter to aggregate command")));
+#endif
+
+     //This could be qualified, so parse it to be sure
+    STRING schemaName;
+    STRING extName;
+    MgUtil::ParseQualifiedClassName(extensionName, schemaName, extName);
+
+    CHECKNULL(m_featureSourceCacheItem.p, L"MgServerSelectFeatures.SupportsFdoJoin");
+    MdfModel::FeatureSource* featureSource = m_featureSourceCacheItem->Get();
+    MdfModel::ExtensionCollection* extensions = featureSource->GetExtensions();
+    CHECKNULL(extensions, L"MgServerSelectFeatures.SupportsFdoJoin");
+
+    MdfModel::Extension* extension = NULL;
+    for (INT32 i = 0; i < extensions->GetCount(); i++) 
+    {
+        MdfModel::Extension* ext = extensions->GetAt(i);
+        if (ext->GetName() == extName)
+        {
+            extension = ext;
+            break;
+        }
+    }
+
+    CHECKNULL(extension, L"MgServerSelectFeatures.SelectFdoJoin");
+    m_command->SetFeatureClassName(extension->GetFeatureClass().c_str());
+    MdfModel::AttributeRelateCollection* relates = extension->GetAttributeRelates();
+    CHECKNULL(relates, L"MgServerSelectFeatures.SelectFdoJoin");
+    MdfModel::AttributeRelate* relate = relates->GetAt(0);
+
+    const MdfModel::MdfString& prefix = relate->GetName();
+
+    STRING primaryAlias = L"primary";
+    STRING secondaryAlias = L"secondary";
+
+    MgSelectAggregateCommand* extSelect = static_cast<MgSelectAggregateCommand*>(m_command.p);
+    extSelect->SetAlias(primaryAlias.c_str());
+
+    FdoPtr<FdoJoinCriteriaCollection> joinCriteria = extSelect->GetJoinCriteria();
+
+    //Set join type
+    FdoJoinType jtype = FdoJoinType_None;
+    switch(relate->GetRelateType())
+    {
+    case MdfModel::AttributeRelate::Inner:
+        jtype = FdoJoinType_Inner;
+        break;
+    case MdfModel::AttributeRelate::LeftOuter:
+        jtype = FdoJoinType_LeftOuter;
+        break;
+    case MdfModel::AttributeRelate::RightOuter:
+        jtype = FdoJoinType_RightOuter;
+        break;
+    }
+
+    bool bForceOneToOne = relate->GetForceOneToOne();
+    //Set filter for this join
+    STRING secondaryClass = relate->GetAttributeClass();
+    STRING filterText;
+    MdfModel::RelatePropertyCollection* relProps = relate->GetRelateProperties();
+    for (INT32 i = 0; i < relProps->GetCount(); i++)
+    {
+        MdfModel::RelateProperty* prop = relProps->GetAt(i);
+        if (!filterText.empty())
+        {
+            filterText += L" AND ";
+        }
+
+        //[primaryAlias].[PropertyName] = [secondaryAlias].[PropertyName]
+        filterText += primaryAlias;
+        filterText += L".";
+        filterText += prop->GetFeatureClassProperty();
+        filterText += L" = ";
+        filterText += secondaryAlias;
+        filterText += L".";
+        filterText += prop->GetAttributeClassProperty();
+    }
+
+    FdoPtr<FdoJoinCriteria> criteria;
+    FdoPtr<FdoIdentifier> idJoinClass = FdoIdentifier::Create(secondaryClass.c_str());
+    FdoPtr<FdoFilter> filter = FdoFilter::Parse(filterText.c_str());
+    if (prefix.empty())
+        criteria = FdoJoinCriteria::Create(idJoinClass, jtype, filter);
+    else
+        criteria = FdoJoinCriteria::Create(secondaryAlias.c_str(), idJoinClass, jtype, filter);
+
+    joinCriteria->Add(criteria);
+}
+
+void MgServerSelectFeatures::ApplyClassProperties(FdoIConnection* fdoConn, CREFSTRING schemaName, CREFSTRING className, MgStringCollection* idPropNames, CREFSTRING alias, CREFSTRING prefix)
+{
+    FdoPtr<FdoIDescribeSchema> descSchema = dynamic_cast<FdoIDescribeSchema*>(fdoConn->CreateCommand(FdoCommandType_DescribeSchema));
+    CHECKNULL((FdoIDescribeSchema*)descSchema, L"MgServerSelectFeatures.SelectFdoJoin");
+
+    if (!schemaName.empty())
+    {
+        descSchema->SetSchemaName(schemaName.c_str());
+    }
+    if (!className.empty())
+    {
+        FdoPtr<FdoStringCollection> classNames = FdoStringCollection::Create();
+        classNames->Add(className.c_str());
+        descSchema->SetClassNames(classNames);
+    }
+
+    FdoPtr<FdoClassDefinition> classDef;
+    FdoPtr<FdoFeatureSchemaCollection> schemas = descSchema->Execute();
+    for (FdoInt32 i = 0; i < schemas->GetCount(); i++)
+    {
+        FdoPtr<FdoFeatureSchema> schema = schemas->GetItem(i);
+        if (wcscmp(schema->GetName(), schemaName.c_str()) == 0) 
+        {
+            FdoPtr<FdoClassCollection> classes = schema->GetClasses();
+            for (FdoInt32 j = 0; j < classes->GetCount(); j++) 
+            {
+                FdoPtr<FdoClassDefinition> klassDef = classes->GetItem(j);
+                if (wcscmp(klassDef->GetName(), className.c_str()) == 0)
+                {
+                    classDef = SAFE_ADDREF(klassDef.p);
+                    break;
+                }
+            }
+        }
+    }
+
+    if (NULL == (FdoClassDefinition*)classDef)
+    {
+        //TODO: Refine message if available
+        throw new MgClassNotFoundException(L"MgServerSelectFeatures.SelectFdoJoin", __LINE__, __WFILE__, NULL, L"", NULL);
+    }
+
+    FdoPtr<FdoIdentifierCollection> propNames = m_command->GetPropertyNames();
+
+    //Add primary class properties
+    FdoPtr<FdoPropertyDefinitionCollection> propDefs = classDef->GetProperties();
+    for (FdoInt32 i = 0; i < propDefs->GetCount(); i++) 
+    {
+        FdoPtr<FdoPropertyDefinition> propDef = propDefs->GetItem(i);
+
+        //Skip ones that aren't data/geometry
+        if (propDef->GetPropertyType() != FdoPropertyType_DataProperty &&
+            propDef->GetPropertyType() != FdoPropertyType_GeometricProperty)
+            continue;
+
+        STRING exprText = alias + L".";
+        exprText += propDef->GetName();
+
+        FdoPtr<FdoExpression> expr = FdoExpression::Parse(exprText.c_str());
+        STRING idName = prefix + propDef->GetName();
+        //[alias].[propertyName] AS [prefix][propertyName]
+        FdoPtr<FdoComputedIdentifier> compId = FdoComputedIdentifier::Create(idName.c_str(), expr);
+
+        propNames->Add(compId);
+    }
+
+    if (NULL != idPropNames)
+    {
+        FdoPtr<FdoDataPropertyDefinitionCollection> idPropDefs = classDef->GetIdentityProperties();
+        for (FdoInt32 i = 0; i < idPropDefs->GetCount(); i++)
+        {
+            FdoPtr<FdoDataPropertyDefinition> dp = idPropDefs->GetItem(i);
+            STRING propName = L"";
+            propName += dp->GetName();
+            idPropNames->Add(propName);
+        }
+    }
 }

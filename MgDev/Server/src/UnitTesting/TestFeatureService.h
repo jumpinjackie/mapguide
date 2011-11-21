@@ -58,6 +58,10 @@ class TestFeatureService : public CppUnit::TestFixture
     CPPUNIT_TEST(TestCase_BenchmarkSelectFeatures);
     CPPUNIT_TEST(TestCase_ConcurrentAccess);
     CPPUNIT_TEST(TestCase_SavePoint);
+    CPPUNIT_TEST(TestCase_JoinFdoFeatures);
+    CPPUNIT_TEST(TestCase_BenchmarkSqliteJoin);
+    
+    CPPUNIT_TEST(TestCase_BenchmarkSqliteAggregateJoin);
 
     CPPUNIT_TEST(TestEnd); // This must be the very last unit test
     CPPUNIT_TEST_SUITE_END();
@@ -101,6 +105,9 @@ public:
     void TestCase_BenchmarkSelectFeatures();
     void TestCase_ConcurrentAccess();
     void TestCase_SavePoint();
+    void TestCase_JoinFdoFeatures();
+    void TestCase_BenchmarkSqliteJoin();
+    void TestCase_BenchmarkSqliteAggregateJoin();
 };
 
 #endif // _TESTFEATURESERVICE_H

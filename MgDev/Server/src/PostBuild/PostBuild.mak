@@ -243,6 +243,10 @@ debug : ..\..\bin\debug\MgFoundationd.dll \
         ..\..\bin\UnitTestFiles\UT_Annotation3.mdf \
         ..\..\bin\UnitTestFiles\SavePointTest.sqlite \
         ..\..\bin\UnitTestFiles\SavePointTest.FeatureSource \
+        ..\..\bin\UnitTestFiles\UT_Parcels_SQLite_Join.FeatureSource \
+        ..\..\bin\UnitTestFiles\UT_FdoJoin.FeatureSource \
+        ..\..\bin\UnitTestFiles\ParcelsJoinTest.sqlite \
+        ..\..\bin\UnitTestFiles\JoinTest.sqlite \
         CopyFdoComponentsDebug \
         CopyFdoProvidersDebug \
         CopySchemaDebug \
@@ -496,6 +500,10 @@ debug64 : ..\..\bin\debug64\MgFoundationd.dll \
         ..\..\bin\UnitTestFiles\UT_Annotation3.mdf \
         ..\..\bin\UnitTestFiles\SavePointTest.sqlite \
         ..\..\bin\UnitTestFiles\SavePointTest.FeatureSource \
+        ..\..\bin\UnitTestFiles\UT_Parcels_SQLite_Join.FeatureSource \
+        ..\..\bin\UnitTestFiles\UT_FdoJoin.FeatureSource \
+        ..\..\bin\UnitTestFiles\ParcelsJoinTest.sqlite \
+        ..\..\bin\UnitTestFiles\JoinTest.sqlite \
         CopyFdoComponentsDebug64 \
         CopyFdoProvidersDebug64 \
         CopySchemaDebug64 \
@@ -749,6 +757,10 @@ release : ..\..\bin\release\MgFoundation.dll \
           ..\..\bin\UnitTestFiles\UT_Annotation3.mdf \
           ..\..\bin\UnitTestFiles\SavePointTest.sqlite \
           ..\..\bin\UnitTestFiles\SavePointTest.FeatureSource \
+          ..\..\bin\UnitTestFiles\UT_Parcels_SQLite_Join.FeatureSource \
+          ..\..\bin\UnitTestFiles\UT_FdoJoin.FeatureSource \
+          ..\..\bin\UnitTestFiles\ParcelsJoinTest.sqlite \
+          ..\..\bin\UnitTestFiles\JoinTest.sqlite \
           CopyFdoComponentsRelease \
           CopyFdoProvidersRelease \
           CopySchemaRelease \
@@ -1002,6 +1014,10 @@ release64 : ..\..\bin\release64\MgFoundation.dll \
           ..\..\bin\UnitTestFiles\UT_Annotation3.mdf \
           ..\..\bin\UnitTestFiles\SavePointTest.sqlite \
           ..\..\bin\UnitTestFiles\SavePointTest.FeatureSource \
+          ..\..\bin\UnitTestFiles\UT_Parcels_SQLite_Join.FeatureSource \
+          ..\..\bin\UnitTestFiles\UT_FdoJoin.FeatureSource \
+          ..\..\bin\UnitTestFiles\ParcelsJoinTest.sqlite \
+          ..\..\bin\UnitTestFiles\JoinTest.sqlite \
           CopyFdoComponentsRelease64 \
           CopyFdoProvidersRelease64 \
           CopySchemaRelease64 \
@@ -1128,6 +1144,10 @@ cleandebug:
     if EXIST ..\..\bin\UnitTestFiles\UT_Annotation3.mdf             del /F ..\..\bin\UnitTestFiles\UT_Annotation3.mdf
     if EXIST ..\..\bin\UnitTestFiles\SavePointTest.sqlite           del /F ..\..\bin\UnitTestFiles\SavePointTest.sqlite
     if EXIST ..\..\bin\UnitTestFiles\SavePointTest.FeatureSource    del /F ..\..\bin\UnitTestFiles\SavePointTest.FeatureSource
+    if EXIST ..\..\bin\UnitTestFiles\UT_Parcels_SQLite_Join.FeatureSource    del /F ..\..\bin\UnitTestFiles\UT_Parcels_SQLite_Join.FeatureSource
+    if EXIST ..\..\bin\UnitTestFiles\UT_FdoJoin.FeatureSource		del /F ..\..\bin\UnitTestFiles\UT_FdoJoin.FeatureSource
+    if EXIST ..\..\bin\UnitTestFiles\ParcelsJoinTest.sqlite         del /F ..\..\bin\UnitTestFiles\ParcelsJoinTest.sqlite
+    if EXIST ..\..\bin\UnitTestFiles\JoinTest.sqlite                del /F ..\..\bin\UnitTestFiles\JoinTest.FeatureSource
     del /F   ..\..\bin\debug\*.ilk
 
 
@@ -1249,6 +1269,10 @@ cleandebug64:
     if EXIST ..\..\bin\UnitTestFiles\UT_Annotation3.mdf             del /F ..\..\bin\UnitTestFiles\UT_Annotation3.mdf
     if EXIST ..\..\bin\UnitTestFiles\SavePointTest.sqlite           del /F ..\..\bin\UnitTestFiles\SavePointTest.sqlite
     if EXIST ..\..\bin\UnitTestFiles\SavePointTest.FeatureSource    del /F ..\..\bin\UnitTestFiles\SavePointTest.FeatureSource
+    if EXIST ..\..\bin\UnitTestFiles\UT_Parcels_SQLite_Join.FeatureSource    del /F ..\..\bin\UnitTestFiles\UT_Parcels_SQLite_Join.FeatureSource
+    if EXIST ..\..\bin\UnitTestFiles\UT_FdoJoin.FeatureSource		del /F ..\..\bin\UnitTestFiles\UT_FdoJoin.FeatureSource
+    if EXIST ..\..\bin\UnitTestFiles\ParcelsJoinTest.sqlite         del /F ..\..\bin\UnitTestFiles\ParcelsJoinTest.sqlite
+    if EXIST ..\..\bin\UnitTestFiles\JoinTest.sqlite                del /F ..\..\bin\UnitTestFiles\JoinTest.FeatureSource
     del /F   ..\..\bin\debug64\*.ilk
 
 
@@ -1370,7 +1394,10 @@ cleanrelease:
     if EXIST ..\..\bin\UnitTestFiles\UT_Annotation3.mdf             del /F ..\..\bin\UnitTestFiles\UT_Annotation3.mdf
     if EXIST ..\..\bin\UnitTestFiles\SavePointTest.sqlite           del /F ..\..\bin\UnitTestFiles\SavePointTest.sqlite
     if EXIST ..\..\bin\UnitTestFiles\SavePointTest.FeatureSource    del /F ..\..\bin\UnitTestFiles\SavePointTest.FeatureSource
-
+	if EXIST ..\..\bin\UnitTestFiles\UT_Parcels_SQLite_Join.FeatureSource    del /F ..\..\bin\UnitTestFiles\UT_Parcels_SQLite_Join.FeatureSource
+    if EXIST ..\..\bin\UnitTestFiles\UT_FdoJoin.FeatureSource		del /F ..\..\bin\UnitTestFiles\UT_FdoJoin.FeatureSource
+    if EXIST ..\..\bin\UnitTestFiles\ParcelsJoinTest.sqlite         del /F ..\..\bin\UnitTestFiles\ParcelsJoinTest.sqlite
+    if EXIST ..\..\bin\UnitTestFiles\JoinTest.sqlite                del /F ..\..\bin\UnitTestFiles\JoinTest.FeatureSource
 
 cleanrelease64:
     if EXIST ..\..\bin\release64\MgFoundation.dll              del /F ..\..\bin\release64\MgFoundation.dll
@@ -1490,6 +1517,10 @@ cleanrelease64:
     if EXIST ..\..\bin\UnitTestFiles\UT_Annotation3.mdf             del /F ..\..\bin\UnitTestFiles\UT_Annotation3.mdf
     if EXIST ..\..\bin\UnitTestFiles\SavePointTest.sqlite           del /F ..\..\bin\UnitTestFiles\SavePointTest.sqlite
     if EXIST ..\..\bin\UnitTestFiles\SavePointTest.FeatureSource    del /F ..\..\bin\UnitTestFiles\SavePointTest.FeatureSource
+    if EXIST ..\..\bin\UnitTestFiles\UT_Parcels_SQLite_Join.FeatureSource    del /F ..\..\bin\UnitTestFiles\UT_Parcels_SQLite_Join.FeatureSource
+    if EXIST ..\..\bin\UnitTestFiles\UT_FdoJoin.FeatureSource		del /F ..\..\bin\UnitTestFiles\UT_FdoJoin.FeatureSource
+    if EXIST ..\..\bin\UnitTestFiles\ParcelsJoinTest.sqlite         del /F ..\..\bin\UnitTestFiles\ParcelsJoinTest.sqlite
+    if EXIST ..\..\bin\UnitTestFiles\JoinTest.sqlite                del /F ..\..\bin\UnitTestFiles\JoinTest.FeatureSource
 
 
 "..\..\..\UnitTest\TestData\ResourceService\LibraryRepositoryContent.xml" :
@@ -1575,6 +1606,10 @@ cleanrelease64:
 "..\..\..\UnitTest\TestData\Symbology\UT_Annotation2.mdf" :
 "..\..\..\UnitTest\TestData\Symbology\UT_Annotation3.ldf" :
 "..\..\..\UnitTest\TestData\Symbology\UT_Annotation3.mdf" :
+"..\..\..\UnitTest\TestData\Symbology\UT_Parcels_SQLite_Join.FeatureSource" :
+"..\..\..\UnitTest\TestData\Symbology\UT_FdoJoin.FeatureSource" :
+"..\..\..\UnitTest\TestData\Symbology\ParcelsJoinTest.sqlite" :
+"..\..\..\UnitTest\TestData\Symbology\JoinTest.sqlite" :
 
 ..\..\bin\UnitTestFiles\LibraryRepositoryContent.xml : "..\..\..\UnitTest\TestData\ResourceService\LibraryRepositoryContent.xml"
     if NOT EXIST ..\..\bin\UnitTestFiles\nul mkdir ..\..\bin\UnitTestFiles
@@ -1919,3 +1954,19 @@ cleanrelease64:
 ..\..\bin\UnitTestFiles\SavePointTest.FeatureSource : "..\..\..\UnitTest\TestData\FeatureService\SQLite\SavePointTest.FeatureSource"
     if NOT EXIST ..\..\bin\UnitTestFiles\nul mkdir ..\..\bin\UnitTestFiles
     if EXIST "..\..\..\UnitTest\TestData\FeatureService\SQLite\SavePointTest.FeatureSource" xcopy /r /d /y "..\..\..\UnitTest\TestData\FeatureService\SQLite\SavePointTest.FeatureSource" ..\..\bin\UnitTestFiles\
+
+..\..\bin\UnitTestFiles\UT_Parcels_SQLite_Join.FeatureSource : "..\..\..\UnitTest\TestData\FeatureService\SQLite\UT_Parcels_SQLite_Join.FeatureSource"
+    if NOT EXIST ..\..\bin\UnitTestFiles\nul mkdir ..\..\bin\UnitTestFiles
+    if EXIST "..\..\..\UnitTest\TestData\FeatureService\SQLite\UT_Parcels_SQLite_Join.FeatureSource" xcopy /r /d /y "..\..\..\UnitTest\TestData\FeatureService\SQLite\UT_Parcels_SQLite_Join.FeatureSource" ..\..\bin\UnitTestFiles\
+
+..\..\bin\UnitTestFiles\UT_FdoJoin.FeatureSource : "..\..\..\UnitTest\TestData\FeatureService\SQLite\UT_FdoJoin.FeatureSource"
+    if NOT EXIST ..\..\bin\UnitTestFiles\nul mkdir ..\..\bin\UnitTestFiles
+    if EXIST "..\..\..\UnitTest\TestData\FeatureService\SQLite\UT_FdoJoin.FeatureSource" xcopy /r /d /y "..\..\..\UnitTest\TestData\FeatureService\SQLite\UT_FdoJoin.FeatureSource" ..\..\bin\UnitTestFiles\
+
+..\..\bin\UnitTestFiles\ParcelsJoinTest.sqlite : "..\..\..\UnitTest\TestData\FeatureService\SQLite\ParcelsJoinTest.sqlite"
+    if NOT EXIST ..\..\bin\UnitTestFiles\nul mkdir ..\..\bin\UnitTestFiles
+    if EXIST "..\..\..\UnitTest\TestData\FeatureService\SQLite\ParcelsJoinTest.sqlite" xcopy /r /d /y "..\..\..\UnitTest\TestData\FeatureService\SQLite\ParcelsJoinTest.sqlite" ..\..\bin\UnitTestFiles\
+
+..\..\bin\UnitTestFiles\JoinTest.sqlite : "..\..\..\UnitTest\TestData\FeatureService\SQLite\JoinTest.sqlite"
+    if NOT EXIST ..\..\bin\UnitTestFiles\nul mkdir ..\..\bin\UnitTestFiles
+    if EXIST "..\..\..\UnitTest\TestData\FeatureService\SQLite\JoinTest.sqlite" xcopy /r /d /y "..\..\..\UnitTest\TestData\FeatureService\SQLite\JoinTest.sqlite" ..\..\bin\UnitTestFiles\

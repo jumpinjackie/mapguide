@@ -91,6 +91,14 @@ private:
     INT32 m_nJoinQueryBatchSize;
 
     INT32 m_nDataCacheSize;
+
+    // FDO join optimization
+    bool IsFunctionOnPrimaryProperty(FdoFunction* function, FdoIConnection* conn, CREFSTRING schemaName, CREFSTRING className);
+    bool SupportsFdoJoin(MgResourceIdentifier* featureSourceId, CREFSTRING extension, bool isAggregate);
+    MgReader* SelectFdoJoin(MgResourceIdentifier* featureSourceId, CREFSTRING extension, bool isAggregate);
+    void ApplyAggregateCommandJoinFilterAndCriteria(MgResourceIdentifier* featureSourceId, CREFSTRING extension);
+    void ApplyClassProperties(FdoIConnection* fdoConn, CREFSTRING schemaName, CREFSTRING className, MgStringCollection* idPropNames, CREFSTRING alias, CREFSTRING prefix = L"");
+    bool FilterContainsSecondaryProperties(MgResourceIdentifier* featureSourceId, CREFSTRING filter, STRING secondarySchema, STRING secondaryClassName, STRING secondaryPrefix);
 };
 
 #endif

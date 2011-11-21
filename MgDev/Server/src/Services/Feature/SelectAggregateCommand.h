@@ -49,6 +49,7 @@ public:
     virtual FdoFilter* GetFilter();
 
     virtual MgReader* Execute();
+    MgReader* ExecuteJoined(MgStringCollection* idPropNames, bool bForceOneToOne);
     virtual bool IsSupportedFunction(FdoFunction* fdoFunc);
     virtual bool SupportsSelectGrouping();
     virtual bool SupportsSelectOrdering();
@@ -58,6 +59,9 @@ public:
     {
         delete this;
     }
+
+    virtual FdoJoinCriteriaCollection* GetJoinCriteria();
+    virtual void SetAlias(FdoString* alias);
 
 private:
     Ptr<MgServerFeatureConnection> m_connection;
