@@ -118,6 +118,7 @@ public:
     static FdoObjectPropertyDefinition* GetObjectPropertyDefinition(MgObjectPropertyDefinition* objPropDef, FdoClassCollection* fdoClassCol);
     static FdoParameterDirection GetFdoParameterDirection(INT32 paramDirection);
     static INT32 GetMgParameterDirection(FdoParameterDirection fdoParamDirection);
+    static FdoIdentifierCollection* ExtractIdentifiers(FdoExpression* expr);
 
     static void UpdateFdoFeatureSchema(MgFeatureSchema* mgSchema, FdoFeatureSchema* fdoSchema);
     static void UpdateFdoClassCollection(MgClassDefinitionCollection* mgClassDefCol, FdoClassCollection* fdoClassCol);

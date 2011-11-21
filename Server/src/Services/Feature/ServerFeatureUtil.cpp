@@ -3551,3 +3551,72 @@ void MgServerFeatureUtil::UpdateRasterPropertyDefinition(
 
     MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgServerFeatureUtil.UpdateRasterPropertyDefinition")
 }
+
+FdoIdentifierCollection* MgServerFeatureUtil::ExtractIdentifiers(FdoExpression* expr)
+{
+    CHECKNULL(expr, L"MgServerFeatureUtil.ExtractIdentifiers");
+
+    FdoPtr<FdoIdentifierCollection> ret;
+    MG_FEATURE_SERVICE_TRY()
+
+    ret = FdoIdentifierCollection::Create();
+
+    switch(expr->GetExpressionType())
+    {
+    case FdoExpressionItemType_ComputedIdentifier:
+        {
+            FdoComputedIdentifier* comp = static_cast<FdoComputedIdentifier*>(expr);
+            FdoPtr<FdoExpression> inner = comp->GetExpression();
+
+            FdoPtr<FdoIdentifierCollection> result = ExtractIdentifiers(inner);
+            for (FdoInt32 i = 0; i < result->GetCount(); i++)
+            {
+                FdoPtr<FdoIdentifier> resultItem = result->GetItem(i);
+                ret->Add(resultItem);
+            }
+        }
+        break;
+    case FdoExpressionItemType_Function:
+        {
+            FdoFunction* func = static_cast<FdoFunction*>(expr);
+            FdoExpressionCollection* funcArgs = func->GetArguments();
+            for (FdoInt32 i = 0; i < funcArgs->GetCount(); i++)
+            {
+                FdoPtr<FdoExpression> arg = funcArgs->GetItem(i);
+                FdoPtr<FdoIdentifierCollection> result = ExtractIdentifiers(arg);
+                for (FdoInt32 j = 0; j < result->GetCount(); j++)
+                {
+                    FdoPtr<FdoIdentifier> resultItem = result->GetItem(j);
+                    ret->Add(resultItem);
+                }
+            }
+        }
+        break;
+    case FdoExpressionItemType_Identifier:
+        ret->Add(static_cast<FdoIdentifier*>(expr));
+        break;
+    case FdoExpressionItemType_UnaryExpression:
+        {
+            FdoUnaryExpression* unexpr = static_cast<FdoUnaryExpression*>(expr);
+            FdoExpression* inner = unexpr->GetExpression();
+
+            FdoPtr<FdoIdentifierCollection> result = ExtractIdentifiers(inner);
+            for (FdoInt32 i = 0; i < result->GetCount(); i++)
+            {
+                FdoPtr<FdoIdentifier> resultItem = result->GetItem(i);
+                ret->Add(resultItem);
+            }
+        }
+        break;
+    case FdoExpressionItemType_SubSelectExpression:
+        {
+            FdoSubSelectExpression* subSelect = static_cast<FdoSubSelectExpression*>(expr);
+            FdoPtr<FdoIdentifier> propName = subSelect->GetPropertyName();
+            ret->Add(propName);
+        }
+        break;
+    }
+
+    MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgServerFeatureUtil.ExtractIdentifiers")
+    return ret.Detach();
+}
