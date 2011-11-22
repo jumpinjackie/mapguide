@@ -69,12 +69,14 @@
                 // particular string while the rest of the encoded chars are translated properly.
                 $subXml = substr($xml, strpos($xml, 'xs:element'), -1);
                 $subXml = preg_replace("/-x([A-Za-z0-9]{1,4})-/e", "html_entity_decode('&#'.hexdec('$1').';',ENT_NOQUOTES,'UTF-8')", $subXml);
+                $subXml = preg_replace("/_x([A-Za-z0-9]{1,4})-/e", "html_entity_decode('&#'.hexdec('$1').';',ENT_NOQUOTES,'UTF-8')", $subXml);
                 $xml = substr_replace($xml, $subXml, strpos($xml, 'xs:element'), -1);
 
                 $nameSpaceStart = strpos($xml, 'targetNamespace="');
                 $nameSpaceEnd = strpos($xml, '"', $nameSpaceStart+17);
                 $nameSpace = substr($xml, $nameSpaceStart, $nameSpaceEnd-$nameSpaceStart);
                 $nameSpaceModified = preg_replace("/-x([A-Za-z0-9]{1,4})-/e", "html_entity_decode('&#'.hexdec('$1').';',ENT_NOQUOTES,'UTF-8')", $nameSpace);
+                $nameSpaceModified = preg_replace("/_x([A-Za-z0-9]{1,4})-/e", "html_entity_decode('&#'.hexdec('$1').';',ENT_NOQUOTES,'UTF-8')", $nameSpace);
 
                 $xml = str_replace($nameSpace, $nameSpaceModified, $xml);
                 $xml = preg_replace("/-x([A-Za-z0-9]{1,4})-/e", "'$1'", $xml);
