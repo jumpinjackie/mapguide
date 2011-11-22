@@ -94,9 +94,9 @@
             <xsl:when test="$identity">
                 <!--create table for data properties-->
                 <xsl:if test="count(.//xs:element/@type) &lt; count(.//xs:element)">
-                    <h3><img src="./images/expand_pane.png"><xsl:attribute name="onclick">Toggle("Data_"+"<xsl:value-of select="$currclassname"/>")</xsl:attribute></img> <xsl:value-of select="$stringDataProperties"/></h3>
+                    <h3><img src="./images/expand_pane.png"><xsl:attribute name="onclick">Toggle("Data_"+"<xsl:call-template name="getSchemaName"><xsl:with-param name="nameSpace" select="$namespace"/></xsl:call-template>"+"_"+"<xsl:value-of select="$currclassname"/>")</xsl:attribute></img> <xsl:value-of select="$stringDataProperties"/></h3>
                     <div style="display:none">
-                        <xsl:attribute name="id">Data_<xsl:value-of select="$currclassname"/></xsl:attribute>
+                        <xsl:attribute name="id">Data_<xsl:call-template name="getSchemaName"><xsl:with-param name="nameSpace" select="$namespace"/></xsl:call-template>_<xsl:value-of select="$currclassname"/></xsl:attribute>
                         <table cellspacing="0">
                             <tr>
                                 <td class="heading"><xsl:value-of select="$stringPropertyName"/></td>
@@ -111,9 +111,9 @@
                 </xsl:if>
                 <!--create table for geometric properties-->
                 <xsl:if test=".//xs:element/@type='gml:AbstractGeometryType'">
-                    <h3><img src="./images/expand_pane.png"><xsl:attribute name="onclick">Toggle("Geom_"+"<xsl:value-of select="$currclassname"/>")</xsl:attribute></img> <xsl:value-of select="$stringGeometricProperties"/></h3>
+                    <h3><img src="./images/expand_pane.png"><xsl:attribute name="onclick">Toggle("Geom_"+"<xsl:call-template name="getSchemaName"><xsl:with-param name="nameSpace" select="$namespace"/></xsl:call-template>"+"_"+"<xsl:value-of select="$currclassname"/>")</xsl:attribute></img> <xsl:value-of select="$stringGeometricProperties"/></h3>
                     <div style="display:none">
-                        <xsl:attribute name="id">Geom_<xsl:value-of select="$currclassname"/></xsl:attribute>
+                        <xsl:attribute name="id">Geom_<xsl:call-template name="getSchemaName"><xsl:with-param name="nameSpace" select="$namespace"/></xsl:call-template>_<xsl:value-of select="$currclassname"/></xsl:attribute>
                         <table cellspacing="0"><tr>
                             <td class="data">
                                 <table class="data" cellspacing="0">
