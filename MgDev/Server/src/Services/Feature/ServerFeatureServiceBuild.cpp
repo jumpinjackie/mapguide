@@ -70,7 +70,6 @@
 #include "OpGetDataRows.cpp"
 #include "SelectAggregateCommand.cpp"
 #include "SelectCommand.cpp"
-#include "ExtendedSelectCommand.cpp"
 #include "ServerDataReader.cpp"
 #include "ServerSqlDataReaderPool.cpp"
 #include "FeatureNumericFunctions.cpp"

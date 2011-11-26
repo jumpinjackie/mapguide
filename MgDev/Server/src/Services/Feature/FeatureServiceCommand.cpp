@@ -20,7 +20,6 @@
 #include "Services/FeatureService.h"
 #include "FeatureServiceCommand.h"
 #include "SelectCommand.h"
-#include "ExtendedSelectCommand.h"
 #include "SelectAggregateCommand.h"
 
 MgFeatureServiceCommand* MgFeatureServiceCommand::CreateCommand(MgResourceIdentifier* resource, FdoCommandType commandType)
@@ -36,11 +35,6 @@ MgFeatureServiceCommand* MgFeatureServiceCommand::CreateCommand(MgResourceIdenti
         case FdoCommandType_SelectAggregates:
         {
             command = new MgSelectAggregateCommand(resource);
-            break;
-        }
-        case FdoCommandType_ExtendedSelect:
-        {
-            command = new MgExtendedSelectCommand(resource);
             break;
         }
     }

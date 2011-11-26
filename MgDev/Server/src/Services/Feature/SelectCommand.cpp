@@ -396,3 +396,37 @@ MgFdoFilterCollection* MgSelectCommand::GetSubFilters()
 
     return filters.Detach();
 }
+
+FdoJoinCriteriaCollection* MgSelectCommand::GetJoinCriteria()
+{
+    CHECKNULL((FdoISelect*)m_command, L"MgSelectCommand.GetJoinCriteria");
+    return m_command->GetJoinCriteria();
+}
+
+void MgSelectCommand::SetAlias(FdoString* alias)
+{
+    CHECKNULL((FdoISelect*)m_command, L"MgSelectCommand.SetDistinct");
+    m_command->SetAlias(alias);
+}
+
+MgReader* MgSelectCommand::ExecuteJoined(MgStringCollection* idPropNames, bool bForceOneToOne)
+{
+    Ptr<MgReader> ret;
+
+    MG_FEATURE_SERVICE_TRY()
+
+    FdoPtr<FdoIFeatureReader> fdoReader = m_command->Execute();
+    if (bForceOneToOne)
+    {
+        FdoPtr<FdoStringCollection> names = MgServerFeatureUtil::MgToFdoStringCollection(idPropNames, false);
+        FdoPtr<FdoIFeatureReader> forcedReader = new MgFdoForcedOneToOneFeatureReader(fdoReader, names); 
+        ret = new MgServerFeatureReader(m_connection, forcedReader);
+    }
+    else
+    {
+        ret = new MgServerFeatureReader(m_connection, fdoReader);
+    }
+    MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgSelectCommand.ExecuteJoined")
+
+    return ret.Detach();
+}

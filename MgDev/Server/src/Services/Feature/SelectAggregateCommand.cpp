@@ -199,7 +199,7 @@ MgReader* MgSelectAggregateCommand::ExecuteJoined(MgStringCollection* idPropName
     Ptr<MgReader> ret;
 
     FdoPtr<FdoIConnection> fdoConn = m_connection->GetConnection();
-    FdoPtr<FdoIExtendedSelect> select = static_cast<FdoIExtendedSelect*>(fdoConn->CreateCommand(FdoCommandType_ExtendedSelect));
+    FdoPtr<FdoISelect> select = static_cast<FdoISelect*>(fdoConn->CreateCommand(FdoCommandType_Select));
 
     FdoPtr<FdoIdentifier> clsName = m_command->GetFeatureClassName();
     select->SetFeatureClassName(clsName);
@@ -271,7 +271,7 @@ MgReader* MgSelectAggregateCommand::ExecuteJoined(MgStringCollection* idPropName
     FdoOrderingOption orderOpt = m_command->GetOrderingOption();
 
     //n00bism: String goes in, garbage comes out. Anyway, we know the alias we want to set
-    select->SetAlias(L"primary");
+    select->SetAlias(PRIMARY_ALIAS);
     //select->SetAlias(m_command->GetAlias());
 
     FdoPtr<FdoJoinCriteriaCollection> srcCriteria = GetJoinCriteria();

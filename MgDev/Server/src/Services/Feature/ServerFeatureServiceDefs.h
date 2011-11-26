@@ -24,4 +24,7 @@
 #include "Fdo.h"
 #include "ServerFeatureServiceExceptionDef.h"
 
+#define PRIMARY_ALIAS L"a"
+#define SECONDARY_ALIAS L"b"
+
 #endif
