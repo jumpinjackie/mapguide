@@ -65,6 +65,10 @@ public:
         delete this;
     }
 
+    MgReader* ExecuteJoined(MgStringCollection* idPropNames, bool bForceOneToOne);
+    virtual FdoJoinCriteriaCollection* GetJoinCriteria();
+    virtual void SetAlias(FdoString* alias);
+
 private:
     Ptr<MgServerFeatureConnection> m_connection;
     STRING m_providerName;

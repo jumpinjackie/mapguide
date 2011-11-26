@@ -24,7 +24,6 @@
 #include "ServerFeatureUtil.h"
 #include "FeatureServiceCommand.h"
 #include "SelectCommand.h"
-#include "ExtendedSelectCommand.h"
 #include "SelectAggregateCommand.h"
 #include "FeatureDistribution.h"
 #include "ServerGwsFeatureReader.h"
@@ -111,7 +110,7 @@ MgReader* MgServerSelectFeatures::SelectFeatures(MgResourceIdentifier* resource,
 #ifdef DEBUG_FDO_JOIN
             ACE_DEBUG((LM_INFO, ACE_TEXT("\n(%t) Feature Source (%W) supports FDO join optimization"), fsIdStr.c_str()));
 #endif
-            m_command = MgFeatureServiceCommand::CreateCommand(resource, FdoCommandType_ExtendedSelect);
+            m_command = MgFeatureServiceCommand::CreateCommand(resource, FdoCommandType_Select);
             mgReader = SelectFdoJoin(resource, className, false);
         }
         else 
@@ -141,7 +140,7 @@ MgReader* MgServerSelectFeatures::SelectFeatures(MgResourceIdentifier* resource,
 #endif
         // Perform the same select query as above, but route this through the FDO expression engine
         // Slow maybe, but anything is faster than going via the GWS query engine.
-        m_command = MgFeatureServiceCommand::CreateCommand(resource, FdoCommandType_ExtendedSelect);
+        m_command = MgFeatureServiceCommand::CreateCommand(resource, FdoCommandType_Select);
         mgReader = SelectFdoJoin(resource, className, true);
     }
     else
@@ -1894,8 +1893,8 @@ MgReader* MgServerSelectFeatures::SelectFdoJoin(MgResourceIdentifier* featureSou
 
     const MdfModel::MdfString& prefix = relate->GetName();
 
-    STRING primaryAlias = L"primary";
-    STRING secondaryAlias = L"secondary";
+    STRING primaryAlias = PRIMARY_ALIAS;
+    STRING secondaryAlias = SECONDARY_ALIAS;
 
     FdoPtr<FdoJoinCriteriaCollection> joinCriteria;
     if (isAggregate)
@@ -1906,7 +1905,7 @@ MgReader* MgServerSelectFeatures::SelectFdoJoin(MgResourceIdentifier* featureSou
     }
     else
     {
-        MgExtendedSelectCommand* cmd = static_cast<MgExtendedSelectCommand*>(m_command.p);
+        MgSelectCommand* cmd = static_cast<MgSelectCommand*>(m_command.p);
         cmd->SetAlias(primaryAlias.c_str());
         joinCriteria = cmd->GetJoinCriteria();
     }
@@ -2020,7 +2019,7 @@ MgReader* MgServerSelectFeatures::SelectFdoJoin(MgResourceIdentifier* featureSou
     if (isAggregate)
         ret = ((MgSelectAggregateCommand*)m_command.p)->ExecuteJoined(idPropNames, bForceOneToOne);
     else
-        ret = ((MgExtendedSelectCommand*)m_command.p)->ExecuteJoined(idPropNames, bForceOneToOne);
+        ret = ((MgSelectCommand*)m_command.p)->ExecuteJoined(idPropNames, bForceOneToOne);
 
     MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgServerSelectFeatures.SelectFdoJoin")
 
@@ -2062,8 +2061,8 @@ void MgServerSelectFeatures::ApplyAggregateCommandJoinFilterAndCriteria(MgResour
 
     const MdfModel::MdfString& prefix = relate->GetName();
 
-    STRING primaryAlias = L"primary";
-    STRING secondaryAlias = L"secondary";
+    STRING primaryAlias = PRIMARY_ALIAS;
+    STRING secondaryAlias = SECONDARY_ALIAS;
 
     MgSelectAggregateCommand* extSelect = static_cast<MgSelectAggregateCommand*>(m_command.p);
     extSelect->SetAlias(primaryAlias.c_str());
