@@ -945,7 +945,7 @@ catch ( Exception $e )
                 mapViewerDocumentElement = document.getElementById("mapViewerFrame").contentWindow.document.documentElement;
             }
 
-            if(mapViewerDocumentElement.innerHTML.indexOf("MapGuide Site Administrator - Login") > 1)
+            if(mapViewerDocumentElement.innerHTML.indexOf("Site Administrator - Login") > 1)
             {
                 if(mapViewerDocumentElement.innerHTML.indexOf("login.php") > 1)
                 {
@@ -1420,7 +1420,7 @@ catch ( Exception $e )
             if ((4 == xmlHttp.readyState || "complete" == xmlHttp.readyState)&& 200 == xmlHttp.status)
             {
                 //if the session is time out, the whole page should redirect to the login page
-                if(xmlHttp.responseText.indexOf("MapGuide Site Administrator - Login") > 1)
+                if(xmlHttp.responseText.indexOf("Site Administrator - Login") > 1)
                 {
                     if(xmlHttp.responseText.indexOf("login.php") > 1)
                         {

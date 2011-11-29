@@ -44,11 +44,15 @@
     //from mapviewerajax to mapviewerjava, and change the relative path to absolute path
     //which casues the cross-domain problem
     //now we check if we install the ajax java, then use the "mapviewerjava/ajaxviewer.jsp?" directly to avoid this problem
-    if(file_exists("../mapviewerjava/ajaxviewer.jsp"))
+    $os = (DIRECTORY_SEPARATOR=='\\') ? "winNT" : "linux";
+    //under the linux system, the mapviewerjava is always installed, so if someone is running apache + java on linux,
+    //the admin should manually change the line 51 as:
+    //if(file_exists("../mapviewerjava/ajaxviewer.jsp"))
+    if( ("winNT" == $os) && file_exists("../mapviewerjava/ajaxviewer.jsp"))
     {
         $ajaxViewerFolder = "mapviewerjava/ajaxviewer.jsp?";
     }
-    
+
     $webLayoutUrl="../".$ajaxViewerFolder."WEBLAYOUT=".urlencode($webLayoutName)."&LOCALE=en&SESSION=".$site->GetCurrentSession();
 
     header('Location:'. $webLayoutUrl);
