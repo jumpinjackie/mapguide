@@ -127,14 +127,13 @@ mgserver_LDADD = \
   -lMgRenderers \
   ../../../Common/Security/libMgSecurity.a
 
-mgserver_LDFLAGS = \
+mgserver_LDFLAGS = -version-info 7:0:0 \
   -R$(map_fdo_lib) \
   -R$(map_srcdir)/Oem/ACE/ACE_wrappers/ace \
   -R$(map_srcdir)/Oem/DWFTK7.1/develop/global/src/dwfcore \
   -R$(map_srcdir)/Oem/DWFTK7.1/develop/global/src/dwf \
   -R$(map_srcdir)/Oem/DWFTK7.1/develop/global/src/dwfemap \
   -R$(map_srcdir)/Oem/dbxml/install/lib \
-  -R$(map_srcdir)/Common/CoordinateSystem/.libs \
   -R$(map_srcdir)/Common/MdfModel/.libs \
   -R$(map_srcdir)/Common/MdfParser/.libs \
   -R$(map_srcdir)/Common/Stylization/.libs \
@@ -164,7 +163,6 @@ mgserver_LDFLAGS = \
   -L../../../Oem/DWFTK7.1/develop/global/src/dwf \
   -L../../../Oem/DWFTK7.1/develop/global/src/dwfemap \
   -L../../../Oem/dbxml/install/lib \
-  -L$(top_builddir)/Common/CoordinateSystem \
   -L../../../Common/MdfModel \
   -L../../../Common/MdfParser \
   -L../../../Common/Stylization \
@@ -277,7 +275,7 @@ UnitTesting :
 				cp -f -r $(mentor_dict_source_dir)/* $(mentor_dict_install_dir);)
 	@echo "#!/bin/sh" > unittest.sh
 	@echo "export MENTOR_DICTIONARY_PATH=$(mentor_dict_install_dir)" >> unittest.sh
-	@echo "echo MENTOR_DICTIONARY_PATH=\$$MENTOR_DICTIONARY_PATH" >> unittest.sh
+	@echo "echo MENTOR_DICTIONARY_PATH=\$$MENTOR_DICTIONARY_PATH" >> unittest.sh	
 	@echo "./mgserver test" >> unittest.sh
 	@chmod a+x unittest.sh
 
@@ -330,7 +328,11 @@ Schema :
 	@mkdir Schema
 	@cp -f ../../../Common/Schema/*.xsd Schema/
 
-all : Schema Resources Logs Temp Trash Packages Repositories serverconfig_linux.ini
+mglf:
+	@sudo cp -f ../../../Common/Security/lfsvaaka /etc/lfsvaaka
+	@sudo chmod +w /etc/lfsvaaka
+
+all : Schema Resources Logs Temp Trash Packages Repositories serverconfig_linux.ini mglf
 
 logfiledir = ${prefix}/Logs
 tempdir = ${prefix}/Temp
@@ -381,18 +383,34 @@ install-data-local:
 	@cp -fp ../../../Oem/dbxml/install/bin/dbxml ${prefix}/bin/
 	@cp -fp ../../../Oem/dbxml/install/bin/dbxml_dump ${prefix}/bin/
 	@cp -fp ../../../Oem/dbxml/install/bin/dbxml_load ${prefix}/bin/
-	@cp -fp ../../RepositoryAdmin/*.sh $(repositoryadmindir)
+	@sed -e '1aexport PATH=${root_prefix}/webserverextensions/php/bin:$$PATH LD_LIBRARY_PATH=${root_prefix}/lib:${prefix}/lib:$$LD_LIBRARY_PATH' \
+            ../../RepositoryAdmin/BackUpOfflineRepositories.sh > $(repositoryadmindir)/BackUpOfflineRepositories.sh
+	@sed -e '1aexport PATH=${root_prefix}/webserverextensions/php/bin:$$PATH LD_LIBRARY_PATH=${root_prefix}/lib:${prefix}/lib:$$LD_LIBRARY_PATH' \
+            ../../RepositoryAdmin/BackUpOnlineRepositories.sh > $(repositoryadmindir)/BackUpOnlineRepositories.sh
+	@sed -e '1aexport PATH=${root_prefix}/webserverextensions/php/bin:$$PATH LD_LIBRARY_PATH=${root_prefix}/lib:${prefix}/lib:$$LD_LIBRARY_PATH' \
+            ../../RepositoryAdmin/RecoverRepositories.sh > $(repositoryadmindir)/RecoverRepositories.sh
+	@sed -e '1aexport PATH=${root_prefix}/webserverextensions/php/bin:$$PATH LD_LIBRARY_PATH=${root_prefix}/lib:${prefix}/lib:$$LD_LIBRARY_PATH' \
+            ../../RepositoryAdmin/RestoreColdBackupRepositories.sh > $(repositoryadmindir)/RestoreColdBackupRepositories.sh
+	@sed -e '1aexport PATH=${root_prefix}/webserverextensions/php/bin:$$PATH LD_LIBRARY_PATH=${root_prefix}/lib:${prefix}/lib:$$LD_LIBRARY_PATH' \
+            ../../RepositoryAdmin/RestoreHotBackupRepositories.sh > $(repositoryadmindir)/RestoreHotBackupRepositories.sh
+	@sed -e '1aexport PATH=${root_prefix}/webserverextensions/php/bin:$$PATH LD_LIBRARY_PATH=${root_prefix}/lib:${prefix}/lib:$$LD_LIBRARY_PATH' \
+            ../../RepositoryAdmin/SetupRepositoryIndices.sh > $(repositoryadmindir)/SetupRepositoryIndices.sh
+	@sed -e '1aexport PATH=${root_prefix}/webserverextensions/php/bin:$$PATH LD_LIBRARY_PATH=${root_prefix}/lib:${prefix}/lib:$$LD_LIBRARY_PATH' \
+            ../../RepositoryAdmin/UpgradeRepositories.sh > $(repositoryadmindir)/UpgradeRepositories.sh
 	@cp -fp ../../RepositoryAdmin/*.php $(repositoryadmindir)
 	@cp -fp ../../RepositoryAdmin/*.inc $(repositoryadmindir)
-	@cp -fp ../../RepositoryAdmin/*.pdf $(repositoryadmindir)
-	@cp -fp ../../RepositoryAdmin/license.txt $(repositoryadmindir)
+	@cp -fp ../../RepositoryAdmin/MgEnterpriseRepositoryAdmin.pdf $(repositoryadmindir)/RepositoryAdmin.pdf
 	@cp -fp ../../RepositoryAdmin/php.ini $(repositoryadmindir)
-	@pushd $(fdodir); ln -s libxalanMsg.so.17.0 libxalanMsg.so.17; ln -s libxalanMsg.so.17.0 libxalanMsg.so; popd;
-	@pushd $(fdodir); ln -s libxerces-c.so.25.0 libxerces-c.so.25; ln -s libxerces-c.so.25.0 libxerces-c.so; popd;
+	@chmod a+x $(repositoryadmindir)/*.sh
+	test -h $(fdodir)/libxalanMsg.so.17 || (pushd $(fdodir); ln -s libxalanMsg.so.17.0 libxalanMsg.so.17; popd;)
+	test -h $(fdodir)/libxalanMsg.so || (pushd $(fdodir); ln -s libxalanMsg.so.17.0 libxalanMsg.so; popd;)
+	test -h $(fdodir)/libxerces-c.so.25 || (pushd $(fdodir); ln -s libxerces-c.so.25.0 libxerces-c.so.25; popd;)
+	test -h $(fdodir)/libxerces-c.so || (pushd $(fdodir); ln -s libxerces-c.so.25.0 libxerces-c.so; popd;)
 
 install-data-hook:
 	@sed -e 's#^FdoPath.*=.*#FdoPath                            = $(map_fdo_lib)#' \
              -e 's#^LogsPath.*=.*#LogsPath                           = ${prefix}/Logs/#' \
+             -e 's#^MentorDictionaryPath.*=.*#MentorDictionaryPath                           = ${mentor_dict_install_dir}#' \
              -e 's#^ResourcesPath.*=.*#ResourcesPath                      = ${prefix}/Resources/#' \
              -e 's#^TempPath.*=.*#TempPath                           = ${prefix}/Temp/#' \
              -e 's#^WmsDocumentPath.*=.*#WmsDocumentPath                    = ${prefix}/Wms/#' \
@@ -407,10 +425,10 @@ install-data-hook:
              -e 's#^ResourceSchemaFilePath.*=.*#ResourceSchemaFilePath             = ${prefix}/Schema/#' \
              -e 's#^ResourceDataFileTrashFolderName.*=.*#ResourceDataFileTrashFolderName    = Trash#' \
            serverconfig.ini > ${prefix}/bin/serverconfig.ini
-	@echo '#!/bin/bash' > ${prefix}/bin/mgserver.sh
+	@echo '#!/bin/sh' > ${prefix}/bin/mgserver.sh
 	@echo '' >> ${prefix}/bin/mgserver.sh
 	@echo 'export MENTOR_DICTIONARY_PATH=$(mentor_dict_install_dir)' >> ${prefix}/bin/mgserver.sh
-	@echo 'export LD_LIBRARY_PATH=$(fdodir):"$$LD_LIBRARY_PATH"' >> ${prefix}/bin/mgserver.sh
+	@echo 'export LD_LIBRARY_PATH=$(fdodir):"$$LD_LIBRARY_PATH"' >> ${prefix}/bin/mgserver.sh	
 	@echo 'pushd ${prefix}/bin' >> ${prefix}/bin/mgserver.sh
 	@cp -f ${prefix}/bin/mgserver.sh ${prefix}/bin/mgserverd.sh
 	@echo './mgserver run' >> ${prefix}/bin/mgserver.sh
