@@ -393,6 +393,7 @@ install-data-local:
 install-data-hook:
 	@sed -e 's#^FdoPath.*=.*#FdoPath                            = $(map_fdo_lib)#' \
              -e 's#^LogsPath.*=.*#LogsPath                           = ${prefix}/Logs/#' \
+             -e 's#^MentorDictionaryPath.*=.*#MentorDictionaryPath   = ${mentor_dict_install_dir}#' \
              -e 's#^ResourcesPath.*=.*#ResourcesPath                      = ${prefix}/Resources/#' \
              -e 's#^TempPath.*=.*#TempPath                           = ${prefix}/Temp/#' \
              -e 's#^WmsDocumentPath.*=.*#WmsDocumentPath                    = ${prefix}/Wms/#' \
