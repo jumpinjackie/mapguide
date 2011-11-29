@@ -30,7 +30,7 @@ try
     {
         $layerCollection = $map->GetLayers();
         $n = 0;
-        $bLayers;
+        $bLayers = array();
         for ($i = 0; $i < $layerCollection->GetCount(); $i++)
         {
              $layer = $layerCollection->GetItem($i);
