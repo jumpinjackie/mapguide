@@ -103,19 +103,28 @@
                         $dataReader = $featureSrvc->SelectAggregate($featuresId, $featureName, $query);
                         if ($dataReader->ReadNext())
                         {
-                            $ptype = $dataReader->GetPropertyType("TotalCount");
-                            switch ($ptype)
+                            // When there is no data, the property will be null.
+                            if($dataReader->IsNull("TotalCount"))
                             {
-                                case MgPropertyType::Int32:
-                                    $totalEntries = $dataReader->GetInt32("TotalCount");
-                                    $gotCount = true;
-                                    break;
-                                case MgPropertyType::Int64:
-                                    $totalEntries = $dataReader->GetInt64("TotalCount");
-                                    $gotCount = true;
-                                    break;
+                                $totalEntries = 0;
+                                $gotCount = true;
                             }
-                            $dataReader->Close();
+                            else
+                            {
+                                $ptype = $dataReader->GetPropertyType("TotalCount");
+                                switch ($ptype)
+                                {
+                                    case MgPropertyType::Int32:
+                                        $totalEntries = $dataReader->GetInt32("TotalCount");
+                                        $gotCount = true;
+                                        break;
+                                    case MgPropertyType::Int64:
+                                        $totalEntries = $dataReader->GetInt64("TotalCount");
+                                        $gotCount = true;
+                                        break;
+                                }
+                                $dataReader->Close();
+                            }
                         }
                     }
                 }
