@@ -109,10 +109,12 @@ try
 
     int taskPaneWidth = taskPane.GetWidth();
     int toolbarHeight = 30;
+    int taskBarHeight = 30;
     int statusbarHeight = 26;
 
     taskPaneWidth = showTaskPane? taskPaneWidth: 0;
     toolbarHeight = showToolbar? toolbarHeight: 0;
+    taskBarHeight = showTaskBar ? taskBarHeight : 0;
     statusbarHeight = showStatusbar? statusbarHeight: 0;
 
     //Encode the initial url so that it does not trip any sub-frames (especially if this url has parameters)
@@ -436,7 +438,7 @@ try
                         webLayout.IsZoomControlVisible()? "1": "0",
                         sessionParam,
                         vpath + "formframe.jsp",
-                        String.valueOf(toolbarHeight),
+                        String.valueOf(taskBarHeight),
                         srcTaskBar,
                         srcTaskFrame,
                         srcStatusbar

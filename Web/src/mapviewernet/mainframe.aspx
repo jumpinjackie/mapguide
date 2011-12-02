@@ -108,10 +108,12 @@ NameValueCollection cmds = null;
 
         int taskPaneWidth = taskPane.GetWidth();
         int toolbarHeight = 30;
+        int taskBarHeight = 30;
         int statusbarHeight = 26;
 
         int taskWidth = showTaskPane ? taskPaneWidth : 0;
         toolbarHeight = showToolbar ? toolbarHeight : 0;
+        taskBarHeight = showTaskBar ? taskBarHeight : 0;
         statusbarHeight = showStatusbar ? statusbarHeight : 0;
 
         //Encode the initial url so that it does not trip any sub-frames (especially if this url has parameters)
@@ -440,7 +442,7 @@ NameValueCollection cmds = null;
                         webLayout.IsZoomControlVisible()? "1": "0",
                         sessionParam,
                         vpath + "formframe.aspx",
-                        toolbarHeight.ToString(NumberFormatInfo.InvariantInfo),
+                        taskBarHeight.ToString(NumberFormatInfo.InvariantInfo),
                         srcTaskBar,
                         srcTaskFrame,
                         srcStatusbar

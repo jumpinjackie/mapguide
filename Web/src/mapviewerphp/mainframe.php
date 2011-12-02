@@ -126,10 +126,12 @@ function BuildViewer($forDwf = true)
 
         $taskPaneWidth = $taskPane->GetWidth();
         $toolbarHeight = 30;
+        $taskbarHeight = 30;
         $statusbarHeight = 26;
 
         $taskWidth = $showTaskPane? $taskPaneWidth: 0;
         $toolbarHeight = $showToolbar? $toolbarHeight: 0;
+        $taskbarHeight = $showTaskBar ? $taskbarHeight : 0;
         $statusbarHeight = $showStatusbar? $statusbarHeight: 0;
 
         //Encode the initial url so that it does not trip any sub-frames (especially if this url has parameters)
@@ -442,7 +444,7 @@ function BuildViewer($forDwf = true)
                                     $webLayout->IsZoomControlVisible()? 1: 0,
                                     $sessionParam,
                                     $vpath . "formframe.php",
-                                    $toolbarHeight+1, $srcTaskBar,
+                                    $taskbarHeight+1, $srcTaskBar,
                                     $srcTaskFrame,
                                     $srcStatusbar);
         }
