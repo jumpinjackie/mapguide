@@ -290,6 +290,7 @@ catch ( Exception $e )
             border-left: 1px solid #666666;
             z-index: 100;
             line-height: 1.0;
+            word-wrap:break-word;
             white-space: normal;
             font-weight: normal;
         }
@@ -352,7 +353,7 @@ catch ( Exception $e )
         #ResultNotMatchWrn
         {
             border: 2px solid #CCCCCC;
-            background: #FFFEBB url('images/warning.png') no-repeat left top;
+            background: #FFFEBB url('images/warning.png') scroll no-repeat 2px 2px;
             margin-top: 25px;
             padding-left: 30px;
             display: none;
@@ -362,7 +363,7 @@ catch ( Exception $e )
         .errorMessage
         {
             border: 2px solid #CCCCCC;
-            background: #FFFEBB url('images/warning.png') no-repeat 1px 1px;
+            background: #FFFEBB url('images/warning.png') scroll no-repeat 2px 2px;
             margin-top: 20px;
             padding: 4px 5px 5px 32px;
             width: auto;
@@ -592,6 +593,13 @@ catch ( Exception $e )
             var settingsBtn = document.getElementById("mapViewerBtn");
             var centerPoint = document.getElementById("txtCenterPoint");
             var scale = document.getElementById("txtScale");
+            
+            //for IE
+            if(centerPoint.detachEvent)
+            {
+                centerPoint.detachEvent("onpropertychange",CenterPointPropertyChange);
+                scale.detachEvent("onpropertychange",ScalePropertyChange);
+            }
 
             //If another map is selected, then the center point and scale should be cleared of values,
             //that is return to default values “enter center point”  and “enter scale”.
@@ -603,6 +611,13 @@ catch ( Exception $e )
             if(scale.value != "Enter scale")
             {
                 scale.value = "Enter scale";
+            }
+
+            //for IE
+            if(centerPoint.attachEvent)
+            {
+               centerPoint.attachEvent("onpropertychange",CenterPointPropertyChange);
+               scale.attachEvent("onpropertychange",ScalePropertyChange);
             }
 
             //show the map definition ID by the side of the map selector
@@ -645,10 +660,10 @@ catch ( Exception $e )
         function ClearWrnMsg()
         {
             var scale = document.getElementById("txtScale");
-            scale.className="";
+            scale.style.borderColor = "";
 
             var centerPoint = document.getElementById("txtCenterPoint");
-            centerPoint.className="";
+            centerPoint.style.borderColor =  "";
 
             var scaleWarnMsg = document.getElementById("scaleWarnMessage");
             scaleWarnMsg.innerHTML = "";
@@ -666,11 +681,17 @@ catch ( Exception $e )
             var scaleWarnMsg = document.getElementById("scaleWarnMessage");
             var scaleValue = RemoveSpace(scale.value);
 
+            //for IE
+            if(scale.detachEvent)
+            {
+                scale.detachEvent("onpropertychange",ScalePropertyChange);
+            }
+
             if("" == scaleValue)
             {
                 result = false;
                 scaleWarnMsg.innerHTML = "A map scale was not entered.";
-                scale.className="warnMsgStyle";
+                scale.style.borderColor = "red";
             }
             else
             {
@@ -692,7 +713,7 @@ catch ( Exception $e )
                 if(!result)
                 {
                     scaleWarnMsg.innerHTML = "Not a valid map scale.";
-                    scale.className = "warnMsgStyle";
+                    scale.style.borderColor = "red";
                 }
                 else
                 {
@@ -702,8 +723,14 @@ catch ( Exception $e )
                     }
 
                     scaleWarnMsg.innerHTML = "";
-                    scale.className="";
+                    scale.style.borderColor = "";
                 }
+            }
+            
+            //for IE
+            if(scale.attachEvent)
+            {
+                scale.attachEvent("onpropertychange",ScalePropertyChange);
             }
 
             return result;
@@ -718,11 +745,17 @@ catch ( Exception $e )
             var centerPointWarnMsg = document.getElementById("centerPointWarnMessage");
             var centerPointValue = RemoveSpace(centerPoint.value);
 
+            //for IE
+            if(centerPoint.detachEvent)
+            {
+                centerPoint.detachEvent("onpropertychange",CenterPointPropertyChange);
+            }
+
             if("" == centerPointValue)
             {
                 result = false;
                 centerPointWarnMsg.innerHTML = "A center point was not entered.";
-                centerPoint.className = "warnMsgStyle";
+                centerPoint.style.borderColor = "red";
             }
             else
             {
@@ -733,7 +766,7 @@ catch ( Exception $e )
                     {
                         result = false;
                         centerPointWarnMsg.innerHTML = "Not a valid center point.";
-                        centerPoint.className = "warnMsgStyle";
+                        centerPoint.style.borderColor = "red";
                     }
                     else
                     {
@@ -745,7 +778,7 @@ catch ( Exception $e )
                         if(!result)
                         {
                             centerPointWarnMsg.innerHTML = "Not a valid center point.";
-                            centerPoint.className="warnMsgStyle";
+                            centerPoint.style.borderColor = "red";
                         }
                         else
                         {
@@ -755,7 +788,7 @@ catch ( Exception $e )
                             }
 
                             centerPointWarnMsg.innerHTML = "";
-                            centerPoint.className = "";
+                            centerPoint.style.borderColor = "";
                         }
                     }
                 }
@@ -763,14 +796,64 @@ catch ( Exception $e )
                 {
                     result = false;
                     centerPointWarnMsg.innerHTML = "Not a valid center point.";
-                    centerPoint.className = "warnMsgStyle";
+                    centerPoint.style.borderColor = "red";
                 }
+            }
+
+            //for IE
+            if(centerPoint.attachEvent)
+            {
+                centerPoint.attachEvent("onpropertychange",CenterPointPropertyChange);
             }
 
             return result;
         }
 
-        function ScaleTxtKeyUp()
+        function InitialEvents()
+        {
+            var centerPointEl = document.getElementById("txtCenterPoint");
+            var scaleEl = document.getElementById("txtScale");
+
+            //for browsers which support addEventListener, add event handler
+            //for input, include the FF, Chrome, Safari
+            if (centerPointEl.addEventListener)
+            {
+                centerPointEl.addEventListener("input", CenterPointTxtChange, false);
+                scaleEl.addEventListener("input", ScaleTxtChange, false);
+            }
+            else if(centerPointEl.attachEvent)
+            {
+                //For IE, use attachEvent to add event hanlder for onpropertychange
+                centerPointEl.attachEvent("onpropertychange",CenterPointPropertyChange);
+                scaleEl.attachEvent("onpropertychange",ScalePropertyChange);
+            }
+            else
+            {
+                //For browers, which don't support both, use onkeup event
+                centerPointEl.onkeyup = CenterPointTxtChange;
+                scaleEl.onkeyup = ScaleTxtChange;
+            }
+        }
+
+        //For IE
+        function ScalePropertyChange(e)
+        {
+            if("value" == e.propertyName)
+            {
+                ScaleTxtChange();
+            }
+        }
+
+        //For IE
+        function CenterPointPropertyChange(e)
+        {
+            if("value" == e.propertyName)
+            {
+                CenterPointTxtChange();
+            }
+        }
+
+        function ScaleTxtChange()
         {
             //when the scale textbox has new input
             //get the new value and check if the input is resonable
@@ -796,9 +879,11 @@ catch ( Exception $e )
             ShowReportWarningMsg();
         }
 
-        function CenterPointTxtKeyUp()
+        function CenterPointTxtChange()
         {
-            var visible=ValidateCenterPoint(false);
+            //when the center point textbox has new input
+            //get the new value and check if the input is resonable
+            var visible = ValidateCenterPoint(false);
 
             //check other settings to see if it is reasonable
             if(visible)
@@ -810,7 +895,7 @@ catch ( Exception $e )
                 }
                 else
                 {
-                    visible=false;
+                    visible = false;
                 }
             }
 
@@ -824,9 +909,21 @@ catch ( Exception $e )
         {
             var scale = document.getElementById("txtScale");
 
+            //for IE
+            if(scale.detachEvent)
+            {
+                scale.detachEvent("onpropertychange",ScalePropertyChange);
+            }
+
             if( scale.value=="Enter scale")
             {
                 scale.value="";
+            }
+
+            //for IE
+            if(scale.attachEvent)
+            {
+               scale.attachEvent("onpropertychange",ScalePropertyChange);
             }
         }
 
@@ -834,9 +931,21 @@ catch ( Exception $e )
         {
             var centerPoint = document.getElementById("txtCenterPoint");
 
+            //for IE
+            if(centerPoint.detachEvent)
+            {
+                centerPoint.detachEvent("onpropertychange",CenterPointPropertyChange);
+            }
+
             if( centerPoint.value=="Enter center point")
             {
                 centerPoint.value="";
+            }
+
+            //for IE
+            if(centerPoint.attachEvent)
+            {
+               centerPoint.attachEvent("onpropertychange",CenterPointPropertyChange);
             }
         }
 
@@ -1050,11 +1159,27 @@ catch ( Exception $e )
            var scale = mapFrame.GetScale();
 
            var centerPoint = document.getElementById("txtCenterPoint");
+           if(centerPoint.detachEvent)
+           {
+                centerPoint.detachEvent("onpropertychange",CenterPointPropertyChange);
+           }
            centerPoint.value = center.X + "*" + center.Y;
+           if(centerPoint.attachEvent)
+           {
+                centerPoint.attachEvent("onpropertychange",CenterPointPropertyChange);
+           }
            var centerPointValidate = ValidateCenterPoint(true);
 
            var scaleInput = document.getElementById("txtScale");
+           if(scaleInput.detachEvent)
+           {
+               scaleInput.detachEvent("onpropertychange",ScalePropertyChange);
+           }
            scaleInput.value = scale;
+           if(scaleInput.attachEvent)
+           {
+               scaleInput.attachEvent("onpropertychange",ScalePropertyChange);
+           }
            var scaleValidate = ValidateScale(true);
 
            var visible = centerPointValidate && scaleValidate;
@@ -1316,6 +1441,30 @@ catch ( Exception $e )
             //set tooltip position
             toolTip.style.top = elPos.y + linkObj.offsetHeight+ downMouseTop+ "px";
             toolTip.style.left = mosPos.x + downMouseLeft + "px";
+
+            var bodyWidth = document.body.clientWidth;
+            //clientWidth is different among different browsers,
+            //The IE is shorter than others, so to avoid the tooltip length exceeds the border
+            //we add a fix here
+            if(window.addEventListener)
+            {
+                bodyWidth -= 12;
+            }
+            var toolTipWidth = Math.abs(bodyWidth - (mosPos.x + downMouseLeft));
+            toolTipWidth = toolTipWidth > 280?280:toolTipWidth;
+
+            //in IE9, if we don't set the width, and the tooltip is near the browser border,
+            //it will break the string to many lines if the string contains white spaces
+            //for example, Library://Samples/Sheboygan/Maps/Test a map with many white space.MapDefinition
+            //this will be display like this:
+            //Library://Samples/Sheboygan/Maps/Test
+            //a
+            //map
+            //with
+            //many
+            //white
+            //space.MapDefinition
+            toolTip.style.width = toolTipWidth + "px";
             
             toolTip.style.display = "block";
             toolTip.className = "showTooltip";
@@ -1679,7 +1828,7 @@ catch ( Exception $e )
         //Note: when use document.getElementById, make sure the variable name is not the same with the "ID"
         //like this: layerInfoDetail =document.getElementById("layerInfoDetail");
         //it will cause problem under IE9 quirks mode, layerInfoDetail is already a built-in object of the document.
-        //two way to solve this problem
+        //two ways to solve this problem
         //1) make the variable name different with the "ID", layerDetail =document.getElementById("layerInfoDetail");
         //2) add "var" before the varibale name, var layerInfoDetail =document.getElementById("layerInfoDetail");
         function DisplayLayerDetail(layerDetail)
@@ -1689,7 +1838,7 @@ catch ( Exception $e )
 
             if( "" != Trim(layerDetail[3]) )
             {
-                layerDetailContent += '<div style="padding: 10px; background-color:#FFFEBB;">';
+                layerDetailContent += '<div style="padding: 10px; background-color:#FFFEBB;word-wrap:break-word;">';
                 layerDetailContent += "<span style='font-weight:bold;'>Details</span>";
                 layerDetailContent += "<br/><br/>";
                 layerDetailContent += layerDetail[3];
@@ -1711,7 +1860,7 @@ catch ( Exception $e )
             }
 
             layerDetailContent += "</div>";
-            layerDetailContent += '<div style=" background-color: #EEEEEE;padding: 10px;">';
+            layerDetailContent += '<div style=" background-color: #EEEEEE;padding: 10px;word-wrap:break-word;">';
             layerDetailContent += "<span style='font-weight:bold;'>Scale Range</span>";
             layerDetailContent += "<br/><br/>";
             layerDetailContent += layerDetail[2];
@@ -1885,42 +2034,48 @@ catch ( Exception $e )
             {
                 // gets the text we want to use for sorting for a cell.
                 // strips leading and trailing whitespace.
-
-                if (node.getAttribute("sortKey") != null)
+                try
                 {
-                    return node.getAttribute("sortKey");
-                }
-                else if (typeof node.textContent != 'undefined')
-                {
-                    return node.textContent.replace(/^\s+|\s+$/g, '');
-                }
-                else if (typeof node.innerText != 'undefined')
-                {
-                    return node.innerText.replace(/^\s+|\s+$/g, '');
-                }
-                else if (typeof node.text != 'undefined')
-                {
-                    return node.text.replace(/^\s+|\s+$/g, '');
-                }
-                else
-                {
-                    switch (node.nodeType)
+                    if (node.getAttribute("sortKey") != null)
                     {
-                        case 4:
-                            return node.nodeValue.replace(/^\s+|\s+$/g, '');
-                            break;
-                        case 1:
-                        case 11:
-                            var innerText = '';
-                            var i = 0;
-                            for (; i < node.childNodes.length; i++) {
-                                innerText += SortLayers.getInnerText(node.childNodes[i]);
-                            }
-                            return innerText.replace(/^\s+|\s+$/g, '');
-                            break;
-                        default:
-                            return '';
+                        return node.getAttribute("sortKey");
                     }
+                    else if (typeof node.textContent != 'undefined')
+                    {
+                        return node.textContent.replace(/^\s+|\s+$/g, '');
+                    }
+                    else if (typeof node.innerText != 'undefined')
+                    {
+                        return node.innerText.replace(/^\s+|\s+$/g, '');
+                    }
+                    else if (typeof node.text != 'undefined')
+                    {
+                        return node.text.replace(/^\s+|\s+$/g, '');
+                    }
+                    else
+                    {
+                        switch (node.nodeType)
+                        {
+                            case 4:
+                                return node.nodeValue.replace(/^\s+|\s+$/g, '');
+                                break;
+                            case 1:
+                            case 11:
+                                var innerText = '';
+                                var i = 0;
+                                for (; i < node.childNodes.length; i++) {
+                                    innerText += SortLayers.getInnerText(node.childNodes[i]);
+                                }
+                                return innerText.replace(/^\s+|\s+$/g, '');
+                                break;
+                            default:
+                                return '';
+                        }
+                    }
+                }
+                catch(e)
+                {
+                    return '';
                 }
             },
 
@@ -1993,6 +2148,9 @@ catch ( Exception $e )
             }
 
             SetSettingsWithCookie();
+            //register the events handler for the center point textbox and scale textbox
+            //input change
+            InitialEvents();
         }
 
         function SetSettingsWithCookie()
@@ -2063,11 +2221,29 @@ catch ( Exception $e )
                 }
 
                 var centerPoint = document.getElementById("txtCenterPoint");
+                if(centerPoint.detachEvent)
+                {
+                    centerPoint.detachEvent("onpropertychange",CenterPointPropertyChange);
+                }
                 centerPoint.value = selectSetting[2];
+                if(centerPoint.attachEvent)
+                {
+                    centerPoint.attachEvent("onpropertychange",CenterPointPropertyChange);
+                }
+
                 ValidateCenterPoint(false);
 
                 var scaleInput = document.getElementById("txtScale");
+                if(scaleInput.detachEvent)
+                {
+                    scaleInput.detachEvent("onpropertychange",ScalePropertyChange);
+                }
                 scaleInput.value = FormatNumber(selectSetting[3],4);
+                if(scaleInput.attachEvent)
+                {
+                    scaleInput.attachEvent("onpropertychange",ScalePropertyChange);
+                }
+
                 ValidateScale(false);
 
                 var tipDiv = document.getElementById("mapResourceNameTip");
@@ -2228,7 +2404,7 @@ catch ( Exception $e )
                                                                 Center Point
                                                             </div>
                                                             <input type="textbox" name="txtCenterPoint" id="txtCenterPoint" style="width:220px;"
-                                                                   onFocus="CenterPointFocus();" onKeyUp="CenterPointTxtKeyUp();" value="Enter center point" disabled="disabled"/>
+                                                                   onFocus="CenterPointFocus();" value="Enter center point" disabled="disabled"/>
                                                         </td>
                                                         <td style="padding:5px; width: 60%">
                                                             <div style=" margin-bottom: 5px; font-weight: bold;">
@@ -2236,11 +2412,11 @@ catch ( Exception $e )
                                                             </div>
                                                             <label for="txtScale">1: &nbsp;&nbsp;</label>
                                                             <input type="textbox" name="txtScale" id="txtScale" onFocus="ScaleFocus();"
-                                                                   onKeyUp="ScaleTxtKeyUp();" value="Enter scale" disabled="disabled"/>
+                                                                   value="Enter scale" disabled="disabled"/>
                                                         </td>
                                                     </tr>
                                                     <tr>
-                                                        <td>
+                                                        <td style="height:18px;">
                                                             <span id="centerPointWarnMessage" style="color: #F03136; padding-left: 5px;">
                                                             </span>
                                                         </td>
