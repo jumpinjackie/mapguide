@@ -653,7 +653,10 @@ function BuildGroupInfo()
 {
     if(!hasTiles)
         return;
-    visGroups = GetLegendCtrl().GetBaseGroups(true);
+    for(var gr in visBaseGroups.items){
+      visBaseGroups.removeItem(gr);
+    }
+    visGroups = GetLegendCtrl().GetBaseGroups(true,curScale);
     for(var i=0; i < visGroups.length; i++)
         visBaseGroups.setItem(visGroups[i], i);
 }
