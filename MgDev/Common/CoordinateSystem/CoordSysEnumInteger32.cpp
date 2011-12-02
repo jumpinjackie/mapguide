@@ -34,6 +34,13 @@ CCoordinateSystemEnumInteger32::CCoordinateSystemEnumInteger32() :
 
 CCoordinateSystemEnumInteger32::~CCoordinateSystemEnumInteger32()
 {
+    this->ClearFilter();
+
+    delete[] this->m_pnValues;
+    this->m_pnValues = NULL;
+
+    this->m_ulSize = 0;
+    this->m_ulPos = 0;
 }
 
 //MgDisposable
