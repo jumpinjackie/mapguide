@@ -1087,7 +1087,24 @@ function DoGetLayers(nodes, layers, onlyVisible, onlySelectable)
     }
 }
 
-function GetBaseGroups(visOnly)
+function IsBaseGroupLayersVisible(baseGroup,scale)
+{
+  for(var i=0; i < baseGroup.children.length; i++)
+  {
+    var layerTree = baseGroup.children[i];
+    for( var j=0; j < layerTree.children.length;j++ )
+    {
+      var style = layerTree.children[j];
+      if(scale >= style.min && scale <= style.max)
+      {
+        return true;
+      }
+    }
+  }
+  return false;
+}
+
+function GetBaseGroups(visOnly,scale)
 {
     if(tree == null)
         return null;
@@ -1099,6 +1116,8 @@ function GetBaseGroups(visOnly)
             if(tree[i].base)
             {
                 if(visOnly && !tree[i].visible)
+                    continue;
+                if(scale && visOnly && !IsBaseGroupLayersVisible(tree[i],scale))
                     continue;
                 groups.push(tree[i].name);
             }
