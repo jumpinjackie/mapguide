@@ -142,13 +142,14 @@
 <H3><A name="legendpalette">Legend palette methods</A></H3>
 
   <DL>
-    <DT><STRONG><A name="legendpalette_getbasegroups">GetBaseGroups(onlyVisible)</A></STRONG></DT>
+    <DT><STRONG><A name="legendpalette_getbasegroups">GetBaseGroups(onlyVisible, scale)</A></STRONG></DT>
       <DD>
       Returns a list of the names of the base groups that meet the specified filtering criteria.
 
       <P>
       <STRONG>Parameters:</STRONG><BR>
-      <CODE>onlyVisible</CODE> - set to <CODE>true</CODE> to return only visible base groups; set to <CODE>false</CODE> to ignore base-group visibility.
+      <CODE>onlyVisible</CODE> - set to <CODE>true</CODE> to return only visible base groups; set to <CODE>false</CODE> to ignore base-group visibility.<BR>
+      <CODE>scale</CODE> - set to the desired scale which to filter such visible groups at. Does nothing if <CODE>onlyVisible</CODE> is set to <CODE>false</CODE>
       </P>
 
       </DD>
