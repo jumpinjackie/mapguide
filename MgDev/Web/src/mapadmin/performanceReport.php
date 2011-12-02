@@ -959,6 +959,11 @@ catch ( Exception $e )
                 mapFrame.src = "performanceReport_MapViewer.php?mapDefinition=" + mapDefinitonSelector.options[mapDefinitonSelector.selectedIndex].value;
             }
 
+            //when open the dialogue, scroll to the top
+            window.scrollTo(0,0);
+            //disable the scroll bar
+            document.body.style.overflow = "hidden";
+
             var bgDiv = document.getElementById("bgDiv");
             var mapViewerDiv = document.getElementById("mapViewerDialog");
 
@@ -993,8 +998,13 @@ catch ( Exception $e )
 
         function SetBgDivSize(bgDiv)
         {
-            bgDiv.style.height = document.body.offsetHeight+"px";
-            bgDiv.style.width = document.body.offsetWidth+"px";
+           //different browsers explain the offsetHeight, clientWidth differently,
+           //so we add a spacing to the height and width
+           //because the overflow of the body will be set as "hidden"
+           //so the exceed part will not be displayed and ensure the bgDiv will conver the whole webpage
+           var spacing = 32;
+           bgDiv.style.height = document.body.offsetHeight + spacing + "px";
+           bgDiv.style.width = document.body.offsetWidth + spacing + "px";
         }
 
         //default map viewer width and height
@@ -1101,6 +1111,10 @@ catch ( Exception $e )
             //will get the old page's frame and then the buttons will not be displayed in new page
             var mapFrame = document.getElementById("mapViewerFrame");
             mapFrame.src="";
+
+            //set the overflow to "auto", so after close the dialogue
+            //the page will back to normal
+            document.body.style.overflow = "auto";
         }
 
         var messageShorterInterval = null;
