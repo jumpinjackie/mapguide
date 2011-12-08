@@ -50,6 +50,8 @@ Characteristics of an ePlot DWF:
    single: Rendering Service
    single: MgRenderingService
 
+.. _rendering-service:
+
 Rendering Service
 -----------------
 

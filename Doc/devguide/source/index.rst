@@ -23,11 +23,10 @@ Contents
    analyzing_features
    digitizing_and_redlining
    custom_output
-   openlayers
    fusion
    mapagent
-   maestroapi
    mapguide_advanced
+   supplemental_development
    mapguide_cookbook
 
 Indices and tables
