@@ -107,6 +107,8 @@ uses the hidden ``scriptFrame`` so the page output is not visible.
     single: Redlining; Creating a Feature Source
     single: Feature Source; Creating
 
+.. _create-feature-source:
+
 Creating a Feature Source
 ^^^^^^^^^^^^^^^^^^^^^^^^^
 
