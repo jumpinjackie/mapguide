@@ -23,7 +23,12 @@
 
 #include "stdafx.h"
 #include "GwsQueryEngineImp.h"
+#include <SDF/SdfCommandType.h>
+#include <SHP/ShpCommandType.h>
 
+//Uncomment to see what join algorithm is used for the join operation
+//
+//#define DEBUG_FEATURE_JOIN
 
 /////////////////////////////////////////////////////////////////////
 //
@@ -31,14 +36,33 @@
 //
 /////////////////////////////////////////////////////////////////////
 
-static bool supportOrdering (FdoIConnection * conn)
+static bool supportOrdering (FdoIConnection * conn, bool bSingleJoinProperty)
 {
     FdoPtr<FdoICommandCapabilities> ptrCap;
     ptrCap = conn->GetCommandCapabilities();
     assert (ptrCap);
     if (ptrCap == NULL)
         return false;
-    return ptrCap->SupportsSelectOrdering();
+
+    //Even if standard select ordering is not supported, we can still 
+    //sort if the join is on a single property and the extended select
+    //command is supported
+    FdoInt32 size = 0;
+    FdoInt32* pTypes = ptrCap->GetCommands(size);
+    bool bSupportsExtendedSelect = false;
+    for(int i = 0; i < size; i++ )
+    {
+        if( pTypes[i] == SdfCommandType_ExtendedSelect || 
+            pTypes[i] == ShpCommandType_ExtendedSelect || 
+            pTypes[i] == FdoCommandType_ExtendedSelect)
+        {
+            bSupportsExtendedSelect = true;
+            break;
+        }
+    }
+
+    return ptrCap->SupportsSelectOrdering() ||
+        (bSupportsExtendedSelect && bSingleJoinProperty);
 }
 
 
@@ -322,7 +346,7 @@ CGwsPreparedJoinQuery * CGwsFeatureSourceQuery::PrepareJoinQuery (
             FdoPtr<FdoIConnection>  conn =
                         m_connectionpool->GetConnection (
                                                 lfqdef->ClassName ().FeatureSource ());
-            lSupportsOrdering = supportOrdering (conn);
+            lSupportsOrdering = supportOrdering (conn, lCols->GetCount() == 1);
             pLeftQuery = PrepareFeatureQuery (
                 lfqdef, lSupportsOrdering ? lCols.p : NULL, lfqdef->GetOrderingOption(), subsuffix);
 
@@ -356,7 +380,7 @@ CGwsPreparedJoinQuery * CGwsFeatureSourceQuery::PrepareJoinQuery (
             FdoPtr<FdoIConnection>  conn =
                         m_connectionpool->GetConnection (
                                                 rfqdef->ClassName ().FeatureSource ());
-            rSupportsOrdering = supportOrdering (conn);
+            rSupportsOrdering = supportOrdering (conn, rCols->GetCount() == 1);
 
             pRightQuery = PrepareFeatureQuery (rfqdef,
                                             rSupportsOrdering ? rCols.p : NULL,
@@ -421,6 +445,23 @@ CGwsPreparedJoinQuery * CGwsFeatureSourceQuery::PrepareJoinQuery (
                 joinmethod = eGwsNestedLoops;
             }
         }
+
+#ifdef DEBUG_FEATURE_JOIN
+        std::string sJoinType;
+        if (joinmethod == eGwsNestedLoops)
+            sJoinType = "eGwsNestedLoops";
+        else if (joinmethod == eGwsSortMerge)
+            sJoinType = "eGwsSortMerge";
+        else if (joinmethod == eGwsNestedLoopSortedBlock)
+            sJoinType = "eGwsNestedLoopSortedBlock";
+        else if (joinmethod == eGwsBatchSortedBlock)
+            sJoinType = "eGwsBatchSortedBlock";
+        else if (joinmethod == eGwsHash)
+            sJoinType = "eGwsHash";
+
+        if (!sJoinType.empty())
+            printf("CGwsFeatureSourceQuery::PrepareJoinQuery() - Using method: %s\n", sJoinType.c_str());
+#endif
 
         prepQuery = CreatePreparedJoinQuery (pFQuery->Type (),
                                              joinmethod,

@@ -30,6 +30,10 @@
 #include "FdoExpressionEngineCopyFilter.h"
 #include "FdoExpressionEngineFilterProcessor.h"
 
+//Uncomment to track how many FdoISelect commands are executed for a join
+//operation. Each executed command prints [Query] to stdout
+//
+//#define TRACE_GWS_QUERY
 
 /////////////////////////////////////////////////////////////////////
 //
@@ -392,6 +396,9 @@ EGwsStatus CGwsPreparedFeatureQuery::Execute (
     try {
         FdoPtr<FdoFilter> filter = ((FdoISelect *)m_pCommand.p)->GetFilter ();
         PrepareFilter (filter, m_bIsAxisAlignedRectangleFilter);
+        #ifdef TRACE_GWS_QUERY
+        printf("[Query]");
+        #endif
         #ifdef _DEBUG_BATCHSORT_JOIN
         if(filter)
         {
