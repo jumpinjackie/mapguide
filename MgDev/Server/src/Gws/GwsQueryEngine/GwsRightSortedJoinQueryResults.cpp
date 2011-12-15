@@ -24,7 +24,7 @@
 #include "stdafx.h"
 #include "GwsQueryEngineImp.h"
 
-
+//#define DEBUG_SORT_MERGE_JOIN
 /////////////////////////////////////////////////////////////////////
 //
 // class CGwsRightSortedJoinQueryResults
@@ -114,6 +114,16 @@ bool CGwsRightSortedJoinQueryResults::ReadNext()
                                             fiter->GetDataValues (m_joincols);
         m_joinvals = joinvals;
         int res = m_joinkeys.Compare (m_joinvals);
+
+#ifdef DEBUG_SORT_MERGE_JOIN
+        wchar_t* lbuffer = new wchar_t[2048];
+        m_joinkeys.ToString(lbuffer, 2048);
+        wchar_t* rbuffer = new wchar_t[2048];
+        m_joinvals.ToString(rbuffer, 2048);
+        printf("%S == %S : %d\n", lbuffer, rbuffer, res);
+        delete [] lbuffer;
+        delete [] rbuffer;
+#endif
 
         if (res == 1) {
             bRes = m_reader->ReadNext ();
