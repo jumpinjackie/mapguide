@@ -357,13 +357,67 @@ CGwsPreparedJoinQuery * CGwsFeatureSourceQuery::PrepareJoinQuery (
                 lJoin->JoinMethod () == eGwsSortMerge)
             {
                 // if left part is ordered and ordering is identical to
-                // the left join attrbites use this orderin
+                // the left join attributes use this ordering
+                //
+                // Or to explain visually (in crude ASCII):
+                //
+                // [Left Side - Joined]
+                //
+                // [Left sorting prop    \  /
+                //  for first join]       \/     
+                //                         \     
+                // [Our current left side]  \      / [Our right side]
+                //                           \    /
+                // [Left sorting prop for     \  /
+                //  2nd join is the same]      \/
+                //
+                // If both left sorting props are the same it implies both are the same. Left side here
+                // cannot support ordering if both are different because sorting cannot be applied to an
+                // iterator (which the join source is represented by)
+                //
+                // TODO: If we want to be really smart, we would propagate the new property back to the parent
+                // source as an additional property to sort on (if capable) if they're different
                 FdoPtr<FdoStringCollection> l =  lJoin->LeftProperties ();
                 if (l->GetCount () == lCols->GetCount ()) {
                     int i;
                     for (i = 0; i < l->GetCount (); i ++) {
-                        if (wcscmp (l->GetString (i), lCols->GetString (i)) != 0) {
-                            break;
+                        //Compare the names
+                        FdoPtr<FdoExpression> lexpr1 = FdoExpression::Parse(l->GetString(i));       //Join Source
+                        FdoPtr<FdoExpression> lexpr2 = FdoExpression::Parse(lCols->GetString(i));   //Our left join prop
+                        //Both parse out to identifiers
+                        if (lexpr1->GetExpressionType() == FdoExpressionItemType_Identifier &&
+	                        lexpr2->GetExpressionType() == FdoExpressionItemType_Identifier)
+                        {
+                            FdoIdentifier* ident1 = (FdoIdentifier*)lexpr1.p;  //Join Source
+                            FdoIdentifier* ident2 = (FdoIdentifier*)lexpr2.p;  //Our left join prop
+	                        FdoString* name1 = ident1->GetName();
+	                        FdoString* name2 = ident2->GetName();
+                            bool bMatch = wcscmp (name1, name2) == 0;
+
+                            //If our left join prop is qualified need to check if join names match
+                            int scopeLen;
+                            FdoString** ident2Scope = ident2->GetScope(scopeLen);
+                            if (scopeLen > 0)
+                            {
+                                //The first descendant scope is the one we're interested in
+                                FdoString* parentName = ident2Scope[scopeLen - 1];
+                                //The originating left source join query definition
+                                IGWSJoinQueryDefinition* leftJoinQueryDef = dynamic_cast<IGWSJoinQueryDefinition*>(lqdef.p);
+                                if (NULL != leftJoinQueryDef)
+                                {
+                                    FdoString* joinName = leftJoinQueryDef->JoinName();
+                                    if (wcscmp(parentName, joinName) != 0)
+                                        bMatch = false;
+                                }
+                            }
+
+	                        if (!bMatch) {
+		                        break;
+	                        }
+                        }
+                        else
+                        {
+	                        break;
                         }
                     }
                     if (i == l->GetCount ())
