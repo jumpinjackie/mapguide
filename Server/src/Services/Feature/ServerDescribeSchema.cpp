@@ -354,7 +354,10 @@ MgFeatureSchemaCollection* MgServerDescribeSchema::DescribeSchema(MgResourceIden
                         }
                     }
 
-                    break;
+                    if(NULL != extClassDefinition)
+                    {
+                        break;
+                    }
                 }
 
                 if (NULL == extClassDefinition)
