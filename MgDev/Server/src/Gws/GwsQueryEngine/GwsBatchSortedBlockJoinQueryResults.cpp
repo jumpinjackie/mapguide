@@ -29,6 +29,19 @@
 // This setting limits the batch size used by the join algorithm
 int CGwsBatchSortedBlockJoinQueryResults::sm_nBatchSize = 100; //Default
 
+// FIXME:
+//
+// All current MapGuide Feature Join bugs (#502, #791, #1396, #1790) are caused by this
+// particular join algorithm. All tickets involved a SDF/SHP joined to a sortable secondary
+// source
+//
+// Before #1888, SDF/SHP sources were not considered sortable (they still are not sortable if 
+// the join is on multiple properties, but this scenario is pretty uncommon)
+//
+// The submission of #1888 therefore effectively sweeps the above tickets under the carpet
+// as this algorithm is no longer used, but that doesn't hide the fact if this
+// algorithm is chosen with data sources similar to the aforementioned tickets,
+// the merged result may not be correct.
 
 /////////////////////////////////////////////////////////////////////
 //
