@@ -63,7 +63,7 @@ double MgTimerUtil::GetTime()
     return count.QuadPart* (1000.0 / frequency.QuadPart);
 #else
     gettimeofday(&count, NULL);
-    return (count.tv_sec * 1000.0) + count.tv_usec;
+    return (count.tv_sec * 1000000.0) + count.tv_usec;
 #endif
 }
 
