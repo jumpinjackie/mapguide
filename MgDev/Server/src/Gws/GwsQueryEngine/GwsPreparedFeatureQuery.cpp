@@ -34,6 +34,7 @@
 //operation. Each executed command prints [Query] to stdout
 //
 //#define TRACE_GWS_QUERY
+//#define DEBUG_PREPARED_FEATURE_QUERY
 
 /////////////////////////////////////////////////////////////////////
 //
@@ -204,6 +205,13 @@ EGwsStatus CGwsPreparedFeatureQuery::Init (
         FdoInt32* pTypes = ptrCap->GetCommands(size);
         for(int i = 0; i < size; i++ )
         {
+            if( pTypes[i] == FdoCommandType_ExtendedSelect)
+            {
+                m_bExtendedQuerySupported = true;
+                selcmd = (FdoIExtendedSelect *) m_connection->CreateCommand (FdoCommandType_ExtendedSelect);
+                mExSelProv = eFDO;
+                break;
+            }
             if( pTypes[i] == SdfCommandType_ExtendedSelect)
             {
                 m_bExtendedQuerySupported = true;
@@ -232,7 +240,12 @@ EGwsStatus CGwsPreparedFeatureQuery::Init (
             }
             if(m_bExtendedQuerySupported)
             {
-                if(mExSelProv == eSDF)
+                if(mExSelProv == eFDO)
+                {
+                    FdoIExtendedSelect* pExSelCmd = (FdoIExtendedSelect*)selcmd;
+                    pExSelCmd->SetOrderingOption(orderBy->GetString(0), orderingOption);
+                }
+                else if(mExSelProv == eSDF)
                 {
                     SdfIExtendedSelect* pExSelCmd = (SdfIExtendedSelect*)selcmd;
                     pExSelCmd->SetOrderingOption(orderBy->GetString(0), orderingOption);
@@ -411,7 +424,9 @@ EGwsStatus CGwsPreparedFeatureQuery::Execute (
         FdoPtr<FdoIFeatureReader> reader;
         if(bScrollable && m_bExtendedQuerySupported)
         {
-            if(mExSelProv == eSDF)
+            if (mExSelProv == eFDO)
+                reader = ((FdoIExtendedSelect *)m_pCommand.p)->ExecuteScrollable();
+            else if(mExSelProv == eSDF)
                 reader = ((SdfIExtendedSelect *)m_pCommand.p)->ExecuteScrollable();
             else if(mExSelProv == eSHP)
                 reader = ((ShpIExtendedSelect *)m_pCommand.p)->ExecuteScrollable();
@@ -424,6 +439,21 @@ EGwsStatus CGwsPreparedFeatureQuery::Execute (
         else
             bGotScrollableIterator = true;
 
+        #ifdef DEBUG_PREPARED_FEATURE_QUERY
+        if(bScrollable && m_bExtendedQuerySupported)
+        {
+            std::string sCommandType;
+            if (mExSelProv == eFDO)
+                sCommandType = "FdoIExtendedSelect";
+            else if(mExSelProv == eSDF)
+                sCommandType = "SdfIExtendedSelect";
+            else if(mExSelProv == eSHP)
+                sCommandType = "ShpIExtendedSelect";
+
+            if (!sCommandType.empty())
+                printf("Extended query type is: %s\n", sCommandType.c_str());
+        }
+        #endif
         CGwsFeatureIterator * pResults = CreateFeatureIterator (eGwsFeatureIterator);
         stat = pResults->InitializeReader (reader, m_pQuery, this, bGotScrollableIterator);
         if (! IGWSException::IsError (stat)) {

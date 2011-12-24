@@ -269,7 +269,7 @@ protected:
     GWSCoordinateSystem                 m_csname;
 };
 
-typedef enum _GwsExtendedSelProvider { eSDF, eSHP, eCGFI } EGwsExtendedSelProvider;
+typedef enum _GwsExtendedSelProvider { eSDF, eSHP, eCGFI, eFDO } EGwsExtendedSelProvider;
 
 
 ///////////////////////////////////////////////////////////////////////////////

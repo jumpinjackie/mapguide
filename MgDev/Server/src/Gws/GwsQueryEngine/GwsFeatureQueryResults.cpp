@@ -72,8 +72,10 @@ EGwsStatus CGwsFeatureIterator::InitializeReader (
     m_reader = pReader;
 
     m_bScrollableReader = bIsScrollable;
-
-    if(dynamic_cast<SdfIScrollableFeatureReader*>(pReader) != NULL)
+    
+    if(dynamic_cast<FdoIScrollableFeatureReader*>(pReader) != NULL)
+        m_extProviderType = eFDO;
+    else if(dynamic_cast<SdfIScrollableFeatureReader*>(pReader) != NULL)
         m_extProviderType = eSDF;
     else if(dynamic_cast<ShpIScrollableFeatureReader*>(pReader) != NULL)
         m_extProviderType = eSHP;
