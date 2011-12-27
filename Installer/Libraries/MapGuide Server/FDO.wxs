@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+  <?define Have_ArcSde = "no" ?>
   <?if "$(var.MgPlatform)" = "x64" ?>
     <?define Win64 = "yes" ?>
     <?define PlatformProgramFilesFolder = "ProgramFiles64Folder" ?>
@@ -9,7 +10,7 @@
   <?endif ?>
   <Fragment>
       <CustomAction Id="FdoRegCmd" Property="FdoReg" Execute="immediate" Value="&quot;[FDOLOCATION]FdoRegUtil.exe&quot;" />
-      
+
       <CustomAction Execute="immediate" Id="FdoRegArcSdeCmd" Property="FdoRegArcSde" Value="[FdoReg] -r &quot;.\ArcSDEProvider.dll&quot;" />
       <CustomAction Execute="immediate" Id="FdoRegSdfCmd" Property="FdoRegSdf" Value="[FdoReg] -r &quot;.\SDFProvider.dll&quot;" />
       <CustomAction Execute="immediate" Id="FdoRegShpCmd" Property="FdoRegShp" Value="[FdoReg] -r &quot;.\SHPProvider.dll&quot;" />
@@ -109,9 +110,13 @@
           </Component>
           <!-- ArcSDE Provider -->
           <Component Id="FdoArcSdeComponent" Win64="$(var.Win64)" Guid="73E0719B-243F-49E9-BF74-F1B7CF7EA35F">
+              <?if Have_ArcSde = "yes" ?>
               <File Id="ArcSdeMessage" Checksum="yes" Source="$(var.MgSource)\Server\FDO\ArcSDEMessage.dll" />
               <File Id="ArcSdeProvider92" Checksum="yes" Source="$(var.MgSource)\Server\FDO\ArcSdeProvider92.dll" />
               <File Id="ArcSdeProvider" Checksum="yes" Source="$(var.MgSource)\Server\FDO\ArcSdeProvider.dll" />
+              <?else ?>
+              <CreateFolder />
+              <?endif ?>
           </Component>
           <!-- GDAL Provider -->
           <Component Id="FdoGdalProviderComponent" Win64="$(var.Win64)" Guid="B1D7539F-865E-4A32-B82A-96E76012780B">

@@ -72,7 +72,18 @@ SET INSTALLER_DEV_INSTALLER=%INSTALLER_DEV%\Installers\MapGuide
 
 SET NSIS=%CD%\Support\NSIS
 SET PARAFFIN=%CD%
-SET PATH=%PATH%;%PARAFFIN%;%NSIS%;%WIX%\bin\
+SET PATH=%PATH%;%PARAFFIN%;%NSIS%;%WIX%\bin\;%CD%\..\MgDev\BuildTools\WebTools\7-Zip
+
+rem ==================================================
+rem Web dependencies
+rem ==================================================
+SET HTTPD_VERSION=2.2.21
+SET PHP_VERSION=5.3.8
+SET TOMCAT_VERSION=7.0.23
+SET HTTPD_PACKAGE=httpd-%HTTPD_VERSION%-win32-x86-ssl.zip
+SET TOMCAT_PACKAGE=apache-tomcat-%TOMCAT_VERSION%-windows-x86.zip
+SET PHP_TS_PACKAGE=php-%PHP_VERSION%-Win32-VC9-x86.zip
+SET PHP_NTS_PACKAGE=php-%PHP_VERSION%-nts-Win32-VC9-x86.zip
 
 rem ==================================================
 rem MSBuild Settings
@@ -206,18 +217,34 @@ echo [prepare] Installer Pre-Requisites
 %MSBUILD% InstallerPreReq.sln
 copy %INSTALLER_FDO_REG_UTIL%\%TYPEBUILD%\FdoRegUtil.exe %MG_SOURCE%\Server\FDO
 popd
-rem copy support files into server and web directories
-echo [prepare] Tomcat
-%XCOPY% "%INSTALLER_DEV%\Support\Web\%CPUTYPE%\Tomcat" "%MG_SOURCE%\Web\Tomcat" /EXCLUDE:svn_excludes.txt
-echo [prepare] Php
-%XCOPY% "%INSTALLER_DEV%\Support\Web\%CPUTYPE%\Php" "%MG_SOURCE%\Web\Php" /EXCLUDE:svn_excludes.txt
-echo [prepare] Apache2
-%XCOPY% "%INSTALLER_DEV%\Support\Web\%CPUTYPE%\Apache2" "%MG_SOURCE%\Web\Apache2" /EXCLUDE:svn_excludes.txt
+pushd "%INSTALLER_DEV_SUPPORT%\Web\%CPUTYPE%"
+echo [prepare] Unpack Apache httpd
+7z x %HTTPD_PACKAGE% -o"%MG_SOURCE%\Web\Apache2"
+REM the zip does not package the root dir, so we need to move everything to this level
+pushd "%MG_SOURCE%\Web\Apache2"
+move Apache2\*.* .
+rd Apache2
+rd readme.txt
+popd
+echo [prepare] Unpack Tomcat
+REM the zip does not package the root dir, so we need to move everything to this level
+7z x %TOMCAT_PACKAGE% -o"%MG_SOURCE%\Web\Tomcat"
+pushd "%MG_SOURCE%\Web\Tomcat"
+move apache-tomcat-7.0.23\*.* .
+rd apache-tomcat-7.0.23
+popd
+echo [prepare] Unpack PHP (Thread Safe)
+7z x %PHP_TS_PACKAGE% -o"%MG_SOURCE%\Web\Php"
+rem echo [prepare] Unpack PHP (Non-Thread Safe)
+rem 7z x %PHP_NTS_PACKAGE% -o"%MG_SOURCE%\Web\PHP_NTS"
+popd
 rem copy template configs on top
 echo [prepare] Tomcat config
 %XCOPY% "%INSTALLER_DEV%\Support\Web\%CPUTYPE%\configs\Tomcat" "%MG_SOURCE%\Web\Tomcat" /EXCLUDE:svn_excludes.txt
 echo [prepare] Php config
 %XCOPY% "%INSTALLER_DEV%\Support\Web\%CPUTYPE%\configs\Php" "%MG_SOURCE%\Web\Php" /EXCLUDE:svn_excludes.txt
+rem echo [prepare] Php config
+rem %XCOPY% "%INSTALLER_DEV%\Support\Web\%CPUTYPE%\configs\Php" "%MG_SOURCE%\Web\PHP_NTS" /EXCLUDE:svn_excludes.txt
 echo [prepare] Apache2 config
 %XCOPY% "%INSTALLER_DEV%\Support\Web\%CPUTYPE%\configs\Apache2" "%MG_SOURCE%\Web\Apache2" /EXCLUDE:svn_excludes.txt
 echo [prepare] FDO providers.xml
@@ -269,6 +296,10 @@ move /Y %WIX_INC_WEB%\incApacheFiles.PARAFFIN %WIX_INC_WEB%\incApacheFiles.wxs
 echo [regen]: Web - Php
 %PARAFFIN% %WIX_INC_WEB%\incPhpFiles.wxs
 move /Y %WIX_INC_WEB%\incPhpFiles.PARAFFIN %WIX_INC_WEB%\incPhpFiles.wxs
+
+rem echo [regen]: Web - Php NTS
+rem %PARAFFIN% %WIX_INC_WEB%\incPhpNtsFiles.wxs
+rem move /Y %WIX_INC_WEB%\incPhpNtsFiles.PARAFFIN %WIX_INC_WEB%\incPhpNtsFiles.wxs
 
 echo [regen]: Web - Tomcat
 %PARAFFIN% %WIX_INC_WEB%\incTomcatFiles.wxs
@@ -353,8 +384,11 @@ echo [generate]: CS-Map - dictionaries
 echo [generate]: Web - Apache
 %PARAFFIN% -dir %MG_SOURCE%\Web\Apache2 -alias $(var.MgSource)\Web\Apache2 -custom APACHEFILES -dirref WEBEXTENSIONSLOCATION %WIX_INC_WEB%\incApacheFiles.wxs
 
-echo [generate]: Web - Php
+echo [generate]: Web - Php TS
 %PARAFFIN% -dir %MG_SOURCE%\Web\Php -alias $(var.MgSource)\Web\Php -custom PHPFILES -dirref WEBEXTENSIONSLOCATION %WIX_INC_WEB%\incPhpFiles.wxs
+
+rem echo [generate]: Web - Php NTS
+rem %PARAFFIN% -dir %MG_SOURCE%\Web\PHP_NTS -alias $(var.MgSource)\Web\PHP_NTS -custom PHPNTSFILES -dirref WEBEXTENSIONSLOCATION %WIX_INC_WEB%\incPhpNtsFiles.wxs
 
 echo [generate]: Web - Tomcat
 %PARAFFIN% -dir %MG_SOURCE%\Web\Tomcat -alias $(var.MgSource)\Web\Tomcat -custom TOMCATFILES -dirref WEBEXTENSIONSLOCATION %WIX_INC_WEB%\incTomcatFiles.wxs

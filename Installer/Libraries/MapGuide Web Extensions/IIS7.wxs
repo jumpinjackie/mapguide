@@ -17,7 +17,7 @@
 
     <!-- Set up FastCGI -->
     <CustomAction Id="MapGuideIIS7_I_CreateFastCgi_Cmd" Property="MapGuideIIS7_I_CreateFastCgi" Execute="immediate"
-            Value="[AppCmd] add apppool set config /section:system.webServer/fastCGI /+[\[]fullPath=&quot;[WEBEXTENSIONSLOCATION]Php\php-cgi.exe&quot;[\]]" />
+            Value="[AppCmd] add apppool set config /section:system.webServer/fastCGI /+[\[]fullPath=&quot;[PHPLOCATION]\php-cgi.exe&quot;[\]]" />
     <CustomAction Id="MapGuideIIS7_I_CreateFastCgi" BinaryKey="WixCA" DllEntry="CAQuietExec" Execute="deferred" Return="ignore" Impersonate="no"/>
 
     <!-- Set the application pool's properties -->
@@ -42,13 +42,8 @@
 
     <!-- Set up the PHP script mapping to FastCGI -->
     <CustomAction Id="MapGuideIIS7_I_CreatePhpScriptMapping_Cmd" Property="MapGuideIIS7_I_CreatePhpScriptMapping" Execute="immediate"
-        Value="[AppCmd] set config &quot;[MG_WEBSITE]/[VIRTUALDIR]&quot; /section:handlers /+[\[]name='&quot;PHP_via_FastCGI&quot;',path='*.php',verb='*',scriptProcessor='&quot;[WEBEXTENSIONSLOCATION]Php\php-cgi.exe&quot;',modules='FastCgiModule',resourceType='Unspecified'[\]]" />
+        Value="[AppCmd] set config &quot;[MG_WEBSITE]/[VIRTUALDIR]&quot; /section:handlers /+[\[]name='&quot;PHP_via_FastCGI&quot;',path='*.php',verb='*',scriptProcessor='&quot;[PHPLOCATION]\php-cgi.exe&quot;',modules='FastCgiModule',resourceType='Unspecified'[\]]" />
     <CustomAction Id="MapGuideIIS7_I_CreatePhpScriptMapping" BinaryKey="WixCA" DllEntry="CAQuietExec" Execute="deferred" Return="ignore" Impersonate="no"/>
-
-    <!-- Allow access to the PHP ISAPI -->
-    <CustomAction Id="MapGuideIIS7_I_EnablePhpExtension_Cmd" Property="MapGuideIIS7_I_EnablePhpExtension" Execute="immediate"
-        Value="[AppCmd] set config /section:isapiCgiRestriction /+[\[]path='&quot;[WEBEXTENSIONSLOCATION]Php\php5isapi.dll&quot;',allowed='True',description='&quot;MapGuide PHP ISAPI handler&quot;'[\]]" />
-    <CustomAction Id="MapGuideIIS7_I_EnablePhpExtension" BinaryKey="WixCA" DllEntry="CAQuietExec" Execute="deferred" Return="ignore" Impersonate="no"/>
 
     <!-- Create the MapAgent application -->
     <CustomAction Id="MapGuideIIS7_I_CreateMapAgentApp_Cmd" Property="MapGuideIIS7_I_CreateMapAgentApp" Execute="immediate"
@@ -152,11 +147,6 @@
     <CustomAction Id="MapGuideIIS7_U_ClearMapAgentRestriction_Cmd" Property="MapGuideIIS7_U_ClearMapAgentRestriction" Execute="immediate"
         Value="[AppCmd] set config /section:isapiCgiRestriction /-[\[]path='&quot;[WEBEXTENSIONSLOCATION]www\mapagent\isapi_MapAgent.dll&quot;'[\]]" />
     <CustomAction Id="MapGuideIIS7_U_ClearMapAgentRestriction" BinaryKey="WixCA" DllEntry="CAQuietExec" Execute="deferred" Return="ignore" Impersonate="no"/>
-
-    <!-- Remove entry in ISAPI/CGI Restrictions for PHP -->
-    <CustomAction Id="MapGuideIIS7_U_ClearPhpRestriction_Cmd" Property="MapGuideIIS7_U_ClearPhpRestriction" Execute="immediate"
-        Value="[AppCmd] set config /section:isapiCgiRestriction /-[\[]path='&quot;[WEBEXTENSIONSLOCATION]Php\php5isapi.dll&quot;'[\]]" />
-    <CustomAction Id="MapGuideIIS7_U_ClearPhpRestriction" BinaryKey="WixCA" DllEntry="CAQuietExec" Execute="deferred" Return="ignore" Impersonate="no"/>
 
     <!-- Remove MapViewerAjax application -->
     <CustomAction Id="MapGuideIIS7_U_RemoveViewer_Cmd" Property="MapGuideIIS7_U_RemoveViewer" Execute="immediate"

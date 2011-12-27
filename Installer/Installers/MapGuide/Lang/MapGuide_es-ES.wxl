@@ -23,6 +23,13 @@
     <String Id="DisabledFeaturesDialog_DotNet">Dot Net Framework 2.0 no se ha encontrado, por lo que el Asp.Net Web Extensiones no estará disponible</String>
     <String Id="DisabledFeaturesDialog_Instructions">Si desea utilizar estas funciones, haga clic en cancelar y corregir el problema antes de proceder con la instalación</String>
 
+    <String Id="FastCgiDialog_Title">FastCGI es necesario</String>
+    <String Id="FastCgiDialog_Description">FastCGI es necesario instalar</String>
+    <String Id="FastCgiDialog_Instructions">MapGuide de configuración de IIS FastCGI requiere ser instalado en este sistema</String>
+    <String Id="FastCgiDialog_Instructions2">Usted puede descargar desde este enlace FastCGI</String>
+    <String Id="FastCgiDialog_Link">http://www.iis.net/download/FastCGI</String>
+    <String Id="FastCgiDialog_Instructions3">Puede ignorar este mensaje si FastCGI para IIS ya está instalado. De lo contrario, debe cancelar la instalación e instalar FastCGI primero</String>
+
     <String Id="ServerConfigDlg_Title">Puerto del servidor de configuración</String>
     <String Id="ServerConfigDlg_Description">Configurar los puertos de escucha para MapGuide Server</String>
     <String Id="ServerConfigDlg_Prompt">MapGuide Server se instala utilizando los números de puerto siguiente. El servidor de Web y los archivos de configuración de nivel se establece para utilizar los números de puerto se especifica a continuación.</String>

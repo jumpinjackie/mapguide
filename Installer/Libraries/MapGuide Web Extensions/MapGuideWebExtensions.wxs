@@ -13,7 +13,7 @@
         <PropertyRef Id="NETFRAMEWORK20"/>
         <PropertyRef Id="MGWEB_CONFIG"/>
         <PropertyRef Id="IIS_API_TYPE"/>
-      
+
         <DirectoryRef Id="WebParentFolder">
             <Directory Id="WEBEXTENSIONSLOCATION" Name="Web">
                 <Component Id="WebPortConfigComponent" Win64="$(var.Win64)" Guid="3C8FE0E1-3161-423D-9E08-0983B7075C4C" Feature="WebExtensionsFeature">
@@ -65,21 +65,15 @@
                                      Permanent="no"
                                      System="yes"
                                      Value="[PHPLOCATION]" />
-                        <RegistryKey Action="createAndRemoveOnUninstall"
+                        <RegistryKey Id="PhpRegistryKey"
+                                     Action="createAndRemoveOnUninstall"
                                      Root="HKLM"
                                      Key="Software\PHP\[PHP_VERSION]">
-                            <RegistryValue Action="write"
-                                       Name="IniFilePath"
-                                       Type="string"
-                                       Value="[PHPLOCATION]" />
-                        </RegistryKey>
-                        <RegistryKey Action="createAndRemoveOnUninstall"
-                                     Root="HKLM"
-                                     Key="Software\PHP\5.3.1">
-                             <RegistryValue Action="write"
-                                        Name="IniFilePath"
-                                        Type="string"
-                                        Value="[PHPLOCATION]" />
+                            <RegistryValue  Id="PhpRegistryKeyValue"
+                                            Action="write"
+                                            Name="IniFilePath"
+                                            Type="string"
+                                            Value="[PHPLOCATION]" />
                         </RegistryKey>
                     </Component>
                 </Directory>

@@ -23,6 +23,13 @@
     <String Id="DisabledFeaturesDialog_DotNet">The .NET Framework 2.0 was not found, so the .NET Web Extensions for IIS will not be available</String>
     <String Id="DisabledFeaturesDialog_Instructions">If you want to use these features, click on cancel and correct the problem before proceeding with installation</String>
 
+    <String Id="FastCgiDialog_Title">FastCGI is required</String>
+    <String Id="FastCgiDialog_Description">FastCGI needs to be installed</String>
+    <String Id="FastCgiDialog_Instructions">MapGuide IIS Configuration requires FastCGI to be installed on this system</String>
+    <String Id="FastCgiDialog_Instructions2">You can download FastCGI from this link</String>
+    <String Id="FastCgiDialog_Link">http://www.iis.net/download/FastCGI</String>
+    <String Id="FastCgiDialog_Instructions3">You can ignore this message if FastCGI for IIS is already installed. Otherwise you must cancel this installation and install FastCGI first</String>
+
     <String Id="ServerConfigDlg_Title">Server Port Configuration</String>
     <String Id="ServerConfigDlg_Description">Set up the listening ports for MapGuide Server</String>
     <String Id="ServerConfigDlg_Prompt">MapGuide Server will be installed using the following port numbers. The Server and Web Tier configuration files will be set to use the specified port numbers below.</String>

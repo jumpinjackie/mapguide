@@ -12,7 +12,8 @@
 	<!-- isapi_MapAgent.dll -->
     <?define FCGI_MAP = "[!file_MAPAGENTFILES_100]" ?>
 	<!-- php5isapi.dll -->
-    <?define PHP_MAP = "[WindowsFolder]\system32\inetsrv\fcgiext.dll" ?>
+    <?define PHP_MAP = "[WindowsFolder]system32\inetsrv\fcgiext.dll" ?>
+    <?define PHP_CGI_EXE = "[!file_PHPFILES_41]" ?>
     <Fragment>
         <Property Id="FRAMEWORKDIR">
             <RegistrySearch
@@ -51,7 +52,25 @@
         <!-- End Trac Ticket #361 stuff -->
 
         <Feature Id="IISSetupFeature" Level="1" Display="hidden" >
-
+            <Component Id="IISFastCgiConfigComponent" Win64="$(var.Win64)" Guid="2C29D170-15B0-41E6-AD72-91DA094A28CC" Directory="IISROOTLOCATION">
+                <Condition>MGWEB_CONFIG=&quot;IIS&quot; AND IISVERSIONMAJOR=&quot;#5&quot; OR IISVERSIONMAJOR=&quot;#6&quot;</Condition>
+                <CreateFolder />
+                <IniFile Id="IniRegPhpType"
+                         Action="addLine"
+                         Directory="IISROOTLOCATION"
+                         Key="php"
+                         Name="fcgiext.ini"
+                         Section="Types"
+                         Value="PHP"/>
+                <IniFile Id="IniSetPhpExe"
+                         Action="addLine"
+                         Directory="IISROOTLOCATION"
+                         Key="ExePath"
+                         Name="fcgiext.ini"
+                         Section="PHP"
+                         Value="$(var.PHP_CGI_EXE)"/>
+            </Component>
+            
             <!-- IIS5 Base component -->
             <!-- 
             NOTE: Always check the file offsets whenever PHP is updated and/or the mapagent is updated, because we may be creating script
@@ -63,7 +82,7 @@
                 <iis:WebVirtualDir Id="IIS5MapGuideVDir" Alias="[VIRTUALDIR]" Directory="WEBROOTLOCATION" WebSite="IISDefaultWebSite">
                     <iis:WebDirProperties Id="IIS5MapGuideDocuments" DefaultDocuments="index.php,index.html,index.htm,default.aspx,index.aspx,default.htm,default.html" AnonymousAccess="yes" BasicAuthentication="no" WindowsAuthentication="no"/>
                     <iis:WebApplication Id="IIS5MapGuideWebApp" Name="[VIRTUALDIR]">
-                        <iis:WebApplicationExtension Extension="php" Script="yes" Verbs="GET,POST" CheckPath="no" Executable="$(var.PHP_MAP)" />
+                        <iis:WebApplicationExtension Extension="php" Script="yes" Verbs="GET,POST,HEAD" CheckPath="yes" Executable="$(var.PHP_MAP)" />
                     </iis:WebApplication>
                     <iis:WebVirtualDir Id="IIS5MapAgentVDir" Alias="mapagent" Directory="dir_mapagent_0" >
                         <iis:WebDirProperties Id="IIS5MapAgentProperties" DefaultDocuments="index.html" AnonymousAccess="yes" BasicAuthentication="no" WindowsAuthentication="no"/>
@@ -128,7 +147,7 @@
                     <iis:WebDirProperties Id="IIS6MapGuideDocuments" DefaultDocuments="index.php,index.html,index.htm,default.aspx,index.aspx,default.htm,default.html"  AnonymousAccess="yes" BasicAuthentication="no" WindowsAuthentication="no" />
                     <iis:MimeMap Id="IIS6JsonMimeType" Type="application/json" Extension =".json" />
                     <iis:WebApplication Id="IIS6MapGuideWebApp" Name="[VIRTUALDIR]" WebAppPool="IIS6MapGuideAppPool" >
-                        <iis:WebApplicationExtension Extension="php" Script="yes" Verbs="GET,POST" CheckPath="no" Executable="$(var.PHP_MAP)" />
+                        <iis:WebApplicationExtension Extension="php" Script="yes" Verbs="GET,POST,HEAD" CheckPath="yes" Executable="$(var.PHP_MAP)" />
                     </iis:WebApplication>
                     <iis:WebVirtualDir Id="IIS6MapAgentVDir" Alias="mapagent" Directory="dir_mapagent_0" >
                         <iis:WebDirProperties Id="IIS6MapAgentProperties" DefaultDocuments="index.html" AnonymousAccess="yes" BasicAuthentication="no" WindowsAuthentication="no" />
