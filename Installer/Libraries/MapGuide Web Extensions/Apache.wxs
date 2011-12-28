@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
     <!-- httpd.exe -->
-    <?define HTTP_MAP = "file_APACHEFILES_20" ?>
+    <?define HTTP_MAP = "file_APACHEFILES_19" ?>
 	<Fragment>
         <Binary Id="ApacheActions" SourceFile="..\..\Custom\bin\apache_actions.dll" />
         <CustomAction Id="UpdateApacheConfig.SetValues" Property="UpdateApacheConfig" Value="[WEBEXTENSIONSLOCATION];[APACHE_API_TYPE];[APACHE_PORT];[APACHELOCATION];[PHPLOCATION];[WEBROOTLOCATION];[VIRTUALDIR]" />

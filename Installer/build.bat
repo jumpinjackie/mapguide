@@ -51,6 +51,7 @@ SET INSTALLER_VERSION=%INSTALLER_VERSION_MAJOR_MINOR_REV%.0
 SET INSTALLER_TITLE="MapGuide Open Source %INSTALLER_VERSION_MAJOR_MINOR% Trunk (%TYPEBUILD%)"
 SET MG_REG_KEY=Software\OSGeo\MapGuide\%INSTALLER_VERSION_MAJOR_MINOR_REV%
 SET MG_SOURCE=%CD%\..\MgDev\%TYPEBUILD%
+SET MG_SOURCE_WEB=%CD%\..\MgDev\Web
 SET MG_SOURCE_INC=
 rem Set to NO to build installers quicker (at the expense of file size)
 SET MAX_COMPRESSION=YES
@@ -217,24 +218,25 @@ echo [prepare] Installer Pre-Requisites
 %MSBUILD% InstallerPreReq.sln
 copy %INSTALLER_FDO_REG_UTIL%\%TYPEBUILD%\FdoRegUtil.exe %MG_SOURCE%\Server\FDO
 popd
-pushd "%INSTALLER_DEV_SUPPORT%\Web\%CPUTYPE%"
 echo [prepare] Unpack Apache httpd
-7z x %HTTPD_PACKAGE% -o"%MG_SOURCE%\Web\Apache2"
-REM the zip does not package the root dir, so we need to move everything to this level
-pushd "%MG_SOURCE%\Web\Apache2"
-move Apache2\*.* .
-rd Apache2
-rd readme.txt
+pushd "%INSTALLER_DEV_SUPPORT%\Web\%CPUTYPE%"
+REM we unpack to root because Apache2 is the root dir in the zip file
+7z x %HTTPD_PACKAGE% -y -o"%MG_SOURCE%\Web"
 popd
 echo [prepare] Unpack Tomcat
-REM the zip does not package the root dir, so we need to move everything to this level
-7z x %TOMCAT_PACKAGE% -o"%MG_SOURCE%\Web\Tomcat"
-pushd "%MG_SOURCE%\Web\Tomcat"
-move apache-tomcat-7.0.23\*.* .
-rd apache-tomcat-7.0.23
+pushd "%MG_SOURCE%\Web"
+rd /S /Q Tomcat
+popd
+pushd "%INSTALLER_DEV_SUPPORT%\Web\%CPUTYPE%"
+REM we unpack to root because Tomcat is the root dir in the zip file
+7z x %TOMCAT_PACKAGE% -y -o"%MG_SOURCE%\Web"
+popd
+pushd "%MG_SOURCE%\Web"
+rename apache-tomcat-7.0.23 Tomcat
 popd
 echo [prepare] Unpack PHP (Thread Safe)
-7z x %PHP_TS_PACKAGE% -o"%MG_SOURCE%\Web\Php"
+pushd "%INSTALLER_DEV_SUPPORT%\Web\%CPUTYPE%"
+7z x %PHP_TS_PACKAGE% -y -o"%MG_SOURCE%\Web\Php"
 rem echo [prepare] Unpack PHP (Non-Thread Safe)
 rem 7z x %PHP_NTS_PACKAGE% -o"%MG_SOURCE%\Web\PHP_NTS"
 popd
@@ -247,6 +249,8 @@ rem echo [prepare] Php config
 rem %XCOPY% "%INSTALLER_DEV%\Support\Web\%CPUTYPE%\configs\Php" "%MG_SOURCE%\Web\PHP_NTS" /EXCLUDE:svn_excludes.txt
 echo [prepare] Apache2 config
 %XCOPY% "%INSTALLER_DEV%\Support\Web\%CPUTYPE%\configs\Apache2" "%MG_SOURCE%\Web\Apache2" /EXCLUDE:svn_excludes.txt
+echo [prepare] Apache2 mapagent so
+copy /Y "%MG_SOURCE_WEB%\src\mapagent\mod_mgmapagent.so" "%MG_SOURCE%\Web\Apache2\modules"
 echo [prepare] FDO providers.xml
 copy /Y "%INSTALLER_DEV%\Support\Web\%CPUTYPE%\configs\FDO\providers.xml" "%MG_SOURCE%\Server\FDO\"
 
