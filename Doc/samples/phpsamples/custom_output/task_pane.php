@@ -73,19 +73,6 @@
       </li>
 
       <li>
-        <a target="_blank" href="emap.php?SESSION=<?= $sessionId ?>&MAPNAME=<?= $mapName ?>" >
-        eMap</a>
-        <br/>Create and display an eMap. Requires Autodesk&reg; DWF&trade; Viewer or Autodesk Design Review on the client system.
-        <br/>
-        <?php
-        $fileName = 'emap.php';
-        $dir = getcwd();
-        $fullPath = urlencode($dir . '/' . $fileName);
-        ?>
-        <a target="_blank" href="../common/viewsource.php?FILENAME=<?= $fullPath ?>" >View source</a>
-      </li>
-
-      <li>
         <a target="_blank" href="eplot.php?SESSION=<?= $sessionId ?>&MAPNAME=<?= $mapName ?>" >
         ePlot</a>
         <br/>Create and display an ePlot. Requires Autodesk DWF Viewer or Autodesk Design Review on the client system.
