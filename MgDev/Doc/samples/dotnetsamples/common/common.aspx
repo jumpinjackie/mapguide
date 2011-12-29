@@ -85,4 +85,22 @@ public class TemplateUtil
     }
 }
 
+public class Utility
+{
+    public static void OutputReaderContent(MgByteReader byteReader, HttpResponse response)
+    {
+        MemoryStream memBuf = new MemoryStream();
+        byte[] byteBuffer = new byte[1024];
+        int numBytes = byteReader.Read(byteBuffer, 1024);
+        while (numBytes > 0)
+        {
+            memBuf.Write(byteBuffer, 0, numBytes);
+            numBytes = byteReader.Read(byteBuffer, 1024);
+        }
+        response.ContentType = byteReader.GetMimeType();
+        byte[] content = memBuf.ToArray();
+        response.OutputStream.Write(content, 0, content.Length);
+    }
+}
+
 </script>
