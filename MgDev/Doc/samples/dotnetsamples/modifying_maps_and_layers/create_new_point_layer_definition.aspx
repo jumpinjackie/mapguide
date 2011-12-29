@@ -18,7 +18,7 @@
 <%@ Import Namespace="System" %>
 <%@ Import Namespace="System.Xml" %>
 <%@ Import Namespace="OSGeo.MapGuide" %>
-<!-- #Include File="layer_functions.aspx" -->
+<!-- #Include File="layer_functions.aspx" -->z
 <script runat="server">
 String sessionId;
 String mapName;
@@ -91,39 +91,43 @@ try
 	classDefinition.SetDescription("Feature class with point data.");
 	classDefinition.SetDefaultGeometryPropertyName("GEOM");
 
+    MgPropertyDefinitionCollection idProps = classDefinition.GetIdentityProperties();
+    MgPropertyDefinitionCollection clsProps = classDefinition.GetProperties();
+    
 	// Create an identify property
 	MgDataPropertyDefinition identityProperty = new MgDataPropertyDefinition("KEY");
 	identityProperty.SetDataType(MgPropertyType.Int32);
 	identityProperty.SetAutoGeneration(true);
 	identityProperty.SetReadOnly(true);
 	// Add the identity property to the class definition
-	classDefinition.GetIdentityProperties().Add(identityProperty);
-	classDefinition.GetProperties().Add(identityProperty);
+    clsProps.Add(identityProperty);
+    idProps.Add(identityProperty);
 
 	// Create a name property
 	MgDataPropertyDefinition nameProperty = new MgDataPropertyDefinition("NAME");
 	nameProperty.SetDataType(MgPropertyType.String);
 	// Add the name property to the class definition
-	classDefinition.GetProperties().Add(nameProperty);
+    clsProps.Add(nameProperty);
 
 	// Create a geometry property
 	MgGeometricPropertyDefinition geometryProperty = new MgGeometricPropertyDefinition("GEOM");
 	geometryProperty.SetGeometryTypes(MgFeatureGeometricType.Point);
 	// Add the geometry property to the class definition
-	classDefinition.GetProperties().Add(geometryProperty);
+    clsProps.Add(geometryProperty);
 
 	// Create a feature schema
 	MgFeatureSchema featureSchema = new MgFeatureSchema("PointSchema", "Point schema");
+    MgClassDefinitionCollection classes = featureSchema.GetClasses();
 	// Add the feature schema to the class definition
-	featureSchema.GetClasses().Add(classDefinition);
+    classes.Add(classDefinition);
 
 	// Create the feature source
 	String featureSourceName = "Library://Samples/DevGuide/Data/points.FeatureSource";
 	MgResourceIdentifier resourceIdentifier = new MgResourceIdentifier(featureSourceName);
 	//wkt = "LOCALCS[\"*XY-MT*\",LOCAL_DATUM[\"*X-Y*\",10000],UNIT[\"Meter\", 1],AXIS[\"X\",EAST],AXIS[\"Y\",NORTH]]";
-    String wkt = map.GetMapSRS();
-	//sdfParams = new MgCreateSdfParams("ArbitraryXY", wkt, featureSchema);
+    String wkt = "GEOGCS[\"LL84\",DATUM[\"WGS84\",SPHEROID[\"WGS84\",6378137.000,298.25722293]],PRIMEM[\"Greenwich\",0],UNIT[\"Degree\",0.01745329251994]]";
     MgCreateSdfParams sdfParams = new MgCreateSdfParams("LatLong", wkt, featureSchema);
+    sdfParams.SetFileName("points.sdf");
     featureService.CreateFeatureSource(resourceIdentifier, sdfParams);
 
 	// We need to add some data to the sdf before using it.  The spatial context
