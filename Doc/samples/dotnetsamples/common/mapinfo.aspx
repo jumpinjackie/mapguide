@@ -82,6 +82,7 @@ String mapName;
                 <th>Layer Type</th>
                 <th>Layer Definition</th>
                 <th>Feature Source Id</th>
+                <th>Object Id</th>
                 <th>Needs Refresh</th>
             </tr>
             <% 
@@ -98,8 +99,9 @@ String mapName;
                 <td><%= layer.IsVisible() %></td>
                 <td><%= layer.GetExpandInLegend() %></td>
                 <td><%= layer.GetLayerType() %></td>
-                <td><%= layer.GetLayerDefinition().ToString() %></td>
-                <td><%= layer.GetFeatureSourceId() %></td>
+                <td><a target="_blank" href="viewresourcecontent.aspx?SESSION=<%= sessionId %>&RESOURCEID=<%= layer.GetLayerDefinition().ToString() %>"><%= layer.GetLayerDefinition().ToString() %></a></td>
+                <td><a target="_blank" href="viewresourcecontent.aspx?SESSION=<%= sessionId %>&RESOURCEID=<%= layer.GetFeatureSourceId() %>"><%= layer.GetLayerDefinition().ToString() %></a></td>
+                <td><%= layer.GetObjectId() %></td>
                 <td><%= layer.NeedsRefresh() %></td>
             </tr>
             <% } %>
