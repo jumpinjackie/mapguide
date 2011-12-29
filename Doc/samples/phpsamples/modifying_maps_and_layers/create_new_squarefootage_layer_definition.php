@@ -37,7 +37,7 @@
 
 <?php
 require_once('../common/common.php');
-require_once($webExtensionsDirectory . 'www/mapviewerphp/layerdefinitionfactory.php');
+require_once('../common/layerdefinitionfactory.php');
 require_once('layer_functions.php');
 try
 {
@@ -122,7 +122,7 @@ try
 
     //---------------------------------------------------//
     //  Save the map back to the session repository
-    $map->Save($sessionResourceID);
+    $map->Save();
 
     //---------------------------------------------------//
 }

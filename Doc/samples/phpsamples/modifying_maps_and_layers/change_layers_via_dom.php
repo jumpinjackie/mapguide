@@ -49,6 +49,7 @@ try
     $userInfo = new MgUserInformation($sessionId);
     $siteConnection = new MgSiteConnection();
     $siteConnection->Open($userInfo);
+    $resourceService = $siteConnection->CreateService(MgServiceType::ResourceService);
     
     // --------------------------------------------------//
     // Open the map

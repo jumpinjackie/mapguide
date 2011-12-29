@@ -35,7 +35,7 @@
 <body onLoad="OnPageLoad()">
   <?php
   require_once('../common/common.php');
-  require_once($webExtensionsDirectory . 'www/mapviewerphp/layerdefinitionfactory.php');
+  require_once('../common/layerdefinitionfactory.php');
   require_once('../modifying_maps_and_layers/layer_functions.php');
 
   // Get the parameters passed in from the task pane
