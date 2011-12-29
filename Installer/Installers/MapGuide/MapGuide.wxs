@@ -773,7 +773,7 @@
                 After="UpdatePhpIni.SetValues">&amp;WebExtPhpFeature&gt;2</Custom>
             <Custom
                 Action="UpdatePhpIni.SetValues"
-                After="UpdateApacheConfig">&amp;WebExtPhpFeature&gt;2</Custom>
+                Before="InstallFinalize">&amp;WebExtPhpFeature&gt;2</Custom>
             <Custom
                 Action="InstallApacheServiceCA"
                 Before="InstallFinalize">MGWEB_CONFIG=&quot;APACHE&quot; AND &amp;WebExtApacheFeature&gt;2</Custom>

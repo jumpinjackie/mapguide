@@ -11,7 +11,7 @@
     <?endif ?>
 	<!-- isapi_MapAgent.dll -->
     <?define FCGI_MAP = "[!file_MAPAGENTFILES_100]" ?>
-	<!-- php5isapi.dll -->
+	<!-- fcgiext.dll -->
     <?define PHP_MAP = "[WindowsFolder]system32\inetsrv\fcgiext.dll" ?>
     <?define PHP_CGI_EXE = "[!file_PHPFILES_41]" ?>
     <Fragment>
