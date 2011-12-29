@@ -19,9 +19,9 @@
 // -----------------------------------------------------------------------------------
 // Use the following for Windows installations
 // -----------------------------------------------------------------------------------
-String webExtensionsDirectory = "C:\\Program Files\\Autodesk\\MapGuideEnterprise2011\\WebServerExtensions\\";
+String webExtensionsDirectory = "C:\\Program Files\\OSGeo\\MapGuide\\Web\\";
   
-String MapGuideServerDirectory = "C:\\Program Files\\Autodesk\\MapGuideEnterprise2011\\Server\\";
+String MapGuideServerDirectory = "C:\\Program Files\\OSGeo\\MapGuide\\Server\\";
   
 String viewerFilesDirectory = webExtensionsDirectory + "www\\viewerfiles\\";
   
@@ -38,9 +38,9 @@ String webconfigFilePath = webconfigDirectory + "webconfig.ini";
 // Use the following for Linux installations
 // -----------------------------------------------------------------------------------
 /************************************************************************************* 
-String webExtensionsDirectory = "/opt/Autodesk/mapguideenterprise2011/webserverextensions/";
+String webExtensionsDirectory = "/usr/local/mapguideopensource/web/";
   
-String MapGuideServerDirectory = "/opt/Autodesk/mapguideenterprise2011/server/";
+String MapGuideServerDirectory = "/usr/local/mapguideopensource/server/";
   
 String viewerFilesDirectory = webExtensionsDirectory + "www/viewerfiles/";
   
