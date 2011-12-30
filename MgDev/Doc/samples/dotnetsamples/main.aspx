@@ -73,6 +73,6 @@ catch (MgException ex)
 
   <frameset rows="110,*" frameborder="NO" border="0" framespacing="0">
     <frame src="common/Title.aspx?TitleText=<%= title %>" name="TitleFrame" scrolling="NO" noresize />
-    <frame src="/mapguide/mapviewerajax/?SESSION=<%= sessionId %>&WEBLAYOUT=<%= webLayout %>" name="ViewerFrame" />
+    <frame src="../mapviewerajax/?SESSION=<%= sessionId %>&WEBLAYOUT=<%= webLayout %>" name="ViewerFrame" />
   </frameset>
 </html>

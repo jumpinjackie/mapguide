@@ -54,6 +54,6 @@
 
   <frameset rows="110,*" frameborder="NO" border="0" framespacing="0">
     <frame src="common/title.jsp?TitleText=<%= title %>" name="TitleFrame" scrolling="NO" noresize />
-    <frame src="/mapguide2011/mapviewerajax/?SESSION=<%= sessionId %>&WEBLAYOUT=<%= webLayout %>" name="ViewerFrame" />
+    <frame src="../mapviewerajax/?SESSION=<%= sessionId %>&WEBLAYOUT=<%= webLayout %>" name="ViewerFrame" />
   </frameset>
 </html>
