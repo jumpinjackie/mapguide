@@ -21,8 +21,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 <%@ Import Namespace="Jayrock.Json" %>
 <%@ Import Namespace="Jayrock.Json.Conversion" %>
 
-<!-- #Include File="property.aspx -->
-<!-- #Include File="layerinfo.aspx -->
+<!-- #Include File="property.aspx" -->
+<!-- #Include File="layerinfo.aspx" -->
 <!-- #Include File="../../utilityfunctions.aspx -->
 
 <script language="c#" runat="server">

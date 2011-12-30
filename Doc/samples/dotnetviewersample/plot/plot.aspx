@@ -73,7 +73,7 @@ try
 }
 catch (MgException mge)
 {
-    String result = mge.GetMessage() + "<br><br>" + mge.GetDetails();
+    String result = mge.GetExceptionMessage() + "<br><br>" + mge.GetDetails();
 
     Response.ContentType = "text/html";
     Response.Write(result);

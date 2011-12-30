@@ -19,6 +19,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 <%@ Import Namespace="System.Text" %>
 <%@ Import Namespace="System.Globalization" %>
 <%@ Import Namespace="OSGeo.MapGuide" %>
+<%@ Import Namespace="Jayrock.Json" %>
 
 <script language="c#" runat="server">
     public class Property : JsonObject
