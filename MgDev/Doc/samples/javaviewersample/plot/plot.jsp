@@ -81,7 +81,7 @@
     }
     catch (MgException e)
     {
-        String result = e.GetMessage() + "<br><br>" + e.GetDetails();
+        String result = e.GetExceptionMessage() + "<br><br>" + e.GetDetails();
 
         response.setContentType("text/html");
         response.setContentLength(result.length());

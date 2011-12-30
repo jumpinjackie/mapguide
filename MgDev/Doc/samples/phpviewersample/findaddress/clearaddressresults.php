@@ -70,7 +70,7 @@
     }
     catch (MgException $e)
     {
-        echo $e->GetMessage();
+        echo $e->GetExceptionMessage();
         echo $e->GetDetails();
     }
 ?>
