@@ -140,7 +140,7 @@ try
 }
 catch (MgException e)
 {
-    Response.Write("<tr><td>" + e.GetMessage()+ "</td></tr>");
+    Response.Write("<tr><td>" + e.GetExceptionMessage()+ "</td></tr>");
     Response.Write("<tr><td class=\"Spacer\"></td></tr>");
     Response.Write("<tr><td>" + e.GetDetails() + "</td></tr>");
 }
