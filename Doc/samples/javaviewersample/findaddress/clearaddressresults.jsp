@@ -71,7 +71,7 @@
     }
     catch (MgException e)
     {
-        out.write(e.GetMessage());
+        out.write(e.GetExceptionMessage());
         out.write(e.GetDetails());
     }
 %>

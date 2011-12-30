@@ -139,7 +139,7 @@
     }
     catch (MgException e)
     {
-        out.write("<tr><td>" + e.GetMessage()+ "</td></tr>");
+        out.write("<tr><td>" + e.GetExceptionMessage()+ "</td></tr>");
         out.write("<tr><td class=\"Spacer\"></td></tr>");
         out.write("<tr><td>" + e.GetDetails() + "</td></tr>");
     }

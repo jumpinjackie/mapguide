@@ -169,7 +169,7 @@
     }
     catch (MgException $e)
     {
-        echo $e->GetMessage();
+        echo $e->GetExceptionMessage();
         echo '<br>';
         echo $e->GetDetails();
     }
