@@ -67,7 +67,7 @@ SET MG_UNIT_TEST=%MG_DEV%\UnitTest
 SET MG_FUSION=%MG_OEM%\Fusion
 SET MG_DOC=%MG_DEV%\Doc
 SET MG_DOC_OUTPUT=%MG_DOC%\MgOpensource_WebAPIReference
-SET MG_DOC_DEVGUIDE_SAMPLES=%MG_DOC%\samples\phpsamples
+SET MG_DOC_DEVGUIDE_SAMPLES=%MG_DOC%\samples\
 SET MG_BUILD_TEMP=%MG_DEV%\BuildTemp
 
 SET MG_OUTPUT=%MG_DEV%\%TYPEBUILD%
@@ -416,10 +416,23 @@ if "%TYPECOMPONENT%"=="web" goto quit
 :install_doc
 echo [install]: Documentation
 %XCOPY% "%MG_DOC_OUTPUT%" "%MG_OUTPUT_WEB%\www\help\webapi" /EXCLUDE:svn_excludes.txt+%TYPEBUILD%_excludes.txt
-echo [install]: Developer's Guide Sample Code
-%XCOPY% "%MG_DOC_DEVGUIDE_SAMPLES%" "%MG_OUTPUT_WEB%\www\phpsamples" /EXCLUDE:svn_excludes.txt+%TYPEBUILD%_excludes.txt
+echo [install]: Developer's Guide Sample Code (PHP)
+%XCOPY% "%MG_DOC_DEVGUIDE_SAMPLES%\phpsamples" "%MG_OUTPUT_WEB%\www\phpsamples" /EXCLUDE:svn_excludes.txt+%TYPEBUILD%_excludes.txt
+echo [install]: Developer's Guide Sample Code (Java)
+%XCOPY% "%MG_DOC_DEVGUIDE_SAMPLES%\javasamples" "%MG_OUTPUT_WEB%\www\javasamples" /EXCLUDE:svn_excludes.txt+%TYPEBUILD%_excludes.txt
+echo [install]: Developer's Guide Sample Code (DotNet)
+%XCOPY% "%MG_DOC_DEVGUIDE_SAMPLES%\dotnetsamples" "%MG_OUTPUT_WEB%\www\dotnetsamples" /EXCLUDE:svn_excludes.txt+%TYPEBUILD%_excludes.txt
+echo [install]: Developer's Guide Sample Code (PHP)
+%XCOPY% "%MG_DOC_DEVGUIDE_SAMPLES%\phpviewersample" "%MG_OUTPUT_WEB%\www\phpviewersample" /EXCLUDE:svn_excludes.txt+%TYPEBUILD%_excludes.txt
+echo [install]: Developer's Guide Sample Code (Java)
+%XCOPY% "%MG_DOC_DEVGUIDE_SAMPLES%\javaviewersample" "%MG_OUTPUT_WEB%\www\javaviewersample" /EXCLUDE:svn_excludes.txt+%TYPEBUILD%_excludes.txt
+echo [install]: Developer's Guide Sample Code (DotNet)
+%XCOPY% "%MG_DOC_DEVGUIDE_SAMPLES%\dotnetviewersample" "%MG_OUTPUT_WEB%\www\dotnetviewersample" /EXCLUDE:svn_excludes.txt+%TYPEBUILD%_excludes.txt
 echo [install]: Viewer API documentation
 %XCOPY% "%MG_DOC%\viewerapi" "%MG_OUTPUT_WEB%\www\help\viewerapi" /EXCLUDE:svn_excludes.txt+%TYPEBUILD%_excludes.txt
+echo [install]: Copy dlls into .net samples
+%XCOPY% "%MG_OUTPUT_WEB%\www\mapviewernet\bin\*.dll" "%MG_OUTPUT_WEB%\www\dotnetsamples\bin" /EXCLUDE:svn_excludes.txt+%TYPEBUILD%_excludes.txt
+%XCOPY% "%MG_OUTPUT_WEB%\www\mapviewernet\bin\*.dll" "%MG_OUTPUT_WEB%\www\dotnetviewersample\bin" /EXCLUDE:svn_excludes.txt+%TYPEBUILD%_excludes.txt
 
 goto quit
 
