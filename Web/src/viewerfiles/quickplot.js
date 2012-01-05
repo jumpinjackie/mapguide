@@ -859,14 +859,16 @@ PreviewDialog.prototype =
                   "&box=" + this.captureInfo.params1 +
                   "&normalized_box=" + this.captureInfo.params2 + 
                   "&scale_denominator=" + this.captureInfo.scaleDenominator + 
-                  "&rotation=" + this.captureInfo.rotation; 
+                  "&rotation=" + this.captureInfo.rotation + 
+                  "&timestamp=" + (new Date()).getTime(); 
                 
             this.printPicture       = $(this.innerDoc.getElementById("PrintPicture"));
-            this.printPicture.src   = src;
             
             // Listen to print picture onload vent
             this.printPicture.addEvent("load", this.printPictureLoaded.bind(this));
             this.printPicture.addEvent("error", this.printPictureLoadError.bind(this));
+
+            this.printPicture.src   = src;
             
             var innerBox  = this.previewContainer.getMarginBoxSize();
             // Resize the frame according to the inner container's 
