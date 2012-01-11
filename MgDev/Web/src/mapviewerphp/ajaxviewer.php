@@ -17,7 +17,7 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
-// Start output buffering
+// Start output buffering 
 ob_start();
 
 include 'mainframe.php';
