@@ -122,6 +122,11 @@
         Value="[AppCmd] set app &quot;[MG_WEBSITE]/[VIRTUALDIR]/mapviewerajax&quot; /applicationPool:&quot;[APP_POOL_NAME]&quot;" />
     <CustomAction Id="MapGuideIIS7_I_AssignViewerAppPoolPhp" BinaryKey="WixCA" DllEntry="CAQuietExec" Execute="deferred" Return="ignore" Impersonate="no"/>
 
+    <!-- 
+    PHP viewer/devguide samples fortunately do not require explicit set up in IIS7, as they should inherit
+    the parent virtual dir settings, which know how to process PHP files
+    -->
+        
     <!-- ************************* IIS7 ASP.Net Viewer INSTALL ***************************************** -->
 
     <!-- Create the MapAgent application -->
@@ -139,6 +144,51 @@
         Value="[AppCmd] set app &quot;[MG_WEBSITE]/[VIRTUALDIR]/mapviewerajax&quot; /applicationPool:&quot;[APP_POOL_NAME]&quot;" />
     <CustomAction Id="MapGuideIIS7_I_AssignViewerAppPoolNet" BinaryKey="WixCA" DllEntry="CAQuietExec" Execute="deferred" Return="ignore" Impersonate="no"/>
 
+    <!-- Create the mapviewernet application -->
+    <CustomAction Id="MapGuideIIS7_I_CreateMapViewerNet_Cmd" Property="MapGuideIIS7_I_CreateMapViewerNet" Execute="immediate"
+        Value="[AppCmd] add app /site.name:&quot;[MG_WEBSITE]&quot; /path:&quot;/[VIRTUALDIR]/mapviewernet&quot; /physicalPath:&quot;[WEBEXTENSIONSLOCATION]www\mapviewernet&quot;" />
+    <CustomAction Id="MapGuideIIS7_I_CreateMapViewerNet" BinaryKey="WixCA" DllEntry="CAQuietExec" Execute="deferred" Return="ignore" Impersonate="no"/>
+
+    <!-- Set the default document for mapviewernet to ajaxviewer.aspx -->
+    <CustomAction Id="MapGuideIIS7_I_SetMapViewerDocNet_Cmd" Property="MapGuideIIS7_I_SetMapViewerDocNet" Execute="immediate"
+        Value="[AppCmd] set config &quot;[MG_WEBSITE]/[VIRTUALDIR]/mapviewernet&quot; /section:defaultDocument /+files.[\[]value='ajaxviewer.aspx'[\]]" />
+    <CustomAction Id="MapGuideIIS7_I_SetMapViewerDocNet" BinaryKey="WixCA" DllEntry="CAQuietExec" Execute="deferred" Return="ignore" Impersonate="no"/>
+
+    <!-- Make the mapviewernet application run in the MapGuide app pool -->
+    <CustomAction Id="MapGuideIIS7_I_AssignMapViewerAppPoolNet_Cmd" Property="MapGuideIIS7_I_AssignMapViewerAppPoolNet" Execute="immediate"
+        Value="[AppCmd] set app &quot;[MG_WEBSITE]/[VIRTUALDIR]/mapviewernet&quot; /applicationPool:&quot;[APP_POOL_NAME]&quot;" />
+    <CustomAction Id="MapGuideIIS7_I_AssignMapViewerAppPoolNet" BinaryKey="WixCA" DllEntry="CAQuietExec" Execute="deferred" Return="ignore" Impersonate="no"/>
+
+    <!-- Create the dotnetviewersample application -->
+    <CustomAction Id="MapGuideIIS7_I_CreateViewerSampleNet_Cmd" Property="MapGuideIIS7_I_CreateViewerSampleNet" Execute="immediate"
+        Value="[AppCmd] add app /site.name:&quot;[MG_WEBSITE]&quot; /path:&quot;/[VIRTUALDIR]/dotnetviewersample&quot; /physicalPath:&quot;[WEBEXTENSIONSLOCATION]www\dotnetviewersample&quot;" />
+    <CustomAction Id="MapGuideIIS7_I_CreateViewerSampleNet" BinaryKey="WixCA" DllEntry="CAQuietExec" Execute="deferred" Return="ignore" Impersonate="no"/>
+
+    <!-- Set the default document for dotnetviewersample to ajaxviewersample.aspx -->
+    <CustomAction Id="MapGuideIIS7_I_SetViewerDocViewerSampleNet_Cmd" Property="MapGuideIIS7_I_SetViewerDocViewerSampleNet" Execute="immediate"
+        Value="[AppCmd] set config &quot;[MG_WEBSITE]/[VIRTUALDIR]/dotnetviewersample&quot; /section:defaultDocument /+files.[\[]value='ajaxviewersample.aspx'[\]]" />
+    <CustomAction Id="MapGuideIIS7_I_SetViewerDocViewerSampleNet" BinaryKey="WixCA" DllEntry="CAQuietExec" Execute="deferred" Return="ignore" Impersonate="no"/>
+
+    <!-- Make the dotnetviewersample application run in the MapGuide app pool -->
+    <CustomAction Id="MapGuideIIS7_I_AssignViewerAppPoolViewerSampleNet_Cmd" Property="MapGuideIIS7_I_AssignViewerAppPoolViewerSampleNet" Execute="immediate"
+        Value="[AppCmd] set app &quot;[MG_WEBSITE]/[VIRTUALDIR]/dotnetviewersample&quot; /applicationPool:&quot;[APP_POOL_NAME]&quot;" />
+    <CustomAction Id="MapGuideIIS7_I_AssignViewerAppPoolViewerSampleNet" BinaryKey="WixCA" DllEntry="CAQuietExec" Execute="deferred" Return="ignore" Impersonate="no"/>
+
+    <!-- Create the dotnetsamples application -->
+    <CustomAction Id="MapGuideIIS7_I_CreateViewerDevGuideSamplesNet_Cmd" Property="MapGuideIIS7_I_CreateViewerDevGuideSamplesNet" Execute="immediate"
+        Value="[AppCmd] add app /site.name:&quot;[MG_WEBSITE]&quot; /path:&quot;/[VIRTUALDIR]/dotnetsamples&quot; /physicalPath:&quot;[WEBEXTENSIONSLOCATION]www\dotnetsamples&quot;" />
+    <CustomAction Id="MapGuideIIS7_I_CreateViewerDevGuideSamplesNet" BinaryKey="WixCA" DllEntry="CAQuietExec" Execute="deferred" Return="ignore" Impersonate="no"/>
+
+    <!-- Set the default document for dotnetsamples to main.aspx -->
+    <CustomAction Id="MapGuideIIS7_I_SetViewerDocDevGuideSamplesNet_Cmd" Property="MapGuideIIS7_I_SetViewerDocDevGuideSamplesNet" Execute="immediate"
+        Value="[AppCmd] set config &quot;[MG_WEBSITE]/[VIRTUALDIR]/dotnetsamples&quot; /section:defaultDocument /+files.[\[]value='main.aspx'[\]]" />
+    <CustomAction Id="MapGuideIIS7_I_SetViewerDocDevGuideSamplesNet" BinaryKey="WixCA" DllEntry="CAQuietExec" Execute="deferred" Return="ignore" Impersonate="no"/>
+
+    <!-- Make the dotnetsamples application run in the MapGuide app pool -->
+    <CustomAction Id="MapGuideIIS7_I_AssignViewerAppPoolDevGuideSamplesNet_Cmd" Property="MapGuideIIS7_I_AssignViewerAppPoolDevGuideSamplesNet" Execute="immediate"
+        Value="[AppCmd] set app &quot;[MG_WEBSITE]/[VIRTUALDIR]/dotnetsamples&quot; /applicationPool:&quot;[APP_POOL_NAME]&quot;" />
+    <CustomAction Id="MapGuideIIS7_I_AssignViewerAppPoolDevGuideSamplesNet" BinaryKey="WixCA" DllEntry="CAQuietExec" Execute="deferred" Return="ignore" Impersonate="no"/>
+        
     <!-- ************************* IIS7 All Features UNINSTALL ***************************************** -->
 
     <CustomAction Id="MapGuideIIS7_U_AppCmd_Cmd" Property="AppCmd" Execute="immediate" Value="&quot;[WindowsFolder]system32\inetsrv\APPCMD.EXE&quot;" />
@@ -153,6 +203,16 @@
         Value="[AppCmd] delete app &quot;[MG_WEBSITE]/[VIRTUALDIR]/mapviewerajax&quot;" />
     <CustomAction Id="MapGuideIIS7_U_RemoveViewer" BinaryKey="WixCA" DllEntry="CAQuietExec" Execute="deferred" Return="ignore" Impersonate="no"/>
 
+    <!-- Remove dotnetsamples application -->
+    <CustomAction Id="MapGuideIIS7_U_RemoveDotNetSamples_Cmd" Property="MapGuideIIS7_U_RemoveDotNetSamples" Execute="immediate"
+        Value="[AppCmd] delete app &quot;[MG_WEBSITE]/[VIRTUALDIR]/dotnetsamples&quot;" />
+    <CustomAction Id="MapGuideIIS7_U_RemoveDotNetSamples" BinaryKey="WixCA" DllEntry="CAQuietExec" Execute="deferred" Return="ignore" Impersonate="no"/>
+
+    <!-- Remove dotnetviewersample application -->
+    <CustomAction Id="MapGuideIIS7_U_RemoveDotNetViewerSample_Cmd" Property="MapGuideIIS7_U_RemoveDotNetViewerSample" Execute="immediate"
+        Value="[AppCmd] delete app &quot;[MG_WEBSITE]/[VIRTUALDIR]/dotnetviewersample&quot;" />
+    <CustomAction Id="MapGuideIIS7_U_RemoveDotNetViewerSample" BinaryKey="WixCA" DllEntry="CAQuietExec" Execute="deferred" Return="ignore" Impersonate="no"/>
+        
     <!-- Remove MapAgent application -->
     <CustomAction Id="MapGuideIIS7_U_RemoveMapAgent_Cmd" Property="MapGuideIIS7_U_RemoveMapAgent" Execute="immediate"
         Value="[AppCmd] delete app &quot;[MG_WEBSITE]/[VIRTUALDIR]/mapagent&quot;" />

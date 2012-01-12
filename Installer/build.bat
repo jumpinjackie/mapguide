@@ -8,7 +8,7 @@ rem it will also copy the installer to the specified output path. Otherwise it w
 rem value of INSTALLER_OUTPUT defined in this file
 rem
 rem Requirements:
-rem   1. Wix 3.0 (latest beta) (http://wix.sourceforge.net)
+rem   1. Wix 3.0 (http://wix.codeplex.com)
 rem   2. Paraffin (http://www.wintellect.com/CS/blogs/jrobbins/archive/2008/12/22/paraffin-3-0-now-with-full-wix-3-0-support.aspx)
 rem
 rem Usage:
@@ -313,9 +313,29 @@ echo [regen]: Web - Help
 %PARAFFIN% %WIX_INC_WEB%\incHelpFiles.wxs
 move /Y %WIX_INC_WEB%\incHelpFiles.PARAFFIN %WIX_INC_WEB%\incHelpFiles.wxs
 
-echo [regen]: Web - devguide
-%PARAFFIN% %WIX_INC_WEB%\incDevGuideFiles.wxs
-move /Y %WIX_INC_WEB%\incDevGuideFiles.PARAFFIN %WIX_INC_WEB%\incDevGuideFiles.wxs
+echo [regen]: Web - devguide PHP
+%PARAFFIN% %WIX_INC_WEB%\incPhpDevGuideFiles.wxs
+move /Y %WIX_INC_WEB%\incPhpDevGuideFiles.PARAFFIN %WIX_INC_WEB%\incPhpDevGuideFiles.wxs
+
+echo [regen]: Web - devguide Java
+%PARAFFIN% %WIX_INC_WEB%\incJavaDevGuideFiles.wxs
+move /Y %WIX_INC_WEB%\incJavaDevGuideFiles.PARAFFIN %WIX_INC_WEB%\incJavaDevGuideFiles.wxs
+
+echo [regen]: Web - devguide DotNet
+%PARAFFIN% %WIX_INC_WEB%\incDotNetDevGuideFiles.wxs
+move /Y %WIX_INC_WEB%\incDotNetDevGuideFiles.PARAFFIN %WIX_INC_WEB%\incDotNetDevGuideFiles.wxs
+
+echo [regen]: Web - viewer sample PHP
+%PARAFFIN% %WIX_INC_WEB%\incPhpViewerSampleFiles.wxs
+move /Y %WIX_INC_WEB%\incPhpViewerSampleFiles.PARAFFIN %WIX_INC_WEB%\incPhpViewerSampleFiles.wxs
+
+echo [regen]: Web - viewer sample Java
+%PARAFFIN% %WIX_INC_WEB%\incJavaViewerSampleFiles.wxs
+move /Y %WIX_INC_WEB%\incJavaViewerSampleFiles.PARAFFIN %WIX_INC_WEB%\incJavaViewerSampleFiles.wxs
+
+echo [regen]: Web - viewer sample DotNet
+%PARAFFIN% %WIX_INC_WEB%\incDotNetViewerSampleFiles.wxs
+move /Y %WIX_INC_WEB%\incDotNetViewerSampleFiles.PARAFFIN %WIX_INC_WEB%\incDotNetViewerSampleFiles.wxs
 
 echo [regen]: Web - mapagent
 %PARAFFIN% %WIX_INC_WEB%\incMapAgentFiles.wxs
@@ -358,7 +378,7 @@ goto quit
 :generate
 echo [generate]: MapGuide Installer
 
-SET PARAFFIN=paraffin.exe -guids -direXclude .svn 
+SET PARAFFIN=paraffin.exe -guids 
 
 SET WIX_INC_SERVER="%INSTALLER_DEV%\Libraries\MapGuide Server\FileIncludes"
 SET WIX_INC_WEB="%INSTALLER_DEV%\Libraries\MapGuide Web Extensions\FileIncludes"
@@ -400,8 +420,23 @@ echo [generate]: Web - Tomcat
 echo [generate]: Web - Help
 %PARAFFIN% -dir %MG_SOURCE%\Web\www\help -alias $(var.MgSource)\Web\www\help -custom HELPFILES -dirref WEBROOTLOCATION %WIX_INC_WEB%\incHelpFiles.wxs
 
-echo [generate]: Web - Developer's Guide Samples
-%PARAFFIN% -dir %MG_SOURCE%\Web\www\phpsamples -alias $(var.MgSource)\Web\www\phpsamples -custom DEVGUIDEFILES -dirref WEBROOTLOCATION %WIX_INC_WEB%\incDevGuideFiles.wxs
+echo [generate]: Web - Developer's Guide Samples (PHP)
+%PARAFFIN% -dir %MG_SOURCE%\Web\www\phpsamples -alias $(var.MgSource)\Web\www\phpsamples -custom PHPDEVGUIDEFILES -dirref WEBROOTLOCATION %WIX_INC_WEB%\incPhpDevGuideFiles.wxs
+
+echo [generate]: Web - Developer's Guide Samples (Java)
+%PARAFFIN% -dir %MG_SOURCE%\Web\www\javasamples -alias $(var.MgSource)\Web\www\javasamples -custom JAVADEVGUIDEFILES -dirref WEBROOTLOCATION %WIX_INC_WEB%\incJavaDevGuideFiles.wxs
+
+echo [generate]: Web - Developer's Guide Samples (DotNet)
+%PARAFFIN% -dir %MG_SOURCE%\Web\www\dotnetsamples -alias $(var.MgSource)\Web\www\dotnetsamples -custom DOTNETDEVGUIDEFILES -dirref WEBROOTLOCATION %WIX_INC_WEB%\incDotNetDevGuideFiles.wxs
+
+echo [generate]: Web - Developer's Guide Samples (PHP)
+%PARAFFIN% -dir %MG_SOURCE%\Web\www\phpviewersample -alias $(var.MgSource)\Web\www\phpviewersample -custom PHPVIEWERSAMPLEFILES -dirref WEBROOTLOCATION %WIX_INC_WEB%\incPhpViewerSampleFiles.wxs
+
+echo [generate]: Web - Developer's Guide Samples (Java)
+%PARAFFIN% -dir %MG_SOURCE%\Web\www\javaviewersample -alias $(var.MgSource)\Web\www\javaviewersample -custom JAVAVIEWERSAMPLEFILES -dirref WEBROOTLOCATION %WIX_INC_WEB%\incJavaViewerSampleFiles.wxs
+
+echo [generate]: Web - Developer's Guide Samples (DotNet)
+%PARAFFIN% -dir %MG_SOURCE%\Web\www\dotnetviewersample -alias $(var.MgSource)\Web\www\dotnetviewersample -custom DOTNETVIEWERSAMPLEFILES -dirref WEBROOTLOCATION %WIX_INC_WEB%\incDotNetViewerSampleFiles.wxs
 
 echo [generate]: Web - mapagent
 %PARAFFIN% -dir %MG_SOURCE%\Web\www\mapagent -alias $(var.MgSource)\Web\www\mapagent -custom MAPAGENTFILES -dirref WEBROOTLOCATION %WIX_INC_WEB%\incMapAgentFiles.wxs

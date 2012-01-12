@@ -20,8 +20,18 @@
     <String Id="WebExtMapViewerASPXFeature_Description">.NET versión del visualizador de mapas.</String>
     <String Id="WebExtSamplesFeature">Muestras</String>
     <String Id="WebExtSamplesFeature_Description">Muestra el código y los datos</String>
-    <String Id="WebExtDevGuideSamplesFeature">Developer's Guide Código de muestra</String>
-    <String Id="WebExtDevGuideSamplesFeature_Description">Ejemplo de código de PHP a partir de la MapGuide Developer's Guide. Esto requiere la muestra de datos Sheboygan.</String>
+    <String Id="WebExtPhpDevGuideSamplesFeature">Developer's Guide Código de muestra (PHP)</String>
+    <String Id="WebExtPhpDevGuideSamplesFeature_Description">Ejemplo de código de PHP a partir de la MapGuide Developer's Guide. Esto requiere la muestra de datos Sheboygan.</String>
+    <String Id="WebExtJavaDevGuideSamplesFeature">Developer's Guide Código de muestra (Java)</String>
+    <String Id="WebExtJavaDevGuideSamplesFeature_Description">Ejemplo de código de Java a partir de la MapGuide Developer's Guide. Esto requiere la muestra de datos Sheboygan.</String>
+    <String Id="WebExtDotNetDevGuideSamplesFeature">Developer's Guide Código de muestra (.net)</String>
+    <String Id="WebExtDotNetDevGuideSamplesFeature_Description">Ejemplo de código de .net a partir de la MapGuide Developer's Guide. Esto requiere la muestra de datos Sheboygan.</String>
+    <String Id="WebExtPhpViewerSampleFeature">Viewer Sample (PHP)</String>
+    <String Id="WebExtPhpViewerSampleFeature_Description">Viewer Sample code (PHP)</String>
+    <String Id="WebExtJavaViewerSampleFeature">Viewer Sample (Java)</String>
+    <String Id="WebExtJavaViewerSampleFeature_Description">Viewer Sample code (Java)</String>
+    <String Id="WebExtDotNetViewerSampleFeature">Viewer Sample (DotNet)</String>
+    <String Id="WebExtDotNetViewerSampleFeature_Description">Viewer Sample code (DotNet)</String>
     <String Id="WebLocalizedFeature">Localización de archivos</String>
     <String Id="WebLocalizedFeature_Description">Localización de archivos para el nivel Web</String>
     <String Id="WebFusionFeature">Fusion</String>
@@ -38,6 +48,13 @@
     <String Id="WebTempFeature_Description">Usted puede elegir un lugar donde MapGuide almacenará los archivos temporales</String>
 
     <String Id="Shortcut_WebAPI">Web de documentación de la API</String>
+    <String Id="Shortcut_WikiHelp">Autodesk WikiHelp</String>
+    <String Id="Shortcut_PhpViewerSample">PHP Viewer Sample</String>
+    <String Id="Shortcut_PhpDevGuideSample">PHP Developer's Guide Samples</String>
+    <String Id="Shortcut_DotNetViewerSample">.net Viewer Sample</String>
+    <String Id="Shortcut_DotNetDevGuideSample">.net Developer's Guide Samples</String>
+    <String Id="Shortcut_JavaViewerSample">Java Viewer Sample</String>
+    <String Id="Shortcut_JavaDevGuideSample">Java Developer's Guide Samples</String>
     <String Id="Shortcut_ViewerAPI">Visor de Documentación de la API</String>
     <String Id="Shortcut_SiteAdmin">MapGuide administrador del sitio</String>
     <String Id="Shortcut_MapAgent">MapAgent Páginas de prueba</String>

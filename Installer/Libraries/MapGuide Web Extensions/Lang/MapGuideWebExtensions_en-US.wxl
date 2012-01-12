@@ -20,8 +20,18 @@
     <String Id="WebExtMapViewerASPXFeature_Description">The .NET version of the map viewer.</String>
     <String Id="WebExtSamplesFeature">Samples</String>
     <String Id="WebExtSamplesFeature_Description">Sample code and data</String>
-    <String Id="WebExtDevGuideSamplesFeature">Developer's Guide Sample Code</String>
-    <String Id="WebExtDevGuideSamplesFeature_Description">PHP sample code from the MapGuide Developer's Guide. This requires the Sheboygan sample data.</String>
+    <String Id="WebExtPhpDevGuideSamplesFeature">Developer's Guide Sample Code (PHP)</String>
+    <String Id="WebExtPhpDevGuideSamplesFeature_Description">PHP sample code from the MapGuide Developer's Guide. This requires the Sheboygan sample data.</String>
+    <String Id="WebExtJavaDevGuideSamplesFeature">Developer's Guide Sample Code (Java)</String>
+    <String Id="WebExtJavaDevGuideSamplesFeature_Description">Java sample code from the MapGuide Developer's Guide. This requires the Sheboygan sample data.</String>
+    <String Id="WebExtDotNetDevGuideSamplesFeature">Developer's Guide Sample Code (.net)</String>
+    <String Id="WebExtDotNetDevGuideSamplesFeature_Description">.net sample code from the MapGuide Developer's Guide. This requires the Sheboygan sample data.</String>
+    <String Id="WebExtPhpViewerSampleFeature">Viewer Sample (PHP)</String>
+    <String Id="WebExtPhpViewerSampleFeature_Description">Viewer Sample code (PHP)</String>
+    <String Id="WebExtJavaViewerSampleFeature">Viewer Sample (Java)</String>
+    <String Id="WebExtJavaViewerSampleFeature_Description">Viewer Sample code (Java)</String>
+    <String Id="WebExtDotNetViewerSampleFeature">Viewer Sample (.net)</String>
+    <String Id="WebExtDotNetViewerSampleFeature_Description">Viewer Sample code (.net)</String>
     <String Id="WebLocalizedFeature">Localization Files</String>
     <String Id="WebLocalizedFeature_Description">Localization files for the web tier</String>
     <String Id="WebFusionFeature">Fusion</String>
@@ -38,6 +48,13 @@
     <String Id="WebTempFeature_Description">You may choose a location where MapGuide will store temporary files.</String>
 
     <String Id="Shortcut_WebAPI">Web API Documentation</String>
+    <String Id="Shortcut_PhpViewerSample">PHP Viewer Sample</String>
+    <String Id="Shortcut_PhpDevGuideSample">PHP Developer's Guide Samples</String>
+    <String Id="Shortcut_DotNetViewerSample">.net Viewer Sample</String>
+    <String Id="Shortcut_DotNetDevGuideSample">.net Developer's Guide Samples</String>
+    <String Id="Shortcut_JavaViewerSample">Java Viewer Sample</String>
+    <String Id="Shortcut_JavaDevGuideSample">Java Developer's Guide Samples</String>
+    <String Id="Shortcut_WikiHelp">Autodesk WikiHelp</String>
     <String Id="Shortcut_ViewerAPI">Viewer API Documentation</String>
     <String Id="Shortcut_SiteAdmin">MapGuide Site Administrator</String>
     <String Id="Shortcut_MapAgent">MapAgent Test Pages</String>

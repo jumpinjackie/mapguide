@@ -176,8 +176,31 @@
                 <!-- This is required because a UI bug displays the feature as network-installable if there are no folders or files. -->
                 <CreateFolder />
               </Component>
-              <Feature Id="WebExtDevGuideSamplesFeature" Title="!(loc.WebExtDevGuideSamplesFeature)" Level="1" Description="!(loc.WebExtDevGuideSamplesFeature_Description)" AllowAdvertise="no" TypicalDefault="install" InstallDefault="local">
-                    <ComponentGroupRef Id="group_DEVGUIDEFILES" />
+                <Feature Id="WebExtPhpDevGuideSamplesFeature" Title="!(loc.WebExtPhpDevGuideSamplesFeature)" Level="1" Description="!(loc.WebExtPhpDevGuideSamplesFeature_Description)" AllowAdvertise="no" TypicalDefault="install" InstallDefault="local">
+                    <ComponentGroupRef Id="group_PHPDEVGUIDEFILES" />
+                    <ComponentRef Id="WebApachePHPDevGuideSampleShortcutComponent"/>
+                    <ComponentRef Id="WebIISPHPDevGuideSampleShortcutComponent"/>
+                </Feature>
+                <Feature Id="WebExtJavaDevGuideSamplesFeature" Title="!(loc.WebExtJavaDevGuideSamplesFeature)" Level="1" Description="!(loc.WebExtJavaDevGuideSamplesFeature_Description)" AllowAdvertise="no" TypicalDefault="install" InstallDefault="local">
+                    <ComponentGroupRef Id="group_JAVADEVGUIDEFILES" />
+                    <ComponentRef Id="WebApacheJavaDevGuideSampleShortcutComponent"/>
+                </Feature>
+                <Feature Id="WebExtDotNetDevGuideSamplesFeature" Title="!(loc.WebExtDotNetDevGuideSamplesFeature)" Level="1" Description="!(loc.WebExtDotNetDevGuideSamplesFeature_Description)" AllowAdvertise="no" TypicalDefault="install" InstallDefault="local">
+                    <ComponentGroupRef Id="group_DOTNETDEVGUIDEFILES" />
+                    <ComponentRef Id="WebIISDotNetDevGuideSampleShortcutComponent"/>
+                </Feature>
+                <Feature Id="WebExtPhpViewerSampleFeature" Title="!(loc.WebExtPhpViewerSampleFeature)" Level="1" Description="!(loc.WebExtPhpViewerSampleFeature_Description)" AllowAdvertise="no" TypicalDefault="install" InstallDefault="local">
+                    <ComponentGroupRef Id="group_PHPVIEWERSAMPLEFILES" />
+                    <ComponentRef Id="WebApachePHPViewerSampleShortcutComponent" />
+                    <ComponentRef Id="WebIISPHPViewerSampleShortcutComponent"/>
+                </Feature>
+                <Feature Id="WebExtJavaViewerSampleFeature" Title="!(loc.WebExtJavaViewerSampleFeature)" Level="1" Description="!(loc.WebExtJavaViewerSampleFeature_Description)" AllowAdvertise="no" TypicalDefault="install" InstallDefault="local">
+                    <ComponentGroupRef Id="group_JAVAVIEWERSAMPLEFILES" />
+                    <ComponentRef Id="WebApacheJavaViewerSampleShortcutComponent"/>
+                </Feature>
+                <Feature Id="WebExtDotNetViewerSampleFeature" Title="!(loc.WebExtDotNetViewerSampleFeature)" Level="1" Description="!(loc.WebExtDotNetViewerSampleFeature_Description)" AllowAdvertise="no" TypicalDefault="install" InstallDefault="local">
+                    <ComponentGroupRef Id="group_DOTNETVIEWERSAMPLEFILES" />
+                    <ComponentRef Id="WebIISDotNetViewerSampleShortcutComponent"/>
                 </Feature>
             </Feature>
             <Feature Id="WebLocalizedFeature" Title="!(loc.WebLocalizedFeature)" Display="hidden"  Level="1" Description="!(loc.WebLocalizedFeature_Description)" AllowAdvertise="no" TypicalDefault="install" InstallDefault="local">

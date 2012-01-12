@@ -71,6 +71,58 @@
                     KeyPath="yes" />
           </RegistryKey>
         </Component>
+          <Component Id="WebApachePHPViewerSampleShortcutComponent" Win64="$(var.Win64)" Guid="E3D81381-6B4A-41AD-B83A-CE686455D3DC">
+              <Condition>MGWEB_CONFIG=&quot;APACHE&quot; AND &amp;WebExtPhpViewerSampleFeature&gt;2</Condition>
+              <util:InternetShortcut Id="ApachePhpViewerSampleShortcut"
+                                 Directory="MapGuideOpenSourceMenuLocation"
+                                 Name="!(loc.Shortcut_PhpViewerSample)"
+                                 Target="http://localhost:[APACHE_PORT]/[VIRTUALDIR]/phpviewersample/ajaxviewer.php" />
+              <RegistryKey Root="HKCU" Key="$(var.MgRegKey)\ApachePHPViewerSampleShortcutComponent">
+                  <RegistryValue
+                          Value="Installed"
+                          Type="string"
+                          KeyPath="yes" />
+              </RegistryKey>
+          </Component>
+          <Component Id="WebApachePHPDevGuideSampleShortcutComponent" Win64="$(var.Win64)" Guid="F2F3F90B-D033-47FA-9DDD-943E594ABE98">
+              <Condition>MGWEB_CONFIG=&quot;APACHE&quot; AND &amp;WebExtPhpDevGuideSamplesFeature&gt;2</Condition>
+              <util:InternetShortcut Id="ApachePhpDevGuideSampleShortcut"
+                                 Directory="MapGuideOpenSourceMenuLocation"
+                                 Name="!(loc.Shortcut_PhpDevGuideSample)"
+                                 Target="http://localhost:[APACHE_PORT]/[VIRTUALDIR]/phpsamples/main.php" />
+              <RegistryKey Root="HKCU" Key="$(var.MgRegKey)\ApachePHPDevGuideSampleShortcutComponent">
+                  <RegistryValue
+                          Value="Installed"
+                          Type="string"
+                          KeyPath="yes" />
+              </RegistryKey>
+          </Component>
+          <Component Id="WebApacheJavaViewerSampleShortcutComponent" Win64="$(var.Win64)" Guid="4D0D9A31-2BB5-4DE8-881A-53A5371BF93D">
+              <Condition>MGWEB_CONFIG=&quot;APACHE&quot; AND &amp;WebExtJavaViewerSampleFeature&gt;2</Condition>
+              <util:InternetShortcut Id="ApacheJavaViewerSampleShortcut"
+                                 Directory="MapGuideOpenSourceMenuLocation"
+                                 Name="!(loc.Shortcut_JavaViewerSample)"
+                                 Target="http://localhost:[APACHE_PORT]/[VIRTUALDIR]/javaviewersample/ajaxviewer.jsp" />
+              <RegistryKey Root="HKCU" Key="$(var.MgRegKey)\ApacheJavaViewerSampleShortcutComponent">
+                  <RegistryValue
+                          Value="Installed"
+                          Type="string"
+                          KeyPath="yes" />
+              </RegistryKey>
+          </Component>
+          <Component Id="WebApacheJavaDevGuideSampleShortcutComponent" Win64="$(var.Win64)" Guid="4DB97F1C-D225-4437-B2B8-69ECDE4F4168">
+              <Condition>MGWEB_CONFIG=&quot;APACHE&quot; AND &amp;WebExtJavaDevGuideSamplesFeature&gt;2</Condition>
+              <util:InternetShortcut Id="ApacheJavaDevGuideSampleShortcut"
+                                 Directory="MapGuideOpenSourceMenuLocation"
+                                 Name="!(loc.Shortcut_JavaDevGuideSample)"
+                                 Target="http://localhost:[APACHE_PORT]/[VIRTUALDIR]/javasamples/main.jsp" />
+              <RegistryKey Root="HKCU" Key="$(var.MgRegKey)\ApacheJavaDevGuideSampleShortcutComponent">
+                  <RegistryValue
+                          Value="Installed"
+                          Type="string"
+                          KeyPath="yes" />
+              </RegistryKey>
+          </Component>
         <Component Id="IISWebApiShortcutComponent" Win64="$(var.Win64)" Guid="DFA7D99A-3760-4072-9510-7EC5D658FB5F">
           <Condition>MGWEB_CONFIG=&quot;IIS&quot;</Condition>
           <CreateFolder />
@@ -93,6 +145,58 @@
                                      Name="!(loc.Shortcut_ViewerAPI)"
                                      Target="http://localhost/[VIRTUALDIR]/help/viewerapi/index.htm" />
               <RegistryKey Root="HKCU" Key="$(var.MgRegKey)\IISViewerApiShortcut">
+                  <RegistryValue
+                          Value="Installed"
+                          Type="string"
+                          KeyPath="yes" />
+              </RegistryKey>
+          </Component>
+          <Component Id="WebIISPHPViewerSampleShortcutComponent" Win64="$(var.Win64)" Guid="F1B2C345-52F8-4179-8CDC-34D2D3E22418">
+              <Condition>MGWEB_CONFIG=&quot;IIS&quot; AND &amp;WebExtPhpViewerSampleFeature&gt;2</Condition>
+              <util:InternetShortcut Id="IISPhpViewerSampleShortcut"
+                                 Directory="MapGuideOpenSourceMenuLocation"
+                                 Name="!(loc.Shortcut_PhpViewerSample)"
+                                 Target="http://localhost/[VIRTUALDIR]/phpviewersample/ajaxviewer.php" />
+              <RegistryKey Root="HKCU" Key="$(var.MgRegKey)\IISPHPViewerSampleShortcutComponent">
+                  <RegistryValue
+                          Value="Installed"
+                          Type="string"
+                          KeyPath="yes" />
+              </RegistryKey>
+          </Component>
+          <Component Id="WebIISPHPDevGuideSampleShortcutComponent" Win64="$(var.Win64)" Guid="EEAB8D50-3ECA-4CBF-8D80-3F02219CB797">
+              <Condition>MGWEB_CONFIG=&quot;IIS&quot; AND &amp;WebExtPhpDevGuideSamplesFeature&gt;2</Condition>
+              <util:InternetShortcut Id="IISPhpDevGuideSampleShortcut"
+                                 Directory="MapGuideOpenSourceMenuLocation"
+                                 Name="!(loc.Shortcut_PhpDevGuideSample)"
+                                 Target="http://localhost/[VIRTUALDIR]/phpsamples/main.php" />
+              <RegistryKey Root="HKCU" Key="$(var.MgRegKey)\IISPHPDevGuideSampleShortcutComponent">
+                  <RegistryValue
+                          Value="Installed"
+                          Type="string"
+                          KeyPath="yes" />
+              </RegistryKey>
+          </Component>
+          <Component Id="WebIISDotNetViewerSampleShortcutComponent" Win64="$(var.Win64)" Guid="BE2DD022-04C2-45AF-95A6-87E652BE52CA">
+              <Condition>MGWEB_CONFIG=&quot;IIS&quot; AND &amp;WebExtDotNetViewerSampleFeature&gt;2</Condition>
+              <util:InternetShortcut Id="IISDotNetViewerSampleShortcut"
+                                 Directory="MapGuideOpenSourceMenuLocation"
+                                 Name="!(loc.Shortcut_DotNetViewerSample)"
+                                 Target="http://localhost/[VIRTUALDIR]/dotnetviewersample/ajaxviewer.aspx" />
+              <RegistryKey Root="HKCU" Key="$(var.MgRegKey)\IISDotNetViewerSampleShortcutComponent">
+                  <RegistryValue
+                          Value="Installed"
+                          Type="string"
+                          KeyPath="yes" />
+              </RegistryKey>
+          </Component>
+          <Component Id="WebIISDotNetDevGuideSampleShortcutComponent" Win64="$(var.Win64)" Guid="0B766EEB-FA31-4833-91F6-87C2A653FD33">
+              <Condition>MGWEB_CONFIG=&quot;IIS&quot; AND &amp;WebExtDotNetDevGuideSamplesFeature&gt;2</Condition>
+              <util:InternetShortcut Id="IISDotNetDevGuideSampleShortcut"
+                                 Directory="MapGuideOpenSourceMenuLocation"
+                                 Name="!(loc.Shortcut_DotNetDevGuideSample)"
+                                 Target="http://localhost/[VIRTUALDIR]/dotnetsamples/main.aspx" />
+              <RegistryKey Root="HKCU" Key="$(var.MgRegKey)\IISDotNetDevGuideSampleShortcutComponent">
                   <RegistryValue
                           Value="Installed"
                           Type="string"
@@ -130,11 +234,15 @@
             <util:InternetShortcut Id="MapGuideTrac"
                                    Directory="WebResourcesLocation"
                                    Name="!(loc.Shortcut_Trac)"
-                                   Target="http://trac.osgeo.org" />
+                                   Target="http://trac.osgeo.org/mapguide" />
             <util:InternetShortcut Id="MapGuideBestPractices"
                                    Directory="WebResourcesLocation"
                                    Name="!(loc.Shortcut_BestPractices)"
                                    Target="http://sandbox.mapguide.com" />
+            <util:InternetShortcut Id="AutodeskWikiHelp"
+                                   Directory="WebResourcesLocation"
+                                   Name="!(loc.Shortcut_WikiHelp)"
+                                   Target="http://wikihelp.autodesk.com/Infr._Map_Server/enu/2012" />
             <util:InternetShortcut Id="MapGuideCentral"
                                    Directory="WebResourcesLocation"
                                    Name="!(loc.Shortcut_MapGuideCentral)"

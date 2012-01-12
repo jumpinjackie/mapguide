@@ -677,6 +677,18 @@
             <Custom Action="MapGuideIIS7_I_SetViewerDocNet" After="MapGuideIIS7_I_CreateViewerNet">MGWEB_CONFIG=&quot;IIS&quot; AND IIS_API_TYPE=&quot;DOTNET&quot; AND IISVERSIONMAJOR=&quot;#7&quot; AND &amp;WebExtensionsFeature&gt;2</Custom>
             <Custom Action="MapGuideIIS7_I_AssignViewerAppPoolNet" After="MapGuideIIS7_I_SetViewerDocNet">MGWEB_CONFIG=&quot;IIS&quot; AND IIS_API_TYPE=&quot;DOTNET&quot; AND IISVERSIONMAJOR=&quot;#7&quot; AND &amp;WebExtensionsFeature&gt;2</Custom>
 
+            <Custom Action="MapGuideIIS7_I_CreateMapViewerNet" After="MapGuideIIS7_I_AssignViewerAppPoolNet">MGWEB_CONFIG=&quot;IIS&quot; AND IIS_API_TYPE=&quot;DOTNET&quot; AND IISVERSIONMAJOR=&quot;#7&quot; AND &amp;WebExtensionsFeature&gt;2 AND &amp;WebExtMapViewerASPXFeature&gt;2</Custom>
+            <Custom Action="MapGuideIIS7_I_SetMapViewerDocNet" After="MapGuideIIS7_I_CreateMapViewerNet">MGWEB_CONFIG=&quot;IIS&quot; AND IIS_API_TYPE=&quot;DOTNET&quot; AND IISVERSIONMAJOR=&quot;#7&quot; AND &amp;WebExtensionsFeature&gt;2 AND &amp;WebExtMapViewerASPXFeature&gt;2</Custom>
+            <Custom Action="MapGuideIIS7_I_AssignMapViewerAppPoolNet" After="MapGuideIIS7_I_SetMapViewerDocNet">MGWEB_CONFIG=&quot;IIS&quot; AND IIS_API_TYPE=&quot;DOTNET&quot; AND IISVERSIONMAJOR=&quot;#7&quot; AND &amp;WebExtensionsFeature&gt;2 AND &amp;WebExtMapViewerASPXFeature&gt;2</Custom>
+
+            <Custom Action="MapGuideIIS7_I_CreateViewerSampleNet" After="MapGuideIIS7_I_AssignMapViewerAppPoolNet">MGWEB_CONFIG=&quot;IIS&quot; AND IIS_API_TYPE=&quot;DOTNET&quot; AND IISVERSIONMAJOR=&quot;#7&quot; AND &amp;WebExtensionsFeature&gt;2 AND &amp;WebExtDotNetViewerSampleFeature&gt;2</Custom>
+            <Custom Action="MapGuideIIS7_I_SetViewerDocViewerSampleNet" After="MapGuideIIS7_I_CreateViewerSampleNet">MGWEB_CONFIG=&quot;IIS&quot; AND IIS_API_TYPE=&quot;DOTNET&quot; AND IISVERSIONMAJOR=&quot;#7&quot; AND &amp;WebExtensionsFeature&gt;2 AND &amp;WebExtDotNetViewerSampleFeature&gt;2</Custom>
+            <Custom Action="MapGuideIIS7_I_AssignViewerAppPoolViewerSampleNet" After="MapGuideIIS7_I_SetViewerDocViewerSampleNet">MGWEB_CONFIG=&quot;IIS&quot; AND IIS_API_TYPE=&quot;DOTNET&quot; AND IISVERSIONMAJOR=&quot;#7&quot; AND &amp;WebExtensionsFeature&gt;2 AND &amp;WebExtDotNetViewerSampleFeature&gt;2</Custom>
+
+            <Custom Action="MapGuideIIS7_I_CreateViewerDevGuideSamplesNet" After="MapGuideIIS7_I_AssignViewerAppPoolViewerSampleNet">MGWEB_CONFIG=&quot;IIS&quot; AND IIS_API_TYPE=&quot;DOTNET&quot; AND IISVERSIONMAJOR=&quot;#7&quot; AND &amp;WebExtensionsFeature&gt;2 AND &amp;WebExtDotNetDevGuideSamplesFeature&gt;2</Custom>
+            <Custom Action="MapGuideIIS7_I_SetViewerDocDevGuideSamplesNet" After="MapGuideIIS7_I_CreateViewerDevGuideSamplesNet">MGWEB_CONFIG=&quot;IIS&quot; AND IIS_API_TYPE=&quot;DOTNET&quot; AND IISVERSIONMAJOR=&quot;#7&quot; AND &amp;WebExtensionsFeature&gt;2 AND &amp;WebExtDotNetDevGuideSamplesFeature&gt;2</Custom>
+            <Custom Action="MapGuideIIS7_I_AssignViewerAppPoolDevGuideSamplesNet" After="MapGuideIIS7_I_SetViewerDocDevGuideSamplesNet">MGWEB_CONFIG=&quot;IIS&quot; AND IIS_API_TYPE=&quot;DOTNET&quot; AND IISVERSIONMAJOR=&quot;#7&quot; AND &amp;WebExtensionsFeature&gt;2 AND &amp;WebExtDotNetDevGuideSamplesFeature&gt;2</Custom>
+
           <!-- IIS7 UNINSTALL deferred action properties -->
             <Custom Action="MapGuideIIS7_U_AppCmd_Cmd" After="InstallInitialize">MGWEB_CONFIG=&quot;IIS&quot; AND IISVERSIONMAJOR=&quot;#7&quot; AND &amp;WebExtensionsFeature=2</Custom>
             <Custom Action="MapGuideIIS7_U_ClearMapAgentRestriction_Cmd" After="MapGuideIIS7_U_AppCmd_Cmd">MGWEB_CONFIG=&quot;IIS&quot; AND IISVERSIONMAJOR=&quot;#7&quot; AND &amp;WebExtensionsFeature=2</Custom>

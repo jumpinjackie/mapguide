@@ -8,7 +8,7 @@ rem it will also copy the installer to the specified output path. Otherwise it w
 rem value of INSTALLER_OUTPUT defined in this file
 rem
 rem Requirements:
-rem   1. Wix 3.0 (latest beta) (http://wix.sourceforge.net)
+rem   1. Wix 3.5 (http://wix.codeplex.com)
 rem   2. Paraffin (http://www.wintellect.com/CS/blogs/jrobbins/archive/2008/12/22/paraffin-3-0-now-with-full-wix-3-0-support.aspx)
 rem
 rem Usage:
@@ -361,7 +361,7 @@ goto quit
 :generate
 echo [generate]: MapGuide Installer
 
-SET PARAFFIN=paraffin.exe -Win64 -guids -direXclude .svn 
+SET PARAFFIN=paraffin.exe -Win64 -guids
 
 SET WIX_INC_SERVER="%INSTALLER_DEV%\Libraries\MapGuide Server\FileIncludes"
 SET WIX_INC_WEB="%INSTALLER_DEV%\Libraries\MapGuide Web Extensions\FileIncludes"

@@ -1,9 +1,9 @@
 !ifdef MAXCOMPRESSION
 
-;SetCompressor /FINAL /SOLID lzma
-;SetCompressorDictSize 64
+SetCompressor /FINAL /SOLID lzma
+SetCompressorDictSize 64
 
-;FileBufSize 256
+FileBufSize 256
 
 !endif
 
