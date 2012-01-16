@@ -36,22 +36,25 @@ PSTRBUNDLE GetStringBundle(string& locale_)
         locale = english;
     else
         strlower(locale);
+    
+    string localKey = localizationPath + locale;
 
-    map<string, PSTRBUNDLE>::const_iterator it = languages.find(locale);
+    map<string, PSTRBUNDLE>::const_iterator it = languages.find(localKey);
+    
     if (it == languages.end()) {
         FILE* f = NULL;
-        string fname = localizationPath + locale;
+        string fname = localKey;
         f = fopen(fname.c_str(), "r");
         if(f == NULL) {  // assume file doesn't exists
             // requested locale is not supported, default to English
-            it = languages.find(english);
+            it = languages.find(localizationPath + english);
             if(it != languages.end())
                 return it->second;
             fname = localizationPath + english;
             f = fopen(fname.c_str(), "r");
         }
         PSTRBUNDLE sb = new STRBUNDLE;
-        languages[locale] = sb;
+        languages[localKey] = sb;
         if(f != NULL) {
             char l[MAX_LOC_LEN + 1];
             for(int lc = 0; fgets(l, MAX_LOC_LEN, f) != NULL; lc++) {
@@ -74,7 +77,7 @@ PSTRBUNDLE GetStringBundle(string& locale_)
             fclose(f);
         }
     }
-    return languages[locale];
+    return languages[localKey];
 }
 
 static char* Localize(const char* text_, const char* locale_, int os)
