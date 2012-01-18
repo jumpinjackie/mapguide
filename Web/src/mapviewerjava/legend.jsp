@@ -76,6 +76,9 @@ PrintWriter writer = response.getWriter();
 
 try
 {
+    output = new StringBuffer("\nvar layerData = new Array();\n");
+    intermediateVar = 0;
+    
     // Initialize web tier with the site configuration file.
     InitializeWebTier();
 
