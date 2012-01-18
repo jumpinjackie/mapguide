@@ -208,8 +208,7 @@
       <div class="rule2"> 
         <table width="100%" border="0">
           <tr> 
-            <td width="17%"><b>General Properties</b></td>
-            <td width="83%">&nbsp; </td>
+            <td width="17%" colspan="2"><b>General Properties</b></td>
           </tr>
           <tr> 
             <td width="17%">Display name</td>
@@ -258,13 +257,15 @@
         </table>
         <table width="100%" border="0">
           <tr> 
-            <td width="17%"><b> Administrative Connection Properties</b></td>
-            <td width="83%">&nbsp; </td>
+            <td width="17%" colspan="2"><b> Administrative Connection Properties</b></td>
           </tr>
           <tr> 
             <td width="17%">Maximum connections</td>
             <td width="83%">Max number of open administration connections (value 
-              &lt;= 1024)</td>
+              &lt;= 1024)<br />
+              The operations through this connection include Log related operations (get log, delete log, clear log etc.), package related operations (make package, load package, enumerate packages etc.) and Site related operations (get site version, get site status) etc. <br />
+              MgServerAdmin is the central class to performance administration operations <br /><br />
+            </td>
           </tr>
           <tr> 
             <td width="17%">Port</td>
@@ -287,58 +288,60 @@
 
         <table width="100%" border="0">
           <tr> 
-            <td width="17%"><b> Client Connection Properties</b></td>
-            <td width="83%">&nbsp; </td>
+            <td width="17%" colspan="2"><b> Client Connection Properties</b></td>
           </tr>
           <tr> 
             <td width="17%">Maximum connections</td>
-            <td width="83%">Max number of open administration connections (value 
-              &lt;= 1024)</td>
+            <td width="83%">Max number of open client connections (value 
+              &lt;= 1024)<br />
+              The operations that are performed via the service APIs (including FeatureService, Resource Server, Rendering Service etc.)are through this connection <br /><br />
+            </td>
           </tr>
           <tr> 
             <td width="17%">Port</td>
-            <td width="83%">Port to use for administration operations. If this 
+            <td width="83%">Port to use for client operations. If this 
               port number is changed, the corresponding port number in the <i>webconfig.ini</i> 
               file should also be changed (the <i>ini</i> file is installed with 
               the Web Extensions).</td>
           </tr>
           <tr> 
             <td width="17%">Maximum queued operations</td>
-            <td width="83%">Max number of administration operations to queue (value 
+            <td width="83%">Max number of client operations to queue (value 
               &lt;= 1024)</td>
           </tr>
           <tr> 
             <td width="17%">Maximum threads in pool</td>
-            <td width="83%">Number of threads available for processing administration 
+            <td width="83%">Number of threads available for processing client 
               operations (value &lt;= 1024)</td>
           </tr>
         </table>
 
         <table width="100%" border="0">
           <tr> 
-            <td width="17%"><b> Site Connection Properties</b></td>
-            <td width="83%">&nbsp; </td>
+            <td width="17%" colspan="2"><b> Site Connection Properties</b></td>
           </tr>
           <tr> 
             <td width="17%">Maximum connections</td>
-            <td width="83%">Max number of open administration connections (value 
-              &lt;= 1024)</td>
+            <td width="83%">Max number of open site connections (value 
+              &lt;= 1024)<br />
+              The operations through this connect include create session, destroy session, enumerate users, authenticate etc. MgSite is the central class to performance these operations <br /><br />
+            </td>
           </tr>
           <tr> 
             <td width="17%">Port</td>
-            <td width="83%">Port to use for administration operations. If this 
+            <td width="83%">Port to use for site operations. If this 
               port number is changed, the corresponding port number in the <i>webconfig.ini</i> 
               file should also be changed (the <i>ini</i> file is installed with 
               the Web Extensions).</td>
           </tr>
           <tr> 
             <td width="17%">Maximum queued operations</td>
-            <td width="83%">Max number of administration operations to queue (value 
+            <td width="83%">Max number of site operations to queue (value 
               &lt;= 1024)</td>
           </tr>
           <tr> 
             <td width="17%">Maximum threads in pool</td>
-            <td width="83%">Number of threads available for processing administration 
+            <td width="83%">Number of threads available for processing site 
               operations (value &lt;= 1024)</td>
           </tr>
         </table>
