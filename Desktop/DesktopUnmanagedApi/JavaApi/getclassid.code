@@ -1,0 +1,6 @@
+
+/* Get a class identifier from an Object instance */
+JNIEXPORT jint JNICALL Java_org_osgeo_mapguide_MapGuideJavaApiJNI_getClassId(JNIEnv* jenv, jclass jcls, jlong jarg1)
+{
+  return ((MgObject*)(void*)jarg1)->GetClassId();
+}
