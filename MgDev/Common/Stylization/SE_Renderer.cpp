@@ -474,20 +474,40 @@ void SE_Renderer::DrawSymbol(SE_RenderPrimitiveList& symbol,
         else if (primitive->type == SE_RenderPrimitive_Raster)
         {
             SE_RenderRaster* rp = (SE_RenderRaster*)primitive;
-            ImageData& imgData = rp->imageData;
 
-            if (imgData.data != NULL)
+            if (m_bSelectionMode)
             {
-                // update the extents with this primitive's bounds
-                for (int j=0; j<4; ++j)
-                    extents.add_point(primitive->bounds[j]);
+                // if the raster symbol is selected, then draw the mask selection polygon only
+                LineBuffer *lb = LineBufferPool::NewLineBuffer(m_pPool, 5);
+                std::auto_ptr<LineBuffer> spLB(lb);
 
-                // get position and angle to use
-                double x, y;
-                xform.transform(rp->position[0], rp->position[1], x, y);
-                double angleDeg = (rp->angleRad + angleRad) * M_180PI;
+                lb->MoveTo(rp->bounds[3].x, rp->bounds[3].y);
+                for (int i = 0; i < 4; ++i)
+                {
+                    lb->LineTo(rp->bounds[i].x, rp->bounds[i].y);
+                }
+                
+                DrawScreenPolygon(lb, &xform, m_selFillColor);
+                DrawScreenPolyline(lb, &xform, m_selLineStroke);
 
-                DrawScreenRaster(imgData.data, imgData.size, imgData.format, imgData.width, imgData.height, x, y, rp->extent[0], rp->extent[1], angleDeg, rp->opacity);
+                LineBufferPool::FreeLineBuffer(m_pPool, spLB.release());
+            }
+            else 
+            {
+                ImageData& imgData = rp->imageData;
+                if (imgData.data != NULL)
+                {
+                    // update the extents with this primitive's bounds
+                    for (int j=0; j<4; ++j)
+                        extents.add_point(primitive->bounds[j]);
+
+                    // get position and angle to use
+                    double x, y;
+                    xform.transform(rp->position[0], rp->position[1], x, y);
+                    double angleDeg = (rp->angleRad + angleRad) * M_180PI;
+
+                    DrawScreenRaster(imgData.data, imgData.size, imgData.format, imgData.width, imgData.height, x, y, rp->extent[0], rp->extent[1], angleDeg, rp->opacity);
+                }
             }
         }
     }
