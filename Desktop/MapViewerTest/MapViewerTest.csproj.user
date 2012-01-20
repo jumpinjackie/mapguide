@@ -3,4 +3,8 @@
     <StartArguments>Library://Samples/Sheboygan/Maps/Sheboygan.MapDefinition</StartArguments>
     <EnableUnmanagedDebugging>true</EnableUnmanagedDebugging>
   </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x64' ">
+    <StartArguments>Library://Samples/Sheboygan/Maps/Sheboygan.MapDefinition</StartArguments>
+    <EnableUnmanagedDebugging>true</EnableUnmanagedDebugging>
+  </PropertyGroup>
 </Project>

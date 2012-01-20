@@ -28,27 +28,27 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>..\bin\Release\</OutputPath>
+    <OutputPath>bin\Release\</OutputPath>
     <DefineConstants>
     </DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <DocumentationFile>..\bin\Release\OSGeo.MapGuide.Viewer.XML</DocumentationFile>
+    <DocumentationFile>bin\Release\OSGeo.MapGuide.Viewer.XML</DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="OSGeo.MapGuide.Foundation, Version=1.0.0.1, Culture=neutral, processorArchitecture=x86">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\Workspace\mg-desktop\bin\Release\OSGeo.MapGuide.Foundation.dll</HintPath>
+      <HintPath>..\bin\Assemblies\OSGeo.MapGuide.Foundation.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="OSGeo.MapGuide.Geometry, Version=1.0.0.1, Culture=neutral, processorArchitecture=x86">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\Workspace\mg-desktop\bin\Release\OSGeo.MapGuide.Geometry.dll</HintPath>
+      <HintPath>..\bin\Assemblies\OSGeo.MapGuide.Geometry.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="OSGeo.MapGuide.PlatformBase, Version=1.0.0.1, Culture=neutral, processorArchitecture=x86">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\Workspace\mg-desktop\bin\Release\OSGeo.MapGuide.PlatformBase.dll</HintPath>
+      <HintPath>..\bin\Assemblies\OSGeo.MapGuide.PlatformBase.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="System" />
