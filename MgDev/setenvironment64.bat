@@ -1,5 +1,15 @@
 @echo off
 rem ==================================================
+rem setenvironment64.bat
+rem
+rem Sets the required environment variables for the
+rem build.bat script
+rem
+rem Compiler defaults to vc9.0. To use the vc10
+rem compiler, call setenvironment.bat like so:
+rem 
+rem setenvironment64.bat vc10
+rem ==================================================
 rem Top-level vars
 rem ==================================================
 SET OLDPATH=%PATH%
@@ -8,7 +18,8 @@ SET TYPEBUILD=Release64
 SET CONFIGURATION=Release
 SET PLATFORM=x64
 SET TYPECOMPONENT=all
-
+SET VC_COMPILER_VERSION=9
+IF "%1" == "vc10" SET VC_COMPILER_VERSION=10
 rem ==================================================
 rem MapGuide vars
 rem ==================================================
