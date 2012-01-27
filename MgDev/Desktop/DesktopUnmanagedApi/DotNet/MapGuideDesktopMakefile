@@ -1,4 +1,5 @@
 cleandebug:
+  echo clean - debug
   del /Q .\Mg*.cs
   del /Q .\SWIGTYPE*.cs
   del /Q .\*Constants.cs
@@ -13,6 +14,7 @@ cleandebug:
   if exist $(ASSEMBLY_DIR)\OSGeo.MapGuide.PlatformBase.dll del $(OUTDIR)\OSGeo.MapGuide.PlatformBase.dll
 
 cleanrelease:
+  echo clean - release
   del /Q .\Mg*.cs
   del /Q .\SWIGTYPE*.cs
   del /Q .\*Constants.cs
@@ -30,12 +32,13 @@ debug: $(OUTDIR)\OSGeo.MapGuide.Desktop.Temp.dll
 release: $(OUTDIR)\OSGeo.MapGuide.Desktop.dll
 
 $(OUTDIR)\OSGeo.MapGuide.Desktop.Temp.dll:
+  echo target - OSGeo.MapGuide.Desktop.Temp.dll
   copy /Y $(WEB_BIN_DIR)\OSGeo.MapGuide.Foundation.dll $(OUTDIR)\OSGeo.MapGuide.Foundation.dll
   copy /Y $(WEB_BIN_DIR)\OSGeo.MapGuide.Geometry.dll $(OUTDIR)\OSGeo.MapGuide.Geometry.dll
   copy /Y $(WEB_BIN_DIR)\OSGeo.MapGuide.PlatformBase.dll $(OUTDIR)\OSGeo.MapGuide.PlatformBase.dll
   copy /Y SignMapGuideApi.exe $(OUTDIR)\SignMapGuideApi.exe
   copy /Y maestroapi.key $(OUTDIR)\maestroapi.key
-  SignApi.bat $(OUTDIR)
+  $(SIGNER) $(OUTDIR)
   csc.exe /debug+ /debug:full /optimize- /out:$(OUTDIR)\OSGeo.MapGuide.Desktop.dll /platform:$(PLATFORM) /target:library /reference:$(OUTDIR)\OSGeo.MapGuide.Foundation.dll;$(OUTDIR)\OSGeo.MapGuide.Geometry.dll;$(OUTDIR)\OSGeo.MapGuide.PlatformBase.dll .\*.cs .\Partials\*.cs
   copy /y $(OUTDIR)\OSGeo.MapGuide.Desktop.dll $(OUTDIR)\OSGeo.MapGuide.Desktop.Temp.dll
   copy /Y $(WEB_BIN_DIR)\FoundationUnmanagedApi.dll $(OUTDIR)\FoundationUnmanagedApi.dll
@@ -48,12 +51,13 @@ $(OUTDIR)\OSGeo.MapGuide.Desktop.Temp.dll:
   copy /Y $(OUTDIR)\OSGeo.MapGuide.Desktop.dll $(ASSEMBLY_DIR)\OSGeo.MapGuide.Desktop.dll
 
 $(OUTDIR)\OSGeo.MapGuide.Desktop.dll:
+  echo target - OSGeo.MapGuide.Desktop.dll
   copy /Y $(WEB_BIN_DIR)\OSGeo.MapGuide.Foundation.dll $(OUTDIR)\OSGeo.MapGuide.Foundation.dll
   copy /Y $(WEB_BIN_DIR)\OSGeo.MapGuide.Geometry.dll $(OUTDIR)\OSGeo.MapGuide.Geometry.dll
   copy /Y $(WEB_BIN_DIR)\OSGeo.MapGuide.PlatformBase.dll $(OUTDIR)\OSGeo.MapGuide.PlatformBase.dll
   copy /Y SignMapGuideApi.exe $(OUTDIR)\SignMapGuideApi.exe
   copy /Y maestroapi.key $(OUTDIR)\maestroapi.key
-  SignApi.bat $(OUTDIR)
+  $(SIGNER) $(OUTDIR)
   csc.exe /debug+ /debug:pdbonly /optimize+ /out:$(OUTDIR)\OSGeo.MapGuide.Desktop.dll /target:library /platform:$(PLATFORM) /reference:$(OUTDIR)\OSGeo.MapGuide.Foundation.dll;$(OUTDIR)\OSGeo.MapGuide.Geometry.dll;$(OUTDIR)\OSGeo.MapGuide.PlatformBase.dll .\*.cs .\Partials\*.cs 
   copy /Y $(WEB_BIN_DIR)\FoundationUnmanagedApi.dll $(OUTDIR)\FoundationUnmanagedApi.dll
   copy /Y $(WEB_BIN_DIR)\GeometryUnmanagedApi.dll $(OUTDIR)\GeometryUnmanagedApi.dll
