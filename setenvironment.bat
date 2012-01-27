@@ -1,3 +1,14 @@
+@echo off
+rem ==================================================
+rem setenvironment.bat
+rem
+rem Sets the required environment variables for the
+rem build.bat script
+rem
+rem Compiler defaults to vc9.0. To use the vc10
+rem compiler, call setenvironment.bat like so:
+rem 
+rem setenvironment.bat vc10
 rem ==================================================
 rem Top-level vars
 rem ==================================================
@@ -6,6 +17,8 @@ SET TYPEACTION=build
 SET TYPEBUILD=Release
 SET CONFIGURATION=Release
 SET TYPECOMPONENT=all
+SET VC_COMPILER_VERSION=9
+IF "%1" == "vc10" SET VC_COMPILER_VERSION=10
 rem ==================================================
 rem MapGuide vars
 rem ==================================================
@@ -58,7 +71,7 @@ SET CPU_CORES=%NUMBER_OF_PROCESSORS%
 
 rem Uncomment the line below to enable msbuild logging
 rem SET MSBUILD_LOG=/l:FileLogger,Microsoft.Build.Engine;logfile=Build.log;verbosity=diagnostic
-SET MSBUILD_VERBOSITY=/v:q
+SET MSBUILD_VERBOSITY=/v:n
 
 rem ==================================================
 rem Command aliases

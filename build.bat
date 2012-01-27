@@ -43,6 +43,15 @@ rem
 rem Please note that -a=install does nothing if -w=oem
 
 rem ==================================================
+rem Update solution suffix if using VC10 compiler.
+rem NOTE: VS10 solution files are suffixed with _VS2010
+rem which is why we can do it like this
+rem ==================================================
+
+SET VS_SLN_SUFFIX=
+IF "%VC_COMPILER_VERSION%" == "10" SET VS_SLN_SUFFIX=_VS2010
+
+rem ==================================================
 rem Parameter Handling
 rem ==================================================
 
@@ -152,6 +161,11 @@ echo Action is [%TYPEACTION%] on [%TYPECOMPONENT%]
 echo Deployment Directory for Server: %MG_OUTPUT_SERVER%
 echo Deployment Directory for Web: %MG_OUTPUT_WEB%
 echo CPU cores: %CPU_CORES%
+IF "%VC_COMPILER_VERSION%" == "10" (
+echo Using VC10 compiler
+) ELSE (
+echo Using VC9 compiler
+)
 echo ===================================================
 
 if "%TYPEACTION%"=="build" goto build
@@ -166,19 +180,23 @@ if "%TYPECOMPONENT%"=="doc" goto clean_doc
 
 :clean_oem
 echo [clean]: Clean Oem
-%MSBUILD_CLEAN% %MG_OEM%\Oem.sln
+%MSBUILD_CLEAN% %MG_OEM%\Oem%VS_SLN_SUFFIX%.sln
 echo [clean]: Clean Oem - CS-Map
+IF "%VC_COMPILER_VERSION%" == "10" (
+%MSBUILD_CLEAN% %MG_OEM%\CSMap\VC100\OpenSource.sln
+) ELSE (
 %MSBUILD_CLEAN% %MG_OEM%\CSMap\VC90\OpenSource.sln
+)
 if not "%TYPECOMPONENT%"=="all" goto quit
 
 :clean_server
 echo [clean]: Clean Server
-%MSBUILD_CLEAN% %MG_SERVER%\Server.sln
+%MSBUILD_CLEAN% %MG_SERVER%\Server%VS_SLN_SUFFIX%.sln
 if not "%TYPECOMPONENT%"=="all" goto quit
 
 :clean_web
 echo [clean]: Clean Web
-%MSBUILD_CLEAN% %MG_WEB_SRC%\WebTier.sln
+%MSBUILD_CLEAN% %MG_WEB_SRC%\WebTier%VS_SLN_SUFFIX%.sln
 echo [clean]: Clean fusion
 %ANT% clean -f %MG_OEM%\fusion\build.xml
 if not "%TYPECOMPONENT%"=="all" goto quit
@@ -207,11 +225,15 @@ goto custom_error
 
 :build_oem
 echo [build]: Building Oem
-%MSBUILD% %MG_OEM%\Oem.sln
+%MSBUILD% %MG_OEM%\Oem%VS_SLN_SUFFIX%.sln
 if "%errorlevel%"=="1" goto error
 rem CsMap is not in Oem.sln, so we need to build that separately
 echo [build]: Building Oem - CSMap
+IF "%VC_COMPILER_VERSION%" == "10" (
+%MSBUILD% %MG_OEM%\CsMap\VC100\OpenSource.sln
+) ELSE (
 %MSBUILD% %MG_OEM%\CsMap\VC90\OpenSource.sln
+)
 if "%errorlevel%"=="1" goto error
 if "%TYPECOMPONENT%"=="oem" 	goto quit
 if "%TYPECOMPONENT%"=="server" 	goto quit
@@ -220,7 +242,7 @@ if "%TYPECOMPONENT%"=="doc" 	goto quit
 
 :build_server
 echo [build]: Building Server
-%MSBUILD% %MG_SERVER%\Server.sln
+%MSBUILD% %MG_SERVER%\Server%VS_SLN_SUFFIX%.sln
 if "%errorlevel%"=="1" goto error
 if "%TYPECOMPONENT%"=="oem" 	goto quit
 if "%TYPECOMPONENT%"=="server" 	goto quit
@@ -229,7 +251,7 @@ if "%TYPECOMPONENT%"=="doc" 	goto quit
 
 :build_web
 echo [build]: Building Web Tier
-%MSBUILD% %MG_WEB_SRC%\WebTier.sln
+%MSBUILD% %MG_WEB_SRC%\WebTier%VS_SLN_SUFFIX%.sln
 if "%errorlevel%"=="1" goto error
 if "%TYPECOMPONENT%"=="oem" 	 goto quit
 if "%TYPECOMPONENT%"=="server" 	 goto quit
