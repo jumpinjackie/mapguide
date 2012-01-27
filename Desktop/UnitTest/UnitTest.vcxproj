@@ -81,7 +81,7 @@
     </ClCompile>
     <Link>
       <AdditionalDependencies>cppunitd.lib;MgDesktopd.lib;FDO.lib;FDOCommon.lib;ACEd.lib;MgFoundationd.lib;MgGeometryd.lib;MgMdfModeld.lib;MgMdfParserd.lib;MgPlatformBased.lib;MgRenderersd.lib;MgStylizationd.lib;xerces-c_3mgD.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>..\..\Oem\ACE\ACE_wrappers\lib;..\..\Oem\FDO\Lib;..\..\Oem\DWFTK7.1\develop\global\lib\static\debug\vc8.0;..\..\Oem\dbxml\xerces-c-src\Build\Win32\VC9\Debug;..\..\Common\lib\debug;..\Lib\debug;..\..\Oem\CppUnit-1.9.14\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>..\..\Oem\ACE\ACE_wrappers\lib;..\..\Oem\FDO\Lib;..\..\Oem\DWFTK7.1\develop\global\lib\static\debug\vc8.0;..\..\Oem\dbxml\xerces-c-src\Build\Win32\VC10\Debug;..\..\Common\lib\debug;..\Lib\debug;..\..\Oem\CppUnit-1.9.14\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <TargetMachine>MachineX86</TargetMachine>
     </Link>
@@ -129,7 +129,7 @@ xcopy /S /Y /I ..\..\Oem\CsMap\Dictionaries\*.csv $(OutDir)Dictionaries\
     </ClCompile>
     <Link>
       <AdditionalDependencies>cppunitd.lib;MgDesktopd.lib;FDO.lib;FDOCommon.lib;ACEd.lib;MgFoundationd.lib;MgGeometryd.lib;MgMdfModeld.lib;MgMdfParserd.lib;MgPlatformBased.lib;MgRenderersd.lib;MgStylizationd.lib;xerces-c_3mgD.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>..\..\Oem\ACE\ACE_wrappers\lib;..\..\Oem\FDO\Lib;..\..\Oem\DWFTK7.1\develop\global\lib\static\debug\vc8.0;..\..\Oem\dbxml\xerces-c-src\Build\Win32\VC9\Debug;..\..\Common\lib\debug;..\Lib\debug;..\..\Oem\CppUnit-1.9.14\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>..\..\Oem\ACE\ACE_wrappers\lib64;..\..\Oem\FDO\Lib64;..\..\Oem\DWFTK7.1\develop\global\lib\static\debug64\vc8.0;..\..\Oem\dbxml\xerces-c-src\Build\Win32\VC10\Debug;..\..\Common\lib\debug64;..\Lib\debug64;..\..\Oem\CppUnit-1.9.14\lib64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <TargetMachine>MachineX64</TargetMachine>
     </Link>
@@ -174,7 +174,7 @@ xcopy /S /Y /I ..\..\Oem\CsMap\Dictionaries\*.csv $(OutDir)Dictionaries\
     </ClCompile>
     <Link>
       <AdditionalDependencies>cppunit.lib;MgDesktop.lib;FDO.lib;FDOCommon.lib;ACE.lib;MgFoundation.lib;MgGeometry.lib;MgMdfModel.lib;MgMdfParser.lib;MgPlatformBase.lib;MgRenderers.lib;MgStylization.lib;xerces-c_3mg.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>..\..\Oem\ACE\ACE_wrappers\lib;..\..\Oem\FDO\Lib;..\..\Oem\DWFTK7.1\develop\global\lib\static\release\vc8.0;..\..\Oem\dbxml\xerces-c-src\Build\Win32\VC9\Release;..\..\Common\lib\release;..\Lib\release;..\..\Oem\CppUnit-1.9.14\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>..\..\Oem\ACE\ACE_wrappers\lib;..\..\Oem\FDO\Lib;..\..\Oem\DWFTK7.1\develop\global\lib\static\release\vc8.0;..\..\Oem\dbxml\xerces-c-src\Build\Win32\VC10\Release;..\..\Common\lib\release;..\Lib\release;..\..\Oem\CppUnit-1.9.14\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <DelayLoadDLLs>FDO.dll;%(DelayLoadDLLs)</DelayLoadDLLs>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <OptimizeReferences>true</OptimizeReferences>
