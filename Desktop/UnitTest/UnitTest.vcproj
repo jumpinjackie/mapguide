@@ -91,6 +91,79 @@
 			/>
 		</Configuration>
 		<Configuration
+			Name="Debug|x64"
+			OutputDirectory="$(SolutionDir)$(PlatformName)\$(ConfigurationName)"
+			IntermediateDirectory="$(PlatformName)\$(ConfigurationName)"
+			ConfigurationType="1"
+			CharacterSet="1"
+			>
+			<Tool
+				Name="VCPreBuildEventTool"
+			/>
+			<Tool
+				Name="VCCustomBuildTool"
+			/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"
+			/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"
+			/>
+			<Tool
+				Name="VCMIDLTool"
+				TargetEnvironment="3"
+			/>
+			<Tool
+				Name="VCCLCompilerTool"
+				Optimization="0"
+				AdditionalIncludeDirectories="..\..\Common\Foundation;..\..\Common\PlatformBase;..\..\Common\Geometry;..\..\Common\MdfModel;..\..\Common\MdfParser;..\..\Oem\ACE\ACE_wrappers;&quot;..\..\Oem\dbxml\xerces-c-src\src&quot;;..\..\Oem\FDO\Inc;..\..\Oem\FDO\Inc\ExpressionEngine;..\..\Common\Renderers;..\..\Common\Stylization;..\..\Oem\DWFTK7.1\develop\global\src;..\..\Oem\DWFTK7.1\develop\global\src\dwf;&quot;..\..\Oem\CppUnit-1.9.14\include&quot;;..\MgDesktop"
+				PreprocessorDefinitions="WIN32;DEBUG;_WINDOWS;_USRDLL"
+				MinimalRebuild="true"
+				BasicRuntimeChecks="3"
+				RuntimeLibrary="3"
+				WarningLevel="3"
+				DebugInformationFormat="3"
+			/>
+			<Tool
+				Name="VCManagedResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCPreLinkEventTool"
+			/>
+			<Tool
+				Name="VCLinkerTool"
+				AdditionalDependencies="cppunitd.lib MgDesktopd.lib FDO.lib FDOCommon.lib ACEd.lib MgFoundationd.lib MgGeometryd.lib MgMdfModeld.lib MgMdfParserd.lib MgPlatformBased.lib MgRenderersd.lib MgStylizationd.lib xerces-c_3mgD.lib"
+				AdditionalLibraryDirectories="..\..\Oem\ACE\ACE_wrappers\lib;..\..\Oem\FDO\Lib;..\..\Oem\DWFTK7.1\develop\global\lib\static\debug\vc8.0;&quot;..\..\Oem\dbxml\xerces-c-src\Build\Win32\VC9\Debug&quot;;..\..\Common\lib\debug;..\Lib\debug;&quot;..\..\Oem\CppUnit-1.9.14\lib&quot;"
+				GenerateDebugInformation="true"
+				TargetMachine="17"
+			/>
+			<Tool
+				Name="VCALinkTool"
+			/>
+			<Tool
+				Name="VCManifestTool"
+			/>
+			<Tool
+				Name="VCXDCMakeTool"
+			/>
+			<Tool
+				Name="VCBscMakeTool"
+			/>
+			<Tool
+				Name="VCFxCopTool"
+			/>
+			<Tool
+				Name="VCAppVerifierTool"
+			/>
+			<Tool
+				Name="VCPostBuildEventTool"
+				CommandLine="xcopy /S /Y ..\..\Common\bin\debug\*.* $(OutDir)&#x0D;&#x0A;xcopy /S /Y /I ..\..\Oem\ACE\ACE_wrappers\lib\ACEd.dll $(OutDir)&#x0D;&#x0A;xcopy /S /Y /I ..\..\Oem\dbxml\bin\debug\xerces-c_3_1mgD.dll $(OutDir)&#x0D;&#x0A;xcopy /S /Y /I ..\..\Oem\geos-2.2.0\VisualStudio\Debug\GEOSd.dll $(OutDir)&#x0D;&#x0A;xcopy /S /Y /I ..\..\Oem\gd\build\win32\gd\Debug\gd.dll $(OutDir)&#x0D;&#x0A;xcopy /S /Y /I ..\..\Oem\FDO\Bin\Debug\*.* $(OutDir)\FDO\&#x0D;&#x0A;xcopy /S /Y /I ..\..\Server\bin\Debug\MgGws*.* $(OutDir)&#x0D;&#x0A;xcopy /Y ..\MgDesktop\bin\$(ConfigurationName)\*.* $(OutDir)&#x0D;&#x0A;xcopy /S /Y /I ..\..\UnitTest\TestData\DrawingService\*.* $(OutDir)\..\UnitTestFiles\&#x0D;&#x0A;xcopy /Y /I ..\..\UnitTest\TestData\FeatureService\*.* $(OutDir)\..\UnitTestFiles\&#x0D;&#x0A;xcopy /Y /I ..\..\UnitTest\TestData\FeatureService\SDF\*.* $(OutDir)\..\UnitTestFiles\&#x0D;&#x0A;xcopy /Y /I ..\..\UnitTest\TestData\FeatureService\SHP\*.* $(OutDir)\..\UnitTestFiles\&#x0D;&#x0A;xcopy /S /Y /I ..\..\UnitTest\TestData\MapLayer\*.* $(OutDir)\..\UnitTestFiles\&#x0D;&#x0A;xcopy /S /Y /I ..\..\UnitTest\TestData\MappingService\*.* $(OutDir)\..\UnitTestFiles\&#x0D;&#x0A;xcopy /S /Y /I ..\..\UnitTest\TestData\ResourceService\*.* $(OutDir)\..\UnitTestFiles\&#x0D;&#x0A;xcopy /S /Y /I ..\..\UnitTest\TestData\Symbology\*.* $(OutDir)\..\UnitTestFiles\&#x0D;&#x0A;xcopy /S /Y /I ..\..\UnitTest\TestData\TileService\*.* $(OutDir)\..\UnitTestFiles\&#x0D;&#x0A;xcopy /S /Y /I ..\TestProviderList\providers.xml $(OutDir)\Fdo\&#x0D;&#x0A;xcopy /S /Y /I ..\DesktopTestData\*.* $(OutDir)\..\UnitTestFiles\&#x0D;&#x0A;copy /Y  $(OutDir)\..\UnitTestFiles\UT_Parcels.sdf copy /Y  $(OutDir)\..\UnitTestFiles\UT_Parcels_Writeable.sdf&#x0D;&#x0A;xcopy /S /Y /I ..\..\Oem\CsMap\Dictionaries\*.csd $(OutDir)\Dictionaries\&#x0D;&#x0A;xcopy /S /Y /I ..\..\Oem\CsMap\Dictionaries\*.gdc $(OutDir)\Dictionaries\&#x0D;&#x0A;xcopy /S /Y /I ..\..\Oem\CsMap\Dictionaries\*.mrt $(OutDir)\Dictionaries\&#x0D;&#x0A;xcopy /S /Y /I ..\..\Oem\CsMap\Dictionaries\*.csv $(OutDir)\Dictionaries\&#x0D;&#x0A;"
+			/>
+		</Configuration>
+		<Configuration
 			Name="Release|Win32"
 			OutputDirectory="..\bin\release"
 			IntermediateDirectory="..\obj\release"
@@ -164,79 +237,6 @@
 			<Tool
 				Name="VCPostBuildEventTool"
 				CommandLine="xcopy /S /Y ..\..\Common\bin\release\*.* $(OutDir)&#x0D;&#x0A;xcopy /S /Y /I ..\..\Oem\ACE\ACE_wrappers\lib\ACE.dll $(OutDir)&#x0D;&#x0A;xcopy /S /Y /I ..\..\Oem\dbxml\bin\xerces-c_3_1mg.dll $(OutDir)&#x0D;&#x0A;xcopy /S /Y /I ..\..\Oem\geos-2.2.0\VisualStudio\Release\GEOS.dll $(OutDir)&#x0D;&#x0A;xcopy /S /Y /I ..\..\Oem\gd\build\win32\gd\Release\gd.dll $(OutDir)&#x0D;&#x0A;xcopy /S /Y /I ..\..\Oem\FDO\Bin\Release\*.* $(OutDir)\FDO\&#x0D;&#x0A;xcopy /S /Y /I ..\..\Server\bin\Release\MgGws*.* $(OutDir)&#x0D;&#x0A;xcopy /Y ..\MgDesktop\bin\$(ConfigurationName)\*.* $(OutDir)&#x0D;&#x0A;xcopy /S /Y /I ..\..\UnitTest\TestData\DrawingService\*.* $(OutDir)\..\UnitTestFiles\&#x0D;&#x0A;xcopy /Y /I ..\..\UnitTest\TestData\FeatureService\*.* $(OutDir)\..\UnitTestFiles\&#x0D;&#x0A;xcopy /Y /I ..\..\UnitTest\TestData\FeatureService\SDF\*.* $(OutDir)\..\UnitTestFiles\&#x0D;&#x0A;xcopy /Y /I ..\..\UnitTest\TestData\FeatureService\SHP\*.* $(OutDir)\..\UnitTestFiles\&#x0D;&#x0A;xcopy /S /Y /I ..\..\UnitTest\TestData\MapLayer\*.* $(OutDir)\..\UnitTestFiles\&#x0D;&#x0A;xcopy /S /Y /I ..\..\UnitTest\TestData\MappingService\*.* $(OutDir)\..\UnitTestFiles\&#x0D;&#x0A;xcopy /S /Y /I ..\..\UnitTest\TestData\ResourceService\*.* $(OutDir)\..\UnitTestFiles\&#x0D;&#x0A;xcopy /S /Y /I ..\..\UnitTest\TestData\Symbology\*.* $(OutDir)\..\UnitTestFiles\&#x0D;&#x0A;xcopy /S /Y /I ..\..\UnitTest\TestData\TileService\*.* $(OutDir)\..\UnitTestFiles\&#x0D;&#x0A;xcopy /S /Y /I ..\TestProviderList\providers.xml $(OutDir)\Fdo\&#x0D;&#x0A;xcopy /S /Y /I ..\DesktopTestData\*.* $(OutDir)\..\UnitTestFiles\&#x0D;&#x0A;copy /Y  $(OutDir)\..\UnitTestFiles\UT_Parcels.sdf copy /Y  $(OutDir)\..\UnitTestFiles\UT_Parcels_Writeable.sdf&#x0D;&#x0A;xcopy /S /Y /I ..\..\Oem\CsMap\Dictionaries\*.csd $(OutDir)\Dictionaries\&#x0D;&#x0A;xcopy /S /Y /I ..\..\Oem\CsMap\Dictionaries\*.gdc $(OutDir)\Dictionaries\&#x0D;&#x0A;xcopy /S /Y /I ..\..\Oem\CsMap\Dictionaries\*.mrt $(OutDir)\Dictionaries\&#x0D;&#x0A;xcopy /S /Y /I ..\..\Oem\CsMap\Dictionaries\*.csv $(OutDir)\Dictionaries\&#x0D;&#x0A;xcopy /Y /I ..\..\Oem\CsMap\Dictionaries\*.txt $(OutDir)\Dictionaries\&#x0D;&#x0A;"
-			/>
-		</Configuration>
-		<Configuration
-			Name="Debug|x64"
-			OutputDirectory="$(SolutionDir)$(PlatformName)\$(ConfigurationName)"
-			IntermediateDirectory="$(PlatformName)\$(ConfigurationName)"
-			ConfigurationType="1"
-			CharacterSet="1"
-			>
-			<Tool
-				Name="VCPreBuildEventTool"
-			/>
-			<Tool
-				Name="VCCustomBuildTool"
-			/>
-			<Tool
-				Name="VCXMLDataGeneratorTool"
-			/>
-			<Tool
-				Name="VCWebServiceProxyGeneratorTool"
-			/>
-			<Tool
-				Name="VCMIDLTool"
-				TargetEnvironment="3"
-			/>
-			<Tool
-				Name="VCCLCompilerTool"
-				Optimization="0"
-				AdditionalIncludeDirectories="..\..\Common\Foundation;..\..\Common\PlatformBase;..\..\Common\Geometry;..\..\Common\MdfModel;..\..\Common\MdfParser;..\..\Oem\ACE\ACE_wrappers;&quot;..\..\Oem\dbxml\xerces-c-src\src&quot;;..\..\Oem\FDO\Inc;..\..\Oem\FDO\Inc\ExpressionEngine;..\..\Common\Renderers;..\..\Common\Stylization;..\..\Oem\DWFTK7.1\develop\global\src;..\..\Oem\DWFTK7.1\develop\global\src\dwf;&quot;..\..\Oem\CppUnit-1.9.14\include&quot;;..\MgDesktop"
-				PreprocessorDefinitions="WIN32;DEBUG;_WINDOWS;_USRDLL"
-				MinimalRebuild="true"
-				BasicRuntimeChecks="3"
-				RuntimeLibrary="3"
-				WarningLevel="3"
-				DebugInformationFormat="3"
-			/>
-			<Tool
-				Name="VCManagedResourceCompilerTool"
-			/>
-			<Tool
-				Name="VCResourceCompilerTool"
-			/>
-			<Tool
-				Name="VCPreLinkEventTool"
-			/>
-			<Tool
-				Name="VCLinkerTool"
-				AdditionalDependencies="cppunitd.lib MgDesktopd.lib FDO.lib FDOCommon.lib ACEd.lib MgFoundationd.lib MgGeometryd.lib MgMdfModeld.lib MgMdfParserd.lib MgPlatformBased.lib MgRenderersd.lib MgStylizationd.lib xerces-c_3mgD.lib"
-				AdditionalLibraryDirectories="..\..\Oem\ACE\ACE_wrappers\lib;..\..\Oem\FDO\Lib;..\..\Oem\DWFTK7.1\develop\global\lib\static\debug\vc8.0;&quot;..\..\Oem\dbxml\xerces-c-src\Build\Win32\VC9\Debug&quot;;..\..\Common\lib\debug;..\Lib\debug;&quot;..\..\Oem\CppUnit-1.9.14\lib&quot;"
-				GenerateDebugInformation="true"
-				TargetMachine="17"
-			/>
-			<Tool
-				Name="VCALinkTool"
-			/>
-			<Tool
-				Name="VCManifestTool"
-			/>
-			<Tool
-				Name="VCXDCMakeTool"
-			/>
-			<Tool
-				Name="VCBscMakeTool"
-			/>
-			<Tool
-				Name="VCFxCopTool"
-			/>
-			<Tool
-				Name="VCAppVerifierTool"
-			/>
-			<Tool
-				Name="VCPostBuildEventTool"
-				CommandLine="xcopy /S /Y ..\..\Common\bin\debug\*.* $(OutDir)&#x0D;&#x0A;xcopy /S /Y /I ..\..\Oem\ACE\ACE_wrappers\lib\ACEd.dll $(OutDir)&#x0D;&#x0A;xcopy /S /Y /I ..\..\Oem\dbxml\bin\debug\xerces-c_3_1mgD.dll $(OutDir)&#x0D;&#x0A;xcopy /S /Y /I ..\..\Oem\geos-2.2.0\VisualStudio\Debug\GEOSd.dll $(OutDir)&#x0D;&#x0A;xcopy /S /Y /I ..\..\Oem\gd\build\win32\gd\Debug\gd.dll $(OutDir)&#x0D;&#x0A;xcopy /S /Y /I ..\..\Oem\FDO\Bin\Debug\*.* $(OutDir)\FDO\&#x0D;&#x0A;xcopy /S /Y /I ..\..\Server\bin\Debug\MgGws*.* $(OutDir)&#x0D;&#x0A;xcopy /Y ..\MgDesktop\bin\$(ConfigurationName)\*.* $(OutDir)&#x0D;&#x0A;xcopy /S /Y /I ..\..\UnitTest\TestData\DrawingService\*.* $(OutDir)\..\UnitTestFiles\&#x0D;&#x0A;xcopy /Y /I ..\..\UnitTest\TestData\FeatureService\*.* $(OutDir)\..\UnitTestFiles\&#x0D;&#x0A;xcopy /Y /I ..\..\UnitTest\TestData\FeatureService\SDF\*.* $(OutDir)\..\UnitTestFiles\&#x0D;&#x0A;xcopy /Y /I ..\..\UnitTest\TestData\FeatureService\SHP\*.* $(OutDir)\..\UnitTestFiles\&#x0D;&#x0A;xcopy /S /Y /I ..\..\UnitTest\TestData\MapLayer\*.* $(OutDir)\..\UnitTestFiles\&#x0D;&#x0A;xcopy /S /Y /I ..\..\UnitTest\TestData\MappingService\*.* $(OutDir)\..\UnitTestFiles\&#x0D;&#x0A;xcopy /S /Y /I ..\..\UnitTest\TestData\ResourceService\*.* $(OutDir)\..\UnitTestFiles\&#x0D;&#x0A;xcopy /S /Y /I ..\..\UnitTest\TestData\Symbology\*.* $(OutDir)\..\UnitTestFiles\&#x0D;&#x0A;xcopy /S /Y /I ..\..\UnitTest\TestData\TileService\*.* $(OutDir)\..\UnitTestFiles\&#x0D;&#x0A;xcopy /S /Y /I ..\TestProviderList\providers.xml $(OutDir)\Fdo\&#x0D;&#x0A;xcopy /S /Y /I ..\DesktopTestData\*.* $(OutDir)\..\UnitTestFiles\&#x0D;&#x0A;copy /Y  $(OutDir)\..\UnitTestFiles\UT_Parcels.sdf copy /Y  $(OutDir)\..\UnitTestFiles\UT_Parcels_Writeable.sdf&#x0D;&#x0A;xcopy /S /Y /I ..\..\Oem\CsMap\Dictionaries\*.csd $(OutDir)\Dictionaries\&#x0D;&#x0A;xcopy /S /Y /I ..\..\Oem\CsMap\Dictionaries\*.gdc $(OutDir)\Dictionaries\&#x0D;&#x0A;xcopy /S /Y /I ..\..\Oem\CsMap\Dictionaries\*.mrt $(OutDir)\Dictionaries\&#x0D;&#x0A;xcopy /S /Y /I ..\..\Oem\CsMap\Dictionaries\*.csv $(OutDir)\Dictionaries\&#x0D;&#x0A;"
 			/>
 		</Configuration>
 		<Configuration
@@ -345,7 +345,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Release|Win32"
+					Name="Debug|x64"
 					ExcludedFromBuild="true"
 					>
 					<Tool
@@ -353,7 +353,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Debug|x64"
+					Name="Release|Win32"
 					ExcludedFromBuild="true"
 					>
 					<Tool
@@ -381,7 +381,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Release|Win32"
+					Name="Debug|x64"
 					ExcludedFromBuild="true"
 					>
 					<Tool
@@ -389,7 +389,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Debug|x64"
+					Name="Release|Win32"
 					ExcludedFromBuild="true"
 					>
 					<Tool
@@ -417,7 +417,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Release|Win32"
+					Name="Debug|x64"
 					ExcludedFromBuild="true"
 					>
 					<Tool
@@ -425,7 +425,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Debug|x64"
+					Name="Release|Win32"
 					ExcludedFromBuild="true"
 					>
 					<Tool
