@@ -226,7 +226,7 @@ xcopy /Y /I ..\..\Oem\CsMap\Dictionaries\*.txt $(OutDir)Dictionaries\
     </ClCompile>
     <Link>
       <AdditionalDependencies>cppunit.lib;MgDesktop.lib;FDO.lib;FDOCommon.lib;ACE.lib;MgFoundation.lib;MgGeometry.lib;MgMdfModel.lib;MgMdfParser.lib;MgPlatformBase.lib;MgRenderers.lib;MgStylization.lib;xerces-c_3mg.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>..\..\Oem\ACE\ACE_wrappers\lib64;..\..\Oem\FDO\Lib64;..\..\Oem\DWFTK7.1\develop\global\lib\static\release64\vc8.0;..\..\Oem\dbxml\xerces-c-src\Build\x64\VC9\Release;..\..\Common\lib\release64;..\Lib\release64;..\..\Oem\CppUnit-1.9.14\lib64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>..\..\Oem\ACE\ACE_wrappers\lib64;..\..\Oem\FDO\Lib64;..\..\Oem\DWFTK7.1\develop\global\lib\static\release64\vc8.0;..\..\Oem\dbxml\xerces-c-src\Build\x64\VC10\Release;..\..\Common\lib\release64;..\Lib\release64;..\..\Oem\CppUnit-1.9.14\lib64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <DelayLoadDLLs>FDO.dll;%(DelayLoadDLLs)</DelayLoadDLLs>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <OptimizeReferences>true</OptimizeReferences>
