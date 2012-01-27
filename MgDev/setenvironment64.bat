@@ -76,7 +76,7 @@ SET CPU_CORES=1
 
 rem Uncomment the line below to enable msbuild logging
 rem SET MSBUILD_LOG=/l:FileLogger,Microsoft.Build.Engine;logfile=Build.log;verbosity=diagnostic
-SET MSBUILD_VERBOSITY=/v:q
+SET MSBUILD_VERBOSITY=/v:n
 
 rem ==================================================
 rem Command aliases
