@@ -164,6 +164,8 @@ MgReader* MgServerSelectFeatures::SelectFeatures(MgResourceIdentifier* resource,
             isSelectAggregate = false;
             useClassName = false;
         }
+        else if (bFeatureJoinProperties)
+            useClassName = false;
 
         Ptr<MgReader> reader;
 
@@ -1602,7 +1604,7 @@ bool MgServerSelectFeatures::SupportsFdoJoin(MgResourceIdentifier* featureSource
 
         //Need to check the filter here to see if it involves secondary class properties and/or
         //expressions involving such properties. We don't support this yet
-        if (m_options != NULL)
+        if (m_options != NULL && relates->GetCount())
         {
             MdfModel::AttributeRelate* relate = relates->GetAt(0);
             STRING filterText = m_options->GetFilter();
