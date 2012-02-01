@@ -536,6 +536,8 @@ MgByteReader* MgServerFeatureUtil::GetRaster(FdoIReader* reader, CREFSTRING rast
             __LINE__, __WFILE__, &arguments, L"MgStringEmpty", NULL);
     }
 
+    ACE_MT (ACE_GUARD_RETURN (ACE_Recursive_Thread_Mutex, ace_mon, *ACE_Static_Object_Lock::instance (), 0));
+
     Ptr<MgByteReader> byteReader;
 
     FdoPtr<FdoIRaster> fdoRaster = reader->GetRaster(rasterPropName.c_str());
