@@ -1063,10 +1063,10 @@ void MgMap::BulkLoadIdentityProperties(MgFeatureService* featureService)
     /// Typedefs for populating identity properties into the map
     typedef std::list<MgLayer*> LayerList;
     typedef std::map<STRING,LayerList> LayerClassMap;
-    typedef std::map<STRING,LayerClassMap> LayerFeatureSourceMap;
+    typedef std::map<STRING,LayerClassMap> LayerSchemaMap;
+    typedef std::map<STRING,LayerSchemaMap> LayerFeatureSourceMap;
 
     LayerFeatureSourceMap fsMap;
-    std::map<STRING,STRING> fsSchema;
 
     // Group layers by their feature source / class name
     for(int i = 0; i < m_layers->GetCount(); i++)
@@ -1080,8 +1080,7 @@ void MgMap::BulkLoadIdentityProperties(MgFeatureService* featureService)
             layer->ParseFeatureName(featureService, className, schemaName);
             if (!schemaName.empty())
             {
-                fsMap[featureSource][className].push_back(layer.p);
-                fsSchema[featureSource] = schemaName;
+                fsMap[featureSource][schemaName][className].push_back(layer.p);
             }
         }
     }
@@ -1090,34 +1089,38 @@ void MgMap::BulkLoadIdentityProperties(MgFeatureService* featureService)
     {
         // Assumption:  feature source is only referencing one schema
         STRING featureSource = fsIter->first;
-        STRING schemaName = fsSchema[featureSource];
         Ptr<MgResourceIdentifier> resId = new MgResourceIdentifier(featureSource);
-        LayerClassMap& classList = fsIter->second;
-        Ptr<MgStringCollection> classNames = new MgStringCollection();
-        for (LayerClassMap::iterator cIter = classList.begin(); cIter != classList.end(); ++cIter)
+        LayerSchemaMap& schemaList = fsIter->second;
+        for (LayerSchemaMap::iterator schemaIter = schemaList.begin(); schemaIter != schemaList.end(); ++schemaIter)
         {
-            classNames->Add(cIter->first);
-        }
-
-        try
-        {
-            // Ignore failures when pulling identity properties
-            Ptr<MgClassDefinitionCollection> partialDefs = featureService->GetIdentityProperties(resId, schemaName, classNames);
-            for (int i = 0; i < partialDefs->GetCount(); i++)
+            STRING schemaName = schemaIter->first;
+            LayerClassMap& classList = schemaIter->second;
+            Ptr<MgStringCollection> classNames = new MgStringCollection();
+            for (LayerClassMap::iterator cIter = classList.begin(); cIter != classList.end(); ++cIter)
             {
-                Ptr<MgClassDefinition> def = partialDefs->GetItem(i);
-                STRING className = def->GetName();
+                classNames->Add(cIter->first);
+            }
 
-                LayerList& layers = fsMap[featureSource][className];
-                for (LayerList::iterator lIter = layers.begin(); lIter != layers.end(); ++lIter)
+            try
+            {
+                // Ignore failures when pulling identity properties
+                Ptr<MgClassDefinitionCollection> partialDefs = featureService->GetIdentityProperties(resId, schemaName, classNames);
+                for (int i = 0; i < partialDefs->GetCount(); i++)
                 {
-                    (*lIter)->PopulateIdentityProperties(def);
+                    Ptr<MgClassDefinition> def = partialDefs->GetItem(i);
+                    STRING className = def->GetName();
+
+                    LayerList& layers = fsMap[featureSource][schemaName][className];
+                    for (LayerList::iterator lIter = layers.begin(); lIter != layers.end(); ++lIter)
+                    {
+                        (*lIter)->PopulateIdentityProperties(def);
+                    }
                 }
             }
-        }
-        catch (MgException* e)
-        {
-            e->Release();
+            catch (MgException* e)
+            {
+                e->Release();
+            }
         }
     }
 }
