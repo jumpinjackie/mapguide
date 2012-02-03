@@ -146,7 +146,8 @@ void IOGridColor::Write(MdfStream& fd, GridColor* color, Version* version, MgTab
         IOGridColorBands::Write(fd, colorBands, version, tab);
 
     // Write any unknown XML / extended data
-    IOUnknown::Write(fd, color->GetUnknownXml(), version, tab);
+    if(color)
+        IOUnknown::Write(fd, color->GetUnknownXml(), version, tab);
 
     tab.dectab();
     fd << tab.tab() << endStr(sColor) << std::endl;
