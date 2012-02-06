@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
   <?define Have_ArcSde = "no" ?>
+  <?define Fdo_VS2010 = "yes" ?>
+  <?if "$(var.Fdo_VS2010)" = "yes" ?>
+    <?define Have_ArcSde = "yes" ?>
+  <?endif ?>
   <?if "$(var.MgPlatform)" = "x64" ?>
     <?define Win64 = "yes" ?>
     <?define PlatformProgramFilesFolder = "ProgramFiles64Folder" ?>
@@ -89,8 +93,17 @@
           <!-- FDO Core -->
           <Component Id="FdoCoreCompnent" Win64="$(var.Win64)" Guid="90F4CB26-524F-499B-AA22-BD17036B167D">
               <File Id="FdoRegUtil" Checksum="yes" Source="$(var.MgSource)\Server\FDO\FdoRegUtil.exe" />
+              <?if "$(var.Fdo_VS2010)" = "no" ?>
               <File Id="FdoBoostDateTime" Checksum="yes" Source="$(var.MgSource)\Server\FDO\boost_date_time-vc90-mt-1_42.dll" />
               <File Id="FdoBoostThread" Checksum="yes" Source="$(var.MgSource)\Server\FDO\boost_thread-vc90-mt-1_42.dll" />
+              <?else?>
+              <File Id="FdoBoostDateTime" Checksum="yes" Source="$(var.MgSource)\Server\FDO\boost_date_time-vc100-mt-1_42.dll" />
+              <File Id="FdoBoostThread" Checksum="yes" Source="$(var.MgSource)\Server\FDO\boost_thread-vc100-mt-1_42.dll" />
+              <?endif ?>
+              <File Id="XalanLib" Checksum="yes" Source="$(var.MgSource)\Server\FDO\Xalan-C_1_11.dll" />
+              <File Id="XalanMessagesLib" Checksum="yes" Source="$(var.MgSource)\Server\FDO\XalanMessages_1_11.dll" />
+              <File Id="XercesLib" Checksum="yes" Source="$(var.MgSource)\Server\FDO\xerces-c_3_1.dll" />
+              <File Id="GdalLib" Checksum="yes" Source="$(var.MgSource)\Server\FDO\gdal17.dll" />
               <File Id="FdoExpressionEngine" Checksum="yes" Source="$(var.MgSource)\Server\FDO\ExpressionEngine.dll" />
               <File Id="FdoCore" Checksum="yes" Source="$(var.MgSource)\Server\FDO\FDO.dll" />
               <File Id="FdoCommon" Checksum="yes" Source="$(var.MgSource)\Server\FDO\FDOCommon.dll" />
@@ -98,11 +111,7 @@
               <File Id="FdoMessage" Checksum="yes" Source="$(var.MgSource)\Server\FDO\FDOMessage.dll" />
               <File Id="FdoSpatial" Checksum="yes" Source="$(var.MgSource)\Server\FDO\FDOSpatial.dll" />
               <File Id="FdoOWS" Checksum="yes" Source="$(var.MgSource)\Server\FDO\OWS.dll" />
-              <File Id="GdalLib" Checksum="yes" Source="$(var.MgSource)\Server\FDO\gdal17.dll" />
               <File Id="ProvidersXml" Checksum="yes" Source="$(var.MgSource)\Server\FDO\providers.xml" />
-              <File Id="XalanLib" Checksum="yes" Source="$(var.MgSource)\Server\FDO\Xalan-C_1_11.dll" />
-              <File Id="XalanMessagesLib" Checksum="yes" Source="$(var.MgSource)\Server\FDO\XalanMessages_1_11.dll" />
-              <File Id="XercesLib" Checksum="yes" Source="$(var.MgSource)\Server\FDO\xerces-c_3_1.dll" />
               <!-- Generic RDBMS -->
               <File Id="RdbmsMsg" Checksum="yes" Source="$(var.MgSource)\Server\FDO\RdbmsMsg.dll" />
               <File Id="RdbmsOverrides" Checksum="yes" Source="$(var.MgSource)\Server\FDO\RdbmsOverrides.dll" />

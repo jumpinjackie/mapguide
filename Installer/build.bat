@@ -8,7 +8,7 @@ rem it will also copy the installer to the specified output path. Otherwise it w
 rem value of INSTALLER_OUTPUT defined in this file
 rem
 rem Requirements:
-rem   1. Wix 3.0 (http://wix.codeplex.com)
+rem   1. Wix 3.5 (http://wix.codeplex.com)
 rem   2. Paraffin (http://www.wintellect.com/CS/blogs/jrobbins/archive/2008/12/22/paraffin-3-0-now-with-full-wix-3-0-support.aspx)
 rem
 rem Usage:
@@ -35,6 +35,15 @@ rem ==================================================
 rem Top-level vars
 rem ==================================================
 SET OLDPATH=%PATH%
+
+rem ==================================================
+rem Update solution suffix if using VC10 compiler.
+rem NOTE: VS10 solution files are suffixed with _VS2010
+rem which is why we can do it like this
+rem ==================================================
+
+SET VS_SLN_SUFFIX=
+IF "%VC_COMPILER_VERSION%" == "10" SET VS_SLN_SUFFIX=_VS2010
 
 rem ==================================================
 rem Command Line Option Defaults
@@ -81,10 +90,9 @@ rem ==================================================
 SET HTTPD_VERSION=2.2.21
 SET PHP_VERSION=5.3.8
 SET TOMCAT_VERSION=7.0.23
-SET HTTPD_PACKAGE=httpd-%HTTPD_VERSION%-win32-x86-ssl.zip
+SET HTTPD_PACKAGE=httpd-%HTTPD_VERSION%-x86-vc10.zip
 SET TOMCAT_PACKAGE=apache-tomcat-%TOMCAT_VERSION%-windows-x86.zip
-SET PHP_TS_PACKAGE=php-%PHP_VERSION%-Win32-VC9-x86.zip
-SET PHP_NTS_PACKAGE=php-%PHP_VERSION%-nts-Win32-VC9-x86.zip
+SET PHP_TS_PACKAGE=php-%PHP_VERSION%-x86-vc10.zip
 
 rem ==================================================
 rem MSBuild Settings
@@ -95,7 +103,7 @@ SET CPU_CORES=%NUMBER_OF_PROCESSORS%
 
 rem Uncomment the line below to enable msbuild logging
 rem SET MSBUILD_LOG=/l:FileLogger,Microsoft.Build.Engine;logfile=Build.log;verbosity=diagnostic
-SET MSBUILD_VERBOSITY=/v:q
+SET MSBUILD_VERBOSITY=/v:n
 
 rem ==================================================
 rem Command aliases
@@ -204,9 +212,9 @@ if "%TYPEACTION%"=="regen" goto regen
 
 :clean
 echo [clean]: Installer Pre-Reqs
-%MSBUILD_CLEAN% InstallerPreReq.sln
+%MSBUILD_CLEAN% InstallerPreReq%VS_SLN_SUFFIX%.sln
 echo [clean]: Installer
-%MSBUILD_CLEAN% InstallerWix.sln
+%MSBUILD_CLEAN% InstallerWix%VS_SLN_SUFFIX%.sln
 goto quit
 
 :prepare
@@ -215,13 +223,12 @@ if not exist "%MG_SOURCE%\Server" goto error_mg_server_not_found
 if not exist "%MG_SOURCE%\Web" goto error_mg_web_not_found
 if not exist "%MG_SOURCE%\CS-Map" goto error_mg_csmap_not_found
 echo [prepare] Installer Pre-Requisites
-%MSBUILD% InstallerPreReq.sln
+%MSBUILD% InstallerPreReq%VS_SLN_SUFFIX%.sln
 copy %INSTALLER_FDO_REG_UTIL%\%TYPEBUILD%\FdoRegUtil.exe %MG_SOURCE%\Server\FDO
 popd
 echo [prepare] Unpack Apache httpd
 pushd "%INSTALLER_DEV_SUPPORT%\Web\%CPUTYPE%"
-REM we unpack to root because Apache2 is the root dir in the zip file
-7z x %HTTPD_PACKAGE% -y -o"%MG_SOURCE%\Web"
+7z x %HTTPD_PACKAGE% -y -o"%MG_SOURCE%\Web\Apache2"
 popd
 echo [prepare] Unpack Tomcat
 pushd "%MG_SOURCE%\Web"
@@ -237,16 +244,12 @@ popd
 echo [prepare] Unpack PHP (Thread Safe)
 pushd "%INSTALLER_DEV_SUPPORT%\Web\%CPUTYPE%"
 7z x %PHP_TS_PACKAGE% -y -o"%MG_SOURCE%\Web\Php"
-rem echo [prepare] Unpack PHP (Non-Thread Safe)
-rem 7z x %PHP_NTS_PACKAGE% -o"%MG_SOURCE%\Web\PHP_NTS"
 popd
 rem copy template configs on top
 echo [prepare] Tomcat config
 %XCOPY% "%INSTALLER_DEV%\Support\Web\%CPUTYPE%\configs\Tomcat" "%MG_SOURCE%\Web\Tomcat" /EXCLUDE:svn_excludes.txt
 echo [prepare] Php config
 %XCOPY% "%INSTALLER_DEV%\Support\Web\%CPUTYPE%\configs\Php" "%MG_SOURCE%\Web\Php" /EXCLUDE:svn_excludes.txt
-rem echo [prepare] Php config
-rem %XCOPY% "%INSTALLER_DEV%\Support\Web\%CPUTYPE%\configs\Php" "%MG_SOURCE%\Web\PHP_NTS" /EXCLUDE:svn_excludes.txt
 echo [prepare] Apache2 config
 %XCOPY% "%INSTALLER_DEV%\Support\Web\%CPUTYPE%\configs\Apache2" "%MG_SOURCE%\Web\Apache2" /EXCLUDE:svn_excludes.txt
 echo [prepare] Apache2 mapagent so
@@ -300,10 +303,6 @@ move /Y %WIX_INC_WEB%\incApacheFiles.PARAFFIN %WIX_INC_WEB%\incApacheFiles.wxs
 echo [regen]: Web - Php
 %PARAFFIN% %WIX_INC_WEB%\incPhpFiles.wxs
 move /Y %WIX_INC_WEB%\incPhpFiles.PARAFFIN %WIX_INC_WEB%\incPhpFiles.wxs
-
-rem echo [regen]: Web - Php NTS
-rem %PARAFFIN% %WIX_INC_WEB%\incPhpNtsFiles.wxs
-rem move /Y %WIX_INC_WEB%\incPhpNtsFiles.PARAFFIN %WIX_INC_WEB%\incPhpNtsFiles.wxs
 
 echo [regen]: Web - Tomcat
 %PARAFFIN% %WIX_INC_WEB%\incTomcatFiles.wxs
@@ -411,9 +410,6 @@ echo [generate]: Web - Apache
 echo [generate]: Web - Php TS
 %PARAFFIN% -dir %MG_SOURCE%\Web\Php -alias $(var.MgSource)\Web\Php -custom PHPFILES -dirref WEBEXTENSIONSLOCATION %WIX_INC_WEB%\incPhpFiles.wxs
 
-rem echo [generate]: Web - Php NTS
-rem %PARAFFIN% -dir %MG_SOURCE%\Web\PHP_NTS -alias $(var.MgSource)\Web\PHP_NTS -custom PHPNTSFILES -dirref WEBEXTENSIONSLOCATION %WIX_INC_WEB%\incPhpNtsFiles.wxs
-
 echo [generate]: Web - Tomcat
 %PARAFFIN% -dir %MG_SOURCE%\Web\Tomcat -alias $(var.MgSource)\Web\Tomcat -custom TOMCATFILES -dirref WEBEXTENSIONSLOCATION %WIX_INC_WEB%\incTomcatFiles.wxs
 
@@ -468,11 +464,12 @@ goto quit
 SET RUN_BUILD=%MSBUILD% /p:OutputName=%INSTALLER_NAME%;MgCulture=%CULTURE%;MgTitle=%INSTALLER_TITLE%;MgVersion=%INSTALLER_VERSION%;MgRegKey=%MG_REG_KEY%;MgPlatform=%CPUTYPE%
 if not ""=="%MG_SOURCE_INC%" set RUN_BUILD=%RUN_BUILD%;MgSource=%MG_SOURCE_INC%
 echo [build]: Installer 
-%RUN_BUILD% InstallerWix.sln
+%RUN_BUILD% InstallerWix%VS_SLN_SUFFIX%.sln
 if "%errorlevel%"=="1" goto error
 pushd "%INSTALLER_DEV_BOOTSTRAP%"
 echo [bootstrap]: Copying vcredist
-copy /Y vcredist_x86.exe "%INSTALLER_OUTPUT%\vcredist_x86.exe"
+copy /Y vcredist_2008_x86.exe "%INSTALLER_OUTPUT%\vcredist_2008_x86.exe"
+copy /Y vcredist_2010_x86.exe "%INSTALLER_OUTPUT%\vcredist_2010_x86.exe"
 popd
 if "%errorlevel%"=="1" goto error
 if "%MAX_COMPRESSION%"=="YES" goto build_max_compress

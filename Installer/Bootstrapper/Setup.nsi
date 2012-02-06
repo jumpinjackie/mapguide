@@ -41,33 +41,68 @@ Section Main
 	Push $R0
     ClearErrors
 ;
+; NOTE: We're keeping the VC2008 redist check here as some PHP extensions are built against MSVCR90
+;
+CheckVC2008Install:
+;
 ; http://social.msdn.microsoft.com/Forums/en-US/vcgeneral/thread/639e2cfd-bb61-425b-a087-a2442df23402   
 ;
 !if ${CPU} = "x64"
 	SetRegView 64
     ReadRegDword $R0 HKLM "SOFTWARE\Microsoft\DevDiv\VC\Servicing\9.0\RED\1033" "SP"
-    IfErrors InstallVSRedist BeginInstall
+    IfErrors InstallVC2008Redist CheckVC2010Install
 !else
 	SetRegView 32
     ; Reg key for 32-bit OS
     ReadRegDword $R0 HKLM "SOFTWARE\Microsoft\DevDiv\VC\Servicing\9.0\RED\1033" "SP"
-    IfErrors CheckWow32Registry BeginInstall
+    IfErrors CheckVS2008Wow32Registry CheckVC2010Install
 	
-CheckWow32Registry:	
+CheckVS2008Wow32Registry:	
 	SetRegView 64
     ; Reg key for 64-bit OS (WoW32)
     ReadRegDword $R0 HKLM "SOFTWARE\Microsoft\DevDiv\VC\Servicing\9.0\RED\1033" "SP"
-    IfErrors InstallVSRedist BeginInstall
+    IfErrors InstallVC2008Redist CheckVC2010Install
 !endif
 
-InstallVSRedist:
-	MessageBox MB_OK "Installing VS redist"
+InstallVC2008Redist:
+	MessageBox MB_OK "Installing Visual C++ 2008 redist"
 !if ${CPU} = "x64"
-	File /r "${INSTALLER_OUTPUT}\vcredist_x64.exe"
-	ExecWait '"$OUTDIR\vcredist_x64.exe" /q:a"'
+	File /r "${INSTALLER_OUTPUT}\vcredist_2008_x64.exe"
+	ExecWait '"$OUTDIR\vcredist_2008_x64.exe" /q:a"'
 !else
-	File /r "${INSTALLER_OUTPUT}\vcredist_x86.exe"
-	ExecWait '"$OUTDIR\vcredist_x86.exe" /q:a'
+	File /r "${INSTALLER_OUTPUT}\vcredist_2008_x86.exe"
+	ExecWait '"$OUTDIR\vcredist_2008_x86.exe" /q:a'
+!endif
+
+CheckVC2010Install:
+;
+; http://blogs.msdn.com/b/astebner/archive/2010/05/05/10008146.aspx
+;
+!if ${CPU} = "x64"
+	SetRegView 64
+    ReadRegDword $R0 HKLM "SOFTWARE\Microsoft\VisualStudio\10.0\VC\VCRedist\x64" "Installed"
+    IfErrors InstallVC2010Redist BeginInstall
+!else
+	SetRegView 32
+    ; Reg key for 32-bit OS
+    ReadRegDword $R0 HKLM "SOFTWARE\Microsoft\VisualStudio\10.0\VC\VCRedist\x86" "Installed"
+    IfErrors CheckVS2010Wow32Registry BeginInstall
+	
+CheckVS2010Wow32Registry:	
+	SetRegView 64
+    ; Reg key for 64-bit OS (WoW32)
+    ReadRegDword $R0 HKLM "SOFTWARE\Microsoft\VisualStudio\10.0\VC\VCRedist\x86" "Installed"
+    IfErrors InstallVC2010Redist BeginInstall
+!endif
+
+InstallVC2010Redist:
+	MessageBox MB_OK "Installing Visual C++ 2010 redist"
+!if ${CPU} = "x64"
+	File /r "${INSTALLER_OUTPUT}\vcredist_2010_x64.exe"
+	ExecWait '"$OUTDIR\vcredist_2010_x64.exe" /passive /norestart'
+!else
+	File /r "${INSTALLER_OUTPUT}\vcredist_2010_x86.exe"
+	ExecWait '"$OUTDIR\vcredist_2010_x86.exe" /passive /norestart'
 !endif
 
 BeginInstall:
@@ -80,9 +115,11 @@ BeginInstall:
 	; Delete the MGOS installer and any other extracted after completion
 	Delete "$OUTDIR\${OUTNAME}.msi"
 !if ${CPU} = "x64"
-	Delete "$OUTDIR\vcredist_x64.exe"
+	Delete "$OUTDIR\vcredist_2008_x64.exe"
+    Delete "$OUTDIR\vcredist_2010_x64.exe"
 !else
-	Delete "$OUTDIR\vcredist_x86.exe"
+	Delete "$OUTDIR\vcredist_2008_x86.exe"
+    Delete "$OUTDIR\vcredist_2010_x86.exe"
 !endif
 	
 SectionEnd

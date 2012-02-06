@@ -37,6 +37,15 @@ rem ==================================================
 SET OLDPATH=%PATH%
 
 rem ==================================================
+rem Update solution suffix if using VC10 compiler.
+rem NOTE: VS10 solution files are suffixed with _VS2010
+rem which is why we can do it like this
+rem ==================================================
+
+SET VS_SLN_SUFFIX=
+IF "%VC_COMPILER_VERSION%" == "10" SET VS_SLN_SUFFIX=_VS2010
+
+rem ==================================================
 rem Command Line Option Defaults
 rem ==================================================
 
@@ -74,6 +83,16 @@ SET INSTALLER_DEV_INSTALLER=%INSTALLER_DEV%\Installers\MapGuide
 SET NSIS=%CD%\Support\NSIS
 SET PARAFFIN=%CD%
 SET PATH=%PATH%;%PARAFFIN%;%NSIS%
+
+rem ==================================================
+rem Web dependencies
+rem ==================================================
+SET HTTPD_VERSION=2.2.21
+SET PHP_VERSION=5.3.8
+SET TOMCAT_VERSION=7.0.23
+SET HTTPD_PACKAGE=httpd-%HTTPD_VERSION%-x64-vc10.zip
+SET TOMCAT_PACKAGE=apache-tomcat-%TOMCAT_VERSION%-windows-x64.zip
+SET PHP_TS_PACKAGE=php-%PHP_VERSION%-x64-vc10.zip
 
 rem ==================================================
 rem MSBuild Settings
@@ -214,25 +233,10 @@ if "%TYPEACTION%"=="generate" goto generate
 if "%TYPEACTION%"=="regen" goto regen
 
 :clean
-echo [clean]: FdoRegUtil
-pushd %INSTALLER_FDO_REG_UTIL%
-%MSBUILD_CLEAN% FdoRegUtil.vcproj
-popd
-echo [clean]: CS-Map
-pushd "%INSTALLER_DEV_CSMAP%"
-%MSBUILD_CLEAN% "CS Map.wixproj"
-popd
-echo [clean]: MapGuide Server
-pushd "%INSTALLER_DEV_MGSERVER%"
-%MSBUILD_CLEAN% "MapGuide Server.wixproj"
-popd
-echo [clean]: MapGuide Web
-pushd "%INSTALLER_DEV_MGWEB%"
-%MSBUILD_CLEAN% "MapGuide Web Extensions.wixproj"
-popd
+echo [clean]: Installer Pre-Reqs
+%MSBUILD_CLEAN% InstallerPreReq%VS_SLN_SUFFIX%.sln
 echo [clean]: Installer
-%MSBUILD_CLEAN% Installer.sln
-popd
+%MSBUILD_CLEAN% InstallerWix%VS_SLN_SUFFIX%.sln
 goto quit
 
 :prepare
@@ -241,16 +245,28 @@ if not exist "%MG_SOURCE%\Server" goto error_mg_server_not_found
 if not exist "%MG_SOURCE%\Web" goto error_mg_web_not_found
 if not exist "%MG_SOURCE%\CS-Map" goto error_mg_csmap_not_found
 echo [prepare] Installer Pre-Requisites
-%MSBUILD% InstallerPreReq.sln
+%MSBUILD% InstallerPreReq%VS_SLN_SUFFIX%.sln
 copy %INSTALLER_FDO_REG_UTIL%\%TYPEBUILD%\FdoRegUtil.exe %MG_SOURCE%\Server\FDO
 popd
-rem copy support files into server and web directories
-echo [prepare] Tomcat
-%XCOPY% "%INSTALLER_DEV%\Support\Web\%PLATFORM%\Tomcat" "%MG_SOURCE%\Web\Tomcat" /EXCLUDE:svn_excludes.txt
-echo [prepare] Php
-%XCOPY% "%INSTALLER_DEV%\Support\Web\%PLATFORM%\Php" "%MG_SOURCE%\Web\Php" /EXCLUDE:svn_excludes.txt
-echo [prepare] Apache2
-%XCOPY% "%INSTALLER_DEV%\Support\Web\%PLATFORM%\Apache2" "%MG_SOURCE%\Web\Apache2" /EXCLUDE:svn_excludes.txt
+echo [prepare] Unpack Apache httpd
+pushd "%INSTALLER_DEV_SUPPORT%\Web\%CPUTYPE%"
+7z x %HTTPD_PACKAGE% -y -o"%MG_SOURCE%\Web\Apache2"
+popd
+echo [prepare] Unpack Tomcat
+pushd "%MG_SOURCE%\Web"
+rd /S /Q Tomcat
+popd
+pushd "%INSTALLER_DEV_SUPPORT%\Web\%CPUTYPE%"
+REM we unpack to root because Tomcat is the root dir in the zip file
+7z x %TOMCAT_PACKAGE% -y -o"%MG_SOURCE%\Web"
+popd
+pushd "%MG_SOURCE%\Web"
+rename apache-tomcat-7.0.23 Tomcat
+popd
+echo [prepare] Unpack PHP (Thread Safe)
+pushd "%INSTALLER_DEV_SUPPORT%\Web\%CPUTYPE%"
+7z x %PHP_TS_PACKAGE% -y -o"%MG_SOURCE%\Web\Php"
+popd
 rem copy template configs on top
 echo [prepare] Tomcat config
 %XCOPY% "%INSTALLER_DEV%\Support\Web\%PLATFORM%\configs\Tomcat" "%MG_SOURCE%\Web\Tomcat" /EXCLUDE:svn_excludes.txt
@@ -468,11 +484,12 @@ goto quit
 SET RUN_BUILD=%MSBUILD% /p:OutputName=%INSTALLER_NAME%;MgCulture=%CULTURE%;MgTitle=%INSTALLER_TITLE%;MgVersion=%INSTALLER_VERSION%;MgRegKey=%MG_REG_KEY%;MgPlatform=%PLATFORM%
 if not ""=="%MG_SOURCE_INC%" set RUN_BUILD=%RUN_BUILD%;MgSource=%MG_SOURCE_INC%
 echo [build]: Installer 
-%RUN_BUILD% InstallerWix.sln
+%RUN_BUILD% InstallerWix%VS_SLN_SUFFIX%.sln
 if "%errorlevel%"=="1" goto error
 pushd "%INSTALLER_DEV_BOOTSTRAP%"
 echo [bootstrap]: Copying vcredist
-copy /Y vcredist_x64.exe "%INSTALLER_OUTPUT%\vcredist_x64.exe"
+copy /Y vcredist_2008_x64.exe "%INSTALLER_OUTPUT%\vcredist_2008_x64.exe"
+copy /Y vcredist_2010_x64.exe "%INSTALLER_OUTPUT%\vcredist_2010_x64.exe"
 popd
 if "%errorlevel%"=="1" goto error
 if "%MAX_COMPRESSION%"=="YES" goto build_max_compress
