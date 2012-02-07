@@ -29,10 +29,24 @@ namespace InstantSetup
 {
     public partial class IISConfigCtrl : UserControl, IConfigurationView
     {
+        private IISSetupConfigurationProcess _confImpl;
+
         public IISConfigCtrl()
         {
             InitializeComponent();
-            this.Config = new IISSetupConfigurationProcess();
+            this.Config = _confImpl = new IISSetupConfigurationProcess();
+
+            numAdminPort.Value = _confImpl.ServerAdminPort;
+            numClientPort.Value = _confImpl.ServerClientPort;
+            numSitePort.Value = _confImpl.ServerSitePort;
+
+            txtWebSiteName.Text = _confImpl.WebSiteName;
+            txtVirtualDir.Text = _confImpl.VirtualDirectoryName;
+            txtAppPool.Text = _confImpl.ApplicationPool;
+            txtAppCmd.Text = _confImpl.AppCmdPath;
+
+            rdDotNet.Checked = _confImpl.EnableDotNet;
+            rdPhp.Checked = _confImpl.EnablePhp;
         }
 
         public AbstractSetupConfigurationProcess Config
@@ -44,6 +58,53 @@ namespace InstantSetup
         public Control Wrapper
         {
             get { return this; }
+        }
+
+        private void rdDotNet_CheckedChanged(object sender, EventArgs e)
+        {
+            _confImpl.EnableDotNet = rdDotNet.Checked;
+            _confImpl.EnablePhp = rdPhp.Checked;
+        }
+
+        private void rdPhp_CheckedChanged(object sender, EventArgs e)
+        {
+            _confImpl.EnableDotNet = rdDotNet.Checked;
+            _confImpl.EnablePhp = rdPhp.Checked;
+        }
+
+        private void txtAppCmd_TextChanged(object sender, EventArgs e)
+        {
+            _confImpl.AppCmdPath = txtAppCmd.Text;
+        }
+
+        private void txtWebSiteName_TextChanged(object sender, EventArgs e)
+        {
+            _confImpl.WebSiteName = txtWebSiteName.Text;
+        }
+
+        private void txtVirtualDir_TextChanged(object sender, EventArgs e)
+        {
+            this.Config.VirtualDirectoryName = txtVirtualDir.Text;
+        }
+
+        private void numAdminPort_ValueChanged(object sender, EventArgs e)
+        {
+            this.Config.ServerAdminPort = Convert.ToInt32(numAdminPort.Value);
+        }
+
+        private void numClientPort_ValueChanged(object sender, EventArgs e)
+        {
+            this.Config.ServerClientPort = Convert.ToInt32(numClientPort.Value);
+        }
+
+        private void numSitePort_ValueChanged(object sender, EventArgs e)
+        {
+            this.Config.ServerSitePort = Convert.ToInt32(numSitePort.Value);
+        }
+
+        private void txtAppPool_TextChanged(object sender, EventArgs e)
+        {
+            _confImpl.ApplicationPool = txtAppPool.Text;
         }
     }
 }

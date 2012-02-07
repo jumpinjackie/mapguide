@@ -42,6 +42,7 @@
             this.txtBatchOutput = new System.Windows.Forms.TextBox();
             this.label3 = new System.Windows.Forms.Label();
             this.chkWriteMentorDictPath = new System.Windows.Forms.CheckBox();
+            this.TAB_IIS7 = new System.Windows.Forms.TabPage();
             this.tabControl1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -62,6 +63,7 @@
                         | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
             this.tabControl1.Controls.Add(this.TAB_APACHE);
+            this.tabControl1.Controls.Add(this.TAB_IIS7);
             this.tabControl1.Location = new System.Drawing.Point(13, 87);
             this.tabControl1.Name = "tabControl1";
             this.tabControl1.SelectedIndex = 0;
@@ -181,6 +183,16 @@
             this.chkWriteMentorDictPath.UseVisualStyleBackColor = true;
             this.chkWriteMentorDictPath.CheckedChanged += new System.EventHandler(this.chkWriteMentorDictPath_CheckedChanged);
             // 
+            // TAB_IIS7
+            // 
+            this.TAB_IIS7.Location = new System.Drawing.Point(4, 22);
+            this.TAB_IIS7.Name = "TAB_IIS7";
+            this.TAB_IIS7.Padding = new System.Windows.Forms.Padding(3);
+            this.TAB_IIS7.Size = new System.Drawing.Size(519, 390);
+            this.TAB_IIS7.TabIndex = 2;
+            this.TAB_IIS7.Text = "IIS7";
+            this.TAB_IIS7.UseVisualStyleBackColor = true;
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -222,6 +234,7 @@
         private System.Windows.Forms.TextBox txtBatchOutput;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.CheckBox chkWriteMentorDictPath;
+        private System.Windows.Forms.TabPage TAB_IIS7;
     }
 }
 

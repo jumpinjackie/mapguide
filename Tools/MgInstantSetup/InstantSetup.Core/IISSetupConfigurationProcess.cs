@@ -24,6 +24,20 @@ namespace InstantSetup.Core
 {
     public class IISSetupConfigurationProcess : AbstractSetupConfigurationProcess
     {
+        public IISSetupConfigurationProcess()
+            : base()
+        {
+            this.VirtualDirectoryName = "mapguide";
+
+            this.UsingIIS7 = true;
+            this.AppCmdPath = "C:\\Windows\\System32\\inetsrv\\appcmd.exe";
+            this.WebSiteName = "Default Web Site";
+            this.ApplicationPool = "MapGuideTrunkAppPool";
+
+            this.EnableDotNet = true;
+            this.EnablePhp = false;
+        }
+
         public bool EnableDotNet { get; set; }
 
         /// <summary>
@@ -32,24 +46,35 @@ namespace InstantSetup.Core
         /// </summary>
         public bool UsingIIS7 { get; set; }
 
+        public string AppCmdPath { get; set; }
+
+        public string WebSiteName { get; set; }
+
+        public string ApplicationPool { get; set; }
+
         protected override void DoBackupConfigFiles()
         {
-            throw new NotImplementedException();
+            
         }
 
         protected override void ValidateConfigSettings()
         {
-            throw new NotImplementedException();
-        }
-
-        protected override void ConfigureWebServer()
-        {
-            throw new NotImplementedException();
+            
         }
 
         protected override void WriteAdditionalBatchFiles()
         {
-            throw new NotImplementedException();
+            
+        }
+
+        protected override void ConfigureWebServer()
+        {
+            var cmd = new AppCmd(this.AppCmdPath, this.WebSiteName, this.VirtualDirectoryName, this.ApplicationPool, this.WebTierRootDir, this.WebTierPhpDir);
+            cmd.SetupCore();
+            if (this.EnableDotNet)
+                cmd.SetDefaultDotNetViewer();
+            else if (this.EnablePhp)
+                cmd.SetDefaultPhpViewer();
         }
     }
 }

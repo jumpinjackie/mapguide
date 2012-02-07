@@ -32,6 +32,7 @@ namespace InstantSetup
         {
             InitializeComponent();
             _apacheConf = new ApacheConfigCtrl();
+            _iis7Conf = new IISConfigCtrl();
 
             txtServiceName.Text = "MapGuide Server Trunk";
         }
@@ -39,10 +40,21 @@ namespace InstantSetup
         protected override void OnLoad(EventArgs e)
         {
             _apacheConf.Wrapper.Dock = DockStyle.Fill;
+            _iis7Conf.Wrapper.Dock = DockStyle.Fill;
             TAB_APACHE.Controls.Add(_apacheConf.Wrapper);
+            TAB_IIS7.Controls.Add(_iis7Conf.Wrapper);
         }
 
         private IConfigurationView _apacheConf;
+        private IConfigurationView _iis7Conf;
+
+        private IConfigurationView GetActiveView()
+        {
+            if (tabControl1.SelectedTab == TAB_APACHE)
+                return _apacheConf;
+            else
+                return _iis7Conf;
+        }
 
         private void btnSourceDir_Click(object sender, EventArgs e)
         {
@@ -54,36 +66,36 @@ namespace InstantSetup
 
         private void txtSourceDirectory_TextChanged(object sender, EventArgs e)
         {
-            _apacheConf.Config.BuildOutputPath = txtSourceDirectory.Text;
+            _iis7Conf.Config.BuildOutputPath = _apacheConf.Config.BuildOutputPath = txtSourceDirectory.Text;
         }
 
         private void txtBatchOutput_TextChanged(object sender, EventArgs e)
         {
-            _apacheConf.Config.BatchFileOutputDirectory = txtBatchOutput.Text;
+            _iis7Conf.Config.BatchFileOutputDirectory = _apacheConf.Config.BatchFileOutputDirectory = txtBatchOutput.Text;
         }
 
         private void txtServiceName_TextChanged(object sender, EventArgs e)
         {
-            _apacheConf.Config.MapGuideServiceName = txtServiceName.Text;
+            _iis7Conf.Config.MapGuideServiceName = _apacheConf.Config.MapGuideServiceName = txtServiceName.Text;
         }
 
         private void chkInstallServices_CheckedChanged(object sender, EventArgs e)
         {
-            _apacheConf.Config.InstallServices = chkInstallServices.Checked;
+            _iis7Conf.Config.InstallServices = _apacheConf.Config.InstallServices = chkInstallServices.Checked;
         }
 
         private void chkWriteMentorDictPath_CheckedChanged(object sender, EventArgs e)
         {
-            _apacheConf.Config.WriteMentorDictionaryPath = chkWriteMentorDictPath.Checked;
+            _iis7Conf.Config.WriteMentorDictionaryPath = _apacheConf.Config.WriteMentorDictionaryPath = chkWriteMentorDictPath.Checked;
         }
 
         private void btnConfigure_Click(object sender, EventArgs e)
         {
             try
             {
-                _apacheConf.Config.Execute();
+                GetActiveView().Config.Execute();
                 if (!chkInstallServices.Checked)
-                    MessageBox.Show("Batch scripts saved to " + _apacheConf.Config.BatchFileOutputDirectory);
+                    MessageBox.Show("Batch scripts saved to " + GetActiveView().Config.BatchFileOutputDirectory);
                 //Service install not implemented
             }
             catch (Exception ex)
