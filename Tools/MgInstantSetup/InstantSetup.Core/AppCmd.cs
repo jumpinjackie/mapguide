@@ -43,7 +43,7 @@ namespace InstantSetup.Core
         /// <summary>
         /// 0 - web site name, 1 - virtual dir, 2 - php dir
         /// </summary>
-        const string CREATE_PHP_SCRIPT_MAPPING = "set config \"{0}/{1}\" /section:handlers /+\"[name='PHP_via_FastCGI',path='*.php',verb='*',scriptProcessor='{2}\\php-cgi.exe',modules='FastCgiModule',resourceType='Unspecified']\"";
+        const string CREATE_PHP_SCRIPT_MAPPING = "set config \"{0}/{1}\" /section:handlers /+\"[name='PHP_via_FastCGI',path='*.php',verb='*',scriptProcessor='{2}\\php-cgi.exe',modules='FastCgiModule',resourceType='File',requireAccess='Script']\"";
 
         /// <summary>
         /// 0 - web site name, 1 - virtual dir, 2 - web tier root dir
