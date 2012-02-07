@@ -12,12 +12,12 @@
 
     <!-- Create the application pool -->
     <CustomAction Id="MapGuideIIS7_I_CreateAppPool_Cmd" Property="MapGuideIIS7_I_CreateAppPool" Execute="immediate"
-        Value="[AppCmd] add apppool /name:&quot;[APP_POOL_NAME]&quot;" />
+        Value="[AppCmd] add apppool /name:&quot;[APP_POOL_NAME]&quot; /managedRuntimeVersion:&quot;v4.0&quot;" />
     <CustomAction Id="MapGuideIIS7_I_CreateAppPool" BinaryKey="WixCA" DllEntry="CAQuietExec" Execute="deferred" Return="ignore" Impersonate="no"/>
 
     <!-- Set up FastCGI -->
     <CustomAction Id="MapGuideIIS7_I_CreateFastCgi_Cmd" Property="MapGuideIIS7_I_CreateFastCgi" Execute="immediate"
-            Value="[AppCmd] add apppool set config /section:system.webServer/fastCGI /+[\[]fullPath=&quot;[PHPLOCATION]php-cgi.exe&quot;[\]]" />
+            Value="[AppCmd] set config /section:system.webServer/fastCGI /+[\[]fullPath=&quot;[PHPLOCATION]php-cgi.exe&quot;[\]]" />
     <CustomAction Id="MapGuideIIS7_I_CreateFastCgi" BinaryKey="WixCA" DllEntry="CAQuietExec" Execute="deferred" Return="ignore" Impersonate="no"/>
 
     <!-- Set the application pool's properties -->
@@ -67,7 +67,7 @@
 
     <!-- Set App Pool to 32-bit mode (applies to 64-bit windows) -->
     <CustomAction Id="MapGuideIIS7_I_Set32BitAppPool_Cmd" Property="MapGuideIIS7_I_Set32BitAppPool" Execute="immediate"
-        Value="[AppCmd] apppool set /apppool.name:&quot;[APP_POOL_NAME]&quot; /enable32BitAppOnWin64:true" />
+        Value="[AppCmd] set apppool /apppool.name:&quot;[APP_POOL_NAME]&quot; /enable32BitAppOnWin64:true" />
     <CustomAction Id="MapGuideIIS7_I_Set32BitAppPool" BinaryKey="WixCA" DllEntry="CAQuietExec" Execute="deferred" Return="ignore" Impersonate="no" />
         
     <!-- Make the MapGuide application run in the MapGuide app pool -->
