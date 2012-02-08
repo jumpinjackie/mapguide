@@ -31,6 +31,7 @@
             this.btnConfigure = new System.Windows.Forms.Button();
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.TAB_APACHE = new System.Windows.Forms.TabPage();
+            this.TAB_IIS7 = new System.Windows.Forms.TabPage();
             this.label1 = new System.Windows.Forms.Label();
             this.txtServiceName = new System.Windows.Forms.TextBox();
             this.label2 = new System.Windows.Forms.Label();
@@ -42,7 +43,7 @@
             this.txtBatchOutput = new System.Windows.Forms.TextBox();
             this.label3 = new System.Windows.Forms.Label();
             this.chkWriteMentorDictPath = new System.Windows.Forms.CheckBox();
-            this.TAB_IIS7 = new System.Windows.Forms.TabPage();
+            this.chk64Bit = new System.Windows.Forms.CheckBox();
             this.tabControl1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -64,10 +65,10 @@
                         | System.Windows.Forms.AnchorStyles.Right)));
             this.tabControl1.Controls.Add(this.TAB_APACHE);
             this.tabControl1.Controls.Add(this.TAB_IIS7);
-            this.tabControl1.Location = new System.Drawing.Point(13, 87);
+            this.tabControl1.Location = new System.Drawing.Point(13, 111);
             this.tabControl1.Name = "tabControl1";
             this.tabControl1.SelectedIndex = 0;
-            this.tabControl1.Size = new System.Drawing.Size(527, 416);
+            this.tabControl1.Size = new System.Drawing.Size(527, 392);
             this.tabControl1.TabIndex = 1;
             // 
             // TAB_APACHE
@@ -75,10 +76,20 @@
             this.TAB_APACHE.Location = new System.Drawing.Point(4, 22);
             this.TAB_APACHE.Name = "TAB_APACHE";
             this.TAB_APACHE.Padding = new System.Windows.Forms.Padding(3);
-            this.TAB_APACHE.Size = new System.Drawing.Size(519, 390);
+            this.TAB_APACHE.Size = new System.Drawing.Size(519, 366);
             this.TAB_APACHE.TabIndex = 1;
             this.TAB_APACHE.Text = "Apache";
             this.TAB_APACHE.UseVisualStyleBackColor = true;
+            // 
+            // TAB_IIS7
+            // 
+            this.TAB_IIS7.Location = new System.Drawing.Point(4, 22);
+            this.TAB_IIS7.Name = "TAB_IIS7";
+            this.TAB_IIS7.Padding = new System.Windows.Forms.Padding(3);
+            this.TAB_IIS7.Size = new System.Drawing.Size(519, 390);
+            this.TAB_IIS7.TabIndex = 2;
+            this.TAB_IIS7.Text = "IIS7";
+            this.TAB_IIS7.UseVisualStyleBackColor = true;
             // 
             // label1
             // 
@@ -183,21 +194,23 @@
             this.chkWriteMentorDictPath.UseVisualStyleBackColor = true;
             this.chkWriteMentorDictPath.CheckedChanged += new System.EventHandler(this.chkWriteMentorDictPath_CheckedChanged);
             // 
-            // TAB_IIS7
+            // chk64Bit
             // 
-            this.TAB_IIS7.Location = new System.Drawing.Point(4, 22);
-            this.TAB_IIS7.Name = "TAB_IIS7";
-            this.TAB_IIS7.Padding = new System.Windows.Forms.Padding(3);
-            this.TAB_IIS7.Size = new System.Drawing.Size(519, 390);
-            this.TAB_IIS7.TabIndex = 2;
-            this.TAB_IIS7.Text = "IIS7";
-            this.TAB_IIS7.UseVisualStyleBackColor = true;
+            this.chk64Bit.AutoSize = true;
+            this.chk64Bit.Location = new System.Drawing.Point(156, 87);
+            this.chk64Bit.Name = "chk64Bit";
+            this.chk64Bit.Size = new System.Drawing.Size(201, 17);
+            this.chk64Bit.TabIndex = 12;
+            this.chk64Bit.Text = "This is a 64-bit instance of MapGuide";
+            this.chk64Bit.UseVisualStyleBackColor = true;
+            this.chk64Bit.CheckedChanged += new System.EventHandler(this.chk64Bit_CheckedChanged);
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(552, 544);
+            this.Controls.Add(this.chk64Bit);
             this.Controls.Add(this.chkWriteMentorDictPath);
             this.Controls.Add(this.button1);
             this.Controls.Add(this.txtBatchOutput);
@@ -235,6 +248,7 @@
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.CheckBox chkWriteMentorDictPath;
         private System.Windows.Forms.TabPage TAB_IIS7;
+        private System.Windows.Forms.CheckBox chk64Bit;
     }
 }
 

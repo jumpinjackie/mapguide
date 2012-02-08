@@ -49,6 +49,11 @@ namespace InstantSetup.Core
             this.ServerSitePort = 2822;
         }
 
+        /// <summary>
+        /// Gets or sets whether the installation of MapGuide to be configured is 64-bit
+        /// </summary>
+        public bool Is64BitMapGuide { get; set; }
+
         public bool WriteMentorDictionaryPath { get; set; }
 
         public string BatchFileOutputDirectory { get; set; }

@@ -111,5 +111,10 @@ namespace InstantSetup
                 txtBatchOutput.Text = folderBrowser.SelectedPath;
             }
         }
+
+        private void chk64Bit_CheckedChanged(object sender, EventArgs e)
+        {
+            _iis7Conf.Config.Is64BitMapGuide = _apacheConf.Config.Is64BitMapGuide = chk64Bit.Checked;
+        }
     }
 }

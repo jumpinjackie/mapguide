@@ -193,7 +193,7 @@ namespace InstantSetup.Core
             return Process.Start(psi);
         }
 
-        internal void SetupCore()
+        internal void SetupCore(bool b64BitMapGuide)
         {
             Process p = null;
             p = StartAppCmdProcess(string.Format(CREATE_FASTCGI, _phpDir));
@@ -229,8 +229,11 @@ namespace InstantSetup.Core
             p = StartAppCmdProcess(string.Format(SET_MAPAGENT_ISAPI_ACCESS, _webExtensionsRootDir));
             Trace.TraceInformation(p.StandardOutput.ReadToEnd()); p.WaitForExit();
             //if (p.ExitCode != 0) Debugger.Break();
-            p = StartAppCmdProcess(string.Format(SET_32BIT_APP_POOL, _appPoolName));
-            Trace.TraceInformation(p.StandardOutput.ReadToEnd()); p.WaitForExit();
+            if (!b64BitMapGuide)
+            {
+                p = StartAppCmdProcess(string.Format(SET_32BIT_APP_POOL, _appPoolName));
+                Trace.TraceInformation(p.StandardOutput.ReadToEnd()); p.WaitForExit();
+            }
             //if (p.ExitCode != 0) Debugger.Break();
             p = StartAppCmdProcess(string.Format(SET_MAPGUIDE_VDIR_APP_POOL, _webSite, _virtualDir, _appPoolName));
             Trace.TraceInformation(p.StandardOutput.ReadToEnd()); p.WaitForExit();

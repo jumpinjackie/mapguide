@@ -70,7 +70,7 @@ namespace InstantSetup.Core
         protected override void ConfigureWebServer()
         {
             var cmd = new AppCmd(this.AppCmdPath, this.WebSiteName, this.VirtualDirectoryName, this.ApplicationPool, this.WebTierRootDir, this.WebTierPhpDir);
-            cmd.SetupCore();
+            cmd.SetupCore(this.Is64BitMapGuide);
             if (this.EnableDotNet)
                 cmd.SetDefaultDotNetViewer();
             else if (this.EnablePhp)
