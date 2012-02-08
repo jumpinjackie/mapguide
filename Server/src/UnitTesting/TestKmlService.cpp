@@ -388,11 +388,25 @@ void TestKmlService::TestCase_GetFeaturesKml()
         STRING agentUri = L"http://myserver/mapguide/mapagent/mapagent.fcgi";
         STRING format = L"KML";
 
-        //call GetLayerKml
-        Ptr<MgByteReader> reader = m_svcKml->GetFeaturesKml(layer, extents, width, height, dpi, drawOrder, agentUri, format);
+        try
+        {
+            //call GetLayerKml
+            Ptr<MgByteReader> reader = m_svcKml->GetFeaturesKml(layer, extents, width, height, dpi, drawOrder, agentUri, format);
 
-        STRING mimeType = reader->GetMimeType();
-        CPPUNIT_ASSERT(mimeType.compare(MgMimeType::Kml) == 0);
+            STRING mimeType = reader->GetMimeType();
+            CPPUNIT_ASSERT(mimeType.compare(MgMimeType::Kml) == 0);
+        }
+        catch(MgConnectionFailedException* e)
+        {
+            SAFE_RELEASE(e);
+            ACE_DEBUG((LM_INFO, ACE_TEXT("\nTestCase_GetFeaturesKml skipped because unable to connect to test server.\n")));
+
+            // We need to update the mapguide server status so that it can be used again because we have used the
+            // same exception class for servers outside the one actually executing this code.
+            MgSiteManager* siteManager = MgSiteManager::GetInstance();
+            Ptr<MgSiteInfo> siteInfo = siteManager->GetSiteInfo(0);
+            siteInfo->SetStatus(MgSiteInfo::Ok);
+        }
 
         //compare results against referenced content
         //TODO: Find a way to make the comparison work on Windows AND Linux
