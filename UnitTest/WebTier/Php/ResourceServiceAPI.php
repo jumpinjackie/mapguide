@@ -37,7 +37,7 @@ class ResourceServiceAPI
     function __construct($db)
     {
         $this->mimeType="text/xml";
-        Utils::MapAgentInit("../../../Web/src/webconfig.ini");
+        Utils::MapAgentInit(WEBCONFIGINI);
 
         $this->cred = new MgUserInformation();
         $this->cred->SetMgUsernamePassword("Administrator","admin");

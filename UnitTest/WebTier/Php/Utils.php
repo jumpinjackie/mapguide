@@ -19,6 +19,8 @@
 
 //Class that defines static methods that are commonly used in the infrastructure
 
+define( 'WEBCONFIGINI', "../../../Web/src/webconfig.ini");
+
 class Utils
 {
     public static function SetCommonParams($paramSet, $db)
@@ -72,6 +74,12 @@ class Utils
 
     public static function GetPath($fileName)
     {
+        $pos = strrpos($fileName, ':');
+        if($pos)
+        {
+            return $fileName;
+        }
+
         $relPath = __FILE__;
         $pos = strrpos($relPath, '\\');
 

@@ -217,15 +217,23 @@ class Validate
         {
             //Form a file name that is going to be used for the outputting results to a file
             $type=substr($serviceType, 0, strpos($serviceType, "_"));
+            $dumpFilePath = Utils::GetPath("../../TestData/".$type."/DumpFiles/");
             $filePath = Utils::GetPath("../../TestData/".$type."/DumpFiles/".$type."HttpTest");
             $fileName = $filePath."_".$paramSet.".".$actualExtension;
 
             if ($_POST['testExecutionMode'] == "dump")
             {
-                file_put_contents($fileName, $resultData);
+                //if the folder "DumpFiles" is not exist, then user need to create the folder themself
+                //or the "dump" operation fail, so add these code to create the folder automatically
+                if(!file_exists($dumpFilePath))
+                {
+                    mkdir($dumpFilePath);
+                }
+
+                file_put_contents($fileName, "$resultData");
             }
             else
-            {
+            {             
                 //This section is special case handling for the operations that return different data after each call
                 $resultData=ValidateUtils::SpecialDataHandling($operation, $resultData, $contentType);
 
@@ -235,7 +243,20 @@ class Validate
                     //then do not overwrite the filename in the database
                     //To distinguish between sample data and filename all filenames should be prefixed with "@@"
                     $status = $this->vm->Execute("Select Result from HttpTestResults where ParamSet=$paramSet;");
-                    $sampleResult = $this->vm->GetString("Result");
+                    
+                    //Get the sample data from the database
+                    $this->vm->Execute("Select Result from HttpTestResults where ParamSet = $paramSet");
+                    //When use the GetString to get the result which is actually BlOB will cause exception
+                    //unfortunately, this expection can not be caught by the php engine, cause it is not legal php exception
+                    //maybe it is a problem of the sqlite in mapguide, so use GetBlob here, if the sqlite fix this problem
+                    //we can use try catch
+                    $byteReader = $this->vm->GetBlob("Result");
+                    $sampleResult;  
+                    
+                    while ($byteReader->Read($resultContent, 1024)>0)
+                    {
+                        $sampleResult.=$resultContent;
+                    }
 
                     if ("@@"!=substr($sampleResult, 0, 2))
                     {

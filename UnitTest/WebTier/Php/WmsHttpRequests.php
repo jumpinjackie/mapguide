@@ -98,6 +98,9 @@ class WmsHttpRequests
 
             $this->unitTestParamVm->Execute("Select ParamValue from Params WHERE ParamSet=$paramSet AND ParamName=\"format\"");
             $arrayParam["format"]=$this->unitTestParamVm->GetString("ParamValue");
+            
+            $this->unitTestParamVm->Execute("Select ParamValue from Params WHERE ParamSet=$paramSet AND ParamName=\"version\"");
+            $arrayParam["version"]=$this->unitTestParamVm->GetString("ParamValue");
 
             return $this->httpRequest->SendRequest($this->URL, $arrayParam);
 
@@ -121,8 +124,9 @@ class WmsHttpRequests
             $arrayParam["service"]=$this->unitTestParamVm->GetString("ParamValue");
 
             $this->unitTestParamVm->Execute("Select ParamValue from Params WHERE ParamSet=$paramSet AND ParamName=\"layers\"");
-            $arrayParam["layers"]=$this->unitTestParamVm->GetString("ParamValue");
-
+            $arrayParam["layers"]=$this->unitTestParamVm->GetString("ParamValue");            
+            $arrayParam["query_layers"]=$this->unitTestParamVm->GetString("ParamValue");
+            
             $this->unitTestParamVm->Execute("Select ParamValue from Params WHERE ParamSet=$paramSet AND ParamName=\"srs\"");
             $arrayParam["srs"]=$this->unitTestParamVm->GetString("ParamValue");
 
@@ -143,6 +147,12 @@ class WmsHttpRequests
 
             $this->unitTestParamVm->Execute("Select ParamValue from Params WHERE ParamSet=$paramSet AND ParamName=\"format\"");
             $arrayParam["format"]=$this->unitTestParamVm->GetString("ParamValue");
+            
+            $this->unitTestParamVm->Execute("Select ParamValue from Params WHERE ParamSet=$paramSet AND ParamName=\"version\"");
+            $arrayParam["version"]=$this->unitTestParamVm->GetString("ParamValue");
+            
+            $this->unitTestParamVm->Execute("Select ParamValue from Params WHERE ParamSet=$paramSet AND ParamName=\"info_format\"");
+            $arrayParam["info_format"]= $this->unitTestParamVm->GetString("ParamValue");
 
             return $this->httpRequest->SendRequest($this->URL, $arrayParam);
 

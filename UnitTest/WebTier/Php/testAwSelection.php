@@ -156,7 +156,7 @@ class StringKeyFeature implements FeatureClass
 try
 {
 
-    Utils::MapAgentInit("../../../Web/src/webconfig.ini");
+    Utils::MapAgentInit(WEBCONFIGINI);
     $site = new MgSiteConnection();
     $cred = new MgUserInformation();
     $cred->SetMgUsernamePassword("Administrator","admin");

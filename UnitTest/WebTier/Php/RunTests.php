@@ -73,9 +73,9 @@ function main()
 
     $testsFailed += ExecuteTest("Api", "../../TestData/WebLayout/WebLayoutTest.dump", $testsRun, $file, $isEnterprise);
 
-   // $testsFailed += ExecuteTest("Http", "../../TestData/Wfs/WfsTest.dump", $testsRun, $file, $isEnterprise);
+    $testsFailed += ExecuteTest("Http", "../../TestData/Wfs/WfsTest.dump", $testsRun, $file, $isEnterprise);
 
-   // $testsFailed += ExecuteTest("Http", "../../TestData/Wms/WmsTest.dump", $testsRun, $file, $isEnterprise);
+    $testsFailed += ExecuteTest("Http", "../../TestData/Wms/WmsTest.dump", $testsRun, $file, $isEnterprise);
 
     $testsFailed += ExecuteTest("Api", "../../TestData/Unicode/UnicodeTest.dump", $testsRun, $file, $isEnterprise);
 

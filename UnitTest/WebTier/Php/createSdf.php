@@ -24,7 +24,7 @@ require_once("Utils.php");
 try
 {
 
-    Utils::MapAgentInit("../../../Web/src/webconfig.ini");
+    Utils::MapAgentInit(WEBCONFIGINI);
     $site = new MgSiteConnection();
     $cred = new MgUserInformation();
     $cred->SetMgUsernamePassword("Administrator","admin");

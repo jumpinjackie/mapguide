@@ -37,7 +37,7 @@ class SiteServiceAPI
 
     function __construct($db)
     {
-        Utils::MapAgentInit("../../../Web/src/webconfig.ini");
+        Utils::MapAgentInit(WEBCONFIGINI);
 
         $this->cred = new MgUserInformation();
         $this->cred->SetMgUsernamePassword("Administrator","admin");

@@ -24,7 +24,7 @@ require_once("Utils.php");
 try
 {
 
-    Utils::MapAgentInit("../../../Web/src/webconfig.ini");
+    Utils::MapAgentInit(WEBCONFIGINI);
     $site = new MgSiteConnection();
     $cred = new MgUserInformation();
     $cred->SetMgUsernamePassword("Administrator","admin");
@@ -109,7 +109,7 @@ for ($i=1; $i<=$count; $i++)
 {
 
     $bufferProps = new MgPropertyCollection();
-    $nameProp = new MgStringProperty("NAME", "Name_Eš??????Ab2??˜Ab2????_".$i);
+    $nameProp = new MgStringProperty("NAME", "Name_Eï¿½??????Ab2??ï¿½Ab2????_".$i);
     $bufferProps->Add($nameProp);
 
     $x = 120+$i/$count;
