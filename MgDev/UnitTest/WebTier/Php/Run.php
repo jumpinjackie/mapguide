@@ -91,7 +91,6 @@ class Run
             else
             {
                 $url="http://".$_SERVER['SERVER_ADDR'].":".$_SERVER['SERVER_PORT']."/mapguide/mapagent/mapagent.fcgi";
-
             }
 
             $testName=$_POST['testName'];
@@ -195,7 +194,7 @@ class Run
 
                 if (substr_count($_POST['requestType'],"Http"))
                 {
-                    $status = $this->validate->ValidateHttpRequest($_POST['testName'], $paramSet, $paramValue, $actualResult, $file);
+                    $status = $this->validate->ValidateHttpRequest($_POST['testName'], $paramSet, $paramValue, $actualResult, $file);    
                 }
                 else
                 {
@@ -213,10 +212,9 @@ class Run
                 HtmlPrinter::printTableEnd();
                 HtmlPrinter::PrintGenerateFormHiddenFields();
                 HtmlPrinter::PrintFormFooter($_POST['requestType'], "Generate");
-
             }
 
-            if ($_POST['testExecutionMode'] == 'generate')
+            if ($_POST['testExecutionMode'] == "generate")
             {
                 Utils::CreateDumpFile($this->unitTestDb);
             }

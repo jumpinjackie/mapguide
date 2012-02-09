@@ -34,7 +34,7 @@ class WebLayoutAPI
     {
         $wl = null;
 
-        Utils::MapAgentInit("../../../Web/src/webconfig.ini");
+        Utils::MapAgentInit(WEBCONFIGINI);
 
         $this->cred = new MgUserInformation();
         $this->cred->SetMgUsernamePassword("Administrator","admin");

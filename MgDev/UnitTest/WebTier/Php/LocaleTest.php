@@ -27,7 +27,7 @@ if ($pos == false)
 $curPath = substr_replace($curPath, "", $pos+1);
 
 //Note: current path might already be the script!!
-MgInitializeWebTier("../../../Web/src/webconfig.ini");
+MgInitializeWebTier(WEBCONFIGINI);
 
 $locale = $_GET['LOCALE'];
 

@@ -29,15 +29,15 @@ class ServerAdminAPI
 
     function __construct($db)
     {
-        Utils::MapAgentInit("../../../Web/src/webconfig.ini");
+        Utils::MapAgentInit(WEBCONFIGINI);
 
         $this->cred = new MgUserInformation();
         $this->cred->SetMgUsernamePassword("Administrator","admin");
         $this->cred->SetLocale("en");
 
-
         $this->serverAdmin = new MgServerAdmin();
-        $this->serverAdmin->Open("localhost", $this->cred);
+        //!not work with localhost?
+        $this->serverAdmin->Open("127.0.0.1", $this->cred);
 
         $this->unitTestParamVm = new SqliteVM($db, true);
         $this->arrayParam = array();
@@ -181,7 +181,6 @@ class ServerAdminAPI
         {
             $this->unitTestParamVm->Execute("Select ParamValue from Params WHERE ParamSet=$paramSet AND ParamName=\"LOGTYPE\"");
             $logtype = $this->unitTestParamVm->GetString("ParamValue");
-
             $cleared = $this->serverAdmin->ClearLog($logtype);
             return new Result(Utils::BooleanToString($cleared), "text/plain");
         }

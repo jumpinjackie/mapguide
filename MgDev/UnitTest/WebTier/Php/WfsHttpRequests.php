@@ -80,10 +80,13 @@ class WfsHttpRequests
 
             $this->unitTestParamVm->Execute("Select ParamValue from Params WHERE ParamSet=$paramSet AND ParamName=\"service\"");
             $arrayParam["service"]=$this->unitTestParamVm->GetString("ParamValue");
+            
+            $this->unitTestParamVm->Execute("Select ParamValue from Params WHERE ParamSet=$paramSet AND ParamName=\"version\"");
+            $arrayParam["version"]=$this->unitTestParamVm->GetString("ParamValue");
 
             $this->unitTestParamVm->Execute("Select ParamValue from Params WHERE ParamSet=$paramSet AND ParamName=\"typeName\"");
             $arrayParam["typeName"]=$this->unitTestParamVm->GetString("ParamValue");
-
+                       
             return $this->httpRequest->SendRequest($this->URL, $arrayParam);
         }
         catch (SqliteException $s)
@@ -104,6 +107,9 @@ class WfsHttpRequests
 
             $this->unitTestParamVm->Execute("Select ParamValue from Params WHERE ParamSet=$paramSet AND ParamName=\"service\"");
             $arrayParam["service"]=$this->unitTestParamVm->GetString("ParamValue");
+            
+            $this->unitTestParamVm->Execute("Select ParamValue from Params WHERE ParamSet=$paramSet AND ParamName=\"version\"");
+            $arrayParam["version"]=$this->unitTestParamVm->GetString("ParamValue");
 
             $this->unitTestParamVm->Execute("Select ParamValue from Params WHERE ParamSet=$paramSet AND ParamName=\"typeName\"");
             $arrayParam["typeName"]=$this->unitTestParamVm->GetString("ParamValue");
