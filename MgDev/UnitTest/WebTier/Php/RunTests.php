@@ -20,6 +20,7 @@
 //Command line script that executes all tests in the given database files
 
 define('Run_MAIN_METHOD', true);
+require_once("sqlite_constants.php");
 require_once("Run.php");
 main();
 
