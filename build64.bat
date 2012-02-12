@@ -253,7 +253,15 @@ if "%errorlevel%"=="1" goto error
 rem CsMap is not in Oem.sln, so we need to build that separately
 echo [build]: Building Oem - CSMap
 IF "%VC_COMPILER_VERSION%" == "10" (
+IF "%VC_X64_CROSS_COMPILE%" == "1" (
+echo [build]: Cross-compiling CSMap
+REM For x64 cross compilation, we build the CS-Map projects individually
+REM except for the compiler project, which we build in x86
+%MSBUILD% %MG_OEM%\CsMap\VC100\Library.vcxproj
+msbuild /p:Configuration=%CONFIGURATION%;Platform=Win32 %MG_OEM%\CsMap\VC100\Library.vcxproj
+) ELSE (
 %MSBUILD% %MG_OEM%\CsMap\VC100\OpenSource.sln
+)
 ) ELSE (
 %MSBUILD% %MG_OEM%\CsMap\VC90\OpenSource.sln
 )
@@ -441,25 +449,25 @@ echo                                web,
 echo                                doc
 echo ************************************************************************
 :quit
-SET TYPEACTION=
-SET TYPEBUILD=
-SET MG_OUTPUT=
-SET MG_BUILD_COMPONENT=
-SET MG_DEV=
-SET MG_INSTALLER=
-SET MG_OEM=
-SET MG_SERVER=
-SET MG_WEB=
-SET MG_WEB_SRC=
-SET MG_WEB_BIN=
-SET MG_UNIT_TEST=
-SET MG_FUSION=
-SET MG_DOC=
-SET MG_DOC_OUTPUT=
-SET MG_ERROR=
+REM SET TYPEACTION=
+REM SET TYPEBUILD=
+REM SET MG_OUTPUT=
+REM SET MG_BUILD_COMPONENT=
+REM SET MG_DEV=
+REM SET MG_INSTALLER=
+REM SET MG_OEM=
+REM SET MG_SERVER=
+REM SET MG_WEB=
+REM SET MG_WEB_SRC=
+REM SET MG_WEB_BIN=
+REM SET MG_UNIT_TEST=
+REM SET MG_FUSION=
+REM SET MG_DOC=
+REM SET MG_DOC_OUTPUT=
+REM SET MG_ERROR=
 
-SET MSBUILD_LOG=
-SET MSBUILD_VERBOSITY=
-SET XCOPY=
-SET MSBUILD=
-SET PATH=%OLDPATH%
+REM SET MSBUILD_LOG=
+REM SET MSBUILD_VERBOSITY=
+REM SET XCOPY=
+REM SET MSBUILD=
+REM SET PATH=%OLDPATH%

@@ -18,14 +18,7 @@
 	       with http and end with /mapguide.  If you have installed
 	       fusion inside the www directory of MapGuide, then you can
 	       leave this empty as it will be automatically calculated. */
-           "webTierUrl": "",
-      /* for MapGuide OS version > 2.1 and MGE2010 and higher set this to true*/
-          "useAsyncOverlay": true,
-	    /* The tileCacheUrl is the root url to a static mapguide tile cache.
-	       A relative URL will be relative to your application.
-	       The root url will be appended with the 'Sn'
-         directories for each zoom level. */
-           "tileCacheUrl": "http://localhost:8008/sheboygan"
+           "webTierUrl": ""
     },
     /* The MapServer section is required if you are installing fusion
        for MapServer. */
@@ -41,10 +34,6 @@
 	        web-accessible temporary legend images. */
 	    "legendIconCacheDir":"/ms4w/tmp/ms_tmp",
             /* The file  system path to where the maps are stored. */
-        "mapFileRoot":"/ms4w/apps/",
-        /*The file  system path where the saved map sessions are stored.*/
-         "mapRestoreState":"/opt/fgs/apps/savedSession/",
-        /*The file  system path where the php sessions are stored.*/
-         "mapRestoreStateSession":"/opt/fgs/tmp/"
+            "mapFileRoot":"/ms4w/apps/"
     }
 }

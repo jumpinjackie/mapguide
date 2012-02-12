@@ -93102,7 +93102,7 @@ Fusion.registerEventID(Fusion.Event.FUSION_ERROR);
 /**
  * Fusion.Lib.ApplicationDefinition
  *
- * $Id: ApplicationDefinition.js 2445 2011-11-02 17:31:57Z madair $
+ * $Id: ApplicationDefinition.js 2515 2012-01-13 03:13:51Z liuar $
  *
  * Copyright (c) 2007, DM Solutions Group Inc.
  * Permission is hereby granted, free of charge, to any person obtaining a
@@ -93799,14 +93799,14 @@ Fusion.Lib.ApplicationDefinition.WidgetSet = OpenLayers.Class({
         //not sure why this is here and it creates an area on the map where 
         //the mouse can't interact with the map
         // is this a debug widget? madair
-        /*
+        
         this.mapWidget.message = new Fusion.MapMessage(this.mapWidget.oMapOL.viewPortDiv);
         this.mapWidget.registerForEvent(Fusion.Event.MAP_EXTENTS_CHANGED, (function(){
                 if (this.message != null){
                     this.message.refreshLayout();
                 }
             }).bind(this.mapWidget));
-            */
+        
             
         //create all the other widgets for the widget set
         for (var i=0; i<this.widgetTags.length; i++) {
@@ -95085,7 +95085,7 @@ Fusion.Lib.MGRequest.MGGetFeatureSetEnvelope = OpenLayers.Class(Fusion.Lib.MGReq
 /**
  * Fusion.Widget
  *
- * $Id: Widget.js 2474 2011-12-01 10:04:17Z liuar $
+ * $Id: Widget.js 2521 2012-01-19 02:04:27Z hubu $
  *
  * Copyright (c) 2007, DM Solutions Group Inc.
  * Permission is hereby granted, free of charge, to any person obtaining a
@@ -95203,11 +95203,9 @@ Fusion.Widget = OpenLayers.Class(Fusion.Lib.EventMgr, {
         if (uiObj.addEvents) {
             if (Fusion.Widget.uiInstances[this.type][0].uiObj &&
                 Fusion.Widget.uiInstances[this.type][0].uiObj.options.active &&
-                Fusion.Widget.uiInstances[this.type][0].shouldActivateWith(this)) {
-                uiObj.options.active = true;
-                if (uiObj.domA) {
-                    uiObj.domA.addClass('jx' + uiObj.options.type + 'Active');
-                }
+                Fusion.Widget.uiInstances[this.type][0].shouldActivateWith(this) &&
+                uiObj.setActive) {
+                uiObj.setActive(true);
             }
             
             uiObj.addEvents({
@@ -95218,11 +95216,9 @@ Fusion.Widget = OpenLayers.Class(Fusion.Lib.EventMgr, {
                     var instances = Fusion.Widget.uiInstances[this.type];
                     for (var i=0; i<instances.length; i++) {
                         var instance = instances[i];
-                        if (instance.shouldActivateWith(this) && instance.uiObj) {
-                            instance.uiObj.options.active = false;
-                            if (instance.uiObj.domA) {
-                                instance.uiObj.domA.removeClass('jx' + instance.uiObj.options.type + 'Active');
-                            }
+                        if (instance.shouldActivateWith(this) &&
+                            instance.uiObj && instance.uiObj.setActive) {
+                            instance.uiObj.setActive(false);
                         }
                     }
                     this.deactivate();
@@ -95231,11 +95227,9 @@ Fusion.Widget = OpenLayers.Class(Fusion.Lib.EventMgr, {
                     var instances = Fusion.Widget.uiInstances[this.type];
                     for (var i=0; i<instances.length; i++) {
                         var instance = instances[i];
-                        if (instance.shouldActivateWith(this) && instance.uiObj) {
-                            instance.uiObj.options.active = true;
-                            if (instance.uiObj.domA) {
-                                instance.uiObj.domA.addClass('jx' + instance.uiObj.options.type + 'Active');
-                            }                            
+                        if (instance.shouldActivateWith(this) &&
+                            instance.uiObj && instance.uiObj.setActive) {
+                            instance.uiObj.setActive(true);
                         }
                     }
                     this.activate();
@@ -97137,113 +97131,137 @@ Fusion.SelectionObject.Layer = OpenLayers.Class({
  * It is to show a floating message bar over the main map viewer
  */
 Fusion.MapMessage = OpenLayers.Class({
-	parentNode : null,
-	domObj : null,
-	leadingIcon : null,
-	textCell : null,
-	message : "",
-	
-	infoIconName : "images/icons/info.png",
-	warningIconName : "images/icons/warning.png",
-	errorIconName : "images/icons/error.png",
-	
-	containerCssText : "position:absolute; z-index:10000; padding:10px; border:solid 2px #ECECEC; background:#FFFFBB",
-	iconCssText : "margin-right:10px",
-	textCellCssText : "width:100%; vertical-align:top; font: 8pt Tahoma",
+    parentNode : null,
+    domObj : null,
+    leadingIcon : null,
+    textCell : null,
+    message : "",
+    
+    infoIconName : "images/icons/info.png",
+    warningIconName : "images/icons/warning.png",
+    errorIconName : "images/icons/error.png",
+    
+    containerCssText : "position:absolute; z-index:10000; padding:10px; border:solid 2px #ECECEC; background:#FFFFBB",
+    iconCssText : "margin-right:10px",
+    textCellCssText : "width:100%; vertical-align:top; font: 8pt Tahoma",
 
-	opacity: 0.95,
-	
-	initialize : function(parentNode)
-	{
-		this.parentNode = $(parentNode);
-		// Create the div container
-		var container   = document.createElement("div");
-		container.style.visibility = "hidden";
-		this.container  = $(container);
-		parentNode.appendChild(container);
+    opacity: 0.95,
+    
+    initialize : function(parentNode)
+    {
+        this.parentNode = $(parentNode);
+    },
+    
+    createBar : function()
+    {
+        if (!this.container)
+        {
+            // Create the div container
+            var container   = document.createElement("div");
+            container.style.visibility = "hidden";
+            this.container  = $(container);
+            this.parentNode.appendChild(container);
+        }
 
-		container.style.cssText = this.containerCssText;
-		var offset = {left:10, top:10};
-		container.style.left = offset.left + "px";
-		container.style.top  = offset.top  + "px";
-		
-		// Create the inner table
-		var table = document.createElement("table");
-		container.appendChild(table);
-		table.style.width = "100%";
-		table.cellSpacing = "0";
-		table.cellPadding = "0";
-		table.border      = "0";
-		// Create the table row
-		var row   = table.insertRow(0);
-		// The icon cell
-		var cell  = row.insertCell(0);
-		// Add the info icon by default
-		var icon  = document.createElement("img");
-		icon.src  = this.infoIconName;
-		cell.appendChild(icon);
-		icon.style.cssText = this.iconCssText;
-		this.leadingIcon   = icon;
-		// Create the text cell
-		cell      = row.insertCell(1);
-		cell.style.cssText = this.textCellCssText;
-		this.textCell = $(cell);
-		this.textCell.innerHTML = this.message;
-		
-		this.refreshLayout();
-		// Hide message bar by default
-		this.container.setOpacity(0);
-		this.container.style.visibility = "visible";
-	},
-	
-	info : function(message)
-	{
-		this.message = message;
-		this.leadingIcon.src = this.infoIconName;
-		this.show();
-	},
-	
-	warn : function(message)
-	{
-		this.message = message;
-		this.leadingIcon.src = this.warningIconName;
-		this.show();
-	},
-	
-	error : function(message)
-	{
-		this.message = message;
-		this.leadingIcon.src = this.errorIconName;
-		this.show();
-	},
-	
-	clear : function()
-	{
-		this.message = "";
-		this.textCell.innerHTML = "";
-		this.hide();
-	},
-	
-	show : function()
-	{
-		this.textCell.innerHTML = this.message;
-		this.container.fade(this.opacity);
-	},
-	
-	hide : function()
-	{
-		this.container.fade(0);
-	},
-	
-	refreshLayout: function()
-	{
-		// 44 = 2 * padding (10) + 2 * offset(10) + 2 * border (2)
-        var newWidth = this.parentNode.offsetWidth - 44;
-        if (newWidth >= 0)
-            this.container.style.width  = this.parentNode.offsetWidth - 44 + "px";
-	},
-	
-	CLASS_NAME: "Fusion.MapMessage"
+        container.style.cssText = this.containerCssText;
+        var offset = {left:10, top:10};
+        container.style.left = offset.left + "px";
+        container.style.top  = offset.top  + "px";
+        
+        // Create the inner table
+        var table = document.createElement("table");
+        container.appendChild(table);
+        table.style.width = "100%";
+        table.cellSpacing = "0";
+        table.cellPadding = "0";
+        table.border      = "0";
+        // Create the table row
+        var row   = table.insertRow(0);
+        // The icon cell
+        var cell  = row.insertCell(0);
+        // Add the info icon by default
+        var icon  = document.createElement("img");
+        icon.src  = this.infoIconName;
+        cell.appendChild(icon);
+        icon.style.cssText = this.iconCssText;
+        this.leadingIcon   = icon;
+        // Create the text cell
+        cell      = row.insertCell(1);
+        cell.style.cssText = this.textCellCssText;
+        this.textCell = $(cell);
+        this.textCell.innerHTML = this.message;
+        
+        this.refreshLayout();
+        // Hide message bar by default
+        this.container.setOpacity(0);
+        this.container.style.visibility = "visible";
+    },
+    
+    removeBar : function()
+    {
+        if (typeof (this.container) != "undefined" && this.container != null)
+        {
+            this.container.fade(0);
+            window.setTimeout((function()
+            {
+                this.container.parentNode.removeChild(this.container);
+                this.container = null;
+            }).bind(this), 500);
+        }
+    },
+    
+    info : function(message)
+    {
+        this.message = message;
+        this.show();
+        this.leadingIcon.src = this.infoIconName;
+    },
+    
+    warn : function(message)
+    {
+        this.message = message;
+        this.show();
+        this.leadingIcon.src = this.warningIconName;
+    },
+    
+    error : function(message)
+    {
+        this.message = message;
+        this.show();
+        this.leadingIcon.src = this.errorIconName;
+    },
+    
+    clear : function()
+    {
+        this.message = "";
+        this.textCell.innerHTML = "";
+        this.hide();
+    },
+    
+    show : function()
+    {
+        this.createBar();
+        this.textCell.innerHTML = this.message;
+        this.container.fade(this.opacity);
+    },
+    
+    hide : function()
+    {
+        this.removeBar();
+    },
+    
+    refreshLayout: function()
+    {
+        if (typeof (this.container) != "undefined" && this.container != null)
+        {
+            // 44 = 2 * padding (10) + 2 * offset(10) + 2 * border (2)
+            var newWidth = this.parentNode.offsetWidth - 44;
+            if (newWidth >= 0)
+                this.container.style.width  = this.parentNode.offsetWidth - 44 + "px";
+        }
+    },
+    
+    CLASS_NAME: "Fusion.MapMessage"
 });/**
  * Fusion.Layers
  *
@@ -99954,14 +99972,7 @@ Fusion.configuration=/* This is the fusion configuration file.  Adjust as necess
 	       with http and end with /mapguide.  If you have installed
 	       fusion inside the www directory of MapGuide, then you can
 	       leave this empty as it will be automatically calculated. */
-           "webTierUrl": "",
-      /* for MapGuide OS version > 2.1 and MGE2010 and higher set this to true*/
-          "useAsyncOverlay": true,
-	    /* The tileCacheUrl is the root url to a static mapguide tile cache.
-	       A relative URL will be relative to your application.
-	       The root url will be appended with the 'Sn'
-         directories for each zoom level. */
-           "tileCacheUrl": "http://localhost:8008/sheboygan"
+           "webTierUrl": ""
     },
     /* The MapServer section is required if you are installing fusion
        for MapServer. */
@@ -99977,11 +99988,7 @@ Fusion.configuration=/* This is the fusion configuration file.  Adjust as necess
 	        web-accessible temporary legend images. */
 	    "legendIconCacheDir":"/ms4w/tmp/ms_tmp",
             /* The file  system path to where the maps are stored. */
-        "mapFileRoot":"/ms4w/apps/",
-        /*The file  system path where the saved map sessions are stored.*/
-         "mapRestoreState":"/opt/fgs/apps/savedSession/",
-        /*The file  system path where the php sessions are stored.*/
-         "mapRestoreStateSession":"/opt/fgs/tmp/"
+            "mapFileRoot":"/ms4w/apps/"
     }
 }
 /**
@@ -100702,8 +100709,9 @@ Fusion.Widget.BasemapSwitcher = OpenLayers.Class(Fusion.Widget, {
 
     setDefaultBasemap: function() {
         this.generateOptions();
-        //re-generate the menu
-        this.uiObj.initialize();
+
+        //clean current menu items
+        this.uiObj.subDomObj.empty();
 
         //set up the root menu
         var buttonSet = new Jx.ButtonSet();
@@ -100952,7 +100960,7 @@ Fusion.Widget.Buffer = OpenLayers.Class(Fusion.Widget, {
 /**
  * Fusion.Widget.BufferPanel
  *
- * $Id: BufferPanel.js 2313 2011-01-07 20:36:04Z madair $
+ * $Id: BufferPanel.js 2521 2012-01-19 02:04:27Z hubu $
  *
  * Copyright (c) 2007, DM Solutions Group Inc.
  * Permission is hereby granted, free of charge, to any person obtaining a
@@ -101069,7 +101077,10 @@ Fusion.Widget.BufferPanel = OpenLayers.Class(Fusion.Widget, {
         }
         url += params.join('&');
         if ( taskPaneTarget ) {
-            taskPaneTarget.setContent(url);
+            if(!taskPaneTarget.isSameWithLast(url))
+            {
+                taskPaneTarget.setContent(url);
+            }
         } else {
             if ( pageElement ) {
                 pageElement.src = url;
@@ -101791,7 +101802,10 @@ Fusion.Widget.FeatureInfo = OpenLayers.Class(Fusion.Widget, {
         }
         url += params.join('&');
         if ( taskPaneTarget ) {
-            taskPaneTarget.setContent(url);
+            if(!taskPaneTarget.isSameWithLast(url))
+            {
+                taskPaneTarget.setContent(url);
+            }
         } else {
             if ( pageElement ) {
                 pageElement.src = url;
@@ -101968,7 +101982,7 @@ Fusion.Widget.GetFeatureInfo = OpenLayers.Class(Fusion.Widget,
 /**
  * Fusion.Widget.Help
  *
- * $Id: Help.js 2313 2011-01-07 20:36:04Z madair $
+ * $Id: Help.js 2521 2012-01-19 02:04:27Z hubu $
  *
  * Copyright (c) 2007, DM Solutions Group Inc.
  * Permission is hereby granted, free of charge, to any person obtaining a
@@ -102051,7 +102065,10 @@ Fusion.Widget.Help = OpenLayers.Class(Fusion.Widget, {
         /* check to see if this is going into a task pane */
         var taskPaneTarget = Fusion.getWidgetById(this.target);
         if ( taskPaneTarget ) {
-            taskPaneTarget.setContent(url);
+            if(!taskPaneTarget.isSameWithLast(url))
+            {
+                taskPaneTarget.setContent(url);
+            }
         } else {
             /* check to see if it is going into a frame in the page */
             var pageElement = $(this.target);
@@ -102162,7 +102179,7 @@ Fusion.Widget.InvokeScript = OpenLayers.Class(Fusion.Widget, {
 });/**
  * Fusion.Widget.InvokeURL
  *
- * $Id: InvokeURL.js 2455 2011-11-10 08:38:50Z liuar $
+ * $Id: InvokeURL.js 2521 2012-01-19 02:04:27Z hubu $
  *
  * Copyright (c) 2007, DM Solutions Group Inc.
  * Permission is hereby granted, free of charge, to any person obtaining a
@@ -102273,7 +102290,10 @@ Fusion.Widget.InvokeURL = OpenLayers.Class(Fusion.Widget, {
         url += params.join('&');
         var taskPaneTarget = Fusion.getWidgetById(this.sTarget);
         if ( taskPaneTarget ) {
-            taskPaneTarget.setContent(url);
+            if(!taskPaneTarget.isSameWithLast(url))
+            {
+                taskPaneTarget.setContent(url);
+            }
         } else {
             var pageElement = $(this.sTarget);
             if ( pageElement ) {
@@ -104598,7 +104618,7 @@ Fusion.Widget.Maptip = OpenLayers.Class(Fusion.Widget, {
 /**
  * Fusion.Widget.Measure
  *
- * $Id: Measure.js 2485 2011-12-08 16:29:53Z jng $
+ * $Id: Measure.js 2521 2012-01-19 02:04:27Z hubu $
  *
  * Copyright (c) 2007, DM Solutions Group Inc.
  * Permission is hereby granted, free of charge, to any person obtaining a
@@ -105065,7 +105085,10 @@ Fusion.Widget.Measure = OpenLayers.Class(Fusion.Widget, {
             var taskPaneTarget = Fusion.getWidgetById(this.sTarget);
             var outputWin = window;
             if ( taskPaneTarget ) {
-                taskPaneTarget.setContent(url);
+                if(!taskPaneTarget.isSameWithLast(url))
+                {
+                    taskPaneTarget.setContent(url);
+                }
                 outputWin = taskPaneTarget.iframe.contentWindow;
             } else {
                 outputWin = window.open(url, this.sTarget, this.sWinFeatures);
@@ -106411,7 +106434,10 @@ Fusion.Widget.Query = OpenLayers.Class(Fusion.Widget, {
         }
         url += params.join('&');
         if ( taskPaneTarget ) {
-            taskPaneTarget.setContent(url);
+            if(!taskPaneTarget.isSameWithLast(url))
+            {
+                taskPaneTarget.setContent(url);
+            }
         } else {
             if ( pageElement ) {
                 pageElement.src = url;
@@ -106579,7 +106605,10 @@ Fusion.Widget.QuickPlot = OpenLayers.Class(Fusion.Widget,
         
         if (taskPaneTarget) 
         {
-            taskPaneTarget.setContent(url);
+            if(!taskPaneTarget.isSameWithLast(url))
+            {
+                taskPaneTarget.setContent(url);
+            }
         } 
         else 
         {
@@ -107564,11 +107593,11 @@ PreviewDialog.prototype =
             width:400,
             height: 400,
             content: '<table border="0" cellspacing="0" cellpadding="0" id="PreviewContainer">' + 
-                     '	<tr>' + 
-                     '		<td>' + 
-                     '			<iframe id="PreviewFrame" scrolling="no" frameborder="0" style="border: 0px; width: 400px; height: 300px;" src="about:blank"></iframe>' +
-                     '		</td>' +
-                     '  </tr>' +
+                     '    <tr>' + 
+                     '        <td>' + 
+                     '            <iframe id="PreviewFrame" scrolling="no" frameborder="0" style="border: 0px; width: 400px; height: 300px;" src="about:blank"></iframe>' +
+                     '        </td>' +
+                     '    </tr>' +
                      '</table>'
         });
         
@@ -107656,22 +107685,17 @@ PreviewDialog.prototype =
             var factor    = 0.5;
             this.previewContainer = $(this.innerDoc.getElementById("PreviewContainer"));
             this.previewContainer.style.width = box.width * factor + "px";
-            this.pictureContainer = $(this.innerDoc.getElementById("PictureContainer"));
-            var pcBox = this.pictureContainer.getContentBoxSize();
+            this.resizePictureContainer();
             
-            this.indicator        = $(this.innerDoc.getElementById("ProgressIndicator"));
-            
-            var paperSize  = this.captureInfo.paperSize;
-            this.paperSize = paperSize;
-            
-            var ratio = paperSize.w / paperSize.h;
-            
-            // Resize the indicator
-            this.indicator.style.width  = pcBox.width + "px";
-            this.indicator.style.height = pcBox.width / ratio + "px";
-            // Set a explicit size to the container
-            this.pictureContainer.style.width  = this.indicator.style.width;
-            this.pictureContainer.style.height = this.indicator.style.height;
+            // Verify if the priview container "overflows" the visible screen area
+            var containerBox = this.previewContainer.getContentBoxSize();
+            if (containerBox.height > box.height)
+            {
+                var overhead = $(this.innerDoc.getElementById("legalNotice")).getMarginBoxSize().height + $(this.innerDoc.getElementById("AnnotationContainer")).getMarginBoxSize().height + 4 * this.previewContainer.cellSpacing;
+                this.previewContainer.style.width = containerBox.width * box.height / containerBox.height - overhead + "px";
+                this.resizePictureContainer();
+            }
+
             // Get the styles for the print picture
             var rules = this.innerDoc.styleSheets[1].cssRules || this.innerDoc.styleSheets[1].rules;
             this.previewStyle = rules[0];
@@ -107733,6 +107757,31 @@ PreviewDialog.prototype =
             this.jxDialog.domObj.setOpacity(0);
             this.resizeIsPending = true;
         }
+    },
+    
+    resizePictureContainer: function()
+    {
+        this.innerDoc         = this.previewFrame.contentWindow.document;
+
+        this.indicator        = $(this.innerDoc.getElementById("ProgressIndicator"));
+        // Reset the size of the indicator first
+        this.indicator.style.width = "";
+        this.indicator.style.height = "";
+        // Reset the size of the picture container
+        this.pictureContainer = $(this.innerDoc.getElementById("PictureContainer"));
+        this.pictureContainer.style.width = "";
+        this.pictureContainer.style.height = "";
+        
+        // Resize
+        var pcBox = this.pictureContainer.getContentBoxSize();
+        var ratio = this.captureInfo.paperSize.w / this.captureInfo.paperSize.h;
+
+        this.indicator.style.width  = pcBox.width + "px";
+        this.indicator.style.height = pcBox.width / ratio + "px";
+        
+        // Set an explicit size to the container
+        this.pictureContainer.style.width  = this.indicator.style.width;
+        this.pictureContainer.style.height = this.indicator.style.height;
     },
     
     previewInnerLoaded: function()
@@ -107804,15 +107853,15 @@ PreviewDialog.prototype =
         // Set the print size
         // NOTE: It works only with a 96 dpi device dpi
         var deviceDpi  = 96;
-        var idealSize  = {width:(this.paperSize.w / 25.4 - 2 * this.printMargin) * deviceDpi, height:(this.paperSize.h / 25.4 - 2 * this.printMargin) * deviceDpi};
+        var idealSize  = {width:(this.captureInfo.paperSize.w / 25.4 - 2 * this.printMargin) * deviceDpi, height:(this.captureInfo.paperSize.h / 25.4 - 2 * this.printMargin) * deviceDpi};
         // Get the size of the print frame
         var docSize    = $(this.innerDoc.body).getContentBoxSize();
         var realHeight = idealSize.height - (docSize.height - size.height);
-        var realWidth  = realHeight * this.paperSize.w / this.paperSize.h;
+        var realWidth  = realHeight * this.captureInfo.paperSize.w / this.captureInfo.paperSize.h;
         if (realWidth > idealSize.width)
         {
             realWidth = idealSize.width;
-            realHeight = realWidth / (this.paperSize.w / this.paperSize.h);
+            realHeight = realWidth / (this.captureInfo.paperSize.w / this.captureInfo.paperSize.h);
         }
         
         this.printStyle.style.width  = realWidth + "px";
@@ -108321,7 +108370,10 @@ Fusion.Widget.Redline.DefaultTaskPane = OpenLayers.Class(
         var outputWin = window;
 
         if ( taskPaneTarget ) {
-            taskPaneTarget.setContent(url);
+            if(!taskPaneTarget.isSameWithLast(url))
+            {
+                taskPaneTarget.setContent(url);
+            }
             outputWin = taskPaneTarget.iframe.contentWindow;
         } else {
             outputWin = window.open(url, this.widget.sTarget, this.widget.sWinFeatures);
@@ -110005,7 +110057,7 @@ Fusion.Widget.SelectRadiusValue = OpenLayers.Class(Fusion.Widget, {
 /**
  * Fusion.Widget.SelectWithin
  *
- * $Id: SelectWithin.js 2313 2011-01-07 20:36:04Z madair $
+ * $Id: SelectWithin.js 2521 2012-01-19 02:04:27Z hubu $
  *
  * Copyright (c) 2007, DM Solutions Group Inc.
  * Permission is hereby granted, free of charge, to any person obtaining a
@@ -110115,7 +110167,10 @@ Fusion.Widget.SelectWithin = OpenLayers.Class(Fusion.Widget, {
         }
         url += params.join('&');
         if ( taskPaneTarget ) {
-            taskPaneTarget.setContent(url);
+            if(!taskPaneTarget.isSameWithLast(url))
+            {
+                taskPaneTarget.setContent(url);
+            }
         } else {
             if ( pageElement ) {
                 pageElement.src = url;
@@ -110791,7 +110846,7 @@ Fusion.Widget.SelectionPanel.SelectionRendererHorizontal = OpenLayers.Class(Fusi
 /**
  * Fusion.Widget.TaskPane
  *
- * $Id: TaskPane.js 2474 2011-12-01 10:04:17Z liuar $
+ * $Id: TaskPane.js 2521 2012-01-19 02:04:27Z hubu $
  *
  * Copyright (c) 2007, DM Solutions Group Inc.
  * Permission is hereby granted, free of charge, to any person obtaining a
@@ -110951,13 +111006,8 @@ Fusion.Widget.TaskPane = OpenLayers.Class(Fusion.Widget, {
         this.setContent(url);
     },
 
-    setContent: function(url) {
-        Fusion.triggerEvent(Fusion.Event.TASK_PANE_LOADED);
-        
-        if (this.nCurrentTask < this.aExecutedTasks.length-1) {
-            //this.aExecutedTasks.splice(this.nCurrentTask, this.aExecutedTasks.length - this.nCurrentTask);
-        }
-        
+
+    addCommonParams:function(url){
         //add in some common parameters if they aren't supplied already
         var baseUrl = url.split("?");
         var params = OpenLayers.Util.getParameters(url);
@@ -110972,7 +111022,17 @@ Fusion.Widget.TaskPane = OpenLayers.Class(Fusion.Widget, {
           params["mapname"] = widgetLayer.getMapName();
         }
         var newUrl = baseUrl[0] + "?" + OpenLayers.Util.getParameterString(params);
+        return newUrl;
+    },
+    
+    isSameWithLast:function(url){
+        return this.aExecutedTasks[this.aExecutedTasks.length-1] == this.addCommonParams(url) ;
+    },
+    
+    setContent: function(url) {
+        Fusion.triggerEvent(Fusion.Event.TASK_PANE_LOADED);
         
+        var newUrl = this.addCommonParams(url);
         this.aExecutedTasks.push(newUrl);
         ++this.nCurrentTask;
         this.loadFrame(newUrl);
@@ -111072,7 +111132,10 @@ Fusion.Widget.Theme = OpenLayers.Class(Fusion.Widget, {
         }
         url += params.join('&');
         if ( taskPaneTarget ) {
-            taskPaneTarget.setContent(url);
+            if(!taskPaneTarget.isSameWithLast(url))
+            {
+                taskPaneTarget.setContent(url);
+            }
         } else {
             if ( pageElement ) {
                 pageElement.src = url;

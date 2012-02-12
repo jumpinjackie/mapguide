@@ -186,14 +186,13 @@ var fusionInitialized = function() {
     mapWidget.registerForEvent(Fusion.Event.MAP_LOADED, initPanelHandler);
 }
 
+var isTaskPaneRegistered = false;
+
 var initPanelHandler = function() {
+    if(isTaskPaneRegistered) return;
     //register this with MAP_LOADED so that the initial layout will remain
     Fusion.registerForEvent(Fusion.Event.TASK_PANE_LOADED, showTaskPane);
-
-    // The initPanelHandler is used to register task pane, which only needs once.
-    // So we should remove the register to avoid initPanelHandler to be called multiple times.
-    var mapWidget = Fusion.getMapById('Map');
-    mapWidget.deregisterForEvent(Fusion.Event.MAP_LOADED, initPanelHandler);
+    isTaskPaneRegistered = true;
 }
 
 var showOverviewMap = function() {

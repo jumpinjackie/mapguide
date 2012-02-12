@@ -19,7 +19,14 @@ SET CONFIGURATION=Release
 SET PLATFORM=x64
 SET TYPECOMPONENT=all
 SET VC_COMPILER_VERSION=9
-IF "%1" == "vc10" SET VC_COMPILER_VERSION=10
+IF "%1" == "vc10" (
+SET VC_COMPILER_VERSION=10
+SET VC_X64_CROSS_COMPILE=0
+)
+IF "%1" == "vc10cross" (
+SET VC_COMPILER_VERSION=10
+SET VC_X64_CROSS_COMPILE=1
+)
 rem ==================================================
 rem MapGuide vars
 rem ==================================================
