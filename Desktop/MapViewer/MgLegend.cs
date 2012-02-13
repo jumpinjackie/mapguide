@@ -511,6 +511,23 @@ namespace OSGeo.MapGuide.Viewer
             public Image ThemeIcon { get; set; }
         }
 
+        private bool HasVisibleParent(MgLayerGroup grp)
+        {
+            var current = grp.Group;
+            if (current != null)
+                return current.IsVisible();
+            return true;
+        }
+
+        private bool HasVisibleParent(MgLayerBase layer)
+        {
+            var current = layer.Group;
+            if (current != null)
+                return current.IsVisible();
+
+            return true;
+        }
+
         private void trvLegend_AfterCheck(object sender, TreeViewEventArgs e)
         {
             if (e.Node.Tag == null)
@@ -520,8 +537,11 @@ namespace OSGeo.MapGuide.Viewer
             {
                 if (_groups.ContainsKey(e.Node.Name))
                 {
-                    _groups[e.Node.Name].SetVisible(e.Node.Checked);
-                    OnRequestRefresh();
+                    var grp = _groups[e.Node.Name];
+                    grp.SetVisible(e.Node.Checked);
+                    var bVis = HasVisibleParent(grp);
+                    if (bVis)
+                        OnRequestRefresh();
                 }
             }
             else //Layer
@@ -530,8 +550,12 @@ namespace OSGeo.MapGuide.Viewer
                 {
                     var layer = _layers[e.Node.Name];
                     layer.SetVisible(e.Node.Checked);
-                    layer.ForceRefresh();
-                    OnRequestRefresh();
+                    var bVis = HasVisibleParent(layer);
+                    if (bVis)
+                    {
+                        layer.ForceRefresh();
+                        OnRequestRefresh();
+                    }
                 }
             }
         }
