@@ -351,6 +351,8 @@ echo [install]: Web Tier - mapviewerjava
 %XCOPY% "%MG_WEB_SRC%\mapviewerjava" "%MG_OUTPUT_WEB%\www\mapviewerjava" /EXCLUDE:%TYPEBUILD%_excludes.txt
 echo [install]: Web Tier - mapviewerjava - WEB-INF
 %XCOPY% "%MG_WEB_SRC%\WEB-INF" "%MG_OUTPUT_WEB%\www\WEB-INF" /EXCLUDE:svn_excludes.txt+%TYPEBUILD%_excludes.txt
+REM Required for Web Tier unit tests
+copy /Y "%MG_OEM%\SQLite\bin\win32\%TYPEBUILD%\php_SQLitePhpApi.dll" "%MG_OUTPUT_WEB%\Php\ext"
 echo [install]: Web Tier - fusion
 call build_fusion.bat
 %XCOPY% "%MG_OEM%\fusion_build" "%MG_OUTPUT_WEB%\www\fusion" /EXCLUDE:%CONFIGURATION%_excludes.txt
@@ -417,8 +419,8 @@ echo                                web,
 echo                                doc
 echo ************************************************************************
 :quit
-REM SET TYPEACTION=
-REM SET TYPEBUILD=
+SET TYPEACTION=build
+SET TYPEBUILD=Release
 REM SET MG_OUTPUT=
 REM SET MG_BUILD_COMPONENT=
 REM SET MG_DEV=
