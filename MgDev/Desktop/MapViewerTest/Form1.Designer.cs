@@ -65,6 +65,9 @@
             this.viewer = new OSGeo.MapGuide.Viewer.MgMapViewer();
             this.toolStripContainer1 = new System.Windows.Forms.ToolStripContainer();
             this.toolbar = new OSGeo.MapGuide.Viewer.MgDefaultToolbar();
+            this.ctxViewer = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.refreshMapToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.initialViewToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.statusStrip1.SuspendLayout();
             this.menuStrip1.SuspendLayout();
             this.toolStrip1.SuspendLayout();
@@ -79,6 +82,7 @@
             this.toolStripContainer1.ContentPanel.SuspendLayout();
             this.toolStripContainer1.TopToolStripPanel.SuspendLayout();
             this.toolStripContainer1.SuspendLayout();
+            this.ctxViewer.SuspendLayout();
             this.SuspendLayout();
             // 
             // statusStrip1
@@ -386,6 +390,7 @@
             // 
             // viewer
             // 
+            this.viewer.ContextMenuStrip = this.ctxViewer;
             this.viewer.ConvertTiledGroupsToNonTiled = true;
             this.viewer.Cursor = System.Windows.Forms.Cursors.Default;
             this.viewer.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -429,6 +434,28 @@
             this.toolbar.Viewer = null;
             this.toolbar.ZoomOutMode = OSGeo.MapGuide.Viewer.ZoomOutMode.AutoZoom;
             // 
+            // ctxViewer
+            // 
+            this.ctxViewer.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.refreshMapToolStripMenuItem,
+            this.initialViewToolStripMenuItem});
+            this.ctxViewer.Name = "ctxViewer";
+            this.ctxViewer.Size = new System.Drawing.Size(153, 70);
+            // 
+            // refreshMapToolStripMenuItem
+            // 
+            this.refreshMapToolStripMenuItem.Name = "refreshMapToolStripMenuItem";
+            this.refreshMapToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.refreshMapToolStripMenuItem.Text = "Refresh Map";
+            this.refreshMapToolStripMenuItem.Click += new System.EventHandler(this.refreshMapToolStripMenuItem_Click);
+            // 
+            // initialViewToolStripMenuItem
+            // 
+            this.initialViewToolStripMenuItem.Name = "initialViewToolStripMenuItem";
+            this.initialViewToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.initialViewToolStripMenuItem.Text = "Initial View";
+            this.initialViewToolStripMenuItem.Click += new System.EventHandler(this.initialViewToolStripMenuItem_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -459,6 +486,7 @@
             this.toolStripContainer1.TopToolStripPanel.PerformLayout();
             this.toolStripContainer1.ResumeLayout(false);
             this.toolStripContainer1.PerformLayout();
+            this.ctxViewer.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -502,6 +530,9 @@
         private System.Windows.Forms.ToolStripMenuItem showConnectionPoolStatusToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem purgePooledConnectionsToolStripMenuItem;
         private OSGeo.MapGuide.Viewer.MgLegend legend;
+        private System.Windows.Forms.ContextMenuStrip ctxViewer;
+        private System.Windows.Forms.ToolStripMenuItem refreshMapToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem initialViewToolStripMenuItem;
     }
 }
 

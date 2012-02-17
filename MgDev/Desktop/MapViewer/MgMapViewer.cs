@@ -2000,6 +2000,9 @@ namespace OSGeo.MapGuide.Viewer
 
         private void HandleMouseClick(MouseEventArgs e)
         {
+            if (e.Button == MouseButtons.Right)
+                return;
+
             if (this.DigitizingType != MapDigitizationType.None)
             {
                 //Points are easy, one click and you're done

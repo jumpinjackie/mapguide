@@ -433,5 +433,15 @@ namespace MapViewerTest
                 }
             }
         }
+
+        private void refreshMapToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            viewer.RefreshMap();
+        }
+
+        private void initialViewToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            viewer.InitialMapView();
+        }
     }
 }
