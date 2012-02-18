@@ -82,6 +82,10 @@ dimensions or the image will be distorted.
 .. code-block:: csharp
 
     //This code fragment assumes you have imported the OSGeo.MapGuide namespace
+    
+    MgByteReader byteReader = renderingService.RenderMap(map, selection, envelope, imageWidth, imageHeight, color, "PNG");
+    //See common/common.aspx for implementation of Utility.OutputReaderContent()
+    Utility.OutputReaderContent(byteReader, Response);
 
 **Java**
     
@@ -89,6 +93,8 @@ dimensions or the image will be distorted.
 .. code-block:: java
 
     //This code fragment assumes you have imported the org.osgeo.mapguide namespace
+    
+    //Code sample not yet available
 
 .. index::
    single: Custom Output; dwf
@@ -162,6 +168,34 @@ information from the print layout.
 .. code-block:: csharp
 
     //This code fragment assumes you have imported the OSGeo.MapGuide namespace
+    
+    MgDwfVersion dwfVersion = new MgDwfVersion("6.01", "1.2");
+
+    MgPlotSpecification plotSpec = new MgPlotSpecification(8.5f, 11.0f, MgPageUnitsType.Inches, 0.5f, 0.5f, 0.5f, 0.5f);
+
+    MgResourceIdentifier layoutRes = new MgResourceIdentifier("Library://Samples/Sheboygan/Layouts/SheboyganMap.PrintLayout");
+    MgLayout layout =  new MgLayout(layoutRes, "City of Sheboygan", MgPageUnitsType.Inches);
+
+    MgMapPlotCollection plotCollection = new MgMapPlotCollection();
+
+    MgMapPlot plot1 = new MgMapPlot(map, plotSpec, layout);
+    plot1.SetCenterAndScale(map.GetViewCenter().GetCoordinate(), map.GetViewScale() * 2);
+    plotCollection.Add(plot1);
+
+    // Create a second map for the second sheet in the DWF. This second sheet uses the print layout
+    // to display a page title and legend.
+
+    MgMap map2 = new MgMap(siteConnection);
+    map2.Create(map.GetMapDefinition(), "Sheet 2");
+    MgMapPlot plot2 = new MgMapPlot(map2, plotSpec, layout);
+    plot2.SetCenterAndScale(map.GetViewCenter().GetCoordinate(), map.GetViewScale());
+    plotCollection.Add(plot2);
+
+    MgByteReader byteReader = mappingService.GenerateMultiPlot(plotCollection, dwfVersion);
+
+    // Now output the resulting DWF.
+    // See common/common.aspx for implementation of Utility.OutputReaderContent()
+    Utility.OutputReaderContent(byteReader, Response);
 
 **Java**
     
@@ -169,3 +203,5 @@ information from the print layout.
 .. code-block:: java
 
     //This code fragment assumes you have imported the org.osgeo.mapguide namespace
+    
+    //Code sample not yet available

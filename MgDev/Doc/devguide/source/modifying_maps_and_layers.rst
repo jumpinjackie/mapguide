@@ -1,3 +1,5 @@
+.. _modifying-maps-and-layers:
+
 Modifying Maps and Layers
 =========================
 
@@ -15,9 +17,6 @@ This chapter describes how to modify maps and layers.
 
 Adding An Existing Layer To A Map
 ---------------------------------
-
-.. todo::
-    Update page number reference with section link
 
 If the layer already exists in the resource repository, add it to the map by getting
 the map's layer collection and then adding the layer to that collection.
@@ -52,7 +51,7 @@ the map's layer collection and then adding the layer to that collection.
 By default, newly added layers are added to the bottom of the drawing order,
 so they may be obscured by other layers. If you want to specify where the layer
 appears in the drawing order, use the ``$layerCollection->Insert()`` method.
-For an example, see Adding Layers To A Map on page 68.
+For an example, see :ref:`adding-layers-to-a-map`.
 
 .. note::
 
@@ -63,9 +62,6 @@ For an example, see Adding Layers To A Map on page 68.
 
 Creating Layers by Modifying XML
 --------------------------------
-
-.. todo::
-    Update page number reference with section link
 
 The easiest way to programmatically create new layers is to
 
@@ -144,6 +140,50 @@ the *MapGuide Web API Reference*.
 .. code-block:: csharp
 
     //This code fragment assumes you have imported the OSGeo.MapGuide namespace
+    
+    // --------------------------------------------------//
+    // Open the map
+    MgMap map = new MgMap(siteConnection);
+    map.Open(mapName);
+
+    // ...
+    // --------------------------------------------------//
+    // Load a layer from XML, and use the DOM to change it
+
+    // Load the prototype layer definition into
+    // a PHP DOM object.
+    XmlDocument domDocument = new XmlDocument();
+    String layerDefPath = Server.MapPath("RecentlyBuilt.LayerDefinition");
+    if (!File.Exists(layerDefPath))
+    {
+        Response.Write("The layer definition 'RecentlyBuilt.LayerDefinition' could not be found.<BR>\n");
+        return;
+    }
+    domDocument.Load(layerDefPath);
+
+    // Get a list of all the <AreaRule><Filter> elements in
+    // the XML.
+    XmlNodeList nodes = domDocument.SelectNodes("//AreaRule/Filter");
+    // Find the correct node and change it
+    foreach (XmlNode node in nodes)
+    {
+        if (node.InnerText == "YRBUILT > 1950")
+        {
+            node.InnerText = "YRBUILT > 1980";
+        }
+    }
+
+    // Get a list of all the <LegendLabel> elements in the
+    // XML.
+    nodes = domDocument.SelectNodes("//LegendLabel");
+    // Find the correct node and change it
+    foreach (XmlNode node in nodes)
+    {
+        if (node.InnerText == "Built after 1950")
+        {
+            node.InnerText = "Built after 1980";
+        }
+    }
 
 **Java**
     
@@ -151,6 +191,8 @@ the *MapGuide Web API Reference*.
 .. code-block:: java
 
     //This code fragment assumes you have imported the org.osgeo.mapguide namespace
+    
+    //Code sample not yet available
 
 .. note::
 
@@ -158,7 +200,7 @@ the *MapGuide Web API Reference*.
     be considered as one way for modifying XML. By no means is this the **definitive** way.
 
 The page then goes on to save the XML to a resource and loads that resource
-into the map, as described in Adding Layers To A Map on page 68.
+into the map, as described in :ref:`adding-layers-to-a-map`.
 
 If you wish to modify an existing layer that is visible in other users' maps,
 without affecting those maps:
@@ -167,7 +209,7 @@ without affecting those maps:
  2. Modify the layer and save it back to the session repository.
  3. Change the user's map to refer to the modified layer.
 
-See Adding Layers To A Map on page 68.
+See :ref:`adding-layers-to-a-map`
 
 .. index::
     single: LayerDefinitionFactory
@@ -192,7 +234,7 @@ to either use the UI, or modify the XML of the layer definition.)
 The ``layerdefinitionfactory`` is only available for PHP. For development using
 ASP.NET, a good alternative is to use the Visual Studio tool ``xsd.exe`` to generate
 .NET classes for the LayerDefinition schema, or to use the strongly-typed resource classes
-in the Maestro API
+in the :ref:`maestroapi`
 
 ``CreateLayerDefinition($resourceId, $featureClass, $geometry, $featureClassRange)``
 
@@ -260,9 +302,6 @@ For more information on these settings, see the MapGuide Studio Help.
 Example: Creating a layer that users Area Rules
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-.. todo::
-    Update page number reference with section link
-
 .. note::
     
     This example specifically uses the ``LayerDefinitionFactory`` class which is not available for .net and Java
@@ -298,7 +337,7 @@ uses three area rules to theme parcels by their square footage.
     // ...
     
 The script then saves the XML to a resource and loads that resource into the
-map. See Adding Layers To A Map on page 68.
+map. See :ref:`adding-layers-to-a-map`.
 
 .. index::
     single: LayerDefinitionFactory; Line Rules
@@ -393,6 +432,8 @@ To create point-based rules, three methods are used.
 
 .. index::
     single: MgMap; Adding Layers
+
+.. _adding-layers-to-a-map:
 
 Adding Layers to a Map
 ----------------------

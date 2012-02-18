@@ -431,8 +431,7 @@ requires a feature service connection.
 
 Once the site connection and any other service connections are open, the
 page can use MapGuide Web API calls to retrieve and process data. Output
-goes to the task pane or back to the Viewer. See The MapGuide Viewer on
-page 15 for details about sending data to the Viewer.
+goes to the task pane or back to the Viewer. See :ref:`mapguide-ajax-viewer` for details about sending data to the Viewer.
 
 .. note::
 

@@ -19,6 +19,8 @@ are being used, it is important to be able to convert between them.
 .. index::
     single: Geometry: Representations
 
+.. _representations-of-geometry:
+
 Representations of Geometry
 ---------------------------
 
@@ -108,12 +110,8 @@ are:
 Comparing Geometry Objects
 ^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-.. todo::
-    Update page number reference with section link
-
 The ``MgGeometry`` class contains methods for comparing different geometry
-objects. These are similar to the spatial filters described in Selecting with the
-Web API on page 39. Methods to test spatial relationships include:
+objects. These are similar to the spatial filters described in :ref:`selecting-with-web-api`. Methods to test spatial relationships include:
 
  * ``Contains()``
  * ``Crosses()``
@@ -365,9 +363,6 @@ Another way to calculate the distance is to use ``MgCoordinateSystemMeasure::Get
 Temporary Feature Sources
 -------------------------
 
-.. todo::
-    Update page number reference with section link
-
 Many geometric analysis operations require creating new features and new
 feature sources. For example, drawing a buffer around a point on a map requires
 a layer to display the buffer polygon, and the layer requires a feature source.
@@ -521,7 +516,7 @@ is user-defined.
 
 To display features from a temporary feature source in a map, create a layer
 definition that refers to the feature source. Use the techniques described in
-Modifying Maps and Layers on page 57.
+:ref:`modifying-maps-and-layers`.
 
 .. index::
     single: Features; Inserting Features
@@ -534,9 +529,6 @@ Modifying Maps and Layers on page 57.
 
 Inserting, Deleting and Updating Features
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-.. todo::
-    Update page number reference with section link
 
 To change data in a feature source, create an MgFeatureCommandCollection
 object. This can contain commands to insert, delete, or update features in an
@@ -702,7 +694,7 @@ the following:
 
 To update existing features, create an MgPropertyCollection object that
 contains the new values for the properties and a filter expression that selects
-the correct feature or features. See Querying Feature Data on page 38 for details
+the correct feature or features. See :ref:`querying-feature-data` for details
 about filter expressions.
 
 .. index::
@@ -878,11 +870,7 @@ that puts point markers on each parcel.
 Example
 -------
 
-.. todo::
-    Update page number reference with section link
-
-This example builds on the example from Working With the Active Selection
-on page 48. Instead of listing the parcels in the selection, it creates a series of
+This example builds on the example from :ref:`working-with-the-active-selection`. Instead of listing the parcels in the selection, it creates a series of
 concentric buffers around the selection, showing increasing distance. The
 code sections below contain the significant additions in this example. The
 complete source code is available with the Developer's Guide samples.
@@ -936,30 +924,6 @@ it deletes any existing features before creating the new buffer. The functions
     // If it does not exist, create a feature source and
     // a layer to hold the buffer.
 
-    /*
-    // Old way, pre MapGuide OS 2.0. Kept here for reference
-    try
-    {
-      $bufferLayer = $map->GetLayers()->GetItem('Buffer');
-      $bufferFeatureResId = new MgResourceIdentifier($bufferLayer->GetFeatureSourceId());
-
-      $commands = new MgFeatureCommandCollection();
-      $commands->Add(new MgDeleteFeatures('BufferClass', "ID like '%'"));
-
-      $featureService->UpdateFeatures($bufferFeatureResId, $commands, false);
-    }
-    catch (MgObjectNotFoundException $e)
-    {
-      // When an MgObjectNotFoundException is thrown, the layer
-      // does not exist and must be created.
-
-      $bufferFeatureResId = new MgResourceIdentifier("Session:" . $sessionId . "//Buffer.FeatureSource");
-      CreateBufferFeatureSource($featureService, $mapWktSrs, $bufferFeatureResId);
-      $bufferLayer = CreateBufferLayer($resourceService, $bufferFeatureResId, $sessionId);
-      $map->GetLayers()->Insert(0, $bufferLayer);
-    }
-    */
-    
     // This is how things can be done now
     $layerIndex = $map->GetLayers()->IndexOf('Buffer');
     if ($layerIndex < 0)
@@ -986,6 +950,44 @@ it deletes any existing features before creating the new buffer. The functions
 .. code-block:: csharp
 
     //This code fragment assumes you have imported the OSGeo.MapGuide namespace
+    int bufferRingSize = 100; // measured in metres
+    int bufferRingCount = 5;
+
+    // Set up some objects for coordinate conversion
+
+    String mapWktSrs = map.GetMapSRS();
+    MgAgfReaderWriter agfReaderWriter = new MgAgfReaderWriter();
+    MgWktReaderWriter wktReaderWriter = new MgWktReaderWriter();
+    MgCoordinateSystemFactory coordinateSystemFactory = new MgCoordinateSystemFactory();
+    MgCoordinateSystem srs = coordinateSystemFactory.Create(mapWktSrs);
+    MgMeasure srsMeasure = srs.GetMeasure();
+
+    BufferHelper helper = new BufferHelper(Server);
+
+    // Check for a buffer layer. If it exists, delete
+    // the current features.
+    // If it does not exist, create a feature source and
+    // a layer to hold the buffer.
+
+    MgLayer bufferLayer = null;
+    int layerIndex = map.GetLayers().IndexOf("Buffer");
+    if (layerIndex < 0)
+    {
+        // The layer does not exist and must be created.
+
+        MgResourceIdentifier bufferFeatureResId = new MgResourceIdentifier("Session:" + sessionId + "//Buffer.FeatureSource");
+        helper.CreateBufferFeatureSource(featureService, mapWktSrs, bufferFeatureResId);
+        bufferLayer = helper.CreateBufferLayer(resourceService, bufferFeatureResId, sessionId);
+        map.GetLayers().Insert(0, bufferLayer);
+    }
+    else
+    {
+        bufferLayer = (MgLayer)map.GetLayers().GetItem(layerIndex);
+        MgFeatureCommandCollection commands = new MgFeatureCommandCollection();
+        commands.Add(new MgDeleteFeatures("BufferClass", "ID like '%'"));
+
+        bufferLayer.UpdateFeatures(commands);
+    }
 
 **Java**
     
@@ -1039,18 +1041,11 @@ the rings get progressively darker towards the center of the buffer area.
         $commands->Add(new MgInsertFeatures('BufferClass', $properties));
     }
 
-    // Old way, pre MapGuide OS 2.0
-    //$results = $featureService->UpdateFeatures($bufferFeatureResId, $commands, false);
-    
-    // New way, post MapGuide OS 2.0
     $results = $bufferLayer->UpdateFeatures($commands);
 
     $bufferLayer->SetVisible(true);
     $bufferLayer->ForceRefresh();
     $bufferLayer->SetDisplayInLegend(true);
-    
-    //If you created a MgMap using the empty constructor
-    //$map->Save($resourceService);
     
     //If you created a MgMap with a MgSiteConnection
     $map->Save();
@@ -1061,6 +1056,44 @@ the rings get progressively darker towards the center of the buffer area.
 .. code-block:: csharp
 
     //This code fragment assumes you have imported the OSGeo.MapGuide namespace
+    MgGeometryCollection inputGeometries = new MgGeometryCollection();
+    while (featureReader.ReadNext())
+    {
+        MgByteReader featureGeometryData = featureReader.GetGeometry("SHPGEOM");
+        MgGeometry featureGeometry = agfReaderWriter.Read(featureGeometryData);
+
+        inputGeometries.Add(featureGeometry);
+    }
+
+    MgGeometryFactory geometryFactory = new MgGeometryFactory();
+    MgGeometry mergedGeometries = geometryFactory.CreateMultiGeometry(inputGeometries);
+
+    // Add buffer features to the temporary feature source.
+    // Create multiple concentric buffers to show area.
+    // If the stylization for the layer draws the features
+    // partially transparent, the concentric rings will be
+    // progressively darker towards the center.
+    // The stylization is set in the layer template file, which
+    // is used in function CreateBufferLayer().
+
+    MgFeatureCommandCollection commands = new MgFeatureCommandCollection();
+    for (int bufferRing = 0; bufferRing < bufferRingCount; bufferRing++)
+    {
+        double bufferDist = srs.ConvertMetersToCoordinateSystemUnits(bufferRingSize * (bufferRing + 1));
+        MgGeometry bufferGeometry = mergedGeometries.Buffer(bufferDist, srsMeasure);
+
+        MgPropertyCollection properties = new MgPropertyCollection();
+        properties.Add(new MgGeometryProperty("BufferGeometry", agfReaderWriter.Write(bufferGeometry)));
+
+        commands.Add(new MgInsertFeatures("BufferClass", properties));
+    }
+
+    bufferLayer.UpdateFeatures(commands);
+
+    bufferLayer.SetVisible(true);
+    bufferLayer.ForceRefresh();
+    bufferLayer.SetDisplayInLegend(true);
+    map.Save();
 
 **Java**
     
@@ -1069,13 +1102,15 @@ the rings get progressively darker towards the center of the buffer area.
 
     //This code fragment assumes you have imported the org.osgeo.mapguide namespace
     
+    //No code sample available yet.
+    
 The functions ``CreateBufferFeatureSource()`` and ``CreateBufferLayer()`` are
 in ``bufferfunctions.php``. ``CreateBufferFeatureSource()`` creates a temporary
 feature source, with a single feature class, ``BufferClass``. The feature class has
 two properties, ``ID`` and ``BufferGeometry``. ``ID`` is autogenerated, so it does not
 need to be added with a new feature. ``CreateBufferLayer()`` modifies a layer
 definition from an external file and saves it to the repository. For more details,
-see Modifying Maps and Layers on page 57.
+see :ref:`modifying-maps-and-layers`.
 
 **PHP**
 
@@ -1142,6 +1177,105 @@ see Modifying Maps and Layers on page 57.
 .. code-block:: csharp
 
     //This code fragment assumes you have imported the OSGeo.MapGuide namespace
+    
+    //NOTE: This is only subset of the BufferHelper relevant to this particular chapter
+    //of the developer's guide. For the full source, see bufferfunctions.aspx from the
+    //.net Developer Guide sample.
+    
+    public class BufferHelper
+    {
+        private HttpServerUtility _server;
+
+        public BufferHelper(HttpServerUtility server) 
+        { 
+            _server = server;
+        }
+        
+        HttpServerUtility Server { get { return _server; } }
+    
+        public void CreateBufferFeatureSource(MgFeatureService featureService, String wkt, MgResourceIdentifier bufferFeatureResId)
+        {
+            MgClassDefinition bufferClass = new MgClassDefinition();
+            bufferClass.SetName("BufferClass");
+            MgPropertyDefinitionCollection properties = bufferClass.GetProperties();
+
+            MgDataPropertyDefinition idProperty = new MgDataPropertyDefinition("ID");
+            idProperty.SetDataType(MgPropertyType.Int32);
+            idProperty.SetReadOnly(true);
+            idProperty.SetNullable(false);
+            idProperty.SetAutoGeneration(true);
+            properties.Add(idProperty);
+
+            MgGeometricPropertyDefinition polygonProperty = new MgGeometricPropertyDefinition("BufferGeometry");
+            polygonProperty.SetGeometryTypes(MgFeatureGeometricType.Surface);
+            polygonProperty.SetHasElevation(false);
+            polygonProperty.SetHasMeasure(false);
+            polygonProperty.SetReadOnly(false);
+            polygonProperty.SetSpatialContextAssociation("defaultSrs");
+            properties.Add(polygonProperty);
+
+            MgPropertyDefinitionCollection idProperties = bufferClass.GetIdentityProperties();
+            idProperties.Add(idProperty);
+
+            bufferClass.SetDefaultGeometryPropertyName("BufferGeometry");
+
+            MgFeatureSchema bufferSchema = new MgFeatureSchema("BufferLayerSchema", "temporary schema to hold a buffer");
+            bufferSchema.GetClasses().Add(bufferClass);
+
+            MgCreateSdfParams sdfParams = new MgCreateSdfParams("defaultSrs", wkt, bufferSchema);
+
+            featureService.CreateFeatureSource(bufferFeatureResId, sdfParams);
+        }
+
+        public MgLayer CreateBufferLayer(MgResourceService resourceService, MgResourceIdentifier bufferFeatureResId, String sessionId)
+        {
+            // Load the layer definition template into
+            // a XmlDocument object, find the "ResourceId" element, and
+            // modify its content to reference the temporary
+            // feature source.
+
+            XmlDocument doc = new XmlDocument();
+            doc.Load(Server.MapPath("bufferlayerdefinition.xml"));
+            XmlNode featureSourceNode = doc.GetElementsByTagName("ResourceId")[0];
+            featureSourceNode.InnerText = bufferFeatureResId.ToString();
+
+            // Get the updated layer definition from the XmlDocument
+            // and save it to the session repository using the
+            // ResourceService object.
+
+            MgByteSource byteSource = null;
+            using (MemoryStream ms = new MemoryStream())
+            {
+                doc.Save(ms);
+                ms.Position = 0L;
+                
+                //Note we do this to ensure our XML content is free of any BOM characters
+                byte [] layerDefinition = ms.ToArray();
+                Encoding utf8 = Encoding.UTF8;
+                String layerDefStr = new String(utf8.GetChars(layerDefinition));
+                layerDefinition = new byte[layerDefStr.Length-1];
+                int byteCount = utf8.GetBytes(layerDefStr, 1, layerDefStr.Length-1, layerDefinition, 0);
+                
+                byteSource = new MgByteSource(layerDefinition, layerDefinition.Length);
+                byteSource.SetMimeType(MgMimeType.Xml);
+            }
+
+            MgResourceIdentifier tempLayerResId = new MgResourceIdentifier("Session:" + sessionId + "//Buffer.LayerDefinition");
+
+            resourceService.SetResource(tempLayerResId, byteSource.GetReader(), null);
+
+            // Create an MgLayer object based on the new layer definition
+            // and return it to the caller.
+
+            MgLayer bufferLayer = new MgLayer(tempLayerResId, resourceService);
+            bufferLayer.SetName("Buffer");
+            bufferLayer.SetLegendLabel("Buffer");
+            bufferLayer.SetDisplayInLegend(true);
+            bufferLayer.SetSelectable(false);
+            
+            return bufferLayer;
+        }
+    }
 
 **Java**
     
@@ -1149,6 +1283,8 @@ see Modifying Maps and Layers on page 57.
 .. code-block:: java
 
     //This code fragment assumes you have imported the org.osgeo.mapguide namespace
+    
+    //No code sample available yet
     
 There is an additional example in the Developer's Guide samples. It queries
 the parcels in the buffer area and selects parcels that match certain criteria.
@@ -1175,6 +1311,17 @@ filter.
 .. code-block:: csharp
 
     //This code fragment assumes you have imported the OSGeo.MapGuide namespace
+    
+    double bufferDist = srs.ConvertMetersToCoordinateSystemUnits(bufferRingSize);
+    MgGeometry bufferGeometry = mergedGeometries.Buffer(bufferDist, srsMeasure);
+
+    // Create a filter to select parcels within the buffer. Combine
+    // a basic filter and a spatial filter to select all parcels
+    // within the buffer that are of type "MFG".
+
+    queryOptions = new MgFeatureQueryOptions();
+    queryOptions.SetFilter("RTYPE = 'MFG'");
+    queryOptions.SetSpatialFilter("SHPGEOM", bufferGeometry, MgFeatureSpatialOperations.Inside);
 
 **Java**
     
@@ -1182,6 +1329,17 @@ filter.
 .. code-block:: java
 
     //This code fragment assumes you have imported the org.osgeo.mapguide namespace
+    
+    double bufferDist = srs.ConvertMetersToCoordinateSystemUnits(bufferRingSize);
+    MgGeometry bufferGeometry = mergedGeometries.Buffer(bufferDist, srsMeasure);
+
+    // Create a filter to select parcels within the buffer. Combine
+    // a basic filter and a spatial filter to select all parcels
+    // within the buffer that are of type "MFG".
+
+    queryOptions = new MgFeatureQueryOptions();
+    queryOptions.SetFilter("RTYPE = 'MFG'");
+    queryOptions.SetSpatialFilter("SHPGEOM", bufferGeometry, MgFeatureSpatialOperations.Inside);
 
 It creates an additional feature source that contains point markers for each of
 the selected parcels.
@@ -1215,10 +1373,6 @@ the selected parcels.
 
     if ($parcelMarkerCommands->GetCount() > 0)
     {
-        // Old way, pre MapGuide OS 2.0. Kept here for reference
-        //$featureService->UpdateFeatures($parcelFeatureResId, $parcelMarkerCommands, false);
-        
-        // New way, post MapGuide OS 2.0
         $parcelMarkerLayer->UpdateFeatures($parcelMarkerCommands);
     }
     else
@@ -1232,6 +1386,36 @@ the selected parcels.
 .. code-block:: csharp
 
     //This code fragment assumes you have imported the OSGeo.MapGuide namespace
+    
+    // Get the features from the feature source,
+    // determine the centroid of each selected feature, and
+    // add a point to the ParcelMarker layer to mark the
+    // centroid.
+    // Collect all the points into an MgFeatureCommandCollection,
+    // so they can all be added in one operation.
+    
+    MgFeatureCommandCollection parcelMarkerCommands = new MgFeatureCommandCollection();
+    while (featureReader.ReadNext())
+    {
+        MgByteReader byteReader = featureReader.GetGeometry("SHPGEOM");
+        MgGeometry geometry = agfReaderWriter.Read(byteReader);
+        MgPoint point = geometry.GetCentroid();
+
+        // Create an insert command for this parcel.
+        MgPropertyCollection properties = new MgPropertyCollection();
+        properties.Add(new MgGeometryProperty("ParcelLocation", agfReaderWriter.Write(point)));
+        parcelMarkerCommands.Add(new MgInsertFeatures("ParcelMarkerClass", properties));
+    }
+    featureReader.Close();
+
+    if (parcelMarkerCommands.GetCount() > 0)
+    {
+        parcelMarkerLayer.UpdateFeatures(parcelMarkerCommands);
+    }
+    else
+    {
+        Response.Write("</p><p>No parcels within the buffer area match.");
+    }
 
 **Java**
     
@@ -1239,3 +1423,33 @@ the selected parcels.
 .. code-block:: java
 
     //This code fragment assumes you have imported the org.osgeo.mapguide namespace
+    
+    // Get the features from the feature source,
+    // determine the centroid of each selected feature, and
+    // add a point to the ParcelMarker layer to mark the
+    // centroid.
+    // Collect all the points into an MgFeatureCommandCollection,
+    // so they can all be added in one operation.
+    
+    MgFeatureCommandCollection parcelMarkerCommands = new MgFeatureCommandCollection();
+    while (featureReader.ReadNext())
+    {
+        MgByteReader byteReader = featureReader.GetGeometry("SHPGEOM");
+        MgGeometry geometry = agfReaderWriter.Read(byteReader);
+        MgPoint point = geometry.GetCentroid();
+
+        // Create an insert command for this parcel.
+        MgPropertyCollection properties = new MgPropertyCollection();
+        properties.Add(new MgGeometryProperty("ParcelLocation", agfReaderWriter.Write(point)));
+        parcelMarkerCommands.Add(new MgInsertFeatures("ParcelMarkerClass", properties));
+    }
+    featureReader.Close();
+
+    if (parcelMarkerCommands.GetCount() > 0)
+    {
+        parcelMarkerLayer.UpdateFeatures(parcelMarkerCommands);
+    }
+    else
+    {
+        response.getWriter().Write("</p><p>No parcels within the buffer area match.");
+    }
