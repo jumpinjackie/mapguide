@@ -168,6 +168,47 @@ Guide samples.
 .. code-block:: csharp
 
     //This code fragment assumes you have imported the OSGeo.MapGuide namespace
+    
+    // Create a temporary feature source to draw the lines on
+
+    // Create a feature class definition for the new feature
+    // source
+    MgClassDefinition classDefinition = new MgClassDefinition();
+    classDefinition.SetName("Lines");
+    classDefinition.SetDescription("Lines to display.");
+    String geometryPropertyName="SHPGEOM";
+    classDefinition.SetDefaultGeometryPropertyName( geometryPropertyName);
+
+    // Create an identify property
+    MgDataPropertyDefinition identityProperty = new MgDataPropertyDefinition("KEY");
+    identityProperty.SetDataType(MgPropertyType.Int32);
+    identityProperty.SetAutoGeneration(true);
+    identityProperty.SetReadOnly(true);
+    // Add the identity property to the class definition
+    classDefinition.GetIdentityProperties().Add(identityProperty);
+    classDefinition.GetProperties().Add(identityProperty);
+
+    // Create a name property
+    MgDataPropertyDefinition nameProperty = new MgDataPropertyDefinition("NAME");
+    nameProperty.SetDataType(MgPropertyType.String);
+    // Add the name property to the class definition
+    classDefinition.GetProperties().Add(nameProperty);
+
+    // Create a geometry property
+    MgGeometricPropertyDefinition geometryProperty = new MgGeometricPropertyDefinition(geometryPropertyName);
+    geometryProperty.SetGeometryTypes(MgFeatureGeometricType.Surface);
+    // Add the geometry property to the class definition
+    classDefinition.GetProperties().Add(geometryProperty);
+
+    // Create a feature schema
+    MgFeatureSchema featureSchema = new MgFeatureSchema("SHP_Schema", "Line schema");
+    // Add the feature schema to the class definition
+    featureSchema.GetClasses().Add(classDefinition);
+
+    // Create the feature source
+    String wkt = map.GetMapSRS();
+    MgCreateSdfParams sdfParams = new MgCreateSdfParams("spatial context", wkt, featureSchema);
+    featureService.CreateFeatureSource(resourceIdentifier, sdfParams);
 
 **Java**
     
@@ -175,6 +216,47 @@ Guide samples.
 .. code-block:: java
 
     //This code fragment assumes you have imported the org.osgeo.mapguide namespace
+    
+    // Create a temporary feature source to draw the lines on
+
+    // Create a feature class definition for the new feature
+    // source
+    MgClassDefinition classDefinition = new MgClassDefinition();
+    classDefinition.SetName("Lines");
+    classDefinition.SetDescription("Lines to display.");
+    String geometryPropertyName="SHPGEOM";
+    classDefinition.SetDefaultGeometryPropertyName( geometryPropertyName);
+
+    // Create an identify property
+    MgDataPropertyDefinition identityProperty = new MgDataPropertyDefinition("KEY");
+    identityProperty.SetDataType(MgPropertyType.Int32);
+    identityProperty.SetAutoGeneration(true);
+    identityProperty.SetReadOnly(true);
+    // Add the identity property to the class definition
+    classDefinition.GetIdentityProperties().Add(identityProperty);
+    classDefinition.GetProperties().Add(identityProperty);
+
+    // Create a name property
+    MgDataPropertyDefinition nameProperty = new MgDataPropertyDefinition("NAME");
+    nameProperty.SetDataType(MgPropertyType.String);
+    // Add the name property to the class definition
+    classDefinition.GetProperties().Add(nameProperty);
+
+    // Create a geometry property
+    MgGeometricPropertyDefinition geometryProperty = new MgGeometricPropertyDefinition(geometryPropertyName);
+    geometryProperty.SetGeometryTypes(MgFeatureGeometricType.Surface);
+    // Add the geometry property to the class definition
+    classDefinition.GetProperties().Add(geometryProperty);
+
+    // Create a feature schema
+    MgFeatureSchema featureSchema = new MgFeatureSchema("SHP_Schema", "Line schema");
+    // Add the feature schema to the class definition
+    featureSchema.GetClasses().Add(classDefinition);
+
+    // Create the feature source
+    String wkt = map.GetMapSRS();
+    MgCreateSdfParams sdfParams = new MgCreateSdfParams("spatial context", wkt, featureSchema);
+    featureService.CreateFeatureSource(resourceIdentifier, sdfParams);
 
 .. index::
     single: Redlining; Create a Layer
@@ -186,4 +268,4 @@ Create a Layer
     Update page number reference with section link
 
 The final step is to create a new layer to display the feature source, the same
-way it was done in Adding Layers To A Map on page 68.
+way it was done in :ref:`adding-layers-to-a-map`

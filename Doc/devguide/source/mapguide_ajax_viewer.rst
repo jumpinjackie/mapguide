@@ -1,5 +1,7 @@
 .. index::
    single: viewer
+
+.. _mapguide-ajax-viewer:
    
 The MapGuide AJAX Viewer
 ========================

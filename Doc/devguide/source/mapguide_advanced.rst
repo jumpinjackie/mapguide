@@ -169,12 +169,6 @@ The following example, modifies the `Default` schema by deleting the `Test` clas
 
     Not all data stores support the `ApplySchema` API. Check the FDO provider capabilities of the feature source to determine if such an operation is possible.
 
-Quering Data with Expressions and Filters
------------------------------------------
-
-Relationship to FDO
--------------------
-
 The Geospatial Platform and MapGuide's role in it
 -------------------------------------------------
 

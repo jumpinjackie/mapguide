@@ -51,6 +51,8 @@ feature data.
 .. index::
     single: Features; Querying
 
+.. _querying-feature-data:
+
 Querying Feature Data
 ---------------------
 
@@ -64,15 +66,12 @@ interested in. This can be done with the Viewer or through Web API calls.
 Feature Readers
 ^^^^^^^^^^^^^^^
 
-.. todo::
-    Update page number reference with section link
-
 A *feature reader*, represented by an ``MgFeatureReader`` object, is used to iterate
 through a list of features. Typically, the feature reader is created by selecting
 features from a feature source.
 
 To create a feature reader, use the ``MgFeatureService::SelectFeatures()``
-method. See Selecting with the Web API on page 39 for details about selection.
+method. See :ref:`selecting-with-web-api` details about selection.
 
 To process the features in a feature reader, use the
 ``MgFeatureReader::ReadNext()`` method. You must call this method before
@@ -104,6 +103,8 @@ Otherwise, call ``MgFeatureReader::GetPropertyName()`` and
 
 .. index::
     single: Selections
+
+.. _selecting-with-web-api:
 
 Selecting with the Web API
 ^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -262,16 +263,13 @@ To select all features owned by Davis or Davies, create a filter like this:
 Spatial Filters
 """""""""""""""
 
-.. todo::
-    Update page number reference with section link
-
 With spatial filters, you can do comparisons using geometric properties. For
 example, you can select all features that are inside an area on the map, or that
 intersect an area.
 
 .. note::
 
-    For more information about geometry, see Representation of Geometry on page 73.
+    For more information about geometry, see :ref:`representations-of-geometry`.
 
 There are two ways of using spatial filters:
 
@@ -459,6 +457,8 @@ either of the following sequences:
 
 .. index::
     single: Selections; Listing Properties
+
+.. _example-selection:
 
 Example: Selection
 ^^^^^^^^^^^^^^^^^^
@@ -685,9 +685,6 @@ JavaScript as part of an ``onClick`` event or a form action.
 Additional Parameters to an Invoke URL Command
 """"""""""""""""""""""""""""""""""""""""""""""
 
-.. todo:
-    Update page number references to section links
-
 With this release of MapGuide, the current selection is the only variable that
 can be passed as part of an Invoke URL command.
 
@@ -725,7 +722,7 @@ then when the URL is invoked
 
 gets the current selection, in XML format.
 
-See Working With the Active Selection on page 48 for details about using the
+See :ref:`working-with-the-active-selection` for details about using the
 XML data.
 
 .. note::
@@ -802,6 +799,8 @@ a form. For example, clicking the following link would execute the function:
 
 .. index::
     single: Active Selection; Manipulating the Active Selection
+
+.. _working-with-the-active-selection:
 
 Working with the Active Selection
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -967,25 +966,18 @@ This submits a request to listselection.php, which contains the following:
 Setting the Active Selection with the Web API
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-.. todo::
-    Update page number reference with section link
-
 To set the run-time map selection using a query, perform the following steps:
 
- * Create a selection as described in Selecting with the Web API on page 39. This creates a feature reader containing the selected features.
+ * Create a selection as described in `selecting-with-the-web-api`. This creates a feature reader containing the selected features.
  * Create an ``MgSelection`` object to hold the features in the feature reader.
  * Send the selection to the Viewer, along with a call to the Viewer API function ``SetSelectionXML()``.
 
 Example: Setting the Active Selection
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-.. todo::
-    Update page number reference with section link
-
 The following example combines the pieces needed to create a selection using
 the Web API and pass it back to the Viewer where it becomes the active
-selection for the map. It is an extension of the example shown in Example:
-Selection on page 43.
+selection for the map. It is an extension of the example shown :ref:`example-selection`.
 
 The PHP code in this example creates the selection XML. Following that is a
 JavaScript function that calls the ``SetSelectionXML()`` function with the
@@ -1053,7 +1045,7 @@ selection. This function is executed when the page loads.
         }
         catch (MgException $e)
         {
-            echo $e->GetMessage();
+            echo $e->GetExceptionMessage();
             echo $e->GetDetails();
         }
         ?>
@@ -1067,6 +1059,7 @@ selection. This function is executed when the page loads.
         function OnPageLoad()
         {
             selectionXml = '<?php echo $selectionXml; ?>';
+            parent.parent.SetSelectionXML(selectionXml);
         }
     </script>
 
@@ -1075,7 +1068,94 @@ selection. This function is executed when the page loads.
 .. highlight:: csharp
 .. code-block:: csharp
 
-    //This code fragment assumes you have imported the OSGeo.MapGuide namespace
+    <!-- This code fragment assumes you have imported the OSGeo.MapGuide namespace -->
+    <body class="AppFrame" onLoad="OnPageLoad()">
+     
+        <h1 class="AppHeading">Select features</h1>
+
+    <%
+
+    sessionId = Request.Params["SESSION"];
+    mapName = Request.Params["MAPNAME"];
+
+    try
+    {
+
+      // Initialize the Web Extensions and connect to the Server using
+      // the Web Extensions session identifier stored in PHP session state.
+
+      MapGuideApi.MgInitializeWebTier (Constants.WebConfigPath);
+
+      MgUserInformation userInfo = new MgUserInformation(sessionId);
+      MgSiteConnection siteConnection = new MgSiteConnection();
+      siteConnection.Open(userInfo);
+
+      MgMap map = new MgMap(siteConnection);
+      map.Open(mapName);
+
+      // Get the geometry for the boundaries of District 1
+
+      MgFeatureQueryOptions districtQuery = new MgFeatureQueryOptions();
+      districtQuery.SetFilter("Autogenerated_SDF_ID = 1");
+
+      MgLayerBase layer = map.GetLayers().GetItem("Districts");
+      MgFeatureReader featureReader = layer.SelectFeatures(districtQuery);
+      MgByteReader districtGeometryData = null;
+      try {
+        featureReader.ReadNext();
+        districtGeometryData = featureReader.GetGeometry("Data");
+      } finally { //Ensures the reader is closed regardless
+        featureReader.Close();
+      }
+
+      // Convert the AGF binary data to MgGeometry.
+
+      MgAgfReaderWriter agfReaderWriter = new MgAgfReaderWriter();
+      MgGeometry districtGeometry = agfReaderWriter.Read(districtGeometryData);
+
+      // Create a filter to select the desired features. Combine
+      // a basic filter and a spatial filter.
+
+      MgFeatureQueryOptions queryOptions = new MgFeatureQueryOptions();
+      queryOptions.SetFilter("RNAME LIKE 'SCHMITT%'");
+      queryOptions.SetSpatialFilter("SHPGEOM", districtGeometry, MgFeatureSpatialOperations.Inside);
+
+      // Get the features from the feature source,
+      // turn it into a selection, then save the selection as XML.
+
+      layer = map.GetLayers().GetItem("Parcels");
+      featureReader = layer.SelectFeatures(queryOptions);
+
+      MgSelection selection = new MgSelection(map);
+      selection.AddFeatures(layer, featureReader, 0);
+      selectionXml = selection.ToXml();
+
+      Response.Write("Selecting parcels owned by Schmitt in District&nbsp;1");
+    }
+    catch (MgException e)
+    {
+      Response.Write(e.GetExceptionMessage());
+      Response.Write(e.GetDetails());
+    }
+    %>
+
+  </body>
+
+  <script language="javascript">
+
+    <!-- Emit this function and assocate it with the onLoad event for the -.
+    <!-- page so that it gets executed when this page loads in the        -.
+    <!-- browser. The function calls the SetSelectionXML method on the    -.
+    <!-- Viewer Frame, which updates the current selection on the viewer  -.
+    <!-- and the server.                                                  -.
+
+    function OnPageLoad()
+    {
+      selectionXml = '<%= selectionXml %>';
+      parent.parent.SetSelectionXML(selectionXml);
+    }
+
+  </script>
 
 **Java**
     
@@ -1083,3 +1163,5 @@ selection. This function is executed when the page loads.
 .. code-block:: java
 
     //This code fragment assumes you have imported the org.osgeo.mapguide namespace
+    
+    //Code sample currently not available
