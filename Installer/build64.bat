@@ -257,6 +257,7 @@ pushd "%MG_SOURCE%\Web"
 rd /S /Q Tomcat
 popd
 pushd "%INSTALLER_DEV_SUPPORT%\Web\%CPUTYPE%"
+copy /Y mod_jk.so "%MG_SOURCE%\Web\Apache2\modules"
 REM we unpack to root because Tomcat is the root dir in the zip file
 7z x %TOMCAT_PACKAGE% -y -o"%MG_SOURCE%\Web"
 popd

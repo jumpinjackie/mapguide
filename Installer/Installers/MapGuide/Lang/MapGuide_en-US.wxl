@@ -5,7 +5,7 @@
     http://msdn.microsoft.com/en-us/library/system.globalization.cultureinfo(vs.80).aspx
     -->
     <String Id="LANG">1033</String>
-    <String Id="ProductName">MapGuide Open Source 2.2</String>
+    <String Id="ProductName">MapGuide Open Source 2.4</String>
     <String Id="ProductManufacturer">Open Source Geospatial Foundation</String>
 
     <String Id="InstallerTitle">[ProductName] Setup</String>
@@ -20,7 +20,7 @@
     <String Id="DisabledFeaturesDialog_Title">Disabled Features</String>
     <String Id="DisabledFeaturesDialog_Description">Some features will not be available</String>
     <String Id="DisabledFeaturesDialog_IIS">IIS is not installed, so it will not be available as an installation choice.</String>
-    <String Id="DisabledFeaturesDialog_DotNet">The .NET Framework 2.0 was not found, so the .NET Web Extensions for IIS will not be available</String>
+    <String Id="DisabledFeaturesDialog_DotNet">The .NET Framework 4.0 was not found, so the .NET Web Extensions for IIS will not be available</String>
     <String Id="DisabledFeaturesDialog_Instructions">If you want to use these features, click on cancel and correct the problem before proceeding with installation</String>
 
     <String Id="FastCgiDialog_Title">FastCGI is required</String>

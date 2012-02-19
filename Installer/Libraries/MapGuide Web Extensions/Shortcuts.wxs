@@ -36,6 +36,20 @@
                     KeyPath="yes" />
           </RegistryKey>
         </Component>
+        <Component Id="ApacheDevGuideShortcutComponent" Win64="$(var.Win64)" Guid="4DC72C73-8CF0-49B3-8558-5E7CAFA7B6CE">
+          <Condition>MGWEB_CONFIG=&quot;APACHE&quot;</Condition>
+          <CreateFolder />
+          <util:InternetShortcut Id="ApacheDevGuide"
+                                 Directory="MapGuideOpenSourceMenuLocation"
+                                 Name="!(loc.Shortcut_DevGuide)"
+                                 Target="http://localhost:[APACHE_PORT]/[VIRTUALDIR]/help/devguide/index.html" />
+          <RegistryKey Root="HKCU" Key="$(var.MgRegKey)\ApacheDevGuideShortcut">
+            <RegistryValue
+                    Value="Installed"
+                    Type="string"
+                    KeyPath="yes" />
+          </RegistryKey>
+        </Component>
         <Component Id="ApacheViewerApiShortcutComponent" Win64="$(var.Win64)" Guid="4AABF916-33FC-440D-9D6F-8CE95F2ADE7A">
             <Condition>MGWEB_CONFIG=&quot;APACHE&quot;</Condition>
             <CreateFolder />
@@ -72,11 +86,11 @@
           </RegistryKey>
         </Component>
           <Component Id="WebApachePHPViewerSampleShortcutComponent" Win64="$(var.Win64)" Guid="E3D81381-6B4A-41AD-B83A-CE686455D3DC">
-              <Condition>MGWEB_CONFIG=&quot;APACHE&quot; AND &amp;WebExtPhpViewerSampleFeature&gt;2</Condition>
+              <Condition>MGWEB_CONFIG=&quot;APACHE&quot;</Condition>
               <util:InternetShortcut Id="ApachePhpViewerSampleShortcut"
                                  Directory="MapGuideOpenSourceMenuLocation"
                                  Name="!(loc.Shortcut_PhpViewerSample)"
-                                 Target="http://localhost:[APACHE_PORT]/[VIRTUALDIR]/phpviewersample/ajaxviewer.php" />
+                                 Target="http://localhost:[APACHE_PORT]/[VIRTUALDIR]/phpviewersample/ajaxviewersample.php" />
               <RegistryKey Root="HKCU" Key="$(var.MgRegKey)\ApachePHPViewerSampleShortcutComponent">
                   <RegistryValue
                           Value="Installed"
@@ -85,7 +99,7 @@
               </RegistryKey>
           </Component>
           <Component Id="WebApachePHPDevGuideSampleShortcutComponent" Win64="$(var.Win64)" Guid="F2F3F90B-D033-47FA-9DDD-943E594ABE98">
-              <Condition>MGWEB_CONFIG=&quot;APACHE&quot; AND &amp;WebExtPhpDevGuideSamplesFeature&gt;2</Condition>
+              <Condition>MGWEB_CONFIG=&quot;APACHE&quot;</Condition>
               <util:InternetShortcut Id="ApachePhpDevGuideSampleShortcut"
                                  Directory="MapGuideOpenSourceMenuLocation"
                                  Name="!(loc.Shortcut_PhpDevGuideSample)"
@@ -98,11 +112,11 @@
               </RegistryKey>
           </Component>
           <Component Id="WebApacheJavaViewerSampleShortcutComponent" Win64="$(var.Win64)" Guid="4D0D9A31-2BB5-4DE8-881A-53A5371BF93D">
-              <Condition>MGWEB_CONFIG=&quot;APACHE&quot; AND &amp;WebExtJavaViewerSampleFeature&gt;2</Condition>
+              <Condition>MGWEB_CONFIG=&quot;APACHE&quot;</Condition>
               <util:InternetShortcut Id="ApacheJavaViewerSampleShortcut"
                                  Directory="MapGuideOpenSourceMenuLocation"
                                  Name="!(loc.Shortcut_JavaViewerSample)"
-                                 Target="http://localhost:[APACHE_PORT]/[VIRTUALDIR]/javaviewersample/ajaxviewer.jsp" />
+                                 Target="http://localhost:[APACHE_PORT]/[VIRTUALDIR]/javaviewersample/ajaxviewersample.jsp" />
               <RegistryKey Root="HKCU" Key="$(var.MgRegKey)\ApacheJavaViewerSampleShortcutComponent">
                   <RegistryValue
                           Value="Installed"
@@ -111,7 +125,7 @@
               </RegistryKey>
           </Component>
           <Component Id="WebApacheJavaDevGuideSampleShortcutComponent" Win64="$(var.Win64)" Guid="4DB97F1C-D225-4437-B2B8-69ECDE4F4168">
-              <Condition>MGWEB_CONFIG=&quot;APACHE&quot; AND &amp;WebExtJavaDevGuideSamplesFeature&gt;2</Condition>
+              <Condition>MGWEB_CONFIG=&quot;APACHE&quot;</Condition>
               <util:InternetShortcut Id="ApacheJavaDevGuideSampleShortcut"
                                  Directory="MapGuideOpenSourceMenuLocation"
                                  Name="!(loc.Shortcut_JavaDevGuideSample)"
@@ -137,6 +151,20 @@
                     KeyPath="yes" />
           </RegistryKey>
         </Component>
+        <Component Id="IISDevGuideShortcutComponent" Win64="$(var.Win64)" Guid="BA2B2FE0-F11E-41D0-9939-D774C1D3171A">
+          <Condition>MGWEB_CONFIG=&quot;IIS&quot;</Condition>
+          <CreateFolder />
+          <util:InternetShortcut Id="IISDevGuide"
+                                 Directory="MapGuideOpenSourceMenuLocation"
+                                 Name="!(loc.Shortcut_DevGuide)"
+                                 Target="http://localhost/[VIRTUALDIR]/help/devguide/index.html" />
+          <RegistryKey Root="HKCU" Key="$(var.MgRegKey)\IISDevGuideShortcut">
+            <RegistryValue
+                    Value="Installed"
+                    Type="string"
+                    KeyPath="yes" />
+          </RegistryKey>
+        </Component>
           <Component Id="IISViewerApiShortcutComponent" Win64="$(var.Win64)" Guid="F2CCA279-4C99-48CE-9F79-7465449E2B33">
               <Condition>MGWEB_CONFIG=&quot;IIS&quot;</Condition>
               <CreateFolder />
@@ -152,7 +180,7 @@
               </RegistryKey>
           </Component>
           <Component Id="WebIISPHPViewerSampleShortcutComponent" Win64="$(var.Win64)" Guid="F1B2C345-52F8-4179-8CDC-34D2D3E22418">
-              <Condition>MGWEB_CONFIG=&quot;IIS&quot; AND &amp;WebExtPhpViewerSampleFeature&gt;2</Condition>
+              <Condition>MGWEB_CONFIG=&quot;IIS&quot;</Condition>
               <util:InternetShortcut Id="IISPhpViewerSampleShortcut"
                                  Directory="MapGuideOpenSourceMenuLocation"
                                  Name="!(loc.Shortcut_PhpViewerSample)"
@@ -165,7 +193,7 @@
               </RegistryKey>
           </Component>
           <Component Id="WebIISPHPDevGuideSampleShortcutComponent" Win64="$(var.Win64)" Guid="EEAB8D50-3ECA-4CBF-8D80-3F02219CB797">
-              <Condition>MGWEB_CONFIG=&quot;IIS&quot; AND &amp;WebExtPhpDevGuideSamplesFeature&gt;2</Condition>
+              <Condition>MGWEB_CONFIG=&quot;IIS&quot;</Condition>
               <util:InternetShortcut Id="IISPhpDevGuideSampleShortcut"
                                  Directory="MapGuideOpenSourceMenuLocation"
                                  Name="!(loc.Shortcut_PhpDevGuideSample)"
@@ -178,11 +206,11 @@
               </RegistryKey>
           </Component>
           <Component Id="WebIISDotNetViewerSampleShortcutComponent" Win64="$(var.Win64)" Guid="BE2DD022-04C2-45AF-95A6-87E652BE52CA">
-              <Condition>MGWEB_CONFIG=&quot;IIS&quot; AND &amp;WebExtDotNetViewerSampleFeature&gt;2</Condition>
+              <Condition>MGWEB_CONFIG=&quot;IIS&quot;</Condition>
               <util:InternetShortcut Id="IISDotNetViewerSampleShortcut"
                                  Directory="MapGuideOpenSourceMenuLocation"
                                  Name="!(loc.Shortcut_DotNetViewerSample)"
-                                 Target="http://localhost/[VIRTUALDIR]/dotnetviewersample/ajaxviewer.aspx" />
+                                 Target="http://localhost/[VIRTUALDIR]/dotnetviewersample/ajaxviewersample.aspx" />
               <RegistryKey Root="HKCU" Key="$(var.MgRegKey)\IISDotNetViewerSampleShortcutComponent">
                   <RegistryValue
                           Value="Installed"
@@ -191,7 +219,7 @@
               </RegistryKey>
           </Component>
           <Component Id="WebIISDotNetDevGuideSampleShortcutComponent" Win64="$(var.Win64)" Guid="0B766EEB-FA31-4833-91F6-87C2A653FD33">
-              <Condition>MGWEB_CONFIG=&quot;IIS&quot; AND &amp;WebExtDotNetDevGuideSamplesFeature&gt;2</Condition>
+              <Condition>MGWEB_CONFIG=&quot;IIS&quot;</Condition>
               <util:InternetShortcut Id="IISDotNetDevGuideSampleShortcut"
                                  Directory="MapGuideOpenSourceMenuLocation"
                                  Name="!(loc.Shortcut_DotNetDevGuideSample)"

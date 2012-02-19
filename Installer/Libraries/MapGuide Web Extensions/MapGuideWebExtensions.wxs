@@ -10,7 +10,7 @@
     <?endif ?>
     <Fragment>
 
-        <PropertyRef Id="NETFRAMEWORK20"/>
+        <PropertyRef Id="NETFRAMEWORK40FULL"/>
         <PropertyRef Id="MGWEB_CONFIG"/>
         <PropertyRef Id="IIS_API_TYPE"/>
 
@@ -58,6 +58,7 @@
                 <Directory Id="PHPLOCATION" Name="Php">
                     <Component Id="WebExtPhpComponent" Win64="$(var.Win64)" Guid="88814E96-07DC-4fb7-A993-F31FC1E000CB" Feature="WebExtPhpFeature">
                         <CreateFolder />
+                        <!--
                         <Environment Id="PhpEnvVar"
                                      Action="set"
                                      Name="PATH"
@@ -65,6 +66,7 @@
                                      Permanent="no"
                                      System="yes"
                                      Value="[PHPLOCATION]" />
+                        -->
                         <RegistryKey Id="PhpRegistryKey"
                                      Action="createAndRemoveOnUninstall"
                                      Root="HKLM"
@@ -156,6 +158,8 @@
                 <ComponentRef Id="IISWebApiShortcutComponent"/>
                 <ComponentRef Id="ApacheViewerApiShortcutComponent"/>
                 <ComponentRef Id="IISViewerApiShortcutComponent"/>
+                <ComponentRef Id="ApacheDevGuideShortcutComponent"/>
+                <ComponentRef Id="IISDevGuideShortcutComponent"/>
             </Feature>
             <Feature Id="WebExtMapViewerFeature" Title="!(loc.WebExtMapViewerFeature)" Display="hidden" Level="1" Description="!(loc.WebExtMapViewerFeature_Description)" AllowAdvertise="no" TypicalDefault="install" InstallDefault="local" >
                 <ComponentGroupRef Id="group_MAPVIEWERFILES"/>

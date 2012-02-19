@@ -47,6 +47,7 @@
     <String Id="WebTempFeature">Temp Directory</String>
     <String Id="WebTempFeature_Description">You may choose a location where MapGuide will store temporary files.</String>
 
+    <String Id="Shortcut_DevGuide">MapGuide Developer's Guide</String>
     <String Id="Shortcut_WebAPI">Web API Documentation</String>
     <String Id="Shortcut_PhpViewerSample">PHP Viewer Sample</String>
     <String Id="Shortcut_PhpDevGuideSample">PHP Developer's Guide Samples</String>

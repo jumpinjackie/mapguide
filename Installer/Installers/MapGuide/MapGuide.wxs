@@ -44,12 +44,12 @@
             Key="$(var.MgRegKey)"
             Name="IIS_API_TYPE"  />
         </Property>
-        <Property Id="APP_POOL_NAME" Secure="yes" Value="MapGuideAppPool" />
         <Property Id="MGSERVER_IP" Secure="yes" Value="127.0.0.1" />
         <Property Id="APACHE_PORT" Secure="yes" Value="8008" />
         <Property Id="APACHE_VERSION" Secure="yes" Value="2.2.21" />
         <Property Id="PHP_VERSION" Secure="yes" Value="5.3.8" />
         <Property Id="MG_VERSION_MAJOR_MINOR" Secure="yes" Value="2.4" />
+        <Property Id="APP_POOL_NAME" Secure="yes" Value="MapGuide24AppPool" />
         <!-- Server Port Settings  -->
         <Property Id="MG_ADMIN_PORT" Secure="yes" Value="2810" />
         <Property Id="MG_CLIENT_PORT" Secure="yes" Value="2811" />
@@ -168,7 +168,7 @@
 
                        IIS is not installed, so it will not be available as an installation choice.
                        
-                       The .NET Framework 2.0 was not found, so the .NET Web Extensions for IIS will not be available
+                       The .NET Framework 4.0 was not found, so the .NET Web Extensions for IIS will not be available
                     
                 -->
                 <Control Id="Title" Type="Text" X="15" Y="6" Width="200" Height="15" Transparent="yes" NoPrefix="yes" Text="{\WixUI_Font_Title}!(loc.DisabledFeaturesDialog_Title)" />
@@ -180,7 +180,7 @@
                     <Condition Action="hide">NOT IISVERSIONMAJOR=&quot;#0&quot;</Condition>
                 </Control>
                 <Control Id="TxtMessageDotNet" Type="Text" X="30" Y="150" Width="302" Height="30" Text="!(loc.DisabledFeaturesDialog_DotNet)">
-                    <Condition Action="hide">NETFRAMEWORK20</Condition>
+                    <Condition Action="hide">NETFRAMEWORK40FULL</Condition>
                 </Control>
                 <Control Id="TxtMessageInstructions" Type="Text" X="22" Y="64" Width="318" Height="27" Text="!(loc.DisabledFeaturesDialog_Instructions)" />
                 
@@ -460,7 +460,7 @@
             
             <Publish Dialog="LicenseAgreementDlg" Control="Back" Event="NewDialog" Value="WelcomeDlg">1</Publish>
             <Publish Dialog="LicenseAgreementDlg" Control="Next" Event="NewDialog" Value="ServerConfigDlg" Order="1">LicenseAccepted=&quot;1&quot;</Publish>
-            <Publish Dialog="LicenseAgreementDlg" Control="Next" Event="NewDialog" Value="DisabledFeaturesDialog" Order="2">LicenseAccepted=&quot;1&quot; AND (IISVERSIONMAJOR=&quot;#0&quot; OR (NOT NETFRAMEWORK20))</Publish>
+            <Publish Dialog="LicenseAgreementDlg" Control="Next" Event="NewDialog" Value="DisabledFeaturesDialog" Order="2">LicenseAccepted=&quot;1&quot; AND (IISVERSIONMAJOR=&quot;#0&quot; OR (NOT NETFRAMEWORK40FULL))</Publish>
 
             <Publish Dialog="DisabledFeaturesDialog" Control="Next" Event="NewDialog" Value="ServerConfigDlg" Order="1">1</Publish>
             <Publish Dialog="DisabledFeaturesDialog" Control="Back" Event="NewDialog" Value="LicenseAgreementDlg">1</Publish>
@@ -480,22 +480,32 @@
             <Publish Dialog="WebServerConfigDlgIIS" Control="Next" Event="Remove" Value="FdoMySqlProviderFeature" Order="5">1</Publish>
             <Publish Dialog="WebServerConfigDlgIIS" Control="Next" Event="Remove" Value="FdoPostgreSqlProviderFeature" Order="7">1</Publish>
             <!-- If Apache, or IIS and the .Net Framework is not installed, set feature default for the ASPX viewer to not install -->
-            <Publish Dialog="WebServerConfigDlgIIS" Control="Next" Event="Remove" Value="WebExtMapViewerASPXFeature" Order="7">(MGWEB_CONFIG=&quot;APACHE&quot;) OR (MGWEB_CONFIG=&quot;IIS&quot; AND NOT NETFRAMEWORK20)</Publish>
+            <Publish Dialog="WebServerConfigDlgIIS" Control="Next" Event="Remove" Value="WebExtMapViewerASPXFeature" Order="7">(MGWEB_CONFIG=&quot;APACHE&quot;) OR (MGWEB_CONFIG=&quot;IIS&quot; AND NOT NETFRAMEWORK40FULL)</Publish>
             <Publish Dialog="WebServerConfigDlgIIS" Control="Next" Event="NewDialog" Value="ApacheConfigDlg" Order="8">MGWEB_CONFIG=&quot;APACHE&quot;</Publish>
             <Publish Dialog="WebServerConfigDlgIIS" Control="Next" Event="NewDialog" Value="FastCgiWarningDlg" Order="9">MGWEB_CONFIG=&quot;IIS&quot;</Publish>
             <!-- If IIS, set feature defaults for Apache, Tomcat, and JSP viewer to not install -->
+            <!-- 
+            Turn off:
+                - Apache
+                - Tomcat
+                - Java Viewer
+                - Java Viewer Sample
+                - Java DevGuide Sample
+            -->
             <Publish Dialog="WebServerConfigDlgIIS" Control="Next" Event="Remove" Value="WebExtApacheFeature" Order="10">MGWEB_CONFIG=&quot;IIS&quot;</Publish>
             <Publish Dialog="WebServerConfigDlgIIS" Control="Next" Event="Remove" Value="WebExtTomcatFeature" Order="11">MGWEB_CONFIG=&quot;IIS&quot;</Publish>
             <Publish Dialog="WebServerConfigDlgIIS" Control="Next" Event="Remove" Value="WebExtMapViewerJSPFeature" Order="12">MGWEB_CONFIG=&quot;IIS&quot;</Publish>
+            <Publish Dialog="WebServerConfigDlgIIS" Control="Next" Event="Remove" Value="WebExtJavaDevGuideSamplesFeature" Order="13">MGWEB_CONFIG=&quot;IIS&quot;</Publish>
+            <Publish Dialog="WebServerConfigDlgIIS" Control="Next" Event="Remove" Value="WebExtJavaViewerSampleFeature" Order="14">MGWEB_CONFIG=&quot;IIS&quot;</Publish>
             <Publish Dialog="WebServerConfigDlgIIS" Control="Next" Event="NewDialog" Value="IPConfigDlg" Order="13">MGWEB_CONFIG=&quot;MANUAL&quot;</Publish>
             <Publish Dialog="WebServerConfigDlgIIS" Control="Back" Event="NewDialog" Value="LicenseAgreementDlg">1</Publish>
             <Publish Dialog="WebServerConfigDlgIIS" Control="Cancel" Event="SpawnDialog" Value="CancelDlg">1</Publish>
 
             <!-- Show the FastCGI warning before advancing to any IIS configuration dialog -->
-            <Publish Dialog="FastCgiWarningDlg" Control="Next" Event="NewDialog" Value="IISLangConfigDlg" Order="1">MGWEB_CONFIG=&quot;IIS&quot; AND NETFRAMEWORK20</Publish>
-            <Publish Dialog="FastCgiWarningDlg" Control="Next" Event="NewDialog" Value="IPConfigDlg" Order="2">MGWEB_CONFIG=&quot;IIS&quot; AND IISVERSIONMAJOR=&quot;#5&quot; AND (NOT NETFRAMEWORK20)</Publish>
-            <Publish Dialog="FastCgiWarningDlg" Control="Next" Event="NewDialog" Value="IIS6ConfigDlg" Order="3">MGWEB_CONFIG=&quot;IIS&quot; AND IISVERSIONMAJOR=&quot;#6&quot; AND (NOT NETFRAMEWORK20)</Publish>
-            <Publish Dialog="FastCgiWarningDlg" Control="Next" Event="NewDialog" Value="IIS7ConfigDlg" Order="4">MGWEB_CONFIG=&quot;IIS&quot; AND IISVERSIONMAJOR=&quot;#7&quot; AND (NOT NETFRAMEWORK20)</Publish>
+            <Publish Dialog="FastCgiWarningDlg" Control="Next" Event="NewDialog" Value="IISLangConfigDlg" Order="1">MGWEB_CONFIG=&quot;IIS&quot; AND NETFRAMEWORK40FULL</Publish>
+            <Publish Dialog="FastCgiWarningDlg" Control="Next" Event="NewDialog" Value="IPConfigDlg" Order="2">MGWEB_CONFIG=&quot;IIS&quot; AND IISVERSIONMAJOR=&quot;#5&quot; AND (NOT NETFRAMEWORK40FULL)</Publish>
+            <Publish Dialog="FastCgiWarningDlg" Control="Next" Event="NewDialog" Value="IIS6ConfigDlg" Order="3">MGWEB_CONFIG=&quot;IIS&quot; AND IISVERSIONMAJOR=&quot;#6&quot; AND (NOT NETFRAMEWORK40FULL)</Publish>
+            <Publish Dialog="FastCgiWarningDlg" Control="Next" Event="NewDialog" Value="IIS7ConfigDlg" Order="4">MGWEB_CONFIG=&quot;IIS&quot; AND IISVERSIONMAJOR=&quot;#7&quot; AND (NOT NETFRAMEWORK40FULL)</Publish>
             <Publish Dialog="FastCgiWarningDlg" Control="Back" Event="NewDialog" Value="WebServerConfigDlgIIS">1</Publish>
             <Publish Dialog="FastCgiWarningDlg" Control="Cancel" Event="SpawnDialog" Value="CancelDlg">1</Publish>
 
@@ -508,20 +518,57 @@
             <Publish Dialog="WebServerConfigDlgNoIIS" Control="Next" Event="Remove" Value="FdoMySqlProviderFeature" Order="5">1</Publish>
             <Publish Dialog="WebServerConfigDlgNoIIS" Control="Next" Event="Remove" Value="FdoPostGisProviderFeature" Order="6">1</Publish>
             <!-- If Apache, set feature default for the ASPX viewer to not install -->
+            <!-- 
+            Turn off:
+                - .net Viewer
+                - .net Viewer Sample
+                - .net DevGuide Sample
+            -->
             <Publish Dialog="WebServerConfigDlgNoIIS" Control="Next" Event="Remove" Value="WebExtMapViewerASPXFeature" Order="7">MGWEB_CONFIG=&quot;APACHE&quot;</Publish>
-            <Publish Dialog="WebServerConfigDlgNoIIS" Control="Next" Event="NewDialog" Value="ApacheConfigDlg" Order="8">MGWEB_CONFIG=&quot;APACHE&quot;</Publish>
-            <Publish Dialog="WebServerConfigDlgNoIIS" Control="Next" Event="NewDialog" Value="IPConfigDlg" Order="9">MGWEB_CONFIG=&quot;MANUAL&quot;</Publish>
+            <Publish Dialog="WebServerConfigDlgNoIIS" Control="Next" Event="Remove" Value="WebExtDotNetViewerSampleFeature" Order="8">MGWEB_CONFIG=&quot;APACHE&quot;</Publish>
+            <Publish Dialog="WebServerConfigDlgNoIIS" Control="Next" Event="Remove" Value="WebExtDotNetDevGuideSamplesFeature" Order="9">MGWEB_CONFIG=&quot;APACHE&quot;</Publish>
+            <Publish Dialog="WebServerConfigDlgNoIIS" Control="Next" Event="NewDialog" Value="ApacheConfigDlg" Order="10">MGWEB_CONFIG=&quot;APACHE&quot;</Publish>
+            <Publish Dialog="WebServerConfigDlgNoIIS" Control="Next" Event="NewDialog" Value="IPConfigDlg" Order="11">MGWEB_CONFIG=&quot;MANUAL&quot;</Publish>
             <Publish Dialog="WebServerConfigDlgNoIIS" Control="Back" Event="NewDialog" Value="LicenseAgreementDlg">1</Publish>
             <Publish Dialog="WebServerConfigDlgNoIIS" Control="Cancel" Event="SpawnDialog" Value="CancelDlg">1</Publish>
 
             <Publish Dialog="ApacheConfigDlg" Control="Next" Event="NewDialog" Value="IPConfigDlg">1</Publish>
             <!-- Set default features based on Java API choice - AddLocal required in case user changes mind and comes back -->
+            <!-- 
+            Turn off:
+                - .net Viewer
+                - PHP Viewer
+                - .net Viewer Sample
+                - PHP Viewer Sample
+                - .net DevGuide Sample
+                - PHP DevGuide Sample
+            -->
             <Publish Dialog="ApacheConfigDlg" Control="Next" Event="Remove" Value="WebExtMapViewerPHPFeature">APACHE_API_TYPE=&quot;JAVA&quot;</Publish>
+            <Publish Dialog="ApacheConfigDlg" Control="Next" Event="Remove" Value="WebExtMapViewerASPXFeature">APACHE_API_TYPE=&quot;JAVA&quot;</Publish>
+            <Publish Dialog="ApacheConfigDlg" Control="Next" Event="Remove" Value="WebExtDotNetDevGuideSamplesFeature">APACHE_API_TYPE=&quot;JAVA&quot;</Publish>
+            <Publish Dialog="ApacheConfigDlg" Control="Next" Event="Remove" Value="WebExtPhpDevGuideSamplesFeature">APACHE_API_TYPE=&quot;JAVA&quot;</Publish>
+            <Publish Dialog="ApacheConfigDlg" Control="Next" Event="Remove" Value="WebExtDotNetViewerSampleFeature">APACHE_API_TYPE=&quot;JAVA&quot;</Publish>
+            <Publish Dialog="ApacheConfigDlg" Control="Next" Event="Remove" Value="WebExtPhpViewerSampleFeature">APACHE_API_TYPE=&quot;JAVA&quot;</Publish>
             <Publish Dialog="ApacheConfigDlg" Control="Next" Event="AddLocal" Value="WebExtTomcatFeature">APACHE_API_TYPE=&quot;JAVA&quot;</Publish>
             <Publish Dialog="ApacheConfigDlg" Control="Next" Event="AddLocal" Value="WebExtMapViewerJSPFeature">APACHE_API_TYPE=&quot;JAVA&quot;</Publish>
             <!-- Set default features based on PHP API choice - AddLocal required in case user changes mind and comes back -->
+            <!-- 
+            Turn off:
+                - .net Viewer
+                - Java Viewer
+                - Tomcat
+                - .net Viewer Sample
+                - Java Viewer Sample
+                - .net DevGuide Sample
+                - Java DevGuide Sample
+            -->
             <Publish Dialog="ApacheConfigDlg" Control="Next" Event="Remove" Value="WebExtTomcatFeature">APACHE_API_TYPE=&quot;PHP&quot;</Publish>
             <Publish Dialog="ApacheConfigDlg" Control="Next" Event="Remove" Value="WebExtMapViewerJSPFeature">APACHE_API_TYPE=&quot;PHP&quot;</Publish>
+            <Publish Dialog="ApacheConfigDlg" Control="Next" Event="Remove" Value="WebExtMapViewerASPXFeature">APACHE_API_TYPE=&quot;PHP&quot;</Publish>
+            <Publish Dialog="ApacheConfigDlg" Control="Next" Event="Remove" Value="WebExtJavaDevGuideSamplesFeature">APACHE_API_TYPE=&quot;PHP&quot;</Publish>
+            <Publish Dialog="ApacheConfigDlg" Control="Next" Event="Remove" Value="WebExtDotNetDevGuideSamplesFeature">APACHE_API_TYPE=&quot;PHP&quot;</Publish>
+            <Publish Dialog="ApacheConfigDlg" Control="Next" Event="Remove" Value="WebExtJavaViewerSampleFeature">APACHE_API_TYPE=&quot;PHP&quot;</Publish>
+            <Publish Dialog="ApacheConfigDlg" Control="Next" Event="Remove" Value="WebExtDotNetViewerSampleFeature">APACHE_API_TYPE=&quot;PHP&quot;</Publish>
             <Publish Dialog="ApacheConfigDlg" Control="Next" Event="AddLocal" Value="WebExtMapViewerPHPFeature">APACHE_API_TYPE=&quot;PHP&quot;</Publish>
             <!-- Handle special "Back" actions to set UI properties -->
             <Publish Dialog="ApacheConfigDlg" Control="Back" Event="DoAction" Value="MgWeb_Config_To_NoIIS_CA" Order="1">IISVERSIONMAJOR=&quot;#0&quot;</Publish> 
@@ -545,24 +592,24 @@
             <Publish Dialog="IISLangConfigDlg" Control="Cancel" Event="SpawnDialog" Value="CancelDlg">1</Publish>
             
             <Publish Dialog="IIS6ConfigDlg" Control="Next" Event="NewDialog" Value="IPConfigDlg">1</Publish>
-            <Publish Dialog="IIS6ConfigDlg" Control="Back" Event="NewDialog" Value="IISLangConfigDlg" Order="1">NETFRAMEWORK20</Publish>
-            <Publish Dialog="IIS6ConfigDlg" Control="Back" Event="DoAction" Value="MgWeb_Config_To_IIS_CA" Order="2">NOT NETFRAMEWORK20</Publish>
-            <Publish Dialog="IIS6ConfigDlg" Control="Back" Event="NewDialog" Value="WebServerConfigDlgIIS" Order="3">NOT NETFRAMEWORK20</Publish>
+            <Publish Dialog="IIS6ConfigDlg" Control="Back" Event="NewDialog" Value="IISLangConfigDlg" Order="1">NETFRAMEWORK40FULL</Publish>
+            <Publish Dialog="IIS6ConfigDlg" Control="Back" Event="DoAction" Value="MgWeb_Config_To_IIS_CA" Order="2">NOT NETFRAMEWORK40FULL</Publish>
+            <Publish Dialog="IIS6ConfigDlg" Control="Back" Event="NewDialog" Value="WebServerConfigDlgIIS" Order="3">NOT NETFRAMEWORK40FULL</Publish>
             <Publish Dialog="IIS6ConfigDlg" Control="Cancel" Event="SpawnDialog" Value="CancelDlg">1</Publish>
 
             <Publish Dialog="IIS7ConfigDlg" Control="Next" Event="NewDialog" Value="IPConfigDlg">1</Publish>
-            <Publish Dialog="IIS7ConfigDlg" Control="Back" Event="NewDialog" Value="IISLangConfigDlg" Order="1">NETFRAMEWORK20</Publish>
-            <Publish Dialog="IIS7ConfigDlg" Control="Back" Event="DoAction" Value="MgWeb_Config_To_IIS_CA" Order="2">NOT NETFRAMEWORK20</Publish>
-            <Publish Dialog="IIS7ConfigDlg" Control="Back" Event="NewDialog" Value="WebServerConfigDlgIIS" Order="3">NOT NETFRAMEWORK20</Publish>
+            <Publish Dialog="IIS7ConfigDlg" Control="Back" Event="NewDialog" Value="IISLangConfigDlg" Order="1">NETFRAMEWORK40FULL</Publish>
+            <Publish Dialog="IIS7ConfigDlg" Control="Back" Event="DoAction" Value="MgWeb_Config_To_IIS_CA" Order="2">NOT NETFRAMEWORK40FULL</Publish>
+            <Publish Dialog="IIS7ConfigDlg" Control="Back" Event="NewDialog" Value="WebServerConfigDlgIIS" Order="3">NOT NETFRAMEWORK40FULL</Publish>
             <Publish Dialog="IIS7ConfigDlg" Control="Cancel" Event="SpawnDialog" Value="CancelDlg">1</Publish>
 
             <Publish Dialog="IPConfigDlg" Control="Next" Event="NewDialog" Value="InstallDirDlg">1</Publish>
-            <Publish Dialog="IPConfigDlg" Control="Back" Event="NewDialog" Value="IISLangConfigDlg" Order="1">MGWEB_CONFIG=&quot;IIS&quot; AND IISVERSIONMAJOR=&quot;#5&quot; AND NETFRAMEWORK20</Publish>
+            <Publish Dialog="IPConfigDlg" Control="Back" Event="NewDialog" Value="IISLangConfigDlg" Order="1">MGWEB_CONFIG=&quot;IIS&quot; AND IISVERSIONMAJOR=&quot;#5&quot; AND NETFRAMEWORK40FULL</Publish>
             <Publish Dialog="IPConfigDlg" Control="Back" Event="NewDialog" Value="IIS6ConfigDlg" Order="2">MGWEB_CONFIG=&quot;IIS&quot; AND IISVERSIONMAJOR=&quot;#6&quot;</Publish>
             <Publish Dialog="IPConfigDlg" Control="Back" Event="NewDialog" Value="IIS7ConfigDlg" Order="3">MGWEB_CONFIG=&quot;IIS&quot; AND IISVERSIONMAJOR=&quot;#7&quot;</Publish>
             <Publish Dialog="IPConfigDlg" Control="Back" Event="NewDialog" Value="ApacheConfigDlg" Order="4">MGWEB_CONFIG=&quot;APACHE&quot;</Publish>
-            <Publish Dialog="IPConfigDlg" Control="Back" Event="DoAction" Value="MgWeb_Config_To_IIS_CA" Order="5">(NOT IISVERSIONMAJOR=&quot;#0&quot;) AND ( (IISVERSIONMAJOR=&quot;#5&quot; AND (NOT NETFRAMEWORK20)) OR (MGWEB_CONFIG=&quot;MANUAL&quot; ))</Publish>
-            <Publish Dialog="IPConfigDlg" Control="Back" Event="NewDialog" Value="WebServerConfigDlgIIS" Order="6">(NOT IISVERSIONMAJOR=&quot;#0&quot;) AND ( (IISVERSIONMAJOR=&quot;#5&quot; AND (NOT NETFRAMEWORK20) AND MGWEB_CONFIG=&quot;IIS&quot; ) OR (MGWEB_CONFIG=&quot;MANUAL&quot; ))</Publish>
+            <Publish Dialog="IPConfigDlg" Control="Back" Event="DoAction" Value="MgWeb_Config_To_IIS_CA" Order="5">(NOT IISVERSIONMAJOR=&quot;#0&quot;) AND ( (IISVERSIONMAJOR=&quot;#5&quot; AND (NOT NETFRAMEWORK40FULL)) OR (MGWEB_CONFIG=&quot;MANUAL&quot; ))</Publish>
+            <Publish Dialog="IPConfigDlg" Control="Back" Event="NewDialog" Value="WebServerConfigDlgIIS" Order="6">(NOT IISVERSIONMAJOR=&quot;#0&quot;) AND ( (IISVERSIONMAJOR=&quot;#5&quot; AND (NOT NETFRAMEWORK40FULL) AND MGWEB_CONFIG=&quot;IIS&quot; ) OR (MGWEB_CONFIG=&quot;MANUAL&quot; ))</Publish>
             <Publish Dialog="IPConfigDlg" Control="Back" Event="DoAction" Value="MgWeb_Config_To_NoIIS_CA" Order="7">IISVERSIONMAJOR=&quot;#0&quot;</Publish>
             <Publish Dialog="IPConfigDlg" Control="Back" Event="NewDialog" Value="WebServerConfigDlgNoIIS" Order="8">IISVERSIONMAJOR=&quot;#0&quot; AND MGWEB_CONFIG=&quot;MANUAL&quot;</Publish>
             <Publish Dialog="IPConfigDlg" Control="Cancel" Event="SpawnDialog" Value="CancelDlg">1</Publish>
@@ -705,11 +752,11 @@
             <Custom Action="MapGuideIIS7_U_DeleteAppPool" After="MapGuideIIS7_U_RemoveMapGuide">MGWEB_CONFIG=&quot;IIS&quot; AND IISVERSIONMAJOR=&quot;#7&quot; AND &amp;WebExtensionsFeature=2</Custom>
 
           <!-- IIS6 properties for deferred actions -->
-            <Custom Action="AspNetRegIIS_Cmd" After="CostFinalize">NETFRAMEWORK20 AND MGWEB_CONFIG=&quot;IIS&quot; AND (IISVERSIONMAJOR=&quot;#5&quot; OR IISVERSIONMAJOR=&quot;#6&quot;) AND &amp;WebExtensionsFeature&gt;2</Custom>
+            <Custom Action="AspNetRegIIS_Cmd" After="CostFinalize">NETFRAMEWORK40FULL AND MGWEB_CONFIG=&quot;IIS&quot; AND (IISVERSIONMAJOR=&quot;#5&quot; OR IISVERSIONMAJOR=&quot;#6&quot;) AND &amp;WebExtensionsFeature&gt;2</Custom>
 
           <!-- IIS6 deferred actions  ConfigureIIS is a WiX built-in action; I'm overriding and making the action conditional -->
             <Custom Action="ConfigureIIs" After="InstallFiles">MGWEB_CONFIG=&quot;IIS&quot; AND (IISVERSIONMAJOR=&quot;#5&quot; OR IISVERSIONMAJOR=&quot;#6&quot;) AND (&amp;WebExtensionsFeature&gt;2 OR &amp;WebExtensionsFeature=2)</Custom>
-            <Custom Action="AspNetRegIIS" After="ConfigureIIs">NETFRAMEWORK20 AND MGWEB_CONFIG=&quot;IIS&quot; AND (IISVERSIONMAJOR=&quot;#5&quot; OR IISVERSIONMAJOR=&quot;#6&quot;) AND &amp;WebExtensionsFeature&gt;2</Custom>
+            <Custom Action="AspNetRegIIS" After="ConfigureIIs">NETFRAMEWORK40FULL AND MGWEB_CONFIG=&quot;IIS&quot; AND (IISVERSIONMAJOR=&quot;#5&quot; OR IISVERSIONMAJOR=&quot;#6&quot;) AND &amp;WebExtensionsFeature&gt;2</Custom>
 
             
             <Custom Action="FdoRegCmd" After="InstallInitialize"></Custom>
