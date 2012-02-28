@@ -361,7 +361,6 @@ private:
     int TransformInverse (double& xx,double& yy);
     INT32 TransformPoint2D (double dCoords [3]);        /* 2D conversion without Critical Section */
     INT32 TransformPoint3D (double dCoords [3]);        /* 3D conversion without Critical Section */
-    void GeographicAdjust (double dCoords [3]);
     void InterpretStatus (INT32 status);
 };
 
