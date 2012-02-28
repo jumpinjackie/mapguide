@@ -166,10 +166,6 @@ MgCoordinate* CCoordinateSystemTransform::Transform(double x, double y)
     }
     else
     {
-        if (m_bIgnoreOutsideDomainWarning && m_bSrcIsGeographic)
-        {
-            GeographicAdjust (dCoords);
-        }
         if (m_bIsReentrant)
         {
             status = TransformPoint2D (dCoords);
@@ -235,10 +231,6 @@ MgCoordinate* CCoordinateSystemTransform::TransformM(double x, double y, double 
     }
     else
     {
-        if (m_bIgnoreOutsideDomainWarning && m_bSrcIsGeographic)
-        {
-            GeographicAdjust (dCoords);
-        }
         if (m_bIsReentrant)
         {
             status = TransformPoint2D (dCoords);
@@ -302,10 +294,6 @@ MgCoordinate* CCoordinateSystemTransform::Transform(double x, double y, double z
     }
     else
     {
-        if (m_bIgnoreOutsideDomainWarning && m_bSrcIsGeographic)
-        {
-            GeographicAdjust (dCoords);
-        }
         if (m_bIsReentrant)
         {
             status = TransformPoint3D (dCoords);
@@ -370,10 +358,6 @@ MgCoordinate* CCoordinateSystemTransform::TransformM(double x, double y, double 
     }
     else
     {
-        if (m_bIgnoreOutsideDomainWarning && m_bSrcIsGeographic)
-        {
-            GeographicAdjust (dCoords);
-        }
         if (m_bIsReentrant)
         {
             status = TransformPoint3D (dCoords);
@@ -1065,10 +1049,6 @@ void CCoordinateSystemTransform::Transform(double* x, double* y)
     //Convert the point
     INT32 status;
     double dCoords [3] = {*x, *y, 0.0};
-    if (m_bIgnoreOutsideDomainWarning && m_bSrcIsGeographic)
-    {
-        GeographicAdjust (dCoords);
-    }
     if (m_bIsReentrant)
     {
         status = TransformPoint2D (dCoords);
@@ -1142,10 +1122,6 @@ void CCoordinateSystemTransform::Transform(double x[], double y[], int arraySize
         dCoords [0] = x [idx];
         dCoords [1] = y [idx];
 
-        if (m_bIgnoreOutsideDomainWarning && m_bSrcIsGeographic)
-        {
-            GeographicAdjust (dCoords);
-        }
         status = TransformPoint2D (dCoords);
         x [idx] = dCoords [0];
         y [idx] = dCoords [1];
@@ -1195,10 +1171,6 @@ void CCoordinateSystemTransform::TransformM(double* x, double* y, double* m)
     //Convert the point
     INT32 status;
     double dCoords [3] = {*x, *y, 0.0};
-    if (m_bIgnoreOutsideDomainWarning && m_bSrcIsGeographic)
-    {
-        GeographicAdjust (dCoords);
-    }
     if (m_bIsReentrant)
     {
         status = TransformPoint2D (dCoords);
@@ -1273,10 +1245,6 @@ void CCoordinateSystemTransform::TransformM(double x[], double y[], double m[], 
         dCoords [0] = x [idx];
         dCoords [1] = y [idx];
 
-        if (m_bIgnoreOutsideDomainWarning && m_bSrcIsGeographic)
-        {
-            GeographicAdjust (dCoords);
-        }
         status = TransformPoint2D (dCoords);
         x [idx] = dCoords [0];
         y [idx] = dCoords [1];
@@ -1329,10 +1297,6 @@ void CCoordinateSystemTransform::Transform(double* x, double* y, double* z)
 
     //Convert the point
     double dCoords [3] = {*x, *y, *z};
-    if (m_bIgnoreOutsideDomainWarning && m_bSrcIsGeographic)
-    {
-        GeographicAdjust (dCoords);
-    }
     if (m_bIsReentrant)
     {
         status = TransformPoint3D (dCoords);
@@ -1408,10 +1372,6 @@ void CCoordinateSystemTransform::Transform(double x[], double y[], double z[], i
         dCoords [1] = y [idx];
         dCoords [2] = z [idx];
 
-        if (m_bIgnoreOutsideDomainWarning && m_bSrcIsGeographic)
-        {
-            GeographicAdjust (dCoords);
-        }
         status = TransformPoint2D (dCoords);
         x [idx] = dCoords [0];
         y [idx] = dCoords [1];
@@ -1464,10 +1424,6 @@ void CCoordinateSystemTransform::TransformM(double* x, double* y, double* z, dou
 
     //Convert the point
     double dCoords [3] = {*x, *y, *z};
-    if (m_bIgnoreOutsideDomainWarning && m_bSrcIsGeographic)
-    {
-        GeographicAdjust (dCoords);
-    }
     if (m_bIsReentrant)
     {
         status = TransformPoint2D (dCoords);
@@ -1543,11 +1499,6 @@ void CCoordinateSystemTransform::TransformM(double x[], double y[], double z[], 
         dCoords [1] = y [idx];
         dCoords [2] = z [idx];
 
-        if (m_bIgnoreOutsideDomainWarning && m_bSrcIsGeographic)
-        {
-            GeographicAdjust (dCoords);
-        }
-
         status = TransformPoint2D (dCoords);
         x [idx] = dCoords [0];
         y [idx] = dCoords [1];
@@ -1616,10 +1567,6 @@ void CCoordinateSystemTransform::Transform2D (double xy[][2],INT32 pointCount)
     pDblXY = xy [0];
     for (idx = 0;idx < pointCount;idx++)
     {
-        if (m_bIgnoreOutsideDomainWarning && m_bSrcIsGeographic)
-        {
-            GeographicAdjust (pDblXY);
-        }
         status = TransformPoint2D (pDblXY);
         
         // Warning status values will have already been counted.  We only need
@@ -1684,10 +1631,6 @@ void CCoordinateSystemTransform::Transform3D (double xyz[][3],INT32 pointCount)
     pDblXYZ = xyz [0];
     for (idx = 0;idx < pointCount;idx++)
     {
-        if (m_bIgnoreOutsideDomainWarning && m_bSrcIsGeographic)
-        {
-            GeographicAdjust (pDblXYZ);
-        }
         status = TransformPoint3D (pDblXYZ);
         
         // Warning status values will have already been counted.  We only need
@@ -2261,30 +2204,7 @@ INT32 CCoordinateSystemTransform::TransformPoint3D (double point [3])
     }
     return status;
 }
-/* Not sure that I understand why this is here.  It was in previous code,
-   so we keep it to eliminate possible regressions. */
-void CCoordinateSystemTransform::GeographicAdjust (double dCoords[3])
-{
-    if(dCoords[0] < m_src.cent_mer + m_src.min_ll[0])
-    {
-        dCoords[0] = m_src.cent_mer + m_src.min_ll[0];
-    }
 
-    if(dCoords[0] > m_src.cent_mer + m_src.max_ll[0])
-    {
-        dCoords[0] = m_src.cent_mer + m_src.max_ll[0];
-    }
-
-    if(dCoords[1] > m_src.max_ll[1])
-    {
-        dCoords[1] = m_src.max_ll[1];
-    }
-
-    if(dCoords[1] < m_src.min_ll[1])
-    {
-        dCoords[1] = m_src.max_ll[1];
-    }
-}
 // For performance reasons, this function is, usually, called only in the event
 // of a non-zero status value.  Note that exceptions are usually thrown should
 // status be non-zero.
