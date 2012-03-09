@@ -303,6 +303,7 @@ UpdateApacheConfig(MSIHANDLE hMSI)
 
 		if (FileExists(szHttpdConf))
 		{
+            MSGBOX_DEBUG_MSG("Processing httpd.conf");
 			std::ifstream fin(szHttpdConf);
 			
 			std::string buffer;
@@ -338,7 +339,12 @@ UpdateApacheConfig(MSIHANDLE hMSI)
 			std::ofstream fout(szHttpdConf);
 			fout << buffer;
 			fout.close();
+            MSGBOX_DEBUG_MSG("httpd.conf configured");
 		}
+        else
+        {
+            MSGBOX_DEBUG_MSG("httpd.conf not found");
+        }
 
         //Even if the java option is not the active API, perform these substitutions
         //anyway on these files should they get installed.
@@ -348,6 +354,7 @@ UpdateApacheConfig(MSIHANDLE hMSI)
 
 		if (FileExists(szTomcatConf))
 		{
+            MSGBOX_DEBUG_MSG("Processing tomcat.conf");
 			std::ifstream fin(szTomcatConf);
 			
 			std::string buffer;
@@ -367,14 +374,21 @@ UpdateApacheConfig(MSIHANDLE hMSI)
 			std::ofstream fout(szTomcatConf);
 			fout << buffer;
 			fout.close();
+
+            MSGBOX_DEBUG_MSG("tomcat.conf processed");
 		}
+        else
+        {
+            MSGBOX_DEBUG_MSG("ERROR: tomcat.conf not found");
+        }
         
         szFileName = szWebExtDir + "\\Tomcat\\conf\\Catalina\\localhost\\mapguide.xml";
         const char* szMapGuideXml = szFileName.c_str();
         
         if (FileExists(szMapGuideXml))
         {
-            std::ifstream fin(szTomcatConf);
+            MSGBOX_DEBUG_MSG("Processing Tomcat\\conf\\Catalina\\localhost\\mapguide.xml");
+            std::ifstream fin(szMapGuideXml);
 			
 			std::string buffer;
 			std::string line;
@@ -392,8 +406,17 @@ UpdateApacheConfig(MSIHANDLE hMSI)
 			std::ofstream fout(szMapGuideXml);
 			fout << buffer;
 			fout.close();
+            MSGBOX_DEBUG_MSG("Tomcat\\conf\\Catalina\\localhost\\mapguide.xml processed");
+        }
+        else
+        {
+            MSGBOX_DEBUG_MSG("ERROR: Tomcat\\conf\\Catalina\\localhost\\mapguide.xml not found");
         }
 	}
+    else
+    {
+        MSGBOX_DEBUG_MSG("ERROR: Unexpected number of tokens in CustomActionData");
+    }
 	return ERROR_SUCCESS;
 }
 

@@ -22,6 +22,14 @@
 
 // TODO: reference additional headers your program requires here
 
+//#define MSGBOX_DEBUGGING
+
+#ifdef MSGBOX_DEBUGGING
+#define MSGBOX_DEBUG_MSG(msg) ::MessageBoxW(NULL, L##msg, L"Debugging apache_actions", MB_OK)
+#else
+#define MSGBOX_DEBUG_MSG(msg)
+#endif
+
 //{{AFX_INSERT_LOCATION}}
 // Microsoft Visual C++ will insert additional declarations immediately before the previous line.
 
