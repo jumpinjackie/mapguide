@@ -266,6 +266,10 @@ echo [build]: Building Doc
 pushd %MG_DOC%
 call MgOpenSource_run_doxygen.bat
 popd
+echo [build]: MapGuide Developer's Guide
+pushd %MG_DOC%\devguide
+call make.bat html
+popd
 goto quit
 
 rem =======================================================
@@ -365,6 +369,8 @@ if "%TYPECOMPONENT%"=="web" goto quit
 :install_doc
 echo [install]: Documentation
 %XCOPY% "%MG_DOC_OUTPUT%" "%MG_OUTPUT_WEB%\www\help\webapi" /EXCLUDE:svn_excludes.txt+%TYPEBUILD%_excludes.txt
+echo [install]: MapGuide Developer's Guide
+%XCOPY% "%MG_DOC%\devguide\build\html" "%MG_OUTPUT_WEB%\www\help\devguide" /EXCLUDE:svn_excludes.txt+%TYPEBUILD%_excludes.txt
 echo [install]: Developer's Guide Sample Code (PHP)
 %XCOPY% "%MG_DOC_DEVGUIDE_SAMPLES%\phpsamples" "%MG_OUTPUT_WEB%\www\phpsamples" /EXCLUDE:%TYPEBUILD%_excludes.txt
 echo [install]: Developer's Guide Sample Code (Java)
