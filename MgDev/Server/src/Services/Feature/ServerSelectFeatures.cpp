@@ -252,12 +252,15 @@ MgReader* MgServerSelectFeatures::SelectFeatures(MgResourceIdentifier* resource,
 
                 STRING::size_type nPropLength = propName.length();
                 STRING::size_type nPropStart = expression.rfind(propName);
-                STRING::size_type nPropEnd = expression.find(L")", nPropStart + 1);
+                if(nPropStart != STRING::npos)
+                {
+                    STRING::size_type nPropEnd = expression.find(L")", nPropStart + 1);
 
-                STRING newExpression = expression.substr(0, nPropStart);
-                newExpression += parsedPropertyName;
-                newExpression += expression.substr(nPropStart + nPropLength);
-                computedProperties->SetValue(aliasName, newExpression);
+                    STRING newExpression = expression.substr(0, nPropStart);
+                    newExpression += parsedPropertyName;
+                    newExpression += expression.substr(nPropStart + nPropLength);
+                    computedProperties->SetValue(aliasName, newExpression);
+                }
 
                 // Apply options to FDO command
                 ApplyQueryOptions(isSelectAggregate);
