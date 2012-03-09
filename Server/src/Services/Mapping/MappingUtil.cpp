@@ -660,7 +660,7 @@ void MgMappingUtil::StylizeLayers(MgResourceService* svcResource,
                     // On error, ignore the exception and use the original extent.
                     MG_TRY()
                     Ptr<MgSpatialContextReader> contextReader = svcFeature->GetSpatialContexts(featResId, false);
-                    STRING layerWkt = layerCs->ToString();
+                    STRING layerWkt = (NULL == layerCs.p) ? L"" : layerCs->ToString();
                     while (contextReader.p != NULL && contextReader->ReadNext())
                     {
                         // Try to find wkt for feature's coordinate system
