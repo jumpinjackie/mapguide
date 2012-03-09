@@ -231,16 +231,18 @@ pushd "%INSTALLER_DEV_SUPPORT%\Web\%CPUTYPE%"
 7z x %HTTPD_PACKAGE% -y -o"%MG_SOURCE%\Web\Apache2"
 popd
 echo [prepare] Unpack Tomcat
-pushd "%MG_SOURCE%\Web"
-rd /S /Q Tomcat
-popd
 pushd "%INSTALLER_DEV_SUPPORT%\Web\%CPUTYPE%"
 copy /Y mod_jk.so "%MG_SOURCE%\Web\Apache2\modules"
 REM we unpack to root because Tomcat is the root dir in the zip file
 7z x %TOMCAT_PACKAGE% -y -o"%MG_SOURCE%\Web"
 popd
 pushd "%MG_SOURCE%\Web"
+if exist Tomcat (
+xcopy /S /Y apache-tomcat-7.0.23\*.* Tomcat
+rd /S /Q apache-tomcat-7.0.23
+) else (
 rename apache-tomcat-7.0.23 Tomcat
+)
 popd
 echo [prepare] Unpack PHP (Thread Safe)
 pushd "%INSTALLER_DEV_SUPPORT%\Web\%CPUTYPE%"
