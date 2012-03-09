@@ -117,7 +117,7 @@
 
             <!-- IIS5 PHP Viewer Sample component -->
             <Component Id="IIS5PhpViewerSampleComponent" Win64="$(var.Win64)" Guid="2CB24A26-985E-4EEF-8412-A54282542B04" Directory="WEBEXTENSIONSLOCATION">
-                <Condition>MGWEB_CONFIG=&quot;IIS&quot; AND IIS_API_TYPE=&quot;PHP&quot; AND IISVERSIONMAJOR=&quot;#5&quot; AND &amp;WebExtPhpViewerSampleFeature&gt;2</Condition>
+                <Condition>MGWEB_CONFIG=&quot;IIS&quot; AND IIS_API_TYPE=&quot;PHP&quot; AND IISVERSIONMAJOR=&quot;#5&quot;</Condition>
                 <CreateFolder />
                 <iis:WebVirtualDir Id="IIS5PhpViewerSampleVDir" Alias="[VIRTUALDIR]/phpviewersample" Directory="dir_phpviewersample_0" WebSite="IISDefaultWebSite">
                     <iis:WebDirProperties Id="IIS5PhpViewerSampleDocument" DefaultDocuments="ajaxviewersample.php"  AnonymousAccess="yes" BasicAuthentication="no" WindowsAuthentication="no" />
@@ -127,7 +127,7 @@
 
             <!-- IIS5 PHP DevGuide Sample component -->
             <Component Id="IIS5PhpDevGuideSampleComponent" Win64="$(var.Win64)" Guid="58BB8334-650E-481D-8033-BF1C212FE57E" Directory="WEBEXTENSIONSLOCATION">
-                <Condition>MGWEB_CONFIG=&quot;IIS&quot; AND IIS_API_TYPE=&quot;PHP&quot; AND IISVERSIONMAJOR=&quot;#5&quot; AND &amp;WebExtPhpDevGuideSamplesFeature&gt;2</Condition>
+                <Condition>MGWEB_CONFIG=&quot;IIS&quot; AND IIS_API_TYPE=&quot;PHP&quot; AND IISVERSIONMAJOR=&quot;#5&quot;</Condition>
                 <CreateFolder />
                 <iis:WebVirtualDir Id="IIS5PhpDevGuideSampleVDir" Alias="[VIRTUALDIR]/phpsamples" Directory="dir_phpsamples_0" WebSite="IISDefaultWebSite">
                     <iis:WebDirProperties Id="IIS5PhpDevGuideSampleDocument" DefaultDocuments="main.php"  AnonymousAccess="yes" BasicAuthentication="no" WindowsAuthentication="no" />
@@ -157,7 +157,7 @@
 
             <!-- IIS5 DotNet Viewer Sample component -->
             <Component Id="IIS5DotNetViewerSampleComponent" Win64="$(var.Win64)" Guid="81AE3F12-5CC5-48F6-AC62-5F225A9743EB" Directory="WEBEXTENSIONSLOCATION">
-                <Condition>NETFRAMEWORK40FULL AND MGWEB_CONFIG=&quot;IIS&quot; AND IIS_API_TYPE=&quot;DOTNET&quot; AND IISVERSIONMAJOR=&quot;#5&quot; AND &amp;WebExtDotNetViewerSampleFeature&gt;2</Condition>
+                <Condition>NETFRAMEWORK40FULL AND MGWEB_CONFIG=&quot;IIS&quot; AND IIS_API_TYPE=&quot;DOTNET&quot; AND IISVERSIONMAJOR=&quot;#5&quot;</Condition>
                 <CreateFolder />
                 <iis:WebVirtualDir Id="IIS5DotNetViewerSampleVDir" Alias="[VIRTUALDIR]/dotnetviewersample" Directory="dir_dotnetviewersample_0" WebSite="IISDefaultWebSite">
                     <iis:WebDirProperties Id="IIS5DotNetViewerSampleDocument" DefaultDocuments="ajaxviewersample.aspx"  AnonymousAccess="yes" BasicAuthentication="no" WindowsAuthentication="no" />
@@ -167,7 +167,7 @@
 
             <!-- IIS5 DotNet DevGuide Sample component -->
             <Component Id="IIS5DotNetDevGuideSampleComponent" Win64="$(var.Win64)" Guid="91FA4F55-0673-4043-BEBD-19E4094A8A32" Directory="WEBEXTENSIONSLOCATION">
-                <Condition>NETFRAMEWORK40FULL AND MGWEB_CONFIG=&quot;IIS&quot; AND IIS_API_TYPE=&quot;DOTNET&quot; AND IISVERSIONMAJOR=&quot;#5&quot; AND &amp;WebExtDotNetDevGuideSamplesFeature&gt;2</Condition>
+                <Condition>NETFRAMEWORK40FULL AND MGWEB_CONFIG=&quot;IIS&quot; AND IIS_API_TYPE=&quot;DOTNET&quot; AND IISVERSIONMAJOR=&quot;#5&quot;</Condition>
                 <CreateFolder />
                 <iis:WebVirtualDir Id="IIS5DotNetDevGuideSampleVDir" Alias="[VIRTUALDIR]/dotnetsamples" Directory="dir_dotnetsamples_0" WebSite="IISDefaultWebSite">
                     <iis:WebDirProperties Id="IIS5DotNetDevGuideSampleDocument" DefaultDocuments="main.aspx"  AnonymousAccess="yes" BasicAuthentication="no" WindowsAuthentication="no" />
@@ -232,7 +232,7 @@
 
             <!-- IIS6 PHP Viewer Sample component -->
             <Component Id="IIS6PhpViewerSampleComponent" Win64="$(var.Win64)" Guid="88AACC15-76BC-47B9-B5C3-698142A3BE07" Directory="WEBEXTENSIONSLOCATION">
-                <Condition>MGWEB_CONFIG=&quot;IIS&quot; AND IIS_API_TYPE=&quot;PHP&quot; AND IISVERSIONMAJOR=&quot;#6&quot; AND &amp;WebExtPhpViewerSampleFeature&gt;2</Condition>
+                <Condition>MGWEB_CONFIG=&quot;IIS&quot; AND IIS_API_TYPE=&quot;PHP&quot; AND IISVERSIONMAJOR=&quot;#6&quot;</Condition>
                 <CreateFolder />
                 <iis:WebVirtualDir Id="IIS6PhpViewerSampleVDir" Alias="[VIRTUALDIR]/phpviewersample" Directory="dir_phpviewersample_0" WebSite="IISDefaultWebSite">
                     <iis:WebDirProperties Id="IIS6PhpViewerSampleDocument" DefaultDocuments="ajaxviewersample.php"  AnonymousAccess="yes" BasicAuthentication="no" WindowsAuthentication="no" />
@@ -241,7 +241,7 @@
 
             <!-- IIS6 PHP DevGuide Sample component -->
             <Component Id="IIS6PhpDevGuideSampleComponent" Win64="$(var.Win64)" Guid="EFE0BE5D-4D36-4366-A81F-F05414DE766F" Directory="WEBEXTENSIONSLOCATION">
-                <Condition>MGWEB_CONFIG=&quot;IIS&quot; AND IIS_API_TYPE=&quot;PHP&quot; AND IISVERSIONMAJOR=&quot;#6&quot; AND &amp;WebExtPhpDevGuideSamplesFeature&gt;2</Condition>
+                <Condition>MGWEB_CONFIG=&quot;IIS&quot; AND IIS_API_TYPE=&quot;PHP&quot; AND IISVERSIONMAJOR=&quot;#6&quot;</Condition>
                 <CreateFolder />
                 <iis:WebVirtualDir Id="IIS6PhpDevGuideSampleVDir" Alias="[VIRTUALDIR]/phpsamples" Directory="dir_phpsamples_0" WebSite="IISDefaultWebSite">
                     <iis:WebDirProperties Id="IIS6PhpDevGuideSampleDocument" DefaultDocuments="main.php"  AnonymousAccess="yes" BasicAuthentication="no" WindowsAuthentication="no" />
@@ -270,7 +270,7 @@
 
             <!-- IIS6 DotNet Viewer Sample component -->
             <Component Id="IIS6DotNetViewerSampleComponent" Win64="$(var.Win64)" Guid="E2330508-5E84-4451-9D34-F813B452039D" Directory="WEBEXTENSIONSLOCATION">
-                <Condition>NETFRAMEWORK40FULL AND MGWEB_CONFIG=&quot;IIS&quot; AND IIS_API_TYPE=&quot;DOTNET&quot; AND IISVERSIONMAJOR=&quot;#6&quot; AND &amp;WebExtDotNetViewerSampleFeature&gt;2</Condition>
+                <Condition>NETFRAMEWORK40FULL AND MGWEB_CONFIG=&quot;IIS&quot; AND IIS_API_TYPE=&quot;DOTNET&quot; AND IISVERSIONMAJOR=&quot;#6&quot;</Condition>
                 <CreateFolder />
                 <iis:WebVirtualDir Id="IIS6DotNetViewerSampleVDir" Alias="[VIRTUALDIR]/dotnetviewersample" Directory="dir_dotnetviewersample_0" WebSite="IISDefaultWebSite">
                     <iis:WebDirProperties Id="IIS6DotNetViewerSampleDocument" DefaultDocuments="ajaxviewersample.aspx"  AnonymousAccess="yes" BasicAuthentication="no" WindowsAuthentication="no" />
@@ -280,7 +280,7 @@
 
             <!-- IIS6 DotNet DevGuide Sample component -->
             <Component Id="IIS6DotNetDevGuideSampleComponent" Win64="$(var.Win64)" Guid="71EDDC8E-A1BA-4c69-B7E3-F52E32FB3CA1" Directory="WEBEXTENSIONSLOCATION">
-                <Condition>NETFRAMEWORK40FULL AND MGWEB_CONFIG=&quot;IIS&quot; AND IIS_API_TYPE=&quot;DOTNET&quot; AND IISVERSIONMAJOR=&quot;#6&quot; AND &amp;WebExtDotNetDevGuideSamplesFeature&gt;2</Condition>
+                <Condition>NETFRAMEWORK40FULL AND MGWEB_CONFIG=&quot;IIS&quot; AND IIS_API_TYPE=&quot;DOTNET&quot; AND IISVERSIONMAJOR=&quot;#6&quot;</Condition>
                 <CreateFolder />
                 <iis:WebVirtualDir Id="IIS6DotNetDevGuideSampleVDir" Alias="[VIRTUALDIR]/dotnetsamples" Directory="dir_dotnetsamples_0" WebSite="IISDefaultWebSite">
                     <iis:WebDirProperties Id="IIS6DotNetDevGuideSampleDocument" DefaultDocuments="main.aspx"  AnonymousAccess="yes" BasicAuthentication="no" WindowsAuthentication="no" />

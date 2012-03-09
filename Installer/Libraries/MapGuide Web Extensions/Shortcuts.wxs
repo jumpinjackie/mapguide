@@ -184,7 +184,7 @@
               <util:InternetShortcut Id="IISPhpViewerSampleShortcut"
                                  Directory="MapGuideOpenSourceMenuLocation"
                                  Name="!(loc.Shortcut_PhpViewerSample)"
-                                 Target="http://localhost/[VIRTUALDIR]/phpviewersample/ajaxviewer.php" />
+                                 Target="http://localhost/[VIRTUALDIR]/phpviewersample/ajaxviewersample.php" />
               <RegistryKey Root="HKCU" Key="$(var.MgRegKey)\IISPHPViewerSampleShortcutComponent">
                   <RegistryValue
                           Value="Installed"
