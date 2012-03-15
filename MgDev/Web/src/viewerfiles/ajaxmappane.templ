@@ -1942,7 +1942,7 @@ function OnMapOverlayImageLoadedError(e)
         objDivRefresh.style.display='none';
     }
     mapLoading = false;
-
+/*
     var text = this.req.responseText;
     
     var message = text;
@@ -1957,7 +1957,7 @@ function OnMapOverlayImageLoadedError(e)
     }
 
     alert(message);
-
+*/
     return false;
 }
 
@@ -2001,7 +2001,7 @@ function OnSelectionOverlayImageLoaded(e)
 }
 
 function OnSelectionOverlayImageLoadedError(e)
-{
+{/*
     var text = this.req.responseText;
     
     var messageErr = "";
@@ -2017,7 +2017,7 @@ function OnSelectionOverlayImageLoadedError(e)
         messageErr = "No feature available.";
 
     alert(messageErr);
-
+*/
     return false;
 }
 
@@ -2105,7 +2105,7 @@ function OnAlternateSelectionImageLoaded()
 }
 
 function RequestFailed(text)
-{  
+{  /*
     var message = text;
     var startPos = text.indexOf("<h2>");
     if(startPos != -1)
@@ -2118,7 +2118,7 @@ function RequestFailed(text)
     
     isAlertShow = true;
     alert(message);
-    isAlertShow = false;
+    isAlertShow = false;*/
 }
 
 function DraggingShape(e)
