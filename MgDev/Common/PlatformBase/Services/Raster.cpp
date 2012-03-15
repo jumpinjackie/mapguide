@@ -226,7 +226,16 @@ void MgRaster::Serialize(MgStream* stream)
         stream->WriteString(m_rasterPropName);
         stream->WriteInt32(m_bpp);
         stream->WriteInt32(m_dataModel);
-        stream->WriteObject(m_palette.p);
+        
+        // hack to handle null palette. (NOTE: copy/pasted MgByte serialization logic from MgSpatialContextData)
+        Ptr<MgByte> tmpPalette = m_palette;
+        if (tmpPalette == NULL)
+            tmpPalette = new MgByte();
+
+        Ptr<MgByteSource> byteSource = new MgByteSource(tmpPalette);
+        Ptr<MgByteReader> byteReader = byteSource->GetReader();
+        stream->WriteStream(byteReader);
+
 //      stream->WriteObject(m_extent);
         stream->WriteInt32(m_numBands);
         stream->WriteInt32(m_curBand);
@@ -247,7 +256,12 @@ void MgRaster::Deserialize(MgStream* stream)
         stream->GetString(m_rasterPropName);
         stream->GetInt32(m_bpp);
         stream->GetInt32(m_dataModel);
-        m_palette = (MgByte*)stream->GetObject();
+
+        //(NOTE: copy/pasted MgByte deserialization logic from MgSpatialContextData)
+        Ptr<MgByteReader> byteReader = stream->GetStream();
+        Ptr<MgByteSink> byteSink = new MgByteSink(byteReader);
+        m_palette = byteSink->ToBuffer();
+
 //      m_extent = (MgEnvelope*)stream->GetObject();
         stream->GetInt32(m_numBands);
         stream->GetInt32(m_curBand);
