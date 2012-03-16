@@ -19,6 +19,7 @@
 #define ACE_CONFIG_WIN32_H
 #include /**/ "ace/pre.h"
 #define ACE_HAS_IPV6
+#define ACE_USES_IPV4_IPV6_MIGRATION
 
 // NOTE: Please do not add anything besides #include's here.  Put other stuff
 //       (definitions, etc.) in the included headers
