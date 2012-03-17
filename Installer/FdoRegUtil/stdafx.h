@@ -11,6 +11,7 @@
 #include <tchar.h>
 
 int Register(_TCHAR* path);
+int Register(_TCHAR* name, _TCHAR* displayName, _TCHAR* description, _TCHAR* version, _TCHAR* fdoVersion, _TCHAR* path);
 int Unregister(_TCHAR* name);
 void Usage();
 

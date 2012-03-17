@@ -1,8 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
-    <!-- httpd.exe -->
-    <?define HTTP_MAP = "file_APACHEFILES_19" ?>
-	<Fragment>
+    <?if "$(var.MgPlatform)" = "x64" ?>
+        <!-- httpd.exe -->
+        <?define HTTP_MAP = "file_APACHEFILES_19" ?>
+        <!-- tomcat7.exe -->
+        <?define TOMCAT_MAP = "file_TOMCATFILES_39" ?>
+        <!-- service.bat -->
+        <?define TOMCAT_BAT = "file_TOMCATFILES_29" ?>
+    <?else ?>
+        <!-- httpd.exe -->
+        <?define HTTP_MAP = "file_APACHEFILES_19" ?>
+        <!-- tomcat7.exe -->
+        <?define TOMCAT_MAP = "file_TOMCATFILES_39" ?>
+        <!-- service.bat -->
+        <?define TOMCAT_BAT = "file_TOMCATFILES_29" ?>
+    <?endif ?>
+    <Fragment>
         <Binary Id="ApacheActions" SourceFile="..\..\Custom\bin\apache_actions.dll" />
         <CustomAction Id="UpdateApacheConfig.SetValues" Property="UpdateApacheConfig" Value="[WEBEXTENSIONSLOCATION];[APACHE_API_TYPE];[APACHE_PORT];[APACHELOCATION];[PHPLOCATION];[WEBROOTLOCATION];[VIRTUALDIR]" />
         <CustomAction Id="UpdateApacheConfig" Return="check" BinaryKey="ApacheActions" Execute="deferred"  DllEntry="UpdateApacheConfig" />
@@ -11,5 +24,8 @@
         <CustomAction Id="RemoveApacheServiceCA" Execute="immediate" Return="ignore" FileKey="$(var.HTTP_MAP)" ExeCommand="-k uninstall -n &quot;ApacheMapGuide[MG_VERSION_MAJOR_MINOR]&quot;" />
         <CustomAction Id="InstallApacheServiceCA" Execute="deferred" Return="ignore" FileKey="$(var.HTTP_MAP)" ExeCommand="-k install -n &quot;ApacheMapGuide[MG_VERSION_MAJOR_MINOR]&quot;" />
         <CustomAction Id="StartApacheServiceCA" Execute="deferred" Return="ignore" FileKey="$(var.HTTP_MAP)" ExeCommand="-k start -n &quot;ApacheMapGuide[MG_VERSION_MAJOR_MINOR]&quot;" />
+        <CustomAction Id="RemoveTomcatServiceCA" Execute="immediate" Return="ignore" FileKey="$(var.TOMCAT_MAP)" ExeCommand="//DS//TomcatMapGuide[MG_VERSION_MAJOR_MINOR]" />
+        <CustomAction Id="InstallTomcatServiceCA" Execute="deferred" Return="ignore" FileKey="$(var.TOMCAT_BAT)" ExeCommand="install TomcatMapGuide[MG_VERSION_MAJOR_MINOR]" />
+        <CustomAction Id="StartTomcatServiceCA" Execute="deferred" Return="ignore" FileKey="$(var.TOMCAT_MAP)" ExeCommand="//RS//TomcatMapGuide[MG_VERSION_MAJOR_MINOR]" />
 	</Fragment>
 </Wix>

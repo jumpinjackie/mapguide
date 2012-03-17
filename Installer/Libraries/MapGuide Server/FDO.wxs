@@ -15,19 +15,19 @@
   <Fragment>
       <CustomAction Id="FdoRegCmd" Property="FdoReg" Execute="immediate" Value="&quot;[FDOLOCATION]FdoRegUtil.exe&quot;" />
 
-      <CustomAction Execute="immediate" Id="FdoRegArcSdeCmd" Property="FdoRegArcSde" Value="[FdoReg] -r &quot;.\ArcSDEProvider.dll&quot;" />
-      <CustomAction Execute="immediate" Id="FdoRegSdfCmd" Property="FdoRegSdf" Value="[FdoReg] -r &quot;.\SDFProvider.dll&quot;" />
-      <CustomAction Execute="immediate" Id="FdoRegShpCmd" Property="FdoRegShp" Value="[FdoReg] -r &quot;.\SHPProvider.dll&quot;" />
-      <CustomAction Execute="immediate" Id="FdoRegWfsCmd" Property="FdoRegWfs" Value="[FdoReg] -r &quot;.\WFSProvider.dll&quot;" />
-      <CustomAction Execute="immediate" Id="FdoRegWmsCmd" Property="FdoRegWms" Value="[FdoReg] -r &quot;.\WMSProvider.dll&quot;" />
-      <CustomAction Execute="immediate" Id="FdoRegOdbcCmd" Property="FdoRegOdbc" Value="[FdoReg] -r &quot;.\ODBCProvider.dll&quot;" />
-      <CustomAction Execute="immediate" Id="FdoRegMySqlCmd" Property="FdoRegMySql" Value="[FdoReg] -r &quot;.\MySQLProvider.dll&quot;" />
-      <CustomAction Execute="immediate" Id="FdoRegGdalCmd" Property="FdoRegGdal" Value="[FdoReg] -r &quot;.\GRFPProvider.dll&quot;" />
-      <CustomAction Execute="immediate" Id="FdoRegOgrCmd" Property="FdoRegOgr" Value="[FdoReg] -r &quot;.\OGRProvider.dll&quot;" />
-      <CustomAction Execute="immediate" Id="FdoRegPostgreSqlCmd" Property="FdoRegPostgreSql" Value="[FdoReg] -r &quot;.\PostgreSQLProvider.dll&quot;" />
-      <CustomAction Execute="immediate" Id="FdoRegOracleCmd" Property="FdoRegOracle" Value="[FdoReg] -r &quot;.\KingOracleProvider.dll&quot;" />
-      <CustomAction Execute="immediate" Id="FdoRegSqlServerCmd" Property="FdoRegSqlServer" Value="[FdoReg] -r &quot;.\SQLServerSpatialProvider.dll&quot;" />
-      <CustomAction Execute="immediate" Id="FdoRegSltCmd" Property="FdoRegSlt" Value="[FdoReg] -r &quot;.\SQLiteProvider.dll&quot;" />
+      <CustomAction Execute="immediate" Id="FdoRegArcSdeCmd" Property="FdoRegArcSde" Value="[FdoReg] -r &quot;OSGeo.ArcSDE.[FDO_VERSION_SMALL]&quot; &quot;!(loc.ArcSdeProvider)&quot; &quot;!(loc.ArcSdeProviderDesc)&quot; &quot;[FDO_VERSION]&quot; &quot;[FDO_VERSION]&quot; &quot;.\ArcSDEProvider.dll&quot;" />
+      <CustomAction Execute="immediate" Id="FdoRegSdfCmd" Property="FdoRegSdf" Value="[FdoReg] -r &quot;OSGeo.SDF.[FDO_VERSION_SMALL]&quot; &quot;!(loc.SdfProvider)&quot; &quot;!(loc.SdfProviderDesc)&quot; &quot;[FDO_VERSION]&quot; &quot;[FDO_VERSION]&quot; &quot;.\SDFProvider.dll&quot;" />
+      <CustomAction Execute="immediate" Id="FdoRegShpCmd" Property="FdoRegShp" Value="[FdoReg] -r &quot;OSGeo.SHP.[FDO_VERSION_SMALL]&quot; &quot;!(loc.ShpProvider)&quot; &quot;!(loc.ShpProviderDesc)&quot; &quot;[FDO_VERSION]&quot; &quot;[FDO_VERSION]&quot; &quot;.\SHPProvider.dll&quot;" />
+      <CustomAction Execute="immediate" Id="FdoRegWfsCmd" Property="FdoRegWfs" Value="[FdoReg] -r &quot;OSGeo.WFS.[FDO_VERSION_SMALL]&quot; &quot;!(loc.WfsProvider)&quot; &quot;!(loc.WfsProviderDesc)&quot; &quot;[FDO_VERSION]&quot; &quot;[FDO_VERSION]&quot; &quot;.\WFSProvider.dll&quot;" />
+      <CustomAction Execute="immediate" Id="FdoRegWmsCmd" Property="FdoRegWms" Value="[FdoReg] -r &quot;OSGeo.WMS.[FDO_VERSION_SMALL]&quot; &quot;!(loc.WmsProvider)&quot; &quot;!(loc.WmsProviderDesc)&quot; &quot;[FDO_VERSION]&quot; &quot;[FDO_VERSION]&quot; &quot;.\WMSProvider.dll&quot;" />
+      <CustomAction Execute="immediate" Id="FdoRegOdbcCmd" Property="FdoRegOdbc" Value="[FdoReg] -r &quot;OSGeo.ODBC.[FDO_VERSION_SMALL]&quot; &quot;!(loc.OdbcProvider)&quot; &quot;!(loc.OdbcProviderDesc)&quot; &quot;[FDO_VERSION]&quot; &quot;[FDO_VERSION]&quot; &quot;.\ODBCProvider.dll&quot;" />
+      <CustomAction Execute="immediate" Id="FdoRegMySqlCmd" Property="FdoRegMySql" Value="[FdoReg] -r &quot;OSGeo.MySQL.[FDO_VERSION_SMALL]&quot; &quot;!(loc.MySqlProvider)&quot; &quot;!(loc.MySqlProviderDesc)&quot; &quot;[FDO_VERSION]&quot; &quot;[FDO_VERSION]&quot; &quot;.\MySQLProvider.dll&quot;" />
+      <CustomAction Execute="immediate" Id="FdoRegGdalCmd" Property="FdoRegGdal" Value="[FdoReg] -r &quot;OSGeo.Gdal.[FDO_VERSION_SMALL]&quot; &quot;!(loc.GdalProvider)&quot; &quot;!(loc.GdalProviderDesc)&quot; &quot;[FDO_VERSION]&quot; &quot;[FDO_VERSION]&quot; &quot;.\GRFPProvider.dll&quot;" />
+      <CustomAction Execute="immediate" Id="FdoRegOgrCmd" Property="FdoRegOgr" Value="[FdoReg] -r &quot;OSGeo.OGR.[FDO_VERSION_SMALL]&quot; &quot;!(loc.OgrProvider)&quot; &quot;!(loc.OgrProviderDesc)&quot; &quot;[FDO_VERSION]&quot; &quot;[FDO_VERSION]&quot; &quot;.\OGRProvider.dll&quot;" />
+      <CustomAction Execute="immediate" Id="FdoRegPostgreSqlCmd" Property="FdoRegPostgreSql" Value="[FdoReg] -r &quot;OSGeo.PostgreSQL.[FDO_VERSION_SMALL]&quot; &quot;!(loc.PostgreSqlProvider)&quot; &quot;!(loc.PostgreSqlProviderDesc)&quot; &quot;[FDO_VERSION]&quot; &quot;[FDO_VERSION]&quot; &quot;.\PostgreSQLProvider.dll&quot;" />
+      <CustomAction Execute="immediate" Id="FdoRegOracleCmd" Property="FdoRegOracle" Value="[FdoReg] -r &quot;King.Oracle.[FDO_VERSION_SMALL]&quot; &quot;!(loc.KingOracleProvider)&quot; &quot;!(loc.KingOracleProviderDesc)&quot; &quot;[FDO_VERSION]&quot; &quot;[FDO_VERSION]&quot; &quot;.\KingOracleProvider.dll&quot;" />
+      <CustomAction Execute="immediate" Id="FdoRegSqlServerCmd" Property="FdoRegSqlServer" Value="[FdoReg] -r &quot;OSGeo.SQLServerSpatial.[FDO_VERSION_SMALL]&quot; &quot;!(loc.SqlServerProvider)&quot; &quot;!(loc.SqlServerProviderDesc)&quot; &quot;[FDO_VERSION]&quot; &quot;[FDO_VERSION]&quot; &quot;.\SQLServerSpatialProvider.dll&quot;" />
+      <CustomAction Execute="immediate" Id="FdoRegSltCmd" Property="FdoRegSlt" Value="[FdoReg] -r &quot;OSGeo.SQLite.[FDO_VERSION_SMALL]&quot; &quot;!(loc.SltProvider)&quot; &quot;!(loc.SltProviderDesc)&quot; &quot;[FDO_VERSION]&quot; &quot;[FDO_VERSION]&quot; &quot;.\SQLiteProvider.dll&quot;" />
 
       <CustomAction Id="FdoRegArcSde" BinaryKey="WixCA" DllEntry="CAQuietExec" Execute="deferred" Return="ignore" Impersonate="no"/>
       <CustomAction Id="FdoRegSdf" BinaryKey="WixCA" DllEntry="CAQuietExec" Execute="deferred" Return="ignore" Impersonate="no"/>

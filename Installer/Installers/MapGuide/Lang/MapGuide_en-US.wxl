@@ -75,8 +75,9 @@
     <String Id="UpdateApacheConfig">Setting values for httpd.conf</String>
     <String Id="UpdatePhpIni">Setting values for php.ini</String>
     <String Id="InstallApacheServiceCA">Installing Apache Service</String>
+    <String Id="InstallTomcatServiceCA">Installing Tomcat Service</String>
     <String Id="MgServerInstallCA">Installing MapGuide Service</String>
     <String Id="MgServerUninstallCA">Removing MapGuide Service</String>
     <String Id="RemoveApacheServiceCA">Removing Apache Service</String>
-
+    <String Id="RemoveTomcatServiceCA">Removing Tomcat Service</String>
 </WixLocalization>

@@ -644,9 +644,11 @@
             <ProgressText Action="UpdateApacheConfig">!(loc.UpdateApacheConfig)</ProgressText>
             <ProgressText Action="UpdatePhpIni">!(loc.UpdatePhpIni)</ProgressText>
             <ProgressText Action="InstallApacheServiceCA">!(loc.InstallApacheServiceCA)</ProgressText>
+            <ProgressText Action="InstallTomcatServiceCA">!(loc.InstallTomcatServiceCA)</ProgressText>
             <ProgressText Action="MgServerInstallCA">!(loc.MgServerInstallCA)</ProgressText>
             <ProgressText Action="MgServerUninstallCA">!(loc.MgServerUninstallCA)</ProgressText>
             <ProgressText Action="RemoveApacheServiceCA">!(loc.RemoveApacheServiceCA)</ProgressText>
+            <ProgressText Action="RemoveTomcatServiceCA">!(loc.RemoveTomcatServiceCA)</ProgressText>
 
         </UI>
 
@@ -840,6 +842,12 @@
                 Action="StartApacheServiceCA"
                 After="InstallApacheServiceCA">MGWEB_CONFIG=&quot;APACHE&quot; AND &amp;WebExtApacheFeature&gt;2</Custom>
             <Custom
+                Action="InstallTomcatServiceCA"
+                Before="InstallFinalize">MGWEB_CONFIG=&quot;APACHE&quot; AND &amp;WebExtTomcatFeature&gt;2</Custom>
+            <Custom
+                Action="StartTomcatServiceCA"
+                Before="InstallTomcatServiceCA">MGWEB_CONFIG=&quot;APACHE&quot; AND &amp;WebExtTomcatFeature&gt;2</Custom>
+            <Custom
                 Action="MgServerInstallCA"
                 Before="InstallFinalize">&amp;ServerFeature&gt;2</Custom>
             <Custom
@@ -848,6 +856,9 @@
             <Custom
                 Action="RemoveApacheServiceCA"
                 Before="RemoveFiles">MGWEB_CONFIG=&quot;APACHE&quot; AND &amp;WebExtApacheFeature=2</Custom>
+            <Custom
+                Action="RemoveTomcatServiceCA"
+                Before="RemoveFiles">MGWEB_CONFIG=&quot;APACHE&quot; AND &amp;WebExtTomcatFeature&gt;2</Custom>
         </InstallExecuteSequence>
     </Product>
 </Wix>
