@@ -3,17 +3,22 @@
      xmlns:iis="http://schemas.microsoft.com/wix/IIsExtension"
      xmlns:util="http://schemas.microsoft.com/wix/UtilExtension">
     <?if "$(var.MgPlatform)" = "x64" ?>
-      <?define Win64 = "yes" ?>
-      <?define PlatformProgramFilesFolder = "ProgramFiles64Folder" ?>
+        <?define Win64 = "yes" ?>
+        <?define PlatformProgramFilesFolder = "ProgramFiles64Folder" ?>
+        <!-- isapi_MapAgent.dll -->
+        <?define FCGI_MAP = "[!file_MAPAGENTFILES_100]" ?>
+        <!-- php-cgi.exe -->
+        <?define PHP_CGI_EXE = "[!file_PHPFILES_26]" ?>
     <?else ?>
-       <?define Win64 = "no" ?>
-       <?define PlatformProgramFilesFolder = "ProgramFilesFolder" ?>
+        <?define Win64 = "no" ?>
+        <?define PlatformProgramFilesFolder = "ProgramFilesFolder" ?>
+        <!-- isapi_MapAgent.dll -->
+        <?define FCGI_MAP = "[!file_MAPAGENTFILES_100]" ?>
+        <!-- php-cgi.exe -->
+        <?define PHP_CGI_EXE = "[!file_PHPFILES_32]" ?>
     <?endif ?>
-	<!-- isapi_MapAgent.dll -->
-    <?define FCGI_MAP = "[!file_MAPAGENTFILES_100]" ?>
 	<!-- fcgiext.dll -->
     <?define PHP_MAP = "[WindowsFolder]system32\inetsrv\fcgiext.dll" ?>
-    <?define PHP_CGI_EXE = "[!file_PHPFILES_32]" ?>
     <Fragment>
         <Property Id="FRAMEWORKDIR">
             <RegistrySearch
