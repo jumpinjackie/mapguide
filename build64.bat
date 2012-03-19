@@ -341,7 +341,7 @@ echo [install]: Server - WFS
 echo [install]: Server - WMS
 %XCOPY% "%MG_SERVER%\bin\%TYPEBUILD%\wms" "%MG_OUTPUT_SERVER%\wms" /EXCLUDE:svn_excludes.txt+%CONFIGURATION%_excludes.txt
 echo [install]: Server - DBXML
-copy /Y "%MG_OEM%\%MG_OEM_DBXML%\%MG_OEM_DB%\build_windows\%TYPEBUILD%64\*.exe" "%MG_OUTPUT_SERVER%\bin"
+copy /Y "%MG_OEM%\%MG_OEM_DBXML%\%MG_OEM_DB%\build_windows\%TYPEBUILD%\*.exe" "%MG_OUTPUT_SERVER%\bin"
 copy /Y "%MG_OEM%\%MG_OEM_DBXML%\bin64\*.exe" "%MG_OUTPUT_SERVER%\bin"
 echo [install]: Server - RepositoryAdmin
 %XCOPY% "%MG_SERVER%\RepositoryAdmin" "%MG_OUTPUT_SERVER%\RepositoryAdmin" /EXCLUDE:svn_excludes.txt+%CONFIGURATION%_excludes.txt
@@ -388,7 +388,7 @@ echo [install]: Web Tier - mapviewerjava
 echo [install]: Web Tier - mapviewerjava - WEB-INF
 %XCOPY% "%MG_WEB_SRC%\WEB-INF" "%MG_OUTPUT_WEB%\www\WEB-INF" /EXCLUDE:svn_excludes.txt+%CONFIGURATION%_excludes.txt
 REM Required for Web Tier unit tests
-copy /Y "%MG_OEM%\SQLite\bin\win64\%TYPEBUILD%\php_SQLitePhpApi.dll" "%MG_OUTPUT_WEB%\Php\ext"
+copy /Y "%MG_OEM%\SQLite\bin\win64\%CONFIGURATION%\php_SQLitePhpApi.dll" "%MG_OUTPUT_WEB%\Php\ext"
 echo [install]: Web Tier - fusion
 call build_fusion.bat
 %XCOPY% "%MG_OEM%\fusion_build" "%MG_OUTPUT_WEB%\www\fusion" /EXCLUDE:%CONFIGURATION%_excludes.txt
