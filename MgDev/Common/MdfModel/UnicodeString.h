@@ -21,6 +21,7 @@
 #include "MdfModel.h"
 #include <string>
 #include <cstring>
+#include <cstdio>
 
 using namespace std;
 
