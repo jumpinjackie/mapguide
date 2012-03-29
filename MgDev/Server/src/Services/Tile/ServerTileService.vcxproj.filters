@@ -1,0 +1,67 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Ops">
+      <UniqueIdentifier>{fb366cea-edda-470c-b2b3-72bb684b79df}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="OpClearCache.cpp">
+      <Filter>Ops</Filter>
+    </ClCompile>
+    <ClCompile Include="OpGetDefaultTileSizeX.cpp">
+      <Filter>Ops</Filter>
+    </ClCompile>
+    <ClCompile Include="OpGetDefaultTileSizeY.cpp">
+      <Filter>Ops</Filter>
+    </ClCompile>
+    <ClCompile Include="OpGetTile.cpp">
+      <Filter>Ops</Filter>
+    </ClCompile>
+    <ClCompile Include="OpSetTile.cpp">
+      <Filter>Ops</Filter>
+    </ClCompile>
+    <ClCompile Include="TileOperation.cpp">
+      <Filter>Ops</Filter>
+    </ClCompile>
+    <ClCompile Include="TileOperationFactory.cpp">
+      <Filter>Ops</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Common\Dll.cpp" />
+    <ClCompile Include="ServerTileService.cpp" />
+    <ClCompile Include="ServerTileServiceBuild.cpp" />
+    <ClCompile Include="TileCache.cpp" />
+    <ClCompile Include="TileServiceHandler.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="OpClearCache.h">
+      <Filter>Ops</Filter>
+    </ClInclude>
+    <ClInclude Include="OpGetDefaultTileSizeX.h">
+      <Filter>Ops</Filter>
+    </ClInclude>
+    <ClInclude Include="OpGetDefaultTileSizeY.h">
+      <Filter>Ops</Filter>
+    </ClInclude>
+    <ClInclude Include="OpGetTile.h">
+      <Filter>Ops</Filter>
+    </ClInclude>
+    <ClInclude Include="OpSetTile.h">
+      <Filter>Ops</Filter>
+    </ClInclude>
+    <ClInclude Include="TileOperation.h">
+      <Filter>Ops</Filter>
+    </ClInclude>
+    <ClInclude Include="TileOperationFactory.h">
+      <Filter>Ops</Filter>
+    </ClInclude>
+    <ClInclude Include="ServerTileDllExport.h" />
+    <ClInclude Include="ServerTileService.h" />
+    <ClInclude Include="..\..\Common\stdafx.h" />
+    <ClInclude Include="TileCache.h" />
+    <ClInclude Include="TileServiceHandler.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="ServerTileService.rc" />
+  </ItemGroup>
+</Project>

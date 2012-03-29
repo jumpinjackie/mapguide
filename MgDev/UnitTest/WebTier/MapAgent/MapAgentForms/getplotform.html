@@ -1,0 +1,83 @@
+<html>
+    <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <script type="text/javascript" src="setactiontarget.js" >
+    </script>
+    </head>
+    <body>
+        <form name="input" action="" method="get" ID="Form1">
+            <div nowrap="true">
+            <b>Operation:</b> <input type="text" name="OPERATION" value="GETPLOT" size="50" ID="Text1">
+            <p>
+                Version: <input type="text" name="VERSION" value="1.0.0" size="10" ID="Text2">
+            <p>
+                Dwf version: <input type="text" name="DWFVERSION" value="6.01" size="30" ID="Text3">
+            <p>
+                EPlot version: <input type="text" name="EPLOTVERSION" value="1.2" size="10" ID="Text4">
+            <p>
+                <br>
+                Enter either:
+            <p>
+                &nbsp; &nbsp; Session id: <input type="text" name="SESSION" size="100" ID="Text5">
+            <p>
+                &nbsp; &nbsp; Map name: <input type="text" name="MAPNAME" value="TestMap" size="100" ID="Text6">
+            <p>
+                or:
+            <p>
+                &nbsp; &nbsp; Locale: <input type="text" name="LOCALE" value="en" size="10" ID="Text7">
+            <p>
+                &nbsp; &nbsp; Client Agent: <input type="text" name="CLIENTAGENT" value="MapGuide Developer" size="100">
+            <p>
+                &nbsp; &nbsp; Map definition: <input type="text" name="MAPDEFINITION" value="Library://" size="100" ID="Text8">
+            <p>
+                <br>
+                Enter either:
+            <p>
+                &nbsp; &nbsp; Layout resource id: <input type="text" name="LAYOUT" size="100" ID="Text9">
+            <p>
+                &nbsp; &nbsp; Layout title: <input type="text" name="LAYOUTTITLE" size="100" ID="Text10">
+            <p>
+                &nbsp; &nbsp; Layout unit type: <input type="text" name="LAYOUTUNITTYPE" size="100" ID="Text11">
+            <p>
+                or:
+            <p>
+                &nbsp; &nbsp; Width: <input type="text" name="WIDTH" value="8.5" size="10" ID="Text12">
+            <p>
+                &nbsp; &nbsp; Height: <input type="text" name="HEIGHT" value="11" size="10" ID="Text13">
+            <p>
+                &nbsp; &nbsp; Margins: <input type="text" name="MARGINS" size="10" ID="Text14">
+            <p>
+                &nbsp; &nbsp; Units: <input type="text" name="UNITS" value="in" size="10" ID="Text15">
+            <p>
+                ------------------------------ Commands (optional) ------------------------------
+            <p>
+                View center X: <input type="text" name="SETVIEWCENTERX" size="10" ID="Text101">
+            <p>
+                View center Y: <input type="text" name="SETVIEWCENTERY" size="10" ID="Text102">
+            <p>
+                View scale: <input type="text" name="SETVIEWSCALE" size="10" ID="Text103">
+            <p>
+                Data extent (x1, y1, x2, y2): <input type="text" name="SETDATAEXTENT" size="50" ID="Text104">
+            <p>
+                Display Dpi: <input type="text" name="SETDISPLAYDPI" value="75" size="10" ID="Text105">
+            <p>
+                Display width: <input type="text" name="SETDISPLAYWIDTH" value="1024" size="10" ID="Text106" disabled="true" style="background-color:lightgrey">
+            <p>
+                Display height: <input type="text" name="SETDISPLAYHEIGHT" value="768" size="10" ID="Text107" disabled="true" style="background-color:lightgrey">
+            <p>
+                Show layers: <input type="text" name="SHOWLAYERS" size="80" ID="Text108">
+            <p>
+                Hide layers: <input type="text" name="HIDELAYERS" size="80" ID="Text109">
+            <p>
+                Show groups: <input type="text" name="SHOWGROUPS" size="80" ID="Text110">
+            <p>
+                Hide groups: <input type="text" name="HIDEGROUPS" size="80" ID="Text111">
+            <p>
+                Refresh layers: <input type="text" name="REFRESHLAYERS" size="80" ID="Text112" disabled="true" style="background-color:lightgrey">
+            <p>
+                <input type="submit" value="Submit" onclick="SetActionTarget()"> <input type="reset">
+            </div>
+        </form>
+        </p>
+    </body>
+</html>

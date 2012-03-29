@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Ops">
+      <UniqueIdentifier>{6f852e7d-f829-4d75-899e-cf3988a25a47}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="OpProfileRenderDynamicOverlay.cpp">
+      <Filter>Ops</Filter>
+    </ClCompile>
+    <ClCompile Include="OpProfileRenderMap.cpp">
+      <Filter>Ops</Filter>
+    </ClCompile>
+    <ClCompile Include="ProfilingOperation.cpp">
+      <Filter>Ops</Filter>
+    </ClCompile>
+    <ClCompile Include="ProfilingOperationFactory.cpp">
+      <Filter>Ops</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Common\Dll.cpp" />
+    <ClCompile Include="ProfilingServiceHandler.cpp" />
+    <ClCompile Include="ServerProfilingService.cpp" />
+    <ClCompile Include="ServerProfilingServiceBuild.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="OpProfileRenderDynamicOverlay.h">
+      <Filter>Ops</Filter>
+    </ClInclude>
+    <ClInclude Include="OpProfileRenderMap.h">
+      <Filter>Ops</Filter>
+    </ClInclude>
+    <ClInclude Include="ProfilingOperation.h">
+      <Filter>Ops</Filter>
+    </ClInclude>
+    <ClInclude Include="ProfilingOperationFactory.h">
+      <Filter>Ops</Filter>
+    </ClInclude>
+    <ClInclude Include="ProfilingServiceHandler.h" />
+    <ClInclude Include="ServerProfilingDllExport.h" />
+    <ClInclude Include="ServerProfilingService.h" />
+    <ClInclude Include="..\..\Common\stdafx.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="ServerProfilingService.rc" />
+  </ItemGroup>
+</Project>

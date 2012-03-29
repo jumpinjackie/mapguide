@@ -1,0 +1,348 @@
+/* mg_open_source.css */
+
+@import url(doxygen.css);
+
+body {
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+	background-color:#FFFFFF;
+	color: #000000;
+	font-size: 12px;
+}
+
+/******************************************/
+/* Syntax sections                        */
+/******************************************/
+
+/* All syntax and example sections are      
+   visible in MGOS Ref topics             */
+
+div.Syntax, 
+div.JavaSyntax, 
+div.PhpSyntax, 
+div.DotNetSyntax {
+	background-color:#FFFFD9;
+}
+
+div.Example, 
+div.JavaExample, 
+div.PhpExample, 
+div.CSharpExample {
+	background-color:#E9E9E9;
+}
+
+/******************************************/
+/* Main page (index.html)                 */
+/******************************************/
+
+/*  Table cells on main page (index.html) */
+div.mainpage td {
+	background-color: #FFFFCC;
+	border-right-color: #FF6633;
+	border-bottom-color: #FF6633;
+	border-left-color: #FFCC33;
+	border-top-color: #FFCC33;
+	text-align: center;
+}
+
+/*******************************/
+/* Used in external topics     */
+/*******************************/
+p.indent_1 {
+	padding-left: 0.25in;
+}
+p.indent_2 {
+	padding-left: 0.5in;
+}
+p.indent_3 {
+	padding-left: 0.75in;
+}
+
+/* Ruled Table */
+table.RuledTable {
+	border-collapse: collapse;
+}
+table.RuledTable th {
+	background-color: #CCCCCC;		/* grey */
+	padding: 6px;
+	border-style:solid;
+	border-color:#000000; 			/* black */
+	border-width:1px;	
+}
+table.RuledTable td {
+	padding-left: 6px;
+	padding-right: 6px;
+	padding-top: 4px;
+	padding-top: 4px;
+	border-style:solid;
+	border-color:#000000; 			/* black */
+	border-width:1px;	
+}
+table.RuledTable td.shaded{
+	background-color:#CCCCCC;		/* grey */
+}	
+table.RuledTable th.no_border {
+	border-style:none;	
+	border-top-style:none;	
+	background-color:#FFFFFF;		/* white */
+}
+
+td.shaded{
+	background-color:#CCCCCC;	/* grey */
+}
+
+/* Used in Geometry_AgfText.h */
+p.row_1 {
+	font-family: "Courier New", Courier, monospace;
+	background-color: #FFFFCC;
+}
+pre.row_2 {
+	font-family: "Courier New", Courier, monospace;
+	background-color: #E7FFCE;
+}
+
+/* "Outside Ruled" table */
+/* (NOT CURRENTLY USED) */
+table.outside_ruled th.upper_left {
+	border-top-style: solid;
+	border-left-style: solid;
+}
+table.outside_ruled th.top {
+	border-top-style: solid;
+}
+table.outside_ruled th.left {
+	border-left-style: solid;
+}
+table.outside_ruled th.right {
+	border-right-style: solid;
+}
+table.outside_ruled th.top_left {
+	border-top-style: solid;
+	border-left-style: solid;
+}
+table.outside_ruled th.top_right {
+	border-top-style: solid;
+	border-right-style: solid;
+} 
+table.outside_ruled th.bottom_left {
+	border-bottom-style: solid;
+	border-left-style: solid;
+}
+table.outside_ruled td.right {
+	border-right-style: solid;
+}
+table.outside_ruled td.left {
+	border-left-style: solid;
+}
+table.outside_ruled td.bottom {
+	border-bottom-style: solid;
+}
+table.outside_ruled td.bottom_left {
+	border-bottom-style: solid;
+	border-left-style: solid;
+}
+table.outside_ruled td.bottom_right {
+	border-bottom-style: solid;
+	border-right-style: solid;
+}
+
+/* Used in Geometry (spatial operator) external topics: */
+/* 'Applies To' table */
+table.applies_to {
+	border-collapse:collapse;
+	border-style:none;
+	border-width:0px;
+}
+table.applies_to th {
+	padding: 0px 3px 0px 3px;
+}
+table.applies_to th.top {
+	border:solid #000000 1px;
+}
+table.applies_to th.left {
+	border:solid #000000 1px;
+	text-align: right;
+}
+table.applies_to td {
+	border:solid #000000 1px;
+	padding: 0px 3px 0px 3px;
+}
+table.applies_to td.Yes {
+	color: #000000;
+	background-color:#BEFF7D;	/* green */
+}
+table.applies_to td.x {
+	color: #000000;				/* black */
+	background-color:#FFFFFF;	/* white */
+}
+
+/* 'Nine Intersection' table */
+table.nine_intersection {
+	border-collapse:collapse;
+	border-style:none;
+	border-width:0px;
+}
+table.nine_intersection th  {
+	padding: 0px 3px 0px 3px;
+}
+table.nine_intersection th.top  {
+	border-top-style:solid;
+	border-top-color:#000000;
+	border-top-width:1px;
+
+	border-left-style:solid;
+	border-left-color:#000000;
+	border-left-width:1px;
+
+	border-right-style:solid;
+	border-right-color:#000000;
+	border-right-width:1px;
+	
+	border-bottom-style:none;
+	
+	text-align:center;
+}
+table.nine_intersection th.left  {
+	border-top-style:solid;
+	border-top-color:#000000;
+	border-top-width:1px;
+
+	border-left-style:solid;
+	border-left-color:#000000;
+	border-left-width:1px;
+
+	border-bottom-style:solid;
+	border-bottom-color:#000000;
+	border-bottom-width:1px;
+	
+	border-right-style:none;
+	
+	text-align:right;	
+}
+table.nine_intersection td  {
+	border-style:solid;
+	border-color:#000000;
+	border-width:1px;
+	padding: 0px 3px 0px 3px;
+}
+table.nine_intersection .upper_left  {
+	border-style: none;
+}
+
+table.nine_intersection .A_interior_color {
+	border-top-style:solid;
+	border-top-color:#000000;
+	border-top-width:1px;
+	
+	border-bottom-style:solid;
+	border-bottom-color:#000000;
+	border-bottom-width:1px;
+	
+	border-left-style:none;
+		
+	width:3px;
+	background-color:#FF7F00;	/* orange */
+}
+table.nine_intersection .A_boundary_color {
+	border-top-style:solid;
+	border-top-color:#000000;
+	border-top-width:1px;
+	
+	border-bottom-style:solid;
+	border-bottom-color:#000000;
+	border-bottom-width:1px;
+	
+	border-left-style:none;
+	
+	width:3px;
+	background-color:#FF0000;	/* red */
+}
+table.nine_intersection .A_exterior_color {
+	border-top-style:solid;
+	border-top-color:#000000;
+	border-top-width:1px;
+	
+	border-bottom-style:solid;
+	border-bottom-color:#000000;
+	border-bottom-width:1px;
+	
+	border-left-style:solid;
+	border-left-color:#999999;
+	border-left-width:1px;
+		
+	width:3px;
+	background-color:#FFFFCC;	/* yellow */
+}
+
+table.nine_intersection .B_interior_color {
+	border-left-style:solid;
+	border-left-color:#000000;
+	border-left-width:1px;
+	
+	border-right-style:solid;
+	border-right-color:#000000;
+	border-right-width:1px;
+	
+	border-top-style:none;
+	
+	background-color:#00A0C6;	/* light blue */
+	height:6px;
+}
+table.nine_intersection .B_boundary_color {
+	border-left-style:solid;
+	border-left-color:#000000;
+	border-left-width:1px;
+	
+	border-right-style:solid;
+	border-right-color:#000000;
+	border-right-width:1px;
+	
+	border-top-style:none;
+	
+	background-color:#0000FF;	/* dark blue */
+	height:6px;
+}
+table.nine_intersection td.B_exterior_color {
+	border-left-style:solid;
+	border-left-color:#000000;
+	border-left-width:1px;
+	
+	border-right-style:solid;
+	border-right-color:#000000;
+	border-right-width:1px;
+	
+	border-top-style:solid;
+	border-top-color:#999999;
+	border-top-width:1px;
+	
+	background-color:#FFFFCC;	/* yellow */
+	height:6px;
+}
+
+table.nine_intersection td.F {
+	color: #000000;
+	background-color:#BEFF7D;	/* green */
+}
+table.nine_intersection td.T {
+	color: #000000;
+	background-color:#BEFF7D;	/* green */
+}
+table.nine_intersection td.Yes {
+	color: #000000;
+	background-color:#BEFF7D;	/* green */
+}
+table.nine_intersection td.I {
+	color: #000000;
+	background-color: #BEFF7D;	/* green */
+}
+table.nine_intersection td.O {
+	color: #000000;
+	background-color: #BEFF7D;	/* green */
+}
+table.nine_intersection td.x {
+	color: #999999;				/* grey */
+	background-color:#FFFFFF;	/* white */
+}
+
+
+
+

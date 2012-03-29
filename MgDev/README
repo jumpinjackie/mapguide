@@ -1,0 +1,110 @@
+Overview of MapGuide Open Source
+
+MapGuide Open Source is a web-based platform that enables users to 
+quickly develop and deploy web mapping applications and geospatial 
+web services. MapGuide features an interactive viewer that includes 
+support for feature selection, property inspection, map tips, and 
+operations such as buffer, select within, and measure. MapGuide 
+includes an XML database for managing content, and supports most 
+popular geospatial file formats, databases, and standards. MapGuide 
+can be deployed on Linux or Windows, supports Apache and IIS web 
+servers, and offers extensive PHP, .NET, Java, and JavaScript APIs 
+for application development. MapGuide Open Source is licensed under 
+the LGPL (see the License.html file found in this directory).
+
+The project website is at http://mapguide.osgeo.org.
+
+----------------------------
+
+Build environments
+
+MapGuide has been build on both Windows using the Microsoft Visual 
+Studio .NET and Sun Java compiler and Linux using GNU CPP and Sun 
+Java compilers. The latest details about which Linux distros are
+being used by developers can be found at 
+http://mapguide.osgeo.org/1.1/docs/BuildInstallQuickStartLinux.html.
+
+
+----------------------------
+
+Build, install and run instructions
+
+The latest build, install and run instructions are also found at 
+the above link.
+
+(TODO: create a .html(?) file that contains the build/install/run 
+instructions for the branch. Then reference and maintain that 
+instead of keeping a separate version on the website.)
+
+
+----------------------------
+
+Directories
+
+The major directories of the project are the following:
+
+Common: 
+    contains source common to various parts (Web Server extensions 
+    and Server) of MapGuide Open Source.
+
+  CoordinateSystem:
+      classes that abstracts the Proj.4 libraries, these classes
+      can be modified to incorporate other coordinate system
+      libraries.
+
+  Foundation:
+      classes for collections, common structures and types, 
+      exceptions and utility classes.
+
+  Geometry:
+      classes for the various geometry types supported by the 
+      system.
+
+  MapGuideCommon:
+      common classes used to support the various server services.
+
+  MdfModel:
+      classes for manipulating MapDefinitions, LayerDefinitions
+      and FeatureSources.
+
+  MdfParser:
+      classes for parsing and serializing to and from the 
+      MdfModel classes.
+
+  PlatformBase:
+      classes for collections, common structures and types, 
+      exceptions and utility classes.
+
+  Renderers:
+      classes used to render maps.
+
+  Schema:
+      all the schemas used by MapGuide Open Source.
+
+  Security:
+      encryption and licensing classes.
+
+  Stylization:
+      classes used for stylizing feature data.
+
+OEM:
+    third-party libraries
+
+Server:
+    source for the MapGuide Open Source server.
+
+UnitTest:
+    source for running the unit tests.  Note that there are also
+    unit tests in the Server subdirectory.
+
+Web:
+    source for the MapGuide Open Source web server extensions.
+
+
+----------------------------
+
+Currently much of the developer documentation is found at
+http://mapguide.osgeo.org.  We will be migrating it to the standard
+files described in 
+http://tldp.org/HOWTO/Software-Release-Practice-HOWTO/distpractice.html
+as time permits.

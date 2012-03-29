@@ -1,0 +1,318 @@
+<?xml version='1.0'?>
+<Configuration>
+<Definitions>
+
+ <!-- This definition enumerates the WFS versions we will support.
+      Note that each version below must be backed by a like-named
+      template file (ie, 1.0.0.xml.awd) in order to work.
+      These must appear in increasing order!
+      Also, anything other than a <Version> element is ignored.    -->
+ <Define item="SupportedVersions">
+   <Version number="1.0.0"/>
+   <Version number="1.1.0"/>
+ </Define>
+
+ <!-- These are edited by the Site Administration tool, though you
+      could modify them by any UTF-8-enabled editor.               -->
+ <Define item="Service.Name">OGC:WFS</Define> <!-- Generally should stay OGC:WFS -->
+ <Define item="Service.Title">MapGuide WFS Server</Define>
+ <Define item="Service.Fees">none</Define>
+ <Define item="Service.Abstract">MapGuide WFS Server</Define>
+ <Define item="Service.AccessConstraints">none</Define>
+ <!-- Who to contact -->
+ <Define item="Service.Contact.ProviderName"></Define>
+ <Define item="Service.Contact.ProviderSite"></Define>
+ <Define item="Service.Contact.Name"></Define>
+ <Define item="Service.Contact.Organization"></Define>
+ <Define item="Service.Contact.Position"></Define>
+ <Define item="Service.Contact.Address.Type">postal</Define>
+ <Define item="Service.Contact.Address.Street"></Define>
+ <Define item="Service.Contact.Address.City"></Define>
+ <Define item="Service.Contact.Address.StateProv"></Define>
+ <Define item="Service.Contact.Address.PostCode"></Define>
+ <Define item="Service.Contact.Address.Country"></Define>
+ <Define item="Service.Contact.Phone"></Define>
+ <Define item="Service.Contact.Fax"></Define>
+ <Define item="Service.Contact.Email"></Define>
+ <Define item="Service.Contact.HoursOfService">24x7</Define>
+ <Define item="Service.Contact.Instructions"></Define>
+ <Define item="Service.Contact.Role"></Define>
+ <!-- The URL elements.  Change to suit, as this is reported -->
+ <Define item="SERVER_NAME">localhost:8008</Define>
+ <Define item="SCRIPT_NAME">/mapguide/mapagent/mapagent.fcgi</Define>
+
+ <!-- Stock definitions -->
+ <Define item="URl.OnlineResource">http://www.your-domain.com</Define>
+ <Define item="Url.GetCapabilities">http://&SERVER_NAME;&SCRIPT_NAME;</Define>
+ <Define item="Url.DescribeFeatureType">http://&SERVER_NAME;&SCRIPT_NAME;</Define>
+ <Define item="Url.GetFeature">http://&SERVER_NAME;&SCRIPT_NAME;</Define>
+
+ <!-- List the keywords to be associated with the WFS - pick what describes your data -->
+ <Define item="Service.Keywords"><item>GIS WFS Server</item></Define>
+
+
+ <!-- Enumerates an element in a dictionary for HTML
+      (Used chiefly for debugging, and in exceptions) -->
+ <Define item="EnumDictionary.html"><tr><td class="name">&EnumDictionary.Name;</td><td><?Escape text="&EnumDictionary.Value;"?></td></tr>
+ </Define>
+
+ <!-- This is the HTML stylesheet, which should be referenced by anything returning HTML
+      Note: one could substitute this with an out-of-band stylesheet link to an external doc,
+      that is to say, replacing this with:
+           <link rel="stylesheet" href="http://your-url-to-a/stylesheet.css" />
+      and then maintaining that document somewhere on your webserver.                         -->
+ <Define item="html.stylesheet">
+<style>
+body {
+  font-family: arial,
+}
+table {
+  font-family: arial,
+}
+.title {
+  background-color: #ccf;
+  font-weight: bold;
+  font-size: larger;
+}
+.name {
+  background-color: #eef;
+  font-weight: bold;
+}
+</style>
+</Define>
+
+ <Define item="ReferenceSystems">
+  <item>EPSG:4326</item>
+ </Define>
+
+ <!-- This is the default definition for a layer in GetCapabilities as text/xml
+      Some versions may override this definition with a like-named definition
+      of their own; any version-specific definition supercedes this one.        -->
+ <Define item="EnumLayer.xml">
+  <Layer queryable="&Layer.queryable;" transparent="&Layer.transparent;">
+   <Name>&Layer.name;</Name>
+   <Title>&Layer.Title;</Title>
+   <?Enum list="&ReferenceSystems;" using="&RS.xml;"?>
+  </Layer>
+ </Define>
+
+ <!-- This is the default definition for a layer in GetCapabilities as text/html -->
+ <Define item="EnumLayer.html">
+  <tr>
+   <td class="name">&Layer.name;</td>
+   <td>queryable="&Layer.queryable;" transparent="&Layer.transparent;"
+    <ul>
+     <?Enum list="&ReferenceSystems;" using="&Format.html;"?>
+    </ul>
+   </td>
+  </tr>
+ </Define>
+
+ <!-- This is the default definition for a reference system (SRS, or CRS) -->
+ <Define item="RS.xml"><SRS>&Enum.item;</SRS></Define>
+
+
+
+
+ <!-- You can control the formats supported by various
+      WFS responses by (a) modifying these lists and
+      (b) adding (if necessary) the appropriate
+      <Response> element in the corresponding version
+      template files.  You can locally override the
+      supported formats by copying one of these
+      definitions and modifying it to suit; in this
+      case, the mods only apply to that version.        -->
+
+ <!-- These are the supported (Get)Capabilities formats
+      Specific version templates can override these     -->
+ <Define item="Formats.GetCapabilities">
+   <item>text/xml</item>
+   <item>text/html</item>
+   <item>text/plain</item>
+ </Define>
+
+ <!-- These are the supported DescribeFeatureType formats
+      Specific version templates can override these -->
+ <Define item="Formats.DescribeFeatureType">
+   <item>GML2</item>
+   <item>text/xml; subtype=gml/2.1.2</item>
+   <item>GML3</item>
+   <item>text/xml; subtype=gml/3.1.1</item>
+ </Define>
+
+ <Define item="Formats.DescribeFeatureType.default.1.0.0">text/xml; subtype=gml/2.1.2</Define>
+ <Define item="Formats.DescribeFeatureType.default.1.1.0">text/xml; subtype=gml/3.1.1</Define>
+ 
+ <!-- For historic reasons, we need to accept these output formats, -->
+ <!-- which we convert into the indicated notations                 -->
+ <Define item="Parameter.OutputFormat.ValueMap">
+  <translate from="GML2">text/xml; subtype=gml/2.1.2</translate>
+  <translate from="XMLSCHEMA">text/xml; subtype=gml/2.1.2</translate>
+  <translate from="GML3">text/xml; subtype=gml/3.1.1</translate>
+ </Define>
+
+ <!-- These are the supported GetFeature formats
+      Specific version templates can override these    -->
+ <Define item="Formats.GetFeature">
+   <item>GML2</item>
+   <item>text/xml; subtype=gml/2.1.2</item>
+   <item>GML3</item>
+   <item>text/xml; subtype=gml/3.1.1</item>
+ </Define>
+
+ <Define item="Formats.GetFeature.default.1.0.0">text/xml; subtype=gml/2.1.2</Define>
+ <Define item="Formats.GetFeature.default.1.1.0">text/xml; subtype=gml/3.1.1</Define>
+ 
+ <!-- These are the supported Exception formats
+      Specific version templates can override these -->
+ <Define item="Formats.Exception">
+   <item>application/vnd.ogc.se_xml</item>
+   <item>application/vnd.ogc.se_inimage</item>
+   <item>application/vnd.ogc.se_blank</item>
+   <item>text/html</item>
+   <item>text/plain</item>
+ </Define>
+
+
+ <!-- For now, all query capabilities are static, determined by the defs   -->
+ <!-- below; future work should glean these from the FDO GetCapy, and do   -->
+ <!-- something logical.  Using too many FDO sources means that it's       -->
+ <!-- possible that the intersection of providers' capabilities may be an  -->
+ <!-- empty set, since any given operation may not be supported by one of  -->
+ <!-- the providers.  FDO support of queries varies by implementation.     -->
+
+ <!-- TODO: These will need to be reported from the provider in question.  -->
+ <!-- NOTE: commented elements mark those ogc:Filter geometry operands that-->
+ <!-- are not supported by FDO as of this release, and thus will not be    -->
+ <!-- enumerated.  Depending on which FDO providers are used, the remaining-->
+ <!-- set of operands may need to be further reduced, in the interest of   -->
+ <!-- "honest advertisement": WFS query capabilities can only describe the -->
+ <!-- service as a whole, though FDO capabilities vary by implementation.  -->
+ <Define item="Query.GeometryOperands">
+  <!-- item>Arc</item -->
+  <!-- item>ArcByBulge</item -->
+  <!-- item>ArcByCenterPoint</item -->
+  <!-- item>Bezier</item -->
+  <!-- item>Circle</item -->
+  <!-- item>CircleByCenterPoint</item -->
+  <!-- item>Clothoid</item -->
+  <!-- item>CubicSpline</item -->
+  <item>Envelope</item>
+  <!-- item>Geodesic</item -->
+  <item>LineString</item>
+  <!-- item>OffsetCurve</item -->
+  <item>Point</item>
+  <item>Polygon</item>
+  <!-- item>PolyhedralSurface</item -->
+  <!-- item>Solid</item -->
+  <!-- item>Tin</item -->
+  <!-- item>Triangle</item -->
+  <!-- item>TriangulagedSurface</item -->
+ </Define>
+
+ <!-- TODO: These will need to be reported from the provider in question -->
+ <Define item="Query.SpatialOperators">
+  <item>BBOX</item>
+  <!-- item>Beyond</item -->
+  <item>Contains</item>
+  <item>Crosses</item>
+  <item>Disjoint</item>
+  <item>DWithin</item>
+  <item>Equals</item>
+  <item>Intersects</item>
+  <item>Overlaps</item>
+  <item>Touches</item>
+  <item>Within</item>
+ </Define>
+
+ <!-- TODO: These will need to be reported from the provider in question -->
+ <Define item="Query.ComparisonOperators">
+  <item>LessThan</item>
+  <item>GreaterThan</item>
+  <item>LessThanEqualTo</item>
+  <item>GreaterThanEqualTo</item>
+  <item>EqualTo</item>
+  <item>NotEqualTo</item>
+  <item>Like</item>
+  <item>Between</item>
+  <item>NullCheck</item>
+ </Define>
+
+ <!-- TODO: These will need to be reported from the provider in question -->
+ <!-- Currently, no functions are supported, but if an FDO provider ever -->
+ <!-- does do so, this is the syntax to use to advertise them.           -->
+ <Define item="Query.FunctionNames">
+  <!--item args="1">MIN</item>
+  <item args="1">MAX</item-->
+ </Define>
+
+ <!-- This specifies the default maximum features returned -->
+ <!-- TODO: examine if this can be gotten from internal config -->
+ <Define item="Default.MaxFeatures">1000</Define>
+
+ <!-- This is the way formats are reported in XML -->
+ <Define item="Format.xml">
+  <Format>&Enum.item;</Format>
+ </Define>
+
+ <!-- This is the way formats are reported in HTML -->
+ <Define item="Format.html">
+  <li>&Enum.item;</li>
+ </Define>
+
+ <!-- This is the way formats are reported in plain text -->
+ <Define item="Format.plain">
+ * &Enum.item;
+ </Define>
+
+ <!-- This definition allows a site to override the behavior of -->
+ <!-- the SRS= parameter of requests.                           -->
+ <!-- Add translate elements here to map any particularly       -->
+ <!-- troublesome SRS to some appropriate WKT.                  -->
+ <Define item="SRS.WKT.map">
+  <translate from="URN:OGC:DEF:CRS:EPSG::4326">GEOGCS["LL84",DATUM["WGS84",SPHEROID["WGS84",6378137.000,298.25722293]],PRIMEM["Greenwich",0],UNIT["Degree",0.01745329251994]]</translate>
+  <translate from="CRS:84">GEOGCS["LL84",DATUM["WGS84",SPHEROID["WGS84",6378137.000,298.25722293]],PRIMEM["Greenwich",0],UNIT["Degree",0.01745329251994]]</translate>
+ </Define>
+ 
+</Definitions>
+
+
+<!--  This is the exception of last resort, and is used if
+      no exception Response is found in the version-specific
+      template (or if an error occurs before a version can
+      be established.)
+      By this declaration, we say the default response shall
+      be html.  Of course, any appropriate <Response/> in
+      the template file will supercede this.
+-->
+
+<Exception content-type="text/html">
+<html>
+ <head>
+  <title>WFS Service Exception</title>
+  &html.stylesheet;
+ </head>
+ <body>
+  <table>
+   <tr>
+    <td class="title" colspan="2"><b>WFS Service Exception</b></td>
+   </tr>
+   <tr>
+    <td colspan="2">
+     An exception occurred on the server.
+    </td>
+   </tr>
+   <tr>
+    <td class="name">Code</td><td>&Exception.Type;</td>
+   </tr>
+   <tr>
+    <td class="name">Reason</td><td>&Exception.Message;</td>
+   </tr>
+   <tr><td class="title" colspan="2">Definitions</td></tr>
+  <?EnumDictionary using="&EnumDictionary.html;"?>
+  </table>
+ </body>
+</html>
+</Exception>
+
+</Configuration>

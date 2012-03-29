@@ -1,0 +1,247 @@
+#------------------configure.in----------------------------------------
+dnl Configure.in for MapGuide Open Source
+#----------------------------------------------------------------------
+# Variables
+# Following are the makefile directories
+#----------------------------------------------------------------------
+AC_INIT(mapguide,2.2.0,http://mapguide.osgeo.org)
+AC_CONFIG_SRCDIR(configure.in)
+AM_INIT_AUTOMAKE
+AM_INIT_AUTOMAKE([1.9 tar-pax])
+
+AC_PREFIX_DEFAULT(/usr/local/mapguideopensource)
+
+AC_LANG_C
+AC_PROG_CC
+AC_LANG_CPLUSPLUS
+AC_PROG_CXX
+AM_PROG_LIBTOOL
+
+# Check for std headers
+AC_HEADER_STDC
+AC_CHECK_HEADERS(unistd.h math.h netdb.h netinet/in.h sys/types.h sys/socket.h,,AC_MSG_ERROR([required header file missing]))
+AC_CHECK_FUNCS(gethostbyname socket htons connect shutdown,,AC_MSG_ERROR([required standard library function missing]))
+
+dnl *******************************************************
+dnl CoordinateSystem Configuration
+dnl *******************************************************
+map_using_proj4="no"
+map_unittesting_dir="UnitTesting"
+AC_MSG_NOTICE([Using Mentor CoordinateSystem])
+AC_SUBST(map_coordsys_dir,"CoordinateSystem")
+AC_SUBST(map_coordsys_dir_path,"Common/CoordinateSystem")
+AC_SUBST(map_coordsys_include_path,"Common/CoordinateSystem")
+AC_SUBST(map_unittesting_dir)
+map_opt_oem_subdirs="CsMap"
+map_opt_oem_distsubdirs=""
+
+dnl *******************************************************
+dnl PHP 5.3.1 Configuration
+dnl *******************************************************
+# Check for php
+# Note : Not yet implemented
+AC_ARG_WITH([php],
+        MAP_HELP_STRING([--with-php],
+                        [specify php headers dir prefix as args [[default=no]]]),
+        [with_php=$withval],
+        [with_php=no])
+
+if test $with_php = "no"; then
+    AC_MSG_NOTICE([Using php 5.3.1 from included Oem Directory])
+else
+    AC_MSG_NOTICE(["WARNING!!: Using custom specified php include dir is not supported in this release."])
+    AC_MSG_NOTICE([Using php 5.3.1 from included Oem Directory])
+fi
+
+dnl *******************************************************
+dnl FDO 3.7.0 Configuration
+dnl Include / lib paths
+dnl *******************************************************
+# custom Fdo path specification
+AC_ARG_WITH([fdo-include],
+        MAP_HELP_STRING([--with-fdo-include],
+                        [specifies custom dir for fdo include files [[default=DEFAULT]]]),
+        [custom_inc=$withval],
+        [custom_inc=DEFAULT])
+
+if test $custom_inc = "DEFAULT"; then
+    map_fdo_include="/usr/local/fdo-3.7.0/include"
+    if test -d $map_fdo_include; then
+        AC_MSG_NOTICE([Building with default location of FDO include files at /usr/local/fdo-3.7.0/include])
+    else
+        AC_MSG_ERROR([the default FDO include path $map_fdo_include is not a valid directory. Please use the custom option])
+    fi
+else
+    if test -d $custom_inc; then
+        map_fdo_include="$custom_inc"
+        AC_MSG_NOTICE([Building with custom location of FDO include dir at $map_fdo_include])
+    else
+        AC_MSG_ERROR([the specified FDO include path $custom_inc is not a valid directory])
+    fi
+fi
+
+AC_ARG_WITH([fdo-lib],
+        MAP_HELP_STRING([--with-fdo-lib],
+                        [specifies custom path for fdo libraries [[default=DEFAULT]]]),
+        [custom_lib=$withval],
+        [custom_lib=DEFAULT])
+
+if test $custom_lib = "DEFAULT"; then
+    map_fdo_lib="/usr/local/fdo-3.7.0/lib"
+    if test -d $map_fdo_lib; then
+        AC_MSG_NOTICE([Building with default location of FDO libraries at /usr/local/fdo-3.7.0/lib])
+    else
+        AC_MSG_ERROR([the default FDO lib path $map_fdo_lib is not a valid directory. Please use the custom option])
+    fi
+else
+    if test -d $custom_lib; then
+        map_fdo_lib="$custom_lib"
+        AC_MSG_NOTICE([Building with custom location of FDO libraries at $custom_lib])
+    else
+        AC_MSG_ERROR([the specified FDO library path $custom_lib is not a valid directory])
+    fi
+fi
+
+AC_SUBST(map_fdo_include)
+AC_SUBST(map_fdo_lib)
+
+dnl *******************************************************
+dnl GCC Compiler Configuration
+dnl *******************************************************
+# Compiler version checking
+AC_MSG_NOTICE([Checking GCC Version])
+gcc --version > gccver.txt
+sed -e '/^gcc version 3.2/ p' gccver.txt > gcc32.txt
+
+# Check for Debug or Release build settings
+AC_ARG_ENABLE([optimized],
+        MAP_HELP_STRING([--enable-optimized],
+                        [enable optimized build [[default=no]]]),
+        [enable_optimized=$enableval],
+        [enable_optimized=no])
+
+if test $enable_optimized = no; then
+    AC_MSG_NOTICE([Using debug configuration])
+    if test -s gcc32.txt; then
+        AC_MSG_NOTICE([gcc 3.2.x requires less strict compiler flags. Please pay attention to warnings!])
+        CXXFLAGS="-g -D_DEBUG"
+        AC_SUBST(CXXFLAGS, ["-g -D_DEBUG"])
+    else
+        AC_MSG_NOTICE([this version of gcc is not actively supported])
+        CXXFLAGS="-g -D_DEBUG"
+        AC_SUBST(CXXFLAGS, ["-g -D_DEBUG"])
+    fi
+else
+    AC_MSG_NOTICE([Using optimized configuration])
+    if test -s "gcc32.txt"; then
+        AC_MSG_NOTICE([gcc 3.2.x . Please pay attention to warnings!])
+        CXXFLAGS="-O2 -g -pipe -march=i386 -mcpu=i686 -fno-use-cxa-atexit -fexceptions"
+        AC_SUBST(CXXFLAGS, ["-O2 -g -pipe -march=i386 -mcpu=i686 -fno-use-cxa-atexit -fexceptions"])
+    else
+        AC_MSG_NOTICE([this gcc version is not actively supported.])
+        CXXFLAGS="-O2 -g -pipe -march=i386 -mcpu=i686 -fno-use-cxa-atexit -fexceptions"
+        AC_SUBST(CXXFLAGS, ["-O2 -g -pipe -march=i386 -mcpu=i686 -fno-use-cxa-atexit -fexceptions"])
+    fi
+fi
+
+dnl *******************************************************
+dnl Server / WebTier Toggle
+dnl *******************************************************
+# Setup Subdirs
+AC_MSG_NOTICE([Building Common Libraries])
+map_toplevel_subdirs="Oem Common"
+
+AC_ARG_ENABLE([server],
+        MAP_HELP_STRING([--enable-server],
+                        [enable server build [[default=yes]]]),
+        [enable_server=$enableval],
+        [enable_server=yes])
+
+if test $enable_server = yes; then
+    AC_MSG_NOTICE([Building Server])
+    map_toplevel_subdirs="$map_toplevel_subdirs Server"
+else
+    AC_MSG_NOTICE([Ignoring Server])
+fi
+
+AC_ARG_ENABLE([webtier],
+        MAP_HELP_STRING([--enable-webtier],
+                        [enable webtier build [[default=yes]]]),
+        [enable_webtier=$enableval],
+        [enable_webtier=yes])
+
+if test $enable_webtier = yes; then
+    AC_MSG_NOTICE([Building Web Tier])
+    map_toplevel_subdirs="$map_toplevel_subdirs Web"
+else
+    AC_MSG_NOTICE([Ignoring Web Tier])
+fi
+
+AC_SUBST(map_toplevel_subdirs)
+
+dnl *******************************************************
+dnl Cleanup and Output Makefiles
+dnl *******************************************************
+rm gccver.txt
+rm gcc32.txt
+
+map_srcdir=`(cd $srcdir && pwd)`
+AC_SUBST(map_srcdir)
+
+# All Makefile.am in the entire structure that need to be generated.
+# TODO: move them all to the macro file.
+
+AC_CONFIG_FILES(Makefile)
+# MAP_CONFIG_FILES_OEM
+AC_CONFIG_FILES([Oem/Makefile])
+
+# MAP_CONFIG_FILES_COMMON
+AC_CONFIG_FILES([Common/Makefile \
+        Common/MdfModel/Makefile \
+        Common/MdfParser/Makefile \
+        Common/Security/Makefile \
+        Common/Foundation/Makefile \
+        Common/Geometry/Makefile \
+        Common/PlatformBase/Makefile \
+        Common/MapGuideCommon/Makefile \
+        Common/Stylization/Makefile \
+        Common/Renderers/Makefile])
+
+# MAP_CONFIG_FILES_SERVER
+AC_CONFIG_FILES([Server/Makefile \
+        Server/src/Makefile \
+        Server/src/Gws/Makefile \
+        Server/src/Gws/GwsResource/Makefile \
+        Server/src/Gws/GwsCommon/Makefile \
+        Server/src/Gws/GwsQueryEngine/Makefile \
+        Server/src/Common/Makefile \
+        Server/src/Common/Base/Makefile \
+        Server/src/Common/Cache/Makefile \
+        Server/src/Common/Manager/Makefile \
+        Server/src/Common/Thread/Makefile \
+        Server/src/Services/Makefile \
+        Server/src/Services/Feature/Makefile \
+        Server/src/Services/Kml/Makefile \
+        Server/src/Services/Mapping/Makefile \
+        Server/src/Services/Resource/Makefile \
+        Server/src/Services/Site/Makefile \
+        Server/src/Services/Drawing/Makefile \
+        Server/src/Services/Profiling/Makefile \
+        Server/src/Services/Rendering/Makefile \
+        Server/src/Services/ServerAdmin/Makefile \
+        Server/src/Services/Tile/Makefile \
+        Server/src/Core/Makefile])
+AC_CONFIG_FILES([Server/src/UnitTesting/Makefile])
+
+# MAP_CONFIG_FILES_WEBTIER
+AC_CONFIG_FILES([Web/Makefile \
+        Web/src/Makefile \
+        Web/src/WebApp/Makefile \
+        Web/src/WebSupport/Makefile \
+        Web/src/JavaApi/Makefile \
+        Web/src/PhpApi/Makefile \
+        Web/src/HttpHandler/Makefile \
+        Web/src/CgiAgent/Makefile \
+        Web/src/ApacheAgent/Makefile])
+
+AC_OUTPUT

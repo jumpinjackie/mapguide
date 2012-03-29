@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="Windows-1252"?>
+<VisualStudioProject
+	ProjectType="Visual C++"
+	Version="9.00"
+	Name="WebDotNetApi"
+	ProjectGUID="{41F3263B-C16C-49E8-ADF6-416DFB55C9E2}"
+	RootNamespace="WebDotNetApi"
+	Keyword="MakeFileProj"
+	TargetFrameworkVersion="131072"
+	>
+	<Platforms>
+		<Platform
+			Name="Win32"
+		/>
+		<Platform
+			Name="x64"
+		/>
+	</Platforms>
+	<ToolFiles>
+	</ToolFiles>
+	<Configurations>
+		<Configuration
+			Name="Debug|Win32"
+			OutputDirectory="..\..\..\bin\debug"
+			IntermediateDirectory="..\..\..\obj\debug\DotNetApi\Web"
+			ConfigurationType="0"
+			>
+			<Tool
+				Name="VCNMakeTool"
+				BuildCommandLine="nmake -f WebMakefile PLATFORM=x86 OUTDIR=&quot;$(OutDir)&quot; debug"
+				ReBuildCommandLine="nmake -a -f WebMakefile PLATFORM=x86 OUTDIR=&quot;$(OutDir)&quot; debug"
+				CleanCommandLine="nmake -f WebMakefile OUTDIR=&quot;$(OutDir)&quot; cleandebug"
+				Output="$(OutDir)\OSGeo.MapGuide.Web.dll"
+				PreprocessorDefinitions=""
+				IncludeSearchPath=""
+				ForcedIncludes=""
+				AssemblySearchPath=""
+				ForcedUsingAssemblies=""
+				CompileAsManaged=""
+			/>
+		</Configuration>
+		<Configuration
+			Name="Debug|x64"
+			OutputDirectory="..\..\..\bin\debug64"
+			IntermediateDirectory="..\..\..\obj\debug64\DotNetApi\Web"
+			ConfigurationType="0"
+			>
+			<Tool
+				Name="VCNMakeTool"
+				BuildCommandLine="nmake -f WebMakefile PLATFORM=x64 OUTDIR=&quot;$(OutDir)&quot; debug"
+				ReBuildCommandLine="nmake -a -f WebMakefile PLATFORM=x64 OUTDIR=&quot;$(OutDir)&quot; debug"
+				CleanCommandLine="nmake -f WebMakefile OUTDIR=&quot;$(OutDir)&quot; cleandebug"
+				Output="$(OutDir)\OSGeo.MapGuide.Web.dll"
+				PreprocessorDefinitions=""
+				IncludeSearchPath=""
+				ForcedIncludes=""
+				AssemblySearchPath=""
+				ForcedUsingAssemblies=""
+				CompileAsManaged=""
+			/>
+		</Configuration>
+		<Configuration
+			Name="Release|Win32"
+			OutputDirectory="..\..\..\bin\release"
+			IntermediateDirectory="..\..\..\obj\release\DotNetApi\Web"
+			ConfigurationType="0"
+			>
+			<Tool
+				Name="VCNMakeTool"
+				BuildCommandLine="nmake -f WebMakefile PLATFORM=x86 OUTDIR=&quot;$(OutDir)&quot; release"
+				ReBuildCommandLine="nmake -a -f WebMakefile PLATFORM=x86 OUTDIR=&quot;$(OutDir)&quot; release"
+				CleanCommandLine="nmake -f WebMakefile OUTDIR=&quot;$(OutDir)&quot; cleanrelease"
+				Output="$(OutDir)\OSGeo.MapGuide.Web.dll"
+				PreprocessorDefinitions=""
+				IncludeSearchPath=""
+				ForcedIncludes=""
+				AssemblySearchPath=""
+				ForcedUsingAssemblies=""
+				CompileAsManaged=""
+			/>
+		</Configuration>
+		<Configuration
+			Name="Release|x64"
+			OutputDirectory="..\..\..\bin\release64"
+			IntermediateDirectory="..\..\..\obj\release64\DotNetApi\Web"
+			ConfigurationType="0"
+			>
+			<Tool
+				Name="VCNMakeTool"
+				BuildCommandLine="nmake -f WebMakefile PLATFORM=x64 OUTDIR=&quot;$(OutDir)&quot; release"
+				ReBuildCommandLine="nmake -a -f WebMakefile PLATFORM=x64 OUTDIR=&quot;$(OutDir)&quot; release"
+				CleanCommandLine="nmake -f WebMakefile OUTDIR=&quot;$(OutDir)&quot; cleanrelease"
+				Output="$(OutDir)\OSGeo.MapGuide.Web.dll"
+				PreprocessorDefinitions=""
+				IncludeSearchPath=""
+				ForcedIncludes=""
+				AssemblySearchPath=""
+				ForcedUsingAssemblies=""
+				CompileAsManaged=""
+			/>
+		</Configuration>
+	</Configurations>
+	<References>
+	</References>
+	<Files>
+		<File
+			RelativePath=".\WebMakefile"
+			>
+		</File>
+	</Files>
+	<Globals>
+	</Globals>
+</VisualStudioProject>

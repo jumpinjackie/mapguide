@@ -1,0 +1,217 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Ops">
+      <UniqueIdentifier>{687c9e1b-fb75-4d84-8aed-2cc6da10a10b}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="OpBringOnline.cpp">
+      <Filter>Ops</Filter>
+    </ClCompile>
+    <ClCompile Include="OpClearLog.cpp">
+      <Filter>Ops</Filter>
+    </ClCompile>
+    <ClCompile Include="OpDeleteLog.cpp">
+      <Filter>Ops</Filter>
+    </ClCompile>
+    <ClCompile Include="OpDeletePackage.cpp">
+      <Filter>Ops</Filter>
+    </ClCompile>
+    <ClCompile Include="OpEnableMaximumLogSize.cpp">
+      <Filter>Ops</Filter>
+    </ClCompile>
+    <ClCompile Include="OpEnumerateLogs.cpp">
+      <Filter>Ops</Filter>
+    </ClCompile>
+    <ClCompile Include="OpEnumeratePackages.cpp">
+      <Filter>Ops</Filter>
+    </ClCompile>
+    <ClCompile Include="OpGetConfigurationProperties.cpp">
+      <Filter>Ops</Filter>
+    </ClCompile>
+    <ClCompile Include="OpGetDocument.cpp">
+      <Filter>Ops</Filter>
+    </ClCompile>
+    <ClCompile Include="OpGetInformationProperties.cpp">
+      <Filter>Ops</Filter>
+    </ClCompile>
+    <ClCompile Include="OpGetLog.cpp">
+      <Filter>Ops</Filter>
+    </ClCompile>
+    <ClCompile Include="OpGetLogFile.cpp">
+      <Filter>Ops</Filter>
+    </ClCompile>
+    <ClCompile Include="OpGetPackageLog.cpp">
+      <Filter>Ops</Filter>
+    </ClCompile>
+    <ClCompile Include="OpGetPackageStatus.cpp">
+      <Filter>Ops</Filter>
+    </ClCompile>
+    <ClCompile Include="OpGetSiteStatus.cpp">
+      <Filter>Ops</Filter>
+    </ClCompile>
+    <ClCompile Include="OpGetSiteVersion.cpp">
+      <Filter>Ops</Filter>
+    </ClCompile>
+    <ClCompile Include="OpIsMaximumLogSizeEnabled.cpp">
+      <Filter>Ops</Filter>
+    </ClCompile>
+    <ClCompile Include="OpIsOnline.cpp">
+      <Filter>Ops</Filter>
+    </ClCompile>
+    <ClCompile Include="OpLoadPackage.cpp">
+      <Filter>Ops</Filter>
+    </ClCompile>
+    <ClCompile Include="OpMakePackage.cpp">
+      <Filter>Ops</Filter>
+    </ClCompile>
+    <ClCompile Include="OpNotifyResourcesChanged.cpp">
+      <Filter>Ops</Filter>
+    </ClCompile>
+    <ClCompile Include="OpRegisterServicesOnServers.cpp">
+      <Filter>Ops</Filter>
+    </ClCompile>
+    <ClCompile Include="OpRemoveConfigurationProperties.cpp">
+      <Filter>Ops</Filter>
+    </ClCompile>
+    <ClCompile Include="OpRenameLog.cpp">
+      <Filter>Ops</Filter>
+    </ClCompile>
+    <ClCompile Include="OpSetConfigurationProperties.cpp">
+      <Filter>Ops</Filter>
+    </ClCompile>
+    <ClCompile Include="OpSetDocument.cpp">
+      <Filter>Ops</Filter>
+    </ClCompile>
+    <ClCompile Include="OpSetLogDelimiter.cpp">
+      <Filter>Ops</Filter>
+    </ClCompile>
+    <ClCompile Include="OpSetMaximumLogSize.cpp">
+      <Filter>Ops</Filter>
+    </ClCompile>
+    <ClCompile Include="OpTakeOffline.cpp">
+      <Filter>Ops</Filter>
+    </ClCompile>
+    <ClCompile Include="OpUnregisterServicesOnServers.cpp">
+      <Filter>Ops</Filter>
+    </ClCompile>
+    <ClCompile Include="ServerAdminOperation.cpp">
+      <Filter>Ops</Filter>
+    </ClCompile>
+    <ClCompile Include="ServerAdminOperationFactory.cpp">
+      <Filter>Ops</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Common\Dll.cpp" />
+    <ClCompile Include="ServerAdminService.cpp" />
+    <ClCompile Include="ServerAdminServiceBuild.cpp" />
+    <ClCompile Include="ServerAdminServiceHandler.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="OpBringOnline.h">
+      <Filter>Ops</Filter>
+    </ClInclude>
+    <ClInclude Include="OpClearLog.h">
+      <Filter>Ops</Filter>
+    </ClInclude>
+    <ClInclude Include="OpDeleteLog.h">
+      <Filter>Ops</Filter>
+    </ClInclude>
+    <ClInclude Include="OpDeletePackage.h">
+      <Filter>Ops</Filter>
+    </ClInclude>
+    <ClInclude Include="OpEnumeratePackages.h">
+      <Filter>Ops</Filter>
+    </ClInclude>
+    <ClInclude Include="OpGetConfigurationProperties.h">
+      <Filter>Ops</Filter>
+    </ClInclude>
+    <ClInclude Include="OpGetDocument.h">
+      <Filter>Ops</Filter>
+    </ClInclude>
+    <ClInclude Include="OpGetInformationProperties.h">
+      <Filter>Ops</Filter>
+    </ClInclude>
+    <ClInclude Include="OpGetLog.h">
+      <Filter>Ops</Filter>
+    </ClInclude>
+    <ClInclude Include="OpGetLogFile.h">
+      <Filter>Ops</Filter>
+    </ClInclude>
+    <ClInclude Include="OpGetPackageLog.h">
+      <Filter>Ops</Filter>
+    </ClInclude>
+    <ClInclude Include="OpGetPackageStatus.h">
+      <Filter>Ops</Filter>
+    </ClInclude>
+    <ClInclude Include="OpGetSiteStatus.h">
+      <Filter>Ops</Filter>
+    </ClInclude>
+    <ClInclude Include="OpGetSiteVersion.h">
+      <Filter>Ops</Filter>
+    </ClInclude>
+    <ClInclude Include="OpIsOnline.h">
+      <Filter>Ops</Filter>
+    </ClInclude>
+    <ClInclude Include="OpLoadPackage.h">
+      <Filter>Ops</Filter>
+    </ClInclude>
+    <ClInclude Include="OpMakePackage.h">
+      <Filter>Ops</Filter>
+    </ClInclude>
+    <ClInclude Include="OpNotifyResourcesChanged.h">
+      <Filter>Ops</Filter>
+    </ClInclude>
+    <ClInclude Include="OpRegisterServicesOnServers.h">
+      <Filter>Ops</Filter>
+    </ClInclude>
+    <ClInclude Include="OpRemoveConfigurationProperties.h">
+      <Filter>Ops</Filter>
+    </ClInclude>
+    <ClInclude Include="OpSetConfigurationProperties.h">
+      <Filter>Ops</Filter>
+    </ClInclude>
+    <ClInclude Include="OpSetDocument.h">
+      <Filter>Ops</Filter>
+    </ClInclude>
+    <ClInclude Include="OpSetLogDelimiter.h">
+      <Filter>Ops</Filter>
+    </ClInclude>
+    <ClInclude Include="OpSetMaximumLogSize.h">
+      <Filter>Ops</Filter>
+    </ClInclude>
+    <ClInclude Include="OpTakeOffline.h">
+      <Filter>Ops</Filter>
+    </ClInclude>
+    <ClInclude Include="OpUnregisterServicesOnServers.h">
+      <Filter>Ops</Filter>
+    </ClInclude>
+    <ClInclude Include="ServerAdminOperation.h">
+      <Filter>Ops</Filter>
+    </ClInclude>
+    <ClInclude Include="ServerAdminOperationFactory.h">
+      <Filter>Ops</Filter>
+    </ClInclude>
+    <ClInclude Include="ServerAdminDllExport.h" />
+    <ClInclude Include="ServerAdminService.h" />
+    <ClInclude Include="ServerAdminServiceHandler.h" />
+    <ClInclude Include="..\..\Common\stdafx.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="ServerAdminService.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuildStep Include="OpEnableMaximumLogSize.h">
+      <Filter>Ops</Filter>
+    </CustomBuildStep>
+    <CustomBuildStep Include="OpEnumerateLogs.h">
+      <Filter>Ops</Filter>
+    </CustomBuildStep>
+    <CustomBuildStep Include="OpIsMaximumLogSizeEnabled.h">
+      <Filter>Ops</Filter>
+    </CustomBuildStep>
+    <CustomBuildStep Include="OpRenameLog.h">
+      <Filter>Ops</Filter>
+    </CustomBuildStep>
+  </ItemGroup>
+</Project>

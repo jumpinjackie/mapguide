@@ -1,0 +1,289 @@
+﻿<?xml version='1.0'?>
+<Configuration>
+<Definitions>
+
+ <!-- This definition enumerates the WMS versions we will support.
+      Note that each version below must be backed by a like-named
+      template file (ie, 1.0.0.xml.awd) in order to work.
+      These must appear in increasing order!
+      Also, anything other than a <Version> element is ignored.    -->
+ <Define item="SupportedVersions">
+   <Version number="1.0.0"/>
+   <Version number="1.1.0"/>
+   <Version number="1.1.1"/>
+   <Version number="1.3.0"/>
+ </Define>
+
+ <!-- These are edited by the Site Administration tool, though you
+      could modify them by any UTF-8-enabled editor.               -->
+ <Define item="Service.Name">OGC:WMS</Define> <!-- Generally should stay OGC:WMS -->
+ <Define item="Service.Title">MapGuide WMS Server</Define>
+ <Define item="Service.Fees">none</Define>
+ <Define item="Service.Abstract">MapGuide WMS Server</Define>
+ <Define item="Service.AccessConstraints">none</Define>
+ <!-- Who to contact -->
+ <Define item="Service.Contact.Name"></Define>
+ <Define item="Service.Contact.Organization"></Define>
+ <Define item="Service.Contact.Position"></Define>
+ <Define item="Service.Contact.Address.Type">postal</Define>
+ <Define item="Service.Contact.Address.Street"></Define>
+ <Define item="Service.Contact.Address.City"></Define>
+ <Define item="Service.Contact.Address.StateProv"></Define>
+ <Define item="Service.Contact.Address.PostCode"></Define>
+ <Define item="Service.Contact.Address.Country"></Define>
+ <Define item="Service.Contact.Phone"></Define>
+ <Define item="Service.Contact.Fax"></Define>
+ <Define item="Service.Contact.Email"></Define>
+
+ <!-- The URL elements.  Change to suit, as this is reported -->
+ <Define item="SERVER_NAME">localhost:8008</Define>
+ <Define item="SCRIPT_NAME">/mapguide/mapagent/mapagent.fcgi</Define>
+
+ <!-- Stock definitions -->
+ <Define item="URl.OnlineResource">http://&SERVER_NAME;/</Define>
+ <Define item="Url.GetCapabilities">http://&SERVER_NAME;&SCRIPT_NAME;</Define>
+ <Define item="Url.GetMap">http://&SERVER_NAME;&SCRIPT_NAME;</Define>
+ <Define item="Url.GetFeatureInfo">http://&SERVER_NAME;&SCRIPT_NAME;</Define>
+
+ <!-- List the keywords to be associated with the WMS - pick what describes your data -->
+ <Define item="Service.Keywords">
+    <item>GIS</item>
+    <item>WMS</item>
+    <item>Server</item>
+ </Define>
+
+
+ <!-- Enumerates an element in a dictionary for HTML
+      (Used chiefly for debugging, and in exceptions) -->
+ <Define item="EnumDictionary.html"><tr><td class="name">&EnumDictionary.Name;</td><td><?Escape text="&EnumDictionary.Value;"?></td></tr>
+ </Define>
+
+ <!-- This is the HTML stylesheet, which should be referenced by anything returning HTML
+      Note: one could substitute this with an out-of-band stylesheet link to an external doc,
+      that is to say, replacing this with:
+           <link rel="stylesheet" href="http://your-url-to-a/stylesheet.css" />
+      and then maintaining that document somewhere on your webserver.                         -->
+ <Define item="html.stylesheet">
+<style>
+body {
+  font-family: arial,
+}
+table {
+  font-family: arial,
+}
+.title {
+  background-color: #ccf;
+  font-weight: bold;
+  font-size: larger;
+}
+.name {
+  background-color: #eef;
+  font-weight: bold;
+}
+</style>
+</Define>
+
+ <Define item="ReferenceSystems">
+  <item>EPSG:4326</item>
+  <!--
+  <item>CRS:84</item>
+  -->
+ </Define>
+
+ <!-- This is the default definition for a layer in GetCapabilities as text/xml
+      Some versions may override this definition with a like-named definition
+      of their own; any version-specific definition supercedes this one.        -->
+ <Define item="EnumLayer.xml">
+  <Layer queryable="&Layer.queryable;" transparent="&Layer.transparent;">
+   <Name>&Layer.name;</Name>
+   <Title>&Layer.Title;</Title>
+   <?Enum list="&ReferenceSystems;" using="&RS.xml;"?>
+  </Layer>
+ </Define>
+
+ <!-- This is the default definition for a layer in GetCapabilities as text/html -->
+ <Define item="EnumLayer.html">
+  <tr>
+   <td class="name">&Layer.name;</td>
+   <td>queryable="&Layer.queryable;" transparent="&Layer.transparent;"
+    <ul>
+     <?Enum list="&ReferenceSystems;" using="&Format.html;"?>
+    </ul>
+   </td>
+  </tr>
+ </Define>
+
+ <!-- This is the default definition for a reference system (SRS, or CRS) -->
+ <Define item="RS.xml"><SRS>&Enum.item;</SRS></Define>
+ <Define item="RS_CRS.xml"><CRS>&Enum.item;</CRS></Define>
+ 
+ <!-- You can control the formats supported by various
+      WMS responses by (a) modifying these lists and
+      (b) adding (if necessary) the appropriate
+      <Response> element in the corresponding version
+      template files.  You can locally override the
+      supported formats by copying one of these
+      definitions and modifying it to suit; in this
+      case, the mods only apply to that version.        -->
+
+ <!-- These are the supported (Get)Capabilities formats
+      Specific version templates can override these     -->
+ <Define item="Formats.GetCapabilities">
+   <item>text/xml</item>
+   <item>text/html</item>
+   <item>text/plain</item>
+ </Define>
+
+ <!-- These are the supported (Get)Map formats
+      Specific version templates can override these -->
+ <Define item="Formats.GetMap">
+   <item>image/png</item>
+   <item>image/jpeg</item>
+   <item>image/gif</item>
+ </Define>
+
+ <!-- This value map permits FORMAT= parameters to be  -->
+ <!-- translated into canonical mime type notations    -->
+ <!-- mostly for historical support (1.0.0 didn't use  -->
+ <!-- mime types) but also for tolerance; some clients -->
+ <!-- don't follow the requirement that parameter      -->
+ <!-- values are (supposed to be) case sensitive.      -->
+ <Define item="Parameter.Format.ValueMap">
+  <!-- Permutations of GIF -->
+  <translate from="GIF">image/gif</translate>
+  <translate from="gif">image/gif</translate>
+  <translate from="image/GIF">image/gif</translate>
+
+  <!-- Permutations of PNG -->
+  <translate from="PNG">image/png</translate>
+  <translate from="png">image/png</translate>
+  <translate from="image/PNG">image/png</translate>
+
+  <!-- Permutations of JPG -->
+  <translate from="JPG">image/jpeg</translate>
+  <translate from="JPEG">image/jpeg</translate>
+  <translate from="jpg">image/jpeg</translate>
+  <translate from="jpeg">image/jpeg</translate>
+  <translate from="image/JPEG">image/jpeg</translate>
+  <translate from="image/JPG">image/jpeg</translate>
+ </Define>
+
+
+ <!-- -->
+ <Define item="Parameter.SRS.ValueMap">
+  <translate from="LL84">EPSG:4326</translate>
+ </Define>
+
+ <!-- These are the supported (Get)FeatureInfo formats
+      Specific version templates can override these    -->
+ <Define item="Formats.GetFeatureInfo">
+   <item>text/xml</item>
+   <item>text/html</item>
+   <item>text/plain</item>
+ </Define>
+
+ <!-- These are the supported Exception formats
+      Specific version templates can override these -->
+ <Define item="Formats.Exception">
+   <item>application/vnd.ogc.se_xml</item>
+   <item>application/vnd.ogc.se_inimage</item>
+   <item>application/vnd.ogc.se_blank</item>
+   <item>text/html</item>
+   <item>text/plain</item>
+   <item>XML</item>
+   <item>INIMAGE</item>
+   <item>BLANK</item>
+
+ </Define>
+
+
+ <!-- This is the way formats are reported in XML -->
+ <Define item="Format.xml">
+  <Format>&Enum.item;</Format>
+ </Define>
+
+ <!-- This is the way formats are reported in HTML -->
+ <Define item="Format.html">
+  <li>&Enum.item;</li>
+ </Define>
+
+ <!-- This is the way formats are reported in plain text -->
+ <Define item="Format.plain">
+ * &Enum.item;
+ </Define>
+
+ <!-- These are default values to be overridden by metadata in
+      each layer. -->
+ <Define item="Layer.Queryable">0</Define><!-- For security, defaults to off; author must explicitly allow -->
+ <Define item="Layer.Cascaded">0</Define>
+ <Define item="Layer.Nosubsets">0</Define>
+ <Define item="Layer.Opaque">0</Define>
+ <Define item="Layer.Title">&Layer.Title;</Define>
+
+ <!-- Hack!- these are guard values in case the Layer.Bounds property
+      is not well formed; Studio is offering zero data validation on
+      its input via the UI.  Of course, this isn't a perfect solution
+      either, but it guards against the most likely cases.  If somebody
+      types in a badly-formed <Bounds /> element that isn't EPSG:4326
+      then the whole enchilada is serious GIGO. -->
+ <Define item="Enum.item.SRS">EPSG:4326</Define>
+ <Define item="Enum.item.CRS">EPSG:4326</Define>
+ <Define item="Enum.item.north">90</Define>
+ <Define item="Enum.item.south">-90</Define>
+ <Define item="Enum.item.west">-180</Define>
+ <Define item="Enum.item.east">180</Define>
+
+ <!-- This definition allows a site to override the behavior of -->
+ <!-- the SRS= parameter of requests.                           -->
+ <!-- Add translate elements here to map any particularly       -->
+ <!-- troublesome SRS to some appropriate WKT.                  -->
+ <Define item="SRS.WKT.map">
+  <!-- This example fixes a problem with EPSG:21781 not
+       finding the WKT for EPSG:21781 in the CS library.
+  -->
+  <translate from="EPSG:21781">PROJCS["CH1903.LV03/01",GEOGCS["LLCH1903",DATUM["CH-1903",SPHEROID["BESSEL",6377397.155,299.15281535],TOWGS84[660.0770,13.5510,369.3440,0.804816,0.577692,0.952236,5.66000000]],PRIMEM["Greenwich",0],UNIT["Degree",0.017453292519943295]],PROJECTION["Swiss_Oblique_Cylindrical"],PARAMETER["false_easting",600000.000],PARAMETER["false_northing",200000.000],PARAMETER["latitude_of_origin",46.95240555555556],PARAMETER["central_meridian",7.43958333333333],UNIT["Meter",1.00000000000000]]</translate>
+  <translate from="CRS:84">GEOGCS["LL84",DATUM["WGS84",SPHEROID["WGS84",6378137.000,298.25722293]],PRIMEM["Greenwich",0],UNIT["Degree",0.01745329251994]]</translate>
+ </Define>
+
+</Definitions>
+
+
+<!--  This is the exception of last resort, and is used if
+      no exception Response is found in the version-specific
+      template (or if an error occurs before a version can
+      be established.)
+      By this declaration, we say the default response shall
+      be html.  Of course, any appropriate <Response/> in
+      the template file will supercede this.
+-->
+
+<Exception content-type="text/html">
+<html>
+ <head>
+  <title>WMS Service Exception</title>
+  &html.stylesheet;
+ </head>
+ <body>
+  <table>
+   <tr>
+    <td class="title" colspan="2"><b>WMS Service Exception</b></td>
+   </tr>
+   <tr>
+    <td colspan="2">
+     An exception occurred on the server.
+    </td>
+   </tr>
+   <tr>
+    <td class="name">Code</td><td>&Exception.Type;</td>
+   </tr>
+   <tr>
+    <td class="name">Reason</td><td>&Exception.Message;</td>
+   </tr>
+   <tr><td class="title" colspan="2">Definitions</td></tr>
+  <?EnumDictionary using="&EnumDictionary.html;"?>
+  </table>
+ </body>
+</html>
+</Exception>
+
+</Configuration>

@@ -1,0 +1,2216 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 39;
+	objects = {
+		034768DDFF38A45A11DB9C8B = {
+			children = (
+				8D07F2C80486CC7A007CD1D0,
+			);
+			isa = PBXGroup;
+			name = Products;
+			refType = 4;
+			sourceTree = "<group>";
+		};
+//030
+//031
+//032
+//033
+//034
+//080
+//081
+//082
+//083
+//084
+		0867D690FE84028FC02AAC07 = {
+			buildSettings = {
+			};
+			buildStyles = (
+				4F0BB7EC011F40E904CA0E50,
+				4F0BB7ED011F40E904CA0E50,
+			);
+			hasScannedForEncodings = 1;
+			isa = PBXProject;
+			mainGroup = 0867D691FE84028FC02AAC07;
+			productRefGroup = 034768DDFF38A45A11DB9C8B;
+			projectDirPath = "";
+			targets = (
+				8D07F2BC0486CC7A007CD1D0,
+			);
+		};
+		0867D691FE84028FC02AAC07 = {
+			children = (
+				08FB77ACFE841707C02AAC07,
+				089C1665FE841158C02AAC07,
+				0867D69AFE84028FC02AAC07,
+				034768DDFF38A45A11DB9C8B,
+			);
+			isa = PBXGroup;
+			name = DWFCore;
+			refType = 4;
+			sourceTree = "<group>";
+		};
+		0867D69AFE84028FC02AAC07 = {
+			children = (
+				CC47E64007F21EB4005B21C2,
+				CC47E64307F21FFB005B21C2,
+				08FB77AAFE841565C02AAC07,
+			);
+			isa = PBXGroup;
+			name = "External Frameworks and Libraries";
+			refType = 4;
+			sourceTree = "<group>";
+		};
+		089C1665FE841158C02AAC07 = {
+			children = (
+				8D07F2C70486CC7A007CD1D0,
+				089C1666FE841158C02AAC07,
+			);
+			isa = PBXGroup;
+			name = Resources;
+			refType = 4;
+			sourceTree = "<group>";
+		};
+		089C1666FE841158C02AAC07 = {
+			children = (
+				089C1667FE841158C02AAC07,
+			);
+			isa = PBXVariantGroup;
+			name = InfoPlist.strings;
+			refType = 4;
+			sourceTree = "<group>";
+		};
+		089C1667FE841158C02AAC07 = {
+			fileEncoding = 10;
+			isa = PBXFileReference;
+			lastKnownFileType = text.plist.strings;
+			name = English;
+			path = English.lproj/InfoPlist.strings;
+			refType = 4;
+			sourceTree = "<group>";
+		};
+		08FB77AAFE841565C02AAC07 = {
+			isa = PBXFileReference;
+			lastKnownFileType = wrapper.framework;
+			name = Carbon.framework;
+			path = /System/Library/Frameworks/Carbon.framework;
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		08FB77ACFE841707C02AAC07 = {
+			children = (
+				32BAE0B70371A74B00C91783,
+				CC7BFF4B07F2042E000092C2,
+			);
+			isa = PBXGroup;
+			name = Source;
+			path = "";
+			refType = 4;
+			sourceTree = "<group>";
+		};
+//080
+//081
+//082
+//083
+//084
+//320
+//321
+//322
+//323
+//324
+		32BAE0B70371A74B00C91783 = {
+			fileEncoding = 4;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			path = DWFCore_Prefix.pch;
+			refType = 4;
+			sourceTree = "<group>";
+		};
+//320
+//321
+//322
+//323
+//324
+//4F0
+//4F1
+//4F2
+//4F3
+//4F4
+		4F0BB7EC011F40E904CA0E50 = {
+			buildSettings = {
+				COPY_PHASE_STRIP = NO;
+				DEBUGGING_SYMBOLS = YES;
+				DEPLOYMENT_LOCATION = NO;
+				DSTROOT = "";
+				DYLIB_CURRENT_VERSION = 1.1.0;
+				GCC_DEBUGGING_SYMBOLS = full;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_WARN_ABOUT_MISSING_PROTOTYPES = NO;
+				GCC_WARN_ALLOW_INCOMPLETE_PROTOCOL = NO;
+				GCC_WARN_CHECK_SWITCH_STATEMENTS = NO;
+				GCC_WARN_EFFECTIVE_CPLUSPLUS_VIOLATIONS = NO;
+				GCC_WARN_HIDDEN_VIRTUAL_FUNCTIONS = NO;
+				GCC_WARN_INITIALIZER_NOT_FULLY_BRACKETED = NO;
+				GCC_WARN_MISSING_PARENTHESES = NO;
+				GCC_WARN_NON_VIRTUAL_DESTRUCTOR = YES;
+				GCC_WARN_PEDANTIC = NO;
+				GCC_WARN_SHADOW = YES;
+				GCC_WARN_SIGN_COMPARE = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = NO;
+				GCC_WARN_UNUSED_PARAMETER = YES;
+				GCC_WARN_UNUSED_VALUE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				HEADER_SEARCH_PATHS = ../../../src;
+				INSTALL_PATH = /../../../lib/shared/debug/;
+				LIBRARY_STYLE = DYNAMIC;
+				OPTIMIZATION_CFLAGS = "-O0";
+				PRODUCT_NAME = DWFCore;
+				REZ_PREPROCESSOR_DEFINITIONS = "";
+				REZ_PREPROCESSOR_UNDEFINITIONS = "";
+				USE_HEADERMAP = NO;
+				ZERO_LINK = YES;
+			};
+			isa = PBXBuildStyle;
+			name = Development;
+		};
+		4F0BB7ED011F40E904CA0E50 = {
+			buildSettings = {
+				COPY_PHASE_STRIP = YES;
+				DEPLOYMENT_LOCATION = NO;
+				DSTROOT = "";
+				DYLIB_CURRENT_VERSION = 1.1.0;
+				GCC_ENABLE_FIX_AND_CONTINUE = NO;
+				GCC_OPTIMIZATION_LEVEL = 2;
+				GCC_WARN_ALLOW_INCOMPLETE_PROTOCOL = NO;
+				GCC_WARN_CHECK_SWITCH_STATEMENTS = NO;
+				GCC_WARN_EFFECTIVE_CPLUSPLUS_VIOLATIONS = NO;
+				GCC_WARN_HIDDEN_VIRTUAL_FUNCTIONS = NO;
+				GCC_WARN_INITIALIZER_NOT_FULLY_BRACKETED = NO;
+				GCC_WARN_MISSING_PARENTHESES = NO;
+				GCC_WARN_NON_VIRTUAL_DESTRUCTOR = YES;
+				GCC_WARN_PEDANTIC = NO;
+				GCC_WARN_SHADOW = YES;
+				GCC_WARN_SIGN_COMPARE = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				GCC_WARN_UNUSED_PARAMETER = YES;
+				GCC_WARN_UNUSED_VALUE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				HEADER_SEARCH_PATHS = ../../../src;
+				INSTALL_PATH = /../../../lib/shared/release/;
+				LIBRARY_STYLE = DYNAMIC;
+				PRODUCT_NAME = DWFCore;
+				REZ_PREPROCESSOR_UNDEFINITIONS = "";
+				USE_HEADERMAP = NO;
+				ZERO_LINK = NO;
+			};
+			isa = PBXBuildStyle;
+			name = Deployment;
+		};
+//4F0
+//4F1
+//4F2
+//4F3
+//4F4
+//8D0
+//8D1
+//8D2
+//8D3
+//8D4
+		8D07F2BC0486CC7A007CD1D0 = {
+			buildPhases = (
+				8D07F2BD0486CC7A007CD1D0,
+				8D07F2BF0486CC7A007CD1D0,
+				8D07F2C10486CC7A007CD1D0,
+				8D07F2C30486CC7A007CD1D0,
+				8D07F2C50486CC7A007CD1D0,
+			);
+			buildRules = (
+			);
+			buildSettings = {
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				FRAMEWORK_SEARCH_PATHS = "";
+				FRAMEWORK_VERSION = A;
+				GCC_ENABLE_TRIGRAPHS = NO;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
+				GCC_OPTIMIZATION_LEVEL = 2;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = DWFCore_Prefix.pch;
+				GCC_WARN_ABOUT_MISSING_PROTOTYPES = NO;
+				GCC_WARN_FOUR_CHARACTER_CONSTANTS = NO;
+				GCC_WARN_UNKNOWN_PRAGMAS = NO;
+				HEADER_SEARCH_PATHS = ../../../src;
+				INFOPLIST_FILE = Info.plist;
+				INSTALL_PATH = "$(HOME)/Library/Frameworks";
+				LIBRARY_SEARCH_PATHS = "";
+				LIBRARY_STYLE = DYNAMIC;
+				OTHER_CFLAGS = "";
+				OTHER_LDFLAGS = "";
+				PRODUCT_NAME = DWFCore;
+				SECTORDER_FLAGS = "";
+				USE_HEADERMAP = NO;
+				WARNING_CFLAGS = "-Wmost -Wno-four-char-constants -Wno-unknown-pragmas";
+				WRAPPER_EXTENSION = framework;
+			};
+			dependencies = (
+			);
+			isa = PBXNativeTarget;
+			name = DWFCore;
+			productInstallPath = "$(HOME)/Library/Frameworks";
+			productName = DWFCore;
+			productReference = 8D07F2C80486CC7A007CD1D0;
+			productType = "com.apple.product-type.framework";
+		};
+		8D07F2BD0486CC7A007CD1D0 = {
+			buildActionMask = 2147483647;
+			files = (
+				8D07F2BE0486CC7A007CD1D0,
+				CC7BFF8007F204E9000092C2,
+				CC7BFF8207F204E9000092C2,
+				CC7BFF8307F204E9000092C2,
+				CC7BFF8407F204E9000092C2,
+				CC7BFF8507F204E9000092C2,
+				CC7BFF8707F204E9000092C2,
+				CC7BFF8907F204E9000092C2,
+				CC7BFF8B07F204E9000092C2,
+				CC7BFF8C07F204E9000092C2,
+				CC7BFF8E07F204E9000092C2,
+				CC7BFF9007F204E9000092C2,
+				CC7BFF9107F204E9000092C2,
+				CC7BFF9207F204E9000092C2,
+				CC7BFF9307F204E9000092C2,
+				CC7BFF9507F204E9000092C2,
+				CC7BFF9707F204E9000092C2,
+				CC7BFF9807F204E9000092C2,
+				CC7BFF9A07F204E9000092C2,
+				CC7BFF9B07F204E9000092C2,
+				CC7BFF9C07F204E9000092C2,
+				CC7BFF9D07F204E9000092C2,
+				CC7BFF9E07F204E9000092C2,
+				CC7BFF9F07F204E9000092C2,
+				CC7BFFA007F204E9000092C2,
+				CC7BFFA107F204E9000092C2,
+				CC7BFFA307F204E9000092C2,
+				CC7BFFA407F204E9000092C2,
+				CC7BFFA607F204E9000092C2,
+				CC7BFFA807F204E9000092C2,
+				CC7BFFAA07F204E9000092C2,
+				CC7BFFAB07F204E9000092C2,
+				CC7BFFAD07F204E9000092C2,
+				CC7BFFAF07F204E9000092C2,
+				CC7BFFB107F204E9000092C2,
+				CC7BFFC607F2055E000092C2,
+				CC7BFFC807F2055E000092C2,
+				CC7BFFCA07F2055E000092C2,
+				CC7BFFCC07F2055E000092C2,
+				CC7BFFCE07F2055E000092C2,
+				CC7BFFD307F2055E000092C2,
+				CC7BFFD407F2055E000092C2,
+				CC7BFFD607F2055E000092C2,
+				CC7BFFDD07F20584000092C2,
+				CC7BFFDF07F20584000092C2,
+				CC7BFFEA07F205B1000092C2,
+				CC7BFFEC07F205B1000092C2,
+				CC7BFFEE07F205B1000092C2,
+				CC7B000D07F20609000092C2,
+				CC7B000F07F20609000092C2,
+				CC7B001107F20609000092C2,
+				CC7B001307F20609000092C2,
+				CC7B001407F20609000092C2,
+				CC7B001707F20609000092C2,
+				CC7B001907F20609000092C2,
+				CC7B001C07F20609000092C2,
+				CC7B001E07F20609000092C2,
+				CC7B001F07F20609000092C2,
+				CC7B002107F20609000092C2,
+			);
+			isa = PBXHeadersBuildPhase;
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		8D07F2BE0486CC7A007CD1D0 = {
+			fileRef = 32BAE0B70371A74B00C91783;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		8D07F2BF0486CC7A007CD1D0 = {
+			buildActionMask = 2147483647;
+			files = (
+				8D07F2C00486CC7A007CD1D0,
+			);
+			isa = PBXResourcesBuildPhase;
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		8D07F2C00486CC7A007CD1D0 = {
+			fileRef = 089C1666FE841158C02AAC07;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		8D07F2C10486CC7A007CD1D0 = {
+			buildActionMask = 2147483647;
+			files = (
+				CC7BFF7F07F204E9000092C2,
+				CC7BFF8107F204E9000092C2,
+				CC7BFF8607F204E9000092C2,
+				CC7BFF8807F204E9000092C2,
+				CC7BFF8A07F204E9000092C2,
+				CC7BFF8D07F204E9000092C2,
+				CC7BFF8F07F204E9000092C2,
+				CC7BFF9407F204E9000092C2,
+				CC7BFF9607F204E9000092C2,
+				CC7BFF9907F204E9000092C2,
+				CC7BFFA207F204E9000092C2,
+				CC7BFFA507F204E9000092C2,
+				CC7BFFA707F204E9000092C2,
+				CC7BFFA907F204E9000092C2,
+				CC7BFFAC07F204E9000092C2,
+				CC7BFFAE07F204E9000092C2,
+				CC7BFFB007F204E9000092C2,
+				CC7BFFC507F2055E000092C2,
+				CC7BFFC707F2055E000092C2,
+				CC7BFFC907F2055E000092C2,
+				CC7BFFCB07F2055E000092C2,
+				CC7BFFCD07F2055E000092C2,
+				CC7BFFCF07F2055E000092C2,
+				CC7BFFD007F2055E000092C2,
+				CC7BFFD107F2055E000092C2,
+				CC7BFFD207F2055E000092C2,
+				CC7BFFD507F2055E000092C2,
+				CC7BFFDC07F20584000092C2,
+				CC7BFFDE07F20584000092C2,
+				CC7BFFE807F205B1000092C2,
+				CC7BFFE907F205B1000092C2,
+				CC7BFFEB07F205B1000092C2,
+				CC7BFFED07F205B1000092C2,
+				CC7B000907F20609000092C2,
+				CC7B000A07F20609000092C2,
+				CC7B000B07F20609000092C2,
+				CC7B000C07F20609000092C2,
+				CC7B000E07F20609000092C2,
+				CC7B001007F20609000092C2,
+				CC7B001207F20609000092C2,
+				CC7B001507F20609000092C2,
+				CC7B001607F20609000092C2,
+				CC7B001807F20609000092C2,
+				CC7B001A07F20609000092C2,
+				CC7B001B07F20609000092C2,
+				CC7B001D07F20609000092C2,
+				CC7B002007F20609000092C2,
+			);
+			isa = PBXSourcesBuildPhase;
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		8D07F2C30486CC7A007CD1D0 = {
+			buildActionMask = 2147483647;
+			files = (
+				8D07F2C40486CC7A007CD1D0,
+				CC47E64107F21EB4005B21C2,
+				CC47E64407F21FFB005B21C2,
+			);
+			isa = PBXFrameworksBuildPhase;
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		8D07F2C40486CC7A007CD1D0 = {
+			fileRef = 08FB77AAFE841565C02AAC07;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		8D07F2C50486CC7A007CD1D0 = {
+			buildActionMask = 2147483647;
+			files = (
+			);
+			isa = PBXRezBuildPhase;
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		8D07F2C70486CC7A007CD1D0 = {
+			fileEncoding = 4;
+			isa = PBXFileReference;
+			lastKnownFileType = text.plist;
+			path = Info.plist;
+			refType = 4;
+			sourceTree = "<group>";
+		};
+		8D07F2C80486CC7A007CD1D0 = {
+			explicitFileType = wrapper.framework;
+			includeInIndex = 0;
+			isa = PBXFileReference;
+			path = DWFCore.framework;
+			refType = 3;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+//8D0
+//8D1
+//8D2
+//8D3
+//8D4
+//CC0
+//CC1
+//CC2
+//CC3
+//CC4
+		CC47E64007F21EB4005B21C2 = {
+			isa = PBXFileReference;
+			lastKnownFileType = "compiled.mach-o.dylib";
+			name = libz.dylib;
+			path = /usr/lib/libz.dylib;
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		CC47E64107F21EB4005B21C2 = {
+			fileRef = CC47E64007F21EB4005B21C2;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		CC47E64307F21FFB005B21C2 = {
+			isa = PBXFileReference;
+			lastKnownFileType = "compiled.mach-o.dylib";
+			name = libpthread.dylib;
+			path = /usr/lib/libSystem.B.dylib;
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		CC47E64407F21FFB005B21C2 = {
+			fileRef = CC47E64307F21FFB005B21C2;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		CC7B000007F20609000092C2 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			name = infutil.h;
+			path = ../../../src/dwfcore/zlib/infutil.h;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		CC7B000107F20609000092C2 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.c;
+			name = maketree.c;
+			path = ../../../src/dwfcore/zlib/maketree.c;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		CC7B000207F20609000092C2 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.c;
+			name = trees.c;
+			path = ../../../src/dwfcore/zlib/trees.c;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		CC7B000307F20609000092C2 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			name = trees.h;
+			path = ../../../src/dwfcore/zlib/trees.h;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		CC7B000407F20609000092C2 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.c;
+			name = uncompr.c;
+			path = ../../../src/dwfcore/zlib/uncompr.c;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		CC7B000507F20609000092C2 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			name = zconf.h;
+			path = ../../../src/dwfcore/zlib/zconf.h;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		CC7B000607F20609000092C2 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			name = zlib.h;
+			path = ../../../src/dwfcore/zlib/zlib.h;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		CC7B000707F20609000092C2 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.c;
+			name = zutil.c;
+			path = ../../../src/dwfcore/zlib/zutil.c;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		CC7B000807F20609000092C2 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			name = zutil.h;
+			path = ../../../src/dwfcore/zlib/zutil.h;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		CC7B000907F20609000092C2 = {
+			fileRef = CC7BFFF007F20609000092C2;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		CC7B000A07F20609000092C2 = {
+			fileRef = CC7BFFF107F20609000092C2;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		CC7B000B07F20609000092C2 = {
+			fileRef = CC7BFFF207F20609000092C2;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		CC7B000C07F20609000092C2 = {
+			fileRef = CC7BFFF307F20609000092C2;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		CC7B000D07F20609000092C2 = {
+			fileRef = CC7BFFF407F20609000092C2;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		CC7B000E07F20609000092C2 = {
+			fileRef = CC7BFFF507F20609000092C2;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		CC7B000F07F20609000092C2 = {
+			fileRef = CC7BFFF607F20609000092C2;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		CC7B001007F20609000092C2 = {
+			fileRef = CC7BFFF707F20609000092C2;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		CC7B001107F20609000092C2 = {
+			fileRef = CC7BFFF807F20609000092C2;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		CC7B001207F20609000092C2 = {
+			fileRef = CC7BFFF907F20609000092C2;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		CC7B001307F20609000092C2 = {
+			fileRef = CC7BFFFA07F20609000092C2;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		CC7B001407F20609000092C2 = {
+			fileRef = CC7BFFFB07F20609000092C2;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		CC7B001507F20609000092C2 = {
+			fileRef = CC7BFFFC07F20609000092C2;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		CC7B001607F20609000092C2 = {
+			fileRef = CC7BFFFD07F20609000092C2;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		CC7B001707F20609000092C2 = {
+			fileRef = CC7BFFFE07F20609000092C2;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		CC7B001807F20609000092C2 = {
+			fileRef = CC7BFFFF07F20609000092C2;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		CC7B001907F20609000092C2 = {
+			fileRef = CC7B000007F20609000092C2;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		CC7B001A07F20609000092C2 = {
+			fileRef = CC7B000107F20609000092C2;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		CC7B001B07F20609000092C2 = {
+			fileRef = CC7B000207F20609000092C2;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		CC7B001C07F20609000092C2 = {
+			fileRef = CC7B000307F20609000092C2;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		CC7B001D07F20609000092C2 = {
+			fileRef = CC7B000407F20609000092C2;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		CC7B001E07F20609000092C2 = {
+			fileRef = CC7B000507F20609000092C2;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		CC7B001F07F20609000092C2 = {
+			fileRef = CC7B000607F20609000092C2;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		CC7B002007F20609000092C2 = {
+			fileRef = CC7B000707F20609000092C2;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		CC7B002107F20609000092C2 = {
+			fileRef = CC7B000807F20609000092C2;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		CC7BFF4B07F2042E000092C2 = {
+			children = (
+				CC7BFFB207F2050C000092C2,
+				CC7BFFD707F20564000092C2,
+				CC7BFFE007F2058D000092C2,
+				CC7BFFEF07F205C1000092C2,
+				CC7BFF4C07F204E9000092C2,
+				CC7BFF4D07F204E9000092C2,
+				CC7BFF4E07F204E9000092C2,
+				CC7BFF4F07F204E9000092C2,
+				CC7BFF5007F204E9000092C2,
+				CC7BFF5107F204E9000092C2,
+				CC7BFF5207F204E9000092C2,
+				CC7BFF5307F204E9000092C2,
+				CC7BFF5407F204E9000092C2,
+				CC7BFF5507F204E9000092C2,
+				CC7BFF5607F204E9000092C2,
+				CC7BFF5707F204E9000092C2,
+				CC7BFF5807F204E9000092C2,
+				CC7BFF5907F204E9000092C2,
+				CC7BFF5A07F204E9000092C2,
+				CC7BFF5B07F204E9000092C2,
+				CC7BFF5C07F204E9000092C2,
+				CC7BFF5D07F204E9000092C2,
+				CC7BFF5E07F204E9000092C2,
+				CC7BFF5F07F204E9000092C2,
+				CC7BFF6007F204E9000092C2,
+				CC7BFF6107F204E9000092C2,
+				CC7BFF6207F204E9000092C2,
+				CC7BFF6307F204E9000092C2,
+				CC7BFF6407F204E9000092C2,
+				CC7BFF6507F204E9000092C2,
+				CC7BFF6607F204E9000092C2,
+				CC7BFF6707F204E9000092C2,
+				CC7BFF6807F204E9000092C2,
+				CC7BFF6907F204E9000092C2,
+				CC7BFF6A07F204E9000092C2,
+				CC7BFF6B07F204E9000092C2,
+				CC7BFF6C07F204E9000092C2,
+				CC7BFF6D07F204E9000092C2,
+				CC7BFF6E07F204E9000092C2,
+				CC7BFF6F07F204E9000092C2,
+				CC7BFF7007F204E9000092C2,
+				CC7BFF7107F204E9000092C2,
+				CC7BFF7207F204E9000092C2,
+				CC7BFF7307F204E9000092C2,
+				CC7BFF7407F204E9000092C2,
+				CC7BFF7507F204E9000092C2,
+				CC7BFF7607F204E9000092C2,
+				CC7BFF7707F204E9000092C2,
+				CC7BFF7807F204E9000092C2,
+				CC7BFF7907F204E9000092C2,
+				CC7BFF7A07F204E9000092C2,
+				CC7BFF7B07F204E9000092C2,
+				CC7BFF7C07F204E9000092C2,
+				CC7BFF7D07F204E9000092C2,
+				CC7BFF7E07F204E9000092C2,
+			);
+			isa = PBXGroup;
+			name = dwfcore;
+			path = "";
+			refType = 4;
+			sourceTree = "<group>";
+		};
+		CC7BFF4C07F204E9000092C2 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
+			name = BufferInputStream.cpp;
+			path = ../../../src/dwfcore/BufferInputStream.cpp;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		CC7BFF4D07F204E9000092C2 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			name = BufferInputStream.h;
+			path = ../../../src/dwfcore/BufferInputStream.h;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		CC7BFF4E07F204E9000092C2 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
+			name = BufferOutputStream.cpp;
+			path = ../../../src/dwfcore/BufferOutputStream.cpp;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		CC7BFF4F07F204E9000092C2 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			name = BufferOutputStream.h;
+			path = ../../../src/dwfcore/BufferOutputStream.h;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		CC7BFF5007F204E9000092C2 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			name = Comparator.h;
+			path = ../../../src/dwfcore/Comparator.h;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		CC7BFF5107F204E9000092C2 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			name = Core.h;
+			path = ../../../src/dwfcore/Core.h;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		CC7BFF5207F204E9000092C2 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			name = CountedObject.h;
+			path = ../../../src/dwfcore/CountedObject.h;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		CC7BFF5307F204E9000092C2 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
+			name = DecompressingInputStream.cpp;
+			path = ../../../src/dwfcore/DecompressingInputStream.cpp;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		CC7BFF5407F204E9000092C2 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			name = DecompressingInputStream.h;
+			path = ../../../src/dwfcore/DecompressingInputStream.h;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		CC7BFF5507F204E9000092C2 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
+			name = Exception.cpp;
+			path = ../../../src/dwfcore/Exception.cpp;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		CC7BFF5607F204E9000092C2 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			name = Exception.h;
+			path = ../../../src/dwfcore/Exception.h;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		CC7BFF5707F204E9000092C2 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
+			name = File.cpp;
+			path = ../../../src/dwfcore/File.cpp;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		CC7BFF5807F204E9000092C2 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			name = File.h;
+			path = ../../../src/dwfcore/File.h;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		CC7BFF5907F204E9000092C2 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			name = FileDescriptor.h;
+			path = ../../../src/dwfcore/FileDescriptor.h;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		CC7BFF5A07F204E9000092C2 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
+			name = FileInputStream.cpp;
+			path = ../../../src/dwfcore/FileInputStream.cpp;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		CC7BFF5B07F204E9000092C2 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			name = FileInputStream.h;
+			path = ../../../src/dwfcore/FileInputStream.h;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		CC7BFF5C07F204E9000092C2 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
+			name = FileOutputStream.cpp;
+			path = ../../../src/dwfcore/FileOutputStream.cpp;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		CC7BFF5D07F204E9000092C2 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			name = FileOutputStream.h;
+			path = ../../../src/dwfcore/FileOutputStream.h;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		CC7BFF5E07F204E9000092C2 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			name = Hash.h;
+			path = ../../../src/dwfcore/Hash.h;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		CC7BFF5F07F204E9000092C2 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			name = InputStream.h;
+			path = ../../../src/dwfcore/InputStream.h;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		CC7BFF6007F204E9000092C2 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			name = Iterator.h;
+			path = ../../../src/dwfcore/Iterator.h;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		CC7BFF6107F204E9000092C2 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
+			name = MIME.cpp;
+			path = ../../../src/dwfcore/MIME.cpp;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		CC7BFF6207F204E9000092C2 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			name = MIME.h;
+			path = ../../../src/dwfcore/MIME.h;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		CC7BFF6307F204E9000092C2 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
+			name = MonitoredInputStream.cpp;
+			path = ../../../src/dwfcore/MonitoredInputStream.cpp;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		CC7BFF6407F204E9000092C2 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			name = MonitoredInputStream.h;
+			path = ../../../src/dwfcore/MonitoredInputStream.h;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		CC7BFF6507F204E9000092C2 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			name = OutputStream.h;
+			path = ../../../src/dwfcore/OutputStream.h;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		CC7BFF6607F204E9000092C2 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
+			name = Owner.cpp;
+			path = ../../../src/dwfcore/Owner.cpp;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		CC7BFF6707F204E9000092C2 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			name = Owner.h;
+			path = ../../../src/dwfcore/Owner.h;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		CC7BFF6807F204E9000092C2 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			name = Pointer.h;
+			path = ../../../src/dwfcore/Pointer.h;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		CC7BFF6907F204E9000092C2 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			name = SkipList.h;
+			path = ../../../src/dwfcore/SkipList.h;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		CC7BFF6A07F204E9000092C2 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			name = STL.h;
+			path = ../../../src/dwfcore/STL.h;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		CC7BFF6B07F204E9000092C2 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			name = StreamFileDescriptor.h;
+			path = ../../../src/dwfcore/StreamFileDescriptor.h;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		CC7BFF6C07F204E9000092C2 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			name = String.h;
+			path = ../../../src/dwfcore/String.h;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		CC7BFF6D07F204E9000092C2 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			name = Synchronization.h;
+			path = ../../../src/dwfcore/Synchronization.h;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		CC7BFF6E07F204E9000092C2 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			name = TempFile.h;
+			path = ../../../src/dwfcore/TempFile.h;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		CC7BFF6F07F204E9000092C2 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
+			name = ThreadPool.cpp;
+			path = ../../../src/dwfcore/ThreadPool.cpp;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		CC7BFF7007F204E9000092C2 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			name = ThreadPool.h;
+			path = ../../../src/dwfcore/ThreadPool.h;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		CC7BFF7107F204E9000092C2 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			name = Timer.h;
+			path = ../../../src/dwfcore/Timer.h;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		CC7BFF7207F204E9000092C2 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
+			name = UnzippingInputStream.cpp;
+			path = ../../../src/dwfcore/UnzippingInputStream.cpp;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		CC7BFF7307F204E9000092C2 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			name = UnzippingInputStream.h;
+			path = ../../../src/dwfcore/UnzippingInputStream.h;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		CC7BFF7407F204E9000092C2 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
+			name = UTF8EncodingOutputStream.cpp;
+			path = ../../../src/dwfcore/UTF8EncodingOutputStream.cpp;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		CC7BFF7507F204E9000092C2 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			name = UTF8EncodingOutputStream.h;
+			path = ../../../src/dwfcore/UTF8EncodingOutputStream.h;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		CC7BFF7607F204E9000092C2 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
+			name = UUID.cpp;
+			path = ../../../src/dwfcore/UUID.cpp;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		CC7BFF7707F204E9000092C2 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			name = UUID.h;
+			path = ../../../src/dwfcore/UUID.h;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		CC7BFF7807F204E9000092C2 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			name = Version.h;
+			path = ../../../src/dwfcore/Version.h;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		CC7BFF7907F204E9000092C2 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
+			name = XMLEncodingOutputStream.cpp;
+			path = ../../../src/dwfcore/XMLEncodingOutputStream.cpp;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		CC7BFF7A07F204E9000092C2 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			name = XMLEncodingOutputStream.h;
+			path = ../../../src/dwfcore/XMLEncodingOutputStream.h;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		CC7BFF7B07F204E9000092C2 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
+			name = ZipFileDescriptor.cpp;
+			path = ../../../src/dwfcore/ZipFileDescriptor.cpp;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		CC7BFF7C07F204E9000092C2 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			name = ZipFileDescriptor.h;
+			path = ../../../src/dwfcore/ZipFileDescriptor.h;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		CC7BFF7D07F204E9000092C2 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
+			name = ZippingOutputStream.cpp;
+			path = ../../../src/dwfcore/ZippingOutputStream.cpp;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		CC7BFF7E07F204E9000092C2 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			name = ZippingOutputStream.h;
+			path = ../../../src/dwfcore/ZippingOutputStream.h;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		CC7BFF7F07F204E9000092C2 = {
+			fileRef = CC7BFF4C07F204E9000092C2;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		CC7BFF8007F204E9000092C2 = {
+			fileRef = CC7BFF4D07F204E9000092C2;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		CC7BFF8107F204E9000092C2 = {
+			fileRef = CC7BFF4E07F204E9000092C2;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		CC7BFF8207F204E9000092C2 = {
+			fileRef = CC7BFF4F07F204E9000092C2;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		CC7BFF8307F204E9000092C2 = {
+			fileRef = CC7BFF5007F204E9000092C2;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		CC7BFF8407F204E9000092C2 = {
+			fileRef = CC7BFF5107F204E9000092C2;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		CC7BFF8507F204E9000092C2 = {
+			fileRef = CC7BFF5207F204E9000092C2;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		CC7BFF8607F204E9000092C2 = {
+			fileRef = CC7BFF5307F204E9000092C2;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		CC7BFF8707F204E9000092C2 = {
+			fileRef = CC7BFF5407F204E9000092C2;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		CC7BFF8807F204E9000092C2 = {
+			fileRef = CC7BFF5507F204E9000092C2;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		CC7BFF8907F204E9000092C2 = {
+			fileRef = CC7BFF5607F204E9000092C2;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		CC7BFF8A07F204E9000092C2 = {
+			fileRef = CC7BFF5707F204E9000092C2;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		CC7BFF8B07F204E9000092C2 = {
+			fileRef = CC7BFF5807F204E9000092C2;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		CC7BFF8C07F204E9000092C2 = {
+			fileRef = CC7BFF5907F204E9000092C2;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		CC7BFF8D07F204E9000092C2 = {
+			fileRef = CC7BFF5A07F204E9000092C2;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		CC7BFF8E07F204E9000092C2 = {
+			fileRef = CC7BFF5B07F204E9000092C2;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		CC7BFF8F07F204E9000092C2 = {
+			fileRef = CC7BFF5C07F204E9000092C2;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		CC7BFF9007F204E9000092C2 = {
+			fileRef = CC7BFF5D07F204E9000092C2;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		CC7BFF9107F204E9000092C2 = {
+			fileRef = CC7BFF5E07F204E9000092C2;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		CC7BFF9207F204E9000092C2 = {
+			fileRef = CC7BFF5F07F204E9000092C2;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		CC7BFF9307F204E9000092C2 = {
+			fileRef = CC7BFF6007F204E9000092C2;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		CC7BFF9407F204E9000092C2 = {
+			fileRef = CC7BFF6107F204E9000092C2;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		CC7BFF9507F204E9000092C2 = {
+			fileRef = CC7BFF6207F204E9000092C2;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		CC7BFF9607F204E9000092C2 = {
+			fileRef = CC7BFF6307F204E9000092C2;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		CC7BFF9707F204E9000092C2 = {
+			fileRef = CC7BFF6407F204E9000092C2;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		CC7BFF9807F204E9000092C2 = {
+			fileRef = CC7BFF6507F204E9000092C2;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		CC7BFF9907F204E9000092C2 = {
+			fileRef = CC7BFF6607F204E9000092C2;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		CC7BFF9A07F204E9000092C2 = {
+			fileRef = CC7BFF6707F204E9000092C2;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		CC7BFF9B07F204E9000092C2 = {
+			fileRef = CC7BFF6807F204E9000092C2;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		CC7BFF9C07F204E9000092C2 = {
+			fileRef = CC7BFF6907F204E9000092C2;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		CC7BFF9D07F204E9000092C2 = {
+			fileRef = CC7BFF6A07F204E9000092C2;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		CC7BFF9E07F204E9000092C2 = {
+			fileRef = CC7BFF6B07F204E9000092C2;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		CC7BFF9F07F204E9000092C2 = {
+			fileRef = CC7BFF6C07F204E9000092C2;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		CC7BFFA007F204E9000092C2 = {
+			fileRef = CC7BFF6D07F204E9000092C2;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		CC7BFFA107F204E9000092C2 = {
+			fileRef = CC7BFF6E07F204E9000092C2;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		CC7BFFA207F204E9000092C2 = {
+			fileRef = CC7BFF6F07F204E9000092C2;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		CC7BFFA307F204E9000092C2 = {
+			fileRef = CC7BFF7007F204E9000092C2;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		CC7BFFA407F204E9000092C2 = {
+			fileRef = CC7BFF7107F204E9000092C2;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		CC7BFFA507F204E9000092C2 = {
+			fileRef = CC7BFF7207F204E9000092C2;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		CC7BFFA607F204E9000092C2 = {
+			fileRef = CC7BFF7307F204E9000092C2;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		CC7BFFA707F204E9000092C2 = {
+			fileRef = CC7BFF7407F204E9000092C2;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		CC7BFFA807F204E9000092C2 = {
+			fileRef = CC7BFF7507F204E9000092C2;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		CC7BFFA907F204E9000092C2 = {
+			fileRef = CC7BFF7607F204E9000092C2;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		CC7BFFAA07F204E9000092C2 = {
+			fileRef = CC7BFF7707F204E9000092C2;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		CC7BFFAB07F204E9000092C2 = {
+			fileRef = CC7BFF7807F204E9000092C2;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		CC7BFFAC07F204E9000092C2 = {
+			fileRef = CC7BFF7907F204E9000092C2;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		CC7BFFAD07F204E9000092C2 = {
+			fileRef = CC7BFF7A07F204E9000092C2;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		CC7BFFAE07F204E9000092C2 = {
+			fileRef = CC7BFF7B07F204E9000092C2;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		CC7BFFAF07F204E9000092C2 = {
+			fileRef = CC7BFF7C07F204E9000092C2;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		CC7BFFB007F204E9000092C2 = {
+			fileRef = CC7BFF7D07F204E9000092C2;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		CC7BFFB107F204E9000092C2 = {
+			fileRef = CC7BFF7E07F204E9000092C2;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		CC7BFFB207F2050C000092C2 = {
+			children = (
+				CC7BFFB307F2055E000092C2,
+				CC7BFFB407F2055E000092C2,
+				CC7BFFB507F2055E000092C2,
+				CC7BFFB607F2055E000092C2,
+				CC7BFFB707F2055E000092C2,
+				CC7BFFB807F2055E000092C2,
+				CC7BFFB907F2055E000092C2,
+				CC7BFFBA07F2055E000092C2,
+				CC7BFFBB07F2055E000092C2,
+				CC7BFFBC07F2055E000092C2,
+				CC7BFFBD07F2055E000092C2,
+				CC7BFFBE07F2055E000092C2,
+				CC7BFFBF07F2055E000092C2,
+				CC7BFFC007F2055E000092C2,
+				CC7BFFC107F2055E000092C2,
+				CC7BFFC207F2055E000092C2,
+				CC7BFFC307F2055E000092C2,
+				CC7BFFC407F2055E000092C2,
+			);
+			isa = PBXGroup;
+			name = ansi;
+			path = "";
+			refType = 4;
+			sourceTree = "<group>";
+		};
+		CC7BFFB307F2055E000092C2 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
+			name = Core.cpp;
+			path = ../../../src/dwfcore/ansi/Core.cpp;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		CC7BFFB407F2055E000092C2 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			name = Core.h;
+			path = ../../../src/dwfcore/ansi/Core.h;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		CC7BFFB507F2055E000092C2 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
+			name = Mutex.cpp;
+			path = ../../../src/dwfcore/ansi/Mutex.cpp;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		CC7BFFB607F2055E000092C2 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			name = Mutex.h;
+			path = ../../../src/dwfcore/ansi/Mutex.h;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		CC7BFFB707F2055E000092C2 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
+			name = Semaphore.cpp;
+			path = ../../../src/dwfcore/ansi/Semaphore.cpp;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		CC7BFFB807F2055E000092C2 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			name = Semaphore.h;
+			path = ../../../src/dwfcore/ansi/Semaphore.h;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		CC7BFFB907F2055E000092C2 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
+			name = Signal.cpp;
+			path = ../../../src/dwfcore/ansi/Signal.cpp;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		CC7BFFBA07F2055E000092C2 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			name = Signal.h;
+			path = ../../../src/dwfcore/ansi/Signal.h;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		CC7BFFBB07F2055E000092C2 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
+			name = StandardFileDescriptor.cpp;
+			path = ../../../src/dwfcore/ansi/StandardFileDescriptor.cpp;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		CC7BFFBC07F2055E000092C2 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			name = StandardFileDescriptor.h;
+			path = ../../../src/dwfcore/ansi/StandardFileDescriptor.h;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		CC7BFFBD07F2055E000092C2 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
+			name = StreamFileDescriptor.cpp;
+			path = ../../../src/dwfcore/ansi/StreamFileDescriptor.cpp;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		CC7BFFBE07F2055E000092C2 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
+			name = String.cpp;
+			path = ../../../src/dwfcore/ansi/String.cpp;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		CC7BFFBF07F2055E000092C2 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
+			name = TempFile.cpp;
+			path = ../../../src/dwfcore/ansi/TempFile.cpp;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		CC7BFFC007F2055E000092C2 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
+			name = Thread.cpp;
+			path = ../../../src/dwfcore/ansi/Thread.cpp;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		CC7BFFC107F2055E000092C2 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			name = Thread.h;
+			path = ../../../src/dwfcore/ansi/Thread.h;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		CC7BFFC207F2055E000092C2 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			name = Types.h;
+			path = ../../../src/dwfcore/ansi/Types.h;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		CC7BFFC307F2055E000092C2 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
+			name = UUID.cpp;
+			path = ../../../src/dwfcore/ansi/UUID.cpp;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		CC7BFFC407F2055E000092C2 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			name = UUID.h;
+			path = ../../../src/dwfcore/ansi/UUID.h;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		CC7BFFC507F2055E000092C2 = {
+			fileRef = CC7BFFB307F2055E000092C2;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		CC7BFFC607F2055E000092C2 = {
+			fileRef = CC7BFFB407F2055E000092C2;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		CC7BFFC707F2055E000092C2 = {
+			fileRef = CC7BFFB507F2055E000092C2;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		CC7BFFC807F2055E000092C2 = {
+			fileRef = CC7BFFB607F2055E000092C2;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		CC7BFFC907F2055E000092C2 = {
+			fileRef = CC7BFFB707F2055E000092C2;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		CC7BFFCA07F2055E000092C2 = {
+			fileRef = CC7BFFB807F2055E000092C2;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		CC7BFFCB07F2055E000092C2 = {
+			fileRef = CC7BFFB907F2055E000092C2;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		CC7BFFCC07F2055E000092C2 = {
+			fileRef = CC7BFFBA07F2055E000092C2;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		CC7BFFCD07F2055E000092C2 = {
+			fileRef = CC7BFFBB07F2055E000092C2;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		CC7BFFCE07F2055E000092C2 = {
+			fileRef = CC7BFFBC07F2055E000092C2;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		CC7BFFCF07F2055E000092C2 = {
+			fileRef = CC7BFFBD07F2055E000092C2;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		CC7BFFD007F2055E000092C2 = {
+			fileRef = CC7BFFBE07F2055E000092C2;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		CC7BFFD107F2055E000092C2 = {
+			fileRef = CC7BFFBF07F2055E000092C2;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		CC7BFFD207F2055E000092C2 = {
+			fileRef = CC7BFFC007F2055E000092C2;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		CC7BFFD307F2055E000092C2 = {
+			fileRef = CC7BFFC107F2055E000092C2;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		CC7BFFD407F2055E000092C2 = {
+			fileRef = CC7BFFC207F2055E000092C2;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		CC7BFFD507F2055E000092C2 = {
+			fileRef = CC7BFFC307F2055E000092C2;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		CC7BFFD607F2055E000092C2 = {
+			fileRef = CC7BFFC407F2055E000092C2;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		CC7BFFD707F20564000092C2 = {
+			children = (
+				CC7BFFD807F20584000092C2,
+				CC7BFFD907F20584000092C2,
+				CC7BFFDA07F20584000092C2,
+				CC7BFFDB07F20584000092C2,
+			);
+			isa = PBXGroup;
+			name = mac;
+			path = "";
+			refType = 4;
+			sourceTree = "<group>";
+		};
+		CC7BFFD807F20584000092C2 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
+			name = Core.cpp;
+			path = ../../../src/dwfcore/mac/Core.cpp;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		CC7BFFD907F20584000092C2 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			name = Core.h;
+			path = ../../../src/dwfcore/mac/Core.h;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		CC7BFFDA07F20584000092C2 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
+			name = Timer.cpp;
+			path = ../../../src/dwfcore/mac/Timer.cpp;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		CC7BFFDB07F20584000092C2 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			name = Types.h;
+			path = ../../../src/dwfcore/mac/Types.h;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		CC7BFFDC07F20584000092C2 = {
+			fileRef = CC7BFFD807F20584000092C2;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		CC7BFFDD07F20584000092C2 = {
+			fileRef = CC7BFFD907F20584000092C2;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		CC7BFFDE07F20584000092C2 = {
+			fileRef = CC7BFFDA07F20584000092C2;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		CC7BFFDF07F20584000092C2 = {
+			fileRef = CC7BFFDB07F20584000092C2;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		CC7BFFE007F2058D000092C2 = {
+			children = (
+				CC7BFFE107F205B1000092C2,
+				CC7BFFE207F205B1000092C2,
+				CC7BFFE307F205B1000092C2,
+				CC7BFFE407F205B1000092C2,
+				CC7BFFE507F205B1000092C2,
+				CC7BFFE607F205B1000092C2,
+				CC7BFFE707F205B1000092C2,
+			);
+			isa = PBXGroup;
+			name = zip;
+			refType = 4;
+			sourceTree = "<group>";
+		};
+		CC7BFFE107F205B1000092C2 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
+			name = gvmat32c.cpp;
+			path = ../../../src/dwfcore/zip/gvmat32c.cpp;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		CC7BFFE207F205B1000092C2 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
+			name = password.cpp;
+			path = ../../../src/dwfcore/zip/password.cpp;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		CC7BFFE307F205B1000092C2 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			name = password.h;
+			path = ../../../src/dwfcore/zip/password.h;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		CC7BFFE407F205B1000092C2 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
+			name = unzip.cpp;
+			path = ../../../src/dwfcore/zip/unzip.cpp;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		CC7BFFE507F205B1000092C2 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			name = unzip.h;
+			path = ../../../src/dwfcore/zip/unzip.h;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		CC7BFFE607F205B1000092C2 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
+			name = zip.cpp;
+			path = ../../../src/dwfcore/zip/zip.cpp;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		CC7BFFE707F205B1000092C2 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			name = zip.h;
+			path = ../../../src/dwfcore/zip/zip.h;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		CC7BFFE807F205B1000092C2 = {
+			fileRef = CC7BFFE107F205B1000092C2;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		CC7BFFE907F205B1000092C2 = {
+			fileRef = CC7BFFE207F205B1000092C2;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		CC7BFFEA07F205B1000092C2 = {
+			fileRef = CC7BFFE307F205B1000092C2;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		CC7BFFEB07F205B1000092C2 = {
+			fileRef = CC7BFFE407F205B1000092C2;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		CC7BFFEC07F205B1000092C2 = {
+			fileRef = CC7BFFE507F205B1000092C2;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		CC7BFFED07F205B1000092C2 = {
+			fileRef = CC7BFFE607F205B1000092C2;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		CC7BFFEE07F205B1000092C2 = {
+			fileRef = CC7BFFE707F205B1000092C2;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		CC7BFFEF07F205C1000092C2 = {
+			children = (
+				CC7BFFF007F20609000092C2,
+				CC7BFFF107F20609000092C2,
+				CC7BFFF207F20609000092C2,
+				CC7BFFF307F20609000092C2,
+				CC7BFFF407F20609000092C2,
+				CC7BFFF507F20609000092C2,
+				CC7BFFF607F20609000092C2,
+				CC7BFFF707F20609000092C2,
+				CC7BFFF807F20609000092C2,
+				CC7BFFF907F20609000092C2,
+				CC7BFFFA07F20609000092C2,
+				CC7BFFFB07F20609000092C2,
+				CC7BFFFC07F20609000092C2,
+				CC7BFFFD07F20609000092C2,
+				CC7BFFFE07F20609000092C2,
+				CC7BFFFF07F20609000092C2,
+				CC7B000007F20609000092C2,
+				CC7B000107F20609000092C2,
+				CC7B000207F20609000092C2,
+				CC7B000307F20609000092C2,
+				CC7B000407F20609000092C2,
+				CC7B000507F20609000092C2,
+				CC7B000607F20609000092C2,
+				CC7B000707F20609000092C2,
+				CC7B000807F20609000092C2,
+			);
+			isa = PBXGroup;
+			name = zlib;
+			path = "";
+			refType = 4;
+			sourceTree = "<group>";
+		};
+		CC7BFFF007F20609000092C2 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.c;
+			name = adler32.c;
+			path = ../../../src/dwfcore/zlib/adler32.c;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		CC7BFFF107F20609000092C2 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.c;
+			name = compress.c;
+			path = ../../../src/dwfcore/zlib/compress.c;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		CC7BFFF207F20609000092C2 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.c;
+			name = crc32.c;
+			path = ../../../src/dwfcore/zlib/crc32.c;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		CC7BFFF307F20609000092C2 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.c;
+			name = deflate.c;
+			path = ../../../src/dwfcore/zlib/deflate.c;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		CC7BFFF407F20609000092C2 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			name = deflate.h;
+			path = ../../../src/dwfcore/zlib/deflate.h;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		CC7BFFF507F20609000092C2 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.c;
+			name = infblock.c;
+			path = ../../../src/dwfcore/zlib/infblock.c;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		CC7BFFF607F20609000092C2 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			name = infblock.h;
+			path = ../../../src/dwfcore/zlib/infblock.h;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		CC7BFFF707F20609000092C2 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.c;
+			name = infcodes.c;
+			path = ../../../src/dwfcore/zlib/infcodes.c;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		CC7BFFF807F20609000092C2 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			name = infcodes.h;
+			path = ../../../src/dwfcore/zlib/infcodes.h;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		CC7BFFF907F20609000092C2 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.c;
+			name = inffast.c;
+			path = ../../../src/dwfcore/zlib/inffast.c;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		CC7BFFFA07F20609000092C2 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			name = inffast.h;
+			path = ../../../src/dwfcore/zlib/inffast.h;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		CC7BFFFB07F20609000092C2 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			name = inffixed.h;
+			path = ../../../src/dwfcore/zlib/inffixed.h;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		CC7BFFFC07F20609000092C2 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.c;
+			name = inflate.c;
+			path = ../../../src/dwfcore/zlib/inflate.c;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		CC7BFFFD07F20609000092C2 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.c;
+			name = inftrees.c;
+			path = ../../../src/dwfcore/zlib/inftrees.c;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		CC7BFFFE07F20609000092C2 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			name = inftrees.h;
+			path = ../../../src/dwfcore/zlib/inftrees.h;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		CC7BFFFF07F20609000092C2 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.c;
+			name = infutil.c;
+			path = ../../../src/dwfcore/zlib/infutil.c;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+	};
+	rootObject = 0867D690FE84028FC02AAC07;
+}

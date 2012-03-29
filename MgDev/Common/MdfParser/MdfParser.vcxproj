@@ -1,0 +1,426 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{85882748-DD71-4D2B-9E5A-03AF8C8D91B7}</ProjectGuid>
+    <RootNamespace>MdfParser</RootNamespace>
+    <Keyword>Win32Proj</Keyword>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <_ProjectFileVersion>10.0.30319.1</_ProjectFileVersion>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">..\bin\debug\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">..\obj\debug\MdfParser\</IntDir>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</LinkIncremental>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">..\bin\debug64\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">..\obj\debug64\MdfParser\</IntDir>
+    <IgnoreImportLibrary Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</IgnoreImportLibrary>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</LinkIncremental>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">..\bin\release\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">..\obj\release\MdfParser\</IntDir>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</LinkIncremental>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">..\bin\release64\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">..\obj\release64\MdfParser\</IntDir>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</LinkIncremental>
+    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" />
+    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" />
+    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" />
+    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" />
+    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" />
+    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" />
+    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Release|x64'">AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Release|x64'" />
+    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Release|x64'" />
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">MgMdfParserd</TargetName>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">MgMdfParserd</TargetName>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">MgMdfParser</TargetName>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">MgMdfParser</TargetName>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>..\MdfModel;..\..\Oem\dbxml\xerces-c-src\src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_USRDLL;MDFPARSER_EXPORTS;_CRT_SECURE_NO_DEPRECATE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MinimalRebuild>true</MinimalRebuild>
+      <ExceptionHandling>Async</ExceptionHandling>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <WarningLevel>Level3</WarningLevel>
+      <TreatWarningAsError>false</TreatWarningAsError>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>xerces-c_3mgD.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <OutputFile>$(OutDir)MgMdfParserd.dll</OutputFile>
+      <AdditionalLibraryDirectories>..\..\Oem\dbxml\xerces-c-src\Build\Win32\VC10\Debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <ProgramDatabaseFile>$(OutDir)MgMdfParserd.pdb</ProgramDatabaseFile>
+      <SubSystem>Windows</SubSystem>
+      <RandomizedBaseAddress>false</RandomizedBaseAddress>
+      <DataExecutionPrevention>
+      </DataExecutionPrevention>
+      <ImportLibrary>..\lib\debug\MgMdfParserd.lib</ImportLibrary>
+      <TargetMachine>MachineX86</TargetMachine>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>..\MdfModel;..\..\Oem\dbxml\xerces-c-src\src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_USRDLL;MDFPARSER_EXPORTS;_CRT_SECURE_NO_DEPRECATE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MinimalRebuild>true</MinimalRebuild>
+      <ExceptionHandling>Async</ExceptionHandling>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <WarningLevel>Level3</WarningLevel>
+      <TreatWarningAsError>false</TreatWarningAsError>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>xerces-c_3mgD.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <OutputFile>$(OutDir)MgMdfParserd.dll</OutputFile>
+      <AdditionalLibraryDirectories>..\..\Oem\dbxml\xerces-c-src\Build\x64\VC10\Debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <ProgramDatabaseFile>$(OutDir)MgMdfParserd.pdb</ProgramDatabaseFile>
+      <SubSystem>Windows</SubSystem>
+      <ImportLibrary>..\lib\debug64\MgMdfParserd.lib</ImportLibrary>
+      <TargetMachine>MachineX64</TargetMachine>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <Optimization>MaxSpeed</Optimization>
+      <AdditionalIncludeDirectories>..\MdfModel;..\..\Oem\dbxml\xerces-c-src\src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USRDLL;MDFPARSER_EXPORTS;_CRT_SECURE_NO_DEPRECATE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ExceptionHandling>Async</ExceptionHandling>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>xerces-c_3mg.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <OutputFile>$(OutDir)MgMdfParser.dll</OutputFile>
+      <AdditionalLibraryDirectories>..\..\Oem\dbxml\xerces-c-src\Build\Win32\VC10\Release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <ProgramDatabaseFile>$(OutDir)MgMdfParser.pdb</ProgramDatabaseFile>
+      <SubSystem>Windows</SubSystem>
+      <OptimizeReferences>true</OptimizeReferences>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <RandomizedBaseAddress>false</RandomizedBaseAddress>
+      <DataExecutionPrevention>
+      </DataExecutionPrevention>
+      <ImportLibrary>..\lib\release\MgMdfParser.lib</ImportLibrary>
+      <TargetMachine>MachineX86</TargetMachine>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <Optimization>MaxSpeed</Optimization>
+      <AdditionalIncludeDirectories>..\MdfModel;..\..\Oem\dbxml\xerces-c-src\src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USRDLL;MDFPARSER_EXPORTS;_CRT_SECURE_NO_DEPRECATE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ExceptionHandling>Async</ExceptionHandling>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>xerces-c_3mg.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <OutputFile>$(OutDir)MgMdfParser.dll</OutputFile>
+      <AdditionalLibraryDirectories>..\..\Oem\dbxml\xerces-c-src\Build\x64\VC10\Release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <ProgramDatabaseFile>$(OutDir)MgMdfParser.pdb</ProgramDatabaseFile>
+      <SubSystem>Windows</SubSystem>
+      <OptimizeReferences>true</OptimizeReferences>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <ImportLibrary>..\lib\release64\MgMdfParser.lib</ImportLibrary>
+      <TargetMachine>MachineX64</TargetMachine>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="Common\IOColor.cpp" />
+    <ClCompile Include="Common\IOExtent3D.cpp" />
+    <ClCompile Include="Common\IOPoint3D.cpp" />
+    <ClCompile Include="Common\IOSize2D.cpp" />
+    <ClCompile Include="Common\IOStringObjectCollection.cpp" />
+    <ClCompile Include="Common\IOVector3D.cpp" />
+    <ClCompile Include="IOURLData.cpp" />
+    <ClCompile Include="IOProfileRenderLabelsResult.cpp" />
+    <ClCompile Include="IOProfileRenderLayerResult.cpp" />
+    <ClCompile Include="IOProfileRenderLayersResult.cpp" />
+    <ClCompile Include="IOProfileRenderMapResult.cpp" />
+    <ClCompile Include="IOProfileRenderSelectionResult.cpp" />
+    <ClCompile Include="IOProfileRenderWatermarkResult.cpp" />
+    <ClCompile Include="IOProfileRenderWatermarksResult.cpp" />
+    <ClCompile Include="IOProfileResult.cpp" />
+    <ClCompile Include="IOScaleRange.cpp" />
+    <ClCompile Include="PrintLayout\IODataConfiguration.cpp" />
+    <ClCompile Include="PrintLayout\IOMapView.cpp" />
+    <ClCompile Include="PrintLayout\IOMapViewportDefinition.cpp" />
+    <ClCompile Include="PrintLayout\IOPrintLayoutDefinition.cpp" />
+    <ClCompile Include="PrintLayout\IOPrintLayoutElementCollection.cpp" />
+    <ClCompile Include="PrintLayout\IOPrintLayoutElementDefinition.cpp" />
+    <ClCompile Include="PrintLayout\IOPrintLayoutElementStyle.cpp" />
+    <ClCompile Include="PrintLayout\IOPropertyMappingCollection.cpp" />
+    <ClCompile Include="PrintLayout\IOStylizationConfiguration.cpp" />
+    <ClCompile Include="PrintLayout\IOThickness.cpp" />
+    <ClCompile Include="FSDSAX2Parser.cpp" />
+    <ClCompile Include="IOAreaRule.cpp" />
+    <ClCompile Include="IOAreaSymbolization2D.cpp" />
+    <ClCompile Include="IOAreaTypeStyle.cpp" />
+    <ClCompile Include="IOAreaUsage.cpp" />
+    <ClCompile Include="IOAttributeRelate.cpp" />
+    <ClCompile Include="IOBaseMapDefinition.cpp" />
+    <ClCompile Include="IOBaseMapLayer.cpp" />
+    <ClCompile Include="IOBaseMapLayerGroup.cpp" />
+    <ClCompile Include="IOBlockSymbol.cpp" />
+    <ClCompile Include="IOCalculatedProperty.cpp" />
+    <ClCompile Include="IOChannelBand.cpp" />
+    <ClCompile Include="IOCompositeRule.cpp" />
+    <ClCompile Include="IOCompositeSymbolization.cpp" />
+    <ClCompile Include="IOCompositeTypeStyle.cpp" />
+    <ClCompile Include="IOCompoundSymbolDefinition.cpp" />
+    <ClCompile Include="IODrawingLayerDefinition.cpp" />
+    <ClCompile Include="IOElevationSettings.cpp" />
+    <ClCompile Include="IOExtension.cpp" />
+    <ClCompile Include="IOExtra.cpp" />
+    <ClCompile Include="IOFeatureSource.cpp" />
+    <ClCompile Include="IOFill.cpp" />
+    <ClCompile Include="IOFontSymbol.cpp" />
+    <ClCompile Include="IOGraphicElement.cpp" />
+    <ClCompile Include="IOGraphicElementCollection.cpp" />
+    <ClCompile Include="IOGridColor.cpp" />
+    <ClCompile Include="IOGridColorBands.cpp" />
+    <ClCompile Include="IOGridColorRule.cpp" />
+    <ClCompile Include="IOGridColorStyle.cpp" />
+    <ClCompile Include="IOGridLayerDefinition.cpp" />
+    <ClCompile Include="IOGridScaleRange.cpp" />
+    <ClCompile Include="IOGridSurfaceStyle.cpp" />
+    <ClCompile Include="IOHillShade.cpp" />
+    <ClCompile Include="IOImage.cpp" />
+    <ClCompile Include="IOImageSymbol.cpp" />
+    <ClCompile Include="IOLabel.cpp" />
+    <ClCompile Include="IOLineRule.cpp" />
+    <ClCompile Include="IOLineSymbolization2D.cpp" />
+    <ClCompile Include="IOLineTypeStyle.cpp" />
+    <ClCompile Include="IOLineUsage.cpp" />
+    <ClCompile Include="IOMapDefinition.cpp" />
+    <ClCompile Include="IOMapLayer.cpp" />
+    <ClCompile Include="IOMapLayerCommon.cpp" />
+    <ClCompile Include="IOMapLayerGroup.cpp" />
+    <ClCompile Include="IOMapLayerGroupCommon.cpp" />
+    <ClCompile Include="IOMarkSymbol.cpp" />
+    <ClCompile Include="IONameStringPair.cpp" />
+    <ClCompile Include="IOOverride.cpp" />
+    <ClCompile Include="IOOverrideCollection.cpp" />
+    <ClCompile Include="IOParameter.cpp" />
+    <ClCompile Include="IOParameterCollection.cpp" />
+    <ClCompile Include="IOPath.cpp" />
+    <ClCompile Include="IOPointRule.cpp" />
+    <ClCompile Include="IOPointSymbolization2D.cpp" />
+    <ClCompile Include="IOPointTypeStyle.cpp" />
+    <ClCompile Include="IOPointUsage.cpp" />
+    <ClCompile Include="IORelateProperty.cpp" />
+    <ClCompile Include="IOResizeBox.cpp" />
+    <ClCompile Include="IOResourceRef.cpp" />
+    <ClCompile Include="IOSimpleSymbol.cpp" />
+    <ClCompile Include="IOSimpleSymbolDefinition.cpp" />
+    <ClCompile Include="IOStroke.cpp" />
+    <ClCompile Include="IOSupplementalSpatialContextInfo.cpp" />
+    <ClCompile Include="IOSymbol.cpp" />
+    <ClCompile Include="IOSymbolInstance.cpp" />
+    <ClCompile Include="IOText.cpp" />
+    <ClCompile Include="IOTextFrame.cpp" />
+    <ClCompile Include="IOThemeLabel.cpp" />
+    <ClCompile Include="IOTileWatermarkPosition.cpp" />
+    <ClCompile Include="IOUnknown.cpp" />
+    <ClCompile Include="IOUtil.cpp" />
+    <ClCompile Include="IOVectorLayerDefinition.cpp" />
+    <ClCompile Include="IOVectorScaleRange.cpp" />
+    <ClCompile Include="IOW2DSymbol.cpp" />
+    <ClCompile Include="IOWatermarkAppearance.cpp" />
+    <ClCompile Include="IOWatermarkDefinition.cpp" />
+    <ClCompile Include="IOWatermarkInstance.cpp" />
+    <ClCompile Include="IOWatermarkOffsetUnit.cpp" />
+    <ClCompile Include="IOWatermarkXOffset.cpp" />
+    <ClCompile Include="IOWatermarkYOffset.cpp" />
+    <ClCompile Include="IOXYWatermarkPosition.cpp" />
+    <ClCompile Include="MdfParser.cpp" />
+    <ClCompile Include="SAX2ElementHandler.cpp" />
+    <ClCompile Include="SAX2Parser.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Common\IOColor.h" />
+    <ClInclude Include="Common\IOExtent3D.h" />
+    <ClInclude Include="Common\IOPoint3D.h" />
+    <ClInclude Include="Common\IOSize2D.h" />
+    <ClInclude Include="Common\IOStringObjectCollection.h" />
+    <ClInclude Include="Common\IOVector3D.h" />
+    <ClInclude Include="IOURLData.h" />
+    <ClInclude Include="IOProfileRenderLabelsResult.h" />
+    <ClInclude Include="IOProfileRenderLayerResult.h" />
+    <ClInclude Include="IOProfileRenderLayersResult.h" />
+    <ClInclude Include="IOProfileRenderMapResult.h" />
+    <ClInclude Include="IOProfileRenderWatermarkResult.h" />
+    <ClInclude Include="IOProfileRenderSelectionResult.h" />
+    <ClInclude Include="IOProfileRenderWatermarksResult.h" />
+    <ClInclude Include="IOProfileResult.h" />
+    <ClInclude Include="IOScaleRange.h" />
+    <ClInclude Include="PrintLayout\IODataConfiguration.h" />
+    <ClInclude Include="PrintLayout\IOMapView.h" />
+    <ClInclude Include="PrintLayout\IOMapViewportDefinition.h" />
+    <ClInclude Include="PrintLayout\IOPrintLayoutDefinition.h" />
+    <ClInclude Include="PrintLayout\IOPrintLayoutElementCollection.h" />
+    <ClInclude Include="PrintLayout\IOPrintLayoutElementDefinition.h" />
+    <ClInclude Include="PrintLayout\IOPrintLayoutElementStyle.h" />
+    <ClInclude Include="PrintLayout\IOPropertyMappingCollection.h" />
+    <ClInclude Include="PrintLayout\IOStylizationConfiguration.h" />
+    <ClInclude Include="PrintLayout\IOThickness.h" />
+    <ClInclude Include="FSDSAX2Parser.h" />
+    <ClInclude Include="IOAreaRule.h" />
+    <ClInclude Include="IOAreaSymbolization2D.h" />
+    <ClInclude Include="IOAreaTypeStyle.h" />
+    <ClInclude Include="IOAreaUsage.h" />
+    <ClInclude Include="IOAttributeRelate.h" />
+    <ClInclude Include="IOBaseMapDefinition.h" />
+    <ClInclude Include="IOBaseMapLayer.h" />
+    <ClInclude Include="IOBaseMapLayerGroup.h" />
+    <ClInclude Include="IOBlockSymbol.h" />
+    <ClInclude Include="IOCalculatedProperty.h" />
+    <ClInclude Include="IOChannelBand.h" />
+    <ClInclude Include="IOCompositeRule.h" />
+    <ClInclude Include="IOCompositeSymbolization.h" />
+    <ClInclude Include="IOCompositeTypeStyle.h" />
+    <ClInclude Include="IOCompoundSymbolDefinition.h" />
+    <ClInclude Include="IODrawingLayerDefinition.h" />
+    <ClInclude Include="IOElevationSettings.h" />
+    <ClInclude Include="IOExtension.h" />
+    <ClInclude Include="IOExtra.h" />
+    <ClInclude Include="IOFeatureSource.h" />
+    <ClInclude Include="IOFill.h" />
+    <ClInclude Include="IOFontSymbol.h" />
+    <ClInclude Include="IOGraphicElement.h" />
+    <ClInclude Include="IOGraphicElementCollection.h" />
+    <ClInclude Include="IOGridColor.h" />
+    <ClInclude Include="IOGridColorRule.h" />
+    <ClInclude Include="IOGridColorStyle.h" />
+    <ClInclude Include="IOGridLayerDefinition.h" />
+    <ClInclude Include="IOGridScaleRange.h" />
+    <ClInclude Include="IOGridSurfaceStyle.h" />
+    <ClInclude Include="IOHillShade.h" />
+    <ClInclude Include="IOImage.h" />
+    <ClInclude Include="IOImageSymbol.h" />
+    <ClInclude Include="IOLabel.h" />
+    <ClInclude Include="IOLineRule.h" />
+    <ClInclude Include="IOLineSymbolization2D.h" />
+    <ClInclude Include="IOLineTypeStyle.h" />
+    <ClInclude Include="IOLineUsage.h" />
+    <ClInclude Include="IOMapDefinition.h" />
+    <ClInclude Include="IOMapLayer.h" />
+    <ClInclude Include="IOMapLayerCommon.h" />
+    <ClInclude Include="IOMapLayerGroup.h" />
+    <ClInclude Include="IOMapLayerGroupCommon.h" />
+    <ClInclude Include="IOMarkSymbol.h" />
+    <ClInclude Include="IONameStringPair.h" />
+    <ClInclude Include="IOOverride.h" />
+    <ClInclude Include="IOOverrideCollection.h" />
+    <ClInclude Include="IOParameter.h" />
+    <ClInclude Include="IOParameterCollection.h" />
+    <ClInclude Include="IOPath.h" />
+    <ClInclude Include="IOPointRule.h" />
+    <ClInclude Include="IOPointSymbolization2D.h" />
+    <ClInclude Include="IOPointTypeStyle.h" />
+    <ClInclude Include="IOPointUsage.h" />
+    <ClInclude Include="IORelateProperty.h" />
+    <ClInclude Include="IOResizeBox.h" />
+    <ClInclude Include="IOResourceRef.h" />
+    <ClInclude Include="IOSimpleSymbol.h" />
+    <ClInclude Include="IOSimpleSymbolDefinition.h" />
+    <ClInclude Include="IOStroke.h" />
+    <ClInclude Include="IOSupplementalSpatialContextInfo.h" />
+    <ClInclude Include="IOSymbol.h" />
+    <ClInclude Include="IOSymbolInstance.h" />
+    <ClInclude Include="IOText.h" />
+    <ClInclude Include="IOTextFrame.h" />
+    <ClInclude Include="IOThemeLabel.h" />
+    <ClInclude Include="IOTileWatermarkPosition.h" />
+    <ClInclude Include="IOUnknown.h" />
+    <ClInclude Include="IOUtil.h" />
+    <ClInclude Include="IOVectorLayerDefinition.h" />
+    <ClInclude Include="IOVectorScaleRange.h" />
+    <ClInclude Include="IOW2DSymbol.h" />
+    <ClInclude Include="IOWatermarkAppearance.h" />
+    <ClInclude Include="IOWatermarkDefinition.h" />
+    <ClInclude Include="IOWatermarkInstance.h" />
+    <ClInclude Include="IOWatermarkOffsetUnit.h" />
+    <ClInclude Include="IOWatermarkXOffset.h" />
+    <ClInclude Include="IOWatermarkYOffset.h" />
+    <ClInclude Include="IOXYWatermarkPosition.h" />
+    <ClInclude Include="MdfParser.h" />
+    <ClInclude Include="SAX2ElementHandler.h" />
+    <ClInclude Include="SAX2Parser.h" />
+    <ClInclude Include="stdafx.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="MdfParser.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\MdfModel\MdfModel.vcxproj">
+      <Project>{c50254f2-654a-48de-af5b-20605aef8d10}</Project>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

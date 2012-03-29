@@ -1,0 +1,19 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<script type="text/javascript"">
+function Execute(value)
+{
+  window.parent.showform.location = "wkttocode.php?WKT=" + value;
+}
+</script>
+
+<html>
+<body>
+        <b>Coordinate System API: ConvertWktToCoordinateSystemCode</b><br><br>
+        <form name="input" action="" method="get" ID="Form1">
+        <b>OGC WKT:</b>
+        <input type="text" name="WKT" value="" size="100" ID="Text1"><br>
+        <p>
+        <input type="button" value="Execute" onclick="Execute(WKT.value)">
+        </form>
+</body>
+</html>

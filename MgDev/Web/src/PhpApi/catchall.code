@@ -1,0 +1,8 @@
+
+void onCatchAll(const char* proxyfname TSRMLS_DC)
+{
+    string s = proxyfname;
+    wstring fname = MgUtil::MultiByteToWideChar(s);
+    MgUnclassifiedException* e = new MgUnclassifiedException(fname, __LINE__, __WFILE__, NULL, L"", NULL);
+    ThrowPHPExceptionWrapper(e TSRMLS_CC);
+}

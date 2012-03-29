@@ -1,0 +1,42 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<script type="text/javascript" src="setactiontarget.js" >
+</script>
+</head>
+<body>
+<form name="input" action="" method="get">
+<b>Request:</b>
+<input type="text" name="REQUEST" value="GETMAP" size="50">
+<p> Service:
+<input type="text" name="SERVICE" value="WMS" size="10">
+<p> Version:
+<input type="text" name="VERSION" value="1.3.0" size="10">
+<p> Format:
+<select name="FORMAT">
+<option value="image/png">image/png</option>
+<option value="image/jpeg">image/jpeg</option>
+<option value="image/gif">image/gif</option>
+</select>
+<p> Layers (comma-separated):
+<input type="text" name="LAYERS" value="Samples/Sheboygan/Layers/Parcels,Samples/Sheboygan/Layers/Roads" size="100">
+<p> Bounding Box (minx,miny,maxx,maxy):
+<input type="text" name="BBOX" value="43.73822699224595,-87.7398334220901,43.75068777906662,-87.72068284176505" size="100">
+<p> Coordinate System:
+<input type="text" name="SRS" value="EPSG:4326" size="100">
+<p> Display Width (pixels):
+<input type="text" name="WIDTH" value="796" size="100">
+<p> Display Height (pixels):
+<input type="text" name="HEIGHT" value="717" size="100">
+<p> Background Color (0xRRGGBB):
+<input type="text" name="BGCOLOR" value="0x0000FF" size="100">
+<p> Transparent Background:
+<select name="TRANSPARENT">
+<option value="FALSE">FALSE</option>
+<option value="TRUE">TRUE</option>
+</select>
+<p>
+<input type="submit" value="Submit" onclick="SetActionTarget()"> <input type="reset">
+</form>
+</body>
+</html>

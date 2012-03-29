@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LayerDefinition version="1.1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xsi:noNamespaceSchemaLocation="LayerDefinition-1.1.0.xsd">
+  <VectorLayerDefinition>
+    <ResourceId></ResourceId>
+    <FeatureName>ParcelMarkerClass</FeatureName>
+    <FeatureNameType>FeatureClass</FeatureNameType>
+    <Geometry>ParcelLocation</Geometry>
+    <VectorScaleRange>
+      <MinScale>0</MinScale>
+      <MaxScale>10000</MaxScale>
+      <PointTypeStyle>
+        <DisplayAsText>false</DisplayAsText>
+        <AllowOverpost>false</AllowOverpost>
+        <PointRule>
+          <LegendLabel></LegendLabel>
+          <PointSymbolization2D>
+            <Mark>
+             <Unit>Inches</Unit>
+             <SizeContext>DeviceUnits</SizeContext>
+             <SizeX>.1</SizeX>
+             <SizeY>.1</SizeY>
+             <Rotation>0</Rotation>
+             <Shape>X</Shape>
+             <Fill>
+              <FillPattern>Solid</FillPattern>
+              <ForegroundColor>FFFF0000</ForegroundColor>
+              <BackgroundColor>ff000000</BackgroundColor>
+             </Fill>
+             <Edge>
+              <LineStyle>Solid</LineStyle>
+              <Thickness>0.0</Thickness>
+              <Color>ff000000</Color>
+              <Unit>Centimeters</Unit>
+              <SizeContext>DeviceUnits</SizeContext>
+             </Edge>
+            </Mark>
+          </PointSymbolization2D>
+        </PointRule>
+      </PointTypeStyle>
+    </VectorScaleRange>
+  </VectorLayerDefinition>
+</LayerDefinition>

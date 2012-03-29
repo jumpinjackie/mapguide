@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LayerDefinition xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="LayerDefinition-1.2.0.xsd" version="1.2.0">
+  <VectorLayerDefinition>
+    <ResourceId>Library://data sources/world cities.FeatureSource</ResourceId>
+    <FeatureName>SHP_Schema:World_Cities</FeatureName>
+    <FeatureNameType>FeatureClass</FeatureNameType>
+    <Geometry>SHPGEOM</Geometry>
+    <VectorScaleRange>
+      <PointTypeStyle>
+        <DisplayAsText>false</DisplayAsText>
+        <AllowOverpost>false</AllowOverpost>
+        <PointRule>
+          <LegendLabel></LegendLabel>
+          <PointSymbolization2D>
+            <W2D>
+              <Unit>Inches</Unit>
+              <SizeContext>DeviceUnits</SizeContext>
+              <SizeX>0.118110236220472</SizeX>
+              <SizeY>0.118110236220472</SizeY>
+              <W2DSymbol>
+                <ResourceId></ResourceId>
+                <LibraryItemName></LibraryItemName>
+              </W2DSymbol>
+            </W2D>
+          </PointSymbolization2D>
+        </PointRule>
+      </PointTypeStyle>
+    </VectorScaleRange>
+  </VectorLayerDefinition>
+</LayerDefinition>

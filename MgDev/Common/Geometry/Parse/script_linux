@@ -1,0 +1,44 @@
+s/y.tab.c/yyAwkt.cpp/g
+/^# *line/s/\\/\\\\/g
+/^# *line/b
+s/yy/gis_awkt_yy/g
+s/YY/GIS_AWKT_YY/g
+s/y.tab.c/yyAwkt.cpp/g
+s/yyparse (GIS_AWKT_YYPARSE_PARAM_ARG)/yyparse(GisParseAwkt* pParse)/g
+s/yylex()/yylex(pParse)/g
+/int gis_awkt_yydebug/D
+/int gis_awkt_yynerrs/D
+/int gis_awkt_yyerrflag/D
+/int gis_awkt_yychar/D
+/^short \*gis_awkt_yyssp/D
+/short \*gis_awkt_yyss/D
+s/gis_awkt_yynerrs/pParse->gis_awkt_yynerrs/g
+s/gis_awkt_yydebug/pParse->gis_awkt_yydebug/g
+s/gis_awkt_yyerrflag/pParse->gis_awkt_yyerrflag/g
+s/gis_awkt_yychar/pParse->gis_awkt_yychar/g
+s/gis_awkt_yyssp/pParse->gis_awkt_yyssp/g
+s/typedef union _GIS_AWKT_YYSTYPE/#if 0/g
+s/} GIS_AWKT_YYSTYPE;/#endif/g
+/GIS_AWKT_YYSTYPE \*gis_awkt_yyvsp/D
+/GIS_AWKT_YYSTYPE gis_awkt_yyval;/D
+/GIS_AWKT_YYSTYPE gis_awkt_yylval;/D
+s/gis_awkt_yyvsp/pParse->gis_awkt_yyvsp/g
+s/gis_awkt_yyval/pParse->gis_awkt_yyval/g
+s/gis_awkt_yylval/pParse->gis_awkt_yylval/g
+s/gis_awkt_yyss;/pParse->gis_awkt_yyss;/g
+s/gis_awkt_yyss /pParse->gis_awkt_yyss /g
+s/gis_awkt_yyss)/pParse->gis_awkt_yyss)/g
+s/gis_awkt_yyss,/pParse->gis_awkt_yyss,/g
+s/gis_awkt_yylineno/pParse->gis_awkt_yylineno/g
+s/  gis_awkt_yyerror(/ gis_awkt_yyerror( pParse,/g
+/GIS_AWKT_YYSTYPE \*gis_awkt_yyvs;/D
+/gis_awkt_yystacksize;/D
+s/gis_awkt_yystacksize/pParse->gis_awkt_yystacksize/g
+s/gis_awkt_yysslim/pParse->gis_awkt_yysslim/g
+s/gis_awkt_yyvs;/pParse->gis_awkt_yyvs;/g
+s/gis_awkt_yyvs /pParse->gis_awkt_yyvs /g
+s/gis_awkt_yyvs,/pParse->gis_awkt_yyvs,/g
+s/int gis_awkt_yygrowstack()/int gis_awkt_yygrowstack(GisParseAwkt *pParse)/g
+s/gis_awkt_yygrowstack()/gis_awkt_yygrowstack(pParse)/g
+s/static int gis_awkt_yygrowstack(GisParseAwkt \*pParse);/class GisParseAwkt; static int gis_awkt_yygrowstack(GisParseAwkt \*pParse);/g
+

@@ -1,0 +1,341 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Common">
+      <UniqueIdentifier>{0277acf7-54cf-4d4e-a6c6-6ba59d5f1652}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="PrintLayout">
+      <UniqueIdentifier>{8ae0d67c-c670-4d12-aec1-b77dddc09dcf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ProfileResult">
+      <UniqueIdentifier>{ba1fc980-0d34-4134-8059-68b42135be47}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Common\IOColor.cpp">
+      <Filter>Common</Filter>
+    </ClCompile>
+    <ClCompile Include="Common\IOExtent3D.cpp">
+      <Filter>Common</Filter>
+    </ClCompile>
+    <ClCompile Include="Common\IOPoint3D.cpp">
+      <Filter>Common</Filter>
+    </ClCompile>
+    <ClCompile Include="Common\IOSize2D.cpp">
+      <Filter>Common</Filter>
+    </ClCompile>
+    <ClCompile Include="Common\IOStringObjectCollection.cpp">
+      <Filter>Common</Filter>
+    </ClCompile>
+    <ClCompile Include="Common\IOVector3D.cpp">
+      <Filter>Common</Filter>
+    </ClCompile>
+    <ClCompile Include="PrintLayout\IODataConfiguration.cpp">
+      <Filter>PrintLayout</Filter>
+    </ClCompile>
+    <ClCompile Include="PrintLayout\IOMapView.cpp">
+      <Filter>PrintLayout</Filter>
+    </ClCompile>
+    <ClCompile Include="PrintLayout\IOMapViewportDefinition.cpp">
+      <Filter>PrintLayout</Filter>
+    </ClCompile>
+    <ClCompile Include="PrintLayout\IOPrintLayoutDefinition.cpp">
+      <Filter>PrintLayout</Filter>
+    </ClCompile>
+    <ClCompile Include="PrintLayout\IOPrintLayoutElementCollection.cpp">
+      <Filter>PrintLayout</Filter>
+    </ClCompile>
+    <ClCompile Include="PrintLayout\IOPrintLayoutElementDefinition.cpp">
+      <Filter>PrintLayout</Filter>
+    </ClCompile>
+    <ClCompile Include="PrintLayout\IOPrintLayoutElementStyle.cpp">
+      <Filter>PrintLayout</Filter>
+    </ClCompile>
+    <ClCompile Include="PrintLayout\IOPropertyMappingCollection.cpp">
+      <Filter>PrintLayout</Filter>
+    </ClCompile>
+    <ClCompile Include="PrintLayout\IOStylizationConfiguration.cpp">
+      <Filter>PrintLayout</Filter>
+    </ClCompile>
+    <ClCompile Include="PrintLayout\IOThickness.cpp">
+      <Filter>PrintLayout</Filter>
+    </ClCompile>
+    <ClCompile Include="FSDSAX2Parser.cpp" />
+    <ClCompile Include="IOAreaRule.cpp" />
+    <ClCompile Include="IOAreaSymbolization2D.cpp" />
+    <ClCompile Include="IOAreaTypeStyle.cpp" />
+    <ClCompile Include="IOAreaUsage.cpp" />
+    <ClCompile Include="IOAttributeRelate.cpp" />
+    <ClCompile Include="IOBaseMapDefinition.cpp" />
+    <ClCompile Include="IOBaseMapLayer.cpp" />
+    <ClCompile Include="IOBaseMapLayerGroup.cpp" />
+    <ClCompile Include="IOBlockSymbol.cpp" />
+    <ClCompile Include="IOCalculatedProperty.cpp" />
+    <ClCompile Include="IOChannelBand.cpp" />
+    <ClCompile Include="IOCompositeRule.cpp" />
+    <ClCompile Include="IOCompositeSymbolization.cpp" />
+    <ClCompile Include="IOCompositeTypeStyle.cpp" />
+    <ClCompile Include="IOCompoundSymbolDefinition.cpp" />
+    <ClCompile Include="IODrawingLayerDefinition.cpp" />
+    <ClCompile Include="IOElevationSettings.cpp" />
+    <ClCompile Include="IOExtension.cpp" />
+    <ClCompile Include="IOExtra.cpp" />
+    <ClCompile Include="IOFeatureSource.cpp" />
+    <ClCompile Include="IOFill.cpp" />
+    <ClCompile Include="IOFontSymbol.cpp" />
+    <ClCompile Include="IOGraphicElement.cpp" />
+    <ClCompile Include="IOGraphicElementCollection.cpp" />
+    <ClCompile Include="IOGridColor.cpp" />
+    <ClCompile Include="IOGridColorBands.cpp" />
+    <ClCompile Include="IOGridColorRule.cpp" />
+    <ClCompile Include="IOGridColorStyle.cpp" />
+    <ClCompile Include="IOGridLayerDefinition.cpp" />
+    <ClCompile Include="IOGridScaleRange.cpp" />
+    <ClCompile Include="IOGridSurfaceStyle.cpp" />
+    <ClCompile Include="IOHillShade.cpp" />
+    <ClCompile Include="IOImage.cpp" />
+    <ClCompile Include="IOImageSymbol.cpp" />
+    <ClCompile Include="IOLabel.cpp" />
+    <ClCompile Include="IOLineRule.cpp" />
+    <ClCompile Include="IOLineSymbolization2D.cpp" />
+    <ClCompile Include="IOLineTypeStyle.cpp" />
+    <ClCompile Include="IOLineUsage.cpp" />
+    <ClCompile Include="IOMapDefinition.cpp" />
+    <ClCompile Include="IOMapLayer.cpp" />
+    <ClCompile Include="IOMapLayerCommon.cpp" />
+    <ClCompile Include="IOMapLayerGroup.cpp" />
+    <ClCompile Include="IOMapLayerGroupCommon.cpp" />
+    <ClCompile Include="IOMarkSymbol.cpp" />
+    <ClCompile Include="IONameStringPair.cpp" />
+    <ClCompile Include="IOOverride.cpp" />
+    <ClCompile Include="IOOverrideCollection.cpp" />
+    <ClCompile Include="IOParameter.cpp" />
+    <ClCompile Include="IOParameterCollection.cpp" />
+    <ClCompile Include="IOPath.cpp" />
+    <ClCompile Include="IOPointRule.cpp" />
+    <ClCompile Include="IOPointSymbolization2D.cpp" />
+    <ClCompile Include="IOPointTypeStyle.cpp" />
+    <ClCompile Include="IOPointUsage.cpp" />
+    <ClCompile Include="IORelateProperty.cpp" />
+    <ClCompile Include="IOResizeBox.cpp" />
+    <ClCompile Include="IOResourceRef.cpp" />
+    <ClCompile Include="IOSimpleSymbol.cpp" />
+    <ClCompile Include="IOSimpleSymbolDefinition.cpp" />
+    <ClCompile Include="IOStroke.cpp" />
+    <ClCompile Include="IOSupplementalSpatialContextInfo.cpp" />
+    <ClCompile Include="IOSymbol.cpp" />
+    <ClCompile Include="IOSymbolInstance.cpp" />
+    <ClCompile Include="IOText.cpp" />
+    <ClCompile Include="IOTextFrame.cpp" />
+    <ClCompile Include="IOThemeLabel.cpp" />
+    <ClCompile Include="IOTileWatermarkPosition.cpp" />
+    <ClCompile Include="IOUnknown.cpp" />
+    <ClCompile Include="IOUtil.cpp" />
+    <ClCompile Include="IOVectorLayerDefinition.cpp" />
+    <ClCompile Include="IOVectorScaleRange.cpp" />
+    <ClCompile Include="IOW2DSymbol.cpp" />
+    <ClCompile Include="IOWatermarkAppearance.cpp" />
+    <ClCompile Include="IOWatermarkDefinition.cpp" />
+    <ClCompile Include="IOWatermarkInstance.cpp" />
+    <ClCompile Include="IOWatermarkOffsetUnit.cpp" />
+    <ClCompile Include="IOWatermarkXOffset.cpp" />
+    <ClCompile Include="IOWatermarkYOffset.cpp" />
+    <ClCompile Include="IOXYWatermarkPosition.cpp" />
+    <ClCompile Include="MdfParser.cpp" />
+    <ClCompile Include="SAX2ElementHandler.cpp" />
+    <ClCompile Include="SAX2Parser.cpp" />
+    <ClCompile Include="IOURLData.cpp" />
+    <ClCompile Include="IOScaleRange.cpp">
+      <Filter>ProfileResult</Filter>
+    </ClCompile>
+    <ClCompile Include="IOProfileRenderWatermarkResult.cpp">
+      <Filter>ProfileResult</Filter>
+    </ClCompile>
+    <ClCompile Include="IOProfileRenderLayerResult.cpp">
+      <Filter>ProfileResult</Filter>
+    </ClCompile>
+    <ClCompile Include="IOProfileRenderWatermarksResult.cpp">
+      <Filter>ProfileResult</Filter>
+    </ClCompile>
+    <ClCompile Include="IOProfileRenderLayersResult.cpp">
+      <Filter>ProfileResult</Filter>
+    </ClCompile>
+    <ClCompile Include="IOProfileRenderSelectionResult.cpp">
+      <Filter>ProfileResult</Filter>
+    </ClCompile>
+    <ClCompile Include="IOProfileRenderLabelsResult.cpp">
+      <Filter>ProfileResult</Filter>
+    </ClCompile>
+    <ClCompile Include="IOProfileRenderMapResult.cpp">
+      <Filter>ProfileResult</Filter>
+    </ClCompile>
+    <ClCompile Include="IOProfileResult.cpp">
+      <Filter>ProfileResult</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Common\IOColor.h">
+      <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="Common\IOExtent3D.h">
+      <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="Common\IOPoint3D.h">
+      <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="Common\IOSize2D.h">
+      <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="Common\IOStringObjectCollection.h">
+      <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="Common\IOVector3D.h">
+      <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="PrintLayout\IODataConfiguration.h">
+      <Filter>PrintLayout</Filter>
+    </ClInclude>
+    <ClInclude Include="PrintLayout\IOMapView.h">
+      <Filter>PrintLayout</Filter>
+    </ClInclude>
+    <ClInclude Include="PrintLayout\IOMapViewportDefinition.h">
+      <Filter>PrintLayout</Filter>
+    </ClInclude>
+    <ClInclude Include="PrintLayout\IOPrintLayoutDefinition.h">
+      <Filter>PrintLayout</Filter>
+    </ClInclude>
+    <ClInclude Include="PrintLayout\IOPrintLayoutElementCollection.h">
+      <Filter>PrintLayout</Filter>
+    </ClInclude>
+    <ClInclude Include="PrintLayout\IOPrintLayoutElementDefinition.h">
+      <Filter>PrintLayout</Filter>
+    </ClInclude>
+    <ClInclude Include="PrintLayout\IOPrintLayoutElementStyle.h">
+      <Filter>PrintLayout</Filter>
+    </ClInclude>
+    <ClInclude Include="PrintLayout\IOPropertyMappingCollection.h">
+      <Filter>PrintLayout</Filter>
+    </ClInclude>
+    <ClInclude Include="PrintLayout\IOStylizationConfiguration.h">
+      <Filter>PrintLayout</Filter>
+    </ClInclude>
+    <ClInclude Include="PrintLayout\IOThickness.h">
+      <Filter>PrintLayout</Filter>
+    </ClInclude>
+    <ClInclude Include="FSDSAX2Parser.h" />
+    <ClInclude Include="IOAreaRule.h" />
+    <ClInclude Include="IOAreaSymbolization2D.h" />
+    <ClInclude Include="IOAreaTypeStyle.h" />
+    <ClInclude Include="IOAreaUsage.h" />
+    <ClInclude Include="IOAttributeRelate.h" />
+    <ClInclude Include="IOBaseMapDefinition.h" />
+    <ClInclude Include="IOBaseMapLayer.h" />
+    <ClInclude Include="IOBaseMapLayerGroup.h" />
+    <ClInclude Include="IOBlockSymbol.h" />
+    <ClInclude Include="IOCalculatedProperty.h" />
+    <ClInclude Include="IOChannelBand.h" />
+    <ClInclude Include="IOCompositeRule.h" />
+    <ClInclude Include="IOCompositeSymbolization.h" />
+    <ClInclude Include="IOCompositeTypeStyle.h" />
+    <ClInclude Include="IOCompoundSymbolDefinition.h" />
+    <ClInclude Include="IODrawingLayerDefinition.h" />
+    <ClInclude Include="IOElevationSettings.h" />
+    <ClInclude Include="IOExtension.h" />
+    <ClInclude Include="IOExtra.h" />
+    <ClInclude Include="IOFeatureSource.h" />
+    <ClInclude Include="IOFill.h" />
+    <ClInclude Include="IOFontSymbol.h" />
+    <ClInclude Include="IOGraphicElement.h" />
+    <ClInclude Include="IOGraphicElementCollection.h" />
+    <ClInclude Include="IOGridColor.h" />
+    <ClInclude Include="IOGridColorRule.h" />
+    <ClInclude Include="IOGridColorStyle.h" />
+    <ClInclude Include="IOGridLayerDefinition.h" />
+    <ClInclude Include="IOGridScaleRange.h" />
+    <ClInclude Include="IOGridSurfaceStyle.h" />
+    <ClInclude Include="IOHillShade.h" />
+    <ClInclude Include="IOImage.h" />
+    <ClInclude Include="IOImageSymbol.h" />
+    <ClInclude Include="IOLabel.h" />
+    <ClInclude Include="IOLineRule.h" />
+    <ClInclude Include="IOLineSymbolization2D.h" />
+    <ClInclude Include="IOLineTypeStyle.h" />
+    <ClInclude Include="IOLineUsage.h" />
+    <ClInclude Include="IOMapDefinition.h" />
+    <ClInclude Include="IOMapLayer.h" />
+    <ClInclude Include="IOMapLayerCommon.h" />
+    <ClInclude Include="IOMapLayerGroup.h" />
+    <ClInclude Include="IOMapLayerGroupCommon.h" />
+    <ClInclude Include="IOMarkSymbol.h" />
+    <ClInclude Include="IONameStringPair.h" />
+    <ClInclude Include="IOOverride.h" />
+    <ClInclude Include="IOOverrideCollection.h" />
+    <ClInclude Include="IOParameter.h" />
+    <ClInclude Include="IOParameterCollection.h" />
+    <ClInclude Include="IOPath.h" />
+    <ClInclude Include="IOPointRule.h" />
+    <ClInclude Include="IOPointSymbolization2D.h" />
+    <ClInclude Include="IOPointTypeStyle.h" />
+    <ClInclude Include="IOPointUsage.h" />
+    <ClInclude Include="IORelateProperty.h" />
+    <ClInclude Include="IOResizeBox.h" />
+    <ClInclude Include="IOResourceRef.h" />
+    <ClInclude Include="IOSimpleSymbol.h" />
+    <ClInclude Include="IOSimpleSymbolDefinition.h" />
+    <ClInclude Include="IOStroke.h" />
+    <ClInclude Include="IOSupplementalSpatialContextInfo.h" />
+    <ClInclude Include="IOSymbol.h" />
+    <ClInclude Include="IOSymbolInstance.h" />
+    <ClInclude Include="IOText.h" />
+    <ClInclude Include="IOTextFrame.h" />
+    <ClInclude Include="IOThemeLabel.h" />
+    <ClInclude Include="IOTileWatermarkPosition.h" />
+    <ClInclude Include="IOUnknown.h" />
+    <ClInclude Include="IOUtil.h" />
+    <ClInclude Include="IOVectorLayerDefinition.h" />
+    <ClInclude Include="IOVectorScaleRange.h" />
+    <ClInclude Include="IOW2DSymbol.h" />
+    <ClInclude Include="IOWatermarkAppearance.h" />
+    <ClInclude Include="IOWatermarkDefinition.h" />
+    <ClInclude Include="IOWatermarkInstance.h" />
+    <ClInclude Include="IOWatermarkOffsetUnit.h" />
+    <ClInclude Include="IOWatermarkXOffset.h" />
+    <ClInclude Include="IOWatermarkYOffset.h" />
+    <ClInclude Include="IOXYWatermarkPosition.h" />
+    <ClInclude Include="MdfParser.h" />
+    <ClInclude Include="SAX2ElementHandler.h" />
+    <ClInclude Include="SAX2Parser.h" />
+    <ClInclude Include="stdafx.h" />
+    <ClInclude Include="IOURLData.h" />
+    <ClInclude Include="IOScaleRange.h">
+      <Filter>ProfileResult</Filter>
+    </ClInclude>
+    <ClInclude Include="IOProfileRenderLabelsResult.h">
+      <Filter>ProfileResult</Filter>
+    </ClInclude>
+    <ClInclude Include="IOProfileRenderLayerResult.h">
+      <Filter>ProfileResult</Filter>
+    </ClInclude>
+    <ClInclude Include="IOProfileRenderWatermarkResult.h">
+      <Filter>ProfileResult</Filter>
+    </ClInclude>
+    <ClInclude Include="IOProfileRenderLayersResult.h">
+      <Filter>ProfileResult</Filter>
+    </ClInclude>
+    <ClInclude Include="IOProfileRenderSelectionResult.h">
+      <Filter>ProfileResult</Filter>
+    </ClInclude>
+    <ClInclude Include="IOProfileRenderWatermarksResult.h">
+      <Filter>ProfileResult</Filter>
+    </ClInclude>
+    <ClInclude Include="IOProfileRenderMapResult.h">
+      <Filter>ProfileResult</Filter>
+    </ClInclude>
+    <ClInclude Include="IOProfileResult.h">
+      <Filter>ProfileResult</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="MdfParser.rc" />
+  </ItemGroup>
+</Project>

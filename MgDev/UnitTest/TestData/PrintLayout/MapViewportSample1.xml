@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<PrintLayoutElementDefinition xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="PrintLayoutDefinition-2.0.0.xsd" version="2.0.0">
+	<MapViewportDefinition elementType="MapViewportDefinition">
+		<Description>String</Description>
+		<ResourceId>String</ResourceId>
+		<Stylization>
+			<ResourceId>String</ResourceId>
+			<ExtendedData1/>
+		</Stylization>
+		<Data>
+			<ResourceId>String</ResourceId>
+			<FeatureClass>String</FeatureClass>
+			<Geometry>String</Geometry>
+			<Filter>String</Filter>
+			<PropertyMappings>
+				<PropertyMapping>
+					<TargetProperty>String</TargetProperty>
+					<SourceProperty>String</SourceProperty>
+					<SourceUnits>String</SourceUnits>
+					<ExtendedData1/>
+				</PropertyMapping>
+			</PropertyMappings>
+			<ExtendedData1/>
+		</Data>
+		<ExtendedData1/>
+		<MapName>String</MapName>
+		<HiddenLayerNames>
+			<Name>String</Name>
+		</HiddenLayerNames>
+		<Locked>false</Locked>
+		<On>true</On>
+		<MapView>
+			<Center>
+				<X>0.0</X>
+				<Y>0.0</Y>
+				<Z>0.0</Z>
+			</Center>
+			<Height>0.0</Height>
+			<Rotation>0.0</Rotation>
+			<ViewDirection>
+				<X>0.0</X>
+				<Y>0.0</Y>
+				<Z>0.0</Z>
+			</ViewDirection>
+			<ModelUnits>String</ModelUnits>
+			<ExtendedData1/>
+		</MapView>
+	</MapViewportDefinition>
+</PrintLayoutElementDefinition>

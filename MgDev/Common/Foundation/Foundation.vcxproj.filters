@@ -1,0 +1,657 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Exception">
+      <UniqueIdentifier>{7bb8909d-f0c8-42ac-99e9-89586e2d0203}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Data">
+      <UniqueIdentifier>{a3028396-a081-4d9a-9c88-e68313baccf7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="System">
+      <UniqueIdentifier>{d91158b3-a9b5-4fde-93ac-c579c2a36c33}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Exception\ApplicationException.cpp">
+      <Filter>Exception</Filter>
+    </ClCompile>
+    <ClCompile Include="Exception\ArgumentOutOfRangeException.cpp">
+      <Filter>Exception</Filter>
+    </ClCompile>
+    <ClCompile Include="Exception\ClassNotFoundException.cpp">
+      <Filter>Exception</Filter>
+    </ClCompile>
+    <ClCompile Include="Exception\ConfigurationException.cpp">
+      <Filter>Exception</Filter>
+    </ClCompile>
+    <ClCompile Include="Exception\ConfigurationLoadFailedException.cpp">
+      <Filter>Exception</Filter>
+    </ClCompile>
+    <ClCompile Include="Exception\ConfigurationSaveFailedException.cpp">
+      <Filter>Exception</Filter>
+    </ClCompile>
+    <ClCompile Include="Exception\DateTimeException.cpp">
+      <Filter>Exception</Filter>
+    </ClCompile>
+    <ClCompile Include="Exception\DecryptionException.cpp">
+      <Filter>Exception</Filter>
+    </ClCompile>
+    <ClCompile Include="Exception\DirectoryNotFoundException.cpp">
+      <Filter>Exception</Filter>
+    </ClCompile>
+    <ClCompile Include="Exception\DivideByZeroException.cpp">
+      <Filter>Exception</Filter>
+    </ClCompile>
+    <ClCompile Include="Exception\DomainException.cpp">
+      <Filter>Exception</Filter>
+    </ClCompile>
+    <ClCompile Include="Exception\DuplicateDirectoryException.cpp">
+      <Filter>Exception</Filter>
+    </ClCompile>
+    <ClCompile Include="Exception\DuplicateFileException.cpp">
+      <Filter>Exception</Filter>
+    </ClCompile>
+    <ClCompile Include="Exception\DuplicateObjectException.cpp">
+      <Filter>Exception</Filter>
+    </ClCompile>
+    <ClCompile Include="Exception\EncryptionException.cpp">
+      <Filter>Exception</Filter>
+    </ClCompile>
+    <ClCompile Include="Exception\Exception.cpp">
+      <Filter>Exception</Filter>
+    </ClCompile>
+    <ClCompile Include="Exception\FileIoException.cpp">
+      <Filter>Exception</Filter>
+    </ClCompile>
+    <ClCompile Include="Exception\FileNotFoundException.cpp">
+      <Filter>Exception</Filter>
+    </ClCompile>
+    <ClCompile Include="Exception\GridDensityException.cpp">
+      <Filter>Exception</Filter>
+    </ClCompile>
+    <ClCompile Include="Exception\IndexOutOfRangeException.cpp">
+      <Filter>Exception</Filter>
+    </ClCompile>
+    <ClCompile Include="Exception\InvalidArgumentException.cpp">
+      <Filter>Exception</Filter>
+    </ClCompile>
+    <ClCompile Include="Exception\InvalidCastException.cpp">
+      <Filter>Exception</Filter>
+    </ClCompile>
+    <ClCompile Include="Exception\InvalidMimeTypeException.cpp">
+      <Filter>Exception</Filter>
+    </ClCompile>
+    <ClCompile Include="Exception\InvalidOperationException.cpp">
+      <Filter>Exception</Filter>
+    </ClCompile>
+    <ClCompile Include="Exception\InvalidPropertyTypeException.cpp">
+      <Filter>Exception</Filter>
+    </ClCompile>
+    <ClCompile Include="Exception\InvalidStreamHeaderException.cpp">
+      <Filter>Exception</Filter>
+    </ClCompile>
+    <ClCompile Include="Exception\IoException.cpp">
+      <Filter>Exception</Filter>
+    </ClCompile>
+    <ClCompile Include="Exception\LengthException.cpp">
+      <Filter>Exception</Filter>
+    </ClCompile>
+    <ClCompile Include="Exception\LogicException.cpp">
+      <Filter>Exception</Filter>
+    </ClCompile>
+    <ClCompile Include="Exception\NotFiniteNumberException.cpp">
+      <Filter>Exception</Filter>
+    </ClCompile>
+    <ClCompile Include="Exception\NotImplementedException.cpp">
+      <Filter>Exception</Filter>
+    </ClCompile>
+    <ClCompile Include="Exception\NullArgumentException.cpp">
+      <Filter>Exception</Filter>
+    </ClCompile>
+    <ClCompile Include="Exception\NullPropertyValueException.cpp">
+      <Filter>Exception</Filter>
+    </ClCompile>
+    <ClCompile Include="Exception\NullReferenceException.cpp">
+      <Filter>Exception</Filter>
+    </ClCompile>
+    <ClCompile Include="Exception\ObjectNotFoundException.cpp">
+      <Filter>Exception</Filter>
+    </ClCompile>
+    <ClCompile Include="Exception\OutOfMemoryException.cpp">
+      <Filter>Exception</Filter>
+    </ClCompile>
+    <ClCompile Include="Exception\OutOfRangeException.cpp">
+      <Filter>Exception</Filter>
+    </ClCompile>
+    <ClCompile Include="Exception\OverflowException.cpp">
+      <Filter>Exception</Filter>
+    </ClCompile>
+    <ClCompile Include="Exception\PlatformNotSupportedException.cpp">
+      <Filter>Exception</Filter>
+    </ClCompile>
+    <ClCompile Include="Exception\ResourcesException.cpp">
+      <Filter>Exception</Filter>
+    </ClCompile>
+    <ClCompile Include="Exception\ResourcesLoadFailedException.cpp">
+      <Filter>Exception</Filter>
+    </ClCompile>
+    <ClCompile Include="Exception\ResourceTagNotFoundException.cpp">
+      <Filter>Exception</Filter>
+    </ClCompile>
+    <ClCompile Include="Exception\RuntimeException.cpp">
+      <Filter>Exception</Filter>
+    </ClCompile>
+    <ClCompile Include="Exception\StreamIoException.cpp">
+      <Filter>Exception</Filter>
+    </ClCompile>
+    <ClCompile Include="Exception\SystemException.cpp">
+      <Filter>Exception</Filter>
+    </ClCompile>
+    <ClCompile Include="Exception\TemporaryFileNotAvailableException.cpp">
+      <Filter>Exception</Filter>
+    </ClCompile>
+    <ClCompile Include="Exception\ThirdPartyException.cpp">
+      <Filter>Exception</Filter>
+    </ClCompile>
+    <ClCompile Include="Exception\UnclassifiedException.cpp">
+      <Filter>Exception</Filter>
+    </ClCompile>
+    <ClCompile Include="Exception\UnderflowException.cpp">
+      <Filter>Exception</Filter>
+    </ClCompile>
+    <ClCompile Include="Exception\XmlException.cpp">
+      <Filter>Exception</Filter>
+    </ClCompile>
+    <ClCompile Include="Exception\XmlParserException.cpp">
+      <Filter>Exception</Filter>
+    </ClCompile>
+    <ClCompile Include="Data\BatchPropertyCollection.cpp">
+      <Filter>Data</Filter>
+    </ClCompile>
+    <ClCompile Include="Data\Byte.cpp">
+      <Filter>Data</Filter>
+    </ClCompile>
+    <ClCompile Include="Data\ByteReader.cpp">
+      <Filter>Data</Filter>
+    </ClCompile>
+    <ClCompile Include="Data\ByteSink.cpp">
+      <Filter>Data</Filter>
+    </ClCompile>
+    <ClCompile Include="Data\ByteSource.cpp">
+      <Filter>Data</Filter>
+    </ClCompile>
+    <ClCompile Include="Data\Collection.cpp">
+      <Filter>Data</Filter>
+    </ClCompile>
+    <ClCompile Include="Data\DateTime.cpp">
+      <Filter>Data</Filter>
+    </ClCompile>
+    <ClCompile Include="Data\MimeType.cpp">
+      <Filter>Data</Filter>
+    </ClCompile>
+    <ClCompile Include="Data\NamedCollection.cpp">
+      <Filter>Data</Filter>
+    </ClCompile>
+    <ClCompile Include="Data\NullableProperty.cpp">
+      <Filter>Data</Filter>
+    </ClCompile>
+    <ClCompile Include="Data\Property.cpp">
+      <Filter>Data</Filter>
+    </ClCompile>
+    <ClCompile Include="Data\PropertyCollection.cpp">
+      <Filter>Data</Filter>
+    </ClCompile>
+    <ClCompile Include="Data\PropertyDefinition.cpp">
+      <Filter>Data</Filter>
+    </ClCompile>
+    <ClCompile Include="Data\StringCollection.cpp">
+      <Filter>Data</Filter>
+    </ClCompile>
+    <ClCompile Include="Data\StringProperty.cpp">
+      <Filter>Data</Filter>
+    </ClCompile>
+    <ClCompile Include="System\AceStreamHelper.cpp">
+      <Filter>System</Filter>
+    </ClCompile>
+    <ClCompile Include="System\ByteSourceFileImpl.cpp">
+      <Filter>System</Filter>
+    </ClCompile>
+    <ClCompile Include="System\ByteSourceMemoryImpl.cpp">
+      <Filter>System</Filter>
+    </ClCompile>
+    <ClCompile Include="System\ByteSourceSocketStreamImpl.cpp">
+      <Filter>System</Filter>
+    </ClCompile>
+    <ClCompile Include="System\ByteSourceStreamImpl.cpp">
+      <Filter>System</Filter>
+    </ClCompile>
+    <ClCompile Include="System\ClassFactory.cpp">
+      <Filter>System</Filter>
+    </ClCompile>
+    <ClCompile Include="System\Configuration.cpp">
+      <Filter>System</Filter>
+    </ClCompile>
+    <ClCompile Include="System\ConfigurationHeap.cpp">
+      <Filter>System</Filter>
+    </ClCompile>
+    <ClCompile Include="System\ConfigurationSection.cpp">
+      <Filter>System</Filter>
+    </ClCompile>
+    <ClCompile Include="System\ConfigurationSectionCollection.cpp">
+      <Filter>System</Filter>
+    </ClCompile>
+    <ClCompile Include="System\Disposable.cpp">
+      <Filter>System</Filter>
+    </ClCompile>
+    <ClCompile Include="System\DisposableCollection.cpp">
+      <Filter>System</Filter>
+    </ClCompile>
+    <ClCompile Include="System\FileUtil.cpp">
+      <Filter>System</Filter>
+    </ClCompile>
+    <ClCompile Include="System\FoundationConfigProperties.cpp">
+      <Filter>System</Filter>
+    </ClCompile>
+    <ClCompile Include="System\GuardDisposable.cpp">
+      <Filter>System</Filter>
+    </ClCompile>
+    <ClCompile Include="System\MemoryStreamHelper.cpp">
+      <Filter>System</Filter>
+    </ClCompile>
+    <ClCompile Include="System\NamedSerializable.cpp">
+      <Filter>System</Filter>
+    </ClCompile>
+    <ClCompile Include="System\Object.cpp">
+      <Filter>System</Filter>
+    </ClCompile>
+    <ClCompile Include="System\PacketParser.cpp">
+      <Filter>System</Filter>
+    </ClCompile>
+    <ClCompile Include="System\Resources.cpp">
+      <Filter>System</Filter>
+    </ClCompile>
+    <ClCompile Include="System\Serializable.cpp">
+      <Filter>System</Filter>
+    </ClCompile>
+    <ClCompile Include="System\ServerConnectionBase.cpp">
+      <Filter>System</Filter>
+    </ClCompile>
+    <ClCompile Include="System\SetLocale.cpp">
+      <Filter>System</Filter>
+    </ClCompile>
+    <ClCompile Include="System\Stream.cpp">
+      <Filter>System</Filter>
+    </ClCompile>
+    <ClCompile Include="System\StreamData.cpp">
+      <Filter>System</Filter>
+    </ClCompile>
+    <ClCompile Include="System\StreamHelper.cpp">
+      <Filter>System</Filter>
+    </ClCompile>
+    <ClCompile Include="System\StreamParser.cpp">
+      <Filter>System</Filter>
+    </ClCompile>
+    <ClCompile Include="System\StreamReader.cpp">
+      <Filter>System</Filter>
+    </ClCompile>
+    <ClCompile Include="System\StreamWriter.cpp">
+      <Filter>System</Filter>
+    </ClCompile>
+    <ClCompile Include="System\Util.cpp">
+      <Filter>System</Filter>
+    </ClCompile>
+    <ClCompile Include="System\XmlUtil.cpp">
+      <Filter>System</Filter>
+    </ClCompile>
+    <ClCompile Include="FoundationBuild.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Exception\ApplicationException.h">
+      <Filter>Exception</Filter>
+    </ClInclude>
+    <ClInclude Include="Exception\ArgumentOutOfRangeException.h">
+      <Filter>Exception</Filter>
+    </ClInclude>
+    <ClInclude Include="Exception\ClassNotFoundException.h">
+      <Filter>Exception</Filter>
+    </ClInclude>
+    <ClInclude Include="Exception\ConfigurationException.h">
+      <Filter>Exception</Filter>
+    </ClInclude>
+    <ClInclude Include="Exception\ConfigurationLoadFailedException.h">
+      <Filter>Exception</Filter>
+    </ClInclude>
+    <ClInclude Include="Exception\ConfigurationSaveFailedException.h">
+      <Filter>Exception</Filter>
+    </ClInclude>
+    <ClInclude Include="Exception\DateTimeException.h">
+      <Filter>Exception</Filter>
+    </ClInclude>
+    <ClInclude Include="Exception\DecryptionException.h">
+      <Filter>Exception</Filter>
+    </ClInclude>
+    <ClInclude Include="Exception\DirectoryNotFoundException.h">
+      <Filter>Exception</Filter>
+    </ClInclude>
+    <ClInclude Include="Exception\DivideByZeroException.h">
+      <Filter>Exception</Filter>
+    </ClInclude>
+    <ClInclude Include="Exception\DomainException.h">
+      <Filter>Exception</Filter>
+    </ClInclude>
+    <ClInclude Include="Exception\DuplicateDirectoryException.h">
+      <Filter>Exception</Filter>
+    </ClInclude>
+    <ClInclude Include="Exception\DuplicateFileException.h">
+      <Filter>Exception</Filter>
+    </ClInclude>
+    <ClInclude Include="Exception\DuplicateObjectException.h">
+      <Filter>Exception</Filter>
+    </ClInclude>
+    <ClInclude Include="Exception\EncryptionException.h">
+      <Filter>Exception</Filter>
+    </ClInclude>
+    <ClInclude Include="Exception\Exception.h">
+      <Filter>Exception</Filter>
+    </ClInclude>
+    <ClInclude Include="Exception\ExceptionDefs.h">
+      <Filter>Exception</Filter>
+    </ClInclude>
+    <ClInclude Include="Exception\FileIoException.h">
+      <Filter>Exception</Filter>
+    </ClInclude>
+    <ClInclude Include="Exception\FileNotFoundException.h">
+      <Filter>Exception</Filter>
+    </ClInclude>
+    <ClInclude Include="Exception\GridDensityException.h">
+      <Filter>Exception</Filter>
+    </ClInclude>
+    <ClInclude Include="Exception\IndexOutOfRangeException.h">
+      <Filter>Exception</Filter>
+    </ClInclude>
+    <ClInclude Include="Exception\InvalidArgumentException.h">
+      <Filter>Exception</Filter>
+    </ClInclude>
+    <ClInclude Include="Exception\InvalidCastException.h">
+      <Filter>Exception</Filter>
+    </ClInclude>
+    <ClInclude Include="Exception\InvalidMimeTypeException.h">
+      <Filter>Exception</Filter>
+    </ClInclude>
+    <ClInclude Include="Exception\InvalidOperationException.h">
+      <Filter>Exception</Filter>
+    </ClInclude>
+    <ClInclude Include="Exception\InvalidPropertyTypeException.h">
+      <Filter>Exception</Filter>
+    </ClInclude>
+    <ClInclude Include="Exception\InvalidStreamHeaderException.h">
+      <Filter>Exception</Filter>
+    </ClInclude>
+    <ClInclude Include="Exception\IoException.h">
+      <Filter>Exception</Filter>
+    </ClInclude>
+    <ClInclude Include="Exception\LengthException.h">
+      <Filter>Exception</Filter>
+    </ClInclude>
+    <ClInclude Include="Exception\LogicException.h">
+      <Filter>Exception</Filter>
+    </ClInclude>
+    <ClInclude Include="Exception\NotFiniteNumberException.h">
+      <Filter>Exception</Filter>
+    </ClInclude>
+    <ClInclude Include="Exception\NotImplementedException.h">
+      <Filter>Exception</Filter>
+    </ClInclude>
+    <ClInclude Include="Exception\NullArgumentException.h">
+      <Filter>Exception</Filter>
+    </ClInclude>
+    <ClInclude Include="Exception\NullPropertyValueException.h">
+      <Filter>Exception</Filter>
+    </ClInclude>
+    <ClInclude Include="Exception\NullReferenceException.h">
+      <Filter>Exception</Filter>
+    </ClInclude>
+    <ClInclude Include="Exception\ObjectNotFoundException.h">
+      <Filter>Exception</Filter>
+    </ClInclude>
+    <ClInclude Include="Exception\OutOfMemoryException.h">
+      <Filter>Exception</Filter>
+    </ClInclude>
+    <ClInclude Include="Exception\OutOfRangeException.h">
+      <Filter>Exception</Filter>
+    </ClInclude>
+    <ClInclude Include="Exception\OverflowException.h">
+      <Filter>Exception</Filter>
+    </ClInclude>
+    <ClInclude Include="Exception\PlatformNotSupportedException.h">
+      <Filter>Exception</Filter>
+    </ClInclude>
+    <ClInclude Include="Exception\ResourcesException.h">
+      <Filter>Exception</Filter>
+    </ClInclude>
+    <ClInclude Include="Exception\ResourcesLoadFailedException.h">
+      <Filter>Exception</Filter>
+    </ClInclude>
+    <ClInclude Include="Exception\ResourceTagNotFoundException.h">
+      <Filter>Exception</Filter>
+    </ClInclude>
+    <ClInclude Include="Exception\RuntimeException.h">
+      <Filter>Exception</Filter>
+    </ClInclude>
+    <ClInclude Include="Exception\StreamIoException.h">
+      <Filter>Exception</Filter>
+    </ClInclude>
+    <ClInclude Include="Exception\SystemException.h">
+      <Filter>Exception</Filter>
+    </ClInclude>
+    <ClInclude Include="Exception\TemporaryFileNotAvailableException.h">
+      <Filter>Exception</Filter>
+    </ClInclude>
+    <ClInclude Include="Exception\ThirdPartyException.h">
+      <Filter>Exception</Filter>
+    </ClInclude>
+    <ClInclude Include="Exception\UnclassifiedException.h">
+      <Filter>Exception</Filter>
+    </ClInclude>
+    <ClInclude Include="Exception\UnderflowException.h">
+      <Filter>Exception</Filter>
+    </ClInclude>
+    <ClInclude Include="Exception\XmlException.h">
+      <Filter>Exception</Filter>
+    </ClInclude>
+    <ClInclude Include="Exception\XmlParserException.h">
+      <Filter>Exception</Filter>
+    </ClInclude>
+    <ClInclude Include="Data\BatchPropertyCollection.h">
+      <Filter>Data</Filter>
+    </ClInclude>
+    <ClInclude Include="Data\Byte.h">
+      <Filter>Data</Filter>
+    </ClInclude>
+    <ClInclude Include="Data\ByteReader.h">
+      <Filter>Data</Filter>
+    </ClInclude>
+    <ClInclude Include="Data\ByteSink.h">
+      <Filter>Data</Filter>
+    </ClInclude>
+    <ClInclude Include="Data\ByteSource.h">
+      <Filter>Data</Filter>
+    </ClInclude>
+    <ClInclude Include="Data\Collection.h">
+      <Filter>Data</Filter>
+    </ClInclude>
+    <ClInclude Include="Data\DateTime.h">
+      <Filter>Data</Filter>
+    </ClInclude>
+    <ClInclude Include="Data\FeaturePropertyType.h">
+      <Filter>Data</Filter>
+    </ClInclude>
+    <ClInclude Include="Data\MimeType.h">
+      <Filter>Data</Filter>
+    </ClInclude>
+    <ClInclude Include="Data\NamedCollection.h">
+      <Filter>Data</Filter>
+    </ClInclude>
+    <ClInclude Include="Data\NullableProperty.h">
+      <Filter>Data</Filter>
+    </ClInclude>
+    <ClInclude Include="Data\Property.h">
+      <Filter>Data</Filter>
+    </ClInclude>
+    <ClInclude Include="Data\PropertyCollection.h">
+      <Filter>Data</Filter>
+    </ClInclude>
+    <ClInclude Include="Data\PropertyDefinition.h">
+      <Filter>Data</Filter>
+    </ClInclude>
+    <ClInclude Include="Data\PropertyType.h">
+      <Filter>Data</Filter>
+    </ClInclude>
+    <ClInclude Include="Data\StringCollection.h">
+      <Filter>Data</Filter>
+    </ClInclude>
+    <ClInclude Include="Data\StringProperty.h">
+      <Filter>Data</Filter>
+    </ClInclude>
+    <ClInclude Include="System\AceStreamHelper.h">
+      <Filter>System</Filter>
+    </ClInclude>
+    <ClInclude Include="System\ArgumentPacket.h">
+      <Filter>System</Filter>
+    </ClInclude>
+    <ClInclude Include="System\BasicPacket.h">
+      <Filter>System</Filter>
+    </ClInclude>
+    <ClInclude Include="System\BinaryStreamArgumentPacket.h">
+      <Filter>System</Filter>
+    </ClInclude>
+    <ClInclude Include="System\ByteSourceFileImpl.h">
+      <Filter>System</Filter>
+    </ClInclude>
+    <ClInclude Include="System\ByteSourceImpl.h">
+      <Filter>System</Filter>
+    </ClInclude>
+    <ClInclude Include="System\ByteSourceMemoryImpl.h">
+      <Filter>System</Filter>
+    </ClInclude>
+    <ClInclude Include="System\ByteSourceSocketStreamImpl.h">
+      <Filter>System</Filter>
+    </ClInclude>
+    <ClInclude Include="System\ByteSourceStreamImpl.h">
+      <Filter>System</Filter>
+    </ClInclude>
+    <ClInclude Include="System\ClassFactory.h">
+      <Filter>System</Filter>
+    </ClInclude>
+    <ClInclude Include="System\CollectionPacket.h">
+      <Filter>System</Filter>
+    </ClInclude>
+    <ClInclude Include="System\Configuration.h">
+      <Filter>System</Filter>
+    </ClInclude>
+    <ClInclude Include="System\ConfigurationHeap.h">
+      <Filter>System</Filter>
+    </ClInclude>
+    <ClInclude Include="System\ConfigurationSection.h">
+      <Filter>System</Filter>
+    </ClInclude>
+    <ClInclude Include="System\ConfigurationSectionCollection.h">
+      <Filter>System</Filter>
+    </ClInclude>
+    <ClInclude Include="System\ControlPacket.h">
+      <Filter>System</Filter>
+    </ClInclude>
+    <ClInclude Include="System\Disposable.h">
+      <Filter>System</Filter>
+    </ClInclude>
+    <ClInclude Include="System\DisposableCollection.h">
+      <Filter>System</Filter>
+    </ClInclude>
+    <ClInclude Include="System\FileUtil.h">
+      <Filter>System</Filter>
+    </ClInclude>
+    <ClInclude Include="System\FoundationClassId.h">
+      <Filter>System</Filter>
+    </ClInclude>
+    <ClInclude Include="System\FoundationConfigProperties.h">
+      <Filter>System</Filter>
+    </ClInclude>
+    <ClInclude Include="System\GuardDisposable.h">
+      <Filter>System</Filter>
+    </ClInclude>
+    <ClInclude Include="System\LinuxMemoryStatus.h">
+      <Filter>System</Filter>
+    </ClInclude>
+    <ClInclude Include="System\MemoryStreamHelper.h">
+      <Filter>System</Filter>
+    </ClInclude>
+    <ClInclude Include="System\NamedSerializable.h">
+      <Filter>System</Filter>
+    </ClInclude>
+    <ClInclude Include="System\Object.h">
+      <Filter>System</Filter>
+    </ClInclude>
+    <ClInclude Include="System\OperationPacket.h">
+      <Filter>System</Filter>
+    </ClInclude>
+    <ClInclude Include="System\OperationResponsePacket.h">
+      <Filter>System</Filter>
+    </ClInclude>
+    <ClInclude Include="System\PacketParser.h">
+      <Filter>System</Filter>
+    </ClInclude>
+    <ClInclude Include="System\PacketStructure.h">
+      <Filter>System</Filter>
+    </ClInclude>
+    <ClInclude Include="System\Ptr.h">
+      <Filter>System</Filter>
+    </ClInclude>
+    <ClInclude Include="System\Resources.h">
+      <Filter>System</Filter>
+    </ClInclude>
+    <ClInclude Include="System\Serializable.h">
+      <Filter>System</Filter>
+    </ClInclude>
+    <ClInclude Include="System\ServerConnectionBase.h">
+      <Filter>System</Filter>
+    </ClInclude>
+    <ClInclude Include="System\SetLocale.h">
+      <Filter>System</Filter>
+    </ClInclude>
+    <ClInclude Include="System\Stream.h">
+      <Filter>System</Filter>
+    </ClInclude>
+    <ClInclude Include="System\StreamData.h">
+      <Filter>System</Filter>
+    </ClInclude>
+    <ClInclude Include="System\StreamHeader.h">
+      <Filter>System</Filter>
+    </ClInclude>
+    <ClInclude Include="System\StreamHelper.h">
+      <Filter>System</Filter>
+    </ClInclude>
+    <ClInclude Include="System\StreamParser.h">
+      <Filter>System</Filter>
+    </ClInclude>
+    <ClInclude Include="System\StreamReader.h">
+      <Filter>System</Filter>
+    </ClInclude>
+    <ClInclude Include="System\StreamWriter.h">
+      <Filter>System</Filter>
+    </ClInclude>
+    <ClInclude Include="System\Util.h">
+      <Filter>System</Filter>
+    </ClInclude>
+    <ClInclude Include="System\XmlDefs.h">
+      <Filter>System</Filter>
+    </ClInclude>
+    <ClInclude Include="System\XmlUtil.h">
+      <Filter>System</Filter>
+    </ClInclude>
+    <ClInclude Include="Foundation.h" />
+    <ClInclude Include="FoundationDefs.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="Foundation.rc" />
+  </ItemGroup>
+</Project>

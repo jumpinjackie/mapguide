@@ -1,0 +1,1094 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="build_windows">
+      <UniqueIdentifier>{cb785610-ebb8-425d-a067-0e2a4a0e8379}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include">
+      <UniqueIdentifier>{8d73a1dc-d62b-46c1-ad9c-2e4c308b48a2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="dbxml">
+      <UniqueIdentifier>{73ea2c73-d20b-482c-81d8-bbe1b53c82f4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="dataItem">
+      <UniqueIdentifier>{c771cc09-3e72-4e57-a3a5-9d11bfbdb21f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="nodeStore">
+      <UniqueIdentifier>{e7079288-c570-4cf0-bcb8-d49c8ce94369}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="optimizer">
+      <UniqueIdentifier>{6735a3ed-1052-471c-856d-7fde0aca6761}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="query">
+      <UniqueIdentifier>{6d184d59-81d1-4d0b-bfec-11ed59e53cd5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="debug">
+      <UniqueIdentifier>{5601da5f-b68b-47a7-84fe-665453041e37}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="libdbxml.rc">
+      <Filter>build_windows</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\include\dbxml\DbXml.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\dbxml\DbXmlFwd.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\dbxml\XmlCompression.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\dbxml\XmlContainer.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\dbxml\XmlContainerConfig.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\dbxml\XmlData.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\dbxml\XmlDebugListener.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\dbxml\XmlDocument.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\dbxml\XmlEventReader.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\dbxml\XmlEventReaderToWriter.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\dbxml\XmlEventWriter.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\dbxml\XmlException.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\dbxml\XmlExternalFunction.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\dbxml\XmlIndexLookup.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\dbxml\XmlIndexSpecification.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\dbxml\XmlInputStream.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\dbxml\XmlManager.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\dbxml\XmlMetaDataIterator.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\dbxml\XmlNamespace.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\dbxml\XmlPortability.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\dbxml\XmlQueryContext.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\dbxml\XmlQueryExpression.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\dbxml\XmlResolver.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\dbxml\XmlResults.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\dbxml\XmlStatistics.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\dbxml\XmlTransaction.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\dbxml\XmlUpdateContext.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\dbxml\XmlValue.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\dbxml\AtomicNodeValue.hpp">
+      <Filter>dbxml</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\dbxml\BaseInputStream.hpp">
+      <Filter>dbxml</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\dbxml\Buffer.hpp">
+      <Filter>dbxml</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\dbxml\BulkPut.hpp">
+      <Filter>dbxml</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\dbxml\CacheDatabase.hpp">
+      <Filter>dbxml</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\dbxml\CacheDatabaseMinder.hpp">
+      <Filter>dbxml</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\dbxml\CompressionZlib.hpp">
+      <Filter>dbxml</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\dbxml\ConfigurationDatabase.hpp">
+      <Filter>dbxml</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\dbxml\Container.hpp">
+      <Filter>dbxml</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\dbxml\ContainerBase.hpp">
+      <Filter>dbxml</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\dbxml\ContainerConfig.hpp">
+      <Filter>dbxml</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\dbxml\Counters.hpp">
+      <Filter>dbxml</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\dbxml\Cursor.hpp">
+      <Filter>dbxml</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\dbxml\DatabaseNodeValue.hpp">
+      <Filter>dbxml</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\dbxml\db_rdbt.h">
+      <Filter>dbxml</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\dbxml\db_utils.h">
+      <Filter>dbxml</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\dbxml\DbWrapper.hpp">
+      <Filter>dbxml</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\dbxml\DbXmlInternal.hpp">
+      <Filter>dbxml</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\dbxml\DictionaryCache.hpp">
+      <Filter>dbxml</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\dbxml\DictionaryDatabase.hpp">
+      <Filter>dbxml</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\dbxml\DocID.hpp">
+      <Filter>dbxml</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\dbxml\Document.hpp">
+      <Filter>dbxml</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\dbxml\DocumentDatabase.hpp">
+      <Filter>dbxml</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\dbxml\Globals.hpp">
+      <Filter>dbxml</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\dbxml\HighResTimer.hpp">
+      <Filter>dbxml</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\dbxml\IndexEntry.hpp">
+      <Filter>dbxml</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\dbxml\Indexer.hpp">
+      <Filter>dbxml</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\dbxml\IndexLookup.hpp">
+      <Filter>dbxml</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\dbxml\IndexSpecification.hpp">
+      <Filter>dbxml</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\dbxml\Key.hpp">
+      <Filter>dbxml</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\dbxml\KeyGenerator.hpp">
+      <Filter>dbxml</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\dbxml\KeyStash.hpp">
+      <Filter>dbxml</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\dbxml\KeyStatistics.hpp">
+      <Filter>dbxml</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\dbxml\LocalFileInputStream.hpp">
+      <Filter>dbxml</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\dbxml\Log.hpp">
+      <Filter>dbxml</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\dbxml\Manager.hpp">
+      <Filter>dbxml</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\dbxml\MemBufInputStream.hpp">
+      <Filter>dbxml</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\dbxml\MetaDatum.hpp">
+      <Filter>dbxml</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\dbxml\MutexLock.hpp">
+      <Filter>dbxml</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\dbxml\Name.hpp">
+      <Filter>dbxml</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\dbxml\NameID.hpp">
+      <Filter>dbxml</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\dbxml\NamespaceMap.hpp">
+      <Filter>dbxml</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\dbxml\OperationContext.hpp">
+      <Filter>dbxml</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\dbxml\QueryContext.hpp">
+      <Filter>dbxml</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\dbxml\QueryExpression.hpp">
+      <Filter>dbxml</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\dbxml\RawNodeValue.hpp">
+      <Filter>dbxml</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\dbxml\ReferenceCounted.hpp">
+      <Filter>dbxml</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\dbxml\ReferenceMinder.hpp">
+      <Filter>dbxml</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\dbxml\Results.hpp">
+      <Filter>dbxml</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\dbxml\ResultsEventWriter.hpp">
+      <Filter>dbxml</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\dbxml\ScopedDbt.hpp">
+      <Filter>dbxml</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\dbxml\ScopedPtr.hpp">
+      <Filter>dbxml</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\dbxml\SharedPtr.hpp">
+      <Filter>dbxml</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\dbxml\Statistics.hpp">
+      <Filter>dbxml</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\dbxml\StdInInputStream.hpp">
+      <Filter>dbxml</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\dbxml\StructuralStatsDatabase.hpp">
+      <Filter>dbxml</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\dbxml\Syntax.hpp">
+      <Filter>dbxml</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\dbxml\SyntaxDatabase.hpp">
+      <Filter>dbxml</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\dbxml\SyntaxManager.hpp">
+      <Filter>dbxml</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\dbxml\tokenizer.hpp">
+      <Filter>dbxml</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\dbxml\Transaction.hpp">
+      <Filter>dbxml</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\dbxml\TypeConversions.hpp">
+      <Filter>dbxml</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\dbxml\UpdateContext.hpp">
+      <Filter>dbxml</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\dbxml\URLInputStream.hpp">
+      <Filter>dbxml</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\dbxml\UTF8.hpp">
+      <Filter>dbxml</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\dbxml\Value.hpp">
+      <Filter>dbxml</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\dbxml\VariableBindings.hpp">
+      <Filter>dbxml</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\dbxml\XmlInputStreamWrapper.hpp">
+      <Filter>dbxml</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\dbxml\dataItem\DbXmlConfiguration.hpp">
+      <Filter>dataItem</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\dbxml\dataItem\DbXmlContains.hpp">
+      <Filter>dataItem</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\dbxml\dataItem\DbXmlDocAvailable.hpp">
+      <Filter>dataItem</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\dbxml\dataItem\DbXmlDocumentCacheImpl.hpp">
+      <Filter>dataItem</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\dbxml\dataItem\DbXmlFactoryImpl.hpp">
+      <Filter>dataItem</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\dbxml\dataItem\DbXmlFunction.hpp">
+      <Filter>dataItem</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\dbxml\dataItem\DbXmlNodeImpl.hpp">
+      <Filter>dataItem</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\dbxml\dataItem\DbXmlNodeTest.hpp">
+      <Filter>dataItem</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\dbxml\dataItem\DbXmlPredicate.hpp">
+      <Filter>dataItem</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\dbxml\dataItem\DbXmlPrintAST.hpp">
+      <Filter>dataItem</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\dbxml\dataItem\DbXmlSequenceBuilder.hpp">
+      <Filter>dataItem</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\dbxml\dataItem\DbXmlUpdateFactory.hpp">
+      <Filter>dataItem</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\dbxml\dataItem\DbXmlUri.hpp">
+      <Filter>dataItem</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\dbxml\dataItem\DbXmlURIResolver.hpp">
+      <Filter>dataItem</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\dbxml\dataItem\Join.hpp">
+      <Filter>dataItem</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\dbxml\dataItem\LookupIndexFunction.hpp">
+      <Filter>dataItem</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\dbxml\dataItem\MetaDataFunction.hpp">
+      <Filter>dataItem</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\dbxml\dataItem\NodeHandleFunction.hpp">
+      <Filter>dataItem</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\dbxml\nodeStore\EventReader.hpp">
+      <Filter>nodeStore</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\dbxml\nodeStore\EventReaderToWriter.hpp">
+      <Filter>nodeStore</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\dbxml\nodeStore\EventWriter.hpp">
+      <Filter>nodeStore</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\dbxml\nodeStore\NsConstants.hpp">
+      <Filter>nodeStore</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\dbxml\nodeStore\NsDoc.hpp">
+      <Filter>nodeStore</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\dbxml\nodeStore\NsDocument.hpp">
+      <Filter>nodeStore</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\dbxml\nodeStore\NsDocumentDatabase.hpp">
+      <Filter>nodeStore</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\dbxml\nodeStore\NsDom.hpp">
+      <Filter>nodeStore</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\dbxml\nodeStore\NsEvent.hpp">
+      <Filter>nodeStore</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\dbxml\nodeStore\NsEventReader.hpp">
+      <Filter>nodeStore</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\dbxml\nodeStore\NsEventWriter.hpp">
+      <Filter>nodeStore</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\dbxml\nodeStore\NsFormat.hpp">
+      <Filter>nodeStore</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\dbxml\nodeStore\NsHandlerBase.hpp">
+      <Filter>nodeStore</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\dbxml\nodeStore\NsImpliedSchemaFilter.hpp">
+      <Filter>nodeStore</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\dbxml\nodeStore\NsNid.hpp">
+      <Filter>nodeStore</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\dbxml\nodeStore\NsNode.hpp">
+      <Filter>nodeStore</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\dbxml\nodeStore\NsRawNode.hpp">
+      <Filter>nodeStore</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\dbxml\nodeStore\NsReindexer.hpp">
+      <Filter>nodeStore</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\dbxml\nodeStore\NsSAX2Reader.hpp">
+      <Filter>nodeStore</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\dbxml\nodeStore\NsTypes.hpp">
+      <Filter>nodeStore</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\dbxml\nodeStore\NsUpdate.hpp">
+      <Filter>nodeStore</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\dbxml\nodeStore\NsUpgrade.hpp">
+      <Filter>nodeStore</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\dbxml\nodeStore\NsUtil.hpp">
+      <Filter>nodeStore</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\dbxml\nodeStore\NsWriter.hpp">
+      <Filter>nodeStore</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\dbxml\nodeStore\NsXercesIndexer.hpp">
+      <Filter>nodeStore</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\dbxml\nodeStore\NsXercesTranscoder.hpp">
+      <Filter>nodeStore</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\dbxml\nodeStore\PullEventInputStream.hpp">
+      <Filter>nodeStore</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\dbxml\optimizer\ASTReplaceOptimizer.hpp">
+      <Filter>optimizer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\dbxml\optimizer\DbXmlStaticTyper.hpp">
+      <Filter>optimizer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\dbxml\optimizer\ImpliedSchemaGenerator.hpp">
+      <Filter>optimizer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\dbxml\optimizer\NodeVisitingOptimizer.hpp">
+      <Filter>optimizer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\dbxml\optimizer\QueryPlanGenerator.hpp">
+      <Filter>optimizer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\dbxml\optimizer\QueryPlanOptimizer.hpp">
+      <Filter>optimizer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\dbxml\query\AncestorJoinQP.hpp">
+      <Filter>query</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\dbxml\query\ASTToQueryPlan.hpp">
+      <Filter>query</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\dbxml\query\AttributeJoinQP.hpp">
+      <Filter>query</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\dbxml\query\AttributeOrChildJoinQP.hpp">
+      <Filter>query</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\dbxml\query\BufferQP.hpp">
+      <Filter>query</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\dbxml\query\ChildJoinQP.hpp">
+      <Filter>query</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\dbxml\query\CollectionQP.hpp">
+      <Filter>query</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\dbxml\query\ContextNodeQP.hpp">
+      <Filter>query</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\dbxml\query\DecisionPointQP.hpp">
+      <Filter>query</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\dbxml\query\DescendantJoinQP.hpp">
+      <Filter>query</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\dbxml\query\DocQP.hpp">
+      <Filter>query</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\dbxml\query\EmptyQP.hpp">
+      <Filter>query</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\dbxml\query\ExceptQP.hpp">
+      <Filter>query</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\dbxml\query\FilterQP.hpp">
+      <Filter>query</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\dbxml\query\ImpliedSchemaNode.hpp">
+      <Filter>query</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\dbxml\query\IntersectQP.hpp">
+      <Filter>query</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\dbxml\query\LevelFilterQP.hpp">
+      <Filter>query</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\dbxml\query\NodeInfo.hpp">
+      <Filter>query</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\dbxml\query\NodeIterator.hpp">
+      <Filter>query</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\dbxml\query\NodePredicateFilterQP.hpp">
+      <Filter>query</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\dbxml\query\ParentJoinQP.hpp">
+      <Filter>query</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\dbxml\query\ParentOfAttributeJoinQP.hpp">
+      <Filter>query</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\dbxml\query\ParentOfChildJoinQP.hpp">
+      <Filter>query</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\dbxml\query\PredicateFilterQP.hpp">
+      <Filter>query</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\dbxml\query\QueryExecutionContext.hpp">
+      <Filter>query</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\dbxml\query\QueryPlan.hpp">
+      <Filter>query</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\dbxml\query\QueryPlanHolder.hpp">
+      <Filter>query</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\dbxml\query\QueryPlanToAST.hpp">
+      <Filter>query</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\dbxml\query\SequentialScanQP.hpp">
+      <Filter>query</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\dbxml\query\StepQP.hpp">
+      <Filter>query</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\dbxml\query\StructuralJoinQP.hpp">
+      <Filter>query</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\dbxml\query\UnionQP.hpp">
+      <Filter>query</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\dbxml\query\ValueFilterQP.hpp">
+      <Filter>query</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\dbxml\query\VariableQP.hpp">
+      <Filter>query</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\dbxml\debug\DbXmlASTDebugHook.hpp">
+      <Filter>debug</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\dbxml\debug\DbXmlDebugHookDecorator.hpp">
+      <Filter>debug</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\dbxml\debug\DbXmlTupleDebugHook.hpp">
+      <Filter>debug</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\dbxml\debug\QPDebugHook.hpp">
+      <Filter>debug</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\src\dbxml\AtomicNodeValue.cpp">
+      <Filter>dbxml</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\dbxml\BaseInputStream.cpp">
+      <Filter>dbxml</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\dbxml\Buffer.cpp">
+      <Filter>dbxml</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\dbxml\BulkPut.cpp">
+      <Filter>dbxml</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\dbxml\CacheDatabase.cpp">
+      <Filter>dbxml</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\dbxml\CacheDatabaseMinder.cpp">
+      <Filter>dbxml</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\dbxml\CompressionZlib.cpp">
+      <Filter>dbxml</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\dbxml\ConfigurationDatabase.cpp">
+      <Filter>dbxml</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\dbxml\Container.cpp">
+      <Filter>dbxml</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\dbxml\ContainerBase.cpp">
+      <Filter>dbxml</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\dbxml\ContainerConfig.cpp">
+      <Filter>dbxml</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\dbxml\Counters.cpp">
+      <Filter>dbxml</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\dbxml\Cursor.cpp">
+      <Filter>dbxml</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\dbxml\DatabaseNodeValue.cpp">
+      <Filter>dbxml</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\dbxml\db_rdbt.c">
+      <Filter>dbxml</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\dbxml\DbWrapper.cpp">
+      <Filter>dbxml</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\dbxml\DbXmlInternal.cpp">
+      <Filter>dbxml</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\dbxml\DictionaryCache.cpp">
+      <Filter>dbxml</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\dbxml\DictionaryDatabase.cpp">
+      <Filter>dbxml</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\dbxml\DocID.cpp">
+      <Filter>dbxml</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\dbxml\Document.cpp">
+      <Filter>dbxml</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\dbxml\DocumentDatabase.cpp">
+      <Filter>dbxml</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\dbxml\Globals.cpp">
+      <Filter>dbxml</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\dbxml\HighResTimer.cpp">
+      <Filter>dbxml</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\dbxml\IndexEntry.cpp">
+      <Filter>dbxml</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\dbxml\Indexer.cpp">
+      <Filter>dbxml</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\dbxml\IndexLookup.cpp">
+      <Filter>dbxml</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\dbxml\IndexSpecification.cpp">
+      <Filter>dbxml</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\dbxml\Key.cpp">
+      <Filter>dbxml</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\dbxml\KeyGenerator.cpp">
+      <Filter>dbxml</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\dbxml\KeyStash.cpp">
+      <Filter>dbxml</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\dbxml\KeyStatistics.cpp">
+      <Filter>dbxml</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\dbxml\LocalFileInputStream.cpp">
+      <Filter>dbxml</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\dbxml\LogDbXml.cpp">
+      <Filter>dbxml</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\dbxml\Manager.cpp">
+      <Filter>dbxml</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\dbxml\MemBufInputStream.cpp">
+      <Filter>dbxml</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\dbxml\MetaDatum.cpp">
+      <Filter>dbxml</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\dbxml\MutexLock.cpp">
+      <Filter>dbxml</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\dbxml\Name.cpp">
+      <Filter>dbxml</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\dbxml\NameID.cpp">
+      <Filter>dbxml</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\dbxml\QueryContext.cpp">
+      <Filter>dbxml</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\dbxml\QueryExpression.cpp">
+      <Filter>dbxml</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\dbxml\RawNodeValue.cpp">
+      <Filter>dbxml</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\dbxml\ReferenceCounted.cpp">
+      <Filter>dbxml</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\dbxml\ReferenceMinder.cpp">
+      <Filter>dbxml</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\dbxml\Results.cpp">
+      <Filter>dbxml</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\dbxml\ResultsEventWriter.cpp">
+      <Filter>dbxml</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\dbxml\Statistics.cpp">
+      <Filter>dbxml</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\dbxml\StdInInputStream.cpp">
+      <Filter>dbxml</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\dbxml\StructuralStatsDatabase.cpp">
+      <Filter>dbxml</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\dbxml\Syntax.cpp">
+      <Filter>dbxml</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\dbxml\SyntaxDatabase.cpp">
+      <Filter>dbxml</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\dbxml\SyntaxManager.cpp">
+      <Filter>dbxml</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\dbxml\Transaction.cpp">
+      <Filter>dbxml</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\dbxml\UpdateContext.cpp">
+      <Filter>dbxml</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\dbxml\URLInputStream.cpp">
+      <Filter>dbxml</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\dbxml\UTF8.cpp">
+      <Filter>dbxml</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\dbxml\Value.cpp">
+      <Filter>dbxml</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\dbxml\VariableBindings.cpp">
+      <Filter>dbxml</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\dbxml\XmlCompression.cpp">
+      <Filter>dbxml</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\dbxml\XmlContainer.cpp">
+      <Filter>dbxml</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\dbxml\XmlContainerConfig.cpp">
+      <Filter>dbxml</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\dbxml\XmlData.cpp">
+      <Filter>dbxml</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\dbxml\XmlDocument.cpp">
+      <Filter>dbxml</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\dbxml\XmlEventReader.cpp">
+      <Filter>dbxml</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\dbxml\XmlEventReaderToWriter.cpp">
+      <Filter>dbxml</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\dbxml\XmlEventWriter.cpp">
+      <Filter>dbxml</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\dbxml\XmlException.cpp">
+      <Filter>dbxml</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\dbxml\XmlIndexLookup.cpp">
+      <Filter>dbxml</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\dbxml\XmlIndexSpecification.cpp">
+      <Filter>dbxml</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\dbxml\XmlInputStream.cpp">
+      <Filter>dbxml</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\dbxml\XmlManager.cpp">
+      <Filter>dbxml</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\dbxml\XmlMetaDataIterator.cpp">
+      <Filter>dbxml</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\dbxml\XmlNamespace.cpp">
+      <Filter>dbxml</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\dbxml\XmlQueryContext.cpp">
+      <Filter>dbxml</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\dbxml\XmlQueryExpression.cpp">
+      <Filter>dbxml</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\dbxml\XmlResolver.cpp">
+      <Filter>dbxml</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\dbxml\XmlResults.cpp">
+      <Filter>dbxml</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\dbxml\XmlStatistics.cpp">
+      <Filter>dbxml</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\dbxml\XmlTransaction.cpp">
+      <Filter>dbxml</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\dbxml\XmlUpdateContext.cpp">
+      <Filter>dbxml</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\dbxml\XmlValue.cpp">
+      <Filter>dbxml</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\dbxml\dataItem\DbXmlConfiguration.cpp">
+      <Filter>dataItem</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\dbxml\dataItem\DbXmlContains.cpp">
+      <Filter>dataItem</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\dbxml\dataItem\DbXmlDocAvailable.cpp">
+      <Filter>dataItem</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\dbxml\dataItem\DbXmlDocumentCacheImpl.cpp">
+      <Filter>dataItem</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\dbxml\dataItem\DbXmlFactoryImpl.cpp">
+      <Filter>dataItem</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\dbxml\dataItem\DbXmlFunction.cpp">
+      <Filter>dataItem</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\dbxml\dataItem\DbXmlNodeImpl.cpp">
+      <Filter>dataItem</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\dbxml\dataItem\DbXmlNodeTest.cpp">
+      <Filter>dataItem</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\dbxml\dataItem\DbXmlPredicate.cpp">
+      <Filter>dataItem</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\dbxml\dataItem\DbXmlPrintAST.cpp">
+      <Filter>dataItem</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\dbxml\dataItem\DbXmlSequenceBuilder.cpp">
+      <Filter>dataItem</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\dbxml\dataItem\DbXmlUpdateFactory.cpp">
+      <Filter>dataItem</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\dbxml\dataItem\DbXmlUri.cpp">
+      <Filter>dataItem</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\dbxml\dataItem\DbXmlURIResolver.cpp">
+      <Filter>dataItem</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\dbxml\dataItem\Join.cpp">
+      <Filter>dataItem</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\dbxml\dataItem\LookupIndexFunction.cpp">
+      <Filter>dataItem</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\dbxml\dataItem\MetaDataFunction.cpp">
+      <Filter>dataItem</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\dbxml\dataItem\NodeHandleFunction.cpp">
+      <Filter>dataItem</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\dbxml\nodeStore\EventReader.cpp">
+      <Filter>nodeStore</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\dbxml\nodeStore\EventReaderToWriter.cpp">
+      <Filter>nodeStore</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\dbxml\nodeStore\NsDoc.cpp">
+      <Filter>nodeStore</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\dbxml\nodeStore\NsDocument.cpp">
+      <Filter>nodeStore</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\dbxml\nodeStore\NsDocumentDatabase.cpp">
+      <Filter>nodeStore</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\dbxml\nodeStore\NsDom.cpp">
+      <Filter>nodeStore</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\dbxml\nodeStore\NsEvent.cpp">
+      <Filter>nodeStore</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\dbxml\nodeStore\NsEventReader.cpp">
+      <Filter>nodeStore</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\dbxml\nodeStore\NsEventWriter.cpp">
+      <Filter>nodeStore</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\dbxml\nodeStore\NsFormat.cpp">
+      <Filter>nodeStore</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\dbxml\nodeStore\NsHandlerBase.cpp">
+      <Filter>nodeStore</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\dbxml\nodeStore\NsImpliedSchemaFilter.cpp">
+      <Filter>nodeStore</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\dbxml\nodeStore\NsNid.cpp">
+      <Filter>nodeStore</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\dbxml\nodeStore\NsNode.cpp">
+      <Filter>nodeStore</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\dbxml\nodeStore\NsRawNode.cpp">
+      <Filter>nodeStore</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\dbxml\nodeStore\NsReindexer.cpp">
+      <Filter>nodeStore</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\dbxml\nodeStore\NsSAX2Reader.cpp">
+      <Filter>nodeStore</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\dbxml\nodeStore\NsUpdate.cpp">
+      <Filter>nodeStore</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\dbxml\nodeStore\NsUpgrade.cpp">
+      <Filter>nodeStore</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\dbxml\nodeStore\NsUtil.cpp">
+      <Filter>nodeStore</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\dbxml\nodeStore\NsWriter.cpp">
+      <Filter>nodeStore</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\dbxml\nodeStore\NsXercesIndexer.cpp">
+      <Filter>nodeStore</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\dbxml\nodeStore\NsXercesTranscoder.cpp">
+      <Filter>nodeStore</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\dbxml\nodeStore\PullEventInputStream.cpp">
+      <Filter>nodeStore</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\dbxml\optimizer\ASTReplaceOptimizer.cpp">
+      <Filter>optimizer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\dbxml\optimizer\DbXmlStaticTyper.cpp">
+      <Filter>optimizer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\dbxml\optimizer\ImpliedSchemaGenerator.cpp">
+      <Filter>optimizer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\dbxml\optimizer\QueryPlanGenerator.cpp">
+      <Filter>optimizer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\dbxml\optimizer\QueryPlanOptimizer.cpp">
+      <Filter>optimizer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\dbxml\query\AncestorJoinQP.cpp">
+      <Filter>query</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\dbxml\query\ASTToQueryPlan.cpp">
+      <Filter>query</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\dbxml\query\AttributeJoinQP.cpp">
+      <Filter>query</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\dbxml\query\AttributeOrChildJoinQP.cpp">
+      <Filter>query</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\dbxml\query\BufferQP.cpp">
+      <Filter>query</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\dbxml\query\ChildJoinQP.cpp">
+      <Filter>query</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\dbxml\query\CollectionQP.cpp">
+      <Filter>query</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\dbxml\query\ContextNodeQP.cpp">
+      <Filter>query</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\dbxml\query\DecisionPointQP.cpp">
+      <Filter>query</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\dbxml\query\DescendantJoinQP.cpp">
+      <Filter>query</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\dbxml\query\DocQP.cpp">
+      <Filter>query</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\dbxml\query\EmptyQP.cpp">
+      <Filter>query</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\dbxml\query\ExceptQP.cpp">
+      <Filter>query</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\dbxml\query\FilterQP.cpp">
+      <Filter>query</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\dbxml\query\ImpliedSchemaNode.cpp">
+      <Filter>query</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\dbxml\query\IntersectQP.cpp">
+      <Filter>query</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\dbxml\query\LevelFilterQP.cpp">
+      <Filter>query</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\dbxml\query\NodeInfo.cpp">
+      <Filter>query</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\dbxml\query\NodeIterator.cpp">
+      <Filter>query</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\dbxml\query\NodePredicateFilterQP.cpp">
+      <Filter>query</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\dbxml\query\ParentJoinQP.cpp">
+      <Filter>query</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\dbxml\query\ParentOfAttributeJoinQP.cpp">
+      <Filter>query</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\dbxml\query\ParentOfChildJoinQP.cpp">
+      <Filter>query</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\dbxml\query\PredicateFilterQP.cpp">
+      <Filter>query</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\dbxml\query\QueryExecutionContext.cpp">
+      <Filter>query</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\dbxml\query\QueryPlan.cpp">
+      <Filter>query</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\dbxml\query\QueryPlanHolder.cpp">
+      <Filter>query</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\dbxml\query\QueryPlanToAST.cpp">
+      <Filter>query</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\dbxml\query\SequentialScanQP.cpp">
+      <Filter>query</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\dbxml\query\StepQP.cpp">
+      <Filter>query</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\dbxml\query\StructuralJoinQP.cpp">
+      <Filter>query</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\dbxml\query\UnionQP.cpp">
+      <Filter>query</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\dbxml\query\ValueFilterQP.cpp">
+      <Filter>query</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\dbxml\query\VariableQP.cpp">
+      <Filter>query</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\dbxml\debug\DbXmlASTDebugHook.cpp">
+      <Filter>debug</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\dbxml\debug\DbXmlDebugHookDecorator.cpp">
+      <Filter>debug</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\dbxml\debug\DbXmlTupleDebugHook.cpp">
+      <Filter>debug</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\dbxml\debug\QPDebugHook.cpp">
+      <Filter>debug</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>

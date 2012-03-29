@@ -1,0 +1,28 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<script type="text/javascript" src="setactiontarget.js" >
+</script>
+</head>
+<body>
+<form name="input" action="MapAgent.php" method="post" enctype="multipart/form-data">
+<input type="hidden" name="MAX_FILE_SIZE" value="10000000" />
+<b>Operation:</b>
+<input type="text" name="OPERATION" value="SETRESOURCE" size="50">
+<p> Version:
+<input type="text" name="VERSION" value="1.0.0" size="10">
+<p> Locale:
+<input type="text" name="LOCALE" value="en" size="10">
+<p> Client Agent:
+<input type="text" name="CLIENTAGENT" value="MapGuide Developer" size="100">
+<p> Resource ID:
+<input type="text" name="RESOURCEID" value="Library://Test/Sources/World.FeatureSource" size="100">
+<p> Content:
+<input type="file" name="CONTENT" size="100">
+<p> Header:
+<input type="file" name="HEADER" size="100">
+<p>
+<input type="submit" value="Submit" onclick="SetActionTarget()"> <input type="reset">
+</form>
+</body>
+</html>

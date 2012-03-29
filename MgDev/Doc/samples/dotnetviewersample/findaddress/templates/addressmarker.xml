@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LayerDefinition version="1.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="LayerDefinition-1.0.0.xsd">
+  <VectorLayerDefinition>
+    <ResourceId></ResourceId>
+    <FeatureName>AddressMarker</FeatureName>
+    <FeatureNameType>FeatureClass</FeatureNameType>
+    <Geometry>Location</Geometry>
+    <VectorScaleRange>
+      <MaxScale>10000</MaxScale>
+      <PointTypeStyle>
+        <DisplayAsText>false</DisplayAsText>
+        <AllowOverpost>false</AllowOverpost>
+        <PointRule>
+          <LegendLabel></LegendLabel>
+          <Label>
+            <Unit>Points</Unit>
+            <SizeContext>DeviceUnits</SizeContext>
+            <SizeX>7</SizeX>
+            <SizeY>10</SizeY>
+            <Text>Address</Text>
+            <FontName>Verdana</FontName>
+            <ForegroundColor>FF000000</ForegroundColor>
+            <BackgroundColor>FFFFFFFF</BackgroundColor>
+            <BackgroundStyle>Ghosted</BackgroundStyle>
+            <HorizontalAlignment>&apos;Center&apos;</HorizontalAlignment>
+            <VerticalAlignment>&apos;Baseline&apos;</VerticalAlignment>
+          </Label>
+          <PointSymbolization2D>
+            <W2D>
+              <Unit>Millimeters</Unit>
+              <SizeContext>DeviceUnits</SizeContext>
+              <SizeX>15</SizeX>
+              <SizeY>15</SizeY>
+              <W2DSymbol>
+                <ResourceId>Library://Samples/Sheboygan/Symbols/BasicSymbols.SymbolLibrary</ResourceId>
+                <LibraryItemName>PushPin - Blue</LibraryItemName>
+              </W2DSymbol>
+            </W2D>
+          </PointSymbolization2D>
+        </PointRule>
+      </PointTypeStyle>
+    </VectorScaleRange>
+    <VectorScaleRange>
+      <PointTypeStyle>
+        <DisplayAsText>false</DisplayAsText>
+        <AllowOverpost>false</AllowOverpost>
+        <PointRule>
+          <LegendLabel></LegendLabel>
+          <PointSymbolization2D>
+            <W2D>
+              <Unit>Millimeters</Unit>
+              <SizeContext>DeviceUnits</SizeContext>
+              <SizeX>15</SizeX>
+              <SizeY>15</SizeY>
+              <W2DSymbol>
+                <ResourceId>Library://Samples/Sheboygan/Symbols/BasicSymbols.SymbolLibrary</ResourceId>
+                <LibraryItemName>PushPin - Blue</LibraryItemName>
+              </W2DSymbol>
+            </W2D>
+          </PointSymbolization2D>
+        </PointRule>
+      </PointTypeStyle>
+    </VectorScaleRange>
+  </VectorLayerDefinition>
+</LayerDefinition>

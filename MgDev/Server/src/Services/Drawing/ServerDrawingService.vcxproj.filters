@@ -1,0 +1,92 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Ops">
+      <UniqueIdentifier>{326da341-3ee9-4927-9347-e694cbf2b21b}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="DrawingOperation.cpp">
+      <Filter>Ops</Filter>
+    </ClCompile>
+    <ClCompile Include="DrawingOperationFactory.cpp">
+      <Filter>Ops</Filter>
+    </ClCompile>
+    <ClCompile Include="OpDescribeDrawing.cpp">
+      <Filter>Ops</Filter>
+    </ClCompile>
+    <ClCompile Include="OpEnumerateLayers.cpp">
+      <Filter>Ops</Filter>
+    </ClCompile>
+    <ClCompile Include="OpEnumerateSectionResources.cpp">
+      <Filter>Ops</Filter>
+    </ClCompile>
+    <ClCompile Include="OpEnumerateSections.cpp">
+      <Filter>Ops</Filter>
+    </ClCompile>
+    <ClCompile Include="OpGetCoordinateSpace.cpp">
+      <Filter>Ops</Filter>
+    </ClCompile>
+    <ClCompile Include="OpGetDrawing.cpp">
+      <Filter>Ops</Filter>
+    </ClCompile>
+    <ClCompile Include="OpGetLayer.cpp">
+      <Filter>Ops</Filter>
+    </ClCompile>
+    <ClCompile Include="OpGetSection.cpp">
+      <Filter>Ops</Filter>
+    </ClCompile>
+    <ClCompile Include="OpGetSectionResource.cpp">
+      <Filter>Ops</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Common\Dll.cpp" />
+    <ClCompile Include="DrawingServiceHandler.cpp" />
+    <ClCompile Include="ServerDrawingService.cpp" />
+    <ClCompile Include="ServerDrawingServiceBuild.cpp" />
+    <ClCompile Include="ServerDrawingServiceUtil.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="DrawingOperation.h">
+      <Filter>Ops</Filter>
+    </ClInclude>
+    <ClInclude Include="DrawingOperationFactory.h">
+      <Filter>Ops</Filter>
+    </ClInclude>
+    <ClInclude Include="OpDescribeDrawing.h">
+      <Filter>Ops</Filter>
+    </ClInclude>
+    <ClInclude Include="OpEnumerateLayers.h">
+      <Filter>Ops</Filter>
+    </ClInclude>
+    <ClInclude Include="OpEnumerateSectionResources.h">
+      <Filter>Ops</Filter>
+    </ClInclude>
+    <ClInclude Include="OpEnumerateSections.h">
+      <Filter>Ops</Filter>
+    </ClInclude>
+    <ClInclude Include="OpGetCoordinateSpace.h">
+      <Filter>Ops</Filter>
+    </ClInclude>
+    <ClInclude Include="OpGetDrawing.h">
+      <Filter>Ops</Filter>
+    </ClInclude>
+    <ClInclude Include="OpGetLayer.h">
+      <Filter>Ops</Filter>
+    </ClInclude>
+    <ClInclude Include="OpGetSection.h">
+      <Filter>Ops</Filter>
+    </ClInclude>
+    <ClInclude Include="OpGetSectionResource.h">
+      <Filter>Ops</Filter>
+    </ClInclude>
+    <ClInclude Include="DrawingServiceHandler.h" />
+    <ClInclude Include="ServerDrawingDllExport.h" />
+    <ClInclude Include="ServerDrawingService.h" />
+    <ClInclude Include="ServerDrawingServiceDefs.h" />
+    <ClInclude Include="ServerDrawingServiceUtil.h" />
+    <ClInclude Include="..\..\Common\stdafx.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="ServerDrawingService.rc" />
+  </ItemGroup>
+</Project>

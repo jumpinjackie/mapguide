@@ -1,0 +1,579 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="ExpressionEngine">
+      <UniqueIdentifier>{c391dc0c-1301-4b4b-b179-735ad7873fcd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Geom">
+      <UniqueIdentifier>{78afd599-be0d-400e-9285-89e1442d5a25}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Interfaces">
+      <UniqueIdentifier>{b23677cc-20fc-4b31-998f-7d6121fdff9f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Stylizers">
+      <UniqueIdentifier>{73285cc1-0e1e-4c19-8ef0-9ef3272a14ad}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="StyleEngine">
+      <UniqueIdentifier>{0613ff3c-4e6e-4d44-b938-1e72475ddbf3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="FontEngine">
+      <UniqueIdentifier>{d87b5137-bb10-44c7-bb8b-cf222f5368eb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GisGrid">
+      <UniqueIdentifier>{79218f1c-63f4-4b80-a1dd-3f0e7fd23597}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Shared">
+      <UniqueIdentifier>{b9f208c0-414d-4567-84e7-1d2c1439bc00}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="ExpressionFunctionArgb.cpp">
+      <Filter>ExpressionEngine</Filter>
+    </ClCompile>
+    <ClCompile Include="ExpressionFunctionDecap.cpp">
+      <Filter>ExpressionEngine</Filter>
+    </ClCompile>
+    <ClCompile Include="ExpressionFunctionFeatureClass.cpp">
+      <Filter>ExpressionEngine</Filter>
+    </ClCompile>
+    <ClCompile Include="ExpressionFunctionFeatureId.cpp">
+      <Filter>ExpressionEngine</Filter>
+    </ClCompile>
+    <ClCompile Include="ExpressionFunctionIf.cpp">
+      <Filter>ExpressionEngine</Filter>
+    </ClCompile>
+    <ClCompile Include="ExpressionFunctionLayerId.cpp">
+      <Filter>ExpressionEngine</Filter>
+    </ClCompile>
+    <ClCompile Include="ExpressionFunctionLookup.cpp">
+      <Filter>ExpressionEngine</Filter>
+    </ClCompile>
+    <ClCompile Include="ExpressionFunctionMapName.cpp">
+      <Filter>ExpressionEngine</Filter>
+    </ClCompile>
+    <ClCompile Include="ExpressionFunctionRange.cpp">
+      <Filter>ExpressionEngine</Filter>
+    </ClCompile>
+    <ClCompile Include="ExpressionFunctionSession.cpp">
+      <Filter>ExpressionEngine</Filter>
+    </ClCompile>
+    <ClCompile Include="ExpressionFunctionUrlEncode.cpp">
+      <Filter>ExpressionEngine</Filter>
+    </ClCompile>
+    <ClCompile Include="ExpressionHelper.cpp">
+      <Filter>ExpressionEngine</Filter>
+    </ClCompile>
+    <ClCompile Include="LineBuffer.cpp">
+      <Filter>Geom</Filter>
+    </ClCompile>
+    <ClCompile Include="Matrix3D.cpp">
+      <Filter>Geom</Filter>
+    </ClCompile>
+    <ClCompile Include="Point2D.cpp">
+      <Filter>Geom</Filter>
+    </ClCompile>
+    <ClCompile Include="Point3D.cpp">
+      <Filter>Geom</Filter>
+    </ClCompile>
+    <ClCompile Include="PolygonUtils.cpp">
+      <Filter>Geom</Filter>
+    </ClCompile>
+    <ClCompile Include="Vector2D.cpp">
+      <Filter>Geom</Filter>
+    </ClCompile>
+    <ClCompile Include="Vector3D.cpp">
+      <Filter>Geom</Filter>
+    </ClCompile>
+    <ClCompile Include="Stylizer.cpp">
+      <Filter>Interfaces</Filter>
+    </ClCompile>
+    <ClCompile Include="DefaultStylizer.cpp">
+      <Filter>Stylizers</Filter>
+    </ClCompile>
+    <ClCompile Include="GeometryAdapter.cpp">
+      <Filter>Stylizers</Filter>
+    </ClCompile>
+    <ClCompile Include="PointAdapter.cpp">
+      <Filter>Stylizers</Filter>
+    </ClCompile>
+    <ClCompile Include="PolygonAdapter.cpp">
+      <Filter>Stylizers</Filter>
+    </ClCompile>
+    <ClCompile Include="PolylineAdapter.cpp">
+      <Filter>Stylizers</Filter>
+    </ClCompile>
+    <ClCompile Include="RasterAdapter.cpp">
+      <Filter>Stylizers</Filter>
+    </ClCompile>
+    <ClCompile Include="SE_AreaPositioning.cpp">
+      <Filter>StyleEngine</Filter>
+    </ClCompile>
+    <ClCompile Include="SE_Bounds.cpp">
+      <Filter>StyleEngine</Filter>
+    </ClCompile>
+    <ClCompile Include="SE_BufferPool.cpp">
+      <Filter>StyleEngine</Filter>
+    </ClCompile>
+    <ClCompile Include="SE_ExpressionBase.cpp">
+      <Filter>StyleEngine</Filter>
+    </ClCompile>
+    <ClCompile Include="SE_LineBuffer.cpp">
+      <Filter>StyleEngine</Filter>
+    </ClCompile>
+    <ClCompile Include="SE_LineRenderer.cpp">
+      <Filter>StyleEngine</Filter>
+    </ClCompile>
+    <ClCompile Include="SE_Matrix.cpp">
+      <Filter>StyleEngine</Filter>
+    </ClCompile>
+    <ClCompile Include="SE_PositioningAlgorithms.cpp">
+      <Filter>StyleEngine</Filter>
+    </ClCompile>
+    <ClCompile Include="SE_Renderer.cpp">
+      <Filter>StyleEngine</Filter>
+    </ClCompile>
+    <ClCompile Include="SE_StyleVisitor.cpp">
+      <Filter>StyleEngine</Filter>
+    </ClCompile>
+    <ClCompile Include="SE_SymbolDefProxies.cpp">
+      <Filter>StyleEngine</Filter>
+    </ClCompile>
+    <ClCompile Include="SE_SymbolManager.cpp">
+      <Filter>StyleEngine</Filter>
+    </ClCompile>
+    <ClCompile Include="StylizationEngine.cpp">
+      <Filter>StyleEngine</Filter>
+    </ClCompile>
+    <ClCompile Include="atom_element_abandonment.cpp">
+      <Filter>FontEngine</Filter>
+    </ClCompile>
+    <ClCompile Include="atom_element_environment.cpp">
+      <Filter>FontEngine</Filter>
+    </ClCompile>
+    <ClCompile Include="atom_element_location.cpp">
+      <Filter>FontEngine</Filter>
+    </ClCompile>
+    <ClCompile Include="atom_element_structure.cpp">
+      <Filter>FontEngine</Filter>
+    </ClCompile>
+    <ClCompile Include="atom_element_style.cpp">
+      <Filter>FontEngine</Filter>
+    </ClCompile>
+    <ClCompile Include="atom_element_textrun.cpp">
+      <Filter>FontEngine</Filter>
+    </ClCompile>
+    <ClCompile Include="atom_element_transform.cpp">
+      <Filter>FontEngine</Filter>
+    </ClCompile>
+    <ClCompile Include="atom_element_universe.cpp">
+      <Filter>FontEngine</Filter>
+    </ClCompile>
+    <ClCompile Include="atom_impl.cpp">
+      <Filter>FontEngine</Filter>
+    </ClCompile>
+    <ClCompile Include="BIDIConverter.cpp">
+      <Filter>FontEngine</Filter>
+    </ClCompile>
+    <ClCompile Include="mtext_parser.cpp">
+      <Filter>FontEngine</Filter>
+    </ClCompile>
+    <ClCompile Include="RichTextEngine.cpp">
+      <Filter>FontEngine</Filter>
+    </ClCompile>
+    <ClCompile Include="RS_FontEngine.cpp">
+      <Filter>FontEngine</Filter>
+    </ClCompile>
+    <ClCompile Include="RS_TextMetrics.cpp">
+      <Filter>FontEngine</Filter>
+    </ClCompile>
+    <ClCompile Include="Band.cpp">
+      <Filter>GisGrid</Filter>
+    </ClCompile>
+    <ClCompile Include="BandData.cpp">
+      <Filter>GisGrid</Filter>
+    </ClCompile>
+    <ClCompile Include="Color.cpp">
+      <Filter>GisGrid</Filter>
+    </ClCompile>
+    <ClCompile Include="GeometryAlgorithms.cpp">
+      <Filter>GisGrid</Filter>
+    </ClCompile>
+    <ClCompile Include="GridApplyStatusReporter.cpp">
+      <Filter>GisGrid</Filter>
+    </ClCompile>
+    <ClCompile Include="GridChannelBand.cpp">
+      <Filter>GisGrid</Filter>
+    </ClCompile>
+    <ClCompile Include="GridColorBandHandler.cpp">
+      <Filter>GisGrid</Filter>
+    </ClCompile>
+    <ClCompile Include="GridColorBandsHandler.cpp">
+      <Filter>GisGrid</Filter>
+    </ClCompile>
+    <ClCompile Include="GridColorHandler.cpp">
+      <Filter>GisGrid</Filter>
+    </ClCompile>
+    <ClCompile Include="GridColorNullHandler.cpp">
+      <Filter>GisGrid</Filter>
+    </ClCompile>
+    <ClCompile Include="GridColorThemeHandler.cpp">
+      <Filter>GisGrid</Filter>
+    </ClCompile>
+    <ClCompile Include="GridData.cpp">
+      <Filter>GisGrid</Filter>
+    </ClCompile>
+    <ClCompile Include="GridStyleColorHandler.cpp">
+      <Filter>GisGrid</Filter>
+    </ClCompile>
+    <ClCompile Include="GridStyleSurfaceColorHandler.cpp">
+      <Filter>GisGrid</Filter>
+    </ClCompile>
+    <ClCompile Include="GridStyleSurfaceHandler.cpp">
+      <Filter>GisGrid</Filter>
+    </ClCompile>
+    <ClCompile Include="GridStylizer.cpp">
+      <Filter>GisGrid</Filter>
+    </ClCompile>
+    <ClCompile Include="GridTheme.cpp">
+      <Filter>GisGrid</Filter>
+    </ClCompile>
+    <ClCompile Include="GridThemeParser.cpp">
+      <Filter>GisGrid</Filter>
+    </ClCompile>
+    <ClCompile Include="KeyEncode.cpp">
+      <Filter>Shared</Filter>
+    </ClCompile>
+    <ClCompile Include="LabelRenderer.cpp">
+      <Filter>Shared</Filter>
+    </ClCompile>
+    <ClCompile Include="LabelRendererBase.cpp">
+      <Filter>Shared</Filter>
+    </ClCompile>
+    <ClCompile Include="LabelRendererLocal.cpp">
+      <Filter>Shared</Filter>
+    </ClCompile>
+    <ClCompile Include="LineStyleDef.cpp">
+      <Filter>Shared</Filter>
+    </ClCompile>
+    <ClCompile Include="SimpleOverpost.cpp">
+      <Filter>Shared</Filter>
+    </ClCompile>
+    <ClCompile Include="StylizationUtil.cpp">
+      <Filter>Shared</Filter>
+    </ClCompile>
+    <ClCompile Include="TransformMesh.cpp">
+      <Filter>Shared</Filter>
+    </ClCompile>
+    <ClCompile Include="ThemeParameters.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="ExpressionFunctionArgb.h">
+      <Filter>ExpressionEngine</Filter>
+    </ClInclude>
+    <ClInclude Include="ExpressionFunctionDecap.h">
+      <Filter>ExpressionEngine</Filter>
+    </ClInclude>
+    <ClInclude Include="ExpressionFunctionFeatureClass.h">
+      <Filter>ExpressionEngine</Filter>
+    </ClInclude>
+    <ClInclude Include="ExpressionFunctionFeatureId.h">
+      <Filter>ExpressionEngine</Filter>
+    </ClInclude>
+    <ClInclude Include="ExpressionFunctionIf.h">
+      <Filter>ExpressionEngine</Filter>
+    </ClInclude>
+    <ClInclude Include="ExpressionFunctionLayerId.h">
+      <Filter>ExpressionEngine</Filter>
+    </ClInclude>
+    <ClInclude Include="ExpressionFunctionLookup.h">
+      <Filter>ExpressionEngine</Filter>
+    </ClInclude>
+    <ClInclude Include="ExpressionFunctionMapName.h">
+      <Filter>ExpressionEngine</Filter>
+    </ClInclude>
+    <ClInclude Include="ExpressionFunctionRange.h">
+      <Filter>ExpressionEngine</Filter>
+    </ClInclude>
+    <ClInclude Include="ExpressionFunctionSession.h">
+      <Filter>ExpressionEngine</Filter>
+    </ClInclude>
+    <ClInclude Include="ExpressionFunctionUrlEncode.h">
+      <Filter>ExpressionEngine</Filter>
+    </ClInclude>
+    <ClInclude Include="ExpressionHelper.h">
+      <Filter>ExpressionEngine</Filter>
+    </ClInclude>
+    <ClInclude Include="Bounds.h">
+      <Filter>Geom</Filter>
+    </ClInclude>
+    <ClInclude Include="DataValueStack.h">
+      <Filter>Geom</Filter>
+    </ClInclude>
+    <ClInclude Include="LineBuffer.h">
+      <Filter>Geom</Filter>
+    </ClInclude>
+    <ClInclude Include="Matrix3D.h">
+      <Filter>Geom</Filter>
+    </ClInclude>
+    <ClInclude Include="Point2D.h">
+      <Filter>Geom</Filter>
+    </ClInclude>
+    <ClInclude Include="Point3D.h">
+      <Filter>Geom</Filter>
+    </ClInclude>
+    <ClInclude Include="PolygonUtils.h">
+      <Filter>Geom</Filter>
+    </ClInclude>
+    <ClInclude Include="Vector2D.h">
+      <Filter>Geom</Filter>
+    </ClInclude>
+    <ClInclude Include="Vector3D.h">
+      <Filter>Geom</Filter>
+    </ClInclude>
+    <ClInclude Include="CSysTransformer.h">
+      <Filter>Interfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="LineStyle.h">
+      <Filter>Interfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="Renderer.h">
+      <Filter>Interfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="RendererStyles.h">
+      <Filter>Interfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="RS_FeatureReader.h">
+      <Filter>Interfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="RS_Font.h">
+      <Filter>Interfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="RS_InputStream.h">
+      <Filter>Interfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="RS_OutputStream.h">
+      <Filter>Interfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="RS_Raster.h">
+      <Filter>Interfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="RS_SymbolManager.h">
+      <Filter>Interfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="SLDSymbols.h">
+      <Filter>Interfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="Stylizer.h">
+      <Filter>Interfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="DefaultStylizer.h">
+      <Filter>Stylizers</Filter>
+    </ClInclude>
+    <ClInclude Include="FeatureTypeStyleVisitor.h">
+      <Filter>Stylizers</Filter>
+    </ClInclude>
+    <ClInclude Include="GeometryAdapter.h">
+      <Filter>Stylizers</Filter>
+    </ClInclude>
+    <ClInclude Include="PointAdapter.h">
+      <Filter>Stylizers</Filter>
+    </ClInclude>
+    <ClInclude Include="PolygonAdapter.h">
+      <Filter>Stylizers</Filter>
+    </ClInclude>
+    <ClInclude Include="PolylineAdapter.h">
+      <Filter>Stylizers</Filter>
+    </ClInclude>
+    <ClInclude Include="RasterAdapter.h">
+      <Filter>Stylizers</Filter>
+    </ClInclude>
+    <ClInclude Include="SymbolVisitor.h">
+      <Filter>Stylizers</Filter>
+    </ClInclude>
+    <ClInclude Include="SE_AreaPositioning.h">
+      <Filter>StyleEngine</Filter>
+    </ClInclude>
+    <ClInclude Include="SE_Bounds.h">
+      <Filter>StyleEngine</Filter>
+    </ClInclude>
+    <ClInclude Include="SE_BufferPool.h">
+      <Filter>StyleEngine</Filter>
+    </ClInclude>
+    <ClInclude Include="SE_ExpressionBase.h">
+      <Filter>StyleEngine</Filter>
+    </ClInclude>
+    <ClInclude Include="SE_LineBuffer.h">
+      <Filter>StyleEngine</Filter>
+    </ClInclude>
+    <ClInclude Include="SE_Matrix.h">
+      <Filter>StyleEngine</Filter>
+    </ClInclude>
+    <ClInclude Include="SE_PositioningAlgorithms.h">
+      <Filter>StyleEngine</Filter>
+    </ClInclude>
+    <ClInclude Include="SE_Renderer.h">
+      <Filter>StyleEngine</Filter>
+    </ClInclude>
+    <ClInclude Include="SE_RendererStyles.h">
+      <Filter>StyleEngine</Filter>
+    </ClInclude>
+    <ClInclude Include="SE_RenderProxies.h">
+      <Filter>StyleEngine</Filter>
+    </ClInclude>
+    <ClInclude Include="SE_StyleVisitor.h">
+      <Filter>StyleEngine</Filter>
+    </ClInclude>
+    <ClInclude Include="SE_SymbolDefProxies.h">
+      <Filter>StyleEngine</Filter>
+    </ClInclude>
+    <ClInclude Include="SE_SymbolManager.h">
+      <Filter>StyleEngine</Filter>
+    </ClInclude>
+    <ClInclude Include="StylizationEngine.h">
+      <Filter>StyleEngine</Filter>
+    </ClInclude>
+    <ClInclude Include="atom.h">
+      <Filter>FontEngine</Filter>
+    </ClInclude>
+    <ClInclude Include="atom_element.h">
+      <Filter>FontEngine</Filter>
+    </ClInclude>
+    <ClInclude Include="atom_element_abandonment.h">
+      <Filter>FontEngine</Filter>
+    </ClInclude>
+    <ClInclude Include="atom_element_environment.h">
+      <Filter>FontEngine</Filter>
+    </ClInclude>
+    <ClInclude Include="atom_element_location.h">
+      <Filter>FontEngine</Filter>
+    </ClInclude>
+    <ClInclude Include="atom_element_structure.h">
+      <Filter>FontEngine</Filter>
+    </ClInclude>
+    <ClInclude Include="atom_element_style.h">
+      <Filter>FontEngine</Filter>
+    </ClInclude>
+    <ClInclude Include="atom_element_textrun.h">
+      <Filter>FontEngine</Filter>
+    </ClInclude>
+    <ClInclude Include="atom_element_transform.h">
+      <Filter>FontEngine</Filter>
+    </ClInclude>
+    <ClInclude Include="atom_element_universe.h">
+      <Filter>FontEngine</Filter>
+    </ClInclude>
+    <ClInclude Include="BIDIConverter.h">
+      <Filter>FontEngine</Filter>
+    </ClInclude>
+    <ClInclude Include="mtext_parser.h">
+      <Filter>FontEngine</Filter>
+    </ClInclude>
+    <ClInclude Include="RichTextEngine.h">
+      <Filter>FontEngine</Filter>
+    </ClInclude>
+    <ClInclude Include="RS_FontEngine.h">
+      <Filter>FontEngine</Filter>
+    </ClInclude>
+    <ClInclude Include="RS_TextMetrics.h">
+      <Filter>FontEngine</Filter>
+    </ClInclude>
+    <ClInclude Include="Band.h">
+      <Filter>GisGrid</Filter>
+    </ClInclude>
+    <ClInclude Include="BandData.h">
+      <Filter>GisGrid</Filter>
+    </ClInclude>
+    <ClInclude Include="Color.h">
+      <Filter>GisGrid</Filter>
+    </ClInclude>
+    <ClInclude Include="GeometryAlgorithms.h">
+      <Filter>GisGrid</Filter>
+    </ClInclude>
+    <ClInclude Include="GridApplyStatusReporter.h">
+      <Filter>GisGrid</Filter>
+    </ClInclude>
+    <ClInclude Include="GridChannelBand.h">
+      <Filter>GisGrid</Filter>
+    </ClInclude>
+    <ClInclude Include="GridColorBandHandler.h">
+      <Filter>GisGrid</Filter>
+    </ClInclude>
+    <ClInclude Include="GridColorBandsHandler.h">
+      <Filter>GisGrid</Filter>
+    </ClInclude>
+    <ClInclude Include="GridColorHandler.h">
+      <Filter>GisGrid</Filter>
+    </ClInclude>
+    <ClInclude Include="GridColorNullHandler.h">
+      <Filter>GisGrid</Filter>
+    </ClInclude>
+    <ClInclude Include="GridColorThemeHandler.h">
+      <Filter>GisGrid</Filter>
+    </ClInclude>
+    <ClInclude Include="GridData.h">
+      <Filter>GisGrid</Filter>
+    </ClInclude>
+    <ClInclude Include="GridStatusReporter.h">
+      <Filter>GisGrid</Filter>
+    </ClInclude>
+    <ClInclude Include="GridStyleColorHandler.h">
+      <Filter>GisGrid</Filter>
+    </ClInclude>
+    <ClInclude Include="GridStyleHandler.h">
+      <Filter>GisGrid</Filter>
+    </ClInclude>
+    <ClInclude Include="GridStyleSurfaceColorHandler.h">
+      <Filter>GisGrid</Filter>
+    </ClInclude>
+    <ClInclude Include="GridStyleSurfaceHandler.h">
+      <Filter>GisGrid</Filter>
+    </ClInclude>
+    <ClInclude Include="GridStylizer.h">
+      <Filter>GisGrid</Filter>
+    </ClInclude>
+    <ClInclude Include="GridTheme.h">
+      <Filter>GisGrid</Filter>
+    </ClInclude>
+    <ClInclude Include="GridThemeParser.h">
+      <Filter>GisGrid</Filter>
+    </ClInclude>
+    <ClInclude Include="MathHelper.h">
+      <Filter>GisGrid</Filter>
+    </ClInclude>
+    <ClInclude Include="KeyEncode.h">
+      <Filter>Shared</Filter>
+    </ClInclude>
+    <ClInclude Include="LabelRenderer.h">
+      <Filter>Shared</Filter>
+    </ClInclude>
+    <ClInclude Include="LabelRendererBase.h">
+      <Filter>Shared</Filter>
+    </ClInclude>
+    <ClInclude Include="LabelRendererLocal.h">
+      <Filter>Shared</Filter>
+    </ClInclude>
+    <ClInclude Include="LineStyleDef.h">
+      <Filter>Shared</Filter>
+    </ClInclude>
+    <ClInclude Include="RS_BufferOutputStream.h">
+      <Filter>Shared</Filter>
+    </ClInclude>
+    <ClInclude Include="SimpleOverpost.h">
+      <Filter>Shared</Filter>
+    </ClInclude>
+    <ClInclude Include="StylizationUtil.h">
+      <Filter>Shared</Filter>
+    </ClInclude>
+    <ClInclude Include="TransformMesh.h">
+      <Filter>Shared</Filter>
+    </ClInclude>
+    <ClInclude Include="stdafx.h" />
+    <ClInclude Include="Stylization.h" />
+    <ClInclude Include="StylizationAPI.h" />
+    <ClInclude Include="StylizationDefs.h" />
+    <ClInclude Include="ThemeParameters.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="Stylization.rc" />
+  </ItemGroup>
+</Project>

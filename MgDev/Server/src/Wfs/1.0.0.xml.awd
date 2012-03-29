@@ -1,0 +1,278 @@
+<?xml version='1.0'?>
+<Template service="WFS" version="1.0.0">
+
+<Definitions>
+
+ <!-- This defines the format any given Feature Type will take when enumerated in GetCapabilities-->
+ <!--                                                                                     -->
+ <!--  Feature.Prefix        - A unique prefix assigned to this feature's resource.       -->
+ <!--  Feature.Name          - The assigned name for the feature.                         -->
+ <!--  Feature.FullName      - The fully-qualified name for the feature: Prefix+Name      -->
+ <!--  Feature.Resource      - The MapGuide resource name associated with this feature    -->
+ <!--                                                                                     -->
+ <!--  Feature.Title         - The human-readable name for this feature.                  -->
+ <!--  Feature.Abstract      - Human-readable description of the feature.                 -->
+ <!--  Feature.Keywords      - Keywords to describe the feature.                          -->
+ <!--  Feature.Description   - Additional text provided by FDO.                           -->
+ <!--                                                                                     -->
+ <!--  Feature.Bounds        - Studio-provided <Bounds /> collection.                     -->
+ <!--                                                                                     -->
+ <!--  Feature.PrimarySRS    - Unused.  Reserved for future use. DO NOT USE.              -->
+ <Define item="Feature.xml">
+  <!--
+       Feature class #&Feature.iteration;
+    -->
+    <FeatureType xmlns:&Feature.Prefix;="&Feature.Resource;">
+      <Name>&Feature.FullName;</Name>
+      <?If l="&Feature.Description;" op="eq" r=""?>
+       <Title>&Feature.Title;</Title>
+      <?Else?>
+       <Title>&Feature.Title; (&Feature.Description;)</Title>
+      <?Endif?>
+      <?Ifdef item="Feature.Abstract"?>
+      <Abstract>&Feature.Abstract;</Abstract>
+      <?Endif?>
+      <?Ifdef item="Feature.Keywords"?>
+      <Keyword>&Feature.Keywords;</Keyword>
+      <?Endif?>
+      <?Ifdef item="Feature.PrimarySRS"?>
+      <SRS>&Feature.PrimarySRS;</SRS>
+      <?Else?>
+      <?Enum list="&Feature.Bounds;" item="Bounds" using="&SRS.xml;"?>
+      <?Endif?>
+      <?Enum list="&Feature.Bounds;" item="Bounds" using="&LatLonBoundingBox.xml;"?>
+    </FeatureType>
+  </Define>
+
+
+  <Define item="SRS.xml">
+   <SRS>&Enum.item.SRS;</SRS>
+  </Define>
+
+  <!-- Sniff out the EPSG:4326 item and use it for LatLon bounds -->
+  <Define item="LatLonBoundingBox.xml">
+    <LatLongBoundingBox minx="&Enum.item.west;" miny="&Enum.item.south;" maxx="&Enum.item.east;" maxy="&Enum.item.north;"/>
+  </Define>
+  <Define item="BoundingBox.xml">
+    <BoundingBox SRS="&Enum.item.SRS;" minx="&Enum.item.west;" miny="&Enum.item.south;" maxx="&Enum.item.east;" maxy="&Enum.item.north;"/>
+  </Define>
+
+  <!-- Default, in case the metadata doesn't include a <Bounds> definition.  -->
+  <!-- EnumFeatureTypes' Feature.Bounds eclipses this definition, but if     -->
+  <!-- that is ever omitted, this one shows through.                         -->
+  <!--  General format is one or more elements of the following:             -->
+  <!--    <Bounds SRS="..." west="..." south="..." east="..." north="..."/>  -->
+  <!--    where west, south, east, and north represent values in units       -->
+  <!--    determined by SRS.                                                 -->
+  <Define item="Feature.Bounds">
+    <Bounds SRS="EPSG:4326" west="-180" south="-90" east="180" north="90"/>
+  </Define>
+
+
+ <!-- Version 1.0.0 didn't break out the individual operators like
+      subsequent versions did, therefore, we swallow up the six
+      ops, and let everything else pass through -->
+ <Define item="ComparisonOperators.translate">
+  <translate from="LessThan"><!-- LessThan assumed in Simple_Comparisons --></translate>
+  <translate from="GreaterThan"><!-- GreaterThan assumed in Simple_Comparisons --></translate>
+  <translate from="LessThanEqualTo"><!-- LessThanEqualTo assumed in Simple_Comparisons --></translate>
+  <translate from="GreaterThanEqualTo"><!-- GreaterThanEqualTo assumed in Simple_Comparisons --></translate>
+  <translate from="EqualTo"><!-- EqualTo assumed in Simple_Comparisons --></translate>
+  <translate from="NotEqualTo"><!-- NotEqualTo assumed in Simple_Comparisons --></translate>
+  <translate>&Format.OgcElement;</translate>
+ </Define>
+ <Define item="Format.ComparisonOperators">
+  <?Translate text="&Enum.item;" with="&ComparisonOperators.translate;"?>
+ </Define>
+ <Define item="ComparisonOperators.1.0.0">
+        <ogc:Simple_Comparisons/>
+
+        <?Enum list="&Query.ComparisonOperators;" using="&Format.ComparisonOperators;"?>
+ </Define>
+
+
+ <!-- Routine Enum formats, in xml -->
+ <Define item="Keywords.xml"><ows:Keyword>&Enum.item;</ows:Keyword></Define>
+ <Define item="ParameterValue.xml"><ows:Value>&Enum.item;</ows:Value></Define>
+ <Define item="ParameterValue.Version.xml"><ows:Value>&Enum.item.number;</ows:Value></Define>
+ <Define item="GeometryOperands.xml"><ogc:GeometryOperand>&Enum.item;</ogc:GeometryOperand></Define>
+ <Define item="SpatialOperators.xml"><ogc:SpatialOperator name="&Enum.item;"/></Define>
+ <Define item="ComparisonOperators.xml"><ogc:ComparisonOperator>&Enum.item;</ogc:ComparisonOperator></Define>
+ <Define item="FunctionNames.xml"><ogc:Function_Name nArgs="&Enum.item.args;">&Enum.item;</ogc:Function_Name></Define>
+ <Define item="OtherSRS.xml"><wfs:OtherSRS>&Enum.item;</wfs:OtherSRS></Define>
+ <Define item="Format.xml"><ows:Format>&Enum.item;</ows:Format></Define>
+
+ <Define item="DescribeFeature.EnumDelim.xml">
+   <!-- &Enum.iteration; -->
+   <xs:import schemaLocation="&Url.DescribeFeatureType;?request=DescribeFeatureType&amp;service=WFS&amp;version=1.0.0&amp;typeName=&Enum.item;"/>
+ </Define>
+ <Define item="DescribeFeature.EnumFeature.xml">
+   <!-- &Feature.iteration; -->
+   <xs:import schemaLocation="&Url.DescribeFeatureType;?request=DescribeFeatureType&amp;service=WFS&amp;version=1.0.0&amp;typeName=&Feature.FullName;"/>
+ </Define>
+
+ <Define item="Format.OgcElement">
+   <ogc:&Enum.item; />
+ </Define>
+
+ <Define item="GetFeature.xml">
+   <!-- Feature &Feature.iteration; -->
+   &Feature.OuterXml;
+ </Define>
+
+ <Define item="GetFeatureCollection.xml">
+   <wfs:FeatureCollection &FeatureCollection.Namespaces;>
+     <?EnumFeatures using="&GetFeature.xml;" ?> 
+   </wfs:FeatureCollection>
+ </Define>
+</Definitions>
+
+<!--
+
+  WFS GetCapabilities  - XML
+
+-->
+<Response request="GetCapabilities" content-type="text/xml"><WFS_Capabilities version="1.0.0"
+          xmlns="http://www.opengis.net/wfs"
+                  xmlns:myns="http://www.someserver.com/myns"
+                  xmlns:ogc="http://www.opengis.net/ogc"
+                  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                  xsi:schemaLocation="http://www.opengis.net/wfs http://schemas.opengeospatial.net/wfs/1.0.0/WFS-capabilities.xsd">
+  <!-- ================================================================== -->
+  <!-- SERVICE IDENTIFICATION SECTION                                     -->
+  <!-- ================================================================== -->
+  <Service>
+    <Name>&Service.Name;</Name>
+    <Title>&Service.Title;</Title>
+    <Abstract>&Service.Abstract;</Abstract>
+    <OnlineResource>&Url.OnlineResource;</OnlineResource>
+  </Service>
+
+  <!-- ================================================================== -->
+  <!-- OPERATIONS METADATA SECTION                                        -->
+  <!-- ================================================================== -->
+  <Capability>
+    <Request>
+
+      <GetCapabilities>
+        <DCPType>
+          <HTTP>
+            <Get onlineResource="&Url.GetCapabilities;?"/>
+          </HTTP>
+        </DCPType>
+      </GetCapabilities>
+
+      <DescribeFeatureType>
+        <SchemaDescriptionLanguage>
+          <XMLSCHEMA/>
+        </SchemaDescriptionLanguage>
+        <DCPType>
+          <HTTP>
+            <Get onlineResource="&Url.DescribeFeatureType;?"/>
+          </HTTP>
+        </DCPType>
+      </DescribeFeatureType>
+
+      <GetFeature>
+        <ResultFormat>
+          <GML2/> <!-- TODO -->
+        </ResultFormat>
+        <DCPType>
+          <HTTP>
+            <Get onlineResource="&Url.GetFeature;?"/>
+          </HTTP>
+        </DCPType>
+        <DCPType>
+          <HTTP>
+            <Post onlineResource="&Url.GetFeature;"/>
+          </HTTP>
+        </DCPType>
+      </GetFeature>
+
+    </Request>
+  </Capability>
+
+  <!-- ================================================================== -->
+  <!-- FEATURE TYPE LIST SECTION                                          -->
+  <!-- ================================================================== -->
+
+  <FeatureTypeList>
+    <!-- Operations common to all feature types -->
+    <Operations>
+      <Query/>
+    </Operations>
+
+    <?EnumFeatureTypes using="&Feature.xml;"?>
+
+  </FeatureTypeList>
+
+  <!-- ================================================================== -->
+  <!-- FILTER CAPABILITIES SECTION                                        -->
+  <!-- ================================================================== -->
+  <ogc:Filter_Capabilities>
+    <ogc:Spatial_Capabilities>
+      <ogc:Spatial_Operators>
+
+        <?Enum list="&Query.SpatialOperators;" using="&Format.OgcElement;"?>
+
+      </ogc:Spatial_Operators>
+    </ogc:Spatial_Capabilities>
+    <ogc:Scalar_Capabilities>
+      <ogc:Logical_Operators/>
+      <ogc:Comparison_Operators>
+        &ComparisonOperators.1.0.0;
+      </ogc:Comparison_Operators>
+      <ogc:Arithmetic_Operators>
+
+        <ogc:Simple_Arithmetic/>
+
+        <ogc:Functions>
+          <ogc:Function_Names>
+            <?Enum list="&Query.FunctionNames;" using="&FunctionNames.xml;"?>
+          </ogc:Function_Names>
+        </ogc:Functions>
+      </ogc:Arithmetic_Operators>
+    </ogc:Scalar_Capabilities>
+  </ogc:Filter_Capabilities>
+</WFS_Capabilities></Response>
+
+
+
+
+
+
+<!--
+
+  WFS DescribeFeatureType - XML, GML 2.1.2
+
+-->
+<Response request="DescribeFeatureType" content-type="text/xml; subtype=gml/2.1.2">
+ <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+            elementFormDefault="qualified" attributeFormDefault="unqualified">
+ <?EnumFeatureTypes using="&DescribeFeature.EnumFeature.xml;" ?>
+ </xs:schema>
+</Response>
+
+<!--
+
+  WFS GetFeature - XML, GML 2.1.2
+
+-->
+<Response request="GetFeature" content-type="text/xml; subtype=gml/2.1.2">
+ <?GetFeatureCollection using="&GetFeatureCollection.xml;" ?>
+</Response>
+
+<!--
+
+  Exception Format  - XML
+
+-->
+<Response request="Exception" content-type="text/xml">
+<ServiceExceptionReport version="&TemplateVersion;" xmlns="http://www.opengis.net/ogc">
+ <ServiceException code="&Exception.Type;">
+  Request=&Request.request; resulted in an exception: &Exception.message;
+ </ServiceException>
+</ServiceExceptionReport>
+</Response>
+
+</Template>

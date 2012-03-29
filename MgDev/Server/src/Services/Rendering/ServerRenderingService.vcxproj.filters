@@ -1,0 +1,75 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Ops">
+      <UniqueIdentifier>{5abef4a6-14ab-44aa-b7ce-2285de76224a}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="OpQueryFeatureProperties.cpp">
+      <Filter>Ops</Filter>
+    </ClCompile>
+    <ClCompile Include="OpQueryFeatures.cpp">
+      <Filter>Ops</Filter>
+    </ClCompile>
+    <ClCompile Include="OpRenderDynamicOverlay.cpp">
+      <Filter>Ops</Filter>
+    </ClCompile>
+    <ClCompile Include="OpRenderMap.cpp">
+      <Filter>Ops</Filter>
+    </ClCompile>
+    <ClCompile Include="OpRenderMapLegend.cpp">
+      <Filter>Ops</Filter>
+    </ClCompile>
+    <ClCompile Include="OpRenderTile.cpp">
+      <Filter>Ops</Filter>
+    </ClCompile>
+    <ClCompile Include="RenderingOperation.cpp">
+      <Filter>Ops</Filter>
+    </ClCompile>
+    <ClCompile Include="RenderingOperationFactory.cpp">
+      <Filter>Ops</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Common\Dll.cpp" />
+    <ClCompile Include="FeatureInfoRenderer.cpp" />
+    <ClCompile Include="FeaturePropRenderer.cpp" />
+    <ClCompile Include="RenderingServiceHandler.cpp" />
+    <ClCompile Include="ServerRenderingService.cpp" />
+    <ClCompile Include="ServerRenderingServiceBuild.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="OpQueryFeatureProperties.h">
+      <Filter>Ops</Filter>
+    </ClInclude>
+    <ClInclude Include="OpQueryFeatures.h">
+      <Filter>Ops</Filter>
+    </ClInclude>
+    <ClInclude Include="OpRenderDynamicOverlay.h">
+      <Filter>Ops</Filter>
+    </ClInclude>
+    <ClInclude Include="OpRenderMap.h">
+      <Filter>Ops</Filter>
+    </ClInclude>
+    <ClInclude Include="OpRenderMapLegend.h">
+      <Filter>Ops</Filter>
+    </ClInclude>
+    <ClInclude Include="OpRenderTile.h">
+      <Filter>Ops</Filter>
+    </ClInclude>
+    <ClInclude Include="RenderingOperation.h">
+      <Filter>Ops</Filter>
+    </ClInclude>
+    <ClInclude Include="RenderingOperationFactory.h">
+      <Filter>Ops</Filter>
+    </ClInclude>
+    <ClInclude Include="FeatureInfoRenderer.h" />
+    <ClInclude Include="FeaturePropRenderer.h" />
+    <ClInclude Include="RenderingServiceHandler.h" />
+    <ClInclude Include="ServerRenderingDllExport.h" />
+    <ClInclude Include="ServerRenderingService.h" />
+    <ClInclude Include="..\..\Common\stdafx.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="ServerRenderingService.rc" />
+  </ItemGroup>
+</Project>

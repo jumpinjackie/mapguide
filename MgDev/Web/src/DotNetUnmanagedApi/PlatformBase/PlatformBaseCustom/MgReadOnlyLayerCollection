@@ -1,0 +1,110 @@
+INTERFACE System.Collections.Generic.IList<MgLayerBase>
+
+public class MgReadOnlyLayerCollectionEnumerator : IDisposable, System.Collections.Generic.IEnumerator<MgLayerBase>
+{
+  public MgReadOnlyLayerCollectionEnumerator(MgReadOnlyLayerCollection coll)
+  {
+    m_coll = coll;
+    m_pos = -1;
+  }
+
+  public MgLayerBase Current
+  {
+    get
+    {
+      return m_coll.GetItem(m_pos);
+    }
+  }
+
+  Object System.Collections.IEnumerator.Current
+  {
+    get
+    {
+      return m_coll.GetItem(m_pos);
+    }
+  }
+
+  public bool MoveNext()
+  {
+    bool bOk = false;
+    if (m_pos < m_coll.GetCount()-1)
+    {
+      m_pos++;
+      bOk = true;
+    }
+  return bOk;
+  }
+
+  public void Reset()
+  {
+    m_pos = -1;
+  }
+
+  public void Dispose()
+  {
+    m_coll = null;
+  }
+
+  private MgReadOnlyLayerCollection m_coll;
+  private int m_pos;
+
+}
+
+public System.Collections.Generic.IEnumerator<MgLayerBase> GetEnumerator()
+{
+  return new MgReadOnlyLayerCollectionEnumerator(this);
+}
+
+System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
+{
+  return new MgReadOnlyLayerCollectionEnumerator(this);
+}
+
+public int Count
+{  
+  get { return GetCount(); }
+}
+
+public bool IsReadOnly
+{
+  get { return true; }
+}
+
+public void CopyTo(MgLayerBase[] array, int arrayIndex)
+{
+  for (int i=0; i<GetCount(); i++)
+  {
+    array[arrayIndex+i] = GetItem(i);
+  }
+}
+
+public MgLayerBase this[int index]
+{
+   get { return GetItem(index); }
+   set { }
+}
+
+//
+// Empty stubs due to Read-only behaviour
+//
+public void Add(MgLayerBase value)
+{
+}
+
+public void Clear()
+{
+}
+
+public bool Remove(MgLayerBase value)
+{
+   return false;
+}
+
+public void Insert(int index, MgLayerBase value)
+{
+}
+
+public void RemoveAt(int index)
+{
+}
+

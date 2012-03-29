@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="Windows-1252"?>
+<VisualStudioProject
+	ProjectType="Visual C++"
+	Version="9.00"
+	Name="DesktopDotNetApi"
+	ProjectGUID="{3928C0FF-780C-4921-9921-FAA82162CA2B}"
+	RootNamespace="DesktopDotNetApi"
+	Keyword="MakeFileProj"
+	TargetFrameworkVersion="131072"
+	>
+	<Platforms>
+		<Platform
+			Name="Win32"
+		/>
+		<Platform
+			Name="x64"
+		/>
+	</Platforms>
+	<ToolFiles>
+	</ToolFiles>
+	<Configurations>
+		<Configuration
+			Name="Debug|Win32"
+			OutputDirectory="$(SolutionDir)bin\$(ConfigurationName)"
+			IntermediateDirectory="$(SolutionDir)obj\$(ConfigurationName)"
+			ConfigurationType="0"
+			>
+			<Tool
+				Name="VCNMakeTool"
+				BuildCommandLine="nmake -f MapGuideDesktopMakefile SIGNER=SignApi.bat PLATFORM=x86 OUTDIR=&quot;$(OutDir)&quot; debug"
+				ReBuildCommandLine="nmake -a -f MapGuideDesktopMakefile SIGNER=SignApi.bat PLATFORM=x86 OUTDIR=&quot;$(OutDir)&quot; debug"
+				CleanCommandLine="nmake -f MapGuideDesktopMakefile SIGNER=SignApi.bat OUTDIR=&quot;$(OutDir)&quot; cleandebug"
+				Output="DesktopDotNetApi.exe"
+				PreprocessorDefinitions="WIN32;_DEBUG"
+				IncludeSearchPath=""
+				ForcedIncludes=""
+				AssemblySearchPath=""
+				ForcedUsingAssemblies=""
+				CompileAsManaged=""
+			/>
+		</Configuration>
+		<Configuration
+			Name="Debug|x64"
+			OutputDirectory="$(SolutionDir)$(PlatformName)\$(ConfigurationName)"
+			IntermediateDirectory="$(PlatformName)\$(ConfigurationName)"
+			ConfigurationType="0"
+			>
+			<Tool
+				Name="VCNMakeTool"
+				BuildCommandLine="nmake -f MapGuideDesktopMakefile SIGNER=SignApi.bat PLATFORM=x86 OUTDIR=&quot;$(OutDir)&quot; debug"
+				ReBuildCommandLine="nmake -a -f MapGuideDesktopMakefile SIGNER=SignApi.bat PLATFORM=x86 OUTDIR=&quot;$(OutDir)&quot; debug"
+				CleanCommandLine="nmake -f MapGuideDesktopMakefile SIGNER=SignApi.bat OUTDIR=&quot;$(OutDir)&quot; cleandebug"
+				Output="DesktopDotNetApi.exe"
+				PreprocessorDefinitions="WIN32;_DEBUG"
+				IncludeSearchPath=""
+				ForcedIncludes=""
+				AssemblySearchPath=""
+				ForcedUsingAssemblies=""
+				CompileAsManaged=""
+			/>
+		</Configuration>
+		<Configuration
+			Name="Release|Win32"
+			OutputDirectory="..\..\bin\release"
+			IntermediateDirectory="..\..\obj\release"
+			ConfigurationType="0"
+			>
+			<Tool
+				Name="VCNMakeTool"
+				BuildCommandLine="nmake -f MapGuideDesktopMakefile SIGNER=SignApi.bat PLATFORM=x86 ASSEMBLY_DIR=&quot;$(OutDir)\..\Assemblies&quot; OUTDIR=&quot;$(OutDir)&quot; WEB_BIN_DIR=&quot;$(SolutionDir)..\Web\bin\release&quot; release"
+				ReBuildCommandLine="nmake -a -f MapGuideDesktopMakefile SIGNER=SignApi.bat PLATFORM=x86 ASSEMBLY_DIR=&quot;$(OutDir)\..\Assemblies&quot; OUTDIR=&quot;$(OutDir)&quot; WEB_BIN_DIR=&quot;$(SolutionDir)..\Web\bin\release&quot; release"
+				CleanCommandLine="nmake -f MapGuideDesktopMakefile SIGNER=SignApi.bat OUTDIR=&quot;$(OutDir)&quot; ASSEMBLY_DIR=&quot;$(OutDir)\..\Assemblies&quot; cleanrelease"
+				Output="OSGeo.MapGuide.Desktop.dll"
+				PreprocessorDefinitions="WIN32;NDEBUG"
+				IncludeSearchPath=""
+				ForcedIncludes=""
+				AssemblySearchPath=""
+				ForcedUsingAssemblies=""
+				CompileAsManaged=""
+			/>
+		</Configuration>
+		<Configuration
+			Name="Release|x64"
+			OutputDirectory="..\..\bin\release64"
+			IntermediateDirectory="..\..\obj\release64"
+			ConfigurationType="0"
+			>
+			<Tool
+				Name="VCNMakeTool"
+				BuildCommandLine="nmake -f MapGuideDesktopMakefile SIGNER=SignApi.bat PLATFORM=x64 ASSEMBLY_DIR=&quot;$(OutDir)\..\Assemblies&quot; OUTDIR=&quot;$(OutDir)&quot; WEB_BIN_DIR=&quot;$(SolutionDir)..\Web\bin\release64&quot; release"
+				ReBuildCommandLine="nmake -a -f MapGuideDesktopMakefile SIGNER=SignApi.bat PLATFORM=x64 ASSEMBLY_DIR=&quot;$(OutDir)\..\Assemblies&quot;  OUTDIR=&quot;$(OutDir)&quot; WEB_BIN_DIR=&quot;$(SolutionDir)..\Web\bin\release64&quot; release"
+				CleanCommandLine="nmake -f MapGuideDesktopMakefile SIGNER=SignApi.bat ASSEMBLY_DIR=&quot;$(OutDir)\..\Assemblies&quot;  OUTDIR=&quot;$(OutDir)&quot; cleanrelease"
+				Output="OSGeo.MapGuide.Desktop.dll"
+				PreprocessorDefinitions="WIN32;NDEBUG"
+				IncludeSearchPath=""
+				ForcedIncludes=""
+				AssemblySearchPath=""
+				ForcedUsingAssemblies=""
+				CompileAsManaged=""
+			/>
+		</Configuration>
+	</Configurations>
+	<References>
+	</References>
+	<Files>
+		<File
+			RelativePath=".\MapGuideDesktopMakefile"
+			>
+		</File>
+	</Files>
+	<Globals>
+	</Globals>
+</VisualStudioProject>

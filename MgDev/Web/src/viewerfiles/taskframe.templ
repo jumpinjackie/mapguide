@@ -1,0 +1,56 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+
+<script language="javascript" src="../viewerfiles/browserdetect.js"></script>
+<script language=javascript>
+
+var thisFrame = this;
+var listClosed = 1;
+
+function OpenTaskMenu()
+{
+    ToggleTaskList();
+}
+
+function ToggleTaskList()
+{
+    var listHeight;
+    var docHeight = msie?document.body.clientHeight: window.innerHeight;
+    var docWidth = msie?document.body.clientWidth: window.innerWidth;
+    if(listClosed)
+        listHeight = thisFrame.frames[0].BuildList(docWidth, docHeight / 3, parent);
+    else
+        listHeight = 0;
+    document.getElementById("taskFrameSet").rows = listHeight + ",*";
+    listClosed = !listClosed;
+    parent.taskBar.OnListOpen(!listClosed);
+}
+
+function OnListIdle()
+{
+    if(!listClosed)
+        ToggleTaskList();
+}
+
+function OnForwardMouseDown(doc, e)
+{
+    if(doc != parent.taskBar.document)
+    {
+        if(!listClosed)
+            ToggleTaskList();
+    }
+}
+
+function GetTaskPane()
+{
+    return taskPaneFrame;
+}
+
+</script>
+</head>
+<frameset id="taskFrameSet" name="taskFrameSet" rows="0,*" frameborder=0 border=0>
+    <frame name="taskListFrame" src="%s?LOCALE=%s" noresize scrolling=no>
+    <frame name="taskPaneFrame" src="%s" noresize>
+</frameset>
+</html>

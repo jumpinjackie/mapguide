@@ -1,0 +1,624 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<link rel="stylesheet" href="../viewerfiles/viewer.css" type="text/css">
+<style type="text/css">
+    body.TaskPane
+    {
+        border-right-width: 1px;
+        border-right-style: solid;
+        border-right-color: #a0a0a0;
+    }
+    div.PopupMenu
+    {
+        position: absolute;
+        width: 200px;
+        background-color: white;
+        position: absolute;
+        left: -500px;
+        top: 1px;
+        border: solid 1px #a0a0a0;
+        overflow: hidden;
+        z-index: -1;
+    }
+    div.PopupScrollUpArea
+    {
+        position: absolute;
+        left: 0px;
+        top: 0px;
+        height: 12px;
+        background: white;
+        width: 100%%;
+        cursor: pointer;
+        visibility: hidden;
+    }
+    div.PopupScrollDownArea
+    {
+        position: absolute;
+        left: 0px;
+        top: 0px;
+        height: 12px;
+        background: white;
+        width: 100%%;
+        cursor: pointer;
+        visibility: hidden;
+    }
+    span.PopupMetrics
+    {
+        font-family: __#@font#__;
+        font-size: __#@fontsize#__;
+        font-weight: normal;
+    }
+</style>
+
+<script language="javascript" src="../viewerfiles/browserdetect.js"></script>
+<script language="javascript" src="../viewerfiles/contextmenu.js"></script>
+<script language="javascript" src="../viewerfiles/hashtable.js"></script>
+<script language="javascript">
+
+function LayerDef(legend, name, objectId)
+{
+    this.legend = legend;
+    this.name = name;
+    this.objectId = objectId;
+}
+
+var intId;
+var tbMenu;
+var ctxMenu;
+var selectionSet = null;
+var selEnumerator = null;
+var curFeature = null;
+var emapViewer;
+var digihandler = null;
+var digitizing = false;
+
+// public functions -----------------------------------------------
+//
+function ZoomToView(x,y,scale,refresh)
+{
+    emapViewer.ZoomToView(x, y, scale);
+    if(refresh == 1)
+        emapViewer.Refresh();
+}
+
+function ZoomToScale(scale)
+{
+    emapViewer.MapScale = scale;
+    emapViewer.Refresh();
+}
+
+function Refresh()
+{
+    emapViewer.Refresh();
+}
+
+function GetMapWidth()
+{
+    return emapViewer.MapWidth;
+}
+
+function GetMapHeight()
+{
+    return emapViewer.MapHeight;
+}
+
+function GetSessionId()
+{
+    return emapViewer.Document.Properties("_AW_Session").Value;
+}
+
+function GetMapName()
+{
+    return emapViewer.Document.Properties("_AW_MapName").Value;
+}
+
+function ScreenToMapUnits(x, y)
+{
+    return emapViewer.ScreenToMapUnits(x, y);
+}
+
+function MapUnitsToLatLon(x, y)
+{
+    return emapViewer.MapUnitsToLonLat(x, y);
+}
+
+function GetSelectedCount()
+{
+    if(selectionSet == null)
+        selectionSet = emapViewer.SelectionSet;
+    return selectionSet.Count;
+}
+
+function ClearSelection()
+{
+    emapViewer.ExecuteCommand("CLEARSELECTION");
+}
+
+function GetLayers(onlyVisible, onlySelectable)
+{
+    var layers = new Array();
+    var list = new Enumerator(emapViewer.Document.Layers);
+    for (; !list.atEnd(); list.moveNext())
+    {
+        var layer = list.item();
+        if(!layer.Visible && onlyVisible)
+            continue;
+        if(!layer.Selectable && onlySelectable)
+            continue;
+        var uiGr = layer.UIGraphic;
+        var lyr = new LayerDef(uiGr != null && uiGr.ShowInLegend? uiGr.Label: "", layer.Name, layer.ObjectId);
+        layers.push(lyr);
+    }
+    return layers;
+}
+
+function GetSelectedLayers()
+{
+    var lyrId = "";
+    var layers = new Array();
+    var ht = new Hashtable();
+    if(selectionSet == null)
+        selectionSet = emapViewer.SelectionSet;
+
+    for(selEnumerator = new Enumerator(selectionSet); !selEnumerator.atEnd(); selEnumerator.moveNext())
+    {
+        var feature = selEnumerator.item();
+        var currId = feature.LayerObjectId;
+        if(currId != lyrId)
+        {
+            lyrId = currId;
+            var layer = emapViewer.Document.GetMapLayer(currId);
+            var name = layer.Name;
+            if(ht.getItem(name) == null)
+            {
+                ht.setItem(name, "");
+                var uiGr = layer.UIGraphic;
+                var layer = new LayerDef(uiGr != null && uiGr.ShowInLegend? uiGr.Label: "", name, currId);
+                layers.push(layer);
+            }
+        }
+    }
+    return layers;
+}
+
+function GetSelectionXML()
+{
+    if(GetSelectedCount() == 0)
+        return "";
+    return emapViewer.SerializeSet(selectionSet);
+}
+
+function SetSelectionXML(xmlSet)
+{
+    emapViewer.ExecuteCommand("CLEARSELECTION");
+    var set = emapViewer.DeserializeSet(xmlSet);
+    emapViewer.SelectionSet = set;
+}
+
+function IsEnglishUnits()
+{
+    return !emapViewer.MetricMapUnits;
+}
+
+function IsLatLongDisplayUnits()
+{
+    return emapViewer.LonLatCoordinateUnits;
+}
+
+function SetEnglishUnits(isEnglish)
+{
+    emapViewer.MetricMapUnits = !isEnglish;
+}
+
+function SetLatLonDisplayUnits(isLatLon)
+{
+    emapViewer.LonLatCoordinateUnits = isLatLon;
+}
+
+function GetMapUnitsType()
+{
+    return emapViewer.Document.CoordinateSpace.Units.UnitType;
+}
+
+function GetMetersPerUnits()
+{
+    return emapViewer.Document.CoordinateSpace.Units.ScaleFactor;
+}
+
+function GetCenter()
+{
+    return emapViewer.MapCenter;
+}
+
+function GetScale()
+{
+    return emapViewer.MapScale;
+}
+
+function DigitizePoint(handler)
+{
+    if(!PrepareDigitization(handler))
+        return;
+    emapViewer.DocumentHandler.DigitizePoint();
+}
+
+function DigitizeLine(handler)
+{
+    if(!PrepareDigitization(handler))
+        return;
+    emapViewer.DocumentHandler.DigitizeLine();
+}
+
+function DigitizeLineString(handler)
+{
+    if(!PrepareDigitization(handler))
+        return;
+    emapViewer.DocumentHandler.DigitizeLineString();
+}
+
+function DigitizePolygon(handler)
+{
+    if(!PrepareDigitization(handler))
+        return;
+    emapViewer.DocumentHandler.DigitizePolygon();
+}
+
+function DigitizeCircle(handler)
+{
+    if(!PrepareDigitization(handler))
+        return;
+    emapViewer.DocumentHandler.DigitizeCircle();
+}
+
+function DigitizeRectangle(handler)
+{
+    if(!PrepareDigitization(handler))
+        return;
+    emapViewer.DocumentHandler.DigitizeRectangle();
+}
+
+function IsDigitizing()
+{
+    return digitizing;
+}
+
+// private functions -----------------------------------------------
+//
+function ExecuteMapAction(action)
+{
+    switch(action)
+    {
+        case 1:
+            emapViewer.ExecuteCommand("PAN");
+            break;
+        case 2:
+            emapViewer.ExecuteCommand("PANUP");
+            break;
+        case 3:
+            emapViewer.ExecuteCommand("PANDOWN");
+            break;
+        case 4:
+            emapViewer.ExecuteCommand("PANRIGHT");
+            break;
+        case 5:
+            emapViewer.ExecuteCommand("PANLEFT");
+            break;
+        case 6:
+            emapViewer.ExecuteCommand("ZOOM");
+            break;
+        case 7:
+            emapViewer.ExecuteCommand("ZOOMIN");
+            break;
+        case 8:
+            emapViewer.ExecuteCommand("ZOOMOUT");
+            break;
+        case 9:
+            emapViewer.ExecuteCommand("ZOOMRECT");
+            break;
+        case 10:
+            emapViewer.ExecuteCommand("ZOOMSELECTION");
+            break;
+        case 11:
+            emapViewer.ExecuteCommand("INITIALMAPVIEW");
+            break;
+        case 12:
+            emapViewer.ExecuteCommand("PREVIOUSVIEW");
+            break;
+        case 13:
+            emapViewer.ExecuteCommand("NEXTVIEW");
+            break;
+        case 14:
+            emapViewer.ExecuteCommand("INITIALMAPVIEW");
+            break;
+        case 15:
+            emapViewer.ExecuteCommand("SELECT");
+            break;
+        case 16:
+            emapViewer.ExecuteCommand("SELECTRADIUS");
+            break;
+        case 17:
+            emapViewer.ExecuteCommand("SELECTPOLYGON");
+            break;
+        case 19:
+            emapViewer.ExecuteCommand("CLEARSELECTION");
+            break;
+        case 20:
+            Refresh();
+            break;
+        case 21:
+            emapViewer.ExecuteCommand("COPY");
+            break;
+        case 22:
+            emapViewer.ExecuteCommand("ABOUT");
+            break;
+        default:
+            return;
+    }
+    digitizing = false;
+}
+
+function InitDocument()
+{
+    document.onmousedown = OnMouseDown;
+
+    document.getElementById("FlyoutDivs").innerHTML = InitToolbarFlyouts(parent.toolbarItems);
+    if(parent.IsContextMenu())
+        document.getElementById("CtxMenuDivs").innerHTML = InitContextMenu(parent.ctxMenuItems);
+
+    // the current product (DWF Viewer or ADR)
+    var productName = DWFViewer.ProductName;
+
+    // create the event relayer object, accounting for the product
+    frdoc = frames["Relayer"].document;
+    var object = frdoc.createElement("OBJECT");
+    object.style.visibility = "hidden";
+    object.id = 'EMapEventRelayer';
+    if (productName == "Autodesk DWF Viewer")
+        object.classid = 'clsid:90BB2003-1BA4-4D88-45BC-4734E453A8EF';
+    else if (productName == "Autodesk Design Review")
+        object.classid = 'clsid:90BB2003-1BA4-4D88-45BC-5734E453A8EF';
+    frdoc.appendChild(object);
+
+    // add the relayer to the viewer
+    DWFViewer.AddEventRelayer(frdoc.EMapEventRelayer);
+}
+
+function ContextMenu(x, y)
+{
+    hidePopup(tbMenu);
+    showPopup(ctxMenu, true, x, y);
+}
+
+function OnMouseDown(e)
+{
+    if(!PopupMouseDown(e))
+    {
+        hidePopup(tbMenu)
+        hidePopup(ctxMenu)
+        parent.ForwardMouseDown(document, e);
+    }
+}
+
+function InitToolbarFlyouts(items)
+{
+    var divs = "";
+    for(var i = 0; i < items.length; i++)
+    {
+        if(items[i].type == 3)
+        {
+            divs += "<iframe id=\"IFr" + items[i].htmlElt + "\" style=\"position:absolute;top:0px;left:0px;width:0px;height:0px;background-color:cyan;\" frameborder=\"0\"></iframe>\n";
+            divs += "<div class=\"PopupMenu\" id=\"" + items[i].htmlElt + "\"></div>\n";
+            divs += InitToolbarFlyouts(items[i].subItems);
+        }
+    }
+    return divs;
+}
+
+function BuildContextMenuObjects(menus, parentMenu, items, divName, nesting)
+{
+    var menuObj = new MenuData(divName,20, 21, 50, 150, "../stdicons/icon_popupscrollup.gif", "../stdicons/icon_popupscrollup_disabled.gif", "../stdicons/icon_popupscrolldown.gif", "../stdicons/icon_popupscrolldown_disabled.gif", parent, true, "white");
+    startBuildMenuContent(menuObj);
+    var subIndex = 0;
+    for(var i = 0; i < items.length; i++)
+    {
+        var item = items[i];
+        if(item.type == 2)
+            addMenuOption(menuObj, "", 0, 2, "", "", false);
+        else if(item.type == 1)
+        {
+            var cmd = parent.commands[item.cmdIndex];
+            addMenuOption(menuObj, item.name, item.cmdIndex, 1, cmd.icon, cmd.iconDisabled, cmd.enabled);
+        }
+        else  if(item.type == 3)
+        {
+            addMenuOption(menuObj, item.name, "Sub:" + (subIndex ++), 3, item.iconUrl, "", false);
+            menuObj.subMenus.push(BuildContextMenuObjects(menus, menuObj, item.subItems, item.htmlElt, nesting + 1));
+        }
+    }
+
+    endBuildMenuContent(menuObj);
+    menuObj.parentMenu = parentMenu;
+    menuObj.nesting = nesting;
+    menus[menus.length] = menuObj;
+
+    return menuObj;
+}
+
+function InitContextMenu(items)
+{
+    var menus = new Array();
+    ctxMenu = BuildContextMenuObjects(menus, null, items, 'CtxMenu', 0);
+
+    var divs = "";
+    for(var i = 0; i < menus.length; i++)
+    {
+        var menu = menus[i];
+        divs += "<iframe id=\"IFr" + menu.menuName + "\" style=\"position:absolute;top:0px;left:0px;width:0px;height:0px;background-color:white;\" frameborder=\"0\"></iframe>\n";
+        divs += "<div class=\"PopupMenu\" id=\"" + menu.menuName + "\"></div>\n";
+    }
+
+    return divs;
+}
+
+function OpenFlyout(xpos, tbItemIndex)
+{
+    var tbItem = parent.toolbarItems[tbItemIndex];
+    tbMenu = new MenuData(tbItem.htmlElt, 20, 21, 50, 150,
+                          "../stdicons/icon_popupscrollup.gif", "../stdicons/icon_popupscrollup_disabled.gif", "../stdicons/icon_popupscrolldown.gif", "../stdicons/icon_popupscrolldown_disabled.gif",
+                          parent, true, "#f0f0f0");
+    startBuildMenuContent(tbMenu);
+
+    var commands = parent.commands;
+    var items = tbItem.subItems;
+    for(var i = 0; i < items.length; i++)
+    {
+        var item = items[i];
+        if(item.type == 2)
+            addMenuOption(tbMenu, "", 0, 2, "", "", false);
+        else if(item.type == 1)
+        {
+            var cmd = commands[item.cmdIndex];
+            addMenuOption(tbMenu, item.name, item.cmdIndex, 1, cmd.icon, cmd.iconDisabled, cmd.enabled);
+        }
+    }
+    endBuildMenuContent(tbMenu);
+    showPopup(tbMenu, false, xpos, 0);
+}
+
+function OnForwardMouseDown(e)
+{
+    hidePopup(tbMenu);
+    hidePopup(ctxMenu);
+}
+
+function OnDblClick(x, y)
+{
+    // Override this method in an external script to implement
+    // your own double-click handler.
+    // e.g. mapFrame.OnDblClick = MyOnDblClick
+    // where MyOnDblClick() is a function in your script
+
+    return false;
+}
+
+function Print(layouts, title)
+{
+    var layoutColl = new ActiveXObject("AdCommon.Collection2");
+    var unitStr = emapViewer.MetricMapUnits? "Metric": "US-English";
+
+    for(var i = 0; i < layouts.length; i++)
+    {
+        var resId = layouts[i];
+        var name = "";
+        try
+        {
+            name = resId.substr(resId.lastIndexOf('/') + 1).slice(0, -12);
+            var layout = emapViewer.CreatePrintLayout();
+            layout.Name = name;
+            layout.Resource = resId;
+            layout.Title = title;
+            layout.UnitType = unitStr;
+            layoutColl._Add(layout, name);
+        }
+        catch(e) {}
+    }
+    emapViewer.ShowPrintDialog(layoutColl);
+}
+
+function OnDigitizeEnd(shape)
+{
+    if(digihandler != null)
+    {
+        digitizing = false;
+        digihandler(shape);
+        digihandler = null;
+    }
+}
+
+function PrepareDigitization(handler)
+{
+    if(handler == null)
+        return false;
+    if(parent.InMeasure())
+    {
+        parent.SetStatusMsg("__#MEASALREADYRUNNING#__");
+        return false;
+    }
+    digihandler = handler;
+    digitizing = true;
+    return true;
+}
+
+var Src="%s"
+var NavpaneWidth="%s";
+var NavpaneVisible="%s";
+var LayersBandVisible="%s";
+var PropertiesBandVisible="%s";
+var HyperlinkTarget="%s";
+
+</script>
+
+<script src="../viewerfiles/initdwfctrl.js"></script>
+
+<script language=javascript for="DWFViewer" event="OnLButtonDown(x, y, handled)">
+    parent.ForwardMouseDown(document, null);
+    if(parent.ClickMap(x, y))
+        handled.State = true;
+</script>
+
+<script language="javascript" for="DWFViewer" event="OnLButtonDblClick(x, y, handled)">
+    if(OnDblClick(x, y))
+    {
+        handled.State = true;
+    }
+</script>
+
+<script language="javascript" for="DWFViewer" event="OnKeyDown(key, handled)">
+    if(key == 27 && digitizing)
+        digitizing = false;
+</script>
+
+<script language=javascript for="DWFViewer" event="OnExecuteCommandEx(itemType, state, data, handled)">
+    if(itemType == "CONTEXTMENU")
+    {
+        if(parent.IsContextMenu())
+        {
+            if(isPopupOpen(ctxMenu))
+                hidePopup(ctxMenu);
+
+            handled.State = true;
+            var x = data >> 16;
+            var y = data %% 65536;
+
+            self.ContextMenu(x - self.screenLeft, y - self.screenTop);
+        }
+        else
+            handled.State = true;
+    }
+</script>
+
+<script language=javascript for="DWFViewer" event="OnMouseMove(buttons, x, y, handled)">
+    if(!parent.OnCursorPosChanged(x, y))
+        handled.State = true;
+</script>
+
+<script language=javascript for="DWFViewer" event="OnEndLoadItem(itemName, data, res)">
+    if(itemName == "DOCUMENT")
+    {
+        emapViewer = DWFViewer.DocumentHandler;
+        parent.OnMapLoaded();
+        parent.OnScaleChanged(emapViewer.MapScale);
+    }
+</script>
+
+</head>
+<body leftmargin=0 topmargin=0 rightmargin=0 bottommargin=0 marginwidth=0 marginheight=0 bgcolor=#d0d0d0>
+    <iframe name="Relayer" width=0 height=0 src="../viewerfiles/emaprelayer.html"></iframe>
+    <div class="PopupMetricsDiv" id="MetricsDiv"><span class="PopupMetrics" id="Metrics"></span></div>
+    <span id="FlyoutDivs"></span>
+    <span id="CtxMenuDivs"></span>
+    <div id="DWF"></div>
+    <script language="JScript">CreateDWFControl();</script>
+</body>
+</html>
