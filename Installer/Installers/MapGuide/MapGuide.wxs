@@ -660,9 +660,9 @@
         <InstallExecuteSequence>
 
           <!-- IIS7 Base properties for deferred actions -->
-            <Custom Action="MapGuideIIS7_I_CreateFastCgi_Cmd" After="CostFinalize">MGWEB_CONFIG=&quot;IIS&quot; AND IISVERSIONMAJOR=&quot;#7&quot; AND &amp;WebExtensionsFeature&gt;2</Custom>
-            <Custom Action="MapGuideIIS7_I_AppCmd_Cmd" After="MapGuideIIS7_I_CreateFastCgi_Cmd">MGWEB_CONFIG=&quot;IIS&quot; AND IISVERSIONMAJOR=&quot;#7&quot; AND &amp;WebExtensionsFeature&gt;2</Custom>
-            <Custom Action="MapGuideIIS7_I_CreateAppPool_Cmd" After="MapGuideIIS7_I_AppCmd_Cmd">MGWEB_CONFIG=&quot;IIS&quot; AND IISVERSIONMAJOR=&quot;#7&quot; AND &amp;WebExtensionsFeature&gt;2</Custom>
+            <Custom Action="MapGuideIIS7_I_AppCmd_Cmd" After="CostFinalize">MGWEB_CONFIG=&quot;IIS&quot; AND IISVERSIONMAJOR=&quot;#7&quot; AND &amp;WebExtensionsFeature&gt;2</Custom>
+            <Custom Action="MapGuideIIS7_I_CreateFastCgi_Cmd" After="MapGuideIIS7_I_AppCmd_Cmd">MGWEB_CONFIG=&quot;IIS&quot; AND IISVERSIONMAJOR=&quot;#7&quot; AND &amp;WebExtensionsFeature&gt;2</Custom>
+            <Custom Action="MapGuideIIS7_I_CreateAppPool_Cmd" After="MapGuideIIS7_I_CreateFastCgi_Cmd">MGWEB_CONFIG=&quot;IIS&quot; AND IISVERSIONMAJOR=&quot;#7&quot; AND &amp;WebExtensionsFeature&gt;2</Custom>
             <Custom Action="MapGuideIIS7_I_SetAppPoolProp_Cmd" After="MapGuideIIS7_I_CreateAppPool_Cmd">MGWEB_CONFIG=&quot;IIS&quot; AND IISVERSIONMAJOR=&quot;#7&quot; AND &amp;WebExtensionsFeature&gt;2</Custom>
             <Custom Action="MapGuideIIS7_I_UnlockSrvHandlers_Cmd" After="MapGuideIIS7_I_SetAppPoolProp_Cmd">MGWEB_CONFIG=&quot;IIS&quot; AND IISVERSIONMAJOR=&quot;#7&quot; AND &amp;WebExtensionsFeature&gt;2</Custom>
             <Custom Action="MapGuideIIS7_I_UnlockSiteHandlers_Cmd" After="MapGuideIIS7_I_UnlockSrvHandlers_Cmd">MGWEB_CONFIG=&quot;IIS&quot; AND IISVERSIONMAJOR=&quot;#7&quot; AND &amp;WebExtensionsFeature&gt;2</Custom>
@@ -692,7 +692,8 @@
 
           <!-- IIS7 Base deferred CAs -->
             <Custom Action="MapGuideIIS7_I_CreateAppPool" After="InstallFiles">MGWEB_CONFIG=&quot;IIS&quot; AND IISVERSIONMAJOR=&quot;#7&quot; AND &amp;WebExtensionsFeature&gt;2</Custom>
-            <Custom Action="MapGuideIIS7_I_SetAppPoolProp" After="MapGuideIIS7_I_CreateAppPool">MGWEB_CONFIG=&quot;IIS&quot; AND IISVERSIONMAJOR=&quot;#7&quot; AND &amp;WebExtensionsFeature&gt;2</Custom>
+			<Custom Action="MapGuideIIS7_I_CreateFastCgi" After="MapGuideIIS7_I_CreateAppPool">MGWEB_CONFIG=&quot;IIS&quot; AND IISVERSIONMAJOR=&quot;#7&quot; AND &amp;WebExtensionsFeature&gt;2</Custom>
+            <Custom Action="MapGuideIIS7_I_SetAppPoolProp" After="MapGuideIIS7_I_CreateFastCgi">MGWEB_CONFIG=&quot;IIS&quot; AND IISVERSIONMAJOR=&quot;#7&quot; AND &amp;WebExtensionsFeature&gt;2</Custom>
             
             <?if "$(var.MgPlatform)" = "x64" ?>
             <Custom Action="MapGuideIIS7_I_UnlockSrvHandlers" After="MapGuideIIS7_I_SetAppPoolProp">MGWEB_CONFIG=&quot;IIS&quot; AND IISVERSIONMAJOR=&quot;#7&quot; AND &amp;WebExtensionsFeature&gt;2</Custom>

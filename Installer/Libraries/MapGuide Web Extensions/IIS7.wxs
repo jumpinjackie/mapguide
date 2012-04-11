@@ -17,8 +17,8 @@
 
     <!-- Set up FastCGI -->
     <CustomAction Id="MapGuideIIS7_I_CreateFastCgi_Cmd" Property="MapGuideIIS7_I_CreateFastCgi" Execute="immediate"
-            Value="[AppCmd] set config /section:system.webServer/fastCGI /+[\[]fullPath=&quot;[PHPLOCATION]php-cgi.exe&quot;[\]]" />
-    <CustomAction Id="MapGuideIIS7_I_CreateFastCgi" BinaryKey="WixCA" DllEntry="CAQuietExec" Execute="deferred" Return="ignore" Impersonate="no"/>
+            Value="[AppCmd] set config /section:system.webServer/fastCGI &quot;/+[\[]fullPath='[PHPLOCATION]php-cgi.exe'[\]]&quot;" />
+    <CustomAction Id="MapGuideIIS7_I_CreateFastCgi" BinaryKey="WixCA" DllEntry="CAQuietExec" Execute="deferred" Return="check" Impersonate="no"/>
 
     <!-- Set the application pool's properties -->
     <CustomAction Id="MapGuideIIS7_I_SetAppPoolProp_Cmd" Property="MapGuideIIS7_I_SetAppPoolProp" Execute="immediate"
