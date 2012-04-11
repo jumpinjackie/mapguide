@@ -5373,7 +5373,6 @@ uninstall-am: uninstall-binPROGRAMS uninstall-libLTLIBRARIES
 
 
 $(LEXERFILE): $(LEXTEMPLATE) $(LEXSKEL)
-	$(LEX) -BUs -Pxq -S$(LEXSKEL) -o$(LEXERFILE) $(LEXTEMPLATE) # This can take a long time
 
 $(PARSERCPP) $(PARSERHPP): $(PARSERFILE)
 	$(YACC) -d -v -o $(PARSERCPP) $(PARSERFILE)

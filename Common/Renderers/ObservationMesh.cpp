@@ -22,6 +22,7 @@
 #include "RS_OutputStream.h"
 #include <map>
 #include <cstring>
+#include <cstdio>
 
 //desired observation mesh accuracy (in degrees)
 #define OM_TOLERANCE 1e-5

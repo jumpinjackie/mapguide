@@ -88,6 +88,12 @@ libMgRenderers_la_LIBADD = \
   ../../Oem/gd/freetype/objs/.libs/libfreetype.a \
   ../../Oem/gd/jpeg/.libs/libjpeg.a \
   ../../Oem/gd/lpng/libpng.a \
-  ../../Oem/agg-2.4/src/libagg.a
+  ../../Oem/agg-2.4/src/libagg.a \
+  -ldwfcore \
+  -ldwftk \
+  -ldwfemap
 
-libMgRenderers_la_LDFLAGS = -release $(PACKAGE_VERSION)
+libMgRenderers_la_LDFLAGS = -release $(PACKAGE_VERSION) \
+  -L../../Oem/DWFTK7.1/develop/global/src/dwfcore/.libs \
+  -L../../Oem/DWFTK7.1/develop/global/src/dwf/.libs \
+  -L../../Oem/DWFTK7.1/develop/global/src/dwfemap/.libs
