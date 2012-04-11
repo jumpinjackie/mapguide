@@ -4,7 +4,7 @@ dnl Configure.in for MapGuide Open Source
 # Variables
 # Following are the makefile directories
 #----------------------------------------------------------------------
-AC_INIT(mapguide,2.2.0,http://mapguide.osgeo.org)
+AC_INIT(mapguide,2.4.0,http://mapguide.osgeo.org)
 AC_CONFIG_SRCDIR(configure.in)
 AM_INIT_AUTOMAKE
 AM_INIT_AUTOMAKE([1.9 tar-pax])
@@ -135,12 +135,12 @@ else
     AC_MSG_NOTICE([Using optimized configuration])
     if test -s "gcc32.txt"; then
         AC_MSG_NOTICE([gcc 3.2.x . Please pay attention to warnings!])
-        CXXFLAGS="-O2 -g -pipe -march=i386 -mcpu=i686 -fno-use-cxa-atexit -fexceptions"
-        AC_SUBST(CXXFLAGS, ["-O2 -g -pipe -march=i386 -mcpu=i686 -fno-use-cxa-atexit -fexceptions"])
+        CXXFLAGS="-O2 -g -pipe -march=i686 -mtune=i686 -fno-use-cxa-atexit -fexceptions"
+        AC_SUBST(CXXFLAGS, ["-O2 -g -pipe -march=i686 -mtune=i686 -fno-use-cxa-atexit -fexceptions"])
     else
         AC_MSG_NOTICE([this gcc version is not actively supported.])
-        CXXFLAGS="-O2 -g -pipe -march=i386 -mcpu=i686 -fno-use-cxa-atexit -fexceptions"
-        AC_SUBST(CXXFLAGS, ["-O2 -g -pipe -march=i386 -mcpu=i686 -fno-use-cxa-atexit -fexceptions"])
+        CXXFLAGS="-O2 -g -pipe -march=i686 -mtune=i686 -fno-use-cxa-atexit -fexceptions"
+        AC_SUBST(CXXFLAGS, ["-O2 -g -pipe -march=i686 -mtune=i686 -fno-use-cxa-atexit -fexceptions"])
     fi
 fi
 

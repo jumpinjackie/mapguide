@@ -17,5 +17,6 @@
 #include <ctype.h>
 #include <cstdlib>
 #include <cstring>
+#include <cstdio>
 
 #endif
