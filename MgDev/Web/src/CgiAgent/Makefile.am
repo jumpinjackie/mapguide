@@ -37,14 +37,17 @@ mapagent_LDADD = -lACE \
                  -lMgFoundation \
                  -lMgGeometry \
                  -lMgPlatformBase \
+                 -lMgMapGuideCommon \
                  -lMgMdfModel \
                  -lMgMdfParser \
                  -lMgHttpHandler \
-                 -lMgWebSupport
+                 -lMgWebSupport \
+                 -llib_json
 
 mapagent_LDFLAGS = \
             -L../../../Oem/ACE/ACE_wrappers/ace \
             -L../../../Oem/dbxml/install/lib \
+            -L../../../Oem/jsoncpp/lib \
             -L../../../Common/CoordinateSystem \
             -L../../../Common/MdfModel \
             -L../../../Common/MdfParser \

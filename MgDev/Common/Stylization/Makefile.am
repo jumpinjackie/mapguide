@@ -202,6 +202,7 @@ noinst_HEADERS = \
   Vector3D.h \
   TransformMesh.h
 
-libMgStylization_la_LIBADD =
+libMgStylization_la_LIBADD = -lExpressionEngine
 
-libMgStylization_la_LDFLAGS = -release $(PACKAGE_VERSION)
+libMgStylization_la_LDFLAGS = -release $(PACKAGE_VERSION) \
+  -L$(map_fdo_lib)

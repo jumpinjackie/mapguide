@@ -17,7 +17,7 @@
 
 #include "stdafx.h"
 #include "SE_BufferPool.h"
-
+#include <cstdlib>
 
 SE_BufferPool::SE_BufferPool()
 {

@@ -44,7 +44,7 @@ public: // implementations of the IStructure interface;
     }
 
     // What is the "shape" of the run?  Does it flow and wrap, or... ?
-    ATOM::Shape::Type Shape() const
+    ATOM::Shape::Type GetShape() const
     {
         return m_eShape;
     }

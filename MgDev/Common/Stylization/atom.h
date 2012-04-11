@@ -1962,7 +1962,7 @@ public:
     virtual IStructure* Outer()      const = 0;
 
     // What is the "shape" of the run?  Does it flow and wrap, or... ?
-    virtual Shape::Type Shape()      const = 0;
+    virtual Shape::Type GetShape()      const = 0;
 
     // Is selection considered continuous with previous run?
     virtual bool        Continuous() const = 0;

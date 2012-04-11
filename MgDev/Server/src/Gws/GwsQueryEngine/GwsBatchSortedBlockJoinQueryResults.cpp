@@ -24,7 +24,7 @@
 #include "stdafx.h"
 #include "GwsQueryEngineImp.h"
 #include "GwsBinaryFeatureWriter.h"
-
+#include <cstdio>
 
 // This setting limits the batch size used by the join algorithm
 int CGwsBatchSortedBlockJoinQueryResults::sm_nBatchSize = 100; //Default
