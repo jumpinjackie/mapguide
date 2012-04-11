@@ -12,8 +12,8 @@ CC       = gcc
 CXX      = g++
 LEX      = flex
 YACC     = yacc
-CFLAGS   = -pipe -UZTS -Wall -W -O2 -g -pipe -march=i386 -mcpu=i686 -fno-use-cxa-atexit -fexceptions  -DNDEBUG
-CXXFLAGS = -pipe -UZTS -Wall -W -O2 -g -pipe -march=i386 -mcpu=i686 -fno-use-cxa-atexit -fexceptions  -DNDEBUG
+CFLAGS   = -pipe -UZTS -Wall -W -O2 -g -pipe -march=i686 -mtune=i686 -fno-use-cxa-atexit -fexceptions  -DNDEBUG
+CXXFLAGS = -pipe -UZTS -Wall -W -O2 -g -pipe -march=i686 -mtune=i686 -fno-use-cxa-atexit -fexceptions  -DNDEBUG
 LEXFLAGS = 
 YACCFLAGS= -d
 INCPATH  = -I$(QTDIR)/mkspecs/default -I.
@@ -100,8 +100,7 @@ uiclean:
 yaccclean:
 lexclean:
 clean:
-	-$(DEL_FILE) $(OBJECTS) 
-	-$(DEL_FILE) Makefile
+	-$(DEL_FILE) $(OBJECTS)
 	-$(DEL_FILE) *~ core *.core
 
 

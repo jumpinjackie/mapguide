@@ -80,7 +80,7 @@ LIBS     += -ldl
 ifeq ($(threads),1)
   LIBS += -lpthread
   # look for the rt library in the usual places
-  LIBS += $(shell test "`ls -L /usr/lib*/librt.so* /lib*/librt.so*`" && echo -lrt)
+  LIBS += $(shell getconf AIO_LISTIO_MAX >/dev/null 2>&1 && echo -lrt)
 endif
 
 ifeq ($(optimize),1)
