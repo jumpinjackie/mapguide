@@ -497,6 +497,8 @@
             <Publish Dialog="WebServerConfigDlgIIS" Control="Next" Event="Remove" Value="WebExtMapViewerJSPFeature" Order="12">MGWEB_CONFIG=&quot;IIS&quot;</Publish>
             <Publish Dialog="WebServerConfigDlgIIS" Control="Next" Event="Remove" Value="WebExtJavaDevGuideSamplesFeature" Order="13">MGWEB_CONFIG=&quot;IIS&quot;</Publish>
             <Publish Dialog="WebServerConfigDlgIIS" Control="Next" Event="Remove" Value="WebExtJavaViewerSampleFeature" Order="14">MGWEB_CONFIG=&quot;IIS&quot;</Publish>
+			<Publish Dialog="WebServerConfigDlgIIS" Control="Next" Event="Remove" Value="WebExtPhpDevGuideSamplesFeature">MGWEB_CONFIG=&quot;IIS&quot;</Publish>
+			<Publish Dialog="WebServerConfigDlgIIS" Control="Next" Event="Remove" Value="WebExtPhpViewerSampleFeature">MGWEB_CONFIG=&quot;IIS&quot;</Publish>
             <Publish Dialog="WebServerConfigDlgIIS" Control="Next" Event="NewDialog" Value="IPConfigDlg" Order="13">MGWEB_CONFIG=&quot;MANUAL&quot;</Publish>
             <Publish Dialog="WebServerConfigDlgIIS" Control="Back" Event="NewDialog" Value="LicenseAgreementDlg">1</Publish>
             <Publish Dialog="WebServerConfigDlgIIS" Control="Cancel" Event="SpawnDialog" Value="CancelDlg">1</Publish>
@@ -516,7 +518,7 @@
             <Publish Dialog="WebServerConfigDlgNoIIS" Control="Next" Event="Remove" Value="FdoArcSdeProviderFeature" Order="3">1</Publish>
             <Publish Dialog="WebServerConfigDlgNoIIS" Control="Next" Event="Remove" Value="FdoKingOracleProviderFeature" Order="4">1</Publish>
             <Publish Dialog="WebServerConfigDlgNoIIS" Control="Next" Event="Remove" Value="FdoMySqlProviderFeature" Order="5">1</Publish>
-            <Publish Dialog="WebServerConfigDlgNoIIS" Control="Next" Event="Remove" Value="FdoPostGisProviderFeature" Order="6">1</Publish>
+            <Publish Dialog="WebServerConfigDlgNoIIS" Control="Next" Event="Remove" Value="FdoPostgreSqlProviderFeature" Order="6">1</Publish>
             <!-- If Apache, set feature default for the ASPX viewer to not install -->
             <!-- 
             Turn off:
@@ -842,12 +844,15 @@
             <Custom
                 Action="StartApacheServiceCA"
                 After="InstallApacheServiceCA">MGWEB_CONFIG=&quot;APACHE&quot; AND &amp;WebExtApacheFeature&gt;2</Custom>
+			<!-- Something's wrong with the Tomcat actions. So disable them for now -->
+			<!--
             <Custom
                 Action="InstallTomcatServiceCA"
                 Before="InstallFinalize">MGWEB_CONFIG=&quot;APACHE&quot; AND &amp;WebExtTomcatFeature&gt;2</Custom>
             <Custom
                 Action="StartTomcatServiceCA"
                 Before="InstallTomcatServiceCA">MGWEB_CONFIG=&quot;APACHE&quot; AND &amp;WebExtTomcatFeature&gt;2</Custom>
+			-->
             <Custom
                 Action="MgServerInstallCA"
                 Before="InstallFinalize">&amp;ServerFeature&gt;2</Custom>

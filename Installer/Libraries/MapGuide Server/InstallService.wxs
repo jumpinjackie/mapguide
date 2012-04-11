@@ -1,7 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Wix   xmlns="http://schemas.microsoft.com/wix/2006/wi">
   <!-- mgserver.exe -->
+  <?if "$(var.MgPlatform)" = "x64" ?>
+  <?define MGSERVER_MAP = "file_SRVBINFILES_23" ?>
+  <?else ?>
   <?define MGSERVER_MAP = "file_SRVBINFILES_26" ?>
+  <?endif ?>
   <Fragment>
   
     <CustomAction 

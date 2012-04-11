@@ -65,7 +65,8 @@ CheckVS2008Wow32Registry:
 !endif
 
 InstallVC2008Redist:
-	MessageBox MB_OK "Installing Visual C++ 2008 redist"
+	Banner::show /NOUNLOAD "Installing Visual C++ 2008 Redistributable"
+	Banner::getWindow /NOUNLOAD
 !if ${CPU} = "x64"
 	File /r "${INSTALLER_OUTPUT}\vcredist_2008_x64.exe"
 	ExecWait '"$OUTDIR\vcredist_2008_x64.exe" /q:a"'
@@ -73,6 +74,7 @@ InstallVC2008Redist:
 	File /r "${INSTALLER_OUTPUT}\vcredist_2008_x86.exe"
 	ExecWait '"$OUTDIR\vcredist_2008_x86.exe" /q:a'
 !endif
+	Banner::destroy
 
 CheckVC2010Install:
 ;
@@ -96,7 +98,8 @@ CheckVS2010Wow32Registry:
 !endif
 
 InstallVC2010Redist:
-	MessageBox MB_OK "Installing Visual C++ 2010 redist"
+	Banner::show /NOUNLOAD "Installing Visual C++ 2010 Redistributable"
+	Banner::getWindow /NOUNLOAD
 !if ${CPU} = "x64"
 	File /r "${INSTALLER_OUTPUT}\vcredist_2010_x64.exe"
 	ExecWait '"$OUTDIR\vcredist_2010_x64.exe" /passive /norestart'
@@ -104,6 +107,7 @@ InstallVC2010Redist:
 	File /r "${INSTALLER_OUTPUT}\vcredist_2010_x86.exe"
 	ExecWait '"$OUTDIR\vcredist_2010_x86.exe" /passive /norestart'
 !endif
+	Banner::destroy
 
 BeginInstall:
 	Banner::show /NOUNLOAD "Extracting files. Please Wait"
