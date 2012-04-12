@@ -24,7 +24,7 @@
     $targetType = 0;
     $mapName = "";
     $sessionId = "";
-    $us = "";
+    //$us = "";
 
     GetRequestParameters();
 
@@ -43,7 +43,7 @@ function GetParameters($params)
     $mapName = $params['MAPNAME'];
     $sessionId = $params['SESSION'];
     $targetType = $params['TARGETTYPE'];
-    $us = $params['US'];
+    //$us = $params['US'];
 }
 
 function GetRequestParameters()
