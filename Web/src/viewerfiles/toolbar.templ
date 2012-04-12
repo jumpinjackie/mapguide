@@ -52,6 +52,7 @@ var active = "";
 var intId;
 var btnActions = new Array();
 var btnStates = new Array();
+var mapTipBtns = new Array();
 
 // public functions -----------------------------------------------
 //
@@ -194,6 +195,8 @@ function MeasureText(t)
     return metrics.offsetWidth;
 }
 
+function GetMapTipButtons() { return mapTipBtns; }
+
 function InitToolbar()
 {
     var commands = parent.commands;
@@ -231,9 +234,11 @@ function InitToolbar()
                    "  </span>\n" +
                    "</td>\n";
 
-                btnActions[i] = cmd.action;
-                btnStates[i] = cmd.enabled;
-                curPosX += 28;
+            btnActions[i] = cmd.action;
+            btnStates[i] = cmd.enabled;
+            if (cmd.action == 34) //34 - MapTip
+                mapTipBtns.push(i);
+            curPosX += 28;
         }
         else if(tbItem.type == 3)
         {
