@@ -8,7 +8,7 @@ function getMapFrame()
     else if (targetType == 2)
     {
         // In a new window
-        return opener.parent.parent.mapFrame;
+        return opener.GetMapFrame();
     }
     else if (targetType == 3)
     {
