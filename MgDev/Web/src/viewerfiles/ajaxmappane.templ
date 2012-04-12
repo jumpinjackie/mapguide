@@ -2221,28 +2221,36 @@ function ZoomToScale(scale)
 
 function MapTip()
 {
-    var maptipBtn = parent.tbFrame.document.getElementById(14)
+    var idxes = parent.tbFrame.GetMapTipButtons();
     if(!haveTooltip)
     {
         haveTooltip = true;
-        //The tooltip is enabled.
-        //highlight the maptip button via change the background and the border color
-        if(maptipBtn)
-        {
-            maptipBtn.style.border = "solid #a0a0a0 1px";
-            maptipBtn.style.background = "#dcdcdc";
+        for (var i = 0; i < idxes.length; i++) {
+            var maptipBtn = parent.tbFrame.document.getElementById(idxes[i]);
+            //The tooltip is enabled.
+            //highlight the maptip button via change the background and the border color
+            if(maptipBtn)
+            {
+                maptipBtn.style.border = "solid #a0a0a0 1px";
+                maptipBtn.style.background = "#dcdcdc";
+            }
         }
     }
     else
     {
         haveTooltip = false;
-        document.getElementById("hlTip").style.display = 'none';
-        //disable the tooltip
-        //change back the background and border color
-        if(maptipBtn)
-        {
-            maptipBtn.style.border = "solid #f0f0f0 1px";
-            maptipBtn.style.background = "#f0f0f0";
+        var tip = document.getElementById("hlTip");
+        if (tip != null)
+            tip.style.display = 'none';
+        for (var i = 0; i < idxes.length; i++) {
+            var maptipBtn = parent.tbFrame.document.getElementById(idxes[i]);
+            //disable the tooltip
+            //change back the background and border color
+            if(maptipBtn)
+            {
+                maptipBtn.style.border = "solid #f0f0f0 1px";
+                maptipBtn.style.background = "#f0f0f0";
+            }
         }
     }
 }
