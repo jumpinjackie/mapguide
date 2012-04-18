@@ -1,3 +1,4 @@
+!include x64.nsh
 !ifdef MAXCOMPRESSION
 
 SetCompressor /FINAL /SOLID lzma
@@ -32,6 +33,14 @@ Function .onInit
 	StrCmp $R0 0 +3
 		MessageBox MB_OK|MB_ICONEXCLAMATION "The installer is already running."
 		Abort
+
+; Only for 64-bit installers. Prevent installation on 32-bit windows for obvious reasons
+!if ${CPU} = "x64"
+    ${IfNot} ${RunningX64}
+    MessageBox MB_OK|MB_ICONEXCLAMATION "This installer can only be run on 64-bit windows"
+    Abort
+    ${EndIf}
+!endif
 FunctionEnd
 
 Section Main

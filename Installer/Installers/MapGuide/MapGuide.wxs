@@ -55,8 +55,12 @@
         <Property Id="MG_CLIENT_PORT" Secure="yes" Value="2811" />
         <Property Id="MG_SITE_PORT" Secure="yes" Value="2812" />
         <!-- Used by FdoRegUtil.exe -->
-        <Property Id="FDO_VERSION" Secure="yes" Value="3.7.0.0" />
         <Property Id="FDO_VERSION_SMALL" Secure="yes" Value="3.7" />
+        <Property Id="FDO_VERSION" Secure="yes" Value="[FDO_VERSION_SMALL].0.0" />
+        <!-- IIS vars -->
+        <Property Id="ASPNETVERSION" Value="v4.0" />
+        <Property Id="PHP_FCGI_HANDLER_NAME" Value="MapGuide_[MG_VERSION_MAJOR_MINOR]_PHP_via_FastCGI" />
+        <Property Id="MAPAGENT_ISAPI_NAME" Value="MapGuide [MG_VERSION_MAJOR_MINOR] MapAgent ISAPI handler" />
 
         <!-- 
         These are currently static, though there is opportunity in the future for these
@@ -651,7 +655,68 @@
             <ProgressText Action="MgServerUninstallCA">!(loc.MgServerUninstallCA)</ProgressText>
             <ProgressText Action="RemoveApacheServiceCA">!(loc.RemoveApacheServiceCA)</ProgressText>
             <ProgressText Action="RemoveTomcatServiceCA">!(loc.RemoveTomcatServiceCA)</ProgressText>
-
+            <ProgressText Action="MapGuideIIS7_I_UnlockSiteHandlers">!(loc.MapGuideIIS7_I_UnlockSiteHandlers)</ProgressText>
+            <ProgressText Action="MapGuideIIS7_I_CreateMapGuideApp">!(loc.MapGuideIIS7_I_CreateMapGuideApp)</ProgressText>
+            <ProgressText Action="MapGuideIIS7_I_SelectXmlCompat">!(loc.MapGuideIIS7_I_SelectXmlCompat)</ProgressText>
+            <ProgressText Action="MapGuideIIS7_I_CreatePhpScriptMapping">!(loc.MapGuideIIS7_I_CreatePhpScriptMapping)</ProgressText>
+            <ProgressText Action="MapGuideIIS7_I_CreateMapAgentApp">!(loc.MapGuideIIS7_I_CreateMapAgentApp)</ProgressText>
+            <ProgressText Action="MapGuideIIS7_I_SetMapAgentHandlerAccess">!(loc.MapGuideIIS7_I_SetMapAgentHandlerAccess)</ProgressText>
+            <ProgressText Action="MapGuideIIS7_I_CreateMapAgentScriptHandling">!(loc.MapGuideIIS7_I_CreateMapAgentScriptHandling)</ProgressText>
+            <ProgressText Action="MapGuideIIS7_I_EnableMapAgentExtension">!(loc.MapGuideIIS7_I_EnableMapAgentExtension)</ProgressText>
+            <ProgressText Action="MapGuideIIS7_I_AssignMapGuideAppPool">!(loc.MapGuideIIS7_I_AssignMapGuideAppPool)</ProgressText>
+            <ProgressText Action="MapGuideIIS7_I_AssignMapAgentAppPool">!(loc.MapGuideIIS7_I_AssignMapAgentAppPool)</ProgressText>
+            <ProgressText Action="MapGuideIIS7_I_UnlockHttpErrorsMain">!(loc.MapGuideIIS7_I_UnlockHttpErrorsMain)</ProgressText>
+            <ProgressText Action="MapGuideIIS7_I_UnlockHttpErrorsWebSite">!(loc.MapGuideIIS7_I_UnlockHttpErrorsWebSite)</ProgressText>
+            <ProgressText Action="MapGuideIIS7_I_UnlockHttpErrorsMapGuide">!(loc.MapGuideIIS7_I_UnlockHttpErrorsMapGuide)</ProgressText>
+            <ProgressText Action="MapGuideIIS7_I_Reset401Handler">!(loc.MapGuideIIS7_I_Reset401Handler)</ProgressText>
+            <ProgressText Action="MapGuideIIS7_I_AddJsonMime">!(loc.MapGuideIIS7_I_AddJsonMime)</ProgressText>
+            <ProgressText Action="MapGuideIIS7_I_CreateViewerPhp">!(loc.MapGuideIIS7_I_CreateViewerPhp)</ProgressText>
+            <ProgressText Action="MapGuideIIS7_I_SetViewerDocPhp">!(loc.MapGuideIIS7_I_SetViewerDocPhp)</ProgressText>
+            <ProgressText Action="MapGuideIIS7_I_AssignViewerAppPoolPhp">!(loc.MapGuideIIS7_I_AssignViewerAppPoolPhp)</ProgressText>
+            <ProgressText Action="MapGuideIIS7_I_CreateViewerNet">!(loc.MapGuideIIS7_I_CreateViewerNet)</ProgressText>
+            <ProgressText Action="MapGuideIIS7_I_SetViewerDocNet">!(loc.MapGuideIIS7_I_SetViewerDocNet)</ProgressText>
+            <ProgressText Action="MapGuideIIS7_I_AssignViewerAppPoolNet">!(loc.MapGuideIIS7_I_AssignViewerAppPoolNet)</ProgressText>
+            <ProgressText Action="MapGuideIIS7_I_CreateMapViewerNet">!(loc.MapGuideIIS7_I_CreateMapViewerNet)</ProgressText>
+            <ProgressText Action="MapGuideIIS7_I_SetMapViewerDocNet">!(loc.MapGuideIIS7_I_SetMapViewerDocNet)</ProgressText>
+            <ProgressText Action="MapGuideIIS7_I_AssignMapViewerAppPoolNet">!(loc.MapGuideIIS7_I_AssignMapViewerAppPoolNet)</ProgressText>
+            <ProgressText Action="MapGuideIIS7_I_CreateViewerSampleNet">!(loc.MapGuideIIS7_I_CreateViewerSampleNet)</ProgressText>
+            <ProgressText Action="MapGuideIIS7_I_SetViewerDocViewerSampleNet">!(loc.MapGuideIIS7_I_SetViewerDocViewerSampleNet)</ProgressText>
+            <ProgressText Action="MapGuideIIS7_I_AssignViewerAppPoolViewerSampleNet">!(loc.MapGuideIIS7_I_AssignViewerAppPoolViewerSampleNet)</ProgressText>
+            <ProgressText Action="MapGuideIIS7_I_CreateViewerDevGuideSamplesNet">!(loc.MapGuideIIS7_I_CreateViewerDevGuideSamplesNet)</ProgressText>
+            <ProgressText Action="MapGuideIIS7_I_SetViewerDocDevGuideSamplesNet">!(loc.MapGuideIIS7_I_SetViewerDocDevGuideSamplesNet)</ProgressText>
+            <ProgressText Action="MapGuideIIS7_I_AssignViewerAppPoolDevGuideSamplesNet">!(loc.MapGuideIIS7_I_AssignViewerAppPoolDevGuideSamplesNet)</ProgressText>
+            <ProgressText Action="MapGuideIIS7_U_ClearMapAgentRestriction">!(loc.MapGuideIIS7_U_ClearMapAgentRestriction)</ProgressText>
+            <ProgressText Action="MapGuideIIS7_U_RemoveViewer">!(loc.MapGuideIIS7_U_RemoveViewer)</ProgressText>
+            <ProgressText Action="MapGuideIIS7_U_RemoveMapAgent">!(loc.MapGuideIIS7_U_RemoveMapAgent)</ProgressText>
+            <ProgressText Action="MapGuideIIS7_U_RemoveMapGuide">!(loc.MapGuideIIS7_U_RemoveMapGuide)</ProgressText>
+            <ProgressText Action="MapGuideIIS7_U_DeleteAppPool">!(loc.MapGuideIIS7_U_DeleteAppPool)</ProgressText>
+            <ProgressText Action="AspNetRegIIS">!(loc.AspNetRegIIS)</ProgressText>
+            <ProgressText Action="FdoRegArcSde">!(loc.FdoRegArcSde)</ProgressText>
+            <ProgressText Action="FdoRegSdf">!(loc.FdoRegSdf)</ProgressText>
+            <ProgressText Action="FdoRegShp">!(loc.FdoRegShp)</ProgressText>
+            <ProgressText Action="FdoRegWfs">!(loc.FdoRegWfs)</ProgressText>
+            <ProgressText Action="FdoRegWms">!(loc.FdoRegWms)</ProgressText>
+            <ProgressText Action="FdoRegOdbc">!(loc.FdoRegOdbc)</ProgressText>
+            <ProgressText Action="FdoRegMySql">!(loc.FdoRegMySql)</ProgressText>
+            <ProgressText Action="FdoRegGdal">!(loc.FdoRegGdal)</ProgressText>
+            <ProgressText Action="FdoRegOgr">!(loc.FdoRegOgr)</ProgressText>
+            <ProgressText Action="FdoRegPostgreSql">!(loc.FdoRegPostgreSql)</ProgressText>
+            <ProgressText Action="FdoRegOracle">!(loc.FdoRegOracle)</ProgressText>
+            <ProgressText Action="FdoRegSqlServer">!(loc.FdoRegSqlServer)</ProgressText>
+            <ProgressText Action="FdoRegSlt">!(loc.FdoRegSlt)</ProgressText>
+            <ProgressText Action="FdoUnRegArcSde">!(loc.FdoUnRegArcSde)</ProgressText>
+            <ProgressText Action="FdoUnRegSdf">!(loc.FdoUnRegSdf)</ProgressText>
+            <ProgressText Action="FdoUnRegShp">!(loc.FdoUnRegShp)</ProgressText>
+            <ProgressText Action="FdoUnRegWfs">!(loc.FdoUnRegWfs)</ProgressText>
+            <ProgressText Action="FdoUnRegWms">!(loc.FdoUnRegWms)</ProgressText>
+            <ProgressText Action="FdoUnRegOdbc">!(loc.FdoUnRegOdbc)</ProgressText>
+            <ProgressText Action="FdoUnRegMySql">!(loc.FdoUnRegMySql)</ProgressText>
+            <ProgressText Action="FdoUnRegGdal">!(loc.FdoUnRegGdal)</ProgressText>
+            <ProgressText Action="FdoUnRegOgr">!(loc.FdoUnRegOgr)</ProgressText>
+            <ProgressText Action="FdoUnRegPostgreSql">!(loc.FdoUnRegPostgreSql)</ProgressText>
+            <ProgressText Action="FdoUnRegOracle">!(loc.FdoUnRegOracle)</ProgressText>
+            <ProgressText Action="FdoUnRegSqlServer">!(loc.FdoUnRegSqlServer)</ProgressText>
+            <ProgressText Action="FdoUnRegSlt">!(loc.FdoUnRegSlt)</ProgressText>
         </UI>
 
         <!-- Trac #361: Run our custom CA as part of the UI install sequence -->
@@ -669,7 +734,8 @@
             <Custom Action="MapGuideIIS7_I_UnlockSrvHandlers_Cmd" After="MapGuideIIS7_I_SetAppPoolProp_Cmd">MGWEB_CONFIG=&quot;IIS&quot; AND IISVERSIONMAJOR=&quot;#7&quot; AND &amp;WebExtensionsFeature&gt;2</Custom>
             <Custom Action="MapGuideIIS7_I_UnlockSiteHandlers_Cmd" After="MapGuideIIS7_I_UnlockSrvHandlers_Cmd">MGWEB_CONFIG=&quot;IIS&quot; AND IISVERSIONMAJOR=&quot;#7&quot; AND &amp;WebExtensionsFeature&gt;2</Custom>
             <Custom Action="MapGuideIIS7_I_CreateMapGuideApp_Cmd" After="MapGuideIIS7_I_UnlockSiteHandlers_Cmd">MGWEB_CONFIG=&quot;IIS&quot; AND IISVERSIONMAJOR=&quot;#7&quot; AND &amp;WebExtensionsFeature&gt;2</Custom>
-            <Custom Action="MapGuideIIS7_I_CreatePhpScriptMapping_Cmd" After="MapGuideIIS7_I_CreateMapGuideApp_Cmd">MGWEB_CONFIG=&quot;IIS&quot; AND IISVERSIONMAJOR=&quot;#7&quot; AND &amp;WebExtensionsFeature&gt;2</Custom>
+            <Custom Action="MapGuideIIS7_I_SelectXmlCompat_Cmd" After="MapGuideIIS7_I_CreateMapGuideApp_Cmd">MGWEB_CONFIG=&quot;IIS&quot; AND IISVERSIONMAJOR=&quot;#7&quot; AND &amp;WebExtensionsFeature&gt;2</Custom>
+            <Custom Action="MapGuideIIS7_I_CreatePhpScriptMapping_Cmd" After="MapGuideIIS7_I_SelectXmlCompat_Cmd">MGWEB_CONFIG=&quot;IIS&quot; AND IISVERSIONMAJOR=&quot;#7&quot; AND &amp;WebExtensionsFeature&gt;2</Custom>
             <Custom Action="MapGuideIIS7_I_CreateMapAgentApp_Cmd" After="MapGuideIIS7_I_CreatePhpScriptMapping_Cmd">MGWEB_CONFIG=&quot;IIS&quot; AND IISVERSIONMAJOR=&quot;#7&quot; AND &amp;WebExtensionsFeature&gt;2</Custom>
             <Custom Action="MapGuideIIS7_I_SetMapAgentHandlerAccess_Cmd" After="MapGuideIIS7_I_CreateMapAgentApp_Cmd">MGWEB_CONFIG=&quot;IIS&quot; AND IISVERSIONMAJOR=&quot;#7&quot; AND &amp;WebExtensionsFeature&gt;2</Custom>
             <Custom Action="MapGuideIIS7_I_CreateMapAgentScriptHandling_Cmd" After="MapGuideIIS7_I_SetMapAgentHandlerAccess_Cmd">MGWEB_CONFIG=&quot;IIS&quot; AND IISVERSIONMAJOR=&quot;#7&quot; AND &amp;WebExtensionsFeature&gt;2</Custom>
@@ -682,19 +748,34 @@
             <Custom Action="MapGuideIIS7_I_Reset401Handler_Cmd" After="MapGuideIIS7_I_UnlockHttpErrorsMapGuide_Cmd">MGWEB_CONFIG=&quot;IIS&quot; AND IISVERSIONMAJOR=&quot;#7&quot; AND &amp;WebExtensionsFeature&gt;2</Custom>
             <Custom Action="MapGuideIIS7_I_AddJsonMime_Cmd" After="MapGuideIIS7_I_Reset401Handler_Cmd">MGWEB_CONFIG=&quot;IIS&quot; AND IISVERSIONMAJOR=&quot;#7&quot; AND &amp;WebExtensionsFeature&gt;2</Custom>
 
-          <!-- IIS7 PHP Viewer properties for deferred actions -->
+            <!-- IIS7 PHP Viewer properties for deferred actions -->
             <Custom Action="MapGuideIIS7_I_CreateViewerPhp_Cmd" After="MapGuideIIS7_I_AddJsonMime_Cmd">MGWEB_CONFIG=&quot;IIS&quot; AND IIS_API_TYPE=&quot;PHP&quot; AND IISVERSIONMAJOR=&quot;#7&quot; AND &amp;WebExtensionsFeature&gt;2</Custom>
             <Custom Action="MapGuideIIS7_I_SetViewerDocPhp_Cmd" After="MapGuideIIS7_I_CreateViewerPhp_Cmd">MGWEB_CONFIG=&quot;IIS&quot; AND IIS_API_TYPE=&quot;PHP&quot; AND IISVERSIONMAJOR=&quot;#7&quot; AND &amp;WebExtensionsFeature&gt;2</Custom>
             <Custom Action="MapGuideIIS7_I_AssignViewerAppPoolPhp_Cmd" After="MapGuideIIS7_I_SetViewerDocPhp_Cmd">MGWEB_CONFIG=&quot;IIS&quot; AND IIS_API_TYPE=&quot;PHP&quot; AND IISVERSIONMAJOR=&quot;#7&quot; AND &amp;WebExtensionsFeature&gt;2</Custom>
 
-          <!-- IIS7 ASP.Net Viewer properties for deferred actions -->
+            <!-- IIS7 ASP.Net Viewer properties for deferred actions -->
             <Custom Action="MapGuideIIS7_I_CreateViewerNet_Cmd" After="MapGuideIIS7_I_Reset401Handler_Cmd">MGWEB_CONFIG=&quot;IIS&quot; AND IIS_API_TYPE=&quot;DOTNET&quot; AND IISVERSIONMAJOR=&quot;#7&quot; AND &amp;WebExtensionsFeature&gt;2</Custom>
             <Custom Action="MapGuideIIS7_I_SetViewerDocNet_Cmd" After="MapGuideIIS7_I_CreateViewerNet_Cmd">MGWEB_CONFIG=&quot;IIS&quot; AND IIS_API_TYPE=&quot;DOTNET&quot; AND IISVERSIONMAJOR=&quot;#7&quot; AND &amp;WebExtensionsFeature&gt;2</Custom>
             <Custom Action="MapGuideIIS7_I_AssignViewerAppPoolNet_Cmd" After="MapGuideIIS7_I_SetViewerDocNet_Cmd">MGWEB_CONFIG=&quot;IIS&quot; AND IIS_API_TYPE=&quot;DOTNET&quot; AND IISVERSIONMAJOR=&quot;#7&quot; AND &amp;WebExtensionsFeature&gt;2</Custom>
 
-          <!-- IIS7 Base deferred CAs -->
+            <!-- mapviewernet -->
+            <Custom Action="MapGuideIIS7_I_CreateMapViewerNet_Cmd" After="MapGuideIIS7_I_AssignViewerAppPoolNet_Cmd">MGWEB_CONFIG=&quot;IIS&quot; AND IIS_API_TYPE=&quot;DOTNET&quot; AND IISVERSIONMAJOR=&quot;#7&quot; AND &amp;WebExtensionsFeature&gt;2</Custom>
+            <Custom Action="MapGuideIIS7_I_SetMapViewerDocNet_Cmd" After="MapGuideIIS7_I_CreateMapViewerNet_Cmd">MGWEB_CONFIG=&quot;IIS&quot; AND IIS_API_TYPE=&quot;DOTNET&quot; AND IISVERSIONMAJOR=&quot;#7&quot; AND &amp;WebExtensionsFeature&gt;2</Custom>
+            <Custom Action="MapGuideIIS7_I_AssignMapViewerAppPoolNet_Cmd" After="MapGuideIIS7_I_SetMapViewerDocNet_Cmd">MGWEB_CONFIG=&quot;IIS&quot; AND IIS_API_TYPE=&quot;DOTNET&quot; AND IISVERSIONMAJOR=&quot;#7&quot; AND &amp;WebExtensionsFeature&gt;2</Custom>
+
+            <!-- .net viewer sample -->
+            <Custom Action="MapGuideIIS7_I_CreateViewerSampleNet_Cmd" After="MapGuideIIS7_I_AssignMapViewerAppPoolNet_Cmd">MGWEB_CONFIG=&quot;IIS&quot; AND IIS_API_TYPE=&quot;DOTNET&quot; AND IISVERSIONMAJOR=&quot;#7&quot; AND &amp;WebExtensionsFeature&gt;2 AND &amp;WebExtDotNetViewerSampleFeature&gt;2</Custom>
+            <Custom Action="MapGuideIIS7_I_SetViewerDocViewerSampleNet_Cmd" After="MapGuideIIS7_I_CreateViewerSampleNet_Cmd">MGWEB_CONFIG=&quot;IIS&quot; AND IIS_API_TYPE=&quot;DOTNET&quot; AND IISVERSIONMAJOR=&quot;#7&quot; AND &amp;WebExtensionsFeature&gt;2 AND &amp;WebExtDotNetViewerSampleFeature&gt;2</Custom>
+            <Custom Action="MapGuideIIS7_I_AssignViewerAppPoolViewerSampleNet_Cmd" After="MapGuideIIS7_I_SetViewerDocViewerSampleNet_Cmd">MGWEB_CONFIG=&quot;IIS&quot; AND IIS_API_TYPE=&quot;DOTNET&quot; AND IISVERSIONMAJOR=&quot;#7&quot; AND &amp;WebExtensionsFeature&gt;2 AND &amp;WebExtDotNetViewerSampleFeature&gt;2</Custom>
+
+            <!-- .net devguide sample -->
+            <Custom Action="MapGuideIIS7_I_CreateViewerDevGuideSamplesNet_Cmd" After="MapGuideIIS7_I_AssignViewerAppPoolViewerSampleNet_Cmd">MGWEB_CONFIG=&quot;IIS&quot; AND IIS_API_TYPE=&quot;DOTNET&quot; AND IISVERSIONMAJOR=&quot;#7&quot; AND &amp;WebExtensionsFeature&gt;2 AND &amp;WebExtDotNetDevGuideSamplesFeature&gt;2</Custom>
+            <Custom Action="MapGuideIIS7_I_SetViewerDocDevGuideSamplesNet_Cmd" After="MapGuideIIS7_I_CreateViewerDevGuideSamplesNet_Cmd">MGWEB_CONFIG=&quot;IIS&quot; AND IIS_API_TYPE=&quot;DOTNET&quot; AND IISVERSIONMAJOR=&quot;#7&quot; AND &amp;WebExtensionsFeature&gt;2 AND &amp;WebExtDotNetDevGuideSamplesFeature&gt;2</Custom>
+            <Custom Action="MapGuideIIS7_I_AssignViewerAppPoolDevGuideSamplesNet_Cmd" After="MapGuideIIS7_I_SetViewerDocDevGuideSamplesNet_Cmd">MGWEB_CONFIG=&quot;IIS&quot; AND IIS_API_TYPE=&quot;DOTNET&quot; AND IISVERSIONMAJOR=&quot;#7&quot; AND &amp;WebExtensionsFeature&gt;2 AND &amp;WebExtDotNetDevGuideSamplesFeature&gt;2</Custom>
+            
+            <!-- IIS7 Base deferred CAs -->
             <Custom Action="MapGuideIIS7_I_CreateAppPool" After="InstallFiles">MGWEB_CONFIG=&quot;IIS&quot; AND IISVERSIONMAJOR=&quot;#7&quot; AND &amp;WebExtensionsFeature&gt;2</Custom>
-			<Custom Action="MapGuideIIS7_I_CreateFastCgi" After="MapGuideIIS7_I_CreateAppPool">MGWEB_CONFIG=&quot;IIS&quot; AND IISVERSIONMAJOR=&quot;#7&quot; AND &amp;WebExtensionsFeature&gt;2</Custom>
+            <Custom Action="MapGuideIIS7_I_CreateFastCgi" After="MapGuideIIS7_I_CreateAppPool">MGWEB_CONFIG=&quot;IIS&quot; AND IISVERSIONMAJOR=&quot;#7&quot; AND &amp;WebExtensionsFeature&gt;2</Custom>
             <Custom Action="MapGuideIIS7_I_SetAppPoolProp" After="MapGuideIIS7_I_CreateFastCgi">MGWEB_CONFIG=&quot;IIS&quot; AND IISVERSIONMAJOR=&quot;#7&quot; AND &amp;WebExtensionsFeature&gt;2</Custom>
             
             <?if "$(var.MgPlatform)" = "x64" ?>
@@ -706,7 +787,8 @@
             
             <Custom Action="MapGuideIIS7_I_UnlockSiteHandlers" After="MapGuideIIS7_I_UnlockSrvHandlers">MGWEB_CONFIG=&quot;IIS&quot; AND IISVERSIONMAJOR=&quot;#7&quot; AND &amp;WebExtensionsFeature&gt;2</Custom>
             <Custom Action="MapGuideIIS7_I_CreateMapGuideApp" After="MapGuideIIS7_I_UnlockSiteHandlers">MGWEB_CONFIG=&quot;IIS&quot; AND IISVERSIONMAJOR=&quot;#7&quot; AND &amp;WebExtensionsFeature&gt;2</Custom>
-            <Custom Action="MapGuideIIS7_I_CreatePhpScriptMapping" After="MapGuideIIS7_I_CreateMapGuideApp">MGWEB_CONFIG=&quot;IIS&quot; AND IISVERSIONMAJOR=&quot;#7&quot; AND &amp;WebExtensionsFeature&gt;2</Custom>
+            <Custom Action="MapGuideIIS7_I_SelectXmlCompat" After="MapGuideIIS7_I_CreateMapGuideApp">MGWEB_CONFIG=&quot;IIS&quot; AND IISVERSIONMAJOR=&quot;#7&quot; AND &amp;WebExtensionsFeature&gt;2</Custom>
+            <Custom Action="MapGuideIIS7_I_CreatePhpScriptMapping" After="MapGuideIIS7_I_SelectXmlCompat">MGWEB_CONFIG=&quot;IIS&quot; AND IISVERSIONMAJOR=&quot;#7&quot; AND &amp;WebExtensionsFeature&gt;2</Custom>
             <Custom Action="MapGuideIIS7_I_CreateMapAgentApp" After="MapGuideIIS7_I_CreatePhpScriptMapping">MGWEB_CONFIG=&quot;IIS&quot; AND IISVERSIONMAJOR=&quot;#7&quot; AND &amp;WebExtensionsFeature&gt;2</Custom>
             <Custom Action="MapGuideIIS7_I_SetMapAgentHandlerAccess" After="MapGuideIIS7_I_CreateMapAgentApp">MGWEB_CONFIG=&quot;IIS&quot; AND IISVERSIONMAJOR=&quot;#7&quot; AND &amp;WebExtensionsFeature&gt;2</Custom>
             <Custom Action="MapGuideIIS7_I_CreateMapAgentScriptHandling" After="MapGuideIIS7_I_SetMapAgentHandlerAccess">MGWEB_CONFIG=&quot;IIS&quot; AND IISVERSIONMAJOR=&quot;#7&quot; AND &amp;WebExtensionsFeature&gt;2</Custom>
