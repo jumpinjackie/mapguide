@@ -2160,7 +2160,12 @@ INT32 CCoordinateSystemTransform::TransformPoint2D (double point[3])
         }
         if (dtmStatus != 0)
         {
-            status = (dtmStatus < 0) ? TransformTotalFailure : TransformDatumShiftWarning;
+            //NOTE: Ternary expressions will trigger "undefined reference" to these 2 constants
+            //For GCC 4.1 and older
+            if (dtmStatus < 0)
+                status = TransformTotalFailure;
+            else
+                status = TransformDatumShiftWarning;
             ++m_nDatumCount;
         }
     }
@@ -2198,7 +2203,12 @@ INT32 CCoordinateSystemTransform::TransformPoint3D (double point [3])
         }
         if (dtmStatus != 0)
         {
-            status = (dtmStatus < 0) ? TransformTotalFailure : TransformDatumShiftWarning;
+            //NOTE: Ternary expressions will trigger "undefined reference" to these 2 constants
+            //For GCC 4.1 and older
+            if (dtmStatus < 0)
+                status = TransformTotalFailure;
+            else
+                status = TransformDatumShiftWarning;
             ++m_nDatumCount;
         }
     }
