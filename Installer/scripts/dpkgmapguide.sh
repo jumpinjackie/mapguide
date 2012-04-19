@@ -6,31 +6,33 @@
 #   changelog - generated changelog file
 #   substvars - subst params created by dpkg-shlibdeps
 #   mapguidecommon/ - packaging directory for common MapGuide components
-#     usr/local/mapguideopensource-2.2.0/ - copied tree for common components
+#     usr/local/mapguideopensource-2.4.0/ - copied tree for common components
 #     DEBIAN/
 #       control - control file generated from dpkg-gencontrol
 #       symbols - symbols file generated from dpkg-gensymbols
 #
 #   mapguideserver/ - packaging directory for MapGuide Server
-#     usr/local/mapguideopensource-2.2.0/ - copied tree for Server
+#     usr/local/mapguideopensource-2.4.0/ - copied tree for Server
 #     DEBIAN/
 #       control - control file generated from dpkg-gencontrol
 #       symbols - symbols file generated from dpkg-gensymbols
 #
 #   mapguidewebextensions/ - packaging directory for Web Extensions
-#     usr/local/mapguideopensource-2.2.0/ - copied tree for Web Extensions
+#     usr/local/mapguideopensource-2.4.0/ - copied tree for Web Extensions
 #     DEBIAN/
 #       control - control file generated from dpkg-gencontrol
 #       symbols - symbols file generated from dpkg-gensymbols
 #
 #   mapguidehttpd/ - packaging directory for Apache Bundle
-#     usr/local/mapguideopensource-2.2.0/ - copied tree for Apache bundle
+#     usr/local/mapguideopensource-2.4.0/ - copied tree for Apache bundle
 #     DEBIAN/
 #       control - control file generated from dpkg-gencontrol
 #       symbols - symbols file generated from dpkg-gensymbols
 # 
+#
+# Make sure setvars.sh is called first before running this script
 BUILDROOT=`pwd`
-MGBUILD=2.2.0
+MGBUILD=${BUILDNUM}
 MGINST=usr/local/mapguideopensource-${MGBUILD}
 ROOT=${BUILDROOT}/debian/mapguidecommon
 TREE=${BUILDROOT}/debian
@@ -124,7 +126,7 @@ CURRTIME=`date -R`
 cat > debian/changelog <<END-OF-CHANGELOG
 mapguideopensource-src (${MGBUILD}-${BUILDNUM}) experimental; urgency=low
 
-  * 2.2.0 Release Candidate 1
+  * ${BUILDNUM}
 
  -- MapGuide Internals Mail List <mapguide-internals@lists.osgeo.org>  ${CURRTIME}
 END-OF-CHANGELOG

@@ -1,22 +1,28 @@
 #!/bin/bash
-APIVERSION=2.3
-BUILDNUM=${APIVERSION}.0
-BUILDROOT=`pwd`
-INSTALLROOT=/usr/local/mapguideopensource-${BUILDNUM}
-LOCKFILEDIR=/var/lock/mgserver
-MGSOURCE=${BUILDROOT}/mgdev
-VERFILE=${MGSOURCE}/Common/ProductVersion.h
-SVNROOT="svn://svn.bld.mgproto.net"
-#SVNROOT="http://svn.osgeo.org"
 
-rm -rf ${MGSOURCE}
-rm -rf ${INSTALLROOT}
+# Make sure setvars.sh is called first before running this script
+
+if [ ! -d ${JAVA_HOME} ];
+then
+echo "ERROR: Environment variable JAVA_HOME not set. Please set this enviroment variable first"
+exit
+fi
+
+sudo rm -rf ${MGSOURCE}
+sudo rm -rf ${INSTALLROOT}
 
 REVISION=`svn info ${SVNROOT}/mapguide/trunk/MgDev | perl revnum.pl`
 echo ${REVISION} > revnum.txt
+echo "Exporting svn revision ${REVISION}"
+if [ ${LOCALSVN} = 1 ] 
+then
+    echo "Making local SVN copy to ${MGSOURCE}"
+    cp -R ${SVNROOT}/mapguide/trunk/MgDev ${MGSOURCE}
+else
+    echo "Performing fresh SVN export to ${MGSOURCE}"
+    svn export -q -r ${REVISION} ${SVNROOT}/mapguide/trunk/MgDev ${MGSOURCE}
+fi
 echo "Building Revision ${BUILDNUM}.${REVISION}" 
-svn export -q -r ${REVISION} ${SVNROOT}/mapguide/trunk/MgDev ${MGSOURCE}
-
 cd ${MGSOURCE}
 
 echo "#ifndef PRODUCTVERSION_H_" > ${VERFILE}
@@ -25,48 +31,71 @@ echo 'const STRING ProductVersion = L"'${BUILDNUM}'.'${REVISION}'";' >> ${VERFIL
 echo 'const STRING ApiVersion     = L"'${APIVERSION}'";' >> ${VERFILE}
 echo '#endif' >> ${VERFILE}
 
+echo "Building LinuxApt"
 pushd ${MGSOURCE}/Oem/LinuxApt
-./build_apt.sh --prefix ${INSTALLROOT} --with-tomcat
+sudo ./build_apt.sh --prefix ${INSTALLROOT} --with-tomcat
 popd
 
-./build_oem.sh --prefix=${INSTALLROOT}
+echo "Building Oem"
+# Need an ubuntu-flavoured build_oem.sh if we're doing ubuntu
+if [ ${UBUNTU} = 1 ]
+then
+    cp ${BUILDROOT}/build_oem_ubuntu.sh .
+    chmod +x build_oem_ubuntu.sh
+    sudo ./build_oem_ubuntu.sh --prefix=${INSTALLROOT}
+else
+    sudo ./build_oem.sh --prefix=${INSTALLROOT}
+fi
 
+echo "Building Fusion"
 pushd ${MGSOURCE}/Oem/fusion
 ant prepare
 ant compress
 popd
 
+echo "Building MapGuide"
 aclocal
 libtoolize --force
 automake --add-missing --copy
 autoconf
 ./configure --enable-optimized --prefix=${INSTALLROOT}
-make
-make install
+make $MY_MAKE_OPTS
+sudo make install
 
+echo "Preparing binaries for packaging"
 # Prepare binaries for packaging by removing unnecessary
 # .la and .a files and stripping unneeded symbols from the binaries
 pushd ${INSTALLROOT}
 LIBDIRS="lib server/lib webserverextensions/lib" 
+echo "Stripping symbols from binaries"
 for libdir in ${LIBDIRS}
 do
-   # Remove any .la and .a files in lib directories
-   rm -f ${libdir}/*.la
-   rm -f ${libdir}/*.a
+    # Remove any .la and .a files in lib directories
+    sudo rm -f ${libdir}/*.la
+    sudo rm -f ${libdir}/*.a
 
-   # Remove unneeded symbols from files in the lib directories
-   for file in `find ${libdir}/lib*.so* -type f -print`
-   do
-      strip --strip-unneeded ${file}
-      chmod a-x ${file}
-   done
+    # Remove unneeded symbols from files in the lib directories
+    for file in `find ${libdir}/lib*.so* -type f -print`
+    do
+        sudo strip --strip-unneeded ${file}
+        sudo chmod a-x ${file}
+    done
 done
+if [ ${LOCALSVN} = 1 ]
+then
+    echo "Stripping out .svn directories"
+    # Empty out all .svn directories
+    find -name "\.svn" -exec sudo rm -rf {} \;
+fi
 popd
 
+echo "Creating MapGuide Open Source binary tarball"
 # Tarball the whole works and put it in a bin directory
 pushd ${BUILDROOT}
 if [ ! -d bin ]; then
-   mkdir -p bin
+    mkdir -p bin
 fi
-tar -zcf bin/mapguideopensource-${BUILDNUM}.${REVISION}.tar.gz ${INSTALLROOT} ${LOCKFILEDIR}
-popd
+
+sudo tar -zcf bin/mapguideopensource-${BUILDNUM}.${REVISION}.tar.gz ${INSTALLROOT} ${LOCKFILEDIR}
+
+echo "Build complete!"
