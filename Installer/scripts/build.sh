@@ -8,19 +8,27 @@ echo "ERROR: Environment variable JAVA_HOME not set. Please set this enviroment 
 exit
 fi
 
-sudo rm -rf ${MGSOURCE}
+if [ ${PRESERVE_BUILD_ROOT} != 1 ]
+then
+    sudo rm -rf ${MGSOURCE}
+else
+    echo "Preserving existing build dir"
+fi
 sudo rm -rf ${INSTALLROOT}
 
 REVISION=`svn info ${SVNROOT}${SVNRELPATH} | perl revnum.pl`
 echo ${REVISION} > revnum.txt
-echo "Exporting svn revision ${REVISION}"
-if [ ${LOCALSVN} = 1 ] 
+if [ ${PRESERVE_BUILD_ROOT} != 1 ];
 then
-    echo "Making local SVN copy to ${MGSOURCE}"
-    cp -R ${SVNROOT}${SVNRELPATH} ${MGSOURCE}
-else
-    echo "Performing fresh SVN export to ${MGSOURCE}"
-    svn export -q -r ${REVISION} ${SVNROOT}${SVNRELPATH} ${MGSOURCE}
+    echo "Exporting svn revision ${REVISION}"
+    if [ ${LOCALSVN} = 1 ] 
+    then
+        echo "Making local SVN copy to ${MGSOURCE}"
+        cp -R ${SVNROOT}${SVNRELPATH} ${MGSOURCE}
+    else
+        echo "Performing fresh SVN export to ${MGSOURCE}"
+        svn export -q -r ${REVISION} ${SVNROOT}${SVNRELPATH} ${MGSOURCE}
+    fi
 fi
 echo "Building Revision ${BUILDNUM}.${REVISION}" 
 cd ${MGSOURCE}
