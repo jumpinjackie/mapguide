@@ -11,16 +11,16 @@ fi
 sudo rm -rf ${MGSOURCE}
 sudo rm -rf ${INSTALLROOT}
 
-REVISION=`svn info ${SVNROOT}/mapguide/trunk/MgDev | perl revnum.pl`
+REVISION=`svn info ${SVNROOT}${SVNRELPATH} | perl revnum.pl`
 echo ${REVISION} > revnum.txt
 echo "Exporting svn revision ${REVISION}"
 if [ ${LOCALSVN} = 1 ] 
 then
     echo "Making local SVN copy to ${MGSOURCE}"
-    cp -R ${SVNROOT}/mapguide/trunk/MgDev ${MGSOURCE}
+    cp -R ${SVNROOT}${SVNRELPATH} ${MGSOURCE}
 else
     echo "Performing fresh SVN export to ${MGSOURCE}"
-    svn export -q -r ${REVISION} ${SVNROOT}/mapguide/trunk/MgDev ${MGSOURCE}
+    svn export -q -r ${REVISION} ${SVNROOT}${SVNRELPATH} ${MGSOURCE}
 fi
 echo "Building Revision ${BUILDNUM}.${REVISION}" 
 cd ${MGSOURCE}
