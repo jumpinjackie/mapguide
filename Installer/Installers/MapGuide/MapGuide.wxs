@@ -49,7 +49,15 @@
         <Property Id="APACHE_VERSION" Secure="yes" Value="2.2.21" />
         <Property Id="PHP_VERSION" Secure="yes" Value="5.3.8" />
         <Property Id="MG_VERSION_MAJOR_MINOR" Secure="yes" Value="2.4" />
-        <Property Id="APP_POOL_NAME" Secure="yes" Value="MapGuide24AppPool" />
+        <Property Id="APP_POOL_NAME" Secure="yes" Value="MapGuide24AppPool">
+            <RegistrySearch
+            Id="MgAppPoolNameRs"
+            Type="raw"
+            Root="HKLM"
+            Win64="$(var.Win64)"
+            Key="$(var.MgRegKey)"
+            Name="APP_POOL_NAME"  />
+        </Property>
         <!-- Server Port Settings  -->
         <Property Id="MG_ADMIN_PORT" Secure="yes" Value="2810" />
         <Property Id="MG_CLIENT_PORT" Secure="yes" Value="2811" />
@@ -67,7 +75,15 @@
         properties to be exposed in the dialog UI.
         -->
         <Property Id="SITE_ID" Secure="yes" Value="1" />
-        <Property Id="VIRTUALDIR" Secure="yes" Value="mapguide" />
+        <Property Id="VIRTUALDIR" Secure="yes" Value="mapguide">
+            <RegistrySearch
+            Id="MgVirtualDirRs"
+            Type="raw"
+            Root="HKLM"
+            Win64="$(var.Win64)"
+            Key="$(var.MgRegKey)"
+            Name="VIRTUALDIR"  />
+        </Property>
         <Property Id="MG_WEBSITE" Secure="yes" Value="Default Web Site">
             <RegistrySearch
             Id="MgWebsiteRs"
@@ -731,7 +747,14 @@
             <Custom Action="MapGuideIIS7_I_CreateFastCgi_Cmd" After="MapGuideIIS7_I_AppCmd_Cmd">MGWEB_CONFIG=&quot;IIS&quot; AND IISVERSIONMAJOR=&quot;#7&quot; AND &amp;WebExtensionsFeature&gt;2</Custom>
             <Custom Action="MapGuideIIS7_I_CreateAppPool_Cmd" After="MapGuideIIS7_I_CreateFastCgi_Cmd">MGWEB_CONFIG=&quot;IIS&quot; AND IISVERSIONMAJOR=&quot;#7&quot; AND &amp;WebExtensionsFeature&gt;2</Custom>
             <Custom Action="MapGuideIIS7_I_SetAppPoolProp_Cmd" After="MapGuideIIS7_I_CreateAppPool_Cmd">MGWEB_CONFIG=&quot;IIS&quot; AND IISVERSIONMAJOR=&quot;#7&quot; AND &amp;WebExtensionsFeature&gt;2</Custom>
+            
+            <?if "$(var.MgPlatform)" = "x64" ?>
             <Custom Action="MapGuideIIS7_I_UnlockSrvHandlers_Cmd" After="MapGuideIIS7_I_SetAppPoolProp_Cmd">MGWEB_CONFIG=&quot;IIS&quot; AND IISVERSIONMAJOR=&quot;#7&quot; AND &amp;WebExtensionsFeature&gt;2</Custom>
+            <?else ?>
+            <Custom Action="MapGuideIIS7_I_Set32BitAppPool_Cmd" After="MapGuideIIS7_I_SetAppPoolProp_Cmd">MGWEB_CONFIG=&quot;IIS&quot; AND IISVERSIONMAJOR=&quot;#7&quot; AND &amp;WebExtensionsFeature&gt;2</Custom>
+            <Custom Action="MapGuideIIS7_I_UnlockSrvHandlers_Cmd" After="MapGuideIIS7_I_Set32BitAppPool_Cmd">MGWEB_CONFIG=&quot;IIS&quot; AND IISVERSIONMAJOR=&quot;#7&quot; AND &amp;WebExtensionsFeature&gt;2</Custom>
+            <?endif ?>
+            
             <Custom Action="MapGuideIIS7_I_UnlockSiteHandlers_Cmd" After="MapGuideIIS7_I_UnlockSrvHandlers_Cmd">MGWEB_CONFIG=&quot;IIS&quot; AND IISVERSIONMAJOR=&quot;#7&quot; AND &amp;WebExtensionsFeature&gt;2</Custom>
             <Custom Action="MapGuideIIS7_I_CreateMapGuideApp_Cmd" After="MapGuideIIS7_I_UnlockSiteHandlers_Cmd">MGWEB_CONFIG=&quot;IIS&quot; AND IISVERSIONMAJOR=&quot;#7&quot; AND &amp;WebExtensionsFeature&gt;2</Custom>
             <Custom Action="MapGuideIIS7_I_SelectXmlCompat_Cmd" After="MapGuideIIS7_I_CreateMapGuideApp_Cmd">MGWEB_CONFIG=&quot;IIS&quot; AND IISVERSIONMAJOR=&quot;#7&quot; AND &amp;WebExtensionsFeature&gt;2</Custom>
@@ -826,15 +849,21 @@
           <!-- IIS7 UNINSTALL deferred action properties -->
             <Custom Action="MapGuideIIS7_U_AppCmd_Cmd" After="InstallInitialize">MGWEB_CONFIG=&quot;IIS&quot; AND IISVERSIONMAJOR=&quot;#7&quot; AND &amp;WebExtensionsFeature=2</Custom>
             <Custom Action="MapGuideIIS7_U_ClearMapAgentRestriction_Cmd" After="MapGuideIIS7_U_AppCmd_Cmd">MGWEB_CONFIG=&quot;IIS&quot; AND IISVERSIONMAJOR=&quot;#7&quot; AND &amp;WebExtensionsFeature=2</Custom>
-            <Custom Action="MapGuideIIS7_U_RemoveViewer_Cmd" After="MapGuideIIS7_U_ClearMapAgentRestriction_Cmd">MGWEB_CONFIG=&quot;IIS&quot; AND IISVERSIONMAJOR=&quot;#7&quot; AND &amp;WebExtensionsFeature=2</Custom>
-            <Custom Action="MapGuideIIS7_U_RemoveMapAgent_Cmd" After="MapGuideIIS7_U_RemoveViewer_Cmd">MGWEB_CONFIG=&quot;IIS&quot; AND IISVERSIONMAJOR=&quot;#7&quot; AND &amp;WebExtensionsFeature=2</Custom>
+            <Custom Action="MapGuideIIS7_U_RemoveDotNetSamples_Cmd" After="MapGuideIIS7_U_ClearMapAgentRestriction_Cmd">MGWEB_CONFIG=&quot;IIS&quot; AND IISVERSIONMAJOR=&quot;#7&quot; AND &amp;WebExtensionsFeature=2</Custom>
+            <Custom Action="MapGuideIIS7_U_RemoveDotNetViewerSample_Cmd" After="MapGuideIIS7_U_RemoveDotNetSamples_Cmd">MGWEB_CONFIG=&quot;IIS&quot; AND IISVERSIONMAJOR=&quot;#7&quot; AND &amp;WebExtensionsFeature=2</Custom>
+            <Custom Action="MapGuideIIS7_U_RemoveViewer_Cmd" After="MapGuideIIS7_U_RemoveDotNetViewerSample_Cmd">MGWEB_CONFIG=&quot;IIS&quot; AND IISVERSIONMAJOR=&quot;#7&quot; AND &amp;WebExtensionsFeature=2</Custom>
+            <Custom Action="MapGuideIIS7_U_RemoveViewerNet_Cmd" After="MapGuideIIS7_U_RemoveViewer_Cmd">MGWEB_CONFIG=&quot;IIS&quot; AND IISVERSIONMAJOR=&quot;#7&quot; AND &amp;WebExtensionsFeature=2</Custom>
+            <Custom Action="MapGuideIIS7_U_RemoveMapAgent_Cmd" After="MapGuideIIS7_U_RemoveViewerNet_Cmd">MGWEB_CONFIG=&quot;IIS&quot; AND IISVERSIONMAJOR=&quot;#7&quot; AND &amp;WebExtensionsFeature=2</Custom>
             <Custom Action="MapGuideIIS7_U_RemoveMapGuide_Cmd" After="MapGuideIIS7_U_RemoveMapAgent_Cmd">MGWEB_CONFIG=&quot;IIS&quot; AND IISVERSIONMAJOR=&quot;#7&quot; AND &amp;WebExtensionsFeature=2</Custom>
             <Custom Action="MapGuideIIS7_U_DeleteAppPool_Cmd" After="MapGuideIIS7_U_RemoveMapGuide_Cmd">MGWEB_CONFIG=&quot;IIS&quot; AND IISVERSIONMAJOR=&quot;#7&quot; AND &amp;WebExtensionsFeature=2</Custom>
 
           <!-- IIS7 UNINSTALL deferred CAs -->
             <Custom Action="MapGuideIIS7_U_ClearMapAgentRestriction" After="MapGuideIIS7_U_DeleteAppPool_Cmd">MGWEB_CONFIG=&quot;IIS&quot; AND IISVERSIONMAJOR=&quot;#7&quot; AND &amp;WebExtensionsFeature=2</Custom>
-            <Custom Action="MapGuideIIS7_U_RemoveViewer" After="MapGuideIIS7_U_ClearMapAgentRestriction">MGWEB_CONFIG=&quot;IIS&quot; AND IISVERSIONMAJOR=&quot;#7&quot; AND &amp;WebExtensionsFeature=2</Custom>
-            <Custom Action="MapGuideIIS7_U_RemoveMapAgent" After="MapGuideIIS7_U_RemoveViewer">MGWEB_CONFIG=&quot;IIS&quot; AND IISVERSIONMAJOR=&quot;#7&quot; AND &amp;WebExtensionsFeature=2</Custom>
+            <Custom Action="MapGuideIIS7_U_RemoveDotNetSamples" After="MapGuideIIS7_U_ClearMapAgentRestriction">MGWEB_CONFIG=&quot;IIS&quot; AND IISVERSIONMAJOR=&quot;#7&quot; AND &amp;WebExtensionsFeature=2</Custom>
+            <Custom Action="MapGuideIIS7_U_RemoveDotNetViewerSample" After="MapGuideIIS7_U_RemoveDotNetSamples">MGWEB_CONFIG=&quot;IIS&quot; AND IISVERSIONMAJOR=&quot;#7&quot; AND &amp;WebExtensionsFeature=2</Custom>
+            <Custom Action="MapGuideIIS7_U_RemoveViewer" After="MapGuideIIS7_U_RemoveDotNetViewerSample">MGWEB_CONFIG=&quot;IIS&quot; AND IISVERSIONMAJOR=&quot;#7&quot; AND &amp;WebExtensionsFeature=2</Custom>
+            <Custom Action="MapGuideIIS7_U_RemoveViewerNet" After="MapGuideIIS7_U_RemoveViewer">MGWEB_CONFIG=&quot;IIS&quot; AND IISVERSIONMAJOR=&quot;#7&quot; AND &amp;WebExtensionsFeature=2</Custom>
+            <Custom Action="MapGuideIIS7_U_RemoveMapAgent" After="MapGuideIIS7_U_RemoveViewerNet">MGWEB_CONFIG=&quot;IIS&quot; AND IISVERSIONMAJOR=&quot;#7&quot; AND &amp;WebExtensionsFeature=2</Custom>
             <Custom Action="MapGuideIIS7_U_RemoveMapGuide" After="MapGuideIIS7_U_RemoveMapAgent">MGWEB_CONFIG=&quot;IIS&quot; AND IISVERSIONMAJOR=&quot;#7&quot; AND &amp;WebExtensionsFeature=2</Custom>
             <Custom Action="MapGuideIIS7_U_DeleteAppPool" After="MapGuideIIS7_U_RemoveMapGuide">MGWEB_CONFIG=&quot;IIS&quot; AND IISVERSIONMAJOR=&quot;#7&quot; AND &amp;WebExtensionsFeature=2</Custom>
 

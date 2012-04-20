@@ -44,6 +44,8 @@
                   <RegistryKey Id="MapGuideKey" Action="create" Root="HKLM" Key="$(var.MgRegKey)">
                     <RegistryValue Id="IisApiType" Action="write" Type="string" Name="IIS_API_TYPE" Value="[IIS_API_TYPE]" />
                     <RegistryValue Id="MgWebConfig" Action="write" Type="string" Name="MGWEB_CONFIG" Value="[MGWEB_CONFIG]" />
+                    <RegistryValue Id="MgApplicationPoolName" Action="write" Type="string" Name="APP_POOL_NAME" Value="[APP_POOL_NAME]" />
+                    <RegistryValue Id="MgVirtualDir" Action="write" Type="string" Name="VIRTUALDIR" Value="[VIRTUALDIR]" />
                   </RegistryKey>
                   <CreateFolder />
                 </Component>
