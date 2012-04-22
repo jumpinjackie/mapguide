@@ -1,5 +1,11 @@
 #!/bin/bash
 
+# Must have root
+if [[ $EUID -ne 0 ]]; then
+	echo "You must run this script with superuser privileges"
+	exit 1
+fi
+
 # Remove Ubuntu packages for MapGuide
 for file in server webextensions httpd common
 do
