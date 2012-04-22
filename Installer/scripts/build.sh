@@ -17,9 +17,13 @@ fi
 sudo rm -rf ${INSTALLROOT}
 
 REVISION=`svn info ${SVNROOT}${SVNRELPATH} | perl revnum.pl`
-echo ${REVISION} > revnum.txt
-if [ ${PRESERVE_BUILD_ROOT} != 1 ];
+sudo echo ${REVISION} > revnum.txt
+if [ ${PRESERVE_BUILD_ROOT} != 1 -o ! -d ${MGSOURCE} ];
 then
+    if [ ! -d ${MGSOURCE} ];
+    then
+    	echo "Build root ${MGSOURCE} does not exist. Doing svn export"
+    fi
     echo "Exporting svn revision ${REVISION}"
     if [ ${LOCALSVN} = 1 ] 
     then
