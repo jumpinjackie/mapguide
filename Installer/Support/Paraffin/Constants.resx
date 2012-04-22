@@ -1,0 +1,256 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="AliasMultipleSwitches" xml:space="preserve">
+    <value>Only one -alias switch at a time is supported.</value>
+  </data>
+  <data name="ArrayMustBeValid" xml:space="preserve">
+    <value>The array must not be null or of zero length.</value>
+  </data>
+  <data name="CommentProducer" xml:space="preserve">
+    <value>Autogenerated by Paraffin - Wintellect - John Robbins - john@wintellect.com</value>
+  </data>
+  <data name="CommentWarning" xml:space="preserve">
+    <value>Manual changes to this file may cause incorrect behavior.</value>
+  </data>
+  <data name="DirectoryCannotBeEmpty" xml:space="preserve">
+    <value>The -directory switch must always be specified.</value>
+  </data>
+  <data name="DirectoryDoesNotExist" xml:space="preserve">
+    <value>The -directory specified path does not exist.</value>
+  </data>
+  <data name="DirectoryMultipleSwitches" xml:space="preserve">
+    <value>Only one -directory switch at a time is supported.</value>
+  </data>
+  <data name="DirectoryRefMultipleSwitches" xml:space="preserve">
+    <value>Only one -dirref switch at a time is supported.</value>
+  </data>
+  <data name="ErrorSwitch" xml:space="preserve">
+    <value>Error on the '{0}' switch.</value>
+  </data>
+  <data name="ExtensionCannotBeEmpty" xml:space="preserve">
+    <value>Extension values cannot be empty.</value>
+  </data>
+  <data name="IncrementMultipleSwitches" xml:space="preserve">
+    <value>Only one increment switch at a time is supported.</value>
+  </data>
+  <data name="IncrementNoParse" xml:space="preserve">
+    <value>The increment value does not appear to be an integer.</value>
+  </data>
+  <data name="IncrementNotZero" xml:space="preserve">
+    <value>The increment value must be greater than zero.</value>
+  </data>
+  <data name="InteropCallFailed" xml:space="preserve">
+    <value>A call into Windows failed unexpectedly.</value>
+  </data>
+  <data name="InvalidFileNameCountFmt" xml:space="preserve">
+    <value>There appears to be multiple nodes in input .WXS file with the same file name in the same directory: {0}.</value>
+  </data>
+  <data name="InvalidParameter" xml:space="preserve">
+    <value>An invalid parameter was passed to the method.</value>
+  </data>
+  <data name="MutuallyExclusiveOptions" xml:space="preserve">
+    <value>Update and creation command line options are mutually excusive.</value>
+  </data>
+  <data name="OutputAlreadySpecified" xml:space="preserve">
+    <value>Only one output or processing file can be specified.</value>
+  </data>
+  <data name="OutputCannotBeEmpty" xml:space="preserve">
+    <value>You must specify the .WXS file to write to or process.</value>
+  </data>
+  <data name="UniqueCannotBeEmpty" xml:space="preserve">
+    <value>The -unique value cannot be empty.</value>
+  </data>
+  <data name="UniqueMultipleSwitches" xml:space="preserve">
+    <value>Only one -unique switch at a time is supported.</value>
+  </data>
+  <data name="UniqueTooLong" xml:space="preserve">
+    <value>The -unique string value cannot be longer than 65 characters.</value>
+  </data>
+  <data name="UnknownCommandLineOption" xml:space="preserve">
+    <value>Unknown command line option.</value>
+  </data>
+  <data name="UnknownFileType" xml:space="preserve">
+    <value>The file to process does no appear to have been created with Paraffin. The comment node is missing.</value>
+  </data>
+  <data name="UpdateFileMustExist" xml:space="preserve">
+    <value>The file to update does not exist.</value>
+  </data>
+  <data name="UsageString" xml:space="preserve">
+    <value>Paraffin {0}
+(c) 2007-2008, John Robbins - john@wintellect.com
+A better Tallow for generating Windows Installer XML (WiX) 3.0 fragments. 
+
+Usage:
+ Paraffin (-dir &lt;dir&gt; -custom &lt;value&gt; &lt;file&gt;
+            [-alias &lt;alias&gt; -ext &lt;ext&gt;* | -dirref &lt;DirectoryRef&gt; |
+             -direXclude &lt;exdir&gt;* | -inc # |  
+             -guids |-multiple | -norecurse | -Win64] ) |
+          (-update &lt;file&gt; [-ext &lt;ext&gt;*])
+           
+Required parameters to create a new fragment:
+    -dir &lt;dir&gt;             - The directory to recurse and build the fragment 
+                             from. (short: -d)
+    -custom &lt;value&gt;        - The unique value to apply to all generated 
+                             components, and files. Note all invalid id
+                             characters converted to underscores. (short: -c)
+    &lt;file&gt;                 - The .WXS output file.
+
+Optional parameters when creating a new fragment:
+    -alias &lt;alias&gt;         - The alias to replace the base directory in the 
+                             File element's src attribute. The default is to 
+                             put the full hard coded path. (short: -a)
+    -ext &lt;ext&gt;             - File extensions to exclude. Specify as many -ext
+                             options as necessary. (short: -e)
+    -direXclude &lt;exdir&gt;    - Directories to exclude. There is no wildcard 
+                             matching, only string contains matching. Specify 
+                             as many -direXclude options as necessary.
+                             (short: -x)
+    -dirref &lt;DirectoryRef&gt; - Override the default &lt;DirectoryRef&gt; Id 
+                             attribute.  Default: INSTALLDIR (short: -dr)
+    -inc #                 - The number to add to each directory and component 
+                             elements to allow space for additional items 
+                             later. (short: -i)
+    -guids                 - Generate GUID values for all components. 
+                             (short: -g)
+    -multiple              - Multiple files per component. Defaults to one 
+                             file per component. (short: -m)
+    -norecurse             - Do not recurse directories. Defaults to recursing 
+                             all directories under &lt;dir&gt;. (short: -nr)
+    -Win64                 - If specified, adds Win64="yes" to all components.
+
+Required parameters to update a previously created file:
+    -update                - Indicates you want to update an existing .WXS file
+                             that was created by Paraffin.
+    &lt;file&gt;                 - The .WXS file to process. The updated output is 
+                             written to &lt;file&gt;.PARAFFIN.
+
+Optional parameters when updating a previously created file:
+   -ext &lt;ext &gt;             - File extensions to exclude. Specify as many -ext
+                             options as necessary. Additional ignore extensions
+                             are added to those already specified when the file
+                             was initially created. (short: -e)
+   -direXclude &lt;exdir&gt;     - Directories to exclude. There is no wildcard 
+                             matching, only string contains matching. Specify 
+                             as many -direXclude options as necessary. 
+                             Additional exclude directories are added to those 
+                             already specified when the file was initially 
+                             created. (short: -x)</value>
+  </data>
+</root>

@@ -46,6 +46,8 @@
     <String Id="WebStdIconsFeature_Description">Icons for the AJAX viewer</String>
     <String Id="WebTempFeature">Temp Directory</String>
     <String Id="WebTempFeature_Description">You may choose a location where MapGuide will store temporary files.</String>
+    <String Id="SvnMetadataFeature">SVN Metadata</String>
+    <String Id="SvnMetadataFeature_Description">Includes SVN metadata for web application files allowing the user to pull down fixes and updates using a Subversion client</String>
 
     <String Id="Shortcut_DevGuide">MapGuide Developer's Guide</String>
     <String Id="Shortcut_WebAPI">Web API Documentation</String>

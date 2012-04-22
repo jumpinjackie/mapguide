@@ -228,7 +228,25 @@
                 <ComponentGroupRef Id="group_MAPVIEWERSTDICONFILES" />
             </Feature>
             <FeatureRef Id="IISSetupFeature" />
+            <Feature Id="SvnMetadataFeature" Title="!(loc.SvnMetadataFeature)" Level="1" Description="!(loc.SvnMetadataFeature_Description)" AllowAdvertise="no" TypicalDefault="install" InstallDefault="local">
+                <ComponentGroupRef Id="incDotNetDevGuideFiles_SVNMETADATA" />
+                <ComponentGroupRef Id="incDotNetViewerSampleFiles_SVNMETADATA" />
+                <ComponentGroupRef Id="incFusionFiles_SVNMETADATA" />
+                <ComponentGroupRef Id="incHelpFiles_SVNMETADATA" />
+                <ComponentGroupRef Id="incJavaDevGuideFiles_SVNMETADATA" />
+                <ComponentGroupRef Id="incJavaViewerSampleFiles_SVNMETADATA" />
+                <ComponentGroupRef Id="incMapAgentFiles_SVNMETADATA" />
+                <ComponentGroupRef Id="incMapViewerAspxFiles_SVNMETADATA" />
+                <ComponentGroupRef Id="incMapViewerFiles_SVNMETADATA" />
+                <ComponentGroupRef Id="incMapViewerJspFiles_SVNMETADATA" />
+                <ComponentGroupRef Id="incMapViewerLocalizedFiles_SVNMETADATA" />
+                <ComponentGroupRef Id="incMapViewerMapAdminFiles_SVNMETADATA" />
+                <ComponentGroupRef Id="incMapViewerPhpFiles_SVNMETADATA" />
+                <ComponentGroupRef Id="incMapViewerSchemareportFiles_SVNMETADATA" />
+                <ComponentGroupRef Id="incMapViewerStdiconFiles_SVNMETADATA" />
+                <ComponentGroupRef Id="incPhpDevGuideFiles_SVNMETADATA" />
+                <ComponentGroupRef Id="incPhpViewerSampleFiles_SVNMETADATA" />
+            </Feature>
         </Feature>
-
     </Fragment>
 </Wix>
