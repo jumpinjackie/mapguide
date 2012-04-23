@@ -31,6 +31,7 @@
 # 
 #
 # Make sure setvars.sh is called first before running this script
+source ./setvars.sh
 BUILDROOT=`pwd`
 MGBUILD=${BUILDNUM}
 MGINST=usr/local/mapguideopensource-${MGBUILD}

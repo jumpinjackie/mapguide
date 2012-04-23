@@ -1,6 +1,7 @@
 #!/bin/bash
 
 # Make sure setvars.sh is called first before running this script
+source ./setvars.sh
 
 if [ ! -d ${JAVA_HOME} ];
 then
@@ -10,14 +11,14 @@ fi
 
 if [ ${PRESERVE_BUILD_ROOT} != 1 ]
 then
-    sudo rm -rf ${MGSOURCE}
+    rm -rf ${MGSOURCE}
 else
     echo "Preserving existing build dir"
 fi
-sudo rm -rf ${INSTALLROOT}
+rm -rf ${INSTALLROOT}
 
 REVISION=`svn info ${SVNROOT}${SVNRELPATH} | perl revnum.pl`
-sudo echo ${REVISION} > revnum.txt
+echo ${REVISION} > revnum.txt
 if [ ${PRESERVE_BUILD_ROOT} != 1 -o ! -d ${MGSOURCE} ];
 then
     if [ ! -d ${MGSOURCE} ];
@@ -29,6 +30,8 @@ then
     then
         echo "Making local SVN copy to ${MGSOURCE}"
         cp -R ${SVNROOT}${SVNRELPATH} ${MGSOURCE}
+        echo "Cleaning out .svn directories"
+        find . -name .svn -exec rm -rf {} \;
     else
         echo "Performing fresh SVN export to ${MGSOURCE}"
         svn export -q -r ${REVISION} ${SVNROOT}${SVNRELPATH} ${MGSOURCE}
@@ -45,7 +48,7 @@ echo '#endif' >> ${VERFILE}
 
 echo "Building LinuxApt"
 pushd ${MGSOURCE}/Oem/LinuxApt
-sudo ./build_apt.sh --prefix ${INSTALLROOT} --with-tomcat
+./build_apt.sh --prefix ${INSTALLROOT} --with-tomcat
 popd
 
 echo "Building Oem"
@@ -54,9 +57,9 @@ if [ ${UBUNTU} = 1 ]
 then
     cp ${BUILDROOT}/build_oem_ubuntu.sh .
     chmod +x build_oem_ubuntu.sh
-    sudo ./build_oem_ubuntu.sh --prefix=${INSTALLROOT}
+    ./build_oem_ubuntu.sh --prefix=${INSTALLROOT}
 else
-    sudo ./build_oem.sh --prefix=${INSTALLROOT}
+    ./build_oem.sh --prefix=${INSTALLROOT}
 fi
 
 echo "Building Fusion"
@@ -72,7 +75,7 @@ automake --add-missing --copy
 autoconf
 ./configure --enable-optimized --prefix=${INSTALLROOT}
 make $MY_MAKE_OPTS
-sudo make install
+make install
 
 echo "Preparing binaries for packaging"
 # Prepare binaries for packaging by removing unnecessary
@@ -83,22 +86,16 @@ echo "Stripping symbols from binaries"
 for libdir in ${LIBDIRS}
 do
     # Remove any .la and .a files in lib directories
-    sudo rm -f ${libdir}/*.la
-    sudo rm -f ${libdir}/*.a
+    rm -f ${libdir}/*.la
+    rm -f ${libdir}/*.a
 
     # Remove unneeded symbols from files in the lib directories
     for file in `find ${libdir}/lib*.so* -type f -print`
     do
-        sudo strip --strip-unneeded ${file}
-        sudo chmod a-x ${file}
+        strip --strip-unneeded ${file}
+        chmod a-x ${file}
     done
 done
-if [ ${LOCALSVN} = 1 ]
-then
-    echo "Stripping out .svn directories"
-    # Empty out all .svn directories
-    find -name "\.svn" -exec sudo rm -rf {} \;
-fi
 popd
 
 echo "Creating MapGuide Open Source binary tarball"
@@ -108,6 +105,6 @@ if [ ! -d bin ]; then
     mkdir -p bin
 fi
 
-sudo tar -zcf bin/mapguideopensource-${BUILDNUM}.${REVISION}.tar.gz ${INSTALLROOT} ${LOCKFILEDIR}
+tar -zcf bin/mapguideopensource-${BUILDNUM}.${REVISION}.tar.gz ${INSTALLROOT} ${LOCKFILEDIR}
 
 echo "Build complete!"
