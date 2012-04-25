@@ -31,7 +31,13 @@
 # 
 #
 # Make sure setvars.sh is called first before running this script
-source ./setvars.sh
+
+if [ ! ${MG_BUILD_VARS_SET:-0} -eq 1 ]
+then
+echo "Please call setvars.sh first (source ./setvars.sh)"
+exit 1
+fi
+
 BUILDROOT=`pwd`
 MGBUILD=${BUILDNUM}
 MGINST=usr/local/mapguideopensource-${MGBUILD}

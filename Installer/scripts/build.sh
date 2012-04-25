@@ -1,7 +1,6 @@
 #!/bin/bash
 
 # Make sure setvars.sh is called first before running this script
-source ./setvars.sh
 
 if [ ! -d ${JAVA_HOME} ];
 then
@@ -9,7 +8,13 @@ echo "ERROR: Environment variable JAVA_HOME not set. Please set this enviroment 
 exit
 fi
 
-if [ ${PRESERVE_BUILD_ROOT} != 1 ]
+if [ ! ${MG_BUILD_VARS_SET:-0} -eq 1 ];
+then
+echo "Please call setvars.sh first (source ./setvars.sh)"
+exit 1
+fi
+
+if [ ! ${PRESERVE_BUILD_ROOT} -eq 1 ]
 then
     rm -rf ${MGSOURCE}
 else
@@ -19,7 +24,7 @@ rm -rf ${INSTALLROOT}
 
 REVISION=`svn info ${SVNROOT}${SVNRELPATH} | perl revnum.pl`
 echo ${REVISION} > revnum.txt
-if [ ${PRESERVE_BUILD_ROOT} != 1 -o ! -d ${MGSOURCE} ];
+if [ ! ${PRESERVE_BUILD_ROOT} -eq 1 -o ! -d ${MGSOURCE} ];
 then
     if [ ! -d ${MGSOURCE} ];
     then
@@ -51,15 +56,16 @@ pushd ${MGSOURCE}/Oem/LinuxApt
 ./build_apt.sh --prefix ${INSTALLROOT} --with-tomcat
 popd
 
-echo "Building Oem"
 # Need an ubuntu-flavoured build_oem.sh if we're doing ubuntu
-if [ ${UBUNTU} = 1 ]
+if [ ${UBUNTU} -eq 1 ]
 then
     cp ${BUILDROOT}/build_oem_ubuntu.sh .
     chmod +x build_oem_ubuntu.sh
-    ./build_oem_ubuntu.sh --prefix=${INSTALLROOT}
+    echo "Building Oem (Ubuntu)"
+    ./build_oem_ubuntu.sh --prefix ${INSTALLROOT}
 else
-    ./build_oem.sh --prefix=${INSTALLROOT}
+    echo "Building Oem (Regular)"
+    ./build_oem.sh --prefix ${INSTALLROOT}
 fi
 
 echo "Building Fusion"
