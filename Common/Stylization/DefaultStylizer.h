@@ -68,6 +68,11 @@ public:
 
     STYLIZATION_API virtual void SetGeometryAdapter(FdoGeometryType type, GeometryAdapter* stylizer);
 
+    STYLIZATION_API virtual bool HasValidScaleRange(MdfModel::VectorLayerDefinition* layer,
+                                                    double mapScale);
+
+    STYLIZATION_API virtual FdoFilter* GetRulesFilter(MdfModel::VectorLayerDefinition* layer,
+                                                      double mapScale);
 private:
     int StylizeVLHelper(MdfModel::VectorLayerDefinition* layer,
                         MdfModel::VectorScaleRange*      scaleRange,
