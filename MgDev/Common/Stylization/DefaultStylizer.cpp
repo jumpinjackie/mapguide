@@ -539,3 +539,91 @@ void DefaultStylizer::ClearAdapters()
     delete m_pRasterAdapter;
     m_pRasterAdapter = NULL;
 }
+
+
+//////////////////////////////////////////////////////////////////////////////
+bool DefaultStylizer::HasValidScaleRange(MdfModel::VectorLayerDefinition* layer,
+                                         double                           mapScale)
+{
+    // look through the scale ranges to find a valid one
+    MdfModel::VectorScaleRangeCollection* scaleRanges = layer->GetScaleRanges();
+    MdfModel::VectorScaleRange* scaleRange = Stylizer::FindScaleRange(*scaleRanges, mapScale);
+
+    return (NULL != scaleRange);
+}
+
+
+//////////////////////////////////////////////////////////////////////////////
+FdoFilter* DefaultStylizer::GetRulesFilter(MdfModel::VectorLayerDefinition* layer,
+                                           double                           mapScale)
+{
+    // look through the scale ranges to find a valid one
+    MdfModel::VectorScaleRangeCollection* scaleRanges = layer->GetScaleRanges();
+    MdfModel::VectorScaleRange* scaleRange = Stylizer::FindScaleRange(*scaleRanges, mapScale);
+
+    // no range -- fast return, the layer is invisible at this scale
+    if (NULL == scaleRange)
+        return NULL;
+
+    // extract all the composite styles once
+    MdfModel::FeatureTypeStyleCollection* ftsc = scaleRange->GetFeatureTypeStyles();
+    std::vector<CompositeTypeStyle*> compTypeStyles;
+    for (int i=0; i<ftsc->GetCount(); ++i)
+    {
+        MdfModel::FeatureTypeStyle* fts = ftsc->GetAt(i);
+        if (FeatureTypeStyleVisitor::DetermineFeatureTypeStyle(fts) == FeatureTypeStyleVisitor::ftsComposite)
+            compTypeStyles.push_back((CompositeTypeStyle*)fts);
+    }
+
+    size_t numTypeStyles = compTypeStyles.size();
+    _ASSERT(numTypeStyles > 0);
+    if (numTypeStyles == 0)
+        return NULL;
+
+    // Build a filter by combining the filters for each rule
+    MdfString filterstr;
+
+    for (size_t i=0; i<numTypeStyles; ++i)
+    {
+        CompositeTypeStyle* style = compTypeStyles.at(i);
+        RuleCollection* rulecoll = style->GetRules();
+        int nRules = rulecoll->GetCount();
+
+        for (int j=0; j<nRules; ++j)
+        {
+            CompositeRule* r = static_cast<CompositeRule*>(rulecoll->GetAt(j));
+            const MdfString& temp = r->GetFilter(); 
+
+            if (!temp.empty())
+            {
+                if (filterstr.empty())
+                    filterstr.append(L"("); // start filter
+                else
+                    filterstr.append(L" OR ");
+
+                filterstr.append(L"(");
+                filterstr.append(temp.c_str());
+                filterstr.append(L")");
+            }
+        }
+    }
+
+    // Output filter
+    FdoFilter* filter = NULL;
+
+    if (!filterstr.empty())
+    {
+        filterstr.append(L")"); // close filter
+
+        try
+        {
+            filter = FdoFilter::Parse(filterstr.c_str());
+        }
+        catch (FdoException* e)
+        {
+            e->Release();
+        }
+    }
+
+    return filter;
+}
