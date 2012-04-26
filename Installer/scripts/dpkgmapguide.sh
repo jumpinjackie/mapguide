@@ -32,14 +32,8 @@
 #
 # Make sure setvars.sh is called first before running this script
 
-if [ ! ${MG_BUILD_VARS_SET:-0} -eq 1 ]
-then
-echo "Please call setvars.sh first (source ./setvars.sh)"
-exit 1
-fi
-
 BUILDROOT=`pwd`
-MGBUILD=${BUILDNUM}
+MGBUILD=2.4.0
 MGINST=usr/local/mapguideopensource-${MGBUILD}
 ROOT=${BUILDROOT}/debian/mapguidecommon
 TREE=${BUILDROOT}/debian
