@@ -29,6 +29,7 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.lblCoords = new System.Windows.Forms.ToolStripStatusLabel();
             this.lblScale = new System.Windows.Forms.ToolStripStatusLabel();
@@ -54,6 +55,8 @@
             this.btnDigitizePolygon = new System.Windows.Forms.ToolStripButton();
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.btnPlotToDwf = new System.Windows.Forms.ToolStripButton();
+            this.toolStripButton1 = new System.Windows.Forms.ToolStripButton();
+            this.toolStripButton2 = new System.Windows.Forms.ToolStripButton();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.splitContainer2 = new System.Windows.Forms.SplitContainer();
             this.legend = new OSGeo.MapGuide.Viewer.MgLegend();
@@ -63,26 +66,28 @@
             this.thisIsALayerContextMenuToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.propertyPane = new OSGeo.MapGuide.Viewer.MgPropertyPane();
             this.viewer = new OSGeo.MapGuide.Viewer.MgMapViewer();
-            this.toolStripContainer1 = new System.Windows.Forms.ToolStripContainer();
-            this.toolbar = new OSGeo.MapGuide.Viewer.MgDefaultToolbar();
             this.ctxViewer = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.refreshMapToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.initialViewToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripContainer1 = new System.Windows.Forms.ToolStripContainer();
+            this.toolbar = new OSGeo.MapGuide.Viewer.MgDefaultToolbar();
             this.statusStrip1.SuspendLayout();
             this.menuStrip1.SuspendLayout();
             this.toolStrip1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
             this.splitContainer1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.splitContainer2)).BeginInit();
             this.splitContainer2.Panel1.SuspendLayout();
             this.splitContainer2.Panel2.SuspendLayout();
             this.splitContainer2.SuspendLayout();
             this.ctxGroup.SuspendLayout();
             this.ctxLayer.SuspendLayout();
+            this.ctxViewer.SuspendLayout();
             this.toolStripContainer1.ContentPanel.SuspendLayout();
             this.toolStripContainer1.TopToolStripPanel.SuspendLayout();
             this.toolStripContainer1.SuspendLayout();
-            this.ctxViewer.SuspendLayout();
             this.SuspendLayout();
             // 
             // statusStrip1
@@ -220,7 +225,9 @@
             this.btnDigitizeRectangle,
             this.btnDigitizePolygon,
             this.toolStripSeparator1,
-            this.btnPlotToDwf});
+            this.btnPlotToDwf,
+            this.toolStripButton1,
+            this.toolStripButton2});
             this.toolStrip1.LayoutStyle = System.Windows.Forms.ToolStripLayoutStyle.HorizontalStackWithOverflow;
             this.toolStrip1.Location = new System.Drawing.Point(0, 25);
             this.toolStrip1.Name = "toolStrip1";
@@ -303,6 +310,24 @@
             this.btnPlotToDwf.Size = new System.Drawing.Size(23, 22);
             this.btnPlotToDwf.Text = "Plot current view to DWF";
             this.btnPlotToDwf.Click += new System.EventHandler(this.btnPlotToDwf_Click);
+            // 
+            // toolStripButton1
+            // 
+            this.toolStripButton1.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButton1.Image")));
+            this.toolStripButton1.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.toolStripButton1.Name = "toolStripButton1";
+            this.toolStripButton1.Size = new System.Drawing.Size(72, 22);
+            this.toolStripButton1.Text = "Measure";
+            this.toolStripButton1.Click += new System.EventHandler(this.toolStripButton1_Click);
+            // 
+            // toolStripButton2
+            // 
+            this.toolStripButton2.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButton2.Image")));
+            this.toolStripButton2.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.toolStripButton2.Name = "toolStripButton2";
+            this.toolStripButton2.Size = new System.Drawing.Size(59, 22);
+            this.toolStripButton2.Text = "Buffer";
+            this.toolStripButton2.Click += new System.EventHandler(this.toolStripButton2_Click);
             // 
             // splitContainer1
             // 
@@ -399,8 +424,30 @@
             this.viewer.SelectionColor = System.Drawing.Color.OrangeRed;
             this.viewer.Size = new System.Drawing.Size(572, 465);
             this.viewer.TabIndex = 1;
-            this.viewer.ZoomInFactor = 0.75;
-            this.viewer.ZoomOutFactor = 1.35;
+            this.viewer.ZoomInFactor = 0.75D;
+            this.viewer.ZoomOutFactor = 1.35D;
+            // 
+            // ctxViewer
+            // 
+            this.ctxViewer.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.refreshMapToolStripMenuItem,
+            this.initialViewToolStripMenuItem});
+            this.ctxViewer.Name = "ctxViewer";
+            this.ctxViewer.Size = new System.Drawing.Size(141, 48);
+            // 
+            // refreshMapToolStripMenuItem
+            // 
+            this.refreshMapToolStripMenuItem.Name = "refreshMapToolStripMenuItem";
+            this.refreshMapToolStripMenuItem.Size = new System.Drawing.Size(140, 22);
+            this.refreshMapToolStripMenuItem.Text = "Refresh Map";
+            this.refreshMapToolStripMenuItem.Click += new System.EventHandler(this.refreshMapToolStripMenuItem_Click);
+            // 
+            // initialViewToolStripMenuItem
+            // 
+            this.initialViewToolStripMenuItem.Name = "initialViewToolStripMenuItem";
+            this.initialViewToolStripMenuItem.Size = new System.Drawing.Size(140, 22);
+            this.initialViewToolStripMenuItem.Text = "Initial View";
+            this.initialViewToolStripMenuItem.Click += new System.EventHandler(this.initialViewToolStripMenuItem_Click);
             // 
             // toolStripContainer1
             // 
@@ -434,28 +481,6 @@
             this.toolbar.Viewer = null;
             this.toolbar.ZoomOutMode = OSGeo.MapGuide.Viewer.ZoomOutMode.AutoZoom;
             // 
-            // ctxViewer
-            // 
-            this.ctxViewer.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.refreshMapToolStripMenuItem,
-            this.initialViewToolStripMenuItem});
-            this.ctxViewer.Name = "ctxViewer";
-            this.ctxViewer.Size = new System.Drawing.Size(153, 70);
-            // 
-            // refreshMapToolStripMenuItem
-            // 
-            this.refreshMapToolStripMenuItem.Name = "refreshMapToolStripMenuItem";
-            this.refreshMapToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
-            this.refreshMapToolStripMenuItem.Text = "Refresh Map";
-            this.refreshMapToolStripMenuItem.Click += new System.EventHandler(this.refreshMapToolStripMenuItem_Click);
-            // 
-            // initialViewToolStripMenuItem
-            // 
-            this.initialViewToolStripMenuItem.Name = "initialViewToolStripMenuItem";
-            this.initialViewToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
-            this.initialViewToolStripMenuItem.Text = "Initial View";
-            this.initialViewToolStripMenuItem.Click += new System.EventHandler(this.initialViewToolStripMenuItem_Click);
-            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -475,18 +500,20 @@
             this.toolStrip1.PerformLayout();
             this.splitContainer1.Panel1.ResumeLayout(false);
             this.splitContainer1.Panel2.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).EndInit();
             this.splitContainer1.ResumeLayout(false);
             this.splitContainer2.Panel1.ResumeLayout(false);
             this.splitContainer2.Panel2.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.splitContainer2)).EndInit();
             this.splitContainer2.ResumeLayout(false);
             this.ctxGroup.ResumeLayout(false);
             this.ctxLayer.ResumeLayout(false);
+            this.ctxViewer.ResumeLayout(false);
             this.toolStripContainer1.ContentPanel.ResumeLayout(false);
             this.toolStripContainer1.TopToolStripPanel.ResumeLayout(false);
             this.toolStripContainer1.TopToolStripPanel.PerformLayout();
             this.toolStripContainer1.ResumeLayout(false);
             this.toolStripContainer1.PerformLayout();
-            this.ctxViewer.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -533,6 +560,8 @@
         private System.Windows.Forms.ContextMenuStrip ctxViewer;
         private System.Windows.Forms.ToolStripMenuItem refreshMapToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem initialViewToolStripMenuItem;
+        private System.Windows.Forms.ToolStripButton toolStripButton1;
+        private System.Windows.Forms.ToolStripButton toolStripButton2;
     }
 }
 
