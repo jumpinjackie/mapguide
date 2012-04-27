@@ -90,6 +90,12 @@
     <Compile Include="IMapViewerComponent.cs" />
     <Compile Include="IMapStatusBar.cs" />
     <Compile Include="IPropertyPane.cs" />
+    <Compile Include="MgBufferControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="MgBufferControl.Designer.cs">
+      <DependentUpon>MgBufferControl.cs</DependentUpon>
+    </Compile>
     <Compile Include="MgDefaultToolbar.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -104,6 +110,12 @@
       <DependentUpon>MgLegend.cs</DependentUpon>
     </Compile>
     <Compile Include="MgMapViewerProvider.cs" />
+    <Compile Include="MgLineMeasureControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="MgLineMeasureControl.Designer.cs">
+      <DependentUpon>MgLineMeasureControl.cs</DependentUpon>
+    </Compile>
     <Compile Include="MgPropertyPane.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -124,8 +136,14 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Debug.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+    <EmbeddedResource Include="MgBufferControl.resx">
+      <DependentUpon>MgBufferControl.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="MgLegend.resx">
       <DependentUpon>MgLegend.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="MgLineMeasureControl.resx">
+      <DependentUpon>MgLineMeasureControl.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="MgPropertyPane.resx">
       <DependentUpon>MgPropertyPane.cs</DependentUpon>
@@ -337,6 +355,9 @@
       <ProductName>Windows Installer 3.1</ProductName>
       <Install>true</Install>
     </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\AreaLayerDef.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

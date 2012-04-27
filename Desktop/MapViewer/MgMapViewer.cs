@@ -835,6 +835,21 @@ namespace OSGeo.MapGuide.Viewer
             _digitizationYetToStart = true;
         }
 
+        private LineDigitizationCallback _segmentCallback;
+
+        /// <summary>
+        /// Starts the digitization process for a line string (polyline)
+        /// </summary>
+        /// <param name="callback">The callback to be invoked when the digitization process completes</param>
+        /// <param name="segmentCallback">The callback to be invoked when a new segment of the current line string is digitized</param>
+        public void DigitizeLineString(LineStringDigitizationCallback callback, LineDigitizationCallback segmentCallback)
+        {
+            this.DigitizingType = MapDigitizationType.LineString;
+            _digitzationCallback = callback;
+            _segmentCallback = segmentCallback;
+            _digitizationYetToStart = true;
+        }
+
         /// <summary>
         /// Starts the digitization process for a rectangle
         /// </summary>
@@ -849,6 +864,7 @@ namespace OSGeo.MapGuide.Viewer
         private void ResetDigitzationState()
         {
             _digitzationCallback = null;
+            _segmentCallback = null;
             dPath.Clear();
             dPtEnd.X = dPtStart.Y = 0;
             dPtStart.X = dPtStart.Y = 0;
@@ -881,6 +897,16 @@ namespace OSGeo.MapGuide.Viewer
             var cb = (PolygonDigitizationCallback)_digitzationCallback;
             ResetDigitzationState();
             cb(coords);
+        }
+
+        private void OnLineStringSegmentDigitized(Point p1, Point p2)
+        {
+            if (_segmentCallback != null)
+            {
+                var ptx1 = ScreenToMapUnits(p1.X, p1.Y);
+                var ptx2 = ScreenToMapUnits(p2.X, p2.Y);
+                _segmentCallback.Invoke(ptx1.X, ptx1.Y, ptx2.X, ptx2.Y);
+            }
         }
 
         private void OnLineStringDigitized(List<Point> path)
@@ -2037,6 +2063,7 @@ namespace OSGeo.MapGuide.Viewer
                             pt.X = e.X;
                             pt.Y = e.Y;
                             dPath.Add(new Point(e.X, e.Y)); //This is a transient one
+                            OnLineStringSegmentDigitized(dPath[dPath.Count - 3], dPath[dPath.Count - 2]);
                         }
                         else
                         {
