@@ -41,7 +41,7 @@ ArrayList layerNames = null;
     }
     catch (MgException e)
     {
-        errorMsg = e.GetMessage();
+        errorMsg = e.GetExceptionMessage();
         errorDetail = e.GetDetails();
     }
 %>
