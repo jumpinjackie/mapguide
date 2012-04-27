@@ -93,6 +93,13 @@ namespace OSGeo.MapGuide.Viewer
         void DigitizeLineString(LineStringDigitizationCallback callback);
 
         /// <summary>
+        /// Starts the digitization process for a line string (polyline)
+        /// </summary>
+        /// <param name="callback">The callback to be invoked when the digitization process completes</param>
+        /// <param name="segmentDigitized">The callback to be invoked when a new segment of the current line string is digitized</param>
+        void DigitizeLineString(LineStringDigitizationCallback callback, LineDigitizationCallback segmentDigitized);
+
+        /// <summary>
         /// Starts the digitization process for a rectangle
         /// </summary>
         /// <param name="callback">The callback to be invoked when the digitization process completes</param>

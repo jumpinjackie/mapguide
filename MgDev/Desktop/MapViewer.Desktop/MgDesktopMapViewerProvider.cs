@@ -11,12 +11,14 @@ namespace OSGeo.MapGuide.Viewer.Desktop
         private MgdMap _implMap;
         private MgRenderingService _renderSvc;
         private MgServiceFactory _fact;
+        private MgResourceService _resSvc;
 
         public MgDesktopMapViewerProvider(MgdMap map, MgdResourceService resSvc, MgRenderingService renderingService) : base(map, resSvc) 
         {
             _implMap = map;
             _fact = new MgServiceFactory();
             _renderSvc = renderingService;
+            _resSvc = (MgResourceService)_fact.CreateService(MgServiceType.ResourceService);
         }
 
         
@@ -122,6 +124,11 @@ namespace OSGeo.MapGuide.Viewer.Desktop
                 return layerImpl.IsPotentiallyVisibleAtScale(_implMap.ViewScale, bConsiderParentGroupVisibility);
 
             throw new InvalidOperationException("The given layer is not of the expected implementation (" + typeof(MgdLayer).FullName + ")");
+        }
+
+        public override MgLayerBase CreateLayer(MgResourceIdentifier layerDefId)
+        {
+            return new MgdLayer(layerDefId, _resSvc);
         }
     }
 }

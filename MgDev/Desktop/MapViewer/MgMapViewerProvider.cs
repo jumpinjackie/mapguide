@@ -181,6 +181,7 @@ namespace OSGeo.MapGuide.Viewer
         public abstract void SetViewScale(double scale);
         public abstract void MakeGroupNormal(MgLayerGroup group);
 
+        public abstract MgLayerBase CreateLayer(MgResourceIdentifier layerDefId);
         public abstract MgService CreateService(int serviceType);
         public abstract MgByteReader GenerateLegendImage(MgResourceIdentifier layerDefinition, double viewScale, int width, int height, string format, int geomType, int themeCategory);
 
