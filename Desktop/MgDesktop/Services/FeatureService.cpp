@@ -3381,8 +3381,7 @@ MgPropertyCollection* MgdFeatureService::UpdateFeatures(MgResourceIdentifier* re
 { 
 	CHECK_FEATURE_SOURCE_ARGUMENT(resource, L"MgdFeatureService::UpdateFeatures");
     CHECKARGUMENTNULL(commands, L"MgdFeatureService::UpdateFeatures");
-    CHECKARGUMENTNULL(transaction, L"MgdFeatureService::UpdateFeatures");
-
+    
     Ptr<MgPropertyCollection> ret;
 
     MG_FEATURE_SERVICE_TRY()
@@ -3437,7 +3436,7 @@ MgPropertyCollection* MgdFeatureService::UpdateFeatures(MgResourceIdentifier* re
                 bool supports = false;
                 for (FdoInt32 j = 0; j < sCmdCount; j++)
                 {
-                    if (supportedCmds[i] == FdoCommandType_Insert)
+                    if (supportedCmds[j] == FdoCommandType_Insert)
                     {
                         supports = true;
                         break;
@@ -3466,7 +3465,7 @@ MgPropertyCollection* MgdFeatureService::UpdateFeatures(MgResourceIdentifier* re
                 bool supports = false;
                 for (FdoInt32 j = 0; j < sCmdCount; j++)
                 {
-                    if (supportedCmds[i] == FdoCommandType_Delete)
+                    if (supportedCmds[j] == FdoCommandType_Delete)
                     {
                         supports = true;
                         break;
@@ -3494,7 +3493,7 @@ MgPropertyCollection* MgdFeatureService::UpdateFeatures(MgResourceIdentifier* re
                 bool supports = false;
                 for (FdoInt32 j = 0; j < sCmdCount; j++)
                 {
-                    if (supportedCmds[i] == FdoCommandType_Update)
+                    if (supportedCmds[j] == FdoCommandType_Update)
                     {
                         supports = true;
                         break;
