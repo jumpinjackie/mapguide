@@ -459,7 +459,18 @@ namespace MapViewerTest
             var ctrl = new MgBufferControl(viewer);
             var frm = new Form();
             frm.Text = "Buffer";
-            frm.Size = ctrl.PreferredSize;
+            frm.Size = new System.Drawing.Size(250, 601);
+            ctrl.Dock = DockStyle.Fill;
+            frm.Controls.Add(ctrl);
+            frm.Show();
+        }
+
+        private void toolStripButton3_Click(object sender, EventArgs e)
+        {
+            var ctrl = new MgQueryControl(viewer);
+            var frm = new Form();
+            frm.Text = "Query";
+            frm.Size = new System.Drawing.Size(266, 460);
             ctrl.Dock = DockStyle.Fill;
             frm.Controls.Add(ctrl);
             frm.Show();
