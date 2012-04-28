@@ -211,6 +211,13 @@ namespace OSGeo.MapGuide.Viewer
         void UpdateSelection();
 
         /// <summary>
+        /// Updates the rendered selection. Call this method if you have manipulated the selection
+        /// set outside of the viewer
+        /// </summary>
+        /// <param name="raise">Indicates if the <see cref="SelectionChanged"/> event should be raised as well</param>
+        void UpdateSelection(bool raise);
+
+        /// <summary>
         /// Selects features from all selectable layers that intersects the given geometry
         /// </summary>
         /// <param name="geom"></param>
