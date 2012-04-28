@@ -1,6 +1,7 @@
 #!/bin/bash
 TEMPDIR=/tmp/build_mapguide
-URL="http://download.osgeo.org/mapguide/releases/2.4.0/Test/ubuntu11"
+#URL="http://download.osgeo.org/mapguide/releases/2.4.0/Test/ubuntu11"
+URL="http://192.168.0.2/downloads/ubuntu11"
 FDOVER_MAJOR_MINOR=3.7
 FDOVER_MAJOR_MINOR_REV=${FDOVER_MAJOR_MINOR}.0
 FDOVER=${FDOVER_MAJOR_MINOR_REV}-4308_i386

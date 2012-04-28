@@ -13,7 +13,7 @@ do
 done
 
 # Remove Ubuntu packages for FDO
-for file in gdal kingoracle ogr odbc mysql postgis rdbms sdf shp sqlite wfs wms core
+for file in gdal kingoracle ogr odbc mysql postgis rdbms sdf shp sqlite wfs wms arcsde core
 do
   dpkg --remove fdo-${file}
 done
