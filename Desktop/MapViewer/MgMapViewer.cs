@@ -1253,11 +1253,27 @@ namespace OSGeo.MapGuide.Viewer
 
         /// <summary>
         /// Updates the rendered selection. Call this method if you have manipulated the selection
-        /// set outside of the viewer
+        /// set outside of the viewer. This does not raise the <see cref="SelectionChanged"/> event
         /// </summary>
         public void UpdateSelection()
         {
+            UpdateSelection(false);
+        }
+
+        /// <summary>
+        /// Updates the rendered selection. Call this method if you have manipulated the selection
+        /// set outside of the viewer
+        /// </summary>
+        /// <param name="raise">Indicates if the <see cref="SelectionChanged"/> event should be raised as well</param>
+        public void UpdateSelection(bool raise)
+        {
             RenderSelection();
+            if (raise)
+            {
+                var handler = this.SelectionChanged;
+                if (handler != null)
+                    handler(this, EventArgs.Empty);
+            }
         }
 
         internal void RenderSelection()
