@@ -351,7 +351,8 @@ void MgMappingUtil::StylizeLayers(MgResourceService* svcResource,
                                   double scale,
                                   bool selection,
                                   bool extractColors,
-                                  CancelStylization cancel)
+                                  ProfileRenderLayersResultBase* pPRLsResult,
+								  CancelStylization cancel)
 {
     #ifdef _DEBUG
     long dwStart = GetTickCount();
@@ -362,10 +363,12 @@ void MgMappingUtil::StylizeLayers(MgResourceService* svcResource,
     // stylization operation.
     TransformCacheMap transformCache;
 
-    Ptr<MgStringCollection> layerIds = new MgStringCollection();
     // Get the layers' resource content in a single request by adding them to a collection
     for (int i = layers->GetCount()-1; i >= 0; i--)
     {
+        auto_ptr<MdfModel::LayerDefinition> ldf;
+        RSMgFeatureReader* rsReader = NULL;
+
         Ptr<MgLayerBase> mapLayer = layers->GetItem(i);
 
         //don't send data if layer is not currently visible
@@ -386,60 +389,43 @@ void MgMappingUtil::StylizeLayers(MgResourceService* svcResource,
                 continue;
         }
 
-        Ptr<MgResourceIdentifier> mapLayerId = mapLayer->GetLayerDefinition();
-        layerIds->Add(mapLayerId->ToString());
-    }
-
-    // request the collection from resource service and add ResourceContent to the individual layers
-    if(layerIds->GetCount() != 0)
-    {
-        Ptr<MgStringCollection> layerContents = svcResource->GetResourceContents(layerIds, NULL);
-        for(int i = 0; i < layerIds->GetCount(); i ++)
-        {
-            for(int j = 0; j < layers->GetCount(); j ++)
-            {
-                Ptr<MgLayerBase> mapLayer = layers->GetItem(j);
-                Ptr<MgResourceIdentifier> mapLayerId = mapLayer->GetLayerDefinition();
-                if(mapLayerId->ToString() == layerIds->GetItem(i))
-                {
-                    mapLayer->SetLayerResourceContent(layerContents->GetItem(i));
-                    break;
-                }
-            }
-        }
-    }
-
-    // cycle over the layers and do stylization
-    for (int i = layers->GetCount()-1; i >= 0; i--)
-    {
-        auto_ptr<MdfModel::LayerDefinition> ldf;
-        RSMgFeatureReader* rsReader = NULL;
-
-        Ptr<MgLayerBase> mapLayer = layers->GetItem(i);
 
         #ifdef _DEBUG
         long dwLayerStart = GetTickCount();
         ACE_DEBUG((LM_INFO, L"(%t)  StylizeLayers(%d) **LAYERSTART** Name:%W  VAS:%W\n", i, (mapLayer->GetName()).c_str(), mapLayer->IsVisibleAtScale(scale)? L"True" : L"False"));
         #endif
 
-        if(mapLayer->GetLayerResourceContent() == L"")
-            continue;
+
 
         MG_SERVER_MAPPING_SERVICE_TRY()
 
-            // get layer definition using SAX XML Parser
-            ldf.reset(MgLayerBase::GetLayerDefinition(mapLayer->GetLayerResourceContent()));
+            // Just profile visible layers?
+            TransformCache* TCForProfile = NULL;
+            double minScale_Profile = 0.0;
+            double maxScale_Profile = MdfModel::VectorScaleRange::MAX_MAP_SCALE;
+            if(NULL != pPRLsResult)
+            {
+                ProfileRenderLayerResult* pPRLResult = new ProfileRenderLayerResult(); // points points to Profile Render Layers Result
+               
+                // Set the start time of stylizing layer
+                pPRLResult->SetRenderTime(MgTimerUtil::GetTime());
+
+                ProfileRenderLayerResultCollection* pPRLResultColl = pPRLsResult->GetProfileRenderLayerResults();
+                pPRLResultColl->Adopt(pPRLResult);
+            }
+
+            //get layer definition
+            Ptr<MgResourceIdentifier> layerid = mapLayer->GetLayerDefinition();
+            ldf.reset(MgLayerBase::GetLayerDefinition(svcResource, layerid));
 
             Ptr<MgLayerGroup> group = mapLayer->GetGroup();
-
-            /*
+			/*
             MgLogDetail logDetail(MgServiceType::MappingService, MgLogDetail::InternalTrace, L"MgMappingUtil.StylizeLayers", mgStackParams);
             logDetail.AddString(L"Map",map->GetName());
-            Ptr<MgResourceIdentifier> layerid = mapLayer->GetLayerDefinition();
+
             logDetail.AddResourceIdentifier(L"LayerId",layerid);
             logDetail.Create();
-            */
-
+			*/
             //base map layers are not editable
             bool bEditable = true;
             if (mapLayer->GetLayerType() == MgLayerType::BaseMap)
@@ -486,6 +472,9 @@ void MgMappingUtil::StylizeLayers(MgResourceService* svcResource,
 
                 if (scaleRange)
                 {
+                    minScale_Profile = scaleRange->GetMinScale();
+                    maxScale_Profile = scaleRange->GetMaxScale();
+
                     #ifdef _DEBUG
                     ACE_DEBUG((LM_INFO, L"(%t)  StylizeLayers(%d) **Stylizing** Name:%W\n", i, (mapLayer->GetName()).c_str()));
                     #endif
@@ -514,6 +503,7 @@ void MgMappingUtil::StylizeLayers(MgResourceService* svcResource,
 
                     //get a transform from layer coord sys to map coord sys
                     TransformCache* item = TransformCache::GetLayerToMapTransform(transformCache, vl->GetFeatureName(), featResId, dstCs, csFactory, svcFeature);
+                    TCForProfile = item;
                     Ptr<MgCoordinateSystem> layerCs = item? item->GetCoordSys() : NULL;
                     MgCSTrans* xformer = item? item->GetTransform() : NULL;
 
@@ -597,6 +587,9 @@ void MgMappingUtil::StylizeLayers(MgResourceService* svcResource,
 
                 if (scaleRange)
                 {
+                    minScale_Profile = scaleRange->GetMinScale();
+                    maxScale_Profile = scaleRange->GetMaxScale();
+
                     //get feature source id
                     STRING sfeatResId = gl->GetResourceID();
                     Ptr<MgResourceIdentifier> featResId = new MgResourceIdentifier(sfeatResId);
@@ -621,6 +614,7 @@ void MgMappingUtil::StylizeLayers(MgResourceService* svcResource,
                         ACE_MT(ACE_GUARD(ACE_Recursive_Thread_Mutex, ace_mon, sg_fdoRfpMutex));
                         item = TransformCache::GetLayerToMapTransform(transformCache, gl->GetFeatureName(), featResId, dstCs, csFactory, svcFeature);
                     }
+                    TCForProfile = item;
 
                     Ptr<MgCoordinateSystem> layerCs = item? item->GetCoordSys() : NULL;
                     MgCSTrans* xformer = item? item->GetTransform() : NULL;
@@ -649,7 +643,7 @@ void MgMappingUtil::StylizeLayers(MgResourceService* svcResource,
                     // On error, ignore the exception and use the original extent.
                     MG_TRY()
                     Ptr<MgSpatialContextReader> contextReader = svcFeature->GetSpatialContexts(featResId, false);
-                    STRING layerWkt = layerCs->ToString();
+                    STRING layerWkt = (NULL == layerCs.p) ? L"" : layerCs->ToString();
                     while (contextReader.p != NULL && contextReader->ReadNext())
                     {
                         // Try to find wkt for feature's coordinate system
@@ -731,6 +725,9 @@ void MgMappingUtil::StylizeLayers(MgResourceService* svcResource,
             }
             else if (dl) //############################################################################ drawing layer
             {
+                minScale_Profile = dl->GetMinScale();
+                maxScale_Profile = dl->GetMaxScale();
+
                 // make sure we have a valid scale range
                 if (scale >= dl->GetMinScale() && scale < dl->GetMaxScale())
                 {
@@ -773,6 +770,7 @@ void MgMappingUtil::StylizeLayers(MgResourceService* svcResource,
                             }
                         }
                     }
+                    TCForProfile = cached;
 
                     //get DWF from drawing service
                     Ptr<MgByteReader> reader = svcDrawing->GetSection(resId, dl->GetSheet());
@@ -789,6 +787,60 @@ void MgMappingUtil::StylizeLayers(MgResourceService* svcResource,
                 #endif
             } // end layer switch
 
+            if(NULL != pPRLsResult)
+            {
+                ProfileRenderLayerResultCollection* pPRLResultColl = pPRLsResult->GetProfileRenderLayerResults();
+                
+                // Get current ProfileRenderLayerResult
+                ProfileRenderLayerResult* pPRLResult = pPRLResultColl->GetAt(pPRLResultColl->GetCount()-1); //TODO: check index
+                
+                // Calculate the time spent on stylizing layer
+                double stylizeLayerTime = MgTimerUtil::GetTime() - pPRLResult->GetRenderTime();
+                pPRLResult->SetRenderTime(stylizeLayerTime);
+
+                pPRLResult->SetResourceId(layerid->ToString());
+                pPRLResult->SetLayerName(mapLayer->GetName());
+
+                if(vl)
+                {
+                    pPRLResult->SetLayerType(L"Vector Layer"); //NOXLATE?
+                }
+                else if(dl)
+                {
+                    pPRLResult->SetLayerType(L"Drawing Layer"); //NOXLATE?
+                }
+                else if(gl)
+                {
+                    pPRLResult->SetLayerType(L"Grid Layer"); //NOXLATE?
+                }
+                else
+                {
+                    pPRLResult->SetLayerType(L"Unknown Type"); //NOXLATE?
+                }
+                
+                pPRLResult->SetFeatureClassName(mapLayer->GetFeatureClassName());
+
+                STRING layerCsCode = L"";
+                if(NULL != TCForProfile)
+                {
+                    Ptr<MgCoordinateSystem> layerCS = TCForProfile->GetCoordSys();
+                    layerCsCode = layerCS->GetCsCode();
+                }
+                pPRLResult->SetCoordinateSystem(layerCsCode);
+
+                ScaleRange* pScaleRange = new ScaleRange();
+                pScaleRange->SetMinScale(minScale_Profile);
+                pScaleRange->SetMaxScale(maxScale_Profile);
+                pPRLResult->AdoptScaleRange(pScaleRange);
+
+                STRING filter = L""; // NOXLATE
+                if (overrideFilters)
+                {
+                    filter = overrideFilters->GetItem(i);
+                }
+                pPRLResult->SetFilter(filter.empty()? mapLayer->GetFilter() : filter);
+            }
+
         MG_SERVER_MAPPING_SERVICE_CATCH(L"MgMappingUtil.StylizeLayers");
 
         delete rsReader;
@@ -799,7 +851,7 @@ void MgMappingUtil::StylizeLayers(MgResourceService* svcResource,
             //       layer failed in addition to logging the error.
             //MgServerManager* serverManager = MgServerManager::GetInstance();
             //STRING locale = (NULL == serverManager)? MgResources::DefaultMessageLocale : serverManager->GetDefaultMessageLocale();
-            STRING locale = MgResources::DefaultMessageLocale;
+			STRING locale = MgResources::DefaultMessageLocale;
 
             // Get the layer that failed
             MgStringCollection arguments;
@@ -828,9 +880,29 @@ void MgMappingUtil::StylizeLayers(MgResourceService* svcResource,
             ACE_DEBUG( (LM_DEBUG, err.c_str()) );
 #endif
             // TODO could throw here depending on a serverconfig setting (RFC64)
-            //throw exception;
+//          throw exception;
+
+
+            if(NULL != pPRLsResult)
+            {
+                ProfileRenderLayerResultCollection* pPRLResultColl = pPRLsResult->GetProfileRenderLayerResults();
+                
+                // Get current ProfileRenderLayerResult
+                ProfileRenderLayerResult* pPRLResult = pPRLResultColl->GetAt(pPRLResultColl->GetCount()-1); //TODO: check index
+                
+                // Calculate the time spent on stylizing layer
+                double stylizeLayerTime = MgTimerUtil::GetTime() - pPRLResult->GetRenderTime();
+                pPRLResult->SetRenderTime(stylizeLayerTime);
+
+                Ptr<MgResourceIdentifier> layerid = mapLayer->GetLayerDefinition();
+                pPRLResult->SetResourceId(layerid->ToString());
+                pPRLResult->SetLayerName(mapLayer->GetName());
+
+                pPRLResult->SetError(message);
+            }
         } // if exception
     } // for all layers
+
 
     #ifdef _DEBUG
     ACE_DEBUG((LM_INFO, L"(%t)StylizeLayers() **MAPDONE** Layers:%d  Total Time:%6.4f (s)\n\n", layers->GetCount(), (GetTickCount()-dwStart)/1000.0));

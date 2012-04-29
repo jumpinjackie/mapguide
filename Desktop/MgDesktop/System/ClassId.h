@@ -12,6 +12,7 @@
 #define MAPGUIDE_DESKTOP_RESOURCESERVICE_ID     41100
 #define MAPGUIDE_DESKTOP_TILESERVICE_ID         41200
 #define MAPGUIDE_DESKTOP_KMLSERVICE_ID          41300
+#define MAPGUIDE_DESKTOP_PROFILING_SERVICE_ID   41400
 
 // MapLayer API
 #define MapGuide_Desktop_MapLayer_Map           MAPGUIDE_DESKTOP_MAPLAYER_ID+0
@@ -120,8 +121,10 @@
 // Tile Service
 #define MapGuide_Desktop_TileService_TileService                            MAPGUIDE_DESKTOP_TILESERVICE_ID+0
 
-// Tile Service
+// KML Service
 #define MapGuide_Desktop_KmlService_KmlService                              MAPGUIDE_DESKTOP_KMLSERVICE_ID+0
 
+// Profiling
+#define MapGuide_Desktop_ProfilingService_ProfilingService					MAPGUIDE_DESKTOP_PROFILING_SERVICE_ID+0
 
 #endif
