@@ -273,6 +273,12 @@
     <ClCompile Include="Services\Resource\ZipFileReader.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Services\ProfilingService.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="System\TimerUtil.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Exception\AliasNotFoundException.h">
@@ -555,6 +561,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Services\Resource\ZipFileReader.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Services\ProfilingService.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="System\TimerUtil.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -1,5 +1,6 @@
 #include "System/ConfigProperties.cpp"
 #include "System/PlatformInit.cpp"
+#include "System/TimerUtil.cpp"
 
 #include "Exception/AliasNotFoundException.cpp"
 #include "Exception/ConnectionFailedException.cpp"
@@ -26,6 +27,7 @@
 #include "Services/FeatureReader.cpp"
 #include "Services/FeatureService.cpp"
 #include "Services/ImageFormats.cpp"
+#include "Services/ProfilingService.cpp"
 #include "Services/RenderingService.cpp"
 #include "Services/ResourceService.cpp"
 #include "Services/ScrollableFeatureReader.cpp"

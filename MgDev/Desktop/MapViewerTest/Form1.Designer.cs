@@ -57,21 +57,23 @@
             this.btnPlotToDwf = new System.Windows.Forms.ToolStripButton();
             this.toolStripButton1 = new System.Windows.Forms.ToolStripButton();
             this.toolStripButton2 = new System.Windows.Forms.ToolStripButton();
+            this.toolStripButton3 = new System.Windows.Forms.ToolStripButton();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.splitContainer2 = new System.Windows.Forms.SplitContainer();
-            this.legend = new OSGeo.MapGuide.Viewer.MgLegend();
             this.ctxGroup = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.thisIsAGroupContextMenuToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.ctxLayer = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.thisIsALayerContextMenuToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.propertyPane = new OSGeo.MapGuide.Viewer.MgPropertyPane();
-            this.viewer = new OSGeo.MapGuide.Viewer.MgMapViewer();
             this.ctxViewer = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.refreshMapToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.initialViewToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripContainer1 = new System.Windows.Forms.ToolStripContainer();
+            this.toolStripButton4 = new System.Windows.Forms.ToolStripButton();
+            this.legend = new OSGeo.MapGuide.Viewer.MgLegend();
+            this.propertyPane = new OSGeo.MapGuide.Viewer.MgPropertyPane();
+            this.viewer = new OSGeo.MapGuide.Viewer.MgMapViewer();
             this.toolbar = new OSGeo.MapGuide.Viewer.MgDefaultToolbar();
-            this.toolStripButton3 = new System.Windows.Forms.ToolStripButton();
+            this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
             this.statusStrip1.SuspendLayout();
             this.menuStrip1.SuspendLayout();
             this.toolStrip1.SuspendLayout();
@@ -227,9 +229,11 @@
             this.btnDigitizePolygon,
             this.toolStripSeparator1,
             this.btnPlotToDwf,
+            this.toolStripSeparator2,
             this.toolStripButton1,
             this.toolStripButton2,
-            this.toolStripButton3});
+            this.toolStripButton3,
+            this.toolStripButton4});
             this.toolStrip1.LayoutStyle = System.Windows.Forms.ToolStripLayoutStyle.HorizontalStackWithOverflow;
             this.toolStrip1.Location = new System.Drawing.Point(0, 25);
             this.toolStrip1.Name = "toolStrip1";
@@ -331,6 +335,15 @@
             this.toolStripButton2.Text = "Buffer";
             this.toolStripButton2.Click += new System.EventHandler(this.toolStripButton2_Click);
             // 
+            // toolStripButton3
+            // 
+            this.toolStripButton3.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButton3.Image")));
+            this.toolStripButton3.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.toolStripButton3.Name = "toolStripButton3";
+            this.toolStripButton3.Size = new System.Drawing.Size(59, 22);
+            this.toolStripButton3.Text = "Query";
+            this.toolStripButton3.Click += new System.EventHandler(this.toolStripButton3_Click);
+            // 
             // splitContainer1
             // 
             this.splitContainer1.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -368,17 +381,6 @@
             this.splitContainer2.SplitterDistance = 236;
             this.splitContainer2.TabIndex = 0;
             // 
-            // legend
-            // 
-            this.legend.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.legend.GroupContextMenu = this.ctxGroup;
-            this.legend.LayerContextMenu = this.ctxLayer;
-            this.legend.Location = new System.Drawing.Point(0, 0);
-            this.legend.Name = "legend";
-            this.legend.Size = new System.Drawing.Size(208, 236);
-            this.legend.TabIndex = 0;
-            this.legend.ThemeCompressionLimit = 25;
-            // 
             // ctxGroup
             // 
             this.ctxGroup.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
@@ -406,28 +408,6 @@
             this.thisIsALayerContextMenuToolStripMenuItem.Size = new System.Drawing.Size(220, 22);
             this.thisIsALayerContextMenuToolStripMenuItem.Text = "This is a layer context menu";
             this.thisIsALayerContextMenuToolStripMenuItem.Click += new System.EventHandler(this.thisIsALayerContextMenuToolStripMenuItem_Click);
-            // 
-            // propertyPane
-            // 
-            this.propertyPane.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.propertyPane.Location = new System.Drawing.Point(0, 0);
-            this.propertyPane.Name = "propertyPane";
-            this.propertyPane.Size = new System.Drawing.Size(208, 225);
-            this.propertyPane.TabIndex = 0;
-            // 
-            // viewer
-            // 
-            this.viewer.ContextMenuStrip = this.ctxViewer;
-            this.viewer.ConvertTiledGroupsToNonTiled = true;
-            this.viewer.Cursor = System.Windows.Forms.Cursors.Default;
-            this.viewer.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.viewer.Location = new System.Drawing.Point(0, 0);
-            this.viewer.Name = "viewer";
-            this.viewer.SelectionColor = System.Drawing.Color.OrangeRed;
-            this.viewer.Size = new System.Drawing.Size(572, 465);
-            this.viewer.TabIndex = 1;
-            this.viewer.ZoomInFactor = 0.75D;
-            this.viewer.ZoomOutFactor = 1.35D;
             // 
             // ctxViewer
             // 
@@ -470,6 +450,49 @@
             this.toolStripContainer1.TopToolStripPanel.Controls.Add(this.toolbar);
             this.toolStripContainer1.TopToolStripPanel.Controls.Add(this.toolStrip1);
             // 
+            // toolStripButton4
+            // 
+            this.toolStripButton4.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButton4.Image")));
+            this.toolStripButton4.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.toolStripButton4.Name = "toolStripButton4";
+            this.toolStripButton4.Size = new System.Drawing.Size(61, 22);
+            this.toolStripButton4.Text = "Profile";
+            this.toolStripButton4.ToolTipText = "Profile current map view";
+            this.toolStripButton4.Click += new System.EventHandler(this.toolStripButton4_Click);
+            // 
+            // legend
+            // 
+            this.legend.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.legend.GroupContextMenu = this.ctxGroup;
+            this.legend.LayerContextMenu = this.ctxLayer;
+            this.legend.Location = new System.Drawing.Point(0, 0);
+            this.legend.Name = "legend";
+            this.legend.Size = new System.Drawing.Size(208, 236);
+            this.legend.TabIndex = 0;
+            this.legend.ThemeCompressionLimit = 25;
+            // 
+            // propertyPane
+            // 
+            this.propertyPane.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.propertyPane.Location = new System.Drawing.Point(0, 0);
+            this.propertyPane.Name = "propertyPane";
+            this.propertyPane.Size = new System.Drawing.Size(208, 225);
+            this.propertyPane.TabIndex = 0;
+            // 
+            // viewer
+            // 
+            this.viewer.ContextMenuStrip = this.ctxViewer;
+            this.viewer.ConvertTiledGroupsToNonTiled = true;
+            this.viewer.Cursor = System.Windows.Forms.Cursors.Default;
+            this.viewer.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.viewer.Location = new System.Drawing.Point(0, 0);
+            this.viewer.Name = "viewer";
+            this.viewer.SelectionColor = System.Drawing.Color.OrangeRed;
+            this.viewer.Size = new System.Drawing.Size(572, 465);
+            this.viewer.TabIndex = 1;
+            this.viewer.ZoomInFactor = 0.75D;
+            this.viewer.ZoomOutFactor = 1.35D;
+            // 
             // toolbar
             // 
             this.toolbar.Dock = System.Windows.Forms.DockStyle.None;
@@ -483,14 +506,10 @@
             this.toolbar.Viewer = null;
             this.toolbar.ZoomOutMode = OSGeo.MapGuide.Viewer.ZoomOutMode.AutoZoom;
             // 
-            // toolStripButton3
+            // toolStripSeparator2
             // 
-            this.toolStripButton3.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButton3.Image")));
-            this.toolStripButton3.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.toolStripButton3.Name = "toolStripButton3";
-            this.toolStripButton3.Size = new System.Drawing.Size(59, 22);
-            this.toolStripButton3.Text = "Query";
-            this.toolStripButton3.Click += new System.EventHandler(this.toolStripButton3_Click);
+            this.toolStripSeparator2.Name = "toolStripSeparator2";
+            this.toolStripSeparator2.Size = new System.Drawing.Size(6, 25);
             // 
             // Form1
             // 
@@ -574,6 +593,8 @@
         private System.Windows.Forms.ToolStripButton toolStripButton1;
         private System.Windows.Forms.ToolStripButton toolStripButton2;
         private System.Windows.Forms.ToolStripButton toolStripButton3;
+        private System.Windows.Forms.ToolStripButton toolStripButton4;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
     }
 }
 
