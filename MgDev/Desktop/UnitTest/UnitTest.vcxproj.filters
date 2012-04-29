@@ -39,6 +39,9 @@
     <ClCompile Include="TestTileService.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="TestProfilingService.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CppUnitExtensions.h">
@@ -67,6 +70,9 @@
     </ClInclude>
     <ClInclude Include="UnitTesting.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="TestProfilingService.h">
+      <Filter>Source Files</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

@@ -5,6 +5,7 @@
 #include "MapLayer/Layer.h"
 #include "MapLayer/Map.h"
 #include "RendererStyles.h"
+#include "ProfileRenderLayersResult.h"
 
 typedef bool (*CancelStylization)(void* userData);
 
@@ -57,6 +58,7 @@ public:
                               double scale,
                               bool selection = false,
                               bool extractColors = false,
+							  ProfileRenderLayersResultBase* = NULL,
                               CancelStylization cancel = NULL);
 
     static RSMgFeatureReader* ExecuteFeatureQuery(MgFeatureService* svcFeature,
