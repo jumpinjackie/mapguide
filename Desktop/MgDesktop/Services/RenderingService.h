@@ -12,10 +12,13 @@ class FeatureInfoRenderer;
 class MgDrawingService;
 struct RS_Bounds;
 class RS_Color;
+class Stylizer;
+class Renderer;
 
 namespace MdfModel
 {
     class FeatureTypeStyle;
+	class ProfileRenderMapResult;
 }
 
 template class Ptr<MgDrawingService>;
@@ -55,6 +58,11 @@ PUBLISHED_API:
                                                MgdSelection* selection,
                                                MgRenderingOptions* options);
 
+    virtual MgByteReader* RenderDynamicOverlay(MgdMap* map,
+                                               MgdSelection* selection,
+                                               MgRenderingOptions* options,
+                                               ProfileRenderMapResult* pPRMResult);
+
     virtual MgByteReader* RenderMap(MgdMap* map,
                                     MgdSelection* selection,
                                     CREFSTRING format);
@@ -76,15 +84,14 @@ PUBLISHED_API:
                                           MgColor* backgroundColor,
                                           CREFSTRING format);
 
-    virtual MgByteReader* GenerateLegendImage(MgResourceIdentifier* resource,
+    // --------------- BEGIN: DWF Rendering and miscellaneous APIs from MgMappingService -----------------------//
+	 virtual MgByteReader* GenerateLegendImage(MgResourceIdentifier* resource,
                                               double scale,
                                               INT32 width,
                                               INT32 height,
                                               CREFSTRING format,
                                               INT32 geomType,
                                               INT32 themeCategory);
-
-    // --------------- DWF Rendering APIs from MgMappingService -----------------------//
 
     virtual MgByteReader* GeneratePlot(
         MgdMap* map,
@@ -112,10 +119,12 @@ PUBLISHED_API:
         MgMapPlotCollection* mapPlots,
         MgDwfVersion* dwfVersion);
 
+private:
+	bool FeatureTypeStyleSupportsGeomType(MdfModel::FeatureTypeStyle* fts, INT32 geomType);
+	// --------------- END: DWF Rendering and miscellaneous APIs from MgMappingService -----------------------//
+
 INTERNAL_API:
-    //These APIs are most likely relics from having to deal with a stateless
-    //medium like HTTP. We won't remove them for now, but we won't make them
-    //visible either
+
     virtual MgByteReader* RenderMap(MgdMap* map,
                                     MgdSelection* selection,
                                     MgEnvelope* extents,
@@ -161,11 +170,21 @@ INTERNAL_API:
                                     MgColor* backgroundColor,
                                     CREFSTRING format,
                                     bool bKeepSelection,
-                                    bool bClip);
+                                    ProfileRenderMapResult* pPRMResult);
+
+    virtual MgByteReader* RenderMap(MgdMap* map,
+                                    MgdSelection* selection,
+                                    MgCoordinate* center,
+                                    double scale,
+                                    INT32 width,
+                                    INT32 height,
+                                    MgColor* backgroundColor,
+                                    CREFSTRING format,
+                                    bool bKeepSelection,
+                                    bool bClip,
+                                    ProfileRenderMapResult* pPRMResult = NULL);
 
 private:
-    bool FeatureTypeStyleSupportsGeomType(MdfModel::FeatureTypeStyle* fts, INT32 geomType);
-
     // used for tile generation
     MgByteReader* RenderTile(MgdMap* map,
                              MgLayerGroup* baseGroup,
@@ -193,8 +212,9 @@ private:
                                     RS_Bounds& b,
                                     bool expandExtents,
                                     bool bKeepSelection,
-                                    bool renderWatermark);
-
+                                    bool renderWatermark,
+                                    ProfileRenderMapResult* pPRMResult = NULL);
+	
     MgByteReader* RenderMapInternal(MgdMap* map,
                                     MgdSelection* selection,
                                     MgReadOnlyLayerCollection* roLayers,
@@ -207,9 +227,10 @@ private:
                                     RS_Bounds& b,
                                     bool expandExtents,
                                     MgRenderingOptions* options,
-                                    bool renderWatermark);
+                                    bool renderWatermark,
+                                    ProfileRenderMapResult* pPRMResult = NULL);
 
-    void RenderForSelection(MgdMap* map,
+    void RenderForSelection(MgMap* map,
                          MgStringCollection* layerNames,
                          MgGeometry* geometry,
                          INT32 selectionVariant,
@@ -224,6 +245,44 @@ private:
                                 bool requiresClipping,
                                 bool localOverposting = false,
                                 double tileExtentOffset = 0.0);
+
+    void RenderLayers(MgdMap* map,
+                      MgReadOnlyLayerCollection* layers,
+                      Stylizer* ds,
+                      Renderer* dr,
+                      MgCoordinateSystem* dstCs,
+                      bool expandExtents,
+                      double scale,
+                      CREFSTRING format,
+                      ProfileRenderMapResult* pPRMResult);
+
+    void RenderSelection(MgdMap* map,
+                         MgdSelection* selection,
+                         MgReadOnlyLayerCollection* layers,
+                         MgRenderingOptions* options,
+                         Stylizer* ds,
+                         Renderer* dr,
+                         MgCoordinateSystem* dstCs,
+                         double scale,
+                         INT32 behavior,
+                         ProfileRenderMapResult* pPRMResult);
+
+    void RenderWatermarks(MgdMap* map,
+                          MgReadOnlyLayerCollection* layers,
+                          Stylizer* ds,
+                          Renderer* dr,
+                          int drawWidth,
+                          int drawHeight,
+                          INT32 saveWidth,
+                          INT32 saveHeight,
+                          ProfileRenderMapResult* pPRMResult);
+
+    MgByteReader* CreateImage(MgdMap* map,
+                              Renderer* dr,
+                              INT32 saveWidth,
+                              INT32 saveHeight,
+                              CREFSTRING format,
+                              ProfileRenderMapResult* pPRMResult);
 
     // member data
     Ptr<MgFeatureService> m_svcFeature;
@@ -241,6 +300,7 @@ private:
     INT32 m_maxRasterImageWidth;
     INT32 m_maxRasterImageHeight;
 
+	// Mapping Service configuration properties
     INT32 m_rasterGridSizeForPlot;
     INT32 m_minRasterGridSizeForPlot;
     double m_rasterGridSizeOverrideRatioForPlot;

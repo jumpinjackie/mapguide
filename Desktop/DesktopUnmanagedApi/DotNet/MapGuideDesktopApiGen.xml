@@ -101,6 +101,7 @@ typedef wchar_t* STRINGPARAM;
     <Header path="../../MgDesktop/Services/DrawingService.h" />
     <Header path="../../MgDesktop/Services/FeatureReader.h" />
     <Header path="../../MgDesktop/Services/FeatureService.h" />
+    <Header path="../../MgDesktop/Services/ProfilingService.h" />
     <Header path="../../MgDesktop/Services/RenderingService.h" />
     <Header path="../../MgDesktop/Services/ResourceService.h" />
     <Header path="../../MgDesktop/Services/ScrollableFeatureReader.h" />

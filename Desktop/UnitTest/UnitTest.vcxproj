@@ -283,6 +283,7 @@ xcopy /Y /I ..\..\Oem\CsMap\Dictionaries\*.txt $(OutDir)Dictionaries\
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="TestProfilingService.cpp" />
     <ClCompile Include="TestRenderingService.cpp" />
     <ClCompile Include="TestResourceService.cpp" />
     <ClCompile Include="TestTileService.cpp" />
@@ -293,6 +294,7 @@ xcopy /Y /I ..\..\Oem\CsMap\Dictionaries\*.txt $(OutDir)Dictionaries\
     <ClInclude Include="TestKmlService.h" />
     <ClInclude Include="TestMappingService.h" />
     <ClInclude Include="TestPerformance.h" />
+    <ClInclude Include="TestProfilingService.h" />
     <ClInclude Include="TestRenderingService.h" />
     <ClInclude Include="TestResourceService.h" />
     <ClInclude Include="TestTileService.h" />

@@ -475,5 +475,13 @@ namespace MapViewerTest
             frm.Controls.Add(ctrl);
             frm.Show();
         }
+
+        private void toolStripButton4_Click(object sender, EventArgs e)
+        {
+            var prof = (MgProfilingService)fact.CreateService(MgServiceType.ProfilingService);
+            var opts = new MgRenderingOptions("PNG", 2, new MgColor(viewer.SelectionColor));
+            var result = prof.ProfileRenderDynamicOverlay(_map, (MgdSelection)viewer.GetSelection(), opts);
+            new XmlResponseDialog(result).ShowDialog();
+        }
     }
 }
