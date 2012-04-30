@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
 using System.Data;
-using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using System.Globalization;
@@ -111,7 +110,7 @@ namespace OSGeo.MapGuide.Viewer
             MgResourceIdentifier ldfId = new MgResourceIdentifier("Session:" + _sessionId + "//" + txtBufferLayer.Text + "_Buffer.LayerDefinition");
 
             MgLayerBase layer = FindLayer(layers, txtBufferLayer.Text);
-            string[] layerNames = lstLayers.Items.OfType<string>().ToArray();
+            string[] layerNames = GetLayerNames();
 
             double distance = Convert.ToDouble(numBufferDistance.Value);
             MeasurementUnit bUnits = (MeasurementUnit)cmbUnits.SelectedItem;
@@ -379,6 +378,16 @@ namespace OSGeo.MapGuide.Viewer
 
             //build report message
             MessageBox.Show("Buffer layer (" + txtBufferLayer.Text + ") " + (newBuffer ? "created" : "updated"));
+        }
+
+        private string[] GetLayerNames()
+        {
+            var items = new List<string>();
+            foreach (var it in lstLayers.Items)
+            {
+                items.Add(it.ToString());
+            }
+            return items.ToArray();
         }
 
         static string ToHtmlColor(Color color)
