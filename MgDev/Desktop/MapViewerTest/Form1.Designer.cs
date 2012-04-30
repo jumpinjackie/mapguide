@@ -55,33 +55,31 @@
             this.btnDigitizePolygon = new System.Windows.Forms.ToolStripButton();
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.btnPlotToDwf = new System.Windows.Forms.ToolStripButton();
+            this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
             this.toolStripButton1 = new System.Windows.Forms.ToolStripButton();
             this.toolStripButton2 = new System.Windows.Forms.ToolStripButton();
             this.toolStripButton3 = new System.Windows.Forms.ToolStripButton();
+            this.toolStripButton4 = new System.Windows.Forms.ToolStripButton();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.splitContainer2 = new System.Windows.Forms.SplitContainer();
+            this.legend = new OSGeo.MapGuide.Viewer.MgLegend();
             this.ctxGroup = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.thisIsAGroupContextMenuToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.ctxLayer = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.thisIsALayerContextMenuToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.propertyPane = new OSGeo.MapGuide.Viewer.MgPropertyPane();
+            this.viewer = new OSGeo.MapGuide.Viewer.MgMapViewer();
             this.ctxViewer = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.refreshMapToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.initialViewToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripContainer1 = new System.Windows.Forms.ToolStripContainer();
-            this.toolStripButton4 = new System.Windows.Forms.ToolStripButton();
-            this.legend = new OSGeo.MapGuide.Viewer.MgLegend();
-            this.propertyPane = new OSGeo.MapGuide.Viewer.MgPropertyPane();
-            this.viewer = new OSGeo.MapGuide.Viewer.MgMapViewer();
             this.toolbar = new OSGeo.MapGuide.Viewer.MgDefaultToolbar();
-            this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
             this.statusStrip1.SuspendLayout();
             this.menuStrip1.SuspendLayout();
             this.toolStrip1.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
             this.splitContainer1.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.splitContainer2)).BeginInit();
             this.splitContainer2.Panel1.SuspendLayout();
             this.splitContainer2.Panel2.SuspendLayout();
             this.splitContainer2.SuspendLayout();
@@ -317,6 +315,11 @@
             this.btnPlotToDwf.Text = "Plot current view to DWF";
             this.btnPlotToDwf.Click += new System.EventHandler(this.btnPlotToDwf_Click);
             // 
+            // toolStripSeparator2
+            // 
+            this.toolStripSeparator2.Name = "toolStripSeparator2";
+            this.toolStripSeparator2.Size = new System.Drawing.Size(6, 25);
+            // 
             // toolStripButton1
             // 
             this.toolStripButton1.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButton1.Image")));
@@ -343,6 +346,16 @@
             this.toolStripButton3.Size = new System.Drawing.Size(59, 22);
             this.toolStripButton3.Text = "Query";
             this.toolStripButton3.Click += new System.EventHandler(this.toolStripButton3_Click);
+            // 
+            // toolStripButton4
+            // 
+            this.toolStripButton4.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButton4.Image")));
+            this.toolStripButton4.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.toolStripButton4.Name = "toolStripButton4";
+            this.toolStripButton4.Size = new System.Drawing.Size(61, 22);
+            this.toolStripButton4.Text = "Profile";
+            this.toolStripButton4.ToolTipText = "Profile current map view";
+            this.toolStripButton4.Click += new System.EventHandler(this.toolStripButton4_Click);
             // 
             // splitContainer1
             // 
@@ -381,6 +394,17 @@
             this.splitContainer2.SplitterDistance = 236;
             this.splitContainer2.TabIndex = 0;
             // 
+            // legend
+            // 
+            this.legend.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.legend.GroupContextMenu = this.ctxGroup;
+            this.legend.LayerContextMenu = this.ctxLayer;
+            this.legend.Location = new System.Drawing.Point(0, 0);
+            this.legend.Name = "legend";
+            this.legend.Size = new System.Drawing.Size(208, 236);
+            this.legend.TabIndex = 0;
+            this.legend.ThemeCompressionLimit = 25;
+            // 
             // ctxGroup
             // 
             this.ctxGroup.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
@@ -408,6 +432,28 @@
             this.thisIsALayerContextMenuToolStripMenuItem.Size = new System.Drawing.Size(220, 22);
             this.thisIsALayerContextMenuToolStripMenuItem.Text = "This is a layer context menu";
             this.thisIsALayerContextMenuToolStripMenuItem.Click += new System.EventHandler(this.thisIsALayerContextMenuToolStripMenuItem_Click);
+            // 
+            // propertyPane
+            // 
+            this.propertyPane.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.propertyPane.Location = new System.Drawing.Point(0, 0);
+            this.propertyPane.Name = "propertyPane";
+            this.propertyPane.Size = new System.Drawing.Size(208, 225);
+            this.propertyPane.TabIndex = 0;
+            // 
+            // viewer
+            // 
+            this.viewer.ContextMenuStrip = this.ctxViewer;
+            this.viewer.ConvertTiledGroupsToNonTiled = true;
+            this.viewer.Cursor = System.Windows.Forms.Cursors.Default;
+            this.viewer.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.viewer.Location = new System.Drawing.Point(0, 0);
+            this.viewer.Name = "viewer";
+            this.viewer.SelectionColor = System.Drawing.Color.OrangeRed;
+            this.viewer.Size = new System.Drawing.Size(572, 465);
+            this.viewer.TabIndex = 1;
+            this.viewer.ZoomInFactor = 0.75;
+            this.viewer.ZoomOutFactor = 1.35;
             // 
             // ctxViewer
             // 
@@ -450,49 +496,6 @@
             this.toolStripContainer1.TopToolStripPanel.Controls.Add(this.toolbar);
             this.toolStripContainer1.TopToolStripPanel.Controls.Add(this.toolStrip1);
             // 
-            // toolStripButton4
-            // 
-            this.toolStripButton4.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButton4.Image")));
-            this.toolStripButton4.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.toolStripButton4.Name = "toolStripButton4";
-            this.toolStripButton4.Size = new System.Drawing.Size(61, 22);
-            this.toolStripButton4.Text = "Profile";
-            this.toolStripButton4.ToolTipText = "Profile current map view";
-            this.toolStripButton4.Click += new System.EventHandler(this.toolStripButton4_Click);
-            // 
-            // legend
-            // 
-            this.legend.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.legend.GroupContextMenu = this.ctxGroup;
-            this.legend.LayerContextMenu = this.ctxLayer;
-            this.legend.Location = new System.Drawing.Point(0, 0);
-            this.legend.Name = "legend";
-            this.legend.Size = new System.Drawing.Size(208, 236);
-            this.legend.TabIndex = 0;
-            this.legend.ThemeCompressionLimit = 25;
-            // 
-            // propertyPane
-            // 
-            this.propertyPane.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.propertyPane.Location = new System.Drawing.Point(0, 0);
-            this.propertyPane.Name = "propertyPane";
-            this.propertyPane.Size = new System.Drawing.Size(208, 225);
-            this.propertyPane.TabIndex = 0;
-            // 
-            // viewer
-            // 
-            this.viewer.ContextMenuStrip = this.ctxViewer;
-            this.viewer.ConvertTiledGroupsToNonTiled = true;
-            this.viewer.Cursor = System.Windows.Forms.Cursors.Default;
-            this.viewer.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.viewer.Location = new System.Drawing.Point(0, 0);
-            this.viewer.Name = "viewer";
-            this.viewer.SelectionColor = System.Drawing.Color.OrangeRed;
-            this.viewer.Size = new System.Drawing.Size(572, 465);
-            this.viewer.TabIndex = 1;
-            this.viewer.ZoomInFactor = 0.75D;
-            this.viewer.ZoomOutFactor = 1.35D;
-            // 
             // toolbar
             // 
             this.toolbar.Dock = System.Windows.Forms.DockStyle.None;
@@ -505,11 +508,6 @@
             this.toolbar.Text = "mgDefaultToolbar1";
             this.toolbar.Viewer = null;
             this.toolbar.ZoomOutMode = OSGeo.MapGuide.Viewer.ZoomOutMode.AutoZoom;
-            // 
-            // toolStripSeparator2
-            // 
-            this.toolStripSeparator2.Name = "toolStripSeparator2";
-            this.toolStripSeparator2.Size = new System.Drawing.Size(6, 25);
             // 
             // Form1
             // 
@@ -530,11 +528,9 @@
             this.toolStrip1.PerformLayout();
             this.splitContainer1.Panel1.ResumeLayout(false);
             this.splitContainer1.Panel2.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).EndInit();
             this.splitContainer1.ResumeLayout(false);
             this.splitContainer2.Panel1.ResumeLayout(false);
             this.splitContainer2.Panel2.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.splitContainer2)).EndInit();
             this.splitContainer2.ResumeLayout(false);
             this.ctxGroup.ResumeLayout(false);
             this.ctxLayer.ResumeLayout(false);
