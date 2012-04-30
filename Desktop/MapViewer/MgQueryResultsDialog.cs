@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
-using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 
@@ -56,7 +55,8 @@ namespace OSGeo.MapGuide.Viewer
 
             var propNames = new List<string>();
             int propCount = reader.GetPropertyCount();
-            HashSet<int> skipProps = new HashSet<int>();
+            //.net 2.0 compatibility hack for set-like behaviour
+            var skipProps = new Dictionary<int, int>();
             for (int i = 0; i < propCount; i++)
             {
                 var pt = reader.GetPropertyType(i);
@@ -66,7 +66,7 @@ namespace OSGeo.MapGuide.Viewer
                     pt == MgPropertyType.Null ||
                     pt == MgPropertyType.Raster)
                 {
-                    skipProps.Add(i);
+                    skipProps[i] = i;
                 }
                 else
                 {
@@ -84,7 +84,7 @@ namespace OSGeo.MapGuide.Viewer
                     object[] values = new object[propCount];
                     for (int i = 0; i < propCount; i++)
                     {
-                        if (skipProps.Contains(i))
+                        if (skipProps.ContainsKey(i))
                             continue;
 
                         if (reader.IsNull(i))
