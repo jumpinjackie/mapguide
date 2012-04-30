@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
 using System.Data;
-using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 
@@ -46,8 +45,18 @@ namespace OSGeo.MapGuide.Viewer
                 //Add to list of line segments
                 _segments.Add(new MeasuredLineSegment() { MapDistanceMeters = dist, Units = (MeasurementUnit)cmbUnits.SelectedItem });
 
-                lblUnits.Text = _segments.Sum(x => x.DisplayUnits).ToString();
+                lblUnits.Text = TotalUnits(_segments).ToString();
             });
+        }
+
+        private static double TotalUnits(IEnumerable<MeasuredLineSegment> segments)
+        {
+            double total = 0.0;
+            foreach (var seg in segments)
+            {
+                total += seg.DisplayUnits;
+            }
+            return total;
         }
 
         private void cmbUnits_SelectedIndexChanged(object sender, EventArgs e)
@@ -57,7 +66,7 @@ namespace OSGeo.MapGuide.Viewer
             {
                 seg.Units = (MeasurementUnit)cmbUnits.SelectedItem;
             }
-            lblUnits.Text = _segments.Sum(x => x.DisplayUnits).ToString(); 
+            lblUnits.Text = TotalUnits(_segments).ToString(); 
         }
     }
 

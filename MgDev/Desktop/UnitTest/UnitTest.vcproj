@@ -442,6 +442,10 @@
 				</FileConfiguration>
 			</File>
 			<File
+				RelativePath=".\TestProfilingService.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\TestRenderingService.cpp"
 				>
 			</File>
@@ -477,6 +481,10 @@
 			</File>
 			<File
 				RelativePath=".\TestPerformance.h"
+				>
+			</File>
+			<File
+				RelativePath=".\TestProfilingService.h"
 				>
 			</File>
 			<File
