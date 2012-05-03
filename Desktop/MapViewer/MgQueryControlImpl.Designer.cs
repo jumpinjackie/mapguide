@@ -1,6 +1,6 @@
 ﻿namespace OSGeo.MapGuide.Viewer
 {
-    partial class MgQueryControl
+    partial class MgQueryControlImpl
     {
         /// <summary> 
         /// Required designer variable.
