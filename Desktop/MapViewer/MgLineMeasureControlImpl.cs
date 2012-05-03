@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
@@ -8,15 +8,16 @@ using System.Windows.Forms;
 
 namespace OSGeo.MapGuide.Viewer
 {
-    public partial class MgLineMeasureControl : UserControl
+    internal partial class MgLineMeasureControlImpl : MgControlImpl
     {
         private IMapViewer _viewer;
         private MgCoordinateSystem _mapCs;
         private BindingList<MeasuredLineSegment> _segments;
 
-        public MgLineMeasureControl(IMapViewer viewer, MeasurementUnit preferredUnit)
+        public MgLineMeasureControlImpl(IMapViewer viewer, MeasurementUnit preferredUnit)
         {
             InitializeComponent();
+            this.Title = Properties.Resources.TitleMeasure;
             _viewer = viewer;
             _segments = new BindingList<MeasuredLineSegment>();
             cmbUnits.DataSource = Enum.GetValues(typeof(MeasurementUnit));

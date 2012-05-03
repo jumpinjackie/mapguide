@@ -91,13 +91,31 @@
     <Compile Include="IMapStatusBar.cs" />
     <Compile Include="IPropertyPane.cs" />
     <Compile Include="MgBufferControl.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="MgBufferControlImpl.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="MgBufferControl.Designer.cs">
-      <DependentUpon>MgBufferControl.cs</DependentUpon>
+    <Compile Include="MgBufferControlImpl.Designer.cs">
+      <DependentUpon>MgBufferControlImpl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="MgComponent.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="MgControlImpl.cs">
+      <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="MgDefaultToolbar.cs">
       <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="MgInvokeComponent.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="MgLineMeasureControlImpl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="MgLineMeasureControlImpl.Designer.cs">
+      <DependentUpon>MgLineMeasureControlImpl.cs</DependentUpon>
     </Compile>
     <Compile Include="MgMapViewer.cs">
       <SubType>Component</SubType>
@@ -110,11 +128,8 @@
       <DependentUpon>MgLegend.cs</DependentUpon>
     </Compile>
     <Compile Include="MgMapViewerProvider.cs" />
-    <Compile Include="MgLineMeasureControl.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="MgLineMeasureControl.Designer.cs">
-      <DependentUpon>MgLineMeasureControl.cs</DependentUpon>
+    <Compile Include="MgMeasureControl.cs">
+      <SubType>Component</SubType>
     </Compile>
     <Compile Include="MgPropertyPane.cs">
       <SubType>UserControl</SubType>
@@ -123,10 +138,13 @@
       <DependentUpon>MgPropertyPane.cs</DependentUpon>
     </Compile>
     <Compile Include="MgQueryControl.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="MgQueryControlImpl.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="MgQueryControl.Designer.cs">
-      <DependentUpon>MgQueryControl.cs</DependentUpon>
+    <Compile Include="MgQueryControlImpl.Designer.cs">
+      <DependentUpon>MgQueryControlImpl.cs</DependentUpon>
     </Compile>
     <Compile Include="MgQueryResultsDialog.cs">
       <SubType>Form</SubType>
@@ -148,20 +166,20 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Debug.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <EmbeddedResource Include="MgBufferControl.resx">
-      <DependentUpon>MgBufferControl.cs</DependentUpon>
+    <EmbeddedResource Include="MgBufferControlImpl.resx">
+      <DependentUpon>MgBufferControlImpl.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="MgLegend.resx">
       <DependentUpon>MgLegend.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="MgLineMeasureControl.resx">
-      <DependentUpon>MgLineMeasureControl.cs</DependentUpon>
+    <EmbeddedResource Include="MgLineMeasureControlImpl.resx">
+      <DependentUpon>MgLineMeasureControlImpl.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="MgPropertyPane.resx">
       <DependentUpon>MgPropertyPane.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="MgQueryControl.resx">
-      <DependentUpon>MgQueryControl.cs</DependentUpon>
+    <EmbeddedResource Include="MgQueryControlImpl.resx">
+      <DependentUpon>MgQueryControlImpl.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="MgQueryResultsDialog.resx">
       <DependentUpon>MgQueryResultsDialog.cs</DependentUpon>

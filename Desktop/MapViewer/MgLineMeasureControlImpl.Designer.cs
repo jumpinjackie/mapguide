@@ -1,6 +1,6 @@
-namespace OSGeo.MapGuide.Viewer
+﻿namespace OSGeo.MapGuide.Viewer
 {
-    partial class MgLineMeasureControl
+    partial class MgLineMeasureControlImpl
     {
         /// <summary> 
         /// Required designer variable.

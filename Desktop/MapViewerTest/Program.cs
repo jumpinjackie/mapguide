@@ -37,11 +37,15 @@ namespace MapViewerTest
                 {
                     var resId = new MgResourceIdentifier(args[0]);
                     resId.Validate();
-
-                    frm.Load += (s, e) =>
+                    var fact = new MgServiceFactory();
+                    var resSvc = (MgResourceService)fact.CreateService(MgServiceType.ResourceService);
+                    if (resSvc.ResourceExists(resId))
                     {
-                        frm.LoadMap(resId);
-                    };
+                        frm.Load += (s, e) =>
+                        {
+                            frm.LoadMap(resId);
+                        };
+                    }
                 }
                 catch (MgException ex)
                 {

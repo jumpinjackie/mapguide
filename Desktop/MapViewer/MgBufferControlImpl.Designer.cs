@@ -1,6 +1,6 @@
-namespace OSGeo.MapGuide.Viewer
+﻿namespace OSGeo.MapGuide.Viewer
 {
-    partial class MgBufferControl
+    partial class MgBufferControlImpl
     {
         /// <summary> 
         /// Required designer variable.
