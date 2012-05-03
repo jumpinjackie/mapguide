@@ -444,38 +444,6 @@ namespace MapViewerTest
             viewer.InitialMapView();
         }
 
-        private void toolStripButton1_Click(object sender, EventArgs e)
-        {
-            var ctrl = new MgLineMeasureControl(viewer, MeasurementUnit.Kilometers);
-            var frm = new Form();
-            frm.Text = "Measure";
-            ctrl.Dock = DockStyle.Fill;
-            frm.Controls.Add(ctrl);
-            frm.Show();
-        }
-
-        private void toolStripButton2_Click(object sender, EventArgs e)
-        {
-            var ctrl = new MgBufferControl(viewer);
-            var frm = new Form();
-            frm.Text = "Buffer";
-            frm.Size = new System.Drawing.Size(250, 601);
-            ctrl.Dock = DockStyle.Fill;
-            frm.Controls.Add(ctrl);
-            frm.Show();
-        }
-
-        private void toolStripButton3_Click(object sender, EventArgs e)
-        {
-            var ctrl = new MgQueryControl(viewer);
-            var frm = new Form();
-            frm.Text = "Query";
-            frm.Size = new System.Drawing.Size(266, 460);
-            ctrl.Dock = DockStyle.Fill;
-            frm.Controls.Add(ctrl);
-            frm.Show();
-        }
-
         private void toolStripButton4_Click(object sender, EventArgs e)
         {
             var prof = (MgProfilingService)fact.CreateService(MgServiceType.ProfilingService);
