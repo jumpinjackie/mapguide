@@ -2000,7 +2000,7 @@ class JAVA : public Language {
       addThrows(n, "tmap:javaout", n);
 	  if(returnObject)
 	  {
-		  Replaceall(tm, "new $javaclassname(cPtr, $owner)", "($javaclassname)ObjectFactory.createObject($module.getClassId(cPtr), cPtr, $owner)");
+		  Replaceall(tm, "new $javaclassname(cPtr, $owner)", "($javaclassname)ObjectFactory.createObject($module.getClassId(cPtr), cPtr, true)");
 		  Replaceall(tm, "$module", imclass_name);
 	  }
       if (Getattr(n,"feature:new"))
