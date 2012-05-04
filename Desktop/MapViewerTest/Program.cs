@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Windows.Forms;
 using OSGeo.MapGuide;
 using System.Diagnostics;
+using OSGeo.MapGuide.Viewer;
+using OSGeo.MapGuide.Viewer.Desktop;
 
 namespace MapViewerTest
 {
@@ -30,7 +32,7 @@ namespace MapViewerTest
                 MessageBox.Show(ex.ToString(), "Error");
                 return;
             }
-            var frm = new Form1();
+            var frm = new MgAppWindow();
             if (args.Length == 1)
             {
                 try
@@ -43,7 +45,7 @@ namespace MapViewerTest
                     {
                         frm.Load += (s, e) =>
                         {
-                            frm.LoadMap(resId);
+                            LoadMap(frm, resId);
                         };
                     }
                 }
@@ -54,6 +56,17 @@ namespace MapViewerTest
             }
             Application.ApplicationExit += new EventHandler(OnAppExit);
             Application.Run(frm);
+        }
+
+        private static void LoadMap(MgAppWindow frm, MgResourceIdentifier mapId)
+        {
+            var map = new MgdMap(mapId);
+            var fact = new MgServiceFactory();
+
+            frm.LoadMap(
+                new MgDesktopMapViewerProvider(map,
+                    (MgdResourceService)fact.CreateService(MgServiceType.ResourceService),
+                    (MgRenderingService)fact.CreateService(MgServiceType.RenderingService)));
         }
 
         static void OnAppExit(object sender, EventArgs e)

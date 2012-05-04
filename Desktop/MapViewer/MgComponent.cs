@@ -19,6 +19,14 @@ namespace OSGeo.MapGuide.Viewer
 
         /// <summary>
         /// Gets whether to disable invocation entry points (eg. buttons, menus, etc) to this component when the
+        /// viewer is digitizing
+        /// </summary>
+        [Category("MapGuide Component Properties")]
+        [Description("Disables this component while the digitizing is happening")]
+        public virtual bool DisableWhenDigitizing { get { return true; } }
+
+        /// <summary>
+        /// Gets whether to disable invocation entry points (eg. buttons, menus, etc) to this component when the
         /// viewer is busy
         /// </summary>
         [Category("MapGuide Component Properties")]
@@ -63,26 +71,32 @@ namespace OSGeo.MapGuide.Viewer
             }
         }
 
-        /// <summary>
-        /// Subscribes to viewer events
-        /// </summary>
-        /// <param name="viewer"></param>
         protected virtual void SubscribeViewerEvents(IMapViewer viewer)
         {
             if (viewer != null)
                 viewer.PropertyChanged += OnViewerPropertyChanged;
         }
 
-        public event ViewerBusyStateEventHandler ViewerBusyStateChanged;
-
-        void OnViewerPropertyChanged(object sender, PropertyChangedEventArgs e)
+        protected virtual void OnViewerPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName == "IsBusy")
             {
                 var busy = this.Viewer.IsBusy;
                 Trace.TraceInformation("Dispatching busy state event to " + _listeners.Count + " listeners");
-                foreach (var l in _listeners)
-                    l.SetBusy(busy);
+                if (this.DisableWhenMapIsLoading)
+                {
+                    foreach (var l in _listeners)
+                        l.SetDisabled(busy);
+                }
+            }
+            else if (e.PropertyName == "DigitizingType")
+            {
+                var bDigitizing = (this.Viewer.DigitizingType != MapDigitizationType.None);
+                if (this.DisableWhenDigitizing)
+                {
+                    foreach (var l in _listeners)
+                        l.SetDisabled(bDigitizing);
+                }
             }
         }
 
@@ -96,14 +110,14 @@ namespace OSGeo.MapGuide.Viewer
                 viewer.PropertyChanged -= OnViewerPropertyChanged;
         }
 
-        private List<IMapViewerBusyStateListener> _listeners = new List<IMapViewerBusyStateListener>();
+        protected List<IButtonStateListener> _listeners = new List<IButtonStateListener>();
 
-        public void AddListener(IMapViewerBusyStateListener listener)
+        public void AddListener(IButtonStateListener listener)
         {
             _listeners.Add(listener);
         }
 
-        public void RemoveListener(IMapViewerBusyStateListener listener)
+        public void RemoveListener(IButtonStateListener listener)
         {
             _listeners.Remove(listener);
         }
@@ -119,9 +133,12 @@ namespace OSGeo.MapGuide.Viewer
 
     public delegate void ViewerBusyStateEventHandler(bool busy);
 
-    public interface IMapViewerBusyStateListener
+    public interface IButtonStateListener
     {
-        void SetBusy(bool busy);
+        void SetDisabled(bool busy);
+        void SetActive(bool outlined);
+        void SetText(string text);
+        void SetIcon(Image icon);
     }
 
     /// <summary>
@@ -132,7 +149,7 @@ namespace OSGeo.MapGuide.Viewer
         /// <summary>
         /// Display the UI view within the specified parent container
         /// </summary>
-        ParentContainer,
+        TaskPane,
         /// <summary>
         /// Display the UI view within a new window
         /// </summary>
@@ -143,11 +160,11 @@ namespace OSGeo.MapGuide.Viewer
     /// The base class of all UI-based components
     /// </summary>
     [ToolboxItem(false)]
-    public class MgViewerComponent : MgComponent
+    public class MgViewerComponent : MgComponent, ISupportInitialize
     {
         protected MgViewerComponent()
         {
-            this.ParentContainer = null;
+            this.TaskPane = null;
             this.Target = MgViewerTarget.NewWindow;
         }
 
@@ -155,8 +172,8 @@ namespace OSGeo.MapGuide.Viewer
         /// 
         /// </summary>
         [Category("MapGuide Component Properties")]
-        [Description("The control which will house this component")]
-        public Control ParentContainer
+        [Description("The task pane which will host the UI view")]
+        public MgTaskPane TaskPane
         {
             get;
             set;
@@ -175,8 +192,9 @@ namespace OSGeo.MapGuide.Viewer
             get { return _target; }
             set
             {
-                if (value == MgViewerTarget.ParentContainer && this.ParentContainer == null)
-                    throw new ArgumentException("Must specify a parent container");
+                //Must have a task pane assigned, but we suppress this check during initialization
+                if (!_init && (value == MgViewerTarget.TaskPane && this.TaskPane == null))
+                    throw new ArgumentException("Target: No task pane assigned");
                 _target = value;
             }
         }
@@ -191,26 +209,84 @@ namespace OSGeo.MapGuide.Viewer
         {
             var control = CreateControlImpl();
             control.Dock = DockStyle.Fill;
-            if (this.Target == MgViewerTarget.ParentContainer)
+            if (this.Target == MgViewerTarget.TaskPane)
             {
-                this.ParentContainer.Controls.Clear();
-                this.ParentContainer.Controls.Add(control);
+                new TaskPaneContentCloser(this.TaskPane, control);
             }
             else //New Window
             {
-                var form = new Form();
-                Rectangle screenRectangle = form.RectangleToScreen(form.ClientRectangle);
-                int titleHeight = screenRectangle.Top - form.Top;
-                form.Width = control.PreferredSize.Width;
-                form.Height = control.PreferredSize.Height + titleHeight + 10; //HACK: height calculation is imperfect, so pad out
-                form.Text = control.Title;
-                form.Controls.Add(control);
+                new NewWindowContentCloser(control);
+            }
+        }
+
+        class TaskPaneContentCloser : IContentCloser
+        {
+            private MgTaskPane _taskPane;
+            private MgControlImpl _control;
+
+            public TaskPaneContentCloser(MgTaskPane taskPane, MgControlImpl control)
+            {
+                _taskPane = taskPane;
+                _control = control;
+
+                _control.Closer = this;
+                _taskPane.SetContent(_control);
+            }
+
+            public void Close()
+            {
+                _taskPane.LoadInitialTask();
+            }
+        }
+
+        class NewWindowContentCloser : IContentCloser 
+        {
+            private Form _frm;
+            private MgControlImpl _control;
+
+            public NewWindowContentCloser(MgControlImpl control)
+            {
+                _frm = new Form();
+                _control = control;
+                Rectangle screenRectangle = _frm.RectangleToScreen(_frm.ClientRectangle);
+                int titleHeight = screenRectangle.Top - _frm.Top;
+                _frm.Width = _control.PreferredSize.Width;
+                _frm.Height = _control.PreferredSize.Height + titleHeight + 10; //HACK: height calculation is imperfect, so pad out
+                _frm.Text = _control.Title;
+                _frm.Controls.Add(_control);
+                _control.Closer = this;
 
                 if (control.ModalWindow)
-                    form.ShowDialog();
+                    _frm.ShowDialog();
                 else
-                    form.Show();
+                    _frm.Show();
             }
+
+            public void Close()
+            {
+                if (_control.ModalWindow)
+                    _frm.DialogResult = DialogResult.OK;
+                else
+                    _frm.Close();
+
+                if (!_control.IsDisposed)
+                    _control.Dispose();
+            }
+        }
+
+        private bool _init = true;
+
+        public void BeginInit()
+        {
+            _init = true;
+        }
+
+        public void EndInit()
+        {
+            _init = false;
+            //Now it's safe to check that task pane must be assigned if target is task pane
+            if (this.TaskPane == null && this.Target == MgViewerTarget.TaskPane)
+                throw new InvalidOperationException("EndInit: No task pane assigned");
         }
     }
 }

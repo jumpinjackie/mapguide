@@ -103,8 +103,8 @@
             // 
             this.bgGridLoader.WorkerReportsProgress = true;
             this.bgGridLoader.DoWork += new System.ComponentModel.DoWorkEventHandler(this.bgGridLoader_DoWork);
-            this.bgGridLoader.ProgressChanged += new System.ComponentModel.ProgressChangedEventHandler(this.bgGridLoader_ProgressChanged);
             this.bgGridLoader.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(this.bgGridLoader_RunWorkerCompleted);
+            this.bgGridLoader.ProgressChanged += new System.ComponentModel.ProgressChangedEventHandler(this.bgGridLoader_ProgressChanged);
             // 
             // MgQueryResultsDialog
             // 
@@ -118,6 +118,7 @@
             this.ShowIcon = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Query Results";
+            this.TopMost = true;
             this.toolStrip1.ResumeLayout(false);
             this.toolStrip1.PerformLayout();
             this.statusStrip1.ResumeLayout(false);
