@@ -86,6 +86,7 @@ namespace OSGeo.MapGuide.Viewer
             {
                 ClearFilterGeometry();
                 _filterGeometry = _wktRw.Read(MakeWktPolygon(llx, lly, urx, ury));
+                lblSpatialFilterGeomSet.Visible = true;
             });
         }
 
@@ -102,6 +103,7 @@ namespace OSGeo.MapGuide.Viewer
                 coords.Add(_geomFact.CreateCoordinateXY(coordinates[0, 0], coordinates[0, 1]));
                 MgLinearRing ring = _geomFact.CreateLinearRing(coords);
                 _filterGeometry = _geomFact.CreatePolygon(ring, null);
+                lblSpatialFilterGeomSet.Visible = true;
             });
         }
 
@@ -109,6 +111,7 @@ namespace OSGeo.MapGuide.Viewer
         {
             if (_filterGeometry != null)
                 _filterGeometry.Dispose();
+            lblSpatialFilterGeomSet.Visible = false;
         }
 
         private void btnClear_Click(object sender, EventArgs e)
@@ -188,6 +191,21 @@ namespace OSGeo.MapGuide.Viewer
             }
 
             return sb.ToString();
+        }
+
+        private void lnkRefreshLayers_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            _layers.Clear();
+            var map = _viewer.GetMap();
+            var layers = map.GetLayers();
+            for (var i = 0; i < layers.GetCount(); i++)
+            {
+                _layers.Add(layers.GetItem(i));
+            }
+            if (cmbLayer.SelectedIndex != 0)
+                cmbLayer.SelectedIndex = 0;
+            else
+                cmbLayer_SelectedIndexChanged(this, EventArgs.Empty);
         }
     }
 
