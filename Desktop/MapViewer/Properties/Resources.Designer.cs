@@ -613,11 +613,29 @@ namespace OSGeo.MapGuide.Viewer.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Print.
+        /// </summary>
+        internal static string TextPrint {
+            get {
+                return ResourceManager.GetString("TextPrint", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Refresh Map.
         /// </summary>
         internal static string TextRefreshMap {
             get {
                 return ResourceManager.GetString("TextRefreshMap", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Scale.
+        /// </summary>
+        internal static string TextScale {
+            get {
+                return ResourceManager.GetString("TextScale", resourceCulture);
             }
         }
         
@@ -717,6 +735,15 @@ namespace OSGeo.MapGuide.Viewer.Properties {
         internal static string TitleMeasure {
             get {
                 return ResourceManager.GetString("TitleMeasure", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Print Settings.
+        /// </summary>
+        internal static string TitlePrintSettings {
+            get {
+                return ResourceManager.GetString("TitlePrintSettings", resourceCulture);
             }
         }
         
