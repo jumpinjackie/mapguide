@@ -14,7 +14,7 @@ namespace OSGeo.MapGuide.Viewer
         public MgQueryComponent()
         {
             this.Icon = Properties.Resources.search;
-            this.Label = Properties.Resources.TitleQuery;
+            this.Label = this.ToolTipText = Properties.Resources.TitleQuery;
         }
 
         protected override MgControlImpl CreateControlImpl()

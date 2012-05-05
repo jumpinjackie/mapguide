@@ -120,6 +120,15 @@
     <Compile Include="MgMeasureComponent.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="MgPrintComponent.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="MgPrintControlImpl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="MgPrintControlImpl.Designer.cs">
+      <DependentUpon>MgPrintControlImpl.cs</DependentUpon>
+    </Compile>
     <Compile Include="MgPropertyPane.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -184,6 +193,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="MgLineMeasureControlImpl.resx">
       <DependentUpon>MgLineMeasureControlImpl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="MgPrintControlImpl.resx">
+      <DependentUpon>MgPrintControlImpl.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="MgPropertyPane.resx">
       <DependentUpon>MgPropertyPane.cs</DependentUpon>

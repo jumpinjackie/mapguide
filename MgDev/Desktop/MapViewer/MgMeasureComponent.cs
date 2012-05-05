@@ -14,7 +14,7 @@ namespace OSGeo.MapGuide.Viewer
         public MgMeasureComponent()
         {
             this.Icon = Properties.Resources.measure;
-            this.Label = Properties.Resources.TitleMeasure;
+            this.Label = this.ToolTipText = Properties.Resources.TitleMeasure;
             this.MeasureMode = MeasureMode.Line;
             this.PreferredUnits = MeasurementUnit.Meters;
         }

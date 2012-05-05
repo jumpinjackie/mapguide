@@ -14,7 +14,7 @@ namespace OSGeo.MapGuide.Viewer
         public MgBufferComponent()
         {
             this.Icon = Properties.Resources.buffer;
-            this.Label = Properties.Resources.TitleBuffer;
+            this.Label = this.ToolTipText = Properties.Resources.TitleBuffer;
             this.DefaultLayerName = "Buffer 1";
             this.DefaultBufferUnits = MeasurementUnit.Meters;
         }
