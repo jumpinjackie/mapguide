@@ -196,6 +196,13 @@ namespace OSGeo.MapGuide.Viewer.Properties {
             }
         }
         
+        internal static System.Drawing.Bitmap icon_home {
+            get {
+                object obj = ResourceManager.GetObject("icon_home", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
         internal static System.Drawing.Bitmap icon_loading {
             get {
                 object obj = ResourceManager.GetObject("icon_loading", resourceCulture);
@@ -213,6 +220,13 @@ namespace OSGeo.MapGuide.Viewer.Properties {
         internal static System.Drawing.Bitmap icon_select {
             get {
                 object obj = ResourceManager.GetObject("icon_select", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        internal static System.Drawing.Bitmap icon_tasks {
+            get {
+                object obj = ResourceManager.GetObject("icon_tasks", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -350,9 +364,23 @@ namespace OSGeo.MapGuide.Viewer.Properties {
             }
         }
         
+        internal static System.Drawing.Bitmap load_package {
+            get {
+                object obj = ResourceManager.GetObject("load_package", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
         internal static System.Drawing.Bitmap measure {
             get {
                 object obj = ResourceManager.GetObject("measure", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        internal static System.Drawing.Bitmap monitor_status {
+            get {
+                object obj = ResourceManager.GetObject("monitor_status", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -532,11 +560,56 @@ namespace OSGeo.MapGuide.Viewer.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Load Package.
+        /// </summary>
+        internal static string TextLoadPackage {
+            get {
+                return ResourceManager.GetString("TextLoadPackage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Nothing is selected.
+        /// </summary>
+        internal static string TextNoSelection {
+            get {
+                return ResourceManager.GetString("TextNoSelection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Options Saved.
+        /// </summary>
+        internal static string TextOptionsSaved {
+            get {
+                return ResourceManager.GetString("TextOptionsSaved", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Package Loaded.
+        /// </summary>
+        internal static string TextPackageLoaded {
+            get {
+                return ResourceManager.GetString("TextPackageLoaded", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Pan.
         /// </summary>
         internal static string TextPan {
             get {
                 return ResourceManager.GetString("TextPan", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Plot to DWF.
+        /// </summary>
+        internal static string TextPlotToDwf {
+            get {
+                return ResourceManager.GetString("TextPlotToDwf", resourceCulture);
             }
         }
         
@@ -577,6 +650,24 @@ namespace OSGeo.MapGuide.Viewer.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Task Pane.
+        /// </summary>
+        internal static string TextTaskPane {
+            get {
+                return ResourceManager.GetString("TextTaskPane", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Viewer Options.
+        /// </summary>
+        internal static string TextViewerOptions {
+            get {
+                return ResourceManager.GetString("TextViewerOptions", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Zoom Extents.
         /// </summary>
         internal static string TextZoomExtents {
@@ -604,6 +695,15 @@ namespace OSGeo.MapGuide.Viewer.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Zoom to Selection.
+        /// </summary>
+        internal static string TextZoomToSelection {
+            get {
+                return ResourceManager.GetString("TextZoomToSelection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Buffer.
         /// </summary>
         internal static string TitleBuffer {
@@ -627,6 +727,15 @@ namespace OSGeo.MapGuide.Viewer.Properties {
         internal static string TitleQuery {
             get {
                 return ResourceManager.GetString("TitleQuery", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Viewer Options.
+        /// </summary>
+        internal static string TitleViewerOptions {
+            get {
+                return ResourceManager.GetString("TitleViewerOptions", resourceCulture);
             }
         }
         
@@ -665,6 +774,13 @@ namespace OSGeo.MapGuide.Viewer.Properties {
         internal static System.Drawing.Bitmap view_forward {
             get {
                 object obj = ResourceManager.GetObject("view_forward", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        internal static System.Drawing.Bitmap view_log {
+            get {
+                object obj = ResourceManager.GetObject("view_log", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

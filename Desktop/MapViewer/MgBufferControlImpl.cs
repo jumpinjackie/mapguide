@@ -16,7 +16,7 @@ namespace OSGeo.MapGuide.Viewer
         private MgFeatureService _featSvc;
         private string _sessionId;
 
-        public MgBufferControlImpl(IMapViewer viewer)
+        public MgBufferControlImpl(IMapViewer viewer, string defaultLayerName, MeasurementUnit units)
         {
             InitializeComponent();
             this.Title = Properties.Resources.TitleBuffer;
@@ -27,7 +27,7 @@ namespace OSGeo.MapGuide.Viewer
             _featSvc = (MgFeatureService)provider.CreateService(MgServiceType.FeatureService);
 
             cmbUnits.DataSource = Enum.GetValues(typeof(MeasurementUnit));
-            cmbUnits.SelectedItem = MeasurementUnit.Kilometers;
+            cmbUnits.SelectedItem = units;
             cmbBorderPattern.DataSource = Enum.GetValues(typeof(StockPattern));
             cmbFillPattern.DataSource = Enum.GetValues(typeof(StockPattern));
 
@@ -40,6 +40,8 @@ namespace OSGeo.MapGuide.Viewer
             numBufferDistance.Value = 1;
             numFillTransparency.Value = 50;
             numLineThickness.Value = 1;
+
+            txtBufferLayer.Text = defaultLayerName;
 
             _viewer.SelectionChanged += new EventHandler(OnViewerSelectedChanged);
             OnViewerSelectedChanged(this, EventArgs.Empty);
@@ -90,296 +92,304 @@ namespace OSGeo.MapGuide.Viewer
 
         private void btnCreate_Click(object sender, EventArgs e)
         {
-            var layerName = txtBufferLayer.Text.Trim();
-            if (string.IsNullOrEmpty(layerName))
+            btnCreate.Enabled = false;
+            try
             {
-                MessageBox.Show("Please enter a name for this layer");
-                return;
-            }
-
-            if (lstLayers.SelectedItems.Count == 0)
-            {
-                MessageBox.Show("Please include one or more layers to create a buffer from");
-                return;
-            }
-
-            var map = _viewer.GetMap();
-            var layers = map.GetLayers();
-            var provider = _viewer.GetProvider();
-
-            //From here, it's the same logic as buffer.aspx in .net MapGuide AJAX viewer
-            MgResourceIdentifier fsId = new MgResourceIdentifier("Session:" + _sessionId + "//" + txtBufferLayer.Text + "_Buffer.FeatureSource");
-            MgResourceIdentifier ldfId = new MgResourceIdentifier("Session:" + _sessionId + "//" + txtBufferLayer.Text + "_Buffer.LayerDefinition");
-
-            MgLayerBase layer = FindLayer(layers, txtBufferLayer.Text);
-            string[] layerNames = GetLayerNames();
-
-            double distance = Convert.ToDouble(numBufferDistance.Value);
-            MeasurementUnit bUnits = (MeasurementUnit)cmbUnits.SelectedItem;
-            switch (bUnits)
-            {
-                case MeasurementUnit.Feet:
-                    distance *= 0.30480;
-                    break;
-                case MeasurementUnit.Kilometers:
-                    distance *= 1000;
-                    break;
-                case MeasurementUnit.Miles:
-                    distance *= 1609.35;
-                    break;
-            }
-
-            String srsDefMap = GetMapSrs(map);
-            MgCoordinateSystem srsMap = provider.GetMapCoordinateSystem();
-            string mapSrsUnits = "";
-            bool arbitraryMapSrs = (srsMap.GetType() == MgCoordinateSystemType.Arbitrary);
-            if (arbitraryMapSrs)
-                mapSrsUnits = srsMap.GetUnits();
-
-            String xtrans = String.Format("{0:x2}", ((int)(255 * Convert.ToInt32(numFillTransparency.Value) / 100)));
-            var lineColor = ToHtmlColor(pnlBorderColor.BackColor);
-            var foreColor = ToHtmlColor(pnlFillColor.BackColor);
-            var backColor = ToHtmlColor(pnlFillBackColor.BackColor);
-            String layerTempl = string.Format(Properties.Resources.AreaLayerDef,
-                    fsId.ToString(),
-                    "BufferSchema:Buffer",
-                    "GEOM",
-                    cmbFillPattern.SelectedItem,
-                    xtrans + foreColor,
-                    ((0 != 1/*transparent*/) ? "ff" : "00") + backColor,
-                    cmbBorderPattern.SelectedItem,
-                    numLineThickness.Value.ToString(NumberFormatInfo.InvariantInfo),
-                    lineColor
-            );
-            byte[] bytes = Encoding.UTF8.GetBytes(layerTempl);
-            MgByteSource src = new MgByteSource(bytes, bytes.Length);
-            MgByteReader layerDefContent = src.GetReader();
-            _resSvc.SetResource(ldfId, layerDefContent, null);
-
-            bool newBuffer = false;
-            if (layer == null)
-            {
-                newBuffer = true;
-
-                //Targetting a new layer. create a data source for it
-                //
-                MgClassDefinition classDef = new MgClassDefinition();
-
-                classDef.SetName("Buffer");
-                classDef.SetDescription("Feature class for buffer layer");
-                classDef.SetDefaultGeometryPropertyName("GEOM");
-
-                //Set KEY property
-                MgDataPropertyDefinition prop = new MgDataPropertyDefinition("KEY");
-                prop.SetDataType(MgPropertyType.Int32);
-                prop.SetAutoGeneration(true);
-                prop.SetReadOnly(true);
-                classDef.GetIdentityProperties().Add(prop);
-                classDef.GetProperties().Add(prop);
-
-                //Set ID property. Hold this segment ID
-                prop = new MgDataPropertyDefinition("ID");
-                prop.SetDataType(MgPropertyType.Int32);
-                classDef.GetProperties().Add(prop);
-
-                //Set geometry property
-                MgGeometricPropertyDefinition geomProp = new MgGeometricPropertyDefinition("GEOM");
-                //prop.SetGeometryTypes(MgFeatureGeometricType.mfgtSurface); //TODO use the constant when exposed
-                geomProp.SetGeometryTypes(4);
-                classDef.GetProperties().Add(geomProp);
-
-                //Create the schema
-                MgFeatureSchema schema = new MgFeatureSchema("BufferSchema", "Temporary buffer schema");
-                schema.GetClasses().Add(classDef);
-
-                //finally, creation of the feature source
-                MgCreateSdfParams sdfParams = new MgCreateSdfParams("LatLong", map.GetMapSRS(), schema);
-                _featSvc.CreateFeatureSource(fsId, sdfParams);
-
-                //Add layer to map
-                layer = provider.CreateLayer(ldfId);
-                layer.SetName(txtBufferLayer.Text);
-                layer.SetLegendLabel(txtBufferLayer.Text);
-                layer.SetDisplayInLegend(true);
-                layer.SetSelectable(true);
-                layers.Insert(0, layer);
-            }
-            else
-            {
-                //data source already exist. clear its content
-                //
-                ClearDataSource(_featSvc, fsId, "BufferSchema:Buffer");
-            }
-
-            var sel = _viewer.GetSelection();
-            var selLayers = sel.GetLayers();
-
-            MgAgfReaderWriter agfRW = new MgAgfReaderWriter();
-            MgGeometryCollection bufferGeometries = new MgGeometryCollection();
-            MgGeometry geomBuffer;
-
-            MgFeatureCommandCollection commands = new MgFeatureCommandCollection();
-            int featId = 0;
-
-            MgBatchPropertyCollection propCollection = new MgBatchPropertyCollection();
-
-            int excludedLayers = 0;
-            MgCoordinateSystem srsDs = null;
-            MgGeometryCollection inputGeometries = new MgGeometryCollection();
-
-            int bufferFeatures = 0;
-            for (int li = 0; li < selLayers.GetCount(); li++)
-            {
-                MgLayerBase selLayer = selLayers.GetItem(li);
-                bool inputLayer = false;
-                String selLayerName = selLayer.GetName();
-                for (int il = 0; il < layerNames.Length; il++)
+                var layerName = txtBufferLayer.Text.Trim();
+                if (string.IsNullOrEmpty(layerName))
                 {
-                    if (layerNames[il].Equals(selLayerName))
-                    {
-                        inputLayer = true;
+                    MessageBox.Show("Please enter a name for this layer");
+                    return;
+                }
+
+                if (lstLayers.SelectedItems.Count == 0)
+                {
+                    MessageBox.Show("Please include one or more layers to create a buffer from");
+                    return;
+                }
+
+                var map = _viewer.GetMap();
+                var layers = map.GetLayers();
+                var provider = _viewer.GetProvider();
+
+                //From here, it's the same logic as buffer.aspx in .net MapGuide AJAX viewer
+                MgResourceIdentifier fsId = new MgResourceIdentifier("Session:" + _sessionId + "//" + txtBufferLayer.Text + "_Buffer.FeatureSource");
+                MgResourceIdentifier ldfId = new MgResourceIdentifier("Session:" + _sessionId + "//" + txtBufferLayer.Text + "_Buffer.LayerDefinition");
+
+                MgLayerBase layer = FindLayer(layers, txtBufferLayer.Text);
+                string[] layerNames = GetLayerNames();
+
+                double distance = Convert.ToDouble(numBufferDistance.Value);
+                MeasurementUnit bUnits = (MeasurementUnit)cmbUnits.SelectedItem;
+                switch (bUnits)
+                {
+                    case MeasurementUnit.Feet:
+                        distance *= 0.30480;
                         break;
-                    }
+                    case MeasurementUnit.Kilometers:
+                        distance *= 1000;
+                        break;
+                    case MeasurementUnit.Miles:
+                        distance *= 1609.35;
+                        break;
                 }
-                if (inputLayer == false)
+
+                String srsDefMap = GetMapSrs(map);
+                MgCoordinateSystem srsMap = provider.GetMapCoordinateSystem();
+                string mapSrsUnits = "";
+                bool arbitraryMapSrs = (srsMap.GetType() == MgCoordinateSystemType.Arbitrary);
+                if (arbitraryMapSrs)
+                    mapSrsUnits = srsMap.GetUnits();
+
+                String xtrans = String.Format("{0:x2}", ((int)(255 * Convert.ToInt32(numFillTransparency.Value) / 100)));
+                var lineColor = ToHtmlColor(pnlBorderColor.BackColor);
+                var foreColor = ToHtmlColor(pnlFillColor.BackColor);
+                var backColor = ToHtmlColor(pnlFillBackColor.BackColor);
+                String layerTempl = string.Format(Properties.Resources.AreaLayerDef,
+                        fsId.ToString(),
+                        "BufferSchema:Buffer",
+                        "GEOM",
+                        cmbFillPattern.SelectedItem,
+                        xtrans + foreColor,
+                        ((0 != 1/*transparent*/) ? "ff" : "00") + backColor,
+                        cmbBorderPattern.SelectedItem,
+                        numLineThickness.Value.ToString(NumberFormatInfo.InvariantInfo),
+                        lineColor
+                );
+                byte[] bytes = Encoding.UTF8.GetBytes(layerTempl);
+                MgByteSource src = new MgByteSource(bytes, bytes.Length);
+                MgByteReader layerDefContent = src.GetReader();
+                _resSvc.SetResource(ldfId, layerDefContent, null);
+
+                bool newBuffer = false;
+                if (layer == null)
                 {
-                    continue;
+                    newBuffer = true;
+
+                    //Targetting a new layer. create a data source for it
+                    //
+                    MgClassDefinition classDef = new MgClassDefinition();
+
+                    classDef.SetName("Buffer");
+                    classDef.SetDescription("Feature class for buffer layer");
+                    classDef.SetDefaultGeometryPropertyName("GEOM");
+
+                    //Set KEY property
+                    MgDataPropertyDefinition prop = new MgDataPropertyDefinition("KEY");
+                    prop.SetDataType(MgPropertyType.Int32);
+                    prop.SetAutoGeneration(true);
+                    prop.SetReadOnly(true);
+                    classDef.GetIdentityProperties().Add(prop);
+                    classDef.GetProperties().Add(prop);
+
+                    //Set ID property. Hold this segment ID
+                    prop = new MgDataPropertyDefinition("ID");
+                    prop.SetDataType(MgPropertyType.Int32);
+                    classDef.GetProperties().Add(prop);
+
+                    //Set geometry property
+                    MgGeometricPropertyDefinition geomProp = new MgGeometricPropertyDefinition("GEOM");
+                    //prop.SetGeometryTypes(MgFeatureGeometricType.mfgtSurface); //TODO use the constant when exposed
+                    geomProp.SetGeometryTypes(4);
+                    classDef.GetProperties().Add(geomProp);
+
+                    //Create the schema
+                    MgFeatureSchema schema = new MgFeatureSchema("BufferSchema", "Temporary buffer schema");
+                    schema.GetClasses().Add(classDef);
+
+                    //finally, creation of the feature source
+                    MgCreateSdfParams sdfParams = new MgCreateSdfParams("LatLong", map.GetMapSRS(), schema);
+                    _featSvc.CreateFeatureSource(fsId, sdfParams);
+
+                    //Add layer to map
+                    layer = provider.CreateLayer(ldfId);
+                    layer.SetName(txtBufferLayer.Text);
+                    layer.SetLegendLabel(txtBufferLayer.Text);
+                    layer.SetDisplayInLegend(true);
+                    layer.SetSelectable(true);
+                    layers.Insert(0, layer);
                 }
-
-                // get the data source SRS
-                //
-                MgResourceIdentifier featSourceId = new MgResourceIdentifier(selLayer.GetFeatureSourceId());
-                MgSpatialContextReader ctxs = _featSvc.GetSpatialContexts(featSourceId, false);
-                String srsDefDs = "";
-                if (ctxs != null && ctxs.ReadNext())
-                    srsDefDs = ctxs.GetCoordinateSystemWkt();
-
-                if (srsDefDs == null || srsDefDs.Length == 0)
-                {
-                    excludedLayers++;
-                    continue;
-                }
-
-                var srsFactory = new MgCoordinateSystemFactory();
-                srsDs = srsFactory.Create(srsDefDs);
-                bool arbitraryDsSrs = (srsDs.GetType() == MgCoordinateSystemType.Arbitrary);
-                String dsSrsUnits = "";
-
-                if (arbitraryDsSrs)
-                    dsSrsUnits = srsDs.GetUnits();
-
-                // exclude layer if:
-                //  the map is non-arbitrary and the layer is arbitrary or vice-versa
-                //     or
-                //  layer and map are both arbitrary but have different units
-                //
-                if ((arbitraryDsSrs != arbitraryMapSrs) || (arbitraryDsSrs && (dsSrsUnits != mapSrsUnits)))
-                {
-                    excludedLayers++;
-                    continue;
-                }
-
-                // calculate distance in the data source SRS units
-                //
-                double dist = srsDs.ConvertMetersToCoordinateSystemUnits(distance);
-
-                // calculate great circle unless data source srs is arbitrary
-                MgCoordinateSystemMeasure measure;
-                if (!arbitraryDsSrs)
-                    measure = srsDs.GetMeasure();
                 else
-                    measure = null;
-
-                // create a SRS transformer if necessary
-                MgCoordinateSystemTransform srsXform;
-                if (!srsDefDs.Equals(srsDefMap))
-                    srsXform = srsFactory.GetTransform(srsDs, srsMap);
-                else
-                    srsXform = null;
-
-                String featureClassName = selLayer.GetFeatureClassName();
-                String filter = sel.GenerateFilter(selLayer, featureClassName);
-                if (filter == null || filter.Length == 0)
-                    continue;
-
-                MgFeatureQueryOptions query = new MgFeatureQueryOptions();
-                query.SetFilter(filter);
-
-                MgResourceIdentifier featureSource = new MgResourceIdentifier(selLayer.GetFeatureSourceId());
-
-                MgFeatureReader features = _featSvc.SelectFeatures(featureSource, featureClassName, query);
-
-                if (features.ReadNext())
                 {
-                    MgClassDefinition classDef = features.GetClassDefinition();
-                    String geomPropName = classDef.GetDefaultGeometryPropertyName();
+                    //data source already exist. clear its content
+                    //
+                    ClearDataSource(_featSvc, fsId, "BufferSchema:Buffer");
+                }
 
-                    do
+                var sel = _viewer.GetSelection();
+                var selLayers = sel.GetLayers();
+
+                MgAgfReaderWriter agfRW = new MgAgfReaderWriter();
+                MgGeometryCollection bufferGeometries = new MgGeometryCollection();
+                MgGeometry geomBuffer;
+
+                MgFeatureCommandCollection commands = new MgFeatureCommandCollection();
+                int featId = 0;
+
+                MgBatchPropertyCollection propCollection = new MgBatchPropertyCollection();
+
+                int excludedLayers = 0;
+                MgCoordinateSystem srsDs = null;
+                MgGeometryCollection inputGeometries = new MgGeometryCollection();
+
+                int bufferFeatures = 0;
+                for (int li = 0; li < selLayers.GetCount(); li++)
+                {
+                    MgLayerBase selLayer = selLayers.GetItem(li);
+                    bool inputLayer = false;
+                    String selLayerName = selLayer.GetName();
+                    for (int il = 0; il < layerNames.Length; il++)
                     {
-                        MgByteReader geomReader = features.GetGeometry(geomPropName);
-                        MgGeometry geom = agfRW.Read(geomReader);
-
-                        if (!chkMergeBuffers.Checked)
+                        if (layerNames[il].Equals(selLayerName))
                         {
-                            geomBuffer = geom.Buffer(dist, measure);
-                            if (geomBuffer != null)
-                            {
-                                if (srsXform != null)
-                                    geomBuffer = (MgGeometry)geomBuffer.Transform(srsXform);
-                                AddFeatureToCollection(propCollection, agfRW, featId++, geomBuffer);
-                                bufferFeatures++;
-                            }
-                        }
-                        else
-                        {
-                            if (srsXform != null)
-                                geom = (MgGeometry)geom.Transform(srsXform);
-                            inputGeometries.Add(geom);
+                            inputLayer = true;
+                            break;
                         }
                     }
-                    while (features.ReadNext());
+                    if (inputLayer == false)
+                    {
+                        continue;
+                    }
 
-                    features.Close();
-                }
-            }
+                    // get the data source SRS
+                    //
+                    MgResourceIdentifier featSourceId = new MgResourceIdentifier(selLayer.GetFeatureSourceId());
+                    MgSpatialContextReader ctxs = _featSvc.GetSpatialContexts(featSourceId, false);
+                    String srsDefDs = "";
+                    if (ctxs != null && ctxs.ReadNext())
+                        srsDefDs = ctxs.GetCoordinateSystemWkt();
 
-            if (chkMergeBuffers.Checked)
-            {
-                if (inputGeometries.GetCount() > 0)
-                {
-                    double dist = srsMap.ConvertMetersToCoordinateSystemUnits(distance);
+                    if (srsDefDs == null || srsDefDs.Length == 0)
+                    {
+                        excludedLayers++;
+                        continue;
+                    }
+
+                    var srsFactory = new MgCoordinateSystemFactory();
+                    srsDs = srsFactory.Create(srsDefDs);
+                    bool arbitraryDsSrs = (srsDs.GetType() == MgCoordinateSystemType.Arbitrary);
+                    String dsSrsUnits = "";
+
+                    if (arbitraryDsSrs)
+                        dsSrsUnits = srsDs.GetUnits();
+
+                    // exclude layer if:
+                    //  the map is non-arbitrary and the layer is arbitrary or vice-versa
+                    //     or
+                    //  layer and map are both arbitrary but have different units
+                    //
+                    if ((arbitraryDsSrs != arbitraryMapSrs) || (arbitraryDsSrs && (dsSrsUnits != mapSrsUnits)))
+                    {
+                        excludedLayers++;
+                        continue;
+                    }
+
+                    // calculate distance in the data source SRS units
+                    //
+                    double dist = srsDs.ConvertMetersToCoordinateSystemUnits(distance);
+
+                    // calculate great circle unless data source srs is arbitrary
                     MgCoordinateSystemMeasure measure;
-                    if (!arbitraryMapSrs)
-                        measure = srsMap.GetMeasure();
+                    if (!arbitraryDsSrs)
+                        measure = srsDs.GetMeasure();
                     else
                         measure = null;
 
-                    MgGeometryFactory geomFactory = new MgGeometryFactory();
-                    geomBuffer = geomFactory.CreateMultiGeometry(inputGeometries).Buffer(dist, measure);
-                    if (geomBuffer != null)
+                    // create a SRS transformer if necessary
+                    MgCoordinateSystemTransform srsXform;
+                    if (!srsDefDs.Equals(srsDefMap))
+                        srsXform = srsFactory.GetTransform(srsDs, srsMap);
+                    else
+                        srsXform = null;
+
+                    String featureClassName = selLayer.GetFeatureClassName();
+                    String filter = sel.GenerateFilter(selLayer, featureClassName);
+                    if (filter == null || filter.Length == 0)
+                        continue;
+
+                    MgFeatureQueryOptions query = new MgFeatureQueryOptions();
+                    query.SetFilter(filter);
+
+                    MgResourceIdentifier featureSource = new MgResourceIdentifier(selLayer.GetFeatureSourceId());
+
+                    MgFeatureReader features = _featSvc.SelectFeatures(featureSource, featureClassName, query);
+
+                    if (features.ReadNext())
                     {
-                        AddFeatureToCollection(propCollection, agfRW, featId, geomBuffer);
-                        bufferFeatures = 1;
+                        MgClassDefinition classDef = features.GetClassDefinition();
+                        String geomPropName = classDef.GetDefaultGeometryPropertyName();
+
+                        do
+                        {
+                            MgByteReader geomReader = features.GetGeometry(geomPropName);
+                            MgGeometry geom = agfRW.Read(geomReader);
+
+                            if (!chkMergeBuffers.Checked)
+                            {
+                                geomBuffer = geom.Buffer(dist, measure);
+                                if (geomBuffer != null)
+                                {
+                                    if (srsXform != null)
+                                        geomBuffer = (MgGeometry)geomBuffer.Transform(srsXform);
+                                    AddFeatureToCollection(propCollection, agfRW, featId++, geomBuffer);
+                                    bufferFeatures++;
+                                }
+                            }
+                            else
+                            {
+                                if (srsXform != null)
+                                    geom = (MgGeometry)geom.Transform(srsXform);
+                                inputGeometries.Add(geom);
+                            }
+                        }
+                        while (features.ReadNext());
+
+                        features.Close();
                     }
                 }
-            }
 
-            if (propCollection.GetCount() > 0)
-            {
-                commands.Add(new MgInsertFeatures("BufferSchema:Buffer", propCollection));
+                if (chkMergeBuffers.Checked)
+                {
+                    if (inputGeometries.GetCount() > 0)
+                    {
+                        double dist = srsMap.ConvertMetersToCoordinateSystemUnits(distance);
+                        MgCoordinateSystemMeasure measure;
+                        if (!arbitraryMapSrs)
+                            measure = srsMap.GetMeasure();
+                        else
+                            measure = null;
 
-                //Insert the features in the temporary data source
+                        MgGeometryFactory geomFactory = new MgGeometryFactory();
+                        geomBuffer = geomFactory.CreateMultiGeometry(inputGeometries).Buffer(dist, measure);
+                        if (geomBuffer != null)
+                        {
+                            AddFeatureToCollection(propCollection, agfRW, featId, geomBuffer);
+                            bufferFeatures = 1;
+                        }
+                    }
+                }
+
+                if (propCollection.GetCount() > 0)
+                {
+                    commands.Add(new MgInsertFeatures("BufferSchema:Buffer", propCollection));
+
+                    //Insert the features in the temporary data source
+                    //
+                    ReleaseReader(_featSvc.UpdateFeatures(fsId, commands, false), commands);
+                }
+
+                // Save the new map state
                 //
-                ReleaseReader(_featSvc.UpdateFeatures(fsId, commands, false), commands);
+                layer.ForceRefresh();
+                _viewer.RefreshMap();
+
+                //build report message
+                MessageBox.Show("Buffer layer (" + txtBufferLayer.Text + ") " + (newBuffer ? "created" : "updated"));
             }
-
-            // Save the new map state
-            //
-            layer.ForceRefresh();
-            _viewer.RefreshMap();
-
-            //build report message
-            MessageBox.Show("Buffer layer (" + txtBufferLayer.Text + ") " + (newBuffer ? "created" : "updated"));
+            finally
+            {
+                btnCreate.Enabled = true;
+            }
         }
 
         private string[] GetLayerNames()

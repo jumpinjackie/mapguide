@@ -266,6 +266,18 @@ namespace OSGeo.MapGuide.Viewer
         /// <param name="urx"></param>
         /// <param name="ury"></param>
         void ZoomToExtents(double llx, double lly, double urx, double ury);
+
+        /// <summary>
+        /// Gets or sets whether to show vertex coordinates when digitizing
+        /// </summary>
+        bool ShowVertexCoordinatesWhenDigitizing { get; set; }
+
+        /// <summary>
+        /// Gets or sets whether to convert tiled layers to non-tiled layers. This is a workaround
+        /// setting for tiled maps to be displayed as viewer support for tiled layers is still not
+        /// implemented
+        /// </summary>
+        bool ConvertTiledGroupsToNonTiled { get; set; }
     }
 
     /// <summary>

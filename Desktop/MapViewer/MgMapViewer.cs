@@ -17,6 +17,7 @@ namespace OSGeo.MapGuide.Viewer
     /// <summary>
     /// A map viewer component
     /// </summary>
+    [ToolboxItem(true)]
     public class MgMapViewer : Control, IMapViewer
     {
         private BackgroundWorker renderWorker;

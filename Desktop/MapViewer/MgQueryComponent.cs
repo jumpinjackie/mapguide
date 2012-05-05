@@ -9,9 +9,9 @@ namespace OSGeo.MapGuide.Viewer
     /// A generic feature query component
     /// </summary>
     [ToolboxItem(true)]
-    public class MgQueryControl : MgViewerComponent
+    public class MgQueryComponent : MgViewerComponent
     {
-        public MgQueryControl()
+        public MgQueryComponent()
         {
             this.Icon = Properties.Resources.search;
             this.Label = Properties.Resources.TitleQuery;
@@ -20,16 +20,6 @@ namespace OSGeo.MapGuide.Viewer
         protected override MgControlImpl CreateControlImpl()
         {
             return new MgQueryControlImpl(this.Viewer);
-        }
-
-        protected override void SubscribeViewerEvents(IMapViewer viewer)
-        {
-            base.SubscribeViewerEvents(viewer);
-        }
-
-        protected override void UnsubscribeViewerEvents(IMapViewer viewer)
-        {
-            base.UnsubscribeViewerEvents(viewer);
         }
     }
 }

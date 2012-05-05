@@ -71,8 +71,8 @@
             // 
             // groupBox1
             // 
-            this.groupBox1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+            this.groupBox1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
             this.groupBox1.Controls.Add(this.lstLayers);
             this.groupBox1.Controls.Add(this.label2);
             this.groupBox1.Controls.Add(this.cmbUnits);
@@ -88,9 +88,9 @@
             // 
             // lstLayers
             // 
-            this.lstLayers.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+            this.lstLayers.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+                        | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
             this.lstLayers.FormattingEnabled = true;
             this.lstLayers.Location = new System.Drawing.Point(9, 126);
             this.lstLayers.Name = "lstLayers";
@@ -108,8 +108,8 @@
             // 
             // cmbUnits
             // 
-            this.cmbUnits.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+            this.cmbUnits.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
             this.cmbUnits.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cmbUnits.FormattingEnabled = true;
             this.cmbUnits.Location = new System.Drawing.Point(105, 66);
@@ -119,6 +119,7 @@
             // 
             // numBufferDistance
             // 
+            this.numBufferDistance.DecimalPlaces = 7;
             this.numBufferDistance.Location = new System.Drawing.Point(9, 67);
             this.numBufferDistance.Maximum = new decimal(new int[] {
             100000,
@@ -156,8 +157,8 @@
             // 
             // groupBox2
             // 
-            this.groupBox2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+            this.groupBox2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
             this.groupBox2.Controls.Add(this.btnFillBackColor);
             this.groupBox2.Controls.Add(this.pnlFillBackColor);
             this.groupBox2.Controls.Add(this.label10);
@@ -263,8 +264,8 @@
             // 
             // groupBox3
             // 
-            this.groupBox3.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+            this.groupBox3.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
             this.groupBox3.Controls.Add(this.numLineThickness);
             this.groupBox3.Controls.Add(this.cmbBorderPattern);
             this.groupBox3.Controls.Add(this.label6);
@@ -352,9 +353,9 @@
             // 
             // groupBox4
             // 
-            this.groupBox4.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+            this.groupBox4.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+                        | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
             this.groupBox4.Controls.Add(this.chkMergeBuffers);
             this.groupBox4.Controls.Add(this.txtBufferLayer);
             this.groupBox4.Controls.Add(this.label9);
@@ -393,7 +394,7 @@
             this.label9.TabIndex = 0;
             this.label9.Text = "Buffer Layer Name:";
             // 
-            // MgBufferControl
+            // MgBufferControlImpl
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -402,7 +403,7 @@
             this.Controls.Add(this.groupBox3);
             this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.groupBox1);
-            this.Name = "MgBufferControl";
+            this.Name = "MgBufferControlImpl";
             this.Size = new System.Drawing.Size(232, 601);
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();

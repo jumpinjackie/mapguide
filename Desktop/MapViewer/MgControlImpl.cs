@@ -24,5 +24,21 @@ namespace OSGeo.MapGuide.Viewer
         /// in a new window. Only applies if parent component shows this component in a new window
         /// </summary>
         public virtual bool ModalWindow { get; set; }
+
+        public IContentCloser Closer { get; set; }
+
+        /// <summary>
+        /// Raises the <see cref="ContentClosed"/> event
+        /// </summary>
+        protected void Close()
+        {
+            if (this.Closer != null)
+                this.Closer.Close();
+        }
+    }
+
+    public interface IContentCloser
+    {
+        void Close();
     }
 }
