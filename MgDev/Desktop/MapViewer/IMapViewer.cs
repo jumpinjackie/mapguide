@@ -166,6 +166,12 @@ namespace OSGeo.MapGuide.Viewer
         MapDigitizationType DigitizingType { get; }
 
         /// <summary>
+        /// Gets the currently rendered image
+        /// </summary>
+        /// <returns></returns>
+        System.Drawing.Image GetCurrentImage();
+
+        /// <summary>
         /// Copies the image of the current map to the clipboard
         /// </summary>
         void CopyMap();

@@ -1907,14 +1907,19 @@ namespace OSGeo.MapGuide.Viewer
             return IsRasterClass(cls);
         }
 
+        public System.Drawing.Image GetCurrentImage()
+        {
+            var bmp = new Bitmap(this.Width, this.Height);
+            this.DrawToBitmap(bmp, this.ClientRectangle);
+            return bmp;
+        }
+
         /// <summary>
         /// Copies the image of the current map to the clipboard
         /// </summary>
         public void CopyMap()
         {
-            var bmp = new Bitmap(this.Width, this.Height);
-            this.DrawToBitmap(bmp, this.ClientRectangle);
-            Clipboard.SetImage(bmp);
+            Clipboard.SetImage(this.GetCurrentImage());
         }
 
         /// <summary>
