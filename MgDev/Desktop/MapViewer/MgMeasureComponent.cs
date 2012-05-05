@@ -9,9 +9,9 @@ namespace OSGeo.MapGuide.Viewer
     /// A generic component for measuring
     /// </summary>
     [ToolboxItem(true)]
-    public class MgMeasureControl : MgViewerComponent
+    public class MgMeasureComponent : MgViewerComponent
     {
-        public MgMeasureControl()
+        public MgMeasureComponent()
         {
             this.Icon = Properties.Resources.measure;
             this.Label = Properties.Resources.TitleMeasure;

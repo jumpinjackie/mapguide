@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -117,4 +117,10 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="label2.Text" xml:space="preserve">
+    <value>The Task Pane is a generic contextual container that UI-based MapGuide Viewer Components can load their views into
+
+Such components can be configured to load their content into this container by simply specifying the "Target" property of the component to "TaskPane" and setting the "TaskPane" property to this control
+</value>
+  </data>
 </root>

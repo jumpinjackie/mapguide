@@ -29,6 +29,7 @@
         private void InitializeComponent()
         {
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.lnkRefreshLayers = new System.Windows.Forms.LinkLabel();
             this.label1 = new System.Windows.Forms.Label();
             this.cmbLayer = new System.Windows.Forms.ComboBox();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
@@ -40,6 +41,7 @@
             this.label2 = new System.Windows.Forms.Label();
             this.chkPropFilterEnabled = new System.Windows.Forms.CheckBox();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
+            this.lblSpatialFilterGeomSet = new System.Windows.Forms.Label();
             this.spatialFilterButtonPanel = new System.Windows.Forms.FlowLayoutPanel();
             this.btnRectangle = new System.Windows.Forms.Button();
             this.btnPolygon = new System.Windows.Forms.Button();
@@ -57,6 +59,7 @@
             // 
             // groupBox1
             // 
+            this.groupBox1.Controls.Add(this.lnkRefreshLayers);
             this.groupBox1.Controls.Add(this.label1);
             this.groupBox1.Controls.Add(this.cmbLayer);
             this.groupBox1.Dock = System.Windows.Forms.DockStyle.Top;
@@ -66,6 +69,17 @@
             this.groupBox1.TabIndex = 0;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Layer";
+            // 
+            // lnkRefreshLayers
+            // 
+            this.lnkRefreshLayers.AutoSize = true;
+            this.lnkRefreshLayers.Location = new System.Drawing.Point(97, 20);
+            this.lnkRefreshLayers.Name = "lnkRefreshLayers";
+            this.lnkRefreshLayers.Size = new System.Drawing.Size(50, 13);
+            this.lnkRefreshLayers.TabIndex = 2;
+            this.lnkRefreshLayers.TabStop = true;
+            this.lnkRefreshLayers.Text = "(Refresh)";
+            this.lnkRefreshLayers.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.lnkRefreshLayers_LinkClicked);
             // 
             // label1
             // 
@@ -78,8 +92,8 @@
             // 
             // cmbLayer
             // 
-            this.cmbLayer.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+            this.cmbLayer.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
             this.cmbLayer.DisplayMember = "Name";
             this.cmbLayer.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cmbLayer.FormattingEnabled = true;
@@ -108,8 +122,8 @@
             // 
             // txtValue
             // 
-            this.txtValue.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+            this.txtValue.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
             this.txtValue.Location = new System.Drawing.Point(16, 145);
             this.txtValue.Name = "txtValue";
             this.txtValue.Size = new System.Drawing.Size(231, 20);
@@ -126,8 +140,8 @@
             // 
             // cmbOperator
             // 
-            this.cmbOperator.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+            this.cmbOperator.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
             this.cmbOperator.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cmbOperator.FormattingEnabled = true;
             this.cmbOperator.Location = new System.Drawing.Point(16, 101);
@@ -146,8 +160,8 @@
             // 
             // cmbProperty
             // 
-            this.cmbProperty.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+            this.cmbProperty.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
             this.cmbProperty.DisplayMember = "Name";
             this.cmbProperty.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cmbProperty.FormattingEnabled = true;
@@ -177,6 +191,7 @@
             // 
             // groupBox3
             // 
+            this.groupBox3.Controls.Add(this.lblSpatialFilterGeomSet);
             this.groupBox3.Controls.Add(this.spatialFilterButtonPanel);
             this.groupBox3.Controls.Add(this.chkSpatialFilter);
             this.groupBox3.Dock = System.Windows.Forms.DockStyle.Top;
@@ -187,11 +202,22 @@
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "Spatial Filter";
             // 
+            // lblSpatialFilterGeomSet
+            // 
+            this.lblSpatialFilterGeomSet.AutoSize = true;
+            this.lblSpatialFilterGeomSet.ForeColor = System.Drawing.Color.Red;
+            this.lblSpatialFilterGeomSet.Location = new System.Drawing.Point(90, 20);
+            this.lblSpatialFilterGeomSet.Name = "lblSpatialFilterGeomSet";
+            this.lblSpatialFilterGeomSet.Size = new System.Drawing.Size(144, 13);
+            this.lblSpatialFilterGeomSet.TabIndex = 3;
+            this.lblSpatialFilterGeomSet.Text = "Spatial Filter Geometry drawn";
+            this.lblSpatialFilterGeomSet.Visible = false;
+            // 
             // spatialFilterButtonPanel
             // 
-            this.spatialFilterButtonPanel.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+            this.spatialFilterButtonPanel.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+                        | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
             this.spatialFilterButtonPanel.Controls.Add(this.btnRectangle);
             this.spatialFilterButtonPanel.Controls.Add(this.btnPolygon);
             this.spatialFilterButtonPanel.Controls.Add(this.btnClear);
@@ -261,8 +287,8 @@
             // 
             // numResults
             // 
-            this.numResults.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+            this.numResults.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
             this.numResults.Location = new System.Drawing.Point(143, 398);
             this.numResults.Maximum = new decimal(new int[] {
             10000,
@@ -278,7 +304,7 @@
             0,
             0});
             // 
-            // MgQueryControl
+            // MgQueryControlImpl
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -288,7 +314,7 @@
             this.Controls.Add(this.groupBox3);
             this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.groupBox1);
-            this.Name = "MgQueryControl";
+            this.Name = "MgQueryControlImpl";
             this.Size = new System.Drawing.Size(266, 431);
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
@@ -325,5 +351,7 @@
         private System.Windows.Forms.Button btnExecute;
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.NumericUpDown numResults;
+        private System.Windows.Forms.LinkLabel lnkRefreshLayers;
+        private System.Windows.Forms.Label lblSpatialFilterGeomSet;
     }
 }

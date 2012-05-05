@@ -79,6 +79,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BaseInteractionComponents.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Debug.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -90,7 +93,7 @@
     <Compile Include="IMapViewerComponent.cs" />
     <Compile Include="IMapStatusBar.cs" />
     <Compile Include="IPropertyPane.cs" />
-    <Compile Include="MgBufferControl.cs">
+    <Compile Include="MgBufferComponent.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="MgBufferControlImpl.cs">
@@ -108,6 +111,9 @@
     <Compile Include="MgDefaultToolbar.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="MgGenericInvokeComponent.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="MgInvokeComponent.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -116,6 +122,9 @@
     </Compile>
     <Compile Include="MgLineMeasureControlImpl.Designer.cs">
       <DependentUpon>MgLineMeasureControlImpl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="MgLoadPackageComponent.cs">
+      <SubType>Component</SubType>
     </Compile>
     <Compile Include="MgMapViewer.cs">
       <SubType>Component</SubType>
@@ -128,7 +137,7 @@
       <DependentUpon>MgLegend.cs</DependentUpon>
     </Compile>
     <Compile Include="MgMapViewerProvider.cs" />
-    <Compile Include="MgMeasureControl.cs">
+    <Compile Include="MgMeasureComponent.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="MgPropertyPane.cs">
@@ -137,7 +146,7 @@
     <Compile Include="MgPropertyPane.Designer.cs">
       <DependentUpon>MgPropertyPane.cs</DependentUpon>
     </Compile>
-    <Compile Include="MgQueryControl.cs">
+    <Compile Include="MgQueryComponent.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="MgQueryControlImpl.cs">
@@ -153,11 +162,32 @@
       <DependentUpon>MgQueryResultsDialog.cs</DependentUpon>
     </Compile>
     <Compile Include="MgReadOnlyStream.cs" />
+    <Compile Include="MgTaskPane.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="MgTaskPane.Designer.cs">
+      <DependentUpon>MgTaskPane.cs</DependentUpon>
+    </Compile>
+    <Compile Include="MgViewerOptionsComponent.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="MgViewerOptionsControlImpl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="MgViewerOptionsControlImpl.Designer.cs">
+      <DependentUpon>MgViewerOptionsControlImpl.cs</DependentUpon>
+    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Tasks\MgTaskPaneStub.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Tasks\MgTaskPaneStub.Designer.cs">
+      <DependentUpon>MgTaskPaneStub.cs</DependentUpon>
     </Compile>
     <Service Include="{94E38DFF-614B-4cbd-B67C-F211BB35CE8B}" />
   </ItemGroup>
@@ -184,9 +214,18 @@
     <EmbeddedResource Include="MgQueryResultsDialog.resx">
       <DependentUpon>MgQueryResultsDialog.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="MgTaskPane.resx">
+      <DependentUpon>MgTaskPane.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="MgViewerOptionsControlImpl.resx">
+      <DependentUpon>MgViewerOptionsControlImpl.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Tasks\MgTaskPaneStub.resx">
+      <DependentUpon>MgTaskPaneStub.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
@@ -394,6 +433,15 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\AreaLayerDef.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="MapViewer.csproj" />
+    <Content Include="MapViewer.csproj.user" />
+    <Content Include="Resources\icon_home.gif" />
+    <Content Include="Resources\icon_tasks.gif" />
+    <Content Include="Resources\load_package.gif" />
+    <Content Include="Resources\monitor_status.gif" />
+    <Content Include="Resources\view_log.gif" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
