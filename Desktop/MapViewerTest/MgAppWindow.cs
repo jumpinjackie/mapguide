@@ -16,6 +16,10 @@ namespace MapViewerTest
         {
             InitializeComponent();
             taskMenu.DropDownDirection = ToolStripDropDownDirection.BelowLeft;
+            if (!this.DesignMode)
+            {
+                new MapViewerController(mapViewer, legendCtrl, this, propertiesCtrl);
+            }
         }
 
         public string MapDefinition
@@ -31,10 +35,6 @@ namespace MapViewerTest
 
         protected override void OnLoad(EventArgs e)
         {
-            if (!this.DesignMode)
-            {
-                new MapViewerController(mapViewer, legendCtrl, this, propertiesCtrl);
-            }
             base.OnLoad(e);
         }
 
@@ -102,6 +102,35 @@ namespace MapViewerTest
                     }
                 }
             }
+        }
+
+        private void mgLayerSelectionHandler1_SelectionMade(string layerName, MgFeatureReader selectedFeatures)
+        {
+            int count = 0;
+            while (selectedFeatures.ReadNext())
+            {
+                count++;
+            }
+            selectedFeatures.Close();
+            MessageBox.Show(count + " parcels selected");
+        }
+
+        private void loadCompactViewerComponent_Invoked(object sender, EventArgs e)
+        {
+            var map = mapViewer.GetMap();
+            var viewer = new CompactViewer();
+            viewer.LoadMap(map.MapDefinition);
+            viewer.Show();
+        }
+
+        private void profileComponent_Invoked(object sender, EventArgs e)
+        {
+            var provider = mapViewer.GetProvider();
+            var map = mapViewer.GetMap();
+            var prof = (MgProfilingService)provider.CreateService(MgServiceType.ProfilingService);
+            var opts = new MgRenderingOptions("PNG", 2, new MgColor(mapViewer.SelectionColor));
+            var result = prof.ProfileRenderDynamicOverlay((MgdMap)map, (MgdSelection)mapViewer.GetSelection(), opts); 
+ 	        new XmlResponseDialog(result).ShowDialog(); 
         }
     }
 }

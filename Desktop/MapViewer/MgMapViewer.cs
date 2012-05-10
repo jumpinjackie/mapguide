@@ -35,8 +35,6 @@ namespace OSGeo.MapGuide.Viewer
 
         private Color _mapBgColor;
 
-        private bool firstRun = true;
-
         private double _orgX1;
         private double _orgX2;
         private double _orgY1;
@@ -965,8 +963,17 @@ namespace OSGeo.MapGuide.Viewer
             return new MgViewerRenderingOptions("PNG", (1 | 4), new MgColor(red, green, blue));
         }
 
+        public void LoadMap(MgMapBase map)
+        {
+            if (_provider == null)
+                throw new InvalidOperationException("Viewer not initialized via Init()");
+
+            _provider.LoadMap(map);
+        }
+
         /// <summary>
-        /// Initializes this viewer with the specified runtime map
+        /// Initializes this viewer with the specified viewer provider, if the provider contains a map
+        /// it will load that as well. Otherwise a call to <see cref="LoadMap"/> is required afterwards
         /// </summary>
         /// <param name="provider">The provider.</param>
         public void Init(MgMapViewerProvider provider)
@@ -981,21 +988,35 @@ namespace OSGeo.MapGuide.Viewer
                 _geomFact = new MgGeometryFactory();
 
             _provider = provider;
-            
-            _mapCs = _provider.GetMapCoordinateSystem();
-            _mapMeasure = _mapCs.GetMeasure();
 
-            if (_resSvc == null)
+            if (_resSvc != null) //Forward looking, dispose the existing one as it may be of a different implementation
             {
-                if (_resSvc == null)
-                    _resSvc = (MgResourceService)_provider.CreateService(MgServiceType.ResourceService);
+                _resSvc.Dispose();
+                _resSvc = null;
             }
-            
+            _resSvc = (MgResourceService)_provider.CreateService(MgServiceType.ResourceService);
+
             _overlayRenderOpts = CreateMapRenderingOptions(0, 0, 255);
             _selectionRenderOpts = CreateSelectionRenderingOptions(0, 0, 255);
 
+            if (_provider != null)
+            {
+                _provider.MapLoaded -= OnMapSetOnProvider;
+                _provider = null;
+            }
+
             _provider = provider;
-            _map = provider.GetMap();
+            _provider.MapLoaded += OnMapSetOnProvider;
+            var map = _provider.GetMap();
+            if (map != null)
+                OnMapSetOnProvider(this, EventArgs.Empty);
+        }
+
+        private void OnMapSetOnProvider(object sender, EventArgs e)
+        {
+            _map = _provider.GetMap();
+            _mapCs = _provider.GetMapCoordinateSystem();
+            _mapMeasure = _mapCs.GetMeasure();
             var bgColor = _map.GetBackgroundColor();
             if (bgColor.Length == 8 || bgColor.Length == 6)
             {
@@ -1032,15 +1053,12 @@ namespace OSGeo.MapGuide.Viewer
                 }
             }
 
-            _provider.RebuildLayerInfoCache();
-            _provider.CacheGeometryProperties(_map.GetLayers());
-
 #if VIEWER_DEBUG
             CreateDebugFeatureSource();
 #endif
             this.Focus();
 
-            var handler = this.ViewerInitialized;
+            var handler = this.MapLoaded;
             if (handler != null)
                 handler(this, EventArgs.Empty);
 
@@ -1083,7 +1101,7 @@ namespace OSGeo.MapGuide.Viewer
         /// </summary>
         [Category("MapGuide Viewer")]
         [Description("Raised when the viewer has been initialized with a runtime map")]
-        public event EventHandler ViewerInitialized;
+        public event EventHandler MapLoaded;
 
         private System.Timers.Timer _delayedResizeTimer;
 
@@ -2510,5 +2528,7 @@ namespace OSGeo.MapGuide.Viewer
             if (handler != null)
                 handler(this, new PropertyChangedEventArgs(name));
         }
+
+        public bool HasLoadedMap { get { return _map != null; } }
     }
 }

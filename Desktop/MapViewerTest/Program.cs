@@ -19,6 +19,8 @@ namespace MapViewerTest
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
             Application.ThreadException += new System.Threading.ThreadExceptionEventHandler(Application_ThreadException);
+            
+            //Must call MgPlatform.Initialize() before we can work with anything from the MapGuide API
             try
             {
                 var sw = new Stopwatch();
@@ -32,80 +34,36 @@ namespace MapViewerTest
                 MessageBox.Show(ex.ToString(), "Error");
                 return;
             }
-            var fact = new MgServiceFactory();
-            var resSvc = (MgResourceService)fact.CreateService(MgServiceType.ResourceService);
+            
+            //MgAppWindow is our Main Window class full of drag-and-drop component goodness. Go ahead and
+            //take a look at MgAppWindow.cs source, not much code there except for the 3 generic invoke components and the
+            //single custom selection handler. Everything else is encapsulated by designer-friendly drag and drop components
+            //Most of the work is dragging and dropping components into the designer surface, and setting lots of properties
             var frm = new MgAppWindow();
+            
+            //We can initialize without specifying a map (allowing for components that do not 
+            //require a loaded map to still be used). You just have to call LoadMap() on the MgMapViewer
+            //instance when ready (not demonstrated here). So if you do load a package here, you will
+            //have to restart the application
+            MgResourceIdentifier resId = null;
             if (args.Length == 1)
             {
-                try
-                {
-                    var resId = new MgResourceIdentifier(args[0]);
-                    resId.Validate();                    
-                    if (!resSvc.ResourceExists(resId))
-                    {
-                        using (var open = new OpenFileDialog())
-                        {
-                            open.Filter = "*.mgp|*.mgp";
-                            if (open.ShowDialog() == DialogResult.OK)
-                            {
-                                var source = new MgByteSource(open.FileName);
-                                var br = source.GetReader();
-                                resSvc.ApplyResourcePackage(br);
-                            }
-                        }
-                    }
+                resId = new MgResourceIdentifier(args[0]);
+                resId.Validate();
+            }
 
-                    if (resSvc.ResourceExists(resId))
-                    {
-                        frm.Load += (s, e) =>
-                        {
-                            LoadMap(frm, resId);
-                        };
-                    }
-                    else
-                    {
-                        MessageBox.Show("The specified Map Definition (" + resId.ToString() + ") does not exist");
-                        return;
-                    }
-                }
-                catch (MgException ex)
-                {
-                    ex.Dispose();
-                }
-            }
-            else
-            {
-                var diag = new ResourceIdDialog();
-                if (diag.ShowDialog() == DialogResult.OK)
-                {
-                    var resId = diag.ResourceID;
-                    if (resSvc.ResourceExists(resId))
-                    {
-                        frm.Load += (s, e) =>
-                        {
-                            LoadMap(frm, resId);
-                        };
-                    }
-                    else
-                    {
-                        MessageBox.Show("The specified Map Definition (" + resId.ToString() + ") does not exist");
-                        return;
-                    }
-                }
-            }
+            var fact = new MgServiceFactory();
+            var resSvc = (MgdResourceService)fact.CreateService(MgServiceType.ResourceService);
+            MgdMap map = null;
+
+            if (resId != null && resSvc.ResourceExists(resId))
+                map = new MgdMap(resId);
+
+            //This is just a pass-through call to MgMapViewer.Init()
+            frm.LoadMap(new MgDesktopMapViewerProvider(map));
+
             Application.ApplicationExit += new EventHandler(OnAppExit);
             Application.Run(frm);
-        }
-
-        private static void LoadMap(MgAppWindow frm, MgResourceIdentifier mapId)
-        {
-            var map = new MgdMap(mapId);
-            var fact = new MgServiceFactory();
-
-            frm.LoadMap(
-                new MgDesktopMapViewerProvider(map,
-                    (MgdResourceService)fact.CreateService(MgServiceType.ResourceService),
-                    (MgRenderingService)fact.CreateService(MgServiceType.RenderingService)));
         }
 
         static void OnAppExit(object sender, EventArgs e)

@@ -151,6 +151,9 @@
       <DependentUpon>MgQueryResultsDialog.cs</DependentUpon>
     </Compile>
     <Compile Include="MgReadOnlyStream.cs" />
+    <Compile Include="MgLayerSelectionHandler.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="MgTaskPane.cs">
       <SubType>UserControl</SubType>
     </Compile>

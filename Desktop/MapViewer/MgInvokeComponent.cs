@@ -21,129 +21,203 @@ namespace OSGeo.MapGuide.Viewer
         MgComponent TargetComponent { get; set; }
     }
 
-    /// <summary>
-    /// A specialized instance of <see cref="T:System.Windows.Forms.ToolStripButton"/> that can
-    /// invoke the assigned <see cref="T:OSGeo.MapGuide.Viewer.MgComponent"/> instance.
-    /// </summary>
-    [ToolStripItemDesignerAvailability(ToolStripItemDesignerAvailability.ToolStrip)]
-    public class MgInvokeComponentButton : ToolStripButton, IButtonStateListener, IInvokeViewerComponent
+    [ToolboxItem(false)]
+    public class ComponentInvokerBase<T> : Component where T : ToolStripItem
     {
-        private MgComponent _component;
+        protected Dictionary<T, MgComponent> _bindings;
 
-        /// <summary>
-        /// Gets or sets the target component to be invoked
-        /// </summary>
-        [Category("MapGuide Component Properties")]
-        [Description("The target component to invoke when this component is clicked. All other UI properties are inherited from this compoent")]
-        public MgComponent TargetComponent
+        protected ComponentInvokerBase() { _bindings = new Dictionary<T, MgComponent>(); }
+
+        [Category("MapGuide Viewer")]
+        [DisplayName("Target Component")]
+        [Description("The target MapGuide component to invoke when this item is clicked")]
+        [DefaultValue(null)]
+        public MgComponent GetTargetComponent(T component)
         {
-            get { return _component; }
-            set 
+            if (_bindings.ContainsKey(component))
+                return _bindings[component];
+            else
+                return null;
+        }
+
+        void OnComponentClicked(object sender, EventArgs e)
+        {
+            var item = sender as T;
+            var binding = item.Tag as ComponentBinding;
+            if (binding != null)
+                binding.Component.Invoke();
+        }
+
+        protected virtual void SetupComponent(T component, MgComponent value)
+        {
+            component.Click += OnComponentClicked;
+        }
+
+        protected virtual void TeardownComponent(T component, MgComponent value)
+        {
+            component.Click -= OnComponentClicked;
+        }
+
+        public void SetTargetComponent(T component, MgComponent value)
+        {
+            if (value == null)
             {
-                if (_component != null)
-                    _component.RemoveListener(this);
-                _component = value;
-                if (_component != null)
+                //Un-bind existing component if it exists, otherwise nothing needs to be done
+                if (_bindings.ContainsKey(component))
                 {
-                    base.ToolTipText = _component.ToolTipText;
-                    base.Text = _component.Label;
-                    base.Image = _component.Icon;
-                    _component.AddListener(this);
+                    TeardownComponent(component, _bindings[component]);
+                    _bindings.Remove(component);
                 }
             }
-        }
-
-        protected override void OnClick(EventArgs e)
-        {
-            if (this.TargetComponent == null)
-                throw new InvalidOperationException("No target component assigned to this component");
-
-            this.TargetComponent.Invoke();
-
-            base.OnClick(e);
-        }
-
-        public void SetDisabled(bool busy)
-        {
-            this.Enabled = !busy;
-        }
-
-        public void SetActive(bool outlined)
-        {
-            this.Checked = outlined;
-        }
-
-        public void SetText(string text)
-        {
-            this.Text = text;
-        }
-
-        public void SetIcon(Image icon)
-        {
-            this.Image = icon;
+            else
+            {
+                if (_bindings.ContainsKey(component))
+                {
+                    TeardownComponent(component, _bindings[component]);
+                    _bindings[component] = value;
+                    SetupComponent(component, value);
+                }
+                else
+                {
+                    _bindings[component] = value;
+                    SetupComponent(component, value);
+                }
+            }
         }
     }
 
-    /// <summary>
-    /// A specialized instance of <see cref="T:System.Windows.Forms.ToolStripMenuItem"/> that can
-    /// invoke the assigned <see cref="T:OSGeo.MapGuide.Viewer.MgComponent"/> instance.
-    /// </summary>
-    [ToolStripItemDesignerAvailability(ToolStripItemDesignerAvailability.ContextMenuStrip | ToolStripItemDesignerAvailability.MenuStrip)]
-    public class MgInvokeComponentMenuItem : ToolStripMenuItem, IButtonStateListener, IInvokeViewerComponent
+    abstract class ComponentBinding : IButtonStateListener 
     {
-        private MgComponent _component;
+        public MgComponent Component { get; protected set; }
 
-        /// <summary>
-        /// Gets or sets the target component to be invoked
-        /// </summary>
-        [Category("MapGuide Component Properties")]
-        [Description("The target component to invoke when this component is clicked. All other UI properties are inherited from this compoent")]
-        public MgComponent TargetComponent
+        protected ComponentBinding(MgComponent component) { this.Component = component; }
+
+        public abstract void SetEnabled(bool enabled);
+
+        public abstract void SetActive(bool outlined);
+
+        public abstract void SetText(string text);
+
+        public abstract void SetIcon(Image icon);
+    }
+
+    class ToolbarButtonComponentBinding : ComponentBinding
+    {
+        private ToolStripButton _item;
+
+        public ToolbarButtonComponentBinding(ToolStripButton item, MgComponent component) 
+            : base(component)
         {
-            get { return _component; }
-            set
-            {
-                if (_component != null)
-                    _component.RemoveListener(this);
-                _component = value;
-                if (_component != null)
-                {
-                    base.ToolTipText = _component.ToolTipText;
-                    base.Text = _component.Label;
-                    base.Image = _component.Icon;
-                    _component.AddListener(this);
-                }
-            }
+            _item = item;
         }
 
-        protected override void OnClick(EventArgs e)
+        public override void SetEnabled(bool enabled)
         {
-            if (this.TargetComponent == null)
-                throw new InvalidOperationException("No target component assigned to this component");
-
-            this.TargetComponent.Invoke();
-
-            base.OnClick(e);
+            _item.Enabled = enabled;
         }
 
-        public void SetDisabled(bool busy)
+        public override void SetActive(bool outlined)
         {
-            this.Enabled = !busy;
+            _item.Checked = outlined;
         }
 
-        public void SetActive(bool outlined)
+        public override void SetText(string text)
         {
-            this.Checked = outlined;
+            _item.Text = text;
         }
 
-        public void SetText(string text)
+        public override void SetIcon(Image icon)
         {
-            this.Text = text;
+            _item.Image = icon;
+        }
+    }
+
+    class MenuItemComponentBinding : ComponentBinding
+    {
+        private ToolStripMenuItem _item;
+
+        public MenuItemComponentBinding(ToolStripMenuItem item, MgComponent component) 
+            : base(component)
+        { 
+            _item = item;
         }
 
-        public void SetIcon(Image icon)
+        public override void SetEnabled(bool enabled)
         {
-            this.Image = icon;
+            _item.Enabled = enabled;
+        }
+
+        public override void SetActive(bool outlined)
+        {
+            _item.Checked = outlined;
+        }
+
+        public override void SetText(string text)
+        {
+            _item.Text = text;
+        }
+
+        public override void SetIcon(Image icon)
+        {
+            _item.Image = icon;
+        }
+    }
+
+    [ToolboxItem(true)]
+    [ProvideProperty("TargetComponent", typeof(ToolStripMenuItem))]
+    public class MgMenuItemComponentInvoker : ComponentInvokerBase<ToolStripMenuItem>, IExtenderProvider
+    {
+        public bool CanExtend(object extendee)
+        {
+            return typeof(ToolStripMenuItem) == extendee.GetType();
+        }
+
+        protected override void SetupComponent(ToolStripMenuItem component, MgComponent value)
+        {
+            component.ToolTipText = value.ToolTipText;
+            component.Text = value.Label;
+            component.Image = value.Icon;
+            var listener = new MenuItemComponentBinding(component, value);
+            component.Tag = listener;
+            value.AddListener(listener);
+            base.SetupComponent(component, value);
+        }
+
+        protected override void TeardownComponent(ToolStripMenuItem component, MgComponent value)
+        {
+            var listener = component.Tag as MenuItemComponentBinding;
+            if (listener != null)
+                value.RemoveListener(listener);
+            base.TeardownComponent(component, value);
+        }
+    }
+
+    [ToolboxItem(true)]
+    [ProvideProperty("TargetComponent", typeof(ToolStripButton))]
+    public class MgToolButtonComponentInvoker : ComponentInvokerBase<ToolStripButton>, IExtenderProvider
+    {
+        public bool CanExtend(object extendee)
+        {
+            return typeof(ToolStripButton) == extendee.GetType();
+        }
+
+        protected override void SetupComponent(ToolStripButton component, MgComponent value)
+        {
+            component.ToolTipText = value.ToolTipText;
+            component.Text = value.Label;
+            component.Image = value.Icon;
+            var listener = new ToolbarButtonComponentBinding(component, value);
+            component.Tag = listener;
+            value.AddListener(listener);
+            base.SetupComponent(component, value);
+        }
+
+        protected override void TeardownComponent(ToolStripButton component, MgComponent value)
+        {
+            var listener = component.Tag as ToolbarButtonComponentBinding;
+            if (listener != null)
+                value.RemoveListener(listener);
+            base.TeardownComponent(component, value);
         }
     }
 }
