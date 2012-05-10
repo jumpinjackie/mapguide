@@ -15,6 +15,14 @@ namespace OSGeo.MapGuide.Viewer
             this.Icon = Properties.Resources.load_package;
         }
 
+        protected override bool RequiresLoadedMap
+        {
+            get
+            {
+                return false;
+            }
+        }
+
         public override void Invoke()
         {
             using (var open = new OpenFileDialog())
@@ -30,7 +38,7 @@ namespace OSGeo.MapGuide.Viewer
                     var br = source.GetReader();
 
                     resSvc.ApplyResourcePackage(br);
-                    MessageBox.Show(Properties.Resources.TextLoadPackage);
+                    MessageBox.Show(Properties.Resources.TextPackageLoaded);
                 }
             }
         }

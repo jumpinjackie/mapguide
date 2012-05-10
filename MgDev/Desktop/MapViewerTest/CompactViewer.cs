@@ -22,12 +22,7 @@ namespace MapViewerTest
         public void LoadMap(MgResourceIdentifier resId)
         {
             var map = new MgdMap(resId);
-            var fact = new MgServiceFactory();
-            viewer.Init(
-                new MgDesktopMapViewerProvider(
-                    map,
-                    (MgdResourceService)fact.CreateService(MgServiceType.ResourceService),
-                    (MgRenderingService)fact.CreateService(MgServiceType.RenderingService)));
+            viewer.Init(new MgDesktopMapViewerProvider(map));
             //viewer.RefreshMap();
         }
     }
