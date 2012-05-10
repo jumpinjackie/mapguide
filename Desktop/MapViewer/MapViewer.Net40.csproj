@@ -117,6 +117,7 @@
     <Compile Include="MgInvokeComponent.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="MgLayerSelectionHandler.cs" />
     <Compile Include="MgLineMeasureControlImpl.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -140,8 +141,12 @@
     <Compile Include="MgMeasureComponent.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="MgPrintComponent.cs" />
-    <Compile Include="MgPrintControlImpl.cs" />
+    <Compile Include="MgPrintComponent.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="MgPrintControlImpl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
     <Compile Include="MgPrintControlImpl.Designer.cs">
       <DependentUpon>MgPrintControlImpl.cs</DependentUpon>
     </Compile>
@@ -444,7 +449,6 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="MapViewer.csproj" />
-    <Content Include="MapViewer.csproj.user" />
     <Content Include="Resources\icon_home.gif" />
     <Content Include="Resources\icon_tasks.gif" />
     <Content Include="Resources\load_package.gif" />
