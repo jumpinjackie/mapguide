@@ -33,6 +33,7 @@ MgServerDataReader::MgServerDataReader(MgServerFeatureConnection* connection, Fd
     m_dataReader = FDO_SAFE_ADDREF(dataReader);
     m_providerName = providerName;
     m_removeFromPoolOnDestruction = false;
+    m_readerDepleted = false;
 
     // The reader takes ownership of the FDO connection
     m_connection->OwnReader();
@@ -48,6 +49,7 @@ MgServerDataReader::MgServerDataReader()
     m_dataReader = NULL;
     m_providerName = L"";
     m_removeFromPoolOnDestruction = false;
+    m_readerDepleted = false;
 }
 
 MgServerDataReader::~MgServerDataReader()
@@ -72,6 +74,9 @@ bool MgServerDataReader::ReadNext()
 {
     CHECKNULL(m_dataReader, L"MgServerDataReader.ReadNext");
 
+    if (m_readerDepleted)
+        return false;
+
     bool retVal = false;
 
     MG_FEATURE_SERVICE_TRY()
@@ -79,6 +84,9 @@ bool MgServerDataReader::ReadNext()
     retVal = m_dataReader->ReadNext();
 
     MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgServerDataReader.ReadNext")
+
+    if (!retVal)
+        m_readerDepleted = true;
 
     return retVal;
 }
@@ -1545,6 +1553,7 @@ STRING MgServerDataReader::GetRasterPropertyName()
         {
             break;
         }
+        name = L"";
     }
 
     return name;
@@ -1690,6 +1699,9 @@ void MgServerDataReader::AddRows(INT32 count)
 {
     CHECKNULL((MgBatchPropertyCollection*)m_bpCol, L"MgServerDataReader.AddRows");
 
+    if (m_readerDepleted)
+        return;
+
     INT32 desiredFeatures = 0;
 
     bool found = false;
@@ -1737,6 +1749,9 @@ void MgServerDataReader::AddRows(INT32 count)
             found = false;
         }
     }
+
+    if (!found)
+        m_readerDepleted = true;
 }
 
 void MgServerDataReader::AddCurrentRow()
