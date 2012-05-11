@@ -31,6 +31,7 @@ MgServerSqlDataReader::MgServerSqlDataReader(MgServerFeatureConnection* connecti
     m_connection = SAFE_ADDREF(connection);
     m_sqlReader = FDO_SAFE_ADDREF(sqlReader);
     m_providerName = providerName;
+    m_readerDepleted = false;
 
     // The reader takes ownership of the FDO connection
     m_connection->OwnReader();
@@ -45,6 +46,7 @@ MgServerSqlDataReader::MgServerSqlDataReader()
     m_connection = NULL;
     m_sqlReader = NULL;
     m_providerName = L"";
+    m_readerDepleted = false;
 }
 
 MgServerSqlDataReader::~MgServerSqlDataReader()
@@ -69,6 +71,9 @@ bool MgServerSqlDataReader::ReadNext()
 {
     CHECKNULL(m_sqlReader, L"MgServerSqlDataReader.ReadNext");
 
+    if (m_readerDepleted)
+        return false;
+
     bool retVal = false;
 
     MG_FEATURE_SERVICE_TRY()
@@ -76,6 +81,9 @@ bool MgServerSqlDataReader::ReadNext()
     retVal = m_sqlReader->ReadNext();
 
     MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgServerSqlDataReader.ReadNext")
+
+    if (!retVal)
+        m_readerDepleted = true;
 
     return retVal;
 }
@@ -1493,8 +1501,12 @@ void MgServerSqlDataReader::AddRows(INT32 count)
     CHECKNULL((MgServerSqlDataReader*)m_sqlReader, L"MgServerSqlDataReader.AddRows");
     CHECKNULL((MgBatchPropertyCollection*)m_bpCol, L"MgServerSqlDataReader.AddRows");
 
-    INT32 desiredFeatures = 0;
+    if (m_readerDepleted)
+        return;
 
+    INT32 desiredFeatures = 0;
+    bool readAtEnd = true;
+    
     while (m_sqlReader->ReadNext())
     {
         AddCurrentRow();
@@ -1503,6 +1515,7 @@ void MgServerSqlDataReader::AddRows(INT32 count)
             desiredFeatures++;
             if (desiredFeatures == count) // Collected required features therefore do not process more
             {
+                readAtEnd = false;
                 break;
             }
         }
@@ -1511,6 +1524,9 @@ void MgServerSqlDataReader::AddRows(INT32 count)
             continue;
         }
     }
+    
+    if (readAtEnd)
+        m_readerDepleted = true;
 }
 
 void MgServerSqlDataReader::AddCurrentRow()
