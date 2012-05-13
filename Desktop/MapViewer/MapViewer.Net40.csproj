@@ -117,6 +117,9 @@
     <Compile Include="MgInvokeComponent.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="MgLayerSelectionHandler.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="MgLineMeasureControlImpl.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -177,6 +180,15 @@
     <Compile Include="MgTaskPane.Designer.cs">
       <DependentUpon>MgTaskPane.cs</DependentUpon>
     </Compile>
+    <Compile Include="MgThemeComponent.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="MgThemeControlImpl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="MgThemeControlImpl.Designer.cs">
+      <DependentUpon>MgThemeControlImpl.cs</DependentUpon>
+    </Compile>
     <Compile Include="MgViewerOptionsComponent.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -198,6 +210,7 @@
     <Compile Include="Tasks\MgTaskPaneStub.Designer.cs">
       <DependentUpon>MgTaskPaneStub.cs</DependentUpon>
     </Compile>
+    <Compile Include="Util.cs" />
     <Service Include="{94E38DFF-614B-4cbd-B67C-F211BB35CE8B}" />
   </ItemGroup>
   <ItemGroup>
@@ -228,6 +241,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="MgTaskPane.resx">
       <DependentUpon>MgTaskPane.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="MgThemeControlImpl.resx">
+      <DependentUpon>MgThemeControlImpl.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="MgViewerOptionsControlImpl.resx">
       <DependentUpon>MgViewerOptionsControlImpl.cs</DependentUpon>
@@ -448,7 +464,6 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="MapViewer.csproj" />
-    <Content Include="MapViewer.csproj.user" />
     <Content Include="Resources\icon_home.gif" />
     <Content Include="Resources\icon_tasks.gif" />
     <Content Include="Resources\load_package.gif" />

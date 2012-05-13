@@ -273,6 +273,10 @@ private:
 											bool withLock,
                                             bool asScrollable);
 	
+	bool ContainsUdf(MgFeatureConnection* conn, FdoExpression* expression);
+	bool IsCustomFunction(FdoFunction* fdoFunc);
+	MgReader* GetCustomReader(MgReader* reader, FdoFunction* customFunc, CREFSTRING propertyName);
+
     static MgSpatialContextData* GetSpatialContextData(FdoISpatialContextReader* spatialReader, MgSpatialContextInfo* spatialContextInfo);
 
     // Methods for describe schema

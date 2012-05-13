@@ -13,6 +13,24 @@ namespace OSGeo.MapGuide.Viewer
             this.Icon = Properties.Resources.invoke_script;
         }
 
+        [Category("MapGuide Viewer")]
+        [Description("Indicates whether this component can be invoked without a loaded map")]
+        public bool CanInvokeWithoutLoadedMap
+        {
+            get;
+            set;
+        }
+
+        protected override bool RequiresLoadedMap
+        {
+            get
+            {
+                return !this.CanInvokeWithoutLoadedMap;
+            }
+        }
+
+        [Category("MapGuide Viewer")]
+        [Description("Raised when this component has been invoked")]
         public event EventHandler Invoked;
 
         public override void Invoke()

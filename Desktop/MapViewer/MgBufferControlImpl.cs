@@ -116,7 +116,7 @@ namespace OSGeo.MapGuide.Viewer
                 MgResourceIdentifier fsId = new MgResourceIdentifier("Session:" + _sessionId + "//" + txtBufferLayer.Text + "_Buffer.FeatureSource");
                 MgResourceIdentifier ldfId = new MgResourceIdentifier("Session:" + _sessionId + "//" + txtBufferLayer.Text + "_Buffer.LayerDefinition");
 
-                MgLayerBase layer = FindLayer(layers, txtBufferLayer.Text);
+                MgLayerBase layer = Util.FindLayer(layers, txtBufferLayer.Text);
                 string[] layerNames = GetLayerNames();
 
                 double distance = Convert.ToDouble(numBufferDistance.Value);
@@ -134,7 +134,7 @@ namespace OSGeo.MapGuide.Viewer
                         break;
                 }
 
-                String srsDefMap = GetMapSrs(map);
+                String srsDefMap = Util.GetMapSrs(map);
                 MgCoordinateSystem srsMap = provider.GetMapCoordinateSystem();
                 string mapSrsUnits = "";
                 bool arbitraryMapSrs = (srsMap.GetType() == MgCoordinateSystemType.Arbitrary);
@@ -142,9 +142,9 @@ namespace OSGeo.MapGuide.Viewer
                     mapSrsUnits = srsMap.GetUnits();
 
                 String xtrans = String.Format("{0:x2}", ((int)(255 * Convert.ToInt32(numFillTransparency.Value) / 100)));
-                var lineColor = ToHtmlColor(pnlBorderColor.BackColor);
-                var foreColor = ToHtmlColor(pnlFillColor.BackColor);
-                var backColor = ToHtmlColor(pnlFillBackColor.BackColor);
+                var lineColor = Util.ToHtmlColor(pnlBorderColor.BackColor);
+                var foreColor = Util.ToHtmlColor(pnlFillColor.BackColor);
+                var backColor = Util.ToHtmlColor(pnlFillBackColor.BackColor);
                 String layerTempl = string.Format(Properties.Resources.AreaLayerDef,
                         fsId.ToString(),
                         "BufferSchema:Buffer",
@@ -213,7 +213,7 @@ namespace OSGeo.MapGuide.Viewer
                 {
                     //data source already exist. clear its content
                     //
-                    ClearDataSource(_featSvc, fsId, "BufferSchema:Buffer");
+                    Util.ClearDataSource(_featSvc, fsId, "BufferSchema:Buffer");
                 }
 
                 var sel = _viewer.GetSelection();
@@ -331,7 +331,7 @@ namespace OSGeo.MapGuide.Viewer
                                 {
                                     if (srsXform != null)
                                         geomBuffer = (MgGeometry)geomBuffer.Transform(srsXform);
-                                    AddFeatureToCollection(propCollection, agfRW, featId++, geomBuffer);
+                                    Util.AddFeatureToCollection(propCollection, agfRW, featId++, geomBuffer);
                                     bufferFeatures++;
                                 }
                             }
@@ -363,7 +363,7 @@ namespace OSGeo.MapGuide.Viewer
                         geomBuffer = geomFactory.CreateMultiGeometry(inputGeometries).Buffer(dist, measure);
                         if (geomBuffer != null)
                         {
-                            AddFeatureToCollection(propCollection, agfRW, featId, geomBuffer);
+                            Util.AddFeatureToCollection(propCollection, agfRW, featId, geomBuffer);
                             bufferFeatures = 1;
                         }
                     }
@@ -375,7 +375,7 @@ namespace OSGeo.MapGuide.Viewer
 
                     //Insert the features in the temporary data source
                     //
-                    ReleaseReader(_featSvc.UpdateFeatures(fsId, commands, false), commands);
+                    Util.ReleaseReader(_featSvc.UpdateFeatures(fsId, commands, false), commands);
                 }
 
                 // Save the new map state
@@ -400,86 +400,6 @@ namespace OSGeo.MapGuide.Viewer
                 items.Add(it.ToString());
             }
             return items.ToArray();
-        }
-
-        static string ToHtmlColor(Color color)
-        {
-            return String.Format("{0:X2}{1:X2}{2:X2}", color.R, color.G, color.B);
-        }
-
-        static MgLayerBase FindLayer(MgLayerCollection layers, String layerName)
-        {
-            MgLayerBase layer = null;
-            int i = 0;
-            for (i = 0; i < layers.GetCount(); i++)
-            {
-                MgLayerBase layer1 = layers.GetItem(i);
-
-                if (layer1.GetName() == layerName)
-                {
-                    layer = layer1;
-                    break;
-                }
-            }
-            return layer;
-        }
-
-        static string GetMapSrs(MgMapBase map)
-        {
-            try
-            {
-                String srs = map.GetMapSRS();
-                if (srs != "")
-                    return srs;
-            }
-            catch (MgException e)
-            {
-            }
-
-            //No SRS, set to ArbitrayXY meters
-            //
-            return "LOCALCS[\"Non-Earth (Meter)\",LOCAL_DATUM[\"Local Datum\",0],UNIT[\"Meter\", 1],AXIS[\"X\",EAST],AXIS[\"Y\",NORTH]]";
-        }
-
-        static void ClearDataSource(MgFeatureService featSvc, MgResourceIdentifier fsId, String featureName)
-        {
-            MgDeleteFeatures deleteCmd = new MgDeleteFeatures(featureName, "ID >= 0");
-            MgFeatureCommandCollection commands = new MgFeatureCommandCollection();
-            commands.Add(deleteCmd);
-            featSvc.UpdateFeatures(fsId, commands, false);
-        }
-
-        static void ReleaseReader(MgPropertyCollection res, MgFeatureCommandCollection commands)
-        {
-            if (res == null)
-                return;
-
-            for (int i = 0; i < res.GetCount(); i++)
-            {
-                MgFeatureCommand cmd = commands.GetItem(i);
-                if (cmd is MgInsertFeatures)
-                {
-                    MgFeatureProperty resProp = res.GetItem(i) as MgFeatureProperty;
-                    if (resProp != null)
-                    {
-                        MgFeatureReader reader = resProp.GetValue() as MgFeatureReader;
-                        if (reader == null)
-                            return;
-                        reader.Close();
-                    }
-                }
-            }
-        }
-
-        static void AddFeatureToCollection(MgBatchPropertyCollection propCollection, MgAgfReaderWriter agfRW, int featureId, MgGeometry featureGeom)
-        {
-            MgPropertyCollection bufferProps = new MgPropertyCollection();
-            MgInt32Property idProp = new MgInt32Property("ID", featureId);
-            bufferProps.Add(idProp);
-            MgByteReader geomReader = agfRW.Write(featureGeom);
-            MgGeometryProperty geomProp = new MgGeometryProperty("GEOM", geomReader);
-            bufferProps.Add(geomProp);
-            propCollection.Add(bufferProps);
         }
     }
 

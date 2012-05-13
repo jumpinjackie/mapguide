@@ -151,11 +151,23 @@
       <DependentUpon>MgQueryResultsDialog.cs</DependentUpon>
     </Compile>
     <Compile Include="MgReadOnlyStream.cs" />
+    <Compile Include="MgLayerSelectionHandler.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="MgTaskPane.cs">
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="MgTaskPane.Designer.cs">
       <DependentUpon>MgTaskPane.cs</DependentUpon>
+    </Compile>
+    <Compile Include="MgThemeComponent.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="MgThemeControlImpl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="MgThemeControlImpl.Designer.cs">
+      <DependentUpon>MgThemeControlImpl.cs</DependentUpon>
     </Compile>
     <Compile Include="MgViewerOptionsComponent.cs">
       <SubType>Component</SubType>
@@ -178,6 +190,7 @@
     <Compile Include="Tasks\MgTaskPaneStub.Designer.cs">
       <DependentUpon>MgTaskPaneStub.cs</DependentUpon>
     </Compile>
+    <Compile Include="Util.cs" />
     <Service Include="{94E38DFF-614B-4cbd-B67C-F211BB35CE8B}" />
   </ItemGroup>
   <ItemGroup>
@@ -208,6 +221,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="MgTaskPane.resx">
       <DependentUpon>MgTaskPane.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="MgThemeControlImpl.resx">
+      <DependentUpon>MgThemeControlImpl.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="MgViewerOptionsControlImpl.resx">
       <DependentUpon>MgViewerOptionsControlImpl.cs</DependentUpon>
@@ -408,6 +424,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Resources\AreaLayerDef.txt" />
+    <None Include="Resources\AreaRuleTemplate.txt" />
     <None Include="Resources\view_log.gif" />
     <None Include="Resources\monitor_status.gif" />
     <None Include="Resources\load_package.gif" />

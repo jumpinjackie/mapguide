@@ -74,28 +74,14 @@ namespace OSGeo.MapGuide.Viewer
         protected virtual void SubscribeViewerEvents(IMapViewer viewer)
         {
             if (viewer != null)
+            {
                 viewer.PropertyChanged += OnViewerPropertyChanged;
-        }
+                viewer.MapLoaded += OnViewerMapLoaded;
 
-        protected virtual void OnViewerPropertyChanged(object sender, PropertyChangedEventArgs e)
-        {
-            if (e.PropertyName == "IsBusy")
-            {
-                var busy = this.Viewer.IsBusy;
-                Trace.TraceInformation("Dispatching busy state event to " + _listeners.Count + " listeners");
-                if (this.DisableWhenMapIsLoading)
+                if (this.RequiresLoadedMap)
                 {
                     foreach (var l in _listeners)
-                        l.SetDisabled(busy);
-                }
-            }
-            else if (e.PropertyName == "DigitizingType")
-            {
-                var bDigitizing = (this.Viewer.DigitizingType != MapDigitizationType.None);
-                if (this.DisableWhenDigitizing)
-                {
-                    foreach (var l in _listeners)
-                        l.SetDisabled(bDigitizing);
+                        l.SetEnabled(viewer.HasLoadedMap);
                 }
             }
         }
@@ -107,14 +93,55 @@ namespace OSGeo.MapGuide.Viewer
         protected virtual void UnsubscribeViewerEvents(IMapViewer viewer)
         {
             if (viewer != null)
+            {
                 viewer.PropertyChanged -= OnViewerPropertyChanged;
+                viewer.MapLoaded -= OnViewerMapLoaded;
+            }
         }
+
+        protected virtual void OnViewerMapLoaded(object sender, EventArgs e)
+        {
+            foreach (var l in _listeners)
+                l.SetEnabled(this.Viewer.HasLoadedMap);
+        }
+
+        protected virtual void OnViewerPropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == "IsBusy")
+            {
+                var busy = this.Viewer.IsBusy;
+                Trace.TraceInformation("Dispatching busy state event to " + _listeners.Count + " listeners");
+                if (this.DisableWhenMapIsLoading)
+                {
+                    foreach (var l in _listeners)
+                        l.SetEnabled(!busy);
+                }
+            }
+            else if (e.PropertyName == "DigitizingType")
+            {
+                var bDigitizing = (this.Viewer.DigitizingType != MapDigitizationType.None);
+                if (this.DisableWhenDigitizing)
+                {
+                    foreach (var l in _listeners)
+                        l.SetEnabled(!bDigitizing);
+                }
+            }
+        }
+        
+        /// <summary>
+        /// Gets whether this component requires a loaded map. If true, and no map is loaded this
+        /// component will be disabled until a map is loaded. If false, this component stays enabled
+        /// and can operate without a loaded map
+        /// </summary>
+        protected virtual bool RequiresLoadedMap { get { return true; } }
 
         protected List<IButtonStateListener> _listeners = new List<IButtonStateListener>();
 
         public void AddListener(IButtonStateListener listener)
         {
             _listeners.Add(listener);
+            if (this.RequiresLoadedMap)
+                listener.SetEnabled(this.Viewer != null && this.Viewer.HasLoadedMap);
         }
 
         public void RemoveListener(IButtonStateListener listener)
@@ -135,7 +162,7 @@ namespace OSGeo.MapGuide.Viewer
 
     public interface IButtonStateListener
     {
-        void SetDisabled(bool busy);
+        void SetEnabled(bool enabled);
         void SetActive(bool outlined);
         void SetText(string text);
         void SetIcon(Image icon);

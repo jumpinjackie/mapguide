@@ -37,6 +37,7 @@ public:
     bool SupportsSelectOrdering();
     FdoJoinType GetJoinTypes() const;
 
+	bool IsSupportedFunction(FdoFunction* function);
     void OwnReader();
 
 private:
