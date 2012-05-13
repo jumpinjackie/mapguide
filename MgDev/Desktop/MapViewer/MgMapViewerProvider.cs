@@ -50,13 +50,40 @@ namespace OSGeo.MapGuide.Viewer
         /// </summary>
         protected MgResourceService _resSvc;
 
-        protected MgMapViewerProvider(MgMapBase map, MgResourceService resSvc)
+        protected MgMapViewerProvider(MgMapBase map)
         {
-            _map = map;
-            _resSvc = resSvc;
+            SubInit();
+            LoadMap(map);
         }
 
+        protected virtual void SubInit() { }
+
         public MgMapBase GetMap() { return _map; }
+
+        protected virtual void DisposeExistingMap()
+        {
+            if (_map != null)
+            {
+                _map.Dispose();
+                _map = null;
+            }
+        }
+
+        internal void LoadMap(MgMapBase map)
+        {
+            if (map == null)
+                return;
+
+            DisposeExistingMap();
+            _map = map;
+            RebuildLayerInfoCache();
+            CacheGeometryProperties(_map.GetLayers());
+            var h = this.MapLoaded;
+            if (h != null)
+                h(this, EventArgs.Empty);
+        }
+
+        internal event EventHandler MapLoaded;
 
         /// <summary>
         /// The coordinate system factory
@@ -133,11 +160,14 @@ namespace OSGeo.MapGuide.Viewer
         private Dictionary<string, XmlDocument> _cachedLayerDefinitions = new Dictionary<string, XmlDocument>();
         private Dictionary<string, string> _tooltipExpressions = new Dictionary<string, string>();
 
-        public void RebuildLayerInfoCache()
+        protected void RebuildLayerInfoCache()
         {
             _cachedLayerDefinitions.Clear();
             _tooltipExpressions.Clear();
             _propertyMappings.Clear();
+            if (_resSvc == null)
+                _resSvc = (MgResourceService)CreateService(MgServiceType.ResourceService);
+
             //Pre-cache layer definitions and tooltip properties
             var layers = _map.GetLayers();
             MgStringCollection resIds = new MgStringCollection();

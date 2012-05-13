@@ -215,3 +215,40 @@ void MgFeatureConnection::OwnReader()
         FDO_SAFE_ADDREF(m_fdoConn);
     m_bCloseConnection = false;
 }
+
+bool MgFeatureConnection::IsSupportedFunction(FdoFunction* fdoFunc)
+{
+	CHECKNULL(m_fdoConn, L"MgFeatureConnection.SupportsFunction");
+
+    FdoPtr<FdoIExpressionCapabilities> fec = m_fdoConn->GetExpressionCapabilities();
+    CHECKNULL((FdoIExpressionCapabilities*)fec, L"MgFeatureConnection.SupportsFunction");
+
+    bool supports = false;
+
+    FdoPtr<FdoFunctionDefinitionCollection> ffdc = fec->GetFunctions();
+    if (NULL != (FdoFunctionDefinitionCollection*)ffdc)
+    {
+        FdoInt32 funcCnt = ffdc->GetCount();
+        for (FdoInt32 i=0; i < funcCnt; i++)
+        {
+            FdoPtr<FdoFunctionDefinition> ffd = ffdc->GetItem(i);
+            CHECKNULL((FdoFunctionDefinition*)ffd, L"MgFeatureConnection.SupportsFunction");
+
+            // TODO: Just comparing name is enough?
+            // TODO: I think, NOT, because there can be overloaded functions like one function
+            // with multiple arguments, differnet datatypes etc.
+            //
+            // Comparing argument count is not sufficient because, there can be optional arguments
+            // as well. Therefore, we should just restrict to name comparision only
+            FdoString* funcNameAllowed = ffd->GetName();
+            FdoString* funcNameSupplied = fdoFunc->GetName();
+            size_t cmp = _wcsicmp(funcNameAllowed, funcNameSupplied);
+            if (cmp == 0)
+            {
+                supports = true;
+                break;
+            }
+        }
+    }
+    return supports;
+}

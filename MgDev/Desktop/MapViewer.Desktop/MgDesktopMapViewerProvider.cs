@@ -11,16 +11,17 @@ namespace OSGeo.MapGuide.Viewer.Desktop
         private MgdMap _implMap;
         private MgRenderingService _renderSvc;
         private MgServiceFactory _fact;
-        private MgResourceService _resSvc;
 
-        public MgDesktopMapViewerProvider(MgdMap map, MgdResourceService resSvc, MgRenderingService renderingService) : base(map, resSvc) 
+        public MgDesktopMapViewerProvider(MgdMap map) : base(map) 
         {
             _implMap = map;
-            _fact = new MgServiceFactory();
-            _renderSvc = renderingService;
-            _resSvc = (MgResourceService)_fact.CreateService(MgServiceType.ResourceService);
         }
 
+        protected override void SubInit()
+        {
+            _fact = new MgServiceFactory();
+            _renderSvc = (MgRenderingService)_fact.CreateService(MgServiceType.RenderingService);
+        }
         
         private MgRenderingOptions _lastRenderOpts;
 

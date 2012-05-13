@@ -61,7 +61,7 @@ namespace OSGeo.MapGuide.Viewer
             _viewer.MapScaleChanged += new EventHandler(OnMapScaleChanged);
             _viewer.SelectionChanged += new EventHandler(OnMapSelectionChanged);
             _viewer.PropertyChanged += new System.ComponentModel.PropertyChangedEventHandler(OnMapPropertyChanged);
-            _viewer.ViewerInitialized += new EventHandler(OnViewerInitialized);
+            _viewer.MapLoaded += new EventHandler(OnViewerMapLoaded);
             _viewer.MouseMapPositionChanged += new EventHandler<MapPointEventArgs>(OnMouseMapPositionChanged);
             if (_legend != null)
             {
@@ -93,7 +93,7 @@ namespace OSGeo.MapGuide.Viewer
             _viewer.RefreshMap();
         }
 
-        void OnViewerInitialized(object sender, EventArgs e)
+        void OnViewerMapLoaded(object sender, EventArgs e)
         {
             if (_legend != null)
             {

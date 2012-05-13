@@ -227,6 +227,36 @@ xcopy /Y $(ProjectDir)Platform.ini $(OutDir)
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="Services\Feature\FeatureDistribution.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="Services\Feature\FeatureGeometricFunctions.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="Services\Feature\FeatureNumericFunctions.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="Services\Feature\FeatureStringFunctions.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="Services\Feature\ProxyDataReader.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="Services\ProfilingService.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
@@ -747,6 +777,25 @@ xcopy /Y $(ProjectDir)Platform.ini $(OutDir)
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Exception\AliasNotFoundException.h" />
+    <ClInclude Include="Services\Feature\BooleanDataReaderCreator.h" />
+    <ClInclude Include="Services\Feature\ByteDataReaderCreator.h" />
+    <ClInclude Include="Services\Feature\DataReaderCreator.h" />
+    <ClInclude Include="Services\Feature\DateTimeDataReaderCreator.h" />
+    <ClInclude Include="Services\Feature\DoubleDataReaderCreator.h" />
+    <ClInclude Include="Services\Feature\FeatureDistribution.h" />
+    <ClInclude Include="Services\Feature\FeatureGeometricFunctions.h" />
+    <ClInclude Include="Services\Feature\FeatureNumericFunctions.h" />
+    <ClInclude Include="Services\Feature\FeatureStringFunctions.h" />
+    <ClInclude Include="Services\Feature\FeautreNumericFunctions.h" />
+    <ClInclude Include="Services\Feature\GeometryDataReaderCreator.h" />
+    <ClInclude Include="Services\Feature\Int16DataReaderCreator.h" />
+    <ClInclude Include="Services\Feature\Int32DataReaderCreator.h" />
+    <ClInclude Include="Services\Feature\Int64DataReaderCreator.h" />
+    <ClInclude Include="Services\Feature\Matrix.h" />
+    <ClInclude Include="Services\Feature\ProxyDataReader.h" />
+    <ClInclude Include="Services\Feature\SingleDataReaderCreator.h" />
+    <ClInclude Include="Services\Feature\StringDataReaderCreator.h" />
+    <ClInclude Include="Services\Feature\UniqueFunction.h" />
     <ClInclude Include="Services\ProfilingService.h" />
     <ClInclude Include="Services\Resource\ByteSourceDwfInputStreamImpl.h" />
     <ClInclude Include="Services\ByteSourceRasterStreamImpl.h" />

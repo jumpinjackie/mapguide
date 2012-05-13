@@ -257,7 +257,7 @@ namespace OSGeo.MapGuide.Viewer
         /// <summary>
         /// Raised when the viewer has been initialized
         /// </summary>
-        event EventHandler ViewerInitialized;
+        event EventHandler MapLoaded;
 
         /// <summary>
         /// Raised when the map cursor position has changed
@@ -284,6 +284,11 @@ namespace OSGeo.MapGuide.Viewer
         /// implemented
         /// </summary>
         bool ConvertTiledGroupsToNonTiled { get; set; }
+
+        /// <summary>
+        /// Gets whether this viewer has a map loaded into it
+        /// </summary>
+        bool HasLoadedMap { get; }
     }
 
     /// <summary>

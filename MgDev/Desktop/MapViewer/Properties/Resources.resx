@@ -427,4 +427,10 @@
   <data name="TextScale" xml:space="preserve">
     <value>Scale</value>
   </data>
+  <data name="TitleTheme" xml:space="preserve">
+    <value>Theme</value>
+  </data>
+  <data name="AreaRuleTemplate" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\AreaRuleTemplate.txt;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
+  </data>
 </root>
