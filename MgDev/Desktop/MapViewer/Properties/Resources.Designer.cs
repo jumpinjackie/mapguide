@@ -88,6 +88,32 @@ namespace OSGeo.MapGuide.Viewer.Properties {
             }
         }
         
+        /// <summary>
+        ///   Looks up a localized string similar to &lt;AreaRule&gt;
+        /// &lt;LegendLabel&gt;{0}&lt;/LegendLabel&gt;
+        /// &lt;Filter&gt;{1}&lt;/Filter&gt;
+        /// &lt;AreaSymbolization2D&gt;
+        ///  &lt;Fill&gt;
+        ///   &lt;FillPattern&gt;Solid&lt;/FillPattern&gt;
+        ///   &lt;ForegroundColor&gt;{2}&lt;/ForegroundColor&gt;
+        ///   &lt;BackgroundColor&gt;FF000000&lt;/BackgroundColor&gt;
+        ///  &lt;/Fill&gt;
+        ///  &lt;Stroke&gt;
+        ///   &lt;LineStyle&gt;Solid&lt;/LineStyle&gt;
+        ///   &lt;Thickness&gt;0&lt;/Thickness&gt;
+        ///   &lt;Color&gt;{3}&lt;/Color&gt;
+        ///   &lt;Unit&gt;Inches&lt;/Unit&gt;
+        ///  &lt;/Stroke&gt;
+        /// &lt;/AreaSymbolization2D&gt;
+        ///&lt;/AreaRule&gt;
+        ///.
+        /// </summary>
+        internal static string AreaRuleTemplate {
+            get {
+                return ResourceManager.GetString("AreaRuleTemplate", resourceCulture);
+            }
+        }
+        
         internal static System.Drawing.Bitmap buffer {
             get {
                 object obj = ResourceManager.GetObject("buffer", resourceCulture);
@@ -753,6 +779,15 @@ namespace OSGeo.MapGuide.Viewer.Properties {
         internal static string TitleQuery {
             get {
                 return ResourceManager.GetString("TitleQuery", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Theme.
+        /// </summary>
+        internal static string TitleTheme {
+            get {
+                return ResourceManager.GetString("TitleTheme", resourceCulture);
             }
         }
         

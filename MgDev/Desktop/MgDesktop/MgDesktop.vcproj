@@ -1156,7 +1156,115 @@
 				</FileConfiguration>
 			</File>
 			<File
+				RelativePath=".\Services\Feature\FeatureDistribution.cpp"
+				>
+				<FileConfiguration
+					Name="Debug|Win32"
+					ExcludedFromBuild="true"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|x64"
+					ExcludedFromBuild="true"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32"
+					ExcludedFromBuild="true"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|x64"
+					ExcludedFromBuild="true"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+					/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath=".\Services\Feature\FeatureGeometricFunctions.cpp"
+				>
+				<FileConfiguration
+					Name="Debug|Win32"
+					ExcludedFromBuild="true"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|x64"
+					ExcludedFromBuild="true"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32"
+					ExcludedFromBuild="true"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|x64"
+					ExcludedFromBuild="true"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+					/>
+				</FileConfiguration>
+			</File>
+			<File
 				RelativePath=".\Services\Rendering\FeatureInfoRenderer.cpp"
+				>
+				<FileConfiguration
+					Name="Debug|Win32"
+					ExcludedFromBuild="true"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|x64"
+					ExcludedFromBuild="true"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32"
+					ExcludedFromBuild="true"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|x64"
+					ExcludedFromBuild="true"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+					/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath=".\Services\Feature\FeatureNumericFunctions.cpp"
 				>
 				<FileConfiguration
 					Name="Debug|Win32"
@@ -1373,6 +1481,42 @@
 			</File>
 			<File
 				RelativePath=".\Services\Feature\FeatureSourceCacheItem.cpp"
+				>
+				<FileConfiguration
+					Name="Debug|Win32"
+					ExcludedFromBuild="true"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|x64"
+					ExcludedFromBuild="true"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32"
+					ExcludedFromBuild="true"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|x64"
+					ExcludedFromBuild="true"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+					/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath=".\Services\Feature\FeatureStringFunctions.cpp"
 				>
 				<FileConfiguration
 					Name="Debug|Win32"
@@ -2349,6 +2493,42 @@
 			</File>
 			<File
 				RelativePath=".\Services\Feature\ProjectedFeatureReader.cpp"
+				>
+				<FileConfiguration
+					Name="Debug|Win32"
+					ExcludedFromBuild="true"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|x64"
+					ExcludedFromBuild="true"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32"
+					ExcludedFromBuild="true"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|x64"
+					ExcludedFromBuild="true"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+					/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath=".\Services\Feature\ProxyDataReader.cpp"
 				>
 				<FileConfiguration
 					Name="Debug|Win32"
@@ -3510,6 +3690,14 @@
 				>
 			</File>
 			<File
+				RelativePath=".\Services\Feature\BooleanDataReaderCreator.h"
+				>
+			</File>
+			<File
+				RelativePath=".\Services\Feature\ByteDataReaderCreator.h"
+				>
+			</File>
+			<File
 				RelativePath=".\Services\Resource\ByteSourceDwfInputStreamImpl.h"
 				>
 			</File>
@@ -3543,6 +3731,18 @@
 			</File>
 			<File
 				RelativePath=".\Services\DataReader.h"
+				>
+			</File>
+			<File
+				RelativePath=".\Services\Feature\DataReaderCreator.h"
+				>
+			</File>
+			<File
+				RelativePath=".\Services\Feature\DateTimeDataReaderCreator.h"
+				>
+			</File>
+			<File
+				RelativePath=".\Services\Feature\DoubleDataReaderCreator.h"
 				>
 			</File>
 			<File
@@ -3606,7 +3806,19 @@
 				>
 			</File>
 			<File
+				RelativePath=".\Services\Feature\FeatureDistribution.h"
+				>
+			</File>
+			<File
+				RelativePath=".\Services\Feature\FeatureGeometricFunctions.h"
+				>
+			</File>
+			<File
 				RelativePath=".\Services\Rendering\FeatureInfoRenderer.h"
+				>
+			</File>
+			<File
+				RelativePath=".\Services\Feature\FeatureNumericFunctions.h"
 				>
 			</File>
 			<File
@@ -3634,7 +3846,19 @@
 				>
 			</File>
 			<File
+				RelativePath=".\Services\Feature\FeatureStringFunctions.h"
+				>
+			</File>
+			<File
 				RelativePath=".\Services\Feature\FeatureUtil.h"
+				>
+			</File>
+			<File
+				RelativePath=".\Services\Feature\FeautreNumericFunctions.h"
+				>
+			</File>
+			<File
+				RelativePath=".\Services\Feature\GeometryDataReaderCreator.h"
 				>
 			</File>
 			<File
@@ -3651,6 +3875,18 @@
 			</File>
 			<File
 				RelativePath=".\Services\ImageFormats.h"
+				>
+			</File>
+			<File
+				RelativePath=".\Services\Feature\Int16DataReaderCreator.h"
+				>
+			</File>
+			<File
+				RelativePath=".\Services\Feature\Int32DataReaderCreator.h"
+				>
+			</File>
+			<File
+				RelativePath=".\Services\Feature\Int64DataReaderCreator.h"
 				>
 			</File>
 			<File
@@ -3718,6 +3954,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\Services\Feature\Matrix.h"
+				>
+			</File>
+			<File
 				RelativePath=".\Services\Feature\MgCSTrans.h"
 				>
 			</File>
@@ -3759,6 +3999,10 @@
 			</File>
 			<File
 				RelativePath=".\Services\Feature\ProjectedFeatureReader.h"
+				>
+			</File>
+			<File
+				RelativePath=".\Services\Feature\ProxyDataReader.h"
 				>
 			</File>
 			<File
@@ -3834,11 +4078,19 @@
 				>
 			</File>
 			<File
+				RelativePath=".\Services\Feature\SingleDataReaderCreator.h"
+				>
+			</File>
+			<File
 				RelativePath=".\Services\Feature\SpatialContextCacheItem.h"
 				>
 			</File>
 			<File
 				RelativePath=".\Services\SqlReader.h"
+				>
+			</File>
+			<File
+				RelativePath=".\Services\Feature\StringDataReaderCreator.h"
 				>
 			</File>
 			<File
@@ -3867,6 +4119,10 @@
 			</File>
 			<File
 				RelativePath=".\Services\Feature\TransformCache.h"
+				>
+			</File>
+			<File
+				RelativePath=".\Services\Feature\UniqueFunction.h"
 				>
 			</File>
 			<File

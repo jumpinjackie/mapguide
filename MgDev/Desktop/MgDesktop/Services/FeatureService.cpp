@@ -18,6 +18,7 @@
 #include "DataReader.h"
 #include "SqlReader.h"
 
+#include "Services/Feature/FeatureDistribution.h"
 #include "Services/Feature/ProjectedFeatureReader.h"
 #include "Services/Feature/GwsFeatureReader.h"
 #include "Services/Feature/GwsConnectionPool.h"
@@ -3294,6 +3295,10 @@ MgDataReader* MgdFeatureService::SelectAggregate(MgResourceIdentifier* resource,
 
         INT32 propCount = props->GetCount();
         INT32 compCount = computed->GetCount();
+		
+		bool bCustomPropertyFound = false;
+		FdoFunction* customFunc = NULL;
+		STRING customPropName;
 
         FdoPtr<FdoIdentifierCollection> fdoProps = select->GetPropertyNames();
         if (propCount > 0)
@@ -3309,10 +3314,60 @@ MgDataReader* MgdFeatureService::SelectAggregate(MgResourceIdentifier* resource,
 	        for (INT32 i = 0; i < compCount; i++)
 	        {
 		        Ptr<MgStringProperty> comp = computed->GetItem(i);
+				STRING aliasName = comp->GetName();
 		        FdoPtr<FdoExpression> expr = FdoExpression::Parse(comp->GetValue().c_str());
-		        FdoPtr<FdoComputedIdentifier> name= FdoComputedIdentifier::Create(comp->GetName().c_str(), expr);
+		        
+				if (ContainsUdf(connWrap, expr))
+				{
+					// If property is already found, two custom properties are not supported and therefore throw exception
+					if (bCustomPropertyFound)
+					{
+						STRING message = MgFeatureUtil::GetMessage(L"MgOnlyOnePropertyAllowed");
 
-		        fdoProps->Add(name);
+						MgStringCollection arguments;
+						arguments.Add(message);
+						throw new MgFeatureServiceException(L"MgdFeatureService::SelectAggregate", __LINE__, __WFILE__, &arguments, L"", NULL);
+					}
+
+					// Downcast to FdoFunction
+					FdoFunction* function = dynamic_cast<FdoFunction*>(expr.p);
+
+					if (function != NULL)
+					{
+						FdoString* expName = aliasName.c_str();
+						if (expName != NULL)
+						{
+							FdoPtr<FdoExpressionCollection> exprCol = function->GetArguments();
+							FdoInt32 cnt = exprCol->GetCount();
+							FdoPtr<FdoExpression> expr;
+							if (cnt > 0)
+							{
+								expr = exprCol->GetItem(0);   // Property Name
+							}
+
+							// Just pass in the property name
+							// FdoPtr<FdoComputedIdentifier> fdoIden = FdoComputedIdentifier::Create(expName, expr);
+
+							// NOTE: Each provider has its own rule for supporting computed properties, select and select aggregate
+							// functionality. Therefore we just work with simple select command, fetch the property and do the needed
+							// calculations. Therefore, we are not adding them as computed properties.
+
+							FdoIdentifier* propName = dynamic_cast<FdoIdentifier*>(expr.p);
+
+							if (propName != NULL)
+								fdoProps->Add(propName);
+
+							customPropName = aliasName;
+							bCustomPropertyFound = true;
+							customFunc = FDO_SAFE_ADDREF(function);
+						}
+					}
+				}
+				else
+				{
+					FdoPtr<FdoComputedIdentifier> name = FdoComputedIdentifier::Create(comp->GetName().c_str(), expr);
+					fdoProps->Add(name);
+				}
 	        }
         }
 
@@ -3339,12 +3394,76 @@ MgDataReader* MgdFeatureService::SelectAggregate(MgResourceIdentifier* resource,
         }
 
         FdoPtr<FdoIDataReader> fdoReader = select->Execute();
-        reader = new MgdDataReader(connWrap, fdoReader);
+		if (bCustomPropertyFound) 
+		{
+			Ptr<MgReader> origReader = new MgdDataReader(connWrap, fdoReader);
+			Ptr<MgDataReader> customReader = dynamic_cast<MgDataReader*>(this->GetCustomReader(origReader, customFunc, customPropName));
+			origReader->Close();
+			reader = customReader;
+		}
+		else
+		{
+			reader = new MgdDataReader(connWrap, fdoReader);
+		}
     }
 
     MG_FEATURE_SERVICE_CHECK_CONNECTION_CATCH_AND_THROW(resource, L"MgdFeatureService::SelectAggregate")
 
 	return reader.Detach();
+}
+
+// Convert reader into a custom MgDataReader
+MgReader* MgdFeatureService::GetCustomReader(MgReader* reader, FdoFunction* customFunc, CREFSTRING propertyName)
+{
+    Ptr<MgReader> distReader;
+    Ptr<MgFeatureDistribution> featureDist =
+        MgFeatureDistribution::CreateDistributionFunction(reader, customFunc, propertyName);
+
+    distReader = featureDist->Execute();
+    return distReader.Detach();
+}
+
+bool MgdFeatureService::ContainsUdf(MgFeatureConnection* conn, FdoExpression* expression)
+{
+    bool isUdf = false;
+    bool fdoSupported = false;
+
+    // Downcast to FdoFunction
+    FdoFunction* function = dynamic_cast<FdoFunction*>(expression);
+
+    // If we are unable to downcast, it means it is not a function, it is just
+    // an expression. We do not do anything with this. We just pass it to FDO
+    if (function != NULL)
+    {
+        if (conn != NULL)
+        {
+            // Check if FDO supports this function, if so, let FDO handle it
+            fdoSupported = conn->IsSupportedFunction(function);
+        }
+
+        if (!fdoSupported)
+        {
+            // If function is not supported, then check if it is a custom function.
+            isUdf = IsCustomFunction(function);
+        }
+    }
+
+    return isUdf;
+}
+
+
+bool MgdFeatureService::IsCustomFunction(FdoFunction* fdoFunc)
+{
+    bool customFunc = false;
+
+    FdoString* funcNameAllowed = fdoFunc->GetName();
+    if (funcNameAllowed != NULL)
+    {
+        INT32 funcIndex = -1;
+        customFunc = MgFeatureUtil::FindCustomFunction(STRING(funcNameAllowed),funcIndex);
+    }
+
+    return customFunc;
 }
 
 MgPropertyCollection* MgdFeatureService::UpdateFeatures(MgResourceIdentifier* resource,
