@@ -121,8 +121,8 @@
   <data name="layer-shape-line" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\layer-shape-line.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="icon_clearselect" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\icon_clearselect.gif;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="ui-tooltip-balloon-bottom" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\ui-tooltip-balloon-bottom.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="layer-shape-ellipse" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\layer-shape-ellipse.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -130,11 +130,14 @@
   <data name="icon_refreshmap" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\icon_refreshmap.gif;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="icon_tasks" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\icon_tasks.gif;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
   <data name="layer-shape" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\layer-shape.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="ui-tooltip-balloon-bottom" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\ui-tooltip-balloon-bottom.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="icon_clearselect" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\icon_clearselect.gif;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="icon_select" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\icon_select.gif;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -148,14 +151,20 @@
   <data name="layer-shape-polyline" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\layer-shape-polyline.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="DebugLayer" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\DebugLayer.txt;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
+  <data name="icon_home" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\icon_home.gif;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="lc_dwf" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\lc_dwf.gif;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="icon_fitwindow" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\icon_fitwindow.gif;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="layer-shape-polygon" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\layer-shape-polygon.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="icon_zoomout" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\icon_zoomout.gif;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="icon_refreshmap1" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\icon_refreshmap1.gif;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -166,19 +175,13 @@
   <data name="icon_zoomin" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\icon_zoomin.gif;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="icon_zoomout" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\icon_zoomout.gif;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="DebugLayer" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\DebugLayer.txt;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
   </data>
   <data name="PoweredBy_en" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\PoweredBy_en.gif;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="lc_dwf" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\lc_dwf.gif;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="icon_home" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\icon_home.gif;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="icon_tasks" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\icon_tasks.gif;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="map--arrow" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\map--arrow.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
 </root>

@@ -78,10 +78,13 @@ namespace OSGeo.MapGuide.Viewer
             _map = map;
             RebuildLayerInfoCache();
             CacheGeometryProperties(_map.GetLayers());
+            OnNewMapLoaded(map);
             var h = this.MapLoaded;
             if (h != null)
                 h(this, EventArgs.Empty);
         }
+
+        protected virtual void OnNewMapLoaded(MgMapBase map) { }
 
         internal event EventHandler MapLoaded;
 
@@ -153,6 +156,7 @@ namespace OSGeo.MapGuide.Viewer
             }
         }
 
+        private Dictionary<string, MgCoordinateSystemTransform> _mapToLayerTransforms = new Dictionary<string, MgCoordinateSystemTransform>();
         private Dictionary<string, NameValueCollection> _propertyMappings = new Dictionary<string, NameValueCollection>();
 
         internal Dictionary<string, NameValueCollection> AllPropertyMappings { get { return _propertyMappings; } }
@@ -165,6 +169,14 @@ namespace OSGeo.MapGuide.Viewer
             _cachedLayerDefinitions.Clear();
             _tooltipExpressions.Clear();
             _propertyMappings.Clear();
+
+            foreach (var trans in _mapToLayerTransforms.Values)
+            {
+                if (trans != null)
+                    trans.Dispose();
+            }
+            _mapToLayerTransforms.Clear();
+
             if (_resSvc == null)
                 _resSvc = (MgResourceService)CreateService(MgServiceType.ResourceService);
 
@@ -176,6 +188,19 @@ namespace OSGeo.MapGuide.Viewer
                 var layer = layers.GetItem(i);
                 var ldf = layer.GetLayerDefinition();
                 resIds.Add(ldf.ToString());
+
+                //Make sure geometry property checks out
+                var clsDef = layer.GetClassDefinition();
+                var geomName = clsDef.DefaultGeometryPropertyName;
+                var props = clsDef.GetProperties();
+                if (props.IndexOf(geomName) < 0)
+                    continue;
+
+                var geomProp = props.GetItem(geomName) as MgGeometricPropertyDefinition;
+                if (geomProp == null)
+                    continue;
+
+                var trans = GetMapToLayerTransform(layer, geomProp);
             }
             MgStringCollection contents = _resSvc.GetResourceContents(resIds, null);
             for (int i = 0; i < contents.GetCount(); i++)
@@ -201,6 +226,49 @@ namespace OSGeo.MapGuide.Viewer
             }
         }
 
+        internal MgCoordinateSystemTransform GetMapToLayerTransform(MgLayerBase layer, MgGeometricPropertyDefinition geomProp)
+        {
+            string objId = layer.GetObjectId();
+            string mapCsWkt = _map.GetMapSRS();
+            bool bChecked = false;
+            MgCoordinateSystemTransform trans = this.GetLayerTransform(objId, out bChecked);
+            if (trans == null && !bChecked)
+            {
+                MgSpatialContextReader scReader = GetSpatialContexts(layer, false);
+                try
+                {
+                    while (scReader.ReadNext())
+                    {
+                        if (scReader.GetName() == geomProp.SpatialContextAssociation)
+                        {
+                            //Only need to set up transform if layer and map wkts do not match
+                            if (!string.IsNullOrEmpty(mapCsWkt) && !string.IsNullOrEmpty(scReader.GetCoordinateSystemWkt()))
+                            {
+                                if (mapCsWkt != scReader.GetCoordinateSystemWkt())
+                                {
+                                    var csFact = this.CoordSysFactory;
+                                    var layerCs = csFact.Create(scReader.GetCoordinateSystemWkt());
+                                    trans = csFact.GetTransform(this.GetMapCoordinateSystem(), layerCs);
+                                    this.CacheLayerTransform(objId, trans);
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                }
+                finally
+                {
+                    scReader.Close();
+                }
+                if (trans == null)
+                    this.CacheLayerTransform(objId, null);
+            }
+            return trans;
+        }
+
+        protected abstract MgSpatialContextReader GetSpatialContexts(MgLayerBase layer, bool activeOnly);
+
+        public abstract MgMapBase CreateMap(MgResourceIdentifier mapDefinitionId, string name);
         public abstract MgByteReader RenderDynamicOverlay(MgSelectionBase selection, MgViewerRenderingOptions args);
         public abstract void SetDisplaySize(int width, int height);
         public abstract MgSelectionBase CreateSelectionForMap();
@@ -235,6 +303,22 @@ namespace OSGeo.MapGuide.Viewer
         public bool HasTooltips(MgResourceIdentifier ldfId)
         {
             return _tooltipExpressions.ContainsKey(ldfId.ToString());
+        }
+
+        internal MgCoordinateSystemTransform GetLayerTransform(string objId, out bool bAlreadyChecked)
+        {
+            bAlreadyChecked = false;
+            if (_mapToLayerTransforms.ContainsKey(objId))
+            {
+                bAlreadyChecked = true;
+                return _mapToLayerTransforms[objId];
+            }
+            return null;
+        }
+
+        internal void CacheLayerTransform(string objId, MgCoordinateSystemTransform trans)
+        {
+            _mapToLayerTransforms[objId] = trans;
         }
     }
 }
