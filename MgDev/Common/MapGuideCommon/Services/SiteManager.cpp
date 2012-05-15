@@ -334,7 +334,9 @@ MgConnectionProperties* MgSiteManager::GetConnectionProperties(
             // This site is not currently working
 
             // We have a session, but it will not exist on any other machine so we force the session exception
-            throw new MgSessionExpiredException(L"MgSiteManager.GetConnectionProperties",__LINE__,__WFILE__, NULL, L"", NULL);
+            MgStringCollection args;
+            args.Add(sessionId);
+            throw new MgSessionExpiredException(L"MgSiteManager.GetConnectionProperties",__LINE__,__WFILE__, NULL, L"MgSessionExpired", &args);
         }
     }
     else

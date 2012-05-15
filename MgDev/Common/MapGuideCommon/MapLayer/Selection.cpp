@@ -125,7 +125,7 @@ void MgSelection::Open(MgResourceService* resourceService, CREFSTRING mapName)
     if (userInfo.p != NULL) sessionId = userInfo->GetMgSessionId();
     if (sessionId.empty())
     {
-        throw new MgSessionExpiredException(L"MgSelection.Open",__LINE__,__WFILE__, NULL, L"", NULL);
+        throw new MgSessionExpiredException(L"MgSelection.Open",__LINE__,__WFILE__, NULL, L"MgSelectionOpenWithEmptySession", NULL);
     }
 
     Ptr<MgResourceIdentifier> resId = new MgResourceIdentifier(GetResourceName(sessionId, mapName));
@@ -143,7 +143,7 @@ void MgSelection::Save(MgResourceService* resourceService, CREFSTRING mapName)
     if (userInfo.p != NULL) sessionId = userInfo->GetMgSessionId();
     if (sessionId.empty())
     {
-        throw new MgSessionExpiredException(L"MgSelection.Save",__LINE__,__WFILE__, NULL, L"", NULL);
+        throw new MgSessionExpiredException(L"MgSelection.Save",__LINE__,__WFILE__, NULL, L"MgSelectionSaveWithEmptySession", NULL);
     }
 
     Ptr<MgResourceIdentifier> resId = new MgResourceIdentifier(GetResourceName(sessionId, mapName));
