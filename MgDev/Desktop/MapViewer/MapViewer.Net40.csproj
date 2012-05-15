@@ -126,6 +126,9 @@
     <Compile Include="MgLineMeasureControlImpl.Designer.cs">
       <DependentUpon>MgLineMeasureControlImpl.cs</DependentUpon>
     </Compile>
+    <Compile Include="MgLoadMapComponent.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="MgLoadPackageComponent.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -180,8 +183,12 @@
     <Compile Include="MgTaskPane.Designer.cs">
       <DependentUpon>MgTaskPane.cs</DependentUpon>
     </Compile>
-    <Compile Include="MgThemeComponent.cs" />
-    <Compile Include="MgThemeControlImpl.cs" />
+    <Compile Include="MgThemeComponent.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="MgThemeControlImpl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
     <Compile Include="MgThemeControlImpl.Designer.cs">
       <DependentUpon>MgThemeControlImpl.cs</DependentUpon>
     </Compile>
@@ -459,7 +466,6 @@
     <None Include="Resources\AreaLayerDef.txt" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="MapViewer.csproj" />
     <Content Include="Resources\icon_home.gif" />
     <Content Include="Resources\icon_tasks.gif" />
     <Content Include="Resources\load_package.gif" />
