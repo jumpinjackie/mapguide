@@ -31,6 +31,7 @@ namespace OSGeo.MapGuide.Viewer
         private MgWktReaderWriter _wktRW;
         private MgAgfReaderWriter _agfRW;
         private MgGeometryFactory _geomFact;
+        private MgCoordinateSystemFactory _csFact;
         private MgMeasure _mapMeasure;
 
         private Color _mapBgColor;
@@ -257,6 +258,12 @@ namespace OSGeo.MapGuide.Viewer
                 {
                     renderWorker.DoWork -= renderWorker_DoWork;
                     renderWorker.RunWorkerCompleted -= renderWorker_RunWorkerCompleted;
+                }
+
+                if (_csFact != null)
+                {
+                    _csFact.Dispose();
+                    _csFact = null;
                 }
 
                 if (_resSvc != null)
@@ -1847,10 +1854,31 @@ namespace OSGeo.MapGuide.Viewer
                 if (!_provider.HasTooltips(ldfId))
                     continue;
 
+                //Make sure geometry property checks out
+                var geomName = _provider.GetGeometryProperty(objId);
+                var clsDef = layer.GetClassDefinition();
+                var props = clsDef.GetProperties();
+                if (props.IndexOf(geomName) < 0)
+                    continue;
+
+                var geomProp = props.GetItem(geomName) as MgGeometricPropertyDefinition;
+                if (geomProp == null)
+                    continue;
+
+                var trans = _provider.GetMapToLayerTransform(layer, geomProp);
+
                 string propName = "QUERYTOOLTIP";
                 MgFeatureQueryOptions query = new MgFeatureQueryOptions();
                 query.AddComputedProperty(propName, _provider.GetTooltipExpression(ldfId));
-                query.SetSpatialFilter(_provider.GetGeometryProperty(objId), poly, MgFeatureSpatialOperations.Intersects);
+                if (trans != null)
+                {
+                    var txPoly = (MgGeometry)poly.Transform(trans);
+                    query.SetSpatialFilter(geomName, txPoly, MgFeatureSpatialOperations.Intersects);
+                }
+                else
+                {
+                    query.SetSpatialFilter(geomName, poly, MgFeatureSpatialOperations.Intersects);
+                }
 
                 MgFeatureReader reader = null;
                 reader = layer.SelectFeatures(query);
@@ -1956,6 +1984,7 @@ namespace OSGeo.MapGuide.Viewer
             sw.Start();
 #endif
 
+            string mapCsWkt = _map.GetMapSRS();
             var layers = _map.GetLayers();
 
             if (ModifierKeys != Keys.Control)
@@ -1979,11 +2008,33 @@ namespace OSGeo.MapGuide.Viewer
                 _provider.CheckAndCacheGeometryProperty(layer);
 
                 var objId = layer.GetObjectId();
+                string geomName = _provider.GetGeometryProperty(objId);
+
+                //Make sure geometry property checks out
+                var clsDef = layer.GetClassDefinition();
+                var props = clsDef.GetProperties();
+                if (props.IndexOf(geomName) < 0)
+                    continue;
+
+                var geomProp = props.GetItem(geomName) as MgGeometricPropertyDefinition;
+                if (geomProp == null)
+                    continue;
+
                 MgFeatureQueryOptions query = new MgFeatureQueryOptions();
                 string filter = layer.GetFilter();
                 if (!string.IsNullOrEmpty(filter))
                     query.SetFilter(filter);
-                query.SetSpatialFilter(_provider.GetGeometryProperty(objId), geom, MgFeatureSpatialOperations.Intersects);
+
+                var trans = _provider.GetMapToLayerTransform(layer, geomProp);
+                if (trans != null)
+                {
+                    var txGeom = (MgGeometry)geom.Transform(trans);
+                    query.SetSpatialFilter(geomName, txGeom, MgFeatureSpatialOperations.Intersects);
+                }
+                else
+                {
+                    query.SetSpatialFilter(geomName, geom, MgFeatureSpatialOperations.Intersects);
+                }
 
                 MgFeatureReader reader = layer.SelectFeatures(query);
                 try

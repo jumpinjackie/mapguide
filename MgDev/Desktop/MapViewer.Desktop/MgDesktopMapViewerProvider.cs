@@ -17,6 +17,11 @@ namespace OSGeo.MapGuide.Viewer.Desktop
             _implMap = map;
         }
 
+        protected override void OnNewMapLoaded(MgMapBase map)
+        {
+            _implMap = (MgdMap)map;
+        }
+
         protected override void SubInit()
         {
             _fact = new MgServiceFactory();
@@ -130,6 +135,17 @@ namespace OSGeo.MapGuide.Viewer.Desktop
         public override MgLayerBase CreateLayer(MgResourceIdentifier layerDefId)
         {
             return new MgdLayer(layerDefId, _resSvc);
+        }
+
+        public override MgMapBase CreateMap(MgResourceIdentifier mapDefinitionId, string name)
+        {
+            var map = new MgdMap(mapDefinitionId, name);
+            return map;
+        }
+
+        protected override MgSpatialContextReader GetSpatialContexts(MgLayerBase layer, bool activeOnly)
+        {
+            return ((MgdLayer)layer).GetSpatialContexts(activeOnly);
         }
     }
 }

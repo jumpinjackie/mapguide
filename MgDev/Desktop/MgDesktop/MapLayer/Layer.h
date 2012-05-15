@@ -41,6 +41,8 @@ PUBLISHED_API:
 
     virtual bool HasTooltips();
 
+	virtual MgSpatialContextReader* GetSpatialContexts(bool active);
+
 INTERNAL_API:
 
     //////////////////////////////////////////////////////////////////

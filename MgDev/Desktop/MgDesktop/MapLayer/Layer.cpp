@@ -410,6 +410,22 @@ MgdScrollableFeatureReader* MgdLayer::SelectFeaturesExtended(MgFeatureQueryOptio
     return reader.Detach();
 }
 
+MgSpatialContextReader* MgdLayer::GetSpatialContexts(bool active)
+{
+	Ptr<MgSpatialContextReader> reader;
+
+    MG_TRY()
+
+    Ptr<MgdFeatureService> featSvc = static_cast<MgdFeatureService*>(GetMap()->GetService(MgServiceType::FeatureService));
+    Ptr<MgResourceIdentifier> fsId = new MgResourceIdentifier(GetFeatureSourceId());
+
+    reader = featSvc->GetSpatialContexts(fsId, active);
+
+    MG_CATCH_AND_THROW(L"MgdLayer.GetSpatialContexts")
+
+    return reader.Detach();
+}
+
 MgFeatureReader* MgdLayer::InsertFeatures(MgPropertyCollection* propertyValues)
 {
     Ptr<MgFeatureReader> reader;

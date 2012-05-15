@@ -23,6 +23,13 @@ namespace OSGeo.MapGuide.Viewer
             }
         }
 
+        [Description("The LoadMap component to invoke once the package has been loaded")]
+        public MgLoadMapComponent InvokeOnPackageLoad
+        {
+            get;
+            set;
+        }
+
         public override void Invoke()
         {
             using (var open = new OpenFileDialog())
@@ -39,6 +46,8 @@ namespace OSGeo.MapGuide.Viewer
 
                     resSvc.ApplyResourcePackage(br);
                     MessageBox.Show(Properties.Resources.TextPackageLoaded);
+                    if (this.InvokeOnPackageLoad != null)
+                        this.InvokeOnPackageLoad.Invoke();
                 }
             }
         }

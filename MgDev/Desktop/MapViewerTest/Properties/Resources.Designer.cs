@@ -206,6 +206,13 @@ namespace MapViewerTest.Properties {
             }
         }
         
+        internal static System.Drawing.Bitmap map__arrow {
+            get {
+                object obj = ResourceManager.GetObject("map--arrow", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
         internal static System.Drawing.Bitmap PoweredBy_en {
             get {
                 object obj = ResourceManager.GetObject("PoweredBy_en", resourceCulture);
