@@ -112,8 +112,10 @@ void MgSessionCache::RemoveSession(CREFSTRING session)
 
     if (m_sessionInfoMap.end() == i)
     {
+        MgStringCollection args;
+        args.Add(session);
         throw new MgSessionExpiredException(L"MgSessionCache.RemoveSession",
-            __LINE__, __WFILE__, NULL, L"", NULL);
+            __LINE__, __WFILE__, NULL, L"MgSessionExpired", &args);
     }
     else
     {
@@ -171,8 +173,10 @@ MgSessionInfo* MgSessionCache::GetSessionInfo(CREFSTRING session,
     }
     else if (strict)
     {
+        MgStringCollection args;
+        args.Add(session);
         throw new MgSessionExpiredException(L"MgSessionCache.GetSessionInfo",
-            __LINE__, __WFILE__, NULL, L"", NULL);
+            __LINE__, __WFILE__, NULL, L"MgSessionExpired", &args);
     }
 
     return sessionInfo;
