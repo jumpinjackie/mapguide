@@ -106,6 +106,9 @@
     <Compile Include="MgLoadPackageComponent.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="MgLoadMapComponent.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="MgMapViewer.cs">
       <SubType>Component</SubType>
     </Compile>
