@@ -9,6 +9,7 @@ namespace OSGeo.MapGuide.Viewer
     public class MgLoadMapComponent : MgComponent
     {
         [Description("The map definition to load")]
+        [MgComponentProperty]
         public string MapDefinition
         {
             get;

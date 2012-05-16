@@ -20,6 +20,7 @@ namespace OSGeo.MapGuide.Viewer
         }
         
         [Description("The directory where the preferences are saved to and loaded from")]
+        [MgComponentProperty]
         public string PreferencesDirectory
         {
             get;

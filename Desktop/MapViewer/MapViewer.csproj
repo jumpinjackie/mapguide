@@ -59,6 +59,16 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AppLayoutEngine\AppLayout.cs" />
+    <Compile Include="AppLayoutEngine\MgQuitComponent.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="AppLayoutEngine\Shell.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="AppLayoutEngine\Shell.Designer.cs">
+      <DependentUpon>Shell.cs</DependentUpon>
+    </Compile>
     <Compile Include="BaseInteractionComponents.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -197,6 +207,9 @@
     <Service Include="{94E38DFF-614B-4cbd-B67C-F211BB35CE8B}" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="AppLayoutEngine\Shell.resx">
+      <DependentUpon>Shell.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Debug.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Debug.Designer.cs</LastGenOutput>

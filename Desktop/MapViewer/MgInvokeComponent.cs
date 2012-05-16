@@ -40,6 +40,15 @@ namespace OSGeo.MapGuide.Viewer
                 return null;
         }
 
+        public void Clear()
+        {
+            foreach (var key in _bindings.Keys)
+            {
+                TeardownComponent(key, _bindings[key]);
+            }
+            _bindings.Clear();
+        }
+
         void OnComponentClicked(object sender, EventArgs e)
         {
             var item = sender as T;

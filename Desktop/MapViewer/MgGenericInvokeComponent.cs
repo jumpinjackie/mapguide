@@ -15,6 +15,7 @@ namespace OSGeo.MapGuide.Viewer
 
         [Category("MapGuide Viewer")]
         [Description("Indicates whether this component can be invoked without a loaded map")]
+        [MgComponentProperty]
         public bool CanInvokeWithoutLoadedMap
         {
             get;
