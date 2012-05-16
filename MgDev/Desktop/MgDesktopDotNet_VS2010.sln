@@ -11,6 +11,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MapViewer.Desktop.Net40", "
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MapViewerTest.Net40", "MapViewerTest\MapViewerTest.Net40.csproj", "{E2FC8B99-0638-4C01-86C4-1B625D966981}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MgAppLayout.Net40", "MgAppLayout\MgAppLayout.Net40.csproj", "{F6054D81-E857-49FB-945F-AC2ECD9BB27A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SampleExtension.Net40", "SampleExtension\SampleExtension.Net40.csproj", "{942C10FD-F7F5-4E68-806D-32EB23A1DD35}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -59,6 +63,22 @@ Global
 		{E2FC8B99-0638-4C01-86C4-1B625D966981}.Release|x64.Build.0 = Release|x64
 		{E2FC8B99-0638-4C01-86C4-1B625D966981}.Release|x86.ActiveCfg = Release|x86
 		{E2FC8B99-0638-4C01-86C4-1B625D966981}.Release|x86.Build.0 = Release|x86
+		{F6054D81-E857-49FB-945F-AC2ECD9BB27A}.Debug|x64.ActiveCfg = Debug|x64
+		{F6054D81-E857-49FB-945F-AC2ECD9BB27A}.Debug|x64.Build.0 = Debug|x64
+		{F6054D81-E857-49FB-945F-AC2ECD9BB27A}.Debug|x86.ActiveCfg = Debug|x86
+		{F6054D81-E857-49FB-945F-AC2ECD9BB27A}.Debug|x86.Build.0 = Debug|x86
+		{F6054D81-E857-49FB-945F-AC2ECD9BB27A}.Release|x64.ActiveCfg = Release|x64
+		{F6054D81-E857-49FB-945F-AC2ECD9BB27A}.Release|x64.Build.0 = Release|x64
+		{F6054D81-E857-49FB-945F-AC2ECD9BB27A}.Release|x86.ActiveCfg = Release|x86
+		{F6054D81-E857-49FB-945F-AC2ECD9BB27A}.Release|x86.Build.0 = Release|x86
+		{942C10FD-F7F5-4E68-806D-32EB23A1DD35}.Debug|x64.ActiveCfg = Debug|x64
+		{942C10FD-F7F5-4E68-806D-32EB23A1DD35}.Debug|x64.Build.0 = Debug|x64
+		{942C10FD-F7F5-4E68-806D-32EB23A1DD35}.Debug|x86.ActiveCfg = Debug|x86
+		{942C10FD-F7F5-4E68-806D-32EB23A1DD35}.Debug|x86.Build.0 = Debug|x86
+		{942C10FD-F7F5-4E68-806D-32EB23A1DD35}.Release|x64.ActiveCfg = Release|x64
+		{942C10FD-F7F5-4E68-806D-32EB23A1DD35}.Release|x64.Build.0 = Release|x64
+		{942C10FD-F7F5-4E68-806D-32EB23A1DD35}.Release|x86.ActiveCfg = Release|x86
+		{942C10FD-F7F5-4E68-806D-32EB23A1DD35}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
