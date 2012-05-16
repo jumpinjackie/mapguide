@@ -13,6 +13,11 @@ namespace OSGeo.MapGuide.Viewer
             return String.Format("{0:X2}{1:X2}{2:X2}", color.R, color.G, color.B);
         }
 
+        public static string ToHtmlColorWithAlpha(Color color)
+        {
+            return String.Format("{0:X2}{1:X2}{2:X2}{3:X2}", color.A, color.R, color.G, color.B);
+        }
+
         public static Color FromHtmlColor(string html)
         {
             int rgb = int.Parse(html, System.Globalization.NumberStyles.HexNumber);

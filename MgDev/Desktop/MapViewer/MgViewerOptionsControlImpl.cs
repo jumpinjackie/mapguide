@@ -42,7 +42,7 @@ namespace OSGeo.MapGuide.Viewer
         {
             var options = new MgViewerOptions();
             _viewer.SelectionColor = lblSelectionColor.BackColor;
-            options.SelectionColor = Util.ToHtmlColor(_viewer.SelectionColor);
+            options.SelectionColor = Util.ToHtmlColorWithAlpha(_viewer.SelectionColor);
             options.ShowVertexCoordinates = _viewer.ShowVertexCoordinatesWhenDigitizing = chkShowVertexCoordinates.Checked;
             options.ConvertTiledLayersToNonTiled = _viewer.ConvertTiledGroupsToNonTiled = chkConvertTiledToNonTiled.Checked;
             options.ZoomInFactor = _viewer.ZoomInFactor = Convert.ToDouble(numZoomInFactor.Value);

@@ -44,7 +44,7 @@ namespace OSGeo.MapGuide.Viewer.AppLayoutEngine
             layout.Settings = new AppLayoutSettings()
             {
                 ConvertTiledGroupsToNonTiled = true,
-                SelectionColor = Util.ToHtmlColor(System.Drawing.Color.Blue),
+                SelectionColor = Util.ToHtmlColorWithAlpha(System.Drawing.Color.Blue),
                 ShowVertexCoordinatesWhenDigitizing = false,
                 ZoomInFactor = 0.5,
                 ZoomOutFactor = 2.0
