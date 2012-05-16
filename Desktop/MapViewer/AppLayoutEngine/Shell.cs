@@ -39,13 +39,6 @@ namespace OSGeo.MapGuide.Viewer.AppLayoutEngine
             }
             SetTaskPaneWidth(_layout.TaskPane.Width);
 
-            //Apply viewer properties
-            mapViewer.ConvertTiledGroupsToNonTiled = _layout.Settings.ConvertTiledGroupsToNonTiled;
-            mapViewer.SelectionColor = Util.FromHtmlColor(_layout.Settings.SelectionColor);
-            mapViewer.ShowVertexCoordinatesWhenDigitizing = _layout.Settings.ShowVertexCoordinatesWhenDigitizing;
-            mapViewer.ZoomInFactor = _layout.Settings.ZoomInFactor;
-            mapViewer.ZoomOutFactor = _layout.Settings.ZoomOutFactor;
-
             _provider = provider;
             mapViewer.PropertyChanged += new PropertyChangedEventHandler(OnMapViewerPropertyChanged);
         }
@@ -354,6 +347,14 @@ namespace OSGeo.MapGuide.Viewer.AppLayoutEngine
                     }
                 }
             }
+
+            //Apply viewer properties. We do this here because we want to respect the viewer options component
+            //So we apply before the viewer options component gets its chance to
+            mapViewer.ConvertTiledGroupsToNonTiled = layout.Settings.ConvertTiledGroupsToNonTiled;
+            mapViewer.SelectionColor = Util.FromHtmlColor(layout.Settings.SelectionColor);
+            mapViewer.ShowVertexCoordinatesWhenDigitizing = layout.Settings.ShowVertexCoordinatesWhenDigitizing;
+            mapViewer.ZoomInFactor = layout.Settings.ZoomInFactor;
+            mapViewer.ZoomOutFactor = layout.Settings.ZoomOutFactor;
 
             //3rd pass
             foreach (var compDef in layout.Components)

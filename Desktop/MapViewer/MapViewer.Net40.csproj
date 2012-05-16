@@ -80,8 +80,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AppLayoutEngine\AppLayout.cs" />
-    <Compile Include="AppLayoutEngine\MgQuitComponent.cs" />
-    <Compile Include="AppLayoutEngine\Shell.cs" />
+    <Compile Include="AppLayoutEngine\MgQuitComponent.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="AppLayoutEngine\Shell.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="AppLayoutEngine\Shell.Designer.cs">
       <DependentUpon>Shell.cs</DependentUpon>
     </Compile>
