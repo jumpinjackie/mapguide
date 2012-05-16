@@ -5,15 +5,34 @@ using System.ComponentModel;
 using System.Windows.Forms;
 using System.Drawing;
 using System.Diagnostics;
+using System.Reflection;
 
 namespace OSGeo.MapGuide.Viewer
 {
+    public interface IMapComponent
+    {
+        IEnumerable<PropertyInfo> ComponentProperties { get; }
+
+        void SetPropertyValue(string propertyName, object value);
+
+        object GetPropertyValue(string propertyName);
+    }
+
+    /// <summary>
+    /// Indicates that a given CLR property is dynamically invokable
+    /// </summary>
+    [AttributeUsage(AttributeTargets.Property)]
+    public class MgComponentPropertyAttribute : Attribute
+    {
+
+    }
+
     /// <summary>
     /// The base class of all viewer components. This is analogous to a command in the MapGuide
     /// AJAX viewer and a widget in the Fusion viewer.
     /// </summary>
     [ToolboxItem(false)]
-    public class MgComponent : Component
+    public class MgComponent : Component, IMapComponent
     {
         private IMapViewer _viewer;
 
@@ -23,6 +42,7 @@ namespace OSGeo.MapGuide.Viewer
         /// </summary>
         [Category("MapGuide Component Properties")]
         [Description("Disables this component while the digitizing is happening")]
+        [MgComponentProperty]
         public virtual bool DisableWhenDigitizing { get { return true; } }
 
         /// <summary>
@@ -31,6 +51,7 @@ namespace OSGeo.MapGuide.Viewer
         /// </summary>
         [Category("MapGuide Component Properties")]
         [Description("Disables this component while the map is loading")]
+        [MgComponentProperty]
         public virtual bool DisableWhenMapIsLoading { get { return true; } }
 
         /// <summary>
@@ -38,6 +59,7 @@ namespace OSGeo.MapGuide.Viewer
         /// </summary>
         [Category("MapGuide Component Properties")]
         [Description("The description of this component")]
+        [MgComponentProperty]
         public string Label { get; set; }
 
         /// <summary>
@@ -45,6 +67,7 @@ namespace OSGeo.MapGuide.Viewer
         /// </summary>
         [Category("MapGuide Component Properties")]
         [Description("The tooltip text of this component")]
+        [MgComponentProperty]
         public string ToolTipText { get; set; }
 
         /// <summary>
@@ -52,6 +75,7 @@ namespace OSGeo.MapGuide.Viewer
         /// </summary>
         [Category("MapGuide Component Properties")]
         [Description("The icon for this component")]
+        [MgComponentProperty]
         public Image Icon { get; set; }
 
         /// <summary>
@@ -59,6 +83,7 @@ namespace OSGeo.MapGuide.Viewer
         /// </summary>
         [Category("MapGuide Component Properties")]
         [Description("The viewer instance to subscribe events to")]
+        [MgComponentProperty]
         public IMapViewer Viewer
         {
             get { return _viewer; }
@@ -156,6 +181,57 @@ namespace OSGeo.MapGuide.Viewer
         {
             
         }
+
+        private Dictionary<string, PropertyInfo> _properties;
+
+        public IEnumerable<PropertyInfo> ComponentProperties
+        {
+            get 
+            {
+                CheckAndInitProperties();
+                return _properties.Values;
+            }
+        }
+
+        private void CheckAndInitProperties()
+        {
+            if (_properties == null)
+            {
+                _properties = new Dictionary<string, PropertyInfo>();
+                var props = this.GetType().GetProperties();
+                foreach (var p in props)
+                {
+                    var attributes = p.GetCustomAttributes(true);
+                    foreach (var att in attributes)
+                    {
+                        var compAttr = att as MgComponentPropertyAttribute;
+                        if (compAttr != null)
+                        {
+                            _properties[p.Name] = p;
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+
+        public void SetPropertyValue(string propertyName, object value)
+        {
+            CheckAndInitProperties();
+            if (!_properties.ContainsKey(propertyName))
+                throw new InvalidOperationException("Property " + propertyName + " is not a valid component property as it has not been marked with the MgComponentProperty attribute");
+
+            _properties[propertyName].SetValue(this, value, null);
+        }
+
+        public object GetPropertyValue(string propertyName)
+        {
+            CheckAndInitProperties();
+            if (!_properties.ContainsKey(propertyName))
+                throw new InvalidOperationException("Property " + propertyName + " is not a valid component property as it has not been marked with the MgComponentProperty attribute");
+
+            return _properties[propertyName].GetValue(propertyName, null);
+        }
     }
 
     public delegate void ViewerBusyStateEventHandler(bool busy);
@@ -200,6 +276,7 @@ namespace OSGeo.MapGuide.Viewer
         /// </summary>
         [Category("MapGuide Component Properties")]
         [Description("The task pane which will host the UI view")]
+        [MgComponentProperty]
         public MgTaskPane TaskPane
         {
             get;
@@ -214,6 +291,7 @@ namespace OSGeo.MapGuide.Viewer
         [Category("MapGuide Component Properties")]
         [DefaultValue(MgViewerTarget.NewWindow)]
         [Description("Target that this component should display its UI view in")]
+        [MgComponentProperty]
         public MgViewerTarget Target
         {
             get { return _target; }

@@ -69,7 +69,7 @@ namespace OSGeo.MapGuide.Viewer
             }
         }
 
-        internal void LoadMap(MgMapBase map)
+        public void LoadMap(MgMapBase map)
         {
             if (map == null)
                 return;

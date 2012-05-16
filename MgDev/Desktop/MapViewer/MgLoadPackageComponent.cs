@@ -24,6 +24,7 @@ namespace OSGeo.MapGuide.Viewer
         }
 
         [Description("The LoadMap component to invoke once the package has been loaded")]
+        [MgComponentProperty]
         public MgLoadMapComponent InvokeOnPackageLoad
         {
             get;

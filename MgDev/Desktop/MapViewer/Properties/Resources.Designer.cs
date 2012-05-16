@@ -585,6 +585,15 @@ namespace OSGeo.MapGuide.Viewer.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Exit.
+        /// </summary>
+        internal static string TextExitApplication {
+            get {
+                return ResourceManager.GetString("TextExitApplication", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Load Package.
         /// </summary>
         internal static string TextLoadPackage {

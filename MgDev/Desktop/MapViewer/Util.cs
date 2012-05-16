@@ -13,6 +13,12 @@ namespace OSGeo.MapGuide.Viewer
             return String.Format("{0:X2}{1:X2}{2:X2}", color.R, color.G, color.B);
         }
 
+        public static Color FromHtmlColor(string html)
+        {
+            int rgb = int.Parse(html, System.Globalization.NumberStyles.HexNumber);
+            return Color.FromArgb(rgb);
+        }
+
         public static MgLayerBase FindLayer(MgLayerCollection layers, String layerName)
         {
             MgLayerBase layer = null;

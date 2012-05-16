@@ -33,6 +33,7 @@ namespace OSGeo.MapGuide.Viewer
         [Category("MapGuide Component Properties")]
         [Description("The default units to measure in")]
         [DefaultValue(MeasurementUnit.Meters)]
+        [MgComponentProperty]
         public MeasurementUnit PreferredUnits
         {
             get;
@@ -45,6 +46,7 @@ namespace OSGeo.MapGuide.Viewer
         [DefaultValue(MeasureMode.Line)]
         [Browsable(true)]
         [Description("The mode of measurement")]
+        [MgComponentProperty]
         public MeasureMode MeasureMode
         {
             get { return _measureMode; }
