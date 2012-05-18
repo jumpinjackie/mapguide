@@ -73,6 +73,7 @@ int main(int argc, char** argv)
     //in this case.
     runner.addTest(CppUnit::TestFactoryRegistry::getRegistry("TestTileService").makeTest());
     
+    runner.addTest(CppUnit::TestFactoryRegistry::getRegistry("TestLogManager").makeTest());
 
     STRING fileName = L"UnitTestResults.xml";
     if (fileName.size() > 0)

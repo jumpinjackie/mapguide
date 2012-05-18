@@ -370,6 +370,14 @@
 				</FileConfiguration>
 			</File>
 			<File
+				RelativePath=".\TestLogManager.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\TestLogManagerThread.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\TestMappingService.cpp"
 				>
 				<FileConfiguration
@@ -473,6 +481,14 @@
 			</File>
 			<File
 				RelativePath=".\TestKmlService.h"
+				>
+			</File>
+			<File
+				RelativePath=".\TestLogManager.h"
+				>
+			</File>
+			<File
+				RelativePath=".\TestLogManagerThread.h"
 				>
 			</File>
 			<File

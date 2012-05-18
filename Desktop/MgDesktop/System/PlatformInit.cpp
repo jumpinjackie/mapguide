@@ -1,4 +1,5 @@
 #include "MgDesktop.h"
+#include "Log/LogManager.h"
 #include "Fdo.h"
 #include "Services/Rendering/MappingUtil.h"
 #include "Services/Feature/FdoConnectionPool.h"
@@ -32,6 +33,10 @@ void MgPlatform::Initialize(CREFSTRING configFile)
     // Get the default message locale.
     STRING defaultMessageLocale;
     pConfiguration->GetStringValue(MgConfigProperties::GeneralPropertiesSection, MgConfigProperties::GeneralPropertyDefaultMessageLocale, defaultMessageLocale, MgConfigProperties::DefaultGeneralPropertyDefaultMessageLocale);
+
+    //Init log manager
+    MgLogManager* pLogManager = MgLogManager::GetInstance();
+    pLogManager->Initialize();
 
     //Init resources
     MgResources* pResources = MgResources::GetInstance();

@@ -1,6 +1,7 @@
 #include "System/ConfigProperties.cpp"
 #include "System/PlatformInit.cpp"
 #include "System/TimerUtil.cpp"
+#include "System/ThreadBase.cpp"
 
 #include "Exception/AliasNotFoundException.cpp"
 #include "Exception/ConnectionFailedException.cpp"
@@ -11,11 +12,17 @@
 #include "Exception/InvalidDwfPackageException.cpp"
 #include "Exception/InvalidDwfSectionException.cpp"
 #include "Exception/InvalidFeatureSourceException.cpp"
+#include "Exception/InvalidLogEntryException.cpp"
 #include "Exception/InvalidPrintLayoutFontSizeUnitsException.cpp"
 #include "Exception/InvalidPrintLayoutPositionUnitsException.cpp"
 #include "Exception/InvalidPrintLayoutSizeUnitsException.cpp"
 #include "Exception/ParameterNotFoundException.cpp"
 #include "Exception/StylizeLayerFailedException.cpp"
+
+#include "Log/LogDetail.cpp"
+#include "Log/LogEntryData.cpp"
+#include "Log/LogManager.cpp"
+#include "Log/LogThread.cpp"
 
 #include "MapLayer/Layer.cpp"
 #include "MapLayer/Map.cpp"
