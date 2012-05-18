@@ -32,6 +32,7 @@
 #include "Exception/InvalidDwfPackageException.h"
 #include "Exception/InvalidDwfSectionException.h"
 #include "Exception/InvalidFeatureSourceException.h"
+#include "Exception/InvalidLogEntryException.h"
 #include "Exception/InvalidPrintLayoutFontSizeUnitsException.h"
 #include "Exception/InvalidPrintLayoutPositionUnitsException.h"
 #include "Exception/InvalidPrintLayoutSizeUnitsException.h"
@@ -74,10 +75,6 @@
 
 #define NOT_IMPLEMENTED(method) \
 	throw new MgNotImplementedException(method, __LINE__, __WFILE__, NULL, L"", NULL)
-
-//Stub for now
-#define MG_LOG_TRACE_ENTRY(method)
-#define MG_LOG_ERROR_ENTRY(message)
 
 //Uncomment to debug memory leaks. This is the header for Visual Leak Detector
 //See: http://vld.codeplex.com for download and setup

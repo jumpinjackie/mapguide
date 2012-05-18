@@ -75,6 +75,26 @@ EXTERNAL_API:
     static const STRING GeneralPropertyPreCacheMaps;                    /// value("PreCacheMaps")
     static const STRING DefaultGeneralPropertyPreCacheMaps;             /// value("")
 
+    /// Sets the field delimiter in the logs
+    static const STRING GeneralPropertyLogsDelimiter;                   /// value("LogsDelimiter")
+    static const STRING DefaultGeneralPropertyLogsDelimiter;            /// value("\t")
+
+    /// Log detail level for services
+    static const STRING GeneralPropertyLogsDetail;                      /// value("LogsDetail")
+    static const STRING DefaultGeneralPropertyLogsDetail;               /// value("")
+
+    /// Root folder for server's log files
+    static const STRING GeneralPropertyLogsPath;                        /// value("LogsPath")
+    static const STRING DefaultGeneralPropertyLogsPath;                 /// value("Logs/")
+
+    /// Sets the maximum log file size (in kilobytes)
+    static const STRING GeneralPropertyMaxLogFileSize;                  /// value("MaxLogFileSize")
+    static const INT32 DefaultGeneralPropertyMaxLogFileSize;            /// value(64)
+
+    /// Specifies whether the maximum log size restriction is enabled
+    static const STRING GeneralPropertyMaxLogFileSizeEnabled;           /// value("MaxLogFileSizeEnabled")
+    static const bool DefaultGeneralPropertyMaxLogFileSizeEnabled;      /// value(false)
+
 EXTERNAL_API:
 
     /// DRAWING SERVICE PROPERTIES SECTION -------------------------------------------------------------------------------
@@ -335,6 +355,275 @@ INTERNAL_API:
     static const STRING TileServicePropertyTiledMapCacheSize;           /// value("TiledMapCacheSize")
     static const INT32 DefaultTileServicePropertyTiledMapCacheSize;     /// value(10)
 
+EXTERNAL_API:
+
+    //////////////////////////////////////////////////////////////////
+    /// \brief
+    /// The remaining properties are log properties.  For each type of log, there is a "Parameters" property.
+    /// These parameters may be used to customize a log and are listed below.  Note that not
+    /// all of the parameters may be used with a particular log.  See the list of valid
+    /// parameters for each log type below. The Parameters string is a list of
+    /// comma-delimited parameter names.  Each log type has a different set of possible
+    /// parameters.
+    ///
+    /// <table border="1" class="RuledTable">
+    ///    <tr>
+    ///        <th>Parameter</th>
+    ///        <th>Description</th>
+    ///    </tr>
+    ///    <tr>
+    ///        <td>ALL</td>
+    ///        <td>Activates all valid parameters for log.</td>
+    ///    </tr>
+    ///    <tr>
+    ///        <td>AKEY</td>
+    ///        <td>Access Key used by the map layer.</td>
+    ///    </tr>
+    ///    <tr>
+    ///        <td>CLIENT</td>
+    ///        <td>The client and version that generated the request.</td>
+    ///    </tr>
+    ///    <tr>
+    ///        <td>CLIENTID</td>
+    ///        <td>A unique identifier for the client computer that generated the request.</td>
+    ///    </tr>
+    ///    <tr>
+    ///        <td>DATASRC</td>
+    ///        <td>Data source name.</td>
+    ///    </tr>
+    ///    <tr>
+    ///        <td>ITEM</td>
+    ///        <td>The type of request</td>
+    ///    </tr>
+    ///    <tr>
+    ///        <td>LYRTYPE</td>
+    ///        <td>Layer Type.</td>
+    ///    </tr>
+    ///    <tr>
+    ///        <td>MLNAME</td>
+    ///        <td>Map layer name.</td>
+    ///    </tr>
+    ///    <tr>
+    ///        <td>MWIN</td>
+    ///        <td>A composite item that generates entries for MWFURL, XMIN, YMIN, XMAX, and YMAX.</td>
+    ///    </tr>
+    ///    <tr>
+    ///        <td>MWFURL</td>
+    ///        <td>The URL of the map that generated the request.</td>
+    ///    </tr>
+    ///    <tr>
+    ///        <td>NLAYER</td>
+    ///        <td>The number of layers in the request.</td>
+    ///    </tr>
+    ///    <tr>
+    ///        <td>NSCALOG</td>
+    ///        <td>A composite item that generates several entries that conform to the NCSA/CERN log file standard.</td>
+    ///    </tr>
+    ///    <tr>
+    ///        <td>PASSWORD</td>
+    ///        <td>Password used by the map layer.</td>
+    ///    </tr>
+    ///    <tr>
+    ///        <td>PREC</td>
+    ///        <td>A number that indicates map data precision.</td>
+    ///    </tr>
+    ///    <tr>
+    ///        <td>REQID</td>
+    ///        <td>The request identification number.</td>
+    ///    </tr>
+    ///    <tr>
+    ///        <td>REQTIME</td>
+    ///        <td>Time taken to process the request in seconds.</td>
+    ///    </tr>
+    ///    <tr>
+    ///        <td>SCALE</td>
+    ///        <td>The current scale.</td>
+    ///    </tr>
+    ///    <tr>
+    ///        <td>TABLE</td>
+    ///        <td>Feature table name used by the map layer.</td>
+    ///    </tr>
+    ///    <tr>
+    ///        <td>TRACKID</td>
+    ///        <td>Customer tracking ID.</td>
+    ///    </tr>
+    ///    <tr>
+    ///        <td>USER</td>
+    ///        <td>User ID used by this map layer.</td>
+    ///    </tr>
+    ///    <tr>
+    ///        <td>XMAX</td>
+    ///        <td>The maximum X value of the area covered by the request.</td>
+    ///    </tr>
+    ///    <tr>
+    ///        <td>YMAX</td>
+    ///        <td>The maximum Y value of the area covered by the request.</td>
+    ///    </tr>
+    ///    <tr>
+    ///        <td>XMIN</td>
+    ///        <td>The minimum X value of the area covered by the request.</td>
+    ///    </tr>
+    ///    <tr>
+    ///        <td>YMIN</td>
+    ///        <td>The minimum Y value of the area covered by the request.</td>
+    ///    </tr>
+    /// </table>
+    /// \n
+    /// The valid Access log customization parameters are:
+    /// CLIENT, CLIENTID, ITEM, NSCALOG, REQID, PREC, REQTIME, MWIN, MWFURL,
+    /// XMAX, YMAX, XMIN, YMIN, NLAYER, SCALE, TRACKID.
+    /// \n
+    /// The valid Map Layer Access log customization parameters are:
+    /// AKEY, CLIENT, CLIENTID, DATASRC, LYRTYPE, MLNAME, MWIN, MWFURL,
+    /// NSCALOG, PASSWORD, PREC, REQID, REQTIME, SCALE, TABLE, TRACKID,
+    /// USER, XMAX, YMAX, XMIN, YMIN.
+    ///
+    /// TODO:
+    /// - Determine the valid log parameters for the various logs.
+    ///
+
+    /// ACCESS LOG PROPERTIES SECTION ------------------------------------------------------------------------------------
+
+    /// Access Log properties.  This log records all requests to the MapGuide server.
+    /// A record is created for each request after it has been completed.
+    static const STRING AccessLogPropertiesSection;                 /// value("AccessLogProperties")
+
+    /// Enables/disables the Access log
+    static const STRING AccessLogPropertyEnabled;                   /// value("Enabled")
+    static const bool DefaultAccessLogPropertyEnabled;              /// value(true)
+
+    /// The Access log's file name.  NOTE: A log's filename may include the following special
+    /// characters: %d,%m,%y, standing for date, month, year.  If one or all of these are used,
+    /// the special char will be replaced by the actual calendar value when the log file is
+    /// created.  A new log file will be created when the shortest time period has elapsed.
+    /// That is, if the filename includes %d, a new log file will be created everyday.  If the
+    /// filename contains both %m and %y, a new log file is created every month.
+    static const STRING AccessLogPropertyFilename;                  /// value("Filename")
+    static const STRING DefaultAccessLogPropertyFilename;           /// value("Access.log")
+
+    /// The Access log's parameters
+    static const STRING AccessLogPropertyParameters;                /// value("Parameters")
+    static const STRING DefaultAccessLogPropertyParameters;         /// value("")
+
+    /// ADMIN LOG PROPERTIES SECTION -------------------------------------------------------------------------------------
+
+    /// Admin Log properties.  This log records all administrative operations (server status
+    /// changes, configuration changes, etc.).
+    static const STRING AdminLogPropertiesSection;                  /// value("AdminLogProperties")
+
+    /// Enables/disables the Admin log
+    static const STRING AdminLogPropertyEnabled;                    /// value("Enabled")
+    static const bool DefaultAdminLogPropertyEnabled;               /// value(true)
+
+    /// The Admin log's file name.  NOTE: As with the Access Log, the special characters: %d,
+    /// %m, %y may be used in the filename.
+    static const STRING AdminLogPropertyFilename;                   /// value("Filename")
+    static const STRING DefaultAdminLogPropertyFilename;            /// value("Admin.log")
+
+    /// The Admin log's parameters
+    static const STRING AdminLogPropertyParameters;                 /// value("Parameters")
+    static const STRING DefaultAdminLogPropertyParameters;          /// value("")
+
+    /// AUTHENTICATION LOG PROPERTIES SECTION ----------------------------------------------------------------------------
+
+    /// Authentication Log properties.  This log records the success or failure of all
+    /// authentication operations.
+    static const STRING AuthenticationLogPropertiesSection;         /// value("AuthenticationLogProperties")
+
+    /// Enables/disables the Authentication log
+    static const STRING AuthenticationLogPropertyEnabled;           /// value("Enabled")
+    static const bool DefaultAuthenticationLogPropertyEnabled;      /// value(true)
+
+    /// The Authentication log's file name.  NOTE: As with the Access Log, the special
+    /// characters: %d, %m, %y may be used in the filename.
+    static const STRING AuthenticationLogPropertyFilename;          /// value("Filename")
+    static const STRING DefaultAuthenticationLogPropertyFilename;   /// value("Authentication.log")
+
+    /// The Authentication log's parameters
+    static const STRING AuthenticationLogPropertyParameters;        /// value("Parameters")
+    static const STRING DefaultAuthenticationLogPropertyParameters; /// value("")
+
+    /// ERROR LOG PROPERTIES SECTION -------------------------------------------------------------------------------------
+
+    /// Error Log properties.  This log records all errors that occur during the MapGuide
+    /// server's operation.
+    static const STRING ErrorLogPropertiesSection;                  /// value("ErrorLogProperties")
+
+    /// Enables/disables the Error log
+    static const STRING ErrorLogPropertyEnabled;                    /// value("Enabled")
+    static const bool DefaultErrorLogPropertyEnabled;               /// value(true)
+
+    /// The Error log's file name.  NOTE: As with the Access Log, the special characters:
+    /// %d, %m, %y may be used in the file name.
+    static const STRING ErrorLogPropertyFilename;                   /// value("Filename")
+    static const STRING DefaultErrorLogPropertyFilename;            /// value("Error.log")
+
+    /// The Error log's parameters
+    static const STRING ErrorLogPropertyParameters;                 /// value("Parameters")
+    static const STRING DefaultErrorLogPropertyParameters;          /// value("")
+
+    /// PERFORMANCE LOG PROPERTIES SECTION -------------------------------------------------------------------------------------
+
+    /// Performance Log properties.  This log records all server statistical information.
+    static const STRING PerformanceLogPropertiesSection;                  /// value("PerformanceLogProperties")
+
+    /// Enables/disables the Performance log
+    static const STRING PerformanceLogPropertyEnabled;                    /// value("Enabled")
+    static const bool DefaultPerformanceLogPropertyEnabled;               /// value(false)
+
+    /// The Performance log's file name.  NOTE: As with the Access Log, the special characters: %d,
+    /// %m, %y may be used in the filename.
+    static const STRING PerformanceLogPropertyFilename;                   /// value("Filename")
+    static const STRING DefaultPerformanceLogPropertyFilename;            /// value("Performance.log")
+
+    /// The Performance log's parameters
+    static const STRING PerformanceLogPropertyParameters;                 /// value("Parameters")
+    static const STRING DefaultPerformanceLogPropertyParameters;          /// value("")
+
+    /// Sets the time duration (in seconds) between logging performance statistics
+    static const STRING PerformanceLogPropertyInterval;                   /// value("Interval")
+    static const INT32 DefaultPerformanceLogPropertyInterval;             /// value(300)
+
+    /// SESSION LOG PROPERTIES SECTION -----------------------------------------------------------------------------------
+
+    /// Session Log properties.  This log records state information for each connection
+    /// to the MapGuide server, such as connection ID, connection, duration,
+    /// user name, operations received, and operations processed.
+    static const STRING SessionLogPropertiesSection;                /// value("SessionLogProperties")
+
+    /// Enables/disables the Session log
+    static const STRING SessionLogPropertyEnabled;                  /// value("Enabled")
+    static const bool DefaultSessionLogPropertyEnabled;             /// value(true)
+
+    /// The Session log's file name.  NOTE: As with the Access Log, the special
+    /// characters: %d, %m, %y may be used in the filename.
+    static const STRING SessionLogPropertyFilename;                 /// value("Filename")
+    static const STRING DefaultSessionLogPropertyFilename;          /// value("Session.log")
+
+    /// The Session log's parameters
+    static const STRING SessionLogPropertyParameters;               /// value("Parameters")
+    static const STRING DefaultSessionLogPropertyParameters;        /// value("")
+
+    /// TRACE LOG PROPERTIES SECTION -------------------------------------------------------------------------------------
+
+    /// Trace Log properties.  This log records the details for each request (logged
+    /// in the access log).  For example, each request can include data from several
+    /// maps or feature sets, and a detailed record would be created for each one.
+    static const STRING TraceLogPropertiesSection;                  /// value("TraceLogProperties")
+
+    /// Enables/disables the Trace log
+    static const STRING TraceLogPropertyEnabled;                    /// value("Enabled")
+    static const bool DefaultTraceLogPropertyEnabled;               /// value(true)
+
+    /// The Trace log's file name.  NOTE: As with the Access Log, the special
+    /// characters: %d, %m, %y may be used in the filename.
+    static const STRING TraceLogPropertyFilename;                   /// value("Filename")
+    static const STRING DefaultTraceLogPropertyFilename;            /// value("Trace.log")
+
+    /// The Trace log's parameters
+    static const STRING TraceLogPropertyParameters;                 /// value("Parameters")
+    static const STRING DefaultTraceLogPropertyParameters;          /// value("")
+
 public:
 
     // Common Configuration Validation Information Maps
@@ -348,6 +637,14 @@ public:
     static const MgConfigValidationInfo sm_cviResourceServiceProperties[];
     static const MgConfigValidationInfo sm_cviSiteServiceProperties[];
     static const MgConfigValidationInfo sm_cviTileServiceProperties[];
+
+    static const MgConfigValidationInfo sm_cviAccessLogProperties[];
+    static const MgConfigValidationInfo sm_cviAdminLogProperties[];
+    static const MgConfigValidationInfo sm_cviAuthenticationLogProperties[];
+    static const MgConfigValidationInfo sm_cviErrorLogProperties[];
+    static const MgConfigValidationInfo sm_cviPerformanceLogProperties[];
+    static const MgConfigValidationInfo sm_cviSessionLogProperties[];
+    static const MgConfigValidationInfo sm_cviTraceLogProperties[];
 
 };
 /// \endcond
