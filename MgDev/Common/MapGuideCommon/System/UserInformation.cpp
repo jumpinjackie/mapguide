@@ -292,8 +292,23 @@ STRING MgUserInformation::CreateMgSessionId()
     STRING uuid;
     MgUtil::GenerateUuid(uuid);
 
+    // XSS checks for 2-char locales, so we must ensure we generate valid session ids
     // TODO: Pull default locale from MgConfiguration within a try/catch
-    STRING locale = m_locale.empty() ? MgResources::DefaultMessageLocale : m_locale;
+    STRING locale;
+    if (!m_locale.empty())
+    {
+        if (m_locale.length() != 2)
+        {
+            MgStringCollection args;
+            args.Add(m_locale);
+            throw new MgInvalidArgumentException(L"MgUserInformation.CreateMgSessionId", __LINE__, __WFILE__, NULL, L"MgInvalidLocale", &args);
+        }
+        locale = m_locale;
+    }
+    else
+    {
+        locale = MgResources::DefaultMessageLocale;
+    }
 
     uuid.append(L"_");
     uuid.append(locale);
