@@ -48,7 +48,8 @@
             $firstTime = true;
             $validSession = 1;
             $useBasicViewer = ($_GET['viewer'] == 'basic');
-
+            $viewerRequest = '../schemareport/blank.php';
+            
             try
             {
                 $thisFile = __FILE__;
@@ -100,41 +101,60 @@
                         $expr = "COUNT(" .$pd->GetName(). ")";
                         $query = new MgFeatureAggregateOptions();
                         $query->AddComputedProperty("TotalCount", $expr);
-                        $dataReader = $featureSrvc->SelectAggregate($featuresId, $featureName, $query);
-                        if ($dataReader->ReadNext())
+                        try 
                         {
-                            // When there is no data, the property will be null.
-                            if($dataReader->IsNull("TotalCount"))
+                            $dataReader = $featureSrvc->SelectAggregate($featuresId, $featureName, $query);
+                            if ($dataReader->ReadNext())
                             {
-                                $totalEntries = 0;
-                                $gotCount = true;
-                            }
-                            else
-                            {
-                                $ptype = $dataReader->GetPropertyType("TotalCount");
-                                switch ($ptype)
+                                // When there is no data, the property will be null.
+                                if($dataReader->IsNull("TotalCount"))
                                 {
-                                    case MgPropertyType::Int32:
-                                        $totalEntries = $dataReader->GetInt32("TotalCount");
-                                        $gotCount = true;
-                                        break;
-                                    case MgPropertyType::Int64:
-                                        $totalEntries = $dataReader->GetInt64("TotalCount");
-                                        $gotCount = true;
-                                        break;
+                                    $totalEntries = 0;
+                                    $gotCount = true;
                                 }
-                                $dataReader->Close();
+                                else
+                                {
+                                    $ptype = $dataReader->GetPropertyType("TotalCount");
+                                    switch ($ptype)
+                                    {
+                                        case MgPropertyType::Int32:
+                                            $totalEntries = $dataReader->GetInt32("TotalCount");
+                                            $gotCount = true;
+                                            break;
+                                        case MgPropertyType::Int64:
+                                            $totalEntries = $dataReader->GetInt64("TotalCount");
+                                            $gotCount = true;
+                                            break;
+                                    }
+                                    $dataReader->Close();
+                                }
                             }
+                        }
+                        catch (MgException $ex) //Some providers like OGR can lie
+                        {
+                            $gotCount = false;
                         }
                     }
                 }
                 
                 if ($gotCount == false)
                 {
-                    $featureReader = $featureSrvc->SelectFeatures($featuresId, $featureName, null);
-                    while($featureReader->ReadNext())
-                        $totalEntries++;
-                    $featureReader->Close();
+                    $featureReader = null;
+                    try 
+                    {
+                        $featureReader = $featureSrvc->SelectFeatures($featuresId, $featureName, null);
+                    }
+                    catch (MgException $ex)
+                    {
+                        $totalEntries = -1; //Can't Count() or raw spin? Oh dear!
+                    }
+                    
+                    if ($featureReader != null)
+                    {
+                        while($featureReader->ReadNext())
+                            $totalEntries++;
+                        $featureReader->Close();
+                    }
                 }
                 
                 // Create a layer definition
@@ -148,6 +168,9 @@
                 $resId = new MgResourceIdentifier($resName);
                 $resourceSrvc->SetResource($resId, $byteSource->GetReader(), null);
 
+                $extentGeometryAgg = null;
+                $extentGeometrySc = null;
+
                 // Finds the coordinate system
                 $agfReaderWriter = new MgAgfReaderWriter();
                 $spatialcontextReader = $featureSrvc->GetSpatialContexts($featuresId, false);
@@ -159,23 +182,21 @@
 
                         // Finds the extent
                         $extentByteReader = $spatialcontextReader->GetExtent();
-                        if($extentByteReader->ToString()==null)
-                        {
-                            throw new Exception(ErrorMessages::NullExtent);
-                        }
                         break;
                     }
                 }
                 $spatialcontextReader->Close();
-
-                // Get the extent geometry from the spatial context
-                $extentGeometry = $agfReaderWriter->Read($extentByteReader);
+                if ($extentByteReader == null)
+                {
+                    // Get the extent geometry from the spatial context
+                    $extentGeometrySc = $agfReaderWriter->Read($extentByteReader);
+                }
 
                 // Try to get the extents using the selectaggregate as sometimes the spatial context
                 // information is not set
                 $aggregateOptions = new MgFeatureAggregateOptions();
                 $featureProp = 'SPATIALEXTENTS("' . $geomName . '")';
-                $aggregateOptions->AddComputedProperty('extents', $featureProp);
+                $aggregateOptions->AddComputedProperty('EXTENTS', $featureProp);
 
                 try
                 {
@@ -183,15 +204,26 @@
                     if($dataReader->ReadNext())
                     {
                         // Get the extents information
-                        $byteReader = $dataReader->GetGeometry('extents');
-                        $extentGeometry = $agfReaderWriter->Read($byteReader);
+                        $byteReader = $dataReader->GetGeometry('EXTENTS');
+                        $extentGeometryAgg = $agfReaderWriter->Read($byteReader);
                     }
                     $dataReader->Close();
                 }
                 catch (MgException $e)
                 {
+                
                 }
-
+                
+                $extentGeometry = null;
+                // Prefer SpatialExtents() extent over spatial context extent
+                if ($extentGeometryAgg != null)
+                    $extentGeometry = $extentGeometryAgg;
+                if ($extentGeometry == null) { //Stil null? Now try spatial context
+                    if ($extentGeometrySc != null)
+                        $extentGeometry = $extentGeometrySc;
+                    else
+                        throw new Exception(ErrorMessages::NullExtent);
+                }
                 // Get the coordinates
                 $iterator = $extentGeometry->GetCoordinates();
                 while($iterator->MoveNext())
@@ -234,6 +266,7 @@
                 // Save the web layout to a resource stored in the session repository
                 $byteSource = new MgByteSource($webLayout, strlen($webLayout));
                 $byteSource->SetMimeType(MgMimeType::Xml);
+                
                 if($useBasicViewer)
                 {
                     $resName = 'Session:' . $sessionId . '//' . $className . '.WebLayout';
