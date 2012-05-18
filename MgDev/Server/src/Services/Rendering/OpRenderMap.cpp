@@ -76,6 +76,10 @@ void MgOpRenderMap::Execute()
         bool bKeepSelection = false;
         m_stream->GetBoolean(bKeepSelection);
 
+        Ptr<MgEnvelope> env = map->GetDataExtent();
+        Ptr<MgCoordinate> ll = env->GetLowerLeftCoordinate();
+        Ptr<MgCoordinate> ur = env->GetUpperRightCoordinate();
+
         BeginExecution();
 
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_START();
@@ -87,7 +91,20 @@ void MgOpRenderMap::Execute()
         MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
         MG_LOG_OPERATION_MESSAGE_ADD_BOOL(bKeepSelection);
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
-
+        // [(llx lly) (urx ury)]
+        MG_LOG_OPERATION_MESSAGE_ADD_STRING(L" [");
+        MG_LOG_OPERATION_MESSAGE_PARAMETERS_START()
+        MG_LOG_OPERATION_MESSAGE_ADD_DOUBLE(ll->GetX());
+        MG_LOG_OPERATION_MESSAGE_ADD_STRING(L" ");
+        MG_LOG_OPERATION_MESSAGE_ADD_DOUBLE(ll->GetY());
+        MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
+        MG_LOG_OPERATION_MESSAGE_ADD_STRING(L" ");
+        MG_LOG_OPERATION_MESSAGE_PARAMETERS_START();
+        MG_LOG_OPERATION_MESSAGE_ADD_DOUBLE(ur->GetX());
+        MG_LOG_OPERATION_MESSAGE_ADD_STRING(L" ");
+        MG_LOG_OPERATION_MESSAGE_ADD_DOUBLE(ur->GetY());
+        MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
+        MG_LOG_OPERATION_MESSAGE_ADD_STRING(L"] ");
         Validate();
 
         Ptr<MgByteReader> byteReader =
@@ -104,6 +121,10 @@ void MgOpRenderMap::Execute()
         Ptr<MgSelection> selection = (MgSelection*)m_stream->GetObject();
         if(selection)
             selection->SetMap(map);
+
+        Ptr<MgEnvelope> env = map->GetDataExtent();
+        Ptr<MgCoordinate> ll = env->GetLowerLeftCoordinate();
+        Ptr<MgCoordinate> ur = env->GetUpperRightCoordinate();
 
         STRING format;
         m_stream->GetString(format);
@@ -126,6 +147,20 @@ void MgOpRenderMap::Execute()
         MG_LOG_OPERATION_MESSAGE_ADD_BOOL(bKeepSelection);
         MG_LOG_OPERATION_MESSAGE_ADD_BOOL(bClip);
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
+         // [(llx lly) (urx ury)]
+        MG_LOG_OPERATION_MESSAGE_ADD_STRING(L" [");
+        MG_LOG_OPERATION_MESSAGE_PARAMETERS_START()
+        MG_LOG_OPERATION_MESSAGE_ADD_DOUBLE(ll->GetX());
+        MG_LOG_OPERATION_MESSAGE_ADD_STRING(L" ");
+        MG_LOG_OPERATION_MESSAGE_ADD_DOUBLE(ll->GetY());
+        MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
+        MG_LOG_OPERATION_MESSAGE_ADD_STRING(L" ");
+        MG_LOG_OPERATION_MESSAGE_PARAMETERS_START();
+        MG_LOG_OPERATION_MESSAGE_ADD_DOUBLE(ur->GetX());
+        MG_LOG_OPERATION_MESSAGE_ADD_STRING(L" ");
+        MG_LOG_OPERATION_MESSAGE_ADD_DOUBLE(ur->GetY());
+        MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
+        MG_LOG_OPERATION_MESSAGE_ADD_STRING(L"] ");
 
         Validate();
 
@@ -145,6 +180,8 @@ void MgOpRenderMap::Execute()
             selection->SetMap(map);
 
         Ptr<MgEnvelope> extents = (MgEnvelope*)m_stream->GetObject();
+        Ptr<MgCoordinate> ll = extents->GetLowerLeftCoordinate();
+        Ptr<MgCoordinate> ur = extents->GetUpperRightCoordinate();
 
         INT32 width = 0;
         m_stream->GetInt32(width);
@@ -179,6 +216,20 @@ void MgOpRenderMap::Execute()
         MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
         MG_LOG_OPERATION_MESSAGE_ADD_BOOL(bKeepSelection);
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
+        // [(llx lly) (urx ury)]
+        MG_LOG_OPERATION_MESSAGE_ADD_STRING(L" [");
+        MG_LOG_OPERATION_MESSAGE_PARAMETERS_START()
+        MG_LOG_OPERATION_MESSAGE_ADD_DOUBLE(ll->GetX());
+        MG_LOG_OPERATION_MESSAGE_ADD_STRING(L" ");
+        MG_LOG_OPERATION_MESSAGE_ADD_DOUBLE(ll->GetY());
+        MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
+        MG_LOG_OPERATION_MESSAGE_ADD_STRING(L" ");
+        MG_LOG_OPERATION_MESSAGE_PARAMETERS_START();
+        MG_LOG_OPERATION_MESSAGE_ADD_DOUBLE(ur->GetX());
+        MG_LOG_OPERATION_MESSAGE_ADD_STRING(L" ");
+        MG_LOG_OPERATION_MESSAGE_ADD_DOUBLE(ur->GetY());
+        MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
+        MG_LOG_OPERATION_MESSAGE_ADD_STRING(L"] ");
 
         Validate();
 
@@ -197,6 +248,9 @@ void MgOpRenderMap::Execute()
         if(selection)
             selection->SetMap(map);
 
+        Ptr<MgEnvelope> env = map->GetDataExtent();
+        Ptr<MgCoordinate> ll = env->GetLowerLeftCoordinate();
+        Ptr<MgCoordinate> ur = env->GetUpperRightCoordinate();
         Ptr<MgCoordinate> center = (MgCoordinate*)m_stream->GetObject();
 
         double scale = 0.0;
@@ -237,6 +291,20 @@ void MgOpRenderMap::Execute()
         MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
         MG_LOG_OPERATION_MESSAGE_ADD_BOOL(bKeepSelection);
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
+        // [(llx lly) (urx ury)]
+        MG_LOG_OPERATION_MESSAGE_ADD_STRING(L" [");
+        MG_LOG_OPERATION_MESSAGE_PARAMETERS_START()
+        MG_LOG_OPERATION_MESSAGE_ADD_DOUBLE(ll->GetX());
+        MG_LOG_OPERATION_MESSAGE_ADD_STRING(L" ");
+        MG_LOG_OPERATION_MESSAGE_ADD_DOUBLE(ll->GetY());
+        MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
+        MG_LOG_OPERATION_MESSAGE_ADD_STRING(L" ");
+        MG_LOG_OPERATION_MESSAGE_PARAMETERS_START();
+        MG_LOG_OPERATION_MESSAGE_ADD_DOUBLE(ur->GetX());
+        MG_LOG_OPERATION_MESSAGE_ADD_STRING(L" ");
+        MG_LOG_OPERATION_MESSAGE_ADD_DOUBLE(ur->GetY());
+        MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
+        MG_LOG_OPERATION_MESSAGE_ADD_STRING(L"] ");
 
         Validate();
 
