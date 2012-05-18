@@ -71,6 +71,9 @@ void MgOpRenderDynamicOverlay::Execute()
             selection->SetMap(map);
 
         Ptr<MgRenderingOptions> options = (MgRenderingOptions*)m_stream->GetObject();
+        Ptr<MgEnvelope> env = map->GetDataExtent();
+        Ptr<MgCoordinate> ll = env->GetLowerLeftCoordinate();
+        Ptr<MgCoordinate> ur = env->GetUpperRightCoordinate();
 
         BeginExecution();
 
@@ -85,6 +88,20 @@ void MgOpRenderDynamicOverlay::Execute()
         MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(L"MgColor");
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
+        // [(llx lly) (urx ury)]
+        MG_LOG_OPERATION_MESSAGE_ADD_STRING(L" [");
+        MG_LOG_OPERATION_MESSAGE_PARAMETERS_START()
+        MG_LOG_OPERATION_MESSAGE_ADD_DOUBLE(ll->GetX());
+        MG_LOG_OPERATION_MESSAGE_ADD_STRING(L" ");
+        MG_LOG_OPERATION_MESSAGE_ADD_DOUBLE(ll->GetY());
+        MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
+        MG_LOG_OPERATION_MESSAGE_ADD_STRING(L" ");
+        MG_LOG_OPERATION_MESSAGE_PARAMETERS_START();
+        MG_LOG_OPERATION_MESSAGE_ADD_DOUBLE(ur->GetX());
+        MG_LOG_OPERATION_MESSAGE_ADD_STRING(L" ");
+        MG_LOG_OPERATION_MESSAGE_ADD_DOUBLE(ur->GetY());
+        MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
+        MG_LOG_OPERATION_MESSAGE_ADD_STRING(L"] ");
 
         Validate();
 
