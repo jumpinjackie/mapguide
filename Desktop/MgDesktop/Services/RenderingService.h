@@ -86,40 +86,36 @@ PUBLISHED_API:
 
     // --------------- BEGIN: DWF Rendering and miscellaneous APIs from MgMappingService -----------------------//
 	 virtual MgByteReader* GenerateLegendImage(MgResourceIdentifier* resource,
-                                              double scale,
-                                              INT32 width,
-                                              INT32 height,
-                                              CREFSTRING format,
-                                              INT32 geomType,
-                                              INT32 themeCategory);
+                                               double scale,
+                                               INT32 width,
+                                               INT32 height,
+                                               CREFSTRING format,
+                                               INT32 geomType,
+                                               INT32 themeCategory);
 
-    virtual MgByteReader* GeneratePlot(
-        MgdMap* map,
-        MgPlotSpecification* plotSpec,
-        MgLayout* layout,
-        MgDwfVersion* dwfVersion);
+    virtual MgByteReader* GeneratePlot(MgdMap* map,
+                                       MgPlotSpecification* plotSpec,
+                                       MgLayout* layout,
+                                       MgDwfVersion* dwfVersion);
 
-    virtual MgByteReader* GeneratePlot(
-        MgdMap* map,
-        MgCoordinate* center,
-        double scale,
-        MgPlotSpecification* plotSpec,
-        MgLayout* layout,
-        MgDwfVersion* dwfVersion);
+    virtual MgByteReader* GeneratePlot(MgdMap* map,
+                                       MgCoordinate* center,
+                                       double scale,
+                                       MgPlotSpecification* plotSpec,
+                                       MgLayout* layout,
+                                       MgDwfVersion* dwfVersion);
 
-    virtual MgByteReader* GeneratePlot(
-        MgdMap* map,
-        MgEnvelope* extents,
-        bool expandToFit,
-        MgPlotSpecification* plotSpec,
-        MgLayout* layout,
-        MgDwfVersion* dwfVersion);
+    virtual MgByteReader* GeneratePlot(MgdMap* map,
+                                       MgEnvelope* extents,
+                                       bool expandToFit,
+                                       MgPlotSpecification* plotSpec,
+                                       MgLayout* layout,
+                                       MgDwfVersion* dwfVersion);
 
-    virtual MgByteReader* GenerateMultiPlot(
-        MgMapPlotCollection* mapPlots,
-        MgDwfVersion* dwfVersion);
+    virtual MgByteReader* GenerateMultiPlot(MgMapPlotCollection* mapPlots, MgDwfVersion* dwfVersion);
 
 private:
+    virtual MgByteReader* GenerateMultiPlotInternal(MgMapPlotCollection* mapPlots, MgDwfVersion* dwfVersion);
 	bool FeatureTypeStyleSupportsGeomType(MdfModel::FeatureTypeStyle* fts, INT32 geomType);
 	// --------------- END: DWF Rendering and miscellaneous APIs from MgMappingService -----------------------//
 
@@ -197,6 +193,19 @@ private:
                              double mcsMinY,
                              double mcsMaxY,
                              CREFSTRING format);
+
+    // Internal help called by our PUBLISHED_API versions of RenderDynamicOverlay
+    MgByteReader* RenderDynamicOverlayInternal(MgdMap* map,
+                                               MgdSelection* selection,
+                                               MgRenderingOptions* options,
+                                               ProfileRenderMapResult* pPRMResult);
+
+    // Internal help called by our PUBLISHED_API versions of RenderMap
+    MgByteReader* RenderMapPublished(MgdMap* map,
+                                     MgdSelection* selection,
+                                     CREFSTRING format,
+                                     bool bKeepSelection,
+                                     bool bClip);
 
     // helper used by other methods
     MgByteReader* RenderMapInternal(MgdMap* map,
