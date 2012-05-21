@@ -266,7 +266,7 @@ void MgFeatureNumericFunctions::GetEqualCategories(VECTOR &values, int numCats, 
 
         MgStringCollection arguments;
         arguments.Add(message);
-        throw new MgFeatureServiceException(L"MgServerSelectFeatures.GetEqualCategories", __LINE__, __WFILE__, &arguments, L"", NULL);
+        throw new MgFeatureServiceException(L"MgFeatureNumericFunctions::GetEqualCategories", __LINE__, __WFILE__, &arguments, L"", NULL);
     }
 
     // find the range of the data values
@@ -529,7 +529,7 @@ void MgFeatureNumericFunctions::GetStandardDeviationCategories( VECTOR &values, 
 
         MgStringCollection arguments;
         arguments.Add(message);
-        throw new MgFeatureServiceException(L"MgServerSelectFeatures.GetEqualCategories", __LINE__, __WFILE__, &arguments, L"", NULL);
+        throw new MgFeatureServiceException(L"MgFeatureNumericFunctions::GetStandardDeviationCategories", __LINE__, __WFILE__, &arguments, L"", NULL);
     }
 
     // collect information about the data values
@@ -629,7 +629,7 @@ void MgFeatureNumericFunctions::GetQuantileCategories(  VECTOR &values, int numC
 
         MgStringCollection arguments;
         arguments.Add(message);
-        throw new MgFeatureServiceException(L"MgServerSelectFeatures.GetEqualCategories", __LINE__, __WFILE__, &arguments, L"", NULL);
+        throw new MgFeatureServiceException(L"MgFeatureNumericFunctions::GetQuantileCategories", __LINE__, __WFILE__, &arguments, L"", NULL);
     }
 
     int count = (int)values.size();

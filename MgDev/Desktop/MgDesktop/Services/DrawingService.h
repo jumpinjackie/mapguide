@@ -241,7 +241,7 @@ PUBLISHED_API:
 
     //////////////////////////////////////////////////////////////////
     /// <summary>
-    /// Construct an MgServerDrawingService object
+    /// Construct an MgDrawingService object
     /// </summary>
     MgDrawingService();
 

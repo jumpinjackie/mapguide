@@ -27,9 +27,16 @@ MgByteReader* MgDrawingService::GetDrawing(MgResourceIdentifier* resource)
 {
     Ptr<MgByteReader> byteReader;
 
+    MG_LOG_OPERATION_MESSAGE(L"CopyResource");
+
     MG_SERVER_DRAWING_SERVICE_TRY()
 
-    //MG_LOG_TRACE_ENTRY(L"MgDrawingService::GetDrawing()");
+    MG_LOG_OPERATION_MESSAGE_INIT(MG_API_VERSION(1, 0, 0), 1);
+    MG_LOG_OPERATION_MESSAGE_PARAMETERS_START();
+    MG_LOG_OPERATION_MESSAGE_ADD_STRING((NULL == resource) ? L"MgResourceIdentifier" : resource->ToString().c_str());
+    MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
+
+    MG_LOG_TRACE_ENTRY(L"MgDrawingService::GetDrawing()");
 
     if (0 == resource)
     {
@@ -46,7 +53,21 @@ MgByteReader* MgDrawingService::GetDrawing(MgResourceIdentifier* resource)
     // Return the drawing via a MgByteReader
     byteReader = m_resourceService->GetResourceData(resource, dwfFileName, L"");
 
-    MG_SERVER_DRAWING_SERVICE_CATCH_AND_THROW(L"MgDrawingService.GetDrawing")
+    // Successful operation
+    MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Success.c_str());
+
+    MG_SERVER_DRAWING_SERVICE_CATCH(L"MgDrawingService::GetDrawing")
+
+    if (mgException != NULL)
+    {
+        // Failed operation
+        MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Failure.c_str());
+    }
+
+    // Add access log entry for operation
+    MG_LOG_OPERATION_MESSAGE_ACCESS_ENTRY();
+
+    MG_SERVER_DRAWING_SERVICE_THROW()
 
     return byteReader.Detach();
 }
@@ -74,9 +95,16 @@ MgByteReader* MgDrawingService::DescribeDrawing(MgResourceIdentifier* resource)
 {
     Ptr<MgByteReader> byteReader;
 
+    MG_LOG_OPERATION_MESSAGE(L"DescribeDrawing");
+
     MG_SERVER_DRAWING_SERVICE_TRY()
 
-    //MG_LOG_TRACE_ENTRY(L"MgDrawingService::DescribeDrawing()");
+    MG_LOG_OPERATION_MESSAGE_INIT(MG_API_VERSION(1, 0, 0), 1);
+    MG_LOG_OPERATION_MESSAGE_PARAMETERS_START();
+    MG_LOG_OPERATION_MESSAGE_ADD_STRING((NULL == resource) ? L"MgResourceIdentifier" : resource->ToString().c_str());
+    MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
+
+    MG_LOG_TRACE_ENTRY(L"MgDrawingService::DescribeDrawing()");
 
     if (0 == resource)
     {
@@ -126,7 +154,21 @@ MgByteReader* MgDrawingService::DescribeDrawing(MgResourceIdentifier* resource)
 
     MgDrawingServiceUtil::CloseDrawingResource(m_bOpenTempDwfFile, m_tempDwfFileName);
 
-    MG_SERVER_DRAWING_SERVICE_CATCH_AND_THROW(L"MgDrawingService.DescribeDrawing")
+    // Successful operation
+    MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Success.c_str());
+
+    MG_SERVER_DRAWING_SERVICE_CATCH(L"MgDrawingService::DescribeDrawing")
+
+    if (mgException != NULL)
+    {
+        // Failed operation
+        MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Failure.c_str());
+    }
+
+    // Add access log entry for operation
+    MG_LOG_OPERATION_MESSAGE_ACCESS_ENTRY();
+
+    MG_SERVER_DRAWING_SERVICE_THROW()
 
     return byteReader.Detach();
 }
@@ -162,7 +204,16 @@ MgByteReader* MgDrawingService::GetSection(MgResourceIdentifier* resource, CREFS
 {
     Ptr<MgByteReader> byteReader;
 
+    MG_LOG_OPERATION_MESSAGE(L"GetSection");
+
     MG_SERVER_DRAWING_SERVICE_TRY()
+
+    MG_LOG_OPERATION_MESSAGE_INIT(MG_API_VERSION(1, 0, 0), 2);
+    MG_LOG_OPERATION_MESSAGE_PARAMETERS_START();
+    MG_LOG_OPERATION_MESSAGE_ADD_STRING((NULL == resource) ? L"MgResourceIdentifier" : resource->ToString().c_str());
+    MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
+    MG_LOG_OPERATION_MESSAGE_ADD_STRING(sectionName.c_str());
+    MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
 
     MG_LOG_TRACE_ENTRY(L"MgDrawingService::GetSection()");
 
@@ -221,7 +272,21 @@ MgByteReader* MgDrawingService::GetSection(MgResourceIdentifier* resource, CREFS
 
     MgDrawingServiceUtil::CloseDrawingResource(m_bOpenTempDwfFile, m_tempDwfFileName);
 
-    MG_SERVER_DRAWING_SERVICE_CATCH_AND_THROW(L"MgDrawingService.GetSection")
+    // Successful operation
+    MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Success.c_str());
+
+    MG_SERVER_DRAWING_SERVICE_CATCH(L"MgDrawingService::GetSection")
+
+    if (mgException != NULL)
+    {
+        // Failed operation
+        MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Failure.c_str());
+    }
+
+    // Add access log entry for operation
+    MG_LOG_OPERATION_MESSAGE_ACCESS_ENTRY();
+
+    MG_SERVER_DRAWING_SERVICE_THROW()
 
     return byteReader.Detach();
 }
@@ -266,7 +331,16 @@ MgByteReader* MgDrawingService::GetSectionResource(MgResourceIdentifier* resourc
 {
     Ptr<MgByteReader> byteReader;
 
+    MG_LOG_OPERATION_MESSAGE(L"GetSectionResource");
+
     MG_SERVER_DRAWING_SERVICE_TRY()
+
+    MG_LOG_OPERATION_MESSAGE_INIT(MG_API_VERSION(1, 0, 0), 2);
+    MG_LOG_OPERATION_MESSAGE_PARAMETERS_START();
+    MG_LOG_OPERATION_MESSAGE_ADD_STRING((NULL == resource) ? L"MgResourceIdentifier" : resource->ToString().c_str());
+    MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
+    MG_LOG_OPERATION_MESSAGE_ADD_STRING(resourceName.c_str());
+    MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
 
     MG_LOG_TRACE_ENTRY(L"MgDrawingService::GetSectionResource()");
 
@@ -359,7 +433,21 @@ MgByteReader* MgDrawingService::GetSectionResource(MgResourceIdentifier* resourc
 
     MgDrawingServiceUtil::CloseDrawingResource(m_bOpenTempDwfFile, m_tempDwfFileName);
 
-    MG_SERVER_DRAWING_SERVICE_CATCH_AND_THROW(L"MgServicerDrawingService.GetSectionResource")
+    // Successful operation
+    MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Success.c_str());
+
+    MG_SERVER_DRAWING_SERVICE_CATCH(L"MgDrawingService::GetSectionResource")
+
+    if (mgException != NULL)
+    {
+        // Failed operation
+        MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Failure.c_str());
+    }
+
+    // Add access log entry for operation
+    MG_LOG_OPERATION_MESSAGE_ACCESS_ENTRY();
+
+    MG_SERVER_DRAWING_SERVICE_THROW()
 
     return byteReader.Detach();
 }
@@ -397,7 +485,16 @@ MgStringCollection* MgDrawingService::EnumerateLayers(MgResourceIdentifier* reso
 {
     Ptr<MgStringCollection> layers;
 
+    MG_LOG_OPERATION_MESSAGE(L"EnumerateLayers");
+
     MG_SERVER_DRAWING_SERVICE_TRY()
+
+    MG_LOG_OPERATION_MESSAGE_INIT(MG_API_VERSION(1, 0, 0), 2);
+    MG_LOG_OPERATION_MESSAGE_PARAMETERS_START();
+    MG_LOG_OPERATION_MESSAGE_ADD_STRING((NULL == resource) ? L"MgResourceIdentifier" : resource->ToString().c_str());
+    MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
+    MG_LOG_OPERATION_MESSAGE_ADD_STRING(sectionName.c_str());
+    MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
 
     MG_LOG_TRACE_ENTRY(L"MgDrawingService::EnumerateLayers()");
 
@@ -522,7 +619,21 @@ MgStringCollection* MgDrawingService::EnumerateLayers(MgResourceIdentifier* reso
 
     MgDrawingServiceUtil::CloseDrawingResource(m_bOpenTempDwfFile, m_tempDwfFileName);
 
-    MG_SERVER_DRAWING_SERVICE_CATCH_AND_THROW(L"MgDrawingService.EnumerateLayers")
+    // Successful operation
+    MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Success.c_str());
+
+    MG_SERVER_DRAWING_SERVICE_CATCH(L"MgDrawingService::EnumerateLayers")
+
+    if (mgException != NULL)
+    {
+        // Failed operation
+        MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Failure.c_str());
+    }
+
+    // Add access log entry for operation
+    MG_LOG_OPERATION_MESSAGE_ACCESS_ENTRY();
+
+    MG_SERVER_DRAWING_SERVICE_THROW()
 
     return layers.Detach();
 }
@@ -561,7 +672,18 @@ MgByteReader* MgDrawingService::GetLayer( MgResourceIdentifier* resource, CREFST
     Ptr<MgByteReader> byteReader;
     Ptr<MgStringCollection> layers;
 
+    MG_LOG_OPERATION_MESSAGE(L"GetLayer");
+
     MG_SERVER_DRAWING_SERVICE_TRY()
+
+    MG_LOG_OPERATION_MESSAGE_INIT(MG_API_VERSION(1, 0, 0), 3);
+    MG_LOG_OPERATION_MESSAGE_PARAMETERS_START();
+    MG_LOG_OPERATION_MESSAGE_ADD_STRING((NULL == resource) ? L"MgResourceIdentifier" : resource->ToString().c_str());
+    MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
+    MG_LOG_OPERATION_MESSAGE_ADD_STRING(sectionName.c_str());
+    MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
+    MG_LOG_OPERATION_MESSAGE_ADD_STRING(layerName.c_str());
+    MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
 
     MG_LOG_TRACE_ENTRY(L"MgDrawingService::GetLayer()");
 
@@ -823,7 +945,21 @@ MgByteReader* MgDrawingService::GetLayer( MgResourceIdentifier* resource, CREFST
 
     MgDrawingServiceUtil::CloseDrawingResource(m_bOpenTempDwfFile, m_tempDwfFileName);
 
-    MG_SERVER_DRAWING_SERVICE_CATCH_AND_THROW(L"MgDrawingService.GetLayer")
+    // Successful operation
+    MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Success.c_str());
+
+    MG_SERVER_DRAWING_SERVICE_CATCH(L"MgDrawingService::GetLayer")
+
+    if (mgException != NULL)
+    {
+        // Failed operation
+        MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Failure.c_str());
+    }
+
+    // Add access log entry for operation
+    MG_LOG_OPERATION_MESSAGE_ACCESS_ENTRY();
+
+    MG_SERVER_DRAWING_SERVICE_THROW()
 
     return byteReader.Detach();
 }
@@ -852,7 +988,15 @@ MgByteReader* MgDrawingService::EnumerateSections(MgResourceIdentifier* resource
 {
     Ptr<MgByteReader> byteReader;
 
+    MG_LOG_OPERATION_MESSAGE(L"EnumerateSections");
+
     MG_SERVER_DRAWING_SERVICE_TRY()
+
+    MG_LOG_OPERATION_MESSAGE_INIT(MG_API_VERSION(1, 0, 0), 1);
+    MG_LOG_OPERATION_MESSAGE_PARAMETERS_START();
+    MG_LOG_OPERATION_MESSAGE_ADD_STRING((NULL == resource) ? L"MgResourceIdentifier" : resource->ToString().c_str());
+    MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
+    MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
 
     MG_LOG_TRACE_ENTRY(L"MgDrawingService::EnumerateSections()");
 
@@ -938,7 +1082,21 @@ MgByteReader* MgDrawingService::EnumerateSections(MgResourceIdentifier* resource
 
     MgDrawingServiceUtil::CloseDrawingResource(m_bOpenTempDwfFile, m_tempDwfFileName);
 
-    MG_SERVER_DRAWING_SERVICE_CATCH_AND_THROW(L"MgDrawingService.EnumerateSections")
+    // Successful operation
+    MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Success.c_str());
+
+    MG_SERVER_DRAWING_SERVICE_CATCH(L"MgDrawingService::EnumerateSections")
+
+    if (mgException != NULL)
+    {
+        // Failed operation
+        MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Failure.c_str());
+    }
+
+    // Add access log entry for operation
+    MG_LOG_OPERATION_MESSAGE_ACCESS_ENTRY();
+
+    MG_SERVER_DRAWING_SERVICE_THROW()
 
     return byteReader.Detach();
 }
@@ -974,7 +1132,16 @@ MgByteReader* MgDrawingService::EnumerateSectionResources(MgResourceIdentifier* 
 {
     Ptr<MgByteReader> byteReader;
 
+    MG_LOG_OPERATION_MESSAGE(L"EnumerateSectionResources");
+
     MG_SERVER_DRAWING_SERVICE_TRY()
+
+    MG_LOG_OPERATION_MESSAGE_INIT(MG_API_VERSION(1, 0, 0), 2);
+    MG_LOG_OPERATION_MESSAGE_PARAMETERS_START();
+    MG_LOG_OPERATION_MESSAGE_ADD_STRING((NULL == resource) ? L"MgResourceIdentifier" : resource->ToString().c_str());
+    MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
+    MG_LOG_OPERATION_MESSAGE_ADD_STRING(sectionName.c_str());
+    MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
 
     MG_LOG_TRACE_ENTRY(L"MgDrawingService::EnumerateSectionResources()");
 
@@ -1075,7 +1242,21 @@ MgByteReader* MgDrawingService::EnumerateSectionResources(MgResourceIdentifier* 
 
     MgDrawingServiceUtil::CloseDrawingResource(m_bOpenTempDwfFile, m_tempDwfFileName);
 
-    MG_SERVER_DRAWING_SERVICE_CATCH_AND_THROW(L"MgDrawingService.EnumerateSections")
+    // Successful operation
+    MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Success.c_str());
+
+    MG_SERVER_DRAWING_SERVICE_CATCH(L"MgDrawingService::EnumerateSections")
+
+    if (mgException != NULL)
+    {
+        // Failed operation
+        MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Failure.c_str());
+    }
+
+    // Add access log entry for operation
+    MG_LOG_OPERATION_MESSAGE_ACCESS_ENTRY();
+
+    MG_SERVER_DRAWING_SERVICE_THROW()
 
     return byteReader.Detach();
 }
@@ -1101,7 +1282,14 @@ STRING MgDrawingService::GetCoordinateSpace(MgResourceIdentifier* resource)
 {
     STRING dwfCoordinateSpace = L"";
 
+    MG_LOG_OPERATION_MESSAGE(L"GetCoordinateSpace");
+
     MG_SERVER_DRAWING_SERVICE_TRY()
+
+    MG_LOG_OPERATION_MESSAGE_INIT(MG_API_VERSION(1, 0, 0), 1);
+    MG_LOG_OPERATION_MESSAGE_PARAMETERS_START();
+    MG_LOG_OPERATION_MESSAGE_ADD_STRING((NULL == resource) ? L"MgResourceIdentifier" : resource->ToString().c_str());
+    MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
 
     MG_LOG_TRACE_ENTRY(L"MgDrawingService::GetCoordinateSpace()");
 
@@ -1121,7 +1309,21 @@ STRING MgDrawingService::GetCoordinateSpace(MgResourceIdentifier* resource)
         dwfCoordinateSpace = DEFAULT_COORDINATE_SPACE;
     }
 
-    MG_SERVER_DRAWING_SERVICE_CATCH_AND_THROW(L"MgDrawingService.GetCoordinateSpace")
+    // Successful operation
+    MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Success.c_str());
+
+    MG_SERVER_DRAWING_SERVICE_CATCH(L"MgDrawingService::GetCoordinateSpace")
+
+    if (mgException != NULL)
+    {
+        // Failed operation
+        MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Failure.c_str());
+    }
+
+    // Add access log entry for operation
+    MG_LOG_OPERATION_MESSAGE_ACCESS_ENTRY();
+
+    MG_SERVER_DRAWING_SERVICE_THROW()
 
     return dwfCoordinateSpace;
 }
@@ -1150,7 +1352,7 @@ MgDrawingService::MgDrawingService() :
     m_resourceService = static_cast<MgResourceService*>(fact->CreateService(MgServiceType::ResourceService));
     assert(m_resourceService != NULL);
 
-    MG_SERVER_DRAWING_SERVICE_CATCH_AND_THROW(L"MgDrawingServiceUtil.MgDrawingService")
+    MG_SERVER_DRAWING_SERVICE_CATCH_AND_THROW(L"MgDrawingService::MgDrawingService")
 }
 
 
@@ -1164,7 +1366,7 @@ MgDrawingService::~MgDrawingService()
 
     CleanUpTempFiles();
 
-    MG_SERVER_DRAWING_SERVICE_CATCH(L"MgDrawingService.~MgDrawingService")
+    MG_SERVER_DRAWING_SERVICE_CATCH(L"MgDrawingService::~MgDrawingService")
 }
 
 

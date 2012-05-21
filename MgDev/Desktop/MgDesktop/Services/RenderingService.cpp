@@ -255,7 +255,7 @@ MgByteReader* MgRenderingService::GenerateLegendImage(MgResourceIdentifier* reso
     MG_LOG_OPERATION_MESSAGE_ADD_INT32(themeCategory);
     MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
 
-    MG_LOG_TRACE_ENTRY(L"MgServerMappingService::GenerateLegendImage");
+    MG_LOG_TRACE_ENTRY(L"MgRenderingService::GenerateLegendImage()");
 
     if (0 == resource)
     {
@@ -410,7 +410,7 @@ MgByteReader* MgRenderingService::GeneratePlot(MgdMap* map,
     MG_LOG_OPERATION_MESSAGE_ADD_STRING((NULL == dwfVersion) ? L"MgDwfVersion" : dwfVersion->GetLogString());
     MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
 
-    MG_LOG_TRACE_ENTRY(L"MgServerMappingService::GeneratePlot()");
+    MG_LOG_TRACE_ENTRY(L"MgRenderingService::GeneratePlot()");
 
     if (NULL == map  || NULL == dwfVersion || NULL == plotSpec )
     {
@@ -481,7 +481,7 @@ MgByteReader* MgRenderingService::GeneratePlot(MgdMap* map,
     MG_LOG_OPERATION_MESSAGE_ADD_STRING((NULL == dwfVersion) ? L"MgDwfVersion" : dwfVersion->GetLogString());
     MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
 
-    MG_LOG_TRACE_ENTRY(L"MgServerMappingService::GeneratePlot()");
+    MG_LOG_TRACE_ENTRY(L"MgRenderingService::GeneratePlot()");
 
     if (NULL == map  || NULL == center || NULL == dwfVersion || NULL == plotSpec )
     {
@@ -552,7 +552,7 @@ MgByteReader* MgRenderingService::GeneratePlot(MgdMap* map,
     MG_LOG_OPERATION_MESSAGE_ADD_STRING((NULL == dwfVersion) ? L"MgDwfVersion" : dwfVersion->GetLogString());
     MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
 
-    MG_LOG_TRACE_ENTRY(L"MgServerMappingService::GeneratePlot()");
+    MG_LOG_TRACE_ENTRY(L"MgRenderingService::GeneratePlot()");
 
     if (NULL == map  || NULL == extents || NULL == plotSpec || NULL == dwfVersion )
     {
@@ -618,6 +618,8 @@ MgByteReader* MgRenderingService::GenerateMultiPlot(MgMapPlotCollection* mapPlot
     MG_LOG_OPERATION_MESSAGE_ADD_STRING((NULL == dwfVersion) ? L"MgDwfVersion" : dwfVersion->GetLogString().c_str());
     MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
 
+    MG_LOG_TRACE_ENTRY(L"MgRenderingService::GenerateMultiPlot()");
+
     ret = GenerateMultiPlotInternal(mapPlots, dwfVersion);
 
     // Successful operation
@@ -644,7 +646,7 @@ MgByteReader* MgRenderingService::GenerateMultiPlotInternal(MgMapPlotCollection*
 
     MG_SERVER_MAPPING_SERVICE_TRY()
 
-    MG_LOG_TRACE_ENTRY(L"MgServerMappingService::GenerateMultiPlot()");
+    MG_LOG_TRACE_ENTRY(L"MgRenderingService::GenerateMultiPlot()");
 
     if (0 == mapPlots || 0 == dwfVersion)
     {
@@ -1038,6 +1040,8 @@ MgByteReader* MgRenderingService::RenderTile(MgdMap* map, CREFSTRING baseMapLaye
     MG_LOG_OPERATION_MESSAGE_ADD_INT32(tileRow);
     MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
 
+    MG_LOG_TRACE_ENTRY(L"MgRenderingService::RenderTile()");
+
     if (NULL == map || baseMapLayerGroupName.empty())
         throw new MgNullArgumentException(L"MgRenderingService.RenderTile", __LINE__, __WFILE__, NULL, L"", NULL);
 
@@ -1204,6 +1208,8 @@ MgByteReader* MgRenderingService::RenderDynamicOverlay(MgdMap* map, MgdSelection
     MG_LOG_OPERATION_MESSAGE_ADD_STRING(format.c_str());
     MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
 
+    MG_LOG_TRACE_ENTRY(L"MgRenderingService::RenderDynamicOverlay()");
+
     // Call updated RenderDynamicOverlay API
     //ret = RenderDynamicOverlay(map, selection, format, true);
 
@@ -1254,6 +1260,8 @@ MgByteReader* MgRenderingService::RenderDynamicOverlay(MgdMap* map, MgdSelection
     MG_LOG_OPERATION_MESSAGE_ADD_BOOL(bKeepSelection);
     MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
 
+    MG_LOG_TRACE_ENTRY(L"MgRenderingService::RenderDynamicOverlay()");
+
     // Call updated RenderDynamicOverlay API
     MgRenderingOptions options(format, MgRenderingOptions::RenderSelection |
         MgRenderingOptions::RenderLayers | (bKeepSelection? MgRenderingOptions::KeepSelection : 0), NULL);
@@ -1299,6 +1307,8 @@ MgByteReader* MgRenderingService::RenderDynamicOverlay(MgdMap* map, MgdSelection
     MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
     MG_LOG_OPERATION_MESSAGE_ADD_STRING(L"MgRenderingOptions");
     MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
+
+    MG_LOG_TRACE_ENTRY(L"MgRenderingService::RenderDynamicOverlay()");
 
     // Call updated RenderDynamicOverlay API 
     ret = RenderDynamicOverlayInternal(map, selection, options, NULL);
@@ -1348,6 +1358,8 @@ MgByteReader* MgRenderingService::RenderDynamicOverlay(MgdMap* map,
     MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
     MG_LOG_OPERATION_MESSAGE_ADD_STRING(L"ProfileRenderMapResult");
     MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
+
+    MG_LOG_TRACE_ENTRY(L"MgRenderingService::RenderDynamicOverlay()");
 
     ret = RenderDynamicOverlayInternal(map, selection, options, pPRMResult);
 
@@ -1494,6 +1506,8 @@ MgByteReader* MgRenderingService::RenderMap(MgdMap* map,
     MG_LOG_OPERATION_MESSAGE_ADD_STRING(format.c_str());
     MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
 
+    MG_LOG_TRACE_ENTRY(L"MgRenderingService::RenderMap()");
+
     ret = RenderMapPublished(map, selection, format, true, false);
 
     // Successful operation
@@ -1539,6 +1553,8 @@ MgByteReader* MgRenderingService::RenderMap(MgdMap* map,
     MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
     MG_LOG_OPERATION_MESSAGE_ADD_BOOL(bKeepSelection);
     MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
+
+    MG_LOG_TRACE_ENTRY(L"MgRenderingService::RenderMap()");
 
     ret = RenderMapPublished(map, selection, format, bKeepSelection, false);
 
@@ -1590,6 +1606,8 @@ MgByteReader* MgRenderingService::RenderMap(MgdMap* map,
     MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
     MG_LOG_OPERATION_MESSAGE_ADD_BOOL(bClip);
     MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
+
+    MG_LOG_TRACE_ENTRY(L"MgRenderingService::RenderMap()");
 
     ret = RenderMapPublished(map, selection, format, bKeepSelection, bClip);
 
@@ -2079,7 +2097,7 @@ MgByteReader* MgRenderingService::RenderMapLegend(MgdMap* map,
                                                   CREFSTRING format)
 {
     Ptr<MgByteReader> ret;
-    MG_LOG_OPERATION_MESSAGE(L"CopyResource");
+    MG_LOG_OPERATION_MESSAGE(L"RenderMapLegend");
 
     MG_TRY()
 
@@ -2096,6 +2114,8 @@ MgByteReader* MgRenderingService::RenderMapLegend(MgdMap* map,
     MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
     MG_LOG_OPERATION_MESSAGE_ADD_STRING(format.c_str());
     MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
+
+    MG_LOG_TRACE_ENTRY(L"MgRenderingService::RenderMapLegend()");
 
     if (NULL == map || NULL == backgroundColor)
         throw new MgNullArgumentException(L"MgRenderingService.RenderMapLegend", __LINE__, __WFILE__, NULL, L"", NULL);

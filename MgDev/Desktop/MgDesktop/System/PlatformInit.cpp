@@ -163,11 +163,14 @@ void MgPlatform::Initialize(CREFSTRING configFile)
     // Initialize Stylizer callback mechanism for non-fatal FDO exceptions
     MgMappingUtil::InitializeStylizerCallback();
 
+    MG_LOG_TRACE_ENTRY(L"MgPlatform::Initialize()");
+
     sm_init = true;
 }
 
 void MgPlatform::Terminate()
 {
+    MG_LOG_TRACE_ENTRY(L"MgPlatform::Terminate()");
     MG_TRY()
 
     MgFdoConnectionPool::Cleanup();

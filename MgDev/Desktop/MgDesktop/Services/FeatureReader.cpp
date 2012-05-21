@@ -296,7 +296,7 @@ MgByteReader* MgdFeatureReader::GetBLOB(CREFSTRING propertyName)
             MgStringCollection arguments;
             arguments.Add(propertyName);
 
-            throw new MgNullPropertyValueException(L"MgServerFdoFeatureReader.GetBLOB",
+            throw new MgNullPropertyValueException(L"MgdFeatureReader::GetBLOB",
                 __LINE__, __WFILE__, &arguments, L"", NULL);
         }
         else
@@ -332,7 +332,7 @@ MgByteReader* MgdFeatureReader::GetCLOB(CREFSTRING propertyName)
             MgStringCollection arguments;
             arguments.Add(propertyName);
 
-            throw new MgNullPropertyValueException(L"MgServerFdoFeatureReader.GetCLOB",
+            throw new MgNullPropertyValueException(L"MgdFeatureReader::GetCLOB",
                 __LINE__, __WFILE__, &arguments, L"", NULL);
         }
         else
@@ -771,7 +771,7 @@ MgFeatureReader* MgdFeatureReader::GetFeatureObject(CREFSTRING propertyName)
             MgStringCollection arguments;
             arguments.Add(propertyName);
 
-            throw new MgNullPropertyValueException(L"MgServerFdoFeatureReader.GetFeatureObject",
+            throw new MgNullPropertyValueException(L"MgdFeatureReader::GetFeatureObject",
                 __LINE__, __WFILE__, &arguments, L"", NULL);
         }
         else

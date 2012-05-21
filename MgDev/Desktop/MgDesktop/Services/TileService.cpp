@@ -113,7 +113,22 @@ MgByteReader* MgTileService::GetTile(MgResourceIdentifier* mapDefinition,
     FILE* lockFile = NULL;
     STRING tilePathname, lockPathname;
 
+    MG_LOG_OPERATION_MESSAGE(L"GetTile");
+
     MG_TRY()
+
+    MG_LOG_OPERATION_MESSAGE_INIT(MG_API_VERSION(1, 0, 0), 5);
+    MG_LOG_OPERATION_MESSAGE_PARAMETERS_START();
+    MG_LOG_OPERATION_MESSAGE_ADD_STRING((NULL == mapDefinition) ? L"MgResourceIdentifier" : mapDefinition->ToString().c_str());
+    MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
+    MG_LOG_OPERATION_MESSAGE_ADD_STRING(baseMapLayerGroupName.c_str());
+    MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
+    MG_LOG_OPERATION_MESSAGE_ADD_INT32(tileColumn);
+    MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
+    MG_LOG_OPERATION_MESSAGE_ADD_INT32(tileRow);
+    MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
+    MG_LOG_OPERATION_MESSAGE_ADD_INT32(scaleIndex);
+    MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
 
     if (NULL == mapDefinition || baseMapLayerGroupName.empty())
     {
@@ -239,12 +254,24 @@ MgByteReader* MgTileService::GetTile(MgResourceIdentifier* mapDefinition,
         break;
     }
 
-    MG_CATCH(L"MgTileService.GetTile")
+    // Successful operation
+    MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Success.c_str());
+
+    MG_CATCH(L"MgTileService::GetTile")
+
+    if (mgException != NULL)
+    {
+        // Failed operation
+        MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Failure.c_str());
+    }
 
     if (NULL != lockFile)
     {
         MgFileUtil::DeleteFile(lockPathname, false);
     }
+
+    // Add access log entry for operation
+    MG_LOG_OPERATION_MESSAGE_ACCESS_ENTRY();
 
     MG_THROW()
 
@@ -255,15 +282,31 @@ MgByteReader* MgTileService::GetTile(MgResourceIdentifier* mapDefinition,
 ///////////////////////////////////////////////////////////////////////////////
 // look for the tile in the tilecache first
 MgByteReader* MgTileService::GetTile(MgdMap* map,
-                                           CREFSTRING baseMapLayerGroupName,
-                                           INT32 tileColumn,
-                                           INT32 tileRow)
+                                     CREFSTRING baseMapLayerGroupName,
+                                     INT32 tileColumn,
+                                     INT32 tileRow)
 {
     Ptr<MgByteReader> ret;
     FILE* lockFile = NULL;
     STRING tilePathname, lockPathname;
 
+    MG_LOG_OPERATION_MESSAGE(L"GetTile");
+
     MG_TRY()
+
+    Ptr<MgResourceIdentifier> mapId;
+    if (NULL != map)
+        mapId = map->GetMapDefinition();
+    MG_LOG_OPERATION_MESSAGE_INIT(MG_API_VERSION(1, 0, 0), 4);
+    MG_LOG_OPERATION_MESSAGE_PARAMETERS_START();
+    MG_LOG_OPERATION_MESSAGE_ADD_STRING((NULL == mapId) ? L"MgResourceIdentifier" : mapId->ToString().c_str());
+    MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
+    MG_LOG_OPERATION_MESSAGE_ADD_STRING(baseMapLayerGroupName.c_str());
+    MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
+    MG_LOG_OPERATION_MESSAGE_ADD_INT32(tileColumn);
+    MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
+    MG_LOG_OPERATION_MESSAGE_ADD_INT32(tileRow);
+    MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
 
     if (NULL == map || baseMapLayerGroupName.empty())
     {
@@ -345,12 +388,24 @@ MgByteReader* MgTileService::GetTile(MgdMap* map,
         break;
     }
 
-    MG_CATCH(L"MgTileService.GetTile")
+    // Successful operation
+    MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Success.c_str());
+
+    MG_CATCH(L"MgTileService::GetTile")
+
+    if (mgException != NULL)
+    {
+        // Failed operation
+        MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Failure.c_str());
+    }
 
     if (NULL != lockFile)
     {
         MgFileUtil::DeleteFile(lockPathname, false);
     }
+
+    // Add access log entry for operation
+    MG_LOG_OPERATION_MESSAGE_ACCESS_ENTRY();
 
     MG_THROW()
 
@@ -497,17 +552,40 @@ MgResourceService* MgTileService::GetResourceServiceForMapDef(MgResourceIdentifi
 ///////////////////////////////////////////////////////////////////////////////
 void MgTileService::ClearCache(MgdMap* map)
 {
+    MG_LOG_OPERATION_MESSAGE(L"ClearCache");
+
     MG_TRY()
+
+    Ptr<MgResourceIdentifier> resourceId;
+    if (NULL != map)
+        resourceId = map->GetMapDefinition();
+    MG_LOG_OPERATION_MESSAGE_INIT(MG_API_VERSION(1, 0, 0), 1);
+    MG_LOG_OPERATION_MESSAGE_PARAMETERS_START();
+    MG_LOG_OPERATION_MESSAGE_ADD_STRING((NULL == resourceId) ? L"MgResourceIdentifier" : resourceId->ToString().c_str());
+    MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
 
     if (NULL == map)
         throw new MgNullArgumentException(L"MgTileService.ClearCache", __LINE__, __WFILE__, NULL, L"", NULL);
 
-    Ptr<MgResourceIdentifier> resourceId = map->GetMapDefinition();
     ClearMapCache(resourceId->ToString());
 
     m_tileCache->Clear(map);
 
-    MG_CATCH_AND_THROW(L"MgTileService.ClearCache")
+    // Successful operation
+    MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Success.c_str());
+
+    MG_CATCH(L"MgTileService::ClearCache")
+
+    if (mgException != NULL)
+    {
+        // Failed operation
+        MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Failure.c_str());
+    }
+
+    // Add access log entry for operation
+    MG_LOG_OPERATION_MESSAGE_ACCESS_ENTRY();
+
+    MG_THROW()
 }
 
 
@@ -619,12 +697,65 @@ void MgTileService::ClearMapCache(CREFSTRING mapDefinition)
 ///////////////////////////////////////////////////////////////////////////////
 INT32 MgTileService::GetDefaultTileSizeX()
 {
-    return MgTileParameters::tileWidth;
+    INT32 ret = 0;
+    MG_LOG_OPERATION_MESSAGE(L"GetDefaultTileSizeX");
+
+    MG_TRY()
+
+    MG_LOG_OPERATION_MESSAGE_INIT(MG_API_VERSION(1, 0, 0), 0);
+    MG_LOG_OPERATION_MESSAGE_PARAMETERS_START();
+    MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
+    
+    ret = MgTileParameters::tileWidth;
+
+    // Successful operation
+    MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Success.c_str());
+
+    MG_CATCH(L"MgTileService::GetDefaultTileSizeX")
+
+    if (mgException != NULL)
+    {
+        // Failed operation
+        MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Failure.c_str());
+    }
+
+    // Add access log entry for operation
+    MG_LOG_OPERATION_MESSAGE_ACCESS_ENTRY();
+
+    MG_THROW()
+    return 0;
 }
 
 
 ///////////////////////////////////////////////////////////////////////////////
 INT32 MgTileService::GetDefaultTileSizeY()
 {
-    return MgTileParameters::tileHeight;
+    INT32 ret = 0;
+    MG_LOG_OPERATION_MESSAGE(L"GetDefaultTileSizeY");
+
+    MG_TRY()
+
+    MG_LOG_OPERATION_MESSAGE_INIT(MG_API_VERSION(1, 0, 0), 0);
+    MG_LOG_OPERATION_MESSAGE_PARAMETERS_START();
+    MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
+
+    ret = MgTileParameters::tileHeight;
+
+    // Successful operation
+    MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Success.c_str());
+
+    MG_CATCH(L"MgTileService::GetDefaultTileSizeY")
+
+    if (mgException != NULL)
+    {
+        // Failed operation
+        MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Failure.c_str());
+    }
+
+    // Add access log entry for operation
+    MG_LOG_OPERATION_MESSAGE_ACCESS_ENTRY();
+
+    MG_THROW()
+
+    return ret;
 }
