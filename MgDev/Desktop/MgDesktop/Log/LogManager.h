@@ -33,6 +33,13 @@
 
 class MgLogThread;
 
+#define MG_DESKTOP_LOG_EXCEPTION() \
+    STRING locale = MgResources::DefaultMessageLocale; \
+    STRING message = mgException->GetExceptionMessage(locale); \
+    STRING details = mgException->GetDetails(locale); \
+    STRING stackTrace = mgException->GetStackTrace(locale); \
+    MG_LOG_EXCEPTION_ENTRY(message.c_str(), stackTrace.c_str()) \
+
 ///////////////////////////////////////////////////////////////////////////////
 /// Mg Log Manager try/catch/throw macros.
 ///

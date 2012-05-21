@@ -62,6 +62,7 @@ MgByteReader* MgDrawingService::GetDrawing(MgResourceIdentifier* resource)
     {
         // Failed operation
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Failure.c_str());
+        MG_DESKTOP_LOG_EXCEPTION();
     }
 
     // Add access log entry for operation
@@ -163,6 +164,7 @@ MgByteReader* MgDrawingService::DescribeDrawing(MgResourceIdentifier* resource)
     {
         // Failed operation
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Failure.c_str());
+        MG_DESKTOP_LOG_EXCEPTION();
     }
 
     // Add access log entry for operation
@@ -281,6 +283,7 @@ MgByteReader* MgDrawingService::GetSection(MgResourceIdentifier* resource, CREFS
     {
         // Failed operation
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Failure.c_str());
+        MG_DESKTOP_LOG_EXCEPTION();
     }
 
     // Add access log entry for operation
@@ -442,6 +445,7 @@ MgByteReader* MgDrawingService::GetSectionResource(MgResourceIdentifier* resourc
     {
         // Failed operation
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Failure.c_str());
+        MG_DESKTOP_LOG_EXCEPTION();
     }
 
     // Add access log entry for operation
@@ -628,6 +632,7 @@ MgStringCollection* MgDrawingService::EnumerateLayers(MgResourceIdentifier* reso
     {
         // Failed operation
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Failure.c_str());
+        MG_DESKTOP_LOG_EXCEPTION();
     }
 
     // Add access log entry for operation
@@ -954,6 +959,7 @@ MgByteReader* MgDrawingService::GetLayer( MgResourceIdentifier* resource, CREFST
     {
         // Failed operation
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Failure.c_str());
+        MG_DESKTOP_LOG_EXCEPTION();
     }
 
     // Add access log entry for operation
@@ -1091,6 +1097,7 @@ MgByteReader* MgDrawingService::EnumerateSections(MgResourceIdentifier* resource
     {
         // Failed operation
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Failure.c_str());
+        MG_DESKTOP_LOG_EXCEPTION();
     }
 
     // Add access log entry for operation
@@ -1251,6 +1258,7 @@ MgByteReader* MgDrawingService::EnumerateSectionResources(MgResourceIdentifier* 
     {
         // Failed operation
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Failure.c_str());
+        MG_DESKTOP_LOG_EXCEPTION();
     }
 
     // Add access log entry for operation
@@ -1318,6 +1326,7 @@ STRING MgDrawingService::GetCoordinateSpace(MgResourceIdentifier* resource)
     {
         // Failed operation
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Failure.c_str());
+        MG_DESKTOP_LOG_EXCEPTION();
     }
 
     // Add access log entry for operation

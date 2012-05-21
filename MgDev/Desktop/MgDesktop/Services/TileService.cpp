@@ -263,6 +263,7 @@ MgByteReader* MgTileService::GetTile(MgResourceIdentifier* mapDefinition,
     {
         // Failed operation
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Failure.c_str());
+        MG_DESKTOP_LOG_EXCEPTION();
     }
 
     if (NULL != lockFile)
@@ -397,6 +398,7 @@ MgByteReader* MgTileService::GetTile(MgdMap* map,
     {
         // Failed operation
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Failure.c_str());
+        MG_DESKTOP_LOG_EXCEPTION();
     }
 
     if (NULL != lockFile)
@@ -580,6 +582,7 @@ void MgTileService::ClearCache(MgdMap* map)
     {
         // Failed operation
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Failure.c_str());
+        MG_DESKTOP_LOG_EXCEPTION();
     }
 
     // Add access log entry for operation
@@ -717,6 +720,7 @@ INT32 MgTileService::GetDefaultTileSizeX()
     {
         // Failed operation
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Failure.c_str());
+        MG_DESKTOP_LOG_EXCEPTION();
     }
 
     // Add access log entry for operation
@@ -750,6 +754,7 @@ INT32 MgTileService::GetDefaultTileSizeY()
     {
         // Failed operation
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Failure.c_str());
+        MG_DESKTOP_LOG_EXCEPTION();
     }
 
     // Add access log entry for operation
