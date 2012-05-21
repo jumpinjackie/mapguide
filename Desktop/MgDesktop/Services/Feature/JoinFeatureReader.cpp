@@ -474,7 +474,7 @@ FdoIRaster* MgJoinFeatureReader::GetRaster(FdoString* propertyName)
     IGWSFeatureIterator* gwsFeatureIter = NULL;
     STRING parsedPropertyName;
     m_reader->DeterminePropertyFeatureSource(propertyName, &gwsFeatureIter, parsedPropertyName);
-    CHECKNULL(gwsFeatureIter, L"MgServerGwsFeatureReader.GetRaster");
+    CHECKNULL(gwsFeatureIter, L"MgJoinFeatureReader::GetRaster");
 
     // TODO: The IsNull() check is returning true for WFS/WMS FDO providers when there is valid data.
     //       In this case it should really be returning false so that the data can be retrieved.
@@ -485,16 +485,16 @@ FdoIRaster* MgJoinFeatureReader::GetRaster(FdoString* propertyName)
         MgStringCollection arguments;
         arguments.Add(propertyName);
 
-        throw new MgNullPropertyValueException(L"MgJoinFeatureReader.GetRaster",
+        throw new MgNullPropertyValueException(L"MgJoinFeatureReader::GetRaster",
             __LINE__, __WFILE__, &arguments, L"", NULL);
     }
     else
     {
         raster = gwsFeatureIter->GetRaster(parsedPropertyName.c_str());
-        CHECKNULL((FdoIRaster*)raster, L"MgServerGwsFeatureReader.GetRaster");
+        CHECKNULL((FdoIRaster*)raster, L"MgJoinFeatureReader::GetRaster");
     }
 
-    MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgServerGwsFeatureReader.GetRaster");
+    MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgJoinFeatureReader::GetRaster");
 
     return raster.Detach();
 }

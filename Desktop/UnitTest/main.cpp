@@ -57,6 +57,8 @@ int main(int argc, char** argv)
     CppUnit::TextUi::TestRunner runner;
 
     // Add all of the tests
+    //NOTE: Leave trace log off, otherwise one of the tests here will fail
+    runner.addTest(CppUnit::TestFactoryRegistry::getRegistry("TestLogManager").makeTest());
 #ifdef _DEBUG
     ACE_DEBUG((LM_INFO, ACE_TEXT(">>>>> Running all unit tests - Excluding Performance and CoordinateSystem. <<<<<\n\n")));
 #else
@@ -72,8 +74,6 @@ int main(int argc, char** argv)
     //to verify functionality, but don't use VLD for memory leak detection. Seek an alternate tool/library
     //in this case.
     runner.addTest(CppUnit::TestFactoryRegistry::getRegistry("TestTileService").makeTest());
-    
-    runner.addTest(CppUnit::TestFactoryRegistry::getRegistry("TestLogManager").makeTest());
 
     STRING fileName = L"UnitTestResults.xml";
     if (fileName.size() > 0)

@@ -238,6 +238,8 @@ MgByteReader* MgdFeatureService::GetFeatureProviders()
     MG_LOG_OPERATION_MESSAGE_PARAMETERS_START();
     MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
 
+    MG_LOG_TRACE_ENTRY(L"MgdFeatureService::GetFeatureProviders()");
+
     STRING xml = L"<FeatureProviderRegistry>\n";
 
     FdoPtr<IProviderRegistry> reg = FdoFeatureAccessManager::GetProviderRegistry();
@@ -417,6 +419,8 @@ MgStringCollection* MgdFeatureService::GetConnectionPropertyValues(CREFSTRING pr
     MG_LOG_OPERATION_MESSAGE_ADD_STRING(partialConnString.c_str());
     MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
 
+    MG_LOG_TRACE_ENTRY(L"MgdFeatureService::GetConnectionPropertyValues()");
+
     if (providerName.empty())
         throw new MgInvalidArgumentException(L"MgdFeatureService::GetConnectionPropertyValues", __LINE__, __WFILE__, NULL, L"", NULL);
 
@@ -475,6 +479,8 @@ bool MgdFeatureService::TestConnection(CREFSTRING providerName, CREFSTRING conne
     MG_LOG_OPERATION_MESSAGE_ADD_STRING(connectionString.c_str());
     MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
 
+    MG_LOG_TRACE_ENTRY(L"MgdFeatureService::TestConnection()");
+
 	Ptr<MgFeatureConnection> conn = new MgFeatureConnection(providerName, connectionString);
     ok = conn->IsConnectionOpen();
 
@@ -509,6 +515,8 @@ bool MgdFeatureService::TestConnection(MgResourceIdentifier* resource)
     MG_LOG_OPERATION_MESSAGE_PARAMETERS_START();
     MG_LOG_OPERATION_MESSAGE_ADD_STRING((NULL == resource) ? L"MgResourceIdentifier" : resource->ToString().c_str());
     MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
+
+    MG_LOG_TRACE_ENTRY(L"MgdFeatureService::TestConnection()");
 
     CHECK_FEATURE_SOURCE_ARGUMENT(resource, L"MgdFeatureService::TestConnection");
 
@@ -1112,7 +1120,7 @@ void MgdFeatureService::WriteTopologyCapabilities(MgXmlUtil* caps, FdoITopologyC
     caps->AddTextNode(topologyNode, "ConstrainsFeatureMovements", constrainsFeatureMovements);
 
     // TODO: Change this to CATCH_AND_THROW when SimpleDB stops throwing exception of not implemented
-    MG_FEATURE_SERVICE_CATCH(L"MgServerGetProviderCapabilities.CreateTopologyCapabilities")
+    MG_FEATURE_SERVICE_CATCH(L"MgdFeatureService::WriteTopologyCapabilities")
 
 }
 
@@ -1128,6 +1136,8 @@ MgByteReader* MgdFeatureService::GetCapabilities(CREFSTRING providerName)
     MG_LOG_OPERATION_MESSAGE_PARAMETERS_START();
     MG_LOG_OPERATION_MESSAGE_ADD_STRING(providerName.c_str());
     MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
+
+    MG_LOG_TRACE_ENTRY(L"MgdFeatureService::GetCapabilities()");
 
 	ret = GetCapabilities(providerName, L"");
 
@@ -1164,6 +1174,8 @@ MgByteReader* MgdFeatureService::GetCapabilities(CREFSTRING providerName, CREFST
     MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
     MG_LOG_OPERATION_MESSAGE_ADD_STRING(connectionString.c_str());
     MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
+
+    MG_LOG_TRACE_ENTRY(L"MgdFeatureService::GetCapabilities()");
 
     if (providerName.empty())
         throw new MgInvalidArgumentException(L"MgdFeatureService::GetCapabilities", __LINE__, __WFILE__, NULL, L"", NULL);
@@ -1234,6 +1246,8 @@ void MgdFeatureService::ApplySchema(MgResourceIdentifier* resource, MgFeatureSch
     MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
     MG_LOG_OPERATION_MESSAGE_ADD_STRING(L"MgFeatureSchema");
     MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
+
+    MG_LOG_TRACE_ENTRY(L"MgdFeatureService::ApplySchema()");
 
     CHECK_FEATURE_SOURCE_ARGUMENT(resource, L"MgdFeatureService::ApplySchema");
     CHECKARGUMENTNULL(schema, L"MgdFeatureService::ApplySchema");
@@ -1334,6 +1348,8 @@ MgFeatureSchemaCollection* MgdFeatureService::DescribeSchema(MgResourceIdentifie
     MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
     MG_LOG_OPERATION_MESSAGE_ADD_STRING((NULL == classNames) ? L"MgStringCollection" : classNames->GetLogString().c_str());
     MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
+
+    MG_LOG_TRACE_ENTRY(L"MgdFeatureService::DescribeSchema()");
 
     ret = DescribeSchema(resource, schemaName, classNames, true);
 
@@ -1931,6 +1947,8 @@ MgFeatureSchemaCollection* MgdFeatureService::DescribeSchema(MgResourceIdentifie
     MG_LOG_OPERATION_MESSAGE_ADD_STRING(schemaName.c_str());
     MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
 
+    MG_LOG_TRACE_ENTRY(L"MgdFeatureService::DescribeSchema()");
+
 	ret = DescribeSchema(resource, schemaName, NULL);
     
     // Successful operation
@@ -1970,6 +1988,8 @@ STRING MgdFeatureService::DescribeSchemaAsXml(MgResourceIdentifier* resource,
     MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
     MG_LOG_OPERATION_MESSAGE_ADD_STRING((NULL == classNames) ? L"MgStringCollection" : classNames->GetLogString().c_str());
     MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
+
+    MG_LOG_TRACE_ENTRY(L"MgdFeatureService::DescribeSchemaAsXml()");
 
 	CHECK_FEATURE_SOURCE_ARGUMENT(resource, L"MgdFeatureService::DescribeSchemaAsXml");
 
@@ -2055,6 +2075,8 @@ STRING MgdFeatureService::DescribeSchemaAsXml(MgResourceIdentifier* resource,
     MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
     MG_LOG_OPERATION_MESSAGE_ADD_STRING(schemaName.c_str());
     MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
+
+    MG_LOG_TRACE_ENTRY(L"MgdFeatureService::DescribeSchemaAsXml()");
 
 	ret = DescribeSchemaAsXml(resource, schemaName, NULL);
     
@@ -2185,6 +2207,8 @@ STRING MgdFeatureService::SchemaToXml(MgFeatureSchemaCollection* schemas)
     MG_LOG_OPERATION_MESSAGE_ADD_STRING(L"MgFeatureSchemaCollection");
     MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
 
+    MG_LOG_TRACE_ENTRY(L"MgdFeatureService::SchemaToXml()");
+
     CHECKARGUMENTNULL(schemas, L"MgdFeatureService::SchemaToXml");
 
     FdoPtr<FdoFeatureSchemaCollection> fdoSchemaCol = MgFeatureUtil::GetFdoFeatureSchemaCollection(schemas);
@@ -2243,6 +2267,8 @@ MgFeatureSchemaCollection* MgdFeatureService::XmlToSchema(CREFSTRING xml)
     MG_LOG_OPERATION_MESSAGE_PARAMETERS_START();
     MG_LOG_OPERATION_MESSAGE_ADD_STRING(L"STRING");
     MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
+
+    MG_LOG_TRACE_ENTRY(L"MgdFeatureService::XmlToSchema()");
 
     mgSchemaCol = new MgFeatureSchemaCollection();
 
@@ -2333,6 +2359,8 @@ MgFeatureReader* MgdFeatureService::SelectFeatures(MgResourceIdentifier* resourc
     MG_LOG_OPERATION_MESSAGE_ADD_STRING(L"MgFeatureQueryOptions");
     MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
 
+    MG_LOG_TRACE_ENTRY(L"MgdFeatureService::SelectFeatures()");
+
     ret = SelectFeaturesInternal(resource, className, options, L"", false, false);
 
     // Successful operation
@@ -2375,6 +2403,8 @@ MgFeatureReader* MgdFeatureService::SelectFeatures(MgResourceIdentifier* resourc
     MG_LOG_OPERATION_MESSAGE_ADD_STRING(L"STRING");
     MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
 
+    MG_LOG_TRACE_ENTRY(L"MgdFeatureService::SelectFeatures()");
+
 	ret = SelectFeaturesInternal(resource, className, options, coordinateSystem, false, false);
     
     // Successful operation
@@ -2413,6 +2443,8 @@ MgdScrollableFeatureReader* MgdFeatureService::SelectFeaturesExtended(MgResource
     MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
     MG_LOG_OPERATION_MESSAGE_ADD_STRING(L"MgFeatureQueryOptions");
     MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
+
+    MG_LOG_TRACE_ENTRY(L"MgdFeatureService::SelectFeaturesExtended()");
 
     ret = static_cast<MgdScrollableFeatureReader*>(SelectFeaturesInternal(resource, className, options, L"", false, true));
     
@@ -3674,6 +3706,8 @@ MgDataReader* MgdFeatureService::SelectAggregate(MgResourceIdentifier* resource,
     MG_LOG_OPERATION_MESSAGE_ADD_STRING(L"MgFeatureAggregateOptions");
     MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
 
+    MG_LOG_TRACE_ENTRY(L"MgdFeatureService::SelectAggregate()");
+
 	CHECK_FEATURE_SOURCE_ARGUMENT(resource, L"MgdFeatureService::SelectAggregate");
 	CHECKARGUMENTNULL(options, L"MgdFeatureService::SelectAggregate");
     if (className.empty())
@@ -3898,6 +3932,8 @@ MgPropertyCollection* MgdFeatureService::UpdateFeatures(MgResourceIdentifier* re
     MG_LOG_OPERATION_MESSAGE_ADD_BOOL(useTransaction);
     MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
 
+    MG_LOG_TRACE_ENTRY(L"MgdFeatureService::UpdateFeatures()");
+
 	CHECK_FEATURE_SOURCE_ARGUMENT(resource, L"MgdFeatureService::UpdateFeatures");
     CHECKARGUMENTNULL(commands, L"MgdFeatureService::UpdateFeatures");
 
@@ -3949,6 +3985,8 @@ MgPropertyCollection* MgdFeatureService::UpdateFeatures(MgResourceIdentifier* re
     MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
     MG_LOG_OPERATION_MESSAGE_ADD_STRING(L"MgTransaction");
     MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
+
+    MG_LOG_TRACE_ENTRY(L"MgdFeatureService::UpdateFeatures()");
 
 	CHECK_FEATURE_SOURCE_ARGUMENT(resource, L"MgdFeatureService::UpdateFeatures");
     CHECKARGUMENTNULL(commands, L"MgdFeatureService::UpdateFeatures");
@@ -4127,6 +4165,8 @@ MgFeatureReader* MgdFeatureService::InsertFeatures(MgResourceIdentifier* resourc
     MG_LOG_OPERATION_MESSAGE_ADD_STRING(L"MgPropertyCollection");
     MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
 
+    MG_LOG_TRACE_ENTRY(L"MgdFeatureService::InsertFeatures()");
+
 	ret = InsertFeatures(resource, className, propertyValues, NULL);
 
     // Successful operation
@@ -4165,6 +4205,8 @@ MgFeatureReader* MgdFeatureService::InsertFeatures(MgResourceIdentifier* resourc
     MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
     MG_LOG_OPERATION_MESSAGE_ADD_STRING(L"MgTransaction");
     MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
+
+    MG_LOG_TRACE_ENTRY(L"MgdFeatureService::InsertFeatures()");
 
     CHECK_FEATURE_SOURCE_ARGUMENT(resource, L"MgdFeatureService::InsertFeatures");
 	CHECKARGUMENTNULL(propertyValues, L"MgdFeatureService::InsertFeatures");
@@ -4247,6 +4289,8 @@ MgPropertyCollection* MgdFeatureService::InsertFeatures(MgResourceIdentifier* re
     MG_LOG_OPERATION_MESSAGE_ADD_STRING(L"MgBatchPropertyCollection");
     MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
 
+    MG_LOG_TRACE_ENTRY(L"MgdFeatureService::InsertFeatures()");
+
     ret = InsertFeatures(resource, className, batchPropertyValues, NULL);
     
     // Successful operation
@@ -4284,6 +4328,8 @@ MgPropertyCollection* MgdFeatureService::InsertFeatures(MgResourceIdentifier* re
     MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
     MG_LOG_OPERATION_MESSAGE_ADD_STRING(L"MgTransaction");
     MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
+
+    MG_LOG_TRACE_ENTRY(L"MgdFeatureService::InsertFeatures()");
 
     CHECK_FEATURE_SOURCE_ARGUMENT(resource, L"MgdFeatureService::InsertFeatures");
 	CHECKARGUMENTNULL(batchPropertyValues, L"MgdFeatureService::InsertFeatures");
@@ -4419,6 +4465,8 @@ int MgdFeatureService::UpdateFeatures(MgResourceIdentifier* resource, CREFSTRING
     MG_LOG_OPERATION_MESSAGE_ADD_STRING(L"STRING");
     MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
 
+    MG_LOG_TRACE_ENTRY(L"MgdFeatureService::UpdateFeatures()");
+
 	ret = UpdateFeatures(resource, className, propertyValues, filter, NULL);
     
     // Successful operation
@@ -4458,6 +4506,8 @@ int MgdFeatureService::UpdateFeatures(MgResourceIdentifier* resource, CREFSTRING
     MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
     MG_LOG_OPERATION_MESSAGE_ADD_STRING(L"MgTransaction");
     MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
+
+    MG_LOG_TRACE_ENTRY(L"MgdFeatureService::UpdateFeatures()");
 
     CHECK_FEATURE_SOURCE_ARGUMENT(resource, L"MgdFeatureService::UpdateFeatures");
 	CHECKARGUMENTNULL(propertyValues, L"MgdFeatureService::UpdateFeatures");
@@ -4540,6 +4590,8 @@ int MgdFeatureService::DeleteFeatures(MgResourceIdentifier* resource, CREFSTRING
     MG_LOG_OPERATION_MESSAGE_ADD_STRING(L"STRING");
     MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
 
+    MG_LOG_TRACE_ENTRY(L"MgdFeatureService::DeleteFeatures()");
+
 	ret = DeleteFeatures(resource, className, filter, NULL);
     
     // Successful operation
@@ -4577,6 +4629,8 @@ int MgdFeatureService::DeleteFeatures(MgResourceIdentifier* resource, CREFSTRING
     MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
     MG_LOG_OPERATION_MESSAGE_ADD_STRING(L"MgTransaction");
     MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
+
+    MG_LOG_TRACE_ENTRY(L"MgdFeatureService::DeleteFeatures()");
 
     CHECK_FEATURE_SOURCE_ARGUMENT(resource, L"MgdFeatureService::DeleteFeatures");
 	if (className.empty())
@@ -4644,6 +4698,8 @@ void MgdFeatureService::PurgeCache(MgResourceIdentifier* resource)
     MG_LOG_OPERATION_MESSAGE_ADD_STRING((NULL == resource) ? L"MgResourceIdentifier" : resource->ToString().c_str());
     MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
 
+    MG_LOG_TRACE_ENTRY(L"MgdFeatureService::PurgeCache()");
+
     MgFeatureServiceCache* cache = MgFeatureServiceCache::GetInstance();
     cache->RemoveEntry(resource);
     MgFdoConnectionPool::PurgeCachedConnections(resource);
@@ -4683,6 +4739,8 @@ MgFeatureReader* MgdFeatureService::GetLockedFeatures(MgResourceIdentifier* reso
     MG_LOG_OPERATION_MESSAGE_ADD_STRING(L"MgFeatureQueryOptions");
     MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
 
+    MG_LOG_TRACE_ENTRY(L"MgdFeatureService::GetLockedFeatures()");
+
 	ret = SelectFeaturesInternal(resource, className, options, L"", true, false);
 
     // Successful operation
@@ -4715,6 +4773,8 @@ MgTransaction* MgdFeatureService::BeginTransaction(MgResourceIdentifier* resourc
     MG_LOG_OPERATION_MESSAGE_PARAMETERS_START();
     MG_LOG_OPERATION_MESSAGE_ADD_STRING((NULL == resource) ? L"MgResourceIdentifier" : resource->ToString().c_str());
     MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
+
+    MG_LOG_TRACE_ENTRY(L"MgdFeatureService::BeginTransaction()");
 
 	CHECK_FEATURE_SOURCE_ARGUMENT(resource, L"MgdFeatureService::BeginTransaction");
 
@@ -4753,6 +4813,8 @@ MgSqlDataReader* MgdFeatureService::ExecuteSqlQuery(MgResourceIdentifier* resour
     MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
     MG_LOG_OPERATION_MESSAGE_ADD_STRING(sqlStatement.c_str());
     MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
+
+    MG_LOG_TRACE_ENTRY(L"MgdFeatureService::ExecuteSqlQuery()");
 
 	CHECK_FEATURE_SOURCE_ARGUMENT(resource, L"MgdFeatureService::ExecuteSqlQuery");
     if (sqlStatement.empty())
@@ -4806,6 +4868,8 @@ MgSqlDataReader* MgdFeatureService::ExecuteSqlQuery(MgResourceIdentifier* resour
     MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
     MG_LOG_OPERATION_MESSAGE_ADD_STRING(L"MgTransaction");
     MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
+
+    MG_LOG_TRACE_ENTRY(L"MgdFeatureService::ExecuteSqlQuery()");
 
     ret = ExecuteSqlQuery(resource, sqlStatement, params, trans, m_nDataCacheSize);
 
@@ -4867,7 +4931,7 @@ MgSqlDataReader* MgdFeatureService::ExecuteSqlQuery(MgResourceIdentifier* resour
 
     // Create the SQL command
     FdoPtr<FdoISQLCommand> fdoCommand = (FdoISQLCommand*)conn->CreateCommand(FdoCommandType_SQLCommand);
-    CHECKNULL((FdoISQLCommand*)fdoCommand, L"MgServerSqlCommand.ExecuteQuery");
+    CHECKNULL((FdoISQLCommand*)fdoCommand, L"MgdFeatureService::ExecuteSqlQuery");
 
     // Set SQL statement
     fdoCommand->SetSQLStatement((FdoString*)sqlStatement.c_str());
@@ -4885,7 +4949,7 @@ MgSqlDataReader* MgdFeatureService::ExecuteSqlQuery(MgResourceIdentifier* resour
 
     // Execute the command
     FdoPtr<FdoISQLDataReader> sqlReader = fdoCommand->ExecuteReader();
-    CHECKNULL((FdoISQLDataReader*)sqlReader, L"MgServerSqlCommand.ExecuteQuery");
+    CHECKNULL((FdoISQLDataReader*)sqlReader, L"MgdFeatureService::ExecuteSqlQuery");
 
     // Update parameter whose direction is InputOutput, Output, or Return.
     if (NULL != params && params->GetCount() > 0)
@@ -4901,7 +4965,7 @@ INT32 MgdFeatureService::ExecuteSqlNonQuery(MgResourceIdentifier* resource,
                                             CREFSTRING sqlNonSelectStatement,
                                             MgParameterCollection* params,
                                             MgTransaction* trans)
-{ 
+{
     INT32 ret = 0;
     MG_LOG_OPERATION_MESSAGE(L"ExecuteSqlNonQuery");
 
@@ -4917,6 +4981,8 @@ INT32 MgdFeatureService::ExecuteSqlNonQuery(MgResourceIdentifier* resource,
     MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
     MG_LOG_OPERATION_MESSAGE_ADD_STRING(L"MgTransaction");
     MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
+
+    MG_LOG_TRACE_ENTRY(L"MgdFeatureService::ExecuteSqlNonQuery()");
 
     CHECK_FEATURE_SOURCE_ARGUMENT(resource, L"MgdFeatureService::ExecuteSqlNonQuery");
     if (sqlNonSelectStatement.empty())
@@ -4935,7 +5001,7 @@ INT32 MgdFeatureService::ExecuteSqlNonQuery(MgResourceIdentifier* resource,
         Ptr<MgResourceIdentifier> origFeatureSource = mgTrans->GetFeatureSource();
         //Check that the transaction originates from the same feature source
         if (origFeatureSource->ToString() != resource->ToString())
-            throw new MgInvalidArgumentException(L"MgdFeatureService::InsertFeatures", __LINE__, __WFILE__, NULL, L"", NULL);
+            throw new MgInvalidArgumentException(L"MgdFeatureService::ExecuteSqlNonQuery", __LINE__, __WFILE__, NULL, L"", NULL);
 
         connWrap = mgTrans->GetConnection(); //Connection is already open
         fdoTrans = mgTrans->GetFdoTransaction();
@@ -4949,7 +5015,7 @@ INT32 MgdFeatureService::ExecuteSqlNonQuery(MgResourceIdentifier* resource,
 
     // Create the SQL command
     FdoPtr<FdoISQLCommand> fdoCommand = (FdoISQLCommand*)conn->CreateCommand(FdoCommandType_SQLCommand);
-    CHECKNULL((FdoISQLCommand*)fdoCommand, L"MgServerSqlCommand.ExecuteQuery");
+    CHECKNULL((FdoISQLCommand*)fdoCommand, L"MgdFeatureService::ExecuteSqlNonQuery");
 
     // Set SQL statement
     fdoCommand->SetSQLStatement((FdoString*)sqlNonSelectStatement.c_str());
@@ -5002,6 +5068,8 @@ INT32 MgdFeatureService::ExecuteSqlNonQuery(MgResourceIdentifier* resource,
     MG_LOG_OPERATION_MESSAGE_ADD_STRING(sqlNonSelectStatement.c_str());
     MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
 
+    MG_LOG_TRACE_ENTRY(L"MgdFeatureService::ExecuteSqlNonQuery()");
+
 	CHECK_FEATURE_SOURCE_ARGUMENT(resource, L"MgdFeatureService::ExecuteSqlNonQuery");
     if (sqlNonSelectStatement.empty())
         throw new MgInvalidArgumentException(L"MgdFeatureService::ExecuteSqlNonQuery", __LINE__, __WFILE__, NULL, L"", NULL);
@@ -5046,6 +5114,8 @@ MgSpatialContextReader* MgdFeatureService::GetSpatialContexts(MgResourceIdentifi
     MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
     MG_LOG_OPERATION_MESSAGE_ADD_BOOL(bActiveOnly);
     MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
+
+    MG_LOG_TRACE_ENTRY(L"MgdFeatureService::GetSpatialContexts()");
 
 	CHECK_FEATURE_SOURCE_ARGUMENT(resId, L"MgdFeatureService::GetSpatialContexts");
 	

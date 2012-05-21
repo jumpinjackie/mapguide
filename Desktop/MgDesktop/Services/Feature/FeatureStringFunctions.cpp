@@ -187,7 +187,7 @@ void MgFeatureStringFunctions::ExecuteOperation(std::map<STRING, char>& values, 
                 MgStringCollection arguments;
                 arguments.Add(message);
                 throw new MgFeatureServiceException(
-                    L"MgServerSelectFeatures.ExecuteOperation", __LINE__, __WFILE__, &arguments, L"", NULL);
+                    L"MgFeatureStringFunctions.ExecuteOperation", __LINE__, __WFILE__, &arguments, L"", NULL);
             }
         }
     }
