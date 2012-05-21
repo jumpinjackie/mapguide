@@ -234,7 +234,26 @@ MgByteReader* MgRenderingService::GenerateLegendImage(MgResourceIdentifier* reso
 {
     Ptr<MgByteReader> byteReader;
 
+    MG_LOG_OPERATION_MESSAGE(L"GenerateLegendImage");
+
     MG_SERVER_MAPPING_SERVICE_TRY()
+
+    MG_LOG_OPERATION_MESSAGE_INIT(MG_API_VERSION(1, 0, 0), 7);
+    MG_LOG_OPERATION_MESSAGE_PARAMETERS_START();
+    MG_LOG_OPERATION_MESSAGE_ADD_STRING((NULL == resource) ? L"MgResourceIdentifier" : resource->ToString().c_str());
+    MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
+    MG_LOG_OPERATION_MESSAGE_ADD_DOUBLE(scale);
+    MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
+    MG_LOG_OPERATION_MESSAGE_ADD_INT32(imgWidth);
+    MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
+    MG_LOG_OPERATION_MESSAGE_ADD_INT32(imgHeight);
+    MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
+    MG_LOG_OPERATION_MESSAGE_ADD_STRING(format.c_str());
+    MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
+    MG_LOG_OPERATION_MESSAGE_ADD_INT32(geomType);
+    MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
+    MG_LOG_OPERATION_MESSAGE_ADD_INT32(themeCategory);
+    MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
 
     MG_LOG_TRACE_ENTRY(L"MgServerMappingService::GenerateLegendImage");
 
@@ -338,7 +357,21 @@ MgByteReader* MgRenderingService::GenerateLegendImage(MgResourceIdentifier* reso
         byteReader = src->GetReader();
     }
 
-    MG_SERVER_MAPPING_SERVICE_CATCH_AND_THROW(L"MgRenderingService::GenerateLegendImage")
+    // Successful operation
+    MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Success.c_str());
+
+    MG_SERVER_MAPPING_SERVICE_CATCH(L"MgRenderingService::GenerateLegendImage")
+
+    if (mgException != NULL)
+    {
+        // Failed operation
+        MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Failure.c_str());
+    }
+
+    // Add access log entry for operation
+    MG_LOG_OPERATION_MESSAGE_ACCESS_ENTRY();
+
+    MG_SERVER_MAPPING_SERVICE_THROW()
 
     return byteReader.Detach();
 }
@@ -356,7 +389,26 @@ MgByteReader* MgRenderingService::GeneratePlot(MgdMap* map,
 {
     Ptr<MgByteReader> byteReader;
 
+    MG_LOG_OPERATION_MESSAGE(L"GeneratePlot");
+
     MG_SERVER_MAPPING_SERVICE_TRY()
+
+    Ptr<MgResourceIdentifier> mapId;
+    if (NULL != map)
+        mapId = map->GetResourceId();
+    Ptr<MgResourceIdentifier> layoutId;
+    if (NULL != layoutId)
+        layoutId = layout->GetLayout();
+    MG_LOG_OPERATION_MESSAGE_INIT(MG_API_VERSION(1, 0, 0), 4);
+    MG_LOG_OPERATION_MESSAGE_PARAMETERS_START();
+    MG_LOG_OPERATION_MESSAGE_ADD_STRING((NULL == mapId) ? L"MgResourceIdentifier" : mapId->ToString().c_str());
+    MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
+    MG_LOG_OPERATION_MESSAGE_ADD_STRING(L"MgPlotSpecification");
+    MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
+    MG_LOG_OPERATION_MESSAGE_ADD_STRING((NULL == layoutId) ? L"MgResourceIdentifier" : layoutId->ToString().c_str());
+    MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
+    MG_LOG_OPERATION_MESSAGE_ADD_STRING((NULL == dwfVersion) ? L"MgDwfVersion" : dwfVersion->GetLogString());
+    MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
 
     MG_LOG_TRACE_ENTRY(L"MgServerMappingService::GeneratePlot()");
 
@@ -374,9 +426,23 @@ MgByteReader* MgRenderingService::GeneratePlot(MgdMap* map,
     mapPlots->Add(mapPlot);
 
     // Create the plot
-    byteReader = GenerateMultiPlot(mapPlots, dwfVersion);
+    byteReader = GenerateMultiPlotInternal(mapPlots, dwfVersion);
 
-    MG_SERVER_MAPPING_SERVICE_CATCH_AND_THROW(L"MgRenderingService::GeneratePlot")
+    // Successful operation
+    MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Success.c_str());
+
+    MG_SERVER_MAPPING_SERVICE_CATCH(L"MgRenderingService::GeneratePlot")
+
+    if (mgException != NULL)
+    {
+        // Failed operation
+        MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Failure.c_str());
+    }
+
+    // Add access log entry for operation
+    MG_LOG_OPERATION_MESSAGE_ACCESS_ENTRY();
+
+    MG_SERVER_MAPPING_SERVICE_THROW()
 
     return byteReader.Detach();
 }
@@ -390,7 +456,30 @@ MgByteReader* MgRenderingService::GeneratePlot(MgdMap* map,
 {
     Ptr<MgByteReader> byteReader;
 
+    MG_LOG_OPERATION_MESSAGE(L"GeneratePlot");
+
     MG_SERVER_MAPPING_SERVICE_TRY()
+
+    Ptr<MgResourceIdentifier> mapId;
+    if (NULL != map)
+        mapId = map->GetResourceId();
+    Ptr<MgResourceIdentifier> layoutId;
+    if (NULL != layoutId)
+        layoutId = layout->GetLayout();
+    MG_LOG_OPERATION_MESSAGE_INIT(MG_API_VERSION(1, 0, 0), 6);
+    MG_LOG_OPERATION_MESSAGE_PARAMETERS_START();
+    MG_LOG_OPERATION_MESSAGE_ADD_STRING((NULL == mapId) ? L"MgResourceIdentifier" : mapId->ToString().c_str());
+    MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
+    MG_LOG_OPERATION_MESSAGE_ADD_STRING(L"MgCoordinate")
+    MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
+    MG_LOG_OPERATION_MESSAGE_ADD_DOUBLE(scale)
+    MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
+    MG_LOG_OPERATION_MESSAGE_ADD_STRING(L"MgPlotSpecification");
+    MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
+    MG_LOG_OPERATION_MESSAGE_ADD_STRING((NULL == layoutId) ? L"MgResourceIdentifier" : layoutId->ToString().c_str());
+    MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
+    MG_LOG_OPERATION_MESSAGE_ADD_STRING((NULL == dwfVersion) ? L"MgDwfVersion" : dwfVersion->GetLogString());
+    MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
 
     MG_LOG_TRACE_ENTRY(L"MgServerMappingService::GeneratePlot()");
 
@@ -408,9 +497,23 @@ MgByteReader* MgRenderingService::GeneratePlot(MgdMap* map,
     mapPlots->Add(mapPlot);
 
     // Create the plot
-    byteReader = GenerateMultiPlot(mapPlots, dwfVersion);
+    byteReader = GenerateMultiPlotInternal(mapPlots, dwfVersion);
 
-    MG_SERVER_MAPPING_SERVICE_CATCH_AND_THROW(L"MgRenderingService::GeneratePlot")
+    // Successful operation
+    MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Success.c_str());
+
+    MG_SERVER_MAPPING_SERVICE_CATCH(L"MgRenderingService::GeneratePlot")
+
+    if (mgException != NULL)
+    {
+        // Failed operation
+        MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Failure.c_str());
+    }
+
+    // Add access log entry for operation
+    MG_LOG_OPERATION_MESSAGE_ACCESS_ENTRY();
+
+    MG_SERVER_MAPPING_SERVICE_THROW()
 
     return byteReader.Detach();
 }
@@ -424,7 +527,30 @@ MgByteReader* MgRenderingService::GeneratePlot(MgdMap* map,
 {
     Ptr<MgByteReader> byteReader;
 
+    MG_LOG_OPERATION_MESSAGE(L"GeneratePlot");
     MG_SERVER_MAPPING_SERVICE_TRY()
+
+    Ptr<MgResourceIdentifier> mapId;
+    if (NULL != map)
+        mapId = map->GetResourceId();
+    Ptr<MgResourceIdentifier> layoutId;
+    if (NULL != layoutId)
+        layoutId = layout->GetLayout();
+
+    MG_LOG_OPERATION_MESSAGE_INIT(MG_API_VERSION(1, 0, 0), 6);
+    MG_LOG_OPERATION_MESSAGE_PARAMETERS_START();
+    MG_LOG_OPERATION_MESSAGE_ADD_STRING((NULL == mapId) ? L"MgResourceIdentifier" : mapId->ToString().c_str());
+    MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
+    MG_LOG_OPERATION_MESSAGE_ADD_STRING(L"MgEnvelope")
+    MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
+    MG_LOG_OPERATION_MESSAGE_ADD_BOOL(expandToFit)
+    MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
+    MG_LOG_OPERATION_MESSAGE_ADD_STRING(L"MgPlotSpecification");
+    MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
+    MG_LOG_OPERATION_MESSAGE_ADD_STRING((NULL == layoutId) ? L"MgResourceIdentifier" : layoutId->ToString().c_str());
+    MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
+    MG_LOG_OPERATION_MESSAGE_ADD_STRING((NULL == dwfVersion) ? L"MgDwfVersion" : dwfVersion->GetLogString());
+    MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
 
     MG_LOG_TRACE_ENTRY(L"MgServerMappingService::GeneratePlot()");
 
@@ -457,15 +583,62 @@ MgByteReader* MgRenderingService::GeneratePlot(MgdMap* map,
     mapPlots->Add(mapPlot);
 
     // Create the plot
-    byteReader = GenerateMultiPlot(mapPlots, dwfVersion);
+    byteReader = GenerateMultiPlotInternal(mapPlots, dwfVersion);
 
-    MG_SERVER_MAPPING_SERVICE_CATCH_AND_THROW(L"MgRenderingService::GeneratePlot")
+    // Successful operation
+    MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Success.c_str());
+
+    MG_SERVER_MAPPING_SERVICE_CATCH(L"MgRenderingService::GeneratePlot")
+
+    if (mgException != NULL)
+    {
+        // Failed operation
+        MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Failure.c_str());
+    }
+
+    // Add access log entry for operation
+    MG_LOG_OPERATION_MESSAGE_ACCESS_ENTRY();
+
+    MG_SERVER_MAPPING_SERVICE_THROW()
 
     return byteReader.Detach();
 }
 
-MgByteReader* MgRenderingService::GenerateMultiPlot(MgMapPlotCollection* mapPlots,
-                                                    MgDwfVersion* dwfVersion)
+MgByteReader* MgRenderingService::GenerateMultiPlot(MgMapPlotCollection* mapPlots, MgDwfVersion* dwfVersion)
+{
+    Ptr<MgByteReader> ret;
+    MG_LOG_OPERATION_MESSAGE(L"GenerateMultiPlot");
+
+    MG_SERVER_MAPPING_SERVICE_TRY()
+
+    MG_LOG_OPERATION_MESSAGE_INIT(MG_API_VERSION(1, 0, 0), 2);
+    MG_LOG_OPERATION_MESSAGE_PARAMETERS_START();
+    MG_LOG_OPERATION_MESSAGE_ADD_STRING(L"MgMapPlotCollection");
+    MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
+    MG_LOG_OPERATION_MESSAGE_ADD_STRING((NULL == dwfVersion) ? L"MgDwfVersion" : dwfVersion->GetLogString().c_str());
+    MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
+
+    ret = GenerateMultiPlotInternal(mapPlots, dwfVersion);
+
+    // Successful operation
+    MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Success.c_str());
+
+    MG_SERVER_MAPPING_SERVICE_CATCH(L"MgRenderingService::GenerateMultiPlot")
+
+    if (mgException != NULL)
+    {
+        // Failed operation
+        MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Failure.c_str());
+    }
+
+    // Add access log entry for operation
+    MG_LOG_OPERATION_MESSAGE_ACCESS_ENTRY();
+
+    MG_SERVER_MAPPING_SERVICE_THROW()
+    return ret.Detach();
+}
+
+MgByteReader* MgRenderingService::GenerateMultiPlotInternal(MgMapPlotCollection* mapPlots, MgDwfVersion* dwfVersion)
 {
     Ptr<MgByteReader> byteReader;
 
@@ -845,14 +1018,25 @@ MgByteReader* MgRenderingService::GenerateMultiPlot(MgMapPlotCollection* mapPlot
 // ---------------------------------- BEGIN Rendering Service APIs ----------------------------------------------- //
 
 ///////////////////////////////////////////////////////////////////////////////
-MgByteReader* MgRenderingService::RenderTile(MgdMap* map,
-                                                   CREFSTRING baseMapLayerGroupName,
-                                                   INT32 tileColumn,
-                                                   INT32 tileRow)
+MgByteReader* MgRenderingService::RenderTile(MgdMap* map, CREFSTRING baseMapLayerGroupName, INT32 tileColumn, INT32 tileRow)
 {
     Ptr<MgByteReader> ret;
 
+    MG_LOG_OPERATION_MESSAGE(L"RenderTile");
+
     MG_TRY()
+
+    Ptr<MgResourceIdentifier> mapId = map->GetResourceId();
+    MG_LOG_OPERATION_MESSAGE_INIT(MG_API_VERSION(1, 0, 0), 4);
+    MG_LOG_OPERATION_MESSAGE_PARAMETERS_START();
+    MG_LOG_OPERATION_MESSAGE_ADD_STRING((NULL == mapId) ? L"MgResourceIdentifier" : mapId->ToString().c_str());
+    MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
+    MG_LOG_OPERATION_MESSAGE_ADD_STRING(baseMapLayerGroupName.c_str());
+    MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
+    MG_LOG_OPERATION_MESSAGE_ADD_INT32(tileColumn);
+    MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
+    MG_LOG_OPERATION_MESSAGE_ADD_INT32(tileRow);
+    MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
 
     if (NULL == map || baseMapLayerGroupName.empty())
         throw new MgNullArgumentException(L"MgRenderingService.RenderTile", __LINE__, __WFILE__, NULL, L"", NULL);
@@ -911,7 +1095,21 @@ MgByteReader* MgRenderingService::RenderTile(MgdMap* map,
     ret = RenderTile(map, baseGroup, scaleIndex, MgTileParameters::tileWidth, MgTileParameters::tileHeight, scale,
                      tileMinX, tileMaxX, tileMinY, tileMaxY, MgTileParameters::tileFormat);
 
-    MG_CATCH_AND_THROW(L"MgRenderingService.RenderTile")
+    // Successful operation
+    MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Success.c_str());
+
+    MG_CATCH(L"MgRenderingService::RenderTile")
+
+    if (mgException != NULL)
+    {
+        // Failed operation
+        MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Failure.c_str());
+    }
+
+    // Add access log entry for operation
+    MG_LOG_OPERATION_MESSAGE_ACCESS_ENTRY();
+
+    MG_THROW()
 
     return ret.Detach();
 }
@@ -989,38 +1187,139 @@ MgByteReader* MgRenderingService::RenderTile(MgdMap* map,
 
 ///////////////////////////////////////////////////////////////////////////////
 // default arg bKeepSelection = true
-MgByteReader* MgRenderingService::RenderDynamicOverlay(MgdMap* map,
-                                                             MgdSelection* selection,
-                                                             CREFSTRING format)
+MgByteReader* MgRenderingService::RenderDynamicOverlay(MgdMap* map, MgdSelection* selection, CREFSTRING format)
 {
+    Ptr<MgByteReader> ret;
+    MG_LOG_OPERATION_MESSAGE(L"RenderDynamicOverlay");
+
+    MG_TRY()
+
+    Ptr<MgResourceIdentifier> mapId = map->GetResourceId();
+    MG_LOG_OPERATION_MESSAGE_INIT(MG_API_VERSION(1, 0, 0), 3);
+    MG_LOG_OPERATION_MESSAGE_PARAMETERS_START();
+    MG_LOG_OPERATION_MESSAGE_ADD_STRING((NULL == mapId) ? L"MgdMap" : mapId->ToString().c_str());
+    MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
+    MG_LOG_OPERATION_MESSAGE_ADD_STRING(L"MgdSelection");
+    MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
+    MG_LOG_OPERATION_MESSAGE_ADD_STRING(format.c_str());
+    MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
+
     // Call updated RenderDynamicOverlay API
-    return RenderDynamicOverlay(map, selection, format, true);
+    //ret = RenderDynamicOverlay(map, selection, format, true);
+
+    // Call updated RenderDynamicOverlay API
+    MgRenderingOptions options(format, MgRenderingOptions::RenderSelection |
+        MgRenderingOptions::RenderLayers | MgRenderingOptions::KeepSelection, NULL);
+    ret = RenderDynamicOverlayInternal(map, selection, &options, NULL);
+
+    // Successful operation
+    MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Success.c_str());
+
+    MG_CATCH(L"MgRenderingService::RenderDynamicOverlay")
+
+    if (mgException != NULL)
+    {
+        // Failed operation
+        MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Failure.c_str());
+    }
+
+    // Add access log entry for operation
+    MG_LOG_OPERATION_MESSAGE_ACCESS_ENTRY();
+
+    MG_THROW()
+
+    return ret.Detach();
 }
 
 
 ///////////////////////////////////////////////////////////////////////////////
 // default arg bKeepSelection = true
-MgByteReader* MgRenderingService::RenderDynamicOverlay(MgdMap* map,
-                                                             MgdSelection* selection,
-                                                             CREFSTRING format,
-                                                             bool bKeepSelection)
+MgByteReader* MgRenderingService::RenderDynamicOverlay(MgdMap* map, MgdSelection* selection, CREFSTRING format, bool bKeepSelection)
 {
+    Ptr<MgByteReader> ret;
+
+    MG_LOG_OPERATION_MESSAGE(L"RenderDynamicOverlay");
+
+    MG_TRY()
+
+    Ptr<MgResourceIdentifier> mapId = map->GetResourceId();
+    MG_LOG_OPERATION_MESSAGE_INIT(MG_API_VERSION(1, 0, 0), 4);
+    MG_LOG_OPERATION_MESSAGE_PARAMETERS_START();
+    MG_LOG_OPERATION_MESSAGE_ADD_STRING((NULL == mapId) ? L"MgdMap" : mapId->ToString().c_str());
+    MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
+    MG_LOG_OPERATION_MESSAGE_ADD_STRING(L"MgdSelection");
+    MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
+    MG_LOG_OPERATION_MESSAGE_ADD_STRING(format.c_str());
+    MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
+    MG_LOG_OPERATION_MESSAGE_ADD_BOOL(bKeepSelection);
+    MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
+
     // Call updated RenderDynamicOverlay API
     MgRenderingOptions options(format, MgRenderingOptions::RenderSelection |
         MgRenderingOptions::RenderLayers | (bKeepSelection? MgRenderingOptions::KeepSelection : 0), NULL);
-    return RenderDynamicOverlay(map, selection, &options);
+    ret = RenderDynamicOverlayInternal(map, selection, &options, NULL);
+
+    // Successful operation
+    MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Success.c_str());
+
+    MG_CATCH(L"MgRenderingService::RenderDynamicOverlay")
+
+    if (mgException != NULL)
+    {
+        // Failed operation
+        MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Failure.c_str());
+    }
+
+    // Add access log entry for operation
+    MG_LOG_OPERATION_MESSAGE_ACCESS_ENTRY();
+
+    MG_THROW()
+
+    return ret.Detach();
 }
 
 
 ///////////////////////////////////////////////////////////////////////////////
 // called from API (first call of AjaxPgPViewerSampleApplication)
 // default arg pPRMResult = NULL
-MgByteReader* MgRenderingService::RenderDynamicOverlay(MgdMap* map,
-                                                             MgdSelection* selection,
-                                                             MgRenderingOptions* options)
+MgByteReader* MgRenderingService::RenderDynamicOverlay(MgdMap* map, MgdSelection* selection, MgRenderingOptions* options)
 {
+    Ptr<MgByteReader> ret;
+
+    MG_LOG_OPERATION_MESSAGE(L"RenderDynamicOverlay");
+
+    MG_TRY()
+
+    Ptr<MgResourceIdentifier> mapId = map->GetResourceId();
+    MG_LOG_OPERATION_MESSAGE_INIT(MG_API_VERSION(1, 0, 0), 3);
+    MG_LOG_OPERATION_MESSAGE_PARAMETERS_START();
+    MG_LOG_OPERATION_MESSAGE_ADD_STRING((NULL == mapId) ? L"MgdMap" : mapId->ToString().c_str());
+    MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
+    MG_LOG_OPERATION_MESSAGE_ADD_STRING(L"MgdSelection");
+    MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
+    MG_LOG_OPERATION_MESSAGE_ADD_STRING(L"MgRenderingOptions");
+    MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
+
     // Call updated RenderDynamicOverlay API 
-    return RenderDynamicOverlay(map, selection, options, NULL);
+    ret = RenderDynamicOverlayInternal(map, selection, options, NULL);
+
+    // Successful operation
+    MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Success.c_str());
+
+    MG_CATCH(L"MgRenderingService::RenderDynamicOverlay")
+
+    if (mgException != NULL)
+    {
+        // Failed operation
+        MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Failure.c_str());
+    }
+
+    // Add access log entry for operation
+    MG_LOG_OPERATION_MESSAGE_ACCESS_ENTRY();
+
+    MG_THROW()
+
+    return ret.Detach();
 }
 
 
@@ -1028,16 +1327,60 @@ MgByteReader* MgRenderingService::RenderDynamicOverlay(MgdMap* map,
 // Non-published RenderDynamicOverlay API with profile result parameter
 // pPRMResult - a pointer points to Profile Render Map Result.
 MgByteReader* MgRenderingService::RenderDynamicOverlay(MgdMap* map,
-                                                             MgdSelection* selection,
-                                                             MgRenderingOptions* options,
-                                                             ProfileRenderMapResult* pPRMResult)
+                                                       MgdSelection* selection,
+                                                       MgRenderingOptions* options,
+                                                       ProfileRenderMapResult* pPRMResult)
+{
+    Ptr<MgByteReader> ret;
+
+    MG_LOG_OPERATION_MESSAGE(L"RenderDynamicOverlay");
+
+    MG_TRY()
+
+    Ptr<MgResourceIdentifier> mapId = map->GetResourceId();
+    MG_LOG_OPERATION_MESSAGE_INIT(MG_API_VERSION(1, 0, 0), 4);
+    MG_LOG_OPERATION_MESSAGE_PARAMETERS_START();
+    MG_LOG_OPERATION_MESSAGE_ADD_STRING((NULL == mapId) ? L"MgdMap" : mapId->ToString().c_str());
+    MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
+    MG_LOG_OPERATION_MESSAGE_ADD_STRING(L"MgdSelection");
+    MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
+    MG_LOG_OPERATION_MESSAGE_ADD_STRING(L"MgRenderingOptions");
+    MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
+    MG_LOG_OPERATION_MESSAGE_ADD_STRING(L"ProfileRenderMapResult");
+    MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
+
+    ret = RenderDynamicOverlayInternal(map, selection, options, pPRMResult);
+
+    // Successful operation
+    MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Success.c_str());
+
+    MG_CATCH(L"MgRenderingService::RenderDynamicOverlay")
+
+    if (mgException != NULL)
+    {
+        // Failed operation
+        MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Failure.c_str());
+    }
+
+    // Add access log entry for operation
+    MG_LOG_OPERATION_MESSAGE_ACCESS_ENTRY();
+
+    MG_THROW()
+
+    return ret.Detach();
+}
+
+MgByteReader* MgRenderingService::RenderDynamicOverlayInternal(MgdMap* map,
+                                                               MgdSelection* selection,
+                                                               MgRenderingOptions* options,
+                                                               ProfileRenderMapResult* pPRMResult)
 {
     Ptr<MgByteReader> ret;
 
     MG_TRY()
 
     if (NULL == map)
-        throw new MgNullArgumentException(L"MgRenderingService.RenderDynamicOverlay", __LINE__, __WFILE__, NULL, L"", NULL);
+        throw new MgNullArgumentException(L"MgRenderingService.RenderDynamicOverlayInternal", __LINE__, __WFILE__, NULL, L"", NULL);
 
     // validate map view parameters
     int width            = map->GetDisplayWidth();
@@ -1047,23 +1390,23 @@ MgByteReader* MgRenderingService::RenderDynamicOverlay(MgdMap* map,
     double metersPerUnit = map->GetMetersPerUnit();
 
     if (width <= 0)
-        throw new MgInvalidArgumentException(L"MgRenderingService.RenderDynamicOverlay", __LINE__, __WFILE__, NULL, L"MgdMapDisplayWidthCannotBeLessThanOrEqualToZero", NULL);
+        throw new MgInvalidArgumentException(L"MgRenderingService.RenderDynamicOverlayInternal", __LINE__, __WFILE__, NULL, L"MgdMapDisplayWidthCannotBeLessThanOrEqualToZero", NULL);
 
     if (height <= 0)
-        throw new MgInvalidArgumentException(L"MgRenderingService.RenderDynamicOverlay", __LINE__, __WFILE__, NULL, L"MgdMapDisplayHeightCannotBeLessThanOrEqualToZero", NULL);
+        throw new MgInvalidArgumentException(L"MgRenderingService.RenderDynamicOverlayInternal", __LINE__, __WFILE__, NULL, L"MgdMapDisplayHeightCannotBeLessThanOrEqualToZero", NULL);
 
     if (dpi <= 0)
-        throw new MgInvalidArgumentException(L"MgRenderingService.RenderDynamicOverlay", __LINE__, __WFILE__, NULL, L"MgdMapDisplayDpiCannotBeLessThanOrEqualToZero", NULL);
+        throw new MgInvalidArgumentException(L"MgRenderingService.RenderDynamicOverlayInternal", __LINE__, __WFILE__, NULL, L"MgdMapDisplayDpiCannotBeLessThanOrEqualToZero", NULL);
 
     if (scale <= 0.0)
-        throw new MgInvalidArgumentException(L"MgRenderingService.RenderDynamicOverlay", __LINE__, __WFILE__, NULL, L"MgdMapViewScaleCannotBeLessThanOrEqualToZero", NULL);
+        throw new MgInvalidArgumentException(L"MgRenderingService.RenderDynamicOverlayInternal", __LINE__, __WFILE__, NULL, L"MgdMapViewScaleCannotBeLessThanOrEqualToZero", NULL);
 
     if (metersPerUnit <= 0.0)
-        throw new MgInvalidArgumentException(L"MgRenderingService.RenderDynamicOverlay", __LINE__, __WFILE__, NULL, L"MgdMapMetersPerUnitCannotBeLessThanOrEqualToZero", NULL);
+        throw new MgInvalidArgumentException(L"MgRenderingService.RenderDynamicOverlayInternal", __LINE__, __WFILE__, NULL, L"MgdMapMetersPerUnitCannotBeLessThanOrEqualToZero", NULL);
 
     // sanity check - number of image pixels cannot exceed MAX_PIXELS
     if (width * height > MAX_PIXELS)
-        throw new MgOutOfRangeException(L"MgRenderingService.RenderDynamicOverlay", __LINE__, __WFILE__, NULL, L"MgInvalidImageSizeTooBig", NULL);
+        throw new MgOutOfRangeException(L"MgRenderingService.RenderDynamicOverlayInternal", __LINE__, __WFILE__, NULL, L"MgInvalidImageSizeTooBig", NULL);
 
     // compute map extent that corresponds to pixel extent
     Ptr<MgPoint> pt          = map->GetViewCenter();
@@ -1108,7 +1451,7 @@ MgByteReader* MgRenderingService::RenderDynamicOverlay(MgdMap* map,
     // call the internal helper API to do all the stylization overhead work
     ret = RenderMapInternal(map, selection, roLayers, dr.get(), width, height, width, height, scale, extent, false, options, true, pPRMResult);
 
-    MG_CATCH(L"MgRenderingService.RenderDynamicOverlay")
+    MG_CATCH(L"MgRenderingService.RenderDynamicOverlayInternal")
     if (mgException.p)
     {
         if(NULL != pPRMResult)
@@ -1133,22 +1476,89 @@ MgByteReader* MgRenderingService::RenderDynamicOverlay(MgdMap* map,
 ///////////////////////////////////////////////////////////////////////////////
 // default arg bKeepSelection = true
 MgByteReader* MgRenderingService::RenderMap(MgdMap* map,
-                                                  MgdSelection* selection,
-                                                  CREFSTRING format)
+                                            MgdSelection* selection,
+                                            CREFSTRING format)
 {
-    // Call updated RenderMap API
-    return RenderMap(map, selection, format, true);
+    Ptr<MgByteReader> ret;
+    MG_LOG_OPERATION_MESSAGE(L"RenderMap");
+
+    MG_TRY()
+
+    Ptr<MgResourceIdentifier> mapId = map->GetResourceId();
+    MG_LOG_OPERATION_MESSAGE_INIT(MG_API_VERSION(1, 0, 0), 3);
+    MG_LOG_OPERATION_MESSAGE_PARAMETERS_START();
+    MG_LOG_OPERATION_MESSAGE_ADD_STRING((NULL == mapId) ? L"MgdMap" : mapId->ToString().c_str());
+    MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
+    MG_LOG_OPERATION_MESSAGE_ADD_STRING(L"MgdSelection");
+    MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
+    MG_LOG_OPERATION_MESSAGE_ADD_STRING(format.c_str());
+    MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
+
+    ret = RenderMapPublished(map, selection, format, true, false);
+
+    // Successful operation
+    MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Success.c_str());
+
+    MG_CATCH(L"MgRenderingService::RenderMap")
+
+    if (mgException != NULL)
+    {
+        // Failed operation
+        MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Failure.c_str());
+    }
+
+    // Add access log entry for operation
+    MG_LOG_OPERATION_MESSAGE_ACCESS_ENTRY();
+
+    MG_THROW()
+
+    return ret.Detach();
 }
 
 
 ///////////////////////////////////////////////////////////////////////////////
 // default arg bClip = false
 MgByteReader* MgRenderingService::RenderMap(MgdMap* map,
-                                                  MgdSelection* selection,
-                                                  CREFSTRING format,
-                                                  bool bKeepSelection)
+                                            MgdSelection* selection,
+                                            CREFSTRING format,
+                                            bool bKeepSelection)
 {
-    return RenderMap(map, selection, format, bKeepSelection, false);
+    Ptr<MgByteReader> ret;
+    MG_LOG_OPERATION_MESSAGE(L"RenderMap");
+
+    MG_TRY()
+
+    Ptr<MgResourceIdentifier> mapId = map->GetResourceId();
+    MG_LOG_OPERATION_MESSAGE_INIT(MG_API_VERSION(1, 0, 0), 4);
+    MG_LOG_OPERATION_MESSAGE_PARAMETERS_START();
+    MG_LOG_OPERATION_MESSAGE_ADD_STRING((NULL == mapId) ? L"MgdMap" : mapId->ToString().c_str());
+    MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
+    MG_LOG_OPERATION_MESSAGE_ADD_STRING(L"MgdSelection");
+    MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
+    MG_LOG_OPERATION_MESSAGE_ADD_STRING(format.c_str());
+    MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
+    MG_LOG_OPERATION_MESSAGE_ADD_BOOL(bKeepSelection);
+    MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
+
+    ret = RenderMapPublished(map, selection, format, bKeepSelection, false);
+
+    // Successful operation
+    MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Success.c_str());
+
+    MG_CATCH(L"MgRenderingService::RenderMap")
+
+    if (mgException != NULL)
+    {
+        // Failed operation
+        MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Failure.c_str());
+    }
+
+    // Add access log entry for operation
+    MG_LOG_OPERATION_MESSAGE_ACCESS_ENTRY();
+
+    MG_THROW()
+
+    return ret.Detach();
 }
 
 
@@ -1157,17 +1567,63 @@ MgByteReader* MgRenderingService::RenderMap(MgdMap* map,
 // color and display sizes as default arguments to call the real rendermap method
 // default arg (bKeepSelection = true, bClip = false)
 MgByteReader* MgRenderingService::RenderMap(MgdMap* map,
-                                                  MgdSelection* selection,
-                                                  CREFSTRING format,
-                                                  bool bKeepSelection,
-                                                  bool bClip)
+                                            MgdSelection* selection,
+                                            CREFSTRING format,
+                                            bool bKeepSelection,
+                                            bool bClip)
+{
+    Ptr<MgByteReader> ret;
+    MG_LOG_OPERATION_MESSAGE(L"RenderMap");
+
+    MG_TRY()
+
+    Ptr<MgResourceIdentifier> mapId = map->GetResourceId();
+    MG_LOG_OPERATION_MESSAGE_INIT(MG_API_VERSION(1, 0, 0), 5);
+    MG_LOG_OPERATION_MESSAGE_PARAMETERS_START();
+    MG_LOG_OPERATION_MESSAGE_ADD_STRING((NULL == mapId) ? L"MgdMap" : mapId->ToString().c_str());
+    MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
+    MG_LOG_OPERATION_MESSAGE_ADD_STRING(L"MgdSelection");
+    MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
+    MG_LOG_OPERATION_MESSAGE_ADD_STRING(format.c_str());
+    MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
+    MG_LOG_OPERATION_MESSAGE_ADD_BOOL(bKeepSelection);
+    MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
+    MG_LOG_OPERATION_MESSAGE_ADD_BOOL(bClip);
+    MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
+
+    ret = RenderMapPublished(map, selection, format, bKeepSelection, bClip);
+
+    // Successful operation
+    MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Success.c_str());
+
+    MG_CATCH(L"MgRenderingService::RenderMap")
+
+    if (mgException != NULL)
+    {
+        // Failed operation
+        MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Failure.c_str());
+    }
+
+    // Add access log entry for operation
+    MG_LOG_OPERATION_MESSAGE_ACCESS_ENTRY();
+
+    MG_THROW()
+
+    return ret.Detach();
+}
+
+MgByteReader* MgRenderingService::RenderMapPublished(MgdMap* map,
+                                                     MgdSelection* selection,
+                                                     CREFSTRING format,
+                                                     bool bKeepSelection,
+                                                     bool bClip)
 {
     Ptr<MgByteReader> ret;
 
     MG_TRY()
 
     if (NULL == map)
-        throw new MgNullArgumentException(L"MgRenderingService.RenderMap", __LINE__, __WFILE__, NULL, L"", NULL);
+        throw new MgNullArgumentException(L"MgRenderingService.RenderMapPublished", __LINE__, __WFILE__, NULL, L"", NULL);
 
     Ptr<MgPoint> pt = map->GetViewCenter();
     Ptr<MgCoordinate> center = pt->GetCoordinate();
@@ -1181,7 +1637,7 @@ MgByteReader* MgRenderingService::RenderMap(MgdMap* map,
     // punt to more specific RenderMap API
     ret = RenderMap(map, selection, center, scale, map->GetDisplayWidth(), map->GetDisplayHeight(), bgColor, format, bKeepSelection, bClip);
 
-    MG_CATCH_AND_THROW(L"MgRenderingService.RenderMap")
+    MG_CATCH_AND_THROW(L"MgRenderingService.RenderMapPublished")
 
     return ret.Detach();
 }
@@ -1617,14 +2073,29 @@ MgByteReader* MgRenderingService::RenderMapInternal(MgdMap* map,
 
 ///////////////////////////////////////////////////////////////////////////////
 MgByteReader* MgRenderingService::RenderMapLegend(MgdMap* map,
-                                                        INT32 width,
-                                                        INT32 height,
-                                                        MgColor* backgroundColor,
-                                                        CREFSTRING format)
+                                                  INT32 width,
+                                                  INT32 height,
+                                                  MgColor* backgroundColor,
+                                                  CREFSTRING format)
 {
     Ptr<MgByteReader> ret;
+    MG_LOG_OPERATION_MESSAGE(L"CopyResource");
 
     MG_TRY()
+
+    Ptr<MgResourceIdentifier> mapId = map->GetResourceId();
+    MG_LOG_OPERATION_MESSAGE_INIT(MG_API_VERSION(1, 0, 0), 5);
+    MG_LOG_OPERATION_MESSAGE_PARAMETERS_START();
+    MG_LOG_OPERATION_MESSAGE_ADD_STRING((NULL == mapId) ? L"MgdMap" : mapId->ToString().c_str());
+    MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
+    MG_LOG_OPERATION_MESSAGE_ADD_INT32(width);
+    MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
+    MG_LOG_OPERATION_MESSAGE_ADD_INT32(height);
+    MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
+    MG_LOG_OPERATION_MESSAGE_ADD_STRING(L"MgColor");
+    MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
+    MG_LOG_OPERATION_MESSAGE_ADD_STRING(format.c_str());
+    MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
 
     if (NULL == map || NULL == backgroundColor)
         throw new MgNullArgumentException(L"MgRenderingService.RenderMapLegend", __LINE__, __WFILE__, NULL, L"", NULL);
@@ -1698,7 +2169,21 @@ MgByteReader* MgRenderingService::RenderMapLegend(MgdMap* map,
         ret = bs->GetReader();
     }
 
-    MG_CATCH_AND_THROW(L"MgRenderingService.RenderMapLegend")
+    // Successful operation
+    MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Success.c_str());
+
+    MG_CATCH(L"MgRenderingService::RenderMapLegend")
+
+    if (mgException != NULL)
+    {
+        // Failed operation
+        MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Failure.c_str());
+    }
+
+    // Add access log entry for operation
+    MG_LOG_OPERATION_MESSAGE_ACCESS_ENTRY();
+
+    MG_THROW()
 
     return ret.Detach();
 }
