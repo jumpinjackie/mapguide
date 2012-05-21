@@ -220,6 +220,7 @@ void MgdResourceService::ApplyResourcePackage(MgByteReader* packageStream)
     {
         // Failed operation
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Failure.c_str());
+        MG_DESKTOP_LOG_EXCEPTION();
     }
 
     if (!packagePathname.empty())
@@ -318,6 +319,7 @@ void MgdResourceService::SetResource(MgResourceIdentifier* resource, MgByteReade
     {
         // Failed operation
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Failure.c_str());
+        MG_DESKTOP_LOG_EXCEPTION();
     }
 
     // Add access log entry for operation
@@ -389,6 +391,7 @@ void MgdResourceService::DeleteResource(MgResourceIdentifier* resource)
     {
         // Failed operation
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Failure.c_str());
+        MG_DESKTOP_LOG_EXCEPTION();
     }
 
     // Add access log entry for operation
@@ -490,6 +493,7 @@ void MgdResourceService::CopyResource(MgResourceIdentifier* sourceResource, MgRe
     {
         // Failed operation
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Failure.c_str());
+        MG_DESKTOP_LOG_EXCEPTION();
     }
 
     // Add access log entry for operation
@@ -526,6 +530,7 @@ void MgdResourceService::MoveResource(MgResourceIdentifier* sourceResource, MgRe
     {
         // Failed operation
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Failure.c_str());
+        MG_DESKTOP_LOG_EXCEPTION();
     }
 
     // Add access log entry for operation
@@ -626,6 +631,7 @@ void MgdResourceService::MoveResource(MgResourceIdentifier* sourceResource, MgRe
     {
         // Failed operation
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Failure.c_str());
+        MG_DESKTOP_LOG_EXCEPTION();
     }
 
     // Add access log entry for operation
@@ -693,6 +699,7 @@ void MgdResourceService::SetResourceData(MgResourceIdentifier* resource,
     {
         // Failed operation
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Failure.c_str());
+        MG_DESKTOP_LOG_EXCEPTION();
     }
 
     // Add access log entry for operation
@@ -738,6 +745,7 @@ void MgdResourceService::DeleteResourceData(MgResourceIdentifier* resource, CREF
     {
         // Failed operation
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Failure.c_str());
+        MG_DESKTOP_LOG_EXCEPTION();
     }
 
     // Add access log entry for operation
@@ -797,6 +805,7 @@ void MgdResourceService::RenameResourceData(MgResourceIdentifier* resource,
     {
         // Failed operation
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Failure.c_str());
+        MG_DESKTOP_LOG_EXCEPTION();
     }
 
     // Add access log entry for operation
@@ -833,6 +842,7 @@ MgByteReader* MgdResourceService::GetResourceData(MgResourceIdentifier* resource
     {
         // Failed operation
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Failure.c_str());
+        MG_DESKTOP_LOG_EXCEPTION();
     }
 
     // Add access log entry for operation
@@ -1035,6 +1045,7 @@ MgByteReader* MgdResourceService::EnumerateResources(MgResourceIdentifier* resou
     {
         // Failed operation
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Failure.c_str());
+        MG_DESKTOP_LOG_EXCEPTION();
     }
 
     // Add access log entry for operation
@@ -1179,6 +1190,7 @@ MgByteReader* MgdResourceService::EnumerateResources(MgResourceIdentifier* resou
     {
         // Failed operation
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Failure.c_str());
+        MG_DESKTOP_LOG_EXCEPTION();
     }
 
     // Add access log entry for operation
@@ -1246,6 +1258,7 @@ MgByteReader* MgdResourceService::EnumerateResourceData(MgResourceIdentifier* re
     {
         // Failed operation
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Failure.c_str());
+        MG_DESKTOP_LOG_EXCEPTION();
     }
 
     // Add access log entry for operation
@@ -1304,6 +1317,7 @@ bool MgdResourceService::ResourceExists(MgResourceIdentifier* resource)
     {
         // Failed operation
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Failure.c_str());
+        MG_DESKTOP_LOG_EXCEPTION();
     }
 
     // Add access log entry for operation
@@ -1351,6 +1365,7 @@ MgStringCollection* MgdResourceService::GetResourceContents(MgStringCollection* 
     {
         // Failed operation
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Failure.c_str());
+        MG_DESKTOP_LOG_EXCEPTION();
     }
 
     // Add access log entry for operation
@@ -1412,6 +1427,7 @@ MgByteReader* MgdResourceService::GetResourceContent(MgResourceIdentifier* resou
     {
         // Failed operation
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Failure.c_str());
+        MG_DESKTOP_LOG_EXCEPTION();
     }
 
     // Add access log entry for operation
@@ -1524,6 +1540,7 @@ MgByteReader* MgdResourceService::EnumerateUnmanagedData(CREFSTRING path, bool r
     {
         // Failed operation
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Failure.c_str());
+        MG_DESKTOP_LOG_EXCEPTION();
     }
 
     // Add access log entry for operation

@@ -391,6 +391,7 @@ MgByteReader* MgdFeatureService::GetFeatureProviders()
     {
         // Failed operation
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Failure.c_str());
+        MG_DESKTOP_LOG_EXCEPTION();
     }
 
     // Add access log entry for operation
@@ -454,6 +455,7 @@ MgStringCollection* MgdFeatureService::GetConnectionPropertyValues(CREFSTRING pr
     {
         // Failed operation
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Failure.c_str());
+        MG_DESKTOP_LOG_EXCEPTION();
     }
 
     // Add access log entry for operation
@@ -493,6 +495,7 @@ bool MgdFeatureService::TestConnection(CREFSTRING providerName, CREFSTRING conne
     {
         // Failed operation
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Failure.c_str());
+        MG_DESKTOP_LOG_EXCEPTION();
     }
 
     // Add access log entry for operation
@@ -532,6 +535,7 @@ bool MgdFeatureService::TestConnection(MgResourceIdentifier* resource)
     {
         // Failed operation
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Failure.c_str());
+        MG_DESKTOP_LOG_EXCEPTION();
     }
 
     // Add access log entry for operation
@@ -1150,6 +1154,7 @@ MgByteReader* MgdFeatureService::GetCapabilities(CREFSTRING providerName)
     {
         // Failed operation
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Failure.c_str());
+        MG_DESKTOP_LOG_EXCEPTION();
     }
 
     // Add access log entry for operation
@@ -1224,6 +1229,7 @@ MgByteReader* MgdFeatureService::GetCapabilities(CREFSTRING providerName, CREFST
     {
         // Failed operation
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Failure.c_str());
+        MG_DESKTOP_LOG_EXCEPTION();
     }
 
     // Add access log entry for operation
@@ -1322,6 +1328,7 @@ void MgdFeatureService::ApplySchema(MgResourceIdentifier* resource, MgFeatureSch
     {
         // Failed operation
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Failure.c_str());
+        MG_DESKTOP_LOG_EXCEPTION();
     }
 
     // Add access log entry for operation
@@ -1362,6 +1369,7 @@ MgFeatureSchemaCollection* MgdFeatureService::DescribeSchema(MgResourceIdentifie
     {
         // Failed operation
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Failure.c_str());
+        MG_DESKTOP_LOG_EXCEPTION();
     }
 
     // Add access log entry for operation
@@ -1960,6 +1968,7 @@ MgFeatureSchemaCollection* MgdFeatureService::DescribeSchema(MgResourceIdentifie
     {
         // Failed operation
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Failure.c_str());
+        MG_DESKTOP_LOG_EXCEPTION();
     }
 
     // Add access log entry for operation
@@ -2051,6 +2060,7 @@ STRING MgdFeatureService::DescribeSchemaAsXml(MgResourceIdentifier* resource,
     {
         // Failed operation
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Failure.c_str());
+        MG_DESKTOP_LOG_EXCEPTION();
     }
 
     // Add access log entry for operation
@@ -2089,6 +2099,7 @@ STRING MgdFeatureService::DescribeSchemaAsXml(MgResourceIdentifier* resource,
     {
         // Failed operation
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Failure.c_str());
+        MG_DESKTOP_LOG_EXCEPTION();
     }
 
     // Add access log entry for operation
@@ -2245,6 +2256,7 @@ STRING MgdFeatureService::SchemaToXml(MgFeatureSchemaCollection* schemas)
     {
         // Failed operation
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Failure.c_str());
+        MG_DESKTOP_LOG_EXCEPTION();
     }
 
     // Add access log entry for operation
@@ -2330,6 +2342,7 @@ MgFeatureSchemaCollection* MgdFeatureService::XmlToSchema(CREFSTRING xml)
     {
         // Failed operation
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Failure.c_str());
+        MG_DESKTOP_LOG_EXCEPTION();
     }
 
     // Add access log entry for operation
@@ -2372,6 +2385,7 @@ MgFeatureReader* MgdFeatureService::SelectFeatures(MgResourceIdentifier* resourc
     {
         // Failed operation
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Failure.c_str());
+        MG_DESKTOP_LOG_EXCEPTION();
     }
 
     // Add access log entry for operation
@@ -2416,6 +2430,7 @@ MgFeatureReader* MgdFeatureService::SelectFeatures(MgResourceIdentifier* resourc
     {
         // Failed operation
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Failure.c_str());
+        MG_DESKTOP_LOG_EXCEPTION();
     }
 
     // Add access log entry for operation
@@ -2457,6 +2472,7 @@ MgdScrollableFeatureReader* MgdFeatureService::SelectFeaturesExtended(MgResource
     {
         // Failed operation
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Failure.c_str());
+        MG_DESKTOP_LOG_EXCEPTION();
     }
 
     // Add access log entry for operation
@@ -3850,6 +3866,7 @@ MgDataReader* MgdFeatureService::SelectAggregate(MgResourceIdentifier* resource,
     {
         // Failed operation
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Failure.c_str());
+        MG_DESKTOP_LOG_EXCEPTION();
     }
 
     // Add access log entry for operation
@@ -3958,6 +3975,7 @@ MgPropertyCollection* MgdFeatureService::UpdateFeatures(MgResourceIdentifier* re
     {
         // Failed operation
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Failure.c_str());
+        MG_DESKTOP_LOG_EXCEPTION();
     }
 
     // Add access log entry for operation
@@ -4139,6 +4157,7 @@ MgPropertyCollection* MgdFeatureService::UpdateFeatures(MgResourceIdentifier* re
     {
         // Failed operation
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Failure.c_str());
+        MG_DESKTOP_LOG_EXCEPTION();
     }
 
     // Add access log entry for operation
@@ -4178,6 +4197,7 @@ MgFeatureReader* MgdFeatureService::InsertFeatures(MgResourceIdentifier* resourc
     {
         // Failed operation
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Failure.c_str());
+        MG_DESKTOP_LOG_EXCEPTION();
     }
 
     // Add access log entry for operation
@@ -4263,6 +4283,7 @@ MgFeatureReader* MgdFeatureService::InsertFeatures(MgResourceIdentifier* resourc
     {
         // Failed operation
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Failure.c_str());
+        MG_DESKTOP_LOG_EXCEPTION();
     }
 
     // Add access log entry for operation
@@ -4302,6 +4323,7 @@ MgPropertyCollection* MgdFeatureService::InsertFeatures(MgResourceIdentifier* re
     {
         // Failed operation
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Failure.c_str());
+        MG_DESKTOP_LOG_EXCEPTION();
     }
 
     // Add access log entry for operation
@@ -4438,6 +4460,7 @@ MgPropertyCollection* MgdFeatureService::InsertFeatures(MgResourceIdentifier* re
     {
         // Failed operation
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Failure.c_str());
+        MG_DESKTOP_LOG_EXCEPTION();
     }
 
     // Add access log entry for operation
@@ -4478,6 +4501,7 @@ int MgdFeatureService::UpdateFeatures(MgResourceIdentifier* resource, CREFSTRING
     {
         // Failed operation
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Failure.c_str());
+        MG_DESKTOP_LOG_EXCEPTION();
     }
 
     // Add access log entry for operation
@@ -4564,6 +4588,7 @@ int MgdFeatureService::UpdateFeatures(MgResourceIdentifier* resource, CREFSTRING
     {
         // Failed operation
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Failure.c_str());
+        MG_DESKTOP_LOG_EXCEPTION();
     }
 
     // Add access log entry for operation
@@ -4603,6 +4628,7 @@ int MgdFeatureService::DeleteFeatures(MgResourceIdentifier* resource, CREFSTRING
     {
         // Failed operation
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Failure.c_str());
+        MG_DESKTOP_LOG_EXCEPTION();
     }
 
     // Add access log entry for operation
@@ -4677,6 +4703,7 @@ int MgdFeatureService::DeleteFeatures(MgResourceIdentifier* resource, CREFSTRING
     {
         // Failed operation
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Failure.c_str());
+        MG_DESKTOP_LOG_EXCEPTION();
     }
 
     // Add access log entry for operation
@@ -4713,6 +4740,7 @@ void MgdFeatureService::PurgeCache(MgResourceIdentifier* resource)
     {
         // Failed operation
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Failure.c_str());
+        MG_DESKTOP_LOG_EXCEPTION();
     }
 
     // Add access log entry for operation
@@ -4752,6 +4780,7 @@ MgFeatureReader* MgdFeatureService::GetLockedFeatures(MgResourceIdentifier* reso
     {
         // Failed operation
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Failure.c_str());
+        MG_DESKTOP_LOG_EXCEPTION();
     }
 
     // Add access log entry for operation
@@ -4790,6 +4819,7 @@ MgTransaction* MgdFeatureService::BeginTransaction(MgResourceIdentifier* resourc
     {
         // Failed operation
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Failure.c_str());
+        MG_DESKTOP_LOG_EXCEPTION();
     }
 
     // Add access log entry for operation
@@ -4838,6 +4868,7 @@ MgSqlDataReader* MgdFeatureService::ExecuteSqlQuery(MgResourceIdentifier* resour
     {
         // Failed operation
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Failure.c_str());
+        MG_DESKTOP_LOG_EXCEPTION();
     }
 
     // Add access log entry for operation
@@ -4882,6 +4913,7 @@ MgSqlDataReader* MgdFeatureService::ExecuteSqlQuery(MgResourceIdentifier* resour
     {
         // Failed operation
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Failure.c_str());
+        MG_DESKTOP_LOG_EXCEPTION();
     }
 
     // Add access log entry for operation
@@ -5044,6 +5076,7 @@ INT32 MgdFeatureService::ExecuteSqlNonQuery(MgResourceIdentifier* resource,
     {
         // Failed operation
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Failure.c_str());
+        MG_DESKTOP_LOG_EXCEPTION();
     }
 
     // Add access log entry for operation
@@ -5091,6 +5124,7 @@ INT32 MgdFeatureService::ExecuteSqlNonQuery(MgResourceIdentifier* resource,
     {
         // Failed operation
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Failure.c_str());
+        MG_DESKTOP_LOG_EXCEPTION();
     }
 
     // Add access log entry for operation
@@ -5187,6 +5221,7 @@ MgSpatialContextReader* MgdFeatureService::GetSpatialContexts(MgResourceIdentifi
     {
         // Failed operation
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Failure.c_str());
+        MG_DESKTOP_LOG_EXCEPTION();
     }
 
     // Add access log entry for operation
@@ -5440,6 +5475,7 @@ MgLongTransactionReader* MgdFeatureService::GetLongTransactions(MgResourceIdenti
     {
         // Failed operation
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Failure.c_str());
+        MG_DESKTOP_LOG_EXCEPTION();
     }
 
     // Add access log entry for operation
@@ -5484,6 +5520,7 @@ bool MgdFeatureService::SetLongTransaction(MgResourceIdentifier* resource, CREFS
     {
         // Failed operation
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Failure.c_str());
+        MG_DESKTOP_LOG_EXCEPTION();
     }
 
     // Add access log entry for operation
@@ -5567,6 +5604,7 @@ MgStringCollection* MgdFeatureService::GetSchemas(MgResourceIdentifier* resource
     {
         // Failed operation
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Failure.c_str());
+        MG_DESKTOP_LOG_EXCEPTION();
     }
 
     // Add access log entry for operation
@@ -5641,6 +5679,7 @@ MgStringCollection* MgdFeatureService::GetClasses(MgResourceIdentifier* resource
     {
         // Failed operation
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Failure.c_str());
+        MG_DESKTOP_LOG_EXCEPTION();
     }
 
     // Add access log entry for operation
@@ -5680,6 +5719,7 @@ MgClassDefinition* MgdFeatureService::GetClassDefinition(MgResourceIdentifier* r
     {
         // Failed operation
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Failure.c_str());
+        MG_DESKTOP_LOG_EXCEPTION();
     }
 
     // Add access log entry for operation
@@ -5839,6 +5879,7 @@ void MgdFeatureService::CreateFeatureSource(MgResourceIdentifier* resource, MgFe
     {
         // Failed operation
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Failure.c_str());
+        MG_DESKTOP_LOG_EXCEPTION();
     }
 
     // Add access log entry for operation
@@ -5946,6 +5987,7 @@ MgByteReader* MgdFeatureService::EnumerateDataStores(CREFSTRING providerName, CR
     {
         // Failed operation
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Failure.c_str());
+        MG_DESKTOP_LOG_EXCEPTION();
     }
 
     // Add access log entry for operation
@@ -6054,6 +6096,7 @@ MgByteReader* MgdFeatureService::GetSchemaMapping(CREFSTRING providerName, CREFS
     {
         // Failed operation
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Failure.c_str());
+        MG_DESKTOP_LOG_EXCEPTION();
     }
 
     // Add access log entry for operation
@@ -6100,6 +6143,7 @@ void MgdFeatureService::RegisterProvider(CREFSTRING providerLibraryPath)
     {
         // Failed operation
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Failure.c_str());
+        MG_DESKTOP_LOG_EXCEPTION();
     }
 
     // Add access log entry for operation
@@ -6131,6 +6175,7 @@ void MgdFeatureService::UnregisterProvider(CREFSTRING providerName)
     {
         // Failed operation
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Failure.c_str());
+        MG_DESKTOP_LOG_EXCEPTION();
     }
 
     // Add access log entry for operation
@@ -6198,6 +6243,7 @@ MgPropertyDefinitionCollection* MgdFeatureService::GetIdentityProperties(MgResou
     {
         // Failed operation
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Failure.c_str());
+        MG_DESKTOP_LOG_EXCEPTION();
     }
 
     // Add access log entry for operation
@@ -6305,6 +6351,7 @@ MgClassDefinitionCollection* MgdFeatureService::GetIdentityProperties(MgResource
     {
         // Failed operation
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Failure.c_str());
+        MG_DESKTOP_LOG_EXCEPTION();
     }
 
     // Add access log entry for operation
@@ -6382,6 +6429,7 @@ MgByteReader* MgdFeatureService::QueryCacheInfo()
     {
         // Failed operation
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Failure.c_str());
+        MG_DESKTOP_LOG_EXCEPTION();
     }
 
     // Add access log entry for operation

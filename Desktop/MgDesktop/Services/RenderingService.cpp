@@ -366,6 +366,7 @@ MgByteReader* MgRenderingService::GenerateLegendImage(MgResourceIdentifier* reso
     {
         // Failed operation
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Failure.c_str());
+        MG_DESKTOP_LOG_EXCEPTION();
     }
 
     // Add access log entry for operation
@@ -437,6 +438,7 @@ MgByteReader* MgRenderingService::GeneratePlot(MgdMap* map,
     {
         // Failed operation
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Failure.c_str());
+        MG_DESKTOP_LOG_EXCEPTION();
     }
 
     // Add access log entry for operation
@@ -508,6 +510,7 @@ MgByteReader* MgRenderingService::GeneratePlot(MgdMap* map,
     {
         // Failed operation
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Failure.c_str());
+        MG_DESKTOP_LOG_EXCEPTION();
     }
 
     // Add access log entry for operation
@@ -594,6 +597,7 @@ MgByteReader* MgRenderingService::GeneratePlot(MgdMap* map,
     {
         // Failed operation
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Failure.c_str());
+        MG_DESKTOP_LOG_EXCEPTION();
     }
 
     // Add access log entry for operation
@@ -631,6 +635,7 @@ MgByteReader* MgRenderingService::GenerateMultiPlot(MgMapPlotCollection* mapPlot
     {
         // Failed operation
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Failure.c_str());
+        MG_DESKTOP_LOG_EXCEPTION();
     }
 
     // Add access log entry for operation
@@ -1108,6 +1113,7 @@ MgByteReader* MgRenderingService::RenderTile(MgdMap* map, CREFSTRING baseMapLaye
     {
         // Failed operation
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Failure.c_str());
+        MG_DESKTOP_LOG_EXCEPTION();
     }
 
     // Add access log entry for operation
@@ -1227,6 +1233,7 @@ MgByteReader* MgRenderingService::RenderDynamicOverlay(MgdMap* map, MgdSelection
     {
         // Failed operation
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Failure.c_str());
+        MG_DESKTOP_LOG_EXCEPTION();
     }
 
     // Add access log entry for operation
@@ -1276,6 +1283,7 @@ MgByteReader* MgRenderingService::RenderDynamicOverlay(MgdMap* map, MgdSelection
     {
         // Failed operation
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Failure.c_str());
+        MG_DESKTOP_LOG_EXCEPTION();
     }
 
     // Add access log entry for operation
@@ -1322,6 +1330,7 @@ MgByteReader* MgRenderingService::RenderDynamicOverlay(MgdMap* map, MgdSelection
     {
         // Failed operation
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Failure.c_str());
+        MG_DESKTOP_LOG_EXCEPTION();
     }
 
     // Add access log entry for operation
@@ -1372,6 +1381,7 @@ MgByteReader* MgRenderingService::RenderDynamicOverlay(MgdMap* map,
     {
         // Failed operation
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Failure.c_str());
+        MG_DESKTOP_LOG_EXCEPTION();
     }
 
     // Add access log entry for operation
@@ -1519,6 +1529,7 @@ MgByteReader* MgRenderingService::RenderMap(MgdMap* map,
     {
         // Failed operation
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Failure.c_str());
+        MG_DESKTOP_LOG_EXCEPTION();
     }
 
     // Add access log entry for operation
@@ -1567,6 +1578,7 @@ MgByteReader* MgRenderingService::RenderMap(MgdMap* map,
     {
         // Failed operation
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Failure.c_str());
+        MG_DESKTOP_LOG_EXCEPTION();
     }
 
     // Add access log entry for operation
@@ -1620,6 +1632,7 @@ MgByteReader* MgRenderingService::RenderMap(MgdMap* map,
     {
         // Failed operation
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Failure.c_str());
+        MG_DESKTOP_LOG_EXCEPTION();
     }
 
     // Add access log entry for operation
@@ -2198,6 +2211,7 @@ MgByteReader* MgRenderingService::RenderMapLegend(MgdMap* map,
     {
         // Failed operation
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Failure.c_str());
+        MG_DESKTOP_LOG_EXCEPTION();
     }
 
     // Add access log entry for operation
