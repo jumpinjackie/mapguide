@@ -194,7 +194,14 @@ void MgdResourceService::ApplyResourcePackage(MgByteReader* packageStream)
 
     STRING packagePathname;
 
+    MG_LOG_OPERATION_MESSAGE(L"ApplyResourcePackage");
+
     MG_RESOURCE_SERVICE_TRY()
+
+    MG_LOG_OPERATION_MESSAGE_INIT(MG_API_VERSION(1,0,0),1);
+    MG_LOG_OPERATION_MESSAGE_PARAMETERS_START();
+    MG_LOG_OPERATION_MESSAGE_ADD_STRING(L"MgByteReader");
+    MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
 
     packagePathname = MgFileUtil::GenerateTempFileName();
     MgByteSink byteSink(packageStream);
@@ -202,7 +209,16 @@ void MgdResourceService::ApplyResourcePackage(MgByteReader* packageStream)
     byteSink.ToFile(packagePathname);
     LoadResourcePackage(packagePathname);
 
-    MG_RESOURCE_SERVICE_CATCH(L"MgLibraryRepositoryManager.ApplyResourcePackage")
+    // Successful operation
+    MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Success.c_str());
+
+    MG_RESOURCE_SERVICE_CATCH(L"MgdResourceService::ApplyResourcePackage")
+
+    if (mgException != NULL)
+    {
+        // Failed operation
+        MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Failure.c_str());
+    }
 
     if (!packagePathname.empty())
     {
@@ -218,6 +234,9 @@ void MgdResourceService::ApplyResourcePackage(MgByteReader* packageStream)
         {
         }
     }
+
+    // Add access log entry for operation
+    MG_LOG_OPERATION_MESSAGE_ACCESS_ENTRY();
 
     MG_RESOURCE_SERVICE_THROW()
 }
@@ -243,7 +262,20 @@ void MgdResourceService::LoadResourcePackage(CREFSTRING packagePathname)
 }
 
 void MgdResourceService::SetResource(MgResourceIdentifier* resource, MgByteReader* content, MgByteReader* header) 
-{ 
+{
+    MG_LOG_OPERATION_MESSAGE(L"SetResource");
+
+    MG_RESOURCE_SERVICE_TRY()
+
+    MG_LOG_OPERATION_MESSAGE_INIT(MG_API_VERSION(1,0,0),3);
+    MG_LOG_OPERATION_MESSAGE_PARAMETERS_START();
+    MG_LOG_OPERATION_MESSAGE_ADD_STRING((NULL == resource) ? L"MgResourceIdentifier" : resource->ToString().c_str());
+    MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
+    MG_LOG_OPERATION_MESSAGE_ADD_STRING(L"MgByteReader");
+    MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
+    MG_LOG_OPERATION_MESSAGE_ADD_STRING(L"MgByteReader");
+    MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
+
     CHECKARGUMENTNULL(resource, L"MgdResourceService::SetResource");
     //Only null check if not a folder, because otherwise this is a legit way of
     //creating a folder
@@ -272,57 +304,108 @@ void MgdResourceService::SetResource(MgResourceIdentifier* resource, MgByteReade
             MgFdoConnectionPool::PurgeCachedConnections(resource);
         }
     }
+
+    // Successful operation
+    MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Success.c_str());
+
+    MG_RESOURCE_SERVICE_CATCH(L"MgdResourceService::SetResource")
+
+    if (mgException != NULL)
+    {
+        // Failed operation
+        MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Failure.c_str());
+    }
+
+    // Add access log entry for operation
+    MG_LOG_OPERATION_MESSAGE_ACCESS_ENTRY();
+
+    MG_RESOURCE_SERVICE_THROW()
 }
 
 void MgdResourceService::DeleteResource(MgResourceIdentifier* resource) 
 { 
+    MG_LOG_OPERATION_MESSAGE(L"DeleteResource");
+
+    MG_RESOURCE_SERVICE_TRY()
+
+    MG_LOG_OPERATION_MESSAGE_INIT(MG_API_VERSION(1, 0, 0), 1);
+    MG_LOG_OPERATION_MESSAGE_PARAMETERS_START();
+    MG_LOG_OPERATION_MESSAGE_ADD_STRING((NULL == resource) ? L"MgResourceIdentifier" : resource->ToString().c_str());
+    MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
+
     CHECKARGUMENTNULL(resource, L"MgdResourceService::DeleteResource");
-
-    if (!ResourceExists(resource))
-        return;
-
-    if (resource->GetResourceType() == MgResourceType::FeatureSource)
+    if (ResourceExists(resource))
     {
-        //Invalidate any cached information
-        MgFeatureServiceCache* cache = MgFeatureServiceCache::GetInstance();
-        cache->RemoveEntry(resource);
-        //Boot pooled connections to ensure no locks are held (technically,
-        //the pooled connections are closed, but just to play safe)
-        MgFdoConnectionPool::PurgeCachedConnections(resource);
+        if (resource->GetResourceType() == MgResourceType::FeatureSource)
+        {
+            //Invalidate any cached information
+            MgFeatureServiceCache* cache = MgFeatureServiceCache::GetInstance();
+            cache->RemoveEntry(resource);
+            //Boot pooled connections to ensure no locks are held (technically,
+            //the pooled connections are closed, but just to play safe)
+            MgFdoConnectionPool::PurgeCachedConnections(resource);
+        }
+        else if (resource->GetResourceType() == MgResourceType::Folder)
+        {
+            //TODO: We obviously need a fine-grained version instead of going nuclear
+            MgFeatureServiceCache* cache = MgFeatureServiceCache::GetInstance();
+            cache->Clear();
+            //Boot pooled connections to ensure no locks are held (technically,
+            //the pooled connections are closed, but just to play safe)
+            MgFdoConnectionPool::PurgeCachedConnectionsUnderFolder(resource);
+        }
+
+	    STRING contentPath = ResolveContentPath(resource);
+	    STRING dataPath = ResolveDataPath(resource);
+	    if (MgFileUtil::IsFile(contentPath))
+	    {
+		    MgFileUtil::DeleteFile(contentPath);
+
+		    if (MgFileUtil::IsDirectory(dataPath))
+			    MgFileUtil::DeleteDirectory(dataPath);
+	    }
+        else if (MgFileUtil::IsDirectory(contentPath))
+        {
+            //For directory deletes, everything underneath
+            //is expendable too
+            MgFileUtil::DeleteDirectory(contentPath, true);
+
+            if (MgFileUtil::IsDirectory(dataPath))
+			    MgFileUtil::DeleteDirectory(dataPath, true);
+        }
     }
-    else if (resource->GetResourceType() == MgResourceType::Folder)
+    // Successful operation
+    MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Success.c_str());
+
+    MG_RESOURCE_SERVICE_CATCH(L"MgdResourceService::DeleteResource")
+
+    if (mgException != NULL)
     {
-        //TODO: We obviously need a fine-grained version instead of going nuclear
-        MgFeatureServiceCache* cache = MgFeatureServiceCache::GetInstance();
-        cache->Clear();
-        //Boot pooled connections to ensure no locks are held (technically,
-        //the pooled connections are closed, but just to play safe)
-        MgFdoConnectionPool::PurgeCachedConnectionsUnderFolder(resource);
+        // Failed operation
+        MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Failure.c_str());
     }
 
-	STRING contentPath = ResolveContentPath(resource);
-	STRING dataPath = ResolveDataPath(resource);
-	if (MgFileUtil::IsFile(contentPath))
-	{
-		MgFileUtil::DeleteFile(contentPath);
+    // Add access log entry for operation
+    MG_LOG_OPERATION_MESSAGE_ACCESS_ENTRY();
 
-		if (MgFileUtil::IsDirectory(dataPath))
-			MgFileUtil::DeleteDirectory(dataPath);
-	}
-    else if (MgFileUtil::IsDirectory(contentPath))
-    {
-        //For directory deletes, everything underneath
-        //is expendable too
-        MgFileUtil::DeleteDirectory(contentPath, true);
-
-        if (MgFileUtil::IsDirectory(dataPath))
-			MgFileUtil::DeleteDirectory(dataPath, true);
-    }
+    MG_RESOURCE_SERVICE_THROW()
 }
 
-void MgdResourceService::CopyResource(MgResourceIdentifier* sourceResource,
-    MgResourceIdentifier* destResource, bool overwrite) 
+void MgdResourceService::CopyResource(MgResourceIdentifier* sourceResource, MgResourceIdentifier* destResource, bool overwrite) 
 { 
+    MG_LOG_OPERATION_MESSAGE(L"CopyResource");
+
+    MG_RESOURCE_SERVICE_TRY()
+
+    MG_LOG_OPERATION_MESSAGE_INIT(MG_API_VERSION(1, 0, 0), 3);
+    MG_LOG_OPERATION_MESSAGE_PARAMETERS_START();
+    MG_LOG_OPERATION_MESSAGE_ADD_STRING((NULL == sourceResource) ? L"MgResourceIdentifier" : sourceResource->ToString().c_str());
+    MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
+    MG_LOG_OPERATION_MESSAGE_ADD_STRING((NULL == destResource) ? L"MgResourceIdentifier" : destResource->ToString().c_str());
+    MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
+    MG_LOG_OPERATION_MESSAGE_ADD_BOOL(overwrite);
+    MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
+
     CHECKARGUMENTNULL(sourceResource, L"MgdResourceService::CopyResource");
     CHECKARGUMENTNULL(destResource, L"MgdResourceService::CopyResource");
 
@@ -389,15 +472,75 @@ void MgdResourceService::CopyResource(MgResourceIdentifier* sourceResource,
 		    MgFileUtil::CopyFile(src, dst, overwrite);
 	    }
     }
+
+    // Successful operation
+    MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Success.c_str());
+
+    MG_RESOURCE_SERVICE_CATCH(L"MgdResourceService::CopyResource")
+
+    if (mgException != NULL)
+    {
+        // Failed operation
+        MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Failure.c_str());
+    }
+
+    // Add access log entry for operation
+    MG_LOG_OPERATION_MESSAGE_ACCESS_ENTRY();
+
+    MG_RESOURCE_SERVICE_THROW()
 }
 
 void MgdResourceService::MoveResource(MgResourceIdentifier* sourceResource, MgResourceIdentifier* destResource, bool overwrite)
 {
+    MG_LOG_OPERATION_MESSAGE(L"MoveResource");
+
+    MG_RESOURCE_SERVICE_TRY()
+
+    MG_LOG_OPERATION_MESSAGE_INIT(MG_API_VERSION(1, 0, 0), 3);
+    MG_LOG_OPERATION_MESSAGE_PARAMETERS_START();
+    MG_LOG_OPERATION_MESSAGE_ADD_STRING((NULL == sourceResource) ? L"MgResourceIdentifier" : sourceResource->ToString().c_str());
+    MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
+    MG_LOG_OPERATION_MESSAGE_ADD_STRING((NULL == destResource) ? L"MgResourceIdentifier" : destResource->ToString().c_str());
+    MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
+    MG_LOG_OPERATION_MESSAGE_ADD_BOOL(overwrite);
+    MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
+
     MoveResource(sourceResource, destResource, overwrite, false);
+
+    // Successful operation
+    MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Success.c_str());
+
+    MG_RESOURCE_SERVICE_CATCH(L"MgdResourceService::MoveResource")
+
+    if (mgException != NULL)
+    {
+        // Failed operation
+        MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Failure.c_str());
+    }
+
+    // Add access log entry for operation
+    MG_LOG_OPERATION_MESSAGE_ACCESS_ENTRY();
+
+    MG_RESOURCE_SERVICE_THROW()
 }
 
 void MgdResourceService::MoveResource(MgResourceIdentifier* sourceResource, MgResourceIdentifier* destResource, bool overwrite, bool cascade)
 {
+    MG_LOG_OPERATION_MESSAGE(L"MoveResource");
+
+    MG_RESOURCE_SERVICE_TRY()
+
+    MG_LOG_OPERATION_MESSAGE_INIT(MG_API_VERSION(1, 0, 0), 4);
+    MG_LOG_OPERATION_MESSAGE_PARAMETERS_START();
+    MG_LOG_OPERATION_MESSAGE_ADD_STRING((NULL == sourceResource) ? L"MgResourceIdentifier" : sourceResource->ToString().c_str());
+    MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
+    MG_LOG_OPERATION_MESSAGE_ADD_STRING((NULL == destResource) ? L"MgResourceIdentifier" : destResource->ToString().c_str());
+    MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
+    MG_LOG_OPERATION_MESSAGE_ADD_BOOL(overwrite);
+    MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
+    MG_LOG_OPERATION_MESSAGE_ADD_BOOL(cascade);
+    MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
+
     CHECKARGUMENTNULL(sourceResource, L"MgdResourceService::MoveResource");
     CHECKARGUMENTNULL(destResource, L"MgdResourceService::MoveResource");
 
@@ -461,6 +604,22 @@ void MgdResourceService::MoveResource(MgResourceIdentifier* sourceResource, MgRe
 	    }
     }
     DeleteResource(sourceResource);
+
+    // Successful operation
+    MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Success.c_str());
+
+    MG_RESOURCE_SERVICE_CATCH(L"MgdResourceService::MoveResource")
+
+    if (mgException != NULL)
+    {
+        // Failed operation
+        MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Failure.c_str());
+    }
+
+    // Add access log entry for operation
+    MG_LOG_OPERATION_MESSAGE_ACCESS_ENTRY();
+
+    MG_RESOURCE_SERVICE_THROW()
 }
 
 MgByteReader* MgdResourceService::GetResourceHeader(MgResourceIdentifier* resource) 
@@ -482,6 +641,20 @@ void MgdResourceService::InheritPermissionsFrom(MgResourceIdentifier* resource)
 void MgdResourceService::SetResourceData(MgResourceIdentifier* resource,
     CREFSTRING dataName, CREFSTRING dataType, MgByteReader* data) 
 { 
+    MG_LOG_OPERATION_MESSAGE(L"SetResourceData");
+
+    MG_RESOURCE_SERVICE_TRY()
+
+    MG_LOG_OPERATION_MESSAGE_INIT(MG_API_VERSION(1, 0, 0), 4);
+    MG_LOG_OPERATION_MESSAGE_ADD_STRING((NULL == resource) ? L"MgResourceIdentifier" : resource->ToString().c_str());
+    MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
+    MG_LOG_OPERATION_MESSAGE_ADD_STRING(dataName.c_str());
+    MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
+    MG_LOG_OPERATION_MESSAGE_ADD_STRING(dataType.c_str());
+    MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
+    MG_LOG_OPERATION_MESSAGE_ADD_STRING(L"MgByteReader");
+    MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
+
     CHECKARGUMENTNULL(resource, L"MgdResourceService::SetResourceData");
     CHECKARGUMENTNULL(data, L"MgdResourceService::SetResourceData");
 
@@ -496,10 +669,37 @@ void MgdResourceService::SetResourceData(MgResourceIdentifier* resource,
 
 	Ptr<MgByteSink> sink = new MgByteSink(data);
 	sink->ToFile(path);
+
+    // Successful operation
+    MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Success.c_str());
+
+    MG_RESOURCE_SERVICE_CATCH(L"MgdResourceService::SetResourceData")
+
+    if (mgException != NULL)
+    {
+        // Failed operation
+        MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Failure.c_str());
+    }
+
+    // Add access log entry for operation
+    MG_LOG_OPERATION_MESSAGE_ACCESS_ENTRY();
+
+    MG_RESOURCE_SERVICE_THROW()
 }
 
 void MgdResourceService::DeleteResourceData(MgResourceIdentifier* resource, CREFSTRING dataName) 
 { 
+    MG_LOG_OPERATION_MESSAGE(L"DeleteResourceData");
+
+    MG_RESOURCE_SERVICE_TRY()
+
+    MG_LOG_OPERATION_MESSAGE_INIT(MG_API_VERSION(1, 0, 0), 2);
+    MG_LOG_OPERATION_MESSAGE_PARAMETERS_START();
+    MG_LOG_OPERATION_MESSAGE_ADD_STRING((NULL == resource) ? L"MgResourceIdentifier" : resource->ToString().c_str());
+    MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
+    MG_LOG_OPERATION_MESSAGE_ADD_STRING(dataName.c_str());
+    MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
+
     CHECKARGUMENTNULL(resource, L"MgdResourceService::DeleteResourceData");
 
     if (dataName.empty())
@@ -512,11 +712,42 @@ void MgdResourceService::DeleteResourceData(MgResourceIdentifier* resource, CREF
         throw new MgResourceDataNotFoundException(L"MgdResourceService::DeleteResourceData", __LINE__, __WFILE__, NULL, L"", NULL);
 
     MgFileUtil::DeleteFile(path);
+
+    // Successful operation
+    MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Success.c_str());
+
+    MG_RESOURCE_SERVICE_CATCH(L"MgdResourceService::DeleteResourceData")
+
+    if (mgException != NULL)
+    {
+        // Failed operation
+        MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Failure.c_str());
+    }
+
+    // Add access log entry for operation
+    MG_LOG_OPERATION_MESSAGE_ACCESS_ENTRY();
+
+    MG_RESOURCE_SERVICE_THROW()
 }
 
 void MgdResourceService::RenameResourceData(MgResourceIdentifier* resource,
     CREFSTRING oldDataName, CREFSTRING newDataName, bool overwrite) 
 { 
+    MG_LOG_OPERATION_MESSAGE(L"RenameResourceData");
+
+    MG_RESOURCE_SERVICE_TRY()
+
+    MG_LOG_OPERATION_MESSAGE_INIT(MG_API_VERSION(1, 0, 0), 4);
+    MG_LOG_OPERATION_MESSAGE_PARAMETERS_START();
+    MG_LOG_OPERATION_MESSAGE_ADD_STRING((NULL == resource) ? L"MgResourceIdentifier" : resource->ToString().c_str());
+    MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
+    MG_LOG_OPERATION_MESSAGE_ADD_STRING(oldDataName.c_str());
+    MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
+    MG_LOG_OPERATION_MESSAGE_ADD_STRING(newDataName.c_str());
+    MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
+    MG_LOG_OPERATION_MESSAGE_ADD_BOOL(overwrite);
+    MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
+
     CHECKARGUMENTNULL(resource, L"MgdResourceService::RenameResourceData");
     if (!ResourceExists(resource))
     {
@@ -538,12 +769,58 @@ void MgdResourceService::RenameResourceData(MgResourceIdentifier* resource,
         throw new MgResourceDataNotFoundException(L"MgdResourceService::RenameResourceData", __LINE__, __WFILE__, NULL, L"", NULL);
 
 	MgFileUtil::RenameFile(path, oldDataName, newDataName, overwrite);
+
+    // Successful operation
+    MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Success.c_str());
+
+    MG_RESOURCE_SERVICE_CATCH(L"MgdResourceService::RenameResourceData")
+
+    if (mgException != NULL)
+    {
+        // Failed operation
+        MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Failure.c_str());
+    }
+
+    // Add access log entry for operation
+    MG_LOG_OPERATION_MESSAGE_ACCESS_ENTRY();
+
+    MG_RESOURCE_SERVICE_THROW()
 }
 
 MgByteReader* MgdResourceService::GetResourceData(MgResourceIdentifier* resource, CREFSTRING dataName) 
 { 
+    Ptr<MgByteReader> ret;
+    MG_LOG_OPERATION_MESSAGE(L"GetResourceData");
+
+    MG_RESOURCE_SERVICE_TRY()
+
+    MG_LOG_OPERATION_MESSAGE_INIT(MG_API_VERSION(1, 0, 0), 2);
+    MG_LOG_OPERATION_MESSAGE_PARAMETERS_START();
+    MG_LOG_OPERATION_MESSAGE_ADD_STRING((NULL == resource) ? L"MgResourceIdentifier" : resource->ToString().c_str());
+    MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
+    MG_LOG_OPERATION_MESSAGE_ADD_STRING(dataName.c_str());
+    MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
+
     STRING preProcessTags(L"");
-    return GetResourceData(resource, dataName, preProcessTags);
+    ret = GetResourceData(resource, dataName, preProcessTags);
+
+    // Successful operation
+    MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Success.c_str());
+
+    MG_RESOURCE_SERVICE_CATCH(L"MgdResourceService::GetResourceData")
+
+    if (mgException != NULL)
+    {
+        // Failed operation
+        MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Failure.c_str());
+    }
+
+    // Add access log entry for operation
+    MG_LOG_OPERATION_MESSAGE_ACCESS_ENTRY();
+
+    MG_RESOURCE_SERVICE_THROW()
+
+    return ret.Detach();
 }
 
 bool MgdResourceService::ListDirectories(MgStringCollection* directoryNames, CREFSTRING path)
@@ -705,13 +982,73 @@ MgByteReader* MgdResourceService::EnumerateResources(MgResourceIdentifier* resou
         INT32 depth, CREFSTRING type, INT32 properties,
         CREFSTRING fromDate, CREFSTRING toDate)
 {
-    return EnumerateResources(resource, depth, type, properties, fromDate, toDate, true);
+    Ptr<MgByteReader> ret;
+    MG_LOG_OPERATION_MESSAGE(L"EnumerateResources");
+
+    MG_RESOURCE_SERVICE_TRY()
+
+    MG_LOG_OPERATION_MESSAGE_INIT(MG_API_VERSION(1, 0, 0), 6);
+    MG_LOG_OPERATION_MESSAGE_PARAMETERS_START();
+    MG_LOG_OPERATION_MESSAGE_ADD_STRING((NULL == resource) ? L"MgResourceIdentifier" : resource->ToString().c_str());
+    MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
+    MG_LOG_OPERATION_MESSAGE_ADD_INT32(depth);
+    MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
+    MG_LOG_OPERATION_MESSAGE_ADD_STRING(type.c_str());
+    MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
+    MG_LOG_OPERATION_MESSAGE_ADD_INT32(properties);
+    MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
+    MG_LOG_OPERATION_MESSAGE_ADD_STRING(fromDate.c_str());
+    MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
+    MG_LOG_OPERATION_MESSAGE_ADD_STRING(toDate.c_str());
+    MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
+
+    ret = EnumerateResources(resource, depth, type, properties, fromDate, toDate, true);
+
+    // Successful operation
+    MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Success.c_str());
+
+    MG_RESOURCE_SERVICE_CATCH(L"MgdResourceService::EnumerateResources")
+
+    if (mgException != NULL)
+    {
+        // Failed operation
+        MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Failure.c_str());
+    }
+
+    // Add access log entry for operation
+    MG_LOG_OPERATION_MESSAGE_ACCESS_ENTRY();
+
+    MG_RESOURCE_SERVICE_THROW()
+
+    return ret.Detach();
 }
 
 MgByteReader* MgdResourceService::EnumerateResources(MgResourceIdentifier* resource,
         INT32 depth, CREFSTRING type, INT32 properties,
         CREFSTRING fromDate, CREFSTRING toDate, bool computeChildren)
 {
+    Ptr<MgByteReader> response;
+    MG_LOG_OPERATION_MESSAGE(L"EnumerateResources");
+
+    MG_RESOURCE_SERVICE_TRY()
+
+    MG_LOG_OPERATION_MESSAGE_INIT(MG_API_VERSION(1, 0, 0), 7);
+    MG_LOG_OPERATION_MESSAGE_PARAMETERS_START();
+    MG_LOG_OPERATION_MESSAGE_ADD_STRING((NULL == resource) ? L"MgResourceIdentifier" : resource->ToString().c_str());
+    MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
+    MG_LOG_OPERATION_MESSAGE_ADD_INT32(depth);
+    MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
+    MG_LOG_OPERATION_MESSAGE_ADD_STRING(type.c_str());
+    MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
+    MG_LOG_OPERATION_MESSAGE_ADD_INT32(properties);
+    MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
+    MG_LOG_OPERATION_MESSAGE_ADD_STRING(fromDate.c_str());
+    MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
+    MG_LOG_OPERATION_MESSAGE_ADD_STRING(toDate.c_str());
+    MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
+    MG_LOG_OPERATION_MESSAGE_ADD_BOOL(computeChildren);
+    MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
+
     CHECKARGUMENTNULL(resource, L"MgdResourceService::EnumerateResources");
 
     //Disregard: properties, fromDate, toDate. 
@@ -763,7 +1100,6 @@ MgByteReader* MgdResourceService::EnumerateResources(MgResourceIdentifier* resou
     STRING rtype = resource->GetResourceType();
     STRING path = ResolveContentPath(resource);
 
-    Ptr<MgByteReader> response;
     STRING xml = L"<ResourceList xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:noNamespaceSchemaLocation=\"ResourceList-1.0.0.xsd\">";
 
     if (MgResourceType::Folder == rtype)
@@ -810,11 +1146,37 @@ MgByteReader* MgdResourceService::EnumerateResources(MgResourceIdentifier* resou
     source->SetMimeType(MgMimeType::Xml);
     response = source->GetReader();
 
+    // Successful operation
+    MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Success.c_str());
+
+    MG_RESOURCE_SERVICE_CATCH(L"MgdResourceService::EnumerateResources")
+
+    if (mgException != NULL)
+    {
+        // Failed operation
+        MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Failure.c_str());
+    }
+
+    // Add access log entry for operation
+    MG_LOG_OPERATION_MESSAGE_ACCESS_ENTRY();
+
+    MG_RESOURCE_SERVICE_THROW()
+
     return response.Detach();
 }
 
 MgByteReader* MgdResourceService::EnumerateResourceData(MgResourceIdentifier* resource) 
 { 
+    Ptr<MgByteReader> reader;
+    MG_LOG_OPERATION_MESSAGE(L"EnumerateResourceData");
+
+    MG_RESOURCE_SERVICE_TRY()
+
+    MG_LOG_OPERATION_MESSAGE_INIT(MG_API_VERSION(1, 0, 0), 1);
+    MG_LOG_OPERATION_MESSAGE_PARAMETERS_START();
+    MG_LOG_OPERATION_MESSAGE_ADD_STRING((NULL == resource) ? L"MgResourceIdentifier" : resource->ToString().c_str());
+    MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
+
     CHECKARGUMENTNULL(resource, L"MgdResourceService::EnumerateResourceData");
 
     if (!ResourceExists(resource))
@@ -845,10 +1207,26 @@ MgByteReader* MgdResourceService::EnumerateResourceData(MgResourceIdentifier* re
 
     std::string ccontent = MgUtil::WideCharToMultiByte(content);
 
-	Ptr<MgByteReader> reader;
 	Ptr<MgByteSource> byteSource = new MgByteSource((unsigned char*)ccontent.c_str(), (INT32)ccontent.length());
     byteSource->SetMimeType(MgMimeType::Xml);
 	reader = byteSource->GetReader();
+
+    // Successful operation
+    MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Success.c_str());
+
+    MG_RESOURCE_SERVICE_CATCH(L"MgdResourceService::EnumerateResourceData")
+
+    if (mgException != NULL)
+    {
+        // Failed operation
+        MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Failure.c_str());
+    }
+
+    // Add access log entry for operation
+    MG_LOG_OPERATION_MESSAGE_ACCESS_ENTRY();
+
+    MG_RESOURCE_SERVICE_THROW()
+
 	return reader.Detach();
 }
 
@@ -869,22 +1247,62 @@ MgByteReader* MgdResourceService::EnumerateReferences(MgResourceIdentifier* reso
 
 bool MgdResourceService::ResourceExists(MgResourceIdentifier* resource) 
 { 
+    bool ret = false;
+    MG_LOG_OPERATION_MESSAGE(L"ResourceExists");
+
+    MG_RESOURCE_SERVICE_TRY()
+
+    MG_LOG_OPERATION_MESSAGE_INIT(MG_API_VERSION(1, 0, 0), 1);
+    MG_LOG_OPERATION_MESSAGE_PARAMETERS_START();
+    MG_LOG_OPERATION_MESSAGE_ADD_STRING((NULL == resource) ? L"MgResourceIdentifier" : resource->ToString().c_str());
+    MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
+
     CHECKARGUMENTNULL(resource, L"MgdResourceService::ResourceExists");
 
 	STRING path = ResolveContentPath(resource);
     STRING type = resource->GetResourceType();
 
     if (MgResourceType::Folder == type)
-        return MgFileUtil::IsDirectory(path);
+        ret = MgFileUtil::IsDirectory(path);
     else
-	    return MgFileUtil::IsFile(path);
+	    ret = MgFileUtil::IsFile(path);
+
+    // Successful operation
+    MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Success.c_str());
+
+    MG_RESOURCE_SERVICE_CATCH(L"MgdResourceService::ResourceExists")
+
+    if (mgException != NULL)
+    {
+        // Failed operation
+        MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Failure.c_str());
+    }
+
+    // Add access log entry for operation
+    MG_LOG_OPERATION_MESSAGE_ACCESS_ENTRY();
+
+    MG_RESOURCE_SERVICE_THROW()
+
+    return ret;
 }
 
 MgStringCollection* MgdResourceService::GetResourceContents(MgStringCollection* resources, MgStringCollection* preProcessTags)
 {
+    Ptr<MgStringCollection> contents;
+    MG_LOG_OPERATION_MESSAGE(L"GetResourceContents");
+
+    MG_RESOURCE_SERVICE_TRY()
+
+    MG_LOG_OPERATION_MESSAGE_INIT(MG_API_VERSION(1, 0, 0), 2);
+    MG_LOG_OPERATION_MESSAGE_PARAMETERS_START();
+    MG_LOG_OPERATION_MESSAGE_ADD_STRING(L"MgStringCollection");
+    MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
+    MG_LOG_OPERATION_MESSAGE_ADD_STRING(L"MgStringCollection");
+    MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
+
     CHECKARGUMENTNULL(resources, L"MgdResourceService::GetResourceContents");
 
-    Ptr<MgStringCollection> contents = new MgStringCollection();
+    contents = new MgStringCollection();
     for (INT32 i = 0; i < resources->GetCount(); i++)
     {
         Ptr<MgResourceIdentifier> resId = new MgResourceIdentifier(resources->GetItem(i));
@@ -893,6 +1311,23 @@ MgStringCollection* MgdResourceService::GetResourceContents(MgStringCollection* 
         STRING xml = content->ToString();
         contents->Add(xml);
     }
+
+    // Successful operation
+    MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Success.c_str());
+
+    MG_RESOURCE_SERVICE_CATCH(L"MgdResourceService::GetResourceContents")
+
+    if (mgException != NULL)
+    {
+        // Failed operation
+        MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Failure.c_str());
+    }
+
+    // Add access log entry for operation
+    MG_LOG_OPERATION_MESSAGE_ACCESS_ENTRY();
+
+    MG_RESOURCE_SERVICE_THROW()
+
     return contents.Detach();
 }
 
@@ -901,6 +1336,18 @@ MgStringCollection* MgdResourceService::GetResourceContents(MgStringCollection* 
 MgByteReader* MgdResourceService::GetResourceContent(MgResourceIdentifier* resource,
     CREFSTRING preProcessTags) 
 { 
+    Ptr<MgByteReader> content;
+    MG_LOG_OPERATION_MESSAGE(L"GetResourceContent");
+
+    MG_RESOURCE_SERVICE_TRY()
+
+    MG_LOG_OPERATION_MESSAGE_INIT(MG_API_VERSION(1, 0, 0), 2);
+    MG_LOG_OPERATION_MESSAGE_PARAMETERS_START();
+    MG_LOG_OPERATION_MESSAGE_ADD_STRING((NULL == resource) ? L"MgResourceIdentifier" : resource->ToString().c_str());
+    MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
+    MG_LOG_OPERATION_MESSAGE_ADD_STRING(preProcessTags);
+    MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
+
 	CHECKARGUMENTNULL(resource, L"MgdResourceService::GetResourceContent");
     
     STRING resType = resource->GetResourceType();
@@ -920,11 +1367,25 @@ MgByteReader* MgdResourceService::GetResourceContent(MgResourceIdentifier* resou
         throw new MgResourceNotFoundException(L"MgdResourceService::GetResourceContent", __LINE__, __WFILE__, &arguments, L"", NULL);
     }
 
-    Ptr<MgByteReader> content;
-
     Ptr<MgByteSource> source = new MgByteSource(path);
     source->SetMimeType(MgMimeType::Xml);
     content = source->GetReader();
+
+    // Successful operation
+    MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Success.c_str());
+
+    MG_RESOURCE_SERVICE_CATCH(L"MgdResourceService::GetResourceContent")
+
+    if (mgException != NULL)
+    {
+        // Failed operation
+        MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Failure.c_str());
+    }
+
+    // Add access log entry for operation
+    MG_LOG_OPERATION_MESSAGE_ACCESS_ENTRY();
+
+    MG_RESOURCE_SERVICE_THROW()
 
     return content.Detach();
 }
@@ -1003,13 +1464,40 @@ MgByteReader* MgdResourceService::EnumerateUnmanagedData(CREFSTRING path, bool r
 {
     Ptr<MgByteReader> byteReader;
 
+    MG_LOG_OPERATION_MESSAGE(L"EnumerateUnmanagedData");
+
     MG_RESOURCE_SERVICE_TRY()
+
+    MG_LOG_OPERATION_MESSAGE_INIT(MG_API_VERSION(1, 0, 0), 4);
+    MG_LOG_OPERATION_MESSAGE_PARAMETERS_START();
+    MG_LOG_OPERATION_MESSAGE_ADD_STRING(path.c_str());
+    MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
+    MG_LOG_OPERATION_MESSAGE_ADD_BOOL(recursive);
+    MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
+    MG_LOG_OPERATION_MESSAGE_ADD_STRING(type.c_str());
+    MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
+    MG_LOG_OPERATION_MESSAGE_ADD_STRING(filter.c_str());
+    MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
 
     MG_LOG_TRACE_ENTRY(L"MgdResourceService::EnumerateUnmanagedData()");
 
     byteReader = MgUnmanagedDataManager::GetInstance()->EnumerateUnmanagedData(path, recursive, type, filter);
 
-    MG_RESOURCE_SERVICE_CATCH_AND_THROW(L"MgdResourceService::EnumerateUnmanagedData")
+    // Successful operation
+    MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Success.c_str());
+
+    MG_RESOURCE_SERVICE_CATCH(L"MgdResourceService::EnumerateUnmanagedData")
+
+    if (mgException != NULL)
+    {
+        // Failed operation
+        MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Failure.c_str());
+    }
+
+    // Add access log entry for operation
+    MG_LOG_OPERATION_MESSAGE_ACCESS_ENTRY();
+
+    MG_RESOURCE_SERVICE_THROW()
 
     return byteReader.Detach();
 };
