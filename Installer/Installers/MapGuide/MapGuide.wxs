@@ -498,7 +498,7 @@
             <Publish Dialog="WebServerConfigDlgIIS" Control="Next" Event="Remove" Value="FdoArcSdeProviderFeature" Order="3">1</Publish>
             <Publish Dialog="WebServerConfigDlgIIS" Control="Next" Event="Remove" Value="FdoKingOracleProviderFeature" Order="4">1</Publish>
             <Publish Dialog="WebServerConfigDlgIIS" Control="Next" Event="Remove" Value="FdoMySqlProviderFeature" Order="5">1</Publish>
-            <Publish Dialog="WebServerConfigDlgIIS" Control="Next" Event="Remove" Value="FdoPostgreSqlProviderFeature" Order="7">1</Publish>
+            <Publish Dialog="WebServerConfigDlgIIS" Control="Next" Event="Remove" Value="FdoPostgreSqlProviderFeature" Order="6">1</Publish>
             <!-- If Apache, or IIS and the .Net Framework is not installed, set feature default for the ASPX viewer to not install -->
             <Publish Dialog="WebServerConfigDlgIIS" Control="Next" Event="Remove" Value="WebExtMapViewerASPXFeature" Order="7">(MGWEB_CONFIG=&quot;APACHE&quot;) OR (MGWEB_CONFIG=&quot;IIS&quot; AND NOT NETFRAMEWORK40FULL)</Publish>
             <Publish Dialog="WebServerConfigDlgIIS" Control="Next" Event="NewDialog" Value="ApacheConfigDlg" Order="8">MGWEB_CONFIG=&quot;APACHE&quot;</Publish>
@@ -511,14 +511,16 @@
                 - Java Viewer
                 - Java Viewer Sample
                 - Java DevGuide Sample
+                - PHP Viewer Sample
+                - PHP DevGuide Sample
             -->
             <Publish Dialog="WebServerConfigDlgIIS" Control="Next" Event="Remove" Value="WebExtApacheFeature" Order="10">MGWEB_CONFIG=&quot;IIS&quot;</Publish>
             <Publish Dialog="WebServerConfigDlgIIS" Control="Next" Event="Remove" Value="WebExtTomcatFeature" Order="11">MGWEB_CONFIG=&quot;IIS&quot;</Publish>
             <Publish Dialog="WebServerConfigDlgIIS" Control="Next" Event="Remove" Value="WebExtMapViewerJSPFeature" Order="12">MGWEB_CONFIG=&quot;IIS&quot;</Publish>
             <Publish Dialog="WebServerConfigDlgIIS" Control="Next" Event="Remove" Value="WebExtJavaDevGuideSamplesFeature" Order="13">MGWEB_CONFIG=&quot;IIS&quot;</Publish>
             <Publish Dialog="WebServerConfigDlgIIS" Control="Next" Event="Remove" Value="WebExtJavaViewerSampleFeature" Order="14">MGWEB_CONFIG=&quot;IIS&quot;</Publish>
-			<Publish Dialog="WebServerConfigDlgIIS" Control="Next" Event="Remove" Value="WebExtPhpDevGuideSamplesFeature">MGWEB_CONFIG=&quot;IIS&quot;</Publish>
-			<Publish Dialog="WebServerConfigDlgIIS" Control="Next" Event="Remove" Value="WebExtPhpViewerSampleFeature">MGWEB_CONFIG=&quot;IIS&quot;</Publish>
+			      <Publish Dialog="WebServerConfigDlgIIS" Control="Next" Event="Remove" Value="WebExtPhpDevGuideSamplesFeature">MGWEB_CONFIG=&quot;IIS&quot;</Publish>
+			      <Publish Dialog="WebServerConfigDlgIIS" Control="Next" Event="Remove" Value="WebExtPhpViewerSampleFeature">MGWEB_CONFIG=&quot;IIS&quot;</Publish>
             <Publish Dialog="WebServerConfigDlgIIS" Control="Next" Event="NewDialog" Value="IPConfigDlg" Order="13">MGWEB_CONFIG=&quot;MANUAL&quot;</Publish>
             <Publish Dialog="WebServerConfigDlgIIS" Control="Back" Event="NewDialog" Value="LicenseAgreementDlg">1</Publish>
             <Publish Dialog="WebServerConfigDlgIIS" Control="Cancel" Event="SpawnDialog" Value="CancelDlg">1</Publish>
@@ -604,9 +606,13 @@
             <Publish Dialog="IISLangConfigDlg" Control="Next" Event="NewDialog" Value="IIS7ConfigDlg" Order="4">IISVERSIONMAJOR=&quot;#7&quot;</Publish>
             <!-- Default feature settings for PHP API - AddLocal required in case user changes mind and comes back -->
             <Publish Dialog="IISLangConfigDlg" Control="Next" Event="Remove" Value="WebExtMapViewerASPXFeature">IIS_API_TYPE=&quot;PHP&quot;</Publish>
+            <Publish Dialog="IISLangConfigDlg" Control="Next" Event="Remove" Value="WebExtDotNetDevGuideSamplesFeature">IIS_API_TYPE=&quot;PHP&quot;</Publish>
+            <Publish Dialog="IISLangConfigDlg" Control="Next" Event="Remove" Value="WebExtDotNetViewerSampleFeature">IIS_API_TYPE=&quot;PHP&quot;</Publish>
             <Publish Dialog="IISLangConfigDlg" Control="Next" Event="AddLocal" Value="WebExtMapViewerPHPFeature">IIS_API_TYPE=&quot;PHP&quot;</Publish>
             <!-- Default feature settings for ASP.Net API - AddLocal required in case user changes mind and comes back -->
             <Publish Dialog="IISLangConfigDlg" Control="Next" Event="Remove" Value="WebExtMapViewerPHPFeature">IIS_API_TYPE=&quot;DOTNET&quot;</Publish>
+            <Publish Dialog="IISLangConfigDlg" Control="Next" Event="Remove" Value="WebExtPhpDevGuideSamplesFeature">IIS_API_TYPE=&quot;DOTNET&quot;</Publish>
+            <Publish Dialog="IISLangConfigDlg" Control="Next" Event="Remove" Value="WebExtPhpViewerSampleFeature">IIS_API_TYPE=&quot;DOTNET&quot;</Publish>
             <Publish Dialog="IISLangConfigDlg" Control="Next" Event="AddLocal" Value="WebExtMapViewerASPXFeature">IIS_API_TYPE=&quot;DOTNET&quot;</Publish>
             <!-- Handle special "Back" actions to set UI properties -->
             <Publish Dialog="IISLangConfigDlg" Control="Back" Event="DoAction" Value="MgWeb_Config_To_IIS_CA" Order="1">1</Publish> 

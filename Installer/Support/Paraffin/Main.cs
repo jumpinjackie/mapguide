@@ -130,7 +130,7 @@ namespace Wintellect.Paraffin
         internal static Int32 Main ( string [] args )
         {
             LoadProcessFeatureMap();
-
+            
             directoryNumber = 0;
             componentNumber = 0;
             errorMessage = String.Empty;
@@ -216,6 +216,8 @@ namespace Wintellect.Paraffin
 
             ProcessFeatureMap(doc, Path.GetFileNameWithoutExtension(argValues.FileName) );
 
+            GenerateCreateFolderElements(doc, ".svn", argValues.Win64);
+
             // We're done, save it!
             doc.Save ( argValues.FileName );
             return ( 0 );
@@ -236,6 +238,39 @@ namespace Wintellect.Paraffin
                                };
                 foreach (var m in mappings)
                     _featureMap[m.Name] = m.Suffix;
+            }
+        }
+
+        static int createEmptyFolderCounter = 1;
+
+        /// <summary>
+        /// Generates <CreateFolder/> elements for all empty directory elements under the specified name
+        /// </summary>
+        /// <param name="doc"></param>
+        /// <param name="rootDirName"></param>
+        private static void GenerateCreateFolderElements(XDocument doc, string rootDirName, bool win64)
+        {
+            var matches = doc.Descendants("{" + nsWiX3 + "}Directory").Where(x => x.Attribute("Name").Value == rootDirName);
+            foreach (var dir in matches)
+            {
+                int count = 0;
+                Console.WriteLine("\tChecking Directory (Id=" + dir.Attribute("Id") + ") for empty directories");
+                foreach (var emptyDir in dir.Descendants("{" + nsWiX3 + "}Directory").Where(x => !x.HasElements))
+                {
+                    //If you just so happen to have a component named CreateEmptyFolderComponent, well ... too bad :P
+                    var componentId = (emptyDir.Attribute("Id").Value + "CreateEmptyFolderComponent" + createEmptyFolderCounter).Replace(" ", string.Empty);
+                    var el = new XElement("{" + nsWiX3 + "}Component",
+                        new XAttribute("Id", componentId),
+                        new XAttribute("Win64", win64 ? "yes" : "no"),
+                        new XAttribute("Feature", "SvnMetadataFeature"),
+                        new XAttribute("Guid", Guid.NewGuid().ToString()),
+                        new XElement("{" + nsWiX3 + "}CreateFolder")
+                    );
+                    emptyDir.Add(el);
+                    createEmptyFolderCounter++;
+                    count++;
+                }
+                Console.WriteLine(count + " CreateFolder elements generated");
             }
         }
 
@@ -384,6 +419,8 @@ namespace Wintellect.Paraffin
                 AddCommandLineOptionsComment ( outputRoot );
 
                 ProcessFeatureMap(outputDoc, Path.GetFileNameWithoutExtension(outputFile));
+
+                GenerateCreateFolderElements(outputDoc, ".svn", argValues.Win64);
 
                 // All OK, Jumpmaster!
                 outputDoc.Save ( outputFile );
