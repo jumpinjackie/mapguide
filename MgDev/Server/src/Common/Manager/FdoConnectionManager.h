@@ -244,9 +244,9 @@ private:
     // Constructor
     MgFdoConnectionManager();
 
-    FdoIConnection* FindFdoConnection(MgResourceIdentifier* resourceIdentifier);
-    FdoIConnection* FindFdoConnection(CREFSTRING provider, CREFSTRING connectionString);
-    FdoIConnection* SearchFdoConnectionCache(CREFSTRING provider, CREFSTRING key, CREFSTRING ltName);
+    FdoIConnection* FindFdoConnection(MgResourceIdentifier* resourceIdentifier, bool reuseOnly = false);
+    FdoIConnection* FindFdoConnection(CREFSTRING provider, CREFSTRING connectionString, bool reuseOnly = false);
+    FdoIConnection* SearchFdoConnectionCache(CREFSTRING provider, CREFSTRING key, CREFSTRING ltName, bool reuseOnly = false);
     void CacheFdoConnection(FdoIConnection* pFdoConnection, CREFSTRING provider, CREFSTRING key, CREFSTRING ltName);
     bool UpdateFdoConnectionCache(CREFSTRING provider);
 
