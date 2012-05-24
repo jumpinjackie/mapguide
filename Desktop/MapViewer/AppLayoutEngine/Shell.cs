@@ -35,6 +35,8 @@ namespace OSGeo.MapGuide.Viewer.AppLayoutEngine
             if (_layout.InfoPane.IsVisible)
             {
                 SetLegendVisbility(_layout.InfoPane.Legend.Visible);
+                if (_layout.InfoPane.Legend.ThemeCompressionLimit.HasValue)
+                    legend.ThemeCompressionLimit = _layout.InfoPane.Legend.ThemeCompressionLimit.Value;
                 SetPropertyPaneVisbility(_layout.InfoPane.PropertyPane.Visible);
             }
             SetTaskPaneWidth(_layout.TaskPane.Width);

@@ -53,7 +53,8 @@ namespace OSGeo.MapGuide.Viewer.AppLayoutEngine
             {
                 Legend = new LegendSettings() 
                 {
-                    Visible = true
+                    Visible = true,
+                    ThemeCompressionLimit = 25
                 },
                 PropertyPane = new PropertyPaneSettings() 
                 {
@@ -287,6 +288,8 @@ namespace OSGeo.MapGuide.Viewer.AppLayoutEngine
     {
         [XmlElement]
         public bool Visible { get; set; }
+
+        public int? ThemeCompressionLimit { get; set; }
     }
 
     public class PropertyPaneSettings
