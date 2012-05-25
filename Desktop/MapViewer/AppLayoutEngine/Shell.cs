@@ -35,6 +35,7 @@ namespace OSGeo.MapGuide.Viewer.AppLayoutEngine
             if (_layout.InfoPane.IsVisible)
             {
                 SetLegendVisbility(_layout.InfoPane.Legend.Visible);
+                legend.ShowTooltips = _layout.InfoPane.Legend.ShowTooltips;
                 if (_layout.InfoPane.Legend.ThemeCompressionLimit.HasValue)
                     legend.ThemeCompressionLimit = _layout.InfoPane.Legend.ThemeCompressionLimit.Value;
                 SetPropertyPaneVisbility(_layout.InfoPane.PropertyPane.Visible);
