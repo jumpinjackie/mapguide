@@ -436,4 +436,13 @@
   <data name="TextExitApplication" xml:space="preserve">
     <value>Exit</value>
   </data>
+  <data name="DefaultLayerTooltip" xml:space="preserve">
+    <value>Name: {1}{0}Feature Source: {2}{0}Feature Class: {3}</value>
+  </data>
+  <data name="DrawingLayerTooltip" xml:space="preserve">
+    <value>Name: {1}{0}Feature Source: {2}</value>
+  </data>
+  <data name="ThemedLayerTooltip" xml:space="preserve">
+    <value>Name: {1}{0}Feature Source: {2}{0}Feature Class: {3}{0}Number of Rules: {4}</value>
+  </data>
 </root>

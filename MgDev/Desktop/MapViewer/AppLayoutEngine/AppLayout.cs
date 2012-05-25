@@ -289,7 +289,11 @@ namespace OSGeo.MapGuide.Viewer.AppLayoutEngine
         [XmlElement]
         public bool Visible { get; set; }
 
+        [XmlElement]
         public int? ThemeCompressionLimit { get; set; }
+
+        [XmlElement]
+        public bool ShowTooltips { get; set; }
     }
 
     public class PropertyPaneSettings

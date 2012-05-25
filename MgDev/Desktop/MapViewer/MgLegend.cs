@@ -39,6 +39,9 @@ namespace OSGeo.MapGuide.Viewer
         private MgMapViewerProvider _provider;
         private MgMapBase _map;
 
+        private Image _selectableIcon;
+        private Image _unselectableIcon;
+
         /// <summary>
         /// Initializes a new instance of the <see cref="MgLegend"/> class.
         /// </summary>
@@ -52,6 +55,8 @@ namespace OSGeo.MapGuide.Viewer
             _provider = provider;
             _map = _provider.GetMap();
             _resSvc = (MgResourceService)_provider.CreateService(MgServiceType.ResourceService);
+            _selectableIcon = Properties.Resources.lc_select;
+            _unselectableIcon = Properties.Resources.lc_unselect;
             RefreshLegend();
         }
 
@@ -235,9 +240,27 @@ namespace OSGeo.MapGuide.Viewer
             }
         }
 
+        private static void ClearNodes(TreeNodeCollection nodes)
+        {
+            foreach (TreeNode node in nodes)
+            {
+                if (node.Nodes.Count > 0)
+                    ClearNodes(node.Nodes);
+
+                var layerMeta = node.Tag as LayerNodeMetadata;
+                if (layerMeta != null && layerMeta.ThemeIcon != null)
+                {
+                    layerMeta.Layer = null;
+                    layerMeta.ThemeIcon.Dispose();
+                    layerMeta.ThemeIcon = null;
+                }
+            }
+            nodes.Clear();
+        }
+
         private void ResetTreeView()
         {
-            trvLegend.Nodes.Clear();
+            ClearNodes(trvLegend.Nodes);
             imgLegend.Images.Clear();
 
             imgLegend.Images.Add(IMG_BROKEN, Properties.Resources.lc_broken);
@@ -264,6 +287,7 @@ namespace OSGeo.MapGuide.Viewer
             {
                 node.SelectedImageKey = node.ImageKey = IMG_DWF;
                 node.Tag = new LayerNodeMetadata(layer);
+                node.ToolTipText = string.Format(Properties.Resources.DrawingLayerTooltip, Environment.NewLine, layer.Name, layer.FeatureSourceId);
             }
             else
             {
@@ -318,8 +342,12 @@ namespace OSGeo.MapGuide.Viewer
 
                                 imgLegend.Images.Add(id, img);
                                 node.SelectedImageKey = node.ImageKey = id;
+                                node.Tag = new LayerNodeMetadata(layer)
+                                {
+                                    ThemeIcon = img
+                                };
+                                node.ToolTipText = string.Format(Properties.Resources.DefaultLayerTooltip, Environment.NewLine, layer.Name, layer.FeatureSourceId, layer.FeatureClassName);
                             }
-                            node.Tag = new LayerNodeMetadata(layer);
                         }
                         finally
                         {
@@ -368,6 +396,12 @@ namespace OSGeo.MapGuide.Viewer
                             if (rules.Count > 1)
                             {
                                 node.SelectedImageKey = node.ImageKey = IMG_THEME;
+                                var layerMeta = node.Tag as LayerNodeMetadata;
+                                if (layerMeta != null)
+                                {
+                                    layerMeta.ThemeIcon = Properties.Resources.lc_theme;
+                                    node.ToolTipText = string.Format(Properties.Resources.ThemedLayerTooltip, Environment.NewLine, layer.Name, layer.FeatureSourceId, layer.FeatureClassName, rules.Count);
+                                }
                                 if (this.ThemeCompressionLimit > 0 && rules.Count > this.ThemeCompressionLimit)
                                 {
                                     AddThemeRuleNode(layer, node, geomType, 0, rules, 0);
@@ -502,9 +536,15 @@ namespace OSGeo.MapGuide.Viewer
             { 
                 base.IsGroup = false;
                 this.Layer = layer;
+                this.IsSelectable = (layer != null) ? layer.Selectable : false;
+                this.DrawSelectabilityIcon = (layer != null);
             }
 
             internal MgLayerBase Layer { get; set; }
+
+            public bool DrawSelectabilityIcon { get; set; }
+
+            public bool IsSelectable { get; set; }
 
             public bool IsBaseLayer { get; set; }
 
@@ -629,9 +669,15 @@ namespace OSGeo.MapGuide.Viewer
             return false;
         }
 
+        private static bool IsLayerNode(TreeNode node)
+        {
+            var meta = node.Tag as LayerNodeMetadata;
+            return meta != null;
+        }
+
         private void trvLegend_DrawNode(object sender, DrawTreeNodeEventArgs e)
         {
-            if (IsThemeLayerNode(e.Node) && !e.Bounds.IsEmpty)
+            if (IsLayerNode(e.Node) && !e.Bounds.IsEmpty)
             {
                 Color backColor, foreColor;
 
@@ -655,29 +701,46 @@ namespace OSGeo.MapGuide.Viewer
                     foreColor = e.Node.ForeColor;
                 }
 
-                /*
-                using (SolidBrush brush = new SolidBrush(backColor))
-                {
-                    e.Graphics.FillRectangle(brush, e.Node.Bounds);
-                }*/
-
-                //TextRenderer.DrawText(e.Graphics, e.Node.Text, trvLegend.Font, e.Node.Bounds, foreColor, backColor);
-                using (SolidBrush brush = new SolidBrush(Color.Black))
-                {
-                    e.Graphics.DrawString(e.Node.Text, trvLegend.Font, brush, e.Node.Bounds.X + 17.0f + xoffset, e.Node.Bounds.Y);
-                }
-
-                /*
-                if ((e.State & TreeNodeStates.Focused) == TreeNodeStates.Focused)
-                {
-                    ControlPaint.DrawFocusRectangle(e.Graphics, e.Node.Bounds, foreColor, backColor);
-                }*/
+                var selectabilityOffset = xoffset;
+                var iconOffsetNoSelect = xoffset;
+                var iconOffset = selectabilityOffset + 20;
+                var textOffset = iconOffset + 20;
+                var textOffsetNoSelect = iconOffsetNoSelect + 20;
 
                 var tag = e.Node.Tag as LayerNodeMetadata;
-                if (tag != null && tag.ThemeIcon != null)
+                if (tag != null)
                 {
-                    e.Graphics.DrawImage(tag.ThemeIcon, e.Node.Bounds.X + xoffset, e.Node.Bounds.Y);
-                    Trace.TraceInformation("Painted icon at ({0},{1})", e.Node.Bounds.X, e.Node.Bounds.Y);
+                    if (tag.DrawSelectabilityIcon)
+                    {
+                        var icon = tag.IsSelectable ? _selectableIcon : _unselectableIcon;
+                        e.Graphics.DrawImage(icon, e.Node.Bounds.X + selectabilityOffset, e.Node.Bounds.Y);
+                        Trace.TraceInformation("Painted icon at ({0},{1})", e.Node.Bounds.X, e.Node.Bounds.Y);
+                    }
+                    if (tag.ThemeIcon != null)
+                    {
+                        if (tag.DrawSelectabilityIcon)
+                        {
+                            e.Graphics.DrawImage(tag.ThemeIcon, e.Node.Bounds.X + iconOffset, e.Node.Bounds.Y);
+                            Trace.TraceInformation("Painted icon at ({0},{1})", e.Node.Bounds.X, e.Node.Bounds.Y);
+                        }
+                        else
+                        {
+                            e.Graphics.DrawImage(tag.ThemeIcon, e.Node.Bounds.X + iconOffsetNoSelect, e.Node.Bounds.Y);
+                            Trace.TraceInformation("Painted icon at ({0},{1})", e.Node.Bounds.X, e.Node.Bounds.Y);
+                        }
+                    }
+
+                    using (SolidBrush brush = new SolidBrush(Color.Black))
+                    {
+                        e.Graphics.DrawString(e.Node.Text, trvLegend.Font, brush, e.Node.Bounds.X + (tag.DrawSelectabilityIcon ? textOffset : textOffsetNoSelect), e.Node.Bounds.Y);
+                    }
+                }
+                else
+                {
+                    using (SolidBrush brush = new SolidBrush(Color.Black))
+                    {
+                        e.Graphics.DrawString(e.Node.Text, trvLegend.Font, brush, e.Node.Bounds.X + 17.0f + xoffset, e.Node.Bounds.Y);
+                    }
                 }
 
                 e.DrawDefault = false;
@@ -804,6 +867,12 @@ namespace OSGeo.MapGuide.Viewer
                 return grp.Group;
 
             return null;
+        }
+
+        public bool ShowTooltips
+        {
+            get { return trvLegend.ShowNodeToolTips; }
+            set { trvLegend.ShowNodeToolTips = value; }
         }
     }
 }

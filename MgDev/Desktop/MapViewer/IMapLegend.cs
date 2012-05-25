@@ -43,6 +43,11 @@ namespace OSGeo.MapGuide.Viewer
         int ThemeCompressionLimit { get; set; }
 
         /// <summary>
+        /// Gets whether to show tooltips over nodes in the legend control
+        /// </summary>
+        bool ShowTooltips { get; set; }
+
+        /// <summary>
         /// Gets the selected layer
         /// </summary>
         /// <returns></returns>
