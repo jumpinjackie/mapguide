@@ -95,7 +95,13 @@ typedef wchar_t* STRINGPARAM;
     <Header path="../../MgDesktop/Exception/DwfSectionResourceNotFoundException.h" />
     <Header path="../../MgDesktop/Exception/InvalidDwfPackageException.h" />
     <Header path="../../MgDesktop/Exception/InvalidDwfSectionException.h" />
+    <Header path="../../MgDesktop/Exception/InvalidFeatureSourceException.h" />
+    <Header path="../../MgDesktop/Exception/InvalidLogEntryException.h" />
+    <Header path="../../MgDesktop/Exception/InvalidPrintLayoutFontSizeUnitsException.h" />
+    <Header path="../../MgDesktop/Exception/InvalidPrintLayoutPositionUnitsException.h" />
+    <Header path="../../MgDesktop/Exception/InvalidPrintLayoutSizeUnitsException.h" />
     <Header path="../../MgDesktop/Exception/ParameterNotFoundException.h" />
+    <Header path="../../MgDesktop/Exception/StylizeLayerFailedException.h" />
 
     <Header path="../../MgDesktop/Services/DataReader.h" />
     <Header path="../../MgDesktop/Services/DrawingService.h" />
