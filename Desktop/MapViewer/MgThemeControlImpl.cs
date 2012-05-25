@@ -244,9 +244,11 @@ namespace OSGeo.MapGuide.Viewer
             queryOptions.AddFeatureProperty(prop.Name);
 
             MgFeatureReader featureReader = featureService.SelectFeatures(resId, layer.GetFeatureClassName(), queryOptions);
+            Dictionary<string, string> bucket = new Dictionary<string, string>();
             while (featureReader.ReadNext())
             {
                 String value = Util.GetFeaturePropertyValue(featureReader, prop.Name);
+                bucket[value] = value;
                 int propertyType = featureReader.GetPropertyType(prop.Name);
                 if (count == 0)
                 {
@@ -302,6 +304,8 @@ namespace OSGeo.MapGuide.Viewer
 
             txtMin.Text = minValue;
             txtMax.Text = maxValue;
+            if (THEME_INDIVIDUAL == cmbDistribution.SelectedValue.ToString())
+                count = bucket.Count;
             numRules.Value = featureCount = count;
         }
 
