@@ -9,6 +9,7 @@ using OSGeo.MapGuide;
 using System.IO;
 using System.Xml;
 using System.Diagnostics;
+using System.Windows.Forms.VisualStyles;
 
 namespace OSGeo.MapGuide.Viewer
 {
@@ -448,7 +449,8 @@ namespace OSGeo.MapGuide.Viewer
             node.ImageKey = node.SelectedImageKey = IMG_OTHER;
             node.Tag = new LayerNodeMetadata(null) {
                 IsBaseLayer = false,
-                ThemeIcon = Properties.Resources.icon_etc
+                ThemeIcon = Properties.Resources.icon_etc,
+                IsThemeRule = true
             };
             return node;
         }
@@ -473,7 +475,8 @@ namespace OSGeo.MapGuide.Viewer
                     icon.Read(b, b.Length);
                     var tag = new LayerNodeMetadata(null)
                     {
-                        IsBaseLayer = false
+                        IsBaseLayer = false,
+                        IsThemeRule = true
                     };
                     using (var ms = new MemoryStream(b))
                     {
@@ -538,6 +541,7 @@ namespace OSGeo.MapGuide.Viewer
                 this.Layer = layer;
                 this.IsSelectable = (layer != null) ? layer.Selectable : false;
                 this.DrawSelectabilityIcon = (layer != null);
+                this.IsThemeRule = false;
             }
 
             internal MgLayerBase Layer { get; set; }
@@ -545,6 +549,8 @@ namespace OSGeo.MapGuide.Viewer
             public bool DrawSelectabilityIcon { get; set; }
 
             public bool IsSelectable { get; set; }
+
+            public bool IsThemeRule { get; set; }
 
             public bool IsBaseLayer { get; set; }
 
@@ -701,13 +707,29 @@ namespace OSGeo.MapGuide.Viewer
                     foreColor = e.Node.ForeColor;
                 }
 
-                var selectabilityOffset = xoffset;
-                var iconOffsetNoSelect = xoffset;
+                var tag = e.Node.Tag as LayerNodeMetadata;
+                var checkBoxOffset = xoffset;
+                var selectabilityOffset = xoffset + 16;
+                var iconOffsetNoSelect = xoffset + 16;
+                if (tag != null && tag.IsThemeRule) //No checkbox for theme rule nodes
+                {
+                    selectabilityOffset = xoffset;
+                    iconOffsetNoSelect = xoffset;
+                }
                 var iconOffset = selectabilityOffset + 20;
                 var textOffset = iconOffset + 20;
                 var textOffsetNoSelect = iconOffsetNoSelect + 20;
 
-                var tag = e.Node.Tag as LayerNodeMetadata;
+                //Uncomment if you need to "see" the bounds of the node
+                //e.Graphics.DrawRectangle(Pens.Black, e.Node.Bounds);
+
+                if (tag != null && !tag.IsThemeRule) //No checkbox for theme rule nodes
+                {
+                    CheckBoxRenderer.DrawCheckBox(
+                        e.Graphics,
+                        new Point(e.Node.Bounds.X + checkBoxOffset, e.Node.Bounds.Y),
+                        e.Node.Checked ? CheckBoxState.CheckedNormal : CheckBoxState.UncheckedNormal);
+                }
                 if (tag != null)
                 {
                     if (tag.DrawSelectabilityIcon)
@@ -828,6 +850,23 @@ namespace OSGeo.MapGuide.Viewer
             if (e.Button == MouseButtons.Right)
             {
                 trvLegend.SelectedNode = e.Node;
+            }
+            var meta = e.Node.Tag as LayerNodeMetadata;
+            if (meta != null && meta.DrawSelectabilityIcon)
+            {
+                //Toggle layer's selectability if it's within the bounds of the selectability icon
+                var box = new Rectangle(
+                    new Point((e.Node.Bounds.Location.X - 36) + 16, e.Node.Bounds.Location.Y), 
+                    new Size(16, e.Node.Bounds.Height));
+                if (box.Contains(e.X, e.Y))
+                {
+                    var layer = meta.Layer;
+                    layer.Selectable = !layer.Selectable;
+                    meta.IsSelectable = layer.Selectable;
+
+                    //TODO: This bounds is a guess. We should calculate the bounds as part of node rendering, so we know the exact bounds by which to invalidate
+                    trvLegend.Invalidate(new Rectangle(e.Node.Bounds.Location.X - 36, e.Node.Bounds.Location.Y, e.Node.Bounds.Width + 36, e.Node.Bounds.Height));
+                }
             }
         }
 

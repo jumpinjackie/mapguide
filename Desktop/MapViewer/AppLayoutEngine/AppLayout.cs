@@ -47,7 +47,8 @@ namespace OSGeo.MapGuide.Viewer.AppLayoutEngine
                 SelectionColor = Util.ToHtmlColorWithAlpha(System.Drawing.Color.Blue),
                 ShowVertexCoordinatesWhenDigitizing = false,
                 ZoomInFactor = 0.5,
-                ZoomOutFactor = 2.0
+                ZoomOutFactor = 2.0,
+                PointPixelBuffer = 3
             };
             layout.InfoPane = new InfoPaneSettings()
             {
@@ -267,6 +268,9 @@ namespace OSGeo.MapGuide.Viewer.AppLayoutEngine
 
         [XmlElement]
         public double ZoomOutFactor { get; set; }
+
+        [XmlElement]
+        public int PointPixelBuffer { get; set; }
     }
 
     public class InfoPaneSettings

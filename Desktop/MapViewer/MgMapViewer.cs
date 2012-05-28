@@ -166,6 +166,7 @@ namespace OSGeo.MapGuide.Viewer
             this.ZoomInFactor = 0.5;
             this.ZoomOutFactor = 2.0;
             this.SelectionColor = Color.Blue;
+            this.PointPixelBuffer = 2;
 
             this.DigitizingFillTransparency = 100;
             this.DigitizingOutline = Brushes.Red;
@@ -529,6 +530,10 @@ namespace OSGeo.MapGuide.Viewer
                 }
             }
         }
+
+        [Category("MapGuide Viewer")]
+        [Description("The amount of pixels to buffer out by when doing point-based selections with the Select tool")]
+        public int PointPixelBuffer { get; set; }
 
         private Color _digitizingFillColor;
 
@@ -1258,6 +1263,8 @@ namespace OSGeo.MapGuide.Viewer
             public MgViewerRenderingOptions MapRenderingOptions { get; set; }
 
             public bool RaiseEvents { get; set; }
+
+            public bool InvalidateRegardless { get; set; }
         }
 
         class RenderResult
@@ -1267,6 +1274,8 @@ namespace OSGeo.MapGuide.Viewer
             public Image SelectionImage { get; set; }
 
             public bool RaiseEvents { get; set; }
+
+            public bool InvalidateRegardless { get; set; }
         }
 
         /// <summary>
@@ -1304,6 +1313,11 @@ namespace OSGeo.MapGuide.Viewer
 
         internal void RenderSelection()
         {
+            RenderSelection(false);
+        }
+
+        internal void RenderSelection(bool invalidateRegardless)
+        {
             //This is our refresh action
             RefreshAction action = new RefreshAction(() => 
             {
@@ -1315,7 +1329,13 @@ namespace OSGeo.MapGuide.Viewer
                     {
                         SelectionRenderingOptions = _selectionRenderOpts,
                         RaiseEvents = false,
+                        InvalidateRegardless = invalidateRegardless
                     });
+                }
+                else
+                {
+                    if (invalidateRegardless)
+                        this.Invalidate();
                 }
             });
 
@@ -1567,7 +1587,7 @@ namespace OSGeo.MapGuide.Viewer
         private void renderWorker_DoWork(object sender, DoWorkEventArgs e)
         {
             var args = (RenderWorkArgs)e.Argument;
-            var res = new RenderResult() { RaiseEvents = args.RaiseEvents };
+            var res = new RenderResult() { RaiseEvents = args.RaiseEvents, InvalidateRegardless = args.InvalidateRegardless };
             if (args.MapRenderingOptions != null)
             {
                 var br = _provider.RenderDynamicOverlay(null, args.MapRenderingOptions);
@@ -1639,7 +1659,7 @@ namespace OSGeo.MapGuide.Viewer
                 }
                 else 
                 {
-                    if (bInvalidate)
+                    if (bInvalidate || res.InvalidateRegardless)
                         Invalidate(true);
 
                     /*
@@ -2052,7 +2072,7 @@ namespace OSGeo.MapGuide.Viewer
             Trace.TraceInformation("Selection processing completed in {0}ms", sw.ElapsedMilliseconds);
 #endif
 
-            RenderSelection(); //This is either async or queued up. Either way do this before firing off selection changed
+            RenderSelection(true); //This is either async or queued up. Either way do this before firing off selection changed
             var handler = this.SelectionChanged;
             if (handler != null)
                 handler(this, EventArgs.Empty);
@@ -2194,8 +2214,8 @@ namespace OSGeo.MapGuide.Viewer
             {
                 if (this.ActiveTool == MapActiveTool.Select)
                 {
-                    var mapPt1 = ScreenToMapUnits(e.X - 2, e.Y - 2);
-                    var mapPt2 = ScreenToMapUnits(e.X + 2, e.Y + 2);
+                    var mapPt1 = ScreenToMapUnits(e.X - this.PointPixelBuffer, e.Y - this.PointPixelBuffer);
+                    var mapPt2 = ScreenToMapUnits(e.X + this.PointPixelBuffer, e.Y + this.PointPixelBuffer);
 
                     var coord1 = _geomFact.CreateCoordinateXY(mapPt1.X, mapPt1.Y);
                     var coord2 = _geomFact.CreateCoordinateXY(mapPt2.X, mapPt2.Y);

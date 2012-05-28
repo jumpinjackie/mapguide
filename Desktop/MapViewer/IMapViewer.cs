@@ -289,6 +289,11 @@ namespace OSGeo.MapGuide.Viewer
         /// Gets whether this viewer has a map loaded into it
         /// </summary>
         bool HasLoadedMap { get; }
+
+        /// <summary>
+        /// Gets or sets the amount of pixels to buffer out by when doing point-based selections with the Select tool
+        /// </summary>
+        int PointPixelBuffer { get; set; }
     }
 
     /// <summary>
