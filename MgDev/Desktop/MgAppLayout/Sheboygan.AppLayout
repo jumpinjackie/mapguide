@@ -9,6 +9,7 @@
     <ShowVertexCoordinatesWhenDigitizing>false</ShowVertexCoordinatesWhenDigitizing>
     <ZoomInFactor>0.5</ZoomInFactor>
     <ZoomOutFactor>2</ZoomOutFactor>
+    <PointPixelBuffer>3</PointPixelBuffer>
   </Settings>
   <InfoPane>
     <Width>200</Width>
