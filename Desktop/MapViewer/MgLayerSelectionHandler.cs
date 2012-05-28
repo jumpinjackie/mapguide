@@ -5,7 +5,7 @@ using System.ComponentModel;
 
 namespace OSGeo.MapGuide.Viewer
 {
-    public delegate void MgLayerSelectionEventHandler(string layerName, MgFeatureReader selectedFeatures);
+    public delegate void MgLayerSelectionEventHandler(MgSelectionSet selectedFeatures);
 
     [DefaultEvent("SelectionMade")]
     [ToolboxItem(true)]
@@ -54,8 +54,8 @@ namespace OSGeo.MapGuide.Viewer
                         var h = this.SelectionMade;
                         if (h != null)
                         {
-                            var reader = sel.GetSelectedFeatures(layers[layerName], layers[layerName].FeatureClassName, false);
-                            h(layerName, reader);
+                            var selectionSet = new MgSelectionSet(sel, _viewer.GetProvider().AllPropertyMappings);
+                            h(selectionSet);
                         }
                     }
                 }

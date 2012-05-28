@@ -104,15 +104,13 @@ namespace MapViewerTest
             }
         }
 
-        private void mgLayerSelectionHandler1_SelectionMade(string layerName, MgFeatureReader selectedFeatures)
+        private void mgLayerSelectionHandler1_SelectionMade(MgSelectionSet selectedFeatures)
         {
-            int count = 0;
-            while (selectedFeatures.ReadNext())
+            if (Array.IndexOf(selectedFeatures.LayerNames, "Parcels") >= 0)
             {
-                count++;
+                MgFeature[] features = selectedFeatures.GetFeaturesForLayer("Parcels");
+                MessageBox.Show(features.Length + " parcels selected");
             }
-            selectedFeatures.Close();
-            MessageBox.Show(count + " parcels selected");
         }
 
         private void loadCompactViewerComponent_Invoked(object sender, EventArgs e)
