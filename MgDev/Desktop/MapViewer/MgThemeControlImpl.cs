@@ -47,9 +47,21 @@ namespace OSGeo.MapGuide.Viewer
 
             var map = viewer.GetMap();
             var layers = map.GetLayers();
+            //TODO: Obviously support point and line layers
             for (var i = 0; i < layers.GetCount(); i++)
             {
-                _layers.Add(layers.GetItem(i));
+                var layer = layers.GetItem(i);
+                var cls = layer.GetClassDefinition();
+                var geom = layer.GetFeatureGeometryName();
+                if (string.IsNullOrEmpty(geom))
+                    continue;
+
+                var clsProps = cls.GetProperties();
+                var geomProp = clsProps.GetItem(geom) as MgGeometricPropertyDefinition;
+                if ((geomProp.GeometryTypes & MgFeatureGeometricType.Surface) == MgFeatureGeometricType.Surface)
+                {
+                    _layers.Add(layer);
+                }
             }
             cmbLayer.SelectedIndex = 0;
             cmbLayer_SelectedIndexChanged(this, EventArgs.Empty);
