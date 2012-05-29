@@ -64,7 +64,7 @@
         <Property Id="MG_SITE_PORT" Secure="yes" Value="2812" />
         <!-- Used by FdoRegUtil.exe -->
         <Property Id="FDO_VERSION_SMALL" Secure="yes" Value="3.7" />
-        <Property Id="FDO_VERSION" Secure="yes" Value="[FDO_VERSION_SMALL].0.0" />
+        <Property Id="FDO_VERSION" Secure="yes" Value="3.7.0.0" />
         <!-- IIS vars -->
         <Property Id="ASPNETVERSION" Value="v4.0" />
         <Property Id="PHP_FCGI_HANDLER_NAME" Value="MapGuide_[MG_VERSION_MAJOR_MINOR]_PHP_via_FastCGI" />
