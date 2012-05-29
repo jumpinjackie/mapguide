@@ -382,13 +382,14 @@ namespace OSGeo.MapGuide.Viewer
 
             if (THEME_INDIVIDUAL == themeParams.distro)
             {
-                aggregateOptions.AddFeatureProperty(themeParams.property.Name);
-                aggregateOptions.SelectDistinct(true);
+                //aggregateOptions.AddFeatureProperty(themeParams.property.Name);
+                //aggregateOptions.SelectDistinct(true);
+                aggregateOptions.AddComputedProperty("THEME_VALUE", "UNIQUE(\"" + themeParams.property.Name + "\")");
 
                 MgDataReader dataReader = featureService.SelectAggregate(resId, themeParams.layer.GetFeatureClassName(), aggregateOptions);
                 while (dataReader.ReadNext())
                 {
-                    value = Util.GetFeaturePropertyValue(dataReader, themeParams.property.Name);
+                    value = Util.GetFeaturePropertyValue(dataReader, "THEME_VALUE"); // themeParams.property.Name);
 
                     filterText = "&quot;" + themeParams.property.Name + "&quot; = ";
                     if (themeParams.property.DataType == MgPropertyType.String)
@@ -464,7 +465,8 @@ namespace OSGeo.MapGuide.Viewer
             newLayer.SetDisplayInLegend(themeParams.layer.GetDisplayInLegend());
             newLayer.SetVisible(true);
             newLayer.SetSelectable(themeParams.layer.GetSelectable());
-
+            //HACK: This has to be true otherwise owner-drawn nodes will not display its children (the theme rules)
+            provider.SetLayerExpandInLegend(newLayer, true);
             layers.Insert(layers.IndexOf(themeParams.layer), newLayer);
 
             //map.Save(resourceService);

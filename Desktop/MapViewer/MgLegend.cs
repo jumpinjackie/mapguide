@@ -685,6 +685,7 @@ namespace OSGeo.MapGuide.Viewer
         {
             if (IsLayerNode(e.Node) && !e.Bounds.IsEmpty)
             {
+                //TODO: Render +/- for nodes with children (ie. Themed layers)
                 Color backColor, foreColor;
 
                 //For some reason, the default bounds are way off from what you would
