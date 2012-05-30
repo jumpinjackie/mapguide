@@ -1603,7 +1603,7 @@ namespace OSGeo.MapGuide.Viewer
         }
 
         /// <summary>
-        /// Gets whether the index in the view history stack
+        /// Gets the current index in the view history stack
         /// </summary>
         public int ViewHistoryIndex
         {
