@@ -445,4 +445,10 @@
   <data name="ThemedLayerTooltip" xml:space="preserve">
     <value>Name: {1}{0}Feature Source: {2}{0}Feature Class: {3}{0}Number of Rules: {4}</value>
   </data>
+  <data name="TextZoomNext" xml:space="preserve">
+    <value>Zoom Next</value>
+  </data>
+  <data name="TextZoomPrevious" xml:space="preserve">
+    <value>Zoom Previous</value>
+  </data>
 </root>

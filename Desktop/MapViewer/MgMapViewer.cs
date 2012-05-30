@@ -11,6 +11,7 @@ using System.Diagnostics;
 using System.Threading;
 using System.Xml;
 using System.Collections.Specialized;
+using System.Collections.ObjectModel;
 
 namespace OSGeo.MapGuide.Viewer
 {
@@ -155,11 +156,16 @@ namespace OSGeo.MapGuide.Viewer
 
         private MgCoordinateSystem _mapCs;
 
+        private int _viewHistoryIndex;
+        private List<MgMapViewHistoryEntry> _viewHistory;
+
         /// <summary>
         /// Initializes a new instance of the <see cref="MgMapViewer"/> class.
         /// </summary>
         public MgMapViewer()
         {
+            _viewHistory = new List<MgMapViewHistoryEntry>();
+            _viewHistoryIndex = -1;
             this.ShowVertexCoordinatesWhenDigitizing = false;
             this.FeatureTooltipsEnabled = false;
             this.TooltipsEnabled = false;
@@ -1070,6 +1076,12 @@ namespace OSGeo.MapGuide.Viewer
 #endif
             this.Focus();
 
+            //Reset history stack
+            _viewHistory.Clear();
+            OnPropertyChanged("ViewHistory");
+            _viewHistoryIndex = -1;
+            OnPropertyChanged("ViewHistoryIndex");
+            
             var handler = this.MapLoaded;
             if (handler != null)
                 handler(this, EventArgs.Empty);
@@ -1536,8 +1548,90 @@ namespace OSGeo.MapGuide.Viewer
             _extY2 = coord.Y - mcsHeight / 2;
         }
 
+        private bool PruneHistoryEntriesFromCurrentView()
+        {
+            if (_viewHistoryIndex < _viewHistory.Count - 1)
+            {
+                int removed = 0;
+                for (int i = _viewHistory.Count - 1; i > _viewHistoryIndex; i--)
+                {
+                    _viewHistory.RemoveAt(i);
+                    removed++;
+                }
+                return removed > 0;
+            }
+            return false;
+        }
+
         internal void ZoomToView(double x, double y, double scale, bool refresh, bool raiseEvents)
         {
+            ZoomToView(x, y, scale, refresh, raiseEvents, true);
+        }
+
+        /// <summary>
+        /// Navigates to the previous view in the history stack
+        /// </summary>
+        public void PreviousView()
+        {
+            var newIndex = _viewHistoryIndex - 1;
+            if (newIndex < 0)
+                return;
+
+            var view = _viewHistory[newIndex];
+            ZoomToView(view.X, view.Y, view.Scale, true, true, false);
+            _viewHistoryIndex = newIndex;
+            OnPropertyChanged("ViewHistoryIndex");
+        }
+
+        /// <summary>
+        /// Navigates to the next view in the history stack
+        /// </summary>
+        public void NextView()
+        {
+            //Cannot advance from current view
+            if (_viewHistoryIndex == _viewHistory.Count - 1)
+                return;
+
+            var newIndex = _viewHistoryIndex + 1;
+            if (newIndex > _viewHistory.Count - 1)
+                return;
+
+            var view = _viewHistory[newIndex];
+            ZoomToView(view.X, view.Y, view.Scale, true, true, false);
+            _viewHistoryIndex = newIndex;
+            OnPropertyChanged("ViewHistoryIndex");
+        }
+
+        /// <summary>
+        /// Gets whether the index in the view history stack
+        /// </summary>
+        public int ViewHistoryIndex
+        {
+            get { return _viewHistoryIndex; }
+        }
+
+        /// <summary>
+        /// Gets the view history stack. The first item being the earliest and the last item being the most recent.
+        /// </summary>
+        public ReadOnlyCollection<MgMapViewHistoryEntry> ViewHistory
+        {
+            get { return _viewHistory.AsReadOnly(); }
+        }
+
+        internal void ZoomToView(double x, double y, double scale, bool refresh, bool raiseEvents, bool addToHistoryStack)
+        {
+            if (addToHistoryStack)
+            {
+                //If not current view, then any entries from the current view index are no longer needed
+                if (ViewHistoryIndex < _viewHistory.Count - 1)
+                    PruneHistoryEntriesFromCurrentView();
+
+                _viewHistory.Add(new MgMapViewHistoryEntry(x, y, scale));
+                OnPropertyChanged("ViewHistory");
+                _viewHistoryIndex = _viewHistory.Count - 1;
+                OnPropertyChanged("ViewHistoryIndex");
+            }
+
             _provider.SetViewCenterXY(x, y);
 #if VIEWER_DEBUG
             UpdateCenterDebugPoint();

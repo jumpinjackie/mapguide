@@ -102,6 +102,7 @@ namespace OSGeo.MapGuide.Viewer
             {
                 viewer.PropertyChanged += OnViewerPropertyChanged;
                 viewer.MapLoaded += OnViewerMapLoaded;
+                viewer.MapRefreshed += OnMapRefreshed;
 
                 if (this.RequiresLoadedMap)
                 {
@@ -129,6 +130,8 @@ namespace OSGeo.MapGuide.Viewer
             foreach (var l in _listeners)
                 l.SetEnabled(this.Viewer.HasLoadedMap);
         }
+
+        protected virtual void OnMapRefreshed(object sender, EventArgs e) { }
 
         protected virtual void OnViewerPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
