@@ -107,6 +107,9 @@ namespace OSGeo.MapGuide.Viewer.AppLayoutEngine
                     new CommandItem("ZoomOut", false),
                     new CommandItem("InitialView", false),
                     new SeparatorItem(),
+                    new CommandItem("ZoomPrev", false),
+                    new CommandItem("ZoomNext", false),
+                    new SeparatorItem(),
                     new CommandItem("Select", false),
                     new CommandItem("SelectRadius", false),
                     new CommandItem("SelectPolygon", false),
@@ -242,7 +245,9 @@ namespace OSGeo.MapGuide.Viewer.AppLayoutEngine
                 new ComponentDefinition(typeof(Viewer.MgTooltipToggleComponent).FullName, "TooltipToggle"),
                 new ComponentDefinition(typeof(Viewer.MgViewerOptionsComponent).FullName, "ViewerOptions"),
                 new ComponentDefinition(typeof(Viewer.MgZoomInComponent).FullName, "ZoomIn"),
+                new ComponentDefinition(typeof(Viewer.MgZoomNextComponent).FullName, "ZoomNext"),
                 new ComponentDefinition(typeof(Viewer.MgZoomOutComponent).FullName, "ZoomOut"),
+                new ComponentDefinition(typeof(Viewer.MgZoomPreviousComponent).FullName, "ZoomPrev"),
                 new ComponentDefinition(typeof(Viewer.MgZoomToSelectionComponent).FullName, "ZoomToSelection")
             };
             return layout;

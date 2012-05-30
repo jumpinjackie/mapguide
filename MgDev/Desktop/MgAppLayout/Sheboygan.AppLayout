@@ -99,6 +99,15 @@
       </ItemBase>
       <ItemBase xsi:type="SeparatorItem" />
       <ItemBase xsi:type="CommandItem">
+        <ComponentID>ZoomPrev</ComponentID>
+        <ShowLabel>false</ShowLabel>
+      </ItemBase>
+      <ItemBase xsi:type="CommandItem">
+        <ComponentID>ZoomNext</ComponentID>
+        <ShowLabel>false</ShowLabel>
+      </ItemBase>
+      <ItemBase xsi:type="SeparatorItem" />
+      <ItemBase xsi:type="CommandItem">
         <ComponentID>Select</ComponentID>
         <ShowLabel>false</ShowLabel>
       </ItemBase>
@@ -409,8 +418,16 @@
       <ClassName>OSGeo.MapGuide.Viewer.MgZoomInComponent</ClassName>
     </ComponentDefinition>
     <ComponentDefinition>
+      <ComponentID>ZoomNext</ComponentID>
+      <ClassName>OSGeo.MapGuide.Viewer.MgZoomNextComponent</ClassName>
+    </ComponentDefinition>
+    <ComponentDefinition>
       <ComponentID>ZoomOut</ComponentID>
       <ClassName>OSGeo.MapGuide.Viewer.MgZoomOutComponent</ClassName>
+    </ComponentDefinition>
+    <ComponentDefinition>
+      <ComponentID>ZoomPrev</ComponentID>
+      <ClassName>OSGeo.MapGuide.Viewer.MgZoomPreviousComponent</ClassName>
     </ComponentDefinition>
     <ComponentDefinition>
       <ComponentID>ZoomToSelection</ComponentID>

@@ -55,7 +55,6 @@
             this.toolStripSeparator5 = new System.Windows.Forms.ToolStripSeparator();
             this.toolStripSeparator6 = new System.Windows.Forms.ToolStripSeparator();
             this.toolStripDropDownButton1 = new System.Windows.Forms.ToolStripDropDownButton();
-            this.toolStripSeparator7 = new System.Windows.Forms.ToolStripSeparator();
             this.toolStripSeparator8 = new System.Windows.Forms.ToolStripSeparator();
             this.toolStripDropDownButton2 = new System.Windows.Forms.ToolStripDropDownButton();
             this.lblLoading = new System.Windows.Forms.ToolStripLabel();
@@ -68,6 +67,8 @@
             this.lblScale = new System.Windows.Forms.ToolStripStatusLabel();
             this.lblSize = new System.Windows.Forms.ToolStripStatusLabel();
             this.lblLogo = new System.Windows.Forms.ToolStripStatusLabel();
+            this.toolStripSeparator14 = new System.Windows.Forms.ToolStripSeparator();
+            this.toolStripSeparator7 = new System.Windows.Forms.ToolStripSeparator();
             this.legendCtrl = new OSGeo.MapGuide.Viewer.MgLegend();
             this.propertiesCtrl = new OSGeo.MapGuide.Viewer.MgPropertyPane();
             this.mapViewer = new OSGeo.MapGuide.Viewer.MgMapViewer();
@@ -76,6 +77,8 @@
             this.toolStripButton3 = new System.Windows.Forms.ToolStripButton();
             this.toolStripButton4 = new System.Windows.Forms.ToolStripButton();
             this.toolStripButton5 = new System.Windows.Forms.ToolStripButton();
+            this.toolStripButton14 = new System.Windows.Forms.ToolStripButton();
+            this.toolStripButton13 = new System.Windows.Forms.ToolStripButton();
             this.toolStripButton6 = new System.Windows.Forms.ToolStripButton();
             this.toolStripButton7 = new System.Windows.Forms.ToolStripButton();
             this.toolStripButton8 = new System.Windows.Forms.ToolStripButton();
@@ -87,7 +90,7 @@
             this.toolStripMenuItem10 = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem11 = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem27 = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolStripButton13 = new System.Windows.Forms.ToolStripButton();
+            this.toolStripMenuItem31 = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem8 = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem25 = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem26 = new System.Windows.Forms.ToolStripMenuItem();
@@ -140,6 +143,8 @@
             this.loadCompactViewerComponent = new OSGeo.MapGuide.Viewer.MgGenericInvokeComponent();
             this.profileComponent = new OSGeo.MapGuide.Viewer.MgGenericInvokeComponent();
             this.mgToolButtonComponentInvoker1 = new OSGeo.MapGuide.Viewer.MgToolButtonComponentInvoker();
+            this.mgZoomNextComponent1 = new OSGeo.MapGuide.Viewer.MgZoomNextComponent();
+            this.mgZoomPreviousComponent1 = new OSGeo.MapGuide.Viewer.MgZoomPreviousComponent();
             this.mgLayerSelectionHandler1 = new OSGeo.MapGuide.Viewer.MgLayerSelectionHandler();
             this.appMenu.SuspendLayout();
             this.appContextMenu.SuspendLayout();
@@ -376,6 +381,9 @@
             this.toolStripButton3,
             this.toolStripButton4,
             this.toolStripButton5,
+            this.toolStripSeparator7,
+            this.toolStripButton13,
+            this.toolStripButton14,
             this.toolStripSeparator3,
             this.toolStripButton6,
             this.toolStripButton7,
@@ -388,8 +396,6 @@
             this.toolStripButton12,
             this.toolStripSeparator6,
             this.toolStripDropDownButton1,
-            this.toolStripSeparator7,
-            this.toolStripButton13,
             this.toolStripSeparator8,
             this.toolStripDropDownButton2,
             this.lblLoading});
@@ -435,17 +441,14 @@
             this.toolStripMenuItem9,
             this.toolStripMenuItem10,
             this.toolStripMenuItem11,
-            this.toolStripMenuItem27});
+            this.toolStripMenuItem27,
+            this.toolStripSeparator14,
+            this.toolStripMenuItem31});
             this.toolStripDropDownButton1.Image = global::MapViewerTest.Properties.Resources.icon_tasks;
             this.toolStripDropDownButton1.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.toolStripDropDownButton1.Name = "toolStripDropDownButton1";
             this.toolStripDropDownButton1.Size = new System.Drawing.Size(65, 22);
             this.toolStripDropDownButton1.Text = "Tools";
-            // 
-            // toolStripSeparator7
-            // 
-            this.toolStripSeparator7.Name = "toolStripSeparator7";
-            this.toolStripSeparator7.Size = new System.Drawing.Size(6, 25);
             // 
             // toolStripSeparator8
             // 
@@ -550,6 +553,16 @@
             this.lblLogo.Name = "lblLogo";
             this.lblLogo.Size = new System.Drawing.Size(137, 18);
             // 
+            // toolStripSeparator14
+            // 
+            this.toolStripSeparator14.Name = "toolStripSeparator14";
+            this.toolStripSeparator14.Size = new System.Drawing.Size(151, 6);
+            // 
+            // toolStripSeparator7
+            // 
+            this.toolStripSeparator7.Name = "toolStripSeparator7";
+            this.toolStripSeparator7.Size = new System.Drawing.Size(6, 25);
+            // 
             // legendCtrl
             // 
             this.legendCtrl.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -557,6 +570,7 @@
             this.legendCtrl.LayerContextMenu = null;
             this.legendCtrl.Location = new System.Drawing.Point(3, 3);
             this.legendCtrl.Name = "legendCtrl";
+            this.legendCtrl.ShowTooltips = true;
             this.legendCtrl.Size = new System.Drawing.Size(235, 246);
             this.legendCtrl.TabIndex = 0;
             this.legendCtrl.ThemeCompressionLimit = 0;
@@ -577,6 +591,7 @@
             this.mapViewer.Dock = System.Windows.Forms.DockStyle.Fill;
             this.mapViewer.Location = new System.Drawing.Point(0, 0);
             this.mapViewer.Name = "mapViewer";
+            this.mapViewer.PointPixelBuffer = 2;
             this.mapViewer.SelectionColor = System.Drawing.Color.Blue;
             this.mapViewer.Size = new System.Drawing.Size(495, 658);
             this.mapViewer.TabIndex = 0;
@@ -644,6 +659,30 @@
             this.mgToolButtonComponentInvoker1.SetTargetComponent(this.toolStripButton5, this.mgInitialViewComponent1);
             this.toolStripButton5.Text = "Zoom Extents";
             this.toolStripButton5.ToolTipText = "Zoom Extents";
+            // 
+            // toolStripButton14
+            // 
+            this.toolStripButton14.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.toolStripButton14.Enabled = false;
+            this.toolStripButton14.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButton14.Image")));
+            this.toolStripButton14.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.toolStripButton14.Name = "toolStripButton14";
+            this.toolStripButton14.Size = new System.Drawing.Size(23, 22);
+            this.mgToolButtonComponentInvoker1.SetTargetComponent(this.toolStripButton14, this.mgZoomNextComponent1);
+            this.toolStripButton14.Text = "Zoom Next";
+            this.toolStripButton14.ToolTipText = "Zoom Next";
+            // 
+            // toolStripButton13
+            // 
+            this.toolStripButton13.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.toolStripButton13.Enabled = false;
+            this.toolStripButton13.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButton13.Image")));
+            this.toolStripButton13.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.toolStripButton13.Name = "toolStripButton13";
+            this.toolStripButton13.Size = new System.Drawing.Size(23, 22);
+            this.mgToolButtonComponentInvoker1.SetTargetComponent(this.toolStripButton13, this.mgZoomPreviousComponent1);
+            this.toolStripButton13.Text = "Zoom Previous";
+            this.toolStripButton13.ToolTipText = "Zoom Previous";
             // 
             // toolStripButton6
             // 
@@ -733,7 +772,7 @@
             this.toolStripMenuItem9.Enabled = false;
             this.toolStripMenuItem9.Image = ((System.Drawing.Image)(resources.GetObject("toolStripMenuItem9.Image")));
             this.toolStripMenuItem9.Name = "toolStripMenuItem9";
-            this.toolStripMenuItem9.Size = new System.Drawing.Size(119, 22);
+            this.toolStripMenuItem9.Size = new System.Drawing.Size(154, 22);
             this.mgMenuItemComponentInvoker1.SetTargetComponent(this.toolStripMenuItem9, this.mgBufferComponent1);
             this.toolStripMenuItem9.Text = "Buffer";
             // 
@@ -742,7 +781,7 @@
             this.toolStripMenuItem10.Enabled = false;
             this.toolStripMenuItem10.Image = ((System.Drawing.Image)(resources.GetObject("toolStripMenuItem10.Image")));
             this.toolStripMenuItem10.Name = "toolStripMenuItem10";
-            this.toolStripMenuItem10.Size = new System.Drawing.Size(119, 22);
+            this.toolStripMenuItem10.Size = new System.Drawing.Size(154, 22);
             this.mgMenuItemComponentInvoker1.SetTargetComponent(this.toolStripMenuItem10, this.mgMeasureComponent1);
             this.toolStripMenuItem10.Text = "Measure";
             // 
@@ -751,7 +790,7 @@
             this.toolStripMenuItem11.Enabled = false;
             this.toolStripMenuItem11.Image = ((System.Drawing.Image)(resources.GetObject("toolStripMenuItem11.Image")));
             this.toolStripMenuItem11.Name = "toolStripMenuItem11";
-            this.toolStripMenuItem11.Size = new System.Drawing.Size(119, 22);
+            this.toolStripMenuItem11.Size = new System.Drawing.Size(154, 22);
             this.mgMenuItemComponentInvoker1.SetTargetComponent(this.toolStripMenuItem11, this.mgQueryComponent1);
             this.toolStripMenuItem11.Text = "Query";
             // 
@@ -760,21 +799,20 @@
             this.toolStripMenuItem27.Enabled = false;
             this.toolStripMenuItem27.Image = ((System.Drawing.Image)(resources.GetObject("toolStripMenuItem27.Image")));
             this.toolStripMenuItem27.Name = "toolStripMenuItem27";
-            this.toolStripMenuItem27.Size = new System.Drawing.Size(119, 22);
+            this.toolStripMenuItem27.Size = new System.Drawing.Size(154, 22);
             this.mgMenuItemComponentInvoker1.SetTargetComponent(this.toolStripMenuItem27, this.mgThemeComponent1);
             this.toolStripMenuItem27.Text = "Theme";
             this.toolStripMenuItem27.ToolTipText = "Theme";
             // 
-            // toolStripButton13
+            // toolStripMenuItem31
             // 
-            this.toolStripButton13.Enabled = false;
-            this.toolStripButton13.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButton13.Image")));
-            this.toolStripButton13.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.toolStripButton13.Name = "toolStripButton13";
-            this.toolStripButton13.Size = new System.Drawing.Size(107, 22);
-            this.mgToolButtonComponentInvoker1.SetTargetComponent(this.toolStripButton13, this.mgViewerOptionsComponent1);
-            this.toolStripButton13.Text = "Viewer Options";
-            this.toolStripButton13.ToolTipText = "Viewer Options";
+            this.toolStripMenuItem31.Enabled = false;
+            this.toolStripMenuItem31.Image = ((System.Drawing.Image)(resources.GetObject("toolStripMenuItem31.Image")));
+            this.toolStripMenuItem31.Name = "toolStripMenuItem31";
+            this.toolStripMenuItem31.Size = new System.Drawing.Size(154, 22);
+            this.mgMenuItemComponentInvoker1.SetTargetComponent(this.toolStripMenuItem31, this.mgViewerOptionsComponent1);
+            this.toolStripMenuItem31.Text = "Viewer Options";
+            this.toolStripMenuItem31.ToolTipText = "Viewer Options";
             // 
             // toolStripMenuItem8
             // 
@@ -1218,6 +1256,20 @@
             this.profileComponent.Viewer = this.mapViewer;
             this.profileComponent.Invoked += new System.EventHandler(this.profileComponent_Invoked);
             // 
+            // mgZoomNextComponent1
+            // 
+            this.mgZoomNextComponent1.Icon = ((System.Drawing.Image)(resources.GetObject("mgZoomNextComponent1.Icon")));
+            this.mgZoomNextComponent1.Label = "Zoom Next";
+            this.mgZoomNextComponent1.ToolTipText = "Zoom Next";
+            this.mgZoomNextComponent1.Viewer = this.mapViewer;
+            // 
+            // mgZoomPreviousComponent1
+            // 
+            this.mgZoomPreviousComponent1.Icon = ((System.Drawing.Image)(resources.GetObject("mgZoomPreviousComponent1.Icon")));
+            this.mgZoomPreviousComponent1.Label = "Zoom Previous";
+            this.mgZoomPreviousComponent1.ToolTipText = "Zoom Previous";
+            this.mgZoomPreviousComponent1.Viewer = this.mapViewer;
+            // 
             // mgLayerSelectionHandler1
             // 
             this.mgLayerSelectionHandler1.Layers = new string[] {
@@ -1347,8 +1399,6 @@
         private System.Windows.Forms.ToolStripButton toolStripButton12;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator6;
         private System.Windows.Forms.ToolStripDropDownButton toolStripDropDownButton1;
-        private System.Windows.Forms.ToolStripSeparator toolStripSeparator7;
-        private System.Windows.Forms.ToolStripButton toolStripButton13;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator8;
         private System.Windows.Forms.ToolStripDropDownButton toolStripDropDownButton2;
         private System.Windows.Forms.ToolStripLabel lblLoading;
@@ -1388,6 +1438,13 @@
         private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem29;
         private OSGeo.MapGuide.Viewer.MgLoadMapComponent mgLoadMapComponent1;
         private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem30;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator14;
+        private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem31;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator7;
+        private System.Windows.Forms.ToolStripButton toolStripButton14;
+        private OSGeo.MapGuide.Viewer.MgZoomNextComponent mgZoomNextComponent1;
+        private System.Windows.Forms.ToolStripButton toolStripButton13;
+        private OSGeo.MapGuide.Viewer.MgZoomPreviousComponent mgZoomPreviousComponent1;
 
     }
 }

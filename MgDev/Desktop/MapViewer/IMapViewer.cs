@@ -4,6 +4,7 @@ using System.Text;
 using OSGeo.MapGuide;
 using System.Drawing;
 using System.ComponentModel;
+using System.Collections.ObjectModel;
 
 namespace OSGeo.MapGuide.Viewer
 {
@@ -294,6 +295,42 @@ namespace OSGeo.MapGuide.Viewer
         /// Gets or sets the amount of pixels to buffer out by when doing point-based selections with the Select tool
         /// </summary>
         int PointPixelBuffer { get; set; }
+
+        /// <summary>
+        /// Navigates to the previous view in the history stack
+        /// </summary>
+        void PreviousView();
+
+        /// <summary>
+        /// Navigates to the next view in the history stack
+        /// </summary>
+        void NextView();
+
+        /// <summary>
+        /// Gets whether the index in the view history stack
+        /// </summary>
+        int ViewHistoryIndex { get; }
+
+        /// <summary>
+        /// Gets the view history stack. The first item being the earliest and the last item being the most recent.
+        /// </summary>
+        ReadOnlyCollection<MgMapViewHistoryEntry> ViewHistory { get; }
+    }
+
+    public class MgMapViewHistoryEntry
+    {
+        public MgMapViewHistoryEntry(double x, double y, double scale)
+        {
+            this.X = x;
+            this.Y = y;
+            this.Scale = scale;
+        }
+
+        public double X { get; private set; }
+
+        public double Y { get; private set; }
+
+        public double Scale { get; private set; }
     }
 
     /// <summary>
