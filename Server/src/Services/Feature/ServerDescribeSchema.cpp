@@ -1171,23 +1171,27 @@ MgClassDefinitionCollection* MgServerDescribeSchema::GetIdentityProperties(
         {
             STRING className = uncachedClasses->GetItem(j);
 
+            // #1403: Identity properties or not, the class itself should be always returned
+
+            // Add class to collection
+            Ptr<MgClassDefinition> classDef = new MgClassDefinition();
+            classDef->SetName(className);
+
             // Get the class identity properties.
             Ptr<MgPropertyDefinitionCollection> idProps = GetIdentityProperties(fdoSchemas.p, resource, schemaName, className);
             if (NULL != idProps.p && idProps->GetCount() > 0)
             {
                 m_featureServiceCache->SetClassIdentityProperties(resource, schemaName, className, idProps.p);
 
-                // Add class to collection
-                Ptr<MgClassDefinition> classDef = new MgClassDefinition();
-                classDef->SetName(className);
                 Ptr<MgPropertyDefinitionCollection> propDefs = classDef->GetIdentityProperties();
                 for (int k = 0; k < idProps->GetCount(); k++)
                 {
                     Ptr<MgPropertyDefinition> idProp = idProps->GetItem(k);
                     propDefs->Add(idProp);
                 }
-                classDefs->Add(classDef);
             }
+
+            classDefs->Add(classDef);
         }
     }
 
