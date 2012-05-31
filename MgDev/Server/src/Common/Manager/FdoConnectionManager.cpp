@@ -327,7 +327,7 @@ FdoIConnection* MgFdoConnectionManager::Open(MgResourceIdentifier* resourceIdent
             __LINE__, __WFILE__, &arguments, L"", NULL);
     }
 
-    MG_FDOCONNECTION_MANAGER_CATCH(L"MgFdoConnectionManager.Open")
+    MG_FDOCONNECTION_MANAGER_CATCH_WITH_FEATURE_SOURCE(L"MgFdoConnectionManager.Open", resourceIdentifier)
     if (mgException != NULL)
     {
         // There was an exception so remove any connection
@@ -336,6 +336,31 @@ FdoIConnection* MgFdoConnectionManager::Open(MgResourceIdentifier* resourceIdent
         {
             // Update the # of current connections
             providerInfo->DecrementCurrentConnections();
+        }
+
+        //HACK-ish: If an MgFdoException was thrown from below, keep the relevant details and 
+        //attach the feature source id. The end message will look a bit ugly, but the full contents
+        //of the inner exception is preserved. We have to do this because none of the methods called
+        //here that could throw MgFdoException accept a MgResourceIdentifier which we require to use
+        //any _WITH_FEATURE_SOURCE macro with
+        //
+        //MgException really needs better inner exception absorption mechanisms here
+        MgFdoException* ex = dynamic_cast<MgFdoException*>(mgException.p);
+        if (NULL != ex)
+        {
+            MgServerManager* serverManager = MgServerManager::GetInstance();
+            STRING locale = (NULL == serverManager) ?
+                MgResources::DefaultMessageLocale : serverManager->GetDefaultMessageLocale();
+
+            STRING message = ex->GetDetails(locale);
+            message += L"\n";
+            message += ex->GetStackTrace(locale);
+            MgStringCollection args;
+            args.Add(resourceIdentifier->ToString());
+            args.Add(message);
+
+            //Replace the exception to be thrown with our one
+            mgException = new MgFdoException(L"MgFdoConnectionManager.Open", __LINE__, __WFILE__, NULL, L"MgFeatureSourceFormatInnerExceptionMessage", &args);
         }
     }
     MG_FDOCONNECTION_MANAGER_THROW()
@@ -644,7 +669,7 @@ FdoIConnection* MgFdoConnectionManager::FindFdoConnection(MgResourceIdentifier* 
                                               ltName,
                                               reuseOnly);
 
-    MG_FDOCONNECTION_MANAGER_CATCH_AND_THROW(L"MgFdoConnectionManager.FindFdoConnection")
+    MG_FDOCONNECTION_MANAGER_CATCH_AND_THROW_WITH_FEATURE_SOURCE(L"MgFdoConnectionManager.FindFdoConnection", resourceIdentifier)
 
     return pFdoConnection.Detach();
 }
@@ -2298,7 +2323,7 @@ bool MgFdoConnectionManager::SetCachedFdoConnectionAsInvalid(MgResourceIdentifie
         iterProviderInfoCollection++;
     }
 
-    MG_FDOCONNECTION_MANAGER_CATCH_AND_THROW(L"MgFdoConnectionManager.SetCachedFdoConnectionAsInvalid")
+    MG_FDOCONNECTION_MANAGER_CATCH_AND_THROW_WITH_FEATURE_SOURCE(L"MgFdoConnectionManager.SetCachedFdoConnectionAsInvalid", resource)
 
     return success;
 }
