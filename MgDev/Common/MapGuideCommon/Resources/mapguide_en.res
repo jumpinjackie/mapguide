@@ -229,6 +229,7 @@ MgFailedToGetFileNameForDates                         = Failed to get the filena
 MgFailedToLoadFdoLibrary                              = Failed to load FDO library.
 MgFailedToRetrieveSystemExceptionMesage               = Failed to retrieve the system exception mesage. This message may not be unicode compliant.
 MgFailedToRetrieveThirdPartyExceptionMesage           = Failed to retrieve the third party exception mesage. This message may not be unicode compliant.
+MgFeatureSourceFormatInnerExceptionMessage            = Error occurred in Feature Source (%1): %2
 MgFeatureReaderIdNotFound                             = The feature reader ID was not found.
 MgFilenamesIdentical                                  = The filenames cannot be the same.
 MgFormatAllExceptionDetail                            = - %1(%2)
