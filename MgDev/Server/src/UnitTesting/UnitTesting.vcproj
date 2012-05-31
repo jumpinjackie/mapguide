@@ -410,6 +410,14 @@
 			>
 		</File>
 		<File
+			RelativePath=".\TestMisc.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\TestMisc.h"
+			>
+		</File>
+		<File
 			RelativePath=".\TestPerformance.cpp"
 			>
 		</File>
