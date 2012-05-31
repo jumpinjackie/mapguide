@@ -266,6 +266,10 @@ void TestFeatureService::TestEnd()
         Ptr<MgResourceIdentifier> fsres8 = new MgResourceIdentifier(L"Library://UnitTests/Data/ParcelsJoinTestSQLite.FeatureSource");
         pService->DeleteResource(fsres8);
 
+        //May or may not have been created during the test
+        Ptr<MgResourceIdentifier> fsres9 = new MgResourceIdentifier(L"Library://UnitTests/Data/GetIdentityPropertiesTest.FeatureSource");
+        if (pService->ResourceExists(fsres9)) pService->DeleteResource(fsres9);
+
         #ifdef _DEBUG
         ACE_DEBUG((LM_INFO, ACE_TEXT("TestFeatureService::TestEnd()\n")));
         MgFdoConnectionManager* pFdoConnectionManager = MgFdoConnectionManager::GetInstance();
@@ -749,6 +753,77 @@ void TestFeatureService::TestCase_GetClassDefinition()
         Ptr<MgClassDefinition> classDef = pService->GetClassDefinition(resource, schemaName, className);
         STRING name = classDef->GetName();
         CPPUNIT_ASSERT(name == L"Parcels");
+    }
+    catch(MgException* e)
+    {
+        STRING message = e->GetDetails(TEST_LOCALE);
+        SAFE_RELEASE(e);
+        CPPUNIT_FAIL(MG_WCHAR_TO_CHAR(message.c_str()));
+    }
+    catch(FdoException* e)
+    {
+        FDO_SAFE_RELEASE(e);
+        CPPUNIT_FAIL("FdoException occurred");
+    }
+    catch(...)
+    {
+        throw;
+    }
+}
+
+///----------------------------------------------------------------------------
+/// Test Case Description:
+///
+/// This test case exercises the GetIdentityProperties() internal API
+///----------------------------------------------------------------------------
+void TestFeatureService::TestCase_GetIdentityProperties()
+{
+    try
+    {
+        MgServiceManager* serviceManager = MgServiceManager::GetInstance();
+        if(serviceManager == 0)
+        {
+            throw new MgNullReferenceException(L"TestFeatureService.TestCase_GetIdentityProperties", __LINE__, __WFILE__, NULL, L"", NULL);
+        }
+
+        Ptr<MgFeatureService> pService = dynamic_cast<MgFeatureService*>(serviceManager->RequestService(MgServiceType::FeatureService));
+        if (pService == 0)
+        {
+            throw new MgServiceNotAvailableException(L"TestFeatureService.TestCase_GetIdentityProperties", __LINE__, __WFILE__, NULL, L"", NULL);
+        }
+
+        // Set the user information for the current thread to be administrator.
+        Ptr<MgUserInformation> adminUserInfo = new MgUserInformation(MgUser::Administrator, L"");
+        MgUserInformation::SetCurrentUserInfo(adminUserInfo);
+
+        // Set up our test data store
+        Ptr<MgFeatureSchema> testSchema = new MgFeatureSchema(L"UnitTest", L"GetIdentityProperties test schema");
+        Ptr<MgClassDefinition> cls = new MgClassDefinition();
+        cls->SetName(L"NoProps");
+        Ptr<MgClassDefinitionCollection> classes = testSchema->GetClasses();
+        classes->Add(cls);
+
+        STRING wkt = L"LOCAL_CS[\"Non-Earth (Meter)\",LOCAL_DATUM[\"Local Datum\",0],UNIT[\"Meter\", 1],AXIS[\"X\",EAST],AXIS[\"Y\",NORTH]]";
+
+        Ptr<MgResourceIdentifier> fsId = new MgResourceIdentifier(L"Library://UnitTests/Data/GetIdentityPropertiesTest.FeatureSource");
+        Ptr<MgCreateSdfParams> createSdf = new MgCreateSdfParams(L"Default", wkt, testSchema);
+        pService->CreateFeatureSource(fsId, createSdf);
+
+        // Now query it - as the HttpHandler does it
+        Ptr<MgStringCollection> classNames = new MgStringCollection();
+        classNames->Add(L"NoProps");
+        Ptr<MgClassDefinitionCollection> matchingClasses = pService->GetIdentityProperties(fsId, L"UnitTest", classNames);
+        CPPUNIT_ASSERT_MESSAGE("Expected class (NoProps) to be in result for GetIdentityProperties", 1 == matchingClasses->GetCount());
+
+        // Here's the kicker - We expect 0 identity properties instead of exception (#1403)
+        Ptr<MgClassDefinition> klass = matchingClasses->GetItem(0);
+        Ptr<MgPropertyDefinitionCollection> idProps = klass->GetIdentityProperties();
+        CPPUNIT_ASSERT_MESSAGE("Expected 0 identity properties in class (NoProps)", 0 == idProps->GetCount());
+
+        // Here is where exception should be thrown
+        classNames->Clear();
+        classNames->Add(L"IDontExist");
+        CPPUNIT_ASSERT_THROW_MG(pService->GetIdentityProperties(fsId, L"UnitTest", classNames), MgFdoException*);
     }
     catch(MgException* e)
     {
