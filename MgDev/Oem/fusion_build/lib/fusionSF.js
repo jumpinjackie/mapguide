@@ -92883,6 +92883,10 @@ provides: [Jx.Field.Color]
   });
 document.newElement = function(tag, props) {
     var createdElement;
+    var temp = tag.split(' ').shift();//error in IE if tag has extra attributes listed
+                                      //just strip off the tag name, properties should
+                                      //set through the props argument
+
     if (Browser.Engine.trident && props){
         ['name', 'type', 'checked'].each(function(attribute){
             if (!props[attribute]) return;
@@ -92896,15 +92900,16 @@ document.newElement = function(tag, props) {
             createdElement = this.createElement(replaceTag);
         }
         catch (e) {
-            createdElement = this.createElement(tag);
+            createdElement = this.createElement(temp);
         }
     }
     else {
         createdElement = this.createElement(tag);
     }
 
-    return document.id(this.createElement(tag)).set(props);
-};/**
+    return document.id(this.createElement(temp)).set(props);
+};
+/**
  * Fusion.Error
  *
  * $Id: Error.js 1377 2008-04-16 19:27:32Z madair $
@@ -99972,7 +99977,14 @@ Fusion.configuration=/* This is the fusion configuration file.  Adjust as necess
 	       with http and end with /mapguide.  If you have installed
 	       fusion inside the www directory of MapGuide, then you can
 	       leave this empty as it will be automatically calculated. */
-           "webTierUrl": ""
+           "webTierUrl": "",
+      /* for MapGuide OS version > 2.1 and MGE2010 and higher set this to true*/
+          "useAsyncOverlay": true,
+	    /* The tileCacheUrl is the root url to a static mapguide tile cache.
+	       A relative URL will be relative to your application.
+	       The root url will be appended with the 'Sn'
+         directories for each zoom level. */
+           "tileCacheUrl": "http://localhost:8008/sheboygan"
     },
     /* The MapServer section is required if you are installing fusion
        for MapServer. */
@@ -99988,7 +100000,11 @@ Fusion.configuration=/* This is the fusion configuration file.  Adjust as necess
 	        web-accessible temporary legend images. */
 	    "legendIconCacheDir":"/ms4w/tmp/ms_tmp",
             /* The file  system path to where the maps are stored. */
-            "mapFileRoot":"/ms4w/apps/"
+        "mapFileRoot":"/ms4w/apps/",
+        /*The file  system path where the saved map sessions are stored.*/
+         "mapRestoreState":"/opt/fgs/apps/savedSession/",
+        /*The file  system path where the php sessions are stored.*/
+         "mapRestoreStateSession":"/opt/fgs/tmp/"
     }
 }
 /**
@@ -112309,15 +112325,13 @@ Fusion.Layers.Generic = OpenLayers.Class(Fusion.Layers, {
             else {
                 this.oLayerOL = new OpenLayers.Layer[this.layerType](this.getMapName(), this.mapTag.layerOptions );
             }
-        }
-        
-        //fractionalZoom not permitted with tiled base layers
-        this.mapWidget.oMapOL.minPx = null;  //TODO: better fix here, this prevents a mapdraw before layer is ready
-        if (!this.bSingleTile) {
+            //fractionalZoom not permitted with tiled base layers regardless
             this.mapWidget.fractionalZoom = false;
             this.mapWidget.oMapOL.setOptions({fractionalZoom: false});
         }
-
+        
+        
+        this.mapWidget.oMapOL.minPx = null;  //TODO: better fix here, this prevents a mapdraw before layer is ready
         this.oLayerOL.events.register("loadstart", this, this.loadStart);
         this.oLayerOL.events.register("loadend", this, this.loadEnd);
         this.oLayerOL.events.register("loadcancel", this, this.loadEnd);

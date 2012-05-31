@@ -2,7 +2,7 @@
 /**
  * Utilities.php
  *
- * $Id: Utilities.php 2512 2012-01-10 05:33:26Z liuar $
+ * $Id: Utilities.php 2523 2012-01-20 05:16:28Z liuar $
  *
  * Copyright (c) 2007, DM Solutions Group Inc.
  * Permission is hereby granted, free of charge, to any person obtaining a
@@ -754,21 +754,26 @@ function GetPropertyValueFromFeatReader($featureReader, $propertyType, $property
     return $val;
 }
 
-function GetLayerNameInProperties($layerName)
+function GetEncodedLayerName($layerName)
 {
-	return 'layer'.$layerName;    // Add prefix to avoid layer name beginning with number
+    return 'layer'.$layerName;    // Add prefix to avoid layer name beginning with number
 }
 
 /**
    keep all the attributes of selected features in an array
  */
 function BuildSelectionArray($featureReader, $layerName, $properties, $bComputedProperties,
-                             $srsLayer, $bNeedsTransform, $layerObj)
+                             $srsLayer, $bNeedsTransform, $layerObj, $isLayerNameEncoded)
 {
     $agf = new MgAgfReaderWriter();
     $srsFactory = new MgCoordinateSystemFactory();
     
-    $layerName = GetLayerNameInProperties($layerName);    // Add prefix to avoid layer name beginning with number
+    if($isLayerNameEncoded)
+    {
+        // Add prefix to avoid layer name beginning with number
+        // So $isLayerNameEncoded should be true when and only when the properties will be stored in session
+        $layerName = GetEncodedLayerName($layerName);    
+    }
 
     $properties->$layerName->propertynames = array();
     $properties->$layerName->propertyvalues = array();

@@ -49,11 +49,11 @@ PreviewDialog.prototype =
             width:400,
             height: 400,
             content: '<table border="0" cellspacing="0" cellpadding="0" id="PreviewContainer">' + 
-                     '	<tr>' + 
-                     '		<td>' + 
-                     '			<iframe id="PreviewFrame" scrolling="no" frameborder="0" style="border: 0px; width: 400px; height: 300px;" src="about:blank"></iframe>' +
-                     '		</td>' +
-                     '  </tr>' +
+                     '    <tr>' + 
+                     '        <td>' + 
+                     '            <iframe id="PreviewFrame" scrolling="no" frameborder="0" style="border: 0px; width: 400px; height: 300px;" src="about:blank"></iframe>' +
+                     '        </td>' +
+                     '    </tr>' +
                      '</table>'
         });
         
@@ -141,22 +141,17 @@ PreviewDialog.prototype =
             var factor    = 0.5;
             this.previewContainer = $(this.innerDoc.getElementById("PreviewContainer"));
             this.previewContainer.style.width = box.width * factor + "px";
-            this.pictureContainer = $(this.innerDoc.getElementById("PictureContainer"));
-            var pcBox = this.pictureContainer.getContentBoxSize();
+            this.resizePictureContainer();
             
-            this.indicator        = $(this.innerDoc.getElementById("ProgressIndicator"));
-            
-            var paperSize  = this.captureInfo.paperSize;
-            this.paperSize = paperSize;
-            
-            var ratio = paperSize.w / paperSize.h;
-            
-            // Resize the indicator
-            this.indicator.style.width  = pcBox.width + "px";
-            this.indicator.style.height = pcBox.width / ratio + "px";
-            // Set a explicit size to the container
-            this.pictureContainer.style.width  = this.indicator.style.width;
-            this.pictureContainer.style.height = this.indicator.style.height;
+            // Verify if the priview container "overflows" the visible screen area
+            var containerBox = this.previewContainer.getContentBoxSize();
+            if (containerBox.height > box.height)
+            {
+                var overhead = $(this.innerDoc.getElementById("legalNotice")).getMarginBoxSize().height + $(this.innerDoc.getElementById("AnnotationContainer")).getMarginBoxSize().height + 4 * this.previewContainer.cellSpacing;
+                this.previewContainer.style.width = containerBox.width * box.height / containerBox.height - overhead + "px";
+                this.resizePictureContainer();
+            }
+
             // Get the styles for the print picture
             var rules = this.innerDoc.styleSheets[1].cssRules || this.innerDoc.styleSheets[1].rules;
             this.previewStyle = rules[0];
@@ -218,6 +213,31 @@ PreviewDialog.prototype =
             this.jxDialog.domObj.setOpacity(0);
             this.resizeIsPending = true;
         }
+    },
+    
+    resizePictureContainer: function()
+    {
+        this.innerDoc         = this.previewFrame.contentWindow.document;
+
+        this.indicator        = $(this.innerDoc.getElementById("ProgressIndicator"));
+        // Reset the size of the indicator first
+        this.indicator.style.width = "";
+        this.indicator.style.height = "";
+        // Reset the size of the picture container
+        this.pictureContainer = $(this.innerDoc.getElementById("PictureContainer"));
+        this.pictureContainer.style.width = "";
+        this.pictureContainer.style.height = "";
+        
+        // Resize
+        var pcBox = this.pictureContainer.getContentBoxSize();
+        var ratio = this.captureInfo.paperSize.w / this.captureInfo.paperSize.h;
+
+        this.indicator.style.width  = pcBox.width + "px";
+        this.indicator.style.height = pcBox.width / ratio + "px";
+        
+        // Set an explicit size to the container
+        this.pictureContainer.style.width  = this.indicator.style.width;
+        this.pictureContainer.style.height = this.indicator.style.height;
     },
     
     previewInnerLoaded: function()
@@ -289,15 +309,15 @@ PreviewDialog.prototype =
         // Set the print size
         // NOTE: It works only with a 96 dpi device dpi
         var deviceDpi  = 96;
-        var idealSize  = {width:(this.paperSize.w / 25.4 - 2 * this.printMargin) * deviceDpi, height:(this.paperSize.h / 25.4 - 2 * this.printMargin) * deviceDpi};
+        var idealSize  = {width:(this.captureInfo.paperSize.w / 25.4 - 2 * this.printMargin) * deviceDpi, height:(this.captureInfo.paperSize.h / 25.4 - 2 * this.printMargin) * deviceDpi};
         // Get the size of the print frame
         var docSize    = $(this.innerDoc.body).getContentBoxSize();
         var realHeight = idealSize.height - (docSize.height - size.height);
-        var realWidth  = realHeight * this.paperSize.w / this.paperSize.h;
+        var realWidth  = realHeight * this.captureInfo.paperSize.w / this.captureInfo.paperSize.h;
         if (realWidth > idealSize.width)
         {
             realWidth = idealSize.width;
-            realHeight = realWidth / (this.paperSize.w / this.paperSize.h);
+            realHeight = realWidth / (this.captureInfo.paperSize.w / this.captureInfo.paperSize.h);
         }
         
         this.printStyle.style.width  = realWidth + "px";

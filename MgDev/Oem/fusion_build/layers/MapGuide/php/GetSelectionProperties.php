@@ -136,7 +136,7 @@ include('Utilities.php');
 
             $properties = BuildSelectionArray($featureReader, $layerName, $properties,
                                               $bComputedProperties,
-                                              $srsLayer, $bNeedsTransform, $oLayer);
+                                              $srsLayer, $bNeedsTransform, $oLayer, true);
             $featureReader->Close();
         }
 

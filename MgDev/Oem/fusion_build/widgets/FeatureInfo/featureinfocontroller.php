@@ -93,7 +93,7 @@
                   $srsXform = null;
                   $bNeedsTransform = ($srsLayer->GetUnitScale() != 1.0);
               }
-              $properties = BuildSelectionArray($featureReader, $layerName, $properties, true, $srsLayer, $bNeedsTransform, $layer);
+              $properties = BuildSelectionArray($featureReader, $layerName, $properties, true, $srsLayer, $bNeedsTransform, $layer, false);
 
         }
 

@@ -195,15 +195,13 @@ Fusion.Layers.Generic = OpenLayers.Class(Fusion.Layers, {
             else {
                 this.oLayerOL = new OpenLayers.Layer[this.layerType](this.getMapName(), this.mapTag.layerOptions );
             }
-        }
-        
-        //fractionalZoom not permitted with tiled base layers
-        this.mapWidget.oMapOL.minPx = null;  //TODO: better fix here, this prevents a mapdraw before layer is ready
-        if (!this.bSingleTile) {
+            //fractionalZoom not permitted with tiled base layers regardless
             this.mapWidget.fractionalZoom = false;
             this.mapWidget.oMapOL.setOptions({fractionalZoom: false});
         }
-
+        
+        
+        this.mapWidget.oMapOL.minPx = null;  //TODO: better fix here, this prevents a mapdraw before layer is ready
         this.oLayerOL.events.register("loadstart", this, this.loadStart);
         this.oLayerOL.events.register("loadend", this, this.loadEnd);
         this.oLayerOL.events.register("loadcancel", this, this.loadEnd);

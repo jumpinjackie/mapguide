@@ -1,7 +1,7 @@
 /**
  * Fusion.Widget.TaskPane
  *
- * $Id: TaskPane.js 2474 2011-12-01 10:04:17Z liuar $
+ * $Id: TaskPane.js 2521 2012-01-19 02:04:27Z hubu $
  *
  * Copyright (c) 2007, DM Solutions Group Inc.
  * Permission is hereby granted, free of charge, to any person obtaining a
@@ -161,13 +161,8 @@ Fusion.Widget.TaskPane = OpenLayers.Class(Fusion.Widget, {
         this.setContent(url);
     },
 
-    setContent: function(url) {
-        Fusion.triggerEvent(Fusion.Event.TASK_PANE_LOADED);
-        
-        if (this.nCurrentTask < this.aExecutedTasks.length-1) {
-            //this.aExecutedTasks.splice(this.nCurrentTask, this.aExecutedTasks.length - this.nCurrentTask);
-        }
-        
+
+    addCommonParams:function(url){
         //add in some common parameters if they aren't supplied already
         var baseUrl = url.split("?");
         var params = OpenLayers.Util.getParameters(url);
@@ -182,7 +177,17 @@ Fusion.Widget.TaskPane = OpenLayers.Class(Fusion.Widget, {
           params["mapname"] = widgetLayer.getMapName();
         }
         var newUrl = baseUrl[0] + "?" + OpenLayers.Util.getParameterString(params);
+        return newUrl;
+    },
+    
+    isSameWithLast:function(url){
+        return this.aExecutedTasks[this.aExecutedTasks.length-1] == this.addCommonParams(url) ;
+    },
+    
+    setContent: function(url) {
+        Fusion.triggerEvent(Fusion.Event.TASK_PANE_LOADED);
         
+        var newUrl = this.addCommonParams(url);
         this.aExecutedTasks.push(newUrl);
         ++this.nCurrentTask;
         this.loadFrame(newUrl);

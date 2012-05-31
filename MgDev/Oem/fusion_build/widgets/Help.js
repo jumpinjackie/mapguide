@@ -1,7 +1,7 @@
 /**
  * Fusion.Widget.Help
  *
- * $Id: Help.js 2313 2011-01-07 20:36:04Z madair $
+ * $Id: Help.js 2521 2012-01-19 02:04:27Z hubu $
  *
  * Copyright (c) 2007, DM Solutions Group Inc.
  * Permission is hereby granted, free of charge, to any person obtaining a
@@ -84,7 +84,10 @@ Fusion.Widget.Help = OpenLayers.Class(Fusion.Widget, {
         /* check to see if this is going into a task pane */
         var taskPaneTarget = Fusion.getWidgetById(this.target);
         if ( taskPaneTarget ) {
-            taskPaneTarget.setContent(url);
+            if(!taskPaneTarget.isSameWithLast(url))
+            {
+                taskPaneTarget.setContent(url);
+            }
         } else {
             /* check to see if it is going into a frame in the page */
             var pageElement = $(this.target);

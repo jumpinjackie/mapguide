@@ -346,8 +346,9 @@ Fusion.Widget.BasemapSwitcher = OpenLayers.Class(Fusion.Widget, {
 
     setDefaultBasemap: function() {
         this.generateOptions();
-        //re-generate the menu
-        this.uiObj.initialize();
+
+        //clean current menu items
+        this.uiObj.subDomObj.empty();
 
         //set up the root menu
         var buttonSet = new Jx.ButtonSet();

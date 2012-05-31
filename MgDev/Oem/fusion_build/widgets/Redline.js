@@ -126,7 +126,10 @@ Fusion.Widget.Redline.DefaultTaskPane = OpenLayers.Class(
         var outputWin = window;
 
         if ( taskPaneTarget ) {
-            taskPaneTarget.setContent(url);
+            if(!taskPaneTarget.isSameWithLast(url))
+            {
+                taskPaneTarget.setContent(url);
+            }
             outputWin = taskPaneTarget.iframe.contentWindow;
         } else {
             outputWin = window.open(url, this.widget.sTarget, this.widget.sWinFeatures);

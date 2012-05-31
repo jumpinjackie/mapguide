@@ -2,7 +2,7 @@
 /**
  * SelectWithin
  *
- * $Id: SelectWithin.php 2438 2011-10-12 02:14:38Z liuar $
+ * $Id: SelectWithin.php 2535 2012-05-03 10:15:16Z liuar $
  *
  * Copyright (c) 2007, DM Solutions Group Inc.
  * Permission is hereby granted, free of charge, to any person obtaining a
@@ -100,7 +100,7 @@
                 $properties->extents->miny = $oMin->GetY();
                 $properties->extents->maxx = $oMax->GetX();
                 $properties->extents->maxy = $oMax->GetY();
-              } else { echo "/* no extents */"; }
+              } else { echo "<Message>no extents</Message>"; }
 
               //get properties for individual features
               $result->layers = array();
@@ -112,7 +112,7 @@
                 $options->SetFilter($resultSel->GenerateFilter($layer, $layerClassName));
                 $resourceId = new MgResourceIdentifier($layer->GetFeatureSourceId());
                 $featureReader = $featureSrvc->SelectFeatures($resourceId, $layerClassName, $options);
-                $properties = BuildSelectionArray($featureReader, $layerName, $properties, false, NULL, false, $layer);
+                $properties = BuildSelectionArray($featureReader, $layerName, $properties, false, NULL, false, $layer, true);
                 $featureReader->Close();
                 array_push($result->layers, $layerName);
                 array_push($properties->layers, $layerName);
@@ -122,15 +122,15 @@
 
               /*save selection in the session*/
               $_SESSION['selection_array'] = $properties;
-            } else { echo "/* layers false or 0 */"; }
-          } else { echo "/* no resultsel */"; }
-        } else { echo "/* no fi */"; }
-      } else { echo "/*no multi geom*/"; }
-    } else { echo "/* no layers */"; }
+              echo str_replace("</FeatureSet>", "</FeatureSet></FeatureInformation>", str_replace("<FeatureSet", "<FeatureInformation><FeatureSet", $resultSel->ToXml()));
+            } else { echo "<Message>layers false or 0</Message>"; }
+          } else { echo "<Message>no resultsel</Message>"; }
+        } else { echo "<Message>no fi</Message>"; }
+      } else { echo "<Message>no multi geom</Message>"; }
+    } else { echo "<Message>no layers</Message>"; }
 
-    header('Content-type: application/json');
-    header('X-JSON: true');
-    echo var2json($result);
+    //return XML
+    header("Content-type: text/xml");
   } catch(MgException $e) {
     echo "\nException: " . $e->GetDetails();
     return;

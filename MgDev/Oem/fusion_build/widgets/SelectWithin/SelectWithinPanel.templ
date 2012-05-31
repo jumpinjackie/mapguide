@@ -98,7 +98,8 @@ function ExecuteCommand()
 
 function selectedSuccess(r) {
     var mapWidget = GetParent().Fusion.getMapByName(mapName);
-    mapWidget.processQueryResults(zoomTo, r);
+    var callback = GetParent().OpenLayers.Function.bind(mapWidget.processFeatureInfo, mapWidget);
+    GetParent().Fusion.xml2json(callback, r);
 }
 
 function selectedError(r) {
@@ -144,7 +145,7 @@ function RefreshLayers()
 }
 
 function GetParent()
-{debugger;
+{
 	if(popup)
 		return opener;
 	else
