@@ -201,6 +201,7 @@
     <ClInclude Include="TestLogManagerThread.h" />
     <ClInclude Include="TestMappingService.h" />
     <ClInclude Include="TestMdfModel.h" />
+    <ClInclude Include="TestMisc.h" />
     <ClInclude Include="TestPerformance.h" />
     <ClInclude Include="TestProfilingService.h" />
     <ClInclude Include="TestRenderingService.h" />
@@ -223,6 +224,7 @@
     <ClCompile Include="TestLogManagerThread.cpp" />
     <ClCompile Include="TestMappingService.cpp" />
     <ClCompile Include="TestMdfModel.cpp" />
+    <ClCompile Include="TestMisc.cpp" />
     <ClCompile Include="TestPerformance.cpp" />
     <ClCompile Include="TestProfilingService.cpp" />
     <ClCompile Include="TestRenderingService.cpp" />
