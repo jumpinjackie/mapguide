@@ -111,11 +111,11 @@ MgNamedSerializable* MgNamedCollection::GetItem(CREFSTRING name)
 {
     MgNamedSerializable* item = FindItem(name);
     if (!item)
-	{
-		MgStringCollection args;
-		args.Add(name);
+    {
+        MgStringCollection args;
+        args.Add(name);
         throw new MgObjectNotFoundException(L"GetItem", __LINE__, __WFILE__, NULL, L"MgNoNameForObject", &args); // EXC::Create(Exception::NLSGetMessage(NLSID(38_ITEMNOTFOUND),name));
-	}
+    }
 
     return item;
 }

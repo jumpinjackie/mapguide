@@ -75,8 +75,8 @@ INT32 MgFeatureReader::GetPropertyIndex(CREFSTRING propertyName)
     }
     else
     {
-		MgStringCollection args;
-		args.Add(propertyName);
+        MgStringCollection args;
+        args.Add(propertyName);
         throw new MgObjectNotFoundException(L"MgFeatureReader.GetPropertyIndex", __LINE__, __WFILE__, NULL, L"MgNoNameForObject", &args);
         return -1; // to suppress compiler warning.
     }
