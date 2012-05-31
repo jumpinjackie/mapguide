@@ -1,7 +1,7 @@
 /**
  * Fusion.Widget.Measure
  *
- * $Id: Measure.js 2485 2011-12-08 16:29:53Z jng $
+ * $Id: Measure.js 2521 2012-01-19 02:04:27Z hubu $
  *
  * Copyright (c) 2007, DM Solutions Group Inc.
  * Permission is hereby granted, free of charge, to any person obtaining a
@@ -468,7 +468,10 @@ Fusion.Widget.Measure = OpenLayers.Class(Fusion.Widget, {
             var taskPaneTarget = Fusion.getWidgetById(this.sTarget);
             var outputWin = window;
             if ( taskPaneTarget ) {
-                taskPaneTarget.setContent(url);
+                if(!taskPaneTarget.isSameWithLast(url))
+                {
+                    taskPaneTarget.setContent(url);
+                }
                 outputWin = taskPaneTarget.iframe.contentWindow;
             } else {
                 outputWin = window.open(url, this.sTarget, this.sWinFeatures);

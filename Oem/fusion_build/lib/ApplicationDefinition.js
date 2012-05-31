@@ -1,7 +1,7 @@
 /**
  * Fusion.Lib.ApplicationDefinition
  *
- * $Id: ApplicationDefinition.js 2445 2011-11-02 17:31:57Z madair $
+ * $Id: ApplicationDefinition.js 2515 2012-01-13 03:13:51Z liuar $
  *
  * Copyright (c) 2007, DM Solutions Group Inc.
  * Permission is hereby granted, free of charge, to any person obtaining a
@@ -698,14 +698,14 @@ Fusion.Lib.ApplicationDefinition.WidgetSet = OpenLayers.Class({
         //not sure why this is here and it creates an area on the map where 
         //the mouse can't interact with the map
         // is this a debug widget? madair
-        /*
+        
         this.mapWidget.message = new Fusion.MapMessage(this.mapWidget.oMapOL.viewPortDiv);
         this.mapWidget.registerForEvent(Fusion.Event.MAP_EXTENTS_CHANGED, (function(){
                 if (this.message != null){
                     this.message.refreshLayout();
                 }
             }).bind(this.mapWidget));
-            */
+        
             
         //create all the other widgets for the widget set
         for (var i=0; i<this.widgetTags.length; i++) {

@@ -156,7 +156,10 @@ Fusion.Widget.QuickPlot = OpenLayers.Class(Fusion.Widget,
         
         if (taskPaneTarget) 
         {
-            taskPaneTarget.setContent(url);
+            if(!taskPaneTarget.isSameWithLast(url))
+            {
+                taskPaneTarget.setContent(url);
+            }
         } 
         else 
         {

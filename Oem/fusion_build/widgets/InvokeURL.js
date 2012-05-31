@@ -1,7 +1,7 @@
 /**
  * Fusion.Widget.InvokeURL
  *
- * $Id: InvokeURL.js 2455 2011-11-10 08:38:50Z liuar $
+ * $Id: InvokeURL.js 2521 2012-01-19 02:04:27Z hubu $
  *
  * Copyright (c) 2007, DM Solutions Group Inc.
  * Permission is hereby granted, free of charge, to any person obtaining a
@@ -112,7 +112,10 @@ Fusion.Widget.InvokeURL = OpenLayers.Class(Fusion.Widget, {
         url += params.join('&');
         var taskPaneTarget = Fusion.getWidgetById(this.sTarget);
         if ( taskPaneTarget ) {
-            taskPaneTarget.setContent(url);
+            if(!taskPaneTarget.isSameWithLast(url))
+            {
+                taskPaneTarget.setContent(url);
+            }
         } else {
             var pageElement = $(this.sTarget);
             if ( pageElement ) {

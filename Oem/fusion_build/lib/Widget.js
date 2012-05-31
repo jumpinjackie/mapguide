@@ -1,7 +1,7 @@
 /**
  * Fusion.Widget
  *
- * $Id: Widget.js 2474 2011-12-01 10:04:17Z liuar $
+ * $Id: Widget.js 2521 2012-01-19 02:04:27Z hubu $
  *
  * Copyright (c) 2007, DM Solutions Group Inc.
  * Permission is hereby granted, free of charge, to any person obtaining a
@@ -119,11 +119,9 @@ Fusion.Widget = OpenLayers.Class(Fusion.Lib.EventMgr, {
         if (uiObj.addEvents) {
             if (Fusion.Widget.uiInstances[this.type][0].uiObj &&
                 Fusion.Widget.uiInstances[this.type][0].uiObj.options.active &&
-                Fusion.Widget.uiInstances[this.type][0].shouldActivateWith(this)) {
-                uiObj.options.active = true;
-                if (uiObj.domA) {
-                    uiObj.domA.addClass('jx' + uiObj.options.type + 'Active');
-                }
+                Fusion.Widget.uiInstances[this.type][0].shouldActivateWith(this) &&
+                uiObj.setActive) {
+                uiObj.setActive(true);
             }
             
             uiObj.addEvents({
@@ -134,11 +132,9 @@ Fusion.Widget = OpenLayers.Class(Fusion.Lib.EventMgr, {
                     var instances = Fusion.Widget.uiInstances[this.type];
                     for (var i=0; i<instances.length; i++) {
                         var instance = instances[i];
-                        if (instance.shouldActivateWith(this) && instance.uiObj) {
-                            instance.uiObj.options.active = false;
-                            if (instance.uiObj.domA) {
-                                instance.uiObj.domA.removeClass('jx' + instance.uiObj.options.type + 'Active');
-                            }
+                        if (instance.shouldActivateWith(this) &&
+                            instance.uiObj && instance.uiObj.setActive) {
+                            instance.uiObj.setActive(false);
                         }
                     }
                     this.deactivate();
@@ -147,11 +143,9 @@ Fusion.Widget = OpenLayers.Class(Fusion.Lib.EventMgr, {
                     var instances = Fusion.Widget.uiInstances[this.type];
                     for (var i=0; i<instances.length; i++) {
                         var instance = instances[i];
-                        if (instance.shouldActivateWith(this) && instance.uiObj) {
-                            instance.uiObj.options.active = true;
-                            if (instance.uiObj.domA) {
-                                instance.uiObj.domA.addClass('jx' + instance.uiObj.options.type + 'Active');
-                            }                            
+                        if (instance.shouldActivateWith(this) &&
+                            instance.uiObj && instance.uiObj.setActive) {
+                            instance.uiObj.setActive(true);
                         }
                     }
                     this.activate();

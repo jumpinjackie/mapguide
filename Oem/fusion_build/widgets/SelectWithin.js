@@ -1,7 +1,7 @@
 /**
  * Fusion.Widget.SelectWithin
  *
- * $Id: SelectWithin.js 2313 2011-01-07 20:36:04Z madair $
+ * $Id: SelectWithin.js 2521 2012-01-19 02:04:27Z hubu $
  *
  * Copyright (c) 2007, DM Solutions Group Inc.
  * Permission is hereby granted, free of charge, to any person obtaining a
@@ -111,7 +111,10 @@ Fusion.Widget.SelectWithin = OpenLayers.Class(Fusion.Widget, {
         }
         url += params.join('&');
         if ( taskPaneTarget ) {
-            taskPaneTarget.setContent(url);
+            if(!taskPaneTarget.isSameWithLast(url))
+            {
+                taskPaneTarget.setContent(url);
+            }
         } else {
             if ( pageElement ) {
                 pageElement.src = url;
