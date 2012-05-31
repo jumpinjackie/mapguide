@@ -240,7 +240,7 @@ bool MgServerFeatureService::TestConnection(MgResourceIdentifier* resource)
     MgServerFeatureConnection msfc(resource);
     result = msfc.IsConnectionOpen();
 
-    MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgServerFeatureService.TestConnection")
+    MG_FEATURE_SERVICE_CATCH_AND_THROW_WITH_FEATURE_SOURCE(L"MgServerFeatureService.TestConnection", resource)
 
     return result;
 }
@@ -340,7 +340,7 @@ MgFeatureSchemaCollection* MgServerFeatureService::DescribeSchema(MgResourceIden
     MgServerDescribeSchema msds;
     schemas = msds.DescribeSchema(resource, schemaName, classNames);
 
-    MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgServerFeatureService.DescribeSchema");
+    MG_FEATURE_SERVICE_CATCH_AND_THROW_WITH_FEATURE_SOURCE(L"MgServerFeatureService.DescribeSchema", resource);
 
     return schemas.Detach();
 }
@@ -385,7 +385,7 @@ STRING MgServerFeatureService::DescribeSchemaAsXml(MgResourceIdentifier* resourc
     MgServerDescribeSchema msds;
     schemaXml = msds.DescribeSchemaAsXml(resource, schemaName, classNames);
 
-    MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgServerFeatureService.DescribeSchemaAsXml");
+    MG_FEATURE_SERVICE_CATCH_AND_THROW_WITH_FEATURE_SOURCE(L"MgServerFeatureService.DescribeSchemaAsXml", resource);
 
     return schemaXml;
 }
@@ -459,7 +459,7 @@ MgFeatureReader* MgServerFeatureService::SelectFeatures(MgResourceIdentifier* re
     MgServerSelectFeatures mssf;
     reader = (MgFeatureReader*)mssf.SelectFeatures(resource, className, options, false);
 
-    MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgServerFeatureService.SelectFeatures")
+    MG_FEATURE_SERVICE_CATCH_AND_THROW_WITH_FEATURE_SOURCE(L"MgServerFeatureService.SelectFeatures", resource)
 
     return reader.Detach();
 }
@@ -567,7 +567,7 @@ MgDataReader* MgServerFeatureService::SelectAggregate(MgResourceIdentifier* reso
     MgServerSelectFeatures mssf;
     reader = (MgDataReader*)mssf.SelectFeatures(resource, className, options, true);
 
-    MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgServerFeatureService.SelectAggregate");
+    MG_FEATURE_SERVICE_CATCH_AND_THROW_WITH_FEATURE_SOURCE(L"MgServerFeatureService.SelectAggregate", resource);
 
     return reader.Detach();
 }
@@ -707,7 +707,7 @@ MgTransaction* MgServerFeatureService::BeginTransaction(MgResourceIdentifier* re
 
     transaction = transactionPool->CreateTransaction(resource);
 
-    MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgServerFeatureService.BeginTransaction")
+    MG_FEATURE_SERVICE_CATCH_AND_THROW_WITH_FEATURE_SOURCE(L"MgServerFeatureService.BeginTransaction", resource)
 
     return transaction.Detach();
 }
@@ -973,7 +973,7 @@ MgSpatialContextReader* MgServerFeatureService::GetSpatialContexts(MgResourceIde
     MgServerGetSpatialContexts msgsc;
     reader = msgsc.GetSpatialContexts(resource);
 
-    MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgServerFeatureService.GetSpatialContexts")
+    MG_FEATURE_SERVICE_CATCH_AND_THROW_WITH_FEATURE_SOURCE(L"MgServerFeatureService.GetSpatialContexts", resource)
 
     return reader.Detach();
 }
@@ -1067,7 +1067,7 @@ bool MgServerFeatureService::SetLongTransaction(MgResourceIdentifier* featureSou
     // set the name in the manager
     MgLongTransactionManager::SetLongTransactionName(sessionId, featureSourceId, longTransactionName);
 
-    MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgServerFeatureService.SetLongTransaction")
+    MG_FEATURE_SERVICE_CATCH_AND_THROW_WITH_FEATURE_SOURCE(L"MgServerFeatureService.SetLongTransaction", featureSourceId)
 
     return true;
 }
@@ -1263,11 +1263,11 @@ MgByteReader* MgServerFeatureService::DescribeWfsFeatureType(MgResourceIdentifie
 
             if (NULL == classFound.p)
             {
-				STRING qualifiedName = currSchemaName;
-				qualifiedName += L":";
-				qualifiedName += currClassName;
-				MgStringCollection args;
-				args.Add(qualifiedName);
+                STRING qualifiedName = currSchemaName;
+                qualifiedName += L":";
+                qualifiedName += currClassName;
+                MgStringCollection args;
+                args.Add(qualifiedName);
                 throw new MgObjectNotFoundException(L"DescribeWfsFeatureType",
                     __LINE__, __WFILE__, NULL, L"MgNoNameForObject", &args);
             }
@@ -1315,7 +1315,7 @@ MgByteReader* MgServerFeatureService::DescribeWfsFeatureType(MgResourceIdentifie
 
     byteReader = bs->GetReader();
 
-    MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgServerFeatureService.DescribeWfsFeatureType")
+    MG_FEATURE_SERVICE_CATCH_AND_THROW_WITH_FEATURE_SOURCE(L"MgServerFeatureService.DescribeWfsFeatureType", featureSourceId)
 
     return byteReader.Detach();
 }

@@ -635,7 +635,7 @@ STRING MgServerDescribeSchema::DescribeSchemaAsXml(MgResourceIdentifier* resourc
         m_cacheManager->CheckPermission(resource, MgResourcePermission::ReadOnly);
     }
 
-    MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgServerDescribeSchema.DescribeSchemaAsXml")
+    MG_FEATURE_SERVICE_CATCH_AND_THROW_WITH_FEATURE_SOURCE(L"MgServerDescribeSchema.DescribeSchemaAsXml", resource)
 
     return schemaXml;
 }
@@ -1070,7 +1070,7 @@ MgClassDefinition* MgServerDescribeSchema::GetClassDefinition(  MgResourceIdenti
         m_cacheManager->CheckPermission(resource, MgResourcePermission::ReadOnly);
     }
 
-    MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgServerDescribeSchema.GetClassDefinition")
+    MG_FEATURE_SERVICE_CATCH_AND_THROW_WITH_FEATURE_SOURCE(L"MgServerDescribeSchema.GetClassDefinition", resource)
 
     return classDefinition.Detach();
 }
@@ -1192,7 +1192,7 @@ MgClassDefinitionCollection* MgServerDescribeSchema::GetIdentityProperties(
     }
 
 
-    MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgServerDescribeSchema.GetIdentityProperties")
+    MG_FEATURE_SERVICE_CATCH_AND_THROW_WITH_FEATURE_SOURCE(L"MgServerDescribeSchema.GetIdentityProperties", resource)
 
     return classDefs.Detach();
 }

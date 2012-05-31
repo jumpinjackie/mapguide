@@ -35,6 +35,9 @@
 #define MG_FDOCONNECTION_MANAGER_THROW()                       MG_FEATURE_SERVICE_THROW()
 #define MG_FDOCONNECTION_MANAGER_CATCH_AND_THROW(methodName)   MG_FEATURE_SERVICE_CATCH_AND_THROW(methodName)
 
+#define MG_FDOCONNECTION_MANAGER_CATCH_WITH_FEATURE_SOURCE(methodName, fsId)             MG_FEATURE_SERVICE_CATCH_WITH_FEATURE_SOURCE(methodName, fsId)
+#define MG_FDOCONNECTION_MANAGER_CATCH_AND_THROW_WITH_FEATURE_SOURCE(methodName, fsId)   MG_FEATURE_SERVICE_CATCH_AND_THROW_WITH_FEATURE_SOURCE(methodName, fsId)
+
 typedef struct {
     STRING ltName;                              // Current long transaction name for this connection
     FdoIConnection* pFdoConnection;
