@@ -53,7 +53,7 @@ int Execute(CREFSTRING fileName, CREFSTRING test)
             runner.addTest(CppUnit::TestFactoryRegistry::getRegistry("TestMdfModel").makeTest());
             runner.addTest(CppUnit::TestFactoryRegistry::getRegistry("TestKmlService").makeTest());
             runner.addTest(CppUnit::TestFactoryRegistry::getRegistry("TestMappingService").makeTest());
-			runner.addTest(CppUnit::TestFactoryRegistry::getRegistry("TestMisc").makeTest());
+		    runner.addTest(CppUnit::TestFactoryRegistry::getRegistry("TestMisc").makeTest());
             runner.addTest(CppUnit::TestFactoryRegistry::getRegistry("TestRenderingService").makeTest());
             runner.addTest(CppUnit::TestFactoryRegistry::getRegistry("TestResourceService").makeTest());
             runner.addTest(CppUnit::TestFactoryRegistry::getRegistry("TestTileService").makeTest());
@@ -83,7 +83,7 @@ int Execute(CREFSTRING fileName, CREFSTRING test)
             ACE_OS::printf("  LogManager\n");
             ACE_OS::printf("  MappingService\n");
             ACE_OS::printf("  MdfModel\n");
-			ACE_OS::printf("  Misc\n");
+		    ACE_OS::printf("  Misc\n");
             ACE_OS::printf("  Performance\n");
             ACE_OS::printf("  RenderingService\n");
             ACE_OS::printf("  ResourceService\n");
@@ -134,7 +134,7 @@ int Execute(CREFSTRING fileName, CREFSTRING test)
             ACE_DEBUG((LM_INFO, ACE_TEXT(">>>>> Running only MdfModel tests. <<<<<\n\n")));
             runner.addTest(CppUnit::TestFactoryRegistry::getRegistry("TestMdfModel").makeTest());
         }
-		else if(ACE_OS::strcasecmp(MG_WCHAR_TO_TCHAR(test), ACE_LIB_TEXT("Misc")) == 0)
+	    else if(ACE_OS::strcasecmp(MG_WCHAR_TO_TCHAR(test), ACE_LIB_TEXT("Misc")) == 0)
         {
             ACE_DEBUG((LM_INFO, ACE_TEXT(">>>>> Running only Miscellaneous tests. <<<<<\n\n")));
             runner.addTest(CppUnit::TestFactoryRegistry::getRegistry("TestMisc").makeTest());
@@ -216,7 +216,7 @@ int Execute(CREFSTRING fileName, CREFSTRING test)
         runner.addTest(CppUnit::TestFactoryRegistry::getRegistry("TestMdfModel").makeTest());
         runner.addTest(CppUnit::TestFactoryRegistry::getRegistry("TestKmlService").makeTest());
         runner.addTest(CppUnit::TestFactoryRegistry::getRegistry("TestMappingService").makeTest());
-		runner.addTest(CppUnit::TestFactoryRegistry::getRegistry("TestMisc").makeTest());
+	    runner.addTest(CppUnit::TestFactoryRegistry::getRegistry("TestMisc").makeTest());
         runner.addTest(CppUnit::TestFactoryRegistry::getRegistry("TestRenderingService").makeTest());
         runner.addTest(CppUnit::TestFactoryRegistry::getRegistry("TestResourceService").makeTest());
         runner.addTest(CppUnit::TestFactoryRegistry::getRegistry("TestTileService").makeTest());
