@@ -24,8 +24,17 @@ IF "%DESKTOP_PLATFORM%" == "x64" SET DESKTOP_PLATFORM_UNMANAGED=x64
 pushd Desktop
 echo [build]: Desktop API (%DESKTOP_PLATFORM_UNMANAGED%)
 %MSBUILD% /p:Platform=%DESKTOP_PLATFORM_UNMANAGED% MgDesktopApi%VS_SLN_SUFFIX%.sln
+if "%errorlevel%"=="1" goto error
 echo [build]: .net components (%DESKTOP_PLATFORM%)
 %MSBUILD% /p:Platform=%DESKTOP_PLATFORM% MgDesktopDotNet%VS_SLN_SUFFIX%.sln
+if "%errorlevel%"=="1" goto error
 popd
 echo [install]: binaries
 %XCOPY% "Desktop\bin\%TYPEBUILD%" "%MG_OUTPUT_DESKTOP%" /EXCLUDE:svn_excludes.txt+%CONFIGURATION%_excludes.txt
+goto quit
+
+:error
+echo [ERROR]: There was an error building the component
+exit /B 1
+
+:quit
