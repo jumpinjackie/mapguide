@@ -157,6 +157,7 @@ MgXmlParserException                                  = An exception occurred in
 # *****************************************************************************
 [ErrorDescription]
 MgArgumentsMismatch                                   = The arguments needed do not match the arguments provided.
+MgArgumentOutOfRange                                  = Argument out of range [%1, %2]: %3
 MgClassWOIdentity                                     = A class definition has no identity property.
 MgCollectionEmpty                                     = The collection cannot be empty.
 MgCoordinateSystemNotReadyException                   = The object is not ready for this operation.
@@ -298,6 +299,9 @@ MgMissingSchema                                       = No schema specified.
 MgMissingSrs                                          = No coordinate system specified.
 MgNameNotFound                                        = The name was not found.
 MgNoDataFromRenderer                                  = No data from renderer.
+MgNoNameForObject                                     = No object found for name (%1)
+MgNullArgument                                        = Null argument: %1
+MgNullPointer                                         = Null pointer: %1
 MgPropertyValuesEmpty                                 = The property values cannot be empty.
 MgReaderIdNotFound                                    = The reader ID was not found.
 MgRepositoryAlreadyOpened                             = The repository is already opened by another process (e.g. If you are running the server interactively as an application from the command line, are you also running the server as a service?).

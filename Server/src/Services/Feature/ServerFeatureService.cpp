@@ -1263,8 +1263,13 @@ MgByteReader* MgServerFeatureService::DescribeWfsFeatureType(MgResourceIdentifie
 
             if (NULL == classFound.p)
             {
+				STRING qualifiedName = currSchemaName;
+				qualifiedName += L":";
+				qualifiedName += currClassName;
+				MgStringCollection args;
+				args.Add(qualifiedName);
                 throw new MgObjectNotFoundException(L"DescribeWfsFeatureType",
-                    __LINE__, __WFILE__, NULL, L"", NULL);
+                    __LINE__, __WFILE__, NULL, L"MgNoNameForObject", &args);
             }
             else
             {
