@@ -585,8 +585,8 @@ private:
 #define CHECKNULL(pointer, methodname)      \
 if (pointer == NULL)     \
 {                        \
-    MgStringCollection args; \
-    args.Add(L#pointer); \
+	MgStringCollection args; \
+	args.Add(L###pointer); \
     throw new MgNullReferenceException(methodname, \
                                        __LINE__, __WFILE__, NULL, L"MgNullPointer", &args); \
 }
@@ -594,8 +594,8 @@ if (pointer == NULL)     \
 #define CHECKARGUMENTNULL(pointer, methodname)      \
 if (pointer == NULL)     \
 {                        \
-    MgStringCollection args; \
-    args.Add(L#pointer); \
+	MgStringCollection args; \
+	args.Add(L###pointer); \
     throw new MgNullArgumentException(methodname, \
                                        __LINE__, __WFILE__, NULL, L"MgNullArgument", &args); \
 }
@@ -605,14 +605,10 @@ if (pointer == NULL)     \
     {                                                                         \
         if (NULL != methodName)                                               \
         {                                                                     \
-            std::wostringstream minStr;                                       \
-            minStr << min;                                                    \
-            std::wostringstream maxStr;                                       \
-            maxStr << max;                                                    \
-            MgStringCollection args;                                          \
-            args.Add(minStr.str());                                           \
-            args.Add(maxStr.str());                                           \
-            args.Add(L#value);                                                \
+			MgStringCollection args;										  \
+			args.Add(L#min);												  \
+			args.Add(L#max);												  \
+			args.Add(L###value);												  \
             throw new MgArgumentOutOfRangeException(                          \
                 methodName, __LINE__, __WFILE__, NULL, L"MgArgumentOutOfRange", &args); \
         }                                                                     \
