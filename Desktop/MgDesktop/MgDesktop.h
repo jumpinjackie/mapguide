@@ -49,6 +49,7 @@
 #include "Services/ScrollableFeatureReader.h"
 #include "Services/FeatureService.h"
 #include "Services/ImageFormats.h"
+#include "Services/MappingService.h"
 #include "Services/ProfilingService.h"
 #include "Services/RenderingService.h"
 #include "Services/ResourceService.h"

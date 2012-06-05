@@ -87,14 +87,14 @@ namespace MapViewerTest
                     save.Filter = "DWF Files (*.dwf)|*.dwf";
                     if (save.ShowDialog() == DialogResult.OK)
                     {
-                        var renderSvc = (MgRenderingService)mapViewer.GetProvider().CreateService(MgServiceType.RenderingService);
+                        var mappingSvc = (MgdMappingService)mapViewer.GetProvider().CreateService(MgServiceType.MappingService);
                         var map = (MgdMap)mapViewer.GetMap();
                         var dwfVer = new MgDwfVersion("6.01", "1.2");
 
                         var layout = new MgLayout(layoutId, "TestPlot", MgPageUnitsType.Inches);
                         var plotSpec = new MgPlotSpecification(8.5f, 11.0f, MgPageUnitsType.Inches, 0.5f, 0.5f, 0.5f, 0.5f);
 
-                        var result = renderSvc.GeneratePlot(map, plotSpec, layout, dwfVer);
+                        var result = mappingSvc.GeneratePlot(map, plotSpec, layout, dwfVer);
                         var sink = new MgByteSink(result);
                         sink.ToFile(save.FileName);
 

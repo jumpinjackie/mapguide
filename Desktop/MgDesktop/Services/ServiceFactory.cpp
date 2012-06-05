@@ -1,6 +1,7 @@
 #include "ServiceFactory.h"
 #include "ResourceService.h"
 #include "FeatureService.h"
+#include "MappingService.h"
 #include "ProfilingService.h"
 #include "RenderingService.h"
 #include "DrawingService.h"
@@ -60,6 +61,8 @@ MgService* MgServiceFactory::CreateService(INT32 serviceType)
         return new MgDrawingService();
     case MgServiceType::FeatureService:
         return new MgdFeatureService();
+    case MgServiceType::MappingService:
+        return new MgdMappingService();
 	case MgServiceType::ProfilingService:
 		return new MgProfilingService();
     case MgServiceType::RenderingService:
