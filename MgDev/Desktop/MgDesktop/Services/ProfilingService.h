@@ -4,15 +4,15 @@
 #include "MgDesktop.h"
 
 class MgRenderingOptions;
-class MgRenderingService;
+class MgdRenderingService;
 
-/// \defgroup MgProfilingService MgProfilingService
+/// \defgroup MgdProfilingService MgdProfilingService
 /// \ingroup Profiling_Service_Module
 /// \{
 
 /// \brief
 /// This class provides services to profile exsiting MapGuide APIs 
-class MG_DESKTOP_API MgProfilingService : public MgService
+class MG_DESKTOP_API MgdProfilingService : public MgService
 {
 PUBLISHED_API:
 
@@ -92,10 +92,10 @@ INTERNAL_API:
     /// \brief
     /// Construct an MgProfileService object.
     ///
-    MgProfilingService();
+    MgdProfilingService();
 
 EXTERNAL_API:
-	virtual ~MgProfilingService();
+	virtual ~MgdProfilingService();
 
 protected:
 
@@ -118,7 +118,7 @@ protected:
 	virtual void Dispose() { delete this; }
 
 private:
-	MgRenderingService* m_svcRendering;
+	MgdRenderingService* m_svcRendering;
 
 CLASS_ID:
     static const INT32 m_cls_id = MapGuide_Desktop_ProfilingService_ProfilingService;

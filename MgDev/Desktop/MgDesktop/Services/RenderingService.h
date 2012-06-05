@@ -5,7 +5,7 @@ class MgdMap;
 class SE_Renderer;
 class MgRenderingOptions;
 class FeatureInfoRenderer;
-class MgDrawingService;
+class MgdDrawingService;
 struct RS_Bounds;
 class RS_Color;
 class Stylizer;
@@ -17,18 +17,18 @@ namespace MdfModel
 	class ProfileRenderMapResult;
 }
 
-template class Ptr<MgDrawingService>;
+template class Ptr<MgdDrawingService>;
 
-//NOTE: Despite MgRenderingService not defined in PlatformBase, we don't want a naming collision
+//NOTE: Despite MgdRenderingService not defined in PlatformBase, we don't want a naming collision
 //if this library and MapGuideCommon happend to be linked together
 
-class MG_DESKTOP_API MgRenderingService : public MgService
+class MG_DESKTOP_API MgdRenderingService : public MgService
 {
-    DECLARE_CLASSNAME(MgRenderingService)
+    DECLARE_CLASSNAME(MgdRenderingService)
 
 public:
-    MgRenderingService();
-    ~MgRenderingService();
+    MgdRenderingService();
+    ~MgdRenderingService();
 
     DECLARE_CREATE_SERVICE()
 
@@ -256,7 +256,7 @@ private:
     // member data
     Ptr<MgFeatureService> m_svcFeature;
     Ptr<MgResourceService> m_svcResource;
-    Ptr<MgDrawingService> m_svcDrawing;
+    Ptr<MgdDrawingService> m_svcDrawing;
     Ptr<MgCoordinateSystemFactory> m_pCSFactory;
 
     // this will eventually be removed

@@ -73,7 +73,7 @@ MgdMappingService::MgdMappingService() : MgService()
     m_svcFeature = dynamic_cast<MgFeatureService*>(fact->CreateService(MgServiceType::FeatureService));
     assert(m_svcFeature != NULL);
 
-    m_svcDrawing = dynamic_cast<MgDrawingService*>(fact->CreateService(MgServiceType::DrawingService));
+    m_svcDrawing = dynamic_cast<MgdDrawingService*>(fact->CreateService(MgServiceType::DrawingService));
     assert(m_svcDrawing != NULL);
 
     MgConfiguration* pConf = MgConfiguration::GetInstance();

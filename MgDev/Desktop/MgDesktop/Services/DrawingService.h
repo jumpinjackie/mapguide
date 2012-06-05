@@ -3,22 +3,22 @@
 
 #include "MgDesktop.h"
 
-class MG_DESKTOP_API MgDrawingService : public MgService
+class MG_DESKTOP_API MgdDrawingService : public MgService
 {
-    DECLARE_CLASSNAME(MgDrawingService)
+    DECLARE_CLASSNAME(MgdDrawingService)
 
 public:
     //////////////////////////////////////////////////////////////////
     /// <summary>
     /// Destructor
     /// </summary>
-    virtual ~MgDrawingService();
+    virtual ~MgdDrawingService();
 
     //////////////////////////////////////////////////////////////////
     /// <summary>
-    /// Construct an MgDrawingService object
+    /// Construct an MgdDrawingService object
     /// </summary>
-    MgDrawingService();
+    MgdDrawingService();
 
 PUBLISHED_API:
     //////////////////////////////////////////////////////////////////
@@ -60,13 +60,13 @@ PUBLISHED_API:
     //////////////////////////////////////////////////////////////////
     /// <summary>
     /// GetSection() returns a DWF containing only the requested section.  The section is specified by resource identifier (to get the DWF from the repository),
-    /// and the section name.  The section names can be retrieved via call to MgDrawingService::EnumerateSections() or from manifest.xml via call to MgDrawingService::DescribeDrawing().
+    /// and the section name.  The section names can be retrieved via call to MgdDrawingService::EnumerateSections() or from manifest.xml via call to MgdDrawingService::DescribeDrawing().
     /// </summary>
     /// <param name="resource">Input
     /// MgResourceIdentifier object identifying the DWF resource
     /// </param>
     /// <param name="sectionName">Input
-    /// sectionName specifies the unique name of the section in the DWF resource.  Section names can be retrieved via call to MgDrawingService::EnumerateSections() or from manifest.xml via call to MgDrawingService::DescribeDrawing().
+    /// sectionName specifies the unique name of the section in the DWF resource.  Section names can be retrieved via call to MgdDrawingService::EnumerateSections() or from manifest.xml via call to MgdDrawingService::DescribeDrawing().
     /// </param>
     /// <returns>
     /// Returns DWF stream containing the specified section.
@@ -89,8 +89,8 @@ PUBLISHED_API:
     /// GetSectionResource() extracts a specific resource from the DWF package.
     /// It is specified by the resource identifier (to get the DWF from the repository)
     /// and the resource name (to get the DWF resource from the DWF package).
-    /// A list of resource names can be retrieved via call to MgDrawingServices::EnumerateSectionResources(),
-    /// or from the manifest.xml via call to MgDrawingServices::DescribeDrawing().
+    /// A list of resource names can be retrieved via call to MgdDrawingServices::EnumerateSectionResources(),
+    /// or from the manifest.xml via call to MgdDrawingServices::DescribeDrawing().
     /// Refer to the DWF Format Specification at http://viewers/web/Olema/pdf/DWF%206%20Corporate%20Publishing%20Format.pdf for more information resource files associated with a particular section.
     ///
     /// </summary>
@@ -99,8 +99,8 @@ PUBLISHED_API:
     /// </param>
     /// <param name="resourceName">Input
     /// Unique resource name of an item in the DWF.
-    /// The item's name can be retrieved from call to MgDrawingServices::EnumerateDrawingServices(),
-    /// or from the manifest.xml via call to MgDrawingServices::DescribeDrawing().
+    /// The item's name can be retrieved from call to MgdDrawingServices::EnumerateDrawingServices(),
+    /// or from the manifest.xml via call to MgdDrawingServices::DescribeDrawing().
     /// </param>
     /// <returns>
     /// Returns byte stream for the item.
@@ -124,15 +124,15 @@ PUBLISHED_API:
     /// <summary>
     /// EnumerateLayers() returns the layer names in a DWF ePlot section.  An ePlot section is also known as a "sheet" in DWF viewers.
     /// The ePlot section is specified by resource identifier (to get the DWF from the repository), and section name.
-    /// A list of all sections in a DWF can be retrieved from call to MgDrawingServices::EnumerateSections(),
-    /// or from the manifest.xml via call to MgDrawingServices::DescribeDrawing().
+    /// A list of all sections in a DWF can be retrieved from call to MgdDrawingServices::EnumerateSections(),
+    /// or from the manifest.xml via call to MgdDrawingServices::DescribeDrawing().
     //  Refer to the DWF Format Specification at http://viewers/web/Olema/pdf/DWF%206%20Corporate%20Publishing%20Format.pdf for more information on the manifest and sections.
     /// </summary>
     /// <param name="resource">Input
     /// MgResourceIdentifier object identifying the DWF resource
     /// </param>
     /// <param name="sectionName">Input
-    /// sectionName specifies the unique name of the section in the DWF resource.  Section names can be retrieved via call to MgDrawingService::EnumerateSections() or from manifest.xml via call to MgDrawingService::DescribeDrawing().
+    /// sectionName specifies the unique name of the section in the DWF resource.  Section names can be retrieved via call to MgdDrawingService::EnumerateSections() or from manifest.xml via call to MgdDrawingService::DescribeDrawing().
     /// </param>
     /// <returns>
     /// Returns the pointer to a StringCollection of layer names.
@@ -157,10 +157,10 @@ PUBLISHED_API:
     /// MgResourceIdentifier object identifying the DWF resource
     /// </param>
     /// <param name="sectionName">Input
-    /// sectionName specifies the unique name of the section in the DWF resource.  Section names can be retrieved via call to MgDrawingService::EnumerateSections() or from manifest.xml via call to MgDrawingService::DescribeDrawing().
+    /// sectionName specifies the unique name of the section in the DWF resource.  Section names can be retrieved via call to MgdDrawingService::EnumerateSections() or from manifest.xml via call to MgdDrawingService::DescribeDrawing().
     /// </param>
     /// <param name="layerName">Input
-    /// layerName specifies the name of the layer to retrieve from a particular section.  A list of layer names can can be retrieved via call to MgDrawingService::EnumerateLayers().
+    /// layerName specifies the name of the layer to retrieve from a particular section.  A list of layer names can can be retrieved via call to MgdDrawingService::EnumerateLayers().
     /// </param>
     /// <returns>
     /// Returns DWF stream containing the specified layer (in a section)
@@ -205,13 +205,13 @@ PUBLISHED_API:
     /// <summary>
     /// EnumerateSectionResources() enumerates the resources of a DWF section.  The DWF is identified by it's
     /// resource identifier and the section is identified by name.  The section name
-    /// will be retrieved from manifest.xml or from MgDrawingServices::EnumerateSections() API.
+    /// will be retrieved from manifest.xml or from MgdDrawingServices::EnumerateSections() API.
     /// </summary>
     /// <param name="resource">Input
     /// MgResourceIdentifier object identifying the DWF resource
     /// </param>
     /// <param name="sectionName">Input
-    /// sectionName specifies the unique name of the section in the DWF resource.  Section names can be retrieved via call to MgDrawingService::EnumerateSections() or from manifest.xml via call to MgDrawingService::DescribeDrawing().
+    /// sectionName specifies the unique name of the section in the DWF resource.  Section names can be retrieved via call to MgdDrawingService::EnumerateSections() or from manifest.xml via call to MgdDrawingService::DescribeDrawing().
     /// </param>
     /// <returns>
     /// Returns MgByteReader object representing resources in a DWF section.

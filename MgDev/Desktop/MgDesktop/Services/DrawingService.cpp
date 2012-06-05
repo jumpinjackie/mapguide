@@ -23,7 +23,7 @@
 /// - MgServiceNotAvailableException if the underlying resource service cannot be obtained to access the drawing in the resource repository.
 /// - MgXmlParserException if there are problems parsing the resource content specified by the resource identifier.
 /// - See MgResourceService for additional exceptions.
-MgByteReader* MgDrawingService::GetDrawing(MgResourceIdentifier* resource)
+MgByteReader* MgdDrawingService::GetDrawing(MgResourceIdentifier* resource)
 {
     Ptr<MgByteReader> byteReader;
 
@@ -36,11 +36,11 @@ MgByteReader* MgDrawingService::GetDrawing(MgResourceIdentifier* resource)
     MG_LOG_OPERATION_MESSAGE_ADD_STRING((NULL == resource) ? L"MgResourceIdentifier" : resource->ToString().c_str());
     MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
 
-    MG_LOG_TRACE_ENTRY(L"MgDrawingService::GetDrawing()");
+    MG_LOG_TRACE_ENTRY(L"MgdDrawingService::GetDrawing()");
 
     if (0 == resource)
     {
-        throw new MgNullArgumentException(L"MgDrawingService.GetDrawing", __LINE__, __WFILE__, NULL, L"", NULL);
+        throw new MgNullArgumentException(L"MgdDrawingService.GetDrawing", __LINE__, __WFILE__, NULL, L"", NULL);
     }
 
     // Get the name of the dwf file from the resource content and remove the path from the filename
@@ -56,7 +56,7 @@ MgByteReader* MgDrawingService::GetDrawing(MgResourceIdentifier* resource)
     // Successful operation
     MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Success.c_str());
 
-    MG_SERVER_DRAWING_SERVICE_CATCH(L"MgDrawingService::GetDrawing")
+    MG_SERVER_DRAWING_SERVICE_CATCH(L"MgdDrawingService::GetDrawing")
 
     if (mgException != NULL)
     {
@@ -92,7 +92,7 @@ MgByteReader* MgDrawingService::GetDrawing(MgResourceIdentifier* resource)
 /// - MgInvalidDwfPackageException if the DWF specified by the resource identifier is not a DWF of version 6.0 or greater.
 /// - MgDwfException if the DWF component encounters errors.
 /// - See MgResourceService for additional exceptions.
-MgByteReader* MgDrawingService::DescribeDrawing(MgResourceIdentifier* resource)
+MgByteReader* MgdDrawingService::DescribeDrawing(MgResourceIdentifier* resource)
 {
     Ptr<MgByteReader> byteReader;
 
@@ -105,11 +105,11 @@ MgByteReader* MgDrawingService::DescribeDrawing(MgResourceIdentifier* resource)
     MG_LOG_OPERATION_MESSAGE_ADD_STRING((NULL == resource) ? L"MgResourceIdentifier" : resource->ToString().c_str());
     MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
 
-    MG_LOG_TRACE_ENTRY(L"MgDrawingService::DescribeDrawing()");
+    MG_LOG_TRACE_ENTRY(L"MgdDrawingService::DescribeDrawing()");
 
     if (0 == resource)
     {
-        throw new MgNullArgumentException(L"MgDrawingService.DescribeDrawing", __LINE__, __WFILE__, NULL, L"", NULL);
+        throw new MgNullArgumentException(L"MgdDrawingService.DescribeDrawing", __LINE__, __WFILE__, NULL, L"", NULL);
     }
     else
     {
@@ -139,7 +139,7 @@ MgByteReader* MgDrawingService::DescribeDrawing(MgResourceIdentifier* resource)
                 DWFCORE_FREE_OBJECT(pStream);
             if (0 != pBuffer)
                 DWFCORE_FREE_MEMORY(pBuffer);
-            throw new MgInvalidCastException(L"MgDrawingService.DescribeDrawing", __LINE__, __WFILE__, NULL, L"", NULL);
+            throw new MgInvalidCastException(L"MgdDrawingService.DescribeDrawing", __LINE__, __WFILE__, NULL, L"", NULL);
         }
 
         // Return the manifest via a MgByteReader
@@ -158,7 +158,7 @@ MgByteReader* MgDrawingService::DescribeDrawing(MgResourceIdentifier* resource)
     // Successful operation
     MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Success.c_str());
 
-    MG_SERVER_DRAWING_SERVICE_CATCH(L"MgDrawingService::DescribeDrawing")
+    MG_SERVER_DRAWING_SERVICE_CATCH(L"MgdDrawingService::DescribeDrawing")
 
     if (mgException != NULL)
     {
@@ -179,13 +179,13 @@ MgByteReader* MgDrawingService::DescribeDrawing(MgResourceIdentifier* resource)
 //////////////////////////////////////////////////////////////////
 /// <summary>
 /// GetSection() returns a DWF containing only the requested section.  The section is specified by resource identifier (to get the DWF from the repository),
-/// and the section name.  The section names can be retrieved via call to MgDrawingService::EnumerateSections() or from manifest.xml via call to MgDrawingService::DescribeDrawing().
+/// and the section name.  The section names can be retrieved via call to MgdDrawingService::EnumerateSections() or from manifest.xml via call to MgdDrawingService::DescribeDrawing().
 /// </summary>
 /// <param name="resource">Input
 /// MgResourceIdentifier object identifying the DWF resource
 /// </param>
 /// <param name="sectionName">Input
-/// sectionName specifies the unique name of the section in the DWF resource.  Section names can be retrieved via call to MgDrawingService::EnumerateSections() or from manifest.xml via call to MgDrawingService::DescribeDrawing().
+/// sectionName specifies the unique name of the section in the DWF resource.  Section names can be retrieved via call to MgdDrawingService::EnumerateSections() or from manifest.xml via call to MgdDrawingService::DescribeDrawing().
 /// </param>
 /// <returns>
 /// Returns DWF stream containing the specified section.
@@ -202,7 +202,7 @@ MgByteReader* MgDrawingService::DescribeDrawing(MgResourceIdentifier* resource)
 /// - MgDwfException if the DWF component encounters errors.
 /// - MgTemporaryFileNotAvailableException if a temporary file need to complete the operation cannot be generated or accessed.
 /// - See MgResourceService for additional exceptions.
-MgByteReader* MgDrawingService::GetSection(MgResourceIdentifier* resource, CREFSTRING sectionName)
+MgByteReader* MgdDrawingService::GetSection(MgResourceIdentifier* resource, CREFSTRING sectionName)
 {
     Ptr<MgByteReader> byteReader;
 
@@ -217,11 +217,11 @@ MgByteReader* MgDrawingService::GetSection(MgResourceIdentifier* resource, CREFS
     MG_LOG_OPERATION_MESSAGE_ADD_STRING(sectionName.c_str());
     MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
 
-    MG_LOG_TRACE_ENTRY(L"MgDrawingService::GetSection()");
+    MG_LOG_TRACE_ENTRY(L"MgdDrawingService::GetSection()");
 
     if (0 == resource)
     {
-        throw new MgNullArgumentException(L"MgDrawingService.GetSection", __LINE__, __WFILE__, NULL, L"", NULL);
+        throw new MgNullArgumentException(L"MgdDrawingService.GetSection", __LINE__, __WFILE__, NULL, L"", NULL);
     }
     else if (sectionName.empty())
     {
@@ -229,7 +229,7 @@ MgByteReader* MgDrawingService::GetSection(MgResourceIdentifier* resource, CREFS
         arguments.Add(L"2");
         arguments.Add(MgResources::BlankArgument);
 
-        throw new MgInvalidArgumentException(L"MgDrawingService.GetSection",
+        throw new MgInvalidArgumentException(L"MgdDrawingService.GetSection",
             __LINE__, __WFILE__, &arguments, L"MgStringEmpty", NULL);
     }
     else
@@ -243,7 +243,7 @@ MgByteReader* MgDrawingService::GetSection(MgResourceIdentifier* resource, CREFS
         {
             MgStringCollection arguments;
             arguments.Add(sectionName);
-            throw new MgDwfSectionNotFoundException(L"MgDrawingService.GetSection", __LINE__, __WFILE__, &arguments, L"", NULL);
+            throw new MgDwfSectionNotFoundException(L"MgdDrawingService.GetSection", __LINE__, __WFILE__, &arguments, L"", NULL);
         }
 
         // Create a DWFPackageWriter for writing the section to a temporary DWF file
@@ -277,7 +277,7 @@ MgByteReader* MgDrawingService::GetSection(MgResourceIdentifier* resource, CREFS
     // Successful operation
     MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Success.c_str());
 
-    MG_SERVER_DRAWING_SERVICE_CATCH(L"MgDrawingService::GetSection")
+    MG_SERVER_DRAWING_SERVICE_CATCH(L"MgdDrawingService::GetSection")
 
     if (mgException != NULL)
     {
@@ -300,8 +300,8 @@ MgByteReader* MgDrawingService::GetSection(MgResourceIdentifier* resource, CREFS
 /// GetSectionResource() extracts a specific resource from the DWF package.
 /// It is specified by the resource identifier (to get the DWF from the repository)
 /// and the resource name (to get the DWF resource from the DWF package).
-/// A list of resource names can be retrieved via call to MgDrawingServices::EnumerateSectionResources(),
-/// or from the manifest.xml via call to MgDrawingServices::DescribeDrawing().
+/// A list of resource names can be retrieved via call to MgdDrawingServices::EnumerateSectionResources(),
+/// or from the manifest.xml via call to MgdDrawingServices::DescribeDrawing().
 /// Refer to the DWF Format Specification at http://viewers/web/Olema/pdf/DWF%206%20Corporate%20Publishing%20Format.pdf for more information resource files associated with a particular section.
 ///
 /// </summary>
@@ -310,8 +310,8 @@ MgByteReader* MgDrawingService::GetSection(MgResourceIdentifier* resource, CREFS
 /// </param>
 /// <param name="resourceName">Input
 /// Unique resource name of an item in the DWF.
-/// The item's name can be retrieved from call to MgDrawingServices::EnumerateDrawingServices(),
-/// or from the manifest.xml via call to MgDrawingServices::DescribeDrawing().
+/// The item's name can be retrieved from call to MgdDrawingServices::EnumerateDrawingServices(),
+/// or from the manifest.xml via call to MgdDrawingServices::DescribeDrawing().
 /// </param>
 /// <returns>
 /// Returns byte stream for the item.
@@ -330,7 +330,7 @@ MgByteReader* MgDrawingService::GetSection(MgResourceIdentifier* resource, CREFS
 /// - MgDwfException if the DWF component encounters errors.
 /// - MgTemporaryFileNotAvailableException if a temporary file need to complete the operation cannot be generated or accessed.
 /// - See MgResourceService for additional exceptions.
-MgByteReader* MgDrawingService::GetSectionResource(MgResourceIdentifier* resource, CREFSTRING resourceName)
+MgByteReader* MgdDrawingService::GetSectionResource(MgResourceIdentifier* resource, CREFSTRING resourceName)
 {
     Ptr<MgByteReader> byteReader;
 
@@ -345,11 +345,11 @@ MgByteReader* MgDrawingService::GetSectionResource(MgResourceIdentifier* resourc
     MG_LOG_OPERATION_MESSAGE_ADD_STRING(resourceName.c_str());
     MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
 
-    MG_LOG_TRACE_ENTRY(L"MgDrawingService::GetSectionResource()");
+    MG_LOG_TRACE_ENTRY(L"MgdDrawingService::GetSectionResource()");
 
     if (0 == resource)
     {
-        throw new MgNullArgumentException(L"MgDrawingService.GetSectionResource", __LINE__, __WFILE__, NULL, L"", NULL);
+        throw new MgNullArgumentException(L"MgdDrawingService.GetSectionResource", __LINE__, __WFILE__, NULL, L"", NULL);
     }
     else if (resourceName.empty())
     {
@@ -357,7 +357,7 @@ MgByteReader* MgDrawingService::GetSectionResource(MgResourceIdentifier* resourc
         arguments.Add(L"2");
         arguments.Add(MgResources::BlankArgument);
 
-        throw new MgInvalidArgumentException(L"MgDrawingService.GetSectionResource",
+        throw new MgInvalidArgumentException(L"MgdDrawingService.GetSectionResource",
             __LINE__, __WFILE__, &arguments, L"MgStringEmpty", NULL);
     }
     else
@@ -373,7 +373,7 @@ MgByteReader* MgDrawingService::GetSectionResource(MgResourceIdentifier* resourc
             arguments.Add(L"2");
             arguments.Add(resourceName);
 
-            throw new MgInvalidArgumentException(L"MgDrawingService.GetSectionResource",
+            throw new MgInvalidArgumentException(L"MgdDrawingService.GetSectionResource",
                 __LINE__, __WFILE__, &arguments, L"MgResourceNameSeparatorNotFound", NULL);
         }
         sectionName = resourceName.substr(0, index);
@@ -384,7 +384,7 @@ MgByteReader* MgDrawingService::GetSectionResource(MgResourceIdentifier* resourc
             arguments.Add(L"2");
             arguments.Add(resourceName);
 
-            throw new MgInvalidArgumentException(L"MgDrawingService.GetSectionResource",
+            throw new MgInvalidArgumentException(L"MgdDrawingService.GetSectionResource",
                 __LINE__, __WFILE__, &arguments, L"MgResourceNameDoesNotContainSectionName", NULL);
         }
 
@@ -395,7 +395,7 @@ MgByteReader* MgDrawingService::GetSectionResource(MgResourceIdentifier* resourc
         {
             MgStringCollection arguments;
             arguments.Add(sectionName);
-            throw new MgDwfSectionNotFoundException(L"MgDrawingService.GetSectionResource", __LINE__, __WFILE__, &arguments, L"", NULL);
+            throw new MgDwfSectionNotFoundException(L"MgdDrawingService.GetSectionResource", __LINE__, __WFILE__, &arguments, L"", NULL);
         }
         // ...check if the resource exists in the section
         DWFResource* pResource = pSection->findResourceByHREF(resourceName.c_str());
@@ -403,7 +403,7 @@ MgByteReader* MgDrawingService::GetSectionResource(MgResourceIdentifier* resourc
         {
             MgStringCollection arguments;
             arguments.Add(resourceName);
-            throw new MgDwfSectionResourceNotFoundException(L"MgDrawingService.GetSectionResource", __LINE__, __WFILE__, &arguments, L"", NULL);
+            throw new MgDwfSectionResourceNotFoundException(L"MgdDrawingService.GetSectionResource", __LINE__, __WFILE__, &arguments, L"", NULL);
         }
         // ...get the mime type for the resource
         STRING wsMimeType = (STRING)pResource->mime();
@@ -420,7 +420,7 @@ MgByteReader* MgDrawingService::GetSectionResource(MgResourceIdentifier* resourc
                 DWFCORE_FREE_OBJECT(pStream);
             if (0 != pBuffer)
                 DWFCORE_FREE_MEMORY(pBuffer);
-            throw new MgInvalidCastException(L"MgDrawingService.GetSectionResource", __LINE__, __WFILE__, NULL, L"", NULL);
+            throw new MgInvalidCastException(L"MgdDrawingService.GetSectionResource", __LINE__, __WFILE__, NULL, L"", NULL);
         }
 
         // Return the resource via a MgByteReader
@@ -439,7 +439,7 @@ MgByteReader* MgDrawingService::GetSectionResource(MgResourceIdentifier* resourc
     // Successful operation
     MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Success.c_str());
 
-    MG_SERVER_DRAWING_SERVICE_CATCH(L"MgDrawingService::GetSectionResource")
+    MG_SERVER_DRAWING_SERVICE_CATCH(L"MgdDrawingService::GetSectionResource")
 
     if (mgException != NULL)
     {
@@ -461,15 +461,15 @@ MgByteReader* MgDrawingService::GetSectionResource(MgResourceIdentifier* resourc
 /// <summary>
 /// EnumerateLayers() returns the layer names in a DWF ePlot section.  An ePlot section is also known as a "sheet" in DWF viewers.
 /// The ePlot section is specified by resource identifier (to get the DWF from the repository), and section name.
-/// A list of all sections in a DWF can be retrieved from call to MgDrawingServices::EnumerateSections(),
-/// or from the manifest.xml via call to MgDrawingServices::DescribeDrawing().
+/// A list of all sections in a DWF can be retrieved from call to MgdDrawingServices::EnumerateSections(),
+/// or from the manifest.xml via call to MgdDrawingServices::DescribeDrawing().
 //  Refer to the DWF Format Specification at http://viewers/web/Olema/pdf/DWF%206%20Corporate%20Publishing%20Format.pdf for more information on the manifest and sections.
 /// </summary>
 /// <param name="resource">Input
 /// MgResourceIdentifier object identifying the DWF resource
 /// </param>
 /// <param name="sectionName">Input
-/// sectionName specifies the unique name of the section in the DWF resource.  Section names can be retrieved via call to MgDrawingService::EnumerateSections() or from manifest.xml via call to MgDrawingService::DescribeDrawing().
+/// sectionName specifies the unique name of the section in the DWF resource.  Section names can be retrieved via call to MgdDrawingService::EnumerateSections() or from manifest.xml via call to MgdDrawingService::DescribeDrawing().
 /// </param>
 /// <returns>
 /// Returns the pointer to a StringCollection of layer names.
@@ -485,7 +485,7 @@ MgByteReader* MgDrawingService::GetSectionResource(MgResourceIdentifier* resourc
 /// - MgDwfException if the DWF component encounters errors.
 /// - MgTemporaryFileNotAvailableException if a temporary file need to complete the operation cannot be generated or accessed.
 /// - See MgResourceService for additional exceptions.
-MgStringCollection* MgDrawingService::EnumerateLayers(MgResourceIdentifier* resource, CREFSTRING sectionName)
+MgStringCollection* MgdDrawingService::EnumerateLayers(MgResourceIdentifier* resource, CREFSTRING sectionName)
 {
     Ptr<MgStringCollection> layers;
 
@@ -500,11 +500,11 @@ MgStringCollection* MgDrawingService::EnumerateLayers(MgResourceIdentifier* reso
     MG_LOG_OPERATION_MESSAGE_ADD_STRING(sectionName.c_str());
     MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
 
-    MG_LOG_TRACE_ENTRY(L"MgDrawingService::EnumerateLayers()");
+    MG_LOG_TRACE_ENTRY(L"MgdDrawingService::EnumerateLayers()");
 
     if (0 == resource)
     {
-        throw new MgNullArgumentException(L"MgDrawingService.EnumerateLayers", __LINE__, __WFILE__, NULL, L"", NULL);
+        throw new MgNullArgumentException(L"MgdDrawingService.EnumerateLayers", __LINE__, __WFILE__, NULL, L"", NULL);
     }
     else if (sectionName.empty())
     {
@@ -512,7 +512,7 @@ MgStringCollection* MgDrawingService::EnumerateLayers(MgResourceIdentifier* reso
         arguments.Add(L"2");
         arguments.Add(MgResources::BlankArgument);
 
-        throw new MgInvalidArgumentException(L"MgDrawingService.EnumerateLayers",
+        throw new MgInvalidArgumentException(L"MgdDrawingService.EnumerateLayers",
             __LINE__, __WFILE__, &arguments, L"MgStringEmpty", NULL);
     }
     else
@@ -526,7 +526,7 @@ MgStringCollection* MgDrawingService::EnumerateLayers(MgResourceIdentifier* reso
         {
             MgStringCollection arguments;
             arguments.Add(sectionName);
-            throw new MgDwfSectionNotFoundException(L"MgDrawingService.EnumerateLayers", __LINE__, __WFILE__, &arguments, L"", NULL);
+            throw new MgDwfSectionNotFoundException(L"MgdDrawingService.EnumerateLayers", __LINE__, __WFILE__, &arguments, L"", NULL);
         }
 
         // Get the resources for the section
@@ -546,7 +546,7 @@ MgStringCollection* MgDrawingService::EnumerateLayers(MgResourceIdentifier* reso
                 {
                     MgStringCollection arguments;
                     arguments.Add(sectionName);
-                    throw new MgInvalidDwfSectionException(L"MgDrawingService.GetSection", __LINE__, __WFILE__, &arguments, L"", NULL);
+                    throw new MgInvalidDwfSectionException(L"MgdDrawingService.GetSection", __LINE__, __WFILE__, &arguments, L"", NULL);
                 }
 
                 pResource = piResources->get();
@@ -558,13 +558,13 @@ MgStringCollection* MgDrawingService::EnumerateLayers(MgResourceIdentifier* reso
 
         if (0 == pResource)
         {
-            throw new MgNullReferenceException(L"MgDrawingService.EnumerateLayers", __LINE__, __WFILE__, NULL, L"", NULL);
+            throw new MgNullReferenceException(L"MgdDrawingService.EnumerateLayers", __LINE__, __WFILE__, NULL, L"", NULL);
         }
 
         DWFInputStream* pStream = pResource->getInputStream();
         if (0 == pStream)
         {
-            throw new MgNullReferenceException(L"MgDrawingService.EnumerateLayers", __LINE__, __WFILE__, NULL, L"", NULL);
+            throw new MgNullReferenceException(L"MgdDrawingService.EnumerateLayers", __LINE__, __WFILE__, NULL, L"", NULL);
         }
         size_t nBytes = pStream->available();
         char* pBuffer = DWFCORE_ALLOC_MEMORY( char, nBytes );
@@ -572,7 +572,7 @@ MgStringCollection* MgDrawingService::EnumerateLayers(MgResourceIdentifier* reso
         DWFCORE_FREE_OBJECT(pStream);
         if (0 == pBuffer)
         {
-            throw new MgNullReferenceException(L"MgDrawingService.EnumerateLayers", __LINE__, __WFILE__, NULL, L"", NULL);
+            throw new MgNullReferenceException(L"MgdDrawingService.EnumerateLayers", __LINE__, __WFILE__, NULL, L"", NULL);
         }
 
         // Write the memory buffer to a temporary file
@@ -582,7 +582,7 @@ MgStringCollection* MgDrawingService::EnumerateLayers(MgResourceIdentifier* reso
         FILE* fp = fopen( tempW2dFileName.c_str(), "wb+" );  // NOXLATE
         if (0 == fp)
         {
-            throw new MgTemporaryFileNotAvailableException(L"MgDrawingService.EnumerateLayers", __LINE__, __WFILE__, NULL, L"", NULL);
+            throw new MgTemporaryFileNotAvailableException(L"MgdDrawingService.EnumerateLayers", __LINE__, __WFILE__, NULL, L"", NULL);
         }
 
         fwrite(pBuffer, sizeof(char), nBytes, fp);
@@ -626,7 +626,7 @@ MgStringCollection* MgDrawingService::EnumerateLayers(MgResourceIdentifier* reso
     // Successful operation
     MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Success.c_str());
 
-    MG_SERVER_DRAWING_SERVICE_CATCH(L"MgDrawingService::EnumerateLayers")
+    MG_SERVER_DRAWING_SERVICE_CATCH(L"MgdDrawingService::EnumerateLayers")
 
     if (mgException != NULL)
     {
@@ -652,10 +652,10 @@ MgStringCollection* MgDrawingService::EnumerateLayers(MgResourceIdentifier* reso
 /// MgResourceIdentifier object identifying the DWF resource
 /// </param>
 /// <param name="sectionName">Input
-/// sectionName specifies the unique name of the section in the DWF resource.  Section names can be retrieved via call to MgDrawingService::EnumerateSections() or from manifest.xml via call to MgDrawingService::DescribeDrawing().
+/// sectionName specifies the unique name of the section in the DWF resource.  Section names can be retrieved via call to MgdDrawingService::EnumerateSections() or from manifest.xml via call to MgdDrawingService::DescribeDrawing().
 /// </param>
 /// <param name="layerName">Input
-/// layerName specifies the name of the layer to retrieve from a particular section.  A list of layer names can can be retrieved via call to MgDrawingService::EnumerateLayers().
+/// layerName specifies the name of the layer to retrieve from a particular section.  A list of layer names can can be retrieved via call to MgdDrawingService::EnumerateLayers().
 /// </param>
 /// <returns>
 /// Returns DWF stream containing the specified layer (in a section)
@@ -672,7 +672,7 @@ MgStringCollection* MgDrawingService::EnumerateLayers(MgResourceIdentifier* reso
 /// - MgLayerNotFoundException if the requested layer does not exist in the requested section of the DWF package.
 /// - MgDwfException if the DWF component encounters errors.
 /// - See MgResourceService for additional exceptions.
-MgByteReader* MgDrawingService::GetLayer( MgResourceIdentifier* resource, CREFSTRING sectionName, CREFSTRING layerName )
+MgByteReader* MgdDrawingService::GetLayer( MgResourceIdentifier* resource, CREFSTRING sectionName, CREFSTRING layerName )
 {
     Ptr<MgByteReader> byteReader;
     Ptr<MgStringCollection> layers;
@@ -690,11 +690,11 @@ MgByteReader* MgDrawingService::GetLayer( MgResourceIdentifier* resource, CREFST
     MG_LOG_OPERATION_MESSAGE_ADD_STRING(layerName.c_str());
     MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
 
-    MG_LOG_TRACE_ENTRY(L"MgDrawingService::GetLayer()");
+    MG_LOG_TRACE_ENTRY(L"MgdDrawingService::GetLayer()");
 
     if (0 == resource)
     {
-        throw new MgNullArgumentException(L"MgDrawingService.GetLayer", __LINE__, __WFILE__, NULL, L"", NULL);
+        throw new MgNullArgumentException(L"MgdDrawingService.GetLayer", __LINE__, __WFILE__, NULL, L"", NULL);
     }
     else if (sectionName.empty())
     {
@@ -702,7 +702,7 @@ MgByteReader* MgDrawingService::GetLayer( MgResourceIdentifier* resource, CREFST
         arguments.Add(L"2");
         arguments.Add(MgResources::BlankArgument);
 
-        throw new MgInvalidArgumentException(L"MgDrawingService.GetLayer",
+        throw new MgInvalidArgumentException(L"MgdDrawingService.GetLayer",
             __LINE__, __WFILE__, &arguments, L"MgStringEmpty", NULL);
     }
     else
@@ -716,7 +716,7 @@ MgByteReader* MgDrawingService::GetLayer( MgResourceIdentifier* resource, CREFST
         {
             MgStringCollection arguments;
             arguments.Add(sectionName);
-            throw new MgDwfSectionNotFoundException(L"MgDrawingService.GetLayer", __LINE__, __WFILE__, &arguments, L"", NULL);
+            throw new MgDwfSectionNotFoundException(L"MgdDrawingService.GetLayer", __LINE__, __WFILE__, &arguments, L"", NULL);
         }
         pSection->readDescriptor();
 
@@ -737,7 +737,7 @@ MgByteReader* MgDrawingService::GetLayer( MgResourceIdentifier* resource, CREFST
                 {
                     MgStringCollection arguments;
                     arguments.Add(sectionName);
-                    throw new MgInvalidDwfSectionException(L"MgDrawingService.GetSection", __LINE__, __WFILE__, &arguments, L"", NULL);
+                    throw new MgInvalidDwfSectionException(L"MgdDrawingService.GetSection", __LINE__, __WFILE__, &arguments, L"", NULL);
                 }
 
                 pResource = piResources->get();
@@ -749,13 +749,13 @@ MgByteReader* MgDrawingService::GetLayer( MgResourceIdentifier* resource, CREFST
 
         if (0 == pResource)
         {
-            throw new MgNullReferenceException(L"MgDrawingService.EnumerateLayers", __LINE__, __WFILE__, NULL, L"", NULL);
+            throw new MgNullReferenceException(L"MgdDrawingService.EnumerateLayers", __LINE__, __WFILE__, NULL, L"", NULL);
         }
 
         DWFInputStream* pStream = pResource->getInputStream();
         if (0 == pStream)
         {
-            throw new MgNullReferenceException(L"MgDrawingService.GetLayer", __LINE__, __WFILE__, NULL, L"", NULL);
+            throw new MgNullReferenceException(L"MgdDrawingService.GetLayer", __LINE__, __WFILE__, NULL, L"", NULL);
         }
         size_t nBytes = pStream->available();
         char* pBuffer = DWFCORE_ALLOC_MEMORY( char, nBytes );
@@ -763,7 +763,7 @@ MgByteReader* MgDrawingService::GetLayer( MgResourceIdentifier* resource, CREFST
         DWFCORE_FREE_OBJECT(pStream);
         if (0 == pBuffer)
         {
-            throw new MgNullReferenceException(L"MgDrawingService.GetLayer", __LINE__, __WFILE__, NULL, L"", NULL);
+            throw new MgNullReferenceException(L"MgdDrawingService.GetLayer", __LINE__, __WFILE__, NULL, L"", NULL);
         }
 
         // Write the memory buffer to a temporary file
@@ -773,7 +773,7 @@ MgByteReader* MgDrawingService::GetLayer( MgResourceIdentifier* resource, CREFST
         FILE* fp = fopen( tempW2dFileName.c_str(), "wb+" );  // NOXLATE
         if (0 == fp)
         {
-            throw new MgTemporaryFileNotAvailableException(L"MgDrawingService.GetLayer", __LINE__, __WFILE__, NULL, L"", NULL);
+            throw new MgTemporaryFileNotAvailableException(L"MgdDrawingService.GetLayer", __LINE__, __WFILE__, NULL, L"", NULL);
         }
 
         fwrite(pBuffer, sizeof(char), nBytes, fp);
@@ -845,7 +845,7 @@ MgByteReader* MgDrawingService::GetLayer( MgResourceIdentifier* resource, CREFST
             // Cannot find specified layer in the Dwf section
             MgStringCollection arguments;
             arguments.Add(targetLayer.name);
-            throw new MgLayerNotFoundException(L"MgDrawingService.GetLayer", __LINE__, __WFILE__, &arguments, L"", NULL);
+            throw new MgLayerNotFoundException(L"MgdDrawingService.GetLayer", __LINE__, __WFILE__, &arguments, L"", NULL);
         }
 
         // Use EPlotSection to get section color, paper
@@ -868,7 +868,7 @@ MgByteReader* MgDrawingService::GetLayer( MgResourceIdentifier* resource, CREFST
             pPaper) );
         if (0 == pPage)
         {
-            throw new MgOutOfMemoryException(L"MgDrawingService.GetLayer", __LINE__, __WFILE__, NULL, L"", NULL);
+            throw new MgOutOfMemoryException(L"MgdDrawingService.GetLayer", __LINE__, __WFILE__, NULL, L"", NULL);
         }
         // Set properties for the section
         pPage->provideProperty(
@@ -885,7 +885,7 @@ MgByteReader* MgDrawingService::GetLayer( MgResourceIdentifier* resource, CREFST
             L"") );
         if (0 == p2Dgfx)
         {
-            throw new MgOutOfMemoryException(L"MgDrawingService.GetLayer", __LINE__, __WFILE__, NULL, L"", NULL);
+            throw new MgOutOfMemoryException(L"MgdDrawingService.GetLayer", __LINE__, __WFILE__, NULL, L"", NULL);
         }
         p2Dgfx->configureGraphic(pTransform, pExtents, pClip);
 
@@ -895,14 +895,14 @@ MgByteReader* MgDrawingService::GetLayer( MgResourceIdentifier* resource, CREFST
         if (pW2DFile == NULL)
         {
             DWFCORE_FREE_OBJECT( p2Dgfx );
-            throw new MgOutOfMemoryException(L"MgDrawingService.GetLayer", __LINE__, __WFILE__, NULL, L"", NULL);
+            throw new MgOutOfMemoryException(L"MgdDrawingService.GetLayer", __LINE__, __WFILE__, NULL, L"", NULL);
         }
         DWFFileInputStream* pW2DFilestream = DWFCORE_ALLOC_OBJECT( DWFFileInputStream );
         if (pW2DFilestream == NULL)
         {
             DWFCORE_FREE_OBJECT( p2Dgfx );
             DWFCORE_FREE_OBJECT( pW2DFile );
-            throw new MgOutOfMemoryException(L"MgDrawingService.GetLayer", __LINE__, __WFILE__, NULL, L"", NULL);
+            throw new MgOutOfMemoryException(L"MgdDrawingService.GetLayer", __LINE__, __WFILE__, NULL, L"", NULL);
         }
         //... open the file and bind it to the stream
         pW2DFile->open();
@@ -953,7 +953,7 @@ MgByteReader* MgDrawingService::GetLayer( MgResourceIdentifier* resource, CREFST
     // Successful operation
     MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Success.c_str());
 
-    MG_SERVER_DRAWING_SERVICE_CATCH(L"MgDrawingService::GetLayer")
+    MG_SERVER_DRAWING_SERVICE_CATCH(L"MgdDrawingService::GetLayer")
 
     if (mgException != NULL)
     {
@@ -990,7 +990,7 @@ MgByteReader* MgDrawingService::GetLayer( MgResourceIdentifier* resource, CREFST
 /// - MgInvalidDwfPackageException if the DWF specified by the resource identifier is not a DWF of version 6.0 or greater.
 /// - MgDwfException if the DWF component encounters errors.
 /// - See MgResourceService for additional exceptions.
-MgByteReader* MgDrawingService::EnumerateSections(MgResourceIdentifier* resource)
+MgByteReader* MgdDrawingService::EnumerateSections(MgResourceIdentifier* resource)
 {
     Ptr<MgByteReader> byteReader;
 
@@ -1004,11 +1004,11 @@ MgByteReader* MgDrawingService::EnumerateSections(MgResourceIdentifier* resource
     MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
     MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
 
-    MG_LOG_TRACE_ENTRY(L"MgDrawingService::EnumerateSections()");
+    MG_LOG_TRACE_ENTRY(L"MgdDrawingService::EnumerateSections()");
 
     if (0 == resource)
     {
-        throw new MgNullArgumentException(L"MgDrawingService.EnumerateSections", __LINE__, __WFILE__, NULL, L"", NULL);
+        throw new MgNullArgumentException(L"MgdDrawingService.EnumerateSections", __LINE__, __WFILE__, NULL, L"", NULL);
     }
     else
     {
@@ -1091,7 +1091,7 @@ MgByteReader* MgDrawingService::EnumerateSections(MgResourceIdentifier* resource
     // Successful operation
     MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Success.c_str());
 
-    MG_SERVER_DRAWING_SERVICE_CATCH(L"MgDrawingService::EnumerateSections")
+    MG_SERVER_DRAWING_SERVICE_CATCH(L"MgdDrawingService::EnumerateSections")
 
     if (mgException != NULL)
     {
@@ -1113,13 +1113,13 @@ MgByteReader* MgDrawingService::EnumerateSections(MgResourceIdentifier* resource
 /// <summary>
 /// EnumerateSectionResources() enumerates the resources of a DWF section.  The DWF is identified by it's
 /// resource identifier and the section is identified by name.  The section name
-/// will be retrieved from manifest.xml or from MgDrawingServices::EnumerateSections() API.
+/// will be retrieved from manifest.xml or from MgdDrawingServices::EnumerateSections() API.
 /// </summary>
 /// <param name="resource">Input
 /// MgResourceIdentifier object identifying the DWF resource
 /// </param>
 /// <param name="sectionName">Input
-/// sectionName specifies the unique name of the section in the DWF resource.  Section names can be retrieved via call to MgDrawingService::EnumerateSections() or from manifest.xml via call to MgDrawingService::DescribeDrawing().
+/// sectionName specifies the unique name of the section in the DWF resource.  Section names can be retrieved via call to MgdDrawingService::EnumerateSections() or from manifest.xml via call to MgdDrawingService::DescribeDrawing().
 /// </param>
 /// <returns>
 /// Returns MgByteReader object representing resources in a DWF section.
@@ -1135,7 +1135,7 @@ MgByteReader* MgDrawingService::EnumerateSections(MgResourceIdentifier* resource
 /// - MgInvalidDwfPackageException if the DWF specified by the resource identifier is not a DWF of version 6.0 or greater.
 /// - MgDwfException if the DWF component encounters errors.
 /// - See MgResourceService for additional exceptions.
-MgByteReader* MgDrawingService::EnumerateSectionResources(MgResourceIdentifier* resource, CREFSTRING sectionName)
+MgByteReader* MgdDrawingService::EnumerateSectionResources(MgResourceIdentifier* resource, CREFSTRING sectionName)
 {
     Ptr<MgByteReader> byteReader;
 
@@ -1150,11 +1150,11 @@ MgByteReader* MgDrawingService::EnumerateSectionResources(MgResourceIdentifier* 
     MG_LOG_OPERATION_MESSAGE_ADD_STRING(sectionName.c_str());
     MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
 
-    MG_LOG_TRACE_ENTRY(L"MgDrawingService::EnumerateSectionResources()");
+    MG_LOG_TRACE_ENTRY(L"MgdDrawingService::EnumerateSectionResources()");
 
     if (0 == resource)
     {
-        throw new MgNullArgumentException(L"MgDrawingService.EnumerateSectionResources", __LINE__, __WFILE__, NULL, L"", NULL);
+        throw new MgNullArgumentException(L"MgdDrawingService.EnumerateSectionResources", __LINE__, __WFILE__, NULL, L"", NULL);
     }
     else if (sectionName.empty())
     {
@@ -1162,7 +1162,7 @@ MgByteReader* MgDrawingService::EnumerateSectionResources(MgResourceIdentifier* 
         arguments.Add(L"2");
         arguments.Add(MgResources::BlankArgument);
 
-        throw new MgInvalidArgumentException(L"MgDrawingService.EnumerateSectionResources",
+        throw new MgInvalidArgumentException(L"MgdDrawingService.EnumerateSectionResources",
             __LINE__, __WFILE__, &arguments, L"MgStringEmpty", NULL);
     }
     else
@@ -1176,7 +1176,7 @@ MgByteReader* MgDrawingService::EnumerateSectionResources(MgResourceIdentifier* 
         {
             MgStringCollection arguments;
             arguments.Add(sectionName);
-            throw new MgDwfSectionNotFoundException(L"MgDrawingService.EnumerateSectionResources", __LINE__, __WFILE__, &arguments, L"", NULL);
+            throw new MgDwfSectionNotFoundException(L"MgdDrawingService.EnumerateSectionResources", __LINE__, __WFILE__, &arguments, L"", NULL);
         }
 
         // Get all the resources in the section
@@ -1186,7 +1186,7 @@ MgByteReader* MgDrawingService::EnumerateSectionResources(MgResourceIdentifier* 
         {
             MgStringCollection arguments;
             arguments.Add(sectionName);
-            throw new MgInvalidDwfSectionException(L"MgDrawingService.EnumerateSectionResources", __LINE__, __WFILE__, &arguments, L"", NULL);
+            throw new MgInvalidDwfSectionException(L"MgdDrawingService.EnumerateSectionResources", __LINE__, __WFILE__, &arguments, L"", NULL);
         }
 
         // Iterate through the resources and write to xml document
@@ -1252,7 +1252,7 @@ MgByteReader* MgDrawingService::EnumerateSectionResources(MgResourceIdentifier* 
     // Successful operation
     MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Success.c_str());
 
-    MG_SERVER_DRAWING_SERVICE_CATCH(L"MgDrawingService::EnumerateSections")
+    MG_SERVER_DRAWING_SERVICE_CATCH(L"MgdDrawingService::EnumerateSections")
 
     if (mgException != NULL)
     {
@@ -1286,7 +1286,7 @@ MgByteReader* MgDrawingService::EnumerateSectionResources(MgResourceIdentifier* 
 /// - MgServiceNotAvailableException if the underlying resource service cannot be obtained to access the drawing resource in the repository.
 /// - MgXmlParserException if there are problems parsing the resource content specified by the resource identifier.
 /// - See MgResourceService for additional exceptions.
-STRING MgDrawingService::GetCoordinateSpace(MgResourceIdentifier* resource)
+STRING MgdDrawingService::GetCoordinateSpace(MgResourceIdentifier* resource)
 {
     STRING dwfCoordinateSpace = L"";
 
@@ -1299,11 +1299,11 @@ STRING MgDrawingService::GetCoordinateSpace(MgResourceIdentifier* resource)
     MG_LOG_OPERATION_MESSAGE_ADD_STRING((NULL == resource) ? L"MgResourceIdentifier" : resource->ToString().c_str());
     MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
 
-    MG_LOG_TRACE_ENTRY(L"MgDrawingService::GetCoordinateSpace()");
+    MG_LOG_TRACE_ENTRY(L"MgdDrawingService::GetCoordinateSpace()");
 
     if (0 == resource)
     {
-        throw new MgNullArgumentException(L"MgDrawingService.GetCoordinateSpace", __LINE__, __WFILE__, NULL, L"", NULL);
+        throw new MgNullArgumentException(L"MgdDrawingService.GetCoordinateSpace", __LINE__, __WFILE__, NULL, L"", NULL);
     }
 
     // Get the coordinate space from the resource content.
@@ -1320,7 +1320,7 @@ STRING MgDrawingService::GetCoordinateSpace(MgResourceIdentifier* resource)
     // Successful operation
     MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Success.c_str());
 
-    MG_SERVER_DRAWING_SERVICE_CATCH(L"MgDrawingService::GetCoordinateSpace")
+    MG_SERVER_DRAWING_SERVICE_CATCH(L"MgdDrawingService::GetCoordinateSpace")
 
     if (mgException != NULL)
     {
@@ -1340,9 +1340,9 @@ STRING MgDrawingService::GetCoordinateSpace(MgResourceIdentifier* resource)
 
 //////////////////////////////////////////////////////////////////
 /// <summary>
-/// Construct an MgDrawingService object
+/// Construct an MgdDrawingService object
 /// </summary>
-MgDrawingService::MgDrawingService() :
+MgdDrawingService::MgdDrawingService() :
     MgService(),
     m_bOpenTempDwfFile(false),
     m_bOpenTempW2dFile(false),
@@ -1361,7 +1361,7 @@ MgDrawingService::MgDrawingService() :
     m_resourceService = static_cast<MgResourceService*>(fact->CreateService(MgServiceType::ResourceService));
     assert(m_resourceService != NULL);
 
-    MG_SERVER_DRAWING_SERVICE_CATCH_AND_THROW(L"MgDrawingService::MgDrawingService")
+    MG_SERVER_DRAWING_SERVICE_CATCH_AND_THROW(L"MgdDrawingService::MgdDrawingService")
 }
 
 
@@ -1369,13 +1369,13 @@ MgDrawingService::MgDrawingService() :
 /// <summary>
 /// Destructor
 /// </summary>
-MgDrawingService::~MgDrawingService()
+MgdDrawingService::~MgdDrawingService()
 {
     MG_SERVER_DRAWING_SERVICE_TRY()
 
     CleanUpTempFiles();
 
-    MG_SERVER_DRAWING_SERVICE_CATCH(L"MgDrawingService::~MgDrawingService")
+    MG_SERVER_DRAWING_SERVICE_CATCH(L"MgdDrawingService::~MgdDrawingService")
 }
 
 
@@ -1386,7 +1386,7 @@ MgDrawingService::~MgDrawingService()
 /// <returns>
 /// Nothing
 /// </returns>
-void MgDrawingService::CleanUpTempFiles()
+void MgdDrawingService::CleanUpTempFiles()
 {
     MgDrawingServiceUtil::CloseDrawingResource(m_bOpenTempDwfFile, m_tempDwfFileName);
 

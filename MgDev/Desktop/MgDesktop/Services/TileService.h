@@ -3,15 +3,15 @@
 
 #include "Tile/TileCache.h"
 
-class MG_DESKTOP_API MgTileService : public MgService
+class MG_DESKTOP_API MgdTileService : public MgService
 {
-    DECLARE_CLASSNAME(MgTileService)
+    DECLARE_CLASSNAME(MgdTileService)
 
 INTERNAL_API:
-    MgTileService();
+    MgdTileService();
 
 EXTERNAL_API:
-    virtual ~MgTileService();
+    virtual ~MgdTileService();
 
 PUBLISHED_API:
     virtual MgByteReader* GetTile(MgdMap* map,
