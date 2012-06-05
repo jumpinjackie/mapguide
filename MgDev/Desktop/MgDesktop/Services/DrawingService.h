@@ -7,6 +7,19 @@ class MG_DESKTOP_API MgDrawingService : public MgService
 {
     DECLARE_CLASSNAME(MgDrawingService)
 
+public:
+    //////////////////////////////////////////////////////////////////
+    /// <summary>
+    /// Destructor
+    /// </summary>
+    virtual ~MgDrawingService();
+
+    //////////////////////////////////////////////////////////////////
+    /// <summary>
+    /// Construct an MgDrawingService object
+    /// </summary>
+    MgDrawingService();
+
 PUBLISHED_API:
     //////////////////////////////////////////////////////////////////
     /// <summary>
@@ -232,22 +245,6 @@ PUBLISHED_API:
     /// - MgXmlParserException if there are problems parsing the resource content specified by the resource identifier.
     /// - See MgResourceService for additional exceptions.
     virtual STRING GetCoordinateSpace(MgResourceIdentifier* resource);
-
-    //////////////////////////////////////////////////////////////////
-    /// <summary>
-    /// Destructor
-    /// </summary>
-    virtual ~MgDrawingService();
-
-    //////////////////////////////////////////////////////////////////
-    /// <summary>
-    /// Construct an MgDrawingService object
-    /// </summary>
-    MgDrawingService();
-
-    //DECLARE_CREATE_SERVICE()
-
-    //void SetConnectionProperties(MgConnectionProperties* connProp);
 
 CLASS_ID:
     static const INT32 m_cls_id = MapGuide_Desktop_DrawingService_DrawingService;

@@ -1,10 +1,6 @@
 #ifndef DESKTOP_RENDERING_SERVICE_H
 #define DESKTOP_RENDERING_SERVICE_H
 
-class MgLayout;
-class MgMapPlotCollection;
-class MgPlotSpecification;
-class MgDwfVersion;
 class MgdMap;
 class SE_Renderer;
 class MgRenderingOptions;
@@ -36,7 +32,7 @@ public:
 
     DECLARE_CREATE_SERVICE()
 
-    void SetConnectionProperties(MgConnectionProperties* connProp);
+    //void SetConnectionProperties(MgConnectionProperties* connProp);
 
 PUBLISHED_API:
 
@@ -78,42 +74,6 @@ PUBLISHED_API:
                                           INT32 height,
                                           MgColor* backgroundColor,
                                           CREFSTRING format);
-
-    // --------------- BEGIN: DWF Rendering and miscellaneous APIs from MgMappingService -----------------------//
-	 virtual MgByteReader* GenerateLegendImage(MgResourceIdentifier* resource,
-                                               double scale,
-                                               INT32 width,
-                                               INT32 height,
-                                               CREFSTRING format,
-                                               INT32 geomType,
-                                               INT32 themeCategory);
-
-    virtual MgByteReader* GeneratePlot(MgdMap* map,
-                                       MgPlotSpecification* plotSpec,
-                                       MgLayout* layout,
-                                       MgDwfVersion* dwfVersion);
-
-    virtual MgByteReader* GeneratePlot(MgdMap* map,
-                                       MgCoordinate* center,
-                                       double scale,
-                                       MgPlotSpecification* plotSpec,
-                                       MgLayout* layout,
-                                       MgDwfVersion* dwfVersion);
-
-    virtual MgByteReader* GeneratePlot(MgdMap* map,
-                                       MgEnvelope* extents,
-                                       bool expandToFit,
-                                       MgPlotSpecification* plotSpec,
-                                       MgLayout* layout,
-                                       MgDwfVersion* dwfVersion);
-
-    virtual MgByteReader* GenerateMultiPlot(MgMapPlotCollection* mapPlots, MgDwfVersion* dwfVersion);
-
-private:
-    virtual MgByteReader* GenerateMultiPlotInternal(MgMapPlotCollection* mapPlots, MgDwfVersion* dwfVersion);
-	bool FeatureTypeStyleSupportsGeomType(MdfModel::FeatureTypeStyle* fts, INT32 geomType);
-	// --------------- END: DWF Rendering and miscellaneous APIs from MgMappingService -----------------------//
-
 INTERNAL_API:
 
     virtual MgByteReader* RenderDynamicOverlay(MgdMap* map,
@@ -309,19 +269,13 @@ private:
     INT32 m_maxRasterImageWidth;
     INT32 m_maxRasterImageHeight;
 
-	// Mapping Service configuration properties
-    INT32 m_rasterGridSizeForPlot;
-    INT32 m_minRasterGridSizeForPlot;
-    double m_rasterGridSizeOverrideRatioForPlot;
-
 protected:
-
     virtual INT32 GetClassId() { return m_cls_id; }
 
     virtual void Dispose() { delete this; }
 
 CLASS_ID:
-    static const INT32 m_cls_id = MapGuide_Desktop_RenderingService_RenderingService;
+    static const INT32 m_cls_id = MapGuide_Desktop_MappingService_MappingService;
 };
 
 #endif

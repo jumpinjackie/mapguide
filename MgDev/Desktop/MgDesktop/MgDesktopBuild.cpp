@@ -34,6 +34,7 @@
 #include "Services/FeatureReader.cpp"
 #include "Services/FeatureService.cpp"
 #include "Services/ImageFormats.cpp"
+#include "Services/MappingService.cpp"
 #include "Services/ProfilingService.cpp"
 #include "Services/RenderingService.cpp"
 #include "Services/ResourceService.cpp"

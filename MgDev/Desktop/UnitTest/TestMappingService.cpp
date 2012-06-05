@@ -17,11 +17,6 @@
 
 #include "MgDesktop.h"
 #include "TestMappingService.h"
-#include "ServiceManager.h"
-#include "ServerResourceService.h"
-#include "ServerMappingService.h"
-#include "ServerSiteService.h"
-#include "../Common/Manager/FdoConnectionManager.h"
 #include "CppUnitExtensions.h"
 
 const STRING TEST_LOCALE = L"en";
@@ -32,38 +27,16 @@ CPPUNIT_TEST_SUITE_NAMED_REGISTRATION(TestMappingService, "TestMappingService");
 TestMappingService::TestMappingService()
 {
     // Initialize service objects.
-    MgServiceManager* serviceManager = MgServiceManager::GetInstance();
+    //MgServiceManager* serviceManager = MgServiceManager::GetInstance();
+    Ptr<MgServiceFactory> factory = new MgServiceFactory();
 
-    m_svcResource = dynamic_cast<MgResourceService*>(
-        serviceManager->RequestService(MgServiceType::ResourceService));
+    m_svcResource = dynamic_cast<MgdResourceService*>(
+        factory->CreateService(MgServiceType::ResourceService));
     assert(m_svcResource != NULL);
 
-    m_svcMapping = dynamic_cast<MgMappingService*>(
-        serviceManager->RequestService(MgServiceType::MappingService));
+    m_svcMapping = dynamic_cast<MgdMappingService*>(
+        factory->CreateService(MgServiceType::MappingService));
     assert(m_svcMapping != NULL);
-
-    // Initialize a site connection.
-    Ptr<MgServerSiteService> svcSite = dynamic_cast<MgServerSiteService*>(
-        serviceManager->RequestService(MgServiceType::SiteService));
-    assert(svcSite != NULL);
-
-    Ptr<MgUserInformation> userInfo = new MgUserInformation(
-        L"Administrator", L"admin");
-    userInfo->SetLocale(TEST_LOCALE);
-
-    // Set the current MgUserInformation
-    // This must be done before calling CreateSession()
-    MgUserInformation::SetCurrentUserInfo(userInfo);
-
-    STRING session = svcSite->CreateSession();
-    assert(!session.empty());
-    userInfo->SetMgSessionId(session);
-
-    // Set the current MgUserInformation
-    MgUserInformation::SetCurrentUserInfo(userInfo);
-
-    m_siteConnection = new MgSiteConnection();
-    m_siteConnection->Open(userInfo);
 }
 
 
@@ -88,19 +61,6 @@ void TestMappingService::TestStart()
 
     try
     {
-        #ifdef _DEBUG
-        MgFdoConnectionManager* pFdoConnectionManager = MgFdoConnectionManager::GetInstance();
-        if(pFdoConnectionManager)
-        {
-            pFdoConnectionManager->ShowCache();
-        }
-        #endif
-
-        //set user info
-        Ptr<MgUserInformation> userInfo = new MgUserInformation(L"Administrator", L"admin");
-        userInfo->SetLocale(TEST_LOCALE);
-        MgUserInformation::SetCurrentUserInfo(userInfo);
-
         //publish the map definition
         Ptr<MgResourceIdentifier> mapres = new MgResourceIdentifier(L"Library://UnitTests/Maps/Sheboygan.MapDefinition");
         Ptr<MgByteSource> mdfsrc = new MgByteSource(L"../UnitTestFiles/UT_Sheboygan.mdf", false);
@@ -189,11 +149,6 @@ void TestMappingService::TestEnd()
 {
     try
     {
-        //set user info
-        Ptr<MgUserInformation> userInfo = new MgUserInformation(L"Administrator", L"admin");
-        userInfo->SetLocale(TEST_LOCALE);
-        MgUserInformation::SetCurrentUserInfo(userInfo);
-
         //delete the map definition
         Ptr<MgResourceIdentifier> mapres = new MgResourceIdentifier(L"Library://UnitTests/Maps/Sheboygan.MapDefinition");
         m_svcResource->DeleteResource(mapres);
@@ -228,14 +183,6 @@ void TestMappingService::TestEnd()
         // delete the symbol library
         Ptr<MgResourceIdentifier> slres1 = new MgResourceIdentifier(L"Library://UnitTests/Symbols/SymbolMart.SymbolLibrary");
         m_svcResource->DeleteResource(slres1);
-
-        #ifdef _DEBUG
-        MgFdoConnectionManager* pFdoConnectionManager = MgFdoConnectionManager::GetInstance();
-        if(pFdoConnectionManager)
-        {
-            pFdoConnectionManager->ShowCache();
-        }
-        #endif
     }
     catch (MgException* e)
     {
@@ -251,118 +198,28 @@ void TestMappingService::TestEnd()
     ACE_DEBUG((LM_INFO, ACE_TEXT("\nMapping Service tests completed.\n\n")));
 }
 
-
-void TestMappingService::TestCase_GetMap()
-{
-    try
-    {
-        //make a runtime map
-        Ptr<MgResourceIdentifier> mdfres = new MgResourceIdentifier(L"Library://UnitTests/Maps/Sheboygan.MapDefinition");
-        Ptr<MgMap> map = new MgMap(m_siteConnection);
-        map->Create(mdfres, L"UnitTestSheboygan");
-
-        Ptr<MgDwfVersion> version = new MgDwfVersion();
-
-        //call the API
-        Ptr<MgByteReader> emap = m_svcMapping->GenerateMap(map, L"blurple", L"clump", version);
-    }
-    catch(MgException* e)
-    {
-        STRING message = e->GetDetails(TEST_LOCALE);
-        SAFE_RELEASE(e);
-        CPPUNIT_FAIL(MG_WCHAR_TO_CHAR(message.c_str()));
-    }
-    catch(...)
-    {
-        throw;
-    }
-}
-
-
-void TestMappingService::TestCase_GetMapUpdate()
-{
-    try
-    {
-        //make a runtime map
-        Ptr<MgResourceIdentifier> mdfres = new MgResourceIdentifier(L"Library://UnitTests/Maps/Sheboygan.MapDefinition");
-        Ptr<MgMap> map = new MgMap(m_siteConnection);
-        map->Create(mdfres, L"UnitTestSheboygan");
-
-        Ptr<MgDwfVersion> version = new MgDwfVersion();
-
-        //call the API
-        Ptr<MgByteReader> emapupdate = m_svcMapping->GenerateMapUpdate(map, 42, version);
-
-        INT64 len = emapupdate->GetLength();
-
-        //CPPUNIT_ASSERT(len == 7000); //TODO: determine correct length
-    }
-    catch(MgException* e)
-    {
-        STRING message = e->GetDetails(TEST_LOCALE);
-        SAFE_RELEASE(e);
-        CPPUNIT_FAIL(MG_WCHAR_TO_CHAR(message.c_str()));
-    }
-    catch(...)
-    {
-        throw;
-    }
-}
-
-void TestMappingService::TestCase_SaveMap()
-{
-    try
-    {
-        // Create a runtime map, save it, then open it.
-        Ptr<MgResourceIdentifier> mapDefId = new MgResourceIdentifier(L"Library://UnitTests/Maps/Sheboygan.MapDefinition");
-        STRING mapName = L"UnitTestSheboygan";
-        Ptr<MgMap> map = new MgMap(m_siteConnection);
-
-        map->Create(mapDefId, mapName);
-        map->Save();
-        map->Open(mapName);
-
-        Ptr<MgLayerCollection> layers = map->GetLayers();
-        assert(layers->GetCount() > 0);
-    }
-    catch (MgException* e)
-    {
-        STRING message = e->GetDetails(TEST_LOCALE);
-        SAFE_RELEASE(e);
-        CPPUNIT_FAIL(MG_WCHAR_TO_CHAR(message.c_str()));
-    }
-    catch (...)
-    {
-        throw;
-    }
-}
-
 void TestMappingService::TestCase_GetMultiPlot()
 {
     try
     {
         // make a runtime map
         Ptr<MgResourceIdentifier> mapRes1 = new MgResourceIdentifier(L"Library://UnitTests/Maps/Sheboygan.MapDefinition");
-        Ptr<MgMap> map1 = new MgMap(m_siteConnection);
-        map1->Create(mapRes1, L"UnitTestSheboygan1");
+        Ptr<MgdMap> map1 = new MgdMap(mapRes1, L"UnitTestSheboygan1");
         map1->SetViewScale(200e+6);
 
         // make another runtime map
         Ptr<MgResourceIdentifier> mapRes2 = new MgResourceIdentifier(L"Library://UnitTests/Maps/Sheboygan.MapDefinition");
-        Ptr<MgMap> map2 = new MgMap(m_siteConnection);
-        map2->Create(mapRes2, L"UnitTestSheboygan2");
+        Ptr<MgdMap> map2 = new MgdMap(mapRes2, L"UnitTestSheboygan2");
         map2->SetViewScale(100e+6);
 
         // make yet another runtime map
         Ptr<MgResourceIdentifier> mapRes3 = new MgResourceIdentifier(L"Library://UnitTests/Maps/Sheboygan.MapDefinition");
-        Ptr<MgMap> map3 = new MgMap(m_siteConnection);
-        map3->Create(mapRes3, L"UnitTestSheboygan3");
+        Ptr<MgdMap> map3 = new MgdMap(mapRes3, L"UnitTestSheboygan3");
         map3->SetViewScale(20e+6);
 
         // make a 4th runtime map
         Ptr<MgResourceIdentifier> mapRes4 = new MgResourceIdentifier(L"Library://UnitTests/Maps/Sheboygan.MapDefinition");
-        Ptr<MgMap> map4 = new MgMap(m_siteConnection);
-        map4->Create(mapRes4, L"UnitTestSheboygan4");
+        Ptr<MgdMap> map4 = new MgdMap(mapRes4, L"UnitTestSheboygan4");
         map4->SetViewScale(20e+6);
 
         // Create the DwfVersion
@@ -427,8 +284,7 @@ void TestMappingService::TestCase_GetPlotUsingCurrentCenterAndScale()
     {
         // make a runtime map
         Ptr<MgResourceIdentifier> mapRes1 = new MgResourceIdentifier(L"Library://UnitTests/Maps/Sheboygan.MapDefinition");
-        Ptr<MgMap> map1 = new MgMap(m_siteConnection);
-        map1->Create(mapRes1, L"UnitTestSheboygan1");
+        Ptr<MgdMap> map1 = new MgdMap(mapRes1, L"UnitTestSheboygan1");
         map1->SetViewScale(400e+6);
 
         Ptr<MgDwfVersion> version = new MgDwfVersion();
@@ -473,8 +329,7 @@ void TestMappingService::TestCase_GetPlotUsingOverriddenCenterAndScale()
     {
         // make a runtime map
         Ptr<MgResourceIdentifier> mapRes1 = new MgResourceIdentifier(L"Library://UnitTests/Maps/Sheboygan.MapDefinition");
-        Ptr<MgMap> map1 = new MgMap(m_siteConnection);
-        map1->Create(mapRes1, L"UnitTestSheboygan1");
+        Ptr<MgdMap> map1 = new MgdMap(mapRes1, L"UnitTestSheboygan1");
         map1->SetViewScale(400e+6);
 
         Ptr<MgDwfVersion> version = new MgDwfVersion();
@@ -518,8 +373,7 @@ void TestMappingService::TestCase_GetPlotUsingExtents()
     {
         // make a runtime map
         Ptr<MgResourceIdentifier> mapRes1 = new MgResourceIdentifier(L"Library://UnitTests/Maps/Sheboygan.MapDefinition");
-        Ptr<MgMap> map1 = new MgMap(m_siteConnection);
-        map1->Create(mapRes1, L"UnitTestSheboygan1");
+        Ptr<MgdMap> map1 = new MgdMap(mapRes1, L"UnitTestSheboygan1");
         map1->SetViewScale(400e+6);
 
         Ptr<MgDwfVersion> version = new MgDwfVersion();
@@ -563,8 +417,7 @@ void TestMappingService::TestCase_GetPlotUsingExtentsAndExpandToFit()
     {
         // make a runtime map
         Ptr<MgResourceIdentifier> mapRes1 = new MgResourceIdentifier(L"Library://UnitTests/Maps/Sheboygan.MapDefinition");
-        Ptr<MgMap> map1 = new MgMap(m_siteConnection);
-        map1->Create(mapRes1, L"UnitTestSheboygan1");
+        Ptr<MgdMap> map1 = new MgdMap(mapRes1, L"UnitTestSheboygan1");
         map1->SetViewScale(400e+6);
 
         Ptr<MgDwfVersion> version = new MgDwfVersion();
@@ -588,89 +441,6 @@ void TestMappingService::TestCase_GetPlotUsingExtentsAndExpandToFit()
 
         //Ptr<MgByteSink> byteSink = new MgByteSink(eplot);
         //byteSink->ToFile(L"UTNewExtentsExpandToFitPlot.dwf");
-    }
-    catch (MgException* e)
-    {
-        STRING message = e->GetDetails(TEST_LOCALE);
-        SAFE_RELEASE(e);
-        CPPUNIT_FAIL(MG_WCHAR_TO_CHAR(message.c_str()));
-    }
-    catch (...)
-    {
-        throw;
-    }
-}
-
-
-void TestMappingService::TestCase_GetLegendPlot()
-{
-    try
-    {
-        // make a runtime map
-        Ptr<MgResourceIdentifier> mapRes1 = new MgResourceIdentifier(L"Library://UnitTests/Maps/Sheboygan.MapDefinition");
-        Ptr<MgMap> map1 = new MgMap(m_siteConnection);
-        map1->Create(mapRes1, L"UnitTestSheboygan1");
-        map1->SetViewScale(200e+6);
-
-        Ptr<MgDwfVersion> version = new MgDwfVersion();
-
-        Ptr<MgPlotSpecification> plotSpec = new MgPlotSpecification(8.5f, 11.f, L"in", 1, 1, 1, 1);
-
-        double dMapScale = 200e+6;
-        // call the API
-        Ptr<MgByteReader> eplot = m_svcMapping->GenerateLegendPlot(map1, dMapScale, plotSpec, version);
-
-        INT64 len = eplot->GetLength();
-
-        //CPPUNIT_ASSERT(len == 7000); // TODO: determine correct length
-
-        //Ptr<MgByteSink> byteSink = new MgByteSink(eplot);
-        //byteSink->ToFile(L"UTNewLegendPlot.dwf");
-    }
-    catch (MgException* e)
-    {
-        STRING message = e->GetDetails(TEST_LOCALE);
-        SAFE_RELEASE(e);
-        CPPUNIT_FAIL(MG_WCHAR_TO_CHAR(message.c_str()));
-    }
-    catch (...)
-    {
-        throw;
-    }
-}
-
-
-void TestMappingService::TestCase_QueryFeaturesImageMap()
-{
-    try
-    {
-        // make a runtime map
-        Ptr<MgResourceIdentifier> mdfres = new MgResourceIdentifier(L"Library://UnitTests/Maps/Sheboygan.MapDefinition");
-        Ptr<MgMap> map = new MgMap(m_siteConnection);
-        map->Create(mdfres, L"UnitTestSheboygan");
-
-        Ptr<MgCoordinate> c1 = new MgCoordinateXY(-180,0);
-        Ptr<MgCoordinate> c2 = new MgCoordinateXY(0,90);
-        Ptr<MgEnvelope> extent = new MgEnvelope(c1, c2);
-
-        map->SetDataExtent(extent);
-
-        Ptr<MgCoordinate> coordNewCenter = new MgCoordinateXY(-90,45);
-        Ptr<MgPoint> ptNewCenter = new MgPoint(coordNewCenter);
-        map->SetViewCenter(ptNewCenter);
-
-        map->SetViewScale(100000000);
-
-        map->SetDisplayDpi(96);
-        map->SetDisplayWidth(800);
-        map->SetDisplayHeight(600);
-
-        // call the API
-        Ptr<MgByteReader> features = m_svcMapping->QueryFeatures(map, L"Parcels", L"Display"/*MgCoordinateSpace::Display*/);
-
-        // delete result from QueryFeatures test
-        Ptr<MgResourceIdentifier> qfres1 = new MgResourceIdentifier(L"Library://UnitTests/Data/Parcels.FeatureSource");
-        m_svcResource->DeleteResource(qfres1);
     }
     catch (MgException* e)
     {

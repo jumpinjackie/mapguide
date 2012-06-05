@@ -68,6 +68,7 @@ int main(int argc, char** argv)
     runner.addTest(CppUnit::TestFactoryRegistry::getRegistry("TestResourceService").makeTest());
     runner.addTest(CppUnit::TestFactoryRegistry::getRegistry("TestRenderingService").makeTest());
     runner.addTest(CppUnit::TestFactoryRegistry::getRegistry("TestFeatureService").makeTest());
+    runner.addTest(CppUnit::TestFactoryRegistry::getRegistry("TestMappingService").makeTest());
 	runner.addTest(CppUnit::TestFactoryRegistry::getRegistry("TestProfilingService").makeTest());
     
     //This causes access violations in Visual Leak Detector when run in debug mode. Only uncommment

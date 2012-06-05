@@ -101,7 +101,7 @@
 #define MapGuide_Desktop_DrawingService_DrawingService          MAPGUIDE_DESKTOP_DRAWINGSERVICE_ID+0
 
 // Mapping Service
-//#define MapGuide_Desktop_MappingService_MappingService                      MAPGUIDE_DESKTOP_MAPPINGSERVICE_ID+0
+#define MapGuide_Desktop_MappingService_MappingService                      MAPGUIDE_DESKTOP_MAPPINGSERVICE_ID+0
 #define MapGuide_Desktop_MappingService_DwfVersion                          MAPGUIDE_DESKTOP_MAPPINGSERVICE_ID+1
 #define MapGuide_Desktop_MappingService_PlotSpecification                   MAPGUIDE_DESKTOP_MAPPINGSERVICE_ID+2
 #define MapGuide_Desktop_MappingService_PrintLayout                         MAPGUIDE_DESKTOP_MAPPINGSERVICE_ID+3

@@ -4,6 +4,7 @@
 class MgService;
 class MgTileService;
 class MgdFeatureService;
+class MgdMappingService;
 class MgdResourceService;
 class MgDrawingService;
 class MgRenderingService;

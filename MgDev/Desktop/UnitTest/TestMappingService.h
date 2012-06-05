@@ -25,15 +25,15 @@ class TestMappingService : public CppUnit::TestFixture
     CPPUNIT_TEST_SUITE(TestMappingService);
     CPPUNIT_TEST(TestStart); // This must be the very first unit test
 
-    CPPUNIT_TEST(TestCase_GetMap);
-    CPPUNIT_TEST(TestCase_GetMapUpdate);
-    CPPUNIT_TEST(TestCase_SaveMap);
+    //CPPUNIT_TEST(TestCase_GetMap);
+    //CPPUNIT_TEST(TestCase_GetMapUpdate);
+    //CPPUNIT_TEST(TestCase_SaveMap);
     CPPUNIT_TEST(TestCase_GetMultiPlot);
     CPPUNIT_TEST(TestCase_GetPlotUsingCurrentCenterAndScale);
     CPPUNIT_TEST(TestCase_GetPlotUsingOverriddenCenterAndScale);
     CPPUNIT_TEST(TestCase_GetPlotUsingExtents);
     CPPUNIT_TEST(TestCase_GetPlotUsingExtentsAndExpandToFit);
-    CPPUNIT_TEST(TestCase_GetLegendPlot);
+    //CPPUNIT_TEST(TestCase_GetLegendPlot);
     //CPPUNIT_TEST(TestCase_QueryFeaturesImageMap);
 
     CPPUNIT_TEST(TestEnd); // This must be the very last unit test
@@ -49,25 +49,24 @@ public:
     void TestStart();
     void TestEnd();
 
-    void TestCase_GetMap();
-    void TestCase_GetMapUpdate();
-    void TestCase_SaveMap();
+    //void TestCase_GetMap();
+    //void TestCase_GetMapUpdate();
+    //void TestCase_SaveMap();
     void TestCase_GetPlot();
     void TestCase_GetMultiPlot();
     void TestCase_GetPlotUsingCurrentCenterAndScale();
     void TestCase_GetPlotUsingOverriddenCenterAndScale();
     void TestCase_GetPlotUsingExtents();
     void TestCase_GetPlotUsingExtentsAndExpandToFit();
-    void TestCase_GetLegendPlot();
-    void TestCase_QueryFeaturesImageMap();
+    //void TestCase_GetLegendPlot();
+    //void TestCase_QueryFeaturesImageMap();
 
 private:
 
     void PublishTheResources();
 
-    Ptr<MgSiteConnection> m_siteConnection;
-    Ptr<MgResourceService> m_svcResource;
-    Ptr<MgMappingService> m_svcMapping;
+    Ptr<MgdResourceService> m_svcResource;
+    Ptr<MgdMappingService> m_svcMapping;
 };
 
 #endif // TESTMAPPINGSERVICE_H_
