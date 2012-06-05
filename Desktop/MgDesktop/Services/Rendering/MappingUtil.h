@@ -13,7 +13,7 @@ typedef bool (*CancelStylization)(void* userData);
 class MgResourceService;
 class MgFeatureService;
 class MgFeatureReader;
-class MgDrawingService;
+class MgdDrawingService;
 class MgCoordinateSystemFactory;
 class MgResourceIdentifier;
 class MgReadOnlyLayerCollection;
@@ -45,7 +45,7 @@ class MgMappingUtil
 public:
     static void StylizeLayers(MgResourceService* svcResource,
                               MgFeatureService* svcFeature,
-                              MgDrawingService* svcDrawing,
+                              MgdDrawingService* svcDrawing,
                               MgCoordinateSystemFactory* csFactory,
                               MgdMap* map,
                               MgReadOnlyLayerCollection* layers,

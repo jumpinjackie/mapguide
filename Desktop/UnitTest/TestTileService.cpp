@@ -42,7 +42,7 @@ TestTileService::TestTileService()
     m_svcResource = static_cast<MgResourceService*>(fact->CreateService(MgServiceType::ResourceService));
     assert(m_svcResource != NULL);
 
-    m_svcTile = static_cast<MgTileService*>(fact->CreateService(MgServiceType::TileService));
+    m_svcTile = static_cast<MgdTileService*>(fact->CreateService(MgServiceType::TileService));
     assert(m_svcTile != NULL);
 }
 
@@ -244,7 +244,7 @@ ACE_THR_FUNC_RETURN GetTileWorker(void* param)
     {
         // get the tile service instance
         Ptr<MgServiceFactory> fact = new MgServiceFactory();
-        Ptr<MgTileService> svcTile = static_cast<MgTileService*>(fact->CreateService(MgServiceType::TileService));
+        Ptr<MgdTileService> svcTile = static_cast<MgdTileService*>(fact->CreateService(MgServiceType::TileService));
         assert(svcTile != NULL);
 
         // get the tile
@@ -441,7 +441,7 @@ ACE_THR_FUNC_RETURN SetTileWorker(void* param)
     {
         // get the tile service instance
         Ptr<MgServiceFactory> fact = new MgServiceFactory();
-        Ptr<MgTileService> svcTile = static_cast<MgTileService*>(fact->CreateService(MgServiceType::TileService));
+        Ptr<MgdTileService> svcTile = static_cast<MgdTileService*>(fact->CreateService(MgServiceType::TileService));
         assert(svcTile != NULL);
 
         // find the finite display scale closest to the requested map scale

@@ -9,7 +9,7 @@ namespace OSGeo.MapGuide.Viewer.Desktop
     public class MgDesktopMapViewerProvider : MgMapViewerProvider
     {
         private MgdMap _implMap;
-        private MgRenderingService _renderSvc;
+        private MgdRenderingService _renderSvc;
         private MgdMappingService _mappingSvc;
         private MgServiceFactory _fact;
 
@@ -26,7 +26,8 @@ namespace OSGeo.MapGuide.Viewer.Desktop
         protected override void SubInit()
         {
             _fact = new MgServiceFactory();
-            _renderSvc = (MgRenderingService)_fact.CreateService(MgServiceType.RenderingService);
+            _renderSvc = (MgdRenderingService)_fact.CreateService(MgServiceType.RenderingService);
+            _mappingSvc = (MgdMappingService)_fact.CreateService(MgServiceType.MappingService);
         }
         
         private MgRenderingOptions _lastRenderOpts;

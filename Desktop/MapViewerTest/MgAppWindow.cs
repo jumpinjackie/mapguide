@@ -125,7 +125,7 @@ namespace MapViewerTest
         {
             var provider = mapViewer.GetProvider();
             var map = mapViewer.GetMap();
-            var prof = (MgProfilingService)provider.CreateService(MgServiceType.ProfilingService);
+            var prof = (MgdProfilingService)provider.CreateService(MgServiceType.ProfilingService);
             var opts = new MgRenderingOptions("PNG", 2, new MgColor(mapViewer.SelectionColor));
             var result = prof.ProfileRenderDynamicOverlay((MgdMap)map, (MgdSelection)mapViewer.GetSelection(), opts); 
  	        new XmlResponseDialog(result).ShowDialog(); 

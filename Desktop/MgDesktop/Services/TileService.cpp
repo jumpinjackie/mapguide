@@ -1,15 +1,15 @@
 #include "MgDesktop.h"
 #include "TileService.h"
 
-ACE_Recursive_Thread_Mutex MgTileService::sm_mutex;
-bool MgTileService::sm_initialized = false;
-MgTileService::MapCache MgTileService::sm_mapCache;
-bool MgTileService::sm_renderOnly = false;
-INT32 MgTileService::sm_creationCutoffTime = 120;     // in seconds
-INT32 MgTileService::sm_pollingInterval = 1;          // in seconds
-INT32 MgTileService::sm_mapCacheSize = 10;
+ACE_Recursive_Thread_Mutex MgdTileService::sm_mutex;
+bool MgdTileService::sm_initialized = false;
+MgdTileService::MapCache MgdTileService::sm_mapCache;
+bool MgdTileService::sm_renderOnly = false;
+INT32 MgdTileService::sm_creationCutoffTime = 120;     // in seconds
+INT32 MgdTileService::sm_pollingInterval = 1;          // in seconds
+INT32 MgdTileService::sm_mapCacheSize = 10;
 
-MgTileService::MgTileService() : MgService()
+MgdTileService::MgdTileService() : MgService()
 {
     if (!sm_initialized)
     {
@@ -53,7 +53,7 @@ MgTileService::MgTileService() : MgService()
 }
 
 
-MgTileService::~MgTileService()
+MgdTileService::~MgdTileService()
 {
 }
 
@@ -61,7 +61,7 @@ MgTileService::~MgTileService()
 /// \brief
 /// Determine if the tile cache is empty.
 ///
-bool MgTileService::IsTileCacheEmpty() const
+bool MgdTileService::IsTileCacheEmpty() const
 {
     ACE_MT(ACE_GUARD_RETURN(ACE_Recursive_Thread_Mutex, ace_mon, sm_mutex, false));
 
@@ -72,7 +72,7 @@ bool MgTileService::IsTileCacheEmpty() const
 /// \brief
 /// Detect if the tile file has been locked by another thread or process.
 ///
-bool MgTileService::DetectTileLockFile(CREFSTRING lockPathname)
+bool MgdTileService::DetectTileLockFile(CREFSTRING lockPathname)
 {
     bool found = false;
     struct _stat lockFileInfo;
@@ -103,7 +103,7 @@ bool MgTileService::DetectTileLockFile(CREFSTRING lockPathname)
 // Create tilename from mapDefinition, scaleIndex, row, and column.
 // Remove lockfile, look for the tile in the cache, if not in cache create
 // lockfile and look for map in mapcache.
-MgByteReader* MgTileService::GetTile(MgResourceIdentifier* mapDefinition,
+MgByteReader* MgdTileService::GetTile(MgResourceIdentifier* mapDefinition,
                                      CREFSTRING baseMapLayerGroupName,
                                      INT32 tileColumn,
                                      INT32 tileRow,
@@ -132,7 +132,7 @@ MgByteReader* MgTileService::GetTile(MgResourceIdentifier* mapDefinition,
 
     if (NULL == mapDefinition || baseMapLayerGroupName.empty())
     {
-        throw new MgNullArgumentException(L"MgTileService.GetTile",
+        throw new MgNullArgumentException(L"MgdTileService.GetTile",
             __LINE__, __WFILE__, NULL, L"", NULL);
     }
 
@@ -145,13 +145,13 @@ MgByteReader* MgTileService::GetTile(MgResourceIdentifier* mapDefinition,
         arguments.Add(L"5");
         arguments.Add(buffer);
 
-        throw new MgInvalidArgumentException(L"MgTileService.GetTile",
+        throw new MgInvalidArgumentException(L"MgdTileService.GetTile",
             __LINE__, __WFILE__, &arguments, L"MgInvalidScaleIndex", NULL);
     }
 
     // get the service from our helper method
     Ptr<MgResourceService> resourceService = GetResourceServiceForMapDef(mapDefinition,
-                                            L"MgTileService.GetTile");
+                                            L"MgdTileService.GetTile");
     // Generate tile and lock pathnames.
     m_tileCache->GeneratePathnames(mapDefinition, scaleIndex, baseMapLayerGroupName,
         tileColumn, tileRow, tilePathname, lockPathname, false);
@@ -189,7 +189,7 @@ MgByteReader* MgTileService::GetTile(MgResourceIdentifier* mapDefinition,
                 MgStringCollection arguments;
                 arguments.Add(lockPathname);
 
-                throw new MgFileIoException(L"MgTileService.GetTile",
+                throw new MgFileIoException(L"MgdTileService.GetTile",
                     __LINE__, __WFILE__, &arguments, L"MgUnableToLockTileFile", NULL);
             }
 
@@ -210,7 +210,7 @@ MgByteReader* MgTileService::GetTile(MgResourceIdentifier* mapDefinition,
                 MgStringCollection arguments;
                 arguments.Add(lockPathname);
 
-                throw new MgFileIoException(L"MgTileService.GetTile",
+                throw new MgFileIoException(L"MgdTileService.GetTile",
                     __LINE__, __WFILE__, &arguments, L"MgUnableToOpenLockFile", NULL);
             }
             else
@@ -257,7 +257,7 @@ MgByteReader* MgTileService::GetTile(MgResourceIdentifier* mapDefinition,
     // Successful operation
     MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Success.c_str());
 
-    MG_CATCH(L"MgTileService::GetTile")
+    MG_CATCH(L"MgdTileService::GetTile")
 
     if (mgException != NULL)
     {
@@ -282,7 +282,7 @@ MgByteReader* MgTileService::GetTile(MgResourceIdentifier* mapDefinition,
 
 ///////////////////////////////////////////////////////////////////////////////
 // look for the tile in the tilecache first
-MgByteReader* MgTileService::GetTile(MgdMap* map,
+MgByteReader* MgdTileService::GetTile(MgdMap* map,
                                      CREFSTRING baseMapLayerGroupName,
                                      INT32 tileColumn,
                                      INT32 tileRow)
@@ -311,7 +311,7 @@ MgByteReader* MgTileService::GetTile(MgdMap* map,
 
     if (NULL == map || baseMapLayerGroupName.empty())
     {
-        throw new MgNullArgumentException(L"MgTileService.GetTile",
+        throw new MgNullArgumentException(L"MgdTileService.GetTile",
             __LINE__, __WFILE__, NULL, L"", NULL);
     }
 
@@ -322,7 +322,7 @@ MgByteReader* MgTileService::GetTile(MgdMap* map,
     // if we don't find a nearest scale then something is wrong with the map
     if (scaleIndex < 0)
     {
-        throw new MgInvalidMapDefinitionException(L"MgTileService.GetTile",
+        throw new MgInvalidMapDefinitionException(L"MgdTileService.GetTile",
             __LINE__, __WFILE__, NULL, L"", NULL);
     }
 
@@ -354,7 +354,7 @@ MgByteReader* MgTileService::GetTile(MgdMap* map,
                 MgStringCollection arguments;
                 arguments.Add(lockPathname);
 
-                throw new MgFileIoException(L"MgTileService.GetTile",
+                throw new MgFileIoException(L"MgdTileService.GetTile",
                     __LINE__, __WFILE__, &arguments, L"MgUnableToLockTileFile", NULL);
             }
 
@@ -375,7 +375,7 @@ MgByteReader* MgTileService::GetTile(MgdMap* map,
                 MgStringCollection arguments;
                 arguments.Add(lockPathname);
 
-                throw new MgFileIoException(L"MgTileService.GetTile",
+                throw new MgFileIoException(L"MgdTileService.GetTile",
                     __LINE__, __WFILE__, &arguments, L"MgUnableToOpenLockFile", NULL);
             }
             else
@@ -392,7 +392,7 @@ MgByteReader* MgTileService::GetTile(MgdMap* map,
     // Successful operation
     MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Success.c_str());
 
-    MG_CATCH(L"MgTileService::GetTile")
+    MG_CATCH(L"MgdTileService::GetTile")
 
     if (mgException != NULL)
     {
@@ -417,14 +417,14 @@ MgByteReader* MgTileService::GetTile(MgdMap* map,
 
 ///////////////////////////////////////////////////////////////////////////////
 // render a tile and store it in the cache
-MgByteReader* MgTileService::GetTile(CREFSTRING tilePathname, MgdMap* map, INT32 scaleIndex,
+MgByteReader* MgdTileService::GetTile(CREFSTRING tilePathname, MgdMap* map, INT32 scaleIndex,
     CREFSTRING baseMapLayerGroupName, INT32 tileColumn, INT32 tileRow)
 {
     Ptr<MgByteReader> img;
 
     // get a rendering service instance
     Ptr<MgServiceFactory> fact = new MgServiceFactory();
-    Ptr<MgRenderingService> svcRendering = static_cast<MgRenderingService*>(fact->CreateService(MgServiceType::RenderingService));
+    Ptr<MgdRenderingService> svcRendering = static_cast<MgdRenderingService*>(fact->CreateService(MgServiceType::RenderingService));
     assert(NULL != svcRendering);
 
     if (svcRendering != NULL)
@@ -451,7 +451,7 @@ MgByteReader* MgTileService::GetTile(CREFSTRING tilePathname, MgdMap* map, INT32
 
 ///////////////////////////////////////////////////////////////////////////////
 // take a tile image and store it in the tilecache using lockfiles
-void MgTileService::SetTile(MgByteReader* img,
+void MgdTileService::SetTile(MgByteReader* img,
                                   MgdMap* map,
                                   INT32 scaleIndex,
                                   CREFSTRING baseMapLayerGroupName,
@@ -465,7 +465,7 @@ void MgTileService::SetTile(MgByteReader* img,
 
     if (NULL == img || NULL == map || baseMapLayerGroupName.empty())
     {
-        throw new MgNullArgumentException(L"MgTileService.SetTile",
+        throw new MgNullArgumentException(L"MgdTileService.SetTile",
             __LINE__, __WFILE__, NULL, L"", NULL);
     }
 
@@ -478,7 +478,7 @@ void MgTileService::SetTile(MgByteReader* img,
         arguments.Add(L"3");
         arguments.Add(buffer);
 
-        throw new MgInvalidArgumentException(L"MgTileService.GetTile",
+        throw new MgInvalidArgumentException(L"MgdTileService.GetTile",
             __LINE__, __WFILE__, &arguments, L"MgInvalidScaleIndex", NULL);
     }
 
@@ -504,7 +504,7 @@ void MgTileService::SetTile(MgByteReader* img,
             MgStringCollection arguments;
             arguments.Add(lockPathname);
 
-            throw new MgFileIoException(L"MgTileService.SetTile",
+            throw new MgFileIoException(L"MgdTileService.SetTile",
                 __LINE__, __WFILE__, &arguments, L"MgUnableToOpenLockFile", NULL);
         }
         else
@@ -516,7 +516,7 @@ void MgTileService::SetTile(MgByteReader* img,
     // cache the tile
     m_tileCache->Set(img, tilePathname);
 
-    MG_CATCH(L"MgTileService.SetTile")
+    MG_CATCH(L"MgdTileService.SetTile")
 
     if (NULL != lockFile)
     {
@@ -529,7 +529,7 @@ void MgTileService::SetTile(MgByteReader* img,
 
 ///////////////////////////////////////////////////////////////////////////////
 // accessor method for resource service
-MgResourceService* MgTileService::GetResourceServiceForMapDef(MgResourceIdentifier* mapDefinition,
+MgResourceService* MgdTileService::GetResourceServiceForMapDef(MgResourceIdentifier* mapDefinition,
                                                                     CREFSTRING funcName)
 {
     // Get the service from service manager
@@ -552,7 +552,7 @@ MgResourceService* MgTileService::GetResourceServiceForMapDef(MgResourceIdentifi
 
 
 ///////////////////////////////////////////////////////////////////////////////
-void MgTileService::ClearCache(MgdMap* map)
+void MgdTileService::ClearCache(MgdMap* map)
 {
     MG_LOG_OPERATION_MESSAGE(L"ClearCache");
 
@@ -567,7 +567,7 @@ void MgTileService::ClearCache(MgdMap* map)
     MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
 
     if (NULL == map)
-        throw new MgNullArgumentException(L"MgTileService.ClearCache", __LINE__, __WFILE__, NULL, L"", NULL);
+        throw new MgNullArgumentException(L"MgdTileService.ClearCache", __LINE__, __WFILE__, NULL, L"", NULL);
 
     ClearMapCache(resourceId->ToString());
 
@@ -576,7 +576,7 @@ void MgTileService::ClearCache(MgdMap* map)
     // Successful operation
     MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Success.c_str());
 
-    MG_CATCH(L"MgTileService::ClearCache")
+    MG_CATCH(L"MgdTileService::ClearCache")
 
     if (mgException != NULL)
     {
@@ -598,7 +598,7 @@ void MgTileService::ClearCache(MgdMap* map)
 /// Any tile cache associated with the specified Map Definition resources
 /// will be cleared.
 ///
-bool MgTileService::NotifyResourcesChanged(MgSerializableCollection* resources, bool strict)
+bool MgdTileService::NotifyResourcesChanged(MgSerializableCollection* resources, bool strict)
 {
     bool success = true;
 
@@ -625,7 +625,7 @@ bool MgTileService::NotifyResourcesChanged(MgSerializableCollection* resources, 
                     // clear any tile cache associated with this map
                     m_tileCache->Clear(resource);
 
-                    MG_CATCH(L"MgTileService.NotifyResourcesChanged")
+                    MG_CATCH(L"MgdTileService.NotifyResourcesChanged")
 
                     if (NULL != mgException.p)
                     {
@@ -653,14 +653,14 @@ bool MgTileService::NotifyResourcesChanged(MgSerializableCollection* resources, 
 
 
 ///////////////////////////////////////////////////////////////////////////////
-void MgTileService::SetConnectionProperties(MgConnectionProperties*)
+void MgdTileService::SetConnectionProperties(MgConnectionProperties*)
 {
     // Do nothing.  No connection properties are required for Server-side service objects.
 }
 
 
 ///////////////////////////////////////////////////////////////////////////////
-void MgTileService::ClearMapCache(CREFSTRING mapDefinition)
+void MgdTileService::ClearMapCache(CREFSTRING mapDefinition)
 {
     ACE_MT(ACE_GUARD(ACE_Recursive_Thread_Mutex, ace_mon, sm_mutex));
     MapCache::iterator iter = sm_mapCache.end();
@@ -698,7 +698,7 @@ void MgTileService::ClearMapCache(CREFSTRING mapDefinition)
 
 
 ///////////////////////////////////////////////////////////////////////////////
-INT32 MgTileService::GetDefaultTileSizeX()
+INT32 MgdTileService::GetDefaultTileSizeX()
 {
     INT32 ret = 0;
     MG_LOG_OPERATION_MESSAGE(L"GetDefaultTileSizeX");
@@ -714,7 +714,7 @@ INT32 MgTileService::GetDefaultTileSizeX()
     // Successful operation
     MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Success.c_str());
 
-    MG_CATCH(L"MgTileService::GetDefaultTileSizeX")
+    MG_CATCH(L"MgdTileService::GetDefaultTileSizeX")
 
     if (mgException != NULL)
     {
@@ -732,7 +732,7 @@ INT32 MgTileService::GetDefaultTileSizeX()
 
 
 ///////////////////////////////////////////////////////////////////////////////
-INT32 MgTileService::GetDefaultTileSizeY()
+INT32 MgdTileService::GetDefaultTileSizeY()
 {
     INT32 ret = 0;
     MG_LOG_OPERATION_MESSAGE(L"GetDefaultTileSizeY");
@@ -748,7 +748,7 @@ INT32 MgTileService::GetDefaultTileSizeY()
     // Successful operation
     MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Success.c_str());
 
-    MG_CATCH(L"MgTileService::GetDefaultTileSizeY")
+    MG_CATCH(L"MgdTileService::GetDefaultTileSizeY")
 
     if (mgException != NULL)
     {

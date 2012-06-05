@@ -27,7 +27,7 @@ public:
 
     //////////////////////////////////////////////////////////////////
     /// <summary>
-    /// Construct an MgDrawingService object
+    /// Construct an MgdDrawingService object
     /// </summary>
     MgdMappingService();
 
@@ -68,7 +68,7 @@ private:
     // member data
     Ptr<MgFeatureService> m_svcFeature;
     Ptr<MgResourceService> m_svcResource;
-    Ptr<MgDrawingService> m_svcDrawing;
+    Ptr<MgdDrawingService> m_svcDrawing;
     Ptr<MgCoordinateSystemFactory> m_pCSFactory;
 	
     // Mapping Service configuration properties

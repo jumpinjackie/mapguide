@@ -32,7 +32,7 @@ TestRenderingService::TestRenderingService()
 
     // Initialize service objects.
     m_svcResource = static_cast<MgResourceService*>(fact->CreateService(MgServiceType::ResourceService));
-    m_svcRendering = static_cast<MgRenderingService*>(fact->CreateService(MgServiceType::RenderingService));
+    m_svcRendering = static_cast<MgdRenderingService*>(fact->CreateService(MgServiceType::RenderingService));
 }
 
 

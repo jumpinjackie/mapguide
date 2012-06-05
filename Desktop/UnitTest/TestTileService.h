@@ -53,7 +53,7 @@ private:
 
 private:
     Ptr<MgResourceService> m_svcResource;
-    Ptr<MgTileService> m_svcTile;
+    Ptr<MgdTileService> m_svcTile;
 };
 
 #endif

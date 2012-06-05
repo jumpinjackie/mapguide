@@ -338,7 +338,7 @@ RSMgFeatureReader* MgMappingUtil::ExecuteRasterQuery(MgFeatureService* svcFeatur
 // render the layers.
 void MgMappingUtil::StylizeLayers(MgResourceService* svcResource,
                                   MgFeatureService* svcFeature,
-                                  MgDrawingService* svcDrawing,
+                                  MgdDrawingService* svcDrawing,
                                   MgCoordinateSystemFactory* csFactory,
                                   MgdMap* map,
                                   MgReadOnlyLayerCollection* layers,

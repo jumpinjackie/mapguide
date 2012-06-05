@@ -80,7 +80,7 @@ private:
 
 private:
     Ptr<MgResourceService> m_svcResource;
-    Ptr<MgRenderingService> m_svcRendering;
+    Ptr<MgdRenderingService> m_svcRendering;
 };
 
 #endif // _TESTRENDERINGSERVICE_H
