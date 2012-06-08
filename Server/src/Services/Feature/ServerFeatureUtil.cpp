@@ -2286,7 +2286,9 @@ FdoFeatureSchemaCollection* MgServerFeatureUtil::GetFdoFeatureSchemaCollection(
         FdoPtr<FdoFeatureSchema> fdoSchema = GetFdoFeatureSchema(mgSchema);
         if (fdoSchemaCol->Contains(fdoSchema))
         {
-            throw new MgDuplicateObjectException(L"MgServerFeatureUtil.GetFdoFeatureSchemaCollection", __LINE__, __WFILE__, NULL, L"", NULL);
+            MgStringCollection args;
+            args.Add(mgSchema->GetName());
+            throw new MgDuplicateObjectException(L"MgServerFeatureUtil.GetFdoFeatureSchemaCollection", __LINE__, __WFILE__, NULL, L"MgDuplicateObject", &args);
         }
         else
         {
