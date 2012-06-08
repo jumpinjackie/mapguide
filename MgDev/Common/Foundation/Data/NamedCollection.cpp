@@ -494,7 +494,11 @@ void MgNamedCollection::CheckDuplicate(MgNamedSerializable* item, INT32 index)
             foundItem2 = GetItem(index);
 
         if ((foundItem1 != NULL) && (foundItem1.p != foundItem2.p))
-            throw new MgDuplicateObjectException(L"CheckDuplicate", __LINE__, __WFILE__, NULL, L"", NULL); // EXC::Create(Exception::NLSGetMessage(NLSID(45_ITEMINCOLLECTION),(String*) item->GetName()));
+        {
+            MgStringCollection args;
+            args.Add(item->GetName());
+            throw new MgDuplicateObjectException(L"CheckDuplicate", __LINE__, __WFILE__, NULL, L"MgDuplicateObject", &args); // EXC::Create(Exception::NLSGetMessage(NLSID(45_ITEMINCOLLECTION),(String*) item->GetName()));
+        }
     }
 }
 
