@@ -82,11 +82,13 @@ namespace SetAssemblyVersion
             {
                 line = ProcessLinePart(line, "<Assembly: AssemblyVersion(\"");
                 line = ProcessLinePart(line, "<Assembly: AssemblyFileVersion(\"");
+                line = ProcessLinePart(line, "<Assembly: AssemblyInformationalVersion(\"");
             }
             else
             {
                 line = ProcessLinePart(line, "[assembly: AssemblyVersion(\"");
                 line = ProcessLinePart(line, "[assembly: AssemblyFileVersion(\"");
+                line = ProcessLinePart(line, "[assembly: AssemblyInformationalVersion(\"");
             }
             return line;
         }
