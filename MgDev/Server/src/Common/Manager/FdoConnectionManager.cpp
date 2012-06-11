@@ -247,7 +247,10 @@ FdoIConnection* MgFdoConnectionManager::Open(MgResourceIdentifier* resourceIdent
     {
         // If current connections count is equal to the pool size of the provider, we cannot create new connection. 
         // But if it is a PerCommandThreaded/MultiThreaded provider, we can reuse existing connections.
-        reuseOnly = (providerInfo->GetCurrentConnections() == providerInfo->GetPoolSize());
+        reuseOnly = (providerInfo->GetCurrentConnections() == providerInfo->GetPoolSize() &&
+                                                ((providerInfo->GetThreadModel() == FdoThreadCapability_PerCommandThreaded) ||
+                                                (providerInfo->GetThreadModel() == FdoThreadCapability_MultiThreaded)));
+
         if(m_bFdoConnectionPoolEnabled)
         {
             // Search the cache for an FDO connection matching this resourceIdentifier
@@ -415,7 +418,9 @@ FdoIConnection* MgFdoConnectionManager::Open(CREFSTRING provider, CREFSTRING con
     {
         // If current connections count is equal to the pool size of the provider, we cannot create new connection. 
         // But if it is a PerCommandThreaded/MultiThreaded provider, we can reuse existing connections.
-        reuseOnly = (providerInfo->GetCurrentConnections() == providerInfo->GetPoolSize());
+        reuseOnly = (providerInfo->GetCurrentConnections() == providerInfo->GetPoolSize() &&
+                                                ((providerInfo->GetThreadModel() == FdoThreadCapability_PerCommandThreaded) ||
+                                                (providerInfo->GetThreadModel() == FdoThreadCapability_MultiThreaded)));
 
         if(m_bFdoConnectionPoolEnabled)
         {
