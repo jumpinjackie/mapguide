@@ -2221,11 +2221,16 @@ function ZoomToScale(scale)
 
 function MapTip()
 {
-    var idxes = parent.tbFrame.GetMapTipButtons();
+    var idxes = null;
+    if (typeof parent.tbFrame.GetMapTipButtons == 'function')
+    {
+        idxes = parent.tbFrame.GetMapTipButtons();
+    }
+
     if(!haveTooltip)
     {
         haveTooltip = true;
-        for (var i = 0; i < idxes.length; i++) {
+        for (var i = 0; idxes != null && i < idxes.length; i++) {
             var maptipBtn = parent.tbFrame.document.getElementById(idxes[i]);
             //The tooltip is enabled.
             //highlight the maptip button via change the background and the border color
@@ -2242,7 +2247,7 @@ function MapTip()
         var tip = document.getElementById("hlTip");
         if (tip != null)
             tip.style.display = 'none';
-        for (var i = 0; i < idxes.length; i++) {
+        for (var i = 0; idxes != null && i < idxes.length; i++) {
             var maptipBtn = parent.tbFrame.document.getElementById(idxes[i]);
             //disable the tooltip
             //change back the background and border color
