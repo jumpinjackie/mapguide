@@ -454,6 +454,7 @@ private:
     Ptr<MgBatchPropertyCollection>       m_bpCol;
     Ptr<MgPropertyDefinitionCollection>  m_propDefCol;
     void AddCurrentRow();
+    FdoBoolean m_readerDepleted;
 
 CLASS_ID:
     static const INT32 m_cls_id = PlatformBase_FeatureService_SqlDataReader;
