@@ -225,6 +225,7 @@ MgCoordinateSystemUnexpectedError                     = Unexpected error.
 MgCoordinateSystemUnknownUnit                         = Unknown unit.
 MgDataReaderIdNotFound                                = The data reader ID was not found.
 MgDocumentIdentifierFilenameFailed                    = Failed to get the filename from the document identifier because no matching document path found.
+MgDuplicateObject                                     = Duplicate object found for name: %1
 MgFailedToGetFileNameForDates                         = Failed to get the filename for the specified dates.
 MgFailedToLoadFdoLibrary                              = Failed to load FDO library.
 MgFailedToRetrieveSystemExceptionMesage               = Failed to retrieve the system exception mesage. This message may not be unicode compliant.
