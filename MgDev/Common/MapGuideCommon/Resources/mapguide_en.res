@@ -288,6 +288,7 @@ MgInvalidWebTargetViewerType                          = The web target viewer ty
 MgInvalidWebWidgetType                                = The web widget type is invalid because it is not recognized.
 MgInvalidXmlDateTime                                  = The Xml date time is invalid because not all of the fields were found.
 MgInvalidYear                                         = The year is invalid because it must be between 1 and 9999.
+MgLayerBelongsToGroupNotInMap                         = The layer (%1) belongs to a group (%2) which is not part of the map.
 MgMachineIpMustBeLocalHost                            = The machine IP address must be a local host.
 MgMapCacheCleared                                     = The Tile Service map cache has been cleared.  Please increase TiledMapCacheSize in serverconfig.ini.
 MgMapDisplayDpiCannotBeLessThanOrEqualToZero          = The map DPI cannot be less than or equal to zero.

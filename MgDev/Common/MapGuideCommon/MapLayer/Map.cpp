@@ -799,6 +799,9 @@ MgMemoryStreamHelper* MgMap::PackLayersAndGroups()
     Ptr<MgMemoryStreamHelper> streamHelper = new MgMemoryStreamHelper();
     Ptr<MgStream> stream = new MgStream(streamHelper);
 
+    //This is to trap layers attached to groups not in this map
+    std::map<STRING, MgLayerGroup*> groups;
+
     //groups
     INT32 groupCount = m_groups->GetCount();
     stream->WriteInt32(groupCount);
@@ -806,6 +809,7 @@ MgMemoryStreamHelper* MgMap::PackLayersAndGroups()
     {
         Ptr<MgLayerGroup> group = m_groups->GetItem(groupIndex);
         Ptr<MgLayerGroup> parent = group->GetGroup();
+        groups[group->GetObjectId()] = group;
         stream->WriteString(parent != NULL? parent->GetName(): L"");
         stream->WriteObject(group);
     }
@@ -817,6 +821,13 @@ MgMemoryStreamHelper* MgMap::PackLayersAndGroups()
     {
         Ptr<MgLayerBase> layer = m_layers->GetItem(layerIndex);
         Ptr<MgLayerGroup> parent = layer->GetGroup();
+        if (NULL != parent.p && groups.find(parent->GetObjectId()) == groups.end())
+        {
+            MgStringCollection args;
+            args.Add(layer->GetName());
+            args.Add(parent->GetName());
+            throw new MgGroupNotFoundException(L"MgMap.PackLayersAndGroups", __LINE__, __WFILE__, NULL, L"MgLayerBelongsToGroupNotInMap", &args);
+        }
         stream->WriteString(parent != NULL? parent->GetName(): L"");
         stream->WriteObject(layer);
     }
