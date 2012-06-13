@@ -239,25 +239,37 @@ FdoIConnection* MgFdoConnectionManager::Open(MgResourceIdentifier* resourceIdent
 
     // Try to acquire a connection. We will either get a connection or exhaust the re-try logic
     providerInfo = TryAcquireFdoConnection(provider);
+
+    bool reuseOnly = false; 
+
+    ACE_MT(ACE_GUARD_RETURN(ACE_Recursive_Thread_Mutex, ace_mon, sm_mutex, NULL));
     if(providerInfo)
     {
-        ACE_MT(ACE_GUARD_RETURN(ACE_Recursive_Thread_Mutex, ace_mon, sm_mutex, NULL));
+        // If current connections count is equal to the pool size of the provider, we cannot create new connection. 
+        // But if it is a PerCommandThreaded/MultiThreaded provider, we can reuse existing connections.
+        reuseOnly = (providerInfo->GetCurrentConnections() == providerInfo->GetPoolSize() &&
+                                                ((providerInfo->GetThreadModel() == FdoThreadCapability_PerCommandThreaded) ||
+                                                (providerInfo->GetThreadModel() == FdoThreadCapability_MultiThreaded)));
 
         if(m_bFdoConnectionPoolEnabled)
         {
             // Search the cache for an FDO connection matching this resourceIdentifier
             // The content and long transaction name must also match, as the information may change
-            pFdoConnection = FindFdoConnection(resourceIdentifier);
+            pFdoConnection = FindFdoConnection(resourceIdentifier, reuseOnly);
         }
+    }
+    
+    if (providerInfo && ((NULL == pFdoConnection && !reuseOnly) || (NULL != pFdoConnection)))
+    {
+        STRING longTransactionName = (STRING)featureSource->GetLongTransaction();
+
+        // Update the long transaction name to any active one for the current request
+        MgLongTransactionManager::GetLongTransactionName(resourceIdentifier, longTransactionName);
 
         if(NULL == pFdoConnection)
         {
             // Parse XML and get properties
             STRING configDocumentName = (STRING)featureSource->GetConfigurationDocument();
-            STRING longTransactionName = (STRING)featureSource->GetLongTransaction();
-
-            // Update the long transaction name to any active one for the current request
-            MgLongTransactionManager::GetLongTransactionName(resourceIdentifier, longTransactionName);
 
             // Create a new connection
             pFdoConnection = m_connManager->CreateConnection(provider.c_str());
@@ -293,6 +305,11 @@ FdoIConnection* MgFdoConnectionManager::Open(MgResourceIdentifier* resourceIdent
                                provider,
                                resourceIdentifier->ToString(),
                                longTransactionName);
+        }
+        else
+        {
+            // Need to activate long transaction again for some providers.
+            ActivateLongTransaction(pFdoConnection, longTransactionName);
         }
 
         #ifdef _DEBUG_FDOCONNECTION_MANAGER
@@ -394,16 +411,26 @@ FdoIConnection* MgFdoConnectionManager::Open(CREFSTRING provider, CREFSTRING con
 
     // Try to acquire a connection. We will either get a connection or exhaust the re-try logic
     providerInfo = TryAcquireFdoConnection(providerNoVersion);
+
+    bool reuseOnly = false;
+
     if(providerInfo)
     {
-        ACE_MT(ACE_GUARD_RETURN(ACE_Recursive_Thread_Mutex, ace_mon, sm_mutex, NULL));
+        // If current connections count is equal to the pool size of the provider, we cannot create new connection. 
+        // But if it is a PerCommandThreaded/MultiThreaded provider, we can reuse existing connections.
+        reuseOnly = (providerInfo->GetCurrentConnections() == providerInfo->GetPoolSize() &&
+                                                ((providerInfo->GetThreadModel() == FdoThreadCapability_PerCommandThreaded) ||
+                                                (providerInfo->GetThreadModel() == FdoThreadCapability_MultiThreaded)));
 
         if(m_bFdoConnectionPoolEnabled)
         {
             // Search the cache for an FDO connection matching this provider/connection string
-            pFdoConnection = FindFdoConnection(providerNoVersion, updatedConnectionString);
+            pFdoConnection = FindFdoConnection(providerNoVersion, updatedConnectionString, reuseOnly);
         }
+    }
 
+    if (providerInfo && ((NULL == pFdoConnection && !reuseOnly) || (NULL != pFdoConnection)))
+    {
         if(NULL == pFdoConnection)
         {
             // Create a new connection and add it to the cache
@@ -611,7 +638,7 @@ void MgFdoConnectionManager::RemoveExpiredFdoConnections()
 }
 
 
-FdoIConnection* MgFdoConnectionManager::FindFdoConnection(MgResourceIdentifier* resourceIdentifier)
+FdoIConnection* MgFdoConnectionManager::FindFdoConnection(MgResourceIdentifier* resourceIdentifier, bool reuseOnly)
 {
     CHECKNULL(resourceIdentifier, L"MgFdoConnectionManager.FindFdoConnection");
 
@@ -644,7 +671,8 @@ FdoIConnection* MgFdoConnectionManager::FindFdoConnection(MgResourceIdentifier* 
 
     pFdoConnection = SearchFdoConnectionCache(provider,
                                               resourceIdentifier->ToString(),
-                                              ltName);
+                                              ltName,
+                                              reuseOnly);
 
     MG_FDOCONNECTION_MANAGER_CATCH_AND_THROW_WITH_FEATURE_SOURCE(L"MgFdoConnectionManager.FindFdoConnection", resourceIdentifier)
 
@@ -652,7 +680,7 @@ FdoIConnection* MgFdoConnectionManager::FindFdoConnection(MgResourceIdentifier* 
 }
 
 
-FdoIConnection* MgFdoConnectionManager::FindFdoConnection(CREFSTRING provider, CREFSTRING connectionString)
+FdoIConnection* MgFdoConnectionManager::FindFdoConnection(CREFSTRING provider, CREFSTRING connectionString, bool reuseOnly)
 {
     FdoPtr<FdoIConnection> pFdoConnection;
 
@@ -661,7 +689,7 @@ FdoIConnection* MgFdoConnectionManager::FindFdoConnection(CREFSTRING provider, C
     STRING providerNoVersion = UpdateProviderName(provider);
     STRING ltName = L"";
 
-    pFdoConnection = SearchFdoConnectionCache(providerNoVersion, connectionString, ltName);
+    pFdoConnection = SearchFdoConnectionCache(providerNoVersion, connectionString, ltName, reuseOnly);
 
     MG_FDOCONNECTION_MANAGER_CATCH_AND_THROW(L"MgFdoConnectionManager.FindFdoConnection")
 
@@ -669,7 +697,7 @@ FdoIConnection* MgFdoConnectionManager::FindFdoConnection(CREFSTRING provider, C
 }
 
 
-FdoIConnection* MgFdoConnectionManager::SearchFdoConnectionCache(CREFSTRING provider, CREFSTRING key, CREFSTRING ltName)
+FdoIConnection* MgFdoConnectionManager::SearchFdoConnectionCache(CREFSTRING provider, CREFSTRING key, CREFSTRING ltName, bool reuseOnly)
 {
     FdoPtr<FdoIConnection> pFdoConnection;
 
@@ -709,9 +737,12 @@ FdoIConnection* MgFdoConnectionManager::SearchFdoConnectionCache(CREFSTRING prov
                                 INT32 useLimit = providerInfo->GetUseLimit();
                                 if (useLimit == -1 || pFdoConnectionCacheEntry->nUseTotal <= useLimit)
                                 {
+                                    // If the provider is a PerCommandThreaded/MultiThreaded provider, reuse existing 
+                                    // connection only when reuseOnly is true (current connections count == pool size). 
                                     if((!pFdoConnectionCacheEntry->bInUse) ||
-                                       (providerInfo->GetThreadModel() == FdoThreadCapability_PerCommandThreaded) ||
-                                       (providerInfo->GetThreadModel() == FdoThreadCapability_MultiThreaded))
+                                       (reuseOnly && 
+                                       ((providerInfo->GetThreadModel() == FdoThreadCapability_PerCommandThreaded) ||
+                                       (providerInfo->GetThreadModel() == FdoThreadCapability_MultiThreaded))))
                                     {
                                         // It is not in use or the provider is a PerCommandThreaded/MultiThreaded provider so claim it
                                         pFdoConnectionCacheEntry->lastUsed = ACE_OS::gettimeofday();
@@ -1430,7 +1461,10 @@ ProviderInfo* MgFdoConnectionManager::AcquireFdoConnection(CREFSTRING provider)
         if(providerInfo)
         {
             // Check to see if all connections are in use
-            if(providerInfo->GetCurrentConnections() == providerInfo->GetPoolSize())
+            // If it is a PerCommandThreaded/MultiThreaded provider, the existing connections can be reused.
+            if(providerInfo->GetCurrentConnections() == providerInfo->GetPoolSize() && 
+                ((providerInfo->GetThreadModel() != FdoThreadCapability_PerCommandThreaded) &&
+                (providerInfo->GetThreadModel() != FdoThreadCapability_MultiThreaded)))
             {
                 // All connections are in use
                 providerInfo = NULL;
