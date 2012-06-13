@@ -26,6 +26,8 @@ class TestMisc : public CppUnit::TestFixture
     CPPUNIT_TEST(TestStart); // This must be the very first unit test
 
     CPPUNIT_TEST(TestCase_CommonExceptionMessages);
+    CPPUNIT_TEST(TestCase_611);
+    CPPUNIT_TEST(TestCase_1304);
 
     CPPUNIT_TEST(TestEnd); // This must be the very last unit test
     CPPUNIT_TEST_SUITE_END();
@@ -40,6 +42,12 @@ public:
     void TestEnd();
 
     void TestCase_CommonExceptionMessages();
+    void TestCase_611();
+    void TestCase_1304();
+
+private:
+    Ptr<MgSiteConnection> m_siteConnection;
+    Ptr<MgResourceService> m_svcResource;
 };
 
 #endif
