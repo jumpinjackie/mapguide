@@ -51,6 +51,13 @@ MgSelectionBase::MgSelectionBase(MgMapBase* map, CREFSTRING xmlSelectionString)
 // Destructor
 MgSelectionBase::~MgSelectionBase()
 {
+    ClearSelections();
+    delete m_stream;
+    m_stream = NULL;
+}
+
+void MgSelectionBase::ClearSelections()
+{
     // Delete selection manually instead of relying on deep template deletion
     SelectionMap::iterator lIter;
     for (lIter = m_selections.begin(); lIter != m_selections.end(); ++lIter)
@@ -67,11 +74,7 @@ MgSelectionBase::~MgSelectionBase()
         delete clsmap;
     }
     m_selections.clear();
-
-    delete m_stream;
-    m_stream = NULL;
 }
-
 
 void MgSelectionBase::Dispose()
 {
@@ -100,6 +103,10 @@ MgFeatureReader* MgSelectionBase::GetSelectedFeatures(MgLayerBase* layer, CREFST
 // Read selection from XML document.  Previous selection is cleared.
 void MgSelectionBase::FromXml(CREFSTRING xmlSelectionString)
 {
+    ClearSelections();
+    if (xmlSelectionString.empty())
+        return;
+
     // TODO: Validate that data is legal by parsing each selection
     //       string.  MgMap will be required to do this.
 

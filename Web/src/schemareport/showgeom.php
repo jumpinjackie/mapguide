@@ -170,6 +170,7 @@
 
                 $extentGeometryAgg = null;
                 $extentGeometrySc = null;
+                $extentByteReader = null;
 
                 // Finds the coordinate system
                 $agfReaderWriter = new MgAgfReaderWriter();
