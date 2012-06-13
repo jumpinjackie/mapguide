@@ -481,3 +481,30 @@ void TestMisc::TestCase_611()
         throw;
     }
 }
+
+void TestMisc::TestCase_1304()
+{
+    try
+    {
+        Ptr<MgResourceIdentifier> mapRes1 = new MgResourceIdentifier(L"Library://UnitTests/Maps/Sheboygan.MapDefinition");
+        Ptr<MgMap> map1 = new MgMap(m_siteConnection);
+        map1->Create(mapRes1, L"UnitTestSheboygan1");
+
+        Ptr<MgSelection> sel = new MgSelection(map1, L"");
+        Ptr<MgReadOnlyLayerCollection> selLayers = sel->GetLayers();
+        CPPUNIT_ASSERT_MESSAGE("Expected null MgReadOnlyLayerCollection", NULL == selLayers.p); 
+        sel->FromXml(L""); //Should be same result
+        selLayers = sel->GetLayers();
+        CPPUNIT_ASSERT_MESSAGE("Expected null MgReadOnlyLayerCollection", NULL == selLayers.p); 
+    }
+    catch (MgException* e)
+    {
+        STRING message = e->GetDetails(TEST_LOCALE);
+        SAFE_RELEASE(e);
+        CPPUNIT_FAIL(MG_WCHAR_TO_CHAR(message.c_str()));
+    }
+    catch (...)
+    {
+        throw;
+    }
+}

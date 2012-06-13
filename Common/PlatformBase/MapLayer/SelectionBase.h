@@ -622,6 +622,9 @@ protected:
     SelectionMap m_selections;
     Ptr<MgMapBase> m_map;
     MgMemoryStreamHelper* m_stream;
+
+private:
+    void ClearSelections();
 };
 /// \}
 
