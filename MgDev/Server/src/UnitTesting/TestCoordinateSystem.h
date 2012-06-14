@@ -75,9 +75,9 @@ class TestCoordinateSystem : public CppUnit::TestFixture
     CPPUNIT_TEST(TestCase_Geographic_ConvertCode);
     CPPUNIT_TEST(TestCase_Geographic_GetUnits);
     CPPUNIT_TEST(TestCase_Geographic_GetUnitScale);
-    CPPUNIT_TEST(TestCase_Geographic_GetMinX);
+    //CPPUNIT_TEST(TestCase_Geographic_GetMinX);
     CPPUNIT_TEST(TestCase_Geographic_GetMinY);
-    CPPUNIT_TEST(TestCase_Geographic_GetMaxX);
+    //CPPUNIT_TEST(TestCase_Geographic_GetMaxX);
     CPPUNIT_TEST(TestCase_Geographic_GetMaxY);
     CPPUNIT_TEST(TestCase_Geographic_GetCsCode);
     CPPUNIT_TEST(TestCase_Geographic_GetDescription);
