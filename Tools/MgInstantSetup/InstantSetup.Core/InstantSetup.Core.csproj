@@ -41,6 +41,7 @@
     <Compile Include="AbstractSetupConfigurationProcess.cs" />
     <Compile Include="ApacheSetupConfigurationProcess.cs" />
     <Compile Include="AppCmd.cs" />
+    <Compile Include="FdoProviderRegistration.cs" />
     <Compile Include="IISSetupConfigurationProcess.cs" />
     <Compile Include="IniFile.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

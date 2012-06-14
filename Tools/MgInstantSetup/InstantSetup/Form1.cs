@@ -23,6 +23,8 @@ using System.Data;
 using System.Drawing;
 using System.Text;
 using System.Windows.Forms;
+using System.IO;
+using InstantSetup.Core;
 
 namespace InstantSetup
 {
@@ -67,6 +69,7 @@ namespace InstantSetup
         private void txtSourceDirectory_TextChanged(object sender, EventArgs e)
         {
             _iis7Conf.Config.BuildOutputPath = _apacheConf.Config.BuildOutputPath = txtSourceDirectory.Text;
+            TryAutoConfigureFdo();
         }
 
         private void txtBatchOutput_TextChanged(object sender, EventArgs e)
@@ -93,6 +96,26 @@ namespace InstantSetup
         {
             try
             {
+                if (!Directory.Exists(txtFdoDir.Text))
+                {
+                    MessageBox.Show("The specified FDO directory does not exist");
+                    return;
+                }
+
+                if (!File.Exists(txtFdoRegUtilPath.Text))
+                {
+                    MessageBox.Show("The specified FdoRegUtil path does not exist");
+                    return;
+                }
+
+                if (chkProviders.CheckedItems.Count == 0)
+                {
+                    MessageBox.Show("No FDO providers selected for registration");
+                    return;
+                }
+
+                var reg = new FdoProviderRegistration(txtFdoRegUtilPath.Text, GetCheckedProviders());
+                reg.Execute();
                 GetActiveView().Config.Execute();
                 if (!chkInstallServices.Checked)
                     MessageBox.Show("Batch scripts saved to " + GetActiveView().Config.BatchFileOutputDirectory);
@@ -101,6 +124,14 @@ namespace InstantSetup
             catch (Exception ex)
             {
                 MessageBox.Show(ex.ToString());
+            }
+        }
+
+        private IEnumerable<string> GetCheckedProviders()
+        {
+            foreach (var item in chkProviders.CheckedItems)
+            {
+                yield return item.ToString();
             }
         }
 
@@ -115,6 +146,46 @@ namespace InstantSetup
         private void chk64Bit_CheckedChanged(object sender, EventArgs e)
         {
             _iis7Conf.Config.Is64BitMapGuide = _apacheConf.Config.Is64BitMapGuide = chk64Bit.Checked;
+        }
+
+        private void TryAutoConfigureFdo()
+        {
+            if (string.IsNullOrEmpty(txtFdoDir.Text))
+            {
+                var path = Path.Combine(txtSourceDirectory.Text, "Server" + Path.DirectorySeparatorChar + "FDO");
+                if (Directory.Exists(path))
+                    txtFdoDir.Text = path;
+            }
+        }
+
+        private void txtFdoDir_TextChanged(object sender, EventArgs e)
+        {
+            if (!Directory.Exists(txtFdoDir.Text))
+                return;
+
+            if (string.IsNullOrEmpty(txtFdoRegUtilPath.Text))
+            {
+                var path = Path.Combine(txtFdoDir.Text, "FdoRegUtil.exe");
+                if (File.Exists(path))
+                    txtFdoRegUtilPath.Text = path;
+            }
+            var dlls = Directory.GetFiles(txtFdoDir.Text, "*.dll");
+            var list = new List<string>();
+            //Fortunately, FDO providers follow a standard convention of ending with
+            //provider.dll
+            foreach (var dllpath in dlls)
+            {
+                if (dllpath.ToLower().EndsWith("provider.dll"))
+                {
+                    list.Add(dllpath);
+                }
+            }
+
+            chkProviders.Items.Clear();
+            foreach (var item in list)
+            {
+                chkProviders.Items.Add(item, false);
+            }
         }
     }
 }

@@ -44,13 +44,26 @@
             this.label3 = new System.Windows.Forms.Label();
             this.chkWriteMentorDictPath = new System.Windows.Forms.CheckBox();
             this.chk64Bit = new System.Windows.Forms.CheckBox();
+            this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.label7 = new System.Windows.Forms.Label();
+            this.chkProviders = new System.Windows.Forms.CheckedListBox();
+            this.label6 = new System.Windows.Forms.Label();
+            this.button3 = new System.Windows.Forms.Button();
+            this.button2 = new System.Windows.Forms.Button();
+            this.txtFdoRegUtilPath = new System.Windows.Forms.TextBox();
+            this.label5 = new System.Windows.Forms.Label();
+            this.txtFdoDir = new System.Windows.Forms.TextBox();
+            this.label4 = new System.Windows.Forms.Label();
             this.tabControl1.SuspendLayout();
+            this.groupBox1.SuspendLayout();
+            this.groupBox2.SuspendLayout();
             this.SuspendLayout();
             // 
             // btnConfigure
             // 
             this.btnConfigure.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnConfigure.Location = new System.Drawing.Point(465, 509);
+            this.btnConfigure.Location = new System.Drawing.Point(672, 563);
             this.btnConfigure.Name = "btnConfigure";
             this.btnConfigure.Size = new System.Drawing.Size(75, 23);
             this.btnConfigure.TabIndex = 0;
@@ -60,15 +73,13 @@
             // 
             // tabControl1
             // 
-            this.tabControl1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                        | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
             this.tabControl1.Controls.Add(this.TAB_APACHE);
             this.tabControl1.Controls.Add(this.TAB_IIS7);
-            this.tabControl1.Location = new System.Drawing.Point(13, 111);
+            this.tabControl1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tabControl1.Location = new System.Drawing.Point(3, 16);
             this.tabControl1.Name = "tabControl1";
             this.tabControl1.SelectedIndex = 0;
-            this.tabControl1.Size = new System.Drawing.Size(527, 392);
+            this.tabControl1.Size = new System.Drawing.Size(474, 423);
             this.tabControl1.TabIndex = 1;
             // 
             // TAB_APACHE
@@ -76,7 +87,7 @@
             this.TAB_APACHE.Location = new System.Drawing.Point(4, 22);
             this.TAB_APACHE.Name = "TAB_APACHE";
             this.TAB_APACHE.Padding = new System.Windows.Forms.Padding(3);
-            this.TAB_APACHE.Size = new System.Drawing.Size(519, 366);
+            this.TAB_APACHE.Size = new System.Drawing.Size(466, 397);
             this.TAB_APACHE.TabIndex = 1;
             this.TAB_APACHE.Text = "Apache";
             this.TAB_APACHE.UseVisualStyleBackColor = true;
@@ -86,7 +97,7 @@
             this.TAB_IIS7.Location = new System.Drawing.Point(4, 22);
             this.TAB_IIS7.Name = "TAB_IIS7";
             this.TAB_IIS7.Padding = new System.Windows.Forms.Padding(3);
-            this.TAB_IIS7.Size = new System.Drawing.Size(519, 390);
+            this.TAB_IIS7.Size = new System.Drawing.Size(466, 343);
             this.TAB_IIS7.TabIndex = 2;
             this.TAB_IIS7.Text = "IIS7";
             this.TAB_IIS7.UseVisualStyleBackColor = true;
@@ -106,7 +117,7 @@
                         | System.Windows.Forms.AnchorStyles.Right)));
             this.txtServiceName.Location = new System.Drawing.Point(156, 61);
             this.txtServiceName.Name = "txtServiceName";
-            this.txtServiceName.Size = new System.Drawing.Size(380, 20);
+            this.txtServiceName.Size = new System.Drawing.Size(587, 20);
             this.txtServiceName.TabIndex = 3;
             this.txtServiceName.TextChanged += new System.EventHandler(this.txtServiceName_TextChanged);
             // 
@@ -125,14 +136,14 @@
                         | System.Windows.Forms.AnchorStyles.Right)));
             this.txtSourceDirectory.Location = new System.Drawing.Point(156, 9);
             this.txtSourceDirectory.Name = "txtSourceDirectory";
-            this.txtSourceDirectory.Size = new System.Drawing.Size(345, 20);
+            this.txtSourceDirectory.Size = new System.Drawing.Size(552, 20);
             this.txtSourceDirectory.TabIndex = 5;
             this.txtSourceDirectory.TextChanged += new System.EventHandler(this.txtSourceDirectory_TextChanged);
             // 
             // btnSourceDir
             // 
             this.btnSourceDir.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnSourceDir.Location = new System.Drawing.Point(507, 7);
+            this.btnSourceDir.Location = new System.Drawing.Point(714, 7);
             this.btnSourceDir.Name = "btnSourceDir";
             this.btnSourceDir.Size = new System.Drawing.Size(29, 23);
             this.btnSourceDir.TabIndex = 6;
@@ -144,7 +155,7 @@
             // 
             this.chkInstallServices.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.chkInstallServices.AutoSize = true;
-            this.chkInstallServices.Location = new System.Drawing.Point(13, 513);
+            this.chkInstallServices.Location = new System.Drawing.Point(13, 567);
             this.chkInstallServices.Name = "chkInstallServices";
             this.chkInstallServices.Size = new System.Drawing.Size(97, 17);
             this.chkInstallServices.TabIndex = 7;
@@ -156,7 +167,7 @@
             // button1
             // 
             this.button1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.button1.Location = new System.Drawing.Point(507, 33);
+            this.button1.Location = new System.Drawing.Point(714, 33);
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(29, 23);
             this.button1.TabIndex = 10;
@@ -170,7 +181,7 @@
                         | System.Windows.Forms.AnchorStyles.Right)));
             this.txtBatchOutput.Location = new System.Drawing.Point(156, 35);
             this.txtBatchOutput.Name = "txtBatchOutput";
-            this.txtBatchOutput.Size = new System.Drawing.Size(345, 20);
+            this.txtBatchOutput.Size = new System.Drawing.Size(552, 20);
             this.txtBatchOutput.TabIndex = 9;
             this.txtBatchOutput.TextChanged += new System.EventHandler(this.txtBatchOutput_TextChanged);
             // 
@@ -185,8 +196,9 @@
             // 
             // chkWriteMentorDictPath
             // 
+            this.chkWriteMentorDictPath.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.chkWriteMentorDictPath.AutoSize = true;
-            this.chkWriteMentorDictPath.Location = new System.Drawing.Point(116, 513);
+            this.chkWriteMentorDictPath.Location = new System.Drawing.Point(116, 567);
             this.chkWriteMentorDictPath.Name = "chkWriteMentorDictPath";
             this.chkWriteMentorDictPath.Size = new System.Drawing.Size(271, 17);
             this.chkWriteMentorDictPath.TabIndex = 11;
@@ -205,11 +217,124 @@
             this.chk64Bit.UseVisualStyleBackColor = true;
             this.chk64Bit.CheckedChanged += new System.EventHandler(this.chk64Bit_CheckedChanged);
             // 
+            // groupBox1
+            // 
+            this.groupBox1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+                        | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.groupBox1.Controls.Add(this.tabControl1);
+            this.groupBox1.Location = new System.Drawing.Point(267, 111);
+            this.groupBox1.Name = "groupBox1";
+            this.groupBox1.Size = new System.Drawing.Size(480, 442);
+            this.groupBox1.TabIndex = 13;
+            this.groupBox1.TabStop = false;
+            this.groupBox1.Text = "Web";
+            // 
+            // groupBox2
+            // 
+            this.groupBox2.Controls.Add(this.label7);
+            this.groupBox2.Controls.Add(this.chkProviders);
+            this.groupBox2.Controls.Add(this.label6);
+            this.groupBox2.Controls.Add(this.button3);
+            this.groupBox2.Controls.Add(this.button2);
+            this.groupBox2.Controls.Add(this.txtFdoRegUtilPath);
+            this.groupBox2.Controls.Add(this.label5);
+            this.groupBox2.Controls.Add(this.txtFdoDir);
+            this.groupBox2.Controls.Add(this.label4);
+            this.groupBox2.Location = new System.Drawing.Point(12, 111);
+            this.groupBox2.Name = "groupBox2";
+            this.groupBox2.Size = new System.Drawing.Size(249, 439);
+            this.groupBox2.TabIndex = 14;
+            this.groupBox2.TabStop = false;
+            this.groupBox2.Text = "Server";
+            // 
+            // label7
+            // 
+            this.label7.Location = new System.Drawing.Point(19, 370);
+            this.label7.Name = "label7";
+            this.label7.Size = new System.Drawing.Size(206, 53);
+            this.label7.TabIndex = 8;
+            this.label7.Text = "NOTE: Some providers (eg. MySQL) require 3rd party external dependencies in order" +
+                " to sucessfully register";
+            // 
+            // chkProviders
+            // 
+            this.chkProviders.CheckOnClick = true;
+            this.chkProviders.FormattingEnabled = true;
+            this.chkProviders.HorizontalScrollbar = true;
+            this.chkProviders.Location = new System.Drawing.Point(20, 137);
+            this.chkProviders.Name = "chkProviders";
+            this.chkProviders.ScrollAlwaysVisible = true;
+            this.chkProviders.Size = new System.Drawing.Size(205, 229);
+            this.chkProviders.TabIndex = 7;
+            // 
+            // label6
+            // 
+            this.label6.AutoSize = true;
+            this.label6.Location = new System.Drawing.Point(16, 121);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(113, 13);
+            this.label6.TabIndex = 6;
+            this.label6.Text = "Provider dlls to register";
+            // 
+            // button3
+            // 
+            this.button3.Location = new System.Drawing.Point(216, 86);
+            this.button3.Name = "button3";
+            this.button3.Size = new System.Drawing.Size(27, 23);
+            this.button3.TabIndex = 5;
+            this.button3.Text = "...";
+            this.button3.UseVisualStyleBackColor = true;
+            // 
+            // button2
+            // 
+            this.button2.Location = new System.Drawing.Point(216, 41);
+            this.button2.Name = "button2";
+            this.button2.Size = new System.Drawing.Size(27, 23);
+            this.button2.TabIndex = 4;
+            this.button2.Text = "...";
+            this.button2.UseVisualStyleBackColor = true;
+            // 
+            // txtFdoRegUtilPath
+            // 
+            this.txtFdoRegUtilPath.Location = new System.Drawing.Point(20, 88);
+            this.txtFdoRegUtilPath.Name = "txtFdoRegUtilPath";
+            this.txtFdoRegUtilPath.Size = new System.Drawing.Size(190, 20);
+            this.txtFdoRegUtilPath.TabIndex = 3;
+            // 
+            // label5
+            // 
+            this.label5.AutoSize = true;
+            this.label5.Location = new System.Drawing.Point(16, 72);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(85, 13);
+            this.label5.TabIndex = 2;
+            this.label5.Text = "FdoRegUtil Path";
+            // 
+            // txtFdoDir
+            // 
+            this.txtFdoDir.Location = new System.Drawing.Point(20, 43);
+            this.txtFdoDir.Name = "txtFdoDir";
+            this.txtFdoDir.Size = new System.Drawing.Size(190, 20);
+            this.txtFdoDir.TabIndex = 1;
+            this.txtFdoDir.TextChanged += new System.EventHandler(this.txtFdoDir_TextChanged);
+            // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.Location = new System.Drawing.Point(16, 27);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(54, 13);
+            this.label4.TabIndex = 0;
+            this.label4.Text = "FDO Path";
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(552, 544);
+            this.ClientSize = new System.Drawing.Size(759, 598);
+            this.Controls.Add(this.groupBox2);
+            this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.chk64Bit);
             this.Controls.Add(this.chkWriteMentorDictPath);
             this.Controls.Add(this.button1);
@@ -221,11 +346,13 @@
             this.Controls.Add(this.label2);
             this.Controls.Add(this.txtServiceName);
             this.Controls.Add(this.label1);
-            this.Controls.Add(this.tabControl1);
             this.Controls.Add(this.btnConfigure);
             this.Name = "Form1";
             this.Text = "MapGuide Instant Setup";
             this.tabControl1.ResumeLayout(false);
+            this.groupBox1.ResumeLayout(false);
+            this.groupBox2.ResumeLayout(false);
+            this.groupBox2.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -249,6 +376,17 @@
         private System.Windows.Forms.CheckBox chkWriteMentorDictPath;
         private System.Windows.Forms.TabPage TAB_IIS7;
         private System.Windows.Forms.CheckBox chk64Bit;
+        private System.Windows.Forms.GroupBox groupBox1;
+        private System.Windows.Forms.GroupBox groupBox2;
+        private System.Windows.Forms.TextBox txtFdoDir;
+        private System.Windows.Forms.Label label4;
+        private System.Windows.Forms.Label label7;
+        private System.Windows.Forms.CheckedListBox chkProviders;
+        private System.Windows.Forms.Label label6;
+        private System.Windows.Forms.Button button3;
+        private System.Windows.Forms.Button button2;
+        private System.Windows.Forms.TextBox txtFdoRegUtilPath;
+        private System.Windows.Forms.Label label5;
     }
 }
 
