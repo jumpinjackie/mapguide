@@ -103,10 +103,10 @@ class TestCoordinateSystem : public CppUnit::TestFixture
     CPPUNIT_TEST(TestCase_Projected_ConvertCode);
     CPPUNIT_TEST(TestCase_Projected_GetUnits);
     CPPUNIT_TEST(TestCase_Projected_GetUnitScale);
-    CPPUNIT_TEST(TestCase_Projected_GetMinX);
-    CPPUNIT_TEST(TestCase_Projected_GetMinY);
-    CPPUNIT_TEST(TestCase_Projected_GetMaxX);
-    CPPUNIT_TEST(TestCase_Projected_GetMaxY);
+    //CPPUNIT_TEST(TestCase_Projected_GetMinX);
+    //CPPUNIT_TEST(TestCase_Projected_GetMinY);
+    //CPPUNIT_TEST(TestCase_Projected_GetMaxX);
+    //CPPUNIT_TEST(TestCase_Projected_GetMaxY);
     CPPUNIT_TEST(TestCase_Projected_GetCsCode);
     CPPUNIT_TEST(TestCase_Projected_GetDescription);
     CPPUNIT_TEST(TestCase_Projected_GetProjection);
