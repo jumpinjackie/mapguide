@@ -82,6 +82,15 @@
                     </Component>
                 </Directory>
                 <Directory Id="WEBROOTLOCATION" Name="www">
+                  <Directory Id="MAPADMINLOCATION" Name="mapadmin">
+                    <Directory Id="PROFILINGMAPXMLLOCATION" Name="profilingmapxml">
+                      <Component Id="ProfilingPermissionsComponent" Win64="$(var.Win64)" Guid="60660D36-B135-4956-A8ED-10EAF78D76AE" Feature="WebMapAdminFeature">
+                        <CreateFolder>
+                          <util:PermissionEx User="Everyone" GenericAll="yes" />
+                        </CreateFolder>
+                      </Component>
+                    </Directory>
+                  </Directory>
                   <Directory Id="HELPLOCATION" Name="help" />
                   <Component Id="WebRootComponent" Win64="$(var.Win64)" Guid="A84579E6-285D-4869-9F04-AA47FB1ACFD5" Feature="WebExtensionsFeature">
                     <CreateFolder />

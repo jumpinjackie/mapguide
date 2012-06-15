@@ -195,9 +195,15 @@
         <ComponentRef Id="FdoComponent"/>
         <ComponentRef Id="FdoComComponent" />
         <ComponentRef Id="FdoCoreCompnent" />
+        <?if Have_ArcSde = "yes" ?>
         <Feature Id="FdoArcSdeProviderFeature" Title="!(loc.ArcSdeProvider)" Level="1" Description="!(loc.ArcSdeProviderDesc)" AllowAdvertise="no" TypicalDefault="install" InstallDefault="local">
-            <ComponentRef Id="FdoArcSdeComponent" />
+          <ComponentRef Id="FdoArcSdeComponent" />
         </Feature>
+        <?else ?>
+        <Feature Id="FdoArcSdeProviderFeature" Title="!(loc.ArcSdeProvider)" Display="hidden" Level="1" Description="!(loc.ArcSdeProviderDesc)" AllowAdvertise="no" TypicalDefault="install" InstallDefault="local">
+          <ComponentRef Id="FdoArcSdeComponent" />
+        </Feature>
+        <?endif ?>
         <Feature Id="FdoGdalProviderFeature" Title="!(loc.GdalProvider)" Level="1" Description="!(loc.GdalProviderDesc)" AllowAdvertise="no" TypicalDefault="install" InstallDefault="local">
             <ComponentRef Id="FdoGdalProviderComponent" />
         </Feature>
