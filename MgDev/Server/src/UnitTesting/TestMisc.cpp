@@ -22,6 +22,8 @@
 #include "ServerSiteService.h"
 #include "../UnitTesting/CppUnitExtensions.h"
 #include "FoundationDefs.h"
+#include "FdoConnectionManager.h"
+
 const STRING TEST_LOCALE = L"en";
 
 CPPUNIT_TEST_SUITE_NAMED_REGISTRATION(TestMisc, "TestMisc");
