@@ -187,5 +187,21 @@ namespace InstantSetup
                 chkProviders.Items.Add(item, false);
             }
         }
+
+        private void btnFdoPath_Click(object sender, EventArgs e)
+        {
+            if (folderBrowser.ShowDialog() == DialogResult.OK)
+            {
+                txtFdoDir.Text = folderBrowser.SelectedPath;
+            }
+        }
+
+        private void btnFdoRegUtilPath_Click(object sender, EventArgs e)
+        {
+            if (openFileDialog.ShowDialog() == DialogResult.OK)
+            {
+                txtFdoRegUtilPath.Text = openFileDialog.FileName;
+            }
+        }
     }
 }

@@ -49,12 +49,13 @@
             this.label7 = new System.Windows.Forms.Label();
             this.chkProviders = new System.Windows.Forms.CheckedListBox();
             this.label6 = new System.Windows.Forms.Label();
-            this.button3 = new System.Windows.Forms.Button();
-            this.button2 = new System.Windows.Forms.Button();
+            this.btnFdoRegUtilPath = new System.Windows.Forms.Button();
+            this.btnFdoPath = new System.Windows.Forms.Button();
             this.txtFdoRegUtilPath = new System.Windows.Forms.TextBox();
             this.label5 = new System.Windows.Forms.Label();
             this.txtFdoDir = new System.Windows.Forms.TextBox();
             this.label4 = new System.Windows.Forms.Label();
+            this.openFileDialog = new System.Windows.Forms.OpenFileDialog();
             this.tabControl1.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
@@ -97,7 +98,7 @@
             this.TAB_IIS7.Location = new System.Drawing.Point(4, 22);
             this.TAB_IIS7.Name = "TAB_IIS7";
             this.TAB_IIS7.Padding = new System.Windows.Forms.Padding(3);
-            this.TAB_IIS7.Size = new System.Drawing.Size(466, 343);
+            this.TAB_IIS7.Size = new System.Drawing.Size(466, 397);
             this.TAB_IIS7.TabIndex = 2;
             this.TAB_IIS7.Text = "IIS7";
             this.TAB_IIS7.UseVisualStyleBackColor = true;
@@ -235,8 +236,8 @@
             this.groupBox2.Controls.Add(this.label7);
             this.groupBox2.Controls.Add(this.chkProviders);
             this.groupBox2.Controls.Add(this.label6);
-            this.groupBox2.Controls.Add(this.button3);
-            this.groupBox2.Controls.Add(this.button2);
+            this.groupBox2.Controls.Add(this.btnFdoRegUtilPath);
+            this.groupBox2.Controls.Add(this.btnFdoPath);
             this.groupBox2.Controls.Add(this.txtFdoRegUtilPath);
             this.groupBox2.Controls.Add(this.label5);
             this.groupBox2.Controls.Add(this.txtFdoDir);
@@ -277,23 +278,25 @@
             this.label6.TabIndex = 6;
             this.label6.Text = "Provider dlls to register";
             // 
-            // button3
+            // btnFdoRegUtilPath
             // 
-            this.button3.Location = new System.Drawing.Point(216, 86);
-            this.button3.Name = "button3";
-            this.button3.Size = new System.Drawing.Size(27, 23);
-            this.button3.TabIndex = 5;
-            this.button3.Text = "...";
-            this.button3.UseVisualStyleBackColor = true;
+            this.btnFdoRegUtilPath.Location = new System.Drawing.Point(216, 86);
+            this.btnFdoRegUtilPath.Name = "btnFdoRegUtilPath";
+            this.btnFdoRegUtilPath.Size = new System.Drawing.Size(27, 23);
+            this.btnFdoRegUtilPath.TabIndex = 5;
+            this.btnFdoRegUtilPath.Text = "...";
+            this.btnFdoRegUtilPath.UseVisualStyleBackColor = true;
+            this.btnFdoRegUtilPath.Click += new System.EventHandler(this.btnFdoRegUtilPath_Click);
             // 
-            // button2
+            // btnFdoPath
             // 
-            this.button2.Location = new System.Drawing.Point(216, 41);
-            this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(27, 23);
-            this.button2.TabIndex = 4;
-            this.button2.Text = "...";
-            this.button2.UseVisualStyleBackColor = true;
+            this.btnFdoPath.Location = new System.Drawing.Point(216, 41);
+            this.btnFdoPath.Name = "btnFdoPath";
+            this.btnFdoPath.Size = new System.Drawing.Size(27, 23);
+            this.btnFdoPath.TabIndex = 4;
+            this.btnFdoPath.Text = "...";
+            this.btnFdoPath.UseVisualStyleBackColor = true;
+            this.btnFdoPath.Click += new System.EventHandler(this.btnFdoPath_Click);
             // 
             // txtFdoRegUtilPath
             // 
@@ -383,10 +386,11 @@
         private System.Windows.Forms.Label label7;
         private System.Windows.Forms.CheckedListBox chkProviders;
         private System.Windows.Forms.Label label6;
-        private System.Windows.Forms.Button button3;
-        private System.Windows.Forms.Button button2;
+        private System.Windows.Forms.Button btnFdoRegUtilPath;
+        private System.Windows.Forms.Button btnFdoPath;
         private System.Windows.Forms.TextBox txtFdoRegUtilPath;
         private System.Windows.Forms.Label label5;
+        private System.Windows.Forms.OpenFileDialog openFileDialog;
     }
 }
 
