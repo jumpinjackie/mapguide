@@ -17,7 +17,7 @@ SVNROOT=/home/user
 #SVNROOT="http://svn.osgeo.org"
 SVNRELPATH=/mapguide/branches/2.4/MgDev
 MY_MAKE_OPTS="-j 4"
-UBUNTU=0
+UBUNTU=1
 PRESERVE_BUILD_ROOT=1
 
 echo "******************************************************************"
@@ -122,8 +122,7 @@ aclocal
 libtoolize --force
 automake --add-missing --copy
 autoconf
-#./configure --enable-optimized --prefix=${INSTALLROOT}
-./configure --prefix=${INSTALLROOT}
+./configure --enable-optimized --prefix=${INSTALLROOT}
 make $MY_MAKE_OPTS
 check_build
 BUILD_COMPONENT="MapGuide Install"

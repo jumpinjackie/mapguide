@@ -1,13 +1,13 @@
 #!/bin/bash
 TEMPDIR=/tmp/build_mapguide
-#URL="http://download.osgeo.org/mapguide/releases/2.4.0/B/ubuntu11"
-URL="http://192.168.0.2/downloads/ubuntu11"
+#URL="http://download.osgeo.org/mapguide/releases/2.4.0/Beta1/ubuntu12"
+URL="http://192.168.0.2/downloads/ubuntu12"
 FDOVER_MAJOR_MINOR=3.7
 FDOVER_MAJOR_MINOR_REV=${FDOVER_MAJOR_MINOR}.0
-FDOVER=${FDOVER_MAJOR_MINOR_REV}-4308_i386
+FDOVER=${FDOVER_MAJOR_MINOR_REV}-6479_i386
 MGVER_MAJOR_MINOR=2.4
 MGVER_MAJOR_MINOR_REV=${MGVER_MAJOR_MINOR}.0
-MGVER=${MGVER_MAJOR_MINOR_REV}-6579_i386
+MGVER=${MGVER_MAJOR_MINOR_REV}-6757_i386
 
 # Must have root
 if [[ $EUID -ne 0 ]]; then
@@ -160,7 +160,7 @@ start_install()
 			echo -ne "\n    <LibraryPath>libKingOracleProvider.so</LibraryPath>" >> ${providersxml}
 			echo -ne "\n  </FeatureProvider>" >> ${providersxml}
 			;;
-		  odbc)
+		  rdbms)
 			echo "Registering ODBC Provider"
 			echo -ne "\n  <FeatureProvider>" >> ${providersxml}
 			echo -ne "\n    <Name>OSGeo.ODBC.${FDOVER_MAJOR_MINOR}</Name>" >> ${providersxml}
@@ -170,6 +170,26 @@ start_install()
 			echo -ne "\n    <Version>${FDOVER_MAJOR_MINOR_REV}.0</Version>" >> ${providersxml}
 			echo -ne "\n    <FeatureDataObjectsVersion>${FDOVER_MAJOR_MINOR_REV}.0</FeatureDataObjectsVersion>" >> ${providersxml}
 			echo -ne "\n    <LibraryPath>libFdoODBC.so</LibraryPath>" >> ${providersxml}
+			echo -ne "\n  </FeatureProvider>" >> ${providersxml}
+			echo "Registering PostgreSQL Provider"
+			echo -ne "\n  <FeatureProvider>" >> ${providersxml}
+			echo -ne "\n    <Name>OSGeo.PostgreSQL.${FDOVER_MAJOR_MINOR}</Name>" >> ${providersxml}
+			echo -ne "\n    <DisplayName>OSGeo FDO Provider for PostgreSQL</DisplayName>" >> ${providersxml}
+			echo -ne "\n    <Description>Read/write access to PostgreSQL/PostGIS-based data store. Supports spatial data types and spatial query operations</Description>" >> ${providersxml}
+			echo -ne "\n    <IsManaged>False</IsManaged>" >> ${providersxml}
+			echo -ne "\n    <Version>${FDOVER_MAJOR_MINOR_REV}.0</Version>" >> ${providersxml}
+			echo -ne "\n    <FeatureDataObjectsVersion>${FDOVER_MAJOR_MINOR_REV}.0</FeatureDataObjectsVersion>" >> ${providersxml}
+			echo -ne "\n    <LibraryPath>libFdoPostgreSQL.so</LibraryPath>" >> ${providersxml}
+			echo -ne "\n  </FeatureProvider>" >> ${providersxml}
+			echo "Registering MySQL Provider"
+			echo -ne "\n  <FeatureProvider>" >> ${providersxml}
+			echo -ne "\n    <Name>OSGeo.MySQL.${FDOVER_MAJOR_MINOR}</Name>" >> ${providersxml}
+			echo -ne "\n    <DisplayName>OSGeo FDO Provider for MySQL</DisplayName>" >> ${providersxml}
+			echo -ne "\n    <Description>FDO Provider for MySQL</Description>" >> ${providersxml}
+			echo -ne "\n    <IsManaged>False</IsManaged>" >> ${providersxml}
+			echo -ne "\n    <Version>${FDOVER_MAJOR_MINOR_REV}.0</Version>" >> ${providersxml}
+			echo -ne "\n    <FeatureDataObjectsVersion>${FDOVER_MAJOR_MINOR_REV}.0</FeatureDataObjectsVersion>" >> ${providersxml}
+			echo -ne "\n    <LibraryPath>libFdoMySQL.so</LibraryPath>" >> ${providersxml}
 			echo -ne "\n  </FeatureProvider>" >> ${providersxml}
 			;;
 		  ogr)
@@ -182,30 +202,6 @@ start_install()
 			echo -ne "\n    <Version>${FDOVER_MAJOR_MINOR_REV}.0</Version>" >> ${providersxml}
 			echo -ne "\n    <FeatureDataObjectsVersion>${FDOVER_MAJOR_MINOR_REV}.0</FeatureDataObjectsVersion>" >> ${providersxml}
 			echo -ne "\n    <LibraryPath>libOGRProvider.so</LibraryPath>" >> ${providersxml}
-			echo -ne "\n  </FeatureProvider>" >> ${providersxml}
-			;;
-		  postgis)
-			echo "Registering PostgreSQL Provider"
-			echo -ne "\n  <FeatureProvider>" >> ${providersxml}
-			echo -ne "\n    <Name>OSGeo.PostgreSQL.${FDOVER_MAJOR_MINOR}</Name>" >> ${providersxml}
-			echo -ne "\n    <DisplayName>OSGeo FDO Provider for PostgreSQL</DisplayName>" >> ${providersxml}
-			echo -ne "\n    <Description>Read/write access to PostgreSQL/PostGIS-based data store. Supports spatial data types and spatial query operations</Description>" >> ${providersxml}
-			echo -ne "\n    <IsManaged>False</IsManaged>" >> ${providersxml}
-			echo -ne "\n    <Version>${FDOVER_MAJOR_MINOR_REV}.0</Version>" >> ${providersxml}
-			echo -ne "\n    <FeatureDataObjectsVersion>${FDOVER_MAJOR_MINOR_REV}.0</FeatureDataObjectsVersion>" >> ${providersxml}
-			echo -ne "\n    <LibraryPath>libFdoPostgreSQL.so</LibraryPath>" >> ${providersxml}
-			echo -ne "\n  </FeatureProvider>" >> ${providersxml}
-			;;
-		  mysql)
-			echo "Registering MySQL Provider"
-			echo -ne "\n  <FeatureProvider>" >> ${providersxml}
-			echo -ne "\n    <Name>OSGeo.MySQL.${FDOVER_MAJOR_MINOR}</Name>" >> ${providersxml}
-			echo -ne "\n    <DisplayName>OSGeo FDO Provider for MySQL</DisplayName>" >> ${providersxml}
-			echo -ne "\n    <Description>FDO Provider for MySQL</Description>" >> ${providersxml}
-			echo -ne "\n    <IsManaged>False</IsManaged>" >> ${providersxml}
-			echo -ne "\n    <Version>${FDOVER_MAJOR_MINOR_REV}.0</Version>" >> ${providersxml}
-			echo -ne "\n    <FeatureDataObjectsVersion>${FDOVER_MAJOR_MINOR_REV}.0</FeatureDataObjectsVersion>" >> ${providersxml}
-			echo -ne "\n    <LibraryPath>libFdoMySQL.so</LibraryPath>" >> ${providersxml}
 			echo -ne "\n  </FeatureProvider>" >> ${providersxml}
 			;;
 		  sdf)
