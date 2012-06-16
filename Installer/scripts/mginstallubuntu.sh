@@ -1,7 +1,7 @@
 #!/bin/bash
 TEMPDIR=/tmp/build_mapguide
 #URL="http://download.osgeo.org/mapguide/releases/2.4.0/Beta1/ubuntu12"
-URL="http://192.168.0.2/downloads/ubuntu12"
+URL="http://192.168.0.3/downloads/ubuntu12"
 FDOVER_MAJOR_MINOR=3.7
 FDOVER_MAJOR_MINOR_REV=${FDOVER_MAJOR_MINOR}.0
 FDOVER=${FDOVER_MAJOR_MINOR_REV}-6479_i386
@@ -76,11 +76,11 @@ dialog_fdo_provider()
 	tempfile=`tempfile 2>/dev/null` || tempfile=/tmp/test$$
 	trap "rm -f $tempfile" 0 1 2 5 15
 
+	#arcsde    	"OSGeo FDO Provider for ArcSDE" off \
 	# Disable RDBMS provider selection by default
 	$DIALOG --backtitle "MapGuide Open Source Ubuntu installer" \
 			--title "FDO Providers" --clear \
 		    --checklist "Check the FDO Providers you want to install" 20 61 5 \
-   		    arcsde    	"OSGeo FDO Provider for ArcSDE" off \
 		    sdf  		"OSGeo FDO Provider for SDF" ON \
 		    shp    		"OSGeo FDO Provider for SHP" ON \
 		    sqlite 		"OSGeo FDO Provider for SQLite" ON \
