@@ -30,13 +30,14 @@ String title;
 <%
 
 MgSite site = null;
+MgUserInformation userInfo = null;
 try
 {
     // Initialize the web extensions,
     MapGuideApi.MgInitializeWebTier(Constants.WebConfigPath);
 
     // Connect to the site server and create a session
-    MgUserInformation userInfo = new MgUserInformation("Author", "author");
+    userInfo = new MgUserInformation("Author", "author");
     site = new MgSite();
     site.Open(userInfo);
 }
@@ -53,6 +54,27 @@ try
     // Define some constants
     webLayout     = "Library://Samples/Layouts/AspNetSamples.WebLayout";
     title         = "MapGuide Developer's Guide asp.net Samples";
+    
+    MgSiteConnection siteConn = new MgSiteConnection();
+    siteConn.Open(userInfo);
+    
+    // We check for the existence of the specified WebLayout 
+    //
+    // If it doesn't exist, we load a copy from the WebLayout.xml on disk. This is a basic example 
+    // of programmatically loading resource content into to the repository.
+    MgResourceService resSvc = (MgResourceService)siteConn.CreateService(MgServiceType.ResourceService);
+    MgResourceIdentifier wlResId = new MgResourceIdentifier(webLayout);
+    if (!resSvc.ResourceExists(wlResId)) {
+        String xmlPath =  Server.MapPath("WebLayout.xml");
+        MgByteSource wlByteSource = new MgByteSource(xmlPath);
+        MgByteReader wlByteReader = wlByteSource.GetReader();
+        // NOTE: The Author account generally has write access into the site repository
+        // which is why we're doing it like this.
+        // If this was an Anonymous user, they can't write into the session repository. We would normally 
+        // load our content into a session-based repository and modify $webLayout to point to our 
+        // session loaded resource
+        resSvc.SetResource(wlResId, wlByteReader, null);
+    }
 }
 catch (MgException ex)
 {
