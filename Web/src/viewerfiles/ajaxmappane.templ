@@ -571,6 +571,11 @@ function InitDocument()
     moveTimer = 0;
 
     cancelTgt = document.getElementById("KeyTarget");
+    if (!isLegend && !isProperties) {
+        try {
+            document.getElementById("tbSplitter").style.display = 'none';
+        } catch (e) { }
+    }
 
     initTimer = setInterval(delayedInit, 200);
     
