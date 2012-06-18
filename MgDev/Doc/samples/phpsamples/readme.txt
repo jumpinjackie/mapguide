@@ -13,4 +13,4 @@ If this is not the case edit common/common.php and change the paths to match you
 
 These samples require a user named "Author" (pass: author) with authoring privileges. This is a default user in a standard MapGuide installation. If you have deleted or modified this user, edit main.php and update with a matching login
 
-These samples require the Sheboygan sample dataset. In addition it requires a web layout that is provided in the PHPSamples.mgp. Load this package first before running the samples.
+These samples require the Sheboygan sample dataset. Load this package first before running the samples.
