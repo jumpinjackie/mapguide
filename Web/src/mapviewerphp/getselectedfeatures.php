@@ -391,6 +391,7 @@ function GetPropertyValueFromFeatureReader($fr, $agfRW, $propType, $propName)
         case MgPropertyType::String:
             $tStr = "String";
             $val = JsonEscape($fr->GetString($propName)); //String content is arbitrary
+            $val = trim(preg_replace('/\s+/',' ',$val));
             break;
         case MgPropertyType::Blob: //NOT PRESENTABLE IN PROPERTY GRID
             $tStr = "BLOB";
