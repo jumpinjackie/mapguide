@@ -28,6 +28,7 @@ String sessionId = "";
 String webLayoutId = "";
 int dwf = 0;
 String locale = "";
+String mapName = "";
 </script>
 
 <%
@@ -69,14 +70,14 @@ String locale = "";
             String query = url.Substring(index+1);
 
             if(query.Length > 0)
-                url = String.Format("{0}?SESSION={1}&WEBLAYOUT={2}&DWF={3}&LOCALE={4}&{5}", path, sessionId, HttpUtility.UrlEncode(webLayoutId), dwf, locale, query);
+                url = String.Format("{0}?SESSION={1}&MAPNAME={2}&WEBLAYOUT={3}&DWF={4}&LOCALE={5}&{6}", path, sessionId, mapName, HttpUtility.UrlEncode(webLayoutId), dwf, locale, query);
             else
-                url = String.Format("{0}?SESSION={1}&WEBLAYOUT={2}&DWF={3}&LOCALE={4}", path, sessionId, HttpUtility.UrlEncode(webLayoutId), dwf, locale);
+                url = String.Format("{0}?SESSION={1}&MAPNAME={2}&WEBLAYOUT={3}&DWF={4}&LOCALE={5}", path, sessionId, mapName, HttpUtility.UrlEncode(webLayoutId), dwf, locale);
 
         }
         else
         {
-            url = String.Format("{0}?SESSION={1}&WEBLAYOUT={2}&DWF={3}&LOCALE={4}", taskPaneUrl, sessionId, HttpUtility.UrlEncode(webLayoutId), dwf, locale);
+            url = String.Format("{0}?SESSION={1}&MAPNAME={2}&WEBLAYOUT={3}&DWF={4}&LOCALE={5}", taskPaneUrl, sessionId, mapName, HttpUtility.UrlEncode(webLayoutId), dwf, locale);
         }
         String templ = LoadTemplate(Request, "../viewerfiles/taskframe.templ");
         String[] vals = {
@@ -113,6 +114,7 @@ void GetParameters(NameValueCollection parameters)
     sessionId = ValidateSessionId(GetParameter(parameters, "SESSION"));
     locale = ValidateLocaleString(GetParameter(parameters, "LOCALE"));
     webLayoutId = ValidateResourceId(GetParameter(parameters, "WEBLAYOUT"));
+    mapName = ValidateMapName(GetParameter(parameters, "MAPNAME"));
     dwf = GetIntParameter(parameters, "DWF");
 }
 

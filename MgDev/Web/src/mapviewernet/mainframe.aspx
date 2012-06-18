@@ -33,6 +33,7 @@ String orgSessionId = "";
 String username = "";
 String password = "";
 String locale = "";
+String mapName = "";
 int curFlyout = 0;
 NameValueCollection cmds = null;
 </script>
@@ -126,6 +127,14 @@ NameValueCollection cmds = null;
             defHome = true;
         }
         String mapDefinitionUrl = HttpUtility.UrlEncode(mapDef);
+        // NOTE:
+        //
+        // We don't open a MgMap because it is being created by mapframe.aspx that is also probably running
+        // as this script is running. However the naming convention is fixed enough that we can figure out
+        // what to pass to the Task Pane
+        MgResourceIdentifier resId = new MgResourceIdentifier(mapDef);
+        mapName = resId.GetName();
+        
         String title = webLayout.GetTitle();
 
         bool showLegend = infoPane.IsLegendBandVisible();
@@ -152,7 +161,7 @@ NameValueCollection cmds = null;
         //
         String srcToolbar = showToolbar ? ("src=\"" + vpath + "toolbar.aspx?LOCALE=" + locale + "\"") : "";
         String srcStatusbar = showStatusbar ? ("src=\"" + vpath + "statusbar.aspx?LOCALE=" + locale + "\"") : "";
-        String srcTaskFrame = showTaskPane ? ("src=\"" + vpath + "taskframe.aspx?WEBLAYOUT=" + HttpUtility.UrlEncode(webLayoutDefinition) + "&DWF=" + (forDwf != 0 ? "1" : "0") + "&SESSION=" + (sessionId != "" ? sessionId : "") + "&LOCALE=" + locale + "\"") : "";
+        String srcTaskFrame = showTaskPane ? ("src=\"" + vpath + "taskframe.aspx?MAPNAME=" + mapName + "&WEBLAYOUT=" + HttpUtility.UrlEncode(webLayoutDefinition) + "&DWF=" + (forDwf != 0 ? "1" : "0") + "&SESSION=" + (sessionId != "" ? sessionId : "") + "&LOCALE=" + locale + "\"") : "";
         String srcTaskBar = "src=\"" + vpath + "taskbar.aspx?LOCALE=" + locale + "\"";
 
         //view center

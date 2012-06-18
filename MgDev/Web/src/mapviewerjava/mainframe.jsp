@@ -34,6 +34,7 @@ String orgSessionId = "";
 String username = "";
 String password = "";
 String locale = "";
+String mapName = "";
 int curFlyout = 0;
 Hashtable cmds = new Hashtable();
 %>
@@ -127,6 +128,14 @@ try
     }
 
     String mapDefinitionUrl = URLEncoder.encode(mapDef, "UTF-8");
+    // NOTE:
+    //
+    // We don't open a MgMap because it is being created by mapframe.jsp that is also probably running
+    // as this script is running. However the naming convention is fixed enough that we can figure out
+    // what to pass to the Task Pane
+    MgResourceIdentifier resId = new MgResourceIdentifier(mapDef);
+    mapName = resId.GetName();
+    
     String title = webLayout.GetTitle();
 
     boolean showLegend = infoPane.IsLegendBandVisible();
@@ -149,7 +158,7 @@ try
     //
     String srcToolbar = showToolbar ? ( "src=\"" + vpath + "toolbar.jsp?LOCALE=" + locale + "\"" ) : "";
     String srcStatusbar = showStatusbar ? ( "src=\"" + vpath + "statusbar.jsp?LOCALE=" + locale + "\"" ) : "";
-    String srcTaskFrame = showTaskPane? ("src=\"" + vpath + "taskframe.jsp?WEBLAYOUT=" + URLEncoder.encode(webLayoutDefinition, "UTF-8") + "&DWF=" + (forDwf!=0? "1": "0") + "&SESSION=" + (sessionId != ""? sessionId: "") + "&LOCALE=" + locale + "\"") : "";
+    String srcTaskFrame = showTaskPane? ("src=\"" + vpath + "taskframe.jsp?MAPNAME=" + mapName + "&WEBLAYOUT=" + URLEncoder.encode(webLayoutDefinition, "UTF-8") + "&DWF=" + (forDwf!=0? "1": "0") + "&SESSION=" + (sessionId != ""? sessionId: "") + "&LOCALE=" + locale + "\"") : "";
     String srcTaskBar = "src=\"" + vpath + "taskbar.jsp?LOCALE=" + locale + "\"";
 
     //view center
