@@ -171,6 +171,7 @@
                 break;
             case MgPropertyType.String:
                 value = JsonEscape(reader.GetString(propName)); // string content is arbitrary
+                value = value.replaceAll("\\s+", " ").trim();
                 break;
             default: //NOT PRESENTABLE IN PROPERTY GRID
                 value = "";

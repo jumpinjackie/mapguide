@@ -83,6 +83,7 @@
     String sessionId;
     String locale;
     CultureInfo culture;
+    System.Text.RegularExpressions.Regex regex;
 
     static NameValueCollection GetLayerPropertyMappings(MgResourceService resSvc, MgLayerBase layer)
     {
@@ -132,6 +133,7 @@
                 break;
             case MgPropertyType.String:
                 value = JsonEscape(reader.GetString(propName)); //String content is arbitrary
+                value = regex.Replace(value, " ").Trim();
                 break;
             default: //NOT PRESENTABLE IN PROPERTY GRID
                 value = "";
@@ -260,6 +262,7 @@
         locale = GetDefaultLocale();
 
     culture = CultureInfo.GetCultureInfo(locale);
+    regex = new System.Text.RegularExpressions.Regex("\\s+");
 
     //HACK: The default locale (en) resolves to a neutral culture, .net forbids the use of
     //neutral cultures for formatting purposes, so default to InvariantCulture if the resolved

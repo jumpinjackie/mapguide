@@ -37,10 +37,30 @@ catch (MgException $e)
 try
 {
     $sessionId = $site->CreateSession();
+    $siteConn = new MgSiteConnection();
+    $siteConn->Open($userInfo);
 
     // Define some constants
     $webLayout     = "Library://Samples/Layouts/PHPSamples.WebLayout";
     $title         = "MapGuide Developer's Guide PHP Samples";
+    
+    // We check for the existence of the specified WebLayout 
+    //
+    // If it doesn't exist, we load a copy from the WebLayout.xml on disk. This is a basic example 
+    // of programmatically loading resource content into to the repository.
+    $wlResId = new MgResourceIdentifier($webLayout);
+    $resSvc = $siteConn->CreateService(MgServiceType::ResourceService);
+    if (!$resSvc->ResourceExists($wlResId)) {
+        $wlPath = dirname(__FILE__)."//WebLayout.xml";
+        $wlByteSource = new MgByteSource($wlPath);
+        $wlByteReader = $wlByteSource->GetReader();
+        // NOTE: The Author account generally has write access into the site repository
+        // which is why we're doing it like this.
+        // If this was an Anonymous user, they can't write into the session repository. We would normally 
+        // load our content into a session-based repository and modify $webLayout to point to our 
+        // session loaded resource
+        $resSvc->SetResource($wlResId, $wlByteReader, null);
+    }
 }
 catch (MgException $e)
 {
