@@ -24,6 +24,7 @@ $sessionId = "";
 $webLayoutId = "";
 $dwf = 0;
 $locale = "";
+$mapName = "";
 
 GetRequestParameters();
 SetLocalizedFilesPath(GetLocalizationPath());
@@ -71,9 +72,9 @@ try
     
     //If there is a query component to the initial url, append it to the end of the full url string
     if (strlen($query) == 0)
-        $url = sprintf("%s?SESSION=%s&WEBLAYOUT=%s&DWF=%s&LOCALE=%s", $baseUrl, $sessionId, urlencode($webLayoutId), $dwf, $locale);
+        $url = sprintf("%s?SESSION=%s&MAPNAME=%s&WEBLAYOUT=%s&DWF=%s&LOCALE=%s", $baseUrl, $sessionId, $mapName, urlencode($webLayoutId), $dwf, $locale);
     else
-        $url = sprintf("%s?SESSION=%s&WEBLAYOUT=%s&DWF=%s&LOCALE=%s&%s", $baseUrl, $sessionId, urlencode($webLayoutId), $dwf, $locale, $query);
+        $url = sprintf("%s?SESSION=%s&MAPNAME=%s&WEBLAYOUT=%s&DWF=%s&LOCALE=%s&%s", $baseUrl, $sessionId, $mapName, urlencode($webLayoutId), $dwf, $locale, $query);
 
     $templ = file_get_contents("../viewerfiles/taskframe.templ");
     print sprintf($templ, $vpath ."tasklist.php", $locale, $url);
@@ -91,12 +92,13 @@ catch(Exception $ne)
 
 function GetParameters($params)
 {
-    global $taskPane, $sessionId, $webLayoutId, $dwf, $locale;
+    global $taskPane, $sessionId, $webLayoutId, $dwf, $locale, $mapName;
 
     $sessionId = ValidateSessionId(GetParameter($params, 'SESSION'));
     $locale = ValidateLocaleString(GetParameter($params, 'LOCALE'));
     $webLayoutId = ValidateResourceId(GetParameter($params, 'WEBLAYOUT'));
     $dwf = GetIntParameter($params, 'DWF');
+    $mapName = ValidateMapName(GetParameter($params, 'MAPNAME'));
 }
 
 function GetRequestParameters()
