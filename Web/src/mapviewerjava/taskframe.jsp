@@ -29,6 +29,7 @@ String sessionId = "";
 String webLayoutId = "";
 int dwf = 0;
 String locale = "";
+String mapName = "";
 %>
 
 <%
@@ -69,13 +70,13 @@ String locale = "";
             String query = url.substring(index+1);
 
             if(query.length() > 0)
-                url = String.format("%s?SESSION=%s&WEBLAYOUT=%s&DWF=%s&LOCALE=%s&%s", path, sessionId, URLEncoder.encode(webLayoutId, "UTF-8"), dwf, locale, query);
+                url = String.format("%s?SESSION=%s&MAPNAME=%s&WEBLAYOUT=%s&DWF=%s&LOCALE=%s&%s", path, sessionId, mapName, URLEncoder.encode(webLayoutId, "UTF-8"), dwf, locale, query);
             else
-                url = String.format("%s?SESSION=%s&WEBLAYOUT=%s&DWF=%s&LOCALE=%s", path, sessionId, URLEncoder.encode(webLayoutId, "UTF-8"), dwf, locale);
+                url = String.format("%s?SESSION=%s&MAPNAME=%s&WEBLAYOUT=%s&DWF=%s&LOCALE=%s", path, sessionId, mapName, URLEncoder.encode(webLayoutId, "UTF-8"), dwf, locale);
         }
         else
         {
-            url = String.format("%s?SESSION=%s&WEBLAYOUT=%s&DWF=%s&LOCALE=%s", taskPaneUrl, sessionId, URLEncoder.encode(webLayoutId), dwf, locale);
+            url = String.format("%s?SESSION=%s&MAPNAME=%s&WEBLAYOUT=%s&DWF=%s&LOCALE=%s", taskPaneUrl, sessionId, mapName, URLEncoder.encode(webLayoutId), dwf, locale);
         }
         String templ = LoadTemplate("/viewerfiles/taskframe.templ");
         String[] vals = { vpath + "tasklist.jsp",
@@ -103,6 +104,7 @@ void GetRequestParameters(HttpServletRequest request)
     locale = ValidateLocaleString(GetParameter(request, "LOCALE"));
     webLayoutId = ValidateResourceId(GetParameter(request, "WEBLAYOUT"));
     dwf = GetIntParameter(request, "DWF");
+    mapName = ValidateMapName(GetParameter(request, "MAPNAME"));
 }
 
 void OnError(String title, String msg, PrintWriter outStream, HttpServletRequest request) throws FileNotFoundException, IOException

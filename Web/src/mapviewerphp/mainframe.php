@@ -22,6 +22,7 @@ include 'constants.php';
 include 'product.php';
 
 $webLayoutDefinition = '';
+$mapName = '';
 $locale = '';
 $sessionId = '';
 $orgSessionId = '';
@@ -34,6 +35,7 @@ function BuildViewer($forDwf = true)
 {
     global $debug, $webLayoutDefinition, $cmds, $locale;
     global $sessionId, $username, $password, $orgSessionId;
+    global $mapName;
     global $product;
 
     SetLocalizedFilesPath(GetLocalizationPath());
@@ -143,6 +145,15 @@ function BuildViewer($forDwf = true)
             $defHome = true;
         }
         $mapDefinitionUrl = urlencode($mapDef);
+        
+        // NOTE:
+        //
+        // We don't open a MgMap because it is being created by mapframe.php that is also probably running
+        // as this script is running. However the naming convention is fixed enough that we can figure out
+        // what to pass to the Task Pane
+        $resId = new MgResourceIdentifier($mapDef);
+        $mapName = $resId->GetName();
+        
         $title = $webLayout->GetTitle();
         $enablePingServer = $webLayout->GetEnablePingServer();
 
@@ -170,7 +181,7 @@ function BuildViewer($forDwf = true)
         //
         $srcToolbar = $showToolbar? ('src="' . $vpath . 'toolbar.php?LOCALE=' . $locale . '"'): '';
         $srcStatusbar = $showStatusbar? ('src="' . $vpath . 'statusbar.php?LOCALE=' . $locale . '"') : "";
-        $srcTaskFrame = $showTaskPane? ('src="' . $vpath . 'taskframe.php?WEBLAYOUT=' . urlencode($webLayoutDefinition) . '&DWF=' . ($forDwf? "1": "0") . '&SESSION=' . ($sessionId != ""? $sessionId: "") . '&LOCALE=' . $locale . '"') : '';
+        $srcTaskFrame = $showTaskPane? ('src="' . $vpath . 'taskframe.php?MAPNAME=' . $mapName . '&WEBLAYOUT=' . urlencode($webLayoutDefinition) . '&DWF=' . ($forDwf? "1": "0") . '&SESSION=' . ($sessionId != ""? $sessionId: "") . '&LOCALE=' . $locale . '"') : '';
         $srcTaskBar = 'src="' . $vpath . 'taskbar.php?LOCALE=' . $locale . '"';
 
         //view center
@@ -580,7 +591,7 @@ function DeclareUiItems($coll, $varname)
 
 function GetParameters($params)
 {
-    global $debug, $webLayoutDefinition;
+    global $debug, $webLayoutDefinition, $mapName;
     global $sessionId, $username, $password, $orgSessionId, $locale;
 
     $sessionId = ValidateSessionId(GetParameter($params, 'SESSION'));
