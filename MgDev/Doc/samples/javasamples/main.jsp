@@ -52,7 +52,6 @@
     MgResourceIdentifier wlResId = new MgResourceIdentifier(webLayout);
     if (!resSvc.ResourceExists(wlResId)) {
         String xmlPath =  realpath + File.separator + "/javasamples/WebLayout.xml";
-        System.out.println("Loading in " + webLayout + " from WebLayout.xml");
         MgByteSource wlByteSource = new MgByteSource(xmlPath);
         MgByteReader wlByteReader = wlByteSource.GetReader();
         // NOTE: The Author account generally has write access into the site repository
