@@ -3596,7 +3596,7 @@ function BuildTilePlanes(nx1, ny1, nx2, ny2)
         for(var i=0; i < GRIDCY; i ++) {
             tileCode += '<tr height=' + TILECY + 'px>';
             for(var j=0; j < GRIDCX; j ++)
-                tileCode += '<td style="height: ' + TILECY + 'px;' + 'background-color: transparent;padding-top: 0px; padding-left: 0px; padding-bottom: 0px; padding-right: 0px;" id="' + k + ':' + j + ':' + i + '" width=' + TILECX + 'px loaded="0"><div style="width: ' + TILECX + 'px; height: ' + TILECY + 'px;"></td>';
+                tileCode += '<td style="height: ' + TILECY + 'px;' + 'background-color: transparent;padding-top: 0px; padding-left: 0px; padding-bottom: 0px; padding-right: 0px;" id="' + k + ':' + j + ':' + i + '" width=' + TILECX + 'px ><div style="width: ' + TILECX + 'px; height: ' + TILECY + 'px;"></td>';
             tileCode += '</tr>\n';
         }
         tileCode += '</tbody></table>\n';
@@ -3634,9 +3634,6 @@ function RequestTile(col, row, tilex, tiley)
             if((cell = FindCell(k, cellSpec)) == null)
                 return 0;
         }
-        if(cell.loaded == "1")
-            return 0;
-        cell.loaded = "1";
         url = webAgent + "?OPERATION=GETTILEIMAGE&VERSION=1.2.0&SESSION=" + sessionId + "&MAPDEFINITION=" + encodeComponent(mapDefinitionName) + "&BASEMAPLAYERGROUPNAME=" + encodeComponent(baseGroups[k]) + "&TILECOL=" + tilex + "&TILEROW=" + tiley + "&SCALEINDEX=" + sci + "&CLIENTAGENT=" + encodeComponent(clientAgent);
         
         // Defect in the way Chrome 4.0 caches images.

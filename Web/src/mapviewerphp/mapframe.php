@@ -118,7 +118,7 @@ else
             $scales[$i] = $map->GetFiniteDisplayScaleAt($i);
         sort($scales);
         for($i = 0; $i < count($scales); $i ++)
-            $scaleCreationCode = $scaleCreationCode . "scales[" . $i . "]=" . $scales[$i] . "; ";
+            $scaleCreationCode = $scaleCreationCode . "scales[" . $i . "]=" . str_replace(",", ".", $scales[$i]) . "; ";
 
         $mapStateId = new MgResourceIdentifier("Session:" . $sessionId . "//" . $mapName . "." . MgResourceType::Map);
         $map->Save($resourceSrvc, $mapStateId);

@@ -149,7 +149,7 @@ String hlTgtName;
             scales.Sort();
             for(int i = 0; i < scales.Count; i++)
             {
-                scaleCreationCode = scaleCreationCode + "scales[" + i + "]=" + scales[i] + "; ";
+                scaleCreationCode = scaleCreationCode + "scales[" + i + "]=" + scales[i].ToString().Replace(',','.') + "; ";
             }
             MgResourceIdentifier mapStateId = new MgResourceIdentifier("Session:" + sessionId + "//" + mapName + "." + MgResourceType.Map);
             map.Save(resourceSrvc, mapStateId);
