@@ -146,7 +146,7 @@ String hlTgtName;
         int i = 0;
         while(iter.hasNext())
         {
-            scaleCreationCode = scaleCreationCode + "scales[" + i + "]=" + iter.next() + "; ";
+            scaleCreationCode = scaleCreationCode + "scales[" + i + "]=" + iter.next().toString().replace(',','.') + "; ";
             i++;
         }
         MgResourceIdentifier mapStateId = new MgResourceIdentifier("Session:" + sessionId + "//" + mapName + "." + MgResourceType.Map);
