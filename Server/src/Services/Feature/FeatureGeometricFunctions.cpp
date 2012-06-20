@@ -108,7 +108,16 @@ MgReader* MgFeatureGeometricFunctions::Execute()
     while(m_reader->ReadNext())
     {
         // Get the geometry
-        Ptr<MgGeometry> val = GetValue();
+        Ptr<MgGeometry> val;
+        try 
+        {
+            val = GetValue();
+        }
+        catch(MgException* ex) //Don't let a bad geometry derail us, just discard and continue
+        {
+            ex->Release();
+            continue;
+        }
 
         // Get the envelope
         Ptr<MgEnvelope> envl = val->Envelope();
