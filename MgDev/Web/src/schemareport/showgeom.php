@@ -76,6 +76,13 @@
                 $geomProp = $classDef->GetProperties()->GetItem($geomName);
                 $spatialContext = $geomProp->GetSpatialContextAssociation();
 
+                //TODO: Worse case scenario is no provider support for Count() or SpatialExtents()
+                //In such cases, we should piggy-back off of the same raw-spun feature reader to compile the count and MBR
+                //instead of having to raw-spin twice (once to get the count, another to get the MBR via EXTENT())
+                //
+                //TODO: Have a way to do this purely mgserver-side so we don't have row transmission overhead by doing the counting
+                //on the web tier
+
                 //Try the SelectAggregate shortcut. This is faster than raw spinning a feature reader
                 //
                 //NOTE: If MapGuide supported scrollable readers like FDO, we'd have also tried 
@@ -187,7 +194,7 @@
                     }
                 }
                 $spatialcontextReader->Close();
-                if ($extentByteReader == null)
+                if ($extentByteReader != null)
                 {
                     // Get the extent geometry from the spatial context
                     $extentGeometrySc = $agfReaderWriter->Read($extentByteReader);
@@ -212,11 +219,33 @@
                 }
                 catch (MgException $e)
                 {
-                
+                    if ($extentGeometryAgg == null) 
+                    {
+                        //We do have one last hope. EXTENT() is an internal MapGuide custom function that's universally supported
+                        //as it operates against an underlying select query result. This raw-spins the reader server-side so there
+                        //is no server -> web tier transmission overhead involved.
+                        try
+                        {
+                            $aggregateOptions = new MgFeatureAggregateOptions();
+                            $aggregateOptions->AddComputedProperty("COMP_EXTENT", "EXTENT(".$geomName.")");
+                            
+                            $dataReader = $featureSrvc->SelectAggregate($featuresId, $className, $aggregateOptions);
+                            if($dataReader->ReadNext())
+                            {
+                                // Get the extents information
+                                $byteReader = $dataReader->GetGeometry('COMP_EXTENT');
+                                $extentGeometryAgg = $agfReaderWriter->Read($byteReader);
+                            }
+                            $dataReader->Close();
+                        }
+                        catch (MgException $e2) 
+                        {
+                            
+                        }
+                    }
                 }
-                
                 $extentGeometry = null;
-                // Prefer SpatialExtents() extent over spatial context extent
+                // Prefer SpatialExtents() of EXTENT() result over spatial context extent
                 if ($extentGeometryAgg != null)
                     $extentGeometry = $extentGeometryAgg;
                 if ($extentGeometry == null) { //Stil null? Now try spatial context
