@@ -99,6 +99,22 @@ MgReader* MgServerSelectFeatures::SelectFeatures(MgResourceIdentifier* resource,
     bool bFeatureCalculation = FindFeatureCalculation(resource, className);
     //Test for the FDO join optimization, because performance is **substantially** better
     bool bSupportsFdoJoin = SupportsFdoJoin(resource, className, isSelectAggregate);
+
+    // HACK: Sorry, we have to do this for now. Only SQLite provider satisifes the original
+    // FDO join optimization in both regular select and select aggregate modes
+    //
+    // SQL Server has problems in aggregate mode. So we'll say the FDO join optimization is 
+    // not supported when this is in aggregate mode. This means the join is handled by the
+    // GWS query engine. SQL Server on SQL Server join will use the best algorithm (sort merge)
+    // as both sides are sortable so we won't suffer too much of a performance penalty.
+    if (isSelectAggregate)
+    {
+        MdfModel::FeatureSource* featureSource = m_featureSourceCacheItem->Get();
+        const MdfModel::MdfString& providerName = featureSource->GetProvider();
+        if (providerName.find(L"OSGeo.SQLite") == MdfString::npos) //NOXLATE
+            bSupportsFdoJoin = false;
+    }
+
 #ifdef DEBUG_FDO_JOIN
     STRING fsIdStr = resource->ToString();
     ACE_DEBUG((LM_INFO, ACE_TEXT("\n(%t) Testing Feature Source (%W, %W) for FDO join optimization"), fsIdStr.c_str(), className.c_str()));
@@ -1769,7 +1785,7 @@ bool MgServerSelectFeatures::IsFunctionOnPrimaryProperty(FdoFunction* function, 
     if (NULL == (FdoClassDefinition*)classDef)
     {
         //TODO: Refine message if available
-        throw new MgClassNotFoundException(L"MgServerSelectFeatures.SelectFdoJoin", __LINE__, __WFILE__, NULL, L"", NULL);
+        throw new MgClassNotFoundException(L"MgServerSelectFeatures.IsFunctionOnPrimaryProperty", __LINE__, __WFILE__, NULL, L"", NULL);
     }
 
     FdoPtr<FdoPropertyDefinitionCollection> properties = classDef->GetProperties();
@@ -1843,7 +1859,7 @@ bool MgServerSelectFeatures::FilterContainsSecondaryProperties(MgResourceIdentif
         if (NULL == (FdoClassDefinition*)classDef)
         {
             //TODO: Refine message if available
-            throw new MgClassNotFoundException(L"MgServerSelectFeatures.SelectFdoJoin", __LINE__, __WFILE__, NULL, L"", NULL);
+            throw new MgClassNotFoundException(L"MgServerSelectFeatures.FilterContainsSecondaryProperties", __LINE__, __WFILE__, NULL, L"", NULL);
         }
 
         FdoPtr<FdoPropertyDefinitionCollection> propDefs = classDef->GetProperties();
@@ -2162,7 +2178,7 @@ void MgServerSelectFeatures::ApplyClassProperties(FdoIConnection* fdoConn, CREFS
     if (NULL == (FdoClassDefinition*)classDef)
     {
         //TODO: Refine message if available
-        throw new MgClassNotFoundException(L"MgServerSelectFeatures.SelectFdoJoin", __LINE__, __WFILE__, NULL, L"", NULL);
+        throw new MgClassNotFoundException(L"MgServerSelectFeatures.ApplyClassProperties", __LINE__, __WFILE__, NULL, L"", NULL);
     }
 
     FdoPtr<FdoIdentifierCollection> propNames = m_command->GetPropertyNames();
