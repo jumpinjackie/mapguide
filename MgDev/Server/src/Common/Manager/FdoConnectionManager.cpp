@@ -361,6 +361,8 @@ FdoIConnection* MgFdoConnectionManager::Open(MgResourceIdentifier* resourceIdent
             MgStringCollection args;
             args.Add(resourceIdentifier->ToString());
             args.Add(message);
+            args.Add(L"");
+            args.Add(L"");
 
             //Replace the exception to be thrown with our one
             mgException = new MgFdoException(L"MgFdoConnectionManager.Open", __LINE__, __WFILE__, NULL, L"MgFeatureSourceFormatInnerExceptionMessage", &args);
