@@ -82,15 +82,37 @@ FdoIConnection* MgFdoConnectionUtil::CreateConnection(MgResourceIdentifier* reso
     FdoPtr<FdoIConnectionCapabilities> connCaps = conn->GetConnectionCapabilities();
     if (connCaps->SupportsConfiguration() && !configDoc.empty())
     {
-        STRING path = resSvc->ResolveDataPath(resource);
-        MgFileUtil::AppendSlashToEndOfPath(path);
-        path += configDoc;
+        Ptr<MgByteReader> br = resSvc->GetResourceData(resource, configDoc, MgResourcePreProcessingType::Substitution);
+        if (br == NULL)
+        {
+            STRING message = MgUtil::GetResourceMessage(MgResources::FeatureService, L"MgMissingConfiguration");
 
-        FdoPtr<FdoIoFileStream> fs = FdoIoFileStream::Create(path.c_str(), L"r");
-        conn->SetConfiguration(fs);
+            Ptr<MgStringCollection> strCol;
+            if (!message.empty())
+            {
+                strCol = new MgStringCollection();
+                strCol->Add(message);
+            }
+            throw new MgInvalidFeatureSourceException(L"MgFdoConnectionUtil::CreateConnection",
+                __LINE__, __WFILE__, (MgStringCollection*)strCol, L"", NULL);
+        }
+
+        Ptr<MgByte> bytes;
+        bytes = NULL;
+
+        MgByteSink byteSink(br);
+        bytes = byteSink.ToBuffer();
+
+        if (bytes)
+        {
+            FdoIoMemoryStreamP stream = FdoIoMemoryStream::Create();
+            stream->Write((FdoByte*)bytes->Bytes(), (FdoSize)bytes->GetLength());
+            stream->Reset();
+            conn->SetConfiguration(stream);
+        }
     }
 
-	MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgFdoConnectionUtil::CreateConnection")
+	MG_FEATURE_SERVICE_CATCH_AND_THROW_WITH_FEATURE_SOURCE(L"MgFdoConnectionUtil::CreateConnection", resource)
 
 	return conn.Detach();
 }
