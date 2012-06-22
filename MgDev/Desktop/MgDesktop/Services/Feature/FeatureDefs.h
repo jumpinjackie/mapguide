@@ -20,11 +20,54 @@
         MgStringCollection arguments;                                         \
         wchar_t* buf = (wchar_t*)e->GetExceptionMessage();                    \
         INT64 nativeErrorCode = e->GetNativeErrorCode();                      \
+        FdoPtr<FdoException> cause = e->GetCause();                           \
+        FdoPtr<FdoException> root = e->GetRootCause();                        \
+                                                                              \
+        wchar_t* causeStr = NULL;                                             \
+        wchar_t* rootCauseStr = NULL;                                         \
+        if (NULL != cause.p)                                                  \
+            causeStr = (wchar_t*)cause->GetExceptionMessage();                \
+        if (NULL != root.p)                                                   \
+            rootCauseStr = (wchar_t*)root->GetExceptionMessage();             \
                                                                               \
         if (NULL != buf)                                                      \
         {                                                                     \
-            messageId = L"MgFormatInnerExceptionMessage";                     \
+            messageId = L"MgFormatFdoExceptionMessage";                       \
             arguments.Add(buf);                                               \
+            arguments.Add((causeStr == NULL) ? L"" : causeStr);               \
+            arguments.Add((rootCauseStr == NULL) ? L"" : rootCauseStr);       \
+        }                                                                     \
+                                                                              \
+        FDO_SAFE_RELEASE(e);                                                  \
+        mgException = new MgFdoException(methodName, __LINE__, __WFILE__, NULL, messageId, &arguments, nativeErrorCode); \
+                                                                              \
+    MG_CATCH(methodName)                                                      \
+
+#define MG_FEATURE_SERVICE_CATCH_WITH_FEATURE_SOURCE(methodName, fsId)        \
+    }                                                                         \
+    catch (FdoException* e)                                                   \
+    {                                                                         \
+        STRING messageId;                                                     \
+        MgStringCollection arguments;                                         \
+        wchar_t* buf = (wchar_t*)e->GetExceptionMessage();                    \
+        INT64 nativeErrorCode = e->GetNativeErrorCode();                      \
+        FdoPtr<FdoException> cause = e->GetCause();                           \
+        FdoPtr<FdoException> root = e->GetRootCause();                        \
+                                                                              \
+        wchar_t* causeStr = NULL;                                             \
+        wchar_t* rootCauseStr = NULL;                                         \
+        if (NULL != cause.p)                                                  \
+            causeStr = (wchar_t*)cause->GetExceptionMessage();                \
+        if (NULL != root.p)                                                   \
+            rootCauseStr = (wchar_t*)root->GetExceptionMessage();             \
+                                                                              \
+        if (NULL != buf)                                                      \
+        {                                                                     \
+            messageId = L"MgFeatureSourceFormatInnerExceptionMessage";        \
+            arguments.Add(fsId->ToString());                                  \
+            arguments.Add(buf);                                               \
+            arguments.Add((causeStr == NULL) ? L"" : causeStr);               \
+            arguments.Add((rootCauseStr == NULL) ? L"" : rootCauseStr);       \
         }                                                                     \
                                                                               \
         FDO_SAFE_RELEASE(e);                                                  \
@@ -37,6 +80,11 @@
 
 #define MG_FEATURE_SERVICE_CATCH_AND_THROW(methodName)                        \
     MG_FEATURE_SERVICE_CATCH(methodName)                                      \
+                                                                              \
+    MG_FEATURE_SERVICE_THROW()                                                \
+
+#define MG_FEATURE_SERVICE_CATCH_AND_THROW_WITH_FEATURE_SOURCE(methodName, fsId) \
+    MG_FEATURE_SERVICE_CATCH_WITH_FEATURE_SOURCE(methodName, fsId)            \
                                                                               \
     MG_FEATURE_SERVICE_THROW()                                                \
 
@@ -68,6 +116,15 @@
         MgStringCollection arguments;                                         \
         wchar_t* buf = (wchar_t*)e->GetExceptionMessage();                    \
         INT64 nativeErrorCode = e->GetNativeErrorCode();                      \
+        FdoPtr<FdoException> cause = e->GetCause();                           \
+        FdoPtr<FdoException> root = e->GetRootCause();                        \
+                                                                              \
+        wchar_t* causeStr = NULL;                                             \
+        wchar_t* rootCauseStr = NULL;                                         \
+        if (NULL != cause.p)                                                  \
+            causeStr = (wchar_t*)cause->GetExceptionMessage();                \
+        if (NULL != root.p)                                                   \
+            rootCauseStr = (wchar_t*)root->GetExceptionMessage();             \
                                                                               \
         if (NULL != buf)                                                      \
         {                                                                     \
@@ -80,8 +137,11 @@
             {                                                                 \
                 MgFdoConnectionPool::PurgeCachedConnections(resource);        \
             }                                                                 \
-            messageId = L"MgFormatInnerExceptionMessage";                     \
+            messageId = L"MgFeatureSourceFormatInnerExceptionMessage";        \
+            arguments.Add(resource->ToString());                              \
             arguments.Add(buf);                                               \
+            arguments.Add((causeStr == NULL) ? L"" : causeStr);               \
+            arguments.Add((rootCauseStr == NULL) ? L"" : rootCauseStr);       \
         }                                                                     \
                                                                               \
         FDO_SAFE_RELEASE(e);                                                  \

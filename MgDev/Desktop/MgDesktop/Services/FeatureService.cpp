@@ -529,7 +529,7 @@ bool MgdFeatureService::TestConnection(MgResourceIdentifier* resource)
     // Successful operation
     MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Success.c_str());
 
-    MG_FEATURE_SERVICE_CATCH(L"MgdFeatureService::TestConnection")
+    MG_FEATURE_SERVICE_CATCH_WITH_FEATURE_SOURCE(L"MgdFeatureService::TestConnection", resource)
 
     if (mgException != NULL)
     {
@@ -1363,7 +1363,7 @@ MgFeatureSchemaCollection* MgdFeatureService::DescribeSchema(MgResourceIdentifie
     // Successful operation
     MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Success.c_str());
 
-    MG_FEATURE_SERVICE_CATCH(L"MgdFeatureService::DescribeSchema")
+    MG_FEATURE_SERVICE_CATCH_WITH_FEATURE_SOURCE(L"MgdFeatureService::DescribeSchema", resource)
 
     if (mgException != NULL)
     {
@@ -1962,7 +1962,7 @@ MgFeatureSchemaCollection* MgdFeatureService::DescribeSchema(MgResourceIdentifie
     // Successful operation
     MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Success.c_str());
 
-    MG_FEATURE_SERVICE_CATCH(L"MgdFeatureService::DescribeSchema")
+    MG_FEATURE_SERVICE_CATCH_WITH_FEATURE_SOURCE(L"MgdFeatureService::DescribeSchema", resource)
 
     if (mgException != NULL)
     {
@@ -2054,7 +2054,7 @@ STRING MgdFeatureService::DescribeSchemaAsXml(MgResourceIdentifier* resource,
     // Successful operation
     MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Success.c_str());
 
-    MG_FEATURE_SERVICE_CATCH(L"MgdFeatureService::DescribeSchemaAsXml")
+    MG_FEATURE_SERVICE_CATCH_WITH_FEATURE_SOURCE(L"MgdFeatureService::DescribeSchemaAsXml", resource)
 
     if (mgException != NULL)
     {
@@ -2093,7 +2093,7 @@ STRING MgdFeatureService::DescribeSchemaAsXml(MgResourceIdentifier* resource,
     // Successful operation
     MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Success.c_str());
 
-    MG_FEATURE_SERVICE_CATCH(L"MgdFeatureService::DescribeSchemaAsXml")
+    MG_FEATURE_SERVICE_CATCH_WITH_FEATURE_SOURCE(L"MgdFeatureService::DescribeSchemaAsXml", resource)
 
     if (mgException != NULL)
     {
@@ -2379,7 +2379,7 @@ MgFeatureReader* MgdFeatureService::SelectFeatures(MgResourceIdentifier* resourc
     // Successful operation
     MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Success.c_str());
 
-    MG_FEATURE_SERVICE_CATCH(L"MgdFeatureService::SelectFeatures")
+    MG_FEATURE_SERVICE_CATCH_WITH_FEATURE_SOURCE(L"MgdFeatureService::SelectFeatures", resource)
 
     if (mgException != NULL)
     {
@@ -2424,7 +2424,7 @@ MgFeatureReader* MgdFeatureService::SelectFeatures(MgResourceIdentifier* resourc
     // Successful operation
     MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Success.c_str());
 
-    MG_FEATURE_SERVICE_CATCH(L"MgdFeatureService::SelectFeatures")
+    MG_FEATURE_SERVICE_CATCH_WITH_FEATURE_SOURCE(L"MgdFeatureService::SelectFeatures", resource)
 
     if (mgException != NULL)
     {
@@ -2466,7 +2466,7 @@ MgdScrollableFeatureReader* MgdFeatureService::SelectFeaturesExtended(MgResource
     // Successful operation
     MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Success.c_str());
 
-    MG_FEATURE_SERVICE_CATCH(L"MgdFeatureService::SelectFeaturesExtended")
+    MG_FEATURE_SERVICE_CATCH_WITH_FEATURE_SOURCE(L"MgdFeatureService::SelectFeaturesExtended", resource)
 
     if (mgException != NULL)
     {
@@ -4191,7 +4191,7 @@ MgFeatureReader* MgdFeatureService::InsertFeatures(MgResourceIdentifier* resourc
     // Successful operation
     MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Success.c_str());
 
-    MG_FEATURE_SERVICE_CATCH(L"MgdFeatureService::InsertFeatures")
+    MG_FEATURE_SERVICE_CATCH_WITH_FEATURE_SOURCE(L"MgdFeatureService::InsertFeatures", resource)
 
     if (mgException != NULL)
     {
@@ -4317,7 +4317,7 @@ MgPropertyCollection* MgdFeatureService::InsertFeatures(MgResourceIdentifier* re
     // Successful operation
     MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Success.c_str());
 
-    MG_FEATURE_SERVICE_CATCH(L"MgdFeatureService::InsertFeatures")
+    MG_FEATURE_SERVICE_CATCH_WITH_FEATURE_SOURCE(L"MgdFeatureService::InsertFeatures", resource)
 
     if (mgException != NULL)
     {
@@ -4495,7 +4495,7 @@ int MgdFeatureService::UpdateFeatures(MgResourceIdentifier* resource, CREFSTRING
     // Successful operation
     MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Success.c_str());
 
-    MG_FEATURE_SERVICE_CATCH(L"MgdFeatureService::UpdateFeatures")
+    MG_FEATURE_SERVICE_CATCH_WITH_FEATURE_SOURCE(L"MgdFeatureService::UpdateFeatures", resource)
 
     if (mgException != NULL)
     {
@@ -4622,7 +4622,7 @@ int MgdFeatureService::DeleteFeatures(MgResourceIdentifier* resource, CREFSTRING
     // Successful operation
     MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Success.c_str());
 
-    MG_FEATURE_SERVICE_CATCH(L"MgdFeatureService::DeleteFeatures")
+    MG_FEATURE_SERVICE_CATCH_WITH_FEATURE_SOURCE(L"MgdFeatureService::DeleteFeatures", resource)
 
     if (mgException != NULL)
     {
@@ -4734,7 +4734,7 @@ void MgdFeatureService::PurgeCache(MgResourceIdentifier* resource)
     // Successful operation
     MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Success.c_str());
 
-    MG_FEATURE_SERVICE_CATCH(L"MgdFeatureService::PurgeCache")
+    MG_FEATURE_SERVICE_CATCH_WITH_FEATURE_SOURCE(L"MgdFeatureService::PurgeCache", resource)
 
     if (mgException != NULL)
     {
@@ -4774,7 +4774,7 @@ MgFeatureReader* MgdFeatureService::GetLockedFeatures(MgResourceIdentifier* reso
     // Successful operation
     MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Success.c_str());
 
-    MG_FEATURE_SERVICE_CATCH(L"MgdFeatureService::GetLockedFeatures")
+    MG_FEATURE_SERVICE_CATCH_WITH_FEATURE_SOURCE(L"MgdFeatureService::GetLockedFeatures", resource)
 
     if (mgException != NULL)
     {
@@ -4907,7 +4907,7 @@ MgSqlDataReader* MgdFeatureService::ExecuteSqlQuery(MgResourceIdentifier* resour
     // Successful operation
     MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Success.c_str());
 
-    MG_FEATURE_SERVICE_CATCH(L"MgdFeatureService::ExecuteSqlQuery")
+    MG_FEATURE_SERVICE_CATCH_WITH_FEATURE_SOURCE(L"MgdFeatureService::ExecuteSqlQuery", resource)
 
     if (mgException != NULL)
     {
@@ -5713,7 +5713,7 @@ MgClassDefinition* MgdFeatureService::GetClassDefinition(MgResourceIdentifier* r
     // Successful operation
     MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Success.c_str());
 
-    MG_FEATURE_SERVICE_CATCH(L"MgdFeatureService::GetClassDefinition")
+    MG_FEATURE_SERVICE_CATCH_WITH_FEATURE_SOURCE(L"MgdFeatureService::GetClassDefinition", resource)
 
     if (mgException != NULL)
     {
@@ -5789,7 +5789,7 @@ MgClassDefinition* MgdFeatureService::GetClassDefinition(MgResourceIdentifier* r
 
     clone = MgFeatureUtil::CloneMgClassDefinition(classDefinition);
 
-    MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgdFeatureService::GetClassDefinition")
+    MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgdFeatureService::GetClassDefinition", resource)
 
     return clone.Detach();
 }
@@ -6237,7 +6237,7 @@ MgPropertyDefinitionCollection* MgdFeatureService::GetIdentityProperties(MgResou
     // Successful operation
     MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Success.c_str());
 
-    MG_FEATURE_SERVICE_CATCH(L"MgdFeatureService::GetIdentityProperties")
+    MG_FEATURE_SERVICE_CATCH_WITH_FEATURE_SOURCE(L"MgdFeatureService::GetIdentityProperties", resource)
 
     if (mgException != NULL)
     {
@@ -6345,7 +6345,7 @@ MgClassDefinitionCollection* MgdFeatureService::GetIdentityProperties(MgResource
     // Successful operation
     MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Success.c_str());
 
-    MG_FEATURE_SERVICE_CATCH(L"MgdFeatureService::GetIdentityProperties")
+    MG_FEATURE_SERVICE_CATCH_WITH_FEATURE_SOURCE(L"MgdFeatureService::GetIdentityProperties", resource)
 
     if (mgException != NULL)
     {

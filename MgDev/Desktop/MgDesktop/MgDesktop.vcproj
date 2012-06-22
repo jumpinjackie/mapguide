@@ -101,7 +101,7 @@
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
-				CommandLine="xcopy /Y /I $(ProjectDir)Resources\*.* $(OutDir)\Resources&#x0D;&#x0A;xcopy /S /Y /I ..\..\Common\Schema\*.xsd $(OutDir)\Schema&#x0D;&#x0A;xcopy /Y $(ProjectDir)Platform.ini $(OutDir)\&#x0D;&#x0A;"
+				CommandLine="xcopy /S /Y /I ..\..\Common\MapGuideCommon\Resources\*.* $(OutDir)\Resources&#x0D;&#x0A;xcopy /S /Y /I ..\..\Common\Schema\*.xsd $(OutDir)\Schema&#x0D;&#x0A;xcopy /Y $(ProjectDir)Platform.ini $(OutDir)\&#x0D;&#x0A;"
 			/>
 		</Configuration>
 		<Configuration
@@ -188,7 +188,7 @@
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
-				CommandLine="xcopy /Y /I $(ProjectDir)Resources\*.* $(OutDir)\Resources&#x0D;&#x0A;xcopy /S /Y /I ..\..\Common\Schema\*.xsd $(OutDir)\Schema&#x0D;&#x0A;xcopy /Y $(ProjectDir)Platform.ini $(OutDir)\&#x0D;&#x0A;"
+				CommandLine="xcopy /S /Y /I ..\..\Common\MapGuideCommon\Resources\*.* $(OutDir)\Resources&#x0D;&#x0A;xcopy /S /Y /I ..\..\Common\Schema\*.xsd $(OutDir)\Schema&#x0D;&#x0A;xcopy /Y $(ProjectDir)Platform.ini $(OutDir)\&#x0D;&#x0A;"
 			/>
 		</Configuration>
 		<Configuration
@@ -269,7 +269,7 @@
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
-				CommandLine="xcopy /Y /I $(ProjectDir)Resources\*.* $(OutDir)\Resources&#x0D;&#x0A;xcopy /S /Y /I ..\..\Common\Schema\*.xsd $(OutDir)\Schema&#x0D;&#x0A;xcopy /Y $(ProjectDir)Platform.ini $(OutDir)\&#x0D;&#x0A;"
+				CommandLine="xcopy /S /Y /I ..\..\Common\MapGuideCommon\Resources\*.* $(OutDir)\Resources&#x0D;&#x0A;xcopy /S /Y /I ..\..\Common\Schema\*.xsd $(OutDir)\Schema&#x0D;&#x0A;xcopy /Y $(ProjectDir)Platform.ini $(OutDir)\&#x0D;&#x0A;"
 			/>
 		</Configuration>
 		<Configuration
@@ -351,7 +351,7 @@
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
-				CommandLine="xcopy /Y /I $(ProjectDir)Resources\*.* $(OutDir)\Resources&#x0D;&#x0A;xcopy /S /Y /I ..\..\Common\Schema\*.xsd $(OutDir)\Schema&#x0D;&#x0A;xcopy /Y $(ProjectDir)Platform.ini $(OutDir)\&#x0D;&#x0A;"
+				CommandLine="xcopy /S /Y /I ..\..\Common\MapGuideCommon\Resources\*.* $(OutDir)\Resources&#x0D;&#x0A;xcopy /S /Y /I ..\..\Common\Schema\*.xsd $(OutDir)\Schema&#x0D;&#x0A;xcopy /Y $(ProjectDir)Platform.ini $(OutDir)\&#x0D;&#x0A;"
 			/>
 		</Configuration>
 	</Configurations>
