@@ -23,7 +23,7 @@
     </PropertyPane>
   </InfoPane>
   <Map>
-    <MapDefinition>Library://FIELD DATA/Map/TABLET_BASE_MAPS.MapDefinition</MapDefinition>
+    <MapDefinition>Library://Samples/Sheboygan/Maps/Sheboygan.MapDefinition</MapDefinition>
   </Map>
   <Menu>
     <Items>
@@ -317,7 +317,7 @@
         </NameValue>
         <NameValue>
           <Name>MapDefinition</Name>
-          <Value>Library://FIELD DATA/Map/TABLET_BASE_MAPS.MapDefinition</Value>
+          <Value>Library://Samples/Sheboygan/Maps/Sheboygan.MapDefinition</Value>
         </NameValue>
       </Properties>
     </ComponentDefinition>
