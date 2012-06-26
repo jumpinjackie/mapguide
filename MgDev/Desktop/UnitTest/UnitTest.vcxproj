@@ -271,12 +271,9 @@ xcopy /Y /I ..\..\Oem\CsMap\Dictionaries\*.txt $(OutDir)Dictionaries\
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
     </ClCompile>
-    <ClCompile Include="TestMappingService.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
-    </ClCompile>
+    <ClCompile Include="TestLogManager.cpp" />
+    <ClCompile Include="TestLogManagerThread.cpp" />
+    <ClCompile Include="TestMappingService.cpp" />
     <ClCompile Include="TestPerformance.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
@@ -292,6 +289,8 @@ xcopy /Y /I ..\..\Oem\CsMap\Dictionaries\*.txt $(OutDir)Dictionaries\
     <ClInclude Include="CppUnitExtensions.h" />
     <ClInclude Include="TestFeatureService.h" />
     <ClInclude Include="TestKmlService.h" />
+    <ClInclude Include="TestLogManager.h" />
+    <ClInclude Include="TestLogManagerThread.h" />
     <ClInclude Include="TestMappingService.h" />
     <ClInclude Include="TestPerformance.h" />
     <ClInclude Include="TestProfilingService.h" />
