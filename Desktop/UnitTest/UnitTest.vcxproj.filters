@@ -42,6 +42,12 @@
     <ClCompile Include="TestProfilingService.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="TestLogManager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="TestLogManagerThread.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CppUnitExtensions.h">
@@ -73,6 +79,12 @@
     </ClInclude>
     <ClInclude Include="TestProfilingService.h">
       <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="TestLogManagerThread.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="TestLogManager.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
