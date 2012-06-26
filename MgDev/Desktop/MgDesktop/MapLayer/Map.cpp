@@ -1162,3 +1162,9 @@ void MgdMap::SetLayerExpandInLegend(MgLayerBase* layer, bool bExpand)
     CHECKARGUMENTNULL(layer, L"MgdMap::SetGroupExpandInLegend");
     layer->SetExpandInLegend(bExpand);
 }
+
+void MgdMap::SetLayerGroupType(MgLayerGroup* group, INT32 type)
+{
+    CHECKARGUMENTNULL(group, L"MgdMap::SetLayerGroupType");
+    group->SetLayerGroupType(type);
+}

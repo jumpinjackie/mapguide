@@ -111,7 +111,7 @@
 
 // Rendering Service
 #define MapGuide_Desktop_RenderingService_RenderingService                  MAPGUIDE_DESKTOP_RENDERINGSERVICE_ID+0
-//#define MapGuide_Desktop_RenderingService_FeatureInformation                MAPGUIDE_DESKTOP_RENDERINGSERVICE_ID+1
+#define MapGuide_Desktop_RenderingService_FeatureInformation                MAPGUIDE_DESKTOP_RENDERINGSERVICE_ID+1
 #define MapGuide_Desktop_RenderingService_RenderingOptions                  MAPGUIDE_DESKTOP_RENDERINGSERVICE_ID+2
 
 // Resource Service

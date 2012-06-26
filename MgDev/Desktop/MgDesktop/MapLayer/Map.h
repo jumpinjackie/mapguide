@@ -67,6 +67,8 @@ EXTERNAL_API:
 
     static void SetLayerExpandInLegend(MgLayerBase* layer, bool bExpand);
 
+    static void SetLayerGroupType(MgLayerGroup* group, INT32 type);
+
 INTERNAL_API:
     MgdMap();
 

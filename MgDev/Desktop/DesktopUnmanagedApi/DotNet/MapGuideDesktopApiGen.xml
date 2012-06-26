@@ -122,6 +122,7 @@ typedef wchar_t* STRINGPARAM;
     <Header path="../../MgDesktop/Services/Rendering/CustomLogoInfo.h" />
     <Header path="../../MgDesktop/Services/Rendering/CustomTextInfo.h" />
     <Header path="../../MgDesktop/Services/Rendering/DwfVersion.h" />
+    <Header path="../../MgDesktop/Services/Rendering/FeatureInformation.h" />
     <Header path="../../MgDesktop/Services/Rendering/Layout.h" />
     <Header path="../../MgDesktop/Services/Rendering/MapPlot.h" />
     <Header path="../../MgDesktop/Services/Rendering/DwfVersion.h" />

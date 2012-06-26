@@ -63,6 +63,7 @@
 #include "Services/Rendering/CustomLogoInfo.h"
 #include "Services/Rendering/CustomTextInfo.h"
 #include "Services/Rendering/DwfVersion.h"
+#include "Services/Rendering/FeatureInformation.h"
 #include "Services/Rendering/Layout.h"
 #include "Services/Rendering/MapPlot.h"
 #include "Services/Rendering/MapPlotCollection.h"
