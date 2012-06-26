@@ -2,19 +2,11 @@
 #include "System/ConfigProperties.h"
 #include "AGGRenderer.h"
 #include "GDRenderer.h"
-//#include "EPlotRenderer.h"
-//#include "DefaultStylizer.h"
 #include "ImageFormats.h"
-//#include "FeatureTypeStyleVisitor.h"
 #include "SymbolInstance.h"
-//#include "Rendering/icons.h"
-//#include "Rendering/RSMgSymbolManager.h"
 #include "Rendering/RSMgFeatureReader.h"
 #include "Rendering/FeatureInfoRenderer.h"
-//#include "Stylization/SEMgSymbolManager.h"
-//#include "StylizationUtil.h"
 #include "Rendering/MappingUtil.h"
-//#include "Rendering/LegendPlotUtil.h"
 #include "MapLayer/Map.h"
 #include "Feature/TransformCache.h"
 #include "ServiceFactory.h"
@@ -487,6 +479,190 @@ MgByteReader* MgdRenderingService::RenderDynamicOverlay(MgdMap* map,
     MG_LOG_OPERATION_MESSAGE_ACCESS_ENTRY();
 
     MG_THROW()
+
+    return ret.Detach();
+}
+
+MgdFeatureInformation* MgdRenderingService::QueryFeatures(MgdMap* map,
+                                                          MgStringCollection* layerNames,
+                                                          MgGeometry* filterGeometry,
+                                                          INT32 selectionVariant,
+                                                          INT32 maxFeatures)
+{
+    Ptr<MgdFeatureInformation> ret;
+    MG_LOG_OPERATION_MESSAGE(L"QueryFeatures");
+
+    MG_TRY()
+
+    Ptr<MgResourceIdentifier> mapId = map->GetResourceId();
+    MG_LOG_OPERATION_MESSAGE_INIT(MG_API_VERSION(1, 0, 0), 5);
+    MG_LOG_OPERATION_MESSAGE_PARAMETERS_START();
+    MG_LOG_OPERATION_MESSAGE_ADD_STRING((NULL == mapId) ? L"MgdMap" : mapId->ToString().c_str());
+    MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
+    MG_LOG_OPERATION_MESSAGE_ADD_STRING((layerNames == NULL) ? L"MgStringCollection" : layerNames->GetLogString());
+    MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
+    MG_LOG_OPERATION_MESSAGE_ADD_STRING(L"MgGeometry");
+    MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
+    MG_LOG_OPERATION_MESSAGE_ADD_INT32(selectionVariant);
+    MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
+    MG_LOG_OPERATION_MESSAGE_ADD_INT32(maxFeatures);
+    MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
+
+    MG_LOG_TRACE_ENTRY(L"MgdRenderingService::QueryFeatures()");
+
+    ret = QueryFeaturesInternal(map, layerNames, filterGeometry, selectionVariant, L"", maxFeatures, 3 /*visible and selectable*/);
+
+    MG_CATCH(L"MgdRenderingService::QueryFeatures")
+
+    if (mgException != NULL)
+    {
+        // Failed operation
+        MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Failure.c_str());
+        MG_DESKTOP_LOG_EXCEPTION();
+    }
+
+    // Add access log entry for operation
+    MG_LOG_OPERATION_MESSAGE_ACCESS_ENTRY();
+
+    MG_THROW()
+    return ret.Detach();
+}
+
+MgdFeatureInformation* MgdRenderingService::QueryFeatures(
+    MgdMap* map,
+    MgStringCollection* layerNames,
+    MgGeometry* filterGeometry,
+    INT32 selectionVariant,
+    CREFSTRING featureFilter,
+    INT32 maxFeatures,
+    INT32 layerAttributeFilter)
+{
+    Ptr<MgdFeatureInformation> ret;
+    MG_LOG_OPERATION_MESSAGE(L"QueryFeatures");
+
+    MG_TRY()
+
+    Ptr<MgResourceIdentifier> mapId = map->GetResourceId();
+    MG_LOG_OPERATION_MESSAGE_INIT(MG_API_VERSION(1, 0, 0), 7);
+    MG_LOG_OPERATION_MESSAGE_PARAMETERS_START();
+    MG_LOG_OPERATION_MESSAGE_ADD_STRING((NULL == mapId) ? L"MgdMap" : mapId->ToString().c_str());
+    MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
+    MG_LOG_OPERATION_MESSAGE_ADD_STRING((layerNames == NULL) ? L"MgStringCollection" : layerNames->GetLogString());
+    MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
+    MG_LOG_OPERATION_MESSAGE_ADD_STRING(L"MgGeometry");
+    MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
+    MG_LOG_OPERATION_MESSAGE_ADD_INT32(selectionVariant);
+    MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
+    MG_LOG_OPERATION_MESSAGE_ADD_STRING(featureFilter);
+    MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
+    MG_LOG_OPERATION_MESSAGE_ADD_INT32(maxFeatures);
+    MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
+    MG_LOG_OPERATION_MESSAGE_ADD_INT32(layerAttributeFilter);
+    MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
+
+    MG_LOG_TRACE_ENTRY(L"MgdRenderingService::QueryFeatures()");
+
+    ret = QueryFeaturesInternal(map, layerNames, filterGeometry, selectionVariant, featureFilter, maxFeatures, layerAttributeFilter);
+
+    MG_CATCH(L"MgdRenderingService::QueryFeatures")
+
+    if (mgException != NULL)
+    {
+        // Failed operation
+        MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Failure.c_str());
+        MG_DESKTOP_LOG_EXCEPTION();
+    }
+
+    // Add access log entry for operation
+    MG_LOG_OPERATION_MESSAGE_ACCESS_ENTRY();
+
+    MG_THROW()
+    return ret.Detach();
+}
+
+MgdFeatureInformation* MgdRenderingService::QueryFeaturesInternal(MgdMap* map,
+                                                                  MgStringCollection* layerNames,
+                                                                  MgGeometry* geometry,
+                                                                  INT32 selectionVariant,
+                                                                  CREFSTRING featureFilter,
+                                                                  INT32 maxFeatures,
+                                                                  INT32 layerAttributeFilter)
+{
+    Ptr<MgdFeatureInformation> ret;
+
+    MG_TRY()
+
+    //detect case where there is no limit to selection
+    if (maxFeatures == -1)
+        maxFeatures = INT_MAX;
+
+    //create return structure and selection set to fill out
+    ret = new MgdFeatureInformation();
+    Ptr<MgdSelection> sel = new MgdSelection(map);
+
+    double point_buf[2];
+    double* point = NULL;
+    auto_ptr<SE_Renderer> impRenderer;
+    if (geometry && maxFeatures == 1)
+    {
+        MgPolygon* polygon = dynamic_cast<MgPolygon*>(geometry);
+        if (polygon)
+        {
+            Ptr<MgCoordinateIterator> iterator = polygon->GetCoordinates();
+            int num = 0;
+            double pt0_x, pt0_y, pt_x, pt_y;
+            while(iterator->MoveNext())
+            {
+                Ptr<MgCoordinate> coord = iterator->GetCurrent();
+                double x = coord->GetX(), y = coord->GetY();
+                if (!num)
+                {
+                    pt_x = pt0_x = x;
+                    pt_y = pt0_y = y;
+                }
+                else if (x == pt0_x && y == pt0_y)
+                    break;
+                else
+                {
+                    pt_x += x;
+                    pt_y += y;
+                }
+                num++;
+            }
+            if (num > 0)
+            {
+                point_buf[0] = pt_x / num;
+                point_buf[1] = pt_y / num;
+                point = point_buf;
+
+                RS_Color bgColor; // not used
+                impRenderer.reset(CreateRenderer(1, 1, bgColor, false));
+            }
+        }
+    }
+
+    FeatureInfoRenderer fir(sel, maxFeatures, map->GetViewScale(), point, impRenderer.get());
+
+    RenderForSelection(map, layerNames, geometry, selectionVariant, featureFilter, maxFeatures, layerAttributeFilter, &fir);
+
+    //fill out the output object with the info we collected
+    //in the FeatureInfoRenderer for the first feature we hit
+    if (fir.GetNumFeaturesProcessed() > 0)
+    {
+        Ptr<MgPropertyCollection> props = fir.GetProperties();
+        ret->SetProperties(props);
+        ret->SetHyperlink(fir.GetUrl());
+        ret->SetTooltip(fir.GetTooltip());
+    }
+
+    ret->SetSelection(sel);
+
+    #ifdef _DEBUG
+    Ptr<MgReadOnlyLayerCollection> selLayers = sel->GetLayers();
+    ACE_DEBUG((LM_INFO, ACE_TEXT("(%t) MgServerRenderingService::QueryFeatures() Selection Size:%d\n"), selLayers.p? selLayers->GetCount() : 0));
+    #endif
+
+    MG_CATCH_AND_THROW(L"MgdRenderingService::QueryFeaturesInternal")
 
     return ret.Detach();
 }
@@ -1820,4 +1996,385 @@ inline MgByteReader* MgdRenderingService::CreateImage(MgdMap* map,
     }
 
     return bs->GetReader();
+}
+
+///////////////////////////////////////////////////////////////////////////////
+// A helper function that does most of the work for QueryFeatures
+// and QueryFeatureProperties.  Basically runs a rendering loop with
+// a custom renderer supplied by the caller that accumulates selection
+// related things like property values and feature IDs.
+void MgdRenderingService::RenderForSelection(MgdMap* map,
+                                             MgStringCollection* layerNames,
+                                             MgGeometry* geometry,
+                                             INT32 selectionVariant,
+                                             CREFSTRING featureFilter,
+                                             INT32 maxFeatures,
+                                             INT32 layerAttributeFilter,
+                                             FeatureInfoRenderer* selRenderer)
+{
+    // Cache coordinate system transforms for the life of the
+    // stylization operation.
+    TransformCacheMap transformCache;
+
+    MG_TRY()
+
+    ACE_DEBUG ((LM_DEBUG, ACE_TEXT("(%t) RenderForSelection(): ** START **\n")));
+    if (NULL == map || (NULL == geometry && featureFilter.empty()))
+        throw new MgNullArgumentException(L"MgServerRenderingService.RenderForSelection", __LINE__, __WFILE__, NULL, L"", NULL);
+
+    if (maxFeatures < 0)
+    {
+        STRING buffer;
+        MgUtil::Int32ToString(maxFeatures, buffer);
+
+        MgStringCollection arguments;
+        arguments.Add(L"5");
+        arguments.Add(buffer);
+
+        throw new MgInvalidArgumentException(L"MgServerRenderingService.RenderForSelection",
+            __LINE__, __WFILE__, &arguments, L"MgValueCannotBeLessThanZero", NULL);
+    }
+
+    // get the session ID
+    STRING sessionId;
+    //Ptr<MgUserInformation> userInfo = MgUserInformation::GetCurrentUserInfo();
+    //if (userInfo != NULL)
+    //    sessionId = userInfo->GetMgSessionId();
+
+    // validate map view parameters
+    int width            = map->GetDisplayWidth();
+    int height           = map->GetDisplayHeight();
+    int dpi              = map->GetDisplayDpi();
+    double scale         = map->GetViewScale();
+    double metersPerUnit = map->GetMetersPerUnit();
+
+    if (width <= 0)
+        throw new MgInvalidArgumentException(L"MgServerRenderingService.RenderForSelection", __LINE__, __WFILE__, NULL, L"MgMapDisplayWidthCannotBeLessThanOrEqualToZero", NULL);
+
+    if (height <= 0)
+        throw new MgInvalidArgumentException(L"MgServerRenderingService.RenderForSelection", __LINE__, __WFILE__, NULL, L"MgMapDisplayHeightCannotBeLessThanOrEqualToZero", NULL);
+
+    if (dpi <= 0)
+        throw new MgInvalidArgumentException(L"MgServerRenderingService.RenderForSelection", __LINE__, __WFILE__, NULL, L"MgMapDisplayDpiCannotBeLessThanOrEqualToZero", NULL);
+
+    if (scale <= 0.0)
+        throw new MgInvalidArgumentException(L"MgServerRenderingService.RenderForSelection", __LINE__, __WFILE__, NULL, L"MgMapViewScaleCannotBeLessThanOrEqualToZero", NULL);
+
+    if (metersPerUnit <= 0.0)
+        throw new MgInvalidArgumentException(L"MgServerRenderingService.RenderForSelection", __LINE__, __WFILE__, NULL, L"MgMapMetersPerUnitCannotBeLessThanOrEqualToZero", NULL);
+
+    // compute map extent that corresponds to pixel extent
+    Ptr<MgPoint> pt          = map->GetViewCenter();
+    Ptr<MgCoordinate> center = pt->GetCoordinate();
+    double unitsPerPixel     = METERS_PER_INCH / (double)dpi / metersPerUnit;
+    double mapWidth2         = 0.5 * (double)width  * unitsPerPixel * scale;
+    double mapHeight2        = 0.5 * (double)height * unitsPerPixel * scale;
+
+    RS_Bounds extent(center->GetX() - mapWidth2,
+                     center->GetY() - mapHeight2,
+                     center->GetX() + mapWidth2,
+                     center->GetY() + mapHeight2);
+
+    // begin map stylization
+    RS_Color bgcolor(0, 0, 0, 255); // not used
+    STRING srs = map->GetMapSRS();
+    RS_MapUIInfo mapInfo(sessionId, map->GetName(), map->GetObjectId(), srs, L"", bgcolor);
+
+    // initialize the stylizer
+    SEMgSymbolManager semgr(m_svcResource);
+    DefaultStylizer ds(&semgr);
+
+    selRenderer->StartMap(&mapInfo, extent, scale, dpi, metersPerUnit, NULL);
+
+    //initial simple selection scheme
+    //Run a geometric FDO query on the given selection geometry
+    //and return the features we get from FDO
+
+    Ptr<MgLayerCollection> layers = map->GetLayers();
+
+    bool bOnlySelectableLayers = !((layerAttributeFilter & FILTER_SELECTABLE) == 0);
+    bool bOnlyVisibleLayers = !((layerAttributeFilter & FILTER_VISIBLE) == 0);
+    bool bOnlyTooltipLayers = !((layerAttributeFilter & FILTER_HASTOOLTIPS) == 0);
+
+    //iterate over all map layers, but only do selection
+    //if the layer is in the passed in collection
+    for (int p=0; p<layers->GetCount(); p++)
+    {
+        //find the layer we need to select features from
+        Ptr<MgLayerBase> layer = layers->GetItem(p);
+
+        ACE_DEBUG ((LM_DEBUG, ACE_TEXT("(%t) RenderForSelection(): Layer: %W  Selectable:%W  Visible: %W\n"), layer->GetName().c_str(), layer->GetSelectable()? L"True" : L"False", layer->IsVisibleAtScale(scale)? L"True" : L"False"));
+
+        //do this first - this check is fast
+        if (bOnlySelectableLayers && !layer->GetSelectable())
+            continue;
+
+        //do we want to select on this layer -- if caller
+        //gave us a layer name collection, check if the layer
+        //is in there
+        if (layerNames && layerNames->GetCount() > 0 && layerNames->IndexOf(layer->GetName()) == -1)
+            continue;
+
+        //check the visibility at scale if we're not ignoring scale ranges
+        if (bOnlyVisibleLayers && !layer->IsVisibleAtScale(scale))
+            continue;
+
+        //if we only want layers with tooltips, check that this layer has tooltips
+        if (bOnlyTooltipLayers)
+        {
+//          layer->GetLayerInfoFromDefinition(m_svcResource);
+            if (!layer->HasTooltips())
+                continue;
+        }
+
+        //have we processed enough features already?
+        if (maxFeatures <= 0)
+            break;
+
+        //get the MDF layer definition
+        Ptr<MgResourceIdentifier> layerResId = layer->GetLayerDefinition();
+        auto_ptr<MdfModel::LayerDefinition> ldf(MgLayerBase::GetLayerDefinition(m_svcResource, layerResId));
+        MdfModel::VectorLayerDefinition* vl = dynamic_cast<MdfModel::VectorLayerDefinition*>(ldf.get());
+
+        //we can only do geometric query selection for vector layers
+        if (vl)
+        {
+            ACE_DEBUG ((LM_DEBUG, ACE_TEXT("(%t) RenderForSelection(): Layer: %W  Vector Layer\n"), layer->GetName().c_str()));
+
+            //check to see if we want even layers that aren't visible at the current scale
+            if (!bOnlyVisibleLayers)
+            {
+                // Modify the layer scale range only for layers that are passed in
+                MdfModel::VectorScaleRangeCollection* scaleRanges = vl->GetScaleRanges();
+                if (scaleRanges)
+                {
+                    MdfModel::VectorScaleRange* scaleRange = scaleRanges->GetAt(0);
+                    if (scaleRange)
+                    {
+                        scaleRange->SetMinScale(0.0);
+                        scaleRange->SetMaxScale(MdfModel::VectorScaleRange::MAX_MAP_SCALE);
+                    }
+                }
+            }
+
+            Ptr<MgResourceIdentifier> featResId = new MgResourceIdentifier(layer->GetFeatureSourceId());
+
+            //get a transform from layer coord sys to map coord sys
+            Ptr<MgCoordinateSystem> mapCs = srs.empty()? NULL : m_pCSFactory->Create(srs);
+            TransformCache* item = TransformCache::GetLayerToMapTransform(transformCache, vl->GetFeatureName(), featResId, mapCs, m_pCSFactory, m_svcFeature);
+            Ptr<MgCoordinateSystemTransform> trans = item? item->GetMgTransform() : NULL;
+            MgCSTrans* xformer = item? item->GetTransform() : NULL;
+
+            Ptr<MgFeatureQueryOptions> options = new MgFeatureQueryOptions();
+            Ptr<MgGeometricEntity> queryGeom;
+            if (geometry != NULL)
+            {
+                //if we have a valid transform, get the request geom in layer's space
+                queryGeom = SAFE_ADDREF(geometry);
+                STRING geomTextSource = queryGeom->ToAwkt(true);
+                if (trans)
+                {
+                    //get selection geometry in layer space
+                    queryGeom = geometry->Transform(trans);
+                }
+
+                #ifdef _DEBUG
+                // Output the selection geometry
+                STRING geomText = queryGeom->ToAwkt(true);
+                ACE_DEBUG((LM_INFO, ACE_TEXT("(%t) SELECTION FILTER:\n%W\n\n"), geomText.c_str()));
+                #endif
+
+                //set the spatial filter for the selection
+                options->SetSpatialFilter(layer->GetFeatureGeometryName(), (MgGeometry*)(queryGeom.p), /*MgFeatureSpatialOperations*/selectionVariant);
+            }
+
+            // Initialize the reader
+            auto_ptr<RSMgFeatureReader> rsrdr;
+
+            try
+            {
+                if (!featureFilter.empty())
+                {
+                    //set the feature filter, if any
+                    MgdSelection selectionFilter(map, featureFilter);
+                    Ptr<MgReadOnlyLayerCollection> layers = selectionFilter.GetLayers();
+                    if (layers != NULL)
+                    {
+                        for (int i = 0; i < layers->GetCount(); i++)
+                        {
+                            Ptr<MgLayerBase> layer = layers->GetItem(i);
+                            STRING className = layer->GetFeatureClassName();
+                            STRING filter = selectionFilter.GenerateFilter(layer, className);
+                            options->SetFilter(filter);
+                        }
+                    }
+                }
+                else if (!vl->GetFilter().empty())
+                {
+                    //set layer feature filter if any
+                    options->SetFilter(vl->GetFilter());
+                }
+
+                // TODO: can FeatureName be an extension name rather than a FeatureClass?
+                // The reader below needs to be closed and released before the intersectPolygon SelectFeatures below happens
+                // or we end up with a reference count issue that causes a new FDO connection to be cached instead of
+                // reusing the already existing one.
+                Ptr<MgFeatureReader> rdr = m_svcFeature->SelectFeatures(featResId, vl->GetFeatureName(), options);
+                rsrdr.reset(new RSMgFeatureReader(rdr, m_svcFeature, featResId, options, vl->GetGeometry()));
+
+                // Note that the FdoIFeatureReader smart pointer below is created
+                // inside the following IF statement to ensure it gets destroyed
+                // BEFORE the RSMgFeatureReader object above goes out of scope,
+                // even when an exception gets thrown.
+                if (FdoPtr<FdoIFeatureReader>(rsrdr->GetInternalReader()))
+                {
+                    //run a stylization loop with the FeatureInfoRenderer.
+                    //This will build up the selection set and also
+                    //evaluate the tooltip, hyperlink and feature properties
+                    //for the first feature hit
+
+                    RS_UIGraphic uig(NULL, 0, L"");
+                    RS_LayerUIInfo layerinfo(layer->GetName(),
+                                             layer->GetObjectId(), // object ID
+                                             true,   // selectable
+                                             true,   // visible
+                                             true,   // editable
+                                             L"",    // group name
+                                             L"",    // group ID
+                                             true,   // showInLegend
+                                             true,   // expandInLegend
+                                             0.0,    // zOrder
+                                             uig);   // uiGraphic
+
+                    //extract hyperlink and tooltip info
+                    if (!vl->GetToolTip().empty()) 
+                        layerinfo.hastooltips() = true;
+                    if (vl->GetUrlData() && !vl->GetUrlData()->GetUrlContent().empty()) 
+                        layerinfo.hashyperlinks() = true;
+
+                    //set up the property name mapping -- it tells us what
+                    //string the viewer should be displaying as the name of each
+                    //feature property
+                    // TODO: can FeatureName be an extension name rather than a FeatureClass?
+                    RS_FeatureClassInfo fcinfo(vl->GetFeatureName());
+
+                    MdfModel::NameStringPairCollection* pmappings = vl->GetPropertyMappings();
+                    for (int i=0; i<pmappings->GetCount(); i++)
+                    {
+                        MdfModel::NameStringPair* m = pmappings->GetAt(i);
+                        fcinfo.add_mapping(m->GetName(), m->GetValue());
+                    }
+
+                    selRenderer->StartLayer(&layerinfo, &fcinfo);
+                    ds.StylizeVectorLayer(vl, selRenderer, rsrdr.get(), NULL, scale, StylizeThatMany, selRenderer);
+
+                    // Clear the readers in case they are reused below
+                    rdr = NULL;
+                    rsrdr.reset();
+
+                    int numFeaturesProcessed = selRenderer->GetNumFeaturesProcessed();
+                    if (!numFeaturesProcessed && selRenderer->NeedPointTest())
+                    {
+                        // Construct a square selection area 400x larger than then previous area
+                        // centered around the centroid of the original selection area
+                        // Example:  a 4x4 pixel selection area becomes an 80x80 pixel selection area
+                        Ptr<MgPoint> centroid = queryGeom->GetCentroid();
+                        Ptr<MgCoordinate> ctr = centroid->GetCoordinate();
+                        double area = queryGeom->GetArea();
+                        double delta = sqrt(area) * 10.0;
+
+                        // Only process selection if we have a valid area.  The input geometry may not have a
+                        // centroid if it is outside the bounds of the coordinate system.  GetArea() will
+                        // return zero in these cases.
+                        if (delta > 0.0)
+                        {
+                            Ptr<MgCoordinateCollection> coordinates = new MgCoordinateCollection();
+                            Ptr<MgCoordinateXY> coord1 = new MgCoordinateXY(ctr->GetX() - delta, ctr->GetY() - delta);
+                            coordinates->Add(coord1);
+                            Ptr<MgCoordinateXY> coord2 = new MgCoordinateXY(ctr->GetX() - delta, ctr->GetY() + delta);
+                            coordinates->Add(coord2);
+                            Ptr<MgCoordinateXY> coord3 = new MgCoordinateXY(ctr->GetX() + delta, ctr->GetY() + delta);
+                            coordinates->Add(coord3);
+                            Ptr<MgCoordinateXY> coord4 = new MgCoordinateXY(ctr->GetX() + delta, ctr->GetY() - delta);
+                            coordinates->Add(coord4);
+                            coordinates->Add(coord1);
+                            Ptr<MgLinearRing> outerRing = new MgLinearRing(coordinates);
+                            Ptr<MgPolygon> polygon = new MgPolygon(outerRing, NULL);
+
+                            // The selection area may extent past the map extents so clip the selection area to the map extent
+                            Ptr<MgEnvelope> extent = map->GetMapExtent();
+                            Ptr<MgCoordinate> llCoord = extent->GetLowerLeftCoordinate();
+                            Ptr<MgCoordinate> urCoord = extent->GetUpperRightCoordinate();
+                            Ptr<MgCoordinateCollection> extentCoords = new MgCoordinateCollection();
+                            Ptr<MgCoordinateXY> c1 = new MgCoordinateXY(llCoord->GetX(), llCoord->GetY());
+                            extentCoords->Add(c1);
+                            Ptr<MgCoordinateXY> c2 = new MgCoordinateXY(llCoord->GetX(), urCoord->GetY());
+                            extentCoords->Add(c2);
+                            Ptr<MgCoordinateXY> c3 = new MgCoordinateXY(urCoord->GetX(), urCoord->GetY());
+                            extentCoords->Add(c3);
+                            Ptr<MgCoordinateXY> c4 = new MgCoordinateXY(urCoord->GetX(), llCoord->GetY());
+                            extentCoords->Add(c4);
+                            extentCoords->Add(c1);
+                            Ptr<MgLinearRing> extentRing = new MgLinearRing(extentCoords);
+                            Ptr<MgPolygon> extentPolygon = new MgPolygon(extentRing, NULL);
+
+                            Ptr<MgGeometricEntity> queryExtentPolygon = extentPolygon;
+                            if (trans)
+                            {
+                                //get selection geometry in layer space
+                                queryExtentPolygon = extentPolygon->Transform(trans);
+                            }
+                            Ptr<MgGeometry> intersectPolygon = polygon->Intersection((MgPolygon *)queryExtentPolygon.p);
+
+                            if (intersectPolygon != NULL)
+                            {
+                                options->SetSpatialFilter(layer->GetFeatureGeometryName(), intersectPolygon, /*MgFeatureSpatialOperations*/selectionVariant);
+
+                                rdr = m_svcFeature->SelectFeatures(featResId, vl->GetFeatureName(), options);
+                                rsrdr.reset(new RSMgFeatureReader(rdr, m_svcFeature, featResId, options, vl->GetGeometry()));
+                                selRenderer->PointTest(true);
+                                ds.StylizeVectorLayer(vl, selRenderer, rsrdr.get(), xformer, scale, StylizeThatMany, selRenderer);
+
+                                // Clear the readers
+                                rdr = NULL;
+                                rsrdr.reset();
+
+                                selRenderer->PointTest(false);
+                                numFeaturesProcessed = selRenderer->GetNumFeaturesProcessed();
+                            }
+                        }
+                    }
+                    selRenderer->EndLayer();
+
+                    //update maxFeatures to number of features that
+                    //we can select from subsequent layers
+                    maxFeatures -= numFeaturesProcessed;
+                }
+            }
+            catch (MgFdoException* e)
+            {
+                //TODO: what should we really be doing in this case?
+                //This can happen if the underlying FDO provider does not
+                //support a particular spatial operation. One way around this
+                //is to select all features which appear on the screen and then
+                //do our own geometry math.
+                #ifdef _DEBUG
+                STRING error = e->GetExceptionMessage();
+                ACE_DEBUG((LM_INFO, ACE_TEXT("(%t) RenderForSelection() - Error: %S\n"), error.c_str()));
+                #endif
+
+                // Let's throw the exception here, so that it can be recorded in the error log.
+                throw e;
+            }
+        }
+    }
+
+    selRenderer->EndMap();
+    ACE_DEBUG ((LM_DEBUG, ACE_TEXT("(%t) RenderForSelection(): ** END **\n")));
+
+    MG_CATCH(L"MgServerRenderingService.RenderForSelection")
+
+    TransformCache::Clear(transformCache);
+
+    MG_THROW()
 }

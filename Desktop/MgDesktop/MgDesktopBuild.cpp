@@ -76,6 +76,7 @@
 #include "Services/Rendering/CustomTextInfo.cpp"
 #include "Services/Rendering/DwfVersion.cpp"
 #include "Services/Rendering/FeatureInfoRenderer.cpp"
+#include "Services/Rendering/FeatureInformation.cpp"
 #include "Services/Rendering/Layout.cpp"
 #include "Services/Rendering/LegendPlotUtil.cpp"
 #include "Services/Rendering/MappingUtil.cpp"

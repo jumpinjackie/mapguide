@@ -2,6 +2,7 @@
 #define DESKTOP_RENDERING_SERVICE_H
 
 class MgdMap;
+class MgdFeatureInformation;
 class SE_Renderer;
 class MgRenderingOptions;
 class FeatureInfoRenderer;
@@ -74,6 +75,21 @@ PUBLISHED_API:
                                           INT32 height,
                                           MgColor* backgroundColor,
                                           CREFSTRING format);
+
+    virtual MgdFeatureInformation* QueryFeatures(MgdMap* map,
+                                                 MgStringCollection* layerNames,
+                                                 MgGeometry* filterGeometry,
+                                                 INT32 selectionVariant,
+                                                 INT32 maxFeatures);
+
+    virtual MgdFeatureInformation* QueryFeatures(MgdMap* map,
+                                                 MgStringCollection* layerNames,
+                                                 MgGeometry* filterGeometry,
+                                                 INT32 selectionVariant,
+                                                 CREFSTRING featureFilter,
+                                                 INT32 maxFeatures,
+                                                 INT32 layerAttributeFilter);
+
 INTERNAL_API:
 
     virtual MgByteReader* RenderDynamicOverlay(MgdMap* map,
@@ -141,6 +157,14 @@ INTERNAL_API:
                                     MdfModel::ProfileRenderMapResult* pPRMResult = NULL);
 
 private:
+    MgdFeatureInformation* QueryFeaturesInternal(MgdMap* map,
+                                                 MgStringCollection* layerNames,
+                                                 MgGeometry* filterGeometry,
+                                                 INT32 selectionVariant,
+                                                 CREFSTRING featureFilter,
+                                                 INT32 maxFeatures,
+                                                 INT32 layerAttributeFilter);
+
     // used for tile generation
     MgByteReader* RenderTile(MgdMap* map,
                              MgLayerGroup* baseGroup,
@@ -199,14 +223,14 @@ private:
                                     bool renderWatermark,
                                     MdfModel::ProfileRenderMapResult* pPRMResult = NULL);
 
-    void RenderForSelection(MgMap* map,
-                         MgStringCollection* layerNames,
-                         MgGeometry* geometry,
-                         INT32 selectionVariant,
-                         CREFSTRING featureFilter,
-                         INT32 maxFeatures,
-                         INT32 layerAttributeFilter,
-                         FeatureInfoRenderer* selRenderer);
+    void RenderForSelection(MgdMap* map,
+                            MgStringCollection* layerNames,
+                            MgGeometry* geometry,
+                            INT32 selectionVariant,
+                            CREFSTRING featureFilter,
+                            INT32 maxFeatures,
+                            INT32 layerAttributeFilter,
+                            FeatureInfoRenderer* selRenderer);
 
     SE_Renderer* CreateRenderer(int width,
                                 int height,
