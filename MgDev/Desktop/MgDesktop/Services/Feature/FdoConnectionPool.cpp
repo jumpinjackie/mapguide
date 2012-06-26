@@ -55,6 +55,7 @@ FdoIConnection* MgFdoConnectionPool::GetConnection(MgResourceIdentifier* feature
     #ifdef DEBUG_FDO_CONNECTION_POOL
         ACE_DEBUG((LM_INFO, ACE_TEXT("[Created]: (%W)\n"), featureSourceId->ToString().c_str()));
     #endif
+        conn->Open();
         return conn.Detach();
     }
     else
@@ -66,6 +67,8 @@ FdoIConnection* MgFdoConnectionPool::GetConnection(MgResourceIdentifier* feature
         #ifdef DEBUG_FDO_CONNECTION_POOL
             ACE_DEBUG((LM_INFO, ACE_TEXT("[Re-used]: (%W) %d in cache\n"), featureSourceId->ToString().c_str(), it->second.size()));
         #endif
+            if (FdoConnectionState_Closed == rec._conn->GetConnectionState())
+                rec._conn->Open();
             return rec._conn;
         }
         else
@@ -77,6 +80,7 @@ FdoIConnection* MgFdoConnectionPool::GetConnection(MgResourceIdentifier* feature
         #ifdef DEBUG_FDO_CONNECTION_POOL
             ACE_DEBUG((LM_INFO, ACE_TEXT("[Created]: (%W)\n"), featureSourceId->ToString().c_str()));
         #endif
+            conn->Open();
             return conn.Detach();
         }
     }
@@ -87,12 +91,12 @@ FdoIConnection* MgFdoConnectionPool::GetConnection(MgResourceIdentifier* feature
 void MgFdoConnectionPool::ReturnConnection(MgFeatureConnection* conn)
 {
     ScopedLock scc(g_pool.mutex);
+    STRING providerName = conn->GetProviderName();
     FdoPtr<FdoIConnection> fdoConn = conn->GetConnection();
     Ptr<MgResourceIdentifier> fsId = conn->GetFeatureSource();
     STRING fsIdStr = fsId->ToString();
-    fdoConn->Close();
 
-    //Only return it to pool if pooling enabled
+    //Only return it to pool if pooling enabled. Connections returned to the pool stay open otherwise close them
     if (g_bPoolingEnabled)
     {
         STRING providerName = MgFdoConnectionUtil::ParseNonQualifiedProviderName(conn->GetProviderName());
@@ -106,10 +110,18 @@ void MgFdoConnectionPool::ReturnConnection(MgFeatureConnection* conn)
         }
         else
         {
+            fdoConn->Close();
         #ifdef DEBUG_FDO_CONNECTION_POOL
-            ACE_DEBUG((LM_INFO, ACE_TEXT("Connection (%W) is not poolable\n"), fsIdStr.c_str()));
+            ACE_DEBUG((LM_INFO, ACE_TEXT("[Closed] (%W) - Provider excluded from pooling\n"), fsIdStr.c_str()));
         #endif
         }
+    }
+    else
+    {
+        fdoConn->Close();
+        #ifdef DEBUG_FDO_CONNECTION_POOL
+            ACE_DEBUG((LM_INFO, ACE_TEXT("[Closed] (%W) - Connection Pooling disabled\n"), fsIdStr.c_str()));
+        #endif
     }
 }
 

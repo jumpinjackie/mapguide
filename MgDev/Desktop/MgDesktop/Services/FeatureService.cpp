@@ -5789,7 +5789,7 @@ MgClassDefinition* MgdFeatureService::GetClassDefinition(MgResourceIdentifier* r
 
     clone = MgFeatureUtil::CloneMgClassDefinition(classDefinition);
 
-    MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgdFeatureService::GetClassDefinition", resource)
+    MG_FEATURE_SERVICE_CATCH_AND_THROW_WITH_FEATURE_SOURCE(L"MgdFeatureService::GetClassDefinition", resource)
 
     return clone.Detach();
 }

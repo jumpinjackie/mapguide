@@ -69,8 +69,8 @@ class TestLogManager : public CppUnit::TestFixture
     CPPUNIT_TEST(TestCase_GetTraceLogInvalid);
 
     CPPUNIT_TEST(TestCase_LogAccessEntry);
-    CPPUNIT_TEST(TestCase_LogAdminEntry);
-    CPPUNIT_TEST(TestCase_LogAuthenticationEntry);
+    //CPPUNIT_TEST(TestCase_LogAdminEntry);             //Not applicable for mg-desktop
+    //CPPUNIT_TEST(TestCase_LogAuthenticationEntry);    //Not applicable for mg-desktop
     CPPUNIT_TEST(TestCase_LogErrorEntry);
     CPPUNIT_TEST(TestCase_LogTraceEntry);
 
