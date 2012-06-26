@@ -87,6 +87,7 @@
 
 //Uncomment to get extra FDO join chatter when running unit tests
 //#define DEBUG_FDOJOIN
+//Uncomment to get extra connection pool chatter
 //#define DEBUG_FDO_CONNECTION_POOL
 
 #endif

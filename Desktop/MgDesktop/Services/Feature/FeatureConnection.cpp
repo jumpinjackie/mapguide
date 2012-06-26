@@ -9,10 +9,9 @@ MgFeatureConnection::MgFeatureConnection(MgResourceIdentifier* featureSourceIden
 #ifdef DEBUG_FDO_CONNECTION_POOL
     ACE_DEBUG((LM_INFO, ACE_TEXT("MgFeatureConnection::MgFeatureConnection(MgResourceIdentifier*)\n")));
 #endif
-    //This is a poolable connection
+    //This is a potentially poolable connection
     m_fdoConn = MgFdoConnectionPool::GetConnection(featureSourceIdentifier);
     CHECKNULL(m_fdoConn, L"MgFeatureConnection.MgFeatureConnection()");
-    m_fdoConn->Open();
 
     m_resourceId = SAFE_ADDREF(featureSourceIdentifier);
     m_bIsCreatedFromFeatureSource = true;
