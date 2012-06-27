@@ -140,6 +140,21 @@ namespace OSGeo.MapGuide.Viewer
         MgMapViewerProvider GetProvider();
 
         /// <summary>
+        /// Gets or sets the minimum allowed zoom scale for this viewer
+        /// </summary>
+        int MinScale { get; set; }
+
+        /// <summary>
+        /// Gets or sets the maximum allowed zoom scale for this viewer
+        /// </summary>
+        int MaxScale { get; set; }
+
+        /// <summary>
+        /// The amount of time (in ms) to wait to re-render after a mouse wheel scroll
+        /// </summary>
+        int MouseWheelDelayRenderInterval { get; set; }
+
+        /// <summary>
         /// Gets or sets the factor by which to multiply the scale to zoom in
         /// </summary>
         double ZoomInFactor { get; set; }
