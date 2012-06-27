@@ -1139,7 +1139,7 @@ namespace OSGeo.MapGuide.Viewer
         private double CalculateScale(double mcsW, double mcsH, int devW, int devH)
         {
             var mpu = this.MetersPerUnit;
-            var mpp = 0.0254 / _map.DisplayDpi;
+            var mpp = GetMetersPerPixel(_map.DisplayDpi);
             if (devH * mcsW > devW * mcsH)
                 return mcsW * mpu / (devW * mpp); //width-limited
             else
@@ -1575,7 +1575,7 @@ namespace OSGeo.MapGuide.Viewer
             //Update current extents
             double mpu = this.MetersPerUnit;
             double scale = _map.ViewScale;
-            double mpp = 0.0254 / _map.DisplayDpi;
+            double mpp = GetMetersPerPixel(_map.DisplayDpi);
             var pt = _map.ViewCenter;
             var coord = pt.Coordinate;
 
@@ -2412,7 +2412,8 @@ namespace OSGeo.MapGuide.Viewer
 
         private void ResetMouseWheelPaintTransforms()
         {
-            delayRenderTimer.Stop();
+            if (delayRenderTimer != null)
+                delayRenderTimer.Stop();
             mouseWheelSx = null;
             mouseWheelSy = null;
             mouseWheelTx = null;
