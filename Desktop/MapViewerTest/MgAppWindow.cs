@@ -130,5 +130,35 @@ namespace MapViewerTest
             var result = prof.ProfileRenderDynamicOverlay((MgdMap)map, (MgdSelection)mapViewer.GetSelection(), opts); 
  	        new XmlResponseDialog(result).ShowDialog(); 
         }
+
+        private void pointToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            mapViewer.DigitizePoint((x, y) => { MessageBox.Show("Done"); }, "Custom point digitization prompt");
+        }
+
+        private void lineToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            mapViewer.DigitizeLine((x1, y1, x2, y2) => { MessageBox.Show("Done"); }, "Custom line digitization prompt");
+        }
+
+        private void rectangleToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            mapViewer.DigitizeRectangle((x1, y1, x2, y2) => { MessageBox.Show("Done"); }, "Custom rectangle digitization prompt");
+        }
+
+        private void lineStringToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            mapViewer.DigitizeLineString((coords) => { MessageBox.Show("Done"); }, "Custom line string digitization prompt");
+        }
+
+        private void polygonToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            mapViewer.DigitizePolygon((coords) => { MessageBox.Show("Done"); }, "Custom polygon digitization prompt");
+        }
+
+        private void circleToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            mapViewer.DigitizeCircle((x, y, r) => { MessageBox.Show("Done"); }, "Custom circle digitization prompt");
+        }
     }
 }
