@@ -192,7 +192,16 @@ namespace OSGeo.MapGuide.Viewer
             SetStyle(ControlStyles.DoubleBuffer, true);
 
             _mapBgColor = Color.Transparent;
-            
+
+            _defaultDigitizationInstructions = Properties.Resources.GeneralDigitizationInstructions;
+            _defaultMultiSegmentDigitizationInstructions = Properties.Resources.MultiSegmentDigitzationInstructions;
+            _defaultPointDigitizationPrompt = Properties.Resources.PointDigitizationPrompt;
+            _defaultLineDigitizationPrompt = Properties.Resources.LineDigitizationPrompt;
+            _defaultCircleDigitizationPrompt = Properties.Resources.CircleDigitizationPrompt;
+            _defaultLineStringDigitizationPrompt = Properties.Resources.LineStringDigitizationPrompt;
+            _defaultPolygonDigitizationPrompt = Properties.Resources.PolygonDigitizationPrompt;
+            _defaultRectangleDigitizationPrompt = Properties.Resources.RectangleDigitizationPrompt;
+
             renderWorker = new BackgroundWorker();
 
             renderWorker.DoWork += renderWorker_DoWork;
@@ -217,6 +226,18 @@ namespace OSGeo.MapGuide.Viewer
             if (e.KeyCode == Keys.Escape)
             {
                 CancelDigitization();
+            }
+            else if (e.KeyCode == Keys.Z && e.Modifiers == Keys.Control)
+            {
+                if (this.DigitizingType == MapDigitizationType.LineString ||
+                    this.DigitizingType == MapDigitizationType.Polygon)
+                {
+                    if (dPath.Count > 1) //Slice off the last recorded point
+                    {
+                        dPath.RemoveAt(dPath.Count - 1);
+                        Invalidate();
+                    }
+                }
             }
         }
 
@@ -450,6 +471,23 @@ namespace OSGeo.MapGuide.Viewer
             }
         }
 
+        private string _defaultDigitizationInstructions;
+        private string _defaultMultiSegmentDigitizationInstructions;
+
+        private string _defaultPointDigitizationPrompt;
+        private string _defaultLineDigitizationPrompt;
+        private string _defaultCircleDigitizationPrompt;
+        private string _defaultLineStringDigitizationPrompt;
+        private string _defaultPolygonDigitizationPrompt;
+        private string _defaultRectangleDigitizationPrompt;
+
+        private string _pointCustomDigitizationPrompt;
+        private string _lineCustomDigitizationPrompt;
+        private string _circleCustomDigitizationPrompt;
+        private string _lineStringCustomDigitizationPrompt;
+        private string _polygonCustomDigitizationPrompt;
+        private string _rectangleCustomDigitizationPrompt;
+
         /// <summary>
         /// Raises the <see cref="E:System.Windows.Forms.Control.Paint"/> event.
         /// </summary>
@@ -459,18 +497,7 @@ namespace OSGeo.MapGuide.Viewer
             base.OnPaint(e);
             Trace.TraceInformation("OnPaint(e)");
 
-            if (!translate.IsEmpty)
-            {
-                if (mouseWheelTx.HasValue && mouseWheelTy.HasValue)
-                    e.Graphics.TranslateTransform(translate.X + mouseWheelTx.Value, translate.Y + mouseWheelTy.Value);
-                else
-                    e.Graphics.TranslateTransform(translate.X, translate.Y);
-            }
-            else
-            {
-                if (mouseWheelTx.HasValue && mouseWheelTy.HasValue)
-                    e.Graphics.TranslateTransform(mouseWheelTx.Value, mouseWheelTy.Value);
-            }
+            ApplyPaintTranslateTransform(e);
 
             if (mouseWheelSx.HasValue && mouseWheelSy.HasValue && mouseWheelSx.Value != 0.0 && mouseWheelSy.Value != 0.0)
             {
@@ -490,6 +517,8 @@ namespace OSGeo.MapGuide.Viewer
                 e.Graphics.DrawImage(_selectionImage, new PointF(0, 0));
             }
 
+            //TODO: We could add support here for map-space persistent digitizations
+
             if (isDragging && (this.ActiveTool == MapActiveTool.Select || this.ActiveTool == MapActiveTool.ZoomIn))
             {
                 DrawDragRectangle(e);
@@ -500,7 +529,8 @@ namespace OSGeo.MapGuide.Viewer
                 {
                     if (this.DigitizingType == MapDigitizationType.Point)
                     {
-                        DrawTrackingTooltip(e, "Click to finish. Press ESC to cancel");
+                        string str = (_pointCustomDigitizationPrompt ?? _defaultPointDigitizationPrompt) + Environment.NewLine + _defaultDigitizationInstructions;
+                        DrawTrackingTooltip(e, str);
                     }
                     else
                     {
@@ -541,6 +571,22 @@ namespace OSGeo.MapGuide.Viewer
                             DrawTrackingTooltip(e, _activeTooltipText);
                     }
                 }
+            }
+        }
+
+        private void ApplyPaintTranslateTransform(PaintEventArgs e)
+        {
+            if (!translate.IsEmpty)
+            {
+                if (mouseWheelTx.HasValue && mouseWheelTy.HasValue)
+                    e.Graphics.TranslateTransform(translate.X + mouseWheelTx.Value, translate.Y + mouseWheelTy.Value);
+                else
+                    e.Graphics.TranslateTransform(translate.X, translate.Y);
+            }
+            else
+            {
+                if (mouseWheelTx.HasValue && mouseWheelTy.HasValue)
+                    e.Graphics.TranslateTransform(mouseWheelTx.Value, mouseWheelTy.Value);
             }
         }
 
@@ -678,7 +724,8 @@ namespace OSGeo.MapGuide.Viewer
             e.Graphics.DrawEllipse(CreateOutlinePen(), pt2.X, pt2.Y, diameter, diameter);
             e.Graphics.FillEllipse(CreateFillBrush(), pt2.X, pt2.Y, diameter, diameter);
 
-            DrawTrackingTooltip(e, "Click to finish. Press ESC to cancel");
+            string str = (_circleCustomDigitizationPrompt ?? _defaultCircleDigitizationPrompt) + Environment.NewLine + _defaultDigitizationInstructions;
+            DrawTrackingTooltip(e, str);
         }
 
         private void DrawTracingLine(PaintEventArgs e)
@@ -686,7 +733,8 @@ namespace OSGeo.MapGuide.Viewer
             e.Graphics.DrawLine(CreateOutlinePen(), dPtStart, new Point(_mouseX, _mouseY));
             DrawVertexCoordinates(e, dPtStart.X, dPtStart.Y, true);
             DrawVertexCoordinates(e, _mouseX, _mouseY, true);
-            DrawTrackingTooltip(e, "Click to finish. Press ESC to cancel");
+            string str = (_lineCustomDigitizationPrompt ?? _defaultLineDigitizationPrompt) + Environment.NewLine + _defaultDigitizationInstructions;
+            DrawTrackingTooltip(e, str);
         }
 
         private void DrawTracingLineString(PaintEventArgs e)
@@ -700,8 +748,8 @@ namespace OSGeo.MapGuide.Viewer
             {
                 DrawVertexCoordinates(e, pt.X, pt.Y, true);
             }
-
-            DrawTrackingTooltip(e, "Click again to add a new vertex.\nDouble-click to finish. Press ESC to cancel");
+            string str = (_lineStringCustomDigitizationPrompt ?? _defaultLineStringDigitizationPrompt) + Environment.NewLine + _defaultMultiSegmentDigitizationInstructions;
+            DrawTrackingTooltip(e, str);
         }
 
         private void DrawTracingPolygon(PaintEventArgs e)
@@ -716,8 +764,8 @@ namespace OSGeo.MapGuide.Viewer
             {
                 DrawVertexCoordinates(e, pt.X, pt.Y, true);
             }
-
-            DrawTrackingTooltip(e, "Click again to add a new vertex.\nDouble-click to finish. Press ESC to cancel");
+            string str = (_polygonCustomDigitizationPrompt ?? _defaultPolygonDigitizationPrompt) + Environment.NewLine + _defaultMultiSegmentDigitizationInstructions;
+            DrawTrackingTooltip(e, str);
         }
 
         private void DrawTracingRectangle(PaintEventArgs e)
@@ -735,7 +783,8 @@ namespace OSGeo.MapGuide.Viewer
                 DrawVertexCoordinates(e, r.Left, r.Bottom, true);
                 DrawVertexCoordinates(e, r.Right, r.Top, true);
                 DrawVertexCoordinates(e, r.Right, r.Bottom, true);
-                DrawTrackingTooltip(e, "Click to finish. Press ESC to cancel");
+                string str = (_rectangleCustomDigitizationPrompt ?? _defaultRectangleDigitizationPrompt) + Environment.NewLine + _defaultDigitizationInstructions;
+                DrawTrackingTooltip(e, str);
             }
         }
 
@@ -840,55 +889,65 @@ namespace OSGeo.MapGuide.Viewer
         /// Starts the digitization process for a circle
         /// </summary>
         /// <param name="callback">The callback to be invoked when the digitization process completes</param>
-        public void DigitizeCircle(CircleDigitizationCallback callback)
+        /// <param name="customPrompt">The custom prompt to use for the tracking tooltip</param>
+        public void DigitizeCircle(CircleDigitizationCallback callback, string customPrompt)
         {
             this.DigitizingType = MapDigitizationType.Circle;
             _digitzationCallback = callback;
             _digitizationYetToStart = true;
+            _circleCustomDigitizationPrompt = customPrompt;
         }
 
         /// <summary>
         /// Starts the digitization process for a line
         /// </summary>
         /// <param name="callback">The callback to be invoked when the digitization process completes</param>
-        public void DigitizeLine(LineDigitizationCallback callback)
+        /// <param name="customPrompt">The custom prompt to use for the tracking tooltip</param>
+        public void DigitizeLine(LineDigitizationCallback callback, string customPrompt)
         {
             this.DigitizingType = MapDigitizationType.Line;
             _digitzationCallback = callback;
             _digitizationYetToStart = true;
+            _lineCustomDigitizationPrompt = customPrompt;
         }
 
         /// <summary>
         /// Starts the digitization process for a point
         /// </summary>
         /// <param name="callback">The callback to be invoked when the digitization process completes</param>
-        public void DigitizePoint(PointDigitizationCallback callback)
+        /// <param name="customPrompt">The custom prompt to use for the tracking tooltip</param>
+        public void DigitizePoint(PointDigitizationCallback callback, string customPrompt)
         {
             this.DigitizingType = MapDigitizationType.Point;
             _digitzationCallback = callback;
             _digitizationYetToStart = true;
+            _pointCustomDigitizationPrompt = customPrompt;
         }
 
         /// <summary>
         /// Starts the digitization process for a polygon
         /// </summary>
         /// <param name="callback">The callback to be invoked when the digitization process completes</param>
-        public void DigitizePolygon(PolygonDigitizationCallback callback)
+        /// <param name="customPrompt">The custom prompt to use for the tracking tooltip</param>
+        public void DigitizePolygon(PolygonDigitizationCallback callback, string customPrompt)
         {
             this.DigitizingType = MapDigitizationType.Polygon;
             _digitzationCallback = callback;
             _digitizationYetToStart = true;
+            _polygonCustomDigitizationPrompt = customPrompt;
         }
 
         /// <summary>
         /// Starts the digitization process for a line string (polyline)
         /// </summary>
         /// <param name="callback">The callback to be invoked when the digitization process completes</param>
-        public void DigitizeLineString(LineStringDigitizationCallback callback)
+        /// <param name="customPrompt">The custom prompt to use for the tracking tooltip</param>
+        public void DigitizeLineString(LineStringDigitizationCallback callback, string customPrompt)
         {
             this.DigitizingType = MapDigitizationType.LineString;
             _digitzationCallback = callback;
             _digitizationYetToStart = true;
+            _lineStringCustomDigitizationPrompt = customPrompt;
         }
 
         private LineDigitizationCallback _segmentCallback;
@@ -898,23 +957,62 @@ namespace OSGeo.MapGuide.Viewer
         /// </summary>
         /// <param name="callback">The callback to be invoked when the digitization process completes</param>
         /// <param name="segmentCallback">The callback to be invoked when a new segment of the current line string is digitized</param>
-        public void DigitizeLineString(LineStringDigitizationCallback callback, LineDigitizationCallback segmentCallback)
+        /// <param name="customPrompt">The custom prompt to use for the tracking tooltip</param>
+        public void DigitizeLineString(LineStringDigitizationCallback callback, LineDigitizationCallback segmentCallback, string customPrompt)
         {
             this.DigitizingType = MapDigitizationType.LineString;
             _digitzationCallback = callback;
             _segmentCallback = segmentCallback;
             _digitizationYetToStart = true;
+            _lineStringCustomDigitizationPrompt = customPrompt;
         }
 
         /// <summary>
         /// Starts the digitization process for a rectangle
         /// </summary>
         /// <param name="callback">The callback to be invoked when the digitization process completes</param>
-        public void DigitizeRectangle(RectangleDigitizationCallback callback)
+        /// <param name="customPrompt">The custom prompt to use for the tracking tooltip</param>
+        public void DigitizeRectangle(RectangleDigitizationCallback callback, string customPrompt)
         {
             this.DigitizingType = MapDigitizationType.Rectangle;
             _digitzationCallback = callback;
             _digitizationYetToStart = true;
+            _rectangleCustomDigitizationPrompt = customPrompt;
+        }
+
+        public void DigitizeCircle(CircleDigitizationCallback callback)
+        {
+            DigitizeCircle(callback, null);
+        }
+
+        public void DigitizeLine(LineDigitizationCallback callback)
+        {
+            DigitizeLine(callback, null);
+        }
+
+        public void DigitizePoint(PointDigitizationCallback callback)
+        {
+            DigitizePoint(callback, null);
+        }
+
+        public void DigitizePolygon(PolygonDigitizationCallback callback)
+        {
+            DigitizePolygon(callback, null);
+        }
+
+        public void DigitizeLineString(LineStringDigitizationCallback callback)
+        {
+            DigitizeLineString(callback, (string)null);
+        }
+
+        public void DigitizeLineString(LineStringDigitizationCallback callback, LineDigitizationCallback segmentDigitized)
+        {
+            DigitizeLineString(callback, segmentDigitized, null);
+        }
+
+        public void DigitizeRectangle(RectangleDigitizationCallback callback)
+        {
+            DigitizeRectangle(callback, null);
         }
 
         private void ResetDigitzationState()
@@ -925,6 +1023,12 @@ namespace OSGeo.MapGuide.Viewer
             dPtEnd.X = dPtStart.Y = 0;
             dPtStart.X = dPtStart.Y = 0;
             this.DigitizingType = MapDigitizationType.None;
+            _circleCustomDigitizationPrompt = null;
+            _lineCustomDigitizationPrompt = null;
+            _lineStringCustomDigitizationPrompt = null;
+            _polygonCustomDigitizationPrompt = null;
+            _pointCustomDigitizationPrompt = null;
+            _rectangleCustomDigitizationPrompt = null;
             Invalidate();
         }
 
