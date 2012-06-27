@@ -62,8 +62,6 @@ namespace OSGeo.MapGuide.Viewer
             }
         }
 
-        const double MINIMUM_ZOOM_SCALE = 5.0;
-
 #if VIEWER_DEBUG
         private MgdLayer _debugLayer;
 
@@ -174,11 +172,15 @@ namespace OSGeo.MapGuide.Viewer
             this.SelectionColor = Color.Blue;
             this.PointPixelBuffer = 2;
 
+            this.MinScale = 10;
+            this.MaxScale = 1000000000;
+
             this.DigitizingFillTransparency = 100;
             this.DigitizingOutline = Brushes.Red;
             this.DigitzingFillColor = Color.White;
             this.TooltipFillColor = Color.LightYellow;
             this.TooltipFillTransparency = 200;
+            this.MouseWheelDelayRenderInterval = 800;
 
             this.ActiveTool = MapActiveTool.None;
             this.DoubleBuffered = true;
@@ -203,6 +205,7 @@ namespace OSGeo.MapGuide.Viewer
             base.MouseDoubleClick += OnMapMouseDoubleClick;
             base.MouseHover += OnMapMouseHover;
             base.MouseEnter += OnMouseEnter;
+            base.MouseWheel += OnMapMouseWheel;
         }
 
         /// <summary>
@@ -317,6 +320,27 @@ namespace OSGeo.MapGuide.Viewer
             }
             base.Dispose(disposing);
         }
+
+        /// <summary>
+        /// Gets or sets the minimum allowed zoom scale for this viewer
+        /// </summary>
+        [Category("MapGuide Viewer")]
+        [Description("The minimum allowed zoom scale for this viewer")]
+        public int MinScale { get; set; }
+
+        /// <summary>
+        /// Gets or sets the maximum allowed zoom scale for this viewer
+        /// </summary>
+        [Category("MapGuide Viewer")]
+        [Description("The maximum allowed zoom scale for this viewer")]
+        public int MaxScale { get; set; }
+
+        /// <summary>
+        /// The amount of time (in ms) to wait to re-render after a mouse wheel scroll
+        /// </summary>
+        [Category("MapGuide Viewer")]
+        [Description("The amount of time (in ms) to wait to re-render after a mouse wheel scroll")]
+        public int MouseWheelDelayRenderInterval { get; set; }
 
         private Color _selColor;
 
@@ -436,18 +460,33 @@ namespace OSGeo.MapGuide.Viewer
             Trace.TraceInformation("OnPaint(e)");
 
             if (!translate.IsEmpty)
-                e.Graphics.TranslateTransform(translate.X, translate.Y);
+            {
+                if (mouseWheelTx.HasValue && mouseWheelTy.HasValue)
+                    e.Graphics.TranslateTransform(translate.X + mouseWheelTx.Value, translate.Y + mouseWheelTy.Value);
+                else
+                    e.Graphics.TranslateTransform(translate.X, translate.Y);
+            }
+            else
+            {
+                if (mouseWheelTx.HasValue && mouseWheelTy.HasValue)
+                    e.Graphics.TranslateTransform(mouseWheelTx.Value, mouseWheelTy.Value);
+            }
+
+            if (mouseWheelSx.HasValue && mouseWheelSy.HasValue && mouseWheelSx.Value != 0.0 && mouseWheelSy.Value != 0.0)
+            {
+                e.Graphics.ScaleTransform(mouseWheelSx.Value, mouseWheelSy.Value);
+            }
 
             if (_mapImage != null)
             {
-                Trace.TraceInformation("Render Map");
+                Trace.TraceInformation("Render buffered map image");
                 e.Graphics.DrawImage(_mapImage, new PointF(0, 0));
             }
 
             //Thread.Sleep(100);
             if (_selectionImage != null)
             {
-                Trace.TraceInformation("Render Selection");
+                Trace.TraceInformation("Render buffered map selection");
                 e.Graphics.DrawImage(_selectionImage, new PointF(0, 0));
             }
 
@@ -1133,6 +1172,7 @@ namespace OSGeo.MapGuide.Viewer
         {
             var action = new MethodInvoker(() =>
             {
+                ResetMouseWheelPaintTransforms();
                 if (_map != null)
                 {
                     Trace.TraceInformation("Performing delayed resize to (" + this.Width + ", " + this.Height + ")");
@@ -1643,7 +1683,7 @@ namespace OSGeo.MapGuide.Viewer
             Trace.TraceInformation("Center is (" + x + ", " + y + ")");
 #endif
             var oldScale = _map.ViewScale;
-            _provider.SetViewScale(Math.Max(scale, MINIMUM_ZOOM_SCALE));
+            _provider.SetViewScale(NormalizeScale(scale));
 
             if (oldScale != _map.ViewScale)
             {
@@ -2195,6 +2235,12 @@ namespace OSGeo.MapGuide.Viewer
             HandleMouseUp(e);
         }
 
+        private void OnMapMouseWheel(object sender, MouseEventArgs e)
+        {
+            this.Focus();
+            HandleMouseWheel(e);
+        }
+
         private void OnMapMouseClick(object sender, MouseEventArgs e)
         {
             this.Focus();
@@ -2227,6 +2273,152 @@ namespace OSGeo.MapGuide.Viewer
                 dPath.Add(new Point(e.X, e.Y));
                 OnPolygonDigitized(dPath);
             }
+        }
+
+        private double? delayRenderScale;
+        private PointF? delayRenderViewCenter;
+        private float? mouseWheelSx = null;
+        private float? mouseWheelSy = null;
+        private float? mouseWheelTx = null;
+        private float? mouseWheelTy = null;
+        private int? mouseWheelDelta = null;
+        private System.Timers.Timer delayRenderTimer = null;
+
+        private void HandleMouseWheel(MouseEventArgs e)
+        {
+            if (delayRenderTimer == null)
+            {
+                delayRenderTimer = new System.Timers.Timer();
+                delayRenderTimer.Enabled = false;
+                delayRenderTimer.Elapsed += new System.Timers.ElapsedEventHandler(OnDelayRender);
+                delayRenderTimer.Interval = this.MouseWheelDelayRenderInterval;
+            }
+
+            delayRenderTimer.Stop();
+            delayRenderTimer.Start();
+            Trace.TraceInformation("Postponed delay render");
+            Trace.TraceInformation("Mouse delta: " + e.Delta + " (" + (e.Delta > 0 ? "Zoom in" : "Zoom out") + ")");
+            //Negative delta = zoom out, Positive delta = zoom in
+            //deltas are in units of 120, so treat each multiple of 120 as a "zoom unit"
+
+            if (!mouseWheelSx.HasValue && !mouseWheelSy.HasValue)
+            {
+                mouseWheelSx = 1.0f;
+                mouseWheelSy = 1.0f;
+            }
+
+            if (!mouseWheelDelta.HasValue)
+                mouseWheelDelta = 0;
+
+            if (e.Delta > 0) //Zoom In
+            {
+                mouseWheelDelta++;
+                mouseWheelSx -= 0.1f;
+                mouseWheelSy -= 0.1f;
+                Invalidate();
+            }
+            else if (e.Delta < 0) //Zoom Out
+            {
+                mouseWheelDelta--;
+                mouseWheelSx += 0.1f;
+                mouseWheelSy += 0.1f;
+                Invalidate();
+            }
+
+            Trace.TraceInformation("Delta units is: " + mouseWheelDelta);
+
+            //Completely ripped the number crunching here from the AJAX viewer with no sense of shame whatsoever :)
+            delayRenderScale = GetNewScale(_map.ViewScale, mouseWheelDelta.Value);
+            double zoomChange = _map.ViewScale / delayRenderScale.Value;
+
+            //Determine the center of the new, zoomed map, in current screen device coords
+            double screenZoomCenterX = e.X - (e.X - this.Width / 2) / zoomChange;
+            double screenZoomCenterY = e.Y - (e.Y - this.Height / 2) / zoomChange;
+            delayRenderViewCenter = ScreenToMapUnits(screenZoomCenterX, screenZoomCenterY);
+
+            var mpu = this.MetersPerUnit;
+            var mpp = GetMetersPerPixel(_map.DisplayDpi);
+            var w = (_extX2 - _extX1) * this.MetersPerUnit / (delayRenderScale * mpp);
+            if (w > 20000)
+            {
+                w = 20000;
+            }
+            var h = w * ((double)this.Height / (double)this.Width);
+            var xClickOffset = screenZoomCenterX - this.Width / 2;
+            var yClickOffset = screenZoomCenterY - this.Height / 2;
+
+            //Set the paint transforms. Will be reset once the delayed render is fired away
+            mouseWheelTx = (float)((double)this.Width / 2 - w / 2 - xClickOffset * zoomChange);
+            mouseWheelTy = (float)((double)this.Height / 2 - h / 2 - yClickOffset * zoomChange);
+            mouseWheelSx = (float)(w / (double)this.Width);
+            mouseWheelSy = (float)(h / (double)this.Height);
+
+            Trace.TraceInformation("Paint transform (tx: " + mouseWheelTx + ", ty: " + mouseWheelTy + ", sx: " + mouseWheelSx + ", sy: " + mouseWheelSy + ")");
+        }
+
+        static double GetMetersPerPixel(int dpi)
+        {
+            return 0.0254 / dpi;
+        }
+
+        double GetNewScale(double currentScale, int wheelZoomDelta)
+        {
+            var newScale = currentScale;
+            /*
+            //handle finite zoom scales for tiled map
+            if (finscale)
+            {
+                var newScaleIndex = sci - wheelDelta;
+                if (newScaleIndex < 0)
+                {
+                    newScaleIndex = 0;
+                }
+                if (newScaleIndex > scales.length - 1)
+                {
+                    newScaleIndex = scales.length - 1;
+                }
+                newScale = scales[newScaleIndex];
+            }
+            //no finite zoom scales (untiled map)
+            else */
+            {
+                var zoomChange = Math.Pow(1.5, wheelZoomDelta);
+                newScale = zoomChange > 0 ? currentScale / zoomChange : this.MaxScale;
+                newScale = NormalizeScale(newScale);
+            }
+            return newScale;
+        }
+
+        double NormalizeScale(double scale)
+        {
+            if (scale < this.MinScale)
+                return this.MinScale;
+            if (scale > this.MaxScale)
+                return this.MaxScale;
+            return scale;
+        }
+
+        void OnDelayRender(object sender, System.Timers.ElapsedEventArgs e)
+        {
+            Trace.TraceInformation("Delay rendering");
+            Trace.TraceInformation("Set new map coordinates to (" + delayRenderViewCenter.Value.X + ", " + delayRenderViewCenter.Value.Y + " at " + delayRenderScale.Value + ")");
+            ResetMouseWheelPaintTransforms();
+            MethodInvoker action = () => { ZoomToView(delayRenderViewCenter.Value.X, delayRenderViewCenter.Value.Y, delayRenderScale.Value, true); };
+            if (this.InvokeRequired)
+                this.Invoke(action);
+            else
+                action();
+        }
+
+        private void ResetMouseWheelPaintTransforms()
+        {
+            delayRenderTimer.Stop();
+            mouseWheelSx = null;
+            mouseWheelSy = null;
+            mouseWheelTx = null;
+            mouseWheelTy = null;
+            mouseWheelDelta = 0;
+            Trace.TraceInformation("Mouse wheel paint transform reset");
         }
 
         private void HandleMouseClick(MouseEventArgs e)
