@@ -433,4 +433,46 @@
   <data name="AreaRuleTemplate" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\AreaRuleTemplate.txt;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
   </data>
+  <data name="TextExitApplication" xml:space="preserve">
+    <value>Exit</value>
+  </data>
+  <data name="DefaultLayerTooltip" xml:space="preserve">
+    <value>Name: {1}{0}Feature Source: {2}{0}Feature Class: {3}</value>
+  </data>
+  <data name="DrawingLayerTooltip" xml:space="preserve">
+    <value>Name: {1}{0}Feature Source: {2}</value>
+  </data>
+  <data name="ThemedLayerTooltip" xml:space="preserve">
+    <value>Name: {1}{0}Feature Source: {2}{0}Feature Class: {3}{0}Number of Rules: {4}</value>
+  </data>
+  <data name="TextZoomNext" xml:space="preserve">
+    <value>Zoom Next</value>
+  </data>
+  <data name="TextZoomPrevious" xml:space="preserve">
+    <value>Zoom Previous</value>
+  </data>
+  <data name="CircleDigitizationPrompt" xml:space="preserve">
+    <value>Click to finish</value>
+  </data>
+  <data name="LineDigitizationPrompt" xml:space="preserve">
+    <value>Click to finish</value>
+  </data>
+  <data name="LineStringDigitizationPrompt" xml:space="preserve">
+    <value>Click again to add a new vertex.\nDouble-click to finish</value>
+  </data>
+  <data name="PointDigitizationPrompt" xml:space="preserve">
+    <value>Click to finish</value>
+  </data>
+  <data name="PolygonDigitizationPrompt" xml:space="preserve">
+    <value>Click again to add a new vertex.\nDouble-click to finish</value>
+  </data>
+  <data name="GeneralDigitizationInstructions" xml:space="preserve">
+    <value>Press ESC to cancel</value>
+  </data>
+  <data name="MultiSegmentDigitzationInstructions" xml:space="preserve">
+    <value>Press Ctrl-Z to undo last point.\nPress ESC to cancel</value>
+  </data>
+  <data name="RectangleDigitizationPrompt" xml:space="preserve">
+    <value>Click to finish</value>
+  </data>
 </root>

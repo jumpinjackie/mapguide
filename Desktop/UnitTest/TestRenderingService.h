@@ -39,7 +39,7 @@ class TestRenderingService : public CppUnit::TestFixture
     CPPUNIT_TEST(TestCase_RenderMap);
     CPPUNIT_TEST(TestCase_RenderMapWithWatermark);
     CPPUNIT_TEST(TestCase_RenderLegend);
-    //CPPUNIT_TEST(TestCase_QueryFeatures);
+    CPPUNIT_TEST(TestCase_QueryFeatures);
 
     //CPPUNIT_TEST(TestCase_RendererPerformance);
 
@@ -59,7 +59,7 @@ public:
     void TestCase_RenderMap();
     void TestCase_RenderMapWithWatermark();
     void TestCase_RenderLegend();
-    //void TestCase_QueryFeatures();
+    void TestCase_QueryFeatures();
 
     void TestCase_SymbologyPoints();
     void TestCase_SymbologyPointsParam();
@@ -80,7 +80,7 @@ private:
 
 private:
     Ptr<MgResourceService> m_svcResource;
-    Ptr<MgRenderingService> m_svcRendering;
+    Ptr<MgdRenderingService> m_svcRendering;
 };
 
 #endif // _TESTRENDERINGSERVICE_H

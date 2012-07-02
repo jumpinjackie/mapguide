@@ -32,7 +32,7 @@ TestRenderingService::TestRenderingService()
 
     // Initialize service objects.
     m_svcResource = static_cast<MgResourceService*>(fact->CreateService(MgServiceType::ResourceService));
-    m_svcRendering = static_cast<MgRenderingService*>(fact->CreateService(MgServiceType::RenderingService));
+    m_svcRendering = static_cast<MgdRenderingService*>(fact->CreateService(MgServiceType::RenderingService));
 }
 
 
@@ -575,7 +575,6 @@ void TestRenderingService::TestCase_RenderLegend()
     }
 }
 
-/*
 void TestRenderingService::TestCase_QueryFeatures()
 {
     try
@@ -590,7 +589,7 @@ void TestRenderingService::TestCase_QueryFeatures()
         layerNames1->Add(L"Rail");
         layerNames1->Add(L"HydrographicPolygons");
         Ptr<MgPolygon> poly1 = CreateSelectionPolygon(map, 0.3, 0.3);
-        Ptr<MgFeatureInformation> fi1 = m_svcRendering->QueryFeatures(map, layerNames1, poly1, MgFeatureSpatialOperations::Within, -1);
+        Ptr<MgdFeatureInformation> fi1 = m_svcRendering->QueryFeatures(map, layerNames1, poly1, MgFeatureSpatialOperations::Within, -1);
 
         // call the API using a scale of 12000
         map->SetViewScale(12000.0);
@@ -599,7 +598,7 @@ void TestRenderingService::TestCase_QueryFeatures()
         layerNames2->Add(L"Rail");
         layerNames2->Add(L"Parcels");
         Ptr<MgPolygon> poly2 = CreateSelectionPolygon(map, 0.05, 0.05);
-        Ptr<MgFeatureInformation> fi2 = m_svcRendering->QueryFeatures(map, layerNames2, poly2, MgFeatureSpatialOperations::Within, -1);
+        Ptr<MgdFeatureInformation> fi2 = m_svcRendering->QueryFeatures(map, layerNames2, poly2, MgFeatureSpatialOperations::Within, -1);
     }
     catch (MgException* e)
     {
@@ -612,7 +611,6 @@ void TestRenderingService::TestCase_QueryFeatures()
         throw;
     }
 }
-*/
 
 MgdMap* TestRenderingService::CreateTestMapWithWatermark()
 {

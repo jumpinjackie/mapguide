@@ -101,7 +101,7 @@
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
-				CommandLine="xcopy /Y /I $(ProjectDir)Resources\*.* $(OutDir)\Resources&#x0D;&#x0A;xcopy /S /Y /I ..\..\Common\Schema\*.xsd $(OutDir)\Schema&#x0D;&#x0A;xcopy /Y $(ProjectDir)Platform.ini $(OutDir)\&#x0D;&#x0A;"
+				CommandLine="xcopy /S /Y /I ..\..\Common\MapGuideCommon\Resources\*.* $(OutDir)\Resources&#x0D;&#x0A;xcopy /S /Y /I ..\..\Common\Schema\*.xsd $(OutDir)\Schema&#x0D;&#x0A;xcopy /Y $(ProjectDir)Platform.ini $(OutDir)\&#x0D;&#x0A;"
 			/>
 		</Configuration>
 		<Configuration
@@ -188,7 +188,7 @@
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
-				CommandLine="xcopy /Y /I $(ProjectDir)Resources\*.* $(OutDir)\Resources&#x0D;&#x0A;xcopy /S /Y /I ..\..\Common\Schema\*.xsd $(OutDir)\Schema&#x0D;&#x0A;xcopy /Y $(ProjectDir)Platform.ini $(OutDir)\&#x0D;&#x0A;"
+				CommandLine="xcopy /S /Y /I ..\..\Common\MapGuideCommon\Resources\*.* $(OutDir)\Resources&#x0D;&#x0A;xcopy /S /Y /I ..\..\Common\Schema\*.xsd $(OutDir)\Schema&#x0D;&#x0A;xcopy /Y $(ProjectDir)Platform.ini $(OutDir)\&#x0D;&#x0A;"
 			/>
 		</Configuration>
 		<Configuration
@@ -269,7 +269,7 @@
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
-				CommandLine="xcopy /Y /I $(ProjectDir)Resources\*.* $(OutDir)\Resources&#x0D;&#x0A;xcopy /S /Y /I ..\..\Common\Schema\*.xsd $(OutDir)\Schema&#x0D;&#x0A;xcopy /Y $(ProjectDir)Platform.ini $(OutDir)\&#x0D;&#x0A;"
+				CommandLine="xcopy /S /Y /I ..\..\Common\MapGuideCommon\Resources\*.* $(OutDir)\Resources&#x0D;&#x0A;xcopy /S /Y /I ..\..\Common\Schema\*.xsd $(OutDir)\Schema&#x0D;&#x0A;xcopy /Y $(ProjectDir)Platform.ini $(OutDir)\&#x0D;&#x0A;"
 			/>
 		</Configuration>
 		<Configuration
@@ -351,7 +351,7 @@
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
-				CommandLine="xcopy /Y /I $(ProjectDir)Resources\*.* $(OutDir)\Resources&#x0D;&#x0A;xcopy /S /Y /I ..\..\Common\Schema\*.xsd $(OutDir)\Schema&#x0D;&#x0A;xcopy /Y $(ProjectDir)Platform.ini $(OutDir)\&#x0D;&#x0A;"
+				CommandLine="xcopy /S /Y /I ..\..\Common\MapGuideCommon\Resources\*.* $(OutDir)\Resources&#x0D;&#x0A;xcopy /S /Y /I ..\..\Common\Schema\*.xsd $(OutDir)\Schema&#x0D;&#x0A;xcopy /Y $(ProjectDir)Platform.ini $(OutDir)\&#x0D;&#x0A;"
 			/>
 		</Configuration>
 	</Configurations>
@@ -1264,6 +1264,42 @@
 				</FileConfiguration>
 			</File>
 			<File
+				RelativePath=".\Services\Rendering\FeatureInformation.cpp"
+				>
+				<FileConfiguration
+					Name="Debug|Win32"
+					ExcludedFromBuild="true"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|x64"
+					ExcludedFromBuild="true"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32"
+					ExcludedFromBuild="true"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|x64"
+					ExcludedFromBuild="true"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+					/>
+				</FileConfiguration>
+			</File>
+			<File
 				RelativePath=".\Services\Feature\FeatureNumericFunctions.cpp"
 				>
 				<FileConfiguration
@@ -1804,6 +1840,42 @@
 				</FileConfiguration>
 			</File>
 			<File
+				RelativePath=".\Exception\InvalidLogEntryException.cpp"
+				>
+				<FileConfiguration
+					Name="Debug|Win32"
+					ExcludedFromBuild="true"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|x64"
+					ExcludedFromBuild="true"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32"
+					ExcludedFromBuild="true"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|x64"
+					ExcludedFromBuild="true"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+					/>
+				</FileConfiguration>
+			</File>
+			<File
 				RelativePath=".\Exception\InvalidPrintLayoutFontSizeUnitsException.cpp"
 				>
 				<FileConfiguration
@@ -2056,7 +2128,187 @@
 				</FileConfiguration>
 			</File>
 			<File
+				RelativePath=".\Log\LogDetail.cpp"
+				>
+				<FileConfiguration
+					Name="Debug|Win32"
+					ExcludedFromBuild="true"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|x64"
+					ExcludedFromBuild="true"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32"
+					ExcludedFromBuild="true"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|x64"
+					ExcludedFromBuild="true"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+					/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath=".\Log\LogEntryData.cpp"
+				>
+				<FileConfiguration
+					Name="Debug|Win32"
+					ExcludedFromBuild="true"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|x64"
+					ExcludedFromBuild="true"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32"
+					ExcludedFromBuild="true"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|x64"
+					ExcludedFromBuild="true"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+					/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath=".\Log\LogManager.cpp"
+				>
+				<FileConfiguration
+					Name="Debug|Win32"
+					ExcludedFromBuild="true"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|x64"
+					ExcludedFromBuild="true"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32"
+					ExcludedFromBuild="true"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|x64"
+					ExcludedFromBuild="true"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+					/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath=".\Log\LogThread.cpp"
+				>
+				<FileConfiguration
+					Name="Debug|Win32"
+					ExcludedFromBuild="true"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|x64"
+					ExcludedFromBuild="true"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32"
+					ExcludedFromBuild="true"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|x64"
+					ExcludedFromBuild="true"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+					/>
+				</FileConfiguration>
+			</File>
+			<File
 				RelativePath=".\MapLayer\Map.cpp"
+				>
+				<FileConfiguration
+					Name="Debug|Win32"
+					ExcludedFromBuild="true"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|x64"
+					ExcludedFromBuild="true"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32"
+					ExcludedFromBuild="true"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|x64"
+					ExcludedFromBuild="true"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+					/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath=".\Services\MappingService.cpp"
 				>
 				<FileConfiguration
 					Name="Debug|Win32"
@@ -3284,6 +3536,42 @@
 				</FileConfiguration>
 			</File>
 			<File
+				RelativePath=".\System\ThreadBase.cpp"
+				>
+				<FileConfiguration
+					Name="Debug|Win32"
+					ExcludedFromBuild="true"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|x64"
+					ExcludedFromBuild="true"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32"
+					ExcludedFromBuild="true"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|x64"
+					ExcludedFromBuild="true"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+					/>
+				</FileConfiguration>
+			</File>
+			<File
 				RelativePath=".\Services\Tile\TileCache.cpp"
 				>
 				<FileConfiguration
@@ -3818,6 +4106,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\Services\Rendering\FeatureInformation.h"
+				>
+			</File>
+			<File
 				RelativePath=".\Services\Feature\FeatureNumericFunctions.h"
 				>
 			</File>
@@ -3902,6 +4194,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\Exception\InvalidLogEntryException.h"
+				>
+			</File>
+			<File
 				RelativePath=".\Exception\InvalidPrintLayoutFontSizeUnitsException.h"
 				>
 			</File>
@@ -3930,11 +4226,35 @@
 				>
 			</File>
 			<File
+				RelativePath=".\Log\LogDetail.h"
+				>
+			</File>
+			<File
+				RelativePath=".\Log\LogEntryData.h"
+				>
+			</File>
+			<File
+				RelativePath=".\Log\LogManager.h"
+				>
+			</File>
+			<File
+				RelativePath=".\Log\LogThread.h"
+				>
+			</File>
+			<File
+				RelativePath=".\Log\LogType.h"
+				>
+			</File>
+			<File
 				RelativePath=".\MapLayer\Map.h"
 				>
 			</File>
 			<File
 				RelativePath=".\Services\Rendering\MappingDefs.h"
+				>
+			</File>
+			<File
+				RelativePath=".\Services\MappingService.h"
 				>
 			</File>
 			<File
@@ -4095,6 +4415,10 @@
 			</File>
 			<File
 				RelativePath=".\Exception\StylizeLayerFailedException.h"
+				>
+			</File>
+			<File
+				RelativePath=".\System\ThreadBase.h"
 				>
 			</File>
 			<File

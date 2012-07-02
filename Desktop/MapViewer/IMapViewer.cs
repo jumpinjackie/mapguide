@@ -4,6 +4,7 @@ using System.Text;
 using OSGeo.MapGuide;
 using System.Drawing;
 using System.ComponentModel;
+using System.Collections.ObjectModel;
 
 namespace OSGeo.MapGuide.Viewer
 {
@@ -106,6 +107,56 @@ namespace OSGeo.MapGuide.Viewer
         void DigitizeRectangle(RectangleDigitizationCallback callback);
 
         /// <summary>
+        /// Starts the digitization process for a circle
+        /// </summary>
+        /// <param name="callback">The callback to be invoked when the digitization process completes</param>
+        /// <param name="customPrompt">The custom prompt to use for the tracking tooltip</param>
+        void DigitizeCircle(CircleDigitizationCallback callback, string customPrompt);
+
+        /// <summary>
+        /// Starts the digitization process for a line
+        /// </summary>
+        /// <param name="callback">The callback to be invoked when the digitization process completes</param>
+        /// <param name="customPrompt">The custom prompt to use for the tracking tooltip</param>
+        void DigitizeLine(LineDigitizationCallback callback, string customPrompt);
+
+        /// <summary>
+        /// Starts the digitization process for a point
+        /// </summary>
+        /// <param name="callback">The callback to be invoked when the digitization process completes</param>
+        /// <param name="customPrompt">The custom prompt to use for the tracking tooltip</param>
+        void DigitizePoint(PointDigitizationCallback callback, string customPrompt);
+
+        /// <summary>
+        /// Starts the digitization process for a polygon
+        /// </summary>
+        /// <param name="callback">The callback to be invoked when the digitization process completes</param>
+        /// <param name="customPrompt">The custom prompt to use for the tracking tooltip</param>
+        void DigitizePolygon(PolygonDigitizationCallback callback, string customPrompt);
+
+        /// <summary>
+        /// Starts the digitization process for a line string (polyline)
+        /// </summary>
+        /// <param name="callback">The callback to be invoked when the digitization process completes</param>
+        /// <param name="customPrompt">The custom prompt to use for the tracking tooltip</param>
+        void DigitizeLineString(LineStringDigitizationCallback callback, string customPrompt);
+
+        /// <summary>
+        /// Starts the digitization process for a line string (polyline)
+        /// </summary>
+        /// <param name="callback">The callback to be invoked when the digitization process completes</param>
+        /// <param name="segmentDigitized">The callback to be invoked when a new segment of the current line string is digitized</param>
+        /// <param name="customPrompt">The custom prompt to use for the tracking tooltip</param>
+        void DigitizeLineString(LineStringDigitizationCallback callback, LineDigitizationCallback segmentDigitized, string customPrompt);
+
+        /// <summary>
+        /// Starts the digitization process for a rectangle
+        /// </summary>
+        /// <param name="callback">The callback to be invoked when the digitization process completes</param>
+        /// <param name="customPrompt">The custom prompt to use for the tracking tooltip</param>
+        void DigitizeRectangle(RectangleDigitizationCallback callback, string customPrompt);
+
+        /// <summary>
         /// Gets the current runtime map
         /// </summary>
         /// <returns></returns>
@@ -137,6 +188,21 @@ namespace OSGeo.MapGuide.Viewer
         /// </summary>
         /// <returns></returns>
         MgMapViewerProvider GetProvider();
+
+        /// <summary>
+        /// Gets or sets the minimum allowed zoom scale for this viewer
+        /// </summary>
+        int MinScale { get; set; }
+
+        /// <summary>
+        /// Gets or sets the maximum allowed zoom scale for this viewer
+        /// </summary>
+        int MaxScale { get; set; }
+
+        /// <summary>
+        /// The amount of time (in ms) to wait to re-render after a mouse wheel scroll
+        /// </summary>
+        int MouseWheelDelayRenderInterval { get; set; }
 
         /// <summary>
         /// Gets or sets the factor by which to multiply the scale to zoom in
@@ -289,6 +355,47 @@ namespace OSGeo.MapGuide.Viewer
         /// Gets whether this viewer has a map loaded into it
         /// </summary>
         bool HasLoadedMap { get; }
+
+        /// <summary>
+        /// Gets or sets the amount of pixels to buffer out by when doing point-based selections with the Select tool
+        /// </summary>
+        int PointPixelBuffer { get; set; }
+
+        /// <summary>
+        /// Navigates to the previous view in the history stack
+        /// </summary>
+        void PreviousView();
+
+        /// <summary>
+        /// Navigates to the next view in the history stack
+        /// </summary>
+        void NextView();
+
+        /// <summary>
+        /// Gets the current index in the view history stack
+        /// </summary>
+        int ViewHistoryIndex { get; }
+
+        /// <summary>
+        /// Gets the view history stack. The first item being the earliest and the last item being the most recent.
+        /// </summary>
+        ReadOnlyCollection<MgMapViewHistoryEntry> ViewHistory { get; }
+    }
+
+    public class MgMapViewHistoryEntry
+    {
+        public MgMapViewHistoryEntry(double x, double y, double scale)
+        {
+            this.X = x;
+            this.Y = y;
+            this.Scale = scale;
+        }
+
+        public double X { get; private set; }
+
+        public double Y { get; private set; }
+
+        public double Scale { get; private set; }
     }
 
     /// <summary>

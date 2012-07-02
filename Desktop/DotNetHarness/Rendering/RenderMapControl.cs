@@ -26,7 +26,7 @@ namespace DotNetHarness.Rendering
             try
             {
                 var fact = new MgServiceFactory();
-                MgRenderingService renSvc = (MgRenderingService)fact.CreateService(MgServiceType.RenderingService);
+                MgdRenderingService renSvc = (MgdRenderingService)fact.CreateService(MgServiceType.RenderingService);
                 MgResourceIdentifier resId = new MgResourceIdentifier(textBox1.Text);
 
                 MgdMap map = new MgdMap(resId);

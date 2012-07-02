@@ -47,9 +47,21 @@ namespace OSGeo.MapGuide.Viewer
 
             var map = viewer.GetMap();
             var layers = map.GetLayers();
+            //TODO: Obviously support point and line layers
             for (var i = 0; i < layers.GetCount(); i++)
             {
-                _layers.Add(layers.GetItem(i));
+                var layer = layers.GetItem(i);
+                var cls = layer.GetClassDefinition();
+                var geom = layer.GetFeatureGeometryName();
+                if (string.IsNullOrEmpty(geom))
+                    continue;
+
+                var clsProps = cls.GetProperties();
+                var geomProp = clsProps.GetItem(geom) as MgGeometricPropertyDefinition;
+                if ((geomProp.GeometryTypes & MgFeatureGeometricType.Surface) == MgFeatureGeometricType.Surface)
+                {
+                    _layers.Add(layer);
+                }
             }
             cmbLayer.SelectedIndex = 0;
             cmbLayer_SelectedIndexChanged(this, EventArgs.Empty);
@@ -244,9 +256,11 @@ namespace OSGeo.MapGuide.Viewer
             queryOptions.AddFeatureProperty(prop.Name);
 
             MgFeatureReader featureReader = featureService.SelectFeatures(resId, layer.GetFeatureClassName(), queryOptions);
+            Dictionary<string, string> bucket = new Dictionary<string, string>();
             while (featureReader.ReadNext())
             {
                 String value = Util.GetFeaturePropertyValue(featureReader, prop.Name);
+                bucket[value] = value;
                 int propertyType = featureReader.GetPropertyType(prop.Name);
                 if (count == 0)
                 {
@@ -302,6 +316,8 @@ namespace OSGeo.MapGuide.Viewer
 
             txtMin.Text = minValue;
             txtMax.Text = maxValue;
+            if (THEME_INDIVIDUAL == cmbDistribution.SelectedValue.ToString())
+                count = bucket.Count;
             numRules.Value = featureCount = count;
         }
 
@@ -378,13 +394,14 @@ namespace OSGeo.MapGuide.Viewer
 
             if (THEME_INDIVIDUAL == themeParams.distro)
             {
-                aggregateOptions.AddFeatureProperty(themeParams.property.Name);
-                aggregateOptions.SelectDistinct(true);
+                //aggregateOptions.AddFeatureProperty(themeParams.property.Name);
+                //aggregateOptions.SelectDistinct(true);
+                aggregateOptions.AddComputedProperty("THEME_VALUE", "UNIQUE(\"" + themeParams.property.Name + "\")");
 
                 MgDataReader dataReader = featureService.SelectAggregate(resId, themeParams.layer.GetFeatureClassName(), aggregateOptions);
                 while (dataReader.ReadNext())
                 {
-                    value = Util.GetFeaturePropertyValue(dataReader, themeParams.property.Name);
+                    value = Util.GetFeaturePropertyValue(dataReader, "THEME_VALUE"); // themeParams.property.Name);
 
                     filterText = "&quot;" + themeParams.property.Name + "&quot; = ";
                     if (themeParams.property.DataType == MgPropertyType.String)
@@ -460,7 +477,8 @@ namespace OSGeo.MapGuide.Viewer
             newLayer.SetDisplayInLegend(themeParams.layer.GetDisplayInLegend());
             newLayer.SetVisible(true);
             newLayer.SetSelectable(themeParams.layer.GetSelectable());
-
+            //HACK: This has to be true otherwise owner-drawn nodes will not display its children (the theme rules)
+            provider.SetLayerExpandInLegend(newLayer, true);
             layers.Insert(layers.IndexOf(themeParams.layer), newLayer);
 
             //map.Save(resourceService);

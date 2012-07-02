@@ -69,7 +69,7 @@ namespace OSGeo.MapGuide.Viewer
             }
         }
 
-        internal void LoadMap(MgMapBase map)
+        public void LoadMap(MgMapBase map)
         {
             if (map == null)
                 return;
@@ -190,9 +190,22 @@ namespace OSGeo.MapGuide.Viewer
                 resIds.Add(ldf.ToString());
 
                 //Make sure geometry property checks out
-                var clsDef = layer.GetClassDefinition();
-                var geomName = clsDef.DefaultGeometryPropertyName;
+                MgClassDefinition clsDef = null;
+                try 
+                {
+                    clsDef = layer.GetClassDefinition();
+                }
+                catch (MgException ex)
+                {
+                    Trace.TraceWarning("Failed to get geometry property for layer: " + layer.Name + Environment.NewLine + ex.ToString());
+                    ex.Dispose();
+                    continue;
+                }
                 var props = clsDef.GetProperties();
+                var geomName = clsDef.DefaultGeometryPropertyName;
+                if (string.IsNullOrEmpty(geomName))
+                    continue;
+
                 if (props.IndexOf(geomName) < 0)
                     continue;
 

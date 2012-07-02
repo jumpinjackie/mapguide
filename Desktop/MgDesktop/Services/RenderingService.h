@@ -1,15 +1,12 @@
 #ifndef DESKTOP_RENDERING_SERVICE_H
 #define DESKTOP_RENDERING_SERVICE_H
 
-class MgLayout;
-class MgMapPlotCollection;
-class MgPlotSpecification;
-class MgDwfVersion;
 class MgdMap;
+class MgdFeatureInformation;
 class SE_Renderer;
 class MgRenderingOptions;
 class FeatureInfoRenderer;
-class MgDrawingService;
+class MgdDrawingService;
 struct RS_Bounds;
 class RS_Color;
 class Stylizer;
@@ -21,22 +18,22 @@ namespace MdfModel
 	class ProfileRenderMapResult;
 }
 
-template class Ptr<MgDrawingService>;
+template class Ptr<MgdDrawingService>;
 
-//NOTE: Despite MgRenderingService not defined in PlatformBase, we don't want a naming collision
+//NOTE: Despite MgdRenderingService not defined in PlatformBase, we don't want a naming collision
 //if this library and MapGuideCommon happend to be linked together
 
-class MG_DESKTOP_API MgRenderingService : public MgService
+class MG_DESKTOP_API MgdRenderingService : public MgService
 {
-    DECLARE_CLASSNAME(MgRenderingService)
+    DECLARE_CLASSNAME(MgdRenderingService)
 
 public:
-    MgRenderingService();
-    ~MgRenderingService();
+    MgdRenderingService();
+    ~MgdRenderingService();
 
     DECLARE_CREATE_SERVICE()
 
-    void SetConnectionProperties(MgConnectionProperties* connProp);
+    //void SetConnectionProperties(MgConnectionProperties* connProp);
 
 PUBLISHED_API:
 
@@ -57,11 +54,6 @@ PUBLISHED_API:
     virtual MgByteReader* RenderDynamicOverlay(MgdMap* map,
                                                MgdSelection* selection,
                                                MgRenderingOptions* options);
-
-    virtual MgByteReader* RenderDynamicOverlay(MgdMap* map,
-                                               MgdSelection* selection,
-                                               MgRenderingOptions* options,
-                                               ProfileRenderMapResult* pPRMResult);
 
     virtual MgByteReader* RenderMap(MgdMap* map,
                                     MgdSelection* selection,
@@ -84,46 +76,26 @@ PUBLISHED_API:
                                           MgColor* backgroundColor,
                                           CREFSTRING format);
 
-    // --------------- BEGIN: DWF Rendering and miscellaneous APIs from MgMappingService -----------------------//
-	 virtual MgByteReader* GenerateLegendImage(MgResourceIdentifier* resource,
-                                              double scale,
-                                              INT32 width,
-                                              INT32 height,
-                                              CREFSTRING format,
-                                              INT32 geomType,
-                                              INT32 themeCategory);
+    virtual MgdFeatureInformation* QueryFeatures(MgdMap* map,
+                                                 MgStringCollection* layerNames,
+                                                 MgGeometry* filterGeometry,
+                                                 INT32 selectionVariant,
+                                                 INT32 maxFeatures);
 
-    virtual MgByteReader* GeneratePlot(
-        MgdMap* map,
-        MgPlotSpecification* plotSpec,
-        MgLayout* layout,
-        MgDwfVersion* dwfVersion);
-
-    virtual MgByteReader* GeneratePlot(
-        MgdMap* map,
-        MgCoordinate* center,
-        double scale,
-        MgPlotSpecification* plotSpec,
-        MgLayout* layout,
-        MgDwfVersion* dwfVersion);
-
-    virtual MgByteReader* GeneratePlot(
-        MgdMap* map,
-        MgEnvelope* extents,
-        bool expandToFit,
-        MgPlotSpecification* plotSpec,
-        MgLayout* layout,
-        MgDwfVersion* dwfVersion);
-
-    virtual MgByteReader* GenerateMultiPlot(
-        MgMapPlotCollection* mapPlots,
-        MgDwfVersion* dwfVersion);
-
-private:
-	bool FeatureTypeStyleSupportsGeomType(MdfModel::FeatureTypeStyle* fts, INT32 geomType);
-	// --------------- END: DWF Rendering and miscellaneous APIs from MgMappingService -----------------------//
+    virtual MgdFeatureInformation* QueryFeatures(MgdMap* map,
+                                                 MgStringCollection* layerNames,
+                                                 MgGeometry* filterGeometry,
+                                                 INT32 selectionVariant,
+                                                 CREFSTRING featureFilter,
+                                                 INT32 maxFeatures,
+                                                 INT32 layerAttributeFilter);
 
 INTERNAL_API:
+
+    virtual MgByteReader* RenderDynamicOverlay(MgdMap* map,
+                                               MgdSelection* selection,
+                                               MgRenderingOptions* options,
+                                               MdfModel::ProfileRenderMapResult* pPRMResult);
 
     virtual MgByteReader* RenderMap(MgdMap* map,
                                     MgdSelection* selection,
@@ -170,7 +142,7 @@ INTERNAL_API:
                                     MgColor* backgroundColor,
                                     CREFSTRING format,
                                     bool bKeepSelection,
-                                    ProfileRenderMapResult* pPRMResult);
+                                    MdfModel::ProfileRenderMapResult* pPRMResult);
 
     virtual MgByteReader* RenderMap(MgdMap* map,
                                     MgdSelection* selection,
@@ -182,9 +154,17 @@ INTERNAL_API:
                                     CREFSTRING format,
                                     bool bKeepSelection,
                                     bool bClip,
-                                    ProfileRenderMapResult* pPRMResult = NULL);
+                                    MdfModel::ProfileRenderMapResult* pPRMResult = NULL);
 
 private:
+    MgdFeatureInformation* QueryFeaturesInternal(MgdMap* map,
+                                                 MgStringCollection* layerNames,
+                                                 MgGeometry* filterGeometry,
+                                                 INT32 selectionVariant,
+                                                 CREFSTRING featureFilter,
+                                                 INT32 maxFeatures,
+                                                 INT32 layerAttributeFilter);
+
     // used for tile generation
     MgByteReader* RenderTile(MgdMap* map,
                              MgLayerGroup* baseGroup,
@@ -197,6 +177,19 @@ private:
                              double mcsMinY,
                              double mcsMaxY,
                              CREFSTRING format);
+
+    // Internal help called by our PUBLISHED_API versions of RenderDynamicOverlay
+    MgByteReader* RenderDynamicOverlayInternal(MgdMap* map,
+                                               MgdSelection* selection,
+                                               MgRenderingOptions* options,
+                                               MdfModel::ProfileRenderMapResult* pPRMResult);
+
+    // Internal help called by our PUBLISHED_API versions of RenderMap
+    MgByteReader* RenderMapPublished(MgdMap* map,
+                                     MgdSelection* selection,
+                                     CREFSTRING format,
+                                     bool bKeepSelection,
+                                     bool bClip);
 
     // helper used by other methods
     MgByteReader* RenderMapInternal(MgdMap* map,
@@ -213,7 +206,7 @@ private:
                                     bool expandExtents,
                                     bool bKeepSelection,
                                     bool renderWatermark,
-                                    ProfileRenderMapResult* pPRMResult = NULL);
+                                    MdfModel::ProfileRenderMapResult* pPRMResult = NULL);
 	
     MgByteReader* RenderMapInternal(MgdMap* map,
                                     MgdSelection* selection,
@@ -228,16 +221,16 @@ private:
                                     bool expandExtents,
                                     MgRenderingOptions* options,
                                     bool renderWatermark,
-                                    ProfileRenderMapResult* pPRMResult = NULL);
+                                    MdfModel::ProfileRenderMapResult* pPRMResult = NULL);
 
-    void RenderForSelection(MgMap* map,
-                         MgStringCollection* layerNames,
-                         MgGeometry* geometry,
-                         INT32 selectionVariant,
-                         CREFSTRING featureFilter,
-                         INT32 maxFeatures,
-                         INT32 layerAttributeFilter,
-                         FeatureInfoRenderer* selRenderer);
+    void RenderForSelection(MgdMap* map,
+                            MgStringCollection* layerNames,
+                            MgGeometry* geometry,
+                            INT32 selectionVariant,
+                            CREFSTRING featureFilter,
+                            INT32 maxFeatures,
+                            INT32 layerAttributeFilter,
+                            FeatureInfoRenderer* selRenderer);
 
     SE_Renderer* CreateRenderer(int width,
                                 int height,
@@ -254,7 +247,7 @@ private:
                       bool expandExtents,
                       double scale,
                       CREFSTRING format,
-                      ProfileRenderMapResult* pPRMResult);
+                      MdfModel::ProfileRenderMapResult* pPRMResult);
 
     void RenderSelection(MgdMap* map,
                          MgdSelection* selection,
@@ -265,7 +258,7 @@ private:
                          MgCoordinateSystem* dstCs,
                          double scale,
                          INT32 behavior,
-                         ProfileRenderMapResult* pPRMResult);
+                         MdfModel::ProfileRenderMapResult* pPRMResult);
 
     void RenderWatermarks(MgdMap* map,
                           MgReadOnlyLayerCollection* layers,
@@ -275,19 +268,19 @@ private:
                           int drawHeight,
                           INT32 saveWidth,
                           INT32 saveHeight,
-                          ProfileRenderMapResult* pPRMResult);
+                          MdfModel::ProfileRenderMapResult* pPRMResult);
 
     MgByteReader* CreateImage(MgdMap* map,
                               Renderer* dr,
                               INT32 saveWidth,
                               INT32 saveHeight,
                               CREFSTRING format,
-                              ProfileRenderMapResult* pPRMResult);
+                              MdfModel::ProfileRenderMapResult* pPRMResult);
 
     // member data
     Ptr<MgFeatureService> m_svcFeature;
     Ptr<MgResourceService> m_svcResource;
-    Ptr<MgDrawingService> m_svcDrawing;
+    Ptr<MgdDrawingService> m_svcDrawing;
     Ptr<MgCoordinateSystemFactory> m_pCSFactory;
 
     // this will eventually be removed
@@ -300,19 +293,13 @@ private:
     INT32 m_maxRasterImageWidth;
     INT32 m_maxRasterImageHeight;
 
-	// Mapping Service configuration properties
-    INT32 m_rasterGridSizeForPlot;
-    INT32 m_minRasterGridSizeForPlot;
-    double m_rasterGridSizeOverrideRatioForPlot;
-
 protected:
-
     virtual INT32 GetClassId() { return m_cls_id; }
 
     virtual void Dispose() { delete this; }
 
 CLASS_ID:
-    static const INT32 m_cls_id = MapGuide_Desktop_RenderingService_RenderingService;
+    static const INT32 m_cls_id = MapGuide_Desktop_MappingService_MappingService;
 };
 
 #endif

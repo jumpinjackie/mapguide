@@ -338,7 +338,7 @@ RSMgFeatureReader* MgMappingUtil::ExecuteRasterQuery(MgFeatureService* svcFeatur
 // render the layers.
 void MgMappingUtil::StylizeLayers(MgResourceService* svcResource,
                                   MgFeatureService* svcFeature,
-                                  MgDrawingService* svcDrawing,
+                                  MgdDrawingService* svcDrawing,
                                   MgCoordinateSystemFactory* csFactory,
                                   MgdMap* map,
                                   MgReadOnlyLayerCollection* layers,
@@ -419,13 +419,13 @@ void MgMappingUtil::StylizeLayers(MgResourceService* svcResource,
             ldf.reset(MgLayerBase::GetLayerDefinition(svcResource, layerid));
 
             Ptr<MgLayerGroup> group = mapLayer->GetGroup();
-			/*
+			
             MgLogDetail logDetail(MgServiceType::MappingService, MgLogDetail::InternalTrace, L"MgMappingUtil.StylizeLayers", mgStackParams);
             logDetail.AddString(L"Map",map->GetName());
 
             logDetail.AddResourceIdentifier(L"LayerId",layerid);
             logDetail.Create();
-			*/
+			
             //base map layers are not editable
             bool bEditable = true;
             if (mapLayer->GetLayerType() == MgLayerType::BaseMap)
@@ -866,7 +866,8 @@ void MgMappingUtil::StylizeLayers(MgResourceService* svcResource,
 
             STRING message = exception->GetExceptionMessage(locale);
             STRING stackTrace = exception->GetStackTrace(locale);
-            //MG_LOG_EXCEPTION_ENTRY(message.c_str(), stackTrace.c_str());
+            
+            MG_LOG_EXCEPTION_ENTRY(message.c_str(), stackTrace.c_str());
 
 #if defined(_DEBUG) || defined(_DEBUG_PNG8)
             STRING details = mgException->GetDetails(locale);

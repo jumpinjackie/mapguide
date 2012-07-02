@@ -3,18 +3,18 @@
 #include "ProfileRenderMapResult.h"
 #include "SAX2Parser.h" 
 
-MgProfilingService::MgProfilingService()
+MgdProfilingService::MgdProfilingService()
 {
 	Ptr<MgServiceFactory> fact = new MgServiceFactory();
-	m_svcRendering = static_cast<MgRenderingService*>(fact->CreateService(MgServiceType::RenderingService));
+	m_svcRendering = static_cast<MgdRenderingService*>(fact->CreateService(MgServiceType::RenderingService));
 }
 
-MgProfilingService::~MgProfilingService()
+MgdProfilingService::~MgdProfilingService()
 {
 	SAFE_RELEASE(m_svcRendering);
 }
 
-MgByteReader* MgProfilingService::ProfileRenderDynamicOverlay(
+MgByteReader* MgdProfilingService::ProfileRenderDynamicOverlay(
         MgdMap* map,
         MgdSelection* selection,
         MgRenderingOptions* options)
@@ -24,7 +24,7 @@ MgByteReader* MgProfilingService::ProfileRenderDynamicOverlay(
     MG_TRY()
 
     if (NULL == map)
-        throw new MgNullArgumentException(L"MgServerProfilingService.ProfileRenderDynamicOverlay", __LINE__, __WFILE__, NULL, L"", NULL);
+        throw new MgNullArgumentException(L"MgdProfilingService::ProfileRenderDynamicOverlay", __LINE__, __WFILE__, NULL, L"", NULL);
 
     auto_ptr<ProfileRenderMapResult> pPRMResult; // a pointer points to Profile Render Map Result
     pPRMResult.reset(new ProfileRenderMapResult());
@@ -44,13 +44,13 @@ MgByteReader* MgProfilingService::ProfileRenderDynamicOverlay(
     string content = parser.SerializeToXML(pPRMResult.get(),version.get());
     ret = new MgByteReader(MgUtil::MultiByteToWideChar(content), MgMimeType::Xml);
 
-    MG_CATCH_AND_THROW(L"MgServerProfilingService.ProfileRenderDynamicOverlay")
+    MG_CATCH_AND_THROW(L"MgdProfilingService::ProfileRenderDynamicOverlay")
 
     return ret.Detach();
 }
 
 
-MgByteReader* MgProfilingService::ProfileRenderMap(
+MgByteReader* MgdProfilingService::ProfileRenderMap(
         MgdMap* map,
         MgdSelection* selection,
         MgCoordinate* center,
@@ -66,7 +66,7 @@ MgByteReader* MgProfilingService::ProfileRenderMap(
     MG_TRY()
 
     if (NULL == map)
-        throw new MgNullArgumentException(L"MgServerProfilingService.ProfileRenderMap", __LINE__, __WFILE__, NULL, L"", NULL);
+        throw new MgNullArgumentException(L"MgdProfilingService::ProfileRenderMap", __LINE__, __WFILE__, NULL, L"", NULL);
 
     auto_ptr<ProfileRenderMapResult> pPRMResult; // a pointer points to Profile Render Map Result
     pPRMResult.reset(new ProfileRenderMapResult());
@@ -86,7 +86,7 @@ MgByteReader* MgProfilingService::ProfileRenderMap(
     string content = parser.SerializeToXML(pPRMResult.get(),version.get());
     ret = new MgByteReader(MgUtil::MultiByteToWideChar(content), MgMimeType::Xml);
 
-    MG_CATCH_AND_THROW(L"MgServerProfilingService.ProfileRenderMap")
+    MG_CATCH_AND_THROW(L"MgdProfilingService::ProfileRenderMap")
 
     return ret.Detach();
 }

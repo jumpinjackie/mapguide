@@ -623,7 +623,7 @@ const wchar_t* MgdSqlDataReader::GetString(CREFSTRING propertyName, INT32& lengt
             throw;
     }
 
-    MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgServerDataReader.GetString");
+    MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgdSqlDataReader::GetString");
 
     return ((const wchar_t*)retVal);
 }

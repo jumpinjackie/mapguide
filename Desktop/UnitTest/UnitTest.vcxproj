@@ -87,6 +87,7 @@
     </Link>
     <PostBuildEvent>
       <Command>xcopy /S /Y ..\..\Common\bin\debug\*.* $(OutDir)
+xcopy /S /Y /I ..\..\Common\MapGuideCommon\Resources\*.* $(OutDir)Resources\
 xcopy /S /Y /I ..\..\Oem\ACE\ACE_wrappers\lib\ACEd.dll $(OutDir)
 xcopy /S /Y /I ..\..\Oem\dbxml\bin\debug\xerces-c_3_1mgD.dll $(OutDir)
 xcopy /S /Y /I ..\..\Oem\geos-2.2.0\VisualStudio\Debug\GEOSd.dll $(OutDir)
@@ -103,7 +104,6 @@ xcopy /S /Y /I ..\..\UnitTest\TestData\MappingService\*.* $(OutDir)..\UnitTestFi
 xcopy /S /Y /I ..\..\UnitTest\TestData\ResourceService\*.* $(OutDir)..\UnitTestFiles\
 xcopy /S /Y /I ..\..\UnitTest\TestData\Symbology\*.* $(OutDir)..\UnitTestFiles\
 xcopy /S /Y /I ..\..\UnitTest\TestData\TileService\*.* $(OutDir)..\UnitTestFiles\
-xcopy /S /Y /I ..\TestProviderList\providers.xml $(OutDir)Fdo\
 xcopy /S /Y /I ..\DesktopTestData\*.* $(OutDir)..\UnitTestFiles\
 copy /Y  $(OutDir)..\UnitTestFiles\UT_Parcels.sdf copy /Y  $(OutDir)..\UnitTestFiles\UT_Parcels_Writeable.sdf
 xcopy /S /Y /I ..\..\Oem\CsMap\Dictionaries\*.csd $(OutDir)Dictionaries\
@@ -135,6 +135,7 @@ xcopy /S /Y /I ..\..\Oem\CsMap\Dictionaries\*.csv $(OutDir)Dictionaries\
     </Link>
     <PostBuildEvent>
       <Command>xcopy /S /Y ..\..\Common\bin\debug\*.* $(OutDir)
+xcopy /S /Y /I ..\..\Common\MapGuideCommon\Resources\*.* $(OutDir)Resources\
 xcopy /S /Y /I ..\..\Oem\ACE\ACE_wrappers\lib\ACEd.dll $(OutDir)
 xcopy /S /Y /I ..\..\Oem\dbxml\bin\debug\xerces-c_3_1mgD.dll $(OutDir)
 xcopy /S /Y /I ..\..\Oem\geos-2.2.0\VisualStudio\Debug\GEOSd.dll $(OutDir)
@@ -151,7 +152,6 @@ xcopy /S /Y /I ..\..\UnitTest\TestData\MappingService\*.* $(OutDir)..\UnitTestFi
 xcopy /S /Y /I ..\..\UnitTest\TestData\ResourceService\*.* $(OutDir)..\UnitTestFiles\
 xcopy /S /Y /I ..\..\UnitTest\TestData\Symbology\*.* $(OutDir)..\UnitTestFiles\
 xcopy /S /Y /I ..\..\UnitTest\TestData\TileService\*.* $(OutDir)..\UnitTestFiles\
-xcopy /S /Y /I ..\TestProviderList\providers.xml $(OutDir)Fdo\
 xcopy /S /Y /I ..\DesktopTestData\*.* $(OutDir)..\UnitTestFiles\
 copy /Y  $(OutDir)..\UnitTestFiles\UT_Parcels.sdf copy /Y  $(OutDir)..\UnitTestFiles\UT_Parcels_Writeable.sdf
 xcopy /S /Y /I ..\..\Oem\CsMap\Dictionaries\*.csd $(OutDir)Dictionaries\
@@ -183,6 +183,7 @@ xcopy /S /Y /I ..\..\Oem\CsMap\Dictionaries\*.csv $(OutDir)Dictionaries\
     </Link>
     <PostBuildEvent>
       <Command>xcopy /S /Y ..\..\Common\bin\release\*.* $(OutDir)
+xcopy /S /Y /I ..\..\Common\MapGuideCommon\Resources\*.* $(OutDir)Resources\
 xcopy /S /Y /I ..\..\Oem\ACE\ACE_wrappers\lib\ACE.dll $(OutDir)
 xcopy /S /Y /I ..\..\Oem\dbxml\bin\xerces-c_3_1mg.dll $(OutDir)
 xcopy /S /Y /I ..\..\Oem\geos-2.2.0\VisualStudio\Release\GEOS.dll $(OutDir)
@@ -199,7 +200,6 @@ xcopy /S /Y /I ..\..\UnitTest\TestData\MappingService\*.* $(OutDir)..\UnitTestFi
 xcopy /S /Y /I ..\..\UnitTest\TestData\ResourceService\*.* $(OutDir)..\UnitTestFiles\
 xcopy /S /Y /I ..\..\UnitTest\TestData\Symbology\*.* $(OutDir)..\UnitTestFiles\
 xcopy /S /Y /I ..\..\UnitTest\TestData\TileService\*.* $(OutDir)..\UnitTestFiles\
-xcopy /S /Y /I ..\TestProviderList\providers.xml $(OutDir)Fdo\
 xcopy /S /Y /I ..\DesktopTestData\*.* $(OutDir)..\UnitTestFiles\
 copy /Y  $(OutDir)..\UnitTestFiles\UT_Parcels.sdf copy /Y  $(OutDir)..\UnitTestFiles\UT_Parcels_Writeable.sdf
 xcopy /S /Y /I ..\..\Oem\CsMap\Dictionaries\*.csd $(OutDir)Dictionaries\
@@ -235,6 +235,7 @@ xcopy /Y /I ..\..\Oem\CsMap\Dictionaries\*.txt $(OutDir)Dictionaries\
     </Link>
     <PostBuildEvent>
       <Command>xcopy /S /Y ..\..\Common\bin\release64\*.* $(OutDir)
+xcopy /S /Y /I ..\..\Common\MapGuideCommon\Resources\*.* $(OutDir)Resources\
 xcopy /S /Y /I ..\..\Oem\ACE\ACE_wrappers\lib64\ACE.dll $(OutDir)
 xcopy /S /Y /I ..\..\Oem\dbxml\bin64\xerces-c_3_1mg.dll $(OutDir)
 xcopy /S /Y /I ..\..\Oem\geos-2.2.0\VisualStudio\Release64\GEOS.dll $(OutDir)
@@ -251,7 +252,6 @@ xcopy /S /Y /I ..\..\UnitTest\TestData\MappingService\*.* $(OutDir)..\UnitTestFi
 xcopy /S /Y /I ..\..\UnitTest\TestData\ResourceService\*.* $(OutDir)..\UnitTestFiles\
 xcopy /S /Y /I ..\..\UnitTest\TestData\Symbology\*.* $(OutDir)..\UnitTestFiles\
 xcopy /S /Y /I ..\..\UnitTest\TestData\TileService\*.* $(OutDir)..\UnitTestFiles\
-xcopy /S /Y /I ..\TestProviderList\providers.xml $(OutDir)Fdo\
 xcopy /S /Y /I ..\DesktopTestData\*.* $(OutDir)..\UnitTestFiles\
 copy /Y  $(OutDir)..\UnitTestFiles\UT_Parcels.sdf copy /Y  $(OutDir)..\UnitTestFiles\UT_Parcels_Writeable.sdf
 xcopy /S /Y /I ..\..\Oem\CsMap\Dictionaries\*.csd $(OutDir)Dictionaries\
@@ -271,12 +271,9 @@ xcopy /Y /I ..\..\Oem\CsMap\Dictionaries\*.txt $(OutDir)Dictionaries\
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
     </ClCompile>
-    <ClCompile Include="TestMappingService.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
-    </ClCompile>
+    <ClCompile Include="TestLogManager.cpp" />
+    <ClCompile Include="TestLogManagerThread.cpp" />
+    <ClCompile Include="TestMappingService.cpp" />
     <ClCompile Include="TestPerformance.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
@@ -292,6 +289,8 @@ xcopy /Y /I ..\..\Oem\CsMap\Dictionaries\*.txt $(OutDir)Dictionaries\
     <ClInclude Include="CppUnitExtensions.h" />
     <ClInclude Include="TestFeatureService.h" />
     <ClInclude Include="TestKmlService.h" />
+    <ClInclude Include="TestLogManager.h" />
+    <ClInclude Include="TestLogManagerThread.h" />
     <ClInclude Include="TestMappingService.h" />
     <ClInclude Include="TestPerformance.h" />
     <ClInclude Include="TestProfilingService.h" />

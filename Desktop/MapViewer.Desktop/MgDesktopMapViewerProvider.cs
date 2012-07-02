@@ -9,7 +9,8 @@ namespace OSGeo.MapGuide.Viewer.Desktop
     public class MgDesktopMapViewerProvider : MgMapViewerProvider
     {
         private MgdMap _implMap;
-        private MgRenderingService _renderSvc;
+        private MgdRenderingService _renderSvc;
+        private MgdMappingService _mappingSvc;
         private MgServiceFactory _fact;
 
         public MgDesktopMapViewerProvider(MgdMap map) : base(map) 
@@ -25,7 +26,8 @@ namespace OSGeo.MapGuide.Viewer.Desktop
         protected override void SubInit()
         {
             _fact = new MgServiceFactory();
-            _renderSvc = (MgRenderingService)_fact.CreateService(MgServiceType.RenderingService);
+            _renderSvc = (MgdRenderingService)_fact.CreateService(MgServiceType.RenderingService);
+            _mappingSvc = (MgdMappingService)_fact.CreateService(MgServiceType.MappingService);
         }
         
         private MgRenderingOptions _lastRenderOpts;
@@ -101,7 +103,7 @@ namespace OSGeo.MapGuide.Viewer.Desktop
 
         public override MgByteReader GenerateLegendImage(MgResourceIdentifier layerDefinition, double viewScale, int width, int height, string format, int geomType, int themeCategory)
         {
-            return _renderSvc.GenerateLegendImage(layerDefinition, viewScale, width, height, format, geomType, themeCategory);
+            return _mappingSvc.GenerateLegendImage(layerDefinition, viewScale, width, height, format, geomType, themeCategory);
         }
 
         public override void SetGroupExpandInLegend(MgLayerGroup group, bool bExpanded)

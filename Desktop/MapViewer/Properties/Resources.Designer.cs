@@ -80,8 +80,7 @@ namespace OSGeo.MapGuide.Viewer.Properties {
         ///        &lt;AreaRule&gt;
         ///          &lt;LegendLabel/&gt;
         ///          &lt;AreaSymbolization2D&gt;
-        ///            &lt;Fill&gt;
-        /// [rest of string was truncated]&quot;;.
+        ///            &lt;Fill&gt;        /// [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string AreaLayerDef {
             get {
@@ -122,6 +121,15 @@ namespace OSGeo.MapGuide.Viewer.Properties {
             }
         }
         
+        /// <summary>
+        ///   Looks up a localized string similar to Click to finish.
+        /// </summary>
+        internal static string CircleDigitizationPrompt {
+            get {
+                return ResourceManager.GetString("CircleDigitizationPrompt", resourceCulture);
+            }
+        }
+        
         internal static System.Drawing.Bitmap control {
             get {
                 object obj = ResourceManager.GetObject("control", resourceCulture);
@@ -142,6 +150,24 @@ namespace OSGeo.MapGuide.Viewer.Properties {
         internal static string CountFormat {
             get {
                 return ResourceManager.GetString("CountFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Name: {1}{0}Feature Source: {2}{0}Feature Class: {3}.
+        /// </summary>
+        internal static string DefaultLayerTooltip {
+            get {
+                return ResourceManager.GetString("DefaultLayerTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Name: {1}{0}Feature Source: {2}.
+        /// </summary>
+        internal static string DrawingLayerTooltip {
+            get {
+                return ResourceManager.GetString("DrawingLayerTooltip", resourceCulture);
             }
         }
         
@@ -198,6 +224,15 @@ namespace OSGeo.MapGuide.Viewer.Properties {
             get {
                 object obj = ResourceManager.GetObject("file_save", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Press ESC to cancel.
+        /// </summary>
+        internal static string GeneralDigitizationInstructions {
+            get {
+                return ResourceManager.GetString("GeneralDigitizationInstructions", resourceCulture);
             }
         }
         
@@ -390,6 +425,24 @@ namespace OSGeo.MapGuide.Viewer.Properties {
             }
         }
         
+        /// <summary>
+        ///   Looks up a localized string similar to Click to finish.
+        /// </summary>
+        internal static string LineDigitizationPrompt {
+            get {
+                return ResourceManager.GetString("LineDigitizationPrompt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Click again to add a new vertex.\nDouble-click to finish.
+        /// </summary>
+        internal static string LineStringDigitizationPrompt {
+            get {
+                return ResourceManager.GetString("LineStringDigitizationPrompt", resourceCulture);
+            }
+        }
+        
         internal static System.Drawing.Bitmap load_package {
             get {
                 object obj = ResourceManager.GetObject("load_package", resourceCulture);
@@ -411,6 +464,15 @@ namespace OSGeo.MapGuide.Viewer.Properties {
             }
         }
         
+        /// <summary>
+        ///   Looks up a localized string similar to Press Ctrl-Z to undo last point.\nPress ESC to cancel.
+        /// </summary>
+        internal static string MultiSegmentDigitzationInstructions {
+            get {
+                return ResourceManager.GetString("MultiSegmentDigitzationInstructions", resourceCulture);
+            }
+        }
+        
         internal static System.Drawing.Bitmap options {
             get {
                 object obj = ResourceManager.GetObject("options", resourceCulture);
@@ -422,6 +484,24 @@ namespace OSGeo.MapGuide.Viewer.Properties {
             get {
                 object obj = ResourceManager.GetObject("overview_map", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Click to finish.
+        /// </summary>
+        internal static string PointDigitizationPrompt {
+            get {
+                return ResourceManager.GetString("PointDigitizationPrompt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Click again to add a new vertex.\nDouble-click to finish.
+        /// </summary>
+        internal static string PolygonDigitizationPrompt {
+            get {
+                return ResourceManager.GetString("PolygonDigitizationPrompt", resourceCulture);
             }
         }
         
@@ -443,6 +523,15 @@ namespace OSGeo.MapGuide.Viewer.Properties {
             get {
                 object obj = ResourceManager.GetObject("print", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Click to finish.
+        /// </summary>
+        internal static string RectangleDigitizationPrompt {
+            get {
+                return ResourceManager.GetString("RectangleDigitizationPrompt", resourceCulture);
             }
         }
         
@@ -582,6 +671,15 @@ namespace OSGeo.MapGuide.Viewer.Properties {
         internal static string TextEnableTooltips {
             get {
                 return ResourceManager.GetString("TextEnableTooltips", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Exit.
+        /// </summary>
+        internal static string TextExitApplication {
+            get {
+                return ResourceManager.GetString("TextExitApplication", resourceCulture);
             }
         }
         
@@ -730,6 +828,15 @@ namespace OSGeo.MapGuide.Viewer.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Zoom Next.
+        /// </summary>
+        internal static string TextZoomNext {
+            get {
+                return ResourceManager.GetString("TextZoomNext", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Zoom Out.
         /// </summary>
         internal static string TextZoomOut {
@@ -739,11 +846,29 @@ namespace OSGeo.MapGuide.Viewer.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Zoom Previous.
+        /// </summary>
+        internal static string TextZoomPrevious {
+            get {
+                return ResourceManager.GetString("TextZoomPrevious", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Zoom to Selection.
         /// </summary>
         internal static string TextZoomToSelection {
             get {
                 return ResourceManager.GetString("TextZoomToSelection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Name: {1}{0}Feature Source: {2}{0}Feature Class: {3}{0}Number of Rules: {4}.
+        /// </summary>
+        internal static string ThemedLayerTooltip {
+            get {
+                return ResourceManager.GetString("ThemedLayerTooltip", resourceCulture);
             }
         }
         

@@ -57,6 +57,8 @@ int main(int argc, char** argv)
     CppUnit::TextUi::TestRunner runner;
 
     // Add all of the tests
+    //NOTE: Leave trace log off, otherwise one of the tests here will fail
+    runner.addTest(CppUnit::TestFactoryRegistry::getRegistry("TestLogManager").makeTest());
 #ifdef _DEBUG
     ACE_DEBUG((LM_INFO, ACE_TEXT(">>>>> Running all unit tests - Excluding Performance and CoordinateSystem. <<<<<\n\n")));
 #else
@@ -66,13 +68,13 @@ int main(int argc, char** argv)
     runner.addTest(CppUnit::TestFactoryRegistry::getRegistry("TestResourceService").makeTest());
     runner.addTest(CppUnit::TestFactoryRegistry::getRegistry("TestRenderingService").makeTest());
     runner.addTest(CppUnit::TestFactoryRegistry::getRegistry("TestFeatureService").makeTest());
+    runner.addTest(CppUnit::TestFactoryRegistry::getRegistry("TestMappingService").makeTest());
 	runner.addTest(CppUnit::TestFactoryRegistry::getRegistry("TestProfilingService").makeTest());
     
     //This causes access violations in Visual Leak Detector when run in debug mode. Only uncommment
     //to verify functionality, but don't use VLD for memory leak detection. Seek an alternate tool/library
     //in this case.
     runner.addTest(CppUnit::TestFactoryRegistry::getRegistry("TestTileService").makeTest());
-    
 
     STRING fileName = L"UnitTestResults.xml";
     if (fileName.size() > 0)

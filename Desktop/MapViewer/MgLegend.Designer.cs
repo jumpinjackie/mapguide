@@ -44,6 +44,7 @@
             this.trvLegend.Name = "trvLegend";
             this.trvLegend.SelectedImageIndex = 0;
             this.trvLegend.ShowLines = false;
+            this.trvLegend.ShowNodeToolTips = true;
             this.trvLegend.Size = new System.Drawing.Size(150, 150);
             this.trvLegend.TabIndex = 0;
             this.trvLegend.AfterCheck += new System.Windows.Forms.TreeViewEventHandler(this.trvLegend_AfterCheck);
