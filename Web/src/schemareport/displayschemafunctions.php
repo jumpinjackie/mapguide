@@ -21,6 +21,186 @@
 
 <?php
 
+class MBR 
+{
+    public $coordinateSystem;
+    public $extentGeometry;
+}
+
+function GetFeatureClassMBR($featuresId, $className, $geomProp, $featureSrvc)
+{
+    $extentGeometryAgg = null;
+    $extentGeometrySc = null;
+    $extentByteReader = null;
+    
+    $mbr = new MBR();
+    $geomName = $geomProp->GetName();
+    $spatialContext = $geomProp->GetSpatialContextAssociation();
+
+    // Finds the coordinate system
+    $agfReaderWriter = new MgAgfReaderWriter();
+    $spatialcontextReader = $featureSrvc->GetSpatialContexts($featuresId, false);
+    while ($spatialcontextReader->ReadNext())
+    {
+        if ($spatialcontextReader->GetName() == $spatialContext)
+        {
+            $mbr->coordinateSystem = $spatialcontextReader->GetCoordinateSystemWkt();
+
+            // Finds the extent
+            $extentByteReader = $spatialcontextReader->GetExtent();
+            break;
+        }
+    }
+    $spatialcontextReader->Close();
+    if ($extentByteReader != null)
+    {
+        // Get the extent geometry from the spatial context
+        $extentGeometrySc = $agfReaderWriter->Read($extentByteReader);
+    }
+
+    // Try to get the extents using the selectaggregate as sometimes the spatial context
+    // information is not set
+    $aggregateOptions = new MgFeatureAggregateOptions();
+    $featureProp = 'SPATIALEXTENTS("' . $geomName . '")';
+    $aggregateOptions->AddComputedProperty('EXTENTS', $featureProp);
+
+    try
+    {
+        $dataReader = $featureSrvc->SelectAggregate($featuresId, $className, $aggregateOptions);
+        if($dataReader->ReadNext())
+        {
+            // Get the extents information
+            $byteReader = $dataReader->GetGeometry('EXTENTS');
+            $extentGeometryAgg = $agfReaderWriter->Read($byteReader);
+        }
+        $dataReader->Close();
+    }
+    catch (MgException $e)
+    {
+        if ($extentGeometryAgg == null) 
+        {
+            //We do have one last hope. EXTENT() is an internal MapGuide custom function that's universally supported
+            //as it operates against an underlying select query result. This raw-spins the reader server-side so there
+            //is no server -> web tier transmission overhead involved.
+            try
+            {
+                $aggregateOptions = new MgFeatureAggregateOptions();
+                $aggregateOptions->AddComputedProperty("COMP_EXTENT", "EXTENT(".$geomName.")");
+                
+                $dataReader = $featureSrvc->SelectAggregate($featuresId, $className, $aggregateOptions);
+                if($dataReader->ReadNext())
+                {
+                    // Get the extents information
+                    $byteReader = $dataReader->GetGeometry('COMP_EXTENT');
+                    $extentGeometryAgg = $agfReaderWriter->Read($byteReader);
+                }
+                $dataReader->Close();
+            }
+            catch (MgException $e2) 
+            {
+                
+            }
+        }
+    }
+    
+    $mbr->extentGeometry = null;
+    // Prefer SpatialExtents() of EXTENT() result over spatial context extent
+    if ($extentGeometryAgg != null)
+        $mbr->extentGeometry = $extentGeometryAgg;
+    if ($mbr->extentGeometry == null) { //Stil null? Now try spatial context
+        if ($extentGeometrySc != null)
+            $mbr->extentGeometry = $extentGeometrySc;
+    }
+    return $mbr;
+}
+
+function GetFeatureCount($featuresId, $schemaName, $className, $resourceSrvc, $featureSrvc)
+{
+    //Try the SelectAggregate shortcut. This is faster than raw spinning a feature reader
+    //
+    //NOTE: If MapGuide supported scrollable readers like FDO, we'd have also tried 
+    //that as well.
+    $featureName = $schemaName . ":" . $className;
+    $canCount = false;
+    $gotCount = false;
+    $fsBr = $resourceSrvc->GetResourceContent($featuresId);
+    $fsXml = $fsBr->ToString();
+    $fsDoc = DOMDocument::loadXML($fsXml);
+    $providerNodeList = $fsDoc->getElementsByTagName("Provider");
+    $providerName = $providerNodeList->item(0)->nodeValue;
+    $capsBr = $featureSrvc->GetCapabilities($providerName);
+    $capsXml = $capsBr->ToString();
+    //This should be good enough to find out if Count() is supported
+    $canCount = !(strstr($capsXml, "<Name>Count</Name>") === false);
+    
+    if ($canCount) {
+        $clsDef = $featureSrvc->GetClassDefinition($featuresId, $schemaName, $className);
+        $idProps = $clsDef->GetIdentityProperties();
+        if ($idProps->GetCount() > 0)
+        {
+            $pd = $idProps->GetItem(0);
+            $expr = "COUNT(" .$pd->GetName(). ")";
+            $query = new MgFeatureAggregateOptions();
+            $query->AddComputedProperty("TotalCount", $expr);
+            try 
+            {
+                $dataReader = $featureSrvc->SelectAggregate($featuresId, $featureName, $query);
+                if ($dataReader->ReadNext())
+                {
+                    // When there is no data, the property will be null.
+                    if($dataReader->IsNull("TotalCount"))
+                    {
+                        $totalEntries = 0;
+                        $gotCount = true;
+                    }
+                    else
+                    {
+                        $ptype = $dataReader->GetPropertyType("TotalCount");
+                        switch ($ptype)
+                        {
+                            case MgPropertyType::Int32:
+                                $totalEntries = $dataReader->GetInt32("TotalCount");
+                                $gotCount = true;
+                                break;
+                            case MgPropertyType::Int64:
+                                $totalEntries = $dataReader->GetInt64("TotalCount");
+                                $gotCount = true;
+                                break;
+                        }
+                        $dataReader->Close();
+                    }
+                }
+            }
+            catch (MgException $ex) //Some providers like OGR can lie
+            {
+                $gotCount = false;
+            }
+        }
+    }
+    
+    if ($gotCount == false)
+    {
+        $featureReader = null;
+        try 
+        {
+            $featureReader = $featureSrvc->SelectFeatures($featuresId, $featureName, null);
+        }
+        catch (MgException $ex)
+        {
+            $totalEntries = -1; //Can't Count() or raw spin? Oh dear!
+        }
+        
+        if ($featureReader != null)
+        {
+            while($featureReader->ReadNext())
+                $totalEntries++;
+            $featureReader->Close();
+        }
+    }
+    
+    return $totalEntries;
+}
+
 function GetPropertyName($featureReader, $property, $propertyType)
 {
     if($featureReader->IsNull($property))

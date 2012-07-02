@@ -55,11 +55,11 @@ rem set the appropriate environment variables before
 rem running
 rem ==================================================
 
-IF "%JAVA_HOME%" == "" SET JAVA_HOME=C:\Program Files\Java\jdk1.6.0_21
+IF "%JAVA_HOME%" == "" SET JAVA_HOME=C:\Program Files\Java\jdk1.6.0_31
 IF "%DOXYGEN%" == "" SET DOXYGEN=%MG_DEV%\BuildTools\doxygen
-IF "%GNUWIN32%" == "" SET GNUWIN32=C:\Program Files\GnuWin32\bin
+IF "%GNUWIN32%" == "" SET GNUWIN32=C:\Program Files (x86)\GnuWin32\bin
 IF "%SEVENZ%" == "" SET SEVENZ=%MG_DEV%\BuildTools\WebTools\7-Zip
-IF "%ANT_HOME%" == "" SET ANT_HOME=%MG_DEV%\BuildTools\apache-ant-1.7.1
+IF "%ANT_HOME%" == "" SET ANT_HOME=C:\apache-ant-1.8.3
 
 SET PATH=%PATH%;%DOXYGEN%;%GNUWIN32%;%SEVENZ%;%ANT_HOME%\bin
 rem ==================================================
