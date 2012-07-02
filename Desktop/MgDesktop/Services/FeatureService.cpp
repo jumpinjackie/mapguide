@@ -5630,8 +5630,8 @@ MgStringCollection* MgdFeatureService::GetClasses(MgResourceIdentifier* resource
     MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
 
 	CHECK_FEATURE_SOURCE_ARGUMENT(resource, L"MgdFeatureService::GetClasses");
-	if (schemaName.empty())
-		throw new MgInvalidArgumentException(L"MgdFeatureService::GetClasses", __LINE__, __WFILE__, NULL, L"", NULL);
+	//if (schemaName.empty())
+	//	throw new MgInvalidArgumentException(L"MgdFeatureService::GetClasses", __LINE__, __WFILE__, NULL, L"", NULL);
 
     Ptr<MgFeatureConnection> connWrap = new MgFeatureConnection(resource);
 	FdoPtr<FdoIConnection> conn = connWrap->GetConnection();
@@ -5639,7 +5639,8 @@ MgStringCollection* MgdFeatureService::GetClasses(MgResourceIdentifier* resource
 	if (SupportsPartialSchemaDiscovery(conn))
 	{
 		FdoPtr<FdoIGetClassNames> fetch = (FdoIGetClassNames*)conn->CreateCommand(FdoCommandType_GetClassNames);
-		fetch->SetSchemaName(schemaName.c_str());
+        if (!schemaName.empty())
+		    fetch->SetSchemaName(schemaName.c_str());
 		FdoPtr<FdoStringCollection> names = fetch->Execute();
 
 		classNames = MgFeatureUtil::FdoToMgStringCollection(names, false);
@@ -5654,7 +5655,7 @@ MgStringCollection* MgdFeatureService::GetClasses(MgResourceIdentifier* resource
 		{
 			FdoPtr<FdoFeatureSchema> schema = schemas->GetItem(i);
 			STRING name = schema->GetName();
-			if (name != schemaName)
+			if (!schemaName.empty() && name != schemaName)
 				continue;
 
 			FdoPtr<FdoClassCollection> classes = schema->GetClasses();
