@@ -788,7 +788,7 @@ void MgFileUtil::DeleteFile(CREFSTRING pathname, bool strict)
 
     int errCode = ACE_OS::unlink(MG_WCHAR_TO_TCHAR(pathname));
 
-    if (0 != errCode)
+    if (0 != errCode && strict)
     {
         errCode = errno; // This is not thread safe - requires guard
         MgStringCollection arguments;
