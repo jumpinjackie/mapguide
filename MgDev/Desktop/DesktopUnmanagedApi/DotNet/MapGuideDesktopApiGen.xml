@@ -95,12 +95,19 @@ typedef wchar_t* STRINGPARAM;
     <Header path="../../MgDesktop/Exception/DwfSectionResourceNotFoundException.h" />
     <Header path="../../MgDesktop/Exception/InvalidDwfPackageException.h" />
     <Header path="../../MgDesktop/Exception/InvalidDwfSectionException.h" />
+    <Header path="../../MgDesktop/Exception/InvalidFeatureSourceException.h" />
+    <Header path="../../MgDesktop/Exception/InvalidLogEntryException.h" />
+    <Header path="../../MgDesktop/Exception/InvalidPrintLayoutFontSizeUnitsException.h" />
+    <Header path="../../MgDesktop/Exception/InvalidPrintLayoutPositionUnitsException.h" />
+    <Header path="../../MgDesktop/Exception/InvalidPrintLayoutSizeUnitsException.h" />
     <Header path="../../MgDesktop/Exception/ParameterNotFoundException.h" />
+    <Header path="../../MgDesktop/Exception/StylizeLayerFailedException.h" />
 
     <Header path="../../MgDesktop/Services/DataReader.h" />
     <Header path="../../MgDesktop/Services/DrawingService.h" />
     <Header path="../../MgDesktop/Services/FeatureReader.h" />
     <Header path="../../MgDesktop/Services/FeatureService.h" />
+    <Header path="../../MgDesktop/Services/MappingService.h" />
     <Header path="../../MgDesktop/Services/ProfilingService.h" />
     <Header path="../../MgDesktop/Services/RenderingService.h" />
     <Header path="../../MgDesktop/Services/ResourceService.h" />
@@ -115,6 +122,7 @@ typedef wchar_t* STRINGPARAM;
     <Header path="../../MgDesktop/Services/Rendering/CustomLogoInfo.h" />
     <Header path="../../MgDesktop/Services/Rendering/CustomTextInfo.h" />
     <Header path="../../MgDesktop/Services/Rendering/DwfVersion.h" />
+    <Header path="../../MgDesktop/Services/Rendering/FeatureInformation.h" />
     <Header path="../../MgDesktop/Services/Rendering/Layout.h" />
     <Header path="../../MgDesktop/Services/Rendering/MapPlot.h" />
     <Header path="../../MgDesktop/Services/Rendering/DwfVersion.h" />

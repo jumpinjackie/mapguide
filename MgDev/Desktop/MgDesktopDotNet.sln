@@ -11,6 +11,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MapViewer.Desktop", "MapVie
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MapViewerTest", "MapViewerTest\MapViewerTest.csproj", "{E2FC8B99-0638-4C01-86C4-1B625D966981}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MgAppLayout", "MgAppLayout\MgAppLayout.csproj", "{F7FCC5EB-FB46-41FE-AC4B-430DF52C4066}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SampleExtension", "SampleExtension\SampleExtension.csproj", "{B97E7D94-E693-4081-8229-2FE87E5502E4}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -55,6 +59,22 @@ Global
 		{E2FC8B99-0638-4C01-86C4-1B625D966981}.Release|x64.Build.0 = Release|x64
 		{E2FC8B99-0638-4C01-86C4-1B625D966981}.Release|x86.ActiveCfg = Release|x86
 		{E2FC8B99-0638-4C01-86C4-1B625D966981}.Release|x86.Build.0 = Release|x86
+		{F7FCC5EB-FB46-41FE-AC4B-430DF52C4066}.Debug|x64.ActiveCfg = Debug|x64
+		{F7FCC5EB-FB46-41FE-AC4B-430DF52C4066}.Debug|x64.Build.0 = Debug|x64
+		{F7FCC5EB-FB46-41FE-AC4B-430DF52C4066}.Debug|x86.ActiveCfg = Debug|x86
+		{F7FCC5EB-FB46-41FE-AC4B-430DF52C4066}.Debug|x86.Build.0 = Debug|x86
+		{F7FCC5EB-FB46-41FE-AC4B-430DF52C4066}.Release|x64.ActiveCfg = Release|x64
+		{F7FCC5EB-FB46-41FE-AC4B-430DF52C4066}.Release|x64.Build.0 = Release|x64
+		{F7FCC5EB-FB46-41FE-AC4B-430DF52C4066}.Release|x86.ActiveCfg = Release|x86
+		{F7FCC5EB-FB46-41FE-AC4B-430DF52C4066}.Release|x86.Build.0 = Release|x86
+		{B97E7D94-E693-4081-8229-2FE87E5502E4}.Debug|x64.ActiveCfg = Debug|x64
+		{B97E7D94-E693-4081-8229-2FE87E5502E4}.Debug|x64.Build.0 = Debug|x64
+		{B97E7D94-E693-4081-8229-2FE87E5502E4}.Debug|x86.ActiveCfg = Debug|x86
+		{B97E7D94-E693-4081-8229-2FE87E5502E4}.Debug|x86.Build.0 = Debug|x86
+		{B97E7D94-E693-4081-8229-2FE87E5502E4}.Release|x64.ActiveCfg = Release|x64
+		{B97E7D94-E693-4081-8229-2FE87E5502E4}.Release|x64.Build.0 = Release|x64
+		{B97E7D94-E693-4081-8229-2FE87E5502E4}.Release|x86.ActiveCfg = Release|x86
+		{B97E7D94-E693-4081-8229-2FE87E5502E4}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

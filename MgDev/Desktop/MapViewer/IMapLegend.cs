@@ -37,6 +37,17 @@ namespace OSGeo.MapGuide.Viewer
         ContextMenuStrip LayerContextMenu { get; set; }
 
         /// <summary>
+        /// Gets or sets the theme compression limit (the number of rules a theme must exceed in order to be
+        /// compressed)
+        /// </summary>
+        int ThemeCompressionLimit { get; set; }
+
+        /// <summary>
+        /// Gets whether to show tooltips over nodes in the legend control
+        /// </summary>
+        bool ShowTooltips { get; set; }
+
+        /// <summary>
         /// Gets the selected layer
         /// </summary>
         /// <returns></returns>

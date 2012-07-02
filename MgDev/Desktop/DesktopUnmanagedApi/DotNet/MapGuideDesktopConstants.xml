@@ -77,7 +77,6 @@ Foundation/Geometry/PlatformBase swig interfaces
     <Class name="MgUnitType" />
     <Class name="MgPageUnitsType" />
     <Class name="MgImageFormats" />
-    <Class name="MgConfigProperties" />
 </Classes>
 
 <!--
@@ -88,7 +87,6 @@ Foundation/Geometry/PlatformBase swig interfaces
     <Header path="../../MgDesktop/Services/ImageFormats.h" />
     <Header path="../../MgDesktop/Services/Rendering/MapPlotInstruction.h" />
     <Header path="../../MgDesktop/Services/Rendering/UnitType.h" />
-    <Header path="../../MgDesktop/System/ConfigProperties.h" />
 </Headers>
 
 </Parameters>

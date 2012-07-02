@@ -84,6 +84,80 @@ namespace OSGeo.MapGuide.Viewer
     }
 
     [ToolboxItem(true)]
+    public class MgZoomNextComponent : MgComponent
+    {
+        public MgZoomNextComponent()
+        {
+            this.Label = this.ToolTipText = Properties.Resources.TextZoomNext;
+            this.Icon = Properties.Resources.view_forward;
+        }
+
+        private void Evaluate()
+        {
+            var history = this.Viewer.ViewHistory;
+            var enabled = (history.Count > 1 && this.Viewer.ViewHistoryIndex < history.Count - 1);
+            foreach (var l in _listeners)
+                l.SetEnabled(enabled);
+        }
+
+        protected override void OnMapRefreshed(object sender, EventArgs e)
+        {
+            Evaluate();
+        }
+
+        protected override void OnViewerPropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == "ViewHistoryIndex" || e.PropertyName == "ViewHistory")
+            {
+                Evaluate();
+            }
+            base.OnViewerPropertyChanged(sender, e);
+        }
+
+        public override void Invoke()
+        {
+            this.Viewer.NextView();
+        }
+    }
+
+    [ToolboxItem(true)]
+    public class MgZoomPreviousComponent : MgComponent
+    {
+        public MgZoomPreviousComponent()
+        {
+            this.Label = this.ToolTipText = Properties.Resources.TextZoomPrevious;
+            this.Icon = Properties.Resources.view_back;
+        }
+
+        private void Evaluate()
+        {
+            var history = this.Viewer.ViewHistory;
+            var enabled = history.Count > 1;
+            foreach (var l in _listeners)
+                l.SetEnabled(enabled);
+        }
+
+        protected override void OnMapRefreshed(object sender, EventArgs e)
+        {
+            Evaluate();
+        }
+
+        protected override void OnViewerPropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == "ViewHistoryIndex" || e.PropertyName == "ViewHistory")
+            {
+                Evaluate();
+            }
+            base.OnViewerPropertyChanged(sender, e);
+        }
+
+        public override void Invoke()
+        {
+            this.Viewer.PreviousView();
+        }
+    }
+
+    [ToolboxItem(true)]
     public class MgZoomToSelectionComponent : MgComponent
     {
         private MgAgfReaderWriter _agfRw;

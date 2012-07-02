@@ -32,6 +32,7 @@
 #include "Exception/InvalidDwfPackageException.h"
 #include "Exception/InvalidDwfSectionException.h"
 #include "Exception/InvalidFeatureSourceException.h"
+#include "Exception/InvalidLogEntryException.h"
 #include "Exception/InvalidPrintLayoutFontSizeUnitsException.h"
 #include "Exception/InvalidPrintLayoutPositionUnitsException.h"
 #include "Exception/InvalidPrintLayoutSizeUnitsException.h"
@@ -48,6 +49,7 @@
 #include "Services/ScrollableFeatureReader.h"
 #include "Services/FeatureService.h"
 #include "Services/ImageFormats.h"
+#include "Services/MappingService.h"
 #include "Services/ProfilingService.h"
 #include "Services/RenderingService.h"
 #include "Services/ResourceService.h"
@@ -61,6 +63,7 @@
 #include "Services/Rendering/CustomLogoInfo.h"
 #include "Services/Rendering/CustomTextInfo.h"
 #include "Services/Rendering/DwfVersion.h"
+#include "Services/Rendering/FeatureInformation.h"
 #include "Services/Rendering/Layout.h"
 #include "Services/Rendering/MapPlot.h"
 #include "Services/Rendering/MapPlotCollection.h"
@@ -75,10 +78,6 @@
 #define NOT_IMPLEMENTED(method) \
 	throw new MgNotImplementedException(method, __LINE__, __WFILE__, NULL, L"", NULL)
 
-//Stub for now
-#define MG_LOG_TRACE_ENTRY(method)
-#define MG_LOG_ERROR_ENTRY(message)
-
 //Uncomment to debug memory leaks. This is the header for Visual Leak Detector
 //See: http://vld.codeplex.com for download and setup
 #ifdef _WIN32
@@ -89,6 +88,7 @@
 
 //Uncomment to get extra FDO join chatter when running unit tests
 //#define DEBUG_FDOJOIN
+//Uncomment to get extra connection pool chatter
 //#define DEBUG_FDO_CONNECTION_POOL
 
 #endif

@@ -1,6 +1,7 @@
 #include "ServiceFactory.h"
 #include "ResourceService.h"
 #include "FeatureService.h"
+#include "MappingService.h"
 #include "ProfilingService.h"
 #include "RenderingService.h"
 #include "DrawingService.h"
@@ -57,28 +58,30 @@ MgService* MgServiceFactory::CreateService(INT32 serviceType)
     switch(serviceType)
     {
     case MgServiceType::DrawingService:
-        return new MgDrawingService();
+        return new MgdDrawingService();
     case MgServiceType::FeatureService:
         return new MgdFeatureService();
+    case MgServiceType::MappingService:
+        return new MgdMappingService();
 	case MgServiceType::ProfilingService:
-		return new MgProfilingService();
+		return new MgdProfilingService();
     case MgServiceType::RenderingService:
-        return new MgRenderingService();
+        return new MgdRenderingService();
     case MgServiceType::ResourceService:
         return new MgdResourceService(sm_libContentPath,
                                       sm_libDataPath, 
                                       sm_sesContentPath, 
                                       sm_sesDataPath);
     case MgServiceType::TileService:
-        return new MgTileService();
+        return new MgdTileService();
     }
     throw new MgServiceNotSupportedException(L"MgServiceFactory::CreateService", __LINE__, __WFILE__, NULL, L"", NULL);
 }
 
 /*
-MgTileService* MgServiceFactory::CreateTileService()
+MgdTileService* MgServiceFactory::CreateTileService()
 {
-    return new MgTileService();
+    return new MgdTileService();
 }
 
 MgdFeatureService* MgServiceFactory::CreateFeatureService()
@@ -94,13 +97,13 @@ MgdResourceService* MgServiceFactory::CreateResourceService()
                                   sm_sesDataPath);
 }
 
-MgDrawingService* MgServiceFactory::CreateDrawingService()
+MgdDrawingService* MgServiceFactory::CreateDrawingService()
 {
-    return new MgDrawingService();
+    return new MgdDrawingService();
 }
 
-MgRenderingService* MgServiceFactory::CreateRenderingService()
+MgdRenderingService* MgServiceFactory::CreateRenderingService()
 {
-    return new MgRenderingService();
+    return new MgdRenderingService();
 }
 */

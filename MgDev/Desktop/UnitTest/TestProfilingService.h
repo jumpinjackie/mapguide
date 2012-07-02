@@ -50,7 +50,7 @@ private:
 
 private:
     Ptr<MgResourceService> m_svcResource;
-    Ptr<MgProfilingService> m_svcProfiling;
+    Ptr<MgdProfilingService> m_svcProfiling;
 };
 
 #endif // _TESTPROFILINGSERVICE_H

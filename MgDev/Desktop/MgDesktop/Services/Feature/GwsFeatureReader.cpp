@@ -1388,14 +1388,14 @@ BYTE_ARRAY_OUT MgdGwsFeatureReader::GetGeometry(CREFSTRING propertyName, INT32& 
             MgStringCollection arguments;
             arguments.Add(propertyName);
 
-            throw new MgNullPropertyValueException(L"MgdGwsFeatureReader.GetGeometry",
+            throw new MgNullPropertyValueException(L"MgdGwsFeatureReader::GetGeometry",
                 __LINE__, __WFILE__, &arguments, L"", NULL);
         }
         else
             throw;
     }
 
-    MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgServerFeatureReader.GetGeometry");
+    MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgJoinFeatureReader::GetGeometry");
 
     return (BYTE_ARRAY_OUT)data;
 }

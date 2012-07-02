@@ -2,11 +2,12 @@
 #define DESKTOP_SERVICE_FACTORY_H
 
 class MgService;
-class MgTileService;
+class MgdTileService;
 class MgdFeatureService;
+class MgdMappingService;
 class MgdResourceService;
-class MgDrawingService;
-class MgRenderingService;
+class MgdDrawingService;
+class MgdRenderingService;
 
 class MG_DESKTOP_API MgServiceFactory : public MgGuardDisposable
 {

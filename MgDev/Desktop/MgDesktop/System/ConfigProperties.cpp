@@ -135,6 +135,16 @@ const STRING MgConfigProperties::GeneralPropertyRenderer                        
 const STRING MgConfigProperties::DefaultGeneralPropertyRenderer                             = L"GD";
 const STRING MgConfigProperties::GeneralPropertyPreCacheMaps                                = L"PreCacheMaps";
 const STRING MgConfigProperties::DefaultGeneralPropertyPreCacheMaps                         = L"";
+const STRING MgConfigProperties::GeneralPropertyLogsDelimiter                               = L"LogsDelimiter";
+const STRING MgConfigProperties::DefaultGeneralPropertyLogsDelimiter                        = L"\t";
+const STRING MgConfigProperties::GeneralPropertyLogsDetail                                  = L"LogsDetail";
+const STRING MgConfigProperties::DefaultGeneralPropertyLogsDetail                           = L"";
+const STRING MgConfigProperties::GeneralPropertyLogsPath                                    = L"LogsPath";
+const STRING MgConfigProperties::DefaultGeneralPropertyLogsPath                             = L"Logs/";
+const STRING MgConfigProperties::GeneralPropertyMaxLogFileSize                              = L"MaxLogFileSize";
+const INT32  MgConfigProperties::DefaultGeneralPropertyMaxLogFileSize                       = 1024;
+const STRING MgConfigProperties::GeneralPropertyMaxLogFileSizeEnabled                       = L"MaxLogFileSizeEnabled";
+const bool   MgConfigProperties::DefaultGeneralPropertyMaxLogFileSizeEnabled                = false;
 
 // ******************************************************************
 // Drawing Service Properties
@@ -287,6 +297,85 @@ const INT32 MgConfigProperties::DefaultTileServicePropertyTileSizeY             
 const STRING MgConfigProperties::TileServicePropertyImageFormat                             = L"ImageFormat";
 const STRING MgConfigProperties::DefaultTileServicePropertyImageFormat                      = L"PNG";
 
+// ******************************************************************
+// Access Log Properties
+// ******************************************************************
+const STRING MgConfigProperties::AccessLogPropertiesSection                                 = L"AccessLogProperties";
+const STRING MgConfigProperties::AccessLogPropertyEnabled                                   = L"Enabled";
+const bool   MgConfigProperties::DefaultAccessLogPropertyEnabled                            = true;
+const STRING MgConfigProperties::AccessLogPropertyFilename                                  = L"Filename";
+const STRING MgConfigProperties::DefaultAccessLogPropertyFilename                           = L"Access.log";
+const STRING MgConfigProperties::AccessLogPropertyParameters                                = L"Parameters";
+const STRING MgConfigProperties::DefaultAccessLogPropertyParameters                         = L"";
+
+// ******************************************************************
+// Admin Log Properties
+// ******************************************************************
+const STRING MgConfigProperties::AdminLogPropertiesSection                                  = L"AdminLogProperties";
+const STRING MgConfigProperties::AdminLogPropertyEnabled                                    = L"Enabled";
+const bool   MgConfigProperties::DefaultAdminLogPropertyEnabled                             = true;
+const STRING MgConfigProperties::AdminLogPropertyFilename                                   = L"Filename";
+const STRING MgConfigProperties::DefaultAdminLogPropertyFilename                            = L"Admin.log";
+const STRING MgConfigProperties::AdminLogPropertyParameters                                 = L"Parameters";
+const STRING MgConfigProperties::DefaultAdminLogPropertyParameters                          = L"";
+
+// ******************************************************************
+// Authentication Log Properties
+// ******************************************************************
+const STRING MgConfigProperties::AuthenticationLogPropertiesSection                         = L"AuthenticationLogProperties";
+const STRING MgConfigProperties::AuthenticationLogPropertyEnabled                           = L"Enabled";
+const bool   MgConfigProperties::DefaultAuthenticationLogPropertyEnabled                    = true;
+const STRING MgConfigProperties::AuthenticationLogPropertyFilename                          = L"Filename";
+const STRING MgConfigProperties::DefaultAuthenticationLogPropertyFilename                   = L"Authentication.log";
+const STRING MgConfigProperties::AuthenticationLogPropertyParameters                        = L"Parameters";
+const STRING MgConfigProperties::DefaultAuthenticationLogPropertyParameters                 = L"";
+
+// ******************************************************************
+// Error Log Properties
+// ******************************************************************
+const STRING MgConfigProperties::ErrorLogPropertiesSection                                  = L"ErrorLogProperties";
+const STRING MgConfigProperties::ErrorLogPropertyEnabled                                    = L"Enabled";
+const bool   MgConfigProperties::DefaultErrorLogPropertyEnabled                             = true;
+const STRING MgConfigProperties::ErrorLogPropertyFilename                                   = L"Filename";
+const STRING MgConfigProperties::DefaultErrorLogPropertyFilename                            = L"Error.log";
+const STRING MgConfigProperties::ErrorLogPropertyParameters                                 = L"Parameters";
+const STRING MgConfigProperties::DefaultErrorLogPropertyParameters                          = L"";
+
+// ******************************************************************
+// Performance Log Properties
+// ******************************************************************
+const STRING MgConfigProperties::PerformanceLogPropertiesSection                            = L"PerformanceLogProperties";
+const STRING MgConfigProperties::PerformanceLogPropertyEnabled                              = L"Enabled";
+const bool   MgConfigProperties::DefaultPerformanceLogPropertyEnabled                       = false;
+const STRING MgConfigProperties::PerformanceLogPropertyFilename                             = L"Filename";
+const STRING MgConfigProperties::DefaultPerformanceLogPropertyFilename                      = L"Performance.log";
+const STRING MgConfigProperties::PerformanceLogPropertyParameters                           = L"Parameters";
+const STRING MgConfigProperties::DefaultPerformanceLogPropertyParameters                    = L"";
+const STRING MgConfigProperties::PerformanceLogPropertyInterval                             = L"Interval";
+const INT32  MgConfigProperties::DefaultPerformanceLogPropertyInterval                      = 300;
+
+// ******************************************************************
+// Session Log Properties
+// ******************************************************************
+const STRING MgConfigProperties::SessionLogPropertiesSection                                = L"SessionLogProperties";
+const STRING MgConfigProperties::SessionLogPropertyEnabled                                  = L"Enabled";
+const bool   MgConfigProperties::DefaultSessionLogPropertyEnabled                           = false;
+const STRING MgConfigProperties::SessionLogPropertyFilename                                 = L"Filename";
+const STRING MgConfigProperties::DefaultSessionLogPropertyFilename                          = L"Session.log";
+const STRING MgConfigProperties::SessionLogPropertyParameters                               = L"Parameters";
+const STRING MgConfigProperties::DefaultSessionLogPropertyParameters                        = L"";
+
+// ******************************************************************
+// Trace Log Properties
+// ******************************************************************
+const STRING MgConfigProperties::TraceLogPropertiesSection                                  = L"TraceLogProperties";
+const STRING MgConfigProperties::TraceLogPropertyEnabled                                    = L"Enabled";
+const bool   MgConfigProperties::DefaultTraceLogPropertyEnabled                             = false;
+const STRING MgConfigProperties::TraceLogPropertyFilename                                   = L"Filename";
+const STRING MgConfigProperties::DefaultTraceLogPropertyFilename                            = L"Trace.log";
+const STRING MgConfigProperties::TraceLogPropertyParameters                                 = L"Parameters";
+const STRING MgConfigProperties::DefaultTraceLogPropertyParameters                          = L"";
+
 ///////////////////////////////////////////////////////////////////////////////
 /// Common Configuration Validation Information Maps
 ///
@@ -388,5 +477,62 @@ const MgConfigValidationInfo MgConfigProperties::sm_cviTileServiceProperties[] =
     { MgConfigProperties::TileServicePropertyTileSizeX                              , MgPropertyType::Int32     , 50                                    , 10000                                 , L""                                       },
     { MgConfigProperties::TileServicePropertyTileSizeY                              , MgPropertyType::Int32     , 50                                    , 10000                                 , L""                                       },
     { MgConfigProperties::TileServicePropertyImageFormat                            , MgPropertyType::String    , 2                                     , 4                                     , L""                                       },
+    { L""                                                                           , 0                         , 0.0                                   , 0.0                                   , L""                                       }
+};
+
+const MgConfigValidationInfo MgConfigProperties::sm_cviAccessLogProperties[] =
+{
+    { MgConfigProperties::AccessLogPropertyEnabled                                  , MgPropertyType::Boolean   , 0                                     , 1                                     , L""                                       },
+    { MgConfigProperties::AccessLogPropertyFilename                                 , MgPropertyType::String    , MG_CONFIG_MIN_FILE_NAME_LENGTH        , MG_CONFIG_MAX_FILE_NAME_LENGTH        , MG_CONFIG_FILE_NAME_RESERVED_CHARACTERS   },
+    { MgConfigProperties::AccessLogPropertyParameters                               , MgPropertyType::String    , MG_CONFIG_MIN_LOG_PARAMETERS_LENGTH   , MG_CONFIG_MAX_LOG_PARAMETERS_LENGTH   , L""                                       },
+    { L""                                                                           , 0                         , 0.0                                   , 0.0                                   , L""                                       }
+};
+
+const MgConfigValidationInfo MgConfigProperties::sm_cviAdminLogProperties[] =
+{
+    { MgConfigProperties::AdminLogPropertyEnabled                                   , MgPropertyType::Boolean   , 0                                     , 1                                     , L""                                       },
+    { MgConfigProperties::AdminLogPropertyFilename                                  , MgPropertyType::String    , MG_CONFIG_MIN_FILE_NAME_LENGTH        , MG_CONFIG_MAX_FILE_NAME_LENGTH        , MG_CONFIG_FILE_NAME_RESERVED_CHARACTERS   },
+    { MgConfigProperties::AdminLogPropertyParameters                                , MgPropertyType::String    , MG_CONFIG_MIN_LOG_PARAMETERS_LENGTH   , MG_CONFIG_MAX_LOG_PARAMETERS_LENGTH   , L""                                       },
+    { L""                                                                           , 0                         , 0.0                                   , 0.0                                   , L""                                       }
+};
+
+const MgConfigValidationInfo MgConfigProperties::sm_cviAuthenticationLogProperties[] =
+{
+    { MgConfigProperties::AuthenticationLogPropertyEnabled                          , MgPropertyType::Boolean   , 0                                     , 1                                     , L""                                       },
+    { MgConfigProperties::AuthenticationLogPropertyFilename                         , MgPropertyType::String    , MG_CONFIG_MIN_FILE_NAME_LENGTH        , MG_CONFIG_MAX_FILE_NAME_LENGTH        , MG_CONFIG_FILE_NAME_RESERVED_CHARACTERS   },
+    { MgConfigProperties::AuthenticationLogPropertyParameters                       , MgPropertyType::String    , MG_CONFIG_MIN_LOG_PARAMETERS_LENGTH   , MG_CONFIG_MAX_LOG_PARAMETERS_LENGTH   , L""                                       },
+    { L""                                                                           , 0                         , 0.0                                   , 0.0                                   , L""                                       }
+};
+
+const MgConfigValidationInfo MgConfigProperties::sm_cviErrorLogProperties[] =
+{
+    { MgConfigProperties::ErrorLogPropertyEnabled                                   , MgPropertyType::Boolean   , 0                                     , 1                                     , L""                                       },
+    { MgConfigProperties::ErrorLogPropertyFilename                                  , MgPropertyType::String    , MG_CONFIG_MIN_FILE_NAME_LENGTH        , MG_CONFIG_MAX_FILE_NAME_LENGTH        , MG_CONFIG_FILE_NAME_RESERVED_CHARACTERS   },
+    { MgConfigProperties::ErrorLogPropertyParameters                                , MgPropertyType::String    , MG_CONFIG_MIN_LOG_PARAMETERS_LENGTH   , MG_CONFIG_MAX_LOG_PARAMETERS_LENGTH   , L""                                       },
+    { L""                                                                           , 0                         , 0.0                                   , 0.0                                   , L""                                       }
+};
+
+const MgConfigValidationInfo MgConfigProperties::sm_cviPerformanceLogProperties[] =
+{
+    { MgConfigProperties::PerformanceLogPropertyEnabled                             , MgPropertyType::Boolean   , 0                                     , 1                                     , L""                                       },
+    { MgConfigProperties::PerformanceLogPropertyFilename                            , MgPropertyType::String    , MG_CONFIG_MIN_FILE_NAME_LENGTH        , MG_CONFIG_MAX_FILE_NAME_LENGTH        , MG_CONFIG_FILE_NAME_RESERVED_CHARACTERS   },
+    { MgConfigProperties::PerformanceLogPropertyParameters                          , MgPropertyType::String    , MG_CONFIG_MIN_LOG_PARAMETERS_LENGTH   , MG_CONFIG_MAX_LOG_PARAMETERS_LENGTH   , L""                                       },
+    { MgConfigProperties::PerformanceLogPropertyInterval                            , MgPropertyType::Int32     , 0                                     , 60000                                 , L""                                       },
+    { L""                                                                           , 0                         , 0.0                                   , 0.0                                   , L""                                       }
+};
+
+const MgConfigValidationInfo MgConfigProperties::sm_cviSessionLogProperties[] =
+{
+    { MgConfigProperties::SessionLogPropertyEnabled                                 , MgPropertyType::Boolean   , 0                                     , 1                                     , L""                                       },
+    { MgConfigProperties::SessionLogPropertyFilename                                , MgPropertyType::String    , MG_CONFIG_MIN_FILE_NAME_LENGTH        , MG_CONFIG_MAX_FILE_NAME_LENGTH        , MG_CONFIG_FILE_NAME_RESERVED_CHARACTERS   },
+    { MgConfigProperties::SessionLogPropertyParameters                              , MgPropertyType::String    , MG_CONFIG_MIN_LOG_PARAMETERS_LENGTH   , MG_CONFIG_MAX_LOG_PARAMETERS_LENGTH   , L""                                       },
+    { L""                                                                           , 0                         , 0.0                                   , 0.0                                   , L""                                       }
+};
+
+const MgConfigValidationInfo MgConfigProperties::sm_cviTraceLogProperties[] =
+{
+    { MgConfigProperties::TraceLogPropertyEnabled                                   , MgPropertyType::Boolean   , 0                                     , 1                                     , L""                                       },
+    { MgConfigProperties::TraceLogPropertyFilename                                  , MgPropertyType::String    , MG_CONFIG_MIN_FILE_NAME_LENGTH        , MG_CONFIG_MAX_FILE_NAME_LENGTH        , MG_CONFIG_FILE_NAME_RESERVED_CHARACTERS   },
+    { MgConfigProperties::TraceLogPropertyParameters                                , MgPropertyType::String    , MG_CONFIG_MIN_LOG_PARAMETERS_LENGTH   , MG_CONFIG_MAX_LOG_PARAMETERS_LENGTH   , L""                                       },
     { L""                                                                           , 0                         , 0.0                                   , 0.0                                   , L""                                       }
 };

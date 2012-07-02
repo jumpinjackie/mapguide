@@ -32,7 +32,7 @@ TestProfilingService::TestProfilingService()
         factory->CreateService(MgServiceType::ResourceService));
     assert(m_svcResource != NULL);
 
-    m_svcProfiling = dynamic_cast<MgProfilingService*>(
+    m_svcProfiling = dynamic_cast<MgdProfilingService*>(
         factory->CreateService(MgServiceType::ProfilingService));
     assert(m_svcProfiling != NULL);
 }

@@ -87,14 +87,14 @@ namespace MapViewerTest
                     save.Filter = "DWF Files (*.dwf)|*.dwf";
                     if (save.ShowDialog() == DialogResult.OK)
                     {
-                        var renderSvc = (MgRenderingService)mapViewer.GetProvider().CreateService(MgServiceType.RenderingService);
+                        var mappingSvc = (MgdMappingService)mapViewer.GetProvider().CreateService(MgServiceType.MappingService);
                         var map = (MgdMap)mapViewer.GetMap();
                         var dwfVer = new MgDwfVersion("6.01", "1.2");
 
                         var layout = new MgLayout(layoutId, "TestPlot", MgPageUnitsType.Inches);
                         var plotSpec = new MgPlotSpecification(8.5f, 11.0f, MgPageUnitsType.Inches, 0.5f, 0.5f, 0.5f, 0.5f);
 
-                        var result = renderSvc.GeneratePlot(map, plotSpec, layout, dwfVer);
+                        var result = mappingSvc.GeneratePlot(map, plotSpec, layout, dwfVer);
                         var sink = new MgByteSink(result);
                         sink.ToFile(save.FileName);
 
@@ -104,15 +104,13 @@ namespace MapViewerTest
             }
         }
 
-        private void mgLayerSelectionHandler1_SelectionMade(string layerName, MgFeatureReader selectedFeatures)
+        private void mgLayerSelectionHandler1_SelectionMade(MgSelectionSet selectedFeatures)
         {
-            int count = 0;
-            while (selectedFeatures.ReadNext())
+            if (Array.IndexOf(selectedFeatures.LayerNames, "Parcels") >= 0)
             {
-                count++;
+                MgFeature[] features = selectedFeatures.GetFeaturesForLayer("Parcels");
+                MessageBox.Show(features.Length + " parcels selected");
             }
-            selectedFeatures.Close();
-            MessageBox.Show(count + " parcels selected");
         }
 
         private void loadCompactViewerComponent_Invoked(object sender, EventArgs e)
@@ -127,10 +125,40 @@ namespace MapViewerTest
         {
             var provider = mapViewer.GetProvider();
             var map = mapViewer.GetMap();
-            var prof = (MgProfilingService)provider.CreateService(MgServiceType.ProfilingService);
+            var prof = (MgdProfilingService)provider.CreateService(MgServiceType.ProfilingService);
             var opts = new MgRenderingOptions("PNG", 2, new MgColor(mapViewer.SelectionColor));
             var result = prof.ProfileRenderDynamicOverlay((MgdMap)map, (MgdSelection)mapViewer.GetSelection(), opts); 
  	        new XmlResponseDialog(result).ShowDialog(); 
+        }
+
+        private void pointToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            mapViewer.DigitizePoint((x, y) => { MessageBox.Show("Done"); }, "Custom point digitization prompt");
+        }
+
+        private void lineToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            mapViewer.DigitizeLine((x1, y1, x2, y2) => { MessageBox.Show("Done"); }, "Custom line digitization prompt");
+        }
+
+        private void rectangleToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            mapViewer.DigitizeRectangle((x1, y1, x2, y2) => { MessageBox.Show("Done"); }, "Custom rectangle digitization prompt");
+        }
+
+        private void lineStringToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            mapViewer.DigitizeLineString((coords) => { MessageBox.Show("Done"); }, "Custom line string digitization prompt");
+        }
+
+        private void polygonToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            mapViewer.DigitizePolygon((coords) => { MessageBox.Show("Done"); }, "Custom polygon digitization prompt");
+        }
+
+        private void circleToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            mapViewer.DigitizeCircle((x, y, r) => { MessageBox.Show("Done"); }, "Custom circle digitization prompt");
         }
     }
 }

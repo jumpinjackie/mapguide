@@ -23,7 +23,7 @@ namespace DotNetHarness.Rendering
             try
             {
                 var fact = new MgServiceFactory();
-                MgRenderingService renSvc = (MgRenderingService)fact.CreateService(MgServiceType.RenderingService);
+                MgdRenderingService renSvc = (MgdRenderingService)fact.CreateService(MgServiceType.RenderingService);
 
                 MgResourceIdentifier mdfId = new MgResourceIdentifier(txtMapDefinition.Text);
                 var sw = new Stopwatch();

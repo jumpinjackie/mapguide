@@ -11,6 +11,7 @@ using System.Diagnostics;
 using System.Threading;
 using System.Xml;
 using System.Collections.Specialized;
+using System.Collections.ObjectModel;
 
 namespace OSGeo.MapGuide.Viewer
 {
@@ -60,8 +61,6 @@ namespace OSGeo.MapGuide.Viewer
                 //Invalidate();
             }
         }
-
-        const double MINIMUM_ZOOM_SCALE = 5.0;
 
 #if VIEWER_DEBUG
         private MgdLayer _debugLayer;
@@ -155,23 +154,33 @@ namespace OSGeo.MapGuide.Viewer
 
         private MgCoordinateSystem _mapCs;
 
+        private int _viewHistoryIndex;
+        private List<MgMapViewHistoryEntry> _viewHistory;
+
         /// <summary>
         /// Initializes a new instance of the <see cref="MgMapViewer"/> class.
         /// </summary>
         public MgMapViewer()
         {
+            _viewHistory = new List<MgMapViewHistoryEntry>();
+            _viewHistoryIndex = -1;
             this.ShowVertexCoordinatesWhenDigitizing = false;
             this.FeatureTooltipsEnabled = false;
             this.TooltipsEnabled = false;
             this.ZoomInFactor = 0.5;
             this.ZoomOutFactor = 2.0;
             this.SelectionColor = Color.Blue;
+            this.PointPixelBuffer = 2;
+
+            this.MinScale = 10;
+            this.MaxScale = 1000000000;
 
             this.DigitizingFillTransparency = 100;
             this.DigitizingOutline = Brushes.Red;
             this.DigitzingFillColor = Color.White;
             this.TooltipFillColor = Color.LightYellow;
             this.TooltipFillTransparency = 200;
+            this.MouseWheelDelayRenderInterval = 800;
 
             this.ActiveTool = MapActiveTool.None;
             this.DoubleBuffered = true;
@@ -183,7 +192,16 @@ namespace OSGeo.MapGuide.Viewer
             SetStyle(ControlStyles.DoubleBuffer, true);
 
             _mapBgColor = Color.Transparent;
-            
+
+            _defaultDigitizationInstructions = Properties.Resources.GeneralDigitizationInstructions;
+            _defaultMultiSegmentDigitizationInstructions = Properties.Resources.MultiSegmentDigitzationInstructions;
+            _defaultPointDigitizationPrompt = Properties.Resources.PointDigitizationPrompt;
+            _defaultLineDigitizationPrompt = Properties.Resources.LineDigitizationPrompt;
+            _defaultCircleDigitizationPrompt = Properties.Resources.CircleDigitizationPrompt;
+            _defaultLineStringDigitizationPrompt = Properties.Resources.LineStringDigitizationPrompt;
+            _defaultPolygonDigitizationPrompt = Properties.Resources.PolygonDigitizationPrompt;
+            _defaultRectangleDigitizationPrompt = Properties.Resources.RectangleDigitizationPrompt;
+
             renderWorker = new BackgroundWorker();
 
             renderWorker.DoWork += renderWorker_DoWork;
@@ -196,6 +214,7 @@ namespace OSGeo.MapGuide.Viewer
             base.MouseDoubleClick += OnMapMouseDoubleClick;
             base.MouseHover += OnMapMouseHover;
             base.MouseEnter += OnMouseEnter;
+            base.MouseWheel += OnMapMouseWheel;
         }
 
         /// <summary>
@@ -207,6 +226,18 @@ namespace OSGeo.MapGuide.Viewer
             if (e.KeyCode == Keys.Escape)
             {
                 CancelDigitization();
+            }
+            else if (e.KeyCode == Keys.Z && e.Modifiers == Keys.Control)
+            {
+                if (this.DigitizingType == MapDigitizationType.LineString ||
+                    this.DigitizingType == MapDigitizationType.Polygon)
+                {
+                    if (dPath.Count > 1) //Slice off the last recorded point
+                    {
+                        dPath.RemoveAt(dPath.Count - 1);
+                        Invalidate();
+                    }
+                }
             }
         }
 
@@ -310,6 +341,27 @@ namespace OSGeo.MapGuide.Viewer
             }
             base.Dispose(disposing);
         }
+
+        /// <summary>
+        /// Gets or sets the minimum allowed zoom scale for this viewer
+        /// </summary>
+        [Category("MapGuide Viewer")]
+        [Description("The minimum allowed zoom scale for this viewer")]
+        public int MinScale { get; set; }
+
+        /// <summary>
+        /// Gets or sets the maximum allowed zoom scale for this viewer
+        /// </summary>
+        [Category("MapGuide Viewer")]
+        [Description("The maximum allowed zoom scale for this viewer")]
+        public int MaxScale { get; set; }
+
+        /// <summary>
+        /// The amount of time (in ms) to wait to re-render after a mouse wheel scroll
+        /// </summary>
+        [Category("MapGuide Viewer")]
+        [Description("The amount of time (in ms) to wait to re-render after a mouse wheel scroll")]
+        public int MouseWheelDelayRenderInterval { get; set; }
 
         private Color _selColor;
 
@@ -419,6 +471,23 @@ namespace OSGeo.MapGuide.Viewer
             }
         }
 
+        private string _defaultDigitizationInstructions;
+        private string _defaultMultiSegmentDigitizationInstructions;
+
+        private string _defaultPointDigitizationPrompt;
+        private string _defaultLineDigitizationPrompt;
+        private string _defaultCircleDigitizationPrompt;
+        private string _defaultLineStringDigitizationPrompt;
+        private string _defaultPolygonDigitizationPrompt;
+        private string _defaultRectangleDigitizationPrompt;
+
+        private string _pointCustomDigitizationPrompt;
+        private string _lineCustomDigitizationPrompt;
+        private string _circleCustomDigitizationPrompt;
+        private string _lineStringCustomDigitizationPrompt;
+        private string _polygonCustomDigitizationPrompt;
+        private string _rectangleCustomDigitizationPrompt;
+
         /// <summary>
         /// Raises the <see cref="E:System.Windows.Forms.Control.Paint"/> event.
         /// </summary>
@@ -428,21 +497,27 @@ namespace OSGeo.MapGuide.Viewer
             base.OnPaint(e);
             Trace.TraceInformation("OnPaint(e)");
 
-            if (!translate.IsEmpty)
-                e.Graphics.TranslateTransform(translate.X, translate.Y);
+            ApplyPaintTranslateTransform(e);
+
+            if (mouseWheelSx.HasValue && mouseWheelSy.HasValue && mouseWheelSx.Value != 0.0 && mouseWheelSy.Value != 0.0)
+            {
+                e.Graphics.ScaleTransform(mouseWheelSx.Value, mouseWheelSy.Value);
+            }
 
             if (_mapImage != null)
             {
-                Trace.TraceInformation("Render Map");
+                Trace.TraceInformation("Render buffered map image");
                 e.Graphics.DrawImage(_mapImage, new PointF(0, 0));
             }
 
             //Thread.Sleep(100);
             if (_selectionImage != null)
             {
-                Trace.TraceInformation("Render Selection");
+                Trace.TraceInformation("Render buffered map selection");
                 e.Graphics.DrawImage(_selectionImage, new PointF(0, 0));
             }
+
+            //TODO: We could add support here for map-space persistent digitizations
 
             if (isDragging && (this.ActiveTool == MapActiveTool.Select || this.ActiveTool == MapActiveTool.ZoomIn))
             {
@@ -454,7 +529,8 @@ namespace OSGeo.MapGuide.Viewer
                 {
                     if (this.DigitizingType == MapDigitizationType.Point)
                     {
-                        DrawTrackingTooltip(e, "Click to finish. Press ESC to cancel");
+                        string str = (_pointCustomDigitizationPrompt ?? _defaultPointDigitizationPrompt) + Environment.NewLine + _defaultDigitizationInstructions;
+                        DrawTrackingTooltip(e, str);
                     }
                     else
                     {
@@ -498,6 +574,22 @@ namespace OSGeo.MapGuide.Viewer
             }
         }
 
+        private void ApplyPaintTranslateTransform(PaintEventArgs e)
+        {
+            if (!translate.IsEmpty)
+            {
+                if (mouseWheelTx.HasValue && mouseWheelTy.HasValue)
+                    e.Graphics.TranslateTransform(translate.X + mouseWheelTx.Value, translate.Y + mouseWheelTy.Value);
+                else
+                    e.Graphics.TranslateTransform(translate.X, translate.Y);
+            }
+            else
+            {
+                if (mouseWheelTx.HasValue && mouseWheelTy.HasValue)
+                    e.Graphics.TranslateTransform(mouseWheelTx.Value, mouseWheelTy.Value);
+            }
+        }
+
         private Brush _digitizingOutline;
 
         [Category("MapGuide Viewer")]
@@ -529,6 +621,10 @@ namespace OSGeo.MapGuide.Viewer
                 }
             }
         }
+
+        [Category("MapGuide Viewer")]
+        [Description("The amount of pixels to buffer out by when doing point-based selections with the Select tool")]
+        public int PointPixelBuffer { get; set; }
 
         private Color _digitizingFillColor;
 
@@ -628,7 +724,8 @@ namespace OSGeo.MapGuide.Viewer
             e.Graphics.DrawEllipse(CreateOutlinePen(), pt2.X, pt2.Y, diameter, diameter);
             e.Graphics.FillEllipse(CreateFillBrush(), pt2.X, pt2.Y, diameter, diameter);
 
-            DrawTrackingTooltip(e, "Click to finish. Press ESC to cancel");
+            string str = (_circleCustomDigitizationPrompt ?? _defaultCircleDigitizationPrompt) + Environment.NewLine + _defaultDigitizationInstructions;
+            DrawTrackingTooltip(e, str);
         }
 
         private void DrawTracingLine(PaintEventArgs e)
@@ -636,7 +733,8 @@ namespace OSGeo.MapGuide.Viewer
             e.Graphics.DrawLine(CreateOutlinePen(), dPtStart, new Point(_mouseX, _mouseY));
             DrawVertexCoordinates(e, dPtStart.X, dPtStart.Y, true);
             DrawVertexCoordinates(e, _mouseX, _mouseY, true);
-            DrawTrackingTooltip(e, "Click to finish. Press ESC to cancel");
+            string str = (_lineCustomDigitizationPrompt ?? _defaultLineDigitizationPrompt) + Environment.NewLine + _defaultDigitizationInstructions;
+            DrawTrackingTooltip(e, str);
         }
 
         private void DrawTracingLineString(PaintEventArgs e)
@@ -650,8 +748,8 @@ namespace OSGeo.MapGuide.Viewer
             {
                 DrawVertexCoordinates(e, pt.X, pt.Y, true);
             }
-
-            DrawTrackingTooltip(e, "Click again to add a new vertex.\nDouble-click to finish. Press ESC to cancel");
+            string str = (_lineStringCustomDigitizationPrompt ?? _defaultLineStringDigitizationPrompt) + Environment.NewLine + _defaultMultiSegmentDigitizationInstructions;
+            DrawTrackingTooltip(e, str);
         }
 
         private void DrawTracingPolygon(PaintEventArgs e)
@@ -666,8 +764,8 @@ namespace OSGeo.MapGuide.Viewer
             {
                 DrawVertexCoordinates(e, pt.X, pt.Y, true);
             }
-
-            DrawTrackingTooltip(e, "Click again to add a new vertex.\nDouble-click to finish. Press ESC to cancel");
+            string str = (_polygonCustomDigitizationPrompt ?? _defaultPolygonDigitizationPrompt) + Environment.NewLine + _defaultMultiSegmentDigitizationInstructions;
+            DrawTrackingTooltip(e, str);
         }
 
         private void DrawTracingRectangle(PaintEventArgs e)
@@ -685,7 +783,8 @@ namespace OSGeo.MapGuide.Viewer
                 DrawVertexCoordinates(e, r.Left, r.Bottom, true);
                 DrawVertexCoordinates(e, r.Right, r.Top, true);
                 DrawVertexCoordinates(e, r.Right, r.Bottom, true);
-                DrawTrackingTooltip(e, "Click to finish. Press ESC to cancel");
+                string str = (_rectangleCustomDigitizationPrompt ?? _defaultRectangleDigitizationPrompt) + Environment.NewLine + _defaultDigitizationInstructions;
+                DrawTrackingTooltip(e, str);
             }
         }
 
@@ -790,55 +889,65 @@ namespace OSGeo.MapGuide.Viewer
         /// Starts the digitization process for a circle
         /// </summary>
         /// <param name="callback">The callback to be invoked when the digitization process completes</param>
-        public void DigitizeCircle(CircleDigitizationCallback callback)
+        /// <param name="customPrompt">The custom prompt to use for the tracking tooltip</param>
+        public void DigitizeCircle(CircleDigitizationCallback callback, string customPrompt)
         {
             this.DigitizingType = MapDigitizationType.Circle;
             _digitzationCallback = callback;
             _digitizationYetToStart = true;
+            _circleCustomDigitizationPrompt = customPrompt;
         }
 
         /// <summary>
         /// Starts the digitization process for a line
         /// </summary>
         /// <param name="callback">The callback to be invoked when the digitization process completes</param>
-        public void DigitizeLine(LineDigitizationCallback callback)
+        /// <param name="customPrompt">The custom prompt to use for the tracking tooltip</param>
+        public void DigitizeLine(LineDigitizationCallback callback, string customPrompt)
         {
             this.DigitizingType = MapDigitizationType.Line;
             _digitzationCallback = callback;
             _digitizationYetToStart = true;
+            _lineCustomDigitizationPrompt = customPrompt;
         }
 
         /// <summary>
         /// Starts the digitization process for a point
         /// </summary>
         /// <param name="callback">The callback to be invoked when the digitization process completes</param>
-        public void DigitizePoint(PointDigitizationCallback callback)
+        /// <param name="customPrompt">The custom prompt to use for the tracking tooltip</param>
+        public void DigitizePoint(PointDigitizationCallback callback, string customPrompt)
         {
             this.DigitizingType = MapDigitizationType.Point;
             _digitzationCallback = callback;
             _digitizationYetToStart = true;
+            _pointCustomDigitizationPrompt = customPrompt;
         }
 
         /// <summary>
         /// Starts the digitization process for a polygon
         /// </summary>
         /// <param name="callback">The callback to be invoked when the digitization process completes</param>
-        public void DigitizePolygon(PolygonDigitizationCallback callback)
+        /// <param name="customPrompt">The custom prompt to use for the tracking tooltip</param>
+        public void DigitizePolygon(PolygonDigitizationCallback callback, string customPrompt)
         {
             this.DigitizingType = MapDigitizationType.Polygon;
             _digitzationCallback = callback;
             _digitizationYetToStart = true;
+            _polygonCustomDigitizationPrompt = customPrompt;
         }
 
         /// <summary>
         /// Starts the digitization process for a line string (polyline)
         /// </summary>
         /// <param name="callback">The callback to be invoked when the digitization process completes</param>
-        public void DigitizeLineString(LineStringDigitizationCallback callback)
+        /// <param name="customPrompt">The custom prompt to use for the tracking tooltip</param>
+        public void DigitizeLineString(LineStringDigitizationCallback callback, string customPrompt)
         {
             this.DigitizingType = MapDigitizationType.LineString;
             _digitzationCallback = callback;
             _digitizationYetToStart = true;
+            _lineStringCustomDigitizationPrompt = customPrompt;
         }
 
         private LineDigitizationCallback _segmentCallback;
@@ -848,23 +957,62 @@ namespace OSGeo.MapGuide.Viewer
         /// </summary>
         /// <param name="callback">The callback to be invoked when the digitization process completes</param>
         /// <param name="segmentCallback">The callback to be invoked when a new segment of the current line string is digitized</param>
-        public void DigitizeLineString(LineStringDigitizationCallback callback, LineDigitizationCallback segmentCallback)
+        /// <param name="customPrompt">The custom prompt to use for the tracking tooltip</param>
+        public void DigitizeLineString(LineStringDigitizationCallback callback, LineDigitizationCallback segmentCallback, string customPrompt)
         {
             this.DigitizingType = MapDigitizationType.LineString;
             _digitzationCallback = callback;
             _segmentCallback = segmentCallback;
             _digitizationYetToStart = true;
+            _lineStringCustomDigitizationPrompt = customPrompt;
         }
 
         /// <summary>
         /// Starts the digitization process for a rectangle
         /// </summary>
         /// <param name="callback">The callback to be invoked when the digitization process completes</param>
-        public void DigitizeRectangle(RectangleDigitizationCallback callback)
+        /// <param name="customPrompt">The custom prompt to use for the tracking tooltip</param>
+        public void DigitizeRectangle(RectangleDigitizationCallback callback, string customPrompt)
         {
             this.DigitizingType = MapDigitizationType.Rectangle;
             _digitzationCallback = callback;
             _digitizationYetToStart = true;
+            _rectangleCustomDigitizationPrompt = customPrompt;
+        }
+
+        public void DigitizeCircle(CircleDigitizationCallback callback)
+        {
+            DigitizeCircle(callback, null);
+        }
+
+        public void DigitizeLine(LineDigitizationCallback callback)
+        {
+            DigitizeLine(callback, null);
+        }
+
+        public void DigitizePoint(PointDigitizationCallback callback)
+        {
+            DigitizePoint(callback, null);
+        }
+
+        public void DigitizePolygon(PolygonDigitizationCallback callback)
+        {
+            DigitizePolygon(callback, null);
+        }
+
+        public void DigitizeLineString(LineStringDigitizationCallback callback)
+        {
+            DigitizeLineString(callback, (string)null);
+        }
+
+        public void DigitizeLineString(LineStringDigitizationCallback callback, LineDigitizationCallback segmentDigitized)
+        {
+            DigitizeLineString(callback, segmentDigitized, null);
+        }
+
+        public void DigitizeRectangle(RectangleDigitizationCallback callback)
+        {
+            DigitizeRectangle(callback, null);
         }
 
         private void ResetDigitzationState()
@@ -875,6 +1023,12 @@ namespace OSGeo.MapGuide.Viewer
             dPtEnd.X = dPtStart.Y = 0;
             dPtStart.X = dPtStart.Y = 0;
             this.DigitizingType = MapDigitizationType.None;
+            _circleCustomDigitizationPrompt = null;
+            _lineCustomDigitizationPrompt = null;
+            _lineStringCustomDigitizationPrompt = null;
+            _polygonCustomDigitizationPrompt = null;
+            _pointCustomDigitizationPrompt = null;
+            _rectangleCustomDigitizationPrompt = null;
             Invalidate();
         }
 
@@ -1065,6 +1219,12 @@ namespace OSGeo.MapGuide.Viewer
 #endif
             this.Focus();
 
+            //Reset history stack
+            _viewHistory.Clear();
+            OnPropertyChanged("ViewHistory");
+            _viewHistoryIndex = -1;
+            OnPropertyChanged("ViewHistoryIndex");
+            
             var handler = this.MapLoaded;
             if (handler != null)
                 handler(this, EventArgs.Empty);
@@ -1083,7 +1243,7 @@ namespace OSGeo.MapGuide.Viewer
         private double CalculateScale(double mcsW, double mcsH, int devW, int devH)
         {
             var mpu = this.MetersPerUnit;
-            var mpp = 0.0254 / _map.DisplayDpi;
+            var mpp = GetMetersPerPixel(_map.DisplayDpi);
             if (devH * mcsW > devW * mcsH)
                 return mcsW * mpu / (devW * mpp); //width-limited
             else
@@ -1116,6 +1276,7 @@ namespace OSGeo.MapGuide.Viewer
         {
             var action = new MethodInvoker(() =>
             {
+                ResetMouseWheelPaintTransforms();
                 if (_map != null)
                 {
                     Trace.TraceInformation("Performing delayed resize to (" + this.Width + ", " + this.Height + ")");
@@ -1258,6 +1419,8 @@ namespace OSGeo.MapGuide.Viewer
             public MgViewerRenderingOptions MapRenderingOptions { get; set; }
 
             public bool RaiseEvents { get; set; }
+
+            public bool InvalidateRegardless { get; set; }
         }
 
         class RenderResult
@@ -1267,6 +1430,8 @@ namespace OSGeo.MapGuide.Viewer
             public Image SelectionImage { get; set; }
 
             public bool RaiseEvents { get; set; }
+
+            public bool InvalidateRegardless { get; set; }
         }
 
         /// <summary>
@@ -1304,6 +1469,11 @@ namespace OSGeo.MapGuide.Viewer
 
         internal void RenderSelection()
         {
+            RenderSelection(false);
+        }
+
+        internal void RenderSelection(bool invalidateRegardless)
+        {
             //This is our refresh action
             RefreshAction action = new RefreshAction(() => 
             {
@@ -1315,7 +1485,13 @@ namespace OSGeo.MapGuide.Viewer
                     {
                         SelectionRenderingOptions = _selectionRenderOpts,
                         RaiseEvents = false,
+                        InvalidateRegardless = invalidateRegardless
                     });
+                }
+                else
+                {
+                    if (invalidateRegardless)
+                        this.Invalidate();
                 }
             });
 
@@ -1503,7 +1679,7 @@ namespace OSGeo.MapGuide.Viewer
             //Update current extents
             double mpu = this.MetersPerUnit;
             double scale = _map.ViewScale;
-            double mpp = 0.0254 / _map.DisplayDpi;
+            double mpp = GetMetersPerPixel(_map.DisplayDpi);
             var pt = _map.ViewCenter;
             var coord = pt.Coordinate;
 
@@ -1516,8 +1692,90 @@ namespace OSGeo.MapGuide.Viewer
             _extY2 = coord.Y - mcsHeight / 2;
         }
 
+        private bool PruneHistoryEntriesFromCurrentView()
+        {
+            if (_viewHistoryIndex < _viewHistory.Count - 1)
+            {
+                int removed = 0;
+                for (int i = _viewHistory.Count - 1; i > _viewHistoryIndex; i--)
+                {
+                    _viewHistory.RemoveAt(i);
+                    removed++;
+                }
+                return removed > 0;
+            }
+            return false;
+        }
+
         internal void ZoomToView(double x, double y, double scale, bool refresh, bool raiseEvents)
         {
+            ZoomToView(x, y, scale, refresh, raiseEvents, true);
+        }
+
+        /// <summary>
+        /// Navigates to the previous view in the history stack
+        /// </summary>
+        public void PreviousView()
+        {
+            var newIndex = _viewHistoryIndex - 1;
+            if (newIndex < 0)
+                return;
+
+            var view = _viewHistory[newIndex];
+            ZoomToView(view.X, view.Y, view.Scale, true, true, false);
+            _viewHistoryIndex = newIndex;
+            OnPropertyChanged("ViewHistoryIndex");
+        }
+
+        /// <summary>
+        /// Navigates to the next view in the history stack
+        /// </summary>
+        public void NextView()
+        {
+            //Cannot advance from current view
+            if (_viewHistoryIndex == _viewHistory.Count - 1)
+                return;
+
+            var newIndex = _viewHistoryIndex + 1;
+            if (newIndex > _viewHistory.Count - 1)
+                return;
+
+            var view = _viewHistory[newIndex];
+            ZoomToView(view.X, view.Y, view.Scale, true, true, false);
+            _viewHistoryIndex = newIndex;
+            OnPropertyChanged("ViewHistoryIndex");
+        }
+
+        /// <summary>
+        /// Gets the current index in the view history stack
+        /// </summary>
+        public int ViewHistoryIndex
+        {
+            get { return _viewHistoryIndex; }
+        }
+
+        /// <summary>
+        /// Gets the view history stack. The first item being the earliest and the last item being the most recent.
+        /// </summary>
+        public ReadOnlyCollection<MgMapViewHistoryEntry> ViewHistory
+        {
+            get { return _viewHistory.AsReadOnly(); }
+        }
+
+        internal void ZoomToView(double x, double y, double scale, bool refresh, bool raiseEvents, bool addToHistoryStack)
+        {
+            if (addToHistoryStack)
+            {
+                //If not current view, then any entries from the current view index are no longer needed
+                if (ViewHistoryIndex < _viewHistory.Count - 1)
+                    PruneHistoryEntriesFromCurrentView();
+
+                _viewHistory.Add(new MgMapViewHistoryEntry(x, y, scale));
+                OnPropertyChanged("ViewHistory");
+                _viewHistoryIndex = _viewHistory.Count - 1;
+                OnPropertyChanged("ViewHistoryIndex");
+            }
+
             _provider.SetViewCenterXY(x, y);
 #if VIEWER_DEBUG
             UpdateCenterDebugPoint();
@@ -1529,7 +1787,7 @@ namespace OSGeo.MapGuide.Viewer
             Trace.TraceInformation("Center is (" + x + ", " + y + ")");
 #endif
             var oldScale = _map.ViewScale;
-            _provider.SetViewScale(Math.Max(scale, MINIMUM_ZOOM_SCALE));
+            _provider.SetViewScale(NormalizeScale(scale));
 
             if (oldScale != _map.ViewScale)
             {
@@ -1567,7 +1825,7 @@ namespace OSGeo.MapGuide.Viewer
         private void renderWorker_DoWork(object sender, DoWorkEventArgs e)
         {
             var args = (RenderWorkArgs)e.Argument;
-            var res = new RenderResult() { RaiseEvents = args.RaiseEvents };
+            var res = new RenderResult() { RaiseEvents = args.RaiseEvents, InvalidateRegardless = args.InvalidateRegardless };
             if (args.MapRenderingOptions != null)
             {
                 var br = _provider.RenderDynamicOverlay(null, args.MapRenderingOptions);
@@ -1639,7 +1897,7 @@ namespace OSGeo.MapGuide.Viewer
                 }
                 else 
                 {
-                    if (bInvalidate)
+                    if (bInvalidate || res.InvalidateRegardless)
                         Invalidate(true);
 
                     /*
@@ -2052,7 +2310,7 @@ namespace OSGeo.MapGuide.Viewer
             Trace.TraceInformation("Selection processing completed in {0}ms", sw.ElapsedMilliseconds);
 #endif
 
-            RenderSelection(); //This is either async or queued up. Either way do this before firing off selection changed
+            RenderSelection(true); //This is either async or queued up. Either way do this before firing off selection changed
             var handler = this.SelectionChanged;
             if (handler != null)
                 handler(this, EventArgs.Empty);
@@ -2079,6 +2337,12 @@ namespace OSGeo.MapGuide.Viewer
         private void OnMapMouseUp(object sender, MouseEventArgs e)
         {
             HandleMouseUp(e);
+        }
+
+        private void OnMapMouseWheel(object sender, MouseEventArgs e)
+        {
+            this.Focus();
+            HandleMouseWheel(e);
         }
 
         private void OnMapMouseClick(object sender, MouseEventArgs e)
@@ -2113,6 +2377,153 @@ namespace OSGeo.MapGuide.Viewer
                 dPath.Add(new Point(e.X, e.Y));
                 OnPolygonDigitized(dPath);
             }
+        }
+
+        private double? delayRenderScale;
+        private PointF? delayRenderViewCenter;
+        private float? mouseWheelSx = null;
+        private float? mouseWheelSy = null;
+        private float? mouseWheelTx = null;
+        private float? mouseWheelTy = null;
+        private int? mouseWheelDelta = null;
+        private System.Timers.Timer delayRenderTimer = null;
+
+        private void HandleMouseWheel(MouseEventArgs e)
+        {
+            if (delayRenderTimer == null)
+            {
+                delayRenderTimer = new System.Timers.Timer();
+                delayRenderTimer.Enabled = false;
+                delayRenderTimer.Elapsed += new System.Timers.ElapsedEventHandler(OnDelayRender);
+                delayRenderTimer.Interval = this.MouseWheelDelayRenderInterval;
+            }
+
+            delayRenderTimer.Stop();
+            delayRenderTimer.Start();
+            Trace.TraceInformation("Postponed delay render");
+            Trace.TraceInformation("Mouse delta: " + e.Delta + " (" + (e.Delta > 0 ? "Zoom in" : "Zoom out") + ")");
+            //Negative delta = zoom out, Positive delta = zoom in
+            //deltas are in units of 120, so treat each multiple of 120 as a "zoom unit"
+
+            if (!mouseWheelSx.HasValue && !mouseWheelSy.HasValue)
+            {
+                mouseWheelSx = 1.0f;
+                mouseWheelSy = 1.0f;
+            }
+
+            if (!mouseWheelDelta.HasValue)
+                mouseWheelDelta = 0;
+
+            if (e.Delta > 0) //Zoom In
+            {
+                mouseWheelDelta++;
+                mouseWheelSx -= 0.1f;
+                mouseWheelSy -= 0.1f;
+                Invalidate();
+            }
+            else if (e.Delta < 0) //Zoom Out
+            {
+                mouseWheelDelta--;
+                mouseWheelSx += 0.1f;
+                mouseWheelSy += 0.1f;
+                Invalidate();
+            }
+
+            Trace.TraceInformation("Delta units is: " + mouseWheelDelta);
+
+            //Completely ripped the number crunching here from the AJAX viewer with no sense of shame whatsoever :)
+            delayRenderScale = GetNewScale(_map.ViewScale, mouseWheelDelta.Value);
+            double zoomChange = _map.ViewScale / delayRenderScale.Value;
+
+            //Determine the center of the new, zoomed map, in current screen device coords
+            double screenZoomCenterX = e.X - (e.X - this.Width / 2) / zoomChange;
+            double screenZoomCenterY = e.Y - (e.Y - this.Height / 2) / zoomChange;
+            delayRenderViewCenter = ScreenToMapUnits(screenZoomCenterX, screenZoomCenterY);
+
+            var mpu = this.MetersPerUnit;
+            var mpp = GetMetersPerPixel(_map.DisplayDpi);
+            var w = (_extX2 - _extX1) * this.MetersPerUnit / (delayRenderScale * mpp);
+            if (w > 20000)
+            {
+                w = 20000;
+            }
+            var h = w * ((double)this.Height / (double)this.Width);
+            var xClickOffset = screenZoomCenterX - this.Width / 2;
+            var yClickOffset = screenZoomCenterY - this.Height / 2;
+
+            //Set the paint transforms. Will be reset once the delayed render is fired away
+            mouseWheelTx = (float)((double)this.Width / 2 - w / 2 - xClickOffset * zoomChange);
+            mouseWheelTy = (float)((double)this.Height / 2 - h / 2 - yClickOffset * zoomChange);
+            mouseWheelSx = (float)(w / (double)this.Width);
+            mouseWheelSy = (float)(h / (double)this.Height);
+
+            Trace.TraceInformation("Paint transform (tx: " + mouseWheelTx + ", ty: " + mouseWheelTy + ", sx: " + mouseWheelSx + ", sy: " + mouseWheelSy + ")");
+        }
+
+        static double GetMetersPerPixel(int dpi)
+        {
+            return 0.0254 / dpi;
+        }
+
+        double GetNewScale(double currentScale, int wheelZoomDelta)
+        {
+            var newScale = currentScale;
+            /*
+            //handle finite zoom scales for tiled map
+            if (finscale)
+            {
+                var newScaleIndex = sci - wheelDelta;
+                if (newScaleIndex < 0)
+                {
+                    newScaleIndex = 0;
+                }
+                if (newScaleIndex > scales.length - 1)
+                {
+                    newScaleIndex = scales.length - 1;
+                }
+                newScale = scales[newScaleIndex];
+            }
+            //no finite zoom scales (untiled map)
+            else */
+            {
+                var zoomChange = Math.Pow(1.5, wheelZoomDelta);
+                newScale = zoomChange > 0 ? currentScale / zoomChange : this.MaxScale;
+                newScale = NormalizeScale(newScale);
+            }
+            return newScale;
+        }
+
+        double NormalizeScale(double scale)
+        {
+            if (scale < this.MinScale)
+                return this.MinScale;
+            if (scale > this.MaxScale)
+                return this.MaxScale;
+            return scale;
+        }
+
+        void OnDelayRender(object sender, System.Timers.ElapsedEventArgs e)
+        {
+            Trace.TraceInformation("Delay rendering");
+            Trace.TraceInformation("Set new map coordinates to (" + delayRenderViewCenter.Value.X + ", " + delayRenderViewCenter.Value.Y + " at " + delayRenderScale.Value + ")");
+            ResetMouseWheelPaintTransforms();
+            MethodInvoker action = () => { ZoomToView(delayRenderViewCenter.Value.X, delayRenderViewCenter.Value.Y, delayRenderScale.Value, true); };
+            if (this.InvokeRequired)
+                this.Invoke(action);
+            else
+                action();
+        }
+
+        private void ResetMouseWheelPaintTransforms()
+        {
+            if (delayRenderTimer != null)
+                delayRenderTimer.Stop();
+            mouseWheelSx = null;
+            mouseWheelSy = null;
+            mouseWheelTx = null;
+            mouseWheelTy = null;
+            mouseWheelDelta = 0;
+            Trace.TraceInformation("Mouse wheel paint transform reset");
         }
 
         private void HandleMouseClick(MouseEventArgs e)
@@ -2194,8 +2605,8 @@ namespace OSGeo.MapGuide.Viewer
             {
                 if (this.ActiveTool == MapActiveTool.Select)
                 {
-                    var mapPt1 = ScreenToMapUnits(e.X - 2, e.Y - 2);
-                    var mapPt2 = ScreenToMapUnits(e.X + 2, e.Y + 2);
+                    var mapPt1 = ScreenToMapUnits(e.X - this.PointPixelBuffer, e.Y - this.PointPixelBuffer);
+                    var mapPt2 = ScreenToMapUnits(e.X + this.PointPixelBuffer, e.Y + this.PointPixelBuffer);
 
                     var coord1 = _geomFact.CreateCoordinateXY(mapPt1.X, mapPt1.Y);
                     var coord2 = _geomFact.CreateCoordinateXY(mapPt2.X, mapPt2.Y);

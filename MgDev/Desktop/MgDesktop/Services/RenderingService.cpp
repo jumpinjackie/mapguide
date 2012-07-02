@@ -2,73 +2,17 @@
 #include "System/ConfigProperties.h"
 #include "AGGRenderer.h"
 #include "GDRenderer.h"
-#include "EPlotRenderer.h"
-#include "DefaultStylizer.h"
 #include "ImageFormats.h"
-#include "FeatureTypeStyleVisitor.h"
 #include "SymbolInstance.h"
-#include "Rendering/icons.h"
-#include "Rendering/RSMgSymbolManager.h"
 #include "Rendering/RSMgFeatureReader.h"
 #include "Rendering/FeatureInfoRenderer.h"
-#include "Stylization/SEMgSymbolManager.h"
-#include "StylizationUtil.h"
 #include "Rendering/MappingUtil.h"
-#include "Rendering/LegendPlotUtil.h"
 #include "MapLayer/Map.h"
 #include "Feature/TransformCache.h"
 #include "ServiceFactory.h"
 #include "Tile/TileDefs.h"
 #include "Rendering/MapPlot.h"
 #include "Rendering/MapPlotCollection.h"
-
-///////////////////////////////////////////////////////////////////////////////
-/// Mg Server Mapping Service try/catch/throw macros.
-///
-#define MG_SERVER_MAPPING_SERVICE_TRY()                                       \
-    MG_TRY()                                                                  \
-
-// For the Mapping service, gracefully handle and remap any Fdo exceptions to MapGuide exceptions.
-// Some Fdo providiers like WMS return useful error strings when a request fails.
-// Without the remap, this information is lost and MapGuide returns an unclassified exception.
-#define MG_SERVER_MAPPING_SERVICE_CATCH(methodName)                         \
-    }                                                                       \
-    catch (MgException* e)                                                  \
-                                                                            \
-    {                                                                       \
-        mgException = e;                                                    \
-        mgException->AddStackTraceInfo(methodName, __LINE__, __WFILE__);    \
-    }                                                                       \
-    catch (exception& e)                                                    \
-    {                                                                       \
-        mgException = MgSystemException::Create(e, methodName, __LINE__, __WFILE__); \
-    }                                                                       \
-    catch (FdoException* e)                                                 \
-    {                                                                       \
-        STRING messageId;                                                   \
-        MgStringCollection arguments;                                       \
-        wchar_t* buf = (wchar_t*)e->GetExceptionMessage();                  \
-        INT64 nativeErrorCode = e->GetNativeErrorCode();                    \
-        if (NULL != buf)                                                    \
-        {                                                                   \
-            messageId = L"MgFormatInnerExceptionMessage";                   \
-            arguments.Add(buf);                                             \
-        }                                                                   \
-        FDO_SAFE_RELEASE(e);                                                \
-        mgException = new MgFdoException(methodName, __LINE__, __WFILE__, NULL, messageId, &arguments, nativeErrorCode); \
-    }                                                                       \
-    catch (...)                                                             \
-    {                                                                       \
-        mgException = new MgUnclassifiedException(methodName, __LINE__, __WFILE__, NULL, L"", NULL); \
-    }                                                                       \
-
-#define MG_SERVER_MAPPING_SERVICE_THROW()                                     \
-    MG_THROW()                                                                \
-
-#define MG_SERVER_MAPPING_SERVICE_CATCH_AND_THROW(methodName)                 \
-    MG_SERVER_MAPPING_SERVICE_CATCH(methodName)                               \
-                                                                              \
-    MG_SERVER_MAPPING_SERVICE_THROW()                                         \
 
 // the maximum number of allowed pixels for rendered images
 static const INT32 MAX_PIXELS = 16384*16384;
@@ -94,13 +38,9 @@ bool StylizeThatMany(void* data)
 
 
 ///////////////////////////////////////////////////////////////////////////////
-MgRenderingService::MgRenderingService() : MgService()
+MgdRenderingService::MgdRenderingService() : MgService()
 {
     m_pCSFactory = new MgCoordinateSystemFactory();
-
-    // store references to the various services we use
-    //MgServiceManager* serviceMan = MgServiceManager::GetInstance();
-    //assert(NULL != serviceMan);
 
     Ptr<MgServiceFactory> fact = new MgServiceFactory();
 
@@ -110,7 +50,7 @@ MgRenderingService::MgRenderingService() : MgService()
     m_svcFeature = dynamic_cast<MgFeatureService*>(fact->CreateService(MgServiceType::FeatureService));
     assert(m_svcFeature != NULL);
 
-    m_svcDrawing = dynamic_cast<MgDrawingService*>(fact->CreateService(MgServiceType::DrawingService));
+    m_svcDrawing = dynamic_cast<MgdDrawingService*>(fact->CreateService(MgServiceType::DrawingService));
     assert(m_svcDrawing != NULL);
 
     MgConfiguration* pConf = MgConfiguration::GetInstance();
@@ -149,22 +89,6 @@ MgRenderingService::MgRenderingService() : MgService()
                           m_maxRasterImageHeight,
                           MgConfigProperties::DefaultRenderingServicePropertyMaxRasterImageHeight);
 
-	// Set Mapping Service related properties
-	pConf->GetIntValue(MgConfigProperties::RenderingServicePropertiesSection,
-                          MgConfigProperties::RenderingServicePropertyRasterGridSizeForPlot,
-                          m_rasterGridSizeForPlot,
-                          MgConfigProperties::DefaultRenderingServicePropertyRasterGridSizeForPlot);
-
-    pConf->GetIntValue(MgConfigProperties::RenderingServicePropertiesSection,
-                          MgConfigProperties::RenderingServicePropertyMinRasterGridSizeForPlot,
-                          m_minRasterGridSizeForPlot,
-                          MgConfigProperties::DefaultRenderingServicePropertyMinRasterGridSizeForPlot);
-
-    pConf->GetDoubleValue(MgConfigProperties::RenderingServicePropertiesSection,
-                          MgConfigProperties::RenderingServicePropertyRasterGridSizeOverrideRatioForPlot,
-                          m_rasterGridSizeOverrideRatioForPlot,
-                          MgConfigProperties::DefaultRenderingServicePropertyRasterGridSizeOverrideRatioForPlot);
-
     // there should only be one instance of this class, so it's safe to
     // directly set these static variables
     bool bClampPoints;
@@ -185,677 +109,37 @@ MgRenderingService::MgRenderingService() : MgService()
 
 
 ///////////////////////////////////////////////////////////////////////////////
-MgRenderingService::~MgRenderingService()
+MgdRenderingService::~MgdRenderingService()
 {
-}
-
-// Returns true if the supplied feature type style is compatible with the
-// supplied geometry type: 1=Point, 2=Line, 3=Area, 4=Composite
-bool MgRenderingService::FeatureTypeStyleSupportsGeomType(MdfModel::FeatureTypeStyle* fts, INT32 geomType)
-{
-    if (fts == NULL)
-        return false;
-
-    // if ShowInLegend is false, the legend doesn't need to be shown
-    if(!fts->IsShowInLegend())
-        return false;
-
-    // a value of -1 matches any
-    if (geomType == -1)
-        return true;
-
-    FeatureTypeStyleVisitor::eFeatureTypeStyle ftsType = FeatureTypeStyleVisitor::DetermineFeatureTypeStyle(fts);
-
-    switch (ftsType)
-    {
-        case FeatureTypeStyleVisitor::ftsPoint:
-            return (geomType == 1);
-
-        case FeatureTypeStyleVisitor::ftsLine:
-            return (geomType == 2);
-
-        case FeatureTypeStyleVisitor::ftsArea:
-            return (geomType == 3);
-
-        case FeatureTypeStyleVisitor::ftsComposite:
-            return (geomType == 4);
-    }
-
-    return false;
-}
-
-MgByteReader* MgRenderingService::GenerateLegendImage(MgResourceIdentifier* resource,
-                                                      double     scale,
-                                                      INT32      imgWidth,
-                                                      INT32      imgHeight,
-                                                      CREFSTRING format,
-                                                      INT32      geomType,
-                                                      INT32      themeCategory)
-{
-    Ptr<MgByteReader> byteReader;
-
-    MG_SERVER_MAPPING_SERVICE_TRY()
-
-    MG_LOG_TRACE_ENTRY(L"MgServerMappingService::GenerateLegendImage");
-
-    if (0 == resource)
-    {
-        throw new MgNullArgumentException(
-            L"MgRenderingService::GenerateLegendImage", __LINE__, __WFILE__, NULL, L"", NULL);
-    }
-
-    if (m_svcResource == NULL)
-    {
-        Ptr<MgServiceFactory> fact = new MgServiceFactory();
-        m_svcResource = static_cast<MgResourceService*>(fact->CreateService(MgServiceType::ResourceService));
-    }
-
-    auto_ptr<MdfModel::LayerDefinition> ldf(MgLayerBase::GetLayerDefinition(m_svcResource, resource));
-    MdfModel::VectorLayerDefinition* vl = dynamic_cast<MdfModel::VectorLayerDefinition*>(ldf.get());
-    MdfModel::DrawingLayerDefinition* dl = dynamic_cast<MdfModel::DrawingLayerDefinition*>(ldf.get());
-    MdfModel::GridLayerDefinition* gl = dynamic_cast<MdfModel::GridLayerDefinition*>(ldf.get());
-
-    if (vl) // vector layer
-    {
-        MdfModel::VectorScaleRangeCollection* src = vl->GetScaleRanges();
-
-        MdfModel::VectorScaleRange* range = NULL;
-
-        //find the right scale range
-        for (int i=0; i<src->GetCount(); i++)
-        {
-            MdfModel::VectorScaleRange* r = src->GetAt(i);
-
-            if (scale >= r->GetMinScale() && scale < r->GetMaxScale())
-            {
-                range = r;
-                break;
-            }
-        }
-
-        //we have the scale range... find the feature style
-        if (range)
-        {
-            MdfModel::FeatureTypeStyle* fts = NULL;
-
-            // The "geometry type" specifies which flavor of feature type style to use,
-            // while the theme category is a 0-based value which specifies the actual
-            // type style to use.  So if I have a scale range with two composite type
-            // styles, the first with 3 rules and the second with 2 rules, then the
-            // theme category can range from 0 to 4: 0,1,2 refer to the 3 rules in the
-            // 1st type style, while 3,4 refer to the 2 rules in the 2nd type style.
-            MdfModel::FeatureTypeStyleCollection* ftsc = range->GetFeatureTypeStyles();
-            int numFTS = ftsc->GetCount();
-            for (int j=0; j<numFTS; ++j)
-            {
-                // filter the type styles
-                MdfModel::FeatureTypeStyle* temp = ftsc->GetAt(j);
-                if (!FeatureTypeStyleSupportsGeomType(temp, geomType))
-                    continue;
-
-                // make sure we have rules
-                RuleCollection* rules = temp->GetRules();
-                if (!rules)
-                    continue;
-
-                // check if the theme category refers to one of these rules (note: a
-                // value of -1 matches anything)
-                int numRules = rules->GetCount();
-                if (themeCategory >= -1 && themeCategory < numRules)
-                {
-                    // found it
-                    fts = temp;
-                    break;
-                }
-
-                // adjust the theme category, and move to the next type style
-                themeCategory -= numRules;
-            }
-
-            if (fts)
-                byteReader = MgMappingUtil::DrawFTS(m_svcResource, fts, imgWidth, imgHeight, themeCategory);
-            else
-            {
-                //return the fixed array
-                //MgByteSource will make its own copy of the data
-                Ptr<MgByteSource> src = new MgByteSource((BYTE_ARRAY_IN)BLANK_LAYER_ICON, sizeof(BLANK_LAYER_ICON));
-                byteReader = src->GetReader();
-            }
-        }
-    }
-    else if (dl) // drawing layer
-    {
-        //return the fixed array
-        //MgByteSource will make its own copy of the data
-        Ptr<MgByteSource> src = new MgByteSource((BYTE_ARRAY_IN)DWF_LAYER_ICON, sizeof(DWF_LAYER_ICON));
-        byteReader = src->GetReader();
-    }
-    else if (gl) //grid (raster) layer
-    {
-        //return the fixed array
-        //MgByteSource will make its own copy of the data
-        Ptr<MgByteSource> src = new MgByteSource((BYTE_ARRAY_IN)RASTER_LAYER_ICON, sizeof(RASTER_LAYER_ICON));
-        byteReader = src->GetReader();
-    }
-
-    MG_SERVER_MAPPING_SERVICE_CATCH_AND_THROW(L"MgRenderingService::GenerateLegendImage")
-
-    return byteReader.Detach();
-}
-
-///////////////////////////////////////////////////////////////////////////////
-void MgRenderingService::SetConnectionProperties(MgConnectionProperties*)
-{
-    // Do nothing.  No connection properties are required for server-side service objects.
-}
-
-MgByteReader* MgRenderingService::GeneratePlot(MgdMap* map,
-                                               MgPlotSpecification* plotSpec,
-                                               MgLayout* layout,
-                                               MgDwfVersion* dwfVersion)
-{
-    Ptr<MgByteReader> byteReader;
-
-    MG_SERVER_MAPPING_SERVICE_TRY()
-
-    MG_LOG_TRACE_ENTRY(L"MgServerMappingService::GeneratePlot()");
-
-    if (NULL == map  || NULL == dwfVersion || NULL == plotSpec )
-    {
-        throw new MgNullArgumentException(
-            L"MgRenderingService::GeneratePlot", __LINE__, __WFILE__, NULL, L"", NULL);
-    }
-
-    // Create a MgMapPlot which will be passed to GenerateMultiPlot
-    Ptr<MgMapPlot> mapPlot = new MgMapPlot(map, plotSpec, layout);
-
-    // Add it to a MgMapPlotCollecion
-    Ptr<MgMapPlotCollection> mapPlots = new MgMapPlotCollection();
-    mapPlots->Add(mapPlot);
-
-    // Create the plot
-    byteReader = GenerateMultiPlot(mapPlots, dwfVersion);
-
-    MG_SERVER_MAPPING_SERVICE_CATCH_AND_THROW(L"MgRenderingService::GeneratePlot")
-
-    return byteReader.Detach();
-}
-
-MgByteReader* MgRenderingService::GeneratePlot(MgdMap* map,
-                                               MgCoordinate* center,
-                                               double scale,
-                                               MgPlotSpecification* plotSpec,
-                                               MgLayout* layout,
-                                               MgDwfVersion* dwfVersion)
-{
-    Ptr<MgByteReader> byteReader;
-
-    MG_SERVER_MAPPING_SERVICE_TRY()
-
-    MG_LOG_TRACE_ENTRY(L"MgServerMappingService::GeneratePlot()");
-
-    if (NULL == map  || NULL == center || NULL == dwfVersion || NULL == plotSpec )
-    {
-        throw new MgNullArgumentException(
-            L"MgRenderingService::GeneratePlot", __LINE__, __WFILE__, NULL, L"", NULL);
-    }
-
-    // Create a MgMapPlot which will be passed to GenerateMultiPlot
-    Ptr<MgMapPlot> mapPlot = new MgMapPlot(map, center, scale, plotSpec, layout);
-
-    // Add it to a MgMapPlotCollecion
-    Ptr<MgMapPlotCollection> mapPlots = new MgMapPlotCollection();
-    mapPlots->Add(mapPlot);
-
-    // Create the plot
-    byteReader = GenerateMultiPlot(mapPlots, dwfVersion);
-
-    MG_SERVER_MAPPING_SERVICE_CATCH_AND_THROW(L"MgRenderingService::GeneratePlot")
-
-    return byteReader.Detach();
-}
-
-MgByteReader* MgRenderingService::GeneratePlot(MgdMap* map,
-                                               MgEnvelope* extents,
-                                               bool expandToFit,
-                                               MgPlotSpecification* plotSpec,
-                                               MgLayout* layout,
-                                               MgDwfVersion* dwfVersion)
-{
-    Ptr<MgByteReader> byteReader;
-
-    MG_SERVER_MAPPING_SERVICE_TRY()
-
-    MG_LOG_TRACE_ENTRY(L"MgServerMappingService::GeneratePlot()");
-
-    if (NULL == map  || NULL == extents || NULL == plotSpec || NULL == dwfVersion )
-    {
-        throw new MgNullArgumentException(
-            L"MgRenderingService::GeneratePlot", __LINE__, __WFILE__, NULL, L"", NULL);
-    }
-
-    // Make a copy of the extents
-    Ptr<MgCoordinate> oldll = extents->GetLowerLeftCoordinate();
-    Ptr<MgCoordinate> oldur = extents->GetUpperRightCoordinate();
-    Ptr<MgCoordinate> ll = new MgCoordinateXY(oldll->GetX(), oldll->GetY());
-    Ptr<MgCoordinate> ur = new MgCoordinateXY(oldur->GetX(), oldur->GetY());
-    if (ll == NULL || ur == NULL)
-    {
-        throw new MgNullArgumentException(L"MgRenderingService::GeneratePlot", __LINE__, __WFILE__, NULL, L"", NULL);
-    }
-    Ptr<MgEnvelope> env = new MgEnvelope(ll, ur);
-
-    // Create a MgMapPlot which will be passed to GenerateMultiPlot
-    Ptr<MgMapPlot> mapPlot = new MgMapPlot(map, env, expandToFit, plotSpec, layout);
-
-    // Add it to a MgMapPlotCollecion
-    Ptr<MgMapPlotCollection> mapPlots = new MgMapPlotCollection();
-    if (mapPlot == NULL || mapPlots == NULL)
-    {
-        throw new MgNullArgumentException(L"MgRenderingService::GeneratePlot", __LINE__, __WFILE__, NULL, L"", NULL);
-    }
-    mapPlots->Add(mapPlot);
-
-    // Create the plot
-    byteReader = GenerateMultiPlot(mapPlots, dwfVersion);
-
-    MG_SERVER_MAPPING_SERVICE_CATCH_AND_THROW(L"MgRenderingService::GeneratePlot")
-
-    return byteReader.Detach();
-}
-
-MgByteReader* MgRenderingService::GenerateMultiPlot(MgMapPlotCollection* mapPlots,
-                                                    MgDwfVersion* dwfVersion)
-{
-    Ptr<MgByteReader> byteReader;
-
-    MG_SERVER_MAPPING_SERVICE_TRY()
-
-    MG_LOG_TRACE_ENTRY(L"MgServerMappingService::GenerateMultiPlot()");
-
-    if (0 == mapPlots || 0 == dwfVersion)
-    {
-        throw new MgNullArgumentException(
-            L"MgRenderingService::GenerateMultiPlot", __LINE__, __WFILE__, NULL, L"", NULL);
-    }
-
-    // get a temporary file to write out EPlot DWF to
-    // TODO: clean the temp file name prefix
-    STRING dwfName = MgFileUtil::GenerateTempFileName(false, L"default_prefix");
-
-    EPlotRenderer dr(dwfName.c_str(), 0, 0, L"inches");  // NOXLATE
-
-    dr.SetRasterGridSize(m_rasterGridSizeForPlot);
-    dr.SetMinRasterGridSize(m_minRasterGridSizeForPlot);
-    dr.SetRasterGridSizeOverrideRatio(m_rasterGridSizeOverrideRatioForPlot);
-    dr.SetMaxRasterImageWidth(m_maxRasterImageWidth);
-    dr.SetMaxRasterImageHeight(m_maxRasterImageHeight);
-
-    RSMgSymbolManager mgr(m_svcResource);
-    dr.SetSymbolManager(&mgr);
-
-    // process the MapPlot collection
-    for (int nMapPlotIndex = 0; nMapPlotIndex < mapPlots->GetCount(); nMapPlotIndex++)
-    {
-        Ptr<MgMapPlot> mapPlot = mapPlots->GetItem(nMapPlotIndex);
-        if (NULL == mapPlot)
-        {
-            throw new MgNullReferenceException(L"MgRenderingService::GenerateMultiPlot", __LINE__, __WFILE__, NULL, L"", NULL);
-        }
-
-        Ptr<MgdMap> map = mapPlot->GetMap();
-        if (NULL == map)
-        {
-            throw new MgNullReferenceException(L"MgRenderingService::GenerateMultiPlot", __LINE__, __WFILE__, NULL, L"", NULL);
-        }
-
-        Ptr<MgPlotSpecification> plotSpec = mapPlot->GetPlotSpecification();
-        if (NULL == plotSpec)
-        {
-            throw new MgNullReferenceException(L"MgRenderingService::GenerateMultiPlot", __LINE__, __WFILE__, NULL, L"", NULL);
-        }
-
-        Ptr<MgLayout> layout = mapPlot->GetLayout();
-
-        double width = plotSpec->GetPaperWidth();
-        double height = plotSpec->GetPaperHeight();
-        STRING pageUnits = plotSpec->GetPageSizeUnits();
-
-        dr.SetPageWidth(width);
-        dr.SetPageHeight(height);
-        dr.SetPageSizeUnits(pageUnits);
-        dr.SetMapWidth(width);
-        dr.SetMapHeight(height);
-        dr.mapBoundsHeight() = height;
-
-        // temporary place for the resId of the Map
-        Ptr<MgResourceIdentifier> mapResId = map->GetMapDefinition();
-
-        // request extenst
-        Ptr<MgEnvelope> env = map->GetDataExtent();
-        if (env == NULL)
-        {
-            throw new MgNullReferenceException(L"MgRenderingService::GenerateMultiPlot", __LINE__, __WFILE__, NULL, L"", NULL);
-        }
-
-        Ptr<MgCoordinate> ll = env->GetLowerLeftCoordinate();
-        Ptr<MgCoordinate> ur = env->GetUpperRightCoordinate();
-        if (ll == NULL || ur == NULL)
-        {
-            throw new MgNullReferenceException(L"MgRenderingService::GenerateMultiPlot", __LINE__, __WFILE__, NULL, L"", NULL);
-        }
-        RS_Bounds b(ll->GetX(), ll->GetY(), ur->GetX(), ur->GetY());
-
-        //if requested data extent is not valid, use map definition extent
-        // this may be removed eventually, but is a good sanity check nonetheless
-        if (!b.IsValid())
-        {
-            Ptr<MgEnvelope> env2 = map->GetMapExtent();
-            if (env2 == NULL)
-            {
-                throw new MgNullReferenceException(L"MgRenderingService::GenerateMultiPlot", __LINE__, __WFILE__, NULL, L"", NULL);
-            }
-
-            Ptr<MgCoordinate> ll2 = env2->GetLowerLeftCoordinate();
-            Ptr<MgCoordinate> ur2 = env2->GetUpperRightCoordinate();
-            if (ll2 == NULL || ur2 == NULL)
-            {
-                throw new MgNullReferenceException(L"MgRenderingService::GenerateMultiPlot", __LINE__, __WFILE__, NULL, L"", NULL);
-            }
-
-            b.minx = ll2->GetX();
-            b.miny = ll2->GetY();
-            b.maxx = ur2->GetX();
-            b.maxy = ur2->GetY();
-        }
-
-        // Create a simple print layout containing only the map
-        Ptr<MgPrintLayout> printLayout = new MgPrintLayout();
-        if (printLayout == NULL)
-        {
-            throw new MgNullReferenceException(L"MgRenderingService::GenerateMultiPlot", __LINE__, __WFILE__, NULL, L"", NULL);
-        }
-
-        if (NULL != layout)
-        {
-            Ptr<MgResourceIdentifier> resID = layout->GetLayout();
-            printLayout->Create(m_svcResource, resID);
-            printLayout->SetPlotSize(plotSpec);
-            printLayout->SetScaleBarUnits(layout->GetUnitType());
-            printLayout->SetPlotTitle(layout->GetTitle());
-
-            Ptr<MgPlotSpecification> spec = printLayout->GetPlotSize();
-
-            width = spec->GetPaperWidth();
-            height = spec->GetPaperHeight();
-            pageUnits = spec->GetPageSizeUnits();
-        }
-        else
-        {
-            printLayout->SetPlotSize(plotSpec);
-        }
-
-        printLayout->PageWidth() = width;
-        printLayout->PageHeight() = height;
-        printLayout->Units() = pageUnits;
-
-        dr.EnableLayoutPlot();
-
-        //get the map coordinate system
-        MdfModel::MdfString srs = map->GetMapSRS();
-        Ptr<MgCoordinateSystem> dstCs;
-        if (!srs.empty())
-        {
-            //let's not fail here if coord sys conversion fails for the
-            //map's coordinate system. Instead we will fail per layer at a later stage
-            try
-            {
-                dstCs = m_pCSFactory->Create(srs);
-            }
-            catch (MgInvalidCoordinateSystemException* e)
-            {
-                e->Release();
-            }
-        }
-
-        double metersPerUnit = (dstCs.p) ? dstCs->ConvertCoordinateSystemUnitsToMeters(1.0) : 1.0;
-        RS_String units = (dstCs.p) ? dstCs->GetUnits() : L"";
-
-        double dMapScale = 0.0;
-        Ptr<MgCoordinate> center = new MgCoordinateXY(0, 0);
-        Ptr<MgEnvelope> extents = map->GetMapExtent();
-        if (center == NULL || extents == NULL)
-        {
-            throw new MgNullReferenceException(L"MgRenderingService::GenerateMultiPlot", __LINE__, __WFILE__, NULL, L"", NULL);
-        }
-
-        switch (mapPlot->GetMapPlotInstruction())
-        {
-        case MgMapPlotInstruction::UseMapCenterAndScale:
-            {
-                dMapScale = map->GetViewScale();
-                if (dMapScale <= 0)
-                {
-                    Ptr<MgEnvelope> extents = map->GetDataExtent();
-                    if (extents == NULL)
-                    {
-                        throw new MgNullReferenceException(L"MgRenderingService::GenerateMultiPlot", __LINE__, __WFILE__, NULL, L"", NULL);
-                    }
-                    printLayout->ComputeMapOffsetAndSize(dMapScale, extents, metersPerUnit, dr.mapOffsetX(), dr.mapOffsetY(), dr.mapWidth(), dr.mapHeight());
-                    double mapWidth = dr.mapWidth();
-                    double mapHeight = dr.mapHeight();
-                    if (_wcsicmp(pageUnits.c_str(), L"mm") == 0 || _wcsicmp(pageUnits.c_str(), L"millimeters") == 0) // NOXLATE
-                    {
-                        mapWidth *= MM_TO_IN;
-                        mapHeight *= MM_TO_IN;
-                    }
-
-                    double scaleToFitX = (extents->GetWidth() * metersPerUnit * M_TO_IN) / mapWidth;
-                    double scaleToFitY = (extents->GetHeight() * metersPerUnit * M_TO_IN) / mapHeight;
-                    dMapScale = rs_max(scaleToFitX, scaleToFitY);
-                }
-
-                Ptr<MgPoint> pt = map->GetViewCenter();
-                center = pt->GetCoordinate();
-                break;
-            }
-        case MgMapPlotInstruction::UseOverriddenCenterAndScale:
-            {
-                dMapScale = mapPlot->GetScale();
-                center = mapPlot->GetCenter();
-                break;
-            }
-        case MgMapPlotInstruction::UseOverriddenExtent:
-            {
-                // Compute the plotCenter and plotScale from the extents
-                extents = mapPlot->GetExtent();
-                //...plotCenter
-                Ptr<MgCoordinate> plotll = extents->GetLowerLeftCoordinate();
-                Ptr<MgCoordinate> plotur = extents->GetUpperRightCoordinate();
-                if (plotll == NULL || plotur == NULL)
-                {
-                    throw new MgNullReferenceException(L"MgRenderingService::GenerateMultiPlot", __LINE__, __WFILE__, NULL, L"", NULL);
-                }
-                double minX = plotll->GetX();
-                double minY = plotll->GetY();
-                double maxX = plotur->GetX();
-                double maxY = plotur->GetY();
-                double centerX = minX + (maxX - minX) * 0.5;
-                double centerY = minY + (maxY - minY) * 0.5;
-                //
-                //...plotScale
-                printLayout->ComputeMapOffsetAndSize(dMapScale, extents, metersPerUnit, dr.mapOffsetX(), dr.mapOffsetY(), dr.mapWidth(), dr.mapHeight());
-                double mapWidth = dr.mapWidth();
-                double mapHeight = dr.mapHeight();
-                if (_wcsicmp(pageUnits.c_str(), L"mm") == 0 || _wcsicmp(pageUnits.c_str(), L"millimeters") == 0)  // NOXLATE
-                {
-                    mapWidth *= MM_TO_IN;
-                    mapHeight *= MM_TO_IN;
-                }
-
-                double scaleToFitX = (extents->GetWidth() * metersPerUnit * M_TO_IN) / mapWidth;
-                double scaleToFitY = (extents->GetHeight() * metersPerUnit * M_TO_IN) / mapHeight;
-                dMapScale = rs_max(scaleToFitX, scaleToFitY);
-
-                map->SetViewScale(dMapScale);
-                center = new MgCoordinateXY(centerX, centerY);
-                if (center == NULL)
-                {
-                    throw new MgNullReferenceException(L"MgRenderingService::GenerateMultiPlot", __LINE__, __WFILE__, NULL, L"", NULL);
-                }
-                Ptr<MgPoint> centerpt = new MgPoint(center);
-                if (centerpt == NULL)
-                {
-                    throw new MgNullReferenceException(L"MgRenderingService::GenerateMultiPlot", __LINE__, __WFILE__, NULL, L"", NULL);
-                }
-                map->SetViewCenter(centerpt);
-                break;
-            }
-        default:
-            {
-                MgStringCollection arguments;
-                arguments.Add(L"1");
-                arguments.Add(L"MgMapPlotCollection");
-
-                throw new MgInvalidArgumentException(L"MgRenderingService::GenerateMultiPlot",
-                    __LINE__, __WFILE__, &arguments, L"MgInvalidMapPlotCollectionMapPlotInstruction", NULL);
-            }
-            break;
-        }
-
-        printLayout->SetPlotCenter(center);
-        printLayout->SetPlotScale(dMapScale);
-
-        // Get the map background color
-        RS_Color bgcolor;
-        StylizationUtil::ParseColor( map->GetBackgroundColor(), bgcolor);
-
-        // Get the layout background color
-        RS_Color layoutColor;
-        Ptr<MgColor> bgColor = printLayout->GetBackgroundColor();
-        layoutColor.red() = bgColor->GetRed();
-        layoutColor.green() = bgColor->GetGreen();
-        layoutColor.blue() = bgColor->GetBlue();
-
-        // Get the session ID
-        STRING sessionId;
-        /*Ptr<MgUserInformation> userInfo = MgUserInformation::GetCurrentUserInfo();
-        if (userInfo != NULL)
-            sessionId = userInfo->GetMgSessionId();*/
-
-        RS_MapUIInfo mapInfo(sessionId, map->GetName(), L"", srs, units, layoutColor);
-
-        // Dynamically adjust the width and height of the map
-        printLayout->ComputeMapOffsetAndSize(dMapScale, extents, metersPerUnit, dr.mapOffsetX(), dr.mapOffsetY(), dr.mapWidth(), dr.mapHeight(), mapPlot->GetExpandToFit());
-
-        Ptr<MgCoordinate> newll;
-        Ptr<MgCoordinate> newur;
-        if (mapPlot->GetMapPlotInstruction() != MgMapPlotInstruction::UseOverriddenExtent || mapPlot->GetExpandToFit())
-        {
-            double mapWidth = dr.mapWidth();
-            double mapHeight = dr.mapHeight();
-            if (_wcsicmp(pageUnits.c_str(), L"mm") == 0 || _wcsicmp(pageUnits.c_str(), L"millimeters") == 0)  // NOXLATE
-            {
-                mapWidth *= MM_TO_IN;
-                mapHeight *= MM_TO_IN;
-            }
-
-            env = printLayout->DetermineLayoutMapExtents(map, metersPerUnit, mapWidth, mapHeight);
-
-            newll = env->GetLowerLeftCoordinate();
-            newur = env->GetUpperRightCoordinate();
-        }
-        else if (mapPlot->GetMapPlotInstruction() == MgMapPlotInstruction::UseOverriddenExtent && !mapPlot->GetExpandToFit())
-        {
-            newll = extents->GetLowerLeftCoordinate();
-            newur = extents->GetUpperRightCoordinate();
-        }
-
-        b.minx = newll->GetX();
-        b.miny = newll->GetY();
-        b.maxx = newur->GetX();
-        b.maxy = newur->GetY();
-
-        SEMgSymbolManager semgr(m_svcResource);
-        DefaultStylizer ds(&semgr);
-
-        double dpi = map->GetDisplayDpi();
-        dr.StartMap(&mapInfo, b, dMapScale, dpi, metersPerUnit);
-
-        Ptr<MgLayerCollection> layers = map->GetLayers();
-        if (layers == NULL)
-        {
-            throw new MgNullReferenceException(L"MgRenderingService::GenerateMultiPlot", __LINE__, __WFILE__, NULL, L"", NULL);
-        }
-
-        // Define a polygon to represent the map extents and fill it with the map background color
-        dr.StartLayer(NULL, NULL);
-        LineBuffer lb(5);
-        lb.MoveTo(b.minx, b.miny);
-        lb.LineTo(b.maxx, b.miny);
-        lb.LineTo(b.maxx, b.maxy);
-        lb.LineTo(b.minx, b.maxy);
-        lb.Close();
-
-        RS_LineStroke lineStroke;
-        RS_FillStyle fillStyle(lineStroke, bgcolor, layoutColor, L"Solid");  // NOXLATE
-        dr.ProcessPolygon(&lb, fillStyle);
-        dr.EndLayer();
-
-        //transfer layers to a temporary collection
-        //here it doesn't matter but in the rendering service it does
-        Ptr<MgReadOnlyLayerCollection> rolc = new MgReadOnlyLayerCollection();
-
-        for (int u=0; u<layers->GetCount(); u++)
-        {
-            Ptr<MgLayerBase> lr = layers->GetItem(u);
-            rolc->Add(lr);
-        }
-
-        //stylize all the map layers
-        MgMappingUtil::StylizeLayers(m_svcResource, m_svcFeature, m_svcDrawing, m_pCSFactory, map,
-                                     rolc, NULL, &ds, &dr, dstCs, false, false, dMapScale);
-
-        // Finish adding the map to the page
-        // Calculate the the height of the map bounds on the page (in page units)
-        dr.mapBoundsHeight() = b.height() * dr.mapWidth()/b.width();
-
-        //construct one every time -- not really a bottleneck
-        MgLegendPlotUtil lu(m_svcResource);
-
-        // Now add the rest of the layout element to the page
-        lu.AddLayoutElements(printLayout, (STRING)mapInfo.name(), mapResId->ToString(), map, layers, b, dMapScale, metersPerUnit, dr);
-
-        dr.EndMap();
-    }
-
-    dr.Done();
-
-    // write out the file
-    Ptr<MgByteSource> bs = new MgByteSource(dwfName, true);
-
-    bs->SetMimeType(MgMimeType::Dwf);
-    byteReader = bs->GetReader();
-
-    MG_SERVER_MAPPING_SERVICE_CATCH_AND_THROW(L"MgRenderingService::GenerateMultiPlot")
-
-    return byteReader.Detach();
 }
 
 // ---------------------------------- BEGIN Rendering Service APIs ----------------------------------------------- //
 
 ///////////////////////////////////////////////////////////////////////////////
-MgByteReader* MgRenderingService::RenderTile(MgdMap* map,
-                                                   CREFSTRING baseMapLayerGroupName,
-                                                   INT32 tileColumn,
-                                                   INT32 tileRow)
+MgByteReader* MgdRenderingService::RenderTile(MgdMap* map, CREFSTRING baseMapLayerGroupName, INT32 tileColumn, INT32 tileRow)
 {
     Ptr<MgByteReader> ret;
 
+    MG_LOG_OPERATION_MESSAGE(L"RenderTile");
+
     MG_TRY()
 
+    Ptr<MgResourceIdentifier> mapId = map->GetResourceId();
+    MG_LOG_OPERATION_MESSAGE_INIT(MG_API_VERSION(1, 0, 0), 4);
+    MG_LOG_OPERATION_MESSAGE_PARAMETERS_START();
+    MG_LOG_OPERATION_MESSAGE_ADD_STRING((NULL == mapId) ? L"MgResourceIdentifier" : mapId->ToString().c_str());
+    MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
+    MG_LOG_OPERATION_MESSAGE_ADD_STRING(baseMapLayerGroupName.c_str());
+    MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
+    MG_LOG_OPERATION_MESSAGE_ADD_INT32(tileColumn);
+    MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
+    MG_LOG_OPERATION_MESSAGE_ADD_INT32(tileRow);
+    MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
+
+    MG_LOG_TRACE_ENTRY(L"MgdRenderingService::RenderTile()");
+
     if (NULL == map || baseMapLayerGroupName.empty())
-        throw new MgNullArgumentException(L"MgRenderingService.RenderTile", __LINE__, __WFILE__, NULL, L"", NULL);
+        throw new MgNullArgumentException(L"MgdRenderingService.RenderTile", __LINE__, __WFILE__, NULL, L"", NULL);
 
     // find the finite display scale closest to the requested map scale
     double scale = map->GetViewScale();
@@ -863,7 +147,7 @@ MgByteReader* MgRenderingService::RenderTile(MgdMap* map,
 
     // if we don't find a nearest scale then something is wrong with the map
     if (scaleIndex < 0)
-        throw new MgInvalidMapDefinitionException(L"MgRenderingService.RenderTile", __LINE__, __WFILE__, NULL, L"", NULL);
+        throw new MgInvalidMapDefinitionException(L"MgdRenderingService.RenderTile", __LINE__, __WFILE__, NULL, L"", NULL);
 
     // get the layer group associated with the name
     Ptr<MgLayerGroupCollection> layerGroups = map->GetLayerGroups();
@@ -874,7 +158,7 @@ MgByteReader* MgRenderingService::RenderTile(MgdMap* map,
         arguments.Add(L"2");
         arguments.Add(baseMapLayerGroupName);
 
-        throw new MgInvalidArgumentException(L"MgRenderingService.RenderTile",
+        throw new MgInvalidArgumentException(L"MgdRenderingService.RenderTile",
             __LINE__, __WFILE__, &arguments, L"MgdMapLayerGroupNameNotFound", NULL);
     }
 
@@ -911,7 +195,22 @@ MgByteReader* MgRenderingService::RenderTile(MgdMap* map,
     ret = RenderTile(map, baseGroup, scaleIndex, MgTileParameters::tileWidth, MgTileParameters::tileHeight, scale,
                      tileMinX, tileMaxX, tileMinY, tileMaxY, MgTileParameters::tileFormat);
 
-    MG_CATCH_AND_THROW(L"MgRenderingService.RenderTile")
+    // Successful operation
+    MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Success.c_str());
+
+    MG_CATCH(L"MgdRenderingService::RenderTile")
+
+    if (mgException != NULL)
+    {
+        // Failed operation
+        MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Failure.c_str());
+        MG_DESKTOP_LOG_EXCEPTION();
+    }
+
+    // Add access log entry for operation
+    MG_LOG_OPERATION_MESSAGE_ACCESS_ENTRY();
+
+    MG_THROW()
 
     return ret.Detach();
 }
@@ -919,7 +218,7 @@ MgByteReader* MgRenderingService::RenderTile(MgdMap* map,
 
 ///////////////////////////////////////////////////////////////////////////////
 /// render a map using all layers from the baseGroup
-MgByteReader* MgRenderingService::RenderTile(MgdMap* map,
+MgByteReader* MgdRenderingService::RenderTile(MgdMap* map,
                                                    MgLayerGroup* baseGroup,
                                                    INT32 scaleIndex,
                                                    INT32 width,
@@ -936,7 +235,7 @@ MgByteReader* MgRenderingService::RenderTile(MgdMap* map,
     MG_TRY()
 
     if (NULL == map || NULL == baseGroup)
-        throw new MgNullArgumentException(L"MgRenderingService.RenderTile", __LINE__, __WFILE__, NULL, L"", NULL);
+        throw new MgNullArgumentException(L"MgdRenderingService.RenderTile", __LINE__, __WFILE__, NULL, L"", NULL);
 
     // get map extent that corresponds to tile extent
     RS_Bounds extent(mcsMinX, mcsMinY, mcsMaxX, mcsMaxY);
@@ -981,7 +280,7 @@ MgByteReader* MgRenderingService::RenderTile(MgdMap* map,
     // restore the base group's visibility
     baseGroup->SetVisible(groupVisible);
 
-    MG_CATCH_AND_THROW(L"MgRenderingService.RenderTile")
+    MG_CATCH_AND_THROW(L"MgdRenderingService.RenderTile")
 
     return ret.Detach();
 }
@@ -989,55 +288,396 @@ MgByteReader* MgRenderingService::RenderTile(MgdMap* map,
 
 ///////////////////////////////////////////////////////////////////////////////
 // default arg bKeepSelection = true
-MgByteReader* MgRenderingService::RenderDynamicOverlay(MgdMap* map,
-                                                             MgdSelection* selection,
-                                                             CREFSTRING format)
+MgByteReader* MgdRenderingService::RenderDynamicOverlay(MgdMap* map, MgdSelection* selection, CREFSTRING format)
 {
+    Ptr<MgByteReader> ret;
+    MG_LOG_OPERATION_MESSAGE(L"RenderDynamicOverlay");
+
+    MG_TRY()
+
+    Ptr<MgResourceIdentifier> mapId = map->GetResourceId();
+    MG_LOG_OPERATION_MESSAGE_INIT(MG_API_VERSION(1, 0, 0), 3);
+    MG_LOG_OPERATION_MESSAGE_PARAMETERS_START();
+    MG_LOG_OPERATION_MESSAGE_ADD_STRING((NULL == mapId) ? L"MgdMap" : mapId->ToString().c_str());
+    MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
+    MG_LOG_OPERATION_MESSAGE_ADD_STRING(L"MgdSelection");
+    MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
+    MG_LOG_OPERATION_MESSAGE_ADD_STRING(format.c_str());
+    MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
+
+    MG_LOG_TRACE_ENTRY(L"MgdRenderingService::RenderDynamicOverlay()");
+
     // Call updated RenderDynamicOverlay API
-    return RenderDynamicOverlay(map, selection, format, true);
+    //ret = RenderDynamicOverlay(map, selection, format, true);
+
+    // Call updated RenderDynamicOverlay API
+    MgRenderingOptions options(format, MgRenderingOptions::RenderSelection |
+        MgRenderingOptions::RenderLayers | MgRenderingOptions::KeepSelection, NULL);
+    ret = RenderDynamicOverlayInternal(map, selection, &options, NULL);
+
+    // Successful operation
+    MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Success.c_str());
+
+    MG_CATCH(L"MgdRenderingService::RenderDynamicOverlay")
+
+    if (mgException != NULL)
+    {
+        // Failed operation
+        MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Failure.c_str());
+        MG_DESKTOP_LOG_EXCEPTION();
+    }
+
+    // Add access log entry for operation
+    MG_LOG_OPERATION_MESSAGE_ACCESS_ENTRY();
+
+    MG_THROW()
+
+    return ret.Detach();
 }
 
 
 ///////////////////////////////////////////////////////////////////////////////
 // default arg bKeepSelection = true
-MgByteReader* MgRenderingService::RenderDynamicOverlay(MgdMap* map,
-                                                             MgdSelection* selection,
-                                                             CREFSTRING format,
-                                                             bool bKeepSelection)
+MgByteReader* MgdRenderingService::RenderDynamicOverlay(MgdMap* map, MgdSelection* selection, CREFSTRING format, bool bKeepSelection)
 {
+    Ptr<MgByteReader> ret;
+
+    MG_LOG_OPERATION_MESSAGE(L"RenderDynamicOverlay");
+
+    MG_TRY()
+
+    Ptr<MgResourceIdentifier> mapId = map->GetResourceId();
+    MG_LOG_OPERATION_MESSAGE_INIT(MG_API_VERSION(1, 0, 0), 4);
+    MG_LOG_OPERATION_MESSAGE_PARAMETERS_START();
+    MG_LOG_OPERATION_MESSAGE_ADD_STRING((NULL == mapId) ? L"MgdMap" : mapId->ToString().c_str());
+    MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
+    MG_LOG_OPERATION_MESSAGE_ADD_STRING(L"MgdSelection");
+    MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
+    MG_LOG_OPERATION_MESSAGE_ADD_STRING(format.c_str());
+    MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
+    MG_LOG_OPERATION_MESSAGE_ADD_BOOL(bKeepSelection);
+    MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
+
+    MG_LOG_TRACE_ENTRY(L"MgdRenderingService::RenderDynamicOverlay()");
+
     // Call updated RenderDynamicOverlay API
     MgRenderingOptions options(format, MgRenderingOptions::RenderSelection |
         MgRenderingOptions::RenderLayers | (bKeepSelection? MgRenderingOptions::KeepSelection : 0), NULL);
-    return RenderDynamicOverlay(map, selection, &options);
+    ret = RenderDynamicOverlayInternal(map, selection, &options, NULL);
+
+    // Successful operation
+    MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Success.c_str());
+
+    MG_CATCH(L"MgdRenderingService::RenderDynamicOverlay")
+
+    if (mgException != NULL)
+    {
+        // Failed operation
+        MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Failure.c_str());
+        MG_DESKTOP_LOG_EXCEPTION();
+    }
+
+    // Add access log entry for operation
+    MG_LOG_OPERATION_MESSAGE_ACCESS_ENTRY();
+
+    MG_THROW()
+
+    return ret.Detach();
 }
 
 
 ///////////////////////////////////////////////////////////////////////////////
 // called from API (first call of AjaxPgPViewerSampleApplication)
 // default arg pPRMResult = NULL
-MgByteReader* MgRenderingService::RenderDynamicOverlay(MgdMap* map,
-                                                             MgdSelection* selection,
-                                                             MgRenderingOptions* options)
+MgByteReader* MgdRenderingService::RenderDynamicOverlay(MgdMap* map, MgdSelection* selection, MgRenderingOptions* options)
 {
+    Ptr<MgByteReader> ret;
+
+    MG_LOG_OPERATION_MESSAGE(L"RenderDynamicOverlay");
+
+    MG_TRY()
+
+    Ptr<MgResourceIdentifier> mapId = map->GetResourceId();
+    MG_LOG_OPERATION_MESSAGE_INIT(MG_API_VERSION(1, 0, 0), 3);
+    MG_LOG_OPERATION_MESSAGE_PARAMETERS_START();
+    MG_LOG_OPERATION_MESSAGE_ADD_STRING((NULL == mapId) ? L"MgdMap" : mapId->ToString().c_str());
+    MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
+    MG_LOG_OPERATION_MESSAGE_ADD_STRING(L"MgdSelection");
+    MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
+    MG_LOG_OPERATION_MESSAGE_ADD_STRING(L"MgRenderingOptions");
+    MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
+
+    MG_LOG_TRACE_ENTRY(L"MgdRenderingService::RenderDynamicOverlay()");
+
     // Call updated RenderDynamicOverlay API 
-    return RenderDynamicOverlay(map, selection, options, NULL);
+    ret = RenderDynamicOverlayInternal(map, selection, options, NULL);
+
+    // Successful operation
+    MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Success.c_str());
+
+    MG_CATCH(L"MgdRenderingService::RenderDynamicOverlay")
+
+    if (mgException != NULL)
+    {
+        // Failed operation
+        MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Failure.c_str());
+        MG_DESKTOP_LOG_EXCEPTION();
+    }
+
+    // Add access log entry for operation
+    MG_LOG_OPERATION_MESSAGE_ACCESS_ENTRY();
+
+    MG_THROW()
+
+    return ret.Detach();
 }
 
 
 ///////////////////////////////////////////////////////////////////////////////
 // Non-published RenderDynamicOverlay API with profile result parameter
 // pPRMResult - a pointer points to Profile Render Map Result.
-MgByteReader* MgRenderingService::RenderDynamicOverlay(MgdMap* map,
-                                                             MgdSelection* selection,
-                                                             MgRenderingOptions* options,
-                                                             ProfileRenderMapResult* pPRMResult)
+MgByteReader* MgdRenderingService::RenderDynamicOverlay(MgdMap* map,
+                                                       MgdSelection* selection,
+                                                       MgRenderingOptions* options,
+                                                       ProfileRenderMapResult* pPRMResult)
+{
+    Ptr<MgByteReader> ret;
+
+    MG_LOG_OPERATION_MESSAGE(L"RenderDynamicOverlay");
+
+    MG_TRY()
+
+    Ptr<MgResourceIdentifier> mapId = map->GetResourceId();
+    MG_LOG_OPERATION_MESSAGE_INIT(MG_API_VERSION(1, 0, 0), 4);
+    MG_LOG_OPERATION_MESSAGE_PARAMETERS_START();
+    MG_LOG_OPERATION_MESSAGE_ADD_STRING((NULL == mapId) ? L"MgdMap" : mapId->ToString().c_str());
+    MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
+    MG_LOG_OPERATION_MESSAGE_ADD_STRING(L"MgdSelection");
+    MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
+    MG_LOG_OPERATION_MESSAGE_ADD_STRING(L"MgRenderingOptions");
+    MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
+    MG_LOG_OPERATION_MESSAGE_ADD_STRING(L"ProfileRenderMapResult");
+    MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
+
+    MG_LOG_TRACE_ENTRY(L"MgdRenderingService::RenderDynamicOverlay()");
+
+    ret = RenderDynamicOverlayInternal(map, selection, options, pPRMResult);
+
+    // Successful operation
+    MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Success.c_str());
+
+    MG_CATCH(L"MgdRenderingService::RenderDynamicOverlay")
+
+    if (mgException != NULL)
+    {
+        // Failed operation
+        MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Failure.c_str());
+        MG_DESKTOP_LOG_EXCEPTION();
+    }
+
+    // Add access log entry for operation
+    MG_LOG_OPERATION_MESSAGE_ACCESS_ENTRY();
+
+    MG_THROW()
+
+    return ret.Detach();
+}
+
+MgdFeatureInformation* MgdRenderingService::QueryFeatures(MgdMap* map,
+                                                          MgStringCollection* layerNames,
+                                                          MgGeometry* filterGeometry,
+                                                          INT32 selectionVariant,
+                                                          INT32 maxFeatures)
+{
+    Ptr<MgdFeatureInformation> ret;
+    MG_LOG_OPERATION_MESSAGE(L"QueryFeatures");
+
+    MG_TRY()
+
+    Ptr<MgResourceIdentifier> mapId = map->GetResourceId();
+    MG_LOG_OPERATION_MESSAGE_INIT(MG_API_VERSION(1, 0, 0), 5);
+    MG_LOG_OPERATION_MESSAGE_PARAMETERS_START();
+    MG_LOG_OPERATION_MESSAGE_ADD_STRING((NULL == mapId) ? L"MgdMap" : mapId->ToString().c_str());
+    MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
+    MG_LOG_OPERATION_MESSAGE_ADD_STRING((layerNames == NULL) ? L"MgStringCollection" : layerNames->GetLogString());
+    MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
+    MG_LOG_OPERATION_MESSAGE_ADD_STRING(L"MgGeometry");
+    MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
+    MG_LOG_OPERATION_MESSAGE_ADD_INT32(selectionVariant);
+    MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
+    MG_LOG_OPERATION_MESSAGE_ADD_INT32(maxFeatures);
+    MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
+
+    MG_LOG_TRACE_ENTRY(L"MgdRenderingService::QueryFeatures()");
+
+    ret = QueryFeaturesInternal(map, layerNames, filterGeometry, selectionVariant, L"", maxFeatures, 3 /*visible and selectable*/);
+
+    MG_CATCH(L"MgdRenderingService::QueryFeatures")
+
+    if (mgException != NULL)
+    {
+        // Failed operation
+        MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Failure.c_str());
+        MG_DESKTOP_LOG_EXCEPTION();
+    }
+
+    // Add access log entry for operation
+    MG_LOG_OPERATION_MESSAGE_ACCESS_ENTRY();
+
+    MG_THROW()
+    return ret.Detach();
+}
+
+MgdFeatureInformation* MgdRenderingService::QueryFeatures(
+    MgdMap* map,
+    MgStringCollection* layerNames,
+    MgGeometry* filterGeometry,
+    INT32 selectionVariant,
+    CREFSTRING featureFilter,
+    INT32 maxFeatures,
+    INT32 layerAttributeFilter)
+{
+    Ptr<MgdFeatureInformation> ret;
+    MG_LOG_OPERATION_MESSAGE(L"QueryFeatures");
+
+    MG_TRY()
+
+    Ptr<MgResourceIdentifier> mapId = map->GetResourceId();
+    MG_LOG_OPERATION_MESSAGE_INIT(MG_API_VERSION(1, 0, 0), 7);
+    MG_LOG_OPERATION_MESSAGE_PARAMETERS_START();
+    MG_LOG_OPERATION_MESSAGE_ADD_STRING((NULL == mapId) ? L"MgdMap" : mapId->ToString().c_str());
+    MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
+    MG_LOG_OPERATION_MESSAGE_ADD_STRING((layerNames == NULL) ? L"MgStringCollection" : layerNames->GetLogString());
+    MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
+    MG_LOG_OPERATION_MESSAGE_ADD_STRING(L"MgGeometry");
+    MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
+    MG_LOG_OPERATION_MESSAGE_ADD_INT32(selectionVariant);
+    MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
+    MG_LOG_OPERATION_MESSAGE_ADD_STRING(featureFilter);
+    MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
+    MG_LOG_OPERATION_MESSAGE_ADD_INT32(maxFeatures);
+    MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
+    MG_LOG_OPERATION_MESSAGE_ADD_INT32(layerAttributeFilter);
+    MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
+
+    MG_LOG_TRACE_ENTRY(L"MgdRenderingService::QueryFeatures()");
+
+    ret = QueryFeaturesInternal(map, layerNames, filterGeometry, selectionVariant, featureFilter, maxFeatures, layerAttributeFilter);
+
+    MG_CATCH(L"MgdRenderingService::QueryFeatures")
+
+    if (mgException != NULL)
+    {
+        // Failed operation
+        MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Failure.c_str());
+        MG_DESKTOP_LOG_EXCEPTION();
+    }
+
+    // Add access log entry for operation
+    MG_LOG_OPERATION_MESSAGE_ACCESS_ENTRY();
+
+    MG_THROW()
+    return ret.Detach();
+}
+
+MgdFeatureInformation* MgdRenderingService::QueryFeaturesInternal(MgdMap* map,
+                                                                  MgStringCollection* layerNames,
+                                                                  MgGeometry* geometry,
+                                                                  INT32 selectionVariant,
+                                                                  CREFSTRING featureFilter,
+                                                                  INT32 maxFeatures,
+                                                                  INT32 layerAttributeFilter)
+{
+    Ptr<MgdFeatureInformation> ret;
+
+    MG_TRY()
+
+    //detect case where there is no limit to selection
+    if (maxFeatures == -1)
+        maxFeatures = INT_MAX;
+
+    //create return structure and selection set to fill out
+    ret = new MgdFeatureInformation();
+    Ptr<MgdSelection> sel = new MgdSelection(map);
+
+    double point_buf[2];
+    double* point = NULL;
+    auto_ptr<SE_Renderer> impRenderer;
+    if (geometry && maxFeatures == 1)
+    {
+        MgPolygon* polygon = dynamic_cast<MgPolygon*>(geometry);
+        if (polygon)
+        {
+            Ptr<MgCoordinateIterator> iterator = polygon->GetCoordinates();
+            int num = 0;
+            double pt0_x, pt0_y, pt_x, pt_y;
+            while(iterator->MoveNext())
+            {
+                Ptr<MgCoordinate> coord = iterator->GetCurrent();
+                double x = coord->GetX(), y = coord->GetY();
+                if (!num)
+                {
+                    pt_x = pt0_x = x;
+                    pt_y = pt0_y = y;
+                }
+                else if (x == pt0_x && y == pt0_y)
+                    break;
+                else
+                {
+                    pt_x += x;
+                    pt_y += y;
+                }
+                num++;
+            }
+            if (num > 0)
+            {
+                point_buf[0] = pt_x / num;
+                point_buf[1] = pt_y / num;
+                point = point_buf;
+
+                RS_Color bgColor; // not used
+                impRenderer.reset(CreateRenderer(1, 1, bgColor, false));
+            }
+        }
+    }
+
+    FeatureInfoRenderer fir(sel, maxFeatures, map->GetViewScale(), point, impRenderer.get());
+
+    RenderForSelection(map, layerNames, geometry, selectionVariant, featureFilter, maxFeatures, layerAttributeFilter, &fir);
+
+    //fill out the output object with the info we collected
+    //in the FeatureInfoRenderer for the first feature we hit
+    if (fir.GetNumFeaturesProcessed() > 0)
+    {
+        Ptr<MgPropertyCollection> props = fir.GetProperties();
+        ret->SetProperties(props);
+        ret->SetHyperlink(fir.GetUrl());
+        ret->SetTooltip(fir.GetTooltip());
+    }
+
+    ret->SetSelection(sel);
+
+    #ifdef _DEBUG
+    Ptr<MgReadOnlyLayerCollection> selLayers = sel->GetLayers();
+    ACE_DEBUG((LM_INFO, ACE_TEXT("(%t) MgServerRenderingService::QueryFeatures() Selection Size:%d\n"), selLayers.p? selLayers->GetCount() : 0));
+    #endif
+
+    MG_CATCH_AND_THROW(L"MgdRenderingService::QueryFeaturesInternal")
+
+    return ret.Detach();
+}
+
+MgByteReader* MgdRenderingService::RenderDynamicOverlayInternal(MgdMap* map,
+                                                               MgdSelection* selection,
+                                                               MgRenderingOptions* options,
+                                                               ProfileRenderMapResult* pPRMResult)
 {
     Ptr<MgByteReader> ret;
 
     MG_TRY()
 
     if (NULL == map)
-        throw new MgNullArgumentException(L"MgRenderingService.RenderDynamicOverlay", __LINE__, __WFILE__, NULL, L"", NULL);
+        throw new MgNullArgumentException(L"MgdRenderingService.RenderDynamicOverlayInternal", __LINE__, __WFILE__, NULL, L"", NULL);
 
     // validate map view parameters
     int width            = map->GetDisplayWidth();
@@ -1047,23 +687,23 @@ MgByteReader* MgRenderingService::RenderDynamicOverlay(MgdMap* map,
     double metersPerUnit = map->GetMetersPerUnit();
 
     if (width <= 0)
-        throw new MgInvalidArgumentException(L"MgRenderingService.RenderDynamicOverlay", __LINE__, __WFILE__, NULL, L"MgdMapDisplayWidthCannotBeLessThanOrEqualToZero", NULL);
+        throw new MgInvalidArgumentException(L"MgdRenderingService.RenderDynamicOverlayInternal", __LINE__, __WFILE__, NULL, L"MgdMapDisplayWidthCannotBeLessThanOrEqualToZero", NULL);
 
     if (height <= 0)
-        throw new MgInvalidArgumentException(L"MgRenderingService.RenderDynamicOverlay", __LINE__, __WFILE__, NULL, L"MgdMapDisplayHeightCannotBeLessThanOrEqualToZero", NULL);
+        throw new MgInvalidArgumentException(L"MgdRenderingService.RenderDynamicOverlayInternal", __LINE__, __WFILE__, NULL, L"MgdMapDisplayHeightCannotBeLessThanOrEqualToZero", NULL);
 
     if (dpi <= 0)
-        throw new MgInvalidArgumentException(L"MgRenderingService.RenderDynamicOverlay", __LINE__, __WFILE__, NULL, L"MgdMapDisplayDpiCannotBeLessThanOrEqualToZero", NULL);
+        throw new MgInvalidArgumentException(L"MgdRenderingService.RenderDynamicOverlayInternal", __LINE__, __WFILE__, NULL, L"MgdMapDisplayDpiCannotBeLessThanOrEqualToZero", NULL);
 
     if (scale <= 0.0)
-        throw new MgInvalidArgumentException(L"MgRenderingService.RenderDynamicOverlay", __LINE__, __WFILE__, NULL, L"MgdMapViewScaleCannotBeLessThanOrEqualToZero", NULL);
+        throw new MgInvalidArgumentException(L"MgdRenderingService.RenderDynamicOverlayInternal", __LINE__, __WFILE__, NULL, L"MgdMapViewScaleCannotBeLessThanOrEqualToZero", NULL);
 
     if (metersPerUnit <= 0.0)
-        throw new MgInvalidArgumentException(L"MgRenderingService.RenderDynamicOverlay", __LINE__, __WFILE__, NULL, L"MgdMapMetersPerUnitCannotBeLessThanOrEqualToZero", NULL);
+        throw new MgInvalidArgumentException(L"MgdRenderingService.RenderDynamicOverlayInternal", __LINE__, __WFILE__, NULL, L"MgdMapMetersPerUnitCannotBeLessThanOrEqualToZero", NULL);
 
     // sanity check - number of image pixels cannot exceed MAX_PIXELS
     if (width * height > MAX_PIXELS)
-        throw new MgOutOfRangeException(L"MgRenderingService.RenderDynamicOverlay", __LINE__, __WFILE__, NULL, L"MgInvalidImageSizeTooBig", NULL);
+        throw new MgOutOfRangeException(L"MgdRenderingService.RenderDynamicOverlayInternal", __LINE__, __WFILE__, NULL, L"MgInvalidImageSizeTooBig", NULL);
 
     // compute map extent that corresponds to pixel extent
     Ptr<MgPoint> pt          = map->GetViewCenter();
@@ -1108,7 +748,7 @@ MgByteReader* MgRenderingService::RenderDynamicOverlay(MgdMap* map,
     // call the internal helper API to do all the stylization overhead work
     ret = RenderMapInternal(map, selection, roLayers, dr.get(), width, height, width, height, scale, extent, false, options, true, pPRMResult);
 
-    MG_CATCH(L"MgRenderingService.RenderDynamicOverlay")
+    MG_CATCH(L"MgdRenderingService.RenderDynamicOverlayInternal")
     if (mgException.p)
     {
         if(NULL != pPRMResult)
@@ -1132,23 +772,96 @@ MgByteReader* MgRenderingService::RenderDynamicOverlay(MgdMap* map,
 
 ///////////////////////////////////////////////////////////////////////////////
 // default arg bKeepSelection = true
-MgByteReader* MgRenderingService::RenderMap(MgdMap* map,
-                                                  MgdSelection* selection,
-                                                  CREFSTRING format)
+MgByteReader* MgdRenderingService::RenderMap(MgdMap* map,
+                                            MgdSelection* selection,
+                                            CREFSTRING format)
 {
-    // Call updated RenderMap API
-    return RenderMap(map, selection, format, true);
+    Ptr<MgByteReader> ret;
+    MG_LOG_OPERATION_MESSAGE(L"RenderMap");
+
+    MG_TRY()
+
+    Ptr<MgResourceIdentifier> mapId = map->GetResourceId();
+    MG_LOG_OPERATION_MESSAGE_INIT(MG_API_VERSION(1, 0, 0), 3);
+    MG_LOG_OPERATION_MESSAGE_PARAMETERS_START();
+    MG_LOG_OPERATION_MESSAGE_ADD_STRING((NULL == mapId) ? L"MgdMap" : mapId->ToString().c_str());
+    MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
+    MG_LOG_OPERATION_MESSAGE_ADD_STRING(L"MgdSelection");
+    MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
+    MG_LOG_OPERATION_MESSAGE_ADD_STRING(format.c_str());
+    MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
+
+    MG_LOG_TRACE_ENTRY(L"MgdRenderingService::RenderMap()");
+
+    ret = RenderMapPublished(map, selection, format, true, false);
+
+    // Successful operation
+    MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Success.c_str());
+
+    MG_CATCH(L"MgdRenderingService::RenderMap")
+
+    if (mgException != NULL)
+    {
+        // Failed operation
+        MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Failure.c_str());
+        MG_DESKTOP_LOG_EXCEPTION();
+    }
+
+    // Add access log entry for operation
+    MG_LOG_OPERATION_MESSAGE_ACCESS_ENTRY();
+
+    MG_THROW()
+
+    return ret.Detach();
 }
 
 
 ///////////////////////////////////////////////////////////////////////////////
 // default arg bClip = false
-MgByteReader* MgRenderingService::RenderMap(MgdMap* map,
-                                                  MgdSelection* selection,
-                                                  CREFSTRING format,
-                                                  bool bKeepSelection)
+MgByteReader* MgdRenderingService::RenderMap(MgdMap* map,
+                                            MgdSelection* selection,
+                                            CREFSTRING format,
+                                            bool bKeepSelection)
 {
-    return RenderMap(map, selection, format, bKeepSelection, false);
+    Ptr<MgByteReader> ret;
+    MG_LOG_OPERATION_MESSAGE(L"RenderMap");
+
+    MG_TRY()
+
+    Ptr<MgResourceIdentifier> mapId = map->GetResourceId();
+    MG_LOG_OPERATION_MESSAGE_INIT(MG_API_VERSION(1, 0, 0), 4);
+    MG_LOG_OPERATION_MESSAGE_PARAMETERS_START();
+    MG_LOG_OPERATION_MESSAGE_ADD_STRING((NULL == mapId) ? L"MgdMap" : mapId->ToString().c_str());
+    MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
+    MG_LOG_OPERATION_MESSAGE_ADD_STRING(L"MgdSelection");
+    MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
+    MG_LOG_OPERATION_MESSAGE_ADD_STRING(format.c_str());
+    MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
+    MG_LOG_OPERATION_MESSAGE_ADD_BOOL(bKeepSelection);
+    MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
+
+    MG_LOG_TRACE_ENTRY(L"MgdRenderingService::RenderMap()");
+
+    ret = RenderMapPublished(map, selection, format, bKeepSelection, false);
+
+    // Successful operation
+    MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Success.c_str());
+
+    MG_CATCH(L"MgdRenderingService::RenderMap")
+
+    if (mgException != NULL)
+    {
+        // Failed operation
+        MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Failure.c_str());
+        MG_DESKTOP_LOG_EXCEPTION();
+    }
+
+    // Add access log entry for operation
+    MG_LOG_OPERATION_MESSAGE_ACCESS_ENTRY();
+
+    MG_THROW()
+
+    return ret.Detach();
 }
 
 
@@ -1156,18 +869,67 @@ MgByteReader* MgRenderingService::RenderMap(MgdMap* map,
 // render complete map around center point in given scale using map's background
 // color and display sizes as default arguments to call the real rendermap method
 // default arg (bKeepSelection = true, bClip = false)
-MgByteReader* MgRenderingService::RenderMap(MgdMap* map,
-                                                  MgdSelection* selection,
-                                                  CREFSTRING format,
-                                                  bool bKeepSelection,
-                                                  bool bClip)
+MgByteReader* MgdRenderingService::RenderMap(MgdMap* map,
+                                            MgdSelection* selection,
+                                            CREFSTRING format,
+                                            bool bKeepSelection,
+                                            bool bClip)
+{
+    Ptr<MgByteReader> ret;
+    MG_LOG_OPERATION_MESSAGE(L"RenderMap");
+
+    MG_TRY()
+
+    Ptr<MgResourceIdentifier> mapId = map->GetResourceId();
+    MG_LOG_OPERATION_MESSAGE_INIT(MG_API_VERSION(1, 0, 0), 5);
+    MG_LOG_OPERATION_MESSAGE_PARAMETERS_START();
+    MG_LOG_OPERATION_MESSAGE_ADD_STRING((NULL == mapId) ? L"MgdMap" : mapId->ToString().c_str());
+    MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
+    MG_LOG_OPERATION_MESSAGE_ADD_STRING(L"MgdSelection");
+    MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
+    MG_LOG_OPERATION_MESSAGE_ADD_STRING(format.c_str());
+    MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
+    MG_LOG_OPERATION_MESSAGE_ADD_BOOL(bKeepSelection);
+    MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
+    MG_LOG_OPERATION_MESSAGE_ADD_BOOL(bClip);
+    MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
+
+    MG_LOG_TRACE_ENTRY(L"MgdRenderingService::RenderMap()");
+
+    ret = RenderMapPublished(map, selection, format, bKeepSelection, bClip);
+
+    // Successful operation
+    MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Success.c_str());
+
+    MG_CATCH(L"MgdRenderingService::RenderMap")
+
+    if (mgException != NULL)
+    {
+        // Failed operation
+        MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Failure.c_str());
+        MG_DESKTOP_LOG_EXCEPTION();
+    }
+
+    // Add access log entry for operation
+    MG_LOG_OPERATION_MESSAGE_ACCESS_ENTRY();
+
+    MG_THROW()
+
+    return ret.Detach();
+}
+
+MgByteReader* MgdRenderingService::RenderMapPublished(MgdMap* map,
+                                                     MgdSelection* selection,
+                                                     CREFSTRING format,
+                                                     bool bKeepSelection,
+                                                     bool bClip)
 {
     Ptr<MgByteReader> ret;
 
     MG_TRY()
 
     if (NULL == map)
-        throw new MgNullArgumentException(L"MgRenderingService.RenderMap", __LINE__, __WFILE__, NULL, L"", NULL);
+        throw new MgNullArgumentException(L"MgdRenderingService.RenderMapPublished", __LINE__, __WFILE__, NULL, L"", NULL);
 
     Ptr<MgPoint> pt = map->GetViewCenter();
     Ptr<MgCoordinate> center = pt->GetCoordinate();
@@ -1181,7 +943,7 @@ MgByteReader* MgRenderingService::RenderMap(MgdMap* map,
     // punt to more specific RenderMap API
     ret = RenderMap(map, selection, center, scale, map->GetDisplayWidth(), map->GetDisplayHeight(), bgColor, format, bKeepSelection, bClip);
 
-    MG_CATCH_AND_THROW(L"MgRenderingService.RenderMap")
+    MG_CATCH_AND_THROW(L"MgdRenderingService.RenderMapPublished")
 
     return ret.Detach();
 }
@@ -1189,7 +951,7 @@ MgByteReader* MgRenderingService::RenderMap(MgdMap* map,
 
 ///////////////////////////////////////////////////////////////////////////////
 // default arg bKeepSelection = true
-MgByteReader* MgRenderingService::RenderMap(MgdMap* map,
+MgByteReader* MgdRenderingService::RenderMap(MgdMap* map,
                                                   MgdSelection* selection,
                                                   MgEnvelope* extents,
                                                   INT32 width,
@@ -1205,7 +967,7 @@ MgByteReader* MgRenderingService::RenderMap(MgdMap* map,
 ///////////////////////////////////////////////////////////////////////////////
 // render the provided extent of the map and align aspect ratios to the provided window
 // default arg bKeepSelection = true
-MgByteReader* MgRenderingService::RenderMap(MgdMap* map,
+MgByteReader* MgdRenderingService::RenderMap(MgdMap* map,
                                                   MgdSelection* selection,
                                                   MgEnvelope* extents,
                                                   INT32 width,
@@ -1219,23 +981,23 @@ MgByteReader* MgRenderingService::RenderMap(MgdMap* map,
     MG_TRY()
 
     if (NULL == map || extents == NULL || backgroundColor == NULL)
-        throw new MgNullArgumentException(L"MgRenderingService.RenderMap", __LINE__, __WFILE__, NULL, L"", NULL);
+        throw new MgNullArgumentException(L"MgdRenderingService.RenderMap", __LINE__, __WFILE__, NULL, L"", NULL);
 
     // validate map view parameters
     int dpi              = map->GetDisplayDpi();
     double metersPerUnit = map->GetMetersPerUnit();
 
     if (width <= 0)
-        throw new MgInvalidArgumentException(L"MgRenderingService.RenderMap", __LINE__, __WFILE__, NULL, L"MgdMapDisplayWidthCannotBeLessThanOrEqualToZero", NULL);
+        throw new MgInvalidArgumentException(L"MgdRenderingService.RenderMap", __LINE__, __WFILE__, NULL, L"MgdMapDisplayWidthCannotBeLessThanOrEqualToZero", NULL);
 
     if (height <= 0)
-        throw new MgInvalidArgumentException(L"MgRenderingService.RenderMap", __LINE__, __WFILE__, NULL, L"MgdMapDisplayHeightCannotBeLessThanOrEqualToZero", NULL);
+        throw new MgInvalidArgumentException(L"MgdRenderingService.RenderMap", __LINE__, __WFILE__, NULL, L"MgdMapDisplayHeightCannotBeLessThanOrEqualToZero", NULL);
 
     if (dpi <= 0)
-        throw new MgInvalidArgumentException(L"MgRenderingService.RenderMap", __LINE__, __WFILE__, NULL, L"MgdMapDisplayDpiCannotBeLessThanOrEqualToZero", NULL);
+        throw new MgInvalidArgumentException(L"MgdRenderingService.RenderMap", __LINE__, __WFILE__, NULL, L"MgdMapDisplayDpiCannotBeLessThanOrEqualToZero", NULL);
 
     if (metersPerUnit <= 0.0)
-        throw new MgInvalidArgumentException(L"MgRenderingService.RenderMap", __LINE__, __WFILE__, NULL, L"MgdMapMetersPerUnitCannotBeLessThanOrEqualToZero", NULL);
+        throw new MgInvalidArgumentException(L"MgdRenderingService.RenderMap", __LINE__, __WFILE__, NULL, L"MgdMapMetersPerUnitCannotBeLessThanOrEqualToZero", NULL);
 
     // compute a view center and scale from the given extents
     // and pass on to the RenderMap that uses center and scale
@@ -1287,7 +1049,7 @@ MgByteReader* MgRenderingService::RenderMap(MgdMap* map,
 
     // sanity check - number of image pixels cannot exceed MAX_PIXELS
     if (drawWidth * drawHeight > MAX_PIXELS)
-        throw new MgOutOfRangeException(L"MgRenderingService.RenderMap", __LINE__, __WFILE__, NULL, L"MgInvalidImageSizeTooBig", NULL);
+        throw new MgOutOfRangeException(L"MgdRenderingService.RenderMap", __LINE__, __WFILE__, NULL, L"MgInvalidImageSizeTooBig", NULL);
 
     // use the supplied background color
     RS_Color bgcolor(backgroundColor->GetRed(),
@@ -1303,7 +1065,7 @@ MgByteReader* MgRenderingService::RenderMap(MgdMap* map,
     // call the internal helper API to do all the stylization overhead work
     ret = RenderMapInternal(map, selection, NULL, dr.get(), drawWidth, drawHeight, width, height, format, scale, b, false, bKeepSelection, true);
 
-    MG_CATCH_AND_THROW(L"MgRenderingService.RenderMap")
+    MG_CATCH_AND_THROW(L"MgdRenderingService.RenderMap")
 
     return ret.Detach();
 }
@@ -1311,7 +1073,7 @@ MgByteReader* MgRenderingService::RenderMap(MgdMap* map,
 
 ///////////////////////////////////////////////////////////////////////////////
 // default argument bKeepSelection = true
-MgByteReader* MgRenderingService::RenderMap(MgdMap* map,
+MgByteReader* MgdRenderingService::RenderMap(MgdMap* map,
                                                   MgdSelection* selection,
                                                   MgCoordinate* center,
                                                   double scale,
@@ -1327,7 +1089,7 @@ MgByteReader* MgRenderingService::RenderMap(MgdMap* map,
 
 ///////////////////////////////////////////////////////////////////////////////
 // default arguments bClip = false  pProfileRenderMapResult = NULL
-MgByteReader* MgRenderingService::RenderMap(MgdMap* map,
+MgByteReader* MgdRenderingService::RenderMap(MgdMap* map,
                                                   MgdSelection* selection,
                                                   MgCoordinate* center,
                                                   double scale,
@@ -1342,7 +1104,7 @@ MgByteReader* MgRenderingService::RenderMap(MgdMap* map,
 
 ///////////////////////////////////////////////////////////////////////////////
 // default arguments bClip = false
-MgByteReader* MgRenderingService::RenderMap(MgdMap* map,
+MgByteReader* MgdRenderingService::RenderMap(MgdMap* map,
                                                   MgdSelection* selection,
                                                   MgCoordinate* center,
                                                   double scale,
@@ -1360,7 +1122,7 @@ MgByteReader* MgRenderingService::RenderMap(MgdMap* map,
 // render map around center point in given scale
 // default args bKeepSelection = true, bClip = false, backgroundColor = map->backgroundColor,
 // width = map->getDisplayWidth, height = map->getDisplayHeight
-MgByteReader* MgRenderingService::RenderMap(MgdMap* map,
+MgByteReader* MgdRenderingService::RenderMap(MgdMap* map,
                                                   MgdSelection* selection,
                                                   MgCoordinate* center,
                                                   double scale,
@@ -1377,30 +1139,30 @@ MgByteReader* MgRenderingService::RenderMap(MgdMap* map,
     MG_TRY()
 
     if (NULL == map || NULL == center || NULL == backgroundColor)
-        throw new MgNullArgumentException(L"MgRenderingService.RenderMap", __LINE__, __WFILE__, NULL, L"", NULL);
+        throw new MgNullArgumentException(L"MgdRenderingService.RenderMap", __LINE__, __WFILE__, NULL, L"", NULL);
 
     // validate map view parameters
     int dpi              = map->GetDisplayDpi();
     double metersPerUnit = map->GetMetersPerUnit();
 
     if (width <= 0)
-        throw new MgInvalidArgumentException(L"MgRenderingService.RenderMap", __LINE__, __WFILE__, NULL, L"MgdMapDisplayWidthCannotBeLessThanOrEqualToZero", NULL);
+        throw new MgInvalidArgumentException(L"MgdRenderingService.RenderMap", __LINE__, __WFILE__, NULL, L"MgdMapDisplayWidthCannotBeLessThanOrEqualToZero", NULL);
 
     if (height <= 0)
-        throw new MgInvalidArgumentException(L"MgRenderingService.RenderMap", __LINE__, __WFILE__, NULL, L"MgdMapDisplayHeightCannotBeLessThanOrEqualToZero", NULL);
+        throw new MgInvalidArgumentException(L"MgdRenderingService.RenderMap", __LINE__, __WFILE__, NULL, L"MgdMapDisplayHeightCannotBeLessThanOrEqualToZero", NULL);
 
     if (dpi <= 0)
-        throw new MgInvalidArgumentException(L"MgRenderingService.RenderMap", __LINE__, __WFILE__, NULL, L"MgdMapDisplayDpiCannotBeLessThanOrEqualToZero", NULL);
+        throw new MgInvalidArgumentException(L"MgdRenderingService.RenderMap", __LINE__, __WFILE__, NULL, L"MgdMapDisplayDpiCannotBeLessThanOrEqualToZero", NULL);
 
     if (scale <= 0.0)
-        throw new MgInvalidArgumentException(L"MgRenderingService.RenderMap", __LINE__, __WFILE__, NULL, L"MgdMapViewScaleCannotBeLessThanOrEqualToZero", NULL);
+        throw new MgInvalidArgumentException(L"MgdRenderingService.RenderMap", __LINE__, __WFILE__, NULL, L"MgdMapViewScaleCannotBeLessThanOrEqualToZero", NULL);
 
     if (metersPerUnit <= 0.0)
-        throw new MgInvalidArgumentException(L"MgRenderingService.RenderMap", __LINE__, __WFILE__, NULL, L"MgdMapMetersPerUnitCannotBeLessThanOrEqualToZero", NULL);
+        throw new MgInvalidArgumentException(L"MgdRenderingService.RenderMap", __LINE__, __WFILE__, NULL, L"MgdMapMetersPerUnitCannotBeLessThanOrEqualToZero", NULL);
 
     // sanity check - number of image pixels cannot exceed MAX_PIXELS
     if (width * height > MAX_PIXELS)
-        throw new MgOutOfRangeException(L"MgRenderingService.RenderMap", __LINE__, __WFILE__, NULL, L"MgInvalidImageSizeTooBig", NULL);
+        throw new MgOutOfRangeException(L"MgdRenderingService.RenderMap", __LINE__, __WFILE__, NULL, L"MgInvalidImageSizeTooBig", NULL);
 
     double unitsPerPixel = METERS_PER_INCH / (double)dpi / metersPerUnit;
     double mapWidth2 = 0.5 * (double)width * unitsPerPixel * scale;
@@ -1434,7 +1196,7 @@ MgByteReader* MgRenderingService::RenderMap(MgdMap* map,
     // call the internal helper API to do all the stylization overhead work
     ret = RenderMapInternal(map, selection, NULL, dr.get(), width, height, width, height, format, scale, b, false, bKeepSelection, true, pPRMResult);
 
-    MG_CATCH(L"MgRenderingService.RenderMap")
+    MG_CATCH(L"MgdRenderingService.RenderMap")
     if (mgException.p)
     {
         if(NULL != pPRMResult)
@@ -1458,7 +1220,7 @@ MgByteReader* MgRenderingService::RenderMap(MgdMap* map,
 ///////////////////////////////////////////////////////////////////////////////
 // pack options into object and forward call (select Selection AND Layers)
 // maybe keepSelection called by RenderTile
-MgByteReader* MgRenderingService::RenderMapInternal(MgdMap* map,
+MgByteReader* MgdRenderingService::RenderMapInternal(MgdMap* map,
                                                           MgdSelection* selection,
                                                           MgReadOnlyLayerCollection* roLayers,
                                                           SE_Renderer* dr,
@@ -1487,7 +1249,7 @@ MgByteReader* MgRenderingService::RenderMapInternal(MgdMap* map,
 // (this is the baseGroup layers for rendering tiles)
 // render map using provided options object from before
 // this is called for tiles and for dynamic overlays
-MgByteReader* MgRenderingService::RenderMapInternal(MgdMap* map,
+MgByteReader* MgdRenderingService::RenderMapInternal(MgdMap* map,
                                                           MgdSelection* selection,
                                                           MgReadOnlyLayerCollection* roLayers,
                                                           SE_Renderer* dr,
@@ -1579,7 +1341,7 @@ MgByteReader* MgRenderingService::RenderMapInternal(MgdMap* map,
             RenderWatermarks(map,tempLayers,&ds, dr,drawWidth, drawHeight, saveWidth, saveHeight, pPRMResult);
         }
 
-    MG_CATCH(L"MgRenderingService.RenderMapInternal")
+    MG_CATCH(L"MgdRenderingService.RenderMapInternal")
 
     if(NULL != pPRMResult)
     {
@@ -1616,29 +1378,46 @@ MgByteReader* MgRenderingService::RenderMapInternal(MgdMap* map,
 
 
 ///////////////////////////////////////////////////////////////////////////////
-MgByteReader* MgRenderingService::RenderMapLegend(MgdMap* map,
-                                                        INT32 width,
-                                                        INT32 height,
-                                                        MgColor* backgroundColor,
-                                                        CREFSTRING format)
+MgByteReader* MgdRenderingService::RenderMapLegend(MgdMap* map,
+                                                  INT32 width,
+                                                  INT32 height,
+                                                  MgColor* backgroundColor,
+                                                  CREFSTRING format)
 {
     Ptr<MgByteReader> ret;
+    MG_LOG_OPERATION_MESSAGE(L"RenderMapLegend");
 
     MG_TRY()
 
+    Ptr<MgResourceIdentifier> mapId = map->GetResourceId();
+    MG_LOG_OPERATION_MESSAGE_INIT(MG_API_VERSION(1, 0, 0), 5);
+    MG_LOG_OPERATION_MESSAGE_PARAMETERS_START();
+    MG_LOG_OPERATION_MESSAGE_ADD_STRING((NULL == mapId) ? L"MgdMap" : mapId->ToString().c_str());
+    MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
+    MG_LOG_OPERATION_MESSAGE_ADD_INT32(width);
+    MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
+    MG_LOG_OPERATION_MESSAGE_ADD_INT32(height);
+    MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
+    MG_LOG_OPERATION_MESSAGE_ADD_STRING(L"MgColor");
+    MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
+    MG_LOG_OPERATION_MESSAGE_ADD_STRING(format.c_str());
+    MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
+
+    MG_LOG_TRACE_ENTRY(L"MgdRenderingService::RenderMapLegend()");
+
     if (NULL == map || NULL == backgroundColor)
-        throw new MgNullArgumentException(L"MgRenderingService.RenderMapLegend", __LINE__, __WFILE__, NULL, L"", NULL);
+        throw new MgNullArgumentException(L"MgdRenderingService.RenderMapLegend", __LINE__, __WFILE__, NULL, L"", NULL);
 
     // validate map view parameters
     if (width <= 0)
-        throw new MgInvalidArgumentException(L"MgRenderingService.RenderMapLegend", __LINE__, __WFILE__, NULL, L"MgdMapDisplayWidthCannotBeLessThanOrEqualToZero", NULL);
+        throw new MgInvalidArgumentException(L"MgdRenderingService.RenderMapLegend", __LINE__, __WFILE__, NULL, L"MgdMapDisplayWidthCannotBeLessThanOrEqualToZero", NULL);
 
     if (height <= 0)
-        throw new MgInvalidArgumentException(L"MgRenderingService.RenderMapLegend", __LINE__, __WFILE__, NULL, L"MgdMapDisplayHeightCannotBeLessThanOrEqualToZero", NULL);
+        throw new MgInvalidArgumentException(L"MgdRenderingService.RenderMapLegend", __LINE__, __WFILE__, NULL, L"MgdMapDisplayHeightCannotBeLessThanOrEqualToZero", NULL);
 
     // sanity check - number of image pixels cannot exceed MAX_PIXELS
     if (width * height > MAX_PIXELS)
-        throw new MgOutOfRangeException(L"MgRenderingService.RenderMapLegend", __LINE__, __WFILE__, NULL, L"MgInvalidImageSizeTooBig", NULL);
+        throw new MgOutOfRangeException(L"MgdRenderingService.RenderMapLegend", __LINE__, __WFILE__, NULL, L"MgInvalidImageSizeTooBig", NULL);
 
     RS_Color bgcolor(backgroundColor->GetRed(),
                      backgroundColor->GetGreen(),
@@ -1698,13 +1477,28 @@ MgByteReader* MgRenderingService::RenderMapLegend(MgdMap* map,
         ret = bs->GetReader();
     }
 
-    MG_CATCH_AND_THROW(L"MgRenderingService.RenderMapLegend")
+    // Successful operation
+    MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Success.c_str());
+
+    MG_CATCH(L"MgdRenderingService::RenderMapLegend")
+
+    if (mgException != NULL)
+    {
+        // Failed operation
+        MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Failure.c_str());
+        MG_DESKTOP_LOG_EXCEPTION();
+    }
+
+    // Add access log entry for operation
+    MG_LOG_OPERATION_MESSAGE_ACCESS_ENTRY();
+
+    MG_THROW()
 
     return ret.Detach();
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-SE_Renderer* MgRenderingService::CreateRenderer(int width,
+SE_Renderer* MgdRenderingService::CreateRenderer(int width,
                                                       int height,
                                                       RS_Color& bgColor,
                                                       bool requiresClipping,
@@ -1730,7 +1524,7 @@ SE_Renderer* MgRenderingService::CreateRenderer(int width,
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-inline void MgRenderingService::RenderLayers(MgdMap* map,
+inline void MgdRenderingService::RenderLayers(MgdMap* map,
                                                    MgReadOnlyLayerCollection* layers,
                                                    Stylizer* ds,
                                                    Renderer* dr,
@@ -1766,7 +1560,7 @@ inline void MgRenderingService::RenderLayers(MgdMap* map,
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-inline void MgRenderingService::RenderSelection(MgdMap* map,
+inline void MgdRenderingService::RenderSelection(MgdMap* map,
                                                       MgdSelection* selection,
                                                       MgReadOnlyLayerCollection* layers,
                                                       MgRenderingOptions* options,
@@ -1793,7 +1587,7 @@ inline void MgRenderingService::RenderSelection(MgdMap* map,
     Ptr<MgReadOnlyLayerCollection> selLayers = selection->GetLayers();
 
     #ifdef _DEBUG
-    printf("MgRenderingService::RenderSelection() - Layers:%d  Selection Layers:%d\n", layers? layers->GetCount() : 0, selLayers.p? selLayers->GetCount() : 0);
+    printf("MgdRenderingService::RenderSelection() - Layers:%d  Selection Layers:%d\n", layers? layers->GetCount() : 0, selLayers.p? selLayers->GetCount() : 0);
     #endif
 
     if (selLayers.p && selLayers->GetCount() > 0)
@@ -1853,7 +1647,7 @@ inline void MgRenderingService::RenderSelection(MgdMap* map,
     }
 }
 ///////////////////////////////////////////////////////////////////////////////
-inline void MgRenderingService::RenderWatermarks(MgdMap* map,
+inline void MgdRenderingService::RenderWatermarks(MgdMap* map,
                                                        MgReadOnlyLayerCollection* layers,
                                                        Stylizer* ds,
                                                        Renderer* dr,
@@ -2033,7 +1827,7 @@ inline void MgRenderingService::RenderWatermarks(MgdMap* map,
                     }
                 }
 
-            MG_CATCH(L"MgRenderingService.RenderWatermarks")
+            MG_CATCH(L"MgdRenderingService.RenderWatermarks")
             if(mgException.p)
             {
                 // Do not do anything if fail in resource loading and has logged error.
@@ -2102,7 +1896,7 @@ inline void MgRenderingService::RenderWatermarks(MgdMap* map,
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-inline MgByteReader* MgRenderingService::CreateImage(MgdMap* map,
+inline MgByteReader* MgdRenderingService::CreateImage(MgdMap* map,
                                                            Renderer* dr,
                                                            INT32 saveWidth,
                                                            INT32 saveHeight,
@@ -2159,7 +1953,7 @@ inline MgByteReader* MgRenderingService::CreateImage(MgdMap* map,
             {
                 RS_ColorVector tileColorPalette;
                 MgMappingUtil::ParseColorStrings(&tileColorPalette, map);
-//              printf("<<<<<<<<<<<<<<<<<<<<< MgRenderingService::ColorPalette->size(): %d\n", tileColorPalette.size());
+//              printf("<<<<<<<<<<<<<<<<<<<<< MgdRenderingService::ColorPalette->size(): %d\n", tileColorPalette.size());
                 data.reset(((AGGRenderer*)dr)->Save(format, saveWidth, saveHeight, &tileColorPalette));
             }
             else
@@ -2189,7 +1983,7 @@ inline MgByteReader* MgRenderingService::CreateImage(MgdMap* map,
             bs->SetMimeType(MgMimeType::Tiff);
     }
     else
-        throw new MgNullReferenceException(L"MgRenderingService.CreateImage", __LINE__, __WFILE__, NULL, L"MgNoDataFromRenderer", NULL);
+        throw new MgNullReferenceException(L"MgdRenderingService.CreateImage", __LINE__, __WFILE__, NULL, L"MgNoDataFromRenderer", NULL);
     
     if(NULL != pPRMResult)
     {
@@ -2202,4 +1996,385 @@ inline MgByteReader* MgRenderingService::CreateImage(MgdMap* map,
     }
 
     return bs->GetReader();
+}
+
+///////////////////////////////////////////////////////////////////////////////
+// A helper function that does most of the work for QueryFeatures
+// and QueryFeatureProperties.  Basically runs a rendering loop with
+// a custom renderer supplied by the caller that accumulates selection
+// related things like property values and feature IDs.
+void MgdRenderingService::RenderForSelection(MgdMap* map,
+                                             MgStringCollection* layerNames,
+                                             MgGeometry* geometry,
+                                             INT32 selectionVariant,
+                                             CREFSTRING featureFilter,
+                                             INT32 maxFeatures,
+                                             INT32 layerAttributeFilter,
+                                             FeatureInfoRenderer* selRenderer)
+{
+    // Cache coordinate system transforms for the life of the
+    // stylization operation.
+    TransformCacheMap transformCache;
+
+    MG_TRY()
+
+    ACE_DEBUG ((LM_DEBUG, ACE_TEXT("(%t) RenderForSelection(): ** START **\n")));
+    if (NULL == map || (NULL == geometry && featureFilter.empty()))
+        throw new MgNullArgumentException(L"MgServerRenderingService.RenderForSelection", __LINE__, __WFILE__, NULL, L"", NULL);
+
+    if (maxFeatures < 0)
+    {
+        STRING buffer;
+        MgUtil::Int32ToString(maxFeatures, buffer);
+
+        MgStringCollection arguments;
+        arguments.Add(L"5");
+        arguments.Add(buffer);
+
+        throw new MgInvalidArgumentException(L"MgServerRenderingService.RenderForSelection",
+            __LINE__, __WFILE__, &arguments, L"MgValueCannotBeLessThanZero", NULL);
+    }
+
+    // get the session ID
+    STRING sessionId;
+    //Ptr<MgUserInformation> userInfo = MgUserInformation::GetCurrentUserInfo();
+    //if (userInfo != NULL)
+    //    sessionId = userInfo->GetMgSessionId();
+
+    // validate map view parameters
+    int width            = map->GetDisplayWidth();
+    int height           = map->GetDisplayHeight();
+    int dpi              = map->GetDisplayDpi();
+    double scale         = map->GetViewScale();
+    double metersPerUnit = map->GetMetersPerUnit();
+
+    if (width <= 0)
+        throw new MgInvalidArgumentException(L"MgServerRenderingService.RenderForSelection", __LINE__, __WFILE__, NULL, L"MgMapDisplayWidthCannotBeLessThanOrEqualToZero", NULL);
+
+    if (height <= 0)
+        throw new MgInvalidArgumentException(L"MgServerRenderingService.RenderForSelection", __LINE__, __WFILE__, NULL, L"MgMapDisplayHeightCannotBeLessThanOrEqualToZero", NULL);
+
+    if (dpi <= 0)
+        throw new MgInvalidArgumentException(L"MgServerRenderingService.RenderForSelection", __LINE__, __WFILE__, NULL, L"MgMapDisplayDpiCannotBeLessThanOrEqualToZero", NULL);
+
+    if (scale <= 0.0)
+        throw new MgInvalidArgumentException(L"MgServerRenderingService.RenderForSelection", __LINE__, __WFILE__, NULL, L"MgMapViewScaleCannotBeLessThanOrEqualToZero", NULL);
+
+    if (metersPerUnit <= 0.0)
+        throw new MgInvalidArgumentException(L"MgServerRenderingService.RenderForSelection", __LINE__, __WFILE__, NULL, L"MgMapMetersPerUnitCannotBeLessThanOrEqualToZero", NULL);
+
+    // compute map extent that corresponds to pixel extent
+    Ptr<MgPoint> pt          = map->GetViewCenter();
+    Ptr<MgCoordinate> center = pt->GetCoordinate();
+    double unitsPerPixel     = METERS_PER_INCH / (double)dpi / metersPerUnit;
+    double mapWidth2         = 0.5 * (double)width  * unitsPerPixel * scale;
+    double mapHeight2        = 0.5 * (double)height * unitsPerPixel * scale;
+
+    RS_Bounds extent(center->GetX() - mapWidth2,
+                     center->GetY() - mapHeight2,
+                     center->GetX() + mapWidth2,
+                     center->GetY() + mapHeight2);
+
+    // begin map stylization
+    RS_Color bgcolor(0, 0, 0, 255); // not used
+    STRING srs = map->GetMapSRS();
+    RS_MapUIInfo mapInfo(sessionId, map->GetName(), map->GetObjectId(), srs, L"", bgcolor);
+
+    // initialize the stylizer
+    SEMgSymbolManager semgr(m_svcResource);
+    DefaultStylizer ds(&semgr);
+
+    selRenderer->StartMap(&mapInfo, extent, scale, dpi, metersPerUnit, NULL);
+
+    //initial simple selection scheme
+    //Run a geometric FDO query on the given selection geometry
+    //and return the features we get from FDO
+
+    Ptr<MgLayerCollection> layers = map->GetLayers();
+
+    bool bOnlySelectableLayers = !((layerAttributeFilter & FILTER_SELECTABLE) == 0);
+    bool bOnlyVisibleLayers = !((layerAttributeFilter & FILTER_VISIBLE) == 0);
+    bool bOnlyTooltipLayers = !((layerAttributeFilter & FILTER_HASTOOLTIPS) == 0);
+
+    //iterate over all map layers, but only do selection
+    //if the layer is in the passed in collection
+    for (int p=0; p<layers->GetCount(); p++)
+    {
+        //find the layer we need to select features from
+        Ptr<MgLayerBase> layer = layers->GetItem(p);
+
+        ACE_DEBUG ((LM_DEBUG, ACE_TEXT("(%t) RenderForSelection(): Layer: %W  Selectable:%W  Visible: %W\n"), layer->GetName().c_str(), layer->GetSelectable()? L"True" : L"False", layer->IsVisibleAtScale(scale)? L"True" : L"False"));
+
+        //do this first - this check is fast
+        if (bOnlySelectableLayers && !layer->GetSelectable())
+            continue;
+
+        //do we want to select on this layer -- if caller
+        //gave us a layer name collection, check if the layer
+        //is in there
+        if (layerNames && layerNames->GetCount() > 0 && layerNames->IndexOf(layer->GetName()) == -1)
+            continue;
+
+        //check the visibility at scale if we're not ignoring scale ranges
+        if (bOnlyVisibleLayers && !layer->IsVisibleAtScale(scale))
+            continue;
+
+        //if we only want layers with tooltips, check that this layer has tooltips
+        if (bOnlyTooltipLayers)
+        {
+//          layer->GetLayerInfoFromDefinition(m_svcResource);
+            if (!layer->HasTooltips())
+                continue;
+        }
+
+        //have we processed enough features already?
+        if (maxFeatures <= 0)
+            break;
+
+        //get the MDF layer definition
+        Ptr<MgResourceIdentifier> layerResId = layer->GetLayerDefinition();
+        auto_ptr<MdfModel::LayerDefinition> ldf(MgLayerBase::GetLayerDefinition(m_svcResource, layerResId));
+        MdfModel::VectorLayerDefinition* vl = dynamic_cast<MdfModel::VectorLayerDefinition*>(ldf.get());
+
+        //we can only do geometric query selection for vector layers
+        if (vl)
+        {
+            ACE_DEBUG ((LM_DEBUG, ACE_TEXT("(%t) RenderForSelection(): Layer: %W  Vector Layer\n"), layer->GetName().c_str()));
+
+            //check to see if we want even layers that aren't visible at the current scale
+            if (!bOnlyVisibleLayers)
+            {
+                // Modify the layer scale range only for layers that are passed in
+                MdfModel::VectorScaleRangeCollection* scaleRanges = vl->GetScaleRanges();
+                if (scaleRanges)
+                {
+                    MdfModel::VectorScaleRange* scaleRange = scaleRanges->GetAt(0);
+                    if (scaleRange)
+                    {
+                        scaleRange->SetMinScale(0.0);
+                        scaleRange->SetMaxScale(MdfModel::VectorScaleRange::MAX_MAP_SCALE);
+                    }
+                }
+            }
+
+            Ptr<MgResourceIdentifier> featResId = new MgResourceIdentifier(layer->GetFeatureSourceId());
+
+            //get a transform from layer coord sys to map coord sys
+            Ptr<MgCoordinateSystem> mapCs = srs.empty()? NULL : m_pCSFactory->Create(srs);
+            TransformCache* item = TransformCache::GetLayerToMapTransform(transformCache, vl->GetFeatureName(), featResId, mapCs, m_pCSFactory, m_svcFeature);
+            Ptr<MgCoordinateSystemTransform> trans = item? item->GetMgTransform() : NULL;
+            MgCSTrans* xformer = item? item->GetTransform() : NULL;
+
+            Ptr<MgFeatureQueryOptions> options = new MgFeatureQueryOptions();
+            Ptr<MgGeometricEntity> queryGeom;
+            if (geometry != NULL)
+            {
+                //if we have a valid transform, get the request geom in layer's space
+                queryGeom = SAFE_ADDREF(geometry);
+                STRING geomTextSource = queryGeom->ToAwkt(true);
+                if (trans)
+                {
+                    //get selection geometry in layer space
+                    queryGeom = geometry->Transform(trans);
+                }
+
+                #ifdef _DEBUG
+                // Output the selection geometry
+                STRING geomText = queryGeom->ToAwkt(true);
+                ACE_DEBUG((LM_INFO, ACE_TEXT("(%t) SELECTION FILTER:\n%W\n\n"), geomText.c_str()));
+                #endif
+
+                //set the spatial filter for the selection
+                options->SetSpatialFilter(layer->GetFeatureGeometryName(), (MgGeometry*)(queryGeom.p), /*MgFeatureSpatialOperations*/selectionVariant);
+            }
+
+            // Initialize the reader
+            auto_ptr<RSMgFeatureReader> rsrdr;
+
+            try
+            {
+                if (!featureFilter.empty())
+                {
+                    //set the feature filter, if any
+                    MgdSelection selectionFilter(map, featureFilter);
+                    Ptr<MgReadOnlyLayerCollection> layers = selectionFilter.GetLayers();
+                    if (layers != NULL)
+                    {
+                        for (int i = 0; i < layers->GetCount(); i++)
+                        {
+                            Ptr<MgLayerBase> layer = layers->GetItem(i);
+                            STRING className = layer->GetFeatureClassName();
+                            STRING filter = selectionFilter.GenerateFilter(layer, className);
+                            options->SetFilter(filter);
+                        }
+                    }
+                }
+                else if (!vl->GetFilter().empty())
+                {
+                    //set layer feature filter if any
+                    options->SetFilter(vl->GetFilter());
+                }
+
+                // TODO: can FeatureName be an extension name rather than a FeatureClass?
+                // The reader below needs to be closed and released before the intersectPolygon SelectFeatures below happens
+                // or we end up with a reference count issue that causes a new FDO connection to be cached instead of
+                // reusing the already existing one.
+                Ptr<MgFeatureReader> rdr = m_svcFeature->SelectFeatures(featResId, vl->GetFeatureName(), options);
+                rsrdr.reset(new RSMgFeatureReader(rdr, m_svcFeature, featResId, options, vl->GetGeometry()));
+
+                // Note that the FdoIFeatureReader smart pointer below is created
+                // inside the following IF statement to ensure it gets destroyed
+                // BEFORE the RSMgFeatureReader object above goes out of scope,
+                // even when an exception gets thrown.
+                if (FdoPtr<FdoIFeatureReader>(rsrdr->GetInternalReader()))
+                {
+                    //run a stylization loop with the FeatureInfoRenderer.
+                    //This will build up the selection set and also
+                    //evaluate the tooltip, hyperlink and feature properties
+                    //for the first feature hit
+
+                    RS_UIGraphic uig(NULL, 0, L"");
+                    RS_LayerUIInfo layerinfo(layer->GetName(),
+                                             layer->GetObjectId(), // object ID
+                                             true,   // selectable
+                                             true,   // visible
+                                             true,   // editable
+                                             L"",    // group name
+                                             L"",    // group ID
+                                             true,   // showInLegend
+                                             true,   // expandInLegend
+                                             0.0,    // zOrder
+                                             uig);   // uiGraphic
+
+                    //extract hyperlink and tooltip info
+                    if (!vl->GetToolTip().empty()) 
+                        layerinfo.hastooltips() = true;
+                    if (vl->GetUrlData() && !vl->GetUrlData()->GetUrlContent().empty()) 
+                        layerinfo.hashyperlinks() = true;
+
+                    //set up the property name mapping -- it tells us what
+                    //string the viewer should be displaying as the name of each
+                    //feature property
+                    // TODO: can FeatureName be an extension name rather than a FeatureClass?
+                    RS_FeatureClassInfo fcinfo(vl->GetFeatureName());
+
+                    MdfModel::NameStringPairCollection* pmappings = vl->GetPropertyMappings();
+                    for (int i=0; i<pmappings->GetCount(); i++)
+                    {
+                        MdfModel::NameStringPair* m = pmappings->GetAt(i);
+                        fcinfo.add_mapping(m->GetName(), m->GetValue());
+                    }
+
+                    selRenderer->StartLayer(&layerinfo, &fcinfo);
+                    ds.StylizeVectorLayer(vl, selRenderer, rsrdr.get(), NULL, scale, StylizeThatMany, selRenderer);
+
+                    // Clear the readers in case they are reused below
+                    rdr = NULL;
+                    rsrdr.reset();
+
+                    int numFeaturesProcessed = selRenderer->GetNumFeaturesProcessed();
+                    if (!numFeaturesProcessed && selRenderer->NeedPointTest())
+                    {
+                        // Construct a square selection area 400x larger than then previous area
+                        // centered around the centroid of the original selection area
+                        // Example:  a 4x4 pixel selection area becomes an 80x80 pixel selection area
+                        Ptr<MgPoint> centroid = queryGeom->GetCentroid();
+                        Ptr<MgCoordinate> ctr = centroid->GetCoordinate();
+                        double area = queryGeom->GetArea();
+                        double delta = sqrt(area) * 10.0;
+
+                        // Only process selection if we have a valid area.  The input geometry may not have a
+                        // centroid if it is outside the bounds of the coordinate system.  GetArea() will
+                        // return zero in these cases.
+                        if (delta > 0.0)
+                        {
+                            Ptr<MgCoordinateCollection> coordinates = new MgCoordinateCollection();
+                            Ptr<MgCoordinateXY> coord1 = new MgCoordinateXY(ctr->GetX() - delta, ctr->GetY() - delta);
+                            coordinates->Add(coord1);
+                            Ptr<MgCoordinateXY> coord2 = new MgCoordinateXY(ctr->GetX() - delta, ctr->GetY() + delta);
+                            coordinates->Add(coord2);
+                            Ptr<MgCoordinateXY> coord3 = new MgCoordinateXY(ctr->GetX() + delta, ctr->GetY() + delta);
+                            coordinates->Add(coord3);
+                            Ptr<MgCoordinateXY> coord4 = new MgCoordinateXY(ctr->GetX() + delta, ctr->GetY() - delta);
+                            coordinates->Add(coord4);
+                            coordinates->Add(coord1);
+                            Ptr<MgLinearRing> outerRing = new MgLinearRing(coordinates);
+                            Ptr<MgPolygon> polygon = new MgPolygon(outerRing, NULL);
+
+                            // The selection area may extent past the map extents so clip the selection area to the map extent
+                            Ptr<MgEnvelope> extent = map->GetMapExtent();
+                            Ptr<MgCoordinate> llCoord = extent->GetLowerLeftCoordinate();
+                            Ptr<MgCoordinate> urCoord = extent->GetUpperRightCoordinate();
+                            Ptr<MgCoordinateCollection> extentCoords = new MgCoordinateCollection();
+                            Ptr<MgCoordinateXY> c1 = new MgCoordinateXY(llCoord->GetX(), llCoord->GetY());
+                            extentCoords->Add(c1);
+                            Ptr<MgCoordinateXY> c2 = new MgCoordinateXY(llCoord->GetX(), urCoord->GetY());
+                            extentCoords->Add(c2);
+                            Ptr<MgCoordinateXY> c3 = new MgCoordinateXY(urCoord->GetX(), urCoord->GetY());
+                            extentCoords->Add(c3);
+                            Ptr<MgCoordinateXY> c4 = new MgCoordinateXY(urCoord->GetX(), llCoord->GetY());
+                            extentCoords->Add(c4);
+                            extentCoords->Add(c1);
+                            Ptr<MgLinearRing> extentRing = new MgLinearRing(extentCoords);
+                            Ptr<MgPolygon> extentPolygon = new MgPolygon(extentRing, NULL);
+
+                            Ptr<MgGeometricEntity> queryExtentPolygon = extentPolygon;
+                            if (trans)
+                            {
+                                //get selection geometry in layer space
+                                queryExtentPolygon = extentPolygon->Transform(trans);
+                            }
+                            Ptr<MgGeometry> intersectPolygon = polygon->Intersection((MgPolygon *)queryExtentPolygon.p);
+
+                            if (intersectPolygon != NULL)
+                            {
+                                options->SetSpatialFilter(layer->GetFeatureGeometryName(), intersectPolygon, /*MgFeatureSpatialOperations*/selectionVariant);
+
+                                rdr = m_svcFeature->SelectFeatures(featResId, vl->GetFeatureName(), options);
+                                rsrdr.reset(new RSMgFeatureReader(rdr, m_svcFeature, featResId, options, vl->GetGeometry()));
+                                selRenderer->PointTest(true);
+                                ds.StylizeVectorLayer(vl, selRenderer, rsrdr.get(), xformer, scale, StylizeThatMany, selRenderer);
+
+                                // Clear the readers
+                                rdr = NULL;
+                                rsrdr.reset();
+
+                                selRenderer->PointTest(false);
+                                numFeaturesProcessed = selRenderer->GetNumFeaturesProcessed();
+                            }
+                        }
+                    }
+                    selRenderer->EndLayer();
+
+                    //update maxFeatures to number of features that
+                    //we can select from subsequent layers
+                    maxFeatures -= numFeaturesProcessed;
+                }
+            }
+            catch (MgFdoException* e)
+            {
+                //TODO: what should we really be doing in this case?
+                //This can happen if the underlying FDO provider does not
+                //support a particular spatial operation. One way around this
+                //is to select all features which appear on the screen and then
+                //do our own geometry math.
+                #ifdef _DEBUG
+                STRING error = e->GetExceptionMessage();
+                ACE_DEBUG((LM_INFO, ACE_TEXT("(%t) RenderForSelection() - Error: %S\n"), error.c_str()));
+                #endif
+
+                // Let's throw the exception here, so that it can be recorded in the error log.
+                throw e;
+            }
+        }
+    }
+
+    selRenderer->EndMap();
+    ACE_DEBUG ((LM_DEBUG, ACE_TEXT("(%t) RenderForSelection(): ** END **\n")));
+
+    MG_CATCH(L"MgServerRenderingService.RenderForSelection")
+
+    TransformCache::Clear(transformCache);
+
+    MG_THROW()
 }

@@ -20,6 +20,7 @@ namespace OSGeo.MapGuide.Viewer
         }
         
         [Description("The directory where the preferences are saved to and loaded from")]
+        [MgComponentProperty]
         public string PreferencesDirectory
         {
             get;
@@ -41,7 +42,7 @@ namespace OSGeo.MapGuide.Viewer
                         var options = (MgViewerOptions)ser.Deserialize(stream);
                         //Apply settings
                         viewer.ShowVertexCoordinatesWhenDigitizing = options.ShowVertexCoordinates;
-                        viewer.SelectionColor = ColorTranslator.FromHtml(options.SelectionColor);
+                        viewer.SelectionColor = Util.FromHtmlColor(options.SelectionColor);
                         viewer.ZoomInFactor = options.ZoomInFactor;
                         viewer.ZoomOutFactor = options.ZoomOutFactor;
                         viewer.ConvertTiledGroupsToNonTiled = options.ConvertTiledLayersToNonTiled;

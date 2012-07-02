@@ -20,9 +20,11 @@ namespace OSGeo.MapGuide.Viewer
         }
 
         [Description("The default name of the buffer layer that is created")]
+        [MgComponentProperty]
         public string DefaultLayerName { get; set; }
 
         [Description("The default buffer unit selection")]
+        [MgComponentProperty]
         public MeasurementUnit DefaultBufferUnits { get; set; }
 
         protected override MgControlImpl CreateControlImpl()

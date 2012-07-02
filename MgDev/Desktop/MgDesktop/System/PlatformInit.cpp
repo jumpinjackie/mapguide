@@ -1,4 +1,5 @@
 #include "MgDesktop.h"
+#include "Log/LogManager.h"
 #include "Fdo.h"
 #include "Services/Rendering/MappingUtil.h"
 #include "Services/Feature/FdoConnectionPool.h"
@@ -32,6 +33,10 @@ void MgPlatform::Initialize(CREFSTRING configFile)
     // Get the default message locale.
     STRING defaultMessageLocale;
     pConfiguration->GetStringValue(MgConfigProperties::GeneralPropertiesSection, MgConfigProperties::GeneralPropertyDefaultMessageLocale, defaultMessageLocale, MgConfigProperties::DefaultGeneralPropertyDefaultMessageLocale);
+
+    //Init log manager
+    MgLogManager* pLogManager = MgLogManager::GetInstance();
+    pLogManager->Initialize();
 
     //Init resources
     MgResources* pResources = MgResources::GetInstance();
@@ -158,11 +163,14 @@ void MgPlatform::Initialize(CREFSTRING configFile)
     // Initialize Stylizer callback mechanism for non-fatal FDO exceptions
     MgMappingUtil::InitializeStylizerCallback();
 
+    MG_LOG_TRACE_ENTRY(L"MgPlatform::Initialize()");
+
     sm_init = true;
 }
 
 void MgPlatform::Terminate()
 {
+    MG_LOG_TRACE_ENTRY(L"MgPlatform::Terminate()");
     MG_TRY()
 
     MgFdoConnectionPool::Cleanup();
