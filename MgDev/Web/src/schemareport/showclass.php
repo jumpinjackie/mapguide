@@ -60,6 +60,7 @@
                 $site->Open($userInfo);
 
                 $featureSrvc = $site->CreateService(MgServiceType::FeatureService);
+                $resourceSrvc = $site->CreateService(MgServiceType::ResourceService);
                 $resId = new MgResourceIdentifier($resName);
 
                 $schemaName = substr(strrchr($schemaName, "/"), 1);
@@ -67,12 +68,8 @@
                 $geomName = $classDef->GetDefaultGeometryPropertyName();
 
                 $qualifiedClassName = $schemaName . ":" . $className;
-                $featureReader = $featureSrvc->SelectFeatures($resId, $qualifiedClassName, null);
-
                 // Calculate total number of entries.
-                while($featureReader->ReadNext())
-                  $totalEntries++;
-                $featureReader->Close();
+                $totalEntries = GetFeatureCount($resId, $schemaName, $className, $resourceSrvc, $featureSrvc);
 
                 $currentPage = ceil(($index+$maxEntries)/$maxEntries);
                 $maxPage = ceil($totalEntries/$maxEntries);
