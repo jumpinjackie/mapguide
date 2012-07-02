@@ -306,7 +306,7 @@ void KmlRenderer::WriteCoordinates(LineBuffer* plb)
 
     for (int i = 0; i < numPoints; i ++)
     {
-        sprintf(buffer, "%f,%f,%f%s", plb->x_coord(i), plb->y_coord(i), m_elevation, (i < numPoints - 1)? "," : "");
+        sprintf(buffer, "%f,%f,%f%s", plb->x_coord(i), plb->y_coord(i), m_elevation, (i < numPoints - 1)? " " : "");
         m_kmlContent->WriteString(buffer);
     }
     m_kmlContent->WriteString("</coordinates>");
@@ -321,7 +321,7 @@ void KmlRenderer::WriteContourCoordinates(LineBuffer* plb, int cntr)
     int pointOffset = plb->contour_start_point(cntr);
     for (int i = 0; i < numPoints; i ++)
     {
-        sprintf(buffer, "%f,%f,%f%s", plb->x_coord(pointOffset), plb->y_coord(pointOffset), m_elevation, (i < numPoints - 1)? "," : "");
+        sprintf(buffer, "%f,%f,%f%s", plb->x_coord(pointOffset), plb->y_coord(pointOffset), m_elevation, (i < numPoints - 1)? " " : "");
         m_kmlContent->WriteString(buffer);
         pointOffset++;
     }
