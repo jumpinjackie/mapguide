@@ -95,7 +95,7 @@ void MgHttpKmlGetLayer::Execute(MgHttpResponse& hResponse)
         arguments.Add(L"BBOX");
         arguments.Add(MgResources::BlankArgument);
 
-        throw new MgInvalidArgumentException(L"MgHttpKmlGetFeatures.Execute",
+        throw new MgInvalidArgumentException(L"MgHttpKmlGetLayer.Execute",
             __LINE__, __WFILE__, &arguments, L"MgStringEmpty", NULL);
     }
 
