@@ -1071,14 +1071,14 @@ function DoGetLayers(nodes, layers, onlyVisible, onlySelectable)
         var node = nodes[i];
         if(node.type == 0)
         {
-            if(onlyVisible && !node.visible)
+            if(onlyVisible && (!node.visible || node.curScale == -1))
                 continue;
             if(node.children != null && node.children.length > 0)
                 DoGetLayers(node.children, layers, onlyVisible, onlySelectable);
         }
         else if(node.type == 1)
         {
-            if(onlyVisible && !node.visible)
+            if(onlyVisible && (!node.visible || node.curScale == -1))
                 continue;
             if(onlySelectable && !node.selectable)
                 continue;
