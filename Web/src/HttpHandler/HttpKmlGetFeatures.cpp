@@ -104,6 +104,16 @@ void MgHttpKmlGetFeatures::Execute(MgHttpResponse& hResponse)
     // Check common parameters
     ValidateCommonParameters();
 
+    if (m_boundingBox.empty())
+    {
+        MgStringCollection arguments;
+        arguments.Add(L"BBOX");
+        arguments.Add(MgResources::BlankArgument);
+
+        throw new MgInvalidArgumentException(L"MgHttpKmlGetFeatures.Execute",
+            __LINE__, __WFILE__, &arguments, L"MgStringEmpty", NULL);
+    }
+
     STRING sessionId = m_userInfo->GetMgSessionId();
 
     // Get a resource service instance
