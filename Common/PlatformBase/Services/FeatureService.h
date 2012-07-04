@@ -870,10 +870,20 @@ PUBLISHED_API:
     ///   <li>If the command is of type MgLockFeatures, the property
     ///     type is MgPropertyType::Feature, and its value is the number
     ///     of features locked.</li>
-    ///   <li>If the command is of type MgUnLockFeatures, the property
+    ///   <li>If the command is of type MgUnlockFeatures, the property
     ///     type is MgPropertyType::Int32, and its value is the number of
     ///     features unlocked.</li>
+    ///   <li>For any of the above commands, if the property type is 
+    ///     MgPropertyType::String, it indicates an exception had occurred
+    ///     for that particular command, and its value is the exception message.
+    ///     This only applies when the operation is not using a transaction</li>
     /// </ul>
+    ///
+    /// \remarks
+    /// If useTransaction is false, this method will not throw any exceptions on command execution failure. 
+    /// In such cases, you need to inspect the returned collection for any instances of MgStringProperty
+    /// Such instances will contain the exception message for the corresponding command that was
+    /// executed
     ///
     /// \exception MgFeatureServiceException
     /// \exception MgInvalidArgumentException
@@ -943,10 +953,20 @@ PUBLISHED_API:
     ///   <li>If the command is of type MgLockFeatures, the property
     ///     type is MgPropertyType::Feature, and its value is the number
     ///     of features locked.</li>
-    ///   <li>If the command is of type MgUnLockFeatures, the property
+    ///   <li>If the command is of type MgUnlockFeatures, the property
     ///     type is MgPropertyType::Int32, and its value is the number of
     ///     features unlocked.</li>
+    ///   <li>For any of the above commands, if the property type is 
+    ///     MgPropertyType::String, it indicates an exception had occurred
+    ///     for that particular command, and its value is the exception message.
+    ///     This only applies when the operation is not using a transaction</li>
     /// </ul>
+    ///
+    /// \remarks
+    /// If transaction is NULL, this method will not throw any exceptions on command execution failure. 
+    /// In such cases, you need to inspect the returned collection for any instances of MgStringProperty
+    /// Such instances will contain the exception message for the corresponding command that was
+    /// executed
     ///
     /// \exception MgFeatureServiceException
     /// \exception MgInvalidArgumentException

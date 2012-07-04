@@ -54,6 +54,7 @@ void MgOpUpdateFeatures::Execute()
 {
     ACE_DEBUG((LM_DEBUG, ACE_TEXT("  (%t) MgOpUpdateFeatures::Execute()\n")));
 
+    STRING partialFailureMsg;
     MG_LOG_OPERATION_MESSAGE(L"UpdateFeatures");
 
     MG_FEATURE_SERVICE_TRY()
@@ -92,6 +93,22 @@ void MgOpUpdateFeatures::Execute()
 
         // Write the response
         EndExecution(rowsAffected);
+
+        // #649: Exceptions are only thrown in transactional cases (which will never reach here). For non-transactional cases, 
+        // we check for any MgStringProperty instances. These are "serialized" FDO exception messages indicating failure for that 
+        // particular command. We can't throw for non-transactional cases, instead we put the onus on the consuming caller to do 
+        // the same check we are doing here.
+        for (INT32 i = 0; i < rowsAffected->GetCount(); i++) 
+        {
+            Ptr<MgProperty> prop = rowsAffected->GetItem(i);
+            if (prop->GetPropertyType() == MgPropertyType::String)
+            {
+                MgStringProperty* sprop = static_cast<MgStringProperty*>(prop.p);
+                //One is enough to flag partial failure (should we go through all of them?)
+                partialFailureMsg = sprop->GetValue();
+                break;
+            }
+        }
     }
     else
     {
@@ -105,15 +122,26 @@ void MgOpUpdateFeatures::Execute()
             __LINE__, __WFILE__, NULL, L"", NULL);
     }
 
-    // Successful operation
-    MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Success.c_str());
+    if (partialFailureMsg.empty())
+    {
+        // Successful operation
+        MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Success.c_str());
+    }
 
     MG_FEATURE_SERVICE_CATCH(L"MgOpUpdateFeatures.Execute")
 
-    if (mgException != NULL)
+    if (mgException != NULL || !partialFailureMsg.empty())
     {
         // Failed operation
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Failure.c_str());
+        // Only thrown exceptions are logged, so for this partial failure to be logged into Error.log it needs to be
+        // wrapped in an MgException to be thrown at the end of this method
+        if (mgException == NULL && !partialFailureMsg.empty())
+        {
+            MgStringCollection args;
+            args.Add(partialFailureMsg);
+            mgException = new MgFeatureServiceException(L"MgOpUpdateFeatures.Execute", __LINE__, __WFILE__, NULL, L"MgFormatInnerExceptionMessage", &args);
+        }
     }
 
     // Add access log entry for operation
