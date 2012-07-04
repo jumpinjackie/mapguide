@@ -120,6 +120,7 @@ function GetFeatureCount($featuresId, $schemaName, $className, $resourceSrvc, $f
     //
     //NOTE: If MapGuide supported scrollable readers like FDO, we'd have also tried 
     //that as well.
+    $totalEntries = -1;
     $featureName = $schemaName . ":" . $className;
     $canCount = false;
     $gotCount = false;
