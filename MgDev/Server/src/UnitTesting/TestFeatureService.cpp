@@ -2758,3 +2758,69 @@ void TestFeatureService::TestCase_BenchmarkSqliteAggregateJoin()
         throw;
     }
 }
+
+///----------------------------------------------------------------------------
+/// Test Case Description:
+///
+/// This test case tests the correct response for a non-transactional failure
+/// in UpdateFeatures
+///----------------------------------------------------------------------------
+void TestFeatureService::TestCase_UpdateFeaturesPartialFailure()
+{
+    try
+    {
+        MgServiceManager* serviceManager = MgServiceManager::GetInstance();
+        if(serviceManager == 0)
+        {
+            throw new MgNullReferenceException(L"TestFeatureService.TestCase_UpdateFeaturesPartialFailure", __LINE__, __WFILE__, NULL, L"", NULL);
+        }
+
+        Ptr<MgFeatureService> featSvc = dynamic_cast<MgFeatureService*>(serviceManager->RequestService(MgServiceType::FeatureService));
+        if (featSvc == 0)
+        {
+            throw new MgServiceNotAvailableException(L"TestFeatureService.TestCase_UpdateFeaturesPartialFailure",
+                __LINE__, __WFILE__, NULL, L"", NULL);
+        }
+
+        Ptr<MgResourceIdentifier> fsId = new MgResourceIdentifier(L"Library://UnitTests/Data/Sheboygan_Parcels.FeatureSource");
+        Ptr<MgPropertyCollection> props = new MgPropertyCollection();
+        Ptr<MgInt32Property> idProp = new MgInt32Property(L"id", 0);
+        props->Add(idProp);
+        Ptr<MgInsertFeatures> insert = new MgInsertFeatures(L"Parcels1", props); //Bogus class name to trigger exception
+        Ptr<MgFeatureCommandCollection> cmds = new MgFeatureCommandCollection();
+        cmds->Add(insert);
+
+        Ptr<MgPropertyCollection> result = featSvc->UpdateFeatures(fsId, cmds, false);
+        CPPUNIT_ASSERT(result->GetCount() > 0);
+
+        bool bPartialFailure = false;
+        for (INT32 i = 0; i < result->GetCount(); i++)
+        {
+            Ptr<MgProperty> prop = result->GetItem(i);
+            if (prop->GetPropertyType() == MgPropertyType::String)
+            {
+                bPartialFailure = true;
+                break;
+            }
+        }
+
+        CPPUNIT_ASSERT(bPartialFailure);
+    }
+    catch(MgException* e)
+    {
+        STRING message = e->GetDetails(TEST_LOCALE);
+        SAFE_RELEASE(e);
+        CPPUNIT_FAIL(MG_WCHAR_TO_CHAR(message.c_str()));
+    }
+    catch(FdoException* e)
+    {
+        STRING message = L"FdoException occurred: ";
+        message += e->GetExceptionMessage();
+        FDO_SAFE_RELEASE(e);
+        CPPUNIT_FAIL(MG_WCHAR_TO_CHAR(message.c_str()));
+    }
+    catch(...)
+    {
+        throw;
+    }
+}
