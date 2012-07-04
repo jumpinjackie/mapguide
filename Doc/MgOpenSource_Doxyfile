@@ -25,7 +25,7 @@ DETAILS_AT_TOP         = YES
 INHERIT_DOCS           = YES
 SEPARATE_MEMBER_PAGES  = YES
 TAB_SIZE               = 4
-ALIASES                = ProdName="MapGuide Open Source"
+ALIASES                = ProdName="MapGuide Open Source 2.4"
 ALIASES               += DevGuide="<em>MapGuide Open Source Developer's Guide</em>"
 ALIASES               += note1=""
 ALIASES               += note2=""
