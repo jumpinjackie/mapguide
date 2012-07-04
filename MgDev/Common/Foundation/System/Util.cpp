@@ -858,42 +858,124 @@ bool MgUtil::GetLinuxMemoryStatus(MgLinuxMemoryStatus* pMemoryStatus)
             throw new MgFileNotFoundException(L"MgUtil.GetLinuxMemoryStatus", __LINE__, __WFILE__, &arguments, L"", NULL);
         }
 
-        // Move file pointer to next line
-        fgets(line, 80, meminfo);
+	    /*
 
-        // Read physical memory info
+	    /proc/meminfo looks like this:
+
+	    MemTotal:	    <size> kB	<-- Read this
+	    MemFree:	    <size> kB	<-- Read this
+	    Buffers:	    <size> kB	<-- Read this
+	    Cached:		    <size> kB	<-- Read this
+	    SwapCached:	    <size> kB
+	    Active:		    <size> kB
+	    Inactive:	    <size> kB
+	    Active(anon):	<size> kB
+	    Inactive(anon):	<size> kB
+	    Active(file):	<size> kB
+	    Inactive(file):	<size> kB
+	    Unevictable:	<size> kB
+	    Mlocked:	    <size> kB
+	    HighTotal:	    <size> kB
+	    HighFree:	    <size> kB
+	    LowTotal:	    <size> kB
+	    LowFree:	    <size> kB
+	    SwapTotal:	    <size> kB	<-- Read this
+	    SwapFree:	    <size> kB	<-- Read this
+	    ...
+
+	    Infer the used amount by (total - free)
+
+	    */
+
         double total;
         double used;
         double free;
         double shared;
         double buffers;
         double cached;
-        fgets(line, 80, meminfo);
-        sscanf(line, "%*4s %lf %lf %lf %lf %lf %lf",
-            &total, &used, &free, &shared, &buffers, &cached);
-
-        pMemoryStatus->m_memTotal = (INT64)total;
-        pMemoryStatus->m_memUsed = (INT64)used;
-        pMemoryStatus->m_memFree = (INT64)free;
-        pMemoryStatus->m_memShared = (INT64)shared;
-        pMemoryStatus->m_memBuffers = (INT64)buffers;
-        pMemoryStatus->m_memCached = (INT64)cached;
-
-        // Read swap memory info
         double swapTotal;
         double swapUsed;
         double swapFree;
-        fgets(line, 80, meminfo);
-        sscanf(line, "%*5s %lf %lf %lf",
-            &swapTotal, &swapUsed, &swapFree);
+        int lineNum = 0;
+        bool bComplete = false;
+        //printf("Parse /proc/meminfo\n");
+        //Read until all lines are accounted for or EOF
+        //All values read are in KB so they have to be multiplied
+        //by 1024 for the number to be in bytes (same as Windows)
+        while (fgets(line, 80, meminfo) != NULL)
+        {
+            lineNum++;
+            if (lineNum == 1) //MemTotal line
+            {
+                //printf("%s\n", line);
+                sscanf(line, "%*9s %lf", &total);
+                total *= 1024;
+                //printf("Parsed: %lf\n", total);
+            }
+            else if (lineNum == 2) //MemFree line
+            {
+                //printf("%s\n", line);
+                sscanf(line, "%*8s %lf", &free);
+                free *= 1024;
+                //printf("Parsed: %lf\n", free);
+            }
+            else if (lineNum == 3) //Buffers line
+            {
+                //printf("%s\n", line);
+                sscanf(line, "%*8s %lf", &buffers);
+                buffers *= 1024;
+                //printf("Parsed: %lf\n", buffers);
+            }
+            else if (lineNum == 4) //Cached line
+            {
+                //printf("%s\n", line);
+                sscanf(line, "%*7s %lf", &cached);
+                cached *= 1024;
+                //printf("Parsed: %lf\n", cached);
+            }
+            else if (lineNum == 18) //SwapTotal line
+            {
+                //printf("%s\n", line);
+                sscanf(line, "%*10s %lf", &swapTotal);
+                swapTotal *= 1024;
+            }
+            else if (lineNum == 19) //SwapFree line
+            {
+                //printf("%s\n", line);
+                sscanf(line, "%*9s %lf", &swapFree);
+                swapFree *= 1024;                
+            }
 
-        pMemoryStatus->m_swapTotal = (INT64)swapTotal;
-        pMemoryStatus->m_swapUsed = (INT64)swapUsed;
-        pMemoryStatus->m_swapFree = (INT64)swapFree;
+	        if (lineNum > 19) //Past SwapFree line
+	        {
+	            bComplete = true; //All lines accounted for
+	            break;	
+	        }
+        }
 
+        if (bComplete) 
+        {
+            pMemoryStatus->m_memTotal = (INT64)total;
+            pMemoryStatus->m_memFree = (INT64)free;
+            pMemoryStatus->m_memUsed = (INT64)(pMemoryStatus->m_memTotal - pMemoryStatus->m_memFree);
+            //TODO: What value in /proc/meminfo represents this? This value isn't used at the moment so we can sort of get away with it for now
+            pMemoryStatus->m_memShared = 0L;
+            pMemoryStatus->m_memBuffers = (INT64)buffers;
+            pMemoryStatus->m_memCached = (INT64)cached; 
+
+            pMemoryStatus->m_swapTotal = (INT64)swapTotal;
+            pMemoryStatus->m_swapFree = (INT64)swapFree;
+            pMemoryStatus->m_swapUsed = (INT64)(pMemoryStatus->m_swapTotal - pMemoryStatus->m_swapFree);
+
+            //printf("Parse complete\n");
+            bSuccess = true;
+        } 
+        else 
+        {
+            //printf("Parse failed\n");
+            bSuccess = false;
+        }
         fclose(meminfo);
-
-        bSuccess = true;
 
     #endif // _WIN32
 
