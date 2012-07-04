@@ -40,6 +40,7 @@ class TestFeatureService : public CppUnit::TestFixture
     CPPUNIT_TEST(TestCase_SelectFeatures);
     CPPUNIT_TEST(TestCase_SelectAggregate);
 //    CPPUNIT_TEST(TestCase_UpdateFeatures);
+    CPPUNIT_TEST(TestCase_UpdateFeaturesPartialFailure);
 //  TODO write test case when know how to make command collection
     CPPUNIT_TEST(TestCase_ExecuteSqlQuery);
     CPPUNIT_TEST(TestCase_ExecuteSqlNonQuery);
@@ -89,6 +90,7 @@ public:
     void TestCase_SelectFeatures();
     void TestCase_SelectAggregate();
 //    void TestCase_UpdateFeatures();
+    void TestCase_UpdateFeaturesPartialFailure();
     void TestCase_ExecuteSqlQuery();
     void TestCase_ExecuteSqlNonQuery();
     void TestCase_GetSpatialContexts();
