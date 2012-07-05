@@ -490,7 +490,7 @@ void MgFileUtil::DeleteDirectory(CREFSTRING path, bool recursive, bool strict)
 
     int errCode = _rmdir(MgUtil::WideCharToMultiByte(path).c_str());
 
-    if (0 != errCode)
+    if (0 != errCode && strict)
     {
         errCode = errno; // This is not thread safe - requires guard
         MgStringCollection arguments;
