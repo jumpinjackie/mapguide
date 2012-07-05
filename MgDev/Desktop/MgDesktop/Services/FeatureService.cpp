@@ -1382,7 +1382,7 @@ MgFeatureSchemaCollection* MgdFeatureService::DescribeSchema(MgResourceIdentifie
 
 MgFeatureSchemaCollection* MgdFeatureService::DescribeSchema(MgResourceIdentifier* resource,
                                                              CREFSTRING schemaName,
-                                                             MgStringCollection* classNames,
+                                                             MgStringCollection* findClassNames,
                                                              bool serialize) 
 { 
 	CHECK_FEATURE_SOURCE_ARGUMENT(resource, L"MgdFeatureService::DescribeSchema");
@@ -1392,7 +1392,37 @@ MgFeatureSchemaCollection* MgdFeatureService::DescribeSchema(MgResourceIdentifie
     MG_FEATURE_SERVICE_TRY()
 
     MgFeatureServiceCache* cache = MgFeatureServiceCache::GetInstance();
-    fsCollection = cache->GetSchemas(resource, schemaName, classNames, serialize);
+    fsCollection = cache->GetSchemas(resource, schemaName, findClassNames, serialize);
+
+    Ptr<MgFeatureSourceCacheItem> fsCache = cache->GetFeatureSource(resource);
+    MdfModel::FeatureSource* featureSource = fsCache->Get();
+    CHECKNULL(featureSource, L"MgdFeatureService::DescribeSchema");
+    MdfModel::ExtensionCollection* extensions = featureSource->GetExtensions();
+    CHECKNULL(extensions, L"MgdFeatureService::DescribeSchema");
+    int extensionCount = extensions->GetCount();
+
+    //Weed out extended class names because FDO won't know anything about them
+    Ptr<MgStringCollection> classNames;
+    if (NULL != findClassNames)
+    {
+        classNames = new MgStringCollection();
+        for (INT32 i = 0; i < findClassNames->GetCount(); i++)
+        {
+            STRING clsName = findClassNames->GetItem(i);
+            bool bIsExtendedClassName = false;
+            for (INT32 j = 0; j < extensionCount; j++)
+            {
+                MdfModel::Extension* extension = extensions->GetAt(i);
+                CHECKNULL(extension, L"MgdFeatureService::DescribeSchema");
+                STRING extName = (STRING)extension->GetName();
+                if (clsName == extName)
+                    bIsExtendedClassName = true;
+            }
+
+            if (!bIsExtendedClassName)
+                classNames->Add(clsName);
+        }
+    }
 
     if (NULL == fsCollection.p)
     {
@@ -1409,7 +1439,6 @@ MgFeatureSchemaCollection* MgdFeatureService::DescribeSchema(MgResourceIdentifie
         //
         // A new MgFeatureSchema needs to be created for each primary schema in FDO schemas.
         //
-
         Ptr<MgFeatureSchema> schema;
         Ptr<MgClassDefinitionCollection> classCol;
 
@@ -1459,15 +1488,6 @@ MgFeatureSchemaCollection* MgdFeatureService::DescribeSchema(MgResourceIdentifie
             //
             // A new MgClassDefinition needs to be created for each extension and added to the MgClassCollection
             //
-
-            Ptr<MgFeatureSourceCacheItem> fsCache = cache->GetFeatureSource(resource);
-
-            MdfModel::FeatureSource* featureSource = fsCache->Get();
-            CHECKNULL(featureSource, L"MgdFeatureService::DescribeSchema");
-            MdfModel::ExtensionCollection* extensions = featureSource->GetExtensions();
-            CHECKNULL(extensions, L"MgdFeatureService::DescribeSchema");
-            int extensionCount = extensions->GetCount();
-
             for (int i = 0; i < extensionCount; i++)
             {
                 Ptr<MgClassDefinition> extClassDefinition;
@@ -1698,39 +1718,27 @@ MgFeatureSchemaCollection* MgdFeatureService::DescribeSchema(MgResourceIdentifie
                                             mpdc->Add(propDef);
                                         }
                                     }
-
                                     break;
-
                                 }  // end loop thru secondary class collection
-
                                 break;
-
                             }  // end loop thru secondary schemas
                         }
                         else
                         {
                             throw new MgConnectionFailedException(L"MgdFeatureService::DescribeSchema", __LINE__, __WFILE__, NULL, L"", NULL);
                         }
-
                     }  // end if (NULL != secFeatureSource)
-
                 }  // end loop thru all attribute relates (joins)
-
                 if (!extensionName.empty())
                 {
                     extClassDefinition->SetName(extensionName);
                 }
-
                 // Add the extension class definition to the MgClassDefinitionCollection
                 classCol->Add(extClassDefinition);
-
             }  // Repeat for all extensions
-
             // Add the schema to the MgFeatureSchemaCollection
             fsCollection->Add(schema);
-
         }  // End loop thru all schemas
-
         cache->SetSchemas(resource, schemaName, classNames, serialize, fsCollection.p);
     }
     else
@@ -5636,6 +5644,8 @@ MgStringCollection* MgdFeatureService::GetClasses(MgResourceIdentifier* resource
     Ptr<MgFeatureConnection> connWrap = new MgFeatureConnection(resource);
 	FdoPtr<FdoIConnection> conn = connWrap->GetConnection();
 
+    STRING theSchemaName = schemaName;
+
 	if (SupportsPartialSchemaDiscovery(conn))
 	{
 		FdoPtr<FdoIGetClassNames> fetch = (FdoIGetClassNames*)conn->CreateCommand(FdoCommandType_GetClassNames);
@@ -5670,6 +5680,49 @@ MgStringCollection* MgdFeatureService::GetClasses(MgResourceIdentifier* resource
 
 		classNames = names;
 	}
+
+    //In case an empty schema name was specified, get the schema name
+    //from the first result.
+    if (theSchemaName.empty())
+    {
+        INT32 clsCount = classNames->GetCount();
+        if (clsCount > 0)
+        {
+            for (INT32 i = 0; i < clsCount; i++)
+            {
+                STRING qn = classNames->GetItem(i);
+                STRING sn;
+                STRING cn;
+                MgUtil::ParseQualifiedClassName(qn, sn, cn);
+                
+                theSchemaName = sn;
+                break;
+            }
+        }
+    }
+
+    MgFeatureServiceCache* cache = MgFeatureServiceCache::GetInstance();
+    // Add extended feature class names
+    Ptr<MgFeatureSourceCacheItem> fsCache = cache->GetFeatureSource(resource);
+    MdfModel::FeatureSource* featureSource = fsCache->Get();
+    CHECKNULL(featureSource, L"MgdFeatureService::GetClasses");
+    MdfModel::ExtensionCollection* extensions = featureSource->GetExtensions();
+    CHECKNULL(extensions, L"MgdFeatureService::GetClasses");
+    int extensionCount = extensions->GetCount();
+    for (int i = 0; i < extensionCount; i++)
+    {
+        MdfModel::Extension* extension = extensions->GetAt(i);
+        CHECKNULL(extension, L"MgdFeatureService::GetClasses");
+
+        // Get the extension name
+        STRING extensionName = (STRING)extension->GetName();
+
+        STRING extendedClassName = theSchemaName;
+        extendedClassName += L":";
+        extendedClassName += extensionName;
+
+        classNames->Add(extendedClassName);
+    }
 
     // Successful operation
     MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Success.c_str());

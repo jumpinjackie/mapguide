@@ -55,9 +55,11 @@ FdoInt32 MgGwsConnectionPool::Release ()
 {
     m_iRefCount --;
     assert (m_iRefCount >= 0);
-    if (m_iRefCount == 0)
-        Dispose ();
-    return m_iRefCount;
+    if (0 != m_iRefCount)
+        return m_iRefCount;
+
+    Dispose ();
+    return 0;
 }
 void MgGwsConnectionPool::Dispose ()
 {

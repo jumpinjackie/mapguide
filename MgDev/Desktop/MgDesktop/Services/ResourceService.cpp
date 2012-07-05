@@ -298,16 +298,8 @@ void MgdResourceService::SetResource(MgResourceIdentifier* resource, MgByteReade
     if (NULL != content)
     {
 	    Ptr<MgByteSink> sink = new MgByteSink(content);
-	    sink->ToFile(path);
-
-        if (resource->GetResourceType() == MgResourceType::FeatureSource)
-        {
-            //Invalidate any cached information
-            MgFeatureServiceCache* cache = MgFeatureServiceCache::GetInstance();
-            cache->RemoveEntry(resource);
-            //Boot pooled connections
-            MgFdoConnectionPool::PurgeCachedConnections(resource);
-        }
+        sink->ToFile(path);
+        ReleasePotentialLocks(resource);
     }
 
     // Successful operation
@@ -344,26 +336,8 @@ void MgdResourceService::DeleteResource(MgResourceIdentifier* resource)
     CHECKARGUMENTNULL(resource, L"MgdResourceService::DeleteResource");
     if (ResourceExists(resource))
     {
-        if (resource->GetResourceType() == MgResourceType::FeatureSource)
-        {
-            //Invalidate any cached information
-            MgFeatureServiceCache* cache = MgFeatureServiceCache::GetInstance();
-            cache->RemoveEntry(resource);
-            //Boot pooled connections to ensure no locks are held (technically,
-            //the pooled connections are closed, but just to play safe)
-            MgFdoConnectionPool::PurgeCachedConnections(resource);
-        }
-        else if (resource->GetResourceType() == MgResourceType::Folder)
-        {
-            //TODO: We obviously need a fine-grained version instead of going nuclear
-            MgFeatureServiceCache* cache = MgFeatureServiceCache::GetInstance();
-            cache->Clear();
-            //Boot pooled connections to ensure no locks are held (technically,
-            //the pooled connections are closed, but just to play safe)
-            MgFdoConnectionPool::PurgeCachedConnectionsUnderFolder(resource);
-        }
-
-	    STRING contentPath = ResolveContentPath(resource);
+        ReleasePotentialLocks(resource);
+        STRING contentPath = ResolveContentPath(resource);
 	    STRING dataPath = ResolveDataPath(resource);
 	    if (MgFileUtil::IsFile(contentPath))
 	    {
@@ -398,6 +372,27 @@ void MgdResourceService::DeleteResource(MgResourceIdentifier* resource)
     MG_LOG_OPERATION_MESSAGE_ACCESS_ENTRY();
 
     MG_RESOURCE_SERVICE_THROW()
+}
+
+void MgdResourceService::ReleasePotentialLocks(MgResourceIdentifier* resource)
+{
+    CHECKARGUMENTNULL(resource, L"MgdResourceService::DeleteResource");
+    if (resource->GetResourceType() == MgResourceType::FeatureSource)
+    {
+        //Invalidate any cached information
+        MgFeatureServiceCache* cache = MgFeatureServiceCache::GetInstance();
+        cache->RemoveEntry(resource);
+        //Boot pooled connections to ensure no locks are held
+        MgFdoConnectionPool::PurgeCachedConnections(resource);
+    }
+    else if (resource->GetResourceType() == MgResourceType::Folder)
+    {
+        //TODO: We obviously need a fine-grained version instead of going nuclear
+        MgFeatureServiceCache* cache = MgFeatureServiceCache::GetInstance();
+        cache->Clear();
+        //Boot pooled connections to ensure no locks are held
+        MgFdoConnectionPool::PurgeCachedConnectionsUnderFolder(resource);
+    }
 }
 
 void MgdResourceService::CopyResource(MgResourceIdentifier* sourceResource, MgResourceIdentifier* destResource, bool overwrite) 
@@ -728,6 +723,7 @@ void MgdResourceService::DeleteResourceData(MgResourceIdentifier* resource, CREF
     if (dataName.empty())
         throw new MgNullArgumentException(L"MgdResourceService::DeleteResourceData", __LINE__, __WFILE__, NULL, L"", NULL);
 
+    ReleasePotentialLocks(resource);
 	STRING path = ResolveDataPath(resource);
 	path += dataName;
 

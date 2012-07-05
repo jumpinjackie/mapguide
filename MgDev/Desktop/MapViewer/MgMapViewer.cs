@@ -2309,7 +2309,12 @@ namespace OSGeo.MapGuide.Viewer
             sw.Stop();
             Trace.TraceInformation("Selection processing completed in {0}ms", sw.ElapsedMilliseconds);
 #endif
-
+            //This selection may result in nothing, so we invalidate the selection image beforehand
+            if (_selectionImage != null)
+            {
+                _selectionImage.Dispose();
+                _selectionImage = null;
+            }
             RenderSelection(true); //This is either async or queued up. Either way do this before firing off selection changed
             var handler = this.SelectionChanged;
             if (handler != null)
@@ -2390,6 +2395,9 @@ namespace OSGeo.MapGuide.Viewer
 
         private void HandleMouseWheel(MouseEventArgs e)
         {
+            if (!this.HasLoadedMap)
+                return;
+
             if (delayRenderTimer == null)
             {
                 delayRenderTimer = new System.Timers.Timer();
