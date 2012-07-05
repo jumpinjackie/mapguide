@@ -2017,8 +2017,9 @@ void MgdRenderingService::RenderForSelection(MgdMap* map,
     TransformCacheMap transformCache;
 
     MG_TRY()
-
+#ifdef _DEBUG
     ACE_DEBUG ((LM_DEBUG, ACE_TEXT("(%t) RenderForSelection(): ** START **\n")));
+#endif
     if (NULL == map || (NULL == geometry && featureFilter.empty()))
         throw new MgNullArgumentException(L"MgServerRenderingService.RenderForSelection", __LINE__, __WFILE__, NULL, L"", NULL);
 
@@ -2102,9 +2103,9 @@ void MgdRenderingService::RenderForSelection(MgdMap* map,
     {
         //find the layer we need to select features from
         Ptr<MgLayerBase> layer = layers->GetItem(p);
-
+    #ifdef _DEBUG
         ACE_DEBUG ((LM_DEBUG, ACE_TEXT("(%t) RenderForSelection(): Layer: %W  Selectable:%W  Visible: %W\n"), layer->GetName().c_str(), layer->GetSelectable()? L"True" : L"False", layer->IsVisibleAtScale(scale)? L"True" : L"False"));
-
+    #endif
         //do this first - this check is fast
         if (bOnlySelectableLayers && !layer->GetSelectable())
             continue;
@@ -2139,8 +2140,9 @@ void MgdRenderingService::RenderForSelection(MgdMap* map,
         //we can only do geometric query selection for vector layers
         if (vl)
         {
+        #ifdef _DEBUG
             ACE_DEBUG ((LM_DEBUG, ACE_TEXT("(%t) RenderForSelection(): Layer: %W  Vector Layer\n"), layer->GetName().c_str()));
-
+        #endif
             //check to see if we want even layers that aren't visible at the current scale
             if (!bOnlyVisibleLayers)
             {
@@ -2370,7 +2372,9 @@ void MgdRenderingService::RenderForSelection(MgdMap* map,
     }
 
     selRenderer->EndMap();
+#ifdef _DEBUG
     ACE_DEBUG ((LM_DEBUG, ACE_TEXT("(%t) RenderForSelection(): ** END **\n")));
+#endif
 
     MG_CATCH(L"MgServerRenderingService.RenderForSelection")
 

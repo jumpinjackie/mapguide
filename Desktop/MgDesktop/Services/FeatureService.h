@@ -272,7 +272,7 @@ private:
 											CREFSTRING coordinateSystem,
 											bool withLock,
                                             bool asScrollable);
-	
+
 	bool ContainsUdf(MgFeatureConnection* conn, FdoExpression* expression);
 	bool IsCustomFunction(FdoFunction* fdoFunc);
 	MgReader* GetCustomReader(MgReader* reader, FdoFunction* customFunc, CREFSTRING propertyName);

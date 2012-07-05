@@ -97,6 +97,7 @@ protected:
 	virtual void Dispose() { delete this; }
 
 private:
+    void ReleasePotentialLocks(MgResourceIdentifier* resource);
     static bool ListDirectories(MgStringCollection* directoryNames, CREFSTRING path);
     void WriteResourceFolderEntry(REFSTRING xml, INT32 maxDepth, STRING type, MgResourceIdentifier* resId, CREFSTRING enumeratedFolderId = L"");
     void WriteResourceDocumentEntry(REFSTRING xml, MgResourceIdentifier* resId);
@@ -105,6 +106,7 @@ private:
 	STRING m_libraryDataPath;
 	STRING m_sessionContentPath;
 	STRING m_sessionDataPath;
+    STRING m_schemaPath;
 };
 
 #endif
