@@ -43,6 +43,7 @@ class TestFeatureService : public CppUnit::TestFixture
     CPPUNIT_TEST(TestCase_SelectFeaturesTransformed);
     CPPUNIT_TEST(TestCase_SelectScrollable);
     CPPUNIT_TEST(TestCase_SelectAggregate);
+    CPPUNIT_TEST(TestCase_ExtendedFeatureClass);
     CPPUNIT_TEST(TestCase_InsertFeatures);
     CPPUNIT_TEST(TestCase_InsertFeaturesBatch);
     CPPUNIT_TEST(TestCase_UpdateFeatures);
@@ -105,6 +106,7 @@ public:
     void TestCase_DeleteFeatures();
     void TestCase_ExecuteSqlQuery();
     void TestCase_ExecuteSqlNonQuery();
+    void TestCase_ExtendedFeatureClass();
     void TestCase_GetSpatialContexts();
     void TestCase_GetLongTransactions();
     void TestCase_SetLongTransaction();

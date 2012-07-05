@@ -23,7 +23,7 @@ struct PoolCacheEntry
     STRING ProviderName;
 };
 
-class MgFdoConnectionPool
+class MG_DESKTOP_API MgFdoConnectionPool //Needs to be exported for unit testing code
 {
 public:
     static void Initialize(MgConfiguration* config);

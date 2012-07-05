@@ -17,6 +17,7 @@
 
 #include "Services/Feature/FeatureUtil.h"
 #include "MgDesktop.h"
+#include "Services/Feature/FdoConnectionPool.h"
 #include "TestFeatureService.h"
 #include "CppUnitExtensions.h"
 #include "Fdo.h"
@@ -261,7 +262,18 @@ void TestFeatureService::TestEnd()
                 __LINE__, __WFILE__, NULL, L"", NULL);
         }
 
-        /*
+
+#ifdef DEBUG
+        ACE_DEBUG((LM_INFO, ACE_TEXT("\nConnection Pool status: \n\n")));
+        std::vector<PoolCacheEntry*> entries;
+        MgFdoConnectionPool::GetCacheInfo(entries);
+        for (std::vector<PoolCacheEntry*>::iterator it = entries.begin(); it != entries.end(); it++)
+        {
+            STRING resId = (*it)->ResourceId;
+            ACE_DEBUG((LM_INFO, ACE_TEXT(" - %W (%d Open, %d Closed)\n"), resId.c_str(), (*it)->OpenCount, (*it)->ClosedCount));
+        }
+#endif
+
         // delete the feature sources definition
         Ptr<MgResourceIdentifier> fsres1 = new MgResourceIdentifier(L"Library://UnitTests/Data/Sheboygan_Parcels.FeatureSource");
         pService->DeleteResource(fsres1);
@@ -283,9 +295,12 @@ void TestFeatureService::TestEnd()
 
         Ptr<MgResourceIdentifier> fsres7 = new MgResourceIdentifier(L"Library://UnitTests/Data/Sheboygan_Parcels_Writable.FeatureSource");
         pService->DeleteResource(fsres7);
-        */
-        Ptr<MgResourceIdentifier> folder = new MgResourceIdentifier(L"Library://UnitTests/");
-        pService->DeleteResource(folder);
+
+        Ptr<MgResourceIdentifier> fsres8 = new MgResourceIdentifier(L"Library://UnitTests/Data/FdoJoin.FeatureSource");
+        pService->DeleteResource(fsres8);
+        
+        //Ptr<MgResourceIdentifier> folder = new MgResourceIdentifier(L"Library://UnitTests/");
+        //pService->DeleteResource(folder);
     }
     catch (MgException* e)
     {
@@ -2579,6 +2594,125 @@ void TestFeatureService::TestCase_JoinFeaturesChainedInner1ToMany()
         CPPUNIT_ASSERT(s3 == L"30320");
         CPPUNIT_ASSERT(s4 == L"Voting District Seven");
         CPPUNIT_ASSERT(s5 == L"7");
+    }
+    catch(MgException* e)
+    {
+        STRING message = e->GetDetails(TEST_LOCALE);
+        STRING st = e->GetStackTrace(TEST_LOCALE);
+        message += L"\n" + st;
+        SAFE_RELEASE(e);
+        CPPUNIT_FAIL(MG_WCHAR_TO_CHAR(message.c_str()));
+    }
+    catch(FdoException* e)
+    {
+        STRING message = L"FdoException occurred: ";
+        message += e->GetExceptionMessage();
+        FDO_SAFE_RELEASE(e);
+        CPPUNIT_FAIL(MG_WCHAR_TO_CHAR(message.c_str()));
+    }
+    catch(...)
+    {
+        throw;
+    }
+}
+
+///----------------------------------------------------------------------------
+/// Test Case Description:
+///
+/// This test case exercises schema description APIs against a feature source
+/// with Extended Feature Classes
+///----------------------------------------------------------------------------
+void TestFeatureService::TestCase_ExtendedFeatureClass()
+{
+    try
+    {
+        Ptr<MgServiceFactory> fact = new MgServiceFactory();
+        Ptr<MgFeatureService> pService = dynamic_cast<MgFeatureService*>(fact->CreateService(MgServiceType::FeatureService));
+        if (pService == 0)
+        {
+            throw new MgServiceNotAvailableException(L"TestFeatureService.TestCase_ExtendedFeatureClass",
+                __LINE__, __WFILE__, NULL, L"", NULL);
+        }
+
+        Ptr<MgResourceIdentifier> lFeatureSource = new MgResourceIdentifier(L"Library://UnitTests/Data/TestChainedInner1ToManyJoin.FeatureSource");
+
+        Ptr<MgFeatureReader> reader = pService->SelectFeatures(lFeatureSource, L"Ext1", NULL);
+
+        Ptr<MgFeatureSchemaCollection> schemas;
+        Ptr<MgFeatureSchema> schema;
+        //With GetClasses
+        Ptr<MgStringCollection> classNames = pService->GetClasses(lFeatureSource, L"");
+        CPPUNIT_ASSERT(classNames->GetCount() > 0);
+        bool bFound = false;
+        for (INT32 i = 0; i < classNames->GetCount(); i++)
+        {
+            STRING name = classNames->GetItem(i);
+            if (name.find(L"Ext1") != STRING::npos)
+            {
+                bFound = true;
+                break;
+            }
+        }
+        CPPUNIT_ASSERT(bFound);
+
+        //With 1st variation of DescribeSchema()
+        schemas = pService->DescribeSchema(lFeatureSource, L"");
+        CPPUNIT_ASSERT(NULL != schemas.p);
+        CPPUNIT_ASSERT(1 == schemas->GetCount());
+        schema = schemas->GetItem(0);
+        Ptr<MgClassDefinitionCollection> classes = schema->GetClasses();
+        bFound = false;
+        for (INT32 i = 0; i < classes->GetCount(); i++)
+        {
+            Ptr<MgClassDefinition> klass = classes->GetItem(i);
+            if (klass->GetName() == L"Ext1")
+            {
+                bFound = true;
+                break;
+            }
+        }
+        CPPUNIT_ASSERT(bFound);
+
+        //1st variation of DescribeSchema() with the actual parent schema name
+        schemas = pService->DescribeSchema(lFeatureSource, L"SHP_Schema");
+        CPPUNIT_ASSERT(NULL != schemas.p);
+        CPPUNIT_ASSERT(1 == schemas->GetCount());
+        schema = schemas->GetItem(0);
+        classes = schema->GetClasses();
+        bFound = false;
+        for (INT32 i = 0; i < classes->GetCount(); i++)
+        {
+            Ptr<MgClassDefinition> klass = classes->GetItem(i);
+            if (klass->GetName() == L"Ext1")
+            {
+                bFound = true;
+                break;
+            }
+        }
+        CPPUNIT_ASSERT(bFound);
+        Ptr<MgStringCollection> findClassNames = new MgStringCollection();
+        findClassNames->Add(L"Ext1");
+
+        //2nd variation of DescribeSchema()
+        schemas = pService->DescribeSchema(lFeatureSource, L"SHP_Schema", findClassNames);
+        CPPUNIT_ASSERT(NULL != schemas.p);
+        CPPUNIT_ASSERT(1 == schemas->GetCount());
+        schema = schemas->GetItem(0);
+        classes = schema->GetClasses();
+        bFound = false;
+        for (INT32 i = 0; i < classes->GetCount(); i++)
+        {
+            Ptr<MgClassDefinition> klass = classes->GetItem(i);
+            if (klass->GetName() == L"Ext1")
+            {
+                bFound = true;
+                break;
+            }
+        }
+        CPPUNIT_ASSERT(bFound);
+
+        Ptr<MgClassDefinition> clsDef = pService->GetClassDefinition(lFeatureSource, L"SHP_Schema", L"Ext1");
+        CPPUNIT_ASSERT(NULL != clsDef.p);
     }
     catch(MgException* e)
     {
