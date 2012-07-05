@@ -2390,6 +2390,9 @@ namespace OSGeo.MapGuide.Viewer
 
         private void HandleMouseWheel(MouseEventArgs e)
         {
+            if (!this.HasLoadedMap)
+                return;
+
             if (delayRenderTimer == null)
             {
                 delayRenderTimer = new System.Timers.Timer();
