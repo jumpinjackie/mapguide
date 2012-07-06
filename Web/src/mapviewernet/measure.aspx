@@ -35,7 +35,7 @@ double x2 = 0;
 double y2 = 0;
 double total = 0;
 String srs = "";
-int us = 0;
+String units = "";
 int segId = 1;
 String error = "";
 double distance = 0;
@@ -102,10 +102,10 @@ String dataSource = "";
 
                 distance = srsMap.ConvertCoordinateSystemUnitsToMeters(distance);
 
-                if (0 == us)
-                    distance *= 0.001;              //get kilometers
-                else
-                    distance *= 0.000621371192;     //get miles
+                if (units == "mi") distance *= 0.000621371192;  //get miles
+                if (units == "km") distance *= 0.001;           //get kilometers
+                if (units == "ft") distance *= 3.2808399;       //get feet
+                if (units == "usft") distance *= 3.2808333;     //get US survey feet
 
                 total += distance;
 
@@ -164,7 +164,14 @@ String dataSource = "";
                         featureSrvc.CreateFeatureSource(dataSourceId, parameters);
 
                         //build map tip
-                        String unitText = (us == 1) ? "Miles" : "Kilometers";
+                        String unitText = "";
+                        if (units == "mi") unitText = "DISTANCEMILES";
+                        if (units == "km") unitText = "DISTANCEKILOMETERS";
+                        if (units == "ft") unitText = "DISTANCEFEET";
+                        if (units == "usft") unitText = "DISTANCEUSFEET";
+                        if (units == "m") unitText = "DISTANCEMETERS";
+                        unitText = MgLocalizer.GetString(unitText, locale);
+
                         String tip = String.Format("Concat(Concat(Concat('" + MgLocalizer.GetString("MEASUREPARTIAL", locale) + ": ', PARTIAL), Concat(', " + MgLocalizer.GetString("MEASURETOTAL", locale) + ": ', TOTAL)), ' ({0})')", unitText);
 
                         //Create the layer definition
@@ -239,6 +246,7 @@ String dataSource = "";
                     total.ToString(NumberFormatInfo.InvariantInfo),
                     distance.ToString(NumberFormatInfo.InvariantInfo),
                     "1",
+                    units,
                     vpath + "measure.aspx",
                     vpath + "measure.aspx"
                     };
@@ -266,6 +274,7 @@ void GetParameters(NameValueCollection parameters)
     mapName = ValidateMapName(GetParameter(parameters, "MAPNAME"));
     target = GetIntParameter(parameters, "TGT");
     popup = GetIntParameter(parameters, "POPUP");
+    units = GetParameter(parameters, "UNITS");
     if(IsParameter(parameters, "CLEAR"))
         clear = true;
     else
@@ -275,7 +284,6 @@ void GetParameters(NameValueCollection parameters)
         x2 = GetDoubleParameter(parameters, "X2");
         y2 = GetDoubleParameter(parameters, "Y2");
         total = GetDoubleParameter(parameters, "TOTAL");
-        us = GetIntParameter(parameters, "US");
         segId = GetIntParameter(parameters, "SEGID");
     }
 }

@@ -37,7 +37,7 @@ double x2;
 double y2;
 double total;
 String srs;
-int us;
+String units;
 int segId;
 String error;
 double distance;
@@ -59,7 +59,7 @@ String dataSource;
     y2 = 0;
     total = 0;
     srs = "";
-    us = 0;
+    units = "";
     segId = 1;
     error = "";
     distance = 0;
@@ -124,10 +124,10 @@ String dataSource;
 
             distance = srsMap.ConvertCoordinateSystemUnitsToMeters(distance);
 
-            if(0 == us)
-                distance *= 0.001;              //get kilometers
-            else
-                distance *= 0.000621371192;     //get miles
+            if (units.equals("mi")) distance *= 0.000621371192;  //get miles
+            if (units.equals("km")) distance *= 0.001;           //get kilometers
+            if (units.equals("ft")) distance *= 3.2808399;       //get feet
+            if (units.equals("usft")) distance *= 3.2808333;       //get US survey feet
 
             total += distance;
 
@@ -186,7 +186,14 @@ String dataSource;
                     featureSrvc.CreateFeatureSource(dataSourceId, parameters);
 
                     //build map tip
-                    String unitText = (us==1)? "Miles": "Kilometers";
+                    String unitText = "";
+                    if (units.equals("mi")) unitText = "DISTANCEMILES";
+                    if (units.equals("km")) unitText = "DISTANCEKILOMETERS";
+                    if (units.equals("ft")) unitText = "DISTANCEFEET";
+                    if (units.equals("usft")) unitText = "DISTANCEUSFEET";
+                    if (units.equals("m")) unitText = "DISTANCEMETERS";
+                    unitText = MgLocalizer.GetString(unitText, locale);
+
                     String tip = "Concat(Concat(Concat('" + MgLocalizer.GetString("MEASUREPARTIAL", locale) + ": ', PARTIAL), Concat(', " + MgLocalizer.GetString("MEASURETOTAL", locale) + ": ', TOTAL)), ' (" + unitText + ")')";
 
                     //Create the layer definition
@@ -262,6 +269,7 @@ String dataSource;
             String.valueOf(total),
             String.valueOf(distance),
             "1",
+            units,
             vpath + "measure.jsp",
             vpath + "measure.jsp"
     };
@@ -276,6 +284,7 @@ void GetRequestParameters(HttpServletRequest request)
     mapName = ValidateMapName(GetParameter(request, "MAPNAME"));
     target = GetIntParameter(request, "TGT");
     popup = GetIntParameter(request, "POPUP");
+    units = GetParameter(request, "UNITS");
     if(IsParameter(request, "CLEAR"))
     {
         clear = true;
@@ -288,7 +297,6 @@ void GetRequestParameters(HttpServletRequest request)
         x2 = GetDoubleParameter(request, "X2");
         y2 = GetDoubleParameter(request, "Y2");
         total = GetDoubleParameter(request, "TOTAL");
-        us = GetIntParameter(request, "US");
         segId = GetIntParameter(request, "SEGID");
     }
 }

@@ -32,7 +32,7 @@
     $y2 = 0;
     $total = 0;
     $srs = "";
-    $us = 1;
+    $units = "";
     $segId = 1;
     $error = "";
     $distance = 0;
@@ -92,10 +92,11 @@
                 $distance = $srsMap->MeasureEuclideanDistance($x1, $y1, $x2, $y2);
 
             $distance = $srsMap->ConvertCoordinateSystemUnitsToMeters($distance);
-            if(!$us)
-                $distance *= 0.001;             //get kilometers
-            else
-                $distance *= 0.000621371192;    //get miles
+
+            if ($units == "mi") $distance *= 0.000621371192;  //get miles
+            if ($units == "km") $distance *= 0.001;           //get kilometers
+            if ($units == "ft") $distance *= 3.2808399;       //get feet
+            if ($units == "usft") $distance *= 3.2808333;       //get US survey feet
 
             $total += $distance;
 
@@ -154,7 +155,14 @@
                     $featureSrvc->CreateFeatureSource($dataSourceId, $params);
 
                     //build map tip
-                    $unitText = $us? GetLocalizedString("DISTANCEMILES", $locale): GetLocalizedString("DISTANCEKILOMETERS", $locale);
+                    $unitText = "";
+                    if ($units == "mi") $unitText = "DISTANCEMILES";
+                    if ($units == "km") $unitText = "DISTANCEKILOMETERS";
+                    if ($units == "ft") $unitText = "DISTANCEFEET";
+                    if ($units == "usft") $unitText = "DISTANCEUSFEET";
+                    if ($units == "m") $unitText = "DISTANCEMETERS";
+                    $unitText = GetLocalizedString($unitText, $locale);
+
                     $tip = sprintf("Concat(Concat(Concat('" . GetLocalizedString("MEASUREPARTIAL", $locale) . ": ', PARTIAL), Concat(', " . GetLocalizedString("MEASURETOTAL", $locale) . ": ', TOTAL)), ' (%s)')", $unitText);
 
                     //Create the layer definition
@@ -227,6 +235,7 @@
                 $total,
                 $distance,
                 1,
+                $units,
                 $vpath . "measure.php",
                 $vpath . "measure.php");
 
@@ -282,7 +291,7 @@ function FindLayer($layers, $layerDef)
 
 function GetParameters($params)
 {
-    global $mapName, $sessionId, $x1, $y1, $x2, $y2, $popup;
+    global $mapName, $sessionId, $x1, $y1, $x2, $y2, $popup, $units;
     global $total, $clear, $us, $segId, $target, $locale;
 
     $sessionId = ValidateSessionId(GetParameter($params, 'SESSION'));
@@ -291,11 +300,11 @@ function GetParameters($params)
 
     $target = GetIntParameter($params, 'TGT');
     $popup = GetIntParameter($params, 'POPUP');
+    $units = GetParameter($params, 'UNITS');
     if(isset($params['CLEAR']))
         $clear = true;
     else
     {
-        $us = GetIntParameter($params, 'US');
         $segId = GetIntParameter($params, 'SEGID');
         $x1 = GetDoubleParameter($params, 'X1');
         $y1 = GetDoubleParameter($params, 'Y1');
