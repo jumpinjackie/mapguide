@@ -303,15 +303,44 @@ void MgdResourceService::SetResource(MgResourceIdentifier* resource, MgByteReade
         std::string xml;
         sink->ToStringUtf8(xml);
 
-        XercesDOMParser parser;
-        parser.setExternalSchemaLocation(m_schemaPath.c_str());        
+        XercesDOMParser parser;  
         parser.setValidationScheme(XercesDOMParser::Val_Always);
+        parser.cacheGrammarFromParse(true);
         DefaultHandler handler;
         parser.setErrorHandler(&handler);
         try 
         {
             MemBufInputSource source((const XMLByte*)xml.c_str(), xml.size(), "MgdResourceService.Class", false);
             parser.parse(source);
+
+            DOMDocument* doc = parser.getDocument();
+            CHECKNULL(doc, L"MgdResourceService::SetResource");
+            STRING resType = resource->GetResourceType();
+            DOMElement* docEl = doc->getDocumentElement();
+            CHECKNULL(docEl, L"MgdResourceService::SetResource");
+            STRING docElName = docEl->getNodeName();
+
+            //Now make sure it's the right type of XML document
+
+            //Everything except SymbolDefinitions will have the same root element name as the resource type
+            if (resType != MgResourceType::SymbolDefinition)
+            {
+                if (resType != docElName)
+                {
+                    MgStringCollection args;
+                    args.Add(docElName);
+                    throw new MgInvalidResourceTypeException(L"MgdResourceService::SetResource", __LINE__, __WFILE__, &args, L"", NULL);
+                }
+            }
+            else
+            {
+                if (docElName != L"SimpleSymbolDefinition" && docElName != L"CompoundSymbolDefinition")
+                {
+                    MgStringCollection args;
+                    args.Add(docElName);
+                    throw new MgInvalidResourceTypeException(L"MgdResourceService::SetResource", __LINE__, __WFILE__, &args, L"", NULL);
+                }
+            }
         }
         catch (const SAXParseException& e)
         {
