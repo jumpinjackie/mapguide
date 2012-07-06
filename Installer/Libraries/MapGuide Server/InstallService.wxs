@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Wix   xmlns="http://schemas.microsoft.com/wix/2006/wi">
+  <!-- mgserver.exe -->
+  <?if "$(var.MgPlatform)" = "x64" ?>
+  <?define MGSERVER_MAP = "file_SRVBINFILES_26" ?>
+  <?else ?>
+  <?define MGSERVER_MAP = "file_SRVBINFILES_26" ?>
+  <?endif ?>
+  <Fragment>
+  
+    <CustomAction 
+      Execute="deferred" 
+      Return="ignore" 
+      Id="MgServerInstallCA" 
+      FileKey="$(var.MGSERVER_MAP)"
+      ExeCommand="install &quot;MapGuide Server [MG_VERSION_MAJOR_MINOR]&quot;" />
+
+    <CustomAction
+      Execute="immediate"
+      Return="ignore"
+      Id="MgServerUninstallCA"
+      FileKey="$(var.MGSERVER_MAP)"
+      ExeCommand="uninstall" />
+
+  </Fragment>
+</Wix>
