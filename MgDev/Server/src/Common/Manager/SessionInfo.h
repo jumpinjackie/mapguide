@@ -77,17 +77,17 @@ private:
 
 inline STRING MgSessionInfo::GetUser() const
 {
-    return m_user;
+    return (STRING)m_user.c_str();
 }
 
 inline STRING MgSessionInfo::GetClient() const
 {
-    return m_client;
+    return (STRING)m_client.c_str();
 }
 
 inline STRING MgSessionInfo::GetClientIp() const
 {
-    return m_clientIp;
+    return (STRING)m_clientIp.c_str();
 }
 
 inline const MgDateTime& MgSessionInfo::GetStartTime() const
