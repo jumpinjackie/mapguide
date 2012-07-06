@@ -129,22 +129,22 @@ private:
 
 inline STRING MgConnection::GetClientAgent() const
 {
-    return m_clientAgent;
+    return (STRING)m_clientAgent.c_str();
 }
 
 inline STRING MgConnection::GetClientIp() const
 {
-    return m_clientIp;
+    return (STRING)m_clientIp.c_str();
 }
 
 inline STRING MgConnection::GetUserName() const
 {
-    return m_userName;
+    return (STRING)m_userName.c_str();
 }
 
 inline STRING MgConnection::GetSessionId() const
 {
-    return m_sessionId;
+    return (STRING)m_sessionId.c_str();
 }
 
 inline const ACE_Time_Value& MgConnection::GetStartTime() const
