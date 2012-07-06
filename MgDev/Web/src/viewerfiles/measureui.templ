@@ -48,13 +48,14 @@ var sessionId = "%s";
 var total = %s;
 var partial = %s;
 var refresh = %s;
+var units = "%s";
 
 function InitDocument()
 {
     if(!popup)
         document.onmousedown = OnMouseDown;
+    SetUnits();
     SetMeasureResults(partial, total);
-    ShowUnits();
     if(refresh)
         GetParent().Refresh();
 }
@@ -66,14 +67,14 @@ function OnMouseDown(e)
 
 function AddMeasure(segId, begin, end)
 {
-    var url = "%s?SEGID=" + segId + "&LOCALE=" + locale + "&MAPNAME=" + encodeURIComponent(mapName) + "&SESSION=" + sessionId + "&X1=" + begin.X + "&Y1=" + begin.Y + "&X2=" + end.X + "&Y2=" + end.Y + "&TOTAL=" + total + "&US=" + (GetParent().GetMapFrame().IsEnglishUnits()? 1: 0) + "&TGT=" + target + "&POPUP=" + popup;
+    var url = "%s?SEGID=" + segId + "&LOCALE=" + locale + "&MAPNAME=" + encodeURIComponent(mapName) + "&SESSION=" + sessionId + "&X1=" + begin.X + "&Y1=" + begin.Y + "&X2=" + end.X + "&Y2=" + end.Y + "&TOTAL=" + total + "&UNITS=" + units + "&TGT=" + target + "&POPUP=" + popup;
     document.location.href = url;
 }
 
 function ClearMeasure()
 {
     GetParent().ClearMeasure();
-    var url = "%s?MAPNAME=" + encodeURIComponent(mapName) + "&LOCALE=" + locale + "&SESSION=" + sessionId + "&CLEAR=&TGT=" + target + "&POPUP=" + popup;
+    var url = "%s?MAPNAME=" + encodeURIComponent(mapName) + "&LOCALE=" + locale + "&SESSION=" + sessionId + "&CLEAR=&TGT=" + target + "&POPUP=" + popup + "&UNITS=" + units;
     document.location.href = url;
     GetParent().ResumeMeasure();
 }
@@ -111,11 +112,44 @@ function SetMeasureResults(partial, total)
     document.getElementById("total").innerHTML = FormatLocalizedDecimal(total, 2);
 }
 
-function ShowUnits()
+function OnChangeUnits()
 {
-    var units = GetParent().GetMapFrame().IsEnglishUnits()? "__#MILES#__": "__#KILOMETERS#__";
-    document.getElementById("units1").innerHTML = units;
-    document.getElementById("units2").innerHTML = units;
+    var unitelem = document.getElementById("unitselect");
+    for (var i=0; i < unitelem.length; i++)
+    {
+        var opt = unitelem.options[i];
+        if (opt.selected)
+        {
+            units = opt.value;
+            document.getElementById("units1").innerHTML = opt.text;
+            document.getElementById("units2").innerHTML = opt.text;
+            break;
+        }
+    }
+}
+
+function SetUnits()
+{
+    if (!units || units == "")
+    {
+        units = GetParent().GetMapFrame().IsEnglishUnits()? "mi": "km";
+    }
+
+    var unitelem = document.getElementById("unitselect");
+    var unitText = "";
+    for (var i=0; i < unitelem.length; i++)
+    {
+        var opt = unitelem.options[i];
+        opt.selected = false;
+        if (opt.value == units)
+        {
+            opt.selected = true;
+            unitText = opt.text;
+        }
+    }
+
+    document.getElementById("units1").innerHTML = unitText;
+    document.getElementById("units2").innerHTML = unitText;
 }
 
 function FormatLocalizedDecimal(numberValue, decimalPlaces)
@@ -138,6 +172,16 @@ function FormatLocalizedDecimal(numberValue, decimalPlaces)
     <tr><td class="Title">__#MEASURETITLE#__<hr></td></tr>
     <tr><td class="InfoText">__#MEASUREINFO#__</td></tr>
     <tr><td height="6"></td></tr>
+    <tr><td class="InfoText">__#MEASUREUNITS#__</td></tr>
+    <tr><td>
+      <select id="unitselect" name="UNITS" class="Ctrl" onchange="OnChangeUnits()">
+        <option value="mi">__#DISTANCEMILES#__</option>
+        <option value="km">__#DISTANCEKILOMETERS#__</option>
+        <option value="usft">__#DISTANCEUSFEET#__</option>
+        <option value="ft">__#DISTANCEFEET#__</option>
+        <option value="m">__#DISTANCEMETERS#__</option>
+      </select>
+    </td></tr>
   </table>
   <table border="0" cellpadding="5">
     <tr class="RegText">
