@@ -429,6 +429,38 @@ void TestResourceService::TestCase_SetResource()
     }
 }
 
+void TestResourceService::TestCase_SetResourceInvalid()
+{
+    try
+    {
+        Ptr<MgServiceFactory> fact = new MgServiceFactory();
+        Ptr<MgResourceService> pService = dynamic_cast<MgResourceService*>(fact->CreateService(MgServiceType::ResourceService));
+        if (pService == 0)
+        {
+            throw new MgServiceNotAvailableException(L"TestResourceService.TestCase_MoveResource", __LINE__, __WFILE__, NULL, L"", NULL);
+        }
+
+        std::string notXml = "Not XML content";
+        std::string malformedXml = "<Foo></Bar>";
+
+        Ptr<MgByteSource> bs1 = new MgByteSource((BYTE_ARRAY_IN)notXml.c_str(), (INT32)notXml.length());
+        Ptr<MgByteSource> bs2 = new MgByteSource((BYTE_ARRAY_IN)malformedXml.c_str(), (INT32)malformedXml.length());
+
+        Ptr<MgByteReader> r1 = bs1->GetReader();
+        Ptr<MgByteReader> r2 = bs2->GetReader();
+        Ptr<MgResourceIdentifier> resId = new MgResourceIdentifier(L"Library://UnitTests/NotGettingSaved.FeatureSource");
+
+        CPPUNIT_ASSERT_THROW_MG(pService->SetResource(resId, r1, NULL), MgXmlParserException*);
+        CPPUNIT_ASSERT_THROW_MG(pService->SetResource(resId, r2, NULL), MgXmlParserException*);
+    }
+    catch(MgException* e)
+    {
+        STRING message = e->GetDetails(TEST_LOCALE);
+        SAFE_RELEASE(e);
+        CPPUNIT_FAIL(MG_WCHAR_TO_CHAR(message.c_str()));
+    }
+}
+
 ///----------------------------------------------------------------------------
 /// Test Case Description:
 ///
