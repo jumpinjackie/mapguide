@@ -30,6 +30,7 @@ int popup = 0;
 int cmdIndex = -1;
 String mapName = "";
 String sessionId = "";
+String units = "";
 double total = 0;
 </script>
 
@@ -53,6 +54,7 @@ double total = 0;
                     total.ToString(NumberFormatInfo.InvariantInfo),
                     "0",
                     "0",
+                    units,
                     vpath + "measure.aspx",
                     vpath + "measure.aspx"
                     };
@@ -77,6 +79,7 @@ void GetParameters(NameValueCollection parameters)
     popup = GetIntParameter(parameters, "POPUP");
     cmdIndex = GetIntParameter(parameters, "CMDINDEX");
     total = GetDoubleParameter(parameters, "TOTAL");
+    units = GetParameter(parameters, "UNITS");
 }
 
 </script>
