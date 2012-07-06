@@ -11,6 +11,7 @@ STRING MgServiceFactory::sm_libContentPath = L"";
 STRING MgServiceFactory::sm_libDataPath = L"";
 STRING MgServiceFactory::sm_sesContentPath = L"";
 STRING MgServiceFactory::sm_sesDataPath = L"";
+STRING MgServiceFactory::sm_schemaPath = L"";
 
 MG_IMPL_DYNCREATE(MgServiceFactory);
 
@@ -42,6 +43,11 @@ void MgServiceFactory::Initialize()
                          sm_sesDataPath,
                          MgConfigProperties::DefaultResourceServicePropertySessionResourceDataFilePath);
 
+    conf->GetStringValue(MgConfigProperties::ResourceServicePropertiesSection,
+                         MgConfigProperties::ResourceServicePropertyResourceSchemaFilePath,
+                         sm_schemaPath,
+                         MgConfigProperties::DefaultResourceServicePropertyResourceSchemaFilePath);
+
     //Create these paths if they don't exist
     if (!MgFileUtil::IsDirectory(sm_libContentPath))
         MgFileUtil::CreateDirectory(sm_libContentPath, false, true);
@@ -51,6 +57,12 @@ void MgServiceFactory::Initialize()
         MgFileUtil::CreateDirectory(sm_sesContentPath, false, true);
     if (!MgFileUtil::IsDirectory(sm_sesDataPath))
         MgFileUtil::CreateDirectory(sm_sesDataPath, false, true);
+    if (!MgFileUtil::IsDirectory(sm_schemaPath))
+    {
+        MgStringCollection args;
+        args.Add(sm_schemaPath);
+        throw new MgDirectoryNotFoundException(L"MgServiceFactory::Initialize", __LINE__, __WFILE__, &args, L"", NULL);
+    }
 }
 
 MgService* MgServiceFactory::CreateService(INT32 serviceType)
@@ -71,7 +83,8 @@ MgService* MgServiceFactory::CreateService(INT32 serviceType)
         return new MgdResourceService(sm_libContentPath,
                                       sm_libDataPath, 
                                       sm_sesContentPath, 
-                                      sm_sesDataPath);
+                                      sm_sesDataPath,
+                                      sm_schemaPath);
     case MgServiceType::TileService:
         return new MgdTileService();
     }
