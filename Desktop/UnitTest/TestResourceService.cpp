@@ -442,16 +442,55 @@ void TestResourceService::TestCase_SetResourceInvalid()
 
         std::string notXml = "Not XML content";
         std::string malformedXml = "<Foo></Bar>";
+        std::string fsXml = "<FeatureSource></FeatureSource>";
+        std::string unkXml = "<Unknown></Unknown>";
+        std::string fsIncompleteXml = "<FeatureSource xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xsi:noNamespaceSchemaLocation=\"FeatureSource-1.0.0.xsd\"></FeatureSource>";
+        std::string simpleSymXml = "<SimpleSymbolDefinition></SimpleSymbolDefinition>";
+        std::string compoundSymXml = "<CompoundSymbolDefinition></CompoundSymbolDefinition>";
 
         Ptr<MgByteSource> bs1 = new MgByteSource((BYTE_ARRAY_IN)notXml.c_str(), (INT32)notXml.length());
         Ptr<MgByteSource> bs2 = new MgByteSource((BYTE_ARRAY_IN)malformedXml.c_str(), (INT32)malformedXml.length());
+        Ptr<MgByteSource> bs3 = new MgByteSource((BYTE_ARRAY_IN)fsXml.c_str(), (INT32)fsXml.length());
+        Ptr<MgByteSource> bs4 = new MgByteSource((BYTE_ARRAY_IN)unkXml.c_str(), (INT32)unkXml.length());
+        Ptr<MgByteSource> bs5 = new MgByteSource((BYTE_ARRAY_IN)fsIncompleteXml.c_str(), (INT32)fsIncompleteXml.length());
+        Ptr<MgByteSource> bs6 = new MgByteSource((BYTE_ARRAY_IN)simpleSymXml.c_str(), (INT32)simpleSymXml.length());
+        Ptr<MgByteSource> bs7 = new MgByteSource((BYTE_ARRAY_IN)compoundSymXml.c_str(), (INT32)compoundSymXml.length());
 
         Ptr<MgByteReader> r1 = bs1->GetReader();
         Ptr<MgByteReader> r2 = bs2->GetReader();
+        Ptr<MgByteReader> r3 = bs3->GetReader();
+        Ptr<MgByteReader> r4 = bs4->GetReader();
+        Ptr<MgByteReader> r5 = bs5->GetReader();
+        Ptr<MgByteReader> r6 = bs6->GetReader();
+        Ptr<MgByteReader> r7 = bs7->GetReader();
         Ptr<MgResourceIdentifier> resId = new MgResourceIdentifier(L"Library://UnitTests/NotGettingSaved.FeatureSource");
+        Ptr<MgResourceIdentifier> ldfId = new MgResourceIdentifier(L"Library://UnitTests/NotGettingSaved.LayerDefinition");
+        Ptr<MgResourceIdentifier> mdfId = new MgResourceIdentifier(L"Library://UnitTests/NotGettingSaved.MapDefinition");
+        Ptr<MgResourceIdentifier> pltId = new MgResourceIdentifier(L"Library://UnitTests/NotGettingSaved.PrintLayout");
+        Ptr<MgResourceIdentifier> symId = new MgResourceIdentifier(L"Library://UnitTests/NotGettingSaved.SymbolDefinition");
+        Ptr<MgResourceIdentifier> slbId = new MgResourceIdentifier(L"Library://UnitTests/NotGettingSaved.SymbolLibrary");
+        Ptr<MgResourceIdentifier> ssId = new MgResourceIdentifier(L"Library://UnitTests/GettingSavedSimple.SymbolDefinition");
+        Ptr<MgResourceIdentifier> csId = new MgResourceIdentifier(L"Library://UnitTests/GettingSavedCompound.SymbolDefinition");
 
+        //TODO: We can get xerces to vet the content as being XML, but can't figure out how to get xerces
+        //to validate the content model. Until we figure that out, the relevant assertions are commented
+        //out. Still at this stage it's better than letting any arbitrary content get through these calls.
         CPPUNIT_ASSERT_THROW_MG(pService->SetResource(resId, r1, NULL), MgXmlParserException*);
         CPPUNIT_ASSERT_THROW_MG(pService->SetResource(resId, r2, NULL), MgXmlParserException*);
+        //CPPUNIT_ASSERT_THROW_MG(pService->SetResource(resId, r3, NULL), MgXmlParserException*);
+        CPPUNIT_ASSERT_THROW_MG(pService->SetResource(ldfId, r3, NULL), MgInvalidResourceTypeException*);
+        r3->Rewind();
+        CPPUNIT_ASSERT_THROW_MG(pService->SetResource(mdfId, r3, NULL), MgInvalidResourceTypeException*);
+        r3->Rewind();
+        CPPUNIT_ASSERT_THROW_MG(pService->SetResource(pltId, r3, NULL), MgInvalidResourceTypeException*);
+        r3->Rewind();
+        CPPUNIT_ASSERT_THROW_MG(pService->SetResource(symId, r3, NULL), MgInvalidResourceTypeException*);
+        r3->Rewind();
+        CPPUNIT_ASSERT_THROW_MG(pService->SetResource(slbId, r3, NULL), MgInvalidResourceTypeException*);
+        CPPUNIT_ASSERT_THROW_MG(pService->SetResource(resId, r4, NULL), MgInvalidResourceTypeException*);
+        //CPPUNIT_ASSERT_THROW_MG(pService->SetResource(resId, r5, NULL), MgXmlParserException*);
+        pService->SetResource(ssId, r6, NULL);
+        pService->SetResource(csId, r7, NULL);
     }
     catch(MgException* e)
     {
