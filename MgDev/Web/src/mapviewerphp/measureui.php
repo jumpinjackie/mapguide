@@ -26,6 +26,7 @@
     $clientWidth = 0;
     $mapName = "";
     $sessionId = "";
+    $units = "";
     $total = 0;
 
     GetRequestParameters();
@@ -36,7 +37,7 @@
     $templ = Localize($templ, $locale, GetClientOS());
 
     $vpath = GetSurroundVirtualPath();
-    print sprintf($templ, $locale, $target, $popup, $mapName, $sessionId, $total, 0, 0, $vpath . "measure.php", $vpath . "measure.php");
+    print sprintf($templ, $locale, $target, $popup, $mapName, $sessionId, $total, 0, 0, $units, $vpath . "measure.php", $vpath . "measure.php");
 
 function GetParameters($params)
 {
@@ -50,6 +51,7 @@ function GetParameters($params)
     $cmdIndex = GetIntParameter($params, 'CMDINDEX');
     $clientWidth = GetIntParameter($params, 'WIDTH');
     $total = GetDoubleParameter($params, 'TOTAL');
+    $units = GetParameter($params, 'UNITS');
 }
 
 function GetRequestParameters()
