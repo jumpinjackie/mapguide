@@ -31,6 +31,7 @@ int popup = 0;
 int cmdIndex = -1;
 String mapName = "";
 String sessionId = "";
+String units = "";
 double total = 0;
 %>
 
@@ -54,6 +55,7 @@ double total = 0;
             String.valueOf(total),
             "0",
             "0",
+            units,
             vpath + "measure.jsp",
             vpath + "measure.jsp"
     };
@@ -70,5 +72,6 @@ void GetRequestParameters(HttpServletRequest request)
     cmdIndex = GetIntParameter(request, "CMDINDEX");
     mapName = ValidateMapName(GetParameter(request, "MAPNAME"));
     total = GetDoubleParameter(request, "TOTAL");
+    units = GetParameter(request, "UNITS");
 }
 %>
