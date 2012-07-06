@@ -18,6 +18,7 @@
 DISTANCEMILES       = Miles
 DISTANCEKILOMETERS  = Kilometers
 DISTANCEFEET        = Feet
+DISTANCEUSFEET      = US Survey Feet
 DISTANCEMETERS      = Meters
 
 # Fill Patterns/Values
@@ -113,6 +114,7 @@ COLORPICKER100TRANSPARENCY      = 100%% transparency
 COLORPICKERHEXFORMAT            = Hex format
 
 # MeasureUI
+MEASUREUNITS            = Measure units:
 MEASURETITLE            = Measure Distance
 MEASUREINFO             = Click a start and end point.
 RESUME                  = Resume
