@@ -34,6 +34,7 @@ private:
     static STRING sm_libDataPath;
 	static STRING sm_sesContentPath;
 	static STRING sm_sesDataPath;
+    static STRING sm_schemaPath;
 };
 
 #endif
