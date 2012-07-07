@@ -387,8 +387,6 @@ install-data-local:
 	@cp -fp ../../RepositoryAdmin/*.pdf $(repositoryadmindir)
 	@cp -fp ../../RepositoryAdmin/license.txt $(repositoryadmindir)
 	@cp -fp ../../RepositoryAdmin/php.ini $(repositoryadmindir)
-	@pushd $(fdodir); ln -s libxalanMsg.so.17.0 libxalanMsg.so.17; ln -s libxalanMsg.so.17.0 libxalanMsg.so; popd;
-	@pushd $(fdodir); ln -s libxerces-c.so.25.0 libxerces-c.so.25; ln -s libxerces-c.so.25.0 libxerces-c.so; popd;
 
 install-data-hook:
 	@sed -e 's#^FdoPath.*=.*#FdoPath                            = $(map_fdo_lib)#' \
@@ -412,6 +410,7 @@ install-data-hook:
 	@echo '' >> ${prefix}/bin/mgserver.sh
 	@echo 'export MENTOR_DICTIONARY_PATH=$(mentor_dict_install_dir)' >> ${prefix}/bin/mgserver.sh
 	@echo 'export LD_LIBRARY_PATH=$(fdodir):"$$LD_LIBRARY_PATH"' >> ${prefix}/bin/mgserver.sh
+	@echo 'export NLSPATH=$(map_fdo_nls):"$$NLSPATH"' >> ${prefix}/bin/mgserver.sh
 	@echo 'pushd ${prefix}/bin' >> ${prefix}/bin/mgserver.sh
 	@cp -f ${prefix}/bin/mgserver.sh ${prefix}/bin/mgserverd.sh
 	@echo './mgserver run' >> ${prefix}/bin/mgserver.sh
