@@ -8,7 +8,7 @@ class MG_DESKTOP_API MgdResourceService : public MgResourceService
     DECLARE_CLASSNAME(MgdResourceService)
 
 INTERNAL_API:
-    MgdResourceService(CREFSTRING libraryContentRoot, CREFSTRING libraryDataRoot, CREFSTRING sessionContentRoot, CREFSTRING sessionDataRoot);
+    MgdResourceService(CREFSTRING libraryContentRoot, CREFSTRING libraryDataRoot, CREFSTRING sessionContentRoot, CREFSTRING sessionDataRoot, CREFSTRING schemaPath);
 
     virtual MgByteReader* EnumerateRepositories(CREFSTRING repositoryType);
 

@@ -14,6 +14,7 @@ void MgPlatform::Initialize(CREFSTRING configFile)
         return;
 
     ACE::init();
+    XMLPlatformUtils::Initialize();
 
     MgConfiguration* pConfiguration = MgConfiguration::GetInstance();
     pConfiguration->LoadConfiguration(configFile);
@@ -179,6 +180,7 @@ void MgPlatform::Terminate()
     Ptr<MgdResourceService> resSvc = dynamic_cast<MgdResourceService*>(fact->CreateService(MgServiceType::ResourceService));
     resSvc->DeleteSessionFiles();
 
+    XMLPlatformUtils::Terminate();
     ACE::fini();
 
     MG_CATCH_AND_RELEASE()

@@ -19,13 +19,14 @@ static int MgDirEntryComparator(const ACE_DIRENT **d1, const ACE_DIRENT **d2)
 }
 
 //INTERNAL_API:
-MgdResourceService::MgdResourceService(CREFSTRING libraryContentRoot, CREFSTRING libraryDataRoot, CREFSTRING sessionContentRoot, CREFSTRING sessionDataRoot)
+MgdResourceService::MgdResourceService(CREFSTRING libraryContentRoot, CREFSTRING libraryDataRoot, CREFSTRING sessionContentRoot, CREFSTRING sessionDataRoot, CREFSTRING schemaPath)
 : MgResourceService()
 { 
 	m_libraryContentPath = libraryContentRoot;
 	m_libraryDataPath = libraryDataRoot;
 	m_sessionContentPath = sessionContentRoot;
 	m_sessionDataPath = sessionDataRoot;
+    m_schemaPath = schemaPath;
 }
 
 MgdResourceService::~MgdResourceService() { }
@@ -298,7 +299,95 @@ void MgdResourceService::SetResource(MgResourceIdentifier* resource, MgByteReade
     if (NULL != content)
     {
 	    Ptr<MgByteSink> sink = new MgByteSink(content);
-        sink->ToFile(path);
+
+        std::string xml;
+        sink->ToStringUtf8(xml);
+
+        XercesDOMParser parser;  
+        parser.setValidationScheme(XercesDOMParser::Val_Always);
+        parser.cacheGrammarFromParse(true);
+        DefaultHandler handler;
+        parser.setErrorHandler(&handler);
+        try 
+        {
+            MemBufInputSource source((const XMLByte*)xml.c_str(), xml.size(), "MgdResourceService.Class", false);
+            parser.parse(source);
+
+            DOMDocument* doc = parser.getDocument();
+            CHECKNULL(doc, L"MgdResourceService::SetResource");
+            STRING resType = resource->GetResourceType();
+            DOMElement* docEl = doc->getDocumentElement();
+            CHECKNULL(docEl, L"MgdResourceService::SetResource");
+            STRING docElName = docEl->getNodeName();
+
+            //Now make sure it's the right type of XML document
+
+            //Everything except SymbolDefinitions will have the same root element name as the resource type
+            if (resType != MgResourceType::SymbolDefinition)
+            {
+                if (resType != docElName)
+                {
+                    MgStringCollection args;
+                    args.Add(docElName);
+                    throw new MgInvalidResourceTypeException(L"MgdResourceService::SetResource", __LINE__, __WFILE__, &args, L"", NULL);
+                }
+            }
+            else
+            {
+                if (docElName != L"SimpleSymbolDefinition" && docElName != L"CompoundSymbolDefinition")
+                {
+                    MgStringCollection args;
+                    args.Add(docElName);
+                    throw new MgInvalidResourceTypeException(L"MgdResourceService::SetResource", __LINE__, __WFILE__, &args, L"", NULL);
+                }
+            }
+        }
+        catch (const SAXParseException& e)
+        {
+            STRING msg = e.getMessage();
+            XMLFileLoc lineNum = e.getLineNumber();
+            XMLFileLoc colNum = e.getColumnNumber();
+
+            const XMLCh* pubId = e.getPublicId();
+            const XMLCh* sysId = e.getSystemId();
+
+            STRING pubIdStr;
+            if (NULL != pubId)
+                pubIdStr = pubId;
+            STRING sysIdStr;
+            if (NULL != sysId)
+                sysIdStr = sysId;
+
+            STRING lineNumStr;
+            STRING colNumStr;
+            MgUtil::Int64ToString(lineNum, lineNumStr);
+            MgUtil::Int64ToString(colNum, colNumStr);
+
+            MgStringCollection args;
+            args.Add(msg);
+            args.Add(lineNumStr);
+            args.Add(colNumStr);
+            args.Add(pubIdStr);
+            args.Add(sysIdStr);
+            throw new MgXmlParserException(L"MgdResourceService::SetResource", __LINE__, __WFILE__, &args, L"", NULL);
+        }
+
+        //Can't rewind a byte sink. So make another one
+        if (content->IsRewindable())
+        {
+            content->Rewind();
+            Ptr<MgByteSink> sink2 = new MgByteSink(content);
+            sink2->ToFile(path);
+        }
+        else
+        {
+            //Make a new byte source/reader/sink from the checked out xml string
+            Ptr<MgByteSource> bs = new MgByteSource((BYTE_ARRAY_IN)xml.c_str(), (INT32)xml.length());
+            Ptr<MgByteReader> rdr = bs->GetReader();
+            Ptr<MgByteSink> sink2 = new MgByteSink(rdr);
+            sink2->ToFile(path);
+        }
+
         ReleasePotentialLocks(resource);
     }
 

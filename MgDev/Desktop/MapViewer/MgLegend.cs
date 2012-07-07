@@ -51,14 +51,31 @@ namespace OSGeo.MapGuide.Viewer
             InitializeComponent();
         }
 
+        private Dictionary<string, bool> _initialLayerSelectabilityState = new Dictionary<string, bool>();
+
         internal void Init(MgMapViewerProvider provider)
         {
             _provider = provider;
             _map = _provider.GetMap();
+            InitInitialSelectabilityStates();
             _resSvc = (MgResourceService)_provider.CreateService(MgServiceType.ResourceService);
             _selectableIcon = Properties.Resources.lc_select;
             _unselectableIcon = Properties.Resources.lc_unselect;
             RefreshLegend();
+        }
+
+        private void InitInitialSelectabilityStates()
+        {
+            if (_map != null)
+            {
+                _initialLayerSelectabilityState.Clear();
+                var layers = _map.GetLayers();
+                for (int i = 0; i < layers.GetCount(); i++)
+                {
+                    var layer = layers.GetItem(i);
+                    _initialLayerSelectabilityState[layer.GetObjectId()] = layer.Selectable;
+                }
+            }
         }
 
         private Dictionary<string, MgLayerBase> _layers = new Dictionary<string, MgLayerBase>();
@@ -287,7 +304,9 @@ namespace OSGeo.MapGuide.Viewer
             if (fsId.EndsWith("DrawingSource"))
             {
                 node.SelectedImageKey = node.ImageKey = IMG_DWF;
-                node.Tag = new LayerNodeMetadata(layer);
+                //If not in the dictionary, assume it is a dynamically added layer
+                bool bInitiallySelectable = _initialLayerSelectabilityState.ContainsKey(layer.GetObjectId()) ? _initialLayerSelectabilityState[layer.GetObjectId()] : layer.Selectable;
+                node.Tag = new LayerNodeMetadata(layer, bInitiallySelectable);
                 node.ToolTipText = string.Format(Properties.Resources.DrawingLayerTooltip, Environment.NewLine, layer.Name, layer.FeatureSourceId);
             }
             else
@@ -343,7 +362,9 @@ namespace OSGeo.MapGuide.Viewer
 
                                 imgLegend.Images.Add(id, img);
                                 node.SelectedImageKey = node.ImageKey = id;
-                                node.Tag = new LayerNodeMetadata(layer)
+                                //If not in the dictionary, assume it is a dynamically added layer
+                                bool bInitiallySelectable = _initialLayerSelectabilityState.ContainsKey(layer.GetObjectId()) ? _initialLayerSelectabilityState[layer.GetObjectId()] : layer.Selectable;
+                                node.Tag = new LayerNodeMetadata(layer, bInitiallySelectable)
                                 {
                                     ThemeIcon = img
                                 };
@@ -447,7 +468,7 @@ namespace OSGeo.MapGuide.Viewer
             TreeNode node = new TreeNode();
             node.Text = (count + " other styles");
             node.ImageKey = node.SelectedImageKey = IMG_OTHER;
-            node.Tag = new LayerNodeMetadata(null) {
+            node.Tag = new LayerNodeMetadata(null, false) {
                 IsBaseLayer = false,
                 ThemeIcon = Properties.Resources.icon_etc,
                 IsThemeRule = true
@@ -458,12 +479,12 @@ namespace OSGeo.MapGuide.Viewer
         private TreeNode CreateThemeRuleNode(MgResourceIdentifier layerDefId, double viewScale, string labelText, int geomType, int categoryIndex)
         {
             MgByteReader icon = _provider.GenerateLegendImage(layerDefId,
-                                                               viewScale,
-                                                               16,
-                                                               16,
-                                                               "PNG",
-                                                               geomType,
-                                                               categoryIndex);
+                                                              viewScale,
+                                                              16,
+                                                              16,
+                                                              "PNG",
+                                                              geomType,
+                                                              categoryIndex);
             TreeNode node = new TreeNode();
             node.Text = labelText;
             if (icon != null)
@@ -473,7 +494,7 @@ namespace OSGeo.MapGuide.Viewer
 
                     byte[] b = new byte[icon.GetLength()];
                     icon.Read(b, b.Length);
-                    var tag = new LayerNodeMetadata(null)
+                    var tag = new LayerNodeMetadata(null, false)
                     {
                         IsBaseLayer = false,
                         IsThemeRule = true
@@ -535,12 +556,12 @@ namespace OSGeo.MapGuide.Viewer
 
         class LayerNodeMetadata : LegendNodeMetadata
         {
-            public LayerNodeMetadata(MgLayerBase layer) 
+            public LayerNodeMetadata(MgLayerBase layer, bool bInitiallySelectable) 
             { 
                 base.IsGroup = false;
                 this.Layer = layer;
                 this.IsSelectable = (layer != null) ? layer.Selectable : false;
-                this.DrawSelectabilityIcon = (layer != null);
+                this.DrawSelectabilityIcon = (layer != null && bInitiallySelectable);
                 this.IsThemeRule = false;
             }
 
