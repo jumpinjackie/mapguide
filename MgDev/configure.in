@@ -101,9 +101,10 @@ else
         AC_MSG_ERROR([the specified FDO library path $custom_lib is not a valid directory])
     fi
 fi
-
+map_fdo_nls="/usr/local/fdo-3.7.0/nls/%N"
 AC_SUBST(map_fdo_include)
 AC_SUBST(map_fdo_lib)
+AC_SUBST(map_fdo_nls)
 
 dnl *******************************************************
 dnl GCC Compiler Configuration
