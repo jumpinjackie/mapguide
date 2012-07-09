@@ -380,6 +380,11 @@ namespace OSGeo.MapGuide.Viewer
         /// Gets the view history stack. The first item being the earliest and the last item being the most recent.
         /// </summary>
         ReadOnlyCollection<MgMapViewHistoryEntry> ViewHistory { get; }
+
+        /// <summary>
+        /// Cancels the active digitization process. Does nothing if <see cref="DigitizingType"/> is MapDigitizationType.None
+        /// </summary>
+        void CancelDigitization();
     }
 
     public class MgMapViewHistoryEntry
