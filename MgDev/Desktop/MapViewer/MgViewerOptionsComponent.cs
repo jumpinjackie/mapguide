@@ -57,7 +57,7 @@ namespace OSGeo.MapGuide.Viewer
             }
         }
 
-        protected override MgControlImpl CreateControlImpl()
+        protected override MgControlView CreateControlView()
         {
             return new MgViewerOptionsControlImpl(this.Viewer, this.PreferencesDirectory);
         }

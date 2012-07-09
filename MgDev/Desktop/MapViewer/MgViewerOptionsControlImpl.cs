@@ -10,7 +10,7 @@ using System.IO;
 
 namespace OSGeo.MapGuide.Viewer
 {
-    public partial class MgViewerOptionsControlImpl : MgControlImpl
+    public partial class MgViewerOptionsControlImpl : MgControlView
     {
         private IMapViewer _viewer;
         private string _saveDirectory;

@@ -8,7 +8,7 @@ using System.Windows.Forms;
 
 namespace OSGeo.MapGuide.Viewer
 {
-    public partial class MgPrintControlImpl : MgControlImpl
+    public partial class MgPrintControlImpl : MgControlView
     {
         private IMapViewer _viewer;
 

@@ -322,11 +322,13 @@ namespace OSGeo.MapGuide.Viewer
         /// Creates the associated view. Must be overridden by subclasses
         /// </summary>
         /// <returns></returns>
-        protected virtual MgControlImpl CreateControlImpl() { throw new NotImplementedException(); }
+        protected virtual MgControlView CreateControlView() { throw new NotImplementedException(); }
+
+        internal MgControlView CreateControl() { return CreateControlView(); }
 
         public override void Invoke()
         {
-            var control = CreateControlImpl();
+            var control = CreateControlView();
             control.Dock = DockStyle.Fill;
             if (this.Target == MgViewerTarget.TaskPane)
             {
@@ -341,9 +343,9 @@ namespace OSGeo.MapGuide.Viewer
         class TaskPaneContentCloser : IContentCloser
         {
             private MgTaskPane _taskPane;
-            private MgControlImpl _control;
+            private MgControlView _control;
 
-            public TaskPaneContentCloser(MgTaskPane taskPane, MgControlImpl control)
+            public TaskPaneContentCloser(MgTaskPane taskPane, MgControlView control)
             {
                 _taskPane = taskPane;
                 _control = control;
@@ -354,6 +356,7 @@ namespace OSGeo.MapGuide.Viewer
 
             public void Close()
             {
+                _control.Dispose();
                 _taskPane.LoadInitialTask();
             }
         }
@@ -361,9 +364,9 @@ namespace OSGeo.MapGuide.Viewer
         class NewWindowContentCloser : IContentCloser 
         {
             private Form _frm;
-            private MgControlImpl _control;
+            private MgControlView _control;
 
-            public NewWindowContentCloser(MgControlImpl control, Form owner)
+            public NewWindowContentCloser(MgControlView control, Form owner)
             {
                 _frm = new Form();
                 _control = control;

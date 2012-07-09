@@ -9,7 +9,7 @@ using System.Globalization;
 
 namespace OSGeo.MapGuide.Viewer
 {
-    internal partial class MgBufferControlImpl : MgControlImpl
+    internal partial class MgBufferControlImpl : MgControlView
     {
         private IMapViewer _viewer;
         private MgResourceService _resSvc;

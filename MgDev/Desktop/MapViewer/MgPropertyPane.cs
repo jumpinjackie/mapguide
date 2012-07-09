@@ -80,7 +80,7 @@ namespace OSGeo.MapGuide.Viewer
             var feat = this.CurrentFeature;
             if (feat != null)
             {
-                propGrid.SelectedObject = new DictionaryPropertyGridAdapter(feat.Properties);
+                propGrid.SelectedObject = new MgDictionaryPropertyGridAdapter(feat.Properties);
             }
         }
 
@@ -179,11 +179,11 @@ namespace OSGeo.MapGuide.Viewer
         }
     }
 
-    internal class DictionaryPropertyGridAdapter : ICustomTypeDescriptor
+    public class MgDictionaryPropertyGridAdapter : ICustomTypeDescriptor
     {
         IDictionary _dictionary;
 
-        public DictionaryPropertyGridAdapter(IDictionary d)
+        public MgDictionaryPropertyGridAdapter(IDictionary d)
         {
             _dictionary = d;
         }

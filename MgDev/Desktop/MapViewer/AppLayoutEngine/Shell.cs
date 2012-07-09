@@ -9,11 +9,29 @@ using System.Reflection;
 
 namespace OSGeo.MapGuide.Viewer.AppLayoutEngine
 {
-    public partial class Shell : Form, IMapStatusBar
+    public partial class Shell : Form, IShell
     {
-        public Shell(AppLayout layout, MgMapViewerProvider provider)
+        private Shell()
         {
             InitializeComponent();
+        }
+
+        private static Shell _instance;
+
+        public static IShell Instance
+        {
+            get
+            {
+                if (null == _instance)
+                {
+                    _instance = new Shell();
+                }
+                return _instance;
+            }
+        }
+
+        public void Initialize(AppLayout layout, MgMapViewerProvider provider)
+        {
             this.Text = layout.Title;
             _menuInvoker = new MgMenuItemComponentInvoker();
             _toolInvoker = new MgToolButtonComponentInvoker();
@@ -41,12 +59,20 @@ namespace OSGeo.MapGuide.Viewer.AppLayoutEngine
                 SetPropertyPaneVisbility(_layout.InfoPane.PropertyPane.Visible);
             }
             SetTaskPaneWidth(_layout.TaskPane.Width);
+            if (!string.IsNullOrEmpty(_layout.TaskPane.InitialComponentID))
+            {
+                var cmp = GetComponent(_layout.TaskPane.InitialComponentID) as MgViewerComponent;
+                if (cmp != null)
+                    taskPane.SetInitialComponent(cmp);
+                else
+                    MessageBox.Show("WARNING: The specified initial task component id (" + _layout.TaskPane.InitialComponentID + ") does not exist in the AppLayout");
+            }
 
             _provider = provider;
             mapViewer.PropertyChanged += new PropertyChangedEventHandler(OnMapViewerPropertyChanged);
         }
 
-        public void SetTaskPaneWidth(uint width)
+        internal void SetTaskPaneWidth(uint width)
         {
             if (appContainer.Panel2Collapsed)
                 appContainer.Panel2Collapsed = false;
@@ -54,7 +80,7 @@ namespace OSGeo.MapGuide.Viewer.AppLayoutEngine
             appContainer.SplitterDistance = (int)(appContainer.Width - width);
         }
 
-        public void SetInfoPaneWidth(uint width)
+        internal void SetInfoPaneWidth(uint width)
         {
             if (infoPaneViewerContainer.Panel1Collapsed)
                 infoPaneViewerContainer.Panel1Collapsed = false;
@@ -62,22 +88,22 @@ namespace OSGeo.MapGuide.Viewer.AppLayoutEngine
             infoPaneViewerContainer.SplitterDistance = (int)width;
         }
 
-        public void SetLegendVisbility(bool visible)
+        internal void SetLegendVisbility(bool visible)
         {
             layerPropertiesContainer.Panel1Collapsed = !visible;
         }
 
-        public void SetPropertyPaneVisbility(bool visible)
+        internal void SetPropertyPaneVisbility(bool visible)
         {
             layerPropertiesContainer.Panel2Collapsed = !visible;
         }
 
-        public void SetTaskPaneVisible(bool visible)
+        internal void SetTaskPaneVisible(bool visible)
         {
             appContainer.Panel2Collapsed = !visible;
         }
 
-        public void SetInfoPaneVisible(bool visible)
+        internal void SetInfoPaneVisible(bool visible)
         {
             infoPaneViewerContainer.Panel1Collapsed = !visible;
         }
@@ -373,26 +399,28 @@ namespace OSGeo.MapGuide.Viewer.AppLayoutEngine
                 if (vc != null)
                 {
                     vc.OwnerParent = this;
+                    if (vc.Target == MgViewerTarget.TaskPane)
+                        vc.TaskPane = taskPane;
                 }
             }
         }
 
-        void IMapStatusBar.SetCursorPositionMessage(string message)
+        public void SetCursorPositionMessage(string message)
         {
             lblCoordinates.Text = message;
         }
 
-        void IMapStatusBar.SetFeatureSelectedMessage(string message)
+        public void SetFeatureSelectedMessage(string message)
         {
             lblSelected.Text = message;
         }
 
-        void IMapStatusBar.SetMapScaleMessage(string message)
+        public void SetMapScaleMessage(string message)
         {
             lblMapScale.Text = message;
         }
 
-        void IMapStatusBar.SetMapSizeMessage(string message)
+        public void SetMapSizeMessage(string message)
         {
             lblMapSize.Text = message;
         }
@@ -401,5 +429,45 @@ namespace OSGeo.MapGuide.Viewer.AppLayoutEngine
         {
             taskPane.LoadInitialTask();
         }
+
+        public MgComponent GetComponent(string componentId)
+        {
+            return _components.ContainsKey(componentId) ? _components[componentId] : null;
+        }
+
+
+        public IMapLegend Legend
+        {
+            get { return legend; }
+        }
+
+        public IPropertyPane PropertyPane
+        {
+            get { return propertyPane; }
+        }
+
+        public MgTaskPane TaskPane
+        {
+            get { return taskPane; }
+        }
+
+        public void ReloadViewer(MgMapViewerProvider provider)
+        {
+            _provider = provider;
+            mapViewer.Init(_provider);
+        }
+    }
+
+    public interface IShell : IMapStatusBar
+    {
+        MgComponent GetComponent(string componentId);
+
+        IMapLegend Legend { get; }
+
+        IPropertyPane PropertyPane { get; }
+
+        MgTaskPane TaskPane { get; }
+
+        void ReloadViewer(MgMapViewerProvider provider);
     }
 }

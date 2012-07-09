@@ -19,7 +19,7 @@ namespace OSGeo.MapGuide.Viewer
             this.PreferredUnits = MeasurementUnit.Meters;
         }
 
-        protected override MgControlImpl CreateControlImpl()
+        protected override MgControlView CreateControlView()
         {
             switch (_measureMode)
             {

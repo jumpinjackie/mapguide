@@ -8,7 +8,7 @@ using System.Windows.Forms;
 
 namespace OSGeo.MapGuide.Viewer
 {
-    internal partial class MgQueryControlImpl : MgControlImpl
+    internal partial class MgQueryControlImpl : MgControlView
     {
         private IMapViewer _viewer;
         private MgWktReaderWriter _wktRw;
