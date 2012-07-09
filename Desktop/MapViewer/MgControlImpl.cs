@@ -10,14 +10,25 @@ namespace OSGeo.MapGuide.Viewer
     /// Base class for views show by their associated <see cref="T:OSGeo.MapGuide.Viewer.MgViewerComponent"/> instances
     /// </summary>
     [ToolboxItem(false)]
-    public class MgControlImpl : UserControl
+    public class MgControlView : UserControl
     {
         /// <summary>
         /// Gets or set the title to show if this view is shown in a new window
         /// </summary>
         public virtual string Title { get; set; }
 
-        protected MgControlImpl() { this.ModalWindow = false; }
+        protected MgControlView() { this.ModalWindow = false; }
+
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                SubCleanup();
+            }
+            base.Dispose(disposing);
+        }
+
+        protected virtual void SubCleanup() { }
 
         /// <summary>
         /// Gets whether to show as a modal window if parent component chooses to show this component

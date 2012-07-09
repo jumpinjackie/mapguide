@@ -14,7 +14,7 @@ namespace OSGeo.MapGuide.Viewer
             this.Icon = Properties.Resources.print;
         }
 
-        protected override MgControlImpl CreateControlImpl()
+        protected override MgControlView CreateControlView()
         {
             return new MgPrintControlImpl(this.Viewer);
         }

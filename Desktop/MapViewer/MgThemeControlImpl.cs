@@ -10,7 +10,7 @@ using System.Globalization;
 
 namespace OSGeo.MapGuide.Viewer
 {
-    public partial class MgThemeControlImpl : MgControlImpl
+    public partial class MgThemeControlImpl : MgControlView
     {
         private IMapViewer _viewer;
         private BindingList<MgDataPropertyDefinition> _properties;

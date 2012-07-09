@@ -14,7 +14,7 @@ namespace OSGeo.MapGuide.Viewer
             this.Label = this.ToolTipText = Properties.Resources.TitleTheme;
         }
 
-        protected override MgControlImpl CreateControlImpl()
+        protected override MgControlView CreateControlView()
         {
             return new MgThemeControlImpl(this.Viewer);
         }

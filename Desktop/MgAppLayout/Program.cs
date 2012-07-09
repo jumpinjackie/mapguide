@@ -61,9 +61,10 @@ namespace MgAppLayout
             var resSvc = (MgResourceService)provider.CreateService(MgServiceType.ResourceService);
             if (resSvc.ResourceExists(mdfId))
                 provider.LoadMap(new MgdMap(mdfId));
-            var frm = new Shell(layout, provider);
+            var frm = Shell.Instance;
+            ((Shell)frm).Initialize(layout, provider);
             Application.ApplicationExit += new EventHandler(OnAppExit);
-            Application.Run(frm);
+            Application.Run((Shell)frm);
         }
 
         static void OnAppExit(object sender, EventArgs e)

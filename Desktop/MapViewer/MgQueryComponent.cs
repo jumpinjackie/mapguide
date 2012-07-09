@@ -17,7 +17,7 @@ namespace OSGeo.MapGuide.Viewer
             this.Label = this.ToolTipText = Properties.Resources.TitleQuery;
         }
 
-        protected override MgControlImpl CreateControlImpl()
+        protected override MgControlView CreateControlView()
         {
             return new MgQueryControlImpl(this.Viewer);
         }

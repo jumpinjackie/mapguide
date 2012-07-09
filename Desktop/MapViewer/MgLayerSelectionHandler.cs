@@ -41,6 +41,7 @@ namespace OSGeo.MapGuide.Viewer
             var selLayers = sel.GetLayers();
             if (selLayers != null)
             {
+                var selectionSet = new MgSelectionSet(sel, _viewer.GetProvider().AllPropertyMappings);
                 var layers = new Dictionary<string, MgLayerBase>();
                 for (int i = 0; i < selLayers.Count; i++)
                 {
@@ -54,7 +55,6 @@ namespace OSGeo.MapGuide.Viewer
                         var h = this.SelectionMade;
                         if (h != null)
                         {
-                            var selectionSet = new MgSelectionSet(sel, _viewer.GetProvider().AllPropertyMappings);
                             h(selectionSet);
                         }
                     }

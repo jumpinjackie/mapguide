@@ -247,6 +247,7 @@
   </ContextMenu>
   <TaskPane>
     <Width>250</Width>
+    <InitialComponentID>SamplesTaskPane</InitialComponentID>
     <TaskMenu>
       <Items>
         <ItemBase xsi:type="CommandItem">
@@ -447,6 +448,51 @@
       <ComponentID>Startup</ComponentID>
       <Assembly>SampleExtension.dll</Assembly>
       <ClassName>SampleExtension.MgStartupComponent</ClassName>
+    </ComponentDefinition>
+    <ComponentDefinition>
+      <ComponentID>SamplesTaskPane</ComponentID>
+      <Assembly>SampleExtension.dll</Assembly>
+      <ClassName>SampleExtension.MgSampleTaskPaneComponent</ClassName>
+    </ComponentDefinition>
+    <ComponentDefinition>
+      <ComponentID>HelloMap</ComponentID>
+      <Assembly>SampleExtension.dll</Assembly>
+      <ClassName>SampleExtension.MgHelloMapComponent</ClassName>
+    </ComponentDefinition>
+    <ComponentDefinition>
+      <ComponentID>HelloViewer</ComponentID>
+      <Assembly>SampleExtension.dll</Assembly>
+      <ClassName>SampleExtension.MgHelloViewerComponent</ClassName>
+    </ComponentDefinition>
+    <ComponentDefinition>
+      <ComponentID>InteractingWithLayers</ComponentID>
+      <Assembly>SampleExtension.dll</Assembly>
+      <ClassName>SampleExtension.MgInteractingWithLayersComponent</ClassName>
+    </ComponentDefinition>
+    <ComponentDefinition>
+      <ComponentID>WorkingWithFeatureData</ComponentID>
+      <Assembly>SampleExtension.dll</Assembly>
+      <ClassName>SampleExtension.MgWorkingWithFeatureDataComponent</ClassName>
+    </ComponentDefinition>
+    <ComponentDefinition>
+      <ComponentID>ModifyingMapsAndLayers</ComponentID>
+      <Assembly>SampleExtension.dll</Assembly>
+      <ClassName>SampleExtension.MgModifyingMapsAndLayersComponent</ClassName>
+    </ComponentDefinition>
+    <ComponentDefinition>
+      <ComponentID>AnalyzingFeatures</ComponentID>
+      <Assembly>SampleExtension.dll</Assembly>
+      <ClassName>SampleExtension.MgAnalyzingFeaturesComponent</ClassName>
+    </ComponentDefinition>
+    <ComponentDefinition>
+      <ComponentID>DigitizingAndRedlining</ComponentID>
+      <Assembly>SampleExtension.dll</Assembly>
+      <ClassName>SampleExtension.MgDigitizingAndRedliningComponent</ClassName>
+    </ComponentDefinition>
+    <ComponentDefinition>
+      <ComponentID>CustomOutput</ComponentID>
+      <Assembly>SampleExtension.dll</Assembly>
+      <ClassName>SampleExtension.MgCustomOutputComponent</ClassName>
     </ComponentDefinition>
   </Components>
 </AppLayout>

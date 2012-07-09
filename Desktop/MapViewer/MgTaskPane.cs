@@ -32,7 +32,7 @@ namespace OSGeo.MapGuide.Viewer
             c.Dock = DockStyle.Top; //This allows for scrolling
             rootContainer.Controls.Clear();
             rootContainer.Controls.Add(c);
-            var mgc = c as MgControlImpl;
+            var mgc = c as MgControlView;
             if (mgc != null)
                 lblTitle.Text = mgc.Title;
             else
@@ -52,6 +52,13 @@ namespace OSGeo.MapGuide.Viewer
         private void btnInitialTask_Click(object sender, EventArgs e)
         {
             LoadInitialTask();
+        }
+
+        internal void SetInitialComponent(MgViewerComponent cmp)
+        {
+            if (cmp.Target != MgViewerTarget.TaskPane)
+                throw new InvalidOperationException("The specified component's target is not the Task Pane");
+            this.InitialTask = cmp.CreateControl();
         }
     }
 }

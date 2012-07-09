@@ -8,7 +8,7 @@ using System.Windows.Forms;
 
 namespace OSGeo.MapGuide.Viewer
 {
-    internal partial class MgLineMeasureControlImpl : MgControlImpl
+    internal partial class MgLineMeasureControlImpl : MgControlView
     {
         private IMapViewer _viewer;
         private MgCoordinateSystem _mapCs;

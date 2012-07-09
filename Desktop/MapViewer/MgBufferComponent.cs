@@ -27,7 +27,7 @@ namespace OSGeo.MapGuide.Viewer
         [MgComponentProperty]
         public MeasurementUnit DefaultBufferUnits { get; set; }
 
-        protected override MgControlImpl CreateControlImpl()
+        protected override MgControlView CreateControlView()
         {
             return new MgBufferControlImpl(this.Viewer, this.DefaultLayerName, this.DefaultBufferUnits);
         }
