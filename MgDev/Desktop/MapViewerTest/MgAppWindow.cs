@@ -118,7 +118,7 @@ namespace MapViewerTest
             var map = mapViewer.GetMap();
             var viewer = new CompactViewer();
             viewer.LoadMap(map.MapDefinition);
-            viewer.Show();
+            viewer.Show(this); //or viewer.Show(null) works too. You just have to call the overload of Show() that takes a owner parameter
         }
 
         private void profileComponent_Invoked(object sender, EventArgs e)

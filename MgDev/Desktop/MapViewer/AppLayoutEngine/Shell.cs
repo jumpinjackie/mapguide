@@ -364,6 +364,17 @@ namespace OSGeo.MapGuide.Viewer.AppLayoutEngine
             {
                 _components[compDef.ComponentID].Viewer = mapViewer;
             }
+
+            //4th pass, set the owner parent of any MgViewerComponent instances
+            //to this instance
+            foreach (var comp in _components.Values)
+            {
+                var vc = comp as MgViewerComponent;
+                if (vc != null)
+                {
+                    vc.OwnerParent = this;
+                }
+            }
         }
 
         void IMapStatusBar.SetCursorPositionMessage(string message)
