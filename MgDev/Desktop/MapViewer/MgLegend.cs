@@ -712,6 +712,17 @@ namespace OSGeo.MapGuide.Viewer
                 //For some reason, the default bounds are way off from what you would
                 //expect it to be. So we apply this offset for any text/image draw operations
                 int xoffset = -36;
+                if (trvLegend.ShowPlusMinus && e.Node.Nodes.Count > 0)
+                {
+                    // Use the VisualStyles renderer to use the proper OS-defined glyphs
+                    Rectangle expandRect = new Rectangle(e.Node.Bounds.X - 52, e.Node.Bounds.Y, 16, 16);
+
+                    VisualStyleElement element = (e.Node.IsExpanded) ? 
+                        VisualStyleElement.TreeView.Glyph.Opened : VisualStyleElement.TreeView.Glyph.Closed;
+
+                    VisualStyleRenderer renderer = new VisualStyleRenderer(element);
+                    renderer.DrawBackground(e.Graphics, expandRect);
+                }
 
                 if ((e.State & TreeNodeStates.Selected) == TreeNodeStates.Selected)
                 {
