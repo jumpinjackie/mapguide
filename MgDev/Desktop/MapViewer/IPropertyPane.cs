@@ -150,13 +150,21 @@ namespace OSGeo.MapGuide.Viewer
                 for (int i = 0; i < selLayers.GetCount(); i++)
                 {
                     var layer = selLayers.GetItem(i);
+                    var clsName = layer.GetFeatureClassName();
+                    int selCount = selection.GetSelectedFeaturesCount(layer, clsName);
+                    if (selCount == 0)
+                    {
+                        System.Diagnostics.Trace.TraceWarning("No items in selection set for this layer (" + layer.GetName() + "). Layer shouldn't be here then");
+                        continue;
+                    }
+
                     var ldfId = layer.GetLayerDefinition();
                     NameValueCollection mappings = null;
                     if (propertyMappings.ContainsKey(ldfId.ToString()))
                         mappings = propertyMappings[ldfId.ToString()];
 
                     _features[layer.Name] = new List<MgFeature>();
-
+                    
                     var reader = selection.GetSelectedFeatures(layer, layer.GetFeatureClassName(), false);
                     while (reader.ReadNext())
                     {

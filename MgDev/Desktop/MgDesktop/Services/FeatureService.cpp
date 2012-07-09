@@ -1412,7 +1412,7 @@ MgFeatureSchemaCollection* MgdFeatureService::DescribeSchema(MgResourceIdentifie
             bool bIsExtendedClassName = false;
             for (INT32 j = 0; j < extensionCount; j++)
             {
-                MdfModel::Extension* extension = extensions->GetAt(i);
+                MdfModel::Extension* extension = extensions->GetAt(j);
                 CHECKNULL(extension, L"MgdFeatureService::DescribeSchema");
                 STRING extName = (STRING)extension->GetName();
                 if (clsName == extName)
