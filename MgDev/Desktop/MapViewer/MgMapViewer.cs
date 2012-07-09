@@ -241,7 +241,7 @@ namespace OSGeo.MapGuide.Viewer
             }
         }
 
-        private void CancelDigitization()
+        public void CancelDigitization()
         {
             if (this.DigitizingType != MapDigitizationType.None)
             {
