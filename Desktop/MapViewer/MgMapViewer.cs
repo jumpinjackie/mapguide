@@ -16,8 +16,27 @@ using System.Collections.ObjectModel;
 namespace OSGeo.MapGuide.Viewer
 {
     /// <summary>
-    /// A map viewer component
+    /// A map viewer component for displaying/rendering a <see cref="T:OSGeo.MapGuide.MgMapBase"/> instance
     /// </summary>
+    /// <remarks>
+    /// <para>
+    /// For any non-modal <see cref="T:System.Windows.Forms.Form"/> instances displayed over this control, if you call <see cref="T:System.Windows.Forms.Form.Show()"/> on the
+    /// form without specifying the owner, this control will automatically be sent to the back of the draw order by this control. To avoid this behavior always call 
+    /// <see cref="T:System.Windows.Forms.Form.Show(System.Windows.Forms.IWin32Window)"/>. You can choose to pass an actual owner or a null owner, but this particular overload
+    /// must be used.
+    /// </para>
+    /// <para>
+    /// If you are using <see cref="T:OSGeo.MapGuide.Viewer.MgViewerComponent"/> instances with <see cref="T:OSGeo.MapGuide.Viewer.MgViewerTarget"/> set to NewWindow, 
+    /// be sure to set the <see cref="P:OSGeo.MapGuide.Viewer.MgViewerComponent.OwnerParent"/> property to your top-level form. This form will be automatically set as 
+    /// the owner form for any new window displayed by the respective component. This property is optional. All forms displayed by this component will not exhibit the
+    /// "sent to back of draw order" display problem.
+    /// </para>
+    /// <para>
+    /// For applications using the AppLayout engine, such components do not need to have the OwnerParent set. As long as the Target is set to NewWindow, the AppLayout
+    /// engine will automatically set the OwnerParent of all defined <see cref="T:OSGeo.MapGuide.Viewer.MgViewerComponent"/> instances to the main 
+    /// AppLayout main window.
+    /// </para>
+    /// </remarks>
     [ToolboxItem(true)]
     public class MgMapViewer : Control, IMapViewer
     {

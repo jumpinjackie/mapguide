@@ -308,6 +308,17 @@ namespace OSGeo.MapGuide.Viewer
         }
 
         /// <summary>
+        /// Gets or sets the owner form that any new windows displayed by this component will belong to.
+        /// </summary>
+        [Category("MapGuide Component Properties")]
+        [Description("The parent form which will be the owner for any new windows displayed by this component")]
+        public Form OwnerParent
+        {
+            get;
+            set;
+        }
+
+        /// <summary>
         /// Creates the associated view. Must be overridden by subclasses
         /// </summary>
         /// <returns></returns>
@@ -323,7 +334,7 @@ namespace OSGeo.MapGuide.Viewer
             }
             else //New Window
             {
-                new NewWindowContentCloser(control);
+                new NewWindowContentCloser(control, this.OwnerParent);
             }
         }
 
@@ -352,7 +363,7 @@ namespace OSGeo.MapGuide.Viewer
             private Form _frm;
             private MgControlImpl _control;
 
-            public NewWindowContentCloser(MgControlImpl control)
+            public NewWindowContentCloser(MgControlImpl control, Form owner)
             {
                 _frm = new Form();
                 _control = control;
@@ -365,9 +376,9 @@ namespace OSGeo.MapGuide.Viewer
                 _control.Closer = this;
 
                 if (control.ModalWindow)
-                    _frm.ShowDialog();
+                    _frm.ShowDialog(owner);
                 else
-                    _frm.Show();
+                    _frm.Show(owner);
             }
 
             public void Close()
