@@ -2638,6 +2638,17 @@ void TestFeatureService::TestCase_ExtendedFeatureClass()
 
         Ptr<MgFeatureReader> reader = pService->SelectFeatures(lFeatureSource, L"Ext1", NULL);
 
+        //With GetIdentityProperties
+        Ptr<MgPropertyDefinitionCollection> idProps = pService->GetIdentityProperties(lFeatureSource, L"SHP_Schema", L"Ext1");
+        CPPUNIT_ASSERT(NULL != idProps);
+        CPPUNIT_ASSERT(1 == idProps->GetCount());
+
+        Ptr<MgStringCollection> findClasses = new MgStringCollection();
+        findClasses->Add(L"Ext1");
+        Ptr<MgClassDefinitionCollection> matches = pService->GetIdentityProperties(lFeatureSource, L"SHP_Schema", findClasses);
+        CPPUNIT_ASSERT(NULL != matches);
+        CPPUNIT_ASSERT(1 == matches->GetCount());
+
         Ptr<MgFeatureSchemaCollection> schemas;
         Ptr<MgFeatureSchema> schema;
         //With GetClasses
