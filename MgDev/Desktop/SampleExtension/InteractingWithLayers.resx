@@ -120,7 +120,10 @@
   <data name="label1.Text" xml:space="preserve">
     <value>This sample demonstrates layer manipulation and interrogation
 
-Unlike the MapGuide Web Extensions API, layer and group changes are immediately reflected on the map. No Open() or Save() is required on the map object, just a refresh of the viewer afterwards
+Unlike the MapGuide Web Extensions API, layer and group changes are immediately reflected on the map. 
+
+No Open() or Save() is required on the map object, just a refresh of the viewer afterwards and a refresh of the legend if a layer has been modified or the layer/group structure has been modified
+
 
 </value>
   </data>

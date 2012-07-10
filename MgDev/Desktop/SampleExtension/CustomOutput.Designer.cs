@@ -35,8 +35,8 @@
             this.btnRenderMap2 = new System.Windows.Forms.Button();
             this.btnRenderMap1 = new System.Windows.Forms.Button();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
-            this.btnSinglePlot = new System.Windows.Forms.Button();
             this.btnMultiPlot = new System.Windows.Forms.Button();
+            this.btnSinglePlot = new System.Windows.Forms.Button();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.SuspendLayout();
@@ -109,6 +109,8 @@
             // 
             // groupBox2
             // 
+            this.groupBox2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
             this.groupBox2.Controls.Add(this.btnMultiPlot);
             this.groupBox2.Controls.Add(this.btnSinglePlot);
             this.groupBox2.Location = new System.Drawing.Point(17, 251);
@@ -117,16 +119,6 @@
             this.groupBox2.TabIndex = 2;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Plot current view to DWF";
-            // 
-            // btnSinglePlot
-            // 
-            this.btnSinglePlot.Location = new System.Drawing.Point(24, 29);
-            this.btnSinglePlot.Name = "btnSinglePlot";
-            this.btnSinglePlot.Size = new System.Drawing.Size(177, 23);
-            this.btnSinglePlot.TabIndex = 0;
-            this.btnSinglePlot.Text = "Single-Page plot";
-            this.btnSinglePlot.UseVisualStyleBackColor = true;
-            this.btnSinglePlot.Click += new System.EventHandler(this.btnSinglePlot_Click);
             // 
             // btnMultiPlot
             // 
@@ -137,6 +129,16 @@
             this.btnMultiPlot.Text = "Multi-Page plot";
             this.btnMultiPlot.UseVisualStyleBackColor = true;
             this.btnMultiPlot.Click += new System.EventHandler(this.btnMultiPlot_Click);
+            // 
+            // btnSinglePlot
+            // 
+            this.btnSinglePlot.Location = new System.Drawing.Point(24, 29);
+            this.btnSinglePlot.Name = "btnSinglePlot";
+            this.btnSinglePlot.Size = new System.Drawing.Size(177, 23);
+            this.btnSinglePlot.TabIndex = 0;
+            this.btnSinglePlot.Text = "Single-Page plot";
+            this.btnSinglePlot.UseVisualStyleBackColor = true;
+            this.btnSinglePlot.Click += new System.EventHandler(this.btnSinglePlot_Click);
             // 
             // CustomOutput
             // 

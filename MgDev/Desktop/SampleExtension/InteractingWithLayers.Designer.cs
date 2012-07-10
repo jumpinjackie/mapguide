@@ -40,13 +40,13 @@
                         | System.Windows.Forms.AnchorStyles.Right)));
             this.label1.Location = new System.Drawing.Point(15, 19);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(180, 125);
+            this.label1.Size = new System.Drawing.Size(180, 189);
             this.label1.TabIndex = 2;
             this.label1.Text = resources.GetString("label1.Text");
             // 
             // btnLayerVisibility
             // 
-            this.btnLayerVisibility.Location = new System.Drawing.Point(18, 147);
+            this.btnLayerVisibility.Location = new System.Drawing.Point(18, 223);
             this.btnLayerVisibility.Name = "btnLayerVisibility";
             this.btnLayerVisibility.Size = new System.Drawing.Size(177, 23);
             this.btnLayerVisibility.TabIndex = 3;
@@ -56,7 +56,7 @@
             // 
             // btnRenameRoadsLayer
             // 
-            this.btnRenameRoadsLayer.Location = new System.Drawing.Point(18, 176);
+            this.btnRenameRoadsLayer.Location = new System.Drawing.Point(18, 252);
             this.btnRenameRoadsLayer.Name = "btnRenameRoadsLayer";
             this.btnRenameRoadsLayer.Size = new System.Drawing.Size(177, 23);
             this.btnRenameRoadsLayer.TabIndex = 4;
