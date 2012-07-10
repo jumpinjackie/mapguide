@@ -10,7 +10,7 @@ namespace SampleExtension
     {
         public override void Invoke()
         {
-            MessageBox.Show("If you see this message. It is because I was automatically invoked by the AppLayout's InvokeOnStartup property", "SampleExtension: MgStartupComponent");
+            MessageBox.Show(Layers.StartupText, "mg-desktop API Samples");
         }
     }
 }

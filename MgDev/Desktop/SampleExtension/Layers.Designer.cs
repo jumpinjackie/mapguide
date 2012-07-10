@@ -256,6 +256,26 @@ namespace SampleExtension {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to &lt;?xml version=&quot;1.0&quot;?&gt;
+        ///&lt;LayerDefinition xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot; xmlns:xsd=&quot;http://www.w3.org/2001/XMLSchema&quot; xsi:noNamespaceSchemaLocation=&quot;LayerDefinition-1.0.0.xsd&quot; version=&quot;1.0.0&quot;&gt;
+        ///  &lt;VectorLayerDefinition&gt;
+        ///    &lt;ResourceId&gt;{0}&lt;/ResourceId&gt;
+        ///    &lt;FeatureName&gt;{1}&lt;/FeatureName&gt;
+        ///    &lt;FeatureNameType&gt;FeatureClass&lt;/FeatureNameType&gt;
+        ///    &lt;Geometry&gt;{2}&lt;/Geometry&gt;
+        ///    &lt;VectorScaleRange&gt;
+        ///      &lt;AreaTypeStyle&gt;
+        ///        &lt;AreaRule&gt;
+        ///          &lt;LegendLabel /&gt;
+        ///          &lt;AreaSymboliz [rest of string was truncated]&quot;;.
+        /// </summary>
+        internal static string Redline {
+            get {
+                return ResourceManager.GetString("Redline", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to &lt;VectorScaleRange&gt;
         ///  &lt;MinScale&gt;%s&lt;/MinScale&gt;
         ///  &lt;MaxScale&gt;%s&lt;/MaxScale&gt;
@@ -266,6 +286,17 @@ namespace SampleExtension {
         internal static string scalerange {
             get {
                 return ResourceManager.GetString("scalerange", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to If you see this message, it is because I am a component that was automatically invoked by the AppLayout&apos;s InvokeOnStartup property. 
+        ///
+        ///These samples requires the Sheboygan dataset loaded. If you haven&apos;t loaded this package, you load the package and map after this message from the &quot;File&quot; menu..
+        /// </summary>
+        internal static string StartupText {
+            get {
+                return ResourceManager.GetString("StartupText", resourceCulture);
             }
         }
         

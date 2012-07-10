@@ -157,4 +157,12 @@
   <data name="ParcelMarker" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>Resources\ParcelMarker.txt;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
   </data>
+  <data name="Redline" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Resources\Redline.txt;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
+  </data>
+  <data name="StartupText" xml:space="preserve">
+    <value>If you see this message, it is because I am a component that was automatically invoked by the AppLayout's InvokeOnStartup property. 
+
+These samples requires the Sheboygan dataset loaded. If you haven't loaded this package, you load the package and map after this message from the "File" menu.</value>
+  </data>
 </root>

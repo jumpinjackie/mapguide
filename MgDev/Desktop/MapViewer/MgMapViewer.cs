@@ -251,7 +251,7 @@ namespace OSGeo.MapGuide.Viewer
                 if (this.DigitizingType == MapDigitizationType.LineString ||
                     this.DigitizingType == MapDigitizationType.Polygon)
                 {
-                    if (dPath.Count > 1) //Slice off the last recorded point
+                    if (dPath.Count > 2) //Slice off the last recorded point
                     {
                         dPath.RemoveAt(dPath.Count - 1);
                         Invalidate();
