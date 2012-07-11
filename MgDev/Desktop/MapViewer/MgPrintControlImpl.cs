@@ -49,6 +49,11 @@ namespace OSGeo.MapGuide.Viewer
 
         private void printDocument_PrintPage(object sender, System.Drawing.Printing.PrintPageEventArgs e)
         {
+            MgMapViewerProvider provider = _viewer.GetProvider();
+            MgSelectionBase selection = _viewer.GetSelection();
+            MgMapBase map = _viewer.GetMap();
+            MgPoint pt = map.ViewCenter;
+            MgCoordinate coord = pt.Coordinate;
             float leftMargin = e.MarginBounds.Left;
             float topMargin = e.MarginBounds.Top;
             float yPos = topMargin;
@@ -65,27 +70,23 @@ namespace OSGeo.MapGuide.Viewer
             var scaleStr = string.Format("{0} 1 : {1}", Properties.Resources.TextScale, _viewer.GetMap().ViewScale);
             var sizeScale = e.Graphics.MeasureString(scaleStr, scaleFont);
 
-            //Draw map
-            var img = _viewer.GetCurrentImage();
-            var imgWidth = (float)img.Width;
-            var imgHeight = (float)img.Height;
-
             //Scale to fit within this page
-            //TODO: We should probably re-render at the desired size 
-            var workableImgHeight = pageHeight - (sizeTitle.Height * 1.1f) - (sizeScale.Height * 1.1f);
-            var workableImgWidth = e.MarginBounds.Width;
-            var hratio = 1.0f;
-            var wratio = 1.0f;
-            if (imgHeight > workableImgHeight)
-                hratio = imgHeight / workableImgHeight;
-            if (imgWidth > workableImgWidth)
-                wratio = imgWidth / workableImgWidth;
+            var imgHeight = (int)(pageHeight - (sizeTitle.Height * 1.1f) - (sizeScale.Height * 1.1f));
+            var imgWidth = e.MarginBounds.Width;
 
-            //Multiply by this ratio
-            imgWidth *= (1.0f / wratio);
-            imgHeight *= (1.0f / hratio);
+            using (var state = provider.CreateTransientState())
+            {
+                var tempState = new MgMapDisplayParameters(coord.X, coord.Y, map.ViewScale, imgWidth, imgHeight, (int)numDPI.Value);
+                state.PushState(tempState);
+                MgByteReader br = provider.RenderMap(selection, "PNG");
+                using (MgReadOnlyStream stream = new MgReadOnlyStream(br))
+                {
+                    Image img = Image.FromStream(stream);
+                    e.Graphics.DrawImage(img, leftMargin, yPos, imgWidth, imgHeight);
+                    img.Dispose();
+                }
+            }
 
-            e.Graphics.DrawImage(img, leftMargin, yPos, imgWidth, imgHeight);
             yPos += imgHeight;
 
             //Render scale

@@ -37,6 +37,9 @@
             this.btnPrintPreview = new System.Windows.Forms.Button();
             this.btnPrint = new System.Windows.Forms.Button();
             this.printDialog = new System.Windows.Forms.PrintDialog();
+            this.numDPI = new System.Windows.Forms.NumericUpDown();
+            this.label2 = new System.Windows.Forms.Label();
+            ((System.ComponentModel.ISupportInitialize)(this.numDPI)).BeginInit();
             this.SuspendLayout();
             // 
             // label1
@@ -60,7 +63,7 @@
             // chkScale
             // 
             this.chkScale.AutoSize = true;
-            this.chkScale.Location = new System.Drawing.Point(17, 58);
+            this.chkScale.Location = new System.Drawing.Point(17, 103);
             this.chkScale.Name = "chkScale";
             this.chkScale.Size = new System.Drawing.Size(83, 17);
             this.chkScale.TabIndex = 2;
@@ -87,7 +90,7 @@
             // 
             // btnPrintPreview
             // 
-            this.btnPrintPreview.Location = new System.Drawing.Point(17, 92);
+            this.btnPrintPreview.Location = new System.Drawing.Point(17, 126);
             this.btnPrintPreview.Name = "btnPrintPreview";
             this.btnPrintPreview.Size = new System.Drawing.Size(83, 23);
             this.btnPrintPreview.TabIndex = 3;
@@ -97,7 +100,7 @@
             // 
             // btnPrint
             // 
-            this.btnPrint.Location = new System.Drawing.Point(106, 92);
+            this.btnPrint.Location = new System.Drawing.Point(106, 126);
             this.btnPrint.Name = "btnPrint";
             this.btnPrint.Size = new System.Drawing.Size(75, 23);
             this.btnPrint.TabIndex = 4;
@@ -112,17 +115,46 @@
             this.printDialog.ShowHelp = true;
             this.printDialog.UseEXDialog = true;
             // 
+            // numDPI
+            // 
+            this.numDPI.Location = new System.Drawing.Point(17, 77);
+            this.numDPI.Maximum = new decimal(new int[] {
+            1410065407,
+            2,
+            0,
+            0});
+            this.numDPI.Name = "numDPI";
+            this.numDPI.Size = new System.Drawing.Size(120, 20);
+            this.numDPI.TabIndex = 5;
+            this.numDPI.Value = new decimal(new int[] {
+            96,
+            0,
+            0,
+            0});
+            // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Location = new System.Drawing.Point(14, 61);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(25, 13);
+            this.label2.TabIndex = 6;
+            this.label2.Text = "DPI";
+            // 
             // MgPrintControlImpl
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.Controls.Add(this.label2);
+            this.Controls.Add(this.numDPI);
             this.Controls.Add(this.btnPrint);
             this.Controls.Add(this.btnPrintPreview);
             this.Controls.Add(this.chkScale);
             this.Controls.Add(this.txtTitle);
             this.Controls.Add(this.label1);
             this.Name = "MgPrintControlImpl";
-            this.Size = new System.Drawing.Size(236, 133);
+            this.Size = new System.Drawing.Size(236, 164);
+            ((System.ComponentModel.ISupportInitialize)(this.numDPI)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -138,5 +170,7 @@
         private System.Windows.Forms.Button btnPrintPreview;
         private System.Windows.Forms.Button btnPrint;
         private System.Windows.Forms.PrintDialog printDialog;
+        private System.Windows.Forms.NumericUpDown numDPI;
+        private System.Windows.Forms.Label label2;
     }
 }
