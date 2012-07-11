@@ -282,6 +282,7 @@ namespace OSGeo.MapGuide.Viewer
         protected abstract MgSpatialContextReader GetSpatialContexts(MgLayerBase layer, bool activeOnly);
 
         public abstract MgMapBase CreateMap(MgResourceIdentifier mapDefinitionId, string name);
+        public abstract MgByteReader RenderMap(MgSelectionBase selection, string format);
         public abstract MgByteReader RenderDynamicOverlay(MgSelectionBase selection, MgViewerRenderingOptions args);
         public abstract void SetDisplaySize(int width, int height);
         public abstract MgSelectionBase CreateSelectionForMap();
@@ -302,6 +303,13 @@ namespace OSGeo.MapGuide.Viewer
         public abstract bool LayerHasTooltips(MgLayerBase layer);
 
         public abstract bool IsLayerPotentiallyVisibleAtScale(MgLayerBase layer, bool bConsiderParentGroupVisibility);
+
+        public abstract MgTransientMapState CreateTransientState(MgMapBase map);
+
+        public MgTransientMapState CreateTransientState()
+        {
+            return CreateTransientState(_map);
+        }
 
         public string GetGeometryProperty(string objId)
         {

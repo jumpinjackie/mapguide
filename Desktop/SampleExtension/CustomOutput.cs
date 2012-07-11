@@ -36,9 +36,9 @@ namespace SampleExtension
             //MgdTransientMapState is a helper class which lets us apply transient state to a map, which is automatically
             //undone on disposal. This is how we can render custom views of a map with specific display parameters without
             //permanently changing the display parameters used by the map viewer
-            using (MgdTransientMapState tempState = new MgdTransientMapState(map))
+            using (MgTransientMapState tempState = provider.CreateTransientState(map))
             {
-                MgdMapDisplayParameters state = new MgdMapDisplayParameters(centerCoord.X, centerCoord.Y, 4000, 640, 480, 96);
+                MgMapDisplayParameters state = new MgMapDisplayParameters(centerCoord.X, centerCoord.Y, 4000, 640, 480, 96);
                 tempState.PushState(state);
 
                 MgByteReader br = renderSvc.RenderMap(map, selection, "PNG");
@@ -75,9 +75,9 @@ namespace SampleExtension
             //MgdTransientMapState is a helper class which lets us apply transient state to a map, which is automatically
             //undone on disposal. This is how we can render custom views of a map with specific display parameters without
             //permanently changing the display parameters used by the map viewer
-            using (MgdTransientMapState tempState = new MgdTransientMapState(map))
+            using (MgTransientMapState tempState = provider.CreateTransientState(map))
             {
-                MgdMapDisplayParameters state = new MgdMapDisplayParameters(centerCoord.X, centerCoord.Y, 5000, 1024, 768, 96);
+                MgMapDisplayParameters state = new MgMapDisplayParameters(centerCoord.X, centerCoord.Y, 5000, 1024, 768, 96);
                 tempState.PushState(state);
 
                 MgByteReader br = renderSvc.RenderMap(map, selection, "PNG");
@@ -114,9 +114,9 @@ namespace SampleExtension
             //MgdTransientMapState is a helper class which lets us apply transient state to a map, which is automatically
             //undone on disposal. This is how we can render custom views of a map with specific display parameters without
             //permanently changing the display parameters used by the map viewer
-            using (MgdTransientMapState tempState = new MgdTransientMapState(map))
+            using (MgTransientMapState tempState = provider.CreateTransientState(map))
             {
-                MgdMapDisplayParameters state = new MgdMapDisplayParameters(centerCoord.X, centerCoord.Y, 6000, 1920, 1680, 192);
+                MgMapDisplayParameters state = new MgMapDisplayParameters(centerCoord.X, centerCoord.Y, 6000, 1920, 1680, 192);
                 tempState.PushState(state);
 
                 MgByteReader br = renderSvc.RenderMap(map, selection, "PNG");
@@ -153,9 +153,9 @@ namespace SampleExtension
             //MgdTransientMapState is a helper class which lets us apply transient state to a map, which is automatically
             //undone on disposal. This is how we can render custom views of a map with specific display parameters without
             //permanently changing the display parameters used by the map viewer
-            using (MgdTransientMapState tempState = new MgdTransientMapState(map))
+            using (MgTransientMapState tempState = provider.CreateTransientState(map))
             {
-                MgdMapDisplayParameters state = new MgdMapDisplayParameters(centerCoord.X, centerCoord.Y, 7000, 2048, 1920, 192);
+                MgMapDisplayParameters state = new MgMapDisplayParameters(centerCoord.X, centerCoord.Y, 7000, 2048, 1920, 192);
                 tempState.PushState(state);
 
                 MgByteReader br = renderSvc.RenderMap(map, selection, "PNG");

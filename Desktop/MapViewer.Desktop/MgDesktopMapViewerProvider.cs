@@ -149,5 +149,15 @@ namespace OSGeo.MapGuide.Viewer.Desktop
         {
             return ((MgdLayer)layer).GetSpatialContexts(activeOnly);
         }
+
+        public override MgTransientMapState CreateTransientState(MgMapBase map)
+        {
+            return new MgdTransientMapState((MgdMap)map);
+        }
+
+        public override MgByteReader RenderMap(MgSelectionBase selection, string format)
+        {
+            return _renderSvc.RenderMap(_implMap, (MgdSelection)selection, format);
+        }
     }
 }

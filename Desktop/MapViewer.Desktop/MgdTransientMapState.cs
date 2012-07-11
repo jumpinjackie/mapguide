@@ -10,112 +10,28 @@ namespace OSGeo.MapGuide.Viewer.Desktop
     /// of this stack, allowing your map to be used for <see cref="T:OSGeo.MapGuide.MgdRenderingService.RenderMap()"/>
     /// calls without permanently altering state.
     /// </summary>
-    public class MgdTransientMapState : IDisposable
+    public class MgdTransientMapState : MgTransientMapState<MgdMap>
     {
-        private MgdMap _map;
+        internal MgdTransientMapState(MgdMap map) : base(map) { } 
 
-        private Stack<MgdMapStateTransition> _states;
-
-        private MgdMapDisplayParameters _origState;
-
-        public MgdTransientMapState(MgdMap map)
+        protected override void ApplyViewCenter(double x, double y)
         {
-            _map = map;
-            _origState = GetCurrentState();
-            _states = new Stack<MgdMapStateTransition>();
+            _map.SetViewCenterXY(x, y);
         }
 
-        private MgdMapDisplayParameters GetCurrentState()
+        protected override void ApplyViewScale(double scale)
         {
-            var pt = _map.ViewCenter;
-            var coord = pt.Coordinate;
-            return new MgdMapDisplayParameters(coord.X, coord.Y, _map.ViewScale, _map.DisplayWidth, _map.DisplayHeight, _map.DisplayDpi);
+            _map.SetViewScale(scale);
         }
 
-        private void ApplyState(MgdMapDisplayParameters state)
+        protected override void ApplyDisplaySize(int width, int height)
         {
-            _map.SetViewCenterXY(state.X, state.Y);
-            _map.SetViewScale(state.Scale);
-            _map.SetDisplaySize(state.Width, state.Height);
-            if (state.DPI.HasValue)
-                _map.DisplayDpi = state.DPI.Value;
+            _map.SetDisplaySize(width, height);
         }
 
-        public int Depth { get { return _states.Count; } }
-
-        /// <summary>
-        /// Pushes the given state onto the map state stack. The map takes on the display parameters specified
-        /// in this given state.
-        /// </summary>
-        /// <param name="state"></param>
-        public void PushState(MgdMapDisplayParameters state)
+        protected override void ApplyDPI(int dpi)
         {
-            if (state == null)
-                throw new ArgumentNullException("state");
-
-            var oldState = GetCurrentState();
-            ApplyState(state);
-
-            _states.Push(new MgdMapStateTransition() { OldState = oldState, NewState = state });
-        }
-
-        /// <summary>
-        /// Pops the latest state from the map state stack. The map state is restored to
-        /// the previously applied state.
-        /// </summary>
-        /// <returns>The state that was previously applied</returns>
-        public MgdMapDisplayParameters PopState()
-        {
-            if (_states.Count == 0)
-                return null;
-
-            var trans = _states.Pop();
-            ApplyState(trans.OldState);
-            return trans.NewState;
-        }
-
-        public void Dispose()
-        {
-            while (_states.Count > 0)
-            {
-                this.PopState();
-            }
-            ApplyState(_origState);
-        }
-    }
-
-    internal class MgdMapStateTransition
-    {
-        public MgdMapDisplayParameters NewState { get; set; }
-
-        public MgdMapDisplayParameters OldState { get; set; }
-    }
-
-    /// <summary>
-    /// Represents display parameters for a map
-    /// </summary>
-    public class MgdMapDisplayParameters
-    {
-        public double X { get; private set; }
-        public double Y { get; private set; }
-        public double Scale { get; private set; }
-        public int Width { get; private set; }
-        public int Height { get; private set; }
-        public int? DPI { get; private set; }
-
-        public MgdMapDisplayParameters(double x, double y, double scale, int width, int height)
-        {
-            this.X = x;
-            this.Y = y;
-            this.Scale = scale;
-            this.Width = width;
-            this.Height = height;
-        }
-
-        public MgdMapDisplayParameters(double x, double y, double scale, int width, int height, int dpi)
-            : this(x, y, scale, width, height)
-        {
-            this.DPI = dpi;
+            _map.DisplayDpi = dpi;
         }
     }
 }
