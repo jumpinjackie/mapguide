@@ -202,6 +202,7 @@
     <Compile Include="MgThemeControlImpl.Designer.cs">
       <DependentUpon>MgThemeControlImpl.cs</DependentUpon>
     </Compile>
+    <Compile Include="MgTransientMapState.cs" />
     <Compile Include="MgViewerOptionsComponent.cs">
       <SubType>Component</SubType>
     </Compile>
