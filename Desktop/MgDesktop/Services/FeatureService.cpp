@@ -2509,6 +2509,13 @@ MgFeatureReader* MgdFeatureService::SelectFeaturesInternal(MgResourceIdentifier*
     Ptr<MgFeatureReader> reader;
     MG_FEATURE_SERVICE_TRY()
     
+    MgLogDetail logDetail(MgServiceType::FeatureService, MgLogDetail::InternalTrace, L"MgdFeatureService::SelectFeaturesInternal", mgStackParams);
+    logDetail.AddResourceIdentifier(L"resource", resource);
+    logDetail.AddString(L"className", className);
+    logDetail.AddString(L"coordinateSystem", coordinateSystem);
+    logDetail.AddBool(L"withLock", withLock);
+    logDetail.AddBool(L"asScrollable", asScrollable);
+
 	Ptr<MgFeatureConnection> connWrap = new MgFeatureConnection(resource);
     {
         FdoPtr<FdoIConnection> conn = connWrap->GetConnection();
@@ -2657,6 +2664,8 @@ MgFeatureReader* MgdFeatureService::SelectFeaturesInternal(MgResourceIdentifier*
             if (combineFilter != NULL)
             {
                 select->SetFilter(combineFilter);
+                STRING filterText = combineFilter->ToString();
+                logDetail.AddString(L"Filter", filterText);
             }
 
             if (asScrollable)
@@ -2668,6 +2677,10 @@ MgFeatureReader* MgdFeatureService::SelectFeaturesInternal(MgResourceIdentifier*
         bool bFeatureJoinProperties = FindFeatureJoinProperties(resource, className);
         // Check if a feature join is only a calculation
         bool bFeatureCalculation = FindFeatureCalculation(resource, className);
+
+        logDetail.AddBool(L"IsFeatureJoinClass", bFeatureJoinProperties);
+        logDetail.AddBool(L"IsCalculationClass", bFeatureCalculation);
+        logDetail.Create();
 
         if (bFeatureJoinProperties)
         {
@@ -2787,8 +2800,14 @@ MgFeatureReader* MgdFeatureService::SelectFeaturesJoined(MgResourceIdentifier* f
             Ptr<MgFeatureConnection> leftConn = new MgFeatureConnection(featureSourceIdentifier);
             
             STRING fsIdStr = featureSourceIdentifier->ToString();
+            bool bSupportsFdoJoinOptimization = SupportsFdoJoins(leftConn, extension);
+
+            MgLogDetail logDetail(MgServiceType::FeatureService, MgLogDetail::InternalTrace, L"MgdFeatureService::SelectFeaturesJoined", mgStackParams);
+            logDetail.AddBool(L"SupportsFdoJoinOptimization", bSupportsFdoJoinOptimization);
+            logDetail.Create();
+
             // See if we can use the FDO join optimization
-            if (SupportsFdoJoins(leftConn, extension))
+            if (bSupportsFdoJoinOptimization)
             {
 #ifdef DEBUG_FDOJOIN
                 STRING fsIdStr = featureSourceIdentifier->ToString();
@@ -3036,7 +3055,7 @@ MgFeatureReader* MgdFeatureService::SelectFeaturesJoined(MgResourceIdentifier* f
 
             // Prepare and Execute Query
             query->Prepare();
-
+            
             // Search the filter to see if it contains the extension name
             // If the extension name is not found it means that the filter involves attribute(s) only from the primary
             if(NULL != filter)

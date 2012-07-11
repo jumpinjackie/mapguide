@@ -41,6 +41,11 @@ bool g_bPoolingEnabled;
 
 FdoIConnection* MgFdoConnectionPool::GetConnection(MgResourceIdentifier* featureSourceId)
 {
+    FdoPtr<FdoIConnection> conn;
+    MG_FEATURE_SERVICE_TRY()
+
+    CHECK_FEATURE_SOURCE_ARGUMENT(featureSourceId, L"MgFdoConnectionPool::GetConnection");
+
     ScopedLock scc(g_pool.mutex);
     STRING fsIdStr = featureSourceId->ToString();
     ConnPool::iterator it = g_pool.freePool.find(fsIdStr);
@@ -48,15 +53,17 @@ FdoIConnection* MgFdoConnectionPool::GetConnection(MgResourceIdentifier* feature
     MdfModel::FeatureSource* fs = MgFdoConnectionUtil::GetFeatureSource(featureSourceId);
     STRING providerName = MgFdoConnectionUtil::ParseNonQualifiedProviderName(fs->GetProvider());
 
+    bool bNewInstance = false;
+
     //no connection for this string in the pool -- make one
     if (!g_bPoolingEnabled || it == g_pool.freePool.end() || it->second.size() == 0)
     {
-        FdoPtr<FdoIConnection> conn = MgFdoConnectionUtil::CreateConnection(featureSourceId);
+        conn = MgFdoConnectionUtil::CreateConnection(featureSourceId);
     #ifdef DEBUG_FDO_CONNECTION_POOL
         ACE_DEBUG((LM_INFO, ACE_TEXT("[Created]: (%W)\n"), featureSourceId->ToString().c_str()));
     #endif
         conn->Open();
-        return conn.Detach();
+        bNewInstance = true;
     }
     else
     {
@@ -69,32 +76,45 @@ FdoIConnection* MgFdoConnectionPool::GetConnection(MgResourceIdentifier* feature
         #endif
             if (FdoConnectionState_Closed == rec._conn->GetConnectionState())
                 rec._conn->Open();
-            return rec._conn;
+            conn = rec._conn;
+            bNewInstance = false;
         }
         else
         {
         #ifdef DEBUG_FDO_CONNECTION_POOL
             ACE_DEBUG((LM_INFO, ACE_TEXT("Provider for (%W) is not poolable\n"), featureSourceId->ToString().c_str()));
         #endif
-            FdoPtr<FdoIConnection> conn = MgFdoConnectionUtil::CreateConnection(featureSourceId);
+            conn = MgFdoConnectionUtil::CreateConnection(featureSourceId);
         #ifdef DEBUG_FDO_CONNECTION_POOL
             ACE_DEBUG((LM_INFO, ACE_TEXT("[Created]: (%W)\n"), featureSourceId->ToString().c_str()));
         #endif
             conn->Open();
-            return conn.Detach();
+            bNewInstance = true;
         }
     }
 
-    return NULL;
+    MgLogDetail logDetail(MgServiceType::FeatureService, MgLogDetail::InternalTrace, L"MgFdoConnectionPool::GetConnection", mgStackParams);
+    logDetail.AddResourceIdentifier(L"featureSourceId", featureSourceId);
+    logDetail.AddBool(L"IsNewInstance", bNewInstance);
+    logDetail.Create();
+
+    MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgFdoConnectionPool::GetConnection")
+
+    return conn.Detach();
 }
 
 void MgFdoConnectionPool::ReturnConnection(MgFeatureConnection* conn)
 {
+    MG_FEATURE_SERVICE_TRY()
+
     ScopedLock scc(g_pool.mutex);
     STRING providerName = conn->GetProviderName();
     FdoPtr<FdoIConnection> fdoConn = conn->GetConnection();
     Ptr<MgResourceIdentifier> fsId = conn->GetFeatureSource();
     STRING fsIdStr = fsId->ToString();
+
+    bool bReturned = false;
+    bool bProviderExcluded = false;
 
     //Only return it to pool if pooling enabled. Connections returned to the pool stay open otherwise close them
     if (g_bPoolingEnabled)
@@ -107,6 +127,7 @@ void MgFdoConnectionPool::ReturnConnection(MgFeatureConnection* conn)
         #ifdef DEBUG_FDO_CONNECTION_POOL
             ACE_DEBUG((LM_INFO, ACE_TEXT("[Returned] (%W) %d in cache\n"), fsIdStr.c_str(), vec.size()));
         #endif
+            bReturned = true;
         }
         else
         {
@@ -114,6 +135,7 @@ void MgFdoConnectionPool::ReturnConnection(MgFeatureConnection* conn)
         #ifdef DEBUG_FDO_CONNECTION_POOL
             ACE_DEBUG((LM_INFO, ACE_TEXT("[Closed] (%W) - Provider excluded from pooling\n"), fsIdStr.c_str()));
         #endif
+            bProviderExcluded = true;
         }
     }
     else
@@ -123,10 +145,20 @@ void MgFdoConnectionPool::ReturnConnection(MgFeatureConnection* conn)
             ACE_DEBUG((LM_INFO, ACE_TEXT("[Closed] (%W) - Connection Pooling disabled\n"), fsIdStr.c_str()));
         #endif
     }
+
+    MgLogDetail logDetail(MgServiceType::FeatureService, MgLogDetail::InternalTrace, L"MgFdoConnectionPool::ReturnConnection", mgStackParams);
+    logDetail.AddResourceIdentifier(L"FeatureSource", fsId);
+    logDetail.AddBool(L"ReturnedToPool", bReturned);
+    logDetail.AddBool(L"ProviderExcluded", bProviderExcluded);
+    logDetail.Create();
+
+    MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgFdoConnectionPool::ReturnConnection")
 }
 
 void MgFdoConnectionPool::Initialize(MgConfiguration* pConfiguration)
 {
+    MG_FEATURE_SERVICE_TRY()
+
     bool bDataConnectionPoolEnabled = MgConfigProperties::DefaultFeatureServicePropertyDataConnectionPoolEnabled;
     INT32 nDataConnectionPoolSize = MgConfigProperties::DefaultFeatureServicePropertyDataConnectionPoolSize;
     STRING excludedProviders = MgConfigProperties::DefaultFeatureServicePropertyDataConnectionPoolExcludedProviders;
@@ -165,10 +197,21 @@ void MgFdoConnectionPool::Initialize(MgConfiguration* pConfiguration)
     {
         g_excludedProviders = new MgStringCollection();
     }
+
+    MgLogDetail logDetail(MgServiceType::FeatureService, MgLogDetail::InternalTrace, L"MgFdoConnectionPool::Initialize", mgStackParams);
+    logDetail.AddBool(L"PoolingEnabled", g_bPoolingEnabled);
+    logDetail.AddString(L"ExcludedProviders", excludedProviders);
+    logDetail.Create();
+
+    MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgFdoConnectionPool::Initialize")
 }
 
 void MgFdoConnectionPool::Cleanup()
 {
+    MG_FEATURE_SERVICE_TRY()
+
+    MG_LOG_TRACE_ENTRY(L"MgFdoConnectionPool::Cleanup()");
+
     ScopedLock scc(g_pool.mutex);
     
     for (ConnPool::iterator it = g_pool.freePool.begin(); it != g_pool.freePool.end(); ++it)
@@ -183,11 +226,21 @@ void MgFdoConnectionPool::Cleanup()
             it->second.pop_back();
         }
     }
+
+    MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgFdoConnectionPool::Cleanup")
 }
 
 void MgFdoConnectionPool::PurgeCachedConnections(MgResourceIdentifier* resId)
 {
+    if (NULL == resId)
+        return;
+
+    if (MgResourceType::FeatureSource != resId->GetResourceType())
+        return;
+
     ScopedLock scc(g_pool.mutex);
+
+    MG_FEATURE_SERVICE_TRY()
 
     STRING fsIdStr = resId->ToString();
     ConnPool::iterator it = g_pool.freePool.find(fsIdStr);
@@ -204,11 +257,25 @@ void MgFdoConnectionPool::PurgeCachedConnections(MgResourceIdentifier* resId)
     #ifdef DEBUG_FDO_CONNECTION_POOL
         ACE_DEBUG((LM_INFO, ACE_TEXT("[Purge]: (%W) %d purged\n"), fsIdStr.c_str(), purged));
     #endif
+        MgLogDetail logDetail(MgServiceType::FeatureService, MgLogDetail::InternalTrace, L"MgFdoConnectionPool::PurgeCachedConnections", mgStackParams);
+        logDetail.AddResourceIdentifier(L"resId", resId);
+        logDetail.AddInt32(L"purgedConnections", purged);
+        logDetail.Create();
     }
+
+    MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgFdoConnectionPool::PurgeCachedConnections")
 }
 
 void MgFdoConnectionPool::PurgeCachedConnectionsUnderFolder(MgResourceIdentifier* resId)
 {
+    if (NULL == resId)
+        return;
+
+    if (MgResourceType::Folder != resId->GetResourceType())
+        return;
+
+    MG_FEATURE_SERVICE_TRY()
+
     ScopedLock scc(g_pool.mutex);
 
     STRING fsIdStr = resId->ToString();
@@ -234,6 +301,13 @@ void MgFdoConnectionPool::PurgeCachedConnectionsUnderFolder(MgResourceIdentifier
 #ifdef DEBUG_FDO_CONNECTION_POOL
     ACE_DEBUG((LM_INFO, ACE_TEXT("[Purge]: (%W) %d purged\n"), fsIdStr.c_str(), purged));
 #endif
+
+    MgLogDetail logDetail(MgServiceType::FeatureService, MgLogDetail::InternalTrace, L"MgFdoConnectionPool::PurgeCachedConnectionsUnderFolder", mgStackParams);
+    logDetail.AddResourceIdentifier(L"resId", resId);
+    logDetail.AddInt32(L"purgedConnections", purged);
+    logDetail.Create();
+
+    MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgFdoConnectionPool::PurgeCachedConnectionsUnderFolder")
 }
 
 bool MgFdoConnectionPool::StringStartsWith(CREFSTRING haystack, CREFSTRING needle)

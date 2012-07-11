@@ -112,7 +112,13 @@ STRING MgdResourceService::GetContentDirectory(MgResourceIdentifier* resId)
 
 STRING MgdResourceService::ResolveContentPath(MgResourceIdentifier* resId)
 {
-	STRING path = GetContentDirectory(resId);
+    STRING path;
+
+    MG_RESOURCE_SERVICE_TRY()
+
+    CHECKARGUMENTNULL(resId, L"MgdResourceService::ResolveContentPath");
+
+	path = GetContentDirectory(resId);
     STRING type = resId->GetResourceType();
     if (MgResourceType::Folder != type)
     {
@@ -122,15 +128,25 @@ STRING MgdResourceService::ResolveContentPath(MgResourceIdentifier* resId)
         path += L".";
         path += type;
     }
+
+    MgLogDetail logDetail(MgServiceType::ResourceService, MgLogDetail::InternalTrace, L"MgdResourceService::ResolveContentPath", mgStackParams);
+    logDetail.AddResourceIdentifier(L"resId", resId);
+    logDetail.AddString(L"resolvedPath", path);
+    logDetail.Create();
+
+    MG_RESOURCE_SERVICE_CATCH_AND_THROW(L"MgdResourceService::ResolveContentPath")
+
     return path;
 }
 
 STRING MgdResourceService::ResolveDataPath(MgResourceIdentifier* resId)
 {
+    STRING cntPath;
+    MG_RESOURCE_SERVICE_TRY()
+
 	CHECKARGUMENTNULL(resId, L"MgdResourceService::ResolveDataPath");
 
 	STRING type = resId->GetRepositoryType();
-	STRING cntPath;
 	if (type == L"Library")
 	{
 		// [ROOT]/Data/[path]/[name].[resourceType]/
@@ -152,8 +168,6 @@ STRING MgdResourceService::ResolveDataPath(MgResourceIdentifier* resId)
 		    cntPath += type;
         }
 		MgFileUtil::AppendSlashToEndOfPath(cntPath);
-
-		return cntPath;
 	}
 	else if (type == L"Session")
 	{
@@ -180,13 +194,21 @@ STRING MgdResourceService::ResolveDataPath(MgResourceIdentifier* resId)
 		    cntPath += type;
         }
 		MgFileUtil::AppendSlashToEndOfPath(cntPath);
-
-		return cntPath;
 	}
 	else 
 	{
 		throw new MgInvalidArgumentException(L"MgdResourceService::ResolveDataPath", __LINE__, __WFILE__, NULL, L"", NULL);
 	}
+
+    MgLogDetail logDetail(MgServiceType::ResourceService, MgLogDetail::InternalTrace, L"MgdResourceService::ResolveDataPath", mgStackParams);
+    logDetail.AddResourceIdentifier(L"resId", resId);
+    logDetail.AddString(L"repositoryType", type);
+    logDetail.AddString(L"resolvedPath", cntPath);
+    logDetail.Create();
+
+    MG_RESOURCE_SERVICE_CATCH_AND_THROW(L"MgdResourceService::ResolveDataPath")
+
+    return cntPath;
 }
 
 void MgdResourceService::ApplyResourcePackage(MgByteReader* packageStream) 

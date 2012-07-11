@@ -19,11 +19,6 @@ void MgPlatform::Initialize(CREFSTRING configFile)
     MgConfiguration* pConfiguration = MgConfiguration::GetInstance();
     pConfiguration->LoadConfiguration(configFile);
 
-    MgServiceFactory::Initialize();
-
-    // Init the Fdo Connection Pool
-    MgFdoConnectionPool::Initialize(pConfiguration);
-
     // Get the resources path.
     STRING resourcesPath;
     pConfiguration->GetStringValue(MgConfigProperties::GeneralPropertiesSection, 
@@ -35,16 +30,21 @@ void MgPlatform::Initialize(CREFSTRING configFile)
     STRING defaultMessageLocale;
     pConfiguration->GetStringValue(MgConfigProperties::GeneralPropertiesSection, MgConfigProperties::GeneralPropertyDefaultMessageLocale, defaultMessageLocale, MgConfigProperties::DefaultGeneralPropertyDefaultMessageLocale);
 
-    //Init log manager
+    // Init log manager
     MgLogManager* pLogManager = MgLogManager::GetInstance();
     pLogManager->Initialize();
 
-    //Init resources
+    MgServiceFactory::Initialize();
+
+    // Init the Fdo Connection Pool
+    MgFdoConnectionPool::Initialize(pConfiguration);
+
+    // Init resources
     MgResources* pResources = MgResources::GetInstance();
     pResources->Initialize(resourcesPath);
     pResources->LoadResources(defaultMessageLocale);
 
-    //Init FDO
+    // Init FDO
     STRING fdoPath;
     pConfiguration->GetStringValue(MgConfigProperties::GeneralPropertiesSection, 
                                    MgConfigProperties::GeneralPropertyFdoPath, 
@@ -179,6 +179,10 @@ void MgPlatform::Terminate()
     Ptr<MgServiceFactory> fact = new MgServiceFactory();;
     Ptr<MgdResourceService> resSvc = dynamic_cast<MgdResourceService*>(fact->CreateService(MgServiceType::ResourceService));
     resSvc->DeleteSessionFiles();
+
+    //This is important. Otherwise the process using this library will be left lingering
+    MgLogManager* pLogManager = MgLogManager::GetInstance();
+    pLogManager->StopLogThread();
 
     XMLPlatformUtils::Terminate();
     ACE::fini();
