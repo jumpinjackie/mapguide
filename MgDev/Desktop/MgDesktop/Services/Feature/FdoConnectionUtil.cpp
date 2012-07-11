@@ -6,6 +6,15 @@
 
 FdoIConnection* MgFdoConnectionUtil::CreateConnection(CREFSTRING providerName, CREFSTRING connectionString)
 {
+    FdoPtr<FdoIConnection> conn;
+
+    MG_FEATURE_SERVICE_TRY()
+
+    MgLogDetail logDetail(MgServiceType::FeatureService, MgLogDetail::InternalTrace, L"MgFdoConnectionUtil::CreateConnection", mgStackParams);
+    logDetail.AddString(L"providerName", providerName);
+    logDetail.AddString(L"connectionString", connectionString);
+    logDetail.Create();
+
     Ptr<MgServiceFactory> fact = new MgServiceFactory();
     Ptr<MgdResourceService> resSvc = static_cast<MgdResourceService*>(fact->CreateService(MgServiceType::ResourceService));
     FdoPtr<FdoProviderNameTokens> tokens = FdoProviderNameTokens::Create(providerName.c_str());
@@ -19,7 +28,7 @@ FdoIConnection* MgFdoConnectionUtil::CreateConnection(CREFSTRING providerName, C
     providerNoVersion += (FdoString*)local->GetString();
 
 	FdoPtr<IConnectionManager> connMgr = FdoFeatureAccessManager::GetConnectionManager();
-	FdoPtr<FdoIConnection> conn = connMgr->CreateConnection(providerNoVersion.c_str());
+	conn = connMgr->CreateConnection(providerNoVersion.c_str());
 
     //Some providers may be sensitive to being assigned an empty string
     if (!connectionString.empty())
@@ -27,11 +36,17 @@ FdoIConnection* MgFdoConnectionUtil::CreateConnection(CREFSTRING providerName, C
 	    conn->SetConnectionString(connectionString.c_str());
     }
 
+    MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgFdoConnectionUtil::CreateConnection")
+
 	return conn.Detach();
 }
 
 FdoIConnection* MgFdoConnectionUtil::CreateConnection(MgResourceIdentifier* resource)
 {
+    FdoPtr<FdoIConnection> conn;
+
+	MG_FEATURE_SERVICE_TRY()
+
     CHECK_FEATURE_SOURCE_ARGUMENT(resource, L"MgFdoConnectionUtil::CreateConnection");
     Ptr<MgServiceFactory> fact = new MgServiceFactory();
     Ptr<MgdResourceService> resSvc = static_cast<MgdResourceService*>(fact->CreateService(MgServiceType::ResourceService));
@@ -45,10 +60,6 @@ FdoIConnection* MgFdoConnectionUtil::CreateConnection(MgResourceIdentifier* reso
 	STRING provider = (STRING)fs->GetProvider();
     STRING configDoc = (STRING)fs->GetConfigurationDocument();
 
-	FdoPtr<FdoIConnection> conn;
-
-	MG_FEATURE_SERVICE_TRY()
-	
 	FdoPtr<IConnectionManager> connMgr = FdoFeatureAccessManager::GetConnectionManager();
     
     FdoPtr<FdoProviderNameTokens> tokens = FdoProviderNameTokens::Create(provider.c_str());
@@ -78,6 +89,10 @@ FdoIConnection* MgFdoConnectionUtil::CreateConnection(MgResourceIdentifier* reso
 
 		dict->SetProperty(n.c_str(), v.c_str());
 	}
+
+    MgLogDetail logDetail(MgServiceType::FeatureService, MgLogDetail::InternalTrace, L"MgFdoConnectionUtil::CreateConnection", mgStackParams);
+    logDetail.AddResourceIdentifier(L"resource", resource);
+    logDetail.Create();
 
     FdoPtr<FdoIConnectionCapabilities> connCaps = conn->GetConnectionCapabilities();
     if (connCaps->SupportsConfiguration() && !configDoc.empty())
