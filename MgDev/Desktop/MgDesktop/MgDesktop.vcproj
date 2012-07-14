@@ -45,7 +45,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="0"
 				EnableIntrinsicFunctions="false"
-				AdditionalIncludeDirectories="..\..\Common\Foundation;..\..\Common\PlatformBase;..\..\Common\Geometry;..\..\Common\MdfModel;..\..\Common\MdfParser;..\..\Oem\ACE\ACE_wrappers;&quot;..\..\Oem\dbxml\xerces-c-src\src&quot;;..\..\Oem\FDO\Inc;..\..\Oem\FDO\Inc\ExpressionEngine;..\..\Common\Renderers;..\..\Common\Stylization;..\..\Oem\DWFTK7.1\develop\global\src;..\..\Oem\DWFTK7.1\develop\global\src\dwf;..\..\Server\src\Gws\Include;..\..\Server\src\Gws\GwsCommon\inc;..\..\Server\src\Gws\GwsQueryEngine\inc"
+				AdditionalIncludeDirectories="..\..\Common\Foundation;..\..\Common\PlatformBase;..\..\Common\Geometry;..\..\Common\MdfModel;..\..\Common\MdfParser;..\..\Oem\ACE\ACE_wrappers;&quot;..\..\Oem\dbxml\xerces-c-src\src&quot;;..\..\Oem\FDO\Inc;..\..\Oem\FDO\Inc\ExpressionEngine;..\..\Common\Renderers;..\..\Common\Stylization;..\..\Oem\DWFTK7.1\develop\global\src;..\..\Oem\DWFTK7.1\develop\global\src\dwf;..\..\Server\src\Gws\Include;..\..\Server\src\Gws\GwsCommon\inc;..\..\Server\src\Gws\GwsQueryEngine\inc;..\..\Common\Security"
 				PreprocessorDefinitions="WIN32;DEBUG;_WINDOWS;_USRDLL;DESKTOP_EXPORTS;DWFCORE_STATIC;DWFTK_STATIC;DWFTK_USE_DWFCORE_ZLIB;DWFTK_BUILD_EXPAT;WHIP_STATIC_LIB"
 				MinimalRebuild="true"
 				ExceptionHandling="1"
@@ -66,7 +66,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="FDO.lib FDOCommon.lib FDOGeometry.lib ExpressionEngine.lib ACEd.lib MgFoundationd.lib MgGeometryd.lib MgMdfModeld.lib MgMdfParserd.lib MgPlatformBased.lib MgRenderersd.lib MgStylizationd.lib MgGwsCommond.lib MgGwsQueryEngined.lib xerces-c_3mgD.lib dwfcore_wt.1.1.1.lib dwftk_wt.7.1.1.lib whiptk_wt.7.7.601.lib"
+				AdditionalDependencies="FDO.lib FDOCommon.lib FDOGeometry.lib ExpressionEngine.lib ACEd.lib MgFoundationd.lib MgGeometryd.lib MgMdfModeld.lib MgMdfParserd.lib MgPlatformBased.lib MgRenderersd.lib MgStylizationd.lib MgGwsCommond.lib MgGwsQueryEngined.lib xerces-c_3mgD.lib dwfcore_wt.1.1.1.lib dwftk_wt.7.1.1.lib whiptk_wt.7.7.601.lib MgSecurity.lib"
 				ShowProgress="0"
 				OutputFile="$(OutDir)\MgDesktopd.dll"
 				LinkIncremental="1"
@@ -132,7 +132,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="0"
 				EnableIntrinsicFunctions="false"
-				AdditionalIncludeDirectories="..\..\Common\Foundation;..\..\Common\PlatformBase;..\..\Common\Geometry;..\..\Common\MdfModel;..\..\Common\MdfParser;..\..\Oem\ACE\ACE_wrappers;&quot;..\..\Oem\dbxml\xerces-c-src\src&quot;;..\..\Oem\FDO\Inc;..\..\Oem\FDO\Inc\ExpressionEngine;..\..\Common\Renderers;..\..\Common\Stylization;..\..\Oem\DWFTK7.1\develop\global\src;..\..\Oem\DWFTK7.1\develop\global\src\dwf;..\..\Server\src\Gws\Include;..\..\Server\src\Gws\GwsCommon\inc;..\..\Server\src\Gws\GwsQueryEngine\inc"
+				AdditionalIncludeDirectories="..\..\Common\Foundation;..\..\Common\PlatformBase;..\..\Common\Geometry;..\..\Common\MdfModel;..\..\Common\MdfParser;..\..\Oem\ACE\ACE_wrappers;&quot;..\..\Oem\dbxml\xerces-c-src\src&quot;;..\..\Oem\FDO\Inc;..\..\Oem\FDO\Inc\ExpressionEngine;..\..\Common\Renderers;..\..\Common\Stylization;..\..\Oem\DWFTK7.1\develop\global\src;..\..\Oem\DWFTK7.1\develop\global\src\dwf;..\..\Server\src\Gws\Include;..\..\Server\src\Gws\GwsCommon\inc;..\..\Server\src\Gws\GwsQueryEngine\inc;..\..\Common\Security"
 				PreprocessorDefinitions="WIN32;DEBUG;_WINDOWS;_USRDLL;DESKTOP_EXPORTS;DWFCORE_STATIC;DWFTK_STATIC;DWFTK_USE_DWFCORE_ZLIB;DWFTK_BUILD_EXPAT;WHIP_STATIC_LIB"
 				MinimalRebuild="true"
 				ExceptionHandling="1"
@@ -153,7 +153,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="FDO.lib FDOCommon.lib FDOGeometry.lib ExpressionEngine.lib ACEd.lib MgFoundationd.lib MgGeometryd.lib MgMdfModeld.lib MgMdfParserd.lib MgPlatformBased.lib MgRenderersd.lib MgStylizationd.lib MgGwsCommond.lib MgGwsQueryEngined.lib xerces-c_3mgD.lib dwfcore_wt.1.1.1.lib dwftk_wt.7.1.1.lib whiptk_wt.7.7.601.lib"
+				AdditionalDependencies="FDO.lib FDOCommon.lib FDOGeometry.lib ExpressionEngine.lib ACEd.lib MgFoundationd.lib MgGeometryd.lib MgMdfModeld.lib MgMdfParserd.lib MgPlatformBased.lib MgRenderersd.lib MgStylizationd.lib MgGwsCommond.lib MgGwsQueryEngined.lib xerces-c_3mgD.lib dwfcore_wt.1.1.1.lib dwftk_wt.7.1.1.lib whiptk_wt.7.7.601.lib MgSecurityd.lib"
 				ShowProgress="0"
 				OutputFile="$(OutDir)\MgDesktopd.dll"
 				LinkIncremental="1"
@@ -218,7 +218,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="2"
 				EnableIntrinsicFunctions="true"
-				AdditionalIncludeDirectories="..\..\Common\Foundation;..\..\Common\PlatformBase;..\..\Common\Geometry;..\..\Common\MdfModel;..\..\Common\MdfParser;..\..\Oem\ACE\ACE_wrappers;&quot;..\..\Oem\dbxml\xerces-c-src\src&quot;;..\..\Oem\FDO\Inc;..\..\Oem\FDO\Inc\ExpressionEngine;..\..\Common\Renderers;..\..\Common\Stylization;..\..\Oem\DWFTK7.1\develop\global\src;..\..\Oem\DWFTK7.1\develop\global\src\dwf;..\..\Server\src\Gws\Include;..\..\Server\src\Gws\GwsCommon\inc;..\..\Server\src\Gws\GwsQueryEngine\inc"
+				AdditionalIncludeDirectories="..\..\Common\Foundation;..\..\Common\PlatformBase;..\..\Common\Geometry;..\..\Common\MdfModel;..\..\Common\MdfParser;..\..\Oem\ACE\ACE_wrappers;&quot;..\..\Oem\dbxml\xerces-c-src\src&quot;;..\..\Oem\FDO\Inc;..\..\Oem\FDO\Inc\ExpressionEngine;..\..\Common\Renderers;..\..\Common\Stylization;..\..\Oem\DWFTK7.1\develop\global\src;..\..\Oem\DWFTK7.1\develop\global\src\dwf;..\..\Server\src\Gws\Include;..\..\Server\src\Gws\GwsCommon\inc;..\..\Server\src\Gws\GwsQueryEngine\inc;..\..\Common\Security"
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;DESKTOP_EXPORTS;DWFCORE_STATIC;DWFTK_STATIC;DWFTK_USE_DWFCORE_ZLIB;DWFTK_BUILD_EXPAT;WHIP_STATIC_LIB"
 				ExceptionHandling="1"
 				RuntimeLibrary="2"
@@ -237,7 +237,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="FDO.lib FDOCommon.lib FDOGeometry.lib ExpressionEngine.lib ACE.lib MgFoundation.lib MgGeometry.lib MgMdfModel.lib MgMdfParser.lib MgPlatformBase.lib MgRenderers.lib MgStylization.lib MgGwsCommon.lib MgGwsQueryEngine.lib xerces-c_3mg.lib dwfcore_wt.1.1.1.lib dwftk_wt.7.1.1.lib whiptk_wt.7.7.601.lib"
+				AdditionalDependencies="FDO.lib FDOCommon.lib FDOGeometry.lib ExpressionEngine.lib ACE.lib MgFoundation.lib MgGeometry.lib MgMdfModel.lib MgMdfParser.lib MgPlatformBase.lib MgRenderers.lib MgStylization.lib MgGwsCommon.lib MgGwsQueryEngine.lib xerces-c_3mg.lib dwfcore_wt.1.1.1.lib dwftk_wt.7.1.1.lib whiptk_wt.7.7.601.lib MgSecurity.lib"
 				OutputFile="$(OutDir)\$(ProjectName).dll"
 				LinkIncremental="1"
 				AdditionalLibraryDirectories="..\..\Oem\ACE\ACE_wrappers\lib;..\..\Oem\FDO\Lib;..\..\Oem\DWFTK7.1\develop\global\lib\static\release\vc8.0;&quot;..\..\Oem\dbxml\xerces-c-src\Build\Win32\VC9\Release&quot;;..\..\Common\lib\release;..\..\Server\lib\release"
@@ -300,7 +300,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="2"
 				EnableIntrinsicFunctions="true"
-				AdditionalIncludeDirectories="..\..\Common\Foundation;..\..\Common\PlatformBase;..\..\Common\Geometry;..\..\Common\MdfModel;..\..\Common\MdfParser;..\..\Oem\ACE\ACE_wrappers;&quot;..\..\Oem\dbxml\xerces-c-src\src&quot;;..\..\Oem\FDO\Inc;..\..\Oem\FDO\Inc\ExpressionEngine;..\..\Common\Renderers;..\..\Common\Stylization;..\..\Oem\DWFTK7.1\develop\global\src;..\..\Oem\DWFTK7.1\develop\global\src\dwf;..\..\Server\src\Gws\Include;..\..\Server\src\Gws\GwsCommon\inc;..\..\Server\src\Gws\GwsQueryEngine\inc"
+				AdditionalIncludeDirectories="..\..\Common\Foundation;..\..\Common\PlatformBase;..\..\Common\Geometry;..\..\Common\MdfModel;..\..\Common\MdfParser;..\..\Oem\ACE\ACE_wrappers;&quot;..\..\Oem\dbxml\xerces-c-src\src&quot;;..\..\Oem\FDO\Inc;..\..\Oem\FDO\Inc\ExpressionEngine;..\..\Common\Renderers;..\..\Common\Stylization;..\..\Oem\DWFTK7.1\develop\global\src;..\..\Oem\DWFTK7.1\develop\global\src\dwf;..\..\Server\src\Gws\Include;..\..\Server\src\Gws\GwsCommon\inc;..\..\Server\src\Gws\GwsQueryEngine\inc;..\..\Common\Security"
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;DESKTOP_EXPORTS;DWFCORE_STATIC;DWFTK_STATIC;DWFTK_USE_DWFCORE_ZLIB;DWFTK_BUILD_EXPAT;WHIP_STATIC_LIB"
 				ExceptionHandling="1"
 				RuntimeLibrary="2"
@@ -319,7 +319,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="FDO.lib FDOCommon.lib FDOGeometry.lib ExpressionEngine.lib ACE.lib MgFoundation.lib MgGeometry.lib MgMdfModel.lib MgMdfParser.lib MgPlatformBase.lib MgRenderers.lib MgStylization.lib MgGwsCommon.lib MgGwsQueryEngine.lib xerces-c_3mg.lib dwfcore_wt.1.1.1.lib dwftk_wt.7.1.1.lib whiptk_wt.7.7.601.lib"
+				AdditionalDependencies="FDO.lib FDOCommon.lib FDOGeometry.lib ExpressionEngine.lib ACE.lib MgFoundation.lib MgGeometry.lib MgMdfModel.lib MgMdfParser.lib MgPlatformBase.lib MgRenderers.lib MgStylization.lib MgGwsCommon.lib MgGwsQueryEngine.lib xerces-c_3mg.lib dwfcore_wt.1.1.1.lib dwftk_wt.7.1.1.lib whiptk_wt.7.7.601.lib MgSecurity.lib"
 				OutputFile="$(OutDir)\$(ProjectName).dll"
 				LinkIncremental="1"
 				AdditionalLibraryDirectories="..\..\Oem\ACE\ACE_wrappers\lib64;..\..\Oem\FDO\Lib64;..\..\Oem\DWFTK7.1\develop\global\lib\static\release64\vc8.0;&quot;..\..\Oem\dbxml\xerces-c-src\Build\x64\VC9\Release&quot;;..\..\Common\lib\release64;..\..\Server\lib\release64"

@@ -6,6 +6,7 @@
 #include "Services/Resource/UnmanagedDataManager.h"
 #include "ace/Dirent_Selector.h"
 #include "Services/Feature/FdoConnectionPool.h"
+#include "CryptographyUtil.h"
 
 static int MgDirEntrySelector(const ACE_DIRENT *d)
 {
@@ -561,6 +562,7 @@ void MgdResourceService::CopyResource(MgResourceIdentifier* sourceResource, MgRe
     }
     else
     {
+        ReleasePotentialLocks(destResource);
         if (!MgFileUtil::PathnameExists(dstContentDir))
             MgFileUtil::CreateDirectory(dstContentDir, false, true);
         MgFileUtil::CopyFile(srcContentPath, dstContentPath, overwrite);
@@ -698,6 +700,7 @@ void MgdResourceService::MoveResource(MgResourceIdentifier* sourceResource, MgRe
     }
     else
     {
+        ReleasePotentialLocks(destResource);
         if (!MgFileUtil::PathnameExists(dstContentDir))
             MgFileUtil::CreateDirectory(dstContentDir, false, true);
         MgFileUtil::CopyFile(srcContentPath, dstContentPath, overwrite);
@@ -730,7 +733,7 @@ void MgdResourceService::MoveResource(MgResourceIdentifier* sourceResource, MgRe
 
     // Successful operation
     MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Success.c_str());
-
+    
     MG_RESOURCE_SERVICE_CATCH(L"MgdResourceService::MoveResource")
 
     if (mgException != NULL)
@@ -1547,7 +1550,11 @@ MgByteReader* MgdResourceService::GetResourceContent(MgResourceIdentifier* resou
 
 MgByteReader* MgdResourceService::GetResourceData(MgResourceIdentifier* resource,
     CREFSTRING dataName, CREFSTRING preProcessTags) 
-{ 
+{
+    Ptr<MgByteReader> reader;
+
+    MG_RESOURCE_SERVICE_TRY()
+
 	CHECKARGUMENTNULL(resource, L"MgdResourceService::GetResourceData");
     if (!ResourceExists(resource))
     {
@@ -1565,10 +1572,64 @@ MgByteReader* MgdResourceService::GetResourceData(MgResourceIdentifier* resource
 	if (!MgFileUtil::IsFile(path))
 		throw new MgResourceDataNotFoundException(L"MgdResourceService::GetResourceData", __LINE__, __WFILE__, NULL, L"", NULL);
 
-	Ptr<MgByteReader> reader;
-	Ptr<MgByteSource> source = new MgByteSource(path);
-	reader = source->GetReader();
+	Ptr<MgByteSource> source;
+
+    //As per MapGuide Server behaviour, if request is for MG_USER_CREDENTIALS return the decrypted username only
+    if (dataName == MgResourceDataName::UserCredentials)
+    {
+        source = new MgByteSource(path);
+        reader = source->GetReader();
+        Ptr<MgByteSink> sink = new MgByteSink(reader);
+        std::string data;
+        sink->ToStringUtf8(data);
+
+        std::string mbUsername;
+        std::string mbPassword;
+        MgCryptographyUtil crypto;
+        crypto.DecryptCredentials(data, mbUsername, mbPassword);
+
+        source = NULL;
+        reader = NULL;
+        source = new MgByteSource((BYTE_ARRAY_IN)mbUsername.c_str(), mbUsername.length());
+        reader = source->GetReader();
+    }
+    else
+    {
+        source = new MgByteSource(path);
+	    reader = source->GetReader();
+    }
+
+    MG_RESOURCE_SERVICE_CATCH_AND_THROW(L"MgdResourceService::GetResourceData")
+
 	return reader.Detach();
+}
+
+MgByteReader* MgdResourceService::GetRawCredentials(MgResourceIdentifier* resource)
+{
+    Ptr<MgByteReader> blob;
+
+    MG_RESOURCE_SERVICE_TRY()
+
+    CHECKARGUMENTNULL(resource, L"MgdResourceService::GetResourceData");
+    if (!ResourceExists(resource))
+    {
+        MgStringCollection arguments;
+        arguments.Add(resource->ToString());
+        throw new MgResourceNotFoundException(L"MgdResourceService::GetResourceData", __LINE__, __WFILE__, &arguments, L"", NULL);
+    }
+
+    STRING path = ResolveDataPath(resource);
+    path += MgResourceDataName::UserCredentials;
+
+	if (!MgFileUtil::IsFile(path))
+		throw new MgResourceDataNotFoundException(L"MgdResourceService::GetResourceData", __LINE__, __WFILE__, NULL, L"", NULL);
+
+    Ptr<MgByteSource> source = new MgByteSource(path);
+    blob = source->GetReader();
+
+    MG_RESOURCE_SERVICE_CATCH_AND_THROW(L"MgdResourceService::GetRawCredentials")
+
+    return blob.Detach();
 }
 
 MgDateTime* MgdResourceService::GetResourceModifiedDate(MgResourceIdentifier* resource) 
@@ -1657,3 +1718,55 @@ MgByteReader* MgdResourceService::EnumerateUnmanagedData(CREFSTRING path, bool r
 
     return byteReader.Detach();
 };
+
+void MgdResourceService::SetResourceCredentials(MgResourceIdentifier* resource, CREFSTRING userName, CREFSTRING password)
+{
+    MG_LOG_OPERATION_MESSAGE(L"SetResourceCredentials");
+
+    MG_RESOURCE_SERVICE_TRY()
+
+    MG_LOG_OPERATION_MESSAGE_INIT(MG_API_VERSION(1, 0, 0), 3);
+    MG_LOG_OPERATION_MESSAGE_PARAMETERS_START();
+    MG_LOG_OPERATION_MESSAGE_ADD_STRING((NULL == resource) ? L"MgResourceIdentifier" : resource->ToString().c_str());
+    MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
+    MG_LOG_OPERATION_MESSAGE_ADD_STRING(userName.c_str());
+    MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
+    MG_LOG_OPERATION_MESSAGE_ADD_STRING(L"<Password>");
+    MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
+
+    MG_LOG_TRACE_ENTRY(L"MgdResourceService::SetResourceCredentials()");
+
+    std::string data;
+    std::string mgUsername = MgUtil::WideCharToMultiByte(userName);
+    std::string mgPassword = MgUtil::WideCharToMultiByte(password);
+    MgCryptographyUtil crypto;
+    crypto.EncryptCredentials(mgUsername, mgPassword, data);
+
+    Ptr<MgByteSource> bs = new MgByteSource((BYTE_ARRAY_IN)data.c_str(), data.length());
+    Ptr<MgByteReader> br = bs->GetReader();
+
+    //Invalidate any cached connections as they may use old credentials
+    if (resource->GetResourceType() == MgResourceType::FeatureSource)
+    {
+        MgFdoConnectionPool::PurgeCachedConnections(resource);
+    }
+
+    SetResourceData(resource, MgResourceDataName::UserCredentials, MgResourceDataType::File, br);
+
+    // Successful operation
+    MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Success.c_str());
+
+    MG_RESOURCE_SERVICE_CATCH(L"MgdResourceService::SetResourceCredentials")
+
+    if (mgException != NULL)
+    {
+        // Failed operation
+        MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Failure.c_str());
+        MG_DESKTOP_LOG_EXCEPTION();
+    }
+
+    // Add access log entry for operation
+    MG_LOG_OPERATION_MESSAGE_ACCESS_ENTRY();
+
+    MG_RESOURCE_SERVICE_THROW()
+}

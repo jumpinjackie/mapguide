@@ -5,6 +5,8 @@
 
 class MG_DESKTOP_API MgdResourceService : public MgResourceService
 {
+    friend class MgFdoConnectionUtil;
+
     DECLARE_CLASSNAME(MgdResourceService)
 
 INTERNAL_API:
@@ -62,6 +64,8 @@ PUBLISHED_API:
 
     virtual MgByteReader* EnumerateUnmanagedData(CREFSTRING path, bool recursive, CREFSTRING type, CREFSTRING filter);
 
+    void SetResourceCredentials(MgResourceIdentifier* resource, CREFSTRING userName, CREFSTRING password);
+
 INTERNAL_API:
     virtual MgByteReader* EnumerateResources(MgResourceIdentifier* resource,
         INT32 depth, CREFSTRING type, INT32 properties,
@@ -97,6 +101,7 @@ protected:
 	virtual void Dispose() { delete this; }
 
 private:
+    MgByteReader* GetRawCredentials(MgResourceIdentifier* resource);
     void ReleasePotentialLocks(MgResourceIdentifier* resource);
     static bool ListDirectories(MgStringCollection* directoryNames, CREFSTRING path);
     void WriteResourceFolderEntry(REFSTRING xml, INT32 maxDepth, STRING type, MgResourceIdentifier* resId, CREFSTRING enumeratedFolderId = L"");

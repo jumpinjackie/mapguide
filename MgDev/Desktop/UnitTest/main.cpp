@@ -24,6 +24,15 @@
 #endif
 */
 
+#define TEST_COORDINATE_SYSTEM  0
+#define TEST_LOG_MANAGER        1
+#define TEST_RESOURCE_SERVICE   1
+#define TEST_FEATURE_SERVICE    1
+#define TEST_MAPPING_SERVICE    1
+#define TEST_PROFILING_SERVICE  1
+#define TEST_RENDERING_SERVICE  1
+#define TEST_TILE_SERVICE       1
+
 int main(int argc, char** argv)
 {
 /*
@@ -58,23 +67,38 @@ int main(int argc, char** argv)
 
     // Add all of the tests
     //NOTE: Leave trace log off, otherwise one of the tests here will fail
+#if TEST_LOG_MANAGER == 1
     runner.addTest(CppUnit::TestFactoryRegistry::getRegistry("TestLogManager").makeTest());
+#endif
 #ifdef _DEBUG
     ACE_DEBUG((LM_INFO, ACE_TEXT(">>>>> Running all unit tests - Excluding Performance and CoordinateSystem. <<<<<\n\n")));
 #else
     ACE_DEBUG((LM_INFO, ACE_TEXT(">>>>> Running all unit tests - Excluding Performance. <<<<<\n\n")));
-    //runner.addTest(CppUnit::TestFactoryRegistry::getRegistry("TestCoordinateSystem").makeTest());
+    #if TEST_COORDINATE_SYSTEM == 1
+    runner.addTest(CppUnit::TestFactoryRegistry::getRegistry("TestCoordinateSystem").makeTest());
+    #endif
 #endif
+#if TEST_RESOURCE_SERVICE == 1
     runner.addTest(CppUnit::TestFactoryRegistry::getRegistry("TestResourceService").makeTest());
+#endif
+#if TEST_RENDERING_SERVICE == 1
     runner.addTest(CppUnit::TestFactoryRegistry::getRegistry("TestRenderingService").makeTest());
+#endif
+#if TEST_FEATURE_SERVICE == 1
     runner.addTest(CppUnit::TestFactoryRegistry::getRegistry("TestFeatureService").makeTest());
+#endif
+#if TEST_MAPPING_SERVICE == 1
     runner.addTest(CppUnit::TestFactoryRegistry::getRegistry("TestMappingService").makeTest());
+#endif
+#if TEST_PROFILING_SERVICE == 1
 	runner.addTest(CppUnit::TestFactoryRegistry::getRegistry("TestProfilingService").makeTest());
-    
+#endif
+#if TEST_TILE_SERVICE == 1
     //This causes access violations in Visual Leak Detector when run in debug mode. Only uncommment
     //to verify functionality, but don't use VLD for memory leak detection. Seek an alternate tool/library
     //in this case.
     runner.addTest(CppUnit::TestFactoryRegistry::getRegistry("TestTileService").makeTest());
+#endif
 
     STRING fileName = L"UnitTestResults.xml";
     if (fileName.size() > 0)

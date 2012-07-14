@@ -3,6 +3,7 @@
 #include "Fdo.h"
 #include "FeatureServiceCache.h"
 #include "Services/Resource/UnmanagedDataManager.h"
+#include "CryptographyUtil.h"
 
 FdoIConnection* MgFdoConnectionUtil::CreateConnection(CREFSTRING providerName, CREFSTRING connectionString)
 {
@@ -76,6 +77,33 @@ FdoIConnection* MgFdoConnectionUtil::CreateConnection(MgResourceIdentifier* reso
 	FdoPtr<FdoIConnectionInfo> connInfo = conn->GetConnectionInfo();
 	FdoPtr<FdoIConnectionPropertyDictionary> dict = connInfo->GetConnectionProperties();
 
+    STRING username;
+    STRING password;
+
+    Ptr<MgByteReader> resData = resSvc->EnumerateResourceData(resource);
+    Ptr<MgByteSink> sink = new MgByteSink(resData);
+    STRING resDataXml;
+    sink->ToString(resDataXml);
+
+    if (resDataXml.find(MgResourceDataName::UserCredentials) != STRING::npos)
+    {
+        Ptr<MgByteReader> blob = resSvc->GetRawCredentials(resource);
+        if (NULL != blob.p)
+        {
+            Ptr<MgByteSink> credSink = new MgByteSink(blob);
+            std::string credentials;
+            credSink->ToStringUtf8(credentials);
+
+            MgCryptographyUtil crypto;
+            std::string mbUsername;
+            std::string mbPassword;
+            crypto.DecryptCredentials(credentials, mbUsername, mbPassword);
+
+            username = MgUtil::MultiByteToWideChar(mbUsername);
+            password = MgUtil::MultiByteToWideChar(mbPassword);
+        }
+    }
+
 	MdfModel::NameStringPairCollection* params = fs->GetParameters();
 	for (INT32 i = 0; i < params->GetCount(); i++)
 	{
@@ -85,7 +113,7 @@ FdoIConnection* MgFdoConnectionUtil::CreateConnection(MgResourceIdentifier* reso
         STRING v = pair->GetValue();
 
         //Perform tag substitution if found
-        PerformTagSubstitution(resSvc, v, resource);
+        PerformTagSubstitution(resSvc, v, resource, username, password);
 
 		dict->SetProperty(n.c_str(), v.c_str());
 	}
@@ -132,16 +160,29 @@ FdoIConnection* MgFdoConnectionUtil::CreateConnection(MgResourceIdentifier* reso
 	return conn.Detach();
 }
 
-void MgFdoConnectionUtil::PerformTagSubstitution(MgdResourceService* resSvc, REFSTRING str, MgResourceIdentifier* resource)
+void MgFdoConnectionUtil::PerformTagSubstitution(MgdResourceService* resSvc, REFSTRING str, MgResourceIdentifier* resource, CREFSTRING username, CREFSTRING password)
 {
-    STRING dataToken = L"%MG_DATA_FILE_PATH%";
-    const int pos = str.find(dataToken);
-    if (pos >= 0)
+    const int dataTokenPos = str.find(MgResourceTag::DataFilePath);
+    const int dataAliasPos = str.find(MgResourceTag::DataPathAliasBegin);
+    const int usernamePos = str.find(MgResourceTag::Username);
+    const int passwordPos = str.find(MgResourceTag::Password);
+    if (dataTokenPos != STRING::npos)
     {
         STRING dataPath = resSvc->ResolveDataPath(resource);
-        str.replace(pos, dataToken.size(), dataPath);
+        str.replace(dataTokenPos, MgResourceTag::DataFilePath.size(), dataPath);
     }
-    MgUnmanagedDataManager::SubstituteDataPathAliases(str);
+    else if (dataAliasPos != STRING::npos)
+    {
+        MgUnmanagedDataManager::SubstituteDataPathAliases(str);
+    }
+    else if (usernamePos != STRING::npos && !username.empty())
+    {
+        str.replace(usernamePos, MgResourceTag::Username.size(), username);
+    }
+    else if (passwordPos != STRING::npos && !password.empty())
+    {
+        str.replace(passwordPos, MgResourceTag::Password.size(), password);
+    }
 }
 
 STRING MgFdoConnectionUtil::ParseNonQualifiedProviderName(CREFSTRING providerName)
