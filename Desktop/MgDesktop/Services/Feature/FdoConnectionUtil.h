@@ -20,7 +20,7 @@ public:
     static MdfModel::FeatureSource* GetFeatureSource(MgResourceIdentifier* resource);
 
 private:
-    static void PerformTagSubstitution(MgdResourceService* resSvc, REFSTRING str, MgResourceIdentifier* resource);
+    static void PerformTagSubstitution(MgdResourceService* resSvc, REFSTRING str, MgResourceIdentifier* resource, CREFSTRING username = L"", CREFSTRING password = L"");
     static STRING ParseNonQualifiedProviderName(CREFSTRING providerName);
 
     //Creates a connection by feature source ID. Any tag and aliases present in the connection parameters

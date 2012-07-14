@@ -52,7 +52,12 @@ void TestFeatureService::TestStart()
         Ptr<MgResourceService> pService = dynamic_cast<MgResourceService*>(fact->CreateService(MgServiceType::ResourceService));
         if (pService == 0)
         {
-            throw new MgServiceNotAvailableException(L"TestResourceService.setUp", __LINE__, __WFILE__, NULL, L"", NULL);
+            throw new MgServiceNotAvailableException(L"TestFeatureService.TestStart", __LINE__, __WFILE__, NULL, L"", NULL);
+        }
+        Ptr<MgdFeatureService> featSvc = dynamic_cast<MgdFeatureService*>(fact->CreateService(MgServiceType::FeatureService));
+        if (featSvc == 0)
+        {
+            throw new MgServiceNotAvailableException(L"TestFeatureService.TestStart", __LINE__, __WFILE__, NULL, L"", NULL);
         }
 
         // publish the map definition
@@ -83,6 +88,7 @@ void TestFeatureService::TestStart()
         MgResourceIdentifier resourceIdentifier6(L"Library://UnitTests/Data/Empty.FeatureSource");
         MgResourceIdentifier resourceIdentifier7(L"Library://UnitTests/Data/Sheboygan_Parcels_Writable.FeatureSource");
         MgResourceIdentifier resourceIdentifier8(L"Library://UnitTests/Data/FdoJoin.FeatureSource");
+        MgResourceIdentifier resourceIdentifier9(L"Library://UnitTests/Data/SecuredCredentials.FeatureSource");
 #ifdef _WIN32
         STRING resourceContentFileName1 = L"..\\UnitTestFiles\\Sheboygan_Parcels.FeatureSource";
         STRING resourceContentFileName2 = L"..\\UnitTestFiles\\Redding_Parcels.FeatureSource";
@@ -92,6 +98,7 @@ void TestFeatureService::TestStart()
         STRING resourceContentFileName6=  L"..\\UnitTestFiles\\Empty.FeatureSource";
         STRING resourceContentFileName7=  L"..\\UnitTestFiles\\Sheboygan_Parcels_Writable.FeatureSource";
         STRING resourceContentFileName8=  L"..\\UnitTestFiles\\UT_FdoJoin.FeatureSource";
+        STRING resourceContentFileName9=  L"..\\UnitTestFiles\\SecuredCredentials.fs";
         STRING dataFileName1 = L"..\\UnitTestFiles\\Sheboygan_Parcels.sdf";
         STRING dataFileName2 = L"..\\UnitTestFiles\\Redding_Parcels.shp";
         STRING dataFileName3 = L"..\\UnitTestFiles\\Redding_Parcels.dbf";
@@ -109,6 +116,7 @@ void TestFeatureService::TestStart()
         STRING resourceContentFileName6 = L"../UnitTestFiles/Empty.FeatureSource";
         STRING resourceContentFileName7=  L"../UnitTestFiles/Sheboygan_Parcels_Writable.FeatureSource";
         STRING resourceContentFileName8=  L"../UnitTestFiles/UT_FdoJoin.FeatureSource";
+        STRING resourceContentFileName9=  L"../UnitTestFiles/SecuredCredentials.fs";
         STRING dataFileName1 = L"../UnitTestFiles/Sheboygan_Parcels.sdf";
         STRING dataFileName2 = L"../UnitTestFiles/Redding_Parcels.shp";
         STRING dataFileName3 = L"../UnitTestFiles/Redding_Parcels.dbf";
@@ -151,6 +159,10 @@ void TestFeatureService::TestStart()
         Ptr<MgByteSource> contentSource8 = new MgByteSource(resourceContentFileName8);
         Ptr<MgByteReader> contentReader8 = contentSource8->GetReader();
         pService->SetResource(&resourceIdentifier8, contentReader8, NULL);
+
+        Ptr<MgByteSource> contentSource9 = new MgByteSource(resourceContentFileName9);
+        Ptr<MgByteReader> contentReader9 = contentSource9->GetReader();
+        pService->SetResource(&resourceIdentifier9, contentReader9, NULL);
 
         //Set the resource data
         Ptr<MgByteSource> dataSource1 = new MgByteSource(dataFileName1);
@@ -299,6 +311,9 @@ void TestFeatureService::TestEnd()
         Ptr<MgResourceIdentifier> fsres8 = new MgResourceIdentifier(L"Library://UnitTests/Data/FdoJoin.FeatureSource");
         pService->DeleteResource(fsres8);
         
+        Ptr<MgResourceIdentifier> fsres9 = new MgResourceIdentifier(L"Library://UnitTests/Data/SecuredCredentials.FeatureSource");
+        pService->DeleteResource(fsres9);
+
         //Ptr<MgResourceIdentifier> folder = new MgResourceIdentifier(L"Library://UnitTests/");
         //pService->DeleteResource(folder);
     }
@@ -2939,7 +2954,6 @@ void TestFeatureService::TestCase_CreateFeatureSource()
     }
 }
 
-/*
 ///----------------------------------------------------------------------------
 /// Test Case Description:
 ///
@@ -2951,7 +2965,8 @@ void TestFeatureService::TestCase_BenchmarkSelectFeatures()
     {
         ACE_DEBUG((LM_INFO, ACE_TEXT("\nTestFeatureService::TestCase_BenchmarkSelectFeatures() - Start\n")));
 
-        Ptr<MgFeatureService> pService = MgServiceFactory::CreateFeatureService();
+        Ptr<MgServiceFactory> factory = new MgServiceFactory();
+        Ptr<MgFeatureService> pService = dynamic_cast<MgFeatureService*>(factory->CreateService(MgServiceType::FeatureService));
         if (pService == 0)
         {
             throw new MgServiceNotAvailableException(L"TestFeatureService.TestCase_BenchmarkSelectFeatures", __LINE__, __WFILE__, NULL, L"", NULL);
@@ -3002,7 +3017,90 @@ void TestFeatureService::TestCase_BenchmarkSelectFeatures()
     {
         throw;
     }
-}*/
+}
+
+void TestFeatureService::TestCase_SecuredCredentials()
+{
+    //This test requires SQL Server express with a MgUnitTest database created.
+    //Once these requirements are met, fill in the required SQL Server credentials here
+    STRING username = L"";
+    STRING password = L"";
+    try
+    {
+        Ptr<MgServiceFactory> factory = new MgServiceFactory();
+        Ptr<MgFeatureService> featSvc = dynamic_cast<MgFeatureService*>(factory->CreateService(MgServiceType::FeatureService));
+        if (featSvc == 0)
+        {
+            throw new MgServiceNotAvailableException(L"TestFeatureService.TestCase_SecuredCredentials", __LINE__, __WFILE__, NULL, L"", NULL);
+        }
+        Ptr<MgdResourceService> resSvc = dynamic_cast<MgdResourceService*>(factory->CreateService(MgServiceType::ResourceService));
+        if (resSvc == 0)
+        {
+            throw new MgServiceNotAvailableException(L"TestFeatureService.TestCase_SecuredCredentials", __LINE__, __WFILE__, NULL, L"", NULL);
+        }
+        
+        Ptr<MgResourceIdentifier> fsId = new MgResourceIdentifier(L"Library://UnitTests/Data/SecuredCredentials.FeatureSource");
+        //Test as-is, this should be bad (false or exception, just as long as it is not true)
+        try
+        {
+            bool bResult = featSvc->TestConnection(fsId);
+            CPPUNIT_ASSERT(false == bResult);
+        }
+        catch (MgFdoException* ex)
+        {
+            SAFE_RELEASE(ex);
+        }
+
+        //Now apply credentials
+        resSvc->SetResourceCredentials(fsId, username, password);
+        CPPUNIT_ASSERT(true == featSvc->TestConnection(fsId));
+
+        //Now apply bad credentials
+        username = L"foo";
+        password = L"bar";
+        resSvc->SetResourceCredentials(fsId, username, password);
+        //this should be bad (false or exception, just as long as it is not true)
+        try
+        {
+            bool bResult = featSvc->TestConnection(fsId);
+            CPPUNIT_ASSERT(false == bResult);
+        }
+        catch (MgFdoException* ex)
+        {
+            SAFE_RELEASE(ex);
+        }
+
+        //Try again without MG_USER_CREDENTIALS
+        resSvc->DeleteResourceData(fsId, MgResourceDataName::UserCredentials);
+        //this should be bad (false or exception, just as long as it is not true)
+        try
+        {
+            bool bResult = featSvc->TestConnection(fsId);
+            CPPUNIT_ASSERT(false == bResult);
+        }
+        catch (MgFdoException* ex)
+        {
+            SAFE_RELEASE(ex);
+        }
+    }
+    catch(MgException* e)
+    {
+        STRING message = e->GetDetails(TEST_LOCALE);
+        SAFE_RELEASE(e);
+        CPPUNIT_FAIL(MG_WCHAR_TO_CHAR(message.c_str()));
+    }
+    catch(FdoException* e)
+    {
+        STRING message = L"FdoException occurred: ";
+        message += e->GetExceptionMessage();
+        FDO_SAFE_RELEASE(e);
+        CPPUNIT_FAIL(MG_WCHAR_TO_CHAR(message.c_str()));
+    }
+    catch(...)
+    {
+        throw;
+    }
+}
 
 MgdMap* TestFeatureService::CreateTestMap()
 {

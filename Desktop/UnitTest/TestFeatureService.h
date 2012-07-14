@@ -58,9 +58,10 @@ class TestFeatureService : public CppUnit::TestFixture
     //Our sortability check has broken this for some reason
     CPPUNIT_TEST(TestCase_JoinFeaturesChainedInner1ToMany);
     CPPUNIT_TEST(TestCase_JoinFdoFeatures);
-    //CPPUNIT_TEST(TestCase_BenchmarkSelectFeatures);
+    CPPUNIT_TEST(TestCase_BenchmarkSelectFeatures);
     //CPPUNIT_TEST(TestCase_ConcurrentAccess);
 
+    //CPPUNIT_TEST(TestCase_SecuredCredentials);
     CPPUNIT_TEST(TestCase_LayerInsertFeatures);
     CPPUNIT_TEST(TestCase_LayerUpdateFeatures);
     CPPUNIT_TEST(TestCase_LayerDeleteFeatures);
@@ -114,7 +115,7 @@ public:
     void TestCase_JoinFeaturesChainedInner1ToMany();
     void TestCase_JoinFdoFeatures();
     void TestCase_CreateFeatureSource();
-    //void TestCase_BenchmarkSelectFeatures();
+    void TestCase_BenchmarkSelectFeatures();
     //void TestCase_ConcurrentAccess();
 
     void TestCase_BenchmarkSdfJoin();
@@ -124,6 +125,7 @@ public:
     void TestCase_BenchmarkNestedLoopsSortedBlockJoin();
     void TestCase_BenchmarkNestedLoopsJoin();
 
+    void TestCase_SecuredCredentials();
     void TestCase_LayerInsertFeatures();
     void TestCase_LayerUpdateFeatures();
     void TestCase_LayerDeleteFeatures();
