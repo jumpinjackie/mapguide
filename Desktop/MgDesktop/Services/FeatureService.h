@@ -273,6 +273,14 @@ private:
 											bool withLock,
                                             bool asScrollable);
 
+    MgDataReader* SelectAggregateNormal(MgFeatureConnection* conn,
+                                        CREFSTRING className,
+                                        MgFeatureAggregateOptions* options);
+
+    MgDataReader* SelectAggregateJoined(MgFeatureConnection* conn,
+                                        CREFSTRING className,
+                                        MgFeatureAggregateOptions* options);
+
 	bool ContainsUdf(MgFeatureConnection* conn, FdoExpression* expression);
 	bool IsCustomFunction(FdoFunction* fdoFunc);
 	MgReader* GetCustomReader(MgReader* reader, FdoFunction* customFunc, CREFSTRING propertyName);

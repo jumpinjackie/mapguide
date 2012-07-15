@@ -3757,132 +3757,11 @@ MgDataReader* MgdFeatureService::SelectAggregate(MgResourceIdentifier* resource,
         throw new MgInvalidArgumentException(L"MgdFeatureService::SelectAggregate", __LINE__, __WFILE__, NULL, L"", NULL);
 
     Ptr<MgFeatureConnection> connWrap = new MgFeatureConnection(resource);
-    {
-        FdoPtr<FdoIConnection> conn = connWrap->GetConnection();
-
-        FdoPtr<FdoISelectAggregates> select = (FdoISelectAggregates*)conn->CreateCommand(FdoCommandType_SelectAggregates);
-        select->SetFeatureClassName(className.c_str());
-
-        STRING filter = options->GetFilter();
-        if (!filter.empty())
-	        select->SetFilter(filter.c_str());
-
-        Ptr<MgStringCollection> props = options->GetClassProperties();
-        Ptr<MgStringPropertyCollection> computed = options->GetComputedProperties();
-
-        INT32 propCount = props->GetCount();
-        INT32 compCount = computed->GetCount();
-		
-		bool bCustomPropertyFound = false;
-		FdoFunction* customFunc = NULL;
-		STRING customPropName;
-
-        FdoPtr<FdoIdentifierCollection> fdoProps = select->GetPropertyNames();
-        if (propCount > 0)
-        {
-	        for (INT32 i = 0; i < propCount; i++)
-	        {
-		        FdoPtr<FdoIdentifier> name = FdoIdentifier::Create(props->GetItem(i).c_str());
-		        fdoProps->Add(name);
-	        }
-        }
-        if (compCount > 0)
-        {
-	        for (INT32 i = 0; i < compCount; i++)
-	        {
-		        Ptr<MgStringProperty> comp = computed->GetItem(i);
-				STRING aliasName = comp->GetName();
-		        FdoPtr<FdoExpression> expr = FdoExpression::Parse(comp->GetValue().c_str());
-		        
-				if (ContainsUdf(connWrap, expr))
-				{
-					// If property is already found, two custom properties are not supported and therefore throw exception
-					if (bCustomPropertyFound)
-					{
-						STRING message = MgFeatureUtil::GetMessage(L"MgOnlyOnePropertyAllowed");
-
-						MgStringCollection arguments;
-						arguments.Add(message);
-						throw new MgFeatureServiceException(L"MgdFeatureService::SelectAggregate", __LINE__, __WFILE__, &arguments, L"", NULL);
-					}
-
-					// Downcast to FdoFunction
-					FdoFunction* function = dynamic_cast<FdoFunction*>(expr.p);
-
-					if (function != NULL)
-					{
-						FdoString* expName = aliasName.c_str();
-						if (expName != NULL)
-						{
-							FdoPtr<FdoExpressionCollection> exprCol = function->GetArguments();
-							FdoInt32 cnt = exprCol->GetCount();
-							FdoPtr<FdoExpression> expr;
-							if (cnt > 0)
-							{
-								expr = exprCol->GetItem(0);   // Property Name
-							}
-
-							// Just pass in the property name
-							// FdoPtr<FdoComputedIdentifier> fdoIden = FdoComputedIdentifier::Create(expName, expr);
-
-							// NOTE: Each provider has its own rule for supporting computed properties, select and select aggregate
-							// functionality. Therefore we just work with simple select command, fetch the property and do the needed
-							// calculations. Therefore, we are not adding them as computed properties.
-
-							FdoIdentifier* propName = dynamic_cast<FdoIdentifier*>(expr.p);
-
-							if (propName != NULL)
-								fdoProps->Add(propName);
-
-							customPropName = aliasName;
-							bCustomPropertyFound = true;
-							customFunc = FDO_SAFE_ADDREF(function);
-						}
-					}
-				}
-				else
-				{
-					FdoPtr<FdoComputedIdentifier> name = FdoComputedIdentifier::Create(comp->GetName().c_str(), expr);
-					fdoProps->Add(name);
-				}
-	        }
-        }
-
-        if (options->GetDistinct())
-	        select->SetDistinct(true);
-
-        STRING groupFilter = options->GetGroupFilter();
-        if (!groupFilter.empty())
-        {
-	        FdoPtr<FdoFilter> grpFilter = FdoFilter::Parse(groupFilter.c_str());
-	        select->SetGroupingFilter(grpFilter);
-        }
-        FdoPtr<FdoIdentifierCollection> fdoGroupBy = select->GetGrouping();
-        Ptr<MgStringCollection> mgGroupBy = options->GetGroupingProperties();
-        if (NULL != mgGroupBy && mgGroupBy->GetCount() > 0)
-        {
-	        for (INT32 i = 0; i < mgGroupBy->GetCount(); i++)
-	        {
-		        STRING name = mgGroupBy->GetItem(i);
-		        FdoPtr<FdoIdentifier> fdoId = FdoIdentifier::Create(name.c_str());
-
-		        fdoGroupBy->Add(fdoId);
-	        }
-        }
-
-        FdoPtr<FdoIDataReader> fdoReader = select->Execute();
-		if (bCustomPropertyFound) 
-		{
-			Ptr<MgReader> origReader = new MgdDataReader(connWrap, fdoReader);
-			Ptr<MgDataReader> customReader = dynamic_cast<MgDataReader*>(this->GetCustomReader(origReader, customFunc, customPropName));
-			origReader->Close();
-			reader = customReader;
-		}
-		else
-		{
-			reader = new MgdDataReader(connWrap, fdoReader);
-		}
-    }
+    bool bFeatureJoin = FindFeatureJoinProperties(resource, className);
+    if (bFeatureJoin)
+        reader = SelectAggregateJoined(connWrap, className, options);
+    else
+        reader = SelectAggregateNormal(connWrap, className, options);
 
     // Successful operation
     MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Success.c_str());
@@ -3902,6 +3781,156 @@ MgDataReader* MgdFeatureService::SelectAggregate(MgResourceIdentifier* resource,
     MG_FEATURE_SERVICE_THROW()
 
 	return reader.Detach();
+}
+
+MgDataReader* MgdFeatureService::SelectAggregateNormal(MgFeatureConnection* connWrap, CREFSTRING className, MgFeatureAggregateOptions* options)
+{
+    Ptr<MgDataReader> reader;
+    MG_FEATURE_SERVICE_TRY()
+    
+    CHECKNULL(options, L"MgdFeatureService::SelectAggregateNormal");
+    CHECKNULL(connWrap, L"MgdFeatureService::SelectAggregateNormal");
+    FdoPtr<FdoIConnection> conn = connWrap->GetConnection();
+
+    FdoPtr<FdoISelectAggregates> select = (FdoISelectAggregates*)conn->CreateCommand(FdoCommandType_SelectAggregates);
+    select->SetFeatureClassName(className.c_str());
+
+    STRING filter = options->GetFilter();
+    if (!filter.empty())
+        select->SetFilter(filter.c_str());
+
+    Ptr<MgStringCollection> props = options->GetClassProperties();
+    Ptr<MgStringPropertyCollection> computed = options->GetComputedProperties();
+
+    INT32 propCount = props->GetCount();
+    INT32 compCount = computed->GetCount();
+	
+    bool bCustomPropertyFound = false;
+    FdoFunction* customFunc = NULL;
+    STRING customPropName;
+
+    FdoPtr<FdoIdentifierCollection> fdoProps = select->GetPropertyNames();
+    if (propCount > 0)
+    {
+        for (INT32 i = 0; i < propCount; i++)
+        {
+            FdoPtr<FdoIdentifier> name = FdoIdentifier::Create(props->GetItem(i).c_str());
+            fdoProps->Add(name);
+        }
+    }
+    if (compCount > 0)
+    {
+        for (INT32 i = 0; i < compCount; i++)
+        {
+            Ptr<MgStringProperty> comp = computed->GetItem(i);
+		    STRING aliasName = comp->GetName();
+            FdoPtr<FdoExpression> expr = FdoExpression::Parse(comp->GetValue().c_str());
+	        
+		    if (ContainsUdf(connWrap, expr))
+		    {
+			    // If property is already found, two custom properties are not supported and therefore throw exception
+			    if (bCustomPropertyFound)
+			    {
+				    STRING message = MgFeatureUtil::GetMessage(L"MgOnlyOnePropertyAllowed");
+
+				    MgStringCollection arguments;
+				    arguments.Add(message);
+				    throw new MgFeatureServiceException(L"MgdFeatureService::SelectAggregate", __LINE__, __WFILE__, &arguments, L"", NULL);
+			    }
+
+			    // Downcast to FdoFunction
+			    FdoFunction* function = dynamic_cast<FdoFunction*>(expr.p);
+
+			    if (function != NULL)
+			    {
+				    FdoString* expName = aliasName.c_str();
+				    if (expName != NULL)
+				    {
+					    FdoPtr<FdoExpressionCollection> exprCol = function->GetArguments();
+					    FdoInt32 cnt = exprCol->GetCount();
+					    FdoPtr<FdoExpression> expr;
+					    if (cnt > 0)
+					    {
+						    expr = exprCol->GetItem(0);   // Property Name
+					    }
+
+					    // Just pass in the property name
+					    // FdoPtr<FdoComputedIdentifier> fdoIden = FdoComputedIdentifier::Create(expName, expr);
+
+					    // NOTE: Each provider has its own rule for supporting computed properties, select and select aggregate
+					    // functionality. Therefore we just work with simple select command, fetch the property and do the needed
+					    // calculations. Therefore, we are not adding them as computed properties.
+
+					    FdoIdentifier* propName = dynamic_cast<FdoIdentifier*>(expr.p);
+
+					    if (propName != NULL)
+						    fdoProps->Add(propName);
+
+					    customPropName = aliasName;
+					    bCustomPropertyFound = true;
+					    customFunc = FDO_SAFE_ADDREF(function);
+				    }
+			    }
+		    }
+		    else
+		    {
+			    FdoPtr<FdoComputedIdentifier> name = FdoComputedIdentifier::Create(comp->GetName().c_str(), expr);
+			    fdoProps->Add(name);
+		    }
+        }
+    }
+
+    if (options->GetDistinct())
+        select->SetDistinct(true);
+
+    STRING groupFilter = options->GetGroupFilter();
+    if (!groupFilter.empty())
+    {
+        FdoPtr<FdoFilter> grpFilter = FdoFilter::Parse(groupFilter.c_str());
+        select->SetGroupingFilter(grpFilter);
+    }
+    FdoPtr<FdoIdentifierCollection> fdoGroupBy = select->GetGrouping();
+    Ptr<MgStringCollection> mgGroupBy = options->GetGroupingProperties();
+    if (NULL != mgGroupBy && mgGroupBy->GetCount() > 0)
+    {
+        for (INT32 i = 0; i < mgGroupBy->GetCount(); i++)
+        {
+            STRING name = mgGroupBy->GetItem(i);
+            FdoPtr<FdoIdentifier> fdoId = FdoIdentifier::Create(name.c_str());
+
+            fdoGroupBy->Add(fdoId);
+        }
+    }
+
+    FdoPtr<FdoIDataReader> fdoReader = select->Execute();
+    if (bCustomPropertyFound) 
+    {
+	    Ptr<MgReader> origReader = new MgdDataReader(connWrap, fdoReader);
+	    Ptr<MgDataReader> customReader = dynamic_cast<MgDataReader*>(this->GetCustomReader(origReader, customFunc, customPropName));
+	    origReader->Close();
+	    reader = customReader;
+    }
+    else
+    {
+	    reader = new MgdDataReader(connWrap, fdoReader);
+    }
+
+    MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgdFeatureService::SelectAggregateNormal")
+
+    return reader.Detach();
+}
+
+MgDataReader* MgdFeatureService::SelectAggregateJoined(MgFeatureConnection* connWrap, CREFSTRING className, MgFeatureAggregateOptions* options)
+{
+    Ptr<MgDataReader> reader;
+
+    MG_FEATURE_SERVICE_TRY()
+
+    NOT_IMPLEMENTED(L"MgdFeatureService::SelectAggregateJoined");
+
+    MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgdFeatureService::SelectAggregateJoined")
+
+    return reader.Detach();
 }
 
 // Convert reader into a custom MgDataReader
