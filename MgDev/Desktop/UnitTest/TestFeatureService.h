@@ -68,6 +68,7 @@ class TestFeatureService : public CppUnit::TestFixture
     CPPUNIT_TEST(TestCase_LayerSelectScrollable);
 
     CPPUNIT_TEST(TestCase_BenchmarkSqliteJoin);
+    CPPUNIT_TEST(TestCase_BenchmarkSqliteAggregateJoin);
     CPPUNIT_TEST(TestCase_BenchmarkSdfJoin);
     CPPUNIT_TEST(TestCase_BenchmarkMergeSortJoin);
     CPPUNIT_TEST(TestCase_BenchmarkBatchSortedBlockJoin);
@@ -120,6 +121,7 @@ public:
 
     void TestCase_BenchmarkSdfJoin();
     void TestCase_BenchmarkSqliteJoin();
+    void TestCase_BenchmarkSqliteAggregateJoin();
     void TestCase_BenchmarkMergeSortJoin();
     void TestCase_BenchmarkBatchSortedBlockJoin();
     void TestCase_BenchmarkNestedLoopsSortedBlockJoin();
