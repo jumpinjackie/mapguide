@@ -115,6 +115,7 @@ public:
     static MgClassDefinition* CloneMgClassDefinition(MgClassDefinition* classDef);
     static MgFeatureSchema* CloneMgSchema(MgFeatureSchema* schema);
     static void UpdateFdoPropertyValue(FdoPropertyValue* fp, MgProperty* prop);
+    static FdoIdentifierCollection* ExtractIdentifiers(FdoExpression* expr);
 private:
     static bool Initialize();
 
