@@ -25,11 +25,11 @@
 
 class MgFeatureConnection;
 
-class MgServerSqlCommand
+class MgSqlCommand
 {
 public:
-    MgServerSqlCommand();
-    ~MgServerSqlCommand();
+    MgSqlCommand();
+    ~MgSqlCommand();
     MgSqlDataReader* ExecuteQuery(
                         MgResourceIdentifier* resource,
                         CREFSTRING sqlStatement,

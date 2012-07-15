@@ -22,24 +22,24 @@
 #include "Services/Feature/FeatureServiceCache.h"
 
 //////////////////////////////////////////////////////////////////
-MgServerApplySchema::MgServerApplySchema()
+MgApplySchema::MgApplySchema()
 {
 }
 
 //////////////////////////////////////////////////////////////////
-MgServerApplySchema::~MgServerApplySchema()
+MgApplySchema::~MgApplySchema()
 {
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-void MgServerApplySchema::ApplySchema(MgResourceIdentifier* resource,
+void MgApplySchema::ApplySchema(MgResourceIdentifier* resource,
     MgFeatureSchema* schema)
 {
     MG_FEATURE_SERVICE_TRY()
 
     if (NULL == resource || NULL == schema)
     {
-        throw new MgNullArgumentException(L"MgServerApplySchema.ApplySchema", __LINE__, __WFILE__, NULL, L"", NULL);
+        throw new MgNullArgumentException(L"MgApplySchema.ApplySchema", __LINE__, __WFILE__, NULL, L"", NULL);
     }
 
     // Connect to provider
@@ -57,17 +57,17 @@ void MgServerApplySchema::ApplySchema(MgResourceIdentifier* resource,
         {
             // TODO: specify which argument and message, once we have the mechanism
             STRING message = MgFeatureUtil::GetMessage(L"MgCommandNotSupported");
-            throw new MgInvalidOperationException(L"MgServerApplySchema.ApplySchema", __LINE__, __WFILE__, NULL, L"", NULL);
+            throw new MgInvalidOperationException(L"MgApplySchema.ApplySchema", __LINE__, __WFILE__, NULL, L"", NULL);
         }
 
         FdoPtr<FdoIDescribeSchema> fdoDecribeSchemaCmd = (FdoIDescribeSchema*) fdoConn->CreateCommand(FdoCommandType_DescribeSchema);
-        CHECKNULL((FdoIDescribeSchema*)fdoDecribeSchemaCmd, L"MgServerApplySchema.ApplySchema");
+        CHECKNULL((FdoIDescribeSchema*)fdoDecribeSchemaCmd, L"MgApplySchema.ApplySchema");
 
         FdoPtr<FdoFeatureSchemaCollection> schemas = fdoDecribeSchemaCmd->Execute();
-        CHECKNULL((FdoFeatureSchemaCollection*)schemas, L"MgServerApplySchema.ApplySchema");
+        CHECKNULL((FdoFeatureSchemaCollection*)schemas, L"MgApplySchema.ApplySchema");
 
         FdoPtr<FdoIApplySchema> fdoApplySchemaCmd = (FdoIApplySchema*)fdoConn->CreateCommand(FdoCommandType_ApplySchema);
-        CHECKNULL((FdoIApplySchema*)fdoApplySchemaCmd, L"MgServerApplySchema.ApplySchema");
+        CHECKNULL((FdoIApplySchema*)fdoApplySchemaCmd, L"MgApplySchema.ApplySchema");
 
         STRING schemaName = schema->GetName();
         FdoPtr<FdoFeatureSchema> fdoOldSchema = schemas->FindItem(schemaName.c_str());

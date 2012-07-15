@@ -51,6 +51,7 @@ public:
     virtual bool SupportsSelectDistinct() = 0;
 
     virtual MgReader* Execute() = 0;
+    virtual MgReader* ExecuteWithLock() = 0;
 
 protected:
 

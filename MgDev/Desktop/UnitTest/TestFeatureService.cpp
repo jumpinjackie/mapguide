@@ -2743,7 +2743,7 @@ void TestFeatureService::TestCase_ExtendedFeatureClass()
 
         //Custom aggregates should also work
         Ptr<MgFeatureAggregateOptions> agg = new MgFeatureAggregateOptions();
-        agg->AddComputedProperty(L"EXTENT", L"EXTENTS(SHPGEOM)");
+        agg->AddComputedProperty(L"THE_EXTENT", L"EXTENT(SHPGEOM)");
         Ptr<MgDataReader> dr = pService->SelectAggregate(lFeatureSource, L"Ext1", agg);
         bool bRead = dr->ReadNext();
         dr->Close();

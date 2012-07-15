@@ -71,12 +71,16 @@ MgSelectFeatures::~MgSelectFeatures()
 
 // Executes the select features command and serializes the reader
 MgReader* MgSelectFeatures::SelectFeatures(MgResourceIdentifier* resource,
-                                                 CREFSTRING className,
-                                                 MgFeatureQueryOptions* options,
-                                                 bool executeSelectAggregate)
+                                           CREFSTRING className,
+                                           MgFeatureQueryOptions* options,
+                                           bool executeSelectAggregate,
+                                           bool isExtended,
+                                           bool withLock)
 {
     Ptr<MgReader> mgReader;
     bool isSelectAggregate = executeSelectAggregate;
+    assert(!(isSelectAggregate && isExtended));
+    assert(!(withLock && isExtended));
 
     MG_FEATURE_SERVICE_TRY()
 
@@ -118,7 +122,19 @@ MgReader* MgSelectFeatures::SelectFeatures(MgResourceIdentifier* resource,
     STRING fsIdStr = resource->ToString();
     ACE_DEBUG((LM_INFO, ACE_TEXT("\n(%t) Testing Feature Source (%W, %W) for FDO join optimization"), fsIdStr.c_str(), className.c_str()));
 #endif  
-    if (!isSelectAggregate && bFeatureJoinProperties)
+
+    if (isExtended)
+    {
+        if (bFeatureJoinProperties)
+        {
+            throw new MgInvalidOperationException(L"MgSelectFeatures.SelectFeatures", __LINE__, __WFILE__, NULL, L"", NULL);
+        }
+
+        m_command = MgFeatureServiceCommand::CreateCommand(resource, FdoCommandType_ExtendedSelect);
+        m_command->SetFeatureClassName((FdoString*)className.c_str());
+        mgReader = SelectExtended();
+    }
+    else if (!isSelectAggregate && bFeatureJoinProperties)
     {
         if (bSupportsFdoJoin)
         {
@@ -302,7 +318,10 @@ MgReader* MgSelectFeatures::SelectFeatures(MgResourceIdentifier* resource,
         ValidateConstraintsOnCustomFunctions();
 
         // Execute the command
-        reader = m_command->Execute();
+        if (withLock)
+            reader = m_command->ExecuteWithLock();
+        else
+            reader = m_command->Execute();
 
         CHECKNULL((MgReader*)reader, L"MgServerSelectFeatures.SelectFeatures");
 
@@ -736,11 +755,7 @@ void MgSelectFeatures::CreateCommand(MgResourceIdentifier* resource, bool isSele
 
 void MgSelectFeatures::ValidateParam(MgResourceIdentifier* resource, CREFSTRING className)
 {
-    // className and resource identifier can not be NULL
-    if (resource == NULL)
-    {
-        throw new MgNullArgumentException(L"MgSelectFeatures::ValidateParam()", __LINE__, __WFILE__, NULL, L"", NULL);
-    }
+    CHECK_FEATURE_SOURCE_ARGUMENT(resource, L"MgSelectFeatures::ValidateParam");
 
     if (className.empty())
     {
@@ -2215,4 +2230,13 @@ void MgSelectFeatures::ApplyClassProperties(FdoIConnection* fdoConn, CREFSTRING 
             idPropNames->Add(propName);
         }
     }
+}
+
+MgdScrollableFeatureReader* MgSelectFeatures::SelectExtended()
+{
+    Ptr<MgdScrollableFeatureReader> scrollReader;
+    ApplyQueryOptions(false);
+    scrollReader = dynamic_cast<MgdScrollableFeatureReader*>(m_command->Execute());
+    CHECKNULL(scrollReader.p, L"MgSelectFeatures::SelectExtended");
+    return scrollReader.Detach();
 }

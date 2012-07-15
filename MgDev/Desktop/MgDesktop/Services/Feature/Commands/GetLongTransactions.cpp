@@ -21,16 +21,16 @@
 #include "Services/Feature/FeatureUtil.h"
 #include <math.h>
 
-MgServerGetLongTransactions::MgServerGetLongTransactions()
+MgGetLongTransactions::MgGetLongTransactions()
 {
 }
 
-MgServerGetLongTransactions::~MgServerGetLongTransactions()
+MgGetLongTransactions::~MgGetLongTransactions()
 {
 }
 
 // Executes the get long transactions command and serializes the schema to XML
-MgLongTransactionReader* MgServerGetLongTransactions::GetLongTransactions(MgResourceIdentifier* resId, bool bActiveOnly)
+MgLongTransactionReader* MgGetLongTransactions::GetLongTransactions(MgResourceIdentifier* resId, bool bActiveOnly)
 {
     Ptr<MgLongTransactionReader> mgLongTransactionReader;
     mgLongTransactionReader = NULL;
@@ -39,7 +39,7 @@ MgLongTransactionReader* MgServerGetLongTransactions::GetLongTransactions(MgReso
 
     if (NULL == resId)
     {
-        throw new MgNullArgumentException(L"MgServerGetLongTransactions.GetLongTransactions", __LINE__, __WFILE__, NULL, L"", NULL);
+        throw new MgNullArgumentException(L"MgGetLongTransactions.GetLongTransactions", __LINE__, __WFILE__, NULL, L"", NULL);
     }
 
     // Connect to provider
@@ -58,15 +58,15 @@ MgLongTransactionReader* MgServerGetLongTransactions::GetLongTransactions(MgReso
         {
             // TODO: specify which argument and message, once we have the mechanism
             STRING message = MgFeatureUtil::GetMessage(L"MgCommandNotSupported");
-            throw new MgInvalidOperationException(L"MgServerGetLongTransactions.GetLongTransactions", __LINE__, __WFILE__, NULL, L"", NULL);
+            throw new MgInvalidOperationException(L"MgGetLongTransactions.GetLongTransactions", __LINE__, __WFILE__, NULL, L"", NULL);
         }
 
         FdoPtr<FdoIGetLongTransactions> fdoCommand = (FdoIGetLongTransactions*)fdoConn->CreateCommand(FdoCommandType_GetLongTransactions);
-        CHECKNULL((FdoIGetLongTransactions*)fdoCommand, L"MgServerGetLongTransactions.GetLongTransactions");
+        CHECKNULL((FdoIGetLongTransactions*)fdoCommand, L"MgGetLongTransactions.GetLongTransactions");
 
         // Execute the command
         FdoPtr<FdoILongTransactionReader> longTransactionReader = fdoCommand->Execute();
-        CHECKNULL((FdoILongTransactionReader*)longTransactionReader, L"MgServerGetLongTransactions.GetLongTransactions");
+        CHECKNULL((FdoILongTransactionReader*)longTransactionReader, L"MgGetLongTransactions.GetLongTransactions");
 
         mgLongTransactionReader = new MgLongTransactionReader();
         while (longTransactionReader->ReadNext())
@@ -83,7 +83,7 @@ MgLongTransactionReader* MgServerGetLongTransactions::GetLongTransactions(MgReso
 
             // Add transaction data to the long transaction reader
             Ptr<MgLongTransactionData> longTransactionData = GetLongTransactionData(longTransactionReader);
-            CHECKNULL((MgLongTransactionData*)longTransactionData, L"MgServerGetLongTransactions.GetLongTransactions");
+            CHECKNULL((MgLongTransactionData*)longTransactionData, L"MgGetLongTransactions.GetLongTransactions");
             mgLongTransactionReader->AddLongTransactionData(longTransactionData);
 
             // If only active long transaction is required skip all others
@@ -96,21 +96,21 @@ MgLongTransactionReader* MgServerGetLongTransactions::GetLongTransactions(MgReso
     }
     else
     {
-        throw new MgConnectionFailedException(L"MgServerGetLongTransactions::GetLongTransactions()", __LINE__, __WFILE__, NULL, L"", NULL);
+        throw new MgConnectionFailedException(L"MgGetLongTransactions::GetLongTransactions()", __LINE__, __WFILE__, NULL, L"", NULL);
     }
 
-    MG_FEATURE_SERVICE_CHECK_CONNECTION_CATCH_AND_THROW(resId, L"MgServerGetLongTransactions.GetLongTransactions")
+    MG_FEATURE_SERVICE_CHECK_CONNECTION_CATCH_AND_THROW(resId, L"MgGetLongTransactions.GetLongTransactions")
 
     return mgLongTransactionReader.Detach();
 }
 
-MgLongTransactionData* MgServerGetLongTransactions::GetLongTransactionData(FdoILongTransactionReader* longTransactionReader)
+MgLongTransactionData* MgGetLongTransactions::GetLongTransactionData(FdoILongTransactionReader* longTransactionReader)
 {
     Ptr<MgLongTransactionData> longTransactionData = new MgLongTransactionData();
 
     // Name must exist
     FdoString* name = longTransactionReader->GetName();
-    CHECKNULL((FdoString*)name, L"MgServerGetLongTransactions.GetLongTransactions");
+    CHECKNULL((FdoString*)name, L"MgGetLongTransactions.GetLongTransactions");
     longTransactionData->SetName(STRING(name));
 
     // Desc for long transaction

@@ -20,7 +20,6 @@
 #include "Services/Feature/FeatureConnection.h"
 #include "Services/Feature/FeatureUtil.h"
 
-/*
 static std::map<FdoThreadCapability, std::string>          s_FdoThreadCapability;
 static std::map<FdoSpatialContextExtentType, std::string>  s_FdoSpatialContextExtentType;
 static std::map<FdoClassType, std::string>                 s_FdoClassType;
@@ -34,12 +33,11 @@ static std::map<FdoDistanceOperations,  std::string>       s_FdoDistanceOperatio
 static std::map<FdoExpressionType,  std::string>           s_FdoExpressionType;
 static std::map<FdoGeometryType,  std::string>             s_FdoGeometryType;
 static std::map<FdoGeometryComponentType,  std::string>    s_FdoGeometryComponentType;
-*/
 
-bool MgServerGetProviderCapabilities::m_isInitialized = MgServerGetProviderCapabilities::Initialize();
+bool MgGetProviderCapabilities::m_isInitialized = MgGetProviderCapabilities::Initialize();
 
 
-MgServerGetProviderCapabilities::MgServerGetProviderCapabilities(CREFSTRING providerName, CREFSTRING connectionString)
+MgGetProviderCapabilities::MgGetProviderCapabilities(CREFSTRING providerName, CREFSTRING connectionString)
 {
     if (providerName.empty())
     {
@@ -47,12 +45,12 @@ MgServerGetProviderCapabilities::MgServerGetProviderCapabilities(CREFSTRING prov
         arguments.Add(L"1");
         arguments.Add(MgResources::BlankArgument);
 
-        throw new MgInvalidArgumentException(L"MgServerGetProviderCapabilities.MgServerGetProviderCapabilities",
+        throw new MgInvalidArgumentException(L"MgGetProviderCapabilities.MgGetProviderCapabilities",
             __LINE__, __WFILE__, &arguments, L"MgStringEmpty", NULL);
     }
 
     FdoPtr<IConnectionManager> connManager = FdoFeatureAccessManager::GetConnectionManager();
-    CHECKNULL(connManager, L"MgServerGetProviderCapabilities.MgServerGetProviderCapabilities");
+    CHECKNULL(connManager, L"MgGetProviderCapabilities.MgGetProviderCapabilities");
 
     // Remove the version from the provider name
     FdoPtr<FdoProviderNameTokens> tokens = FdoProviderNameTokens::Create(providerName.c_str());
@@ -77,10 +75,10 @@ MgServerGetProviderCapabilities::MgServerGetProviderCapabilities(CREFSTRING prov
         fdoConn->Open();
     }
 
-    CHECKNULL(fdoConn, L"MgServerGetProviderCapabilities.MgServerGetProviderCapabilities");
+    CHECKNULL(fdoConn, L"MgGetProviderCapabilities.MgGetProviderCapabilities");
 
     m_xmlUtil = new MgXmlUtil();
-    CHECKNULL(m_xmlUtil, L"MgServerGetProviderCapabilities.MgServerGetProviderCapabilities");
+    CHECKNULL(m_xmlUtil, L"MgGetProviderCapabilities.MgGetProviderCapabilities");
 
     m_xmlCap = NULL;
 
@@ -89,7 +87,7 @@ MgServerGetProviderCapabilities::MgServerGetProviderCapabilities(CREFSTRING prov
     m_providerName = providerNoVersion;
 }
 
-MgServerGetProviderCapabilities::~MgServerGetProviderCapabilities()
+MgGetProviderCapabilities::~MgGetProviderCapabilities()
 {
     // Check if the connection needs to be closed
     if(m_fdoConn->GetConnectionState() == FdoConnectionState_Open)
@@ -104,9 +102,9 @@ MgServerGetProviderCapabilities::~MgServerGetProviderCapabilities()
 }
 
 
-MgByteReader* MgServerGetProviderCapabilities::GetProviderCapabilities()
+MgByteReader* MgGetProviderCapabilities::GetProviderCapabilities()
 {
-    CHECKNULL(m_xmlUtil, L"MgServerGetProviderCapabilities.GetProviderCapabilities");
+    CHECKNULL(m_xmlUtil, L"MgGetProviderCapabilities.GetProviderCapabilities");
     Ptr<MgByteReader> byteReader;
 
     MG_FEATURE_SERVICE_TRY()
@@ -119,17 +117,17 @@ MgByteReader* MgServerGetProviderCapabilities::GetProviderCapabilities()
         byteReader = m_xmlCap->ToReader();
     }
 
-    MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgServerGetProviderCapabilities.GetProviderCapabilities")
+    MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgGetProviderCapabilities.GetProviderCapabilities")
 
     return byteReader.Detach();
 }
 
-void MgServerGetProviderCapabilities::CreateCapabilitiesDocument()
+void MgGetProviderCapabilities::CreateCapabilitiesDocument()
 {
     // Root node element created
     // this XML follows the FdoProviderCapabilities-1.0.0.xsd schema
     m_xmlCap = new MgXmlUtil("FeatureProviderCapabilities");
-    CHECKNULL(m_xmlCap, L"MgServerGetProviderCapabilities::CreateCapabilitiesDocument");
+    CHECKNULL(m_xmlCap, L"MgGetProviderCapabilities::CreateCapabilitiesDocument");
     DOMElement* root = m_xmlCap->GetRootNode();
 
     // Provide name element and its attribute
@@ -153,19 +151,19 @@ void MgServerGetProviderCapabilities::CreateCapabilitiesDocument()
 
 
 
-void MgServerGetProviderCapabilities::CreateConnectionCapabilities()
+void MgGetProviderCapabilities::CreateConnectionCapabilities()
 {
-    CHECKNULL(m_xmlCap, L"MgServerGetProviderCapabilities::CreateConnectionCapabilities");
-    CHECKNULL(m_fdoConn, L"MgServerGetProviderCapabilities::CreateConnectionCapabilities");
+    CHECKNULL(m_xmlCap, L"MgGetProviderCapabilities::CreateConnectionCapabilities");
+    CHECKNULL(m_fdoConn, L"MgGetProviderCapabilities::CreateConnectionCapabilities");
 
     DOMElement* root = m_xmlCap->GetRootNode();
-    CHECKNULL(root, L"MgServerGetProviderCapabilities::CreateConnectionCapabilities");
+    CHECKNULL(root, L"MgGetProviderCapabilities::CreateConnectionCapabilities");
 
     DOMElement* connNode = m_xmlCap->AddChildNode(root, "Connection");
-    CHECKNULL(connNode, L"MgServerGetProviderCapabilities::CreateConnectionCapabilities");
+    CHECKNULL(connNode, L"MgGetProviderCapabilities::CreateConnectionCapabilities");
 
     FdoPtr<FdoIConnectionCapabilities> ficc = m_fdoConn->GetConnectionCapabilities();
-    CHECKNULL((FdoIConnectionCapabilities*)ficc, L"MgServerGetProviderCapabilities::CreateConnectionCapabilities");
+    CHECKNULL((FdoIConnectionCapabilities*)ficc, L"MgGetProviderCapabilities::CreateConnectionCapabilities");
 
     // Thread
     FdoThreadCapability ftc = ficc->GetThreadCapability();
@@ -178,7 +176,7 @@ void MgServerGetProviderCapabilities::CreateConnectionCapabilities()
     if (cnt > 0 && fscet != NULL)
     {
         DOMElement* scNode = m_xmlCap->AddChildNode(connNode, "SpatialContextExtent");
-        CHECKNULL(scNode, L"MgServerGetProviderCapabilities::CreateConnectionCapabilities");
+        CHECKNULL(scNode, L"MgGetProviderCapabilities::CreateConnectionCapabilities");
 
         for (FdoInt32 i = 0; i < cnt; i++)
         {
@@ -211,19 +209,19 @@ void MgServerGetProviderCapabilities::CreateConnectionCapabilities()
 }
 
 
-void MgServerGetProviderCapabilities::CreateSchemaCapabilities()
+void MgGetProviderCapabilities::CreateSchemaCapabilities()
 {
-    CHECKNULL(m_xmlCap, L"MgServerGetProviderCapabilities::CreateSchemaCapabilities");
-    CHECKNULL(m_fdoConn, L"MgServerGetProviderCapabilities::CreateSchemaCapabilities");
+    CHECKNULL(m_xmlCap, L"MgGetProviderCapabilities::CreateSchemaCapabilities");
+    CHECKNULL(m_fdoConn, L"MgGetProviderCapabilities::CreateSchemaCapabilities");
 
     FdoPtr<FdoISchemaCapabilities> fsc = m_fdoConn->GetSchemaCapabilities();
-    CHECKNULL((FdoISchemaCapabilities*)fsc, L"MgServerGetProviderCapabilities::CreateSchemaCapabilities");
+    CHECKNULL((FdoISchemaCapabilities*)fsc, L"MgGetProviderCapabilities::CreateSchemaCapabilities");
 
     DOMElement* root = m_xmlCap->GetRootNode();
-    CHECKNULL(root, L"MgServerGetProviderCapabilities::CreateSchemaCapabilities");
+    CHECKNULL(root, L"MgGetProviderCapabilities::CreateSchemaCapabilities");
 
     DOMElement* schemaNode = m_xmlCap->AddChildNode(root, "Schema");
-    CHECKNULL(schemaNode, L"MgServerGetProviderCapabilities::CreateSchemaCapabilities");
+    CHECKNULL(schemaNode, L"MgGetProviderCapabilities::CreateSchemaCapabilities");
 
     // Add all class types
     FdoInt32 cnt = 0;
@@ -231,7 +229,7 @@ void MgServerGetProviderCapabilities::CreateSchemaCapabilities()
     if (cnt > 0 && fct != NULL)
     {
         DOMElement* classNode = m_xmlCap->AddChildNode(schemaNode, "Class");
-        CHECKNULL(classNode, L"MgServerGetProviderCapabilities::CreateSchemaCapabilities");
+        CHECKNULL(classNode, L"MgGetProviderCapabilities::CreateSchemaCapabilities");
 
         for (FdoInt32 i=0; i < cnt; i++)
         {
@@ -246,7 +244,7 @@ void MgServerGetProviderCapabilities::CreateSchemaCapabilities()
     if (cnt > 0 && fdt != NULL)
     {
         DOMElement* dataNode = m_xmlCap->AddChildNode(schemaNode, "Data");
-        CHECKNULL(dataNode, L"MgServerGetProviderCapabilities::CreateSchemaCapabilities");
+        CHECKNULL(dataNode, L"MgGetProviderCapabilities::CreateSchemaCapabilities");
 
         for (FdoInt32 i=0; i < cnt; i++)
         {
@@ -285,7 +283,7 @@ void MgServerGetProviderCapabilities::CreateSchemaCapabilities()
     if (cnt > 0 && sagt != NULL)
     {
         DOMElement* sagtNode = m_xmlCap->AddChildNode(schemaNode, "SupportedAutoGeneratedTypes");
-        CHECKNULL(sagtNode, L"MgServerGetProviderCapabilities::CreateSchemaCapabilities");
+        CHECKNULL(sagtNode, L"MgGetProviderCapabilities::CreateSchemaCapabilities");
 
         for (FdoInt32 i=0; i < cnt; i++)
         {
@@ -298,19 +296,19 @@ void MgServerGetProviderCapabilities::CreateSchemaCapabilities()
     m_xmlCap->AddTextNode(schemaNode, "SupportsSchemaModification", supportsSchemaModification);
 }
 
-void MgServerGetProviderCapabilities::CreateCommandCapabilities()
+void MgGetProviderCapabilities::CreateCommandCapabilities()
 {
-    CHECKNULL(m_xmlCap, L"MgServerGetProviderCapabilities::CreateCommandCapabilities");
-    CHECKNULL(m_fdoConn, L"MgServerGetProviderCapabilities::CreateCommandCapabilities");
+    CHECKNULL(m_xmlCap, L"MgGetProviderCapabilities::CreateCommandCapabilities");
+    CHECKNULL(m_fdoConn, L"MgGetProviderCapabilities::CreateCommandCapabilities");
 
     FdoPtr<FdoICommandCapabilities> fcc = m_fdoConn->GetCommandCapabilities();
-    CHECKNULL((FdoICommandCapabilities*)fcc, L"MgServerGetProviderCapabilities::CreateCommandCapabilities");
+    CHECKNULL((FdoICommandCapabilities*)fcc, L"MgGetProviderCapabilities::CreateCommandCapabilities");
 
     DOMElement* root = m_xmlCap->GetRootNode();
-    CHECKNULL(root, L"MgServerGetProviderCapabilities::CreateCommandCapabilities");
+    CHECKNULL(root, L"MgGetProviderCapabilities::CreateCommandCapabilities");
 
     DOMElement* cmdNode = m_xmlCap->AddChildNode(root, "Command");
-    CHECKNULL(cmdNode, L"MgServerGetProviderCapabilities::CreateCommandCapabilities");
+    CHECKNULL(cmdNode, L"MgGetProviderCapabilities::CreateCommandCapabilities");
 
     // Add all command types
     FdoInt32 cnt = 0;
@@ -318,7 +316,7 @@ void MgServerGetProviderCapabilities::CreateCommandCapabilities()
     if (cnt > 0 && fcmd != NULL)
     {
         DOMElement* scNode = m_xmlCap->AddChildNode(cmdNode, "SupportedCommands");
-        CHECKNULL(scNode, L"MgServerGetProviderCapabilities::CreateCommandCapabilities");
+        CHECKNULL(scNode, L"MgGetProviderCapabilities::CreateCommandCapabilities");
 
         for (FdoInt32 i=0; i < cnt; i++)
         {
@@ -384,19 +382,19 @@ void MgServerGetProviderCapabilities::CreateCommandCapabilities()
     m_xmlCap->AddTextNode(cmdNode, "SupportsSelectGrouping", supportsSelectGrouping);
 }
 
-void MgServerGetProviderCapabilities::CreateFilterCapabilities()
+void MgGetProviderCapabilities::CreateFilterCapabilities()
 {
-    CHECKNULL(m_xmlCap, L"MgServerGetProviderCapabilities::CreateFilterCapabilities");
-    CHECKNULL(m_fdoConn, L"MgServerGetProviderCapabilities::CreateFilterCapabilities");
+    CHECKNULL(m_xmlCap, L"MgGetProviderCapabilities::CreateFilterCapabilities");
+    CHECKNULL(m_fdoConn, L"MgGetProviderCapabilities::CreateFilterCapabilities");
 
     FdoPtr<FdoIFilterCapabilities> ffc = m_fdoConn->GetFilterCapabilities();
-    CHECKNULL((FdoIFilterCapabilities*)ffc, L"MgServerGetProviderCapabilities::CreateFilterCapabilities");
+    CHECKNULL((FdoIFilterCapabilities*)ffc, L"MgGetProviderCapabilities::CreateFilterCapabilities");
 
     DOMElement* root = m_xmlCap->GetRootNode();
-    CHECKNULL(root, L"MgServerGetProviderCapabilities::CreateFilterCapabilities");
+    CHECKNULL(root, L"MgGetProviderCapabilities::CreateFilterCapabilities");
 
     DOMElement* filterNode = m_xmlCap->AddChildNode(root, "Filter");
-    CHECKNULL(filterNode, L"MgServerGetProviderCapabilities::CreateFilterCapabilities");
+    CHECKNULL(filterNode, L"MgGetProviderCapabilities::CreateFilterCapabilities");
 
     // Add all condition types
     FdoInt32 cnt = 0;
@@ -404,7 +402,7 @@ void MgServerGetProviderCapabilities::CreateFilterCapabilities()
     if (cnt > 0 && fct != NULL)
     {
         DOMElement* condNode = m_xmlCap->AddChildNode(filterNode, "Condition");
-        CHECKNULL(condNode, L"MgServerGetProviderCapabilities::CreateFilterCapabilities");
+        CHECKNULL(condNode, L"MgGetProviderCapabilities::CreateFilterCapabilities");
 
         for (FdoInt32 i=0; i < cnt; i++)
         {
@@ -419,7 +417,7 @@ void MgServerGetProviderCapabilities::CreateFilterCapabilities()
     if (cnt > 0 && fso != NULL)
     {
         DOMElement* fsoNode = m_xmlCap->AddChildNode(filterNode, "Spatial");
-        CHECKNULL(fsoNode, L"MgServerGetProviderCapabilities::CreateFilterCapabilities");
+        CHECKNULL(fsoNode, L"MgGetProviderCapabilities::CreateFilterCapabilities");
 
         for (FdoInt32 i=0; i < cnt; i++)
         {
@@ -434,7 +432,7 @@ void MgServerGetProviderCapabilities::CreateFilterCapabilities()
     if (cnt > 0 && fdo != NULL)
     {
         DOMElement* distNode = m_xmlCap->AddChildNode(filterNode, "Distance");
-        CHECKNULL(distNode, L"MgServerGetProviderCapabilities::CreateFilterCapabilities");
+        CHECKNULL(distNode, L"MgGetProviderCapabilities::CreateFilterCapabilities");
 
         for (FdoInt32 i=0; i < cnt; i++)
         {
@@ -452,19 +450,19 @@ void MgServerGetProviderCapabilities::CreateFilterCapabilities()
     m_xmlCap->AddTextNode(filterNode, "SupportsNonLiteralGeometricOperations", supportsNonLiteralGeometricOperations);
 }
 
-void MgServerGetProviderCapabilities::CreateExpressionCapabilities()
+void MgGetProviderCapabilities::CreateExpressionCapabilities()
 {
-    CHECKNULL(m_xmlCap, L"MgServerGetProviderCapabilities::CreateExpressionCapabilities");
-    CHECKNULL(m_fdoConn, L"MgServerGetProviderCapabilities::CreateExpressionCapabilities");
+    CHECKNULL(m_xmlCap, L"MgGetProviderCapabilities::CreateExpressionCapabilities");
+    CHECKNULL(m_fdoConn, L"MgGetProviderCapabilities::CreateExpressionCapabilities");
 
     FdoPtr<FdoIExpressionCapabilities> fec = m_fdoConn->GetExpressionCapabilities();
-    CHECKNULL((FdoIExpressionCapabilities*)fec, L"MgServerGetProviderCapabilities::CreateExpressionCapabilities");
+    CHECKNULL((FdoIExpressionCapabilities*)fec, L"MgGetProviderCapabilities::CreateExpressionCapabilities");
 
     DOMElement* root = m_xmlCap->GetRootNode();
-    CHECKNULL(root, L"MgServerGetProviderCapabilities::CreateExpressionCapabilities");
+    CHECKNULL(root, L"MgGetProviderCapabilities::CreateExpressionCapabilities");
 
     DOMElement* expressionNode = m_xmlCap->AddChildNode(root, "Expression");
-    CHECKNULL(expressionNode, L"MgServerGetProviderCapabilities::CreateExpressionCapabilities");
+    CHECKNULL(expressionNode, L"MgGetProviderCapabilities::CreateExpressionCapabilities");
 
     // Add all expression types
     FdoInt32 cnt = 0;
@@ -472,7 +470,7 @@ void MgServerGetProviderCapabilities::CreateExpressionCapabilities()
     if (cnt > 0 && fet != NULL)
     {
         DOMElement* typeNode = m_xmlCap->AddChildNode(expressionNode, "Type");
-        CHECKNULL(typeNode, L"MgServerGetProviderCapabilities::CreateExpressionCapabilities");
+        CHECKNULL(typeNode, L"MgGetProviderCapabilities::CreateExpressionCapabilities");
 
         for (FdoInt32 i=0; i < cnt; i++)
         {
@@ -491,16 +489,16 @@ void MgServerGetProviderCapabilities::CreateExpressionCapabilities()
         {
             // Add function definition collection element if there are any functions available
             DOMElement* funcDefColNode = m_xmlCap->AddChildNode(expressionNode, "FunctionDefinitionList");
-            CHECKNULL(funcDefColNode, L"MgServerGetProviderCapabilities::CreateExpressionCapabilities");
+            CHECKNULL(funcDefColNode, L"MgGetProviderCapabilities::CreateExpressionCapabilities");
 
             for (FdoInt32 i=0; i < funcCnt; i++)
             {
                 // Add function definition element
                 FdoPtr<FdoFunctionDefinition> ffd = ffdc->GetItem(i);
-                CHECKNULL((FdoFunctionDefinition*)ffd, L"MgServerGetProviderCapabilities::CreateExpressionCapabilities");
+                CHECKNULL((FdoFunctionDefinition*)ffd, L"MgGetProviderCapabilities::CreateExpressionCapabilities");
 
                 DOMElement* funcDefNode = m_xmlCap->AddChildNode(funcDefColNode, "FunctionDefinition");
-                CHECKNULL(funcDefNode, L"MgServerGetProviderCapabilities::CreateExpressionCapabilities");
+                CHECKNULL(funcDefNode, L"MgGetProviderCapabilities::CreateExpressionCapabilities");
 
                 const char* strName = MgUtil::WideCharToMultiByte(ffd->GetName());
                 const char* strDesc = MgUtil::WideCharToMultiByte(ffd->GetDescription());
@@ -524,16 +522,16 @@ void MgServerGetProviderCapabilities::CreateExpressionCapabilities()
                     {
                         // Add ArgumentDefinitionCollection if there are arguments
                         DOMElement* argDefColNode = m_xmlCap->AddChildNode(funcDefNode, "ArgumentDefinitionList");
-                        CHECKNULL(argDefColNode, L"MgServerGetProviderCapabilities::CreateExpressionCapabilities");
+                        CHECKNULL(argDefColNode, L"MgGetProviderCapabilities::CreateExpressionCapabilities");
 
                         for (FdoInt32 j=0; j < argCnt; j++)
                         {
                             // Add ArgumentDefinition for each argument
                             FdoPtr<FdoArgumentDefinition> fad = argCol->GetItem(j);
-                            CHECKNULL((FdoArgumentDefinition*)fad, L"MgServerGetProviderCapabilities::CreateExpressionCapabilities");
+                            CHECKNULL((FdoArgumentDefinition*)fad, L"MgGetProviderCapabilities::CreateExpressionCapabilities");
 
                             DOMElement* argDefNode = m_xmlCap->AddChildNode(argDefColNode, "ArgumentDefinition");
-                            CHECKNULL(argDefNode, L"MgServerGetProviderCapabilities::CreateExpressionCapabilities");
+                            CHECKNULL(argDefNode, L"MgGetProviderCapabilities::CreateExpressionCapabilities");
 
                             const char* strArgName = MgUtil::WideCharToMultiByte(fad->GetName());
                             const char* strArgDesc = MgUtil::WideCharToMultiByte(fad->GetDescription());
@@ -556,19 +554,19 @@ void MgServerGetProviderCapabilities::CreateExpressionCapabilities()
 }
 
 
-void MgServerGetProviderCapabilities::CreateExpressionCapabilities2()
+void MgGetProviderCapabilities::CreateExpressionCapabilities2()
 {
-    CHECKNULL(m_xmlCap, L"MgServerGetProviderCapabilities::CreateExpressionCapabilities");
-    CHECKNULL(m_fdoConn, L"MgServerGetProviderCapabilities::CreateExpressionCapabilities");
+    CHECKNULL(m_xmlCap, L"MgGetProviderCapabilities::CreateExpressionCapabilities");
+    CHECKNULL(m_fdoConn, L"MgGetProviderCapabilities::CreateExpressionCapabilities");
 
     FdoPtr<FdoIExpressionCapabilities> fec = m_fdoConn->GetExpressionCapabilities();
-    CHECKNULL((FdoIExpressionCapabilities*)fec, L"MgServerGetProviderCapabilities::CreateExpressionCapabilities");
+    CHECKNULL((FdoIExpressionCapabilities*)fec, L"MgGetProviderCapabilities::CreateExpressionCapabilities");
 
     DOMElement* root = m_xmlCap->GetRootNode();
-    CHECKNULL(root, L"MgServerGetProviderCapabilities::CreateExpressionCapabilities");
+    CHECKNULL(root, L"MgGetProviderCapabilities::CreateExpressionCapabilities");
 
     DOMElement* expressionNode = m_xmlCap->AddChildNode(root, "Expression");
-    CHECKNULL(expressionNode, L"MgServerGetProviderCapabilities::CreateExpressionCapabilities");
+    CHECKNULL(expressionNode, L"MgGetProviderCapabilities::CreateExpressionCapabilities");
 
     // Add all expression types
     FdoInt32 cnt = 0;
@@ -576,7 +574,7 @@ void MgServerGetProviderCapabilities::CreateExpressionCapabilities2()
     if (cnt > 0 && fet != NULL)
     {
         DOMElement* typeNode = m_xmlCap->AddChildNode(expressionNode, "Type");
-        CHECKNULL(typeNode, L"MgServerGetProviderCapabilities::CreateExpressionCapabilities");
+        CHECKNULL(typeNode, L"MgGetProviderCapabilities::CreateExpressionCapabilities");
 
         for (FdoInt32 i=0; i < cnt; i++)
         {
@@ -595,16 +593,16 @@ void MgServerGetProviderCapabilities::CreateExpressionCapabilities2()
         {
             // Add function definition collection element if there are any functions available
             DOMElement* funcDefColNode = m_xmlCap->AddChildNode(expressionNode, "FunctionDefinitionList");
-            CHECKNULL(funcDefColNode, L"MgServerGetProviderCapabilities::CreateExpressionCapabilities");
+            CHECKNULL(funcDefColNode, L"MgGetProviderCapabilities::CreateExpressionCapabilities");
 
             for (FdoInt32 i=0; i < funcCnt; i++)
             {
                 // Add function definition element
                 FdoPtr<FdoFunctionDefinition> ffd = ffdc->GetItem(i);
-                CHECKNULL((FdoFunctionDefinition*)ffd, L"MgServerGetProviderCapabilities::CreateExpressionCapabilities");
+                CHECKNULL((FdoFunctionDefinition*)ffd, L"MgGetProviderCapabilities::CreateExpressionCapabilities");
 
                 DOMElement* funcDefNode = m_xmlCap->AddChildNode(funcDefColNode, "FunctionDefinition");
-                CHECKNULL(funcDefNode, L"MgServerGetProviderCapabilities::CreateExpressionCapabilities");
+                CHECKNULL(funcDefNode, L"MgGetProviderCapabilities::CreateExpressionCapabilities");
 
                 const char* strName = MgUtil::WideCharToMultiByte(ffd->GetName());
                 const char* strDesc = MgUtil::WideCharToMultiByte(ffd->GetDescription());
@@ -630,16 +628,16 @@ void MgServerGetProviderCapabilities::CreateExpressionCapabilities2()
                     {
 
                         DOMElement* signDefColNode = m_xmlCap->AddChildNode(funcDefNode, "SignatureDefinitionCollection");
-                        CHECKNULL(signDefColNode, L"MgServerGetProviderCapabilities::CreateExpressionCapabilities");
+                        CHECKNULL(signDefColNode, L"MgGetProviderCapabilities::CreateExpressionCapabilities");
                         for (FdoInt32 j=0; j < signaturesCnt; j++)
                         {
 
                             // Add SignatureDefinition for each signature
                             FdoPtr<FdoSignatureDefinition> fsd = signatures->GetItem(j);
-                            CHECKNULL((FdoSignatureDefinition*)fsd, L"MgServerGetProviderCapabilities::CreateExpressionCapabilities");
+                            CHECKNULL((FdoSignatureDefinition*)fsd, L"MgGetProviderCapabilities::CreateExpressionCapabilities");
 
                             DOMElement* signDefNode = m_xmlCap->AddChildNode(signDefColNode, "SignatureDefinition");
-                            CHECKNULL(signDefNode, L"MgServerGetProviderCapabilities::CreateExpressionCapabilities");
+                            CHECKNULL(signDefNode, L"MgGetProviderCapabilities::CreateExpressionCapabilities");
 
                             FdoPropertyType eSignPropertyDataType = fsd->GetReturnPropertyType();
                             string strSignPropertyType = s_FdoPropertyTypeAsString[eSignPropertyDataType];
@@ -655,7 +653,7 @@ void MgServerGetProviderCapabilities::CreateExpressionCapabilities2()
                                 m_xmlCap->AddTextNode(signDefNode, "DataType",  strSignDataType.c_str());
 
                             DOMElement* argDefColNode = m_xmlCap->AddChildNode(signDefNode, "ArgumentDefinitionList");
-                            CHECKNULL(argDefColNode, L"MgServerGetProviderCapabilities::CreateExpressionCapabilities");
+                            CHECKNULL(argDefColNode, L"MgGetProviderCapabilities::CreateExpressionCapabilities");
 
                             FdoPtr<FdoReadOnlyArgumentDefinitionCollection> fads = fsd->GetArguments();
                             if (NULL != (FdoReadOnlyArgumentDefinitionCollection *) fads)
@@ -666,10 +664,10 @@ void MgServerGetProviderCapabilities::CreateExpressionCapabilities2()
                                     for (int k=0; k<argCnt; k++)
                                     {
                                         FdoPtr<FdoArgumentDefinition> fad = fads->GetItem(k);
-                                        CHECKNULL((FdoArgumentDefinition*)fad, L"MgServerGetProviderCapabilities::CreateExpressionCapabilities");
+                                        CHECKNULL((FdoArgumentDefinition*)fad, L"MgGetProviderCapabilities::CreateExpressionCapabilities");
 
                                         DOMElement* argDefNode = m_xmlCap->AddChildNode(argDefColNode, "ArgumentDefinition");
-                                        CHECKNULL(argDefNode, L"MgServerGetProviderCapabilities::CreateExpressionCapabilities");
+                                        CHECKNULL(argDefNode, L"MgGetProviderCapabilities::CreateExpressionCapabilities");
 
                                         const char* strArgName = MgUtil::WideCharToMultiByte(fad->GetName());
                                         const char* strArgDesc = MgUtil::WideCharToMultiByte(fad->GetDescription());
@@ -698,7 +696,7 @@ void MgServerGetProviderCapabilities::CreateExpressionCapabilities2()
                                             if (fpvc->GetConstraintType() == FdoPropertyValueConstraintType_List)
                                             {
                                                 DOMElement* propValueConstListNode = m_xmlCap->AddChildNode(argDefNode, "PropertyValueConstraintList");
-                                                CHECKNULL(propValueConstListNode, L"MgServerGetProviderCapabilities::CreateExpressionCapabilities");
+                                                CHECKNULL(propValueConstListNode, L"MgGetProviderCapabilities::CreateExpressionCapabilities");
 
                                                 FdoPropertyValueConstraintType eConstraintType = fpvc->GetConstraintType();
 
@@ -711,7 +709,7 @@ void MgServerGetProviderCapabilities::CreateExpressionCapabilities2()
                                                         for (int l=0; l<dvCnt; l++)
                                                         {
                                                             FdoPtr<FdoDataValue> dv = dvc->GetItem(l);
-                                                            CHECKNULL((FdoDataValue*)dv, L"MgServerGetProviderCapabilities::CreateExpressionCapabilities");
+                                                            CHECKNULL((FdoDataValue*)dv, L"MgGetProviderCapabilities::CreateExpressionCapabilities");
                                                             FdoDataType dataType = dv->GetDataType();
                                                             // FdoDataType_String is the only supported type
                                                             if (dataType == FdoDataType_String)
@@ -738,19 +736,19 @@ void MgServerGetProviderCapabilities::CreateExpressionCapabilities2()
     }
 }
 
-void MgServerGetProviderCapabilities::CreateRasterCapabilities()
+void MgGetProviderCapabilities::CreateRasterCapabilities()
 {
-    CHECKNULL(m_xmlCap, L"MgServerGetProviderCapabilities::CreateRasterCapabilities");
-    CHECKNULL(m_fdoConn, L"MgServerGetProviderCapabilities::CreateRasterCapabilities");
+    CHECKNULL(m_xmlCap, L"MgGetProviderCapabilities::CreateRasterCapabilities");
+    CHECKNULL(m_fdoConn, L"MgGetProviderCapabilities::CreateRasterCapabilities");
 
     FdoPtr<FdoIRasterCapabilities> frc = m_fdoConn->GetRasterCapabilities();
-    CHECKNULL((FdoIRasterCapabilities*)frc, L"MgServerGetProviderCapabilities::CreateRasterCapabilities");
+    CHECKNULL((FdoIRasterCapabilities*)frc, L"MgGetProviderCapabilities::CreateRasterCapabilities");
 
     DOMElement* root = m_xmlCap->GetRootNode();
-    CHECKNULL(root, L"MgServerGetProviderCapabilities::CreateRasterCapabilities");
+    CHECKNULL(root, L"MgGetProviderCapabilities::CreateRasterCapabilities");
 
     DOMElement* rasterNode = m_xmlCap->AddChildNode(root, "Raster");
-    CHECKNULL(rasterNode, L"MgServerGetProviderCapabilities::CreateRasterCapabilities");
+    CHECKNULL(rasterNode, L"MgGetProviderCapabilities::CreateRasterCapabilities");
 
     // Supports Raster
     bool supportsRaster = frc->SupportsRaster();
@@ -765,10 +763,10 @@ void MgServerGetProviderCapabilities::CreateRasterCapabilities()
 
 }
 
-void MgServerGetProviderCapabilities::CreateTopologyCapabilities()
+void MgGetProviderCapabilities::CreateTopologyCapabilities()
 {
-    CHECKNULL(m_xmlCap, L"MgServerGetProviderCapabilities::CreateTopologyCapabilities");
-    CHECKNULL(m_fdoConn, L"MgServerGetProviderCapabilities::CreateTopologyCapabilities");
+    CHECKNULL(m_xmlCap, L"MgGetProviderCapabilities::CreateTopologyCapabilities");
+    CHECKNULL(m_fdoConn, L"MgGetProviderCapabilities::CreateTopologyCapabilities");
 
     MG_FEATURE_SERVICE_TRY()
 
@@ -781,10 +779,10 @@ void MgServerGetProviderCapabilities::CreateTopologyCapabilities()
     }
 
     DOMElement* root = m_xmlCap->GetRootNode();
-    CHECKNULL(root, L"MgServerGetProviderCapabilities::CreateTopologyCapabilities");
+    CHECKNULL(root, L"MgGetProviderCapabilities::CreateTopologyCapabilities");
 
     DOMElement* topologyNode = m_xmlCap->AddChildNode(root, "Topology");
-    CHECKNULL(topologyNode, L"MgServerGetProviderCapabilities::CreateTopologyCapabilities");
+    CHECKNULL(topologyNode, L"MgGetProviderCapabilities::CreateTopologyCapabilities");
 
     // Supports Topology
     bool supportsTopology = frc->SupportsTopology();
@@ -804,14 +802,14 @@ void MgServerGetProviderCapabilities::CreateTopologyCapabilities()
     m_xmlCap->AddTextNode(topologyNode, "ConstrainsFeatureMovements", constrainsFeatureMovements);
 
     // TODO: Change this to CATCH_AND_THROW when SimpleDB stops throwing exception of not implemented
-    MG_FEATURE_SERVICE_CATCH(L"MgServerGetProviderCapabilities.CreateTopologyCapabilities")
+    MG_FEATURE_SERVICE_CATCH(L"MgGetProviderCapabilities.CreateTopologyCapabilities")
 
 }
 
-void MgServerGetProviderCapabilities::CreateGeometryCapabilities()
+void MgGetProviderCapabilities::CreateGeometryCapabilities()
 {
-    CHECKNULL(m_xmlCap, L"MgServerGetProviderCapabilities.CreateGeometryCapabilities");
-    CHECKNULL(m_fdoConn, L"MgServerGetProviderCapabilities.CreateGeometryCapabilities");
+    CHECKNULL(m_xmlCap, L"MgGetProviderCapabilities.CreateGeometryCapabilities");
+    CHECKNULL(m_fdoConn, L"MgGetProviderCapabilities.CreateGeometryCapabilities");
 
     MG_FEATURE_SERVICE_TRY()
 
@@ -824,17 +822,17 @@ void MgServerGetProviderCapabilities::CreateGeometryCapabilities()
     }
 
     DOMElement* root = m_xmlCap->GetRootNode();
-    CHECKNULL(root, L"MgServerGetProviderCapabilities.CreateGeometryCapabilities");
+    CHECKNULL(root, L"MgGetProviderCapabilities.CreateGeometryCapabilities");
 
     DOMElement* geometryNode = m_xmlCap->AddChildNode(root, "Geometry");
-    CHECKNULL(geometryNode, L"MgServerGetProviderCapabilities.CreateGeometryCapabilities");
+    CHECKNULL(geometryNode, L"MgGetProviderCapabilities.CreateGeometryCapabilities");
 
     FdoInt32 cnt = 0;
     FdoGeometryType* geomType = fgc->GetGeometryTypes(cnt);
     if (cnt > 0 && geomType != NULL)
     {
         DOMElement* geometryTypeNode = m_xmlCap->AddChildNode(geometryNode, "Types");
-        CHECKNULL(geometryTypeNode, L"MgServerGetProviderCapabilities.CreateGeometryCapabilities");
+        CHECKNULL(geometryTypeNode, L"MgGetProviderCapabilities.CreateGeometryCapabilities");
 
         for (FdoInt32 i=0; i < cnt; i++)
         {
@@ -847,7 +845,7 @@ void MgServerGetProviderCapabilities::CreateGeometryCapabilities()
     if (cnt > 0 && geomCompType != NULL)
     {
         DOMElement* geometryCompNode = m_xmlCap->AddChildNode(geometryNode, "Components");
-        CHECKNULL(geometryCompNode, L"MgServerGetProviderCapabilities.CreateGeometryCapabilities");
+        CHECKNULL(geometryCompNode, L"MgGetProviderCapabilities.CreateGeometryCapabilities");
 
         for (FdoInt32 i=0; i < cnt; i++)
         {
@@ -863,12 +861,12 @@ void MgServerGetProviderCapabilities::CreateGeometryCapabilities()
 
     m_xmlCap->AddTextNode(geometryNode, "Dimensionality", &buff[0]);
 
-    MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgServerGetProviderCapabilities.CreateGeometryCapabilities")
+    MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgGetProviderCapabilities.CreateGeometryCapabilities")
 }
 
-bool MgServerGetProviderCapabilities::IsConnectionOpen()
+bool MgGetProviderCapabilities::IsConnectionOpen()
 {
-    CHECKNULL(m_fdoConn, L"MgServerGetProviderCapabilities.IsConnectionOpen");
+    CHECKNULL(m_fdoConn, L"MgGetProviderCapabilities.IsConnectionOpen");
 
     FdoConnectionState state = m_fdoConn->GetConnectionState();
     if (state != FdoConnectionState_Open)
@@ -877,7 +875,7 @@ bool MgServerGetProviderCapabilities::IsConnectionOpen()
     return true;
 }
 
-bool MgServerGetProviderCapabilities::Initialize()
+bool MgGetProviderCapabilities::Initialize()
 {
     // Thread Capability
     s_FdoThreadCapability[FdoThreadCapability_SingleThreaded]           = "SingleThreaded";

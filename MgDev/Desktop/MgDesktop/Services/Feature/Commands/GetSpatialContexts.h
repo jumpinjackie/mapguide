@@ -25,11 +25,11 @@
 
 class MgFeatureServiceCache;
 
-class MgServerGetSpatialContexts
+class MgGetSpatialContexts
 {
 public:
-    MgServerGetSpatialContexts();
-    ~MgServerGetSpatialContexts();
+    MgGetSpatialContexts();
+    ~MgGetSpatialContexts();
     MgSpatialContextReader* GetSpatialContexts(MgResourceIdentifier* resId);
 
 private:

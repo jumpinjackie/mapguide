@@ -36,7 +36,9 @@ public:
     MgReader* SelectFeatures(MgResourceIdentifier* resource,
                              CREFSTRING className,
                              MgFeatureQueryOptions* options,
-                             bool isSelectAggregate);
+                             bool isSelectAggregate,
+                             bool isExtended = false,
+                             bool withLock = false);
 
 private:
     void  ApplyQueryOptions(bool isSelectAggregate);
@@ -46,6 +48,8 @@ private:
     // void  ApplySpatialFilter();
     void  ApplyOrderingOptions();
     void  ApplyFetchSize();
+
+    MgdScrollableFeatureReader* SelectExtended();
 
     //bool HasCustomProperty() { return m_customPropertyFound; }
     //FdoFunction* GetCustomFunction() { return FDO_SAFE_ADDREF(m_customFunction); }
