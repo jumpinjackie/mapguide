@@ -24,12 +24,12 @@
 #include "Fdo.h"
 #include "FSDSAX2Parser.h"
 
-class MgServerApplySchema
+class MgApplySchema
 {
 /// Constructors/Destructor
 public:
-    MgServerApplySchema();
-    ~MgServerApplySchema();
+    MgApplySchema();
+    ~MgApplySchema();
 public:
     void ApplySchema(MgResourceIdentifier* resource, MgFeatureSchema* schema);
 };

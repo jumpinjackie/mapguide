@@ -188,6 +188,15 @@ MgReader* MgSelectCommand::Execute()
     return new MgdFeatureReader(m_connection, featureReader);
 }
 
+MgReader* MgSelectCommand::ExecuteWithLock()
+{
+    FdoPtr<FdoIFeatureReader> reader;
+    CHECKNULL((FdoISelect*)m_command, L"MgExtendedSelectCommand.Execute");
+
+    reader = m_command->ExecuteWithLock();
+    return new MgdFeatureReader(m_connection, reader);
+}
+
 bool MgSelectCommand::IsSupportedFunction(FdoFunction* fdoFunc)
 {
     FdoPtr<FdoIConnection> fdoConn = m_connection->GetConnection();

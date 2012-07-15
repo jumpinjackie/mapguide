@@ -1,3 +1,6 @@
+#ifndef DESKTOP_EXTENDED_SELECT_COMMAND_H
+#define DESKTOP_EXTENDED_SELECT_COMMAND_H
+
 //
 //  Copyright (C) 2004-2011 by Autodesk, Inc.
 //
@@ -15,16 +18,17 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
-#ifndef _MGSELECTAGGREGATECOMMAND_H_
-#define _MGSELECTAGGREGATECOMMAND_H_
+class MgFdoFeatureReader;
+class MgFdoReaderCollection;
+class MgFdoFilterCollection;
 
-class MgSelectAggregateCommand : public MgFeatureServiceCommand
+class MgExtendedSelectCommand : public MgFeatureServiceCommand
 {
-    DECLARE_CLASSNAME(MgSelectAggregateCommand)
+    DECLARE_CLASSNAME(MgExtendedSelectCommand)
 
 public:
-    MgSelectAggregateCommand(MgResourceIdentifier* resource);
-    virtual ~MgSelectAggregateCommand();
+    MgExtendedSelectCommand(MgResourceIdentifier* resource);
+    virtual ~MgExtendedSelectCommand();
 
     virtual FdoIdentifierCollection* GetPropertyNames();
 
@@ -38,6 +42,9 @@ public:
     virtual void SetOrderingOption( FdoOrderingOption  option );
     virtual FdoOrderingOption GetOrderingOption( );
 
+    void SetOrderingOption( FdoString* name, FdoOrderingOption  option );
+    FdoOrderingOption GetOrderingOption( FdoString* name );
+
     virtual FdoIdentifierCollection* GetGrouping();
     virtual void SetGroupingFilter( FdoFilter* filter );
     virtual FdoFilter* GetGroupingFilter( );
@@ -49,26 +56,27 @@ public:
     virtual FdoFilter* GetFilter();
 
     virtual MgReader* Execute();
-    MgReader* ExecuteJoined(MgStringCollection* idPropNames, bool bForceOneToOne);
+    virtual MgReader* ExecuteWithLock();
+
     virtual bool IsSupportedFunction(FdoFunction* fdoFunc);
+
     virtual bool SupportsSelectGrouping();
     virtual bool SupportsSelectOrdering();
     virtual bool SupportsSelectDistinct();
-
-    virtual MgReader* ExecuteWithLock() { NOT_IMPLEMENTED(L"MgSelectAggregateCommand::ExecuteWithLock"); }
 
     virtual void Dispose()
     {
         delete this;
     }
 
+    MgReader* ExecuteJoined(MgStringCollection* idPropNames, bool bForceOneToOne);
     virtual FdoJoinCriteriaCollection* GetJoinCriteria();
     virtual void SetAlias(FdoString* alias);
 
 private:
     Ptr<MgFeatureConnection> m_connection;
     STRING m_providerName;
-    FdoPtr<FdoISelectAggregates> m_command;
+    FdoPtr<FdoIExtendedSelect> m_command;
 
     FdoPtr<FdoFilter> m_filter;
 };

@@ -24,7 +24,7 @@ class MgFdoFilterCollection;
 
 class MgSelectCommand : public MgFeatureServiceCommand
 {
-    DECLARE_CLASSNAME(MgServerSqlProcessor)
+    DECLARE_CLASSNAME(MgSelectCommand)
 
 public:
     MgSelectCommand(MgResourceIdentifier* resource);
@@ -53,6 +53,7 @@ public:
     virtual FdoFilter* GetFilter();
 
     virtual MgReader* Execute();
+    virtual MgReader* ExecuteWithLock();
 
     virtual bool IsSupportedFunction(FdoFunction* fdoFunc);
 

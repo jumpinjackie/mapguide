@@ -19,19 +19,19 @@
 #include "GetSchemaMapping.h"
 #include "Services/Resource/UnmanagedDataManager.h"
 
-MgServerGetSchemaMapping::MgServerGetSchemaMapping() :
+MgGetSchemaMapping::MgGetSchemaMapping() :
     m_bytes(NULL)
 {
 }
 
-MgServerGetSchemaMapping::~MgServerGetSchemaMapping()
+MgGetSchemaMapping::~MgGetSchemaMapping()
 {
     delete [] m_bytes;
     m_bytes = NULL;
 }
 
 
-MgByteReader* MgServerGetSchemaMapping::GetSchemaMapping(CREFSTRING providerName, CREFSTRING partialConnString)
+MgByteReader* MgGetSchemaMapping::GetSchemaMapping(CREFSTRING providerName, CREFSTRING partialConnString)
 {
     Ptr<MgByteReader> byteReader;
 
@@ -51,7 +51,7 @@ MgByteReader* MgServerGetSchemaMapping::GetSchemaMapping(CREFSTRING providerName
 
         // Create the memory stream
         FdoIoMemoryStreamP fmis = FdoIoMemoryStream::Create();
-        CHECKNULL((FdoIoMemoryStream*)fmis, L"MgServerGetSchemaMapping.GetSchemaMapping");
+        CHECKNULL((FdoIoMemoryStream*)fmis, L"MgGetSchemaMapping.GetSchemaMapping");
 
         FdoXmlWriterP writer = FdoXmlWriter::Create(fmis);
 
@@ -69,26 +69,26 @@ MgByteReader* MgServerGetSchemaMapping::GetSchemaMapping(CREFSTRING providerName
 
         // Get the schema
         FdoPtr<FdoIDescribeSchema> fdoDescribeSchemaCommand = (FdoIDescribeSchema*)fdoConnection->CreateCommand(FdoCommandType_DescribeSchema);
-        CHECKNULL((FdoIDescribeSchema*)fdoDescribeSchemaCommand, L"MgServerGetSchemaMapping.GetSchemaMapping");
+        CHECKNULL((FdoIDescribeSchema*)fdoDescribeSchemaCommand, L"MgGetSchemaMapping.GetSchemaMapping");
 
         // Execute the command
         FdoPtr<FdoFeatureSchemaCollection> fdoFeatureSchemaCollection;
         fdoFeatureSchemaCollection = fdoDescribeSchemaCommand->Execute();
-        CHECKNULL((FdoFeatureSchemaCollection*)fdoFeatureSchemaCollection, L"MgServerGetSchemaMapping.GetSchemaMapping");
+        CHECKNULL((FdoFeatureSchemaCollection*)fdoFeatureSchemaCollection, L"MgGetSchemaMapping.GetSchemaMapping");
 
         // Write to memory stream
         fdoFeatureSchemaCollection->WriteXml(writer);
 
         // Get the schema mapping
         FdoPtr<FdoIDescribeSchemaMapping> fdoDescribeSchemaMappingCommand = (FdoIDescribeSchemaMapping*)fdoConnection->CreateCommand(FdoCommandType_DescribeSchemaMapping);
-        CHECKNULL((FdoIDescribeSchemaMapping*)fdoDescribeSchemaMappingCommand, L"MgServerGetSchemaMapping.GetSchemaMapping");
+        CHECKNULL((FdoIDescribeSchemaMapping*)fdoDescribeSchemaMappingCommand, L"MgGetSchemaMapping.GetSchemaMapping");
 
         fdoDescribeSchemaMappingCommand->SetIncludeDefaults(true);
 
         // Execute the command
         FdoPtr<FdoPhysicalSchemaMappingCollection> fdoPhysicalSchemaMappingCollection;
         fdoPhysicalSchemaMappingCollection = fdoDescribeSchemaMappingCommand->Execute();
-        CHECKNULL((FdoPhysicalSchemaMappingCollection*)fdoPhysicalSchemaMappingCollection, L"MgServerGetSchemaMapping.GetSchemaMapping");
+        CHECKNULL((FdoPhysicalSchemaMappingCollection*)fdoPhysicalSchemaMappingCollection, L"MgGetSchemaMapping.GetSchemaMapping");
 
         // Write to memory stream
         fdoPhysicalSchemaMappingCollection->WriteXml(writer);
@@ -100,7 +100,7 @@ MgByteReader* MgServerGetSchemaMapping::GetSchemaMapping(CREFSTRING providerName
 
         FdoInt64 len = fmis->GetLength();
         m_bytes = new FdoByte[(size_t)len];
-        CHECKNULL(m_bytes, L"MgServerGetSchemaMapping.GetSchemaMapping");
+        CHECKNULL(m_bytes, L"MgGetSchemaMapping.GetSchemaMapping");
 
         fmis->Read(m_bytes, (FdoSize)len);
 
@@ -110,10 +110,10 @@ MgByteReader* MgServerGetSchemaMapping::GetSchemaMapping(CREFSTRING providerName
     }
     else
     {
-        throw new MgConnectionFailedException(L"MgServerGetSchemaMapping::GetSchemaMapping()", __LINE__, __WFILE__, NULL, L"", NULL);
+        throw new MgConnectionFailedException(L"MgGetSchemaMapping::GetSchemaMapping()", __LINE__, __WFILE__, NULL, L"", NULL);
     }
 
-    MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgServerGetSchemaMapping.GetSchemaMapping")
+    MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgGetSchemaMapping.GetSchemaMapping")
 
     return byteReader.Detach();
 }

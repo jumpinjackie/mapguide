@@ -27,11 +27,11 @@ class MgFeatureConnection;
 class MgFeatureCommandCollection;
 class MgIntCollection;
 
-class MgServerUpdateFeatures
+class MgUpdateFeaturesCommand
 {
 public:
-    MgServerUpdateFeatures();
-    ~MgServerUpdateFeatures();
+    MgUpdateFeaturesCommand();
+    ~MgUpdateFeaturesCommand();
     MgPropertyCollection* Execute(MgResourceIdentifier* resource,
                                   MgFeatureCommandCollection* commands,
                                   bool useTransaction);
@@ -39,6 +39,22 @@ public:
     MgPropertyCollection* Execute(MgResourceIdentifier* resource,
                                   MgFeatureCommandCollection* commands,
                                   MgTransaction* transaction);
+
+    MgFeatureReader* ExecuteInsert(MgResourceIdentifier* resource, CREFSTRING className, MgPropertyCollection* propertyValues);
+
+    MgFeatureReader* ExecuteInsert(MgResourceIdentifier* resource, CREFSTRING className, MgPropertyCollection* propertyValues, MgTransaction* trans);
+
+    MgPropertyCollection* ExecuteInsert(MgResourceIdentifier* resource, CREFSTRING className, MgBatchPropertyCollection* batchPropertyValues);
+
+    MgPropertyCollection* ExecuteInsert(MgResourceIdentifier* resource, CREFSTRING className, MgBatchPropertyCollection* batchPropertyValues, MgTransaction* trans);
+
+	int ExecuteUpdate(MgResourceIdentifier* resource, CREFSTRING className, MgPropertyCollection* propertyValues, CREFSTRING filter);
+
+    int ExecuteUpdate(MgResourceIdentifier* resource, CREFSTRING className, MgPropertyCollection* propertyValues, CREFSTRING filter, MgTransaction* trans);
+
+	int ExecuteDelete(MgResourceIdentifier* resource, CREFSTRING className, CREFSTRING filter);
+
+	int ExecuteDelete(MgResourceIdentifier* resource, CREFSTRING className, CREFSTRING filter, MgTransaction* trans);
 
 private:
     void Connect(MgResourceIdentifier* resource, MgTransaction* transaction);

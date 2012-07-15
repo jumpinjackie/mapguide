@@ -23,11 +23,11 @@
 #include "System/XmlUtil.h"
 #include "Fdo.h"
 
-class MgServerGetLongTransactions
+class MgGetLongTransactions
 {
 public:
-    MgServerGetLongTransactions();
-    ~MgServerGetLongTransactions();
+    MgGetLongTransactions();
+    ~MgGetLongTransactions();
     MgLongTransactionReader* GetLongTransactions(MgResourceIdentifier* resId, bool bActiveOnly);
     MgLongTransactionData* GetLongTransactionData(FdoILongTransactionReader* longTransactionReader);
 

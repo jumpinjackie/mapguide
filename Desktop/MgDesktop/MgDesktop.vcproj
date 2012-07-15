@@ -760,6 +760,42 @@
 				</FileConfiguration>
 			</File>
 			<File
+				RelativePath=".\Services\Feature\Commands\DescribeSchema.cpp"
+				>
+				<FileConfiguration
+					Name="Debug|Win32"
+					ExcludedFromBuild="true"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|x64"
+					ExcludedFromBuild="true"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32"
+					ExcludedFromBuild="true"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|x64"
+					ExcludedFromBuild="true"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+					/>
+				</FileConfiguration>
+			</File>
+			<File
 				RelativePath=".\Services\DrawingService.cpp"
 				>
 				<FileConfiguration
@@ -977,6 +1013,42 @@
 			</File>
 			<File
 				RelativePath=".\Services\Rendering\DwfVersion.cpp"
+				>
+				<FileConfiguration
+					Name="Debug|Win32"
+					ExcludedFromBuild="true"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|x64"
+					ExcludedFromBuild="true"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32"
+					ExcludedFromBuild="true"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|x64"
+					ExcludedFromBuild="true"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+					/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath=".\Services\Feature\Commands\ExtendedSelectCommand.cpp"
 				>
 				<FileConfiguration
 					Name="Debug|Win32"
@@ -4798,6 +4870,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\Services\Feature\Commands\DescribeSchema.h"
+				>
+			</File>
+			<File
 				RelativePath=".\Services\Feature\DoubleDataReaderCreator.h"
 				>
 			</File>
@@ -4831,6 +4907,10 @@
 			</File>
 			<File
 				RelativePath=".\Services\Rendering\DwfVersion.h"
+				>
+			</File>
+			<File
+				RelativePath=".\Services\Feature\Commands\ExtendedSelectCommand.h"
 				>
 			</File>
 			<File

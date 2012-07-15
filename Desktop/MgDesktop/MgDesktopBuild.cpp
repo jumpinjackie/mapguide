@@ -77,6 +77,8 @@
 #include "Services/Feature/TransformCache.cpp"
 #include "Services/Feature/Commands/ApplySchema.cpp"
 #include "Services/Feature/Commands/DeleteCommand.cpp"
+#include "Services/Feature/Commands/DescribeSchema.cpp"
+#include "Services/Feature/Commands/ExtendedSelectCommand.cpp"
 #include "Services/Feature/Commands/FeatureManipulationCommand.cpp"
 #include "Services/Feature/Commands/FeatureServiceCommand.cpp"
 #include "Services/Feature/Commands/GetConnectionPropertyValues.cpp"

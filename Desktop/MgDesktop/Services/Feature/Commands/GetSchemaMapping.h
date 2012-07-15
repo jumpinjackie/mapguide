@@ -23,11 +23,11 @@
 #include "System/XmlUtil.h"
 #include "Fdo.h"
 
-class MgServerGetSchemaMapping
+class MgGetSchemaMapping
 {
 public:
-    MgServerGetSchemaMapping();
-    ~MgServerGetSchemaMapping();
+    MgGetSchemaMapping();
+    ~MgGetSchemaMapping();
 
 
     MgByteReader* GetSchemaMapping(CREFSTRING providerName, CREFSTRING partialConnString);

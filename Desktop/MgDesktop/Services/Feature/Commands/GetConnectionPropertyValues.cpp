@@ -21,16 +21,16 @@
 #include "Services/Feature/FeatureUtil.h"
 #include "Services/CryptoDefs.h"
 
-MgServerGetConnectionPropertyValues::MgServerGetConnectionPropertyValues()
+MgGetConnectionPropertyValues::MgGetConnectionPropertyValues()
 {
 }
 
-MgServerGetConnectionPropertyValues::~MgServerGetConnectionPropertyValues()
+MgGetConnectionPropertyValues::~MgGetConnectionPropertyValues()
 {
 }
 
 // Executes the describe schema command and serializes the schema to XML
-MgStringCollection* MgServerGetConnectionPropertyValues::GetConnectionPropertyValues( CREFSTRING providerName,
+MgStringCollection* MgGetConnectionPropertyValues::GetConnectionPropertyValues( CREFSTRING providerName,
                                                                                       CREFSTRING propertyName,
                                                                                       CREFSTRING partialConnString )
 {
@@ -44,7 +44,7 @@ MgStringCollection* MgServerGetConnectionPropertyValues::GetConnectionPropertyVa
         arguments.Add(L"1");
         arguments.Add(MgResources::BlankArgument);
 
-        throw new MgInvalidArgumentException(L"MgServerGetConnectionPropertyValues.GetConnectionPropertyValues",
+        throw new MgInvalidArgumentException(L"MgGetConnectionPropertyValues.GetConnectionPropertyValues",
             __LINE__, __WFILE__, &arguments, L"MgStringEmpty", NULL);
     }
 
@@ -54,7 +54,7 @@ MgStringCollection* MgServerGetConnectionPropertyValues::GetConnectionPropertyVa
         arguments.Add(L"2");
         arguments.Add(MgResources::BlankArgument);
 
-        throw new MgInvalidArgumentException(L"MgServerGetConnectionPropertyValues.GetConnectionPropertyValues",
+        throw new MgInvalidArgumentException(L"MgGetConnectionPropertyValues.GetConnectionPropertyValues",
             __LINE__, __WFILE__, &arguments, L"MgStringEmpty", NULL);
     }
 
@@ -72,7 +72,7 @@ MgStringCollection* MgServerGetConnectionPropertyValues::GetConnectionPropertyVa
         cryptoUtil.DecryptString(cipherText, plainText);
         MgUtil::MultiByteToWideChar(plainText, decryptedPartialConnString);
 
-        MG_CRYPTOGRAPHY_CATCH(L"MgServerGetConnectionPropertyValues.GetConnectionPropertyValues")
+        MG_CRYPTOGRAPHY_CATCH(L"MgGetConnectionPropertyValues.GetConnectionPropertyValues")
 
         if (cryptographyException != NULL)
         {
@@ -90,21 +90,21 @@ MgStringCollection* MgServerGetConnectionPropertyValues::GetConnectionPropertyVa
     {
         if(NULL == msfc.p)
         {
-            throw new MgConnectionFailedException(L"MgServerGetConnectionPropertyValues.GetConnectionPropertyValues", __LINE__, __WFILE__, NULL, L"", NULL);
+            throw new MgConnectionFailedException(L"MgGetConnectionPropertyValues.GetConnectionPropertyValues", __LINE__, __WFILE__, NULL, L"", NULL);
         }
 
         // The reference to the FDO connection from the MgFeatureConnection object must be cleaned up before the parent object
         // otherwise it leaves the FDO connection marked as still in use.
         FdoPtr<FdoIConnection> fdoConn = msfc->GetConnection();
-        CHECKNULL((FdoIConnection*)fdoConn, L"MgServerGetConnectionPropertyValues.GetConnectionPropertyValues");
+        CHECKNULL((FdoIConnection*)fdoConn, L"MgGetConnectionPropertyValues.GetConnectionPropertyValues");
 
         // Get Connection Info
         FdoPtr<FdoIConnectionInfo> connInfo = fdoConn->GetConnectionInfo();
-        CHECKNULL((FdoIConnectionInfo*)connInfo, L"MgServerGetConnectionPropertyValues.GetConnectionPropertyValues");
+        CHECKNULL((FdoIConnectionInfo*)connInfo, L"MgGetConnectionPropertyValues.GetConnectionPropertyValues");
 
         // Get Connection Property Dictionary
         FdoPtr<FdoIConnectionPropertyDictionary> fdoConnPropDict = connInfo->GetConnectionProperties();
-        CHECKNULL((FdoIConnectionPropertyDictionary*)fdoConnPropDict, L"MgServerGetConnectionPropertyValues.GetConnectionPropertyValues");
+        CHECKNULL((FdoIConnectionPropertyDictionary*)fdoConnPropDict, L"MgGetConnectionPropertyValues.GetConnectionPropertyValues");
 
         bool enumerable = fdoConnPropDict->IsPropertyEnumerable((FdoString*)propertyName.c_str());
         if (!enumerable)
@@ -113,7 +113,7 @@ MgStringCollection* MgServerGetConnectionPropertyValues::GetConnectionPropertyVa
             arguments.Add(L"2");
             arguments.Add(propertyName);
 
-            throw new MgInvalidArgumentException(L"MgServerGetConnectionPropertyValues.GetConnectionPropertyValues",
+            throw new MgInvalidArgumentException(L"MgGetConnectionPropertyValues.GetConnectionPropertyValues",
                 __LINE__, __WFILE__, &arguments, L"MgPropertyNotEnumerable", NULL);
         }
 
@@ -130,7 +130,7 @@ MgStringCollection* MgServerGetConnectionPropertyValues::GetConnectionPropertyVa
         }
     }
 
-    MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgServerGetConnectionPropertyValues.GetConnectionPropertyValues")
+    MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgGetConnectionPropertyValues.GetConnectionPropertyValues")
 
     return stringCol.Detach();
 }

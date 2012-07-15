@@ -25,13 +25,13 @@
 */
 
 #define TEST_COORDINATE_SYSTEM  0
-#define TEST_LOG_MANAGER        0
-#define TEST_RESOURCE_SERVICE   0
+#define TEST_LOG_MANAGER        1
+#define TEST_RESOURCE_SERVICE   1
 #define TEST_FEATURE_SERVICE    1
-#define TEST_MAPPING_SERVICE    0
-#define TEST_PROFILING_SERVICE  0
-#define TEST_RENDERING_SERVICE  0
-#define TEST_TILE_SERVICE       0
+#define TEST_MAPPING_SERVICE    1
+#define TEST_PROFILING_SERVICE  1
+#define TEST_RENDERING_SERVICE  1
+#define TEST_TILE_SERVICE       1
 
 int main(int argc, char** argv)
 {
