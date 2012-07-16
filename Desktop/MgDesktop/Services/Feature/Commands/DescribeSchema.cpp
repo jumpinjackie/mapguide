@@ -1026,6 +1026,8 @@ MgClassDefinition* MgDescribeSchema::GetClassDefinition(  MgResourceIdentifier* 
 
     MG_FEATURE_SERVICE_TRY()
 
+    CHECK_FEATURE_SOURCE_ARGUMENT(resource, L"MgDescribeSchema::GetClassDefinition");
+
     if (className.empty())
     {
         throw new MgClassNotFoundException(

@@ -1,27 +1,17 @@
 #include "FSDSAX2Parser.h"
 #include "FeatureService.h"
 #include "ResourceService.h"
-#include "Services/Feature/FeatureConnection.h"
-#include "Services/Feature/FeatureDefs.h"
-#include "Services/Feature/FeatureServiceCache.h"
-#include "Services/Feature/FdoForcedOneToOneFeatureReader.h"
-#include "Services/Feature/RdbmsFeatureSourceParams.h"
 #include "ServiceFactory.h"
 #include "Fdo.h"
-#include "FdoExpressionEngine.h"
-#include "FdoExpressionEngineCopyFilter.h"
 #include "PlatformBase.h"
-#include "Services/Feature/FeatureUtil.h"
+
 #include "FeatureReader.h"
 #include "ScrollableFeatureReader.h"
 #include "DataReader.h"
 #include "SqlReader.h"
 
-#include "Services/Feature/FeatureDistribution.h"
+#include "Services/Feature/FeatureUtil.h"
 #include "Services/Feature/ProjectedFeatureReader.h"
-#include "Services/Feature/GwsFeatureReader.h"
-#include "Services/Feature/GwsConnectionPool.h"
-#include "GwsQueryEngineImp.h"
 
 #include "Services/Feature/Commands/ApplySchema.h"
 #include "Services/Feature/Commands/CreateFeatureSource.h"
@@ -1438,14 +1428,8 @@ MgSqlDataReader* MgdFeatureService::ExecuteSqlQuery(MgResourceIdentifier* resour
     if (sqlStatement.empty())
         throw new MgInvalidArgumentException(L"MgdFeatureService::ExecuteSqlQuery", __LINE__, __WFILE__, NULL, L"", NULL);
 
-	Ptr<MgFeatureConnection> connWrap = new MgFeatureConnection(resource);
-    FdoPtr<FdoIConnection> conn = connWrap->GetConnection();
-
-	FdoPtr<FdoISQLCommand> sql = (FdoISQLCommand*)conn->CreateCommand(FdoCommandType_SQLCommand);
-	sql->SetSQLStatement(sqlStatement.c_str());
-
-	FdoPtr<FdoISQLDataReader> fdoReader = sql->ExecuteReader();
-	reader = new MgdSqlDataReader(connWrap, fdoReader);
+	MgSqlCommand cmd;
+    reader = cmd.ExecuteQuery(resource, sqlStatement, NULL, NULL);
 
     // Successful operation
     MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Success.c_str());
@@ -1854,7 +1838,13 @@ MgClassDefinition* MgdFeatureService::GetClassDefinition(MgResourceIdentifier* r
     MG_LOG_OPERATION_MESSAGE_ADD_STRING(className.c_str());
     MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
 
-	ret = GetClassDefinition(resource, schemaName, className, true);
+    MgDescribeSchema cmd;
+    Ptr<MgClassDefinition> clsDef = cmd.GetClassDefinition(resource, schemaName, className, true);
+
+    //In MapGuide Server returning this potentially cached copy is okay as a new instance is created
+    //travelling the server/webtier boundary. This is not the case in mg-desktop so we have to clone
+    //this result and return the clone instead.
+    ret = MgFeatureUtil::CloneMgClassDefinition(clsDef);
 
     // Successful operation
     MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Success.c_str());
