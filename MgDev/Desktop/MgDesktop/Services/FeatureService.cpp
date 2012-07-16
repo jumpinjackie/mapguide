@@ -1,7 +1,6 @@
 #include "FSDSAX2Parser.h"
 #include "FeatureService.h"
 #include "ResourceService.h"
-#include "Services/Feature/CreateFeatureSource.h"
 #include "Services/Feature/FeatureConnection.h"
 #include "Services/Feature/FeatureDefs.h"
 #include "Services/Feature/FeatureServiceCache.h"
@@ -25,7 +24,9 @@
 #include "GwsQueryEngineImp.h"
 
 #include "Services/Feature/Commands/ApplySchema.h"
+#include "Services/Feature/Commands/CreateFeatureSource.h"
 #include "Services/Feature/Commands/DescribeSchema.h"
+#include "Services/Feature/Commands/EnumerateDataStores.h"
 #include "Services/Feature/Commands/GetConnectionPropertyValues.h"
 #include "Services/Feature/Commands/GetFeatureProviders.h"
 #include "Services/Feature/Commands/GetLongTransactions.h"
@@ -1995,38 +1996,8 @@ MgByteReader* MgdFeatureService::EnumerateDataStores(CREFSTRING providerName, CR
     MG_LOG_OPERATION_MESSAGE_ADD_STRING(partialConnString.c_str());
     MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
 
-    if (providerName.empty())
-        throw new MgInvalidArgumentException(L"MgdFeatureService::EnumerateDataStores", __LINE__, __WFILE__, NULL, L"", NULL);
-    
-    Ptr<MgFeatureConnection> connWrap = new MgFeatureConnection(providerName, partialConnString);
-	FdoPtr<FdoIConnection> conn = connWrap->GetConnection();
+    MgEnumerateDataStores cmd;
 
-	FdoPtr<FdoIListDataStores> list = (FdoIListDataStores*)conn->CreateCommand(FdoCommandType_ListDataStores);
-	list->SetIncludeNonFdoEnabledDatastores(true);
-	
-	FdoPtr<FdoIDataStoreReader> dsReader = list->Execute();
-
-	STRING xml = L"<DataStoreList>\n";
-
-	while (dsReader->ReadNext())
-	{
-		xml += L"\t<DataStore>\n";
-		xml += L"\t\t<Name>";
-		xml += dsReader->GetName();
-		xml += L"</Name>\n";
-		xml += L"\t\t<FdoEnabled>\n";
-		xml += dsReader->GetIsFdoEnabled() ? L"true" : L"false";
-		xml += L"</FdoEnabled>\n";
-		xml += L"\t</DataStore>\n";
-	}
-	dsReader->Close();
-
-	xml += L"</DataStoreList>";
-
-	string utf8Text = MgUtil::WideCharToMultiByte(xml);
-    Ptr<MgByteSource> byteSource = new MgByteSource((BYTE_ARRAY_IN) utf8Text.c_str(), (INT32)utf8Text.length());
-    byteSource->SetMimeType(MgMimeType::Xml);
-	reader = byteSource->GetReader();
 
     // Successful operation
     MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Success.c_str());

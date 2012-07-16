@@ -46,7 +46,6 @@
 
 #include "Services/Drawing/DrawingServiceUtil.cpp"
 
-#include "Services/Feature/CreateFeatureSource.cpp"
 #include "Services/Feature/FdoConnectionPool.cpp"
 #include "Services/Feature/FdoConnectionUtil.cpp"
 #include "Services/Feature/FdoFeatureReader.cpp"
@@ -76,8 +75,10 @@
 #include "Services/Feature/SpatialContextCacheItem.cpp"
 #include "Services/Feature/TransformCache.cpp"
 #include "Services/Feature/Commands/ApplySchema.cpp"
+#include "Services/Feature/Commands/CreateFeatureSource.cpp"
 #include "Services/Feature/Commands/DeleteCommand.cpp"
 #include "Services/Feature/Commands/DescribeSchema.cpp"
+#include "Services/Feature/Commands/EnumerateDataStores.cpp"
 #include "Services/Feature/Commands/ExtendedSelectCommand.cpp"
 #include "Services/Feature/Commands/FeatureManipulationCommand.cpp"
 #include "Services/Feature/Commands/FeatureServiceCommand.cpp"

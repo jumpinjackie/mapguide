@@ -1,7 +1,7 @@
 #include "MgDesktop.h"
 #include "CreateFeatureSource.h"
-#include "FdoConnectionUtil.h"
-#include "FeatureUtil.h"
+#include "Services/Feature/FdoConnectionUtil.h"
+#include "Services/Feature/FeatureUtil.h"
 
 MgCreateFeatureSource::MgCreateFeatureSource()
 {
