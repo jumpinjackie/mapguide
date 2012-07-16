@@ -580,7 +580,7 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath=".\Services\Feature\CreateFeatureSource.cpp"
+				RelativePath=".\Services\Feature\Commands\CreateFeatureSource.cpp"
 				>
 				<FileConfiguration
 					Name="Debug|Win32"
@@ -1013,6 +1013,42 @@
 			</File>
 			<File
 				RelativePath=".\Services\Rendering\DwfVersion.cpp"
+				>
+				<FileConfiguration
+					Name="Debug|Win32"
+					ExcludedFromBuild="true"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|x64"
+					ExcludedFromBuild="true"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32"
+					ExcludedFromBuild="true"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|x64"
+					ExcludedFromBuild="true"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+					/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath=".\Services\Feature\Commands\EnumerateDataStores.cpp"
 				>
 				<FileConfiguration
 					Name="Debug|Win32"
@@ -4838,7 +4874,7 @@
 				>
 			</File>
 			<File
-				RelativePath=".\Services\Feature\CreateFeatureSource.h"
+				RelativePath=".\Services\Feature\Commands\CreateFeatureSource.h"
 				>
 			</File>
 			<File
@@ -4907,6 +4943,10 @@
 			</File>
 			<File
 				RelativePath=".\Services\Rendering\DwfVersion.h"
+				>
+			</File>
+			<File
+				RelativePath=".\Services\Feature\Commands\EnumerateDataStores.h"
 				>
 			</File>
 			<File
