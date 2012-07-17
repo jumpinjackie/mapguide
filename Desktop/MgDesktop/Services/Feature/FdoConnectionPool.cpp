@@ -3,6 +3,9 @@
 #include "FdoConnectionPool.h"
 #include "FdoConnectionUtil.h"
 
+INT64 MgFdoConnectionPool::sm_nConnectionsRequested = 0L;
+INT64 MgFdoConnectionPool::sm_nConnectionsReturned = 0L;
+
 //connection pool record -- contains database pointer
 //plus extra timing information/status
 struct PoolRec
@@ -100,6 +103,8 @@ FdoIConnection* MgFdoConnectionPool::GetConnection(MgResourceIdentifier* feature
 
     MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgFdoConnectionPool::GetConnection")
 
+    sm_nConnectionsRequested++;
+
     return conn.Detach();
 }
 
@@ -110,8 +115,11 @@ void MgFdoConnectionPool::ReturnConnection(MgFeatureConnection* conn)
     ScopedLock scc(g_pool.mutex);
     STRING providerName = conn->GetProviderName();
     FdoPtr<FdoIConnection> fdoConn = conn->GetConnection();
+    
+    STRING fsIdStr;
     Ptr<MgResourceIdentifier> fsId = conn->GetFeatureSource();
-    STRING fsIdStr = fsId->ToString();
+    if (NULL != fsId.p)
+        fsIdStr = fsId->ToString();
 
     bool bReturned = false;
     bool bProviderExcluded = false;
@@ -153,10 +161,15 @@ void MgFdoConnectionPool::ReturnConnection(MgFeatureConnection* conn)
     logDetail.Create();
 
     MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgFdoConnectionPool::ReturnConnection")
+
+    sm_nConnectionsReturned++;
 }
 
 void MgFdoConnectionPool::Initialize(MgConfiguration* pConfiguration)
 {
+    sm_nConnectionsRequested = 0L;
+    sm_nConnectionsReturned = 0L;
+
     MG_FEATURE_SERVICE_TRY()
 
     bool bDataConnectionPoolEnabled = MgConfigProperties::DefaultFeatureServicePropertyDataConnectionPoolEnabled;
@@ -210,9 +223,17 @@ void MgFdoConnectionPool::Cleanup()
 {
     MG_FEATURE_SERVICE_TRY()
 
-    MG_LOG_TRACE_ENTRY(L"MgFdoConnectionPool::Cleanup()");
-
     ScopedLock scc(g_pool.mutex);
+
+    MgLogDetail logDetail(MgServiceType::FeatureService, MgLogDetail::InternalTrace, L"MgFdoConnectionPool::Cleanup", mgStackParams);
+    logDetail.AddInt64(L"ConnectionsRequested", sm_nConnectionsRequested);
+    logDetail.AddInt64(L"ConnectionsReturned", sm_nConnectionsReturned);
+    logDetail.Create();
+
+    if (sm_nConnectionsRequested != sm_nConnectionsReturned)
+    {
+        ACE_DEBUG((LM_INFO, ACE_TEXT("[WARNING] %d connections have leaked for this session (ie. not returned)\n"), (sm_nConnectionsRequested - sm_nConnectionsReturned)));
+    }
     
     for (ConnPool::iterator it = g_pool.freePool.begin(); it != g_pool.freePool.end(); ++it)
     {

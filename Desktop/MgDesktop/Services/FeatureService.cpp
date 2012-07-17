@@ -159,14 +159,14 @@ bool MgdFeatureService::TestConnection(MgResourceIdentifier* resource)
 
     MG_FEATURE_SERVICE_TRY()
 
+    CHECK_FEATURE_SOURCE_ARGUMENT(resource, L"MgdFeatureService::TestConnection");
+
     MG_LOG_OPERATION_MESSAGE_INIT(MG_API_VERSION(1, 0, 0), 1);
     MG_LOG_OPERATION_MESSAGE_PARAMETERS_START();
     MG_LOG_OPERATION_MESSAGE_ADD_STRING((NULL == resource) ? L"MgResourceIdentifier" : resource->ToString().c_str());
     MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
 
     MG_LOG_TRACE_ENTRY(L"MgdFeatureService::TestConnection()");
-
-    CHECK_FEATURE_SOURCE_ARGUMENT(resource, L"MgdFeatureService::TestConnection");
 
 	Ptr<MgFeatureConnection> conn = new MgFeatureConnection(resource);
 	ok = conn->IsConnectionOpen();
@@ -274,6 +274,9 @@ void MgdFeatureService::ApplySchema(MgResourceIdentifier* resource, MgFeatureSch
 
     MG_FEATURE_SERVICE_TRY()
 
+    CHECK_FEATURE_SOURCE_ARGUMENT(resource, L"MgdFeatureService::ApplySchema");
+    CHECKARGUMENTNULL(schema, L"MgdFeatureService::ApplySchema");
+
     MG_LOG_OPERATION_MESSAGE_INIT(MG_API_VERSION(1, 0, 0), 2);
     MG_LOG_OPERATION_MESSAGE_PARAMETERS_START();
     MG_LOG_OPERATION_MESSAGE_ADD_STRING((NULL == resource) ? L"MgResourceIdentifier" : resource->ToString().c_str());
@@ -282,9 +285,6 @@ void MgdFeatureService::ApplySchema(MgResourceIdentifier* resource, MgFeatureSch
     MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
 
     MG_LOG_TRACE_ENTRY(L"MgdFeatureService::ApplySchema()");
-
-    CHECK_FEATURE_SOURCE_ARGUMENT(resource, L"MgdFeatureService::ApplySchema");
-    CHECKARGUMENTNULL(schema, L"MgdFeatureService::ApplySchema");
 
     MgApplySchema apply;
     apply.ApplySchema(resource, schema);
@@ -316,7 +316,9 @@ MgFeatureSchemaCollection* MgdFeatureService::DescribeSchema(MgResourceIdentifie
     MG_LOG_OPERATION_MESSAGE(L"DescribeSchema");
 
     MG_FEATURE_SERVICE_TRY()
-
+    
+    CHECK_FEATURE_SOURCE_ARGUMENT(resource, L"MgdFeatureService::DescribeSchema");
+    
     MG_LOG_OPERATION_MESSAGE_INIT(MG_API_VERSION(1, 0, 0), 3);
     MG_LOG_OPERATION_MESSAGE_PARAMETERS_START();
     MG_LOG_OPERATION_MESSAGE_ADD_STRING((NULL == resource) ? L"MgResourceIdentifier" : resource->ToString().c_str());
@@ -423,6 +425,8 @@ MgFeatureSchemaCollection* MgdFeatureService::DescribeSchema(MgResourceIdentifie
 
     MG_FEATURE_SERVICE_TRY()
 
+    CHECK_FEATURE_SOURCE_ARGUMENT(resource, L"MgdFeatureService::DescribeSchema");
+
     MG_LOG_OPERATION_MESSAGE_INIT(MG_API_VERSION(1, 0, 0), 2);
     MG_LOG_OPERATION_MESSAGE_PARAMETERS_START();
     MG_LOG_OPERATION_MESSAGE_ADD_STRING((NULL == resource) ? L"MgResourceIdentifier" : resource->ToString().c_str());
@@ -464,6 +468,8 @@ STRING MgdFeatureService::DescribeSchemaAsXml(MgResourceIdentifier* resource,
 
     MG_FEATURE_SERVICE_TRY()
 
+    CHECK_FEATURE_SOURCE_ARGUMENT(resource, L"MgdFeatureService::DescribeSchemaAsXml");
+
     MG_LOG_OPERATION_MESSAGE_INIT(MG_API_VERSION(1, 0, 0), 3);
     MG_LOG_OPERATION_MESSAGE_PARAMETERS_START();
     MG_LOG_OPERATION_MESSAGE_ADD_STRING((NULL == resource) ? L"MgResourceIdentifier" : resource->ToString().c_str());
@@ -474,8 +480,6 @@ STRING MgdFeatureService::DescribeSchemaAsXml(MgResourceIdentifier* resource,
     MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
 
     MG_LOG_TRACE_ENTRY(L"MgdFeatureService::DescribeSchemaAsXml()");
-
-	CHECK_FEATURE_SOURCE_ARGUMENT(resource, L"MgdFeatureService::DescribeSchemaAsXml");
 
     MgDescribeSchema describe;
     describe.DescribeSchemaAsXml(resource, schemaName, classNames);
@@ -507,6 +511,8 @@ STRING MgdFeatureService::DescribeSchemaAsXml(MgResourceIdentifier* resource,
     MG_LOG_OPERATION_MESSAGE(L"DescribeSchemaAsXml");
 
     MG_FEATURE_SERVICE_TRY()
+
+    CHECK_FEATURE_SOURCE_ARGUMENT(resource, L"MgdFeatureService:DescribeSchemaAsXml");
 
     MG_LOG_OPERATION_MESSAGE_INIT(MG_API_VERSION(1, 0, 0), 2);
     MG_LOG_OPERATION_MESSAGE_PARAMETERS_START();
@@ -626,6 +632,8 @@ MgFeatureReader* MgdFeatureService::SelectFeatures(MgResourceIdentifier* resourc
 
     MG_FEATURE_SERVICE_TRY()
 
+    CHECK_FEATURE_SOURCE_ARGUMENT(resource, L"MgdFeatureService::SelectFeatures");
+
     MG_LOG_OPERATION_MESSAGE_INIT(MG_API_VERSION(1, 0, 0), 3);
     MG_LOG_OPERATION_MESSAGE_PARAMETERS_START();
     MG_LOG_OPERATION_MESSAGE_ADD_STRING((NULL == resource) ? L"MgResourceIdentifier" : resource->ToString().c_str());
@@ -674,6 +682,8 @@ MgFeatureReader* MgdFeatureService::SelectFeatures(MgResourceIdentifier* resourc
     MG_LOG_OPERATION_MESSAGE(L"SelectFeatures");
 
     MG_FEATURE_SERVICE_TRY()
+
+    CHECK_FEATURE_SOURCE_ARGUMENT(resource, L"MgdFeatureService::SelectFeatures");
 
     MG_LOG_OPERATION_MESSAGE_INIT(MG_API_VERSION(1, 0, 0), 4);
     MG_LOG_OPERATION_MESSAGE_PARAMETERS_START();
@@ -771,6 +781,8 @@ MgdScrollableFeatureReader* MgdFeatureService::SelectFeaturesExtended(MgResource
 
     MG_FEATURE_SERVICE_TRY()
 
+    CHECK_FEATURE_SOURCE_ARGUMENT(resource, L"MgdFeatureService::SelectFeatureExtended");
+
     MG_LOG_OPERATION_MESSAGE_INIT(MG_API_VERSION(1, 0, 0), 3);
     MG_LOG_OPERATION_MESSAGE_PARAMETERS_START();
     MG_LOG_OPERATION_MESSAGE_ADD_STRING((NULL == resource) ? L"MgResourceIdentifier" : resource->ToString().c_str());
@@ -821,6 +833,9 @@ MgDataReader* MgdFeatureService::SelectAggregate(MgResourceIdentifier* resource,
 
     MG_FEATURE_SERVICE_TRY()
 
+    CHECK_FEATURE_SOURCE_ARGUMENT(resource, L"MgdFeatureService::SelectAggregate");
+	CHECKARGUMENTNULL(options, L"MgdFeatureService::SelectAggregate");
+
     MG_LOG_OPERATION_MESSAGE_INIT(MG_API_VERSION(1, 0, 0), 3);
     MG_LOG_OPERATION_MESSAGE_PARAMETERS_START();
     MG_LOG_OPERATION_MESSAGE_ADD_STRING((NULL == resource) ? L"MgResourceIdentifier" : resource->ToString().c_str());
@@ -836,9 +851,6 @@ MgDataReader* MgdFeatureService::SelectAggregate(MgResourceIdentifier* resource,
     logDetail.AddObject(L"Options", options);
     logDetail.Create();
 
-	CHECK_FEATURE_SOURCE_ARGUMENT(resource, L"MgdFeatureService::SelectAggregate");
-	CHECKARGUMENTNULL(options, L"MgdFeatureService::SelectAggregate");
-    
     MgSelectFeatures select;
     reader = dynamic_cast<MgDataReader*>(select.SelectFeatures(resource, className, options, true));
     CHECKNULL(reader.p, L"MgdFeatureService::SelectAggregate");
@@ -872,6 +884,9 @@ MgPropertyCollection* MgdFeatureService::UpdateFeatures(MgResourceIdentifier* re
 
     MG_FEATURE_SERVICE_TRY()
 
+    CHECK_FEATURE_SOURCE_ARGUMENT(resource, L"MgdFeatureService::UpdateFeatures");
+    CHECKARGUMENTNULL(commands, L"MgdFeatureService::UpdateFeatures");
+
     MG_LOG_OPERATION_MESSAGE_INIT(MG_API_VERSION(1, 0, 0), 3);
     MG_LOG_OPERATION_MESSAGE_PARAMETERS_START();
     MG_LOG_OPERATION_MESSAGE_ADD_STRING((NULL == resource) ? L"MgResourceIdentifier" : resource->ToString().c_str());
@@ -882,9 +897,6 @@ MgPropertyCollection* MgdFeatureService::UpdateFeatures(MgResourceIdentifier* re
     MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
 
     MG_LOG_TRACE_ENTRY(L"MgdFeatureService::UpdateFeatures()");
-
-	CHECK_FEATURE_SOURCE_ARGUMENT(resource, L"MgdFeatureService::UpdateFeatures");
-    CHECKARGUMENTNULL(commands, L"MgdFeatureService::UpdateFeatures");
 
     MgUpdateFeaturesCommand cmd;
     result = cmd.Execute(resource, commands, useTransaction);
@@ -917,6 +929,8 @@ MgPropertyCollection* MgdFeatureService::UpdateFeatures(MgResourceIdentifier* re
     MG_LOG_OPERATION_MESSAGE(L"UpdateFeatures");
 
     MG_FEATURE_SERVICE_TRY()
+
+    CHECK_FEATURE_SOURCE_ARGUMENT(resource, L"MgdFeatureService::UpdateFeatures");
 
     MG_LOG_OPERATION_MESSAGE_INIT(MG_API_VERSION(1, 0, 0), 3);
     MG_LOG_OPERATION_MESSAGE_PARAMETERS_START();
@@ -962,6 +976,8 @@ MgFeatureReader* MgdFeatureService::InsertFeatures(MgResourceIdentifier* resourc
 
     MG_FEATURE_SERVICE_TRY()
 
+    CHECK_FEATURE_SOURCE_ARGUMENT(resource, L"MgdFeatureService::InsertFeatures");
+
     MG_LOG_OPERATION_MESSAGE_INIT(MG_API_VERSION(1, 0, 0), 3);
     MG_LOG_OPERATION_MESSAGE_PARAMETERS_START();
     MG_LOG_OPERATION_MESSAGE_ADD_STRING((NULL == resource) ? L"MgResourceIdentifier" : resource->ToString().c_str());
@@ -1002,6 +1018,8 @@ MgFeatureReader* MgdFeatureService::InsertFeatures(MgResourceIdentifier* resourc
     MG_LOG_OPERATION_MESSAGE(L"InsertFeatures");
 
     MG_FEATURE_SERVICE_TRY()
+
+    CHECK_FEATURE_SOURCE_ARGUMENT(resource, L"MgdFeatureService::InsertFeatures");
 
     MG_LOG_OPERATION_MESSAGE_INIT(MG_API_VERSION(1, 0, 0), 4);
     MG_LOG_OPERATION_MESSAGE_PARAMETERS_START();
@@ -1046,6 +1064,8 @@ MgPropertyCollection* MgdFeatureService::InsertFeatures(MgResourceIdentifier* re
 
     MG_FEATURE_SERVICE_TRY()
 
+    CHECK_FEATURE_SOURCE_ARGUMENT(resource, L"MgdFeatureService::InsertFeatures");
+
     MG_LOG_OPERATION_MESSAGE_INIT(MG_API_VERSION(1, 0, 0), 3);
     MG_LOG_OPERATION_MESSAGE_PARAMETERS_START();
     MG_LOG_OPERATION_MESSAGE_ADD_STRING((NULL == resource) ? L"MgResourceIdentifier" : resource->ToString().c_str());
@@ -1085,6 +1105,8 @@ MgPropertyCollection* MgdFeatureService::InsertFeatures(MgResourceIdentifier* re
     MG_LOG_OPERATION_MESSAGE(L"InsertFeatures");
 
     MG_FEATURE_SERVICE_TRY()
+
+    CHECK_FEATURE_SOURCE_ARGUMENT(resource, L"MgdFeatureService::InsertFeatures");
 
     MG_LOG_OPERATION_MESSAGE_INIT(MG_API_VERSION(1, 0, 0), 4);
     MG_LOG_OPERATION_MESSAGE_PARAMETERS_START();
@@ -1128,6 +1150,8 @@ int MgdFeatureService::UpdateFeatures(MgResourceIdentifier* resource, CREFSTRING
 
     MG_FEATURE_SERVICE_TRY()
 
+    CHECK_FEATURE_SOURCE_ARGUMENT(resource, L"MgdFeatureService::UpdateFeatures");
+
     MG_LOG_OPERATION_MESSAGE_INIT(MG_API_VERSION(1, 0, 0), 4);
     MG_LOG_OPERATION_MESSAGE_PARAMETERS_START();
     MG_LOG_OPERATION_MESSAGE_ADD_STRING((NULL == resource) ? L"MgResourceIdentifier" : resource->ToString().c_str());
@@ -1168,6 +1192,8 @@ int MgdFeatureService::UpdateFeatures(MgResourceIdentifier* resource, CREFSTRING
     MG_LOG_OPERATION_MESSAGE(L"UpdateFeatures");
 
     MG_FEATURE_SERVICE_TRY()
+
+    CHECK_FEATURE_SOURCE_ARGUMENT(resource, L"MgdFeatureService::UpdateFeatures");
 
     MG_LOG_OPERATION_MESSAGE_INIT(MG_API_VERSION(1, 0, 0), 5);
     MG_LOG_OPERATION_MESSAGE_PARAMETERS_START();
@@ -1214,6 +1240,8 @@ int MgdFeatureService::DeleteFeatures(MgResourceIdentifier* resource, CREFSTRING
 
     MG_FEATURE_SERVICE_TRY()
 
+    CHECK_FEATURE_SOURCE_ARGUMENT(resource, L"MgdFeatureService::DeleteFeatures");
+
     MG_LOG_OPERATION_MESSAGE_INIT(MG_API_VERSION(1, 0, 0), 3);
     MG_LOG_OPERATION_MESSAGE_PARAMETERS_START();
     MG_LOG_OPERATION_MESSAGE_ADD_STRING((NULL == resource) ? L"MgResourceIdentifier" : resource->ToString().c_str());
@@ -1253,6 +1281,8 @@ int MgdFeatureService::DeleteFeatures(MgResourceIdentifier* resource, CREFSTRING
     MG_LOG_OPERATION_MESSAGE(L"DeleteFeatures");
 
     MG_FEATURE_SERVICE_TRY()
+
+    CHECK_FEATURE_SOURCE_ARGUMENT(resource, L"MgdFeatureService::DeleteFeatures");
 
     MG_LOG_OPERATION_MESSAGE_INIT(MG_API_VERSION(1, 0, 0), 4);
     MG_LOG_OPERATION_MESSAGE_PARAMETERS_START();
@@ -1296,6 +1326,8 @@ void MgdFeatureService::PurgeCache(MgResourceIdentifier* resource)
 
     MG_FEATURE_SERVICE_TRY()
 
+    CHECK_FEATURE_SOURCE_ARGUMENT(resource, L"MgdFeatureService::PurgeCache");
+
     MG_LOG_OPERATION_MESSAGE_INIT(MG_API_VERSION(1, 0, 0), 1);
     MG_LOG_OPERATION_MESSAGE_PARAMETERS_START();
     MG_LOG_OPERATION_MESSAGE_ADD_STRING((NULL == resource) ? L"MgResourceIdentifier" : resource->ToString().c_str());
@@ -1333,6 +1365,8 @@ MgFeatureReader* MgdFeatureService::GetLockedFeatures(MgResourceIdentifier* reso
     MG_LOG_OPERATION_MESSAGE(L"GetLockedFeatures");
 
     MG_FEATURE_SERVICE_TRY()
+
+    CHECK_FEATURE_SOURCE_ARGUMENT(resource, L"MgdFeatureService::GetLockedFeatures");
 
     MG_LOG_OPERATION_MESSAGE_INIT(MG_API_VERSION(1, 0, 0), 3);
     MG_LOG_OPERATION_MESSAGE_PARAMETERS_START();
@@ -1376,14 +1410,14 @@ MgTransaction* MgdFeatureService::BeginTransaction(MgResourceIdentifier* resourc
 
     MG_FEATURE_SERVICE_TRY()
 
+    CHECK_FEATURE_SOURCE_ARGUMENT(resource, L"MgdFeatureService::BeginTransaction");
+
     MG_LOG_OPERATION_MESSAGE_INIT(MG_API_VERSION(1, 0, 0), 1);
     MG_LOG_OPERATION_MESSAGE_PARAMETERS_START();
     MG_LOG_OPERATION_MESSAGE_ADD_STRING((NULL == resource) ? L"MgResourceIdentifier" : resource->ToString().c_str());
     MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
 
     MG_LOG_TRACE_ENTRY(L"MgdFeatureService::BeginTransaction()");
-
-	CHECK_FEATURE_SOURCE_ARGUMENT(resource, L"MgdFeatureService::BeginTransaction");
 
     Ptr<MgFeatureConnection> conn = new MgFeatureConnection(resource);
     trans = new MgdTransaction(conn, resource);
@@ -1415,6 +1449,10 @@ MgSqlDataReader* MgdFeatureService::ExecuteSqlQuery(MgResourceIdentifier* resour
 
     MG_FEATURE_SERVICE_TRY()
 
+    CHECK_FEATURE_SOURCE_ARGUMENT(resource, L"MgdFeatureService::ExecuteSqlQuery");
+    if (sqlStatement.empty())
+        throw new MgInvalidArgumentException(L"MgdFeatureService::ExecuteSqlQuery", __LINE__, __WFILE__, NULL, L"", NULL);
+
     MG_LOG_OPERATION_MESSAGE_INIT(MG_API_VERSION(1, 0, 0), 2);
     MG_LOG_OPERATION_MESSAGE_PARAMETERS_START();
     MG_LOG_OPERATION_MESSAGE_ADD_STRING((NULL == resource) ? L"MgResourceIdentifier" : resource->ToString().c_str());
@@ -1423,10 +1461,6 @@ MgSqlDataReader* MgdFeatureService::ExecuteSqlQuery(MgResourceIdentifier* resour
     MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
 
     MG_LOG_TRACE_ENTRY(L"MgdFeatureService::ExecuteSqlQuery()");
-
-	CHECK_FEATURE_SOURCE_ARGUMENT(resource, L"MgdFeatureService::ExecuteSqlQuery");
-    if (sqlStatement.empty())
-        throw new MgInvalidArgumentException(L"MgdFeatureService::ExecuteSqlQuery", __LINE__, __WFILE__, NULL, L"", NULL);
 
 	MgSqlCommand cmd;
     reader = cmd.ExecuteQuery(resource, sqlStatement, NULL, NULL);
@@ -1460,6 +1494,8 @@ MgSqlDataReader* MgdFeatureService::ExecuteSqlQuery(MgResourceIdentifier* resour
     MG_LOG_OPERATION_MESSAGE(L"ExecuteSqlQuery");
 
     MG_FEATURE_SERVICE_TRY()
+
+    CHECK_FEATURE_SOURCE_ARGUMENT(resource, L"MgdFeatureService::ExecuteSqlQuery");
 
     MG_LOG_OPERATION_MESSAGE_INIT(MG_API_VERSION(1, 0, 0), 4);
     MG_LOG_OPERATION_MESSAGE_PARAMETERS_START();
@@ -1529,6 +1565,10 @@ INT32 MgdFeatureService::ExecuteSqlNonQuery(MgResourceIdentifier* resource,
 
     MG_FEATURE_SERVICE_TRY()
 
+    CHECK_FEATURE_SOURCE_ARGUMENT(resource, L"MgdFeatureService::ExecuteSqlNonQuery");
+    if (sqlNonSelectStatement.empty())
+        throw new MgInvalidArgumentException(L"MgdFeatureService::ExecuteSqlNonQuery", __LINE__, __WFILE__, NULL, L"", NULL);
+
     MG_LOG_OPERATION_MESSAGE_INIT(MG_API_VERSION(1, 0, 0), 4);
     MG_LOG_OPERATION_MESSAGE_PARAMETERS_START();
     MG_LOG_OPERATION_MESSAGE_ADD_STRING((NULL == resource) ? L"MgResourceIdentifier" : resource->ToString().c_str());
@@ -1541,10 +1581,6 @@ INT32 MgdFeatureService::ExecuteSqlNonQuery(MgResourceIdentifier* resource,
     MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
 
     MG_LOG_TRACE_ENTRY(L"MgdFeatureService::ExecuteSqlNonQuery()");
-
-    CHECK_FEATURE_SOURCE_ARGUMENT(resource, L"MgdFeatureService::ExecuteSqlNonQuery");
-    if (sqlNonSelectStatement.empty())
-        throw new MgInvalidArgumentException(L"MgdFeatureService::ExecuteSqlNonQuery", __LINE__, __WFILE__, NULL, L"", NULL);
 
     CHECKARGUMENTNULL(params, L"MgdFeatureService::ExecuteSqlQuery");
     CHECKARGUMENTNULL(trans, L"MgdFeatureService::ExecuteSqlQuery");
@@ -1579,6 +1615,10 @@ INT32 MgdFeatureService::ExecuteSqlNonQuery(MgResourceIdentifier* resource,
 
     MG_FEATURE_SERVICE_TRY()
 
+    CHECK_FEATURE_SOURCE_ARGUMENT(resource, L"MgdFeatureService::ExecuteSqlNonQuery");
+    if (sqlNonSelectStatement.empty())
+        throw new MgInvalidArgumentException(L"MgdFeatureService::ExecuteSqlNonQuery", __LINE__, __WFILE__, NULL, L"", NULL);
+
     MG_LOG_OPERATION_MESSAGE_INIT(MG_API_VERSION(1, 0, 0), 2);
     MG_LOG_OPERATION_MESSAGE_PARAMETERS_START();
     MG_LOG_OPERATION_MESSAGE_ADD_STRING((NULL == resource) ? L"MgResourceIdentifier" : resource->ToString().c_str());
@@ -1587,10 +1627,6 @@ INT32 MgdFeatureService::ExecuteSqlNonQuery(MgResourceIdentifier* resource,
     MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
 
     MG_LOG_TRACE_ENTRY(L"MgdFeatureService::ExecuteSqlNonQuery()");
-
-	CHECK_FEATURE_SOURCE_ARGUMENT(resource, L"MgdFeatureService::ExecuteSqlNonQuery");
-    if (sqlNonSelectStatement.empty())
-        throw new MgInvalidArgumentException(L"MgdFeatureService::ExecuteSqlNonQuery", __LINE__, __WFILE__, NULL, L"", NULL);
 
     MgSqlCommand cmd;
     ret = cmd.ExecuteNonQuery(resource, sqlNonSelectStatement, NULL, NULL);
@@ -1621,6 +1657,8 @@ MgSpatialContextReader* MgdFeatureService::GetSpatialContexts(MgResourceIdentifi
     MG_LOG_OPERATION_MESSAGE(L"GetSpatialContexts");
 
     MG_FEATURE_SERVICE_TRY()
+
+    CHECK_FEATURE_SOURCE_ARGUMENT(resId, L"MgdResourceService::GetSpatialContext");
 
     MG_LOG_OPERATION_MESSAGE_INIT(MG_API_VERSION(1, 0, 0), 2);
     MG_LOG_OPERATION_MESSAGE_PARAMETERS_START();
@@ -1666,6 +1704,8 @@ MgLongTransactionReader* MgdFeatureService::GetLongTransactions(MgResourceIdenti
     MG_LOG_OPERATION_MESSAGE(L"GetLongTransactions");
 
     MG_FEATURE_SERVICE_TRY()
+    
+    CHECK_FEATURE_SOURCE_ARGUMENT(resource, L"MgdFeatureService::GetLongTransactions");
 
     MG_LOG_OPERATION_MESSAGE_INIT(MG_API_VERSION(1, 0, 0), 2);
     MG_LOG_OPERATION_MESSAGE_PARAMETERS_START();
@@ -1674,8 +1714,6 @@ MgLongTransactionReader* MgdFeatureService::GetLongTransactions(MgResourceIdenti
     MG_LOG_OPERATION_MESSAGE_ADD_BOOL(bActiveOnly);
     MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
 
-	CHECK_FEATURE_SOURCE_ARGUMENT(resource, L"MgdFeatureService::GetLongTransactions");
-	
     MgGetLongTransactions getTrans;
     reader = getTrans.GetLongTransactions(resource, bActiveOnly);
 
@@ -1706,16 +1744,16 @@ bool MgdFeatureService::SetLongTransaction(MgResourceIdentifier* resource, CREFS
 
     MG_FEATURE_SERVICE_TRY()
 
+    CHECK_FEATURE_SOURCE_ARGUMENT(resource, L"MgdFeatureService::SetLongTransaction");
+    if (longTransactionName.empty())
+        throw new MgNullArgumentException(L"MgdFeatureService::SetLongTransaction", __LINE__, __WFILE__, NULL, L"", NULL);
+
     MG_LOG_OPERATION_MESSAGE_INIT(MG_API_VERSION(1, 0, 0), 2);
     MG_LOG_OPERATION_MESSAGE_PARAMETERS_START();
     MG_LOG_OPERATION_MESSAGE_ADD_STRING((NULL == resource) ? L"MgResourceIdentifier" : resource->ToString().c_str());
     MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
     MG_LOG_OPERATION_MESSAGE_ADD_STRING(longTransactionName.c_str());
     MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
-
-	CHECK_FEATURE_SOURCE_ARGUMENT(resource, L"MgdFeatureService::SetLongTransaction");
-    if (longTransactionName.empty())
-        throw new MgNullArgumentException(L"MgdFeatureService::SetLongTransaction", __LINE__, __WFILE__, NULL, L"", NULL);
 
 	Ptr<MgFeatureConnection> connWrap = new MgFeatureConnection(resource);
 	FdoPtr<FdoIConnection> conn = connWrap->GetConnection();
@@ -1751,12 +1789,12 @@ MgStringCollection* MgdFeatureService::GetSchemas(MgResourceIdentifier* resource
 
     MG_FEATURE_SERVICE_TRY()
 
+    CHECK_FEATURE_SOURCE_ARGUMENT(resource, L"MgdFeatureService::GetSchemas");
+
     MG_LOG_OPERATION_MESSAGE_INIT(MG_API_VERSION(1, 0, 0), 1);
     MG_LOG_OPERATION_MESSAGE_PARAMETERS_START();
     MG_LOG_OPERATION_MESSAGE_ADD_STRING((NULL == resource) ? L"MgResourceIdentifier" : resource->ToString().c_str());
     MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
-
-	CHECK_FEATURE_SOURCE_ARGUMENT(resource, L"MgdFeatureService::GetSchemas");
 
     MgDescribeSchema describe;
     schemaNames = describe.GetSchemas(resource);
@@ -1787,6 +1825,8 @@ MgStringCollection* MgdFeatureService::GetClasses(MgResourceIdentifier* resource
     MG_LOG_OPERATION_MESSAGE(L"GetClasses");
 
     MG_FEATURE_SERVICE_TRY()
+    
+    CHECK_FEATURE_SOURCE_ARGUMENT(resource, L"MgdFeatureService::GetClasses");
 
     MG_LOG_OPERATION_MESSAGE_INIT(MG_API_VERSION(1, 0, 0), 2);
     MG_LOG_OPERATION_MESSAGE_PARAMETERS_START();
@@ -1795,8 +1835,6 @@ MgStringCollection* MgdFeatureService::GetClasses(MgResourceIdentifier* resource
     MG_LOG_OPERATION_MESSAGE_ADD_STRING(schemaName.c_str());
     MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
 
-	CHECK_FEATURE_SOURCE_ARGUMENT(resource, L"MgdFeatureService::GetClasses");
-	
     MgDescribeSchema describe;
     classNames = describe.GetClasses(resource, schemaName);
 
@@ -1828,6 +1866,8 @@ MgClassDefinition* MgdFeatureService::GetClassDefinition(MgResourceIdentifier* r
     MG_LOG_OPERATION_MESSAGE(L"GetClassDefinition");
 
     MG_FEATURE_SERVICE_TRY()
+
+    CHECK_FEATURE_SOURCE_ARGUMENT(resource, L"MgdFeatureService::GetClassDefinition");
 
     MG_LOG_OPERATION_MESSAGE_INIT(MG_API_VERSION(1, 0, 0), 3);
     MG_LOG_OPERATION_MESSAGE_PARAMETERS_START();
@@ -1898,15 +1938,15 @@ void MgdFeatureService::CreateFeatureSource(MgResourceIdentifier* resource, MgFe
 
     MG_FEATURE_SERVICE_TRY()
 
+    CHECK_FEATURE_SOURCE_ARGUMENT(resource, L"MgdFeatureService::CreateFeatureSource");
+    CHECKARGUMENTNULL(sourceParams, L"MgdFeatureService::CreateFeatureSource");
+
     MG_LOG_OPERATION_MESSAGE_INIT(MG_API_VERSION(1, 0, 0), 2);
     MG_LOG_OPERATION_MESSAGE_PARAMETERS_START();
     MG_LOG_OPERATION_MESSAGE_ADD_STRING((NULL == resource) ? L"MgResourceIdentifier" : resource->ToString().c_str());
     MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
     MG_LOG_OPERATION_MESSAGE_ADD_STRING(L"MgFeatureSourceParams");
     MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
-
-    CHECK_FEATURE_SOURCE_ARGUMENT(resource, L"MgdFeatureService::CreateFeatureSource");
-    CHECKARGUMENTNULL(sourceParams, L"MgdFeatureService::CreateFeatureSource");
 
     Ptr<MgCreateFeatureSource> creator = new MgCreateFeatureSource();
     creator->CreateFeatureSource(resource, sourceParams);
@@ -2138,6 +2178,8 @@ MgPropertyDefinitionCollection* MgdFeatureService::GetIdentityProperties(MgResou
 
     MG_FEATURE_SERVICE_TRY()
 
+    CHECK_FEATURE_SOURCE_ARGUMENT(resource, L"MgdFeatureService::GetIdentityProperties");
+
     MG_LOG_OPERATION_MESSAGE_INIT(MG_API_VERSION(1, 0, 0), 3);
     MG_LOG_OPERATION_MESSAGE_PARAMETERS_START();
     MG_LOG_OPERATION_MESSAGE_ADD_STRING((NULL == resource) ? L"MgResourceIdentifier" : resource->ToString().c_str());
@@ -2147,8 +2189,6 @@ MgPropertyDefinitionCollection* MgdFeatureService::GetIdentityProperties(MgResou
     MG_LOG_OPERATION_MESSAGE_ADD_STRING(className.c_str());
     MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
 
-    CHECK_FEATURE_SOURCE_ARGUMENT(resource, L"MgdFeatureService::GetIdentityProperties");
-    
     MgDescribeSchema describe;
     Ptr<MgStringCollection> classNames = new MgStringCollection();
     classNames->Add(className);
@@ -2191,6 +2231,8 @@ MgClassDefinitionCollection* MgdFeatureService::GetIdentityProperties(MgResource
 
     MG_FEATURE_SERVICE_TRY()
 
+    CHECK_FEATURE_SOURCE_ARGUMENT(resource, L"MgdFeatureService::GetIdentityProperties");
+
     MG_LOG_OPERATION_MESSAGE_INIT(MG_API_VERSION(1, 0, 0), 3);
     MG_LOG_OPERATION_MESSAGE_PARAMETERS_START();
     MG_LOG_OPERATION_MESSAGE_ADD_STRING((NULL == resource) ? L"MgResourceIdentifier" : resource->ToString().c_str());
@@ -2200,8 +2242,6 @@ MgClassDefinitionCollection* MgdFeatureService::GetIdentityProperties(MgResource
     MG_LOG_OPERATION_MESSAGE_ADD_STRING((NULL == classNames) ? L"MgStringCollection" : classNames->GetLogString().c_str());
     MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
 
-    CHECK_FEATURE_SOURCE_ARGUMENT(resource, L"MgdFeatureService::GetIdentityProperties");
-    
     MgDescribeSchema describe;
     classDefs = describe.GetIdentityProperties(resource, schemaName, classNames);
 
