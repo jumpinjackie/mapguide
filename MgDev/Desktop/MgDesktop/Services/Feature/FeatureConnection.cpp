@@ -68,13 +68,7 @@ void MgFeatureConnection::Close()
     #ifdef DEBUG_FDO_CONNECTION_POOL
         ACE_DEBUG((LM_INFO, ACE_TEXT("MgFeatureConnection::Close()\n")));
     #endif
-        //Ones initialized with a resource id are poolable and thus must be
-        //returned
-        if (m_bIsCreatedFromFeatureSource)
-            MgFdoConnectionPool::ReturnConnection(this);
-        else
-            m_fdoConn->Close();
-
+        MgFdoConnectionPool::ReturnConnection(this);
         m_fdoConn = NULL;
     }
 }

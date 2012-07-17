@@ -65,11 +65,12 @@ namespace MgAppLayout
             ((Shell)frm).Initialize(layout, provider);
             Application.ApplicationExit += new EventHandler(OnAppExit);
             Application.Run((Shell)frm);
+            MgPlatform.Terminate();
         }
 
         static void OnAppExit(object sender, EventArgs e)
         {
-            MgPlatform.Terminate();
+            
         }
 
         static void Application_ThreadException(object sender, System.Threading.ThreadExceptionEventArgs e)

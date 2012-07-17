@@ -391,14 +391,6 @@ void TestProfilingService::TestEnd()
         m_svcResource->DeleteResource(mapres12);
         Ptr<MgResourceIdentifier> wdfres1 = new MgResourceIdentifier(L"Library://UnitTests/Watermarks/PoweredByMapGuide.WatermarkDefinition");
         m_svcResource->DeleteResource(wdfres1);
-
-       #ifdef _DEBUG
-        MgFdoConnectionManager* pFdoConnectionManager = MgFdoConnectionManager::GetInstance();
-        if(pFdoConnectionManager)
-        {
-            pFdoConnectionManager->ShowCache();
-        }
-        #endif
     }
     catch(MgFileIoException* e)
     {

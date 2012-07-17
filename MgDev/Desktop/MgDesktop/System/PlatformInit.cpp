@@ -174,15 +174,15 @@ void MgPlatform::Terminate()
     MG_LOG_TRACE_ENTRY(L"MgPlatform::Terminate()");
     MG_TRY()
 
-    MgFdoConnectionPool::Cleanup();
-
-    Ptr<MgServiceFactory> fact = new MgServiceFactory();;
-    Ptr<MgdResourceService> resSvc = dynamic_cast<MgdResourceService*>(fact->CreateService(MgServiceType::ResourceService));
-    resSvc->DeleteSessionFiles();
+    //MgFdoConnectionPool::Cleanup();
 
     //This is important. Otherwise the process using this library will be left lingering
     MgLogManager* pLogManager = MgLogManager::GetInstance();
     pLogManager->StopLogThread();
+
+    Ptr<MgServiceFactory> fact = new MgServiceFactory();;
+    Ptr<MgdResourceService> resSvc = dynamic_cast<MgdResourceService*>(fact->CreateService(MgServiceType::ResourceService));
+    resSvc->DeleteSessionFiles();
 
     XMLPlatformUtils::Terminate();
     ACE::fini();
