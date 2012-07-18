@@ -1,6 +1,13 @@
 #ifndef DESKTOP_FDO_CONNECTION_UTIL_H
 #define DESKTOP_FDO_CONNECTION_UTIL_H
 
+#define RELEASE_AND_DEBUG_FDO_CONNECTION_REF_COUNT(methodName, fdoConn, expectedRefCount) \
+    FdoInt32 iRefCount = fdoConn->Release(); \
+    if (iRefCount != expectedRefCount) \
+    { \
+        ACE_DEBUG((LM_INFO, ACE_TEXT("[%W - WARNING] Expected refcount of %d. Instead, got a refcount of %d\n"), methodName, expectedRefCount, iRefCount)); \
+    } \
+
 class MgFdoConnectionPool;
 class FdoIConnection;
 class MgResourceIdentifier;
