@@ -131,7 +131,7 @@ void MgCreateFileFeatureSource::CreateFeatureSource(bool bCheckFeatureClass, boo
         CreateDataStore(conn);
         ApplySchemaAndCreateSpatialContext(conn);
 
-        conn->Close();
+        MgFdoConnectionUtil::CloseConnection(conn);
 
         Ptr<MgResourceService> resourceService = GetResourceService();
         if (NULL != (MgResourceService*)resourceService)

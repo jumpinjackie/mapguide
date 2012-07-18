@@ -5,8 +5,13 @@
 #include "Services/Resource/UnmanagedDataManager.h"
 #include "CryptographyUtil.h"
 
+INT64 MgFdoConnectionUtil::sm_nConnectionsCreated = 0L;
+INT64 MgFdoConnectionUtil::sm_nConnectionsClosed = 0L;
+
 FdoIConnection* MgFdoConnectionUtil::CreateConnection(CREFSTRING providerName, CREFSTRING connectionString)
 {
+    sm_nConnectionsCreated++;
+
     FdoPtr<FdoIConnection> conn;
 
     MG_FEATURE_SERVICE_TRY()
@@ -44,6 +49,8 @@ FdoIConnection* MgFdoConnectionUtil::CreateConnection(CREFSTRING providerName, C
 
 FdoIConnection* MgFdoConnectionUtil::CreateConnection(MgResourceIdentifier* resource)
 {
+    sm_nConnectionsCreated++;
+
     FdoPtr<FdoIConnection> conn;
 
 	MG_FEATURE_SERVICE_TRY()
@@ -276,3 +283,30 @@ MdfModel::FeatureSource* MgFdoConnectionUtil::GetFeatureSource(MgResourceIdentif
 
     return fs;
 }
+
+void MgFdoConnectionUtil::CloseConnection(FdoIConnection* conn)
+{
+    sm_nConnectionsClosed++;
+    try 
+    {
+        conn->Close();
+    }
+    catch (FdoException* ex)
+    {
+        FDO_SAFE_RELEASE(ex);
+    }
+    catch (...) 
+    { 
+    
+    }
+}
+
+#ifdef DEBUG_FDO_CONNECTION_POOL
+void MgFdoConnectionUtil::CheckCallStats()
+{
+    if (sm_nConnectionsCreated > sm_nConnectionsClosed)
+    {
+        ACE_DEBUG((LM_INFO, ACE_TEXT("[WARNING] Create/Close call mismatch - Create calls: %d, Close calls: %d\n"), sm_nConnectionsCreated, sm_nConnectionsClosed));
+    }
+}
+#endif

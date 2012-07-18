@@ -1,5 +1,6 @@
 #include "SqlReader.h"
 #include "Services/Feature/FeatureConnection.h"
+#include "Services/Feature/FdoConnectionUtil.h"
 #include "Fdo.h"
 
 MgdSqlDataReader::MgdSqlDataReader(MgFeatureConnection* conn, FdoISQLDataReader* reader)
@@ -535,9 +536,10 @@ void MgdSqlDataReader::Close()
     FdoPtr<FdoIConnection> fdoConnection = m_connection->GetConnection();
 
     // Release the connection.
+    //m_connection = NULL;
+    MgFdoConnectionPool::ReturnConnection(m_connection);
     m_connection = NULL;
-
-    fdoConnection->Close();
+    //MgFdoConnectionUtil::CloseConnection(fdoConnection);
 
 	MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgdDataReader::Close");
 }

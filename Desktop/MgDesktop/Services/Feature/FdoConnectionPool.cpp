@@ -3,9 +3,6 @@
 #include "FdoConnectionPool.h"
 #include "FdoConnectionUtil.h"
 
-INT64 MgFdoConnectionPool::sm_nConnectionsRequested = 0L;
-INT64 MgFdoConnectionPool::sm_nConnectionsReturned = 0L;
-
 //connection pool record -- contains database pointer
 //plus extra timing information/status
 struct PoolRec
@@ -62,10 +59,10 @@ FdoIConnection* MgFdoConnectionPool::GetConnection(MgResourceIdentifier* feature
     if (!g_bPoolingEnabled || it == g_pool.freePool.end() || it->second.size() == 0)
     {
         conn = MgFdoConnectionUtil::CreateConnection(featureSourceId);
-    #ifdef DEBUG_FDO_CONNECTION_POOL
-        ACE_DEBUG((LM_INFO, ACE_TEXT("[Created]: (%W)\n"), featureSourceId->ToString().c_str()));
-    #endif
         conn->Open();
+    #ifdef DEBUG_FDO_CONNECTION_POOL
+        ACE_DEBUG((LM_INFO, ACE_TEXT("[Created]: (%W) (refcount: %d)\n"), featureSourceId->ToString().c_str(), conn->GetRefCount()));
+    #endif
         bNewInstance = true;
     }
     else
@@ -74,12 +71,12 @@ FdoIConnection* MgFdoConnectionPool::GetConnection(MgResourceIdentifier* feature
         {
             PoolRec rec = it->second.back();
             it->second.pop_back();
-        #ifdef DEBUG_FDO_CONNECTION_POOL
-            ACE_DEBUG((LM_INFO, ACE_TEXT("[Re-used]: (%W) %d in cache\n"), featureSourceId->ToString().c_str(), it->second.size()));
-        #endif
             if (FdoConnectionState_Closed == rec._conn->GetConnectionState())
                 rec._conn->Open();
             conn = rec._conn;
+        #ifdef DEBUG_FDO_CONNECTION_POOL
+            ACE_DEBUG((LM_INFO, ACE_TEXT("[Re-used]: (%W) %d in cache (refcount: %d)\n"), featureSourceId->ToString().c_str(), it->second.size(), conn->GetRefCount()));
+        #endif
             bNewInstance = false;
         }
         else
@@ -88,10 +85,10 @@ FdoIConnection* MgFdoConnectionPool::GetConnection(MgResourceIdentifier* feature
             ACE_DEBUG((LM_INFO, ACE_TEXT("Provider for (%W) is not poolable\n"), featureSourceId->ToString().c_str()));
         #endif
             conn = MgFdoConnectionUtil::CreateConnection(featureSourceId);
-        #ifdef DEBUG_FDO_CONNECTION_POOL
-            ACE_DEBUG((LM_INFO, ACE_TEXT("[Created]: (%W)\n"), featureSourceId->ToString().c_str()));
-        #endif
             conn->Open();
+        #ifdef DEBUG_FDO_CONNECTION_POOL
+            ACE_DEBUG((LM_INFO, ACE_TEXT("[Created]: (%W) (refcount: %d)\n"), featureSourceId->ToString().c_str(), conn->GetRefCount()));
+        #endif
             bNewInstance = true;
         }
     }
@@ -103,9 +100,12 @@ FdoIConnection* MgFdoConnectionPool::GetConnection(MgResourceIdentifier* feature
 
     MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgFdoConnectionPool::GetConnection")
 
-    sm_nConnectionsRequested++;
-
     return conn.Detach();
+}
+
+FdoIConnection* MgFdoConnectionPool::GetConnection(CREFSTRING providerName, CREFSTRING connectionString)
+{
+    return MgFdoConnectionUtil::CreateConnection(providerName, connectionString);
 }
 
 void MgFdoConnectionPool::ReturnConnection(MgFeatureConnection* conn)
@@ -114,8 +114,10 @@ void MgFdoConnectionPool::ReturnConnection(MgFeatureConnection* conn)
 
     ScopedLock scc(g_pool.mutex);
     STRING providerName = conn->GetProviderName();
-    FdoPtr<FdoIConnection> fdoConn = conn->GetConnection();
+    FdoPtr<FdoIConnection> fdoConn = conn->m_fdoConn; //conn->GetConnection();
     
+    //If feature source is empty, it means the connection was not created via its feature source id
+    //meaning it's not poolable and can't be returned.
     STRING fsIdStr;
     Ptr<MgResourceIdentifier> fsId = conn->GetFeatureSource();
     if (NULL != fsId.p)
@@ -128,48 +130,43 @@ void MgFdoConnectionPool::ReturnConnection(MgFeatureConnection* conn)
     if (g_bPoolingEnabled)
     {
         STRING providerName = MgFdoConnectionUtil::ParseNonQualifiedProviderName(conn->GetProviderName());
-        if (!g_excludedProviders->Contains(providerName))
+        if (!g_excludedProviders->Contains(providerName) && !fsIdStr.empty())
         {
             std::vector<PoolRec>& vec = g_pool.freePool[fsIdStr];
             vec.push_back(PoolRec(fdoConn, time(NULL), fsIdStr));
         #ifdef DEBUG_FDO_CONNECTION_POOL
-            ACE_DEBUG((LM_INFO, ACE_TEXT("[Returned] (%W) %d in cache\n"), fsIdStr.c_str(), vec.size()));
+            ACE_DEBUG((LM_INFO, ACE_TEXT("[Returned] (%W) %d in cache (refcount: %d)\n"), fsIdStr.c_str(), vec.size(), fdoConn->GetRefCount()));
         #endif
             bReturned = true;
         }
         else
         {
-            fdoConn->Close();
+            MgFdoConnectionUtil::CloseConnection(fdoConn);
         #ifdef DEBUG_FDO_CONNECTION_POOL
-            ACE_DEBUG((LM_INFO, ACE_TEXT("[Closed] (%W) - Provider excluded from pooling\n"), fsIdStr.c_str()));
+            ACE_DEBUG((LM_INFO, ACE_TEXT("[Closed] (%W) - Provider excluded from pooling (refcount: %d)\n"), fsIdStr.c_str(), fdoConn->GetRefCount()));
         #endif
             bProviderExcluded = true;
         }
     }
     else
     {
-        fdoConn->Close();
+        MgFdoConnectionUtil::CloseConnection(fdoConn);
         #ifdef DEBUG_FDO_CONNECTION_POOL
-            ACE_DEBUG((LM_INFO, ACE_TEXT("[Closed] (%W) - Connection Pooling disabled\n"), fsIdStr.c_str()));
+        ACE_DEBUG((LM_INFO, ACE_TEXT("[Closed] (%W) - Connection Pooling disabled (refcount: %d)\n"), fsIdStr.c_str(), fdoConn->GetRefCount()));
         #endif
     }
 
     MgLogDetail logDetail(MgServiceType::FeatureService, MgLogDetail::InternalTrace, L"MgFdoConnectionPool::ReturnConnection", mgStackParams);
-    logDetail.AddResourceIdentifier(L"FeatureSource", fsId);
+    logDetail.AddString(L"FeatureSource", fsIdStr.empty() ? L"<No Feature Source>" : fsIdStr);
     logDetail.AddBool(L"ReturnedToPool", bReturned);
     logDetail.AddBool(L"ProviderExcluded", bProviderExcluded);
     logDetail.Create();
 
-    MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgFdoConnectionPool::ReturnConnection")
-
-    sm_nConnectionsReturned++;
+    MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgFdoConnectionPool::ReturnConnection")   
 }
 
 void MgFdoConnectionPool::Initialize(MgConfiguration* pConfiguration)
 {
-    sm_nConnectionsRequested = 0L;
-    sm_nConnectionsReturned = 0L;
-
     MG_FEATURE_SERVICE_TRY()
 
     bool bDataConnectionPoolEnabled = MgConfigProperties::DefaultFeatureServicePropertyDataConnectionPoolEnabled;
@@ -225,21 +222,11 @@ void MgFdoConnectionPool::Cleanup()
 
     ScopedLock scc(g_pool.mutex);
 
-    MgLogDetail logDetail(MgServiceType::FeatureService, MgLogDetail::InternalTrace, L"MgFdoConnectionPool::Cleanup", mgStackParams);
-    logDetail.AddInt64(L"ConnectionsRequested", sm_nConnectionsRequested);
-    logDetail.AddInt64(L"ConnectionsReturned", sm_nConnectionsReturned);
-    logDetail.Create();
-
-    if (sm_nConnectionsRequested != sm_nConnectionsReturned)
-    {
-        ACE_DEBUG((LM_INFO, ACE_TEXT("[WARNING] %d connections have leaked for this session (ie. not returned)\n"), (sm_nConnectionsRequested - sm_nConnectionsReturned)));
-    }
-    
     for (ConnPool::iterator it = g_pool.freePool.begin(); it != g_pool.freePool.end(); ++it)
     {
         while (it->second.size())
         {
-            it->second.back()._conn->Close();
+            MgFdoConnectionUtil::CloseConnection(it->second.back()._conn);
             it->second.back()._conn->Release();
         #ifdef DEBUG_FDO_CONNECTION_POOL
             ACE_DEBUG((LM_INFO, ACE_TEXT("[Cleanup]: (%W) %d in cache\n"), it->second.back()._fsId.c_str(), it->second.size()));
@@ -247,6 +234,10 @@ void MgFdoConnectionPool::Cleanup()
             it->second.pop_back();
         }
     }
+
+#ifdef DEBUG_FDO_CONNECTION_POOL
+    MgFdoConnectionUtil::CheckCallStats();
+#endif
 
     MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgFdoConnectionPool::Cleanup")
 }
@@ -270,7 +261,7 @@ void MgFdoConnectionPool::PurgeCachedConnections(MgResourceIdentifier* resId)
         INT32 purged = 0;
         while (it->second.size())
         {
-            it->second.back()._conn->Close();
+            MgFdoConnectionUtil::CloseConnection(it->second.back()._conn);
             it->second.back()._conn->Release();
             it->second.pop_back();
             purged++;
@@ -312,7 +303,7 @@ void MgFdoConnectionPool::PurgeCachedConnectionsUnderFolder(MgResourceIdentifier
         {
             while (it->second.size())
             {
-                it->second.back()._conn->Close();
+                MgFdoConnectionUtil::CloseConnection(it->second.back()._conn);
                 it->second.back()._conn->Release();
                 it->second.pop_back();
                 purged++;
