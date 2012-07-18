@@ -6,9 +6,9 @@
 #include <cppunit/extensions/TestFactoryRegistry.h>
 #include <cppunit/ui/text/TestRunner.h>
 
-/*
 // for memory leak detection
-#ifdef _WIN32
+#if defined(_WIN32) && defined(_DEBUG)
+#if !defined(USING_VLD)
 #define _CRTDBG_MAP_ALLOC
 #include <stdlib.h>
 #include <crtdbg.h>
@@ -22,12 +22,12 @@
 #define new DEBUG_CLIENTBLOCK
 #endif
 #endif
-*/
+#endif
 
 #define TEST_COORDINATE_SYSTEM  0
 #define TEST_LOG_MANAGER        1
 #define TEST_RESOURCE_SERVICE   1
-#define TEST_FEATURE_SERVICE    0
+#define TEST_FEATURE_SERVICE    1
 #define TEST_MAPPING_SERVICE    1
 #define TEST_PROFILING_SERVICE  1
 #define TEST_RENDERING_SERVICE  1
@@ -35,8 +35,8 @@
 
 int main(int argc, char** argv)
 {
-/*
-#ifdef _WIN32
+#if defined(_WIN32) && defined(_DEBUG)
+#if !defined(USING_VLD)
     _CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
 
     #ifdef _DEBUG
@@ -46,7 +46,7 @@ int main(int argc, char** argv)
     _CrtSetBreakAlloc(iBlock);
     #endif
 #endif
-*/
+#endif
 
     ACE_DEBUG((LM_INFO, ACE_TEXT("Initialize Platform.ini\n")));
     //Benchmark this
