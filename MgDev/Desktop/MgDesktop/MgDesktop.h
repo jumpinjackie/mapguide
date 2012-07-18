@@ -80,12 +80,12 @@
 
 //Uncomment to debug memory leaks. This is the header for Visual Leak Detector
 //See: http://vld.codeplex.com for download and setup
-//#ifdef _WIN32
-//#ifdef _DEBUG
-//#define USING_VLD
-//#include <vld.h>
-//#endif
-//#endif
+#ifdef _WIN32
+#ifdef _DEBUG
+#define USING_VLD
+#include <vld.h>
+#endif
+#endif
 
 //Uncomment to get extra FDO join chatter when running unit tests
 //#define DEBUG_FDOJOIN

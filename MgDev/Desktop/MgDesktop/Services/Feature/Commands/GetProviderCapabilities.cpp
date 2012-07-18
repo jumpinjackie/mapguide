@@ -19,6 +19,7 @@
 #include "GetProviderCapabilities.h"
 #include "Services/Feature/FeatureConnection.h"
 #include "Services/Feature/FeatureUtil.h"
+#include "Services/Feature/FdoConnectionUtil.h"
 
 static std::map<FdoThreadCapability, std::string>          s_FdoThreadCapability;
 static std::map<FdoSpatialContextExtentType, std::string>  s_FdoSpatialContextExtentType;
@@ -92,7 +93,7 @@ MgGetProviderCapabilities::~MgGetProviderCapabilities()
     // Check if the connection needs to be closed
     if(m_fdoConn->GetConnectionState() == FdoConnectionState_Open)
     {
-        m_fdoConn->Close();
+        MgFdoConnectionUtil::CloseConnection(m_fdoConn);
     }
 
     m_fdoConn = NULL;

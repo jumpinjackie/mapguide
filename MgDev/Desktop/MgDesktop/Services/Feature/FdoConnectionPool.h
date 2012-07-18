@@ -36,8 +36,6 @@ public:
     static void GetCacheInfo(std::vector<PoolCacheEntry*>& entries); //Caller responsible for cleanup of contents
 
 private:
-    static INT64 sm_nConnectionsRequested;
-    static INT64 sm_nConnectionsReturned;
     static bool StringStartsWith(CREFSTRING haystack, CREFSTRING needle);
 };
 

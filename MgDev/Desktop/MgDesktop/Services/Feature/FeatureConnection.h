@@ -9,6 +9,8 @@ template class Ptr<MgResourceIdentifier>;
 
 class MgFeatureConnection : public MgGuardDisposable
 {
+    friend class MgFdoConnectionPool;
+
 public:
     MgFeatureConnection(MgResourceIdentifier* featureSourceIdentifier);
     MgFeatureConnection(CREFSTRING providerName, CREFSTRING connectionString);

@@ -1,17 +1,21 @@
 #include "Fdo.h"
 #include "FdoConnectionUtil.h"
 #include "FeatureConnection.h"
+#ifdef DEBUG_FDO_CONNECTION_POOL
+#include <WinBase.h>
+#endif
 
 // Initialize the minimum required memeber variables
 MgFeatureConnection::MgFeatureConnection(MgResourceIdentifier* featureSourceIdentifier)
 {
     Initialize();
-#ifdef DEBUG_FDO_CONNECTION_POOL
-    ACE_DEBUG((LM_INFO, ACE_TEXT("MgFeatureConnection::MgFeatureConnection(MgResourceIdentifier*)\n")));
-#endif
     //This is a potentially poolable connection
     m_fdoConn = MgFdoConnectionPool::GetConnection(featureSourceIdentifier);
     CHECKNULL(m_fdoConn, L"MgFeatureConnection.MgFeatureConnection()");
+
+#ifdef DEBUG_FDO_CONNECTION_POOL
+    ACE_DEBUG((LM_INFO, ACE_TEXT("MgFeatureConnection::MgFeatureConnection(MgResourceIdentifier*) - refcount: %d\n"), m_fdoConn->GetRefCount()));
+#endif
 
     m_resourceId = SAFE_ADDREF(featureSourceIdentifier);
     m_bIsCreatedFromFeatureSource = true;
@@ -21,14 +25,15 @@ MgFeatureConnection::MgFeatureConnection(MgResourceIdentifier* featureSourceIden
 MgFeatureConnection::MgFeatureConnection(CREFSTRING providerName, CREFSTRING connectionString)
 {
     Initialize();
-#ifdef DEBUG_FDO_CONNECTION_POOL
-    ACE_DEBUG((LM_INFO, ACE_TEXT("MgFeatureConnection::MgFeatureConnection(CREFSTRING, CREFSTRING)\n")));
-#endif
     //This is not a poolable connection
-    m_fdoConn = MgFdoConnectionUtil::CreateConnection(providerName, connectionString); //pFdoConnectionManager->Open(providerName, connectionString);
+    m_fdoConn = MgFdoConnectionPool::GetConnection(providerName, connectionString);
     CHECKNULL(m_fdoConn, L"MgFeatureConnection.MgFeatureConnection()");
     if (!connectionString.empty())
         m_fdoConn->Open();
+
+#ifdef DEBUG_FDO_CONNECTION_POOL
+    ACE_DEBUG((LM_INFO, ACE_TEXT("MgFeatureConnection::MgFeatureConnection(CREFSTRING, CREFSTRING) - refcount: %d\n"), m_fdoConn->GetRefCount()));
+#endif
 
     m_resourceId = NULL;
     m_bIsCreatedFromFeatureSource = false;
@@ -66,7 +71,8 @@ void MgFeatureConnection::Close()
     if (NULL != m_fdoConn)
     {
     #ifdef DEBUG_FDO_CONNECTION_POOL
-        ACE_DEBUG((LM_INFO, ACE_TEXT("MgFeatureConnection::Close()\n")));
+        FdoInt32 iRefCount = m_fdoConn->GetRefCount();
+        ACE_DEBUG((LM_INFO, ACE_TEXT("MgFeatureConnection::Close() - refcount %d\n"), iRefCount));
     #endif
         MgFdoConnectionPool::ReturnConnection(this);
         m_fdoConn = NULL;

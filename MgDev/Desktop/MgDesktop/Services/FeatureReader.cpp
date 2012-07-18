@@ -3,6 +3,7 @@
 #include "Services/Feature/FeatureConnection.h"
 #include "Services/Feature/FeatureUtil.h"
 #include "Services/Feature/RasterHelper.h"
+#include "Services/Feature/FdoConnectionUtil.h"
 #include "Fdo.h"
 
 MgdFeatureReader::MgdFeatureReader(MgFeatureConnection* conn, FdoIFeatureReader* reader)
@@ -620,15 +621,14 @@ void MgdFeatureReader::Close()
     MG_FEATURE_SERVICE_TRY()
 
     m_reader->Close(); 
-    m_connection->Close();
-
-    /*
+    
     // Get the FDO connection
     FdoPtr<FdoIConnection> fdoConnection = m_connection->GetConnection();
     // Release the connection.
+    //m_connection = NULL;
+    MgFdoConnectionPool::ReturnConnection(m_connection);
     m_connection = NULL;
-    fdoConnection->Close();
-    */
+    //MgFdoConnectionUtil::CloseConnection(fdoConnection);
 
     MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgdFeatureReader::Close");
 }
