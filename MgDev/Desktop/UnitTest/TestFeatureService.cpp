@@ -2748,6 +2748,50 @@ void TestFeatureService::TestCase_ExtendedFeatureClass()
         bool bRead = dr->ReadNext();
         dr->Close();
         CPPUNIT_ASSERT(bRead);
+
+        //XML form should also have this class
+        STRING xml = pService->DescribeSchemaAsXml(lFeatureSource, L"");
+        CPPUNIT_ASSERT(!xml.empty());
+        Ptr<MgFeatureSchemaCollection> pSchemas = pService->XmlToSchema(xml);
+        CPPUNIT_ASSERT(NULL != pSchemas.p);
+        CPPUNIT_ASSERT(1 == pSchemas->GetCount());
+        Ptr<MgFeatureSchema> pSchema = pSchemas->GetItem(0);
+        Ptr<MgClassDefinitionCollection> pClasses = pSchema->GetClasses();
+        CPPUNIT_ASSERT(NULL != pClasses.p);
+        CPPUNIT_ASSERT(pClasses->GetCount() > 0);
+        bFound = false;
+        for (INT32 i = 0; i < pClasses->GetCount(); i++)
+        {
+            Ptr<MgClassDefinition> klass = pClasses->GetItem(i);
+            if (klass->GetName() == L"Ext1")
+            {
+                bFound = true;
+                break;
+            }
+        }
+        CPPUNIT_ASSERT(bFound);
+
+        //XML form should also have this class
+        xml = pService->DescribeSchemaAsXml(lFeatureSource, L"SHP_Schema");
+        CPPUNIT_ASSERT(!xml.empty());
+        pSchemas = pService->XmlToSchema(xml);
+        CPPUNIT_ASSERT(NULL != pSchemas.p);
+        CPPUNIT_ASSERT(1 == pSchemas->GetCount());
+        pSchema = pSchemas->GetItem(0);
+        pClasses = pSchema->GetClasses();
+        CPPUNIT_ASSERT(NULL != pClasses.p);
+        CPPUNIT_ASSERT(pClasses->GetCount() > 0);
+        bFound = false;
+        for (INT32 i = 0; i < pClasses->GetCount(); i++)
+        {
+            Ptr<MgClassDefinition> klass = pClasses->GetItem(i);
+            if (klass->GetName() == L"Ext1")
+            {
+                bFound = true;
+                break;
+            }
+        }
+        CPPUNIT_ASSERT(bFound);
     }
     catch(MgException* e)
     {
