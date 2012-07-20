@@ -482,7 +482,7 @@ STRING MgdFeatureService::DescribeSchemaAsXml(MgResourceIdentifier* resource,
     MG_LOG_TRACE_ENTRY(L"MgdFeatureService::DescribeSchemaAsXml()");
 
     MgDescribeSchema describe;
-    describe.DescribeSchemaAsXml(resource, schemaName, classNames);
+    schemaXml = describe.DescribeSchemaAsXml(resource, schemaName, classNames);
 
     // Successful operation
     MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Success.c_str());
