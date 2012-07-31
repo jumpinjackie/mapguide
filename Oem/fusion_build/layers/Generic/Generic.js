@@ -190,7 +190,12 @@ Fusion.Layers.Generic = OpenLayers.Class(Fusion.Layers, {
        
         if (!this.oLayerOL) {
             if(this.layerType == 'OpenStreetMap' || this.layerType == 'OSM') {
-                this.oLayerOL = new OpenLayers.Layer.OSM(this.getMapName(), null, this.mapTag.layerOptions );
+                //Test OSM sub-type before falling back to OpenLayers.Layer.OSM
+                if (typeof(OpenLayers.Layer.OSM[this.mapTag.layerOptions.type]) != 'undefined') { 
+                    this.oLayerOL = new OpenLayers.Layer.OSM[this.mapTag.layerOptions.type](this.getMapName(), null, this.mapTag.layerOptions );
+                } else {
+                    this.oLayerOL = new OpenLayers.Layer.OSM(this.getMapName(), null, this.mapTag.layerOptions );
+                }
             }
             else {
                 this.oLayerOL = new OpenLayers.Layer[this.layerType](this.getMapName(), this.mapTag.layerOptions );

@@ -38,7 +38,7 @@ var Fusion = {
 /**
  * Fusion
  *
- * $Id: fusion.js 2434 2011-10-04 15:32:02Z jng $
+ * $Id: fusion.js 2544 2012-07-07 12:08:15Z jng $
  *
  * Copyright (c) 2007, DM Solutions Group Inc.
  * Permission is hereby granted, free of charge, to any person obtaining a
@@ -1435,6 +1435,7 @@ Object.inheritFrom = function(destination, source, args) {
     
     if (!Fusion._singleFile) {
         var coreScripts = ['lib/OpenLayers/OpenLayers.js',
+                           'lib/OpenLayers/OpenLayersGMapsPatch.js', /* Remove when we base off of OL 2.12 */
                             'lib/OLpatch.js',
                             'lib/jxLib/jxlib.uncompressed.js',
                             'lib/IE9patch.js',
@@ -50171,7 +50172,60 @@ OpenLayers.Control.ArgParser = OpenLayers.Class(OpenLayers.Control, {
 
     CLASS_NAME: "OpenLayers.Control.ArgParser"
 });
-/** remove String.prototype.contains **/
+/**
+ * OpenLayersGMapsPatch.js
+ *
+ * This is a TOS-compliant patch to remove the "Map Data" popup that gets displayed on each map move.
+ *
+ * Source: http://trac.osgeo.org/openlayers/wiki/Release/2.11/GoogleMaps37
+ * TODO: When we move to OpenLayers 2.12, the patch is built in and this file will no longer be needed
+ */
+
+OpenLayers.Layer.Google.v3.repositionMapElements = function() {
+    // This is the first time any Google layer in this mapObject has been
+    // made visible.  The mapObject needs to know the container size.
+    google.maps.event.trigger(this.mapObject, "resize");
+    
+    var div = this.mapObject.getDiv().firstChild;
+    if (!div || div.childNodes.length < 3) {
+        this.repositionTimer = window.setTimeout(
+            OpenLayers.Function.bind(this.repositionMapElements, this),
+            250
+        );
+        return false;
+    }
+
+    var cache = OpenLayers.Layer.Google.cache[this.map.id];
+    var container = this.map.viewPortDiv;
+    
+    // move the ToS and branding stuff up to the container div
+    // depends on value of zIndex, which is not robust
+    for (var i=div.children.length-1; i>=0; --i) {
+        if (div.children[i].style.zIndex == 1000001) {
+            var termsOfUse = div.children[i];
+            container.appendChild(termsOfUse);
+            termsOfUse.style.zIndex = "1100";
+            termsOfUse.style.bottom = "";
+            termsOfUse.className = "olLayerGoogleCopyright olLayerGoogleV3";
+            termsOfUse.style.display = "";
+            cache.termsOfUse = termsOfUse;
+        }
+        if (div.children[i].style.zIndex == 1000000) {
+            var poweredBy = div.children[i];
+            container.appendChild(poweredBy);
+            poweredBy.style.zIndex = "1100";
+            poweredBy.style.bottom = "";
+            poweredBy.className = "olLayerGooglePoweredBy olLayerGoogleV3 gmnoprint";
+            poweredBy.style.display = "";
+            cache.poweredBy = poweredBy;
+        }
+        if (div.children[i].style.zIndex == 10000002) {
+            container.appendChild(div.children[i]);
+        }
+    }
+
+    this.setGMapVisibility(this.visibility);
+};/** remove String.prototype.contains **/
 String.prototype.contains = null;
 
 /**
@@ -95510,7 +95564,7 @@ Fusion.Tool.Search = OpenLayers.Class({
 /**
  * Fusion.Widget.Map
  *
- * $Id: Map.js 2495 2011-12-23 03:11:53Z liuar $
+ * $Id: Map.js 2545 2012-07-07 12:16:49Z jng $
  *
  * Copyright (c) 2007, DM Solutions Group Inc.
  * Permission is hereby granted, free of charge, to any person obtaining a
@@ -96423,7 +96477,7 @@ Fusion.Widget.Map = OpenLayers.Class(Fusion.Lib.EventMgr, {
             initialExtents = this.getMapGroupExtent(true);
         }
       }
-      this.initialExtents = initialExtents;
+      if (!this.initialExtents) this.initialExtents = initialExtents;
       return initialExtents;
     },
 
@@ -96901,9 +96955,6 @@ Fusion.Widget.Map = OpenLayers.Class(Fusion.Lib.EventMgr, {
 
      onContextMenu: function(e) {
          //console.log('oncontextmenu');
-         // below line as a workaround for IE9 defect, please refer to https://trac.osgeo.org/fusion/ticket/424
-         // once IE9 fix this defect, we will roll back this line.
-         e=window.event?window.event:e;
          if (this.oContextMenu && !this.bSupressContextMenu && this.isLoaded()) {
              this.oContextMenu.show(new Event(e));
              this.contextMenuPosition = this.getEventPosition(e);
@@ -98084,7 +98135,7 @@ Fusion.Strings.en = {
 'bingSatellite':'Bing Satellite',
 'bingHybrid':'Bing Hybrid',
 'openStreetMap':'Open Street Map',
-'openStreetMapOsmarender':'Open Street Map (Osmarender)',
+'openStreetMapTransportMap':'Open Street Map (TransportMap)',
 'openStreetMapCycleMap':'Open Street Map (CycleMap)',
 'end': ''
 };
@@ -100424,7 +100475,7 @@ Fusion.Widget.BasemapSwitcher = OpenLayers.Class(Fusion.Widget, {
         'Aerial': -1,
         'Hybrid': -1,
         'Mapnik': 0,
-        'Osmarender': 0,
+        'TransportMap': 0,
         'CycleMap': 0,
         'None': 0
     },
@@ -100450,7 +100501,7 @@ Fusion.Widget.BasemapSwitcher = OpenLayers.Class(Fusion.Widget, {
             'Aerial': null,
             'Hybrid': null,
             'Mapnik': null,
-            'Osmarender': null,
+            'TransportMap': null,
             'CycleMap': null,
             'None': null
         };
@@ -100639,23 +100690,14 @@ Fusion.Widget.BasemapSwitcher = OpenLayers.Class(Fusion.Widget, {
                     else {
 
                         switch (map.mapTag.extension.Options[0].type[0]) {
-                            case 'Mapnik':
+                            case 'TransportMap':
                                 if (map.mapTag.extension.Options[0].name) {
-                                    this.options['Mapnik'] = map.mapTag.extension.Options[0].name[0];
+                                    this.options['TransportMap'] = map.mapTag.extension.Options[0].name[0];
                                 }
                                 else {
-                                    this.options['Mapnik'] =  OpenLayers.i18n('openStreetMap');
+                                    this.options['TransportMap'] = OpenLayers.i18n('openStreetMapTransportMap');
                                 }
-                                this.baseMaps['Mapnik'] = map;
-                                break;
-                            case 'Osmarender':
-                                if (map.mapTag.extension.Options[0].name) {
-                                    this.options['Osmarender'] = map.mapTag.extension.Options[0].name[0];
-                                }
-                                else {
-                                    this.options['Osmarender'] = OpenLayers.i18n('openStreetMapOsmarender');
-                                }
-                                this.baseMaps['Osmarender'] = map;
+                                this.baseMaps['TransportMap'] = map;
                                 break;
                             case 'CycleMap':
                                 if (map.mapTag.extension.Options[0].name) {
@@ -100666,7 +100708,14 @@ Fusion.Widget.BasemapSwitcher = OpenLayers.Class(Fusion.Widget, {
                                 }
                                 this.baseMaps['CycleMap'] = map;
                                 break;
-                            default:
+                            default: //Default to Mapnik tileset
+                                if (map.mapTag.extension.Options[0].name) {
+                                    this.options['Mapnik'] = map.mapTag.extension.Options[0].name[0];
+                                }
+                                else {
+                                    this.options['Mapnik'] =  OpenLayers.i18n('openStreetMap');
+                                }
+                                this.baseMaps['Mapnik'] = map;
                                 break;
                         }
                         // The first non-MapGuide basemap will be the default basemap
@@ -102690,7 +102739,7 @@ Fusion.Widget.LayerManager = OpenLayers.Class(Fusion.Widget,  {
 /**
  * Fusion.Widget.Legend
  *
- * $Id: Legend.js 2507 2012-01-04 07:30:36Z jng $
+ * $Id: Legend.js 2539 2012-06-26 20:45:48Z madair $
  *
  * Copyright (c) 2007, DM Solutions Group Inc.
  * Permission is hereby granted, free of charge, to any person obtaining a
@@ -103312,7 +103361,16 @@ Fusion.Widget.Legend.LegendRendererDefault = OpenLayers.Class(Fusion.Widget.Lege
                     layer.parentGroup.legend.treeItem.add(layer.legend.treeItem);
                 } else {
                     if (range.styles.length > 0) {
-                        var url = layer.oMap.getLegendImageURL(fScale, layer, range.styles[0]);
+                        var url;
+                        if(style.iconOpt && style.iconOpt.url){
+                            url = style.iconOpt.url;
+                            var img = layer.legend.treeItem.elements.get('jxTreeIcon');
+                            var iconX = -1 * style.iconX;
+                            var iconY = -1 * style.iconY;
+                            img.style.backgroundPosition = iconX + 'px ' + iconY + 'px';
+                        }else{
+                            url = layer.oMap.getLegendImageURL(scale, layer, style);
+                        }
                         layer.legend.treeItem.setImage(url);
                         layer.legend.treeItem.enable(true);
                     } else {
@@ -103449,6 +103507,7 @@ Fusion.Widget.Legend.LegendRendererDefault = OpenLayers.Class(Fusion.Widget.Lege
         }
         // MapGuide DWF and Raster layer
          // MapGuide Raster and DWF layer
+
         if(layer.layerTypes[0] == 4){
             opt.image = this.imgLayerRasterIcon;
             opt.enabled = true;
@@ -103456,6 +103515,7 @@ Fusion.Widget.Legend.LegendRendererDefault = OpenLayers.Class(Fusion.Widget.Lege
             opt.image = this.imgLayerDWFIcon;
             opt.enabled = true;
         }
+
 
         var item;
         if (!layer.isBaseMapLayer&&checkbox) {
@@ -103503,8 +103563,8 @@ Fusion.Widget.Legend.LegendRendererDefault = OpenLayers.Class(Fusion.Widget.Lege
             }
             iconX = -1 * (style.iconX + this.iconWidth);
             iconY = -1 * (style.iconY + this.iconHeight);
+            img.style.backgroundPosition = iconX + 'px ' + iconY + 'px';
         }
-        img.style.backgroundPosition = iconX + 'px ' + iconY + 'px';
         
         return item;
     },
@@ -103693,7 +103753,8 @@ Fusion.Widget.Legend.TreeFolder = new Class({
             this.groupInfoIcon.set('src', icon);
         }
     }
-});/**
+});
+/**
  * Fusion.Widget.LinkToView
  *
  * $Id: LinkToView.js 2359 2011-04-04 20:25:47Z madair $
@@ -103799,7 +103860,7 @@ Fusion.Widget.LinkToView = OpenLayers.Class(Fusion.Widget,  {
 /**
  * Fusion.Widget.MapMenu
  *
- * $Id: MapMenu.js 2379 2011-05-11 18:15:37Z madair $
+ * $Id: MapMenu.js 2542 2012-06-28 20:07:38Z madair $
  *
  * Copyright (c) 2007, DM Solutions Group Inc.
  * Permission is hereby granted, free of charge, to any person obtaining a
@@ -103943,6 +104004,10 @@ Fusion.Widget.MapMenu = OpenLayers.Class(Fusion.Widget,  {
               for (var i=0; i<list.length; i++) {
                   var resource = list[i];
                   var mapId = resource.sResourceId;
+                  //kludge to get readable map name for pubilshed maps from mapReousrce value
+                  if (resource.sMapResource) {
+                      mapId = resource.sMapResource;
+                  }
                   mapId = mapId.replace(this.rootFolder, '');
                   var folders = mapId.split('/');
                   var label = folders.pop();
@@ -112320,7 +112385,12 @@ Fusion.Layers.Generic = OpenLayers.Class(Fusion.Layers, {
        
         if (!this.oLayerOL) {
             if(this.layerType == 'OpenStreetMap' || this.layerType == 'OSM') {
-                this.oLayerOL = new OpenLayers.Layer.OSM(this.getMapName(), null, this.mapTag.layerOptions );
+                //Test OSM sub-type before falling back to OpenLayers.Layer.OSM
+                if (typeof(OpenLayers.Layer.OSM[this.mapTag.layerOptions.type]) != 'undefined') { 
+                    this.oLayerOL = new OpenLayers.Layer.OSM[this.mapTag.layerOptions.type](this.getMapName(), null, this.mapTag.layerOptions );
+                } else {
+                    this.oLayerOL = new OpenLayers.Layer.OSM(this.getMapName(), null, this.mapTag.layerOptions );
+                }
             }
             else {
                 this.oLayerOL = new OpenLayers.Layer[this.layerType](this.getMapName(), this.mapTag.layerOptions );
@@ -112458,7 +112528,7 @@ Fusion.Layers.Generic = OpenLayers.Class(Fusion.Layers, {
 /**
  * Fusion.Layers.MapGuide
  *
- * $Id: MapGuide.js 2479 2011-12-02 10:13:04Z jng $
+ * $Id: MapGuide.js 2546 2012-07-07 12:26:30Z jng $
  *
  * Copyright (c) 2007, DM Solutions Group Inc.
  * Permission is hereby granted, free of charge, to any person obtaining a
@@ -112863,6 +112933,19 @@ Fusion.Layers.MapGuide = OpenLayers.Class(Fusion.Layers, {
                     this.mapWidget.oMapOL.addLayer(this.oLayerOL2);
                     this.oLayerOL2.setVisibility(true);
                 }
+            }
+
+            //Fix Defect: the Base Layer Group should be invisiable when the "initially visiable in map" is set to false
+            var i = 0;
+            var j = 0;
+            for(i = 0;i < this.layerRoot.groups.length; i++){  
+                if(this.layerRoot.groups[i].isBaseMapGroup && !this.layerRoot.groups[i].initiallyVisible){
+                    for(j = 0; j<this.oLayersOLTile.length; j++) {
+                        if(this.oLayersOLTile[j].params.basemaplayergroupname === this.layerRoot.groups[i].name) {
+                            this.oLayersOLTile[j].setVisibility(false);
+                        }
+                    }    
+                }   
             }
         }
         this.mapWidget._removeWorker();
@@ -113886,10 +113969,10 @@ Fusion.SimpleSelectionObject = OpenLayers.Class({
             {
                 for(var i = 0; i < layers.length; i++)
                 {
-                    var layerId = o['FeatureInformation']['FeatureSet'][0]['Layer'][i]['@id'][0];
+                    var layerId = layers[i]['@id'][0];
 
-                    var classElt = o['FeatureInformation']['FeatureSet'][0]['Layer'][i]['Class'][0];
-                    var className = o['FeatureInformation']['FeatureSet'][0]['Layer'][i]['Class'][0]['@id'][0];
+                    var classElt = layers[i]['Class'][0];
+                    var className = layers[i]['Class'][0]['@id'][0];
 
                     var layer = new Fusion.SimpleSelectionObject.Layer(layerId, className);
 

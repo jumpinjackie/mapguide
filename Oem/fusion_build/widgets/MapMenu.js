@@ -1,7 +1,7 @@
 /**
  * Fusion.Widget.MapMenu
  *
- * $Id: MapMenu.js 2379 2011-05-11 18:15:37Z madair $
+ * $Id: MapMenu.js 2542 2012-06-28 20:07:38Z madair $
  *
  * Copyright (c) 2007, DM Solutions Group Inc.
  * Permission is hereby granted, free of charge, to any person obtaining a
@@ -145,6 +145,10 @@ Fusion.Widget.MapMenu = OpenLayers.Class(Fusion.Widget,  {
               for (var i=0; i<list.length; i++) {
                   var resource = list[i];
                   var mapId = resource.sResourceId;
+                  //kludge to get readable map name for pubilshed maps from mapReousrce value
+                  if (resource.sMapResource) {
+                      mapId = resource.sMapResource;
+                  }
                   mapId = mapId.replace(this.rootFolder, '');
                   var folders = mapId.split('/');
                   var label = folders.pop();
