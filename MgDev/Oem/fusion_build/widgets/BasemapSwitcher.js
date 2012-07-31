@@ -45,7 +45,7 @@ Fusion.Widget.BasemapSwitcher = OpenLayers.Class(Fusion.Widget, {
         'Aerial': -1,
         'Hybrid': -1,
         'Mapnik': 0,
-        'Osmarender': 0,
+        'TransportMap': 0,
         'CycleMap': 0,
         'None': 0
     },
@@ -71,7 +71,7 @@ Fusion.Widget.BasemapSwitcher = OpenLayers.Class(Fusion.Widget, {
             'Aerial': null,
             'Hybrid': null,
             'Mapnik': null,
-            'Osmarender': null,
+            'TransportMap': null,
             'CycleMap': null,
             'None': null
         };
@@ -260,23 +260,14 @@ Fusion.Widget.BasemapSwitcher = OpenLayers.Class(Fusion.Widget, {
                     else {
 
                         switch (map.mapTag.extension.Options[0].type[0]) {
-                            case 'Mapnik':
+                            case 'TransportMap':
                                 if (map.mapTag.extension.Options[0].name) {
-                                    this.options['Mapnik'] = map.mapTag.extension.Options[0].name[0];
+                                    this.options['TransportMap'] = map.mapTag.extension.Options[0].name[0];
                                 }
                                 else {
-                                    this.options['Mapnik'] =  OpenLayers.i18n('openStreetMap');
+                                    this.options['TransportMap'] = OpenLayers.i18n('openStreetMapTransportMap');
                                 }
-                                this.baseMaps['Mapnik'] = map;
-                                break;
-                            case 'Osmarender':
-                                if (map.mapTag.extension.Options[0].name) {
-                                    this.options['Osmarender'] = map.mapTag.extension.Options[0].name[0];
-                                }
-                                else {
-                                    this.options['Osmarender'] = OpenLayers.i18n('openStreetMapOsmarender');
-                                }
-                                this.baseMaps['Osmarender'] = map;
+                                this.baseMaps['TransportMap'] = map;
                                 break;
                             case 'CycleMap':
                                 if (map.mapTag.extension.Options[0].name) {
@@ -287,7 +278,14 @@ Fusion.Widget.BasemapSwitcher = OpenLayers.Class(Fusion.Widget, {
                                 }
                                 this.baseMaps['CycleMap'] = map;
                                 break;
-                            default:
+                            default: //Default to Mapnik tileset
+                                if (map.mapTag.extension.Options[0].name) {
+                                    this.options['Mapnik'] = map.mapTag.extension.Options[0].name[0];
+                                }
+                                else {
+                                    this.options['Mapnik'] =  OpenLayers.i18n('openStreetMap');
+                                }
+                                this.baseMaps['Mapnik'] = map;
                                 break;
                         }
                         // The first non-MapGuide basemap will be the default basemap

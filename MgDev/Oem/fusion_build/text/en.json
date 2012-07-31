@@ -75,7 +75,7 @@ Fusion.Strings.en = {
 'bingSatellite':'Bing Satellite',
 'bingHybrid':'Bing Hybrid',
 'openStreetMap':'Open Street Map',
-'openStreetMapOsmarender':'Open Street Map (Osmarender)',
+'openStreetMapTransportMap':'Open Street Map (TransportMap)',
 'openStreetMapCycleMap':'Open Street Map (CycleMap)',
 'end': ''
 };

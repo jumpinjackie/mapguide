@@ -1,7 +1,7 @@
 /**
  * Fusion
  *
- * $Id: fusion.js 2434 2011-10-04 15:32:02Z jng $
+ * $Id: fusion.js 2544 2012-07-07 12:08:15Z jng $
  *
  * Copyright (c) 2007, DM Solutions Group Inc.
  * Permission is hereby granted, free of charge, to any person obtaining a
@@ -1398,6 +1398,7 @@ Object.inheritFrom = function(destination, source, args) {
     
     if (!Fusion._singleFile) {
         var coreScripts = ['lib/OpenLayers/OpenLayers.js',
+                           'lib/OpenLayers/OpenLayersGMapsPatch.js', /* Remove when we base off of OL 2.12 */
                             'lib/OLpatch.js',
                             'lib/jxLib/jxlib.uncompressed.js',
                             'lib/IE9patch.js',

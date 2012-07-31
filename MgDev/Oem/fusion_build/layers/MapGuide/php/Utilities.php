@@ -2,7 +2,7 @@
 /**
  * Utilities.php
  *
- * $Id: Utilities.php 2523 2012-01-20 05:16:28Z liuar $
+ * $Id: Utilities.php 2543 2012-07-07 11:51:06Z jng $
  *
  * Copyright (c) 2007, DM Solutions Group Inc.
  * Permission is hereby granted, free of charge, to any person obtaining a
@@ -788,15 +788,15 @@ function BuildSelectionArray($featureReader, $layerName, $properties, $bComputed
     array_push($properties->$layerName->metadatanames, 'area');
     array_push($properties->$layerName->metadatanames, 'length');
 
-    //NOTE: PHP will complain about _SESSION being undefined when display_errors = On with full verbosity
-    //messing up any JSON response in the process!
-    $mappings = $_SESSION['property_mappings'][$layerObj->GetObjectId()];
-    foreach((array)$mappings as $name => $value)
-    {
-        $propType = $featureReader->GetPropertyType($name);
-        array_push($properties->$layerName->propertynames, $name);
-        array_push($properties->$layerName->propertyvalues, $value);
-        array_push($properties->$layerName->propertytypes, $propType);
+    if (isset($_SESSION)) {
+        $mappings = $_SESSION['property_mappings'][$layerObj->GetObjectId()];    
+        foreach((array)$mappings as $name => $value)
+        {
+            $propType = $featureReader->GetPropertyType($name);
+            array_push($properties->$layerName->propertynames, $name);
+            array_push($properties->$layerName->propertyvalues, $value);
+            array_push($properties->$layerName->propertytypes, $propType);
+        }
     }
 
     $srsTarget = null;

@@ -1,7 +1,7 @@
 /**
  * Fusion.Widget.Map
  *
- * $Id: Map.js 2495 2011-12-23 03:11:53Z liuar $
+ * $Id: Map.js 2545 2012-07-07 12:16:49Z jng $
  *
  * Copyright (c) 2007, DM Solutions Group Inc.
  * Permission is hereby granted, free of charge, to any person obtaining a
@@ -914,7 +914,7 @@ Fusion.Widget.Map = OpenLayers.Class(Fusion.Lib.EventMgr, {
             initialExtents = this.getMapGroupExtent(true);
         }
       }
-      this.initialExtents = initialExtents;
+      if (!this.initialExtents) this.initialExtents = initialExtents;
       return initialExtents;
     },
 
@@ -1392,9 +1392,6 @@ Fusion.Widget.Map = OpenLayers.Class(Fusion.Lib.EventMgr, {
 
      onContextMenu: function(e) {
          //console.log('oncontextmenu');
-         // below line as a workaround for IE9 defect, please refer to https://trac.osgeo.org/fusion/ticket/424
-         // once IE9 fix this defect, we will roll back this line.
-         e=window.event?window.event:e;
          if (this.oContextMenu && !this.bSupressContextMenu && this.isLoaded()) {
              this.oContextMenu.show(new Event(e));
              this.contextMenuPosition = this.getEventPosition(e);

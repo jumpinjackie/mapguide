@@ -1,7 +1,7 @@
 /**
  * Fusion.Layers.MapGuide
  *
- * $Id: MapGuide.js 2479 2011-12-02 10:13:04Z jng $
+ * $Id: MapGuide.js 2546 2012-07-07 12:26:30Z jng $
  *
  * Copyright (c) 2007, DM Solutions Group Inc.
  * Permission is hereby granted, free of charge, to any person obtaining a
@@ -406,6 +406,19 @@ Fusion.Layers.MapGuide = OpenLayers.Class(Fusion.Layers, {
                     this.mapWidget.oMapOL.addLayer(this.oLayerOL2);
                     this.oLayerOL2.setVisibility(true);
                 }
+            }
+
+            //Fix Defect: the Base Layer Group should be invisiable when the "initially visiable in map" is set to false
+            var i = 0;
+            var j = 0;
+            for(i = 0;i < this.layerRoot.groups.length; i++){  
+                if(this.layerRoot.groups[i].isBaseMapGroup && !this.layerRoot.groups[i].initiallyVisible){
+                    for(j = 0; j<this.oLayersOLTile.length; j++) {
+                        if(this.oLayersOLTile[j].params.basemaplayergroupname === this.layerRoot.groups[i].name) {
+                            this.oLayersOLTile[j].setVisibility(false);
+                        }
+                    }    
+                }   
             }
         }
         this.mapWidget._removeWorker();
@@ -1429,10 +1442,10 @@ Fusion.SimpleSelectionObject = OpenLayers.Class({
             {
                 for(var i = 0; i < layers.length; i++)
                 {
-                    var layerId = o['FeatureInformation']['FeatureSet'][0]['Layer'][i]['@id'][0];
+                    var layerId = layers[i]['@id'][0];
 
-                    var classElt = o['FeatureInformation']['FeatureSet'][0]['Layer'][i]['Class'][0];
-                    var className = o['FeatureInformation']['FeatureSet'][0]['Layer'][i]['Class'][0]['@id'][0];
+                    var classElt = layers[i]['Class'][0];
+                    var className = layers[i]['Class'][0]['@id'][0];
 
                     var layer = new Fusion.SimpleSelectionObject.Layer(layerId, className);
 
