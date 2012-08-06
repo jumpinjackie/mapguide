@@ -123,6 +123,9 @@ void MgHttpQueryMapFeatures::Execute(MgHttpResponse& hResponse)
     Ptr<MgByteReader> featureDescriptionInfo = controller.QueryMapFeatures(
         m_mapName, layerNames, filterGeometry, selectionVariant, m_featureFilter, m_maxFeatures, m_persist, m_layerAttributeFilter);
 
+    //Convert to alternate response format, if necessary
+    ProcessFormatConversion(featureDescriptionInfo);
+
     // Set the result
     hResult->SetResultObject(featureDescriptionInfo, featureDescriptionInfo->GetMimeType());
 
