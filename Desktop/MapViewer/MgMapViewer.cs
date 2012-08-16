@@ -2089,10 +2089,8 @@ namespace OSGeo.MapGuide.Viewer
             _lastTooltipX = x;
             _lastTooltipY = y;
 
-            var layers = _map.GetLayers();
-            
-            var mapPt1 = ScreenToMapUnits(x - 2, y - 2);
-            var mapPt2 = ScreenToMapUnits(x + 2, y + 2);
+            var mapPt1 = ScreenToMapUnits(x - this.PointPixelBuffer, y - this.PointPixelBuffer);
+            var mapPt2 = ScreenToMapUnits(x + this.PointPixelBuffer, y + this.PointPixelBuffer);
             var ringCoords = new MgCoordinateCollection();
             ringCoords.Add(_geomFact.CreateCoordinateXY(mapPt2.X, mapPt2.Y));
             ringCoords.Add(_geomFact.CreateCoordinateXY(mapPt1.X, mapPt2.Y));
@@ -2101,113 +2099,12 @@ namespace OSGeo.MapGuide.Viewer
             ringCoords.Add(_geomFact.CreateCoordinateXY(mapPt2.X, mapPt2.Y)); //Close it
             var poly = _geomFact.CreatePolygon(_geomFact.CreateLinearRing(ringCoords), new MgLinearRingCollection());
 
-            for (int i = 0; i < layers.GetCount(); i++)
+            MgTooltipQueryResult tr = _provider.QueryMapFeatures(MgQueryRequestType.Tooltip, null, poly, MgFeatureSpatialOperations.Intersects, "", 1, 4 /* has tooltips */) as MgTooltipQueryResult;
+            if (tr != null)
             {
-                var layer = layers.GetItem(i);
-                var layerGroup = layer.GetGroup();
-                //Layer not visible or its parent is not visible
-                if (!layer.IsVisible() || (layerGroup != null && !layerGroup.IsVisible()))
-                    continue;
-
-                //No defined tooltips
-                if (!_provider.LayerHasTooltips(layer))
-                    continue;
-
-                //Drawing layers have no intelligence
-                string fsId = layer.FeatureSourceId;
-                if (fsId.EndsWith(MgResourceType.DrawingSource))
-                    continue;
-
-                //Nor do rasters
-                if (IsRasterLayer(layer))
-                    continue;
-
-                var objId = layer.GetObjectId();
-                var ldfId = layer.GetLayerDefinition();
-                var ldfIdStr = ldfId.ToString();
-
-                //No tooltip detected
-                //if (!_tooltipExpressions.ContainsKey(ldfIdStr))
-                if (!_provider.HasTooltips(ldfId))
-                    continue;
-
-                //Make sure geometry property checks out
-                var geomName = _provider.GetGeometryProperty(objId);
-                var clsDef = layer.GetClassDefinition();
-                var props = clsDef.GetProperties();
-                if (props.IndexOf(geomName) < 0)
-                    continue;
-
-                var geomProp = props.GetItem(geomName) as MgGeometricPropertyDefinition;
-                if (geomProp == null)
-                    continue;
-
-                var trans = _provider.GetMapToLayerTransform(layer, geomProp);
-
-                string propName = "QUERYTOOLTIP";
-                MgFeatureQueryOptions query = new MgFeatureQueryOptions();
-                query.AddComputedProperty(propName, _provider.GetTooltipExpression(ldfId));
-                if (trans != null)
-                {
-                    var txPoly = (MgGeometry)poly.Transform(trans);
-                    query.SetSpatialFilter(geomName, txPoly, MgFeatureSpatialOperations.Intersects);
-                }
-                else
-                {
-                    query.SetSpatialFilter(geomName, poly, MgFeatureSpatialOperations.Intersects);
-                }
-
-                MgFeatureReader reader = null;
-                reader = layer.SelectFeatures(query);
-                try
-                {
-                    if (reader.ReadNext())
-                    {
-                        object value = null;
-
-                        var pt = reader.GetPropertyType(propName);
-                        switch (pt)
-                        {
-                            case MgPropertyType.String:
-                                value = reader.GetString(propName);
-                                break;
-                            case MgPropertyType.Boolean:
-                                value = reader.GetBoolean(propName);
-                                break;
-                            case MgPropertyType.Byte:
-                                value = reader.GetByte(propName);
-                                break;
-                            case MgPropertyType.DateTime:
-                                value = reader.GetByte(propName);
-                                break;
-                            case MgPropertyType.Double:
-                            case MgPropertyType.Decimal:
-                                value = reader.GetDouble(propName);
-                                break;
-                            case MgPropertyType.Int16:
-                                value = reader.GetInt16(propName);
-                                break;
-                            case MgPropertyType.Int32:
-                                value = reader.GetInt32(propName);
-                                break;
-                            case MgPropertyType.Int64:
-                                value = reader.GetInt64(propName);
-                                break;
-                            case MgPropertyType.Single:
-                                value = reader.GetSingle(propName);
-                                break;
-                        }
-
-                        if (value != null)
-                            return value.ToString(); //.Replace("\n", Environment.NewLine);
-                    }
-                }
-                finally
-                {
-                    reader.Close();
-                }
+                _activeTooltipText = tr.Tooltip;
+                return _activeTooltipText;
             }
-
             return string.Empty;
         }
 
@@ -2245,11 +2142,17 @@ namespace OSGeo.MapGuide.Viewer
             Clipboard.SetImage(this.GetCurrentImage());
         }
 
+        public void SelectByGeometry(MgGeometry geom)
+        {
+            SelectByGeometry(geom, -1);
+        }
+
         /// <summary>
         /// Selects features from all selectable layers that intersects the given geometry
         /// </summary>
         /// <param name="geom"></param>
-        public void SelectByGeometry(MgGeometry geom)
+        /// <param name="maxFeatures"></param>
+        public void SelectByGeometry(MgGeometry geom, int maxFeatures)
         {
             //Don't select if dragging. This is the cause of the failure to render
             //multiple selections, which required a manual refresh afterwards
@@ -2260,70 +2163,18 @@ namespace OSGeo.MapGuide.Viewer
             var sw = new Stopwatch();
             sw.Start();
 #endif
-
-            string mapCsWkt = _map.GetMapSRS();
-            var layers = _map.GetLayers();
-
-            if (ModifierKeys != Keys.Control)
-                _provider.ClearSelection(_selection);
-
-            for (int i = 0; i < layers.GetCount(); i++)
+            //We will be either wiping or updating the existing selection set
+            MgSelectionQueryResult sel = _provider.QueryMapFeatures(MgQueryRequestType.Selection, null, geom, MgFeatureSpatialOperations.Intersects, "", maxFeatures, (1 | 2)) as MgSelectionQueryResult; //1=Visible, 2=Selectable, 4=HasTooltips
+            if (sel != null)
             {
-                var layer = layers.GetItem(i);
-                if (!layer.Selectable || !layer.IsVisible())
-                    continue;
-
-                string fsId = layer.FeatureSourceId;
-                if (fsId.EndsWith(MgResourceType.DrawingSource))
-                    continue;
-
-                //Nor do rasters
-                if (IsRasterLayer(layer))
-                    continue;
-
-                //This could be a newly added layer
-                _provider.CheckAndCacheGeometryProperty(layer);
-
-                var objId = layer.GetObjectId();
-                string geomName = _provider.GetGeometryProperty(objId);
-
-                //Make sure geometry property checks out
-                var clsDef = layer.GetClassDefinition();
-                var props = clsDef.GetProperties();
-                if (props.IndexOf(geomName) < 0)
-                    continue;
-
-                var geomProp = props.GetItem(geomName) as MgGeometricPropertyDefinition;
-                if (geomProp == null)
-                    continue;
-
-                MgFeatureQueryOptions query = new MgFeatureQueryOptions();
-                string filter = layer.GetFilter();
-                if (!string.IsNullOrEmpty(filter))
-                    query.SetFilter(filter);
-
-                var trans = _provider.GetMapToLayerTransform(layer, geomProp);
-                if (trans != null)
-                {
-                    var txGeom = (MgGeometry)geom.Transform(trans);
-                    query.SetSpatialFilter(geomName, txGeom, MgFeatureSpatialOperations.Intersects);
-                }
-                else
-                {
-                    query.SetSpatialFilter(geomName, geom, MgFeatureSpatialOperations.Intersects);
-                }
-
-                MgFeatureReader reader = layer.SelectFeatures(query);
-                try
-                {
-                    _selection.AddFeatures(layer, reader, 0);
-                }
-                finally
-                {
-                    reader.Close();
-                }
+                MgSelectionBase newSel = sel.Selection;
+                string newXml = newSel.ToXml();
+                _selection.FromXml(newXml);
             }
-
+            else
+            {
+                _selection.FromXml("");
+            }
 #if TRACE
             sw.Stop();
             Trace.TraceInformation("Selection processing completed in {0}ms", sw.ElapsedMilliseconds);
@@ -2642,7 +2493,7 @@ namespace OSGeo.MapGuide.Viewer
 
                     MgGeometry geom = _wktRW.Read(MakeWktPolygon(mapPt1.X, mapPt1.Y, mapPt2.X, mapPt2.Y));
 
-                    SelectByGeometry(geom);
+                    SelectByGeometry(geom, 1);
                 }
                 else if (this.ActiveTool == MapActiveTool.ZoomIn)
                 {

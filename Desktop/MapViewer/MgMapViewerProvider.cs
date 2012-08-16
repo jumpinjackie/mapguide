@@ -341,5 +341,47 @@ namespace OSGeo.MapGuide.Viewer
         {
             _mapToLayerTransforms[objId] = trans;
         }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="queryType"></param>
+        /// <param name="layerNames"></param>
+        /// <param name="filterGeom"></param>
+        /// <param name="selectionVariant"></param>
+        /// <param name="featureFilter"></param>
+        /// <param name="maxFeatures"></param>
+        /// <param name="layerAttributeFilter"></param>
+        /// <returns></returns>
+        public abstract MgQueryMapFeaturesResult QueryMapFeatures(MgQueryRequestType queryType, MgStringCollection layerNames, MgGeometry filterGeom, int selectionVariant, string featureFilter, int maxFeatures, int layerAttributeFilter);
+
+        protected MgTooltipQueryResult MakeTooltip(string tooltip) { return new MgTooltipQueryResult(tooltip); }
+
+        protected MgSelectionQueryResult MakeSelectionResult(MgSelectionBase sel) { return new MgSelectionQueryResult(sel); }
+    }
+
+    public abstract class MgQueryMapFeaturesResult
+    {
+
+    }
+
+    public class MgTooltipQueryResult : MgQueryMapFeaturesResult
+    {
+        internal MgTooltipQueryResult(string tooltip) { this.Tooltip = tooltip; }
+
+        public string Tooltip { get; private set; }
+    }
+
+    public class MgSelectionQueryResult : MgQueryMapFeaturesResult
+    {
+        internal MgSelectionQueryResult(MgSelectionBase newSelection) { this.Selection = newSelection; }
+
+        public MgSelectionBase Selection { get; private set; }
+    }
+
+    public enum MgQueryRequestType
+    {
+        Tooltip,
+        Selection
     }
 }

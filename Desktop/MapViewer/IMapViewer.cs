@@ -296,6 +296,13 @@ namespace OSGeo.MapGuide.Viewer
         void SelectByGeometry(MgGeometry geom);
 
         /// <summary>
+        /// Selects features from all selectable layers that intersects the given geometry up to the specified number
+        /// </summary>
+        /// <param name="geom"></param>
+        /// <param name="maxFeatures">The maximum number of features to select. Specify -1 for all features</param>
+        void SelectByGeometry(MgGeometry geom, int maxFeatures);
+
+        /// <summary>
         /// Zooms to the initial map view
         /// </summary>
         void InitialMapView();
