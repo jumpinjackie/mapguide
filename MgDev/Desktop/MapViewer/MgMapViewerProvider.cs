@@ -77,7 +77,6 @@ namespace OSGeo.MapGuide.Viewer
             DisposeExistingMap();
             _map = map;
             RebuildLayerInfoCache();
-            CacheGeometryProperties(_map.GetLayers());
             OnNewMapLoaded(map);
             var h = this.MapLoaded;
             if (h != null)
@@ -111,63 +110,16 @@ namespace OSGeo.MapGuide.Viewer
             return CoordSysFactory.Create(_map.GetMapSRS());
         }
 
-        private Dictionary<string, string> _layerGeomProps = new Dictionary<string, string>();
-
-        public void CacheGeometryProperties(MgLayerCollection layers)
-        {
-            //Cache geometry properties
-            for (int i = 0; i < layers.GetCount(); i++)
-            {
-                var layer = layers.GetItem(i);
-                //if (!layer.Selectable || !layer.IsVisible())
-                //    continue;
-
-                var objId = layer.GetObjectId();
-                if (_layerGeomProps.ContainsKey(objId))
-                    continue;
-
-                string fsId = layer.FeatureSourceId;
-                if (fsId.EndsWith(MgResourceType.DrawingSource))
-                    continue;
-
-                CheckAndCacheGeometryProperty(layer);
-            }
-        }
-
-        public void CheckAndCacheGeometryProperty(MgLayerBase layer)
-        {
-            var objId = layer.GetObjectId();
-            if (!_layerGeomProps.ContainsKey(objId))
-            {
-                try
-                {
-                    var cls = layer.GetClassDefinition();
-                    var geomName = cls.DefaultGeometryPropertyName;
-                    if (!string.IsNullOrEmpty(geomName))
-                    {
-                        _layerGeomProps[objId] = geomName;
-                    }
-                }
-                catch (MgException ex)
-                {
-                    Trace.TraceWarning("Failed to get geometry property for layer: " + layer.Name + Environment.NewLine + ex.ToString());
-                    ex.Dispose();
-                }
-            }
-        }
-
         private Dictionary<string, MgCoordinateSystemTransform> _mapToLayerTransforms = new Dictionary<string, MgCoordinateSystemTransform>();
         private Dictionary<string, NameValueCollection> _propertyMappings = new Dictionary<string, NameValueCollection>();
 
         internal Dictionary<string, NameValueCollection> AllPropertyMappings { get { return _propertyMappings; } }
 
         private Dictionary<string, XmlDocument> _cachedLayerDefinitions = new Dictionary<string, XmlDocument>();
-        private Dictionary<string, string> _tooltipExpressions = new Dictionary<string, string>();
 
         protected void RebuildLayerInfoCache()
         {
             _cachedLayerDefinitions.Clear();
-            _tooltipExpressions.Clear();
             _propertyMappings.Clear();
 
             foreach (var trans in _mapToLayerTransforms.Values)
@@ -222,9 +174,6 @@ namespace OSGeo.MapGuide.Viewer
                 doc.LoadXml(contents.GetItem(i));
 
                 _cachedLayerDefinitions[resIds.GetItem(i)] = doc;
-                XmlNodeList nodes = doc.GetElementsByTagName("ToolTip");
-                if (nodes.Count == 1)
-                    _tooltipExpressions[resIds.GetItem(i)] = nodes[0].InnerText;
 
                 XmlNodeList propMaps = doc.GetElementsByTagName("PropertyMapping");
                 if (propMaps.Count > 0)
@@ -309,21 +258,6 @@ namespace OSGeo.MapGuide.Viewer
         public MgTransientMapState CreateTransientState()
         {
             return CreateTransientState(_map);
-        }
-
-        public string GetGeometryProperty(string objId)
-        {
-            return _layerGeomProps[objId];
-        }
-
-        public string GetTooltipExpression(MgResourceIdentifier ldfId)
-        {
-            return _tooltipExpressions[ldfId.ToString()];
-        }
-
-        public bool HasTooltips(MgResourceIdentifier ldfId)
-        {
-            return _tooltipExpressions.ContainsKey(ldfId.ToString());
         }
 
         internal MgCoordinateSystemTransform GetLayerTransform(string objId, out bool bAlreadyChecked)

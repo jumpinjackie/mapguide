@@ -163,10 +163,17 @@ namespace OSGeo.MapGuide.Viewer.Desktop
         public override MgQueryMapFeaturesResult QueryMapFeatures(MgQueryRequestType queryType, MgStringCollection layerNames, MgGeometry filterGeom, int selectionVariant, string featureFilter, int maxFeatures, int layerAttributeFilter)
         {
             var fi = _renderSvc.QueryFeatures(_implMap, layerNames, filterGeom, selectionVariant, featureFilter, maxFeatures, layerAttributeFilter);
-            if (queryType == MgQueryRequestType.Tooltip)
-                return MakeTooltip(fi.GetTooltip());
-            else
-                return MakeSelectionResult(fi.GetSelection());
+            try
+            {
+                if (queryType == MgQueryRequestType.Tooltip)
+                    return MakeTooltip(fi.GetTooltip());
+                else
+                    return MakeSelectionResult(fi.GetSelection());
+            }
+            finally
+            {
+                fi.Dispose();
+            }
         }
     }
 }
