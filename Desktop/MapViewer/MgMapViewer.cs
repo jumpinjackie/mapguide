@@ -2142,6 +2142,10 @@ namespace OSGeo.MapGuide.Viewer
             Clipboard.SetImage(this.GetCurrentImage());
         }
 
+        /// <summary>
+        /// Selects features from all selectable layers that intersects the given geometry
+        /// </summary>
+        /// <param name="geom"></param>
         public void SelectByGeometry(MgGeometry geom)
         {
             SelectByGeometry(geom, -1);
@@ -2170,6 +2174,7 @@ namespace OSGeo.MapGuide.Viewer
                 MgSelectionBase newSel = sel.Selection;
                 string newXml = newSel.ToXml();
                 _selection.FromXml(newXml);
+                newSel.Dispose();
             }
             else
             {
