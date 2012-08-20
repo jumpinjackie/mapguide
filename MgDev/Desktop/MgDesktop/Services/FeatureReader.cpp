@@ -649,35 +649,32 @@ MgByteReader* MgdFeatureReader::ToXml()
 
 const wchar_t* MgdFeatureReader::GetString(CREFSTRING propertyName, INT32& length) 
 { 
-	FdoString* ret = NULL;
+	CHECKNULL(m_reader, L"MgdFeatureReader::GetString");
+
+    FdoString* retVal = NULL;
 
     MG_FEATURE_SERVICE_TRY()
 
-    try
+    if(m_reader->IsNull(propertyName.c_str()))
     {
-        ret = m_reader->GetString(propertyName.c_str());
-        if (ret != NULL)
-        {
-            length = (INT32)wcslen((const wchar_t*)ret);
-        }
-    }
-    catch(...)
-    {
-        if(m_reader->IsNull(propertyName.c_str()))
-        {
-            MgStringCollection arguments;
-            arguments.Add(propertyName);
+        MgStringCollection arguments;
+        arguments.Add(propertyName);
 
-            throw new MgNullPropertyValueException(L"MgdFeatureReader::GetString",
-                __LINE__, __WFILE__, &arguments, L"", NULL);
+        throw new MgNullPropertyValueException(L"MgdFeatureReader::GetString",
+            __LINE__, __WFILE__, &arguments, L"", NULL);
+    }
+    else
+    {
+        retVal = m_reader->GetString(propertyName.c_str());
+        if (retVal != NULL)
+        {
+            length = (INT32)wcslen((const wchar_t*)retVal);
         }
-        else
-            throw;
     }
 
     MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgdFeatureReader::GetString");
 
-    return ((const wchar_t*)ret);
+    return ((const wchar_t*)retVal);
 }
 
 void MgdFeatureReader::Serialize(MgStream* stream) 
