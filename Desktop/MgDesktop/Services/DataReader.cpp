@@ -677,26 +677,21 @@ const wchar_t* MgdDataReader::GetString(CREFSTRING propertyName, INT32& length)
 
     MG_FEATURE_SERVICE_TRY()
 
-    try
+    if(m_reader->IsNull(propertyName.c_str()))
+    {
+        MgStringCollection arguments;
+        arguments.Add(propertyName);
+
+        throw new MgNullPropertyValueException(L"MgdDataReader::GetString",
+            __LINE__, __WFILE__, &arguments, L"", NULL);
+    }
+    else
     {
         retVal = m_reader->GetString(propertyName.c_str());
         if (retVal != NULL)
         {
             length = (INT32)wcslen((const wchar_t*)retVal);
         }
-    }
-    catch(...)
-    {
-        if(m_reader->IsNull(propertyName.c_str()))
-        {
-            MgStringCollection arguments;
-            arguments.Add(propertyName);
-
-            throw new MgNullPropertyValueException(L"MgdDataReader::GetString",
-                __LINE__, __WFILE__, &arguments, L"", NULL);
-        }
-        else
-            throw;
     }
 
     MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgdDataReader::GetString");

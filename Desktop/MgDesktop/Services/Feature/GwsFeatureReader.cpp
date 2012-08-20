@@ -1417,9 +1417,17 @@ const wchar_t* MgdGwsFeatureReader::GetString(CREFSTRING propertyName, INT32& le
     IGWSFeatureIterator* gwsFeatureIter = NULL;
     STRING parsedPropertyName;
     DeterminePropertyFeatureSource(propertyName, &gwsFeatureIter, parsedPropertyName);
-    CHECKNULL(gwsFeatureIter, L"MgdGwsFeatureReader.GetString");
+    CHECKNULL(gwsFeatureIter, L"MgdGwsFeatureReader::GetString");
 
-    try
+    if(gwsFeatureIter->IsNull(parsedPropertyName.c_str()))
+    {
+        MgStringCollection arguments;
+        arguments.Add(propertyName);
+
+        throw new MgNullPropertyValueException(L"MgdGwsFeatureReader::GetString",
+            __LINE__, __WFILE__, &arguments, L"", NULL);
+    }
+    else
     {
         retVal = gwsFeatureIter->GetString(parsedPropertyName.c_str());
         if (retVal != NULL)
@@ -1427,21 +1435,8 @@ const wchar_t* MgdGwsFeatureReader::GetString(CREFSTRING propertyName, INT32& le
             length = (INT32)wcslen((const wchar_t*)retVal);
         }
     }
-    catch(...)
-    {
-        if(gwsFeatureIter->IsNull(parsedPropertyName.c_str()))
-        {
-            MgStringCollection arguments;
-            arguments.Add(propertyName);
 
-            throw new MgNullPropertyValueException(L"MgdGwsFeatureReader.GetString",
-                __LINE__, __WFILE__, &arguments, L"", NULL);
-        }
-        else
-            throw;
-    }
-
-    MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgdGwsFeatureReader.GetString");
+    MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgdGwsFeatureReader::GetString");
 
     return ((const wchar_t*)retVal);
 }
