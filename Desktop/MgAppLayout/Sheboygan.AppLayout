@@ -494,5 +494,10 @@
       <Assembly>SampleExtension.dll</Assembly>
       <ClassName>SampleExtension.MgCustomOutputComponent</ClassName>
     </ComponentDefinition>
+    <ComponentDefinition>
+      <ComponentID>PrePostRender</ComponentID>
+      <Assembly>SampleExtension.dll</Assembly>
+      <ClassName>SampleExtension.MgPrePostRenderingComponent</ClassName>
+    </ComponentDefinition>
   </Components>
 </AppLayout>

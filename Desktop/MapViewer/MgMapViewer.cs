@@ -514,14 +514,18 @@ namespace OSGeo.MapGuide.Viewer
         protected override void OnPaint(PaintEventArgs e)
         {
             base.OnPaint(e);
-            Trace.TraceInformation("OnPaint(e)");
 
+            Trace.TraceInformation("OnPaint(e)");
             ApplyPaintTranslateTransform(e);
 
             if (mouseWheelSx.HasValue && mouseWheelSy.HasValue && mouseWheelSx.Value != 0.0 && mouseWheelSy.Value != 0.0)
             {
                 e.Graphics.ScaleTransform(mouseWheelSx.Value, mouseWheelSy.Value);
             }
+
+            var pre = this.PreMapRender;
+            if (pre != null)
+                pre(this, e);
 
             if (_mapImage != null)
             {
@@ -591,6 +595,10 @@ namespace OSGeo.MapGuide.Viewer
                     }
                 }
             }
+
+            var post = this.PostMapRender;
+            if (post != null)
+                post(this, e);
         }
 
         private void ApplyPaintTranslateTransform(PaintEventArgs e)
@@ -1465,6 +1473,10 @@ namespace OSGeo.MapGuide.Viewer
         /// Updates the rendered selection. Call this method if you have manipulated the selection
         /// set outside of the viewer. This does not raise the <see cref="SelectionChanged"/> event
         /// </summary>
+        /// <remarks>
+        /// If you have modified the selection as a result of calling <see cref="SelectByGeometry"/>, calling
+        /// this method is not necessary as it will have automatically do this.
+        /// </remarks>
         public void UpdateSelection()
         {
             UpdateSelection(false);
@@ -1475,6 +1487,10 @@ namespace OSGeo.MapGuide.Viewer
         /// set outside of the viewer
         /// </summary>
         /// <param name="raise">Indicates if the <see cref="SelectionChanged"/> event should be raised as well</param>
+        /// <remarks>
+        /// If you have modified the selection as a result of calling <see cref="SelectByGeometry"/>, calling
+        /// this method is not necessary as it will have automatically do this.
+        /// </remarks>
         public void UpdateSelection(bool raise)
         {
             RenderSelection();
@@ -2875,5 +2891,13 @@ namespace OSGeo.MapGuide.Viewer
         }
 
         public bool HasLoadedMap { get { return _map != null; } }
+
+        int IMapViewer.ControlHeight { get { return this.Height; } }
+
+        int IMapViewer.ControlWidth { get { return this.Width; } }
+
+        public event PaintEventHandler PreMapRender;
+
+        public event PaintEventHandler PostMapRender;
     }
 }
