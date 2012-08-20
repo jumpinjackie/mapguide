@@ -5,6 +5,7 @@ using OSGeo.MapGuide;
 using System.Drawing;
 using System.ComponentModel;
 using System.Collections.ObjectModel;
+using System.Windows.Forms;
 
 namespace OSGeo.MapGuide.Viewer
 {
@@ -280,6 +281,10 @@ namespace OSGeo.MapGuide.Viewer
         /// Updates the rendered selection. Call this method if you have manipulated the selection
         /// set outside of the viewer
         /// </summary>
+        /// <remarks>
+        /// If you have modified the selection as a result of calling <see cref="SelectByGeometry"/>, calling
+        /// this method is not necessary as it will have automatically do this.
+        /// </remarks>
         void UpdateSelection();
 
         /// <summary>
@@ -287,12 +292,20 @@ namespace OSGeo.MapGuide.Viewer
         /// set outside of the viewer
         /// </summary>
         /// <param name="raise">Indicates if the <see cref="SelectionChanged"/> event should be raised as well</param>
+        /// <remarks>
+        /// If you have modified the selection as a result of calling <see cref="SelectByGeometry"/>, calling
+        /// this method is not necessary as it will have automatically do this.
+        /// </remarks>
         void UpdateSelection(bool raise);
 
         /// <summary>
         /// Selects features from all selectable layers that intersects the given geometry
         /// </summary>
         /// <param name="geom"></param>
+        /// <remarks>
+        /// This method will automatically trigger selection updates. Calling <see cref="UpdateSelection"/> is not necessary if
+        /// you are calling this method
+        /// </remarks>
         void SelectByGeometry(MgGeometry geom);
 
         /// <summary>
@@ -300,6 +313,10 @@ namespace OSGeo.MapGuide.Viewer
         /// </summary>
         /// <param name="geom"></param>
         /// <param name="maxFeatures">The maximum number of features to select. Specify -1 for all features</param>
+        /// <remarks>
+        /// This method will automatically trigger selection updates. Calling <see cref="UpdateSelection"/> is not necessary if
+        /// you are calling this method
+        /// </remarks>
         void SelectByGeometry(MgGeometry geom, int maxFeatures);
 
         /// <summary>
@@ -392,6 +409,55 @@ namespace OSGeo.MapGuide.Viewer
         /// Cancels the active digitization process. Does nothing if <see cref="DigitizingType"/> is MapDigitizationType.None
         /// </summary>
         void CancelDigitization();
+
+        /// <summary>
+        /// Raised before map rendering begins in the control's Paint method. This allows you to do custom rendering before the
+        /// map image is rendered. Depending on whatever map/layer transparency settings, content rendered by your handler may
+        /// be obscured by the map image that is rendered afterwards. If you need to do custom rendering on top of a rendered map
+        /// image, consider doing the rendering on the <see cref="E:OSGeo.MapGuide.Viewer.IMapViewer.PostMapRender"/> event
+        /// instead.
+        /// </summary>
+        /// <remarks>
+        /// The <see cref="T:System.Drawing.Graphics"/> object attached to the <see cref="T:System.Windows.Forms.PaintEventArgs"/>
+        /// that is passed to your handler will already have any scale/translate transforms applied as a result of user panning or
+        /// transitional zooming.
+        /// 
+        /// Also note that any such custom rendrered content will not appear in any custom rendering or plotting output through
+        /// MapGuide's APIs as it has no knowledge of the your custom rendered content here.
+        /// </remarks>
+        event PaintEventHandler PreMapRender;
+
+        /// <summary>
+        /// Raised after map render has completed in the control's Paint method. This allows you to do custom rendering after the
+        /// map image is rendered
+        /// </summary>
+        /// <remarks>
+        /// The <see cref="T:System.Drawing.Graphics"/> object attached to the <see cref="T:System.Windows.Forms.PaintEventArgs"/>
+        /// that is passed to your handler will already have any scale/translate transforms applied as a result of user panning or
+        /// transitional zooming.
+        /// 
+        /// Also note that any such custom rendrered content will not appear in any custom rendering or plotting output through
+        /// MapGuide's APIs as it has no knowledge of the your custom rendered content here.
+        /// </remarks>
+        event PaintEventHandler PostMapRender;
+
+        /// <summary>
+        /// Gets the width of this control
+        /// </summary>
+        int ControlWidth { get; }
+
+        /// <summary>
+        /// Gets the height of this control
+        /// </summary>
+        int ControlHeight { get; }
+
+        /// <summary>
+        /// Converts the given coordinate in screen units to map units
+        /// </summary>
+        /// <param name="x"></param>
+        /// <param name="y"></param>
+        /// <returns></returns>
+        PointF ScreenToMapUnits(double x, double y);
     }
 
     public class MgMapViewHistoryEntry

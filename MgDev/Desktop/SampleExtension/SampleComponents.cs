@@ -115,4 +115,17 @@ namespace SampleExtension
             return new CustomOutput(this.Viewer);
         }
     }
+
+    public class MgPrePostRenderingComponent : MgViewerComponent
+    {
+        public MgPrePostRenderingComponent()
+        {
+            this.Target = MgViewerTarget.TaskPane;
+        }
+
+        protected override MgControlView CreateControlView()
+        {
+            return new PrePostRendering(this.Viewer);
+        }
+    }
 }

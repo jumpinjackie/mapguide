@@ -39,6 +39,7 @@
             this.label2 = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
             this.btnReload = new System.Windows.Forms.Button();
+            this.btnPrePostRender = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // btnHelloMap
@@ -142,7 +143,7 @@
             // 
             // label1
             // 
-            this.label1.Location = new System.Drawing.Point(23, 324);
+            this.label1.Location = new System.Drawing.Point(20, 357);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(200, 45);
             this.label1.TabIndex = 9;
@@ -151,7 +152,7 @@
             // 
             // btnReload
             // 
-            this.btnReload.Location = new System.Drawing.Point(23, 372);
+            this.btnReload.Location = new System.Drawing.Point(20, 405);
             this.btnReload.Name = "btnReload";
             this.btnReload.Size = new System.Drawing.Size(173, 23);
             this.btnReload.TabIndex = 10;
@@ -159,10 +160,22 @@
             this.btnReload.UseVisualStyleBackColor = true;
             this.btnReload.Click += new System.EventHandler(this.btnReload_Click);
             // 
+            // btnPrePostRender
+            // 
+            this.btnPrePostRender.Location = new System.Drawing.Point(23, 307);
+            this.btnPrePostRender.Name = "btnPrePostRender";
+            this.btnPrePostRender.Size = new System.Drawing.Size(173, 23);
+            this.btnPrePostRender.TabIndex = 11;
+            this.btnPrePostRender.Tag = "PrePostRender";
+            this.btnPrePostRender.Text = "Pre/Post Rendering";
+            this.btnPrePostRender.UseVisualStyleBackColor = true;
+            this.btnPrePostRender.Click += new System.EventHandler(this.OnActionClick);
+            // 
             // SamplesTaskPane
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.Controls.Add(this.btnPrePostRender);
             this.Controls.Add(this.btnReload);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.label2);
@@ -175,7 +188,7 @@
             this.Controls.Add(this.btnHelloViewer);
             this.Controls.Add(this.btnHelloMap);
             this.Name = "SamplesTaskPane";
-            this.Size = new System.Drawing.Size(247, 413);
+            this.Size = new System.Drawing.Size(247, 446);
             this.ResumeLayout(false);
 
         }
@@ -193,5 +206,6 @@
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Button btnReload;
+        private System.Windows.Forms.Button btnPrePostRender;
     }
 }
