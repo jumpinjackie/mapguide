@@ -706,7 +706,6 @@ namespace OSGeo.MapGuide.Viewer
         {
             if (IsLayerNode(e.Node) && !e.Bounds.IsEmpty)
             {
-                //TODO: Render +/- for nodes with children (ie. Themed layers)
                 Color backColor, foreColor;
 
                 //For some reason, the default bounds are way off from what you would
@@ -715,13 +714,31 @@ namespace OSGeo.MapGuide.Viewer
                 if (trvLegend.ShowPlusMinus && e.Node.Nodes.Count > 0)
                 {
                     // Use the VisualStyles renderer to use the proper OS-defined glyphs
-                    Rectangle expandRect = new Rectangle(e.Node.Bounds.X - 52, e.Node.Bounds.Y, 16, 16);
+                    Rectangle glyphRect = new Rectangle(e.Node.Bounds.X - 52, e.Node.Bounds.Y, 16, 16);
+                    if (Application.RenderWithVisualStyles)
+                    {
+                        VisualStyleElement element = (e.Node.IsExpanded) ?
+                            VisualStyleElement.TreeView.Glyph.Opened : VisualStyleElement.TreeView.Glyph.Closed;
 
-                    VisualStyleElement element = (e.Node.IsExpanded) ? 
-                        VisualStyleElement.TreeView.Glyph.Opened : VisualStyleElement.TreeView.Glyph.Closed;
+                        VisualStyleRenderer renderer = new VisualStyleRenderer(element);
+                        renderer.DrawBackground(e.Graphics, glyphRect);
+                    }
+                    else //Visual Styles disabled, fallback to drawing the +/- using geometric primitives
+                    {
+                        int h = 8;
+                        int w = 8;
+                        int x = glyphRect.X;
+                        int y = glyphRect.Y + (glyphRect.Height / 2) - 4;
 
-                    VisualStyleRenderer renderer = new VisualStyleRenderer(element);
-                    renderer.DrawBackground(e.Graphics, expandRect);
+                        //Draw the -
+                        e.Graphics.DrawRectangle(new Pen(SystemBrushes.ControlDark), x, y, w, h);
+                        e.Graphics.FillRectangle(new SolidBrush(Color.White), x + 1, y + 1, w - 1, h - 1);
+                        e.Graphics.DrawLine(new Pen(new SolidBrush(Color.Black)), x + 2, y + 4, x + w - 2, y + 4);
+
+                        //Draw the |
+                        if (!e.Node.IsExpanded)
+                            e.Graphics.DrawLine(new Pen(new SolidBrush(Color.Black)), x + 4, y + 2, x + 4, y + h - 2); 
+                    }
                 }
 
                 if ((e.State & TreeNodeStates.Selected) == TreeNodeStates.Selected)
@@ -758,10 +775,22 @@ namespace OSGeo.MapGuide.Viewer
 
                 if (tag != null && !tag.IsThemeRule) //No checkbox for theme rule nodes
                 {
-                    CheckBoxRenderer.DrawCheckBox(
-                        e.Graphics,
-                        new Point(e.Node.Bounds.X + checkBoxOffset, e.Node.Bounds.Y),
-                        e.Node.Checked ? CheckBoxState.CheckedNormal : CheckBoxState.UncheckedNormal);
+                    if (Application.RenderWithVisualStyles)
+                    {
+                        CheckBoxRenderer.DrawCheckBox(
+                            e.Graphics,
+                            new Point(e.Node.Bounds.X + checkBoxOffset, e.Node.Bounds.Y),
+                            e.Node.Checked ? CheckBoxState.CheckedNormal : CheckBoxState.UncheckedNormal);
+                    }
+                    else
+                    {
+                        //We don't have to do this, but with Visual Styles disabled, there is a noticeable jarring visual difference from DrawDefault'd checkboxes
+                        //So we might as well emulate that style for the sake of consistency
+                        var rect = new Rectangle(e.Node.Bounds.X + checkBoxOffset, e.Node.Bounds.Y, 16, 16);
+                        ControlPaint.DrawCheckBox(e.Graphics, rect, e.Node.Checked ? ButtonState.Checked | ButtonState.Flat : ButtonState.Flat);
+                        rect.Inflate(-2, -2);
+                        e.Graphics.DrawRectangle(new Pen(Brushes.Black, 2.0f), rect);
+                    }
                 }
                 if (tag != null)
                 {
