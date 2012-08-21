@@ -89,13 +89,14 @@ namespace OSGeo.MapGuide.Viewer
                 if (node.Nodes.Count > 0)
                     ClearNodes(node.Nodes);
 
+                /*
                 var layerMeta = node.Tag as LayerNodeMetadata;
                 if (layerMeta != null && layerMeta.ThemeIcon != null)
                 {
                     layerMeta.Layer = null;
                     layerMeta.ThemeIcon.Dispose();
                     layerMeta.ThemeIcon = null;
-                }
+                }*/
             }
             nodes.Clear();
         }
@@ -139,14 +140,14 @@ namespace OSGeo.MapGuide.Viewer
             if (e.Node.Tag == null)
                 return;
 
-            if (((LegendNodeMetadata)e.Node.Tag).IsGroup) //Group
+            var meta = ((LegendNodeMetadata)e.Node.Tag);
+            if (meta.IsGroup) //Group
             {
-                _presenter.SetGroupVisible(e.Node.Name, e.Node.Checked);
+                _presenter.SetGroupVisible(meta.ObjectId, e.Node.Checked);
             }
             else //Layer
             {
-                
-                _presenter.SetLayerVisible(e.Node.Name, e.Node.Checked);
+                _presenter.SetLayerVisible(meta.ObjectId, e.Node.Checked);
             }
         }
 
@@ -155,13 +156,14 @@ namespace OSGeo.MapGuide.Viewer
             if (e.Node.Tag == null)
                 return;
 
-            if (((LegendNodeMetadata)e.Node.Tag).IsGroup) //Group
+            var meta = ((LegendNodeMetadata)e.Node.Tag);
+            if (meta.IsGroup) //Group
             {
-                _presenter.SetGroupExpandInLegend(e.Node.Name, true);
+                _presenter.SetGroupExpandInLegend(meta.ObjectId, true);
             }
             else //Layer
             {
-                _presenter.SetLayerExpandInLegend(e.Node.Name, true);
+                _presenter.SetLayerExpandInLegend(meta.ObjectId, true);
             }
         }
 
@@ -170,13 +172,14 @@ namespace OSGeo.MapGuide.Viewer
             if (e.Node.Tag == null)
                 return;
 
-            if (((LegendNodeMetadata)e.Node.Tag).IsGroup) //Group
+            var meta = ((LegendNodeMetadata)e.Node.Tag);
+            if (meta.IsGroup) //Group
             {
-                _presenter.SetGroupExpandInLegend(e.Node.Name, false);
+                _presenter.SetGroupExpandInLegend(meta.ObjectId, false);
             }
             else //Layer
             {
-                _presenter.SetLayerExpandInLegend(e.Node.Name, false);
+                _presenter.SetLayerExpandInLegend(meta.ObjectId, false);
             }
         }
 
@@ -269,7 +272,7 @@ namespace OSGeo.MapGuide.Viewer
             get { return _themeCompressionLimit; }
             set { _themeCompressionLimit = value; }
         }
-
+        
         private void OnLayerContextMenuOpening(object sender, CancelEventArgs e)
         {
 

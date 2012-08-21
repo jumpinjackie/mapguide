@@ -10,6 +10,7 @@ namespace OSGeo.MapGuide.Viewer
     using Legend.Model;
     using System.Xml;
     using System.IO;
+using System.Diagnostics;
 
     interface ILegendView
     {
@@ -40,11 +41,8 @@ namespace OSGeo.MapGuide.Viewer
 
         private ILegendView _legend;
 
-        //TODO: Coalesce this all into a single object. ie. Merge into the respective metadata classes.
-        private Dictionary<string, bool> _initialLayerSelectabilityState = new Dictionary<string, bool>();
-        private Dictionary<string, MgLayerBase> _layers = new Dictionary<string, MgLayerBase>();
-        private Dictionary<string, MgLayerGroup> _groups = new Dictionary<string, MgLayerGroup>();
-        private Dictionary<string, string> _layerDefinitionContents = new Dictionary<string, string>();
+        private Dictionary<string, LayerNodeMetadata> _layers = new Dictionary<string, LayerNodeMetadata>();
+        private Dictionary<string, GroupNodeMetadata> _groups = new Dictionary<string, GroupNodeMetadata>();
 
         public MgLegendControlPresenter(ILegendView legend, MgMapViewerProvider provider)
         {
@@ -61,12 +59,12 @@ namespace OSGeo.MapGuide.Viewer
         {
             if (_map != null)
             {
-                _initialLayerSelectabilityState.Clear();
+                _layers.Clear();
                 var layers = _map.GetLayers();
                 for (int i = 0; i < layers.GetCount(); i++)
                 {
                     var layer = layers.GetItem(i);
-                    _initialLayerSelectabilityState[layer.GetObjectId()] = layer.Selectable;
+                    _layers[layer.GetObjectId()] = new LayerNodeMetadata(layer, layer.Selectable);
                 }
             }
         }
@@ -98,26 +96,43 @@ namespace OSGeo.MapGuide.Viewer
             var lt = layer.GetLayerType();
             var fsId = layer.GetFeatureSourceId();
 
+            LayerNodeMetadata layerMeta = null;
             if (fsId.EndsWith("DrawingSource"))
             {
                 node.SelectedImageKey = node.ImageKey = IMG_DWF;
-                //If not in the dictionary, assume it is a dynamically added layer
-                bool bInitiallySelectable = _initialLayerSelectabilityState.ContainsKey(layer.GetObjectId()) ? _initialLayerSelectabilityState[layer.GetObjectId()] : layer.Selectable;
-                node.Tag = new LayerNodeMetadata(layer, bInitiallySelectable);
+                bool bInitiallySelectable = layer.Selectable;
+                if (_layers.ContainsKey(layer.GetObjectId()))
+                {
+                    layerMeta = _layers[layer.GetObjectId()];
+                    bInitiallySelectable = layerMeta.WasInitiallySelectable;
+                }
+                else //If not in the dictionary, assume it is a dynamically added layer
+                {
+                    layerMeta = new LayerNodeMetadata(layer, bInitiallySelectable);
+                    _layers[layer.GetObjectId()] = layerMeta;
+                }
+                node.Tag = layerMeta;
                 node.ToolTipText = string.Format(Properties.Resources.DrawingLayerTooltip, Environment.NewLine, layer.Name, layer.FeatureSourceId);
             }
             else
             {
-                string layerData = null;
                 var ldfId = layer.LayerDefinition;
-                if (_layerDefinitionContents.ContainsKey(ldfId.ToString()))
-                    layerData = _layerDefinitionContents[ldfId.ToString()];
-
-                if (layerData == null)
+                if (_layers.ContainsKey(layer.GetObjectId()))
+                {
+                    layerMeta = _layers[layer.GetObjectId()];
+                }
+                else
+                {
+                    layerMeta = new LayerNodeMetadata(layer, layer.Selectable);
+                    _layers[layer.GetObjectId()] = layerMeta;
+                }
+                if (string.IsNullOrEmpty(layerMeta.LayerDefinitionContent))
                     return null;
 
+                node.Tag = layerMeta;
+
                 XmlDocument doc = new XmlDocument();
-                doc.LoadXml(layerData);
+                doc.LoadXml(layerMeta.LayerDefinitionContent);
                 int type = 0;
                 XmlNodeList scaleRanges = doc.GetElementsByTagName("VectorScaleRange");
                 if (scaleRanges.Count == 0)
@@ -139,111 +154,116 @@ namespace OSGeo.MapGuide.Viewer
 
                 try
                 {
-                    MgByteReader layerIcon = _provider.GenerateLegendImage(layer.LayerDefinition,
-                                                                            _map.ViewScale,
-                                                                            16,
-                                                                            16,
-                                                                            "PNG",
-                                                                            -1,
-                                                                            -1);
-                    if (layerIcon != null)
+                    if (layerMeta.Icon == null)
                     {
-                        try
+                        MgByteReader layerIcon = _provider.GenerateLegendImage(layer.LayerDefinition,
+                                                                                _map.ViewScale,
+                                                                                16,
+                                                                                16,
+                                                                                "PNG",
+                                                                                -1,
+                                                                                -1);
+                        legendCallCount++;
+                        if (layerIcon != null)
                         {
-                            byte[] b = new byte[layerIcon.GetLength()];
-                            layerIcon.Read(b, b.Length);
-                            using (var ms = new MemoryStream(b))
+                            try
                             {
-                                string id = Guid.NewGuid().ToString();
-                                Image img = Image.FromStream(ms);
-
-                                _legend.AddLegendIcon(id, img);
-                                node.SelectedImageKey = node.ImageKey = id;
-                                //If not in the dictionary, assume it is a dynamically added layer
-                                bool bInitiallySelectable = _initialLayerSelectabilityState.ContainsKey(layer.GetObjectId()) ? _initialLayerSelectabilityState[layer.GetObjectId()] : layer.Selectable;
-                                node.Tag = new LayerNodeMetadata(layer, bInitiallySelectable)
+                                byte[] b = new byte[layerIcon.GetLength()];
+                                layerIcon.Read(b, b.Length);
+                                using (var ms = new MemoryStream(b))
                                 {
-                                    ThemeIcon = img
-                                };
-                                node.ToolTipText = string.Format(Properties.Resources.DefaultLayerTooltip, Environment.NewLine, layer.Name, layer.FeatureSourceId, layer.FeatureClassName);
+                                    layerMeta.Icon = Image.FromStream(ms);
+                                    node.ToolTipText = string.Format(Properties.Resources.DefaultLayerTooltip, Environment.NewLine, layer.Name, layer.FeatureSourceId, layer.FeatureClassName);
+                                }
+                            }
+                            finally
+                            {
+                                layerIcon.Dispose();
                             }
                         }
-                        finally
+                        else
                         {
-                            layerIcon.Dispose();
+                            layerMeta.Icon = Properties.Resources.lc_broken;
                         }
-                    }
-                    else
-                    {
-                        node.SelectedImageKey = node.ImageKey = IMG_BROKEN;
                     }
                 }
                 catch
                 {
-                    node.SelectedImageKey = node.ImageKey = IMG_BROKEN;
+                    layerMeta.Icon = Properties.Resources.lc_broken;
                 }
 
-                for (int sc = 0; sc < scaleRanges.Count; sc++)
+                if (!layerMeta.HasTheme())
                 {
-                    XmlElement scaleRange = (XmlElement)scaleRanges[sc];
-                    XmlNodeList minElt = scaleRange.GetElementsByTagName("MinScale");
-                    XmlNodeList maxElt = scaleRange.GetElementsByTagName("MaxScale");
-                    String minScale, maxScale;
-                    minScale = "0";
-                    maxScale = "1000000000000.0";   // as MDF's VectorScaleRange::MAX_MAP_SCALE
-                    if (minElt.Count > 0)
-                        minScale = minElt[0].ChildNodes[0].Value;
-                    if (maxElt.Count > 0)
-                        maxScale = maxElt[0].ChildNodes[0].Value;
-
-                    if (type != 0)
-                        break;
-
-                    for (int geomType = 0; geomType < typeStyles.Length; geomType++)
+                    for (int sc = 0; sc < scaleRanges.Count; sc++)
                     {
-                        int catIndex = 0;
-                        XmlNodeList typeStyle = scaleRange.GetElementsByTagName(typeStyles[geomType]);
-                        for (int st = 0; st < typeStyle.Count; st++)
-                        {
-                            // We will check if this typestyle is going to be shown in the legend
-                            XmlNodeList showInLegend = ((XmlElement)typeStyle[st]).GetElementsByTagName("ShowInLegend");
-                            if (showInLegend.Count > 0)
-                                if (!bool.Parse(showInLegend[0].ChildNodes[0].Value))
-                                    continue;   // This typestyle does not need to be shown in the legend
+                        XmlElement scaleRange = (XmlElement)scaleRanges[sc];
+                        XmlNodeList minElt = scaleRange.GetElementsByTagName("MinScale");
+                        XmlNodeList maxElt = scaleRange.GetElementsByTagName("MaxScale");
+                        String minScale, maxScale;
+                        minScale = "0";
+                        maxScale = "1000000000000.0";   // as MDF's VectorScaleRange::MAX_MAP_SCALE
+                        if (minElt.Count > 0)
+                            minScale = minElt[0].ChildNodes[0].Value;
+                        if (maxElt.Count > 0)
+                            maxScale = maxElt[0].ChildNodes[0].Value;
 
-                            XmlNodeList rules = ((XmlElement)typeStyle[st]).GetElementsByTagName(ruleNames[geomType]);
-                            if (rules.Count > 1)
+                        if (type != 0)
+                            break;
+
+                        for (int geomType = 0; geomType < typeStyles.Length; geomType++)
+                        {
+                            ThemeCategory themeCat = new ThemeCategory()
                             {
-                                node.SelectedImageKey = node.ImageKey = IMG_THEME;
-                                var layerMeta = node.Tag as LayerNodeMetadata;
-                                if (layerMeta != null)
+                                MinScale = minScale,
+                                MaxScale = maxScale,
+                                GeometryType = geomType
+                            };
+
+                            int catIndex = 0;
+                            XmlNodeList typeStyle = scaleRange.GetElementsByTagName(typeStyles[geomType]);
+                            for (int st = 0; st < typeStyle.Count; st++)
+                            {
+                                // We will check if this typestyle is going to be shown in the legend
+                                XmlNodeList showInLegend = ((XmlElement)typeStyle[st]).GetElementsByTagName("ShowInLegend");
+                                if (showInLegend.Count > 0)
+                                    if (!bool.Parse(showInLegend[0].ChildNodes[0].Value))
+                                        continue;   // This typestyle does not need to be shown in the legend
+
+                                XmlNodeList rules = ((XmlElement)typeStyle[st]).GetElementsByTagName(ruleNames[geomType]);
+                                if (rules.Count > 1)
                                 {
-                                    layerMeta.ThemeIcon = Properties.Resources.lc_theme;
+                                    layerMeta.Icon = Properties.Resources.lc_theme;
                                     node.ToolTipText = string.Format(Properties.Resources.ThemedLayerTooltip, Environment.NewLine, layer.Name, layer.FeatureSourceId, layer.FeatureClassName, rules.Count);
-                                }
-                                if (_legend.ThemeCompressionLimit > 0 && rules.Count > _legend.ThemeCompressionLimit)
-                                {
-                                    AddThemeRuleNode(layer, node, geomType, 0, rules, 0);
-                                    node.Nodes.Add(CreateCompressedThemeNode(rules.Count - 2));
-                                    AddThemeRuleNode(layer, node, geomType, rules.Count - 1, rules, rules.Count - 1);
-                                }
-                                else
-                                {
-                                    for (int r = 0; r < rules.Count; r++)
+
+                                    if (_legend.ThemeCompressionLimit > 0 && rules.Count > _legend.ThemeCompressionLimit)
                                     {
-                                        AddThemeRuleNode(layer, node, geomType, catIndex++, rules, r);
+                                        AddThemeRuleNode(layerMeta, themeCat, node, geomType, 0, rules, 0);
+                                        node.Nodes.Add(CreateCompressedThemeNode(layerMeta, themeCat, rules.Count - 2));
+                                        AddThemeRuleNode(layerMeta, themeCat, node, geomType, rules.Count - 1, rules, rules.Count - 1);
+                                    }
+                                    else
+                                    {
+                                        for (int r = 0; r < rules.Count; r++)
+                                        {
+                                            AddThemeRuleNode(layerMeta, themeCat, node, geomType, catIndex++, rules, r);
+                                        }
                                     }
                                 }
                             }
                         }
                     }
                 }
+                else //Already cached
+                {
+                    Trace.TraceInformation("Icons already cached for: " + layer.Name);
+                    node.Nodes.AddRange(layerMeta.CreateThemeNodesFromCachedMetadata(_map.ViewScale));
+                }
             }
 
             return node;
         }
 
-        private void AddThemeRuleNode(MgLayerBase layer, TreeNode node, int geomType, int catIndex, XmlNodeList rules, int r)
+        private void AddThemeRuleNode(LayerNodeMetadata layerMeta, ThemeCategory themeCat, TreeNode node, int geomType, int catIndex, XmlNodeList rules, int r)
         {
             XmlElement rule = (XmlElement)rules[r];
             XmlNodeList label = rule.GetElementsByTagName("LegendLabel");
@@ -256,33 +276,32 @@ namespace OSGeo.MapGuide.Viewer
             //if (filter != null && filter.Count > 0 && filter[0].ChildNodes.Count > 0)
             //    filterText = filter[0].ChildNodes[0].Value;
 
-            var child = CreateThemeRuleNode(layer.LayerDefinition, _map.ViewScale, labelText, (geomType + 1), catIndex);
+            var child = CreateThemeRuleNode(layerMeta, themeCat, _map.ViewScale, labelText, (geomType + 1), catIndex);
             node.Nodes.Add(child);
         }
 
-        private TreeNode CreateCompressedThemeNode(int count)
+        private TreeNode CreateCompressedThemeNode(LayerNodeMetadata layer, ThemeCategory cat, int count)
         {
             TreeNode node = new TreeNode();
             node.Text = (count + " other styles");
             node.ImageKey = node.SelectedImageKey = IMG_OTHER;
-            node.Tag = new LayerNodeMetadata(null, false)
-            {
-                IsBaseLayer = false,
-                ThemeIcon = Properties.Resources.icon_etc,
-                IsThemeRule = true
-            };
+            var meta = new LayerThemeNodeMetadata(true, Properties.Resources.icon_etc, node.Text);
+            node.Tag = meta;
+            layer.AddThemeNode(cat, meta);
             return node;
         }
 
-        private TreeNode CreateThemeRuleNode(MgResourceIdentifier layerDefId, double viewScale, string labelText, int geomType, int categoryIndex)
+        private TreeNode CreateThemeRuleNode(LayerNodeMetadata layer, ThemeCategory themeCat, double viewScale, string labelText, int geomType, int categoryIndex)
         {
-            MgByteReader icon = _provider.GenerateLegendImage(layerDefId,
+            MgLayerBase lyr = layer.Layer;
+            MgByteReader icon = _provider.GenerateLegendImage(lyr.LayerDefinition,
                                                               viewScale,
                                                               16,
                                                               16,
                                                               "PNG",
                                                               geomType,
                                                               categoryIndex);
+            legendCallCount++;
             TreeNode node = new TreeNode();
             node.Text = labelText;
             if (icon != null)
@@ -292,17 +311,12 @@ namespace OSGeo.MapGuide.Viewer
 
                     byte[] b = new byte[icon.GetLength()];
                     icon.Read(b, b.Length);
-                    var tag = new LayerNodeMetadata(null, false)
-                    {
-                        IsBaseLayer = false,
-                        IsThemeRule = true
-                    };
                     using (var ms = new MemoryStream(b))
                     {
-                        string id = Guid.NewGuid().ToString();
-                        tag.ThemeIcon = Image.FromStream(ms);
+                        var tag = new LayerThemeNodeMetadata(false, Image.FromStream(ms), labelText);
+                        layer.AddThemeNode(themeCat, tag);
+                        node.Tag = tag;
                     }
-                    node.Tag = tag;
                 }
                 finally
                 {
@@ -319,10 +333,14 @@ namespace OSGeo.MapGuide.Viewer
             node.Text = group.GetLegendLabel();
             node.Checked = group.IsVisible();
             node.SelectedImageKey = node.ImageKey = IMG_GROUP;
-            node.Tag = new GroupNodeMetadata(group);
+            var meta = new GroupNodeMetadata(group);
+            node.Tag = meta;
+            _groups[group.GetObjectId()] = meta;
             node.ContextMenuStrip = _legend.GroupContextMenu;
             return node;
         }
+
+        private int legendCallCount = 0;
 
         public TreeNode[] CreateNodes()
         {
@@ -330,19 +348,19 @@ namespace OSGeo.MapGuide.Viewer
             var nodesById = new Dictionary<string, TreeNode>();
 
             var scale = _map.ViewScale;
+            if (scale < 10.0)
+                return output.ToArray();
+
             var groups = _map.GetLayerGroups();
             var layers = _map.GetLayers();
 
-            _layerDefinitionContents.Clear();
-            _layers.Clear();
-            _groups.Clear();
+            legendCallCount = 0;
 
             //Process groups first
             List<MgLayerGroup> remainingNodes = new List<MgLayerGroup>();
             for (int i = 0; i < groups.GetCount(); i++)
             {
                 var group = groups.GetItem(i);
-                _groups.Add(group.GetObjectId(), group);
                 if (!group.GetDisplayInLegend())
                     continue;
 
@@ -382,38 +400,73 @@ namespace OSGeo.MapGuide.Viewer
                 }
             }
 
-            //Now process layers
+            //Collect all resource contents in a batch
+            MgStringCollection layerIds = new MgStringCollection();
+            //Also collect the layer metadata nodes to create or update
+            var layerMetaNodesToUpdate = new Dictionary<string, MgLayerBase>();
+            //Now process layers. Layers without metadata nodes or without layer definition content
+            //are added to the list
             for (int i = 0; i < layers.GetCount(); i++)
             {
                 var lyr = layers.GetItem(i);
-                var ldfId = lyr.LayerDefinition;
+                bool display = lyr.DisplayInLegend;
+                bool visible = _provider.IsLayerPotentiallyVisibleAtScale(lyr, false);
+                if (!display)
+                    continue;
 
-                if (!_layerDefinitionContents.ContainsKey(ldfId.ToString()))
+                if (!visible)
+                    continue;
+
+                if (_layers.ContainsKey(lyr.GetObjectId()))
                 {
-                    _layerDefinitionContents[ldfId.ToString()] = string.Empty;
+                    if (string.IsNullOrEmpty(_layers[lyr.GetObjectId()].LayerDefinitionContent))
+                    {
+                        var ldfId = lyr.LayerDefinition;
+                        layerIds.Add(ldfId.ToString());
+                        layerMetaNodesToUpdate[ldfId.ToString()] = lyr;
+                    }
+                }
+                else
+                {
+                    var ldfId = lyr.LayerDefinition;
+                    layerIds.Add(ldfId.ToString());
+                    layerMetaNodesToUpdate[ldfId.ToString()] = lyr;
                 }
             }
 
-            //Collect all resource contents in a batch
-            MgStringCollection layerIds = new MgStringCollection();
-            foreach (var lid in _layerDefinitionContents.Keys)
+            if (layerIds.GetCount() > 0)
             {
-                layerIds.Add(lid);
-            }
-
-            MgStringCollection layerContents = _resSvc.GetResourceContents(layerIds, null);
-            for (int i = 0; i < layerIds.GetCount(); i++)
-            {
-                string lid = layerIds.GetItem(i);
-                _layerDefinitionContents[lid] = layerContents.GetItem(i);
+                int added = 0;
+                int updated = 0;
+                //Fetch the contents and create/update the required layer metadata nodes
+                MgStringCollection layerContents = _resSvc.GetResourceContents(layerIds, null);
+                for (int i = 0; i < layerIds.GetCount(); i++)
+                {
+                    string lid = layerIds.GetItem(i);
+                    var lyr = layerMetaNodesToUpdate[lid];
+                    var objId = lyr.GetObjectId();
+                    LayerNodeMetadata meta = null;
+                    if (_layers.ContainsKey(objId))
+                    {
+                        meta = _layers[objId];
+                        updated++;
+                    }
+                    else
+                    {
+                        meta = new LayerNodeMetadata(lyr, lyr.Selectable);
+                        _layers[objId] = meta;
+                        added++;
+                    }
+                    meta.LayerDefinitionContent = layerContents.GetItem(i);
+                }
+                Trace.TraceInformation("CreateNodes: {0} layer contents added, {1} layer contents updated", added, updated);
             }
 
             List<MgLayerBase> remainingLayers = new List<MgLayerBase>();
             for (int i = 0; i < layers.GetCount(); i++)
             {
                 var layer = layers.GetItem(i);
-                _layers.Add(layer.GetObjectId(), layer);
-
+                
                 bool display = layer.DisplayInLegend;
                 bool visible = _provider.IsLayerPotentiallyVisibleAtScale(layer, false);
                 if (!display)
@@ -481,15 +534,15 @@ namespace OSGeo.MapGuide.Viewer
                     }
                 }
             }
-
+            Trace.TraceInformation("{0} calls made to GenerateLegendImage", legendCallCount);
             return output.ToArray();
         }
 
         private static bool IsThemeLayerNode(TreeNode node)
         {
-            var meta = node.Tag as LayerNodeMetadata;
+            var meta = node.Tag as LayerThemeNodeMetadata;
             if (meta != null)
-                return meta.ThemeIcon != null || meta.IsBaseLayer;
+                return true;
 
             return false;
         }
@@ -502,7 +555,7 @@ namespace OSGeo.MapGuide.Viewer
 
         internal void DrawNode(DrawTreeNodeEventArgs e, bool showPlusMinus, Font font)
         {
-            if (IsLayerNode(e.Node) && !e.Bounds.IsEmpty)
+            if (!e.Bounds.IsEmpty && (IsLayerNode(e.Node) || IsThemeLayerNode(e.Node)))
             {
                 Color backColor, foreColor;
 
@@ -555,11 +608,12 @@ namespace OSGeo.MapGuide.Viewer
                     foreColor = e.Node.ForeColor;
                 }
 
-                var tag = e.Node.Tag as LayerNodeMetadata;
+                var layerMeta = e.Node.Tag as LayerNodeMetadata;
+                var themeMeta = e.Node.Tag as LayerThemeNodeMetadata;
                 var checkBoxOffset = xoffset;
                 var selectabilityOffset = xoffset + 16;
                 var iconOffsetNoSelect = xoffset + 16;
-                if (tag != null && tag.IsThemeRule) //No checkbox for theme rule nodes
+                if (themeMeta != null) //No checkbox for theme rule nodes
                 {
                     selectabilityOffset = xoffset;
                     iconOffsetNoSelect = xoffset;
@@ -571,7 +625,7 @@ namespace OSGeo.MapGuide.Viewer
                 //Uncomment if you need to "see" the bounds of the node
                 //e.Graphics.DrawRectangle(Pens.Black, e.Node.Bounds);
 
-                if (tag != null && !tag.IsThemeRule) //No checkbox for theme rule nodes
+                if (layerMeta != null) //No checkbox for theme rule nodes
                 {
                     if (Application.RenderWithVisualStyles)
                     {
@@ -590,31 +644,43 @@ namespace OSGeo.MapGuide.Viewer
                         e.Graphics.DrawRectangle(new Pen(Brushes.Black, 2.0f), rect);
                     }
                 }
-                if (tag != null)
+                if (layerMeta != null)
                 {
-                    if (tag.DrawSelectabilityIcon)
+                    if (layerMeta.DrawSelectabilityIcon)
                     {
-                        var icon = tag.IsSelectable ? _selectableIcon : _unselectableIcon;
+                        var icon = layerMeta.IsSelectable ? _selectableIcon : _unselectableIcon;
                         e.Graphics.DrawImage(icon, e.Node.Bounds.X + selectabilityOffset, e.Node.Bounds.Y);
                         //Trace.TraceInformation("Painted icon at ({0},{1})", e.Node.Bounds.X, e.Node.Bounds.Y);
                     }
-                    if (tag.ThemeIcon != null)
+                    if (layerMeta.Icon != null)
                     {
-                        if (tag.DrawSelectabilityIcon)
+                        if (layerMeta.DrawSelectabilityIcon)
                         {
-                            e.Graphics.DrawImage(tag.ThemeIcon, e.Node.Bounds.X + iconOffset, e.Node.Bounds.Y);
+                            e.Graphics.DrawImage(layerMeta.Icon, e.Node.Bounds.X + iconOffset, e.Node.Bounds.Y);
                             //Trace.TraceInformation("Painted icon at ({0},{1})", e.Node.Bounds.X, e.Node.Bounds.Y);
                         }
                         else
                         {
-                            e.Graphics.DrawImage(tag.ThemeIcon, e.Node.Bounds.X + iconOffsetNoSelect, e.Node.Bounds.Y);
+                            e.Graphics.DrawImage(layerMeta.Icon, e.Node.Bounds.X + iconOffsetNoSelect, e.Node.Bounds.Y);
                             //Trace.TraceInformation("Painted icon at ({0},{1})", e.Node.Bounds.X, e.Node.Bounds.Y);
                         }
                     }
 
                     using (SolidBrush brush = new SolidBrush(Color.Black))
                     {
-                        e.Graphics.DrawString(e.Node.Text, font, brush, e.Node.Bounds.X + (tag.DrawSelectabilityIcon ? textOffset : textOffsetNoSelect), e.Node.Bounds.Y);
+                        e.Graphics.DrawString(e.Node.Text, font, brush, e.Node.Bounds.X + (layerMeta.DrawSelectabilityIcon ? textOffset : textOffsetNoSelect), e.Node.Bounds.Y);
+                    }
+                }
+                else if (themeMeta != null)
+                {
+                    if (themeMeta.ThemeIcon != null)
+                    {
+                        e.Graphics.DrawImage(themeMeta.ThemeIcon, e.Node.Bounds.X + iconOffsetNoSelect, e.Node.Bounds.Y);
+                    }
+
+                    using (SolidBrush brush = new SolidBrush(Color.Black))
+                    {
+                        e.Graphics.DrawString(e.Node.Text, font, brush, e.Node.Bounds.X + textOffsetNoSelect, e.Node.Bounds.Y);
                     }
                 }
                 else
@@ -633,23 +699,29 @@ namespace OSGeo.MapGuide.Viewer
             }
         }
 
-        internal void SetGroupExpandInLegend(string groupName, bool expand)
+        internal void SetGroupExpandInLegend(string objectId, bool expand)
         {
-            if (_groups.ContainsKey(groupName))
-                _provider.SetGroupExpandInLegend(_groups[groupName], expand);
-        }
-
-        internal void SetLayerExpandInLegend(string layerName, bool expand)
-        {
-            if (_layers.ContainsKey(layerName))
-                _provider.SetLayerExpandInLegend(_layers[layerName], expand);
-        }
-
-        internal void SetGroupVisible(string name, bool bChecked)
-        {
-            if (_groups.ContainsKey(name))
+            if (_groups.ContainsKey(objectId))
             {
-                var grp = _groups[name];
+                var grp = _groups[objectId].Group;
+                _provider.SetGroupExpandInLegend(grp, expand);
+            }
+        }
+
+        internal void SetLayerExpandInLegend(string objectId, bool expand)
+        {
+            if (_layers.ContainsKey(objectId))
+            {
+                var lyr = _layers[objectId].Layer;
+                _provider.SetLayerExpandInLegend(lyr, expand);
+            }
+        }
+
+        internal void SetGroupVisible(string objectId, bool bChecked)
+        {
+            if (_groups.ContainsKey(objectId))
+            {
+                var grp = _groups[objectId].Group;
                 grp.SetVisible(bChecked);
                 var bVis = HasVisibleParent(grp);
                 if (bVis)
@@ -657,11 +729,11 @@ namespace OSGeo.MapGuide.Viewer
             }
         }
 
-        internal void SetLayerVisible(string name, bool bChecked)
+        internal void SetLayerVisible(string objectId, bool bChecked)
         {
-            if (_layers.ContainsKey(name))
+            if (_layers.ContainsKey(objectId))
             {
-                var layer = _layers[name];
+                var layer = _layers[objectId].Layer;
                 layer.SetVisible(bChecked);
                 var bVis = HasVisibleParent(layer);
                 if (bVis)
@@ -675,22 +747,77 @@ namespace OSGeo.MapGuide.Viewer
 
     namespace Legend.Model
     {
-        class LegendNodeMetadata
+        abstract class LegendNodeMetadata
         {
             public bool IsGroup { get; protected set; }
+
+            public abstract string ObjectId { get; }
         }
 
+        [DebuggerDisplay("Name = {Layer.Name}, Label = {Layer.LegendLabel}")]
         class GroupNodeMetadata : LegendNodeMetadata
         {
-            internal MgLayerGroup Group { get; set; }
+            internal MgLayerGroup Group { get; private set; }
 
             public GroupNodeMetadata(MgLayerGroup group)
             {
                 base.IsGroup = true;
                 this.Group = group;
             }
+
+            public override string ObjectId
+            {
+                get { return this.Group.GetObjectId(); }
+            }
         }
 
+        [DebuggerDisplay("Layer Theme Node")]
+        class LayerThemeNodeMetadata : LegendNodeMetadata
+        {
+            public LayerThemeNodeMetadata(bool bPlaceholder, Image themeIcon, string labelText)
+            {
+                this.IsPlaceholder = bPlaceholder;
+                this.ThemeIcon = themeIcon;
+                this.Label = labelText;
+            }
+
+            public bool IsPlaceholder { get; private set; }
+
+            public Image ThemeIcon { get; set; }
+
+            public string Label { get; private set; }
+
+            public override string ObjectId
+            {
+                get { return ""; }
+            }
+        }
+
+        class ThemeCategory
+        {
+            public string MinScale { get; set; }
+
+            public string MaxScale { get; set; }
+
+            public int GeometryType { get; set; }
+
+            public override int GetHashCode()
+            {
+                unchecked // Overflow is fine, just wrap
+                {
+                    int hash = 17;
+                    // Suitable nullity checks etc, of course :)
+                    if (MinScale != null)
+                        hash = hash * 23 + MinScale.GetHashCode();
+                    if (MaxScale != null)
+                        hash = hash * 23 + MaxScale.GetHashCode();
+                    hash = hash * 23 + GeometryType.GetHashCode();
+                    return hash;
+                }
+            }
+        }
+
+        [DebuggerDisplay("Name = {Layer.Name}, Label = {Layer.LegendLabel}")]
         class LayerNodeMetadata : LegendNodeMetadata
         {
             public LayerNodeMetadata(MgLayerBase layer, bool bInitiallySelectable)
@@ -699,20 +826,122 @@ namespace OSGeo.MapGuide.Viewer
                 this.Layer = layer;
                 this.IsSelectable = (layer != null) ? layer.Selectable : false;
                 this.DrawSelectabilityIcon = (layer != null && bInitiallySelectable);
-                this.IsThemeRule = false;
+                this.WasInitiallySelectable = bInitiallySelectable;
+                this.LayerDefinitionContent = null;
+                _themeNodes = new Dictionary<ThemeCategory, List<LayerThemeNodeMetadata>>();
             }
 
-            internal MgLayerBase Layer { get; set; }
+            public override string ObjectId
+            {
+                get { return this.Layer.GetObjectId(); }
+            }
+
+            public Image Icon { get; set; }
+
+            public string IconId { get; set; }
+
+            internal MgLayerBase Layer { get; private set; }
 
             public bool DrawSelectabilityIcon { get; set; }
 
             public bool IsSelectable { get; set; }
 
-            public bool IsThemeRule { get; set; }
+            public bool WasInitiallySelectable { get; private set; }
 
             public bool IsBaseLayer { get; set; }
 
-            public Image ThemeIcon { get; set; }
+            public string LayerDefinitionContent { get; set; }
+
+            private Dictionary<ThemeCategory, List<LayerThemeNodeMetadata>> _themeNodes;
+
+            public List<LayerThemeNodeMetadata> GetThemeNodes(ThemeCategory category)
+            {
+                if (_themeNodes.ContainsKey(category))
+                    return _themeNodes[category];
+                return null;
+            }
+
+            public void AddThemeNode(ThemeCategory category, LayerThemeNodeMetadata themeMeta)
+            {
+                if (!_themeNodes.ContainsKey(category))
+                    _themeNodes[category] = new List<LayerThemeNodeMetadata>();
+
+                _themeNodes[category].Add(themeMeta);
+            }
+
+            internal bool HasTheme()
+            {
+                if (_themeNodes.Count == 0)
+                    return false;
+
+                foreach (var coll in _themeNodes.Values)
+                    if (coll.Count > 0)
+                        return true;
+
+                return false;
+            }
+
+            internal TreeNode[] CreateThemeNodesFromCachedMetadata(double scale)
+            {
+                var nodes = new List<TreeNode>();
+
+                //Find the applicable scale range(s)
+                foreach (var cat in _themeNodes.Keys)
+                {
+                    bool bApplicable = false;
+
+                    bool bHasMin = !string.IsNullOrEmpty(cat.MinScale);
+                    bool bHasMax = !string.IsNullOrEmpty(cat.MaxScale);
+
+                    if (bHasMin)
+                    {
+                        double minVal = double.Parse(cat.MinScale);
+                        if (bHasMax) //bHasMin = true, bHasMax = true
+                        {
+                            double maxVal = double.Parse(cat.MaxScale);
+                            if (scale >= minVal && scale < maxVal)
+                                bApplicable = true;
+                        }
+                        else         //bHasMin = true, bHasMax = false
+                        {
+                            if (scale >= minVal)
+                                bApplicable = true;
+                        }
+                    }
+                    else
+                    {
+                        if (bHasMax) //bHasMin = false, bHasMax = true
+                        {
+                            double maxVal = double.Parse(cat.MaxScale);
+                            if (scale < maxVal)
+                                bApplicable = true;
+                        }
+                        else         //bHasMin = false, bHasMax = false
+                        {
+                            bApplicable = true;
+                        }
+                    }
+
+                    if (bApplicable)
+                    {
+                        var metadata = _themeNodes[cat];
+                        nodes.AddRange(CreateThemeNodes(metadata));
+                    }
+                }
+
+                return nodes.ToArray();
+            }
+
+            private IEnumerable<TreeNode> CreateThemeNodes(List<LayerThemeNodeMetadata> metadata)
+            {
+                foreach (var meta in metadata)
+                {
+                    var node = new TreeNode();
+                    node.Text = meta.Label;
+                    node.Tag = meta;
+                    yield return node;
+                }
+            }
         }
     }
 }
