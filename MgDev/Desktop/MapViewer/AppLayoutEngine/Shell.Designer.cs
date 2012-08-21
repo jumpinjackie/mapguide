@@ -29,15 +29,20 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Shell));
             this.appContainer = new System.Windows.Forms.SplitContainer();
             this.infoPaneViewerContainer = new System.Windows.Forms.SplitContainer();
             this.layerPropertiesContainer = new System.Windows.Forms.SplitContainer();
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabPage2 = new System.Windows.Forms.TabPage();
+            this.legend = new OSGeo.MapGuide.Viewer.MgLegend();
             this.tabControl2 = new System.Windows.Forms.TabControl();
             this.tabPage3 = new System.Windows.Forms.TabPage();
+            this.propertyPane = new OSGeo.MapGuide.Viewer.MgPropertyPane();
+            this.mapViewer = new OSGeo.MapGuide.Viewer.MgMapViewer();
             this.viewerContextMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.viewerToolbar = new System.Windows.Forms.ToolStrip();
+            this.taskPane = new OSGeo.MapGuide.Viewer.MgTaskPane();
             this.taskPaneToolbar = new System.Windows.Forms.ToolStrip();
             this.btnInitialTask = new System.Windows.Forms.ToolStripButton();
             this.taskMenu = new System.Windows.Forms.ToolStripDropDownButton();
@@ -48,10 +53,7 @@
             this.lblMapScale = new System.Windows.Forms.ToolStripStatusLabel();
             this.lblMapSize = new System.Windows.Forms.ToolStripStatusLabel();
             this.lblPoweredBy = new System.Windows.Forms.ToolStripStatusLabel();
-            this.legend = new OSGeo.MapGuide.Viewer.MgLegend();
-            this.propertyPane = new OSGeo.MapGuide.Viewer.MgPropertyPane();
-            this.mapViewer = new OSGeo.MapGuide.Viewer.MgMapViewer();
-            this.taskPane = new OSGeo.MapGuide.Viewer.MgTaskPane();
+            this.imgList = new System.Windows.Forms.ImageList(this.components);
             this.appContainer.Panel1.SuspendLayout();
             this.appContainer.Panel2.SuspendLayout();
             this.appContainer.SuspendLayout();
@@ -130,6 +132,7 @@
             // 
             this.tabControl1.Controls.Add(this.tabPage2);
             this.tabControl1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tabControl1.ImageList = this.imgList;
             this.tabControl1.Location = new System.Drawing.Point(0, 0);
             this.tabControl1.Name = "tabControl1";
             this.tabControl1.SelectedIndex = 0;
@@ -139,18 +142,32 @@
             // tabPage2
             // 
             this.tabPage2.Controls.Add(this.legend);
-            this.tabPage2.Location = new System.Drawing.Point(4, 22);
+            this.tabPage2.ImageIndex = 0;
+            this.tabPage2.Location = new System.Drawing.Point(4, 23);
             this.tabPage2.Name = "tabPage2";
             this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage2.Size = new System.Drawing.Size(212, 245);
+            this.tabPage2.Size = new System.Drawing.Size(212, 244);
             this.tabPage2.TabIndex = 1;
             this.tabPage2.Text = "Layers";
             this.tabPage2.UseVisualStyleBackColor = true;
+            // 
+            // legend
+            // 
+            this.legend.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.legend.GroupContextMenu = null;
+            this.legend.LayerContextMenu = null;
+            this.legend.Location = new System.Drawing.Point(3, 3);
+            this.legend.Name = "legend";
+            this.legend.ShowTooltips = true;
+            this.legend.Size = new System.Drawing.Size(206, 238);
+            this.legend.TabIndex = 0;
+            this.legend.ThemeCompressionLimit = 0;
             // 
             // tabControl2
             // 
             this.tabControl2.Controls.Add(this.tabPage3);
             this.tabControl2.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tabControl2.ImageList = this.imgList;
             this.tabControl2.Location = new System.Drawing.Point(0, 0);
             this.tabControl2.Name = "tabControl2";
             this.tabControl2.SelectedIndex = 0;
@@ -160,13 +177,40 @@
             // tabPage3
             // 
             this.tabPage3.Controls.Add(this.propertyPane);
-            this.tabPage3.Location = new System.Drawing.Point(4, 22);
+            this.tabPage3.ImageIndex = 1;
+            this.tabPage3.Location = new System.Drawing.Point(4, 23);
             this.tabPage3.Name = "tabPage3";
             this.tabPage3.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage3.Size = new System.Drawing.Size(212, 202);
+            this.tabPage3.Size = new System.Drawing.Size(212, 201);
             this.tabPage3.TabIndex = 1;
             this.tabPage3.Text = "Properties";
             this.tabPage3.UseVisualStyleBackColor = true;
+            // 
+            // propertyPane
+            // 
+            this.propertyPane.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.propertyPane.Location = new System.Drawing.Point(3, 3);
+            this.propertyPane.Name = "propertyPane";
+            this.propertyPane.Size = new System.Drawing.Size(206, 195);
+            this.propertyPane.TabIndex = 0;
+            // 
+            // mapViewer
+            // 
+            this.mapViewer.ContextMenuStrip = this.viewerContextMenu;
+            this.mapViewer.Cursor = System.Windows.Forms.Cursors.Default;
+            this.mapViewer.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.mapViewer.Location = new System.Drawing.Point(0, 0);
+            this.mapViewer.MaxScale = 1000000000;
+            this.mapViewer.MinScale = 10;
+            this.mapViewer.MouseWheelDelayRenderInterval = 800;
+            this.mapViewer.Name = "mapViewer";
+            this.mapViewer.PointPixelBuffer = 2;
+            this.mapViewer.SelectionColor = System.Drawing.Color.Blue;
+            this.mapViewer.Size = new System.Drawing.Size(438, 503);
+            this.mapViewer.TabIndex = 0;
+            this.mapViewer.Text = "mgMapViewer1";
+            this.mapViewer.ZoomInFactor = 0.5;
+            this.mapViewer.ZoomOutFactor = 2;
             // 
             // viewerContextMenu
             // 
@@ -180,6 +224,14 @@
             this.viewerToolbar.Size = new System.Drawing.Size(662, 25);
             this.viewerToolbar.TabIndex = 1;
             this.viewerToolbar.Text = "toolStrip2";
+            // 
+            // taskPane
+            // 
+            this.taskPane.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.taskPane.Location = new System.Drawing.Point(0, 25);
+            this.taskPane.Name = "taskPane";
+            this.taskPane.Size = new System.Drawing.Size(215, 503);
+            this.taskPane.TabIndex = 1;
             // 
             // taskPaneToolbar
             // 
@@ -261,46 +313,12 @@
             this.lblPoweredBy.Name = "lblPoweredBy";
             this.lblPoweredBy.Size = new System.Drawing.Size(137, 18);
             // 
-            // legend
+            // imgList
             // 
-            this.legend.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.legend.GroupContextMenu = null;
-            this.legend.LayerContextMenu = null;
-            this.legend.Location = new System.Drawing.Point(3, 3);
-            this.legend.Name = "legend";
-            this.legend.Size = new System.Drawing.Size(206, 239);
-            this.legend.TabIndex = 0;
-            this.legend.ThemeCompressionLimit = 0;
-            // 
-            // propertyPane
-            // 
-            this.propertyPane.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.propertyPane.Location = new System.Drawing.Point(3, 3);
-            this.propertyPane.Name = "propertyPane";
-            this.propertyPane.Size = new System.Drawing.Size(206, 196);
-            this.propertyPane.TabIndex = 0;
-            // 
-            // mapViewer
-            // 
-            this.mapViewer.ContextMenuStrip = this.viewerContextMenu;
-            this.mapViewer.Cursor = System.Windows.Forms.Cursors.Default;
-            this.mapViewer.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.mapViewer.Location = new System.Drawing.Point(0, 0);
-            this.mapViewer.Name = "mapViewer";
-            this.mapViewer.SelectionColor = System.Drawing.Color.Blue;
-            this.mapViewer.Size = new System.Drawing.Size(438, 503);
-            this.mapViewer.TabIndex = 0;
-            this.mapViewer.Text = "mgMapViewer1";
-            this.mapViewer.ZoomInFactor = 0.5;
-            this.mapViewer.ZoomOutFactor = 2;
-            // 
-            // taskPane
-            // 
-            this.taskPane.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.taskPane.Location = new System.Drawing.Point(0, 25);
-            this.taskPane.Name = "taskPane";
-            this.taskPane.Size = new System.Drawing.Size(215, 503);
-            this.taskPane.TabIndex = 1;
+            this.imgList.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("imgList.ImageStream")));
+            this.imgList.TransparentColor = System.Drawing.Color.Transparent;
+            this.imgList.Images.SetKeyName(0, "legend-layer.png");
+            this.imgList.Images.SetKeyName(1, "property.png");
             // 
             // Shell
             // 
@@ -362,5 +380,6 @@
         private System.Windows.Forms.ToolStripStatusLabel lblMapSize;
         private System.Windows.Forms.ToolStripStatusLabel lblPoweredBy;
         private System.Windows.Forms.ContextMenuStrip viewerContextMenu;
+        private System.Windows.Forms.ImageList imgList;
     }
 }
