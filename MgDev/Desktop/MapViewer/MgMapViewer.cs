@@ -268,7 +268,7 @@ namespace OSGeo.MapGuide.Viewer
                 dPtStart.X = 0;
                 dPtStart.Y = 0;
                 this.DigitizingType = MapDigitizationType.None;
-                Trace.TraceInformation("Digitization cancelled");
+                //Trace.TraceInformation("Digitization cancelled");
                 this.Invalidate();
             }
         }
@@ -453,7 +453,7 @@ namespace OSGeo.MapGuide.Viewer
                     _selectionRenderOpts = null;
 
                     _selectionRenderOpts = CreateSelectionRenderingOptions(value.R, value.G, value.B);
-                    Trace.TraceInformation("Selection color updated to ({0}, {1}, {2})", value.R, value.G, value.B);
+                    //Trace.TraceInformation("Selection color updated to ({0}, {1}, {2})", value.R, value.G, value.B);
                 }
             }
             
@@ -515,7 +515,7 @@ namespace OSGeo.MapGuide.Viewer
         {
             base.OnPaint(e);
 
-            Trace.TraceInformation("OnPaint(e)");
+            //Trace.TraceInformation("OnPaint(e)");
             ApplyPaintTranslateTransform(e);
 
             if (mouseWheelSx.HasValue && mouseWheelSy.HasValue && mouseWheelSx.Value != 0.0 && mouseWheelSy.Value != 0.0)
@@ -529,14 +529,14 @@ namespace OSGeo.MapGuide.Viewer
 
             if (_mapImage != null)
             {
-                Trace.TraceInformation("Render buffered map image");
+                //Trace.TraceInformation("Render buffered map image");
                 e.Graphics.DrawImage(_mapImage, new PointF(0, 0));
             }
 
             //Thread.Sleep(100);
             if (_selectionImage != null)
             {
-                Trace.TraceInformation("Render buffered map selection");
+                //Trace.TraceInformation("Render buffered map selection");
                 e.Graphics.DrawImage(_selectionImage, new PointF(0, 0));
             }
 
@@ -801,9 +801,9 @@ namespace OSGeo.MapGuide.Viewer
             if (rect.HasValue)
             {
                 var r = rect.Value;
-                Trace.TraceInformation("Draw rangle ({0} {1}, {2} {3})", r.Left, r.Top, r.Right, r.Bottom);
+                //Trace.TraceInformation("Draw rangle ({0} {1}, {2} {3})", r.Left, r.Top, r.Right, r.Bottom);
                 e.Graphics.DrawRectangle(CreateOutlinePen(), r);
-                Trace.TraceInformation("Fill rangle ({0} {1}, {2} {3})", r.Left, r.Top, r.Right, r.Bottom);
+                //Trace.TraceInformation("Fill rangle ({0} {1}, {2} {3})", r.Left, r.Top, r.Right, r.Bottom);
                 e.Graphics.FillRectangle(CreateFillBrush(), r);
 
                 DrawVertexCoordinates(e, r.Left, r.Top, true);
@@ -821,9 +821,9 @@ namespace OSGeo.MapGuide.Viewer
             if (rect.HasValue)
             {
                 var r = rect.Value;
-                Trace.TraceInformation("Draw rangle ({0} {1}, {2} {3})", r.Left, r.Top, r.Right, r.Bottom);
+                //Trace.TraceInformation("Draw rangle ({0} {1}, {2} {3})", r.Left, r.Top, r.Right, r.Bottom);
                 e.Graphics.DrawRectangle(CreateOutlinePen(), r);
-                Trace.TraceInformation("Fill rangle ({0} {1}, {2} {3})", r.Left, r.Top, r.Right, r.Bottom);
+                //Trace.TraceInformation("Fill rangle ({0} {1}, {2} {3})", r.Left, r.Top, r.Right, r.Bottom);
                 e.Graphics.FillRectangle(CreateFillBrush(), r);
             }
         }
@@ -1306,13 +1306,13 @@ namespace OSGeo.MapGuide.Viewer
                 ResetMouseWheelPaintTransforms();
                 if (_map != null)
                 {
-                    Trace.TraceInformation("Performing delayed resize to (" + this.Width + ", " + this.Height + ")");
+                    //Trace.TraceInformation("Performing delayed resize to (" + this.Width + ", " + this.Height + ")");
                     _provider.SetDisplaySize(this.Width, this.Height);
                     UpdateExtents();
                     RefreshMap(false);
                 }
                 _delayedResizeTimer.Stop();
-                Trace.TraceInformation("Delayed resize timer stopped");
+                //Trace.TraceInformation("Delayed resize timer stopped");
             });
             if (this.InvokeRequired)
                 this.Invoke(action);
@@ -1326,17 +1326,17 @@ namespace OSGeo.MapGuide.Viewer
             {
                 _delayedResizeTimer = new System.Timers.Timer();
                 _delayedResizeTimer.Elapsed += OnDelayResizeTimerElapsed;
-                Trace.TraceInformation("Delay resize timer initialized");
+                //Trace.TraceInformation("Delay resize timer initialized");
             }
             if (_delayedResizeTimer.Enabled)
             {
-                Trace.TraceInformation("Stopped delayed resize");
+                //Trace.TraceInformation("Stopped delayed resize");
                 _delayedResizeTimer.Stop();
             }
 
             _delayedResizeTimer.Interval = 500;
             _delayedResizeTimer.Start();
-            Trace.TraceInformation("Delayed resize re-scheduled");
+            //Trace.TraceInformation("Delayed resize re-scheduled");
         }
 
         /// <summary>
@@ -1609,7 +1609,7 @@ namespace OSGeo.MapGuide.Viewer
 
                 _busy = value;
 #if TRACE
-                Trace.TraceInformation("IsBusy = " + _busy);
+                //Trace.TraceInformation("IsBusy = " + _busy);
                 if (value)
                 {
                     _renderSw.Reset();
@@ -1618,7 +1618,7 @@ namespace OSGeo.MapGuide.Viewer
                 else
                 {
                     _renderSw.Stop();
-                    Trace.TraceInformation("Rendering operation took {0}ms", _renderSw.ElapsedMilliseconds);
+                    //Trace.TraceInformation("Rendering operation took {0}ms", _renderSw.ElapsedMilliseconds);
                 }
 #endif
                 OnPropertyChanged("IsBusy");
@@ -1907,7 +1907,7 @@ namespace OSGeo.MapGuide.Viewer
                         this.Image.Dispose();
                         this.Image = null;
                     }
-                    Trace.TraceInformation("Set map image");
+                    //Trace.TraceInformation("Set map image");
                     this.Image = res.Image;
                     bInvalidate = true;
                 }
@@ -1918,7 +1918,7 @@ namespace OSGeo.MapGuide.Viewer
                         _selectionImage.Dispose();
                         _selectionImage = null;
                     }
-                    Trace.TraceInformation("Set selection image");
+                    //Trace.TraceInformation("Set selection image");
                     _selectionImage = res.SelectionImage;
                     bInvalidate = true;
                 }
@@ -1926,7 +1926,7 @@ namespace OSGeo.MapGuide.Viewer
                 //If there is a queued refresh action, execute it now
                 if (_queuedRefresh != null)
                 {
-                    Trace.TraceInformation("Executing queued rendering operation");
+                    //Trace.TraceInformation("Executing queued rendering operation");
                     _queuedRefresh();
                     _queuedRefresh = null;
                 }
@@ -2198,7 +2198,7 @@ namespace OSGeo.MapGuide.Viewer
             }
 #if TRACE
             sw.Stop();
-            Trace.TraceInformation("Selection processing completed in {0}ms", sw.ElapsedMilliseconds);
+            //Trace.TraceInformation("Selection processing completed in {0}ms", sw.ElapsedMilliseconds);
 #endif
             //This selection may result in nothing, so we invalidate the selection image beforehand
             if (_selectionImage != null)
@@ -2299,8 +2299,8 @@ namespace OSGeo.MapGuide.Viewer
 
             delayRenderTimer.Stop();
             delayRenderTimer.Start();
-            Trace.TraceInformation("Postponed delay render");
-            Trace.TraceInformation("Mouse delta: " + e.Delta + " (" + (e.Delta > 0 ? "Zoom in" : "Zoom out") + ")");
+            //Trace.TraceInformation("Postponed delay render");
+            //Trace.TraceInformation("Mouse delta: " + e.Delta + " (" + (e.Delta > 0 ? "Zoom in" : "Zoom out") + ")");
             //Negative delta = zoom out, Positive delta = zoom in
             //deltas are in units of 120, so treat each multiple of 120 as a "zoom unit"
 
@@ -2328,7 +2328,7 @@ namespace OSGeo.MapGuide.Viewer
                 Invalidate();
             }
 
-            Trace.TraceInformation("Delta units is: " + mouseWheelDelta);
+            //Trace.TraceInformation("Delta units is: " + mouseWheelDelta);
 
             //Completely ripped the number crunching here from the AJAX viewer with no sense of shame whatsoever :)
             delayRenderScale = GetNewScale(_map.ViewScale, mouseWheelDelta.Value);
@@ -2356,7 +2356,7 @@ namespace OSGeo.MapGuide.Viewer
             mouseWheelSx = (float)(w / (double)this.Width);
             mouseWheelSy = (float)(h / (double)this.Height);
 
-            Trace.TraceInformation("Paint transform (tx: " + mouseWheelTx + ", ty: " + mouseWheelTy + ", sx: " + mouseWheelSx + ", sy: " + mouseWheelSy + ")");
+            //Trace.TraceInformation("Paint transform (tx: " + mouseWheelTx + ", ty: " + mouseWheelTy + ", sx: " + mouseWheelSx + ", sy: " + mouseWheelSy + ")");
         }
 
         static double GetMetersPerPixel(int dpi)
@@ -2403,8 +2403,8 @@ namespace OSGeo.MapGuide.Viewer
 
         void OnDelayRender(object sender, System.Timers.ElapsedEventArgs e)
         {
-            Trace.TraceInformation("Delay rendering");
-            Trace.TraceInformation("Set new map coordinates to (" + delayRenderViewCenter.Value.X + ", " + delayRenderViewCenter.Value.Y + " at " + delayRenderScale.Value + ")");
+            //Trace.TraceInformation("Delay rendering");
+            //Trace.TraceInformation("Set new map coordinates to (" + delayRenderViewCenter.Value.X + ", " + delayRenderViewCenter.Value.Y + " at " + delayRenderScale.Value + ")");
             ResetMouseWheelPaintTransforms();
             MethodInvoker action = () => { ZoomToView(delayRenderViewCenter.Value.X, delayRenderViewCenter.Value.Y, delayRenderScale.Value, true); };
             if (this.InvokeRequired)
@@ -2422,7 +2422,7 @@ namespace OSGeo.MapGuide.Viewer
             mouseWheelTx = null;
             mouseWheelTy = null;
             mouseWheelDelta = 0;
-            Trace.TraceInformation("Mouse wheel paint transform reset");
+            //Trace.TraceInformation("Mouse wheel paint transform reset");
         }
 
         private void HandleMouseClick(MouseEventArgs e)
@@ -2542,18 +2542,18 @@ namespace OSGeo.MapGuide.Viewer
             if (e.Button == MouseButtons.Left)
             {
                 dragStart = e.Location;
-                Trace.TraceInformation("Drag started at (" + dragStart.X + ", " + dragStart.Y + ")");
+                //Trace.TraceInformation("Drag started at (" + dragStart.X + ", " + dragStart.Y + ")");
 
                 switch (this.ActiveTool)
                 {
                     case MapActiveTool.Pan:
-                        Trace.TraceInformation("START PANNING");
+                        //Trace.TraceInformation("START PANNING");
                         break;
                     case MapActiveTool.Select:
-                        Trace.TraceInformation("START SELECT");
+                        //Trace.TraceInformation("START SELECT");
                         break;
                     case MapActiveTool.ZoomIn:
-                        Trace.TraceInformation("START ZOOM");
+                        //Trace.TraceInformation("START ZOOM");
                         break;
                 }
             }
@@ -2677,7 +2677,7 @@ namespace OSGeo.MapGuide.Viewer
                     _activeTooltipText = QueryFirstVisibleTooltip(e.X, e.Y);
 #if TRACE
                     sw.Stop();
-                    Trace.TraceInformation("QueryFirstVisibleTooltip() executed in {0}ms", sw.ElapsedMilliseconds);
+                    //Trace.TraceInformation("QueryFirstVisibleTooltip() executed in {0}ms", sw.ElapsedMilliseconds);
 #endif
                 }
                 else
@@ -2695,7 +2695,7 @@ namespace OSGeo.MapGuide.Viewer
                     //Fix the last one, can't edit last one because points are value types
                     dPath.RemoveAt(dPath.Count - 1);
                     dPath.Add(new Point(e.X, e.Y));
-                    Trace.TraceInformation("Updating last point of a {0} point path", dPath.Count);
+                    //Trace.TraceInformation("Updating last point of a {0} point path", dPath.Count);
                 }
                 Invalidate();
             }
@@ -2728,7 +2728,7 @@ namespace OSGeo.MapGuide.Viewer
                     double mdy = coord.Y - pt.Y;
 
                     ZoomToView(coord.X, coord.Y, _map.ViewScale, true);
-                    Trace.TraceInformation("END PANNING");
+                    //Trace.TraceInformation("END PANNING");
                 }
                 else if (this.ActiveTool == MapActiveTool.Select)
                 {
