@@ -138,7 +138,7 @@ namespace OSGeo.MapGuide.Viewer
             if (e.PropertyName == "IsBusy")
             {
                 var busy = this.Viewer.IsBusy;
-                Trace.TraceInformation("Dispatching busy state event to " + _listeners.Count + " listeners");
+                //Trace.TraceInformation("Dispatching busy state event to " + _listeners.Count + " listeners");
                 if (this.DisableWhenMapIsLoading)
                 {
                     foreach (var l in _listeners)
