@@ -117,6 +117,7 @@
 #include "Services/Resource/ByteSourceDwfInputStreamImpl.cpp"
 #include "Services/Resource/OperationInfo.cpp"
 #include "Services/Resource/OperationParameter.cpp"
+#include "Services/Resource/ResourceContentCache.cpp"
 #include "Services/Resource/ResourceDefs.cpp"
 #include "Services/Resource/ResourcePackageHandler.cpp"
 #include "Services/Resource/ResourcePackageLoader.cpp"
