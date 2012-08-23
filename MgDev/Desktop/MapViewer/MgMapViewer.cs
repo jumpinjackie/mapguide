@@ -200,6 +200,7 @@ namespace OSGeo.MapGuide.Viewer
             this.TooltipFillColor = Color.LightYellow;
             this.TooltipFillTransparency = 200;
             this.MouseWheelDelayRenderInterval = 800;
+            this.TooltipDelayInterval = 1000;
 
             this.ActiveTool = MapActiveTool.None;
             this.DoubleBuffered = true;
@@ -234,6 +235,7 @@ namespace OSGeo.MapGuide.Viewer
             base.MouseHover += OnMapMouseHover;
             base.MouseEnter += OnMouseEnter;
             base.MouseWheel += OnMapMouseWheel;
+            base.MouseLeave += OnMapMouseLeave;
         }
 
         /// <summary>
@@ -303,6 +305,7 @@ namespace OSGeo.MapGuide.Viewer
                 base.MouseDoubleClick -= OnMapMouseDoubleClick;
                 base.MouseHover -= OnMapMouseHover;
                 base.MouseEnter -= OnMouseEnter;
+                base.MouseLeave -= OnMapMouseLeave;
 
                 if (renderWorker != null)
                 {
@@ -381,6 +384,13 @@ namespace OSGeo.MapGuide.Viewer
         [Category("MapGuide Viewer")]
         [Description("The amount of time (in ms) to wait to re-render after a mouse wheel scroll")]
         public int MouseWheelDelayRenderInterval { get; set; }
+
+        /// <summary>
+        /// The amount of time (in ms) to wait to re-render after a mouse wheel scroll
+        /// </summary>
+        [Category("MapGuide Viewer")]
+        [Description("The amount of time (in ms) to wait to fire off a tooltip request after the mouse pointer becomes stationary")]
+        public int TooltipDelayInterval { get; set; }
 
         private Color _selColor;
 
@@ -2115,7 +2125,7 @@ namespace OSGeo.MapGuide.Viewer
             ringCoords.Add(_geomFact.CreateCoordinateXY(mapPt2.X, mapPt2.Y)); //Close it
             var poly = _geomFact.CreatePolygon(_geomFact.CreateLinearRing(ringCoords), new MgLinearRingCollection());
 
-            MgTooltipQueryResult tr = _provider.QueryMapFeatures(MgQueryRequestType.Tooltip, null, poly, MgFeatureSpatialOperations.Intersects, "", 1, 4 /* has tooltips */) as MgTooltipQueryResult;
+            MgTooltipQueryResult tr = _provider.QueryMapFeatures(MgQueryRequestType.Tooltip, null, poly, MgFeatureSpatialOperations.Intersects, "", 1, 5 /* has tooltips */) as MgTooltipQueryResult;
             if (tr != null)
             {
                 _activeTooltipText = tr.Tooltip;
@@ -2219,6 +2229,13 @@ namespace OSGeo.MapGuide.Viewer
         }
 
         #region Mouse handlers
+
+        private void OnMapMouseLeave(object sender, EventArgs e)
+        {
+            //Need to do this otherwise a tooltip query is made at the viewer boundary
+            if (delayTooltipTimer != null && delayTooltipTimer.Enabled)
+                delayTooltipTimer.Stop();
+        }
 
         private void OnMapMouseDown(object sender, MouseEventArgs e)
         {
@@ -2660,15 +2677,6 @@ namespace OSGeo.MapGuide.Viewer
                     }
                 }
 
-                // FIXME: 
-                //
-                // We really need a JS setTimeout() equivalent for C# because that's what we want
-                // to do here, set a delayed call to QueryFirstVisibleTooltip() that is aborted if
-                // the mouse pointer has moved significantly since the last time.
-                //
-                // A timer based approach could probably work, but I haven't figured out the best 
-                // way yet.
-
                 this.TooltipsEnabled = !isDragging && this.FeatureTooltipsEnabled;
 
                 //Only query for tooltips if not digitizing
@@ -2676,15 +2684,22 @@ namespace OSGeo.MapGuide.Viewer
                    (this.ActiveTool == MapActiveTool.Select || this.ActiveTool == MapActiveTool.Pan) &&
                     this.TooltipsEnabled)
                 {
-#if TRACE
-                    var sw = new Stopwatch();
-                    sw.Start();
-#endif
-                    _activeTooltipText = QueryFirstVisibleTooltip(e.X, e.Y);
-#if TRACE
-                    sw.Stop();
-                    //Trace.TraceInformation("QueryFirstVisibleTooltip() executed in {0}ms", sw.ElapsedMilliseconds);
-#endif
+                    if (delayTooltipTimer == null)
+                    {
+                        delayTooltipTimer = new System.Timers.Timer();
+                        delayTooltipTimer.Enabled = false;
+                        delayTooltipTimer.Elapsed += new System.Timers.ElapsedEventHandler(OnDelayTooltipTimerElapsed);
+                        delayTooltipTimer.Interval = this.TooltipDelayInterval;
+                    }
+
+                    _delayTooltipQueryPoint = new Point(e.X, e.Y);
+                    delayTooltipTimer.Start();
+
+                    if (Math.Abs(e.X - _lastTooltipQueryX) > 2 || Math.Abs(e.Y - _lastTooltipQueryY) > 2)
+                    {
+                        _activeTooltipText = null;
+                        Invalidate();
+                    }
                 }
                 else
                 {
@@ -2706,6 +2721,24 @@ namespace OSGeo.MapGuide.Viewer
                 Invalidate();
             }
         }
+
+        void OnDelayTooltipTimerElapsed(object sender, System.Timers.ElapsedEventArgs e)
+        {
+            delayTooltipTimer.Stop();
+            if (_delayTooltipQueryPoint.HasValue)
+            {
+                _activeTooltipText = QueryFirstVisibleTooltip(_delayTooltipQueryPoint.Value.X, _delayTooltipQueryPoint.Value.Y);
+                _lastTooltipQueryX = _delayTooltipQueryPoint.Value.X;
+                _lastTooltipQueryY = _delayTooltipQueryPoint.Value.Y;
+                _delayTooltipQueryPoint = null;
+                Invalidate();
+            }
+        }
+
+        private int _lastTooltipQueryX;
+        private int _lastTooltipQueryY;
+        private Point? _delayTooltipQueryPoint = null;
+        private System.Timers.Timer delayTooltipTimer = null;
 
         private void HandleMouseUp(MouseEventArgs e)
         {

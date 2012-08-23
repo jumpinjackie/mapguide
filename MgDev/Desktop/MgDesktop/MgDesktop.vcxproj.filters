@@ -393,6 +393,9 @@
     <ClCompile Include="Services\Feature\FeatureSetReader.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Services\Resource\ResourceContentCache.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Exception\AliasNotFoundException.h">
@@ -843,6 +846,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Services\CryptoDefs.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Services\Resource\ResourceRontentCache.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

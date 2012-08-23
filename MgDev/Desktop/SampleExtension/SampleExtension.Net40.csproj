@@ -147,6 +147,10 @@
     <Compile Include="ParcelQueryResultWindow.Designer.cs">
       <DependentUpon>ParcelQueryResultWindow.cs</DependentUpon>
     </Compile>
+    <Compile Include="PrePostRendering.cs" />
+    <Compile Include="PrePostRendering.Designer.cs">
+      <DependentUpon>PrePostRendering.cs</DependentUpon>
+    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ResourceIdDialog.cs">
       <SubType>Form</SubType>
@@ -221,6 +225,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="ParcelQueryResultWindow.resx">
       <DependentUpon>ParcelQueryResultWindow.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="PrePostRendering.resx">
+      <DependentUpon>PrePostRendering.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="ResourceIdDialog.resx">
       <DependentUpon>ResourceIdDialog.cs</DependentUpon>

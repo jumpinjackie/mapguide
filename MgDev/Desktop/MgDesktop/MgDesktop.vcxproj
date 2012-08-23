@@ -467,6 +467,12 @@ xcopy /Y $(ProjectDir)Platform.ini $(OutDir)
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="Services\Resource\ResourceContentCache.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="System\ConfigProperties.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
@@ -1031,6 +1037,7 @@ xcopy /Y $(ProjectDir)Platform.ini $(OutDir)
     <ClInclude Include="Services\Rendering\FeatureInformation.h" />
     <ClInclude Include="Services\Resource\ByteSourceDwfInputStreamImpl.h" />
     <ClInclude Include="Services\ByteSourceRasterStreamImpl.h" />
+    <ClInclude Include="Services\Resource\ResourceContentCache.h" />
     <ClInclude Include="System\ClassId.h" />
     <ClInclude Include="System\ConfigProperties.h" />
     <ClInclude Include="Exception\ConnectionFailedException.h" />

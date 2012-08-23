@@ -130,6 +130,7 @@
     <Compile Include="MgLayerSelectionHandler.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="MgLegendControlPresenter.cs" />
     <Compile Include="MgLineMeasureControlImpl.cs">
       <SubType>UserControl</SubType>
     </Compile>
