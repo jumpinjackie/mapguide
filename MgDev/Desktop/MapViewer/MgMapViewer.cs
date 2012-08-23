@@ -2222,33 +2222,39 @@ namespace OSGeo.MapGuide.Viewer
 
         private void OnMapMouseDown(object sender, MouseEventArgs e)
         {
+            if (IsBusy) return;
             HandleMouseDown(e);
         }
 
         private void OnMapMouseMove(object sender, MouseEventArgs e)
         {
+            if (IsBusy) return;
             HandleMouseMove(e);
         }
         
         private void OnMapMouseUp(object sender, MouseEventArgs e)
         {
+            if (IsBusy) return;
             HandleMouseUp(e);
         }
 
         private void OnMapMouseWheel(object sender, MouseEventArgs e)
         {
+            if (IsBusy) return;
             this.Focus();
             HandleMouseWheel(e);
         }
 
         private void OnMapMouseClick(object sender, MouseEventArgs e)
         {
+            if (IsBusy) return;
             this.Focus();
             HandleMouseClick(e);
         }
 
         private void OnMapMouseDoubleClick(object sender, MouseEventArgs e)
         {
+            if (IsBusy) return;
             this.Focus();
             HandleMouseDoubleClick(e);
         }
@@ -2641,7 +2647,7 @@ namespace OSGeo.MapGuide.Viewer
 
             if (this.ActiveTool == MapActiveTool.Pan || this.ActiveTool == MapActiveTool.Select || this.ActiveTool == MapActiveTool.ZoomIn)
             {
-                if (e.Location != dragStart && !isDragging && e.Button == MouseButtons.Left && !IsBusy)
+                if (e.Location != dragStart && !isDragging && e.Button == MouseButtons.Left)
                 {
                     isDragging = true;
                 }
