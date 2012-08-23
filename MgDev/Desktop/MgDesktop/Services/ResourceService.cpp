@@ -1,6 +1,7 @@
 #include "ResourceService.h"
 #include "Foundation.h"
 #include "Services/Feature/FeatureServiceCache.h"
+#include "Services/Resource/ResourceContentCache.h"
 #include "Services/Resource/ResourceDefs.h"
 #include "Services/Resource/ResourcePackageLoader.h"
 #include "Services/Resource/UnmanagedDataManager.h"
@@ -318,11 +319,11 @@ void MgdResourceService::SetResource(MgResourceIdentifier* resource, MgByteReade
         MgFileUtil::CreateDirectory(dir, false, true);
 
 	STRING path = ResolveContentPath(resource);
-   
+
     if (NULL != content)
     {
-	    Ptr<MgByteSink> sink = new MgByteSink(content);
-
+        //Keep a wide copy
+        Ptr<MgByteSink> sink = new MgByteSink(content);
         std::string xml;
         sink->ToStringUtf8(xml);
 
@@ -449,6 +450,11 @@ void MgdResourceService::DeleteResource(MgResourceIdentifier* resource)
     if (ResourceExists(resource))
     {
         ReleasePotentialLocks(resource);
+
+        //Empty cached version
+        MgResourceContentCache* cache = MgResourceContentCache::GetInstance();
+        cache->RemoveContentEntry(resource);
+
         STRING contentPath = ResolveContentPath(resource);
 	    STRING dataPath = ResolveDataPath(resource);
 	    if (MgFileUtil::IsFile(contentPath))
@@ -1516,18 +1522,41 @@ MgByteReader* MgdResourceService::GetResourceContent(MgResourceIdentifier* resou
         throw new MgInvalidResourceTypeException(L"MgdResourceService::GetResourceContent", __LINE__, __WFILE__, NULL, L"", NULL);
     }
 
-    STRING path = ResolveContentPath(resource);
-    if (!MgFileUtil::IsFile(path))
+    //Think of the hard disks. Check we have a cached copy and return that, otherwise
+    //stash the content in the cache for future calls on the same resource
+    MgResourceContentCache* cache = MgResourceContentCache::GetInstance();
+    STRING resContent = cache->GetContentEntry(resource);
+    if (resContent.empty())
     {
-        MgStringCollection arguments;
-        arguments.Add(resource->ToString());
-        throw new MgResourceNotFoundException(L"MgdResourceService::GetResourceContent", __LINE__, __WFILE__, &arguments, L"", NULL);
+        STRING path = ResolveContentPath(resource);
+        if (!MgFileUtil::IsFile(path))
+        {
+            MgStringCollection arguments;
+            arguments.Add(resource->ToString());
+            throw new MgResourceNotFoundException(L"MgdResourceService::GetResourceContent", __LINE__, __WFILE__, &arguments, L"", NULL);
+        }
+
+        Ptr<MgByteSource> source = new MgByteSource(path);
+        Ptr<MgByteReader> reader = source->GetReader();
+
+        Ptr<MgByteSink> sink = new MgByteSink(reader);
+        sink->ToString(resContent);
+
+        std::string mbXml = MgUtil::WideCharToMultiByte(resContent);
+        //Stash it for future calls
+        cache->PutContentEntry(resource, resContent);
+
+        Ptr<MgByteSource> source2 = new MgByteSource((BYTE_ARRAY_IN)mbXml.c_str(), mbXml.length());
+        source2->SetMimeType(MgMimeType::Xml);
+        content = source2->GetReader();
     }
-
-    Ptr<MgByteSource> source = new MgByteSource(path);
-    source->SetMimeType(MgMimeType::Xml);
-    content = source->GetReader();
-
+    else
+    {
+        std::string mbXml = MgUtil::WideCharToMultiByte(resContent);
+        Ptr<MgByteSource> source = new MgByteSource((BYTE_ARRAY_IN)mbXml.c_str(), mbXml.length());
+        source->SetMimeType(MgMimeType::Xml);
+        content = source->GetReader();
+    }
     // Successful operation
     MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Success.c_str());
 

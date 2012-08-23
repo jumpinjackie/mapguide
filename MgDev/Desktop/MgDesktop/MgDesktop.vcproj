@@ -3608,6 +3608,42 @@
 				</FileConfiguration>
 			</File>
 			<File
+				RelativePath=".\Services\Resource\ResourceContentCache.cpp"
+				>
+				<FileConfiguration
+					Name="Debug|Win32"
+					ExcludedFromBuild="true"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|x64"
+					ExcludedFromBuild="true"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32"
+					ExcludedFromBuild="true"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|x64"
+					ExcludedFromBuild="true"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+					/>
+				</FileConfiguration>
+			</File>
+			<File
 				RelativePath=".\Services\Resource\ResourceDefs.cpp"
 				>
 				<FileConfiguration
@@ -5275,6 +5311,10 @@
 			</File>
 			<File
 				RelativePath=".\Services\RenderingService.h"
+				>
+			</File>
+			<File
+				RelativePath=".\Services\Resource\ResourceContentCache.h"
 				>
 			</File>
 			<File
