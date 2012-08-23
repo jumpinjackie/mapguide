@@ -2641,7 +2641,7 @@ namespace OSGeo.MapGuide.Viewer
 
             if (this.ActiveTool == MapActiveTool.Pan || this.ActiveTool == MapActiveTool.Select || this.ActiveTool == MapActiveTool.ZoomIn)
             {
-                if (e.Location != dragStart && !isDragging && e.Button == MouseButtons.Left)
+                if (e.Location != dragStart && !isDragging && e.Button == MouseButtons.Left && !IsBusy)
                 {
                     isDragging = true;
                 }
