@@ -152,46 +152,7 @@ using System.Diagnostics;
                 String[] typeStyles = new String[] { "PointTypeStyle", "LineTypeStyle", "AreaTypeStyle", "CompositeTypeStyle" };
                 String[] ruleNames = new String[] { "PointRule", "LineRule", "AreaRule", "CompositeRule" };
 
-                try
-                {
-                    if (layerMeta.Icon == null)
-                    {
-                        MgByteReader layerIcon = _provider.GenerateLegendImage(layer.LayerDefinition,
-                                                                                _map.ViewScale,
-                                                                                16,
-                                                                                16,
-                                                                                "PNG",
-                                                                                -1,
-                                                                                -1);
-                        legendCallCount++;
-                        if (layerIcon != null)
-                        {
-                            try
-                            {
-                                byte[] b = new byte[layerIcon.GetLength()];
-                                layerIcon.Read(b, b.Length);
-                                using (var ms = new MemoryStream(b))
-                                {
-                                    layerMeta.Icon = Image.FromStream(ms);
-                                    node.ToolTipText = string.Format(Properties.Resources.DefaultLayerTooltip, Environment.NewLine, layer.Name, layer.FeatureSourceId, layer.FeatureClassName);
-                                }
-                            }
-                            finally
-                            {
-                                layerIcon.Dispose();
-                            }
-                        }
-                        else
-                        {
-                            layerMeta.Icon = Properties.Resources.lc_broken;
-                        }
-                    }
-                }
-                catch
-                {
-                    layerMeta.Icon = Properties.Resources.lc_broken;
-                }
-
+                node.ToolTipText = string.Format(Properties.Resources.DefaultLayerTooltip, Environment.NewLine, layer.Name, layer.FeatureSourceId, layer.FeatureClassName);
                 if (!layerMeta.HasTheme())
                 {
                     for (int sc = 0; sc < scaleRanges.Count; sc++)
@@ -232,7 +193,7 @@ using System.Diagnostics;
                                 XmlNodeList rules = ((XmlElement)typeStyle[st]).GetElementsByTagName(ruleNames[geomType]);
                                 if (rules.Count > 1)
                                 {
-                                    layerMeta.Icon = Properties.Resources.lc_theme;
+                                    layerMeta.SetDefaultIcon(themeCat, Properties.Resources.lc_theme);
                                     node.ToolTipText = string.Format(Properties.Resources.ThemedLayerTooltip, Environment.NewLine, layer.Name, layer.FeatureSourceId, layer.FeatureClassName, rules.Count);
 
                                     if (_legend.ThemeCompressionLimit > 0 && rules.Count > _legend.ThemeCompressionLimit)
@@ -247,6 +208,45 @@ using System.Diagnostics;
                                         {
                                             AddThemeRuleNode(layerMeta, themeCat, node, geomType, catIndex++, rules, r);
                                         }
+                                    }
+                                }
+                                else
+                                {
+                                    try
+                                    {
+                                        MgByteReader layerIcon = _provider.GenerateLegendImage(layer.LayerDefinition,
+                                                                                                   _map.ViewScale,
+                                                                                                   16,
+                                                                                                   16,
+                                                                                                   "PNG",
+                                                                                                   -1,
+                                                                                                   -1);
+                                        legendCallCount++;
+                                        if (layerIcon != null)
+                                        {
+                                            try
+                                            {
+                                                byte[] b = new byte[layerIcon.GetLength()];
+                                                layerIcon.Read(b, b.Length);
+                                                using (var ms = new MemoryStream(b))
+                                                {
+                                                    layerMeta.SetDefaultIcon(themeCat, Image.FromStream(ms));
+                                                    node.ToolTipText = string.Format(Properties.Resources.DefaultLayerTooltip, Environment.NewLine, layer.Name, layer.FeatureSourceId, layer.FeatureClassName);
+                                                }
+                                            }
+                                            finally
+                                            {
+                                                layerIcon.Dispose();
+                                            }
+                                        }
+                                        else
+                                        {
+                                            layerMeta.SetDefaultIcon(themeCat, Properties.Resources.lc_broken);
+                                        }
+                                    }
+                                    catch
+                                    {
+                                        layerMeta.SetDefaultIcon(themeCat, Properties.Resources.lc_broken);
                                     }
                                 }
                             }
@@ -555,6 +555,7 @@ using System.Diagnostics;
 
         internal void DrawNode(DrawTreeNodeEventArgs e, bool showPlusMinus, Font font)
         {
+            var currentScale = _map.ViewScale;
             if (!e.Bounds.IsEmpty && (IsLayerNode(e.Node) || IsThemeLayerNode(e.Node)))
             {
                 Color backColor, foreColor;
@@ -652,16 +653,30 @@ using System.Diagnostics;
                         e.Graphics.DrawImage(icon, e.Node.Bounds.X + selectabilityOffset, e.Node.Bounds.Y);
                         //Trace.TraceInformation("Painted icon at ({0},{1})", e.Node.Bounds.X, e.Node.Bounds.Y);
                     }
-                    if (layerMeta.Icon != null)
+
+                    Image layerIcon = null;
+                    if (layerMeta.IsRaster)
+                    {
+                        layerIcon = Properties.Resources.lc_raster;
+                    }
+                    else if (layerMeta.IsDwf)
+                    {
+                        layerIcon = Properties.Resources.lc_dwf;
+                    }
+                    else
+                    {
+                        layerIcon = layerMeta.GetDefaultIcon(currentScale);
+                    }
+                    if (layerIcon != null)
                     {
                         if (layerMeta.DrawSelectabilityIcon)
                         {
-                            e.Graphics.DrawImage(layerMeta.Icon, e.Node.Bounds.X + iconOffset, e.Node.Bounds.Y);
+                            e.Graphics.DrawImage(layerIcon, e.Node.Bounds.X + iconOffset, e.Node.Bounds.Y);
                             //Trace.TraceInformation("Painted icon at ({0},{1})", e.Node.Bounds.X, e.Node.Bounds.Y);
                         }
                         else
                         {
-                            e.Graphics.DrawImage(layerMeta.Icon, e.Node.Bounds.X + iconOffsetNoSelect, e.Node.Bounds.Y);
+                            e.Graphics.DrawImage(layerIcon, e.Node.Bounds.X + iconOffsetNoSelect, e.Node.Bounds.Y);
                             //Trace.TraceInformation("Painted icon at ({0},{1})", e.Node.Bounds.X, e.Node.Bounds.Y);
                         }
                     }
@@ -815,6 +830,17 @@ using System.Diagnostics;
                     return hash;
                 }
             }
+
+            public override bool Equals(object obj)
+            {
+                var cat = obj as ThemeCategory;
+                if (cat == null)
+                    return false;
+
+                return this.MaxScale == cat.MaxScale &&
+                       this.MinScale == cat.MinScale &&
+                       this.GeometryType == cat.GeometryType;
+            }
         }
 
         [DebuggerDisplay("Name = {Layer.Name}, Label = {Layer.LegendLabel}")]
@@ -829,6 +855,7 @@ using System.Diagnostics;
                 this.WasInitiallySelectable = bInitiallySelectable;
                 this.LayerDefinitionContent = null;
                 _themeNodes = new Dictionary<ThemeCategory, List<LayerThemeNodeMetadata>>();
+                _defaultIcons = new Dictionary<ThemeCategory, Image>();
             }
 
             public override string ObjectId
@@ -836,9 +863,62 @@ using System.Diagnostics;
                 get { return this.Layer.GetObjectId(); }
             }
 
-            public Image Icon { get; set; }
+            private bool? _isRaster;
 
-            public string IconId { get; set; }
+            public bool IsRaster
+            {
+                get
+                {
+                    if (_isRaster.HasValue)
+                        return _isRaster.Value;
+
+                    if (!string.IsNullOrEmpty(this.LayerDefinitionContent))
+                        _isRaster = this.LayerDefinitionContent.Contains("<GridLayerDefinition");
+
+                    if (_isRaster.HasValue)
+                        return _isRaster.Value;
+
+                    throw new Exception("Layer metadata not fully initialized"); //Shouldn't get to here
+                }
+            }
+
+            private bool? _isDwf;
+
+            public bool IsDwf
+            {
+                get
+                {
+                    if (_isDwf.HasValue)
+                        return _isRaster.Value;
+
+                    if (!string.IsNullOrEmpty(this.LayerDefinitionContent))
+                        _isDwf = this.LayerDefinitionContent.Contains("<DrawingLayerDefinition");
+
+                    if (_isDwf.HasValue)
+                        return _isRaster.Value;
+
+                    throw new Exception("Layer metadata not fully initialized"); //Shouldn't get to here
+                }
+            }
+
+            private Dictionary<ThemeCategory, Image> _defaultIcons;
+
+            public void SetDefaultIcon(ThemeCategory cat, Image image)
+            {
+                _defaultIcons[cat] = image;
+            }
+
+            public Image GetDefaultIcon(double scale)
+            {
+                foreach (var cat in _defaultIcons.Keys)
+                {
+                    if (ScaleIsApplicable(scale, cat))
+                        return _defaultIcons[cat];
+                }
+                return null;
+            }
+
+            //public Image Icon { get; set; }
 
             internal MgLayerBase Layer { get; private set; }
 
@@ -871,7 +951,7 @@ using System.Diagnostics;
 
             internal bool HasTheme()
             {
-                if (_themeNodes.Count == 0)
+                if (_themeNodes.Count == 0 || _defaultIcons.Count == 0)
                     return false;
 
                 foreach (var coll in _themeNodes.Values)
@@ -888,39 +968,7 @@ using System.Diagnostics;
                 //Find the applicable scale range(s)
                 foreach (var cat in _themeNodes.Keys)
                 {
-                    bool bApplicable = false;
-
-                    bool bHasMin = !string.IsNullOrEmpty(cat.MinScale);
-                    bool bHasMax = !string.IsNullOrEmpty(cat.MaxScale);
-
-                    if (bHasMin)
-                    {
-                        double minVal = double.Parse(cat.MinScale);
-                        if (bHasMax) //bHasMin = true, bHasMax = true
-                        {
-                            double maxVal = double.Parse(cat.MaxScale);
-                            if (scale >= minVal && scale < maxVal)
-                                bApplicable = true;
-                        }
-                        else         //bHasMin = true, bHasMax = false
-                        {
-                            if (scale >= minVal)
-                                bApplicable = true;
-                        }
-                    }
-                    else
-                    {
-                        if (bHasMax) //bHasMin = false, bHasMax = true
-                        {
-                            double maxVal = double.Parse(cat.MaxScale);
-                            if (scale < maxVal)
-                                bApplicable = true;
-                        }
-                        else         //bHasMin = false, bHasMax = false
-                        {
-                            bApplicable = true;
-                        }
-                    }
+                    bool bApplicable = ScaleIsApplicable(scale, cat);
 
                     if (bApplicable)
                     {
@@ -930,6 +978,44 @@ using System.Diagnostics;
                 }
 
                 return nodes.ToArray();
+            }
+
+            private static bool ScaleIsApplicable(double scale, ThemeCategory cat)
+            {
+                bool bApplicable = false;
+
+                bool bHasMin = !string.IsNullOrEmpty(cat.MinScale);
+                bool bHasMax = !string.IsNullOrEmpty(cat.MaxScale);
+
+                if (bHasMin)
+                {
+                    double minVal = double.Parse(cat.MinScale);
+                    if (bHasMax) //bHasMin = true, bHasMax = true
+                    {
+                        double maxVal = double.Parse(cat.MaxScale);
+                        if (scale >= minVal && scale < maxVal)
+                            bApplicable = true;
+                    }
+                    else         //bHasMin = true, bHasMax = false
+                    {
+                        if (scale >= minVal)
+                            bApplicable = true;
+                    }
+                }
+                else
+                {
+                    if (bHasMax) //bHasMin = false, bHasMax = true
+                    {
+                        double maxVal = double.Parse(cat.MaxScale);
+                        if (scale < maxVal)
+                            bApplicable = true;
+                    }
+                    else         //bHasMin = false, bHasMax = false
+                    {
+                        bApplicable = true;
+                    }
+                }
+                return bApplicable;
             }
 
             private IEnumerable<TreeNode> CreateThemeNodes(List<LayerThemeNodeMetadata> metadata)
