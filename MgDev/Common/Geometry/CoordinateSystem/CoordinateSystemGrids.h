@@ -54,24 +54,23 @@ class MgCoordinateSystemGridTick;               // a position in viewport coordi
 /// \{
 
 ///////////////////////////////////////////////////////////////////////////////
-/// <summary>
-/// <c>MgCoordinateSystemGridSpecification</c> is an object that is used to
+/// \brief
+/// MgCoordinateSystemGridSpecification is an object that is used to
 /// convey all the parameters necessary for the generation of a grid/graticule
 /// lumped into a single object for convenience.  Thus, adding a parameter
 /// determined to be necessary at a later time does not alter a lot of calling
-/// sequences.<p>
+/// sequences.\n
 /// Note that this interface is an abstract interface.  There is code
 /// associated with the implementation of this interface which is used to
 /// handle the conversion of parameters between the various unit systems.
-/// Thus, one obtains a <c>MgCoordinateSystemGridSpecification</c> from the
-/// <c>MgCoordinateSystemFactory</c> object.<p>
+/// Thus, one obtains a MgCoordinateSystemGridSpecification from the
+/// MgCoordinateSystemFactory object.\n
 /// Note that all values are provided in the units specified within the object.
 /// The units used in this object do <b>not</b> need to be the same as any
 /// coordinate system involved in the generation of a grid, although the
 /// <b>type</b> of unit must be consistent with the type of grid being drawn.
 /// That is, specifying a Angular unit type when drawing a UTM grid will cause
 /// an exception at the time the request for (say) grid lines is issued.
-/// </summary>
 class MG_GEOMETRY_API MgCoordinateSystemGridSpecification : public MgGuardDisposable
 {
 PUBLISHED_API:
@@ -365,7 +364,7 @@ PUBLISHED_API:
     /// specific northing value; the resulting lines usually being horizontal
     /// (i.e. west to east).
     ///
-    /// \bugs
+    /// \bug
     /// This function should be named SetGridIncrements to be consistent with the
     /// rest of the interface.
     ///
@@ -456,7 +455,7 @@ PUBLISHED_API:
     /// less than that requested.  This provision is implemented to reduce the
     /// probability of a runaway grid which consumes the entire machine.
     ///
-    /// \bugs
+    /// \bug
     /// The maximum curve point variable should be a part of this object.
     ///
     virtual void SetCurvePrecision (double curvePrecision) = 0;
@@ -678,17 +677,16 @@ CLASS_ID:
 //=============================================================================
 // External to this interface, boundary objects are always in the viewport
 // (i.e. target) coordinate system.
-/// <summary>
+/// \brief
 /// This object is used to maintain the definition of the boundary of a
 /// specific grid or graticule.  Externally, a
-/// <c>MgCoordinateSystemGridBoundary</c> object will be in viewport
+/// MgCoordinateSystemGridBoundary object will be in viewport
 /// coordinates.  Internally, objects of this type are often used to the
 /// carry grid boundaries in grid coordinates, and also greographic
-/// coordinates.<p>
+/// coordinates.\n
 /// Grid boundaries iusually start out as rectangles, but are often converted
 /// to a series of complex curves approximated by multi-segment lines (i.e.
 /// line strings).
-/// </summsry>
 class MG_GEOMETRY_API MgCoordinateSystemGridBoundary : public MgGuardDisposable
 {
 PUBLISHED_API:

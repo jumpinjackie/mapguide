@@ -26,6 +26,7 @@ END_NAMESPACE_MDFMODEL
 //the rendering service can get the WatermarkDefinition.
 //So it's only an internal API.
 
+/// \cond INTERNAL
 class MG_PLATFORMBASE_API MgWatermark
 {
 INTERNAL_API:
@@ -33,5 +34,6 @@ INTERNAL_API:
     static MdfModel::WatermarkDefinition* GetWatermarkDefinition(MgResourceService* svcResource, MgResourceIdentifier* resId);
     static MdfModel::WatermarkDefinition* GetWatermarkDefinition(CREFSTRING resourceContent);
 };
+/// \endcond
 
 #endif
