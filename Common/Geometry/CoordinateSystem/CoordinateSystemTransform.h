@@ -371,7 +371,7 @@ PUBLISHED_API:
     /// The starting point of the linear segment in source system coordinates.
     /// \param toPnt
     /// The end point of the linear segment in source system coordinates.
-    /// \param chordValue
+    /// \param curvePrecision
     /// The returned line string is segmented to the degree necessary such
     /// that the distance between the LineString approximation of the true
     /// curve and the true curve istself is never more than this value.  Units
@@ -433,11 +433,10 @@ PUBLISHED_API:
     /// which is to be returned.
     /// \return
     /// Returns a disposable pointer to the geodetic transformation definition
-    /// indicated by the index parameter. The \link MgCoordinateSystemGeodeticTransformDef
+    /// indicated by the index parameter. The MgCoordinateSystemGeodeticTransformDef
     /// instance is guaranteed to exist in the geodetic transformation definition
     /// dictionary.
-    /// \exception  MgIndexOutOfRangeException if index is out of range. See \link
-    ///             GetGeodeticTransformationCount.
+    /// \exception  MgIndexOutOfRangeException if index is out of range. See MgCoordinateSystemTransform::GetGeodeticTransformationCount.
     /// \exception  MgCoordinateSystemLoadFailedException if the geodetic transformation
     ///             denoted by the index is not contained in the dictionries
     ///             but has been created in-memory only. Note though, that this will only
@@ -459,10 +458,10 @@ PUBLISHED_API:
     /// for which the direction is to be returned.
     /// \return
     /// Returns a memebr of the MgCoordinateSystemGeodeticDirection class:
-    /// * GeodeticDirectionForward for the forward direction,
-    /// * GeodeticDirectionInverse or the inverse direction,
-    /// * GeodeticDirectionNone if there is no specification (e.g. a null transformation), and
-    /// * GeodeticDirectionError if the index parameter is invalid.
+    /// * MgCoordinateSystemGeodeticDirection::GeodeticDirectionForward for the forward direction,
+    /// * MgCoordinateSystemGeodeticDirection::GeodeticDirectionInverse or the inverse direction,
+    /// * MgCoordinateSystemGeodeticDirection::GeodeticDirectionNone if there is no specification (e.g. a null transformation), and
+    /// * MgCoordinateSystemGeodeticDirection::GeodeticDirectionError if the index parameter is invalid.
     /// \remarks
     /// No exceptions are thrown.
     ///

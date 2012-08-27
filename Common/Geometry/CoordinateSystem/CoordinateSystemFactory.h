@@ -26,7 +26,8 @@
 /// \brief
 /// Supports the creation of MgCoordinateSystem objects based on
 /// a OpenGIS Well-Known Text (WKT) definition of the coordinate
-/// system.
+/// system. This class is the main entry point for accessing assorted classes
+/// and functionalities of the Coordinate System API
 ///
 class MG_GEOMETRY_API MgCoordinateSystemFactory : public MgGuardDisposable
 {
@@ -52,6 +53,18 @@ PUBLISHED_API:
     /// \htmlinclude PHPExampleTop.html
     /// \code
     /// $coordSysFactory = new MgCoordinateSystemFactory();
+    /// \endcode
+    /// \htmlinclude ExampleBottom.html
+    /// <!-- Example (C#) -->
+    /// \htmlinclude CSharpExampleTop.html
+    /// \code
+    /// MgCoordinateSystemFactory csFactory = new MgCoordinateSystemFactory();
+    /// \endcode
+    /// \htmlinclude ExampleBottom.html
+    /// <!-- Example (Java) -->
+    /// \htmlinclude JavaExampleTop.html
+    /// \code
+    /// MgCoordinateSystemFactory csFactory = new MgCoordinateSystemFactory();
     /// \endcode
     /// \htmlinclude ExampleBottom.html
     ///
@@ -137,38 +150,132 @@ PUBLISHED_API:
     virtual MgCoordinateSystem* Create(CREFSTRING wkt);
 
     //factory
+    ///////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Gets the coordinate system catalog
+    /// \return
+    /// Returns the MgCoordinateSystemCatalog
     virtual MgCoordinateSystemCatalog* GetCatalog();
+    
+    ///////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Constructs a MgCoordinateSystemTransform that can be used to transform
+    /// coordinates from the source coordinate system to the target coordinate
+    /// system.
+    /// \param pSource (MgCoordinateSystem)
+    /// The source coordinate system
+    /// \param pTarget (MgCoordinateSystem)
+    /// The target coordinate system
+    /// \return
+    /// The coordinate system transform that can be used to transform coordinates
     virtual MgCoordinateSystemTransform* GetTransform(MgCoordinateSystem* pSource,
                                                       MgCoordinateSystem* pTarget);
+                                                      
+    ///////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Creates a MgCoordinateSystem object from the specified CS-Map coordinate
+    /// system code
+    /// \param code (String/string)
+    /// The CS-Map coordinate system code
+    /// \return
+    /// The coordinate system
     virtual MgCoordinateSystem* CreateFromCode(CREFSTRING code);
+    
+    ///////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Gets the matching CS-Map coordinate system code based on the specified
+    /// coordinate system WKT text. See \link WKTofSRS WKT of Spatial Reference System \endlink
+    /// \param wkt (String/string)
+    /// The coordinate system WKT string
+    /// \return
+    /// The CS-Map coordinate system code that corresponds to the specified WKT
     virtual STRING ConvertWktToCoordinateSystemCode(CREFSTRING wkt);
+    
+    ///////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Gets the matching coordinate system WKT based on the specified CS-Map
+    /// coordinate system code
+    /// \param code (String/string)
+    /// The CS-Map coordinate system code
+    /// \return
+    /// The coordinate system WKT string that corresponds to the specified CS-Map
+    /// coordinate system code.\n
+    /// See \link WKTofSRS WKT of Spatial Reference System \endlink
     virtual STRING ConvertCoordinateSystemCodeToWkt(CREFSTRING code);
+    
+    ///////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Returns a list of the available coordinate system categories
+    /// \return
+    /// A MgStringCollection containing the names of the available coordinate 
+    /// system categories
     virtual MgStringCollection* EnumerateCategories();
+    
+    ///////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Returns a MgBatchPropertyCollection containing the properties of each
+    /// coordinate system under the specified category
+    /// \param category (String/string)
+    /// The coordinate system category to enumerate
+    /// \return
+    /// A MgBatchPropertyCollection containing the properties of each coordinate system
+    /// under the specified category
     virtual MgBatchPropertyCollection* EnumerateCoordinateSystems(CREFSTRING category);
+    
+    ///////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Gets the matching coordinate system WKT based on the specified EPSG code
+    /// \param code
+    /// The EPSG code
+    /// \return
+    /// The coordinate system WKT string that corresponds to the specified EPSG code
+    /// See \link WKTofSRS WKT of Spatial Reference System \endlink
     virtual STRING ConvertEpsgCodeToWkt(INT32 code);
+    
+    ///////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Gets the matching EPSG code based on the specified coordinate system WKT
+    /// \param wkt (String/string)
+    /// The coordinate system WKT string. See \link WKTofSRS WKT of Spatial Reference System \endlink
+    /// \return
+    /// The EPSG code that corresponds to the specified coordinate system WKT string
     virtual INT32 ConvertWktToEpsgCode(CREFSTRING wkt);
+    
+    ///////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Gets name of the underlying coordinate system library
+    /// \return
+    /// Returns the name of the underlying coordinate system library
     virtual STRING GetBaseLibrary();
+    
+    ///////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Gets whether the specified coordinate system WKT string is a valid one
+    /// \param wkt (String/string)
+    /// The coordinate system WKT string. See \link WKTofSRS WKT of Spatial Reference System \endlink
+    /// \return
+    /// Returns <b>true</b> if the specified WKT is valid. Returns <b>false</b> otherwise
     virtual bool IsValid(CREFSTRING wkt);
 
     // Grids and Graticules -- General
 
     ///////////////////////////////////////////////////////////////////////////
-    /// /brief
+    /// \brief
     /// Constructs a grid boundary object.
-    /// /param southwest
+    /// \param southwest
     /// The coordinates of the the southwest corner of a rectangular region
     /// which represents the grid region.  This point <b>MUST</b> indeed be
     /// southwest of the coordinate provided by the <c>northeast</c> parameter.
-    /// /param northeast
+    /// \param northeast
     /// The coordinates of the the northeast corner of a rectangular region
     /// which represents the grid region.  This point <b>MUST</b> indeed be
     /// northeast of the coordinate provided by the <c>southwest</c> parameter.
-    /// /return
-    /// Returns the grid boundary in the ofrm used by the grid/graticule
+    /// \return
+    /// Returns the grid boundary in the form used by the grid/graticule
     /// sub-system.
     /// \exception MgOutOfMemoryException
     /// Thrown in the event of heap memory allocation failure.
-    /// /remarks
+    /// \remarks
     /// Externally, grid bundary objects are in viewport coordinates and
     /// define the extents of the region within which a grid is to be drawn.
     /// Such objects are often simple rectangles, but his is not a
@@ -177,111 +284,89 @@ PUBLISHED_API:
                                                          MgCoordinate* northeast);
 
     ///////////////////////////////////////////////////////////////////////////
-    /// <summary>
+    /// \brief
     /// Constructs a grid boundary object.  Externally, grid objects are in
     /// viewport coordinates and define the extents of the region within
     /// which a grid is to be drawn.  Such objects are often simple
     /// rectangles, but his is not a requirement.
-    /// </summary>
-    /// <param name="boundary">
+    /// \param boundary
     /// The grid boundary in the form of a MgPolygon with no interior rings.
-    /// </param>
-    /// <returns>
+    /// \return
     /// Returns the boundary in the form used by the grid/graticule sub-system.
-    /// </returns>
-    /// <exception cref="MgOutOfMemoryException">
+    /// \exception MgOutOfMemoryException
     /// Thrown in the event of heap memory allocation failure.
-    /// </exception>
-    /// <remarks>
-    /// The <c>boundary</c> argument need not be a rectangle, but is assumed
+    /// \remarks
+    /// The boundary argument need not be a rectangle, but is assumed
     /// to be closed.
-    /// </remarks>
     virtual MgCoordinateSystemGridBoundary* GridBoundary(MgPolygon* boundary);
 
     ///////////////////////////////////////////////////////////////////////////
-    /// <summary>
+    /// \brief
     /// Constructs a grid specification object with all specifications set to
     /// <b>invalid</b> values.
-    /// </summary>
-    /// <returns>
+    /// \return
     /// An object which carries all of the several parameter which determine
     /// nature of a grid or graticule and any sub-feature thereof.
-    /// </returns>
-    /// <exception cref="std::bad_alloc">
+    /// \exception std::bad_alloc
     /// Thrown in the event of a heap memory allocation failure.
-    /// </exception>
-    /// <remarks>
+    /// \remarks
     /// When manufactured by this overload, the consuming application must
     /// set all values to valid values before using the returned object
     /// in any way.
-    /// </remarks>
     virtual MgCoordinateSystemGridSpecification* GridSpecification (void);
 
     ///////////////////////////////////////////////////////////////////////////
-    /// <summary>
+    /// \brief
     /// Constructs a grid specification object with all specifications set to
     /// the values indicated by the supplied parameters.
-    /// </summary>
-    /// <param name="increment">
+    /// \param increment
     /// The distance between grid lines of a grid or graticule.  This value is
     /// used for both the easting and northing grid lines; and the value must
     /// be in the units specified by the <c>unitCode</c> parameter.
-    /// </param>
-    /// <param name="tickIncrement">
+    /// \param tickIncrement
     /// The distance between tick marks of a grid or graticule.  This value is
     /// used for both the easting and northing tick marks; and the value must
     /// be in the units specified by the <c>unitCode</c> parameter.
-    /// </param>
-    /// <param name="unitCode">
+    /// \param unitCode
     /// One of the values defined by the MgCoordinateSystemUnitCode object
     /// which indicates the units in which the <c>increment</c>,
     /// <c>tickIncrement</c>, and <c>curvePrecision</c> parameters are
     /// specified.
-    /// </param>
-    /// <param name="curvePrecision">
+    /// \param curvePrecision
     /// In the units indicated by the <c>unitCode</c> parameter, the
     /// <b>desired</b> maximum distance between the true complex curve and
     /// the multi-segment approximation of the complex curve of any grid or
     /// graticule line generated using this specification.
-    /// </param>
-    /// <returns>
+    /// \return
     /// A fully initialized grid specification object.
-    /// </returns>
-    /// <exception cref="std::bad_alloc">
+    /// \exception std::bad_alloc
     /// Thrown in the event of a heap memory allocation failure.
-    /// </exception>
-    /// <remarks>
+    /// \remarks
     /// This particular overload is designed for the most common situations.
     /// It presumes the units used are of thelinear type, and thus this
     /// particular overload cannot be used to generate a specification
     /// object for use in graticule generation.
-    /// </remarks>
     virtual MgCoordinateSystemGridSpecification* GridSpecification (double increment,
                                                                     double tickIncrement,
                                                                     INT32 unitCode,
                                                                     double curvePrecision);
 
     ///////////////////////////////////////////////////////////////////////////
-    /// <summary>
+    /// \brief
     /// Constructs a grid specification object with all specifications set to
     /// the values indicated by the supplied parameters.
-    /// </summary>
-    /// <param name="gridType">
+    /// \param gridType
     /// A value defined by the MgCoordinateSystemGridSpecializationType object
     /// which indicates the Type of specialized grid desired.
-    /// </param>
-    /// <param name="gridLevel">
+    /// \param gridLevel
     /// A value which indicates the density of the grid desired.  The exact
     /// value of this parameter is dependent upon the value of the
     /// <c>gridType</c> argument.  See Remarks below.
-    /// </param>
-    /// <returns>
+    /// \return
     /// Returns a fully initialized grid specification structure.
-    /// </returns>
-    /// <exception cref="std::bad_alloc">
+    /// \exception std::bad_alloc
     /// Thrown in the event of a heap memory allocation failure.
-    /// </exception>
-    /// <remarks>
+    /// \remarks
     /// The value of the <c>gridLevel</c> parameter is depenent upon the
     /// <c>gridType</c> argument.  For each type of grid, there exists
     /// a different set legal values for the <c>gridLevel</c> parameter.
@@ -290,248 +375,196 @@ PUBLISHED_API:
     /// and therefore the value of the <c>gridLevel</c> argument would
     /// need to be a value defined by the MgCoordinateSystemMgrsGridLevel
     /// object.
-    /// </remarks>
     virtual MgCoordinateSystemGridSpecification* GridSpecification (INT32 gridType,
                                                                     INT32 gridLevel);
 
     // Grids and Graticules -- Generic
     ///////////////////////////////////////////////////////////////////////////
-    /// <summary>
+    /// \brief
     /// Manufactures generic grid object.  A generic grid is one which simply
     /// draws isolines of one coordinate system (the Grid coordinate system)
     /// into the drawing space of another (the frame system).
-    /// </summary>
-    /// <param name="sGridCs">
+    /// \param sGridCs
     /// The coordinate system code name of the grid coordinate system.
-    /// </param>
-    /// <param name="sFrameCs">
+    /// \param sFrameCs
     /// The coordinate system code name of the frame coordinate system.
-    /// </param>
-    /// <param name="bSetExceptionsOn">
+    /// \param bSetExceptionsOn
     /// <c>true</c> indicates that exceptions are to be thrown on all
     /// exceptional conditions.
-    /// </param>
-    /// <returns>
+    /// \return
     /// Returns a disposable pointer to the abstract interface class from which the
     /// generic grid object (and all other grid objects) derive.
     /// object derive.
-    /// </returns>
-    /// <exception cref="MgOutOfMemoryException">
+    /// \exception MgOutOfMemoryException
     /// Thrown on heap memory allocation failure.
-    /// </exception>
-    /// <remarks>
-    /// Refer to <see cref="MgCoordinateSystemFactory::CreateFromCode"> for
+    /// \remarks
+    /// Refer to MgCoordinateSystemFactory::CreateFromCode for
     /// additional exception information.
-    /// </remarks>
     virtual MgCoordinateSystemGridBase* GenericGrid (CREFSTRING sGridCs,
                                                      CREFSTRING sFrameCs,
                                                      bool bSetExceptionsOn);
 
     ///////////////////////////////////////////////////////////////////////////
-    /// <summary>
+    /// \brief
     /// Manufactures generic grid object.  A generic grid is one which simply
     /// draws isolines of one coordinate system (the Grid coordinate system)
     /// into the drawing space of another (the frame system).
-    /// </summary>
-    /// <param name="pGridCs">
+    /// \param pGridCs
     /// The grid coordinate system.
-    /// </param>
-    /// <param name="pFrameCs">
+    /// \param pFrameCs
     /// The frame coordinate system.
-    /// </param>
-    /// <param name="bSetExceptionsOn">
+    /// \param bSetExceptionsOn
     /// <c>true</c> indicates that exceptions are to be thrown on all
     /// exceptional conditions.
-    /// </param>
-    /// <returns>
+    /// \return
     /// Returns a disposable pointer to the abstract interface class from which the
     /// generic grid object (and all other grid objects) derive.
     /// object derive.
-    /// </returns>
-    /// <exception cref="MgOutOfMemoryException">
+    /// \exception MgOutOfMemoryException
     /// Thrown on heap memory allocation failure.
-    /// </exception>
-    /// <remarks>
-    /// Refer to <see cref="MgCoordinateSystemFactory::CreateFromCode"> for
+    /// \remarks
+    /// Refer to MgCoordinateSystemFactory::CreateFromCode for
     /// additional exception information.
-    /// </remarks>
     virtual MgCoordinateSystemGridBase* GenericGrid (MgCoordinateSystem* pGridCs,
                                                      MgCoordinateSystem* pFrameCs,
                                                      bool bSetExceptionsOn);
 
     // Grids and Graticules -- MGRS
     ///////////////////////////////////////////////////////////////////////////
-    /// <summary>
+    /// \brief
     /// Manufactures an MGRS grid object.  The returned object is suitable only
     /// for use in simple coordinate <-> MGRS string calculations.
-    /// </summary>
-    /// <param name="dEquatorialRadius">
+    /// \param dEquatorialRadius
     /// Equatorial radius of the ellipsod upon which conversions to and from
     /// MGRS strings are to be based.
-    /// </param>
-    /// <param name="dEccentricy">
+    /// \param dEccentricity
     /// Eccentricity of the ellipsod upon which conversions to and from
     /// MGRS strings are to be based.
-    /// </param>
-    /// <param name="nLetteringScheme">
-    /// A value as defined in the <c>MgCoordinateSystemMgrsLetteringScheme</c>
+    /// \param nLetteringScheme
+    /// A value as defined in the MgCoordinateSystemMgrsLetteringScheme
     /// object which specifies the lettering scheme to be used on MGRS
     /// string conversions.
-    /// </param>
-    /// <param name="bSetExceptionsOn">
+    /// \param bSetExceptionsOn
     /// <c>true</c> indicates that exceptions are to be thrown on coordinate
     /// conversions which fail for any reason.
-    /// </param>
-    /// </param>
-    /// <returns>
-    /// Returns a disposable pointer to an <c>MgCoordinateSystemMgrs</c>
+    /// \return
+    /// Returns a disposable pointer to an MgCoordinateSystemMgrs
     /// object which is suitable <b>only</b> for MGRS string conversions.
-    /// </returns>
-    /// <exception cref="MgOutOfMemoryException">
+    /// \exception MgOutOfMemoryException
     /// Thrown on heap memory allocation failure.
-    /// </exception>
     virtual MgCoordinateSystemMgrs* GetMgrs(double dEquatorialRadius,double dEccentricity,
                                                                      INT8 nLetteringScheme,
                                                                      bool bSetExceptionsOn);
 
     ///////////////////////////////////////////////////////////////////////////
-    /// <summary>
+    /// \brief
     /// Manufactures an MGRS grid object.  The returned object is suitable only
     /// for use in simple coordinate <-> MGRS string calculations.
-    /// </summary>
-    /// <param name="sEllispoidCode">
+    /// \param sEllipsoidCode
     /// Dictionary code name of the ellipsoid upon which conversions to and from
     /// MGRS strings are to be based.
-    /// </param>
-    /// <param name="nLetteringScheme">
-    /// A value as defined in the <c>MgCoordinateSystemMgrsLetteringScheme</c>
+    /// \param nLetteringScheme
+    /// A value as defined in the MgCoordinateSystemMgrsLetteringScheme
     /// object which specifies the lettering scheme to be used on MGRS
     /// string conversions.
-    /// </param>
-    /// <param name="bSetExceptionsOn">
+    /// \param bSetExceptionsOn
     /// <c>true</c> indicates that exceptions are to be thrown on coordinate
     /// conversions which fail for any reason.
-    /// </param>
-    /// <returns>
-    /// Returns a disposable pointer to an <c>MgCoordinateSystemMgrs</c>
+    /// \return
+    /// Returns a disposable pointer to an MgCoordinateSystemMgrs
     /// object which is suitable <b>only</b> for MGRS string conversions.
-    /// </returns>
-    /// <exception cref="MgOutOfMemoryException">
+    /// \exception MgOutOfMemoryException
     /// Thrown on heap memory allocation failure.
-    /// </exception>
     virtual MgCoordinateSystemMgrs* GetMgrsEllipsoid(CREFSTRING sEllipsoidCode,
                                                      INT8 nLetteringScheme,
                                                      bool bSetExceptionsOn);
 
     ///////////////////////////////////////////////////////////////////////////
-    /// <summary>
+    /// \brief
     /// Manufactures an MGRS grid object.  The returned object is suitable only
     /// for use in simple coordinate <-> MGRS string calculations.
-    /// </summary>
-    /// <param name="sDatumCode">
+    /// \param sDatumCode
     /// Dictionary code name of the datum whose referenced ellipsoid is to be
     /// used for all conversions to and from MGRS strings.
-    /// </param>
-    /// <param name="nLetteringScheme">
-    /// A value as defined in the <c>MgCoordinateSystemMgrsLetteringScheme</c>
+    /// \param nLetteringScheme
+    /// A value as defined in the MgCoordinateSystemMgrsLetteringScheme
     /// object which specifies the lettering scheme to be used on MGRS
     /// string conversions.
-    /// </param>
-    /// <param name="bSetExceptionsOn">
+    /// \param bSetExceptionsOn
     /// <c>true</c> indicates that exceptions are to be thrown on coordinate
     /// conversions which fail for any reason.
-    /// </param>
-    /// <returns>
-    /// Returns a disposable pointer to an <c>MgCoordinateSystemMgrs</c>
+    /// \return
+    /// Returns a disposable pointer to an MgCoordinateSystemMgrs
     /// object which is suitable <b>only</b> for MGRS string conversions.
-    /// </returns>
-    /// <exception cref="MgOutOfMemoryException">
+    /// \exception MgOutOfMemoryException
     /// Thrown on heap memory allocation failure.
-    /// </exception>
-    /// <remarks>
+    /// \remarks
     /// The datum specification is simply a means of specifying the ellipsoid
     /// upon which the calculations are to be based.  It does <b>not</b> mean
     /// that any datum shift calculations will be performed.
-    /// </remarks>
     virtual MgCoordinateSystemMgrs* GetMgrsDatum(CREFSTRING sDatumCode,
                                                  INT8 nLetteringScheme,
                                                  bool bSetExceptionsOn);
 
     ///////////////////////////////////////////////////////////////////////////
-    /// <summary>
+    /// \brief
     /// Manufactures an MGRS grid object which is suitable for generating an
     /// actual MGRS grid.
-    /// </summary>
-    /// <param name="pFrameCs">
+    /// \param pFrameCs
     /// The frame coordinate system.
-    /// </param>
-    /// <param name="bUseFrameDatum">
+    /// \param bUseFrameDatum
     /// <c>true</c> causes the frame datum to be used for all geodetic calculations
     /// neccessary to generate the grid; otherwise WGS84 is assumed.
-    /// <param name="nLetteringScheme">
-    /// A value as defined in the <c>MgCoordinateSystemMgrsLetteringScheme</c>
+    /// \param nLetteringScheme
+    /// A value as defined in the MgCoordinateSystemMgrsLetteringScheme
     /// object which specifies the lettering scheme to be used on MGRS
     /// string conversions.
-    /// </param>
-    /// <param name="bSetExceptionsOn">
+    /// \param bSetExceptionsOn
     /// <c>true</c> indicates that exceptions are to be thrown on coordinate
     /// conversions which fail for any reason. This applies only to MGRS string
     /// conversions.
-    /// </param>
-    /// <returns>
+    /// \return
     /// Returns a disposable pointer to the abstract interface class from which the
     /// MGRS grid object (and all other grid objects) derive.
-    /// object derive.
-    /// </returns>
-    /// <exception cref="MgOutOfMemoryException">
+    /// \exception MgOutOfMemoryException
     /// Thrown on heap memory allocation failure.
-    /// </exception>
-    /// <remarks>
-    /// Refer to <see cref="MgCoordinateSystemFactory::CreateFromCode"> for
-    /// additional exception information.<para>
+    /// \remarks
+    /// Refer to MgCoordinateSystemFactory::CreateFromCode for
+    /// additional exception information.\n
     /// Coordinate system transformation exceptions are always suppressed during
     /// grid generation.
-    /// </remarks>
     virtual MgCoordinateSystemGridBase* MgrsGrid (MgCoordinateSystem* pFrameCs,
                                                   bool bUseFrameDatum,
                                                   INT8 nLetteringScheme,
                                                   bool bSetExceptionsOn);
 
     ///////////////////////////////////////////////////////////////////////////
-    /// <summary>
+    /// \brief
     /// Manufactures an MGRS grid object which is suitable for generating an
     /// actual MGRS grid.
-    /// </summary>
-    /// <param name="sFrameCs">
+    /// \param sFrameCs
     /// The dictionary code name of the frame coordinate system.
-    /// </param>
-    /// <param name="bUseFrameDatum">
+    /// \param bUseFrameDatum
     /// <c>true</c> causes the frame datum to be used for all geodetic calculations
     /// neccessary to generate the grid; otherwise WGS84 is assumed.
-    /// <param name="nLetteringScheme">
-    /// A value as defined in the <c>MgCoordinateSystemMgrsLetteringScheme</c>
+    /// \param nLetteringScheme
+    /// A value as defined in the MgCoordinateSystemMgrsLetteringScheme
     /// object which specifies the lettering scheme to be used on MGRS
     /// string conversions.
-    /// </param>
-    /// <param name="bSetExceptionsOn">
+    /// \param bSetExceptionsOn
     /// <c>true</c> indicates that exceptions are to be thrown on coordinate
     /// conversions which fail for any reason. This applies only to MGRS string
     /// conversions.
-    /// </param>
-    /// <returns>
+    /// \return
     /// Returns a disposable pointer to the abstract interface class from which the
     /// MGRS grid object (and all other grid objects) derive.
-    /// object derive.
-    /// </returns>
-    /// <exception cref="MgOutOfMemoryException">
+    /// \exception MgOutOfMemoryException
     /// Thrown on heap memory allocation failure.
-    /// </exception>
-    /// <remarks>
-    /// Refer to <see cref="MgCoordinateSystemFactory::CreateFromCode"> for
-    /// additional exception information.<para>
+    /// \remarks
+    /// Refer to MgCoordinateSystemFactory::CreateFromCode for
+    /// additional exception information.\n
     /// Coordinate system transformation exceptions are always suppressed during
     /// grid generation.
-    /// </remarks>
     virtual MgCoordinateSystemGridBase* MgrsGrid (CREFSTRING sFrameCs,
                                                   bool bUseFrameDatum,
                                                   INT8 nLetteringScheme,

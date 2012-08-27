@@ -603,7 +603,7 @@ PUBLISHED_API:
     /// virtual int GetPropertyIndex(string propertyName);
     /// \htmlinclude SyntaxBottom.html
     ///
-    /// \param propertyName(string)
+    /// \param propertyName (String/string)
     /// The name of the property in the list of
     /// properties belonging to the feature currently
     /// being read.

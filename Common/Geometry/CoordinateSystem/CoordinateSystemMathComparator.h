@@ -36,7 +36,7 @@ PUBLISHED_API:
     /// \brief
     /// Disables or enables the comparison of any integral geodetic transformation information
     /// when comparing datums. By default, this class compares any geodetic transformation
-    /// information it finds. If set to false, the \link SameDatum method 
+    /// information it finds. If set to false, the MgCoordinateSystemMathComparator::SameDatum method 
     /// only compares ellipsoid information and any other, non-transformation related, properties.
     virtual void SetCompareInternalDatumOldParameters(bool) = 0;
 

@@ -242,7 +242,7 @@ PUBLISHED_API:
     /// \brief
     /// Constructs an empty un-initialized MgMap object.
     ///
-    /// \remarks
+    /// \deprecated
     /// This method has been deprecated. Use the following method:
     /// \link MgMap(MgSiteConnection*) MgMap(MgSiteConnection* siteConnection) \endlink.
     ///
@@ -305,7 +305,7 @@ PUBLISHED_API:
     /// definition, and a name for the map. This method is used for
     /// MapGuide Viewers or for offline map production.
     ///
-    /// \remarks
+    /// \deprecated
     /// This method has been deprecated. Use the following method:
     /// \link MgMap::Create(MgResourceIdentifier*,CREFSTRING) Create(MgResourceIdentifier mapDefinition, string mapName) \endlink.
     ///
@@ -413,7 +413,7 @@ PUBLISHED_API:
     /// \brief
     /// Loads the map object from a session repository.
     ///
-    /// \remarks
+    /// \deprecated
     /// This method has been deprecated. Use the following method:
     /// \link MgMap::Open(CREFSTRING) Open(string mapName) \endlink.
     /// For more information, see \link Maps_and_Layers_Module Maps and Layers \endlink.
@@ -500,7 +500,7 @@ PUBLISHED_API:
     /// \brief
     /// Saves the Map using the specified resource service.
     ///
-    /// \remarks
+    /// \deprecated
     /// This method has been deprecated. Use the following method:
     /// \link Save() Save() \endlink.
     /// This method assumes a valid resource identifier has already

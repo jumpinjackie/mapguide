@@ -99,12 +99,12 @@ print "Post processing '$INPUT_DIRECTORY' ... \n\n";
 
 # Do it
 show_global_variables(); # (for debugging)
-delete_file_list();
+#delete_file_list();
 remove_SWIG_commands_from_directory($INPUT_DIRECTORY);
-change_title();
+#change_title();
 fix_links_in_directory($INPUT_DIRECTORY);
-change_root();
-remove_namespace();
+#change_root();
+#remove_namespace();
 
 # All done
 print "\nPost processing is complete. (Time taken = ", convert_seconds_to_hms_string((time() - $start_time)) , ".)\n"; 

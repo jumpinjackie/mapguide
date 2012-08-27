@@ -904,8 +904,8 @@ PUBLISHED_API:
     /// \remarks
     /// The XML returned by MgFeatureService::GetCapabilities says
     /// whether a provider supports SQL commands. See \link ProviderCapabilities Provider Capabilities \endlink.
-    /// This API has to be used along with new APIs of BeginTransaction(...).
-    /// If passing NULL for transaction, it will work the same as UpdateFeatures(resource, commands, false).
+    /// This API has to be used along with new APIs of MgFeatureService::BeginTransaction.
+    /// If passing NULL for transaction, it will work the same as MgFeatureService::UpdateFeatures(resource, commands, false).
     ///
     /// <!-- Syntax in .Net, Java, and PHP -->
     /// \htmlinclude DotNetSyntaxTop.html
@@ -924,11 +924,6 @@ PUBLISHED_API:
     /// \param commands (MgFeatureCommandCollection)
     /// A collection of feature commands to be
     /// executed.
-    /// \param useTransaction (boolean/bool)
-    /// If true and transactions are supported
-    /// by the Fdo provider, execute all
-    /// commands inside a transaction. If false,
-    /// do not use a transaction.
     /// \param transaction (MgTransaction)
     /// The MgTransaction instance on which the commands
     /// will be executed.
@@ -1021,6 +1016,8 @@ PUBLISHED_API:
     /// Starts a transaction on the specified feature source
     ///
     /// \remarks
+    /// The XML returned by MgFeatureService::GetCapabilities says
+    /// whether a provider supports transactions. See \link ProviderCapabilities Provider Capabilities \endlink.
     ///
     /// <!-- Syntax in .Net, Java, and PHP -->
     /// \htmlinclude DotNetSyntaxTop.html

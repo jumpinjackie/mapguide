@@ -22,6 +22,9 @@
 	<!-- ------------ MAPPING SERVICE --------------- -->
 	\defgroup Mapping_Service_Module Mapping Service
 
+	<!-- ------------ PROFILING SERVICE ------------- -->
+	\defgroup Profiling_Service_Module Profiling Service
+
 	<!-- ------------ RENDERING SERVICE ------------- -->
 	\defgroup Rendering_Service_Module Rendering Service
 		The Rendering Service renders a map into a bitmapped image
