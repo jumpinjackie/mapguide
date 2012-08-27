@@ -18,7 +18,7 @@ namespace OSGeo.MapGuide.Viewer
     /// <summary>
     /// A control that displays and controls visibility of layers in a runtime map
     /// </summary>
-    public partial class MgLegend : UserControl, IMapLegend, ILegendView
+    public partial class MgLegend : UserControl, IMapLegend, ILegendView, INotifyPropertyChanged 
     {
         // TODO:
         // 
@@ -55,6 +55,8 @@ namespace OSGeo.MapGuide.Viewer
             RefreshLegend();
         }
 
+        private Stopwatch _legendUpdateStopwatch = new Stopwatch();
+
         /// <summary>
         /// Refreshes this component
         /// </summary>
@@ -66,20 +68,78 @@ namespace OSGeo.MapGuide.Viewer
             if (_presenter == null)
                 return;
 
+            if (IsBusy)
+                return;
+
             ResetTreeView();
             trvLegend.BeginUpdate();
+            _legendUpdateStopwatch.Start();
+            this.IsBusy = true;
+            bgLegendUpdate.RunWorkerAsync();
+            /*
+            //Synchronous version
             try
             {
-                var sw = new Stopwatch();
-                sw.Start();
                 trvLegend.Nodes.AddRange(_presenter.CreateNodes());
-                sw.Stop();
-                Trace.TraceInformation("RefreshLegend: Completed in {0}ms", sw.ElapsedMilliseconds);
             }
             finally
             {
                 trvLegend.EndUpdate();
+            }*/
+        }
+
+        private bool _busy = false;
+
+        [Browsable(false)]
+        public bool IsBusy
+        {
+            get { return _busy; }
+            private set
+            {
+                if (_busy.Equals(value))
+                    return;
+
+                _busy = value;
+                Trace.TraceInformation("Legend IsBusy: {0}", this.IsBusy);
+                OnPropertyChanged("IsBusy");
             }
+        }
+
+        private void bgLegendUpdate_DoWork(object sender, DoWorkEventArgs e)
+        {
+            e.Result = _presenter.CreateNodes();
+        }
+
+        private void bgLegendUpdate_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        {
+            this.IsBusy = bgLegendUpdate.IsBusy;
+            var nodes = e.Result as TreeNode[];
+            if (nodes != null)
+            {
+                //Attach relevant context menus based on attached metadata
+                foreach (var n in nodes)
+                {
+                    var lm = n.Tag as LegendNodeMetadata;
+                    if (lm != null)
+                    {
+                        if (lm.IsGroup)
+                        {
+                            n.ContextMenuStrip = this.GroupContextMenu;
+                        }
+                        else
+                        {
+                            var lyrm = n.Tag as LayerNodeMetadata;
+                            if (lyrm != null)
+                                n.ContextMenuStrip = this.LayerContextMenu;
+                        }
+                    }
+                }
+                trvLegend.Nodes.AddRange(nodes);
+            }
+            trvLegend.EndUpdate();
+            _legendUpdateStopwatch.Stop();
+            Trace.TraceInformation("RefreshLegend: Completed in {0}ms", _legendUpdateStopwatch.ElapsedMilliseconds);
+            _legendUpdateStopwatch.Reset();
         }
 
         private static void ClearNodes(TreeNodeCollection nodes)
@@ -270,7 +330,14 @@ namespace OSGeo.MapGuide.Viewer
         public int ThemeCompressionLimit
         {
             get { return _themeCompressionLimit; }
-            set { _themeCompressionLimit = value; }
+            set 
+            {
+                if (value != _themeCompressionLimit)
+                    return;
+
+                _themeCompressionLimit = value;
+                OnPropertyChanged("ThemeCompressionLimit");
+            }
         }
         
         private void OnLayerContextMenuOpening(object sender, CancelEventArgs e)
@@ -344,7 +411,23 @@ namespace OSGeo.MapGuide.Viewer
         public bool ShowTooltips
         {
             get { return trvLegend.ShowNodeToolTips; }
-            set { trvLegend.ShowNodeToolTips = value; }
+            set 
+            {
+                if (value != trvLegend.ShowNodeToolTips)
+                    return;
+
+                trvLegend.ShowNodeToolTips = value;
+                OnPropertyChanged("ShowTooltips");
+            }
+        }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        private void OnPropertyChanged(string propertyName)
+        {
+            var h = this.PropertyChanged;
+            if (h != null)
+                h(this, new PropertyChangedEventArgs(propertyName));
         }
     }
 }

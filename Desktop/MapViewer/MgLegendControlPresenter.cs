@@ -10,12 +10,12 @@ namespace OSGeo.MapGuide.Viewer
     using Legend.Model;
     using System.Xml;
     using System.IO;
-using System.Diagnostics;
+    using System.Diagnostics;
 
     interface ILegendView
     {
-        ContextMenuStrip LayerContextMenu { get; }
-        ContextMenuStrip GroupContextMenu { get; }
+        //ContextMenuStrip LayerContextMenu { get; }
+        //ContextMenuStrip GroupContextMenu { get; }
         void AddLegendIcon(string id, Image icon);
         int ThemeCompressionLimit { get; }
         void OnRequestRefresh();
@@ -92,7 +92,7 @@ using System.Diagnostics;
             node.Name = layer.GetObjectId();
             node.Text = layer.GetLegendLabel();
             node.Checked = layer.GetVisible();
-            node.ContextMenuStrip = _legend.LayerContextMenu;
+            //node.ContextMenuStrip = _legend.LayerContextMenu;
             var lt = layer.GetLayerType();
             var fsId = layer.GetFeatureSourceId();
 
@@ -153,7 +153,7 @@ using System.Diagnostics;
                 String[] ruleNames = new String[] { "PointRule", "LineRule", "AreaRule", "CompositeRule" };
 
                 node.ToolTipText = string.Format(Properties.Resources.DefaultLayerTooltip, Environment.NewLine, layer.Name, layer.FeatureSourceId, layer.FeatureClassName);
-                if (!layerMeta.HasTheme())
+                if (!layerMeta.HasTheme() || !layerMeta.HasDefaultIcons())
                 {
                     for (int sc = 0; sc < scaleRanges.Count; sc++)
                     {
@@ -210,7 +210,7 @@ using System.Diagnostics;
                                         }
                                     }
                                 }
-                                else
+                                else if (!layerMeta.HasDefaultIconsAt(_map.ViewScale))
                                 {
                                     try
                                     {
@@ -336,7 +336,7 @@ using System.Diagnostics;
             var meta = new GroupNodeMetadata(group);
             node.Tag = meta;
             _groups[group.GetObjectId()] = meta;
-            node.ContextMenuStrip = _legend.GroupContextMenu;
+            //node.ContextMenuStrip = _legend.GroupContextMenu;
             return node;
         }
 
@@ -949,9 +949,14 @@ using System.Diagnostics;
                 _themeNodes[category].Add(themeMeta);
             }
 
+            internal bool HasDefaultIcons()
+            {
+                return (_defaultIcons.Count > 0);
+            }
+
             internal bool HasTheme()
             {
-                if (_themeNodes.Count == 0 || _defaultIcons.Count == 0)
+                if (_themeNodes.Count == 0)
                     return false;
 
                 foreach (var coll in _themeNodes.Values)
@@ -1027,6 +1032,16 @@ using System.Diagnostics;
                     node.Tag = meta;
                     yield return node;
                 }
+            }
+
+            internal bool HasDefaultIconsAt(double scale)
+            {
+                foreach (var cat in _defaultIcons.Keys)
+                {
+                    if (ScaleIsApplicable(scale, cat))
+                        return true;
+                }
+                return false;
             }
         }
     }
