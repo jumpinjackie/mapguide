@@ -853,6 +853,10 @@ PUBLISHED_API:
     ///   <li>If the command is of type MgUnLockFeatures, the property
     ///     type is MgPropertyType::Int32, and its value is the number of
     ///     features unlocked.</li>
+    ///   <li>For any of the above commands, if the property type is 
+    ///     MgPropertyType::String, it indicates an exception had occurred
+    ///     for that particular command, and its value is the exception message.
+    ///     This only applies when the operation is not using a transaction</li>
     /// </ul>
     ///
     /// \exception MgFeatureServiceException
