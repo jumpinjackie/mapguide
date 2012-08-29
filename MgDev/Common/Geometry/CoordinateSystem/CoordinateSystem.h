@@ -52,6 +52,16 @@ PUBLISHED_API:
     virtual double GetMinY()=0;  /// __get
     virtual double GetMaxX()=0;  /// __get
     virtual double GetMaxY()=0;  /// __get
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Returns the CS-Map coordinate system code
+    ///
+    /// \return
+    /// The CS-Map coordinate system code
+    ///
+    /// \remarks
+    /// This method used to be called GetCode prior to MapGuide Open Source 2.2 / MapGuide Enterprise 2011 / AutoCAD Map3D 2011
+    ///
     virtual STRING GetCsCode()=0;  /// __get
     virtual STRING GetDescription()=0;  /// __get
     virtual STRING GetProjection()=0;  /// __get
@@ -68,7 +78,27 @@ PUBLISHED_API:
     virtual MgCoordinateSystemMeasure* GetMeasure()=0;
     virtual MgStringCollection* GetCategories()=0;
     virtual MgCoordinateSystemCatalog* GetCatalog()=0;
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Sets the CS-Map coordinate system code for this coordinate system
+    ///
+    /// \param sCode (String/string)
+    /// The CS-Map coordinate system code
+    ///
+    /// \remarks
+    /// This method used to be called SetCode prior to MapGuide Open Source 2.2 / MapGuide Enterprise 2011 / AutoCAD Map3D 2011
+    ///
     virtual void SetCsCode(CREFSTRING sCode)=0;
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Checks whether the given CS-Map coordinate system code is a legal one
+    ///
+    /// \return
+    /// true if the given code is a legal one, false otherwise
+    ///
+    /// \remarks
+    /// This method used to be called IsLegalCode prior to MapGuide Open Source 2.2 / MapGuide Enterprise 2011 / AutoCAD Map3D 2011
+    ///
     virtual bool IsLegalCsCode(CREFSTRING sCode)=0;
     virtual bool IsValid()=0;
     virtual bool IsUsable(MgCoordinateSystemCatalog *pCatalog)=0;

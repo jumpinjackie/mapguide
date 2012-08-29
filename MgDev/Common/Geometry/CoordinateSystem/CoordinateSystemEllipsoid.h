@@ -23,8 +23,38 @@ class MgCoordinateSystemEllipsoid : public MgGuardDisposable
     DECLARE_CLASSNAME(MgCoordinateSystemEllipsoid)
 
 PUBLISHED_API:
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Returns the CS-Map coordinate system ellipsoid code
+    ///
+    /// \return
+    /// The CS-Map coordinate system ellipsoid code
+    ///
+    /// \remarks
+    /// This method used to be called GetCode prior to MapGuide Open Source 2.2 / MapGuide Enterprise 2011 / AutoCAD Map3D 2011
+    ///
     virtual STRING GetElCode()=0;  /// __get
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Sets the CS-Map coordinate system ellipsoid code for this ellipsoid
+    ///
+    /// \param sCode (String/string)
+    /// The CS-Map coordinate system ellipsoid code
+    ///
+    /// \remarks
+    /// This method used to be called SetCode prior to MapGuide Open Source 2.2 / MapGuide Enterprise 2011 / AutoCAD Map3D 2011
+    ///
     virtual void SetElCode(CREFSTRING sCode)=0;
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Checks whether the specified CS-Map coordinate system ellipsoid code is a legal one
+    ///
+    /// \return
+    /// true if the given code is a legal one, false otherwise
+    ///
+    /// \remarks
+    /// This method used to be called IsLegalCode prior to MapGuide Open Source 2.2 / MapGuide Enterprise 2011 / AutoCAD Map3D 2011
+    ///
     virtual bool IsLegalElCode(CREFSTRING sCode)=0;
     virtual bool IsValid()=0;
     virtual bool IsUsable()=0;
