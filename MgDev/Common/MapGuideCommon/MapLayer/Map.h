@@ -256,6 +256,16 @@ PUBLISHED_API:
     /// MgMap();
     /// \htmlinclude SyntaxBottom.html
     ///
+    /// \remarks
+    /// If you use this constructor, the following methods of the associated layer objects
+    /// are not available to be used.
+    ///  \li MgLayerBase::GetClassDefinition()
+    ///  \li MgLayerBase::SelectFeatures(MgFeatureQueryOptions*)
+    ///  \li MgLayerBase::SelectAggregate(MgFeatureAggregateOptions*)
+    ///  \li MgLayerBase::UpdateFeatures(MgFeatureCommandCollection*)
+    ///
+    /// To take advantage of these methods, you must use the following method instead:
+    /// \link MgMap(MgSiteConnection*) MgMap(MgSiteConnection* siteConnection) \endlink
     MgMap();
 
     //////////////////////////////////////////////////////////////////

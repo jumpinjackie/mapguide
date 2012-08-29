@@ -71,10 +71,14 @@ PUBLISHED_API:
     virtual STRING GetEllipsoid()=0;  /// __get
     virtual STRING GetEllipsoidDescription()=0;  /// __get
 
+    /// \since 2.3
     virtual INT32 GetEpsgCode (void)=0;  /// __get
+    /// \since 2.3
     virtual INT32 GetSridCode (void)=0;  /// __get
+    /// \since 2.3
     virtual INT16 GetEpsgQuadrant (void)=0;   /// __get
 
+    /// \since 2.0
     virtual MgCoordinateSystemMeasure* GetMeasure()=0;
     virtual MgStringCollection* GetCategories()=0;
     virtual MgCoordinateSystemCatalog* GetCatalog()=0;

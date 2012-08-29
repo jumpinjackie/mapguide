@@ -70,6 +70,7 @@ PUBLISHED_API:
     virtual bool IsLegalGroup(CREFSTRING sGroup)=0;
     virtual STRING GetSource()=0;
     virtual void SetSource(CREFSTRING sSource)=0;
+    /// \since 2.3
     virtual INT16 GetEpsgCode()=0;
     virtual void SetEpsgCode(INT16 epsgCode)=0;
     virtual bool IsLegalSource(CREFSTRING sSource)=0;

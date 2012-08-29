@@ -460,6 +460,7 @@ PUBLISHED_API:
     /// \param dpi (int)
     /// Number of dots per inch of the map display
     ///
+    /// \since 2.4
     virtual void SetDisplayDpi(INT32 dpi);
 
     //////////////////////////////////////////////////////////////////
@@ -578,6 +579,7 @@ PUBLISHED_API:
     /// \return
     /// Background color.
     ///
+    /// \since 2.4
     virtual STRING GetBackgroundColor();
 
 EXTERNAL_API:

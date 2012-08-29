@@ -168,6 +168,7 @@ PUBLISHED_API:
     /// The target coordinate system
     /// \return
     /// The coordinate system transform that can be used to transform coordinates
+    /// \since 2.0
     virtual MgCoordinateSystemTransform* GetTransform(MgCoordinateSystem* pSource,
                                                       MgCoordinateSystem* pTarget);
                                                       

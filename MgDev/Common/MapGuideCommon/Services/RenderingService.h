@@ -139,6 +139,7 @@ PUBLISHED_API:
     /// \return
     /// A byte reader containing the rendered image
     ///
+    /// \since 2.0
     virtual MgByteReader* RenderDynamicOverlay(
         MgMap* map,
         MgSelection* selection,
@@ -492,6 +493,7 @@ PUBLISHED_API:
     /// An MgSelection instance identifying the features that meet the
     /// selection criteria. Returns null if no features are identified.
     ///
+    /// \since 1.2
     virtual MgFeatureInformation* QueryFeatures(
         MgMap* map,
         MgStringCollection* layerNames,
@@ -570,6 +572,7 @@ PUBLISHED_API:
     /// An MgSelection instance identifying the features that meet the
     /// selection criteria. Returns null if no features are identified.
     ///
+    /// \since 1.2
     virtual MgBatchPropertyCollection* QueryFeatureProperties(
         MgMap* map,
         MgStringCollection* layerNames,

@@ -35,6 +35,7 @@ PUBLISHED_API:
     /// \return
     /// native error code of an fdo exception
     ///
+    /// \since 2.2
     INT64 GetNativeErrorCode();
 
 EXTERNAL_API:

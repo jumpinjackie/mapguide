@@ -385,11 +385,15 @@ PUBLISHED_API:
     /// \exception MgInvalidArgumentException
     /// \exception MgFdoException
     ///
+    /// \since 2.3
     virtual MgByteReader* GetCapabilities(CREFSTRING providerName, CREFSTRING connectionString) = 0;
 
     /////////////////////////////////////////////////////////////////////////////////////////////
     /// \brief
-    /// Creates or updates a feature schema within the specified feature source.
+    /// Creates or updates a feature schema within the specified feature source. For this method to
+    /// actually delete any schema elements, the matching elements in the input schema must be marked
+    /// for deletion using the MgFeatureSchema::Delete(), MgClassDefinition::Delete() and 
+    /// MgPropertyDefinition::Delete() methods
     ///
     /// <!-- Syntax in .Net, Java, and PHP -->
     /// \htmlinclude DotNetSyntaxTop.html
@@ -410,6 +414,7 @@ PUBLISHED_API:
     /// \return
     /// Returns nothing.
     ///
+    /// \since 2.2
     virtual void ApplySchema(MgResourceIdentifier* resource, MgFeatureSchema* schema) = 0;
 
     ///////////////////////////////////////////////////////////////////////////
@@ -460,6 +465,7 @@ PUBLISHED_API:
     /// provider documents for details on connection properties,
     /// schema and classes.
     ///
+    /// \since 2.1
     virtual MgFeatureSchemaCollection* DescribeSchema(MgResourceIdentifier* resource,
                                                       CREFSTRING schemaName,
                                                       MgStringCollection* classNames) = 0;
@@ -469,7 +475,7 @@ PUBLISHED_API:
     /// Gets the definitions of one or more schema contained in the
     /// feature source. See \link Feature_Schema_Module Feature Schema \endlink.
     ///
-    /// \remarks
+    /// \deprecated
     /// This method has been deprecated. Use the following method:
     /// \link MgFeatureService::DescribeSchema(MgResourceIdentifier* resource, CREFSTRING schemaName, MgStringCollection* classNames)
     ///                         DescribeSchema(MgResourceIdentifier* resource, CREFSTRING schemaName, MgStringCollection* classNames) \endlink.
@@ -556,6 +562,7 @@ PUBLISHED_API:
     /// \exception MgInvalidArgumentException
     /// \exception MgFdoException
     ///
+    /// \since 2.1
     virtual STRING DescribeSchemaAsXml(MgResourceIdentifier* resource,
                                        CREFSTRING schemaName,
                                        MgStringCollection* classNames) = 0;
@@ -570,6 +577,8 @@ PUBLISHED_API:
     /// FDO XML schema, which are based on OGC GML schema. How to
     /// specify a schema definition in XML is discussed in the
     /// Autodesk FDO API Developer's Guide.
+    ///
+    /// \deprecated
     /// This method has been deprecated. Use the following method:
     /// \link MgFeatureService::DescribeSchemaAsXml(MgResourceIdentifier* resource, CREFSTRING schemaName, MgStringCollection* classNames)
     ///                        DescribeSchemaAsXml(MgResourceIdentifier* resource, CREFSTRING schemaName, MgStringCollection* classNames) \endlink.
@@ -968,6 +977,7 @@ PUBLISHED_API:
     /// \exception MgInvalidOperationException
     /// \exception MgFdoException
     ///
+    /// \since 2.2
     virtual MgPropertyCollection* UpdateFeatures(MgResourceIdentifier* resource,
                                                  MgFeatureCommandCollection* commands,
                                                  MgTransaction* transaction) = 0;
@@ -1042,6 +1052,7 @@ PUBLISHED_API:
     /// \exception MgInvalidOperationException
     /// \exception MgFdoException
     ///
+    /// \since 2.2
     virtual MgTransaction* BeginTransaction(MgResourceIdentifier* resource) = 0;
 
     ////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1150,6 +1161,7 @@ PUBLISHED_API:
     /// \exception MgInvalidOperationException
     /// \exception MgFdoException
     ///
+    /// \since 2.2
     virtual MgSqlDataReader* ExecuteSqlQuery(MgResourceIdentifier* resource,
                                              CREFSTRING sqlStatement,
                                              MgParameterCollection* parameters,
@@ -1256,6 +1268,7 @@ PUBLISHED_API:
     /// \exception MgInvalidOperationException
     /// \exception MgFdoException
     ///
+    /// \since 2.2
     virtual INT32 ExecuteSqlNonQuery(MgResourceIdentifier* resource,
                                      CREFSTRING sqlNonSelectStatement,
                                      MgParameterCollection* parameters,

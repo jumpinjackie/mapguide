@@ -28,6 +28,7 @@
 /// \brief
 /// Defines a list of geometric types.  This is typically used for geometric property description.
 ///
+/// \since 2.0
 class MG_PLATFORMBASE_API MgGeometryTypeInfo : public MgSerializable
 {
     MG_DECL_DYNCREATE();

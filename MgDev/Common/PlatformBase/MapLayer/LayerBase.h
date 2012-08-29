@@ -734,6 +734,7 @@ PUBLISHED_API:
     /// \exception MgInvalidArgumentException
     /// \exception MgFdoException
     ///
+    /// \since 1.2
     virtual MgClassDefinition* GetClassDefinition();
 
     //////////////////////////////////////////////////////////////////
@@ -769,6 +770,7 @@ PUBLISHED_API:
     /// \exception MgInvalidArgumentException
     /// \exception MgFdoException
     ///
+    /// \since 1.2
     virtual MgFeatureReader* SelectFeatures(MgFeatureQueryOptions* options);
 
     //////////////////////////////////////////////////////////////////
@@ -803,6 +805,7 @@ PUBLISHED_API:
     /// \exception MgInvalidArgumentException
     /// \exception MgFdoException
     ///
+    /// \since 1.2
     virtual MgDataReader* SelectAggregate(MgFeatureAggregateOptions* options);
 
     //////////////////////////////////////////////////////////////////
@@ -860,6 +863,7 @@ PUBLISHED_API:
     /// \exception MgInvalidOperationException
     /// \exception MgFdoException
     ///
+    /// \since 1.2
     virtual MgPropertyCollection* UpdateFeatures(MgFeatureCommandCollection* commands);
 
 INTERNAL_API:
