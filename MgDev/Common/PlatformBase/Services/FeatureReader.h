@@ -18,10 +18,6 @@
 #ifndef _MG_FEATURE_READER_H
 #define _MG_FEATURE_READER_H
 
-/// \defgroup MgFeatureReader MgFeatureReader
-/// \ingroup Feature_Service_classes
-/// \{
-
 #ifndef FEATURESET_TEMPL
 #define FEATURESET_TEMPL
 class MgFeatureSet;
@@ -32,6 +28,10 @@ class MgRaster;
 
 class MgFeatureReader;
 template class MG_PLATFORMBASE_API Ptr<MgFeatureReader>;
+
+/// \defgroup MgFeatureReader MgFeatureReader
+/// \ingroup Feature_Service_classes
+/// \{
 
 //////////////////////////////////////////////////////////////////////////////////////////////
 /// \brief

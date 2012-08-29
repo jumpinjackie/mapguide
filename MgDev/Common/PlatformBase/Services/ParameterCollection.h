@@ -18,12 +18,12 @@
 #ifndef _MG_PARAMETER_COLLECTION_H
 #define _MG_PARAMETER_COLLECTION_H
 
+class MgParameterCollection;
+template class MG_PLATFORMBASE_API Ptr<MgParameterCollection>;
+
 /// \defgroup MgParameterCollection MgParameterCollection
 /// \ingroup Collections_Module
 /// \{
-
-class MgParameterCollection;
-template class MG_PLATFORMBASE_API Ptr<MgParameterCollection>;
 
 //////////////////////////////////////////////////////////////////
 /// \brief

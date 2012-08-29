@@ -18,12 +18,12 @@
 #ifndef _MGLINESTRING_H_
 #define _MGLINESTRING_H_
 
+class MgLineString;
+template class MG_GEOMETRY_API Ptr<MgLineString>;
+
 /// \defgroup MgLineString MgLineString
 /// \ingroup Geometry_Module_classes
 /// \{
-
-class MgLineString;
-template class MG_GEOMETRY_API Ptr<MgLineString>;
 
 ////////////////////////////////////////////////////////////////
 /// \brief

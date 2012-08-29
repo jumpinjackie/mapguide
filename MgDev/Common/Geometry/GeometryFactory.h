@@ -18,12 +18,12 @@
 #ifndef _MGGEOMETRYFACTORY_H_
 #define _MGGEOMETRYFACTORY_H_
 
+class MgGeometryFactory;
+template class MG_GEOMETRY_API Ptr<MgGeometryFactory>;
+
 /// \defgroup MgGeometryFactory MgGeometryFactory
 /// \ingroup Geometry_Module_classes
 /// \{
-
-class MgGeometryFactory;
-template class MG_GEOMETRY_API Ptr<MgGeometryFactory>;
 
 /////////////////////////////////////////////////////////////////////
 /// \brief

@@ -18,16 +18,16 @@
 #ifndef GEOMETRY_PROPERTY_H
 #define GEOMETRY_PROPERTY_H
 
-/// \defgroup MgGeometryProperty MgGeometryProperty
-/// \ingroup Feature_Properties_Module
-/// \{
-
 class MgByteReader;
 class MgGeometry;
 class MgNullableProperty;
 
 class MgGeometryProperty;
 template class MG_PLATFORMBASE_API Ptr<MgGeometryProperty>;
+
+/// \defgroup MgGeometryProperty MgGeometryProperty
+/// \ingroup Feature_Properties_Module
+/// \{
 
 /////////////////////////////////////////////////////////////////
 /// \brief

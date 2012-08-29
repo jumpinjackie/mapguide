@@ -2,9 +2,9 @@
 <div class="mainpage">
 <!-- This is the index.html page that the user first sees. -->
 
-\section summary \ProdName Web API Reference
+\section summary \ProdName API Reference
 
-For detailed information about using the Web API see the \DevGuide.
+For detailed information about using the MapGuide API see the \DevGuide.
 
 Maps are made up of layers, where each layer displays features from a feature class. See
 \ref Maps_and_Layers_Module "Maps and Layers" for more details.

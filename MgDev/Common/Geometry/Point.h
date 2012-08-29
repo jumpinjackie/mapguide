@@ -18,12 +18,12 @@
 #ifndef _MGPOINT_H_
 #define _MGPOINT_H_
 
+class MgPoint;
+template class MG_GEOMETRY_API Ptr<MgPoint>;
+
 /// \defgroup MgPoint MgPoint
 /// \ingroup Geometry_Module_classes
 /// \{
-
-class MgPoint;
-template class MG_GEOMETRY_API Ptr<MgPoint>;
 
 //////////////////////////////////////////////////////////////
 /// \brief

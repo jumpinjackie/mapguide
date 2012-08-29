@@ -20,9 +20,9 @@ You don't need to use a newer version unless you want to make use of the new fea
 </UL>
 </P>
 
-<A href="../../xml_schemas/LayerDefinition/LayerDefinition.htm">LayerDefinition-1.0.0.xsd - Details</A><BR>
-<A href="../../xml_schemas/LayerDefinition110/LayerDefinition.htm">LayerDefinition-1.1.0.xsd - Details</A><BR>
-<A href="../../xml_schemas/LayerDefinition120/LayerDefinition.htm">LayerDefinition-1.2.0.xsd - Details</A><BR>
-<A href="../../xml_schemas/LayerDefinition130/LayerDefinition.htm">LayerDefinition-1.3.0.xsd - Details</A>
+<a href="xml_schemas/LayerDefinition/LayerDefinition.htm">LayerDefinition-1.0.0.xsd - Details</A><BR>
+<a href="xml_schemas/LayerDefinition110/LayerDefinition.htm">LayerDefinition-1.1.0.xsd - Details</A><BR>
+<a href="xml_schemas/LayerDefinition120/LayerDefinition.htm">LayerDefinition-1.2.0.xsd - Details</A><BR>
+<a href="xml_schemas/LayerDefinition130/LayerDefinition.htm">LayerDefinition-1.3.0.xsd - Details</A>
 
 **/

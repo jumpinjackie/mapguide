@@ -18,12 +18,12 @@
 #ifndef _MGGEOMETRYCOMPONENT_H_
 #define _MGGEOMETRYCOMPONENT_H_
 
+class MgGeometryComponent;
+template class MG_GEOMETRY_API Ptr<MgGeometryComponent>;
+
 /// \defgroup MgGeometryComponent MgGeometryComponent
 /// \ingroup Geometry_Module_classes
 /// \{
-
-class MgGeometryComponent;
-template class MG_GEOMETRY_API Ptr<MgGeometryComponent>;
 
 /////////////////////////////////////////////////////////////////
 /// \brief

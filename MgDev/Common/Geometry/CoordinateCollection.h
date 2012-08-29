@@ -18,14 +18,14 @@
 #ifndef _MG_COORDINATECOLLECTION_H_
 #define _MG_COORDINATECOLLECTION_H_
 
-/// \defgroup MgCoordinateCollection MgCoordinateCollection
-/// \ingroup Collections_Module
-/// \{
-
 class MgCoordinateIterator;
 class MgCoordinateCollection;
 
 template class MG_GEOMETRY_API Ptr<MgCoordinateCollection>;
+
+/// \defgroup MgCoordinateCollection MgCoordinateCollection
+/// \ingroup Collections_Module
+/// \{
 
 ///////////////////////////////////////////////////////////////////////////////
 /// \brief

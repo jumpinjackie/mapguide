@@ -18,15 +18,15 @@
 #ifndef MG_BYTE_READER_H_
 #define MG_BYTE_READER_H_
 
-/// \defgroup MgByteReader MgByteReader
-/// \ingroup Common_Module
-/// \{
-
 class MgByteSource;
 template class MG_FOUNDATION_API Ptr<MgByteSource>;
 
 class MgByteReader;
 template class MG_FOUNDATION_API Ptr<MgByteReader>;
+
+/// \defgroup MgByteReader MgByteReader
+/// \ingroup Common_Module
+/// \{
 
 ////////////////////////////////////////////////////////////////////
 /// \brief

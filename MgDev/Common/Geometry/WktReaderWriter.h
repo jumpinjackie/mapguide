@@ -18,12 +18,12 @@
 #ifndef _MGWKTREADERWRITER_H_
 #define _MGWKTREADERWRITER_H_
 
+class MgWktReaderWriter;
+template class MG_GEOMETRY_API Ptr<MgWktReaderWriter>;
+
 /// \defgroup MgWktReaderWriter MgWktReaderWriter
 /// \ingroup Geometry_Module_classes
 /// \{
-
-class MgWktReaderWriter;
-template class MG_GEOMETRY_API Ptr<MgWktReaderWriter>;
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
 /// \brief

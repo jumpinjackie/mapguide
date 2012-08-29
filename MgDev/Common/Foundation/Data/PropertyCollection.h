@@ -18,12 +18,12 @@
 #ifndef MGPROPERTYCOLLECTION_H_
 #define MGPROPERTYCOLLECTION_H_
 
+class MgPropertyCollection;
+template class MG_FOUNDATION_API Ptr<MgPropertyCollection>;
+
 /// \defgroup MgPropertyCollection MgPropertyCollection
 /// \ingroup Collections_Module
 /// \{
-
-class MgPropertyCollection;
-template class MG_FOUNDATION_API Ptr<MgPropertyCollection>;
 
 /////////////////////////////////////////////////////////////////
 /// \brief

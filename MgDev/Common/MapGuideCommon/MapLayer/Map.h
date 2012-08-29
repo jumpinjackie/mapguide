@@ -18,10 +18,6 @@
 #ifndef _MG_MAP_H_
 #define _MG_MAP_H_
 
-/// \defgroup MgMap MgMap
-/// \ingroup Maps_and_Layers_Module
-/// \{
-
 #include "Foundation.h"
 #include <vector>
 #include <list>
@@ -37,6 +33,9 @@ template class MG_MAPGUIDE_API Ptr<MgMap>;
 #undef CreateService
 #endif
 
+/// \defgroup MgMap MgMap
+/// \ingroup Maps_and_Layers_Module
+/// \{
 
 /////////////////////////////////////////////////////////////////
 /// \brief

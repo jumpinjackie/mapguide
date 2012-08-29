@@ -18,12 +18,12 @@
 #ifndef _MG_WARNING_H_
 #define _MG_WARNING_H_
 
+class MgWarnings;
+template class MG_PLATFORMBASE_API Ptr<MgWarnings>;
+
 /// \defgroup MgWarnings MgWarnings
 /// \ingroup Common_Module
 /// \{
-
-class MgWarnings;
-template class MG_PLATFORMBASE_API Ptr<MgWarnings>;
 
 /// \brief
 /// Exposes non-critical warning messages from services.

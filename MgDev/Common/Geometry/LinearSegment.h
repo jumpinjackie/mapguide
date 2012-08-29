@@ -18,12 +18,12 @@
 #ifndef _MGLINEARSEGMENT_H_
 #define _MGLINEARSEGMENT_H_
 
+class MgLinearSegment;
+template class MG_GEOMETRY_API Ptr<MgLinearSegment>;
+
 /// \defgroup MgLinearSegment MgLinearSegment
 /// \ingroup Geometry_Module_classes
 /// \{
-
-class MgLinearSegment;
-template class MG_GEOMETRY_API Ptr<MgLinearSegment>;
 
 /////////////////////////////////////////////////////////////////////////////////////////
 /// \brief

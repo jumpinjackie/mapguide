@@ -15,10 +15,6 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
-/// \defgroup MgMapCollection MgMapCollection
-/// \ingroup Maps_and_Layers_Module
-/// \{
-
 #ifndef _MG_MAP_COLLECTION_H_
 #define _MG_MAP_COLLECTION_H_
 
@@ -26,6 +22,10 @@ class MgMapCollection;
 template class MG_PLATFORMBASE_API Ptr<MgMapCollection>;
 
 class MgMap;
+
+/// \defgroup MgMapCollection MgMapCollection
+/// \ingroup Maps_and_Layers_Module
+/// \{
 
 /////////////////////////////////////////////////////////////////
 /// \brief

@@ -18,12 +18,12 @@
 #ifndef _MG_POINTCOLLECTION_H_
 #define _MG_POINTCOLLECTION_H_
 
+class MgPointCollection;
+template class MG_GEOMETRY_API Ptr<MgPointCollection>;
+
 /// \defgroup MgPointCollection MgPointCollection
 /// \ingroup Collections_Module
 /// \{
-
-class MgPointCollection;
-template class MG_GEOMETRY_API Ptr<MgPointCollection>;
 
 ///////////////////////////////////////////////////////////////////////////////
 /// \brief

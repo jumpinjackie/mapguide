@@ -18,12 +18,12 @@
 #ifndef _MGAGGREGATEGEOMETRY_H_
 #define _MGAGGREGATEGEOMETRY_H_
 
+class MgAggregateGeometry;
+template class MG_GEOMETRY_API Ptr<MgAggregateGeometry>;
+
 /// \defgroup MgAggregateGeometry MgAggregateGeometry
 /// \ingroup Geometry_Module_classes
 /// \{
-
-class MgAggregateGeometry;
-template class MG_GEOMETRY_API Ptr<MgAggregateGeometry>;
 
 ////////////////////////////////////////////////////////////////
 /// \brief

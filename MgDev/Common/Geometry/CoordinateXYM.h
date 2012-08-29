@@ -18,12 +18,12 @@
 #ifndef _MgCoordinateXYM_H_
 #define _MgCoordinateXYM_H_
 
+class MgCoordinateXYM;
+template class MG_GEOMETRY_API Ptr<MgCoordinateXYM>;
+
 /// \defgroup MgCoordinateXYM MgCoordinateXYM
 /// \ingroup Geometry_Module_classes
 /// \{
-
-class MgCoordinateXYM;
-template class MG_GEOMETRY_API Ptr<MgCoordinateXYM>;
 
 /////////////////////////////////////////////////////////////////
 /// \brief

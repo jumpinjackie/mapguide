@@ -18,10 +18,6 @@
 #ifndef _MG_LAYER_GROUP_H_
 #define _MG_LAYER_GROUP_H_
 
-/// \defgroup MgLayerGroup MgLayerGroup
-/// \ingroup Maps_and_Layers_Module
-/// \{
-
 class MgLayerGroup;
 class MgLayerGroupCollection;
 
@@ -29,6 +25,10 @@ class MgLayerGroupCollection;
 #define TEMPL_INST_LAYER_GROUP
 template class MG_PLATFORMBASE_API Ptr<MgLayerGroup>;
 #endif
+
+/// \defgroup MgLayerGroup MgLayerGroup
+/// \ingroup Maps_and_Layers_Module
+/// \{
 
 /////////////////////////////////////////////////////////////////
 /// \brief

@@ -18,12 +18,11 @@
 #ifndef _MGCLASS_DEFINITION_H
 #define _MGCLASS_DEFINITION_H
 
+class MgClassDefinition;
+template class MG_PLATFORMBASE_API Ptr<MgClassDefinition>;
 /// \defgroup MgClassDefinition MgClassDefinition
 /// \ingroup Feature_Schema_Module
 /// \{
-
-class MgClassDefinition;
-template class MG_PLATFORMBASE_API Ptr<MgClassDefinition>;
 
 /////////////////////////////////////////////////////////////////
 /// \brief
