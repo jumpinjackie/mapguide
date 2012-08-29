@@ -95,6 +95,7 @@ PUBLISHED_API:
     /// \return
     /// Returns a list of geometry types that are supported.
     ///
+    /// \since 2.0
     MgGeometryTypeInfo * GetSpecificGeometryTypes();  /// __get, __set
 
     //////////////////////////////////////////////////////////////
@@ -256,6 +257,7 @@ PUBLISHED_API:
     /// \return
     /// Returns nothing.
     ///
+    /// \since 2.0
     void SetSpecificGeometryTypes(MgGeometryTypeInfo * typeInfo);
 
     /////////////////////////////////////////////////////////////////////////////////////////

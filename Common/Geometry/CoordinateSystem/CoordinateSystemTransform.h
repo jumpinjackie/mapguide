@@ -489,8 +489,11 @@ PUBLISHED_API:
     virtual bool IsIgnoreOutsideDomainWarning()=0;
 
     // Status Accumulator
+    /// \since 2.4
     virtual INT32 GetSourceWarningCount (void)=0;
+    /// \since 2.4
     virtual INT32 GetdatumWarningCount (void)=0;
+    /// \since 2.4
     virtual INT32 GetTargetWarningCount (void)=0;
 
     // Transformation status

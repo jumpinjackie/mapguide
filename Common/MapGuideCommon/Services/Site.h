@@ -339,6 +339,7 @@ PUBLISHED_API:
     /// \todo
     ///   [[What are the exceptions?]]
     ///
+    /// \since 2.2
     INT32 GetSessionTimeout();
 
     ////////////////////////////////////////////////////////////////
@@ -369,6 +370,7 @@ PUBLISHED_API:
     /// \see
     /// CreateSession
     ///
+    /// \since 2.0
     STRING GetUserForSession();
 
     ///////////////////////////////////////////////////////////////////////////////////
@@ -381,6 +383,7 @@ PUBLISHED_API:
     /// \exception MgConnectionNotOpenException
     /// \exception MgUserNotFoundException
     ///
+    /// \since 2.0
     MgByteReader* EnumerateGroups( CREFSTRING user );
 
     ///////////////////////////////////////////////////////////////////////////////////
@@ -393,6 +396,7 @@ PUBLISHED_API:
     /// \exception MgConnectionNotOpenException
     /// \exception MgUserNotFoundException
     ///
+    /// \since 2.0
     MgStringCollection* EnumerateRoles( CREFSTRING user );
 
 EXTERNAL_API:

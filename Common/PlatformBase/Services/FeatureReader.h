@@ -373,6 +373,7 @@ PUBLISHED_API:
     /// \exception MgNullPropertyValueException
     /// \exception MgFdoException
     ///
+    /// \since 2.2
     virtual MgFeatureReader* GetFeatureObject(INT32 index) = 0;
 
 

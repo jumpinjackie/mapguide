@@ -71,6 +71,8 @@ class MgCoordinateSystemGridTick;               // a position in viewport coordi
 /// <b>type</b> of unit must be consistent with the type of grid being drawn.
 /// That is, specifying a Angular unit type when drawing a UTM grid will cause
 /// an exception at the time the request for (say) grid lines is issued.
+///
+/// \since 2.2
 class MG_GEOMETRY_API MgCoordinateSystemGridSpecification : public MgGuardDisposable
 {
 PUBLISHED_API:
@@ -687,6 +689,8 @@ CLASS_ID:
 /// Grid boundaries iusually start out as rectangles, but are often converted
 /// to a series of complex curves approximated by multi-segment lines (i.e.
 /// line strings).
+///
+/// \since 2.2
 class MG_GEOMETRY_API MgCoordinateSystemGridBoundary : public MgGuardDisposable
 {
 PUBLISHED_API:
@@ -717,6 +721,7 @@ CLASS_ID:
 //=============================================================================
 // Abstract base class for all grid generation objects (generic and
 // specialized).
+/// \since 2.2
 class MG_GEOMETRY_API MgCoordinateSystemGridBase : public MgGuardDisposable
 {
 PUBLISHED_API:
@@ -783,6 +788,7 @@ CLASS_ID:
 // the viewport coordinate system.  The value returned by GetGridOrientation
 // indicates the nature of the grid line in grid coordinates (i.e. easting or
 // northing).
+/// \since 2.2
 class MG_GEOMETRY_API MgCoordinateSystemGridLine : public MgGuardDisposable
 {
 PUBLISHED_API:
@@ -817,6 +823,7 @@ CLASS_ID:
 //                                                                           //
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
+/// \since 2.2
 class MG_GEOMETRY_API MgCoordinateSystemGridRegion : public MgGuardDisposable
 {
 PUBLISHED_API:
@@ -853,6 +860,7 @@ CLASS_ID:
 // In the case of a tick mark on a boundary line, since boundary lines are
 // always maintained in the counterclockwise direction, the interior of the
 // viewport will always be to the left of the direction vector.
+/// \since 2.2
 class MG_GEOMETRY_API MgCoordinateSystemGridTick : public MgGuardDisposable
 {
 PUBLISHED_API:
@@ -878,6 +886,7 @@ CLASS_ID:
 // appear first in ascending order by grid value (easting in this case);
 // followed by grid vertical lines in ascending order by grid value (northing
 // in this case).
+/// \since 2.2
 class MG_GEOMETRY_API MgCoordinateSystemGridLineCollection : public MgGuardDisposable
 {
 PUBLISHED_API:
@@ -904,6 +913,7 @@ CLASS_ID:
 //=============================================================================
 // An MgCoordinateSystemGridRegionCollection is collection of
 // MgCoordinateSystemGridRegion objects.
+/// \since 2.2
 class MG_GEOMETRY_API MgCoordinateSystemGridRegionCollection : public MgGuardDisposable
 {
 PUBLISHED_API:
@@ -930,6 +940,7 @@ CLASS_ID:
 // MgCoordinateSystemGridTick objects.  MgCoordinateSystemGridTickCollection
 // objects will contain MgCoordinateSystemGridTick objects for the entire
 // boundary, or for an individual grid line.
+/// \since 2.2
 class MG_GEOMETRY_API MgCoordinateSystemGridTickCollection : public MgGuardDisposable
 {
 PUBLISHED_API:

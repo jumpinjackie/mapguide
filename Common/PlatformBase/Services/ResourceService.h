@@ -484,6 +484,7 @@ PUBLISHED_API:
     /// \exception MgInvalidResourceNameException
     /// \exception MgInvalidResourceTypeException
     ///
+    /// \since 2.0
     MgByteReader* EnumerateResources(MgResourceIdentifier* resource,
         INT32 depth, CREFSTRING type, bool computeChildren);
 
@@ -869,6 +870,7 @@ PUBLISHED_API:
     /// in the source folder are overwritten. The rest should are
     /// left intact.
     ///
+    /// \since 2.2
     virtual void MoveResource(MgResourceIdentifier* sourceResource,
         MgResourceIdentifier* destResource, bool overwrite, bool cascade);
 
@@ -1012,6 +1014,7 @@ PUBLISHED_API:
     /// \exception MgInvalidResourceNameException
     /// \exception MgInvalidResourceTypeException
     ///
+    /// \since 2.2
     virtual MgStringCollection* GetResourceContents(MgStringCollection* resources,
         MgStringCollection* preProcessTags);
 
@@ -1702,6 +1705,7 @@ PUBLISHED_API:
     /// Returns an MgByteReader object containing the unmanaged data
     /// in XML format using the \link UnmanagedDataList_schema UnmanagedDataList_schema \endlink
     ///
+    /// \since 1.2
     virtual MgByteReader* EnumerateUnmanagedData(CREFSTRING path, bool recursive, CREFSTRING type, CREFSTRING filter);
 
 INTERNAL_API:

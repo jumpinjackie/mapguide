@@ -29,6 +29,7 @@
 /// parameter when a command is executed. Typically, it is used to bind
 /// parameters to the SQL command.
 ///
+/// \since 2.2
 class MG_PLATFORMBASE_API MgParameter : public MgNamedSerializable
 {
     MG_DECL_DYNCREATE();

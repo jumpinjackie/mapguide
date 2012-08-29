@@ -122,6 +122,7 @@ PUBLISHED_API:
     ///////////////////////////////////////////////////////
     /// \brief
     /// Type name for a decimal property.
+    /// \since 2.2
     static const int Decimal  = 15;
 };
 /// \}

@@ -27,6 +27,7 @@
 /// The MgParameterDirection defines integer constants used to signify the
 /// direction in which a parameter value will be used within the context of a
 /// FDO Command.
+/// \since 2.2
 class MG_FOUNDATION_API MgParameterDirection
 {
 PUBLISHED_API:

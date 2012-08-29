@@ -106,6 +106,7 @@ PUBLISHED_API:
     /// \return
     /// Returns the property name.
     ///
+    /// \since 2.2
     virtual STRING GetPropertyName(INT32 index) = 0;
 
     /////////////////////////////////////////////////////////////////////
@@ -154,6 +155,7 @@ PUBLISHED_API:
     /// \return
     /// Returns an MgPropertyType value.
     ///
+    /// \since 2.2
     virtual INT32 GetPropertyType(INT32 index) = 0;
 
     /////////////////////////////////////////////////////////////////////
@@ -611,6 +613,7 @@ PUBLISHED_API:
     /// \return
     /// Returns the property index.
     ///
+    /// \since 2.2
     virtual INT32 GetPropertyIndex(CREFSTRING propertyName) = 0;
 
     /////////////////////////////////////////////////////////////////////
@@ -637,6 +640,7 @@ PUBLISHED_API:
     /// \return
     /// Returns true if the value is null; otherwise returns false.
     ///
+    /// \since 2.2
     virtual bool IsNull(INT32 index) = 0;
 
     /////////////////////////////////////////////////////////////////////
@@ -669,7 +673,7 @@ PUBLISHED_API:
     ///
     /// \exception MgInvalidPropertyTypeException.
     ///
-    ///
+    /// \since 2.2
     virtual bool GetBoolean(INT32 index) = 0;
 
     /////////////////////////////////////////////////////////////////////
@@ -702,7 +706,7 @@ PUBLISHED_API:
     ///
     /// \exception MgInvalidPropertyTypeException.
     ///
-    ///
+    /// \since 2.2
     virtual BYTE GetByte(INT32 index) = 0;
 
     /////////////////////////////////////////////////////////////////////
@@ -735,7 +739,7 @@ PUBLISHED_API:
     ///
     /// \exception MgInvalidPropertyTypeException.
     ///
-    ///
+    /// \since 2.2
     virtual MgDateTime* GetDateTime(INT32 index) = 0;
 
     /////////////////////////////////////////////////////////////////////
@@ -768,7 +772,7 @@ PUBLISHED_API:
     ///
     /// \exception MgInvalidPropertyTypeException.
     ///
-    ///
+    /// \since 2.2
     virtual float GetSingle(INT32 index) = 0;
 
     /////////////////////////////////////////////////////////////////////
@@ -801,7 +805,7 @@ PUBLISHED_API:
     ///
     /// \exception MgInvalidPropertyTypeException.
     ///
-    ///
+    /// \since 2.2
     virtual double GetDouble(INT32 index) = 0;
 
     /////////////////////////////////////////////////////////////////////
@@ -834,7 +838,7 @@ PUBLISHED_API:
     ///
     /// \exception MgInvalidPropertyTypeException
     ///
-    ///
+    /// \since 2.2
     virtual INT16 GetInt16(INT32 index) = 0;
 
     /////////////////////////////////////////////////////////////////////
@@ -867,7 +871,7 @@ PUBLISHED_API:
     ///
     /// \exception MgInvalidPropertyTypeException.
     ///
-    ///
+    /// \since 2.2
     virtual INT32 GetInt32(INT32 index) = 0;
 
     /////////////////////////////////////////////////////////////////////
@@ -903,6 +907,7 @@ PUBLISHED_API:
     /// \note
     /// INT64 is actually a pointer to an Integer64 object
     ///
+    /// \since 2.2
     virtual INT64 GetInt64(INT32 index) = 0;
 
     /////////////////////////////////////////////////////////////////////
@@ -935,7 +940,7 @@ PUBLISHED_API:
     ///
     /// \exception MgInvalidPropertyTypeException.
     ///
-    ///
+    /// \since 2.2
     virtual STRING GetString(INT32 index) = 0;
 
     /////////////////////////////////////////////////////////////////////
@@ -968,7 +973,7 @@ PUBLISHED_API:
     ///
     /// \exception MgInvalidPropertyTypeException
     ///
-    ///
+    /// \since 2.2
     virtual MgByteReader* GetBLOB(INT32 index) = 0;
 
     /////////////////////////////////////////////////////////////////////
@@ -1001,7 +1006,7 @@ PUBLISHED_API:
     ///
     /// \exception MgInvalidPropertyTypeException.
     ///
-    ///
+    /// \since 2.2
     virtual MgByteReader* GetCLOB(INT32 index) = 0;
 
     /////////////////////////////////////////////////////////////////////
@@ -1035,7 +1040,7 @@ PUBLISHED_API:
     ///
     /// \exception MgInvalidPropertyTypeException
     ///
-    ///
+    /// \since 2.2
     virtual MgByteReader* GetGeometry(INT32 index) = 0;
 
     ///////////////////////////////////////////////////////////////////////
@@ -1069,7 +1074,7 @@ PUBLISHED_API:
     /// \exception MgFdoException MgInvalidPropertyTypeException
     /// \exception MgInvalidPropertyTypeException.
     ///
-    ///
+    /// \since 2.2
     virtual MgRaster* GetRaster(INT32 index) = 0;
 
 
