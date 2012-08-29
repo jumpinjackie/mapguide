@@ -6,8 +6,7 @@
 class MgRenderingOptions;
 class MgdRenderingService;
 
-/// \defgroup MgdProfilingService MgdProfilingService
-/// \ingroup Profiling_Service_Module
+/// \ingroup Desktop_Module
 /// \{
 
 /// \brief

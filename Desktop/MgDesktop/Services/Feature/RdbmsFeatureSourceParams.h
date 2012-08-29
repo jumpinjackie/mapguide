@@ -6,6 +6,8 @@
 // Parameter class for creating RDBMS data stores
 //
 //
+/// \ingroup Desktop_Module
+/// \{
 class MG_DESKTOP_API MgRdbmsFeatureSourceParams : public MgFeatureSourceParams
 {
 PUBLISHED_API:
@@ -81,5 +83,5 @@ INTERNAL_API:
     virtual void Serialize(MgStream* stream);
     virtual void Deserialize(MgStream* stream);
 };
-
+/// \}
 #endif

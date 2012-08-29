@@ -21,6 +21,7 @@
 #include "FeatureDefs.h"
 #include "GwsQueryEngine.h"
 
+///\cond INTERNAL
 class GwsRightSideIterator
 {
 public:
@@ -39,7 +40,7 @@ private:
     // features
     bool                m_bHasData;
 };
-
+///\endcond
 typedef std::multimap<STRING, GwsRightSideIterator> GwsFeatureIteratorMap;
 typedef std::pair<STRING, GwsRightSideIterator> GwsFeatureIteratorPair;
 

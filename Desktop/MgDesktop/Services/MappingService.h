@@ -14,6 +14,8 @@ namespace MdfModel
     class FeatureTypeStyle;
 }
 
+/// \ingroup Desktop_Module
+/// \{
 class MG_DESKTOP_API MgdMappingService : public MgService
 {
     DECLARE_CLASSNAME(MgdMappingService)
@@ -87,5 +89,5 @@ protected:
 CLASS_ID:
     static const INT32 m_cls_id = MapGuide_Desktop_RenderingService_RenderingService;
 };
-
+/// \}
 #endif

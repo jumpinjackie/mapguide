@@ -11,6 +11,8 @@ typedef std::list<MdfModel::MdfString> ColorStringList;
 
 class MgServiceFactory;
 
+/// \ingroup Desktop_Module
+/// \{
 class MG_DESKTOP_API MgdMap : public MgMapBase
 {
 	MG_DECL_DYNCREATE()
@@ -126,5 +128,5 @@ private:
 
     INT32 m_watermarkUsage;
 };
-
+/// \}
 #endif

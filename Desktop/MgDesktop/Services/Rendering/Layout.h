@@ -20,10 +20,8 @@
 
 #include "UnitType.h"
 
-/// \defgroup MgLayout MgLayout
-/// \ingroup Mapping_Service_Module
+/// \ingroup Desktop_Module
 /// \{
-
 class MgResourceIdentifier;
 
 ////////////////////////////////////////////////////////////

@@ -9,6 +9,7 @@ class LineBuffer;
 class KeyEncode;
 class TransformMesh;
 
+///\cond INTERNAL
 //A simple Renderer implementation for use by the QueryFeatures
 //RenderingService API. Accumulates feature IDs and also attributes
 //for one feature (case where a tooltip or attribute info needs to
@@ -259,5 +260,5 @@ private:
     RS_String m_test_tooltip;
     RS_FeatureReader* m_feature;
 };
-
+///\endcond
 #endif

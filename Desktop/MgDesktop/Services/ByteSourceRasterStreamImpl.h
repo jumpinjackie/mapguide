@@ -21,6 +21,7 @@
 #include "MgDesktop.h"
 #include "Fdo.h"
 
+///\cond INTERNAL
 /////////////////////////////////////////////////////////////////
 ///<summary>
 /// ByteSourceSocketStreamImpl provides access to the bytes on a file source
@@ -91,5 +92,5 @@ public:
 private:
     FdoIStreamReaderTmpl<FdoByte>* m_stream;
 };
-
+///\endcond
 #endif

@@ -22,7 +22,8 @@ template class Ptr<MgdDrawingService>;
 
 //NOTE: Despite MgdRenderingService not defined in PlatformBase, we don't want a naming collision
 //if this library and MapGuideCommon happend to be linked together
-
+/// \ingroup Desktop_Module
+/// \{
 class MG_DESKTOP_API MgdRenderingService : public MgService
 {
     DECLARE_CLASSNAME(MgdRenderingService)
@@ -301,5 +302,5 @@ protected:
 CLASS_ID:
     static const INT32 m_cls_id = MapGuide_Desktop_MappingService_MappingService;
 };
-
+/// \}
 #endif

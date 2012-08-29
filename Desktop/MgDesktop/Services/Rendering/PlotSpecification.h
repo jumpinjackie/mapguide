@@ -20,10 +20,8 @@
 
 #include "MgDesktop.h"
 
-/// \defgroup MgPlotSpecification MgPlotSpecification
-/// \ingroup Mapping_Service_Module
+/// \ingroup Desktop_Module
 /// \{
-
 ////////////////////////////////////////////////////////////
 /// \brief
 /// Specifies the size and format of the \link ePlot ePlot \endlink

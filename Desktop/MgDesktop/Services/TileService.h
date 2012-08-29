@@ -2,7 +2,8 @@
 #define DESKTOP_TILE_SERVICE_H
 
 #include "Tile/TileCache.h"
-
+/// \ingroup Desktop_Module
+/// \{
 class MG_DESKTOP_API MgdTileService : public MgService
 {
     DECLARE_CLASSNAME(MgdTileService)
@@ -79,5 +80,5 @@ private:
     static INT32 sm_pollingInterval;
     static INT32 sm_mapCacheSize;
 };
-
+/// \}
 #endif

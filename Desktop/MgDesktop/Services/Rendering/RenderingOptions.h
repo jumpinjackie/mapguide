@@ -3,8 +3,7 @@
 
 #include "MgDesktop.h"
 
-/// \defgroup MgRenderingOptions MgRenderingOptions
-/// \ingroup Rendering_Service_Module
+/// \ingroup Desktop_Module
 /// \{
 
 ///////////////////////////////////////////////////////////////////////////////

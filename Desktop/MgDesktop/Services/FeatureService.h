@@ -28,7 +28,8 @@ namespace MdfModel
 {
     class Extension;
 }
-
+/// \ingroup Desktop_Module
+/// \{
 class MG_DESKTOP_API MgdFeatureService : public MgFeatureService
 {
     DECLARE_CLASSNAME(MgdFeatureService)
@@ -265,5 +266,5 @@ CLASS_ID:
 protected:
     virtual INT32 GetClassId() { return m_cls_id; }
 };
-
+/// \}
 #endif

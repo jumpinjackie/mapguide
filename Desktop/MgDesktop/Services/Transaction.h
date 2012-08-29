@@ -5,7 +5,8 @@
 
 class MgFeatureConnection;
 class FdoITransaction;
-
+/// \ingroup Desktop_Module
+/// \{
 class MG_DESKTOP_API MgdTransaction : public MgTransaction
 {
 INTERNAL_API:
@@ -40,5 +41,5 @@ private:
     MgFeatureConnection* m_conn;
 
 };
-
+/// \}
 #endif

@@ -2,7 +2,8 @@
 #define DESKTOP_IMAGE_FORMATS_H
 
 #include "MgDesktop.h"
-
+/// \ingroup Desktop_Module
+/// \{
 class MG_DESKTOP_API MgImageFormats
 {
 PUBLISHED_API:
@@ -27,5 +28,5 @@ PUBLISHED_API:
     /// Raw format
     static const STRING Raw;    /// \if INTERNAL value("RAW") \endif
 };
-
+/// \}
 #endif
