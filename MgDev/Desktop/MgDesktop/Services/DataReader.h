@@ -6,6 +6,8 @@
 class FdoIDataReader;
 class MgFeatureConnection;
 
+/// \ingroup Desktop_Module
+/// \{
 class MG_DESKTOP_API MgdDataReader : public MgDataReader
 {
 INTERNAL_API:
@@ -110,5 +112,5 @@ private:
 	FdoIDataReader* m_reader;
     Ptr<MgFeatureConnection> m_connection;
 };
-
+/// \}
 #endif

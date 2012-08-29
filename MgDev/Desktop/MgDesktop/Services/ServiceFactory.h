@@ -8,7 +8,8 @@ class MgdMappingService;
 class MgdResourceService;
 class MgdDrawingService;
 class MgdRenderingService;
-
+/// \ingroup Desktop_Module
+/// \{
 class MG_DESKTOP_API MgServiceFactory : public MgGuardDisposable
 {
     MG_DECL_DYNCREATE()
@@ -36,5 +37,5 @@ private:
 	static STRING sm_sesDataPath;
     static STRING sm_schemaPath;
 };
-
+/// \}
 #endif

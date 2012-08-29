@@ -18,8 +18,7 @@
 #ifndef DESKTOP_DWF_VERSION_H
 #define DEKSTOP_DWF_VERSION_H
 
-/// \defgroup MgDwfVersion MgDwfVersion
-/// \ingroup Mapping_Service_Module
+/// \ingroup Desktop_Module
 /// \{
 
 /////////////////////////////////////////////////////////////////

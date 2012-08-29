@@ -1,6 +1,7 @@
 #ifndef DESKTOP_UNMANAGED_DATA_TYPE_H
 #define DESKTOP_UNMANAGED_DATA_TYPE_H
-
+/// \ingroup Desktop_Module
+/// \{
 class MG_DESKTOP_API MgUnmanagedDataType 
 {
 PUBLISHED_API:
@@ -16,5 +17,5 @@ PUBLISHED_API:
     /// Both Folders and Files
     static const STRING Both;    /// \if INTERNAL value("Both") \endif
 };
-
+/// \}
 #endif

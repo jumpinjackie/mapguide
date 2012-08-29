@@ -4,6 +4,8 @@
 #include "MgDesktop.h"
 #include "Map.h"
 
+/// \ingroup Desktop_Module
+/// \{
 class MG_DESKTOP_API MgdSelection : public MgSelectionBase
 {
 	MG_DECL_DYNCREATE()
@@ -45,5 +47,5 @@ protected:
 CLASS_ID:
     static const INT32 m_cls_id = MapGuide_Desktop_MapLayer_Selection;
 };
-
+/// \}
 #endif

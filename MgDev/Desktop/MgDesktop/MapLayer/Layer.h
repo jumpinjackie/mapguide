@@ -5,6 +5,8 @@
 
 class MgdScrollableFeatureReader;
 
+/// \ingroup Desktop_Module
+/// \{
 class MG_DESKTOP_API MgdLayer : public MgLayerBase
 {
 	MG_DECL_DYNCREATE()
@@ -103,5 +105,5 @@ protected:
 CLASS_ID:
     static const INT32 m_cls_id = MapGuide_Desktop_MapLayer_Layer;
 };
-
+/// \}
 #endif

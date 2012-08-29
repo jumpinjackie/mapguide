@@ -3,6 +3,8 @@
 
 #include "MgDesktop.h"
 
+/// \ingroup Desktop_Module
+/// \{
 class MG_DESKTOP_API MgdDrawingService : public MgService
 {
     DECLARE_CLASSNAME(MgdDrawingService)
@@ -270,5 +272,5 @@ private:
     bool m_bOpenTempOutputW2dFile;
     STRING m_tempOutputW2dFileName;
 };
-
+/// \}
 #endif

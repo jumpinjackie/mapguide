@@ -8,6 +8,8 @@ class MgCoordinateSystemTransform;
 class MgAgfReaderWriter;
 class MgFeatureConnection;
 
+/// \ingroup Desktop_Module
+/// \{
 class MG_DESKTOP_API MgdFeatureReader : public MgFeatureReader
 {
 INTERNAL_API:
@@ -125,5 +127,5 @@ protected:
     Ptr<MgClassDefinition> m_classDef;
     Ptr<MgFeatureConnection> m_connection;
 };
-
+/// \}
 #endif

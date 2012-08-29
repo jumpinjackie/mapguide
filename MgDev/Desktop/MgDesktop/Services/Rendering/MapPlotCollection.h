@@ -15,10 +15,6 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
-/// \defgroup MgMapPlotCollection MgMapPlotCollection
-/// \ingroup Mapping_Service_Module
-/// \{
-
 #ifndef DESKTOP_MAP_PLOT_COLLECTION_H_
 #define DESKTOP_MAP_PLOT_COLLECTION_H_
 
@@ -26,7 +22,8 @@ class MgMapPlotCollection;
 template class MG_DESKTOP_API Ptr<MgMapPlotCollection>;
 
 class MgMapPlot;
-
+/// \ingroup Desktop_Module
+/// \{
 /////////////////////////////////////////////////////////////////
 /// \brief
 /// Manipulates collections of MgMapPlot objects.

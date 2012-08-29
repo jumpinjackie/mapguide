@@ -2,7 +2,8 @@
 #define DESKTOP_RESOURCE_SERVICE_H
 
 #include "MgDesktop.h"
-
+/// \ingroup Desktop_Module
+/// \{
 class MG_DESKTOP_API MgdResourceService : public MgResourceService
 {
     friend class MgFdoConnectionUtil;
@@ -113,5 +114,5 @@ private:
 	STRING m_sessionDataPath;
     STRING m_schemaPath;
 };
-
+/// \}
 #endif

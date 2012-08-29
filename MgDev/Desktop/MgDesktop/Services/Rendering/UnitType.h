@@ -37,8 +37,7 @@ PUBLISHED_API:
 };
 
 
-/// \defgroup MgPageUnitsType MgPageUnitsType
-/// \ingroup Mapping_Service_Module
+/// \ingroup Desktop_Module
 /// \{
 
 /////////////////////////////////////////////////////////////////
@@ -65,10 +64,8 @@ PUBLISHED_API:
 /// \}
 
 
-/// \defgroup MgCoordinateSpace MgCoordinateSpace
-/// \ingroup Mapping_Service_Module
+/// \ingroup Desktop_Module
 /// \{
-
 ///////////////////////////////////////////////////////////////////////////////
 /// \brief
 /// Specifies the coordinate space for feature geometry returned from QueryFeatures.

@@ -18,10 +18,8 @@
 #ifndef DESKTOP_MAPPLOT_INSTRUCTION_H
 #define DESKTOP_MAPPLOT_INSTRUCTION_H
 
-/// \defgroup MgMapPlotInstruction MgMapPlotInstruction
-/// \ingroup Mapping_Service_Module
+/// \ingroup Desktop_Module
 /// \{
-
 ///////////////////////////////////////////////////////////////////////////////
 /// \brief
 /// MgMapPlotInstruction defines enumerated values used to indicate whether the plot

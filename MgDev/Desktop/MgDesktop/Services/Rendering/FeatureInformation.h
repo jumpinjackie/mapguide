@@ -18,15 +18,12 @@
 #ifndef _MG_FEATUREINFORMATION_H_
 #define _MG_FEATUREINFORMATION_H_
 
-/// \defgroup MgFeatureInformation MgFeatureInformation
-/// \ingroup Common_Module
-/// \{
-
 class MgdFeatureInformation;
 template class MG_DESKTOP_API Ptr<MgdFeatureInformation>;
 
 class MgSelection;
-
+/// \ingroup Desktop_Module
+/// \{
 ///////////////////////////////////////////////////////////
 /// \brief
 /// Information about features.

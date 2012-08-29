@@ -15,10 +15,6 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
-/// \defgroup MgdMapPlot MgdMapPlot
-/// \ingroup Mapping_Service_Module
-/// \{
-
 #ifndef DESKTOP_MAP_PLOT_H_
 #define DESKTOP_MAP_PLOT_H_
 
@@ -26,7 +22,8 @@ class MgdMap;
 class MgdLayer;
 class MgPlotSpecification;
 class MgLayout;
-
+/// \ingroup Desktop_Module
+/// \{
 /////////////////////////////////////////////////////////////////
 /// \brief
 /// The MgdMapPlot class allows the developer to specify the map,
