@@ -18,12 +18,12 @@
 #ifndef _MG_FEATURE_SCHEMA_COLLECTION_H
 #define _MG_FEATURE_SCHEMA_COLLECTION_H
 
+class MgFeatureSchemaCollection;
+template class MG_PLATFORMBASE_API Ptr<MgFeatureSchemaCollection>;
+
 /// \defgroup MgFeatureSchemaCollection MgFeatureSchemaCollection
 /// \ingroup Collections_Module
 /// \{
-
-class MgFeatureSchemaCollection;
-template class MG_PLATFORMBASE_API Ptr<MgFeatureSchemaCollection>;
 
 //////////////////////////////////////////////////////////////////
 /// \brief

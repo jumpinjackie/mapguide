@@ -18,12 +18,12 @@
 #ifndef _MG_LINESTRINGCOLLECTION_H_
 #define _MG_LINESTRINGCOLLECTION_H_
 
+class MgLineStringCollection;
+template class MG_GEOMETRY_API Ptr<MgLineStringCollection>;
+
 /// \defgroup MgLineStringCollection MgLineStringCollection
 /// \ingroup Collections_Module
 /// \{
-
-class MgLineStringCollection;
-template class MG_GEOMETRY_API Ptr<MgLineStringCollection>;
 
 ///////////////////////////////////////////////////////////////////////////////
 /// \brief

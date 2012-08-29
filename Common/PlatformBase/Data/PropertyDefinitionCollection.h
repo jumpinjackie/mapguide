@@ -18,12 +18,12 @@
 #ifndef MGPROPERTYDEFINITIONCOLLECTION_H_
 #define MGPROPERTYDEFINITIONCOLLECTION_H_
 
+class MgPropertyDefinitionCollection;
+template class MG_PLATFORMBASE_API Ptr<MgPropertyDefinitionCollection>;
+
 /// \defgroup MgPropertyDefinitionCollection MgPropertyDefinitionCollection
 /// \ingroup Collections_Module
 /// \{
-
-class MgPropertyDefinitionCollection;
-template class MG_PLATFORMBASE_API Ptr<MgPropertyDefinitionCollection>;
 
 /////////////////////////////////////////////////////////////////
 /// \brief

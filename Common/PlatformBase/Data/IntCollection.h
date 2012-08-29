@@ -18,12 +18,12 @@
 #ifndef MGINT32COLLECTION_H_
 #define MGINT32COLLECTION_H_
 
+class MgIntCollection;
+template class MG_PLATFORMBASE_API Ptr<MgIntCollection>;
+
 /// \defgroup MgIntCollection MgIntCollection
 /// \ingroup Collections_Module
 /// \{
-
-class MgIntCollection;
-template class MG_PLATFORMBASE_API Ptr<MgIntCollection>;
 
 /////////////////////////////////////////////////////////////////
 /// \brief

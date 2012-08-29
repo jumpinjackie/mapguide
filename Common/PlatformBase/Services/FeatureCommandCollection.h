@@ -18,12 +18,12 @@
 #ifndef _MG_FEATURE_COMMAND_COLLECTION_H
 #define _MG_FEATURE_COMMAND_COLLECTION_H
 
+class MgFeatureCommandCollection;
+template class MG_PLATFORMBASE_API Ptr<MgFeatureCommandCollection>;
+
 /// \defgroup MgFeatureCommandCollection MgFeatureCommandCollection
 /// \ingroup Collections_Module
 /// \{
-
-class MgFeatureCommandCollection;
-template class MG_PLATFORMBASE_API Ptr<MgFeatureCommandCollection>;
 
 /// \brief
 /// Represents a collection of feature commands.

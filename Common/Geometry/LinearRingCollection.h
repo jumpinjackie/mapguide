@@ -18,12 +18,12 @@
 #ifndef _MG_LINEARRINGCOLLECTION_H_
 #define _MG_LINEARRINGCOLLECTION_H_
 
+class MgLinearRingCollection;
+template class MG_GEOMETRY_API Ptr<MgLinearRingCollection>;
+
 /// \defgroup MgLinearRingCollection MgLinearRingCollection
 /// \ingroup Collections_Module
 /// \{
-
-class MgLinearRingCollection;
-template class MG_GEOMETRY_API Ptr<MgLinearRingCollection>;
 
 ///////////////////////////////////////////////////////////////////////////////
 /// \brief

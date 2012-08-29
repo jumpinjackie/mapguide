@@ -61,5 +61,5 @@ FdoSpatialContextList
 &lt;/FdoSpatialContextList&gt;
 </pre>
 
-<a href="../../xml_schemas/FdoSpatialContextList/FdoSpatialContextList.html">Details</a>
+<a href="xml_schemas/FdoSpatialContextList/FdoSpatialContextList.html">Details</a>
 **/

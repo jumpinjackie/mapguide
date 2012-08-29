@@ -18,10 +18,6 @@
 #ifndef _MG_MAP_BASE_H_
 #define _MG_MAP_BASE_H_
 
-/// \defgroup MgMapBase MgMapBase
-/// \ingroup Maps_and_Layers_Module
-/// \{
-
 #include "Foundation.h"
 #include <vector>
 #include <list>
@@ -53,6 +49,10 @@ template class MG_PLATFORMBASE_API Ptr<MgMapBase>;
 
 typedef vector<double> FINITESCALES;
 typedef map<double, double, less<double> > SORTEDSCALES;
+
+/// \defgroup MgMapBase MgMapBase
+/// \ingroup Maps_and_Layers_Module
+/// \{
 
 /////////////////////////////////////////////////////////////////
 /// \brief

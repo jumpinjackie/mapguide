@@ -18,12 +18,12 @@
 #ifndef _MGENVELOPE_H_
 #define _MGENVELOPE_H_
 
+class MgEnvelope;
+template class MG_GEOMETRY_API Ptr<MgEnvelope>;
+
 /// \defgroup MgEnvelope MgEnvelope
 /// \ingroup Geometry_Module_classes
 /// \{
-
-class MgEnvelope;
-template class MG_GEOMETRY_API Ptr<MgEnvelope>;
 
 //////////////////////////////////////////////////////////////
 /// \brief

@@ -18,12 +18,12 @@
 #ifndef _MGMULTICURVESTRING_H_
 #define _MGMULTICURVESTRING_H_
 
+class MgMultiCurveString;
+template class MG_GEOMETRY_API Ptr<MgMultiCurveString>;
+
 /// \defgroup MgMultiCurveString MgMultiCurveString
 /// \ingroup Geometry_Module_classes
 /// \{
-
-class MgMultiCurveString;
-template class MG_GEOMETRY_API Ptr<MgMultiCurveString>;
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
 /// \brief

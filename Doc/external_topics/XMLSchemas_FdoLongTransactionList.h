@@ -20,6 +20,6 @@ FdoLongTransactionList
       CreationDate
 </pre>
 
-<a href="../../xml_schemas/FdoLongTransactionList/FdoLongTransactionList.html">Details</a>
+<a href="xml_schemas/FdoLongTransactionList/FdoLongTransactionList.html">Details</a>
 
 **/
