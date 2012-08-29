@@ -30,7 +30,15 @@
 /// \remarks
 /// Use MgFeatureService::DescribeSchema and
 /// MgFeatureService::GetSpatialContexts to get the values needed
-/// to construct and configure the MgFileFeatureSourceParams object.
+/// to construct and configure the MgFileFeatureSourceParams object.\n\n
+/// Only file-based FDO providers that support the FdoICreateDataStore command
+/// can be used with this class to create Feature Sources. As of this writing, the
+/// known supported file-based FDO providers are:
+///  \li OSGeo.SDF
+///  \li OSGeo.SHP
+///  \li OSGeo.SQLite
+///
+/// You cannot create non-file Feature Sources using this class
 ///
 /// <!-- Example (PHP) -->
 /// \htmlinclude PHPExampleTop.html

@@ -25,6 +25,8 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////////////
 /// \brief
 /// Contains the parameters used to create an SDF feature source.
+///
+/// \deprecated
 /// This is a deprecated class. Please use MgFileFeatureSourceParams
 /// to create the parameters used to an SDF feature source.
 ///
