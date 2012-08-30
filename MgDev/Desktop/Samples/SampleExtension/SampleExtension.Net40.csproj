@@ -56,16 +56,28 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="OSGeo.MapGuide.Desktop">
-      <HintPath>..\bin\Assemblies\OSGeo.MapGuide.Desktop.dll</HintPath>
+      <HintPath>..\Lib\OSGeo.MapGuide.Desktop.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="OSGeo.MapGuide.Foundation">
-      <HintPath>..\bin\Assemblies\OSGeo.MapGuide.Foundation.dll</HintPath>
+      <HintPath>..\Lib\OSGeo.MapGuide.Foundation.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="OSGeo.MapGuide.Geometry">
-      <HintPath>..\bin\Assemblies\OSGeo.MapGuide.Geometry.dll</HintPath>
+      <HintPath>..\Lib\OSGeo.MapGuide.Geometry.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="OSGeo.MapGuide.PlatformBase">
-      <HintPath>..\bin\Assemblies\OSGeo.MapGuide.PlatformBase.dll</HintPath>
+      <HintPath>..\Lib\OSGeo.MapGuide.PlatformBase.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="OSGeo.MapGuide.Viewer">
+      <HintPath>..\Lib\OSGeo.MapGuide.Viewer.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="OSGeo.MapGuide.Viewer.Desktop">
+      <HintPath>..\Lib\OSGeo.MapGuide.Viewer.Desktop.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -147,7 +159,9 @@
     <Compile Include="ParcelQueryResultWindow.Designer.cs">
       <DependentUpon>ParcelQueryResultWindow.cs</DependentUpon>
     </Compile>
-    <Compile Include="PrePostRendering.cs" />
+    <Compile Include="PrePostRendering.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
     <Compile Include="PrePostRendering.Designer.cs">
       <DependentUpon>PrePostRendering.cs</DependentUpon>
     </Compile>
@@ -186,16 +200,6 @@
       <DependentUpon>XmlResponseDialog.cs</DependentUpon>
     </Compile>
     <Service Include="{94E38DFF-614B-4cbd-B67C-F211BB35CE8B}" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\MapViewer.Desktop\MapViewer.Desktop.Net40.csproj">
-      <Project>{E2001B46-F226-4F7B-911E-252B9644236E}</Project>
-      <Name>MapViewer.Desktop.Net40</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\MapViewer\MapViewer.Net40.csproj">
-      <Project>{D46ED17B-329B-4D80-9181-FEF8307EFCBB}</Project>
-      <Name>MapViewer.Net40</Name>
-    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="AnalyzingFeatures.resx">
