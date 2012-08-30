@@ -13,6 +13,7 @@ rem which is why we can do it like this
 rem ==================================================
 
 SET MG_OUTPUT_DESKTOP=%MG_OUTPUT%\Desktop
+SET MG_OUTPUT_SAMPLES=%MG_OUTPUT%\DesktopSamples
 SET VS_SLN_SUFFIX=
 IF "%VC_COMPILER_VERSION%" == "10" SET VS_SLN_SUFFIX=_VS2010
 
@@ -31,6 +32,13 @@ if "%errorlevel%"=="1" goto error
 popd
 echo [install]: binaries
 %XCOPY% "Desktop\bin\%TYPEBUILD%" "%MG_OUTPUT_DESKTOP%" /EXCLUDE:svn_excludes.txt+%CONFIGURATION%_excludes.txt
+pushd "Desktop\bin\%TYPEBUILD%"
+del MgMapGuideCommon.dll
+popd
+echo [install]: Samples
+pushd Desktop
+%XCOPY% Samples "%MG_OUTPUT_SAMPLES%" /EXCLUDE:samples_exclude.txt
+popd
 goto quit
 
 :error
