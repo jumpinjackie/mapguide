@@ -18,11 +18,14 @@
 #ifndef DESKTOP_UNITTYPE_H
 #define DESKTOP_UNITTYPE_H
 
+/// \ingroup Desktop_Misc_Module
+/// \{
+
 ///////////////////////////////////////////////////////////////////////////////
 /// \brief
-/// MgUnitType defines enumerated values used to determine the type
+/// MgdUnitType defines enumerated values used to determine the type
 /// of units for plot decorations (scale bar).
-class MG_DESKTOP_API MgUnitType
+class MG_DESKTOP_API MgdUnitType
 {
 PUBLISHED_API:
     /// \if INTERNAL
@@ -36,10 +39,6 @@ PUBLISHED_API:
     static const STRING Metric;     ///\if INTERNAL value("Metric") \endif
 };
 
-
-/// \ingroup Desktop_Module
-/// \{
-
 /////////////////////////////////////////////////////////////////
 /// \brief
 /// Defines page size units for the Mapping Service.
@@ -48,7 +47,7 @@ PUBLISHED_API:
 ///   * [[TO DO: I should change my examples to use this
 ///     instead of hardcoding the string.]]
 ///
-class MG_DESKTOP_API MgPageUnitsType
+class MG_DESKTOP_API MgdPageUnitsType
 {
 PUBLISHED_API:
     /// \if INTERNAL
@@ -64,14 +63,14 @@ PUBLISHED_API:
 /// \}
 
 
-/// \ingroup Desktop_Module
+/// \ingroup Desktop_Misc_Module
 /// \{
 ///////////////////////////////////////////////////////////////////////////////
 /// \brief
 /// Specifies the coordinate space for feature geometry returned from QueryFeatures.
 /// Can also specify that only non-geometric data should be returned by QueryFeature.
 ///
-class MG_DESKTOP_API MgCoordinateSpace
+class MG_DESKTOP_API MgdCoordinateSpace
 {
 PUBLISHED_API:
     /// \if INTERNAL

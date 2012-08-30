@@ -1,12 +1,12 @@
 #include "MgDesktop.h"
 
-IMPLEMENT_EXCEPTION_DEFAULTS(MgAliasNotFoundException, MgApplicationException)
+IMPLEMENT_EXCEPTION_DEFAULTS(MgdAliasNotFoundException, MgApplicationException)
 
 ///////////////////////////////////////////////////////////////////////////////
 /// \brief
-/// Construct a MgConnectionFailedException object.
+/// Construct a MgdConnectionFailedException object.
 ///
-MgAliasNotFoundException::MgAliasNotFoundException(CREFSTRING methodName,
+MgdAliasNotFoundException::MgdAliasNotFoundException(CREFSTRING methodName,
     INT32 lineNumber, CREFSTRING fileName, MgStringCollection* whatArguments,
     CREFSTRING whyMessageId, MgStringCollection* whyArguments) throw() :
     MgApplicationException(methodName, lineNumber, fileName,
@@ -18,6 +18,6 @@ MgAliasNotFoundException::MgAliasNotFoundException(CREFSTRING methodName,
 /// \brief
 /// Destruct the object.
 ///
-MgAliasNotFoundException::~MgAliasNotFoundException() throw()
+MgdAliasNotFoundException::~MgdAliasNotFoundException() throw()
 {
 }

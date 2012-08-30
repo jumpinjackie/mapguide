@@ -1,12 +1,12 @@
 #include "MgDesktop.h"
 
-IMPLEMENT_EXCEPTION_DEFAULTS(MgDuplicateParameterException, MgApplicationException)
+IMPLEMENT_EXCEPTION_DEFAULTS(MgdDuplicateParameterException, MgApplicationException)
 
 ///////////////////////////////////////////////////////////////////////////////
 /// \brief
-/// Construct a MgDuplicateParameterException object.
+/// Construct a MgdDuplicateParameterException object.
 ///
-MgDuplicateParameterException::MgDuplicateParameterException(CREFSTRING methodName,
+MgdDuplicateParameterException::MgdDuplicateParameterException(CREFSTRING methodName,
     INT32 lineNumber, CREFSTRING fileName, MgStringCollection* whatArguments,
     CREFSTRING whyMessageId, MgStringCollection* whyArguments) throw() :
     MgApplicationException(methodName, lineNumber, fileName,
@@ -16,8 +16,8 @@ MgDuplicateParameterException::MgDuplicateParameterException(CREFSTRING methodNa
 
 ///////////////////////////////////////////////////////////////////////////////
 /// \brief
-/// Destruct the MgDuplicateParameterException object.
+/// Destruct the MgdDuplicateParameterException object.
 ///
-MgDuplicateParameterException::~MgDuplicateParameterException() throw()
+MgdDuplicateParameterException::~MgdDuplicateParameterException() throw()
 {
 }

@@ -1,12 +1,12 @@
 #include "MgDesktop.h"
 
-IMPLEMENT_EXCEPTION_DEFAULTS(MgDwfException, MgThirdPartyException)
+IMPLEMENT_EXCEPTION_DEFAULTS(MgdDwfException, MgThirdPartyException)
 
 ///////////////////////////////////////////////////////////////////////////////
 /// \brief
-/// Construct a MgDwfException object.
+/// Construct a MgdDwfException object.
 ///
-MgDwfException::MgDwfException(CREFSTRING methodName,
+MgdDwfException::MgdDwfException(CREFSTRING methodName,
     INT32 lineNumber, CREFSTRING fileName, MgStringCollection* whatArguments,
     CREFSTRING whyMessageId, MgStringCollection* whyArguments) throw() :
     MgThirdPartyException(methodName, lineNumber, fileName,
@@ -18,6 +18,6 @@ MgDwfException::MgDwfException(CREFSTRING methodName,
 /// \brief
 /// Destruct the object.
 ///
-MgDwfException::~MgDwfException() throw()
+MgdDwfException::~MgdDwfException() throw()
 {
 }

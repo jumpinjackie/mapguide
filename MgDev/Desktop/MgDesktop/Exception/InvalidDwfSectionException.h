@@ -1,21 +1,21 @@
 #ifndef DESKTOP_INVALID_DWF_SECTION_EXCEPTION_H
 #define DESKTOP_INVALID_DWF_SECTION_EXCEPTION_H
 
-/// \ingroup Exceptions_Module
+/// \ingroup Desktop_Exceptions_Module
 
 ///////////////////////////////////////////////////////////////////////////////
 /// \brief
 /// Thrown when an invalid section in a DWF is found.
 ///
-class MG_DESKTOP_API MgInvalidDwfSectionException : public MgApplicationException
+class MG_DESKTOP_API MgdInvalidDwfSectionException : public MgApplicationException
 {
-    DECLARE_CLASSNAME(MgInvalidDwfSectionException)
+    DECLARE_CLASSNAME(MgdInvalidDwfSectionException)
 
 EXTERNAL_API:
 
     ///////////////////////////////////////////////////////////////////////////
     /// \brief
-    /// Construct a MgInvalidDwfSectionException object.
+    /// Construct a MgdInvalidDwfSectionException object.
     ///
     /// \param methodName
     /// Name of the method where the exception occurred.
@@ -30,23 +30,23 @@ EXTERNAL_API:
     /// \param whyArguments
     /// Collection of arguments used to format the message that describes why the exception occurs.
     ///
-    MgInvalidDwfSectionException(CREFSTRING methodName, INT32 lineNumber,
+    MgdInvalidDwfSectionException(CREFSTRING methodName, INT32 lineNumber,
         CREFSTRING fileName, MgStringCollection* whatArguments,
         CREFSTRING whyMessageId, MgStringCollection* whyArguments) throw();
 
     ///////////////////////////////////////////////////////////////////////////
     /// \brief
-    /// Destructor for a MgInvalidDwfSectionException object.
+    /// Destructor for a MgdInvalidDwfSectionException object.
     ///
-    virtual ~MgInvalidDwfSectionException() throw();
+    virtual ~MgdInvalidDwfSectionException() throw();
 
 INTERNAL_API:
 
-    DECLARE_EXCEPTION_DEFAULTS(MgInvalidDwfSectionException)
+    DECLARE_EXCEPTION_DEFAULTS(MgdInvalidDwfSectionException)
 
 CLASS_ID:
 
-    static const INT32 m_cls_id = MapGuide_Desktop_Exception_MgInvalidDwfSectionException;
+    static const INT32 m_cls_id = MapGuide_Desktop_Exception_InvalidDwfSectionException;
 };
 
 #endif

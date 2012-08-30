@@ -384,7 +384,7 @@ MgFeatureSourceCacheItem* MgFeatureServiceCache::GetFeatureSource(MgResourceIden
                 STRING errorMsg = parser.GetErrorMessage();
                 MgStringCollection arguments;
                 arguments.Add(errorMsg);
-                throw new MgInvalidFeatureSourceException(
+                throw new MgdInvalidFeatureSourceException(
                     L"MgCacheManager::GetFeatureSourceCacheItem",
                     __LINE__, __WFILE__, &arguments, L"", NULL);
             }
@@ -404,7 +404,7 @@ MgFeatureSourceCacheItem* MgFeatureServiceCache::GetFeatureSource(MgResourceIden
             MgStringCollection arguments;
             arguments.Add(message);
 
-            throw new MgInvalidFeatureSourceException(
+            throw new MgdInvalidFeatureSourceException(
                 L"MgCacheManager.GetFeatureSourceCacheItem",
                 __LINE__, __WFILE__, &arguments, L"", NULL);
         }

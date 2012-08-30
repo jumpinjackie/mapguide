@@ -18,19 +18,19 @@
 #ifndef DESKTOP_MAP_PLOT_COLLECTION_H_
 #define DESKTOP_MAP_PLOT_COLLECTION_H_
 
-class MgMapPlotCollection;
-template class MG_DESKTOP_API Ptr<MgMapPlotCollection>;
+class MgdMapPlotCollection;
+template class MG_DESKTOP_API Ptr<MgdMapPlotCollection>;
 
-class MgMapPlot;
-/// \ingroup Desktop_Module
+class MgdMapPlot;
+/// \ingroup Desktop_Misc_Module
 /// \{
 /////////////////////////////////////////////////////////////////
 /// \brief
-/// Manipulates collections of MgMapPlot objects.
-class MG_DESKTOP_API MgMapPlotCollection : public MgSerializable
+/// Manipulates collections of MgdMapPlot objects.
+class MG_DESKTOP_API MgdMapPlotCollection : public MgSerializable
 {
     MG_DECL_DYNCREATE()
-    DECLARE_CLASSNAME(MgMapPlotCollection)
+    DECLARE_CLASSNAME(MgdMapPlotCollection)
 
 PUBLISHED_API:
     ///////////////////////////////////////////////
@@ -59,24 +59,24 @@ PUBLISHED_API:
     ///
     /// <!-- Syntax in .Net, Java, and PHP -->
     /// \htmlinclude DotNetSyntaxTop.html
-    /// MgMapPlot GetItem(int index);
+    /// MgdMapPlot GetItem(int index);
     /// \htmlinclude SyntaxBottom.html
     /// \htmlinclude JavaSyntaxTop.html
-    /// MgMapPlot GetItem(int index);
+    /// MgdMapPlot GetItem(int index);
     /// \htmlinclude SyntaxBottom.html
     /// \htmlinclude PHPSyntaxTop.html
-    /// MgMapPlot GetItem(int index);
+    /// MgdMapPlot GetItem(int index);
     /// \htmlinclude SyntaxBottom.html
     ///
     /// \param index (int)
     /// Index of the map to get.
     ///
     /// \return
-    /// Returns the specified MgMapPlot object.
+    /// Returns the specified MgdMapPlot object.
     ///
     /// \exception MgOutOfRangeException if the index is invalid.
     ///
-    MgMapPlot* GetItem(INT32 index);
+    MgdMapPlot* GetItem(INT32 index);
 
     //////////////////////////////////////////////////////////////
     /// \brief
@@ -84,25 +84,25 @@ PUBLISHED_API:
     ///
     /// <!-- Syntax in .Net, Java, and PHP -->
     /// \htmlinclude DotNetSyntaxTop.html
-    /// MgMapPlot GetItem(string name);
+    /// MgdMapPlot GetItem(string name);
     /// \htmlinclude SyntaxBottom.html
     /// \htmlinclude JavaSyntaxTop.html
-    /// MgMapPlot GetItem(String name);
+    /// MgdMapPlot GetItem(String name);
     /// \htmlinclude SyntaxBottom.html
     /// \htmlinclude PHPSyntaxTop.html
-    /// MgMapPlot GetItem(string name);
+    /// MgdMapPlot GetItem(string name);
     /// \htmlinclude SyntaxBottom.html
     ///
     /// \param name (String/string)
     /// Name of the MapPlot to get.
     ///
     /// \return
-    /// Returns the specified MgMapPlot object.
+    /// Returns the specified MgdMapPlot object.
     ///
     /// \exception MgInvalidArgumentException if the name does not exist in
     ///  the collection.
     ///
-    MgMapPlot* GetItem(CREFSTRING name);
+    MgdMapPlot* GetItem(CREFSTRING name);
 
     //////////////////////////////////////////////////////////////////
     /// \brief
@@ -111,27 +111,27 @@ PUBLISHED_API:
     ///
     /// <!-- Syntax in .Net, Java, and PHP -->
     /// \htmlinclude DotNetSyntaxTop.html
-    /// void SetItem(int index, MgMapPlot value);
+    /// void SetItem(int index, MgdMapPlot value);
     /// \htmlinclude SyntaxBottom.html
     /// \htmlinclude JavaSyntaxTop.html
-    /// void SetItem(int index, MgMapPlot value);
+    /// void SetItem(int index, MgdMapPlot value);
     /// \htmlinclude SyntaxBottom.html
     /// \htmlinclude PHPSyntaxTop.html
-    /// void SetItem(int index, MgMapPlot value);
+    /// void SetItem(int index, MgdMapPlot value);
     /// \htmlinclude SyntaxBottom.html
     ///
     /// \param index (int)
     /// Position in the collection to set the
     /// MgMapPot.
-    /// \param value (MgMapPlot)
-    /// MgMapPlot to be set in the collection.
+    /// \param value (MgdMapPlot)
+    /// MgdMapPlot to be set in the collection.
     ///
     /// \return
     /// Returns nothing.
     ///
     /// \exception MgOutOfRangeException if the index is out of range.
     ///
-    void SetItem(INT32 index, MgMapPlot* value);
+    void SetItem(INT32 index, MgdMapPlot* value);
 
     ////////////////////////////////////////////////////////////////////
     /// \brief
@@ -139,22 +139,22 @@ PUBLISHED_API:
     ///
     /// <!-- Syntax in .Net, Java, and PHP -->
     /// \htmlinclude DotNetSyntaxTop.html
-    /// void Add(MgMapPlot value);
+    /// void Add(MgdMapPlot value);
     /// \htmlinclude SyntaxBottom.html
     /// \htmlinclude JavaSyntaxTop.html
-    /// void Add(MgMapPlot value);
+    /// void Add(MgdMapPlot value);
     /// \htmlinclude SyntaxBottom.html
     /// \htmlinclude PHPSyntaxTop.html
-    /// void Add(MgMapPlot value);
+    /// void Add(MgdMapPlot value);
     /// \htmlinclude SyntaxBottom.html
     ///
-    /// \param value (MgMapPlot)
-    /// MgMapPlot to be added to the collection.
+    /// \param value (MgdMapPlot)
+    /// MgdMapPlot to be added to the collection.
     ///
     /// \return
     /// Returns nothing.
     ///
-    void Add(MgMapPlot* value);
+    void Add(MgdMapPlot* value);
 
     ///////////////////////////////////////////////////////////////////////
     /// \brief
@@ -166,20 +166,20 @@ PUBLISHED_API:
     ///
     /// <!-- Syntax in .Net, Java, and PHP -->
     /// \htmlinclude DotNetSyntaxTop.html
-    /// void Insert(int index, MgMapPlot value);
+    /// void Insert(int index, MgdMapPlot value);
     /// \htmlinclude SyntaxBottom.html
     /// \htmlinclude JavaSyntaxTop.html
-    /// void Insert(int index, MgMapPlot value);
+    /// void Insert(int index, MgdMapPlot value);
     /// \htmlinclude SyntaxBottom.html
     /// \htmlinclude PHPSyntaxTop.html
-    /// void Insert(int index, MgMapPlot value);
+    /// void Insert(int index, MgdMapPlot value);
     /// \htmlinclude SyntaxBottom.html
     ///
     /// \param index (int)
     /// Position in the collection to insert the
-    /// MgMapPlot.
-    /// \param value (MgMapPlot)
-    /// MgMapPlot to be inserted in the collection.
+    /// MgdMapPlot.
+    /// \param value (MgdMapPlot)
+    /// MgdMapPlot to be inserted in the collection.
     ///
     /// \return
     /// Returns nothing.
@@ -187,7 +187,7 @@ PUBLISHED_API:
     /// \exception MgOutOfRangeException if the specified index is out of
     ///  range.
     ///
-    void Insert(INT32 index, MgMapPlot* value);
+    void Insert(INT32 index, MgdMapPlot* value);
 
     /////////////////////////////////////////
     /// \brief
@@ -215,23 +215,23 @@ PUBLISHED_API:
     ///
     /// <!-- Syntax in .Net, Java, and PHP -->
     /// \htmlinclude DotNetSyntaxTop.html
-    /// bool Remove(MgMapPlot value);
+    /// bool Remove(MgdMapPlot value);
     /// \htmlinclude SyntaxBottom.html
     /// \htmlinclude JavaSyntaxTop.html
-    /// bool Remove(MgMapPlot value);
+    /// bool Remove(MgdMapPlot value);
     /// \htmlinclude SyntaxBottom.html
     /// \htmlinclude PHPSyntaxTop.html
-    /// bool Remove(MgMapPlot value);
+    /// bool Remove(MgdMapPlot value);
     /// \htmlinclude SyntaxBottom.html
     ///
-    /// \param value (MgMapPlot)
-    /// MgMapPlot to be removed
+    /// \param value (MgdMapPlot)
+    /// MgdMapPlot to be removed
     ///
     /// \return
     /// Returns true if removal was successful.
     ///
     ///
-    bool Remove(MgMapPlot* value);
+    bool Remove(MgdMapPlot* value);
 
     ///////////////////////////////////////////////////////////////
     /// \brief
@@ -289,23 +289,23 @@ PUBLISHED_API:
     ///
     /// <!-- Syntax in .Net, Java, and PHP -->
     /// \htmlinclude DotNetSyntaxTop.html
-    /// bool Contains(MgMapPlot value);
+    /// bool Contains(MgdMapPlot value);
     /// \htmlinclude SyntaxBottom.html
     /// \htmlinclude JavaSyntaxTop.html
-    /// boolean Contains(MgMapPlot value);
+    /// boolean Contains(MgdMapPlot value);
     /// \htmlinclude SyntaxBottom.html
     /// \htmlinclude PHPSyntaxTop.html
-    /// bool Contains(MgMapPlot value);
+    /// bool Contains(MgdMapPlot value);
     /// \htmlinclude SyntaxBottom.html
     ///
-    /// \param value (MgMapPlot)
-    /// The MgMapPlot to look for.
+    /// \param value (MgdMapPlot)
+    /// The MgdMapPlot to look for.
     ///
     /// \return
     /// Returns true if the collection contains the specified MapPlot,
     /// or false otherwise.
     ///
-    bool Contains(MgMapPlot* value);
+    bool Contains(MgdMapPlot* value);
 
     ///////////////////////////////////////////////////////////////////
     /// \brief
@@ -337,39 +337,39 @@ PUBLISHED_API:
     ///
     /// <!-- Syntax in .Net, Java, and PHP -->
     /// \htmlinclude DotNetSyntaxTop.html
-    /// int IndexOf(MgMapPlot value);
+    /// int IndexOf(MgdMapPlot value);
     /// \htmlinclude SyntaxBottom.html
     /// \htmlinclude JavaSyntaxTop.html
-    /// int IndexOf(MgMapPlot value);
+    /// int IndexOf(MgdMapPlot value);
     /// \htmlinclude SyntaxBottom.html
     /// \htmlinclude PHPSyntaxTop.html
-    /// int IndexOf(MgMapPlot value);
+    /// int IndexOf(MgdMapPlot value);
     /// \htmlinclude SyntaxBottom.html
     ///
-    /// \param value (MgMapPlot)
+    /// \param value (MgdMapPlot)
     /// Value of the item to get the index of.
     ///
     /// \return
     /// Returns the MapPlot's index if the collection contains the
     /// specified MapPlot, or false (-1) otherwise.
     ///
-    INT32 IndexOf(MgMapPlot* value);
+    INT32 IndexOf(MgdMapPlot* value);
 
     /// \brief
-    /// Constructs an empty MgMapPlotCollection object.
+    /// Constructs an empty MgdMapPlotCollection object.
     ///
     /// <!-- Syntax in .Net, Java, and PHP -->
     /// \htmlinclude DotNetSyntaxTop.html
-    /// MgMapPlotCollection();
+    /// MgdMapPlotCollection();
     /// \htmlinclude SyntaxBottom.html
     /// \htmlinclude JavaSyntaxTop.html
-    /// MgMapPlotCollection();
+    /// MgdMapPlotCollection();
     /// \htmlinclude SyntaxBottom.html
     /// \htmlinclude PHPSyntaxTop.html
-    /// MgMapPlotCollection();
+    /// MgdMapPlotCollection();
     /// \htmlinclude SyntaxBottom.html
     ///
-    MgMapPlotCollection();
+    MgdMapPlotCollection();
 
 INTERNAL_API:
     //////////////////////////////////////////////////////////////////
@@ -392,12 +392,12 @@ INTERNAL_API:
 
 protected:
     /// \brief
-    /// Destruct a MgMapPlotCollection object
+    /// Destruct a MgdMapPlotCollection object
     ///
     /// \return
     /// Nothing
     ///
-    virtual ~MgMapPlotCollection();
+    virtual ~MgdMapPlotCollection();
 
     /// \brief
     /// Get the unique identifier for the class

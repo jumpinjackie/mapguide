@@ -18,21 +18,21 @@
 #ifndef DESKTOP_CONNECTION_FAILED_EXCEPTION_H
 #define DESKTOP_CONNECTION_FAILED_EXCEPTION_H
 
-/// \ingroup Exceptions_Module
+/// \ingroup Desktop_Exceptions_Module
 
 ///////////////////////////////////////////////////////////////////////////////
 /// \brief
 /// Thrown when a connection to a server cannot be established.
 ///
-class MG_DESKTOP_API MgConnectionFailedException : public MgApplicationException
+class MG_DESKTOP_API MgdConnectionFailedException : public MgApplicationException
 {
-    DECLARE_CLASSNAME(MgConnectionFailedException)
+    DECLARE_CLASSNAME(MgdConnectionFailedException)
 
 EXTERNAL_API:
 
     ///////////////////////////////////////////////////////////////////////////
     /// \brief
-    /// Construct a MgConnectionFailedException object.
+    /// Construct a MgdConnectionFailedException object.
     ///
     /// \param methodName
     /// Name of the method where the exception occurred.
@@ -47,23 +47,23 @@ EXTERNAL_API:
     /// \param whyArguments
     /// Collection of arguments used to format the message that describes why the exception occurs.
     ///
-    MgConnectionFailedException(CREFSTRING methodName, INT32 lineNumber,
+    MgdConnectionFailedException(CREFSTRING methodName, INT32 lineNumber,
         CREFSTRING fileName, MgStringCollection* whatArguments,
         CREFSTRING whyMessageId, MgStringCollection* whyArguments) throw();
 
     ///////////////////////////////////////////////////////////////////////////
     /// \brief
-    /// Destructor for a MgConnectionFailedException object.
+    /// Destructor for a MgdConnectionFailedException object.
     ///
-    virtual ~MgConnectionFailedException() throw();
+    virtual ~MgdConnectionFailedException() throw();
 
 INTERNAL_API:
 
-    DECLARE_EXCEPTION_DEFAULTS(MgConnectionFailedException)
+    DECLARE_EXCEPTION_DEFAULTS(MgdConnectionFailedException)
 
 CLASS_ID:
 
-    static const INT32 m_cls_id = MapGuide_Desktop_Exception_MgConnectionFailedException;
+    static const INT32 m_cls_id = MapGuide_Desktop_Exception_ConnectionFailedException;
 };
 
 #endif

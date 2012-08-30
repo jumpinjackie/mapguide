@@ -1,21 +1,21 @@
 #ifndef DESKTOP_DWF_SECTION_RESOURCE_NOT_FOUND_EXCEPTION_H
 #define DESKTOP_DWF_SECTION_RESOURCE_NOT_FOUND_EXCEPTION_H
 
-/// \ingroup Exceptions_Module
+/// \ingroup Desktop_Exceptions_Module
 
 ///////////////////////////////////////////////////////////////////////////////
 /// \brief
 /// Thrown when a DWF section resource is not found.
 ///
-class MG_DESKTOP_API MgDwfSectionResourceNotFoundException : public MgApplicationException
+class MG_DESKTOP_API MgdDwfSectionResourceNotFoundException : public MgApplicationException
 {
-    DECLARE_CLASSNAME(MgDwfSectionResourceNotFoundException)
+    DECLARE_CLASSNAME(MgdDwfSectionResourceNotFoundException)
 
 EXTERNAL_API:
 
     ///////////////////////////////////////////////////////////////////////////
     /// \brief
-    /// Construct a MgDwfSectionResourceNotFoundException object.
+    /// Construct a MgdDwfSectionResourceNotFoundException object.
     ///
     /// \param methodName
     /// Name of the method where the exception occurred.
@@ -30,23 +30,23 @@ EXTERNAL_API:
     /// \param whyArguments
     /// Collection of arguments used to format the message that describes why the exception occurs.
     ///
-    MgDwfSectionResourceNotFoundException(CREFSTRING methodName, INT32 lineNumber,
+    MgdDwfSectionResourceNotFoundException(CREFSTRING methodName, INT32 lineNumber,
         CREFSTRING fileName, MgStringCollection* whatArguments,
         CREFSTRING whyMessageId, MgStringCollection* whyArguments) throw();
 
     ///////////////////////////////////////////////////////////////////////////
     /// \brief
-    /// Destructor for a MgDwfSectionResourceNotFoundException object.
+    /// Destructor for a MgdDwfSectionResourceNotFoundException object.
     ///
-    virtual ~MgDwfSectionResourceNotFoundException() throw();
+    virtual ~MgdDwfSectionResourceNotFoundException() throw();
 
 INTERNAL_API:
 
-    DECLARE_EXCEPTION_DEFAULTS(MgDwfSectionResourceNotFoundException)
+    DECLARE_EXCEPTION_DEFAULTS(MgdDwfSectionResourceNotFoundException)
 
 CLASS_ID:
 
-    static const INT32 m_cls_id = MapGuide_Desktop_Exception_MgDwfSectionResourceNotFoundException;
+    static const INT32 m_cls_id = MapGuide_Desktop_Exception_DwfSectionResourceNotFoundException;
 };
 
 #endif

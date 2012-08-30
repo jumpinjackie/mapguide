@@ -119,8 +119,6 @@ typedef wchar_t* STRINGPARAM;
 
     <Header path="../../MgDesktop/Services/Feature/RdbmsFeatureSourceParams.h" />
 
-    <Header path="../../MgDesktop/Services/Rendering/CustomLogoInfo.h" />
-    <Header path="../../MgDesktop/Services/Rendering/CustomTextInfo.h" />
     <Header path="../../MgDesktop/Services/Rendering/DwfVersion.h" />
     <Header path="../../MgDesktop/Services/Rendering/FeatureInformation.h" />
     <Header path="../../MgDesktop/Services/Rendering/Layout.h" />
@@ -128,7 +126,6 @@ typedef wchar_t* STRINGPARAM;
     <Header path="../../MgDesktop/Services/Rendering/DwfVersion.h" />
     <Header path="../../MgDesktop/Services/Rendering/MapPlotCollection.h" />
     <Header path="../../MgDesktop/Services/Rendering/PlotSpecification.h" />
-    <Header path="../../MgDesktop/Services/Rendering/PrintLayout.h" />
     <Header path="../../MgDesktop/Services/Rendering/RenderingOptions.h" />
 
     <Header path="../../MgDesktop/System/PlatformInit.h" />

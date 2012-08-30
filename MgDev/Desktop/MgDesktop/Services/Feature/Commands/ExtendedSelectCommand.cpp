@@ -42,7 +42,7 @@ MgExtendedSelectCommand::MgExtendedSelectCommand(MgResourceIdentifier* resource)
     }
     else
     {
-        throw new MgConnectionFailedException(L"MgExtendedSelectCommand.MgExtendedSelectCommand", __LINE__, __WFILE__, NULL, L"", NULL);
+        throw new MgdConnectionFailedException(L"MgExtendedSelectCommand.MgExtendedSelectCommand", __LINE__, __WFILE__, NULL, L"", NULL);
     }
     // Create FdoIExtendedSelect command
     FdoPtr<FdoIConnection> fdoConn = m_connection->GetConnection();

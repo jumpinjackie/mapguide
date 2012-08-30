@@ -6,7 +6,7 @@ class MgResourceIdentifier;
 class MgFdoConnectionPool;
 
 template class Ptr<MgResourceIdentifier>;
-
+/// \cond INTERNAL
 class MgFeatureConnection : public MgGuardDisposable
 {
     friend class MgFdoConnectionPool;
@@ -49,5 +49,5 @@ private:
     MgResourceIdentifier* m_resourceId;
     bool m_bCloseConnection;
 };
-
+///\endcond
 #endif

@@ -223,33 +223,33 @@ void TestMappingService::TestCase_GetMultiPlot()
         map4->SetViewScale(20e+6);
 
         // Create the DwfVersion
-        Ptr<MgDwfVersion> version = new MgDwfVersion();
+        Ptr<MgdDwfVersion> version = new MgdDwfVersion();
 
         // Create some plotSpecs
-        Ptr<MgPlotSpecification> plotSpec1 = new MgPlotSpecification(8.5f, 11.f, L"in", 0.5, 0.5, 0.5, 0.5);
-        Ptr<MgPlotSpecification> plotSpec2 = new MgPlotSpecification(11.f, 8.5f, L"in", 1, 1, 1, 1);
-        Ptr<MgPlotSpecification> plotSpec3 = new MgPlotSpecification(8.f, 11.f, L"in", 0.25, 0.25, 0.25, 0.25);
-        Ptr<MgPlotSpecification> plotSpec4 = new MgPlotSpecification(8.5f, 11.f, L"in", 0.25, 0.25, 0.25, 0.25);
+        Ptr<MgdPlotSpecification> plotSpec1 = new MgdPlotSpecification(8.5f, 11.f, L"in", 0.5, 0.5, 0.5, 0.5);
+        Ptr<MgdPlotSpecification> plotSpec2 = new MgdPlotSpecification(11.f, 8.5f, L"in", 1, 1, 1, 1);
+        Ptr<MgdPlotSpecification> plotSpec3 = new MgdPlotSpecification(8.f, 11.f, L"in", 0.25, 0.25, 0.25, 0.25);
+        Ptr<MgdPlotSpecification> plotSpec4 = new MgdPlotSpecification(8.5f, 11.f, L"in", 0.25, 0.25, 0.25, 0.25);
 
         Ptr<MgResourceIdentifier> allElementsLayout = new MgResourceIdentifier(L"Library://UnitTests/PrintLayouts/AllElements.PrintLayout");
-        Ptr<MgLayout> layout = new MgLayout(allElementsLayout, L"Layout1", MgUnitType::USEnglish);
+        Ptr<MgdLayout> layout = new MgdLayout(allElementsLayout, L"Layout1", MgdUnitType::USEnglish);
 
         // Create some MapPlots
-        Ptr<MgMapPlot> mapPlot1 = new MgMapPlot(map1, plotSpec1, layout);
+        Ptr<MgdMapPlot> mapPlot1 = new MgdMapPlot(map1, plotSpec1, layout);
 
         Ptr<MgCoordinate> center = new MgCoordinateXY(-100, 40);
         double scale = 50e+6;
-        Ptr<MgMapPlot> mapPlot2 = new MgMapPlot(map2, center, scale, plotSpec2, layout);
+        Ptr<MgdMapPlot> mapPlot2 = new MgdMapPlot(map2, center, scale, plotSpec2, layout);
 
         Ptr<MgCoordinate> ll = new MgCoordinateXY(-130, 45);
         Ptr<MgCoordinate> ur = new MgCoordinateXY(-100, 60);
         Ptr<MgEnvelope> extent = new MgEnvelope(ll, ur);
-        Ptr<MgMapPlot> mapPlot3 = new MgMapPlot(map3, extent, false, plotSpec3, layout);
+        Ptr<MgdMapPlot> mapPlot3 = new MgdMapPlot(map3, extent, false, plotSpec3, layout);
 
-        Ptr<MgMapPlot> mapPlot4 = new MgMapPlot(map4, extent, true, plotSpec4, layout);
+        Ptr<MgdMapPlot> mapPlot4 = new MgdMapPlot(map4, extent, true, plotSpec4, layout);
 
         // Setup the MapPlot collection
-        Ptr<MgMapPlotCollection> mapPlots = new MgMapPlotCollection();
+        Ptr<MgdMapPlotCollection> mapPlots = new MgdMapPlotCollection();
         mapPlots->Add(mapPlot1);
         mapPlots->Add(mapPlot2);
         mapPlots->Add(mapPlot3);
@@ -287,17 +287,17 @@ void TestMappingService::TestCase_GetPlotUsingCurrentCenterAndScale()
         Ptr<MgdMap> map1 = new MgdMap(mapRes1, L"UnitTestSheboygan1");
         map1->SetViewScale(400e+6);
 
-        Ptr<MgDwfVersion> version = new MgDwfVersion();
+        Ptr<MgdDwfVersion> version = new MgdDwfVersion();
 
         Ptr<MgResourceIdentifier> allElementsLayout = new MgResourceIdentifier(L"Library://UnitTests/PrintLayouts/AllElements.PrintLayout");
 
-        Ptr<MgPlotSpecification> plotSpec = new MgPlotSpecification(8.5f, 11.f, L"inches", .5, .5, .5, .5);
+        Ptr<MgdPlotSpecification> plotSpec = new MgdPlotSpecification(8.5f, 11.f, L"inches", .5, .5, .5, .5);
         Ptr<MgCoordinate> center = new MgCoordinateXY(-120, 40);
         double scale = 20e+6;
         Ptr<MgCoordinate> ll = new MgCoordinateXY(-180, 0);
         Ptr<MgCoordinate> ur = new MgCoordinateXY(0, 90);
         MgEnvelope extents(ll, ur);
-        Ptr<MgLayout> layout = new MgLayout(allElementsLayout, L"TestTitle", MgUnitType::USEnglish);
+        Ptr<MgdLayout> layout = new MgdLayout(allElementsLayout, L"TestTitle", MgdUnitType::USEnglish);
 
         // call the API
         Ptr<MgByteReader> eplot = m_svcMapping->GeneratePlot(map1, plotSpec, NULL, version);
@@ -332,17 +332,17 @@ void TestMappingService::TestCase_GetPlotUsingOverriddenCenterAndScale()
         Ptr<MgdMap> map1 = new MgdMap(mapRes1, L"UnitTestSheboygan1");
         map1->SetViewScale(400e+6);
 
-        Ptr<MgDwfVersion> version = new MgDwfVersion();
+        Ptr<MgdDwfVersion> version = new MgdDwfVersion();
 
         Ptr<MgResourceIdentifier> allElementsLayout = new MgResourceIdentifier(L"Library://UnitTests/PrintLayouts/AllElements.PrintLayout");
 
-        Ptr<MgPlotSpecification> plotSpec = new MgPlotSpecification(8.f, 11.f, L"inches", .5, .5, .5, .5);
+        Ptr<MgdPlotSpecification> plotSpec = new MgdPlotSpecification(8.f, 11.f, L"inches", .5, .5, .5, .5);
         Ptr<MgCoordinate> center = new MgCoordinateXY(-120, 40);
         double scale = 20e+6;
         Ptr<MgCoordinate> ll = new MgCoordinateXY(-180, 0);
         Ptr<MgCoordinate> ur = new MgCoordinateXY(0, 90);
         MgEnvelope extents(ll, ur);
-        Ptr<MgLayout> layout = new MgLayout(allElementsLayout, L"TestTitle", MgUnitType::USEnglish);
+        Ptr<MgdLayout> layout = new MgdLayout(allElementsLayout, L"TestTitle", MgdUnitType::USEnglish);
 
         // call the API
         Ptr<MgByteReader> eplot = m_svcMapping->GeneratePlot(map1, center, scale, plotSpec, layout, version);
@@ -376,17 +376,17 @@ void TestMappingService::TestCase_GetPlotUsingExtents()
         Ptr<MgdMap> map1 = new MgdMap(mapRes1, L"UnitTestSheboygan1");
         map1->SetViewScale(400e+6);
 
-        Ptr<MgDwfVersion> version = new MgDwfVersion();
+        Ptr<MgdDwfVersion> version = new MgdDwfVersion();
 
         Ptr<MgResourceIdentifier> allElementsLayout = new MgResourceIdentifier(L"Library://UnitTests/PrintLayouts/AllElements.PrintLayout");
 
-        Ptr<MgPlotSpecification> plotSpec = new MgPlotSpecification(11.f, 8.5f, L"inches", .5, .5, .5, .5);
+        Ptr<MgdPlotSpecification> plotSpec = new MgdPlotSpecification(11.f, 8.5f, L"inches", .5, .5, .5, .5);
         Ptr<MgCoordinate> center = new MgCoordinateXY(-120, 40);
         double scale = 20e+6;
         Ptr<MgCoordinate> ll = new MgCoordinateXY(-180, 0);
         Ptr<MgCoordinate> ur = new MgCoordinateXY(0, 90);
         Ptr<MgEnvelope> extents = new MgEnvelope(ll, ur);
-        Ptr<MgLayout> layout = new MgLayout(allElementsLayout, L"TestTitle", MgUnitType::USEnglish);
+        Ptr<MgdLayout> layout = new MgdLayout(allElementsLayout, L"TestTitle", MgdUnitType::USEnglish);
 
         // call the API
         Ptr<MgByteReader> eplot = m_svcMapping->GeneratePlot(map1, extents, false, plotSpec, layout, version);
@@ -420,17 +420,17 @@ void TestMappingService::TestCase_GetPlotUsingExtentsAndExpandToFit()
         Ptr<MgdMap> map1 = new MgdMap(mapRes1, L"UnitTestSheboygan1");
         map1->SetViewScale(400e+6);
 
-        Ptr<MgDwfVersion> version = new MgDwfVersion();
+        Ptr<MgdDwfVersion> version = new MgdDwfVersion();
 
         Ptr<MgResourceIdentifier> allElementsLayout = new MgResourceIdentifier(L"Library://UnitTests/PrintLayouts/AllElements.PrintLayout");
 
-        Ptr<MgPlotSpecification> plotSpec = new MgPlotSpecification(8.f, 11.f, L"inches", .5, .5, .5, .5);
+        Ptr<MgdPlotSpecification> plotSpec = new MgdPlotSpecification(8.f, 11.f, L"inches", .5, .5, .5, .5);
         Ptr<MgCoordinate> center = new MgCoordinateXY(-120, 40);
         double scale = 20e+6;
         Ptr<MgCoordinate> ll = new MgCoordinateXY(-180, 0);
         Ptr<MgCoordinate> ur = new MgCoordinateXY(0, 90);
         Ptr<MgEnvelope> extents = new MgEnvelope(ll, ur);
-        Ptr<MgLayout> layout = new MgLayout(allElementsLayout, L"TestTitle", MgUnitType::USEnglish);
+        Ptr<MgdLayout> layout = new MgdLayout(allElementsLayout, L"TestTitle", MgdUnitType::USEnglish);
 
         // call the API
         Ptr<MgByteReader> eplot = m_svcMapping->GeneratePlot(map1, extents, true, plotSpec, NULL, version);

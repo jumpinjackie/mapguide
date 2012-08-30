@@ -11,6 +11,7 @@ namespace MdfModel
     class FeatureSource;
 }
 
+/// \cond INTERNAL
 class MgFdoConnectionUtil
 {
     friend class MgFeatureConnection;
@@ -38,5 +39,6 @@ private:
     static INT64 sm_nConnectionsCreated;
     static INT64 sm_nConnectionsClosed;
 };
+/// \endcond
 
 #endif

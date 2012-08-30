@@ -20,16 +20,16 @@
 
 #include "MgDesktop.h"
 
-/// \ingroup Desktop_Module
+/// \ingroup Desktop_Misc_Module
 /// \{
 ////////////////////////////////////////////////////////////
 /// \brief
 /// Specifies the size and format of the \link ePlot ePlot \endlink
 /// sheet to be created by the Mapping Service operations.
-class MG_DESKTOP_API MgPlotSpecification : public MgSerializable
+class MG_DESKTOP_API MgdPlotSpecification : public MgSerializable
 {
     MG_DECL_DYNCREATE()
-    DECLARE_CLASSNAME(MgPlotSpecification)
+    DECLARE_CLASSNAME(MgdPlotSpecification)
 
 PUBLISHED_API:
     ///////////////////////////////////////////////////////////////////////////////////
@@ -38,13 +38,13 @@ PUBLISHED_API:
     ///
     /// <!-- Syntax in .Net, Java, and PHP -->
     /// \htmlinclude DotNetSyntaxTop.html
-    /// MgPlotSpecification(float paperWidth, float paperHeight, string pageUnits, float left = 0, float top = 0, float right = 0, float bottom = 0);
+    /// MgdPlotSpecification(float paperWidth, float paperHeight, string pageUnits, float left = 0, float top = 0, float right = 0, float bottom = 0);
     /// \htmlinclude SyntaxBottom.html
     /// \htmlinclude JavaSyntaxTop.html
-    /// MgPlotSpecification(float paperWidth, float paperHeight, String pageUnits, float left = 0, float top = 0, float right = 0, float bottom = 0);
+    /// MgdPlotSpecification(float paperWidth, float paperHeight, String pageUnits, float left = 0, float top = 0, float right = 0, float bottom = 0);
     /// \htmlinclude SyntaxBottom.html
     /// \htmlinclude PHPSyntaxTop.html
-    /// MgPlotSpecification(float paperWidth, float paperHeight, string pageUnits, float left = 0, float top = 0, float right = 0, float bottom = 0);
+    /// MgdPlotSpecification(float paperWidth, float paperHeight, string pageUnits, float left = 0, float top = 0, float right = 0, float bottom = 0);
     /// \htmlinclude SyntaxBottom.html
     ///
     /// \param paperWidth (float)
@@ -55,7 +55,7 @@ PUBLISHED_API:
     /// paper height in page units
     /// \param pageUnits (String/string)
     /// Input
-    /// units for page size.  See MgPageUnitsType for valid units of measure
+    /// units for page size.  See MgdPageUnitsType for valid units of measure
     /// \param left (float)
     /// Input
     /// The left margin between the plot and the page edge.
@@ -72,7 +72,7 @@ PUBLISHED_API:
     /// \return
     /// Nothing
     ///
-    MgPlotSpecification(float paperWidth, float paperHeight, CREFSTRING pageUnits,
+    MgdPlotSpecification(float paperWidth, float paperHeight, CREFSTRING pageUnits,
         float left = 0, float top = 0, float right = 0, float bottom = 0);
 
     ///////////////////////////////////////////////////////
@@ -203,7 +203,7 @@ PUBLISHED_API:
     ///
     /// \param pageUnits (String/string)
     /// Units of measure for page. See
-    /// MgPageUnitsType for valid units.
+    /// MgdPageUnitsType for valid units.
     ///
     /// \return
     /// Returns nothing.
@@ -304,7 +304,7 @@ INTERNAL_API:
     /// \brief
     /// Default constructor to shut Ptr<> up.
     ///
-    MgPlotSpecification();
+    MgdPlotSpecification();
 
     //////////////////////////////////////////////////////////////////
     /// \brief

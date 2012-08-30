@@ -22,6 +22,7 @@
 
 class FdoFilter;
 
+/// \cond INTERNAL
 /// \brief
 /// The MgFdoFilterCollection class represents a collection of FdoFilter objects.
 class MgFdoFilterCollection : public FdoCollection<FdoFilter, FdoException>
@@ -51,4 +52,5 @@ public:
     ///
     /*FDO_API*/ static MgFdoFilterCollection* Create();
 };
+/// \endcond
 #endif

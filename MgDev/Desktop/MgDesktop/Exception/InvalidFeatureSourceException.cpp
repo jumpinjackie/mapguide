@@ -1,12 +1,12 @@
 #include "MgDesktop.h"
 
-IMPLEMENT_EXCEPTION_DEFAULTS(MgInvalidFeatureSourceException, MgApplicationException)
+IMPLEMENT_EXCEPTION_DEFAULTS(MgdInvalidFeatureSourceException, MgApplicationException)
 
 ///////////////////////////////////////////////////////////////////////////////
 /// \brief
-/// Construct a MgInvalidFeatureSourceException object.
+/// Construct a MgdInvalidFeatureSourceException object.
 ///
-MgInvalidFeatureSourceException::MgInvalidFeatureSourceException(CREFSTRING methodName,
+MgdInvalidFeatureSourceException::MgdInvalidFeatureSourceException(CREFSTRING methodName,
     INT32 lineNumber, CREFSTRING fileName, MgStringCollection* whatArguments,
     CREFSTRING whyMessageId, MgStringCollection* whyArguments) throw() :
     MgApplicationException(methodName, lineNumber, fileName,
@@ -18,6 +18,6 @@ MgInvalidFeatureSourceException::MgInvalidFeatureSourceException(CREFSTRING meth
 /// \brief
 /// Destruct the object.
 ///
-MgInvalidFeatureSourceException::~MgInvalidFeatureSourceException() throw()
+MgdInvalidFeatureSourceException::~MgdInvalidFeatureSourceException() throw()
 {
 }

@@ -1,12 +1,12 @@
 #include "MgDesktop.h"
 
-IMPLEMENT_EXCEPTION_DEFAULTS(MgDwfSectionNotFoundException, MgApplicationException)
+IMPLEMENT_EXCEPTION_DEFAULTS(MgdDwfSectionNotFoundException, MgApplicationException)
 
 ///////////////////////////////////////////////////////////////////////////////
 /// \brief
-/// Construct a MgDwfSectionNotFoundException object.
+/// Construct a MgdDwfSectionNotFoundException object.
 ///
-MgDwfSectionNotFoundException::MgDwfSectionNotFoundException(CREFSTRING methodName,
+MgdDwfSectionNotFoundException::MgdDwfSectionNotFoundException(CREFSTRING methodName,
     INT32 lineNumber, CREFSTRING fileName, MgStringCollection* whatArguments,
     CREFSTRING whyMessageId, MgStringCollection* whyArguments) throw() :
     MgApplicationException(methodName, lineNumber, fileName,
@@ -18,6 +18,6 @@ MgDwfSectionNotFoundException::MgDwfSectionNotFoundException(CREFSTRING methodNa
 /// \brief
 /// Destruct the object.
 ///
-MgDwfSectionNotFoundException::~MgDwfSectionNotFoundException() throw()
+MgdDwfSectionNotFoundException::~MgdDwfSectionNotFoundException() throw()
 {
 }

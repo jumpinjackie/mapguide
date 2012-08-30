@@ -41,7 +41,7 @@ MgSelectAggregateCommand::MgSelectAggregateCommand(MgResourceIdentifier* resourc
     }
     else
     {
-        throw new MgConnectionFailedException(L"MgSelectAggregateCommand.MgSelectAggregateCommand", __LINE__, __WFILE__, NULL, L"", NULL);
+        throw new MgdConnectionFailedException(L"MgSelectAggregateCommand.MgSelectAggregateCommand", __LINE__, __WFILE__, NULL, L"", NULL);
     }
     // Create FdoISelectAggregates command
     FdoPtr<FdoIConnection> fdoConn = m_connection->GetConnection();

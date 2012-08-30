@@ -1,19 +1,21 @@
 #ifndef DESKTOP_STYLIZE_LAYER_FAILED_EXCEPTION_H
 #define DESKTOP_STYLIZE_LAYER_FAILED_EXCEPTION_H
 
+/// \ingroup Desktop_Exceptions_Module
+
 ///////////////////////////////////////////////////////////////////////////////
 /// \brief
 /// Thrown when a stylize layer fails.
 ///
-class MG_DESKTOP_API MgStylizeLayerFailedException : public MgApplicationException
+class MG_DESKTOP_API MgdStylizeLayerFailedException : public MgApplicationException
 {
-    DECLARE_CLASSNAME(MgStylizeLayerFailedException)
+    DECLARE_CLASSNAME(MgdStylizeLayerFailedException)
 
 EXTERNAL_API:
 
     ///////////////////////////////////////////////////////////////////////////
     /// \brief
-    /// Construct a MgStylizeLayerFailedException object.
+    /// Construct a MgdStylizeLayerFailedException object.
     ///
     /// \param methodName
     /// Name of the method where the exception occurred.
@@ -28,23 +30,23 @@ EXTERNAL_API:
     /// \param whyArguments
     /// Collection of arguments used to format the message that describes why the exception occurs.
     ///
-    MgStylizeLayerFailedException(CREFSTRING methodName, INT32 lineNumber,
+    MgdStylizeLayerFailedException(CREFSTRING methodName, INT32 lineNumber,
         CREFSTRING fileName, MgStringCollection* whatArguments,
         CREFSTRING whyMessageId, MgStringCollection* whyArguments) throw();
 
     ///////////////////////////////////////////////////////////////////////////
     /// \brief
-    /// Destructor for a MgStylizeLayerFailedException object.
+    /// Destructor for a MgdStylizeLayerFailedException object.
     ///
-    virtual ~MgStylizeLayerFailedException() throw();
+    virtual ~MgdStylizeLayerFailedException() throw();
 
 INTERNAL_API:
 
-    DECLARE_EXCEPTION_DEFAULTS(MgStylizeLayerFailedException)
+    DECLARE_EXCEPTION_DEFAULTS(MgdStylizeLayerFailedException)
 
 CLASS_ID:
 
-    static const INT32 m_cls_id = MapGuide_Desktop_Exception_MgStylizeLayerFailedException;
+    static const INT32 m_cls_id = MapGuide_Desktop_Exception_StylizeLayerFailedException;
 };
 
 #endif

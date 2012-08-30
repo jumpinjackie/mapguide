@@ -105,7 +105,7 @@ INPUT                  = external_topics \
                          ../Common/Foundation \
                          ../Common/Geometry \
                          ../Common/PlatformBase \
-                         ../Desktop/MgDesktop 
+                         ../Desktop/MgDesktop
 INPUT_ENCODING         = UTF-8
 FILE_PATTERNS          = *.h
 RECURSIVE              = YES
@@ -171,6 +171,35 @@ EXCLUDE_PATTERNS       = */Buffer/BorderWalker.h \
                          */Data/Vector3D.h \
                          */Data/Margin.h \
                          */Data/SerializableCollection.h \
+                         */Log \
+                         */Services/Feature/Commands \
+                         */Services/Drawing \
+                         */Services/Resource \
+                         */Services/Feature/Fdo* \
+                         */Services/Feature/Feature* \
+                         */Services/Feature/Gws* \
+                         */Services/Feature/GeometryDataReaderCreator.h \
+                         */Services/Feature/Int16DataReaderCreator.h \
+                         */Services/Feature/Int32DataReaderCreator.h \
+                         */Services/Feature/Int64DataReaderCreator.h \
+                         */Services/Feature/JoinFeatureReader.h \
+                         */Services/Feature/Matrix.h \
+                         */Services/Feature/MgCSTrans.h \
+                         */Services/Feature/ProjectedFeatureReader.h \
+                         */Services/Feature/SingleDataReaderCreator.h \
+                         */Services/Feature/SpatialContextCacheItem.h \
+                         */Services/Feature/StringDataReaderCreator.h \
+                         */Services/Feature/RasterHelper.h \
+                         */Services/Feature/TransformCache.h \
+                         */Services/Feature/UniqueFunction.h \
+                         */Services/Rendering/RSMg* \
+                         */Services/Rendering/LegendPlotUtil.h \
+                         */Services/Rendering/MappingUtil.h \
+                         */Services/Stylization \
+                         */Services/Tile \
+                         */System/Mutex.h \
+                         */System/ThreadBase.h \
+                         */System/TimerUtil.h \
                          */.svn
 EXCLUDE_SYMBOLS        =
 EXAMPLE_PATH           = headers_and_footers

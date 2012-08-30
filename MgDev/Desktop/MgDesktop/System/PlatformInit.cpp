@@ -195,7 +195,7 @@ static bool InitializeStaticPlatformData();
 static bool initStatic = InitializeStaticPlatformData();
 
 #define EXCEPTION_CLASS_CREATOR(className) \
-    fact->Register(MapGuide_Desktop_Exception_##className, className::CreateObject);
+    fact->Register(MapGuide_Desktop_Exception_##className, Mgd##className::CreateObject);
 
 bool InitializeStaticPlatformData()
 {
@@ -206,19 +206,19 @@ bool InitializeStaticPlatformData()
     fact->Register(MapGuide_Desktop_MapLayer_Layer, MgdLayer::CreateObject);
     fact->Register(MapGuide_Desktop_MapLayer_Selection, MgdSelection::CreateObject);
 
-    EXCEPTION_CLASS_CREATOR(MgConnectionFailedException)
-    EXCEPTION_CLASS_CREATOR(MgDuplicateParameterException)
-    EXCEPTION_CLASS_CREATOR(MgDwfException)
-    EXCEPTION_CLASS_CREATOR(MgDwfSectionNotFoundException)
-    EXCEPTION_CLASS_CREATOR(MgDwfSectionResourceNotFoundException)
-    EXCEPTION_CLASS_CREATOR(MgInvalidDwfPackageException)
-    EXCEPTION_CLASS_CREATOR(MgInvalidDwfSectionException)
-    EXCEPTION_CLASS_CREATOR(MgInvalidFeatureSourceException)
-    EXCEPTION_CLASS_CREATOR(MgParameterNotFoundException)
-    EXCEPTION_CLASS_CREATOR(MgStylizeLayerFailedException)
-    EXCEPTION_CLASS_CREATOR(MgInvalidPrintLayoutFontSizeUnitsException)
-    EXCEPTION_CLASS_CREATOR(MgInvalidPrintLayoutPositionUnitsException)
-    EXCEPTION_CLASS_CREATOR(MgInvalidPrintLayoutSizeUnitsException)
+    EXCEPTION_CLASS_CREATOR(ConnectionFailedException)
+    EXCEPTION_CLASS_CREATOR(DuplicateParameterException)
+    EXCEPTION_CLASS_CREATOR(DwfException)
+    EXCEPTION_CLASS_CREATOR(DwfSectionNotFoundException)
+    EXCEPTION_CLASS_CREATOR(DwfSectionResourceNotFoundException)
+    EXCEPTION_CLASS_CREATOR(InvalidDwfPackageException)
+    EXCEPTION_CLASS_CREATOR(InvalidDwfSectionException)
+    EXCEPTION_CLASS_CREATOR(InvalidFeatureSourceException)
+    EXCEPTION_CLASS_CREATOR(ParameterNotFoundException)
+    EXCEPTION_CLASS_CREATOR(StylizeLayerFailedException)
+    EXCEPTION_CLASS_CREATOR(InvalidPrintLayoutFontSizeUnitsException)
+    EXCEPTION_CLASS_CREATOR(InvalidPrintLayoutPositionUnitsException)
+    EXCEPTION_CLASS_CREATOR(InvalidPrintLayoutSizeUnitsException)
 
     return true;
 }

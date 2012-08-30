@@ -132,7 +132,7 @@ const MgOperationParameter& MgOperationInfo::GetParameter(CREFSTRING name,
         MgStringCollection arguments;
         arguments.Add(name);
 
-        throw new MgParameterNotFoundException(
+        throw new MgdParameterNotFoundException(
             L"MgOperationInfo.GetParameter", __LINE__, __WFILE__, &arguments, L"", NULL);
     }
 
@@ -158,7 +158,7 @@ void MgOperationInfo::AddParameter(CREFSTRING name,
         MgStringCollection arguments;
         arguments.Add(name);
 
-        throw new MgDuplicateParameterException(
+        throw new MgdDuplicateParameterException(
             L"MgOperationInfo.SetParameter", __LINE__, __WFILE__, &arguments, L"", NULL);
     }
 }

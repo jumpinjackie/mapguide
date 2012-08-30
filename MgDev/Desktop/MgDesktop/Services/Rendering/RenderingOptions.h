@@ -3,17 +3,17 @@
 
 #include "MgDesktop.h"
 
-/// \ingroup Desktop_Module
+/// \ingroup Desktop_Misc_Module
 /// \{
 
 ///////////////////////////////////////////////////////////////////////////////
 /// \brief
 /// Options for Rendering Service.
 ///
-class MG_DESKTOP_API MgRenderingOptions: public MgSerializable
+class MG_DESKTOP_API MgdRenderingOptions: public MgSerializable
 {
     MG_DECL_DYNCREATE();
-    DECLARE_CLASSNAME(MgRenderingOptions)
+    DECLARE_CLASSNAME(MgdRenderingOptions)
 
 PUBLISHED_API:
 
@@ -36,7 +36,7 @@ PUBLISHED_API:
 
     /////////////////////////////////////////////////////////////////
     /// \brief
-    /// Construct an MgRenderingOptions object
+    /// Construct an MgdRenderingOptions object
     ///
     /// \param format
     /// Input
@@ -48,7 +48,7 @@ PUBLISHED_API:
     /// Input
     /// Selection color, including filling color and boundary color
     ///
-    MgRenderingOptions(CREFSTRING format, INT32 behavior, MgColor* selectionColor);
+    MgdRenderingOptions(CREFSTRING format, INT32 behavior, MgColor* selectionColor);
 
     /////////////////////////////////////////////////////////////////
     /// \brief
@@ -101,13 +101,13 @@ INTERNAL_API:
     /// \brief
     /// Default constructor
     ///
-    MgRenderingOptions();
+    MgdRenderingOptions();
 
     /////////////////////////////////////////////////////////////////
     /// \brief
     /// Virtual destructor
     ///
-    virtual ~MgRenderingOptions();
+    virtual ~MgdRenderingOptions();
 
 protected:
 

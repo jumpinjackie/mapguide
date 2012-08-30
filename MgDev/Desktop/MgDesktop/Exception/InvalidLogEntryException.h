@@ -15,7 +15,7 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
-/// \ingroup Exceptions_Module
+/// \ingroup Desktop_Exceptions_Module
 
 #ifndef MG_INVALID_LOG_ENTRY_EXCEPTION_H_
 #define MG_INVALID_LOG_ENTRY_EXCEPTION_H_
@@ -65,7 +65,7 @@ INTERNAL_API:
 
 CLASS_ID:
 
-    static const INT32 m_cls_id = MapGuide_Desktop_Exception_MgInvalidLogEntryException;
+    static const INT32 m_cls_id = MapGuide_Desktop_Exception_InvalidLogEntryException;
 };
 
 #endif

@@ -467,7 +467,7 @@ int MgUnmanagedDataManager::SubstituteDataPathAliases(string& doc)
                     STRING mName = MgUtil::MultiByteToWideChar(mappingName);
                     MgStringCollection args;
                     args.Add(mName);
-                    throw new MgAliasNotFoundException(L"MgUnmanagedDataManager::SubstituteDataPathAliases", __LINE__, __WFILE__, &args, L"MgAliasNotFoundException", NULL);
+                    throw new MgdAliasNotFoundException(L"MgUnmanagedDataManager::SubstituteDataPathAliases", __LINE__, __WFILE__, &args, L"MgdAliasNotFoundException", NULL);
                 }
             }
             break;

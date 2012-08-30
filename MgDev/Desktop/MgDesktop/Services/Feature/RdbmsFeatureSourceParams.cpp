@@ -1,79 +1,79 @@
 #include "RdbmsFeatureSourceParams.h"
 
-MgRdbmsFeatureSourceParams::MgRdbmsFeatureSourceParams()
+MgdRdbmsFeatureSourceParams::MgdRdbmsFeatureSourceParams()
 {
 
 }
 
-MgRdbmsFeatureSourceParams::~MgRdbmsFeatureSourceParams()
+MgdRdbmsFeatureSourceParams::~MgdRdbmsFeatureSourceParams()
 {
 
 }
 
-void MgRdbmsFeatureSourceParams::Serialize(MgStream* stream)
+void MgdRdbmsFeatureSourceParams::Serialize(MgStream* stream)
 {
-    NOT_IMPLEMENTED(L"MgRdbmsFeatureSourceParams::Serialize");
+    NOT_IMPLEMENTED(L"MgdRdbmsFeatureSourceParams::Serialize");
 }
 
-void MgRdbmsFeatureSourceParams::Deserialize(MgStream* stream)
+void MgdRdbmsFeatureSourceParams::Deserialize(MgStream* stream)
 {
-    NOT_IMPLEMENTED(L"MgRdbmsFeatureSourceParams::Serialize");
+    NOT_IMPLEMENTED(L"MgdRdbmsFeatureSourceParams::Serialize");
 }
 
-void MgRdbmsFeatureSourceParams::Dispose() { delete this; }
+void MgdRdbmsFeatureSourceParams::Dispose() { delete this; }
 
-STRING MgRdbmsFeatureSourceParams::GetProviderName() { return m_provider; }
+STRING MgdRdbmsFeatureSourceParams::GetProviderName() { return m_provider; }
 
-void MgRdbmsFeatureSourceParams::SetProviderName(CREFSTRING providerName) { m_provider = providerName; }
+void MgdRdbmsFeatureSourceParams::SetProviderName(CREFSTRING providerName) { m_provider = providerName; }
 
-STRING MgRdbmsFeatureSourceParams::GetService() { return m_service; }
+STRING MgdRdbmsFeatureSourceParams::GetService() { return m_service; }
 
-void MgRdbmsFeatureSourceParams::SetService(CREFSTRING service) { m_service = service; }
+void MgdRdbmsFeatureSourceParams::SetService(CREFSTRING service) { m_service = service; }
 
-STRING MgRdbmsFeatureSourceParams::GetPassword() { return m_password; }
+STRING MgdRdbmsFeatureSourceParams::GetPassword() { return m_password; }
 
-void MgRdbmsFeatureSourceParams::SetPassword(CREFSTRING pwd) { m_password = pwd; }
+void MgdRdbmsFeatureSourceParams::SetPassword(CREFSTRING pwd) { m_password = pwd; }
 
-STRING MgRdbmsFeatureSourceParams::GetUsername() { return m_username; }
+STRING MgdRdbmsFeatureSourceParams::GetUsername() { return m_username; }
 
-void MgRdbmsFeatureSourceParams::SetUsername(CREFSTRING username) { m_username = username; }
+void MgdRdbmsFeatureSourceParams::SetUsername(CREFSTRING username) { m_username = username; }
 
-STRING MgRdbmsFeatureSourceParams::GetDataStore() { return m_datastore; }
+STRING MgdRdbmsFeatureSourceParams::GetDataStore() { return m_datastore; }
 
-void MgRdbmsFeatureSourceParams::SetDataStore(CREFSTRING dataStore) { m_datastore = dataStore; }
+void MgdRdbmsFeatureSourceParams::SetDataStore(CREFSTRING dataStore) { m_datastore = dataStore; }
 
-STRING MgRdbmsFeatureSourceParams::GetSpatialContextName() { return m_scName; }
+STRING MgdRdbmsFeatureSourceParams::GetSpatialContextName() { return m_scName; }
 
-void MgRdbmsFeatureSourceParams::SetSpatialContextName(CREFSTRING name) { m_scName = name; }
+void MgdRdbmsFeatureSourceParams::SetSpatialContextName(CREFSTRING name) { m_scName = name; }
 
-STRING MgRdbmsFeatureSourceParams::GetSpatialContextDescription() { return m_scDescription; }
+STRING MgdRdbmsFeatureSourceParams::GetSpatialContextDescription() { return m_scDescription; }
 
-void MgRdbmsFeatureSourceParams::SetSpatialContextDescription(CREFSTRING description) { m_scDescription = description; }
+void MgdRdbmsFeatureSourceParams::SetSpatialContextDescription(CREFSTRING description) { m_scDescription = description; }
 
-STRING MgRdbmsFeatureSourceParams::GetCoordinateSystemWkt() { return m_scCsWkt; }
+STRING MgdRdbmsFeatureSourceParams::GetCoordinateSystemWkt() { return m_scCsWkt; }
 
-void MgRdbmsFeatureSourceParams::SetCoordinateSystemWkt(CREFSTRING srsWkt) { m_scCsWkt = srsWkt; }
+void MgdRdbmsFeatureSourceParams::SetCoordinateSystemWkt(CREFSTRING srsWkt) { m_scCsWkt = srsWkt; }
 
-STRING MgRdbmsFeatureSourceParams::GetCoordinateSystemName() { return m_scCsName; }
+STRING MgdRdbmsFeatureSourceParams::GetCoordinateSystemName() { return m_scCsName; }
 
-void MgRdbmsFeatureSourceParams::SetCoordinateSystemName(CREFSTRING csName) { m_scCsName = csName; }
+void MgdRdbmsFeatureSourceParams::SetCoordinateSystemName(CREFSTRING csName) { m_scCsName = csName; }
 
-double MgRdbmsFeatureSourceParams::GetXYTolerance() { return m_xyTolerance; }
+double MgdRdbmsFeatureSourceParams::GetXYTolerance() { return m_xyTolerance; }
 
-void MgRdbmsFeatureSourceParams::SetXYTolerance(double tolerance) { m_xyTolerance = tolerance; }
+void MgdRdbmsFeatureSourceParams::SetXYTolerance(double tolerance) { m_xyTolerance = tolerance; }
 
-double MgRdbmsFeatureSourceParams::GetZTolerance() { return m_zTolerance; }
+double MgdRdbmsFeatureSourceParams::GetZTolerance() { return m_zTolerance; }
 
-void MgRdbmsFeatureSourceParams::SetZTolerance(double tolerance) { m_zTolerance = tolerance; }
+void MgdRdbmsFeatureSourceParams::SetZTolerance(double tolerance) { m_zTolerance = tolerance; }
 
-MgFeatureSchema* MgRdbmsFeatureSourceParams::GetFeatureSchema() { return SAFE_ADDREF((MgFeatureSchema*)m_schema); }
+MgFeatureSchema* MgdRdbmsFeatureSourceParams::GetFeatureSchema() { return SAFE_ADDREF((MgFeatureSchema*)m_schema); }
 
-void MgRdbmsFeatureSourceParams::SetFeatureSchema(MgFeatureSchema* featureSchema) { m_schema = SAFE_ADDREF(featureSchema); }
+void MgdRdbmsFeatureSourceParams::SetFeatureSchema(MgFeatureSchema* featureSchema) { m_schema = SAFE_ADDREF(featureSchema); }
 
-MgEnvelope* MgRdbmsFeatureSourceParams::GetSpatialContextExtents() { return SAFE_ADDREF((MgEnvelope*)m_extents); }
+MgEnvelope* MgdRdbmsFeatureSourceParams::GetSpatialContextExtents() { return SAFE_ADDREF((MgEnvelope*)m_extents); }
 
-void MgRdbmsFeatureSourceParams::SetSpatialContextExtents(MgEnvelope* extents) { m_extents = SAFE_ADDREF(extents); }
+void MgdRdbmsFeatureSourceParams::SetSpatialContextExtents(MgEnvelope* extents) { m_extents = SAFE_ADDREF(extents); }
 
-bool MgRdbmsFeatureSourceParams::GetIsFdoEnabled() { return m_useFdoMetadata; }
+bool MgdRdbmsFeatureSourceParams::GetIsFdoEnabled() { return m_useFdoMetadata; }
 
-void MgRdbmsFeatureSourceParams::SetIsFdoEnabled(bool useFdoMetadata) { m_useFdoMetadata = useFdoMetadata; }
+void MgdRdbmsFeatureSourceParams::SetIsFdoEnabled(bool useFdoMetadata) { m_useFdoMetadata = useFdoMetadata; }

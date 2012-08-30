@@ -20,7 +20,7 @@
 
 #include "UnitType.h"
 
-/// \ingroup Desktop_Module
+/// \ingroup Desktop_Misc_Module
 /// \{
 class MgResourceIdentifier;
 
@@ -28,25 +28,25 @@ class MgResourceIdentifier;
 /// \brief
 /// Specifies the ResourceId of the PrintLayout to use for a particular
 /// map, the title and the type of units to use in the layout.
-class MG_DESKTOP_API MgLayout : public MgSerializable
+class MG_DESKTOP_API MgdLayout : public MgSerializable
 {
     MG_DECL_DYNCREATE()
-    DECLARE_CLASSNAME(MgLayout)
+    DECLARE_CLASSNAME(MgdLayout)
 
 PUBLISHED_API:
     ///////////////////////////////////////////////////////////////////////////////////
     /// \brief
-    /// Initializes a new MgLayout object given a layout definition, title and unit type.
+    /// Initializes a new MgdLayout object given a layout definition, title and unit type.
     ///
     /// <!-- Syntax in .Net, Java, and PHP -->
     /// \htmlinclude DotNetSyntaxTop.html
-    /// MgLayout(MgResourceIdentifier layoutDefinition, string title, string unitType);
+    /// MgdLayout(MgResourceIdentifier layoutDefinition, string title, string unitType);
     /// \htmlinclude SyntaxBottom.html
     /// \htmlinclude JavaSyntaxTop.html
-    /// MgLayout(MgResourceIdentifier layoutDefinition, String title, String unitType);
+    /// MgdLayout(MgResourceIdentifier layoutDefinition, String title, String unitType);
     /// \htmlinclude SyntaxBottom.html
     /// \htmlinclude PHPSyntaxTop.html
-    /// MgLayout(MgResourceIdentifier layoutDefinition, string title, string unitType);
+    /// MgdLayout(MgResourceIdentifier layoutDefinition, string title, string unitType);
     /// \htmlinclude SyntaxBottom.html
     ///
     /// \param layoutDefinition (MgResourceIdentifier)
@@ -61,7 +61,7 @@ PUBLISHED_API:
     /// \return
     /// Nothing
     ///
-    MgLayout(MgResourceIdentifier* layoutDefinition, CREFSTRING title, CREFSTRING unitType);
+    MgdLayout(MgResourceIdentifier* layoutDefinition, CREFSTRING title, CREFSTRING unitType);
 
     ///////////////////////////////////////////////////////////////////////////////////
     /// \brief
@@ -230,18 +230,18 @@ INTERNAL_API:
 
     ///////////////////////////////////////////////////////////////////////////////////
     /// \brief
-    /// Construct an MgLayout object.
+    /// Construct an MgdLayout object.
     ///
     /// \return
     /// Nothing
     ///
-    MgLayout();
+    MgdLayout();
 
     //////////////////////////////////////////////////////////////////
     /// \brief
-    /// Destroy a MgLayout object
+    /// Destroy a MgdLayout object
     ///
-    ~MgLayout();
+    ~MgdLayout();
 
     //////////////////////////////////////////////////////////////////
     /// \brief

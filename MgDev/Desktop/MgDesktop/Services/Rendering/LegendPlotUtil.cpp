@@ -48,7 +48,7 @@ MgLegendPlotUtil::~MgLegendPlotUtil()
 }
 
 
-void MgLegendPlotUtil::AddLegendElement(double dMapScale, Renderer& dr, MgdMap* map, MgPlotSpecification* legendSpec, double legendOffsetX, double legendOffsetY)
+void MgLegendPlotUtil::AddLegendElement(double dMapScale, Renderer& dr, MgdMap* map, MgdPlotSpecification* legendSpec, double legendOffsetX, double legendOffsetY)
 {
     if (NULL == map || NULL == legendSpec)
     {
@@ -85,7 +85,7 @@ void MgLegendPlotUtil::AddLegendElement(double dMapScale, Renderer& dr, MgdMap* 
 }
 
 
-void MgLegendPlotUtil::BuildLegendContent(MgdMap* map, double scale, MgPlotSpecification* legendSpec, double legendOffsetX, double legendOffsetY, Renderer& dr, double convertUnits)
+void MgLegendPlotUtil::BuildLegendContent(MgdMap* map, double scale, MgdPlotSpecification* legendSpec, double legendOffsetX, double legendOffsetY, Renderer& dr, double convertUnits)
 {
     RS_TextDef textDef;
     RS_FontDef fontDef(m_legendFontName, legendFontHeightMeters, RS_FontStyle_Regular, RS_Units_Device);
@@ -157,7 +157,7 @@ void MgLegendPlotUtil::BuildLegendContent(MgdMap* map, double scale, MgPlotSpeci
 }
 
 
-void MgLegendPlotUtil::ProcessLayersForLegend(MgdMap* map, double mapScale, MgLayerGroup* mggroup, double startX, double& startY, RS_TextDef textDef, Renderer& dr, MgPlotSpecification* legendSpec, double legendOffsetY, double convertUnits)
+void MgLegendPlotUtil::ProcessLayersForLegend(MgdMap* map, double mapScale, MgLayerGroup* mggroup, double startX, double& startY, RS_TextDef textDef, Renderer& dr, MgdPlotSpecification* legendSpec, double legendOffsetY, double convertUnits)
 {
     double x;
     double &y = startY;
@@ -493,7 +493,7 @@ void MgLegendPlotUtil::AddScalebarElement(MgPrintLayout* layout, RS_Bounds& mapB
 
     // Determine the distance units
     STRING unitsText = L"";
-    if (layout->GetScaleBarUnits() == MgUnitType::USEnglish)
+    if (layout->GetScaleBarUnits() == MgdUnitType::USEnglish)
     {
         if (distancePerDivision >= MI_TO_IN)
         {
@@ -558,7 +558,7 @@ void MgLegendPlotUtil::AddScalebarElement(MgPrintLayout* layout, RS_Bounds& mapB
     // Align scale bar horizontally with the map
     double scalebarStartX = dr.mapOffsetX() - MgPrintLayout::LegendPadding*convertUnits;  // legend padding
 
-    Ptr<MgPlotSpecification> spec = layout->GetPlotSize();
+    Ptr<MgdPlotSpecification> spec = layout->GetPlotSize();
 
     if (scalebarStartX < spec->GetMarginLeft())
         scalebarStartX = spec->GetMarginLeft();
@@ -784,7 +784,7 @@ void MgLegendPlotUtil::AddNorthArrowElement(MgPrintLayout* layout, EPlotRenderer
     double startX = dr.mapOffsetX() + dr.mapWidth();
     if (startX > layout->PageWidth())
     {
-        Ptr<MgPlotSpecification> spec = layout->GetPlotSize();
+        Ptr<MgdPlotSpecification> spec = layout->GetPlotSize();
         startX = layout->PageWidth() - spec->GetMarginLeft();
     }
 
@@ -858,7 +858,7 @@ void MgLegendPlotUtil::AddUrlElement(MgPrintLayout* layout, STRING& mapURL, EPlo
     textDef.halign() = RS_HAlignment_Left;
     textDef.valign() = RS_VAlignment_Base;
 
-    Ptr<MgPlotSpecification> spec = layout->GetPlotSize();
+    Ptr<MgdPlotSpecification> spec = layout->GetPlotSize();
     double x = spec->GetMarginLeft();
     double y = spec->GetMarginBottom();
 
@@ -886,7 +886,7 @@ void MgLegendPlotUtil::AddDateTimeElement(MgPrintLayout* layout, EPlotRenderer& 
     textDef.halign() = RS_HAlignment_Right;
     textDef.valign() = RS_VAlignment_Base;
 
-    Ptr<MgPlotSpecification> spec = layout->GetPlotSize();
+    Ptr<MgdPlotSpecification> spec = layout->GetPlotSize();
     double x = layout->PageWidth() - spec->GetMarginRight();
     double y = spec->GetMarginBottom();
 
@@ -897,7 +897,7 @@ void MgLegendPlotUtil::AddDateTimeElement(MgPrintLayout* layout, EPlotRenderer& 
 
 void MgLegendPlotUtil::AddCustomLogoElement(MgPrintLayout* layout, EPlotRenderer& dr)
 {
-    Ptr<MgPlotSpecification> plotSpec = layout->GetPlotSize();
+    Ptr<MgdPlotSpecification> plotSpec = layout->GetPlotSize();
     STRING pageUnits = plotSpec->GetPageSizeUnits();
     if (!pageUnits.empty())
     {
@@ -957,7 +957,7 @@ void MgLegendPlotUtil::AddCustomLogoElement(MgPrintLayout* layout, EPlotRenderer
         else
         {
             // invalid positionUnits specified
-            throw new MgInvalidPrintLayoutPositionUnitsException(L"MgLegendPlotUtil.AddCustomLogoElement",
+            throw new MgdInvalidPrintLayoutPositionUnitsException(L"MgLegendPlotUtil.AddCustomLogoElement",
                 __LINE__, __WFILE__, NULL, L"", NULL);
         }
 
@@ -996,7 +996,7 @@ void MgLegendPlotUtil::AddCustomLogoElement(MgPrintLayout* layout, EPlotRenderer
         else
         {
             // invalid positionUnits specified - should never get here
-            throw new MgInvalidPrintLayoutPositionUnitsException(L"MgLegendPlotUtil.AddCustomLogoElement",
+            throw new MgdInvalidPrintLayoutPositionUnitsException(L"MgLegendPlotUtil.AddCustomLogoElement",
                 __LINE__, __WFILE__, NULL, L"", NULL);
         }
 
@@ -1020,7 +1020,7 @@ void MgLegendPlotUtil::AddCustomLogoElement(MgPrintLayout* layout, EPlotRenderer
         else
         {
             // invalid positionUnits specified
-            throw new MgInvalidPrintLayoutPositionUnitsException(L"MgLegendPlotUtil.AddCustomLogoElement",
+            throw new MgdInvalidPrintLayoutPositionUnitsException(L"MgLegendPlotUtil.AddCustomLogoElement",
                 __LINE__, __WFILE__, NULL, L"", NULL);
         }
 
@@ -1037,7 +1037,7 @@ void MgLegendPlotUtil::AddCustomLogoElement(MgPrintLayout* layout, EPlotRenderer
         else
         {
             // invalid units specified - should never get here
-            throw new MgInvalidPrintLayoutSizeUnitsException(L"MgLegendPlotUtil.AddCustomLogoElement",
+            throw new MgdInvalidPrintLayoutSizeUnitsException(L"MgLegendPlotUtil.AddCustomLogoElement",
                 __LINE__, __WFILE__, NULL, L"", NULL);
         }
 
@@ -1057,7 +1057,7 @@ void MgLegendPlotUtil::AddCustomLogoElement(MgPrintLayout* layout, EPlotRenderer
 
 void MgLegendPlotUtil::AddCustomTextElement(MgPrintLayout* layout, EPlotRenderer& dr)
 {
-    Ptr<MgPlotSpecification> plotSpec = layout->GetPlotSize();
+    Ptr<MgdPlotSpecification> plotSpec = layout->GetPlotSize();
     STRING pageUnits = plotSpec->GetPageSizeUnits();
     if (!pageUnits.empty())
     {
@@ -1122,7 +1122,7 @@ void MgLegendPlotUtil::AddCustomTextElement(MgPrintLayout* layout, EPlotRenderer
         else
         {
             // invalid positionUnits specified
-            throw new MgInvalidPrintLayoutPositionUnitsException(L"MgLegendPlotUtil.AddCustomLogoElement", __LINE__, __WFILE__, NULL, L"", NULL);
+            throw new MgdInvalidPrintLayoutPositionUnitsException(L"MgLegendPlotUtil.AddCustomLogoElement", __LINE__, __WFILE__, NULL, L"", NULL);
         }
 
         if (positionUnits == L"percent")  // NOXLATE
@@ -1160,7 +1160,7 @@ void MgLegendPlotUtil::AddCustomTextElement(MgPrintLayout* layout, EPlotRenderer
         else
         {
             // invalid positionUnits specified - should never get here
-            throw new MgInvalidPrintLayoutPositionUnitsException(L"MgLegendPlotUtil.AddCustomLogoElement", __LINE__, __WFILE__, NULL, L"", NULL);
+            throw new MgdInvalidPrintLayoutPositionUnitsException(L"MgLegendPlotUtil.AddCustomLogoElement", __LINE__, __WFILE__, NULL, L"", NULL);
         }
 
         double textSize = 0.0;
@@ -1184,7 +1184,7 @@ void MgLegendPlotUtil::AddCustomTextElement(MgPrintLayout* layout, EPlotRenderer
         else
         {
             // invalid positionUnits specified
-            throw new MgInvalidPrintLayoutFontSizeUnitsException(L"MgLegendPlotUtil.AddCustomTextElement", __LINE__, __WFILE__, NULL, L"", NULL);
+            throw new MgdInvalidPrintLayoutFontSizeUnitsException(L"MgLegendPlotUtil.AddCustomTextElement", __LINE__, __WFILE__, NULL, L"", NULL);
         }
 
         if (sizeUnits == L"inches")  // NOXLATE
@@ -1202,7 +1202,7 @@ void MgLegendPlotUtil::AddCustomTextElement(MgPrintLayout* layout, EPlotRenderer
         else
         {
             // invalid units specified
-            throw new MgInvalidPrintLayoutFontSizeUnitsException(L"MgLegendPlotUtil.AddCustomTextElement", __LINE__, __WFILE__, NULL, L"", NULL);
+            throw new MgdInvalidPrintLayoutFontSizeUnitsException(L"MgLegendPlotUtil.AddCustomTextElement", __LINE__, __WFILE__, NULL, L"", NULL);
         }
         fontName = textInfo.GetFontName();
         fontHeight = textSize;
@@ -1246,7 +1246,7 @@ void MgLegendPlotUtil::AddLayoutElements(MgPrintLayout* layout, STRING mapName, 
         ComputeLegendOffsetAndSize(layout, dMapScale, dr, map, legendOffsetX, legendOffsetY, legendWidth, legendHeight);
 
         float legendMargin = (float)(defaultLegendMargin*convertUnits);
-        MgPlotSpecification legendSpec((float)legendWidth, float(legendHeight), pageUnits, legendMargin, legendMargin, legendMargin, legendMargin);
+        MgdPlotSpecification legendSpec((float)legendWidth, float(legendHeight), pageUnits, legendMargin, legendMargin, legendMargin, legendMargin);
 
         // add the legend directly to the ePlot
         AddLegendElement(dMapScale, dr, map, &legendSpec, legendOffsetX, legendOffsetY);
@@ -1299,7 +1299,7 @@ void MgLegendPlotUtil::ComputeLegendOffsetAndSize(MgPrintLayout* layout, double 
     //legend x offset = map offset - legend width - legend padding
     double startX = dr.mapOffsetX() - (MgPrintLayout::LegendWidth + MgPrintLayout::LegendPadding)*convertUnits;
 
-    Ptr<MgPlotSpecification> spec = layout->GetPlotSize();
+    Ptr<MgdPlotSpecification> spec = layout->GetPlotSize();
     if (startX < spec->GetMarginLeft())
     {
         startX = spec->GetMarginLeft();

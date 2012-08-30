@@ -19,22 +19,22 @@
 #include "UnitType.h"
 
 ///////////////////////////////////////////////////////////////////////////////
-/// MgUnitType defines enumerated values used to determine the type
+/// MgdUnitType defines enumerated values used to determine the type
 /// of units for plot decorations (scale bar).
 ///
-const STRING MgUnitType::USEnglish       = L"US-English";
-const STRING MgUnitType::Metric          = L"Metric";
+const STRING MgdUnitType::USEnglish       = L"US-English";
+const STRING MgdUnitType::Metric          = L"Metric";
 
 
 ///////////////////////////////////////////////////////////////////////////////
 /// Page size units for Mapping Service.
 ///
-const STRING MgPageUnitsType::Inches        = L"in";
-const STRING MgPageUnitsType::Millimeters   = L"mm";
+const STRING MgdPageUnitsType::Inches        = L"in";
+const STRING MgdPageUnitsType::Millimeters   = L"mm";
 
 ///////////////////////////////////////////////////////////////////////////////
 /// Coordinate space for geometry returned from QueryFeatureProperties.
 ///
-const STRING MgCoordinateSpace::None        = L"None";
-const STRING MgCoordinateSpace::Map         = L"Map";
-const STRING MgCoordinateSpace::Display     = L"Display";
+const STRING MgdCoordinateSpace::None        = L"None";
+const STRING MgdCoordinateSpace::Map         = L"Map";
+const STRING MgdCoordinateSpace::Display     = L"Display";

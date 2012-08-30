@@ -22,6 +22,7 @@ using namespace std;
 
 #include <vector>
 
+/// \cond INTERNAL
 class MgByteDataReaderCreator : public MgDataReaderCreator<INT8>
 {
     DECLARE_CLASSNAME(MgByteDataReaderCreator)
@@ -52,5 +53,6 @@ public:
         delete this;
     }
 };
+/// \endcond
 
 #endif

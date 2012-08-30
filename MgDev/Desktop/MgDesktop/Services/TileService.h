@@ -2,7 +2,7 @@
 #define DESKTOP_TILE_SERVICE_H
 
 #include "Tile/TileCache.h"
-/// \ingroup Desktop_Module
+/// \ingroup Desktop_Service_Module
 /// \{
 class MG_DESKTOP_API MgdTileService : public MgService
 {

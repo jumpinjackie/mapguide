@@ -21,7 +21,7 @@
 using namespace std;
 
 #include <vector>
-
+/// \cond INTERNAL
 class MgDoubleDataReaderCreator : public MgDataReaderCreator<double>
 {
     DECLARE_CLASSNAME(MgDoubleDataReaderCreator)
@@ -52,5 +52,5 @@ public:
         delete this;
     }
 };
-
+/// \endcond
 #endif

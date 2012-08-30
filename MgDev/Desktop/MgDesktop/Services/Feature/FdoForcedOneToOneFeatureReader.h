@@ -21,7 +21,7 @@
 #include <set>
 
 class FdoIFeatureReader;
-
+/// \cond INTERNAL
 class MgFdoForcedOneToOneFeatureReader: public FdoIFeatureReader
 {
 public:
@@ -90,5 +90,5 @@ private:
 
     FdoClassDefinition* m_cachedClsDef;
 };
-
+/// \endcond
 #endif

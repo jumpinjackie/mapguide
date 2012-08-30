@@ -21,7 +21,7 @@
 class MgDisposable;
 class FdoFunction;
 class MgReader;
-
+/// \cond INTERNAL
 class MgFeatureDistribution : public MgDisposable
 {
 public:
@@ -38,5 +38,5 @@ protected:
         delete this;
     }
 };
-
+/// \endcond
 #endif

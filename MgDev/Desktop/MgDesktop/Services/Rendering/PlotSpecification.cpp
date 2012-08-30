@@ -1,10 +1,10 @@
 #include "PlotSpecification.h"
 
-MG_IMPL_DYNCREATE(MgPlotSpecification)
+MG_IMPL_DYNCREATE(MgdPlotSpecification)
 
-// Construct a MgPlotSpecification object
+// Construct a MgdPlotSpecification object
 //
-MgPlotSpecification::MgPlotSpecification(float paperWidth, float paperHeight, CREFSTRING pageUnits,
+MgdPlotSpecification::MgdPlotSpecification(float paperWidth, float paperHeight, CREFSTRING pageUnits,
                                          float left, float top, float right, float bottom) :
     m_marginLeft(left), m_marginTop(top), m_marginRight(right), m_marginBottom(bottom)
 {
@@ -13,7 +13,7 @@ MgPlotSpecification::MgPlotSpecification(float paperWidth, float paperHeight, CR
     m_pageUnits = pageUnits;
 }
 
-MgPlotSpecification::MgPlotSpecification() : m_marginLeft(0), m_marginTop(0), m_marginRight(0), m_marginBottom(0)
+MgdPlotSpecification::MgdPlotSpecification() : m_marginLeft(0), m_marginTop(0), m_marginRight(0), m_marginBottom(0)
 {
     m_paperWidth = 0.;
     m_paperHeight = 0.;
@@ -21,67 +21,67 @@ MgPlotSpecification::MgPlotSpecification() : m_marginLeft(0), m_marginTop(0), m_
 
 // Returns the paper width in page units
 //
-float MgPlotSpecification::GetPaperWidth()
+float MgdPlotSpecification::GetPaperWidth()
 {
     return m_paperWidth;
 }
 
 // Sets the paper width in page units
 //
-void MgPlotSpecification::SetPaperWidth(float width)
+void MgdPlotSpecification::SetPaperWidth(float width)
 {
     m_paperWidth = width;
 }
 
 // Returns the paper height in page units
 //
-float MgPlotSpecification::GetPaperHeight()
+float MgdPlotSpecification::GetPaperHeight()
 {
     return m_paperHeight;
 }
 
 // Sets the paper height in page units
 //
-void MgPlotSpecification::SetPaperHeight(float height)
+void MgdPlotSpecification::SetPaperHeight(float height)
 {
     m_paperHeight = height;
 }
 
-// Returns the units of measure for the page.  See MgPageUnitsType for valid units.
+// Returns the units of measure for the page.  See MgdPageUnitsType for valid units.
 //
-STRING MgPlotSpecification::GetPageSizeUnits()
+STRING MgdPlotSpecification::GetPageSizeUnits()
 {
     return m_pageUnits;
 }
 
-// Set the units of measure for the page.  See MgPageUnitsType for valid units.
+// Set the units of measure for the page.  See MgdPageUnitsType for valid units.
 //
-void MgPlotSpecification::SetPageSizeUnits(CREFSTRING pageUnits)
+void MgdPlotSpecification::SetPageSizeUnits(CREFSTRING pageUnits)
 {
     m_pageUnits = pageUnits;
 }
 
-float MgPlotSpecification::GetMarginLeft()
+float MgdPlotSpecification::GetMarginLeft()
 {
     return m_marginLeft;
 }
 
-float MgPlotSpecification::GetMarginTop()
+float MgdPlotSpecification::GetMarginTop()
 {
     return m_marginTop;
 }
 
-float MgPlotSpecification::GetMarginRight()
+float MgdPlotSpecification::GetMarginRight()
 {
     return m_marginRight;
 }
 
-float MgPlotSpecification::GetMarginBottom()
+float MgdPlotSpecification::GetMarginBottom()
 {
     return m_marginBottom;
 }
 
-void MgPlotSpecification::SetMargins(float left, float top, float right, float bottom)
+void MgdPlotSpecification::SetMargins(float left, float top, float right, float bottom)
 {
     m_marginLeft   = left;
     m_marginTop    = top;
@@ -91,7 +91,7 @@ void MgPlotSpecification::SetMargins(float left, float top, float right, float b
 
 // Serialize data to a stream
 //
-void MgPlotSpecification::Serialize(MgStream* stream)
+void MgdPlotSpecification::Serialize(MgStream* stream)
 {
     stream->WriteSingle(m_paperWidth);
     stream->WriteSingle(m_paperHeight);
@@ -105,7 +105,7 @@ void MgPlotSpecification::Serialize(MgStream* stream)
 
 // Deserialize data from a stream
 //
-void MgPlotSpecification::Deserialize(MgStream* stream)
+void MgdPlotSpecification::Deserialize(MgStream* stream)
 {
     MgStreamReader* streamReader = (MgStreamReader*)stream;
 

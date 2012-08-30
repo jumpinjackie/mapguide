@@ -96,7 +96,7 @@ MgLongTransactionReader* MgGetLongTransactions::GetLongTransactions(MgResourceId
     }
     else
     {
-        throw new MgConnectionFailedException(L"MgGetLongTransactions::GetLongTransactions()", __LINE__, __WFILE__, NULL, L"", NULL);
+        throw new MgdConnectionFailedException(L"MgGetLongTransactions::GetLongTransactions()", __LINE__, __WFILE__, NULL, L"", NULL);
     }
 
     MG_FEATURE_SERVICE_CHECK_CONNECTION_CATCH_AND_THROW(resId, L"MgGetLongTransactions.GetLongTransactions")

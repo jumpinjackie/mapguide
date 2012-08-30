@@ -11,7 +11,7 @@ typedef std::list<MdfModel::MdfString> ColorStringList;
 
 class MgServiceFactory;
 
-/// \ingroup Desktop_Module
+/// \ingroup Desktop_Map_and_Layers_Module
 /// \{
 class MG_DESKTOP_API MgdMap : public MgMapBase
 {

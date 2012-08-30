@@ -7,15 +7,15 @@
 /// \brief
 /// Thrown when a parameter is not found.
 ///
-class MG_DESKTOP_API MgParameterNotFoundException : public MgApplicationException
+class MG_DESKTOP_API MgdParameterNotFoundException : public MgApplicationException
 {
-    DECLARE_CLASSNAME(MgParameterNotFoundException)
+    DECLARE_CLASSNAME(MgdParameterNotFoundException)
 
 EXTERNAL_API:
 
     ///////////////////////////////////////////////////////////////////////////
     /// \brief
-    /// Construct a MgParameterNotFoundException object.
+    /// Construct a MgdParameterNotFoundException object.
     ///
     /// \param methodName
     /// Name of the method where the exception occurred.
@@ -30,23 +30,23 @@ EXTERNAL_API:
     /// \param whyArguments
     /// Collection of arguments used to format the message that describes why the exception occurs.
     ///
-    MgParameterNotFoundException(CREFSTRING methodName, INT32 lineNumber,
+    MgdParameterNotFoundException(CREFSTRING methodName, INT32 lineNumber,
         CREFSTRING fileName, MgStringCollection* whatArguments,
         CREFSTRING whyMessageId, MgStringCollection* whyArguments) throw();
 
     ///////////////////////////////////////////////////////////////////////////
     /// \brief
-    /// Destruct the MgParameterNotFoundException object.
+    /// Destruct the MgdParameterNotFoundException object.
     ///
-    virtual ~MgParameterNotFoundException() throw();
+    virtual ~MgdParameterNotFoundException() throw();
 
 INTERNAL_API:
 
-    DECLARE_EXCEPTION_DEFAULTS(MgParameterNotFoundException)
+    DECLARE_EXCEPTION_DEFAULTS(MgdParameterNotFoundException)
 
 CLASS_ID:
 
-    static const INT32 m_cls_id = MapGuide_Desktop_Exception_MgParameterNotFoundException;
+    static const INT32 m_cls_id = MapGuide_Desktop_Exception_ParameterNotFoundException;
 };
 /// \endcond
 

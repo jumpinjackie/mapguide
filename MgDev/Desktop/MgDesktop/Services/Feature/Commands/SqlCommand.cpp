@@ -183,6 +183,6 @@ void MgSqlCommand::Validate(MgResourceIdentifier* resource, CREFSTRING sqlStatem
     }
     else
     {
-        throw new MgConnectionFailedException(L"MgSqlCommand::Validate", __LINE__, __WFILE__, NULL, L"", NULL);
+        throw new MgdConnectionFailedException(L"MgSqlCommand::Validate", __LINE__, __WFILE__, NULL, L"", NULL);
     }
 }

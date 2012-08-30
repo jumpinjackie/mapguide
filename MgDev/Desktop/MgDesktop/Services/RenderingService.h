@@ -4,7 +4,7 @@
 class MgdMap;
 class MgdFeatureInformation;
 class SE_Renderer;
-class MgRenderingOptions;
+class MgdRenderingOptions;
 class FeatureInfoRenderer;
 class MgdDrawingService;
 struct RS_Bounds;
@@ -20,9 +20,7 @@ namespace MdfModel
 
 template class Ptr<MgdDrawingService>;
 
-//NOTE: Despite MgdRenderingService not defined in PlatformBase, we don't want a naming collision
-//if this library and MapGuideCommon happend to be linked together
-/// \ingroup Desktop_Module
+/// \ingroup Desktop_Service_Module
 /// \{
 class MG_DESKTOP_API MgdRenderingService : public MgService
 {
@@ -54,7 +52,7 @@ PUBLISHED_API:
 
     virtual MgByteReader* RenderDynamicOverlay(MgdMap* map,
                                                MgdSelection* selection,
-                                               MgRenderingOptions* options);
+                                               MgdRenderingOptions* options);
 
     virtual MgByteReader* RenderMap(MgdMap* map,
                                     MgdSelection* selection,
@@ -95,7 +93,7 @@ INTERNAL_API:
 
     virtual MgByteReader* RenderDynamicOverlay(MgdMap* map,
                                                MgdSelection* selection,
-                                               MgRenderingOptions* options,
+                                               MgdRenderingOptions* options,
                                                MdfModel::ProfileRenderMapResult* pPRMResult);
 
     virtual MgByteReader* RenderMap(MgdMap* map,
@@ -182,7 +180,7 @@ private:
     // Internal help called by our PUBLISHED_API versions of RenderDynamicOverlay
     MgByteReader* RenderDynamicOverlayInternal(MgdMap* map,
                                                MgdSelection* selection,
-                                               MgRenderingOptions* options,
+                                               MgdRenderingOptions* options,
                                                MdfModel::ProfileRenderMapResult* pPRMResult);
 
     // Internal help called by our PUBLISHED_API versions of RenderMap
@@ -220,7 +218,7 @@ private:
                                     double scale,
                                     RS_Bounds& b,
                                     bool expandExtents,
-                                    MgRenderingOptions* options,
+                                    MgdRenderingOptions* options,
                                     bool renderWatermark,
                                     MdfModel::ProfileRenderMapResult* pPRMResult = NULL);
 
@@ -253,7 +251,7 @@ private:
     void RenderSelection(MgdMap* map,
                          MgdSelection* selection,
                          MgReadOnlyLayerCollection* layers,
-                         MgRenderingOptions* options,
+                         MgdRenderingOptions* options,
                          Stylizer* ds,
                          Renderer* dr,
                          MgCoordinateSystem* dstCs,

@@ -146,9 +146,9 @@ INTERNAL_API:
     /// Gets the plot size.
     ///
     /// \return
-    /// Returns the size of the plot as MgPlotSpecification
+    /// Returns the size of the plot as MgdPlotSpecification
     ///
-    MgPlotSpecification* GetPlotSize();
+    MgdPlotSpecification* GetPlotSize();
 
     ////////////////////////////////////////////////////////////////////
     /// \brief
@@ -156,12 +156,12 @@ INTERNAL_API:
     /// in the PrintLayout resource.
     ///
     /// \param plotSpec
-    /// The plot size as a MgPlotSpecification
+    /// The plot size as a MgdPlotSpecification
     ///
     /// \return
     /// Returns nothing.
     ///
-    void SetPlotSize(MgPlotSpecification* plotSpec);
+    void SetPlotSize(MgdPlotSpecification* plotSpec);
 
     ////////////////////////////////////////////////////////////////
     /// \brief
@@ -271,7 +271,7 @@ INTERNAL_API:
 private:
 
     STRING m_plotTitle;
-    Ptr<MgPlotSpecification> m_plotSpec;
+    Ptr<MgdPlotSpecification> m_plotSpec;
     STRING m_scaleBarUnits;
     double m_dPlotScale;
     Ptr<MgCoordinate> m_plotCenter;

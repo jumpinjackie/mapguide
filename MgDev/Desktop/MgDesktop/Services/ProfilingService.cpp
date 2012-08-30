@@ -17,7 +17,7 @@ MgdProfilingService::~MgdProfilingService()
 MgByteReader* MgdProfilingService::ProfileRenderDynamicOverlay(
         MgdMap* map,
         MgdSelection* selection,
-        MgRenderingOptions* options)
+        MgdRenderingOptions* options)
 {
 	Ptr<MgByteReader> ret;
     

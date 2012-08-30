@@ -1,21 +1,21 @@
 #ifndef DESKTOP_DWF_SECTION_NOT_FOUND_EXCEPTION_H
 #define DESKTOP_DWF_SECTION_NOT_FOUND_EXCEPTION_H
 
-/// \ingroup Exceptions_Module
+/// \ingroup Desktop_Exceptions_Module
 
 ///////////////////////////////////////////////////////////////////////////////
 /// \brief
 /// Thrown when a DWF section is not found.
 ///
-class MG_DESKTOP_API MgDwfSectionNotFoundException : public MgApplicationException
+class MG_DESKTOP_API MgdDwfSectionNotFoundException : public MgApplicationException
 {
-    DECLARE_CLASSNAME(MgDwfSectionNotFoundException)
+    DECLARE_CLASSNAME(MgdDwfSectionNotFoundException)
 
 EXTERNAL_API:
 
     ///////////////////////////////////////////////////////////////////////////
     /// \brief
-    /// Construct a MgDwfSectionNotFoundException object.
+    /// Construct a MgdDwfSectionNotFoundException object.
     ///
     /// \param methodName
     /// Name of the method where the exception occurred.
@@ -30,23 +30,23 @@ EXTERNAL_API:
     /// \param whyArguments
     /// Collection of arguments used to format the message that describes why the exception occurs.
     ///
-    MgDwfSectionNotFoundException(CREFSTRING methodName, INT32 lineNumber,
+    MgdDwfSectionNotFoundException(CREFSTRING methodName, INT32 lineNumber,
         CREFSTRING fileName, MgStringCollection* whatArguments,
         CREFSTRING whyMessageId, MgStringCollection* whyArguments) throw();
 
     ///////////////////////////////////////////////////////////////////////////
     /// \brief
-    /// Destructor for a MgDwfSectionNotFoundException object.
+    /// Destructor for a MgdDwfSectionNotFoundException object.
     ///
-    virtual ~MgDwfSectionNotFoundException() throw();
+    virtual ~MgdDwfSectionNotFoundException() throw();
 
 INTERNAL_API:
 
-    DECLARE_EXCEPTION_DEFAULTS(MgDwfSectionNotFoundException)
+    DECLARE_EXCEPTION_DEFAULTS(MgdDwfSectionNotFoundException)
 
 CLASS_ID:
 
-    static const INT32 m_cls_id = MapGuide_Desktop_Exception_MgDwfSectionNotFoundException;
+    static const INT32 m_cls_id = MapGuide_Desktop_Exception_DwfSectionNotFoundException;
 };
 
 #endif

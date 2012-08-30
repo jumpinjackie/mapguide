@@ -3,10 +3,10 @@
 
 #include "MgDesktop.h"
 
-class MgLayout;
-class MgMapPlotCollection;
-class MgPlotSpecification;
-class MgDwfVersion;
+class MgdLayout;
+class MgdMapPlotCollection;
+class MgdPlotSpecification;
+class MgdDwfVersion;
 class MgdMap;
 
 namespace MdfModel
@@ -14,7 +14,7 @@ namespace MdfModel
     class FeatureTypeStyle;
 }
 
-/// \ingroup Desktop_Module
+/// \ingroup Desktop_Service_Module
 /// \{
 class MG_DESKTOP_API MgdMappingService : public MgService
 {
@@ -43,28 +43,28 @@ PUBLISHED_API:
                                                INT32 themeCategory);
 
     virtual MgByteReader* GeneratePlot(MgdMap* map,
-                                       MgPlotSpecification* plotSpec,
-                                       MgLayout* layout,
-                                       MgDwfVersion* dwfVersion);
+                                       MgdPlotSpecification* plotSpec,
+                                       MgdLayout* layout,
+                                       MgdDwfVersion* dwfVersion);
 
     virtual MgByteReader* GeneratePlot(MgdMap* map,
                                        MgCoordinate* center,
                                        double scale,
-                                       MgPlotSpecification* plotSpec,
-                                       MgLayout* layout,
-                                       MgDwfVersion* dwfVersion);
+                                       MgdPlotSpecification* plotSpec,
+                                       MgdLayout* layout,
+                                       MgdDwfVersion* dwfVersion);
 
     virtual MgByteReader* GeneratePlot(MgdMap* map,
                                        MgEnvelope* extents,
                                        bool expandToFit,
-                                       MgPlotSpecification* plotSpec,
-                                       MgLayout* layout,
-                                       MgDwfVersion* dwfVersion);
+                                       MgdPlotSpecification* plotSpec,
+                                       MgdLayout* layout,
+                                       MgdDwfVersion* dwfVersion);
 
-    virtual MgByteReader* GenerateMultiPlot(MgMapPlotCollection* mapPlots, MgDwfVersion* dwfVersion);
+    virtual MgByteReader* GenerateMultiPlot(MgdMapPlotCollection* mapPlots, MgdDwfVersion* dwfVersion);
 
 private:
-    virtual MgByteReader* GenerateMultiPlotInternal(MgMapPlotCollection* mapPlots, MgDwfVersion* dwfVersion);
+    virtual MgByteReader* GenerateMultiPlotInternal(MgdMapPlotCollection* mapPlots, MgdDwfVersion* dwfVersion);
 	bool FeatureTypeStyleSupportsGeomType(MdfModel::FeatureTypeStyle* fts, INT32 geomType);
 
     // member data

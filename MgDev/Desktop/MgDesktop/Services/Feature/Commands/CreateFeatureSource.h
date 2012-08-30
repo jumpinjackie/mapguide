@@ -21,7 +21,7 @@ public:
 class MgCreateRdbmsFeatureSource : public MgGuardDisposable
 {
 public:
-    MgCreateRdbmsFeatureSource(MgResourceIdentifier* resource, MgRdbmsFeatureSourceParams* params);
+    MgCreateRdbmsFeatureSource(MgResourceIdentifier* resource, MgdRdbmsFeatureSourceParams* params);
     virtual ~MgCreateRdbmsFeatureSource();
 
     void CreateFeatureSource();
@@ -31,7 +31,7 @@ private:
     void WriteFeatureSourceContent();
 
     MgResourceIdentifier* m_resource;
-    MgRdbmsFeatureSourceParams* m_params;
+    MgdRdbmsFeatureSourceParams* m_params;
 };
 
 class MgCreateFileFeatureSource : public MgGuardDisposable

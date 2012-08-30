@@ -47,7 +47,7 @@ MgByteSourceDwfInputStreamImpl::~MgByteSourceDwfInputStreamImpl()
 /// </returns>
 ///
 /// <exceptions>
-/// MgDwfException
+/// MgdDwfException
 /// </exceptions>
 ///----------------------------------------------------------------------------
 
@@ -80,7 +80,7 @@ bool MgByteSourceDwfInputStreamImpl::IsRewindable()
 /// </returns>
 ///
 /// <exceptions>
-/// MgDwfException
+/// MgdDwfException
 /// </exceptions>
 ///----------------------------------------------------------------------------
 
@@ -111,7 +111,7 @@ void MgByteSourceDwfInputStreamImpl::Rewind()
 /// </returns>
 ///
 /// <exceptions>
-/// MgDwfException
+/// MgdDwfException
 /// </exceptions>
 ///----------------------------------------------------------------------------
 

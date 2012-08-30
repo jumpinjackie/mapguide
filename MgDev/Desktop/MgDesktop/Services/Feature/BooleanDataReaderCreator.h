@@ -22,6 +22,7 @@ using namespace std;
 
 #include <vector>
 
+/// \cond INTERNAL
 class MgBooleanDataReaderCreator : public MgDataReaderCreator<INT16>
 {
     DECLARE_CLASSNAME(MgBooleanDataReaderCreator)
@@ -52,5 +53,6 @@ public:
         delete this;
     }
 };
+/// \endcond
 
 #endif

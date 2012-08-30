@@ -4,7 +4,7 @@
 #include "MgDesktop.h"
 #include "Map.h"
 
-/// \ingroup Desktop_Module
+/// \ingroup Desktop_Map_and_Layers_Module
 /// \{
 class MG_DESKTOP_API MgdSelection : public MgSelectionBase
 {

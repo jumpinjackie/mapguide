@@ -1,12 +1,12 @@
 #include "MgDesktop.h"
 
-IMPLEMENT_EXCEPTION_DEFAULTS(MgStylizeLayerFailedException, MgApplicationException)
+IMPLEMENT_EXCEPTION_DEFAULTS(MgdStylizeLayerFailedException, MgApplicationException)
 
 ///////////////////////////////////////////////////////////////////////////////
 /// \brief
-/// Construct a MgStylizeLayerFailedException object.
+/// Construct a MgdStylizeLayerFailedException object.
 ///
-MgStylizeLayerFailedException::MgStylizeLayerFailedException(CREFSTRING methodName,
+MgdStylizeLayerFailedException::MgdStylizeLayerFailedException(CREFSTRING methodName,
     INT32 lineNumber, CREFSTRING fileName, MgStringCollection* whatArguments,
     CREFSTRING whyMessageId, MgStringCollection* whyArguments) throw() :
     MgApplicationException(methodName, lineNumber, fileName,
@@ -18,6 +18,6 @@ MgStylizeLayerFailedException::MgStylizeLayerFailedException(CREFSTRING methodNa
 /// \brief
 /// Destruct the object.
 ///
-MgStylizeLayerFailedException::~MgStylizeLayerFailedException() throw()
+MgdStylizeLayerFailedException::~MgdStylizeLayerFailedException() throw()
 {
 }

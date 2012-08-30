@@ -427,7 +427,7 @@ void TestProfilingService::TestCase_ProfileRenderDynamicOverlay()
         Ptr<MgdSelection> selectionOnMapWithWatermark = CreateSelection(mapWithWatermark);
 
         // make a rendering option
-        Ptr<MgRenderingOptions> options = new MgRenderingOptions(L"PNG",MgRenderingOptions::RenderSelection| MgRenderingOptions::RenderLayers| MgRenderingOptions::KeepSelection,NULL);
+        Ptr<MgdRenderingOptions> options = new MgdRenderingOptions(L"PNG",MgdRenderingOptions::RenderSelection| MgdRenderingOptions::RenderLayers| MgdRenderingOptions::KeepSelection,NULL);
         
         // profile rendering normal map
         Ptr<MgByteReader> rdr1 = m_svcProfiling->ProfileRenderDynamicOverlay(map, NULL, options);
@@ -471,7 +471,7 @@ void TestProfilingService::TestCase_ProfileRenderMap()
         Ptr<MgdSelection> selectionOnMapWithWatermark = CreateSelection(mapWithWatermark);
 
         // make a rendering option
-        Ptr<MgRenderingOptions> options = new MgRenderingOptions(L"PNG",MgRenderingOptions::RenderSelection| MgRenderingOptions::RenderLayers| MgRenderingOptions::KeepSelection,NULL);
+        Ptr<MgdRenderingOptions> options = new MgdRenderingOptions(L"PNG",MgdRenderingOptions::RenderSelection| MgdRenderingOptions::RenderLayers| MgdRenderingOptions::KeepSelection,NULL);
 
         Ptr<MgCoordinate> coordNewCenter = new MgCoordinateXY(-87.733253, 43.746199);
         Ptr<MgColor> bgc = new MgColor(255, 255, 255, 255);

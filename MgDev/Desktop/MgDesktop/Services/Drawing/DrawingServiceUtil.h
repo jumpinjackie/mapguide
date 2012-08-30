@@ -29,7 +29,7 @@ struct TargetLayer
     WT_File* pFile;
 };
 
-
+/// \cond INTERNAL
 class MG_DESKTOP_API MgDrawingServiceUtil
 {
     /// Constructors/Destructor
@@ -77,5 +77,5 @@ class MG_DESKTOP_API MgDrawingServiceUtil
             MgByteReader* byteReader, REFSTRING dwfPathName, REFSTRING dwfCoordinateSpace);
 
 };
-
+/// \endcond
 #endif

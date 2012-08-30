@@ -2,6 +2,22 @@
 	\if DESKTOPAPI
 	<!-- ------------ DESKTOP PLATFORM -------------- -->
 	\defgroup Desktop_Module Desktop Platform
+
+	<!-- ------------ DESKTOP SERVICES ------------ -->
+	\defgroup Desktop_Service_Module Desktop Services
+	\ingroup Desktop_Module
+
+	<!-- ------------ DESKTOP MAPS AND LAYERS ------------ -->
+	\defgroup Desktop_Map_and_Layers_Module Desktop Maps and Layers
+	\ingroup Desktop_Module
+
+	<!-- ------------ DESKTOP EXCEPTIONS ------------ -->
+	\defgroup Desktop_Exceptions_Module Desktop Exceptions
+	\ingroup Desktop_Module
+
+	<!-- ------------ DESKTOP EXCEPTIONS ------------ -->
+	\defgroup Desktop_Misc_Module Desktop Misc Classes
+	\ingroup Desktop_Module
 	\endif
 
 	<!-- ------------ MAPS AND LAYERS------------- -->

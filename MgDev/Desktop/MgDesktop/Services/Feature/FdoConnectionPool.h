@@ -3,6 +3,8 @@
 
 #include "Fdo.h"
 
+/// \cond INTERNAL
+
 class MgFeatureConnection;
 class MgResourceIdentifier;
 class MgConfiguration;
@@ -38,5 +40,6 @@ public:
 private:
     static bool StringStartsWith(CREFSTRING haystack, CREFSTRING needle);
 };
+/// \endcond
 
 #endif

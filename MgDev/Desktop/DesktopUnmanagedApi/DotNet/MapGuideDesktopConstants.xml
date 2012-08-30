@@ -73,10 +73,10 @@ Foundation/Geometry/PlatformBase swig interfaces
 <Package>org.osgeo.mapguide</Package>
 
 <Classes>
-    <Class name="MgMapPlotInstruction" />
-    <Class name="MgUnitType" />
-    <Class name="MgPageUnitsType" />
-    <Class name="MgImageFormats" />
+    <Class name="MgdMapPlotInstruction" />
+    <Class name="MgdUnitType" />
+    <Class name="MgdPageUnitsType" />
+    <Class name="MgdImageFormats" />
 </Classes>
 
 <!--

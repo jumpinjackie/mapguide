@@ -17,13 +17,13 @@
 
 #include "MgDesktop.h"
 
-IMPLEMENT_EXCEPTION_DEFAULTS(MgInvalidPrintLayoutSizeUnitsException, MgApplicationException)
+IMPLEMENT_EXCEPTION_DEFAULTS(MgdInvalidPrintLayoutSizeUnitsException, MgApplicationException)
 
 ///////////////////////////////////////////////////////////////////////////////
 /// \brief
 /// Construct a MgPrintToScaleModeNotSelectedException object.
 ///
-MgInvalidPrintLayoutSizeUnitsException::MgInvalidPrintLayoutSizeUnitsException(CREFSTRING methodName,
+MgdInvalidPrintLayoutSizeUnitsException::MgdInvalidPrintLayoutSizeUnitsException(CREFSTRING methodName,
     INT32 lineNumber, CREFSTRING fileName, MgStringCollection* whatArguments,
     CREFSTRING whyMessageId, MgStringCollection* whyArguments) throw() :
     MgApplicationException(methodName, lineNumber, fileName,
@@ -35,6 +35,6 @@ MgInvalidPrintLayoutSizeUnitsException::MgInvalidPrintLayoutSizeUnitsException(C
 /// \brief
 /// Destruct the object.
 ///
-MgInvalidPrintLayoutSizeUnitsException::~MgInvalidPrintLayoutSizeUnitsException() throw()
+MgdInvalidPrintLayoutSizeUnitsException::~MgdInvalidPrintLayoutSizeUnitsException() throw()
 {
 }

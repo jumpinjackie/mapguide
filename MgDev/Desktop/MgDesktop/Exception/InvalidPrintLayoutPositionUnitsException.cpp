@@ -17,13 +17,13 @@
 
 #include "MgDesktop.h"
 
-IMPLEMENT_EXCEPTION_DEFAULTS(MgInvalidPrintLayoutPositionUnitsException, MgApplicationException)
+IMPLEMENT_EXCEPTION_DEFAULTS(MgdInvalidPrintLayoutPositionUnitsException, MgApplicationException)
 
 ///////////////////////////////////////////////////////////////////////////////
 /// \brief
-/// Construct a MgInvalidPrintLayoutPositionUnitsException object.
+/// Construct a MgdInvalidPrintLayoutPositionUnitsException object.
 ///
-MgInvalidPrintLayoutPositionUnitsException::MgInvalidPrintLayoutPositionUnitsException(CREFSTRING methodName,
+MgdInvalidPrintLayoutPositionUnitsException::MgdInvalidPrintLayoutPositionUnitsException(CREFSTRING methodName,
     INT32 lineNumber, CREFSTRING fileName, MgStringCollection* whatArguments,
     CREFSTRING whyMessageId, MgStringCollection* whyArguments) throw() :
     MgApplicationException(methodName, lineNumber, fileName,
@@ -35,6 +35,6 @@ MgInvalidPrintLayoutPositionUnitsException::MgInvalidPrintLayoutPositionUnitsExc
 /// \brief
 /// Destruct the object.
 ///
-MgInvalidPrintLayoutPositionUnitsException::~MgInvalidPrintLayoutPositionUnitsException() throw()
+MgdInvalidPrintLayoutPositionUnitsException::~MgdInvalidPrintLayoutPositionUnitsException() throw()
 {
 }

@@ -24,7 +24,7 @@ class MgReader;
 class MgFeatureDistribution;
 class MgGeometry;
 class MgGeometryCollection;
-
+/// \cond INTERNAL
 class MgFeatureGeometricFunctions : public MgFeatureDistribution
 {
     DECLARE_CLASSNAME(MgFeatureGeometricFunctions)
@@ -87,5 +87,5 @@ private:
     double m_maxZ;
     double m_maxM;
 };
-
+/// \endcond
 #endif

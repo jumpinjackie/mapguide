@@ -1,12 +1,12 @@
 #include "MgDesktop.h"
 
-IMPLEMENT_EXCEPTION_DEFAULTS(MgInvalidDwfPackageException, MgApplicationException)
+IMPLEMENT_EXCEPTION_DEFAULTS(MgdInvalidDwfPackageException, MgApplicationException)
 
 ///////////////////////////////////////////////////////////////////////////////
 /// \brief
-/// Construct a MgInvalidDwfPackageException object.
+/// Construct a MgdInvalidDwfPackageException object.
 ///
-MgInvalidDwfPackageException::MgInvalidDwfPackageException(CREFSTRING methodName,
+MgdInvalidDwfPackageException::MgdInvalidDwfPackageException(CREFSTRING methodName,
     INT32 lineNumber, CREFSTRING fileName, MgStringCollection* whatArguments,
     CREFSTRING whyMessageId, MgStringCollection* whyArguments) throw() :
     MgApplicationException(methodName, lineNumber, fileName,
@@ -18,6 +18,6 @@ MgInvalidDwfPackageException::MgInvalidDwfPackageException(CREFSTRING methodName
 /// \brief
 /// Destruct the object.
 ///
-MgInvalidDwfPackageException::~MgInvalidDwfPackageException() throw()
+MgdInvalidDwfPackageException::~MgdInvalidDwfPackageException() throw()
 {
 }
