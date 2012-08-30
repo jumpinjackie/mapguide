@@ -17,10 +17,10 @@
 
 #include "LogDetail.h"
 
-MgLogDetail::MgLogDetail(INT32 serviceNum, INT8 detail, CREFSTRING methodName, REFSTRING errorLogVar)
+MgdLogDetiail::MgdLogDetiail(INT32 serviceNum, INT8 detail, CREFSTRING methodName, REFSTRING errorLogVar)
 : m_errorLogVar(errorLogVar)
 {
-    MgLogManager* logMgr = MgLogManager::GetInstance();
+    MgdLogManager* logMgr = MgdLogManager::GetInstance();
     m_minDetail = logMgr->GetDetailLevelForService(serviceNum);
     m_bLoggingActive = logMgr->IsTraceLogEnabled();
     m_delimiter = logMgr->GetLogDelimiter();
@@ -28,12 +28,12 @@ MgLogDetail::MgLogDetail(INT32 serviceNum, INT8 detail, CREFSTRING methodName, R
     m_methodName = methodName;
 }
 
-MgLogDetail::~MgLogDetail()
+MgdLogDetiail::~MgdLogDetiail()
 {
     Terminate();
 }
 
-void MgLogDetail::AppendName(CREFSTRING paramName)
+void MgdLogDetiail::AppendName(CREFSTRING paramName)
 {
     if (m_params.length() > 0)
     {
@@ -43,17 +43,17 @@ void MgLogDetail::AppendName(CREFSTRING paramName)
     m_params.append(L"=");
 }
 
- bool MgLogDetail::ParamsActive()
+ bool MgdLogDetiail::ParamsActive()
  {
-     return m_minDetail > MgLogDetail::Error;
+     return m_minDetail > MgdLogDetiail::Error;
  }
 
- bool MgLogDetail::ShouldLog()
+ bool MgdLogDetiail::ShouldLog()
  {
      return m_detail <= m_minDetail;
  }
 
-void MgLogDetail::AddResourceIdentifier(CREFSTRING paramName, MgResourceIdentifier* resId)
+void MgdLogDetiail::AddResourceIdentifier(CREFSTRING paramName, MgResourceIdentifier* resId)
 {
 
     if (NULL != resId && ParamsActive())
@@ -63,7 +63,7 @@ void MgLogDetail::AddResourceIdentifier(CREFSTRING paramName, MgResourceIdentifi
     }
 }
 
-void MgLogDetail::AddInt64(CREFSTRING paramName, INT64 paramValue)
+void MgdLogDetiail::AddInt64(CREFSTRING paramName, INT64 paramValue)
 {
     if (ParamsActive())
     {
@@ -74,7 +74,7 @@ void MgLogDetail::AddInt64(CREFSTRING paramName, INT64 paramValue)
     }
 }
 
-void MgLogDetail::AddInt32(CREFSTRING paramName, INT32 paramValue)
+void MgdLogDetiail::AddInt32(CREFSTRING paramName, INT32 paramValue)
 {
     if (ParamsActive())
     {
@@ -85,7 +85,7 @@ void MgLogDetail::AddInt32(CREFSTRING paramName, INT32 paramValue)
     }
 }
 
-void MgLogDetail::AddBool(CREFSTRING paramName, bool paramValue)
+void MgdLogDetiail::AddBool(CREFSTRING paramName, bool paramValue)
 {
     if (ParamsActive())
     {
@@ -94,7 +94,7 @@ void MgLogDetail::AddBool(CREFSTRING paramName, bool paramValue)
     }
 }
 
-void MgLogDetail::AddString(CREFSTRING paramName, CREFSTRING paramValue)
+void MgdLogDetiail::AddString(CREFSTRING paramName, CREFSTRING paramValue)
 {
     if (ParamsActive())
     {
@@ -103,7 +103,7 @@ void MgLogDetail::AddString(CREFSTRING paramName, CREFSTRING paramValue)
     }
 }
 
-void MgLogDetail::AddObject(CREFSTRING paramName, MgSerializable* object)
+void MgdLogDetiail::AddObject(CREFSTRING paramName, MgSerializable* object)
 {
     if (NULL != object && ParamsActive())
     {
@@ -112,7 +112,7 @@ void MgLogDetail::AddObject(CREFSTRING paramName, MgSerializable* object)
     }
 }
 
-void MgLogDetail::Create()
+void MgdLogDetiail::Create()
 {
     // Always propagate parameters for exception message
     m_errorLogVar = m_params;
@@ -129,7 +129,7 @@ void MgLogDetail::Create()
     }
 }
 
-void MgLogDetail::Terminate()
+void MgdLogDetiail::Terminate()
 {
     if (ShouldLog())
     {

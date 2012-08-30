@@ -5,15 +5,15 @@
 #include "FeatureServiceCacheEntry.h"
 #include "SpatialContextCacheItem.h"
 
-class MgFeatureServiceCache : public MgGuardDisposable
+class MgdFeatureServiceCache : public MgGuardDisposable
 {
 private:
-    static Ptr<MgFeatureServiceCache> smInstance;
-    MgFeatureServiceCache();
+    static Ptr<MgdFeatureServiceCache> smInstance;
+    MgdFeatureServiceCache();
 
 public:
-    static MgFeatureServiceCache* GetInstance();
-    virtual ~MgFeatureServiceCache();
+    static MgdFeatureServiceCache* GetInstance();
+    virtual ~MgdFeatureServiceCache();
 
 public:
     void Clear();
@@ -21,12 +21,12 @@ public:
     void RemoveEntry(CREFSTRING resource);
     void RemoveEntry(MgResourceIdentifier* resource);
 
-    MgFeatureSourceCacheItem* GetFeatureSource(MgResourceIdentifier* resource);
-    MgSpatialContextCacheItem* GetSpatialContextInfo(MgResourceIdentifier* resource);
+    MgdFeatureSourceCacheItem* GetFeatureSource(MgResourceIdentifier* resource);
+    MgdSpatialContextCacheItem* GetSpatialContextInfo(MgResourceIdentifier* resource);
 
-    void SetFeatureSource(MgResourceIdentifier* resource, MgFeatureSourceCacheItem* featureSource);
+    void SetFeatureSource(MgResourceIdentifier* resource, MgdFeatureSourceCacheItem* featureSource);
     
-    void SetSpatialContextInfo(MgResourceIdentifier* resource, MgSpatialContextCacheItem* spatialContextInfo);
+    void SetSpatialContextInfo(MgResourceIdentifier* resource, MgdSpatialContextCacheItem* spatialContextInfo);
     
     void SetSpatialContextReader(MgResourceIdentifier* resource, MgSpatialContextReader* spatialContextReader);
     MgSpatialContextReader* GetSpatialContextReader(MgResourceIdentifier* resource);
@@ -50,20 +50,20 @@ public:
     MgPropertyDefinitionCollection* GetClassIdentityProperties(MgResourceIdentifier* resource, CREFSTRING schemaName, CREFSTRING className);
 
 protected:
-    MgFeatureSourceCacheItem* GetFeatureSourceInternal(MgResourceIdentifier* resource);
-    MgSpatialContextCacheItem* GetSpatialContextInfoInternal(MgResourceIdentifier* resource);
+    MgdFeatureSourceCacheItem* GetFeatureSourceInternal(MgResourceIdentifier* resource);
+    MgdSpatialContextCacheItem* GetSpatialContextInfoInternal(MgResourceIdentifier* resource);
 
-    MgFeatureServiceCacheEntry* SetEntry(MgResourceIdentifier* resource);
-    MgFeatureServiceCacheEntry* GetEntry(MgResourceIdentifier* resource);
+    MgdFeatureServiceCacheEntry* SetEntry(MgResourceIdentifier* resource);
+    MgdFeatureServiceCacheEntry* GetEntry(MgResourceIdentifier* resource);
 
     virtual void Dispose() { delete this; }
 
 private:
     /// Needed for thread-safety
-    ACE_Recursive_Thread_Mutex m_mutex;
+    ACE_Recursive_Thread_Mutex m_MgdMutex;
 
-    typedef std::map<STRING, MgFeatureServiceCacheEntry*> MgFeatureServiceCacheEntries;
-    MgFeatureServiceCacheEntries m_featureServiceCacheEntries;
+    typedef std::map<STRING, MgdFeatureServiceCacheEntry*> MgdFeatureServiceCacheEntries;
+    MgdFeatureServiceCacheEntries m_featureServiceCacheEntries;
 };
 
 #endif

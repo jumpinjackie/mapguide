@@ -23,11 +23,11 @@
 #include "System/XmlUtil.h"
 #include "Fdo.h"
 
-class MgGetFeatureProviders
+class MgdGetFeatureProviders
 {
 public:
-    MgGetFeatureProviders();
-    ~MgGetFeatureProviders();
+    MgdGetFeatureProviders();
+    ~MgdGetFeatureProviders();
 
 
     MgByteReader* GetFeatureProviders();

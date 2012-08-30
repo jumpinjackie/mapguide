@@ -24,7 +24,7 @@
 /// </summary>
 ///----------------------------------------------------------------------------
 
-MgCustomTextInfo::MgCustomTextInfo()
+MgdCustomTextInfo::MgdCustomTextInfo()
 {
     m_dXPosition = 0.0;
     m_dYPosition = 0.0;
@@ -37,7 +37,7 @@ MgCustomTextInfo::MgCustomTextInfo()
 /// </summary>
 ///----------------------------------------------------------------------------
 
-MgCustomTextInfo::~MgCustomTextInfo()
+MgdCustomTextInfo::~MgdCustomTextInfo()
 {
 }
 
@@ -50,7 +50,7 @@ MgCustomTextInfo::~MgCustomTextInfo()
 /// </param>
 ///----------------------------------------------------------------------------
 
-void MgCustomTextInfo::SetX(double xCoord)
+void MgdCustomTextInfo::SetX(double xCoord)
 {
     m_dXPosition = xCoord;
 }
@@ -64,7 +64,7 @@ void MgCustomTextInfo::SetX(double xCoord)
 /// </param>
 ///----------------------------------------------------------------------------
 
-void MgCustomTextInfo::SetY(double yCoord)
+void MgdCustomTextInfo::SetY(double yCoord)
 {
     m_dYPosition = yCoord;
 }
@@ -78,7 +78,7 @@ void MgCustomTextInfo::SetY(double yCoord)
 /// </param>
 ///----------------------------------------------------------------------------
 
-void MgCustomTextInfo::SetPositionUnits(STRING units)
+void MgdCustomTextInfo::SetPositionUnits(STRING units)
 {
     m_positionUnits = units;
 }
@@ -91,7 +91,7 @@ void MgCustomTextInfo::SetPositionUnits(STRING units)
 /// </param>
 ///----------------------------------------------------------------------------
 
-void MgCustomTextInfo::SetValue(STRING value)
+void MgdCustomTextInfo::SetValue(STRING value)
 {
     m_value = value;
 }
@@ -105,7 +105,7 @@ void MgCustomTextInfo::SetValue(STRING value)
 /// </param>
 ///----------------------------------------------------------------------------
 
-void MgCustomTextInfo::SetFontName(STRING fontName)
+void MgdCustomTextInfo::SetFontName(STRING fontName)
 {
     m_fontName = fontName;
 }
@@ -119,7 +119,7 @@ void MgCustomTextInfo::SetFontName(STRING fontName)
 /// </param>
 ///----------------------------------------------------------------------------
 
-void MgCustomTextInfo::SetFontHeight(double height)
+void MgdCustomTextInfo::SetFontHeight(double height)
 {
     m_fontHeight = height;
 }
@@ -133,7 +133,7 @@ void MgCustomTextInfo::SetFontHeight(double height)
 /// </param>
 ///----------------------------------------------------------------------------
 
-void MgCustomTextInfo::SetSizeUnits(STRING units)
+void MgdCustomTextInfo::SetSizeUnits(STRING units)
 {
     m_sizeUnits = units;
 }
@@ -147,7 +147,7 @@ void MgCustomTextInfo::SetSizeUnits(STRING units)
 /// </return>
 ///----------------------------------------------------------------------------
 
-double MgCustomTextInfo::GetX()
+double MgdCustomTextInfo::GetX()
 {
     return m_dXPosition;
 }
@@ -161,7 +161,7 @@ double MgCustomTextInfo::GetX()
 /// </return>
 ///----------------------------------------------------------------------------
 
-double MgCustomTextInfo::GetY()
+double MgdCustomTextInfo::GetY()
 {
     return m_dYPosition;
 }
@@ -175,7 +175,7 @@ double MgCustomTextInfo::GetY()
 /// </return>
 ///----------------------------------------------------------------------------
 
-STRING MgCustomTextInfo::GetPositionUnits()
+STRING MgdCustomTextInfo::GetPositionUnits()
 {
     return m_positionUnits;
 }
@@ -189,7 +189,7 @@ STRING MgCustomTextInfo::GetPositionUnits()
 /// </return>
 ///----------------------------------------------------------------------------
 
-STRING MgCustomTextInfo::GetValue()
+STRING MgdCustomTextInfo::GetValue()
 {
     return m_value;
 }
@@ -203,7 +203,7 @@ STRING MgCustomTextInfo::GetValue()
 /// </return>
 ///----------------------------------------------------------------------------
 
-STRING MgCustomTextInfo::GetFontName()
+STRING MgdCustomTextInfo::GetFontName()
 {
     return m_fontName;
 }
@@ -217,7 +217,7 @@ STRING MgCustomTextInfo::GetFontName()
 /// </return>
 ///----------------------------------------------------------------------------
 
-double MgCustomTextInfo::GetFontHeight()
+double MgdCustomTextInfo::GetFontHeight()
 {
     return m_fontHeight;
 }
@@ -231,7 +231,7 @@ double MgCustomTextInfo::GetFontHeight()
 /// </return>
 ///----------------------------------------------------------------------------
 
-STRING MgCustomTextInfo::GetSizeUnits()
+STRING MgdCustomTextInfo::GetSizeUnits()
 {
     return m_sizeUnits;
 }

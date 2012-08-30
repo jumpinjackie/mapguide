@@ -6,7 +6,7 @@
 /// \{
 class MG_DESKTOP_API MgdResourceService : public MgResourceService
 {
-    friend class MgFdoConnectionUtil;
+    friend class MgdFdoConnectionUtil;
 
     DECLARE_CLASSNAME(MgdResourceService)
 

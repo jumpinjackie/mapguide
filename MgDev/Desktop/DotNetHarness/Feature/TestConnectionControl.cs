@@ -21,7 +21,7 @@ namespace DotNetHarness.Feature
         {
             try
             {
-                var fact = new MgServiceFactory();
+                var fact = new MgdServiceFactory();
                 MgFeatureService featSvc = (MgdFeatureService)fact.CreateService(MgServiceType.FeatureService);
                 MgResourceIdentifier fsId = new MgResourceIdentifier(txtFeatureSource.Text);
 
@@ -38,7 +38,7 @@ namespace DotNetHarness.Feature
         {
             try
             {
-                var fact = new MgServiceFactory();
+                var fact = new MgdServiceFactory();
                 MgFeatureService featSvc = (MgdFeatureService)fact.CreateService(MgServiceType.FeatureService);
 
                 bool res = featSvc.TestConnection(txtFdoProvider.Text, txtConnectionString.Text);

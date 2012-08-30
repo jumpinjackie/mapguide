@@ -24,28 +24,28 @@
 #include "Services/Feature/FeatureUtil.h"
 #include "Services/FeatureReader.h"
 
-MgServerUpdateCommand::MgServerUpdateCommand()
+MgdUpdateCommand::MgdUpdateCommand()
 {
     m_srvrFeatConn = NULL;
     m_featCommand = NULL;
 }
 
-MgServerUpdateCommand::MgServerUpdateCommand(MgFeatureCommand* command, MgFeatureConnection* connection, INT32 cmdId)
+MgdUpdateCommand::MgdUpdateCommand(MgFeatureCommand* command, MgdFeatureConnection* connection, INT32 cmdId)
 {
-    CHECKNULL(command, L"MgServerUpdateCommand.MgServerUpdateCommand");
-    CHECKNULL(connection, L"MgServerUpdateCommand.MgServerUpdateCommand");
+    CHECKNULL(command, L"MgdUpdateCommand.MgdUpdateCommand");
+    CHECKNULL(connection, L"MgdUpdateCommand.MgdUpdateCommand");
 
-    m_srvrFeatConn = SAFE_ADDREF((MgFeatureConnection*)connection);
+    m_srvrFeatConn = SAFE_ADDREF((MgdFeatureConnection*)connection);
     m_featCommand = SAFE_ADDREF((MgUpdateFeatures*)command);
     m_cmdId = cmdId;
 }
 
-MgServerUpdateCommand::~MgServerUpdateCommand()
+MgdUpdateCommand::~MgdUpdateCommand()
 {
     m_srvrFeatConn = NULL;
 }
 
-MgProperty* MgServerUpdateCommand::Execute()
+MgProperty* MgdUpdateCommand::Execute()
 {
     STRING clsName = m_featCommand->GetFeatureClassName();
     STRING filterText = m_featCommand->GetFilterText();
@@ -55,13 +55,13 @@ MgProperty* MgServerUpdateCommand::Execute()
 
     // Create the SQL command
     FdoPtr<FdoIUpdate> fdoCommand = (FdoIUpdate*)fdoConn->CreateCommand(FdoCommandType_Update);
-    CHECKNULL((FdoIUpdate*)fdoCommand, L"MgServerUpdateCommand.Execute");
+    CHECKNULL((FdoIUpdate*)fdoCommand, L"MgdUpdateCommand.Execute");
 
     fdoCommand->SetFeatureClassName(clsName.c_str());
     fdoCommand->SetFilter(filterText.c_str());
 
     FdoPtr<FdoPropertyValueCollection> paramValCol = fdoCommand->GetPropertyValues();
-    MgFeatureUtil::FillFdoPropertyCollection(propCol, paramValCol);
+    MgdFeatureUtil::FillFdoPropertyCollection(propCol, paramValCol);
 
     INT32 recordsUpdated = fdoCommand->Execute();
 

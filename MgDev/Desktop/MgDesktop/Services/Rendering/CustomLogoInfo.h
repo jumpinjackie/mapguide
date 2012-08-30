@@ -19,14 +19,14 @@
 #define DESKTOP_CUSTOM_LOGO_INFO_H
 
 /// \cond INTERNAL
-class MG_DESKTOP_API MgCustomLogoInfo
+class MG_DESKTOP_API MgdCustomLogoInfo
 {
-    DECLARE_CLASSNAME(MgCustomLogoInfo)
+    DECLARE_CLASSNAME(MgdCustomLogoInfo)
 
 public:
     /// Default Constructor
-    MgCustomLogoInfo();
-    ~MgCustomLogoInfo();
+    MgdCustomLogoInfo();
+    ~MgdCustomLogoInfo();
 
     /// Accessors
     void SetX(double xCoord);

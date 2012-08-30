@@ -21,7 +21,7 @@ namespace DotNetHarness.Feature
         {
             try
             {
-                var fact = new MgServiceFactory();
+                var fact = new MgdServiceFactory();
                 MgFeatureService featSvc = (MgdFeatureService)fact.CreateService(MgServiceType.FeatureService);
 
                 MgByteReader response = featSvc.EnumerateDataStores(textBox1.Text, textBox2.Text);

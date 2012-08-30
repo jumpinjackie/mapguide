@@ -4,11 +4,11 @@
 #include "Services/Rendering/MappingUtil.h"
 #include "Services/Feature/FdoConnectionPool.h"
 
-bool MgPlatform::sm_init = false;
+bool MgdPlatform::sm_init = false;
 
-bool MgPlatform::IsInitialized() { return sm_init; }
+bool MgdPlatform::IsInitialized() { return sm_init; }
 
-void MgPlatform::Initialize(CREFSTRING configFile)
+void MgdPlatform::Initialize(CREFSTRING configFile)
 {
     if (sm_init)
         return;
@@ -21,23 +21,23 @@ void MgPlatform::Initialize(CREFSTRING configFile)
 
     // Get the resources path.
     STRING resourcesPath;
-    pConfiguration->GetStringValue(MgConfigProperties::GeneralPropertiesSection, 
-                                   MgConfigProperties::GeneralPropertyResourcesPath, 
+    pConfiguration->GetStringValue(MgdConfigProperties::GeneralPropertiesSection, 
+                                   MgdConfigProperties::GeneralPropertyResourcesPath, 
                                    resourcesPath, 
-                                   MgConfigProperties::DefaultGeneralPropertyResourcesPath);
+                                   MgdConfigProperties::DefaultGeneralPropertyResourcesPath);
 
     // Get the default message locale.
     STRING defaultMessageLocale;
-    pConfiguration->GetStringValue(MgConfigProperties::GeneralPropertiesSection, MgConfigProperties::GeneralPropertyDefaultMessageLocale, defaultMessageLocale, MgConfigProperties::DefaultGeneralPropertyDefaultMessageLocale);
+    pConfiguration->GetStringValue(MgdConfigProperties::GeneralPropertiesSection, MgdConfigProperties::GeneralPropertyDefaultMessageLocale, defaultMessageLocale, MgdConfigProperties::DefaultGeneralPropertyDefaultMessageLocale);
 
     // Init log manager
-    MgLogManager* pLogManager = MgLogManager::GetInstance();
+    MgdLogManager* pLogManager = MgdLogManager::GetInstance();
     pLogManager->Initialize();
 
-    MgServiceFactory::Initialize();
+    MgdServiceFactory::Initialize();
 
     // Init the Fdo Connection Pool
-    MgFdoConnectionPool::Initialize(pConfiguration);
+    MgdFdoConnectionPool::Initialize(pConfiguration);
 
     // Init resources
     MgResources* pResources = MgResources::GetInstance();
@@ -46,20 +46,20 @@ void MgPlatform::Initialize(CREFSTRING configFile)
 
     // Init FDO
     STRING fdoPath;
-    pConfiguration->GetStringValue(MgConfigProperties::GeneralPropertiesSection, 
-                                   MgConfigProperties::GeneralPropertyFdoPath, 
+    pConfiguration->GetStringValue(MgdConfigProperties::GeneralPropertiesSection, 
+                                   MgdConfigProperties::GeneralPropertyFdoPath, 
                                    fdoPath, 
-                                   MgConfigProperties::DefaultGeneralPropertyFdoPath);
+                                   MgdConfigProperties::DefaultGeneralPropertyFdoPath);
 
     // Check if path ends with a '/' if not, add one if needed
     MgFileUtil::AppendSlashToEndOfPath(fdoPath);
 
     // Inject MENTOR_DICTIONARY_PATH
     STRING mentorDictPath;
-    pConfiguration->GetStringValue(MgConfigProperties::GeneralPropertiesSection, 
-                                   MgConfigProperties::GeneralPropertyMentorDictionaryPath, 
+    pConfiguration->GetStringValue(MgdConfigProperties::GeneralPropertiesSection, 
+                                   MgdConfigProperties::GeneralPropertyMentorDictionaryPath, 
                                    mentorDictPath, 
-                                   MgConfigProperties::DefaultGeneralPropertyMentorDictionaryPath);
+                                   MgdConfigProperties::DefaultGeneralPropertyMentorDictionaryPath);
 
     #ifdef WIN32
     HMODULE hlib = NULL;
@@ -137,7 +137,7 @@ void MgPlatform::Initialize(CREFSTRING configFile)
     /*
     if (csCatalog->GetLibraryStatus() != LibraryStatus::lsInitialized)
     {
-        throw new MgCoordinateSystemInitializationFailedException(L"MgPlatform::Initialize", __LINE__, __WFILE__, NULL, L"MgCoordinateSystemInitializationFailedException", NULL);
+        throw new MgCoordinateSystemInitializationFailedException(L"MgdPlatform::Initialize", __LINE__, __WFILE__, NULL, L"MgCoordinateSystemInitializationFailedException", NULL);
     }*/
 
     // Load the Fdo library
@@ -153,8 +153,8 @@ void MgPlatform::Initialize(CREFSTRING configFile)
 
     if (NULL == hlib)
     {
-        ACE_DEBUG ((LM_DEBUG, ACE_TEXT("(%t) MgPlatform::Initialize() - Failed to load FDO library.\n")));
-        throw new MgFdoException(L"MgPlatform::Initialize",
+        ACE_DEBUG ((LM_DEBUG, ACE_TEXT("(%t) MgdPlatform::Initialize() - Failed to load FDO library.\n")));
+        throw new MgFdoException(L"MgdPlatform::Initialize",
              __LINE__, __WFILE__, NULL, L"MgFailedToLoadFdoLibrary", NULL);
     }
 
@@ -162,25 +162,25 @@ void MgPlatform::Initialize(CREFSTRING configFile)
     FdoIDisposable::EnableGlobalThreadLocking(true);
 
     // Initialize Stylizer callback mechanism for non-fatal FDO exceptions
-    MgMappingUtil::InitializeStylizerCallback();
+    MgdMappingUtil::InitializeStylizerCallback();
 
-    MG_LOG_TRACE_ENTRY(L"MgPlatform::Initialize()");
+    MG_LOG_TRACE_ENTRY(L"MgdPlatform::Initialize()");
 
     sm_init = true;
 }
 
-void MgPlatform::Terminate()
+void MgdPlatform::Terminate()
 {
-    MG_LOG_TRACE_ENTRY(L"MgPlatform::Terminate()");
+    MG_LOG_TRACE_ENTRY(L"MgdPlatform::Terminate()");
     MG_TRY()
 
-    //MgFdoConnectionPool::Cleanup();
+    //MgdFdoConnectionPool::Cleanup();
 
     //This is important. Otherwise the process using this library will be left lingering
-    MgLogManager* pLogManager = MgLogManager::GetInstance();
+    MgdLogManager* pLogManager = MgdLogManager::GetInstance();
     pLogManager->StopLogThread();
 
-    Ptr<MgServiceFactory> fact = new MgServiceFactory();;
+    Ptr<MgdServiceFactory> fact = new MgdServiceFactory();;
     Ptr<MgdResourceService> resSvc = dynamic_cast<MgdResourceService*>(fact->CreateService(MgServiceType::ResourceService));
     resSvc->DeleteSessionFiles();
 

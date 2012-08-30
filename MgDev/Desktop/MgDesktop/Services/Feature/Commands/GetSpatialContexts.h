@@ -23,13 +23,13 @@
 #include "System/XmlUtil.h"
 #include "Fdo.h"
 
-class MgFeatureServiceCache;
+class MgdFeatureServiceCache;
 
-class MgGetSpatialContexts
+class MgdGetSpatialContexts
 {
 public:
-    MgGetSpatialContexts();
-    ~MgGetSpatialContexts();
+    MgdGetSpatialContexts();
+    ~MgdGetSpatialContexts();
     MgSpatialContextReader* GetSpatialContexts(MgResourceIdentifier* resId);
 
 private:
@@ -44,7 +44,7 @@ private:
     bool IsEpsgCodeRepresentation (FdoString *coordSysName);
 
     STRING m_providerName;
-    MgFeatureServiceCache* m_featureServiceCache;
+    MgdFeatureServiceCache* m_featureServiceCache;
 };
 
 #endif

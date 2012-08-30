@@ -14,15 +14,15 @@ class TransformMesh;
 //RenderingService API. Accumulates feature IDs and also attributes
 //for one feature (case where a tooltip or attribute info needs to
 //be displayed in the AJAX viewer)
-class MG_DESKTOP_API FeatureInfoRenderer : public SE_Renderer, public RS_FontEngine
+class MG_DESKTOP_API MgdFeatureInfoRenderer : public SE_Renderer, public RS_FontEngine
 {
 public:
-    FeatureInfoRenderer(MgdSelection* selection,
+    MgdFeatureInfoRenderer(MgdSelection* selection,
                         int maxFeatures,
                         double mapScale,
                         double* point = NULL,
                         SE_Renderer* impRenderer = NULL);
-    virtual ~FeatureInfoRenderer();
+    virtual ~MgdFeatureInfoRenderer();
 
     ///////////////////////////////////
     // Renderer implementation
@@ -182,7 +182,7 @@ public:
     virtual const RS_Font* FindFont(RS_FontDef& def);
 
     ///////////////////////////////////////////////////////////////////////
-    // FeatureInfoRenderer functions
+    // MgdFeatureInfoRenderer functions
 
     int GetNumFeaturesProcessed()
     {
@@ -222,7 +222,7 @@ public:
     void SetSelected();
 
 protected:
-    //common to FeaturePropRenderer and FeatureInfoRenderer
+    //common to FeaturePropRenderer and MgdFeatureInfoRenderer
     RS_String m_layerId;
     RS_String m_fcName;
 
@@ -245,7 +245,7 @@ protected:
     double m_scale;
 
 private:
-    //specific to FeatureInfoRenderer
+    //specific to MgdFeatureInfoRenderer
     RS_String m_url;
     RS_String m_tooltip;
     MgPropertyCollection* m_props;

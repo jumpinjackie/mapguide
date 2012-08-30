@@ -6,12 +6,12 @@ const STRING SCALE_INDEX_PREFIX = L"S";
 const STRING ROW_PREFIX = L"R";
 const STRING COLUMN_PREFIX = L"C";
 
-STRING MgTileCache::sm_path = L"";
-INT32 MgTileCache::sm_tileColumnsPerFolder = 30;
-INT32 MgTileCache::sm_tileRowsPerFolder = 30;
+STRING MgdTileCache::sm_path = L"";
+INT32 MgdTileCache::sm_tileColumnsPerFolder = 30;
+INT32 MgdTileCache::sm_tileRowsPerFolder = 30;
 
 // default constructor
-MgTileCache::MgTileCache()
+MgdTileCache::MgdTileCache()
 {
 }
 
@@ -19,7 +19,7 @@ MgTileCache::MgTileCache()
 /// \brief
 /// Initialize the tile cache configuration.
 ///
-void MgTileCache::Initialize()
+void MgdTileCache::Initialize()
 {
     if (sm_path.empty())
     {
@@ -27,10 +27,10 @@ void MgTileCache::Initialize()
         MgConfiguration* configuration = MgConfiguration::GetInstance();
 
         configuration->GetStringValue(
-            MgConfigProperties::TileServicePropertiesSection,
-            MgConfigProperties::TileServicePropertyTileCachePath,
+            MgdConfigProperties::TileServicePropertiesSection,
+            MgdConfigProperties::TileServicePropertyTileCachePath,
             sm_path,
-            MgConfigProperties::DefaultTileServicePropertyTileCachePath);
+            MgdConfigProperties::DefaultTileServicePropertyTileCachePath);
 
         // generate directory location for tile cache
         MgFileUtil::AppendSlashToEndOfPath(sm_path);
@@ -38,40 +38,40 @@ void MgTileCache::Initialize()
         // create directory if it is not already there
         MgFileUtil::CreateDirectory(sm_path, false, true);
 
-        configuration->GetIntValue(MgConfigProperties::TileServicePropertiesSection,
-            MgConfigProperties::TileServicePropertyTileColumnsPerFolder,
+        configuration->GetIntValue(MgdConfigProperties::TileServicePropertiesSection,
+            MgdConfigProperties::TileServicePropertyTileColumnsPerFolder,
             sm_tileColumnsPerFolder,
-            MgConfigProperties::DefaultTileServicePropertyTileColumnsPerFolder);
+            MgdConfigProperties::DefaultTileServicePropertyTileColumnsPerFolder);
 
-        configuration->GetIntValue(MgConfigProperties::TileServicePropertiesSection,
-            MgConfigProperties::TileServicePropertyTileRowsPerFolder,
+        configuration->GetIntValue(MgdConfigProperties::TileServicePropertiesSection,
+            MgdConfigProperties::TileServicePropertyTileRowsPerFolder,
             sm_tileRowsPerFolder,
-            MgConfigProperties::DefaultTileServicePropertyTileRowsPerFolder);
+            MgdConfigProperties::DefaultTileServicePropertyTileRowsPerFolder);
 
-        configuration->GetIntValue(MgConfigProperties::TileServicePropertiesSection,
-            MgConfigProperties::TileServicePropertyTileSizeX,
-            MgTileParameters::tileWidth,
-            MgConfigProperties::DefaultTileServicePropertyTileSizeX);
+        configuration->GetIntValue(MgdConfigProperties::TileServicePropertiesSection,
+            MgdConfigProperties::TileServicePropertyTileSizeX,
+            MgdTileParameters::tileWidth,
+            MgdConfigProperties::DefaultTileServicePropertyTileSizeX);
 
-        configuration->GetIntValue(MgConfigProperties::TileServicePropertiesSection,
-            MgConfigProperties::TileServicePropertyTileSizeY,
-            MgTileParameters::tileHeight,
-            MgConfigProperties::DefaultTileServicePropertyTileSizeY);
+        configuration->GetIntValue(MgdConfigProperties::TileServicePropertiesSection,
+            MgdConfigProperties::TileServicePropertyTileSizeY,
+            MgdTileParameters::tileHeight,
+            MgdConfigProperties::DefaultTileServicePropertyTileSizeY);
 
         STRING format;
-        configuration->GetStringValue(MgConfigProperties::TileServicePropertiesSection,
-            MgConfigProperties::TileServicePropertyImageFormat,
+        configuration->GetStringValue(MgdConfigProperties::TileServicePropertiesSection,
+            MgdConfigProperties::TileServicePropertyImageFormat,
             format,
-            MgConfigProperties::DefaultTileServicePropertyImageFormat);
+            MgdConfigProperties::DefaultTileServicePropertyImageFormat);
 
         // Only allow GIF, PNG, PNG8 and JPG as tile formats
         if (format == MgdImageFormats::Png || format == MgdImageFormats::Png8 || format == MgdImageFormats::Jpeg || format == MgdImageFormats::Gif)
         {
-            MgTileParameters::tileFormat = format;
+            MgdTileParameters::tileFormat = format;
         }
         else
         {
-            MgTileParameters::tileFormat = MgdImageFormats::Png;
+            MgdTileParameters::tileFormat = MgdImageFormats::Png;
         }
     }
 }
@@ -80,7 +80,7 @@ void MgTileCache::Initialize()
 /// \brief
 /// Generate tile and lock pathnames.
 ///
-void MgTileCache::GeneratePathnames(MgResourceIdentifier* mapDef, int scaleIndex,
+void MgdTileCache::GeneratePathnames(MgResourceIdentifier* mapDef, int scaleIndex,
     CREFSTRING group, int tileColumn, int tileRow,
     STRING& tilePathname, STRING& lockPathname, bool createFullPath)
 {
@@ -101,11 +101,11 @@ void MgTileCache::GeneratePathnames(MgResourceIdentifier* mapDef, int scaleIndex
     //     <lockPathname> = <fullPath>/<row>_<column>.lck
     tilePathname += fileName;
     lockPathname = tilePathname;
-    if (MgTileParameters::tileFormat == MgdImageFormats::Jpeg)
+    if (MgdTileParameters::tileFormat == MgdImageFormats::Jpeg)
     {
         tilePathname += L"jpg";
     }
-    else if (MgTileParameters::tileFormat == MgdImageFormats::Gif)
+    else if (MgdTileParameters::tileFormat == MgdImageFormats::Gif)
     {
         tilePathname += L"gif";
     }
@@ -117,7 +117,7 @@ void MgTileCache::GeneratePathnames(MgResourceIdentifier* mapDef, int scaleIndex
     lockPathname += L"lck";
 }
 
-void MgTileCache::GeneratePathnames(MgMapBase* map, int scaleIndex,
+void MgdTileCache::GeneratePathnames(MgMapBase* map, int scaleIndex,
     CREFSTRING group, int tileColumn, int tileRow,
     STRING& tilePathname, STRING& lockPathname, bool createFullPath)
 {
@@ -129,7 +129,7 @@ void MgTileCache::GeneratePathnames(MgMapBase* map, int scaleIndex,
 }
 
 // returns any cached tile for the given pathname
-MgByteReader* MgTileCache::Get(CREFSTRING tilePathname)
+MgByteReader* MgdTileCache::Get(CREFSTRING tilePathname)
 {
     Ptr<MgByteReader> ret;
 
@@ -139,11 +139,11 @@ MgByteReader* MgTileCache::Get(CREFSTRING tilePathname)
     {
         Ptr<MgByteSource> byteSource = new MgByteSource(tilePathname, false);
 
-        if (MgTileParameters::tileFormat == MgdImageFormats::Jpeg)
+        if (MgdTileParameters::tileFormat == MgdImageFormats::Jpeg)
         {
             byteSource->SetMimeType(MgMimeType::Jpeg);
         }
-        else if (MgTileParameters::tileFormat == MgdImageFormats::Gif)
+        else if (MgdTileParameters::tileFormat == MgdImageFormats::Gif)
         {
             byteSource->SetMimeType(MgMimeType::Gif);
         }
@@ -161,7 +161,7 @@ MgByteReader* MgTileCache::Get(CREFSTRING tilePathname)
 }
 
 // caches a tile for the given pathname
-void MgTileCache::Set(MgByteReader* img, CREFSTRING tilePathname)
+void MgdTileCache::Set(MgByteReader* img, CREFSTRING tilePathname)
 {
     if (img != NULL)
     {
@@ -172,7 +172,7 @@ void MgTileCache::Set(MgByteReader* img, CREFSTRING tilePathname)
 }
 
 // clears the tile cache for the given map
-void MgTileCache::Clear(MgMapBase* map)
+void MgdTileCache::Clear(MgMapBase* map)
 {
     if (map != NULL)
     {
@@ -185,7 +185,7 @@ void MgTileCache::Clear(MgMapBase* map)
 }
 
 // clears the tile cache for the given map
-void MgTileCache::Clear(MgResourceIdentifier* mapDef)
+void MgdTileCache::Clear(MgResourceIdentifier* mapDef)
 {
     // the resource must be a map definition
     if (mapDef != NULL && mapDef->GetResourceType() == MgResourceType::MapDefinition)
@@ -199,7 +199,7 @@ void MgTileCache::Clear(MgResourceIdentifier* mapDef)
 }
 
 // gets the base path to use with the tile cache for the given map definition resource
-STRING MgTileCache::GetBasePath(MgResourceIdentifier* mapDef)
+STRING MgdTileCache::GetBasePath(MgResourceIdentifier* mapDef)
 {
     assert(mapDef != NULL);
     assert(mapDef->GetResourceType() == MgResourceType::MapDefinition);
@@ -248,7 +248,7 @@ STRING MgTileCache::GetBasePath(MgResourceIdentifier* mapDef)
 }
 
 // gets the base path to use with the tile cache for the given map
-STRING MgTileCache::GetBasePath(MgMapBase* map)
+STRING MgdTileCache::GetBasePath(MgMapBase* map)
 {
     assert(NULL != map);
     Ptr<MgResourceIdentifier> mapDef = map->GetMapDefinition();
@@ -256,7 +256,7 @@ STRING MgTileCache::GetBasePath(MgMapBase* map)
 }
 
 // gets the full path to use with the tile cache for the given base path / scale index / group
-STRING MgTileCache::GetFullPath(CREFSTRING basePath, int scaleIndex, CREFSTRING group, int tileColumn, int tileRow)
+STRING MgdTileCache::GetFullPath(CREFSTRING basePath, int scaleIndex, CREFSTRING group, int tileColumn, int tileRow)
 {
     // Build full path
     //     <fullPath> = <basePath>/<scaleIndex>/<group>/<rowFolder>/<columnFolder>
@@ -279,20 +279,20 @@ STRING MgTileCache::GetFullPath(CREFSTRING basePath, int scaleIndex, CREFSTRING 
 }
 
 // gets the full path to use with the tile cache for the given map definition / scale index / group
-STRING MgTileCache::GetFullPath(MgResourceIdentifier* mapDef, int scaleIndex, CREFSTRING group, int tileColumn, int tileRow)
+STRING MgdTileCache::GetFullPath(MgResourceIdentifier* mapDef, int scaleIndex, CREFSTRING group, int tileColumn, int tileRow)
 {
     return GetFullPath(GetBasePath(mapDef), scaleIndex, group, tileColumn, tileRow);
 }
 
 // gets the full path to use with the tile cache for the given map / scale index / group
-STRING MgTileCache::GetFullPath(MgMapBase* map, int scaleIndex, CREFSTRING group, int tileColumn, int tileRow)
+STRING MgdTileCache::GetFullPath(MgMapBase* map, int scaleIndex, CREFSTRING group, int tileColumn, int tileRow)
 {
     assert(NULL != map);
     Ptr<MgResourceIdentifier> mapDef = map->GetMapDefinition();
     return GetFullPath(mapDef, scaleIndex, group, tileColumn, tileRow);
 }
 
-STRING MgTileCache::CreateFullPath(CREFSTRING basePath, int scaleIndex, CREFSTRING group, int tileColumn, int tileRow)
+STRING MgdTileCache::CreateFullPath(CREFSTRING basePath, int scaleIndex, CREFSTRING group, int tileColumn, int tileRow)
 {
     assert(!basePath.empty());
     STRING fullPath = basePath;
@@ -323,18 +323,18 @@ STRING MgTileCache::CreateFullPath(CREFSTRING basePath, int scaleIndex, CREFSTRI
     return fullPath;
 }
 
-STRING MgTileCache::CreateFullPath(MgResourceIdentifier* mapDef, int scaleIndex, CREFSTRING group, int tileColumn, int tileRow)
+STRING MgdTileCache::CreateFullPath(MgResourceIdentifier* mapDef, int scaleIndex, CREFSTRING group, int tileColumn, int tileRow)
 {
     return CreateFullPath(GetBasePath(mapDef), scaleIndex, group, tileColumn, tileRow);
 }
 
-STRING MgTileCache::CreateFullPath(MgMapBase* map, int scaleIndex, CREFSTRING group, int tileColumn, int tileRow)
+STRING MgdTileCache::CreateFullPath(MgMapBase* map, int scaleIndex, CREFSTRING group, int tileColumn, int tileRow)
 {
     return CreateFullPath(GetBasePath(map), scaleIndex, group, tileColumn, tileRow);
 }
 
 // Get the folder name corresponding to the specified scale index
-STRING MgTileCache::GetScaleIndexFolder(int scaleIndex)
+STRING MgdTileCache::GetScaleIndexFolder(int scaleIndex)
 {
     STRING scaleIndexString;
     MgUtil::Int32ToString(scaleIndex, scaleIndexString);
@@ -342,19 +342,19 @@ STRING MgTileCache::GetScaleIndexFolder(int scaleIndex)
 }
 
 // Get the folder name corresponding to the specified tile row
-STRING MgTileCache::GetRowFolder(int tileRow)
+STRING MgdTileCache::GetRowFolder(int tileRow)
 {
     return GetFolder(ROW_PREFIX, tileRow, sm_tileRowsPerFolder);
 }
 
 // Get the folder name corresponding to the specified tile column
-STRING MgTileCache::GetColumnFolder(int tileColumn)
+STRING MgdTileCache::GetColumnFolder(int tileColumn)
 {
     return GetFolder(COLUMN_PREFIX, tileColumn, sm_tileColumnsPerFolder);
 }
 
 // Get the parent folder for a given row or column
-STRING MgTileCache::GetFolder(STRING prefix, int tileIndex, int tilesPerFolder)
+STRING MgdTileCache::GetFolder(STRING prefix, int tileIndex, int tilesPerFolder)
 {
     STRING folder;
 
@@ -374,7 +374,7 @@ STRING MgTileCache::GetFolder(STRING prefix, int tileIndex, int tilesPerFolder)
 
 // Get the filename corresponding to the specified row and column.
 // No file extension is added.
-STRING MgTileCache::GetTileName(int tileRow, int tileColumn)
+STRING MgdTileCache::GetTileName(int tileRow, int tileColumn)
 {
     return GetTileIndexString(tileRow, sm_tileRowsPerFolder) + L"_" +
         GetTileIndexString(tileColumn, sm_tileColumnsPerFolder);
@@ -387,7 +387,7 @@ STRING MgTileCache::GetTileName(int tileRow, int tileColumn)
 // Note: Negative values are maintained even near the origin, so a tile with
 // an overall row index of -13 would be stored in row folder "R-0" with a
 // row index of -13.
-STRING MgTileCache::GetTileIndexString(int tileIndex, int tilesPerFolder)
+STRING MgdTileCache::GetTileIndexString(int tileIndex, int tilesPerFolder)
 {
     STRING name;
 

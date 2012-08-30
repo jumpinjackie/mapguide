@@ -21,21 +21,21 @@
 class MgDisposable;
 class FdoFunction;
 class MgReader;
-class MgFeatureDistribution;
+class MgdFeatureDistribution;
 
-class MgFeatureStringFunctions : public MgFeatureDistribution
+class MgdFeatureStringFunctions : public MgdFeatureDistribution
 {
-    DECLARE_CLASSNAME(MgFeatureStringFunctions)
+    DECLARE_CLASSNAME(MgdFeatureStringFunctions)
 
 public:
 
-    MgFeatureStringFunctions(MgReader* reader, FdoFunction* customFunction, CREFSTRING propertyAlias);
+    MgdFeatureStringFunctions(MgReader* reader, FdoFunction* customFunction, CREFSTRING propertyAlias);
     virtual MgReader* Execute();
 
 protected:
 
-    MgFeatureStringFunctions();
-    virtual ~MgFeatureStringFunctions();
+    MgdFeatureStringFunctions();
+    virtual ~MgdFeatureStringFunctions();
     virtual void Dispose()
     {
         delete this;

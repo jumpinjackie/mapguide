@@ -3,23 +3,23 @@
 
 class EPlotRenderer;
 
-class MG_DESKTOP_API MgLegendPlotUtil
+class MG_DESKTOP_API MgdLegendPlotUtil
 {
 public:
 
-    MgLegendPlotUtil(MgResourceService* svcResource);
-    virtual ~MgLegendPlotUtil();
+    MgdLegendPlotUtil(MgResourceService* svcResource);
+    virtual ~MgdLegendPlotUtil();
 
-    void AddTitleElement(MgPrintLayout* layout, STRING& mapName, EPlotRenderer& dr);
-    void AddScalebarElement(MgPrintLayout* layout, RS_Bounds& mapBounds, double dMapScale, double dMetersPerMapUnit, EPlotRenderer& dr, RS_LineStroke& lineStroke);
-    void AddNorthArrowElement(MgPrintLayout* layout, EPlotRenderer& dr, RS_LineStroke& lineStroke);
-    void AddUrlElement(MgPrintLayout* layout, STRING& mapURL, EPlotRenderer& dr);
-    void AddDateTimeElement(MgPrintLayout* layout, EPlotRenderer& dr);
-    void AddCustomLogoElement(MgPrintLayout* layout, EPlotRenderer& dr);
-    void AddCustomTextElement(MgPrintLayout* layout, EPlotRenderer& dr);
+    void AddTitleElement(MgdPrintLayout* layout, STRING& mapName, EPlotRenderer& dr);
+    void AddScalebarElement(MgdPrintLayout* layout, RS_Bounds& mapBounds, double dMapScale, double dMetersPerMapUnit, EPlotRenderer& dr, RS_LineStroke& lineStroke);
+    void AddNorthArrowElement(MgdPrintLayout* layout, EPlotRenderer& dr, RS_LineStroke& lineStroke);
+    void AddUrlElement(MgdPrintLayout* layout, STRING& mapURL, EPlotRenderer& dr);
+    void AddDateTimeElement(MgdPrintLayout* layout, EPlotRenderer& dr);
+    void AddCustomLogoElement(MgdPrintLayout* layout, EPlotRenderer& dr);
+    void AddCustomTextElement(MgdPrintLayout* layout, EPlotRenderer& dr);
 
-    void AddLayoutElements(MgPrintLayout* layout, STRING mapName, STRING mapURL, MgdMap* map, MgLayerCollection* layers, RS_Bounds& mapBounds, double& dMapScale, double& dMetersPerMapUnit, EPlotRenderer& dr);
-    void ComputeLegendOffsetAndSize(MgPrintLayout* layout, double mapScale, EPlotRenderer& dr, MgdMap* map, double &legendOffsetX, double& legendOffsetY, double& legendWidth, double& legendHeight);
+    void AddLayoutElements(MgdPrintLayout* layout, STRING mapName, STRING mapURL, MgdMap* map, MgLayerCollection* layers, RS_Bounds& mapBounds, double& dMapScale, double& dMetersPerMapUnit, EPlotRenderer& dr);
+    void ComputeLegendOffsetAndSize(MgdPrintLayout* layout, double mapScale, EPlotRenderer& dr, MgdMap* map, double &legendOffsetX, double& legendOffsetY, double& legendWidth, double& legendHeight);
     
     //These have been cleaned up to work with a generic renderer, rather than just EPlot.
     //Eventually the scale bar and north arrow ones need to be cleaned up also in order

@@ -18,21 +18,21 @@
 #ifndef _MG_SERVER_UPDATE_COMMAND_H_
 #define _MG_SERVER_UPDATE_COMMAND_H_
 
-class MgFeatureConnection;
+class MgdFeatureConnection;
 
-class MgServerUpdateCommand : public MgFeatureManipulationCommand
+class MgdUpdateCommand : public MgdFeatureManipulationCommand
 {
-    DECLARE_CLASSNAME(MgServerUpdateCommand)
+    DECLARE_CLASSNAME(MgdUpdateCommand)
 
 public:
-    MgServerUpdateCommand(MgFeatureCommand* command, MgFeatureConnection* connection, INT32 cmdId);
+    MgdUpdateCommand(MgFeatureCommand* command, MgdFeatureConnection* connection, INT32 cmdId);
     virtual MgProperty* Execute();
 protected:
-    MgServerUpdateCommand();
-    ~MgServerUpdateCommand();
+    MgdUpdateCommand();
+    ~MgdUpdateCommand();
 private:
     Ptr<MgUpdateFeatures> m_featCommand;
-    Ptr<MgFeatureConnection> m_srvrFeatConn;
+    Ptr<MgdFeatureConnection> m_srvrFeatConn;
     INT32 m_cmdId;
 };
 

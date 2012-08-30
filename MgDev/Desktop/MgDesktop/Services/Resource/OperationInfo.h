@@ -3,9 +3,9 @@
 
 #include "OperationParameter.h"
 
-typedef std::map<STRING, MgOperationParameter> MgOpParamMap;
+typedef std::map<STRING, MgdOperationParameter> MgOpParamMap;
 
-class MgOperationName
+class MgdOperationName
 {
 INTERNAL_API:
 //    static const STRING CreateRepository;
@@ -47,9 +47,9 @@ public:
     STRING GetVersion() const;
     void SetVersion(CREFSTRING version);
 
-    const MgOperationParameter& GetParameter(CREFSTRING name,
+    const MgdOperationParameter& GetParameter(CREFSTRING name,
         bool required = true) const;
-    void AddParameter(CREFSTRING name, const MgOperationParameter& opParam);
+    void AddParameter(CREFSTRING name, const MgdOperationParameter& opParam);
     void RemoveParameter(CREFSTRING name);
 
     const MgOpParamMap& GetParameters() const;
@@ -58,7 +58,7 @@ public:
 
 public:
     static const STRING sm_currentVersion;
-    static const MgOperationParameter sm_blankParameter;
+    static const MgdOperationParameter sm_blankParameter;
 
 private:
     STRING m_name;

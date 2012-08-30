@@ -1,21 +1,21 @@
 #ifndef DESKTOP_FEATURE_SOURCE_CACHE_ITEM_H
 #define DESKTOP_FEATURE_SOURCE_CACHE_ITEM_H
 
-class MgFeatureSourceCacheItem : public MgGuardDisposable
+class MgdFeatureSourceCacheItem : public MgGuardDisposable
 {
     /// Constructors/Destructor
 
 public:
 
-    MgFeatureSourceCacheItem();
-    explicit MgFeatureSourceCacheItem(MdfModel::FeatureSource* featureSource);
-    virtual ~MgFeatureSourceCacheItem();
+    MgdFeatureSourceCacheItem();
+    explicit MgdFeatureSourceCacheItem(MdfModel::FeatureSource* featureSource);
+    virtual ~MgdFeatureSourceCacheItem();
 
 private:
 
     // Unimplemented copy constructor and assignment operator.
-    MgFeatureSourceCacheItem(const MgFeatureSourceCacheItem&);
-    MgFeatureSourceCacheItem& operator=(const MgFeatureSourceCacheItem&);
+    MgdFeatureSourceCacheItem(const MgdFeatureSourceCacheItem&);
+    MgdFeatureSourceCacheItem& operator=(const MgdFeatureSourceCacheItem&);
 
 /// Methods
 
@@ -36,7 +36,7 @@ private:
 
 /// Inline Methods
 
-inline MdfModel::FeatureSource* MgFeatureSourceCacheItem::Get()
+inline MdfModel::FeatureSource* MgdFeatureSourceCacheItem::Get()
 {
     return m_featureSource.get();
 }

@@ -15,22 +15,22 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
-#ifndef _MGFDOFEATUREREADER_H
-#define _MGFDOFEATUREREADER_H
+#ifndef _MgdFdoFeatureReader_H
+#define _MgdFdoFeatureReader_H
 
 #include "FdoReaderCollection.h"
 
 class FdoIFeatureReader;
 
 /// \cond INTERNAL
-class MgFdoFeatureReader: public FdoIFeatureReader
+class MgdFdoFeatureReader: public FdoIFeatureReader
 {
 public:
-    // constructs a MgFdoFeatureReader
-    MgFdoFeatureReader();
-    MgFdoFeatureReader(MgFdoReaderCollection* readerCollection);
+    // constructs a MgdFdoFeatureReader
+    MgdFdoFeatureReader();
+    MgdFdoFeatureReader(MgdFdoReaderCollection* readerCollection);
     // default destructor
-    virtual ~MgFdoFeatureReader();
+    virtual ~MgdFdoFeatureReader();
 
 protected:
 
@@ -90,7 +90,7 @@ public:
 protected:
 
 private:
-    FdoPtr<MgFdoReaderCollection> m_readerCollection;
+    FdoPtr<MgdFdoReaderCollection> m_readerCollection;
     FdoPtr<FdoIFeatureReader> m_currentReader;
     FdoInt32 m_currentReaderId;
     FdoBoolean m_readerDepleted;
@@ -99,4 +99,4 @@ private:
 };
 /// \endcond
 
-#endif // _MGFDOFEATUREREADER_H
+#endif // _MgdFdoFeatureReader_H

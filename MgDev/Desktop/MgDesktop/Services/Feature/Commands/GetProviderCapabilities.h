@@ -23,11 +23,11 @@
 #include "System/XmlUtil.h"
 #include "Fdo.h"
 
-class MgGetProviderCapabilities
+class MgdGetProviderCapabilities
 {
 public:
-    MgGetProviderCapabilities(CREFSTRING providerName, CREFSTRING connectionString);
-    ~MgGetProviderCapabilities();
+    MgdGetProviderCapabilities(CREFSTRING providerName, CREFSTRING connectionString);
+    ~MgdGetProviderCapabilities();
     MgByteReader* GetProviderCapabilities();
 
 private:

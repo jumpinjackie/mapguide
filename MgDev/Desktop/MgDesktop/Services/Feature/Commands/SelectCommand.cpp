@@ -30,148 +30,148 @@
 // The maximum size of the subfilter for a selection query.  Tune this value for optimal selection perfomance.
 #define MG_MAX_SUBFILTER_SIZE  250
 
-MgSelectCommand::MgSelectCommand(MgResourceIdentifier* resource)
+MgdSelectCommand::MgdSelectCommand(MgResourceIdentifier* resource)
 {
-    CHECKNULL((MgResourceIdentifier*)resource, L"MgSelectCommand.MgSelectCommand");
+    CHECKNULL((MgResourceIdentifier*)resource, L"MgdSelectCommand.MgdSelectCommand");
 
     // Connect to provider
-    m_connection = new MgFeatureConnection(resource);
+    m_connection = new MgdFeatureConnection(resource);
     if ((NULL != m_connection.p) && ( m_connection->IsConnectionOpen() ))
     {
         m_providerName = m_connection->GetProviderName();
     }
     else
     {
-        throw new MgdConnectionFailedException(L"MgSelectCommand.MgSelectCommand", __LINE__, __WFILE__, NULL, L"", NULL);
+        throw new MgdConnectionFailedException(L"MgdSelectCommand.MgdSelectCommand", __LINE__, __WFILE__, NULL, L"", NULL);
     }
     // Create FdoISelect command
     FdoPtr<FdoIConnection> fdoConn = m_connection->GetConnection();
     m_command = (FdoISelect*)fdoConn->CreateCommand(FdoCommandType_Select);
-    CHECKNULL((FdoISelect*)m_command, L"MgSelectCommand.MgSelectCommand");
+    CHECKNULL((FdoISelect*)m_command, L"MgdSelectCommand.MgdSelectCommand");
 }
 
-MgSelectCommand::~MgSelectCommand()
+MgdSelectCommand::~MgdSelectCommand()
 {
     m_command = NULL;
     m_filter = NULL;
 }
 
-FdoIdentifierCollection* MgSelectCommand::GetPropertyNames()
+FdoIdentifierCollection* MgdSelectCommand::GetPropertyNames()
 {
-    CHECKNULL((FdoISelect*)m_command, L"MgSelectCommand.GetPropertyNames");
+    CHECKNULL((FdoISelect*)m_command, L"MgdSelectCommand.GetPropertyNames");
     return m_command->GetPropertyNames();
 }
 
-void MgSelectCommand::SetDistinct(bool value)
+void MgdSelectCommand::SetDistinct(bool value)
 {
-    CHECKNULL((FdoISelect*)m_command, L"MgSelectCommand.SetDistinct");
+    CHECKNULL((FdoISelect*)m_command, L"MgdSelectCommand.SetDistinct");
     // This operation is not supported by FdoISelect
     // m_command->SetDistinct(value);
 
-    // throw new MgInvalidOperationException(L"MgSelectCommand.SetDistinct", __LINE__, __WFILE__, NULL, L"", NULL);
+    // throw new MgInvalidOperationException(L"MgdSelectCommand.SetDistinct", __LINE__, __WFILE__, NULL, L"", NULL);
 }
 
-bool MgSelectCommand::GetDistinct()
+bool MgdSelectCommand::GetDistinct()
 {
-    CHECKNULL((FdoISelect*)m_command, L"MgSelectCommand.GetDistinct");
+    CHECKNULL((FdoISelect*)m_command, L"MgdSelectCommand.GetDistinct");
     // This operation is not supported by FdoISelect
     // return m_command->GetDistinct();
 
-    // throw new MgInvalidOperationException(L"MgSelectCommand.GetDistinct", __LINE__, __WFILE__, NULL, L"", NULL);
+    // throw new MgInvalidOperationException(L"MgdSelectCommand.GetDistinct", __LINE__, __WFILE__, NULL, L"", NULL);
 
     return false;
 }
 
-void MgSelectCommand::SetFetchSize(FdoInt32 fetchSize)
+void MgdSelectCommand::SetFetchSize(FdoInt32 fetchSize)
 {
-    CHECKNULL((FdoISelect*)m_command, L"MgSelectCommand.SetFetchSize");
+    CHECKNULL((FdoISelect*)m_command, L"MgdSelectCommand.SetFetchSize");
     m_command->SetFetchSize(fetchSize);
 }
 
-FdoInt32 MgSelectCommand::GetFetchSize()
+FdoInt32 MgdSelectCommand::GetFetchSize()
 {
-    CHECKNULL((FdoISelect*)m_command, L"MgSelectCommand.GetFetchSize");
+    CHECKNULL((FdoISelect*)m_command, L"MgdSelectCommand.GetFetchSize");
     return m_command->GetFetchSize();
 }
 
-FdoIdentifierCollection* MgSelectCommand::GetOrdering()
+FdoIdentifierCollection* MgdSelectCommand::GetOrdering()
 {
-    CHECKNULL((FdoISelect*)m_command, L"MgSelectCommand.GetOrdering");
+    CHECKNULL((FdoISelect*)m_command, L"MgdSelectCommand.GetOrdering");
     return m_command->GetOrdering();
 }
 
-void MgSelectCommand::SetOrderingOption(FdoOrderingOption option)
+void MgdSelectCommand::SetOrderingOption(FdoOrderingOption option)
 {
-    CHECKNULL((FdoISelect*)m_command, L"MgSelectCommand.SetOrderingOption");
+    CHECKNULL((FdoISelect*)m_command, L"MgdSelectCommand.SetOrderingOption");
     m_command->SetOrderingOption(option);
 }
 
-FdoOrderingOption MgSelectCommand::GetOrderingOption()
+FdoOrderingOption MgdSelectCommand::GetOrderingOption()
 {
-    CHECKNULL((FdoISelect*)m_command, L"MgSelectCommand.GetOrderingOption");
+    CHECKNULL((FdoISelect*)m_command, L"MgdSelectCommand.GetOrderingOption");
     return m_command->GetOrderingOption();
 }
 
-FdoIdentifierCollection* MgSelectCommand::GetGrouping()
+FdoIdentifierCollection* MgdSelectCommand::GetGrouping()
 {
-    CHECKNULL((FdoISelect*)m_command, L"MgSelectCommand.GetGrouping");
+    CHECKNULL((FdoISelect*)m_command, L"MgdSelectCommand.GetGrouping");
     // This operation is not supported by FdoISelect
     // return m_command->GetGrouping();
 
-    // throw new MgInvalidOperationException(L"MgSelectCommand.GetGrouping", __LINE__, __WFILE__, NULL, L"", NULL);
+    // throw new MgInvalidOperationException(L"MgdSelectCommand.GetGrouping", __LINE__, __WFILE__, NULL, L"", NULL);
     return NULL;
 }
 
-void MgSelectCommand::SetGroupingFilter(FdoFilter* filter)
+void MgdSelectCommand::SetGroupingFilter(FdoFilter* filter)
 {
-    CHECKNULL((FdoISelect*)m_command, L"MgSelectCommand.SetGroupingFilter");
+    CHECKNULL((FdoISelect*)m_command, L"MgdSelectCommand.SetGroupingFilter");
     // This operation is not supported by FdoISelect
     // m_command->SetGroupingFilter(filter);
 
-    // throw new MgInvalidOperationException(L"MgSelectCommand.SetGroupingFilter", __LINE__, __WFILE__, NULL, L"", NULL);
+    // throw new MgInvalidOperationException(L"MgdSelectCommand.SetGroupingFilter", __LINE__, __WFILE__, NULL, L"", NULL);
 }
 
-FdoFilter* MgSelectCommand::GetGroupingFilter()
+FdoFilter* MgdSelectCommand::GetGroupingFilter()
 {
-    CHECKNULL((FdoISelect*)m_command, L"MgSelectCommand.GetGroupingFilter");
+    CHECKNULL((FdoISelect*)m_command, L"MgdSelectCommand.GetGroupingFilter");
     // This operation is not supported by FdoISelect
     // return m_command->GetGroupingFilter(filter);
 
-    // throw new MgInvalidOperationException(L"MgSelectCommand.GetGroupingFilter", __LINE__, __WFILE__, NULL, L"", NULL);
+    // throw new MgInvalidOperationException(L"MgdSelectCommand.GetGroupingFilter", __LINE__, __WFILE__, NULL, L"", NULL);
     return NULL;
 }
 
-void MgSelectCommand::SetFeatureClassName(FdoString* value)
+void MgdSelectCommand::SetFeatureClassName(FdoString* value)
 {
-    CHECKNULL((FdoISelect*)m_command, L"MgSelectCommand.SetFeatureClassName");
+    CHECKNULL((FdoISelect*)m_command, L"MgdSelectCommand.SetFeatureClassName");
     m_command->SetFeatureClassName(value);
 }
 
-void MgSelectCommand::SetFilter(FdoString* value)
+void MgdSelectCommand::SetFilter(FdoString* value)
 {
-    CHECKNULL((FdoISelect*)m_command, L"MgSelectCommand.SetFilter");
+    CHECKNULL((FdoISelect*)m_command, L"MgdSelectCommand.SetFilter");
     m_command->SetFilter(value);
 }
 
-void MgSelectCommand::SetFilter(FdoFilter* value)
+void MgdSelectCommand::SetFilter(FdoFilter* value)
 {
-    CHECKNULL((FdoISelect*)m_command, L"MgSelectCommand.SetFilter");
+    CHECKNULL((FdoISelect*)m_command, L"MgdSelectCommand.SetFilter");
     m_command->SetFilter(value);
 
     m_filter = FDO_SAFE_ADDREF(value);
 }
 
-MgReader* MgSelectCommand::Execute()
+MgReader* MgdSelectCommand::Execute()
 {
     FdoPtr<FdoIFeatureReader> reader;
 
     // Break up the filter into smaller chunks
-    FdoPtr<MgFdoFilterCollection> subFilters = this->GetSubFilters();
+    FdoPtr<MgdFdoFilterCollection> subFilters = this->GetSubFilters();
 
-    CHECKNULL((FdoISelect*)m_command, L"MgSelectCommand.Execute");
+    CHECKNULL((FdoISelect*)m_command, L"MgdSelectCommand.Execute");
 
     // Execute queries using the smaller filters and collect the results of the queries into a reader collection.
-    FdoPtr<MgFdoReaderCollection> frc = MgFdoReaderCollection::Create();
+    FdoPtr<MgdFdoReaderCollection> frc = MgdFdoReaderCollection::Create();
 
     for (FdoInt32 filterIndex = 0; filterIndex < subFilters->GetCount(); filterIndex++)
     {
@@ -182,51 +182,51 @@ MgReader* MgSelectCommand::Execute()
         frc->Add(reader);
     }
 
-    FdoPtr<MgFdoFeatureReader> featureReader = new MgFdoFeatureReader(frc);
-    CHECKNULL((FdoIFeatureReader*)featureReader, L"MgSelectCommand.Execute");
+    FdoPtr<MgdFdoFeatureReader> featureReader = new MgdFdoFeatureReader(frc);
+    CHECKNULL((FdoIFeatureReader*)featureReader, L"MgdSelectCommand.Execute");
 
     return new MgdFeatureReader(m_connection, featureReader);
 }
 
-MgReader* MgSelectCommand::ExecuteWithLock()
+MgReader* MgdSelectCommand::ExecuteWithLock()
 {
     FdoPtr<FdoIFeatureReader> reader;
-    CHECKNULL((FdoISelect*)m_command, L"MgExtendedSelectCommand.Execute");
+    CHECKNULL((FdoISelect*)m_command, L"MgdExtendedSelectCommand.Execute");
 
     reader = m_command->ExecuteWithLock();
     return new MgdFeatureReader(m_connection, reader);
 }
 
-bool MgSelectCommand::IsSupportedFunction(FdoFunction* fdoFunc)
+bool MgdSelectCommand::IsSupportedFunction(FdoFunction* fdoFunc)
 {
     FdoPtr<FdoIConnection> fdoConn = m_connection->GetConnection();
     return this->IsFdoSupportedFunction(fdoConn, fdoFunc);
 }
 
-bool MgSelectCommand::SupportsSelectGrouping()
+bool MgdSelectCommand::SupportsSelectGrouping()
 {
     FdoPtr<FdoIConnection> fdoConn = m_connection->GetConnection();
-    return MgFeatureServiceCommand::SupportsSelectGrouping(fdoConn);
+    return MgdFeatureServiceCommand::SupportsSelectGrouping(fdoConn);
 }
 
-bool MgSelectCommand::SupportsSelectOrdering()
+bool MgdSelectCommand::SupportsSelectOrdering()
 {
     FdoPtr<FdoIConnection> fdoConn = m_connection->GetConnection();
-    return MgFeatureServiceCommand::SupportsSelectOrdering(fdoConn);
+    return MgdFeatureServiceCommand::SupportsSelectOrdering(fdoConn);
 }
 
-bool MgSelectCommand::SupportsSelectDistinct()
+bool MgdSelectCommand::SupportsSelectDistinct()
 {
     FdoPtr<FdoIConnection> fdoConn = m_connection->GetConnection();
-    return MgFeatureServiceCommand::SupportsSelectDistinct(fdoConn);
+    return MgdFeatureServiceCommand::SupportsSelectDistinct(fdoConn);
 }
 
-FdoFilter* MgSelectCommand::GetFilter()
+FdoFilter* MgdSelectCommand::GetFilter()
 {
     return FDO_SAFE_ADDREF(m_filter.p);
 }
 
-MgFdoFilterCollection* MgSelectCommand::GetSubFilters()
+MgdFdoFilterCollection* MgdSelectCommand::GetSubFilters()
 {
     // Break up a filter into a bunch of smaller filters
 
@@ -346,7 +346,7 @@ MgFdoFilterCollection* MgSelectCommand::GetSubFilters()
     }
 #endif
 
-    FdoPtr<MgFdoFilterCollection> filters = MgFdoFilterCollection::Create();
+    FdoPtr<MgdFdoFilterCollection> filters = MgdFdoFilterCollection::Create();
 
     if (fragmenter.IsFragmented() && fragmenter.GetOrCount() > 0)
     {
@@ -406,19 +406,19 @@ MgFdoFilterCollection* MgSelectCommand::GetSubFilters()
     return filters.Detach();
 }
 
-FdoJoinCriteriaCollection* MgSelectCommand::GetJoinCriteria()
+FdoJoinCriteriaCollection* MgdSelectCommand::GetJoinCriteria()
 {
-    CHECKNULL((FdoISelect*)m_command, L"MgSelectCommand.GetJoinCriteria");
+    CHECKNULL((FdoISelect*)m_command, L"MgdSelectCommand.GetJoinCriteria");
     return m_command->GetJoinCriteria();
 }
 
-void MgSelectCommand::SetAlias(FdoString* alias)
+void MgdSelectCommand::SetAlias(FdoString* alias)
 {
-    CHECKNULL((FdoISelect*)m_command, L"MgSelectCommand.SetDistinct");
+    CHECKNULL((FdoISelect*)m_command, L"MgdSelectCommand.SetDistinct");
     m_command->SetAlias(alias);
 }
 
-MgReader* MgSelectCommand::ExecuteJoined(MgStringCollection* idPropNames, bool bForceOneToOne)
+MgReader* MgdSelectCommand::ExecuteJoined(MgStringCollection* idPropNames, bool bForceOneToOne)
 {
     Ptr<MgReader> ret;
 
@@ -427,15 +427,15 @@ MgReader* MgSelectCommand::ExecuteJoined(MgStringCollection* idPropNames, bool b
     FdoPtr<FdoIFeatureReader> fdoReader = m_command->Execute();
     if (bForceOneToOne)
     {
-        FdoPtr<FdoStringCollection> names = MgFeatureUtil::MgToFdoStringCollection(idPropNames, false);
-        FdoPtr<FdoIFeatureReader> forcedReader = new MgFdoForcedOneToOneFeatureReader(fdoReader, names); 
+        FdoPtr<FdoStringCollection> names = MgdFeatureUtil::MgToFdoStringCollection(idPropNames, false);
+        FdoPtr<FdoIFeatureReader> forcedReader = new MgdFdoForcedOneToOneFeatureReader(fdoReader, names); 
         ret = new MgdFeatureReader(m_connection, forcedReader);
     }
     else
     {
         ret = new MgdFeatureReader(m_connection, fdoReader);
     }
-    MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgSelectCommand.ExecuteJoined")
+    MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgdSelectCommand.ExecuteJoined")
 
     return ret.Detach();
 }

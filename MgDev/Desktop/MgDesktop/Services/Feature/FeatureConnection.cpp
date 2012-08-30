@@ -6,15 +6,15 @@
 #endif
 
 // Initialize the minimum required memeber variables
-MgFeatureConnection::MgFeatureConnection(MgResourceIdentifier* featureSourceIdentifier)
+MgdFeatureConnection::MgdFeatureConnection(MgResourceIdentifier* featureSourceIdentifier)
 {
     Initialize();
     //This is a potentially poolable connection
-    m_fdoConn = MgFdoConnectionPool::GetConnection(featureSourceIdentifier);
-    CHECKNULL(m_fdoConn, L"MgFeatureConnection.MgFeatureConnection()");
+    m_fdoConn = MgdFdoConnectionPool::GetConnection(featureSourceIdentifier);
+    CHECKNULL(m_fdoConn, L"MgdFeatureConnection.MgdFeatureConnection()");
 
 #ifdef DEBUG_FDO_CONNECTION_POOL
-    ACE_DEBUG((LM_INFO, ACE_TEXT("MgFeatureConnection::MgFeatureConnection(MgResourceIdentifier*) - refcount: %d\n"), m_fdoConn->GetRefCount()));
+    ACE_DEBUG((LM_INFO, ACE_TEXT("MgdFeatureConnection::MgdFeatureConnection(MgResourceIdentifier*) - refcount: %d\n"), m_fdoConn->GetRefCount()));
 #endif
 
     m_resourceId = SAFE_ADDREF(featureSourceIdentifier);
@@ -22,17 +22,17 @@ MgFeatureConnection::MgFeatureConnection(MgResourceIdentifier* featureSourceIden
 }
 
 
-MgFeatureConnection::MgFeatureConnection(CREFSTRING providerName, CREFSTRING connectionString)
+MgdFeatureConnection::MgdFeatureConnection(CREFSTRING providerName, CREFSTRING connectionString)
 {
     Initialize();
     //This is not a poolable connection
-    m_fdoConn = MgFdoConnectionPool::GetConnection(providerName, connectionString);
-    CHECKNULL(m_fdoConn, L"MgFeatureConnection.MgFeatureConnection()");
+    m_fdoConn = MgdFdoConnectionPool::GetConnection(providerName, connectionString);
+    CHECKNULL(m_fdoConn, L"MgdFeatureConnection.MgdFeatureConnection()");
     if (!connectionString.empty())
         m_fdoConn->Open();
 
 #ifdef DEBUG_FDO_CONNECTION_POOL
-    ACE_DEBUG((LM_INFO, ACE_TEXT("MgFeatureConnection::MgFeatureConnection(CREFSTRING, CREFSTRING) - refcount: %d\n"), m_fdoConn->GetRefCount()));
+    ACE_DEBUG((LM_INFO, ACE_TEXT("MgdFeatureConnection::MgdFeatureConnection(CREFSTRING, CREFSTRING) - refcount: %d\n"), m_fdoConn->GetRefCount()));
 #endif
 
     m_resourceId = NULL;
@@ -40,7 +40,7 @@ MgFeatureConnection::MgFeatureConnection(CREFSTRING providerName, CREFSTRING con
 }
 
 
-MgFeatureConnection::~MgFeatureConnection()
+MgdFeatureConnection::~MgdFeatureConnection()
 {
     MG_TRY()
 
@@ -54,57 +54,57 @@ MgFeatureConnection::~MgFeatureConnection()
     MG_CATCH_AND_RELEASE()
 }
 
-void MgFeatureConnection::Dispose()
+void MgdFeatureConnection::Dispose()
 {
     delete this;
 }
 
-void MgFeatureConnection::Initialize()
+void MgdFeatureConnection::Initialize()
 {
     m_fdoConn = NULL;
     m_resourceId = NULL;
     m_bCloseConnection = true;
 }
 
-void MgFeatureConnection::Close()
+void MgdFeatureConnection::Close()
 {
     if (NULL != m_fdoConn)
     {
     #ifdef DEBUG_FDO_CONNECTION_POOL
         FdoInt32 iRefCount = m_fdoConn->GetRefCount();
-        ACE_DEBUG((LM_INFO, ACE_TEXT("MgFeatureConnection::Close() - refcount %d\n"), iRefCount));
+        ACE_DEBUG((LM_INFO, ACE_TEXT("MgdFeatureConnection::Close() - refcount %d\n"), iRefCount));
     #endif
-        MgFdoConnectionPool::ReturnConnection(this);
+        MgdFdoConnectionPool::ReturnConnection(this);
         m_fdoConn = NULL;
     }
 }
 
-MgResourceIdentifier* MgFeatureConnection::GetFeatureSource()
+MgResourceIdentifier* MgdFeatureConnection::GetFeatureSource()
 {
     return SAFE_ADDREF(m_resourceId);
 }
 
-FdoIConnection* MgFeatureConnection::GetConnection()
+FdoIConnection* MgdFeatureConnection::GetConnection()
 {
     return FDO_SAFE_ADDREF(m_fdoConn);
 }
 
 
-STRING MgFeatureConnection::GetProviderName()
+STRING MgdFeatureConnection::GetProviderName()
 {
-    CHECKNULL(m_fdoConn, L"MgFeatureConnection.GetProviderName");
+    CHECKNULL(m_fdoConn, L"MgdFeatureConnection.GetProviderName");
 
     // Get FdoIConnectionInfo
     FdoPtr<FdoIConnectionInfo> fdoConnInfo = m_fdoConn->GetConnectionInfo();
-    CHECKNULL((FdoIConnectionInfo*)fdoConnInfo, L"MgFeatureConnection.GetProviderName");
+    CHECKNULL((FdoIConnectionInfo*)fdoConnInfo, L"MgdFeatureConnection.GetProviderName");
 
     return fdoConnInfo->GetProviderName();
 }
 
 
-bool MgFeatureConnection::IsConnectionOpen()
+bool MgdFeatureConnection::IsConnectionOpen()
 {
-    CHECKNULL(m_fdoConn, L"MgFeatureConnection.IsConnectionOpen()");
+    CHECKNULL(m_fdoConn, L"MgdFeatureConnection.IsConnectionOpen()");
     FdoConnectionState state = m_fdoConn->GetConnectionState();
     if (FdoConnectionState_Open != state)
         return false;
@@ -113,9 +113,9 @@ bool MgFeatureConnection::IsConnectionOpen()
 }
 
 
-bool MgFeatureConnection::IsConnectionPending()
+bool MgdFeatureConnection::IsConnectionPending()
 {
-    CHECKNULL(m_fdoConn, L"MgFeatureConnection.IsConnectionPending()");
+    CHECKNULL(m_fdoConn, L"MgdFeatureConnection.IsConnectionPending()");
     FdoConnectionState state = m_fdoConn->GetConnectionState();
     if (FdoConnectionState_Pending != state)
         return false;
@@ -124,9 +124,9 @@ bool MgFeatureConnection::IsConnectionPending()
 }
 
 
-bool MgFeatureConnection::IsConnectionBusy()
+bool MgdFeatureConnection::IsConnectionBusy()
 {
-    CHECKNULL(m_fdoConn, L"MgFeatureConnection.IsConnectionBusy()");
+    CHECKNULL(m_fdoConn, L"MgdFeatureConnection.IsConnectionBusy()");
     FdoConnectionState state = m_fdoConn->GetConnectionState();
     if (FdoConnectionState_Busy != state)
         return false;
@@ -135,9 +135,9 @@ bool MgFeatureConnection::IsConnectionBusy()
 }
 
 
-bool MgFeatureConnection::IsConnectionClosed()
+bool MgdFeatureConnection::IsConnectionClosed()
 {
-    CHECKNULL(m_fdoConn, L"MgFeatureConnection.IsConnectionClosed()");
+    CHECKNULL(m_fdoConn, L"MgdFeatureConnection.IsConnectionClosed()");
     FdoConnectionState state = m_fdoConn->GetConnectionState();
     if (FdoConnectionState_Closed != state)
         return false;
@@ -145,12 +145,12 @@ bool MgFeatureConnection::IsConnectionClosed()
     return true;
 }
 
-bool MgFeatureConnection::SupportsJoins()
+bool MgdFeatureConnection::SupportsJoins()
 {
-    CHECKNULL(m_fdoConn, L"MgFeatureConnection.SupportsJoins");
+    CHECKNULL(m_fdoConn, L"MgdFeatureConnection.SupportsJoins");
 
     FdoPtr<FdoIConnectionCapabilities> connCaps = m_fdoConn->GetConnectionCapabilities();
-    CHECKNULL((FdoIConnectionCapabilities*)connCaps, L"MgFeatureConnection.SupportsJoins");
+    CHECKNULL((FdoIConnectionCapabilities*)connCaps, L"MgdFeatureConnection.SupportsJoins");
     bool joinsSupported = connCaps->SupportsJoins();
 #ifdef DEBUG_FDOJOIN
     if (!joinsSupported)
@@ -161,32 +161,32 @@ bool MgFeatureConnection::SupportsJoins()
     return joinsSupported;
 }
 
-bool MgFeatureConnection::SupportsSelectOrdering()
+bool MgdFeatureConnection::SupportsSelectOrdering()
 {
-    CHECKNULL(m_fdoConn, L"MgFeatureConnection.SupportsSelectOrdering");
+    CHECKNULL(m_fdoConn, L"MgdFeatureConnection.SupportsSelectOrdering");
 
     FdoPtr<FdoICommandCapabilities> cmdCaps = m_fdoConn->GetCommandCapabilities();
-    CHECKNULL((FdoICommandCapabilities*)cmdCaps, L"MgFeatureConnection.SupportsSelectOrdering");
+    CHECKNULL((FdoICommandCapabilities*)cmdCaps, L"MgdFeatureConnection.SupportsSelectOrdering");
 
     return cmdCaps->SupportsSelectOrdering();
 }
 
-FdoJoinType MgFeatureConnection::GetJoinTypes() const
+FdoJoinType MgdFeatureConnection::GetJoinTypes() const
 {
-    CHECKNULL(m_fdoConn, L"MgFeatureConnection.GetJoinTypes");
+    CHECKNULL(m_fdoConn, L"MgdFeatureConnection.GetJoinTypes");
 
     FdoPtr<FdoIConnectionCapabilities> connCaps = m_fdoConn->GetConnectionCapabilities();
-    CHECKNULL((FdoIConnectionCapabilities*)connCaps, L"MgFeatureConnection.GetJoinTypes");
+    CHECKNULL((FdoIConnectionCapabilities*)connCaps, L"MgdFeatureConnection.GetJoinTypes");
 
     return (FdoJoinType)connCaps->GetJoinTypes();
 }
 
-bool MgFeatureConnection::SupportsCommand(INT32 commandType)
+bool MgdFeatureConnection::SupportsCommand(INT32 commandType)
 {
-    CHECKNULL(m_fdoConn, L"MgFeatureConnection.SupportsCommand");
+    CHECKNULL(m_fdoConn, L"MgdFeatureConnection.SupportsCommand");
 
     FdoPtr<FdoICommandCapabilities> fcc = m_fdoConn->GetCommandCapabilities();
-    CHECKNULL((FdoICommandCapabilities*)fcc, L"MgFeatureConnection.SupportsCommand");
+    CHECKNULL((FdoICommandCapabilities*)fcc, L"MgdFeatureConnection.SupportsCommand");
 
     bool supports = false;
 
@@ -208,19 +208,19 @@ bool MgFeatureConnection::SupportsCommand(INT32 commandType)
     return supports;
 }
 
-void MgFeatureConnection::OwnReader()
+void MgdFeatureConnection::OwnReader()
 {
     if(! m_bCloseConnection)
         FDO_SAFE_ADDREF(m_fdoConn);
     m_bCloseConnection = false;
 }
 
-bool MgFeatureConnection::IsSupportedFunction(FdoFunction* fdoFunc)
+bool MgdFeatureConnection::IsSupportedFunction(FdoFunction* fdoFunc)
 {
-	CHECKNULL(m_fdoConn, L"MgFeatureConnection.SupportsFunction");
+	CHECKNULL(m_fdoConn, L"MgdFeatureConnection.SupportsFunction");
 
     FdoPtr<FdoIExpressionCapabilities> fec = m_fdoConn->GetExpressionCapabilities();
-    CHECKNULL((FdoIExpressionCapabilities*)fec, L"MgFeatureConnection.SupportsFunction");
+    CHECKNULL((FdoIExpressionCapabilities*)fec, L"MgdFeatureConnection.SupportsFunction");
 
     bool supports = false;
 
@@ -231,7 +231,7 @@ bool MgFeatureConnection::IsSupportedFunction(FdoFunction* fdoFunc)
         for (FdoInt32 i=0; i < funcCnt; i++)
         {
             FdoPtr<FdoFunctionDefinition> ffd = ffdc->GetItem(i);
-            CHECKNULL((FdoFunctionDefinition*)ffd, L"MgFeatureConnection.SupportsFunction");
+            CHECKNULL((FdoFunctionDefinition*)ffd, L"MgdFeatureConnection.SupportsFunction");
 
             // TODO: Just comparing name is enough?
             // TODO: I think, NOT, because there can be overloaded functions like one function

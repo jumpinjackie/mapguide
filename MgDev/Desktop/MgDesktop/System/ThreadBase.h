@@ -15,18 +15,18 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
-#ifndef MGTHREADBASE_H
-#define MGTHREADBASE_H
+#ifndef MgdThreadBase_H
+#define MgdThreadBase_H
 
 #include "MgDesktop.h"
 #include "Foundation.h"
 
-class MG_DESKTOP_API MgThreadBase : public ACE_Task<ACE_MT_SYNCH>
+class MG_DESKTOP_API MgdThreadBase : public ACE_Task<ACE_MT_SYNCH>
 {
     ///////////////////////////////////////////////////////
     /// Methods
 public:
-    MgThreadBase (ACE_Thread_Manager &tm, INT32 nThreads);
+    MgdThreadBase (ACE_Thread_Manager &tm, INT32 nThreads);
 
     // ACE_Task methods
     virtual int svc() = 0;

@@ -31,7 +31,7 @@
 //#include "SessionInfo.h"
 //#include "Connection.h"
 
-class MgLogThread;
+class MgdLogThread;
 
 #define MG_DESKTOP_LOG_EXCEPTION() \
     STRING locale = MgResources::DefaultMessageLocale; \
@@ -57,14 +57,14 @@ class MgLogThread;
 
 #define MG_LOG_SYSTEM_ENTRY(Priority, Entry) \
   do { \
-    MgLogManager* pMan = MgLogManager::GetInstance(); \
+    MgdLogManager* pMan = MgdLogManager::GetInstance(); \
     pMan->LogSystemEntry(Priority, Entry); \
   } while (0)
 
 //TODO: Log macros need session information such as client ID, version etc.
 #define MG_LOG_ACCESS_ENTRY(Entry, Client, ClientIp, UserName) \
   do { \
-    MgLogManager* pMan = MgLogManager::GetInstance(); \
+    MgdLogManager* pMan = MgdLogManager::GetInstance(); \
     if(pMan->IsAccessLogEnabled()) \
     { \
         pMan->LogAccessEntry(Entry, Client, ClientIp, UserName); \
@@ -73,7 +73,7 @@ class MgLogThread;
 
 #define MG_LOG_ADMIN_ENTRY(Entry, Client, ClientIp, UserName) \
   do { \
-    MgLogManager* pMan = MgLogManager::GetInstance(); \
+    MgdLogManager* pMan = MgdLogManager::GetInstance(); \
     if(pMan->IsAdminLogEnabled()) \
     { \
         pMan->LogAdminEntry(Entry, Client, ClientIp, UserName); \
@@ -82,7 +82,7 @@ class MgLogThread;
 
 #define MG_LOG_AUTHENTICATION_ENTRY(Entry) \
   do { \
-    MgLogManager* pMan = MgLogManager::GetInstance(); \
+    MgdLogManager* pMan = MgdLogManager::GetInstance(); \
     if(pMan->IsAuthenticationLogEnabled()) \
     { \
         MG_CONNECTION_INFO \
@@ -92,7 +92,7 @@ class MgLogThread;
 
 #define MG_LOG_ERROR_ENTRY(Entry) \
   do { \
-    MgLogManager* pMan = MgLogManager::GetInstance(); \
+    MgdLogManager* pMan = MgdLogManager::GetInstance(); \
     if(pMan->IsErrorLogEnabled()) \
     { \
         MG_CONNECTION_INFO \
@@ -102,7 +102,7 @@ class MgLogThread;
 
 #define MG_LOG_EXCEPTION_ENTRY(Entry, StackTrace) \
   do { \
-    MgLogManager* pMan = MgLogManager::GetInstance(); \
+    MgdLogManager* pMan = MgdLogManager::GetInstance(); \
     if(pMan->IsErrorLogEnabled()) \
     { \
         MG_CONNECTION_INFO \
@@ -112,14 +112,14 @@ class MgLogThread;
 
 #define MG_LOG_WARNING_ENTRY(Service, Entry, StackTrace) \
   do { \
-    MgLogManager* pMan = MgLogManager::GetInstance(); \
+    MgdLogManager* pMan = MgdLogManager::GetInstance(); \
     MG_CONNECTION_INFO \
     pMan->LogWarning(Service, Entry, connInfoClient.c_str(), connInfoClientIp.c_str(), connInfoUserName.c_str(), StackTrace); \
   } while (0)
 
 #define MG_LOG_TRACE_ENTRY(Entry) \
   do { \
-    MgLogManager* pMan = MgLogManager::GetInstance(); \
+    MgdLogManager* pMan = MgdLogManager::GetInstance(); \
     if(pMan->IsTraceLogEnabled()) \
     { \
         MG_CONNECTION_INFO \
@@ -204,16 +204,16 @@ class MgLogThread;
     STRING connInfoClientIp = L""; \
     STRING connInfoUserName = L""; 
 
-class MG_DESKTOP_API MgLogManager : public MgGuardDisposable
+class MG_DESKTOP_API MgdLogManager : public MgGuardDisposable
 {
-    DECLARE_CLASSNAME(MgLogManager)
+    DECLARE_CLASSNAME(MgdLogManager)
 
 public:
-    virtual ~MgLogManager();
+    virtual ~MgdLogManager();
 
     virtual void Dispose();
 
-    static MgLogManager* GetInstance();
+    static MgdLogManager* GetInstance();
     void Initialize();
     void LoadConfigurationProperties();
     STRING GetLogsPath();
@@ -349,9 +349,9 @@ public:
 
 private:
     // Constructor
-    MgLogManager();
+    MgdLogManager();
 
-    static Ptr<MgLogManager> m_logManager;
+    static Ptr<MgdLogManager> m_logManager;
     static STRING m_path;
     static INT32 m_maxLogSize;
     static STRING m_delimiter;
@@ -563,9 +563,9 @@ private:
     STRING m_TraceLogFileName;
     STRING m_TraceLogParameters;
 
-    ACE_Recursive_Thread_Mutex m_mutex;
+    ACE_Recursive_Thread_Mutex m_MgdMutex;
     ACE_Thread_Manager m_threadManager;
-    MgLogThread* m_pLogThread;
+    MgdLogThread* m_pLogThread;
     INT64 m_writeCount;
 
     MgDateTime m_cacheAccessLogTimestamp;

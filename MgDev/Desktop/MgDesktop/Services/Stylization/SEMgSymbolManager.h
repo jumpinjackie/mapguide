@@ -6,11 +6,11 @@
 
 class MgResourceService;
 
-class SEMgSymbolManager : public SE_SymbolManager
+class SEMgdSymbolManager : public SE_SymbolManager
 {
 public:
-    SEMgSymbolManager(MgResourceService* svc);
-    virtual ~SEMgSymbolManager();
+    SEMgdSymbolManager(MgResourceService* svc);
+    virtual ~SEMgdSymbolManager();
 
     virtual SymbolDefinition* GetSymbolDefinition(const wchar_t* resourceId);
     virtual bool GetImageData(const wchar_t* resourceId, const wchar_t* resourceName, ImageData& imageData);

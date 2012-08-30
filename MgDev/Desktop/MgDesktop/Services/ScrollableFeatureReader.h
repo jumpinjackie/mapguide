@@ -4,7 +4,7 @@
 #include "Fdo.h"
 #include "MgDesktop.h"
 
-class MgFeatureConnection;
+class MgdFeatureConnection;
 
 // The MgdScrollableFeatureReader is an extension to the MgFeatureReader 
 // that can be traversed in the forward and backward direction (scrollable)
@@ -13,7 +13,7 @@ class MgFeatureConnection;
 class MG_DESKTOP_API MgdScrollableFeatureReader : public MgdFeatureReader
 {
 INTERNAL_API:
-	MgdScrollableFeatureReader(MgFeatureConnection* conn, FdoIScrollableFeatureReader* reader);
+	MgdScrollableFeatureReader(MgdFeatureConnection* conn, FdoIScrollableFeatureReader* reader);
 
 EXTERNAL_API:
 	virtual ~MgdScrollableFeatureReader();

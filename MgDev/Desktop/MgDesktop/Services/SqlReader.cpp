@@ -3,7 +3,7 @@
 #include "Services/Feature/FdoConnectionUtil.h"
 #include "Fdo.h"
 
-MgdSqlDataReader::MgdSqlDataReader(MgFeatureConnection* conn, FdoISQLDataReader* reader)
+MgdSqlDataReader::MgdSqlDataReader(MgdFeatureConnection* conn, FdoISQLDataReader* reader)
 {
 	m_reader = FDO_SAFE_ADDREF(reader);
     m_connection = SAFE_ADDREF(conn);
@@ -60,7 +60,7 @@ INT32 MgdSqlDataReader::GetPropertyType(CREFSTRING propertyName)
             __LINE__, __WFILE__, NULL, L"", NULL);
     }
 
-    type = MgFeatureUtil::GetMgPropertyType(dataType);
+    type = MgdFeatureUtil::GetMgPropertyType(dataType);
 
     MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgdDataReader.GetPropertyType")
 
@@ -537,9 +537,9 @@ void MgdSqlDataReader::Close()
 
     // Release the connection.
     //m_connection = NULL;
-    MgFdoConnectionPool::ReturnConnection(m_connection);
+    MgdFdoConnectionPool::ReturnConnection(m_connection);
     m_connection = NULL;
-    //MgFdoConnectionUtil::CloseConnection(fdoConnection);
+    //MgdFdoConnectionUtil::CloseConnection(fdoConnection);
 
 	MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgdDataReader::Close");
 }

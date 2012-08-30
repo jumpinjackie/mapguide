@@ -25,28 +25,28 @@
 #include "Services/FeatureReader.h"
 #include "Services/Feature/FeatureSetReader.h"
 
-MgServerInsertCommand::MgServerInsertCommand()
+MgdInsertCommand::MgdInsertCommand()
 {
     m_srvrFeatConn = NULL;
     m_featCommand = NULL;
 }
 
-MgServerInsertCommand::MgServerInsertCommand(MgFeatureCommand* command, MgFeatureConnection* connection, INT32 cmdId)
+MgdInsertCommand::MgdInsertCommand(MgFeatureCommand* command, MgdFeatureConnection* connection, INT32 cmdId)
 {
-    CHECKNULL(command, L"MgServerInsertCommand.MgServerInsertCommand");
-    CHECKNULL(connection, L"MgServerInsertCommand.MgServerInsertCommand");
+    CHECKNULL(command, L"MgdInsertCommand.MgdInsertCommand");
+    CHECKNULL(connection, L"MgdInsertCommand.MgdInsertCommand");
 
-    m_srvrFeatConn = SAFE_ADDREF((MgFeatureConnection*)connection);
+    m_srvrFeatConn = SAFE_ADDREF((MgdFeatureConnection*)connection);
     m_featCommand = SAFE_ADDREF((MgInsertFeatures*)command);
     m_cmdId = cmdId;
 }
 
-MgServerInsertCommand::~MgServerInsertCommand()
+MgdInsertCommand::~MgdInsertCommand()
 {
     m_srvrFeatConn = NULL;
 }
 
-MgProperty* MgServerInsertCommand::Execute()
+MgProperty* MgdInsertCommand::Execute()
 {
     Ptr<MgFeatureProperty> prop;
 
@@ -55,18 +55,18 @@ MgProperty* MgServerInsertCommand::Execute()
 
     if ((srcCol == NULL) || srcCol->GetCount() == 0)
     {
-        STRING message = MgFeatureUtil::GetMessage(L"MgNoFeaturesForInsert");
+        STRING message = MgdFeatureUtil::GetMessage(L"MgNoFeaturesForInsert");
 
         MgStringCollection arguments;
         arguments.Add(message);
-        throw new MgFeatureServiceException(L"MgServerInsertCommand::Execute", __LINE__, __WFILE__, &arguments, L"", NULL);
+        throw new MgFeatureServiceException(L"MgdInsertCommand::Execute", __LINE__, __WFILE__, &arguments, L"", NULL);
     }
 
     FdoPtr<FdoIConnection> fdoConn = m_srvrFeatConn->GetConnection();
 
     // Create the SQL command
     FdoPtr<FdoIInsert> fdoCommand = (FdoIInsert*)fdoConn->CreateCommand(FdoCommandType_Insert);
-    CHECKNULL((FdoIInsert*)fdoCommand, L"MgServerInsertCommand.Execute");
+    CHECKNULL((FdoIInsert*)fdoCommand, L"MgdInsertCommand.Execute");
 
     fdoCommand->SetFeatureClassName(clsName.c_str());
 
@@ -85,7 +85,7 @@ MgProperty* MgServerInsertCommand::Execute()
     return prop.Detach();
 }
 
-MgFeatureProperty* MgServerInsertCommand::BatchInsert( MgBatchPropertyCollection* srcCol,
+MgFeatureProperty* MgdInsertCommand::BatchInsert( MgBatchPropertyCollection* srcCol,
                                                        FdoBatchParameterValueCollection* bParamValCol,
                                                        FdoIInsert* fdoCommand,
                                                        FdoIConnection* fdoConn)
@@ -94,11 +94,11 @@ MgFeatureProperty* MgServerInsertCommand::BatchInsert( MgBatchPropertyCollection
     for (INT32 i = 0; i < cnt; i++)
     {
         Ptr<MgPropertyCollection> propCol = srcCol->GetItem(i);
-        FdoPtr<FdoParameterValueCollection> paramCol = MgFeatureUtil::CreateFdoParameterCollection(propCol);
+        FdoPtr<FdoParameterValueCollection> paramCol = MgdFeatureUtil::CreateFdoParameterCollection(propCol);
         bParamValCol->Add(paramCol);
     }
     FdoPtr<FdoIFeatureReader> reader = fdoCommand->Execute();
-    CHECKNULL((FdoIFeatureReader*)reader, L"MgServerInsertCommand.BatchInsert");
+    CHECKNULL((FdoIFeatureReader*)reader, L"MgdInsertCommand.BatchInsert");
 
     // TODO: This is FDO defect, they should not require ReadNext() for class definition
     bool available = false;
@@ -118,7 +118,7 @@ MgFeatureProperty* MgServerInsertCommand::BatchInsert( MgBatchPropertyCollection
 
     if (!available)
     {
-        STRING message = MgFeatureUtil::GetMessage(L"MgInsertError");
+        STRING message = MgdFeatureUtil::GetMessage(L"MgInsertError");
 
         MgStringCollection arguments;
         arguments.Add(message);
@@ -133,7 +133,7 @@ MgFeatureProperty* MgServerInsertCommand::BatchInsert( MgBatchPropertyCollection
     return new MgFeatureProperty(str, mgFeatureReader);
 }
 
-MgFeatureProperty* MgServerInsertCommand::SingleInsert( MgBatchPropertyCollection* srcCol,
+MgFeatureProperty* MgdInsertCommand::SingleInsert( MgBatchPropertyCollection* srcCol,
                                                         FdoPropertyValueCollection* propValCol,
                                                         FdoIInsert* fdoCommand,
                                                         FdoIConnection* fdoConn )
@@ -148,10 +148,10 @@ MgFeatureProperty* MgServerInsertCommand::SingleInsert( MgBatchPropertyCollectio
         Ptr<MgPropertyCollection> propCol = srcCol->GetItem(i);
 
         propValCol->Clear();
-        MgFeatureUtil::FillFdoPropertyCollection(propCol, propValCol);
+        MgdFeatureUtil::FillFdoPropertyCollection(propCol, propValCol);
 
         FdoPtr<FdoIFeatureReader> reader = fdoCommand->Execute();
-        CHECKNULL((FdoIFeatureReader*)reader, L"MgServerInsertCommand.SingleInsert");
+        CHECKNULL((FdoIFeatureReader*)reader, L"MgdInsertCommand.SingleInsert");
 
         if (keyProps == NULL)
         {
@@ -160,17 +160,17 @@ MgFeatureProperty* MgServerInsertCommand::SingleInsert( MgBatchPropertyCollectio
             if (idProps->GetCount() > 0)
             {
                 keyProps = new MgPropertyDefinitionCollection();
-                MgFeatureUtil::GetClassProperties(keyProps, idProps);
+                MgdFeatureUtil::GetClassProperties(keyProps, idProps);
             }
         }
 
         if (keyProps == NULL)
         {
-            STRING message = MgFeatureUtil::GetMessage(L"MgInsertError");
+            STRING message = MgdFeatureUtil::GetMessage(L"MgInsertError");
 
             MgStringCollection arguments;
             arguments.Add(message);
-            throw new MgFeatureServiceException(L"MgServerInsertCommand.SingleInsert", __LINE__, __WFILE__, &arguments, L"", NULL);
+            throw new MgFeatureServiceException(L"MgdInsertCommand.SingleInsert", __LINE__, __WFILE__, &arguments, L"", NULL);
         }
 
         bool available = false;
@@ -190,11 +190,11 @@ MgFeatureProperty* MgServerInsertCommand::SingleInsert( MgBatchPropertyCollectio
 
         if (!available)
         {
-            STRING message = MgFeatureUtil::GetMessage(L"MgInsertError");
+            STRING message = MgdFeatureUtil::GetMessage(L"MgInsertError");
 
             MgStringCollection arguments;
             arguments.Add(message);
-            throw new MgFeatureServiceException(L"MgServerInsertCommand.SingleInsert", __LINE__, __WFILE__, &arguments, L"", NULL);
+            throw new MgFeatureServiceException(L"MgdInsertCommand.SingleInsert", __LINE__, __WFILE__, &arguments, L"", NULL);
         }
 
         // Performance improvement: Only return the key values

@@ -4,24 +4,24 @@
 // Resource Service operations
 // TODO: Share the following strings with the Web tier.
 
-//const STRING MgOperationName::CreateRepository=L"CREATEREPOSITORY";
-//const STRING MgOperationName::DeleteRepository=L"DELETEREPOSITORY";
-const STRING MgOperationName::UpdateRepository=L"UPDATEREPOSITORY";
-//const STRING MgOperationName::ApplyResourcePackage=L"APPLYRESOURCEPACKAGE";
+//const STRING MgdOperationName::CreateRepository=L"CREATEREPOSITORY";
+//const STRING MgdOperationName::DeleteRepository=L"DELETEREPOSITORY";
+const STRING MgdOperationName::UpdateRepository=L"UPDATEREPOSITORY";
+//const STRING MgdOperationName::ApplyResourcePackage=L"APPLYRESOURCEPACKAGE";
 
-const STRING MgOperationName::SetResource=L"SETRESOURCE";
-const STRING MgOperationName::DeleteResource=L"DELETERESOURCE";
-const STRING MgOperationName::MoveResource=L"MOVERESOURCE";
-const STRING MgOperationName::CopyResource=L"COPYRESOURCE";
-const STRING MgOperationName::ChangeResourceOwner=L"CHANGERESOURCEOWNER";
-const STRING MgOperationName::InheritPermissionsFrom=L"INHERITPERMISSIONSFROM";
+const STRING MgdOperationName::SetResource=L"SETRESOURCE";
+const STRING MgdOperationName::DeleteResource=L"DELETERESOURCE";
+const STRING MgdOperationName::MoveResource=L"MOVERESOURCE";
+const STRING MgdOperationName::CopyResource=L"COPYRESOURCE";
+const STRING MgdOperationName::ChangeResourceOwner=L"CHANGERESOURCEOWNER";
+const STRING MgdOperationName::InheritPermissionsFrom=L"INHERITPERMISSIONSFROM";
 
-const STRING MgOperationName::SetResourceData=L"SETRESOURCEDATA";
-const STRING MgOperationName::DeleteResourceData=L"DELETERESOURCEDATA";
-const STRING MgOperationName::RenameResourceData=L"RENAMERESOURCEDATA";
+const STRING MgdOperationName::SetResourceData=L"SETRESOURCEDATA";
+const STRING MgdOperationName::DeleteResourceData=L"DELETERESOURCEDATA";
+const STRING MgdOperationName::RenameResourceData=L"RENAMERESOURCEDATA";
 
 const STRING MgOperationInfo::sm_currentVersion = L"1.0.0";
-const MgOperationParameter MgOperationInfo::sm_blankParameter;
+const MgdOperationParameter MgOperationInfo::sm_blankParameter;
 
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -118,7 +118,7 @@ void MgOperationInfo::SetVersion(CREFSTRING version)
 /// \brief
 /// Gets the specified parameter from the operation parameter map.
 ///
-const MgOperationParameter& MgOperationInfo::GetParameter(CREFSTRING name,
+const MgdOperationParameter& MgOperationInfo::GetParameter(CREFSTRING name,
     bool required) const
 {
     MgOpParamMap::const_iterator i = m_parameters.find(name);
@@ -145,7 +145,7 @@ const MgOperationParameter& MgOperationInfo::GetParameter(CREFSTRING name,
 /// Adds the specified parameter to the operation parameter map.
 ///
 void MgOperationInfo::AddParameter(CREFSTRING name,
-    const MgOperationParameter& opParam)
+    const MgdOperationParameter& opParam)
 {
     MgOpParamMap::const_iterator i = m_parameters.find(name);
 

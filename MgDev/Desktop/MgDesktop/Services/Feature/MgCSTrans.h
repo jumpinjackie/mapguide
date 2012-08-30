@@ -9,11 +9,11 @@ class MgCoordinateSystemTransform;
 
 template class Ptr<MgCoordinateSystemTransform>;
 
-class MG_DESKTOP_API MgCSTrans : public CSysTransformer
+class MG_DESKTOP_API MgdCSTrans : public CSysTransformer
 {
 public:
-    MgCSTrans(MgCoordinateSystem* srcCs, MgCoordinateSystem* dstCs);
-    virtual ~MgCSTrans();
+    MgdCSTrans(MgCoordinateSystem* srcCs, MgCoordinateSystem* dstCs);
+    virtual ~MgdCSTrans();
 
     virtual void TransformPoint(double& x, double& y);
     virtual void TransformPoints(int numPts, double* x, double* y);

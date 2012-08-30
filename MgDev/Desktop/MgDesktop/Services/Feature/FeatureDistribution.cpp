@@ -30,23 +30,23 @@
 #include "FeatureGeometricFunctions.h"
 #include "FeatureStringFunctions.h"
 
-MgFeatureDistribution::MgFeatureDistribution()
+MgdFeatureDistribution::MgdFeatureDistribution()
 {
 }
 
-MgFeatureDistribution::~MgFeatureDistribution()
+MgdFeatureDistribution::~MgdFeatureDistribution()
 {
 }
 
-MgFeatureDistribution* MgFeatureDistribution::CreateDistributionFunction(MgReader* reader, FdoFunction* customFunction, CREFSTRING propertyAlias)
+MgdFeatureDistribution* MgdFeatureDistribution::CreateDistributionFunction(MgReader* reader, FdoFunction* customFunction, CREFSTRING propertyAlias)
 {
     STRING propName;
-    Ptr<MgFeatureDistribution> featDist;
+    Ptr<MgdFeatureDistribution> featDist;
 
     INT32 propType;
     if(1 == reader->GetPropertyCount())
     {
-        propType = MgFeatureUtil::GetPropertyDefinition(reader, propName);
+        propType = MgdFeatureUtil::GetPropertyDefinition(reader, propName);
     }
     else
     {
@@ -58,14 +58,14 @@ MgFeatureDistribution* MgFeatureDistribution::CreateDistributionFunction(MgReade
         {
             expr = exprCol->GetItem(0);
             FdoIdentifier* propIdentifier = dynamic_cast<FdoIdentifier*>(expr.p);
-            CHECKNULL(propIdentifier, L"MgFeatureDistribution.CreateDistributionFunction");
+            CHECKNULL(propIdentifier, L"MgdFeatureDistribution.CreateDistributionFunction");
             propName = propIdentifier->GetName();
             propType = reader->GetPropertyType(propName);
         }
         else
         {
             // Throw original exception
-            propType = MgFeatureUtil::GetPropertyDefinition(reader, propName);
+            propType = MgdFeatureUtil::GetPropertyDefinition(reader, propName);
         }
     }
 
@@ -80,23 +80,23 @@ MgFeatureDistribution* MgFeatureDistribution::CreateDistributionFunction(MgReade
         case MgPropertyType::Single:
         case MgPropertyType::Boolean:
         {
-            featDist = new MgFeatureNumericFunctions(reader, customFunction, propertyAlias);
+            featDist = new MgdFeatureNumericFunctions(reader, customFunction, propertyAlias);
             break;
         }
         case MgPropertyType::String:
         {
-            featDist = new MgFeatureStringFunctions(reader, customFunction, propertyAlias);
+            featDist = new MgdFeatureStringFunctions(reader, customFunction, propertyAlias);
             break;
         }
         case MgPropertyType::Geometry:
         {
-            featDist = new MgFeatureGeometricFunctions(reader, customFunction, propertyAlias);
+            featDist = new MgdFeatureGeometricFunctions(reader, customFunction, propertyAlias);
             break;
         }
         default:
         {
             throw new MgInvalidPropertyTypeException(
-                L"MgFeatureDistribution.CreateDistributionFunction", __LINE__, __WFILE__, NULL, L"", NULL);
+                L"MgdFeatureDistribution.CreateDistributionFunction", __LINE__, __WFILE__, NULL, L"", NULL);
         }
     }
     return featDist.Detach();

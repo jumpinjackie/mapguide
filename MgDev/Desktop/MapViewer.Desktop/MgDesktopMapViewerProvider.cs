@@ -11,7 +11,7 @@ namespace OSGeo.MapGuide.Viewer.Desktop
         private MgdMap _implMap;
         private MgdRenderingService _renderSvc;
         private MgdMappingService _mappingSvc;
-        private MgServiceFactory _fact;
+        private MgdServiceFactory _fact;
 
         public MgDesktopMapViewerProvider(MgdMap map) : base(map) 
         {
@@ -25,18 +25,18 @@ namespace OSGeo.MapGuide.Viewer.Desktop
 
         protected override void SubInit()
         {
-            _fact = new MgServiceFactory();
+            _fact = new MgdServiceFactory();
             _renderSvc = (MgdRenderingService)_fact.CreateService(MgServiceType.RenderingService);
             _mappingSvc = (MgdMappingService)_fact.CreateService(MgServiceType.MappingService);
         }
         
-        private MgRenderingOptions _lastRenderOpts;
+        private MgdRenderingOptions _lastRenderOpts;
 
-        private MgRenderingOptions CreateRenderingOptions(MgViewerRenderingOptions renderOpts)
+        private MgdRenderingOptions CreateRenderingOptions(MgViewerRenderingOptions renderOpts)
         {
             if (null == _lastRenderOpts)
             {
-                _lastRenderOpts = new MgRenderingOptions(renderOpts.Format, renderOpts.Behavior, renderOpts.Color);
+                _lastRenderOpts = new MgdRenderingOptions(renderOpts.Format, renderOpts.Behavior, renderOpts.Color);
             }
             else
             {
@@ -48,7 +48,7 @@ namespace OSGeo.MapGuide.Viewer.Desktop
                     _lastRenderOpts.GetBehavior() == renderOpts.Behavior &&
                     _lastRenderOpts.GetImageFormat() == renderOpts.Format))
                 {
-                    _lastRenderOpts = new MgRenderingOptions(renderOpts.Format, renderOpts.Behavior, renderOpts.Color);
+                    _lastRenderOpts = new MgdRenderingOptions(renderOpts.Format, renderOpts.Behavior, renderOpts.Color);
                 }
             }
             return _lastRenderOpts;

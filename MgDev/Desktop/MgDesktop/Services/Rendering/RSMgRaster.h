@@ -5,12 +5,12 @@
 #include "RS_Raster.h"
 #include "RendererStyles.h"
 
-class RSMgRaster : public RS_Raster
+class RSMgdRaster : public RS_Raster
 {
 public:
 
-    RSMgRaster(MgRaster* raster);
-    virtual ~RSMgRaster();
+    RSMgdRaster(MgRaster* raster);
+    virtual ~RSMgdRaster();
 
     virtual RS_Bounds       GetExtent();
 

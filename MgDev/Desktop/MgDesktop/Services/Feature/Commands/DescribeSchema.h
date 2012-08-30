@@ -25,14 +25,14 @@
 #include "FSDSAX2Parser.h"
 #include "Services/Feature/FeatureServiceCache.h"
 
-class MgDescribeSchema
+class MgdDescribeSchema
 {
 /// Constructors/Destructor
 
 public:
 
-    MgDescribeSchema();
-    ~MgDescribeSchema();
+    MgdDescribeSchema();
+    ~MgdDescribeSchema();
 
 /// Methods
 
@@ -74,8 +74,8 @@ public:
 
 private:
 
-    MgFeatureServiceCache* m_featureServiceCache;
-    Ptr<MgFeatureSourceCacheItem> m_featureSourceCacheItem;
+    MgdFeatureServiceCache* m_featureServiceCache;
+    Ptr<MgdFeatureSourceCacheItem> m_featureSourceCacheItem;
 };
 
 #endif

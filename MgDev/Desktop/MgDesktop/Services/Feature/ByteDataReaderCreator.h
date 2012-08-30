@@ -23,22 +23,22 @@ using namespace std;
 #include <vector>
 
 /// \cond INTERNAL
-class MgByteDataReaderCreator : public MgDataReaderCreator<INT8>
+class MgdByteDataReaderCreator : public MgdDataReaderCreator<INT8>
 {
-    DECLARE_CLASSNAME(MgByteDataReaderCreator)
+    DECLARE_CLASSNAME(MgdByteDataReaderCreator)
 
 public:
-    MgByteDataReaderCreator()
+    MgdByteDataReaderCreator()
     {
     }
 
-    MgByteDataReaderCreator(CREFSTRING propertyAlias)
+    MgdByteDataReaderCreator(CREFSTRING propertyAlias)
     {
         m_propertyAlias = propertyAlias;
         m_propType = MgPropertyType::Byte;
     }
 
-    ~MgByteDataReaderCreator()
+    ~MgdByteDataReaderCreator()
     {
     }
 

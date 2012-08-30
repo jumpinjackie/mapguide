@@ -1,19 +1,19 @@
 #ifndef DESKTOP_OPERATION_PARAMETER_H
 #define DESKTOP_OPERATION_PARAMETER_H
 
-class MgOperationParameter
+class MgdOperationParameter
 {
 /// Constructors/Destructor
 
 public:
-    MgOperationParameter();
-    MgOperationParameter(const MgOperationParameter& opParam);
-    virtual ~MgOperationParameter();
+    MgdOperationParameter();
+    MgdOperationParameter(const MgdOperationParameter& opParam);
+    virtual ~MgdOperationParameter();
 
 /// Methods
 
 public:
-    MgOperationParameter& operator=(const MgOperationParameter& opParam);
+    MgdOperationParameter& operator=(const MgdOperationParameter& opParam);
 
     STRING GetValue() const;
     void SetValue(CREFSTRING value);
@@ -50,13 +50,13 @@ private:
 
 /// Inline Methods
 
-inline STRING MgOperationParameter::GetValue() const
+inline STRING MgdOperationParameter::GetValue() const
 {
     return m_value;
 }
 
 
-inline STRING MgOperationParameter::GetContentType() const
+inline STRING MgdOperationParameter::GetContentType() const
 {
     return m_contentType;
 }

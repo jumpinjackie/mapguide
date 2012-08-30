@@ -135,7 +135,7 @@
                (NULL != wcsstr(buf, L"ConnectionRead")) ||                    \
                (NULL != wcsstr(buf, L"Communication link failure")))          \
             {                                                                 \
-                MgFdoConnectionPool::PurgeCachedConnections(resource);        \
+                MgdFdoConnectionPool::PurgeCachedConnections(resource);        \
             }                                                                 \
             messageId = L"MgFeatureSourceFormatInnerExceptionMessage";        \
             arguments.Add(resource->ToString());                              \

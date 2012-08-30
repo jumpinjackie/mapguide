@@ -22,22 +22,22 @@ using namespace std;
 
 #include <vector>
 
-class MgInt16DataReaderCreator : public MgDataReaderCreator<INT16>
+class MgdInt16DataReaderCreator : public MgdDataReaderCreator<INT16>
 {
-    DECLARE_CLASSNAME(MgInt16DataReaderCreator)
+    DECLARE_CLASSNAME(MgdInt16DataReaderCreator)
 
 public:
-    MgInt16DataReaderCreator()
+    MgdInt16DataReaderCreator()
     {
     }
 
-    MgInt16DataReaderCreator(CREFSTRING propertyAlias)
+    MgdInt16DataReaderCreator(CREFSTRING propertyAlias)
     {
         m_propertyAlias = propertyAlias;
         m_propType = MgPropertyType::Int16;
     }
 
-    ~MgInt16DataReaderCreator()
+    ~MgdInt16DataReaderCreator()
     {
     }
 

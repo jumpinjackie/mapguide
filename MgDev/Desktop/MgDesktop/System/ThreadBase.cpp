@@ -21,7 +21,7 @@
 /// <summary>
 /// Constructor
 /// </summary>
-MgThreadBase::MgThreadBase (ACE_Thread_Manager &tm, INT32 nThreads) :
+MgdThreadBase::MgdThreadBase (ACE_Thread_Manager &tm, INT32 nThreads) :
     ACE_Task<ACE_MT_SYNCH> (&tm)
 {
     if(nThreads <= 0)
@@ -36,13 +36,13 @@ MgThreadBase::MgThreadBase (ACE_Thread_Manager &tm, INT32 nThreads) :
 /// <summary>
 /// Initialization. This activates the thread(s).
 /// </summary>
-INT32 MgThreadBase::Activate()
+INT32 MgdThreadBase::Activate()
 {
     INT32 nResult = 0;
 
     if (activate(THR_DETACHED | THR_NEW_LWP, m_nThreads) == -1)
     {
-        ACE_ERROR ((LM_ERROR, ACE_TEXT("%p\n"), ACE_TEXT("MgThreadBase::activate")));
+        ACE_ERROR ((LM_ERROR, ACE_TEXT("%p\n"), ACE_TEXT("MgdThreadBase::activate")));
         nResult = -1;
     }
 

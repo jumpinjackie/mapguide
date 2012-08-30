@@ -3,31 +3,31 @@
 
 ///////////////////////////////////////////////////////////////////////////////
 /// <summary>
-/// MgByteSourceDwfInputStreamImpl provides access to the bytes on a DWF input
+/// MgdByteSourceDwfInputStreamImpl provides access to the bytes on a DWF input
 /// stream source.
 /// </summary>
 ///
-class MG_DESKTOP_API MgByteSourceDwfInputStreamImpl : public ByteSourceImpl
+class MG_DESKTOP_API MgdByteSourceDwfInputStreamImpl : public ByteSourceImpl
 {
 public:
 
     ///////////////////////////////////////////////////////////////////////////
     /// <summary>
-    /// Constructs an MgByteSourceDwfInputStreamImpl object.
+    /// Constructs an MgdByteSourceDwfInputStreamImpl object.
     /// </summary>
     ///
     /// <param name="inputStream">
     /// DWFInputStream object to use.
     /// </param>
     ///
-    MgByteSourceDwfInputStreamImpl(DWFInputStream* inputStream);
+    MgdByteSourceDwfInputStreamImpl(DWFInputStream* inputStream);
 
     ///////////////////////////////////////////////////////////////////////////
     /// <summary>
-    /// Destructs an MgByteSourceDwfInputStreamImpl object.
+    /// Destructs an MgdByteSourceDwfInputStreamImpl object.
     /// </summary>
     ///
-    virtual ~MgByteSourceDwfInputStreamImpl();
+    virtual ~MgdByteSourceDwfInputStreamImpl();
 
     ///////////////////////////////////////////////////////////////////////////
     /// <summary>
@@ -85,10 +85,10 @@ private:
 
     // Unimplemented Methods
 
-    MgByteSourceDwfInputStreamImpl();
-    MgByteSourceDwfInputStreamImpl(const MgByteSourceDwfInputStreamImpl&);
-    MgByteSourceDwfInputStreamImpl& operator=(
-        const MgByteSourceDwfInputStreamImpl&);
+    MgdByteSourceDwfInputStreamImpl();
+    MgdByteSourceDwfInputStreamImpl(const MgdByteSourceDwfInputStreamImpl&);
+    MgdByteSourceDwfInputStreamImpl& operator=(
+        const MgdByteSourceDwfInputStreamImpl&);
 
 protected:
 

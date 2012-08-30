@@ -3,15 +3,15 @@
 
 #include "MgDesktop.h"
 
-class MgResourceContentCache : public MgGuardDisposable
+class MgdResourceContentCache : public MgGuardDisposable
 {
 private:
-    static Ptr<MgResourceContentCache> smInstance;
-    MgResourceContentCache();
+    static Ptr<MgdResourceContentCache> smInstance;
+    MgdResourceContentCache();
 
 public:
-    static MgResourceContentCache* GetInstance();
-    virtual ~MgResourceContentCache();
+    static MgdResourceContentCache* GetInstance();
+    virtual ~MgdResourceContentCache();
 
     STRING GetContentEntry(MgResourceIdentifier* resource);
     void RemoveContentEntry(MgResourceIdentifier* resource);
@@ -22,10 +22,10 @@ protected:
 
 private:
     /// Needed for thread-safety
-    ACE_Recursive_Thread_Mutex m_mutex;
+    ACE_Recursive_Thread_Mutex m_MgdMutex;
 
-    typedef std::map<STRING, STRING> MgResourceContentCacheEntries;
-    MgResourceContentCacheEntries m_resourceContentCacheEntries;
+    typedef std::map<STRING, STRING> MgdResourceContentCacheEntries;
+    MgdResourceContentCacheEntries m_resourceContentCacheEntries;
 };
 
 #endif

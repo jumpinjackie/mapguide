@@ -48,7 +48,7 @@ void TestFeatureService::TestStart()
 
     try
     {
-        Ptr<MgServiceFactory> fact = new MgServiceFactory();
+        Ptr<MgdServiceFactory> fact = new MgdServiceFactory();
         Ptr<MgResourceService> pService = dynamic_cast<MgResourceService*>(fact->CreateService(MgServiceType::ResourceService));
         if (pService == 0)
         {
@@ -266,7 +266,7 @@ void TestFeatureService::TestEnd()
 {
     try
     {
-        Ptr<MgServiceFactory> fact = new MgServiceFactory();
+        Ptr<MgdServiceFactory> fact = new MgdServiceFactory();
         Ptr<MgResourceService> pService = dynamic_cast<MgResourceService*>(fact->CreateService(MgServiceType::ResourceService));
         if (pService == 0)
         {
@@ -340,7 +340,7 @@ void TestFeatureService::TestCase_GetFeatureProviders()
 {
     try
     {
-        Ptr<MgServiceFactory> fact = new MgServiceFactory();
+        Ptr<MgdServiceFactory> fact = new MgdServiceFactory();
         Ptr<MgFeatureService> pService = dynamic_cast<MgFeatureService*>(fact->CreateService(MgServiceType::FeatureService));
         if (pService == 0)
         {
@@ -380,7 +380,7 @@ void TestFeatureService::TestCase_TestConnectionSDFProvider()
 {
     try
     {
-        Ptr<MgServiceFactory> fact = new MgServiceFactory();
+        Ptr<MgdServiceFactory> fact = new MgdServiceFactory();
         Ptr<MgFeatureService> pService = dynamic_cast<MgFeatureService*>(fact->CreateService(MgServiceType::FeatureService));
         if (pService == 0)
         {
@@ -424,7 +424,7 @@ void TestFeatureService::TestCase_GetConnectionPropertyValues()
 {
     try
     {
-        Ptr<MgServiceFactory> fact = new MgServiceFactory();
+        Ptr<MgdServiceFactory> fact = new MgdServiceFactory();
         Ptr<MgFeatureService> pService = dynamic_cast<MgFeatureService*>(fact->CreateService(MgServiceType::FeatureService));
         if (pService == 0)
         {
@@ -470,7 +470,7 @@ void TestFeatureService::TestCase_GetCapabilities()
 {
     try
     {
-        Ptr<MgServiceFactory> fact = new MgServiceFactory();
+        Ptr<MgdServiceFactory> fact = new MgdServiceFactory();
         Ptr<MgFeatureService> pService = dynamic_cast<MgFeatureService*>(fact->CreateService(MgServiceType::FeatureService));
         if (pService == 0)
         {
@@ -516,7 +516,7 @@ void TestFeatureService::TestCase_TestConnectionResourceIdentifier()
 {
     try
     {
-        Ptr<MgServiceFactory> fact = new MgServiceFactory();
+        Ptr<MgdServiceFactory> fact = new MgdServiceFactory();
         Ptr<MgFeatureService> pService = dynamic_cast<MgFeatureService*>(fact->CreateService(MgServiceType::FeatureService));
         if (pService == 0)
         {
@@ -562,7 +562,7 @@ void TestFeatureService::TestCase_GetSchemas()
 {
     try
     {
-        Ptr<MgServiceFactory> fact = new MgServiceFactory();
+        Ptr<MgdServiceFactory> fact = new MgdServiceFactory();
         Ptr<MgFeatureService> pService = dynamic_cast<MgFeatureService*>(fact->CreateService(MgServiceType::FeatureService));
         if (pService == 0)
         {
@@ -608,7 +608,7 @@ void TestFeatureService::TestCase_GetClasses()
 {
     try
     {
-        Ptr<MgServiceFactory> fact = new MgServiceFactory();
+        Ptr<MgdServiceFactory> fact = new MgdServiceFactory();
         Ptr<MgFeatureService> pService = dynamic_cast<MgFeatureService*>(fact->CreateService(MgServiceType::FeatureService));
         if (pService == 0)
         {
@@ -656,7 +656,7 @@ void TestFeatureService::TestCase_GetClassDefinition()
 {
     try
     {
-        Ptr<MgServiceFactory> fact = new MgServiceFactory();
+        Ptr<MgdServiceFactory> fact = new MgdServiceFactory();
         Ptr<MgFeatureService> pService = dynamic_cast<MgFeatureService*>(fact->CreateService(MgServiceType::FeatureService));
         if (pService == 0)
         {
@@ -724,7 +724,7 @@ void TestFeatureService::TestCase_GetClassDefinitionImmutability()
 {
     try
     {
-        Ptr<MgServiceFactory> fact = new MgServiceFactory();
+        Ptr<MgdServiceFactory> fact = new MgdServiceFactory();
         Ptr<MgFeatureService> pService = dynamic_cast<MgFeatureService*>(fact->CreateService(MgServiceType::FeatureService));
         if (pService == 0)
         {
@@ -787,7 +787,7 @@ void TestFeatureService::TestCase_DescribeSchema()
 {
     try
     {
-        Ptr<MgServiceFactory> fact = new MgServiceFactory();
+        Ptr<MgdServiceFactory> fact = new MgdServiceFactory();
         Ptr<MgFeatureService> pService = dynamic_cast<MgFeatureService*>(fact->CreateService(MgServiceType::FeatureService));
         if (pService == 0)
         {
@@ -836,7 +836,7 @@ void TestFeatureService::TestCase_DescribeSchemaImmutability()
 {
     try
     {
-        Ptr<MgServiceFactory> fact = new MgServiceFactory();
+        Ptr<MgdServiceFactory> fact = new MgdServiceFactory();
         Ptr<MgFeatureService> pService = dynamic_cast<MgFeatureService*>(fact->CreateService(MgServiceType::FeatureService));
         if (pService == 0)
         {
@@ -916,7 +916,7 @@ void TestFeatureService::TestCase_ApplySchema()
 {
     try
     {
-        Ptr<MgServiceFactory> fact = new MgServiceFactory();
+        Ptr<MgdServiceFactory> fact = new MgdServiceFactory();
         Ptr<MgFeatureService> pService = dynamic_cast<MgFeatureService*>(fact->CreateService(MgServiceType::FeatureService));
         if (pService == 0)
         {
@@ -1175,7 +1175,7 @@ void TestFeatureService::TestCase_SelectFeatures()
 {
     try
     {
-        Ptr<MgServiceFactory> fact = new MgServiceFactory();
+        Ptr<MgdServiceFactory> fact = new MgdServiceFactory();
         Ptr<MgFeatureService> pService = dynamic_cast<MgFeatureService*>(fact->CreateService(MgServiceType::FeatureService));
         if (pService == 0)
         {
@@ -1228,7 +1228,7 @@ void TestFeatureService::TestCase_SelectFeaturesTransformed()
 {
     try
     {
-        Ptr<MgServiceFactory> fact = new MgServiceFactory();
+        Ptr<MgdServiceFactory> fact = new MgdServiceFactory();
         Ptr<MgdFeatureService> pService = dynamic_cast<MgdFeatureService*>(fact->CreateService(MgServiceType::FeatureService));
         if (pService == 0)
         {
@@ -1353,7 +1353,7 @@ void TestFeatureService::TestCase_SelectScrollable()
 {
     try
     {
-        Ptr<MgServiceFactory> fact = new MgServiceFactory();
+        Ptr<MgdServiceFactory> fact = new MgdServiceFactory();
         Ptr<MgdFeatureService> pService = dynamic_cast<MgdFeatureService*>(fact->CreateService(MgServiceType::FeatureService));
         if (pService == 0)
         {
@@ -1446,7 +1446,7 @@ void TestFeatureService::TestCase_SelectAggregate()
 {
     try
     {
-        Ptr<MgServiceFactory> fact = new MgServiceFactory();
+        Ptr<MgdServiceFactory> fact = new MgdServiceFactory();
         Ptr<MgFeatureService> pService = dynamic_cast<MgFeatureService*>(fact->CreateService(MgServiceType::FeatureService));
         if (pService == 0)
         {
@@ -1498,7 +1498,7 @@ void TestFeatureService::TestCase_InsertFeatures()
 {
     try
     {
-        Ptr<MgServiceFactory> fact = new MgServiceFactory();
+        Ptr<MgdServiceFactory> fact = new MgdServiceFactory();
         Ptr<MgdFeatureService> pService = dynamic_cast<MgdFeatureService*>(fact->CreateService(MgServiceType::FeatureService));
         if (pService == 0)
         {
@@ -1595,7 +1595,7 @@ void TestFeatureService::TestCase_InsertFeaturesBatch()
 {
     try
     {
-        Ptr<MgServiceFactory> fact = new MgServiceFactory();
+        Ptr<MgdServiceFactory> fact = new MgdServiceFactory();
         Ptr<MgResourceService> pResSvc = dynamic_cast<MgResourceService*>(fact->CreateService(MgServiceType::ResourceService));
         if (pResSvc == 0)
         {
@@ -1813,7 +1813,7 @@ void TestFeatureService::TestCase_UpdateFeatures()
 {
     try
     {
-        Ptr<MgServiceFactory> fact = new MgServiceFactory();
+        Ptr<MgdServiceFactory> fact = new MgdServiceFactory();
         Ptr<MgdFeatureService> pService = dynamic_cast<MgdFeatureService*>(fact->CreateService(MgServiceType::FeatureService));
         if (pService == 0)
         {
@@ -1887,7 +1887,7 @@ void TestFeatureService::TestCase_DeleteFeatures()
 {
     try
     {
-        Ptr<MgServiceFactory> fact = new MgServiceFactory();
+        Ptr<MgdServiceFactory> fact = new MgdServiceFactory();
         Ptr<MgdFeatureService> pService = dynamic_cast<MgdFeatureService*>(fact->CreateService(MgServiceType::FeatureService));
         if (pService == 0)
         {
@@ -1934,7 +1934,7 @@ void TestFeatureService::TestCase_ExecuteSqlQuery()
 {
     try
     {
-        Ptr<MgServiceFactory> fact = new MgServiceFactory();
+        Ptr<MgdServiceFactory> fact = new MgdServiceFactory();
         Ptr<MgFeatureService> pService = dynamic_cast<MgFeatureService*>(fact->CreateService(MgServiceType::FeatureService));
         if (pService == 0)
         {
@@ -1983,7 +1983,7 @@ void TestFeatureService::TestCase_ExecuteSqlNonQuery()
 {
     try
     {
-        Ptr<MgServiceFactory> fact = new MgServiceFactory();
+        Ptr<MgdServiceFactory> fact = new MgdServiceFactory();
         Ptr<MgFeatureService> pService = dynamic_cast<MgFeatureService*>(fact->CreateService(MgServiceType::FeatureService));
         if (pService == 0)
         {
@@ -2031,7 +2031,7 @@ void TestFeatureService::TestCase_GetSpatialContexts()
 {
     try
     {
-        Ptr<MgServiceFactory> fact = new MgServiceFactory();
+        Ptr<MgdServiceFactory> fact = new MgdServiceFactory();
         Ptr<MgFeatureService> pService = dynamic_cast<MgFeatureService*>(fact->CreateService(MgServiceType::FeatureService));
         if (pService == 0)
         {
@@ -2113,7 +2113,7 @@ void TestFeatureService::TestCase_GetLongTransactions()
 {
     try
     {
-        Ptr<MgServiceFactory> fact = new MgServiceFactory();
+        Ptr<MgdServiceFactory> fact = new MgdServiceFactory();
         Ptr<MgFeatureService> pService = dynamic_cast<MgFeatureService*>(fact->CreateService(MgServiceType::FeatureService));
         if (pService == 0)
         {
@@ -2158,7 +2158,7 @@ void TestFeatureService::TestCase_SetLongTransaction()
 {
     try
     {
-        Ptr<MgServiceFactory> fact = new MgServiceFactory();
+        Ptr<MgdServiceFactory> fact = new MgdServiceFactory();
         Ptr<MgFeatureService> pService = dynamic_cast<MgFeatureService*>(fact->CreateService(MgServiceType::FeatureService));
         if (pService == 0)
         {
@@ -2223,7 +2223,7 @@ void TestFeatureService::TestCase_GetFeatures()
 {
     try
     {
-        Ptr<MgFeatureService> pService = MgServiceFactory::CreateFeatureService();
+        Ptr<MgFeatureService> pService = MgdServiceFactory::CreateFeatureService();
         if (pService == 0)
         {
             throw new MgServiceNotAvailableException(L"TestFeatureService.TestCase_GetFeatures", __LINE__, __WFILE__, NULL, L"", NULL);
@@ -2263,7 +2263,7 @@ void TestFeatureService::TestCase_CloseFeatureReader()
 {
     try
     {
-        Ptr<MgFeatureService> pService = MgServiceFactory::CreateFeatureService();
+        Ptr<MgFeatureService> pService = MgdServiceFactory::CreateFeatureService();
         if (pService == 0)
         {
             throw new MgServiceNotAvailableException(L"TestFeatureService.TestCase_CloseFeatureReader", __LINE__, __WFILE__, NULL, L"", NULL);
@@ -2304,7 +2304,7 @@ void TestFeatureService::TestCase_GetSqlRows()
 {
     try
     {
-        Ptr<MgFeatureService> pService = MgServiceFactory::CreateFeatureService();
+        Ptr<MgFeatureService> pService = MgdServiceFactory::CreateFeatureService();
         if (pService == 0)
         {
             throw new MgServiceNotAvailableException(L"TestFeatureService.TestCase_GetSqlRows", __LINE__, __WFILE__, NULL, L"", NULL);
@@ -2344,7 +2344,7 @@ void TestFeatureService::TestCase_CloseSqlReader()
 {
     try
     {
-        Ptr<MgFeatureService> pService = MgServiceFactory::CreateFeatureService();
+        Ptr<MgFeatureService> pService = MgdServiceFactory::CreateFeatureService();
         if (pService == 0)
         {
             throw new MgServiceNotAvailableException(L"TestFeatureService.TestCase_CloseSqlReader", __LINE__, __WFILE__, NULL, L"", NULL);
@@ -2386,7 +2386,7 @@ void TestFeatureService::TestCase_GetRaster()
 {
     try
     {
-        Ptr<MgFeatureService> pService = MgServiceFactory::CreateFeatureService();
+        Ptr<MgFeatureService> pService = MgdServiceFactory::CreateFeatureService();
         if (pService == 0)
         {
             throw new MgServiceNotAvailableException(L"TestFeatureService.TestCase_GetRaster", __LINE__, __WFILE__, NULL, L"", NULL);
@@ -2429,7 +2429,7 @@ void TestFeatureService::TestCase_GetDataRows()
 {
     try
     {
-        Ptr<MgFeatureService> pService = MgServiceFactory::CreateFeatureService();
+        Ptr<MgFeatureService> pService = MgdServiceFactory::CreateFeatureService();
         if (pService == 0)
         {
             throw new MgServiceNotAvailableException(L"TestFeatureService.TestCase_GetDataRows", __LINE__, __WFILE__, NULL, L"", NULL);
@@ -2469,7 +2469,7 @@ void TestFeatureService::TestCase_CloseDataReader()
 {
     try
     {
-        Ptr<MgFeatureService> pService = MgServiceFactory::CreateFeatureService();
+        Ptr<MgFeatureService> pService = MgdServiceFactory::CreateFeatureService();
         if (pService == 0)
         {
             throw new MgServiceNotAvailableException(L"TestFeatureService.TestCase_CloseDataReader", __LINE__, __WFILE__, NULL, L"", NULL);
@@ -2510,7 +2510,7 @@ void TestFeatureService::TestCase_JoinFeatures()
 {
     try
     {
-        Ptr<MgServiceFactory> fact = new MgServiceFactory();
+        Ptr<MgdServiceFactory> fact = new MgdServiceFactory();
         Ptr<MgFeatureService> pService = dynamic_cast<MgFeatureService*>(fact->CreateService(MgServiceType::FeatureService));
         if (pService == 0)
         {
@@ -2568,7 +2568,7 @@ void TestFeatureService::TestCase_JoinFeaturesChainedInner1ToMany()
 {
     try
     {
-        Ptr<MgServiceFactory> fact = new MgServiceFactory();
+        Ptr<MgdServiceFactory> fact = new MgdServiceFactory();
         Ptr<MgFeatureService> pService = dynamic_cast<MgFeatureService*>(fact->CreateService(MgServiceType::FeatureService));
         if (pService == 0)
         {
@@ -2642,7 +2642,7 @@ void TestFeatureService::TestCase_ExtendedFeatureClass()
 {
     try
     {
-        Ptr<MgServiceFactory> fact = new MgServiceFactory();
+        Ptr<MgdServiceFactory> fact = new MgdServiceFactory();
         Ptr<MgFeatureService> pService = dynamic_cast<MgFeatureService*>(fact->CreateService(MgServiceType::FeatureService));
         if (pService == 0)
         {
@@ -2823,7 +2823,7 @@ void TestFeatureService::TestCase_JoinFdoFeatures()
 {
     try
     {
-        Ptr<MgServiceFactory> fact = new MgServiceFactory();
+        Ptr<MgdServiceFactory> fact = new MgdServiceFactory();
         Ptr<MgFeatureService> pService = dynamic_cast<MgFeatureService*>(fact->CreateService(MgServiceType::FeatureService));
         if (pService == 0)
         {
@@ -2907,7 +2907,7 @@ void TestFeatureService::TestCase_CreateFeatureSource()
 {
     try
     {
-        Ptr<MgServiceFactory> fact = new MgServiceFactory();
+        Ptr<MgdServiceFactory> fact = new MgdServiceFactory();
         Ptr<MgFeatureService> pService = dynamic_cast<MgFeatureService*>(fact->CreateService(MgServiceType::FeatureService));
         if (pService == 0)
         {
@@ -3018,7 +3018,7 @@ void TestFeatureService::TestCase_BenchmarkSelectFeatures()
     {
         ACE_DEBUG((LM_INFO, ACE_TEXT("\nTestFeatureService::TestCase_BenchmarkSelectFeatures() - Start\n")));
 
-        Ptr<MgServiceFactory> factory = new MgServiceFactory();
+        Ptr<MgdServiceFactory> factory = new MgdServiceFactory();
         Ptr<MgFeatureService> pService = dynamic_cast<MgFeatureService*>(factory->CreateService(MgServiceType::FeatureService));
         if (pService == 0)
         {
@@ -3080,7 +3080,7 @@ void TestFeatureService::TestCase_SecuredCredentials()
     STRING password = L"";
     try
     {
-        Ptr<MgServiceFactory> factory = new MgServiceFactory();
+        Ptr<MgdServiceFactory> factory = new MgdServiceFactory();
         Ptr<MgFeatureService> featSvc = dynamic_cast<MgFeatureService*>(factory->CreateService(MgServiceType::FeatureService));
         if (featSvc == 0)
         {
@@ -3472,7 +3472,7 @@ void TestFeatureService::TestCase_BenchmarkSdfJoin()
         Ptr<MgByteSource> fsContent = new MgByteSource(L"../UnitTestFiles/UT_Parcels_Sdf_Join.fs");
         Ptr<MgByteReader> fsReader = fsContent->GetReader();
 
-        Ptr<MgServiceFactory> fact = new MgServiceFactory();
+        Ptr<MgdServiceFactory> fact = new MgdServiceFactory();
         Ptr<MgResourceService> pService = dynamic_cast<MgResourceService*>(fact->CreateService(MgServiceType::ResourceService));
         if (pService == 0)
         {
@@ -3572,7 +3572,7 @@ void TestFeatureService::TestCase_BenchmarkSqliteJoin()
         Ptr<MgByteSource> fsContent = new MgByteSource(L"../UnitTestFiles/UT_Parcels_SQLite_Join.fs");
         Ptr<MgByteReader> fsReader = fsContent->GetReader();
 
-        Ptr<MgServiceFactory> fact = new MgServiceFactory();
+        Ptr<MgdServiceFactory> fact = new MgdServiceFactory();
         Ptr<MgResourceService> pService = dynamic_cast<MgResourceService*>(fact->CreateService(MgServiceType::ResourceService));
         if (pService == 0)
         {
@@ -3668,7 +3668,7 @@ void TestFeatureService::TestCase_BenchmarkSqliteAggregateJoin()
 {
     try
     {
-        Ptr<MgServiceFactory> fact = new MgServiceFactory();
+        Ptr<MgdServiceFactory> fact = new MgdServiceFactory();
         Ptr<MgResourceService> pService = dynamic_cast<MgResourceService*>(fact->CreateService(MgServiceType::ResourceService));
         if (pService == 0)
         {
@@ -3777,7 +3777,7 @@ void TestFeatureService::TestCase_BenchmarkMergeSortJoin()
     try
     {
         //Setup our test data
-        Ptr<MgServiceFactory> fact = new MgServiceFactory();
+        Ptr<MgdServiceFactory> fact = new MgdServiceFactory();
         Ptr<MgResourceService> pService = dynamic_cast<MgResourceService*>(fact->CreateService(MgServiceType::ResourceService));
         if (pService == 0)
         {
@@ -3905,7 +3905,7 @@ void TestFeatureService::TestCase_BenchmarkBatchSortedBlockJoin()
     try
     {
         //Setup our test data
-        Ptr<MgServiceFactory> fact = new MgServiceFactory();
+        Ptr<MgdServiceFactory> fact = new MgdServiceFactory();
         Ptr<MgResourceService> pService = dynamic_cast<MgResourceService*>(fact->CreateService(MgServiceType::ResourceService));
         if (pService == 0)
         {
@@ -4033,7 +4033,7 @@ void TestFeatureService::TestCase_BenchmarkNestedLoopsSortedBlockJoin()
     try
     {
         //Setup our test data
-        Ptr<MgServiceFactory> fact = new MgServiceFactory();
+        Ptr<MgdServiceFactory> fact = new MgdServiceFactory();
         Ptr<MgResourceService> pService = dynamic_cast<MgResourceService*>(fact->CreateService(MgServiceType::ResourceService));
         if (pService == 0)
         {
@@ -4163,7 +4163,7 @@ MgResourceIdentifier* TestFeatureService::CreateFeatureSource(MgFeatureService* 
     fsIdStr += L".FeatureSource";
     STRING fileNameStr = name;
     fileNameStr += L".sdf";
-    Ptr<MgClassDefinition> cls = MgFeatureUtil::CloneMgClassDefinition(classDefinition);
+    Ptr<MgClassDefinition> cls = MgdFeatureUtil::CloneMgClassDefinition(classDefinition);
     cls->SetName(name);
 
     //Flip the autogeneration bit (just in case) 
@@ -4392,7 +4392,7 @@ void TestFeatureService::TestCase_BenchmarkNestedLoopsJoin()
     try
     {
         //Setup our test data
-        Ptr<MgServiceFactory> fact = new MgServiceFactory();
+        Ptr<MgdServiceFactory> fact = new MgdServiceFactory();
         Ptr<MgResourceService> pService = dynamic_cast<MgResourceService*>(fact->CreateService(MgServiceType::ResourceService));
         if (pService == 0)
         {

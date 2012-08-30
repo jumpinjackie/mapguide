@@ -6,22 +6,22 @@ class MgStringCollection;
 class MgFeatureSchemaCollection;
 class MgClassDefinition;
 class MgPropertyDefinitionCollection;
-class MgFeatureClassCacheItem;
+class MgdFeatureClassCacheItem;
 
-class MgFeatureSchemaCacheItem : public MgGuardDisposable
+class MgdFeatureSchemaCacheItem : public MgGuardDisposable
 {
 /// Constructors/Destructor
 
 public:
 
-    MgFeatureSchemaCacheItem();
-    virtual ~MgFeatureSchemaCacheItem();
+    MgdFeatureSchemaCacheItem();
+    virtual ~MgdFeatureSchemaCacheItem();
 
 private:
 
     // Unimplemented copy constructor and assignment operator.
-    MgFeatureSchemaCacheItem(const MgFeatureSchemaCacheItem&);
-    MgFeatureSchemaCacheItem& operator=(const MgFeatureSchemaCacheItem&);
+    MgdFeatureSchemaCacheItem(const MgdFeatureSchemaCacheItem&);
+    MgdFeatureSchemaCacheItem& operator=(const MgdFeatureSchemaCacheItem&);
 
 /// Methods
 
@@ -44,8 +44,8 @@ public:
 
 protected:
 
-    MgFeatureClassCacheItem* SetFeatureClassCacheItem(CREFSTRING classKey);
-    MgFeatureClassCacheItem* GetFeatureClassCacheItem(CREFSTRING classKey);
+    MgdFeatureClassCacheItem* SetFeatureClassCacheItem(CREFSTRING classKey);
+    MgdFeatureClassCacheItem* GetFeatureClassCacheItem(CREFSTRING classKey);
 
     virtual void Dispose() { delete this; }
 
@@ -55,8 +55,8 @@ private:
 
     Ptr<MgStringCollection> m_classNames;
 
-    typedef std::map<STRING, MgFeatureClassCacheItem*> MgFeatureClassCacheItems;
-    MgFeatureClassCacheItems m_featureClassCacheItems;
+    typedef std::map<STRING, MgdFeatureClassCacheItem*> MgdFeatureClassCacheItems;
+    MgdFeatureClassCacheItems m_featureClassCacheItems;
 };
 
 #endif

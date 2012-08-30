@@ -5,7 +5,7 @@
 #include "Services/Feature/RasterHelper.h"
 #include "Fdo.h"
 
-MgdScrollableFeatureReader::MgdScrollableFeatureReader(MgFeatureConnection* conn, FdoIScrollableFeatureReader* reader)
+MgdScrollableFeatureReader::MgdScrollableFeatureReader(MgdFeatureConnection* conn, FdoIScrollableFeatureReader* reader)
 : MgdFeatureReader(conn, (FdoIFeatureReader*)reader)
 {
 	m_scrollReader = FDO_SAFE_ADDREF(reader);
@@ -63,7 +63,7 @@ bool MgdScrollableFeatureReader::ReadAt(MgPropertyCollection* key)
     bool ret = false;
     MG_FEATURE_SERVICE_TRY()
     FdoPtr<FdoPropertyValueCollection> propVals = FdoPropertyValueCollection::Create();
-    MgFeatureUtil::FillFdoPropertyCollection(key, propVals);
+    MgdFeatureUtil::FillFdoPropertyCollection(key, propVals);
     ret = m_scrollReader->ReadAt(propVals);
     MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgdScrollableFeatureReader::ReadAt")
     return ret;
@@ -83,7 +83,7 @@ UINT32 MgdScrollableFeatureReader::IndexOf(MgPropertyCollection* key)
     UINT32 ret = 0;
     MG_FEATURE_SERVICE_TRY()
     FdoPtr<FdoPropertyValueCollection> propVals = FdoPropertyValueCollection::Create();
-    MgFeatureUtil::FillFdoPropertyCollection(key, propVals);
+    MgdFeatureUtil::FillFdoPropertyCollection(key, propVals);
     ret = (UINT32)m_scrollReader->IndexOf(propVals);
     MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgdScrollableFeatureReader::IndexOf")
     return ret;

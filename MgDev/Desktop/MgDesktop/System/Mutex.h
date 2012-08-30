@@ -26,11 +26,11 @@
 #endif
 
 // Critical Section Class
-class Mutex
+class MgdMutex
 {
 public:
 
-    Mutex()
+    MgdMutex()
     {
         m_bInitialized = false;
         Initialize();
@@ -38,7 +38,7 @@ public:
 
 #ifdef _WIN32
 
-    ~Mutex()
+    ~MgdMutex()
     {
         ::DeleteCriticalSection(&m_CritSect);
     }
@@ -67,9 +67,9 @@ private:
 
 #else //LINUX
 
-    ~Mutex()
+    ~MgdMutex()
     {
-        pthread_mutex_destroy(&m_CritSect);
+        pthread_MgdMutex_destroy(&m_CritSect);
     }
 
     void Initialize()
@@ -77,26 +77,26 @@ private:
         if(!m_bInitialized)
         {
             m_bInitialized = true;
-            pthread_mutexattr_init(&m_attributes);
-            pthread_mutexattr_settype(&m_attributes, PTHREAD_MUTEX_RECURSIVE);
-            pthread_mutex_init(&m_CritSect, &m_attributes);
-            pthread_mutexattr_destroy(&m_attributes);
+            pthread_MgdMutexattr_init(&m_attributes);
+            pthread_MgdMutexattr_settype(&m_attributes, PTHREAD_MgdMutex_RECURSIVE);
+            pthread_MgdMutex_init(&m_CritSect, &m_attributes);
+            pthread_MgdMutexattr_destroy(&m_attributes);
         }
     }
 
     void Enter()
     {
-        pthread_mutex_lock(&m_CritSect);
+        pthread_MgdMutex_lock(&m_CritSect);
     }
 
     void Leave()
     {
-        pthread_mutex_unlock(&m_CritSect);
+        pthread_MgdMutex_unlock(&m_CritSect);
     }
 
 private:
-    pthread_mutex_t m_CritSect;
-    pthread_mutexattr_t m_attributes;
+    pthread_MgdMutex_t m_CritSect;
+    pthread_MgdMutexattr_t m_attributes;
 
 #endif //_WIN32
 
@@ -108,17 +108,17 @@ private:
 class ScopedLock
 {
 public:
-    ScopedLock(Mutex& mutex):m_mutex(mutex)
+    ScopedLock(MgdMutex& MgdMutex):m_MgdMutex(MgdMutex)
     {
-        m_mutex.Enter();
+        m_MgdMutex.Enter();
     }
     ~ScopedLock()
     {
-        m_mutex.Leave();
+        m_MgdMutex.Leave();
     }
 private:
     ScopedLock();
-    Mutex& m_mutex;
+    MgdMutex& m_MgdMutex;
 };
 
 #endif

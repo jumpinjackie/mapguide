@@ -21,21 +21,21 @@
 #include "GwsQueryEngine.h"
 #include "GwsCommonImp.h"
 
-class MgFeatureConnection;
+class MgdFeatureConnection;
 
 typedef GwsIgnoreCase MgGwsIgnoreCase;
 
-typedef std::map<std::wstring,MgFeatureConnection*,MgGwsIgnoreCase> MgGwsConnectionMap;
+typedef std::map<std::wstring,MgdFeatureConnection*,MgGwsIgnoreCase> MgGwsConnectionMap;
 typedef MgGwsConnectionMap::iterator  MgGwsConnectionIter;
 typedef MgGwsConnectionMap::value_type MgGwsConnectionMapValue;
 
 
-class MgGwsConnectionPool : public IGWSConnectionPool
+class MgdGwsConnectionPool : public IGWSConnectionPool
 {
 public:
 
     // Creation
-    static MgGwsConnectionPool* Create();
+    static MgdGwsConnectionPool* Create();
 
     // IGWSDisposable methods
     virtual FdoInt32 AddRef();
@@ -52,7 +52,7 @@ public:
     // Native methods
 
     // add connection to the pool
-    void AddConnection(FdoString* name, MgFeatureConnection* conn);
+    void AddConnection(FdoString* name, MgdFeatureConnection* conn);
 
     // remove connection from the pool
     void RemoveConnection(FdoString* name);
@@ -61,8 +61,8 @@ public:
 
 protected:
     // Construction/destruction
-    MgGwsConnectionPool();
-    virtual ~MgGwsConnectionPool();
+    MgdGwsConnectionPool();
+    virtual ~MgdGwsConnectionPool();
 
 protected:
     int m_iRefCount;

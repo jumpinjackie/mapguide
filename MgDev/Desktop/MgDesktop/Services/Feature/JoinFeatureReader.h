@@ -26,20 +26,20 @@
 /// add custom behavior
 ///</summary>
 
-class MgJoinFeatureReader : public FdoIFeatureReader
+class MgdJoinFeatureReader : public FdoIFeatureReader
 {
 private:
 
     // Unimplemented Constructors/Methods
 
-    MgJoinFeatureReader();
-    MgJoinFeatureReader(const MgJoinFeatureReader&);
-    MgJoinFeatureReader& operator=(const MgJoinFeatureReader&);
+    MgdJoinFeatureReader();
+    MgdJoinFeatureReader(const MgdJoinFeatureReader&);
+    MgdJoinFeatureReader& operator=(const MgdJoinFeatureReader&);
 
 public:
 
-    MgJoinFeatureReader(MgdGwsFeatureReader* reader);
-    virtual ~MgJoinFeatureReader();
+    MgdJoinFeatureReader(MgdGwsFeatureReader* reader);
+    virtual ~MgdJoinFeatureReader();
 
     /// \brief
     /// Gets the definition of the object currently being read. If the user

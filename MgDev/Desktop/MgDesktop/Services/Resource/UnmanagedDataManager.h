@@ -18,24 +18,24 @@
 #ifndef DESKTOP_UNMANAGED_DATA_MANAGER_H
 #define DESKTOP_UNMANAGED_DATA_MANAGER_H
 
-class MgUnmanagedDataManager : public MgGuardDisposable
+class MgdUnmanagedDataManager : public MgGuardDisposable
 {
-    DECLARE_CLASSNAME(MgUnmanagedDataManager)
+    DECLARE_CLASSNAME(MgdUnmanagedDataManager)
 
 /// Constructors/Destructor
 
 public:
 
-    virtual ~MgUnmanagedDataManager();
+    virtual ~MgdUnmanagedDataManager();
 
 private:
 
-    MgUnmanagedDataManager();
+    MgdUnmanagedDataManager();
 
     // Unimplemented copy constructor and assignment operator.
 
-    MgUnmanagedDataManager(const MgUnmanagedDataManager&);
-    MgUnmanagedDataManager& operator=(const MgUnmanagedDataManager&);
+    MgdUnmanagedDataManager(const MgdUnmanagedDataManager&);
+    MgdUnmanagedDataManager& operator=(const MgdUnmanagedDataManager&);
 
     static bool ParsePath(CREFSTRING path, REFSTRING mappingName, REFSTRING subpath);
     void ParseFilter(CREFSTRING filter, MgStringCollection* filters);
@@ -55,7 +55,7 @@ private:
 
 public:
 
-    static MgUnmanagedDataManager* GetInstance();
+    static MgdUnmanagedDataManager* GetInstance();
 
     static int SubstituteDataPathAliases(REFSTRING data);
     static int SubstituteDataPathAliases(string& data);
@@ -73,14 +73,14 @@ public:
 
 private:
 
-    static Ptr<MgUnmanagedDataManager> sm_unmanagedDataManager;
+    static Ptr<MgdUnmanagedDataManager> sm_unmanagedDataManager;
 
     static const STRING SquareBracketBegin;
     static const wchar_t SquareBracketCharBegin;
     static const STRING SquareBracketEnd;
     static const wchar_t SquareBracketCharEnd;
 
-    ACE_Recursive_Thread_Mutex m_mutex;
+    ACE_Recursive_Thread_Mutex m_MgdMutex;
     Ptr<MgPropertyCollection> m_unmanagedDataMappings;
 };
 

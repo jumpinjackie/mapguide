@@ -1,57 +1,57 @@
 #include "TransformCache.h"
 
-ACE_Recursive_Thread_Mutex TransformCache::sm_mutex;
+ACE_Recursive_Thread_Mutex MgdTransformCache::sm_MgdMutex;
 
 
-TransformCache::TransformCache(MgCSTrans* transform, MgCoordinateSystem* coordinateSystem)
+MgdTransformCache::MgdTransformCache(MgdCSTrans* transform, MgCoordinateSystem* coordinateSystem)
 {
     m_xform.reset(transform);
     m_coordSys = SAFE_ADDREF(coordinateSystem);
 }
 
 
-TransformCache::~TransformCache()
+MgdTransformCache::~MgdTransformCache()
 {
 }
 
 
-MgCSTrans* TransformCache::GetTransform()
+MgdCSTrans* MgdTransformCache::GetTransform()
 {
     return m_xform.get();
 }
 
 
-MgCoordinateSystem* TransformCache::GetCoordSys()
+MgCoordinateSystem* MgdTransformCache::GetCoordSys()
 {
     return SAFE_ADDREF(m_coordSys.p);
 }
 
 
-void TransformCache::SetMgTransform(MgCoordinateSystemTransform* mgTransform)
+void MgdTransformCache::SetMgTransform(MgCoordinateSystemTransform* mgTransform)
 {
     m_transform = SAFE_ADDREF(mgTransform);
 }
 
 
-MgCoordinateSystemTransform* TransformCache::GetMgTransform()
+MgCoordinateSystemTransform* MgdTransformCache::GetMgTransform()
 {
     return SAFE_ADDREF(m_transform.p);
 }
 
 
-void TransformCache::SetEnvelope(MgEnvelope* envelope)
+void MgdTransformCache::SetEnvelope(MgEnvelope* envelope)
 {
     m_envelope = SAFE_ADDREF(envelope);
 }
 
 
-MgEnvelope* TransformCache::GetEnvelope()
+MgEnvelope* MgdTransformCache::GetEnvelope()
 {
     return SAFE_ADDREF(m_envelope.p);
 }
 
 
-TransformCache* TransformCache::GetLayerToMapTransform(TransformCacheMap& cache,
+MgdTransformCache* MgdTransformCache::GetLayerToMapTransform(MgdTransformCacheMap& cache,
                                                        CREFSTRING featureName,
                                                        MgResourceIdentifier* resId,
                                                        MgCoordinateSystem* dstCs,
@@ -59,9 +59,9 @@ TransformCache* TransformCache::GetLayerToMapTransform(TransformCacheMap& cache,
                                                        MgFeatureService* svcFeature)
 {
     // prevent separate threads from simultaneously creating coordinate systems
-    ACE_MT(ACE_GUARD_RETURN(ACE_Recursive_Thread_Mutex, ace_mon, sm_mutex, NULL));
+    ACE_MT(ACE_GUARD_RETURN(ACE_Recursive_Thread_Mutex, ace_mon, sm_MgdMutex, NULL));
 
-    TransformCache* item = NULL;
+    MgdTransformCache* item = NULL;
 
     // Now get the coordinate system of the layer data.
     // Feature Service caches these so we only take the performance hit on
@@ -138,14 +138,14 @@ TransformCache* TransformCache::GetLayerToMapTransform(TransformCacheMap& cache,
         // Create coordinate system transformer
         if (!srcwkt.empty())
         {
-            TransformCacheMap::const_iterator iter = cache.find(srcwkt);
+            MgdTransformCacheMap::const_iterator iter = cache.find(srcwkt);
             if (cache.end() != iter) item = (*iter).second;
             if (NULL == item)
             {
                 Ptr<MgCoordinateSystem> srcCs = csFactory->Create(srcwkt);
                 if (srcCs.p)
                 {
-                    item = new TransformCache(new MgCSTrans(srcCs, dstCs), srcCs);
+                    item = new MgdTransformCache(new MgdCSTrans(srcCs, dstCs), srcCs);
                     cache[srcwkt] = item;
 
                     // Set the coordinate system transform
@@ -171,9 +171,9 @@ TransformCache* TransformCache::GetLayerToMapTransform(TransformCacheMap& cache,
 /// \brief
 /// Clear the specified Transform Cache map.
 ///
-void TransformCache::Clear(TransformCacheMap& cacheMap)
+void MgdTransformCache::Clear(MgdTransformCacheMap& cacheMap)
 {
-    for (TransformCacheMap::iterator i = cacheMap.begin();
+    for (MgdTransformCacheMap::iterator i = cacheMap.begin();
         i != cacheMap.end(); ++i)
     {
         delete (*i).second;

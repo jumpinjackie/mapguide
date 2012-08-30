@@ -33,7 +33,7 @@ extern long GetTickCount();
 #endif
 
 ///////////////////////////////////////////////////////////////////////////////
-MdfModel::MapDefinition* MgMappingUtil::GetMapDefinition(MgResourceService* svcResource, MgResourceIdentifier* resId)
+MdfModel::MapDefinition* MgdMappingUtil::GetMapDefinition(MgResourceService* svcResource, MgResourceIdentifier* resId)
 {
     //get and parse the mapdef
     Ptr<MgByteReader> mdfReader = svcResource->GetResourceContent(resId, L"");
@@ -49,7 +49,7 @@ MdfModel::MapDefinition* MgMappingUtil::GetMapDefinition(MgResourceService* svcR
         STRING errorMsg = parser.GetErrorMessage();
         MgStringCollection arguments;
         arguments.Add(errorMsg);
-        throw new MgInvalidMapDefinitionException(L"MgMappingUtil::GetMapDefinition", __LINE__, __WFILE__, &arguments, L"", NULL);
+        throw new MgInvalidMapDefinitionException(L"MgdMappingUtil::GetMapDefinition", __LINE__, __WFILE__, &arguments, L"", NULL);
     }
 
     // detach the map definition from the parser - it's
@@ -62,13 +62,13 @@ MdfModel::MapDefinition* MgMappingUtil::GetMapDefinition(MgResourceService* svcR
 
 
 ///////////////////////////////////////////////////////////////////////////////
-RSMgFeatureReader* MgMappingUtil::ExecuteFeatureQuery(MgFeatureService* svcFeature,
+RSMgdFeatureReader* MgdMappingUtil::ExecuteFeatureQuery(MgFeatureService* svcFeature,
                                                       RS_Bounds& extent,
                                                       MdfModel::VectorLayerDefinition* vl,
                                                       const wchar_t* overrideFilter,
                                                       MgCoordinateSystem* mapCs,
                                                       MgCoordinateSystem* layerCs,
-                                                      TransformCache* cache)
+                                                      MgdTransformCache* cache)
 {
 #ifdef _DEBUG
     long dwStart = GetTickCount();
@@ -217,12 +217,12 @@ RSMgFeatureReader* MgMappingUtil::ExecuteFeatureQuery(MgFeatureService* svcFeatu
     ACE_DEBUG((LM_INFO, L"(%t)  ExecuteFeatureQuery() total time = %6.4f (s)\n", (GetTickCount()-dwStart)/1000.0));
 #endif
 
-    return new RSMgFeatureReader(rdr.p, svcFeature, featResId.p, options, vl->GetGeometry());
+    return new RSMgdFeatureReader(rdr.p, svcFeature, featResId.p, options, vl->GetGeometry());
 }
 
 
 ///////////////////////////////////////////////////////////////////////////////
-RSMgFeatureReader* MgMappingUtil::ExecuteRasterQuery(MgFeatureService* svcFeature,
+RSMgdFeatureReader* MgdMappingUtil::ExecuteRasterQuery(MgFeatureService* svcFeature,
                                                      RS_Bounds& extent,
                                                      MdfModel::GridLayerDefinition* gl,
                                                      const wchar_t* overrideFilter,
@@ -329,14 +329,14 @@ RSMgFeatureReader* MgMappingUtil::ExecuteRasterQuery(MgFeatureService* svcFeatur
     // TODO: could it be an extension name and not a FeatureClassName?
     rdr = svcFeature->SelectFeatures(featResId, gl->GetFeatureName(), options);
 
-    return new RSMgFeatureReader(rdr.p, svcFeature, featResId.p, options, L"clipped_raster");
+    return new RSMgdFeatureReader(rdr.p, svcFeature, featResId.p, options, L"clipped_raster");
 }
 
 
 ///////////////////////////////////////////////////////////////////////////////
 // This is called by the MgServerRenderingService::RenderMapInternal to
 // render the layers.
-void MgMappingUtil::StylizeLayers(MgResourceService* svcResource,
+void MgdMappingUtil::StylizeLayers(MgResourceService* svcResource,
                                   MgFeatureService* svcFeature,
                                   MgdDrawingService* svcDrawing,
                                   MgCoordinateSystemFactory* csFactory,
@@ -361,13 +361,13 @@ void MgMappingUtil::StylizeLayers(MgResourceService* svcResource,
 
     // Cache coordinate system transforms for the life of the
     // stylization operation.
-    TransformCacheMap transformCache;
+    MgdTransformCacheMap transformCache;
 
     // Get the layers' resource content in a single request by adding them to a collection
     for (int i = layers->GetCount()-1; i >= 0; i--)
     {
         auto_ptr<MdfModel::LayerDefinition> ldf;
-        RSMgFeatureReader* rsReader = NULL;
+        RSMgdFeatureReader* rsReader = NULL;
 
         Ptr<MgLayerBase> mapLayer = layers->GetItem(i);
 
@@ -400,7 +400,7 @@ void MgMappingUtil::StylizeLayers(MgResourceService* svcResource,
         MG_SERVER_MAPPING_SERVICE_TRY()
 
             // Just profile visible layers?
-            TransformCache* TCForProfile = NULL;
+            MgdTransformCache* TCForProfile = NULL;
             double minScale_Profile = 0.0;
             double maxScale_Profile = MdfModel::VectorScaleRange::MAX_MAP_SCALE;
             if(NULL != pPRLsResult)
@@ -408,7 +408,7 @@ void MgMappingUtil::StylizeLayers(MgResourceService* svcResource,
                 ProfileRenderLayerResult* pPRLResult = new ProfileRenderLayerResult(); // points points to Profile Render Layers Result
                
                 // Set the start time of stylizing layer
-                pPRLResult->SetRenderTime(MgTimerUtil::GetTime());
+                pPRLResult->SetRenderTime(MgdTimerUtil::GetTime());
 
                 ProfileRenderLayerResultCollection* pPRLResultColl = pPRLsResult->GetProfileRenderLayerResults();
                 pPRLResultColl->Adopt(pPRLResult);
@@ -420,7 +420,7 @@ void MgMappingUtil::StylizeLayers(MgResourceService* svcResource,
 
             Ptr<MgLayerGroup> group = mapLayer->GetGroup();
 			
-            MgLogDetail logDetail(MgServiceType::MappingService, MgLogDetail::InternalTrace, L"MgMappingUtil.StylizeLayers", mgStackParams);
+            MgdLogDetiail logDetail(MgServiceType::MappingService, MgdLogDetiail::InternalTrace, L"MgdMappingUtil.StylizeLayers", mgStackParams);
             logDetail.AddString(L"Map",map->GetName());
 
             logDetail.AddResourceIdentifier(L"LayerId",layerid);
@@ -502,10 +502,10 @@ void MgMappingUtil::StylizeLayers(MgResourceService* svcResource,
                     #endif
 
                     //get a transform from layer coord sys to map coord sys
-                    TransformCache* item = TransformCache::GetLayerToMapTransform(transformCache, vl->GetFeatureName(), featResId, dstCs, csFactory, svcFeature);
+                    MgdTransformCache* item = MgdTransformCache::GetLayerToMapTransform(transformCache, vl->GetFeatureName(), featResId, dstCs, csFactory, svcFeature);
                     TCForProfile = item;
                     Ptr<MgCoordinateSystem> layerCs = item? item->GetCoordSys() : NULL;
-                    MgCSTrans* xformer = item? item->GetTransform() : NULL;
+                    MgdCSTrans* xformer = item? item->GetTransform() : NULL;
 
                     //extract hyperlink and tooltip info
                     if (!vl->GetToolTip().empty()) layerInfo.hastooltips() = true;
@@ -580,7 +580,7 @@ void MgMappingUtil::StylizeLayers(MgResourceService* svcResource,
             else if (gl) //############################################################################ grid layer
             {
                 // TODO: FDO RFP - Make FdoPtr's reference counter thread-safe.
-                static ACE_Recursive_Thread_Mutex sg_fdoRfpMutex;
+                static ACE_Recursive_Thread_Mutex sg_fdoRfpMgdMutex;
 
                 // make sure we have a valid scale range
                 MdfModel::GridScaleRange* scaleRange = Stylizer::FindScaleRange(*gl->GetScaleRanges(), scale);
@@ -609,15 +609,15 @@ void MgMappingUtil::StylizeLayers(MgResourceService* svcResource,
                     MdfModel::MdfString featureName = gl->GetFeatureName();
 
                     //get a transform from layer coord sys to map coord sys
-                    TransformCache* item = NULL;
+                    MgdTransformCache* item = NULL;
                     {
-                        ACE_MT(ACE_GUARD(ACE_Recursive_Thread_Mutex, ace_mon, sg_fdoRfpMutex));
-                        item = TransformCache::GetLayerToMapTransform(transformCache, gl->GetFeatureName(), featResId, dstCs, csFactory, svcFeature);
+                        ACE_MT(ACE_GUARD(ACE_Recursive_Thread_Mutex, ace_mon, sg_fdoRfpMgdMutex));
+                        item = MgdTransformCache::GetLayerToMapTransform(transformCache, gl->GetFeatureName(), featResId, dstCs, csFactory, svcFeature);
                     }
                     TCForProfile = item;
 
                     Ptr<MgCoordinateSystem> layerCs = item? item->GetCoordSys() : NULL;
-                    MgCSTrans* xformer = item? item->GetTransform() : NULL;
+                    MgdCSTrans* xformer = item? item->GetTransform() : NULL;
 
                     // Test if layer and map are using the same coordinate systems
                     if (NULL == layerCs.p || NULL == dstCs || layerCs->GetCsCode() == dstCs->GetCsCode())
@@ -705,7 +705,7 @@ void MgMappingUtil::StylizeLayers(MgResourceService* svcResource,
                     //perform the raster query
                     FdoPtr<FdoIFeatureReader> fdoReader;
                     {
-                        ACE_MT(ACE_GUARD(ACE_Recursive_Thread_Mutex, ace_mon, sg_fdoRfpMutex));
+                        ACE_MT(ACE_GUARD(ACE_Recursive_Thread_Mutex, ace_mon, sg_fdoRfpMgdMutex));
                         rsReader = ExecuteRasterQuery(svcFeature, extent, gl, overrideFilter.c_str(), dstCs, layerCs, width, height);
                         fdoReader = (NULL == rsReader) ? NULL : rsReader->GetInternalReader();
                     }
@@ -741,8 +741,8 @@ void MgMappingUtil::StylizeLayers(MgResourceService* svcResource,
                     size_t i0 = st.find(L"<CoordinateSpace>");
                     size_t i1 = st.find(L"</CoordinateSpace>");
 
-                    TransformCache* cached = NULL;
-                    MgCSTrans* xformer = NULL;
+                    MgdTransformCache* cached = NULL;
+                    MgdCSTrans* xformer = NULL;
 
                     if (i0 != STRING::npos && i1 != STRING::npos)
                     {
@@ -752,7 +752,7 @@ void MgMappingUtil::StylizeLayers(MgResourceService* svcResource,
                         if (!cs.empty() && cs != dstCs->ToString())
                         {
                             // Create coordinate system transformer
-                            TransformCacheMap::const_iterator iter = transformCache.find(cs);
+                            MgdTransformCacheMap::const_iterator iter = transformCache.find(cs);
                             if (transformCache.end() != iter) cached = (*iter).second;
                             if (NULL != cached)
                             {
@@ -763,8 +763,8 @@ void MgMappingUtil::StylizeLayers(MgResourceService* svcResource,
                                 Ptr<MgCoordinateSystem> srcCs = csFactory->Create(cs);
                                 if (srcCs.p)
                                 {
-                                    xformer = new MgCSTrans(srcCs, dstCs);
-                                    cached = new TransformCache(xformer, srcCs);
+                                    xformer = new MgdCSTrans(srcCs, dstCs);
+                                    cached = new MgdTransformCache(xformer, srcCs);
                                     transformCache[cs] = cached;
                                 }
                             }
@@ -775,7 +775,7 @@ void MgMappingUtil::StylizeLayers(MgResourceService* svcResource,
                     //get DWF from drawing service
                     Ptr<MgByteReader> reader = svcDrawing->GetSection(resId, dl->GetSheet());
 
-                    RSMgInputStream is(reader);
+                    RSMgdInputStream is(reader);
 
                     dr->StartLayer(&layerInfo, NULL);
                     ds->StylizeDrawingLayer(dl, dr, &is, xformer, scale);
@@ -795,7 +795,7 @@ void MgMappingUtil::StylizeLayers(MgResourceService* svcResource,
                 ProfileRenderLayerResult* pPRLResult = pPRLResultColl->GetAt(pPRLResultColl->GetCount()-1); //TODO: check index
                 
                 // Calculate the time spent on stylizing layer
-                double stylizeLayerTime = MgTimerUtil::GetTime() - pPRLResult->GetRenderTime();
+                double stylizeLayerTime = MgdTimerUtil::GetTime() - pPRLResult->GetRenderTime();
                 pPRLResult->SetRenderTime(stylizeLayerTime);
 
                 pPRLResult->SetResourceId(layerid->ToString());
@@ -841,7 +841,7 @@ void MgMappingUtil::StylizeLayers(MgResourceService* svcResource,
                 pPRLResult->SetFilter(filter.empty()? mapLayer->GetFilter() : filter);
             }
 
-        MG_SERVER_MAPPING_SERVICE_CATCH(L"MgMappingUtil.StylizeLayers");
+        MG_SERVER_MAPPING_SERVICE_CATCH(L"MgdMappingUtil.StylizeLayers");
 
         delete rsReader;
 
@@ -862,7 +862,7 @@ void MgMappingUtil::StylizeLayers(MgResourceService* svcResource,
             argumentsWhy.Add(mgException->GetExceptionMessage(locale));
 
             Ptr<MgdStylizeLayerFailedException> exception;
-            exception = new MgdStylizeLayerFailedException(L"MgMappingUtil.StylizeLayers", __LINE__, __WFILE__, &arguments, L"MgFormatInnerExceptionMessage", &argumentsWhy);
+            exception = new MgdStylizeLayerFailedException(L"MgdMappingUtil.StylizeLayers", __LINE__, __WFILE__, &arguments, L"MgFormatInnerExceptionMessage", &argumentsWhy);
 
             STRING message = exception->GetExceptionMessage(locale);
             STRING stackTrace = exception->GetStackTrace(locale);
@@ -892,7 +892,7 @@ void MgMappingUtil::StylizeLayers(MgResourceService* svcResource,
                 ProfileRenderLayerResult* pPRLResult = pPRLResultColl->GetAt(pPRLResultColl->GetCount()-1); //TODO: check index
                 
                 // Calculate the time spent on stylizing layer
-                double stylizeLayerTime = MgTimerUtil::GetTime() - pPRLResult->GetRenderTime();
+                double stylizeLayerTime = MgdTimerUtil::GetTime() - pPRLResult->GetRenderTime();
                 pPRLResult->SetRenderTime(stylizeLayerTime);
 
                 Ptr<MgResourceIdentifier> layerid = mapLayer->GetLayerDefinition();
@@ -909,7 +909,7 @@ void MgMappingUtil::StylizeLayers(MgResourceService* svcResource,
     ACE_DEBUG((LM_INFO, L"(%t)StylizeLayers() **MAPDONE** Layers:%d  Total Time:%6.4f (s)\n\n", layers->GetCount(), (GetTickCount()-dwStart)/1000.0));
     #endif
 
-    TransformCache::Clear(transformCache);
+    MgdTransformCache::Clear(transformCache);
 }
 
 
@@ -921,7 +921,7 @@ void MgMappingUtil::StylizeLayers(MgResourceService* svcResource,
 // most cases the additional "size" of a feature due to its stylization is
 // measured in device units.  The exception is a symbol whose size is defined
 // in mapping units.
-double MgMappingUtil::ComputeStylizationOffset(MgdMap* map,
+double MgdMappingUtil::ComputeStylizationOffset(MgdMap* map,
                                                MdfModel::VectorScaleRange* scaleRange,
                                                double scale)
 {
@@ -1150,14 +1150,14 @@ double MgMappingUtil::ComputeStylizationOffset(MgdMap* map,
     {
         double tileExtentOffset = 0.0;
         MgConfiguration* pConf = MgConfiguration::GetInstance();
-        pConf->GetDoubleValue(MgConfigProperties::RenderingServicePropertiesSection,
-                              MgConfigProperties::RenderingServicePropertyTileExtentOffset,
+        pConf->GetDoubleValue(MgdConfigProperties::RenderingServicePropertiesSection,
+                              MgdConfigProperties::RenderingServicePropertyTileExtentOffset,
                               tileExtentOffset,
-                              MgConfigProperties::DefaultRenderingServicePropertyTileExtentOffset);
+                              MgdConfigProperties::DefaultRenderingServicePropertyTileExtentOffset);
         if (tileExtentOffset < 0.0)
-            tileExtentOffset = MgConfigProperties::DefaultRenderingServicePropertyTileExtentOffset;
+            tileExtentOffset = MgdConfigProperties::DefaultRenderingServicePropertyTileExtentOffset;
 
-        INT32 maxTileDimension = rs_max(MgTileParameters::tileWidth, MgTileParameters::tileHeight);
+        INT32 maxTileDimension = rs_max(MgdTileParameters::tileWidth, MgdTileParameters::tileHeight);
         INT32 offsetPixels = (INT32)ceil(maxTileDimension * tileExtentOffset);
 
         double unitsPerPixel = metersPerPixel * scale / metersPerUnit;
@@ -1170,7 +1170,7 @@ double MgMappingUtil::ComputeStylizationOffset(MgdMap* map,
 
 ///////////////////////////////////////////////////////////////////////////////
 // draws a given feature type style into an image
-MgByteReader* MgMappingUtil::DrawFTS(MgResourceService* svcResource,
+MgByteReader* MgdMappingUtil::DrawFTS(MgResourceService* svcResource,
                                      MdfModel::FeatureTypeStyle* fts,
                                      INT32 imgWidth,
                                      INT32 imgHeight,
@@ -1185,8 +1185,8 @@ MgByteReader* MgMappingUtil::DrawFTS(MgResourceService* svcResource,
     AGGRenderer er(imgWidth, imgHeight, bgcolor, false, false, 0.0);
 
     // and also set up symbol managers for it
-    SEMgSymbolManager se_sman(svcResource);
-    RSMgSymbolManager rs_sman(svcResource);
+    SEMgdSymbolManager se_sman(svcResource);
+    RSMgdSymbolManager rs_sman(svcResource);
     er.SetSymbolManager(&rs_sman);
 
     // draw the preview
@@ -1213,7 +1213,7 @@ MgByteReader* MgMappingUtil::DrawFTS(MgResourceService* svcResource,
 
 ///////////////////////////////////////////////////////////////////////////////
 // transforms a given extent and returns the new extent in the new cs
-MgEnvelope* MgMappingUtil::TransformExtent(MgEnvelope* extent, MgCoordinateSystemTransform* xform)
+MgEnvelope* MgdMappingUtil::TransformExtent(MgEnvelope* extent, MgCoordinateSystemTransform* xform)
 {
     Ptr<MgEnvelope> xformedExt = xform->Transform(extent);
     Ptr<MgPolygon> ccPoly = GetPolygonFromEnvelope(xformedExt);
@@ -1224,7 +1224,7 @@ MgEnvelope* MgMappingUtil::TransformExtent(MgEnvelope* extent, MgCoordinateSyste
 
 ///////////////////////////////////////////////////////////////////////////////
 // returns an MgPolygon from a given envelope
-MgPolygon* MgMappingUtil::GetPolygonFromEnvelope(MgEnvelope* env)
+MgPolygon* MgdMappingUtil::GetPolygonFromEnvelope(MgEnvelope* env)
 {
     Ptr<MgCoordinate> ll = env->GetLowerLeftCoordinate();
     Ptr<MgCoordinate> ur = env->GetUpperRightCoordinate();
@@ -1244,7 +1244,7 @@ MgPolygon* MgMappingUtil::GetPolygonFromEnvelope(MgEnvelope* env)
 
 
 ///////////////////////////////////////////////////////////////////////////////
-void MgMappingUtilExceptionTrap(FdoException* except, int line, wchar_t* file)
+void MgdMappingUtilExceptionTrap(FdoException* except, int line, wchar_t* file)
 {
     MG_TRY()
 
@@ -1273,9 +1273,9 @@ void MgMappingUtilExceptionTrap(FdoException* except, int line, wchar_t* file)
 
 
 ///////////////////////////////////////////////////////////////////////////////
-void MgMappingUtil::InitializeStylizerCallback()
+void MgdMappingUtil::InitializeStylizerCallback()
 {
-    SetStylizerExceptionCallback(&MgMappingUtilExceptionTrap);
+    SetStylizerExceptionCallback(&MgdMappingUtilExceptionTrap);
 }
 
 
@@ -1285,7 +1285,7 @@ void MgMappingUtil::InitializeStylizerCallback()
 // RETURNS: A pointer to the list of colors of the collected colors (maybe
 //          empty but not null)
 ///////////////////////////////////////////////////////////////////////////////
-void MgMappingUtil::GetUsedColorsFromScaleRange(ColorStringList& usedColorList,
+void MgdMappingUtil::GetUsedColorsFromScaleRange(ColorStringList& usedColorList,
                                                 MdfModel::VectorScaleRange* scaleRange,
                                                 SE_SymbolManager* sman)
 {
@@ -1433,7 +1433,7 @@ void MgMappingUtil::GetUsedColorsFromScaleRange(ColorStringList& usedColorList,
 ///////////////////////////////////////////////////////////////////////////////
 // Extract colors from the scalerange, lookup the referenceIds, and store
 // them with the map.
-void MgMappingUtil::ExtractColors(MgdMap* map, MdfModel::VectorScaleRange* scaleRange, Stylizer* stylizer)
+void MgdMappingUtil::ExtractColors(MgdMap* map, MdfModel::VectorScaleRange* scaleRange, Stylizer* stylizer)
 {
     // add the colors from this scaleRange and vectorlayer to the map colors
     try
@@ -1456,7 +1456,7 @@ void MgMappingUtil::ExtractColors(MgdMap* map, MdfModel::VectorScaleRange* scale
 
 ///////////////////////////////////////////////////////////////////////////////
 // overloaded helper for SimpleSymbolDefinition
-inline void MgMappingUtil::FindColorInSymDefHelper(ColorStringList& colorList, MdfModel::SimpleSymbolDefinition* symdef)
+inline void MgdMappingUtil::FindColorInSymDefHelper(ColorStringList& colorList, MdfModel::SimpleSymbolDefinition* symdef)
 {
     // the visitor for the graphics
     class GraphicElementVisitorImpl : public MdfModel::IGraphicElementVisitor
@@ -1503,7 +1503,7 @@ inline void MgMappingUtil::FindColorInSymDefHelper(ColorStringList& colorList, M
 
 ///////////////////////////////////////////////////////////////////////////////
 // overloaded helper for CompoundSymbolDefinition
-inline void MgMappingUtil::FindColorInSymDefHelper(ColorStringList& colorList, MdfModel::CompoundSymbolDefinition* symdef)
+inline void MgdMappingUtil::FindColorInSymDefHelper(ColorStringList& colorList, MdfModel::CompoundSymbolDefinition* symdef)
 {
     if (symdef)
     {
@@ -1529,7 +1529,7 @@ inline void MgMappingUtil::FindColorInSymDefHelper(ColorStringList& colorList, M
 
 ///////////////////////////////////////////////////////////////////////////////
 // overloaded helper for SymbolDefinition
-inline void MgMappingUtil::FindColorInSymDefHelper(ColorStringList& colorList, MdfModel::SymbolDefinition* symdef)
+inline void MgdMappingUtil::FindColorInSymDefHelper(ColorStringList& colorList, MdfModel::SymbolDefinition* symdef)
 {
     FindColorInSymDefHelper(colorList, dynamic_cast<MdfModel::SimpleSymbolDefinition*>(symdef));
     FindColorInSymDefHelper(colorList, dynamic_cast<MdfModel::CompoundSymbolDefinition*>(symdef));
@@ -1545,7 +1545,7 @@ inline void MgMappingUtil::FindColorInSymDefHelper(ColorStringList& colorList, M
 // has a list from all color entries found in the most recent layer stylization.
 // TODO - currently they are interpreted as ffffffff 32 bit RGBA string values.
 // Adding expressions and other interpretations could be done here.
-void MgMappingUtil::ParseColorStrings (RS_ColorVector* tileColorPalette, MgdMap* map)
+void MgdMappingUtil::ParseColorStrings (RS_ColorVector* tileColorPalette, MgdMap* map)
 {
     assert(tileColorPalette);
     assert(map);

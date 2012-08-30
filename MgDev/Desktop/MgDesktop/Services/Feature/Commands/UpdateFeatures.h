@@ -23,15 +23,15 @@
 #include "System/XmlUtil.h"
 #include "Fdo.h"
 
-class MgFeatureConnection;
+class MgdFeatureConnection;
 class MgFeatureCommandCollection;
 class MgIntCollection;
 
-class MgUpdateFeaturesCommand
+class MgdUpdateFeaturesCommand
 {
 public:
-    MgUpdateFeaturesCommand();
-    ~MgUpdateFeaturesCommand();
+    MgdUpdateFeaturesCommand();
+    ~MgdUpdateFeaturesCommand();
     MgPropertyCollection* Execute(MgResourceIdentifier* resource,
                                   MgFeatureCommandCollection* commands,
                                   bool useTransaction);
@@ -61,7 +61,7 @@ private:
 
 private:
 
-    Ptr<MgFeatureConnection> m_SrvrFeatConn;
+    Ptr<MgdFeatureConnection> m_SrvrFeatConn;
     STRING m_providerName;
 };
 

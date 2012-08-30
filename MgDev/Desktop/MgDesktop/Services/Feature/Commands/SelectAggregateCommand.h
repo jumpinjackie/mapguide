@@ -15,16 +15,16 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
-#ifndef _MGSELECTAGGREGATECOMMAND_H_
-#define _MGSELECTAGGREGATECOMMAND_H_
+#ifndef _MgdSelectAggregateCommand_H_
+#define _MgdSelectAggregateCommand_H_
 
-class MgSelectAggregateCommand : public MgFeatureServiceCommand
+class MgdSelectAggregateCommand : public MgdFeatureServiceCommand
 {
-    DECLARE_CLASSNAME(MgSelectAggregateCommand)
+    DECLARE_CLASSNAME(MgdSelectAggregateCommand)
 
 public:
-    MgSelectAggregateCommand(MgResourceIdentifier* resource);
-    virtual ~MgSelectAggregateCommand();
+    MgdSelectAggregateCommand(MgResourceIdentifier* resource);
+    virtual ~MgdSelectAggregateCommand();
 
     virtual FdoIdentifierCollection* GetPropertyNames();
 
@@ -55,7 +55,7 @@ public:
     virtual bool SupportsSelectOrdering();
     virtual bool SupportsSelectDistinct();
 
-    virtual MgReader* ExecuteWithLock() { NOT_IMPLEMENTED(L"MgSelectAggregateCommand::ExecuteWithLock"); }
+    virtual MgReader* ExecuteWithLock() { NOT_IMPLEMENTED(L"MgdSelectAggregateCommand::ExecuteWithLock"); }
 
     virtual void Dispose()
     {
@@ -66,7 +66,7 @@ public:
     virtual void SetAlias(FdoString* alias);
 
 private:
-    Ptr<MgFeatureConnection> m_connection;
+    Ptr<MgdFeatureConnection> m_connection;
     STRING m_providerName;
     FdoPtr<FdoISelectAggregates> m_command;
 

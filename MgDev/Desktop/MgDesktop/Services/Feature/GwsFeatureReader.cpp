@@ -29,7 +29,7 @@
 ///<param name="byteSource">Byte  source object</param>
 ///
 MgdGwsFeatureReader::MgdGwsFeatureReader(
-    MgGwsConnectionPool* pool,
+    MgdGwsConnectionPool* pool,
     IGWSFeatureIterator* gwsFeatureIterator,
     IGWSFeatureIterator* gwsFeatureIteratorCopy,
     CREFSTRING extensionName,
@@ -112,7 +112,7 @@ MgdGwsFeatureReader::~MgdGwsFeatureReader()
 void MgdGwsFeatureReader::SetFilter(FdoFilter* filter)
 {
     // Create the join reader
-    m_joinReader = new MgJoinFeatureReader(this);
+    m_joinReader = new MgdJoinFeatureReader(this);
 
     if(NULL != filter)
     {
@@ -1084,11 +1084,11 @@ MgRaster* MgdGwsFeatureReader::GetRaster(CREFSTRING propertyName)
         FdoPtr<FdoIRaster> raster = gwsFeatureIter->GetRaster(parsedPropertyName.c_str());
         CHECKNULL((FdoIRaster*)raster, L"MgdGwsFeatureReader.GetRaster");
 
-        retVal = MgFeatureUtil::GetMgRaster(raster, parsedPropertyName);
+        retVal = MgdFeatureUtil::GetMgRaster(raster, parsedPropertyName);
         CHECKNULL((MgRaster*)retVal, L"MgdGwsFeatureReader.GetRaster");
 
         // Get the service from service manager
-        Ptr<MgFeatureService> rasterHelp = new MgRasterHelper(this);
+        Ptr<MgFeatureService> rasterHelp = new MgdRasterHelper(this);
         retVal->SetMgService(rasterHelp);
         //MgRaster demands a handle
         STRING handle;
@@ -1111,7 +1111,7 @@ MgByteReader* MgdGwsFeatureReader::GetRaster(STRING rasterPropName, INT32 xSize,
     if (!m_classDef->HasRasterProperty())
     {
         // TODO: specify which argument and message, once we have the mechanism
-        STRING message = MgFeatureUtil::GetMessage(L"MgMissingRasterProperty");
+        STRING message = MgdFeatureUtil::GetMessage(L"MgMissingRasterProperty");
         throw new MgInvalidOperationException(L"MgdFeatureReader::GetRaster", __LINE__, __WFILE__, NULL, L"", NULL);
     }
 
@@ -1127,7 +1127,7 @@ MgByteReader* MgdGwsFeatureReader::GetRaster(STRING rasterPropName, INT32 xSize,
     CHECKNULL(gwsFeatureIter, L"MgdGwsFeatureReader.GetRaster");
 
     // If this property is requested then we fetch the raster data
-    byteReader = MgFeatureUtil::GetRaster(gwsFeatureIter, parsedPropertyName, xSize, ySize);
+    byteReader = MgdFeatureUtil::GetRaster(gwsFeatureIter, parsedPropertyName, xSize, ySize);
 
     MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgdFeatureReader::GetRaster")
 
@@ -1344,7 +1344,7 @@ void MgdGwsFeatureReader::Close()
          iter != connections->end();
          iter++)
     {
-        MgFeatureConnection* conn = (*iter).second;
+        MgdFeatureConnection* conn = (*iter).second;
         conn->Close();
         //FdoPtr<FdoIConnection> fdoConn = conn->GetConnection();
         //fdoConn->Close();
@@ -1395,7 +1395,7 @@ BYTE_ARRAY_OUT MgdGwsFeatureReader::GetGeometry(CREFSTRING propertyName, INT32& 
             throw;
     }
 
-    MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgJoinFeatureReader::GetGeometry");
+    MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgdJoinFeatureReader::GetGeometry");
 
     return (BYTE_ARRAY_OUT)data;
 }
@@ -1764,8 +1764,8 @@ void MgdGwsFeatureReader::AddFeature(MgPropertyDefinitionCollection* propDefCol)
         // Get the name of property
         STRING propName = propDef->GetName();
 
-        INT16 type = MgFeatureUtil::GetMgPropertyType(propDef);
-        Ptr<MgProperty> prop = MgFeatureUtil::GetMgProperty(this, propName, type);
+        INT16 type = MgdFeatureUtil::GetMgPropertyType(propDef);
+        Ptr<MgProperty> prop = MgdFeatureUtil::GetMgProperty(this, propName, type);
         if (prop != NULL)
         {
             propCol->Add(prop);
@@ -1788,7 +1788,7 @@ MgClassDefinition* MgdGwsFeatureReader::GetMgClassDefinition(bool bSerialize)
         CHECKNULL((FdoClassDefinition*)fdoClassDefinition, L"MgdGwsFeatureReader.GetMgClassDefinition");
 
         // Convert FdoClassDefinition to MgClassDefinition
-        Ptr<MgClassDefinition> mgClassDef = MgFeatureUtil::GetMgClassDefinition(fdoClassDefinition, bSerialize);
+        Ptr<MgClassDefinition> mgClassDef = MgdFeatureUtil::GetMgClassDefinition(fdoClassDefinition, bSerialize);
         CHECKNULL((MgClassDefinition*)mgClassDef, L"MgdGwsFeatureReader.GetMgClassDefinition");
 
         // Advance the primary feature source iterator
@@ -1840,7 +1840,7 @@ MgClassDefinition* MgdGwsFeatureReader::GetMgClassDefinition(bool bSerialize)
                         FdoStringP qname = secFdoClassDefinition->GetQualifiedName();
 
                         // Convert FdoClassDefinition to MgClassDefinition
-                        Ptr<MgClassDefinition> secMgClassDef = MgFeatureUtil::GetMgClassDefinition(secFdoClassDefinition, bSerialize);
+                        Ptr<MgClassDefinition> secMgClassDef = MgdFeatureUtil::GetMgClassDefinition(secFdoClassDefinition, bSerialize);
                         CHECKNULL((MgClassDefinition*)secMgClassDef, L"MgdGwsFeatureReader.GetMgClassDefinition");
 
                         // retrieve the secondary properites and prefix them with the relation name
@@ -1887,11 +1887,11 @@ MgClassDefinition* MgdGwsFeatureReader::GetMgClassDefinition(bool bSerialize)
             mcdc->Add(mgClassDef);
             FdoPtr<FdoClassCollection> fcc;
             fcc = FdoClassCollection::Create(NULL);
-            MgFeatureUtil::GetFdoClassCollection(fcc, mcdc);
+            MgdFeatureUtil::GetFdoClassCollection(fcc, mcdc);
             int nFccCount = fcc->GetCount();
 
             // Get the FdoClassDefinition
-            FdoPtr<FdoClassDefinition> fdc = MgFeatureUtil::GetFdoClassDefinition(mgClassDef, fcc);
+            FdoPtr<FdoClassDefinition> fdc = MgdFeatureUtil::GetFdoClassDefinition(mgClassDef, fcc);
 
             // Pass the FdoClassDefinition to SerializeToXml
             if (bSerialize)
@@ -2000,7 +2000,7 @@ void MgdGwsFeatureReader::OwnsConnections()
          iter != connections->end();
          iter++)
     {
-        MgFeatureConnection* conn = (*iter).second;
+        MgdFeatureConnection* conn = (*iter).second;
         if(conn)
         {
             conn->OwnReader();

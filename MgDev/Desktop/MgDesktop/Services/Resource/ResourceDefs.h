@@ -11,7 +11,7 @@
 /// \brief
 /// Package API names
 ///
-class MG_DESKTOP_API MgPackageApiName
+class MG_DESKTOP_API MgdPackageApiName
 {
 INTERNAL_API:
     static const STRING LoadPackage;    /// value("LoadPackage")
@@ -23,7 +23,7 @@ INTERNAL_API:
 /// \brief
 /// Status codes for packages
 ///
-class MG_DESKTOP_API MgPackageStatusCode
+class MG_DESKTOP_API MgdPackageStatusCode
 {
 EXTERNAL_API:
     /// Indicates a package was successfully loaded/made.

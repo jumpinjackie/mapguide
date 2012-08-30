@@ -1,7 +1,7 @@
 #include "MgDesktop.h"
 #include "TileService.h"
 
-ACE_Recursive_Thread_Mutex MgdTileService::sm_mutex;
+ACE_Recursive_Thread_Mutex MgdTileService::sm_MgdMutex;
 bool MgdTileService::sm_initialized = false;
 MgdTileService::MapCache MgdTileService::sm_mapCache;
 bool MgdTileService::sm_renderOnly = false;
@@ -14,42 +14,42 @@ MgdTileService::MgdTileService() : MgService()
     if (!sm_initialized)
     {
         // Perform Double-Checked Locking Optimization.
-        ACE_MT(ACE_GUARD(ACE_Recursive_Thread_Mutex, ace_mon, sm_mutex));
+        ACE_MT(ACE_GUARD(ACE_Recursive_Thread_Mutex, ace_mon, sm_MgdMutex));
 
         if (!sm_initialized)
         {
             MgConfiguration* configuration = MgConfiguration::GetInstance();
 
             configuration->GetBoolValue(
-                MgConfigProperties::TileServicePropertiesSection,
-                MgConfigProperties::TileServicePropertyRenderOnly,
+                MgdConfigProperties::TileServicePropertiesSection,
+                MgdConfigProperties::TileServicePropertyRenderOnly,
                 sm_renderOnly,
-                MgConfigProperties::DefaultTileServicePropertyRenderOnly);
+                MgdConfigProperties::DefaultTileServicePropertyRenderOnly);
 
             configuration->GetIntValue(
-                MgConfigProperties::TileServicePropertiesSection,
-                MgConfigProperties::TileServicePropertyCreationCutoffTime,
+                MgdConfigProperties::TileServicePropertiesSection,
+                MgdConfigProperties::TileServicePropertyCreationCutoffTime,
                 sm_creationCutoffTime,
-                MgConfigProperties::DefaultTileServicePropertyCreationCutoffTime);
+                MgdConfigProperties::DefaultTileServicePropertyCreationCutoffTime);
 
             configuration->GetIntValue(
-                MgConfigProperties::TileServicePropertiesSection,
-                MgConfigProperties::TileServicePropertyPollingInterval,
+                MgdConfigProperties::TileServicePropertiesSection,
+                MgdConfigProperties::TileServicePropertyPollingInterval,
                 sm_pollingInterval,
-                MgConfigProperties::DefaultTileServicePropertyPollingInterval);
+                MgdConfigProperties::DefaultTileServicePropertyPollingInterval);
 
             configuration->GetIntValue(
-                MgConfigProperties::TileServicePropertiesSection,
-                MgConfigProperties::TileServicePropertyTiledMapCacheSize,
+                MgdConfigProperties::TileServicePropertiesSection,
+                MgdConfigProperties::TileServicePropertyTiledMapCacheSize,
                 sm_mapCacheSize,
-                MgConfigProperties::DefaultTileServicePropertyTiledMapCacheSize);
+                MgdConfigProperties::DefaultTileServicePropertyTiledMapCacheSize);
 
-            MgTileCache::Initialize();
+            MgdTileCache::Initialize();
             sm_initialized = true;
         }
     }
 
-    m_tileCache = new MgTileCache();
+    m_tileCache = new MgdTileCache();
 }
 
 
@@ -63,7 +63,7 @@ MgdTileService::~MgdTileService()
 ///
 bool MgdTileService::IsTileCacheEmpty() const
 {
-    ACE_MT(ACE_GUARD_RETURN(ACE_Recursive_Thread_Mutex, ace_mon, sm_mutex, false));
+    ACE_MT(ACE_GUARD_RETURN(ACE_Recursive_Thread_Mutex, ace_mon, sm_MgdMutex, false));
 
     return sm_mapCache.empty();
 }
@@ -175,13 +175,13 @@ MgByteReader* MgdTileService::GetTile(MgResourceIdentifier* mapDefinition,
         STRING mapString = mapDefinition->ToString();
         Ptr<MgdMap> map;
 
-        // Protect the serialized MgMap cache with a mutex.  Stream reading is not
-        // thread safe so we need to deserialize the map within the mutex to ensure
+        // Protect the serialized MgMap cache with a MgdMutex.  Stream reading is not
+        // thread safe so we need to deserialize the map within the MgdMutex to ensure
         // that a Rewind() is not called in the middle of a Deserialize().
         // Lockfile test and creation is in same protected scope.
         {
             // Attempt to lock the tile file.
-            ACE_MT(ACE_GUARD_RETURN(ACE_Recursive_Thread_Mutex, ace_mon, sm_mutex, NULL));
+            ACE_MT(ACE_GUARD_RETURN(ACE_Recursive_Thread_Mutex, ace_mon, sm_MgdMutex, NULL));
 
             // Bail out if the tile file has been locked for so long.
             if (DetectTileLockFile(lockPathname))
@@ -244,7 +244,7 @@ MgByteReader* MgdTileService::GetTile(MgResourceIdentifier* mapDefinition,
                 }
                 sm_mapCache[mapString] = SAFE_ADDREF((MgMemoryStreamHelper*)cachedMap);
             }
-        }   // end of mutex scope
+        }   // end of MgdMutex scope
 
         double scale = map->GetFiniteDisplayScaleAt(scaleIndex);
         map->SetViewScale(scale);
@@ -346,7 +346,7 @@ MgByteReader* MgdTileService::GetTile(MgdMap* map,
     {
         {
             // Attemp to lock the tile file.
-            ACE_MT(ACE_GUARD_RETURN(ACE_Recursive_Thread_Mutex, ace_mon, sm_mutex, NULL));
+            ACE_MT(ACE_GUARD_RETURN(ACE_Recursive_Thread_Mutex, ace_mon, sm_MgdMutex, NULL));
 
             // Bail out if the tile file has been locked for so long.
             if (DetectTileLockFile(lockPathname))
@@ -423,7 +423,7 @@ MgByteReader* MgdTileService::GetTile(CREFSTRING tilePathname, MgdMap* map, INT3
     Ptr<MgByteReader> img;
 
     // get a rendering service instance
-    Ptr<MgServiceFactory> fact = new MgServiceFactory();
+    Ptr<MgdServiceFactory> fact = new MgdServiceFactory();
     Ptr<MgdRenderingService> svcRendering = static_cast<MgdRenderingService*>(fact->CreateService(MgServiceType::RenderingService));
     assert(NULL != svcRendering);
 
@@ -488,7 +488,7 @@ void MgdTileService::SetTile(MgByteReader* img,
 
     {
         // Attemp to lock the tile file.
-        ACE_MT(ACE_GUARD(ACE_Recursive_Thread_Mutex, ace_mon, sm_mutex));
+        ACE_MT(ACE_GUARD(ACE_Recursive_Thread_Mutex, ace_mon, sm_MgdMutex));
 
         if (DetectTileLockFile(lockPathname))
         {
@@ -533,7 +533,7 @@ MgResourceService* MgdTileService::GetResourceServiceForMapDef(MgResourceIdentif
                                                                     CREFSTRING funcName)
 {
     // Get the service from service manager
-    Ptr<MgServiceFactory> fact = new MgServiceFactory();
+    Ptr<MgdServiceFactory> fact = new MgdServiceFactory();
     Ptr<MgResourceService> resourceService = static_cast<MgResourceService*>(fact->CreateService(MgServiceType::ResourceService));
     assert(NULL != resourceService);
     /*
@@ -638,7 +638,7 @@ bool MgdTileService::NotifyResourcesChanged(MgSerializableCollection* resources,
                         /*
                         else
                         {
-                            MgLogManager* logManager = MgLogManager::GetInstance();
+                            MgdLogManager* logManager = MgdLogManager::GetInstance();
                             ACE_ASSERT(NULL != logManager);
                             logManager->LogSystemErrorEntry(mgException.p);
                         }*/
@@ -662,7 +662,7 @@ void MgdTileService::SetConnectionProperties(MgConnectionProperties*)
 ///////////////////////////////////////////////////////////////////////////////
 void MgdTileService::ClearMapCache(CREFSTRING mapDefinition)
 {
-    ACE_MT(ACE_GUARD(ACE_Recursive_Thread_Mutex, ace_mon, sm_mutex));
+    ACE_MT(ACE_GUARD(ACE_Recursive_Thread_Mutex, ace_mon, sm_MgdMutex));
     MapCache::iterator iter = sm_mapCache.end();
     if (mapDefinition.empty())
     {
@@ -709,7 +709,7 @@ INT32 MgdTileService::GetDefaultTileSizeX()
     MG_LOG_OPERATION_MESSAGE_PARAMETERS_START();
     MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
     
-    ret = MgTileParameters::tileWidth;
+    ret = MgdTileParameters::tileWidth;
 
     // Successful operation
     MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Success.c_str());
@@ -743,7 +743,7 @@ INT32 MgdTileService::GetDefaultTileSizeY()
     MG_LOG_OPERATION_MESSAGE_PARAMETERS_START();
     MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
 
-    ret = MgTileParameters::tileHeight;
+    ret = MgdTileParameters::tileHeight;
 
     // Successful operation
     MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Success.c_str());

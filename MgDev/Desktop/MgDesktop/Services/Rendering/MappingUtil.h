@@ -20,8 +20,8 @@ class MgReadOnlyLayerCollection;
 class MgStringCollection;
 class MgMapBase;
 class MgCoordinateSystem;
-class RSMgFeatureReader;
-class TransformCache;
+class RSMgdFeatureReader;
+class MgdTransformCache;
 class SE_SymbolManager;
 class Stylizer;
 class Renderer;
@@ -40,7 +40,7 @@ namespace MdfModel
 }
 
 //Common stylization utility code -- used by both the mapping and rendering services
-class MgMappingUtil
+class MgdMappingUtil
 {
 public:
     static void StylizeLayers(MgResourceService* svcResource,
@@ -61,15 +61,15 @@ public:
 							  ProfileRenderLayersResultBase* = NULL,
                               CancelStylization cancel = NULL);
 
-    static RSMgFeatureReader* ExecuteFeatureQuery(MgFeatureService* svcFeature,
+    static RSMgdFeatureReader* ExecuteFeatureQuery(MgFeatureService* svcFeature,
                                                  RS_Bounds& extent,
                                                  MdfModel::VectorLayerDefinition* vl,
                                                  const wchar_t* overrideFilter,
                                                  MgCoordinateSystem* mapCs,
                                                  MgCoordinateSystem* layerCs,
-                                                 TransformCache* cache);
+                                                 MgdTransformCache* cache);
 
-    static RSMgFeatureReader* ExecuteRasterQuery(MgFeatureService* svcFeature,
+    static RSMgdFeatureReader* ExecuteRasterQuery(MgFeatureService* svcFeature,
                                                 RS_Bounds& extent,
                                                 MdfModel::GridLayerDefinition* gl,
                                                 const wchar_t* overrideFilter,

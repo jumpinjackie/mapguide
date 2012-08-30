@@ -4,14 +4,14 @@
 #include "MgDesktop.h"
 
 class FdoIDataReader;
-class MgFeatureConnection;
+class MgdFeatureConnection;
 
 /// \ingroup Desktop_Misc_Module
 /// \{
 class MG_DESKTOP_API MgdDataReader : public MgDataReader
 {
 INTERNAL_API:
-	MgdDataReader(MgFeatureConnection* conn, FdoIDataReader* reader);
+	MgdDataReader(MgdFeatureConnection* conn, FdoIDataReader* reader);
 
 EXTERNAL_API:
 	virtual ~MgdDataReader();
@@ -110,7 +110,7 @@ private:
     STRING GetRasterPropertyName();
 
 	FdoIDataReader* m_reader;
-    Ptr<MgFeatureConnection> m_connection;
+    Ptr<MgdFeatureConnection> m_connection;
 };
 /// \}
 #endif

@@ -22,22 +22,22 @@ using namespace std;
 
 #include <vector>
 /// \cond INTERNAL
-class MgDoubleDataReaderCreator : public MgDataReaderCreator<double>
+class MgdDoubleDataReaderCreator : public MgdDataReaderCreator<double>
 {
-    DECLARE_CLASSNAME(MgDoubleDataReaderCreator)
+    DECLARE_CLASSNAME(MgdDoubleDataReaderCreator)
 
 public:
-    MgDoubleDataReaderCreator()
+    MgdDoubleDataReaderCreator()
     {
     }
 
-    MgDoubleDataReaderCreator(CREFSTRING propertyAlias)
+    MgdDoubleDataReaderCreator(CREFSTRING propertyAlias)
     {
         m_propertyAlias = propertyAlias;
         m_propType = MgPropertyType::Double;
     }
 
-    ~MgDoubleDataReaderCreator()
+    ~MgdDoubleDataReaderCreator()
     {
     }
 

@@ -5,10 +5,10 @@
 #include "Services/Resource/UnmanagedDataManager.h"
 #include "CryptographyUtil.h"
 
-INT64 MgFdoConnectionUtil::sm_nConnectionsCreated = 0L;
-INT64 MgFdoConnectionUtil::sm_nConnectionsClosed = 0L;
+INT64 MgdFdoConnectionUtil::sm_nConnectionsCreated = 0L;
+INT64 MgdFdoConnectionUtil::sm_nConnectionsClosed = 0L;
 
-FdoIConnection* MgFdoConnectionUtil::CreateConnection(CREFSTRING providerName, CREFSTRING connectionString)
+FdoIConnection* MgdFdoConnectionUtil::CreateConnection(CREFSTRING providerName, CREFSTRING connectionString)
 {
     sm_nConnectionsCreated++;
 
@@ -16,12 +16,12 @@ FdoIConnection* MgFdoConnectionUtil::CreateConnection(CREFSTRING providerName, C
 
     MG_FEATURE_SERVICE_TRY()
 
-    MgLogDetail logDetail(MgServiceType::FeatureService, MgLogDetail::InternalTrace, L"MgFdoConnectionUtil::CreateConnection", mgStackParams);
+    MgdLogDetiail logDetail(MgServiceType::FeatureService, MgdLogDetiail::InternalTrace, L"MgdFdoConnectionUtil::CreateConnection", mgStackParams);
     logDetail.AddString(L"providerName", providerName);
     logDetail.AddString(L"connectionString", connectionString);
     logDetail.Create();
 
-    Ptr<MgServiceFactory> fact = new MgServiceFactory();
+    Ptr<MgdServiceFactory> fact = new MgdServiceFactory();
     Ptr<MgdResourceService> resSvc = static_cast<MgdResourceService*>(fact->CreateService(MgServiceType::ResourceService));
     FdoPtr<FdoProviderNameTokens> tokens = FdoProviderNameTokens::Create(providerName.c_str());
     FdoStringsP tokenValues = tokens->GetNameTokens();
@@ -42,12 +42,12 @@ FdoIConnection* MgFdoConnectionUtil::CreateConnection(CREFSTRING providerName, C
 	    conn->SetConnectionString(connectionString.c_str());
     }
 
-    MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgFdoConnectionUtil::CreateConnection")
+    MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgdFdoConnectionUtil::CreateConnection")
 
 	return conn.Detach();
 }
 
-FdoIConnection* MgFdoConnectionUtil::CreateConnection(MgResourceIdentifier* resource)
+FdoIConnection* MgdFdoConnectionUtil::CreateConnection(MgResourceIdentifier* resource)
 {
     sm_nConnectionsCreated++;
 
@@ -55,8 +55,8 @@ FdoIConnection* MgFdoConnectionUtil::CreateConnection(MgResourceIdentifier* reso
 
 	MG_FEATURE_SERVICE_TRY()
 
-    CHECK_FEATURE_SOURCE_ARGUMENT(resource, L"MgFdoConnectionUtil::CreateConnection");
-    Ptr<MgServiceFactory> fact = new MgServiceFactory();
+    CHECK_FEATURE_SOURCE_ARGUMENT(resource, L"MgdFdoConnectionUtil::CreateConnection");
+    Ptr<MgdServiceFactory> fact = new MgdServiceFactory();
     Ptr<MgdResourceService> resSvc = static_cast<MgdResourceService*>(fact->CreateService(MgServiceType::ResourceService));
 
 	std::string xmlContent;
@@ -125,7 +125,7 @@ FdoIConnection* MgFdoConnectionUtil::CreateConnection(MgResourceIdentifier* reso
 		dict->SetProperty(n.c_str(), v.c_str());
 	}
 
-    MgLogDetail logDetail(MgServiceType::FeatureService, MgLogDetail::InternalTrace, L"MgFdoConnectionUtil::CreateConnection", mgStackParams);
+    MgdLogDetiail logDetail(MgServiceType::FeatureService, MgdLogDetiail::InternalTrace, L"MgdFdoConnectionUtil::CreateConnection", mgStackParams);
     logDetail.AddResourceIdentifier(L"resource", resource);
     logDetail.Create();
 
@@ -143,7 +143,7 @@ FdoIConnection* MgFdoConnectionUtil::CreateConnection(MgResourceIdentifier* reso
                 strCol = new MgStringCollection();
                 strCol->Add(message);
             }
-            throw new MgdInvalidFeatureSourceException(L"MgFdoConnectionUtil::CreateConnection",
+            throw new MgdInvalidFeatureSourceException(L"MgdFdoConnectionUtil::CreateConnection",
                 __LINE__, __WFILE__, (MgStringCollection*)strCol, L"", NULL);
         }
 
@@ -162,12 +162,12 @@ FdoIConnection* MgFdoConnectionUtil::CreateConnection(MgResourceIdentifier* reso
         }
     }
 
-	MG_FEATURE_SERVICE_CATCH_AND_THROW_WITH_FEATURE_SOURCE(L"MgFdoConnectionUtil::CreateConnection", resource)
+	MG_FEATURE_SERVICE_CATCH_AND_THROW_WITH_FEATURE_SOURCE(L"MgdFdoConnectionUtil::CreateConnection", resource)
 
 	return conn.Detach();
 }
 
-void MgFdoConnectionUtil::PerformTagSubstitution(MgdResourceService* resSvc, REFSTRING str, MgResourceIdentifier* resource, CREFSTRING username, CREFSTRING password)
+void MgdFdoConnectionUtil::PerformTagSubstitution(MgdResourceService* resSvc, REFSTRING str, MgResourceIdentifier* resource, CREFSTRING username, CREFSTRING password)
 {
     const int dataTokenPos = str.find(MgResourceTag::DataFilePath);
     const int dataAliasPos = str.find(MgResourceTag::DataPathAliasBegin);
@@ -180,7 +180,7 @@ void MgFdoConnectionUtil::PerformTagSubstitution(MgdResourceService* resSvc, REF
     }
     else if (dataAliasPos != STRING::npos)
     {
-        MgUnmanagedDataManager::SubstituteDataPathAliases(str);
+        MgdUnmanagedDataManager::SubstituteDataPathAliases(str);
     }
     else if (usernamePos != STRING::npos && !username.empty())
     {
@@ -192,7 +192,7 @@ void MgFdoConnectionUtil::PerformTagSubstitution(MgdResourceService* resSvc, REF
     }
 }
 
-STRING MgFdoConnectionUtil::ParseNonQualifiedProviderName(CREFSTRING providerName)
+STRING MgdFdoConnectionUtil::ParseNonQualifiedProviderName(CREFSTRING providerName)
 {
     FdoPtr<FdoProviderNameTokens> tokens = FdoProviderNameTokens::Create(providerName.c_str());
     FdoStringsP tokenParts = tokens->GetNameTokens();
@@ -207,10 +207,10 @@ STRING MgFdoConnectionUtil::ParseNonQualifiedProviderName(CREFSTRING providerNam
     return name;
 }
 
-MdfModel::FeatureSource* MgFdoConnectionUtil::GetFeatureSource(MgResourceIdentifier* resource)
+MdfModel::FeatureSource* MgdFdoConnectionUtil::GetFeatureSource(MgResourceIdentifier* resource)
 {
-    MgFeatureServiceCache* cache = MgFeatureServiceCache::GetInstance();
-    Ptr<MgFeatureSourceCacheItem> fsCache = cache->GetFeatureSource(resource);
+    MgdFeatureServiceCache* cache = MgdFeatureServiceCache::GetInstance();
+    Ptr<MgdFeatureSourceCacheItem> fsCache = cache->GetFeatureSource(resource);
 
     MdfModel::FeatureSource* fs = NULL;
 
@@ -224,7 +224,7 @@ MdfModel::FeatureSource* MgFdoConnectionUtil::GetFeatureSource(MgResourceIdentif
     }
 
     // Get the Resource Service.
-    Ptr<MgServiceFactory> fact = new MgServiceFactory();
+    Ptr<MgdServiceFactory> fact = new MgdServiceFactory();
     Ptr<MgdResourceService> resourceService = static_cast<MgdResourceService*>(fact->CreateService(MgServiceType::ResourceService));
     ACE_ASSERT(NULL != resourceService.p);
 
@@ -247,7 +247,7 @@ MdfModel::FeatureSource* MgFdoConnectionUtil::GetFeatureSource(MgResourceIdentif
             MgStringCollection arguments;
             arguments.Add(errorMsg);
             throw new MgdInvalidFeatureSourceException(
-                L"MgFdoConnectionUtil::GetFeatureSource",
+                L"MgdFdoConnectionUtil::GetFeatureSource",
                 __LINE__, __WFILE__, &arguments, L"", NULL);
         }
     }
@@ -266,7 +266,7 @@ MdfModel::FeatureSource* MgFdoConnectionUtil::GetFeatureSource(MgResourceIdentif
         arguments.Add(message);
 
         throw new MgdInvalidFeatureSourceException(
-            L"MgFdoConnectionUtil::GetFeatureSource",
+            L"MgdFdoConnectionUtil::GetFeatureSource",
             __LINE__, __WFILE__, &arguments, L"", NULL);
     }
 
@@ -277,14 +277,14 @@ MdfModel::FeatureSource* MgFdoConnectionUtil::GetFeatureSource(MgResourceIdentif
     }
     else
     {
-        fsCache = new MgFeatureSourceCacheItem(fs);
+        fsCache = new MgdFeatureSourceCacheItem(fs);
         cache->SetFeatureSource(resource, fsCache);
     }
 
     return fs;
 }
 
-void MgFdoConnectionUtil::CloseConnection(FdoIConnection* conn)
+void MgdFdoConnectionUtil::CloseConnection(FdoIConnection* conn)
 {
     sm_nConnectionsClosed++;
     try 
@@ -302,7 +302,7 @@ void MgFdoConnectionUtil::CloseConnection(FdoIConnection* conn)
 }
 
 #ifdef DEBUG_FDO_CONNECTION_POOL
-void MgFdoConnectionUtil::CheckCallStats()
+void MgdFdoConnectionUtil::CheckCallStats()
 {
     if (sm_nConnectionsCreated > sm_nConnectionsClosed)
     {

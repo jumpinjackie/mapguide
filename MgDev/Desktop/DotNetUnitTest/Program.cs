@@ -32,7 +32,7 @@ namespace DotNetUnitTest
 
         public static void Main()
         {
-            MgPlatform.Initialize("Platform.ini");
+            MgdPlatform.Initialize("Platform.ini");
 
             var resTest = new ResourceServiceTests();
             try

@@ -131,7 +131,7 @@ STRING MgdResourceService::ResolveContentPath(MgResourceIdentifier* resId)
         path += type;
     }
 
-    MgLogDetail logDetail(MgServiceType::ResourceService, MgLogDetail::InternalTrace, L"MgdResourceService::ResolveContentPath", mgStackParams);
+    MgdLogDetiail logDetail(MgServiceType::ResourceService, MgdLogDetiail::InternalTrace, L"MgdResourceService::ResolveContentPath", mgStackParams);
     logDetail.AddResourceIdentifier(L"resId", resId);
     logDetail.AddString(L"resolvedPath", path);
     logDetail.Create();
@@ -202,7 +202,7 @@ STRING MgdResourceService::ResolveDataPath(MgResourceIdentifier* resId)
 		throw new MgInvalidArgumentException(L"MgdResourceService::ResolveDataPath", __LINE__, __WFILE__, NULL, L"", NULL);
 	}
 
-    MgLogDetail logDetail(MgServiceType::ResourceService, MgLogDetail::InternalTrace, L"MgdResourceService::ResolveDataPath", mgStackParams);
+    MgdLogDetiail logDetail(MgServiceType::ResourceService, MgdLogDetiail::InternalTrace, L"MgdResourceService::ResolveDataPath", mgStackParams);
     logDetail.AddResourceIdentifier(L"resId", resId);
     logDetail.AddString(L"repositoryType", type);
     logDetail.AddString(L"resolvedPath", cntPath);
@@ -272,11 +272,11 @@ void MgdResourceService::ApplyResourcePackage(MgByteReader* packageStream)
 void MgdResourceService::LoadResourcePackage(CREFSTRING packagePathname)
 {
     ACE_ASSERT(!packagePathname.empty());
-    auto_ptr<MgResourcePackageLoader> packageLoader;
+    auto_ptr<MgdResourcePackageLoader> packageLoader;
 
     MG_RESOURCE_SERVICE_TRY()
 
-    packageLoader.reset(new MgResourcePackageLoader(*this));
+    packageLoader.reset(new MgdResourcePackageLoader(*this));
     packageLoader->Start(packagePathname, false);
 
     MG_RESOURCE_SERVICE_CATCH(L"MgLibraryRepositoryManager.LoadResourcePackage")
@@ -452,7 +452,7 @@ void MgdResourceService::DeleteResource(MgResourceIdentifier* resource)
         ReleasePotentialLocks(resource);
 
         //Empty cached version
-        MgResourceContentCache* cache = MgResourceContentCache::GetInstance();
+        MgdResourceContentCache* cache = MgdResourceContentCache::GetInstance();
         cache->RemoveContentEntry(resource);
 
         STRING contentPath = ResolveContentPath(resource);
@@ -498,18 +498,18 @@ void MgdResourceService::ReleasePotentialLocks(MgResourceIdentifier* resource)
     if (resource->GetResourceType() == MgResourceType::FeatureSource)
     {
         //Invalidate any cached information
-        MgFeatureServiceCache* cache = MgFeatureServiceCache::GetInstance();
+        MgdFeatureServiceCache* cache = MgdFeatureServiceCache::GetInstance();
         cache->RemoveEntry(resource);
         //Boot pooled connections to ensure no locks are held
-        MgFdoConnectionPool::PurgeCachedConnections(resource);
+        MgdFdoConnectionPool::PurgeCachedConnections(resource);
     }
     else if (resource->GetResourceType() == MgResourceType::Folder)
     {
         //TODO: We obviously need a fine-grained version instead of going nuclear
-        MgFeatureServiceCache* cache = MgFeatureServiceCache::GetInstance();
+        MgdFeatureServiceCache* cache = MgdFeatureServiceCache::GetInstance();
         cache->Clear();
         //Boot pooled connections to ensure no locks are held
-        MgFdoConnectionPool::PurgeCachedConnectionsUnderFolder(resource);
+        MgdFdoConnectionPool::PurgeCachedConnectionsUnderFolder(resource);
     }
 }
 
@@ -1524,7 +1524,7 @@ MgByteReader* MgdResourceService::GetResourceContent(MgResourceIdentifier* resou
 
     //Think of the hard disks. Check we have a cached copy and return that, otherwise
     //stash the content in the cache for future calls on the same resource
-    MgResourceContentCache* cache = MgResourceContentCache::GetInstance();
+    MgdResourceContentCache* cache = MgdResourceContentCache::GetInstance();
     STRING resContent = cache->GetContentEntry(resource);
     if (resContent.empty())
     {
@@ -1726,7 +1726,7 @@ MgByteReader* MgdResourceService::EnumerateUnmanagedData(CREFSTRING path, bool r
 
     MG_LOG_TRACE_ENTRY(L"MgdResourceService::EnumerateUnmanagedData()");
 
-    byteReader = MgUnmanagedDataManager::GetInstance()->EnumerateUnmanagedData(path, recursive, type, filter);
+    byteReader = MgdUnmanagedDataManager::GetInstance()->EnumerateUnmanagedData(path, recursive, type, filter);
 
     // Successful operation
     MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Success.c_str());
@@ -1777,7 +1777,7 @@ void MgdResourceService::SetResourceCredentials(MgResourceIdentifier* resource, 
     //Invalidate any cached connections as they may use old credentials
     if (resource->GetResourceType() == MgResourceType::FeatureSource)
     {
-        MgFdoConnectionPool::PurgeCachedConnections(resource);
+        MgdFdoConnectionPool::PurgeCachedConnections(resource);
     }
 
     SetResourceData(resource, MgResourceDataName::UserCredentials, MgResourceDataType::File, br);

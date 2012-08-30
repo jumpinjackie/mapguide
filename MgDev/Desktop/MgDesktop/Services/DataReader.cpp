@@ -6,7 +6,7 @@
 #include "Services/Feature/FdoConnectionUtil.h"
 #include "Fdo.h"
 
-MgdDataReader::MgdDataReader(MgFeatureConnection* conn, FdoIDataReader* reader)
+MgdDataReader::MgdDataReader(MgdFeatureConnection* conn, FdoIDataReader* reader)
 {
 	m_reader = FDO_SAFE_ADDREF(reader);
     m_connection = SAFE_ADDREF(conn);
@@ -74,7 +74,7 @@ INT32 MgdDataReader::GetPropertyType(CREFSTRING propertyName)
                     __LINE__, __WFILE__, NULL, L"", NULL);
             }
 
-            type = MgFeatureUtil::GetMgPropertyType(dataType);
+            type = MgdFeatureUtil::GetMgPropertyType(dataType);
             break;
         }
         case FdoPropertyType_RasterProperty:
@@ -428,12 +428,12 @@ MgRaster* MgdDataReader::GetRaster(CREFSTRING propertyName)
     FdoPtr<FdoIRaster> raster = m_reader->GetRaster(propertyName.c_str());
     CHECKNULL((FdoIRaster*)raster, L"MgdDataReader::GetRaster");
 
-    retVal = MgFeatureUtil::GetMgRaster(raster, propertyName);
+    retVal = MgdFeatureUtil::GetMgRaster(raster, propertyName);
     CHECKNULL((MgRaster*)retVal, L"MgdDataReader::GetRaster");
 
     //This is a clunky way to do what is effectively calling the overloaded GetRaster(propName, xSize, ySize)
     //method, but MgRaster demands this
-    Ptr<MgFeatureService> rasterHelp = new MgRasterHelper(this);
+    Ptr<MgFeatureService> rasterHelp = new MgdRasterHelper(this);
     retVal->SetMgService(rasterHelp);
     //MgRaster demands a handle
     STRING handle;
@@ -460,11 +460,11 @@ MgByteReader* MgdDataReader::GetRaster(STRING rasterPropName, INT32 xSize, INT32
     if (rasterPropName.empty())
     {
         // TODO: specify which argument and message, once we have the mechanism
-        STRING message = MgFeatureUtil::GetMessage(L"MgMissingRasterProperty");
+        STRING message = MgdFeatureUtil::GetMessage(L"MgMissingRasterProperty");
         throw new MgInvalidOperationException(L"MgdDataReader::GetRaster",
             __LINE__, __WFILE__, NULL, L"", NULL);
     }
-    byteReader = MgFeatureUtil::GetRaster(m_reader, rasterPropName, xSize, ySize);
+    byteReader = MgdFeatureUtil::GetRaster(m_reader, rasterPropName, xSize, ySize);
 
     MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgdDataReader::GetRaster")
 
@@ -650,9 +650,9 @@ void MgdDataReader::Close()
 
     // Release the connection.
     //m_connection = NULL;
-    MgFdoConnectionPool::ReturnConnection(m_connection);
+    MgdFdoConnectionPool::ReturnConnection(m_connection);
     m_connection = NULL;
-    //MgFdoConnectionUtil::CloseConnection(fdoConnection);
+    //MgdFdoConnectionUtil::CloseConnection(fdoConnection);
 
 	MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgdDataReader::Close");
 }

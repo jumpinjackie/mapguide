@@ -25,7 +25,7 @@ namespace MapViewerTest
             {
                 var sw = new Stopwatch();
                 sw.Start();
-                MgPlatform.Initialize("Platform.ini");
+                MgdPlatform.Initialize("Platform.ini");
                 sw.Stop();
                 Trace.TraceInformation("Platform initialization took {0}ms", sw.ElapsedMilliseconds);
             }
@@ -52,7 +52,7 @@ namespace MapViewerTest
                 resId.Validate();
             }
 
-            var fact = new MgServiceFactory();
+            var fact = new MgdServiceFactory();
             var resSvc = (MgdResourceService)fact.CreateService(MgServiceType.ResourceService);
             MgdMap map = null;
 
@@ -68,7 +68,7 @@ namespace MapViewerTest
 
         static void OnAppExit(object sender, EventArgs e)
         {
-            MgPlatform.Terminate();
+            MgdPlatform.Terminate();
         }
 
         static void Application_ThreadException(object sender, System.Threading.ThreadExceptionEventArgs e)

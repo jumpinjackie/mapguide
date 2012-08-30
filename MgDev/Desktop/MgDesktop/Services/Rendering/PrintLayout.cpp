@@ -21,23 +21,23 @@
 #include "System/XmlUtil.h"
 
 // Layout element constants
-const double MgPrintLayout::LegendWidth     = 2.0;
-const double MgPrintLayout::LegendPadding   = 0.1;
-const double MgPrintLayout::HeaderHeight    = 1.0;
-const double MgPrintLayout::ScalebarHeight  = 0.75;
-const double MgPrintLayout::ScalebarPadding = 0.5;
-const double MgPrintLayout::FooterHeight    = 0.5;
-const double MgPrintLayout::GroupIndent     = 0.3;
+const double MgdPrintLayout::LegendWidth     = 2.0;
+const double MgdPrintLayout::LegendPadding   = 0.1;
+const double MgdPrintLayout::HeaderHeight    = 1.0;
+const double MgdPrintLayout::ScalebarHeight  = 0.75;
+const double MgdPrintLayout::ScalebarPadding = 0.5;
+const double MgdPrintLayout::FooterHeight    = 0.5;
+const double MgdPrintLayout::GroupIndent     = 0.3;
 
 //const double METERS_PER_INCH      = 0.0254; // meters to inches conversion
 //const double MILLIMETERS_PER_INCH = 25.4;   // millimeters to inches conversion
 
 
-MG_IMPL_DYNCREATE(MgPrintLayout)
+MG_IMPL_DYNCREATE(MgdPrintLayout)
 
-// Construct a MgPrintLayout object
+// Construct a MgdPrintLayout object
 //
-MgPrintLayout::MgPrintLayout() :
+MgdPrintLayout::MgdPrintLayout() :
     m_scaleBarUnits(MgdUnitType::Metric),
     m_dPlotScale(0),
     m_dPageWidth(0),
@@ -57,16 +57,16 @@ MgPrintLayout::MgPrintLayout() :
 }
 
 
-// Destructor for MgPrintLayout
-MgPrintLayout::~MgPrintLayout()
+// Destructor for MgdPrintLayout
+MgdPrintLayout::~MgdPrintLayout()
 {
 }
 
 
-// Initialize a new MgPrintLayout object given a resource service
+// Initialize a new MgdPrintLayout object given a resource service
 // and print layout defintion.
 //
-void MgPrintLayout::Create(MgResourceService* resourceService, MgResourceIdentifier* layoutDefinition)
+void MgdPrintLayout::Create(MgResourceService* resourceService, MgResourceIdentifier* layoutDefinition)
 {
     Ptr<MgByteReader> byteReader;
 
@@ -75,7 +75,7 @@ void MgPrintLayout::Create(MgResourceService* resourceService, MgResourceIdentif
     if (0 == resourceService || 0 == layoutDefinition)
     {
         throw new MgNullArgumentException(
-            L"MgPrintLayout.Create", __LINE__, __WFILE__, NULL, L"", NULL);
+            L"MgdPrintLayout.Create", __LINE__, __WFILE__, NULL, L"", NULL);
     }
 
     // Get the PrintLayout contents
@@ -91,13 +91,13 @@ void MgPrintLayout::Create(MgResourceService* resourceService, MgResourceIdentif
     // Get the PrintLayout properties
     GetLayoutPropertiesFromXml(&xmlUtil);
 
-    MG_CATCH_AND_THROW(L"MgPrintLayout.Create")
+    MG_CATCH_AND_THROW(L"MgdPrintLayout.Create")
 }
 
 
 // Get the plot title
 //
-STRING MgPrintLayout::GetPlotTitle()
+STRING MgdPrintLayout::GetPlotTitle()
 {
     return m_plotTitle;
 }
@@ -106,7 +106,7 @@ STRING MgPrintLayout::GetPlotTitle()
 // Set the plot title.  This overrides the default plot title
 // with a user specified title.
 //
-void MgPrintLayout::SetPlotTitle(CREFSTRING plotTitle)
+void MgdPrintLayout::SetPlotTitle(CREFSTRING plotTitle)
 {
     m_plotTitle = plotTitle;
 }
@@ -114,7 +114,7 @@ void MgPrintLayout::SetPlotTitle(CREFSTRING plotTitle)
 
 //  Get the scale to use for generating the plot with layout.
 //
-double MgPrintLayout::GetPlotScale()
+double MgdPrintLayout::GetPlotScale()
 {
     return m_dPlotScale;
 }
@@ -123,7 +123,7 @@ double MgPrintLayout::GetPlotScale()
 // Sets the map scale for the plot.  This will override the
 // current map scale with the specified scale.
 //
-void MgPrintLayout::SetPlotScale(double dMapScale)
+void MgdPrintLayout::SetPlotScale(double dMapScale)
 {
     m_dPlotScale = dMapScale;
 }
@@ -131,7 +131,7 @@ void MgPrintLayout::SetPlotScale(double dMapScale)
 
 // Get the map center for generating the plot.
 //
-MgCoordinate* MgPrintLayout::GetPlotCenter()
+MgCoordinate* MgdPrintLayout::GetPlotCenter()
 {
     return SAFE_ADDREF((MgCoordinate*)m_plotCenter);
 }
@@ -139,7 +139,7 @@ MgCoordinate* MgPrintLayout::GetPlotCenter()
 
 // Sets the map center for generating the plot.  This will override the
 // current map center with the specified map center.
-void MgPrintLayout::SetPlotCenter(MgCoordinate* center)
+void MgdPrintLayout::SetPlotCenter(MgCoordinate* center)
 {
     m_plotCenter = SAFE_ADDREF(center);
 }
@@ -147,7 +147,7 @@ void MgPrintLayout::SetPlotCenter(MgCoordinate* center)
 
 // Get the plot size.
 //
-MgdPlotSpecification* MgPrintLayout::GetPlotSize()
+MgdPlotSpecification* MgdPrintLayout::GetPlotSize()
 {
     return SAFE_ADDREF(m_plotSpec.p);
 }
@@ -156,7 +156,7 @@ MgdPlotSpecification* MgPrintLayout::GetPlotSize()
 // Set the plot size.  This will override the page size specified
 // in the PrintLayout resource.
 //
-void MgPrintLayout::SetPlotSize(MgdPlotSpecification* plotSpec)
+void MgdPrintLayout::SetPlotSize(MgdPlotSpecification* plotSpec)
 {
     m_plotSpec = SAFE_ADDREF(plotSpec);
 }
@@ -164,7 +164,7 @@ void MgPrintLayout::SetPlotSize(MgdPlotSpecification* plotSpec)
 
 // Gets the system of measurement for the scale bar.
 //
-STRING MgPrintLayout::GetScaleBarUnits()
+STRING MgdPrintLayout::GetScaleBarUnits()
 {
     return m_scaleBarUnits;
 }
@@ -172,7 +172,7 @@ STRING MgPrintLayout::GetScaleBarUnits()
 
 // Sets the system of measurement for the scale bar.
 //
-void MgPrintLayout::SetScaleBarUnits(CREFSTRING units)
+void MgdPrintLayout::SetScaleBarUnits(CREFSTRING units)
 {
     m_scaleBarUnits = units;
 }
@@ -180,22 +180,22 @@ void MgPrintLayout::SetScaleBarUnits(CREFSTRING units)
 
 // Gets the background color for the layout.
 //
-MgColor* MgPrintLayout::GetBackgroundColor()
+MgColor* MgdPrintLayout::GetBackgroundColor()
 {
     return SAFE_ADDREF((MgColor*)m_bgColor);
 }
 
 
 // Helper method to get the layout properties from the PrintLayout xml resource.
-void MgPrintLayout::GetLayoutPropertiesFromXml(MgXmlUtil* pXmlUtil)
+void MgdPrintLayout::GetLayoutPropertiesFromXml(MgXmlUtil* pXmlUtil)
 {
-    CHECKNULL(pXmlUtil, L"MgPrintLayout.GetLayoutPropertiesFromXml()");
+    CHECKNULL(pXmlUtil, L"MgdPrintLayout.GetLayoutPropertiesFromXml()");
 
     MG_TRY()
 
     // Retrieve values from the xml document
     DOMElement* root = pXmlUtil->GetRootNode();
-    CHECKNULL(root, L"MgPrintLayout.GetLayoutProperitesFromXml()");
+    CHECKNULL(root, L"MgdPrintLayout.GetLayoutProperitesFromXml()");
 
 //  DOMElement* pageProperties = pXmlUtil->GetElementNode(root, "PageProperties");
 
@@ -244,7 +244,7 @@ void MgPrintLayout::GetLayoutPropertiesFromXml(MgXmlUtil* pXmlUtil)
         {
             for (XMLSize_t i = 0; i < customLogosNodeList->getLength(); ++i)
             {
-                MgCustomLogoInfo logoInfo;
+                MgdCustomLogoInfo logoInfo;
                 wstring positionX;
                 wstring positionY;
                 wstring positionUnits;
@@ -266,7 +266,7 @@ void MgPrintLayout::GetLayoutPropertiesFromXml(MgXmlUtil* pXmlUtil)
                         && positionUnits != L"meters" && positionUnits != L"inches" && positionUnits != L"percent")
                     {
                         // invalid print layout position units
-                        throw new MgdInvalidPrintLayoutPositionUnitsException(L"MgPrintLayout.GetLayoutPropertiesFromXml", __LINE__, __WFILE__, NULL, L"", NULL);
+                        throw new MgdInvalidPrintLayoutPositionUnitsException(L"MgdPrintLayout.GetLayoutPropertiesFromXml", __LINE__, __WFILE__, NULL, L"", NULL);
                     }
                 }
                 pXmlUtil->GetElementValue(logoNode, "ResourceId", resId, false);
@@ -281,7 +281,7 @@ void MgPrintLayout::GetLayoutPropertiesFromXml(MgXmlUtil* pXmlUtil)
                         && sizeUnits != L"inches" && sizeUnits != L"meters")
                     {
                         // invalid print layout size units
-                        throw new MgdInvalidPrintLayoutSizeUnitsException(L"MgPrintLayout.GetLayoutPropertiesFromXml", __LINE__, __WFILE__, NULL, L"", NULL);
+                        throw new MgdInvalidPrintLayoutSizeUnitsException(L"MgdPrintLayout.GetLayoutPropertiesFromXml", __LINE__, __WFILE__, NULL, L"", NULL);
                     }
                 }
                 pXmlUtil->GetElementValue(logoNode, "Rotation", rotation, false);
@@ -308,7 +308,7 @@ void MgPrintLayout::GetLayoutPropertiesFromXml(MgXmlUtil* pXmlUtil)
         {
             for (XMLSize_t i = 0; i < customTextNodeList->getLength(); ++i)
             {
-                MgCustomTextInfo textInfo;
+                MgdCustomTextInfo textInfo;
                 wstring positionX;
                 wstring positionY;
                 wstring positionUnits;
@@ -328,7 +328,7 @@ void MgPrintLayout::GetLayoutPropertiesFromXml(MgXmlUtil* pXmlUtil)
                         && positionUnits != L"percent" && positionUnits != L"meters" && positionUnits != L"inches")
                     {
                         // invalid print layout position units
-                        throw new MgdInvalidPrintLayoutPositionUnitsException(L"MgPrintLayout.GetLayoutPropertiesFromXml", __LINE__, __WFILE__, NULL, L"", NULL);
+                        throw new MgdInvalidPrintLayoutPositionUnitsException(L"MgdPrintLayout.GetLayoutPropertiesFromXml", __LINE__, __WFILE__, NULL, L"", NULL);
                     }
                 }
                 DOMNode* fontNode = pXmlUtil->GetElementNode(textNode, "Font", false);
@@ -341,7 +341,7 @@ void MgPrintLayout::GetLayoutPropertiesFromXml(MgXmlUtil* pXmlUtil)
                         && fontSizeUnits != L"points" && fontSizeUnits != L"meters" && fontSizeUnits != L"inches")
                     {
                         // invalid print layout font size units
-                        throw new MgdInvalidPrintLayoutFontSizeUnitsException(L"MgPrintLayout.GetLayoutPropertiesFromXml", __LINE__, __WFILE__, NULL, L"", NULL);
+                        throw new MgdInvalidPrintLayoutFontSizeUnitsException(L"MgdPrintLayout.GetLayoutPropertiesFromXml", __LINE__, __WFILE__, NULL, L"", NULL);
                     }
                 }
                 pXmlUtil->GetElementValue(textNode, "Value", value, false);
@@ -358,7 +358,7 @@ void MgPrintLayout::GetLayoutPropertiesFromXml(MgXmlUtil* pXmlUtil)
         }
     }
 
-    // Set MgPrintLayout values
+    // Set MgdPrintLayout values
     INT32 nRed = MgUtil::StringToInt32( szRed );
     INT32 nGreen = MgUtil::StringToInt32( szGreen );
     INT32 nBlue = MgUtil::StringToInt32( szBlue );
@@ -380,13 +380,13 @@ void MgPrintLayout::GetLayoutPropertiesFromXml(MgXmlUtil* pXmlUtil)
 
     ShowCustomText() = MgUtil::StringToBoolean( szShowCustomText );
 
-    MG_CATCH_AND_THROW(L"MgPrintLayout.GetLayoutPropertiesFromXml")
+    MG_CATCH_AND_THROW(L"MgdPrintLayout.GetLayoutPropertiesFromXml")
 }
 
 
 // Serialize data to a stream
 //
-void MgPrintLayout::Serialize(MgStream* stream)
+void MgdPrintLayout::Serialize(MgStream* stream)
 {
     stream->WriteString(m_plotTitle);
     stream->WriteObject(m_plotSpec);
@@ -408,10 +408,10 @@ void MgPrintLayout::Serialize(MgStream* stream)
     stream->WriteInt32(customLogosCount);
     if (customLogosCount > 0)
     {
-        for (MgCustomLogoInfoVector::iterator iter = m_logos.begin();
+        for (MgdCustomLogoInfoVector::iterator iter = m_logos.begin();
             iter != m_logos.end(); ++iter)
         {
-            MgCustomLogoInfo logoInfo = (MgCustomLogoInfo)(*iter);
+            MgdCustomLogoInfo logoInfo = (MgdCustomLogoInfo)(*iter);
 
             stream->WriteDouble(logoInfo.GetX());
             stream->WriteDouble(logoInfo.GetY());
@@ -429,10 +429,10 @@ void MgPrintLayout::Serialize(MgStream* stream)
     stream->WriteInt32(customTextCount);
     if (customTextCount > 0)
     {
-        for (MgCustomTextInfoVector::iterator iter = m_text.begin();
+        for (MgdCustomTextInfoVector::iterator iter = m_text.begin();
             iter != m_text.end(); ++iter)
         {
-            MgCustomTextInfo textInfo = (MgCustomTextInfo)(*iter);
+            MgdCustomTextInfo textInfo = (MgdCustomTextInfo)(*iter);
 
             stream->WriteDouble(textInfo.GetX());
             stream->WriteDouble(textInfo.GetY());
@@ -448,7 +448,7 @@ void MgPrintLayout::Serialize(MgStream* stream)
 
 // Deserialize data from a stream
 //
-void MgPrintLayout::Deserialize(MgStream* stream)
+void MgdPrintLayout::Deserialize(MgStream* stream)
 {
     MgStreamReader* streamReader = (MgStreamReader*)stream;
 
@@ -494,7 +494,7 @@ void MgPrintLayout::Deserialize(MgStream* stream)
         STRING name;
         streamReader->GetString(name);
 
-        MgCustomLogoInfo customLogo;
+        MgdCustomLogoInfo customLogo;
         customLogo.SetX(xCoord);
         customLogo.SetY(yCoord);
         customLogo.SetPositionUnits(positionUnits);
@@ -527,7 +527,7 @@ void MgPrintLayout::Deserialize(MgStream* stream)
         STRING value;
         streamReader->GetString(value);
 
-        MgCustomTextInfo customText;
+        MgdCustomTextInfo customText;
         customText.SetX(xCoord);
         customText.SetY(yCoord);
         customText.SetPositionUnits(positionUnits);
@@ -543,7 +543,7 @@ void MgPrintLayout::Deserialize(MgStream* stream)
 
 // Compute the offset and size for the available map area on the page
 //
-void MgPrintLayout::ComputeMapOffsetAndSize(double mapScale, MgEnvelope* mapBounds, double metersPerUnit,
+void MgdPrintLayout::ComputeMapOffsetAndSize(double mapScale, MgEnvelope* mapBounds, double metersPerUnit,
                                             double& mapOffsetX, double& mapOffsetY, double& mapWidth, double& mapHeight, bool expandToFit)
 {
     double convertUnits = 1.0;
@@ -565,20 +565,20 @@ void MgPrintLayout::ComputeMapOffsetAndSize(double mapScale, MgEnvelope* mapBoun
 
         if (m_bShowLegend)
         {
-            mapWidth -= (MgPrintLayout::LegendWidth + MgPrintLayout::LegendPadding)*convertUnits;
-            mapOffsetX += (MgPrintLayout::LegendWidth + MgPrintLayout::LegendPadding)*convertUnits;
+            mapWidth -= (MgdPrintLayout::LegendWidth + MgdPrintLayout::LegendPadding)*convertUnits;
+            mapOffsetX += (MgdPrintLayout::LegendWidth + MgdPrintLayout::LegendPadding)*convertUnits;
         }
         if (m_bShowTitle)
         {
-            mapHeight -= MgPrintLayout::HeaderHeight*convertUnits;
+            mapHeight -= MgdPrintLayout::HeaderHeight*convertUnits;
         }
         if (m_bShowScalebar || m_bShowNorthArrow)
         {
-            mapHeight -= (MgPrintLayout::ScalebarHeight + MgPrintLayout::ScalebarPadding)*convertUnits;
+            mapHeight -= (MgdPrintLayout::ScalebarHeight + MgdPrintLayout::ScalebarPadding)*convertUnits;
         }
         if (m_bShowUrl || m_bShowDateTime)
         {
-            mapHeight -= MgPrintLayout::FooterHeight*convertUnits;
+            mapHeight -= MgdPrintLayout::FooterHeight*convertUnits;
         }
     }
 
@@ -594,20 +594,20 @@ void MgPrintLayout::ComputeMapOffsetAndSize(double mapScale, MgEnvelope* mapBoun
 
             if (m_bShowLegend)
             {
-                mapWidth -= (MgPrintLayout::LegendWidth + MgPrintLayout::LegendPadding)*convertUnits;
-                mapOffsetX += (MgPrintLayout::LegendWidth + MgPrintLayout::LegendPadding)*convertUnits;
+                mapWidth -= (MgdPrintLayout::LegendWidth + MgdPrintLayout::LegendPadding)*convertUnits;
+                mapOffsetX += (MgdPrintLayout::LegendWidth + MgdPrintLayout::LegendPadding)*convertUnits;
             }
             if (m_bShowTitle)
             {
-                mapHeight -= MgPrintLayout::HeaderHeight;
+                mapHeight -= MgdPrintLayout::HeaderHeight;
             }
             if (m_bShowScalebar || m_bShowNorthArrow)
             {
-                mapHeight -= MgPrintLayout::ScalebarHeight;
+                mapHeight -= MgdPrintLayout::ScalebarHeight;
             }
             if (m_bShowUrl || m_bShowDateTime)
             {
-                mapHeight -= MgPrintLayout::FooterHeight;
+                mapHeight -= MgdPrintLayout::FooterHeight;
             }
         }
         else
@@ -630,15 +630,15 @@ void MgPrintLayout::ComputeMapOffsetAndSize(double mapScale, MgEnvelope* mapBoun
             // Determine the offset in X direction such that the map is centered horizontally
             if (m_bShowLegend)
             {
-                if (mapWidth > (m_dPageWidth - mapOffsetX - m_plotSpec->GetMarginRight() - (MgPrintLayout::LegendWidth + MgPrintLayout::LegendPadding)*convertUnits))
+                if (mapWidth > (m_dPageWidth - mapOffsetX - m_plotSpec->GetMarginRight() - (MgdPrintLayout::LegendWidth + MgdPrintLayout::LegendPadding)*convertUnits))
                 {
-                    mapWidth = m_dPageWidth - mapOffsetX - m_plotSpec->GetMarginRight() - (MgPrintLayout::LegendWidth + MgPrintLayout::LegendPadding)*convertUnits;
-                    mapOffsetX += (MgPrintLayout::LegendWidth + MgPrintLayout::LegendPadding)*convertUnits;
+                    mapWidth = m_dPageWidth - mapOffsetX - m_plotSpec->GetMarginRight() - (MgdPrintLayout::LegendWidth + MgdPrintLayout::LegendPadding)*convertUnits;
+                    mapOffsetX += (MgdPrintLayout::LegendWidth + MgdPrintLayout::LegendPadding)*convertUnits;
                 }
                 else
                 {
                     mapOffsetX += (m_dPageWidth - m_plotSpec->GetMarginLeft() - m_plotSpec->GetMarginRight()
-                        - mapWidth + (MgPrintLayout::LegendWidth + MgPrintLayout::LegendPadding)*convertUnits) * 0.5;
+                        - mapWidth + (MgdPrintLayout::LegendWidth + MgdPrintLayout::LegendPadding)*convertUnits) * 0.5;
                 }
             }
             else
@@ -657,15 +657,15 @@ void MgPrintLayout::ComputeMapOffsetAndSize(double mapScale, MgEnvelope* mapBoun
             double dMapHeightAdjustment = -(m_plotSpec->GetMarginTop() + m_plotSpec->GetMarginBottom());
             if (m_bShowTitle)
             {
-                dMapHeightAdjustment -= MgPrintLayout::HeaderHeight*convertUnits;
+                dMapHeightAdjustment -= MgdPrintLayout::HeaderHeight*convertUnits;
             }
             if (m_bShowScalebar || m_bShowNorthArrow)
             {
-                dMapHeightAdjustment -= MgPrintLayout::ScalebarHeight*convertUnits;
+                dMapHeightAdjustment -= MgdPrintLayout::ScalebarHeight*convertUnits;
             }
             if (m_bShowUrl || m_bShowDateTime)
             {
-                dMapHeightAdjustment -= MgPrintLayout::FooterHeight*convertUnits;
+                dMapHeightAdjustment -= MgdPrintLayout::FooterHeight*convertUnits;
             }
 
             if (mapHeight > m_dPageHeight + dMapHeightAdjustment)
@@ -678,7 +678,7 @@ void MgPrintLayout::ComputeMapOffsetAndSize(double mapScale, MgEnvelope* mapBoun
     //finally center map vertically using updated map height
     if (m_bShowTitle)
     {
-        mapOffsetY = (m_dPageHeight - MgPrintLayout::HeaderHeight*convertUnits - mapHeight) * 0.5;
+        mapOffsetY = (m_dPageHeight - MgdPrintLayout::HeaderHeight*convertUnits - mapHeight) * 0.5;
     }
     if (m_bShowScalebar || m_bShowNorthArrow || m_bShowUrl || m_bShowDateTime)
     {
@@ -690,7 +690,7 @@ void MgPrintLayout::ComputeMapOffsetAndSize(double mapScale, MgEnvelope* mapBoun
 // Determine the map extents which will make maximum use of available page space.
 // The extents will be based on the map center and scale, and the size of available map area.
 //
-MgEnvelope* MgPrintLayout::DetermineLayoutMapExtents(MgdMap* map, double metersPerUnit, double mapWidth, double mapHeight)
+MgEnvelope* MgdPrintLayout::DetermineLayoutMapExtents(MgdMap* map, double metersPerUnit, double mapWidth, double mapHeight)
 {
     // Compute the aspect ratio of the available map area
     double pageAR = mapWidth / mapHeight;

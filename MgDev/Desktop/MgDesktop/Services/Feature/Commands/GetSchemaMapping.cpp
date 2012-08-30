@@ -19,39 +19,39 @@
 #include "GetSchemaMapping.h"
 #include "Services/Resource/UnmanagedDataManager.h"
 
-MgGetSchemaMapping::MgGetSchemaMapping() :
+MgdGetSchemaMapping::MgdGetSchemaMapping() :
     m_bytes(NULL)
 {
 }
 
-MgGetSchemaMapping::~MgGetSchemaMapping()
+MgdGetSchemaMapping::~MgdGetSchemaMapping()
 {
     delete [] m_bytes;
     m_bytes = NULL;
 }
 
 
-MgByteReader* MgGetSchemaMapping::GetSchemaMapping(CREFSTRING providerName, CREFSTRING partialConnString)
+MgByteReader* MgdGetSchemaMapping::GetSchemaMapping(CREFSTRING providerName, CREFSTRING partialConnString)
 {
     Ptr<MgByteReader> byteReader;
 
     MG_FEATURE_SERVICE_TRY()
 
     STRING data = partialConnString;
-    MgUnmanagedDataManager::SubstituteDataPathAliases(data);
+    MgdUnmanagedDataManager::SubstituteDataPathAliases(data);
 
     // Connect to the provider
-    Ptr<MgFeatureConnection> msfc = new MgFeatureConnection(providerName, data);
+    Ptr<MgdFeatureConnection> msfc = new MgdFeatureConnection(providerName, data);
     if ((NULL != msfc.p) && (( msfc->IsConnectionOpen() ) || ( msfc->IsConnectionPending() )))
     {
-        // The reference to the FDO connection from the MgFeatureConnection object must be cleaned up before the parent object
+        // The reference to the FDO connection from the MgdFeatureConnection object must be cleaned up before the parent object
         // otherwise it leaves the FDO connection marked as still in use.
         FdoPtr<FdoIConnection> fdoConnection;
         fdoConnection = msfc->GetConnection();
 
         // Create the memory stream
         FdoIoMemoryStreamP fmis = FdoIoMemoryStream::Create();
-        CHECKNULL((FdoIoMemoryStream*)fmis, L"MgGetSchemaMapping.GetSchemaMapping");
+        CHECKNULL((FdoIoMemoryStream*)fmis, L"MgdGetSchemaMapping.GetSchemaMapping");
 
         FdoXmlWriterP writer = FdoXmlWriter::Create(fmis);
 
@@ -69,26 +69,26 @@ MgByteReader* MgGetSchemaMapping::GetSchemaMapping(CREFSTRING providerName, CREF
 
         // Get the schema
         FdoPtr<FdoIDescribeSchema> fdoDescribeSchemaCommand = (FdoIDescribeSchema*)fdoConnection->CreateCommand(FdoCommandType_DescribeSchema);
-        CHECKNULL((FdoIDescribeSchema*)fdoDescribeSchemaCommand, L"MgGetSchemaMapping.GetSchemaMapping");
+        CHECKNULL((FdoIDescribeSchema*)fdoDescribeSchemaCommand, L"MgdGetSchemaMapping.GetSchemaMapping");
 
         // Execute the command
         FdoPtr<FdoFeatureSchemaCollection> fdoFeatureSchemaCollection;
         fdoFeatureSchemaCollection = fdoDescribeSchemaCommand->Execute();
-        CHECKNULL((FdoFeatureSchemaCollection*)fdoFeatureSchemaCollection, L"MgGetSchemaMapping.GetSchemaMapping");
+        CHECKNULL((FdoFeatureSchemaCollection*)fdoFeatureSchemaCollection, L"MgdGetSchemaMapping.GetSchemaMapping");
 
         // Write to memory stream
         fdoFeatureSchemaCollection->WriteXml(writer);
 
         // Get the schema mapping
         FdoPtr<FdoIDescribeSchemaMapping> fdoDescribeSchemaMappingCommand = (FdoIDescribeSchemaMapping*)fdoConnection->CreateCommand(FdoCommandType_DescribeSchemaMapping);
-        CHECKNULL((FdoIDescribeSchemaMapping*)fdoDescribeSchemaMappingCommand, L"MgGetSchemaMapping.GetSchemaMapping");
+        CHECKNULL((FdoIDescribeSchemaMapping*)fdoDescribeSchemaMappingCommand, L"MgdGetSchemaMapping.GetSchemaMapping");
 
         fdoDescribeSchemaMappingCommand->SetIncludeDefaults(true);
 
         // Execute the command
         FdoPtr<FdoPhysicalSchemaMappingCollection> fdoPhysicalSchemaMappingCollection;
         fdoPhysicalSchemaMappingCollection = fdoDescribeSchemaMappingCommand->Execute();
-        CHECKNULL((FdoPhysicalSchemaMappingCollection*)fdoPhysicalSchemaMappingCollection, L"MgGetSchemaMapping.GetSchemaMapping");
+        CHECKNULL((FdoPhysicalSchemaMappingCollection*)fdoPhysicalSchemaMappingCollection, L"MgdGetSchemaMapping.GetSchemaMapping");
 
         // Write to memory stream
         fdoPhysicalSchemaMappingCollection->WriteXml(writer);
@@ -100,7 +100,7 @@ MgByteReader* MgGetSchemaMapping::GetSchemaMapping(CREFSTRING providerName, CREF
 
         FdoInt64 len = fmis->GetLength();
         m_bytes = new FdoByte[(size_t)len];
-        CHECKNULL(m_bytes, L"MgGetSchemaMapping.GetSchemaMapping");
+        CHECKNULL(m_bytes, L"MgdGetSchemaMapping.GetSchemaMapping");
 
         fmis->Read(m_bytes, (FdoSize)len);
 
@@ -110,10 +110,10 @@ MgByteReader* MgGetSchemaMapping::GetSchemaMapping(CREFSTRING providerName, CREF
     }
     else
     {
-        throw new MgdConnectionFailedException(L"MgGetSchemaMapping::GetSchemaMapping()", __LINE__, __WFILE__, NULL, L"", NULL);
+        throw new MgdConnectionFailedException(L"MgdGetSchemaMapping::GetSchemaMapping()", __LINE__, __WFILE__, NULL, L"", NULL);
     }
 
-    MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgGetSchemaMapping.GetSchemaMapping")
+    MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgdGetSchemaMapping.GetSchemaMapping")
 
     return byteReader.Detach();
 }

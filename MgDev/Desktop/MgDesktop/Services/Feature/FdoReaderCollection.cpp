@@ -18,7 +18,7 @@
 #include "stdafx.h"
 #include "FdoReaderCollection.h"
 
-/*FDO_API*/ MgFdoReaderCollection* MgFdoReaderCollection::Create()
+/*FDO_API*/ MgdFdoReaderCollection* MgdFdoReaderCollection::Create()
 {
-    return new MgFdoReaderCollection();
+    return new MgdFdoReaderCollection();
 }

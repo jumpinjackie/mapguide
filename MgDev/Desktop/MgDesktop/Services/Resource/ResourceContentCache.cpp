@@ -1,36 +1,36 @@
 #include "MgDesktop.h"
 #include "ResourceContentCache.h"
 
-Ptr<MgResourceContentCache> MgResourceContentCache::smInstance = (MgResourceContentCache*)NULL;
+Ptr<MgdResourceContentCache> MgdResourceContentCache::smInstance = (MgdResourceContentCache*)NULL;
 
-MgResourceContentCache::MgResourceContentCache() { }
+MgdResourceContentCache::MgdResourceContentCache() { }
 
-MgResourceContentCache::~MgResourceContentCache()
+MgdResourceContentCache::~MgdResourceContentCache()
 {
-    ACE_DEBUG((LM_DEBUG, ACE_TEXT("(%t) MgResourceContentCache::~MgResourceContentCache()\n")));
+    ACE_DEBUG((LM_DEBUG, ACE_TEXT("(%t) MgdResourceContentCache::~MgdResourceContentCache()\n")));
 }
 
-MgResourceContentCache* MgResourceContentCache::GetInstance()
+MgdResourceContentCache* MgdResourceContentCache::GetInstance()
 {
-    if (NULL == MgResourceContentCache::smInstance)
+    if (NULL == MgdResourceContentCache::smInstance)
     {
         // Perform Double-Checked Locking Optimization.
         ACE_MT (ACE_GUARD_RETURN (ACE_Recursive_Thread_Mutex, ace_mon, *ACE_Static_Object_Lock::instance (), 0));
-        if (NULL == MgResourceContentCache::smInstance)
+        if (NULL == MgdResourceContentCache::smInstance)
         {
-            MgResourceContentCache::smInstance = new MgResourceContentCache();
+            MgdResourceContentCache::smInstance = new MgdResourceContentCache();
         }
     }
     return smInstance;
 }
 
-STRING MgResourceContentCache::GetContentEntry(MgResourceIdentifier* resource)
+STRING MgdResourceContentCache::GetContentEntry(MgResourceIdentifier* resource)
 {
-    CHECKARGUMENTNULL(resource, L"MgResourceContentCache::PutContentEntry");
+    CHECKARGUMENTNULL(resource, L"MgdResourceContentCache::PutContentEntry");
     STRING resId = resource->ToString();
 
-    ACE_MT(ACE_GUARD_RETURN(ACE_Recursive_Thread_Mutex, ace_mon, m_mutex, L""));
-    MgResourceContentCacheEntries::iterator i = m_resourceContentCacheEntries.find(resId);
+    ACE_MT(ACE_GUARD_RETURN(ACE_Recursive_Thread_Mutex, ace_mon, m_MgdMutex, L""));
+    MgdResourceContentCacheEntries::iterator i = m_resourceContentCacheEntries.find(resId);
 
     STRING ret;
     if (m_resourceContentCacheEntries.end() != i)
@@ -40,13 +40,13 @@ STRING MgResourceContentCache::GetContentEntry(MgResourceIdentifier* resource)
     return ret;
 }
 
-void MgResourceContentCache::RemoveContentEntry(MgResourceIdentifier* resource)
+void MgdResourceContentCache::RemoveContentEntry(MgResourceIdentifier* resource)
 {
-    CHECKARGUMENTNULL(resource, L"MgResourceContentCache::PutContentEntry");
+    CHECKARGUMENTNULL(resource, L"MgdResourceContentCache::PutContentEntry");
     STRING resId = resource->ToString();
 
-    ACE_MT(ACE_GUARD(ACE_Recursive_Thread_Mutex, ace_mon, m_mutex));
-    MgResourceContentCacheEntries::iterator i = m_resourceContentCacheEntries.find(resId);
+    ACE_MT(ACE_GUARD(ACE_Recursive_Thread_Mutex, ace_mon, m_MgdMutex));
+    MgdResourceContentCacheEntries::iterator i = m_resourceContentCacheEntries.find(resId);
 
     if (m_resourceContentCacheEntries.end() != i)
     {
@@ -54,16 +54,16 @@ void MgResourceContentCache::RemoveContentEntry(MgResourceIdentifier* resource)
     }
 }
 
-void MgResourceContentCache::PutContentEntry(MgResourceIdentifier* resource, CREFSTRING content)
+void MgdResourceContentCache::PutContentEntry(MgResourceIdentifier* resource, CREFSTRING content)
 {
-    CHECKARGUMENTNULL(resource, L"MgResourceContentCache::PutContentEntry");
+    CHECKARGUMENTNULL(resource, L"MgdResourceContentCache::PutContentEntry");
     if (content.empty())
     {
-        throw new MgInvalidArgumentException(L"MgResourceContentCache::PutContentEntry", __LINE__, __WFILE__, NULL, L"", NULL);
+        throw new MgInvalidArgumentException(L"MgdResourceContentCache::PutContentEntry", __LINE__, __WFILE__, NULL, L"", NULL);
     }
     STRING resId = resource->ToString();
-    //ACE_DEBUG((LM_DEBUG, ACE_TEXT("(%t) MgResourceContentCache::PutContentEntry - %W\n"), resId.c_str()));
+    //ACE_DEBUG((LM_DEBUG, ACE_TEXT("(%t) MgdResourceContentCache::PutContentEntry - %W\n"), resId.c_str()));
     
-    ACE_MT(ACE_GUARD(ACE_Recursive_Thread_Mutex, ace_mon, m_mutex));
+    ACE_MT(ACE_GUARD(ACE_Recursive_Thread_Mutex, ace_mon, m_MgdMutex));
     m_resourceContentCacheEntries[resId] = content;
 }

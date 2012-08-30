@@ -18,21 +18,21 @@
 #include "Services/Feature/FeatureDefs.h"
 #include "EnumerateDataStores.h"
 
-MgEnumerateDataStores::MgEnumerateDataStores()
+MgdEnumerateDataStores::MgdEnumerateDataStores()
 {
     // This XML follows the DataStoreList-1.0.0.xsd schema
     m_xmlUtil = new MgXmlUtil("DataStoreList" /* NOXLATE */);
-    CHECKNULL(m_xmlUtil, L"MgEnumerateDataStores.EnumerateDataStores()");
+    CHECKNULL(m_xmlUtil, L"MgdEnumerateDataStores.EnumerateDataStores()");
 }
 
-MgEnumerateDataStores::~MgEnumerateDataStores()
+MgdEnumerateDataStores::~MgdEnumerateDataStores()
 {
     delete m_xmlUtil;
     m_xmlUtil = NULL;
 }
 
 
-MgByteReader* MgEnumerateDataStores::EnumerateDataStores(CREFSTRING providerName, CREFSTRING partialConnString)
+MgByteReader* MgdEnumerateDataStores::EnumerateDataStores(CREFSTRING providerName, CREFSTRING partialConnString)
 {
     Ptr<MgByteReader> byteReader;
 
@@ -41,22 +41,22 @@ MgByteReader* MgEnumerateDataStores::EnumerateDataStores(CREFSTRING providerName
     // Connect to the provider
     FdoPtr<FdoIDataStoreReader> fdoDataStoreReader;
 
-    Ptr<MgFeatureConnection> msfc = new MgFeatureConnection(providerName, partialConnString);
+    Ptr<MgdFeatureConnection> msfc = new MgdFeatureConnection(providerName, partialConnString);
     if ((NULL != msfc.p) && (( msfc->IsConnectionOpen() ) || ( msfc->IsConnectionPending() )))
     {
-        // The reference to the FDO connection from the MgFeatureConnection object must be cleaned up before the parent object
+        // The reference to the FDO connection from the MgdFeatureConnection object must be cleaned up before the parent object
         // otherwise it leaves the FDO connection marked as still in use.
         FdoPtr<FdoIConnection> fdoConnection;
         fdoConnection = msfc->GetConnection();
 
         FdoPtr<FdoIListDataStores> fdoCommand = (FdoIListDataStores*)fdoConnection->CreateCommand(FdoCommandType_ListDataStores);
-        CHECKNULL((FdoIListDataStores*)fdoCommand, L"MgEnumerateDataStores.EnumerateDataStores");
+        CHECKNULL((FdoIListDataStores*)fdoCommand, L"MgdEnumerateDataStores.EnumerateDataStores");
 
         fdoCommand->SetIncludeNonFdoEnabledDatastores(true);
 
         // Execute the command
         fdoDataStoreReader = fdoCommand->Execute();
-        CHECKNULL((FdoIDataStoreReader*)fdoDataStoreReader, L"MgEnumerateDataStores.EnumerateDataStores");
+        CHECKNULL((FdoIDataStoreReader*)fdoDataStoreReader, L"MgdEnumerateDataStores.EnumerateDataStores");
 
         // Add Feature Provider element
         DOMElement* rootElem = m_xmlUtil->GetRootNode();
@@ -86,10 +86,10 @@ MgByteReader* MgEnumerateDataStores::EnumerateDataStores(CREFSTRING providerName
     }
     else
     {
-        throw new MgdConnectionFailedException(L"MgEnumerateDataStores::EnumerateDataStores()", __LINE__, __WFILE__, NULL, L"", NULL);
+        throw new MgdConnectionFailedException(L"MgdEnumerateDataStores::EnumerateDataStores()", __LINE__, __WFILE__, NULL, L"", NULL);
     }
 
-    MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgEnumerateDataStores.EnumerateDataStores")
+    MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgdEnumerateDataStores.EnumerateDataStores")
 
     return byteReader.Detach();
 }

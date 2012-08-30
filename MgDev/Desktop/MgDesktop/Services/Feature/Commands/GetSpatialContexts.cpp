@@ -22,18 +22,18 @@
 #include "Services/Feature/FeatureServiceCache.h"
 #include "GeometryCommon.h"
 
-MgGetSpatialContexts::MgGetSpatialContexts()
+MgdGetSpatialContexts::MgdGetSpatialContexts()
 {
-    m_featureServiceCache = MgFeatureServiceCache::GetInstance();
+    m_featureServiceCache = MgdFeatureServiceCache::GetInstance();
 }
 
-MgGetSpatialContexts::~MgGetSpatialContexts()
+MgdGetSpatialContexts::~MgdGetSpatialContexts()
 {
 }
 
 // Executes the GetSpatialContext command and creates a reader
 
-MgSpatialContextReader* MgGetSpatialContexts::GetSpatialContexts(MgResourceIdentifier* resId)
+MgSpatialContextReader* MgdGetSpatialContexts::GetSpatialContexts(MgResourceIdentifier* resId)
 {
     Ptr<MgSpatialContextReader> mgSpatialContextReader;
 
@@ -44,33 +44,33 @@ MgSpatialContextReader* MgGetSpatialContexts::GetSpatialContexts(MgResourceIdent
     if (NULL == mgSpatialContextReader.p)
     {
         // Connect to provider
-        Ptr<MgFeatureConnection> msfc = new MgFeatureConnection(resId);
+        Ptr<MgdFeatureConnection> msfc = new MgdFeatureConnection(resId);
 
         // Connection must be open to retrieve a list of available contexts.
         if ((NULL != msfc.p) && ( msfc->IsConnectionOpen() ))
         {
-            // The reference to the FDO connection from the MgFeatureConnection object must be cleaned up before the parent object
+            // The reference to the FDO connection from the MgdFeatureConnection object must be cleaned up before the parent object
             // otherwise it leaves the FDO connection marked as still in use.
             FdoPtr<FdoIConnection> fdoConn = msfc->GetConnection();
             m_providerName = msfc->GetProviderName();
 
-            Ptr<MgSpatialContextCacheItem> cacheItem = m_featureServiceCache->GetSpatialContextInfo(resId);
+            Ptr<MgdSpatialContextCacheItem> cacheItem = m_featureServiceCache->GetSpatialContextInfo(resId);
             MgSpatialContextInfo* spatialContextInfo = cacheItem->Get();
 
             // Check whether command is supported by provider
             if (!msfc->SupportsCommand((INT32)FdoCommandType_GetSpatialContexts))
             {
                 // TODO: specify which argument and message, once we have the mechanism
-                STRING message = MgFeatureUtil::GetMessage(L"MgCommandNotSupported");
-                throw new MgInvalidOperationException(L"MgGetSpatialContexts.GetSpatialContexts", __LINE__, __WFILE__, NULL, L"", NULL);
+                STRING message = MgdFeatureUtil::GetMessage(L"MgCommandNotSupported");
+                throw new MgInvalidOperationException(L"MgdGetSpatialContexts.GetSpatialContexts", __LINE__, __WFILE__, NULL, L"", NULL);
             }
 
             FdoPtr<FdoIGetSpatialContexts> fdoCommand = (FdoIGetSpatialContexts*)fdoConn->CreateCommand(FdoCommandType_GetSpatialContexts);
-            CHECKNULL((FdoIGetSpatialContexts*)fdoCommand, L"MgGetSpatialContexts.GetSpatialContexts");
+            CHECKNULL((FdoIGetSpatialContexts*)fdoCommand, L"MgdGetSpatialContexts.GetSpatialContexts");
 
             // Execute the command
             FdoPtr<FdoISpatialContextReader> spatialReader = fdoCommand->Execute();
-            CHECKNULL((FdoISpatialContextReader*)spatialReader, L"MgGetSpatialContexts.GetSpatialContexts");
+            CHECKNULL((FdoISpatialContextReader*)spatialReader, L"MgdGetSpatialContexts.GetSpatialContexts");
 
             mgSpatialContextReader = new MgSpatialContextReader();
             while (spatialReader->ReadNext())
@@ -79,7 +79,7 @@ MgSpatialContextReader* MgGetSpatialContexts::GetSpatialContexts(MgResourceIdent
                 mgSpatialContextReader->SetProviderName(m_providerName);
 
                 Ptr<MgSpatialContextData> spatialData = GetSpatialContextData(spatialReader, spatialContextInfo);
-                CHECKNULL((MgSpatialContextData*)spatialData, L"MgGetSpatialContexts.GetSpatialContexts");
+                CHECKNULL((MgSpatialContextData*)spatialData, L"MgdGetSpatialContexts.GetSpatialContexts");
 
                 // Add spatial data to the spatialcontext reader
                 mgSpatialContextReader->AddSpatialData(spatialData);
@@ -89,7 +89,7 @@ MgSpatialContextReader* MgGetSpatialContexts::GetSpatialContexts(MgResourceIdent
         }
         else
         {
-            throw new MgdConnectionFailedException(L"MgGetSpatialContexts.GetSpatialContexts()", __LINE__, __WFILE__, NULL, L"", NULL);
+            throw new MgdConnectionFailedException(L"MgdGetSpatialContexts.GetSpatialContexts()", __LINE__, __WFILE__, NULL, L"", NULL);
         }
     }
     else
@@ -97,19 +97,19 @@ MgSpatialContextReader* MgGetSpatialContexts::GetSpatialContexts(MgResourceIdent
         //MgCacheManager::GetInstance()->CheckPermission(resId, MgResourcePermission::ReadOnly);
     }
 
-    MG_FEATURE_SERVICE_CHECK_CONNECTION_CATCH_AND_THROW(resId, L"MgGetSpatialContexts.GetSpatialContexts")
+    MG_FEATURE_SERVICE_CHECK_CONNECTION_CATCH_AND_THROW(resId, L"MgdGetSpatialContexts.GetSpatialContexts")
 
     return mgSpatialContextReader.Detach();
 }
 
-MgSpatialContextData* MgGetSpatialContexts::GetSpatialContextData(
+MgSpatialContextData* MgdGetSpatialContexts::GetSpatialContextData(
     FdoISpatialContextReader* spatialReader, MgSpatialContextInfo* spatialContextInfo)
 {
     Ptr<MgSpatialContextData> spatialData = new MgSpatialContextData();
 
     // Name must exist
     FdoString* name = spatialReader->GetName();
-    CHECKNULL((FdoString*)name, L"MgGetSpatialContexts.GetSpatialContexts");
+    CHECKNULL((FdoString*)name, L"MgdGetSpatialContexts.GetSpatialContexts");
     spatialData->SetName(STRING(name));
 
     STRING coordSysName = L"";
@@ -178,7 +178,7 @@ MgSpatialContextData* MgGetSpatialContexts::GetSpatialContextData(
     if (coordSysOverridden)
     {
         srsWkt = csName;
-        desc = MgFeatureUtil::GetMessage(L"MgCoordinateSystemOverridden");
+        desc = MgdFeatureUtil::GetMessage(L"MgCoordinateSystemOverridden");
     }
     else if (spatialContextDefined && !coordSysOverridden)
     {
@@ -263,7 +263,7 @@ MgSpatialContextData* MgGetSpatialContexts::GetSpatialContextData(
     return spatialData.Detach();
 }
 
-bool MgGetSpatialContexts::IsEpsgCodeRepresentation (FdoString *coordSysName)
+bool MgdGetSpatialContexts::IsEpsgCodeRepresentation (FdoString *coordSysName)
 {
     // If the given coordinate system name is NULL or not NULL but empty
     // return false as those cases do not represent an EPSG code.

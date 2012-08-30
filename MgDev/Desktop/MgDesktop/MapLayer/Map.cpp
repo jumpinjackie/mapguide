@@ -134,9 +134,9 @@ void MgdMap::SetDpi(INT32 dpi)
 ///
 MgService* MgdMap::GetService(INT32 serviceType)
 {
-    if (NULL == (MgServiceFactory*)m_factory)
+    if (NULL == (MgdServiceFactory*)m_factory)
     {
-        m_factory = new MgServiceFactory();
+        m_factory = new MgdServiceFactory();
     }
     return m_factory->CreateService(serviceType);
 }

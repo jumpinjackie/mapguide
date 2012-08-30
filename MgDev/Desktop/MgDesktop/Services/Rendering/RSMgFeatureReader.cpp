@@ -19,7 +19,7 @@
                        }
 
 
-RSMgFeatureReader::RSMgFeatureReader(MgFeatureReader* reader, MgFeatureService* svcFeature, MgResourceIdentifier* featResId, MgFeatureQueryOptions* options, const STRING& geomPropName)
+RSMgdFeatureReader::RSMgdFeatureReader(MgFeatureReader* reader, MgFeatureService* svcFeature, MgResourceIdentifier* featResId, MgFeatureQueryOptions* options, const STRING& geomPropName)
 {
     _ASSERT(NULL != reader);
     m_reader = SAFE_ADDREF(reader);
@@ -118,7 +118,7 @@ RSMgFeatureReader::RSMgFeatureReader(MgFeatureReader* reader, MgFeatureService* 
 }
 
 
-RSMgFeatureReader::~RSMgFeatureReader()
+RSMgdFeatureReader::~RSMgdFeatureReader()
 {
     // Reader may be null if an Fdo exception is thrown
     // during a call to Reset()
@@ -139,7 +139,7 @@ RSMgFeatureReader::~RSMgFeatureReader()
 }
 
 
-bool RSMgFeatureReader::ReadNext()
+bool RSMgdFeatureReader::ReadNext()
 {
     RSFR_TRY()
     return m_reader->ReadNext();
@@ -147,7 +147,7 @@ bool RSMgFeatureReader::ReadNext()
 }
 
 
-void RSMgFeatureReader::Close()
+void RSMgdFeatureReader::Close()
 {
     RSFR_TRY()
     m_reader->Close();
@@ -155,7 +155,7 @@ void RSMgFeatureReader::Close()
 }
 
 
-void RSMgFeatureReader::Reset()
+void RSMgdFeatureReader::Reset()
 {
     RSFR_TRY()
 
@@ -168,7 +168,7 @@ void RSMgFeatureReader::Reset()
 }
 
 
-bool RSMgFeatureReader::IsNull(const wchar_t* propertyName)
+bool RSMgdFeatureReader::IsNull(const wchar_t* propertyName)
 {
     RSFR_TRY()
     return m_reader->IsNull(propertyName);
@@ -176,7 +176,7 @@ bool RSMgFeatureReader::IsNull(const wchar_t* propertyName)
 }
 
 
-bool RSMgFeatureReader::GetBoolean(const wchar_t* propertyName)
+bool RSMgdFeatureReader::GetBoolean(const wchar_t* propertyName)
 {
     RSFR_TRY()
     return m_reader->GetBoolean(propertyName);
@@ -184,7 +184,7 @@ bool RSMgFeatureReader::GetBoolean(const wchar_t* propertyName)
 }
 
 
-unsigned char RSMgFeatureReader::GetByte(const wchar_t* propertyName)
+unsigned char RSMgdFeatureReader::GetByte(const wchar_t* propertyName)
 {
     RSFR_TRY()
     return m_reader->GetByte(propertyName);
@@ -192,7 +192,7 @@ unsigned char RSMgFeatureReader::GetByte(const wchar_t* propertyName)
 }
 
 
-FdoDateTime RSMgFeatureReader::GetDateTime(const wchar_t* propertyName)
+FdoDateTime RSMgdFeatureReader::GetDateTime(const wchar_t* propertyName)
 {
     RSFR_TRY()
 
@@ -212,7 +212,7 @@ FdoDateTime RSMgFeatureReader::GetDateTime(const wchar_t* propertyName)
 }
 
 
-float RSMgFeatureReader::GetSingle(const wchar_t* propertyName)
+float RSMgdFeatureReader::GetSingle(const wchar_t* propertyName)
 {
     RSFR_TRY()
     return m_reader->GetSingle(propertyName);
@@ -220,7 +220,7 @@ float RSMgFeatureReader::GetSingle(const wchar_t* propertyName)
 }
 
 
-double RSMgFeatureReader::GetDouble(const wchar_t* propertyName)
+double RSMgdFeatureReader::GetDouble(const wchar_t* propertyName)
 {
     RSFR_TRY()
     return m_reader->GetDouble(propertyName);
@@ -228,7 +228,7 @@ double RSMgFeatureReader::GetDouble(const wchar_t* propertyName)
 }
 
 
-short RSMgFeatureReader::GetInt16(const wchar_t* propertyName)
+short RSMgdFeatureReader::GetInt16(const wchar_t* propertyName)
 {
     RSFR_TRY()
     return m_reader->GetInt16(propertyName);
@@ -236,7 +236,7 @@ short RSMgFeatureReader::GetInt16(const wchar_t* propertyName)
 }
 
 
-int RSMgFeatureReader::GetInt32(const wchar_t* propertyName)
+int RSMgdFeatureReader::GetInt32(const wchar_t* propertyName)
 {
     RSFR_TRY()
     return m_reader->GetInt32(propertyName);
@@ -244,7 +244,7 @@ int RSMgFeatureReader::GetInt32(const wchar_t* propertyName)
 }
 
 
-long long RSMgFeatureReader::GetInt64(const wchar_t* propertyName)
+long long RSMgdFeatureReader::GetInt64(const wchar_t* propertyName)
 {
     RSFR_TRY()
     return m_reader->GetInt64(propertyName);
@@ -252,7 +252,7 @@ long long RSMgFeatureReader::GetInt64(const wchar_t* propertyName)
 }
 
 
-const wchar_t* RSMgFeatureReader::GetString(const wchar_t* propertyName)
+const wchar_t* RSMgdFeatureReader::GetString(const wchar_t* propertyName)
 {
     try
     {
@@ -277,7 +277,7 @@ const wchar_t* RSMgFeatureReader::GetString(const wchar_t* propertyName)
 }
 
 
-LineBuffer* RSMgFeatureReader::GetGeometry(const wchar_t*   propertyName,
+LineBuffer* RSMgdFeatureReader::GetGeometry(const wchar_t*   propertyName,
                                            LineBuffer*      lb,
                                            CSysTransformer* xformer)
 {
@@ -301,34 +301,34 @@ LineBuffer* RSMgFeatureReader::GetGeometry(const wchar_t*   propertyName,
 }
 
 
-RS_Raster* RSMgFeatureReader::GetRaster(const wchar_t* propertyName)
+RS_Raster* RSMgdFeatureReader::GetRaster(const wchar_t* propertyName)
 {
     RSFR_TRY()
     Ptr<MgRaster> raster = m_reader->GetRaster(propertyName);
-    return new RSMgRaster(raster);
+    return new RSMgdRaster(raster);
     RSFR_CATCH()
 }
 
 
-RS_InputStream* RSMgFeatureReader::GetBLOB(const wchar_t* propertyName)
+RS_InputStream* RSMgdFeatureReader::GetBLOB(const wchar_t* propertyName)
 {
     RSFR_TRY()
     Ptr<MgByteReader> rdr = m_reader->GetBLOB(propertyName);
-    return new RSMgInputStream(rdr);
+    return new RSMgdInputStream(rdr);
     RSFR_CATCH()
 }
 
 
-RS_InputStream* RSMgFeatureReader::GetCLOB(const wchar_t* propertyName)
+RS_InputStream* RSMgdFeatureReader::GetCLOB(const wchar_t* propertyName)
 {
     RSFR_TRY()
     Ptr<MgByteReader> rdr = m_reader->GetCLOB(propertyName);
-    return new RSMgInputStream(rdr);
+    return new RSMgdInputStream(rdr);
     RSFR_CATCH()
 }
 
 
-int RSMgFeatureReader::GetPropertyType(const wchar_t* propertyName)
+int RSMgdFeatureReader::GetPropertyType(const wchar_t* propertyName)
 {
     PropertyStub* ps;
 
@@ -385,7 +385,7 @@ int RSMgFeatureReader::GetPropertyType(const wchar_t* propertyName)
 }
 
 
-const wchar_t* RSMgFeatureReader::GetAsString(const wchar_t* propertyName)
+const wchar_t* RSMgdFeatureReader::GetAsString(const wchar_t* propertyName)
 {
     static const size_t MAX_STRING = 64;
 
@@ -483,7 +483,7 @@ const wchar_t* RSMgFeatureReader::GetAsString(const wchar_t* propertyName)
 }
 
 
-const wchar_t* RSMgFeatureReader::GetGeomPropName()
+const wchar_t* RSMgdFeatureReader::GetGeomPropName()
 {
     if (m_geomPropName.empty())
         return NULL;
@@ -492,7 +492,7 @@ const wchar_t* RSMgFeatureReader::GetGeomPropName()
 }
 
 
-const wchar_t* RSMgFeatureReader::GetRasterPropName()
+const wchar_t* RSMgdFeatureReader::GetRasterPropName()
 {
     //The Mapping service will add this computed property
     //to the query
@@ -504,21 +504,21 @@ const wchar_t* RSMgFeatureReader::GetRasterPropName()
 }
 
 
-const wchar_t*const* RSMgFeatureReader::GetIdentPropNames(int& count)
+const wchar_t*const* RSMgdFeatureReader::GetIdentPropNames(int& count)
 {
     count = m_numIdProps;
     return m_idpropNames;
 }
 
 
-const wchar_t*const* RSMgFeatureReader::GetPropNames(int& count)
+const wchar_t*const* RSMgdFeatureReader::GetPropNames(int& count)
 {
     count = m_numProps;
     return m_propNames;
 }
 
 
-FdoIFeatureReader* RSMgFeatureReader::GetInternalReader()
+FdoIFeatureReader* RSMgdFeatureReader::GetInternalReader()
 {
     MgdFeatureReader *fr = dynamic_cast<MgdFeatureReader*>(m_reader);
     if (fr)

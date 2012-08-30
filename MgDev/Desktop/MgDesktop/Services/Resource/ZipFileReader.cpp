@@ -6,8 +6,8 @@
 /// \brief
 /// Constructs the object.
 ///
-MgZipFileReader::MgZipFileReader(CREFSTRING filePath) :
-    MgZipFileHandler(filePath, DWFZipFileDescriptor::eUnzip)
+MgdZipFileReader::MgdZipFileReader(CREFSTRING filePath) :
+    MgdZipFileHandler(filePath, DWFZipFileDescriptor::eUnzip)
 {
 }
 
@@ -15,7 +15,7 @@ MgZipFileReader::MgZipFileReader(CREFSTRING filePath) :
 /// \brief
 /// Destructs the object.
 ///
-MgZipFileReader::~MgZipFileReader()
+MgdZipFileReader::~MgdZipFileReader()
 {
 }
 
@@ -23,7 +23,7 @@ MgZipFileReader::~MgZipFileReader()
 /// \brief
 /// Extracts an archive from the zip file.
 ///
-MgByteSource* MgZipFileReader::ExtractArchive(CREFSTRING filePath)
+MgByteSource* MgdZipFileReader::ExtractArchive(CREFSTRING filePath)
 {
     ACE_ASSERT(!filePath.empty());
     Ptr<MgByteSource> byteSource;
@@ -37,11 +37,11 @@ MgByteSource* MgZipFileReader::ExtractArchive(CREFSTRING filePath)
     DWFString archivedFile(filePath.c_str());
     DWFInputStream* inputStream = m_zipFileDescriptor->unzip(archivedFile);
 
-    MgByteSourceDwfInputStreamImpl* byteSourceImpl =
-        new MgByteSourceDwfInputStreamImpl(inputStream);
+    MgdByteSourceDwfInputStreamImpl* byteSourceImpl =
+        new MgdByteSourceDwfInputStreamImpl(inputStream);
     byteSource = new MgByteSource(byteSourceImpl);
 
-    MG_RESOURCE_SERVICE_CATCH_AND_THROW(L"MgZipFileReader.ExtractArchive")
+    MG_RESOURCE_SERVICE_CATCH_AND_THROW(L"MgdZipFileReader.ExtractArchive")
 
     return byteSource.Detach();
 }

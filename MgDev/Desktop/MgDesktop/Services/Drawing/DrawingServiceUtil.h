@@ -30,20 +30,20 @@ struct TargetLayer
 };
 
 /// \cond INTERNAL
-class MG_DESKTOP_API MgDrawingServiceUtil
+class MG_DESKTOP_API MgdDrawingServiceUtil
 {
     /// Constructors/Destructor
 
     public:
 
-        MgDrawingServiceUtil();
-        virtual ~MgDrawingServiceUtil();
+        MgdDrawingServiceUtil();
+        virtual ~MgdDrawingServiceUtil();
 
     private:
 
         // Unimplemented Methods
-        MgDrawingServiceUtil(const MgDrawingServiceUtil& util);
-        MgDrawingServiceUtil& operator=(const MgDrawingServiceUtil& util);
+        MgdDrawingServiceUtil(const MgdDrawingServiceUtil& util);
+        MgdDrawingServiceUtil& operator=(const MgdDrawingServiceUtil& util);
 
 /// Methods
 

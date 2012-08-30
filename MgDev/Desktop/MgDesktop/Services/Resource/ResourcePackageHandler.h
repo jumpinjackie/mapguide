@@ -1,22 +1,22 @@
 #ifndef DESKTOP_RESOURCE_PACKAGE_HANDLER_H
 #define DESKTOP_RESOURCE_PACKAGE_HANDLER_H
 
-class MgResourcePackageHandler
+class MgdResourcePackageHandler
 {
 /// Constructors/Destructor
 
 public:
 
-    explicit MgResourcePackageHandler(MgResourceService& repositoryManager);
-    virtual ~MgResourcePackageHandler();
+    explicit MgdResourcePackageHandler(MgResourceService& repositoryManager);
+    virtual ~MgdResourcePackageHandler();
 
 private:
 
     // Unimplemented Methods
 
-    MgResourcePackageHandler();
-    MgResourcePackageHandler(const MgResourcePackageHandler&);
-    MgResourcePackageHandler& operator=(const MgResourcePackageHandler&);
+    MgdResourcePackageHandler();
+    MgdResourcePackageHandler(const MgdResourcePackageHandler&);
+    MgdResourcePackageHandler& operator=(const MgdResourcePackageHandler&);
 
 /// Methods
 

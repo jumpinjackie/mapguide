@@ -5,10 +5,10 @@ class MgResourceIdentifier;
 class MgMapBase;
 class MgByteReader;
 
-class MgTileCache : public MgGuardDisposable
+class MgdTileCache : public MgGuardDisposable
 {
 public:
-    MgTileCache();
+    MgdTileCache();
 
     static void Initialize();
 
@@ -36,8 +36,8 @@ protected:
 
 private:
     // Unimplemented Constructors/Methods
-    MgTileCache(const MgTileCache&);
-    MgTileCache& operator=(const MgTileCache&);
+    MgdTileCache(const MgdTileCache&);
+    MgdTileCache& operator=(const MgdTileCache&);
 
     STRING GetBasePath(MgResourceIdentifier* mapDef);
     STRING GetBasePath(MgMapBase* map);

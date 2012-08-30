@@ -4,7 +4,7 @@
 class MgdGwsFeatureReader;
 template class Ptr<MgdFeatureReader>;
 
-class MgRasterHelper : public MgFeatureService
+class MgdRasterHelper : public MgFeatureService
 {
 PUBLISHED_API:
     virtual MgByteReader* GetFeatureProviders();
@@ -136,11 +136,11 @@ PUBLISHED_API:
     
 INTERNAL_API:
 
-    MgRasterHelper(MgdFeatureReader* reader);
-    MgRasterHelper(MgdDataReader* reader);
-    MgRasterHelper(MgdGwsFeatureReader* reader);
+    MgdRasterHelper(MgdFeatureReader* reader);
+    MgdRasterHelper(MgdDataReader* reader);
+    MgdRasterHelper(MgdGwsFeatureReader* reader);
 
-    virtual ~MgRasterHelper() {}
+    virtual ~MgdRasterHelper() {}
 
     // Feature
     virtual MgBatchPropertyCollection* GetFeatures(CREFSTRING featureReader);

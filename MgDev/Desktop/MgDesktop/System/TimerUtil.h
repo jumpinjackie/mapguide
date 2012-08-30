@@ -8,9 +8,9 @@
 #endif
 
 /// \cond INTERNAL
-class MG_DESKTOP_API MgTimerUtil
+class MG_DESKTOP_API MgdTimerUtil
 {
-    DECLARE_CLASSNAME(MgTimerUtil)
+    DECLARE_CLASSNAME(MgdTimerUtil)
 
 INTERNAL_API:
 
@@ -20,7 +20,7 @@ INTERNAL_API:
     ///
     ///
 
-    MgTimerUtil();
+    MgdTimerUtil();
 
     ///////////////////////////////////////////////////////////////////////////
     /// \brief
@@ -28,7 +28,7 @@ INTERNAL_API:
     ///
     ///
 
-    virtual ~MgTimerUtil();
+    virtual ~MgdTimerUtil();
 
     ///////////////////////////////////////////////////////////////////////////
     /// \brief
@@ -45,8 +45,8 @@ private:
 
     /// Unimplemented Methods
 
-    MgTimerUtil(const MgTimerUtil& util);
-    MgTimerUtil& operator=(const MgTimerUtil& util);
+    MgdTimerUtil(const MgdTimerUtil& util);
+    MgdTimerUtil& operator=(const MgdTimerUtil& util);
 
     /// Helper Methods
 

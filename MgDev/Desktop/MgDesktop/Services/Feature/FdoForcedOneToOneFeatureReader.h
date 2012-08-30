@@ -15,21 +15,21 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
-#ifndef _MGFDOFORCEDONETOONEFEATUREREADER_H
-#define _MGFDOFORCEDONETOONEFEATUREREADER_H
+#ifndef _MgdFdoForcedOneToOneFeatureReader_H
+#define _MgdFdoForcedOneToOneFeatureReader_H
 
 #include <set>
 
 class FdoIFeatureReader;
 /// \cond INTERNAL
-class MgFdoForcedOneToOneFeatureReader: public FdoIFeatureReader
+class MgdFdoForcedOneToOneFeatureReader: public FdoIFeatureReader
 {
 public:
-    // constructs a MgFdoForcedOneToOneFeatureReader
-    MgFdoForcedOneToOneFeatureReader();
-    MgFdoForcedOneToOneFeatureReader(FdoIFeatureReader* reader, FdoStringCollection* idPropNames);
+    // constructs a MgdFdoForcedOneToOneFeatureReader
+    MgdFdoForcedOneToOneFeatureReader();
+    MgdFdoForcedOneToOneFeatureReader(FdoIFeatureReader* reader, FdoStringCollection* idPropNames);
     // default destructor
-    virtual ~MgFdoForcedOneToOneFeatureReader();
+    virtual ~MgdFdoForcedOneToOneFeatureReader();
 
 protected:
 

@@ -18,7 +18,7 @@ namespace SampleExtension
             var provider = this.Viewer.GetProvider();
             var map = this.Viewer.GetMap();
             var prof = (MgdProfilingService)provider.CreateService(MgServiceType.ProfilingService);
-            var opts = new MgRenderingOptions("PNG", 2, new MgColor(this.Viewer.SelectionColor));
+            var opts = new MgdRenderingOptions("PNG", 2, new MgColor(this.Viewer.SelectionColor));
             var result = prof.ProfileRenderDynamicOverlay((MgdMap)map, (MgdSelection)this.Viewer.GetSelection(), opts);
             new XmlResponseDialog(result).ShowDialog(); 
         }

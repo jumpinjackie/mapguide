@@ -21,7 +21,7 @@ namespace DotNetHarness.Resource
         {
             try
             {
-                var fact = new MgServiceFactory();
+                var fact = new MgdServiceFactory();
                 MgResourceService resSvc = (MgResourceService)fact.CreateService(MgServiceType.ResourceService);
                 MgResourceIdentifier resId = new MgResourceIdentifier(textBox1.Text);
                 MgByteReader reader = resSvc.GetResourceContent(resId);

@@ -19,14 +19,14 @@
 #define DESKTOP_CUSTOM_TEXT_INFO_H
 
 /// \cond INTERNAL
-class MG_DESKTOP_API MgCustomTextInfo
+class MG_DESKTOP_API MgdCustomTextInfo
 {
-    DECLARE_CLASSNAME(MgCustomTextInfo)
+    DECLARE_CLASSNAME(MgdCustomTextInfo)
 
 public:
     /// Default Constructor
-    MgCustomTextInfo();
-    ~MgCustomTextInfo();
+    MgdCustomTextInfo();
+    ~MgdCustomTextInfo();
 
     /// Accessors
     void SetX(double xCoord);

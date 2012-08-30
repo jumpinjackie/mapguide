@@ -1,7 +1,7 @@
 #ifndef DESKTOP_FDO_CONNECTION_UTIL_H
 #define DESKTOP_FDO_CONNECTION_UTIL_H
 
-class MgFdoConnectionPool;
+class MgdFdoConnectionPool;
 class FdoIConnection;
 class MgResourceIdentifier;
 class MgdResourceService;
@@ -12,10 +12,10 @@ namespace MdfModel
 }
 
 /// \cond INTERNAL
-class MgFdoConnectionUtil
+class MgdFdoConnectionUtil
 {
-    friend class MgFeatureConnection;
-    friend class MgFdoConnectionPool;
+    friend class MgdFeatureConnection;
+    friend class MgdFdoConnectionPool;
 
 public:
     static MdfModel::FeatureSource* GetFeatureSource(MgResourceIdentifier* resource);

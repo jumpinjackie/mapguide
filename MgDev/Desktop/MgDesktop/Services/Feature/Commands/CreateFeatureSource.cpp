@@ -3,15 +3,15 @@
 #include "Services/Feature/FdoConnectionUtil.h"
 #include "Services/Feature/FeatureUtil.h"
 
-MgCreateFeatureSource::MgCreateFeatureSource()
+MgdCreateFeatureSource::MgdCreateFeatureSource()
 {
 }
 
-MgCreateFeatureSource::~MgCreateFeatureSource()
+MgdCreateFeatureSource::~MgdCreateFeatureSource()
 {
 }
 
-void MgCreateFeatureSource::CreateFeatureSource(MgResourceIdentifier* resource, MgFeatureSourceParams* sourceParams)
+void MgdCreateFeatureSource::CreateFeatureSource(MgResourceIdentifier* resource, MgFeatureSourceParams* sourceParams)
 {
     MG_FEATURE_SERVICE_TRY()
 
@@ -20,44 +20,44 @@ void MgCreateFeatureSource::CreateFeatureSource(MgResourceIdentifier* resource, 
     if (NULL != params)
     {
         STRING providerName = params->GetProviderName();
-        Ptr<MgCreateFileFeatureSource> creator = NULL;    
+        Ptr<MgdCreateFileFeatureSource> creator = NULL;    
         if (providerName == L"OSGeo.SDF") // NOXLATE
         {
-            creator = new MgCreateSdfFeatureSource(resource, params);
+            creator = new MgdCreateSdfFeatureSource(resource, params);
             creator->CreateFeatureSource(false, false);
         }
         else if (providerName == L"OSGeo.SHP") // NOXLATE
         {
-            creator = new MgCreateShpFeatureSource(resource, params);
+            creator = new MgdCreateShpFeatureSource(resource, params);
             creator->CreateFeatureSource(true, false);
         }
         else if (providerName == L"OSGeo.SQLite") // NOXLATE
         {
-            creator = new MgCreateSqliteFeatureSource(resource, params);
+            creator = new MgdCreateSqliteFeatureSource(resource, params);
             creator->CreateFeatureSource(false, false);
         }
         else
-            throw new MgInvalidArgumentException(L"MgCreateFeatureSource.CreateFeatureSource", __LINE__, __WFILE__, NULL, L"", NULL);
+            throw new MgInvalidArgumentException(L"MgdCreateFeatureSource.CreateFeatureSource", __LINE__, __WFILE__, NULL, L"", NULL);
     }
     else if (NULL != rdbParams)
     {
         STRING providerName = rdbParams->GetProviderName();
-        Ptr<MgCreateRdbmsFeatureSource> creator = NULL;
+        Ptr<MgdCreateRdbmsFeatureSource> creator = NULL;
         if (providerName == L"OSGeo.MySQL" ||
             providerName == L"OSGeo.SQLServerSpatial" ||
             providerName == L"OSGeo.PostgreSQL")
         {
-            creator = new MgCreateRdbmsFeatureSource(resource, rdbParams);
+            creator = new MgdCreateRdbmsFeatureSource(resource, rdbParams);
             creator->CreateFeatureSource();
         }
         else
-            throw new MgInvalidArgumentException(L"MgCreateFeatureSource.CreateFeatureSource", __LINE__, __WFILE__, NULL, L"", NULL);
+            throw new MgInvalidArgumentException(L"MgdCreateFeatureSource.CreateFeatureSource", __LINE__, __WFILE__, NULL, L"", NULL);
     }
 
-    MG_FEATURE_SERVICE_CHECK_CONNECTION_CATCH_AND_THROW(resource, L"MgCreateFeatureSource.CreateFeatureSource")
+    MG_FEATURE_SERVICE_CHECK_CONNECTION_CATCH_AND_THROW(resource, L"MgdCreateFeatureSource.CreateFeatureSource")
 }
 
-MgCreateFileFeatureSource::MgCreateFileFeatureSource(
+MgdCreateFileFeatureSource::MgdCreateFileFeatureSource(
     MgResourceIdentifier* resource,
     MgFileFeatureSourceParams* params)
 {
@@ -68,13 +68,13 @@ MgCreateFileFeatureSource::MgCreateFileFeatureSource(
     SAFE_ADDREF(params);
 }
 
-MgCreateFileFeatureSource::~MgCreateFileFeatureSource()
+MgdCreateFileFeatureSource::~MgdCreateFileFeatureSource()
 {
     SAFE_RELEASE(m_resource);
     SAFE_RELEASE(m_params);
 }
 
-void MgCreateFileFeatureSource::CreateFeatureSource(bool bCheckFeatureClass, bool bCheckSpatialContext)
+void MgdCreateFileFeatureSource::CreateFeatureSource(bool bCheckFeatureClass, bool bCheckSpatialContext)
 {
     MG_FEATURE_SERVICE_TRY()
 
@@ -86,20 +86,20 @@ void MgCreateFileFeatureSource::CreateFeatureSource(bool bCheckFeatureClass, boo
     //
     Ptr<MgFeatureSchema> schema = m_params->GetFeatureSchema();
     if(schema == NULL)
-        throw new MgInvalidArgumentException(L"MgCreateFileFeatureSource.CreateFeatureSource", __LINE__, __WFILE__, NULL, L"MgMissingSchema", NULL);
+        throw new MgInvalidArgumentException(L"MgdCreateFileFeatureSource.CreateFeatureSource", __LINE__, __WFILE__, NULL, L"MgMissingSchema", NULL);
 
     if (bCheckFeatureClass)
     {
         Ptr<MgClassDefinitionCollection> classes = schema->GetClasses();
         if(classes == NULL || classes->GetCount() == 0)
-            throw new MgInvalidArgumentException(L"MgCreateFileFeatureSource.CreateFeatureSource", __LINE__, __WFILE__, NULL, L"MgMissingClassDef", NULL);
+            throw new MgInvalidArgumentException(L"MgdCreateFileFeatureSource.CreateFeatureSource", __LINE__, __WFILE__, NULL, L"MgMissingClassDef", NULL);
 
         for(INT32 ci = 0; ci < classes->GetCount(); ci++)
         {
             Ptr<MgClassDefinition> classDef = classes->GetItem(ci);
             Ptr<MgPropertyDefinitionCollection> idProps = classDef->GetIdentityProperties();
             if(idProps == NULL || idProps->GetCount() == 0)
-                throw new MgInvalidArgumentException(L"MgCreateFileFeatureSource.CreateFeatureSource", __LINE__, __WFILE__, NULL, L"MgClassWOIdentity", NULL);
+                throw new MgInvalidArgumentException(L"MgdCreateFileFeatureSource.CreateFeatureSource", __LINE__, __WFILE__, NULL, L"MgClassWOIdentity", NULL);
         }
     }
 
@@ -107,7 +107,7 @@ void MgCreateFileFeatureSource::CreateFeatureSource(bool bCheckFeatureClass, boo
     {
         // A coordinate system must be defined
         if(m_params->GetCoordinateSystemWkt().empty())
-            throw new MgInvalidArgumentException(L"MgCreateFileFeatureSource.CreateFeatureSource", __LINE__, __WFILE__, NULL, L"MgMissingSrs", NULL);
+            throw new MgInvalidArgumentException(L"MgdCreateFileFeatureSource.CreateFeatureSource", __LINE__, __WFILE__, NULL, L"MgMissingSrs", NULL);
     }
 
     // Connect to provider
@@ -115,23 +115,23 @@ void MgCreateFileFeatureSource::CreateFeatureSource(bool bCheckFeatureClass, boo
     STRING providerName = m_params->GetProviderName();
     
     
-    Ptr<MgFeatureConnection> connWrap = new MgFeatureConnection(providerName, connString);
+    Ptr<MgdFeatureConnection> connWrap = new MgdFeatureConnection(providerName, connString);
     {
         if(NULL == connWrap.p)
         {
-            throw new MgdConnectionFailedException(L"MgCreateFileFeatureSource.CreateFeatureSource", __LINE__, __WFILE__, NULL, L"", NULL);
+            throw new MgdConnectionFailedException(L"MgdCreateFileFeatureSource.CreateFeatureSource", __LINE__, __WFILE__, NULL, L"", NULL);
         }
 
         FdoPtr<FdoIConnection> conn = connWrap->GetConnection();
         if (conn == NULL)
         {
-            throw new MgdConnectionFailedException(L"MgCreateFileFeatureSource.CreateFeatureSource", __LINE__, __WFILE__, NULL, L"", NULL);
+            throw new MgdConnectionFailedException(L"MgdCreateFileFeatureSource.CreateFeatureSource", __LINE__, __WFILE__, NULL, L"", NULL);
         }
 
         CreateDataStore(conn);
         ApplySchemaAndCreateSpatialContext(conn);
 
-        MgFdoConnectionUtil::CloseConnection(conn);
+        MgdFdoConnectionUtil::CloseConnection(conn);
 
         Ptr<MgResourceService> resourceService = GetResourceService();
         if (NULL != (MgResourceService*)resourceService)
@@ -141,10 +141,10 @@ void MgCreateFileFeatureSource::CreateFeatureSource(bool bCheckFeatureClass, boo
         }
     }
 
-    MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgCreateFileFeatureSource::CreateFeatureSource")
+    MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgdCreateFileFeatureSource::CreateFeatureSource")
 }
 
-void MgCreateFileFeatureSource::CreateDataStore(
+void MgdCreateFileFeatureSource::CreateDataStore(
     FdoIConnection* conn)
 {
     MG_FEATURE_SERVICE_TRY()
@@ -155,10 +155,10 @@ void MgCreateFileFeatureSource::CreateDataStore(
     FdoPtr<FdoIDataStorePropertyDictionary> dsProp = createDsCmd->GetDataStoreProperties();
     dsProp->SetProperty (m_connectParamName.c_str(), m_tempFileName.c_str());
     createDsCmd->Execute();
-    MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgCreateFileFeatureSource::CreateDataStore")
+    MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgdCreateFileFeatureSource::CreateDataStore")
 }
 
-void MgCreateFileFeatureSource::ApplySchemaAndCreateSpatialContextInternal(FdoIConnection* conn)
+void MgdCreateFileFeatureSource::ApplySchemaAndCreateSpatialContextInternal(FdoIConnection* conn)
 {
     MG_FEATURE_SERVICE_TRY()
     // Create the spatialcontext
@@ -175,14 +175,14 @@ void MgCreateFileFeatureSource::ApplySchemaAndCreateSpatialContextInternal(FdoIC
 
     // Create and set the schema
     Ptr<MgFeatureSchema> featureSchema = m_params->GetFeatureSchema();
-    FdoPtr<FdoFeatureSchema> fdoSchema = MgFeatureUtil::GetFdoFeatureSchema(featureSchema);
+    FdoPtr<FdoFeatureSchema> fdoSchema = MgdFeatureUtil::GetFdoFeatureSchema(featureSchema);
     FdoPtr<FdoIApplySchema> applyschema = (FdoIApplySchema*)conn->CreateCommand(FdoCommandType_ApplySchema);
     applyschema->SetFeatureSchema(fdoSchema);
     applyschema->Execute();
-    MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgCreateFileFeatureSource::ApplySchemaAndCreateSpatialContextInternal")
+    MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgdCreateFileFeatureSource::ApplySchemaAndCreateSpatialContextInternal")
 }
 
-void MgCreateFileFeatureSource::ApplySchemaAndCreateSpatialContext(FdoIConnection* conn)
+void MgdCreateFileFeatureSource::ApplySchemaAndCreateSpatialContext(FdoIConnection* conn)
 {
     MG_FEATURE_SERVICE_TRY()
     // Open the connection to the newly created file
@@ -191,10 +191,10 @@ void MgCreateFileFeatureSource::ApplySchemaAndCreateSpatialContext(FdoIConnectio
     conn->Open();
 
     ApplySchemaAndCreateSpatialContextInternal(conn);
-    MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgCreateFileFeatureSource::ApplySchemaAndCreateSpatialContext")
+    MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgdCreateFileFeatureSource::ApplySchemaAndCreateSpatialContext")
 }
 
-STRING MgCreateFileFeatureSource::GetFileName() const
+STRING MgdCreateFileFeatureSource::GetFileName() const
 {
     STRING fileName = m_params->GetFileName();
     if (fileName.empty())
@@ -204,7 +204,7 @@ STRING MgCreateFileFeatureSource::GetFileName() const
 }
 
 
-void MgCreateFileFeatureSource::SetFeatureSourceDefinition(MgResourceService* resourceService)
+void MgdCreateFileFeatureSource::SetFeatureSourceDefinition(MgResourceService* resourceService)
 {
     MG_FEATURE_SERVICE_TRY()
     STRING fileName = GetFileName();
@@ -219,10 +219,10 @@ void MgCreateFileFeatureSource::SetFeatureSourceDefinition(MgResourceService* re
     Ptr<MgByteSource> xmlSource = new MgByteSource((BYTE_ARRAY_IN) utf8Text.c_str(), (INT32)utf8Text.length());
     Ptr<MgByteReader> xmlReader = xmlSource->GetReader();
     resourceService->SetResource(m_resource, xmlReader, NULL);
-    MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgCreateFileFeatureSource::SetFeatureSourceDefinition")
+    MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgdCreateFileFeatureSource::SetFeatureSourceDefinition")
 }
 
-void MgCreateFileFeatureSource::SetResourceDataInternal(MgResourceService* resourceService,
+void MgdCreateFileFeatureSource::SetResourceDataInternal(MgResourceService* resourceService,
                                                         STRING source,
                                                         STRING target)
 {
@@ -230,36 +230,36 @@ void MgCreateFileFeatureSource::SetResourceDataInternal(MgResourceService* resou
     Ptr<MgByteSource> byteSource = new MgByteSource(source, true);
     Ptr<MgByteReader> reader = byteSource->GetReader();
     resourceService->SetResourceData(m_resource, target, MgResourceDataType::File, reader);
-    MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgCreateFileFeatureSource::SetResourceDataInternal")
+    MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgdCreateFileFeatureSource::SetResourceDataInternal")
 }
 
-void MgCreateFileFeatureSource::SetResourceData(MgResourceService* resourceService)
+void MgdCreateFileFeatureSource::SetResourceData(MgResourceService* resourceService)
 {
     MG_FEATURE_SERVICE_TRY()
     STRING target = GetFileName();
     SetResourceDataInternal(resourceService, m_tempFileName, target);
     MgFileUtil::DeleteFile(m_tempFileName);
-    MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgCreateFileFeatureSource::SetResourceData")
+    MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgdCreateFileFeatureSource::SetResourceData")
 }
 
-MgResourceService* MgCreateFileFeatureSource::GetResourceService()
+MgResourceService* MgdCreateFileFeatureSource::GetResourceService()
 {
-    Ptr<MgServiceFactory> fact = new MgServiceFactory();
+    Ptr<MgdServiceFactory> fact = new MgdServiceFactory();
     return static_cast<MgResourceService*>(fact->CreateService(MgServiceType::ResourceService));
 }
 
-STRING MgCreateFileFeatureSource::GetFirstConnectionString()
+STRING MgdCreateFileFeatureSource::GetFirstConnectionString()
 {
     return L"";
 }
 
-STRING MgCreateFileFeatureSource::GetSecondConnectionString()
+STRING MgdCreateFileFeatureSource::GetSecondConnectionString()
 {
     STRING connstr = m_connectParamName + L"=" + m_tempFileName;  // NOXLATE
     return connstr;
 }
 
-STRING MgCreateFileFeatureSource::GetFeatureSourceParameterString() const
+STRING MgdCreateFileFeatureSource::GetFeatureSourceParameterString() const
 {
     STRING fileName = GetFileName();
     STRING featureSource = L"  <Parameter>\n    <Name>" + m_connectParamName + L"</Name>\n"; // NOXLATE
@@ -268,25 +268,25 @@ STRING MgCreateFileFeatureSource::GetFeatureSourceParameterString() const
     return featureSource;
 }
 
-void MgCreateFileFeatureSource::Dispose()
+void MgdCreateFileFeatureSource::Dispose()
 {
     delete this;
 }
 
-MgCreateSdfFeatureSource::MgCreateSdfFeatureSource(
+MgdCreateSdfFeatureSource::MgdCreateSdfFeatureSource(
     MgResourceIdentifier* resource,
     MgFileFeatureSourceParams* params):
-    MgCreateFileFeatureSource(resource, params)
+    MgdCreateFileFeatureSource(resource, params)
 {
     m_fileExtension = L"sdf";  // NOXLATE
     m_connectParamName = L"File";  // NOXLATE
 }
 
-MgCreateSdfFeatureSource::~MgCreateSdfFeatureSource()
+MgdCreateSdfFeatureSource::~MgdCreateSdfFeatureSource()
 {
 }
 
-STRING MgCreateSdfFeatureSource::GetFeatureSourceParameterString() const
+STRING MgdCreateSdfFeatureSource::GetFeatureSourceParameterString() const
 {
     STRING fileName = GetFileName();
     STRING featureSource = L"  <Parameter>\n    <Name>" + m_connectParamName + L"</Name>\n"; // NOXLATE
@@ -299,34 +299,34 @@ STRING MgCreateSdfFeatureSource::GetFeatureSourceParameterString() const
     return featureSource;
 }
 
-MgCreateShpFeatureSource::MgCreateShpFeatureSource(
+MgdCreateShpFeatureSource::MgdCreateShpFeatureSource(
     MgResourceIdentifier* resource,
     MgFileFeatureSourceParams* params):
-    MgCreateFileFeatureSource(resource, params)
+    MgdCreateFileFeatureSource(resource, params)
 {
     m_fileExtension = L"shp";  // NOXLATE
     m_connectParamName = L"DefaultFileLocation";  // NOXLATE
 }
 
-MgCreateShpFeatureSource::~MgCreateShpFeatureSource()
+MgdCreateShpFeatureSource::~MgdCreateShpFeatureSource()
 {
 }
 
-void MgCreateShpFeatureSource::CreateDataStore(
+void MgdCreateShpFeatureSource::CreateDataStore(
     FdoIConnection* conn)
 {
     // Do nothing because SHP files are created by FdoIApplySchema command.
 }
 
 
-void MgCreateShpFeatureSource::ApplySchemaAndCreateSpatialContext(FdoIConnection* conn)
+void MgdCreateShpFeatureSource::ApplySchemaAndCreateSpatialContext(FdoIConnection* conn)
 {
     MG_FEATURE_SERVICE_TRY()
     ApplySchemaAndCreateSpatialContextInternal(conn);
-    MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgCreateShpFeatureSource::ApplySchemaAndCreateSpatialContext")
+    MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgdCreateShpFeatureSource::ApplySchemaAndCreateSpatialContext")
 }
 
-void MgCreateShpFeatureSource::SetResourceData(MgResourceService* resourceService)
+void MgdCreateShpFeatureSource::SetResourceData(MgResourceService* resourceService)
 {
     MG_FEATURE_SERVICE_TRY()
     Ptr<MgStringCollection> sourceFiles = new MgStringCollection();
@@ -340,10 +340,10 @@ void MgCreateShpFeatureSource::SetResourceData(MgResourceService* resourceServic
         SetResourceDataInternal(resourceService, sourceFiles->GetItem(i), targetFiles->GetItem(i));
     }
     MgFileUtil::DeleteDirectory(m_tempFileName);
-    MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgCreateShpFeatureSource::SetResourceData")
+    MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgdCreateShpFeatureSource::SetResourceData")
 }
 
-STRING MgCreateShpFeatureSource::GetFirstConnectionString()
+STRING MgdCreateShpFeatureSource::GetFirstConnectionString()
 {
     // For SHP feature source, m_tempFileName saves a temporary path
     // instead of a temporary file name.
@@ -352,7 +352,7 @@ STRING MgCreateShpFeatureSource::GetFirstConnectionString()
     return connstr;
 }
 
-STRING MgCreateShpFeatureSource::GetSecondConnectionString()
+STRING MgdCreateShpFeatureSource::GetSecondConnectionString()
 {
     if (m_tempFileName.empty())
         m_tempFileName = MgFileUtil::GenerateTempPath();
@@ -360,7 +360,7 @@ STRING MgCreateShpFeatureSource::GetSecondConnectionString()
     return connstr;
 }
 
-STRING MgCreateShpFeatureSource::GetFeatureSourceParameterString() const
+STRING MgdCreateShpFeatureSource::GetFeatureSourceParameterString() const
 {
     STRING featureSource = L"  <Parameter>\n    <Name>" + m_connectParamName + L"</Name>\n"; // NOXLATE
     featureSource += L"     <Value>%MG_DATA_FILE_PATH%</Value>\n"; // NOXLATE
@@ -368,26 +368,26 @@ STRING MgCreateShpFeatureSource::GetFeatureSourceParameterString() const
     return featureSource;
 }
 
-MgCreateSqliteFeatureSource::MgCreateSqliteFeatureSource(
+MgdCreateSqliteFeatureSource::MgdCreateSqliteFeatureSource(
     MgResourceIdentifier* resource,
     MgFileFeatureSourceParams* params):
-    MgCreateFileFeatureSource(resource, params)
+    MgdCreateFileFeatureSource(resource, params)
 {
     m_fileExtension = L"sqlite";  // NOXLATE
     m_connectParamName = L"File";  // NOXLATE
 }
 
-MgCreateSqliteFeatureSource::~MgCreateSqliteFeatureSource()
+MgdCreateSqliteFeatureSource::~MgdCreateSqliteFeatureSource()
 {
 }
 
-STRING MgCreateSqliteFeatureSource::GetSecondConnectionString()
+STRING MgdCreateSqliteFeatureSource::GetSecondConnectionString()
 {
     STRING connstr = m_connectParamName + L"=" + m_tempFileName + L";UseFdoMetadata=true";  // NOXLATE
     return connstr;
 }
 
-STRING MgCreateSqliteFeatureSource::GetFeatureSourceParameterString() const
+STRING MgdCreateSqliteFeatureSource::GetFeatureSourceParameterString() const
 {
     STRING fileName = GetFileName();
     STRING featureSource = L"  <Parameter>\n"; // NOXLATE
@@ -401,7 +401,7 @@ STRING MgCreateSqliteFeatureSource::GetFeatureSourceParameterString() const
     return featureSource;
 }
 
-MgCreateRdbmsFeatureSource::MgCreateRdbmsFeatureSource(MgResourceIdentifier* resource, MgdRdbmsFeatureSourceParams* params)
+MgdCreateRdbmsFeatureSource::MgdCreateRdbmsFeatureSource(MgResourceIdentifier* resource, MgdRdbmsFeatureSourceParams* params)
 {
     m_resource = resource;
     SAFE_ADDREF(resource);
@@ -410,13 +410,13 @@ MgCreateRdbmsFeatureSource::MgCreateRdbmsFeatureSource(MgResourceIdentifier* res
     SAFE_ADDREF(params);
 }
 
-MgCreateRdbmsFeatureSource::~MgCreateRdbmsFeatureSource()
+MgdCreateRdbmsFeatureSource::~MgdCreateRdbmsFeatureSource()
 {
     SAFE_RELEASE(m_resource);
     SAFE_RELEASE(m_params);
 }
 
-void MgCreateRdbmsFeatureSource::CreateFeatureSource() 
+void MgdCreateRdbmsFeatureSource::CreateFeatureSource() 
 {
     MG_FEATURE_SERVICE_TRY()
     STRING provider = m_params->GetProviderName();
@@ -433,7 +433,7 @@ void MgCreateRdbmsFeatureSource::CreateFeatureSource()
     if (!password.empty())
         connStr += L";Password=" + password;
 
-    Ptr<MgFeatureConnection> conn = new MgFeatureConnection(provider, connStr);
+    Ptr<MgdFeatureConnection> conn = new MgdFeatureConnection(provider, connStr);
     {
         FdoPtr<FdoIConnection> fdoConn = conn->GetConnection();
 
@@ -450,9 +450,9 @@ void MgCreateRdbmsFeatureSource::CreateFeatureSource()
 
         connStr += L";DataStore=" + dataStore;
         //Amend connection string to incorporate the created data store
-        conn = new MgFeatureConnection(provider, connStr);
+        conn = new MgdFeatureConnection(provider, connStr);
         if (!conn->IsConnectionOpen())
-            throw new MgdConnectionFailedException(L"MgCreateRdbmsFeatureSource::CreateFeatureSource", __LINE__, __WFILE__, NULL, L"", NULL);
+            throw new MgdConnectionFailedException(L"MgdCreateRdbmsFeatureSource::CreateFeatureSource", __LINE__, __WFILE__, NULL, L"", NULL);
 
         fdoConn = conn->GetConnection();
 
@@ -463,7 +463,7 @@ void MgCreateRdbmsFeatureSource::CreateFeatureSource()
         
         //Extents is required for RDBMS data stores
         Ptr<MgEnvelope> extents = m_params->GetSpatialContextExtents();
-        CHECKNULL((MgEnvelope*)extents, L"MgCreateRdbmsFeatureSource::CreateFeatureSource");
+        CHECKNULL((MgEnvelope*)extents, L"MgdCreateRdbmsFeatureSource::CreateFeatureSource");
 
         Ptr<MgCoordinate> extentsLL = extents->GetLowerLeftCoordinate();
         Ptr<MgCoordinate> extentsUR = extents->GetUpperRightCoordinate();
@@ -500,19 +500,19 @@ void MgCreateRdbmsFeatureSource::CreateFeatureSource()
         //are correctly pointing to the name of the spatial context we just 
         //created?
 
-        MgFeatureUtil::UpdateFdoFeatureSchema(mgSchema, fdoSchema);
+        MgdFeatureUtil::UpdateFdoFeatureSchema(mgSchema, fdoSchema);
         apply->SetFeatureSchema(fdoSchema);
         apply->Execute();
 
         WriteFeatureSourceContent();
     }
-    MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgCreateRdbmsFeatureSource::CreateFeatureSource")
+    MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgdCreateRdbmsFeatureSource::CreateFeatureSource")
 }
 
-void MgCreateRdbmsFeatureSource::WriteFeatureSourceContent()
+void MgdCreateRdbmsFeatureSource::WriteFeatureSourceContent()
 {
     MG_FEATURE_SERVICE_TRY()
-    Ptr<MgServiceFactory> fact = new MgServiceFactory();
+    Ptr<MgdServiceFactory> fact = new MgdServiceFactory();
     Ptr<MgdResourceService> resSvc = static_cast<MgdResourceService*>(fact->CreateService(MgServiceType::ResourceService));
 
     STRING xml = L"<FeatureSource xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:noNamespaceSchemaLocation=\"FeatureSource-1.0.0.xsd\" version=\"1.0.0\">\n"; // NOXLATE
@@ -528,7 +528,7 @@ void MgCreateRdbmsFeatureSource::WriteFeatureSourceContent()
     Ptr<MgByteSource> xmlSource = new MgByteSource((BYTE_ARRAY_IN) utf8Text.c_str(), (INT32)utf8Text.length());
     Ptr<MgByteReader> xmlReader = xmlSource->GetReader();
     resSvc->SetResource(m_resource, xmlReader, NULL);
-    MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgCreateRdbmsFeatureSource::WriteFeatureSourceContent")
+    MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgdCreateRdbmsFeatureSource::WriteFeatureSourceContent")
 }
 
-void MgCreateRdbmsFeatureSource::Dispose() { delete this; }
+void MgdCreateRdbmsFeatureSource::Dispose() { delete this; }

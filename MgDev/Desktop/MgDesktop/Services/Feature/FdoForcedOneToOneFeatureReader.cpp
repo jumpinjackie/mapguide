@@ -1,9 +1,9 @@
 #include "FdoForcedOneToOneFeatureReader.h"
 
-// constructs a MgFdoForcedOneToOneFeatureReader
-MgFdoForcedOneToOneFeatureReader::MgFdoForcedOneToOneFeatureReader() { }
+// constructs a MgdFdoForcedOneToOneFeatureReader
+MgdFdoForcedOneToOneFeatureReader::MgdFdoForcedOneToOneFeatureReader() { }
 
-MgFdoForcedOneToOneFeatureReader::MgFdoForcedOneToOneFeatureReader(FdoIFeatureReader* reader, FdoStringCollection* idPropNames)
+MgdFdoForcedOneToOneFeatureReader::MgdFdoForcedOneToOneFeatureReader(FdoIFeatureReader* reader, FdoStringCollection* idPropNames)
 {
     m_cachedClsDef = NULL;
     m_reader = FDO_SAFE_ADDREF(reader);
@@ -11,7 +11,7 @@ MgFdoForcedOneToOneFeatureReader::MgFdoForcedOneToOneFeatureReader(FdoIFeatureRe
 }
 
 // default destructor
-MgFdoForcedOneToOneFeatureReader::~MgFdoForcedOneToOneFeatureReader() 
+MgdFdoForcedOneToOneFeatureReader::~MgdFdoForcedOneToOneFeatureReader() 
 { 
     m_idValues.clear();
     FDO_SAFE_RELEASE(m_reader);
@@ -19,184 +19,184 @@ MgFdoForcedOneToOneFeatureReader::~MgFdoForcedOneToOneFeatureReader()
     FDO_SAFE_RELEASE(m_cachedClsDef);
 }
 
-void MgFdoForcedOneToOneFeatureReader::Dispose() { delete this; }
+void MgdFdoForcedOneToOneFeatureReader::Dispose() { delete this; }
 
-FdoClassDefinition* MgFdoForcedOneToOneFeatureReader::GetClassDefinition()
+FdoClassDefinition* MgdFdoForcedOneToOneFeatureReader::GetClassDefinition()
 {
     return m_reader->GetClassDefinition();
 }
 
-int MgFdoForcedOneToOneFeatureReader::GetDepth()
+int MgdFdoForcedOneToOneFeatureReader::GetDepth()
 {
     return m_reader->GetDepth();
 }
 
-bool MgFdoForcedOneToOneFeatureReader::GetBoolean(const wchar_t *propertyName)
+bool MgdFdoForcedOneToOneFeatureReader::GetBoolean(const wchar_t *propertyName)
 {
     return m_reader->GetBoolean(propertyName);
 }
 
-FdoByte MgFdoForcedOneToOneFeatureReader::GetByte(const wchar_t *propertyName)
+FdoByte MgdFdoForcedOneToOneFeatureReader::GetByte(const wchar_t *propertyName)
 {
     return m_reader->GetByte(propertyName);
 }
 
-double MgFdoForcedOneToOneFeatureReader::GetDouble(const wchar_t* propertyName)
+double MgdFdoForcedOneToOneFeatureReader::GetDouble(const wchar_t* propertyName)
 {
     return m_reader->GetDouble(propertyName);
 }
 
-short MgFdoForcedOneToOneFeatureReader::GetInt16(const wchar_t *propertyName)
+short MgdFdoForcedOneToOneFeatureReader::GetInt16(const wchar_t *propertyName)
 {
     return m_reader->GetInt16(propertyName);
 }
 
-int MgFdoForcedOneToOneFeatureReader::GetInt32(const wchar_t *propertyName)
+int MgdFdoForcedOneToOneFeatureReader::GetInt32(const wchar_t *propertyName)
 {
     return m_reader->GetInt32(propertyName);
 }
 
-FdoInt64 MgFdoForcedOneToOneFeatureReader::GetInt64(const wchar_t *propertyName)
+FdoInt64 MgdFdoForcedOneToOneFeatureReader::GetInt64(const wchar_t *propertyName)
 {
     return m_reader->GetInt64(propertyName);
 }
 
-float MgFdoForcedOneToOneFeatureReader::GetSingle(const wchar_t *propertyName)
+float MgdFdoForcedOneToOneFeatureReader::GetSingle(const wchar_t *propertyName)
 {
     return m_reader->GetSingle(propertyName);
 }
 
-const wchar_t* MgFdoForcedOneToOneFeatureReader::GetString(const wchar_t *propertyName)
+const wchar_t* MgdFdoForcedOneToOneFeatureReader::GetString(const wchar_t *propertyName)
 {
     return m_reader->GetString(propertyName);
 }
 
-FdoLOBValue* MgFdoForcedOneToOneFeatureReader::GetLOB(const wchar_t* propertyName)
+FdoLOBValue* MgdFdoForcedOneToOneFeatureReader::GetLOB(const wchar_t* propertyName)
 {
     return m_reader->GetLOB(propertyName);
 }
 
-FdoIStreamReader* MgFdoForcedOneToOneFeatureReader::GetLOBStreamReader(const wchar_t* propertyName)
+FdoIStreamReader* MgdFdoForcedOneToOneFeatureReader::GetLOBStreamReader(const wchar_t* propertyName)
 {
     return m_reader->GetLOBStreamReader(propertyName);
 }
 
-bool MgFdoForcedOneToOneFeatureReader::IsNull(const wchar_t *propertyName)
+bool MgdFdoForcedOneToOneFeatureReader::IsNull(const wchar_t *propertyName)
 {
     return m_reader->IsNull(propertyName);
 }
 
-FdoIFeatureReader* MgFdoForcedOneToOneFeatureReader::GetFeatureObject(const wchar_t* propertyName)
+FdoIFeatureReader* MgdFdoForcedOneToOneFeatureReader::GetFeatureObject(const wchar_t* propertyName)
 {
     return m_reader->GetFeatureObject(propertyName);
 }
 
-FdoByteArray* MgFdoForcedOneToOneFeatureReader::GetGeometry(const wchar_t* propertyName)
+FdoByteArray* MgdFdoForcedOneToOneFeatureReader::GetGeometry(const wchar_t* propertyName)
 {
     return m_reader->GetGeometry(propertyName);
 }
 
-const FdoByte * MgFdoForcedOneToOneFeatureReader::GetGeometry(const wchar_t* propertyName, FdoInt32 * count)
+const FdoByte * MgdFdoForcedOneToOneFeatureReader::GetGeometry(const wchar_t* propertyName, FdoInt32 * count)
 {
     return m_reader->GetGeometry(propertyName, count);
 }
 
-FdoIRaster* MgFdoForcedOneToOneFeatureReader::GetRaster(const wchar_t* propertyName)
+FdoIRaster* MgdFdoForcedOneToOneFeatureReader::GetRaster(const wchar_t* propertyName)
 {
     return m_reader->GetRaster(propertyName);
 }
 
-bool MgFdoForcedOneToOneFeatureReader::IsNull(FdoInt32 index)
+bool MgdFdoForcedOneToOneFeatureReader::IsNull(FdoInt32 index)
 {
     return m_reader->IsNull(index);
 }
 
-const wchar_t* MgFdoForcedOneToOneFeatureReader::GetString(FdoInt32 index)
+const wchar_t* MgdFdoForcedOneToOneFeatureReader::GetString(FdoInt32 index)
 {
     return m_reader->GetString(index);
 }
 
-bool MgFdoForcedOneToOneFeatureReader::GetBoolean(FdoInt32 index)
+bool MgdFdoForcedOneToOneFeatureReader::GetBoolean(FdoInt32 index)
 {
     return m_reader->GetBoolean(index);
 }
 
-FdoByte MgFdoForcedOneToOneFeatureReader::GetByte(FdoInt32 index)
+FdoByte MgdFdoForcedOneToOneFeatureReader::GetByte(FdoInt32 index)
 {
     return m_reader->GetByte(index);
 }
 
-FdoDateTime MgFdoForcedOneToOneFeatureReader::GetDateTime(FdoInt32 index)
+FdoDateTime MgdFdoForcedOneToOneFeatureReader::GetDateTime(FdoInt32 index)
 {
     return m_reader->GetDateTime(index);
 }
 
-double MgFdoForcedOneToOneFeatureReader::GetDouble(FdoInt32 index)
+double MgdFdoForcedOneToOneFeatureReader::GetDouble(FdoInt32 index)
 {
     return m_reader->GetDouble(index);
 }
 
-short MgFdoForcedOneToOneFeatureReader::GetInt16(FdoInt32 index)
+short MgdFdoForcedOneToOneFeatureReader::GetInt16(FdoInt32 index)
 {
     return m_reader->GetInt16(index);
 }
 
-int MgFdoForcedOneToOneFeatureReader::GetInt32(FdoInt32 index)
+int MgdFdoForcedOneToOneFeatureReader::GetInt32(FdoInt32 index)
 {
     return m_reader->GetInt32(index);
 }
 
-FdoInt64 MgFdoForcedOneToOneFeatureReader::GetInt64(FdoInt32 index)
+FdoInt64 MgdFdoForcedOneToOneFeatureReader::GetInt64(FdoInt32 index)
 {
     return m_reader->GetInt64(index);
 }
 
-float MgFdoForcedOneToOneFeatureReader::GetSingle(FdoInt32 index)
+float MgdFdoForcedOneToOneFeatureReader::GetSingle(FdoInt32 index)
 {
     return m_reader->GetSingle(index);
 }
 
-FdoLOBValue* MgFdoForcedOneToOneFeatureReader::GetLOB(FdoInt32 index)
+FdoLOBValue* MgdFdoForcedOneToOneFeatureReader::GetLOB(FdoInt32 index)
 {
     return m_reader->GetLOB(index);
 }
 
-FdoIStreamReader* MgFdoForcedOneToOneFeatureReader::GetLOBStreamReader(FdoInt32 index)
+FdoIStreamReader* MgdFdoForcedOneToOneFeatureReader::GetLOBStreamReader(FdoInt32 index)
 {
     return m_reader->GetLOBStreamReader(index);
 }
 
-FdoIRaster* MgFdoForcedOneToOneFeatureReader::GetRaster(FdoInt32 index)
+FdoIRaster* MgdFdoForcedOneToOneFeatureReader::GetRaster(FdoInt32 index)
 {
     return m_reader->GetRaster(index);
 }
 
-const FdoByte* MgFdoForcedOneToOneFeatureReader::GetGeometry(FdoInt32 index, FdoInt32 * count)
+const FdoByte* MgdFdoForcedOneToOneFeatureReader::GetGeometry(FdoInt32 index, FdoInt32 * count)
 {
     return m_reader->GetGeometry(index, count);
 }
 
-FdoByteArray* MgFdoForcedOneToOneFeatureReader::GetGeometry(FdoInt32 index)
+FdoByteArray* MgdFdoForcedOneToOneFeatureReader::GetGeometry(FdoInt32 index)
 {
     return m_reader->GetGeometry(index);
 }
 
-FdoIFeatureReader* MgFdoForcedOneToOneFeatureReader::GetFeatureObject (FdoInt32 index)
+FdoIFeatureReader* MgdFdoForcedOneToOneFeatureReader::GetFeatureObject (FdoInt32 index)
 {
     return m_reader->GetFeatureObject(index);
 }
 
-FdoString* MgFdoForcedOneToOneFeatureReader::GetPropertyName(FdoInt32 index)
+FdoString* MgdFdoForcedOneToOneFeatureReader::GetPropertyName(FdoInt32 index)
 {
     return m_reader->GetPropertyName(index);
 }
 
-FdoInt32 MgFdoForcedOneToOneFeatureReader::GetPropertyIndex(FdoString* propertyName)
+FdoInt32 MgdFdoForcedOneToOneFeatureReader::GetPropertyIndex(FdoString* propertyName)
 {
     return m_reader->GetPropertyIndex(propertyName);
 }
 
-bool MgFdoForcedOneToOneFeatureReader::ReadNext()
+bool MgdFdoForcedOneToOneFeatureReader::ReadNext()
 {
     bool ret = false;
 
@@ -221,18 +221,18 @@ bool MgFdoForcedOneToOneFeatureReader::ReadNext()
     return ret;
 }
 
-void MgFdoForcedOneToOneFeatureReader::Close()
+void MgdFdoForcedOneToOneFeatureReader::Close()
 {
     m_reader->Close();
 }
 
 
-FdoDateTime MgFdoForcedOneToOneFeatureReader::GetDateTime(const wchar_t *propertyName )
+FdoDateTime MgdFdoForcedOneToOneFeatureReader::GetDateTime(const wchar_t *propertyName )
 {
     return m_reader->GetDateTime(propertyName);
 }
 
-STRING MgFdoForcedOneToOneFeatureReader::GetIdentityHash()
+STRING MgdFdoForcedOneToOneFeatureReader::GetIdentityHash()
 {
     STRING ret;
 

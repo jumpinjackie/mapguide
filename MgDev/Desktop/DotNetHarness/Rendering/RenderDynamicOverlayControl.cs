@@ -22,7 +22,7 @@ namespace DotNetHarness.Rendering
         {
             try
             {
-                var fact = new MgServiceFactory();
+                var fact = new MgdServiceFactory();
                 MgdRenderingService renSvc = (MgdRenderingService)fact.CreateService(MgServiceType.RenderingService);
                 MgResourceIdentifier resId = new MgResourceIdentifier(textBox1.Text);
 
@@ -82,7 +82,7 @@ namespace DotNetHarness.Rendering
                 }
 
                 MgColor selColor = new MgColor("0x0000FFFF");
-                MgRenderingOptions renderOpts = new MgRenderingOptions(textBox5.Text, mode, selColor);
+                MgdRenderingOptions renderOpts = new MgdRenderingOptions(textBox5.Text, mode, selColor);
 
                 sw.Start();
                 MgByteReader response = renSvc.RenderDynamicOverlay(map, selection, renderOpts);

@@ -4,13 +4,13 @@
 #define ERROR_VAL (RS_InputStream*)1
 
 
-RSMgSymbolManager::RSMgSymbolManager(MgResourceService* svc)
+RSMgdSymbolManager::RSMgdSymbolManager(MgResourceService* svc)
 {
     m_svcResource = SAFE_ADDREF(svc);
 }
 
 
-RSMgSymbolManager::~RSMgSymbolManager()
+RSMgdSymbolManager::~RSMgdSymbolManager()
 {
     SAFE_RELEASE(m_svcResource);
 
@@ -24,7 +24,7 @@ RSMgSymbolManager::~RSMgSymbolManager()
 }
 
 
-const RS_InputStream* RSMgSymbolManager::GetSymbolData(const wchar_t* libraryName,
+const RS_InputStream* RSMgdSymbolManager::GetSymbolData(const wchar_t* libraryName,
                                                        const wchar_t* symbolName)
 {
     // see if the named symbol already exists in the cache
@@ -42,7 +42,7 @@ const RS_InputStream* RSMgSymbolManager::GetSymbolData(const wchar_t* libraryNam
         {
             MgResourceIdentifier resId(libraryName);
             Ptr<MgByteReader> rdr = m_svcResource->GetResourceData(&resId, symbolName);
-            ret = new RSMgInputStream(rdr.p);
+            ret = new RSMgdInputStream(rdr.p);
             m_mSymbolCache[uniqueName] = ret;
         }
         catch (MgException* e)

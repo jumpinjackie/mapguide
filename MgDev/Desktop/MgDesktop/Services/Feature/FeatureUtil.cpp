@@ -8,14 +8,14 @@ static std::map<INT32, FdoOrderingOption>               s_FdoOrderingOption;
 static std::map<INT32, STRING>                          s_CustomFunctions;
 static std::map<INT32, FdoSpatialOperations>            s_FdoSpatialOperation;
 
-bool MgFeatureUtil::m_isInitialized = MgFeatureUtil::Initialize();
+bool MgdFeatureUtil::m_isInitialized = MgdFeatureUtil::Initialize();
 
-INT32 MgFeatureUtil::GetMgPropertyType(FdoDataType fdoDataType)
+INT32 MgdFeatureUtil::GetMgPropertyType(FdoDataType fdoDataType)
 {
     return s_FeatureUtilFdoDataType[fdoDataType];
 }
 
-bool MgFeatureUtil::FindCustomFunction(CREFSTRING funcName, INT32 &index)
+bool MgdFeatureUtil::FindCustomFunction(CREFSTRING funcName, INT32 &index)
 {
     int cnt = (int)s_CustomFunctions.size();
     bool supports = false;
@@ -39,14 +39,14 @@ bool MgFeatureUtil::FindCustomFunction(CREFSTRING funcName, INT32 &index)
     return supports;
 }
 
-FdoOrderingOption MgFeatureUtil::GetFdoOrderingOption(INT32 orderingOption)
+FdoOrderingOption MgdFeatureUtil::GetFdoOrderingOption(INT32 orderingOption)
 {
     MgOrderingOption::ValidateRange(orderingOption);
 
     return s_FdoOrderingOption[orderingOption];
 }
 
-bool MgFeatureUtil::Initialize()
+bool MgdFeatureUtil::Initialize()
 {
     s_FeatureUtilFdoDataType[FdoDataType_Boolean]  = MgPropertyType::Boolean;
     s_FeatureUtilFdoDataType[FdoDataType_Byte]     = MgPropertyType::Byte;
@@ -100,15 +100,15 @@ bool MgFeatureUtil::Initialize()
     return true;
 }
 
-STRING MgFeatureUtil::GetMessage(CREFSTRING messageId)
+STRING MgdFeatureUtil::GetMessage(CREFSTRING messageId)
 {
     STRING msg = MgUtil::GetResourceMessage(MgResources::FeatureService, messageId);
     return msg;
 }
 
-INT16 MgFeatureUtil::GetMgPropertyType(MgPropertyDefinition* propDef)
+INT16 MgdFeatureUtil::GetMgPropertyType(MgPropertyDefinition* propDef)
 {
-    CHECKNULL((MgPropertyDefinition*)propDef, L"MgFeatureUtil.GetMgPropertyType")
+    CHECKNULL((MgPropertyDefinition*)propDef, L"MgdFeatureUtil.GetMgPropertyType")
 
     INT32 mgPropType = 0;
 
@@ -149,9 +149,9 @@ INT16 MgFeatureUtil::GetMgPropertyType(MgPropertyDefinition* propDef)
 }
 
 
-MgPropertyDefinitionCollection* MgFeatureUtil::GetPropertyDefinitions(MgReader* reader)
+MgPropertyDefinitionCollection* MgdFeatureUtil::GetPropertyDefinitions(MgReader* reader)
 {
-    CHECKNULL(reader, L"MgFeatureUtil.GetPropertyDefinitions");
+    CHECKNULL(reader, L"MgdFeatureUtil.GetPropertyDefinitions");
 
     // Create a new collection
     Ptr<MgPropertyDefinitionCollection> propDefCol = new MgPropertyDefinitionCollection();
@@ -170,9 +170,9 @@ MgPropertyDefinitionCollection* MgFeatureUtil::GetPropertyDefinitions(MgReader* 
 }
 
 
-void MgFeatureUtil::GetArguments(FdoFunction* customFunction, REFSTRING name, int &numCats, double& dataMin, double& dataMax, INT16 type)
+void MgdFeatureUtil::GetArguments(FdoFunction* customFunction, REFSTRING name, int &numCats, double& dataMin, double& dataMax, INT16 type)
 {
-    CHECKNULL(customFunction, L"MgFeatureDistribution.GetArguments");
+    CHECKNULL(customFunction, L"MgdFeatureDistribution.GetArguments");
 
     dataMin = -DoubleMaxValue;
     dataMax = DoubleMaxValue;
@@ -183,11 +183,11 @@ void MgFeatureUtil::GetArguments(FdoFunction* customFunction, REFSTRING name, in
 
     if (cnt < 2)
     {
-        STRING message = MgFeatureUtil::GetMessage(L"MgInvalidComputedProperty");
+        STRING message = MgdFeatureUtil::GetMessage(L"MgInvalidComputedProperty");
 
         MgStringCollection arguments;
         arguments.Add(customFunction->GetName());
-        throw new MgFeatureServiceException(L"MgFeatureUtil.GetArguments", __LINE__, __WFILE__, &arguments, L"", NULL);
+        throw new MgFeatureServiceException(L"MgdFeatureUtil.GetArguments", __LINE__, __WFILE__, &arguments, L"", NULL);
     }
 
     FdoString *arg0 = NULL, *arg1 = NULL, *arg2 = NULL, *arg3 = NULL;
@@ -197,23 +197,23 @@ void MgFeatureUtil::GetArguments(FdoFunction* customFunction, REFSTRING name, in
     // We skip first argument as it is name of property
     FdoInt32 argCnt = 0;
     FdoPtr<FdoExpression> expr0 = exprCol->GetItem(argCnt);
-    CHECKNULL((FdoExpression*)expr0, L"MgFeatureUtil.GetArguments");
+    CHECKNULL((FdoExpression*)expr0, L"MgdFeatureUtil.GetArguments");
     arg0 = expr0->ToString(); // Name of function
 
     FdoPtr<FdoExpression> expr1 = exprCol->GetItem(argCnt+1);
-    CHECKNULL((FdoExpression*)expr1, L"MgFeatureUtil.GetArguments");
+    CHECKNULL((FdoExpression*)expr1, L"MgdFeatureUtil.GetArguments");
     arg1 = expr1->ToString(); // No of categories
 
     if (cnt > 2)
     {
         FdoPtr<FdoExpression> expr2 = exprCol->GetItem(argCnt+2);
-        CHECKNULL((FdoExpression*)expr2, L"MgFeatureUtil.GetArguments");
+        CHECKNULL((FdoExpression*)expr2, L"MgdFeatureUtil.GetArguments");
         arg2 = expr2->ToString(); // Min Range
 
         if (cnt > 3)
         {
             FdoPtr<FdoExpression> expr3 = exprCol->GetItem(argCnt+3);
-            CHECKNULL((FdoExpression*)expr3, L"MgFeatureUtil.GetArguments");
+            CHECKNULL((FdoExpression*)expr3, L"MgdFeatureUtil.GetArguments");
             arg3 = expr3->ToString(); // Max Range
         }
     }
@@ -262,18 +262,18 @@ void MgFeatureUtil::GetArguments(FdoFunction* customFunction, REFSTRING name, in
     }
 }
 
-INT32 MgFeatureUtil::GetPropertyDefinition(MgReader* reader, REFSTRING propName)
+INT32 MgdFeatureUtil::GetPropertyDefinition(MgReader* reader, REFSTRING propName)
 {
-    CHECKNULL((MgReader*)reader, L"MgFeatureUtil.GetPropertyDefinition");
+    CHECKNULL((MgReader*)reader, L"MgdFeatureUtil.GetPropertyDefinition");
 
     INT32 cnt = reader->GetPropertyCount();
     if (cnt != 1)
     {
-        STRING message = MgFeatureUtil::GetMessage(L"MgOnlyOnePropertyAllowed");
+        STRING message = MgdFeatureUtil::GetMessage(L"MgOnlyOnePropertyAllowed");
 
         MgStringCollection arguments;
         arguments.Add(message);
-        throw new MgFeatureServiceException(L"MgFeatureUtil.GetPropertyDefinition", __LINE__, __WFILE__, &arguments, L"", NULL);
+        throw new MgFeatureServiceException(L"MgdFeatureUtil.GetPropertyDefinition", __LINE__, __WFILE__, &arguments, L"", NULL);
     }
 
     // Get the name of property
@@ -284,7 +284,7 @@ INT32 MgFeatureUtil::GetPropertyDefinition(MgReader* reader, REFSTRING propName)
     return type;
 }
 
-bool MgFeatureUtil::FindCustomFunction(FdoFunction* customFunction, INT32 &index)
+bool MgdFeatureUtil::FindCustomFunction(FdoFunction* customFunction, INT32 &index)
 {
     bool supported = false;
     STRING funcName;
@@ -303,7 +303,7 @@ bool MgFeatureUtil::FindCustomFunction(FdoFunction* customFunction, INT32 &index
 }
 
 
-void MgFeatureUtil::ValidateCustomConstraints(FdoFunction* customFunction)
+void MgdFeatureUtil::ValidateCustomConstraints(FdoFunction* customFunction)
 {
     if (customFunction == NULL) { return; } // Nothing to do here
 
@@ -329,7 +329,7 @@ void MgFeatureUtil::ValidateCustomConstraints(FdoFunction* customFunction)
 
                     MgStringCollection arguments;
                     arguments.Add(message);
-                    throw new MgFeatureServiceException(L"MgFeatureUtil.ValidateCustomConstraints",
+                    throw new MgFeatureServiceException(L"MgdFeatureUtil.ValidateCustomConstraints",
                         __LINE__, __WFILE__, &arguments, L"", NULL);
                 }
                 break;
@@ -347,7 +347,7 @@ void MgFeatureUtil::ValidateCustomConstraints(FdoFunction* customFunction)
 
                     MgStringCollection arguments;
                     arguments.Add(message);
-                    throw new MgFeatureServiceException(L"MgFeatureUtil.ValidateCustomConstraints",
+                    throw new MgFeatureServiceException(L"MgdFeatureUtil.ValidateCustomConstraints",
                         __LINE__, __WFILE__, &arguments, L"", NULL);
                 }
                 break;
@@ -356,11 +356,11 @@ void MgFeatureUtil::ValidateCustomConstraints(FdoFunction* customFunction)
     }
 }
 
-double MgFeatureUtil::Minimum(VECTOR& v)
+double MgdFeatureUtil::Minimum(VECTOR& v)
 {
     int cnt = (int)v.size();
     if (cnt <= 0)
-        throw new MgIndexOutOfRangeException(L"MgFeatureUtil.Minimum", __LINE__, __WFILE__, NULL, L"", NULL);
+        throw new MgIndexOutOfRangeException(L"MgdFeatureUtil.Minimum", __LINE__, __WFILE__, NULL, L"", NULL);
     double min = v[0];
     for (int i = 1; i < cnt; ++i)
     {
@@ -371,11 +371,11 @@ double MgFeatureUtil::Minimum(VECTOR& v)
     return min;
 }
 
-INT64 MgFeatureUtil::Minimum(VECTOR_INT64& v)
+INT64 MgdFeatureUtil::Minimum(VECTOR_INT64& v)
 {
     int cnt = (int)v.size();
     if (cnt <= 0)
-        throw new MgIndexOutOfRangeException(L"MgFeatureUtil.Minimum", __LINE__, __WFILE__, NULL, L"", NULL);
+        throw new MgIndexOutOfRangeException(L"MgdFeatureUtil.Minimum", __LINE__, __WFILE__, NULL, L"", NULL);
     INT64 min = v[0];
     for (int i = 1; i < cnt; ++i)
     {
@@ -386,11 +386,11 @@ INT64 MgFeatureUtil::Minimum(VECTOR_INT64& v)
     return min;
 }
 
-double MgFeatureUtil::Maximum(VECTOR& v)
+double MgdFeatureUtil::Maximum(VECTOR& v)
 {
     int cnt = (int)v.size();
     if (cnt <= 0)
-        throw new MgIndexOutOfRangeException(L"MgFeatureUtil.Maximum", __LINE__, __WFILE__, NULL, L"", NULL);
+        throw new MgIndexOutOfRangeException(L"MgdFeatureUtil.Maximum", __LINE__, __WFILE__, NULL, L"", NULL);
     double max = v[0];
     for (int i = 1; i < cnt; ++i)
     {
@@ -401,11 +401,11 @@ double MgFeatureUtil::Maximum(VECTOR& v)
     return max;
 }
 
-INT64 MgFeatureUtil::Maximum(VECTOR_INT64& v)
+INT64 MgdFeatureUtil::Maximum(VECTOR_INT64& v)
 {
     int cnt = (int)v.size();
     if (cnt <= 0)
-        throw new MgIndexOutOfRangeException(L"MgFeatureUtil.Maximum", __LINE__, __WFILE__, NULL, L"", NULL);
+        throw new MgIndexOutOfRangeException(L"MgdFeatureUtil.Maximum", __LINE__, __WFILE__, NULL, L"", NULL);
     INT64 max = v[0];
     for (int i = 1; i < cnt; ++i)
     {
@@ -416,7 +416,7 @@ INT64 MgFeatureUtil::Maximum(VECTOR_INT64& v)
     return max;
 }
 
-FdoSpatialOperations MgFeatureUtil::GetFdoSpatialOperation(INT32 spatialOp)
+FdoSpatialOperations MgdFeatureUtil::GetFdoSpatialOperation(INT32 spatialOp)
 {
     MgFeatureSpatialOperations::ValidateRange(spatialOp);
 
@@ -424,13 +424,13 @@ FdoSpatialOperations MgFeatureUtil::GetFdoSpatialOperation(INT32 spatialOp)
 }
 
 
-INT32 MgFeatureUtil::GetMgFeaturePropertyType(FdoPropertyType fdoPropType)
+INT32 MgdFeatureUtil::GetMgFeaturePropertyType(FdoPropertyType fdoPropType)
 {
     return s_FdoPropertyType[fdoPropType];
 }
 
 
-MgRaster* MgFeatureUtil::GetMgRaster(FdoIRaster* raster, STRING propName)
+MgRaster* MgdFeatureUtil::GetMgRaster(FdoIRaster* raster, STRING propName)
 {
     Ptr<MgRaster> retVal;
 
@@ -495,16 +495,16 @@ MgRaster* MgFeatureUtil::GetMgRaster(FdoIRaster* raster, STRING propName)
         retVal->SetPropertyName(propName);
     }
 
-    MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgFeatureUtil.GetRaster")
+    MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgdFeatureUtil.GetRaster")
 
     return retVal.Detach();
 }
 
 
-MgByteReader* MgFeatureUtil::GetRaster(FdoIReader* reader, CREFSTRING rasterPropName,INT32 xSize, INT32 ySize)
+MgByteReader* MgdFeatureUtil::GetRaster(FdoIReader* reader, CREFSTRING rasterPropName,INT32 xSize, INT32 ySize)
 {
     // Null Reader is invalid
-    CHECKNULL(reader, L"MgFeatureUtil.GetRaster");
+    CHECKNULL(reader, L"MgdFeatureUtil.GetRaster");
 
     // Empty property name is invalid
     if (rasterPropName.empty())
@@ -513,14 +513,14 @@ MgByteReader* MgFeatureUtil::GetRaster(FdoIReader* reader, CREFSTRING rasterProp
         arguments.Add(L"2");
         arguments.Add(MgResources::BlankArgument);
 
-        throw new MgInvalidArgumentException(L"MgFeatureUtil.GetRaster",
+        throw new MgInvalidArgumentException(L"MgdFeatureUtil.GetRaster",
             __LINE__, __WFILE__, &arguments, L"MgStringEmpty", NULL);
     }
 
     Ptr<MgByteReader> byteReader;
 
     FdoPtr<FdoIRaster> fdoRaster = reader->GetRaster(rasterPropName.c_str());
-    CHECKNULL((FdoIRaster*)fdoRaster, L"MgFeatureUtil.GetRaster");
+    CHECKNULL((FdoIRaster*)fdoRaster, L"MgdFeatureUtil.GetRaster");
 
     // TODO: Should we support RasterModel properties and Tiling information ???
     fdoRaster->SetImageXSize(xSize);
@@ -547,7 +547,7 @@ MgByteReader* MgFeatureUtil::GetRaster(FdoIReader* reader, CREFSTRING rasterProp
         {
             FdoPtr<FdoIStreamReaderTmpl<FdoByte> > byteStreamReader =
                 FDO_SAFE_ADDREF(dynamic_cast<FdoIStreamReaderTmpl<FdoByte>*>((FdoIStreamReader*)streamReader));
-            CHECKNULL((FdoIStreamReaderTmpl<FdoByte>*)byteStreamReader, L"MgFeatureUtil.GetRaster");
+            CHECKNULL((FdoIStreamReaderTmpl<FdoByte>*)byteStreamReader, L"MgdFeatureUtil.GetRaster");
 
             ByteSourceRasterStreamImpl* rasterStream = new ByteSourceRasterStreamImpl(byteStreamReader);
             Ptr<MgByteSource> byteSource = new MgByteSource(rasterStream);
@@ -559,10 +559,10 @@ MgByteReader* MgFeatureUtil::GetRaster(FdoIReader* reader, CREFSTRING rasterProp
     return byteReader.Detach();
 }
 
-void MgFeatureUtil::FillFdoParameterCollection(MgParameterCollection* source, FdoParameterValueCollection* target)
+void MgdFeatureUtil::FillFdoParameterCollection(MgParameterCollection* source, FdoParameterValueCollection* target)
 {
-    CHECKNULL(source, L"MgFeatureUtil.FillFdoParameterCollection")
-    CHECKNULL(target, L"MgFeatureUtil.FillFdoParameterCollection")
+    CHECKNULL(source, L"MgdFeatureUtil.FillFdoParameterCollection")
+    CHECKNULL(target, L"MgdFeatureUtil.FillFdoParameterCollection")
 
     INT32 cnt = source->GetCount();
     for (INT32 i = 0; i < cnt; i++)
@@ -573,10 +573,10 @@ void MgFeatureUtil::FillFdoParameterCollection(MgParameterCollection* source, Fd
     }
 }
 
-void MgFeatureUtil::FillParameterCollection(FdoParameterValueCollection* source, MgParameterCollection* target)
+void MgdFeatureUtil::FillParameterCollection(FdoParameterValueCollection* source, MgParameterCollection* target)
 {
-    CHECKNULL(source, L"MgFeatureUtil.FillParameterCollection")
-    CHECKNULL(target, L"MgFeatureUtil.FillParameterCollection")
+    CHECKNULL(source, L"MgdFeatureUtil.FillParameterCollection")
+    CHECKNULL(target, L"MgdFeatureUtil.FillParameterCollection")
 
     INT32 cnt = source->GetCount();
     for (INT32 i = 0; i < cnt; i++)
@@ -587,14 +587,14 @@ void MgFeatureUtil::FillParameterCollection(FdoParameterValueCollection* source,
     }
 }
 
-void MgFeatureUtil::UpdateParameterCollection(FdoParameterValueCollection* source, MgParameterCollection* target)
+void MgdFeatureUtil::UpdateParameterCollection(FdoParameterValueCollection* source, MgParameterCollection* target)
 {
-    CHECKNULL(source, L"MgFeatureUtil.UpdateParameterCollection")
-    CHECKNULL(target, L"MgFeatureUtil.UpdateParameterCollection")
+    CHECKNULL(source, L"MgdFeatureUtil.UpdateParameterCollection")
+    CHECKNULL(target, L"MgdFeatureUtil.UpdateParameterCollection")
 
     if (source->GetCount() != target->GetCount())
     {
-        throw new MgInvalidArgumentException(L"MgFeatureUtil.UpdateParameterCollection",
+        throw new MgInvalidArgumentException(L"MgdFeatureUtil.UpdateParameterCollection",
             __LINE__, __WFILE__, NULL, L"", NULL);
     }
 
@@ -614,10 +614,10 @@ void MgFeatureUtil::UpdateParameterCollection(FdoParameterValueCollection* sourc
     }
 }
 
-void MgFeatureUtil::FillFdoPropertyCollection(MgPropertyCollection* srcCol, FdoPropertyValueCollection* paramCol)
+void MgdFeatureUtil::FillFdoPropertyCollection(MgPropertyCollection* srcCol, FdoPropertyValueCollection* paramCol)
 {
-    CHECKNULL(srcCol, L"MgFeatureUtil.FillFdoPropertyCollection")
-    CHECKNULL(paramCol, L"MgFeatureUtil.FillFdoPropertyCollection")
+    CHECKNULL(srcCol, L"MgdFeatureUtil.FillFdoPropertyCollection")
+    CHECKNULL(paramCol, L"MgdFeatureUtil.FillFdoPropertyCollection")
 
     INT32 cnt = srcCol->GetCount();
     for (INT32 i = 0; i < cnt; i++)
@@ -628,9 +628,9 @@ void MgFeatureUtil::FillFdoPropertyCollection(MgPropertyCollection* srcCol, FdoP
     }
 }
 
-FdoParameterValueCollection* MgFeatureUtil::CreateFdoParameterCollection(MgPropertyCollection* srcCol)
+FdoParameterValueCollection* MgdFeatureUtil::CreateFdoParameterCollection(MgPropertyCollection* srcCol)
 {
-    CHECKNULL(srcCol, L"MgFeatureUtil.FillFdoPropertyCollection")
+    CHECKNULL(srcCol, L"MgdFeatureUtil.FillFdoPropertyCollection")
     FdoPtr<FdoParameterValueCollection> paramCol = FdoParameterValueCollection::Create();
 
     INT32 cnt = srcCol->GetCount();
@@ -644,11 +644,11 @@ FdoParameterValueCollection* MgFeatureUtil::CreateFdoParameterCollection(MgPrope
     return paramCol.Detach();
 }
 
-MgParameter* MgFeatureUtil::FdoParameterValueToMgParameter(FdoParameterValue* fdoParamValue)
+MgParameter* MgdFeatureUtil::FdoParameterValueToMgParameter(FdoParameterValue* fdoParamValue)
 {
-    CHECKNULL(fdoParamValue, L"MgFeatureUtil.FdoParameterValueToMgParameter")
+    CHECKNULL(fdoParamValue, L"MgdFeatureUtil.FdoParameterValueToMgParameter")
     Ptr<MgNullableProperty> prop = dynamic_cast<MgNullableProperty*>(FdoParameterValueToMgProperty(fdoParamValue));
-    CHECKNULL(prop, L"MgFeatureUtil.FdoParameterValueToMgParameter")
+    CHECKNULL(prop, L"MgdFeatureUtil.FdoParameterValueToMgParameter")
 
     Ptr<MgParameter> param = new MgParameter();
     param->SetProperty(prop);
@@ -659,12 +659,12 @@ MgParameter* MgFeatureUtil::FdoParameterValueToMgParameter(FdoParameterValue* fd
     return param.Detach();
 }
 
-MgProperty* MgFeatureUtil::FdoParameterValueToMgProperty(FdoParameterValue* fdoParamValue)
+MgProperty* MgdFeatureUtil::FdoParameterValueToMgProperty(FdoParameterValue* fdoParamValue)
 {
-    CHECKNULL(fdoParamValue, L"MgFeatureUtil.FdoParameterValueToMgProperty")
+    CHECKNULL(fdoParamValue, L"MgdFeatureUtil.FdoParameterValueToMgProperty")
 
     FdoPtr<FdoLiteralValue> fdoLiteralValue = fdoParamValue->GetValue();
-    CHECKNULL(fdoLiteralValue, L"MgFeatureUtil.FdoParameterValueToMgProperty")
+    CHECKNULL(fdoLiteralValue, L"MgdFeatureUtil.FdoParameterValueToMgProperty")
 
     Ptr<MgNullableProperty> prop = NULL;
     STRING paramName = fdoParamValue->GetName();
@@ -873,9 +873,9 @@ MgProperty* MgFeatureUtil::FdoParameterValueToMgProperty(FdoParameterValue* fdoP
     return prop.Detach();
 }
 
-FdoLiteralValue* MgFeatureUtil::MgPropertyToFdoDataValue(MgProperty* srcProp)
+FdoLiteralValue* MgdFeatureUtil::MgPropertyToFdoDataValue(MgProperty* srcProp)
 {
-    CHECKNULL(srcProp, L"MgFeatureUtil.MgPropertyToFdoProperty")
+    CHECKNULL(srcProp, L"MgdFeatureUtil.MgPropertyToFdoProperty")
 
     INT16 propType = srcProp->GetPropertyType();
     FdoPtr<FdoLiteralValue> fdoVal;
@@ -1072,13 +1072,13 @@ FdoLiteralValue* MgFeatureUtil::MgPropertyToFdoDataValue(MgProperty* srcProp)
         }
         case MgPropertyType::Feature:
         {
-            throw new MgInvalidPropertyTypeException(L"MgFeatureUtil.MgPropertyToFdoProperty",
+            throw new MgInvalidPropertyTypeException(L"MgdFeatureUtil.MgPropertyToFdoProperty",
                 __LINE__, __WFILE__, NULL, L"", NULL);
             break;
         }
         case MgPropertyType::Raster:
         {
-            throw new MgInvalidPropertyTypeException(L"MgFeatureUtil.MgPropertyToFdoProperty",
+            throw new MgInvalidPropertyTypeException(L"MgdFeatureUtil.MgPropertyToFdoProperty",
                 __LINE__, __WFILE__, NULL, L"", NULL);
             break;
         }
@@ -1087,7 +1087,7 @@ FdoLiteralValue* MgFeatureUtil::MgPropertyToFdoDataValue(MgProperty* srcProp)
     return fdoVal.Detach();
 }
 
-FdoParameterValue* MgFeatureUtil::MgPropertyToFdoParameter(MgProperty* srcProp)
+FdoParameterValue* MgdFeatureUtil::MgPropertyToFdoParameter(MgProperty* srcProp)
 {
     FdoPtr<FdoLiteralValue> fdoValue = MgPropertyToFdoDataValue(srcProp);
     STRING str = srcProp->GetName();
@@ -1097,7 +1097,7 @@ FdoParameterValue* MgFeatureUtil::MgPropertyToFdoParameter(MgProperty* srcProp)
     return FdoParameterValue::Create(str.c_str(), fdoValue);
 }
 
-FdoParameterValue* MgFeatureUtil::MgParameterToFdoParameter(MgParameter* srcParam)
+FdoParameterValue* MgdFeatureUtil::MgParameterToFdoParameter(MgParameter* srcParam)
 {
     Ptr<MgProperty> srcProp = srcParam->GetProperty();
     assert(srcProp);
@@ -1108,7 +1108,7 @@ FdoParameterValue* MgFeatureUtil::MgParameterToFdoParameter(MgParameter* srcPara
     return value.Detach();
 }
 
-FdoPropertyValue* MgFeatureUtil::MgPropertyToFdoProperty(MgProperty* srcProp)
+FdoPropertyValue* MgdFeatureUtil::MgPropertyToFdoProperty(MgProperty* srcProp)
 {
     FdoPtr<FdoLiteralValue> fdoValue = MgPropertyToFdoDataValue(srcProp);
     STRING str = srcProp->GetName();
@@ -1118,7 +1118,7 @@ FdoPropertyValue* MgFeatureUtil::MgPropertyToFdoProperty(MgProperty* srcProp)
     return FdoPropertyValue::Create(str.c_str(), fdoValue);
 }
 
-INT32 MgFeatureUtil::FdoOrderTypeToMgOrderingOption(FdoOrderType type)
+INT32 MgdFeatureUtil::FdoOrderTypeToMgOrderingOption(FdoOrderType type)
 {
     INT32 orderOption = MgOrderingOption::Ascending;
     switch(type)
@@ -1137,7 +1137,7 @@ INT32 MgFeatureUtil::FdoOrderTypeToMgOrderingOption(FdoOrderType type)
     return orderOption;
 }
 
-FdoOrderType MgFeatureUtil::MgOrderingOptionToFdoOrderType(INT32 type)
+FdoOrderType MgdFeatureUtil::MgOrderingOptionToFdoOrderType(INT32 type)
 {
     MgOrderingOption::ValidateRange(type);
     FdoOrderType orderType = FdoOrderType_Ascending;
@@ -1158,7 +1158,7 @@ FdoOrderType MgFeatureUtil::MgOrderingOptionToFdoOrderType(INT32 type)
     return orderType;
 }
 
-INT32 MgFeatureUtil::FdoObjectTypeToMgObjectPropertyType(FdoObjectType type)
+INT32 MgdFeatureUtil::FdoObjectTypeToMgObjectPropertyType(FdoObjectType type)
 {
     INT32 objectType = MgObjectPropertyType::Value;
     switch(type)
@@ -1182,7 +1182,7 @@ INT32 MgFeatureUtil::FdoObjectTypeToMgObjectPropertyType(FdoObjectType type)
     return objectType;
 }
 
-FdoObjectType MgFeatureUtil::MgObjectPropertyTypeToFdoObjectType(INT32 type)
+FdoObjectType MgdFeatureUtil::MgObjectPropertyTypeToFdoObjectType(INT32 type)
 {
     MgObjectPropertyType::ValidateRange(type);
     FdoObjectType objectType = FdoObjectType_Value;
@@ -1208,7 +1208,7 @@ FdoObjectType MgFeatureUtil::MgObjectPropertyTypeToFdoObjectType(INT32 type)
     return objectType;
 }
 
-MgStringCollection* MgFeatureUtil::FdoToMgStringCollection(FdoStringCollection* fdoStrs, bool includeEmptyStrings)
+MgStringCollection* MgdFeatureUtil::FdoToMgStringCollection(FdoStringCollection* fdoStrs, bool includeEmptyStrings)
 {
     Ptr<MgStringCollection> mgStrs;
 
@@ -1235,7 +1235,7 @@ MgStringCollection* MgFeatureUtil::FdoToMgStringCollection(FdoStringCollection* 
     return mgStrs.Detach();
 }
 
-FdoStringCollection* MgFeatureUtil::MgToFdoStringCollection(MgStringCollection* mgStrs, bool includeEmptyStrings)
+FdoStringCollection* MgdFeatureUtil::MgToFdoStringCollection(MgStringCollection* mgStrs, bool includeEmptyStrings)
 {
     FdoPtr<FdoStringCollection> fdoStrs;
 
@@ -1258,7 +1258,7 @@ FdoStringCollection* MgFeatureUtil::MgToFdoStringCollection(MgStringCollection* 
     return fdoStrs.Detach();
 }
 
-bool MgFeatureUtil::FdoClassExist(const wchar_t* name, FdoClassCollection* clsCol)
+bool MgdFeatureUtil::FdoClassExist(const wchar_t* name, FdoClassCollection* clsCol)
 {
     if (name == NULL) // Empty name is an error
         return false;
@@ -1266,21 +1266,21 @@ bool MgFeatureUtil::FdoClassExist(const wchar_t* name, FdoClassCollection* clsCo
     return (clsCol->IndexOf(name) >= 0);
 }
 
-MgClassDefinition* MgFeatureUtil::GetMgClassDefinition(FdoClassDefinition* fdoClassDefinition, bool bSerialize)
+MgClassDefinition* MgdFeatureUtil::GetMgClassDefinition(FdoClassDefinition* fdoClassDefinition, bool bSerialize)
 {
-    CHECKNULL(fdoClassDefinition, L"MgFeatureUtil.GetMgClassDefinition");
+    CHECKNULL(fdoClassDefinition, L"MgdFeatureUtil.GetMgClassDefinition");
 
     // Create MgClassDefinition
     Ptr<MgClassDefinition> mgClassDef = new MgClassDefinition();
-    CHECKNULL((MgClassDefinition*)mgClassDef, L"MgFeatureUtil.GetMgClassDefinition");
+    CHECKNULL((MgClassDefinition*)mgClassDef, L"MgdFeatureUtil.GetMgClassDefinition");
 
     // Get PropertyDefinitionCollection to store property definitions
     Ptr<MgPropertyDefinitionCollection> propDefCol = mgClassDef->GetProperties();
-    CHECKNULL((MgPropertyDefinitionCollection*)propDefCol, L"MgFeatureUtil.GetMgClassDefinition");
+    CHECKNULL((MgPropertyDefinitionCollection*)propDefCol, L"MgdFeatureUtil.GetMgClassDefinition");
 
     // Get PropertyDefinitionCollection to store key property definitions i.e. which makes key for this feature class
     Ptr<MgPropertyDefinitionCollection> identityPropDefCol = mgClassDef->GetIdentityProperties();
-    CHECKNULL((MgPropertyDefinitionCollection*)identityPropDefCol, L"MgFeatureUtil.GetMgClassDefinition");
+    CHECKNULL((MgPropertyDefinitionCollection*)identityPropDefCol, L"MgdFeatureUtil.GetMgClassDefinition");
 
     // description
     FdoString* desc = fdoClassDefinition->GetDescription();
@@ -1321,7 +1321,7 @@ MgClassDefinition* MgFeatureUtil::GetMgClassDefinition(FdoClassDefinition* fdoCl
 
     // Retrieve Class properties from FDO
     FdoPtr<FdoPropertyDefinitionCollection> fpdc = fdoClassDefinition->GetProperties();
-    CHECKNULL((FdoPropertyDefinitionCollection*)fpdc, L"MgFeatureUtil.GetMgClassDefinition");
+    CHECKNULL((FdoPropertyDefinitionCollection*)fpdc, L"MgdFeatureUtil.GetMgClassDefinition");
 
     // Retrieve Base class properties from FDO
     // TODO: Should we add Base class properties into the list of properties?
@@ -1333,7 +1333,7 @@ MgClassDefinition* MgFeatureUtil::GetMgClassDefinition(FdoClassDefinition* fdoCl
     FdoPtr<FdoDataPropertyDefinitionCollection> fdpdc = fdoClassDefinition->GetIdentityProperties();
 
     // Add properties
-    MgFeatureUtil::GetClassProperties(propDefCol, fpdc);
+    MgdFeatureUtil::GetClassProperties(propDefCol, fpdc);
 
     FdoClassType classType = fdoClassDefinition->GetClassType();
     if (classType == FdoClassType_FeatureClass)
@@ -1350,7 +1350,7 @@ MgClassDefinition* MgFeatureUtil::GetMgClassDefinition(FdoClassDefinition* fdoCl
     }
 
     // Add identity properties
-    MgFeatureUtil::GetClassProperties(identityPropDefCol, fdpdc);
+    MgdFeatureUtil::GetClassProperties(identityPropDefCol, fdpdc);
 
     // Add base properties
 //  this->GetClassProperties(propDefCol, frpdc);
@@ -1391,9 +1391,9 @@ MgClassDefinition* MgFeatureUtil::GetMgClassDefinition(FdoClassDefinition* fdoCl
     return mgClassDef.Detach();
 }
 
-MgByteReader* MgFeatureUtil::SerializeToXml(FdoClassDefinition* classDef)
+MgByteReader* MgdFeatureUtil::SerializeToXml(FdoClassDefinition* classDef)
 {
-    CHECKNULL(classDef, L"MgFeatureUtil.SerializeToXml");
+    CHECKNULL(classDef, L"MgdFeatureUtil.SerializeToXml");
 
     FdoString* className = classDef->GetName();
     FdoFeatureSchemaP pSchema = classDef->GetFeatureSchema();
@@ -1435,7 +1435,7 @@ MgByteReader* MgFeatureUtil::SerializeToXml(FdoClassDefinition* classDef)
 
     FdoInt64 len = fmis->GetLength();
     FdoByte *bytes = new FdoByte[(size_t)len];
-    CHECKNULL(bytes, L"MgFeatureUtil::SerializeToXml");
+    CHECKNULL(bytes, L"MgdFeatureUtil::SerializeToXml");
 
     fmis->Read(bytes, (FdoSize)len);
 
@@ -1463,7 +1463,7 @@ MgByteReader* MgFeatureUtil::SerializeToXml(FdoClassDefinition* classDef)
     return byteReader.Detach();
 }
 
-void MgFeatureUtil::GetClassProperties(MgPropertyDefinitionCollection* propDefCol,
+void MgdFeatureUtil::GetClassProperties(MgPropertyDefinitionCollection* propDefCol,
                                              FdoPropertyDefinitionCollection* fdoPropDefCol)
 {
     if (NULL == fdoPropDefCol)
@@ -1474,10 +1474,10 @@ void MgFeatureUtil::GetClassProperties(MgPropertyDefinitionCollection* propDefCo
     {
         // Get Fdo Property
         FdoPtr<FdoPropertyDefinition> fpd = fdoPropDefCol->GetItem(i);
-        CHECKNULL((FdoPropertyDefinition*)fpd, L"MgFeatureUtil.GetClassProperties");
+        CHECKNULL((FdoPropertyDefinition*)fpd, L"MgdFeatureUtil.GetClassProperties");
 
         // Create MgProperty
-        Ptr<MgPropertyDefinition> prop = MgFeatureUtil::GetMgPropertyDefinition(fpd);
+        Ptr<MgPropertyDefinition> prop = MgdFeatureUtil::GetMgPropertyDefinition(fpd);
 
         // Add it to class definition
         if (prop != NULL)
@@ -1488,7 +1488,7 @@ void MgFeatureUtil::GetClassProperties(MgPropertyDefinitionCollection* propDefCo
 }
 
 
-void MgFeatureUtil::GetClassProperties(MgPropertyDefinitionCollection* propDefCol,
+void MgdFeatureUtil::GetClassProperties(MgPropertyDefinitionCollection* propDefCol,
                                              FdoDataPropertyDefinitionCollection* fdoPropDefCol)
 {
     if (NULL == fdoPropDefCol)
@@ -1499,10 +1499,10 @@ void MgFeatureUtil::GetClassProperties(MgPropertyDefinitionCollection* propDefCo
     {
         // Get Fdo Property
         FdoPtr<FdoPropertyDefinition> fpd = fdoPropDefCol->GetItem(i);
-        CHECKNULL((FdoPropertyDefinition*)fpd, L"MgFeatureUtil.GetClassProperties");
+        CHECKNULL((FdoPropertyDefinition*)fpd, L"MgdFeatureUtil.GetClassProperties");
 
         // Create MgProperty
-        Ptr<MgPropertyDefinition> prop = MgFeatureUtil::GetMgPropertyDefinition(fpd);
+        Ptr<MgPropertyDefinition> prop = MgdFeatureUtil::GetMgPropertyDefinition(fpd);
 
         // Add it to class definition
         if (prop != NULL)
@@ -1512,9 +1512,9 @@ void MgFeatureUtil::GetClassProperties(MgPropertyDefinitionCollection* propDefCo
     }
 }
 
-MgPropertyDefinition* MgFeatureUtil::GetMgPropertyDefinition(FdoPropertyDefinition* fdoPropDef)
+MgPropertyDefinition* MgdFeatureUtil::GetMgPropertyDefinition(FdoPropertyDefinition* fdoPropDef)
 {
-    CHECKNULL((FdoPropertyDefinition*)fdoPropDef, L"MgFeatureUtil.GetMgPropertyDefinition");
+    CHECKNULL((FdoPropertyDefinition*)fdoPropDef, L"MgdFeatureUtil.GetMgPropertyDefinition");
 
     Ptr<MgPropertyDefinition> propDef;
 
@@ -1524,20 +1524,20 @@ MgPropertyDefinition* MgFeatureUtil::GetMgPropertyDefinition(FdoPropertyDefiniti
         // Represents a Data Property type.
         case FdoPropertyType_DataProperty:
         {
-            propDef = MgFeatureUtil::GetDataPropertyDefinition((FdoDataPropertyDefinition*)fdoPropDef);
+            propDef = MgdFeatureUtil::GetDataPropertyDefinition((FdoDataPropertyDefinition*)fdoPropDef);
             break;
         }
         // Represents an Object Property type.
         case FdoPropertyType_ObjectProperty:
         {
-            propDef = MgFeatureUtil::GetObjectPropertyDefinition((FdoObjectPropertyDefinition*)fdoPropDef);
+            propDef = MgdFeatureUtil::GetObjectPropertyDefinition((FdoObjectPropertyDefinition*)fdoPropDef);
             break;
         }
 
         // Represents a Geometric Property type.
         case FdoPropertyType_GeometricProperty:
         {
-            propDef = MgFeatureUtil::GetGeometricPropertyDefinition((FdoGeometricPropertyDefinition*)fdoPropDef);
+            propDef = MgdFeatureUtil::GetGeometricPropertyDefinition((FdoGeometricPropertyDefinition*)fdoPropDef);
             break;
         }
         // Represents an Association Property type.
@@ -1550,7 +1550,7 @@ MgPropertyDefinition* MgFeatureUtil::GetMgPropertyDefinition(FdoPropertyDefiniti
         // Represents a Raster (image) Property type.
         case FdoPropertyType_RasterProperty:
         {
-            propDef = MgFeatureUtil::GetRasterPropertyDefinition((FdoRasterPropertyDefinition*)fdoPropDef);
+            propDef = MgdFeatureUtil::GetRasterPropertyDefinition((FdoRasterPropertyDefinition*)fdoPropDef);
             break;
         }
     }
@@ -1558,7 +1558,7 @@ MgPropertyDefinition* MgFeatureUtil::GetMgPropertyDefinition(FdoPropertyDefiniti
     return propDef.Detach();
 }
 
-MgDataPropertyDefinition* MgFeatureUtil::GetDataPropertyDefinition(FdoDataPropertyDefinition* fdoPropDef)
+MgDataPropertyDefinition* MgdFeatureUtil::GetDataPropertyDefinition(FdoDataPropertyDefinition* fdoPropDef)
 {
     if (fdoPropDef == NULL)
     {
@@ -1612,9 +1612,9 @@ MgDataPropertyDefinition* MgFeatureUtil::GetDataPropertyDefinition(FdoDataProper
     return propDef.Detach();
 }
 
-MgObjectPropertyDefinition* MgFeatureUtil::GetObjectPropertyDefinition(FdoObjectPropertyDefinition* fdoPropDef)
+MgObjectPropertyDefinition* MgdFeatureUtil::GetObjectPropertyDefinition(FdoObjectPropertyDefinition* fdoPropDef)
 {
-    CHECKNULL((FdoObjectPropertyDefinition*)fdoPropDef, L"MgFeatureUtil.GetObjectPropertyDefinition");
+    CHECKNULL((FdoObjectPropertyDefinition*)fdoPropDef, L"MgdFeatureUtil.GetObjectPropertyDefinition");
 
     STRING name = STRING(fdoPropDef->GetName());
     Ptr<MgObjectPropertyDefinition> propDef = new MgObjectPropertyDefinition(name);
@@ -1635,17 +1635,17 @@ MgObjectPropertyDefinition* MgFeatureUtil::GetObjectPropertyDefinition(FdoObject
     }
 
     FdoPtr<FdoClassDefinition> fdoClsDef = fdoPropDef->GetClass();
-    CHECKNULL((FdoClassDefinition*)fdoClsDef, L"MgFeatureUtil.GetObjectPropertyDefinition")
+    CHECKNULL((FdoClassDefinition*)fdoClsDef, L"MgdFeatureUtil.GetObjectPropertyDefinition")
 
     FdoPtr<FdoDataPropertyDefinition> idenProp = fdoPropDef->GetIdentityProperty(); // Can return NULL
 
     FdoObjectType objType = fdoPropDef->GetObjectType();
     FdoOrderType orderType = fdoPropDef->GetOrderType();
 
-    Ptr<MgClassDefinition> objPropClsDef = MgFeatureUtil::GetMgClassDefinition(fdoClsDef, true);
-    Ptr<MgDataPropertyDefinition> objIdenProp = MgFeatureUtil::GetDataPropertyDefinition(idenProp);
-    INT32 orderOption = MgFeatureUtil::FdoOrderTypeToMgOrderingOption(orderType);
-    INT32 mgObjType = MgFeatureUtil::FdoObjectTypeToMgObjectPropertyType(objType);
+    Ptr<MgClassDefinition> objPropClsDef = MgdFeatureUtil::GetMgClassDefinition(fdoClsDef, true);
+    Ptr<MgDataPropertyDefinition> objIdenProp = MgdFeatureUtil::GetDataPropertyDefinition(idenProp);
+    INT32 orderOption = MgdFeatureUtil::FdoOrderTypeToMgOrderingOption(orderType);
+    INT32 mgObjType = MgdFeatureUtil::FdoObjectTypeToMgObjectPropertyType(objType);
 
     propDef->SetClassDefinition(objPropClsDef);
     propDef->SetIdentityProperty(objIdenProp);
@@ -1655,9 +1655,9 @@ MgObjectPropertyDefinition* MgFeatureUtil::GetObjectPropertyDefinition(FdoObject
     return propDef.Detach();
 }
 
-MgGeometricPropertyDefinition* MgFeatureUtil::GetGeometricPropertyDefinition(FdoGeometricPropertyDefinition* fdoPropDef)
+MgGeometricPropertyDefinition* MgdFeatureUtil::GetGeometricPropertyDefinition(FdoGeometricPropertyDefinition* fdoPropDef)
 {
-    CHECKNULL((FdoGeometricPropertyDefinition*)fdoPropDef, L"MgFeatureUtil.GetGeometricPropertyDefinition");
+    CHECKNULL((FdoGeometricPropertyDefinition*)fdoPropDef, L"MgdFeatureUtil.GetGeometricPropertyDefinition");
 
     STRING name = STRING(fdoPropDef->GetName());
     Ptr<MgGeometricPropertyDefinition> propDef = new MgGeometricPropertyDefinition(name);
@@ -1706,9 +1706,9 @@ MgGeometricPropertyDefinition* MgFeatureUtil::GetGeometricPropertyDefinition(Fdo
     return propDef.Detach();
 }
 
-MgRasterPropertyDefinition* MgFeatureUtil::GetRasterPropertyDefinition(FdoRasterPropertyDefinition* fdoPropDef)
+MgRasterPropertyDefinition* MgdFeatureUtil::GetRasterPropertyDefinition(FdoRasterPropertyDefinition* fdoPropDef)
 {
-    CHECKNULL((FdoRasterPropertyDefinition*)fdoPropDef, L"MgFeatureUtil.GetRasterPropertyDefinition");
+    CHECKNULL((FdoRasterPropertyDefinition*)fdoPropDef, L"MgdFeatureUtil.GetRasterPropertyDefinition");
 
     STRING name = STRING(fdoPropDef->GetName());
     Ptr<MgRasterPropertyDefinition> propDef = new MgRasterPropertyDefinition(name);
@@ -1747,10 +1747,10 @@ MgRasterPropertyDefinition* MgFeatureUtil::GetRasterPropertyDefinition(FdoRaster
     return propDef.Detach();
 }
 
-MgProperty* MgFeatureUtil::GetMgProperty(MgReader* reader, CREFSTRING qualifiedPropName, INT16 type)
+MgProperty* MgdFeatureUtil::GetMgProperty(MgReader* reader, CREFSTRING qualifiedPropName, INT16 type)
 {
     // Null Reader is invalid
-    CHECKNULL(reader, L"MgFeatureUtil.GetMgProperty");
+    CHECKNULL(reader, L"MgdFeatureUtil.GetMgProperty");
 
     // No propertyname specified, return NULL
     if (qualifiedPropName.empty())
@@ -1999,14 +1999,14 @@ MgProperty* MgFeatureUtil::GetMgProperty(MgReader* reader, CREFSTRING qualifiedP
 
 //////////////////////////////////////////////////////////////////
 //TODO: I will take this out as I do not know how to instantiate FdoFeatureSchemaCollection
-FdoFeatureSchemaCollection* MgFeatureUtil::GetFdoFeatureSchemaCollection(
+FdoFeatureSchemaCollection* MgdFeatureUtil::GetFdoFeatureSchemaCollection(
     MgFeatureSchemaCollection* mgSchemaCol)
 {
     FdoPtr<FdoFeatureSchemaCollection> fdoSchemaCol;
 
     MG_FEATURE_SERVICE_TRY()
 
-    CHECKNULL(mgSchemaCol, L"MgFeatureUtil.GetFdoFeatureSchemaCollection");
+    CHECKNULL(mgSchemaCol, L"MgdFeatureUtil.GetFdoFeatureSchemaCollection");
     fdoSchemaCol = FdoFeatureSchemaCollection::Create((FdoSchemaElement*)NULL);
 
     INT32 i = 0;
@@ -2018,7 +2018,7 @@ FdoFeatureSchemaCollection* MgFeatureUtil::GetFdoFeatureSchemaCollection(
         FdoPtr<FdoFeatureSchema> fdoSchema = GetFdoFeatureSchema(mgSchema);
         if (fdoSchemaCol->Contains(fdoSchema))
         {
-            throw new MgDuplicateObjectException(L"MgFeatureUtil.GetFdoFeatureSchemaCollection", __LINE__, __WFILE__, NULL, L"", NULL);
+            throw new MgDuplicateObjectException(L"MgdFeatureUtil.GetFdoFeatureSchemaCollection", __LINE__, __WFILE__, NULL, L"", NULL);
         }
         else
         {
@@ -2026,23 +2026,23 @@ FdoFeatureSchemaCollection* MgFeatureUtil::GetFdoFeatureSchemaCollection(
         }
     }
 
-    MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgFeatureUtil.GetFdoFeatureSchemaCollection")
+    MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgdFeatureUtil.GetFdoFeatureSchemaCollection")
 
     return fdoSchemaCol.Detach();
 }
 
 
 //////////////////////////////////////////////////////////////////
-FdoFeatureSchema* MgFeatureUtil::GetFdoFeatureSchema(
+FdoFeatureSchema* MgdFeatureUtil::GetFdoFeatureSchema(
     MgFeatureSchema* mgSchema)
 {
     FdoPtr<FdoFeatureSchema> fdoSchema;
 
     MG_FEATURE_SERVICE_TRY()
-    CHECKNULL(mgSchema, L"MgFeatureUtil.GetFdoFeatureSchema");
+    CHECKNULL(mgSchema, L"MgdFeatureUtil.GetFdoFeatureSchema");
 
     fdoSchema = FdoFeatureSchema::Create();
-    CHECKNULL(fdoSchema, L"MgFeatureUtil.GetFdoFeatureSchema");
+    CHECKNULL(fdoSchema, L"MgdFeatureUtil.GetFdoFeatureSchema");
 
     STRING name = mgSchema->GetName();
     if (!name.empty())
@@ -2061,19 +2061,19 @@ FdoFeatureSchema* MgFeatureUtil::GetFdoFeatureSchema(
 
     GetFdoClassCollection(fdoClassCol, awClassCol);
 
-    MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgFeatureUtil.GetFdoFeatureSchema")
+    MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgdFeatureUtil.GetFdoFeatureSchema")
 
     return fdoSchema.Detach();
 }
 
 
 //////////////////////////////////////////////////////////////////
-void MgFeatureUtil::GetFdoClassCollection(
+void MgdFeatureUtil::GetFdoClassCollection(
     FdoClassCollection* fdoClassCol,
     MgClassDefinitionCollection* mgClassDefCol)
 {
     MG_FEATURE_SERVICE_TRY()
-    CHECKNULL((MgClassDefinitionCollection*)mgClassDefCol, L"MgFeatureUtil.GetFdoClassCollection");
+    CHECKNULL((MgClassDefinitionCollection*)mgClassDefCol, L"MgdFeatureUtil.GetFdoClassCollection");
 
     INT32 count = mgClassDefCol->GetCount();
     INT32 i = 0;
@@ -2082,27 +2082,27 @@ void MgFeatureUtil::GetFdoClassCollection(
     {
         Ptr<MgClassDefinition> mgClassDef = mgClassDefCol->GetItem(i);
         FdoPtr<FdoClassDefinition> fdoClassDef = GetFdoClassDefinition(mgClassDef, fdoClassCol);
-        CHECKNULL(fdoClassDef, L"MgFeatureUtil.GetFdoClassCollection")
+        CHECKNULL(fdoClassDef, L"MgdFeatureUtil.GetFdoClassCollection")
 
         FdoStringP name = fdoClassDef->GetName();
         if (!FdoClassExist(name, fdoClassCol))
             fdoClassCol->Add(fdoClassDef);
     }
 
-    MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgFeatureUtil.GetFdoClassCollection")
+    MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgdFeatureUtil.GetFdoClassCollection")
 }
 
 
 //////////////////////////////////////////////////////////////////
-FdoClassDefinition* MgFeatureUtil::GetFdoClassDefinition(
+FdoClassDefinition* MgdFeatureUtil::GetFdoClassDefinition(
     MgClassDefinition* mgClassDef,
     FdoClassCollection* fdoClassCol)
 {
     FdoPtr<FdoClassDefinition> fdoClassDef;
 
     MG_FEATURE_SERVICE_TRY()
-    CHECKNULL(mgClassDef, L"MgFeatureUtil.GetFdoClassDefinition");
-    CHECKNULL(fdoClassCol, L"MgFeatureUtil.GetFdoClassDefinition");
+    CHECKNULL(mgClassDef, L"MgdFeatureUtil.GetFdoClassDefinition");
+    CHECKNULL(fdoClassCol, L"MgdFeatureUtil.GetFdoClassDefinition");
 
     STRING name = mgClassDef->GetName();
     assert(!name.empty());
@@ -2125,13 +2125,13 @@ FdoClassDefinition* MgFeatureUtil::GetFdoClassDefinition(
         fdoClassDef = FdoClass::Create();
     }
 
-    CHECKNULL(fdoClassDef, L"MgFeatureUtil.GetFdoClassDefinition");
+    CHECKNULL(fdoClassDef, L"MgdFeatureUtil.GetFdoClassDefinition");
 
     FdoPtr<FdoPropertyDefinitionCollection> fdoPropDefCol = fdoClassDef->GetProperties();
-    CHECKNULL((FdoPropertyDefinitionCollection*) fdoPropDefCol, L"MgFeatureUtil.GetFdoClassDefinition");
+    CHECKNULL((FdoPropertyDefinitionCollection*) fdoPropDefCol, L"MgdFeatureUtil.GetFdoClassDefinition");
 
     FdoPtr<FdoDataPropertyDefinitionCollection> fdoIdentityPropDefCol = (FdoDataPropertyDefinitionCollection*)fdoClassDef->GetIdentityProperties();
-    CHECKNULL((FdoDataPropertyDefinitionCollection*)fdoIdentityPropDefCol, L"MgFeatureUtil.GetFdoClassDefinition");
+    CHECKNULL((FdoDataPropertyDefinitionCollection*)fdoIdentityPropDefCol, L"MgdFeatureUtil.GetFdoClassDefinition");
 
     //Set description
     STRING desc = mgClassDef->GetDescription();
@@ -2159,7 +2159,7 @@ FdoClassDefinition* MgFeatureUtil::GetFdoClassDefinition(
 
     // Retrieve Class properties
     Ptr<MgPropertyDefinitionCollection> mgPropDefCol = mgClassDef->GetProperties();
-    CHECKNULL((MgPropertyDefinitionCollection*) mgPropDefCol, L"MgFeatureUtil.GetFdoClassDefinition");
+    CHECKNULL((MgPropertyDefinitionCollection*) mgPropDefCol, L"MgdFeatureUtil.GetFdoClassDefinition");
 
     //Retrieve identity properties
     Ptr<MgPropertyDefinitionCollection> awDataPropDefCol = mgClassDef->GetIdentityProperties();
@@ -2200,14 +2200,14 @@ FdoClassDefinition* MgFeatureUtil::GetFdoClassDefinition(
         ffClass->SetGeometryProperty(defaultGeom);
     }
 
-    MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgFeatureUtil.GetFdoClassDefinition")
+    MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgdFeatureUtil.GetFdoClassDefinition")
 
     return fdoClassDef.Detach();
 }
 
 
 //////////////////////////////////////////////////////////////////
-void MgFeatureUtil::GetClassProperties(
+void MgdFeatureUtil::GetClassProperties(
     FdoPropertyDefinitionCollection* fdoPropDefCol,
     MgPropertyDefinitionCollection* propDefCol,
     FdoClassCollection* fdoClassCol)
@@ -2223,7 +2223,7 @@ void MgFeatureUtil::GetClassProperties(
     {
         // Get Mg Property
         Ptr<MgPropertyDefinition> awpd = propDefCol->GetItem(i);
-        CHECKNULL((MgPropertyDefinition*)awpd, L"MgFeatureUtil.GetClassProperties");
+        CHECKNULL((MgPropertyDefinition*)awpd, L"MgdFeatureUtil.GetClassProperties");
 
         // Create Fdo Property
         FdoPtr<FdoPropertyDefinition> fdoProp = GetFdoPropertyDefinition(awpd, fdoClassCol);
@@ -2233,13 +2233,13 @@ void MgFeatureUtil::GetClassProperties(
             fdoPropDefCol->Add(fdoProp);
         }
     }
-    MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgFeatureUtil.GetClassProperties")
+    MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgdFeatureUtil.GetClassProperties")
 }
 
 
 //////////////////////////////////////////////////////////////////
 // TODO: Not sure why FdoDataPropertyDefinitionCollection derives from SchemaCollection??
-void MgFeatureUtil::GetClassProperties(
+void MgdFeatureUtil::GetClassProperties(
     FdoDataPropertyDefinitionCollection* fdoPropDefCol,
     MgPropertyDefinitionCollection* mgPropDefCol)
 {
@@ -2254,7 +2254,7 @@ void MgFeatureUtil::GetClassProperties(
     {
         //Get property
         Ptr<MgPropertyDefinition> mgPropDef = mgPropDefCol->GetItem(i);
-        CHECKNULL((MgPropertyDefinition*) mgPropDef, L"MgFeatureUtil.GetClassProperties");
+        CHECKNULL((MgPropertyDefinition*) mgPropDef, L"MgdFeatureUtil.GetClassProperties");
 
         //Create Fdo property
         FdoPtr<FdoDataPropertyDefinition> fdoPropDef = (FdoDataPropertyDefinition*)GetFdoPropertyDefinition(mgPropDef, NULL);
@@ -2264,16 +2264,16 @@ void MgFeatureUtil::GetClassProperties(
             fdoPropDefCol->Add(fdoPropDef);
         }
     }
-    MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgFeatureUtil.GetClassProperties")
+    MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgdFeatureUtil.GetClassProperties")
 }
 
 
 //////////////////////////////////////////////////////////////////
-FdoPropertyDefinition* MgFeatureUtil::GetFdoPropertyDefinition(
+FdoPropertyDefinition* MgdFeatureUtil::GetFdoPropertyDefinition(
     MgPropertyDefinition* mgPropDef,
     FdoClassCollection* fdoClassCol)
 {
-    CHECKNULL((MgPropertyDefinition*)mgPropDef, L"MgFeatureUtil.GetFdoPropertyDefinition");
+    CHECKNULL((MgPropertyDefinition*)mgPropDef, L"MgdFeatureUtil.GetFdoPropertyDefinition");
 
     FdoPtr<FdoPropertyDefinition> fdoPropDef;
     MG_FEATURE_SERVICE_TRY()
@@ -2315,14 +2315,14 @@ FdoPropertyDefinition* MgFeatureUtil::GetFdoPropertyDefinition(
             break;
         }
     }
-    MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgFeatureUtil.GetFdoPropertyDefinition")
+    MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgdFeatureUtil.GetFdoPropertyDefinition")
 
     return fdoPropDef.Detach();
 }
 
 
 //////////////////////////////////////////////////////////////////
-FdoDataPropertyDefinition* MgFeatureUtil::GetDataPropertyDefinition(
+FdoDataPropertyDefinition* MgdFeatureUtil::GetDataPropertyDefinition(
     MgDataPropertyDefinition* mgPropDef)
 {
     FdoPtr<FdoDataPropertyDefinition> fdoPropDef;
@@ -2373,21 +2373,21 @@ FdoDataPropertyDefinition* MgFeatureUtil::GetDataPropertyDefinition(
     fdoPropDef->SetScale((FdoInt32)scale);
     fdoPropDef->SetIsAutoGenerated(isAutoGenerated);
 
-    MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgFeatureUtil.GetDataPropertyDefinition")
+    MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgdFeatureUtil.GetDataPropertyDefinition")
 
     return fdoPropDef.Detach();
 }
 
 
 //////////////////////////////////////////////////////////////////
-FdoObjectPropertyDefinition* MgFeatureUtil::GetObjectPropertyDefinition(
+FdoObjectPropertyDefinition* MgdFeatureUtil::GetObjectPropertyDefinition(
     MgObjectPropertyDefinition* objPropDef,
     FdoClassCollection* fdoClassCol)
 {
     FdoPtr<FdoObjectPropertyDefinition> fdoPropDef;
 
     MG_FEATURE_SERVICE_TRY()
-    CHECKNULL((MgObjectPropertyDefinition*)objPropDef, L"MgFeatureUtil.GetObjectPropertyDefinition");
+    CHECKNULL((MgObjectPropertyDefinition*)objPropDef, L"MgdFeatureUtil.GetObjectPropertyDefinition");
 
     fdoPropDef = FdoObjectPropertyDefinition::Create();
     // Retrieve data from MgObjectProperty
@@ -2399,11 +2399,11 @@ FdoObjectPropertyDefinition* MgFeatureUtil::GetObjectPropertyDefinition(
     Ptr<MgDataPropertyDefinition> idProp = objPropDef->GetIdentityProperty();
     // Convert MgObjectProperty data members to Fdo data members
     FdoPtr<FdoClassDefinition> fdoClsDef = GetFdoClassDefinition(clsDef, fdoClassCol);
-    CHECKNULL(fdoClsDef, L"MgFeatureUtil.GetObjectPropertyDefinition")
+    CHECKNULL(fdoClsDef, L"MgdFeatureUtil.GetObjectPropertyDefinition")
 
     FdoPtr<FdoDataPropertyDefinition> fdoDataPropDef = GetDataPropertyDefinition(idProp);
-    FdoObjectType fdoObjectType = MgFeatureUtil::MgObjectPropertyTypeToFdoObjectType(objType);
-    FdoOrderType fdoOrderType = MgFeatureUtil::MgOrderingOptionToFdoOrderType(orderType);
+    FdoObjectType fdoObjectType = MgdFeatureUtil::MgObjectPropertyTypeToFdoObjectType(objType);
+    FdoOrderType fdoOrderType = MgdFeatureUtil::MgOrderingOptionToFdoOrderType(orderType);
     // Set them to Fdo object property
     fdoPropDef->SetName(name.c_str());
     fdoPropDef->SetDescription(desc.c_str());
@@ -2419,20 +2419,20 @@ FdoObjectPropertyDefinition* MgFeatureUtil::GetObjectPropertyDefinition(
             fdoClassCol->Add(fdoClsDef);
     }
 
-    MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgFeatureUtil.GetObjectPropertyDefinition")
+    MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgdFeatureUtil.GetObjectPropertyDefinition")
 
     return fdoPropDef.Detach();
 }
 
 
 //////////////////////////////////////////////////////////////////
-FdoGeometricPropertyDefinition* MgFeatureUtil::GetGeometricPropertyDefinition(
+FdoGeometricPropertyDefinition* MgdFeatureUtil::GetGeometricPropertyDefinition(
     MgGeometricPropertyDefinition* mgPropDef)
 {
     FdoPtr<FdoGeometricPropertyDefinition> fdoPropDef;
 
     MG_FEATURE_SERVICE_TRY()
-    CHECKNULL((MgGeometricPropertyDefinition*)mgPropDef, L"MgFeatureUtil.GetGeometricPropertyDefinition");
+    CHECKNULL((MgGeometricPropertyDefinition*)mgPropDef, L"MgdFeatureUtil.GetGeometricPropertyDefinition");
 
     STRING name = mgPropDef->GetName();
     fdoPropDef = FdoGeometricPropertyDefinition::Create();
@@ -2471,20 +2471,20 @@ FdoGeometricPropertyDefinition* MgFeatureUtil::GetGeometricPropertyDefinition(
         fdoPropDef->SetSpatialContextAssociation((FdoString*)spatialContextName.c_str());
     }
 
-    MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgFeatureUtil.GetGeometricPropertyDefinition")
+    MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgdFeatureUtil.GetGeometricPropertyDefinition")
 
     return fdoPropDef.Detach();
 }
 
 
 //////////////////////////////////////////////////////////////////
-FdoRasterPropertyDefinition* MgFeatureUtil::GetRasterPropertyDefinition(
+FdoRasterPropertyDefinition* MgdFeatureUtil::GetRasterPropertyDefinition(
     MgRasterPropertyDefinition* mgPropDef)
 {
     FdoPtr<FdoRasterPropertyDefinition> fdoPropDef;
 
     MG_FEATURE_SERVICE_TRY()
-    CHECKNULL((MgRasterPropertyDefinition*)mgPropDef, L"MgFeatureUtil.GetRasterPropertyDefinition");
+    CHECKNULL((MgRasterPropertyDefinition*)mgPropDef, L"MgdFeatureUtil.GetRasterPropertyDefinition");
 
     fdoPropDef = FdoRasterPropertyDefinition::Create();
     STRING name = mgPropDef->GetName();
@@ -2516,14 +2516,14 @@ FdoRasterPropertyDefinition* MgFeatureUtil::GetRasterPropertyDefinition(
         fdoPropDef->SetSpatialContextAssociation((FdoString*) spatialContextName.c_str());
     }
 
-    MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgFeatureUtil.GetRasterPropertyDefinition")
+    MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgdFeatureUtil.GetRasterPropertyDefinition")
 
     return fdoPropDef.Detach();
 }
 
 
 //////////////////////////////////////////////////////////////////
-FdoDataType MgFeatureUtil::GetFdoDataType(INT32 awPropType)
+FdoDataType MgdFeatureUtil::GetFdoDataType(INT32 awPropType)
 {
     FdoDataType fdoDataType;
     switch(awPropType)
@@ -2617,7 +2617,7 @@ FdoDataType MgFeatureUtil::GetFdoDataType(INT32 awPropType)
             arguments.Add(L"1");
             arguments.Add(buffer);
 
-            throw new MgInvalidArgumentException(L"MgFeatureUtil.GetFdoDataType",
+            throw new MgInvalidArgumentException(L"MgdFeatureUtil.GetFdoDataType",
                 __LINE__, __WFILE__, &arguments, L"MgInvalidPropertyType", NULL);
         }
     }
@@ -2625,7 +2625,7 @@ FdoDataType MgFeatureUtil::GetFdoDataType(INT32 awPropType)
     return fdoDataType;
 }
 
-FdoParameterDirection MgFeatureUtil::GetFdoParameterDirection(INT32 paramDirection)
+FdoParameterDirection MgdFeatureUtil::GetFdoParameterDirection(INT32 paramDirection)
 {
     FdoParameterDirection fdoParameterDirection;
     switch(paramDirection)
@@ -2660,7 +2660,7 @@ FdoParameterDirection MgFeatureUtil::GetFdoParameterDirection(INT32 paramDirecti
             arguments.Add(L"1");
             arguments.Add(buffer);
 
-            throw new MgInvalidArgumentException(L"MgFeatureUtil.GetFdoParameterDirection",
+            throw new MgInvalidArgumentException(L"MgdFeatureUtil.GetFdoParameterDirection",
                 __LINE__, __WFILE__, &arguments, L"", NULL);
         }
     }
@@ -2668,7 +2668,7 @@ FdoParameterDirection MgFeatureUtil::GetFdoParameterDirection(INT32 paramDirecti
     return fdoParameterDirection;
 }
 
-INT32 MgFeatureUtil::GetMgParameterDirection(FdoParameterDirection fdoParamDirection)
+INT32 MgdFeatureUtil::GetMgParameterDirection(FdoParameterDirection fdoParamDirection)
 {
     INT32 parameterDirection;
     switch(fdoParamDirection)
@@ -2703,7 +2703,7 @@ INT32 MgFeatureUtil::GetMgParameterDirection(FdoParameterDirection fdoParamDirec
             arguments.Add(L"1");
             arguments.Add(buffer);
 
-            throw new MgInvalidArgumentException(L"MgFeatureUtil.GetMgParameterDirection",
+            throw new MgInvalidArgumentException(L"MgdFeatureUtil.GetMgParameterDirection",
                 __LINE__, __WFILE__, &arguments, L"", NULL);
         }
     }
@@ -2712,12 +2712,12 @@ INT32 MgFeatureUtil::GetMgParameterDirection(FdoParameterDirection fdoParamDirec
 }
 
 //////////////////////////////////////////////////////////////////
-void MgFeatureUtil::UpdateFdoFeatureSchema(
+void MgdFeatureUtil::UpdateFdoFeatureSchema(
     MgFeatureSchema* mgSchema,
     FdoFeatureSchema* fdoSchema)
 {
-    CHECKNULL(mgSchema, L"MgFeatureUtil.UpdateFdoFeatureSchema");
-    CHECKNULL(fdoSchema, L"MgFeatureUtil.UpdateFdoFeatureSchema");
+    CHECKNULL(mgSchema, L"MgdFeatureUtil.UpdateFdoFeatureSchema");
+    CHECKNULL(fdoSchema, L"MgdFeatureUtil.UpdateFdoFeatureSchema");
 
     MG_FEATURE_SERVICE_TRY()
 
@@ -2732,17 +2732,17 @@ void MgFeatureUtil::UpdateFdoFeatureSchema(
 
     UpdateFdoClassCollection(mgClassCol, fdoClassCol);
 
-    MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgFeatureUtil.UpdateFdoFeatureSchema")
+    MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgdFeatureUtil.UpdateFdoFeatureSchema")
 }
 
 
 //////////////////////////////////////////////////////////////////
-void MgFeatureUtil::UpdateFdoClassCollection(
+void MgdFeatureUtil::UpdateFdoClassCollection(
     MgClassDefinitionCollection* mgClassDefCol,
     FdoClassCollection* fdoClassCol)
 {
-    CHECKNULL(mgClassDefCol, L"MgFeatureUtil.UpdateFdoClassCollection");
-    CHECKNULL(fdoClassCol, L"MgFeatureUtil.UpdateFdoClassCollection");
+    CHECKNULL(mgClassDefCol, L"MgdFeatureUtil.UpdateFdoClassCollection");
+    CHECKNULL(fdoClassCol, L"MgdFeatureUtil.UpdateFdoClassCollection");
 
     MG_FEATURE_SERVICE_TRY()
 
@@ -2758,8 +2758,8 @@ void MgFeatureUtil::UpdateFdoClassCollection(
         {
             if (!mgClassDef->IsDeleted())
             {
-                FdoPtr<FdoClassDefinition> fdoNewClassDef = MgFeatureUtil::GetFdoClassDefinition(mgClassDef, fdoClassCol);
-                CHECKNULL(fdoNewClassDef, L"MgFeatureUtil.UpdateFdoClassCollection")
+                FdoPtr<FdoClassDefinition> fdoNewClassDef = MgdFeatureUtil::GetFdoClassDefinition(mgClassDef, fdoClassCol);
+                CHECKNULL(fdoNewClassDef, L"MgdFeatureUtil.UpdateFdoClassCollection")
                 fdoClassCol->Add(fdoNewClassDef);
             }
         }
@@ -2772,27 +2772,27 @@ void MgFeatureUtil::UpdateFdoClassCollection(
         }
     }
 
-    MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgFeatureUtil.UpdateFdoClassCollection")
+    MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgdFeatureUtil.UpdateFdoClassCollection")
 }
 
 
 //////////////////////////////////////////////////////////////////
-void MgFeatureUtil::UpdateFdoClassDefinition(
+void MgdFeatureUtil::UpdateFdoClassDefinition(
     MgClassDefinition* mgClassDef,
     FdoClassDefinition* fdoClassDef,
     FdoClassCollection* fdoClassCol)
 {
-    CHECKNULL(mgClassDef, L"MgFeatureUtil.UpdateFdoClassDefinition");
-    CHECKNULL(fdoClassDef, L"MgFeatureUtil.UpdateFdoClassDefinition");
-    CHECKNULL(fdoClassCol, L"MgFeatureUtil.UpdateFdoClassDefinition");
+    CHECKNULL(mgClassDef, L"MgdFeatureUtil.UpdateFdoClassDefinition");
+    CHECKNULL(fdoClassDef, L"MgdFeatureUtil.UpdateFdoClassDefinition");
+    CHECKNULL(fdoClassCol, L"MgdFeatureUtil.UpdateFdoClassDefinition");
 
     MG_FEATURE_SERVICE_TRY()
 
     FdoPtr<FdoPropertyDefinitionCollection> fdoPropDefCol = fdoClassDef->GetProperties();
-    CHECKNULL((FdoPropertyDefinitionCollection*) fdoPropDefCol, L"MgFeatureUtil.UpdateFdoClassDefinition");
+    CHECKNULL((FdoPropertyDefinitionCollection*) fdoPropDefCol, L"MgdFeatureUtil.UpdateFdoClassDefinition");
 
     FdoPtr<FdoDataPropertyDefinitionCollection> fdoIdentityPropDefCol = (FdoDataPropertyDefinitionCollection*)fdoClassDef->GetIdentityProperties();
-    CHECKNULL((FdoDataPropertyDefinitionCollection*)fdoIdentityPropDefCol, L"MgFeatureUtil.UpdateFdoClassDefinition");
+    CHECKNULL((FdoDataPropertyDefinitionCollection*)fdoIdentityPropDefCol, L"MgdFeatureUtil.UpdateFdoClassDefinition");
 
     //Set description
     STRING desc = mgClassDef->GetDescription();
@@ -2815,7 +2815,7 @@ void MgFeatureUtil::UpdateFdoClassDefinition(
 
     // Retrieve Class properties
     Ptr<MgPropertyDefinitionCollection> mgPropDefCol = mgClassDef->GetProperties();
-    CHECKNULL((MgPropertyDefinitionCollection*) mgPropDefCol, L"MgFeatureUtil.UpdateFdoClassDefinition");
+    CHECKNULL((MgPropertyDefinitionCollection*) mgPropDefCol, L"MgdFeatureUtil.UpdateFdoClassDefinition");
 
     //Retrieve identity properties
     Ptr<MgPropertyDefinitionCollection> awDataPropDefCol = mgClassDef->GetIdentityProperties();
@@ -2836,11 +2836,11 @@ void MgFeatureUtil::UpdateFdoClassDefinition(
             FdoPtr<FdoClassDefinition> fdoBaseDef = fdoClassCol->FindItem(bname.c_str());
             if (fdoBaseDef == NULL) // Not found
             {
-                fdoBaseDef = MgFeatureUtil::GetFdoClassDefinition(awBaseDef, fdoClassCol); // Create a new one
+                fdoBaseDef = MgdFeatureUtil::GetFdoClassDefinition(awBaseDef, fdoClassCol); // Create a new one
                 if (fdoBaseDef != NULL)
                 {
                     FdoStringP nameBase = fdoBaseDef->GetName();
-                    if (!MgFeatureUtil::FdoClassExist(nameBase, fdoClassCol))
+                    if (!MgdFeatureUtil::FdoClassExist(nameBase, fdoClassCol))
                         fdoClassCol->Add(fdoBaseDef);
                 }
                 fdoClassDef->SetBaseClass(fdoBaseDef);
@@ -2865,18 +2865,18 @@ void MgFeatureUtil::UpdateFdoClassDefinition(
     {
         FdoFeatureClass* fdoFeatureClass = dynamic_cast<FdoFeatureClass*>(fdoClassDef);
         if (NULL == fdoFeatureClass)
-            throw new MgInvalidArgumentException(L"MgFeatureUtil.UpdateFdoClassDefinition", __LINE__, __WFILE__, NULL, L"", NULL);
+            throw new MgInvalidArgumentException(L"MgdFeatureUtil.UpdateFdoClassDefinition", __LINE__, __WFILE__, NULL, L"", NULL);
 
         FdoPtr<FdoGeometricPropertyDefinition> defaultGeom = (FdoGeometricPropertyDefinition*)fdoPropDefCol->GetItem(geomName.c_str());
         fdoFeatureClass->SetGeometryProperty(defaultGeom);
     }
 
-    MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgFeatureUtil.UpdateFdoClassDefinition")
+    MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgdFeatureUtil.UpdateFdoClassDefinition")
 }
 
 
 //////////////////////////////////////////////////////////////////
-void MgFeatureUtil::UpdateClassProperties(
+void MgdFeatureUtil::UpdateClassProperties(
     MgPropertyDefinitionCollection* propDefCol,
     FdoPropertyDefinitionCollection* fdoPropDefCol,
     FdoClassCollection* fdoClassCol)
@@ -2892,7 +2892,7 @@ void MgFeatureUtil::UpdateClassProperties(
     {
         // Get Mg Property
         Ptr<MgPropertyDefinition> awpd = propDefCol->GetItem(i);
-        CHECKNULL((MgPropertyDefinition*)awpd, L"MgFeatureUtil.UpdateClassProperties");
+        CHECKNULL((MgPropertyDefinition*)awpd, L"MgdFeatureUtil.UpdateClassProperties");
         STRING propName = awpd->GetName();
 
         FdoPtr<FdoPropertyDefinition> fdoOldProp = fdoPropDefCol->FindItem(propName.c_str());
@@ -2901,7 +2901,7 @@ void MgFeatureUtil::UpdateClassProperties(
             if (!awpd->IsDeleted())
             {
                 // Create Fdo Property
-                FdoPtr<FdoPropertyDefinition> fdoProp = MgFeatureUtil::GetFdoPropertyDefinition(awpd, fdoClassCol);
+                FdoPtr<FdoPropertyDefinition> fdoProp = MgdFeatureUtil::GetFdoPropertyDefinition(awpd, fdoClassCol);
                 // Add it to class definition
                 if (fdoProp != NULL)
                 {
@@ -2920,12 +2920,12 @@ void MgFeatureUtil::UpdateClassProperties(
             }
         }
     }
-    MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgFeatureUtil.UpdateClassProperties")
+    MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgdFeatureUtil.UpdateClassProperties")
 }
 
 
 //////////////////////////////////////////////////////////////////
-void MgFeatureUtil::UpdateClassProperties(
+void MgdFeatureUtil::UpdateClassProperties(
     FdoDataPropertyDefinitionCollection* fdoPropDefCol,
     MgPropertyDefinitionCollection* mgPropDefCol)
 {
@@ -2940,7 +2940,7 @@ void MgFeatureUtil::UpdateClassProperties(
     {
         //Get property
         Ptr<MgPropertyDefinition> mgPropDef = mgPropDefCol->GetItem(i);
-        CHECKNULL((MgPropertyDefinition*) mgPropDef, L"MgFeatureUtil.UpdateClassProperties");
+        CHECKNULL((MgPropertyDefinition*) mgPropDef, L"MgdFeatureUtil.UpdateClassProperties");
         STRING propName = mgPropDef->GetName();
 
         FdoPtr<FdoDataPropertyDefinition> fdoOldProp = fdoPropDefCol->FindItem(propName.c_str());
@@ -2968,17 +2968,17 @@ void MgFeatureUtil::UpdateClassProperties(
             }
         }
     }
-    MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgFeatureUtil.UpdateClassProperties")
+    MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgdFeatureUtil.UpdateClassProperties")
 }
 
 
 //////////////////////////////////////////////////////////////////
-void MgFeatureUtil::UpdateFdoPropertyDefinition(
+void MgdFeatureUtil::UpdateFdoPropertyDefinition(
     MgPropertyDefinition* mgPropDef,
     FdoPropertyDefinition* fdoPropDef,
     FdoClassCollection* fdoClassCol)
 {
-    CHECKNULL((MgPropertyDefinition*)mgPropDef, L"MgFeatureUtil.UpdateFdoPropertyDefinition");
+    CHECKNULL((MgPropertyDefinition*)mgPropDef, L"MgdFeatureUtil.UpdateFdoPropertyDefinition");
 
     MG_FEATURE_SERVICE_TRY()
 
@@ -2990,7 +2990,7 @@ void MgFeatureUtil::UpdateFdoPropertyDefinition(
         {
             FdoDataPropertyDefinition* fdoDataPropDef = dynamic_cast<FdoDataPropertyDefinition*>(fdoPropDef);
             if (NULL == fdoDataPropDef)
-                throw new MgInvalidArgumentException(L"MgFeatureUtil.UpdateFdoClassDefinition", __LINE__, __WFILE__, NULL, L"", NULL);
+                throw new MgInvalidArgumentException(L"MgdFeatureUtil.UpdateFdoClassDefinition", __LINE__, __WFILE__, NULL, L"", NULL);
 
             UpdateDataPropertyDefinition((MgDataPropertyDefinition*)mgPropDef, fdoDataPropDef);
             break;
@@ -3000,7 +3000,7 @@ void MgFeatureUtil::UpdateFdoPropertyDefinition(
         {
             FdoObjectPropertyDefinition* fdoObjectPropDef = dynamic_cast<FdoObjectPropertyDefinition*>(fdoPropDef);
             if (NULL == fdoObjectPropDef)
-                throw new MgInvalidArgumentException(L"MgFeatureUtil.UpdateFdoClassDefinition", __LINE__, __WFILE__, NULL, L"", NULL);
+                throw new MgInvalidArgumentException(L"MgdFeatureUtil.UpdateFdoClassDefinition", __LINE__, __WFILE__, NULL, L"", NULL);
 
             UpdateObjectPropertyDefinition((MgObjectPropertyDefinition*)mgPropDef, fdoObjectPropDef, fdoClassCol);
             break;
@@ -3011,7 +3011,7 @@ void MgFeatureUtil::UpdateFdoPropertyDefinition(
         {
             FdoGeometricPropertyDefinition* fdoGeometricPropDef = dynamic_cast<FdoGeometricPropertyDefinition*>(fdoPropDef);
             if (NULL == fdoGeometricPropDef)
-                throw new MgInvalidArgumentException(L"MgFeatureUtil.UpdateFdoClassDefinition", __LINE__, __WFILE__, NULL, L"", NULL);
+                throw new MgInvalidArgumentException(L"MgdFeatureUtil.UpdateFdoClassDefinition", __LINE__, __WFILE__, NULL, L"", NULL);
 
             UpdateGeometricPropertyDefinition((MgGeometricPropertyDefinition*)mgPropDef, fdoGeometricPropDef);
             break;
@@ -3028,23 +3028,23 @@ void MgFeatureUtil::UpdateFdoPropertyDefinition(
         {
             FdoRasterPropertyDefinition* fdoRasterPropDef = dynamic_cast<FdoRasterPropertyDefinition*>(fdoPropDef);
             if (NULL == fdoRasterPropDef)
-                throw new MgInvalidArgumentException(L"MgFeatureUtil.UpdateFdoClassDefinition", __LINE__, __WFILE__, NULL, L"", NULL);
+                throw new MgInvalidArgumentException(L"MgdFeatureUtil.UpdateFdoClassDefinition", __LINE__, __WFILE__, NULL, L"", NULL);
 
             UpdateRasterPropertyDefinition((MgRasterPropertyDefinition*)mgPropDef, fdoRasterPropDef);
             break;
         }
     }
-    MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgFeatureUtil.UpdateFdoPropertyDefinition")
+    MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgdFeatureUtil.UpdateFdoPropertyDefinition")
 }
 
 
 //////////////////////////////////////////////////////////////////
-void MgFeatureUtil::UpdateDataPropertyDefinition(
+void MgdFeatureUtil::UpdateDataPropertyDefinition(
     MgDataPropertyDefinition* mgPropDef,
     FdoDataPropertyDefinition* fdoPropDef)
 {
-    CHECKNULL(mgPropDef, L"MgFeatureUtil.UpdateFdoPropertyDefinition");
-    CHECKNULL(fdoPropDef, L"MgFeatureUtil.UpdateFdoPropertyDefinition");
+    CHECKNULL(mgPropDef, L"MgdFeatureUtil.UpdateFdoPropertyDefinition");
+    CHECKNULL(fdoPropDef, L"MgdFeatureUtil.UpdateFdoPropertyDefinition");
 
     MG_FEATURE_SERVICE_TRY()
 
@@ -3088,18 +3088,18 @@ void MgFeatureUtil::UpdateDataPropertyDefinition(
     if (isAutoGenerated != fdoPropDef->GetIsAutoGenerated())
         fdoPropDef->SetIsAutoGenerated(isAutoGenerated);
 
-    MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgFeatureUtil.UpdateDataPropertyDefinition")
+    MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgdFeatureUtil.UpdateDataPropertyDefinition")
 }
 
 
 //////////////////////////////////////////////////////////////////
-void MgFeatureUtil::UpdateObjectPropertyDefinition(
+void MgdFeatureUtil::UpdateObjectPropertyDefinition(
     MgObjectPropertyDefinition* objPropDef,
     FdoObjectPropertyDefinition* fdoPropDef,
     FdoClassCollection* fdoClassCol)
 {
-    CHECKNULL((MgObjectPropertyDefinition*)objPropDef, L"MgFeatureUtil.UpdateObjectPropertyDefinition");
-    CHECKNULL((FdoObjectPropertyDefinition*)fdoPropDef, L"MgFeatureUtil.UpdateObjectPropertyDefinition");
+    CHECKNULL((MgObjectPropertyDefinition*)objPropDef, L"MgdFeatureUtil.UpdateObjectPropertyDefinition");
+    CHECKNULL((FdoObjectPropertyDefinition*)fdoPropDef, L"MgdFeatureUtil.UpdateObjectPropertyDefinition");
 
     MG_FEATURE_SERVICE_TRY()
 
@@ -3117,7 +3117,7 @@ void MgFeatureUtil::UpdateObjectPropertyDefinition(
         if (!FdoClassExist(clsName.c_str(), fdoClassCol))
         {
             FdoPtr<FdoClassDefinition> fdoClsDef = GetFdoClassDefinition(clsDef, fdoClassCol);
-            CHECKNULL(fdoClsDef, L"MgFeatureUtil.UpdateObjectPropertyDefinition")
+            CHECKNULL(fdoClsDef, L"MgdFeatureUtil.UpdateObjectPropertyDefinition")
             fdoClassCol->Add(fdoClsDef);
         }
         else
@@ -3149,17 +3149,17 @@ void MgFeatureUtil::UpdateObjectPropertyDefinition(
     if (fdoOrderType != fdoPropDef->GetOrderType())
         fdoPropDef->SetOrderType(fdoOrderType);
 
-    MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgFeatureUtil.UpdateObjectPropertyDefinition")
+    MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgdFeatureUtil.UpdateObjectPropertyDefinition")
 }
 
 
 //////////////////////////////////////////////////////////////////
-void MgFeatureUtil::UpdateGeometricPropertyDefinition(
+void MgdFeatureUtil::UpdateGeometricPropertyDefinition(
     MgGeometricPropertyDefinition* mgPropDef,
     FdoGeometricPropertyDefinition* fdoPropDef)
 {
-    CHECKNULL((MgGeometricPropertyDefinition*)mgPropDef, L"MgFeatureUtil.UpdateGeometricPropertyDefinition");
-    CHECKNULL((FdoGeometricPropertyDefinition*)fdoPropDef, L"MgFeatureUtil.UpdateGeometricPropertyDefinition");
+    CHECKNULL((MgGeometricPropertyDefinition*)mgPropDef, L"MgdFeatureUtil.UpdateGeometricPropertyDefinition");
+    CHECKNULL((FdoGeometricPropertyDefinition*)fdoPropDef, L"MgdFeatureUtil.UpdateGeometricPropertyDefinition");
 
     MG_FEATURE_SERVICE_TRY()
 
@@ -3221,17 +3221,17 @@ void MgFeatureUtil::UpdateGeometricPropertyDefinition(
     if(spatialContextName != fdoPropDef->GetSpatialContextAssociation())
         fdoPropDef->SetSpatialContextAssociation((FdoString*)spatialContextName.c_str());
 
-    MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgFeatureUtil.UpdateGeometricPropertyDefinition")
+    MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgdFeatureUtil.UpdateGeometricPropertyDefinition")
 }
 
 
 //////////////////////////////////////////////////////////////////
-void MgFeatureUtil::UpdateRasterPropertyDefinition(
+void MgdFeatureUtil::UpdateRasterPropertyDefinition(
     MgRasterPropertyDefinition* mgPropDef,
     FdoRasterPropertyDefinition* fdoPropDef)
 {
-    CHECKNULL((MgRasterPropertyDefinition*)mgPropDef, L"MgFeatureUtil.UpdateRasterPropertyDefinition");
-    CHECKNULL((FdoRasterPropertyDefinition*)fdoPropDef, L"MgFeatureUtil.UpdateRasterPropertyDefinition");
+    CHECKNULL((MgRasterPropertyDefinition*)mgPropDef, L"MgdFeatureUtil.UpdateRasterPropertyDefinition");
+    CHECKNULL((FdoRasterPropertyDefinition*)fdoPropDef, L"MgdFeatureUtil.UpdateRasterPropertyDefinition");
 
     MG_FEATURE_SERVICE_TRY()
 
@@ -3264,12 +3264,12 @@ void MgFeatureUtil::UpdateRasterPropertyDefinition(
     if (spatialContextName != fdoPropDef->GetSpatialContextAssociation())
         fdoPropDef->SetSpatialContextAssociation((FdoString*)spatialContextName.c_str());
 
-    MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgFeatureUtil.UpdateRasterPropertyDefinition")
+    MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgdFeatureUtil.UpdateRasterPropertyDefinition")
 }
 
-MgClassDefinition* MgFeatureUtil::CloneMgClassDefinition(MgClassDefinition* classDef)
+MgClassDefinition* MgdFeatureUtil::CloneMgClassDefinition(MgClassDefinition* classDef)
 {
-    CHECKNULL((MgClassDefinition*)classDef, L"MgFeatureUtil.CloneMgClassDefinition");
+    CHECKNULL((MgClassDefinition*)classDef, L"MgdFeatureUtil.CloneMgClassDefinition");
 
     Ptr<MgClassDefinition> clone;
 
@@ -3282,14 +3282,14 @@ MgClassDefinition* MgFeatureUtil::CloneMgClassDefinition(MgClassDefinition* clas
     clone = new MgClassDefinition();
     clone->Deserialize(stream);
 
-    MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgFeatureUtil.CloneMgClassDefinition")
+    MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgdFeatureUtil.CloneMgClassDefinition")
 
     return clone.Detach();
 }
 
-MgFeatureSchema* MgFeatureUtil::CloneMgSchema(MgFeatureSchema* schema)
+MgFeatureSchema* MgdFeatureUtil::CloneMgSchema(MgFeatureSchema* schema)
 {
-    CHECKNULL((MgFeatureSchema*)schema, L"MgFeatureUtil.CloneMgSchema");
+    CHECKNULL((MgFeatureSchema*)schema, L"MgdFeatureUtil.CloneMgSchema");
 
     Ptr<MgFeatureSchema> clone;
 
@@ -3304,22 +3304,22 @@ MgFeatureSchema* MgFeatureUtil::CloneMgSchema(MgFeatureSchema* schema)
         Ptr<MgClassDefinition> klass = classes->GetItem(i);
         Ptr<MgClassDefinition> clonedClass = CloneMgClassDefinition(klass);
 
-        CHECKNULL((MgClassDefinition*)clonedClass, L"MgFeatureUtil.CloneMgSchema");
+        CHECKNULL((MgClassDefinition*)clonedClass, L"MgdFeatureUtil.CloneMgSchema");
         clonedClasses->Add(clonedClass);        
     }
 
-    MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgFeatureUtil.CloneMgSchema")
+    MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgdFeatureUtil.CloneMgSchema")
 
     return clone.Detach();
 }
 
-void MgFeatureUtil::UpdateFdoPropertyValue(FdoPropertyValue* fp, MgProperty* srcProp)
+void MgdFeatureUtil::UpdateFdoPropertyValue(FdoPropertyValue* fp, MgProperty* srcProp)
 {
-    CHECKNULL((FdoPropertyValue*)fp, L"MgFeatureUtil.UpdateFdoPropertyValue");
-    CHECKNULL((MgProperty*)srcProp, L"MgFeatureUtil.UpdateFdoPropertyValue");
+    CHECKNULL((FdoPropertyValue*)fp, L"MgdFeatureUtil.UpdateFdoPropertyValue");
+    CHECKNULL((MgProperty*)srcProp, L"MgdFeatureUtil.UpdateFdoPropertyValue");
 
     FdoPtr<FdoValueExpression> expr = fp->GetValue();
-    CHECKNULL((FdoValueExpression*)expr, L"MgFeatureUtil.UpdateFdoPropertyValue");
+    CHECKNULL((FdoValueExpression*)expr, L"MgdFeatureUtil.UpdateFdoPropertyValue");
 
     switch(srcProp->GetPropertyType())
     {
@@ -3432,9 +3432,9 @@ void MgFeatureUtil::UpdateFdoPropertyValue(FdoPropertyValue* fp, MgProperty* src
     }
 }
 
-FdoIdentifierCollection* MgFeatureUtil::ExtractIdentifiers(FdoExpression* expr)
+FdoIdentifierCollection* MgdFeatureUtil::ExtractIdentifiers(FdoExpression* expr)
 {
-    CHECKNULL(expr, L"MgFeatureUtil.ExtractIdentifiers");
+    CHECKNULL(expr, L"MgdFeatureUtil.ExtractIdentifiers");
 
     FdoPtr<FdoIdentifierCollection> ret;
     MG_FEATURE_SERVICE_TRY()

@@ -23,11 +23,11 @@
 #include "System/XmlUtil.h"
 #include "Fdo.h"
 
-class MgEnumerateDataStores
+class MgdEnumerateDataStores
 {
 public:
-    MgEnumerateDataStores();
-    ~MgEnumerateDataStores();
+    MgdEnumerateDataStores();
+    ~MgdEnumerateDataStores();
 
 
     MgByteReader* EnumerateDataStores(CREFSTRING providerName, CREFSTRING partialConnString);

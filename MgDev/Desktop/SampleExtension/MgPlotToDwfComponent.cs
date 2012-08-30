@@ -27,10 +27,10 @@ namespace SampleExtension
                     {
                         var mappingSvc = (MgdMappingService)this.Viewer.GetProvider().CreateService(MgServiceType.MappingService);
                         var map = (MgdMap)this.Viewer.GetMap();
-                        var dwfVer = new MgDwfVersion("6.01", "1.2");
+                        var dwfVer = new MgdDwfVersion("6.01", "1.2");
 
-                        var layout = new MgLayout(layoutId, "TestPlot", MgPageUnitsType.Inches);
-                        var plotSpec = new MgPlotSpecification(8.5f, 11.0f, MgPageUnitsType.Inches, 0.5f, 0.5f, 0.5f, 0.5f);
+                        var layout = new MgdLayout(layoutId, "TestPlot", MgdPageUnitsType.Inches);
+                        var plotSpec = new MgdPlotSpecification(8.5f, 11.0f, MgdPageUnitsType.Inches, 0.5f, 0.5f, 0.5f, 0.5f);
 
                         var result = mappingSvc.GeneratePlot(map, plotSpec, layout, dwfVer);
                         var sink = new MgByteSink(result);

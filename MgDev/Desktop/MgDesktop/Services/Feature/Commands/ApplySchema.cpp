@@ -22,28 +22,28 @@
 #include "Services/Feature/FeatureServiceCache.h"
 
 //////////////////////////////////////////////////////////////////
-MgApplySchema::MgApplySchema()
+MgdApplySchema::MgdApplySchema()
 {
 }
 
 //////////////////////////////////////////////////////////////////
-MgApplySchema::~MgApplySchema()
+MgdApplySchema::~MgdApplySchema()
 {
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-void MgApplySchema::ApplySchema(MgResourceIdentifier* resource,
+void MgdApplySchema::ApplySchema(MgResourceIdentifier* resource,
     MgFeatureSchema* schema)
 {
     MG_FEATURE_SERVICE_TRY()
 
     if (NULL == resource || NULL == schema)
     {
-        throw new MgNullArgumentException(L"MgApplySchema.ApplySchema", __LINE__, __WFILE__, NULL, L"", NULL);
+        throw new MgNullArgumentException(L"MgdApplySchema.ApplySchema", __LINE__, __WFILE__, NULL, L"", NULL);
     }
 
     // Connect to provider
-    Ptr<MgFeatureConnection> msfc = new MgFeatureConnection(resource);
+    Ptr<MgdFeatureConnection> msfc = new MgdFeatureConnection(resource);
 
     // connection must be open
     bool bRefresh = false;
@@ -56,18 +56,18 @@ void MgApplySchema::ApplySchema(MgResourceIdentifier* resource,
             !msfc->SupportsCommand((INT32)FdoCommandType_DescribeSchema))
         {
             // TODO: specify which argument and message, once we have the mechanism
-            STRING message = MgFeatureUtil::GetMessage(L"MgCommandNotSupported");
-            throw new MgInvalidOperationException(L"MgApplySchema.ApplySchema", __LINE__, __WFILE__, NULL, L"", NULL);
+            STRING message = MgdFeatureUtil::GetMessage(L"MgCommandNotSupported");
+            throw new MgInvalidOperationException(L"MgdApplySchema.ApplySchema", __LINE__, __WFILE__, NULL, L"", NULL);
         }
 
         FdoPtr<FdoIDescribeSchema> fdoDecribeSchemaCmd = (FdoIDescribeSchema*) fdoConn->CreateCommand(FdoCommandType_DescribeSchema);
-        CHECKNULL((FdoIDescribeSchema*)fdoDecribeSchemaCmd, L"MgApplySchema.ApplySchema");
+        CHECKNULL((FdoIDescribeSchema*)fdoDecribeSchemaCmd, L"MgdApplySchema.ApplySchema");
 
         FdoPtr<FdoFeatureSchemaCollection> schemas = fdoDecribeSchemaCmd->Execute();
-        CHECKNULL((FdoFeatureSchemaCollection*)schemas, L"MgApplySchema.ApplySchema");
+        CHECKNULL((FdoFeatureSchemaCollection*)schemas, L"MgdApplySchema.ApplySchema");
 
         FdoPtr<FdoIApplySchema> fdoApplySchemaCmd = (FdoIApplySchema*)fdoConn->CreateCommand(FdoCommandType_ApplySchema);
-        CHECKNULL((FdoIApplySchema*)fdoApplySchemaCmd, L"MgApplySchema.ApplySchema");
+        CHECKNULL((FdoIApplySchema*)fdoApplySchemaCmd, L"MgdApplySchema.ApplySchema");
 
         STRING schemaName = schema->GetName();
         FdoPtr<FdoFeatureSchema> fdoOldSchema = schemas->FindItem(schemaName.c_str());
@@ -75,7 +75,7 @@ void MgApplySchema::ApplySchema(MgResourceIdentifier* resource,
         {
             if (!schema->IsDeleted())
             {
-                FdoPtr<FdoFeatureSchema> fdoNewSchema = MgFeatureUtil::GetFdoFeatureSchema(schema);
+                FdoPtr<FdoFeatureSchema> fdoNewSchema = MgdFeatureUtil::GetFdoFeatureSchema(schema);
                 fdoApplySchemaCmd->SetFeatureSchema(fdoNewSchema);
                 fdoApplySchemaCmd->Execute();
                 bRefresh = true;
@@ -84,7 +84,7 @@ void MgApplySchema::ApplySchema(MgResourceIdentifier* resource,
         else
         {
             if (!schema->IsDeleted())
-                MgFeatureUtil::UpdateFdoFeatureSchema(schema, fdoOldSchema);
+                MgdFeatureUtil::UpdateFdoFeatureSchema(schema, fdoOldSchema);
             else
                 fdoOldSchema->Delete();
 
@@ -98,7 +98,7 @@ void MgApplySchema::ApplySchema(MgResourceIdentifier* resource,
     // can return the correct schema
     if (bRefresh)
     {
-        MgFeatureServiceCache* m_cacheManager = MgFeatureServiceCache::GetInstance();
+        MgdFeatureServiceCache* m_cacheManager = MgdFeatureServiceCache::GetInstance();
         m_cacheManager->RemoveEntry(resource);
     }
 

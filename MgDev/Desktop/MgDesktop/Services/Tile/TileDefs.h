@@ -3,7 +3,7 @@
 
 #include "MgDesktop.h"
 
-class MG_DESKTOP_API MgTileParameters
+class MG_DESKTOP_API MgdTileParameters
 {
 INTERNAL_API:
     static INT32 tileWidth;         // width for all tiles

@@ -1,23 +1,23 @@
 #ifndef DESKTOP_ZIP_FILE_HANDLER_H
 #define DESKTOP_ZIP_FILE_HANDLER_H
 
-class MgZipFileHandler
+class MgdZipFileHandler
 {
 /// Constructors/Destructor
 
 public:
 
-    MgZipFileHandler(CREFSTRING filePath,
+    MgdZipFileHandler(CREFSTRING filePath,
         DWFZipFileDescriptor::teFileMode fileMode);
-    virtual ~MgZipFileHandler();
+    virtual ~MgdZipFileHandler();
 
 private:
 
     // Unimplemented Constructors/Methods
 
-    MgZipFileHandler();
-    MgZipFileHandler(const MgZipFileHandler&);
-    MgZipFileHandler& operator=(const MgZipFileHandler&);
+    MgdZipFileHandler();
+    MgdZipFileHandler(const MgdZipFileHandler&);
+    MgdZipFileHandler& operator=(const MgdZipFileHandler&);
 
 /// Methods
 

@@ -22,8 +22,8 @@
 
 class MgDataReader;
 
-class MgProxyDataReader;
-template class MG_DESKTOP_API Ptr<MgProxyDataReader>;
+class MgdProxyDataReader;
+template class MG_DESKTOP_API Ptr<MgdProxyDataReader>;
 
 /// \cond INTERNAL
 /////////////////////////////////////////////////////////////////
@@ -34,10 +34,10 @@ template class MG_DESKTOP_API Ptr<MgProxyDataReader>;
 /// \remarks
 /// The initial position of the SqlReader interface is prior to the first item.
 /// Thus, you must call ReadNext to begin accessing any data.
-class MG_DESKTOP_API  MgProxyDataReader : public MgDataReader
+class MG_DESKTOP_API  MgdProxyDataReader : public MgDataReader
 {
     MG_DECL_DYNCREATE();
-    DECLARE_CLASSNAME(MgProxyDataReader)
+    DECLARE_CLASSNAME(MgdProxyDataReader)
 
 EXTERNAL_API:
 
@@ -576,10 +576,10 @@ INTERNAL_API:
         delete this;
     }
 
-    MgProxyDataReader(MgBatchPropertyCollection* batchCol, MgPropertyDefinitionCollection* propDefCol);
+    MgdProxyDataReader(MgBatchPropertyCollection* batchCol, MgPropertyDefinitionCollection* propDefCol);
 
-    MgProxyDataReader();
-    ~MgProxyDataReader();
+    MgdProxyDataReader();
+    ~MgdProxyDataReader();
 
 private:
 

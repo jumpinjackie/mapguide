@@ -1,20 +1,20 @@
 #ifndef DESKTOP_FEATURE_CLASS_CACHE_ITEM_H
 #define DESKTOP_FEATURE_CLASS_CACHE_ITEM_H
 /// \cond INTERNAL
-class MgFeatureClassCacheItem : public MgGuardDisposable
+class MgdFeatureClassCacheItem : public MgGuardDisposable
 {
 /// Constructors/Destructor
 
 public:
 
-    MgFeatureClassCacheItem();
-    virtual ~MgFeatureClassCacheItem();
+    MgdFeatureClassCacheItem();
+    virtual ~MgdFeatureClassCacheItem();
 
 private:
 
     // Unimplemented copy constructor and assignment operator.
-    MgFeatureClassCacheItem(const MgFeatureClassCacheItem&);
-    MgFeatureClassCacheItem& operator=(const MgFeatureClassCacheItem&);
+    MgdFeatureClassCacheItem(const MgdFeatureClassCacheItem&);
+    MgdFeatureClassCacheItem& operator=(const MgdFeatureClassCacheItem&);
 
 /// Methods
 

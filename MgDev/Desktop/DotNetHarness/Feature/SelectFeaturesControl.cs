@@ -49,7 +49,7 @@ namespace DotNetHarness.Feature
         {
             try
             {
-                var fact = new MgServiceFactory();
+                var fact = new MgdServiceFactory();
                 MgFeatureService featSvc = (MgdFeatureService)fact.CreateService(MgServiceType.FeatureService);
                 MgFeatureQueryOptions query = new MgFeatureQueryOptions();
                 string[] propNames = txtProps.Text.Split(',');

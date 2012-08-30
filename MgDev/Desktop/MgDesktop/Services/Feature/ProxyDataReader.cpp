@@ -17,14 +17,14 @@
 
 #include "ProxyDataReader.h"
 
-MG_IMPL_DYNCREATE(MgProxyDataReader);
+MG_IMPL_DYNCREATE(MgdProxyDataReader);
 
 //////////////////////////////////////////////////////////////////
 ///<summary>
-/// Construct an uninitialized MgProxyDataReader object
+/// Construct an uninitialized MgdProxyDataReader object
 ///</summary>
 ///
-MgProxyDataReader::MgProxyDataReader()
+MgdProxyDataReader::MgdProxyDataReader()
 {
     m_currRecord = 0;
     m_serverDataReader = L"";
@@ -33,7 +33,7 @@ MgProxyDataReader::MgProxyDataReader()
     m_propDefCol = NULL;
 }
 
-MgProxyDataReader::MgProxyDataReader(MgBatchPropertyCollection* batchCol, MgPropertyDefinitionCollection* propDefCol)
+MgdProxyDataReader::MgdProxyDataReader(MgBatchPropertyCollection* batchCol, MgPropertyDefinitionCollection* propDefCol)
 {
     m_currRecord = 0;
     m_serverDataReader = L"";
@@ -44,10 +44,10 @@ MgProxyDataReader::MgProxyDataReader(MgBatchPropertyCollection* batchCol, MgProp
 
 //////////////////////////////////////////////////////////////////
 ///<summary>
-/// Destruct a MgProxyDataReader object
+/// Destruct a MgdProxyDataReader object
 ///</summary>
 ///
-MgProxyDataReader::~MgProxyDataReader()
+MgdProxyDataReader::~MgdProxyDataReader()
 {
     Close();
     SAFE_RELEASE(m_service);
@@ -63,9 +63,9 @@ MgProxyDataReader::~MgProxyDataReader()
 /// <returns>
 /// Returns true if there is a next item.
 /// </returns>
-bool MgProxyDataReader::ReadNext()
+bool MgdProxyDataReader::ReadNext()
 {
-    CHECKNULL(m_set, L"MgProxyDataReader.ReadNext");
+    CHECKNULL(m_set, L"MgdProxyDataReader.ReadNext");
 
     bool foundNextFeature = false;
 
@@ -109,9 +109,9 @@ bool MgProxyDataReader::ReadNext()
 /// Gets the number of properties in the result set.
 /// </summary>
 /// <returns>Returns the number of properties.</returns>
-INT32 MgProxyDataReader::GetPropertyCount()
+INT32 MgdProxyDataReader::GetPropertyCount()
 {
-    CHECKNULL(m_propDefCol, L"MgProxyDataReader.GetPropertyCount");
+    CHECKNULL(m_propDefCol, L"MgdProxyDataReader.GetPropertyCount");
 
     return m_propDefCol->GetCount();
 }
@@ -122,9 +122,9 @@ INT32 MgProxyDataReader::GetPropertyCount()
 /// </summary>
 /// <param name="index">Input the position of the property.</param>
 /// <returns>Returns the property name</returns>
-STRING MgProxyDataReader::GetPropertyName(INT32 index)
+STRING MgdProxyDataReader::GetPropertyName(INT32 index)
 {
-    CHECKNULL(m_propDefCol, L"MgProxyDataReader.GetPropertyName");
+    CHECKNULL(m_propDefCol, L"MgdProxyDataReader.GetPropertyName");
 
     Ptr<MgPropertyDefinition> propDef = m_propDefCol->GetItem(index);
     return propDef->GetName();
@@ -136,9 +136,9 @@ STRING MgProxyDataReader::GetPropertyName(INT32 index)
 /// </summary>
 /// <param name="propertyName">Input the name of the property.</param>
 /// <returns>Returns the property index</returns>
-INT32 MgProxyDataReader::GetPropertyIndex(CREFSTRING propertyName)
+INT32 MgdProxyDataReader::GetPropertyIndex(CREFSTRING propertyName)
 {
-    CHECKNULL(m_propDefCol, L"MgProxyDataReader.GetPropertyIndex");
+    CHECKNULL(m_propDefCol, L"MgdProxyDataReader.GetPropertyIndex");
 
     return m_propDefCol->IndexOf(propertyName);
 }
@@ -149,12 +149,12 @@ INT32 MgProxyDataReader::GetPropertyIndex(CREFSTRING propertyName)
 /// </summary>
 /// <param name="propertyName">Input the property name.</param>
 /// <returns>Returns the type of the property.</returns>
-INT32 MgProxyDataReader::GetPropertyType(CREFSTRING propertyName)
+INT32 MgdProxyDataReader::GetPropertyType(CREFSTRING propertyName)
 {
-    CHECKNULL(m_propDefCol, L"MgProxyDataReader.GetPropertyType");
+    CHECKNULL(m_propDefCol, L"MgdProxyDataReader.GetPropertyType");
 
     Ptr<MgPropertyDefinition> propDef = m_propDefCol->GetItem(propertyName);
-    CHECKNULL((MgPropertyDefinition*)propDef, L"MgProxyDataReader.GetPropertyType");
+    CHECKNULL((MgPropertyDefinition*)propDef, L"MgdProxyDataReader.GetPropertyType");
 
     return propDef->GetPropertyType();
 }
@@ -165,12 +165,12 @@ INT32 MgProxyDataReader::GetPropertyType(CREFSTRING propertyName)
 /// </summary>
 /// <param name="index">Input the property index.</param>
 /// <returns>Returns the type of the property.</returns>
-INT32 MgProxyDataReader::GetPropertyType(INT32 index)
+INT32 MgdProxyDataReader::GetPropertyType(INT32 index)
 {
-    CHECKNULL(m_propDefCol, L"MgProxyDataReader.GetPropertyType");
+    CHECKNULL(m_propDefCol, L"MgdProxyDataReader.GetPropertyType");
 
     Ptr<MgPropertyDefinition> propDef = m_propDefCol->GetItem(index);
-    CHECKNULL((MgPropertyDefinition*)propDef, L"MgProxyDataReader.GetPropertyType");
+    CHECKNULL((MgPropertyDefinition*)propDef, L"MgdProxyDataReader.GetPropertyType");
 
     return propDef->GetPropertyType();
 }
@@ -181,7 +181,7 @@ INT32 MgProxyDataReader::GetPropertyType(INT32 index)
 /// </summary>
 /// <param name="propertyName">Property name.</param>
 /// <returns>Returns true if the value is null.</returns>
-bool MgProxyDataReader::IsNull(CREFSTRING propertyName)
+bool MgdProxyDataReader::IsNull(CREFSTRING propertyName)
 {
     bool isNull = false;
 
@@ -201,7 +201,7 @@ bool MgProxyDataReader::IsNull(CREFSTRING propertyName)
 /// </summary>
 /// <param name="index">Property index.</param>
 /// <returns>Returns true if the value is null.</returns>
-bool MgProxyDataReader::IsNull(INT32 index)
+bool MgdProxyDataReader::IsNull(INT32 index)
 {
     bool isNull = false;
 
@@ -222,7 +222,7 @@ bool MgProxyDataReader::IsNull(INT32 index)
 /// is undertermined</summary>
 /// <param name="propertyName">Property name.</param>
 /// <returns>Returns the Boolean value.</returns>
-bool MgProxyDataReader::GetBoolean(CREFSTRING propertyName)
+bool MgdProxyDataReader::GetBoolean(CREFSTRING propertyName)
 {
     bool retVal = false;
 
@@ -240,7 +240,7 @@ bool MgProxyDataReader::GetBoolean(CREFSTRING propertyName)
 /// is undertermined</summary>
 /// <param name="index">Property index.</param>
 /// <returns>Returns the Boolean value.</returns>
-bool MgProxyDataReader::GetBoolean(INT32 index)
+bool MgdProxyDataReader::GetBoolean(INT32 index)
 {
     bool retVal = false;
 
@@ -258,7 +258,7 @@ bool MgProxyDataReader::GetBoolean(INT32 index)
 /// is undertermined</summary>
 /// <param name="propertyName">Property name.</param>
 /// <returns>Returns the Byte value.</returns>
-BYTE MgProxyDataReader::GetByte(CREFSTRING propertyName)
+BYTE MgdProxyDataReader::GetByte(CREFSTRING propertyName)
 {
     BYTE retVal = 0;
 
@@ -276,7 +276,7 @@ BYTE MgProxyDataReader::GetByte(CREFSTRING propertyName)
 /// is undertermined</summary>
 /// <param name="index">Property index.</param>
 /// <returns>Returns the Byte value.</returns>
-BYTE MgProxyDataReader::GetByte(INT32 index)
+BYTE MgdProxyDataReader::GetByte(INT32 index)
 {
     BYTE retVal = 0;
 
@@ -294,7 +294,7 @@ BYTE MgProxyDataReader::GetByte(INT32 index)
 /// is NULL</summary>
 /// <param name="propertyName">Property name.</param>
 /// <returns>Returns the DTime value.</returns>
-MgDateTime* MgProxyDataReader::GetDateTime(CREFSTRING propertyName)
+MgDateTime* MgdProxyDataReader::GetDateTime(CREFSTRING propertyName)
 {
     Ptr<MgDateTimeProperty> ptrProp = (MgDateTimeProperty*)GetProperty(propertyName, MgPropertyType::DateTime);
     Ptr<MgDateTime> retVal = ptrProp->GetValue();
@@ -310,7 +310,7 @@ MgDateTime* MgProxyDataReader::GetDateTime(CREFSTRING propertyName)
 /// is NULL</summary>
 /// <param name="index">Property index.</param>
 /// <returns>Returns the DTime value.</returns>
-MgDateTime* MgProxyDataReader::GetDateTime(INT32 index)
+MgDateTime* MgdProxyDataReader::GetDateTime(INT32 index)
 {
     Ptr<MgDateTimeProperty> ptrProp = (MgDateTimeProperty*)GetProperty(index, MgPropertyType::DateTime);
     Ptr<MgDateTime> retVal = ptrProp->GetValue();
@@ -326,7 +326,7 @@ MgDateTime* MgProxyDataReader::GetDateTime(INT32 index)
 /// is undetermined</summary>
 /// <param name="propertyName">Property name.</param>
 /// <returns>Returns the single value.</returns>
-float MgProxyDataReader::GetSingle(CREFSTRING propertyName)
+float MgdProxyDataReader::GetSingle(CREFSTRING propertyName)
 {
     float retVal = 0;
 
@@ -344,7 +344,7 @@ float MgProxyDataReader::GetSingle(CREFSTRING propertyName)
 /// is undetermined</summary>
 /// <param name="index">Property index.</param>
 /// <returns>Returns the single value.</returns>
-float MgProxyDataReader::GetSingle(INT32 index)
+float MgdProxyDataReader::GetSingle(INT32 index)
 {
     float retVal = 0;
 
@@ -362,7 +362,7 @@ float MgProxyDataReader::GetSingle(INT32 index)
 /// is undetermined</summary>
 /// <param name="propertyName">Property name.</param>
 /// <returns>Returns the double value.</returns>
-double MgProxyDataReader::GetDouble(CREFSTRING propertyName)
+double MgdProxyDataReader::GetDouble(CREFSTRING propertyName)
 {
     double retVal = 0;
 
@@ -380,7 +380,7 @@ double MgProxyDataReader::GetDouble(CREFSTRING propertyName)
 /// is undetermined</summary>
 /// <param name="index">Property index.</param>
 /// <returns>Returns the double value.</returns>
-double MgProxyDataReader::GetDouble(INT32 index)
+double MgdProxyDataReader::GetDouble(INT32 index)
 {
     double retVal = 0;
 
@@ -398,7 +398,7 @@ double MgProxyDataReader::GetDouble(INT32 index)
 /// is undetermined</summary>
 /// <param name="propertyName">Property name.</param>
 /// <returns>Returns the integer 16 bits value.</returns>
-INT16 MgProxyDataReader::GetInt16(CREFSTRING propertyName)
+INT16 MgdProxyDataReader::GetInt16(CREFSTRING propertyName)
 {
     INT16 retVal = 0;
 
@@ -415,7 +415,7 @@ INT16 MgProxyDataReader::GetInt16(CREFSTRING propertyName)
 /// is undetermined</summary>
 /// <param name="index">Property index.</param>
 /// <returns>Returns the integer 16 bits value.</returns>
-INT16 MgProxyDataReader::GetInt16(INT32 index)
+INT16 MgdProxyDataReader::GetInt16(INT32 index)
 {
     INT16 retVal = 0;
 
@@ -432,7 +432,7 @@ INT16 MgProxyDataReader::GetInt16(INT32 index)
 /// is undetermined</summary>
 /// <param name="propertyName">Property name.</param>
 /// <returns>Returns the integer 32 bits value.</returns>
-INT32 MgProxyDataReader::GetInt32(CREFSTRING propertyName)
+INT32 MgdProxyDataReader::GetInt32(CREFSTRING propertyName)
 {
     INT32 retVal = 0;
 
@@ -449,7 +449,7 @@ INT32 MgProxyDataReader::GetInt32(CREFSTRING propertyName)
 /// is undetermined</summary>
 /// <param name="index">Property index.</param>
 /// <returns>Returns the integer 32 bits value.</returns>
-INT32 MgProxyDataReader::GetInt32(INT32 index)
+INT32 MgdProxyDataReader::GetInt32(INT32 index)
 {
     INT32 retVal = 0;
 
@@ -468,7 +468,7 @@ INT32 MgProxyDataReader::GetInt32(INT32 index)
 /// <returns>Returns the integer 64 bits value.
 /// Note: INT64 is actually a pointer to an Integer64 object
 ///</returns>
-INT64 MgProxyDataReader::GetInt64(CREFSTRING propertyName)
+INT64 MgdProxyDataReader::GetInt64(CREFSTRING propertyName)
 {
     INT64 retVal = 0;
 
@@ -487,7 +487,7 @@ INT64 MgProxyDataReader::GetInt64(CREFSTRING propertyName)
 /// <returns>Returns the integer 64 bits value.
 /// Note: INT64 is actually a pointer to an Integer64 object
 ///</returns>
-INT64 MgProxyDataReader::GetInt64(INT32 index)
+INT64 MgdProxyDataReader::GetInt64(INT32 index)
 {
     INT64 retVal = 0;
 
@@ -504,7 +504,7 @@ INT64 MgProxyDataReader::GetInt64(INT32 index)
 /// is NULL</summary>
 /// <param name="propertyName">Property name.</param>
 /// <returns>Returns the string value.</returns>
-STRING MgProxyDataReader::GetString(CREFSTRING propertyName)
+STRING MgdProxyDataReader::GetString(CREFSTRING propertyName)
 {
     STRING retVal = L"";
 
@@ -521,7 +521,7 @@ STRING MgProxyDataReader::GetString(CREFSTRING propertyName)
 /// is NULL</summary>
 /// <param name="index">Property index.</param>
 /// <returns>Returns the string value.</returns>
-STRING MgProxyDataReader::GetString(INT32 index)
+STRING MgdProxyDataReader::GetString(INT32 index)
 {
     STRING retVal = L"";
 
@@ -538,7 +538,7 @@ STRING MgProxyDataReader::GetString(INT32 index)
 /// is NULL</summary>
 /// <param name="propertyName">Property name.</param>
 /// <returns>Returns the BLOB value.</returns>
-MgByteReader* MgProxyDataReader::GetBLOB(CREFSTRING propertyName)
+MgByteReader* MgdProxyDataReader::GetBLOB(CREFSTRING propertyName)
 {
     Ptr<MgBlobProperty> ptrProp = (MgBlobProperty*)GetProperty(propertyName, MgPropertyType::Blob);
     return ptrProp->GetValue();
@@ -551,7 +551,7 @@ MgByteReader* MgProxyDataReader::GetBLOB(CREFSTRING propertyName)
 /// is NULL</summary>
 /// <param name="index">Property index.</param>
 /// <returns>Returns the BLOB value.</returns>
-MgByteReader* MgProxyDataReader::GetBLOB(INT32 index)
+MgByteReader* MgdProxyDataReader::GetBLOB(INT32 index)
 {
     Ptr<MgBlobProperty> ptrProp = (MgBlobProperty*)GetProperty(index, MgPropertyType::Blob);
     return ptrProp->GetValue();
@@ -564,7 +564,7 @@ MgByteReader* MgProxyDataReader::GetBLOB(INT32 index)
 /// is NULL</summary>
 /// <param name="propertyName">Property name.</param>
 /// <returns>Returns the CLOB value.</returns>
-MgByteReader* MgProxyDataReader::GetCLOB(CREFSTRING propertyName)
+MgByteReader* MgdProxyDataReader::GetCLOB(CREFSTRING propertyName)
 {
     Ptr<MgClobProperty> ptrProp = (MgClobProperty*)GetProperty(propertyName, MgPropertyType::Clob);
     return ptrProp->GetValue();
@@ -577,7 +577,7 @@ MgByteReader* MgProxyDataReader::GetCLOB(CREFSTRING propertyName)
 /// is NULL</summary>
 /// <param name="index">Property index.</param>
 /// <returns>Returns the CLOB value.</returns>
-MgByteReader* MgProxyDataReader::GetCLOB(INT32 index)
+MgByteReader* MgdProxyDataReader::GetCLOB(INT32 index)
 {
     Ptr<MgClobProperty> ptrProp = (MgClobProperty*)GetProperty(index, MgPropertyType::Clob);
     return ptrProp->GetValue();
@@ -590,7 +590,7 @@ MgByteReader* MgProxyDataReader::GetCLOB(INT32 index)
 /// is NULL</summary>
 /// <param name="propertyName">Property name.</param>
 /// <returns>Returns a ByteReader object</returns>
-MgByteReader* MgProxyDataReader::GetGeometry(CREFSTRING propertyName)
+MgByteReader* MgdProxyDataReader::GetGeometry(CREFSTRING propertyName)
 {
     Ptr<MgGeometryProperty> ptrProp = (MgGeometryProperty*)GetProperty(propertyName, MgPropertyType::Geometry);
     return ptrProp->GetValue();
@@ -603,7 +603,7 @@ MgByteReader* MgProxyDataReader::GetGeometry(CREFSTRING propertyName)
 /// is NULL</summary>
 /// <param name="index">Property index.</param>
 /// <returns>Returns a ByteReader object</returns>
-MgByteReader* MgProxyDataReader::GetGeometry(INT32 index)
+MgByteReader* MgdProxyDataReader::GetGeometry(INT32 index)
 {
     Ptr<MgGeometryProperty> ptrProp = (MgGeometryProperty*)GetProperty(index, MgPropertyType::Geometry);
     return ptrProp->GetValue();
@@ -617,7 +617,7 @@ MgByteReader* MgProxyDataReader::GetGeometry(INT32 index)
 /// Stream
 ///</param>
 
-void MgProxyDataReader::Serialize(MgStream* stream)
+void MgdProxyDataReader::Serialize(MgStream* stream)
 {
     bool operationCompleted = true;
     stream->WriteBoolean(operationCompleted);
@@ -639,7 +639,7 @@ void MgProxyDataReader::Serialize(MgStream* stream)
 /// Stream
 ///</param>
 
-void MgProxyDataReader::Deserialize(MgStream* stream)
+void MgdProxyDataReader::Deserialize(MgStream* stream)
 {
     bool operationCompleted = false;
 
@@ -665,7 +665,7 @@ void MgProxyDataReader::Deserialize(MgStream* stream)
 /// XML is serialized from the current position of feature reader in the order
 /// data are retrieved.
 /// <returns>MgByteReader holding XML.</returns>
-MgByteReader* MgProxyDataReader::ToXml()
+MgByteReader* MgdProxyDataReader::ToXml()
 {
     string xmlStr;
     this->ToXml(xmlStr);
@@ -676,10 +676,10 @@ MgByteReader* MgProxyDataReader::ToXml()
     return byteSource->GetReader();
 }
 
-void MgProxyDataReader::ToXml(string &str)
+void MgdProxyDataReader::ToXml(string &str)
 {
-    CHECKNULL((MgBatchPropertyCollection*)m_set, L"MgProxyDataReader.ToXml");
-    CHECKNULL((MgPropertyDefinitionCollection*)m_propDefCol, L"MgProxyDataReader.ToXml");
+    CHECKNULL((MgBatchPropertyCollection*)m_set, L"MgdProxyDataReader.ToXml");
+    CHECKNULL((MgPropertyDefinitionCollection*)m_propDefCol, L"MgdProxyDataReader.ToXml");
 
     // this XML follows the SelectAggregate-1.0.0.xsd schema
     str += "<?xml version=\"1.0\" encoding=\"UTF-8\"?>";
@@ -701,9 +701,9 @@ void MgProxyDataReader::ToXml(string &str)
     str += "</PropertySet>";
 }
 
-void MgProxyDataReader::SetService(MgFeatureService* service)
+void MgdProxyDataReader::SetService(MgFeatureService* service)
 {
-    CHECKNULL(service, L"MgProxyDataReader.SetService");
+    CHECKNULL(service, L"MgdProxyDataReader.SetService");
 
     if (m_service == NULL)
     {
@@ -716,7 +716,7 @@ void MgProxyDataReader::SetService(MgFeatureService* service)
 /// Releases all the resources of feature reader.
 /// This must be called when user is done with Feature Reader
 /// <returns>Nothing</returns>
-void MgProxyDataReader::Close()
+void MgdProxyDataReader::Close()
 {
     if (m_serverDataReader != L"")
     {
@@ -725,7 +725,7 @@ void MgProxyDataReader::Close()
         m_service->CloseDataReader(m_serverDataReader);
         m_serverDataReader = L"";
 
-        MG_CATCH(L"MgProxyDataReader.Close")
+        MG_CATCH(L"MgdProxyDataReader.Close")
 
         // We do not rethrow the exception while destructing the object. Even if we had problem
         // disposing this feature reader, it will automatically get collected after time out.
@@ -734,46 +734,46 @@ void MgProxyDataReader::Close()
 
 
 // Get the property for the specified name
-MgProperty* MgProxyDataReader::GetProperty(CREFSTRING propertyName, INT16 expectedType)
+MgProperty* MgdProxyDataReader::GetProperty(CREFSTRING propertyName, INT16 expectedType)
 {
     Ptr<MgNullableProperty> ptrProp = (MgNullableProperty*)this->GetProperty(propertyName);
-    CHECKNULL(ptrProp, L"MgProxyDataReader.GetProperty");
+    CHECKNULL(ptrProp, L"MgdProxyDataReader.GetProperty");
 
     if (ptrProp->IsNull())
     {
         MgStringCollection arguments;
         arguments.Add(propertyName);
 
-        throw new MgNullPropertyValueException(L"MgProxyDataReader.GetProperty",
+        throw new MgNullPropertyValueException(L"MgdProxyDataReader.GetProperty",
             __LINE__, __WFILE__, &arguments, L"", NULL);
     }
 
     INT16 propType = ptrProp->GetPropertyType();
-    MG_CHECK_PROPERTY_TYPE(propType, expectedType, L"MgProxyDataReader.GetProperty");
+    MG_CHECK_PROPERTY_TYPE(propType, expectedType, L"MgdProxyDataReader.GetProperty");
 
     return SAFE_ADDREF((MgProperty*)ptrProp);
 }
 
 // Get the property for the specified name
-MgProperty* MgProxyDataReader::GetProperty(CREFSTRING propertyName)
+MgProperty* MgdProxyDataReader::GetProperty(CREFSTRING propertyName)
 {
-    CHECKNULL(m_set, L"MgProxyDataReader.GetProperty");
-    MG_CHECK_FEATURE_SET_COUNT(m_set, L"MgProxyDataReader.GetProperty");
+    CHECKNULL(m_set, L"MgdProxyDataReader.GetProperty");
+    MG_CHECK_FEATURE_SET_COUNT(m_set, L"MgdProxyDataReader.GetProperty");
 
     Ptr<MgPropertyCollection> ptrCol = m_set->GetItem(m_currRecord-1);
-    CHECKNULL(ptrCol, L"MgProxyDataReader.GetProperty");
+    CHECKNULL(ptrCol, L"MgdProxyDataReader.GetProperty");
 
     Ptr<MgProperty> ptrProp = ptrCol->GetItem(propertyName);
-    CHECKNULL(ptrProp, L"MgProxyDataReader.GetProperty");
+    CHECKNULL(ptrProp, L"MgdProxyDataReader.GetProperty");
 
     return SAFE_ADDREF((MgProperty*)ptrProp);
 }
 
 // Get the property for the specified name
-MgProperty* MgProxyDataReader::GetProperty(INT32 index, INT16 expectedType)
+MgProperty* MgdProxyDataReader::GetProperty(INT32 index, INT16 expectedType)
 {
     Ptr<MgNullableProperty> ptrProp = (MgNullableProperty*)this->GetProperty(index);
-    CHECKNULL(ptrProp, L"MgProxyDataReader.GetProperty");
+    CHECKNULL(ptrProp, L"MgdProxyDataReader.GetProperty");
 
     if (ptrProp->IsNull())
     {
@@ -783,35 +783,35 @@ MgProperty* MgProxyDataReader::GetProperty(INT32 index, INT16 expectedType)
         MgStringCollection arguments;
         arguments.Add(buffer);
 
-        throw new MgNullPropertyValueException(L"MgProxyDataReader.GetProperty",
+        throw new MgNullPropertyValueException(L"MgdProxyDataReader.GetProperty",
             __LINE__, __WFILE__, &arguments, L"", NULL);
     }
 
     INT16 propType = ptrProp->GetPropertyType();
-    MG_CHECK_PROPERTY_TYPE(propType, expectedType, L"MgProxyDataReader.GetProperty");
+    MG_CHECK_PROPERTY_TYPE(propType, expectedType, L"MgdProxyDataReader.GetProperty");
 
     return SAFE_ADDREF((MgProperty*)ptrProp);
 }
 
 // Get the property for the specified index
-MgProperty* MgProxyDataReader::GetProperty(INT32 index)
+MgProperty* MgdProxyDataReader::GetProperty(INT32 index)
 {
-    CHECKNULL(m_set, L"MgProxyDataReader.GetProperty");
-    MG_CHECK_FEATURE_SET_COUNT(m_set, L"MgProxyDataReader.GetProperty");
+    CHECKNULL(m_set, L"MgdProxyDataReader.GetProperty");
+    MG_CHECK_FEATURE_SET_COUNT(m_set, L"MgdProxyDataReader.GetProperty");
 
     Ptr<MgPropertyCollection> ptrCol = m_set->GetItem(m_currRecord-1);
-    CHECKNULL(ptrCol, L"MgProxyDataReader.GetProperty");
+    CHECKNULL(ptrCol, L"MgdProxyDataReader.GetProperty");
 
     Ptr<MgProperty> ptrProp = ptrCol->GetItem(index);
-    CHECKNULL(ptrProp, L"MgProxyDataReader.GetProperty");
+    CHECKNULL(ptrProp, L"MgdProxyDataReader.GetProperty");
 
     return SAFE_ADDREF((MgProperty*)ptrProp);
 }
 
-void MgProxyDataReader::UpdateCurrentSet(MgBatchPropertyCollection* bpCol)
+void MgdProxyDataReader::UpdateCurrentSet(MgBatchPropertyCollection* bpCol)
 {
-    CHECKNULL((MgBatchPropertyCollection*)m_set, L"MgProxyDataReader.UpdateCurrentSet");
-    CHECKNULL((MgBatchPropertyCollection*)bpCol, L"MgProxyDataReader.UpdateCurrentSet");
+    CHECKNULL((MgBatchPropertyCollection*)m_set, L"MgdProxyDataReader.UpdateCurrentSet");
+    CHECKNULL((MgBatchPropertyCollection*)bpCol, L"MgdProxyDataReader.UpdateCurrentSet");
 
     m_set->Clear();
 
@@ -829,7 +829,7 @@ void MgProxyDataReader::UpdateCurrentSet(MgBatchPropertyCollection* bpCol)
 /// </summary>
 /// <param name="propertyName">Input the property name.</param>
 /// <returns>Returns the raster object.</returns>
-MgRaster* MgProxyDataReader::GetRaster(CREFSTRING propertyName)
+MgRaster* MgdProxyDataReader::GetRaster(CREFSTRING propertyName)
 {
     Ptr<MgRasterProperty> ptrProp = (MgRasterProperty*)GetProperty(propertyName, MgPropertyType::Raster);
     Ptr<MgRaster> retVal = ptrProp->GetValue();
@@ -844,7 +844,7 @@ MgRaster* MgProxyDataReader::GetRaster(CREFSTRING propertyName)
 /// </summary>
 /// <param name="index">Input the property index.</param>
 /// <returns>Returns the raster object.</returns>
-MgRaster* MgProxyDataReader::GetRaster(INT32 index)
+MgRaster* MgdProxyDataReader::GetRaster(INT32 index)
 {
     Ptr<MgRasterProperty> ptrProp = (MgRasterProperty*)GetProperty(index, MgPropertyType::Raster);
     Ptr<MgRaster> retVal = ptrProp->GetValue();
@@ -861,7 +861,7 @@ MgRaster* MgProxyDataReader::GetRaster(INT32 index)
 /// is NULL</summary>
 /// <param name="propertyName">Property name.</param>
 /// <returns>Returns the string value.</returns>
-const wchar_t* MgProxyDataReader::GetString(CREFSTRING propertyName, INT32& length)
+const wchar_t* MgdProxyDataReader::GetString(CREFSTRING propertyName, INT32& length)
 {
     STRING str = this->GetString(propertyName);
     length = (INT32)str.size();
@@ -876,7 +876,7 @@ const wchar_t* MgProxyDataReader::GetString(CREFSTRING propertyName, INT32& leng
 /// is NULL</summary>
 /// <param name="index">Property index.</param>
 /// <returns>Returns the string value.</returns>
-const wchar_t* MgProxyDataReader::GetString(INT32 index, INT32& length)
+const wchar_t* MgdProxyDataReader::GetString(INT32 index, INT32& length)
 {
     STRING str = this->GetString(index);
     length = (INT32)str.size();

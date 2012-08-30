@@ -1,40 +1,40 @@
 #include "MgDesktop.h"
 #include "FeatureServiceCache.h"
 
-Ptr<MgFeatureServiceCache> MgFeatureServiceCache::smInstance = (MgFeatureServiceCache*)NULL;
+Ptr<MgdFeatureServiceCache> MgdFeatureServiceCache::smInstance = (MgdFeatureServiceCache*)NULL;
 
-MgFeatureServiceCache::MgFeatureServiceCache() { }
+MgdFeatureServiceCache::MgdFeatureServiceCache() { }
 
-MgFeatureServiceCache::~MgFeatureServiceCache()
+MgdFeatureServiceCache::~MgdFeatureServiceCache()
 {
     MG_TRY()
 
-    ACE_DEBUG((LM_DEBUG, ACE_TEXT("(%t) MgFeatureServiceCache::~MgFeatureServiceCache()\n")));
+    ACE_DEBUG((LM_DEBUG, ACE_TEXT("(%t) MgdFeatureServiceCache::~MgdFeatureServiceCache()\n")));
 
     Clear();
 
     MG_CATCH_AND_RELEASE()
 }
 
-MgFeatureServiceCache* MgFeatureServiceCache::GetInstance()
+MgdFeatureServiceCache* MgdFeatureServiceCache::GetInstance()
 {
-    if (NULL == MgFeatureServiceCache::smInstance)
+    if (NULL == MgdFeatureServiceCache::smInstance)
     {
         // Perform Double-Checked Locking Optimization.
         ACE_MT (ACE_GUARD_RETURN (ACE_Recursive_Thread_Mutex, ace_mon, *ACE_Static_Object_Lock::instance (), 0));
-        if (NULL == MgFeatureServiceCache::smInstance)
+        if (NULL == MgdFeatureServiceCache::smInstance)
         {
-            MgFeatureServiceCache::smInstance = new MgFeatureServiceCache();
+            MgdFeatureServiceCache::smInstance = new MgdFeatureServiceCache();
         }
     }
     return smInstance;
 }
 
-void MgFeatureServiceCache::Clear()
+void MgdFeatureServiceCache::Clear()
 {
-    ACE_MT(ACE_GUARD(ACE_Recursive_Thread_Mutex, ace_mon, m_mutex));
+    ACE_MT(ACE_GUARD(ACE_Recursive_Thread_Mutex, ace_mon, m_MgdMutex));
 
-    for (MgFeatureServiceCacheEntries::iterator i = m_featureServiceCacheEntries.begin();
+    for (MgdFeatureServiceCacheEntries::iterator i = m_featureServiceCacheEntries.begin();
         i != m_featureServiceCacheEntries.end(); ++i)
     {
 #ifdef _DEBUG
@@ -42,7 +42,7 @@ void MgFeatureServiceCache::Clear()
 
         if (NULL != i->second && 1 != i->second->GetRefCount())
         {
-            ACE_DEBUG((LM_DEBUG, ACE_TEXT("(%t) MgFeatureServiceCache::Clear() - Reference Count of '%W': %d\n"),
+            ACE_DEBUG((LM_DEBUG, ACE_TEXT("(%t) MgdFeatureServiceCache::Clear() - Reference Count of '%W': %d\n"),
                 i->first.c_str(), i->second->GetRefCount()));
         }
 #endif
@@ -52,11 +52,11 @@ void MgFeatureServiceCache::Clear()
     m_featureServiceCacheEntries.clear();
 }
 
-void MgFeatureServiceCache::RemoveEntry(CREFSTRING resource)
+void MgdFeatureServiceCache::RemoveEntry(CREFSTRING resource)
 {
-    ACE_MT(ACE_GUARD(ACE_Recursive_Thread_Mutex, ace_mon, m_mutex));
+    ACE_MT(ACE_GUARD(ACE_Recursive_Thread_Mutex, ace_mon, m_MgdMutex));
 
-    MgFeatureServiceCacheEntries::iterator i =
+    MgdFeatureServiceCacheEntries::iterator i =
         m_featureServiceCacheEntries.find(resource);
 
     if (m_featureServiceCacheEntries.end() != i)
@@ -66,7 +66,7 @@ void MgFeatureServiceCache::RemoveEntry(CREFSTRING resource)
     }
 }
 
-void MgFeatureServiceCache::RemoveEntry(MgResourceIdentifier* resource)
+void MgdFeatureServiceCache::RemoveEntry(MgResourceIdentifier* resource)
 {
     if (NULL != resource)
     {
@@ -74,31 +74,31 @@ void MgFeatureServiceCache::RemoveEntry(MgResourceIdentifier* resource)
     }
 }
 
-MgFeatureServiceCacheEntry* MgFeatureServiceCache::SetEntry(MgResourceIdentifier* resource)
+MgdFeatureServiceCacheEntry* MgdFeatureServiceCache::SetEntry(MgResourceIdentifier* resource)
 {
-    ACE_MT(ACE_GUARD_RETURN(ACE_Recursive_Thread_Mutex, ace_mon, m_mutex, NULL));
+    ACE_MT(ACE_GUARD_RETURN(ACE_Recursive_Thread_Mutex, ace_mon, m_MgdMutex, NULL));
 
-    Ptr<MgFeatureServiceCacheEntry> entry;
+    Ptr<MgdFeatureServiceCacheEntry> entry;
 
     entry = GetEntry(resource);
     if (NULL == entry.p)
     {
         //Compact();
 
-        entry = new MgFeatureServiceCacheEntry();
-        m_featureServiceCacheEntries.insert(MgFeatureServiceCacheEntries::value_type(
+        entry = new MgdFeatureServiceCacheEntry();
+        m_featureServiceCacheEntries.insert(MgdFeatureServiceCacheEntries::value_type(
             resource->ToString(), SAFE_ADDREF(entry.p)));
     }
 
     return entry.Detach();
 }
 
-MgFeatureServiceCacheEntry* MgFeatureServiceCache::GetEntry(MgResourceIdentifier* resource)
+MgdFeatureServiceCacheEntry* MgdFeatureServiceCache::GetEntry(MgResourceIdentifier* resource)
 {
     if (NULL == resource)
     {
         throw new MgNullArgumentException(
-            L"MgFeatureServiceCache::GetEntry",
+            L"MgdFeatureServiceCache::GetEntry",
             __LINE__, __WFILE__, NULL, L"", NULL);
     }
 
@@ -107,14 +107,14 @@ MgFeatureServiceCacheEntry* MgFeatureServiceCache::GetEntry(MgResourceIdentifier
     if (!resource->IsResourceTypeOf(MgResourceType::FeatureSource))
     {
         throw new MgInvalidResourceTypeException(
-            L"MgFeatureServiceCache::GetEntry",
+            L"MgdFeatureServiceCache::GetEntry",
             __LINE__, __WFILE__, NULL, L"", NULL);
     }
 
-    ACE_MT(ACE_GUARD_RETURN(ACE_Recursive_Thread_Mutex, ace_mon, m_mutex, NULL));
+    ACE_MT(ACE_GUARD_RETURN(ACE_Recursive_Thread_Mutex, ace_mon, m_MgdMutex, NULL));
 
-    Ptr<MgFeatureServiceCacheEntry> entry;
-    MgFeatureServiceCacheEntries::iterator i =
+    Ptr<MgdFeatureServiceCacheEntry> entry;
+    MgdFeatureServiceCacheEntries::iterator i =
         m_featureServiceCacheEntries.find(resource->ToString());
 
     if (m_featureServiceCacheEntries.end() != i)
@@ -126,21 +126,21 @@ MgFeatureServiceCacheEntry* MgFeatureServiceCache::GetEntry(MgResourceIdentifier
     return entry.Detach();
 }
 
-void MgFeatureServiceCache::SetFeatureSource(MgResourceIdentifier* resource, MgFeatureSourceCacheItem* featureSource)
+void MgdFeatureServiceCache::SetFeatureSource(MgResourceIdentifier* resource, MgdFeatureSourceCacheItem* featureSource)
 {
-    ACE_MT(ACE_GUARD(ACE_Recursive_Thread_Mutex, ace_mon, m_mutex));
+    ACE_MT(ACE_GUARD(ACE_Recursive_Thread_Mutex, ace_mon, m_MgdMutex));
 
-    Ptr<MgFeatureServiceCacheEntry> entry = SetEntry(resource);
+    Ptr<MgdFeatureServiceCacheEntry> entry = SetEntry(resource);
 
     entry->SetFeatureSource(featureSource);
 }
 
-MgFeatureSourceCacheItem* MgFeatureServiceCache::GetFeatureSourceInternal(MgResourceIdentifier* resource)
+MgdFeatureSourceCacheItem* MgdFeatureServiceCache::GetFeatureSourceInternal(MgResourceIdentifier* resource)
 {
-    ACE_MT(ACE_GUARD_RETURN(ACE_Recursive_Thread_Mutex, ace_mon, m_mutex, NULL));
+    ACE_MT(ACE_GUARD_RETURN(ACE_Recursive_Thread_Mutex, ace_mon, m_MgdMutex, NULL));
 
-    Ptr<MgFeatureSourceCacheItem> data;
-    Ptr<MgFeatureServiceCacheEntry> entry = GetEntry(resource);
+    Ptr<MgdFeatureSourceCacheItem> data;
+    Ptr<MgdFeatureServiceCacheEntry> entry = GetEntry(resource);
 
     if (NULL != entry.p)
     {
@@ -149,21 +149,21 @@ MgFeatureSourceCacheItem* MgFeatureServiceCache::GetFeatureSourceInternal(MgReso
 
     return data.Detach();
 }
-void MgFeatureServiceCache::SetSpatialContextInfo(MgResourceIdentifier* resource, MgSpatialContextCacheItem* spatialContextInfo)
+void MgdFeatureServiceCache::SetSpatialContextInfo(MgResourceIdentifier* resource, MgdSpatialContextCacheItem* spatialContextInfo)
 {
-    ACE_MT(ACE_GUARD(ACE_Recursive_Thread_Mutex, ace_mon, m_mutex));
+    ACE_MT(ACE_GUARD(ACE_Recursive_Thread_Mutex, ace_mon, m_MgdMutex));
 
-    Ptr<MgFeatureServiceCacheEntry> entry = SetEntry(resource);
+    Ptr<MgdFeatureServiceCacheEntry> entry = SetEntry(resource);
 
     entry->SetSpatialContextInfo(spatialContextInfo);
 }
 
-MgSpatialContextCacheItem* MgFeatureServiceCache::GetSpatialContextInfoInternal(MgResourceIdentifier* resource)
+MgdSpatialContextCacheItem* MgdFeatureServiceCache::GetSpatialContextInfoInternal(MgResourceIdentifier* resource)
 {
-    ACE_MT(ACE_GUARD_RETURN(ACE_Recursive_Thread_Mutex, ace_mon, m_mutex, NULL));
+    ACE_MT(ACE_GUARD_RETURN(ACE_Recursive_Thread_Mutex, ace_mon, m_MgdMutex, NULL));
 
-    Ptr<MgSpatialContextCacheItem> data;
-    Ptr<MgFeatureServiceCacheEntry> entry = GetEntry(resource);
+    Ptr<MgdSpatialContextCacheItem> data;
+    Ptr<MgdFeatureServiceCacheEntry> entry = GetEntry(resource);
 
     if (NULL != entry.p)
     {
@@ -173,21 +173,21 @@ MgSpatialContextCacheItem* MgFeatureServiceCache::GetSpatialContextInfoInternal(
     return data.Detach();
 }
 
-void MgFeatureServiceCache::SetSpatialContextReader(MgResourceIdentifier* resource, MgSpatialContextReader* spatialContextReader)
+void MgdFeatureServiceCache::SetSpatialContextReader(MgResourceIdentifier* resource, MgSpatialContextReader* spatialContextReader)
 {
-    ACE_MT(ACE_GUARD(ACE_Recursive_Thread_Mutex, ace_mon, m_mutex));
+    ACE_MT(ACE_GUARD(ACE_Recursive_Thread_Mutex, ace_mon, m_MgdMutex));
 
-    Ptr<MgFeatureServiceCacheEntry> entry = SetEntry(resource);
+    Ptr<MgdFeatureServiceCacheEntry> entry = SetEntry(resource);
 
     entry->SetSpatialContextReader(spatialContextReader);
 }
 
-MgSpatialContextReader* MgFeatureServiceCache::GetSpatialContextReader(MgResourceIdentifier* resource)
+MgSpatialContextReader* MgdFeatureServiceCache::GetSpatialContextReader(MgResourceIdentifier* resource)
 {
-    ACE_MT(ACE_GUARD_RETURN(ACE_Recursive_Thread_Mutex, ace_mon, m_mutex, NULL));
+    ACE_MT(ACE_GUARD_RETURN(ACE_Recursive_Thread_Mutex, ace_mon, m_MgdMutex, NULL));
 
     Ptr<MgSpatialContextReader> data;
-    Ptr<MgFeatureServiceCacheEntry> entry = GetEntry(resource);
+    Ptr<MgdFeatureServiceCacheEntry> entry = GetEntry(resource);
 
     if (NULL != entry.p)
     {
@@ -209,21 +209,21 @@ MgSpatialContextReader* MgFeatureServiceCache::GetSpatialContextReader(MgResourc
     return data.Detach();
 }
 
-void MgFeatureServiceCache::SetSchemaNames(MgResourceIdentifier* resource, MgStringCollection* schemaNames)
+void MgdFeatureServiceCache::SetSchemaNames(MgResourceIdentifier* resource, MgStringCollection* schemaNames)
 {
-    ACE_MT(ACE_GUARD(ACE_Recursive_Thread_Mutex, ace_mon, m_mutex));
+    ACE_MT(ACE_GUARD(ACE_Recursive_Thread_Mutex, ace_mon, m_MgdMutex));
 
-    Ptr<MgFeatureServiceCacheEntry> entry = SetEntry(resource);
+    Ptr<MgdFeatureServiceCacheEntry> entry = SetEntry(resource);
 
     entry->SetSchemaNames(schemaNames);
 }
 
-MgStringCollection* MgFeatureServiceCache::GetSchemaNames(MgResourceIdentifier* resource)
+MgStringCollection* MgdFeatureServiceCache::GetSchemaNames(MgResourceIdentifier* resource)
 {
-    ACE_MT(ACE_GUARD_RETURN(ACE_Recursive_Thread_Mutex, ace_mon, m_mutex, NULL));
+    ACE_MT(ACE_GUARD_RETURN(ACE_Recursive_Thread_Mutex, ace_mon, m_MgdMutex, NULL));
 
     Ptr<MgStringCollection> data;
-    Ptr<MgFeatureServiceCacheEntry> entry = GetEntry(resource);
+    Ptr<MgdFeatureServiceCacheEntry> entry = GetEntry(resource);
 
     if (NULL != entry.p)
     {
@@ -233,21 +233,21 @@ MgStringCollection* MgFeatureServiceCache::GetSchemaNames(MgResourceIdentifier* 
     return data.Detach();
 }
 
-void MgFeatureServiceCache::SetClassNames(MgResourceIdentifier* resource, CREFSTRING schemaName, MgStringCollection* classNames)
+void MgdFeatureServiceCache::SetClassNames(MgResourceIdentifier* resource, CREFSTRING schemaName, MgStringCollection* classNames)
 {
-    ACE_MT(ACE_GUARD(ACE_Recursive_Thread_Mutex, ace_mon, m_mutex));
+    ACE_MT(ACE_GUARD(ACE_Recursive_Thread_Mutex, ace_mon, m_MgdMutex));
 
-    Ptr<MgFeatureServiceCacheEntry> entry = SetEntry(resource);
+    Ptr<MgdFeatureServiceCacheEntry> entry = SetEntry(resource);
 
     entry->SetClassNames(schemaName, classNames);
 }
 
-MgStringCollection* MgFeatureServiceCache::GetClassNames(MgResourceIdentifier* resource, CREFSTRING schemaName)
+MgStringCollection* MgdFeatureServiceCache::GetClassNames(MgResourceIdentifier* resource, CREFSTRING schemaName)
 {
-    ACE_MT(ACE_GUARD_RETURN(ACE_Recursive_Thread_Mutex, ace_mon, m_mutex, NULL));
+    ACE_MT(ACE_GUARD_RETURN(ACE_Recursive_Thread_Mutex, ace_mon, m_MgdMutex, NULL));
 
     Ptr<MgStringCollection> data;
-    Ptr<MgFeatureServiceCacheEntry> entry = GetEntry(resource);
+    Ptr<MgdFeatureServiceCacheEntry> entry = GetEntry(resource);
 
     if (NULL != entry.p)
     {
@@ -257,21 +257,21 @@ MgStringCollection* MgFeatureServiceCache::GetClassNames(MgResourceIdentifier* r
     return data.Detach();
 }
 
-void MgFeatureServiceCache::SetSchemaXml(MgResourceIdentifier* resource, CREFSTRING schemaName, MgStringCollection* classNames, CREFSTRING schemaXml)
+void MgdFeatureServiceCache::SetSchemaXml(MgResourceIdentifier* resource, CREFSTRING schemaName, MgStringCollection* classNames, CREFSTRING schemaXml)
 {
-    ACE_MT(ACE_GUARD(ACE_Recursive_Thread_Mutex, ace_mon, m_mutex));
+    ACE_MT(ACE_GUARD(ACE_Recursive_Thread_Mutex, ace_mon, m_MgdMutex));
 
-    Ptr<MgFeatureServiceCacheEntry> entry = SetEntry(resource);
+    Ptr<MgdFeatureServiceCacheEntry> entry = SetEntry(resource);
 
     entry->SetSchemaXml(schemaName, classNames, schemaXml);
 }
 
-STRING MgFeatureServiceCache::GetSchemaXml(MgResourceIdentifier* resource, CREFSTRING schemaName, MgStringCollection* classNames)
+STRING MgdFeatureServiceCache::GetSchemaXml(MgResourceIdentifier* resource, CREFSTRING schemaName, MgStringCollection* classNames)
 {
-    ACE_MT(ACE_GUARD_RETURN(ACE_Recursive_Thread_Mutex, ace_mon, m_mutex, L""));
+    ACE_MT(ACE_GUARD_RETURN(ACE_Recursive_Thread_Mutex, ace_mon, m_MgdMutex, L""));
 
     STRING data;
-    Ptr<MgFeatureServiceCacheEntry> entry = GetEntry(resource);
+    Ptr<MgdFeatureServiceCacheEntry> entry = GetEntry(resource);
 
     if (NULL != entry.p)
     {
@@ -281,21 +281,21 @@ STRING MgFeatureServiceCache::GetSchemaXml(MgResourceIdentifier* resource, CREFS
     return data;
 }
 
-void MgFeatureServiceCache::SetSchemas(MgResourceIdentifier* resource, CREFSTRING schemaName, MgStringCollection* classNames, bool serialized, MgFeatureSchemaCollection* schemas)
+void MgdFeatureServiceCache::SetSchemas(MgResourceIdentifier* resource, CREFSTRING schemaName, MgStringCollection* classNames, bool serialized, MgFeatureSchemaCollection* schemas)
 {
-    ACE_MT(ACE_GUARD(ACE_Recursive_Thread_Mutex, ace_mon, m_mutex));
+    ACE_MT(ACE_GUARD(ACE_Recursive_Thread_Mutex, ace_mon, m_MgdMutex));
 
-    Ptr<MgFeatureServiceCacheEntry> entry = SetEntry(resource);
+    Ptr<MgdFeatureServiceCacheEntry> entry = SetEntry(resource);
 
     entry->SetSchemas(schemaName, classNames, serialized, schemas);
 }
 
-MgFeatureSchemaCollection* MgFeatureServiceCache::GetSchemas(MgResourceIdentifier* resource, CREFSTRING schemaName, MgStringCollection* classNames, bool serialized)
+MgFeatureSchemaCollection* MgdFeatureServiceCache::GetSchemas(MgResourceIdentifier* resource, CREFSTRING schemaName, MgStringCollection* classNames, bool serialized)
 {
-    ACE_MT(ACE_GUARD_RETURN(ACE_Recursive_Thread_Mutex, ace_mon, m_mutex, NULL));
+    ACE_MT(ACE_GUARD_RETURN(ACE_Recursive_Thread_Mutex, ace_mon, m_MgdMutex, NULL));
 
     Ptr<MgFeatureSchemaCollection> data;
-    Ptr<MgFeatureServiceCacheEntry> entry = GetEntry(resource);
+    Ptr<MgdFeatureServiceCacheEntry> entry = GetEntry(resource);
 
     if (NULL != entry.p)
     {
@@ -305,21 +305,21 @@ MgFeatureSchemaCollection* MgFeatureServiceCache::GetSchemas(MgResourceIdentifie
     return data.Detach();
 }
 
-void MgFeatureServiceCache::SetClassDefinition(MgResourceIdentifier* resource, CREFSTRING schemaName, CREFSTRING className, MgClassDefinition* classDef)
+void MgdFeatureServiceCache::SetClassDefinition(MgResourceIdentifier* resource, CREFSTRING schemaName, CREFSTRING className, MgClassDefinition* classDef)
 {
-    ACE_MT(ACE_GUARD(ACE_Recursive_Thread_Mutex, ace_mon, m_mutex));
+    ACE_MT(ACE_GUARD(ACE_Recursive_Thread_Mutex, ace_mon, m_MgdMutex));
 
-    Ptr<MgFeatureServiceCacheEntry> entry = SetEntry(resource);
+    Ptr<MgdFeatureServiceCacheEntry> entry = SetEntry(resource);
 
     entry->SetClassDefinition(schemaName, className, classDef);
 }
 
-MgClassDefinition* MgFeatureServiceCache::GetClassDefinition(MgResourceIdentifier* resource, CREFSTRING schemaName, CREFSTRING className)
+MgClassDefinition* MgdFeatureServiceCache::GetClassDefinition(MgResourceIdentifier* resource, CREFSTRING schemaName, CREFSTRING className)
 {
-    ACE_MT(ACE_GUARD_RETURN(ACE_Recursive_Thread_Mutex, ace_mon, m_mutex, NULL));
+    ACE_MT(ACE_GUARD_RETURN(ACE_Recursive_Thread_Mutex, ace_mon, m_MgdMutex, NULL));
 
     Ptr<MgClassDefinition> data;
-    Ptr<MgFeatureServiceCacheEntry> entry = GetEntry(resource);
+    Ptr<MgdFeatureServiceCacheEntry> entry = GetEntry(resource);
 
     if (NULL != entry.p)
     {
@@ -329,21 +329,21 @@ MgClassDefinition* MgFeatureServiceCache::GetClassDefinition(MgResourceIdentifie
     return data.Detach();
 }
 
-void MgFeatureServiceCache::SetClassIdentityProperties(MgResourceIdentifier* resource, CREFSTRING schemaName, CREFSTRING className, MgPropertyDefinitionCollection* idProperties)
+void MgdFeatureServiceCache::SetClassIdentityProperties(MgResourceIdentifier* resource, CREFSTRING schemaName, CREFSTRING className, MgPropertyDefinitionCollection* idProperties)
 {
-    ACE_MT(ACE_GUARD(ACE_Recursive_Thread_Mutex, ace_mon, m_mutex));
+    ACE_MT(ACE_GUARD(ACE_Recursive_Thread_Mutex, ace_mon, m_MgdMutex));
 
-    Ptr<MgFeatureServiceCacheEntry> entry = SetEntry(resource);
+    Ptr<MgdFeatureServiceCacheEntry> entry = SetEntry(resource);
 
     entry->SetClassIdentityProperties(schemaName, className, idProperties);
 }
 
-MgPropertyDefinitionCollection* MgFeatureServiceCache::GetClassIdentityProperties(MgResourceIdentifier* resource, CREFSTRING schemaName, CREFSTRING className)
+MgPropertyDefinitionCollection* MgdFeatureServiceCache::GetClassIdentityProperties(MgResourceIdentifier* resource, CREFSTRING schemaName, CREFSTRING className)
 {
-    ACE_MT(ACE_GUARD_RETURN(ACE_Recursive_Thread_Mutex, ace_mon, m_mutex, NULL));
+    ACE_MT(ACE_GUARD_RETURN(ACE_Recursive_Thread_Mutex, ace_mon, m_MgdMutex, NULL));
 
     Ptr<MgPropertyDefinitionCollection> data;
-    Ptr<MgFeatureServiceCacheEntry> entry = GetEntry(resource);
+    Ptr<MgdFeatureServiceCacheEntry> entry = GetEntry(resource);
 
     if (NULL != entry.p)
     {
@@ -353,9 +353,9 @@ MgPropertyDefinitionCollection* MgFeatureServiceCache::GetClassIdentityPropertie
     return data.Detach();
 }
 
-MgFeatureSourceCacheItem* MgFeatureServiceCache::GetFeatureSource(MgResourceIdentifier* resource)
+MgdFeatureSourceCacheItem* MgdFeatureServiceCache::GetFeatureSource(MgResourceIdentifier* resource)
 {
-    Ptr<MgFeatureSourceCacheItem> cacheItem;
+    Ptr<MgdFeatureSourceCacheItem> cacheItem;
 
     MG_TRY()
 
@@ -364,7 +364,7 @@ MgFeatureSourceCacheItem* MgFeatureServiceCache::GetFeatureSource(MgResourceIden
     if (NULL == cacheItem.p)
     {
         // Get the Resource Service.
-        Ptr<MgServiceFactory> fact = new MgServiceFactory();
+        Ptr<MgdServiceFactory> fact = new MgdServiceFactory();
         Ptr<MgResourceService> resourceService = static_cast<MgResourceService*>(fact->CreateService(MgServiceType::ResourceService));
         // Retrieve the XML document from the repository.
         string xmlContent;
@@ -409,7 +409,7 @@ MgFeatureSourceCacheItem* MgFeatureServiceCache::GetFeatureSource(MgResourceIden
                 __LINE__, __WFILE__, &arguments, L"", NULL);
         }
 
-        cacheItem = new MgFeatureSourceCacheItem(featureSource.release());
+        cacheItem = new MgdFeatureSourceCacheItem(featureSource.release());
         GetInstance()->SetFeatureSource(resource, cacheItem.p);
     }
     else
@@ -422,9 +422,9 @@ MgFeatureSourceCacheItem* MgFeatureServiceCache::GetFeatureSource(MgResourceIden
     return cacheItem.Detach();
 }
 
-MgSpatialContextCacheItem* MgFeatureServiceCache::GetSpatialContextInfo(MgResourceIdentifier* resource)
+MgdSpatialContextCacheItem* MgdFeatureServiceCache::GetSpatialContextInfo(MgResourceIdentifier* resource)
 {
-    Ptr<MgSpatialContextCacheItem> cacheItem;
+    Ptr<MgdSpatialContextCacheItem> cacheItem;
 
     MG_TRY()
 
@@ -432,7 +432,7 @@ MgSpatialContextCacheItem* MgFeatureServiceCache::GetSpatialContextInfo(MgResour
 
     if (NULL == cacheItem.p)
     {
-        Ptr<MgFeatureSourceCacheItem> featureSourceCacheItem = GetFeatureSource(resource);
+        Ptr<MgdFeatureSourceCacheItem> featureSourceCacheItem = GetFeatureSource(resource);
         MdfModel::FeatureSource* featureSource = featureSourceCacheItem->Get();
         CHECKNULL(featureSource, L"MgCacheManager.GetSpatialContextCacheItem");
 
@@ -461,7 +461,7 @@ MgSpatialContextCacheItem* MgFeatureServiceCache::GetSpatialContextInfo(MgResour
             spatialContextInfo->insert(MgSpatialContextInfo::value_type(name, coordinateSystem));
         }
 
-        cacheItem = new MgSpatialContextCacheItem(spatialContextInfo.release());
+        cacheItem = new MgdSpatialContextCacheItem(spatialContextInfo.release());
         GetInstance()->SetSpatialContextInfo(resource, cacheItem.p);
     }
     else

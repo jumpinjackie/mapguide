@@ -15,24 +15,24 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
-#ifndef _MGFEATUREDISTRIBUTION_H
-#define _MGFEATUREDISTRIBUTION_H
+#ifndef _MgdFeatureDistribution_H
+#define _MgdFeatureDistribution_H
 
 class MgDisposable;
 class FdoFunction;
 class MgReader;
 /// \cond INTERNAL
-class MgFeatureDistribution : public MgDisposable
+class MgdFeatureDistribution : public MgDisposable
 {
 public:
 
-    static MgFeatureDistribution* CreateDistributionFunction(MgReader* reader, FdoFunction* customFunction, CREFSTRING propertyAlias);
+    static MgdFeatureDistribution* CreateDistributionFunction(MgReader* reader, FdoFunction* customFunction, CREFSTRING propertyAlias);
     virtual MgReader* Execute() = 0;
 
 protected:
 
-    MgFeatureDistribution();
-    virtual ~MgFeatureDistribution();
+    MgdFeatureDistribution();
+    virtual ~MgdFeatureDistribution();
     virtual void Dispose()
     {
         delete this;

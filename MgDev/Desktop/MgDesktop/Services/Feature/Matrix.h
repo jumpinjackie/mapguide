@@ -25,10 +25,10 @@
 //  This matrix template is designed to be used with built-in arithmetic types.
 //  It is of fixed size; it is constructed with one memory allocation.
 template <typename T>
-class MgMatrix
+class MgdMatrix
 {
     public:
-        MgMatrix(int dim1, int dim2)
+        MgdMatrix(int dim1, int dim2)
         {
             assert(dim1 > 0);
             assert(dim2 > 0);
@@ -39,7 +39,7 @@ class MgMatrix
             Clear();
         }
 
-        ~MgMatrix()
+        ~MgdMatrix()
         {
             delete [] m_pData;
         }
