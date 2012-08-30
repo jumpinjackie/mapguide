@@ -8,6 +8,8 @@ The following samples all require the Sheboygan sample dataset. For these sample
 
 Basically, you can't use a .net 4.0 build of mg-desktop on a VS2008 solution
 
+Note that in order to use mg-desktop, your main executable must have CPU architecture set to x86 (because these are .net wrappers to 32-bit unmanaged dlls). All the executable projects in this solution have their CPU architecture set to x86
+
 BasicSample
 ===========
 
