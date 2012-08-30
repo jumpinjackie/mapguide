@@ -46,21 +46,34 @@
     <ErrorReport>prompt</ErrorReport>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="OSGeo.MapGuide.Desktop, Version=2.4.0.0, Culture=neutral, PublicKeyToken=e75f9fd7cf82dc3f, processorArchitecture=x86">
+    <Reference Include="OSGeo.MapGuide.Desktop, Version=2.4.0.6964, Culture=neutral, PublicKeyToken=e75f9fd7cf82dc3f, processorArchitecture=x86">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\bin\Assemblies\OSGeo.MapGuide.Desktop.dll</HintPath>
+      <HintPath>..\Lib\OSGeo.MapGuide.Desktop.dll</HintPath>
+      <Private>False</Private>
     </Reference>
-    <Reference Include="OSGeo.MapGuide.Foundation, Version=1.0.0.1, Culture=neutral, PublicKeyToken=f526c48929fda856, processorArchitecture=x86">
+    <Reference Include="OSGeo.MapGuide.Foundation, Version=2.4.0.6962, Culture=neutral, PublicKeyToken=f526c48929fda856, processorArchitecture=x86">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\bin\Assemblies\OSGeo.MapGuide.Foundation.dll</HintPath>
+      <HintPath>..\Lib\OSGeo.MapGuide.Foundation.dll</HintPath>
+      <Private>False</Private>
     </Reference>
-    <Reference Include="OSGeo.MapGuide.Geometry, Version=1.0.0.1, Culture=neutral, PublicKeyToken=f526c48929fda856, processorArchitecture=x86">
+    <Reference Include="OSGeo.MapGuide.Geometry, Version=2.4.0.6962, Culture=neutral, PublicKeyToken=f526c48929fda856, processorArchitecture=x86">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\bin\Assemblies\OSGeo.MapGuide.Geometry.dll</HintPath>
+      <HintPath>..\Lib\OSGeo.MapGuide.Geometry.dll</HintPath>
+      <Private>False</Private>
     </Reference>
-    <Reference Include="OSGeo.MapGuide.PlatformBase, Version=1.0.0.1, Culture=neutral, PublicKeyToken=f526c48929fda856, processorArchitecture=x86">
+    <Reference Include="OSGeo.MapGuide.PlatformBase, Version=2.4.0.6962, Culture=neutral, PublicKeyToken=f526c48929fda856, processorArchitecture=x86">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\bin\Assemblies\OSGeo.MapGuide.PlatformBase.dll</HintPath>
+      <HintPath>..\Lib\OSGeo.MapGuide.PlatformBase.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="OSGeo.MapGuide.Viewer, Version=2.4.0.6964, Culture=neutral, PublicKeyToken=e75f9fd7cf82dc3f, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Lib\OSGeo.MapGuide.Viewer.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="OSGeo.MapGuide.Viewer.Desktop, Version=2.4.0.6964, Culture=neutral, PublicKeyToken=e75f9fd7cf82dc3f, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Lib\OSGeo.MapGuide.Viewer.Desktop.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
@@ -185,16 +198,6 @@
     <Service Include="{94E38DFF-614B-4cbd-B67C-F211BB35CE8B}" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\MapViewer.Desktop\MapViewer.Desktop.csproj">
-      <Project>{E2001B46-F226-4F7B-911E-252B9644236E}</Project>
-      <Name>MapViewer.Desktop</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\MapViewer\MapViewer.csproj">
-      <Project>{D46ED17B-329B-4D80-9181-FEF8307EFCBB}</Project>
-      <Name>MapViewer</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
     <EmbeddedResource Include="AnalyzingFeatures.resx">
       <DependentUpon>AnalyzingFeatures.cs</DependentUpon>
     </EmbeddedResource>
@@ -275,4 +278,18 @@
   <Target Name="AfterBuild">
   </Target>
   -->
+  <PropertyGroup>
+    <PostBuildEvent>if not exist "$(TargetDir)FDO" md "$(TargetDir)FDO"
+xcopy /s /y "$(SolutionDir)Lib\FDO" "$(TargetDir)FDO"
+if not exist "$(TargetDir)Dictionaries" md "$(TargetDir)Dictionaries"
+xcopy /s /y "$(SolutionDir)Lib\Dictionaries" "$(TargetDir)Dictionaries"
+if not exist "$(TargetDir)Resources" md "$(TargetDir)Resources"
+xcopy /s /y "$(SolutionDir)Lib\Resources" "$(TargetDir)Resources"
+if not exist "$(TargetDir)Schema" md "$(TargetDir)Schema"
+xcopy /s /y "$(SolutionDir)Lib\Schema" "$(TargetDir)Schema"
+copy /y "$(SolutionDir)Lib\*.dll" "$(TargetDir)"
+copy /y "$(SolutionDir)Lib\Platform.ini" "$(TargetDir)"
+copy /y "$(SolutionDir)Lib\MgAppLayout.exe" "$(TargetDir)"
+copy /y "$(SolutionDir)Lib\Sheboygan.AppLayout" "$(TargetDir)"</PostBuildEvent>
+  </PropertyGroup>
 </Project>
