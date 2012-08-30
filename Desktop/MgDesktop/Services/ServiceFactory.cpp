@@ -7,46 +7,46 @@
 #include "DrawingService.h"
 #include "Exception/ServiceNotSupportedException.h"
 
-STRING MgServiceFactory::sm_libContentPath = L"";
-STRING MgServiceFactory::sm_libDataPath = L"";
-STRING MgServiceFactory::sm_sesContentPath = L"";
-STRING MgServiceFactory::sm_sesDataPath = L"";
-STRING MgServiceFactory::sm_schemaPath = L"";
+STRING MgdServiceFactory::sm_libContentPath = L"";
+STRING MgdServiceFactory::sm_libDataPath = L"";
+STRING MgdServiceFactory::sm_sesContentPath = L"";
+STRING MgdServiceFactory::sm_sesDataPath = L"";
+STRING MgdServiceFactory::sm_schemaPath = L"";
 
-MG_IMPL_DYNCREATE(MgServiceFactory);
+MG_IMPL_DYNCREATE(MgdServiceFactory);
 
-MgServiceFactory::MgServiceFactory() { }
+MgdServiceFactory::MgdServiceFactory() { }
 
-MgServiceFactory::~MgServiceFactory() { }
+MgdServiceFactory::~MgdServiceFactory() { }
 
-void MgServiceFactory::Initialize()
+void MgdServiceFactory::Initialize()
 {
     MgConfiguration* conf = MgConfiguration::GetInstance();
 
-    conf->GetStringValue(MgConfigProperties::ResourceServicePropertiesSection, 
-                         MgConfigProperties::ResourceServicePropertyLibraryRepositoryPath,
+    conf->GetStringValue(MgdConfigProperties::ResourceServicePropertiesSection, 
+                         MgdConfigProperties::ResourceServicePropertyLibraryRepositoryPath,
                          sm_libContentPath,
-                         MgConfigProperties::DefaultResourceServicePropertyLibraryRepositoryPath);
+                         MgdConfigProperties::DefaultResourceServicePropertyLibraryRepositoryPath);
 
-    conf->GetStringValue(MgConfigProperties::ResourceServicePropertiesSection, 
-                         MgConfigProperties::ResourceServicePropertyLibraryResourceDataFilePath,
+    conf->GetStringValue(MgdConfigProperties::ResourceServicePropertiesSection, 
+                         MgdConfigProperties::ResourceServicePropertyLibraryResourceDataFilePath,
                          sm_libDataPath,
-                         MgConfigProperties::DefaultResourceServicePropertyLibraryResourceDataFilePath);
+                         MgdConfigProperties::DefaultResourceServicePropertyLibraryResourceDataFilePath);
 
-    conf->GetStringValue(MgConfigProperties::ResourceServicePropertiesSection, 
-                         MgConfigProperties::ResourceServicePropertySessionRepositoryPath,
+    conf->GetStringValue(MgdConfigProperties::ResourceServicePropertiesSection, 
+                         MgdConfigProperties::ResourceServicePropertySessionRepositoryPath,
                          sm_sesContentPath,
-                         MgConfigProperties::DefaultResourceServicePropertySessionRepositoryPath);
+                         MgdConfigProperties::DefaultResourceServicePropertySessionRepositoryPath);
 
-    conf->GetStringValue(MgConfigProperties::ResourceServicePropertiesSection, 
-                         MgConfigProperties::ResourceServicePropertySessionResourceDataFilePath,
+    conf->GetStringValue(MgdConfigProperties::ResourceServicePropertiesSection, 
+                         MgdConfigProperties::ResourceServicePropertySessionResourceDataFilePath,
                          sm_sesDataPath,
-                         MgConfigProperties::DefaultResourceServicePropertySessionResourceDataFilePath);
+                         MgdConfigProperties::DefaultResourceServicePropertySessionResourceDataFilePath);
 
-    conf->GetStringValue(MgConfigProperties::ResourceServicePropertiesSection,
-                         MgConfigProperties::ResourceServicePropertyResourceSchemaFilePath,
+    conf->GetStringValue(MgdConfigProperties::ResourceServicePropertiesSection,
+                         MgdConfigProperties::ResourceServicePropertyResourceSchemaFilePath,
                          sm_schemaPath,
-                         MgConfigProperties::DefaultResourceServicePropertyResourceSchemaFilePath);
+                         MgdConfigProperties::DefaultResourceServicePropertyResourceSchemaFilePath);
 
     //Create these paths if they don't exist
     if (!MgFileUtil::IsDirectory(sm_libContentPath))
@@ -61,11 +61,11 @@ void MgServiceFactory::Initialize()
     {
         MgStringCollection args;
         args.Add(sm_schemaPath);
-        throw new MgDirectoryNotFoundException(L"MgServiceFactory::Initialize", __LINE__, __WFILE__, &args, L"", NULL);
+        throw new MgDirectoryNotFoundException(L"MgdServiceFactory::Initialize", __LINE__, __WFILE__, &args, L"", NULL);
     }
 }
 
-MgService* MgServiceFactory::CreateService(INT32 serviceType)
+MgService* MgdServiceFactory::CreateService(INT32 serviceType)
 {
     switch(serviceType)
     {
@@ -88,21 +88,21 @@ MgService* MgServiceFactory::CreateService(INT32 serviceType)
     case MgServiceType::TileService:
         return new MgdTileService();
     }
-    throw new MgServiceNotSupportedException(L"MgServiceFactory::CreateService", __LINE__, __WFILE__, NULL, L"", NULL);
+    throw new MgServiceNotSupportedException(L"MgdServiceFactory::CreateService", __LINE__, __WFILE__, NULL, L"", NULL);
 }
 
 /*
-MgdTileService* MgServiceFactory::CreateTileService()
+MgdTileService* MgdServiceFactory::CreateTileService()
 {
     return new MgdTileService();
 }
 
-MgdFeatureService* MgServiceFactory::CreateFeatureService()
+MgdFeatureService* MgdServiceFactory::CreateFeatureService()
 {
 	return new MgdFeatureService();
 }
 
-MgdResourceService* MgServiceFactory::CreateResourceService()
+MgdResourceService* MgdServiceFactory::CreateResourceService()
 {
 	return new MgdResourceService(sm_libContentPath,
                                   sm_libDataPath, 
@@ -110,12 +110,12 @@ MgdResourceService* MgServiceFactory::CreateResourceService()
                                   sm_sesDataPath);
 }
 
-MgdDrawingService* MgServiceFactory::CreateDrawingService()
+MgdDrawingService* MgdServiceFactory::CreateDrawingService()
 {
     return new MgdDrawingService();
 }
 
-MgdRenderingService* MgServiceFactory::CreateRenderingService()
+MgdRenderingService* MgdServiceFactory::CreateRenderingService()
 {
     return new MgdRenderingService();
 }

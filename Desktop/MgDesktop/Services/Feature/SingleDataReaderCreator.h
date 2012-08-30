@@ -22,22 +22,22 @@ using namespace std;
 
 #include <vector>
 
-class MgSingleDataReaderCreator : public MgDataReaderCreator<float>
+class MgdSingleDataReaderCreator : public MgdDataReaderCreator<float>
 {
-    DECLARE_CLASSNAME(MgSingleDataReaderCreator)
+    DECLARE_CLASSNAME(MgdSingleDataReaderCreator)
 
 public:
-    MgSingleDataReaderCreator()
+    MgdSingleDataReaderCreator()
     {
     }
 
-    MgSingleDataReaderCreator(CREFSTRING propertyAlias)
+    MgdSingleDataReaderCreator(CREFSTRING propertyAlias)
     {
         m_propertyAlias = propertyAlias;
         m_propType = MgPropertyType::Single;
     }
 
-    ~MgSingleDataReaderCreator()
+    ~MgdSingleDataReaderCreator()
     {
     }
 

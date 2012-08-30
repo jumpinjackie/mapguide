@@ -5,7 +5,7 @@
 
 MgdProfilingService::MgdProfilingService()
 {
-	Ptr<MgServiceFactory> fact = new MgServiceFactory();
+	Ptr<MgdServiceFactory> fact = new MgdServiceFactory();
 	m_svcRendering = static_cast<MgdRenderingService*>(fact->CreateService(MgServiceType::RenderingService));
 }
 
@@ -30,9 +30,9 @@ MgByteReader* MgdProfilingService::ProfileRenderDynamicOverlay(
     pPRMResult.reset(new ProfileRenderMapResult());
 
     // Start to profile the ProfileRenderDynamicOverlay process
-    double renderMapStart = MgTimerUtil::GetTime(); 
+    double renderMapStart = MgdTimerUtil::GetTime(); 
     m_svcRendering->RenderDynamicOverlay(map, selection, options, pPRMResult.get());
-    double renderMapEnd = MgTimerUtil::GetTime();
+    double renderMapEnd = MgdTimerUtil::GetTime();
 
     pPRMResult->SetRenderTime(renderMapEnd - renderMapStart);
     pPRMResult->SetProfileResultType(ProfileResult::ProfileRenderDynamicOverlay);
@@ -72,9 +72,9 @@ MgByteReader* MgdProfilingService::ProfileRenderMap(
     pPRMResult.reset(new ProfileRenderMapResult());
 
     // Start to profile the ProfileRenderMap process
-    double renderMapStart = MgTimerUtil::GetTime(); 
+    double renderMapStart = MgdTimerUtil::GetTime(); 
     m_svcRendering->RenderMap(map, selection, center, scale, width, height, backgroundColor, format, bKeepSelection, pPRMResult.get());
-    double renderMapEnd = MgTimerUtil::GetTime();
+    double renderMapEnd = MgdTimerUtil::GetTime();
 
     pPRMResult->SetRenderTime(renderMapEnd - renderMapStart);
     pPRMResult->SetProfileResultType(ProfileResult::ProfileRenderMap);

@@ -23,11 +23,11 @@
 #include "Services/Feature/FeatureUtil.h"
 #include "Services/Transaction.h"
 
-MgSqlCommand::MgSqlCommand()
+MgdSqlCommand::MgdSqlCommand()
 {
 }
 
-MgSqlCommand::~MgSqlCommand()
+MgdSqlCommand::~MgdSqlCommand()
 {
     MG_TRY()
 
@@ -36,7 +36,7 @@ MgSqlCommand::~MgSqlCommand()
     MG_CATCH_AND_RELEASE()
 }
 
-void MgSqlCommand::CloseConnection()
+void MgdSqlCommand::CloseConnection()
 {
     // The FDO connection must be released before the parent object is released
     m_fdoConn = NULL;
@@ -44,7 +44,7 @@ void MgSqlCommand::CloseConnection()
 }
 
 // Executes the describe schema command and serializes the schema to XML
-MgSqlDataReader* MgSqlCommand::ExecuteQuery(
+MgSqlDataReader* MgdSqlCommand::ExecuteQuery(
     MgResourceIdentifier* resource,
     CREFSTRING sqlStatement,
     MgParameterCollection* params,
@@ -60,7 +60,7 @@ MgSqlDataReader* MgSqlCommand::ExecuteQuery(
 
     // Create the SQL command
     FdoPtr<FdoISQLCommand> fdoCommand = (FdoISQLCommand*)m_fdoConn->CreateCommand(FdoCommandType_SQLCommand);
-    CHECKNULL((FdoISQLCommand*)fdoCommand, L"MgSqlCommand.ExecuteQuery");
+    CHECKNULL((FdoISQLCommand*)fdoCommand, L"MgdSqlCommand.ExecuteQuery");
 
     // Set SQL statement
     fdoCommand->SetSQLStatement((FdoString*)sqlStatement.c_str());
@@ -73,27 +73,27 @@ MgSqlDataReader* MgSqlCommand::ExecuteQuery(
     if (NULL != params && params->GetCount() > 0)
     {
         fdoParams = fdoCommand->GetParameterValues();
-        MgFeatureUtil::FillFdoParameterCollection(params, fdoParams);
+        MgdFeatureUtil::FillFdoParameterCollection(params, fdoParams);
     }
 
     // Execute the command
     FdoPtr<FdoISQLDataReader> sqlReader = fdoCommand->ExecuteReader();
-    CHECKNULL((FdoISQLDataReader*)sqlReader, L"MgSqlCommand.ExecuteQuery");
+    CHECKNULL((FdoISQLDataReader*)sqlReader, L"MgdSqlCommand.ExecuteQuery");
 
     // Update parameter whose direction is InputOutput, Output, or Return.
     if (NULL != params && params->GetCount() > 0)
-        MgFeatureUtil::UpdateParameterCollection(fdoParams, params);
+        MgdFeatureUtil::UpdateParameterCollection(fdoParams, params);
 
     mgSqlDataReader = new MgdSqlDataReader(m_featureConnection, sqlReader); //, m_providerName);
-    CHECKNULL((MgSqlDataReader*)mgSqlDataReader, L"MgSqlCommand.ExecuteQuery");
+    CHECKNULL((MgSqlDataReader*)mgSqlDataReader, L"MgdSqlCommand.ExecuteQuery");
 
-    MG_FEATURE_SERVICE_CHECK_CONNECTION_CATCH_AND_THROW(resource, L"MgSqlCommand.ExecuteQuery")
+    MG_FEATURE_SERVICE_CHECK_CONNECTION_CATCH_AND_THROW(resource, L"MgdSqlCommand.ExecuteQuery")
 
     return mgSqlDataReader.Detach();
 }
 
 // Executes the describe schema command and serializes the schema to XML
-INT32 MgSqlCommand::ExecuteNonQuery(
+INT32 MgdSqlCommand::ExecuteNonQuery(
     MgResourceIdentifier* resource,
     CREFSTRING sqlStatement,
     MgParameterCollection* params,
@@ -108,7 +108,7 @@ INT32 MgSqlCommand::ExecuteNonQuery(
 
     // Create the SQL command
     FdoPtr<FdoISQLCommand> fdoCommand = (FdoISQLCommand*)m_fdoConn->CreateCommand(FdoCommandType_SQLCommand);
-    CHECKNULL((FdoISQLCommand*)fdoCommand, L"MgSqlCommand.ExecuteQuery");
+    CHECKNULL((FdoISQLCommand*)fdoCommand, L"MgdSqlCommand.ExecuteQuery");
 
     // Set SQL statement
     fdoCommand->SetSQLStatement((FdoString*)sqlStatement.c_str());
@@ -118,7 +118,7 @@ INT32 MgSqlCommand::ExecuteNonQuery(
     if (NULL != params && params->GetCount() > 0)
     {
         fdoParams = fdoCommand->GetParameterValues();
-        MgFeatureUtil::FillFdoParameterCollection(params, fdoParams);
+        MgdFeatureUtil::FillFdoParameterCollection(params, fdoParams);
     }
 
     // Execute the command
@@ -126,20 +126,20 @@ INT32 MgSqlCommand::ExecuteNonQuery(
 
     // Update parameter whose direction is InputOutput, Output, or Return.
     if (NULL != params && params->GetCount() > 0)
-        MgFeatureUtil::UpdateParameterCollection(fdoParams, params);
+        MgdFeatureUtil::UpdateParameterCollection(fdoParams, params);
 
-    MG_FEATURE_SERVICE_CHECK_CONNECTION_CATCH_AND_THROW(resource, L"MgSqlCommand.ExecuteQuery")
+    MG_FEATURE_SERVICE_CHECK_CONNECTION_CATCH_AND_THROW(resource, L"MgdSqlCommand.ExecuteQuery")
 
     return rowsAffected;
 }
 
 
-void MgSqlCommand::Validate(MgResourceIdentifier* resource, CREFSTRING sqlStatement, INT32 commandType, MgTransaction* transaction)
+void MgdSqlCommand::Validate(MgResourceIdentifier* resource, CREFSTRING sqlStatement, INT32 commandType, MgTransaction* transaction)
 {
     // SQL statement can not be empty
     if (resource == NULL)
     {
-        throw new MgNullArgumentException(L"MgSqlCommand.Validate", __LINE__, __WFILE__, NULL, L"", NULL);
+        throw new MgNullArgumentException(L"MgdSqlCommand.Validate", __LINE__, __WFILE__, NULL, L"", NULL);
     }
 
     if (sqlStatement.empty())
@@ -148,7 +148,7 @@ void MgSqlCommand::Validate(MgResourceIdentifier* resource, CREFSTRING sqlStatem
         arguments.Add(L"2");
         arguments.Add(MgResources::BlankArgument);
 
-        throw new MgInvalidArgumentException(L"MgSqlCommand.Validate",
+        throw new MgInvalidArgumentException(L"MgdSqlCommand.Validate",
             __LINE__, __WFILE__, &arguments, L"MgStringEmpty", NULL);
     }
 
@@ -165,7 +165,7 @@ void MgSqlCommand::Validate(MgResourceIdentifier* resource, CREFSTRING sqlStatem
     else
     {
         // No transaction, grab the connection as usual.
-        m_featureConnection = new MgFeatureConnection(resource);
+        m_featureConnection = new MgdFeatureConnection(resource);
     }
 
     if (m_featureConnection->IsConnectionOpen() )
@@ -177,12 +177,12 @@ void MgSqlCommand::Validate(MgResourceIdentifier* resource, CREFSTRING sqlStatem
         if (!m_featureConnection->SupportsCommand(commandType))
         {
             // TODO: specify which argument and message, once we have the mechanism
-            STRING message = MgFeatureUtil::GetMessage(L"MgCommandNotSupported");
-            throw new MgInvalidOperationException(L"MgSqlCommand.Validate", __LINE__, __WFILE__, NULL, L"", NULL);
+            STRING message = MgdFeatureUtil::GetMessage(L"MgCommandNotSupported");
+            throw new MgInvalidOperationException(L"MgdSqlCommand.Validate", __LINE__, __WFILE__, NULL, L"", NULL);
         }
     }
     else
     {
-        throw new MgdConnectionFailedException(L"MgSqlCommand::Validate", __LINE__, __WFILE__, NULL, L"", NULL);
+        throw new MgdConnectionFailedException(L"MgdSqlCommand::Validate", __LINE__, __WFILE__, NULL, L"", NULL);
     }
 }

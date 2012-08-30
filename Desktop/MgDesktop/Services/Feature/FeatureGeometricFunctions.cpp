@@ -25,7 +25,7 @@
 #include <algorithm>
 #include "UniqueFunction.h"
 
-MgFeatureGeometricFunctions::MgFeatureGeometricFunctions()
+MgdFeatureGeometricFunctions::MgdFeatureGeometricFunctions()
 {
     m_type = MgPropertyType::Null;
     m_reader = NULL;
@@ -34,19 +34,19 @@ MgFeatureGeometricFunctions::MgFeatureGeometricFunctions()
     m_extentsInitialized = false;
 }
 
-MgFeatureGeometricFunctions::MgFeatureGeometricFunctions(MgReader* reader, FdoFunction* customFunction, CREFSTRING propertyAlias)
+MgdFeatureGeometricFunctions::MgdFeatureGeometricFunctions(MgReader* reader, FdoFunction* customFunction, CREFSTRING propertyAlias)
 {
     Initialize(reader, customFunction, propertyAlias); // Initialize the instance
 }
 
-void MgFeatureGeometricFunctions::Initialize(MgReader* reader, FdoFunction* customFunction, CREFSTRING propertyAlias)
+void MgdFeatureGeometricFunctions::Initialize(MgReader* reader, FdoFunction* customFunction, CREFSTRING propertyAlias)
 {
-    CHECKNULL((MgReader*)reader, L"MgFeatureGeometricFunctions.Initialize");
-    CHECKNULL((FdoFunction*)customFunction, L"MgFeatureGeometricFunctions.Initialize");
+    CHECKNULL((MgReader*)reader, L"MgdFeatureGeometricFunctions.Initialize");
+    CHECKNULL((FdoFunction*)customFunction, L"MgdFeatureGeometricFunctions.Initialize");
 
     if(1 == reader->GetPropertyCount())
     {
-        m_type = MgFeatureUtil::GetPropertyDefinition(reader, m_propertyName);
+        m_type = MgdFeatureUtil::GetPropertyDefinition(reader, m_propertyName);
     }
     else
     {
@@ -58,14 +58,14 @@ void MgFeatureGeometricFunctions::Initialize(MgReader* reader, FdoFunction* cust
         {
             expr = exprCol->GetItem(0);
             FdoIdentifier* propName = dynamic_cast<FdoIdentifier*>(expr.p);
-            CHECKNULL(propName, L"MgFeatureGeometricFunctions.Initialize");
+            CHECKNULL(propName, L"MgdFeatureGeometricFunctions.Initialize");
             m_propertyName = propName->GetName();
             m_type = reader->GetPropertyType(m_propertyName);
         }
         else
         {
             // Throw original exception
-            m_type = MgFeatureUtil::GetPropertyDefinition(reader, m_propertyName);
+            m_type = MgdFeatureUtil::GetPropertyDefinition(reader, m_propertyName);
         }
     }
 
@@ -74,7 +74,7 @@ void MgFeatureGeometricFunctions::Initialize(MgReader* reader, FdoFunction* cust
     if (!this->CheckSupportedPropertyType())
 	{
 		throw new MgInvalidPropertyTypeException(
-			L"MgFeatureGeometricFunctions.Initialize", __LINE__, __WFILE__, NULL, L"", NULL);
+			L"MgdFeatureGeometricFunctions.Initialize", __LINE__, __WFILE__, NULL, L"", NULL);
 	}
 
     // We must have an property alias
@@ -82,11 +82,11 @@ void MgFeatureGeometricFunctions::Initialize(MgReader* reader, FdoFunction* cust
     // But Fdo forces to have an alias. Therefore we implement this restriction.
     if (propertyAlias.empty())
     {
-        STRING message = MgFeatureUtil::GetMessage(L"MgMissingPropertyAlias");
+        STRING message = MgdFeatureUtil::GetMessage(L"MgMissingPropertyAlias");
 
         MgStringCollection arguments;
         arguments.Add(message);
-        throw new MgFeatureServiceException(L"MgFeatureGeometricFunctions.Initialize", __LINE__, __WFILE__, &arguments, L"", NULL);
+        throw new MgFeatureServiceException(L"MgdFeatureGeometricFunctions.Initialize", __LINE__, __WFILE__, &arguments, L"", NULL);
     }
 
     m_reader = SAFE_ADDREF(reader);
@@ -96,19 +96,19 @@ void MgFeatureGeometricFunctions::Initialize(MgReader* reader, FdoFunction* cust
 }
 
 
-MgFeatureGeometricFunctions::~MgFeatureGeometricFunctions()
+MgdFeatureGeometricFunctions::~MgdFeatureGeometricFunctions()
 {
 }
 
 // Execute the function
-MgReader* MgFeatureGeometricFunctions::Execute()
+MgReader* MgdFeatureGeometricFunctions::Execute()
 {
-    CHECKNULL((MgReader*)m_reader, L"MgFeatureGeometricFunctions.Execute");
-    CHECKNULL(m_customFunction, L"MgFeatureGeometricFunctions.Execute");
+    CHECKNULL((MgReader*)m_reader, L"MgdFeatureGeometricFunctions.Execute");
+    CHECKNULL(m_customFunction, L"MgdFeatureGeometricFunctions.Execute");
 
     Ptr<MgGeometryCollection> geomCol = new MgGeometryCollection();
 
-    MG_LOG_TRACE_ENTRY(L"MgFeatureGeometricFunctions::Execute");
+    MG_LOG_TRACE_ENTRY(L"MgdFeatureGeometricFunctions::Execute");
     while(m_reader->ReadNext())
     {
         // Get the geometry
@@ -143,11 +143,11 @@ MgReader* MgFeatureGeometricFunctions::Execute()
     return GetReader(finalResult);
 }
 
-void MgFeatureGeometricFunctions::ComputeExtents(MgCoordinate* lowerLeft,
+void MgdFeatureGeometricFunctions::ComputeExtents(MgCoordinate* lowerLeft,
                                                     MgCoordinate* upperRight)
 {
-    CHECKNULL((MgCoordinate*)lowerLeft, L"MgFeatureGeometricFunctions.ComputeExtents");
-    CHECKNULL((MgCoordinate*)upperRight, L"MgFeatureGeometricFunctions.ComputeExtents");
+    CHECKNULL((MgCoordinate*)lowerLeft, L"MgdFeatureGeometricFunctions.ComputeExtents");
+    CHECKNULL((MgCoordinate*)upperRight, L"MgdFeatureGeometricFunctions.ComputeExtents");
 
     if (!m_extentsInitialized)
     {
@@ -185,7 +185,7 @@ void MgFeatureGeometricFunctions::ComputeExtents(MgCoordinate* lowerLeft,
     }
 }
 
-MgGeometryCollection* MgFeatureGeometricFunctions::ExecuteOperation()
+MgGeometryCollection* MgdFeatureGeometricFunctions::ExecuteOperation()
 {
     INT32 funcCode = -1;
 
@@ -193,7 +193,7 @@ MgGeometryCollection* MgFeatureGeometricFunctions::ExecuteOperation()
 
     // Get the arguments from the FdoFunction
     STRING propertyName;
-    bool supported = MgFeatureUtil::FindCustomFunction(m_customFunction, funcCode);
+    bool supported = MgdFeatureUtil::FindCustomFunction(m_customFunction, funcCode);
 
     if (supported)
     {
@@ -230,12 +230,12 @@ MgGeometryCollection* MgFeatureGeometricFunctions::ExecuteOperation()
             }
             default:
             {
-                STRING message = MgFeatureUtil::GetMessage(L"MgCustomFunctionNotSupported");
+                STRING message = MgdFeatureUtil::GetMessage(L"MgCustomFunctionNotSupported");
 
                 MgStringCollection arguments;
                 arguments.Add(message);
                 throw new MgFeatureServiceException(
-                    L"MgFeatureGeometricFunctions.ExecuteOperation",
+                    L"MgdFeatureGeometricFunctions.ExecuteOperation",
                     __LINE__, __WFILE__, &arguments, L"", NULL);
             }
         }
@@ -245,14 +245,14 @@ MgGeometryCollection* MgFeatureGeometricFunctions::ExecuteOperation()
 }
 
 // Check whether property type is a supported type
-bool MgFeatureGeometricFunctions::CheckSupportedPropertyType()
+bool MgdFeatureGeometricFunctions::CheckSupportedPropertyType()
 {
 	return MgPropertyType::Geometry == m_type;
 }
 
 
 // Get the value of property
-MgGeometry* MgFeatureGeometricFunctions::GetValue()
+MgGeometry* MgdFeatureGeometricFunctions::GetValue()
 {
     Ptr<MgGeometry> geom;
 
@@ -273,7 +273,7 @@ MgGeometry* MgFeatureGeometricFunctions::GetValue()
             default:
             {
                 throw new MgInvalidPropertyTypeException(
-                    L"MgFeatureGeometricFunctions.GetValue",
+                    L"MgdFeatureGeometricFunctions.GetValue",
                     __LINE__, __WFILE__, NULL, L"", NULL);
             }
         }
@@ -286,7 +286,7 @@ MgGeometry* MgFeatureGeometricFunctions::GetValue()
 
 
 // Create the reader for string properties
-MgReader* MgFeatureGeometricFunctions::GetReader(MgGeometryCollection* geomCol)
+MgReader* MgdFeatureGeometricFunctions::GetReader(MgGeometryCollection* geomCol)
 {
     Ptr<MgDataReader> dataReader;
 
@@ -294,14 +294,14 @@ MgReader* MgFeatureGeometricFunctions::GetReader(MgGeometryCollection* geomCol)
     {
         case MgPropertyType::Geometry:
         {
-            Ptr<MgGeometryDataReaderCreator> drCreator = new MgGeometryDataReaderCreator(m_propertyAlias);
+            Ptr<MgdGeometryDataReaderCreator> drCreator = new MgdGeometryDataReaderCreator(m_propertyAlias);
             dataReader = drCreator->Execute(geomCol);
             break;
         }
         default:
         {
             throw new MgInvalidPropertyTypeException(
-                L"MgFeatureGeometricFunctions.GetReader", __LINE__, __WFILE__, NULL, L"", NULL);
+                L"MgdFeatureGeometricFunctions.GetReader", __LINE__, __WFILE__, NULL, L"", NULL);
         }
     }
     return dataReader.Detach();

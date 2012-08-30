@@ -21,14 +21,14 @@
 #include "MgDesktop.h"
 #include "System/ThreadBase.h"
 
-class MgLogThread : public MgThreadBase
+class MgdLogThread : public MgdThreadBase
 {
-    DECLARE_CLASSNAME(MgLogThread)
+    DECLARE_CLASSNAME(MgdLogThread)
 
     ///////////////////////////////////////////////////////
     /// Methods
 public:
-    MgLogThread(ACE_Thread_Manager &tm, INT32 nThreads);
+    MgdLogThread(ACE_Thread_Manager &tm, INT32 nThreads);
 
     // ACE_Task methods
     virtual int svc();

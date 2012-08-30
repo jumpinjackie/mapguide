@@ -30,7 +30,7 @@ namespace SampleExtension
                 var resId = new MgResourceIdentifier(txtResourceId.Text);
                 resId.Validate();
 
-                var fact = new MgServiceFactory();
+                var fact = new MgdServiceFactory();
                 var resSvc = (MgResourceService)fact.CreateService(MgServiceType.ResourceService);
                 if (!resSvc.ResourceExists(resId))
                 {

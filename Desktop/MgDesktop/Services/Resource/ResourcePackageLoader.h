@@ -5,22 +5,22 @@
 #include "ZipFileReader.h"
 #include "ResourcePackageManifestParser.h"
 
-class MgResourcePackageLoader : public MgResourcePackageHandler
+class MgdResourcePackageLoader : public MgdResourcePackageHandler
 {
 /// Constructors/Destructor
 
 public:
 
-    explicit MgResourcePackageLoader(MgResourceService& repositoryManager);
-    virtual ~MgResourcePackageLoader();
+    explicit MgdResourcePackageLoader(MgResourceService& repositoryManager);
+    virtual ~MgdResourcePackageLoader();
 
 private:
 
     // Unimplemented Methods
 
-    MgResourcePackageLoader();
-    MgResourcePackageLoader(const MgResourcePackageLoader&);
-    MgResourcePackageLoader& operator=(const MgResourcePackageLoader&);
+    MgdResourcePackageLoader();
+    MgdResourcePackageLoader(const MgdResourcePackageLoader&);
+    MgdResourcePackageLoader& operator=(const MgdResourcePackageLoader&);
 
 /// Methods
 
@@ -47,16 +47,16 @@ protected:
 private:
 
     MgResourceIdentifier* CreateResourceIdentifier(
-        const MgOperationParameter& opParam) const;
+        const MgdOperationParameter& opParam) const;
     MgByteReader* CreateByteReader(
-        const MgOperationParameter& opParam, bool direct = true) const;
+        const MgdOperationParameter& opParam, bool direct = true) const;
 
 /// Data Members
 
 private:
 
-    auto_ptr<MgZipFileReader> m_zipFileReader;
-    MgResourcePackageManifestParser m_manifestParser;
+    auto_ptr<MgdZipFileReader> m_zipFileReader;
+    MgdResourcePackageManifestParser m_manifestParser;
 };
 
 /// Inline Methods

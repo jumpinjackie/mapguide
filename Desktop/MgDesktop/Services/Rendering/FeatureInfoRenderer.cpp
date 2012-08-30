@@ -3,7 +3,7 @@
 #include "RSMgFeatureReader.h"
 
 
-FeatureInfoRenderer::FeatureInfoRenderer(MgdSelection* selection, int maxFeatures, double mapScale, double* point, SE_Renderer* impRenderer)
+MgdFeatureInfoRenderer::MgdFeatureInfoRenderer(MgdSelection* selection, int maxFeatures, double mapScale, double* point, SE_Renderer* impRenderer)
 : m_extents(0.0, 0.0, 1.0, 1.0),
   m_numFeatures(0),
   m_url(L""),
@@ -32,7 +32,7 @@ FeatureInfoRenderer::FeatureInfoRenderer(MgdSelection* selection, int maxFeature
 }
 
 
-FeatureInfoRenderer::~FeatureInfoRenderer()
+MgdFeatureInfoRenderer::~MgdFeatureInfoRenderer()
 {
     SAFE_RELEASE(m_props);
     SAFE_RELEASE(m_selection);
@@ -41,7 +41,7 @@ FeatureInfoRenderer::~FeatureInfoRenderer()
 }
 
 
-void FeatureInfoRenderer::StartFeature(RS_FeatureReader* feature,
+void MgdFeatureInfoRenderer::StartFeature(RS_FeatureReader* feature,
                                        bool initialPass,
                                        const RS_String* tooltip,
                                        const RS_String* url,
@@ -124,7 +124,7 @@ void FeatureInfoRenderer::StartFeature(RS_FeatureReader* feature,
 }
 
 
-void FeatureInfoRenderer::StartMap(RS_MapUIInfo*    mapInfo,
+void MgdFeatureInfoRenderer::StartMap(RS_MapUIInfo*    mapInfo,
                                    RS_Bounds&       extents,
                                    double           /*mapScale*/,
                                    double           dpi,
@@ -148,7 +148,7 @@ void FeatureInfoRenderer::StartMap(RS_MapUIInfo*    mapInfo,
 }
 
 
-void FeatureInfoRenderer::EndMap()
+void MgdFeatureInfoRenderer::EndMap()
 {
     if(m_impRenderer)
     {
@@ -161,7 +161,7 @@ void FeatureInfoRenderer::EndMap()
 }
 
 
-void FeatureInfoRenderer::StartLayer(RS_LayerUIInfo*      layerInfo,
+void MgdFeatureInfoRenderer::StartLayer(RS_LayerUIInfo*      layerInfo,
                                      RS_FeatureClassInfo* classInfo)
 {
     // remember the layer/feature info
@@ -173,7 +173,7 @@ void FeatureInfoRenderer::StartLayer(RS_LayerUIInfo*      layerInfo,
 }
 
 
-void FeatureInfoRenderer::EndLayer()
+void MgdFeatureInfoRenderer::EndLayer()
 {
     // clear the layer/feature info
     m_layerInfo = NULL;
@@ -181,7 +181,7 @@ void FeatureInfoRenderer::EndLayer()
 }
 
 
-void FeatureInfoRenderer::ProcessMarker(LineBuffer*   lb,
+void MgdFeatureInfoRenderer::ProcessMarker(LineBuffer*   lb,
                                         RS_MarkerDef& mdef,
                                         bool          allowOverpost,
                                         RS_Bounds*    bounds)
@@ -222,7 +222,7 @@ void FeatureInfoRenderer::ProcessMarker(LineBuffer*   lb,
 }
 
 
-void FeatureInfoRenderer::DrawScreenPolyline(LineBuffer* polyline, const SE_Matrix* xform, const SE_LineStroke& lineStroke)
+void MgdFeatureInfoRenderer::DrawScreenPolyline(LineBuffer* polyline, const SE_Matrix* xform, const SE_LineStroke& lineStroke)
 {
     if(m_pointTest && m_featurePending)
     {
@@ -241,7 +241,7 @@ void FeatureInfoRenderer::DrawScreenPolyline(LineBuffer* polyline, const SE_Matr
 }
 
 
-void FeatureInfoRenderer::DrawScreenPolygon(LineBuffer* polygon, const SE_Matrix* xform, unsigned int fill)
+void MgdFeatureInfoRenderer::DrawScreenPolygon(LineBuffer* polygon, const SE_Matrix* xform, unsigned int fill)
 {
     // treat polygons as polylines
     SE_LineStroke lineStroke(fill, 0.0, SE_LineCap_Round, SE_LineJoin_Round, 5.0);
@@ -249,7 +249,7 @@ void FeatureInfoRenderer::DrawScreenPolygon(LineBuffer* polygon, const SE_Matrix
 }
 
 
-void FeatureInfoRenderer::DrawScreenRaster(unsigned char* data, int length,
+void MgdFeatureInfoRenderer::DrawScreenRaster(unsigned char* data, int length,
                                            RS_ImageFormat format, int native_width, int native_height,
                                            double x, double y, double w, double h, double angleDeg)
 {
@@ -268,7 +268,7 @@ void FeatureInfoRenderer::DrawScreenRaster(unsigned char* data, int length,
 }
 
 
-void FeatureInfoRenderer::DrawScreenRaster(unsigned char* data, int length,
+void MgdFeatureInfoRenderer::DrawScreenRaster(unsigned char* data, int length,
                                            RS_ImageFormat format, int native_width, int native_height,
                                            double x, double y, double w, double h, double angleDeg,
                                            double alpha)
@@ -277,7 +277,7 @@ void FeatureInfoRenderer::DrawScreenRaster(unsigned char* data, int length,
 }
 
 
-void FeatureInfoRenderer::DrawScreenText(const RS_TextMetrics& tm, RS_TextDef& tdef, double insx, double insy,
+void MgdFeatureInfoRenderer::DrawScreenText(const RS_TextMetrics& tm, RS_TextDef& tdef, double insx, double insy,
                                          RS_F_Point* path, int npts, double param_position)
 {
     if (m_pointTest && m_featurePending)
@@ -314,7 +314,7 @@ void FeatureInfoRenderer::DrawScreenText(const RS_TextMetrics& tm, RS_TextDef& t
 }
 
 
-void FeatureInfoRenderer::SetSelected()
+void MgdFeatureInfoRenderer::SetSelected()
 {
     m_selection->Add(m_layerId, m_fcName, m_id);
     m_numFeatures++;
@@ -335,13 +335,13 @@ void FeatureInfoRenderer::SetSelected()
 }
 
 
-bool FeatureInfoRenderer::YPointsUp()
+bool MgdFeatureInfoRenderer::YPointsUp()
 {
     return m_impRenderer? m_impRenderer->YPointsUp() : true;
 }
 
 
-void FeatureInfoRenderer::GetWorldToScreenTransform(SE_Matrix& xform)
+void MgdFeatureInfoRenderer::GetWorldToScreenTransform(SE_Matrix& xform)
 {
     xform.x0 = m_scale;
     xform.x1 = 0.0;
@@ -352,14 +352,14 @@ void FeatureInfoRenderer::GetWorldToScreenTransform(SE_Matrix& xform)
 }
 
 
-void FeatureInfoRenderer::WorldToScreenPoint(double& inx, double& iny, double& ox, double& oy)
+void MgdFeatureInfoRenderer::WorldToScreenPoint(double& inx, double& iny, double& ox, double& oy)
 {
     ox = inx * m_scale;
     oy = (YPointsUp()? iny : -iny) * m_scale;
 }
 
 
-void FeatureInfoRenderer::ScreenToWorldPoint(double& inx, double& iny, double& ox, double& oy)
+void MgdFeatureInfoRenderer::ScreenToWorldPoint(double& inx, double& iny, double& ox, double& oy)
 {
     ox = inx / m_scale;
     oy = (YPointsUp()? iny : -iny) / m_scale;
@@ -367,57 +367,57 @@ void FeatureInfoRenderer::ScreenToWorldPoint(double& inx, double& iny, double& o
 
 
 // returns number of pixels per millimeter device
-double FeatureInfoRenderer::GetScreenUnitsPerMillimeterDevice()
+double MgdFeatureInfoRenderer::GetScreenUnitsPerMillimeterDevice()
 {
     return m_dpi / MILLIMETERS_PER_INCH;
 }
 
 
 // returns number of pixels per millimeter world
-double FeatureInfoRenderer::GetScreenUnitsPerMillimeterWorld()
+double MgdFeatureInfoRenderer::GetScreenUnitsPerMillimeterWorld()
 {
     return m_dpi / MILLIMETERS_PER_INCH / m_mapScale;
 }
 
 
 // screen units are pixels
-double FeatureInfoRenderer::GetScreenUnitsPerPixel()
+double MgdFeatureInfoRenderer::GetScreenUnitsPerPixel()
 {
     return 1.0;
 }
 
 
-RS_FontEngine* FeatureInfoRenderer::GetRSFontEngine()
+RS_FontEngine* MgdFeatureInfoRenderer::GetRSFontEngine()
 {
     return this;
 }
 
 
-RS_MapUIInfo* FeatureInfoRenderer::GetMapInfo()
+RS_MapUIInfo* MgdFeatureInfoRenderer::GetMapInfo()
 {
     return m_mapInfo;
 }
 
 
-RS_LayerUIInfo* FeatureInfoRenderer::GetLayerInfo()
+RS_LayerUIInfo* MgdFeatureInfoRenderer::GetLayerInfo()
 {
     return m_layerInfo;
 }
 
 
-RS_FeatureClassInfo* FeatureInfoRenderer::GetFeatureClassInfo()
+RS_FeatureClassInfo* MgdFeatureInfoRenderer::GetFeatureClassInfo()
 {
     return m_fcInfo;
 }
 
 
-double FeatureInfoRenderer::GetMapScale()
+double MgdFeatureInfoRenderer::GetMapScale()
 {
     return m_mapScale;
 }
 
 
-double FeatureInfoRenderer::GetDrawingScale()
+double MgdFeatureInfoRenderer::GetDrawingScale()
 {
     // compute drawing scale
     // drawing scale is map scale converted to [mapping units] / [pixels]
@@ -426,50 +426,50 @@ double FeatureInfoRenderer::GetDrawingScale()
 }
 
 
-double FeatureInfoRenderer::GetMetersPerUnit()
+double MgdFeatureInfoRenderer::GetMetersPerUnit()
 {
     return m_metersPerUnit;
 }
 
 
-double FeatureInfoRenderer::GetDpi()
+double MgdFeatureInfoRenderer::GetDpi()
 {
     return m_dpi;
 }
 
 
-RS_Bounds& FeatureInfoRenderer::GetBounds()
+RS_Bounds& MgdFeatureInfoRenderer::GetBounds()
 {
     return m_extents;
 }
 
 
-bool FeatureInfoRenderer::RequiresClipping()
+bool MgdFeatureInfoRenderer::RequiresClipping()
 {
     return false;
 }
 
 
-bool FeatureInfoRenderer::RequiresLabelClipping()
+bool MgdFeatureInfoRenderer::RequiresLabelClipping()
 {
     return false;
 }
 
 
-bool FeatureInfoRenderer::SupportsZ()
+bool MgdFeatureInfoRenderer::SupportsZ()
 {
     // Z values in feature geometry are ignored
     return false;
 }
 
 
-bool FeatureInfoRenderer::RequiresCompositeLineStyleSeparation()
+bool MgdFeatureInfoRenderer::RequiresCompositeLineStyleSeparation()
 {
     return false;
 }
 
 
-void FeatureInfoRenderer::MeasureString(const RS_String& s,
+void MgdFeatureInfoRenderer::MeasureString(const RS_String& s,
                                         double           height,
                                         const RS_Font*   font,
                                         double           angleRad,
@@ -481,7 +481,7 @@ void FeatureInfoRenderer::MeasureString(const RS_String& s,
 }
 
 
-void FeatureInfoRenderer::DrawString(const RS_String& s,
+void MgdFeatureInfoRenderer::DrawString(const RS_String& s,
                                      double           x,
                                      double           y,
                                      double           width,
@@ -493,7 +493,7 @@ void FeatureInfoRenderer::DrawString(const RS_String& s,
 }
 
 
-const RS_Font* FeatureInfoRenderer::FindFont(RS_FontDef& def)
+const RS_Font* MgdFeatureInfoRenderer::FindFont(RS_FontDef& def)
 {
     return m_impRenderer? m_impRenderer->GetRSFontEngine()->FindFont(def) : NULL;
 }

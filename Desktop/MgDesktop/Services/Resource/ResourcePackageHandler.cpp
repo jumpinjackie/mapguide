@@ -5,7 +5,7 @@
 /// \brief
 /// Constructs the object.
 ///
-MgResourcePackageHandler::MgResourcePackageHandler(
+MgdResourcePackageHandler::MgdResourcePackageHandler(
     MgResourceService& repositoryManager) :
     m_repositoryManager(repositoryManager),
     m_opsSucceeded(0),
@@ -17,7 +17,7 @@ MgResourcePackageHandler::MgResourcePackageHandler(
 /// \brief
 /// Destructs the object.
 ///
-MgResourcePackageHandler::~MgResourcePackageHandler()
+MgdResourcePackageHandler::~MgdResourcePackageHandler()
 {
 }
 
@@ -25,7 +25,7 @@ MgResourcePackageHandler::~MgResourcePackageHandler()
 /// \brief
 /// Initializes the package status information.
 ///
-void MgResourcePackageHandler::InitializeStatus(CREFSTRING packageApiName,
+void MgdResourcePackageHandler::InitializeStatus(CREFSTRING packageApiName,
     CREFSTRING packagePathname, bool logActivities)
 {
     m_packagePathname = packagePathname;
@@ -79,7 +79,7 @@ void MgResourcePackageHandler::InitializeStatus(CREFSTRING packageApiName,
 /// \brief
 /// Updates the package status information.
 ///
-void MgResourcePackageHandler::UpdateStatus(MgException* except)
+void MgdResourcePackageHandler::UpdateStatus(MgException* except)
 {
     /*
     if (m_packageLogWriter != NULL)

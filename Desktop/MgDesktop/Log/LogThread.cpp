@@ -25,8 +25,8 @@
 /// <summary>
 /// Constructor
 /// </summary>
-MgLogThread::MgLogThread(ACE_Thread_Manager &tm, INT32 nThreads) :
-    MgThreadBase(tm, nThreads)
+MgdLogThread::MgdLogThread(ACE_Thread_Manager &tm, INT32 nThreads) :
+    MgdThreadBase(tm, nThreads)
 {
     m_bActive = true;
 }
@@ -35,18 +35,18 @@ MgLogThread::MgLogThread(ACE_Thread_Manager &tm, INT32 nThreads) :
 /// <summary>
 /// ACE_Task method
 /// </summary>
-int MgLogThread::svc()
+int MgdLogThread::svc()
 {
     INT32 nResult = 0;
 
     Ptr<MgException> mgException;
     try
     {
-        MgLogManager* pLogManager = MgLogManager::GetInstance();
+        MgdLogManager* pLogManager = MgdLogManager::GetInstance();
 
         while (m_bActive)
         {
-//            ACE_DEBUG ((LM_DEBUG, ACE_TEXT("(%t) MgLogThread::svc() Ready\n")));
+//            ACE_DEBUG ((LM_DEBUG, ACE_TEXT("(%t) MgdLogThread::svc() Ready\n")));
 
             ACE_Message_Block* messageBlock = NULL;
 
@@ -58,14 +58,14 @@ int MgLogThread::svc()
                 if(nError == EINTR)
                 {
                     ACE_DEBUG ((LM_DEBUG, ACE_TEXT("  (%t) Interrupted while waiting for message\n")));
-                    ACE_DEBUG ((LM_DEBUG, ACE_TEXT("  (%t) MgLogThread - Exiting thread\n")));
+                    ACE_DEBUG ((LM_DEBUG, ACE_TEXT("  (%t) MgdLogThread - Exiting thread\n")));
                     return 0;
                 }
                 else
                 {
                     // There was an error
-                    ACE_DEBUG ((LM_DEBUG, ACE_TEXT("  (%t) MgLogThread - Exiting thread\n")));
-                    ACE_ERROR_RETURN ((LM_ERROR, ACE_TEXT("%p\n"), ACE_TEXT("MgLogThread::svc()")), -1);
+                    ACE_DEBUG ((LM_DEBUG, ACE_TEXT("  (%t) MgdLogThread - Exiting thread\n")));
+                    ACE_ERROR_RETURN ((LM_ERROR, ACE_TEXT("%p\n"), ACE_TEXT("MgdLogThread::svc()")), -1);
                 }
             }
 
@@ -85,7 +85,7 @@ int MgLogThread::svc()
                 else if(messageBlock->msg_type() == ACE_Message_Block::MB_DATA)
                 {
                     // Get the function
-                    MgLogEntryData* led = (MgLogEntryData*)messageBlock->data_block();
+                    MgdLogEntryData* led = (MgdLogEntryData*)messageBlock->data_block();
                     if(led)
                     {
                         Ptr<MgException> mgException;
@@ -118,7 +118,7 @@ int MgLogThread::svc()
                             //MgServerManager* pServerManager = MgServerManager::GetInstance();
                             //STRING locale = pServerManager->GetDefaultMessageLocale();
                             STRING locale = MgResources::DefaultMessageLocale;
-                            mgException = new MgFdoException(L"MgLogThread.svc", __LINE__, __WFILE__, NULL, messageId, &arguments);
+                            mgException = new MgFdoException(L"MgdLogThread.svc", __LINE__, __WFILE__, NULL, messageId, &arguments);
                             ACE_DEBUG ((LM_ERROR, ACE_TEXT("(%t) %W\n"), mgException->GetDetails(locale).c_str()));
                             MG_LOG_EXCEPTION_ENTRY(mgException->GetExceptionMessage(locale).c_str(), mgException->GetStackTrace(locale).c_str());
 
@@ -130,7 +130,7 @@ int MgLogThread::svc()
                             //STRING locale = pServerManager->GetDefaultMessageLocale();
                             STRING locale = MgResources::DefaultMessageLocale;
 
-                            mgException = MgSystemException::Create(e, L"MgLogThread.svc", __LINE__, __WFILE__);
+                            mgException = MgSystemException::Create(e, L"MgdLogThread.svc", __LINE__, __WFILE__);
                             ACE_DEBUG ((LM_ERROR, ACE_TEXT("(%t) %W\n"), mgException->GetDetails(locale).c_str()));
                             MG_LOG_EXCEPTION_ENTRY(mgException->GetExceptionMessage(locale).c_str(), mgException->GetStackTrace(locale).c_str());
                         }
@@ -139,7 +139,7 @@ int MgLogThread::svc()
                             //MgServerManager* pServerManager = MgServerManager::GetInstance();
                             //STRING locale = pServerManager->GetDefaultMessageLocale();
                             STRING locale = MgResources::DefaultMessageLocale;
-                            mgException = new MgUnclassifiedException(L"MgLogThread.svc", __LINE__, __WFILE__, NULL, L"", NULL);
+                            mgException = new MgUnclassifiedException(L"MgdLogThread.svc", __LINE__, __WFILE__, NULL, L"", NULL);
                             ACE_DEBUG ((LM_ERROR, ACE_TEXT("(%t) %W\n"), mgException->GetDetails(locale).c_str()));
                             MG_LOG_EXCEPTION_ENTRY(mgException->GetExceptionMessage(locale).c_str(), mgException->GetStackTrace(locale).c_str());
                         }
@@ -171,7 +171,7 @@ int MgLogThread::svc()
         //STRING locale = pServerManager->GetDefaultMessageLocale();
         STRING locale = MgResources::DefaultMessageLocale;
 
-        mgException = MgSystemException::Create(e, L"MgLogThread.svc", __LINE__, __WFILE__);
+        mgException = MgSystemException::Create(e, L"MgdLogThread.svc", __LINE__, __WFILE__);
         ACE_DEBUG ((LM_ERROR, ACE_TEXT("(%t) %W\n"), mgException->GetDetails(locale).c_str()));
         MG_LOG_EXCEPTION_ENTRY(mgException->GetExceptionMessage(locale).c_str(), mgException->GetStackTrace(locale).c_str());
 
@@ -183,13 +183,13 @@ int MgLogThread::svc()
         //STRING locale = pServerManager->GetDefaultMessageLocale();
         STRING locale = MgResources::DefaultMessageLocale;
 
-        mgException = new MgUnclassifiedException(L"MgLogThread.svc", __LINE__, __WFILE__, NULL, L"", NULL);
+        mgException = new MgUnclassifiedException(L"MgdLogThread.svc", __LINE__, __WFILE__, NULL, L"", NULL);
         ACE_DEBUG ((LM_ERROR, ACE_TEXT("(%t) %W\n"), mgException->GetDetails(locale).c_str()));
         MG_LOG_EXCEPTION_ENTRY(mgException->GetExceptionMessage(locale).c_str(), mgException->GetStackTrace(locale).c_str());
 
         nResult = -1;
     }
 
-    ACE_DEBUG ((LM_DEBUG, ACE_TEXT("(%t) MgLogThread - Exiting thread\n")));
+    ACE_DEBUG ((LM_DEBUG, ACE_TEXT("(%t) MgdLogThread - Exiting thread\n")));
     return nResult;
 }

@@ -21,7 +21,7 @@ namespace DotNetHarness.Feature
         {
             try
             {
-                var fact = new MgServiceFactory();
+                var fact = new MgdServiceFactory();
                 MgFeatureService featSvc = (MgdFeatureService)fact.CreateService(MgServiceType.FeatureService);
                 MgResourceIdentifier fsId = new MgResourceIdentifier(textBox1.Text);
                 string sql = textBox2.Text;

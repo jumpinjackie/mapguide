@@ -27,8 +27,8 @@ class MgResourceService;
 class MgResourceIdentifier;
 class MgXmlUtil;
 
-typedef std::vector<MgCustomLogoInfo> MgCustomLogoInfoVector;
-typedef std::vector<MgCustomTextInfo> MgCustomTextInfoVector;
+typedef std::vector<MgdCustomLogoInfo> MgdCustomLogoInfoVector;
+typedef std::vector<MgdCustomTextInfo> MgdCustomTextInfoVector;
 
 ////////////////////////////////////////////////////////////
 /// \brief
@@ -41,25 +41,25 @@ typedef std::vector<MgCustomTextInfo> MgCustomTextInfoVector;
 /// Future directions for this class (time permitting) are to
 /// remove and/or rewrite the functionality of this class
 /// in more appropriate utility class.
-class MG_DESKTOP_API MgPrintLayout : public MgSerializable
+class MG_DESKTOP_API MgdPrintLayout : public MgSerializable
 {
     MG_DECL_DYNCREATE()
-    DECLARE_CLASSNAME(MgPrintLayout)
+    DECLARE_CLASSNAME(MgdPrintLayout)
 
 INTERNAL_API:
 
     ///////////////////////////////////////////////////////////////////////////////////
     /// \brief
-    /// Construct an MgPrintLayout object.
+    /// Construct an MgdPrintLayout object.
     ///
     /// \return
     /// Nothing
     ///
-    MgPrintLayout();
+    MgdPrintLayout();
 
     ///////////////////////////////////////////////////////////////////////////////////
     /// \brief
-    /// Initializes a new MgPrintLayout object given a resource service,
+    /// Initializes a new MgdPrintLayout object given a resource service,
     /// and print layout definition.
     ///
     /// \param resourceService
@@ -223,9 +223,9 @@ INTERNAL_API:
 
     //////////////////////////////////////////////////////////////////
     /// \brief
-    /// Destroy a MgPrintLayout object
+    /// Destroy a MgdPrintLayout object
     ///
-    ~MgPrintLayout();
+    ~MgdPrintLayout();
 
     //////////////////////////////////////////////////////////////////
     /// \brief
@@ -259,8 +259,8 @@ INTERNAL_API:
     inline bool& ShowCustomLogos() {return m_bShowCustomLogos;}
     inline bool& ShowCustomText() {return m_bShowCustomText;}
 
-    inline MgCustomLogoInfoVector& CustomLogos() {return m_logos;}
-    inline MgCustomTextInfoVector& CustomText() {return m_text;}
+    inline MgdCustomLogoInfoVector& CustomLogos() {return m_logos;}
+    inline MgdCustomTextInfoVector& CustomText() {return m_text;}
 
     MgColor* GetBackgroundColor();
 
@@ -291,8 +291,8 @@ private:
     bool m_bShowCustomLogos;
     bool m_bShowCustomText;
 
-    MgCustomLogoInfoVector m_logos;
-    MgCustomTextInfoVector m_text;
+    MgdCustomLogoInfoVector m_logos;
+    MgdCustomTextInfoVector m_text;
 
     void GetLayoutPropertiesFromXml(MgXmlUtil* pXmlUtil);
 };

@@ -17,19 +17,19 @@
 
 #include "GwsConnectionPool.h"
 
-MgGwsConnectionPool* MgGwsConnectionPool::Create()
+MgdGwsConnectionPool* MgdGwsConnectionPool::Create()
 {
-    MgGwsConnectionPool* pool = new MgGwsConnectionPool();
+    MgdGwsConnectionPool* pool = new MgdGwsConnectionPool();
     pool->AddRef();
     return pool;
 }
 
-MgGwsConnectionPool::MgGwsConnectionPool ()
+MgdGwsConnectionPool::MgdGwsConnectionPool ()
 {
     m_iRefCount = 0;
 }
 
-MgGwsConnectionPool::~MgGwsConnectionPool ()
+MgdGwsConnectionPool::~MgdGwsConnectionPool ()
 {
     if (!m_connections.empty())
     {
@@ -37,7 +37,7 @@ MgGwsConnectionPool::~MgGwsConnectionPool ()
              iter != m_connections.end();
              iter++)
         {
-            MgFeatureConnection * conn = (*iter).second;
+            MgdFeatureConnection * conn = (*iter).second;
             if(conn)
             {
                 conn->Release ();
@@ -47,11 +47,11 @@ MgGwsConnectionPool::~MgGwsConnectionPool ()
     }
 }
 
-FdoInt32 MgGwsConnectionPool::AddRef ()
+FdoInt32 MgdGwsConnectionPool::AddRef ()
 {
     return m_iRefCount ++;
 }
-FdoInt32 MgGwsConnectionPool::Release ()
+FdoInt32 MgdGwsConnectionPool::Release ()
 {
     m_iRefCount --;
     assert (m_iRefCount >= 0);
@@ -61,23 +61,23 @@ FdoInt32 MgGwsConnectionPool::Release ()
     Dispose ();
     return 0;
 }
-void MgGwsConnectionPool::Dispose ()
+void MgdGwsConnectionPool::Dispose ()
 {
     delete this;
 }
 
-IGWSObject * MgGwsConnectionPool::GetOwner ()
+IGWSObject * MgdGwsConnectionPool::GetOwner ()
 {
     return NULL;
 }
 
-void MgGwsConnectionPool::SetOwner (IGWSObject * pObj)
+void MgdGwsConnectionPool::SetOwner (IGWSObject * pObj)
 {
 }
 
 // Gws Query engine expects that this method throws exception
 // in case when connection is not found in the pool
-FdoIConnection * MgGwsConnectionPool::GetConnection (FdoString * name)
+FdoIConnection * MgdGwsConnectionPool::GetConnection (FdoString * name)
 {
     FdoIConnection* fdoConn = NULL;
 
@@ -97,7 +97,7 @@ FdoIConnection * MgGwsConnectionPool::GetConnection (FdoString * name)
 
     }
 
-    MgFeatureConnection * conn = (*iter).second;
+    MgdFeatureConnection * conn = (*iter).second;
     if(conn)
     {
         fdoConn = conn->GetConnection();
@@ -105,9 +105,9 @@ FdoIConnection * MgGwsConnectionPool::GetConnection (FdoString * name)
     return fdoConn;
 }
 
-void MgGwsConnectionPool::AddConnection (
+void MgdGwsConnectionPool::AddConnection (
     FdoString       * name,
-    MgFeatureConnection* conn
+    MgdFeatureConnection* conn
 )
 {
     if (name == NULL || * name == 0 || conn == NULL)
@@ -126,7 +126,7 @@ void MgGwsConnectionPool::AddConnection (
 }
 
 
-void MgGwsConnectionPool::RemoveConnection (FdoString * name)
+void MgdGwsConnectionPool::RemoveConnection (FdoString * name)
 {
     if (name == NULL || * name == 0)
         throw IGWSException::Create (eGwsNullPointer);
@@ -136,7 +136,7 @@ void MgGwsConnectionPool::RemoveConnection (FdoString * name)
         throw IGWSException::Create (eGwsSessionNotFound);
     }
 
-    MgFeatureConnection * conn = (*iter).second;
+    MgdFeatureConnection * conn = (*iter).second;
     if(conn)
     {
         conn->Release ();

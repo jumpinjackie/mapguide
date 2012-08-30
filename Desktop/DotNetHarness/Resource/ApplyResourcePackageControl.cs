@@ -29,7 +29,7 @@ namespace DotNetHarness.Resource
         {
             try
             {
-                var fact = new MgServiceFactory();
+                var fact = new MgdServiceFactory();
                 MgResourceService resSvc = (MgResourceService)fact.CreateService(MgServiceType.ResourceService);
 
                 MgByteSource source = new MgByteSource(textBox1.Text);

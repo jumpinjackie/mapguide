@@ -23,22 +23,22 @@ using namespace std;
 #include <vector>
 
 /// \cond INTERNAL
-class MgDateTimeDataReaderCreator : public MgDataReaderCreator<double>
+class MgdDateTimeDataReaderCreator : public MgdDataReaderCreator<double>
 {
-    DECLARE_CLASSNAME(MgDateTimeDataReaderCreator)
+    DECLARE_CLASSNAME(MgdDateTimeDataReaderCreator)
 
 public:
-    MgDateTimeDataReaderCreator()
+    MgdDateTimeDataReaderCreator()
     {
     }
 
-    MgDateTimeDataReaderCreator(CREFSTRING propertyAlias)
+    MgdDateTimeDataReaderCreator(CREFSTRING propertyAlias)
     {
         m_propertyAlias = propertyAlias;
         m_propType = MgPropertyType::DateTime;
     }
 
-    ~MgDateTimeDataReaderCreator()
+    ~MgdDateTimeDataReaderCreator()
     {
     }
 

@@ -4,13 +4,13 @@
 #include "MgDesktop.h"
 
 class FdoISQLDataReader;
-class MgFeatureConnection;
+class MgdFeatureConnection;
 /// \ingroup Desktop_Misc_Module
 /// \{
 class MG_DESKTOP_API MgdSqlDataReader : public MgSqlDataReader
 {
 INTERNAL_API:
-	MgdSqlDataReader(MgFeatureConnection* conn, FdoISQLDataReader* reader);
+	MgdSqlDataReader(MgdFeatureConnection* conn, FdoISQLDataReader* reader);
 
 EXTERNAL_API:
     virtual ~MgdSqlDataReader();
@@ -107,7 +107,7 @@ protected:
 
 private:
 	FdoISQLDataReader* m_reader;
-    Ptr<MgFeatureConnection> m_connection;
+    Ptr<MgdFeatureConnection> m_connection;
 };
 /// \}
 #endif

@@ -25,18 +25,18 @@
 #include "Services/Feature/FeatureServiceCache.h"
 
 //////////////////////////////////////////////////////////////////
-MgDescribeSchema::MgDescribeSchema()
+MgdDescribeSchema::MgdDescribeSchema()
 {
-    m_featureServiceCache = MgFeatureServiceCache::GetInstance();
+    m_featureServiceCache = MgdFeatureServiceCache::GetInstance();
 }
 
 //////////////////////////////////////////////////////////////////
-MgDescribeSchema::~MgDescribeSchema()
+MgdDescribeSchema::~MgdDescribeSchema()
 {
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-FdoFeatureSchemaCollection* MgDescribeSchema::DescribeFdoSchema(MgResourceIdentifier* resource,
+FdoFeatureSchemaCollection* MgdDescribeSchema::DescribeFdoSchema(MgResourceIdentifier* resource,
     CREFSTRING schemaName, MgStringCollection* classNames, bool& classNameHintUsed)
 {
     // IMPORTANT INFORMATION
@@ -48,11 +48,11 @@ FdoFeatureSchemaCollection* MgDescribeSchema::DescribeFdoSchema(MgResourceIdenti
     MG_FEATURE_SERVICE_TRY()
 
     // Connect to provider
-    Ptr<MgFeatureConnection> connection = new MgFeatureConnection(resource);
+    Ptr<MgdFeatureConnection> connection = new MgdFeatureConnection(resource);
 
     if ((NULL != connection.p) && (connection->IsConnectionOpen()))
     {
-        // The reference to the FDO connection from the MgFeatureConnection object must be cleaned up before the parent object
+        // The reference to the FDO connection from the MgdFeatureConnection object must be cleaned up before the parent object
         // otherwise it leaves the FDO connection marked as still in use.
         FdoPtr<FdoIConnection> fdoConn = connection->GetConnection();
         FdoPtr<FdoIDescribeSchema> fdoCommand = (FdoIDescribeSchema*)fdoConn->CreateCommand(FdoCommandType_DescribeSchema);
@@ -64,7 +64,7 @@ FdoFeatureSchemaCollection* MgDescribeSchema::DescribeFdoSchema(MgResourceIdenti
             fdoCommand->SetSchemaName(schemaName.c_str());
         }
 
-        FdoPtr<FdoStringCollection> fdoClassNames = MgFeatureUtil::MgToFdoStringCollection(classNames, false);
+        FdoPtr<FdoStringCollection> fdoClassNames = MgdFeatureUtil::MgToFdoStringCollection(classNames, false);
 
         if (NULL != fdoClassNames.p && fdoClassNames->GetCount() > 0)
         {
@@ -73,7 +73,7 @@ FdoFeatureSchemaCollection* MgDescribeSchema::DescribeFdoSchema(MgResourceIdenti
 
         // Execute the command
         ffsc = fdoCommand->Execute();
-        CHECKNULL((FdoFeatureSchemaCollection*)ffsc, L"MgDescribeSchema.DescribeFdoSchema");
+        CHECKNULL((FdoFeatureSchemaCollection*)ffsc, L"MgdDescribeSchema.DescribeFdoSchema");
 
         // Finished with primary feature source, so now cycle through any secondary sources
         if (NULL == m_featureSourceCacheItem.p)
@@ -82,28 +82,28 @@ FdoFeatureSchemaCollection* MgDescribeSchema::DescribeFdoSchema(MgResourceIdenti
         }
 
         MdfModel::FeatureSource* featureSource = m_featureSourceCacheItem->Get();
-        CHECKNULL(featureSource, L"MgDescribeSchema.DescribeFdoSchema");
+        CHECKNULL(featureSource, L"MgdDescribeSchema.DescribeFdoSchema");
         MdfModel::ExtensionCollection* extensions = featureSource->GetExtensions();
-        CHECKNULL(extensions, L"MgDescribeSchema.DescribeFdoSchema");
+        CHECKNULL(extensions, L"MgdDescribeSchema.DescribeFdoSchema");
         int extensionCount = extensions->GetCount();
 
         for (int i = 0; i < extensionCount; i++)
         {
             MdfModel::Extension* extension = extensions->GetAt(i);
-            CHECKNULL(extension, L"MgDescribeSchema.DescribeFdoSchema");
+            CHECKNULL(extension, L"MgdDescribeSchema.DescribeFdoSchema");
 
             // Get the extension name
             STRING extensionName = (STRING)extension->GetName();
 
             // Determine the number of secondary sources (AttributeRelates)
             MdfModel::AttributeRelateCollection* attributeRelates = extension->GetAttributeRelates();
-            CHECKNULL(attributeRelates, L"MgDescribeSchema.DescribeFdoSchema");
+            CHECKNULL(attributeRelates, L"MgdDescribeSchema.DescribeFdoSchema");
             int nAttributeRelates = attributeRelates->GetCount();
 
             for (int arIndex = 0; arIndex < nAttributeRelates; arIndex++)
             {
                 MdfModel::AttributeRelate* attributeRelate = attributeRelates->GetAt(arIndex);
-                CHECKNULL(attributeRelate, L"MgDescribeSchema.DescribeFdoSchema");
+                CHECKNULL(attributeRelate, L"MgdDescribeSchema.DescribeFdoSchema");
 
                 // get the resource id of the secondary feature source
                 STRING secondaryResourceId = (STRING)attributeRelate->GetResourceId();
@@ -124,16 +124,16 @@ FdoFeatureSchemaCollection* MgDescribeSchema::DescribeFdoSchema(MgResourceIdenti
                 if (NULL != secondaryFeatureSource)
                 {
                     FdoPtr<FdoFeatureSchemaCollection> ffsc2;
-                    Ptr<MgFeatureConnection> connection2 = new MgFeatureConnection(secondaryFeatureSource);
+                    Ptr<MgdFeatureConnection> connection2 = new MgdFeatureConnection(secondaryFeatureSource);
 
                     if ((NULL != connection2.p) && ( connection2->IsConnectionOpen() ))
                     {
-                        // The reference to the FDO connection from the MgFeatureConnection object must be cleaned up before the parent object
+                        // The reference to the FDO connection from the MgdFeatureConnection object must be cleaned up before the parent object
                         // otherwise it leaves the FDO connection marked as still in use.
                         FdoPtr<FdoIConnection> fdoConn2 = connection2->GetConnection();
                         // Check whether this command is supported by the provider
                         FdoPtr<FdoIDescribeSchema> fdoCommand2 = (FdoIDescribeSchema*)fdoConn2->CreateCommand(FdoCommandType_DescribeSchema);
-                        CHECKNULL((FdoIDescribeSchema*)fdoCommand2, L"MgDescribeSchema.DescribeFdoSchema");
+                        CHECKNULL((FdoIDescribeSchema*)fdoCommand2, L"MgdDescribeSchema.DescribeFdoSchema");
 
                         if (!secSchemaName.empty())
                         {
@@ -150,7 +150,7 @@ FdoFeatureSchemaCollection* MgDescribeSchema::DescribeFdoSchema(MgResourceIdenti
 
                         // Execute the command
                         ffsc2 = fdoCommand2->Execute();
-                        CHECKNULL((FdoFeatureSchemaCollection*)ffsc2, L"MgDescribeSchema.DescribeFdoSchema");
+                        CHECKNULL((FdoFeatureSchemaCollection*)ffsc2, L"MgdDescribeSchema.DescribeFdoSchema");
 
                         if (!secSchemaName.empty())
                         {
@@ -195,7 +195,7 @@ FdoFeatureSchemaCollection* MgDescribeSchema::DescribeFdoSchema(MgResourceIdenti
                     }
                     else
                     {
-                        throw new MgdConnectionFailedException(L"MgDescribeSchema.DescribeFdoSchema", __LINE__, __WFILE__, NULL, L"", NULL);
+                        throw new MgdConnectionFailedException(L"MgdDescribeSchema.DescribeFdoSchema", __LINE__, __WFILE__, NULL, L"", NULL);
                     }
                 }
 
@@ -205,16 +205,16 @@ FdoFeatureSchemaCollection* MgDescribeSchema::DescribeFdoSchema(MgResourceIdenti
     }
     else
     {
-        throw new MgdConnectionFailedException(L"MgDescribeSchema.DescribeFdoSchema", __LINE__, __WFILE__, NULL, L"", NULL);
+        throw new MgdConnectionFailedException(L"MgdDescribeSchema.DescribeFdoSchema", __LINE__, __WFILE__, NULL, L"", NULL);
     }
 
-    MG_FEATURE_SERVICE_CHECK_CONNECTION_CATCH_AND_THROW(resource, L"MgDescribeSchema.DescribeFdoSchema")
+    MG_FEATURE_SERVICE_CHECK_CONNECTION_CATCH_AND_THROW(resource, L"MgdDescribeSchema.DescribeFdoSchema")
 
     return ffsc.Detach();
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-MgFeatureSchemaCollection* MgDescribeSchema::DescribeSchema(MgResourceIdentifier* resource,
+MgFeatureSchemaCollection* MgdDescribeSchema::DescribeSchema(MgResourceIdentifier* resource,
     CREFSTRING schemaName, MgStringCollection* classNames, bool serialize)
 {
     Ptr<MgFeatureSchemaCollection> fsCollection;
@@ -230,7 +230,7 @@ MgFeatureSchemaCollection* MgDescribeSchema::DescribeSchema(MgResourceIdentifier
         bool classNameHintUsed = true;
         FdoPtr<FdoFeatureSchemaCollection> ffsc =
             DescribeFdoSchema(resource, schemaName, classNames, classNameHintUsed);
-        CHECKNULL(ffsc.p, L"MgDescribeSchema.DescribeSchema");
+        CHECKNULL(ffsc.p, L"MgdDescribeSchema.DescribeSchema");
 
         // Get schema count
         FdoInt32 schemaCount = ffsc->GetCount();
@@ -280,7 +280,7 @@ MgFeatureSchemaCollection* MgDescribeSchema::DescribeSchema(MgResourceIdentifier
 
                 if (name != NULL && qname != NULL)
                 {
-                    Ptr<MgClassDefinition> classDefinition = MgFeatureUtil::GetMgClassDefinition(fc, serialize);
+                    Ptr<MgClassDefinition> classDefinition = MgdFeatureUtil::GetMgClassDefinition(fc, serialize);
                     classCol->Add(classDefinition);
                 }
             }
@@ -295,9 +295,9 @@ MgFeatureSchemaCollection* MgDescribeSchema::DescribeSchema(MgResourceIdentifier
             }
 
             MdfModel::FeatureSource* featureSource = m_featureSourceCacheItem->Get();
-            CHECKNULL(featureSource, L"MgDescribeSchema.DescribeSchema");
+            CHECKNULL(featureSource, L"MgdDescribeSchema.DescribeSchema");
             MdfModel::ExtensionCollection* extensions = featureSource->GetExtensions();
-            CHECKNULL(extensions, L"MgDescribeSchema.DescribeSchema");
+            CHECKNULL(extensions, L"MgdDescribeSchema.DescribeSchema");
             int extensionCount = extensions->GetCount();
 
             for (int i = 0; i < extensionCount; i++)
@@ -306,7 +306,7 @@ MgFeatureSchemaCollection* MgDescribeSchema::DescribeSchema(MgResourceIdentifier
                 FdoPtr<FdoClassDefinition> originalClassDef;
 
                 MdfModel::Extension* extension = extensions->GetAt(i);
-                CHECKNULL(extension, L"MgDescribeSchema.DescribeSchema");
+                CHECKNULL(extension, L"MgdDescribeSchema.DescribeSchema");
 
                 // Get the extension name
                 STRING extensionName = (STRING)extension->GetName();
@@ -348,7 +348,7 @@ MgFeatureSchemaCollection* MgDescribeSchema::DescribeSchema(MgResourceIdentifier
                         if (className == primClassName)
                         {
                             // get the class definition
-                            extClassDefinition = MgFeatureUtil::GetMgClassDefinition(originalClassDef, serialize);
+                            extClassDefinition = MgdFeatureUtil::GetMgClassDefinition(originalClassDef, serialize);
                             break;
                         }
                     }
@@ -395,7 +395,7 @@ MgFeatureSchemaCollection* MgDescribeSchema::DescribeSchema(MgResourceIdentifier
                                 {
                                     STRING namePropStr = STRING(nameExpr.c_str());
                                     Ptr<MgDataPropertyDefinition> propDefExpr = new MgDataPropertyDefinition(namePropStr);
-                                    propDefExpr->SetDataType(MgFeatureUtil::GetMgPropertyType(retDataType));
+                                    propDefExpr->SetDataType(MgdFeatureUtil::GetMgPropertyType(retDataType));
                                     propDefExpr->SetNullable(true);
                                     propDefExpr->SetReadOnly(true);
                                     propDefExpr->SetAutoGeneration(false);
@@ -412,14 +412,14 @@ MgFeatureSchemaCollection* MgDescribeSchema::DescribeSchema(MgResourceIdentifier
 
                 // Determine the number of secondary sources (AttributeRelates)
                 MdfModel::AttributeRelateCollection* attributeRelates = extension->GetAttributeRelates();
-                CHECKNULL(attributeRelates, L"MgDescribeSchema.DescribeSchema");
+                CHECKNULL(attributeRelates, L"MgdDescribeSchema.DescribeSchema");
                 int nAttributeRelateCount = attributeRelates->GetCount();
 
                 for (int arIndex = 0; arIndex < nAttributeRelateCount; arIndex++)
                 {
                     // get the attribute relate
                     MdfModel::AttributeRelate* attributeRelate = attributeRelates->GetAt(arIndex);
-                    CHECKNULL(attributeRelate, L"MgDescribeSchema.DescribeSchema");
+                    CHECKNULL(attributeRelate, L"MgdDescribeSchema.DescribeSchema");
 
                     // Get the name of the secondary feature class (AttributeClass)
                     STRING attributeClass = (STRING)attributeRelate->GetAttributeClass();
@@ -442,16 +442,16 @@ MgFeatureSchemaCollection* MgDescribeSchema::DescribeSchema(MgResourceIdentifier
                     if (NULL != secondaryFeatureSource)
                     {
                         FdoPtr<FdoFeatureSchemaCollection> ffsc2;
-                        Ptr<MgFeatureConnection> connection2 = new MgFeatureConnection(secondaryFeatureSource);
+                        Ptr<MgdFeatureConnection> connection2 = new MgdFeatureConnection(secondaryFeatureSource);
 
                         if ((NULL != connection2.p) && ( connection2->IsConnectionOpen() ))
                         {
-                            // The reference to the FDO connection from the MgFeatureConnection object must be cleaned up before the parent object
+                            // The reference to the FDO connection from the MgdFeatureConnection object must be cleaned up before the parent object
                             // otherwise it leaves the FDO connection marked as still in use.
                             FdoPtr<FdoIConnection> fdoConn2 = connection2->GetConnection();
                             // Get the schema collection for the secondary resource
                             FdoPtr<FdoIDescribeSchema> fdoCommand2  = (FdoIDescribeSchema*)fdoConn2->CreateCommand(FdoCommandType_DescribeSchema);
-                            CHECKNULL((FdoIDescribeSchema*)fdoCommand2, L"MgDescribeSchema.DescribeSchema");
+                            CHECKNULL((FdoIDescribeSchema*)fdoCommand2, L"MgdDescribeSchema.DescribeSchema");
 
                             if (!secSchemaName.empty())
                             {
@@ -468,7 +468,7 @@ MgFeatureSchemaCollection* MgDescribeSchema::DescribeSchema(MgResourceIdentifier
 
                             // Execute the command
                             ffsc2 = fdoCommand2->Execute();
-                            CHECKNULL((FdoFeatureSchemaCollection*)ffsc2, L"MgDescribeSchema.DescribeSchema");
+                            CHECKNULL((FdoFeatureSchemaCollection*)ffsc2, L"MgdDescribeSchema.DescribeSchema");
 
                             int nSecSchemaCnt = (int)ffsc2->GetCount();
 
@@ -511,7 +511,7 @@ MgFeatureSchemaCollection* MgDescribeSchema::DescribeSchema(MgResourceIdentifier
                                     }
 
                                     // get the secondary class definition
-                                    Ptr<MgClassDefinition> classDefinition = MgFeatureUtil::GetMgClassDefinition(fc, serialize);
+                                    Ptr<MgClassDefinition> classDefinition = MgdFeatureUtil::GetMgClassDefinition(fc, serialize);
 
                                     // retrieve the secondary properties and prefix them with the relation name
                                     Ptr<MgPropertyDefinitionCollection> mpdc2 = classDefinition->GetProperties();
@@ -541,7 +541,7 @@ MgFeatureSchemaCollection* MgDescribeSchema::DescribeSchema(MgResourceIdentifier
                         }
                         else
                         {
-                            throw new MgdConnectionFailedException(L"MgDescribeSchema.DescribeSchema", __LINE__, __WFILE__, NULL, L"", NULL);
+                            throw new MgdConnectionFailedException(L"MgdDescribeSchema.DescribeSchema", __LINE__, __WFILE__, NULL, L"", NULL);
                         }
 
                     }  // end if (NULL != secFeatureSource)
@@ -570,7 +570,7 @@ MgFeatureSchemaCollection* MgDescribeSchema::DescribeSchema(MgResourceIdentifier
         //m_cacheManager->CheckPermission(resource, MgResourcePermission::ReadOnly);
     }
 
-    MG_FEATURE_SERVICE_CHECK_CONNECTION_CATCH_AND_THROW(resource, L"MgDescribeSchema.DescribeSchema")
+    MG_FEATURE_SERVICE_CHECK_CONNECTION_CATCH_AND_THROW(resource, L"MgdDescribeSchema.DescribeSchema")
 
     return fsCollection.Detach();
 }
@@ -578,7 +578,7 @@ MgFeatureSchemaCollection* MgDescribeSchema::DescribeSchema(MgResourceIdentifier
 ///////////////////////////////////////////////////////////////////////////////
 /// Executes the describe schema command and serializes the schema to XML
 ///
-STRING MgDescribeSchema::DescribeSchemaAsXml(MgResourceIdentifier* resource,
+STRING MgdDescribeSchema::DescribeSchemaAsXml(MgResourceIdentifier* resource,
     CREFSTRING schemaName, MgStringCollection* classNames)
 {
     STRING schemaXml;
@@ -634,7 +634,7 @@ STRING MgDescribeSchema::DescribeSchemaAsXml(MgResourceIdentifier* resource,
         //m_cacheManager->CheckPermission(resource, MgResourcePermission::ReadOnly);
     }
 
-    MG_FEATURE_SERVICE_CATCH_AND_THROW_WITH_FEATURE_SOURCE(L"MgDescribeSchema.DescribeSchemaAsXml", resource)
+    MG_FEATURE_SERVICE_CATCH_AND_THROW_WITH_FEATURE_SOURCE(L"MgdDescribeSchema.DescribeSchemaAsXml", resource)
 
     return schemaXml;
 }
@@ -642,7 +642,7 @@ STRING MgDescribeSchema::DescribeSchemaAsXml(MgResourceIdentifier* resource,
 
 //////////////////////////////////////////////////////////////////
 // Converts MgFeatureSchemaCollection to XML
-STRING MgDescribeSchema::SchemaToXml(MgFeatureSchemaCollection* schema)
+STRING MgdDescribeSchema::SchemaToXml(MgFeatureSchemaCollection* schema)
 {
     STRING xmlSchema;
 
@@ -650,23 +650,23 @@ STRING MgDescribeSchema::SchemaToXml(MgFeatureSchemaCollection* schema)
 
     if (NULL == schema)
     {
-        throw new MgNullArgumentException(L"MgDescribeSchema.SchemaToXml", __LINE__, __WFILE__, NULL, L"", NULL);
+        throw new MgNullArgumentException(L"MgdDescribeSchema.SchemaToXml", __LINE__, __WFILE__, NULL, L"", NULL);
     }
 
-    CHECKNULL((MgFeatureSchemaCollection*)schema, L"MgDescribeSchema.SchemaToXml");
+    CHECKNULL((MgFeatureSchemaCollection*)schema, L"MgdDescribeSchema.SchemaToXml");
 
-    FdoPtr<FdoFeatureSchemaCollection> fdoSchemaCol = MgFeatureUtil::GetFdoFeatureSchemaCollection(schema);
+    FdoPtr<FdoFeatureSchemaCollection> fdoSchemaCol = MgdFeatureUtil::GetFdoFeatureSchemaCollection(schema);
 
     xmlSchema = GetSerializedXml(fdoSchemaCol);
 
-    MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgDescribeSchema.SchemaToXml")
+    MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgdDescribeSchema.SchemaToXml")
 
     return xmlSchema;
 }
 
 //////////////////////////////////////////////////////////////////
 // Converts MgFeatureSchemaCollection to XML with specified namespacePrefix and namespaceURL (Just used for OGC WFS certification)
-STRING MgDescribeSchema::SchemaToXml(MgFeatureSchemaCollection* schema, CREFSTRING namespacePrefix, CREFSTRING namespaceUrl)
+STRING MgdDescribeSchema::SchemaToXml(MgFeatureSchemaCollection* schema, CREFSTRING namespacePrefix, CREFSTRING namespaceUrl)
 {
     STRING xmlSchema;
 
@@ -674,12 +674,12 @@ STRING MgDescribeSchema::SchemaToXml(MgFeatureSchemaCollection* schema, CREFSTRI
 
     if (NULL == schema)
     {
-        throw new MgNullArgumentException(L"MgDescribeSchema.SchemaToXml", __LINE__, __WFILE__, NULL, L"", NULL);
+        throw new MgNullArgumentException(L"MgdDescribeSchema.SchemaToXml", __LINE__, __WFILE__, NULL, L"", NULL);
     }
 
-    CHECKNULL((MgFeatureSchemaCollection*)schema, L"MgDescribeSchema.SchemaToXml");
+    CHECKNULL((MgFeatureSchemaCollection*)schema, L"MgdDescribeSchema.SchemaToXml");
 
-    FdoPtr<FdoFeatureSchemaCollection> fdoSchemaCol = MgFeatureUtil::GetFdoFeatureSchemaCollection(schema);
+    FdoPtr<FdoFeatureSchemaCollection> fdoSchemaCol = MgdFeatureUtil::GetFdoFeatureSchemaCollection(schema);
 
     FdoPtr<FdoXmlFlags> flags = FdoXmlFlags::Create();
 
@@ -700,13 +700,13 @@ STRING MgDescribeSchema::SchemaToXml(MgFeatureSchemaCollection* schema, CREFSTRI
 
     xmlSchema = GetSerializedXml(fdoSchemaCol,flags);
 
-    MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgDescribeSchema.SchemaToXml")
+    MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgdDescribeSchema.SchemaToXml")
 
     return xmlSchema;
 }
 
 //////////////////////////////////////////////////////////////////
-MgFeatureSchemaCollection* MgDescribeSchema::XmlToSchema(CREFSTRING xml)
+MgFeatureSchemaCollection* MgdDescribeSchema::XmlToSchema(CREFSTRING xml)
 {
     Ptr<MgFeatureSchemaCollection> mgSchemaCol;
 
@@ -732,7 +732,7 @@ MgFeatureSchemaCollection* MgDescribeSchema::XmlToSchema(CREFSTRING xml)
     {
         FdoPtr<FdoFeatureSchema> fdoSchema = fdoSchemaCol->GetItem(i);
         FdoStringP name = fdoSchema->GetName();
-        CHECKNULL(name, L"MgDescribeSchema.XmlToSchema");
+        CHECKNULL(name, L"MgdDescribeSchema.XmlToSchema");
 
         FdoStringP description = fdoSchema->GetDescription();
 
@@ -755,29 +755,29 @@ MgFeatureSchemaCollection* MgDescribeSchema::XmlToSchema(CREFSTRING xml)
 
             if (name != NULL && qname != NULL)
             {
-                Ptr<MgClassDefinition> classDefinition = MgFeatureUtil::GetMgClassDefinition(fdoClassDef, true);
+                Ptr<MgClassDefinition> classDefinition = MgdFeatureUtil::GetMgClassDefinition(fdoClassDef, true);
                 classCol->Add(classDefinition);
             }
         }
         mgSchemaCol->Add(mgSchema);
     }
 
-    MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgDescribeSchema.XmlToSchema")
+    MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgdDescribeSchema.XmlToSchema")
 
     return mgSchemaCol.Detach();
 }
 
 
 //////////////////////////////////////////////////////////////////
-STRING MgDescribeSchema::GetSerializedXml(FdoFeatureSchemaCollection* fdoSchemaCol)
+STRING MgdDescribeSchema::GetSerializedXml(FdoFeatureSchemaCollection* fdoSchemaCol)
 {
     STRING serializedXml;
 
     MG_FEATURE_SERVICE_TRY()
-    CHECKNULL(fdoSchemaCol, L"MgDescribeSchema.GetSerializedXml");
+    CHECKNULL(fdoSchemaCol, L"MgdDescribeSchema.GetSerializedXml");
 
     FdoIoMemoryStreamP fmis = FdoIoMemoryStream::Create();
-    CHECKNULL((FdoIoMemoryStream*)fmis, L"MgDescribeSchema.GetSerializedXml");
+    CHECKNULL((FdoIoMemoryStream*)fmis, L"MgdDescribeSchema.GetSerializedXml");
 
     // Write to memory stream
     fdoSchemaCol->WriteXml(fmis);
@@ -785,7 +785,7 @@ STRING MgDescribeSchema::GetSerializedXml(FdoFeatureSchemaCollection* fdoSchemaC
 
     FdoInt64 len = fmis->GetLength();
     FdoByte *bytes = new FdoByte[(size_t)len];
-    CHECKNULL(bytes, L"MgDescribeSchema.GetSerializedXml");
+    CHECKNULL(bytes, L"MgdDescribeSchema.GetSerializedXml");
 
     fmis->Read(bytes, (FdoSize)len);
 
@@ -798,21 +798,21 @@ STRING MgDescribeSchema::GetSerializedXml(FdoFeatureSchemaCollection* fdoSchemaC
 
     delete [] bytes;
 
-    MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgDescribeSchema.GetSerializedXml")
+    MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgdDescribeSchema.GetSerializedXml")
 
     return serializedXml;
 }
 
 //////////////////////////////////////////////////////////////////
-STRING MgDescribeSchema::GetSerializedXml(FdoFeatureSchemaCollection* fdoSchemaCol, FdoXmlFlags* flags)
+STRING MgdDescribeSchema::GetSerializedXml(FdoFeatureSchemaCollection* fdoSchemaCol, FdoXmlFlags* flags)
 {
     STRING serializedXml;
 
     MG_FEATURE_SERVICE_TRY()
-    CHECKNULL(fdoSchemaCol, L"MgDescribeSchema.GetSerializedXml");
+    CHECKNULL(fdoSchemaCol, L"MgdDescribeSchema.GetSerializedXml");
 
     FdoIoMemoryStreamP fmis = FdoIoMemoryStream::Create();
-    CHECKNULL((FdoIoMemoryStream*)fmis, L"MgDescribeSchema.GetSerializedXml");
+    CHECKNULL((FdoIoMemoryStream*)fmis, L"MgdDescribeSchema.GetSerializedXml");
 
     // Write to memory stream
     fdoSchemaCol->WriteXml(fmis,flags);
@@ -820,7 +820,7 @@ STRING MgDescribeSchema::GetSerializedXml(FdoFeatureSchemaCollection* fdoSchemaC
 
     FdoInt64 len = fmis->GetLength();
     FdoByte *bytes = new FdoByte[(size_t)len];
-    CHECKNULL(bytes, L"MgDescribeSchema.GetSerializedXml");
+    CHECKNULL(bytes, L"MgdDescribeSchema.GetSerializedXml");
 
     fmis->Read(bytes, (FdoSize)len);
 
@@ -833,13 +833,13 @@ STRING MgDescribeSchema::GetSerializedXml(FdoFeatureSchemaCollection* fdoSchemaC
 
     delete [] bytes;
 
-    MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgDescribeSchema.GetSerializedXml")
+    MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgdDescribeSchema.GetSerializedXml")
 
     return serializedXml;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-MgStringCollection* MgDescribeSchema::GetSchemas(MgResourceIdentifier* resource)
+MgStringCollection* MgdDescribeSchema::GetSchemas(MgResourceIdentifier* resource)
 {
     Ptr<MgStringCollection> schemaNames;
 
@@ -850,7 +850,7 @@ MgStringCollection* MgDescribeSchema::GetSchemas(MgResourceIdentifier* resource)
     if (NULL == schemaNames.p)
     {
         // Connect to provider.
-        Ptr<MgFeatureConnection> connection = new MgFeatureConnection(resource);
+        Ptr<MgdFeatureConnection> connection = new MgdFeatureConnection(resource);
 
         if ((NULL != connection.p) && (connection->IsConnectionOpen()))
         {
@@ -858,18 +858,18 @@ MgStringCollection* MgDescribeSchema::GetSchemas(MgResourceIdentifier* resource)
             {
                 //m_cacheManager->CheckPermission(resource, MgResourcePermission::ReadOnly);
 
-                // The reference to the FDO connection from the MgFeatureConnection object must be cleaned up
+                // The reference to the FDO connection from the MgdFeatureConnection object must be cleaned up
                 // before the parent object, otherwise it leaves the FDO connection marked as still in use.
                 FdoPtr<FdoIConnection> fdoConn = connection->GetConnection();
                 FdoPtr<FdoIGetSchemaNames> fdoCommand = (FdoIGetSchemaNames*)fdoConn->CreateCommand(FdoCommandType_GetSchemaNames);
-                CHECKNULL(fdoCommand.p, L"MgDescribeSchema.GetSchemas");
+                CHECKNULL(fdoCommand.p, L"MgdDescribeSchema.GetSchemas");
 
                 // Execute the command.
                 FdoPtr<FdoStringCollection> schemas = fdoCommand->Execute();
-                CHECKNULL(schemas.p, L"MgDescribeSchema.GetSchemas");
+                CHECKNULL(schemas.p, L"MgdDescribeSchema.GetSchemas");
 
                 // Get the schema names.
-                schemaNames = MgFeatureUtil::FdoToMgStringCollection(schemas.p, false);
+                schemaNames = MgdFeatureUtil::FdoToMgStringCollection(schemas.p, false);
             }
             else // Fall back on using the DescribeSchema API.
             {
@@ -897,7 +897,7 @@ MgStringCollection* MgDescribeSchema::GetSchemas(MgResourceIdentifier* resource)
         }
         else
         {
-            throw new MgdConnectionFailedException(L"MgDescribeSchema.GetSchemas",
+            throw new MgdConnectionFailedException(L"MgdDescribeSchema.GetSchemas",
                 __LINE__, __WFILE__, NULL, L"", NULL);
         }
 
@@ -908,13 +908,13 @@ MgStringCollection* MgDescribeSchema::GetSchemas(MgResourceIdentifier* resource)
         //m_cacheManager->CheckPermission(resource, MgResourcePermission::ReadOnly);
     }
 
-    MG_FEATURE_SERVICE_CHECK_CONNECTION_CATCH_AND_THROW(resource, L"MgDescribeSchema.GetSchemas")
+    MG_FEATURE_SERVICE_CHECK_CONNECTION_CATCH_AND_THROW(resource, L"MgdDescribeSchema.GetSchemas")
 
     return schemaNames.Detach();
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-MgStringCollection* MgDescribeSchema::GetClasses(MgResourceIdentifier* resource, CREFSTRING schemaName)
+MgStringCollection* MgdDescribeSchema::GetClasses(MgResourceIdentifier* resource, CREFSTRING schemaName)
 {
     Ptr<MgStringCollection> classNames;
 
@@ -925,7 +925,7 @@ MgStringCollection* MgDescribeSchema::GetClasses(MgResourceIdentifier* resource,
     if (NULL == classNames.p)
     {
         // Connect to provider.
-        Ptr<MgFeatureConnection> connection = new MgFeatureConnection(resource);
+        Ptr<MgdFeatureConnection> connection = new MgdFeatureConnection(resource);
 
         if ((NULL != connection.p) && (connection->IsConnectionOpen()))
         {
@@ -942,9 +942,9 @@ MgStringCollection* MgDescribeSchema::GetClasses(MgResourceIdentifier* resource,
                 }
 
                 MdfModel::FeatureSource* featureSource = m_featureSourceCacheItem->Get();
-                CHECKNULL(featureSource, L"MgDescribeSchema.GetClasses");
+                CHECKNULL(featureSource, L"MgdDescribeSchema.GetClasses");
                 MdfModel::ExtensionCollection* extensions = featureSource->GetExtensions();
-                CHECKNULL(extensions, L"MgDescribeSchema.GetClasses");
+                CHECKNULL(extensions, L"MgdDescribeSchema.GetClasses");
 
                 useSchema = (extensions->GetCount() > 0);
             }
@@ -979,11 +979,11 @@ MgStringCollection* MgDescribeSchema::GetClasses(MgResourceIdentifier* resource,
             {
                 //m_cacheManager->CheckPermission(resource, MgResourcePermission::ReadOnly);
 
-                // The reference to the FDO connection from the MgFeatureConnection object must be cleaned up
+                // The reference to the FDO connection from the MgdFeatureConnection object must be cleaned up
                 // before the parent object, otherwise it leaves the FDO connection marked as still in use.
                 FdoPtr<FdoIConnection> fdoConn = connection->GetConnection();
                 FdoPtr<FdoIGetClassNames> fdoCommand = (FdoIGetClassNames*)fdoConn->CreateCommand(FdoCommandType_GetClassNames);
-                CHECKNULL(fdoCommand.p, L"MgDescribeSchema.GetClasses");
+                CHECKNULL(fdoCommand.p, L"MgdDescribeSchema.GetClasses");
 
                 if (!schemaName.empty())
                 {
@@ -992,15 +992,15 @@ MgStringCollection* MgDescribeSchema::GetClasses(MgResourceIdentifier* resource,
 
                 // Execute the command.
                 FdoPtr<FdoStringCollection> classes = fdoCommand->Execute();
-                CHECKNULL(classes.p, L"MgDescribeSchema.GetClasses");
+                CHECKNULL(classes.p, L"MgdDescribeSchema.GetClasses");
 
                 // Get the class names.
-                classNames = MgFeatureUtil::FdoToMgStringCollection(classes.p, false);
+                classNames = MgdFeatureUtil::FdoToMgStringCollection(classes.p, false);
             }
         }
         else
         {
-            throw new MgdConnectionFailedException(L"MgDescribeSchema.GetClasses",
+            throw new MgdConnectionFailedException(L"MgdDescribeSchema.GetClasses",
                 __LINE__, __WFILE__, NULL, L"", NULL);
         }
 
@@ -1011,13 +1011,13 @@ MgStringCollection* MgDescribeSchema::GetClasses(MgResourceIdentifier* resource,
         //m_cacheManager->CheckPermission(resource, MgResourcePermission::ReadOnly);
     }
 
-    MG_FEATURE_SERVICE_CHECK_CONNECTION_CATCH_AND_THROW(resource, L"MgDescribeSchema.GetClasses")
+    MG_FEATURE_SERVICE_CHECK_CONNECTION_CATCH_AND_THROW(resource, L"MgdDescribeSchema.GetClasses")
 
     return classNames.Detach();
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-MgClassDefinition* MgDescribeSchema::GetClassDefinition(  MgResourceIdentifier* resource,
+MgClassDefinition* MgdDescribeSchema::GetClassDefinition(  MgResourceIdentifier* resource,
                                                                 CREFSTRING schemaName,
                                                                 CREFSTRING className,
                                                                 bool serialize)
@@ -1026,12 +1026,12 @@ MgClassDefinition* MgDescribeSchema::GetClassDefinition(  MgResourceIdentifier* 
 
     MG_FEATURE_SERVICE_TRY()
 
-    CHECK_FEATURE_SOURCE_ARGUMENT(resource, L"MgDescribeSchema::GetClassDefinition");
+    CHECK_FEATURE_SOURCE_ARGUMENT(resource, L"MgdDescribeSchema::GetClassDefinition");
 
     if (className.empty())
     {
         throw new MgClassNotFoundException(
-            L"MgDescribeSchema.GetClassDefinition",
+            L"MgdDescribeSchema.GetClassDefinition",
             __LINE__, __WFILE__, NULL, L"", NULL);
     }
 
@@ -1058,7 +1058,7 @@ MgClassDefinition* MgDescribeSchema::GetClassDefinition(  MgResourceIdentifier* 
         if (NULL == classDefinition.p)
         {
             throw new MgClassNotFoundException(
-                L"MgDescribeSchema.GetClassDefinition",
+                L"MgdDescribeSchema.GetClassDefinition",
                 __LINE__, __WFILE__, NULL, L"", NULL);
         }
         else
@@ -1071,7 +1071,7 @@ MgClassDefinition* MgDescribeSchema::GetClassDefinition(  MgResourceIdentifier* 
         //m_cacheManager->CheckPermission(resource, MgResourcePermission::ReadOnly);
     }
 
-    MG_FEATURE_SERVICE_CATCH_AND_THROW_WITH_FEATURE_SOURCE(L"MgDescribeSchema.GetClassDefinition", resource)
+    MG_FEATURE_SERVICE_CATCH_AND_THROW_WITH_FEATURE_SOURCE(L"MgdDescribeSchema.GetClassDefinition", resource)
 
     return classDefinition.Detach();
 }
@@ -1080,7 +1080,7 @@ MgClassDefinition* MgDescribeSchema::GetClassDefinition(  MgResourceIdentifier* 
 /// Returns the collection of identity properties for the specified class.
 /// If the schemaName is empty, then the className needs to be fully qualified.
 ///
-MgClassDefinitionCollection* MgDescribeSchema::GetIdentityProperties(
+MgClassDefinitionCollection* MgdDescribeSchema::GetIdentityProperties(
     MgResourceIdentifier* resource, CREFSTRING schemaName, MgStringCollection* classNames)
 {
     Ptr<MgClassDefinitionCollection> classDefs = new MgClassDefinitionCollection();
@@ -1090,7 +1090,7 @@ MgClassDefinitionCollection* MgDescribeSchema::GetIdentityProperties(
     if (NULL == classNames || classNames->GetCount() == 0)
     {
         throw new MgClassNotFoundException(
-            L"MgDescribeSchema.GetIdentityProperties",
+            L"MgdDescribeSchema.GetIdentityProperties",
             __LINE__, __WFILE__, NULL, L"", NULL);
     }
 
@@ -1165,7 +1165,7 @@ MgClassDefinitionCollection* MgDescribeSchema::GetIdentityProperties(
         else
         {
             //m_cacheManager->CheckPermission(resource, MgResourcePermission::ReadOnly);
-            fdoSchemas = MgFeatureUtil::GetFdoFeatureSchemaCollection(mgSchemas.p);
+            fdoSchemas = MgdFeatureUtil::GetFdoFeatureSchemaCollection(mgSchemas.p);
         }
 
         for (int j = 0; j < uncachedClasses->GetCount(); j++)
@@ -1197,13 +1197,13 @@ MgClassDefinitionCollection* MgDescribeSchema::GetIdentityProperties(
     }
 
 
-    MG_FEATURE_SERVICE_CATCH_AND_THROW_WITH_FEATURE_SOURCE(L"MgDescribeSchema.GetIdentityProperties", resource)
+    MG_FEATURE_SERVICE_CATCH_AND_THROW_WITH_FEATURE_SOURCE(L"MgdDescribeSchema.GetIdentityProperties", resource)
 
     return classDefs.Detach();
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-bool MgDescribeSchema::GetIdentityProperties(CREFSTRING className,
+bool MgdDescribeSchema::GetIdentityProperties(CREFSTRING className,
     FdoClassCollection* classCol, MgPropertyDefinitionCollection* idProps)
 {
     bool hasIdProps = false;
@@ -1212,7 +1212,7 @@ bool MgDescribeSchema::GetIdentityProperties(CREFSTRING className,
 
     if (NULL == classCol || NULL == idProps)
     {
-        throw new MgNullArgumentException(L"MgDescribeSchema.GetIdentityProperties",
+        throw new MgNullArgumentException(L"MgdDescribeSchema.GetIdentityProperties",
             __LINE__, __WFILE__, NULL, L"", NULL);
     }
 
@@ -1240,14 +1240,14 @@ bool MgDescribeSchema::GetIdentityProperties(CREFSTRING className,
                 FdoPtr<FdoDataPropertyDefinitionCollection> propDefCol =
                     classDef->GetIdentityProperties();
 
-                MgFeatureUtil::GetClassProperties(idProps, propDefCol);
+                MgdFeatureUtil::GetClassProperties(idProps, propDefCol);
                 hasIdProps = true;
                 break;
             }
         }
     }
 
-    MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgDescribeSchema.GetIdentityProperties")
+    MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgdDescribeSchema.GetIdentityProperties")
 
     return hasIdProps;
 }
@@ -1257,9 +1257,9 @@ bool MgDescribeSchema::GetIdentityProperties(CREFSTRING className,
 /// Determine whether or not the provider supports the Class Name hint for the
 /// Describe Schema command.
 ///
-bool MgDescribeSchema::IsClassNameHintUsed(FdoIDescribeSchema* fdoCommand)
+bool MgdDescribeSchema::IsClassNameHintUsed(FdoIDescribeSchema* fdoCommand)
 {
-    CHECKNULL(fdoCommand, L"MgDescribeSchema.IsClassNameHintUsed");
+    CHECKNULL(fdoCommand, L"MgdDescribeSchema.IsClassNameHintUsed");
 
     FdoPtr<FdoStringCollection> classNames = fdoCommand->GetClassNames();
     bool classNameHintUsed = (NULL != classNames.p);
@@ -1268,9 +1268,9 @@ bool MgDescribeSchema::IsClassNameHintUsed(FdoIDescribeSchema* fdoCommand)
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-MgStringCollection* MgDescribeSchema::GetSchemaNames(MgFeatureSchemaCollection* schemas)
+MgStringCollection* MgdDescribeSchema::GetSchemaNames(MgFeatureSchemaCollection* schemas)
 {
-    CHECKNULL(schemas, L"MgDescribeSchema.GetSchemaNames");
+    CHECKNULL(schemas, L"MgdDescribeSchema.GetSchemaNames");
 
     Ptr<MgStringCollection> schemaNames = new MgStringCollection();
     INT32 schemaCount = schemas->GetCount();
@@ -1290,9 +1290,9 @@ MgStringCollection* MgDescribeSchema::GetSchemaNames(MgFeatureSchemaCollection* 
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-MgStringCollection* MgDescribeSchema::GetClassNames(MgFeatureSchemaCollection* schemas, CREFSTRING schemaName)
+MgStringCollection* MgdDescribeSchema::GetClassNames(MgFeatureSchemaCollection* schemas, CREFSTRING schemaName)
 {
-    CHECKNULL(schemas, L"MgDescribeSchema.GetClassNames");
+    CHECKNULL(schemas, L"MgdDescribeSchema.GetClassNames");
 
     Ptr<MgStringCollection> classNames = new MgStringCollection();
     INT32 schemaCount = schemas->GetCount();
@@ -1329,9 +1329,9 @@ MgStringCollection* MgDescribeSchema::GetClassNames(MgFeatureSchemaCollection* s
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-MgClassDefinition* MgDescribeSchema::GetClassDefinition(MgFeatureSchemaCollection* schemas, CREFSTRING schemaName, CREFSTRING className)
+MgClassDefinition* MgdDescribeSchema::GetClassDefinition(MgFeatureSchemaCollection* schemas, CREFSTRING schemaName, CREFSTRING className)
 {
-    CHECKNULL(schemas, L"MgDescribeSchema.GetClassDefinition");
+    CHECKNULL(schemas, L"MgdDescribeSchema.GetClassDefinition");
 
     Ptr<MgClassDefinition> classDef;
     INT32 schemaCount = schemas->GetCount();
@@ -1381,11 +1381,11 @@ MgClassDefinition* MgDescribeSchema::GetClassDefinition(MgFeatureSchemaCollectio
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-MgPropertyDefinitionCollection* MgDescribeSchema::GetIdentityProperties(
+MgPropertyDefinitionCollection* MgdDescribeSchema::GetIdentityProperties(
     FdoFeatureSchemaCollection* schemas, MgResourceIdentifier* resource,
     CREFSTRING schemaName, CREFSTRING className)
 {
-    CHECKNULL(schemas, L"MgDescribeSchema.GetIdentityProperties");
+    CHECKNULL(schemas, L"MgdDescribeSchema.GetIdentityProperties");
 
     Ptr<MgPropertyDefinitionCollection> idProps = new MgPropertyDefinitionCollection();
     INT32 schemaCount = schemas->GetCount();
@@ -1418,9 +1418,9 @@ MgPropertyDefinitionCollection* MgDescribeSchema::GetIdentityProperties(
 
                 // Get the class name for the primary source that is being extended.
                 MdfModel::FeatureSource* featureSource = m_featureSourceCacheItem->Get();
-                CHECKNULL(featureSource, L"MgDescribeSchema.GetIdentityProperties");
+                CHECKNULL(featureSource, L"MgdDescribeSchema.GetIdentityProperties");
                 MdfModel::ExtensionCollection* extensions = featureSource->GetExtensions();
-                CHECKNULL(extensions, L"MgDescribeSchema.GetIdentityProperties");
+                CHECKNULL(extensions, L"MgdDescribeSchema.GetIdentityProperties");
                 STRING extensionFeatureClass;
                 int extensionCount = extensions->GetCount();
 
@@ -1428,7 +1428,7 @@ MgPropertyDefinitionCollection* MgDescribeSchema::GetIdentityProperties(
                 for (int i = 0; i < extensionCount; ++i)
                 {
                     MdfModel::Extension* extension = extensions->GetAt(i);
-                    CHECKNULL(extension, L"MgDescribeSchema.GetIdentityProperties");
+                    CHECKNULL(extension, L"MgdDescribeSchema.GetIdentityProperties");
 
                     // Get the extension name.
                     STRING extensionName = (STRING)extension->GetName();
@@ -1452,7 +1452,7 @@ MgPropertyDefinitionCollection* MgDescribeSchema::GetIdentityProperties(
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-bool MgDescribeSchema::CheckExtendedFeatureClass(MgResourceIdentifier* resource,
+bool MgdDescribeSchema::CheckExtendedFeatureClass(MgResourceIdentifier* resource,
     CREFSTRING className)
 {
     bool extended = false;
@@ -1468,15 +1468,15 @@ bool MgDescribeSchema::CheckExtendedFeatureClass(MgResourceIdentifier* resource,
         }
 
         MdfModel::FeatureSource* featureSource = m_featureSourceCacheItem->Get();
-        CHECKNULL(featureSource, L"MgDescribeSchema.CheckExtendedFeatureClass");
+        CHECKNULL(featureSource, L"MgdDescribeSchema.CheckExtendedFeatureClass");
         MdfModel::ExtensionCollection* extensions = featureSource->GetExtensions();
-        CHECKNULL(extensions, L"MgDescribeSchema.CheckExtendedFeatureClass");
+        CHECKNULL(extensions, L"MgdDescribeSchema.CheckExtendedFeatureClass");
         int extensionCount = extensions->GetCount();
 
         for (int i = 0; i < extensionCount; ++i)
         {
             MdfModel::Extension* extension = extensions->GetAt(i);
-            CHECKNULL(extension, L"MgDescribeSchema.CheckExtendedFeatureClass");
+            CHECKNULL(extension, L"MgdDescribeSchema.CheckExtendedFeatureClass");
             STRING extensionName = (STRING)extension->GetName();
 
             STRING currSchemaName, currClassName;
@@ -1494,7 +1494,7 @@ bool MgDescribeSchema::CheckExtendedFeatureClass(MgResourceIdentifier* resource,
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-bool MgDescribeSchema::CheckExtendedFeatureClasses(MgResourceIdentifier* resource,
+bool MgdDescribeSchema::CheckExtendedFeatureClasses(MgResourceIdentifier* resource,
     MgStringCollection* classNames)
 {
     bool extended = false;

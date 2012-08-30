@@ -5,7 +5,7 @@
 /// \brief
 /// Constructs the object.
 ///
-MgZipFileHandler::MgZipFileHandler(CREFSTRING filePath,
+MgdZipFileHandler::MgdZipFileHandler(CREFSTRING filePath,
     DWFZipFileDescriptor::teFileMode fileMode)
 {
     ACE_ASSERT(!filePath.empty());
@@ -17,13 +17,13 @@ MgZipFileHandler::MgZipFileHandler(CREFSTRING filePath,
     m_zipFileDescriptor.reset(new DWFZipFileDescriptor(zipFile, fileMode));
     m_zipFileDescriptor->open();
 
-    MG_RESOURCE_SERVICE_CATCH_AND_THROW(L"MgZipFileHandler.MgZipFileHandler")
+    MG_RESOURCE_SERVICE_CATCH_AND_THROW(L"MgdZipFileHandler.MgdZipFileHandler")
 }
 
 ///////////////////////////////////////////////////////////////////////////////
 /// \brief
 /// Destructs the object.
 ///
-MgZipFileHandler::~MgZipFileHandler()
+MgdZipFileHandler::~MgdZipFileHandler()
 {
 }

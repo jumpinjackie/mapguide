@@ -8,21 +8,21 @@ class MgFeatureSourceParams;
 class MgFileFeatureSourceParams;
 template class FdoPtr<FdoIConnection>;
 
-class MgCreateFeatureSource : public MgGuardDisposable
+class MgdCreateFeatureSource : public MgGuardDisposable
 {
 public:
-    MgCreateFeatureSource();
-    virtual ~MgCreateFeatureSource();
+    MgdCreateFeatureSource();
+    virtual ~MgdCreateFeatureSource();
     void CreateFeatureSource(MgResourceIdentifier* resource, MgFeatureSourceParams* sourceParams);
 
     virtual void Dispose() { delete this; }
 };
 
-class MgCreateRdbmsFeatureSource : public MgGuardDisposable
+class MgdCreateRdbmsFeatureSource : public MgGuardDisposable
 {
 public:
-    MgCreateRdbmsFeatureSource(MgResourceIdentifier* resource, MgdRdbmsFeatureSourceParams* params);
-    virtual ~MgCreateRdbmsFeatureSource();
+    MgdCreateRdbmsFeatureSource(MgResourceIdentifier* resource, MgdRdbmsFeatureSourceParams* params);
+    virtual ~MgdCreateRdbmsFeatureSource();
 
     void CreateFeatureSource();
     virtual void Dispose();
@@ -34,11 +34,11 @@ private:
     MgdRdbmsFeatureSourceParams* m_params;
 };
 
-class MgCreateFileFeatureSource : public MgGuardDisposable
+class MgdCreateFileFeatureSource : public MgGuardDisposable
 {
 public:
-    MgCreateFileFeatureSource(MgResourceIdentifier* resource, MgFileFeatureSourceParams* params);
-    virtual ~MgCreateFileFeatureSource();
+    MgdCreateFileFeatureSource(MgResourceIdentifier* resource, MgFileFeatureSourceParams* params);
+    virtual ~MgdCreateFileFeatureSource();
     void CreateFeatureSource(bool bCheckFeatureClass = false, bool bCheckSpatialContext = false);
     virtual void Dispose();
 
@@ -65,20 +65,20 @@ protected:
     MgFileFeatureSourceParams* m_params;
 };
 
-class MgCreateSdfFeatureSource: public MgCreateFileFeatureSource
+class MgdCreateSdfFeatureSource: public MgdCreateFileFeatureSource
 {
 public:
-    MgCreateSdfFeatureSource(MgResourceIdentifier* resource, MgFileFeatureSourceParams* params);
-    virtual ~MgCreateSdfFeatureSource();
+    MgdCreateSdfFeatureSource(MgResourceIdentifier* resource, MgFileFeatureSourceParams* params);
+    virtual ~MgdCreateSdfFeatureSource();
 protected:
     virtual STRING GetFeatureSourceParameterString() const;
 };
 
-class MgCreateShpFeatureSource: public MgCreateFileFeatureSource
+class MgdCreateShpFeatureSource: public MgdCreateFileFeatureSource
 {
 public:
-    MgCreateShpFeatureSource(MgResourceIdentifier* resource, MgFileFeatureSourceParams* params);
-    virtual ~MgCreateShpFeatureSource();
+    MgdCreateShpFeatureSource(MgResourceIdentifier* resource, MgFileFeatureSourceParams* params);
+    virtual ~MgdCreateShpFeatureSource();
 protected:
     virtual void CreateDataStore(FdoIConnection* conn);
     virtual void ApplySchemaAndCreateSpatialContext(FdoIConnection* conn);
@@ -88,11 +88,11 @@ protected:
     virtual STRING GetFeatureSourceParameterString() const;
 };
 
-class MgCreateSqliteFeatureSource: public MgCreateFileFeatureSource
+class MgdCreateSqliteFeatureSource: public MgdCreateFileFeatureSource
 {
 public:
-    MgCreateSqliteFeatureSource(MgResourceIdentifier* resource, MgFileFeatureSourceParams* params);
-    virtual ~MgCreateSqliteFeatureSource();
+    MgdCreateSqliteFeatureSource(MgResourceIdentifier* resource, MgFileFeatureSourceParams* params);
+    virtual ~MgdCreateSqliteFeatureSource();
 protected:
     virtual STRING GetSecondConnectionString();
     virtual STRING GetFeatureSourceParameterString() const;

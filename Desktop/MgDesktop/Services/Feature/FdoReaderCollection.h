@@ -15,24 +15,24 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
-#ifndef _MGFDOREADERCOLLECTION_H_
-#define _MGFDOREADERCOLLECTION_H_
+#ifndef _MgdFdoReaderCollection_H_
+#define _MgdFdoReaderCollection_H_
 
 #include <FdoStd.h>
 
 class FdoIFeatureReader;
 /// \cond INTERNAL
 /// \brief
-/// The MgFdoReaderCollection class represents a collection of FdoIFeatureReader objects.
-class MgFdoReaderCollection : public FdoCollection<FdoIFeatureReader, FdoException>
+/// The MgdFdoReaderCollection class represents a collection of FdoIFeatureReader objects.
+class MgdFdoReaderCollection : public FdoCollection<FdoIFeatureReader, FdoException>
 {
 protected:
 /// \cond DOXYGEN-IGNORE
-    MgFdoReaderCollection() : FdoCollection<FdoIFeatureReader, FdoException>()
+    MgdFdoReaderCollection() : FdoCollection<FdoIFeatureReader, FdoException>()
     {
     }
 
-    virtual ~MgFdoReaderCollection()
+    virtual ~MgdFdoReaderCollection()
     {
     }
 
@@ -44,12 +44,12 @@ protected:
 
 public:
     /// \brief
-    /// Constructs a default instance of an MgFdoReaderCollection.
+    /// Constructs a default instance of an MgdFdoReaderCollection.
     ///
     /// \return
-    /// Returns MgFdoReaderCollection
+    /// Returns MgdFdoReaderCollection
     ///
-    /*FDO_API*/ static MgFdoReaderCollection* Create();
+    /*FDO_API*/ static MgdFdoReaderCollection* Create();
 };
 /// \endcond
 #endif

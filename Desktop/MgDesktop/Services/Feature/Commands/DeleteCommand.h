@@ -18,21 +18,21 @@
 #ifndef _MG_SERVER_DELETE_COMMAND_H_
 #define _MG_SERVER_DELETE_COMMAND_H_
 
-class MgFeatureConnection;
+class MgdFeatureConnection;
 
-class MgServerDeleteCommand : public MgFeatureManipulationCommand
+class MgdDeleteCommand : public MgdFeatureManipulationCommand
 {
-    DECLARE_CLASSNAME(MgServerDeleteCommand)
+    DECLARE_CLASSNAME(MgdDeleteCommand)
 
 public:
-    MgServerDeleteCommand(MgFeatureCommand* command, MgFeatureConnection* connection, INT32 cmdId);
+    MgdDeleteCommand(MgFeatureCommand* command, MgdFeatureConnection* connection, INT32 cmdId);
     virtual MgProperty* Execute();
 protected:
-    MgServerDeleteCommand();
-    ~MgServerDeleteCommand();
+    MgdDeleteCommand();
+    ~MgdDeleteCommand();
 private:
     Ptr<MgDeleteFeatures> m_featCommand;
-    Ptr<MgFeatureConnection> m_srvrFeatConn;
+    Ptr<MgdFeatureConnection> m_srvrFeatConn;
     INT32 m_cmdId;
 };
 

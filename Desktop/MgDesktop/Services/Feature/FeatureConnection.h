@@ -3,21 +3,21 @@
 
 class FdoIConnection;
 class MgResourceIdentifier;
-class MgFdoConnectionPool;
+class MgdFdoConnectionPool;
 
 template class Ptr<MgResourceIdentifier>;
 /// \cond INTERNAL
-class MgFeatureConnection : public MgGuardDisposable
+class MgdFeatureConnection : public MgGuardDisposable
 {
-    friend class MgFdoConnectionPool;
+    friend class MgdFdoConnectionPool;
 
 public:
-    MgFeatureConnection(MgResourceIdentifier* featureSourceIdentifier);
-    MgFeatureConnection(CREFSTRING providerName, CREFSTRING connectionString);
-    virtual ~MgFeatureConnection();
+    MgdFeatureConnection(MgResourceIdentifier* featureSourceIdentifier);
+    MgdFeatureConnection(CREFSTRING providerName, CREFSTRING connectionString);
+    virtual ~MgdFeatureConnection();
 
 private:
-    MgFeatureConnection();
+    MgdFeatureConnection();
     void Initialize();
 
 public:

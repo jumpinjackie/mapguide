@@ -5,7 +5,7 @@ class MgdMap;
 class MgdFeatureInformation;
 class SE_Renderer;
 class MgdRenderingOptions;
-class FeatureInfoRenderer;
+class MgdFeatureInfoRenderer;
 class MgdDrawingService;
 struct RS_Bounds;
 class RS_Color;
@@ -229,7 +229,7 @@ private:
                             CREFSTRING featureFilter,
                             INT32 maxFeatures,
                             INT32 layerAttributeFilter,
-                            FeatureInfoRenderer* selRenderer);
+                            MgdFeatureInfoRenderer* selRenderer);
 
     SE_Renderer* CreateRenderer(int width,
                                 int height,

@@ -53,7 +53,7 @@ int main(int argc, char** argv)
 #ifdef WIN32
     long lStart = GetTickCount();
 #endif
-    MgPlatform::Initialize(L"Platform.ini");
+    MgdPlatform::Initialize(L"Platform.ini");
 #ifdef WIN32
     ACE_DEBUG((LM_INFO, ACE_TEXT("Platform Initialization time in %dms\n"), (GetTickCount()-lStart)));
 #endif
@@ -120,7 +120,7 @@ int main(int argc, char** argv)
 
     int nResult = runner.result().testFailuresTotal();
 
-    MgPlatform::Terminate();
+    MgdPlatform::Terminate();
 
     return nResult;
 }

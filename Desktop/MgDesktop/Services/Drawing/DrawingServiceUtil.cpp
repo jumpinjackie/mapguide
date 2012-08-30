@@ -9,7 +9,7 @@
 /// </summary>
 ///----------------------------------------------------------------------------
 
-MgDrawingServiceUtil::MgDrawingServiceUtil()
+MgdDrawingServiceUtil::MgdDrawingServiceUtil()
 {
 }
 
@@ -20,12 +20,12 @@ MgDrawingServiceUtil::MgDrawingServiceUtil()
 /// </summary>
 ///----------------------------------------------------------------------------
 
-MgDrawingServiceUtil::~MgDrawingServiceUtil()
+MgdDrawingServiceUtil::~MgdDrawingServiceUtil()
 {
 }
 
 
-WT_Result MgDrawingServiceUtil::MgWt_read(WT_File &file, int desired_bytes, int &bytes_read, void * buffer)
+WT_Result MgdDrawingServiceUtil::MgWt_read(WT_File &file, int desired_bytes, int &bytes_read, void * buffer)
 {
     FILE * fp = (FILE *) file.stream_user_data();
     if (feof(fp))
@@ -39,13 +39,13 @@ WT_Result MgDrawingServiceUtil::MgWt_read(WT_File &file, int desired_bytes, int 
 }
 
 
-WT_Result MgDrawingServiceUtil::MgWt_open(WT_File &)
+WT_Result MgdDrawingServiceUtil::MgWt_open(WT_File &)
 {
     return WT_Result::Success;
 }
 
 
-WT_Result MgDrawingServiceUtil::MgWt_close(WT_File &file)
+WT_Result MgdDrawingServiceUtil::MgWt_close(WT_File &file)
 {
     FILE * fp = (FILE *) file.stream_user_data();
     fclose (fp);
@@ -54,7 +54,7 @@ WT_Result MgDrawingServiceUtil::MgWt_close(WT_File &file)
 }
 
 
-WT_Result MgDrawingServiceUtil::MgWt_process_layer(WT_Layer &layer, WT_File &file)
+WT_Result MgdDrawingServiceUtil::MgWt_process_layer(WT_Layer &layer, WT_File &file)
 {
     MgStringCollection* layerList = (MgStringCollection*) file.heuristics().user_data();
     WT_String layerName = layer.layer_name();
@@ -70,7 +70,7 @@ WT_Result MgDrawingServiceUtil::MgWt_process_layer(WT_Layer &layer, WT_File &fil
 }
 
 
-WT_Result MgDrawingServiceUtil::MgWt_process_color(WT_Color &color, WT_File &file)
+WT_Result MgdDrawingServiceUtil::MgWt_process_color(WT_Color &color, WT_File &file)
 {
     TargetLayer* targetLayer = (TargetLayer*)file.heuristics().user_data();
     if (0 == targetLayer)
@@ -83,7 +83,7 @@ WT_Result MgDrawingServiceUtil::MgWt_process_color(WT_Color &color, WT_File &fil
 }
 
 
-WT_Result MgDrawingServiceUtil::MgWt_process_contour_set(WT_Contour_Set &contour_set, WT_File &file)
+WT_Result MgdDrawingServiceUtil::MgWt_process_contour_set(WT_Contour_Set &contour_set, WT_File &file)
 {
     if ( DetectTargetLayer(file) )
     {
@@ -96,7 +96,7 @@ WT_Result MgDrawingServiceUtil::MgWt_process_contour_set(WT_Contour_Set &contour
 }
 
 
-WT_Result MgDrawingServiceUtil::MgWt_process_filled_ellipse(WT_Filled_Ellipse &filled_ellipse, WT_File &file)
+WT_Result MgdDrawingServiceUtil::MgWt_process_filled_ellipse(WT_Filled_Ellipse &filled_ellipse, WT_File &file)
 {
     if ( DetectTargetLayer(file) )
     {
@@ -109,7 +109,7 @@ WT_Result MgDrawingServiceUtil::MgWt_process_filled_ellipse(WT_Filled_Ellipse &f
 }
 
 
-WT_Result MgDrawingServiceUtil::MgWt_process_gouraud_polyline(WT_Gouraud_Polyline &gouraud_polyline, WT_File &file)
+WT_Result MgdDrawingServiceUtil::MgWt_process_gouraud_polyline(WT_Gouraud_Polyline &gouraud_polyline, WT_File &file)
 {
     if ( DetectTargetLayer(file) )
     {
@@ -122,7 +122,7 @@ WT_Result MgDrawingServiceUtil::MgWt_process_gouraud_polyline(WT_Gouraud_Polylin
 }
 
 
-WT_Result MgDrawingServiceUtil::MgWt_process_gouraud_polytriangle(WT_Gouraud_Polytriangle &gouraud_polytriangle, WT_File &file)
+WT_Result MgdDrawingServiceUtil::MgWt_process_gouraud_polytriangle(WT_Gouraud_Polytriangle &gouraud_polytriangle, WT_File &file)
 {
     if ( DetectTargetLayer(file) )
     {
@@ -135,7 +135,7 @@ WT_Result MgDrawingServiceUtil::MgWt_process_gouraud_polytriangle(WT_Gouraud_Pol
 }
 
 
-WT_Result MgDrawingServiceUtil::MgWt_process_image(WT_Image &image, WT_File &file)
+WT_Result MgdDrawingServiceUtil::MgWt_process_image(WT_Image &image, WT_File &file)
 {
     if ( DetectTargetLayer(file) )
     {
@@ -148,7 +148,7 @@ WT_Result MgDrawingServiceUtil::MgWt_process_image(WT_Image &image, WT_File &fil
 }
 
 
-WT_Result MgDrawingServiceUtil::MgWt_process_png_group4_image(WT_PNG_Group4_Image &image, WT_File &file)
+WT_Result MgdDrawingServiceUtil::MgWt_process_png_group4_image(WT_PNG_Group4_Image &image, WT_File &file)
 {
     if ( DetectTargetLayer(file) )
     {
@@ -161,7 +161,7 @@ WT_Result MgDrawingServiceUtil::MgWt_process_png_group4_image(WT_PNG_Group4_Imag
 }
 
 
-WT_Result MgDrawingServiceUtil::MgWt_process_outline_ellipse(WT_Outline_Ellipse &outline_ellipse, WT_File &file)
+WT_Result MgdDrawingServiceUtil::MgWt_process_outline_ellipse(WT_Outline_Ellipse &outline_ellipse, WT_File &file)
 {
     if ( DetectTargetLayer(file) )
     {
@@ -174,7 +174,7 @@ WT_Result MgDrawingServiceUtil::MgWt_process_outline_ellipse(WT_Outline_Ellipse 
 }
 
 
-WT_Result MgDrawingServiceUtil::MgWt_process_polyline(WT_Polyline &polyline, WT_File &file)
+WT_Result MgdDrawingServiceUtil::MgWt_process_polyline(WT_Polyline &polyline, WT_File &file)
 {
     if ( DetectTargetLayer(file) )
     {
@@ -187,7 +187,7 @@ WT_Result MgDrawingServiceUtil::MgWt_process_polyline(WT_Polyline &polyline, WT_
 }
 
 
-WT_Result MgDrawingServiceUtil::MgWt_process_polygon(WT_Polygon &polygon, WT_File &file)
+WT_Result MgdDrawingServiceUtil::MgWt_process_polygon(WT_Polygon &polygon, WT_File &file)
 {
     if ( DetectTargetLayer(file) )
     {
@@ -200,7 +200,7 @@ WT_Result MgDrawingServiceUtil::MgWt_process_polygon(WT_Polygon &polygon, WT_Fil
 }
 
 
-WT_Result MgDrawingServiceUtil::MgWt_process_polymarker(WT_Polymarker &polymarker, WT_File &file)
+WT_Result MgdDrawingServiceUtil::MgWt_process_polymarker(WT_Polymarker &polymarker, WT_File &file)
 {
     if ( DetectTargetLayer(file) )
     {
@@ -220,7 +220,7 @@ WT_Result MgDrawingServiceUtil::MgWt_process_polymarker(WT_Polymarker &polymarke
 }
 
 
-WT_Result MgDrawingServiceUtil::MgWt_process_polytriangle(WT_Polytriangle &polytriangle, WT_File &file)
+WT_Result MgdDrawingServiceUtil::MgWt_process_polytriangle(WT_Polytriangle &polytriangle, WT_File &file)
 {
     if ( DetectTargetLayer(file) )
     {
@@ -233,7 +233,7 @@ WT_Result MgDrawingServiceUtil::MgWt_process_polytriangle(WT_Polytriangle &polyt
 }
 
 
-WT_Result MgDrawingServiceUtil::MgWt_process_text(WT_Text &text, WT_File &file)
+WT_Result MgdDrawingServiceUtil::MgWt_process_text(WT_Text &text, WT_File &file)
 {
     if ( DetectTargetLayer(file) )
     {
@@ -246,7 +246,7 @@ WT_Result MgDrawingServiceUtil::MgWt_process_text(WT_Text &text, WT_File &file)
 }
 
 
-bool MgDrawingServiceUtil::DetectTargetLayer(WT_File &file)
+bool MgdDrawingServiceUtil::DetectTargetLayer(WT_File &file)
 {
     bool bIsTargetLayer = false;
     TargetLayer* targetLayer = (TargetLayer*)file.heuristics().user_data();
@@ -278,7 +278,7 @@ bool MgDrawingServiceUtil::DetectTargetLayer(WT_File &file)
 }
 
 
-DWFPackageReader* MgDrawingServiceUtil::OpenDrawingResource(
+DWFPackageReader* MgdDrawingServiceUtil::OpenDrawingResource(
     MgResourceService* resourceService, MgResourceIdentifier* resource,
     bool& bOpenTempFile, REFSTRING tempFileName)
 {
@@ -289,7 +289,7 @@ DWFPackageReader* MgDrawingServiceUtil::OpenDrawingResource(
 
     if (resourceService == 0)
     {
-        throw new MgServiceNotAvailableException(L"MgDrawingServiceUtil.OpenDrawingResource", __LINE__, __WFILE__, NULL, L"", NULL);
+        throw new MgServiceNotAvailableException(L"MgdDrawingServiceUtil.OpenDrawingResource", __LINE__, __WFILE__, NULL, L"", NULL);
     }
 
     byteReader = resourceService->GetResourceContent(resource, L"Substitution");
@@ -329,16 +329,16 @@ DWFPackageReader* MgDrawingServiceUtil::OpenDrawingResource(
     {
         MgStringCollection arguments;
         arguments.Add(dwfFileName);
-        throw new MgdInvalidDwfPackageException(L"MgDrawingServiceUtil.OpenDrawingResource", __LINE__, __WFILE__, &arguments, L"", NULL);
+        throw new MgdInvalidDwfPackageException(L"MgdDrawingServiceUtil.OpenDrawingResource", __LINE__, __WFILE__, &arguments, L"", NULL);
     }
 
-    MG_SERVER_DRAWING_SERVICE_CATCH_AND_THROW(L"MgDrawingServiceUtil.OpenDrawingResource")
+    MG_SERVER_DRAWING_SERVICE_CATCH_AND_THROW(L"MgdDrawingServiceUtil.OpenDrawingResource")
 
     return reader.release();
 }
 
 
-void MgDrawingServiceUtil::CloseDrawingResource(bool& bOpenTempFile, CREFSTRING tempFileName)
+void MgdDrawingServiceUtil::CloseDrawingResource(bool& bOpenTempFile, CREFSTRING tempFileName)
 {
     if (bOpenTempFile)
     {
@@ -351,7 +351,7 @@ void MgDrawingServiceUtil::CloseDrawingResource(bool& bOpenTempFile, CREFSTRING 
 }
 
 
-void MgDrawingServiceUtil::ParseDrawingResourceContent(
+void MgdDrawingServiceUtil::ParseDrawingResourceContent(
     MgByteReader* byteReader, REFSTRING dwfPathName, REFSTRING dwfCoordinateSpace)
 {
     try
@@ -390,19 +390,19 @@ void MgDrawingServiceUtil::ParseDrawingResourceContent(
     {
         MgStringCollection arguments;
         arguments.Add(X2W(e.getMessage()));
-        throw new MgXmlParserException(L"MgDrawingServiceUtil.ParseDrawingResourceContent",
+        throw new MgXmlParserException(L"MgdDrawingServiceUtil.ParseDrawingResourceContent",
             __LINE__, __WFILE__, NULL, L"MgFormatInnerExceptionMessage", &arguments);
     }
     catch (const DOMException& e)
     {
         MgStringCollection arguments;
         arguments.Add(X2W(e.msg));
-        throw new MgXmlParserException(L"MgDrawingServiceUtil.ParseDrawingResourceContent",
+        throw new MgXmlParserException(L"MgdDrawingServiceUtil.ParseDrawingResourceContent",
             __LINE__, __WFILE__, NULL, L"MgFormatInnerExceptionMessage", &arguments);
     }
     catch (...)
     {
-        throw new MgUnclassifiedException(L"MgDrawingServiceUtil.ParseDrawingResourceContent",
+        throw new MgUnclassifiedException(L"MgdDrawingServiceUtil.ParseDrawingResourceContent",
             __LINE__, __WFILE__, NULL, L"", NULL);
     }
 }

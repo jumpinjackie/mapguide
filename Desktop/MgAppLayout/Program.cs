@@ -27,7 +27,7 @@ namespace MgAppLayout
             {
                 var sw = new Stopwatch();
                 sw.Start();
-                MgPlatform.Initialize("Platform.ini");
+                MgdPlatform.Initialize("Platform.ini");
                 sw.Stop();
                 Trace.TraceInformation("Platform initialization took {0}ms", sw.ElapsedMilliseconds);
             }
@@ -65,7 +65,7 @@ namespace MgAppLayout
             ((Shell)frm).Initialize(layout, provider);
             Application.ApplicationExit += new EventHandler(OnAppExit);
             Application.Run((Shell)frm);
-            MgPlatform.Terminate();
+            MgdPlatform.Terminate();
         }
 
         static void OnAppExit(object sender, EventArgs e)

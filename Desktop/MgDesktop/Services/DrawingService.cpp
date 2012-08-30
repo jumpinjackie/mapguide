@@ -47,7 +47,7 @@ MgByteReader* MgdDrawingService::GetDrawing(MgResourceIdentifier* resource)
     STRING dwfFileName = L"";
     STRING dwfCoordinateSpace = L"";
     Ptr<MgByteReader> reader = m_resourceService->GetResourceContent(resource, L"");
-    MgDrawingServiceUtil::ParseDrawingResourceContent(reader, dwfFileName, dwfCoordinateSpace);
+    MgdDrawingServiceUtil::ParseDrawingResourceContent(reader, dwfFileName, dwfCoordinateSpace);
     dwfFileName = dwfFileName.substr( dwfFileName.rfind(L"%") + 1 );
 
     // Return the drawing via a MgByteReader
@@ -113,7 +113,7 @@ MgByteReader* MgdDrawingService::DescribeDrawing(MgResourceIdentifier* resource)
     }
     else
     {
-        auto_ptr<DWFPackageReader> reader(MgDrawingServiceUtil::OpenDrawingResource(m_resourceService, resource, m_bOpenTempDwfFile, m_tempDwfFileName));
+        auto_ptr<DWFPackageReader> reader(MgdDrawingServiceUtil::OpenDrawingResource(m_resourceService, resource, m_bOpenTempDwfFile, m_tempDwfFileName));
 
         // Obtain the manifest from the DWF.
         DWFInputStream* pStream = reader->extract(MANIFEST_XML.c_str(), false);
@@ -153,7 +153,7 @@ MgByteReader* MgdDrawingService::DescribeDrawing(MgResourceIdentifier* resource)
             DWFCORE_FREE_MEMORY(pBuffer);
     }
 
-    MgDrawingServiceUtil::CloseDrawingResource(m_bOpenTempDwfFile, m_tempDwfFileName);
+    MgdDrawingServiceUtil::CloseDrawingResource(m_bOpenTempDwfFile, m_tempDwfFileName);
 
     // Successful operation
     MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Success.c_str());
@@ -234,7 +234,7 @@ MgByteReader* MgdDrawingService::GetSection(MgResourceIdentifier* resource, CREF
     }
     else
     {
-        auto_ptr<DWFPackageReader> reader(MgDrawingServiceUtil::OpenDrawingResource(m_resourceService, resource, m_bOpenTempDwfFile, m_tempDwfFileName));
+        auto_ptr<DWFPackageReader> reader(MgdDrawingServiceUtil::OpenDrawingResource(m_resourceService, resource, m_bOpenTempDwfFile, m_tempDwfFileName));
 
         // Check if the section exists in the manifest (and get the mime type from the manifest)
         DWFManifest& manifest = reader->getManifest();
@@ -272,7 +272,7 @@ MgByteReader* MgdDrawingService::GetSection(MgResourceIdentifier* resource, CREF
         byteReader = byteSource->GetReader();
     }
 
-    MgDrawingServiceUtil::CloseDrawingResource(m_bOpenTempDwfFile, m_tempDwfFileName);
+    MgdDrawingServiceUtil::CloseDrawingResource(m_bOpenTempDwfFile, m_tempDwfFileName);
 
     // Successful operation
     MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Success.c_str());
@@ -362,7 +362,7 @@ MgByteReader* MgdDrawingService::GetSectionResource(MgResourceIdentifier* resour
     }
     else
     {
-        auto_ptr<DWFPackageReader> reader(MgDrawingServiceUtil::OpenDrawingResource(m_resourceService, resource, m_bOpenTempDwfFile, m_tempDwfFileName));
+        auto_ptr<DWFPackageReader> reader(MgdDrawingServiceUtil::OpenDrawingResource(m_resourceService, resource, m_bOpenTempDwfFile, m_tempDwfFileName));
 
         // Parse the section name from the resourceName
         STRING::size_type index = resourceName.rfind(RESOURCENAME_SEPARATOR);
@@ -434,7 +434,7 @@ MgByteReader* MgdDrawingService::GetSectionResource(MgResourceIdentifier* resour
             DWFCORE_FREE_MEMORY(pBuffer);
     }
 
-    MgDrawingServiceUtil::CloseDrawingResource(m_bOpenTempDwfFile, m_tempDwfFileName);
+    MgdDrawingServiceUtil::CloseDrawingResource(m_bOpenTempDwfFile, m_tempDwfFileName);
 
     // Successful operation
     MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Success.c_str());
@@ -517,7 +517,7 @@ MgStringCollection* MgdDrawingService::EnumerateLayers(MgResourceIdentifier* res
     }
     else
     {
-        auto_ptr<DWFPackageReader> reader(MgDrawingServiceUtil::OpenDrawingResource(m_resourceService, resource, m_bOpenTempDwfFile, m_tempDwfFileName));
+        auto_ptr<DWFPackageReader> reader(MgdDrawingServiceUtil::OpenDrawingResource(m_resourceService, resource, m_bOpenTempDwfFile, m_tempDwfFileName));
 
         // Check if the section exists in the manifest
         DWFManifest& manifest = reader->getManifest();
@@ -596,9 +596,9 @@ MgStringCollection* MgdDrawingService::EnumerateLayers(MgResourceIdentifier* res
         WT_Result result;
 
         // Set overrides for IO handling of the W2D file
-        file.set_stream_open_action (MgDrawingServiceUtil::MgWt_open);
-        file.set_stream_close_action(MgDrawingServiceUtil::MgWt_close);
-        file.set_stream_read_action (MgDrawingServiceUtil::MgWt_read);
+        file.set_stream_open_action (MgdDrawingServiceUtil::MgWt_open);
+        file.set_stream_close_action(MgdDrawingServiceUtil::MgWt_close);
+        file.set_stream_read_action (MgdDrawingServiceUtil::MgWt_read);
 
         // Open the W2D for reading
         file.set_file_mode(WT_File::File_Read);
@@ -608,7 +608,7 @@ MgStringCollection* MgdDrawingService::EnumerateLayers(MgResourceIdentifier* res
         // Process the W2D
         layers = new MgStringCollection();
         file.heuristics().set_user_data(layers);
-        file.set_layer_action(MgDrawingServiceUtil::MgWt_process_layer);
+        file.set_layer_action(MgdDrawingServiceUtil::MgWt_process_layer);
         do
         {
             result = file.process_next_object();
@@ -621,7 +621,7 @@ MgStringCollection* MgdDrawingService::EnumerateLayers(MgResourceIdentifier* res
         m_bOpenTempW2dFile = false;
     }
 
-    MgDrawingServiceUtil::CloseDrawingResource(m_bOpenTempDwfFile, m_tempDwfFileName);
+    MgdDrawingServiceUtil::CloseDrawingResource(m_bOpenTempDwfFile, m_tempDwfFileName);
 
     // Successful operation
     MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Success.c_str());
@@ -707,7 +707,7 @@ MgByteReader* MgdDrawingService::GetLayer( MgResourceIdentifier* resource, CREFS
     }
     else
     {
-        auto_ptr<DWFPackageReader> reader(MgDrawingServiceUtil::OpenDrawingResource(m_resourceService, resource, m_bOpenTempDwfFile, m_tempDwfFileName));
+        auto_ptr<DWFPackageReader> reader(MgdDrawingServiceUtil::OpenDrawingResource(m_resourceService, resource, m_bOpenTempDwfFile, m_tempDwfFileName));
 
         // Check if the section exists in the manifest
         DWFManifest& manifest = reader->getManifest();
@@ -787,9 +787,9 @@ MgByteReader* MgdDrawingService::GetLayer( MgResourceIdentifier* resource, CREFS
         WT_Result result;
 
         // Set overrides for IO handling of the W2D file
-        infile.set_stream_open_action (MgDrawingServiceUtil::MgWt_open);
-        infile.set_stream_close_action(MgDrawingServiceUtil::MgWt_close);
-        infile.set_stream_read_action (MgDrawingServiceUtil::MgWt_read);
+        infile.set_stream_open_action (MgdDrawingServiceUtil::MgWt_open);
+        infile.set_stream_close_action(MgdDrawingServiceUtil::MgWt_close);
+        infile.set_stream_read_action (MgdDrawingServiceUtil::MgWt_read);
 
         // Open the W2D for reading
         infile.set_file_mode(WT_File::File_Read);
@@ -813,19 +813,19 @@ MgByteReader* MgdDrawingService::GetLayer( MgResourceIdentifier* resource, CREFS
         targetLayer.name = layerName;
         targetLayer.pFile = &outfile;
         infile.heuristics().set_user_data(&targetLayer);
-        infile.set_color_action(MgDrawingServiceUtil::MgWt_process_color);
-        infile.set_contour_set_action(MgDrawingServiceUtil::MgWt_process_contour_set);
-        infile.set_filled_ellipse_action(MgDrawingServiceUtil::MgWt_process_filled_ellipse);
-        infile.set_gouraud_polyline_action(MgDrawingServiceUtil::MgWt_process_gouraud_polyline);
-        infile.set_gouraud_polytriangle_action(MgDrawingServiceUtil::MgWt_process_gouraud_polytriangle);
-        infile.set_image_action(MgDrawingServiceUtil::MgWt_process_image);
-        infile.set_png_group4_image_action(MgDrawingServiceUtil::MgWt_process_png_group4_image);
-        infile.set_outline_ellipse_action(MgDrawingServiceUtil::MgWt_process_outline_ellipse);
-        infile.set_polygon_action(MgDrawingServiceUtil::MgWt_process_polygon);
-        infile.set_polyline_action(MgDrawingServiceUtil::MgWt_process_polyline);
-        infile.set_polymarker_action(MgDrawingServiceUtil::MgWt_process_polymarker);
-        infile.set_polytriangle_action(MgDrawingServiceUtil::MgWt_process_polytriangle);
-        infile.set_text_action(MgDrawingServiceUtil::MgWt_process_text);
+        infile.set_color_action(MgdDrawingServiceUtil::MgWt_process_color);
+        infile.set_contour_set_action(MgdDrawingServiceUtil::MgWt_process_contour_set);
+        infile.set_filled_ellipse_action(MgdDrawingServiceUtil::MgWt_process_filled_ellipse);
+        infile.set_gouraud_polyline_action(MgdDrawingServiceUtil::MgWt_process_gouraud_polyline);
+        infile.set_gouraud_polytriangle_action(MgdDrawingServiceUtil::MgWt_process_gouraud_polytriangle);
+        infile.set_image_action(MgdDrawingServiceUtil::MgWt_process_image);
+        infile.set_png_group4_image_action(MgdDrawingServiceUtil::MgWt_process_png_group4_image);
+        infile.set_outline_ellipse_action(MgdDrawingServiceUtil::MgWt_process_outline_ellipse);
+        infile.set_polygon_action(MgdDrawingServiceUtil::MgWt_process_polygon);
+        infile.set_polyline_action(MgdDrawingServiceUtil::MgWt_process_polyline);
+        infile.set_polymarker_action(MgdDrawingServiceUtil::MgWt_process_polymarker);
+        infile.set_polytriangle_action(MgdDrawingServiceUtil::MgWt_process_polytriangle);
+        infile.set_text_action(MgdDrawingServiceUtil::MgWt_process_text);
 
         //Process the input W2D file.
         do
@@ -948,7 +948,7 @@ MgByteReader* MgdDrawingService::GetLayer( MgResourceIdentifier* resource, CREFS
         m_bOpenTempOutputW2dFile = false;
     }
 
-    MgDrawingServiceUtil::CloseDrawingResource(m_bOpenTempDwfFile, m_tempDwfFileName);
+    MgdDrawingServiceUtil::CloseDrawingResource(m_bOpenTempDwfFile, m_tempDwfFileName);
 
     // Successful operation
     MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Success.c_str());
@@ -1012,7 +1012,7 @@ MgByteReader* MgdDrawingService::EnumerateSections(MgResourceIdentifier* resourc
     }
     else
     {
-        auto_ptr<DWFPackageReader> reader(MgDrawingServiceUtil::OpenDrawingResource(m_resourceService, resource, m_bOpenTempDwfFile, m_tempDwfFileName));
+        auto_ptr<DWFPackageReader> reader(MgdDrawingServiceUtil::OpenDrawingResource(m_resourceService, resource, m_bOpenTempDwfFile, m_tempDwfFileName));
 
         // Get the ePlot sections in the DWF
         DWFManifest& manifest = reader->getManifest();
@@ -1086,7 +1086,7 @@ MgByteReader* MgdDrawingService::EnumerateSections(MgResourceIdentifier* resourc
         byteReader = byteSource->GetReader();
     }
 
-    MgDrawingServiceUtil::CloseDrawingResource(m_bOpenTempDwfFile, m_tempDwfFileName);
+    MgdDrawingServiceUtil::CloseDrawingResource(m_bOpenTempDwfFile, m_tempDwfFileName);
 
     // Successful operation
     MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Success.c_str());
@@ -1167,7 +1167,7 @@ MgByteReader* MgdDrawingService::EnumerateSectionResources(MgResourceIdentifier*
     }
     else
     {
-        auto_ptr<DWFPackageReader> reader(MgDrawingServiceUtil::OpenDrawingResource(m_resourceService, resource, m_bOpenTempDwfFile, m_tempDwfFileName));
+        auto_ptr<DWFPackageReader> reader(MgdDrawingServiceUtil::OpenDrawingResource(m_resourceService, resource, m_bOpenTempDwfFile, m_tempDwfFileName));
 
         // Check if the section exists in the manifest
         DWFManifest& manifest = reader->getManifest();
@@ -1247,7 +1247,7 @@ MgByteReader* MgdDrawingService::EnumerateSectionResources(MgResourceIdentifier*
         byteReader = byteSource->GetReader();
     }
 
-    MgDrawingServiceUtil::CloseDrawingResource(m_bOpenTempDwfFile, m_tempDwfFileName);
+    MgdDrawingServiceUtil::CloseDrawingResource(m_bOpenTempDwfFile, m_tempDwfFileName);
 
     // Successful operation
     MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Success.c_str());
@@ -1309,7 +1309,7 @@ STRING MgdDrawingService::GetCoordinateSpace(MgResourceIdentifier* resource)
     // Get the coordinate space from the resource content.
     STRING dwfFileName = L"";
     Ptr<MgByteReader> reader = m_resourceService->GetResourceContent(resource, L"");
-    MgDrawingServiceUtil::ParseDrawingResourceContent(reader, dwfFileName, dwfCoordinateSpace);
+    MgdDrawingServiceUtil::ParseDrawingResourceContent(reader, dwfFileName, dwfCoordinateSpace);
 
     // Assume coordinate space is LL84 if none is specified in the resource content.
     if (dwfCoordinateSpace.empty())
@@ -1357,7 +1357,7 @@ MgdDrawingService::MgdDrawingService() :
     m_resourceService = dynamic_cast<MgResourceService*>(
         serviceMan->RequestService(MgServiceType::ResourceService));
         */
-    Ptr<MgServiceFactory> fact = new MgServiceFactory();
+    Ptr<MgdServiceFactory> fact = new MgdServiceFactory();
     m_resourceService = static_cast<MgResourceService*>(fact->CreateService(MgServiceType::ResourceService));
     assert(m_resourceService != NULL);
 
@@ -1388,7 +1388,7 @@ MgdDrawingService::~MgdDrawingService()
 /// </returns>
 void MgdDrawingService::CleanUpTempFiles()
 {
-    MgDrawingServiceUtil::CloseDrawingResource(m_bOpenTempDwfFile, m_tempDwfFileName);
+    MgdDrawingServiceUtil::CloseDrawingResource(m_bOpenTempDwfFile, m_tempDwfFileName);
 
     if (m_bOpenTempW2dFile)
     {

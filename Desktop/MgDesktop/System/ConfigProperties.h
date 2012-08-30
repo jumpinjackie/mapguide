@@ -12,9 +12,9 @@
 /// organized into Property Sections.  These sections may be used in the API to
 /// set/get groups of configuration properties.
 /// INTERNAL_ONLY:
-class MG_DESKTOP_API MgConfigProperties
+class MG_DESKTOP_API MgdConfigProperties
 {
-    DECLARE_CLASSNAME(MgConfigProperties)
+    DECLARE_CLASSNAME(MgdConfigProperties)
 
 EXTERNAL_API:
 

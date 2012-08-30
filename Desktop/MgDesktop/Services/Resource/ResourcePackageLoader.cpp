@@ -5,9 +5,9 @@
 /// \brief
 /// Constructs the object.
 ///
-MgResourcePackageLoader::MgResourcePackageLoader(
+MgdResourcePackageLoader::MgdResourcePackageLoader(
     MgResourceService& repositoryManager) :
-    MgResourcePackageHandler(repositoryManager)
+    MgdResourcePackageHandler(repositoryManager)
 {
 }
 
@@ -15,7 +15,7 @@ MgResourcePackageLoader::MgResourcePackageLoader(
 /// \brief
 /// Destructs the object.
 ///
-MgResourcePackageLoader::~MgResourcePackageLoader()
+MgdResourcePackageLoader::~MgdResourcePackageLoader()
 {
 }
 
@@ -23,8 +23,8 @@ MgResourcePackageLoader::~MgResourcePackageLoader()
 /// \brief
 /// Creates a resource identifier based on the specified parameter.
 ///
-MgResourceIdentifier* MgResourcePackageLoader::CreateResourceIdentifier(
-    const MgOperationParameter& opParam) const
+MgResourceIdentifier* MgdResourcePackageLoader::CreateResourceIdentifier(
+    const MgdOperationParameter& opParam) const
 {
     Ptr<MgResourceIdentifier> resource;
 
@@ -38,7 +38,7 @@ MgResourceIdentifier* MgResourcePackageLoader::CreateResourceIdentifier(
     if (resource == NULL)
     {
         throw new MgNullArgumentException(
-            L"MgResourcePackageLoader.CreateResourceIdentifier",
+            L"MgdResourcePackageLoader.CreateResourceIdentifier",
             __LINE__, __WFILE__, NULL, L"", NULL);
     }
 
@@ -47,11 +47,11 @@ MgResourceIdentifier* MgResourcePackageLoader::CreateResourceIdentifier(
     if (!resource->IsRepositoryTypeOf(MgRepositoryType::Library))
     {
         throw new MgInvalidRepositoryTypeException(
-            L"MgResourcePackageLoader.CreateResourceIdentifier",
+            L"MgdResourcePackageLoader.CreateResourceIdentifier",
             __LINE__, __WFILE__, NULL, L"", NULL);
     }
 
-    MG_RESOURCE_SERVICE_CATCH_AND_THROW(L"MgResourcePackageLoader.CreateResourceIdentifier")
+    MG_RESOURCE_SERVICE_CATCH_AND_THROW(L"MgdResourcePackageLoader.CreateResourceIdentifier")
 
     return resource.Detach();
 }
@@ -60,8 +60,8 @@ MgResourceIdentifier* MgResourcePackageLoader::CreateResourceIdentifier(
 /// \brief
 /// Creates a byte reader based on the specified parameter.
 ///
-MgByteReader* MgResourcePackageLoader::CreateByteReader(
-    const MgOperationParameter& opParam, bool direct) const
+MgByteReader* MgdResourcePackageLoader::CreateByteReader(
+    const MgdOperationParameter& opParam, bool direct) const
 {
     Ptr<MgByteReader> byteReader;
 
@@ -88,7 +88,7 @@ MgByteReader* MgResourcePackageLoader::CreateByteReader(
         byteSource->SetMimeType(opParam.GetContentType());
     }
 
-    MG_RESOURCE_SERVICE_CATCH_AND_THROW(L"MgResourcePackageLoader.CreateByteReader")
+    MG_RESOURCE_SERVICE_CATCH_AND_THROW(L"MgdResourcePackageLoader.CreateByteReader")
 
     return byteReader.Detach();
 }
@@ -97,22 +97,22 @@ MgByteReader* MgResourcePackageLoader::CreateByteReader(
 /// \brief
 /// Starts loading the resource package.
 ///
-void MgResourcePackageLoader::Start(CREFSTRING packagePathname,
+void MgdResourcePackageLoader::Start(CREFSTRING packagePathname,
     bool logActivities)
 {
     MG_RESOURCE_SERVICE_TRY()
 
     // Initialize the status information.
-    InitializeStatus(MgPackageApiName::LoadPackage, packagePathname,
+    InitializeStatus(MgdPackageApiName::LoadPackage, packagePathname,
         logActivities);
 
     // Create the package reader.
-    m_zipFileReader.reset(new MgZipFileReader(packagePathname));
+    m_zipFileReader.reset(new MgdZipFileReader(packagePathname));
 
     // Extract the resource package manifest and parse it.
-    MgOperationParameter opParam;
+    MgdOperationParameter opParam;
 
-    opParam.SetValue(MgResourcePackageManifestHandler::sm_manifestFileName);
+    opParam.SetValue(MgdResourcePackageManifestHandler::sm_manifestFileName);
     opParam.SetContentType(MgMimeType::Xml);
 
     string manifestXmlDoc;
@@ -130,14 +130,14 @@ void MgResourcePackageLoader::Start(CREFSTRING packagePathname,
         PerformOperation(opInfoVector[m_opsSucceeded]);
     }
 
-    MG_RESOURCE_SERVICE_CATCH_AND_THROW(L"MgResourcePackageLoader.Start")
+    MG_RESOURCE_SERVICE_CATCH_AND_THROW(L"MgdResourcePackageLoader.Start")
 }
 
 ///////////////////////////////////////////////////////////////////////////////
 /// \brief
 /// Ends the resource package loading process.
 ///
-void MgResourcePackageLoader::End(MgException* except)
+void MgdResourcePackageLoader::End(MgException* except)
 {
     MG_TRY()
 
@@ -162,75 +162,75 @@ void MgResourcePackageLoader::End(MgException* except)
 /// \brief
 /// Performs the specified operation.
 ///
-void MgResourcePackageLoader::PerformOperation(const MgOperationInfo& opInfo)
+void MgdResourcePackageLoader::PerformOperation(const MgOperationInfo& opInfo)
 {
     MG_RESOURCE_SERVICE_TRY()
 
     CREFSTRING opName = opInfo.GetName();
 
-    if (MgOperationName::UpdateRepository == opName)
+    if (MgdOperationName::UpdateRepository == opName)
     {
         UpdateRepository(opInfo);
     }
-    else if (MgOperationName::SetResource == opName)
+    else if (MgdOperationName::SetResource == opName)
     {
         SetResource(opInfo);
     }
-    else if (MgOperationName::DeleteResource == opName)
+    else if (MgdOperationName::DeleteResource == opName)
     {
         DeleteResource(opInfo);
     }
-    else if (MgOperationName::MoveResource == opName)
+    else if (MgdOperationName::MoveResource == opName)
     {
         MoveResource(opInfo);
     }
-    else if (MgOperationName::CopyResource == opName)
+    else if (MgdOperationName::CopyResource == opName)
     {
         CopyResource(opInfo);
     }
-    else if (MgOperationName::ChangeResourceOwner == opName)
+    else if (MgdOperationName::ChangeResourceOwner == opName)
     {
         ChangeResourceOwner(opInfo);
     }
-    else if (MgOperationName::InheritPermissionsFrom == opName)
+    else if (MgdOperationName::InheritPermissionsFrom == opName)
     {
         InheritPermissionsFrom(opInfo);
     }
-    else if (MgOperationName::SetResourceData == opName)
+    else if (MgdOperationName::SetResourceData == opName)
     {
         SetResourceData(opInfo);
     }
-    else if (MgOperationName::DeleteResourceData == opName)
+    else if (MgdOperationName::DeleteResourceData == opName)
     {
         DeleteResourceData(opInfo);
     }
-    else if (MgOperationName::RenameResourceData == opName)
+    else if (MgdOperationName::RenameResourceData == opName)
     {
         RenameResourceData(opInfo);
     }
 
-    MG_RESOURCE_SERVICE_CATCH_AND_THROW(L"MgResourcePackageLoader.PerformOperation")
+    MG_RESOURCE_SERVICE_CATCH_AND_THROW(L"MgdResourcePackageLoader.PerformOperation")
 }
 
 ///////////////////////////////////////////////////////////////////////////////
 /// \brief
 /// Updates an existing repository.
 ///
-void MgResourcePackageLoader::UpdateRepository(
+void MgdResourcePackageLoader::UpdateRepository(
     const MgOperationInfo& opInfo)
 {
     MG_RESOURCE_SERVICE_TRY()
 
-    const MgOperationParameter& resourceIdParam = opInfo.GetParameter(
-        MgOperationParameter::ResourceId);
+    const MgdOperationParameter& resourceIdParam = opInfo.GetParameter(
+        MgdOperationParameter::ResourceId);
     Ptr<MgResourceIdentifier> resource = CreateResourceIdentifier(resourceIdParam);
 
-    const MgOperationParameter& resourceHeaderParam = opInfo.GetParameter(
-        MgOperationParameter::ResourceHeader, false);
+    const MgdOperationParameter& resourceHeaderParam = opInfo.GetParameter(
+        MgdOperationParameter::ResourceHeader, false);
     Ptr<MgByteReader> header = CreateByteReader(resourceHeaderParam, false);
 
-    const MgOperationParameter& resourceContentParam = opInfo.GetParameter(
-        MgOperationParameter::ResourceContent, (header == NULL));
+    const MgdOperationParameter& resourceContentParam = opInfo.GetParameter(
+        MgdOperationParameter::ResourceContent, (header == NULL));
     Ptr<MgByteReader> content = CreateByteReader(resourceContentParam);
 
     /*
@@ -250,28 +250,28 @@ void MgResourcePackageLoader::UpdateRepository(
 
     m_repositoryManager.UpdateRepository(resource, content, header);
 
-    MG_RESOURCE_SERVICE_CATCH_AND_THROW(L"MgResourcePackageLoader.UpdateRepository")
+    MG_RESOURCE_SERVICE_CATCH_AND_THROW(L"MgdResourcePackageLoader.UpdateRepository")
 }
 
 ///////////////////////////////////////////////////////////////////////////////
 /// \brief
 /// Adds a new resource to the repository or updates an existing resource.
 ///
-void MgResourcePackageLoader::SetResource(
+void MgdResourcePackageLoader::SetResource(
     const MgOperationInfo& opInfo)
 {
     MG_RESOURCE_SERVICE_TRY()
 
-    const MgOperationParameter& resourceIdParam = opInfo.GetParameter(
-        MgOperationParameter::ResourceId);
+    const MgdOperationParameter& resourceIdParam = opInfo.GetParameter(
+        MgdOperationParameter::ResourceId);
     Ptr<MgResourceIdentifier> resource = CreateResourceIdentifier(resourceIdParam);
 
-    const MgOperationParameter& resourceHeaderParam = opInfo.GetParameter(
-        MgOperationParameter::ResourceHeader, false);
+    const MgdOperationParameter& resourceHeaderParam = opInfo.GetParameter(
+        MgdOperationParameter::ResourceHeader, false);
     Ptr<MgByteReader> header = CreateByteReader(resourceHeaderParam, false);
 
-    const MgOperationParameter& resourceContentParam = opInfo.GetParameter(
-        MgOperationParameter::ResourceContent, resource->IsFolder() ? false : (header == NULL));
+    const MgdOperationParameter& resourceContentParam = opInfo.GetParameter(
+        MgdOperationParameter::ResourceContent, resource->IsFolder() ? false : (header == NULL));
     Ptr<MgByteReader> content = CreateByteReader(resourceContentParam);
 
     /*
@@ -291,20 +291,20 @@ void MgResourcePackageLoader::SetResource(
 
     m_repositoryManager.SetResource(resource, content, header);
 
-    MG_RESOURCE_SERVICE_CATCH_AND_THROW(L"MgResourcePackageLoader.SetResource")
+    MG_RESOURCE_SERVICE_CATCH_AND_THROW(L"MgdResourcePackageLoader.SetResource")
 }
 
 ///////////////////////////////////////////////////////////////////////////////
 /// \brief
 /// Deletes an existing resource from the opened resource repository.
 ///
-void MgResourcePackageLoader::DeleteResource(
+void MgdResourcePackageLoader::DeleteResource(
     const MgOperationInfo& opInfo)
 {
     MG_RESOURCE_SERVICE_TRY()
 
-    const MgOperationParameter& resourceIdParam = opInfo.GetParameter(
-        MgOperationParameter::ResourceId);
+    const MgdOperationParameter& resourceIdParam = opInfo.GetParameter(
+        MgdOperationParameter::ResourceId);
     Ptr<MgResourceIdentifier> resource = CreateResourceIdentifier(resourceIdParam);
 
     /*
@@ -320,30 +320,30 @@ void MgResourcePackageLoader::DeleteResource(
 
     m_repositoryManager.DeleteResource(resource);
 
-    MG_RESOURCE_SERVICE_CATCH_AND_THROW(L"MgResourcePackageLoader.DeleteResource")
+    MG_RESOURCE_SERVICE_CATCH_AND_THROW(L"MgdResourcePackageLoader.DeleteResource")
 }
 
 ///////////////////////////////////////////////////////////////////////////////
 /// \brief
 /// Renames a resource and/or moves it from one location to another.
 ///
-void MgResourcePackageLoader::MoveResource(
+void MgdResourcePackageLoader::MoveResource(
     const MgOperationInfo& opInfo)
 {
     MG_RESOURCE_SERVICE_TRY()
 
-    const MgOperationParameter& srcResourceIdParam = opInfo.GetParameter(
-        MgOperationParameter::SourceResourceId);
+    const MgdOperationParameter& srcResourceIdParam = opInfo.GetParameter(
+        MgdOperationParameter::SourceResourceId);
     Ptr<MgResourceIdentifier> srcResource = CreateResourceIdentifier(srcResourceIdParam);
 
-    const MgOperationParameter& destResourceIdParam = opInfo.GetParameter(
-        MgOperationParameter::DestinationResourceId);
+    const MgdOperationParameter& destResourceIdParam = opInfo.GetParameter(
+        MgdOperationParameter::DestinationResourceId);
     Ptr<MgResourceIdentifier> destResource = CreateResourceIdentifier(destResourceIdParam);
 
     bool overwrite = ACE_OS::atoi(opInfo.GetParameter(
-        MgOperationParameter::Overwrite, false).GetValue().c_str()) != 0;
+        MgdOperationParameter::Overwrite, false).GetValue().c_str()) != 0;
 
-    CREFSTRING paramCascade = opInfo.GetParameter(MgOperationParameter::Overwrite, false).GetValue();
+    CREFSTRING paramCascade = opInfo.GetParameter(MgdOperationParameter::Overwrite, false).GetValue();
     bool cascade = !paramCascade.empty() && (ACE_OS::atoi(paramCascade.c_str()) != 0);
 
     /*
@@ -363,28 +363,28 @@ void MgResourcePackageLoader::MoveResource(
 
     m_repositoryManager.MoveResource(srcResource, destResource, overwrite, cascade);
 
-    MG_RESOURCE_SERVICE_CATCH_AND_THROW(L"MgResourcePackageLoader.MoveResource")
+    MG_RESOURCE_SERVICE_CATCH_AND_THROW(L"MgdResourcePackageLoader.MoveResource")
 }
 
 ///////////////////////////////////////////////////////////////////////////////
 /// \brief
 /// Copies an existing resource to another location.
 ///
-void MgResourcePackageLoader::CopyResource(
+void MgdResourcePackageLoader::CopyResource(
     const MgOperationInfo& opInfo)
 {
     MG_RESOURCE_SERVICE_TRY()
 
-    const MgOperationParameter& srcResourceIdParam = opInfo.GetParameter(
-        MgOperationParameter::SourceResourceId);
+    const MgdOperationParameter& srcResourceIdParam = opInfo.GetParameter(
+        MgdOperationParameter::SourceResourceId);
     Ptr<MgResourceIdentifier> srcResource = CreateResourceIdentifier(srcResourceIdParam);
 
-    const MgOperationParameter& destResourceIdParam = opInfo.GetParameter(
-        MgOperationParameter::DestinationResourceId);
+    const MgdOperationParameter& destResourceIdParam = opInfo.GetParameter(
+        MgdOperationParameter::DestinationResourceId);
     Ptr<MgResourceIdentifier> destResource = CreateResourceIdentifier(destResourceIdParam);
 
     bool overwrite = ACE_OS::atoi(opInfo.GetParameter(
-        MgOperationParameter::Overwrite, false).GetValue().c_str()) != 0;
+        MgdOperationParameter::Overwrite, false).GetValue().c_str()) != 0;
 
     /*
     if (m_packageLogWriter != NULL)
@@ -403,25 +403,25 @@ void MgResourcePackageLoader::CopyResource(
 
     m_repositoryManager.CopyResource(srcResource, destResource, overwrite);
 
-    MG_RESOURCE_SERVICE_CATCH_AND_THROW(L"MgResourcePackageLoader.CopyResource")
+    MG_RESOURCE_SERVICE_CATCH_AND_THROW(L"MgdResourcePackageLoader.CopyResource")
 }
 
 ///////////////////////////////////////////////////////////////////////////////
 /// \brief
 /// Changes the owner of an existing resource.
 ///
-void MgResourcePackageLoader::ChangeResourceOwner(
+void MgdResourcePackageLoader::ChangeResourceOwner(
     const MgOperationInfo& opInfo)
 {
     MG_RESOURCE_SERVICE_TRY()
 
-    const MgOperationParameter& resourceIdParam = opInfo.GetParameter(
-        MgOperationParameter::ResourceId);
+    const MgdOperationParameter& resourceIdParam = opInfo.GetParameter(
+        MgdOperationParameter::ResourceId);
     Ptr<MgResourceIdentifier> resource = CreateResourceIdentifier(resourceIdParam);
 
-    CREFSTRING owner = opInfo.GetParameter(MgOperationParameter::Owner).GetValue();
+    CREFSTRING owner = opInfo.GetParameter(MgdOperationParameter::Owner).GetValue();
     bool includeDescendants = ACE_OS::atoi(opInfo.GetParameter(
-        MgOperationParameter::IncludeDescendants, false).GetValue().c_str()) != 0;
+        MgdOperationParameter::IncludeDescendants, false).GetValue().c_str()) != 0;
 
     /*
     if (m_packageLogWriter != NULL)
@@ -440,7 +440,7 @@ void MgResourcePackageLoader::ChangeResourceOwner(
 
     m_repositoryManager.ChangeResourceOwner(resource, owner, includeDescendants);
 
-    MG_RESOURCE_SERVICE_CATCH_AND_THROW(L"MgResourcePackageLoader.ChangeResourceOwner")
+    MG_RESOURCE_SERVICE_CATCH_AND_THROW(L"MgdResourcePackageLoader.ChangeResourceOwner")
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -448,13 +448,13 @@ void MgResourcePackageLoader::ChangeResourceOwner(
 /// Sets the permissions for all descendants to be inherited from the
 /// specified resource.
 ///
-void MgResourcePackageLoader::InheritPermissionsFrom(
+void MgdResourcePackageLoader::InheritPermissionsFrom(
     const MgOperationInfo& opInfo)
 {
     MG_RESOURCE_SERVICE_TRY()
 
-    const MgOperationParameter& resourceIdParam = opInfo.GetParameter(
-        MgOperationParameter::ResourceId);
+    const MgdOperationParameter& resourceIdParam = opInfo.GetParameter(
+        MgdOperationParameter::ResourceId);
     Ptr<MgResourceIdentifier> resource = CreateResourceIdentifier(resourceIdParam);
 
     /*
@@ -470,27 +470,27 @@ void MgResourcePackageLoader::InheritPermissionsFrom(
 
     m_repositoryManager.InheritPermissionsFrom(resource);
 
-    MG_RESOURCE_SERVICE_CATCH_AND_THROW(L"MgResourcePackageLoader.InheritPermissionsFrom")
+    MG_RESOURCE_SERVICE_CATCH_AND_THROW(L"MgdResourcePackageLoader.InheritPermissionsFrom")
 }
 
 ///////////////////////////////////////////////////////////////////////////////
 /// \brief
 /// Sets tagged data of a specific type to the specified resource.
 ///
-void MgResourcePackageLoader::SetResourceData(
+void MgdResourcePackageLoader::SetResourceData(
     const MgOperationInfo& opInfo)
 {
     MG_RESOURCE_SERVICE_TRY()
 
-    const MgOperationParameter& resourceIdParam = opInfo.GetParameter(
-        MgOperationParameter::ResourceId);
+    const MgdOperationParameter& resourceIdParam = opInfo.GetParameter(
+        MgdOperationParameter::ResourceId);
     Ptr<MgResourceIdentifier> resource = CreateResourceIdentifier(resourceIdParam);
 
-    CREFSTRING dataName = opInfo.GetParameter(MgOperationParameter::DataName).GetValue();
-    CREFSTRING dataType = opInfo.GetParameter(MgOperationParameter::DataType).GetValue();
+    CREFSTRING dataName = opInfo.GetParameter(MgdOperationParameter::DataName).GetValue();
+    CREFSTRING dataType = opInfo.GetParameter(MgdOperationParameter::DataType).GetValue();
 
-    const MgOperationParameter& resourceDataParam = opInfo.GetParameter(
-        MgOperationParameter::Data);
+    const MgdOperationParameter& resourceDataParam = opInfo.GetParameter(
+        MgdOperationParameter::Data);
     Ptr<MgByteReader> data = CreateByteReader(resourceDataParam);
 
     /*
@@ -512,23 +512,23 @@ void MgResourcePackageLoader::SetResourceData(
 
     m_repositoryManager.SetResourceData(resource, dataName, dataType, data);
 
-    MG_RESOURCE_SERVICE_CATCH_AND_THROW(L"MgResourcePackageLoader.SetResourceData")
+    MG_RESOURCE_SERVICE_CATCH_AND_THROW(L"MgdResourcePackageLoader.SetResourceData")
 }
 
 ///////////////////////////////////////////////////////////////////////////////
 /// \brief
 /// Deletes tagged data from the specified resource.
 ///
-void MgResourcePackageLoader::DeleteResourceData(
+void MgdResourcePackageLoader::DeleteResourceData(
     const MgOperationInfo& opInfo)
 {
     MG_RESOURCE_SERVICE_TRY()
 
-    const MgOperationParameter& resourceIdParam = opInfo.GetParameter(
-        MgOperationParameter::ResourceId);
+    const MgdOperationParameter& resourceIdParam = opInfo.GetParameter(
+        MgdOperationParameter::ResourceId);
     Ptr<MgResourceIdentifier> resource = CreateResourceIdentifier(resourceIdParam);
 
-    CREFSTRING dataName = opInfo.GetParameter(MgOperationParameter::DataName).GetValue();
+    CREFSTRING dataName = opInfo.GetParameter(MgdOperationParameter::DataName).GetValue();
 
     /*
     if (m_packageLogWriter != NULL)
@@ -545,26 +545,26 @@ void MgResourcePackageLoader::DeleteResourceData(
 
     m_repositoryManager.DeleteResourceData(resource, dataName);
 
-    MG_RESOURCE_SERVICE_CATCH_AND_THROW(L"MgResourcePackageLoader.DeleteResourceData")
+    MG_RESOURCE_SERVICE_CATCH_AND_THROW(L"MgdResourcePackageLoader.DeleteResourceData")
 }
 
 ///////////////////////////////////////////////////////////////////////////////
 /// \brief
 /// Renames tagged data for the specified resource.
 ///
-void MgResourcePackageLoader::RenameResourceData(
+void MgdResourcePackageLoader::RenameResourceData(
     const MgOperationInfo& opInfo)
 {
     MG_RESOURCE_SERVICE_TRY()
 
-    const MgOperationParameter& resourceIdParam = opInfo.GetParameter(
-        MgOperationParameter::ResourceId);
+    const MgdOperationParameter& resourceIdParam = opInfo.GetParameter(
+        MgdOperationParameter::ResourceId);
     Ptr<MgResourceIdentifier> resource = CreateResourceIdentifier(resourceIdParam);
 
-    CREFSTRING oldDataName = opInfo.GetParameter(MgOperationParameter::OldDataName).GetValue();
-    CREFSTRING newDataName = opInfo.GetParameter(MgOperationParameter::NewDataName).GetValue();
+    CREFSTRING oldDataName = opInfo.GetParameter(MgdOperationParameter::OldDataName).GetValue();
+    CREFSTRING newDataName = opInfo.GetParameter(MgdOperationParameter::NewDataName).GetValue();
     bool overwrite = ACE_OS::atoi(opInfo.GetParameter(
-        MgOperationParameter::Overwrite, false).GetValue().c_str()) != 0;
+        MgdOperationParameter::Overwrite, false).GetValue().c_str()) != 0;
 
     /*
     if (m_packageLogWriter != NULL)
@@ -585,5 +585,5 @@ void MgResourcePackageLoader::RenameResourceData(
 
     m_repositoryManager.RenameResourceData(resource, oldDataName, newDataName, overwrite);
 
-    MG_RESOURCE_SERVICE_CATCH_AND_THROW(L"MgResourcePackageLoader.RenameResourceData")
+    MG_RESOURCE_SERVICE_CATCH_AND_THROW(L"MgdResourcePackageLoader.RenameResourceData")
 }

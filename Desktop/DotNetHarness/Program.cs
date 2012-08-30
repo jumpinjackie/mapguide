@@ -17,14 +17,14 @@ namespace DotNetHarness
         {
             var sw = new Stopwatch();
             sw.Start();
-            MgPlatform.Initialize("Platform.ini");
+            MgdPlatform.Initialize("Platform.ini");
             sw.Stop();
 
             Trace.TraceInformation("Platform initialization took {0}ms", sw.ElapsedMilliseconds);
 
             Application.ApplicationExit += (s, e) =>
             {
-                MgPlatform.Terminate();
+                MgdPlatform.Terminate();
             };
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);

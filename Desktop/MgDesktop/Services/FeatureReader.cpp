@@ -6,7 +6,7 @@
 #include "Services/Feature/FdoConnectionUtil.h"
 #include "Fdo.h"
 
-MgdFeatureReader::MgdFeatureReader(MgFeatureConnection* conn, FdoIFeatureReader* reader)
+MgdFeatureReader::MgdFeatureReader(MgdFeatureConnection* conn, FdoIFeatureReader* reader)
 {
 	m_reader = FDO_SAFE_ADDREF(reader);
     m_connection = SAFE_ADDREF(conn);
@@ -431,12 +431,12 @@ MgRaster* MgdFeatureReader::GetRaster(CREFSTRING propertyName)
     FdoPtr<FdoIRaster> raster = m_reader->GetRaster(propertyName.c_str());
     CHECKNULL((FdoIRaster*)raster, L"MgdFeatureReader::GetRaster");
 
-    ret = MgFeatureUtil::GetMgRaster(raster, propertyName);
+    ret = MgdFeatureUtil::GetMgRaster(raster, propertyName);
     CHECKNULL((MgRaster*)ret, L"MgdFeatureReader::GetRaster");
 
     //This is a clunky way to do what is effectively calling the overloaded GetRaster(propName, xSize, ySize)
     //method, but MgRaster demands this
-    Ptr<MgFeatureService> rasterHelp = new MgRasterHelper(this);
+    Ptr<MgFeatureService> rasterHelp = new MgdRasterHelper(this);
     ret->SetMgService(rasterHelp);
     //MgRaster demands a handle
     STRING handle;
@@ -458,7 +458,7 @@ MgByteReader* MgdFeatureReader::GetRaster(STRING rasterPropName, INT32 xSize, IN
     if (!m_classDef->HasRasterProperty())
     {
         // TODO: specify which argument and message, once we have the mechanism
-        STRING message = MgFeatureUtil::GetMessage(L"MgMissingRasterProperty");
+        STRING message = MgdFeatureUtil::GetMessage(L"MgMissingRasterProperty");
         throw new MgInvalidOperationException(L"MgdFeatureReader::GetRaster", __LINE__, __WFILE__, NULL, L"", NULL);
     }
 
@@ -469,7 +469,7 @@ MgByteReader* MgdFeatureReader::GetRaster(STRING rasterPropName, INT32 xSize, IN
     }
 
     // If this property is requested then we fetch the raster data
-    byteReader = MgFeatureUtil::GetRaster(m_reader, rasterPropName, xSize, ySize);
+    byteReader = MgdFeatureUtil::GetRaster(m_reader, rasterPropName, xSize, ySize);
 
     MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgdFeatureReader::GetRaster")
 
@@ -626,9 +626,9 @@ void MgdFeatureReader::Close()
     FdoPtr<FdoIConnection> fdoConnection = m_connection->GetConnection();
     // Release the connection.
     //m_connection = NULL;
-    MgFdoConnectionPool::ReturnConnection(m_connection);
+    MgdFdoConnectionPool::ReturnConnection(m_connection);
     m_connection = NULL;
-    //MgFdoConnectionUtil::CloseConnection(fdoConnection);
+    //MgdFdoConnectionUtil::CloseConnection(fdoConnection);
 
     MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgdFeatureReader::Close");
 }
@@ -712,7 +712,7 @@ MgClassDefinition* MgdFeatureReader::GetClassDefinition()
         FdoPtr<FdoClassDefinition> fdoClassDefinition = m_reader->GetClassDefinition();
 
         // Convert FdoClassDefinition to MgClassDefinition
-        m_classDef = MgFeatureUtil::GetMgClassDefinition(fdoClassDefinition, true);
+        m_classDef = MgdFeatureUtil::GetMgClassDefinition(fdoClassDefinition, true);
         CHECKNULL(m_classDef.p, L"MgdFeatureReader::GetClassDefinition");
     }
 
@@ -721,7 +721,7 @@ MgClassDefinition* MgdFeatureReader::GetClassDefinition()
     return SAFE_ADDREF((MgClassDefinition*)m_classDef);
 }
 
-//This is internal, but MgMappingUtil needs it. So we have to implement it
+//This is internal, but MgdMappingUtil needs it. So we have to implement it
 MgClassDefinition* MgdFeatureReader::GetClassDefinitionNoXml() 
 { 
 	CHECKNULL(m_reader, L"MgdFeatureReader::GetClassDefinitionNoXml");
@@ -736,7 +736,7 @@ MgClassDefinition* MgdFeatureReader::GetClassDefinitionNoXml()
         FdoPtr<FdoClassDefinition> fdoClassDefinition = m_reader->GetClassDefinition();
 
         // Convert FdoClassDefinition to MgClassDefinition
-        m_classDef = MgFeatureUtil::GetMgClassDefinition(fdoClassDefinition, false);
+        m_classDef = MgdFeatureUtil::GetMgClassDefinition(fdoClassDefinition, false);
         CHECKNULL(m_classDef.p, L"MgdFeatureReader::GetClassDefinitionNoXml");
     }
 

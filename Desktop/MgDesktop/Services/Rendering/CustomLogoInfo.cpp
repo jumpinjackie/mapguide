@@ -24,7 +24,7 @@
 /// </summary>
 ///----------------------------------------------------------------------------
 
-MgCustomLogoInfo::MgCustomLogoInfo() : m_dXPosition(0), m_dYPosition(0), m_positionUnits(L""),
+MgdCustomLogoInfo::MgdCustomLogoInfo() : m_dXPosition(0), m_dYPosition(0), m_positionUnits(L""),
     m_dSizeWidth(0), m_dSizeHeight(0), m_sizeUnits(L""),
     m_dRotation(0), m_resId(L""), m_name(L"")
 {
@@ -36,7 +36,7 @@ MgCustomLogoInfo::MgCustomLogoInfo() : m_dXPosition(0), m_dYPosition(0), m_posit
 /// </summary>
 ///----------------------------------------------------------------------------
 
-MgCustomLogoInfo::~MgCustomLogoInfo()
+MgdCustomLogoInfo::~MgdCustomLogoInfo()
 {
 }
 
@@ -50,7 +50,7 @@ MgCustomLogoInfo::~MgCustomLogoInfo()
 /// </param>
 ///----------------------------------------------------------------------------
 
-void MgCustomLogoInfo::SetX(double xCoord)
+void MgdCustomLogoInfo::SetX(double xCoord)
 {
     m_dXPosition = xCoord;
 }
@@ -64,7 +64,7 @@ void MgCustomLogoInfo::SetX(double xCoord)
 /// </param>
 ///----------------------------------------------------------------------------
 
-void MgCustomLogoInfo::SetY(double yCoord)
+void MgdCustomLogoInfo::SetY(double yCoord)
 {
     m_dYPosition = yCoord;
 }
@@ -78,7 +78,7 @@ void MgCustomLogoInfo::SetY(double yCoord)
 /// </param>
 ///----------------------------------------------------------------------------
 
-void MgCustomLogoInfo::SetPositionUnits(STRING units)
+void MgdCustomLogoInfo::SetPositionUnits(STRING units)
 {
     m_positionUnits = units;
 }
@@ -92,7 +92,7 @@ void MgCustomLogoInfo::SetPositionUnits(STRING units)
 /// </param>
 ///----------------------------------------------------------------------------
 
-void MgCustomLogoInfo::SetWidth(double width)
+void MgdCustomLogoInfo::SetWidth(double width)
 {
     m_dSizeWidth = width;
 }
@@ -106,7 +106,7 @@ void MgCustomLogoInfo::SetWidth(double width)
 /// </param>
 ///----------------------------------------------------------------------------
 
-void MgCustomLogoInfo::SetHeight(double height)
+void MgdCustomLogoInfo::SetHeight(double height)
 {
     m_dSizeHeight = height;
 }
@@ -120,7 +120,7 @@ void MgCustomLogoInfo::SetHeight(double height)
 /// </param>
 ///----------------------------------------------------------------------------
 
-void MgCustomLogoInfo::SetSizeUnits(STRING units)
+void MgdCustomLogoInfo::SetSizeUnits(STRING units)
 {
     m_sizeUnits = units;
 }
@@ -134,7 +134,7 @@ void MgCustomLogoInfo::SetSizeUnits(STRING units)
 /// </param>
 ///----------------------------------------------------------------------------
 
-void MgCustomLogoInfo::SetRotation(double angle)
+void MgdCustomLogoInfo::SetRotation(double angle)
 {
     m_dRotation = angle;
 }
@@ -148,7 +148,7 @@ void MgCustomLogoInfo::SetRotation(double angle)
 /// </param>
 ///----------------------------------------------------------------------------
 
-void MgCustomLogoInfo::SetResourceId(STRING resId)
+void MgdCustomLogoInfo::SetResourceId(STRING resId)
 {
     m_resId = resId;
 }
@@ -162,7 +162,7 @@ void MgCustomLogoInfo::SetResourceId(STRING resId)
 /// </param>
 ///----------------------------------------------------------------------------
 
-void MgCustomLogoInfo::SetName(STRING name)
+void MgdCustomLogoInfo::SetName(STRING name)
 {
     m_name = name;
 }
@@ -176,7 +176,7 @@ void MgCustomLogoInfo::SetName(STRING name)
 /// </return>
 ///----------------------------------------------------------------------------
 
-double MgCustomLogoInfo::GetX()
+double MgdCustomLogoInfo::GetX()
 {
     return m_dXPosition;
 }
@@ -190,7 +190,7 @@ double MgCustomLogoInfo::GetX()
 /// </return>
 ///----------------------------------------------------------------------------
 
-double MgCustomLogoInfo::GetY()
+double MgdCustomLogoInfo::GetY()
 {
     return m_dYPosition;
 }
@@ -204,7 +204,7 @@ double MgCustomLogoInfo::GetY()
 /// </return>
 ///----------------------------------------------------------------------------
 
-STRING MgCustomLogoInfo::GetPositionUnits()
+STRING MgdCustomLogoInfo::GetPositionUnits()
 {
     return m_positionUnits;
 }
@@ -218,7 +218,7 @@ STRING MgCustomLogoInfo::GetPositionUnits()
 /// </return>
 ///----------------------------------------------------------------------------
 
-double MgCustomLogoInfo::GetWidth()
+double MgdCustomLogoInfo::GetWidth()
 {
     return m_dSizeWidth;
 }
@@ -232,7 +232,7 @@ double MgCustomLogoInfo::GetWidth()
 /// </return>
 ///----------------------------------------------------------------------------
 
-double MgCustomLogoInfo::GetHeight()
+double MgdCustomLogoInfo::GetHeight()
 {
     return m_dSizeHeight;
 }
@@ -246,7 +246,7 @@ double MgCustomLogoInfo::GetHeight()
 /// </return>
 ///----------------------------------------------------------------------------
 
-STRING MgCustomLogoInfo::GetSizeUnits()
+STRING MgdCustomLogoInfo::GetSizeUnits()
 {
     return m_sizeUnits;
 }
@@ -260,7 +260,7 @@ STRING MgCustomLogoInfo::GetSizeUnits()
 /// </return>
 ///----------------------------------------------------------------------------
 
-double MgCustomLogoInfo::GetRotation()
+double MgdCustomLogoInfo::GetRotation()
 {
     return m_dRotation;
 }
@@ -274,7 +274,7 @@ double MgCustomLogoInfo::GetRotation()
 /// </return>
 ///----------------------------------------------------------------------------
 
-STRING MgCustomLogoInfo::GetResourceId()
+STRING MgdCustomLogoInfo::GetResourceId()
 {
     return m_resId;
 }
@@ -288,7 +288,7 @@ STRING MgCustomLogoInfo::GetResourceId()
 /// </return>
 ///----------------------------------------------------------------------------
 
-STRING MgCustomLogoInfo::GetName()
+STRING MgdCustomLogoInfo::GetName()
 {
     return m_name;
 }

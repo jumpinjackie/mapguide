@@ -19,19 +19,19 @@
 #include "UnmanagedDataManager.h"
 
 
-// Process-wide MgUnmanagedDataManager
-Ptr<MgUnmanagedDataManager> MgUnmanagedDataManager::sm_unmanagedDataManager = (MgUnmanagedDataManager*)NULL;
+// Process-wide MgdUnmanagedDataManager
+Ptr<MgdUnmanagedDataManager> MgdUnmanagedDataManager::sm_unmanagedDataManager = (MgdUnmanagedDataManager*)NULL;
 
-const STRING MgUnmanagedDataManager::SquareBracketBegin      = L"[";
-const wchar_t MgUnmanagedDataManager::SquareBracketCharBegin = L'[';
-const STRING MgUnmanagedDataManager::SquareBracketEnd        = L"]";
-const wchar_t MgUnmanagedDataManager::SquareBracketCharEnd   = L']';
+const STRING MgdUnmanagedDataManager::SquareBracketBegin      = L"[";
+const wchar_t MgdUnmanagedDataManager::SquareBracketCharBegin = L'[';
+const STRING MgdUnmanagedDataManager::SquareBracketEnd        = L"]";
+const wchar_t MgdUnmanagedDataManager::SquareBracketCharEnd   = L']';
 
 ///////////////////////////////////////////////////////////////////////////////
 /// \brief
 /// Constructs the object.
 ///
-MgUnmanagedDataManager::MgUnmanagedDataManager()
+MgdUnmanagedDataManager::MgdUnmanagedDataManager()
 {
     Initialize();
 }
@@ -40,16 +40,16 @@ MgUnmanagedDataManager::MgUnmanagedDataManager()
 /// \brief
 /// Destructs the object.
 ///
-MgUnmanagedDataManager::~MgUnmanagedDataManager()
+MgdUnmanagedDataManager::~MgdUnmanagedDataManager()
 {
-    ACE_DEBUG((LM_DEBUG, ACE_TEXT("(%t) MgUnmanagedDataManager::~MgUnmanagedDataManager()\n")));
+    ACE_DEBUG((LM_DEBUG, ACE_TEXT("(%t) MgdUnmanagedDataManager::~MgdUnmanagedDataManager()\n")));
 }
 
 ///////////////////////////////////////////////////////////////////////////////
 /// \brief
 /// Disposes the object.
 ///
-void MgUnmanagedDataManager::Dispose()
+void MgdUnmanagedDataManager::Dispose()
 {
     delete this;
 }
@@ -58,7 +58,7 @@ void MgUnmanagedDataManager::Dispose()
 /// \brief
 /// Initialize the unmanaged data manager.
 ///
-void MgUnmanagedDataManager::Initialize()
+void MgdUnmanagedDataManager::Initialize()
 {
     RefreshUnmanagedDataMappings();
 }
@@ -69,7 +69,7 @@ void MgUnmanagedDataManager::Initialize()
 /// The path must be in the form of:
 ///     "[mappingName]subfolder1/subfolder2"
 ///
-bool MgUnmanagedDataManager::ParsePath(CREFSTRING path, REFSTRING mappingName, REFSTRING subpath)
+bool MgdUnmanagedDataManager::ParsePath(CREFSTRING path, REFSTRING mappingName, REFSTRING subpath)
 {
     bool result = false;
 
@@ -107,7 +107,7 @@ bool MgUnmanagedDataManager::ParsePath(CREFSTRING path, REFSTRING mappingName, R
 /// \brief
 /// Parses the filter into an MgStringCollection
 ///
-void MgUnmanagedDataManager::ParseFilter(CREFSTRING filter, MgStringCollection* filters)
+void MgdUnmanagedDataManager::ParseFilter(CREFSTRING filter, MgStringCollection* filters)
 {
     if (!filter.empty())
     {
@@ -128,7 +128,7 @@ void MgUnmanagedDataManager::ParseFilter(CREFSTRING filter, MgStringCollection* 
 /// \brief
 /// Returns true is file ends in one of the extensions in filters
 ///
-bool MgUnmanagedDataManager::FilterFile(CREFSTRING file, const MgStringCollection* filters)
+bool MgdUnmanagedDataManager::FilterFile(CREFSTRING file, const MgStringCollection* filters)
 {
     bool result = false;
 
@@ -158,7 +158,7 @@ bool MgUnmanagedDataManager::FilterFile(CREFSTRING file, const MgStringCollectio
 /// Recursive method that returns all files and/or folders for a given mapping
 /// name
 ///
-void MgUnmanagedDataManager::GetFilesAndFolders(string& list, CREFSTRING mappingName, CREFSTRING rootdir, CREFSTRING subdir, const MgStringCollection* filters, bool storeFolders, bool storeFiles, bool recursive)
+void MgdUnmanagedDataManager::GetFilesAndFolders(string& list, CREFSTRING mappingName, CREFSTRING rootdir, CREFSTRING subdir, const MgStringCollection* filters, bool storeFolders, bool storeFiles, bool recursive)
 {
     STRING fulldir = rootdir;
     if (!MgFileUtil::EndsWithSlash(fulldir))
@@ -222,7 +222,7 @@ void MgUnmanagedDataManager::GetFilesAndFolders(string& list, CREFSTRING mapping
 /// \brief
 /// Appends folder details to xml string
 ///
-void MgUnmanagedDataManager::AddFolder(string& list, CREFSTRING mappingName, CREFSTRING subdir, CREFSTRING entryName, INT32 numFolders, INT32 numFiles, MgDateTime createdDate, MgDateTime modifiedDate)
+void MgdUnmanagedDataManager::AddFolder(string& list, CREFSTRING mappingName, CREFSTRING subdir, CREFSTRING entryName, INT32 numFolders, INT32 numFiles, MgDateTime createdDate, MgDateTime modifiedDate)
 {
     list += "\t<UnmanagedDataFolder>\n";
 
@@ -258,7 +258,7 @@ void MgUnmanagedDataManager::AddFolder(string& list, CREFSTRING mappingName, CRE
     list += "\t</UnmanagedDataFolder>\n";
 }
 
-void MgUnmanagedDataManager::AddFile(string& list, CREFSTRING mappingName, CREFSTRING subdir, CREFSTRING entryName, INT64 fileSize, MgDateTime createdDate, MgDateTime modifiedDate)
+void MgdUnmanagedDataManager::AddFile(string& list, CREFSTRING mappingName, CREFSTRING subdir, CREFSTRING entryName, INT64 fileSize, MgDateTime createdDate, MgDateTime modifiedDate)
 {
     list += "\t<UnmanagedDataFile>\n";
 
@@ -290,7 +290,7 @@ void MgUnmanagedDataManager::AddFile(string& list, CREFSTRING mappingName, CREFS
 /// Retrieves number of folders and files in the specified folder path
 /// pre-condition: assumes dirpath is a valid folder
 ///
-void MgUnmanagedDataManager::GetNumberOfFilesAndSubfolders(CREFSTRING dirpath, INT32& numFolders, INT32& numFiles)
+void MgdUnmanagedDataManager::GetNumberOfFilesAndSubfolders(CREFSTRING dirpath, INT32& numFolders, INT32& numFiles)
 {
     ACE_DIR* directory = ACE_OS::opendir(ACE_TEXT_WCHAR_TO_TCHAR(dirpath.c_str()));
     if (directory != NULL)
@@ -327,16 +327,16 @@ void MgUnmanagedDataManager::GetNumberOfFilesAndSubfolders(CREFSTRING dirpath, I
 /// \brief
 /// Surrounds name with square brackets
 ///
-STRING MgUnmanagedDataManager::FormatMappingName(CREFSTRING name)
+STRING MgdUnmanagedDataManager::FormatMappingName(CREFSTRING name)
 {
-    return MgUnmanagedDataManager::SquareBracketBegin + name + MgUnmanagedDataManager::SquareBracketEnd;
+    return MgdUnmanagedDataManager::SquareBracketBegin + name + MgdUnmanagedDataManager::SquareBracketEnd;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
 /// \brief
 /// Appends a slash to non-empty string
 ///
-STRING MgUnmanagedDataManager::FormatSubdir(CREFSTRING subdir)
+STRING MgdUnmanagedDataManager::FormatSubdir(CREFSTRING subdir)
 {
     STRING result = subdir;
     if (!result.empty())
@@ -349,54 +349,54 @@ STRING MgUnmanagedDataManager::FormatSubdir(CREFSTRING subdir)
 
 ///////////////////////////////////////////////////////////////////////////////
 /// \brief
-/// Gets the pointer to a process-wide MgUnmanagedDataManager.
+/// Gets the pointer to a process-wide MgdUnmanagedDataManager.
 ///
-MgUnmanagedDataManager* MgUnmanagedDataManager::GetInstance()
+MgdUnmanagedDataManager* MgdUnmanagedDataManager::GetInstance()
 {
     MG_TRY()
 
-    ACE_TRACE("MgUnmanagedDataManager::GetInstance");
+    ACE_TRACE("MgdUnmanagedDataManager::GetInstance");
 
-    if (MgUnmanagedDataManager::sm_unmanagedDataManager == NULL)
+    if (MgdUnmanagedDataManager::sm_unmanagedDataManager == NULL)
     {
         // Perform Double-Checked Locking Optimization.
         ACE_MT(ACE_GUARD_RETURN(ACE_Recursive_Thread_Mutex, ace_mon, *ACE_Static_Object_Lock::instance(), NULL));
 
-        if (MgUnmanagedDataManager::sm_unmanagedDataManager == NULL)
+        if (MgdUnmanagedDataManager::sm_unmanagedDataManager == NULL)
         {
-            MgUnmanagedDataManager::sm_unmanagedDataManager = new MgUnmanagedDataManager;
+            MgdUnmanagedDataManager::sm_unmanagedDataManager = new MgdUnmanagedDataManager;
         }
     }
 
-    MG_CATCH_AND_THROW(L"MgUnmanagedDataManager.GetInstance")
+    MG_CATCH_AND_THROW(L"MgdUnmanagedDataManager.GetInstance")
 
     // To avoid overheads and maintain thread safety,
     // do not assign this returned static singleton to a Ptr object.
-    return MgUnmanagedDataManager::sm_unmanagedDataManager;
+    return MgdUnmanagedDataManager::sm_unmanagedDataManager;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
 /// \brief
 /// Refresh unmanaged data mappings.
 ///
-void MgUnmanagedDataManager::RefreshUnmanagedDataMappings()
+void MgdUnmanagedDataManager::RefreshUnmanagedDataMappings()
 {
     MgConfiguration* configuration = MgConfiguration::GetInstance();
     ACE_ASSERT(NULL != configuration);
 
-    ACE_MT(ACE_GUARD(ACE_Recursive_Thread_Mutex, ace_mon, m_mutex));
+    ACE_MT(ACE_GUARD(ACE_Recursive_Thread_Mutex, ace_mon, m_MgdMutex));
 
     m_unmanagedDataMappings = configuration->GetProperties(
-        MgConfigProperties::UnmanagedDataMappingsSection);
+        MgdConfigProperties::UnmanagedDataMappingsSection);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
 /// \brief
 /// Return unmanaged data mappings.
 ///
-MgPropertyCollection* MgUnmanagedDataManager::GetUnmanagedDataMappings()
+MgPropertyCollection* MgdUnmanagedDataManager::GetUnmanagedDataMappings()
 {
-    ACE_MT(ACE_GUARD_RETURN(ACE_Recursive_Thread_Mutex, ace_mon, m_mutex, NULL));
+    ACE_MT(ACE_GUARD_RETURN(ACE_Recursive_Thread_Mutex, ace_mon, m_MgdMutex, NULL));
 
     return SAFE_ADDREF(m_unmanagedDataMappings.p);
 }
@@ -405,7 +405,7 @@ MgPropertyCollection* MgUnmanagedDataManager::GetUnmanagedDataMappings()
 /// \brief
 /// Substitutes unmanaged data mappings
 ///
-int MgUnmanagedDataManager::SubstituteDataPathAliases(REFSTRING doc)
+int MgdUnmanagedDataManager::SubstituteDataPathAliases(REFSTRING doc)
 {
     int result = 0;
     MG_TRY()
@@ -413,7 +413,7 @@ int MgUnmanagedDataManager::SubstituteDataPathAliases(REFSTRING doc)
     result = SubstituteDataPathAliases(temp);
 
     doc = MgUtil::MultiByteToWideChar(temp);
-    MG_CATCH_AND_THROW(L"MgUnmanagedDataManager::SubstituteDataPathAliases")
+    MG_CATCH_AND_THROW(L"MgdUnmanagedDataManager::SubstituteDataPathAliases")
     return result;
 }
 
@@ -421,7 +421,7 @@ int MgUnmanagedDataManager::SubstituteDataPathAliases(REFSTRING doc)
 /// \brief
 /// Substitutes unmanaged data aliases
 ///
-int MgUnmanagedDataManager::SubstituteDataPathAliases(string& doc)
+int MgdUnmanagedDataManager::SubstituteDataPathAliases(string& doc)
 {
     int count = 0;
     size_t startPos = 0, endPos = 0, currStartPos = 0;
@@ -441,7 +441,7 @@ int MgUnmanagedDataManager::SubstituteDataPathAliases(string& doc)
             size_t nameLen = mappingName.length();
 
             // find the mapping name in the map, and then replace it
-            Ptr<MgPropertyCollection> unmanagedDataMappings = MgUnmanagedDataManager::GetInstance()->GetUnmanagedDataMappings();
+            Ptr<MgPropertyCollection> unmanagedDataMappings = MgdUnmanagedDataManager::GetInstance()->GetUnmanagedDataMappings();
 
             if (NULL != unmanagedDataMappings.p)
             {
@@ -467,7 +467,7 @@ int MgUnmanagedDataManager::SubstituteDataPathAliases(string& doc)
                     STRING mName = MgUtil::MultiByteToWideChar(mappingName);
                     MgStringCollection args;
                     args.Add(mName);
-                    throw new MgdAliasNotFoundException(L"MgUnmanagedDataManager::SubstituteDataPathAliases", __LINE__, __WFILE__, &args, L"MgdAliasNotFoundException", NULL);
+                    throw new MgdAliasNotFoundException(L"MgdUnmanagedDataManager::SubstituteDataPathAliases", __LINE__, __WFILE__, &args, L"MgdAliasNotFoundException", NULL);
                 }
             }
             break;
@@ -484,13 +484,13 @@ int MgUnmanagedDataManager::SubstituteDataPathAliases(string& doc)
 /// \brief
 /// Returns unmanaged data
 ///
-MgByteReader* MgUnmanagedDataManager::EnumerateUnmanagedData(CREFSTRING path, bool recursive, CREFSTRING type, CREFSTRING filter)
+MgByteReader* MgdUnmanagedDataManager::EnumerateUnmanagedData(CREFSTRING path, bool recursive, CREFSTRING type, CREFSTRING filter)
 {
     Ptr<MgByteReader> byteReader;
 
     MG_TRY()
 
-    ACE_TRACE("MgUnmanagedDataManager::EnumerateUnmanagedData");
+    ACE_TRACE("MgdUnmanagedDataManager::EnumerateUnmanagedData");
 
     Ptr<MgPropertyCollection> unmanagedDataMappings = GetUnmanagedDataMappings();
 
@@ -511,13 +511,13 @@ MgByteReader* MgUnmanagedDataManager::EnumerateUnmanagedData(CREFSTRING path, bo
         //      "[alias1]subfolder1/subfolder2/"
 
         STRING mappingName = L"", subfolder = L"";
-        if (!MgUnmanagedDataManager::ParsePath(path, mappingName, subfolder))
+        if (!MgdUnmanagedDataManager::ParsePath(path, mappingName, subfolder))
         {
             MgStringCollection arguments;
             arguments.Add(L"1");
             arguments.Add(path);
 
-            throw new MgInvalidArgumentException(L"MgUnmanagedDataManager.EnumerateUnmanagedData",
+            throw new MgInvalidArgumentException(L"MgdUnmanagedDataManager.EnumerateUnmanagedData",
                 __LINE__, __WFILE__, &arguments, L"", NULL);
         }
 
@@ -564,7 +564,7 @@ MgByteReader* MgUnmanagedDataManager::EnumerateUnmanagedData(CREFSTRING path, bo
                 arguments.Add(L"1");
                 arguments.Add(path);
 
-                throw new MgInvalidArgumentException(L"MgUnmanagedDataManager.EnumerateUnmanagedData",
+                throw new MgInvalidArgumentException(L"MgdUnmanagedDataManager.EnumerateUnmanagedData",
                     __LINE__, __WFILE__, &arguments, L"", NULL);
             }
         }
@@ -610,7 +610,7 @@ MgByteReader* MgUnmanagedDataManager::EnumerateUnmanagedData(CREFSTRING path, bo
         byteReader = byteSource->GetReader();
     }
 
-    MG_CATCH_AND_THROW(L"MgUnmanagedDataManager.EnumerateUnmanagedData")
+    MG_CATCH_AND_THROW(L"MgdUnmanagedDataManager.EnumerateUnmanagedData")
 
     return byteReader.Detach();
 }

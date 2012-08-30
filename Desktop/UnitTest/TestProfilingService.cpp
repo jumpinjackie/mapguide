@@ -26,7 +26,7 @@ CPPUNIT_TEST_SUITE_NAMED_REGISTRATION(TestProfilingService, "TestProfilingServic
 TestProfilingService::TestProfilingService()
 {
     // Initialize service objects.
-    Ptr<MgServiceFactory> factory = new MgServiceFactory();
+    Ptr<MgdServiceFactory> factory = new MgdServiceFactory();
 
     m_svcResource = dynamic_cast<MgResourceService*>(
         factory->CreateService(MgServiceType::ResourceService));

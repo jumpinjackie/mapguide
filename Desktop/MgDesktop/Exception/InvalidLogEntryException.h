@@ -24,9 +24,9 @@
 /// \brief
 /// Thrown when a log entry does not correspond with the expected format.
 ///
-class MG_DESKTOP_API MgInvalidLogEntryException : public MgApplicationException
+class MG_DESKTOP_API MgdInvalidLogEntryException : public MgApplicationException
 {
-    DECLARE_CLASSNAME(MgInvalidLogEntryException)
+    DECLARE_CLASSNAME(MgdInvalidLogEntryException)
 
     ///////////////////////////////////////////////////////
 
@@ -34,7 +34,7 @@ EXTERNAL_API:
 
     ///////////////////////////////////////////////////////////////////////////
     /// \brief
-    /// Construct a MgInvalidLogEntryException object.
+    /// Construct a MgdInvalidLogEntryException object.
     ///
     /// \param methodName
     /// Name of the method where the exception occurred.
@@ -49,7 +49,7 @@ EXTERNAL_API:
     /// \param whyArguments
     /// Collection of arguments used to format the message that describes why the exception occurs.
     ///
-    MgInvalidLogEntryException(CREFSTRING methodName, INT32 lineNumber,
+    MgdInvalidLogEntryException(CREFSTRING methodName, INT32 lineNumber,
         CREFSTRING fileName, MgStringCollection* whatArguments,
         CREFSTRING whyMessageId, MgStringCollection* whyArguments) throw();
 
@@ -57,11 +57,11 @@ EXTERNAL_API:
     /// \brief
     /// Destructor for a MgInvalidPasswordException object.
     ///
-    virtual ~MgInvalidLogEntryException() throw();
+    virtual ~MgdInvalidLogEntryException() throw();
 
 INTERNAL_API:
 
-    DECLARE_EXCEPTION_DEFAULTS(MgInvalidLogEntryException)
+    DECLARE_EXCEPTION_DEFAULTS(MgdInvalidLogEntryException)
 
 CLASS_ID:
 

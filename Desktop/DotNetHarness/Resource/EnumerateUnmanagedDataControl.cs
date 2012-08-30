@@ -21,7 +21,7 @@ namespace DotNetHarness.Resource
         {
             try
             {
-                MgServiceFactory fact = new MgServiceFactory();
+                MgdServiceFactory fact = new MgdServiceFactory();
                 MgResourceService resSvc = (MgResourceService)fact.CreateService(MgServiceType.ResourceService);
 
                 MgByteReader response = resSvc.EnumerateUnmanagedData(txtPath.Text, chkRecursive.Checked, txtType.Text, txtFilter.Text);

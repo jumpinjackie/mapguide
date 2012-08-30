@@ -6,14 +6,14 @@
 class FdoIFeatureReader;
 class MgCoordinateSystemTransform;
 class MgAgfReaderWriter;
-class MgFeatureConnection;
+class MgdFeatureConnection;
 
 /// \ingroup Desktop_Misc_Module
 /// \{
 class MG_DESKTOP_API MgdFeatureReader : public MgFeatureReader
 {
 INTERNAL_API:
-	MgdFeatureReader(MgFeatureConnection* conn, FdoIFeatureReader* reader);
+	MgdFeatureReader(MgdFeatureConnection* conn, FdoIFeatureReader* reader);
 
 EXTERNAL_API:
 	virtual ~MgdFeatureReader();
@@ -125,7 +125,7 @@ INTERNAL_API:
 protected:
 	FdoIFeatureReader* m_reader;
     Ptr<MgClassDefinition> m_classDef;
-    Ptr<MgFeatureConnection> m_connection;
+    Ptr<MgdFeatureConnection> m_connection;
 };
 /// \}
 #endif

@@ -34,7 +34,7 @@ namespace DotNetHarness.Feature
         {
             try
             {
-                var fact = new MgServiceFactory();
+                var fact = new MgdServiceFactory();
                 var featureSvc = (MgdFeatureService)fact.CreateService(MgServiceType.FeatureService);
                 var param = new MgFileFeatureSourceParams();
                 param.CoordinateSystemWkt = txtCoordinateSystemWkt.Text;
@@ -64,9 +64,9 @@ namespace DotNetHarness.Feature
         {
             try
             {
-                var fact = new MgServiceFactory();
+                var fact = new MgdServiceFactory();
                 var featureSvc = (MgdFeatureService)fact.CreateService(MgServiceType.FeatureService);
-                var param = new MgRdbmsFeatureSourceParams();
+                var param = new MgdRdbmsFeatureSourceParams();
                 param.CoordinateSystemWkt = txtCoordinateSystemWkt.Text;
 
                 param.Service = txtService.Text;

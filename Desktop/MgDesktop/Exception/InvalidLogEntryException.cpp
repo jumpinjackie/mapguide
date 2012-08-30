@@ -17,13 +17,13 @@
 
 #include "MgDesktop.h"
 
-IMPLEMENT_EXCEPTION_DEFAULTS(MgInvalidLogEntryException, MgApplicationException)
+IMPLEMENT_EXCEPTION_DEFAULTS(MgdInvalidLogEntryException, MgApplicationException)
 
 ///////////////////////////////////////////////////////////////////////////////
 /// \brief
-/// Construct a MgInvalidLogEntryException object.
+/// Construct a MgdInvalidLogEntryException object.
 ///
-MgInvalidLogEntryException::MgInvalidLogEntryException(CREFSTRING methodName,
+MgdInvalidLogEntryException::MgdInvalidLogEntryException(CREFSTRING methodName,
     INT32 lineNumber, CREFSTRING fileName, MgStringCollection* whatArguments,
     CREFSTRING whyMessageId, MgStringCollection* whyArguments) throw() :
     MgApplicationException(methodName, lineNumber, fileName,
@@ -35,6 +35,6 @@ MgInvalidLogEntryException::MgInvalidLogEntryException(CREFSTRING methodName,
 /// \brief
 /// Destruct the object.
 ///
-MgInvalidLogEntryException::~MgInvalidLogEntryException() throw()
+MgdInvalidLogEntryException::~MgdInvalidLogEntryException() throw()
 {
 }

@@ -23,13 +23,13 @@
 #include "System/XmlUtil.h"
 #include "Fdo.h"
 
-class MgFeatureConnection;
+class MgdFeatureConnection;
 
-class MgSqlCommand
+class MgdSqlCommand
 {
 public:
-    MgSqlCommand();
-    ~MgSqlCommand();
+    MgdSqlCommand();
+    ~MgdSqlCommand();
     MgSqlDataReader* ExecuteQuery(
                         MgResourceIdentifier* resource,
                         CREFSTRING sqlStatement,
@@ -50,7 +50,7 @@ private:
     STRING                  m_providerName;
     STRING                  m_sqlStatement;
     FdoPtr<FdoIConnection> m_fdoConn;
-    Ptr<MgFeatureConnection> m_featureConnection;
+    Ptr<MgdFeatureConnection> m_featureConnection;
 };
 
 #endif

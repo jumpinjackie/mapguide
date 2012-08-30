@@ -5,7 +5,7 @@
 /// \brief
 /// Constructs the object.
 ///
-MgResourcePackageManifestParser::MgResourcePackageManifestParser()
+MgdResourcePackageManifestParser::MgdResourcePackageManifestParser()
 {
     m_operations.reserve(256);
 }
@@ -14,7 +14,7 @@ MgResourcePackageManifestParser::MgResourcePackageManifestParser()
 /// \brief
 /// Destructs the object.
 ///
-MgResourcePackageManifestParser::~MgResourcePackageManifestParser()
+MgdResourcePackageManifestParser::~MgdResourcePackageManifestParser()
 {
 }
 
@@ -22,7 +22,7 @@ MgResourcePackageManifestParser::~MgResourcePackageManifestParser()
 /// \brief
 /// Parses the specified resource package manifest.
 ///
-void MgResourcePackageManifestParser::Parse(const string& manifest)
+void MgdResourcePackageManifestParser::Parse(const string& manifest)
 {
     assert(!manifest.empty());
 
@@ -60,7 +60,7 @@ void MgResourcePackageManifestParser::Parse(const string& manifest)
             {
                 for (XMLSize_t j = 0; j < paramNodeList->getLength(); ++j)
                 {
-                    MgOperationParameter opParam;
+                    MgdOperationParameter opParam;
                     wstring name, value, contentType;
                     DOMNode* paramNode = paramNodeList->item(j);
 
@@ -78,5 +78,5 @@ void MgResourcePackageManifestParser::Parse(const string& manifest)
         }
     }
 
-    MG_RESOURCE_SERVICE_CATCH_AND_THROW(L"MgResourcePackageManifestParser.Parse")
+    MG_RESOURCE_SERVICE_CATCH_AND_THROW(L"MgdResourcePackageManifestParser.Parse")
 }

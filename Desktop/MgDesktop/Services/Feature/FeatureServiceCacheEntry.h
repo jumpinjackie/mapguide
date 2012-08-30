@@ -5,31 +5,31 @@
 #include "FeatureSourceCacheItem.h"
 #include "SpatialContextCacheItem.h"
 
-class MgFeatureServiceCacheEntry : public MgGuardDisposable
+class MgdFeatureServiceCacheEntry : public MgGuardDisposable
 {
 public:
-    MgFeatureServiceCacheEntry();
-    virtual ~MgFeatureServiceCacheEntry();
+    MgdFeatureServiceCacheEntry();
+    virtual ~MgdFeatureServiceCacheEntry();
 
 private:
 
     // Unimplemented copy constructor and assignment operator.
-    MgFeatureServiceCacheEntry(const MgFeatureServiceCacheEntry&);
-    MgFeatureServiceCacheEntry& operator=(const MgFeatureServiceCacheEntry&);
+    MgdFeatureServiceCacheEntry(const MgdFeatureServiceCacheEntry&);
+    MgdFeatureServiceCacheEntry& operator=(const MgdFeatureServiceCacheEntry&);
 
 protected:
-    MgFeatureServiceCacheEntry* SetEntry(MgResourceIdentifier* resource);
-    MgFeatureServiceCacheEntry* GetEntry(MgResourceIdentifier* resource);
+    MgdFeatureServiceCacheEntry* SetEntry(MgResourceIdentifier* resource);
+    MgdFeatureServiceCacheEntry* GetEntry(MgResourceIdentifier* resource);
 
 /// Methods
 
 public:
 
-    void SetFeatureSource(MgFeatureSourceCacheItem* featureSource);
-    MgFeatureSourceCacheItem* GetFeatureSource();
+    void SetFeatureSource(MgdFeatureSourceCacheItem* featureSource);
+    MgdFeatureSourceCacheItem* GetFeatureSource();
 
-    void SetSpatialContextInfo(MgSpatialContextCacheItem* spatialContextInfo);
-    MgSpatialContextCacheItem* GetSpatialContextInfo();
+    void SetSpatialContextInfo(MgdSpatialContextCacheItem* spatialContextInfo);
+    MgdSpatialContextCacheItem* GetSpatialContextInfo();
 
     void SetSpatialContextReader(MgSpatialContextReader* spatialContextReader);
     MgSpatialContextReader* GetSpatialContextReader();
@@ -54,8 +54,8 @@ public:
 
 protected:
 
-    MgFeatureSchemaCacheItem* SetFeatureSchemaCacheItem(CREFSTRING schemaName);
-    MgFeatureSchemaCacheItem* GetFeatureSchemaCacheItem(CREFSTRING schemaName);
+    MgdFeatureSchemaCacheItem* SetFeatureSchemaCacheItem(CREFSTRING schemaName);
+    MgdFeatureSchemaCacheItem* GetFeatureSchemaCacheItem(CREFSTRING schemaName);
 
     void ParseQualifiedClassName(CREFSTRING schemaName, CREFSTRING className,
         REFSTRING parsedSchemaName, REFSTRING parsedClassName);
@@ -81,15 +81,15 @@ private:
 
     bool m_classNameHintUsed;
 
-    Ptr<MgFeatureSourceCacheItem> m_featureSource;
-    Ptr<MgSpatialContextCacheItem> m_spatialContextInfo;
+    Ptr<MgdFeatureSourceCacheItem> m_featureSource;
+    Ptr<MgdSpatialContextCacheItem> m_spatialContextInfo;
 
     Ptr<MgSpatialContextReader> m_spatialContextReader;
 
     Ptr<MgStringCollection> m_schemaNames;
 
-    typedef std::map<STRING, MgFeatureSchemaCacheItem*> MgFeatureSchemaCacheItems;
-    MgFeatureSchemaCacheItems m_featureSchemaCacheItems;
+    typedef std::map<STRING, MgdFeatureSchemaCacheItem*> MgdFeatureSchemaCacheItems;
+    MgdFeatureSchemaCacheItems m_featureSchemaCacheItems;
 };
 
 #endif

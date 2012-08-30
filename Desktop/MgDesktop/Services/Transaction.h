@@ -3,18 +3,18 @@
 
 #include "MgDesktop.h"
 
-class MgFeatureConnection;
+class MgdFeatureConnection;
 class FdoITransaction;
 /// \ingroup Desktop_Misc_Module
 /// \{
 class MG_DESKTOP_API MgdTransaction : public MgTransaction
 {
 INTERNAL_API:
-	MgdTransaction(MgFeatureConnection* conn, MgResourceIdentifier* resource);
+	MgdTransaction(MgdFeatureConnection* conn, MgResourceIdentifier* resource);
 	virtual ~MgdTransaction();
 
     FdoITransaction* GetFdoTransaction();
-    MgFeatureConnection* GetConnection();
+    MgdFeatureConnection* GetConnection();
     virtual void Serialize(MgStream* stream);
     virtual void Deserialize(MgStream* stream);
 
@@ -38,7 +38,7 @@ protected:
 private:
 	MgResourceIdentifier* m_resource;
 	FdoITransaction* m_trans;
-    MgFeatureConnection* m_conn;
+    MgdFeatureConnection* m_conn;
 
 };
 /// \}

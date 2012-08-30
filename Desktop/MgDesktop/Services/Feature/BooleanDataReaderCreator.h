@@ -23,22 +23,22 @@ using namespace std;
 #include <vector>
 
 /// \cond INTERNAL
-class MgBooleanDataReaderCreator : public MgDataReaderCreator<INT16>
+class MgdBooleanDataReaderCreator : public MgdDataReaderCreator<INT16>
 {
-    DECLARE_CLASSNAME(MgBooleanDataReaderCreator)
+    DECLARE_CLASSNAME(MgdBooleanDataReaderCreator)
 
 public:
-    MgBooleanDataReaderCreator()
+    MgdBooleanDataReaderCreator()
     {
     }
 
-    MgBooleanDataReaderCreator(CREFSTRING propertyAlias)
+    MgdBooleanDataReaderCreator(CREFSTRING propertyAlias)
     {
         m_propertyAlias = propertyAlias;
         m_propType = MgPropertyType::Boolean;
     }
 
-    ~MgBooleanDataReaderCreator()
+    ~MgdBooleanDataReaderCreator()
     {
     }
 

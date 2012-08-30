@@ -35,7 +35,7 @@
 #include "DateTimeDataReaderCreator.h"
 #include "BooleanDataReaderCreator.h"
 
-MgFeatureNumericFunctions::MgFeatureNumericFunctions()
+MgdFeatureNumericFunctions::MgdFeatureNumericFunctions()
 {
     m_type = MgPropertyType::Null;
     m_reader = NULL;
@@ -43,19 +43,19 @@ MgFeatureNumericFunctions::MgFeatureNumericFunctions()
     m_propertyAlias = L"";
 }
 
-MgFeatureNumericFunctions::MgFeatureNumericFunctions(MgReader* reader, FdoFunction* customFunction, CREFSTRING propertyAlias)
+MgdFeatureNumericFunctions::MgdFeatureNumericFunctions(MgReader* reader, FdoFunction* customFunction, CREFSTRING propertyAlias)
 {
     Initialize(reader, customFunction, propertyAlias); // Initialize the instance
 }
 
-void MgFeatureNumericFunctions::Initialize(MgReader* reader, FdoFunction* customFunction, CREFSTRING propertyAlias)
+void MgdFeatureNumericFunctions::Initialize(MgReader* reader, FdoFunction* customFunction, CREFSTRING propertyAlias)
 {
-    CHECKNULL((MgReader*)reader, L"MgFeatureNumericFunctions.Initialize");
-    CHECKNULL((FdoFunction*)customFunction, L"MgFeatureNumericFunctions.Initialize");
+    CHECKNULL((MgReader*)reader, L"MgdFeatureNumericFunctions.Initialize");
+    CHECKNULL((FdoFunction*)customFunction, L"MgdFeatureNumericFunctions.Initialize");
 
     if(1 == reader->GetPropertyCount())
     {
-        m_type = MgFeatureUtil::GetPropertyDefinition(reader, m_propertyName);
+        m_type = MgdFeatureUtil::GetPropertyDefinition(reader, m_propertyName);
     }
     else
     {
@@ -67,14 +67,14 @@ void MgFeatureNumericFunctions::Initialize(MgReader* reader, FdoFunction* custom
         {
             expr = exprCol->GetItem(0);
             FdoIdentifier* propName = dynamic_cast<FdoIdentifier*>(expr.p);
-            CHECKNULL(propName, L"MgFeatureNumericFunctions.Initialize");
+            CHECKNULL(propName, L"MgdFeatureNumericFunctions.Initialize");
             m_propertyName = propName->GetName();
             m_type = reader->GetPropertyType(m_propertyName);
         }
         else
         {
             // Throw original exception
-            m_type = MgFeatureUtil::GetPropertyDefinition(reader, m_propertyName);
+            m_type = MgdFeatureUtil::GetPropertyDefinition(reader, m_propertyName);
         }
     }
 
@@ -87,11 +87,11 @@ void MgFeatureNumericFunctions::Initialize(MgReader* reader, FdoFunction* custom
     // But Fdo forces to have an alias. Therefore we implement this restriction.
     if (propertyAlias.empty())
     {
-        STRING message = MgFeatureUtil::GetMessage(L"MgMissingPropertyAlias");
+        STRING message = MgdFeatureUtil::GetMessage(L"MgMissingPropertyAlias");
 
         MgStringCollection arguments;
         arguments.Add(message);
-        throw new MgFeatureServiceException(L"MgFeatureDistribution.Initialize", __LINE__, __WFILE__, &arguments, L"", NULL);
+        throw new MgFeatureServiceException(L"MgdFeatureDistribution.Initialize", __LINE__, __WFILE__, &arguments, L"", NULL);
     }
 
     m_reader = SAFE_ADDREF(reader);
@@ -99,21 +99,21 @@ void MgFeatureNumericFunctions::Initialize(MgReader* reader, FdoFunction* custom
     m_propertyAlias = propertyAlias;
 }
 
-MgFeatureNumericFunctions::~MgFeatureNumericFunctions()
+MgdFeatureNumericFunctions::~MgdFeatureNumericFunctions()
 {
 }
 
-MgReader* MgFeatureNumericFunctions::Execute()
+MgReader* MgdFeatureNumericFunctions::Execute()
 {
-    CHECKNULL((MgReader*)m_reader, L"MgFeatureNumericFunctions.Execute");
-    CHECKNULL(m_customFunction, L"MgFeatureNumericFunctions.Execute");
+    CHECKNULL((MgReader*)m_reader, L"MgdFeatureNumericFunctions.Execute");
+    CHECKNULL(m_customFunction, L"MgdFeatureNumericFunctions.Execute");
 
     Ptr<MgReader> reader;
-    MG_LOG_TRACE_ENTRY(L"MgFeatureNumericFunctions::Execute");
+    MG_LOG_TRACE_ENTRY(L"MgdFeatureNumericFunctions::Execute");
     // TODO: Can this be optimized to process them as they are read?
     // TODO: Should we put a limit on double buffer
     INT32 funcCode = -1;
-    bool supported = MgFeatureUtil::FindCustomFunction(m_customFunction, funcCode);
+    bool supported = MgdFeatureUtil::FindCustomFunction(m_customFunction, funcCode);
     if (supported)
     {
         // In case we have int64 but is a custom function use double to evaluate it.
@@ -155,7 +155,7 @@ MgReader* MgFeatureNumericFunctions::Execute()
             CalculateDistribution(values, distValues);
 
             // Create FeatureReader from distribution values
-            Ptr<MgInt64DataReaderCreator> drCreator = new MgInt64DataReaderCreator(m_propertyAlias);
+            Ptr<MgdInt64DataReaderCreator> drCreator = new MgdInt64DataReaderCreator(m_propertyAlias);
             reader = drCreator->Execute(distValues);
         }
     }
@@ -170,7 +170,7 @@ MgReader* MgFeatureNumericFunctions::Execute()
 }
 
 // Check whether property type is a supported type
-void MgFeatureNumericFunctions::CheckSupportedPropertyType()
+void MgdFeatureNumericFunctions::CheckSupportedPropertyType()
 {
     bool supported = false;
     switch(m_type)
@@ -189,7 +189,7 @@ void MgFeatureNumericFunctions::CheckSupportedPropertyType()
         }
         default:
         {
-            throw new MgInvalidPropertyTypeException(L"MgFeatureNumericFunctions.CheckSupportedPropertyType",
+            throw new MgInvalidPropertyTypeException(L"MgdFeatureNumericFunctions.CheckSupportedPropertyType",
                 __LINE__, __WFILE__, NULL, L"", NULL);
         }
     }
@@ -197,7 +197,7 @@ void MgFeatureNumericFunctions::CheckSupportedPropertyType()
 }
 
 // Get the value of property
-double MgFeatureNumericFunctions::GetValue()
+double MgdFeatureNumericFunctions::GetValue()
 {
     double val = 0;
 
@@ -248,7 +248,7 @@ double MgFeatureNumericFunctions::GetValue()
             }
             default:
             {
-                throw new MgInvalidPropertyTypeException(L"MgFeatureNumericFunctions.CheckSupportedPropertyType",
+                throw new MgInvalidPropertyTypeException(L"MgdFeatureNumericFunctions.CheckSupportedPropertyType",
                     __LINE__, __WFILE__, NULL, L"", NULL);
             }
         }
@@ -257,16 +257,16 @@ double MgFeatureNumericFunctions::GetValue()
 }
 
 // Calculate equal categories
-void MgFeatureNumericFunctions::GetEqualCategories(VECTOR &values, int numCats, double dataMin, double dataMax, VECTOR &distValues)
+void MgdFeatureNumericFunctions::GetEqualCategories(VECTOR &values, int numCats, double dataMin, double dataMax, VECTOR &distValues)
 {
     // Expected categories should be more than zero
     if (numCats <= 0)
     {
-        STRING message = MgFeatureUtil::GetMessage(L"MgInvalidComputedProperty");
+        STRING message = MgdFeatureUtil::GetMessage(L"MgInvalidComputedProperty");
 
         MgStringCollection arguments;
         arguments.Add(message);
-        throw new MgFeatureServiceException(L"MgFeatureNumericFunctions::GetEqualCategories", __LINE__, __WFILE__, &arguments, L"", NULL);
+        throw new MgFeatureServiceException(L"MgdFeatureNumericFunctions::GetEqualCategories", __LINE__, __WFILE__, &arguments, L"", NULL);
     }
 
     // find the range of the data values
@@ -312,43 +312,43 @@ void MgFeatureNumericFunctions::GetEqualCategories(VECTOR &values, int numCats, 
 }
 
 
-void MgFeatureNumericFunctions::GetMinimum(VECTOR &values, VECTOR &distValues)
+void MgdFeatureNumericFunctions::GetMinimum(VECTOR &values, VECTOR &distValues)
 {
     // TODO: Change this algorithm to take reader directly instead of vector
 
     // find the range of the data values
-    distValues.push_back(MgFeatureUtil::Minimum(values));
+    distValues.push_back(MgdFeatureUtil::Minimum(values));
 }
 
 
-void MgFeatureNumericFunctions::GetMinimum(VECTOR_INT64 &values, VECTOR_INT64 &distValues)
+void MgdFeatureNumericFunctions::GetMinimum(VECTOR_INT64 &values, VECTOR_INT64 &distValues)
 {
     // TODO: Change this algorithm to take reader directly instead of vector
 
     // find the range of the data values
-    distValues.push_back(MgFeatureUtil::Minimum(values));
+    distValues.push_back(MgdFeatureUtil::Minimum(values));
 }
 
 
-void MgFeatureNumericFunctions::GetMaximum(VECTOR &values, VECTOR &distValues)
+void MgdFeatureNumericFunctions::GetMaximum(VECTOR &values, VECTOR &distValues)
 {
     // TODO: Change this algorithm to take reader directly instead of vector
 
     // find the range of the data values
-    distValues.push_back(MgFeatureUtil::Maximum(values));
+    distValues.push_back(MgdFeatureUtil::Maximum(values));
 }
 
 
-void MgFeatureNumericFunctions::GetMaximum(VECTOR_INT64 &values, VECTOR_INT64 &distValues)
+void MgdFeatureNumericFunctions::GetMaximum(VECTOR_INT64 &values, VECTOR_INT64 &distValues)
 {
     // TODO: Change this algorithm to take reader directly instead of vector
 
     // find the range of the data values
-    distValues.push_back(MgFeatureUtil::Maximum(values));
+    distValues.push_back(MgdFeatureUtil::Maximum(values));
 }
 
 
-void MgFeatureNumericFunctions::CalculateDistribution(VECTOR& values, VECTOR& distValues)
+void MgdFeatureNumericFunctions::CalculateDistribution(VECTOR& values, VECTOR& distValues)
 {
     STRING funcName;
     int numCats;
@@ -357,7 +357,7 @@ void MgFeatureNumericFunctions::CalculateDistribution(VECTOR& values, VECTOR& di
 
     // Get the arguments from the FdoFunction
     STRING propertyName;
-    bool supported = MgFeatureUtil::FindCustomFunction(m_customFunction, funcCode);
+    bool supported = MgdFeatureUtil::FindCustomFunction(m_customFunction, funcCode);
 
     if (supported)
     {
@@ -365,25 +365,25 @@ void MgFeatureNumericFunctions::CalculateDistribution(VECTOR& values, VECTOR& di
         {
             case EQUAL_CATEGORY: // Equal Category
             {
-                MgFeatureUtil::GetArguments(m_customFunction, propertyName, numCats, dataMin, dataMax, m_type);
+                MgdFeatureUtil::GetArguments(m_customFunction, propertyName, numCats, dataMin, dataMax, m_type);
                 GetEqualCategories(values, numCats, dataMin, dataMax, distValues);
                 break;
             }
             case STDEV_CATEGORY: // StdDev Category
             {
-                MgFeatureUtil::GetArguments(m_customFunction, propertyName, numCats, dataMin, dataMax, m_type);
+                MgdFeatureUtil::GetArguments(m_customFunction, propertyName, numCats, dataMin, dataMax, m_type);
                 GetStandardDeviationCategories(values, numCats, dataMin, dataMax, distValues);
                 break;
             }
             case QUANTILE_CATEGORY: // Quantile Category
             {
-                MgFeatureUtil::GetArguments(m_customFunction, propertyName, numCats, dataMin, dataMax, m_type);
+                MgdFeatureUtil::GetArguments(m_customFunction, propertyName, numCats, dataMin, dataMax, m_type);
                 GetQuantileCategories(values, numCats, dataMin, dataMax, distValues);
                 break;
             }
             case JENK_CATEGORY: // Jenk Category
             {
-                MgFeatureUtil::GetArguments(m_customFunction, propertyName, numCats, dataMin, dataMax, m_type);
+                MgdFeatureUtil::GetArguments(m_customFunction, propertyName, numCats, dataMin, dataMax, m_type);
                 GetJenksCategories(values, numCats, dataMin, dataMax, distValues);
                 break;
             }
@@ -409,18 +409,18 @@ void MgFeatureNumericFunctions::CalculateDistribution(VECTOR& values, VECTOR& di
             }
             case UNIQUE:
             {
-                MgUniqueFunction<double>::Execute(values, distValues);
+                MgdUniqueFunction<double>::Execute(values, distValues);
                 break;
             }
         }
     }
 }
 
-void MgFeatureNumericFunctions::CalculateDistribution(VECTOR_INT64& values, VECTOR_INT64& distValues)
+void MgdFeatureNumericFunctions::CalculateDistribution(VECTOR_INT64& values, VECTOR_INT64& distValues)
 {
     INT32 funcCode = -1;
     // Get the arguments from the FdoFunction
-    bool supported = MgFeatureUtil::FindCustomFunction(m_customFunction, funcCode);
+    bool supported = MgdFeatureUtil::FindCustomFunction(m_customFunction, funcCode);
 
     if (supported)
     {
@@ -438,14 +438,14 @@ void MgFeatureNumericFunctions::CalculateDistribution(VECTOR_INT64& values, VECT
             }
             case UNIQUE:
             {
-                MgUniqueFunction<INT64>::Execute(values, distValues);
+                MgdUniqueFunction<INT64>::Execute(values, distValues);
                 break;
             }
         }
     }
 }
 
-MgReader* MgFeatureNumericFunctions::GetReader(VECTOR& distValues)
+MgReader* MgdFeatureNumericFunctions::GetReader(VECTOR& distValues)
 {
     Ptr<MgDataReader> dataReader;
 
@@ -453,64 +453,64 @@ MgReader* MgFeatureNumericFunctions::GetReader(VECTOR& distValues)
     {
         case MgPropertyType::Double:
         {
-            Ptr<MgDoubleDataReaderCreator> drCreator = new MgDoubleDataReaderCreator(m_propertyAlias);
+            Ptr<MgdDoubleDataReaderCreator> drCreator = new MgdDoubleDataReaderCreator(m_propertyAlias);
             dataReader = drCreator->Execute(distValues);
             break;
         }
         case MgPropertyType::Byte:
         {
-            Ptr<MgByteDataReaderCreator> drCreator = new MgByteDataReaderCreator(m_propertyAlias);
+            Ptr<MgdByteDataReaderCreator> drCreator = new MgdByteDataReaderCreator(m_propertyAlias);
             dataReader = drCreator->Execute(distValues);
             break;
         }
         case MgPropertyType::Int16:
         {
-            Ptr<MgInt16DataReaderCreator> drCreator = new MgInt16DataReaderCreator(m_propertyAlias);
+            Ptr<MgdInt16DataReaderCreator> drCreator = new MgdInt16DataReaderCreator(m_propertyAlias);
             dataReader = drCreator->Execute(distValues);
             break;
         }
         case MgPropertyType::Int32:
         {
-            Ptr<MgInt32DataReaderCreator> drCreator = new MgInt32DataReaderCreator(m_propertyAlias);
+            Ptr<MgdInt32DataReaderCreator> drCreator = new MgdInt32DataReaderCreator(m_propertyAlias);
             dataReader = drCreator->Execute(distValues);
             break;
         }
         case MgPropertyType::Int64:
         {
-            Ptr<MgInt64DataReaderCreator> drCreator = new MgInt64DataReaderCreator(m_propertyAlias);
+            Ptr<MgdInt64DataReaderCreator> drCreator = new MgdInt64DataReaderCreator(m_propertyAlias);
             dataReader = drCreator->Execute(distValues);
             break;
         }
         case MgPropertyType::Single:
         {
-            Ptr<MgSingleDataReaderCreator> drCreator = new MgSingleDataReaderCreator(m_propertyAlias);
+            Ptr<MgdSingleDataReaderCreator> drCreator = new MgdSingleDataReaderCreator(m_propertyAlias);
             dataReader = drCreator->Execute(distValues);
             break;
         }
         case MgPropertyType::DateTime:
         {
-            Ptr<MgDateTimeDataReaderCreator> drCreator = new MgDateTimeDataReaderCreator(m_propertyAlias);
+            Ptr<MgdDateTimeDataReaderCreator> drCreator = new MgdDateTimeDataReaderCreator(m_propertyAlias);
             dataReader = drCreator->Execute(distValues);
             break;
         }
         case MgPropertyType::Boolean:
         {
-            Ptr<MgBooleanDataReaderCreator> drCreator = new MgBooleanDataReaderCreator(m_propertyAlias);
+            Ptr<MgdBooleanDataReaderCreator> drCreator = new MgdBooleanDataReaderCreator(m_propertyAlias);
             dataReader = drCreator->Execute(distValues);
             break;
         }
         default:
         {
-            throw new MgInvalidPropertyTypeException(L"MgFeatureNumericFunctions.CheckSupportedPropertyType",
+            throw new MgInvalidPropertyTypeException(L"MgdFeatureNumericFunctions.CheckSupportedPropertyType",
                 __LINE__, __WFILE__, NULL, L"", NULL);
         }
     }
     return dataReader.Detach();
 }
 
-//MgDataReader* MgFeatureNumericFunctions::GetStringReader(std::vector<STRING>& distValues)
+//MgDataReader* MgdFeatureNumericFunctions::GetStringReader(std::vector<STRING>& distValues)
 //{
-//    MgDoubleDataReaderCreator* drCreator = new MgDoubleDataReaderCreator(m_propertyAlias);
+//    MgdDoubleDataReaderCreator* drCreator = new MgdDoubleDataReaderCreator(m_propertyAlias);
 //    Ptr<MgDataReader> dataReader = drCreator->Execute(distValues);
 //    delete drCreator;
 //
@@ -518,18 +518,18 @@ MgReader* MgFeatureNumericFunctions::GetReader(VECTOR& distValues)
 //}
 
 // Calculate Standard Deviation for the values
-void MgFeatureNumericFunctions::GetStandardDeviationCategories( VECTOR &values, int numCats,
+void MgdFeatureNumericFunctions::GetStandardDeviationCategories( VECTOR &values, int numCats,
                                                                 double dataMin, double dataMax,
                                                                 VECTOR &distValues)
 {
     // Expected categories should be more than zero
     if (numCats <= 0)
     {
-        STRING message = MgFeatureUtil::GetMessage(L"MgInvalidComputedProperty");
+        STRING message = MgdFeatureUtil::GetMessage(L"MgInvalidComputedProperty");
 
         MgStringCollection arguments;
         arguments.Add(message);
-        throw new MgFeatureServiceException(L"MgFeatureNumericFunctions::GetStandardDeviationCategories", __LINE__, __WFILE__, &arguments, L"", NULL);
+        throw new MgFeatureServiceException(L"MgdFeatureNumericFunctions::GetStandardDeviationCategories", __LINE__, __WFILE__, &arguments, L"", NULL);
     }
 
     // collect information about the data values
@@ -618,18 +618,18 @@ void MgFeatureNumericFunctions::GetStandardDeviationCategories( VECTOR &values, 
 
 
 // Calculate Quantile Distribution for the values
-void MgFeatureNumericFunctions::GetQuantileCategories(  VECTOR &values, int numCats,
+void MgdFeatureNumericFunctions::GetQuantileCategories(  VECTOR &values, int numCats,
                                                     double dataMin, double dataMax,
                                                     VECTOR &distValues )
 {
     // Expected categories should be more than zero
     if (numCats <= 0)
     {
-        STRING message = MgFeatureUtil::GetMessage(L"MgInvalidComputedProperty");
+        STRING message = MgdFeatureUtil::GetMessage(L"MgInvalidComputedProperty");
 
         MgStringCollection arguments;
         arguments.Add(message);
-        throw new MgFeatureServiceException(L"MgFeatureNumericFunctions::GetQuantileCategories", __LINE__, __WFILE__, &arguments, L"", NULL);
+        throw new MgFeatureServiceException(L"MgdFeatureNumericFunctions::GetQuantileCategories", __LINE__, __WFILE__, &arguments, L"", NULL);
     }
 
     int count = (int)values.size();
@@ -687,7 +687,7 @@ void MgFeatureNumericFunctions::GetQuantileCategories(  VECTOR &values, int numC
 }
 
 
-bool MgFeatureNumericFunctions::IsInf(double x)
+bool MgdFeatureNumericFunctions::IsInf(double x)
 {
     bool isInfinity = false;
 #ifdef _WIN32
@@ -703,7 +703,7 @@ bool MgFeatureNumericFunctions::IsInf(double x)
     return isInfinity;
 }
 
-bool MgFeatureNumericFunctions::IsNan(double x)
+bool MgdFeatureNumericFunctions::IsNan(double x)
 {
     bool isNan = false;
 #ifdef _WIN32
@@ -715,7 +715,7 @@ bool MgFeatureNumericFunctions::IsNan(double x)
 }
 
 // Calculate Standard Deviation for the values
-void MgFeatureNumericFunctions::GetStandardDeviation(VECTOR &values, VECTOR &distValues)
+void MgdFeatureNumericFunctions::GetStandardDeviation(VECTOR &values, VECTOR &distValues)
 {
     double mean = 0;
 
@@ -767,7 +767,7 @@ void MgFeatureNumericFunctions::GetStandardDeviation(VECTOR &values, VECTOR &dis
 }
 
 // Calculate average
-void MgFeatureNumericFunctions::GetMeanValue(VECTOR &values, VECTOR &distValues)
+void MgdFeatureNumericFunctions::GetMeanValue(VECTOR &values, VECTOR &distValues)
 {
     double mean = 0;
 
@@ -790,21 +790,21 @@ void MgFeatureNumericFunctions::GetMeanValue(VECTOR &values, VECTOR &distValues)
 }
 
 // Calculate average
-void MgFeatureNumericFunctions::GetUniqueValue(VECTOR &values, VECTOR &distValues)
+void MgdFeatureNumericFunctions::GetUniqueValue(VECTOR &values, VECTOR &distValues)
 {
-    MgUniqueFunction<double>::Execute(values, distValues);
+    MgdUniqueFunction<double>::Execute(values, distValues);
 }
 
-void MgFeatureNumericFunctions::GetUniqueValue(VECTOR_INT64 &values, VECTOR_INT64 &distValues)
+void MgdFeatureNumericFunctions::GetUniqueValue(VECTOR_INT64 &values, VECTOR_INT64 &distValues)
 {
-    MgUniqueFunction<INT64>::Execute(values, distValues);
+    MgdUniqueFunction<INT64>::Execute(values, distValues);
 }
 
 //-------------------------------------------------------------------------
 // Jenks' Optimization Method
 //
 //-------------------------------------------------------------------------
-void MgFeatureNumericFunctions::GetJenksCategories(  VECTOR &inputData, int numPartsRequested,
+void MgdFeatureNumericFunctions::GetJenksCategories(  VECTOR &inputData, int numPartsRequested,
                                                  double dataMin, double dataMax,
                                                  VECTOR &distValues )
 {
@@ -840,8 +840,8 @@ void MgFeatureNumericFunctions::GetJenksCategories(  VECTOR &inputData, int numP
     // Note that the Matrix constructors initialize all values to 0.
     // mat1 contains integer values used for indices into data
     // mat2 contains floating point values of data and bigNum
-    MgMatrix<int>     mat1(numObservations + 1, numPartsRequested + 1);
-    MgMatrix<double>  mat2(numObservations + 1, numPartsRequested + 1);
+    MgdMatrix<int>     mat1(numObservations + 1, numPartsRequested + 1);
+    MgdMatrix<double>  mat2(numObservations + 1, numPartsRequested + 1);
 
 //  const double bigNum = 1e+14; // from original BASIC code;
 //  const double bigNum = std::numeric_limits<double>::max();
@@ -960,7 +960,7 @@ void MgFeatureNumericFunctions::GetJenksCategories(  VECTOR &inputData, int numP
 // and the indices.
 // Return true if adjustments we made;
 // Return false if no changes were made.
-bool MgFeatureNumericFunctions::FixGroups(const std::vector<double>& data, std::vector<int>& indices)
+bool MgdFeatureNumericFunctions::FixGroups(const std::vector<double>& data, std::vector<int>& indices)
 {
     bool changed1 = FixDuplicateIndices(indices);
     bool changed2 = FixIndicesByValue(data, indices);
@@ -970,7 +970,7 @@ bool MgFeatureNumericFunctions::FixGroups(const std::vector<double>& data, std::
 
 
 //-----------------------------------------------------------------------------
-bool MgFeatureNumericFunctions::FixDuplicateIndices(std::vector<int>& indices)
+bool MgdFeatureNumericFunctions::FixDuplicateIndices(std::vector<int>& indices)
 {
     if (indices.size() <= 1)
     {
@@ -1002,7 +1002,7 @@ bool MgFeatureNumericFunctions::FixDuplicateIndices(std::vector<int>& indices)
 //-----------------------------------------------------------------------------
 // Examine the values specified by the indices.  If any of the values
 // are identical, then toss out the higher index.
-bool MgFeatureNumericFunctions::FixIndicesByValue(const std::vector<double>& data, std::vector<int>& indices)
+bool MgdFeatureNumericFunctions::FixIndicesByValue(const std::vector<double>& data, std::vector<int>& indices)
 {
     if (indices.size() <= 1)
     {
@@ -1030,7 +1030,7 @@ bool MgFeatureNumericFunctions::FixIndicesByValue(const std::vector<double>& dat
     return changed;
 }
 
-bool MgFeatureNumericFunctions::doubles_equal(double d1, double d2)
+bool MgdFeatureNumericFunctions::doubles_equal(double d1, double d2)
 {
     // We are doing our comparisons with a specific precision.
     const double epsilon = 1.0e-12;  // very small

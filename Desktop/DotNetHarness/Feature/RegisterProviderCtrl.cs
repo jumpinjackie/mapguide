@@ -34,7 +34,7 @@ namespace DotNetHarness.Feature
         {
             try
             {
-                var fact = new MgServiceFactory();
+                var fact = new MgdServiceFactory();
                 var featureSvc = (MgdFeatureService)fact.CreateService(MgServiceType.FeatureService);
                 featureSvc.RegisterProvider(txtProviderPath.Text);
                 MessageBox.Show("Success");

@@ -18,7 +18,7 @@
 #include "stdafx.h"
 #include "FdoFilterCollection.h"
 
-/*FDO_API*/ MgFdoFilterCollection* MgFdoFilterCollection::Create()
+/*FDO_API*/ MgdFdoFilterCollection* MgdFdoFilterCollection::Create()
 {
-    return new MgFdoFilterCollection();
+    return new MgdFdoFilterCollection();
 }

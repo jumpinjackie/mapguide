@@ -15,14 +15,14 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
-#ifndef MGLOGDETAIL_H_
-#define MGLOGDETAIL_H_
+#ifndef MgdLogDetiail_H_
+#define MgdLogDetiail_H_
 
 #include "MgDesktop.h"
 #include "LogManager.h"
 
 //
-// MgLogDetail maintains detailed information for both the Trace Log and the Error Log.
+// MgdLogDetiail maintains detailed information for both the Trace Log and the Error Log.
 // It also handles writing of the trace log based on information contained in serverconfig.ini
 //
 // [GeneralProperties]
@@ -36,9 +36,9 @@
 // Only error messages without parameters are logged for Resource Service, and
 // Error messages and warnings with parameters are logged for Feature Service
 //
-class MG_DESKTOP_API MgLogDetail
+class MG_DESKTOP_API MgdLogDetiail
 {
-    DECLARE_CLASSNAME(MgLogDetail)
+    DECLARE_CLASSNAME(MgdLogDetiail)
 
 public:
 /// Enumerations
@@ -69,8 +69,8 @@ public:
 
     // Defines a log entry for the specified service and detail level.  This entry will only be emitted
     // into trace log if the serverconfig.ini LogsDetail >= detail
-    MgLogDetail(INT32 serviceType, INT8 detail, CREFSTRING methodName, REFSTRING errorLogVar);
-    virtual ~MgLogDetail();
+    MgdLogDetiail(INT32 serviceType, INT8 detail, CREFSTRING methodName, REFSTRING errorLogVar);
+    virtual ~MgdLogDetiail();
 
 /// Methods
 

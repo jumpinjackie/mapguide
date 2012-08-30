@@ -28,7 +28,7 @@ CPPUNIT_TEST_SUITE_NAMED_REGISTRATION(TestRenderingService, "TestRenderingServic
 
 TestRenderingService::TestRenderingService()
 {
-    Ptr<MgServiceFactory> fact = new MgServiceFactory();
+    Ptr<MgdServiceFactory> fact = new MgdServiceFactory();
 
     // Initialize service objects.
     m_svcResource = static_cast<MgResourceService*>(fact->CreateService(MgServiceType::ResourceService));

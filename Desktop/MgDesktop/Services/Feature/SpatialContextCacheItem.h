@@ -4,21 +4,21 @@
 
 typedef std::map<STRING, STRING> MgSpatialContextInfo;
 
-class MgSpatialContextCacheItem : public MgGuardDisposable
+class MgdSpatialContextCacheItem : public MgGuardDisposable
 {
 /// Constructors/Destructor
 
 public:
 
-    MgSpatialContextCacheItem();
-    explicit MgSpatialContextCacheItem(MgSpatialContextInfo* spatialContextInfo);
-    virtual ~MgSpatialContextCacheItem();
+    MgdSpatialContextCacheItem();
+    explicit MgdSpatialContextCacheItem(MgSpatialContextInfo* spatialContextInfo);
+    virtual ~MgdSpatialContextCacheItem();
 
 private:
 
     // Unimplemented copy constructor and assignment operator.
-    MgSpatialContextCacheItem(const MgSpatialContextCacheItem&);
-    MgSpatialContextCacheItem& operator=(const MgSpatialContextCacheItem&);
+    MgdSpatialContextCacheItem(const MgdSpatialContextCacheItem&);
+    MgdSpatialContextCacheItem& operator=(const MgdSpatialContextCacheItem&);
 
 protected:
     virtual void Dispose() { delete this; }
@@ -39,7 +39,7 @@ private:
 
 /// Inline Methods
 
-inline MgSpatialContextInfo* MgSpatialContextCacheItem::Get()
+inline MgSpatialContextInfo* MgdSpatialContextCacheItem::Get()
 {
     return m_spatialContextInfo.get();
 }

@@ -15,13 +15,13 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
-#ifndef _MGFEATURESERVICECOMMAND_H_
-#define _MGFEATURESERVICECOMMAND_H_
+#ifndef _MgdFeatureServiceCommand_H_
+#define _MgdFeatureServiceCommand_H_
 
-class MgFeatureServiceCommand : public MgDisposable
+class MgdFeatureServiceCommand : public MgDisposable
 {
 public:
-    static MgFeatureServiceCommand* CreateCommand(MgResourceIdentifier* resource, FdoCommandType commandType);
+    static MgdFeatureServiceCommand* CreateCommand(MgResourceIdentifier* resource, FdoCommandType commandType);
 
     virtual FdoIdentifierCollection* GetPropertyNames() = 0;
 

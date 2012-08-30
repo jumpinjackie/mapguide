@@ -88,16 +88,16 @@ bool TestLogManager::CreateFile(STRING filename, STRING contents)
 ///----------------------------------------------------------------------------
 /// Test Case Description:
 ///
-/// This test case checks to see if there is a valid MgLogManager and that
-/// there is only 1 MgLogManager.
+/// This test case checks to see if there is a valid MgdLogManager and that
+/// there is only 1 MgdLogManager.
 ///----------------------------------------------------------------------------
 void TestLogManager::TestCase_ValidLogManager()
 {
-    MgLogManager* pMgLogManager = MgLogManager::GetInstance();
-    CPPUNIT_ASSERT(pMgLogManager != NULL);
+    MgdLogManager* pMgdLogManager = MgdLogManager::GetInstance();
+    CPPUNIT_ASSERT(pMgdLogManager != NULL);
 
-    MgLogManager* pMgLogManager2 = MgLogManager::GetInstance();
-    CPPUNIT_ASSERT(pMgLogManager == pMgLogManager2);
+    MgdLogManager* pMgdLogManager2 = MgdLogManager::GetInstance();
+    CPPUNIT_ASSERT(pMgdLogManager == pMgdLogManager2);
 }
 
 ///----------------------------------------------------------------------------
@@ -107,8 +107,8 @@ void TestLogManager::TestCase_ValidLogManager()
 ///----------------------------------------------------------------------------
 void TestLogManager::TestCase_GetLogsPath()
 {
-    MgLogManager* pMgLogManager = MgLogManager::GetInstance();
-    CREFSTRING path = pMgLogManager->GetLogsPath();
+    MgdLogManager* pMgdLogManager = MgdLogManager::GetInstance();
+    CREFSTRING path = pMgdLogManager->GetLogsPath();
 
     CPPUNIT_ASSERT(path.length() > 0);
 }
@@ -149,16 +149,16 @@ void TestLogManager::TestCase_EnumerateLogs()
 {
     try
     {
-        MgLogManager* pMgLogManager = MgLogManager::GetInstance();
+        MgdLogManager* pMgdLogManager = MgdLogManager::GetInstance();
 
         // Create a few files
-        STRING path = pMgLogManager->GetLogsPath();
+        STRING path = pMgdLogManager->GetLogsPath();
         CreateFile(path + TestName, L"");
         CreateFile(path + JunkName, L"");
         CreateFile(path + TestName2, L"");
         CreateFile(path + JunkName2, L"");
 
-        Ptr<MgPropertyCollection> logs = pMgLogManager->EnumerateLogs();
+        Ptr<MgPropertyCollection> logs = pMgdLogManager->EnumerateLogs();
 
         // Make sure the files show up in the enumeration
         Ptr<MgStringProperty> testNameProp = new MgStringProperty(L"LogNameProperty", TestName);
@@ -193,15 +193,15 @@ void TestLogManager::TestCase_DeleteLog()
 {
     try
     {
-        MgLogManager* pMgLogManager = MgLogManager::GetInstance();
+        MgdLogManager* pMgdLogManager = MgdLogManager::GetInstance();
 
-        pMgLogManager->DeleteLog(TestName);
-        pMgLogManager->DeleteLog(NewTestName);
-        pMgLogManager->DeleteLog(JunkName);
-        pMgLogManager->DeleteLog(TestName2);
-        pMgLogManager->DeleteLog(JunkName2);
+        pMgdLogManager->DeleteLog(TestName);
+        pMgdLogManager->DeleteLog(NewTestName);
+        pMgdLogManager->DeleteLog(JunkName);
+        pMgdLogManager->DeleteLog(TestName2);
+        pMgdLogManager->DeleteLog(JunkName2);
 
-        Ptr<MgPropertyCollection> logs = pMgLogManager->EnumerateLogs();
+        Ptr<MgPropertyCollection> logs = pMgdLogManager->EnumerateLogs();
 
         CPPUNIT_ASSERT(!logs->Contains(TestName));
         CPPUNIT_ASSERT(!logs->Contains(NewTestName));
@@ -230,26 +230,26 @@ void TestLogManager::TestCase_RenameLog()
 {
     try
     {
-        MgLogManager* pMgLogManager = MgLogManager::GetInstance();
+        MgdLogManager* pMgdLogManager = MgdLogManager::GetInstance();
 
         // Create test file
-        STRING path = pMgLogManager->GetLogsPath();
+        STRING path = pMgdLogManager->GetLogsPath();
         CreateFile(path + TestName, L"");
 
         // Rename the test file
-        pMgLogManager->RenameLog(TestName, NewTestName);
+        pMgdLogManager->RenameLog(TestName, NewTestName);
 
-        Ptr<MgPropertyCollection> logs = pMgLogManager->EnumerateLogs();
+        Ptr<MgPropertyCollection> logs = pMgdLogManager->EnumerateLogs();
 
         Ptr<MgStringProperty> newTestNameProp = new MgStringProperty(L"LogNameProperty", NewTestName);
         CPPUNIT_ASSERT(logs->Contains(newTestNameProp));
 
-        CPPUNIT_ASSERT_THROW_MG(pMgLogManager->RenameLog(L"", NewTestName), MgNullArgumentException*);
-        CPPUNIT_ASSERT_THROW_MG(pMgLogManager->RenameLog(NewTestName, L""), MgNullArgumentException*);
-        CPPUNIT_ASSERT_THROW_MG(pMgLogManager->RenameLog(TestName, TestName), MgDuplicateFileException*);
-        CPPUNIT_ASSERT_THROW_MG(pMgLogManager->RenameLog(L"DoesNotExist.log", L"NewDoesNotExist.log"), MgFileNotFoundException*);
+        CPPUNIT_ASSERT_THROW_MG(pMgdLogManager->RenameLog(L"", NewTestName), MgNullArgumentException*);
+        CPPUNIT_ASSERT_THROW_MG(pMgdLogManager->RenameLog(NewTestName, L""), MgNullArgumentException*);
+        CPPUNIT_ASSERT_THROW_MG(pMgdLogManager->RenameLog(TestName, TestName), MgDuplicateFileException*);
+        CPPUNIT_ASSERT_THROW_MG(pMgdLogManager->RenameLog(L"DoesNotExist.log", L"NewDoesNotExist.log"), MgFileNotFoundException*);
 #ifdef _WIN32
-        CPPUNIT_ASSERT_THROW_MG(pMgLogManager->RenameLog(NewTestName, L"?"), MgInvalidArgumentException*);
+        CPPUNIT_ASSERT_THROW_MG(pMgdLogManager->RenameLog(NewTestName, L"?"), MgInvalidArgumentException*);
 #endif
     }
     catch (MgException* e)
@@ -273,21 +273,21 @@ void TestLogManager::TestCase_SetAccessLogInfo()
 {
     try
     {
-        MgLogManager* pMgLogManager = MgLogManager::GetInstance();
+        MgdLogManager* pMgdLogManager = MgdLogManager::GetInstance();
 
         // Save original information
-        bool bOriginalEnabled = pMgLogManager->IsAccessLogEnabled();
-        STRING originalName = pMgLogManager->GetAccessLogFileName();
-        STRING originalParams = pMgLogManager->GetAccessLogParameters();
+        bool bOriginalEnabled = pMgdLogManager->IsAccessLogEnabled();
+        STRING originalName = pMgdLogManager->GetAccessLogFileName();
+        STRING originalParams = pMgdLogManager->GetAccessLogParameters();
 
-        pMgLogManager->SetAccessLogInfo(false, TestName, TestParameters);
+        pMgdLogManager->SetAccessLogInfo(false, TestName, TestParameters);
 
-        bool bEnabled = pMgLogManager->IsAccessLogEnabled();
-        STRING name = pMgLogManager->GetAccessLogFileName();
-        STRING params = pMgLogManager->GetAccessLogParameters();
+        bool bEnabled = pMgdLogManager->IsAccessLogEnabled();
+        STRING name = pMgdLogManager->GetAccessLogFileName();
+        STRING params = pMgdLogManager->GetAccessLogParameters();
 
         // Restore original info
-        pMgLogManager->SetAccessLogInfo(bOriginalEnabled, originalName, originalParams);
+        pMgdLogManager->SetAccessLogInfo(bOriginalEnabled, originalName, originalParams);
 
         CPPUNIT_ASSERT(bEnabled == false);
         CPPUNIT_ASSERT(wcscmp(name.c_str(), TestName) == 0);
@@ -314,8 +314,8 @@ void TestLogManager::TestCase_ClearAccessLog()
 {
     try
     {
-        MgLogManager* pMgLogManager = MgLogManager::GetInstance();
-        bool bResult = pMgLogManager->ClearAccessLog();
+        MgdLogManager* pMgdLogManager = MgdLogManager::GetInstance();
+        bool bResult = pMgdLogManager->ClearAccessLog();
         CPPUNIT_ASSERT(bResult);
     }
     catch (MgException* e)
@@ -337,10 +337,10 @@ void TestLogManager::TestCase_ClearAccessLog()
 ///----------------------------------------------------------------------------
 void TestLogManager::TestCase_GetAccessLog()
 {
-    MgLogManager* pMgLogManager = MgLogManager::GetInstance();
-    STRING path = pMgLogManager->GetLogsPath();
-    STRING originalName = pMgLogManager->GetAccessLogFileName();
-    pMgLogManager->SetAccessLogFileName(TestName);
+    MgdLogManager* pMgdLogManager = MgdLogManager::GetInstance();
+    STRING path = pMgdLogManager->GetLogsPath();
+    STRING originalName = pMgdLogManager->GetAccessLogFileName();
+    pMgdLogManager->SetAccessLogFileName(TestName);
 
     STRING contents = Entry1 + Entry2 + Entry3 + Entry4 + LastEntry;
     CreateFile(path + TestName, contents);
@@ -351,23 +351,23 @@ void TestLogManager::TestCase_GetAccessLog()
     try
     {
         Ptr<MgByteReader> byteReader;
-        byteReader = pMgLogManager->GetAccessLog();
+        byteReader = pMgdLogManager->GetAccessLog();
         logContents = MgUtil::MultiByteToWideChar(MgUtil::GetTextFromReader(byteReader));
-        byteReader = pMgLogManager->GetAccessLog(1);
+        byteReader = pMgdLogManager->GetAccessLog(1);
         lastLogEntry = MgUtil::MultiByteToWideChar(MgUtil::GetTextFromReader(byteReader));
 
-        pMgLogManager->SetAccessLogFileName(originalName);
+        pMgdLogManager->SetAccessLogFileName(originalName);
     }
     catch (MgException* e)
     {
-        pMgLogManager->SetAccessLogFileName(originalName);
+        pMgdLogManager->SetAccessLogFileName(originalName);
         STRING message = e->GetDetails(TEST_LOCALE);
         SAFE_RELEASE(e);
         CPPUNIT_FAIL(MG_WCHAR_TO_CHAR(message.c_str()));
     }
     catch (...)
     {
-        pMgLogManager->SetAccessLogFileName(originalName);
+        pMgdLogManager->SetAccessLogFileName(originalName);
         throw;
     }
 
@@ -382,10 +382,10 @@ void TestLogManager::TestCase_GetAccessLog()
 ///----------------------------------------------------------------------------
 void TestLogManager::TestCase_GetAccessLogByDate()
 {
-    MgLogManager* pMgLogManager = MgLogManager::GetInstance();
-    STRING path = pMgLogManager->GetLogsPath();
-    STRING originalName = pMgLogManager->GetAccessLogFileName();
-    pMgLogManager->SetAccessLogFileName(DynamicTestName);
+    MgdLogManager* pMgdLogManager = MgdLogManager::GetInstance();
+    STRING path = pMgdLogManager->GetLogsPath();
+    STRING originalName = pMgdLogManager->GetAccessLogFileName();
+    pMgdLogManager->SetAccessLogFileName(DynamicTestName);
 
     STRING contents = Entry1 + Entry2 + Entry3 + Entry4;
     CreateFile(path + DynamicTestNameDate1, contents);
@@ -403,86 +403,86 @@ void TestLogManager::TestCase_GetAccessLogByDate()
         // from & to dates are at exact time an entry was made
         fromDate = new MgDateTime(2005, 3, 7, 16, 51, 13, 0);
         toDate = new MgDateTime(2005, 3, 7, 16, 54, 19, 0);
-        byteReader = pMgLogManager->GetAccessLog(fromDate, toDate);
+        byteReader = pMgdLogManager->GetAccessLog(fromDate, toDate);
         logContents = MgUtil::MultiByteToWideChar(MgUtil::GetTextFromReader(byteReader));
         CPPUNIT_ASSERT(logContents == (Entry1 + Entry2 + Entry3));
 
         // from & to date are the same and at exact time an entry was made
         fromDate = new MgDateTime(2005, 3, 7, 16, 51, 13, 0);
         toDate = new MgDateTime(2005, 3, 7, 16, 51, 13, 0);
-        byteReader = pMgLogManager->GetAccessLog(fromDate, toDate);
+        byteReader = pMgdLogManager->GetAccessLog(fromDate, toDate);
         logContents = MgUtil::MultiByteToWideChar(MgUtil::GetTextFromReader(byteReader));
         CPPUNIT_ASSERT(logContents == Entry1);
 
         // from & to date are the same and not at exact time an entry was made
         fromDate = new MgDateTime(2005, 3, 7, 16, 52, 0, 0);
         toDate = new MgDateTime(2005, 3, 7, 16, 52, 0, 0);
-        byteReader = pMgLogManager->GetAccessLog(fromDate, toDate);
+        byteReader = pMgdLogManager->GetAccessLog(fromDate, toDate);
         logContents = MgUtil::MultiByteToWideChar(MgUtil::GetTextFromReader(byteReader));
         CPPUNIT_ASSERT(logContents.length() == 0);
 
         // from & to dates are at not at exact times an entry was made
         fromDate = new MgDateTime(2005, 3, 7, 16, 52, 0, 0);
         toDate = new MgDateTime(2005, 3, 7, 16, 56, 0, 0);
-        byteReader = pMgLogManager->GetAccessLog(fromDate, toDate);
+        byteReader = pMgdLogManager->GetAccessLog(fromDate, toDate);
         logContents = MgUtil::MultiByteToWideChar(MgUtil::GetTextFromReader(byteReader));
         CPPUNIT_ASSERT(logContents == (Entry2 + Entry3 + Entry4));
 
         // spans two different files
         fromDate = new MgDateTime(2005, 3, 7, 16, 52, 0, 0);
         toDate = new MgDateTime(2005, 3, 8, 1, 0, 0, 0);
-        byteReader = pMgLogManager->GetAccessLog(fromDate, toDate);
+        byteReader = pMgdLogManager->GetAccessLog(fromDate, toDate);
         logContents = MgUtil::MultiByteToWideChar(MgUtil::GetTextFromReader(byteReader));
         CPPUNIT_ASSERT(logContents == (Entry2 + Entry3 + Entry4 + LastEntry));
 
         // spans two different files, the first of which doesn't exist
         fromDate = new MgDateTime(2005, 3, 6, 23, 59, 59, 0);
         toDate = new MgDateTime(2005, 3, 7, 16, 52, 0, 0);
-        byteReader = pMgLogManager->GetAccessLog(fromDate, toDate);
+        byteReader = pMgdLogManager->GetAccessLog(fromDate, toDate);
         logContents = MgUtil::MultiByteToWideChar(MgUtil::GetTextFromReader(byteReader));
         CPPUNIT_ASSERT(logContents == Entry1);
 
         // spans two different files, the second of which doesn't exist
         fromDate = new MgDateTime(2005, 3, 8, 0, 0, 0, 0);
         toDate = new MgDateTime(2005, 3, 9, 0, 0, 0, 0);
-        byteReader = pMgLogManager->GetAccessLog(fromDate, toDate);
+        byteReader = pMgdLogManager->GetAccessLog(fromDate, toDate);
         logContents = MgUtil::MultiByteToWideChar(MgUtil::GetTextFromReader(byteReader));
         CPPUNIT_ASSERT(logContents == LastEntry);
 
         // from date is after the latest entry in the log files
         fromDate = new MgDateTime(2006, 1, 1, 1, 0, 0, 0);
         toDate = new MgDateTime(2006, 1, 1, 1, 0, 0, 0);
-        byteReader = pMgLogManager->GetAccessLog(fromDate, toDate);
+        byteReader = pMgdLogManager->GetAccessLog(fromDate, toDate);
         logContents = MgUtil::MultiByteToWideChar(MgUtil::GetTextFromReader(byteReader));
         CPPUNIT_ASSERT(logContents.length() == 0);
 
         // Use a null value for the date
-        CPPUNIT_ASSERT_THROW_MG(pMgLogManager->GetAccessLog(NULL, toDate), MgNullArgumentException*);
+        CPPUNIT_ASSERT_THROW_MG(pMgdLogManager->GetAccessLog(NULL, toDate), MgNullArgumentException*);
 
         // Use dates more than 24 hours apart
         fromDate = new MgDateTime(2005, 2, 18, 14, 0, 0, 0);
         toDate = new MgDateTime(2005, 2, 19, 18, 0, 0, 0);
-        CPPUNIT_ASSERT_THROW_MG(pMgLogManager->GetAccessLog(fromDate, toDate), MgInvalidArgumentException*);
+        CPPUNIT_ASSERT_THROW_MG(pMgdLogManager->GetAccessLog(fromDate, toDate), MgInvalidArgumentException*);
 
         // Search a log file with an invalid log entry as the first entry
         CreateFile(path + JunkName, L"asdfasdfasdf");
-        pMgLogManager->SetAccessLogFileName(JunkName);
+        pMgdLogManager->SetAccessLogFileName(JunkName);
         fromDate = new MgDateTime(2005, 3, 8, 0, 0, 0, 0);
         toDate = new MgDateTime(2005, 3, 9, 0, 0, 0, 0);
-        CPPUNIT_ASSERT_THROW_MG(pMgLogManager->GetAccessLog(fromDate, toDate), MgInvalidLogEntryException*);
+        CPPUNIT_ASSERT_THROW_MG(pMgdLogManager->GetAccessLog(fromDate, toDate), MgdInvalidLogEntryException*);
 
-        pMgLogManager->SetAccessLogFileName(originalName);
+        pMgdLogManager->SetAccessLogFileName(originalName);
     }
     catch (MgException* e)
     {
-        pMgLogManager->SetAccessLogFileName(originalName);
+        pMgdLogManager->SetAccessLogFileName(originalName);
         STRING message = e->GetDetails(TEST_LOCALE);
         SAFE_RELEASE(e);
         CPPUNIT_FAIL(MG_WCHAR_TO_CHAR(message.c_str()));
     }
     catch (...)
     {
-        pMgLogManager->SetAccessLogFileName(originalName);
+        pMgdLogManager->SetAccessLogFileName(originalName);
         throw;
     }
 }
@@ -495,8 +495,8 @@ void TestLogManager::TestCase_GetAccessLogByDate()
 ///----------------------------------------------------------------------------
 void TestLogManager::TestCase_GetAccessLogInvalid()
 {
-    MgLogManager* pMgLogManager = MgLogManager::GetInstance();
-    CPPUNIT_ASSERT_THROW_MG(pMgLogManager->GetAccessLog(-1), MgArgumentOutOfRangeException*);
+    MgdLogManager* pMgdLogManager = MgdLogManager::GetInstance();
+    CPPUNIT_ASSERT_THROW_MG(pMgdLogManager->GetAccessLog(-1), MgArgumentOutOfRangeException*);
 }
 
 ///----------------------------------------------------------------------------
@@ -508,21 +508,21 @@ void TestLogManager::TestCase_SetAdminLogInfo()
 {
     try
     {
-        MgLogManager* pMgLogManager = MgLogManager::GetInstance();
+        MgdLogManager* pMgdLogManager = MgdLogManager::GetInstance();
 
         // Save original information
-        bool bOriginalEnabled = pMgLogManager->IsAdminLogEnabled();
-        STRING originalName = pMgLogManager->GetAdminLogFileName();
-        STRING originalParams = pMgLogManager->GetAdminLogParameters();
+        bool bOriginalEnabled = pMgdLogManager->IsAdminLogEnabled();
+        STRING originalName = pMgdLogManager->GetAdminLogFileName();
+        STRING originalParams = pMgdLogManager->GetAdminLogParameters();
 
-        pMgLogManager->SetAdminLogInfo(false, TestName, TestParameters);
+        pMgdLogManager->SetAdminLogInfo(false, TestName, TestParameters);
 
-        bool bEnabled = pMgLogManager->IsAdminLogEnabled();
-        STRING name = pMgLogManager->GetAdminLogFileName();
-        STRING params = pMgLogManager->GetAdminLogParameters();
+        bool bEnabled = pMgdLogManager->IsAdminLogEnabled();
+        STRING name = pMgdLogManager->GetAdminLogFileName();
+        STRING params = pMgdLogManager->GetAdminLogParameters();
 
         // Restore original info
-        pMgLogManager->SetAdminLogInfo(bOriginalEnabled, originalName, originalParams);
+        pMgdLogManager->SetAdminLogInfo(bOriginalEnabled, originalName, originalParams);
 
         CPPUNIT_ASSERT(bEnabled == false);
         CPPUNIT_ASSERT(wcscmp(name.c_str(), TestName) == 0);
@@ -549,8 +549,8 @@ void TestLogManager::TestCase_ClearAdminLog()
 {
     try
     {
-        MgLogManager* pMgLogManager = MgLogManager::GetInstance();
-        bool bResult = pMgLogManager->ClearAdminLog();
+        MgdLogManager* pMgdLogManager = MgdLogManager::GetInstance();
+        bool bResult = pMgdLogManager->ClearAdminLog();
         CPPUNIT_ASSERT(bResult);
     }
     catch (MgException* e)
@@ -572,10 +572,10 @@ void TestLogManager::TestCase_ClearAdminLog()
 ///----------------------------------------------------------------------------
 void TestLogManager::TestCase_GetAdminLog()
 {
-    MgLogManager* pMgLogManager = MgLogManager::GetInstance();
-    STRING path = pMgLogManager->GetLogsPath();
-    STRING originalName = pMgLogManager->GetAdminLogFileName();
-    pMgLogManager->SetAdminLogFileName(TestName);
+    MgdLogManager* pMgdLogManager = MgdLogManager::GetInstance();
+    STRING path = pMgdLogManager->GetLogsPath();
+    STRING originalName = pMgdLogManager->GetAdminLogFileName();
+    pMgdLogManager->SetAdminLogFileName(TestName);
 
     STRING contents = Entry1 + Entry2 + Entry3 + Entry4 + LastEntry;
     CreateFile(path + TestName, contents);
@@ -585,22 +585,22 @@ void TestLogManager::TestCase_GetAdminLog()
 
     try
     {
-        Ptr<MgByteReader> byteReader = pMgLogManager->GetAdminLog();
+        Ptr<MgByteReader> byteReader = pMgdLogManager->GetAdminLog();
         logContents = MgUtil::MultiByteToWideChar(MgUtil::GetTextFromReader(byteReader));
-        byteReader = pMgLogManager->GetAdminLog(1);
+        byteReader = pMgdLogManager->GetAdminLog(1);
         lastLogEntry = MgUtil::MultiByteToWideChar(MgUtil::GetTextFromReader(byteReader));
-        pMgLogManager->SetAdminLogFileName(originalName);
+        pMgdLogManager->SetAdminLogFileName(originalName);
     }
     catch (MgException* e)
     {
-        pMgLogManager->SetAdminLogFileName(originalName);
+        pMgdLogManager->SetAdminLogFileName(originalName);
         STRING message = e->GetDetails(TEST_LOCALE);
         SAFE_RELEASE(e);
         CPPUNIT_FAIL(MG_WCHAR_TO_CHAR(message.c_str()));
     }
     catch (...)
     {
-        pMgLogManager->SetAdminLogFileName(originalName);
+        pMgdLogManager->SetAdminLogFileName(originalName);
         throw;
     }
 
@@ -615,10 +615,10 @@ void TestLogManager::TestCase_GetAdminLog()
 ///----------------------------------------------------------------------------
 void TestLogManager::TestCase_GetAdminLogByDate()
 {
-    MgLogManager* pMgLogManager = MgLogManager::GetInstance();
-    STRING path = pMgLogManager->GetLogsPath();
-    STRING originalName = pMgLogManager->GetAdminLogFileName();
-    pMgLogManager->SetAdminLogFileName(DynamicTestName);
+    MgdLogManager* pMgdLogManager = MgdLogManager::GetInstance();
+    STRING path = pMgdLogManager->GetLogsPath();
+    STRING originalName = pMgdLogManager->GetAdminLogFileName();
+    pMgdLogManager->SetAdminLogFileName(DynamicTestName);
 
     STRING contents = Entry1 + Entry2 + Entry3 + Entry4;
     CreateFile(path + DynamicTestNameDate1, contents);
@@ -636,65 +636,65 @@ void TestLogManager::TestCase_GetAdminLogByDate()
         // from & to dates are at exact time an entry was made
         fromDate = new MgDateTime(2005, 3, 7, 16, 51, 13, 0);
         toDate = new MgDateTime(2005, 3, 7, 16, 54, 19, 0);
-        byteReader = pMgLogManager->GetAdminLog(fromDate, toDate);
+        byteReader = pMgdLogManager->GetAdminLog(fromDate, toDate);
         logContents = MgUtil::MultiByteToWideChar(MgUtil::GetTextFromReader(byteReader));
         CPPUNIT_ASSERT(logContents == (Entry1 + Entry2 + Entry3));
 
         // from & to date are the same and at exact time an entry was made
         fromDate = new MgDateTime(2005, 3, 7, 16, 51, 13, 0);
         toDate = new MgDateTime(2005, 3, 7, 16, 51, 13, 0);
-        byteReader = pMgLogManager->GetAdminLog(fromDate, toDate);
+        byteReader = pMgdLogManager->GetAdminLog(fromDate, toDate);
         logContents = MgUtil::MultiByteToWideChar(MgUtil::GetTextFromReader(byteReader));
         CPPUNIT_ASSERT(logContents == Entry1);
 
         // from & to date are the same and not at exact time an entry was made
         fromDate = new MgDateTime(2005, 3, 7, 16, 52, 0, 0);
         toDate = new MgDateTime(2005, 3, 7, 16, 52, 0, 0);
-        byteReader = pMgLogManager->GetAdminLog(fromDate, toDate);
+        byteReader = pMgdLogManager->GetAdminLog(fromDate, toDate);
         logContents = MgUtil::MultiByteToWideChar(MgUtil::GetTextFromReader(byteReader));
         CPPUNIT_ASSERT(logContents.length() == 0);
 
         // from & to dates are at not at exact times an entry was made
         fromDate = new MgDateTime(2005, 3, 7, 16, 52, 0, 0);
         toDate = new MgDateTime(2005, 3, 7, 16, 56, 0, 0);
-        byteReader = pMgLogManager->GetAdminLog(fromDate, toDate);
+        byteReader = pMgdLogManager->GetAdminLog(fromDate, toDate);
         logContents = MgUtil::MultiByteToWideChar(MgUtil::GetTextFromReader(byteReader));
         CPPUNIT_ASSERT(logContents == (Entry2 + Entry3 + Entry4));
 
         // spans two different files, the second of which doesn't exist
         fromDate = new MgDateTime(2005, 3, 8, 0, 0, 0, 0);
         toDate = new MgDateTime(2005, 3, 9, 0, 0, 0, 0);
-        byteReader = pMgLogManager->GetAdminLog(fromDate, toDate);
+        byteReader = pMgdLogManager->GetAdminLog(fromDate, toDate);
         logContents = MgUtil::MultiByteToWideChar(MgUtil::GetTextFromReader(byteReader));
         CPPUNIT_ASSERT(logContents == LastEntry);
 
         // from date is after the latest entry in the log files
         fromDate = new MgDateTime(2006, 1, 1, 1, 0, 0, 0);
         toDate = new MgDateTime(2006, 1, 1, 1, 0, 0, 0);
-        byteReader = pMgLogManager->GetAdminLog(fromDate, toDate);
+        byteReader = pMgdLogManager->GetAdminLog(fromDate, toDate);
         logContents = MgUtil::MultiByteToWideChar(MgUtil::GetTextFromReader(byteReader));
         CPPUNIT_ASSERT(logContents.length() == 0);
 
         // Use a null value for the date
-        CPPUNIT_ASSERT_THROW_MG(pMgLogManager->GetAdminLog(NULL, toDate), MgNullArgumentException*);
+        CPPUNIT_ASSERT_THROW_MG(pMgdLogManager->GetAdminLog(NULL, toDate), MgNullArgumentException*);
 
         // Use dates more than 24 hours apart
         fromDate = new MgDateTime(2005, 2, 18, 14, 0, 0, 0);
         toDate = new MgDateTime(2005, 2, 19, 18, 0, 0, 0);
-        CPPUNIT_ASSERT_THROW_MG(pMgLogManager->GetAdminLog(fromDate, toDate), MgInvalidArgumentException*);
+        CPPUNIT_ASSERT_THROW_MG(pMgdLogManager->GetAdminLog(fromDate, toDate), MgInvalidArgumentException*);
 
-        pMgLogManager->SetAdminLogFileName(originalName);
+        pMgdLogManager->SetAdminLogFileName(originalName);
     }
     catch (MgException* e)
     {
-        pMgLogManager->SetAdminLogFileName(originalName);
+        pMgdLogManager->SetAdminLogFileName(originalName);
         STRING message = e->GetDetails(TEST_LOCALE);
         SAFE_RELEASE(e);
         CPPUNIT_FAIL(MG_WCHAR_TO_CHAR(message.c_str()));
     }
     catch (...)
     {
-        pMgLogManager->SetAdminLogFileName(originalName);
+        pMgdLogManager->SetAdminLogFileName(originalName);
         throw;
     }
 }
@@ -707,8 +707,8 @@ void TestLogManager::TestCase_GetAdminLogByDate()
 ///----------------------------------------------------------------------------
 void TestLogManager::TestCase_GetAdminLogInvalid()
 {
-    MgLogManager* pMgLogManager = MgLogManager::GetInstance();
-    CPPUNIT_ASSERT_THROW_MG(pMgLogManager->GetAdminLog(-1), MgArgumentOutOfRangeException*);
+    MgdLogManager* pMgdLogManager = MgdLogManager::GetInstance();
+    CPPUNIT_ASSERT_THROW_MG(pMgdLogManager->GetAdminLog(-1), MgArgumentOutOfRangeException*);
 }
 
 ///----------------------------------------------------------------------------
@@ -720,21 +720,21 @@ void TestLogManager::TestCase_SetAuthenticationLogInfo()
 {
     try
     {
-        MgLogManager* pMgLogManager = MgLogManager::GetInstance();
+        MgdLogManager* pMgdLogManager = MgdLogManager::GetInstance();
 
         // Save original information
-        bool bOriginalEnabled = pMgLogManager->IsAuthenticationLogEnabled();
-        STRING originalName = pMgLogManager->GetAuthenticationLogFileName();
-        STRING originalParams = pMgLogManager->GetAuthenticationLogParameters();
+        bool bOriginalEnabled = pMgdLogManager->IsAuthenticationLogEnabled();
+        STRING originalName = pMgdLogManager->GetAuthenticationLogFileName();
+        STRING originalParams = pMgdLogManager->GetAuthenticationLogParameters();
 
-        pMgLogManager->SetAuthenticationLogInfo(false, TestName, TestParameters);
+        pMgdLogManager->SetAuthenticationLogInfo(false, TestName, TestParameters);
 
-        bool bEnabled = pMgLogManager->IsAuthenticationLogEnabled();
-        STRING name = pMgLogManager->GetAuthenticationLogFileName();
-        STRING params = pMgLogManager->GetAuthenticationLogParameters();
+        bool bEnabled = pMgdLogManager->IsAuthenticationLogEnabled();
+        STRING name = pMgdLogManager->GetAuthenticationLogFileName();
+        STRING params = pMgdLogManager->GetAuthenticationLogParameters();
 
         // Restore original info
-        pMgLogManager->SetAuthenticationLogInfo(bOriginalEnabled, originalName, originalParams);
+        pMgdLogManager->SetAuthenticationLogInfo(bOriginalEnabled, originalName, originalParams);
 
         CPPUNIT_ASSERT(bEnabled == false);
         CPPUNIT_ASSERT(wcscmp(name.c_str(), TestName) == 0);
@@ -761,8 +761,8 @@ void TestLogManager::TestCase_ClearAuthenticationLog()
 {
     try
     {
-        MgLogManager* pMgLogManager = MgLogManager::GetInstance();
-        bool bResult = pMgLogManager->ClearAuthenticationLog();
+        MgdLogManager* pMgdLogManager = MgdLogManager::GetInstance();
+        bool bResult = pMgdLogManager->ClearAuthenticationLog();
         CPPUNIT_ASSERT(bResult);
     }
     catch (MgException* e)
@@ -784,10 +784,10 @@ void TestLogManager::TestCase_ClearAuthenticationLog()
 ///----------------------------------------------------------------------------
 void TestLogManager::TestCase_GetAuthenticationLog()
 {
-    MgLogManager* pMgLogManager = MgLogManager::GetInstance();
-    STRING path = pMgLogManager->GetLogsPath();
-    STRING originalName = pMgLogManager->GetAuthenticationLogFileName();
-    pMgLogManager->SetAuthenticationLogFileName(TestName);
+    MgdLogManager* pMgdLogManager = MgdLogManager::GetInstance();
+    STRING path = pMgdLogManager->GetLogsPath();
+    STRING originalName = pMgdLogManager->GetAuthenticationLogFileName();
+    pMgdLogManager->SetAuthenticationLogFileName(TestName);
 
     STRING contents = Entry1 + Entry2 + Entry3 + Entry4 + LastEntry;
     CreateFile(path + TestName, contents);
@@ -797,22 +797,22 @@ void TestLogManager::TestCase_GetAuthenticationLog()
 
     try
     {
-        Ptr<MgByteReader> byteReader = pMgLogManager->GetAuthenticationLog();
+        Ptr<MgByteReader> byteReader = pMgdLogManager->GetAuthenticationLog();
         logContents = MgUtil::MultiByteToWideChar(MgUtil::GetTextFromReader(byteReader));
-        byteReader = pMgLogManager->GetAuthenticationLog(1);
+        byteReader = pMgdLogManager->GetAuthenticationLog(1);
         lastLogEntry = MgUtil::MultiByteToWideChar(MgUtil::GetTextFromReader(byteReader));
-        pMgLogManager->SetAuthenticationLogFileName(originalName);
+        pMgdLogManager->SetAuthenticationLogFileName(originalName);
     }
     catch (MgException* e)
     {
-        pMgLogManager->SetAuthenticationLogFileName(originalName);
+        pMgdLogManager->SetAuthenticationLogFileName(originalName);
         STRING message = e->GetDetails(TEST_LOCALE);
         SAFE_RELEASE(e);
         CPPUNIT_FAIL(MG_WCHAR_TO_CHAR(message.c_str()));
     }
     catch (...)
     {
-        pMgLogManager->SetAuthenticationLogFileName(originalName);
+        pMgdLogManager->SetAuthenticationLogFileName(originalName);
         throw;
     }
 
@@ -827,10 +827,10 @@ void TestLogManager::TestCase_GetAuthenticationLog()
 ///----------------------------------------------------------------------------
 void TestLogManager::TestCase_GetAuthenticationLogByDate()
 {
-    MgLogManager* pMgLogManager = MgLogManager::GetInstance();
-    STRING path = pMgLogManager->GetLogsPath();
-    STRING originalName = pMgLogManager->GetAuthenticationLogFileName();
-    pMgLogManager->SetAuthenticationLogFileName(DynamicTestName);
+    MgdLogManager* pMgdLogManager = MgdLogManager::GetInstance();
+    STRING path = pMgdLogManager->GetLogsPath();
+    STRING originalName = pMgdLogManager->GetAuthenticationLogFileName();
+    pMgdLogManager->SetAuthenticationLogFileName(DynamicTestName);
 
     STRING contents = Entry1 + Entry2 + Entry3 + Entry4;
     CreateFile(path + DynamicTestNameDate1, contents);
@@ -848,65 +848,65 @@ void TestLogManager::TestCase_GetAuthenticationLogByDate()
         // from & to dates are at exact time an entry was made
         fromDate = new MgDateTime(2005, 3, 7, 16, 51, 13, 0);
         toDate = new MgDateTime(2005, 3, 7, 16, 54, 19, 0);
-        byteReader = pMgLogManager->GetAuthenticationLog(fromDate, toDate);
+        byteReader = pMgdLogManager->GetAuthenticationLog(fromDate, toDate);
         logContents = MgUtil::MultiByteToWideChar(MgUtil::GetTextFromReader(byteReader));
         CPPUNIT_ASSERT(logContents == (Entry1 + Entry2 + Entry3));
 
         // from & to dates are at not at exact times an entry was made
         fromDate = new MgDateTime(2005, 3, 7, 16, 52, 0, 0);
         toDate = new MgDateTime(2005, 3, 7, 16, 56, 0, 0);
-        byteReader = pMgLogManager->GetAuthenticationLog(fromDate, toDate);
+        byteReader = pMgdLogManager->GetAuthenticationLog(fromDate, toDate);
         logContents = MgUtil::MultiByteToWideChar(MgUtil::GetTextFromReader(byteReader));
         CPPUNIT_ASSERT(logContents == (Entry2 + Entry3 + Entry4));
 
         // spans two different files
         fromDate = new MgDateTime(2005, 3, 7, 16, 52, 0, 0);
         toDate = new MgDateTime(2005, 3, 8, 1, 0, 0, 0);
-        byteReader = pMgLogManager->GetAuthenticationLog(fromDate, toDate);
+        byteReader = pMgdLogManager->GetAuthenticationLog(fromDate, toDate);
         logContents = MgUtil::MultiByteToWideChar(MgUtil::GetTextFromReader(byteReader));
         CPPUNIT_ASSERT(logContents == (Entry2 + Entry3 + Entry4 + LastEntry));
 
         // spans two different files, the first of which doesn't exist
         fromDate = new MgDateTime(2005, 3, 6, 23, 59, 59, 0);
         toDate = new MgDateTime(2005, 3, 7, 16, 52, 0, 0);
-        byteReader = pMgLogManager->GetAuthenticationLog(fromDate, toDate);
+        byteReader = pMgdLogManager->GetAuthenticationLog(fromDate, toDate);
         logContents = MgUtil::MultiByteToWideChar(MgUtil::GetTextFromReader(byteReader));
         CPPUNIT_ASSERT(logContents == Entry1);
 
         // spans two different files, the second of which doesn't exist
         fromDate = new MgDateTime(2005, 3, 8, 0, 0, 0, 0);
         toDate = new MgDateTime(2005, 3, 9, 0, 0, 0, 0);
-        byteReader = pMgLogManager->GetAuthenticationLog(fromDate, toDate);
+        byteReader = pMgdLogManager->GetAuthenticationLog(fromDate, toDate);
         logContents = MgUtil::MultiByteToWideChar(MgUtil::GetTextFromReader(byteReader));
         CPPUNIT_ASSERT(logContents == LastEntry);
 
         // from date is after the latest entry in the log files
         fromDate = new MgDateTime(2006, 1, 1, 1, 0, 0, 0);
         toDate = new MgDateTime(2006, 1, 1, 1, 0, 0, 0);
-        byteReader = pMgLogManager->GetAuthenticationLog(fromDate, toDate);
+        byteReader = pMgdLogManager->GetAuthenticationLog(fromDate, toDate);
         logContents = MgUtil::MultiByteToWideChar(MgUtil::GetTextFromReader(byteReader));
         CPPUNIT_ASSERT(logContents.length() == 0);
 
         // Use a null value for the date
-        CPPUNIT_ASSERT_THROW_MG(pMgLogManager->GetAuthenticationLog(NULL, toDate), MgNullArgumentException*);
+        CPPUNIT_ASSERT_THROW_MG(pMgdLogManager->GetAuthenticationLog(NULL, toDate), MgNullArgumentException*);
 
         // Use dates more than 24 hours apart
         fromDate = new MgDateTime(2005, 2, 18, 14, 0, 0, 0);
         toDate = new MgDateTime(2005, 2, 19, 18, 0, 0, 0);
-        CPPUNIT_ASSERT_THROW_MG(pMgLogManager->GetAuthenticationLog(fromDate, toDate), MgInvalidArgumentException*);
+        CPPUNIT_ASSERT_THROW_MG(pMgdLogManager->GetAuthenticationLog(fromDate, toDate), MgInvalidArgumentException*);
 
-        pMgLogManager->SetAuthenticationLogFileName(originalName);
+        pMgdLogManager->SetAuthenticationLogFileName(originalName);
     }
     catch (MgException* e)
     {
-        pMgLogManager->SetAuthenticationLogFileName(originalName);
+        pMgdLogManager->SetAuthenticationLogFileName(originalName);
         STRING message = e->GetDetails(TEST_LOCALE);
         SAFE_RELEASE(e);
         CPPUNIT_FAIL(MG_WCHAR_TO_CHAR(message.c_str()));
     }
     catch (...)
     {
-        pMgLogManager->SetAuthenticationLogFileName(originalName);
+        pMgdLogManager->SetAuthenticationLogFileName(originalName);
         throw;
     }
 }
@@ -919,8 +919,8 @@ void TestLogManager::TestCase_GetAuthenticationLogByDate()
 ///----------------------------------------------------------------------------
 void TestLogManager::TestCase_GetAuthenticationLogInvalid()
 {
-    MgLogManager* pMgLogManager = MgLogManager::GetInstance();
-    CPPUNIT_ASSERT_THROW_MG(pMgLogManager->GetAuthenticationLog(-1), MgArgumentOutOfRangeException*);
+    MgdLogManager* pMgdLogManager = MgdLogManager::GetInstance();
+    CPPUNIT_ASSERT_THROW_MG(pMgdLogManager->GetAuthenticationLog(-1), MgArgumentOutOfRangeException*);
 }
 
 ///----------------------------------------------------------------------------
@@ -932,21 +932,21 @@ void TestLogManager::TestCase_SetErrorLogInfo()
 {
     try
     {
-        MgLogManager* pMgLogManager = MgLogManager::GetInstance();
+        MgdLogManager* pMgdLogManager = MgdLogManager::GetInstance();
 
         // Save original information
-        bool bOriginalEnabled = pMgLogManager->IsErrorLogEnabled();
-        STRING originalName = pMgLogManager->GetErrorLogFileName();
-        STRING originalParams = pMgLogManager->GetErrorLogParameters();
+        bool bOriginalEnabled = pMgdLogManager->IsErrorLogEnabled();
+        STRING originalName = pMgdLogManager->GetErrorLogFileName();
+        STRING originalParams = pMgdLogManager->GetErrorLogParameters();
 
-        pMgLogManager->SetErrorLogInfo(false, TestName, TestParameters);
+        pMgdLogManager->SetErrorLogInfo(false, TestName, TestParameters);
 
-        bool bEnabled = pMgLogManager->IsErrorLogEnabled();
-        STRING name = pMgLogManager->GetErrorLogFileName();
-        STRING params = pMgLogManager->GetErrorLogParameters();
+        bool bEnabled = pMgdLogManager->IsErrorLogEnabled();
+        STRING name = pMgdLogManager->GetErrorLogFileName();
+        STRING params = pMgdLogManager->GetErrorLogParameters();
 
         // Restore original info
-        pMgLogManager->SetErrorLogInfo(bOriginalEnabled, originalName, originalParams);
+        pMgdLogManager->SetErrorLogInfo(bOriginalEnabled, originalName, originalParams);
 
         CPPUNIT_ASSERT(bEnabled == false);
         CPPUNIT_ASSERT(wcscmp(name.c_str(), TestName) == 0);
@@ -973,8 +973,8 @@ void TestLogManager::TestCase_ClearErrorLog()
 {
     try
     {
-        MgLogManager* pMgLogManager = MgLogManager::GetInstance();
-        bool bResult = pMgLogManager->ClearErrorLog();
+        MgdLogManager* pMgdLogManager = MgdLogManager::GetInstance();
+        bool bResult = pMgdLogManager->ClearErrorLog();
         CPPUNIT_ASSERT(bResult);
     }
     catch (MgException* e)
@@ -996,10 +996,10 @@ void TestLogManager::TestCase_ClearErrorLog()
 ///----------------------------------------------------------------------------
 void TestLogManager::TestCase_GetErrorLog()
 {
-    MgLogManager* pMgLogManager = MgLogManager::GetInstance();
-    STRING path = pMgLogManager->GetLogsPath();
-    STRING originalName = pMgLogManager->GetErrorLogFileName();
-    pMgLogManager->SetErrorLogFileName(TestName);
+    MgdLogManager* pMgdLogManager = MgdLogManager::GetInstance();
+    STRING path = pMgdLogManager->GetLogsPath();
+    STRING originalName = pMgdLogManager->GetErrorLogFileName();
+    pMgdLogManager->SetErrorLogFileName(TestName);
 
     STRING contents = Entry1 + Entry2 + Entry3 + Entry4 + LastEntry;
     CreateFile(path + TestName, contents);
@@ -1009,22 +1009,22 @@ void TestLogManager::TestCase_GetErrorLog()
 
     try
     {
-        Ptr<MgByteReader> byteReader = pMgLogManager->GetErrorLog();
+        Ptr<MgByteReader> byteReader = pMgdLogManager->GetErrorLog();
         logContents = MgUtil::MultiByteToWideChar(MgUtil::GetTextFromReader(byteReader));
-        byteReader = pMgLogManager->GetErrorLog(1);
+        byteReader = pMgdLogManager->GetErrorLog(1);
         lastLogEntry = MgUtil::MultiByteToWideChar(MgUtil::GetTextFromReader(byteReader));
-        pMgLogManager->SetErrorLogFileName(originalName);
+        pMgdLogManager->SetErrorLogFileName(originalName);
     }
     catch (MgException* e)
     {
-        pMgLogManager->SetErrorLogFileName(originalName);
+        pMgdLogManager->SetErrorLogFileName(originalName);
         STRING message = e->GetDetails(TEST_LOCALE);
         SAFE_RELEASE(e);
         CPPUNIT_FAIL(MG_WCHAR_TO_CHAR(message.c_str()));
     }
     catch (...)
     {
-        pMgLogManager->SetErrorLogFileName(originalName);
+        pMgdLogManager->SetErrorLogFileName(originalName);
         throw;
     }
 
@@ -1039,10 +1039,10 @@ void TestLogManager::TestCase_GetErrorLog()
 ///----------------------------------------------------------------------------
 void TestLogManager::TestCase_GetErrorLogByDate()
 {
-    MgLogManager* pMgLogManager = MgLogManager::GetInstance();
-    STRING path = pMgLogManager->GetLogsPath();
-    STRING originalName = pMgLogManager->GetErrorLogFileName();
-    pMgLogManager->SetErrorLogFileName(DynamicTestName);
+    MgdLogManager* pMgdLogManager = MgdLogManager::GetInstance();
+    STRING path = pMgdLogManager->GetLogsPath();
+    STRING originalName = pMgdLogManager->GetErrorLogFileName();
+    pMgdLogManager->SetErrorLogFileName(DynamicTestName);
 
     STRING contents = Entry1 + Entry2 + Entry3 + Entry4;
     CreateFile(path + DynamicTestNameDate1, contents);
@@ -1060,65 +1060,65 @@ void TestLogManager::TestCase_GetErrorLogByDate()
         // from & to dates are at exact time an entry was made
         fromDate = new MgDateTime(2005, 3, 7, 16, 51, 13, 0);
         toDate = new MgDateTime(2005, 3, 7, 16, 54, 19, 0);
-        byteReader = pMgLogManager->GetErrorLog(fromDate, toDate);
+        byteReader = pMgdLogManager->GetErrorLog(fromDate, toDate);
         logContents = MgUtil::MultiByteToWideChar(MgUtil::GetTextFromReader(byteReader));
         CPPUNIT_ASSERT(logContents == (Entry1 + Entry2 + Entry3));
 
         // from & to dates are at not at exact times an entry was made
         fromDate = new MgDateTime(2005, 3, 7, 16, 52, 0, 0);
         toDate = new MgDateTime(2005, 3, 7, 16, 56, 0, 0);
-        byteReader = pMgLogManager->GetErrorLog(fromDate, toDate);
+        byteReader = pMgdLogManager->GetErrorLog(fromDate, toDate);
         logContents = MgUtil::MultiByteToWideChar(MgUtil::GetTextFromReader(byteReader));
         CPPUNIT_ASSERT(logContents == (Entry2 + Entry3 + Entry4));
 
         // spans two different files
         fromDate = new MgDateTime(2005, 3, 7, 16, 52, 0, 0);
         toDate = new MgDateTime(2005, 3, 8, 1, 0, 0, 0);
-        byteReader = pMgLogManager->GetErrorLog(fromDate, toDate);
+        byteReader = pMgdLogManager->GetErrorLog(fromDate, toDate);
         logContents = MgUtil::MultiByteToWideChar(MgUtil::GetTextFromReader(byteReader));
         CPPUNIT_ASSERT(logContents == (Entry2 + Entry3 + Entry4 + LastEntry));
 
         // spans two different files, the first of which doesn't exist
         fromDate = new MgDateTime(2005, 3, 6, 23, 59, 59, 0);
         toDate = new MgDateTime(2005, 3, 7, 16, 52, 0, 0);
-        byteReader = pMgLogManager->GetErrorLog(fromDate, toDate);
+        byteReader = pMgdLogManager->GetErrorLog(fromDate, toDate);
         logContents = MgUtil::MultiByteToWideChar(MgUtil::GetTextFromReader(byteReader));
         CPPUNIT_ASSERT(logContents == Entry1);
 
         // spans two different files, the second of which doesn't exist
         fromDate = new MgDateTime(2005, 3, 8, 0, 0, 0, 0);
         toDate = new MgDateTime(2005, 3, 9, 0, 0, 0, 0);
-        byteReader = pMgLogManager->GetErrorLog(fromDate, toDate);
+        byteReader = pMgdLogManager->GetErrorLog(fromDate, toDate);
         logContents = MgUtil::MultiByteToWideChar(MgUtil::GetTextFromReader(byteReader));
         CPPUNIT_ASSERT(logContents == LastEntry);
 
         // from date is after the latest entry in the log files
         fromDate = new MgDateTime(2006, 1, 1, 1, 0, 0, 0);
         toDate = new MgDateTime(2006, 1, 1, 1, 0, 0, 0);
-        byteReader = pMgLogManager->GetErrorLog(fromDate, toDate);
+        byteReader = pMgdLogManager->GetErrorLog(fromDate, toDate);
         logContents = MgUtil::MultiByteToWideChar(MgUtil::GetTextFromReader(byteReader));
         CPPUNIT_ASSERT(logContents.length() == 0);
 
         // Use a null value for the date
-        CPPUNIT_ASSERT_THROW_MG(pMgLogManager->GetErrorLog(NULL, toDate), MgNullArgumentException*);
+        CPPUNIT_ASSERT_THROW_MG(pMgdLogManager->GetErrorLog(NULL, toDate), MgNullArgumentException*);
 
         // Use dates more than 24 hours apart
         fromDate = new MgDateTime(2005, 2, 18, 14, 0, 0, 0);
         toDate = new MgDateTime(2005, 2, 19, 18, 0, 0, 0);
-        CPPUNIT_ASSERT_THROW_MG(pMgLogManager->GetErrorLog(fromDate, toDate), MgInvalidArgumentException*);
+        CPPUNIT_ASSERT_THROW_MG(pMgdLogManager->GetErrorLog(fromDate, toDate), MgInvalidArgumentException*);
 
-        pMgLogManager->SetErrorLogFileName(originalName);
+        pMgdLogManager->SetErrorLogFileName(originalName);
     }
     catch (MgException* e)
     {
-        pMgLogManager->SetErrorLogFileName(originalName);
+        pMgdLogManager->SetErrorLogFileName(originalName);
         STRING message = e->GetDetails(TEST_LOCALE);
         SAFE_RELEASE(e);
         CPPUNIT_FAIL(MG_WCHAR_TO_CHAR(message.c_str()));
     }
     catch (...)
     {
-        pMgLogManager->SetErrorLogFileName(originalName);
+        pMgdLogManager->SetErrorLogFileName(originalName);
         throw;
     }
 }
@@ -1131,8 +1131,8 @@ void TestLogManager::TestCase_GetErrorLogByDate()
 ///----------------------------------------------------------------------------
 void TestLogManager::TestCase_GetErrorLogInvalid()
 {
-    MgLogManager* pMgLogManager = MgLogManager::GetInstance();
-    CPPUNIT_ASSERT_THROW_MG(pMgLogManager->GetErrorLog(-1), MgArgumentOutOfRangeException*);
+    MgdLogManager* pMgdLogManager = MgdLogManager::GetInstance();
+    CPPUNIT_ASSERT_THROW_MG(pMgdLogManager->GetErrorLog(-1), MgArgumentOutOfRangeException*);
 }
 
 ///----------------------------------------------------------------------------
@@ -1144,21 +1144,21 @@ void TestLogManager::TestCase_SetSessionLogInfo()
 {
     try
     {
-        MgLogManager* pMgLogManager = MgLogManager::GetInstance();
+        MgdLogManager* pMgdLogManager = MgdLogManager::GetInstance();
 
         // Save original information
-        bool bOriginalEnabled = pMgLogManager->IsSessionLogEnabled();
-        STRING originalName = pMgLogManager->GetSessionLogFileName();
-        STRING originalParams = pMgLogManager->GetSessionLogParameters();
+        bool bOriginalEnabled = pMgdLogManager->IsSessionLogEnabled();
+        STRING originalName = pMgdLogManager->GetSessionLogFileName();
+        STRING originalParams = pMgdLogManager->GetSessionLogParameters();
 
-        pMgLogManager->SetSessionLogInfo(false, TestName, TestParameters);
+        pMgdLogManager->SetSessionLogInfo(false, TestName, TestParameters);
 
-        bool bEnabled = pMgLogManager->IsSessionLogEnabled();
-        STRING name = pMgLogManager->GetSessionLogFileName();
-        STRING params = pMgLogManager->GetSessionLogParameters();
+        bool bEnabled = pMgdLogManager->IsSessionLogEnabled();
+        STRING name = pMgdLogManager->GetSessionLogFileName();
+        STRING params = pMgdLogManager->GetSessionLogParameters();
 
         // Restore original info
-        pMgLogManager->SetSessionLogInfo(bOriginalEnabled, originalName, originalParams);
+        pMgdLogManager->SetSessionLogInfo(bOriginalEnabled, originalName, originalParams);
 
         CPPUNIT_ASSERT(bEnabled == false);
         CPPUNIT_ASSERT(wcscmp(name.c_str(), TestName) == 0);
@@ -1185,8 +1185,8 @@ void TestLogManager::TestCase_ClearSessionLog()
 {
     try
     {
-        MgLogManager* pMgLogManager = MgLogManager::GetInstance();
-        bool bResult = pMgLogManager->ClearSessionLog();
+        MgdLogManager* pMgdLogManager = MgdLogManager::GetInstance();
+        bool bResult = pMgdLogManager->ClearSessionLog();
         CPPUNIT_ASSERT(bResult);
     }
     catch (MgException* e)
@@ -1208,10 +1208,10 @@ void TestLogManager::TestCase_ClearSessionLog()
 ///----------------------------------------------------------------------------
 void TestLogManager::TestCase_GetSessionLog()
 {
-    MgLogManager* pMgLogManager = MgLogManager::GetInstance();
-    STRING path = pMgLogManager->GetLogsPath();
-    STRING originalName = pMgLogManager->GetSessionLogFileName();
-    pMgLogManager->SetSessionLogFileName(TestName);
+    MgdLogManager* pMgdLogManager = MgdLogManager::GetInstance();
+    STRING path = pMgdLogManager->GetLogsPath();
+    STRING originalName = pMgdLogManager->GetSessionLogFileName();
+    pMgdLogManager->SetSessionLogFileName(TestName);
 
     STRING contents = Entry1 + Entry2 + Entry3 + Entry4 + LastEntry;
     CreateFile(path + TestName, contents);
@@ -1221,22 +1221,22 @@ void TestLogManager::TestCase_GetSessionLog()
 
     try
     {
-        Ptr<MgByteReader> byteReader = pMgLogManager->GetSessionLog();
+        Ptr<MgByteReader> byteReader = pMgdLogManager->GetSessionLog();
         logContents = MgUtil::MultiByteToWideChar(MgUtil::GetTextFromReader(byteReader));
-        byteReader = pMgLogManager->GetSessionLog(1);
+        byteReader = pMgdLogManager->GetSessionLog(1);
         lastLogEntry = MgUtil::MultiByteToWideChar(MgUtil::GetTextFromReader(byteReader));
-        pMgLogManager->SetSessionLogFileName(originalName);
+        pMgdLogManager->SetSessionLogFileName(originalName);
     }
     catch (MgException* e)
     {
-        pMgLogManager->SetSessionLogFileName(originalName);
+        pMgdLogManager->SetSessionLogFileName(originalName);
         STRING message = e->GetDetails(TEST_LOCALE);
         SAFE_RELEASE(e);
         CPPUNIT_FAIL(MG_WCHAR_TO_CHAR(message.c_str()));
     }
     catch (...)
     {
-        pMgLogManager->SetSessionLogFileName(originalName);
+        pMgdLogManager->SetSessionLogFileName(originalName);
         throw;
     }
 
@@ -1251,10 +1251,10 @@ void TestLogManager::TestCase_GetSessionLog()
 ///----------------------------------------------------------------------------
 void TestLogManager::TestCase_GetSessionLogByDate()
 {
-    MgLogManager* pMgLogManager = MgLogManager::GetInstance();
-    STRING path = pMgLogManager->GetLogsPath();
-    STRING originalName = pMgLogManager->GetSessionLogFileName();
-    pMgLogManager->SetSessionLogFileName(DynamicTestName);
+    MgdLogManager* pMgdLogManager = MgdLogManager::GetInstance();
+    STRING path = pMgdLogManager->GetLogsPath();
+    STRING originalName = pMgdLogManager->GetSessionLogFileName();
+    pMgdLogManager->SetSessionLogFileName(DynamicTestName);
 
     STRING contents = Entry1 + Entry2 + Entry3 + Entry4;
     CreateFile(path + DynamicTestNameDate1, contents);
@@ -1272,65 +1272,65 @@ void TestLogManager::TestCase_GetSessionLogByDate()
         // from & to dates are at exact time an entry was made
         fromDate = new MgDateTime(2005, 3, 7, 16, 51, 13, 0);
         toDate = new MgDateTime(2005, 3, 7, 16, 54, 19, 0);
-        byteReader = pMgLogManager->GetSessionLog(fromDate, toDate);
+        byteReader = pMgdLogManager->GetSessionLog(fromDate, toDate);
         logContents = MgUtil::MultiByteToWideChar(MgUtil::GetTextFromReader(byteReader));
         CPPUNIT_ASSERT(logContents == (Entry1 + Entry2 + Entry3));
 
         // from & to dates are at not at exact times an entry was made
         fromDate = new MgDateTime(2005, 3, 7, 16, 52, 0, 0);
         toDate = new MgDateTime(2005, 3, 7, 16, 56, 0, 0);
-        byteReader = pMgLogManager->GetSessionLog(fromDate, toDate);
+        byteReader = pMgdLogManager->GetSessionLog(fromDate, toDate);
         logContents = MgUtil::MultiByteToWideChar(MgUtil::GetTextFromReader(byteReader));
         CPPUNIT_ASSERT(logContents == (Entry2 + Entry3 + Entry4));
 
         // spans two different files
         fromDate = new MgDateTime(2005, 3, 7, 16, 52, 0, 0);
         toDate = new MgDateTime(2005, 3, 8, 1, 0, 0, 0);
-        byteReader = pMgLogManager->GetSessionLog(fromDate, toDate);
+        byteReader = pMgdLogManager->GetSessionLog(fromDate, toDate);
         logContents = MgUtil::MultiByteToWideChar(MgUtil::GetTextFromReader(byteReader));
         CPPUNIT_ASSERT(logContents == (Entry2 + Entry3 + Entry4 + LastEntry));
 
         // spans two different files, the first of which doesn't exist
         fromDate = new MgDateTime(2005, 3, 6, 23, 59, 59, 0);
         toDate = new MgDateTime(2005, 3, 7, 16, 52, 0, 0);
-        byteReader = pMgLogManager->GetSessionLog(fromDate, toDate);
+        byteReader = pMgdLogManager->GetSessionLog(fromDate, toDate);
         logContents = MgUtil::MultiByteToWideChar(MgUtil::GetTextFromReader(byteReader));
         CPPUNIT_ASSERT(logContents == Entry1);
 
         // spans two different files, the second of which doesn't exist
         fromDate = new MgDateTime(2005, 3, 8, 0, 0, 0, 0);
         toDate = new MgDateTime(2005, 3, 9, 0, 0, 0, 0);
-        byteReader = pMgLogManager->GetSessionLog(fromDate, toDate);
+        byteReader = pMgdLogManager->GetSessionLog(fromDate, toDate);
         logContents = MgUtil::MultiByteToWideChar(MgUtil::GetTextFromReader(byteReader));
         CPPUNIT_ASSERT(logContents == LastEntry);
 
         // from date is after the latest entry in the log files
         fromDate = new MgDateTime(2006, 1, 1, 1, 0, 0, 0);
         toDate = new MgDateTime(2006, 1, 1, 1, 0, 0, 0);
-        byteReader = pMgLogManager->GetSessionLog(fromDate, toDate);
+        byteReader = pMgdLogManager->GetSessionLog(fromDate, toDate);
         logContents = MgUtil::MultiByteToWideChar(MgUtil::GetTextFromReader(byteReader));
         CPPUNIT_ASSERT(logContents.length() == 0);
 
         // Use a null value for the date
-        CPPUNIT_ASSERT_THROW_MG(pMgLogManager->GetSessionLog(NULL, toDate), MgNullArgumentException*);
+        CPPUNIT_ASSERT_THROW_MG(pMgdLogManager->GetSessionLog(NULL, toDate), MgNullArgumentException*);
 
         // Use dates more than 24 hours apart
         fromDate = new MgDateTime(2005, 2, 18, 14, 0, 0, 0);
         toDate = new MgDateTime(2005, 2, 19, 18, 0, 0, 0);
-        CPPUNIT_ASSERT_THROW_MG(pMgLogManager->GetSessionLog(fromDate, toDate), MgInvalidArgumentException*);
+        CPPUNIT_ASSERT_THROW_MG(pMgdLogManager->GetSessionLog(fromDate, toDate), MgInvalidArgumentException*);
 
-        pMgLogManager->SetSessionLogFileName(originalName);
+        pMgdLogManager->SetSessionLogFileName(originalName);
     }
     catch (MgException* e)
     {
-        pMgLogManager->SetSessionLogFileName(originalName);
+        pMgdLogManager->SetSessionLogFileName(originalName);
         STRING message = e->GetDetails(TEST_LOCALE);
         SAFE_RELEASE(e);
         CPPUNIT_FAIL(MG_WCHAR_TO_CHAR(message.c_str()));
     }
     catch (...)
     {
-        pMgLogManager->SetSessionLogFileName(originalName);
+        pMgdLogManager->SetSessionLogFileName(originalName);
         throw;
     }
 }
@@ -1343,8 +1343,8 @@ void TestLogManager::TestCase_GetSessionLogByDate()
 ///----------------------------------------------------------------------------
 void TestLogManager::TestCase_GetSessionLogInvalid()
 {
-    MgLogManager* pMgLogManager = MgLogManager::GetInstance();
-    CPPUNIT_ASSERT_THROW_MG(pMgLogManager->GetSessionLog(-1), MgArgumentOutOfRangeException*);
+    MgdLogManager* pMgdLogManager = MgdLogManager::GetInstance();
+    CPPUNIT_ASSERT_THROW_MG(pMgdLogManager->GetSessionLog(-1), MgArgumentOutOfRangeException*);
 }
 
 ///----------------------------------------------------------------------------
@@ -1356,21 +1356,21 @@ void TestLogManager::TestCase_SetTraceLogInfo()
 {
     try
     {
-        MgLogManager* pMgLogManager = MgLogManager::GetInstance();
+        MgdLogManager* pMgdLogManager = MgdLogManager::GetInstance();
 
         // Save original information
-        bool bOriginalEnabled = pMgLogManager->IsTraceLogEnabled();
-        STRING originalName = pMgLogManager->GetTraceLogFileName();
-        STRING originalParams = pMgLogManager->GetTraceLogParameters();
+        bool bOriginalEnabled = pMgdLogManager->IsTraceLogEnabled();
+        STRING originalName = pMgdLogManager->GetTraceLogFileName();
+        STRING originalParams = pMgdLogManager->GetTraceLogParameters();
 
-        pMgLogManager->SetTraceLogInfo(false, TestName, TestParameters);
+        pMgdLogManager->SetTraceLogInfo(false, TestName, TestParameters);
 
-        bool bEnabled = pMgLogManager->IsTraceLogEnabled();
-        STRING name = pMgLogManager->GetTraceLogFileName();
-        STRING params = pMgLogManager->GetTraceLogParameters();
+        bool bEnabled = pMgdLogManager->IsTraceLogEnabled();
+        STRING name = pMgdLogManager->GetTraceLogFileName();
+        STRING params = pMgdLogManager->GetTraceLogParameters();
 
         // Restore original info
-        pMgLogManager->SetTraceLogInfo(bOriginalEnabled, originalName, originalParams);
+        pMgdLogManager->SetTraceLogInfo(bOriginalEnabled, originalName, originalParams);
 
         CPPUNIT_ASSERT(bEnabled == false);
         CPPUNIT_ASSERT(wcscmp(name.c_str(), TestName) == 0);
@@ -1397,8 +1397,8 @@ void TestLogManager::TestCase_ClearTraceLog()
 {
     try
     {
-        MgLogManager* pMgLogManager = MgLogManager::GetInstance();
-        bool bResult = pMgLogManager->ClearTraceLog();
+        MgdLogManager* pMgdLogManager = MgdLogManager::GetInstance();
+        bool bResult = pMgdLogManager->ClearTraceLog();
         CPPUNIT_ASSERT(bResult);
     }
     catch (MgException* e)
@@ -1420,10 +1420,10 @@ void TestLogManager::TestCase_ClearTraceLog()
 ///----------------------------------------------------------------------------
 void TestLogManager::TestCase_GetTraceLog()
 {
-    MgLogManager* pMgLogManager = MgLogManager::GetInstance();
-    STRING path = pMgLogManager->GetLogsPath();
-    STRING originalName = pMgLogManager->GetTraceLogFileName();
-    pMgLogManager->SetTraceLogFileName(TestName);
+    MgdLogManager* pMgdLogManager = MgdLogManager::GetInstance();
+    STRING path = pMgdLogManager->GetLogsPath();
+    STRING originalName = pMgdLogManager->GetTraceLogFileName();
+    pMgdLogManager->SetTraceLogFileName(TestName);
 
     STRING contents = Entry1 + Entry2 + Entry3 + Entry4 + LastEntry;
     CreateFile(path + TestName, contents);
@@ -1433,22 +1433,22 @@ void TestLogManager::TestCase_GetTraceLog()
 
     try
     {
-        Ptr<MgByteReader> byteReader = pMgLogManager->GetTraceLog();
+        Ptr<MgByteReader> byteReader = pMgdLogManager->GetTraceLog();
         logContents = MgUtil::MultiByteToWideChar(MgUtil::GetTextFromReader(byteReader));
-        byteReader = pMgLogManager->GetTraceLog(1);
+        byteReader = pMgdLogManager->GetTraceLog(1);
         lastLogEntry = MgUtil::MultiByteToWideChar(MgUtil::GetTextFromReader(byteReader));
-        pMgLogManager->SetTraceLogFileName(originalName);
+        pMgdLogManager->SetTraceLogFileName(originalName);
     }
     catch (MgException* e)
     {
-        pMgLogManager->SetTraceLogFileName(originalName);
+        pMgdLogManager->SetTraceLogFileName(originalName);
         STRING message = e->GetDetails(TEST_LOCALE);
         SAFE_RELEASE(e);
         CPPUNIT_FAIL(MG_WCHAR_TO_CHAR(message.c_str()));
     }
     catch (...)
     {
-        pMgLogManager->SetTraceLogFileName(originalName);
+        pMgdLogManager->SetTraceLogFileName(originalName);
         throw;
     }
 
@@ -1463,10 +1463,10 @@ void TestLogManager::TestCase_GetTraceLog()
 ///----------------------------------------------------------------------------
 void TestLogManager::TestCase_GetTraceLogByDate()
 {
-    MgLogManager* pMgLogManager = MgLogManager::GetInstance();
-    STRING path = pMgLogManager->GetLogsPath();
-    STRING originalName = pMgLogManager->GetTraceLogFileName();
-    pMgLogManager->SetTraceLogFileName(DynamicTestName);
+    MgdLogManager* pMgdLogManager = MgdLogManager::GetInstance();
+    STRING path = pMgdLogManager->GetLogsPath();
+    STRING originalName = pMgdLogManager->GetTraceLogFileName();
+    pMgdLogManager->SetTraceLogFileName(DynamicTestName);
 
     STRING contents = Entry1 + Entry2 + Entry3 + Entry4;
     CreateFile(path + DynamicTestNameDate1, contents);
@@ -1484,65 +1484,65 @@ void TestLogManager::TestCase_GetTraceLogByDate()
         // from & to dates are at exact time an entry was made
         fromDate = new MgDateTime(2005, 3, 7, 16, 51, 13, 0);
         toDate = new MgDateTime(2005, 3, 7, 16, 54, 19, 0);
-        byteReader = pMgLogManager->GetTraceLog(fromDate, toDate);
+        byteReader = pMgdLogManager->GetTraceLog(fromDate, toDate);
         logContents = MgUtil::MultiByteToWideChar(MgUtil::GetTextFromReader(byteReader));
         CPPUNIT_ASSERT(logContents == (Entry1 + Entry2 + Entry3));
 
         // from & to dates are at not at exact times an entry was made
         fromDate = new MgDateTime(2005, 3, 7, 16, 52, 0, 0);
         toDate = new MgDateTime(2005, 3, 7, 16, 56, 0, 0);
-        byteReader = pMgLogManager->GetTraceLog(fromDate, toDate);
+        byteReader = pMgdLogManager->GetTraceLog(fromDate, toDate);
         logContents = MgUtil::MultiByteToWideChar(MgUtil::GetTextFromReader(byteReader));
         CPPUNIT_ASSERT(logContents == (Entry2 + Entry3 + Entry4));
 
         // spans two different files
         fromDate = new MgDateTime(2005, 3, 7, 16, 52, 0, 0);
         toDate = new MgDateTime(2005, 3, 8, 1, 0, 0, 0);
-        byteReader = pMgLogManager->GetTraceLog(fromDate, toDate);
+        byteReader = pMgdLogManager->GetTraceLog(fromDate, toDate);
         logContents = MgUtil::MultiByteToWideChar(MgUtil::GetTextFromReader(byteReader));
         CPPUNIT_ASSERT(logContents == (Entry2 + Entry3 + Entry4 + LastEntry));
 
         // spans two different files, the first of which doesn't exist
         fromDate = new MgDateTime(2005, 3, 6, 23, 59, 59, 0);
         toDate = new MgDateTime(2005, 3, 7, 16, 52, 0, 0);
-        byteReader = pMgLogManager->GetTraceLog(fromDate, toDate);
+        byteReader = pMgdLogManager->GetTraceLog(fromDate, toDate);
         logContents = MgUtil::MultiByteToWideChar(MgUtil::GetTextFromReader(byteReader));
         CPPUNIT_ASSERT(logContents == Entry1);
 
         // spans two different files, the second of which doesn't exist
         fromDate = new MgDateTime(2005, 3, 8, 0, 0, 0, 0);
         toDate = new MgDateTime(2005, 3, 9, 0, 0, 0, 0);
-        byteReader = pMgLogManager->GetTraceLog(fromDate, toDate);
+        byteReader = pMgdLogManager->GetTraceLog(fromDate, toDate);
         logContents = MgUtil::MultiByteToWideChar(MgUtil::GetTextFromReader(byteReader));
         CPPUNIT_ASSERT(logContents == LastEntry);
 
         // from date is after the latest entry in the log files
         fromDate = new MgDateTime(2006, 1, 1, 1, 0, 0, 0);
         toDate = new MgDateTime(2006, 1, 1, 1, 0, 0, 0);
-        byteReader = pMgLogManager->GetTraceLog(fromDate, toDate);
+        byteReader = pMgdLogManager->GetTraceLog(fromDate, toDate);
         logContents = MgUtil::MultiByteToWideChar(MgUtil::GetTextFromReader(byteReader));
         CPPUNIT_ASSERT(logContents.length() == 0);
 
         // Use a null value for the date
-        CPPUNIT_ASSERT_THROW_MG(pMgLogManager->GetTraceLog(NULL, toDate), MgNullArgumentException*);
+        CPPUNIT_ASSERT_THROW_MG(pMgdLogManager->GetTraceLog(NULL, toDate), MgNullArgumentException*);
 
         // Use dates more than 24 hours apart
         fromDate = new MgDateTime(2005, 2, 18, 14, 0, 0, 0);
         toDate = new MgDateTime(2005, 2, 19, 18, 0, 0, 0);
-        CPPUNIT_ASSERT_THROW_MG(pMgLogManager->GetTraceLog(fromDate, toDate), MgInvalidArgumentException*);
+        CPPUNIT_ASSERT_THROW_MG(pMgdLogManager->GetTraceLog(fromDate, toDate), MgInvalidArgumentException*);
 
-        pMgLogManager->SetTraceLogFileName(originalName);
+        pMgdLogManager->SetTraceLogFileName(originalName);
     }
     catch (MgException* e)
     {
-        pMgLogManager->SetTraceLogFileName(originalName);
+        pMgdLogManager->SetTraceLogFileName(originalName);
         STRING message = e->GetDetails(TEST_LOCALE);
         SAFE_RELEASE(e);
         CPPUNIT_FAIL(MG_WCHAR_TO_CHAR(message.c_str()));
     }
     catch (...)
     {
-        pMgLogManager->SetTraceLogFileName(originalName);
+        pMgdLogManager->SetTraceLogFileName(originalName);
         throw;
     }
 }
@@ -1555,8 +1555,8 @@ void TestLogManager::TestCase_GetTraceLogByDate()
 ///----------------------------------------------------------------------------
 void TestLogManager::TestCase_GetTraceLogInvalid()
 {
-    MgLogManager* pMgLogManager = MgLogManager::GetInstance();
-    CPPUNIT_ASSERT_THROW_MG(pMgLogManager->GetTraceLog(-1), MgArgumentOutOfRangeException*);
+    MgdLogManager* pMgdLogManager = MgdLogManager::GetInstance();
+    CPPUNIT_ASSERT_THROW_MG(pMgdLogManager->GetTraceLog(-1), MgArgumentOutOfRangeException*);
 }
 
 ///----------------------------------------------------------------------------
@@ -1570,9 +1570,9 @@ void TestLogManager::TestCase_LogAccessEntry()
     STRING logEntry;
     STRING::size_type pos;
 
-    MgLogManager* pMgLogManager = MgLogManager::GetInstance();
-    bool bOriginalEnabled = pMgLogManager->IsAccessLogEnabled();
-    pMgLogManager->SetAccessLogEnabled(true);
+    MgdLogManager* pMgdLogManager = MgdLogManager::GetInstance();
+    bool bOriginalEnabled = pMgdLogManager->IsAccessLogEnabled();
+    pMgdLogManager->SetAccessLogEnabled(true);
 
     STRING entry = L"TestAccessEntry";
     MG_LOG_ACCESS_ENTRY(entry, L"TestClient", L"TestClientIp", L"TestUser");
@@ -1580,11 +1580,11 @@ void TestLogManager::TestCase_LogAccessEntry()
     // Give the server time to write out the entry as it is on a different thread
     ACE_OS::sleep(2);
 
-    pMgLogManager->SetAccessLogEnabled(bOriginalEnabled);
+    pMgdLogManager->SetAccessLogEnabled(bOriginalEnabled);
 
     try
     {
-        byteReader = pMgLogManager->GetAccessLog(1);
+        byteReader = pMgdLogManager->GetAccessLog(1);
         logEntry = MgUtil::MultiByteToWideChar(MgUtil::GetTextFromReader(byteReader));
     }
     catch (MgException* e)
@@ -1614,9 +1614,9 @@ void TestLogManager::TestCase_LogAdminEntry()
     STRING logEntry;
     STRING::size_type pos;
 
-    MgLogManager* pMgLogManager = MgLogManager::GetInstance();
-    bool bOriginalEnabled = pMgLogManager->IsAdminLogEnabled();
-    pMgLogManager->SetAdminLogEnabled(true);
+    MgdLogManager* pMgdLogManager = MgdLogManager::GetInstance();
+    bool bOriginalEnabled = pMgdLogManager->IsAdminLogEnabled();
+    pMgdLogManager->SetAdminLogEnabled(true);
 
     STRING entry = L"TestAdminEntry";
     MG_LOG_ADMIN_ENTRY(entry, L"TestClient", L"TestClientIp", L"TestUser");
@@ -1624,11 +1624,11 @@ void TestLogManager::TestCase_LogAdminEntry()
     // Give the server time to write out the entry as it is on a different thread
     ACE_OS::sleep(2);
 
-    pMgLogManager->SetAdminLogEnabled(bOriginalEnabled);
+    pMgdLogManager->SetAdminLogEnabled(bOriginalEnabled);
 
     try
     {
-        byteReader = pMgLogManager->GetAdminLog(1);
+        byteReader = pMgdLogManager->GetAdminLog(1);
         logEntry = MgUtil::MultiByteToWideChar(MgUtil::GetTextFromReader(byteReader));
     }
     catch (MgException* e)
@@ -1657,9 +1657,9 @@ void TestLogManager::TestCase_LogAuthenticationEntry()
     STRING logEntry;
     STRING::size_type pos;
 
-    MgLogManager* pMgLogManager = MgLogManager::GetInstance();
-    bool bOriginalEnabled = pMgLogManager->IsAuthenticationLogEnabled();
-    pMgLogManager->SetAuthenticationLogEnabled(true);
+    MgdLogManager* pMgdLogManager = MgdLogManager::GetInstance();
+    bool bOriginalEnabled = pMgdLogManager->IsAuthenticationLogEnabled();
+    pMgdLogManager->SetAuthenticationLogEnabled(true);
 
     STRING entry = L"TestAuthenticationEntry";
     MG_LOG_AUTHENTICATION_ENTRY(entry);
@@ -1667,11 +1667,11 @@ void TestLogManager::TestCase_LogAuthenticationEntry()
     // Give the server time to write out the entry as it is on a different thread
     ACE_OS::sleep(2);
 
-    pMgLogManager->SetAdminLogEnabled(bOriginalEnabled);
+    pMgdLogManager->SetAdminLogEnabled(bOriginalEnabled);
 
     try
     {
-        byteReader = pMgLogManager->GetAuthenticationLog(1);
+        byteReader = pMgdLogManager->GetAuthenticationLog(1);
         logEntry = MgUtil::MultiByteToWideChar(MgUtil::GetTextFromReader(byteReader));
     }
     catch (MgException* e)
@@ -1700,9 +1700,9 @@ void TestLogManager::TestCase_LogErrorEntry()
     STRING logEntry;
     STRING::size_type pos;
 
-    MgLogManager* pMgLogManager = MgLogManager::GetInstance();
-    bool bOriginalEnabled = pMgLogManager->IsErrorLogEnabled();
-    pMgLogManager->SetErrorLogEnabled(true);
+    MgdLogManager* pMgdLogManager = MgdLogManager::GetInstance();
+    bool bOriginalEnabled = pMgdLogManager->IsErrorLogEnabled();
+    pMgdLogManager->SetErrorLogEnabled(true);
 
     STRING entry = L"TestErrorEntry";
     MG_LOG_ERROR_ENTRY(entry);
@@ -1710,11 +1710,11 @@ void TestLogManager::TestCase_LogErrorEntry()
     // Give the server time to write out the entry as it is on a different thread
     ACE_OS::sleep(2);
 
-    pMgLogManager->SetErrorLogEnabled(bOriginalEnabled);
+    pMgdLogManager->SetErrorLogEnabled(bOriginalEnabled);
 
     try
     {
-        byteReader = pMgLogManager->GetErrorLog(1);
+        byteReader = pMgdLogManager->GetErrorLog(1);
         logEntry = MgUtil::MultiByteToWideChar(MgUtil::GetTextFromReader(byteReader));
     }
     catch (MgException* e)
@@ -1743,9 +1743,9 @@ void TestLogManager::TestCase_LogTraceEntry()
     STRING logEntry;
     STRING::size_type pos;
 
-    MgLogManager* pMgLogManager = MgLogManager::GetInstance();
-    bool bOriginalEnabled = pMgLogManager->IsTraceLogEnabled();
-    pMgLogManager->SetTraceLogEnabled(true);
+    MgdLogManager* pMgdLogManager = MgdLogManager::GetInstance();
+    bool bOriginalEnabled = pMgdLogManager->IsTraceLogEnabled();
+    pMgdLogManager->SetTraceLogEnabled(true);
 
     STRING entry = L"TestTraceEntry";
     MG_LOG_TRACE_ENTRY(entry);
@@ -1753,11 +1753,11 @@ void TestLogManager::TestCase_LogTraceEntry()
     // Give the server time to write out the entry as it is on a different thread
     ACE_OS::sleep(2);
 
-    pMgLogManager->SetTraceLogEnabled(bOriginalEnabled);
+    pMgdLogManager->SetTraceLogEnabled(bOriginalEnabled);
 
     try
     {
-        byteReader = pMgLogManager->GetTraceLog(1);
+        byteReader = pMgdLogManager->GetTraceLog(1);
         logEntry = MgUtil::MultiByteToWideChar(MgUtil::GetTextFromReader(byteReader));
     }
     catch (MgException* e)
@@ -1783,10 +1783,10 @@ void TestLogManager::TestCase_LogTraceEntry()
 ///----------------------------------------------------------------------------
 void TestLogManager::TestCase_GetLogFile()
 {
-    MgLogManager* pMgLogManager = MgLogManager::GetInstance();
-    STRING path = pMgLogManager->GetLogsPath();
-    STRING originalName = pMgLogManager->GetAccessLogFileName();
-    pMgLogManager->SetAccessLogFileName(TestName);
+    MgdLogManager* pMgdLogManager = MgdLogManager::GetInstance();
+    STRING path = pMgdLogManager->GetLogsPath();
+    STRING originalName = pMgdLogManager->GetAccessLogFileName();
+    pMgdLogManager->SetAccessLogFileName(TestName);
 
     STRING contents = Entry1 + Entry2 + Entry3 + Entry4 + LastEntry;
     CreateFile(path + TestName, contents);
@@ -1797,21 +1797,21 @@ void TestLogManager::TestCase_GetLogFile()
     try
     {
         Ptr<MgByteReader> byteReader;
-        byteReader = pMgLogManager->GetLogFile(TestName);
+        byteReader = pMgdLogManager->GetLogFile(TestName);
         logContents = MgUtil::MultiByteToWideChar(MgUtil::GetTextFromReader(byteReader));
 
-        pMgLogManager->SetAccessLogFileName(originalName);
+        pMgdLogManager->SetAccessLogFileName(originalName);
     }
     catch (MgException* e)
     {
-        pMgLogManager->SetAccessLogFileName(originalName);
+        pMgdLogManager->SetAccessLogFileName(originalName);
         STRING message = e->GetDetails(TEST_LOCALE);
         SAFE_RELEASE(e);
         CPPUNIT_FAIL(MG_WCHAR_TO_CHAR(message.c_str()));
     }
     catch (...)
     {
-        pMgLogManager->SetAccessLogFileName(originalName);
+        pMgdLogManager->SetAccessLogFileName(originalName);
         throw;
     }
 

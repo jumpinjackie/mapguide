@@ -7,11 +7,11 @@
 // MappingService specific implementation of the RS_SymbolManager interface.
 // It retrieves DWF symbol data from the resource service and caches it
 // for reuse by stylization.
-class MG_DESKTOP_API RSMgSymbolManager : public RS_SymbolManager
+class MG_DESKTOP_API RSMgdSymbolManager : public RS_SymbolManager
 {
 public:
-    RSMgSymbolManager(MgResourceService* svc);
-    virtual ~RSMgSymbolManager();
+    RSMgdSymbolManager(MgResourceService* svc);
+    virtual ~RSMgdSymbolManager();
 
     virtual const RS_InputStream* GetSymbolData(const wchar_t* libraryName,
                                                 const wchar_t* symbolName);

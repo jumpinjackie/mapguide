@@ -5,7 +5,7 @@
 
 /// \cond INTERNAL
 
-class MgFeatureConnection;
+class MgdFeatureConnection;
 class MgResourceIdentifier;
 class MgConfiguration;
 
@@ -25,13 +25,13 @@ struct PoolCacheEntry
     STRING ProviderName;
 };
 
-class MG_DESKTOP_API MgFdoConnectionPool //Needs to be exported for unit testing code
+class MG_DESKTOP_API MgdFdoConnectionPool //Needs to be exported for unit testing code
 {
 public:
     static void Initialize(MgConfiguration* config);
     static FdoIConnection* GetConnection(MgResourceIdentifier* resId);
     static FdoIConnection* GetConnection(CREFSTRING provider, CREFSTRING connectionString);
-    static void ReturnConnection(MgFeatureConnection* conn);
+    static void ReturnConnection(MgdFeatureConnection* conn);
     static void Cleanup();
     static void PurgeCachedConnections(MgResourceIdentifier* resId);
     static void PurgeCachedConnectionsUnderFolder(MgResourceIdentifier* resId);

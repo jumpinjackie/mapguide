@@ -6,7 +6,7 @@
 /// \brief
 /// Construct the object.
 ///
-MgFeatureServiceCacheEntry::MgFeatureServiceCacheEntry() :
+MgdFeatureServiceCacheEntry::MgdFeatureServiceCacheEntry() :
     m_classNameHintUsed(true)
 {
 }
@@ -15,9 +15,9 @@ MgFeatureServiceCacheEntry::MgFeatureServiceCacheEntry() :
 /// \brief
 /// Destruct the object.
 ///
-MgFeatureServiceCacheEntry::~MgFeatureServiceCacheEntry()
+MgdFeatureServiceCacheEntry::~MgdFeatureServiceCacheEntry()
 {
-    for (MgFeatureSchemaCacheItems::iterator i = m_featureSchemaCacheItems.begin();
+    for (MgdFeatureSchemaCacheItems::iterator i = m_featureSchemaCacheItems.begin();
         i != m_featureSchemaCacheItems.end(); ++i)
     {
 #ifdef _DEBUG
@@ -25,7 +25,7 @@ MgFeatureServiceCacheEntry::~MgFeatureServiceCacheEntry()
 
         if (NULL != i->second && 1 != i->second->GetRefCount())
         {
-            ACE_DEBUG((LM_DEBUG, ACE_TEXT("(%t) MgFeatureServiceCacheEntry::~MgFeatureServiceCacheEntry() - Reference Count of '%W': %d\n"),
+            ACE_DEBUG((LM_DEBUG, ACE_TEXT("(%t) MgdFeatureServiceCacheEntry::~MgdFeatureServiceCacheEntry() - Reference Count of '%W': %d\n"),
                 i->first.c_str(), i->second->GetRefCount()));
         }
 #endif
@@ -37,17 +37,17 @@ MgFeatureServiceCacheEntry::~MgFeatureServiceCacheEntry()
 
 ///////////////////////////////////////////////////////////////////////////////
 /// \brief
-/// Return an existing MgFeatureSchemaCacheItem or a newly created one
+/// Return an existing MgdFeatureSchemaCacheItem or a newly created one
 /// if it does not exist.
 ///
-MgFeatureSchemaCacheItem* MgFeatureServiceCacheEntry::SetFeatureSchemaCacheItem(CREFSTRING schemaName)
+MgdFeatureSchemaCacheItem* MgdFeatureServiceCacheEntry::SetFeatureSchemaCacheItem(CREFSTRING schemaName)
 {
-    Ptr<MgFeatureSchemaCacheItem> item = GetFeatureSchemaCacheItem(schemaName);
+    Ptr<MgdFeatureSchemaCacheItem> item = GetFeatureSchemaCacheItem(schemaName);
 
     if (NULL == item.p)
     {
-        item = new MgFeatureSchemaCacheItem();
-        m_featureSchemaCacheItems.insert(MgFeatureSchemaCacheItems::value_type(
+        item = new MgdFeatureSchemaCacheItem();
+        m_featureSchemaCacheItems.insert(MgdFeatureSchemaCacheItems::value_type(
             schemaName, SAFE_ADDREF(item.p)));
     }
 
@@ -56,12 +56,12 @@ MgFeatureSchemaCacheItem* MgFeatureServiceCacheEntry::SetFeatureSchemaCacheItem(
 
 ///////////////////////////////////////////////////////////////////////////////
 /// \brief
-/// Return an existing MgFeatureSchemaCacheItem.
+/// Return an existing MgdFeatureSchemaCacheItem.
 ///
-MgFeatureSchemaCacheItem* MgFeatureServiceCacheEntry::GetFeatureSchemaCacheItem(CREFSTRING schemaName)
+MgdFeatureSchemaCacheItem* MgdFeatureServiceCacheEntry::GetFeatureSchemaCacheItem(CREFSTRING schemaName)
 {
-    Ptr<MgFeatureSchemaCacheItem> item;
-    MgFeatureSchemaCacheItems::iterator i =
+    Ptr<MgdFeatureSchemaCacheItem> item;
+    MgdFeatureSchemaCacheItems::iterator i =
         m_featureSchemaCacheItems.find(schemaName);
 
     if (m_featureSchemaCacheItems.end() != i)
@@ -76,7 +76,7 @@ MgFeatureSchemaCacheItem* MgFeatureServiceCacheEntry::GetFeatureSchemaCacheItem(
 /// \brief
 /// Parse the specified qualified class name.
 ///
-void MgFeatureServiceCacheEntry::ParseQualifiedClassName(
+void MgdFeatureServiceCacheEntry::ParseQualifiedClassName(
     CREFSTRING schemaName, CREFSTRING className,
     REFSTRING parsedSchemaName, REFSTRING parsedClassName)
 {
@@ -91,7 +91,7 @@ void MgFeatureServiceCacheEntry::ParseQualifiedClassName(
         MgStringCollection whyArguments;
         whyArguments.Add(className);
 
-        throw new MgInvalidArgumentException(L"MgFeatureServiceCacheEntry.ParseQualifiedClassName",
+        throw new MgInvalidArgumentException(L"MgdFeatureServiceCacheEntry.ParseQualifiedClassName",
             __LINE__, __WFILE__, &whatArguments, L"MgSchemaNameMismatch", &whyArguments);
     }
 }
@@ -112,7 +112,7 @@ void MgFeatureServiceCacheEntry::ParseQualifiedClassName(
 /// Note that if no class name is specified or the class name hint is not used,
 /// then the class key will be blank.
 ///
-void MgFeatureServiceCacheEntry::FormatKeys(bool classNameHintUsed,
+void MgdFeatureServiceCacheEntry::FormatKeys(bool classNameHintUsed,
     CREFSTRING schemaName, CREFSTRING className,
     REFSTRING schemaKey, REFSTRING classKey)
 {
@@ -152,7 +152,7 @@ void MgFeatureServiceCacheEntry::FormatKeys(bool classNameHintUsed,
     }
 }
 
-INT32 MgFeatureServiceCacheEntry::FormatKeys(bool classNameHintUsed,
+INT32 MgdFeatureServiceCacheEntry::FormatKeys(bool classNameHintUsed,
     CREFSTRING schemaName, MgStringCollection* classNames,
     REFSTRING schemaKey, REFSTRING classKey)
 {
@@ -244,7 +244,7 @@ INT32 MgFeatureServiceCacheEntry::FormatKeys(bool classNameHintUsed,
 /// \brief
 /// Find a schema based on name.
 ///
-MgFeatureSchemaCollection* MgFeatureServiceCacheEntry::FindSchema(MgFeatureSchemaCollection* schemas, CREFSTRING schemaName)
+MgFeatureSchemaCollection* MgdFeatureServiceCacheEntry::FindSchema(MgFeatureSchemaCollection* schemas, CREFSTRING schemaName)
 {
     Ptr<MgFeatureSchemaCollection> data;
 
@@ -274,7 +274,7 @@ MgFeatureSchemaCollection* MgFeatureServiceCacheEntry::FindSchema(MgFeatureSchem
 /// \brief
 /// Find a schema in a superset data.
 ///
-MgFeatureSchemaCollection* MgFeatureServiceCacheEntry::FindSchema(CREFSTRING schemaKey, CREFSTRING classKey, bool serialized, INT32 classCount)
+MgFeatureSchemaCollection* MgdFeatureServiceCacheEntry::FindSchema(CREFSTRING schemaKey, CREFSTRING classKey, bool serialized, INT32 classCount)
 {
     Ptr<MgFeatureSchemaCollection> data;
 
@@ -282,7 +282,7 @@ MgFeatureSchemaCollection* MgFeatureServiceCacheEntry::FindSchema(CREFSTRING sch
     if (!schemaKey.empty())
     {
         // Get the superset item.
-        Ptr<MgFeatureSchemaCacheItem> supersetItem = GetFeatureSchemaCacheItem(L"");
+        Ptr<MgdFeatureSchemaCacheItem> supersetItem = GetFeatureSchemaCacheItem(L"");
 
         if (NULL != supersetItem.p)
         {
@@ -320,7 +320,7 @@ MgFeatureSchemaCollection* MgFeatureServiceCacheEntry::FindSchema(CREFSTRING sch
 /// \brief
 /// Determine if the specified schemas only contain the specified class.
 ///
-bool MgFeatureServiceCacheEntry::FindClass(MgFeatureSchemaCollection* schemas, CREFSTRING className)
+bool MgdFeatureServiceCacheEntry::FindClass(MgFeatureSchemaCollection* schemas, CREFSTRING className)
 {
     bool found = false;
 
@@ -360,57 +360,57 @@ bool MgFeatureServiceCacheEntry::FindClass(MgFeatureSchemaCollection* schemas, C
 /// \brief
 /// Methods to manage cache items.
 ///
-void MgFeatureServiceCacheEntry::SetFeatureSource(MgFeatureSourceCacheItem* featureSource)
+void MgdFeatureServiceCacheEntry::SetFeatureSource(MgdFeatureSourceCacheItem* featureSource)
 {
     m_featureSource = SAFE_ADDREF(featureSource);
 }
 
-MgFeatureSourceCacheItem* MgFeatureServiceCacheEntry::GetFeatureSource()
+MgdFeatureSourceCacheItem* MgdFeatureServiceCacheEntry::GetFeatureSource()
 {
     return SAFE_ADDREF(m_featureSource.p);
 }
 
-void MgFeatureServiceCacheEntry::SetSpatialContextInfo(MgSpatialContextCacheItem* spatialContextInfo)
+void MgdFeatureServiceCacheEntry::SetSpatialContextInfo(MgdSpatialContextCacheItem* spatialContextInfo)
 {
     m_spatialContextInfo = SAFE_ADDREF(spatialContextInfo);
 }
 
-MgSpatialContextCacheItem* MgFeatureServiceCacheEntry::GetSpatialContextInfo()
+MgdSpatialContextCacheItem* MgdFeatureServiceCacheEntry::GetSpatialContextInfo()
 {
     return SAFE_ADDREF(m_spatialContextInfo.p);
 }
 
-void MgFeatureServiceCacheEntry::SetSpatialContextReader(MgSpatialContextReader* spatialContextReader)
+void MgdFeatureServiceCacheEntry::SetSpatialContextReader(MgSpatialContextReader* spatialContextReader)
 {
     m_spatialContextReader = SAFE_ADDREF(spatialContextReader);
 }
 
-MgSpatialContextReader* MgFeatureServiceCacheEntry::GetSpatialContextReader()
+MgSpatialContextReader* MgdFeatureServiceCacheEntry::GetSpatialContextReader()
 {
     return SAFE_ADDREF(m_spatialContextReader.p);
 }
 
-void MgFeatureServiceCacheEntry::SetSchemaNames(MgStringCollection* schemaNames)
+void MgdFeatureServiceCacheEntry::SetSchemaNames(MgStringCollection* schemaNames)
 {
     m_schemaNames = SAFE_ADDREF(schemaNames);
 }
 
-MgStringCollection* MgFeatureServiceCacheEntry::GetSchemaNames()
+MgStringCollection* MgdFeatureServiceCacheEntry::GetSchemaNames()
 {
     return SAFE_ADDREF(m_schemaNames.p);
 }
 
-void MgFeatureServiceCacheEntry::SetClassNames(CREFSTRING schemaName, MgStringCollection* classNames)
+void MgdFeatureServiceCacheEntry::SetClassNames(CREFSTRING schemaName, MgStringCollection* classNames)
 {
-    Ptr<MgFeatureSchemaCacheItem> item = SetFeatureSchemaCacheItem(schemaName);
+    Ptr<MgdFeatureSchemaCacheItem> item = SetFeatureSchemaCacheItem(schemaName);
 
     item->SetClassNames(classNames);
 }
 
-MgStringCollection* MgFeatureServiceCacheEntry::GetClassNames(CREFSTRING schemaName)
+MgStringCollection* MgdFeatureServiceCacheEntry::GetClassNames(CREFSTRING schemaName)
 {
     Ptr<MgStringCollection> data;
-    Ptr<MgFeatureSchemaCacheItem> item = GetFeatureSchemaCacheItem(schemaName);
+    Ptr<MgdFeatureSchemaCacheItem> item = GetFeatureSchemaCacheItem(schemaName);
 
     if (NULL != item.p)
     {
@@ -420,23 +420,23 @@ MgStringCollection* MgFeatureServiceCacheEntry::GetClassNames(CREFSTRING schemaN
     return data.Detach();
 }
 
-void MgFeatureServiceCacheEntry::SetSchemaXml(CREFSTRING schemaName, MgStringCollection* classNames, CREFSTRING schemaXml)
+void MgdFeatureServiceCacheEntry::SetSchemaXml(CREFSTRING schemaName, MgStringCollection* classNames, CREFSTRING schemaXml)
 {
     STRING schemaKey, classKey;
     FormatKeys(m_classNameHintUsed, schemaName, classNames, schemaKey, classKey);
 
-    Ptr<MgFeatureSchemaCacheItem> item = SetFeatureSchemaCacheItem(schemaKey);
+    Ptr<MgdFeatureSchemaCacheItem> item = SetFeatureSchemaCacheItem(schemaKey);
 
     item->SetSchemaXml(classKey, schemaXml);
 }
 
-STRING MgFeatureServiceCacheEntry::GetSchemaXml(CREFSTRING schemaName, MgStringCollection* classNames)
+STRING MgdFeatureServiceCacheEntry::GetSchemaXml(CREFSTRING schemaName, MgStringCollection* classNames)
 {
     STRING schemaKey, classKey;
     FormatKeys(m_classNameHintUsed, schemaName, classNames, schemaKey, classKey);
 
     STRING data;
-    Ptr<MgFeatureSchemaCacheItem> item = GetFeatureSchemaCacheItem(schemaKey);
+    Ptr<MgdFeatureSchemaCacheItem> item = GetFeatureSchemaCacheItem(schemaKey);
 
     if (NULL != item.p)
     {
@@ -446,23 +446,23 @@ STRING MgFeatureServiceCacheEntry::GetSchemaXml(CREFSTRING schemaName, MgStringC
     return data;
 }
 
-void MgFeatureServiceCacheEntry::SetSchemas(CREFSTRING schemaName, MgStringCollection* classNames, bool serialized, MgFeatureSchemaCollection* schemas)
+void MgdFeatureServiceCacheEntry::SetSchemas(CREFSTRING schemaName, MgStringCollection* classNames, bool serialized, MgFeatureSchemaCollection* schemas)
 {
     STRING schemaKey, classKey;
     FormatKeys(m_classNameHintUsed, schemaName, classNames, schemaKey, classKey);
 
-    Ptr<MgFeatureSchemaCacheItem> item = SetFeatureSchemaCacheItem(schemaKey);
+    Ptr<MgdFeatureSchemaCacheItem> item = SetFeatureSchemaCacheItem(schemaKey);
 
     item->SetSchemas(classKey, serialized, schemas);
 }
 
-MgFeatureSchemaCollection* MgFeatureServiceCacheEntry::GetSchemas(CREFSTRING schemaName, MgStringCollection* classNames, bool serialized)
+MgFeatureSchemaCollection* MgdFeatureServiceCacheEntry::GetSchemas(CREFSTRING schemaName, MgStringCollection* classNames, bool serialized)
 {
     STRING schemaKey, classKey;
     INT32 classCount = FormatKeys(m_classNameHintUsed, schemaName, classNames, schemaKey, classKey);
 
     Ptr<MgFeatureSchemaCollection> data;
-    Ptr<MgFeatureSchemaCacheItem> item = GetFeatureSchemaCacheItem(schemaKey);
+    Ptr<MgdFeatureSchemaCacheItem> item = GetFeatureSchemaCacheItem(schemaKey);
 
     // Get the data from the current item.
     if (NULL != item.p)
@@ -511,25 +511,25 @@ MgFeatureSchemaCollection* MgFeatureServiceCacheEntry::GetSchemas(CREFSTRING sch
     return data.Detach();
 }
 
-void MgFeatureServiceCacheEntry::SetClassDefinition(CREFSTRING schemaName, CREFSTRING className, MgClassDefinition* classDef)
+void MgdFeatureServiceCacheEntry::SetClassDefinition(CREFSTRING schemaName, CREFSTRING className, MgClassDefinition* classDef)
 {
     STRING schemaKey, classKey;
     // Since this method requires a specific class name, the hint must be explicitly used.
     FormatKeys(true, schemaName, className, schemaKey, classKey);
 
-    Ptr<MgFeatureSchemaCacheItem> item = SetFeatureSchemaCacheItem(schemaKey);
+    Ptr<MgdFeatureSchemaCacheItem> item = SetFeatureSchemaCacheItem(schemaKey);
 
     item->SetClassDefinition(classKey, classDef);
 }
 
-MgClassDefinition* MgFeatureServiceCacheEntry::GetClassDefinition(CREFSTRING schemaName, CREFSTRING className)
+MgClassDefinition* MgdFeatureServiceCacheEntry::GetClassDefinition(CREFSTRING schemaName, CREFSTRING className)
 {
     STRING schemaKey, classKey;
     // Since this method requires a specific class name, the hint must be explicitly used.
     FormatKeys(true, schemaName, className, schemaKey, classKey);
 
     Ptr<MgClassDefinition> data;
-    Ptr<MgFeatureSchemaCacheItem> item = GetFeatureSchemaCacheItem(schemaKey);
+    Ptr<MgdFeatureSchemaCacheItem> item = GetFeatureSchemaCacheItem(schemaKey);
 
     if (NULL != item.p)
     {
@@ -539,25 +539,25 @@ MgClassDefinition* MgFeatureServiceCacheEntry::GetClassDefinition(CREFSTRING sch
     return data.Detach();
 }
 
-void MgFeatureServiceCacheEntry::SetClassIdentityProperties(CREFSTRING schemaName, CREFSTRING className, MgPropertyDefinitionCollection* idProperties)
+void MgdFeatureServiceCacheEntry::SetClassIdentityProperties(CREFSTRING schemaName, CREFSTRING className, MgPropertyDefinitionCollection* idProperties)
 {
     STRING schemaKey, classKey;
     // Since this method requires a specific class name, the hint must be explicitly used.
     FormatKeys(true, schemaName, className, schemaKey, classKey);
 
-    Ptr<MgFeatureSchemaCacheItem> item = SetFeatureSchemaCacheItem(schemaKey);
+    Ptr<MgdFeatureSchemaCacheItem> item = SetFeatureSchemaCacheItem(schemaKey);
 
     item->SetClassIdentityProperties(classKey, idProperties);
 }
 
-MgPropertyDefinitionCollection* MgFeatureServiceCacheEntry::GetClassIdentityProperties(CREFSTRING schemaName, CREFSTRING className)
+MgPropertyDefinitionCollection* MgdFeatureServiceCacheEntry::GetClassIdentityProperties(CREFSTRING schemaName, CREFSTRING className)
 {
     STRING schemaKey, classKey;
     // Since this method requires a specific class name, the hint must be explicitly used.
     FormatKeys(true, schemaName, className, schemaKey, classKey);
 
     Ptr<MgPropertyDefinitionCollection> data;
-    Ptr<MgFeatureSchemaCacheItem> item = GetFeatureSchemaCacheItem(schemaKey);
+    Ptr<MgdFeatureSchemaCacheItem> item = GetFeatureSchemaCacheItem(schemaKey);
 
     if (NULL != item.p)
     {

@@ -26,11 +26,11 @@ using namespace std;
 //  This matrix template is designed to be used with built-in arithmetic types.
 //  It is of fixed size; it is constructed with one memory allocation.
 template <typename T>
-class MgUniqueFunction
+class MgdUniqueFunction
 {
     public:
-        MgUniqueFunction() {}
-        ~MgUniqueFunction() {}
+        MgdUniqueFunction() {}
+        ~MgdUniqueFunction() {}
 
         static void Execute(const std::vector<T>& in, std::vector<T>& out)
         {

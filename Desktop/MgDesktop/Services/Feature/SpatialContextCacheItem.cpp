@@ -5,7 +5,7 @@
 /// \brief
 /// Construct the object.
 ///
-MgSpatialContextCacheItem::MgSpatialContextCacheItem()
+MgdSpatialContextCacheItem::MgdSpatialContextCacheItem()
 {
 }
 
@@ -13,7 +13,7 @@ MgSpatialContextCacheItem::MgSpatialContextCacheItem()
 /// \brief
 /// Construct the object.
 ///
-MgSpatialContextCacheItem::MgSpatialContextCacheItem(MgSpatialContextInfo* spatialContextInfo)
+MgdSpatialContextCacheItem::MgdSpatialContextCacheItem(MgSpatialContextInfo* spatialContextInfo)
 {
     Set(spatialContextInfo);
 }
@@ -22,7 +22,7 @@ MgSpatialContextCacheItem::MgSpatialContextCacheItem(MgSpatialContextInfo* spati
 /// \brief
 /// Destruct the object.
 ///
-MgSpatialContextCacheItem::~MgSpatialContextCacheItem()
+MgdSpatialContextCacheItem::~MgdSpatialContextCacheItem()
 {
 }
 
@@ -30,7 +30,7 @@ MgSpatialContextCacheItem::~MgSpatialContextCacheItem()
 /// \brief
 /// Set the spatial context info.
 ///
-void MgSpatialContextCacheItem::Set(MgSpatialContextInfo* spatialContextInfo)
+void MgdSpatialContextCacheItem::Set(MgSpatialContextInfo* spatialContextInfo)
 {
     m_spatialContextInfo.reset(spatialContextInfo);
 }

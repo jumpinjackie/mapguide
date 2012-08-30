@@ -1,7 +1,7 @@
 #include "RSMgRaster.h"
 #include "RSMgInputStream.h"
 
-RSMgRaster::RSMgRaster(MgRaster* raster)
+RSMgdRaster::RSMgdRaster(MgRaster* raster)
 {
     assert(raster);
     m_raster = raster;
@@ -11,12 +11,12 @@ RSMgRaster::RSMgRaster(MgRaster* raster)
     m_height = m_raster->GetImageYSize();
 }
 
-RSMgRaster::~RSMgRaster()
+RSMgdRaster::~RSMgdRaster()
 {
     SAFE_RELEASE(m_raster);
 }
 
-RS_Bounds RSMgRaster::GetExtent()
+RS_Bounds RSMgdRaster::GetExtent()
 {
     Ptr<MgEnvelope> env = m_raster->GetBounds();
 
@@ -26,29 +26,29 @@ RS_Bounds RSMgRaster::GetExtent()
     return RS_Bounds(ll->GetX(), ll->GetY(), ur->GetX(), ur->GetY());
 }
 
-int RSMgRaster::GetOriginalWidth()
+int RSMgdRaster::GetOriginalWidth()
 {
     return m_width;
 }
 
-int RSMgRaster::GetOriginalHeight()
+int RSMgdRaster::GetOriginalHeight()
 {
     return m_height;
 }
 
-int RSMgRaster::GetBitsPerPixel()
+int RSMgdRaster::GetBitsPerPixel()
 {
     return m_raster->GetBitsPerPixel();
 }
 
-int RSMgRaster::GetDataModelType()
+int RSMgdRaster::GetDataModelType()
 {
     return m_raster->GetDataModelType();
 }
 
 
 //caller frees returned stream
-RS_InputStream* RSMgRaster::GetStream(RS_ImageFormat format, int width, int height)
+RS_InputStream* RSMgdRaster::GetStream(RS_ImageFormat format, int width, int height)
 {
     if (width > 0 && height > 0)
     {
@@ -79,7 +79,7 @@ RS_InputStream* RSMgRaster::GetStream(RS_ImageFormat format, int width, int heig
     Ptr<MgByteReader> rdr = m_raster->GetStream();
     if(rdr)
     {
-        return new RSMgInputStream(rdr.p);
+        return new RSMgdInputStream(rdr.p);
     }
     else
     {
@@ -87,32 +87,32 @@ RS_InputStream* RSMgRaster::GetStream(RS_ImageFormat format, int width, int heig
     }
 }
 
-RS_InputStream* RSMgRaster::GetPalette()
+RS_InputStream* RSMgdRaster::GetPalette()
 {
     Ptr<MgByte> pal = m_raster->GetPalette();
 
     if (pal.p)
-        return new RSMgInputStream(pal.p);
+        return new RSMgdInputStream(pal.p);
     else
         return NULL;
 }
 
-int RSMgRaster::GetDataType()
+int RSMgdRaster::GetDataType()
 {
     return m_raster->GetDataType();
 }
 
-RS_String RSMgRaster::GetVerticalUnits()
+RS_String RSMgdRaster::GetVerticalUnits()
 {
     return m_raster->GetVerticalUnits();
 }
 
-int RSMgRaster::GetNullValueType()
+int RSMgdRaster::GetNullValueType()
 {
     return m_raster->GetNullValueType();
 }
 
-INT64 RSMgRaster::GetNullValueData()
+INT64 RSMgdRaster::GetNullValueData()
 {
     return m_raster->GetNullValue();
 }

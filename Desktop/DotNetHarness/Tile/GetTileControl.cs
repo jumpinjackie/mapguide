@@ -22,7 +22,7 @@ namespace DotNetHarness.Tile
         {
             try
             {
-                var fact = new MgServiceFactory();
+                var fact = new MgdServiceFactory();
                 MgdTileService renSvc = (MgdTileService)fact.CreateService(MgServiceType.TileService);
 
                 MgResourceIdentifier mdfId = new MgResourceIdentifier(txtMapDefinition.Text);

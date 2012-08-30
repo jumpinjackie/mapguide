@@ -29,7 +29,7 @@ TestLogManagerThread::TestLogManagerThread(ACE_Thread_Manager &tm) :
 
 int TestLogManagerThread::svc()
 {
-    MgLogManager* pMan = MgLogManager::GetInstance();
+    MgdLogManager* pMan = MgdLogManager::GetInstance();
     if (NULL == pMan)
     {
         throw new MgNullReferenceException(L"TestLogManagerThread.svc", __LINE__, __WFILE__, NULL, L"", NULL);

@@ -5,7 +5,7 @@
 /// \brief
 /// Construct the object.
 ///
-MgFeatureSourceCacheItem::MgFeatureSourceCacheItem()
+MgdFeatureSourceCacheItem::MgdFeatureSourceCacheItem()
 {
 }
 
@@ -13,7 +13,7 @@ MgFeatureSourceCacheItem::MgFeatureSourceCacheItem()
 /// \brief
 /// Construct the object.
 ///
-MgFeatureSourceCacheItem::MgFeatureSourceCacheItem(MdfModel::FeatureSource* featureSource)
+MgdFeatureSourceCacheItem::MgdFeatureSourceCacheItem(MdfModel::FeatureSource* featureSource)
 {
     Set(featureSource);
 }
@@ -22,7 +22,7 @@ MgFeatureSourceCacheItem::MgFeatureSourceCacheItem(MdfModel::FeatureSource* feat
 /// \brief
 /// Destruct the object.
 ///
-MgFeatureSourceCacheItem::~MgFeatureSourceCacheItem()
+MgdFeatureSourceCacheItem::~MgdFeatureSourceCacheItem()
 {
 }
 
@@ -30,7 +30,7 @@ MgFeatureSourceCacheItem::~MgFeatureSourceCacheItem()
 /// \brief
 /// Set the feature source.
 ///
-void MgFeatureSourceCacheItem::Set(MdfModel::FeatureSource* featureSource)
+void MgdFeatureSourceCacheItem::Set(MdfModel::FeatureSource* featureSource)
 {
     m_featureSource.reset(featureSource);
 }

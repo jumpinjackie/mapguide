@@ -18,12 +18,12 @@
 #ifndef _MG_FEATURE_MANIPULATION_COMMAND_H_
 #define _MG_FEATURE_MANIPULATION_COMMAND_H_
 
-class MgFeatureConnection;
+class MgdFeatureConnection;
 
-class MgFeatureManipulationCommand : public MgDisposable
+class MgdFeatureManipulationCommand : public MgDisposable
 {
 public:
-    static MgFeatureManipulationCommand* CreateCommand(MgFeatureCommand* command, MgFeatureConnection* connection, INT32 cmdId);
+    static MgdFeatureManipulationCommand* CreateCommand(MgFeatureCommand* command, MgdFeatureConnection* connection, INT32 cmdId);
     virtual MgProperty* Execute() = 0;
 protected:
     virtual void Dispose()

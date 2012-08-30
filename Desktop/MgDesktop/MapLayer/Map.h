@@ -9,7 +9,7 @@
 
 typedef std::list<MdfModel::MdfString> ColorStringList;
 
-class MgServiceFactory;
+class MgdServiceFactory;
 
 /// \ingroup Desktop_Map_and_Layers_Module
 /// \{
@@ -119,7 +119,7 @@ private:
     static const int m_serializeVersion = (4<<16) + 0;
     static STRING m_layerGroupTag;
 
-    Ptr<MgServiceFactory> m_factory;
+    Ptr<MgdServiceFactory> m_factory;
     Ptr<MgMemoryStreamHelper> m_layerGroupHelper;
     Ptr<MgResourceService> m_resourceService;
     bool m_inSave;

@@ -28,7 +28,7 @@ TestMappingService::TestMappingService()
 {
     // Initialize service objects.
     //MgServiceManager* serviceManager = MgServiceManager::GetInstance();
-    Ptr<MgServiceFactory> factory = new MgServiceFactory();
+    Ptr<MgdServiceFactory> factory = new MgdServiceFactory();
 
     m_svcResource = dynamic_cast<MgdResourceService*>(
         factory->CreateService(MgServiceType::ResourceService));

@@ -65,7 +65,7 @@ MgdMappingService::MgdMappingService() : MgService()
     //MgServiceManager* serviceMan = MgServiceManager::GetInstance();
     //assert(NULL != serviceMan);
 
-    Ptr<MgServiceFactory> fact = new MgServiceFactory();
+    Ptr<MgdServiceFactory> fact = new MgdServiceFactory();
 
     m_svcResource = dynamic_cast<MgResourceService*>(fact->CreateService(MgServiceType::ResourceService));
     assert(m_svcResource != NULL);
@@ -77,31 +77,31 @@ MgdMappingService::MgdMappingService() : MgService()
     assert(m_svcDrawing != NULL);
 
     MgConfiguration* pConf = MgConfiguration::GetInstance();
-    pConf->GetIntValue(MgConfigProperties::RenderingServicePropertiesSection,
-                          MgConfigProperties::RenderingServicePropertyMaxRasterImageWidth,
+    pConf->GetIntValue(MgdConfigProperties::RenderingServicePropertiesSection,
+                          MgdConfigProperties::RenderingServicePropertyMaxRasterImageWidth,
                           m_maxRasterImageWidth,
-                          MgConfigProperties::DefaultRenderingServicePropertyMaxRasterImageWidth);
+                          MgdConfigProperties::DefaultRenderingServicePropertyMaxRasterImageWidth);
 
-    pConf->GetIntValue(MgConfigProperties::RenderingServicePropertiesSection,
-                          MgConfigProperties::RenderingServicePropertyMaxRasterImageHeight,
+    pConf->GetIntValue(MgdConfigProperties::RenderingServicePropertiesSection,
+                          MgdConfigProperties::RenderingServicePropertyMaxRasterImageHeight,
                           m_maxRasterImageHeight,
-                          MgConfigProperties::DefaultRenderingServicePropertyMaxRasterImageHeight);
+                          MgdConfigProperties::DefaultRenderingServicePropertyMaxRasterImageHeight);
 
     // Set Mapping Service related properties
-	pConf->GetIntValue(MgConfigProperties::RenderingServicePropertiesSection,
-                          MgConfigProperties::RenderingServicePropertyRasterGridSizeForPlot,
+	pConf->GetIntValue(MgdConfigProperties::RenderingServicePropertiesSection,
+                          MgdConfigProperties::RenderingServicePropertyRasterGridSizeForPlot,
                           m_rasterGridSizeForPlot,
-                          MgConfigProperties::DefaultRenderingServicePropertyRasterGridSizeForPlot);
+                          MgdConfigProperties::DefaultRenderingServicePropertyRasterGridSizeForPlot);
 
-    pConf->GetIntValue(MgConfigProperties::RenderingServicePropertiesSection,
-                          MgConfigProperties::RenderingServicePropertyMinRasterGridSizeForPlot,
+    pConf->GetIntValue(MgdConfigProperties::RenderingServicePropertiesSection,
+                          MgdConfigProperties::RenderingServicePropertyMinRasterGridSizeForPlot,
                           m_minRasterGridSizeForPlot,
-                          MgConfigProperties::DefaultRenderingServicePropertyMinRasterGridSizeForPlot);
+                          MgdConfigProperties::DefaultRenderingServicePropertyMinRasterGridSizeForPlot);
 
-    pConf->GetDoubleValue(MgConfigProperties::RenderingServicePropertiesSection,
-                          MgConfigProperties::RenderingServicePropertyRasterGridSizeOverrideRatioForPlot,
+    pConf->GetDoubleValue(MgdConfigProperties::RenderingServicePropertiesSection,
+                          MgdConfigProperties::RenderingServicePropertyRasterGridSizeOverrideRatioForPlot,
                           m_rasterGridSizeOverrideRatioForPlot,
-                          MgConfigProperties::DefaultRenderingServicePropertyRasterGridSizeOverrideRatioForPlot);
+                          MgdConfigProperties::DefaultRenderingServicePropertyRasterGridSizeOverrideRatioForPlot);
 }
 
 MgdMappingService::~MgdMappingService() { }
@@ -182,7 +182,7 @@ MgByteReader* MgdMappingService::GenerateLegendImage(MgResourceIdentifier* resou
 
     if (m_svcResource == NULL)
     {
-        Ptr<MgServiceFactory> fact = new MgServiceFactory();
+        Ptr<MgdServiceFactory> fact = new MgdServiceFactory();
         m_svcResource = static_cast<MgResourceService*>(fact->CreateService(MgServiceType::ResourceService));
     }
 
@@ -249,7 +249,7 @@ MgByteReader* MgdMappingService::GenerateLegendImage(MgResourceIdentifier* resou
             }
 
             if (fts)
-                byteReader = MgMappingUtil::DrawFTS(m_svcResource, fts, imgWidth, imgHeight, themeCategory);
+                byteReader = MgdMappingUtil::DrawFTS(m_svcResource, fts, imgWidth, imgHeight, themeCategory);
             else
             {
                 //return the fixed array
@@ -582,7 +582,7 @@ MgByteReader* MgdMappingService::GenerateMultiPlotInternal(MgdMapPlotCollection*
     dr.SetMaxRasterImageWidth(m_maxRasterImageWidth);
     dr.SetMaxRasterImageHeight(m_maxRasterImageHeight);
 
-    RSMgSymbolManager mgr(m_svcResource);
+    RSMgdSymbolManager mgr(m_svcResource);
     dr.SetSymbolManager(&mgr);
 
     // process the MapPlot collection
@@ -661,7 +661,7 @@ MgByteReader* MgdMappingService::GenerateMultiPlotInternal(MgdMapPlotCollection*
         }
 
         // Create a simple print layout containing only the map
-        Ptr<MgPrintLayout> printLayout = new MgPrintLayout();
+        Ptr<MgdPrintLayout> printLayout = new MgdPrintLayout();
         if (printLayout == NULL)
         {
             throw new MgNullReferenceException(L"MgdMappingService::GenerateMultiPlot", __LINE__, __WFILE__, NULL, L"", NULL);
@@ -867,7 +867,7 @@ MgByteReader* MgdMappingService::GenerateMultiPlotInternal(MgdMapPlotCollection*
         b.maxx = newur->GetX();
         b.maxy = newur->GetY();
 
-        SEMgSymbolManager semgr(m_svcResource);
+        SEMgdSymbolManager semgr(m_svcResource);
         DefaultStylizer ds(&semgr);
 
         double dpi = map->GetDisplayDpi();
@@ -904,7 +904,7 @@ MgByteReader* MgdMappingService::GenerateMultiPlotInternal(MgdMapPlotCollection*
         }
 
         //stylize all the map layers
-        MgMappingUtil::StylizeLayers(m_svcResource, m_svcFeature, m_svcDrawing, m_pCSFactory, map,
+        MgdMappingUtil::StylizeLayers(m_svcResource, m_svcFeature, m_svcDrawing, m_pCSFactory, map,
                                      rolc, NULL, &ds, &dr, dstCs, false, false, dMapScale);
 
         // Finish adding the map to the page
@@ -912,7 +912,7 @@ MgByteReader* MgdMappingService::GenerateMultiPlotInternal(MgdMapPlotCollection*
         dr.mapBoundsHeight() = b.height() * dr.mapWidth()/b.width();
 
         //construct one every time -- not really a bottleneck
-        MgLegendPlotUtil lu(m_svcResource);
+        MgdLegendPlotUtil lu(m_svcResource);
 
         // Now add the rest of the layout element to the page
         lu.AddLayoutElements(printLayout, (STRING)mapInfo.name(), mapResId->ToString(), map, layers, b, dMapScale, metersPerUnit, dr);

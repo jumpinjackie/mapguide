@@ -6,13 +6,13 @@
 #define IMAGE_ERROR (unsigned char*)1
 
 
-SEMgSymbolManager::SEMgSymbolManager(MgResourceService* svc)
+SEMgdSymbolManager::SEMgdSymbolManager(MgResourceService* svc)
 {
     m_svcResource = SAFE_ADDREF(svc);
 }
 
 
-SEMgSymbolManager::~SEMgSymbolManager()
+SEMgdSymbolManager::~SEMgdSymbolManager()
 {
     SAFE_RELEASE(m_svcResource);
 
@@ -34,7 +34,7 @@ SEMgSymbolManager::~SEMgSymbolManager()
 }
 
 
-SymbolDefinition* SEMgSymbolManager::GetSymbolDefinition(const wchar_t* resourceId)
+SymbolDefinition* SEMgdSymbolManager::GetSymbolDefinition(const wchar_t* resourceId)
 {
     if (!resourceId)
         resourceId = L"";
@@ -105,7 +105,7 @@ SymbolDefinition* SEMgSymbolManager::GetSymbolDefinition(const wchar_t* resource
 }
 
 
-bool SEMgSymbolManager::GetImageData(const wchar_t* resourceId, const wchar_t* resourceName, ImageData& imageData)
+bool SEMgdSymbolManager::GetImageData(const wchar_t* resourceId, const wchar_t* resourceName, ImageData& imageData)
 {
     if (!resourceId)
         resourceId = L"";

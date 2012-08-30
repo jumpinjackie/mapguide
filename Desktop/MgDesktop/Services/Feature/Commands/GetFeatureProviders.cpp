@@ -18,27 +18,27 @@
 #include "Services/Feature/FeatureDefs.h"
 #include "GetFeatureProviders.h"
 
-MgGetFeatureProviders::MgGetFeatureProviders()
+MgdGetFeatureProviders::MgdGetFeatureProviders()
 {
     FdoPtr<IProviderRegistry> providerReg = FdoFeatureAccessManager::GetProviderRegistry();
-    CHECKNULL(providerReg, L"MgGetFeatureProviders.MgGetFeatureProviders()");
+    CHECKNULL(providerReg, L"MgdGetFeatureProviders.MgdGetFeatureProviders()");
 
     FdoPtr<IConnectionManager> connManager = FdoFeatureAccessManager::GetConnectionManager();
-    CHECKNULL(connManager, L"MgGetFeatureProviders.MgGetFeatureProviders()");
+    CHECKNULL(connManager, L"MgdGetFeatureProviders.MgdGetFeatureProviders()");
 
     m_fdoProviderCol = providerReg->GetProviders();
-    CHECKNULL(m_fdoProviderCol, L"MgGetFeatureProviders.MgGetFeatureProviders()");
+    CHECKNULL(m_fdoProviderCol, L"MgdGetFeatureProviders.MgdGetFeatureProviders()");
 
     // this XML follows the FeatureProviderRegistry-1.0.0.xsd schema
     m_xmlUtil = new MgXmlUtil("FeatureProviderRegistry" /* NOXLATE */);
-    CHECKNULL(m_xmlUtil, L"MgGetFeatureProviders.MgGetFeatureProviders()");
+    CHECKNULL(m_xmlUtil, L"MgdGetFeatureProviders.MgdGetFeatureProviders()");
 
     // no more risk of exceptions, so we can now assign these
     m_providerReg = providerReg.Detach();
     m_connManager = connManager.Detach();
 }
 
-MgGetFeatureProviders::~MgGetFeatureProviders()
+MgdGetFeatureProviders::~MgdGetFeatureProviders()
 {
     FDO_SAFE_RELEASE(m_providerReg);
     FDO_SAFE_RELEASE(m_connManager);
@@ -50,7 +50,7 @@ MgGetFeatureProviders::~MgGetFeatureProviders()
 }
 
 
-MgByteReader* MgGetFeatureProviders::GetFeatureProviders()
+MgByteReader* MgdGetFeatureProviders::GetFeatureProviders()
 {
     Ptr<MgByteReader> byteReader;
 
@@ -59,14 +59,14 @@ MgByteReader* MgGetFeatureProviders::GetFeatureProviders()
     CreateFeatureProvidersDocument();
     byteReader = m_xmlUtil->ToReader();
 
-    MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgGetFeatureProviders.GetFeatureProviders")
+    MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgdGetFeatureProviders.GetFeatureProviders")
 
     return byteReader.Detach();
 }
 
-void MgGetFeatureProviders::CreateFeatureProvidersDocument()
+void MgdGetFeatureProviders::CreateFeatureProvidersDocument()
 {
-    CHECKNULL(m_fdoProviderCol, L"MgGetFeatureProviders.CreateFeatureProvidersDocument");
+    CHECKNULL(m_fdoProviderCol, L"MgdGetFeatureProviders.CreateFeatureProvidersDocument");
 
     INT32 cnt = m_fdoProviderCol->GetCount();
     for (INT32 i = 0; i < cnt; i++)
@@ -107,16 +107,16 @@ void MgGetFeatureProviders::CreateFeatureProvidersDocument()
     }
 }
 
-void MgGetFeatureProviders::AddConnectionProperties(DOMElement* providerElem, FdoString* providerName)
+void MgdGetFeatureProviders::AddConnectionProperties(DOMElement* providerElem, FdoString* providerName)
 {
-    CHECKNULL(providerElem, L"MgGetFeatureProviders.AddConnectionProperties");
+    CHECKNULL(providerElem, L"MgdGetFeatureProviders.AddConnectionProperties");
 
     // Get Properties
     FdoInt32 totalProperties = 0;
 
     // Add ConnnectionProperties element (mandatory element)
     DOMElement* connPropRootElem = m_xmlUtil->AddChildNode(providerElem, "ConnectionProperties" /* NOXLATE */ );
-    CHECKNULL(connPropRootElem, L"MgGetFeatureProviders.AddConnectionProperties");
+    CHECKNULL(connPropRootElem, L"MgdGetFeatureProviders.AddConnectionProperties");
 
     // We ignore any exception thrown here so that even if client dll/so is missing, GetFeatureProviders
     // will continue to work.
@@ -125,35 +125,35 @@ void MgGetFeatureProviders::AddConnectionProperties(DOMElement* providerElem, Fd
     // Get FdoIConnection instance
     // TODO: Should this connection be cached?
     FdoPtr<FdoIConnection> fdoConn = m_connManager->CreateConnection(providerName);
-    CHECKNULL((FdoIConnection*)fdoConn, L"MgGetFeatureProviders.AddConnectionProperties");
+    CHECKNULL((FdoIConnection*)fdoConn, L"MgdGetFeatureProviders.AddConnectionProperties");
 
     // Get FdoIConnectionInfo
     FdoPtr<FdoIConnectionInfo> fdoConnInfo = fdoConn->GetConnectionInfo();
-    CHECKNULL((FdoIConnectionInfo*)fdoConnInfo, L"MgGetFeatureProviders.AddConnectionProperties");
+    CHECKNULL((FdoIConnectionInfo*)fdoConnInfo, L"MgdGetFeatureProviders.AddConnectionProperties");
 
     // Get FdoIConnectionPropertyDictionary
     FdoPtr<FdoIConnectionPropertyDictionary> fdoConnPropertyDict = fdoConnInfo->GetConnectionProperties();
-    CHECKNULL((FdoIConnectionPropertyDictionary*)fdoConnPropertyDict, L"MgGetFeatureProviders.AddConnectionProperties");
+    CHECKNULL((FdoIConnectionPropertyDictionary*)fdoConnPropertyDict, L"MgdGetFeatureProviders.AddConnectionProperties");
 
     // Get list of all properties
     FdoString** properties = fdoConnPropertyDict->GetPropertyNames(totalProperties);
-    CHECKNULL(properties, L"MgGetFeatureProviders.AddConnectionProperties");
+    CHECKNULL(properties, L"MgdGetFeatureProviders.AddConnectionProperties");
 
     for ( FdoInt32 i=0; i < totalProperties; i++ )
     {
         AddConnectionProperty(connPropRootElem, properties[i], fdoConnPropertyDict);
     }
 
-    MG_FEATURE_SERVICE_CATCH(L"MgGetFeatureProviders.GetFeatureProviders") // do not rethrow so that GetFeatureProviders works
+    MG_FEATURE_SERVICE_CATCH(L"MgdGetFeatureProviders.GetFeatureProviders") // do not rethrow so that GetFeatureProviders works
 }
 
-void MgGetFeatureProviders::AddConnectionProperty(DOMElement* connPropRootElem,
+void MgdGetFeatureProviders::AddConnectionProperty(DOMElement* connPropRootElem,
                                                    FdoString* propertyName,
                                                    FdoIConnectionPropertyDictionary* fdoConnPropertyDict)
 {
-    CHECKNULL(connPropRootElem,     L"MgGetFeatureProviders.AddConnectionProperty");
-    CHECKNULL(propertyName,         L"MgGetFeatureProviders.AddConnectionProperty");
-    CHECKNULL(fdoConnPropertyDict,  L"MgGetFeatureProviders.AddConnectionProperty");
+    CHECKNULL(connPropRootElem,     L"MgdGetFeatureProviders.AddConnectionProperty");
+    CHECKNULL(propertyName,         L"MgdGetFeatureProviders.AddConnectionProperty");
+    CHECKNULL(fdoConnPropertyDict,  L"MgdGetFeatureProviders.AddConnectionProperty");
 
     DOMElement* connPropElem = m_xmlUtil->AddChildNode(connPropRootElem, "ConnectionProperty"  /* NOXLATE */ );
 

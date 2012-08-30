@@ -3,7 +3,7 @@
 #include "Services/Feature/FeatureDefs.h"
 #include "Services/Feature/FeatureConnection.h"
 
-MgdTransaction::MgdTransaction(MgFeatureConnection* conn, MgResourceIdentifier* resource)
+MgdTransaction::MgdTransaction(MgdFeatureConnection* conn, MgResourceIdentifier* resource)
 {
     CHECKARGUMENTNULL(conn, L"MgdTransaction::ctor");
     CHECK_FEATURE_SOURCE_ARGUMENT(resource, L"MgdTransaction::ctor");
@@ -26,7 +26,7 @@ FdoITransaction* MgdTransaction::GetFdoTransaction()
     return FDO_SAFE_ADDREF(m_trans);
 }
 
-MgFeatureConnection* MgdTransaction::GetConnection()
+MgdFeatureConnection* MgdTransaction::GetConnection()
 {
     return SAFE_ADDREF(m_conn);
 }

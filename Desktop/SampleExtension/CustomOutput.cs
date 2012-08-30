@@ -190,10 +190,10 @@ namespace SampleExtension
                 save.Filter = "DWF Files (*.dwf)|*.dwf";
                 if (save.ShowDialog() == DialogResult.OK)
                 {
-                    MgDwfVersion dwfVer = new MgDwfVersion("6.01", "1.2");
+                    MgdDwfVersion dwfVer = new MgdDwfVersion("6.01", "1.2");
 
-                    MgLayout layout = new MgLayout(layoutId, "City of Sheboygan", MgPageUnitsType.Inches);
-                    MgPlotSpecification plotSpec = new MgPlotSpecification(8.5f, 11.0f, MgPageUnitsType.Inches, 0.5f, 0.5f, 0.5f, 0.5f);
+                    MgdLayout layout = new MgdLayout(layoutId, "City of Sheboygan", MgdPageUnitsType.Inches);
+                    MgdPlotSpecification plotSpec = new MgdPlotSpecification(8.5f, 11.0f, MgdPageUnitsType.Inches, 0.5f, 0.5f, 0.5f, 0.5f);
 
                     MgByteReader result = mappingSvc.GeneratePlot(map, plotSpec, layout, dwfVer);
                     MgByteSink sink = new MgByteSink(result);
@@ -215,14 +215,14 @@ namespace SampleExtension
                 save.Filter = "DWF Files (*.dwf)|*.dwf";
                 if (save.ShowDialog() == DialogResult.OK)
                 {
-                    MgDwfVersion dwfVer = new MgDwfVersion("6.01", "1.2");
+                    MgdDwfVersion dwfVer = new MgdDwfVersion("6.01", "1.2");
 
-                    MgLayout layout = new MgLayout(layoutId, "City of Sheboygan", MgPageUnitsType.Inches);
-                    MgPlotSpecification plotSpec = new MgPlotSpecification(8.5f, 11.0f, MgPageUnitsType.Inches, 0.5f, 0.5f, 0.5f, 0.5f);
+                    MgdLayout layout = new MgdLayout(layoutId, "City of Sheboygan", MgdPageUnitsType.Inches);
+                    MgdPlotSpecification plotSpec = new MgdPlotSpecification(8.5f, 11.0f, MgdPageUnitsType.Inches, 0.5f, 0.5f, 0.5f, 0.5f);
 
-                    MgMapPlotCollection plotCollection = new MgMapPlotCollection();
+                    MgdMapPlotCollection plotCollection = new MgdMapPlotCollection();
 
-                    MgMapPlot plot1 = new MgMapPlot(map, plotSpec, layout);
+                    MgdMapPlot plot1 = new MgdMapPlot(map, plotSpec, layout);
                     plot1.SetCenterAndScale(map.GetViewCenter().GetCoordinate(), map.GetViewScale() * 2);
                     plotCollection.Add(plot1);
 
@@ -230,7 +230,7 @@ namespace SampleExtension
                     // to display a page title and legend.
 
                     MgdMap map2 = new MgdMap(map.GetMapDefinition(), "Sheet 2");
-                    MgMapPlot plot2 = new MgMapPlot(map2, plotSpec, layout);
+                    MgdMapPlot plot2 = new MgdMapPlot(map2, plotSpec, layout);
                     plot2.SetCenterAndScale(map.GetViewCenter().GetCoordinate(), map.GetViewScale());
                     plotCollection.Add(plot2);
 

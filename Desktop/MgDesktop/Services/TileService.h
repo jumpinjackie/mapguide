@@ -68,11 +68,11 @@ private:
     MgResourceService* GetResourceServiceForMapDef(MgResourceIdentifier* mapDefinition, CREFSTRING funcName);
 
     // member data
-    Ptr<MgTileCache> m_tileCache;
+    Ptr<MgdTileCache> m_tileCache;
 
     typedef std::map<STRING, MgMemoryStreamHelper*> MapCache;
 
-    static ACE_Recursive_Thread_Mutex sm_mutex;
+    static ACE_Recursive_Thread_Mutex sm_MgdMutex;
     static bool sm_initialized;
     static MapCache sm_mapCache;
     static bool sm_renderOnly;

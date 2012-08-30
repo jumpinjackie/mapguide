@@ -29,7 +29,7 @@ inline bool hasColorMap (STRING format)
 // used when we want to process a given number of features
 bool StylizeThatMany(void* data)
 {
-    FeatureInfoRenderer* fir = (FeatureInfoRenderer*)data;
+    MgdFeatureInfoRenderer* fir = (MgdFeatureInfoRenderer*)data;
     if ( fir->GetNumFeaturesProcessed() >= fir->GetNumMaxFeatures())
         return true;
 
@@ -42,7 +42,7 @@ MgdRenderingService::MgdRenderingService() : MgService()
 {
     m_pCSFactory = new MgCoordinateSystemFactory();
 
-    Ptr<MgServiceFactory> fact = new MgServiceFactory();
+    Ptr<MgdServiceFactory> fact = new MgdServiceFactory();
 
     m_svcResource = dynamic_cast<MgResourceService*>(fact->CreateService(MgServiceType::ResourceService));
     assert(m_svcResource != NULL);
@@ -54,55 +54,55 @@ MgdRenderingService::MgdRenderingService() : MgService()
     assert(m_svcDrawing != NULL);
 
     MgConfiguration* pConf = MgConfiguration::GetInstance();
-    pConf->GetStringValue(MgConfigProperties::GeneralPropertiesSection,
-                          MgConfigProperties::GeneralPropertyRenderer,
+    pConf->GetStringValue(MgdConfigProperties::GeneralPropertiesSection,
+                          MgdConfigProperties::GeneralPropertyRenderer,
                           m_rendererName,
-                          MgConfigProperties::DefaultGeneralPropertyRenderer);
+                          MgdConfigProperties::DefaultGeneralPropertyRenderer);
 
-    pConf->GetIntValue(MgConfigProperties::RenderingServicePropertiesSection,
-                          MgConfigProperties::RenderingServicePropertyRasterGridSize,
+    pConf->GetIntValue(MgdConfigProperties::RenderingServicePropertiesSection,
+                          MgdConfigProperties::RenderingServicePropertyRasterGridSize,
                           m_rasterGridSize,
-                          MgConfigProperties::DefaultRenderingServicePropertyRasterGridSize);
+                          MgdConfigProperties::DefaultRenderingServicePropertyRasterGridSize);
 
-    pConf->GetIntValue(MgConfigProperties::RenderingServicePropertiesSection,
-                          MgConfigProperties::RenderingServicePropertyMinRasterGridSize,
+    pConf->GetIntValue(MgdConfigProperties::RenderingServicePropertiesSection,
+                          MgdConfigProperties::RenderingServicePropertyMinRasterGridSize,
                           m_minRasterGridSize,
-                          MgConfigProperties::DefaultRenderingServicePropertyMinRasterGridSize);
+                          MgdConfigProperties::DefaultRenderingServicePropertyMinRasterGridSize);
 
-    pConf->GetDoubleValue(MgConfigProperties::RenderingServicePropertiesSection,
-                          MgConfigProperties::RenderingServicePropertyRasterGridSizeOverrideRatio,
+    pConf->GetDoubleValue(MgdConfigProperties::RenderingServicePropertiesSection,
+                          MgdConfigProperties::RenderingServicePropertyRasterGridSizeOverrideRatio,
                           m_rasterGridSizeOverrideRatio,
-                          MgConfigProperties::DefaultRenderingServicePropertyRasterGridSizeOverrideRatio);
+                          MgdConfigProperties::DefaultRenderingServicePropertyRasterGridSizeOverrideRatio);
 
-    pConf->GetIntValue(MgConfigProperties::RenderingServicePropertiesSection,
-                          MgConfigProperties::RenderingServicePropertyRenderSelectionBatchSize,
+    pConf->GetIntValue(MgdConfigProperties::RenderingServicePropertiesSection,
+                          MgdConfigProperties::RenderingServicePropertyRenderSelectionBatchSize,
                           m_renderSelectionBatchSize,
-                          MgConfigProperties::DefaultRenderingServicePropertyRenderSelectionBatchSize);
+                          MgdConfigProperties::DefaultRenderingServicePropertyRenderSelectionBatchSize);
 
-    pConf->GetIntValue(MgConfigProperties::RenderingServicePropertiesSection,
-                          MgConfigProperties::RenderingServicePropertyMaxRasterImageWidth,
+    pConf->GetIntValue(MgdConfigProperties::RenderingServicePropertiesSection,
+                          MgdConfigProperties::RenderingServicePropertyMaxRasterImageWidth,
                           m_maxRasterImageWidth,
-                          MgConfigProperties::DefaultRenderingServicePropertyMaxRasterImageWidth);
+                          MgdConfigProperties::DefaultRenderingServicePropertyMaxRasterImageWidth);
 
-    pConf->GetIntValue(MgConfigProperties::RenderingServicePropertiesSection,
-                          MgConfigProperties::RenderingServicePropertyMaxRasterImageHeight,
+    pConf->GetIntValue(MgdConfigProperties::RenderingServicePropertiesSection,
+                          MgdConfigProperties::RenderingServicePropertyMaxRasterImageHeight,
                           m_maxRasterImageHeight,
-                          MgConfigProperties::DefaultRenderingServicePropertyMaxRasterImageHeight);
+                          MgdConfigProperties::DefaultRenderingServicePropertyMaxRasterImageHeight);
 
     // there should only be one instance of this class, so it's safe to
     // directly set these static variables
     bool bClampPoints;
-    pConf->GetBoolValue(MgConfigProperties::RenderingServicePropertiesSection,
-                          MgConfigProperties::RenderingServicePropertyClampPoints,
+    pConf->GetBoolValue(MgdConfigProperties::RenderingServicePropertiesSection,
+                          MgdConfigProperties::RenderingServicePropertyClampPoints,
                           bClampPoints,
-                          MgConfigProperties::DefaultRenderingServicePropertyClampPoints);
+                          MgdConfigProperties::DefaultRenderingServicePropertyClampPoints);
     AGGRenderer::s_bClampPoints = bClampPoints;
 
     bool bGeneralizeData;
-    pConf->GetBoolValue(MgConfigProperties::RenderingServicePropertiesSection,
-                          MgConfigProperties::RenderingServicePropertyGeneralizeData,
+    pConf->GetBoolValue(MgdConfigProperties::RenderingServicePropertiesSection,
+                          MgdConfigProperties::RenderingServicePropertyGeneralizeData,
                           bGeneralizeData,
-                          MgConfigProperties::DefaultRenderingServicePropertyGeneralizeData);
+                          MgdConfigProperties::DefaultRenderingServicePropertyGeneralizeData);
     AGGRenderer::s_bGeneralizeData = bGeneralizeData;
     GDRenderer::s_bGeneralizeData = bGeneralizeData;
 }
@@ -166,7 +166,7 @@ MgByteReader* MgdRenderingService::RenderTile(MgdMap* map, CREFSTRING baseMapLay
     scale = map->GetFiniteDisplayScaleAt(scaleIndex);
 
     // ensure the tile DPI is set on the map
-    map->SetDisplayDpi(MgTileParameters::tileDPI);
+    map->SetDisplayDpi(MgdTileParameters::tileDPI);
 
     // ------------------------------------------------------
     // the upper left corner of tile (0,0) corresponds to the
@@ -182,9 +182,9 @@ MgByteReader* MgdRenderingService::RenderTile(MgdMap* map, CREFSTRING baseMapLay
     double mapMaxY = rs_max(pt00->GetY(), pt11->GetY());
 
     double metersPerUnit  = map->GetMetersPerUnit();
-    double metersPerPixel = METERS_PER_INCH / MgTileParameters::tileDPI;
-    double tileWidthMCS   = (double)MgTileParameters::tileWidth  * metersPerPixel * scale / metersPerUnit;
-    double tileHeightMCS  = (double)MgTileParameters::tileHeight * metersPerPixel * scale / metersPerUnit;
+    double metersPerPixel = METERS_PER_INCH / MgdTileParameters::tileDPI;
+    double tileWidthMCS   = (double)MgdTileParameters::tileWidth  * metersPerPixel * scale / metersPerUnit;
+    double tileHeightMCS  = (double)MgdTileParameters::tileHeight * metersPerPixel * scale / metersPerUnit;
 
     double tileMinX = mapMinX + (double)(tileColumn  ) * tileWidthMCS;  // left edge
     double tileMaxX = mapMinX + (double)(tileColumn+1) * tileWidthMCS;  // right edge
@@ -192,8 +192,8 @@ MgByteReader* MgdRenderingService::RenderTile(MgdMap* map, CREFSTRING baseMapLay
     double tileMaxY = mapMaxY - (double)(tileRow     ) * tileHeightMCS; // top edge
 
     // make the call to render the tile
-    ret = RenderTile(map, baseGroup, scaleIndex, MgTileParameters::tileWidth, MgTileParameters::tileHeight, scale,
-                     tileMinX, tileMaxX, tileMinY, tileMaxY, MgTileParameters::tileFormat);
+    ret = RenderTile(map, baseGroup, scaleIndex, MgdTileParameters::tileWidth, MgdTileParameters::tileHeight, scale,
+                     tileMinX, tileMaxX, tileMinY, tileMaxY, MgdTileParameters::tileFormat);
 
     // Successful operation
     MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Success.c_str());
@@ -248,12 +248,12 @@ MgByteReader* MgdRenderingService::RenderTile(MgdMap* map,
     // the label renderer needs to know the tile extent offset parameter
     double tileExtentOffset = 0.0;
     MgConfiguration* pConf = MgConfiguration::GetInstance();
-    pConf->GetDoubleValue(MgConfigProperties::RenderingServicePropertiesSection,
-                          MgConfigProperties::RenderingServicePropertyTileExtentOffset,
+    pConf->GetDoubleValue(MgdConfigProperties::RenderingServicePropertiesSection,
+                          MgdConfigProperties::RenderingServicePropertyTileExtentOffset,
                           tileExtentOffset,
-                          MgConfigProperties::DefaultRenderingServicePropertyTileExtentOffset);
+                          MgdConfigProperties::DefaultRenderingServicePropertyTileExtentOffset);
     if (tileExtentOffset < 0.0)
-        tileExtentOffset = MgConfigProperties::DefaultRenderingServicePropertyTileExtentOffset;
+        tileExtentOffset = MgdConfigProperties::DefaultRenderingServicePropertyTileExtentOffset;
 
     // initialize the renderer (set clipping to false so that we label
     // the unclipped geometry)
@@ -641,12 +641,12 @@ MgdFeatureInformation* MgdRenderingService::QueryFeaturesInternal(MgdMap* map,
         }
     }
 
-    FeatureInfoRenderer fir(sel, maxFeatures, map->GetViewScale(), point, impRenderer.get());
+    MgdFeatureInfoRenderer fir(sel, maxFeatures, map->GetViewScale(), point, impRenderer.get());
 
     RenderForSelection(map, layerNames, geometry, selectionVariant, featureFilter, maxFeatures, layerAttributeFilter, &fir);
 
     //fill out the output object with the info we collected
-    //in the FeatureInfoRenderer for the first feature we hit
+    //in the MgdFeatureInfoRenderer for the first feature we hit
     if (fir.GetNumFeaturesProcessed() > 0)
     {
         Ptr<MgPropertyCollection> props = fir.GetProperties();
@@ -1293,10 +1293,10 @@ MgByteReader* MgdRenderingService::RenderMapInternal(MgdMap* map,
     //    sessionId = userInfo->GetMgSessionId();
 
     // initialize the stylizer
-    RSMgSymbolManager mgr(m_svcResource);
+    RSMgdSymbolManager mgr(m_svcResource);
     dr->SetSymbolManager(&mgr);
 
-    SEMgSymbolManager semgr(m_svcResource);
+    SEMgdSymbolManager semgr(m_svcResource);
     DefaultStylizer ds(&semgr);
 
     RS_Color bgcolor(0, 0, 0, 255); //not used -- GDRenderer is already initialized to the correct bgcolor
@@ -1353,7 +1353,7 @@ MgByteReader* MgdRenderingService::RenderMapInternal(MgdMap* map,
         ProfileRenderLabelsResult* pPRLablesResult = new ProfileRenderLabelsResult(); // pointer points to Render Labels Result
         
         // Set the start time of stylizing labels
-        pPRLablesResult->SetRenderTime(MgTimerUtil::GetTime());
+        pPRLablesResult->SetRenderTime(MgdTimerUtil::GetTime());
 
         pPRMResult->AdoptProfileRenderLabelsResult(pPRLablesResult);
     }
@@ -1365,7 +1365,7 @@ MgByteReader* MgdRenderingService::RenderMapInternal(MgdMap* map,
         ProfileRenderLabelsResult* pPRLablesResult = pPRMResult->GetProfileRenderLabelsResult();
 
         // Calculate the time spent on stylizing labels
-        double stylizeLabelsTime = MgTimerUtil::GetTime() - pPRLablesResult->GetRenderTime();
+        double stylizeLabelsTime = MgdTimerUtil::GetTime() - pPRLablesResult->GetRenderTime();
         pPRLablesResult->SetRenderTime(stylizeLabelsTime);
     }
 
@@ -1445,7 +1445,7 @@ MgByteReader* MgdRenderingService::RenderMapLegend(MgdMap* map,
     //      do not overlap the legend border
     Ptr<MgdPlotSpecification> spec = new MgdPlotSpecification(width - 1.0f, height - 1.0f, L"pixels");
     spec->SetMargins(1.0f, 0.0f, 0.0f, 0.0f);
-    MgLegendPlotUtil lu(m_svcResource);
+    MgdLegendPlotUtil lu(m_svcResource);
     lu.AddLegendElement(map->GetViewScale(), *dr, map, spec, 0.0, 0.0);
 
     //done drawing
@@ -1542,10 +1542,10 @@ inline void MgdRenderingService::RenderLayers(MgdMap* map,
         pPRMResult->AdoptProfileRenderLayersResult(pPRLsResult);
                 
         // Set the start time of stylizing layers
-        pPRLsResult->SetRenderTime(MgTimerUtil::GetTime());
+        pPRLsResult->SetRenderTime(MgdTimerUtil::GetTime());
     }
 
-    MgMappingUtil::StylizeLayers(m_svcResource, m_svcFeature, m_svcDrawing, m_pCSFactory, map,
+    MgdMappingUtil::StylizeLayers(m_svcResource, m_svcFeature, m_svcDrawing, m_pCSFactory, map,
                                     layers, NULL, ds, dr, dstCs, expandExtents, false, scale,
                                     false, hasColorMap(format), pPRLsResult);
 
@@ -1554,7 +1554,7 @@ inline void MgdRenderingService::RenderLayers(MgdMap* map,
         pPRLsResult = pPRMResult->GetProfileRenderLayersResult();
 
         // Calculate the time spent on stylizing layers
-        double stylizeLayersTime = MgTimerUtil::GetTime() - pPRLsResult->GetRenderTime();
+        double stylizeLayersTime = MgdTimerUtil::GetTime() - pPRLsResult->GetRenderTime();
         pPRLsResult->SetRenderTime(stylizeLayersTime);
     }
 }
@@ -1581,7 +1581,7 @@ inline void MgdRenderingService::RenderSelection(MgdMap* map,
         pPRMResult->AdoptProfileRenderSelectionResult(pPRSResult);
                 
         // Set the start time of stylizing selected layers
-        pPRSResult->SetRenderTime(MgTimerUtil::GetTime());
+        pPRSResult->SetRenderTime(MgdTimerUtil::GetTime());
     }
 
     Ptr<MgReadOnlyLayerCollection> selLayers = selection->GetLayers();
@@ -1630,7 +1630,7 @@ inline void MgdRenderingService::RenderSelection(MgdMap* map,
             }
         }
 
-        MgMappingUtil::StylizeLayers(m_svcResource, m_svcFeature, m_svcDrawing, m_pCSFactory, map,
+        MgdMappingUtil::StylizeLayers(m_svcResource, m_svcFeature, m_svcDrawing, m_pCSFactory, map,
             modLayers, overrideFilters, ds, renderer, dstCs, false, false, scale, (behavior & MgdRenderingOptions::KeepSelection) != 0,false,pPRSResult);
 
         // Set selection mode to false to avoid affecting following code
@@ -1642,7 +1642,7 @@ inline void MgdRenderingService::RenderSelection(MgdMap* map,
         pPRSResult = pPRMResult->GetProfileRenderSelectionResult();
 
         // Calculate the time spent on stylizing selected layers
-        double stylizeSelectionTime = MgTimerUtil::GetTime() - pPRSResult->GetRenderTime();
+        double stylizeSelectionTime = MgdTimerUtil::GetTime() - pPRSResult->GetRenderTime();
         pPRSResult->SetRenderTime(stylizeSelectionTime);
     }
 }
@@ -1756,7 +1756,7 @@ inline void MgdRenderingService::RenderWatermarks(MgdMap* map,
             pPRMResult->AdoptProfileRenderWatermarksResult(pPRWsResult);
                 
             // Set the start time of stylizing watermarks
-            pPRWsResult->SetRenderTime(MgTimerUtil::GetTime());
+            pPRWsResult->SetRenderTime(MgdTimerUtil::GetTime());
         }
 
         for (int i=watermarkInstances.GetCount()-1; i>=0; i--)
@@ -1779,7 +1779,7 @@ inline void MgdRenderingService::RenderWatermarks(MgdMap* map,
                     ProfileRenderWatermarkResult* pPRWResult = new ProfileRenderWatermarkResult(); // pointer points to Render Watermark Result
                         
                     // Set the start time of stylizing watermark
-                    pPRWResult->SetRenderTime(MgTimerUtil::GetTime());
+                    pPRWResult->SetRenderTime(MgdTimerUtil::GetTime());
 
                     ProfileRenderWatermarkResultCollection* pPRWResultColl = pPRWsResult->GetProfileRenderWatermarkResults();
                     pPRWResultColl->Adopt(pPRWResult);
@@ -1811,7 +1811,7 @@ inline void MgdRenderingService::RenderWatermarks(MgdMap* map,
                     ProfileRenderWatermarkResult* pPRWResult = pPRWResultColl->GetAt(pPRWResultColl->GetCount()-1); // TODO: check index
 
                     // Calculate the time spent on stylizing watermark
-                    double stylizeWatermarkTime = MgTimerUtil::GetTime() - pPRWResult->GetRenderTime();
+                    double stylizeWatermarkTime = MgdTimerUtil::GetTime() - pPRWResult->GetRenderTime();
                     pPRWResult->SetRenderTime(stylizeWatermarkTime);
 
                     pPRWResult->SetResourceId(resourceId);
@@ -1874,7 +1874,7 @@ inline void MgdRenderingService::RenderWatermarks(MgdMap* map,
                         ProfileRenderWatermarkResult* pPRWResult = pPRWResultColl->GetAt(pPRWResultColl->GetCount()-1); // TODO: check index
 
                         // Calculate the time spent on stylizing watermark
-                        double stylizeWatermarkTime = MgTimerUtil::GetTime() - pPRWResult->GetRenderTime();
+                        double stylizeWatermarkTime = MgdTimerUtil::GetTime() - pPRWResult->GetRenderTime();
                         pPRWResult->SetRenderTime(stylizeWatermarkTime);
 
                         pPRWResult->SetResourceId(resourceId);
@@ -1889,7 +1889,7 @@ inline void MgdRenderingService::RenderWatermarks(MgdMap* map,
         if(NULL != pPRWsResult)
         {
             // Calculate the time spent on stylizing watermarks
-            double stylizeRenderWatermarksTime = MgTimerUtil::GetTime() - pPRWsResult->GetRenderTime();
+            double stylizeRenderWatermarksTime = MgdTimerUtil::GetTime() - pPRWsResult->GetRenderTime();
             pPRWsResult->SetRenderTime(stylizeRenderWatermarksTime);
         }
     }
@@ -1906,7 +1906,7 @@ inline MgByteReader* MgdRenderingService::CreateImage(MgdMap* map,
     if(NULL != pPRMResult)
     {
         // Set the start time of creating map image
-        pPRMResult->SetCreateImageTime(MgTimerUtil::GetTime());
+        pPRMResult->SetCreateImageTime(MgdTimerUtil::GetTime());
     }
 
 /*
@@ -1952,7 +1952,7 @@ inline MgByteReader* MgdRenderingService::CreateImage(MgdMap* map,
             if (hasColorMap(format))
             {
                 RS_ColorVector tileColorPalette;
-                MgMappingUtil::ParseColorStrings(&tileColorPalette, map);
+                MgdMappingUtil::ParseColorStrings(&tileColorPalette, map);
 //              printf("<<<<<<<<<<<<<<<<<<<<< MgdRenderingService::ColorPalette->size(): %d\n", tileColorPalette.size());
                 data.reset(((AGGRenderer*)dr)->Save(format, saveWidth, saveHeight, &tileColorPalette));
             }
@@ -1988,7 +1988,7 @@ inline MgByteReader* MgdRenderingService::CreateImage(MgdMap* map,
     if(NULL != pPRMResult)
     {
         // Calculate the time spent on stylizing labels
-        double createImageTime = MgTimerUtil::GetTime() - pPRMResult->GetCreateImageTime();
+        double createImageTime = MgdTimerUtil::GetTime() - pPRMResult->GetCreateImageTime();
         pPRMResult->SetCreateImageTime(createImageTime);
 
         pPRMResult->SetImageFormat(format);
@@ -2010,11 +2010,11 @@ void MgdRenderingService::RenderForSelection(MgdMap* map,
                                              CREFSTRING featureFilter,
                                              INT32 maxFeatures,
                                              INT32 layerAttributeFilter,
-                                             FeatureInfoRenderer* selRenderer)
+                                             MgdFeatureInfoRenderer* selRenderer)
 {
     // Cache coordinate system transforms for the life of the
     // stylization operation.
-    TransformCacheMap transformCache;
+    MgdTransformCacheMap transformCache;
 
     MG_TRY()
 #ifdef _DEBUG
@@ -2082,7 +2082,7 @@ void MgdRenderingService::RenderForSelection(MgdMap* map,
     RS_MapUIInfo mapInfo(sessionId, map->GetName(), map->GetObjectId(), srs, L"", bgcolor);
 
     // initialize the stylizer
-    SEMgSymbolManager semgr(m_svcResource);
+    SEMgdSymbolManager semgr(m_svcResource);
     DefaultStylizer ds(&semgr);
 
     selRenderer->StartMap(&mapInfo, extent, scale, dpi, metersPerUnit, NULL);
@@ -2163,9 +2163,9 @@ void MgdRenderingService::RenderForSelection(MgdMap* map,
 
             //get a transform from layer coord sys to map coord sys
             Ptr<MgCoordinateSystem> mapCs = srs.empty()? NULL : m_pCSFactory->Create(srs);
-            TransformCache* item = TransformCache::GetLayerToMapTransform(transformCache, vl->GetFeatureName(), featResId, mapCs, m_pCSFactory, m_svcFeature);
+            MgdTransformCache* item = MgdTransformCache::GetLayerToMapTransform(transformCache, vl->GetFeatureName(), featResId, mapCs, m_pCSFactory, m_svcFeature);
             Ptr<MgCoordinateSystemTransform> trans = item? item->GetMgTransform() : NULL;
-            MgCSTrans* xformer = item? item->GetTransform() : NULL;
+            MgdCSTrans* xformer = item? item->GetTransform() : NULL;
 
             Ptr<MgFeatureQueryOptions> options = new MgFeatureQueryOptions();
             Ptr<MgGeometricEntity> queryGeom;
@@ -2191,7 +2191,7 @@ void MgdRenderingService::RenderForSelection(MgdMap* map,
             }
 
             // Initialize the reader
-            auto_ptr<RSMgFeatureReader> rsrdr;
+            auto_ptr<RSMgdFeatureReader> rsrdr;
 
             try
             {
@@ -2222,15 +2222,15 @@ void MgdRenderingService::RenderForSelection(MgdMap* map,
                 // or we end up with a reference count issue that causes a new FDO connection to be cached instead of
                 // reusing the already existing one.
                 Ptr<MgFeatureReader> rdr = m_svcFeature->SelectFeatures(featResId, vl->GetFeatureName(), options);
-                rsrdr.reset(new RSMgFeatureReader(rdr, m_svcFeature, featResId, options, vl->GetGeometry()));
+                rsrdr.reset(new RSMgdFeatureReader(rdr, m_svcFeature, featResId, options, vl->GetGeometry()));
 
                 // Note that the FdoIFeatureReader smart pointer below is created
                 // inside the following IF statement to ensure it gets destroyed
-                // BEFORE the RSMgFeatureReader object above goes out of scope,
+                // BEFORE the RSMgdFeatureReader object above goes out of scope,
                 // even when an exception gets thrown.
                 if (FdoPtr<FdoIFeatureReader>(rsrdr->GetInternalReader()))
                 {
-                    //run a stylization loop with the FeatureInfoRenderer.
+                    //run a stylization loop with the MgdFeatureInfoRenderer.
                     //This will build up the selection set and also
                     //evaluate the tooltip, hyperlink and feature properties
                     //for the first feature hit
@@ -2333,7 +2333,7 @@ void MgdRenderingService::RenderForSelection(MgdMap* map,
                                 options->SetSpatialFilter(layer->GetFeatureGeometryName(), intersectPolygon, /*MgFeatureSpatialOperations*/selectionVariant);
 
                                 rdr = m_svcFeature->SelectFeatures(featResId, vl->GetFeatureName(), options);
-                                rsrdr.reset(new RSMgFeatureReader(rdr, m_svcFeature, featResId, options, vl->GetGeometry()));
+                                rsrdr.reset(new RSMgdFeatureReader(rdr, m_svcFeature, featResId, options, vl->GetGeometry()));
                                 selRenderer->PointTest(true);
                                 ds.StylizeVectorLayer(vl, selRenderer, rsrdr.get(), xformer, scale, StylizeThatMany, selRenderer);
 
@@ -2378,7 +2378,7 @@ void MgdRenderingService::RenderForSelection(MgdMap* map,
 
     MG_CATCH(L"MgServerRenderingService.RenderForSelection")
 
-    TransformCache::Clear(transformCache);
+    MgdTransformCache::Clear(transformCache);
 
     MG_THROW()
 }

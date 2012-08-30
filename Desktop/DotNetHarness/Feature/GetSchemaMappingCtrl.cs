@@ -21,7 +21,7 @@ namespace DotNetHarness.Feature
         {
             try
             {
-                var fact = new MgServiceFactory();
+                var fact = new MgdServiceFactory();
                 var featureSvc = (MgdFeatureService)fact.CreateService(MgServiceType.FeatureService);
                 var response = featureSvc.GetSchemaMapping(txtProvider.Text, txtConnString.Text);
                 new XmlResponseDialog(response).ShowDialog();

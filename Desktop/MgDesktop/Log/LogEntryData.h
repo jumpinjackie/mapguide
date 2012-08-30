@@ -20,15 +20,15 @@
 
 ///////////////////////////////////////////////////////////////////////////
 //  The LogEntryData class encapsulates the data needed by the log thread.
-class MgLogEntryData : public ACE_Data_Block
+class MgdLogEntryData : public ACE_Data_Block
 {
-    DECLARE_CLASSNAME(MgLogEntryData)
+    DECLARE_CLASSNAME(MgdLogEntryData)
 
 ///////////////////////////////////////////////////////////////////////
 ///  Constructors/Destructors
 public:
-    MgLogEntryData( enum MgLogType logType, CREFSTRING message, ACE_Log_Priority logPriority );
-    virtual ~MgLogEntryData();
+    MgdLogEntryData( enum MgLogType logType, CREFSTRING message, ACE_Log_Priority logPriority );
+    virtual ~MgdLogEntryData();
 
 ///////////////////////////////////////////////////////////////////////
 ///  Accessors

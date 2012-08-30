@@ -25,7 +25,7 @@
 #include <algorithm>
 #include "UniqueFunction.h"
 
-MgFeatureStringFunctions::MgFeatureStringFunctions()
+MgdFeatureStringFunctions::MgdFeatureStringFunctions()
 {
     m_type = MgPropertyType::Null;
     m_reader = NULL;
@@ -33,19 +33,19 @@ MgFeatureStringFunctions::MgFeatureStringFunctions()
     m_propertyAlias = L"";
 }
 
-MgFeatureStringFunctions::MgFeatureStringFunctions(MgReader* reader, FdoFunction* customFunction, CREFSTRING propertyAlias)
+MgdFeatureStringFunctions::MgdFeatureStringFunctions(MgReader* reader, FdoFunction* customFunction, CREFSTRING propertyAlias)
 {
     Initialize(reader, customFunction, propertyAlias); // Initialize the instance
 }
 
-void MgFeatureStringFunctions::Initialize(MgReader* reader, FdoFunction* customFunction, CREFSTRING propertyAlias)
+void MgdFeatureStringFunctions::Initialize(MgReader* reader, FdoFunction* customFunction, CREFSTRING propertyAlias)
 {
-    CHECKNULL((MgReader*)reader, L"MgFeatureStringFunctions.Initialize");
-    CHECKNULL((FdoFunction*)customFunction, L"MgFeatureStringFunctions.Initialize");
+    CHECKNULL((MgReader*)reader, L"MgdFeatureStringFunctions.Initialize");
+    CHECKNULL((FdoFunction*)customFunction, L"MgdFeatureStringFunctions.Initialize");
 
     if(1 == reader->GetPropertyCount())
     {
-        m_type = MgFeatureUtil::GetPropertyDefinition(reader, m_propertyName);
+        m_type = MgdFeatureUtil::GetPropertyDefinition(reader, m_propertyName);
     }
     else
     {
@@ -57,14 +57,14 @@ void MgFeatureStringFunctions::Initialize(MgReader* reader, FdoFunction* customF
         {
             expr = exprCol->GetItem(0);
             FdoIdentifier* propName = dynamic_cast<FdoIdentifier*>(expr.p);
-            CHECKNULL(propName, L"MgFeatureStringFunctions.Initialize");
+            CHECKNULL(propName, L"MgdFeatureStringFunctions.Initialize");
             m_propertyName = propName->GetName();
             m_type = reader->GetPropertyType(m_propertyName);
         }
         else
         {
             // Throw original exception
-            m_type = MgFeatureUtil::GetPropertyDefinition(reader, m_propertyName);
+            m_type = MgdFeatureUtil::GetPropertyDefinition(reader, m_propertyName);
         }
     }
 
@@ -73,18 +73,18 @@ void MgFeatureStringFunctions::Initialize(MgReader* reader, FdoFunction* customF
 	if (!this->CheckSupportedPropertyType()) 
 	{
 		throw new MgInvalidPropertyTypeException(
-            L"MgFeatureStringFunctions.Initialize", __LINE__, __WFILE__, NULL, L"", NULL);
+            L"MgdFeatureStringFunctions.Initialize", __LINE__, __WFILE__, NULL, L"", NULL);
 	}
     // We must have an property alias
     // Though we can name a property with same name as function expression
     // But Fdo forces to have an alias. Therefore we implement this restriction.
     if (propertyAlias.empty())
     {
-        STRING message = MgFeatureUtil::GetMessage(L"MgMissingPropertyAlias");
+        STRING message = MgdFeatureUtil::GetMessage(L"MgMissingPropertyAlias");
 
         MgStringCollection arguments;
         arguments.Add(message);
-        throw new MgFeatureServiceException(L"MgFeatureStringFunctions.Initialize", __LINE__, __WFILE__, &arguments, L"", NULL);
+        throw new MgFeatureServiceException(L"MgdFeatureStringFunctions.Initialize", __LINE__, __WFILE__, &arguments, L"", NULL);
     }
 
     m_reader = SAFE_ADDREF(reader);
@@ -93,19 +93,19 @@ void MgFeatureStringFunctions::Initialize(MgReader* reader, FdoFunction* customF
 }
 
 
-MgFeatureStringFunctions::~MgFeatureStringFunctions()
+MgdFeatureStringFunctions::~MgdFeatureStringFunctions()
 {
 }
 
 // Execute the function
-MgReader* MgFeatureStringFunctions::Execute()
+MgReader* MgdFeatureStringFunctions::Execute()
 {
-    CHECKNULL((MgReader*)m_reader, L"MgFeatureStringFunctions.Execute");
-    CHECKNULL(m_customFunction, L"MgFeatureStringFunctions.Execute");
+    CHECKNULL((MgReader*)m_reader, L"MgdFeatureStringFunctions.Execute");
+    CHECKNULL(m_customFunction, L"MgdFeatureStringFunctions.Execute");
 
     std::vector<STRING> v2;
 
-    MG_LOG_TRACE_ENTRY(L"MgFeatureStringFunctions::Execute");
+    MG_LOG_TRACE_ENTRY(L"MgdFeatureStringFunctions::Execute");
     // TODO: Should we put a limit on double buffer
 
     std::map<STRING, char> mMap;
@@ -131,14 +131,14 @@ MgReader* MgFeatureStringFunctions::Execute()
 
 
 // Check whether property type is a supported type
-bool MgFeatureStringFunctions::CheckSupportedPropertyType()
+bool MgdFeatureStringFunctions::CheckSupportedPropertyType()
 {
     return (MgPropertyType::String == m_type);
 }
 
 
 // Get the value of property
-void MgFeatureStringFunctions::GetValue(REFSTRING val)
+void MgdFeatureStringFunctions::GetValue(REFSTRING val)
 {
     if (!m_reader->IsNull(m_propertyName))
     {
@@ -152,7 +152,7 @@ void MgFeatureStringFunctions::GetValue(REFSTRING val)
             default:
             {
                 throw new MgInvalidPropertyTypeException(
-                    L"MgFeatureStringFunctions.GetValue", __LINE__, __WFILE__, NULL, L"", NULL);
+                    L"MgdFeatureStringFunctions.GetValue", __LINE__, __WFILE__, NULL, L"", NULL);
             }
         }
     }
@@ -160,13 +160,13 @@ void MgFeatureStringFunctions::GetValue(REFSTRING val)
 
 
 // Execute the function
-void MgFeatureStringFunctions::ExecuteOperation(std::map<STRING, char>& values, std::vector<STRING>& distValues)
+void MgdFeatureStringFunctions::ExecuteOperation(std::map<STRING, char>& values, std::vector<STRING>& distValues)
 {
    INT32 funcCode = -1;
 
     // Get the arguments from the FdoFunction
     STRING propertyName;
-    bool supported = MgFeatureUtil::FindCustomFunction(m_customFunction, funcCode);
+    bool supported = MgdFeatureUtil::FindCustomFunction(m_customFunction, funcCode);
 
     if (supported)
     {
@@ -182,19 +182,19 @@ void MgFeatureStringFunctions::ExecuteOperation(std::map<STRING, char>& values, 
             }
             default:
             {
-                STRING message = MgFeatureUtil::GetMessage(L"MgCustomFunctionNotSupported");
+                STRING message = MgdFeatureUtil::GetMessage(L"MgCustomFunctionNotSupported");
 
                 MgStringCollection arguments;
                 arguments.Add(message);
                 throw new MgFeatureServiceException(
-                    L"MgFeatureStringFunctions.ExecuteOperation", __LINE__, __WFILE__, &arguments, L"", NULL);
+                    L"MgdFeatureStringFunctions.ExecuteOperation", __LINE__, __WFILE__, &arguments, L"", NULL);
             }
         }
     }
 }
 
 // Create the reader for string properties
-MgReader* MgFeatureStringFunctions::GetReader(std::vector<STRING>& distValues)
+MgReader* MgdFeatureStringFunctions::GetReader(std::vector<STRING>& distValues)
 {
     Ptr<MgDataReader> dataReader;
 
@@ -202,14 +202,14 @@ MgReader* MgFeatureStringFunctions::GetReader(std::vector<STRING>& distValues)
     {
         case MgPropertyType::String:
         {
-            Ptr<MgStringDataReaderCreator> drCreator = new MgStringDataReaderCreator(m_propertyAlias);
+            Ptr<MgdStringDataReaderCreator> drCreator = new MgdStringDataReaderCreator(m_propertyAlias);
             dataReader = drCreator->Execute(distValues);
             break;
         }
         default:
         {
             throw new MgInvalidPropertyTypeException(
-                L"MgFeatureStringFunctions.GetReader", __LINE__, __WFILE__, NULL, L"", NULL);
+                L"MgdFeatureStringFunctions.GetReader", __LINE__, __WFILE__, NULL, L"", NULL);
         }
     }
     return dataReader.Detach();

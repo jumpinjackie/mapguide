@@ -3,22 +3,22 @@
 
 #include "System/XmlUtil.h"
 
-class MgResourcePackageManifestHandler
+class MgdResourcePackageManifestHandler
 {
 /// Constructors/Destructor
 
 public:
 
-    MgResourcePackageManifestHandler();
-    virtual ~MgResourcePackageManifestHandler();
+    MgdResourcePackageManifestHandler();
+    virtual ~MgdResourcePackageManifestHandler();
 
 private:
 
     // Unimplemented Methods
 
-    MgResourcePackageManifestHandler(const MgResourcePackageManifestHandler&);
-    MgResourcePackageManifestHandler& operator=(
-        const MgResourcePackageManifestHandler&);
+    MgdResourcePackageManifestHandler(const MgdResourcePackageManifestHandler&);
+    MgdResourcePackageManifestHandler& operator=(
+        const MgdResourcePackageManifestHandler&);
 
 /// Methods
 
@@ -41,7 +41,7 @@ protected:
 
 /// Inline Methods
 
-inline STRING MgResourcePackageManifestHandler::GetDescription() const
+inline STRING MgdResourcePackageManifestHandler::GetDescription() const
 {
     return m_description;
 }

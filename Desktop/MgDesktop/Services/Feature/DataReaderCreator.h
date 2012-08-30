@@ -26,7 +26,7 @@ using namespace std;
 
 /// \cond INTERNAL
 template <typename T>
-class MgDataReaderCreator : public MgDisposable
+class MgdDataReaderCreator : public MgDisposable
 {
 public:
 
@@ -39,7 +39,7 @@ public:
         // Use the converted vector
         Ptr<MgPropertyDefinitionCollection> propDefCol = this->GetPropertyDefinitions();
         Ptr<MgBatchPropertyCollection> bpCol = this->GetBatchCollection(values);
-        return new MgProxyDataReader(bpCol, propDefCol);
+        return new MgdProxyDataReader(bpCol, propDefCol);
     }
 
     MgDataReader* Execute(const std::vector<INT64>& in)
@@ -51,21 +51,21 @@ public:
         // Use the converted vector
         Ptr<MgPropertyDefinitionCollection> propDefCol = this->GetPropertyDefinitions();
         Ptr<MgBatchPropertyCollection> bpCol = this->GetBatchCollection(values);
-        return new MgProxyDataReader(bpCol, propDefCol);
+        return new MgdProxyDataReader(bpCol, propDefCol);
     }
 
     MgDataReader* Execute(const std::vector<STRING>& in)
     {
         Ptr<MgPropertyDefinitionCollection> propDefCol = this->GetPropertyDefinitions();
         Ptr<MgBatchPropertyCollection> bpCol = this->GetBatchCollection(in);
-        return new MgProxyDataReader(bpCol, propDefCol);
+        return new MgdProxyDataReader(bpCol, propDefCol);
     }
 
     MgDataReader* Execute(MgGeometryCollection* in)
     {
         Ptr<MgPropertyDefinitionCollection> propDefCol = this->GetPropertyDefinitions();
         Ptr<MgBatchPropertyCollection> bpCol = this->GetBatchCollection(in);
-        return new MgProxyDataReader(bpCol, propDefCol);
+        return new MgdProxyDataReader(bpCol, propDefCol);
     }
 
     MgPropertyDefinitionCollection* GetPropertyDefinitions()
@@ -156,11 +156,11 @@ protected:
         delete this;
     }
 
-    MgDataReaderCreator()
+    MgdDataReaderCreator()
     {
         m_propType = MgPropertyType::Null;
     }
-    ~MgDataReaderCreator()
+    ~MgdDataReaderCreator()
     {
     }
 

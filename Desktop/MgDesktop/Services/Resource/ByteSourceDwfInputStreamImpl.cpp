@@ -3,7 +3,7 @@
 
 ///----------------------------------------------------------------------------
 /// <summary>
-/// Constructs an MgByteSourceDwfInputStreamImpl object.
+/// Constructs an MgdByteSourceDwfInputStreamImpl object.
 /// </summary>
 ///
 /// <param name="inputStream">
@@ -11,25 +11,25 @@
 /// </param>
 ///----------------------------------------------------------------------------
 
-MgByteSourceDwfInputStreamImpl::MgByteSourceDwfInputStreamImpl(
+MgdByteSourceDwfInputStreamImpl::MgdByteSourceDwfInputStreamImpl(
     DWFInputStream* inputStream) :
     m_inputStream(inputStream)
 {
     if (NULL == m_inputStream)
     {
         throw new MgNullArgumentException(
-            L"MgByteSourceDwfInputStreamImpl.MgByteSourceDwfInputStreamImpl",
+            L"MgdByteSourceDwfInputStreamImpl.MgdByteSourceDwfInputStreamImpl",
             __LINE__, __WFILE__, NULL, L"", NULL);
     }
 }
 
 ///----------------------------------------------------------------------------
 /// <summary>
-/// Destructs an MgByteSourceDwfInputStreamImpl object.
+/// Destructs an MgdByteSourceDwfInputStreamImpl object.
 /// </summary>
 ///----------------------------------------------------------------------------
 
-MgByteSourceDwfInputStreamImpl::~MgByteSourceDwfInputStreamImpl()
+MgdByteSourceDwfInputStreamImpl::~MgdByteSourceDwfInputStreamImpl()
 {
     DWFCORE_FREE_OBJECT(m_inputStream);
 }
@@ -51,7 +51,7 @@ MgByteSourceDwfInputStreamImpl::~MgByteSourceDwfInputStreamImpl()
 /// </exceptions>
 ///----------------------------------------------------------------------------
 
-INT64 MgByteSourceDwfInputStreamImpl::GetLength()
+INT64 MgdByteSourceDwfInputStreamImpl::GetLength()
 {
     INT64 length = 0;
 
@@ -59,12 +59,12 @@ INT64 MgByteSourceDwfInputStreamImpl::GetLength()
 
     length = m_inputStream->available();
 
-    MG_RESOURCE_SERVICE_CATCH_AND_THROW(L"MgByteSourceDwfInputStreamImpl.GetLength")
+    MG_RESOURCE_SERVICE_CATCH_AND_THROW(L"MgdByteSourceDwfInputStreamImpl.GetLength")
 
     return length;
 }
 
-bool MgByteSourceDwfInputStreamImpl::IsRewindable()
+bool MgdByteSourceDwfInputStreamImpl::IsRewindable()
 {
     // Currently DWFUnzippingInputStream does not support rewinding.
     return false;
@@ -84,14 +84,14 @@ bool MgByteSourceDwfInputStreamImpl::IsRewindable()
 /// </exceptions>
 ///----------------------------------------------------------------------------
 
-void MgByteSourceDwfInputStreamImpl::Rewind()
+void MgdByteSourceDwfInputStreamImpl::Rewind()
 {
     MG_RESOURCE_SERVICE_TRY()
 
     // Currently DWFUnzippingInputStream throws an DWFNotImplementedException.
     m_inputStream->seek(SEEK_SET, 0);
 
-    MG_RESOURCE_SERVICE_CATCH_AND_THROW(L"MgByteSourceDwfInputStreamImpl.Rewind")
+    MG_RESOURCE_SERVICE_CATCH_AND_THROW(L"MgdByteSourceDwfInputStreamImpl.Rewind")
 }
 
 ///----------------------------------------------------------------------------
@@ -115,7 +115,7 @@ void MgByteSourceDwfInputStreamImpl::Rewind()
 /// </exceptions>
 ///----------------------------------------------------------------------------
 
-INT32 MgByteSourceDwfInputStreamImpl::Read(BYTE_ARRAY_OUT buffer, INT32 length)
+INT32 MgdByteSourceDwfInputStreamImpl::Read(BYTE_ARRAY_OUT buffer, INT32 length)
 {
     INT32 nBytesRead = 0;
 
@@ -123,7 +123,7 @@ INT32 MgByteSourceDwfInputStreamImpl::Read(BYTE_ARRAY_OUT buffer, INT32 length)
 
     nBytesRead = (INT32)m_inputStream->read(buffer, length);
 
-    MG_RESOURCE_SERVICE_CATCH_AND_THROW(L"MgByteSourceDwfInputStreamImpl.Read")
+    MG_RESOURCE_SERVICE_CATCH_AND_THROW(L"MgdByteSourceDwfInputStreamImpl.Read")
 
     return nBytesRead;
 }

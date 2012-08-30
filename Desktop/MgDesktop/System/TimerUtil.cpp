@@ -2,10 +2,10 @@
 #include "TimerUtil.h"
 
 #ifdef WIN32
-LARGE_INTEGER MgTimerUtil::frequency = {0};
-LARGE_INTEGER MgTimerUtil::count = {0};
+LARGE_INTEGER MgdTimerUtil::frequency = {0};
+LARGE_INTEGER MgdTimerUtil::count = {0};
 #else
-timeval MgTimerUtil::count = {0};
+timeval MgdTimerUtil::count = {0};
 #endif
 
 ///----------------------------------------------------------------------------
@@ -14,7 +14,7 @@ timeval MgTimerUtil::count = {0};
 /// </summary>
 ///----------------------------------------------------------------------------
 
-MgTimerUtil::MgTimerUtil()
+MgdTimerUtil::MgdTimerUtil()
 {
 }
 
@@ -24,7 +24,7 @@ MgTimerUtil::MgTimerUtil()
 /// </summary>
 ///----------------------------------------------------------------------------
 
-MgTimerUtil::~MgTimerUtil()
+MgdTimerUtil::~MgdTimerUtil()
 {
 }
 
@@ -34,7 +34,7 @@ MgTimerUtil::~MgTimerUtil()
 /// </summary>
 ///----------------------------------------------------------------------------
 
-double MgTimerUtil::GetTime()
+double MgdTimerUtil::GetTime()
 {
 #ifdef WIN32
     if(0 == frequency.QuadPart)
@@ -57,9 +57,9 @@ double MgTimerUtil::GetTime()
 /// </summary>
 ///----------------------------------------------------------------------------
 
-void MgTimerUtil::GetFrequency(LARGE_INTEGER* pFrequency)
+void MgdTimerUtil::GetFrequency(LARGE_INTEGER* pFrequency)
 {
     if(!QueryPerformanceFrequency(pFrequency))
-        throw new MgUnclassifiedException(L"MgTimerUtil.GetFrequency", __LINE__, __WFILE__, NULL, L"", NULL);
+        throw new MgUnclassifiedException(L"MgdTimerUtil.GetFrequency", __LINE__, __WFILE__, NULL, L"", NULL);
 }
 #endif

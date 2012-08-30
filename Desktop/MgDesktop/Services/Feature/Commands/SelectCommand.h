@@ -15,20 +15,20 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
-#ifndef _MGSELECTCOMMAND_H_
-#define _MGSELECTCOMMAND_H_
+#ifndef _MgdSelectCommand_H_
+#define _MgdSelectCommand_H_
 
-class MgFdoFeatureReader;
-class MgFdoReaderCollection;
-class MgFdoFilterCollection;
+class MgdFdoFeatureReader;
+class MgdFdoReaderCollection;
+class MgdFdoFilterCollection;
 
-class MgSelectCommand : public MgFeatureServiceCommand
+class MgdSelectCommand : public MgdFeatureServiceCommand
 {
-    DECLARE_CLASSNAME(MgSelectCommand)
+    DECLARE_CLASSNAME(MgdSelectCommand)
 
 public:
-    MgSelectCommand(MgResourceIdentifier* resource);
-    virtual ~MgSelectCommand();
+    MgdSelectCommand(MgResourceIdentifier* resource);
+    virtual ~MgdSelectCommand();
 
     virtual FdoIdentifierCollection* GetPropertyNames();
 
@@ -71,13 +71,13 @@ public:
     virtual void SetAlias(FdoString* alias);
 
 private:
-    Ptr<MgFeatureConnection> m_connection;
+    Ptr<MgdFeatureConnection> m_connection;
     STRING m_providerName;
     FdoPtr<FdoISelect> m_command;
 
     FdoPtr<FdoFilter> m_filter;
 
-    MgFdoFilterCollection* GetSubFilters();
+    MgdFdoFilterCollection* GetSubFilters();
 };
 
 #endif

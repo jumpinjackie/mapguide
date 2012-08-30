@@ -15,8 +15,8 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
-#ifndef _MGFDOFILTERCOLLECTION_H_
-#define _MGFDOFILTERCOLLECTION_H_
+#ifndef _MgdFdoFilterCollection_H_
+#define _MgdFdoFilterCollection_H_
 
 #include <FdoStd.h>
 
@@ -24,16 +24,16 @@ class FdoFilter;
 
 /// \cond INTERNAL
 /// \brief
-/// The MgFdoFilterCollection class represents a collection of FdoFilter objects.
-class MgFdoFilterCollection : public FdoCollection<FdoFilter, FdoException>
+/// The MgdFdoFilterCollection class represents a collection of FdoFilter objects.
+class MgdFdoFilterCollection : public FdoCollection<FdoFilter, FdoException>
 {
 protected:
 /// \cond DOXYGEN-IGNORE
-    MgFdoFilterCollection() : FdoCollection<FdoFilter, FdoException>()
+    MgdFdoFilterCollection() : FdoCollection<FdoFilter, FdoException>()
     {
     }
 
-    virtual ~MgFdoFilterCollection()
+    virtual ~MgdFdoFilterCollection()
     {
     }
 
@@ -45,12 +45,12 @@ protected:
 
 public:
     /// \brief
-    /// Constructs a default instance of an MgFdoFilterCollection.
+    /// Constructs a default instance of an MgdFdoFilterCollection.
     ///
     /// \return
-    /// Returns MgFdoFilterCollection
+    /// Returns MgdFdoFilterCollection
     ///
-    /*FDO_API*/ static MgFdoFilterCollection* Create();
+    /*FDO_API*/ static MgdFdoFilterCollection* Create();
 };
 /// \endcond
 #endif

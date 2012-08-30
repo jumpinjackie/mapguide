@@ -12,12 +12,12 @@ namespace DotNetHarness.Feature
 {
     public partial class GetCapabilitiesControl : UserControl
     {
-        private MgServiceFactory fact;
+        private MgdServiceFactory fact;
 
         public GetCapabilitiesControl()
         {
             InitializeComponent();
-            fact = new MgServiceFactory();
+            fact = new MgdServiceFactory();
         }
 
         private void button1_Click(object sender, EventArgs e)

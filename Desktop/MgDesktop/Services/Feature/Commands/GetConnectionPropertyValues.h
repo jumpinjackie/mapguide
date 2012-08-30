@@ -23,11 +23,11 @@
 #include "System/XmlUtil.h"
 #include "Fdo.h"
 
-class MgGetConnectionPropertyValues
+class MgdGetConnectionPropertyValues
 {
 public:
-    MgGetConnectionPropertyValues();
-    ~MgGetConnectionPropertyValues();
+    MgdGetConnectionPropertyValues();
+    ~MgdGetConnectionPropertyValues();
     MgStringCollection* GetConnectionPropertyValues( CREFSTRING providerName,
                                                      CREFSTRING propertyName,
                                                      CREFSTRING partialConnString );

@@ -104,291 +104,291 @@
 #define MG_CONFIG_MAX_FS_CP_EXCLUDED_LENGTH             1024
 
 // Default configuration filenames
-const STRING MgConfigProperties::DefaultConfigurationFilename                               = L"webconfig.ini";
-const STRING MgConfigProperties::ServerConfigurationFilename                                = L"serverconfig.ini";
+const STRING MgdConfigProperties::DefaultConfigurationFilename                               = L"webconfig.ini";
+const STRING MgdConfigProperties::ServerConfigurationFilename                                = L"serverconfig.ini";
 
 // Configuration file section/property names and default values
 
 // ******************************************************************
 // General Properties
 // ******************************************************************
-const STRING MgConfigProperties::GeneralPropertiesSection                                   = L"GeneralProperties";
-const STRING MgConfigProperties::GeneralPropertyLocale                                      = L"Locale";
-const STRING MgConfigProperties::DefaultGeneralPropertyLocale                               = L"";
-const STRING MgConfigProperties::GeneralPropertyDefaultMessageLocale                        = L"DefaultMessageLocale";
-const STRING MgConfigProperties::DefaultGeneralPropertyDefaultMessageLocale                 = L"en";      // ISO 639-1 name
-const STRING MgConfigProperties::GeneralPropertyFdoPath                                     = L"FdoPath";
-const STRING MgConfigProperties::DefaultGeneralPropertyFdoPath                              = L"FDO/";
-const STRING MgConfigProperties::GeneralPropertyMentorDictionaryPath                        = L"MentorDictionaryPath";
-const STRING MgConfigProperties::DefaultGeneralPropertyMentorDictionaryPath                 = L"";
-const STRING MgConfigProperties::GeneralPropertyLinuxMemDebug                               = L"LinuxMemDebug";
-const bool   MgConfigProperties::DefaultGeneralPropertyLinuxMemDebug                        = false;
-const STRING MgConfigProperties::GeneralPropertyResourcesPath                               = L"ResourcesPath";
-const STRING MgConfigProperties::DefaultGeneralPropertyResourcesPath                        = L"Resources/";
-const STRING MgConfigProperties::GeneralPropertyTempPath                                    = L"TempPath";
-const STRING MgConfigProperties::DefaultGeneralPropertyTempPath                             = L"Temp/";
-const STRING MgConfigProperties::GeneralPropertyWfsDocumentPath                             = L"WfsDocumentPath";
-const STRING MgConfigProperties::DefaultGeneralPropertyWfsDocumentPath                      = L"Wfs/";
-const STRING MgConfigProperties::GeneralPropertyWmsDocumentPath                             = L"WmsDocumentPath";
-const STRING MgConfigProperties::DefaultGeneralPropertyWmsDocumentPath                      = L"Wms/";
-const STRING MgConfigProperties::GeneralPropertyRenderer                                    = L"Renderer";
-const STRING MgConfigProperties::DefaultGeneralPropertyRenderer                             = L"GD";
-const STRING MgConfigProperties::GeneralPropertyPreCacheMaps                                = L"PreCacheMaps";
-const STRING MgConfigProperties::DefaultGeneralPropertyPreCacheMaps                         = L"";
-const STRING MgConfigProperties::GeneralPropertyLogsDelimiter                               = L"LogsDelimiter";
-const STRING MgConfigProperties::DefaultGeneralPropertyLogsDelimiter                        = L"\t";
-const STRING MgConfigProperties::GeneralPropertyLogsDetail                                  = L"LogsDetail";
-const STRING MgConfigProperties::DefaultGeneralPropertyLogsDetail                           = L"";
-const STRING MgConfigProperties::GeneralPropertyLogsPath                                    = L"LogsPath";
-const STRING MgConfigProperties::DefaultGeneralPropertyLogsPath                             = L"Logs/";
-const STRING MgConfigProperties::GeneralPropertyMaxLogFileSize                              = L"MaxLogFileSize";
-const INT32  MgConfigProperties::DefaultGeneralPropertyMaxLogFileSize                       = 1024;
-const STRING MgConfigProperties::GeneralPropertyMaxLogFileSizeEnabled                       = L"MaxLogFileSizeEnabled";
-const bool   MgConfigProperties::DefaultGeneralPropertyMaxLogFileSizeEnabled                = false;
+const STRING MgdConfigProperties::GeneralPropertiesSection                                   = L"GeneralProperties";
+const STRING MgdConfigProperties::GeneralPropertyLocale                                      = L"Locale";
+const STRING MgdConfigProperties::DefaultGeneralPropertyLocale                               = L"";
+const STRING MgdConfigProperties::GeneralPropertyDefaultMessageLocale                        = L"DefaultMessageLocale";
+const STRING MgdConfigProperties::DefaultGeneralPropertyDefaultMessageLocale                 = L"en";      // ISO 639-1 name
+const STRING MgdConfigProperties::GeneralPropertyFdoPath                                     = L"FdoPath";
+const STRING MgdConfigProperties::DefaultGeneralPropertyFdoPath                              = L"FDO/";
+const STRING MgdConfigProperties::GeneralPropertyMentorDictionaryPath                        = L"MentorDictionaryPath";
+const STRING MgdConfigProperties::DefaultGeneralPropertyMentorDictionaryPath                 = L"";
+const STRING MgdConfigProperties::GeneralPropertyLinuxMemDebug                               = L"LinuxMemDebug";
+const bool   MgdConfigProperties::DefaultGeneralPropertyLinuxMemDebug                        = false;
+const STRING MgdConfigProperties::GeneralPropertyResourcesPath                               = L"ResourcesPath";
+const STRING MgdConfigProperties::DefaultGeneralPropertyResourcesPath                        = L"Resources/";
+const STRING MgdConfigProperties::GeneralPropertyTempPath                                    = L"TempPath";
+const STRING MgdConfigProperties::DefaultGeneralPropertyTempPath                             = L"Temp/";
+const STRING MgdConfigProperties::GeneralPropertyWfsDocumentPath                             = L"WfsDocumentPath";
+const STRING MgdConfigProperties::DefaultGeneralPropertyWfsDocumentPath                      = L"Wfs/";
+const STRING MgdConfigProperties::GeneralPropertyWmsDocumentPath                             = L"WmsDocumentPath";
+const STRING MgdConfigProperties::DefaultGeneralPropertyWmsDocumentPath                      = L"Wms/";
+const STRING MgdConfigProperties::GeneralPropertyRenderer                                    = L"Renderer";
+const STRING MgdConfigProperties::DefaultGeneralPropertyRenderer                             = L"GD";
+const STRING MgdConfigProperties::GeneralPropertyPreCacheMaps                                = L"PreCacheMaps";
+const STRING MgdConfigProperties::DefaultGeneralPropertyPreCacheMaps                         = L"";
+const STRING MgdConfigProperties::GeneralPropertyLogsDelimiter                               = L"LogsDelimiter";
+const STRING MgdConfigProperties::DefaultGeneralPropertyLogsDelimiter                        = L"\t";
+const STRING MgdConfigProperties::GeneralPropertyLogsDetail                                  = L"LogsDetail";
+const STRING MgdConfigProperties::DefaultGeneralPropertyLogsDetail                           = L"";
+const STRING MgdConfigProperties::GeneralPropertyLogsPath                                    = L"LogsPath";
+const STRING MgdConfigProperties::DefaultGeneralPropertyLogsPath                             = L"Logs/";
+const STRING MgdConfigProperties::GeneralPropertyMaxLogFileSize                              = L"MaxLogFileSize";
+const INT32  MgdConfigProperties::DefaultGeneralPropertyMaxLogFileSize                       = 1024;
+const STRING MgdConfigProperties::GeneralPropertyMaxLogFileSizeEnabled                       = L"MaxLogFileSizeEnabled";
+const bool   MgdConfigProperties::DefaultGeneralPropertyMaxLogFileSizeEnabled                = false;
 
 // ******************************************************************
 // Drawing Service Properties
 // ******************************************************************
-const STRING MgConfigProperties::DrawingServicePropertiesSection                            = L"DrawingServiceProperties";
+const STRING MgdConfigProperties::DrawingServicePropertiesSection                            = L"DrawingServiceProperties";
 
 // ******************************************************************
 // Feature Service Properties
 // ******************************************************************
-const STRING MgConfigProperties::FeatureServicePropertiesSection                            = L"FeatureServiceProperties";
-const STRING MgConfigProperties::FeatureServicePropertyCacheSize                            = L"CacheSize";
-const INT32  MgConfigProperties::DefaultFeatureServicePropertyCacheSize                     = 100;
-const STRING MgConfigProperties::FeatureServicePropertyCacheTimeLimit                       = L"CacheTimeLimit";
-const INT32  MgConfigProperties::DefaultFeatureServicePropertyCacheTimeLimit                = 86400;
-const STRING MgConfigProperties::FeatureServicePropertyCacheTimerInterval                   = L"CacheTimerInterval";
-const INT32  MgConfigProperties::DefaultFeatureServicePropertyCacheTimerInterval            = 3600;
-const STRING MgConfigProperties::FeatureServicePropertyDataCacheSize                        = L"DataCacheSize";
-const INT32  MgConfigProperties::DefaultFeatureServicePropertyDataCacheSize                 = 100;
-const STRING MgConfigProperties::FeatureServicePropertyDataConnectionPoolEnabled            = L"DataConnectionPoolEnabled";
-const bool   MgConfigProperties::DefaultFeatureServicePropertyDataConnectionPoolEnabled     = false;
-const STRING MgConfigProperties::FeatureServicePropertyDataConnectionPoolExcludedProviders  = L"DataConnectionPoolExcludedProviders";
-const STRING MgConfigProperties::DefaultFeatureServicePropertyDataConnectionPoolExcludedProviders = L""; // This means all providers are cached
-const STRING MgConfigProperties::FeatureServicePropertyDataConnectionPoolSize               = L"DataConnectionPoolSize";
-const INT32  MgConfigProperties::DefaultFeatureServicePropertyDataConnectionPoolSize        = 50;
-const STRING MgConfigProperties::FeatureServicePropertyDataConnectionPoolSizeCustom         = L"DataConnectionPoolSizeCustom";
-const STRING MgConfigProperties::DefaultFeatureServicePropertyDataConnectionPoolSizeCustom  = L"";
-const STRING MgConfigProperties::FeatureServicePropertyDataConnectionTimeout                = L"DataConnectionTimeout";
-const INT32  MgConfigProperties::DefaultFeatureServicePropertyDataConnectionTimeout         = 600;
-const STRING MgConfigProperties::FeatureServicePropertyDataConnectionTimerInterval          = L"DataConnectionTimerInterval";
-const INT32  MgConfigProperties::DefaultFeatureServicePropertyDataConnectionTimerInterval   = 60;
-const STRING MgConfigProperties::FeatureServicePropertyJoinQueryBatchSize                   = L"JoinQueryBatchSize";
-const INT32  MgConfigProperties::DefaultFeatureServicePropertyJoinQueryBatchSize            = 100;
-const STRING MgConfigProperties::FeatureServicePropertyDataConnectionUseLimit               = L"DataConnectionUseLimit";
-const STRING MgConfigProperties::DefaultFeatureServicePropertyDataConnectionUseLimit        = L"";
-const STRING MgConfigProperties::FeatureServicePropertyDataTransactionTimeout               = L"DataTransactionTimeout";
-const INT32  MgConfigProperties::DefaultFeatureServicePropertyDataTransactionTimeout        = 360;
-const STRING MgConfigProperties::FeatureServicePropertyDataTransactionTimerInterval         = L"DataTransactionTimerInterval";
-const INT32  MgConfigProperties::DefaultFeatureServicePropertyDataTransactionTimerInterval  = 60;
-const STRING MgConfigProperties::FeatureServicePropertyFDOConnectionTimeoutCustom           = L"FDOConnectionTimeoutCustom";
-const STRING MgConfigProperties::DefaultFeatureServicePropertyFDOConnectionTimeoutCustom    = L"OSGeo.WMS:120";
+const STRING MgdConfigProperties::FeatureServicePropertiesSection                            = L"FeatureServiceProperties";
+const STRING MgdConfigProperties::FeatureServicePropertyCacheSize                            = L"CacheSize";
+const INT32  MgdConfigProperties::DefaultFeatureServicePropertyCacheSize                     = 100;
+const STRING MgdConfigProperties::FeatureServicePropertyCacheTimeLimit                       = L"CacheTimeLimit";
+const INT32  MgdConfigProperties::DefaultFeatureServicePropertyCacheTimeLimit                = 86400;
+const STRING MgdConfigProperties::FeatureServicePropertyCacheTimerInterval                   = L"CacheTimerInterval";
+const INT32  MgdConfigProperties::DefaultFeatureServicePropertyCacheTimerInterval            = 3600;
+const STRING MgdConfigProperties::FeatureServicePropertyDataCacheSize                        = L"DataCacheSize";
+const INT32  MgdConfigProperties::DefaultFeatureServicePropertyDataCacheSize                 = 100;
+const STRING MgdConfigProperties::FeatureServicePropertyDataConnectionPoolEnabled            = L"DataConnectionPoolEnabled";
+const bool   MgdConfigProperties::DefaultFeatureServicePropertyDataConnectionPoolEnabled     = false;
+const STRING MgdConfigProperties::FeatureServicePropertyDataConnectionPoolExcludedProviders  = L"DataConnectionPoolExcludedProviders";
+const STRING MgdConfigProperties::DefaultFeatureServicePropertyDataConnectionPoolExcludedProviders = L""; // This means all providers are cached
+const STRING MgdConfigProperties::FeatureServicePropertyDataConnectionPoolSize               = L"DataConnectionPoolSize";
+const INT32  MgdConfigProperties::DefaultFeatureServicePropertyDataConnectionPoolSize        = 50;
+const STRING MgdConfigProperties::FeatureServicePropertyDataConnectionPoolSizeCustom         = L"DataConnectionPoolSizeCustom";
+const STRING MgdConfigProperties::DefaultFeatureServicePropertyDataConnectionPoolSizeCustom  = L"";
+const STRING MgdConfigProperties::FeatureServicePropertyDataConnectionTimeout                = L"DataConnectionTimeout";
+const INT32  MgdConfigProperties::DefaultFeatureServicePropertyDataConnectionTimeout         = 600;
+const STRING MgdConfigProperties::FeatureServicePropertyDataConnectionTimerInterval          = L"DataConnectionTimerInterval";
+const INT32  MgdConfigProperties::DefaultFeatureServicePropertyDataConnectionTimerInterval   = 60;
+const STRING MgdConfigProperties::FeatureServicePropertyJoinQueryBatchSize                   = L"JoinQueryBatchSize";
+const INT32  MgdConfigProperties::DefaultFeatureServicePropertyJoinQueryBatchSize            = 100;
+const STRING MgdConfigProperties::FeatureServicePropertyDataConnectionUseLimit               = L"DataConnectionUseLimit";
+const STRING MgdConfigProperties::DefaultFeatureServicePropertyDataConnectionUseLimit        = L"";
+const STRING MgdConfigProperties::FeatureServicePropertyDataTransactionTimeout               = L"DataTransactionTimeout";
+const INT32  MgdConfigProperties::DefaultFeatureServicePropertyDataTransactionTimeout        = 360;
+const STRING MgdConfigProperties::FeatureServicePropertyDataTransactionTimerInterval         = L"DataTransactionTimerInterval";
+const INT32  MgdConfigProperties::DefaultFeatureServicePropertyDataTransactionTimerInterval  = 60;
+const STRING MgdConfigProperties::FeatureServicePropertyFDOConnectionTimeoutCustom           = L"FDOConnectionTimeoutCustom";
+const STRING MgdConfigProperties::DefaultFeatureServicePropertyFDOConnectionTimeoutCustom    = L"OSGeo.WMS:120";
 
 // ******************************************************************
 // Mapping Service Properties
 // ******************************************************************
-const STRING MgConfigProperties::MappingServicePropertiesSection                            = L"MappingServiceProperties";
-const STRING MgConfigProperties::MappingServicePropertyLegendFont                           = L"LegendFont";
-const STRING MgConfigProperties::DefaultMappingServicePropertyLegendFont                    = L"Arial";
+const STRING MgdConfigProperties::MappingServicePropertiesSection                            = L"MappingServiceProperties";
+const STRING MgdConfigProperties::MappingServicePropertyLegendFont                           = L"LegendFont";
+const STRING MgdConfigProperties::DefaultMappingServicePropertyLegendFont                    = L"Arial";
 
 // ******************************************************************
 // Rendering Service Properties
 // ******************************************************************
-const STRING MgConfigProperties::RenderingServicePropertiesSection                          = L"RenderingServiceProperties";
-const STRING MgConfigProperties::RenderingServicePropertyTileExtentOffset                   = L"TileExtentOffset";
-const double MgConfigProperties::DefaultRenderingServicePropertyTileExtentOffset            = 0.35;
-const STRING MgConfigProperties::RenderingServicePropertyRasterGridSize                     = L"RasterGridSize";
-const INT32  MgConfigProperties::DefaultRenderingServicePropertyRasterGridSize              = 100;
-const STRING MgConfigProperties::RenderingServicePropertyMinRasterGridSize                  = L"MinRasterGridSize";
-const INT32  MgConfigProperties::DefaultRenderingServicePropertyMinRasterGridSize           = 10;
-const STRING MgConfigProperties::RenderingServicePropertyRasterGridSizeOverrideRatio        = L"RasterGridSizeOverrideRatio";
-const double MgConfigProperties::DefaultRenderingServicePropertyRasterGridSizeOverrideRatio = 0.25;
-const STRING MgConfigProperties::RenderingServicePropertyRasterGridSizeForPlot              = L"RasterGridSizeForPlot";
-const INT32  MgConfigProperties::DefaultRenderingServicePropertyRasterGridSizeForPlot       = 50;
-const STRING MgConfigProperties::RenderingServicePropertyMinRasterGridSizeForPlot           = L"MinRasterGridSizeForPlot";
-const INT32  MgConfigProperties::DefaultRenderingServicePropertyMinRasterGridSizeForPlot    = 5;
-const STRING MgConfigProperties::RenderingServicePropertyRasterGridSizeOverrideRatioForPlot = L"RasterGridSizeOverrideRatioForPlot";
-const double MgConfigProperties::DefaultRenderingServicePropertyRasterGridSizeOverrideRatioForPlot = 0.10;
-const STRING MgConfigProperties::RenderingServicePropertyRenderSelectionBatchSize           = L"RenderSelectionBatchSize";
-const INT32  MgConfigProperties::DefaultRenderingServicePropertyRenderSelectionBatchSize    = 50000;
-const STRING MgConfigProperties::RenderingServicePropertyClampPoints                        = L"ClampPoints";
-const bool   MgConfigProperties::DefaultRenderingServicePropertyClampPoints                 = false;
-const STRING MgConfigProperties::RenderingServicePropertyGeneralizeData                     = L"GeneralizeData";
-const bool   MgConfigProperties::DefaultRenderingServicePropertyGeneralizeData              = false;
-const STRING MgConfigProperties::RenderingServicePropertyMaxRasterImageWidth                = L"MaxRasterImageWidth";
-const INT32  MgConfigProperties::DefaultRenderingServicePropertyMaxRasterImageWidth         = 2048;
-const STRING MgConfigProperties::RenderingServicePropertyMaxRasterImageHeight               = L"MaxRasterImageHeight";
-const INT32  MgConfigProperties::DefaultRenderingServicePropertyMaxRasterImageHeight        = 2048;
+const STRING MgdConfigProperties::RenderingServicePropertiesSection                          = L"RenderingServiceProperties";
+const STRING MgdConfigProperties::RenderingServicePropertyTileExtentOffset                   = L"TileExtentOffset";
+const double MgdConfigProperties::DefaultRenderingServicePropertyTileExtentOffset            = 0.35;
+const STRING MgdConfigProperties::RenderingServicePropertyRasterGridSize                     = L"RasterGridSize";
+const INT32  MgdConfigProperties::DefaultRenderingServicePropertyRasterGridSize              = 100;
+const STRING MgdConfigProperties::RenderingServicePropertyMinRasterGridSize                  = L"MinRasterGridSize";
+const INT32  MgdConfigProperties::DefaultRenderingServicePropertyMinRasterGridSize           = 10;
+const STRING MgdConfigProperties::RenderingServicePropertyRasterGridSizeOverrideRatio        = L"RasterGridSizeOverrideRatio";
+const double MgdConfigProperties::DefaultRenderingServicePropertyRasterGridSizeOverrideRatio = 0.25;
+const STRING MgdConfigProperties::RenderingServicePropertyRasterGridSizeForPlot              = L"RasterGridSizeForPlot";
+const INT32  MgdConfigProperties::DefaultRenderingServicePropertyRasterGridSizeForPlot       = 50;
+const STRING MgdConfigProperties::RenderingServicePropertyMinRasterGridSizeForPlot           = L"MinRasterGridSizeForPlot";
+const INT32  MgdConfigProperties::DefaultRenderingServicePropertyMinRasterGridSizeForPlot    = 5;
+const STRING MgdConfigProperties::RenderingServicePropertyRasterGridSizeOverrideRatioForPlot = L"RasterGridSizeOverrideRatioForPlot";
+const double MgdConfigProperties::DefaultRenderingServicePropertyRasterGridSizeOverrideRatioForPlot = 0.10;
+const STRING MgdConfigProperties::RenderingServicePropertyRenderSelectionBatchSize           = L"RenderSelectionBatchSize";
+const INT32  MgdConfigProperties::DefaultRenderingServicePropertyRenderSelectionBatchSize    = 50000;
+const STRING MgdConfigProperties::RenderingServicePropertyClampPoints                        = L"ClampPoints";
+const bool   MgdConfigProperties::DefaultRenderingServicePropertyClampPoints                 = false;
+const STRING MgdConfigProperties::RenderingServicePropertyGeneralizeData                     = L"GeneralizeData";
+const bool   MgdConfigProperties::DefaultRenderingServicePropertyGeneralizeData              = false;
+const STRING MgdConfigProperties::RenderingServicePropertyMaxRasterImageWidth                = L"MaxRasterImageWidth";
+const INT32  MgdConfigProperties::DefaultRenderingServicePropertyMaxRasterImageWidth         = 2048;
+const STRING MgdConfigProperties::RenderingServicePropertyMaxRasterImageHeight               = L"MaxRasterImageHeight";
+const INT32  MgdConfigProperties::DefaultRenderingServicePropertyMaxRasterImageHeight        = 2048;
 
 // ******************************************************************
 // Font Alias Mappings section
 // ******************************************************************
-const STRING MgConfigProperties::FontAliasMappingSection                                    = L"FontAliases";
+const STRING MgdConfigProperties::FontAliasMappingSection                                    = L"FontAliases";
 
 // ******************************************************************
 // Unmanaged Data Mappings section
 // ******************************************************************
-const STRING MgConfigProperties::UnmanagedDataMappingsSection                               = L"UnmanagedDataMappings";
+const STRING MgdConfigProperties::UnmanagedDataMappingsSection                               = L"UnmanagedDataMappings";
 
 // ******************************************************************
 // Resource Service Properties
 // ******************************************************************
-const STRING MgConfigProperties::ResourceServicePropertiesSection                               = L"ResourceServiceProperties";
-const STRING MgConfigProperties::ResourceServicePropertyLibraryRepositoryPath                   = L"LibraryRepositoryPath";
-const STRING MgConfigProperties::DefaultResourceServicePropertyLibraryRepositoryPath            = L"Repositories/Library/Content/";
-const STRING MgConfigProperties::ResourceServicePropertyLibraryResourceDataFilePath             = L"LibraryResourceDataFilePath";
-const STRING MgConfigProperties::DefaultResourceServicePropertyLibraryResourceDataFilePath      = L"Repositories/Library/DataFiles/";
-const STRING MgConfigProperties::ResourceServicePropertyPackagesPath                            = L"PackagesPath";
-const STRING MgConfigProperties::DefaultResourceServicePropertyPackagesPath                     = L"Packages/";
-const STRING MgConfigProperties::ResourceServicePropertyResourceDataFileTrashFolderName         = L"ResourceDataFileTrashFolderName";
-const STRING MgConfigProperties::DefaultResourceServicePropertyResourceDataFileTrashFolderName  = L"Trash";
-const STRING MgConfigProperties::ResourceServicePropertyResourceSchemaFilePath                  = L"ResourceSchemaFilePath";
-const STRING MgConfigProperties::DefaultResourceServicePropertyResourceSchemaFilePath           = L"Schema/";
-const STRING MgConfigProperties::ResourceServicePropertySessionRepositoryPath                   = L"SessionRepositoryPath";
-const STRING MgConfigProperties::DefaultResourceServicePropertySessionRepositoryPath            = L"Repositories/Session/Content/";
-const STRING MgConfigProperties::ResourceServicePropertySessionResourceDataFilePath             = L"SessionResourceDataFilePath";
-const STRING MgConfigProperties::DefaultResourceServicePropertySessionResourceDataFilePath      = L"Repositories/Session/DataFiles/";
-const STRING MgConfigProperties::ResourceServicePropertySiteRepositoryPath                      = L"SiteRepositoryPath";
-const STRING MgConfigProperties::DefaultResourceServicePropertySiteRepositoryPath               = L"Repositories/Site/";
-const STRING MgConfigProperties::ResourceServicePropertyResourceValidationEnabled               = L"ResourceValidationEnabled"; // for internal use only
-const bool   MgConfigProperties::DefaultResourceServicePropertyResourceValidationEnabled        = true;
-const STRING MgConfigProperties::ResourceServicePropertyRetryAttempts                           = L"RetryAttempts";             // for internal use only
-const INT32  MgConfigProperties::DefaultResourceServicePropertyRetryAttempts                    = 50;
-const STRING MgConfigProperties::ResourceServicePropertyRetryInterval                           = L"RetryInterval";             // for internal use only
-const INT32  MgConfigProperties::DefaultResourceServicePropertyRetryInterval                    = 25;
-const STRING MgConfigProperties::ResourceServicePropertySessionRepositoriesConfig               = L"SessionRepositoriesConfig";
-const STRING MgConfigProperties::DefaultResourceServicePropertySessionRepositoriesConfig        = L"FilePerSession";
-const STRING MgConfigProperties::ResourceServicePropertySessionRepositoriesLimit                = L"SessionRepositoriesLimit";
-const INT32  MgConfigProperties::DefaultResourceServicePropertySessionRepositoriesLimit         = 200;
+const STRING MgdConfigProperties::ResourceServicePropertiesSection                               = L"ResourceServiceProperties";
+const STRING MgdConfigProperties::ResourceServicePropertyLibraryRepositoryPath                   = L"LibraryRepositoryPath";
+const STRING MgdConfigProperties::DefaultResourceServicePropertyLibraryRepositoryPath            = L"Repositories/Library/Content/";
+const STRING MgdConfigProperties::ResourceServicePropertyLibraryResourceDataFilePath             = L"LibraryResourceDataFilePath";
+const STRING MgdConfigProperties::DefaultResourceServicePropertyLibraryResourceDataFilePath      = L"Repositories/Library/DataFiles/";
+const STRING MgdConfigProperties::ResourceServicePropertyPackagesPath                            = L"PackagesPath";
+const STRING MgdConfigProperties::DefaultResourceServicePropertyPackagesPath                     = L"Packages/";
+const STRING MgdConfigProperties::ResourceServicePropertyResourceDataFileTrashFolderName         = L"ResourceDataFileTrashFolderName";
+const STRING MgdConfigProperties::DefaultResourceServicePropertyResourceDataFileTrashFolderName  = L"Trash";
+const STRING MgdConfigProperties::ResourceServicePropertyResourceSchemaFilePath                  = L"ResourceSchemaFilePath";
+const STRING MgdConfigProperties::DefaultResourceServicePropertyResourceSchemaFilePath           = L"Schema/";
+const STRING MgdConfigProperties::ResourceServicePropertySessionRepositoryPath                   = L"SessionRepositoryPath";
+const STRING MgdConfigProperties::DefaultResourceServicePropertySessionRepositoryPath            = L"Repositories/Session/Content/";
+const STRING MgdConfigProperties::ResourceServicePropertySessionResourceDataFilePath             = L"SessionResourceDataFilePath";
+const STRING MgdConfigProperties::DefaultResourceServicePropertySessionResourceDataFilePath      = L"Repositories/Session/DataFiles/";
+const STRING MgdConfigProperties::ResourceServicePropertySiteRepositoryPath                      = L"SiteRepositoryPath";
+const STRING MgdConfigProperties::DefaultResourceServicePropertySiteRepositoryPath               = L"Repositories/Site/";
+const STRING MgdConfigProperties::ResourceServicePropertyResourceValidationEnabled               = L"ResourceValidationEnabled"; // for internal use only
+const bool   MgdConfigProperties::DefaultResourceServicePropertyResourceValidationEnabled        = true;
+const STRING MgdConfigProperties::ResourceServicePropertyRetryAttempts                           = L"RetryAttempts";             // for internal use only
+const INT32  MgdConfigProperties::DefaultResourceServicePropertyRetryAttempts                    = 50;
+const STRING MgdConfigProperties::ResourceServicePropertyRetryInterval                           = L"RetryInterval";             // for internal use only
+const INT32  MgdConfigProperties::DefaultResourceServicePropertyRetryInterval                    = 25;
+const STRING MgdConfigProperties::ResourceServicePropertySessionRepositoriesConfig               = L"SessionRepositoriesConfig";
+const STRING MgdConfigProperties::DefaultResourceServicePropertySessionRepositoriesConfig        = L"FilePerSession";
+const STRING MgdConfigProperties::ResourceServicePropertySessionRepositoriesLimit                = L"SessionRepositoriesLimit";
+const INT32  MgdConfigProperties::DefaultResourceServicePropertySessionRepositoriesLimit         = 200;
 
 // ******************************************************************
 // Site Service Properties
 // ******************************************************************
-const STRING MgConfigProperties::SiteServicePropertiesSection                               = L"SiteServiceProperties";
-const STRING MgConfigProperties::SiteServicePropertySessionTimeout                          = L"SessionTimeout";
-const INT32  MgConfigProperties::DefaultSiteServicePropertySessionTimeout                   = 1200;
-const STRING MgConfigProperties::SiteServicePropertySessionTimerInterval                    = L"SessionTimerInterval";
-const INT32  MgConfigProperties::DefaultSiteServicePropertySessionTimerInterval             = 400;
+const STRING MgdConfigProperties::SiteServicePropertiesSection                               = L"SiteServiceProperties";
+const STRING MgdConfigProperties::SiteServicePropertySessionTimeout                          = L"SessionTimeout";
+const INT32  MgdConfigProperties::DefaultSiteServicePropertySessionTimeout                   = 1200;
+const STRING MgdConfigProperties::SiteServicePropertySessionTimerInterval                    = L"SessionTimerInterval";
+const INT32  MgdConfigProperties::DefaultSiteServicePropertySessionTimerInterval             = 400;
 
 // ******************************************************************
 // Tile Service Properties
 // ******************************************************************
-const STRING MgConfigProperties::TileServicePropertiesSection                               = L"TileServiceProperties";
-const STRING MgConfigProperties::TileServicePropertyRenderOnly                              = L"RenderOnly";
-const bool   MgConfigProperties::DefaultTileServicePropertyRenderOnly                       = false;
-const STRING MgConfigProperties::TileServicePropertyTileCachePath                           = L"TileCachePath";
-const STRING MgConfigProperties::DefaultTileServicePropertyTileCachePath                    = L"Repositories/TileCache/";
-const STRING MgConfigProperties::TileServicePropertyTileColumnsPerFolder                    = L"TileColumnsPerFolder";
-const INT32 MgConfigProperties::DefaultTileServicePropertyTileColumnsPerFolder              = 30;
-const STRING MgConfigProperties::TileServicePropertyTileRowsPerFolder                       = L"TileRowsPerFolder";
-const INT32 MgConfigProperties::DefaultTileServicePropertyTileRowsPerFolder                 = 30;
-const STRING MgConfigProperties::TileServicePropertyCreationCutoffTime                      = L"CreationCutoffTime";// for internal use only
-const INT32  MgConfigProperties::DefaultTileServicePropertyCreationCutoffTime               = 120;
-const STRING MgConfigProperties::TileServicePropertyPollingInterval                         = L"PollingInterval";   // for internal use only
-const INT32  MgConfigProperties::DefaultTileServicePropertyPollingInterval                  = 1;
-const STRING MgConfigProperties::TileServicePropertyTiledMapCacheSize                       = L"TiledMapCacheSize"; // for internal use only
-const INT32  MgConfigProperties::DefaultTileServicePropertyTiledMapCacheSize                = 10;
-const STRING MgConfigProperties::TileServicePropertyTileSizeX                               = L"DefaultTileSizeX";
-const INT32 MgConfigProperties::DefaultTileServicePropertyTileSizeX                         = 300;
-const STRING MgConfigProperties::TileServicePropertyTileSizeY                               = L"DefaultTileSizeY";
-const INT32 MgConfigProperties::DefaultTileServicePropertyTileSizeY                         = 300;
-const STRING MgConfigProperties::TileServicePropertyImageFormat                             = L"ImageFormat";
-const STRING MgConfigProperties::DefaultTileServicePropertyImageFormat                      = L"PNG";
+const STRING MgdConfigProperties::TileServicePropertiesSection                               = L"TileServiceProperties";
+const STRING MgdConfigProperties::TileServicePropertyRenderOnly                              = L"RenderOnly";
+const bool   MgdConfigProperties::DefaultTileServicePropertyRenderOnly                       = false;
+const STRING MgdConfigProperties::TileServicePropertyTileCachePath                           = L"TileCachePath";
+const STRING MgdConfigProperties::DefaultTileServicePropertyTileCachePath                    = L"Repositories/TileCache/";
+const STRING MgdConfigProperties::TileServicePropertyTileColumnsPerFolder                    = L"TileColumnsPerFolder";
+const INT32 MgdConfigProperties::DefaultTileServicePropertyTileColumnsPerFolder              = 30;
+const STRING MgdConfigProperties::TileServicePropertyTileRowsPerFolder                       = L"TileRowsPerFolder";
+const INT32 MgdConfigProperties::DefaultTileServicePropertyTileRowsPerFolder                 = 30;
+const STRING MgdConfigProperties::TileServicePropertyCreationCutoffTime                      = L"CreationCutoffTime";// for internal use only
+const INT32  MgdConfigProperties::DefaultTileServicePropertyCreationCutoffTime               = 120;
+const STRING MgdConfigProperties::TileServicePropertyPollingInterval                         = L"PollingInterval";   // for internal use only
+const INT32  MgdConfigProperties::DefaultTileServicePropertyPollingInterval                  = 1;
+const STRING MgdConfigProperties::TileServicePropertyTiledMapCacheSize                       = L"TiledMapCacheSize"; // for internal use only
+const INT32  MgdConfigProperties::DefaultTileServicePropertyTiledMapCacheSize                = 10;
+const STRING MgdConfigProperties::TileServicePropertyTileSizeX                               = L"DefaultTileSizeX";
+const INT32 MgdConfigProperties::DefaultTileServicePropertyTileSizeX                         = 300;
+const STRING MgdConfigProperties::TileServicePropertyTileSizeY                               = L"DefaultTileSizeY";
+const INT32 MgdConfigProperties::DefaultTileServicePropertyTileSizeY                         = 300;
+const STRING MgdConfigProperties::TileServicePropertyImageFormat                             = L"ImageFormat";
+const STRING MgdConfigProperties::DefaultTileServicePropertyImageFormat                      = L"PNG";
 
 // ******************************************************************
 // Access Log Properties
 // ******************************************************************
-const STRING MgConfigProperties::AccessLogPropertiesSection                                 = L"AccessLogProperties";
-const STRING MgConfigProperties::AccessLogPropertyEnabled                                   = L"Enabled";
-const bool   MgConfigProperties::DefaultAccessLogPropertyEnabled                            = true;
-const STRING MgConfigProperties::AccessLogPropertyFilename                                  = L"Filename";
-const STRING MgConfigProperties::DefaultAccessLogPropertyFilename                           = L"Access.log";
-const STRING MgConfigProperties::AccessLogPropertyParameters                                = L"Parameters";
-const STRING MgConfigProperties::DefaultAccessLogPropertyParameters                         = L"";
+const STRING MgdConfigProperties::AccessLogPropertiesSection                                 = L"AccessLogProperties";
+const STRING MgdConfigProperties::AccessLogPropertyEnabled                                   = L"Enabled";
+const bool   MgdConfigProperties::DefaultAccessLogPropertyEnabled                            = true;
+const STRING MgdConfigProperties::AccessLogPropertyFilename                                  = L"Filename";
+const STRING MgdConfigProperties::DefaultAccessLogPropertyFilename                           = L"Access.log";
+const STRING MgdConfigProperties::AccessLogPropertyParameters                                = L"Parameters";
+const STRING MgdConfigProperties::DefaultAccessLogPropertyParameters                         = L"";
 
 // ******************************************************************
 // Admin Log Properties
 // ******************************************************************
-const STRING MgConfigProperties::AdminLogPropertiesSection                                  = L"AdminLogProperties";
-const STRING MgConfigProperties::AdminLogPropertyEnabled                                    = L"Enabled";
-const bool   MgConfigProperties::DefaultAdminLogPropertyEnabled                             = true;
-const STRING MgConfigProperties::AdminLogPropertyFilename                                   = L"Filename";
-const STRING MgConfigProperties::DefaultAdminLogPropertyFilename                            = L"Admin.log";
-const STRING MgConfigProperties::AdminLogPropertyParameters                                 = L"Parameters";
-const STRING MgConfigProperties::DefaultAdminLogPropertyParameters                          = L"";
+const STRING MgdConfigProperties::AdminLogPropertiesSection                                  = L"AdminLogProperties";
+const STRING MgdConfigProperties::AdminLogPropertyEnabled                                    = L"Enabled";
+const bool   MgdConfigProperties::DefaultAdminLogPropertyEnabled                             = true;
+const STRING MgdConfigProperties::AdminLogPropertyFilename                                   = L"Filename";
+const STRING MgdConfigProperties::DefaultAdminLogPropertyFilename                            = L"Admin.log";
+const STRING MgdConfigProperties::AdminLogPropertyParameters                                 = L"Parameters";
+const STRING MgdConfigProperties::DefaultAdminLogPropertyParameters                          = L"";
 
 // ******************************************************************
 // Authentication Log Properties
 // ******************************************************************
-const STRING MgConfigProperties::AuthenticationLogPropertiesSection                         = L"AuthenticationLogProperties";
-const STRING MgConfigProperties::AuthenticationLogPropertyEnabled                           = L"Enabled";
-const bool   MgConfigProperties::DefaultAuthenticationLogPropertyEnabled                    = true;
-const STRING MgConfigProperties::AuthenticationLogPropertyFilename                          = L"Filename";
-const STRING MgConfigProperties::DefaultAuthenticationLogPropertyFilename                   = L"Authentication.log";
-const STRING MgConfigProperties::AuthenticationLogPropertyParameters                        = L"Parameters";
-const STRING MgConfigProperties::DefaultAuthenticationLogPropertyParameters                 = L"";
+const STRING MgdConfigProperties::AuthenticationLogPropertiesSection                         = L"AuthenticationLogProperties";
+const STRING MgdConfigProperties::AuthenticationLogPropertyEnabled                           = L"Enabled";
+const bool   MgdConfigProperties::DefaultAuthenticationLogPropertyEnabled                    = true;
+const STRING MgdConfigProperties::AuthenticationLogPropertyFilename                          = L"Filename";
+const STRING MgdConfigProperties::DefaultAuthenticationLogPropertyFilename                   = L"Authentication.log";
+const STRING MgdConfigProperties::AuthenticationLogPropertyParameters                        = L"Parameters";
+const STRING MgdConfigProperties::DefaultAuthenticationLogPropertyParameters                 = L"";
 
 // ******************************************************************
 // Error Log Properties
 // ******************************************************************
-const STRING MgConfigProperties::ErrorLogPropertiesSection                                  = L"ErrorLogProperties";
-const STRING MgConfigProperties::ErrorLogPropertyEnabled                                    = L"Enabled";
-const bool   MgConfigProperties::DefaultErrorLogPropertyEnabled                             = true;
-const STRING MgConfigProperties::ErrorLogPropertyFilename                                   = L"Filename";
-const STRING MgConfigProperties::DefaultErrorLogPropertyFilename                            = L"Error.log";
-const STRING MgConfigProperties::ErrorLogPropertyParameters                                 = L"Parameters";
-const STRING MgConfigProperties::DefaultErrorLogPropertyParameters                          = L"";
+const STRING MgdConfigProperties::ErrorLogPropertiesSection                                  = L"ErrorLogProperties";
+const STRING MgdConfigProperties::ErrorLogPropertyEnabled                                    = L"Enabled";
+const bool   MgdConfigProperties::DefaultErrorLogPropertyEnabled                             = true;
+const STRING MgdConfigProperties::ErrorLogPropertyFilename                                   = L"Filename";
+const STRING MgdConfigProperties::DefaultErrorLogPropertyFilename                            = L"Error.log";
+const STRING MgdConfigProperties::ErrorLogPropertyParameters                                 = L"Parameters";
+const STRING MgdConfigProperties::DefaultErrorLogPropertyParameters                          = L"";
 
 // ******************************************************************
 // Performance Log Properties
 // ******************************************************************
-const STRING MgConfigProperties::PerformanceLogPropertiesSection                            = L"PerformanceLogProperties";
-const STRING MgConfigProperties::PerformanceLogPropertyEnabled                              = L"Enabled";
-const bool   MgConfigProperties::DefaultPerformanceLogPropertyEnabled                       = false;
-const STRING MgConfigProperties::PerformanceLogPropertyFilename                             = L"Filename";
-const STRING MgConfigProperties::DefaultPerformanceLogPropertyFilename                      = L"Performance.log";
-const STRING MgConfigProperties::PerformanceLogPropertyParameters                           = L"Parameters";
-const STRING MgConfigProperties::DefaultPerformanceLogPropertyParameters                    = L"";
-const STRING MgConfigProperties::PerformanceLogPropertyInterval                             = L"Interval";
-const INT32  MgConfigProperties::DefaultPerformanceLogPropertyInterval                      = 300;
+const STRING MgdConfigProperties::PerformanceLogPropertiesSection                            = L"PerformanceLogProperties";
+const STRING MgdConfigProperties::PerformanceLogPropertyEnabled                              = L"Enabled";
+const bool   MgdConfigProperties::DefaultPerformanceLogPropertyEnabled                       = false;
+const STRING MgdConfigProperties::PerformanceLogPropertyFilename                             = L"Filename";
+const STRING MgdConfigProperties::DefaultPerformanceLogPropertyFilename                      = L"Performance.log";
+const STRING MgdConfigProperties::PerformanceLogPropertyParameters                           = L"Parameters";
+const STRING MgdConfigProperties::DefaultPerformanceLogPropertyParameters                    = L"";
+const STRING MgdConfigProperties::PerformanceLogPropertyInterval                             = L"Interval";
+const INT32  MgdConfigProperties::DefaultPerformanceLogPropertyInterval                      = 300;
 
 // ******************************************************************
 // Session Log Properties
 // ******************************************************************
-const STRING MgConfigProperties::SessionLogPropertiesSection                                = L"SessionLogProperties";
-const STRING MgConfigProperties::SessionLogPropertyEnabled                                  = L"Enabled";
-const bool   MgConfigProperties::DefaultSessionLogPropertyEnabled                           = false;
-const STRING MgConfigProperties::SessionLogPropertyFilename                                 = L"Filename";
-const STRING MgConfigProperties::DefaultSessionLogPropertyFilename                          = L"Session.log";
-const STRING MgConfigProperties::SessionLogPropertyParameters                               = L"Parameters";
-const STRING MgConfigProperties::DefaultSessionLogPropertyParameters                        = L"";
+const STRING MgdConfigProperties::SessionLogPropertiesSection                                = L"SessionLogProperties";
+const STRING MgdConfigProperties::SessionLogPropertyEnabled                                  = L"Enabled";
+const bool   MgdConfigProperties::DefaultSessionLogPropertyEnabled                           = false;
+const STRING MgdConfigProperties::SessionLogPropertyFilename                                 = L"Filename";
+const STRING MgdConfigProperties::DefaultSessionLogPropertyFilename                          = L"Session.log";
+const STRING MgdConfigProperties::SessionLogPropertyParameters                               = L"Parameters";
+const STRING MgdConfigProperties::DefaultSessionLogPropertyParameters                        = L"";
 
 // ******************************************************************
 // Trace Log Properties
 // ******************************************************************
-const STRING MgConfigProperties::TraceLogPropertiesSection                                  = L"TraceLogProperties";
-const STRING MgConfigProperties::TraceLogPropertyEnabled                                    = L"Enabled";
-const bool   MgConfigProperties::DefaultTraceLogPropertyEnabled                             = false;
-const STRING MgConfigProperties::TraceLogPropertyFilename                                   = L"Filename";
-const STRING MgConfigProperties::DefaultTraceLogPropertyFilename                            = L"Trace.log";
-const STRING MgConfigProperties::TraceLogPropertyParameters                                 = L"Parameters";
-const STRING MgConfigProperties::DefaultTraceLogPropertyParameters                          = L"";
+const STRING MgdConfigProperties::TraceLogPropertiesSection                                  = L"TraceLogProperties";
+const STRING MgdConfigProperties::TraceLogPropertyEnabled                                    = L"Enabled";
+const bool   MgdConfigProperties::DefaultTraceLogPropertyEnabled                             = false;
+const STRING MgdConfigProperties::TraceLogPropertyFilename                                   = L"Filename";
+const STRING MgdConfigProperties::DefaultTraceLogPropertyFilename                            = L"Trace.log";
+const STRING MgdConfigProperties::TraceLogPropertyParameters                                 = L"Parameters";
+const STRING MgdConfigProperties::DefaultTraceLogPropertyParameters                          = L"";
 
 ///////////////////////////////////////////////////////////////////////////////
 /// Common Configuration Validation Information Maps
 ///
-const MgConfigValidationInfo MgConfigProperties::sm_cviGeneralProperties[] =
+const MgConfigValidationInfo MgdConfigProperties::sm_cviGeneralProperties[] =
 {
-    { MgConfigProperties::GeneralPropertyLocale                                     , MgPropertyType::String    , MG_CONFIG_MIN_OPTIONAL_STRING_LENGTH  , MG_CONFIG_MAX_OPTIONAL_STRING_LENGTH  , L""                                       },
-    { MgConfigProperties::GeneralPropertyDefaultMessageLocale                       , MgPropertyType::String    , MG_CONFIG_MIN_LOCALE_LENGTH           , MG_CONFIG_MAX_LOCALE_LENGTH           , L""                                       },
-    { MgConfigProperties::GeneralPropertyFdoPath                                    , MgPropertyType::String    , MG_CONFIG_MIN_PATH_LENGTH             , MG_CONFIG_MAX_PATH_LENGTH             , MG_CONFIG_PATH_RESERVED_CHARACTERS        },
-    { MgConfigProperties::GeneralPropertyLinuxMemDebug                              , MgPropertyType::Boolean   , 0                                     , 1                                     , L""                                       },
-    { MgConfigProperties::GeneralPropertyResourcesPath                              , MgPropertyType::String    , MG_CONFIG_MIN_PATH_LENGTH             , MG_CONFIG_MAX_PATH_LENGTH             , MG_CONFIG_PATH_RESERVED_CHARACTERS        },
-    { MgConfigProperties::GeneralPropertyTempPath                                   , MgPropertyType::String    , MG_CONFIG_MIN_PATH_LENGTH             , MG_CONFIG_MAX_PATH_LENGTH             , MG_CONFIG_PATH_RESERVED_CHARACTERS        },
-    { MgConfigProperties::GeneralPropertyWfsDocumentPath                            , MgPropertyType::String    , MG_CONFIG_MIN_PATH_LENGTH             , MG_CONFIG_MAX_PATH_LENGTH             , MG_CONFIG_PATH_RESERVED_CHARACTERS        },
-    { MgConfigProperties::GeneralPropertyWmsDocumentPath                            , MgPropertyType::String    , MG_CONFIG_MIN_PATH_LENGTH             , MG_CONFIG_MAX_PATH_LENGTH             , MG_CONFIG_PATH_RESERVED_CHARACTERS        },
+    { MgdConfigProperties::GeneralPropertyLocale                                     , MgPropertyType::String    , MG_CONFIG_MIN_OPTIONAL_STRING_LENGTH  , MG_CONFIG_MAX_OPTIONAL_STRING_LENGTH  , L""                                       },
+    { MgdConfigProperties::GeneralPropertyDefaultMessageLocale                       , MgPropertyType::String    , MG_CONFIG_MIN_LOCALE_LENGTH           , MG_CONFIG_MAX_LOCALE_LENGTH           , L""                                       },
+    { MgdConfigProperties::GeneralPropertyFdoPath                                    , MgPropertyType::String    , MG_CONFIG_MIN_PATH_LENGTH             , MG_CONFIG_MAX_PATH_LENGTH             , MG_CONFIG_PATH_RESERVED_CHARACTERS        },
+    { MgdConfigProperties::GeneralPropertyLinuxMemDebug                              , MgPropertyType::Boolean   , 0                                     , 1                                     , L""                                       },
+    { MgdConfigProperties::GeneralPropertyResourcesPath                              , MgPropertyType::String    , MG_CONFIG_MIN_PATH_LENGTH             , MG_CONFIG_MAX_PATH_LENGTH             , MG_CONFIG_PATH_RESERVED_CHARACTERS        },
+    { MgdConfigProperties::GeneralPropertyTempPath                                   , MgPropertyType::String    , MG_CONFIG_MIN_PATH_LENGTH             , MG_CONFIG_MAX_PATH_LENGTH             , MG_CONFIG_PATH_RESERVED_CHARACTERS        },
+    { MgdConfigProperties::GeneralPropertyWfsDocumentPath                            , MgPropertyType::String    , MG_CONFIG_MIN_PATH_LENGTH             , MG_CONFIG_MAX_PATH_LENGTH             , MG_CONFIG_PATH_RESERVED_CHARACTERS        },
+    { MgdConfigProperties::GeneralPropertyWmsDocumentPath                            , MgPropertyType::String    , MG_CONFIG_MIN_PATH_LENGTH             , MG_CONFIG_MAX_PATH_LENGTH             , MG_CONFIG_PATH_RESERVED_CHARACTERS        },
     { L""                                                                           , 0                         , 0.0                                   , 0.0                                   , L""                                       }
 };
 
@@ -396,143 +396,143 @@ const MgConfigValidationInfo MgConfigProperties::sm_cviGeneralProperties[] =
 /// Server Configuration Validation Information Maps
 ///
 
-const MgConfigValidationInfo MgConfigProperties::sm_cviDrawingServiceProperties[] =
+const MgConfigValidationInfo MgdConfigProperties::sm_cviDrawingServiceProperties[] =
 {
     { L""                                                                           , 0                         , 0.0                                   , 0.0                                  , L""                                        }
 };
 
-const MgConfigValidationInfo MgConfigProperties::sm_cviFeatureServiceProperties[] =
+const MgConfigValidationInfo MgdConfigProperties::sm_cviFeatureServiceProperties[] =
 {
-    { MgConfigProperties::FeatureServicePropertyCacheSize                           , MgPropertyType::Int32     , MG_CONFIG_MIN_FS_CACHE_SIZE           , MG_CONFIG_MAX_FS_CACHE_SIZE           , L""                                       },
-    { MgConfigProperties::FeatureServicePropertyCacheTimeLimit                      , MgPropertyType::Int32     , MG_CONFIG_MIN_FS_CACHE_TIMELIMIT      , MG_CONFIG_MAX_FS_CACHE_TIMELIMIT      , L""                                       },
-    { MgConfigProperties::FeatureServicePropertyCacheTimerInterval                  , MgPropertyType::Int32     , MG_CONFIG_MIN_FS_CACHE_TIMERINTERVAL  , MG_CONFIG_MAX_FS_CACHE_TIMERINTERVAL  , L""                                       },
-    { MgConfigProperties::FeatureServicePropertyDataCacheSize                       , MgPropertyType::Int32     , MG_CONFIG_MIN_CACHE_SIZE              , MG_CONFIG_MAX_CACHE_SIZE              , L""                                       },
-    { MgConfigProperties::FeatureServicePropertyDataConnectionPoolEnabled           , MgPropertyType::Boolean   , 0                                     , 1                                     , L""                                       },
-    { MgConfigProperties::FeatureServicePropertyDataConnectionPoolExcludedProviders , MgPropertyType::String    , MG_CONFIG_MIN_FS_CP_EXCLUDED_LENGTH   , MG_CONFIG_MAX_FS_CP_EXCLUDED_LENGTH   , L""                                       },
-    { MgConfigProperties::FeatureServicePropertyDataConnectionPoolSize              , MgPropertyType::Int32     , MG_CONFIG_MIN_CONNECTION_POOL_SIZE    , MG_CONFIG_MAX_CONNECTION_POOL_SIZE    , L""                                       },
-    { MgConfigProperties::FeatureServicePropertyDataConnectionPoolSizeCustom        , MgPropertyType::String    , MG_CONFIG_MIN_FS_CP_EXCLUDED_LENGTH   , MG_CONFIG_MAX_FS_CP_EXCLUDED_LENGTH   , L""                                       },
-    { MgConfigProperties::FeatureServicePropertyDataConnectionTimeout               , MgPropertyType::Int32     , MG_CONFIG_MIN_TIMEOUT                 , MG_CONFIG_MAX_TIMEOUT                 , L""                                       },
-    { MgConfigProperties::FeatureServicePropertyDataConnectionTimerInterval         , MgPropertyType::Int32     , MG_CONFIG_MIN_TIMER_INTERVAL          , MG_CONFIG_MAX_TIMER_INTERVAL          , L""                                       },
-    { MgConfigProperties::FeatureServicePropertyJoinQueryBatchSize                  , MgPropertyType::Int32     , MG_CONFIG_MIN_JOIN_QUERY_BATCH_SIZE   , MG_CONFIG_MAX_JOIN_QUERY_BATCH_SIZE   , L""                                       },
-    { MgConfigProperties::FeatureServicePropertyDataConnectionUseLimit              , MgPropertyType::String    , MG_CONFIG_MIN_FS_CP_EXCLUDED_LENGTH   , MG_CONFIG_MAX_FS_CP_EXCLUDED_LENGTH   , L""                                       },
-    { MgConfigProperties::FeatureServicePropertyDataTransactionTimeout              , MgPropertyType::Int32     , MG_CONFIG_MIN_TIMEOUT                 , MG_CONFIG_MAX_TIMEOUT                 , L""                                       },
-    { MgConfigProperties::FeatureServicePropertyDataTransactionTimerInterval        , MgPropertyType::Int32     , MG_CONFIG_MIN_TIMER_INTERVAL          , MG_CONFIG_MAX_TIMER_INTERVAL          , L""                                       },
+    { MgdConfigProperties::FeatureServicePropertyCacheSize                           , MgPropertyType::Int32     , MG_CONFIG_MIN_FS_CACHE_SIZE           , MG_CONFIG_MAX_FS_CACHE_SIZE           , L""                                       },
+    { MgdConfigProperties::FeatureServicePropertyCacheTimeLimit                      , MgPropertyType::Int32     , MG_CONFIG_MIN_FS_CACHE_TIMELIMIT      , MG_CONFIG_MAX_FS_CACHE_TIMELIMIT      , L""                                       },
+    { MgdConfigProperties::FeatureServicePropertyCacheTimerInterval                  , MgPropertyType::Int32     , MG_CONFIG_MIN_FS_CACHE_TIMERINTERVAL  , MG_CONFIG_MAX_FS_CACHE_TIMERINTERVAL  , L""                                       },
+    { MgdConfigProperties::FeatureServicePropertyDataCacheSize                       , MgPropertyType::Int32     , MG_CONFIG_MIN_CACHE_SIZE              , MG_CONFIG_MAX_CACHE_SIZE              , L""                                       },
+    { MgdConfigProperties::FeatureServicePropertyDataConnectionPoolEnabled           , MgPropertyType::Boolean   , 0                                     , 1                                     , L""                                       },
+    { MgdConfigProperties::FeatureServicePropertyDataConnectionPoolExcludedProviders , MgPropertyType::String    , MG_CONFIG_MIN_FS_CP_EXCLUDED_LENGTH   , MG_CONFIG_MAX_FS_CP_EXCLUDED_LENGTH   , L""                                       },
+    { MgdConfigProperties::FeatureServicePropertyDataConnectionPoolSize              , MgPropertyType::Int32     , MG_CONFIG_MIN_CONNECTION_POOL_SIZE    , MG_CONFIG_MAX_CONNECTION_POOL_SIZE    , L""                                       },
+    { MgdConfigProperties::FeatureServicePropertyDataConnectionPoolSizeCustom        , MgPropertyType::String    , MG_CONFIG_MIN_FS_CP_EXCLUDED_LENGTH   , MG_CONFIG_MAX_FS_CP_EXCLUDED_LENGTH   , L""                                       },
+    { MgdConfigProperties::FeatureServicePropertyDataConnectionTimeout               , MgPropertyType::Int32     , MG_CONFIG_MIN_TIMEOUT                 , MG_CONFIG_MAX_TIMEOUT                 , L""                                       },
+    { MgdConfigProperties::FeatureServicePropertyDataConnectionTimerInterval         , MgPropertyType::Int32     , MG_CONFIG_MIN_TIMER_INTERVAL          , MG_CONFIG_MAX_TIMER_INTERVAL          , L""                                       },
+    { MgdConfigProperties::FeatureServicePropertyJoinQueryBatchSize                  , MgPropertyType::Int32     , MG_CONFIG_MIN_JOIN_QUERY_BATCH_SIZE   , MG_CONFIG_MAX_JOIN_QUERY_BATCH_SIZE   , L""                                       },
+    { MgdConfigProperties::FeatureServicePropertyDataConnectionUseLimit              , MgPropertyType::String    , MG_CONFIG_MIN_FS_CP_EXCLUDED_LENGTH   , MG_CONFIG_MAX_FS_CP_EXCLUDED_LENGTH   , L""                                       },
+    { MgdConfigProperties::FeatureServicePropertyDataTransactionTimeout              , MgPropertyType::Int32     , MG_CONFIG_MIN_TIMEOUT                 , MG_CONFIG_MAX_TIMEOUT                 , L""                                       },
+    { MgdConfigProperties::FeatureServicePropertyDataTransactionTimerInterval        , MgPropertyType::Int32     , MG_CONFIG_MIN_TIMER_INTERVAL          , MG_CONFIG_MAX_TIMER_INTERVAL          , L""                                       },
     { L""                                                                           , 0                         , 0.0                                   , 0.0                                   , L""                                       }
 };
 
-const MgConfigValidationInfo MgConfigProperties::sm_cviMappingServiceProperties[] =
+const MgConfigValidationInfo MgdConfigProperties::sm_cviMappingServiceProperties[] =
 {
-    { MgConfigProperties::MappingServicePropertyLegendFont                          , MgPropertyType::String    , MG_CONFIG_MIN_FONT_NAME_LENGTH        , MG_CONFIG_MAX_FONT_NAME_LENGTH        , L""                                       },
+    { MgdConfigProperties::MappingServicePropertyLegendFont                          , MgPropertyType::String    , MG_CONFIG_MIN_FONT_NAME_LENGTH        , MG_CONFIG_MAX_FONT_NAME_LENGTH        , L""                                       },
     { L""                                                                           , 0                         , 0.0                                   , 0.0                                   , L""                                       }
 };
 
-const MgConfigValidationInfo MgConfigProperties::sm_cviRenderingServiceProperties[] =
+const MgConfigValidationInfo MgdConfigProperties::sm_cviRenderingServiceProperties[] =
 {
-    { MgConfigProperties::RenderingServicePropertyTileExtentOffset                  , MgPropertyType::Double    , 0.0                                   , 1.0                                   , L""                                       },
-    { MgConfigProperties::RenderingServicePropertyRasterGridSize                    , MgPropertyType::Int32     , 1                                     , MG_CONFIG_MAX_INT32                   , L""                                       },
-    { MgConfigProperties::RenderingServicePropertyMinRasterGridSize                 , MgPropertyType::Int32     , 1                                     , MG_CONFIG_MAX_INT32                   , L""                                       },
-    { MgConfigProperties::RenderingServicePropertyRasterGridSizeOverrideRatio       , MgPropertyType::Double    , 0.0                                   , 1.0                                   , L""                                       },
-    { MgConfigProperties::RenderingServicePropertyRasterGridSizeForPlot             , MgPropertyType::Int32     , 1                                     , MG_CONFIG_MAX_INT32                   , L""                                       },
-    { MgConfigProperties::RenderingServicePropertyMinRasterGridSizeForPlot          , MgPropertyType::Int32     , 1                                     , MG_CONFIG_MAX_INT32                   , L""                                       },
-    { MgConfigProperties::RenderingServicePropertyRasterGridSizeOverrideRatioForPlot, MgPropertyType::Double    , 0.0                                   , 1.0                                   , L""                                       },
-    { MgConfigProperties::RenderingServicePropertyRenderSelectionBatchSize          , MgPropertyType::Int32     , MG_CONFIG_MIN_RENDER_SELECTION_SIZE   , MG_CONFIG_MAX_RENDER_SELECTION_SIZE   , L""                                       },
-    { MgConfigProperties::RenderingServicePropertyMaxRasterImageWidth               , MgPropertyType::Int32     , 1                                     , MG_CONFIG_MAX_INT32                   , L""                                       },
-    { MgConfigProperties::RenderingServicePropertyMaxRasterImageHeight              , MgPropertyType::Int32     , 1                                     , MG_CONFIG_MAX_INT32                   , L""                                       },
+    { MgdConfigProperties::RenderingServicePropertyTileExtentOffset                  , MgPropertyType::Double    , 0.0                                   , 1.0                                   , L""                                       },
+    { MgdConfigProperties::RenderingServicePropertyRasterGridSize                    , MgPropertyType::Int32     , 1                                     , MG_CONFIG_MAX_INT32                   , L""                                       },
+    { MgdConfigProperties::RenderingServicePropertyMinRasterGridSize                 , MgPropertyType::Int32     , 1                                     , MG_CONFIG_MAX_INT32                   , L""                                       },
+    { MgdConfigProperties::RenderingServicePropertyRasterGridSizeOverrideRatio       , MgPropertyType::Double    , 0.0                                   , 1.0                                   , L""                                       },
+    { MgdConfigProperties::RenderingServicePropertyRasterGridSizeForPlot             , MgPropertyType::Int32     , 1                                     , MG_CONFIG_MAX_INT32                   , L""                                       },
+    { MgdConfigProperties::RenderingServicePropertyMinRasterGridSizeForPlot          , MgPropertyType::Int32     , 1                                     , MG_CONFIG_MAX_INT32                   , L""                                       },
+    { MgdConfigProperties::RenderingServicePropertyRasterGridSizeOverrideRatioForPlot, MgPropertyType::Double    , 0.0                                   , 1.0                                   , L""                                       },
+    { MgdConfigProperties::RenderingServicePropertyRenderSelectionBatchSize          , MgPropertyType::Int32     , MG_CONFIG_MIN_RENDER_SELECTION_SIZE   , MG_CONFIG_MAX_RENDER_SELECTION_SIZE   , L""                                       },
+    { MgdConfigProperties::RenderingServicePropertyMaxRasterImageWidth               , MgPropertyType::Int32     , 1                                     , MG_CONFIG_MAX_INT32                   , L""                                       },
+    { MgdConfigProperties::RenderingServicePropertyMaxRasterImageHeight              , MgPropertyType::Int32     , 1                                     , MG_CONFIG_MAX_INT32                   , L""                                       },
     { L""                                                                           , 0                         , 0.0                                   , 0.0                                   , L""                                       }
 };
 
-const MgConfigValidationInfo MgConfigProperties::sm_cviResourceServiceProperties[] =
+const MgConfigValidationInfo MgdConfigProperties::sm_cviResourceServiceProperties[] =
 {
-    { MgConfigProperties::ResourceServicePropertyLibraryRepositoryPath              , MgPropertyType::String    , MG_CONFIG_MIN_PATH_LENGTH             , MG_CONFIG_MAX_PATH_LENGTH             , MG_CONFIG_PATH_RESERVED_CHARACTERS        },
-    { MgConfigProperties::ResourceServicePropertyLibraryResourceDataFilePath        , MgPropertyType::String    , MG_CONFIG_MIN_PATH_LENGTH             , MG_CONFIG_MAX_PATH_LENGTH             , MG_CONFIG_PATH_RESERVED_CHARACTERS        },
-    { MgConfigProperties::ResourceServicePropertyPackagesPath                       , MgPropertyType::String    , MG_CONFIG_MIN_PATH_LENGTH             , MG_CONFIG_MAX_PATH_LENGTH             , MG_CONFIG_PATH_RESERVED_CHARACTERS        },
-    { MgConfigProperties::ResourceServicePropertyResourceDataFileTrashFolderName    , MgPropertyType::String    , MG_CONFIG_MIN_FOLDER_NAME_LENGTH      , MG_CONFIG_MAX_FOLDER_NAME_LENGTH      , MG_CONFIG_FOLDER_NAME_RESERVED_CHARACTERS },
-    { MgConfigProperties::ResourceServicePropertyResourceSchemaFilePath             , MgPropertyType::String    , MG_CONFIG_MIN_PATH_LENGTH             , MG_CONFIG_MAX_PATH_LENGTH             , MG_CONFIG_PATH_RESERVED_CHARACTERS        },
-    { MgConfigProperties::ResourceServicePropertySessionRepositoryPath              , MgPropertyType::String    , MG_CONFIG_MIN_PATH_LENGTH             , MG_CONFIG_MAX_PATH_LENGTH             , MG_CONFIG_PATH_RESERVED_CHARACTERS        },
-    { MgConfigProperties::ResourceServicePropertySessionResourceDataFilePath        , MgPropertyType::String    , MG_CONFIG_MIN_PATH_LENGTH             , MG_CONFIG_MAX_PATH_LENGTH             , MG_CONFIG_PATH_RESERVED_CHARACTERS        },
-    { MgConfigProperties::ResourceServicePropertySiteRepositoryPath                 , MgPropertyType::String    , MG_CONFIG_MIN_PATH_LENGTH             , MG_CONFIG_MAX_PATH_LENGTH             , MG_CONFIG_PATH_RESERVED_CHARACTERS        },
-    { MgConfigProperties::ResourceServicePropertyResourceValidationEnabled          , MgPropertyType::Boolean   , 0                                     , 1                                     , L""                                       },
-    { MgConfigProperties::ResourceServicePropertyRetryAttempts                      , MgPropertyType::Int32     , 0                                     , 1000                                  , L""                                       },
-    { MgConfigProperties::ResourceServicePropertyRetryInterval                      , MgPropertyType::Int32     , 0                                     , 60000                                 , L""                                       },
-    { MgConfigProperties::ResourceServicePropertySessionRepositoriesLimit           , MgPropertyType::Int32     , 0                                     , 60000                                 , L""                                       },
+    { MgdConfigProperties::ResourceServicePropertyLibraryRepositoryPath              , MgPropertyType::String    , MG_CONFIG_MIN_PATH_LENGTH             , MG_CONFIG_MAX_PATH_LENGTH             , MG_CONFIG_PATH_RESERVED_CHARACTERS        },
+    { MgdConfigProperties::ResourceServicePropertyLibraryResourceDataFilePath        , MgPropertyType::String    , MG_CONFIG_MIN_PATH_LENGTH             , MG_CONFIG_MAX_PATH_LENGTH             , MG_CONFIG_PATH_RESERVED_CHARACTERS        },
+    { MgdConfigProperties::ResourceServicePropertyPackagesPath                       , MgPropertyType::String    , MG_CONFIG_MIN_PATH_LENGTH             , MG_CONFIG_MAX_PATH_LENGTH             , MG_CONFIG_PATH_RESERVED_CHARACTERS        },
+    { MgdConfigProperties::ResourceServicePropertyResourceDataFileTrashFolderName    , MgPropertyType::String    , MG_CONFIG_MIN_FOLDER_NAME_LENGTH      , MG_CONFIG_MAX_FOLDER_NAME_LENGTH      , MG_CONFIG_FOLDER_NAME_RESERVED_CHARACTERS },
+    { MgdConfigProperties::ResourceServicePropertyResourceSchemaFilePath             , MgPropertyType::String    , MG_CONFIG_MIN_PATH_LENGTH             , MG_CONFIG_MAX_PATH_LENGTH             , MG_CONFIG_PATH_RESERVED_CHARACTERS        },
+    { MgdConfigProperties::ResourceServicePropertySessionRepositoryPath              , MgPropertyType::String    , MG_CONFIG_MIN_PATH_LENGTH             , MG_CONFIG_MAX_PATH_LENGTH             , MG_CONFIG_PATH_RESERVED_CHARACTERS        },
+    { MgdConfigProperties::ResourceServicePropertySessionResourceDataFilePath        , MgPropertyType::String    , MG_CONFIG_MIN_PATH_LENGTH             , MG_CONFIG_MAX_PATH_LENGTH             , MG_CONFIG_PATH_RESERVED_CHARACTERS        },
+    { MgdConfigProperties::ResourceServicePropertySiteRepositoryPath                 , MgPropertyType::String    , MG_CONFIG_MIN_PATH_LENGTH             , MG_CONFIG_MAX_PATH_LENGTH             , MG_CONFIG_PATH_RESERVED_CHARACTERS        },
+    { MgdConfigProperties::ResourceServicePropertyResourceValidationEnabled          , MgPropertyType::Boolean   , 0                                     , 1                                     , L""                                       },
+    { MgdConfigProperties::ResourceServicePropertyRetryAttempts                      , MgPropertyType::Int32     , 0                                     , 1000                                  , L""                                       },
+    { MgdConfigProperties::ResourceServicePropertyRetryInterval                      , MgPropertyType::Int32     , 0                                     , 60000                                 , L""                                       },
+    { MgdConfigProperties::ResourceServicePropertySessionRepositoriesLimit           , MgPropertyType::Int32     , 0                                     , 60000                                 , L""                                       },
     { L""                                                                           , 0                         , 0.0                                   , 0.0                                   , L""                                       }
 };
 
-const MgConfigValidationInfo MgConfigProperties::sm_cviSiteServiceProperties[] =
+const MgConfigValidationInfo MgdConfigProperties::sm_cviSiteServiceProperties[] =
 {
-    { MgConfigProperties::SiteServicePropertySessionTimeout                         , MgPropertyType::Int32     , MG_CONFIG_MIN_TIMEOUT                 , MG_CONFIG_MAX_TIMEOUT                 , L""                                       },
-    { MgConfigProperties::SiteServicePropertySessionTimerInterval                   , MgPropertyType::Int32     , MG_CONFIG_MIN_TIMER_INTERVAL          , MG_CONFIG_MAX_TIMER_INTERVAL          , L""                                       },
+    { MgdConfigProperties::SiteServicePropertySessionTimeout                         , MgPropertyType::Int32     , MG_CONFIG_MIN_TIMEOUT                 , MG_CONFIG_MAX_TIMEOUT                 , L""                                       },
+    { MgdConfigProperties::SiteServicePropertySessionTimerInterval                   , MgPropertyType::Int32     , MG_CONFIG_MIN_TIMER_INTERVAL          , MG_CONFIG_MAX_TIMER_INTERVAL          , L""                                       },
     { L""                                                                           , 0                         , 0.0                                   , 0.0                                   , L""                                       }
 };
 
-const MgConfigValidationInfo MgConfigProperties::sm_cviTileServiceProperties[] =
+const MgConfigValidationInfo MgdConfigProperties::sm_cviTileServiceProperties[] =
 {
-    { MgConfigProperties::TileServicePropertyRenderOnly                             , MgPropertyType::Boolean   , 0                                     , 1                                     , L""                                       },
-    { MgConfigProperties::TileServicePropertyTileCachePath                          , MgPropertyType::String    , MG_CONFIG_MIN_PATH_LENGTH             , MG_CONFIG_MAX_PATH_LENGTH             , MG_CONFIG_PATH_RESERVED_CHARACTERS        },
-    { MgConfigProperties::TileServicePropertyTileColumnsPerFolder                   , MgPropertyType::Int32     , 1                                     , 1000                                  , L""                                       },
-    { MgConfigProperties::TileServicePropertyTileRowsPerFolder                      , MgPropertyType::Int32     , 1                                     , 1000                                  , L""                                       },
-    { MgConfigProperties::TileServicePropertyCreationCutoffTime                     , MgPropertyType::Int32     , 1                                     , 600                                   , L""                                       },
-    { MgConfigProperties::TileServicePropertyPollingInterval                        , MgPropertyType::Int32     , 1                                     , 60                                    , L""                                       },
-    { MgConfigProperties::TileServicePropertyTiledMapCacheSize                      , MgPropertyType::Int32     , MG_CONFIG_MIN_CACHE_SIZE              , MG_CONFIG_MAX_CACHE_SIZE              , L""                                       },
-    { MgConfigProperties::TileServicePropertyTileSizeX                              , MgPropertyType::Int32     , 50                                    , 10000                                 , L""                                       },
-    { MgConfigProperties::TileServicePropertyTileSizeY                              , MgPropertyType::Int32     , 50                                    , 10000                                 , L""                                       },
-    { MgConfigProperties::TileServicePropertyImageFormat                            , MgPropertyType::String    , 2                                     , 4                                     , L""                                       },
+    { MgdConfigProperties::TileServicePropertyRenderOnly                             , MgPropertyType::Boolean   , 0                                     , 1                                     , L""                                       },
+    { MgdConfigProperties::TileServicePropertyTileCachePath                          , MgPropertyType::String    , MG_CONFIG_MIN_PATH_LENGTH             , MG_CONFIG_MAX_PATH_LENGTH             , MG_CONFIG_PATH_RESERVED_CHARACTERS        },
+    { MgdConfigProperties::TileServicePropertyTileColumnsPerFolder                   , MgPropertyType::Int32     , 1                                     , 1000                                  , L""                                       },
+    { MgdConfigProperties::TileServicePropertyTileRowsPerFolder                      , MgPropertyType::Int32     , 1                                     , 1000                                  , L""                                       },
+    { MgdConfigProperties::TileServicePropertyCreationCutoffTime                     , MgPropertyType::Int32     , 1                                     , 600                                   , L""                                       },
+    { MgdConfigProperties::TileServicePropertyPollingInterval                        , MgPropertyType::Int32     , 1                                     , 60                                    , L""                                       },
+    { MgdConfigProperties::TileServicePropertyTiledMapCacheSize                      , MgPropertyType::Int32     , MG_CONFIG_MIN_CACHE_SIZE              , MG_CONFIG_MAX_CACHE_SIZE              , L""                                       },
+    { MgdConfigProperties::TileServicePropertyTileSizeX                              , MgPropertyType::Int32     , 50                                    , 10000                                 , L""                                       },
+    { MgdConfigProperties::TileServicePropertyTileSizeY                              , MgPropertyType::Int32     , 50                                    , 10000                                 , L""                                       },
+    { MgdConfigProperties::TileServicePropertyImageFormat                            , MgPropertyType::String    , 2                                     , 4                                     , L""                                       },
     { L""                                                                           , 0                         , 0.0                                   , 0.0                                   , L""                                       }
 };
 
-const MgConfigValidationInfo MgConfigProperties::sm_cviAccessLogProperties[] =
+const MgConfigValidationInfo MgdConfigProperties::sm_cviAccessLogProperties[] =
 {
-    { MgConfigProperties::AccessLogPropertyEnabled                                  , MgPropertyType::Boolean   , 0                                     , 1                                     , L""                                       },
-    { MgConfigProperties::AccessLogPropertyFilename                                 , MgPropertyType::String    , MG_CONFIG_MIN_FILE_NAME_LENGTH        , MG_CONFIG_MAX_FILE_NAME_LENGTH        , MG_CONFIG_FILE_NAME_RESERVED_CHARACTERS   },
-    { MgConfigProperties::AccessLogPropertyParameters                               , MgPropertyType::String    , MG_CONFIG_MIN_LOG_PARAMETERS_LENGTH   , MG_CONFIG_MAX_LOG_PARAMETERS_LENGTH   , L""                                       },
+    { MgdConfigProperties::AccessLogPropertyEnabled                                  , MgPropertyType::Boolean   , 0                                     , 1                                     , L""                                       },
+    { MgdConfigProperties::AccessLogPropertyFilename                                 , MgPropertyType::String    , MG_CONFIG_MIN_FILE_NAME_LENGTH        , MG_CONFIG_MAX_FILE_NAME_LENGTH        , MG_CONFIG_FILE_NAME_RESERVED_CHARACTERS   },
+    { MgdConfigProperties::AccessLogPropertyParameters                               , MgPropertyType::String    , MG_CONFIG_MIN_LOG_PARAMETERS_LENGTH   , MG_CONFIG_MAX_LOG_PARAMETERS_LENGTH   , L""                                       },
     { L""                                                                           , 0                         , 0.0                                   , 0.0                                   , L""                                       }
 };
 
-const MgConfigValidationInfo MgConfigProperties::sm_cviAdminLogProperties[] =
+const MgConfigValidationInfo MgdConfigProperties::sm_cviAdminLogProperties[] =
 {
-    { MgConfigProperties::AdminLogPropertyEnabled                                   , MgPropertyType::Boolean   , 0                                     , 1                                     , L""                                       },
-    { MgConfigProperties::AdminLogPropertyFilename                                  , MgPropertyType::String    , MG_CONFIG_MIN_FILE_NAME_LENGTH        , MG_CONFIG_MAX_FILE_NAME_LENGTH        , MG_CONFIG_FILE_NAME_RESERVED_CHARACTERS   },
-    { MgConfigProperties::AdminLogPropertyParameters                                , MgPropertyType::String    , MG_CONFIG_MIN_LOG_PARAMETERS_LENGTH   , MG_CONFIG_MAX_LOG_PARAMETERS_LENGTH   , L""                                       },
+    { MgdConfigProperties::AdminLogPropertyEnabled                                   , MgPropertyType::Boolean   , 0                                     , 1                                     , L""                                       },
+    { MgdConfigProperties::AdminLogPropertyFilename                                  , MgPropertyType::String    , MG_CONFIG_MIN_FILE_NAME_LENGTH        , MG_CONFIG_MAX_FILE_NAME_LENGTH        , MG_CONFIG_FILE_NAME_RESERVED_CHARACTERS   },
+    { MgdConfigProperties::AdminLogPropertyParameters                                , MgPropertyType::String    , MG_CONFIG_MIN_LOG_PARAMETERS_LENGTH   , MG_CONFIG_MAX_LOG_PARAMETERS_LENGTH   , L""                                       },
     { L""                                                                           , 0                         , 0.0                                   , 0.0                                   , L""                                       }
 };
 
-const MgConfigValidationInfo MgConfigProperties::sm_cviAuthenticationLogProperties[] =
+const MgConfigValidationInfo MgdConfigProperties::sm_cviAuthenticationLogProperties[] =
 {
-    { MgConfigProperties::AuthenticationLogPropertyEnabled                          , MgPropertyType::Boolean   , 0                                     , 1                                     , L""                                       },
-    { MgConfigProperties::AuthenticationLogPropertyFilename                         , MgPropertyType::String    , MG_CONFIG_MIN_FILE_NAME_LENGTH        , MG_CONFIG_MAX_FILE_NAME_LENGTH        , MG_CONFIG_FILE_NAME_RESERVED_CHARACTERS   },
-    { MgConfigProperties::AuthenticationLogPropertyParameters                       , MgPropertyType::String    , MG_CONFIG_MIN_LOG_PARAMETERS_LENGTH   , MG_CONFIG_MAX_LOG_PARAMETERS_LENGTH   , L""                                       },
+    { MgdConfigProperties::AuthenticationLogPropertyEnabled                          , MgPropertyType::Boolean   , 0                                     , 1                                     , L""                                       },
+    { MgdConfigProperties::AuthenticationLogPropertyFilename                         , MgPropertyType::String    , MG_CONFIG_MIN_FILE_NAME_LENGTH        , MG_CONFIG_MAX_FILE_NAME_LENGTH        , MG_CONFIG_FILE_NAME_RESERVED_CHARACTERS   },
+    { MgdConfigProperties::AuthenticationLogPropertyParameters                       , MgPropertyType::String    , MG_CONFIG_MIN_LOG_PARAMETERS_LENGTH   , MG_CONFIG_MAX_LOG_PARAMETERS_LENGTH   , L""                                       },
     { L""                                                                           , 0                         , 0.0                                   , 0.0                                   , L""                                       }
 };
 
-const MgConfigValidationInfo MgConfigProperties::sm_cviErrorLogProperties[] =
+const MgConfigValidationInfo MgdConfigProperties::sm_cviErrorLogProperties[] =
 {
-    { MgConfigProperties::ErrorLogPropertyEnabled                                   , MgPropertyType::Boolean   , 0                                     , 1                                     , L""                                       },
-    { MgConfigProperties::ErrorLogPropertyFilename                                  , MgPropertyType::String    , MG_CONFIG_MIN_FILE_NAME_LENGTH        , MG_CONFIG_MAX_FILE_NAME_LENGTH        , MG_CONFIG_FILE_NAME_RESERVED_CHARACTERS   },
-    { MgConfigProperties::ErrorLogPropertyParameters                                , MgPropertyType::String    , MG_CONFIG_MIN_LOG_PARAMETERS_LENGTH   , MG_CONFIG_MAX_LOG_PARAMETERS_LENGTH   , L""                                       },
+    { MgdConfigProperties::ErrorLogPropertyEnabled                                   , MgPropertyType::Boolean   , 0                                     , 1                                     , L""                                       },
+    { MgdConfigProperties::ErrorLogPropertyFilename                                  , MgPropertyType::String    , MG_CONFIG_MIN_FILE_NAME_LENGTH        , MG_CONFIG_MAX_FILE_NAME_LENGTH        , MG_CONFIG_FILE_NAME_RESERVED_CHARACTERS   },
+    { MgdConfigProperties::ErrorLogPropertyParameters                                , MgPropertyType::String    , MG_CONFIG_MIN_LOG_PARAMETERS_LENGTH   , MG_CONFIG_MAX_LOG_PARAMETERS_LENGTH   , L""                                       },
     { L""                                                                           , 0                         , 0.0                                   , 0.0                                   , L""                                       }
 };
 
-const MgConfigValidationInfo MgConfigProperties::sm_cviPerformanceLogProperties[] =
+const MgConfigValidationInfo MgdConfigProperties::sm_cviPerformanceLogProperties[] =
 {
-    { MgConfigProperties::PerformanceLogPropertyEnabled                             , MgPropertyType::Boolean   , 0                                     , 1                                     , L""                                       },
-    { MgConfigProperties::PerformanceLogPropertyFilename                            , MgPropertyType::String    , MG_CONFIG_MIN_FILE_NAME_LENGTH        , MG_CONFIG_MAX_FILE_NAME_LENGTH        , MG_CONFIG_FILE_NAME_RESERVED_CHARACTERS   },
-    { MgConfigProperties::PerformanceLogPropertyParameters                          , MgPropertyType::String    , MG_CONFIG_MIN_LOG_PARAMETERS_LENGTH   , MG_CONFIG_MAX_LOG_PARAMETERS_LENGTH   , L""                                       },
-    { MgConfigProperties::PerformanceLogPropertyInterval                            , MgPropertyType::Int32     , 0                                     , 60000                                 , L""                                       },
+    { MgdConfigProperties::PerformanceLogPropertyEnabled                             , MgPropertyType::Boolean   , 0                                     , 1                                     , L""                                       },
+    { MgdConfigProperties::PerformanceLogPropertyFilename                            , MgPropertyType::String    , MG_CONFIG_MIN_FILE_NAME_LENGTH        , MG_CONFIG_MAX_FILE_NAME_LENGTH        , MG_CONFIG_FILE_NAME_RESERVED_CHARACTERS   },
+    { MgdConfigProperties::PerformanceLogPropertyParameters                          , MgPropertyType::String    , MG_CONFIG_MIN_LOG_PARAMETERS_LENGTH   , MG_CONFIG_MAX_LOG_PARAMETERS_LENGTH   , L""                                       },
+    { MgdConfigProperties::PerformanceLogPropertyInterval                            , MgPropertyType::Int32     , 0                                     , 60000                                 , L""                                       },
     { L""                                                                           , 0                         , 0.0                                   , 0.0                                   , L""                                       }
 };
 
-const MgConfigValidationInfo MgConfigProperties::sm_cviSessionLogProperties[] =
+const MgConfigValidationInfo MgdConfigProperties::sm_cviSessionLogProperties[] =
 {
-    { MgConfigProperties::SessionLogPropertyEnabled                                 , MgPropertyType::Boolean   , 0                                     , 1                                     , L""                                       },
-    { MgConfigProperties::SessionLogPropertyFilename                                , MgPropertyType::String    , MG_CONFIG_MIN_FILE_NAME_LENGTH        , MG_CONFIG_MAX_FILE_NAME_LENGTH        , MG_CONFIG_FILE_NAME_RESERVED_CHARACTERS   },
-    { MgConfigProperties::SessionLogPropertyParameters                              , MgPropertyType::String    , MG_CONFIG_MIN_LOG_PARAMETERS_LENGTH   , MG_CONFIG_MAX_LOG_PARAMETERS_LENGTH   , L""                                       },
+    { MgdConfigProperties::SessionLogPropertyEnabled                                 , MgPropertyType::Boolean   , 0                                     , 1                                     , L""                                       },
+    { MgdConfigProperties::SessionLogPropertyFilename                                , MgPropertyType::String    , MG_CONFIG_MIN_FILE_NAME_LENGTH        , MG_CONFIG_MAX_FILE_NAME_LENGTH        , MG_CONFIG_FILE_NAME_RESERVED_CHARACTERS   },
+    { MgdConfigProperties::SessionLogPropertyParameters                              , MgPropertyType::String    , MG_CONFIG_MIN_LOG_PARAMETERS_LENGTH   , MG_CONFIG_MAX_LOG_PARAMETERS_LENGTH   , L""                                       },
     { L""                                                                           , 0                         , 0.0                                   , 0.0                                   , L""                                       }
 };
 
-const MgConfigValidationInfo MgConfigProperties::sm_cviTraceLogProperties[] =
+const MgConfigValidationInfo MgdConfigProperties::sm_cviTraceLogProperties[] =
 {
-    { MgConfigProperties::TraceLogPropertyEnabled                                   , MgPropertyType::Boolean   , 0                                     , 1                                     , L""                                       },
-    { MgConfigProperties::TraceLogPropertyFilename                                  , MgPropertyType::String    , MG_CONFIG_MIN_FILE_NAME_LENGTH        , MG_CONFIG_MAX_FILE_NAME_LENGTH        , MG_CONFIG_FILE_NAME_RESERVED_CHARACTERS   },
-    { MgConfigProperties::TraceLogPropertyParameters                                , MgPropertyType::String    , MG_CONFIG_MIN_LOG_PARAMETERS_LENGTH   , MG_CONFIG_MAX_LOG_PARAMETERS_LENGTH   , L""                                       },
+    { MgdConfigProperties::TraceLogPropertyEnabled                                   , MgPropertyType::Boolean   , 0                                     , 1                                     , L""                                       },
+    { MgdConfigProperties::TraceLogPropertyFilename                                  , MgPropertyType::String    , MG_CONFIG_MIN_FILE_NAME_LENGTH        , MG_CONFIG_MAX_FILE_NAME_LENGTH        , MG_CONFIG_FILE_NAME_RESERVED_CHARACTERS   },
+    { MgdConfigProperties::TraceLogPropertyParameters                                , MgPropertyType::String    , MG_CONFIG_MIN_LOG_PARAMETERS_LENGTH   , MG_CONFIG_MAX_LOG_PARAMETERS_LENGTH   , L""                                       },
     { L""                                                                           , 0                         , 0.0                                   , 0.0                                   , L""                                       }
 };

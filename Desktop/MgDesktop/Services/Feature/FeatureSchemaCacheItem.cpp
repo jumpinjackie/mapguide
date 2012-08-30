@@ -5,7 +5,7 @@
 /// \brief
 /// Construct the object.
 ///
-MgFeatureSchemaCacheItem::MgFeatureSchemaCacheItem()
+MgdFeatureSchemaCacheItem::MgdFeatureSchemaCacheItem()
 {
 }
 
@@ -13,9 +13,9 @@ MgFeatureSchemaCacheItem::MgFeatureSchemaCacheItem()
 /// \brief
 /// Destruct the object.
 ///
-MgFeatureSchemaCacheItem::~MgFeatureSchemaCacheItem()
+MgdFeatureSchemaCacheItem::~MgdFeatureSchemaCacheItem()
 {
-    for (MgFeatureClassCacheItems::iterator i = m_featureClassCacheItems.begin();
+    for (MgdFeatureClassCacheItems::iterator i = m_featureClassCacheItems.begin();
         i != m_featureClassCacheItems.end(); ++i)
     {
 #ifdef _DEBUG
@@ -23,7 +23,7 @@ MgFeatureSchemaCacheItem::~MgFeatureSchemaCacheItem()
 
         if (NULL != i->second && 1 != i->second->GetRefCount())
         {
-            ACE_DEBUG((LM_DEBUG, ACE_TEXT("(%t) MgFeatureSchemaCacheItem::~MgFeatureSchemaCacheItem() - Reference Count of '%W': %d\n"),
+            ACE_DEBUG((LM_DEBUG, ACE_TEXT("(%t) MgdFeatureSchemaCacheItem::~MgdFeatureSchemaCacheItem() - Reference Count of '%W': %d\n"),
                 i->first.c_str(), i->second->GetRefCount()));
         }
 #endif
@@ -35,17 +35,17 @@ MgFeatureSchemaCacheItem::~MgFeatureSchemaCacheItem()
 
 ///////////////////////////////////////////////////////////////////////////////
 /// \brief
-/// Return an existing MgFeatureClassCacheItem or a newly created one
+/// Return an existing MgdFeatureClassCacheItem or a newly created one
 /// if it does not exist.
 ///
-MgFeatureClassCacheItem* MgFeatureSchemaCacheItem::SetFeatureClassCacheItem(CREFSTRING classKey)
+MgdFeatureClassCacheItem* MgdFeatureSchemaCacheItem::SetFeatureClassCacheItem(CREFSTRING classKey)
 {
-    Ptr<MgFeatureClassCacheItem> item = GetFeatureClassCacheItem(classKey);
+    Ptr<MgdFeatureClassCacheItem> item = GetFeatureClassCacheItem(classKey);
 
     if (NULL == item.p)
     {
-        item = new MgFeatureClassCacheItem();
-        m_featureClassCacheItems.insert(MgFeatureClassCacheItems::value_type(
+        item = new MgdFeatureClassCacheItem();
+        m_featureClassCacheItems.insert(MgdFeatureClassCacheItems::value_type(
             classKey, SAFE_ADDREF(item.p)));
     }
 
@@ -54,12 +54,12 @@ MgFeatureClassCacheItem* MgFeatureSchemaCacheItem::SetFeatureClassCacheItem(CREF
 
 ///////////////////////////////////////////////////////////////////////////////
 /// \brief
-/// Return an existing MgFeatureClassCacheItem.
+/// Return an existing MgdFeatureClassCacheItem.
 ///
-MgFeatureClassCacheItem* MgFeatureSchemaCacheItem::GetFeatureClassCacheItem(CREFSTRING classKey)
+MgdFeatureClassCacheItem* MgdFeatureSchemaCacheItem::GetFeatureClassCacheItem(CREFSTRING classKey)
 {
-    Ptr<MgFeatureClassCacheItem> item;
-    MgFeatureClassCacheItems::iterator i =
+    Ptr<MgdFeatureClassCacheItem> item;
+    MgdFeatureClassCacheItems::iterator i =
         m_featureClassCacheItems.find(classKey);
 
     if (m_featureClassCacheItems.end() != i)
@@ -74,27 +74,27 @@ MgFeatureClassCacheItem* MgFeatureSchemaCacheItem::GetFeatureClassCacheItem(CREF
 /// \brief
 /// Methods to manage cache data.
 ///
-void MgFeatureSchemaCacheItem::SetClassNames(MgStringCollection* classNames)
+void MgdFeatureSchemaCacheItem::SetClassNames(MgStringCollection* classNames)
 {
     m_classNames = SAFE_ADDREF(classNames);
 }
 
-MgStringCollection* MgFeatureSchemaCacheItem::GetClassNames()
+MgStringCollection* MgdFeatureSchemaCacheItem::GetClassNames()
 {
     return SAFE_ADDREF(m_classNames.p);
 }
 
-void MgFeatureSchemaCacheItem::SetSchemaXml(CREFSTRING classNames, CREFSTRING schemaXml)
+void MgdFeatureSchemaCacheItem::SetSchemaXml(CREFSTRING classNames, CREFSTRING schemaXml)
 {
-    Ptr<MgFeatureClassCacheItem> item = SetFeatureClassCacheItem(classNames);
+    Ptr<MgdFeatureClassCacheItem> item = SetFeatureClassCacheItem(classNames);
 
     item->SetSchemaXml(schemaXml);
 }
 
-STRING MgFeatureSchemaCacheItem::GetSchemaXml(CREFSTRING classNames)
+STRING MgdFeatureSchemaCacheItem::GetSchemaXml(CREFSTRING classNames)
 {
     STRING data;
-    Ptr<MgFeatureClassCacheItem> item = GetFeatureClassCacheItem(classNames);
+    Ptr<MgdFeatureClassCacheItem> item = GetFeatureClassCacheItem(classNames);
 
     if (NULL != item.p)
     {
@@ -104,17 +104,17 @@ STRING MgFeatureSchemaCacheItem::GetSchemaXml(CREFSTRING classNames)
     return data;
 }
 
-void MgFeatureSchemaCacheItem::SetSchemas(CREFSTRING classNames, bool serialized, MgFeatureSchemaCollection* schemas)
+void MgdFeatureSchemaCacheItem::SetSchemas(CREFSTRING classNames, bool serialized, MgFeatureSchemaCollection* schemas)
 {
-    Ptr<MgFeatureClassCacheItem> item = SetFeatureClassCacheItem(classNames);
+    Ptr<MgdFeatureClassCacheItem> item = SetFeatureClassCacheItem(classNames);
 
     item->SetSchemas(serialized, schemas);
 }
 
-MgFeatureSchemaCollection* MgFeatureSchemaCacheItem::GetSchemas(CREFSTRING classNames, bool serialized)
+MgFeatureSchemaCollection* MgdFeatureSchemaCacheItem::GetSchemas(CREFSTRING classNames, bool serialized)
 {
     Ptr<MgFeatureSchemaCollection> data;
-    Ptr<MgFeatureClassCacheItem> item = GetFeatureClassCacheItem(classNames);
+    Ptr<MgdFeatureClassCacheItem> item = GetFeatureClassCacheItem(classNames);
 
     if (NULL != item.p)
     {
@@ -124,17 +124,17 @@ MgFeatureSchemaCollection* MgFeatureSchemaCacheItem::GetSchemas(CREFSTRING class
     return data.Detach();
 }
 
-void MgFeatureSchemaCacheItem::SetClassDefinition(CREFSTRING className, MgClassDefinition* classDef)
+void MgdFeatureSchemaCacheItem::SetClassDefinition(CREFSTRING className, MgClassDefinition* classDef)
 {
-    Ptr<MgFeatureClassCacheItem> item = SetFeatureClassCacheItem(className);
+    Ptr<MgdFeatureClassCacheItem> item = SetFeatureClassCacheItem(className);
 
     item->SetClassDefinition(classDef);
 }
 
-MgClassDefinition* MgFeatureSchemaCacheItem::GetClassDefinition(CREFSTRING className)
+MgClassDefinition* MgdFeatureSchemaCacheItem::GetClassDefinition(CREFSTRING className)
 {
     Ptr<MgClassDefinition> data;
-    Ptr<MgFeatureClassCacheItem> item = GetFeatureClassCacheItem(className);
+    Ptr<MgdFeatureClassCacheItem> item = GetFeatureClassCacheItem(className);
 
     if (NULL != item.p)
     {
@@ -144,17 +144,17 @@ MgClassDefinition* MgFeatureSchemaCacheItem::GetClassDefinition(CREFSTRING class
     return data.Detach();
 }
 
-void MgFeatureSchemaCacheItem::SetClassIdentityProperties(CREFSTRING className, MgPropertyDefinitionCollection* idProperties)
+void MgdFeatureSchemaCacheItem::SetClassIdentityProperties(CREFSTRING className, MgPropertyDefinitionCollection* idProperties)
 {
-    Ptr<MgFeatureClassCacheItem> item = SetFeatureClassCacheItem(className);
+    Ptr<MgdFeatureClassCacheItem> item = SetFeatureClassCacheItem(className);
 
     item->SetClassIdentityProperties(idProperties);
 }
 
-MgPropertyDefinitionCollection* MgFeatureSchemaCacheItem::GetClassIdentityProperties(CREFSTRING className)
+MgPropertyDefinitionCollection* MgdFeatureSchemaCacheItem::GetClassIdentityProperties(CREFSTRING className)
 {
     Ptr<MgPropertyDefinitionCollection> data;
-    Ptr<MgFeatureClassCacheItem> item = GetFeatureClassCacheItem(className);
+    Ptr<MgdFeatureClassCacheItem> item = GetFeatureClassCacheItem(className);
 
     if (NULL != item.p)
     {

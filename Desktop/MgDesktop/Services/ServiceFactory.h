@@ -12,15 +12,15 @@ class MgdRenderingService;
 /// \{
 
 ///\brief
-/// The MgServiceFactory class allows you to create instances of service
+/// The MgdServiceFactory class allows you to create instances of service
 /// classes
-class MG_DESKTOP_API MgServiceFactory : public MgGuardDisposable
+class MG_DESKTOP_API MgdServiceFactory : public MgGuardDisposable
 {
     MG_DECL_DYNCREATE()
-    DECLARE_CLASSNAME(MgServiceFactory)
+    DECLARE_CLASSNAME(MgdServiceFactory)
 
 PUBLISHED_API:
-    MgServiceFactory();
+    MgdServiceFactory();
     ///\brief
     /// Creates an instances of the specified service
     ///
@@ -53,7 +53,7 @@ CLASS_ID:
     static const INT32 m_cls_id = MapGuide_Desktop_ServiceFactory;
 
 protected:
-    ~MgServiceFactory();
+    ~MgdServiceFactory();
     virtual void Dispose() { delete this; }
     virtual INT32 GetClassId() { return m_cls_id; }
 

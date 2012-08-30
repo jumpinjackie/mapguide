@@ -44,10 +44,10 @@ private:
 typedef std::multimap<STRING, GwsRightSideIterator> GwsFeatureIteratorMap;
 typedef std::pair<STRING, GwsRightSideIterator> GwsFeatureIteratorPair;
 
-class MgJoinFeatureReader;
+class MgdJoinFeatureReader;
 class FdoExpressionEngine;
 class FdoFilter;
-class MgGwsConnectionPool;
+class MgdGwsConnectionPool;
 
 /////////////////////////////////////////////////////////////////
 /// <summary>
@@ -480,7 +480,7 @@ INTERNAL_API:
 
     MgdGwsFeatureReader();
 
-    MgdGwsFeatureReader(MgGwsConnectionPool* pool,
+    MgdGwsFeatureReader(MgdGwsConnectionPool* pool,
                         IGWSFeatureIterator* gwsFeatureIterator,
                         IGWSFeatureIterator* gwsFeatureIteratorCopy,
                         CREFSTRING extensionName,
@@ -532,7 +532,7 @@ private:
     bool m_bNoMoreData;
     Ptr<MgStringCollection> m_attributeNameDelimiters;
 
-    FdoPtr<MgJoinFeatureReader> m_joinReader;
+    FdoPtr<MgdJoinFeatureReader> m_joinReader;
     FdoPtr<FdoExpressionEngine> m_expressionEngine;
     FdoPtr<FdoFilter> m_filter;
 
@@ -540,7 +540,7 @@ private:
     Ptr<MgFeatureSet> m_featureSet;
     FdoPtr<FdoStringCollection> m_relationNames;
     STRING m_extensionName;
-    FdoPtr<MgGwsConnectionPool> m_pool;
+    FdoPtr<MgdGwsConnectionPool> m_pool;
 
     void ParseSecondaryPropertyName(CREFSTRING inputPropName, CREFSTRING delimiter, CREFSTRING secondaryProp, STRING& relationName, STRING& parsedPropName);
 

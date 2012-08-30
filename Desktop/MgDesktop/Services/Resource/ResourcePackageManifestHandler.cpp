@@ -1,13 +1,13 @@
 #include "ResourceDefs.h"
 #include "ResourcePackageManifestHandler.h"
 
-const STRING MgResourcePackageManifestHandler::sm_manifestFileName = L"MgResourcePackageManifest.xml";
+const STRING MgdResourcePackageManifestHandler::sm_manifestFileName = L"MgResourcePackageManifest.xml";
 
 ///////////////////////////////////////////////////////////////////////////////
 /// \brief
 /// Constructs the object.
 ///
-MgResourcePackageManifestHandler::MgResourcePackageManifestHandler()
+MgdResourcePackageManifestHandler::MgdResourcePackageManifestHandler()
 {
 }
 
@@ -15,7 +15,7 @@ MgResourcePackageManifestHandler::MgResourcePackageManifestHandler()
 /// \brief
 /// Destructs the object.
 ///
-MgResourcePackageManifestHandler::~MgResourcePackageManifestHandler()
+MgdResourcePackageManifestHandler::~MgdResourcePackageManifestHandler()
 {
 }
 
@@ -23,7 +23,7 @@ MgResourcePackageManifestHandler::~MgResourcePackageManifestHandler()
 /// \brief
 /// Sets the resource package description.
 ///
-void MgResourcePackageManifestHandler::SetDescription(CREFSTRING description)
+void MgdResourcePackageManifestHandler::SetDescription(CREFSTRING description)
 {
     m_description = description;
 }

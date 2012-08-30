@@ -51,7 +51,7 @@
  * \ingroup Assertions
  * Example of usage:
  * \code
- *   MgLogManager* pMgLogManager = MgLogManager::GetInstance();
+ *   MgdLogManager* pMgdLogManager = MgdLogManager::GetInstance();
  *   CPPUNIT_ASSERT_THROW_MG(mgr->DeleteLog(L""), MgNullArgumentException*);
  * \endcode
  */

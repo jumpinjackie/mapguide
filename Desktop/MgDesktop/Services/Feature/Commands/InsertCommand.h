@@ -18,18 +18,18 @@
 #ifndef _MG_SERVER_INSERT_COMMAND_H_
 #define _MG_SERVER_INSERT_COMMAND_H_
 
-class MgFeatureConnection;
+class MgdFeatureConnection;
 
-class MgServerInsertCommand : public MgFeatureManipulationCommand
+class MgdInsertCommand : public MgdFeatureManipulationCommand
 {
-    DECLARE_CLASSNAME(MgServerInsertCommand)
+    DECLARE_CLASSNAME(MgdInsertCommand)
 
 public:
-    MgServerInsertCommand(MgFeatureCommand* command, MgFeatureConnection* connection, INT32 cmdId);
+    MgdInsertCommand(MgFeatureCommand* command, MgdFeatureConnection* connection, INT32 cmdId);
     virtual MgProperty* Execute();
 protected:
-    MgServerInsertCommand();
-    ~MgServerInsertCommand();
+    MgdInsertCommand();
+    ~MgdInsertCommand();
 
     MgFeatureProperty* BatchInsert(  MgBatchPropertyCollection* srcCol,
                                      FdoBatchParameterValueCollection* bParamValCol,
@@ -43,7 +43,7 @@ protected:
 
 private:
     Ptr<MgInsertFeatures> m_featCommand;
-    Ptr<MgFeatureConnection> m_srvrFeatConn;
+    Ptr<MgdFeatureConnection> m_srvrFeatConn;
     INT32 m_cmdId;
 };
 

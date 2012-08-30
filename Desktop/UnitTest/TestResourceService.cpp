@@ -81,7 +81,7 @@ void TestResourceService::TestEnd()
 {
     try
     {
-        Ptr<MgServiceFactory> fact = new MgServiceFactory();
+        Ptr<MgdServiceFactory> fact = new MgdServiceFactory();
         Ptr<MgResourceService> pService = dynamic_cast<MgResourceService*>(fact->CreateService(MgServiceType::ResourceService));
         if (pService == 0)
         {
@@ -129,7 +129,7 @@ void TestResourceService::TestCase_EnumerateRepositories()
 {
     try
     {
-        Ptr<MgServiceFactory> fact = new MgServiceFactory();
+        Ptr<MgdServiceFactory> fact = new MgdServiceFactory();
         Ptr<MgResourceService> pService = dynamic_cast<MgResourceService*>(fact->CreateService(MgServiceType::ResourceService));
         if (pService == 0)
         {
@@ -155,7 +155,7 @@ void TestResourceService::TestCase_CreateRepository()
 {
     try
     {
-        Ptr<MgServiceFactory> fact = new MgServiceFactory();
+        Ptr<MgdServiceFactory> fact = new MgdServiceFactory();
         Ptr<MgResourceService> pService = dynamic_cast<MgResourceService*>(fact->CreateService(MgServiceType::ResourceService));
         if (pService == 0)
         {
@@ -181,7 +181,7 @@ void TestResourceService::TestCase_UpdateRepository()
 {
     try
     {
-        Ptr<MgServiceFactory> fact = new MgServiceFactory();
+        Ptr<MgdServiceFactory> fact = new MgdServiceFactory();
         Ptr<MgResourceService> pService = dynamic_cast<MgResourceService*>(fact->CreateService(MgServiceType::ResourceService));
         if (pService == 0)
         {
@@ -207,7 +207,7 @@ void TestResourceService::TestCase_GetRepositoryContent()
 {
     try
     {
-        Ptr<MgServiceFactory> fact = new MgServiceFactory();
+        Ptr<MgdServiceFactory> fact = new MgdServiceFactory();
         Ptr<MgResourceService> pService = dynamic_cast<MgResourceService*>(fact->CreateService(MgServiceType::ResourceService));
         if (pService == 0)
         {
@@ -233,7 +233,7 @@ void TestResourceService::TestCase_GetRepositoryHeader()
 {
     try
     {
-        Ptr<MgServiceFactory> fact = new MgServiceFactory();
+        Ptr<MgdServiceFactory> fact = new MgdServiceFactory();
         Ptr<MgResourceService> pService = dynamic_cast<MgResourceService*>(fact->CreateService(MgServiceType::ResourceService));
         if (pService == 0)
         {
@@ -260,7 +260,7 @@ void TestResourceService::TestCase_ApplyResourcePackage()
 {
     try
     {
-        Ptr<MgServiceFactory> fact = new MgServiceFactory();
+        Ptr<MgdServiceFactory> fact = new MgdServiceFactory();
         Ptr<MgResourceService> pService = dynamic_cast<MgResourceService*>(fact->CreateService(MgServiceType::ResourceService));
         if (pService == 0)
         {
@@ -295,7 +295,7 @@ void TestResourceService::TestCase_DeleteRepository()
 {
     try
     {
-        Ptr<MgServiceFactory> fact = new MgServiceFactory();
+        Ptr<MgdServiceFactory> fact = new MgdServiceFactory();
         Ptr<MgResourceService> pService = dynamic_cast<MgResourceService*>(fact->CreateService(MgServiceType::ResourceService));
         if (pService == 0)
         {
@@ -321,7 +321,7 @@ void TestResourceService::TestCase_ResourceExists()
 {
     try
     {
-        Ptr<MgServiceFactory> fact = new MgServiceFactory();
+        Ptr<MgdServiceFactory> fact = new MgdServiceFactory();
         Ptr<MgResourceService> service = dynamic_cast<MgResourceService*>(fact->CreateService(MgServiceType::ResourceService));
 
         if (NULL == service)
@@ -360,7 +360,7 @@ void TestResourceService::TestCase_EnumerateResources()
 {
     try
     {
-        Ptr<MgServiceFactory> fact = new MgServiceFactory();
+        Ptr<MgdServiceFactory> fact = new MgdServiceFactory();
         Ptr<MgResourceService> pService = dynamic_cast<MgResourceService*>(fact->CreateService(MgServiceType::ResourceService));
         if (pService == 0)
         {
@@ -392,7 +392,7 @@ void TestResourceService::TestCase_SetResource()
 {
     try
     {
-        Ptr<MgServiceFactory> fact = new MgServiceFactory();
+        Ptr<MgdServiceFactory> fact = new MgdServiceFactory();
         Ptr<MgResourceService> pService = dynamic_cast<MgResourceService*>(fact->CreateService(MgServiceType::ResourceService));
         if (pService == 0)
         {
@@ -433,7 +433,7 @@ void TestResourceService::TestCase_SetResourceInvalid()
 {
     try
     {
-        Ptr<MgServiceFactory> fact = new MgServiceFactory();
+        Ptr<MgdServiceFactory> fact = new MgdServiceFactory();
         Ptr<MgResourceService> pService = dynamic_cast<MgResourceService*>(fact->CreateService(MgServiceType::ResourceService));
         if (pService == 0)
         {
@@ -510,7 +510,7 @@ void TestResourceService::TestCase_MoveResource()
 {
     try
     {
-        Ptr<MgServiceFactory> fact = new MgServiceFactory();
+        Ptr<MgdServiceFactory> fact = new MgdServiceFactory();
         Ptr<MgResourceService> pService = dynamic_cast<MgResourceService*>(fact->CreateService(MgServiceType::ResourceService));
         if (pService == 0)
         {
@@ -562,7 +562,7 @@ void TestResourceService::TestCase_CopyResource()
 {
     try
     {
-        Ptr<MgServiceFactory> fact = new MgServiceFactory();
+        Ptr<MgdServiceFactory> fact = new MgdServiceFactory();
         Ptr<MgResourceService> pService = dynamic_cast<MgResourceService*>(fact->CreateService(MgServiceType::ResourceService));
         if (pService == 0)
         {
@@ -599,7 +599,7 @@ void TestResourceService::TestCase_GetResourceContent()
 {
     try
     {
-        Ptr<MgServiceFactory> fact = new MgServiceFactory();
+        Ptr<MgdServiceFactory> fact = new MgdServiceFactory();
         Ptr<MgResourceService> pService = dynamic_cast<MgResourceService*>(fact->CreateService(MgServiceType::ResourceService));
         if (pService == 0)
         {
@@ -637,7 +637,7 @@ void TestResourceService::TestCase_GetResourceContents()
 {
     try
     {
-        Ptr<MgServiceFactory> fact = new MgServiceFactory();
+        Ptr<MgdServiceFactory> fact = new MgdServiceFactory();
         Ptr<MgResourceService> pService = dynamic_cast<MgResourceService*>(fact->CreateService(MgServiceType::ResourceService));
         if (pService == 0)
         {
@@ -681,7 +681,7 @@ void TestResourceService::TestCase_GetResourceHeader()
 {
     try
     {
-        Ptr<MgServiceFactory> fact = new MgServiceFactory();
+        Ptr<MgdServiceFactory> fact = new MgdServiceFactory();
         Ptr<MgResourceService> pService = dynamic_cast<MgResourceService*>(fact->CreateService(MgServiceType::ResourceService));
         if (pService == 0)
         {
@@ -707,7 +707,7 @@ void TestResourceService::TestCase_EnumerateReferences()
 {
     try
     {
-        Ptr<MgServiceFactory> fact = new MgServiceFactory();
+        Ptr<MgdServiceFactory> fact = new MgdServiceFactory();
         Ptr<MgResourceService> pService = dynamic_cast<MgResourceService*>(fact->CreateService(MgServiceType::ResourceService));
         if (pService == 0)
         {
@@ -733,7 +733,7 @@ void TestResourceService::TestCase_ChangeResourceOwner()
 {
     try
     {
-        Ptr<MgServiceFactory> fact = new MgServiceFactory();
+        Ptr<MgdServiceFactory> fact = new MgdServiceFactory();
         Ptr<MgResourceService> pService = dynamic_cast<MgResourceService*>(fact->CreateService(MgServiceType::ResourceService));
         if (pService == 0)
         {
@@ -759,7 +759,7 @@ void TestResourceService::TestCase_InheritPermissionsFrom()
 {
     try
     {
-        Ptr<MgServiceFactory> fact = new MgServiceFactory();
+        Ptr<MgdServiceFactory> fact = new MgdServiceFactory();
         Ptr<MgResourceService> pService = dynamic_cast<MgResourceService*>(fact->CreateService(MgServiceType::ResourceService));
         if (pService == 0)
         {
@@ -786,7 +786,7 @@ void TestResourceService::TestCase_EnumerateResourceData()
 {
     try
     {
-        Ptr<MgServiceFactory> fact = new MgServiceFactory();
+        Ptr<MgdServiceFactory> fact = new MgdServiceFactory();
         Ptr<MgResourceService> pService = dynamic_cast<MgResourceService*>(fact->CreateService(MgServiceType::ResourceService));
         if (pService == 0)
         {
@@ -824,7 +824,7 @@ void TestResourceService::TestCase_SetResourceData()
 {
     try
     {
-        Ptr<MgServiceFactory> fact = new MgServiceFactory();
+        Ptr<MgdServiceFactory> fact = new MgdServiceFactory();
         Ptr<MgResourceService> pService = dynamic_cast<MgResourceService*>(fact->CreateService(MgServiceType::ResourceService));
         if (pService == 0)
         {
@@ -864,7 +864,7 @@ void TestResourceService::TestCase_RenameResourceData()
 {
     try
     {
-        Ptr<MgServiceFactory> fact = new MgServiceFactory();
+        Ptr<MgdServiceFactory> fact = new MgdServiceFactory();
         Ptr<MgResourceService> pService = dynamic_cast<MgResourceService*>(fact->CreateService(MgServiceType::ResourceService));
         if (pService == 0)
         {
@@ -904,7 +904,7 @@ void TestResourceService::TestCase_GetResourceData()
 {
     try
     {
-        Ptr<MgServiceFactory> fact = new MgServiceFactory();
+        Ptr<MgdServiceFactory> fact = new MgdServiceFactory();
         Ptr<MgResourceService> pService = dynamic_cast<MgResourceService*>(fact->CreateService(MgServiceType::ResourceService));
         if (pService == 0)
         {
@@ -946,7 +946,7 @@ void TestResourceService::TestCase_DeleteResourceData()
 {
     try
     {
-        Ptr<MgServiceFactory> fact = new MgServiceFactory();
+        Ptr<MgdServiceFactory> fact = new MgdServiceFactory();
         Ptr<MgResourceService> pService = dynamic_cast<MgResourceService*>(fact->CreateService(MgServiceType::ResourceService));
         if (pService == 0)
         {
@@ -983,7 +983,7 @@ void TestResourceService::TestCase_DeleteResource()
 {
     try
     {
-        Ptr<MgServiceFactory> fact = new MgServiceFactory();
+        Ptr<MgdServiceFactory> fact = new MgdServiceFactory();
         Ptr<MgResourceService> pService = dynamic_cast<MgResourceService*>(fact->CreateService(MgServiceType::ResourceService));
         if (pService == 0)
         {
@@ -1075,7 +1075,7 @@ void TestResourceService::TestCase_EnumerateUnmanagedData()
 {
     try
     {
-        Ptr<MgServiceFactory> fact = new MgServiceFactory();
+        Ptr<MgdServiceFactory> fact = new MgdServiceFactory();
         Ptr<MgResourceService> pService = dynamic_cast<MgResourceService*>(fact->CreateService(MgServiceType::ResourceService));
         if (pService == 0)
         {
@@ -1124,7 +1124,7 @@ ACE_THR_FUNC_RETURN RepositoryWorker(void* param)
     try
     {
         // get the tile service instance
-        Ptr<MgServiceFactory> fact = new MgServiceFactory();
+        Ptr<MgdServiceFactory> fact = new MgdServiceFactory();
         Ptr<MgResourceService> svcResource = dynamic_cast<MgResourceService*>(fact->CreateService(MgServiceType::ResourceService));
         assert(svcResource != NULL);
 
@@ -1185,7 +1185,7 @@ void TestResourceService::TestCase_RepositoryBusy()
         long lStart = GetTickCount();
 
         // get the tile service instance
-        Ptr<MgResourceService> svcResource = MgServiceFactory::CreateResourceService();
+        Ptr<MgResourceService> svcResource = MgdServiceFactory::CreateResourceService();
         assert(svcResource != NULL);
 
         // need a thread manager

@@ -24,9 +24,9 @@
 
 ///////////////////////////////////////////////////////////////////////////
 //  <summary>
-//  The constructor for the MgLogEntryData object.
+//  The constructor for the MgdLogEntryData object.
 //  </summary>
-MgLogEntryData::MgLogEntryData( enum MgLogType logType, CREFSTRING message, ACE_Log_Priority logPriority ) :
+MgdLogEntryData::MgdLogEntryData( enum MgLogType logType, CREFSTRING message, ACE_Log_Priority logPriority ) :
     m_logType(logType),
     m_message(message.c_str()),
     m_logPriority(logPriority)
@@ -35,8 +35,8 @@ MgLogEntryData::MgLogEntryData( enum MgLogType logType, CREFSTRING message, ACE_
 
 ///////////////////////////////////////////////////////////////////////////
 //  <summary>
-//  The destructor for the MgLogEntryData object.
+//  The destructor for the MgdLogEntryData object.
 //  </summary>
-MgLogEntryData::~MgLogEntryData()
+MgdLogEntryData::~MgdLogEntryData()
 {
 };

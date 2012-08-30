@@ -6,24 +6,24 @@
 //simple stylization input stream wrapper around MgByteReader
 //TODO: for now MgByteReader cannot seek, so we read it fully
 //and then use the underlying byte array
-class RSMgInputStream : public RS_InputStream
+class RSMgdInputStream : public RS_InputStream
 {
 public:
 
-    RSMgInputStream(MgByteReader* reader)
+    RSMgdInputStream(MgByteReader* reader)
     {
         MgByteSink sink(reader);
         m_bytes = sink.ToBuffer();
         m_pos = 0;
     }
 
-    RSMgInputStream(MgByte* bytes)
+    RSMgdInputStream(MgByte* bytes)
     {
         m_bytes = SAFE_ADDREF(bytes);
         m_pos = 0;
     }
 
-    virtual ~RSMgInputStream()
+    virtual ~RSMgdInputStream()
     {
         SAFE_RELEASE(m_bytes);
     }

@@ -23,31 +23,31 @@
 #include "SelectCommand.h"
 #include "SelectAggregateCommand.h"
 
-MgFeatureServiceCommand* MgFeatureServiceCommand::CreateCommand(MgResourceIdentifier* resource, FdoCommandType commandType)
+MgdFeatureServiceCommand* MgdFeatureServiceCommand::CreateCommand(MgResourceIdentifier* resource, FdoCommandType commandType)
 {
-    Ptr<MgFeatureServiceCommand> command;
+    Ptr<MgdFeatureServiceCommand> command;
     switch(commandType)
     {
         case FdoCommandType_Select:
         {
-            command = new MgSelectCommand(resource);
+            command = new MgdSelectCommand(resource);
             break;
         }
         case FdoCommandType_SelectAggregates:
         {
-            command = new MgSelectAggregateCommand(resource);
+            command = new MgdSelectAggregateCommand(resource);
             break;
         }
         case FdoCommandType_ExtendedSelect:
         {
-            command = new MgExtendedSelectCommand(resource);
+            command = new MgdExtendedSelectCommand(resource);
             break;
         }
     }
     return command.Detach();
 }
 
-bool MgFeatureServiceCommand::IsFdoSupportedFunction(FdoIConnection* connection, FdoFunction* fdoFunc)
+bool MgdFeatureServiceCommand::IsFdoSupportedFunction(FdoIConnection* connection, FdoFunction* fdoFunc)
 {
     CHECKNULL(connection, L"MgServerSelectFeatures.SupportsFunction");
 
@@ -84,12 +84,12 @@ bool MgFeatureServiceCommand::IsFdoSupportedFunction(FdoIConnection* connection,
     return supports;
 }
 
-bool MgFeatureServiceCommand::SupportsSelectDistinct(FdoIConnection* connection)
+bool MgdFeatureServiceCommand::SupportsSelectDistinct(FdoIConnection* connection)
 {
-    CHECKNULL((FdoIConnection*)connection, L"MgFeatureServiceCommand.SupportsSelectDistinct");
+    CHECKNULL((FdoIConnection*)connection, L"MgdFeatureServiceCommand.SupportsSelectDistinct");
 
     FdoPtr<FdoICommandCapabilities> fcc = connection->GetCommandCapabilities();
-    CHECKNULL((FdoICommandCapabilities*)fcc, L"MgFeatureServiceCommand.SupportsSelectDistinct");
+    CHECKNULL((FdoICommandCapabilities*)fcc, L"MgdFeatureServiceCommand.SupportsSelectDistinct");
 
     bool supports = fcc->SupportsSelectDistinct();
 
@@ -97,24 +97,24 @@ bool MgFeatureServiceCommand::SupportsSelectDistinct(FdoIConnection* connection)
 }
 
 
-bool MgFeatureServiceCommand::SupportsSelectOrdering(FdoIConnection* connection)
+bool MgdFeatureServiceCommand::SupportsSelectOrdering(FdoIConnection* connection)
 {
-    CHECKNULL((FdoIConnection*)connection, L"MgFeatureServiceCommand.SupportsSelectOrdering");
+    CHECKNULL((FdoIConnection*)connection, L"MgdFeatureServiceCommand.SupportsSelectOrdering");
 
     FdoPtr<FdoICommandCapabilities> fcc = connection->GetCommandCapabilities();
-    CHECKNULL((FdoICommandCapabilities*)fcc, L"MgFeatureServiceCommand.SupportsSelectOrdering");
+    CHECKNULL((FdoICommandCapabilities*)fcc, L"MgdFeatureServiceCommand.SupportsSelectOrdering");
 
     bool supports = fcc->SupportsSelectOrdering();
 
     return supports;
 }
 
-bool MgFeatureServiceCommand::SupportsSelectGrouping(FdoIConnection* connection)
+bool MgdFeatureServiceCommand::SupportsSelectGrouping(FdoIConnection* connection)
 {
-    CHECKNULL((FdoIConnection*)connection, L"MgFeatureServiceCommand.SupportsSelectGrouping");
+    CHECKNULL((FdoIConnection*)connection, L"MgdFeatureServiceCommand.SupportsSelectGrouping");
 
     FdoPtr<FdoICommandCapabilities> fcc = connection->GetCommandCapabilities();
-    CHECKNULL((FdoICommandCapabilities*)fcc, L"MgFeatureServiceCommand.SupportsSelectGrouping");
+    CHECKNULL((FdoICommandCapabilities*)fcc, L"MgdFeatureServiceCommand.SupportsSelectGrouping");
 
     bool supports = fcc->SupportsSelectGrouping();
 

@@ -121,7 +121,7 @@ void MgdLayer::GetLayerInfoFromDefinition(MgResourceService* resourceService)
                 Ptr<MgSiteConnection> conn = new MgSiteConnection();
                 conn->Open(userInfo);
 				*/
-                Ptr<MgServiceFactory> fact = new MgServiceFactory();
+                Ptr<MgdServiceFactory> fact = new MgdServiceFactory();
 				Ptr<MgFeatureService> featureService = static_cast<MgFeatureService*>(fact->CreateService(MgServiceType::FeatureService));
                 Ptr<MgResourceIdentifier> resId = new MgResourceIdentifier(m_featureSourceId);
 

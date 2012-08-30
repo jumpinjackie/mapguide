@@ -37,7 +37,7 @@ namespace DotNetUnitTest
         {
             try
             {
-                var fact = new MgServiceFactory();
+                var fact = new MgdServiceFactory();
                 MgdResourceService service = (MgdResourceService)fact.CreateService(MgServiceType.ResourceService);
                 MgResourceIdentifier mapres1 = new MgResourceIdentifier("Library://UnitTests/Data/Shuttle.DrawingSource");
                 service.DeleteResource(mapres1);
@@ -65,7 +65,7 @@ namespace DotNetUnitTest
         {
             try
             {
-                var fact = new MgServiceFactory();
+                var fact = new MgdServiceFactory();
                 var service = (MgResourceService)fact.CreateService(MgServiceType.ResourceService);
                 Assert.Throws<MgNullArgumentException>(() => service.ApplyResourcePackage(null));
 
@@ -88,7 +88,7 @@ namespace DotNetUnitTest
         {
             try
             {
-                var fact = new MgServiceFactory();
+                var fact = new MgdServiceFactory();
                 var service = (MgResourceService)fact.CreateService(MgServiceType.ResourceService);
                 Assert.Throws<MgNullArgumentException>(() => service.ResourceExists(null));
 
@@ -108,7 +108,7 @@ namespace DotNetUnitTest
         {
             try
             {
-                var fact = new MgServiceFactory();
+                var fact = new MgdServiceFactory();
                 var service = (MgResourceService)fact.CreateService(MgServiceType.ResourceService);
 
                 //Try to use NULL arguments
@@ -141,7 +141,7 @@ namespace DotNetUnitTest
         {
             try
             {
-                var fact = new MgServiceFactory();
+                var fact = new MgdServiceFactory();
                 var service = (MgResourceService)fact.CreateService(MgServiceType.ResourceService);
 
                 //Try to use NULL arguments
@@ -182,7 +182,7 @@ namespace DotNetUnitTest
         {
             try
             {
-                var fact = new MgServiceFactory();
+                var fact = new MgdServiceFactory();
                 var service = (MgResourceService)fact.CreateService(MgServiceType.ResourceService);
 
                 //Try to use NULL arguments
@@ -210,7 +210,7 @@ namespace DotNetUnitTest
         {
             try
             {
-                var fact = new MgServiceFactory();
+                var fact = new MgdServiceFactory();
                 var service = (MgResourceService)fact.CreateService(MgServiceType.ResourceService);
 
                 //Try to get the content using NULL arguments
@@ -240,7 +240,7 @@ namespace DotNetUnitTest
         {
             try
             {
-                var fact = new MgServiceFactory();
+                var fact = new MgdServiceFactory();
                 var service = (MgResourceService)fact.CreateService(MgServiceType.ResourceService);
 
                 //Try to get the content using NULL arguments
@@ -275,7 +275,7 @@ namespace DotNetUnitTest
         {
             try
             {
-                var fact = new MgServiceFactory();
+                var fact = new MgdServiceFactory();
                 var service = (MgResourceService)fact.CreateService(MgServiceType.ResourceService);
                 Assert.Throws<MgNotImplementedException>(() => service.GetResourceHeader(null));
             }
@@ -290,7 +290,7 @@ namespace DotNetUnitTest
         {
             try
             {
-                var fact = new MgServiceFactory();
+                var fact = new MgdServiceFactory();
                 var service = (MgResourceService)fact.CreateService(MgServiceType.ResourceService);
                 Assert.Throws<MgNotImplementedException>(() => service.EnumerateReferences(null));
             }
@@ -305,7 +305,7 @@ namespace DotNetUnitTest
         {
             try
             {
-                var fact = new MgServiceFactory();
+                var fact = new MgdServiceFactory();
                 var service = (MgResourceService)fact.CreateService(MgServiceType.ResourceService);
                 Assert.Throws<MgNotImplementedException>(() => service.ChangeResourceOwner(null, "", false));
             }
@@ -320,7 +320,7 @@ namespace DotNetUnitTest
         {
             try
             {
-                var fact = new MgServiceFactory();
+                var fact = new MgdServiceFactory();
                 var service = (MgResourceService)fact.CreateService(MgServiceType.ResourceService);
                 Assert.Throws<MgNotImplementedException>(() => service.InheritPermissionsFrom(null));
             }
@@ -337,7 +337,7 @@ namespace DotNetUnitTest
         {
             try
             {
-                var fact = new MgServiceFactory();
+                var fact = new MgdServiceFactory();
                 var service = (MgResourceService)fact.CreateService(MgServiceType.ResourceService);
 
                 Assert.Throws<MgNullArgumentException>(() => service.EnumerateResourceData(null));
@@ -362,7 +362,7 @@ namespace DotNetUnitTest
         {
             try
             {
-                var fact = new MgServiceFactory();
+                var fact = new MgdServiceFactory();
                 var service = (MgResourceService)fact.CreateService(MgServiceType.ResourceService);
 
                 Assert.Throws<MgNullArgumentException>(() => service.SetResourceData(null, "", "", null));
@@ -392,7 +392,7 @@ namespace DotNetUnitTest
         {
             try
             {
-                var fact = new MgServiceFactory();
+                var fact = new MgdServiceFactory();
                 var service = (MgResourceService)fact.CreateService(MgServiceType.ResourceService);
 
                 Assert.Throws<MgNullArgumentException>(() => service.RenameResourceData(null, resourceDataName, resourceDataName2, true));
@@ -423,7 +423,7 @@ namespace DotNetUnitTest
         {
             try
             {
-                var fact = new MgServiceFactory();
+                var fact = new MgdServiceFactory();
                 var service = (MgResourceService)fact.CreateService(MgServiceType.ResourceService);
 
                 Assert.Throws<MgNullArgumentException>(() => service.GetResourceData(null, resourceDataName));
@@ -445,7 +445,7 @@ namespace DotNetUnitTest
         {
             try
             {
-                var fact = new MgServiceFactory();
+                var fact = new MgdServiceFactory();
                 var service = (MgResourceService)fact.CreateService(MgServiceType.ResourceService);
 
                 Assert.Throws<MgNullArgumentException>(() => service.DeleteResourceData(null, resourceDataName));
@@ -468,7 +468,7 @@ namespace DotNetUnitTest
         {
             try
             {
-                var fact = new MgServiceFactory();
+                var fact = new MgdServiceFactory();
                 var service = (MgResourceService)fact.CreateService(MgServiceType.ResourceService);
                 var featSvc = (MgdFeatureService)fact.CreateService(MgServiceType.FeatureService);
 
@@ -510,7 +510,7 @@ namespace DotNetUnitTest
         {
             try
             {
-                var fact = new MgServiceFactory();
+                var fact = new MgdServiceFactory();
                 var service = (MgResourceService)fact.CreateService(MgServiceType.ResourceService);
                 Assert.Throws<MgNotImplementedException>(() => service.EnumerateUnmanagedData("", true, "", ""));
             }

@@ -6,22 +6,22 @@
 
 typedef std::vector<MgOperationInfo> MgOpInfoVector;
 
-class MgResourcePackageManifestParser : public MgResourcePackageManifestHandler
+class MgdResourcePackageManifestParser : public MgdResourcePackageManifestHandler
 {
 /// Constructors/Destructor
 
 public:
 
-    MgResourcePackageManifestParser();
-    virtual ~MgResourcePackageManifestParser();
+    MgdResourcePackageManifestParser();
+    virtual ~MgdResourcePackageManifestParser();
 
 private:
 
     // Unimplemented Methods
 
-    MgResourcePackageManifestParser(const MgResourcePackageManifestParser&);
-    MgResourcePackageManifestParser& operator=(
-        const MgResourcePackageManifestParser&);
+    MgdResourcePackageManifestParser(const MgdResourcePackageManifestParser&);
+    MgdResourcePackageManifestParser& operator=(
+        const MgdResourcePackageManifestParser&);
 
 /// Methods
 
@@ -40,7 +40,7 @@ private:
 
 /// Inline Methods
 
-inline const MgOpInfoVector& MgResourcePackageManifestParser::GetOperations() const
+inline const MgOpInfoVector& MgdResourcePackageManifestParser::GetOperations() const
 {
     return m_operations;
 }

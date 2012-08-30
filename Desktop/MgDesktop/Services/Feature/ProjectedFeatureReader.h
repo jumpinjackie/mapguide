@@ -6,10 +6,10 @@ class MgFeatureReader;
 class MgCoordinateSystemTransform;
 class MgAgfReaderWriter;
 
-class MG_DESKTOP_API MgProjectedFeatureReader : public MgFeatureReader
+class MG_DESKTOP_API MgdProjectedFeatureReader : public MgFeatureReader
 {
 INTERNAL_API:
-    MgProjectedFeatureReader(MgFeatureReader* reader, MgCoordinateSystemTransform* trans);
+    MgdProjectedFeatureReader(MgFeatureReader* reader, MgCoordinateSystemTransform* trans);
 
     virtual bool ReadNext();
 
@@ -110,7 +110,7 @@ INTERNAL_API:
     //FdoIFeatureReader* GetInternalReader();
 
 protected:
-    virtual ~MgProjectedFeatureReader();
+    virtual ~MgdProjectedFeatureReader();
     virtual void Dispose() { delete this; }
 
 private:

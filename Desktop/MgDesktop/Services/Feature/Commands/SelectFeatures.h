@@ -25,14 +25,14 @@
 #include "Services/Feature/GwsFeatureReader.h"
 
 class MgFeatureQueryOptions;
-class MgFeatureServiceCommand;
-template class Ptr<MgFeatureSourceCacheItem>;
+class MgdFeatureServiceCommand;
+template class Ptr<MgdFeatureSourceCacheItem>;
 
-class MgSelectFeatures
+class MgdSelectFeatures
 {
 public:
-    MgSelectFeatures();
-    ~MgSelectFeatures();
+    MgdSelectFeatures();
+    ~MgdSelectFeatures();
     MgReader* SelectFeatures(MgResourceIdentifier* resource,
                              CREFSTRING className,
                              MgFeatureQueryOptions* options,
@@ -73,9 +73,9 @@ private:
     Ptr<MgStringCollection> properties;
     Ptr<MgFeatureQueryOptions> m_options;
     STRING                  filterText;
-    Ptr<MgFeatureServiceCommand>    m_command;
+    Ptr<MgdFeatureServiceCommand>    m_command;
 
-    Ptr<MgFeatureSourceCacheItem> m_featureSourceCacheItem;
+    Ptr<MgdFeatureSourceCacheItem> m_featureSourceCacheItem;
 
     // Only one custom property is supported. No nesting of custom properties allowed.
     STRING                  m_customPropertyName;

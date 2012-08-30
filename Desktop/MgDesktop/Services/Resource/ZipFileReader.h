@@ -3,22 +3,22 @@
 
 #include "ZipFileHandler.h"
 
-class MgZipFileReader : public MgZipFileHandler
+class MgdZipFileReader : public MgdZipFileHandler
 {
 /// Constructors/Destructor
 
 public:
 
-    explicit MgZipFileReader(CREFSTRING filePath);
-    virtual ~MgZipFileReader();
+    explicit MgdZipFileReader(CREFSTRING filePath);
+    virtual ~MgdZipFileReader();
 
 private:
 
     // Unimplemented Constructors/Methods
 
-    MgZipFileReader();
-    MgZipFileReader(const MgZipFileReader&);
-    MgZipFileReader& operator=(const MgZipFileReader&);
+    MgdZipFileReader();
+    MgdZipFileReader(const MgdZipFileReader&);
+    MgdZipFileReader& operator=(const MgdZipFileReader&);
 
 /// Methods
 

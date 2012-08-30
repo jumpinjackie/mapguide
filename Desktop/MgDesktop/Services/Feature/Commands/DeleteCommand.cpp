@@ -24,28 +24,28 @@
 #include "Services/Feature/FeatureUtil.h"
 #include "Services/FeatureReader.h"
 
-MgServerDeleteCommand::MgServerDeleteCommand()
+MgdDeleteCommand::MgdDeleteCommand()
 {
     m_srvrFeatConn = NULL;
     m_featCommand = NULL;
 }
 
-MgServerDeleteCommand::MgServerDeleteCommand(MgFeatureCommand* command, MgFeatureConnection* connection, INT32 cmdId)
+MgdDeleteCommand::MgdDeleteCommand(MgFeatureCommand* command, MgdFeatureConnection* connection, INT32 cmdId)
 {
-    CHECKNULL(command, L"MgServerDeleteCommand.MgServerDeleteCommand");
-    CHECKNULL(connection, L"MgServerDeleteCommand.MgServerDeleteCommand");
+    CHECKNULL(command, L"MgdDeleteCommand.MgdDeleteCommand");
+    CHECKNULL(connection, L"MgdDeleteCommand.MgdDeleteCommand");
 
-    m_srvrFeatConn = SAFE_ADDREF((MgFeatureConnection*)connection);
+    m_srvrFeatConn = SAFE_ADDREF((MgdFeatureConnection*)connection);
     m_featCommand = SAFE_ADDREF((MgDeleteFeatures*)command);
     m_cmdId = cmdId;
 }
 
-MgServerDeleteCommand::~MgServerDeleteCommand()
+MgdDeleteCommand::~MgdDeleteCommand()
 {
     m_srvrFeatConn = NULL;
 }
 
-MgProperty* MgServerDeleteCommand::Execute()
+MgProperty* MgdDeleteCommand::Execute()
 {
     STRING clsName = m_featCommand->GetFeatureClassName();
     STRING filterText = m_featCommand->GetFilterText();
@@ -54,7 +54,7 @@ MgProperty* MgServerDeleteCommand::Execute()
 
     // Create the SQL command
     FdoPtr<FdoIDelete> fdoCommand = (FdoIDelete*)fdoConn->CreateCommand(FdoCommandType_Delete);
-    CHECKNULL((FdoIDelete*)fdoCommand, L"MgServerDeleteCommand.Execute");
+    CHECKNULL((FdoIDelete*)fdoCommand, L"MgdDeleteCommand.Execute");
 
     fdoCommand->SetFeatureClassName(clsName.c_str());
     fdoCommand->SetFilter(filterText.c_str());

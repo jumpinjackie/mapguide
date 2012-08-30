@@ -18,11 +18,11 @@ class RS_Raster;
 class RS_InputStream;
 
 //RS_FeatureReader implementation based on an MgFeatureReader
-class MG_DESKTOP_API RSMgFeatureReader : public RS_FeatureReader
+class MG_DESKTOP_API RSMgdFeatureReader : public RS_FeatureReader
 {
 public:
-    RSMgFeatureReader(MgFeatureReader* reader, MgFeatureService* svcFeature, MgResourceIdentifier* featResId, MgFeatureQueryOptions* options, const STRING& geomPropName);
-    virtual ~RSMgFeatureReader();
+    RSMgdFeatureReader(MgFeatureReader* reader, MgFeatureService* svcFeature, MgResourceIdentifier* featResId, MgFeatureQueryOptions* options, const STRING& geomPropName);
+    virtual ~RSMgdFeatureReader();
 
     //--------------------------------------------
     // RS_FeatureReader implementation

@@ -5,7 +5,7 @@
 /// \brief
 /// Construct the object.
 ///
-MgFeatureClassCacheItem::MgFeatureClassCacheItem()
+MgdFeatureClassCacheItem::MgdFeatureClassCacheItem()
 {
 }
 
@@ -13,7 +13,7 @@ MgFeatureClassCacheItem::MgFeatureClassCacheItem()
 /// \brief
 /// Destruct the object.
 ///
-MgFeatureClassCacheItem::~MgFeatureClassCacheItem()
+MgdFeatureClassCacheItem::~MgdFeatureClassCacheItem()
 {
 }
 
@@ -21,17 +21,17 @@ MgFeatureClassCacheItem::~MgFeatureClassCacheItem()
 /// \brief
 /// Methods to manage cache data.
 ///
-void MgFeatureClassCacheItem::SetSchemaXml(CREFSTRING schemaXml)
+void MgdFeatureClassCacheItem::SetSchemaXml(CREFSTRING schemaXml)
 {
     m_schemaXml = schemaXml;
 }
 
-STRING MgFeatureClassCacheItem::GetSchemaXml()
+STRING MgdFeatureClassCacheItem::GetSchemaXml()
 {
     return m_schemaXml;
 }
 
-void MgFeatureClassCacheItem::SetSchemas(bool serialized, MgFeatureSchemaCollection* schemas)
+void MgdFeatureClassCacheItem::SetSchemas(bool serialized, MgFeatureSchemaCollection* schemas)
 {
     if (serialized)
     {
@@ -43,7 +43,7 @@ void MgFeatureClassCacheItem::SetSchemas(bool serialized, MgFeatureSchemaCollect
     }
 }
 
-MgFeatureSchemaCollection* MgFeatureClassCacheItem::GetSchemas(bool serialized)
+MgFeatureSchemaCollection* MgdFeatureClassCacheItem::GetSchemas(bool serialized)
 {
     if (serialized)
     {
@@ -55,22 +55,22 @@ MgFeatureSchemaCollection* MgFeatureClassCacheItem::GetSchemas(bool serialized)
     }
 }
 
-void MgFeatureClassCacheItem::SetClassDefinition(MgClassDefinition* classDef)
+void MgdFeatureClassCacheItem::SetClassDefinition(MgClassDefinition* classDef)
 {
     m_classDef = SAFE_ADDREF(classDef);
 }
 
-MgClassDefinition* MgFeatureClassCacheItem::GetClassDefinition()
+MgClassDefinition* MgdFeatureClassCacheItem::GetClassDefinition()
 {
     return SAFE_ADDREF(m_classDef.p);
 }
 
-void MgFeatureClassCacheItem::SetClassIdentityProperties(MgPropertyDefinitionCollection* idProperties)
+void MgdFeatureClassCacheItem::SetClassIdentityProperties(MgPropertyDefinitionCollection* idProperties)
 {
     m_idProperties = SAFE_ADDREF(idProperties);
 }
 
-MgPropertyDefinitionCollection* MgFeatureClassCacheItem::GetClassIdentityProperties()
+MgPropertyDefinitionCollection* MgdFeatureClassCacheItem::GetClassIdentityProperties()
 {
     return SAFE_ADDREF(m_idProperties.p);
 }

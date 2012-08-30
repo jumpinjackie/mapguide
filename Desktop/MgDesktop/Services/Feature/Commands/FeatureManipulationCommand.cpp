@@ -25,15 +25,15 @@
 #include "UpdateCommand.h"
 #include "DeleteCommand.h"
 
-MgFeatureManipulationCommand* MgFeatureManipulationCommand::CreateCommand(MgFeatureCommand* webCmd, MgFeatureConnection* connection, INT32 cmdId)
+MgdFeatureManipulationCommand* MgdFeatureManipulationCommand::CreateCommand(MgFeatureCommand* webCmd, MgdFeatureConnection* connection, INT32 cmdId)
 {
-    CHECKNULL(webCmd, L"MgFeatureManipulationCommand.CreateCommand")
-    CHECKNULL(connection, L"MgFeatureManipulationCommand.CreateCommand")
+    CHECKNULL(webCmd, L"MgdFeatureManipulationCommand.CreateCommand")
+    CHECKNULL(connection, L"MgdFeatureManipulationCommand.CreateCommand")
 
     INT32 cmdType = webCmd->GetCommandType();
     bool supports = false;
 
-    Ptr<MgFeatureManipulationCommand> command;
+    Ptr<MgdFeatureManipulationCommand> command;
 
     switch(cmdType)
     {
@@ -42,7 +42,7 @@ MgFeatureManipulationCommand* MgFeatureManipulationCommand::CreateCommand(MgFeat
             supports = connection->SupportsCommand(FdoCommandType_Insert);
             if (supports)
             {
-                command = new MgServerInsertCommand(webCmd, connection, cmdId);
+                command = new MgdInsertCommand(webCmd, connection, cmdId);
             }
             break;
         }
@@ -51,7 +51,7 @@ MgFeatureManipulationCommand* MgFeatureManipulationCommand::CreateCommand(MgFeat
             supports = connection->SupportsCommand(FdoCommandType_Update);
             if (supports)
             {
-                command = new MgServerUpdateCommand(webCmd, connection, cmdId);
+                command = new MgdUpdateCommand(webCmd, connection, cmdId);
             }
             break;
         }
@@ -60,7 +60,7 @@ MgFeatureManipulationCommand* MgFeatureManipulationCommand::CreateCommand(MgFeat
             supports = connection->SupportsCommand(FdoCommandType_Delete);
             if (supports)
             {
-                command = new MgServerDeleteCommand(webCmd, connection, cmdId);
+                command = new MgdDeleteCommand(webCmd, connection, cmdId);
             }
             break;
         }
@@ -68,11 +68,11 @@ MgFeatureManipulationCommand* MgFeatureManipulationCommand::CreateCommand(MgFeat
 
     if (!supports)
     {
-        STRING message = MgFeatureUtil::GetMessage(L"MgCommandNotSupported");
+        STRING message = MgdFeatureUtil::GetMessage(L"MgCommandNotSupported");
 
         MgStringCollection arguments;
         arguments.Add(message);
-        throw new MgFeatureServiceException(L"MgFeatureManipulationCommand.CreateCommand", __LINE__, __WFILE__, &arguments, L"", NULL);
+        throw new MgFeatureServiceException(L"MgdFeatureManipulationCommand.CreateCommand", __LINE__, __WFILE__, &arguments, L"", NULL);
     }
 
     return command.Detach();

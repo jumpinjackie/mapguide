@@ -28,7 +28,7 @@ static const STRING MG_FEATURE_SOURCE_HASH_PREFIX   = L"ns"; // NOXLATE
 
 class MgReader;
 
-class MG_DESKTOP_API MgFeatureUtil
+class MG_DESKTOP_API MgdFeatureUtil
 {
 public:
 

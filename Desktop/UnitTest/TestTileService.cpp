@@ -36,7 +36,7 @@ CPPUNIT_TEST_SUITE_NAMED_REGISTRATION(TestTileService, "TestTileService");
 
 TestTileService::TestTileService()
 {
-    Ptr<MgServiceFactory> fact = new MgServiceFactory();
+    Ptr<MgdServiceFactory> fact = new MgdServiceFactory();
 
     // store references to the various services we use
     m_svcResource = static_cast<MgResourceService*>(fact->CreateService(MgServiceType::ResourceService));
@@ -243,7 +243,7 @@ ACE_THR_FUNC_RETURN GetTileWorker(void* param)
     try
     {
         // get the tile service instance
-        Ptr<MgServiceFactory> fact = new MgServiceFactory();
+        Ptr<MgdServiceFactory> fact = new MgdServiceFactory();
         Ptr<MgdTileService> svcTile = static_cast<MgdTileService*>(fact->CreateService(MgServiceType::TileService));
         assert(svcTile != NULL);
 
@@ -440,7 +440,7 @@ ACE_THR_FUNC_RETURN SetTileWorker(void* param)
     try
     {
         // get the tile service instance
-        Ptr<MgServiceFactory> fact = new MgServiceFactory();
+        Ptr<MgdServiceFactory> fact = new MgdServiceFactory();
         Ptr<MgdTileService> svcTile = static_cast<MgdTileService*>(fact->CreateService(MgServiceType::TileService));
         assert(svcTile != NULL);
 

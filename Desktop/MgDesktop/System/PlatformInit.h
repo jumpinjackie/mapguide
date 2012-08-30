@@ -8,14 +8,14 @@
 /// A static utility class that provides the means for initializing and tearing down
 /// the MapGuide Platform. You must initialize the platform before you can use any
 /// service classes or the Coordinate System API.
-class MG_DESKTOP_API MgPlatform
+class MG_DESKTOP_API MgdPlatform
 {
 PUBLISHED_API:
     ///////////////////////////////////////////////////////////////////////////////
     ///\brief
     /// Gets whether the the MapGuide Desktop Platform has been initialized. You
     /// cannot use most MapGuide service classes until the platform has been
-    /// initialized. Call MgPlatform::Initialize(CREFSTRING) to initialize the
+    /// initialized. Call MgdPlatform::Initialize(CREFSTRING) to initialize the
     /// platform.
     ///
     ///\return

@@ -22,22 +22,22 @@ using namespace std;
 
 #include <vector>
 
-class MgGeometryDataReaderCreator : public MgDataReaderCreator<MgGeometry*>
+class MgdGeometryDataReaderCreator : public MgdDataReaderCreator<MgGeometry*>
 {
-    DECLARE_CLASSNAME(MgGeometryDataReaderCreator)
+    DECLARE_CLASSNAME(MgdGeometryDataReaderCreator)
 
 public:
-    MgGeometryDataReaderCreator()
+    MgdGeometryDataReaderCreator()
     {
     }
 
-    MgGeometryDataReaderCreator(CREFSTRING propertyAlias)
+    MgdGeometryDataReaderCreator(CREFSTRING propertyAlias)
     {
         m_propertyAlias = propertyAlias;
         m_propType = MgPropertyType::Geometry;
     }
 
-    ~MgGeometryDataReaderCreator()
+    ~MgdGeometryDataReaderCreator()
     {
     }
 

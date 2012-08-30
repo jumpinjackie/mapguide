@@ -21,23 +21,23 @@
 class MgDisposable;
 class FdoFunction;
 class MgReader;
-class MgFeatureDistribution;
+class MgdFeatureDistribution;
 class MgGeometry;
 class MgGeometryCollection;
 /// \cond INTERNAL
-class MgFeatureGeometricFunctions : public MgFeatureDistribution
+class MgdFeatureGeometricFunctions : public MgdFeatureDistribution
 {
-    DECLARE_CLASSNAME(MgFeatureGeometricFunctions)
+    DECLARE_CLASSNAME(MgdFeatureGeometricFunctions)
 
 public:
 
-    MgFeatureGeometricFunctions(MgReader* reader, FdoFunction* customFunction, CREFSTRING propertyAlias);
+    MgdFeatureGeometricFunctions(MgReader* reader, FdoFunction* customFunction, CREFSTRING propertyAlias);
     virtual MgReader* Execute();
 
 protected:
 
-    MgFeatureGeometricFunctions();
-    virtual ~MgFeatureGeometricFunctions();
+    MgdFeatureGeometricFunctions();
+    virtual ~MgdFeatureGeometricFunctions();
     virtual void Dispose()
     {
         delete this;

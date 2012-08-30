@@ -1,7 +1,7 @@
 #include "MgCSTrans.h"
 #include "CoordinateSystem/CoordinateSystem.h"
 
-MgCSTrans::MgCSTrans(MgCoordinateSystem* srcCs, MgCoordinateSystem* dstCs)
+MgdCSTrans::MgdCSTrans(MgCoordinateSystem* srcCs, MgCoordinateSystem* dstCs)
 {
     assert(srcCs);
     assert(dstCs);
@@ -14,24 +14,24 @@ MgCSTrans::MgCSTrans(MgCoordinateSystem* srcCs, MgCoordinateSystem* dstCs)
 }
 
 
-MgCSTrans::~MgCSTrans()
+MgdCSTrans::~MgdCSTrans()
 {
 }
 
 
-void MgCSTrans::TransformPoint(double& x, double& y)
+void MgdCSTrans::TransformPoint(double& x, double& y)
 {
     m_trans->Transform(&x, &y);
 }
 
 
-void MgCSTrans::TransformPoints(int numPts, double* x, double* y)
+void MgdCSTrans::TransformPoints(int numPts, double* x, double* y)
 {
     m_trans->Transform(x, y, numPts);
 }
 
 
-void MgCSTrans::TransformExtent(double& minX, double& minY, double& maxX, double& maxY)
+void MgdCSTrans::TransformExtent(double& minX, double& minY, double& maxX, double& maxY)
 {
     MgEnvelope extent(minX, minY, maxX, maxY);
     Ptr<MgEnvelope> transExtent = m_trans->Transform(&extent);
@@ -45,7 +45,7 @@ void MgCSTrans::TransformExtent(double& minX, double& minY, double& maxX, double
 }
 
 
-double MgCSTrans::GetLinearScale()
+double MgdCSTrans::GetLinearScale()
 {
     return m_dLinearScale;
 }
