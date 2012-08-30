@@ -1,11 +1,11 @@
 #include "RenderingOptions.h"
 
-MG_IMPL_DYNCREATE(MgRenderingOptions)
+MG_IMPL_DYNCREATE(MgdRenderingOptions)
 
 
 //////////////////////////////////////////////////////////////////
 /// <summary>
-/// Construct an MgRenderingOptions object
+/// Construct an MgdRenderingOptions object
 /// </summary>
 /// <param name="format">Input
 /// Image format. Defines the format of the resulting image
@@ -16,7 +16,7 @@ MG_IMPL_DYNCREATE(MgRenderingOptions)
 /// <param name="selectionColor">Input
 /// Selection color, including filling color and boundary color
 /// </param>
-MgRenderingOptions::MgRenderingOptions(CREFSTRING format, INT32 behavior, MgColor* selectionColor)
+MgdRenderingOptions::MgdRenderingOptions(CREFSTRING format, INT32 behavior, MgColor* selectionColor)
 : m_format(MgUtil::ToUpper(format)),
   m_behavior(behavior)
 {
@@ -31,7 +31,7 @@ MgRenderingOptions::MgRenderingOptions(CREFSTRING format, INT32 behavior, MgColo
 /// <returns>
 /// The string value (is in upper case from CTOR)
 /// </returns>
-STRING MgRenderingOptions::GetImageFormat()
+STRING MgdRenderingOptions::GetImageFormat()
 {
     return m_format;
 }
@@ -44,7 +44,7 @@ STRING MgRenderingOptions::GetImageFormat()
 /// <returns>
 /// The integer value
 /// </returns>
-INT32 MgRenderingOptions::GetBehavior()
+INT32 MgdRenderingOptions::GetBehavior()
 {
     return m_behavior;
 }
@@ -57,7 +57,7 @@ INT32 MgRenderingOptions::GetBehavior()
 /// <returns>
 /// The MgColor object
 /// </returns>
-MgColor* MgRenderingOptions::GetSelectionColor()
+MgColor* MgdRenderingOptions::GetSelectionColor()
 {
     return SAFE_ADDREF((MgColor*)m_selectionColor);
 }
@@ -70,7 +70,7 @@ MgColor* MgRenderingOptions::GetSelectionColor()
 /// <param name="stream">Input
 /// Stream
 /// </param>
-void MgRenderingOptions::Serialize(MgStream* stream)
+void MgdRenderingOptions::Serialize(MgStream* stream)
 {
     stream->WriteString(m_format);
     stream->WriteInt32(m_behavior);
@@ -85,7 +85,7 @@ void MgRenderingOptions::Serialize(MgStream* stream)
 /// <param name="stream">Input
 /// Stream
 /// </param>
-void MgRenderingOptions::Deserialize(MgStream* stream)
+void MgdRenderingOptions::Deserialize(MgStream* stream)
 {
     stream->GetString(m_format);
     stream->GetInt32(m_behavior);
@@ -97,7 +97,7 @@ void MgRenderingOptions::Deserialize(MgStream* stream)
 /// <summary>
 /// Default constructor
 /// </summary>
-MgRenderingOptions::MgRenderingOptions()
+MgdRenderingOptions::MgdRenderingOptions()
 : m_behavior(0),
   m_selectionColor(NULL)
 {
@@ -108,7 +108,7 @@ MgRenderingOptions::MgRenderingOptions()
 /// <summary>
 /// Virtual destructor
 /// </summary>
-MgRenderingOptions::~MgRenderingOptions()
+MgdRenderingOptions::~MgdRenderingOptions()
 {
 }
 
@@ -120,7 +120,7 @@ MgRenderingOptions::~MgRenderingOptions()
 /// <returns>
 /// The integer value
 /// </returns>
-INT32 MgRenderingOptions::GetClassId()
+INT32 MgdRenderingOptions::GetClassId()
 {
     return m_cls_id;
 }
@@ -133,7 +133,7 @@ INT32 MgRenderingOptions::GetClassId()
 /// <returns>
 /// Nothing
 /// </returns>
-void MgRenderingOptions::Dispose()
+void MgdRenderingOptions::Dispose()
 {
     delete this;
 }

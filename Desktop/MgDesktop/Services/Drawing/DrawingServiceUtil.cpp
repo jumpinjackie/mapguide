@@ -329,7 +329,7 @@ DWFPackageReader* MgDrawingServiceUtil::OpenDrawingResource(
     {
         MgStringCollection arguments;
         arguments.Add(dwfFileName);
-        throw new MgInvalidDwfPackageException(L"MgDrawingServiceUtil.OpenDrawingResource", __LINE__, __WFILE__, &arguments, L"", NULL);
+        throw new MgdInvalidDwfPackageException(L"MgDrawingServiceUtil.OpenDrawingResource", __LINE__, __WFILE__, &arguments, L"", NULL);
     }
 
     MG_SERVER_DRAWING_SERVICE_CATCH_AND_THROW(L"MgDrawingServiceUtil.OpenDrawingResource")

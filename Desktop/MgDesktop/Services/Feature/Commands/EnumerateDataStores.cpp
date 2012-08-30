@@ -86,7 +86,7 @@ MgByteReader* MgEnumerateDataStores::EnumerateDataStores(CREFSTRING providerName
     }
     else
     {
-        throw new MgConnectionFailedException(L"MgEnumerateDataStores::EnumerateDataStores()", __LINE__, __WFILE__, NULL, L"", NULL);
+        throw new MgdConnectionFailedException(L"MgEnumerateDataStores::EnumerateDataStores()", __LINE__, __WFILE__, NULL, L"", NULL);
     }
 
     MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgEnumerateDataStores.EnumerateDataStores")

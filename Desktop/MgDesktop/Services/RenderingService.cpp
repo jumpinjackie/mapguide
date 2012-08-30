@@ -311,8 +311,8 @@ MgByteReader* MgdRenderingService::RenderDynamicOverlay(MgdMap* map, MgdSelectio
     //ret = RenderDynamicOverlay(map, selection, format, true);
 
     // Call updated RenderDynamicOverlay API
-    MgRenderingOptions options(format, MgRenderingOptions::RenderSelection |
-        MgRenderingOptions::RenderLayers | MgRenderingOptions::KeepSelection, NULL);
+    MgdRenderingOptions options(format, MgdRenderingOptions::RenderSelection |
+        MgdRenderingOptions::RenderLayers | MgdRenderingOptions::KeepSelection, NULL);
     ret = RenderDynamicOverlayInternal(map, selection, &options, NULL);
 
     // Successful operation
@@ -361,8 +361,8 @@ MgByteReader* MgdRenderingService::RenderDynamicOverlay(MgdMap* map, MgdSelectio
     MG_LOG_TRACE_ENTRY(L"MgdRenderingService::RenderDynamicOverlay()");
 
     // Call updated RenderDynamicOverlay API
-    MgRenderingOptions options(format, MgRenderingOptions::RenderSelection |
-        MgRenderingOptions::RenderLayers | (bKeepSelection? MgRenderingOptions::KeepSelection : 0), NULL);
+    MgdRenderingOptions options(format, MgdRenderingOptions::RenderSelection |
+        MgdRenderingOptions::RenderLayers | (bKeepSelection? MgdRenderingOptions::KeepSelection : 0), NULL);
     ret = RenderDynamicOverlayInternal(map, selection, &options, NULL);
 
     // Successful operation
@@ -389,7 +389,7 @@ MgByteReader* MgdRenderingService::RenderDynamicOverlay(MgdMap* map, MgdSelectio
 ///////////////////////////////////////////////////////////////////////////////
 // called from API (first call of AjaxPgPViewerSampleApplication)
 // default arg pPRMResult = NULL
-MgByteReader* MgdRenderingService::RenderDynamicOverlay(MgdMap* map, MgdSelection* selection, MgRenderingOptions* options)
+MgByteReader* MgdRenderingService::RenderDynamicOverlay(MgdMap* map, MgdSelection* selection, MgdRenderingOptions* options)
 {
     Ptr<MgByteReader> ret;
 
@@ -404,7 +404,7 @@ MgByteReader* MgdRenderingService::RenderDynamicOverlay(MgdMap* map, MgdSelectio
     MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
     MG_LOG_OPERATION_MESSAGE_ADD_STRING(L"MgdSelection");
     MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
-    MG_LOG_OPERATION_MESSAGE_ADD_STRING(L"MgRenderingOptions");
+    MG_LOG_OPERATION_MESSAGE_ADD_STRING(L"MgdRenderingOptions");
     MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
 
     MG_LOG_TRACE_ENTRY(L"MgdRenderingService::RenderDynamicOverlay()");
@@ -438,7 +438,7 @@ MgByteReader* MgdRenderingService::RenderDynamicOverlay(MgdMap* map, MgdSelectio
 // pPRMResult - a pointer points to Profile Render Map Result.
 MgByteReader* MgdRenderingService::RenderDynamicOverlay(MgdMap* map,
                                                        MgdSelection* selection,
-                                                       MgRenderingOptions* options,
+                                                       MgdRenderingOptions* options,
                                                        ProfileRenderMapResult* pPRMResult)
 {
     Ptr<MgByteReader> ret;
@@ -454,7 +454,7 @@ MgByteReader* MgdRenderingService::RenderDynamicOverlay(MgdMap* map,
     MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
     MG_LOG_OPERATION_MESSAGE_ADD_STRING(L"MgdSelection");
     MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
-    MG_LOG_OPERATION_MESSAGE_ADD_STRING(L"MgRenderingOptions");
+    MG_LOG_OPERATION_MESSAGE_ADD_STRING(L"MgdRenderingOptions");
     MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
     MG_LOG_OPERATION_MESSAGE_ADD_STRING(L"ProfileRenderMapResult");
     MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
@@ -669,7 +669,7 @@ MgdFeatureInformation* MgdRenderingService::QueryFeaturesInternal(MgdMap* map,
 
 MgByteReader* MgdRenderingService::RenderDynamicOverlayInternal(MgdMap* map,
                                                                MgdSelection* selection,
-                                                               MgRenderingOptions* options,
+                                                               MgdRenderingOptions* options,
                                                                ProfileRenderMapResult* pPRMResult)
 {
     Ptr<MgByteReader> ret;
@@ -1236,8 +1236,8 @@ MgByteReader* MgdRenderingService::RenderMapInternal(MgdMap* map,
                                                           bool renderWatermark,
                                                           ProfileRenderMapResult* pPRMResult)
 {
-    MgRenderingOptions options(format, MgRenderingOptions::RenderSelection |
-        MgRenderingOptions::RenderLayers | (bKeepSelection? MgRenderingOptions::KeepSelection : 0), NULL);
+    MgdRenderingOptions options(format, MgdRenderingOptions::RenderSelection |
+        MgdRenderingOptions::RenderLayers | (bKeepSelection? MgdRenderingOptions::KeepSelection : 0), NULL);
     return RenderMapInternal(map, selection, roLayers, dr, drawWidth, drawHeight, saveWidth, saveHeight, scale, b, expandExtents, &options, renderWatermark, pPRMResult);
 }
 
@@ -1260,7 +1260,7 @@ MgByteReader* MgdRenderingService::RenderMapInternal(MgdMap* map,
                                                           double scale,
                                                           RS_Bounds& b,
                                                           bool expandExtents,
-                                                          MgRenderingOptions* options,
+                                                          MgdRenderingOptions* options,
                                                           bool renderWatermark,
                                                           ProfileRenderMapResult* pPRMResult)
 {
@@ -1325,18 +1325,18 @@ MgByteReader* MgdRenderingService::RenderMapInternal(MgdMap* map,
 
         INT32 behavior = options->GetBehavior();
 
-        if (behavior & MgRenderingOptions::RenderLayers)    // this is for tiles so observer colormaps
+        if (behavior & MgdRenderingOptions::RenderLayers)    // this is for tiles so observer colormaps
         {
             RenderLayers(map, tempLayers, &ds, dr, dstCs, expandExtents, scale, format, pPRMResult);
         }
 
         // now we need to stylize the selection on top (this is not for tiles!)
-        if (selection && (behavior & MgRenderingOptions::RenderSelection))
+        if (selection && (behavior & MgdRenderingOptions::RenderSelection))
         {
             RenderSelection(map, selection, tempLayers, options, &ds, dr, dstCs, scale, behavior, pPRMResult);
         }
 
-        if (renderWatermark && (behavior & MgRenderingOptions::RenderLayers) && map->GetWatermarkUsage() != 0)
+        if (renderWatermark && (behavior & MgdRenderingOptions::RenderLayers) && map->GetWatermarkUsage() != 0)
         {
             RenderWatermarks(map,tempLayers,&ds, dr,drawWidth, drawHeight, saveWidth, saveHeight, pPRMResult);
         }
@@ -1437,13 +1437,13 @@ MgByteReader* MgdRenderingService::RenderMapLegend(MgdMap* map,
     dr->StartMap(&info, b, 1.0, pixelsPerInch, metersPerPixel, NULL);
     dr->StartLayer(NULL, NULL);
 
-    //We need to specify margins and offsets in an MgPlotSpecification,
+    //We need to specify margins and offsets in an MgdPlotSpecification,
     //even though in the image based (non-DWF) case they are 0.
     //Units are given as pixels, needed in order to scale legend
     //layout constants which are in inches.
     //NOTE: we need a left margin of one pixel so that legend icons
     //      do not overlap the legend border
-    Ptr<MgPlotSpecification> spec = new MgPlotSpecification(width - 1.0f, height - 1.0f, L"pixels");
+    Ptr<MgdPlotSpecification> spec = new MgdPlotSpecification(width - 1.0f, height - 1.0f, L"pixels");
     spec->SetMargins(1.0f, 0.0f, 0.0f, 0.0f);
     MgLegendPlotUtil lu(m_svcResource);
     lu.AddLegendElement(map->GetViewScale(), *dr, map, spec, 0.0, 0.0);
@@ -1465,13 +1465,13 @@ MgByteReader* MgdRenderingService::RenderMapLegend(MgdMap* map,
         // put this into a byte source
         Ptr<MgByteSource> bs = new MgByteSource(data->GetBytes(), data->GetNumBytes());
 
-        if (format == MgImageFormats::Gif)
+        if (format == MgdImageFormats::Gif)
             bs->SetMimeType(MgMimeType::Gif);
-        else if (format == MgImageFormats::Jpeg)
+        else if (format == MgdImageFormats::Jpeg)
             bs->SetMimeType(MgMimeType::Jpeg);
-        else if (format == MgImageFormats::Png)
+        else if (format == MgdImageFormats::Png)
             bs->SetMimeType(MgMimeType::Png);
-        else if (format == MgImageFormats::Tiff)
+        else if (format == MgdImageFormats::Tiff)
             bs->SetMimeType(MgMimeType::Tiff);
 
         ret = bs->GetReader();
@@ -1563,7 +1563,7 @@ inline void MgdRenderingService::RenderLayers(MgdMap* map,
 inline void MgdRenderingService::RenderSelection(MgdMap* map,
                                                       MgdSelection* selection,
                                                       MgReadOnlyLayerCollection* layers,
-                                                      MgRenderingOptions* options,
+                                                      MgdRenderingOptions* options,
                                                       Stylizer* ds,
                                                       Renderer* dr,
                                                       MgCoordinateSystem* dstCs,
@@ -1631,7 +1631,7 @@ inline void MgdRenderingService::RenderSelection(MgdMap* map,
         }
 
         MgMappingUtil::StylizeLayers(m_svcResource, m_svcFeature, m_svcDrawing, m_pCSFactory, map,
-            modLayers, overrideFilters, ds, renderer, dstCs, false, false, scale, (behavior & MgRenderingOptions::KeepSelection) != 0,false,pPRSResult);
+            modLayers, overrideFilters, ds, renderer, dstCs, false, false, scale, (behavior & MgdRenderingOptions::KeepSelection) != 0,false,pPRSResult);
 
         // Set selection mode to false to avoid affecting following code
         renderer->SetRenderSelectionMode(false);
@@ -1973,13 +1973,13 @@ inline MgByteReader* MgdRenderingService::CreateImage(MgdMap* map,
         // put this into a byte source
         bs = new MgByteSource(data->GetBytes(), data->GetNumBytes());
 
-        if (format == MgImageFormats::Gif)
+        if (format == MgdImageFormats::Gif)
             bs->SetMimeType(MgMimeType::Gif);
-        else if (format == MgImageFormats::Jpeg)
+        else if (format == MgdImageFormats::Jpeg)
             bs->SetMimeType(MgMimeType::Jpeg);
-        else if (format == MgImageFormats::Png || format == MgImageFormats::Png8)
+        else if (format == MgdImageFormats::Png || format == MgdImageFormats::Png8)
             bs->SetMimeType(MgMimeType::Png);
-        else if (format == MgImageFormats::Tiff)
+        else if (format == MgdImageFormats::Tiff)
             bs->SetMimeType(MgMimeType::Tiff);
     }
     else

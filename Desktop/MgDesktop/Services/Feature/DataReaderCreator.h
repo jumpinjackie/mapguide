@@ -24,6 +24,7 @@ using namespace std;
 #include "MgDesktop.h"
 #include "ProxyDataReader.h"
 
+/// \cond INTERNAL
 template <typename T>
 class MgDataReaderCreator : public MgDisposable
 {
@@ -166,5 +167,5 @@ protected:
     STRING m_propertyAlias;
     int m_propType;
 };
-
+/// \endcond
 #endif

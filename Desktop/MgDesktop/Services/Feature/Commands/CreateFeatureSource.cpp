@@ -16,7 +16,7 @@ void MgCreateFeatureSource::CreateFeatureSource(MgResourceIdentifier* resource, 
     MG_FEATURE_SERVICE_TRY()
 
     MgFileFeatureSourceParams* params = dynamic_cast<MgFileFeatureSourceParams*>(sourceParams);
-    MgRdbmsFeatureSourceParams* rdbParams = dynamic_cast<MgRdbmsFeatureSourceParams*>(sourceParams);
+    MgdRdbmsFeatureSourceParams* rdbParams = dynamic_cast<MgdRdbmsFeatureSourceParams*>(sourceParams);
     if (NULL != params)
     {
         STRING providerName = params->GetProviderName();
@@ -119,13 +119,13 @@ void MgCreateFileFeatureSource::CreateFeatureSource(bool bCheckFeatureClass, boo
     {
         if(NULL == connWrap.p)
         {
-            throw new MgConnectionFailedException(L"MgCreateFileFeatureSource.CreateFeatureSource", __LINE__, __WFILE__, NULL, L"", NULL);
+            throw new MgdConnectionFailedException(L"MgCreateFileFeatureSource.CreateFeatureSource", __LINE__, __WFILE__, NULL, L"", NULL);
         }
 
         FdoPtr<FdoIConnection> conn = connWrap->GetConnection();
         if (conn == NULL)
         {
-            throw new MgConnectionFailedException(L"MgCreateFileFeatureSource.CreateFeatureSource", __LINE__, __WFILE__, NULL, L"", NULL);
+            throw new MgdConnectionFailedException(L"MgCreateFileFeatureSource.CreateFeatureSource", __LINE__, __WFILE__, NULL, L"", NULL);
         }
 
         CreateDataStore(conn);
@@ -401,7 +401,7 @@ STRING MgCreateSqliteFeatureSource::GetFeatureSourceParameterString() const
     return featureSource;
 }
 
-MgCreateRdbmsFeatureSource::MgCreateRdbmsFeatureSource(MgResourceIdentifier* resource, MgRdbmsFeatureSourceParams* params)
+MgCreateRdbmsFeatureSource::MgCreateRdbmsFeatureSource(MgResourceIdentifier* resource, MgdRdbmsFeatureSourceParams* params)
 {
     m_resource = resource;
     SAFE_ADDREF(resource);
@@ -452,7 +452,7 @@ void MgCreateRdbmsFeatureSource::CreateFeatureSource()
         //Amend connection string to incorporate the created data store
         conn = new MgFeatureConnection(provider, connStr);
         if (!conn->IsConnectionOpen())
-            throw new MgConnectionFailedException(L"MgCreateRdbmsFeatureSource::CreateFeatureSource", __LINE__, __WFILE__, NULL, L"", NULL);
+            throw new MgdConnectionFailedException(L"MgCreateRdbmsFeatureSource::CreateFeatureSource", __LINE__, __WFILE__, NULL, L"", NULL);
 
         fdoConn = conn->GetConnection();
 

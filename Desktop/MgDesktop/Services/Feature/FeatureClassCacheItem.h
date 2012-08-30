@@ -1,6 +1,6 @@
 #ifndef DESKTOP_FEATURE_CLASS_CACHE_ITEM_H
 #define DESKTOP_FEATURE_CLASS_CACHE_ITEM_H
-
+/// \cond INTERNAL
 class MgFeatureClassCacheItem : public MgGuardDisposable
 {
 /// Constructors/Destructor
@@ -47,7 +47,7 @@ private:
     Ptr<MgClassDefinition> m_classDef;
     Ptr<MgPropertyDefinitionCollection> m_idProperties;
 };
-
+/// \endcond
 /// Inline Methods
 
 #endif

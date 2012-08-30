@@ -10,6 +10,10 @@ class MgdDrawingService;
 class MgdRenderingService;
 /// \ingroup Desktop_Module
 /// \{
+
+///\brief
+/// The MgServiceFactory class allows you to create instances of service
+/// classes
 class MG_DESKTOP_API MgServiceFactory : public MgGuardDisposable
 {
     MG_DECL_DYNCREATE()
@@ -17,6 +21,29 @@ class MG_DESKTOP_API MgServiceFactory : public MgGuardDisposable
 
 PUBLISHED_API:
     MgServiceFactory();
+    ///\brief
+    /// Creates an instances of the specified service
+    ///
+    ///\param serviceType (MgServiceType)
+    /// The type of service to create
+    ///
+    ///\return
+    /// An instance of the specified service. It must be cast to the appropriate
+    /// subclass
+    ///
+    ///\exception MgServiceNotSupportedException
+    ///
+    ///\remarks
+    /// Depending on the service type, this method will return instances of the following
+    /// types:
+    /// \li MgServiceType::FeatureService - MgdFeatureService
+    /// \li MgServiceType::ResourceService - MgdResourceService
+    /// \li MgServiceType::DrawingService - MgdDrawingService
+    /// \li MgServiceType::MappingService - MgdMappingService
+    /// \li MgServiceType::RenderingService - MgdRenderingService
+    /// \li MgServiceType::ProfilingService - MgdProfilingService
+    /// \li MgServiceType::TileService - MgdTileService
+    ///
     MgService* CreateService(INT32 serviceType);
 
 INTERNAL_API:

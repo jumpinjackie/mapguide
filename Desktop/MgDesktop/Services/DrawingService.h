@@ -3,7 +3,7 @@
 
 #include "MgDesktop.h"
 
-/// \ingroup Desktop_Module
+/// \ingroup Desktop_Service_Module
 /// \{
 class MG_DESKTOP_API MgdDrawingService : public MgService
 {
@@ -54,8 +54,8 @@ PUBLISHED_API:
     /// - MgInvalidCastException if there are problems reading the DWF into memory.
     /// - MgServiceNotAvailableException if the underlying resource service cannot be obtained to access the drawing in the resource repository.
     /// - MgXmlParserException if there are problems parsing the resource content specified by the resource identifier.
-    /// - MgInvalidDwfPackageException if the DWF specified by the resource identifier is not a DWF of version 6.0 or greater.
-    /// - MgDwfException if the DWF component encounters errors.
+    /// - MgdInvalidDwfPackageException if the DWF specified by the resource identifier is not a DWF of version 6.0 or greater.
+    /// - MgdDwfException if the DWF component encounters errors.
     /// - See MgResourceService for additional exceptions.
     MgByteReader* DescribeDrawing(MgResourceIdentifier* resource);
 
@@ -74,14 +74,14 @@ PUBLISHED_API:
     /// Returns DWF stream containing the specified section.
     /// </returns>
     /// EXCEPTIONS:
-    /// - MgDwfSectionNotFoundException if the requested section does not exist in the DWF package.
-    /// - MgInvalidDwfSectionException if the 2d graphics resource for the DWF section cannot be found.
+    /// - MgdDwfSectionNotFoundException if the requested section does not exist in the DWF package.
+    /// - MgdInvalidDwfSectionException if the 2d graphics resource for the DWF section cannot be found.
     /// - MgNullReferenceException no data could be read from the DWF resource.
     /// - MgOutOfMemoryException if there is insufficient memory to complete the operation.
     /// - MgServiceNotAvailableException if the underlying resource service cannot be obtained to access the drawing in the resource repository.
     /// - MgXmlParserException if there are problems parsing the resource content specified by the resource identifier.
-    /// - MgInvalidDwfPackageException if the DWF specified by the resource identifier is not a DWF of version 6.0 or greater.
-    /// - MgDwfException if the DWF component encounters errors.
+    /// - MgdInvalidDwfPackageException if the DWF specified by the resource identifier is not a DWF of version 6.0 or greater.
+    /// - MgdDwfException if the DWF component encounters errors.
     /// - MgTemporaryFileNotAvailableException if a temporary file need to complete the operation cannot be generated or accessed.
     /// - See MgResourceService for additional exceptions.
     MgByteReader* GetSection(MgResourceIdentifier* resource, CREFSTRING sectionName);
@@ -111,13 +111,13 @@ PUBLISHED_API:
     /// </returns>
     /// EXCEPTIONS:
     /// - MgInvalidArgumentException if the requested resourceName does not specify a section name.
-    /// - MgDwfSectionNotFoundException if the requested section does not exist in the DWF package.
-    /// - MgDwfSectionResourceNotFoundException if the requested section resource does not exist in the DWF package.
+    /// - MgdDwfSectionNotFoundException if the requested section does not exist in the DWF package.
+    /// - MgdDwfSectionResourceNotFoundException if the requested section resource does not exist in the DWF package.
     /// - MgInvalidCastException if there are problems reading the DWF into memory.
     /// - MgServiceNotAvailableException if the underlying resource service cannot be obtained to access the drawing in the resource repository.
     /// - MgXmlParserException if there are problems parsing the resource content specified by the resource identifier.
-    /// - MgInvalidDwfPackageException if the DWF specified by the resource identifier is not a DWF of version 6.0 or greater.
-    /// - MgDwfException if the DWF component encounters errors.
+    /// - MgdInvalidDwfPackageException if the DWF specified by the resource identifier is not a DWF of version 6.0 or greater.
+    /// - MgdDwfException if the DWF component encounters errors.
     /// - MgTemporaryFileNotAvailableException if a temporary file need to complete the operation cannot be generated or accessed.
     /// - See MgResourceService for additional exceptions.
     MgByteReader* GetSectionResource(MgResourceIdentifier* resource, CREFSTRING resourceName);
@@ -140,13 +140,13 @@ PUBLISHED_API:
     /// Returns the pointer to a StringCollection of layer names.
     /// </returns>
     /// EXCEPTIONS:
-    /// - MgDwfSectionNotFoundException if the requested section does not exist in the DWF package.
-    /// - MgInvalidDwfSectionException if the 2d graphics resource for the DWF section cannot be found.
+    /// - MgdDwfSectionNotFoundException if the requested section does not exist in the DWF package.
+    /// - MgdInvalidDwfSectionException if the 2d graphics resource for the DWF section cannot be found.
     /// - MgNullReferenceException no data could be read from the DWF resource.
     /// - MgServiceNotAvailableException if the underlying resource service cannot be obtained to access the drawing in the resource repository.
     /// - MgXmlParserException if there are problems parsing the resource content specified by the resource identifier.
-    /// - MgInvalidDwfPackageException if the DWF specified by the resource identifier is not a DWF of version 6.0 or greater.
-    /// - MgDwfException if the DWF component encounters errors.
+    /// - MgdInvalidDwfPackageException if the DWF specified by the resource identifier is not a DWF of version 6.0 or greater.
+    /// - MgdDwfException if the DWF component encounters errors.
     /// - MgTemporaryFileNotAvailableException if a temporary file need to complete the operation cannot be generated or accessed.
     /// - See MgResourceService for additional exceptions.
     MgStringCollection* EnumerateLayers(MgResourceIdentifier* resource, CREFSTRING sectionName);
@@ -168,15 +168,15 @@ PUBLISHED_API:
     /// Returns DWF stream containing the specified layer (in a section)
     /// </returns>
     /// EXCEPTIONS:
-    /// - MgDwfSectionNotFoundException if the requested section does not exist in the DWF package.
-    /// - MgInvalidDwfSectionException if the 2d graphics resource for the DWF section cannot be found.
+    /// - MgdDwfSectionNotFoundException if the requested section does not exist in the DWF package.
+    /// - MgdInvalidDwfSectionException if the 2d graphics resource for the DWF section cannot be found.
     /// - MgNullReferenceException if data could not be read from the DWF resource.
     /// - MgOutOfMemoryException if there is insufficient memory to complete the operation.
     /// - MgServiceNotAvailableException if the underlying resource service cannot be obtained to access the drawing in the resource repository.
     /// - MgXmlParserException if there are problems parsing the resource content specified by the resource identifier.
-    /// - MgInvalidDwfPackageException if the DWF specified by the resource identifier is not a DWF of version 6.0 or greater.
+    /// - MgdInvalidDwfPackageException if the DWF specified by the resource identifier is not a DWF of version 6.0 or greater.
     /// - MgLayerNotFoundException if the requested layer does not exist in the requested section of the DWF package.
-    /// - MgDwfException if the DWF component encounters errors.
+    /// - MgdDwfException if the DWF component encounters errors.
     /// - See MgResourceService for additional exceptions.
     MgByteReader* GetLayer( MgResourceIdentifier* resource,
                             CREFSTRING sectionName,
@@ -198,8 +198,8 @@ PUBLISHED_API:
     /// - MgNullReferenceException no data could be read from the DWF resource.
     /// - MgServiceNotAvailableException if the underlying resource service cannot be obtained to access the drawing in the resource repository.
     /// - MgXmlParserException if there are problems parsing the resource content specified by the resource identifier.
-    /// - MgInvalidDwfPackageException if the DWF specified by the resource identifier is not a DWF of version 6.0 or greater.
-    /// - MgDwfException if the DWF component encounters errors.
+    /// - MgdInvalidDwfPackageException if the DWF specified by the resource identifier is not a DWF of version 6.0 or greater.
+    /// - MgdDwfException if the DWF component encounters errors.
     /// - See MgResourceService for additional exceptions.
     MgByteReader* EnumerateSections(MgResourceIdentifier* resource);
 
@@ -220,13 +220,13 @@ PUBLISHED_API:
     ///
     /// </returns>
     /// EXCEPTIONS:
-    /// - MgDwfSectionNotFoundException if the requested section does not exist in the DWF package.
-    /// - MgInvalidDwfSectionException if the 2d graphics resource for the DWF section cannot be found.
+    /// - MgdDwfSectionNotFoundException if the requested section does not exist in the DWF package.
+    /// - MgdInvalidDwfSectionException if the 2d graphics resource for the DWF section cannot be found.
     /// - MgNullReferenceException no data could be read from the DWF resource.
     /// - MgServiceNotAvailableException if the underlying resource service cannot be obtained to access the drawing in the resource repository.
     /// - MgXmlParserException if there are problems parsing the resource content specified by the resource identifier.
-    /// - MgInvalidDwfPackageException if the DWF specified by the resource identifier is not a DWF of version 6.0 or greater.
-    /// - MgDwfException if the DWF component encounters errors.
+    /// - MgdInvalidDwfPackageException if the DWF specified by the resource identifier is not a DWF of version 6.0 or greater.
+    /// - MgdDwfException if the DWF component encounters errors.
     /// - See MgResourceService for additional exceptions.
     MgByteReader* EnumerateSectionResources(MgResourceIdentifier* resource, CREFSTRING sectionName);
 

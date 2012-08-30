@@ -143,7 +143,7 @@ FdoIConnection* MgFdoConnectionUtil::CreateConnection(MgResourceIdentifier* reso
                 strCol = new MgStringCollection();
                 strCol->Add(message);
             }
-            throw new MgInvalidFeatureSourceException(L"MgFdoConnectionUtil::CreateConnection",
+            throw new MgdInvalidFeatureSourceException(L"MgFdoConnectionUtil::CreateConnection",
                 __LINE__, __WFILE__, (MgStringCollection*)strCol, L"", NULL);
         }
 
@@ -246,7 +246,7 @@ MdfModel::FeatureSource* MgFdoConnectionUtil::GetFeatureSource(MgResourceIdentif
             STRING errorMsg = parser.GetErrorMessage();
             MgStringCollection arguments;
             arguments.Add(errorMsg);
-            throw new MgInvalidFeatureSourceException(
+            throw new MgdInvalidFeatureSourceException(
                 L"MgFdoConnectionUtil::GetFeatureSource",
                 __LINE__, __WFILE__, &arguments, L"", NULL);
         }
@@ -265,7 +265,7 @@ MdfModel::FeatureSource* MgFdoConnectionUtil::GetFeatureSource(MgResourceIdentif
         MgStringCollection arguments;
         arguments.Add(message);
 
-        throw new MgInvalidFeatureSourceException(
+        throw new MgdInvalidFeatureSourceException(
             L"MgFdoConnectionUtil::GetFeatureSource",
             __LINE__, __WFILE__, &arguments, L"", NULL);
     }

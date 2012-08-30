@@ -1,21 +1,21 @@
 #ifndef DESKTOP_INVALID_FEATURE_SOURCE_EXCEPTION_H
 #define DESKTOP_INVALID_FEATURE_SOURCE_EXCEPTION_H
 
-/// \ingroup Exceptions_Module
+/// \ingroup Desktop_Exceptions_Module
 
 ///////////////////////////////////////////////////////////////////////////////
 /// \brief
 /// Thrown when FeatureService encounters a problem.
 ///
-class MG_DESKTOP_API MgInvalidFeatureSourceException : public MgApplicationException
+class MG_DESKTOP_API MgdInvalidFeatureSourceException : public MgApplicationException
 {
-    DECLARE_CLASSNAME(MgInvalidFeatureSourceException)
+    DECLARE_CLASSNAME(MgdInvalidFeatureSourceException)
 
 EXTERNAL_API:
 
     ///////////////////////////////////////////////////////////////////////////
     /// \brief
-    /// Construct a MgInvalidFeatureSourceException object.
+    /// Construct a MgdInvalidFeatureSourceException object.
     ///
     /// \param methodName
     /// Name of the method where the exception occurred.
@@ -30,23 +30,23 @@ EXTERNAL_API:
     /// \param whyArguments
     /// Collection of arguments used to format the message that describes why the exception occurs.
     ///
-    MgInvalidFeatureSourceException(CREFSTRING methodName, INT32 lineNumber,
+    MgdInvalidFeatureSourceException(CREFSTRING methodName, INT32 lineNumber,
         CREFSTRING fileName, MgStringCollection* whatArguments,
         CREFSTRING whyMessageId, MgStringCollection* whyArguments) throw();
 
     ///////////////////////////////////////////////////////////////////////////
     /// \brief
-    /// Destructor for a MgInvalidFeatureSourceException object.
+    /// Destructor for a MgdInvalidFeatureSourceException object.
     ///
-    virtual ~MgInvalidFeatureSourceException() throw();
+    virtual ~MgdInvalidFeatureSourceException() throw();
 
 INTERNAL_API:
 
-    DECLARE_EXCEPTION_DEFAULTS(MgInvalidFeatureSourceException)
+    DECLARE_EXCEPTION_DEFAULTS(MgdInvalidFeatureSourceException)
 
 CLASS_ID:
 
-    static const INT32 m_cls_id = MapGuide_Desktop_Exception_MgInvalidFeatureSourceException;
+    static const INT32 m_cls_id = MapGuide_Desktop_Exception_InvalidFeatureSourceException;
 };
 
 #endif

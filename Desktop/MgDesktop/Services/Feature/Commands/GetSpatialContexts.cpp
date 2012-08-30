@@ -89,7 +89,7 @@ MgSpatialContextReader* MgGetSpatialContexts::GetSpatialContexts(MgResourceIdent
         }
         else
         {
-            throw new MgConnectionFailedException(L"MgGetSpatialContexts.GetSpatialContexts()", __LINE__, __WFILE__, NULL, L"", NULL);
+            throw new MgdConnectionFailedException(L"MgGetSpatialContexts.GetSpatialContexts()", __LINE__, __WFILE__, NULL, L"", NULL);
         }
     }
     else

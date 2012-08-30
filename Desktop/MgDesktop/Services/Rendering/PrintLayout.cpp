@@ -38,7 +38,7 @@ MG_IMPL_DYNCREATE(MgPrintLayout)
 // Construct a MgPrintLayout object
 //
 MgPrintLayout::MgPrintLayout() :
-    m_scaleBarUnits(MgUnitType::Metric),
+    m_scaleBarUnits(MgdUnitType::Metric),
     m_dPlotScale(0),
     m_dPageWidth(0),
     m_dPageHeight(0),
@@ -51,7 +51,7 @@ MgPrintLayout::MgPrintLayout() :
     m_bShowCustomLogos(false),
     m_bShowCustomText(false)
 {
-    m_plotSpec = new MgPlotSpecification(8.5f, 11.f, L"inches");  // NOXLATE
+    m_plotSpec = new MgdPlotSpecification(8.5f, 11.f, L"inches");  // NOXLATE
     m_plotCenter = new MgCoordinateXY(0.0, 0.0);
     m_bgColor = new MgColor(255, 255, 255, 0);
 }
@@ -147,7 +147,7 @@ void MgPrintLayout::SetPlotCenter(MgCoordinate* center)
 
 // Get the plot size.
 //
-MgPlotSpecification* MgPrintLayout::GetPlotSize()
+MgdPlotSpecification* MgPrintLayout::GetPlotSize()
 {
     return SAFE_ADDREF(m_plotSpec.p);
 }
@@ -156,7 +156,7 @@ MgPlotSpecification* MgPrintLayout::GetPlotSize()
 // Set the plot size.  This will override the page size specified
 // in the PrintLayout resource.
 //
-void MgPrintLayout::SetPlotSize(MgPlotSpecification* plotSpec)
+void MgPrintLayout::SetPlotSize(MgdPlotSpecification* plotSpec)
 {
     m_plotSpec = SAFE_ADDREF(plotSpec);
 }
@@ -266,7 +266,7 @@ void MgPrintLayout::GetLayoutPropertiesFromXml(MgXmlUtil* pXmlUtil)
                         && positionUnits != L"meters" && positionUnits != L"inches" && positionUnits != L"percent")
                     {
                         // invalid print layout position units
-                        throw new MgInvalidPrintLayoutPositionUnitsException(L"MgPrintLayout.GetLayoutPropertiesFromXml", __LINE__, __WFILE__, NULL, L"", NULL);
+                        throw new MgdInvalidPrintLayoutPositionUnitsException(L"MgPrintLayout.GetLayoutPropertiesFromXml", __LINE__, __WFILE__, NULL, L"", NULL);
                     }
                 }
                 pXmlUtil->GetElementValue(logoNode, "ResourceId", resId, false);
@@ -281,7 +281,7 @@ void MgPrintLayout::GetLayoutPropertiesFromXml(MgXmlUtil* pXmlUtil)
                         && sizeUnits != L"inches" && sizeUnits != L"meters")
                     {
                         // invalid print layout size units
-                        throw new MgInvalidPrintLayoutSizeUnitsException(L"MgPrintLayout.GetLayoutPropertiesFromXml", __LINE__, __WFILE__, NULL, L"", NULL);
+                        throw new MgdInvalidPrintLayoutSizeUnitsException(L"MgPrintLayout.GetLayoutPropertiesFromXml", __LINE__, __WFILE__, NULL, L"", NULL);
                     }
                 }
                 pXmlUtil->GetElementValue(logoNode, "Rotation", rotation, false);
@@ -328,7 +328,7 @@ void MgPrintLayout::GetLayoutPropertiesFromXml(MgXmlUtil* pXmlUtil)
                         && positionUnits != L"percent" && positionUnits != L"meters" && positionUnits != L"inches")
                     {
                         // invalid print layout position units
-                        throw new MgInvalidPrintLayoutPositionUnitsException(L"MgPrintLayout.GetLayoutPropertiesFromXml", __LINE__, __WFILE__, NULL, L"", NULL);
+                        throw new MgdInvalidPrintLayoutPositionUnitsException(L"MgPrintLayout.GetLayoutPropertiesFromXml", __LINE__, __WFILE__, NULL, L"", NULL);
                     }
                 }
                 DOMNode* fontNode = pXmlUtil->GetElementNode(textNode, "Font", false);
@@ -341,7 +341,7 @@ void MgPrintLayout::GetLayoutPropertiesFromXml(MgXmlUtil* pXmlUtil)
                         && fontSizeUnits != L"points" && fontSizeUnits != L"meters" && fontSizeUnits != L"inches")
                     {
                         // invalid print layout font size units
-                        throw new MgInvalidPrintLayoutFontSizeUnitsException(L"MgPrintLayout.GetLayoutPropertiesFromXml", __LINE__, __WFILE__, NULL, L"", NULL);
+                        throw new MgdInvalidPrintLayoutFontSizeUnitsException(L"MgPrintLayout.GetLayoutPropertiesFromXml", __LINE__, __WFILE__, NULL, L"", NULL);
                     }
                 }
                 pXmlUtil->GetElementValue(textNode, "Value", value, false);
@@ -454,7 +454,7 @@ void MgPrintLayout::Deserialize(MgStream* stream)
 
     streamReader->GetString(m_plotTitle);
 
-    m_plotSpec = (MgPlotSpecification*)streamReader->GetObject();
+    m_plotSpec = (MgdPlotSpecification*)streamReader->GetObject();
 
     streamReader->GetString(m_scaleBarUnits);
 

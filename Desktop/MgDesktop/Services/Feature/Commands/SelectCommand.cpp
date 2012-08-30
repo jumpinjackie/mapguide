@@ -42,7 +42,7 @@ MgSelectCommand::MgSelectCommand(MgResourceIdentifier* resource)
     }
     else
     {
-        throw new MgConnectionFailedException(L"MgSelectCommand.MgSelectCommand", __LINE__, __WFILE__, NULL, L"", NULL);
+        throw new MgdConnectionFailedException(L"MgSelectCommand.MgSelectCommand", __LINE__, __WFILE__, NULL, L"", NULL);
     }
     // Create FdoISelect command
     FdoPtr<FdoIConnection> fdoConn = m_connection->GetConnection();

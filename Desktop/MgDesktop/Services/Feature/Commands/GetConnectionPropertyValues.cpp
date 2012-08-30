@@ -90,7 +90,7 @@ MgStringCollection* MgGetConnectionPropertyValues::GetConnectionPropertyValues( 
     {
         if(NULL == msfc.p)
         {
-            throw new MgConnectionFailedException(L"MgGetConnectionPropertyValues.GetConnectionPropertyValues", __LINE__, __WFILE__, NULL, L"", NULL);
+            throw new MgdConnectionFailedException(L"MgGetConnectionPropertyValues.GetConnectionPropertyValues", __LINE__, __WFILE__, NULL, L"", NULL);
         }
 
         // The reference to the FDO connection from the MgFeatureConnection object must be cleaned up before the parent object

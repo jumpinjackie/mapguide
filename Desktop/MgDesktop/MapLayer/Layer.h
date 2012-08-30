@@ -5,7 +5,7 @@
 
 class MgdScrollableFeatureReader;
 
-/// \ingroup Desktop_Module
+/// \ingroup Desktop_Map_and_Layers_Module
 /// \{
 class MG_DESKTOP_API MgdLayer : public MgLayerBase
 {

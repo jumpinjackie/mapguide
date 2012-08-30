@@ -17,11 +17,11 @@
 
 #include "MgDesktop.h"
 
-MG_IMPL_DYNCREATE(MgDwfVersion)
+MG_IMPL_DYNCREATE(MgdDwfVersion)
 
 // Create a DWF specification.  The DWF is specified by both schema and file version
 //
-MgDwfVersion::MgDwfVersion(CREFSTRING fileVersion, CREFSTRING schemaVersion)
+MgdDwfVersion::MgdDwfVersion(CREFSTRING fileVersion, CREFSTRING schemaVersion)
 {
     m_fileVersion = fileVersion;
     m_schemaVersion = schemaVersion;
@@ -29,35 +29,35 @@ MgDwfVersion::MgDwfVersion(CREFSTRING fileVersion, CREFSTRING schemaVersion)
 
 // Returns the specified DWF file version string
 //
-STRING MgDwfVersion::GetFileVersion()
+STRING MgdDwfVersion::GetFileVersion()
 {
     return m_fileVersion;
 }
 
 // Sets the supported/required client-side file version for DWF.
 //
-void MgDwfVersion::SetFileVersion(CREFSTRING fileVersion)
+void MgdDwfVersion::SetFileVersion(CREFSTRING fileVersion)
 {
     m_fileVersion = fileVersion;
 }
 
 // Returns the specified DWF schema version
 //
-STRING MgDwfVersion::GetSchemaVersion()
+STRING MgdDwfVersion::GetSchemaVersion()
 {
     return m_schemaVersion;
 }
 
 // Sets the supported/required client-side schema version for DWF.
 //
-void MgDwfVersion::SetSchemaVersion(CREFSTRING schemaVersion)
+void MgdDwfVersion::SetSchemaVersion(CREFSTRING schemaVersion)
 {
     m_schemaVersion = schemaVersion;
 }
 
 // Serialize data to a stream
 //
-void MgDwfVersion::Serialize(MgStream* stream)
+void MgdDwfVersion::Serialize(MgStream* stream)
 {
     stream->WriteString(m_fileVersion);
     stream->WriteString(m_schemaVersion);
@@ -65,7 +65,7 @@ void MgDwfVersion::Serialize(MgStream* stream)
 
 // Deserialize data from a stream
 //
-void MgDwfVersion::Deserialize(MgStream* stream)
+void MgdDwfVersion::Deserialize(MgStream* stream)
 {
     MgStreamReader* streamReader = (MgStreamReader*)stream;
 
@@ -75,6 +75,6 @@ void MgDwfVersion::Deserialize(MgStream* stream)
 
 // Default ctor
 //
-MgDwfVersion::MgDwfVersion()
+MgdDwfVersion::MgdDwfVersion()
 {
 }

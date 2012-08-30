@@ -5,7 +5,7 @@
 
 class MgFeatureConnection;
 class FdoITransaction;
-/// \ingroup Desktop_Module
+/// \ingroup Desktop_Misc_Module
 /// \{
 class MG_DESKTOP_API MgdTransaction : public MgTransaction
 {

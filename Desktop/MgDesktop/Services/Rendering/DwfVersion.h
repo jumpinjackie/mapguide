@@ -18,7 +18,7 @@
 #ifndef DESKTOP_DWF_VERSION_H
 #define DEKSTOP_DWF_VERSION_H
 
-/// \ingroup Desktop_Module
+/// \ingroup Desktop_Misc_Module
 /// \{
 
 /////////////////////////////////////////////////////////////////
@@ -30,10 +30,10 @@
 /// These parameters should be set by the client so the MapGuide
 /// server generates client-side compatible DWFs.
 ///
-class MG_DESKTOP_API MgDwfVersion : public MgSerializable
+class MG_DESKTOP_API MgdDwfVersion : public MgSerializable
 {
     MG_DECL_DYNCREATE()
-    DECLARE_CLASSNAME(MgDwfVersion)
+    DECLARE_CLASSNAME(MgdDwfVersion)
 
 PUBLISHED_API:
     /////////////////////////////////////////////////////////////////
@@ -42,13 +42,13 @@ PUBLISHED_API:
     ///
     /// <!-- Syntax in .Net, Java, and PHP -->
     /// \htmlinclude DotNetSyntaxTop.html
-    /// MgDwfVersion(string fileVersion, string schemaVersion);
+    /// MgdDwfVersion(string fileVersion, string schemaVersion);
     /// \htmlinclude SyntaxBottom.html
     /// \htmlinclude JavaSyntaxTop.html
-    /// MgDwfVersion(String fileVersion, String schemaVersion);
+    /// MgdDwfVersion(String fileVersion, String schemaVersion);
     /// \htmlinclude SyntaxBottom.html
     /// \htmlinclude PHPSyntaxTop.html
-    /// MgDwfVersion(string fileVersion, string schemaVersion);
+    /// MgdDwfVersion(string fileVersion, string schemaVersion);
     /// \htmlinclude SyntaxBottom.html
     ///
     /// \param fileVersion (String/string)
@@ -64,11 +64,11 @@ PUBLISHED_API:
     /// <!-- Example (PHP) -->
     /// \htmlinclude PHPExampleTop.html
     /// \code
-    /// $dwfVersion = new MgDwfVersion('6.01','1.2');
+    /// $dwfVersion = new MgdDwfVersion('6.01','1.2');
     /// \endcode
     /// \htmlinclude ExampleBottom.html
     ///
-    MgDwfVersion(CREFSTRING fileVersion, CREFSTRING schemaVersion);
+    MgdDwfVersion(CREFSTRING fileVersion, CREFSTRING schemaVersion);
 
     //////////////////////////////////////////////
     /// \brief
@@ -187,7 +187,7 @@ INTERNAL_API:
     /// \brief
     /// Default constructor to shut Ptr<> up.
     ///
-    MgDwfVersion();
+    MgdDwfVersion();
 
     //////////////////////////////////////////////////////////////////
     /// \brief

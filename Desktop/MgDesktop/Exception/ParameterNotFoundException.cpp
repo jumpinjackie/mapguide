@@ -1,12 +1,12 @@
 #include "MgDesktop.h"
 
-IMPLEMENT_EXCEPTION_DEFAULTS(MgParameterNotFoundException, MgApplicationException)
+IMPLEMENT_EXCEPTION_DEFAULTS(MgdParameterNotFoundException, MgApplicationException)
 
 ///////////////////////////////////////////////////////////////////////////////
 /// \brief
-/// Construct a MgParameterNotFoundException object.
+/// Construct a MgdParameterNotFoundException object.
 ///
-MgParameterNotFoundException::MgParameterNotFoundException(CREFSTRING methodName,
+MgdParameterNotFoundException::MgdParameterNotFoundException(CREFSTRING methodName,
     INT32 lineNumber, CREFSTRING fileName, MgStringCollection* whatArguments,
     CREFSTRING whyMessageId, MgStringCollection* whyArguments) throw() :
     MgApplicationException(methodName, lineNumber, fileName,
@@ -16,8 +16,8 @@ MgParameterNotFoundException::MgParameterNotFoundException(CREFSTRING methodName
 
 ///////////////////////////////////////////////////////////////////////////////
 /// \brief
-/// Destruct the MgParameterNotFoundException object.
+/// Destruct the MgdParameterNotFoundException object.
 ///
-MgParameterNotFoundException::~MgParameterNotFoundException() throw()
+MgdParameterNotFoundException::~MgdParameterNotFoundException() throw()
 {
 }

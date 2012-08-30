@@ -22,7 +22,7 @@ class MgdFeatureInformation;
 template class MG_DESKTOP_API Ptr<MgdFeatureInformation>;
 
 class MgSelection;
-/// \ingroup Desktop_Module
+/// \ingroup Desktop_Misc_Module
 /// \{
 ///////////////////////////////////////////////////////////
 /// \brief

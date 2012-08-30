@@ -1,20 +1,21 @@
 #ifndef DESKTOP_DUPLICATE_PARAMETER_EXCEPTION_H
 #define DESKTOP_DUPLICATE_PARAMETER_EXCEPTION_H
 
+/// \ingroup Desktop_Exceptions_Module
 
 ///////////////////////////////////////////////////////////////////////////////
 /// \brief
 /// Thrown when a duplicate parameter is found.
 ///
-class MG_DESKTOP_API MgDuplicateParameterException : public MgApplicationException
+class MG_DESKTOP_API MgdDuplicateParameterException : public MgApplicationException
 {
-    DECLARE_CLASSNAME(MgDuplicateParameterException)
+    DECLARE_CLASSNAME(MgdDuplicateParameterException)
 
 EXTERNAL_API:
 
     ///////////////////////////////////////////////////////////////////////////
     /// \brief
-    /// Construct a MgDuplicateParameterException object.
+    /// Construct a MgdDuplicateParameterException object.
     ///
     /// \param methodName
     /// Name of the method where the exception occurred.
@@ -29,23 +30,23 @@ EXTERNAL_API:
     /// \param whyArguments
     /// Collection of arguments used to format the message that describes why the exception occurs.
     ///
-    MgDuplicateParameterException(CREFSTRING methodName, INT32 lineNumber,
+    MgdDuplicateParameterException(CREFSTRING methodName, INT32 lineNumber,
         CREFSTRING fileName, MgStringCollection* whatArguments,
         CREFSTRING whyMessageId, MgStringCollection* whyArguments) throw();
 
     ///////////////////////////////////////////////////////////////////////////
     /// \brief
-    /// Destruct the MgDuplicateParameterException object.
+    /// Destruct the MgdDuplicateParameterException object.
     ///
-    virtual ~MgDuplicateParameterException() throw();
+    virtual ~MgdDuplicateParameterException() throw();
 
 INTERNAL_API:
 
-    DECLARE_EXCEPTION_DEFAULTS(MgDuplicateParameterException)
+    DECLARE_EXCEPTION_DEFAULTS(MgdDuplicateParameterException)
 
 CLASS_ID:
 
-    static const INT32 m_cls_id = MapGuide_Desktop_Exception_MgDuplicateParameterException;
+    static const INT32 m_cls_id = MapGuide_Desktop_Exception_DuplicateParameterException;
 };
 
 #endif

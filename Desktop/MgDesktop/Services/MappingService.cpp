@@ -295,9 +295,9 @@ MgByteReader* MgdMappingService::GenerateLegendImage(MgResourceIdentifier* resou
 }
 
 MgByteReader* MgdMappingService::GeneratePlot(MgdMap* map,
-                                               MgPlotSpecification* plotSpec,
-                                               MgLayout* layout,
-                                               MgDwfVersion* dwfVersion)
+                                               MgdPlotSpecification* plotSpec,
+                                               MgdLayout* layout,
+                                               MgdDwfVersion* dwfVersion)
 {
     Ptr<MgByteReader> byteReader;
 
@@ -315,11 +315,11 @@ MgByteReader* MgdMappingService::GeneratePlot(MgdMap* map,
     MG_LOG_OPERATION_MESSAGE_PARAMETERS_START();
     MG_LOG_OPERATION_MESSAGE_ADD_STRING((NULL == mapId) ? L"MgResourceIdentifier" : mapId->ToString().c_str());
     MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
-    MG_LOG_OPERATION_MESSAGE_ADD_STRING(L"MgPlotSpecification");
+    MG_LOG_OPERATION_MESSAGE_ADD_STRING(L"MgdPlotSpecification");
     MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
     MG_LOG_OPERATION_MESSAGE_ADD_STRING((NULL == layoutId) ? L"MgResourceIdentifier" : layoutId->ToString().c_str());
     MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
-    MG_LOG_OPERATION_MESSAGE_ADD_STRING((NULL == dwfVersion) ? L"MgDwfVersion" : dwfVersion->GetLogString());
+    MG_LOG_OPERATION_MESSAGE_ADD_STRING((NULL == dwfVersion) ? L"MgdDwfVersion" : dwfVersion->GetLogString());
     MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
 
     MG_LOG_TRACE_ENTRY(L"MgdMappingService::GeneratePlot()");
@@ -330,11 +330,11 @@ MgByteReader* MgdMappingService::GeneratePlot(MgdMap* map,
             L"MgdMappingService::GeneratePlot", __LINE__, __WFILE__, NULL, L"", NULL);
     }
 
-    // Create a MgMapPlot which will be passed to GenerateMultiPlot
-    Ptr<MgMapPlot> mapPlot = new MgMapPlot(map, plotSpec, layout);
+    // Create a MgdMapPlot which will be passed to GenerateMultiPlot
+    Ptr<MgdMapPlot> mapPlot = new MgdMapPlot(map, plotSpec, layout);
 
-    // Add it to a MgMapPlotCollecion
-    Ptr<MgMapPlotCollection> mapPlots = new MgMapPlotCollection();
+    // Add it to a MgdMapPlotCollecion
+    Ptr<MgdMapPlotCollection> mapPlots = new MgdMapPlotCollection();
     mapPlots->Add(mapPlot);
 
     // Create the plot
@@ -363,9 +363,9 @@ MgByteReader* MgdMappingService::GeneratePlot(MgdMap* map,
 MgByteReader* MgdMappingService::GeneratePlot(MgdMap* map,
                                                MgCoordinate* center,
                                                double scale,
-                                               MgPlotSpecification* plotSpec,
-                                               MgLayout* layout,
-                                               MgDwfVersion* dwfVersion)
+                                               MgdPlotSpecification* plotSpec,
+                                               MgdLayout* layout,
+                                               MgdDwfVersion* dwfVersion)
 {
     Ptr<MgByteReader> byteReader;
 
@@ -387,11 +387,11 @@ MgByteReader* MgdMappingService::GeneratePlot(MgdMap* map,
     MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
     MG_LOG_OPERATION_MESSAGE_ADD_DOUBLE(scale)
     MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
-    MG_LOG_OPERATION_MESSAGE_ADD_STRING(L"MgPlotSpecification");
+    MG_LOG_OPERATION_MESSAGE_ADD_STRING(L"MgdPlotSpecification");
     MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
     MG_LOG_OPERATION_MESSAGE_ADD_STRING((NULL == layoutId) ? L"MgResourceIdentifier" : layoutId->ToString().c_str());
     MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
-    MG_LOG_OPERATION_MESSAGE_ADD_STRING((NULL == dwfVersion) ? L"MgDwfVersion" : dwfVersion->GetLogString());
+    MG_LOG_OPERATION_MESSAGE_ADD_STRING((NULL == dwfVersion) ? L"MgdDwfVersion" : dwfVersion->GetLogString());
     MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
 
     MG_LOG_TRACE_ENTRY(L"MgdMappingService::GeneratePlot()");
@@ -402,11 +402,11 @@ MgByteReader* MgdMappingService::GeneratePlot(MgdMap* map,
             L"MgdMappingService::GeneratePlot", __LINE__, __WFILE__, NULL, L"", NULL);
     }
 
-    // Create a MgMapPlot which will be passed to GenerateMultiPlot
-    Ptr<MgMapPlot> mapPlot = new MgMapPlot(map, center, scale, plotSpec, layout);
+    // Create a MgdMapPlot which will be passed to GenerateMultiPlot
+    Ptr<MgdMapPlot> mapPlot = new MgdMapPlot(map, center, scale, plotSpec, layout);
 
-    // Add it to a MgMapPlotCollecion
-    Ptr<MgMapPlotCollection> mapPlots = new MgMapPlotCollection();
+    // Add it to a MgdMapPlotCollecion
+    Ptr<MgdMapPlotCollection> mapPlots = new MgdMapPlotCollection();
     mapPlots->Add(mapPlot);
 
     // Create the plot
@@ -435,9 +435,9 @@ MgByteReader* MgdMappingService::GeneratePlot(MgdMap* map,
 MgByteReader* MgdMappingService::GeneratePlot(MgdMap* map,
                                                MgEnvelope* extents,
                                                bool expandToFit,
-                                               MgPlotSpecification* plotSpec,
-                                               MgLayout* layout,
-                                               MgDwfVersion* dwfVersion)
+                                               MgdPlotSpecification* plotSpec,
+                                               MgdLayout* layout,
+                                               MgdDwfVersion* dwfVersion)
 {
     Ptr<MgByteReader> byteReader;
 
@@ -459,11 +459,11 @@ MgByteReader* MgdMappingService::GeneratePlot(MgdMap* map,
     MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
     MG_LOG_OPERATION_MESSAGE_ADD_BOOL(expandToFit)
     MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
-    MG_LOG_OPERATION_MESSAGE_ADD_STRING(L"MgPlotSpecification");
+    MG_LOG_OPERATION_MESSAGE_ADD_STRING(L"MgdPlotSpecification");
     MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
     MG_LOG_OPERATION_MESSAGE_ADD_STRING((NULL == layoutId) ? L"MgResourceIdentifier" : layoutId->ToString().c_str());
     MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
-    MG_LOG_OPERATION_MESSAGE_ADD_STRING((NULL == dwfVersion) ? L"MgDwfVersion" : dwfVersion->GetLogString());
+    MG_LOG_OPERATION_MESSAGE_ADD_STRING((NULL == dwfVersion) ? L"MgdDwfVersion" : dwfVersion->GetLogString());
     MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
 
     MG_LOG_TRACE_ENTRY(L"MgdMappingService::GeneratePlot()");
@@ -485,11 +485,11 @@ MgByteReader* MgdMappingService::GeneratePlot(MgdMap* map,
     }
     Ptr<MgEnvelope> env = new MgEnvelope(ll, ur);
 
-    // Create a MgMapPlot which will be passed to GenerateMultiPlot
-    Ptr<MgMapPlot> mapPlot = new MgMapPlot(map, env, expandToFit, plotSpec, layout);
+    // Create a MgdMapPlot which will be passed to GenerateMultiPlot
+    Ptr<MgdMapPlot> mapPlot = new MgdMapPlot(map, env, expandToFit, plotSpec, layout);
 
-    // Add it to a MgMapPlotCollecion
-    Ptr<MgMapPlotCollection> mapPlots = new MgMapPlotCollection();
+    // Add it to a MgdMapPlotCollecion
+    Ptr<MgdMapPlotCollection> mapPlots = new MgdMapPlotCollection();
     if (mapPlot == NULL || mapPlots == NULL)
     {
         throw new MgNullArgumentException(L"MgdMappingService::GeneratePlot", __LINE__, __WFILE__, NULL, L"", NULL);
@@ -519,7 +519,7 @@ MgByteReader* MgdMappingService::GeneratePlot(MgdMap* map,
     return byteReader.Detach();
 }
 
-MgByteReader* MgdMappingService::GenerateMultiPlot(MgMapPlotCollection* mapPlots, MgDwfVersion* dwfVersion)
+MgByteReader* MgdMappingService::GenerateMultiPlot(MgdMapPlotCollection* mapPlots, MgdDwfVersion* dwfVersion)
 {
     Ptr<MgByteReader> ret;
     MG_LOG_OPERATION_MESSAGE(L"GenerateMultiPlot");
@@ -528,9 +528,9 @@ MgByteReader* MgdMappingService::GenerateMultiPlot(MgMapPlotCollection* mapPlots
 
     MG_LOG_OPERATION_MESSAGE_INIT(MG_API_VERSION(1, 0, 0), 2);
     MG_LOG_OPERATION_MESSAGE_PARAMETERS_START();
-    MG_LOG_OPERATION_MESSAGE_ADD_STRING(L"MgMapPlotCollection");
+    MG_LOG_OPERATION_MESSAGE_ADD_STRING(L"MgdMapPlotCollection");
     MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
-    MG_LOG_OPERATION_MESSAGE_ADD_STRING((NULL == dwfVersion) ? L"MgDwfVersion" : dwfVersion->GetLogString().c_str());
+    MG_LOG_OPERATION_MESSAGE_ADD_STRING((NULL == dwfVersion) ? L"MgdDwfVersion" : dwfVersion->GetLogString().c_str());
     MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
 
     MG_LOG_TRACE_ENTRY(L"MgdMappingService::GenerateMultiPlot()");
@@ -556,7 +556,7 @@ MgByteReader* MgdMappingService::GenerateMultiPlot(MgMapPlotCollection* mapPlots
     return ret.Detach();
 }
 
-MgByteReader* MgdMappingService::GenerateMultiPlotInternal(MgMapPlotCollection* mapPlots, MgDwfVersion* dwfVersion)
+MgByteReader* MgdMappingService::GenerateMultiPlotInternal(MgdMapPlotCollection* mapPlots, MgdDwfVersion* dwfVersion)
 {
     Ptr<MgByteReader> byteReader;
 
@@ -588,7 +588,7 @@ MgByteReader* MgdMappingService::GenerateMultiPlotInternal(MgMapPlotCollection* 
     // process the MapPlot collection
     for (int nMapPlotIndex = 0; nMapPlotIndex < mapPlots->GetCount(); nMapPlotIndex++)
     {
-        Ptr<MgMapPlot> mapPlot = mapPlots->GetItem(nMapPlotIndex);
+        Ptr<MgdMapPlot> mapPlot = mapPlots->GetItem(nMapPlotIndex);
         if (NULL == mapPlot)
         {
             throw new MgNullReferenceException(L"MgdMappingService::GenerateMultiPlot", __LINE__, __WFILE__, NULL, L"", NULL);
@@ -600,13 +600,13 @@ MgByteReader* MgdMappingService::GenerateMultiPlotInternal(MgMapPlotCollection* 
             throw new MgNullReferenceException(L"MgdMappingService::GenerateMultiPlot", __LINE__, __WFILE__, NULL, L"", NULL);
         }
 
-        Ptr<MgPlotSpecification> plotSpec = mapPlot->GetPlotSpecification();
+        Ptr<MgdPlotSpecification> plotSpec = mapPlot->GetPlotSpecification();
         if (NULL == plotSpec)
         {
             throw new MgNullReferenceException(L"MgdMappingService::GenerateMultiPlot", __LINE__, __WFILE__, NULL, L"", NULL);
         }
 
-        Ptr<MgLayout> layout = mapPlot->GetLayout();
+        Ptr<MgdLayout> layout = mapPlot->GetLayout();
 
         double width = plotSpec->GetPaperWidth();
         double height = plotSpec->GetPaperHeight();
@@ -675,7 +675,7 @@ MgByteReader* MgdMappingService::GenerateMultiPlotInternal(MgMapPlotCollection* 
             printLayout->SetScaleBarUnits(layout->GetUnitType());
             printLayout->SetPlotTitle(layout->GetTitle());
 
-            Ptr<MgPlotSpecification> spec = printLayout->GetPlotSize();
+            Ptr<MgdPlotSpecification> spec = printLayout->GetPlotSize();
 
             width = spec->GetPaperWidth();
             height = spec->GetPaperHeight();
@@ -722,7 +722,7 @@ MgByteReader* MgdMappingService::GenerateMultiPlotInternal(MgMapPlotCollection* 
 
         switch (mapPlot->GetMapPlotInstruction())
         {
-        case MgMapPlotInstruction::UseMapCenterAndScale:
+        case MgdMapPlotInstruction::UseMapCenterAndScale:
             {
                 dMapScale = map->GetViewScale();
                 if (dMapScale <= 0)
@@ -750,13 +750,13 @@ MgByteReader* MgdMappingService::GenerateMultiPlotInternal(MgMapPlotCollection* 
                 center = pt->GetCoordinate();
                 break;
             }
-        case MgMapPlotInstruction::UseOverriddenCenterAndScale:
+        case MgdMapPlotInstruction::UseOverriddenCenterAndScale:
             {
                 dMapScale = mapPlot->GetScale();
                 center = mapPlot->GetCenter();
                 break;
             }
-        case MgMapPlotInstruction::UseOverriddenExtent:
+        case MgdMapPlotInstruction::UseOverriddenExtent:
             {
                 // Compute the plotCenter and plotScale from the extents
                 extents = mapPlot->GetExtent();
@@ -806,7 +806,7 @@ MgByteReader* MgdMappingService::GenerateMultiPlotInternal(MgMapPlotCollection* 
             {
                 MgStringCollection arguments;
                 arguments.Add(L"1");
-                arguments.Add(L"MgMapPlotCollection");
+                arguments.Add(L"MgdMapPlotCollection");
 
                 throw new MgInvalidArgumentException(L"MgdMappingService::GenerateMultiPlot",
                     __LINE__, __WFILE__, &arguments, L"MgInvalidMapPlotCollectionMapPlotInstruction", NULL);
@@ -841,7 +841,7 @@ MgByteReader* MgdMappingService::GenerateMultiPlotInternal(MgMapPlotCollection* 
 
         Ptr<MgCoordinate> newll;
         Ptr<MgCoordinate> newur;
-        if (mapPlot->GetMapPlotInstruction() != MgMapPlotInstruction::UseOverriddenExtent || mapPlot->GetExpandToFit())
+        if (mapPlot->GetMapPlotInstruction() != MgdMapPlotInstruction::UseOverriddenExtent || mapPlot->GetExpandToFit())
         {
             double mapWidth = dr.mapWidth();
             double mapHeight = dr.mapHeight();
@@ -856,7 +856,7 @@ MgByteReader* MgdMappingService::GenerateMultiPlotInternal(MgMapPlotCollection* 
             newll = env->GetLowerLeftCoordinate();
             newur = env->GetUpperRightCoordinate();
         }
-        else if (mapPlot->GetMapPlotInstruction() == MgMapPlotInstruction::UseOverriddenExtent && !mapPlot->GetExpandToFit())
+        else if (mapPlot->GetMapPlotInstruction() == MgdMapPlotInstruction::UseOverriddenExtent && !mapPlot->GetExpandToFit())
         {
             newll = extents->GetLowerLeftCoordinate();
             newur = extents->GetUpperRightCoordinate();

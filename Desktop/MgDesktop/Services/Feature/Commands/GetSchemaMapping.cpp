@@ -110,7 +110,7 @@ MgByteReader* MgGetSchemaMapping::GetSchemaMapping(CREFSTRING providerName, CREF
     }
     else
     {
-        throw new MgConnectionFailedException(L"MgGetSchemaMapping::GetSchemaMapping()", __LINE__, __WFILE__, NULL, L"", NULL);
+        throw new MgdConnectionFailedException(L"MgGetSchemaMapping::GetSchemaMapping()", __LINE__, __WFILE__, NULL, L"", NULL);
     }
 
     MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgGetSchemaMapping.GetSchemaMapping")

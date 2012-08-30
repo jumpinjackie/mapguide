@@ -5,7 +5,7 @@
 
 class FdoISQLDataReader;
 class MgFeatureConnection;
-/// \ingroup Desktop_Module
+/// \ingroup Desktop_Misc_Module
 /// \{
 class MG_DESKTOP_API MgdSqlDataReader : public MgSqlDataReader
 {

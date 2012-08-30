@@ -21,7 +21,7 @@
 #include <FdoStd.h>
 
 class FdoIFeatureReader;
-
+/// \cond INTERNAL
 /// \brief
 /// The MgFdoReaderCollection class represents a collection of FdoIFeatureReader objects.
 class MgFdoReaderCollection : public FdoCollection<FdoIFeatureReader, FdoException>
@@ -51,4 +51,5 @@ public:
     ///
     /*FDO_API*/ static MgFdoReaderCollection* Create();
 };
+/// \endcond
 #endif

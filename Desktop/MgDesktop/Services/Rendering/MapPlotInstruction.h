@@ -18,16 +18,16 @@
 #ifndef DESKTOP_MAPPLOT_INSTRUCTION_H
 #define DESKTOP_MAPPLOT_INSTRUCTION_H
 
-/// \ingroup Desktop_Module
+/// \ingroup Desktop_Misc_Module
 /// \{
 ///////////////////////////////////////////////////////////////////////////////
 /// \brief
-/// MgMapPlotInstruction defines enumerated values used to indicate whether the plot
+/// MgdMapPlotInstruction defines enumerated values used to indicate whether the plot
 /// should be based on the center and scale of the map,
 /// an overridden center and scale, or an overridden extent.
-class MG_DESKTOP_API MgMapPlotInstruction
+class MG_DESKTOP_API MgdMapPlotInstruction
 {
-    DECLARE_CLASSNAME(MgMapPlotInstruction)
+    DECLARE_CLASSNAME(MgdMapPlotInstruction)
 
 PUBLISHED_API:
     ///////////////////////////////////////////////////////////////////////////

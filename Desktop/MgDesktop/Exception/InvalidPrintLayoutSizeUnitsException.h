@@ -15,7 +15,7 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
-/// \ingroup Exceptions_Module
+/// \ingroup Desktop_Exceptions_Module
 
 #ifndef DESKTOP_INVALID_PRINT_LAYOUT_SIZE_UNITS_EXCEPTION_H_
 #define DESKTOP_INVALID_PRINT_LAYOUT_SIZE_UNITS_EXCEPTION_H_
@@ -25,15 +25,15 @@
 /// Thrown when the size units in a PrintLayout
 /// resource document are not valid.
 ///
-class MG_DESKTOP_API MgInvalidPrintLayoutSizeUnitsException : public MgApplicationException
+class MG_DESKTOP_API MgdInvalidPrintLayoutSizeUnitsException : public MgApplicationException
 {
-    DECLARE_CLASSNAME(MgInvalidPrintLayoutSizeUnitsException)
+    DECLARE_CLASSNAME(MgdInvalidPrintLayoutSizeUnitsException)
 
 EXTERNAL_API:
 
     ///////////////////////////////////////////////////////////////////////////
     /// \brief
-    /// Construct a MgInvalidPrintLayoutSizeUnitsException object.
+    /// Construct a MgdInvalidPrintLayoutSizeUnitsException object.
     ///
     /// \param methodName
     /// Name of the method where the exception occurred.
@@ -48,23 +48,23 @@ EXTERNAL_API:
     /// \param whyArguments
     /// Collection of arguments used to format the message that describes why the exception occurs.
     ///
-    MgInvalidPrintLayoutSizeUnitsException(CREFSTRING methodName, INT32 lineNumber,
+    MgdInvalidPrintLayoutSizeUnitsException(CREFSTRING methodName, INT32 lineNumber,
         CREFSTRING fileName, MgStringCollection* whatArguments,
         CREFSTRING whyMessageId, MgStringCollection* whyArguments) throw();
 
     ///////////////////////////////////////////////////////////////////////////
     /// \brief
-    /// Destructor for a MgInvalidPrintLayoutSizeUnitsException object.
+    /// Destructor for a MgdInvalidPrintLayoutSizeUnitsException object.
     ///
-    virtual ~MgInvalidPrintLayoutSizeUnitsException() throw();
+    virtual ~MgdInvalidPrintLayoutSizeUnitsException() throw();
 
 INTERNAL_API:
 
-    DECLARE_EXCEPTION_DEFAULTS(MgInvalidPrintLayoutSizeUnitsException)
+    DECLARE_EXCEPTION_DEFAULTS(MgdInvalidPrintLayoutSizeUnitsException)
 
 CLASS_ID:
 
-    static const INT32 m_cls_id = MapGuide_Desktop_Exception_MgInvalidPrintLayoutSizeUnitsException;
+    static const INT32 m_cls_id = MapGuide_Desktop_Exception_InvalidPrintLayoutSizeUnitsException;
 };
 
 #endif

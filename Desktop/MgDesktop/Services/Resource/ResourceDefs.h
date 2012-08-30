@@ -54,7 +54,7 @@ EXTERNAL_API:
     {                                                                         \
         MgStringCollection arguments;                                         \
         arguments.Add(STRING(e.message()));                                   \
-        mgException = new MgDwfException(methodName, __LINE__, __WFILE__, NULL, L"MgFormatInnerExceptionMessage", &arguments); \
+        mgException = new MgdDwfException(methodName, __LINE__, __WFILE__, NULL, L"MgFormatInnerExceptionMessage", &arguments); \
     }                                                                         \
     catch (const XMLException& e)                                             \
     {                                                                         \

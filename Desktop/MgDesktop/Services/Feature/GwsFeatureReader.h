@@ -40,7 +40,7 @@ private:
     // features
     bool                m_bHasData;
 };
-///\endcond
+
 typedef std::multimap<STRING, GwsRightSideIterator> GwsFeatureIteratorMap;
 typedef std::pair<STRING, GwsRightSideIterator> GwsFeatureIteratorPair;
 
@@ -546,7 +546,6 @@ private:
 
 CLASS_ID:
     static const INT32 m_cls_id = PlatformBase_FeatureService_GwsFeatureReader;
-
 };
-
+///\endcond
 #endif

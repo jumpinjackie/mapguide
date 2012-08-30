@@ -8,7 +8,7 @@ class MgFeatureConnection;
 
 // The MgdScrollableFeatureReader is an extension to the MgFeatureReader 
 // that can be traversed in the forward and backward direction (scrollable)
-/// \ingroup Desktop_Module
+/// \ingroup Desktop_Misc_Module
 /// \{
 class MG_DESKTOP_API MgdScrollableFeatureReader : public MgdFeatureReader
 {

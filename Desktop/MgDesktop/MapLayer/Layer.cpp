@@ -331,7 +331,7 @@ MgPropertyCollection* MgdLayer::UpdateFeatures(MgFeatureCommandCollection* comma
         STRING errorMsg = parser.GetErrorMessage();
         MgStringCollection arguments;
         arguments.Add(errorMsg);
-        //TODO: MgInvalidFeatureSourceException
+        //TODO: MgdInvalidFeatureSourceException
 		throw new MgFeatureServiceException(L"MgdLayer::UpdateFeatures", __LINE__, __WFILE__, &arguments, L"", NULL);
     }
 

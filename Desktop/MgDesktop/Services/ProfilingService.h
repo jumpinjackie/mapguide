@@ -3,14 +3,14 @@
 
 #include "MgDesktop.h"
 
-class MgRenderingOptions;
+class MgdRenderingOptions;
 class MgdRenderingService;
 
-/// \ingroup Desktop_Module
+/// \ingroup Desktop_Service_Module
 /// \{
 
 /// \brief
-/// This class provides services to profile exsiting MapGuide APIs 
+/// This class provides services to profile existing MapGuide APIs 
 class MG_DESKTOP_API MgdProfilingService : public MgService
 {
 PUBLISHED_API:
@@ -36,7 +36,7 @@ PUBLISHED_API:
     virtual MgByteReader* ProfileRenderDynamicOverlay(
         MgdMap* map,
         MgdSelection* selection,
-        MgRenderingOptions* options);
+        MgdRenderingOptions* options);
 
     /////////////////////////////////////////////////////////////////
     /// \brief

@@ -24,9 +24,9 @@ public:
     //These have been cleaned up to work with a generic renderer, rather than just EPlot.
     //Eventually the scale bar and north arrow ones need to be cleaned up also in order
     //to use them in the AJAX viewer
-    void AddLegendElement(double dMapScale, Renderer& dr, MgdMap* map, MgPlotSpecification* plotSpec, double legendOffsetX, double legendOffsetY);
-    void ProcessLayersForLegend(MgdMap* map, double mapScale, MgLayerGroup* mggroup, double startX, double& startY, RS_TextDef textDef, Renderer& dr, MgPlotSpecification* plotSpec, double legendOffsetY, double convertUnits);
-    void BuildLegendContent(MgdMap* map, double scale, MgPlotSpecification* legendSpec, double legendOffsetX, double legendOffsetY, Renderer& dr, double convertUnits);
+    void AddLegendElement(double dMapScale, Renderer& dr, MgdMap* map, MgdPlotSpecification* plotSpec, double legendOffsetX, double legendOffsetY);
+    void ProcessLayersForLegend(MgdMap* map, double mapScale, MgLayerGroup* mggroup, double startX, double& startY, RS_TextDef textDef, Renderer& dr, MgdPlotSpecification* plotSpec, double legendOffsetY, double convertUnits);
+    void BuildLegendContent(MgdMap* map, double scale, MgdPlotSpecification* legendSpec, double legendOffsetX, double legendOffsetY, Renderer& dr, double convertUnits);
 
     void ExtentFromMapCenter(MgdMap* map, double metersPerUnit, RS_Bounds& b);
 

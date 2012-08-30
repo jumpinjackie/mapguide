@@ -1083,12 +1083,12 @@ void TestResourceService::TestCase_EnumerateUnmanagedData()
         }
 
         // Try to enumerate mappings
-        Ptr<MgByteReader> byteReader0 = pService->EnumerateUnmanagedData(L"", false, MgUnmanagedDataType::Folders, L"");
+        Ptr<MgByteReader> byteReader0 = pService->EnumerateUnmanagedData(L"", false, MgdUnmanagedDataType::Folders, L"");
         STRING mimeType0 = byteReader0->GetMimeType();
         CPPUNIT_ASSERT(wcscmp(mimeType0.c_str(), MgMimeType::Xml.c_str()) == 0);
 
         // Enumerate all unmanaged data files
-        Ptr<MgByteReader> byteReader1 = pService->EnumerateUnmanagedData(L"", true, MgUnmanagedDataType::Files, L"");
+        Ptr<MgByteReader> byteReader1 = pService->EnumerateUnmanagedData(L"", true, MgdUnmanagedDataType::Files, L"");
         STRING mimeType1 = byteReader1->GetMimeType();
         CPPUNIT_ASSERT(wcscmp(mimeType1.c_str(), MgMimeType::Xml.c_str()) == 0);
     }

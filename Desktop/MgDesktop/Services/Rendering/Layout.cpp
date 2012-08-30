@@ -17,24 +17,24 @@
 
 #include "MgDesktop.h"
 
-MG_IMPL_DYNCREATE(MgLayout)
+MG_IMPL_DYNCREATE(MgdLayout)
 
-// Default Constructor for a MgLayout object
+// Default Constructor for a MgdLayout object
 //
-MgLayout::MgLayout()
+MgdLayout::MgdLayout()
 {
 }
 
-// Construct a MgLayout object
+// Construct a MgdLayout object
 //
-MgLayout::MgLayout(MgResourceIdentifier* layoutDefinition, CREFSTRING title, CREFSTRING unitType) :
+MgdLayout::MgdLayout(MgResourceIdentifier* layoutDefinition, CREFSTRING title, CREFSTRING unitType) :
     m_title(title), m_unitType(unitType)
 {
     m_layout = SAFE_ADDREF(layoutDefinition);
 }
 
-// Destructor for MgLayout
-MgLayout::~MgLayout()
+// Destructor for MgdLayout
+MgdLayout::~MgdLayout()
 {
     if (m_layout)
     {
@@ -44,25 +44,25 @@ MgLayout::~MgLayout()
 
 // Get the layout to use when generating the EPlot DWF.  If not specified, then the plotted map
 // will fill the space within the page margins.
-MgResourceIdentifier* MgLayout::GetLayout()
+MgResourceIdentifier* MgdLayout::GetLayout()
 {
     return SAFE_ADDREF(m_layout);
 }
 
 // Set the layout to use when generating the EPlot DWF.
-void MgLayout::SetLayout(MgResourceIdentifier* plotLayout)
+void MgdLayout::SetLayout(MgResourceIdentifier* plotLayout)
 {
     m_layout = plotLayout;
 }
 
 // Get the title
-STRING MgLayout::GetTitle()
+STRING MgdLayout::GetTitle()
 {
     return m_title;
 }
 
 // Set the title
-void MgLayout::SetTitle(CREFSTRING title)
+void MgdLayout::SetTitle(CREFSTRING title)
 {
     m_title = title;
 }
@@ -70,20 +70,20 @@ void MgLayout::SetTitle(CREFSTRING title)
 // Get the layout scale units.  This value determines the units used
 // in the scale bar definition.  This value is ignored if a layout is not
 // specified.
-STRING MgLayout::GetUnitType()
+STRING MgdLayout::GetUnitType()
 {
     return m_unitType;
 }
 
 // Set the layout scale units.
-void MgLayout::SetUnitType(CREFSTRING unitType)
+void MgdLayout::SetUnitType(CREFSTRING unitType)
 {
     m_unitType = unitType;
 }
 
 // Serialize data to a stream
 //
-void MgLayout::Serialize(MgStream* stream)
+void MgdLayout::Serialize(MgStream* stream)
 {
     stream->WriteObject(m_layout);
     stream->WriteString(m_title);
@@ -92,7 +92,7 @@ void MgLayout::Serialize(MgStream* stream)
 
 // Deserialize data from a stream
 //
-void MgLayout::Deserialize(MgStream* stream)
+void MgdLayout::Deserialize(MgStream* stream)
 {
     MgStreamReader* streamReader = (MgStreamReader*)stream;
 

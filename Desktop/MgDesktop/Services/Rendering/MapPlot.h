@@ -20,18 +20,18 @@
 
 class MgdMap;
 class MgdLayer;
-class MgPlotSpecification;
-class MgLayout;
-/// \ingroup Desktop_Module
+class MgdPlotSpecification;
+class MgdLayout;
+/// \ingroup Desktop_Misc_Module
 /// \{
 /////////////////////////////////////////////////////////////////
 /// \brief
 /// The MgdMapPlot class allows the developer to specify the map,
 /// the view of the map, the plot specification, and the layout
 /// for one sheet within a call to GenerateMultiPlot.
-class MG_DESKTOP_API MgMapPlot : public MgNamedSerializable
+class MG_DESKTOP_API MgdMapPlot : public MgNamedSerializable
 {
-    DECLARE_CLASSNAME(MgMapPlot)
+    DECLARE_CLASSNAME(MgdMapPlot)
 
 PUBLISHED_API:
     ///////////////////////////////////////////////
@@ -42,22 +42,22 @@ PUBLISHED_API:
     ///
     /// <!-- Syntax in .Net, Java, and PHP -->
     /// \htmlinclude DotNetSyntaxTop.html
-    /// MgdMapPlot(MgdMap map, MgPlotSpecification plotSpec, MgLayout layout);
+    /// MgdMapPlot(MgdMap map, MgdPlotSpecification plotSpec, MgdLayout layout);
     /// \htmlinclude SyntaxBottom.html
     /// \htmlinclude JavaSyntaxTop.html
-    /// MgdMapPlot(MgdMap map, MgPlotSpecification plotSpec, MgLayout layout);
+    /// MgdMapPlot(MgdMap map, MgdPlotSpecification plotSpec, MgdLayout layout);
     /// \htmlinclude SyntaxBottom.html
     /// \htmlinclude PHPSyntaxTop.html
-    /// MgdMapPlot(MgdMap map, MgPlotSpecification plotSpec, MgLayout layout);
+    /// MgdMapPlot(MgdMap map, MgdPlotSpecification plotSpec, MgdLayout layout);
     /// \htmlinclude SyntaxBottom.html
     ///
     /// \return
     /// Nothing.
     ///
-    MgMapPlot(
+    MgdMapPlot(
         MgdMap* map,
-        MgPlotSpecification* plotSpec,
-        MgLayout* layout);
+        MgdPlotSpecification* plotSpec,
+        MgdLayout* layout);
 
     ///////////////////////////////////////////////
     /// \brief
@@ -67,24 +67,24 @@ PUBLISHED_API:
     ///
     /// <!-- Syntax in .Net, Java, and PHP -->
     /// \htmlinclude DotNetSyntaxTop.html
-    /// MgdMapPlot(MgdMap map, MgCoordinate center, double scale, MgPlotSpecification plotSpec, MgLayout layout);
+    /// MgdMapPlot(MgdMap map, MgCoordinate center, double scale, MgdPlotSpecification plotSpec, MgdLayout layout);
     /// \htmlinclude SyntaxBottom.html
     /// \htmlinclude JavaSyntaxTop.html
-    /// MgdMapPlot(MgdMap map, MgCoordinate center, double scale, MgPlotSpecification plotSpec, MgLayout layout);
+    /// MgdMapPlot(MgdMap map, MgCoordinate center, double scale, MgdPlotSpecification plotSpec, MgdLayout layout);
     /// \htmlinclude SyntaxBottom.html
     /// \htmlinclude PHPSyntaxTop.html
-    /// MgdMapPlot(MgdMap map, MgCoordinate center, double scale, MgPlotSpecification plotSpec, MgLayout layout);
+    /// MgdMapPlot(MgdMap map, MgCoordinate center, double scale, MgdPlotSpecification plotSpec, MgdLayout layout);
     /// \htmlinclude SyntaxBottom.html
     ///
     /// \return
     /// Nothing.
     ///
-    MgMapPlot(
+    MgdMapPlot(
         MgdMap* map,
         MgCoordinate* center,
         double scale,
-        MgPlotSpecification* plotSpec,
-        MgLayout* layout);
+        MgdPlotSpecification* plotSpec,
+        MgdLayout* layout);
 
     ///////////////////////////////////////////////
     /// \brief
@@ -94,24 +94,24 @@ PUBLISHED_API:
     ///
     /// <!-- Syntax in .Net, Java, and PHP -->
     /// \htmlinclude DotNetSyntaxTop.html
-    /// MgdMapPlot(MgdMap map, MgEnvelope extent, bool expandToFit, MgPlotSpecification plotSpec, MgLayout layout);
+    /// MgdMapPlot(MgdMap map, MgEnvelope extent, bool expandToFit, MgdPlotSpecification plotSpec, MgdLayout layout);
     /// \htmlinclude SyntaxBottom.html
     /// \htmlinclude JavaSyntaxTop.html
-    /// MgdMapPlot(MgdMap map, MgEnvelope extent, boolean expandToFit, MgPlotSpecification plotSpec, MgLayout layout);
+    /// MgdMapPlot(MgdMap map, MgEnvelope extent, boolean expandToFit, MgdPlotSpecification plotSpec, MgdLayout layout);
     /// \htmlinclude SyntaxBottom.html
     /// \htmlinclude PHPSyntaxTop.html
-    /// MgdMapPlot(MgdMap map, MgEnvelope extent, bool expandToFit, MgPlotSpecification plotSpec, MgLayout layout);
+    /// MgdMapPlot(MgdMap map, MgEnvelope extent, bool expandToFit, MgdPlotSpecification plotSpec, MgdLayout layout);
     /// \htmlinclude SyntaxBottom.html
     ///
     /// \return
     /// Nothing.
     ///
-    MgMapPlot(
+    MgdMapPlot(
         MgdMap* map,
         MgEnvelope* extent,
         bool expandToFit,
-        MgPlotSpecification* plotSpec,
-        MgLayout* layout);
+        MgdPlotSpecification* plotSpec,
+        MgdLayout* layout);
 
     ///////////////////////////////////////////////
     /// \brief
@@ -340,19 +340,19 @@ PUBLISHED_API:
     ///
     /// <!-- Syntax in .Net, Java, and PHP -->
     /// \htmlinclude DotNetSyntaxTop.html
-    /// MgPlotSpecification GetPlotSpecification();
+    /// MgdPlotSpecification GetPlotSpecification();
     /// \htmlinclude SyntaxBottom.html
     /// \htmlinclude JavaSyntaxTop.html
-    /// MgPlotSpecification GetPlotSpecification();
+    /// MgdPlotSpecification GetPlotSpecification();
     /// \htmlinclude SyntaxBottom.html
     /// \htmlinclude PHPSyntaxTop.html
-    /// MgPlotSpecification GetPlotSpecification();
+    /// MgdPlotSpecification GetPlotSpecification();
     /// \htmlinclude SyntaxBottom.html
     ///
     /// \return
-    /// The MgPlotSpecification.
+    /// The MgdPlotSpecification.
     ///
-    MgPlotSpecification* GetPlotSpecification();
+    MgdPlotSpecification* GetPlotSpecification();
 
     ///////////////////////////////////////////////
     /// \brief
@@ -360,22 +360,22 @@ PUBLISHED_API:
     ///
     /// <!-- Syntax in .Net, Java, and PHP -->
     /// \htmlinclude DotNetSyntaxTop.html
-    /// void SetPlotSpecification(MgPlotSpecification plotSpec);
+    /// void SetPlotSpecification(MgdPlotSpecification plotSpec);
     /// \htmlinclude SyntaxBottom.html
     /// \htmlinclude JavaSyntaxTop.html
-    /// void SetPlotSpecification(MgPlotSpecification plotSpec);
+    /// void SetPlotSpecification(MgdPlotSpecification plotSpec);
     /// \htmlinclude SyntaxBottom.html
     /// \htmlinclude PHPSyntaxTop.html
-    /// void SetPlotSpecification(MgPlotSpecification plotSpec);
+    /// void SetPlotSpecification(MgdPlotSpecification plotSpec);
     /// \htmlinclude SyntaxBottom.html
     ///
-    /// \param plotSpec (MgPlotSpecification)
+    /// \param plotSpec (MgdPlotSpecification)
     /// The plot specification.
     ///
     /// \return
     /// Nothing
     ///
-    void SetPlotSpecification(MgPlotSpecification* plotSpec);
+    void SetPlotSpecification(MgdPlotSpecification* plotSpec);
 
     ///////////////////////////////////////////////
     /// \brief
@@ -384,19 +384,19 @@ PUBLISHED_API:
     ///
     /// <!-- Syntax in .Net, Java, and PHP -->
     /// \htmlinclude DotNetSyntaxTop.html
-    /// MgLayout GetLayout();
+    /// MgdLayout GetLayout();
     /// \htmlinclude SyntaxBottom.html
     /// \htmlinclude JavaSyntaxTop.html
-    /// MgLayout GetLayout();
+    /// MgdLayout GetLayout();
     /// \htmlinclude SyntaxBottom.html
     /// \htmlinclude PHPSyntaxTop.html
-    /// MgLayout GetLayout();
+    /// MgdLayout GetLayout();
     /// \htmlinclude SyntaxBottom.html
     ///
     /// \return
-    /// The MgLayout.
+    /// The MgdLayout.
     ///
-    MgLayout* GetLayout();
+    MgdLayout* GetLayout();
 
     ///////////////////////////////////////////////
     /// \brief
@@ -404,22 +404,22 @@ PUBLISHED_API:
     ///
     /// <!-- Syntax in .Net, Java, and PHP -->
     /// \htmlinclude DotNetSyntaxTop.html
-    /// void SetLayout(MgLayout layout);
+    /// void SetLayout(MgdLayout layout);
     /// \htmlinclude SyntaxBottom.html
     /// \htmlinclude JavaSyntaxTop.html
-    /// void SetLayout(MgLayout layout);
+    /// void SetLayout(MgdLayout layout);
     /// \htmlinclude SyntaxBottom.html
     /// \htmlinclude PHPSyntaxTop.html
-    /// void SetLayout(MgLayout layout);
+    /// void SetLayout(MgdLayout layout);
     /// \htmlinclude SyntaxBottom.html
     ///
-    /// \param layout (MgLayout)
+    /// \param layout (MgdLayout)
     /// The object defining the layout for the plot.
     ///
     /// \return
     /// Nothing
     ///
-    void SetLayout(MgLayout* layout);
+    void SetLayout(MgdLayout* layout);
 
 INTERNAL_API:
     //////////////////////////////////////////////////////////
@@ -463,7 +463,7 @@ INTERNAL_API:
     /// \brief
     /// Construct and empty MgdMapPlot object
     ///
-    MgMapPlot();
+    MgdMapPlot();
 
     //////////////////////////////////////////////////////////
     /// \brief
@@ -472,7 +472,7 @@ INTERNAL_API:
     /// \return
     /// Nothing
     ///
-    virtual ~MgMapPlot();
+    virtual ~MgdMapPlot();
 
 protected:
 
@@ -508,8 +508,8 @@ private:
     void Initialize();
 
     MgdMap* m_map;
-    MgPlotSpecification* m_plotSpec;
-    MgLayout* m_layout;
+    MgdPlotSpecification* m_plotSpec;
+    MgdLayout* m_layout;
 
     MgCoordinate* m_center;
     double m_scale;

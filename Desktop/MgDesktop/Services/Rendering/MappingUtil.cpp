@@ -861,8 +861,8 @@ void MgMappingUtil::StylizeLayers(MgResourceService* svcResource,
             MgStringCollection argumentsWhy;
             argumentsWhy.Add(mgException->GetExceptionMessage(locale));
 
-            Ptr<MgStylizeLayerFailedException> exception;
-            exception = new MgStylizeLayerFailedException(L"MgMappingUtil.StylizeLayers", __LINE__, __WFILE__, &arguments, L"MgFormatInnerExceptionMessage", &argumentsWhy);
+            Ptr<MgdStylizeLayerFailedException> exception;
+            exception = new MgdStylizeLayerFailedException(L"MgMappingUtil.StylizeLayers", __LINE__, __WFILE__, &arguments, L"MgFormatInnerExceptionMessage", &argumentsWhy);
 
             STRING message = exception->GetExceptionMessage(locale);
             STRING stackTrace = exception->GetStackTrace(locale);

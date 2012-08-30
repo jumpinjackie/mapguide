@@ -48,7 +48,7 @@ void MgUpdateFeaturesCommand::Connect(MgResourceIdentifier* resource, MgTransact
     if ((NULL != m_SrvrFeatConn.p) && ( !m_SrvrFeatConn->IsConnectionOpen() ))
     {
 
-        throw new MgConnectionFailedException(L"MgUpdateFeaturesCommand::MgUpdateFeaturesCommand()",
+        throw new MgdConnectionFailedException(L"MgUpdateFeaturesCommand::MgUpdateFeaturesCommand()",
             __LINE__, __WFILE__, NULL, L"", NULL);
     }
 }

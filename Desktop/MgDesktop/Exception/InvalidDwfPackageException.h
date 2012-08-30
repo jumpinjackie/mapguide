@@ -1,21 +1,21 @@
 #ifndef DESKTOP_INVALID_DWF_PACKAGE_EXCEPTION_H
 #define DESKTOP_INVALID_DWF_PACKAGE_EXCEPTION_H
 
-/// \ingroup Exceptions_Module
+/// \ingroup Desktop_Exceptions_Module
 
 ///////////////////////////////////////////////////////////////////////////////
 /// \brief
 /// Thrown when a DWF package is not valid.
 ///
-class MG_DESKTOP_API MgInvalidDwfPackageException : public MgApplicationException
+class MG_DESKTOP_API MgdInvalidDwfPackageException : public MgApplicationException
 {
-    DECLARE_CLASSNAME(MgInvalidDwfPackageException)
+    DECLARE_CLASSNAME(MgdInvalidDwfPackageException)
 
 EXTERNAL_API:
 
     ///////////////////////////////////////////////////////////////////////////
     /// \brief
-    /// Construct a MgInvalidDwfPackageException object.
+    /// Construct a MgdInvalidDwfPackageException object.
     ///
     /// \param methodName
     /// Name of the method where the exception occurred.
@@ -30,23 +30,23 @@ EXTERNAL_API:
     /// \param whyArguments
     /// Collection of arguments used to format the message that describes why the exception occurs.
     ///
-    MgInvalidDwfPackageException(CREFSTRING methodName, INT32 lineNumber,
+    MgdInvalidDwfPackageException(CREFSTRING methodName, INT32 lineNumber,
         CREFSTRING fileName, MgStringCollection* whatArguments,
         CREFSTRING whyMessageId, MgStringCollection* whyArguments) throw();
 
     ///////////////////////////////////////////////////////////////////////////
     /// \brief
-    /// Destructor for a MgInvalidDwfPackageException object.
+    /// Destructor for a MgdInvalidDwfPackageException object.
     ///
-    virtual ~MgInvalidDwfPackageException() throw();
+    virtual ~MgdInvalidDwfPackageException() throw();
 
 INTERNAL_API:
 
-    DECLARE_EXCEPTION_DEFAULTS(MgInvalidDwfPackageException)
+    DECLARE_EXCEPTION_DEFAULTS(MgdInvalidDwfPackageException)
 
 CLASS_ID:
 
-    static const INT32 m_cls_id = MapGuide_Desktop_Exception_MgInvalidDwfPackageException;
+    static const INT32 m_cls_id = MapGuide_Desktop_Exception_InvalidDwfPackageException;
 };
 
 #endif

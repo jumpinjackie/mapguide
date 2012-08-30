@@ -1219,7 +1219,7 @@ MgdGwsFeatureReader* MgSelectFeatures::JoinFeatures(MgResourceIdentifier* featur
             }
             else
             {
-                throw new MgConnectionFailedException(L"MgServerSelectFeatures.JoinFeatures",
+                throw new MgdConnectionFailedException(L"MgServerSelectFeatures.JoinFeatures",
                     __LINE__, __WFILE__, NULL, L"", NULL);
             }
 
@@ -1366,7 +1366,7 @@ MgdGwsFeatureReader* MgSelectFeatures::JoinFeatures(MgResourceIdentifier* featur
                     }
                     else
                     {
-                        throw new MgConnectionFailedException(L"MgServerSelectFeatures.JoinFeatures",
+                        throw new MgdConnectionFailedException(L"MgServerSelectFeatures.JoinFeatures",
                             __LINE__, __WFILE__, NULL, L"", NULL);
                     }
                 }
@@ -1605,7 +1605,7 @@ bool MgSelectFeatures::SupportsFdoJoin(MgResourceIdentifier* featureSourceId, CR
     {
         if (!conn->IsConnectionOpen())
         {
-            throw new MgConnectionFailedException(L"MgServerSelectFeatures.SupportsFdoJoin", __LINE__, __WFILE__, NULL, L"", NULL);
+            throw new MgdConnectionFailedException(L"MgServerSelectFeatures.SupportsFdoJoin", __LINE__, __WFILE__, NULL, L"", NULL);
         }
 
         FdoPtr<FdoIConnection> fdoConn = conn->GetConnection();
@@ -1831,7 +1831,7 @@ bool MgSelectFeatures::FilterContainsSecondaryProperties(MgResourceIdentifier* f
     {
         if (!conn->IsConnectionOpen())
         {
-            throw new MgConnectionFailedException(L"MgServerSelectFeatures.SupportsFdoJoin", __LINE__, __WFILE__, NULL, L"", NULL);
+            throw new MgdConnectionFailedException(L"MgServerSelectFeatures.SupportsFdoJoin", __LINE__, __WFILE__, NULL, L"", NULL);
         }
 
         FdoPtr<FdoIConnection> fdoConn = conn->GetConnection();
@@ -1950,7 +1950,7 @@ MgReader* MgSelectFeatures::SelectFdoJoin(MgResourceIdentifier* featureSourceId,
     {
         if (!conn->IsConnectionOpen())
         {
-            throw new MgConnectionFailedException(L"MgServerSelectFeatures.SelectFdoJoin", __LINE__, __WFILE__, NULL, L"", NULL);
+            throw new MgdConnectionFailedException(L"MgServerSelectFeatures.SelectFdoJoin", __LINE__, __WFILE__, NULL, L"", NULL);
         }
 
         CHECKNULL(m_command, L"MgServerSelectFeatures.SelectFdoJoin");

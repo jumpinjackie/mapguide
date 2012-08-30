@@ -21,18 +21,18 @@
 
 //////////////////////////////////////////////////////////////
 // Default constructor
-MgMapPlot::MgMapPlot()
+MgdMapPlot::MgdMapPlot()
 {
 }
 
 
 //////////////////////////////////////////////////////////////
-// Create and initialize an MgMapPlot instance.
-MgMapPlot::MgMapPlot(MgdMap* map, MgPlotSpecification* plotSpec, MgLayout* layout)
+// Create and initialize an MgdMapPlot instance.
+MgdMapPlot::MgdMapPlot(MgdMap* map, MgdPlotSpecification* plotSpec, MgdLayout* layout)
 {
     if (NULL == map || NULL == plotSpec)
     {
-        throw new MgNullArgumentException(L"MgMapPlot.MgMapPlot", __LINE__, __WFILE__, NULL, L"", NULL);
+        throw new MgNullArgumentException(L"MgdMapPlot.MgdMapPlot", __LINE__, __WFILE__, NULL, L"", NULL);
     }
 
     Initialize();
@@ -41,17 +41,17 @@ MgMapPlot::MgMapPlot(MgdMap* map, MgPlotSpecification* plotSpec, MgLayout* layou
     m_plotSpec = SAFE_ADDREF(plotSpec);
     m_layout = SAFE_ADDREF(layout);
 
-    m_plotInstruction = MgMapPlotInstruction::UseMapCenterAndScale;
+    m_plotInstruction = MgdMapPlotInstruction::UseMapCenterAndScale;
 }
 
 
 //////////////////////////////////////////////////////////////
-MgMapPlot::MgMapPlot(MgdMap* map, MgCoordinate* center, double scale,
-                     MgPlotSpecification* plotSpec, MgLayout* layout)
+MgdMapPlot::MgdMapPlot(MgdMap* map, MgCoordinate* center, double scale,
+                     MgdPlotSpecification* plotSpec, MgdLayout* layout)
 {
     if (NULL == map || NULL == center || NULL == plotSpec)
     {
-        throw new MgNullArgumentException(L"MgMapPlot.MgMapPlot", __LINE__, __WFILE__, NULL, L"", NULL);
+        throw new MgNullArgumentException(L"MgdMapPlot.MgdMapPlot", __LINE__, __WFILE__, NULL, L"", NULL);
     }
 
     Initialize();
@@ -63,17 +63,17 @@ MgMapPlot::MgMapPlot(MgdMap* map, MgCoordinate* center, double scale,
     m_plotSpec = SAFE_ADDREF(plotSpec);
     m_layout = SAFE_ADDREF(layout);
 
-    m_plotInstruction = MgMapPlotInstruction::UseOverriddenCenterAndScale;
+    m_plotInstruction = MgdMapPlotInstruction::UseOverriddenCenterAndScale;
 }
 
 
 //////////////////////////////////////////////////////////////
-MgMapPlot::MgMapPlot(MgdMap* map, MgEnvelope* extent, bool expandToFit,
-                     MgPlotSpecification* plotSpec, MgLayout* layout)
+MgdMapPlot::MgdMapPlot(MgdMap* map, MgEnvelope* extent, bool expandToFit,
+                     MgdPlotSpecification* plotSpec, MgdLayout* layout)
 {
     if (map == NULL || extent == NULL || plotSpec == NULL)
     {
-        throw new MgNullArgumentException(L"MgMapPlot.MgMapPlot", __LINE__, __WFILE__, NULL, L"", NULL);
+        throw new MgNullArgumentException(L"MgdMapPlot.MgdMapPlot", __LINE__, __WFILE__, NULL, L"", NULL);
     }
 
     Initialize();
@@ -85,13 +85,13 @@ MgMapPlot::MgMapPlot(MgdMap* map, MgEnvelope* extent, bool expandToFit,
     m_plotSpec = SAFE_ADDREF(plotSpec);
     m_layout = SAFE_ADDREF(layout);
 
-    m_plotInstruction = MgMapPlotInstruction::UseOverriddenExtent;
+    m_plotInstruction = MgdMapPlotInstruction::UseOverriddenExtent;
 }
 
 
 //////////////////////////////////////////////////////////////
 // Initialize class members which may not be set by the constructors
-void MgMapPlot::Initialize()
+void MgdMapPlot::Initialize()
 {
     Ptr<MgCoordinate> initCoord = new MgCoordinateXY(0, 0);
     m_center = initCoord;
@@ -105,7 +105,7 @@ void MgMapPlot::Initialize()
 
 //////////////////////////////////////////////////////////////
 // Get and Set the MgMap to plot.
-MgdMap* MgMapPlot::GetMap()
+MgdMap* MgdMapPlot::GetMap()
 {
     return SAFE_ADDREF(m_map);
 }
@@ -113,7 +113,7 @@ MgdMap* MgMapPlot::GetMap()
 
 //////////////////////////////////////////////////////////////
 // Set the MgMap to plot.
-void MgMapPlot::SetMap(MgdMap* map)
+void MgdMapPlot::SetMap(MgdMap* map)
 {
     SAFE_RELEASE(m_map);
     m_map = SAFE_ADDREF(map);
@@ -123,7 +123,7 @@ void MgMapPlot::SetMap(MgdMap* map)
 //////////////////////////////////////////////////////////////
 // Get the MapPlotInstruction, which defines how the view of the map
 // to be plotted is defined.
-INT32 MgMapPlot::GetMapPlotInstruction()
+INT32 MgdMapPlot::GetMapPlotInstruction()
 {
     return m_plotInstruction;
 }
@@ -131,7 +131,7 @@ INT32 MgMapPlot::GetMapPlotInstruction()
 
 //////////////////////////////////////////////////////////////
 // Set the MapPlotInstruction.
-void MgMapPlot::SetMapPlotInstruction(INT32 plotInstruction)
+void MgdMapPlot::SetMapPlotInstruction(INT32 plotInstruction)
 {
     m_plotInstruction = plotInstruction;
 }
@@ -139,7 +139,7 @@ void MgMapPlot::SetMapPlotInstruction(INT32 plotInstruction)
 
 //////////////////////////////////////////////////////////////
 // Get and the view center.
-MgCoordinate* MgMapPlot::GetCenter()
+MgCoordinate* MgdMapPlot::GetCenter()
 {
     return SAFE_ADDREF(m_center);
 }
@@ -147,7 +147,7 @@ MgCoordinate* MgMapPlot::GetCenter()
 
 //////////////////////////////////////////////////////////////
 // Get the view scale.
-double MgMapPlot::GetScale()
+double MgdMapPlot::GetScale()
 {
     return m_scale;
 }
@@ -155,18 +155,18 @@ double MgMapPlot::GetScale()
 
 //////////////////////////////////////////////////////////////
 // Set the view center and scale.
-void MgMapPlot::SetCenterAndScale(MgCoordinate* center, double scale)
+void MgdMapPlot::SetCenterAndScale(MgCoordinate* center, double scale)
 {
     SAFE_RELEASE(m_center);
     m_center = SAFE_ADDREF(center);
     m_scale = scale;
-    m_plotInstruction = MgMapPlotInstruction::UseOverriddenCenterAndScale;
+    m_plotInstruction = MgdMapPlotInstruction::UseOverriddenCenterAndScale;
 }
 
 
 //////////////////////////////////////////////////////////////
 // Get the extent.
-MgEnvelope* MgMapPlot::GetExtent()
+MgEnvelope* MgdMapPlot::GetExtent()
 {
     return SAFE_ADDREF(m_extent);
 }
@@ -174,7 +174,7 @@ MgEnvelope* MgMapPlot::GetExtent()
 
 //////////////////////////////////////////////////////////////
 // Get the expand to fit flag.
-bool MgMapPlot::GetExpandToFit()
+bool MgdMapPlot::GetExpandToFit()
 {
     return m_bExpandToFit;
 }
@@ -182,18 +182,18 @@ bool MgMapPlot::GetExpandToFit()
 
 //////////////////////////////////////////////////////////////
 // Set the extent and expand to fit flag.
-void MgMapPlot::SetExtent(MgEnvelope* extent, bool expandToFit)
+void MgdMapPlot::SetExtent(MgEnvelope* extent, bool expandToFit)
 {
     SAFE_RELEASE(m_extent);
     m_extent = SAFE_ADDREF(extent);
     m_bExpandToFit = expandToFit;
-    m_plotInstruction = MgMapPlotInstruction::UseOverriddenExtent;
+    m_plotInstruction = MgdMapPlotInstruction::UseOverriddenExtent;
 }
 
 
 //////////////////////////////////////////////////////////////
 // Get the plot specification
-MgPlotSpecification* MgMapPlot::GetPlotSpecification()
+MgdPlotSpecification* MgdMapPlot::GetPlotSpecification()
 {
     return SAFE_ADDREF(m_plotSpec);
 }
@@ -201,7 +201,7 @@ MgPlotSpecification* MgMapPlot::GetPlotSpecification()
 
 //////////////////////////////////////////////////////////////
 // Set the plot specification.
-void MgMapPlot::SetPlotSpecification(MgPlotSpecification* plotSpec)
+void MgdMapPlot::SetPlotSpecification(MgdPlotSpecification* plotSpec)
 {
     SAFE_RELEASE(m_plotSpec);
     m_plotSpec = SAFE_ADDREF(plotSpec);
@@ -211,7 +211,7 @@ void MgMapPlot::SetPlotSpecification(MgPlotSpecification* plotSpec)
 //////////////////////////////////////////////////////////////
 // Get the layout.  This value is optional; if null the map will fill
 // the entire page area within the margins.
-MgLayout* MgMapPlot::GetLayout()
+MgdLayout* MgdMapPlot::GetLayout()
 {
     return SAFE_ADDREF(m_layout);
 }
@@ -219,7 +219,7 @@ MgLayout* MgMapPlot::GetLayout()
 
 //////////////////////////////////////////////////////////////
 // Set the layout.
-void MgMapPlot::SetLayout(MgLayout* layout)
+void MgdMapPlot::SetLayout(MgdLayout* layout)
 {
     SAFE_RELEASE(m_layout);
     m_layout = SAFE_ADDREF(layout);
@@ -228,7 +228,7 @@ void MgMapPlot::SetLayout(MgLayout* layout)
 
 //////////////////////////////////////////////////////////////
 // Destructor
-MgMapPlot::~MgMapPlot()
+MgdMapPlot::~MgdMapPlot()
 {
     SAFE_RELEASE(m_map);
     SAFE_RELEASE(m_plotSpec);
@@ -240,23 +240,23 @@ MgMapPlot::~MgMapPlot()
 
 //////////////////////////////////////////////////////////////
 // Serialize data to TCP/IP stream
-void MgMapPlot::Serialize(MgStream* stream)
+void MgdMapPlot::Serialize(MgStream* stream)
 {
-    throw new MgNotImplementedException(L"MgMapPlot.Serialize", __LINE__, __WFILE__, NULL, L"", NULL);
+    throw new MgNotImplementedException(L"MgdMapPlot.Serialize", __LINE__, __WFILE__, NULL, L"", NULL);
 }
 
 
 //////////////////////////////////////////////////////////////
 // Deserialize data from TCP/IP stream
-void MgMapPlot::Deserialize(MgStream* stream)
+void MgdMapPlot::Deserialize(MgStream* stream)
 {
-    throw new MgNotImplementedException(L"MgMapPlot.Deserialize", __LINE__, __WFILE__, NULL, L"", NULL);
+    throw new MgNotImplementedException(L"MgdMapPlot.Deserialize", __LINE__, __WFILE__, NULL, L"", NULL);
 }
 
 
 //////////////////////////////////////////////////////////////
 // Get the name of object
-STRING MgMapPlot::GetName()
+STRING MgdMapPlot::GetName()
 {
     return m_map->GetName();
 }
@@ -264,7 +264,7 @@ STRING MgMapPlot::GetName()
 
 //////////////////////////////////////////////////////////////
 // Does it allow to set the name
-bool MgMapPlot::CanSetName()
+bool MgdMapPlot::CanSetName()
 {
     // indirectly via SetMap
     return true;

@@ -22,6 +22,7 @@
 
 class FdoIFeatureReader;
 
+/// \cond INTERNAL
 class MgFdoFeatureReader: public FdoIFeatureReader
 {
 public:
@@ -96,5 +97,6 @@ private:
     void Initialize();
 
 };
+/// \endcond
 
 #endif // _MGFDOFEATUREREADER_H

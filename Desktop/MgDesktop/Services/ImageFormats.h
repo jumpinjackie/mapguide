@@ -2,9 +2,9 @@
 #define DESKTOP_IMAGE_FORMATS_H
 
 #include "MgDesktop.h"
-/// \ingroup Desktop_Module
+/// \ingroup Desktop_Misc_Module
 /// \{
-class MG_DESKTOP_API MgImageFormats
+class MG_DESKTOP_API MgdImageFormats
 {
 PUBLISHED_API:
     /// \internal

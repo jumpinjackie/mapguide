@@ -1,21 +1,21 @@
 #ifndef DESKTOP_DWF_EXCEPTION_H
 #define DESKTOP_DWF_EXCEPTION_H
 
-/// \ingroup Exceptions_Module
+/// \ingroup Desktop_Exceptions_Module
 
 ///////////////////////////////////////////////////////////////////////////////
 /// \brief
 /// Wrapper for DWF toolkit exceptions.
 ///
-class MG_DESKTOP_API MgDwfException : public MgThirdPartyException
+class MG_DESKTOP_API MgdDwfException : public MgThirdPartyException
 {
-    DECLARE_CLASSNAME(MgDwfException)
+    DECLARE_CLASSNAME(MgdDwfException)
 
 EXTERNAL_API:
 
     ///////////////////////////////////////////////////////////////////////////
     /// \brief
-    /// Construct a MgDwfException object.
+    /// Construct a MgdDwfException object.
     ///
     /// \param methodName
     /// Name of the method where the exception occurred.
@@ -30,23 +30,23 @@ EXTERNAL_API:
     /// \param whyArguments
     /// Collection of arguments used to format the message that describes why the exception occurs.
     ///
-    MgDwfException(CREFSTRING methodName, INT32 lineNumber,
+    MgdDwfException(CREFSTRING methodName, INT32 lineNumber,
         CREFSTRING fileName, MgStringCollection* whatArguments,
         CREFSTRING whyMessageId, MgStringCollection* whyArguments) throw();
 
     ///////////////////////////////////////////////////////////////////////////
     /// \brief
-    /// Destructor for a MgDwfException object.
+    /// Destructor for a MgdDwfException object.
     ///
-    virtual ~MgDwfException() throw();
+    virtual ~MgdDwfException() throw();
 
 INTERNAL_API:
 
-    DECLARE_EXCEPTION_DEFAULTS(MgDwfException)
+    DECLARE_EXCEPTION_DEFAULTS(MgdDwfException)
 
 CLASS_ID:
 
-    static const INT32 m_cls_id = MapGuide_Desktop_Exception_MgDwfException;
+    static const INT32 m_cls_id = MapGuide_Desktop_Exception_DwfException;
 };
 
 #endif

@@ -195,7 +195,7 @@ FdoFeatureSchemaCollection* MgDescribeSchema::DescribeFdoSchema(MgResourceIdenti
                     }
                     else
                     {
-                        throw new MgConnectionFailedException(L"MgDescribeSchema.DescribeFdoSchema", __LINE__, __WFILE__, NULL, L"", NULL);
+                        throw new MgdConnectionFailedException(L"MgDescribeSchema.DescribeFdoSchema", __LINE__, __WFILE__, NULL, L"", NULL);
                     }
                 }
 
@@ -205,7 +205,7 @@ FdoFeatureSchemaCollection* MgDescribeSchema::DescribeFdoSchema(MgResourceIdenti
     }
     else
     {
-        throw new MgConnectionFailedException(L"MgDescribeSchema.DescribeFdoSchema", __LINE__, __WFILE__, NULL, L"", NULL);
+        throw new MgdConnectionFailedException(L"MgDescribeSchema.DescribeFdoSchema", __LINE__, __WFILE__, NULL, L"", NULL);
     }
 
     MG_FEATURE_SERVICE_CHECK_CONNECTION_CATCH_AND_THROW(resource, L"MgDescribeSchema.DescribeFdoSchema")
@@ -541,7 +541,7 @@ MgFeatureSchemaCollection* MgDescribeSchema::DescribeSchema(MgResourceIdentifier
                         }
                         else
                         {
-                            throw new MgConnectionFailedException(L"MgDescribeSchema.DescribeSchema", __LINE__, __WFILE__, NULL, L"", NULL);
+                            throw new MgdConnectionFailedException(L"MgDescribeSchema.DescribeSchema", __LINE__, __WFILE__, NULL, L"", NULL);
                         }
 
                     }  // end if (NULL != secFeatureSource)
@@ -897,7 +897,7 @@ MgStringCollection* MgDescribeSchema::GetSchemas(MgResourceIdentifier* resource)
         }
         else
         {
-            throw new MgConnectionFailedException(L"MgDescribeSchema.GetSchemas",
+            throw new MgdConnectionFailedException(L"MgDescribeSchema.GetSchemas",
                 __LINE__, __WFILE__, NULL, L"", NULL);
         }
 
@@ -1000,7 +1000,7 @@ MgStringCollection* MgDescribeSchema::GetClasses(MgResourceIdentifier* resource,
         }
         else
         {
-            throw new MgConnectionFailedException(L"MgDescribeSchema.GetClasses",
+            throw new MgdConnectionFailedException(L"MgDescribeSchema.GetClasses",
                 __LINE__, __WFILE__, NULL, L"", NULL);
         }
 

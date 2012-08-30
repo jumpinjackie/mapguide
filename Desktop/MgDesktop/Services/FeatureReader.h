@@ -8,7 +8,7 @@ class MgCoordinateSystemTransform;
 class MgAgfReaderWriter;
 class MgFeatureConnection;
 
-/// \ingroup Desktop_Module
+/// \ingroup Desktop_Misc_Module
 /// \{
 class MG_DESKTOP_API MgdFeatureReader : public MgFeatureReader
 {

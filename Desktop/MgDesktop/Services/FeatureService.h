@@ -28,7 +28,7 @@ namespace MdfModel
 {
     class Extension;
 }
-/// \ingroup Desktop_Module
+/// \ingroup Desktop_Service_Module
 /// \{
 class MG_DESKTOP_API MgdFeatureService : public MgFeatureService
 {

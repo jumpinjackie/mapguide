@@ -17,13 +17,13 @@
 
 #include "MgDesktop.h"
 
-IMPLEMENT_EXCEPTION_DEFAULTS(MgConnectionFailedException, MgApplicationException)
+IMPLEMENT_EXCEPTION_DEFAULTS(MgdConnectionFailedException, MgApplicationException)
 
 ///////////////////////////////////////////////////////////////////////////////
 /// \brief
-/// Construct a MgConnectionFailedException object.
+/// Construct a MgdConnectionFailedException object.
 ///
-MgConnectionFailedException::MgConnectionFailedException(CREFSTRING methodName,
+MgdConnectionFailedException::MgdConnectionFailedException(CREFSTRING methodName,
     INT32 lineNumber, CREFSTRING fileName, MgStringCollection* whatArguments,
     CREFSTRING whyMessageId, MgStringCollection* whyArguments) throw() :
     MgApplicationException(methodName, lineNumber, fileName,
@@ -35,6 +35,6 @@ MgConnectionFailedException::MgConnectionFailedException(CREFSTRING methodName,
 /// \brief
 /// Destruct the object.
 ///
-MgConnectionFailedException::~MgConnectionFailedException() throw()
+MgdConnectionFailedException::~MgdConnectionFailedException() throw()
 {
 }
