@@ -14,6 +14,7 @@ namespace OSGeo.MapGuide.Viewer.AppLayoutEngine
         private Shell()
         {
             InitializeComponent();
+            UpdateLegendTabText();
         }
 
         private static Shell _instance;
@@ -455,6 +456,19 @@ namespace OSGeo.MapGuide.Viewer.AppLayoutEngine
         {
             _provider = provider;
             mapViewer.Init(_provider);
+        }
+
+        private void legend_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == "IsBusy")
+            {
+                UpdateLegendTabText();
+            }
+        }
+
+        private void UpdateLegendTabText()
+        {
+            TAB_LEGEND.Text = legend.IsBusy ? Properties.Resources.TextLayersRefreshing : Properties.Resources.TextLayers;
         }
     }
 

@@ -475,4 +475,10 @@
   <data name="RectangleDigitizationPrompt" xml:space="preserve">
     <value>Click to finish</value>
   </data>
+  <data name="TextLayers" xml:space="preserve">
+    <value>Layers</value>
+  </data>
+  <data name="TextLayersRefreshing" xml:space="preserve">
+    <value>Layers (Refreshing...)</value>
+  </data>
 </root>
