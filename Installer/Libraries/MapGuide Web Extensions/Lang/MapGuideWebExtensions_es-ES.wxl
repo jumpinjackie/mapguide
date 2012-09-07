@@ -57,6 +57,7 @@
     <String Id="Shortcut_JavaViewerSample">Java Viewer Sample</String>
     <String Id="Shortcut_JavaDevGuideSample">Java Developer's Guide Samples</String>
     <String Id="Shortcut_ViewerAPI">Visor de Documentación de la API</String>
+    <String Id="Shortcut_FusionAPI">Fusion de Documentación de la API</String>
     <String Id="Shortcut_SiteAdmin">MapGuide administrador del sitio</String>
     <String Id="Shortcut_MapAgent">MapAgent Páginas de prueba</String>
     <String Id="Shortcut_GetMaestro">Obtener MapGuide Maestro</String>
