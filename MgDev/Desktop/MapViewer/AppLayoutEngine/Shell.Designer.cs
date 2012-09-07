@@ -34,10 +34,11 @@
             this.infoPaneViewerContainer = new System.Windows.Forms.SplitContainer();
             this.layerPropertiesContainer = new System.Windows.Forms.SplitContainer();
             this.tabControl1 = new System.Windows.Forms.TabControl();
-            this.tabPage2 = new System.Windows.Forms.TabPage();
+            this.TAB_LEGEND = new System.Windows.Forms.TabPage();
             this.legend = new OSGeo.MapGuide.Viewer.MgLegend();
+            this.imgList = new System.Windows.Forms.ImageList(this.components);
             this.tabControl2 = new System.Windows.Forms.TabControl();
-            this.tabPage3 = new System.Windows.Forms.TabPage();
+            this.TAB_PROPERTIES = new System.Windows.Forms.TabPage();
             this.propertyPane = new OSGeo.MapGuide.Viewer.MgPropertyPane();
             this.mapViewer = new OSGeo.MapGuide.Viewer.MgMapViewer();
             this.viewerContextMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
@@ -53,7 +54,6 @@
             this.lblMapScale = new System.Windows.Forms.ToolStripStatusLabel();
             this.lblMapSize = new System.Windows.Forms.ToolStripStatusLabel();
             this.lblPoweredBy = new System.Windows.Forms.ToolStripStatusLabel();
-            this.imgList = new System.Windows.Forms.ImageList(this.components);
             this.appContainer.Panel1.SuspendLayout();
             this.appContainer.Panel2.SuspendLayout();
             this.appContainer.SuspendLayout();
@@ -64,9 +64,9 @@
             this.layerPropertiesContainer.Panel2.SuspendLayout();
             this.layerPropertiesContainer.SuspendLayout();
             this.tabControl1.SuspendLayout();
-            this.tabPage2.SuspendLayout();
+            this.TAB_LEGEND.SuspendLayout();
             this.tabControl2.SuspendLayout();
-            this.tabPage3.SuspendLayout();
+            this.TAB_PROPERTIES.SuspendLayout();
             this.taskPaneToolbar.SuspendLayout();
             this.appStatusBar.SuspendLayout();
             this.SuspendLayout();
@@ -130,7 +130,7 @@
             // 
             // tabControl1
             // 
-            this.tabControl1.Controls.Add(this.tabPage2);
+            this.tabControl1.Controls.Add(this.TAB_LEGEND);
             this.tabControl1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tabControl1.ImageList = this.imgList;
             this.tabControl1.Location = new System.Drawing.Point(0, 0);
@@ -139,17 +139,17 @@
             this.tabControl1.Size = new System.Drawing.Size(220, 271);
             this.tabControl1.TabIndex = 0;
             // 
-            // tabPage2
+            // TAB_LEGEND
             // 
-            this.tabPage2.Controls.Add(this.legend);
-            this.tabPage2.ImageIndex = 0;
-            this.tabPage2.Location = new System.Drawing.Point(4, 23);
-            this.tabPage2.Name = "tabPage2";
-            this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage2.Size = new System.Drawing.Size(212, 244);
-            this.tabPage2.TabIndex = 1;
-            this.tabPage2.Text = "Layers";
-            this.tabPage2.UseVisualStyleBackColor = true;
+            this.TAB_LEGEND.Controls.Add(this.legend);
+            this.TAB_LEGEND.ImageIndex = 0;
+            this.TAB_LEGEND.Location = new System.Drawing.Point(4, 23);
+            this.TAB_LEGEND.Name = "TAB_LEGEND";
+            this.TAB_LEGEND.Padding = new System.Windows.Forms.Padding(3);
+            this.TAB_LEGEND.Size = new System.Drawing.Size(212, 244);
+            this.TAB_LEGEND.TabIndex = 1;
+            this.TAB_LEGEND.Text = "Layers";
+            this.TAB_LEGEND.UseVisualStyleBackColor = true;
             // 
             // legend
             // 
@@ -162,10 +162,18 @@
             this.legend.Size = new System.Drawing.Size(206, 238);
             this.legend.TabIndex = 0;
             this.legend.ThemeCompressionLimit = 0;
+            this.legend.PropertyChanged += new System.ComponentModel.PropertyChangedEventHandler(this.legend_PropertyChanged);
+            // 
+            // imgList
+            // 
+            this.imgList.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("imgList.ImageStream")));
+            this.imgList.TransparentColor = System.Drawing.Color.Transparent;
+            this.imgList.Images.SetKeyName(0, "legend-layer.png");
+            this.imgList.Images.SetKeyName(1, "property.png");
             // 
             // tabControl2
             // 
-            this.tabControl2.Controls.Add(this.tabPage3);
+            this.tabControl2.Controls.Add(this.TAB_PROPERTIES);
             this.tabControl2.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tabControl2.ImageList = this.imgList;
             this.tabControl2.Location = new System.Drawing.Point(0, 0);
@@ -174,17 +182,17 @@
             this.tabControl2.Size = new System.Drawing.Size(220, 228);
             this.tabControl2.TabIndex = 0;
             // 
-            // tabPage3
+            // TAB_PROPERTIES
             // 
-            this.tabPage3.Controls.Add(this.propertyPane);
-            this.tabPage3.ImageIndex = 1;
-            this.tabPage3.Location = new System.Drawing.Point(4, 23);
-            this.tabPage3.Name = "tabPage3";
-            this.tabPage3.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage3.Size = new System.Drawing.Size(212, 201);
-            this.tabPage3.TabIndex = 1;
-            this.tabPage3.Text = "Properties";
-            this.tabPage3.UseVisualStyleBackColor = true;
+            this.TAB_PROPERTIES.Controls.Add(this.propertyPane);
+            this.TAB_PROPERTIES.ImageIndex = 1;
+            this.TAB_PROPERTIES.Location = new System.Drawing.Point(4, 23);
+            this.TAB_PROPERTIES.Name = "TAB_PROPERTIES";
+            this.TAB_PROPERTIES.Padding = new System.Windows.Forms.Padding(3);
+            this.TAB_PROPERTIES.Size = new System.Drawing.Size(212, 201);
+            this.TAB_PROPERTIES.TabIndex = 1;
+            this.TAB_PROPERTIES.Text = "Properties";
+            this.TAB_PROPERTIES.UseVisualStyleBackColor = true;
             // 
             // propertyPane
             // 
@@ -209,6 +217,7 @@
             this.mapViewer.Size = new System.Drawing.Size(438, 503);
             this.mapViewer.TabIndex = 0;
             this.mapViewer.Text = "mgMapViewer1";
+            this.mapViewer.TooltipDelayInterval = 1000;
             this.mapViewer.ZoomInFactor = 0.5;
             this.mapViewer.ZoomOutFactor = 2;
             // 
@@ -313,13 +322,6 @@
             this.lblPoweredBy.Name = "lblPoweredBy";
             this.lblPoweredBy.Size = new System.Drawing.Size(137, 18);
             // 
-            // imgList
-            // 
-            this.imgList.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("imgList.ImageStream")));
-            this.imgList.TransparentColor = System.Drawing.Color.Transparent;
-            this.imgList.Images.SetKeyName(0, "legend-layer.png");
-            this.imgList.Images.SetKeyName(1, "property.png");
-            // 
             // Shell
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -343,9 +345,9 @@
             this.layerPropertiesContainer.Panel2.ResumeLayout(false);
             this.layerPropertiesContainer.ResumeLayout(false);
             this.tabControl1.ResumeLayout(false);
-            this.tabPage2.ResumeLayout(false);
+            this.TAB_LEGEND.ResumeLayout(false);
             this.tabControl2.ResumeLayout(false);
-            this.tabPage3.ResumeLayout(false);
+            this.TAB_PROPERTIES.ResumeLayout(false);
             this.taskPaneToolbar.ResumeLayout(false);
             this.taskPaneToolbar.PerformLayout();
             this.appStatusBar.ResumeLayout(false);
@@ -361,9 +363,9 @@
         private System.Windows.Forms.SplitContainer infoPaneViewerContainer;
         private System.Windows.Forms.SplitContainer layerPropertiesContainer;
         private System.Windows.Forms.TabControl tabControl1;
-        private System.Windows.Forms.TabPage tabPage2;
+        private System.Windows.Forms.TabPage TAB_LEGEND;
         private System.Windows.Forms.TabControl tabControl2;
-        private System.Windows.Forms.TabPage tabPage3;
+        private System.Windows.Forms.TabPage TAB_PROPERTIES;
         private System.Windows.Forms.ToolStrip viewerToolbar;
         private MgTaskPane taskPane;
         private System.Windows.Forms.ToolStrip taskPaneToolbar;
