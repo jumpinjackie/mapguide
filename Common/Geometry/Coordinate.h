@@ -18,12 +18,12 @@
 #ifndef _MGCOORDINATE_H_
 #define _MGCOORDINATE_H_
 
+class MgCoordinate;
+template class MG_GEOMETRY_API Ptr<MgCoordinate>;
+
 /// \defgroup MgCoordinate MgCoordinate
 /// \ingroup Geometry_Module_classes
 /// \{
-
-class MgCoordinate;
-template class MG_GEOMETRY_API Ptr<MgCoordinate>;
 
 /////////////////////////////////////////////////////////////////
 /// \brief

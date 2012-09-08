@@ -29,6 +29,6 @@ ResourceSecurityType
          Permissions : PermissionsType
 </pre>
 
-<a href="../../xml_schemas/ResourceSecurity/ResourceSecurity.html">Details</a>
+<a href="xml_schemas/ResourceSecurity/ResourceSecurity.html">Details</a>
 
 **/

@@ -18,12 +18,12 @@
 #ifndef _MGUNLOCKFEATURES_H
 #define _MGUNLOCKFEATURES_H
 
+class MgUnlockFeatures;
+template class MG_PLATFORMBASE_API Ptr<MgUnlockFeatures>;
+
 /// \defgroup MgUnlockFeatures MgUnlockFeatures
 /// \ingroup Feature_Service_classes
 /// \{
-
-class MgUnlockFeatures;
-template class MG_PLATFORMBASE_API Ptr<MgUnlockFeatures>;
 
 ///////////////////////////////////////////////////////////////////////////////
 /// \brief

@@ -18,12 +18,12 @@
 #ifndef _MG_GEOMETRYCOLLECTION_H_
 #define _MG_GEOMETRYCOLLECTION_H_
 
+class MgGeometryCollection;
+template class MG_GEOMETRY_API Ptr<MgGeometryCollection>;
+
 /// \defgroup MgGeometryCollection MgGeometryCollection
 /// \ingroup Collections_Module
 /// \{
-
-class MgGeometryCollection;
-template class MG_GEOMETRY_API Ptr<MgGeometryCollection>;
 
 ///////////////////////////////////////////////////////////////////////////////
 /// \brief

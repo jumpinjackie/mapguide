@@ -18,12 +18,12 @@
 #ifndef MGRING_H_
 #define MGRING_H_
 
+class MgRing;
+template class MG_GEOMETRY_API Ptr<MgRing>;
+
 /// \defgroup MgRing MgRing
 /// \ingroup Geometry_Module_classes
 /// \{
-
-class MgRing;
-template class MG_GEOMETRY_API Ptr<MgRing>;
 
 //////////////////////////////////////////////////////////////
 /// MgRing is an abstract base class. The concrete classes are

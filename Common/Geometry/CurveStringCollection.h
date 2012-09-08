@@ -18,12 +18,12 @@
 #ifndef _MG_CURVESTRINGCOLLECTION_H_
 #define _MG_CURVESTRINGCOLLECTION_H_
 
+class MgCurveStringCollection;
+template class MG_GEOMETRY_API Ptr<MgCurveStringCollection>;
+
 /// \defgroup MgCurveStringCollection MgCurveStringCollection
 /// \ingroup Collections_Module
 /// \{
-
-class MgCurveStringCollection;
-template class MG_GEOMETRY_API Ptr<MgCurveStringCollection>;
 
 ///////////////////////////////////////////////////////////////////////////////
 /// \brief

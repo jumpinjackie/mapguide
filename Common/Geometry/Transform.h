@@ -18,14 +18,14 @@
 #ifndef _MGTRANSFORM_H_
 #define _MGTRANSFORM_H_
 
-/// \defgroup MgTransform MgTransform
-/// \ingroup Geometry_Module_classes
-/// \{
-
 class MgEnvelope;
 
 class MgTransform;
 template class MG_GEOMETRY_API Ptr<MgTransform>;
+
+/// \defgroup MgTransform MgTransform
+/// \ingroup Geometry_Module_classes
+/// \{
 
 /////////////////////////////////////////////////////////////////
 /// \brief

@@ -18,12 +18,12 @@
 #ifndef _MGCURVEPOLYGON_H_
 #define _MGCURVEPOLYGON_H_
 
+class MgCurvePolygon;
+template class MG_GEOMETRY_API Ptr<MgCurvePolygon>;
+
 /// \defgroup MgCurvePolygon MgCurvePolygon
 /// \ingroup Geometry_Module_classes
 /// \{
-
-class MgCurvePolygon;
-template class MG_GEOMETRY_API Ptr<MgCurvePolygon>;
 
 //////////////////////////////////////////////////////////////////
 /// \brief

@@ -15,16 +15,16 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
-/// \defgroup MgLayerGroupCollection MgLayerGroupCollection
-/// \ingroup Maps_and_Layers_Module
-/// \{
-
 #ifndef _MG_LAYER_GROUP_COLLECTION_H_
 #define _MG_LAYER_GROUP_COLLECTION_H_
 
 class MgMapBase;
 class MgLayerGroupCollection;
 template class MG_PLATFORMBASE_API Ptr<MgLayerGroupCollection>;
+
+/// \defgroup MgLayerGroupCollection MgLayerGroupCollection
+/// \ingroup Maps_and_Layers_Module
+/// \{
 
 ////////////////////////////////////////////////////
 /// \brief

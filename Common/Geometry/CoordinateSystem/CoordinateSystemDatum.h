@@ -26,8 +26,38 @@ class MgCoordinateSystemDatum : public MgGuardDisposable
     DECLARE_CLASSNAME(MgCoordinateSystemDatum)
 
 PUBLISHED_API:
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Returns the CS-Map coordinate system datum code
+    ///
+    /// \return
+    /// The CS-Map coordinate system datum code
+    ///
+    /// \remarks
+    /// This method used to be called GetCode prior to MapGuide Open Source 2.2 / MapGuide Enterprise 2011 / AutoCAD Map3D 2011
+    ///
     virtual STRING GetDtCode()=0;
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Sets the CS-Map coordinate system datum code for this datum
+    ///
+    /// \param sCode (String/string)
+    /// The CS-Map coordinate system datum code
+    ///
+    /// \remarks
+    /// This method used to be called SetCode prior to MapGuide Open Source 2.2 / MapGuide Enterprise 2011 / AutoCAD Map3D 2011
+    ///
     virtual void SetDtCode(CREFSTRING sCode)=0;
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Checks whether the specified CS-Map coordinate system datum code is a legal one
+    ///
+    /// \return
+    /// true if the given code is a legal one, false otherwise
+    ///
+    /// \remarks
+    /// This method used to be called IsLegalCode prior to MapGuide Open Source 2.2 / MapGuide Enterprise 2011 / AutoCAD Map3D 2011
+    ///
     virtual bool IsLegalDtCode(CREFSTRING sCode)=0;
     virtual bool IsValid()=0;
     virtual bool IsUsable(MgCoordinateSystemCatalog *pCatalog)=0;
@@ -40,6 +70,7 @@ PUBLISHED_API:
     virtual bool IsLegalGroup(CREFSTRING sGroup)=0;
     virtual STRING GetSource()=0;
     virtual void SetSource(CREFSTRING sSource)=0;
+    /// \since 2.3
     virtual INT16 GetEpsgCode()=0;
     virtual void SetEpsgCode(INT16 epsgCode)=0;
     virtual bool IsLegalSource(CREFSTRING sSource)=0;

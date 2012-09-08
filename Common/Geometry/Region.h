@@ -18,12 +18,12 @@
 #ifndef MGREGION_H_
 #define MGREGION_H_
 
+class MgRegion;
+template class MG_GEOMETRY_API Ptr<MgRegion>;
+
 /// \defgroup MgRegion MgRegion
 /// \ingroup Geometry_Module_classes
 /// \{
-
-class MgRegion;
-template class MG_GEOMETRY_API Ptr<MgRegion>;
 
 ///////////////////////////////////////////////////////////////
 /// \brief

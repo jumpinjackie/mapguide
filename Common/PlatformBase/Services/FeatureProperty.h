@@ -18,15 +18,15 @@
 #ifndef FEATURE_PROPERTY_H
 #define FEATURE_PROPERTY_H
 
-/// \defgroup MgFeatureProperty MgFeatureProperty
-/// \ingroup Feature_Service_classes
-/// \{
-
 class MgNullableProperty;
 class MgFeatureReader;
 
 class MgFeatureProperty;
 template class MG_PLATFORMBASE_API Ptr<MgFeatureProperty>;
+
+/// \defgroup MgFeatureProperty MgFeatureProperty
+/// \ingroup Feature_Service_classes
+/// \{
 
 /////////////////////////////////////////////////////////////////
 /// \brief

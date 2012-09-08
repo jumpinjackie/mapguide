@@ -18,12 +18,12 @@
 #ifndef _MG_COLOR
 #define _MG_COLOR
 
+class MgColor;
+template class MG_PLATFORMBASE_API Ptr<MgColor>;
+
 /// \defgroup MgColor MgColor
 /// \ingroup Common_Module
 /// \{
-
-class MgColor;
-template class MG_PLATFORMBASE_API Ptr<MgColor>;
 
 /////////////////////////////////////////////////////////////////
 /// \brief

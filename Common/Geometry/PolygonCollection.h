@@ -18,12 +18,12 @@
 #ifndef _MG_POLYGONCOLLECTION_H_
 #define _MG_POLYGONCOLLECTION_H_
 
+class MgPolygonCollection;
+template class MG_GEOMETRY_API Ptr<MgPolygonCollection>;
+
 /// \defgroup MgPolygonCollection MgPolygonCollection
 /// \ingroup Collections_Module
 /// \{
-
-class MgPolygonCollection;
-template class MG_GEOMETRY_API Ptr<MgPolygonCollection>;
 
 ///////////////////////////////////////////////////////////////////////////////
 /// \brief

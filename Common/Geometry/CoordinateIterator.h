@@ -18,12 +18,12 @@
 #ifndef _MGCOORDINATEITERATOR_H_
 #define _MGCOORDINATEITERATOR_H_
 
+class MgCoordinateIterator;
+template class MG_GEOMETRY_API Ptr<MgCoordinateIterator>;
+
 /// \defgroup MgCoordinateIterator MgCoordinateIterator
 /// \ingroup Geometry_Module_classes
 /// \{
-
-class MgCoordinateIterator;
-template class MG_GEOMETRY_API Ptr<MgCoordinateIterator>;
 
 ///////////////////////////////////////////////////////////////////////////////
 /// \brief

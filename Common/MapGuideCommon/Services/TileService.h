@@ -109,6 +109,7 @@ PUBLISHED_API:
     /// \return
     /// Default width of a tile in pixels.
     ///
+    /// \since 1.2
     virtual INT32 GetDefaultTileSizeX() = 0;
 
     //////////////////////////////////////////////////////////////////
@@ -118,6 +119,7 @@ PUBLISHED_API:
     /// \return
     /// Default height of a tile in pixels.
     ///
+    /// \since 1.2
     virtual INT32 GetDefaultTileSizeY() = 0;
 
 INTERNAL_API:

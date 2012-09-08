@@ -21,12 +21,14 @@
 class MgSiteInfo;
 typedef std::vector<MgSiteInfo*> MgSiteVector;
 
+/// \cond INTERNAL
 // Data structure which is passed to thread
 struct SMThreadData
 {
     ACE_thread_t threadId;
     INT32 failoverRetryTime;
 };
+/// \endcond
 
 class MG_MAPGUIDE_API MgSiteManager : public MgGuardDisposable
 {
