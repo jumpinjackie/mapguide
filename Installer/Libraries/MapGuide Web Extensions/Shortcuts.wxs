@@ -199,7 +199,7 @@
               <util:InternetShortcut Id="IISFusionApi"
                                      Directory="MapGuideOpenSourceMenuLocation"
                                      Name="!(loc.Shortcut_FusionAPI)"
-                                     Target="http://localhost/[VIRTUALDIR]/help/fusion/docs/NaturalDocs/index.html" />
+                                     Target="http://localhost/[VIRTUALDIR]/fusion/docs/NaturalDocs/index.html" />
               <RegistryKey Root="HKCU" Key="$(var.MgRegKey)\IISFusionApiShortcut">
                   <RegistryValue
                           Value="Installed"
