@@ -18,12 +18,12 @@
 #ifndef _MG_PARAMETER_COLLECTION_H
 #define _MG_PARAMETER_COLLECTION_H
 
+class MgParameterCollection;
+template class MG_PLATFORMBASE_API Ptr<MgParameterCollection>;
+
 /// \defgroup MgParameterCollection MgParameterCollection
 /// \ingroup Collections_Module
 /// \{
-
-class MgParameterCollection;
-template class MG_PLATFORMBASE_API Ptr<MgParameterCollection>;
 
 //////////////////////////////////////////////////////////////////
 /// \brief
@@ -37,6 +37,7 @@ template class MG_PLATFORMBASE_API Ptr<MgParameterCollection>;
 /// \note
 /// Collections are <i>not</i> thread safe and ordered in the sequence of add operation.
 ///
+/// \since 2.2
 class MG_PLATFORMBASE_API MgParameterCollection : public MgCollection
 {
     MG_DECL_DYNCREATE();

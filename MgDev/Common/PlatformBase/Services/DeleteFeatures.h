@@ -15,15 +15,15 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
-/// \defgroup MgDeleteFeatures MgDeleteFeatures
-/// \ingroup Feature_Service_classes
-/// \{
-
 #ifndef _MGDELETEFEATURES_H
 #define _MGDELETEFEATURES_H
 
 class MgDeleteFeatures;
 template class MG_PLATFORMBASE_API Ptr<MgDeleteFeatures>;
+
+/// \defgroup MgDeleteFeatures MgDeleteFeatures
+/// \ingroup Feature_Service_classes
+/// \{
 
 /////////////////////////////////////////////////////////////////
 /// \brief

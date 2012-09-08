@@ -18,12 +18,12 @@
 #ifndef _MGARCSEGMENT_H_
 #define _MGARCSEGMENT_H_
 
+class MgArcSegment;
+template class MG_GEOMETRY_API Ptr<MgArcSegment>;
+
 /// \defgroup MgArcSegment MgArcSegment
 /// \ingroup Geometry_Module_classes
 /// \{
-
-class MgArcSegment;
-template class MG_GEOMETRY_API Ptr<MgArcSegment>;
 
 /////////////////////////////////////////////////////////////////
 /// \brief

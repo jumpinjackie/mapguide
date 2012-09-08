@@ -18,12 +18,12 @@
 #ifndef _MGMULTIGEOMETRY_H_
 #define _MGMULTIGEOMETRY_H_
 
+class MgMultiGeometry;
+template class MG_GEOMETRY_API Ptr<MgMultiGeometry>;
+
 /// \defgroup MgMultiGeometry MgMultiGeometry
 /// \ingroup Geometry_Module_classes
 /// \{
-
-class MgMultiGeometry;
-template class MG_GEOMETRY_API Ptr<MgMultiGeometry>;
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /// \brief

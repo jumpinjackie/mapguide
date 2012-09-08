@@ -18,12 +18,12 @@
 #ifndef _MGINSERTFEATURES_H
 #define _MGINSERTFEATURES_H
 
+class MgInsertFeatures;
+template class MG_PLATFORMBASE_API Ptr<MgInsertFeatures>;
+
 /// \defgroup MgInsertFeatures MgInsertFeatures
 /// \ingroup Feature_Service_classes
 /// \{
-
-class MgInsertFeatures;
-template class MG_PLATFORMBASE_API Ptr<MgInsertFeatures>;
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /// \brief

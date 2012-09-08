@@ -18,12 +18,12 @@
 #ifndef _MG_CLASS_DEFINITION_COLLECTION_H
 #define _MG_CLASS_DEFINITION_COLLECTION_H
 
+class MgClassDefinitionCollection;
+template class MG_PLATFORMBASE_API Ptr<MgClassDefinitionCollection>;
+
 /// \defgroup MgClassDefinitionCollection MgClassDefinitionCollection
 /// \ingroup Collections_Module
 /// \{
-
-class MgClassDefinitionCollection;
-template class MG_PLATFORMBASE_API Ptr<MgClassDefinitionCollection>;
 
 //////////////////////////////////////////////////////////////////
 /// \brief

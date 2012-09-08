@@ -18,14 +18,14 @@
 #ifndef _MG_FEATUREINFORMATION_H_
 #define _MG_FEATUREINFORMATION_H_
 
-/// \defgroup MgFeatureInformation MgFeatureInformation
-/// \ingroup Common_Module
-/// \{
-
 class MgFeatureInformation;
 template class MG_MAPGUIDE_API Ptr<MgFeatureInformation>;
 
 class MgSelection;
+
+/// \defgroup MgFeatureInformation MgFeatureInformation
+/// \ingroup Common_Module
+/// \{
 
 ///////////////////////////////////////////////////////////
 /// \brief

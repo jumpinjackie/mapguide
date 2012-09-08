@@ -18,12 +18,12 @@
 #ifndef _MGCURVERING_H_
 #define _MGCURVERING_H_
 
+class MgCurveRing;
+template class MG_GEOMETRY_API Ptr<MgCurveRing>;
+
 /// \defgroup MgCurveRing MgCurveRing
 /// \ingroup Geometry_Module_classes
 /// \{
-
-class MgCurveRing;
-template class MG_GEOMETRY_API Ptr<MgCurveRing>;
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 /// \brief

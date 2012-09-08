@@ -32,7 +32,6 @@
 /// MgPropertyDefinitionCollection so that the latter can be used
 /// to store objects constructed from the concrete property
 /// definition classes.
-///
 class MG_FOUNDATION_API  MgPropertyDefinition : public MgProperty
 {
     MG_DECL_DYNCREATE();
@@ -201,6 +200,7 @@ PUBLISHED_API:
     /// \return
     /// Returns nothing.
     ///
+    /// \since 2.2
     void Delete();
 
 EXTERNAL_API:

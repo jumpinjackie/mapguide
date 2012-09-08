@@ -24,6 +24,7 @@
 
 /// \brief
 /// This class provides services to profile exsiting MapGuide APIs 
+/// \since 2.4
 class MG_MAPGUIDE_API MgProfilingService : public MgService
 {
 PUBLISHED_API:

@@ -18,10 +18,6 @@
 #ifndef _MG_MAP_H_
 #define _MG_MAP_H_
 
-/// \defgroup MgMap MgMap
-/// \ingroup Maps_and_Layers_Module
-/// \{
-
 #include "Foundation.h"
 #include <vector>
 #include <list>
@@ -37,6 +33,9 @@ template class MG_MAPGUIDE_API Ptr<MgMap>;
 #undef CreateService
 #endif
 
+/// \defgroup MgMap MgMap
+/// \ingroup Maps_and_Layers_Module
+/// \{
 
 /////////////////////////////////////////////////////////////////
 /// \brief
@@ -242,7 +241,7 @@ PUBLISHED_API:
     /// \brief
     /// Constructs an empty un-initialized MgMap object.
     ///
-    /// \remarks
+    /// \deprecated
     /// This method has been deprecated. Use the following method:
     /// \link MgMap(MgSiteConnection*) MgMap(MgSiteConnection* siteConnection) \endlink.
     ///
@@ -257,6 +256,16 @@ PUBLISHED_API:
     /// MgMap();
     /// \htmlinclude SyntaxBottom.html
     ///
+    /// \remarks
+    /// If you use this constructor, the following methods of the associated layer objects
+    /// are not available to be used.
+    ///  \li MgLayerBase::GetClassDefinition()
+    ///  \li MgLayerBase::SelectFeatures(MgFeatureQueryOptions*)
+    ///  \li MgLayerBase::SelectAggregate(MgFeatureAggregateOptions*)
+    ///  \li MgLayerBase::UpdateFeatures(MgFeatureCommandCollection*)
+    ///
+    /// To take advantage of these methods, you must use the following method instead:
+    /// \link MgMap(MgSiteConnection*) MgMap(MgSiteConnection* siteConnection) \endlink
     MgMap();
 
     //////////////////////////////////////////////////////////////////
@@ -305,7 +314,7 @@ PUBLISHED_API:
     /// definition, and a name for the map. This method is used for
     /// MapGuide Viewers or for offline map production.
     ///
-    /// \remarks
+    /// \deprecated
     /// This method has been deprecated. Use the following method:
     /// \link MgMap::Create(MgResourceIdentifier*,CREFSTRING) Create(MgResourceIdentifier mapDefinition, string mapName) \endlink.
     ///
@@ -413,7 +422,7 @@ PUBLISHED_API:
     /// \brief
     /// Loads the map object from a session repository.
     ///
-    /// \remarks
+    /// \deprecated
     /// This method has been deprecated. Use the following method:
     /// \link MgMap::Open(CREFSTRING) Open(string mapName) \endlink.
     /// For more information, see \link Maps_and_Layers_Module Maps and Layers \endlink.
@@ -500,7 +509,7 @@ PUBLISHED_API:
     /// \brief
     /// Saves the Map using the specified resource service.
     ///
-    /// \remarks
+    /// \deprecated
     /// This method has been deprecated. Use the following method:
     /// \link Save() Save() \endlink.
     /// This method assumes a valid resource identifier has already

@@ -26,6 +26,7 @@
 /// \brief
 /// Options for Rendering Service.
 ///
+/// \since 2.0
 class MG_MAPGUIDE_API MgRenderingOptions: public MgSerializable
 {
     MG_DECL_DYNCREATE();

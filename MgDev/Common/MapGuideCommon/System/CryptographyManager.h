@@ -128,6 +128,7 @@
     {                                                                         \
     }                                                                         \
 
+/// \cond INTERNAL
 /// \defgroup MgCryptographyManager MgCryptographyManager
 /// \ingroup Common_Module
 /// \{
@@ -354,5 +355,6 @@ private:
     MgCryptographyUtil m_cryptoUtil;
 };
 /// \}
+/// \endcond
 
 #endif

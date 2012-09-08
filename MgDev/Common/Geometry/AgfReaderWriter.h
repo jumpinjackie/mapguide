@@ -18,12 +18,12 @@
 #ifndef _MGAGFREADERWRITER_H_
 #define _MGAGFREADERWRITER_H_
 
+class MgAgfReaderWriter;
+template class MG_GEOMETRY_API Ptr<MgAgfReaderWriter>;
+
 /// \defgroup MgAgfReaderWriter MgAgfReaderWriter
 /// \ingroup Geometry_Module_classes
 /// \{
-
-class MgAgfReaderWriter;
-template class MG_GEOMETRY_API Ptr<MgAgfReaderWriter>;
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /// \brief

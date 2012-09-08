@@ -18,12 +18,12 @@
 #ifndef _MGLINEARRING_H_
 #define _MGLINEARRING_H_
 
+class MgLinearRing;
+template class MG_GEOMETRY_API Ptr<MgLinearRing>;
+
 /// \defgroup MgLinearRing MgLinearRing
 /// \ingroup Geometry_Module_classes
 /// \{
-
-class MgLinearRing;
-template class MG_GEOMETRY_API Ptr<MgLinearRing>;
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
 /// \brief

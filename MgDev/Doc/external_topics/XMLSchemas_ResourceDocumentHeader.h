@@ -23,5 +23,5 @@ ResourceDocumentHeader
       ResourceId
 </pre>
 
-<a href="../../xml_schemas/ResourceDocumentHeader/ResourceDocumentHeader.html">Details</a>
+<a href="xml_schemas/ResourceDocumentHeader/ResourceDocumentHeader.html">Details</a>
 **/

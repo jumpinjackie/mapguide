@@ -29,6 +29,7 @@
 /// parameter when a command is executed. Typically, it is used to bind
 /// parameters to the SQL command.
 ///
+/// \since 2.2
 class MG_PLATFORMBASE_API MgParameter : public MgNamedSerializable
 {
     MG_DECL_DYNCREATE();
@@ -51,7 +52,7 @@ PUBLISHED_API:
     /// MgParameter(MgNullableProperty prop);
     /// \htmlinclude SyntaxBottom.html
     ///
-    /// \param name (MgNullableProperty)
+    /// \param prop (MgNullableProperty)
     /// An MgNullableProperty instance which contains
     /// the name and value of the parameter.
     ///
@@ -73,10 +74,10 @@ PUBLISHED_API:
     /// MgParameter(MgNullableProperty prop, int direction);
     /// \htmlinclude SyntaxBottom.html
     ///
-    /// \param name (MgNullableProperty)
+    /// \param prop (MgNullableProperty)
     /// An MgNullableProperty instance which contains
     /// the name and value of the parameter.
-    /// \param value (int)
+    /// \param direction (int)
     /// The function direction of the parameter value.
     ///
     MgParameter(MgNullableProperty* prop, INT32 direction);
@@ -96,7 +97,7 @@ PUBLISHED_API:
     /// void SetProperty(MgNullableProperty prop);
     /// \htmlinclude SyntaxBottom.html
     ///
-    /// \param value
+    /// \param prop (MgNullableProperty)
     /// Input an MgNullableProperty instance which contains
     /// the name and value of the parameter.
     ///

@@ -18,12 +18,12 @@
 #ifndef _MG_CURVERINGCOLLECTION_H_
 #define _MG_CURVERINGCOLLECTION_H_
 
+class MgCurveRingCollection;
+template class MG_GEOMETRY_API Ptr<MgCurveRingCollection>;
+
 /// \defgroup MgCurveRingCollection MgCurveRingCollection
 /// \ingroup Collections_Module
 /// \{
-
-class MgCurveRingCollection;
-template class MG_GEOMETRY_API Ptr<MgCurveRingCollection>;
 
 ///////////////////////////////////////////////////////////////////////////////
 /// \brief

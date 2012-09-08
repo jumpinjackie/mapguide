@@ -1,26 +1,36 @@
 /**
+	\if DESKTOPAPI
+	<!-- ------------ DESKTOP PLATFORM -------------- -->
+	\defgroup Desktop_Module Desktop Platform
+	\endif
+
 	<!-- ------------ MAPS AND LAYERS------------- -->
 	\defgroup Maps_and_Layers_Module Maps and Layers
-  	
+
 	<!-- ------------ RESOURCE SERVICE ------------- -->
 	\defgroup Resource_Service_Module Resource Service
   	
-	<!-- ------------ DRAWING SERVICE --------------- -->
- 	\defgroup Drawing_Service_Module Drawing Service
-	 	The Drawing Service allows low level access to \link drawing_source drawing sources \endlink
-		(DWF data).
- 	
+	<!-- ------------ FEATURE SERVICE ---------------- -->
+	\defgroup Feature_Service_Module Feature Service
+
 	<!-- ------------ FEATURE PROPERTIES ------------ -->
 	\defgroup Feature_Properties_Module Feature Properties
 
 	<!-- ------------ FEATURE SCHEMA ---------------- -->
 	\defgroup Feature_Schema_Module Feature Schema
 
- 	<!-- ------------ FEATURE SERVICE ---------------- -->
-	\defgroup Feature_Service_Module Feature Service
+	\if MAPGUIDEAPI
 
+	<!-- ------------ DRAWING SERVICE --------------- -->
+ 	\defgroup Drawing_Service_Module Drawing Service
+	 	The Drawing Service allows low level access to \link drawing_source drawing sources \endlink
+		(DWF data).
+ 	
 	<!-- ------------ MAPPING SERVICE --------------- -->
 	\defgroup Mapping_Service_Module Mapping Service
+
+	<!-- ------------ PROFILING SERVICE ------------- -->
+	\defgroup Profiling_Service_Module Profiling Service
 
 	<!-- ------------ RENDERING SERVICE ------------- -->
 	\defgroup Rendering_Service_Module Rendering Service
@@ -34,6 +44,8 @@
 	<!-- ------------ TILE SERVICE ------------------ -->
 	\defgroup Tile_Service_Module Tile Service
 		The Tile Service supports smooth pans and zooms	in the AJAX Viewer.
+
+	\endif
 
 	<!-- ------------ COORDINATE SYSTEM ------------- -->
 	\defgroup Coordinate_System_Module Coordinate System

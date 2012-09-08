@@ -18,12 +18,12 @@
 #ifndef MGBATCHPROPERTYCOLLECTION_H_
 #define MGBATCHPROPERTYCOLLECTION_H_
 
+class MgBatchPropertyCollection;
+template class MG_FOUNDATION_API Ptr<MgBatchPropertyCollection>;
+
 /// \defgroup MgBatchPropertyCollection MgBatchPropertyCollection
 /// \ingroup Collections_Module
 /// \{
-
-class MgBatchPropertyCollection;
-template class MG_FOUNDATION_API Ptr<MgBatchPropertyCollection>;
 
 //////////////////////////////////////////////////////////////////
 /// \brief

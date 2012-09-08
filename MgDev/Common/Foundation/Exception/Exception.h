@@ -53,6 +53,9 @@ PUBLISHED_API:
     /// Localized exception message.  See MgSiteConnection for information on specifying
     /// the locale.
     ///
+    /// \remarks
+    /// This method used to be called GetMessage prior to MapGuide Open Source 2.2 / MapGuide Enterprise 2011 / AutoCAD Map3D 2011
+    ///
     STRING GetExceptionMessage() throw();
 
     ///////////////////////////////////////////////////////////////////////////

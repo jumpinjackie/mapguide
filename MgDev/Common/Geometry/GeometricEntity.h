@@ -18,14 +18,14 @@
 #ifndef MGGEOMETRICENTITY_H_
 #define MGGEOMETRICENTITY_H_
 
-/// \defgroup MgGeometricEntity MgGeometricEntity
-/// \ingroup Geometry_Module_classes
-/// \{
-
 class MgPoint;
 
 class MgGeometricEntity;
 template class MG_GEOMETRY_API Ptr<MgGeometricEntity>;
+
+/// \defgroup MgGeometricEntity MgGeometricEntity
+/// \ingroup Geometry_Module_classes
+/// \{
 
 ////////////////////////////////////////////////////////////////
 /// \brief

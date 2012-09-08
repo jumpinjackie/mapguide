@@ -23,6 +23,8 @@
 /// MgTransaction represents a transaction to be performed in a DataStore.
 /// If the transaction is time out, commit or rollback a transaction will
 /// result in one exception MgFeatureServiceException thrown.
+///
+/// \since 2.2
 class MG_PLATFORMBASE_API MgTransaction : public MgSerializable
 {
 PUBLISHED_API:
@@ -44,14 +46,16 @@ PUBLISHED_API:
     ///
     virtual MgResourceIdentifier* GetFeatureSource() = 0;
 
-     /// \brief
+    /// \brief
     ///  Create a save point in this transaction.
     /// 
     /// \param suggestName
     /// Suggested save point name.
     /// 
-    /// \returns 
+    /// \return
     /// The actual name used
+    ///
+    /// \since 2.4
     virtual STRING AddSavePoint(CREFSTRING suggestName) = 0;
 
     /// \brief
@@ -60,9 +64,10 @@ PUBLISHED_API:
     /// \param savePointName 
     /// Save point name.
     /// 
-    /// \returns 
+    /// \return
     /// Returns nothing
- 
+    ///
+    /// \since 2.4
     virtual void ReleaseSavePoint(CREFSTRING savePointName) = 0;
     
     /// \brief
@@ -71,8 +76,10 @@ PUBLISHED_API:
     /// \param savePointName 
     /// Save point name.
     /// 
-    /// \returns 
+    /// \return
     /// Returns nothing 
+    ///
+    /// \since 2.4
     virtual void Rollback(CREFSTRING savePointName) = 0;
 
 protected:

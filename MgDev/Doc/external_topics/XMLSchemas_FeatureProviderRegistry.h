@@ -25,6 +25,6 @@ FeatureProviderRegistry
             DefaultValue?
             Value*
 </pre>
-<a href="../../xml_schemas/FeatureProviderRegistry/FeatureProviderRegistry.html">Details</a>
+<a href="xml_schemas/FeatureProviderRegistry/FeatureProviderRegistry.html">Details</a>
 
 **/

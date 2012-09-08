@@ -24,5 +24,5 @@ FeatureSet
             Value
 </pre>
 
-<a href="../../xml_schemas/FeatureSet/FeatureSet.html">Details</a>
+<a href="xml_schemas/FeatureSet/FeatureSet.html">Details</a>
 **/

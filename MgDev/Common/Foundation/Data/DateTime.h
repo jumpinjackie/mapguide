@@ -18,12 +18,12 @@
 #ifndef MGDATETIME_H_
 #define MGDATETIME_H_
 
+class MgDateTime;
+template class MG_FOUNDATION_API Ptr<MgDateTime>;
+
 /// \defgroup MgDateTime MgDateTime
 /// \ingroup Common_Module
 /// \{
-
-class MgDateTime;
-template class MG_FOUNDATION_API Ptr<MgDateTime>;
 
 /////////////////////////////////////////////////////////////////
 /// \brief

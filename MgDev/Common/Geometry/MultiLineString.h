@@ -18,12 +18,12 @@
 #ifndef _MGMULTILINESTRING_H_
 #define _MGMULTILINESTRING_H_
 
+class MgMultiLineString;
+template class MG_GEOMETRY_API Ptr<MgMultiLineString>;
+
 /// \defgroup MgMultiLineString MgMultiLineString
 /// \ingroup Geometry_Module_classes
 /// \{
-
-class MgMultiLineString;
-template class MG_GEOMETRY_API Ptr<MgMultiLineString>;
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
 /// \brief
