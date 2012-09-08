@@ -707,7 +707,7 @@ PUBLISHED_API:
     /// \return
     /// Returns the feature geometry name or an empty string if this layer is not a feature layer
     ///
-    virtual STRING GetFeatureGeometryName();  /// _get
+    virtual STRING GetFeatureGeometryName();  /// __get
 
     //////////////////////////////////////////////////////////////////
     /// \brief
