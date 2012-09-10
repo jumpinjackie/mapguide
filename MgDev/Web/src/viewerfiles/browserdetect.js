@@ -31,7 +31,7 @@ var msie6minus = false;
 if(msieIndex != -1)
 {
     msie = true;
-    var msieVersion = agent.substr(msieIndex + 5, 1);
+    var msieVersion = agent.substr(msieIndex + 5, 2);
 
     if(parseFloat(msieVersion) >= 7)
     {
