@@ -420,7 +420,8 @@ echo [install]: Viewer API documentation
 echo [install]: Copy dlls into .net samples
 %XCOPY% "%MG_OUTPUT_WEB%\www\mapviewernet\bin\*.dll" "%MG_OUTPUT_WEB%\www\dotnetsamples\bin" /EXCLUDE:svn_excludes.txt+%TYPEBUILD%_excludes.txt
 %XCOPY% "%MG_OUTPUT_WEB%\www\mapviewernet\bin\*.dll" "%MG_OUTPUT_WEB%\www\dotnetviewersample\bin" /EXCLUDE:svn_excludes.txt+%TYPEBUILD%_excludes.txt
-
+echo [build]: .net intellisense files
+DoxyTransform.exe dotnet "%MG_DOC_XML%" "%MG_OUTPUT_WEB%\www\mapviewernet\bin"
 goto quit
 
 :error
