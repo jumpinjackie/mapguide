@@ -285,8 +285,8 @@ MAN_LINKS              = NO
 #---------------------------------------------------------------------------
 # configuration options related to the XML output
 #---------------------------------------------------------------------------
-GENERATE_XML           = NO
-XML_OUTPUT             = xml
+GENERATE_XML           = YES
+XML_OUTPUT             = mgdesktop_xml
 XML_SCHEMA             =
 XML_DTD                =
 XML_PROGRAMLISTING     = YES
