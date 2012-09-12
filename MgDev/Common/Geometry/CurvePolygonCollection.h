@@ -177,6 +177,7 @@ PUBLISHED_API:
     /// \brief
     /// Removes the specified curve polygon from the collection.  Returns false if
     /// the curve polygon could not be removed.
+    ///
     /// <!-- Syntax in .Net, Java, and PHP -->
     /// \htmlinclude DotNetSyntaxTop.html
     /// bool Remove(const MgCurvePolygon value);
