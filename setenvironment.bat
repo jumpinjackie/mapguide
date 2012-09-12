@@ -36,6 +36,7 @@ SET MG_UNIT_TEST=%MG_DEV%\UnitTest
 @echo off
 SET MG_FUSION=%MG_OEM%\Fusion
 SET MG_DOC=%MG_DEV%\Doc
+SET MG_DOC_XML=%MG_DOC%\mgopensource_xml
 SET MG_DOC_OUTPUT=%MG_DOC%\MgOpensource_WebAPIReference
 SET MG_DOC_DEVGUIDE_SAMPLES=%MG_DOC%\samples\
 SET MG_BUILD_TEMP=%MG_DEV%\BuildTemp
@@ -61,7 +62,7 @@ IF "%GNUWIN32%" == "" SET GNUWIN32=C:\Program Files (x86)\GnuWin32\bin
 IF "%SEVENZ%" == "" SET SEVENZ=%MG_DEV%\BuildTools\WebTools\7-Zip
 IF "%ANT_HOME%" == "" SET ANT_HOME=C:\apache-ant-1.8.3
 
-SET PATH=%PATH%;%DOXYGEN%;%GNUWIN32%;%SEVENZ%;%ANT_HOME%\bin
+SET PATH=%PATH%;%DOXYGEN%;%GNUWIN32%;%SEVENZ%;%ANT_HOME%\bin;%MG_DEV%\BuildTools\DoxyTransform
 rem ==================================================
 rem MSBuild Settings
 rem ==================================================
