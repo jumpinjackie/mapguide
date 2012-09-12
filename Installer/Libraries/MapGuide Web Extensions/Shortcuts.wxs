@@ -50,7 +50,7 @@
                     KeyPath="yes" />
           </RegistryKey>
         </Component>
-        <Component Id="ApacheViewerApiShortcutComponent" Win64="$(var.Win64)" Guid="4AABF916-33FC-440D-9D6F-8CE95F2ADE7A">
+        <Component Id="ApacheViewerApiShortcutComponent" Win64="$(var.Win64)" Guid="47CD50F1-5961-43F8-8FE8-BF1CDC8AE895">
             <Condition>MGWEB_CONFIG=&quot;APACHE&quot;</Condition>
             <CreateFolder />
             <util:InternetShortcut Id="ApacheViewerApi"
@@ -58,6 +58,20 @@
                                    Name="!(loc.Shortcut_ViewerAPI)"
                                    Target="http://localhost:[APACHE_PORT]/[VIRTUALDIR]/help/viewerapi/index.htm" />
             <RegistryKey Root="HKCU" Key="$(var.MgRegKey)\ApacheViewerApiShortcut">
+                <RegistryValue
+                        Value="Installed"
+                        Type="string"
+                        KeyPath="yes" />
+            </RegistryKey>
+        </Component>
+        <Component Id="ApacheFusionApiShortcutComponent" Win64="$(var.Win64)" Guid="4AABF916-33FC-440D-9D6F-8CE95F2ADE7A">
+            <Condition>MGWEB_CONFIG=&quot;APACHE&quot;</Condition>
+            <CreateFolder />
+            <util:InternetShortcut Id="ApacheFusionApi"
+                                   Directory="MapGuideOpenSourceMenuLocation"
+                                   Name="!(loc.Shortcut_FusionAPI)"
+                                   Target="http://localhost:[APACHE_PORT]/[VIRTUALDIR]/fusion/docs/NaturalDocs/index.html" />
+            <RegistryKey Root="HKCU" Key="$(var.MgRegKey)\ApacheFusionApiShortcut">
                 <RegistryValue
                         Value="Installed"
                         Type="string"
@@ -179,6 +193,20 @@
                           KeyPath="yes" />
               </RegistryKey>
           </Component>
+          <Component Id="IISFusionApiShortcutComponent" Win64="$(var.Win64)" Guid="8F4A6B97-DEFB-4AA1-859E-3392C5DC30D2">
+              <Condition>MGWEB_CONFIG=&quot;IIS&quot;</Condition>
+              <CreateFolder />
+              <util:InternetShortcut Id="IISFusionApi"
+                                     Directory="MapGuideOpenSourceMenuLocation"
+                                     Name="!(loc.Shortcut_FusionAPI)"
+                                     Target="http://localhost/[VIRTUALDIR]/fusion/docs/NaturalDocs/index.html" />
+              <RegistryKey Root="HKCU" Key="$(var.MgRegKey)\IISFusionApiShortcut">
+                  <RegistryValue
+                          Value="Installed"
+                          Type="string"
+                          KeyPath="yes" />
+              </RegistryKey>
+          </Component>
           <Component Id="WebIISPHPViewerSampleShortcutComponent" Win64="$(var.Win64)" Guid="F1B2C345-52F8-4179-8CDC-34D2D3E22418">
               <Condition>MGWEB_CONFIG=&quot;IIS&quot;</Condition>
               <util:InternetShortcut Id="IISPhpViewerSampleShortcut"
@@ -270,7 +298,7 @@
             <util:InternetShortcut Id="AutodeskWikiHelp"
                                    Directory="WebResourcesLocation"
                                    Name="!(loc.Shortcut_WikiHelp)"
-                                   Target="http://wikihelp.autodesk.com/Infr._Map_Server/enu/2012" />
+                                   Target="http://wikihelp.autodesk.com/Infr._Map_Server/enu/2013" />
             <util:InternetShortcut Id="MapGuideCentral"
                                    Directory="WebResourcesLocation"
                                    Name="!(loc.Shortcut_MapGuideCentral)"

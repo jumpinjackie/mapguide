@@ -169,6 +169,8 @@
                 <ComponentRef Id="IISWebApiShortcutComponent"/>
                 <ComponentRef Id="ApacheViewerApiShortcutComponent"/>
                 <ComponentRef Id="IISViewerApiShortcutComponent"/>
+                <ComponentRef Id="ApacheFusionApiShortcutComponent"/>
+                <ComponentRef Id="IISFusionApiShortcutComponent"/>
                 <ComponentRef Id="ApacheDevGuideShortcutComponent"/>
                 <ComponentRef Id="IISDevGuideShortcutComponent"/>
             </Feature>
