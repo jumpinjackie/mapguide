@@ -29,7 +29,7 @@ namespace DoxyTransform
 
         static void Main(string[] args)
         {
-            if (args.Length != 2)
+            if (args.Length != 2 && args.Length != 3)
             {
                 Usage();
                 return;
@@ -42,10 +42,11 @@ namespace DoxyTransform
             }
 
             string srcDir = args[1];
+            string outputPath = (args.Length == 3) ? args[2] : "";
 
             if (args[0].ToLower() == "dotnet")
             {
-                ProcessDotNet(srcDir);
+                ProcessDotNet(srcDir, outputPath);
             }
             else if (args[0].ToLower() == "java")
             {
@@ -384,7 +385,7 @@ namespace DoxyTransform
             return null;
         }
 
-        private static void ProcessDotNet(string srcDir)
+        private static void ProcessDotNet(string srcDir, string outDir)
         {
             foundationDoc = CreateDotNetDocument("OSGeo.MapGuide.Foundation");
             geometryDoc = CreateDotNetDocument("OSGeo.MapGuide.Geometry");
@@ -402,16 +403,31 @@ namespace DoxyTransform
                 if (cls != null && doc != null)
                     CreateDotNetClassElement(doc, cls);
             }
-            foundationDoc.Save("OSGeo.MapGuide.Foundation.xml");
-            geometryDoc.Save("OSGeo.MapGuide.Geometry.xml");
-            platformBaseDoc.Save("OSGeo.MapGuide.PlatformBase.xml");
-            mapguideCommonDoc.Save("OSGeo.MapGuide.MapGuideCommon.xml");
-            webDoc.Save("OSGeo.MapGuide.Web.xml");
+
+            if (!string.IsNullOrEmpty(outDir))
+            {
+                if (!Directory.Exists(outDir))
+                    Directory.CreateDirectory(outDir);
+
+                foundationDoc.Save(Path.Combine(outDir, "OSGeo.MapGuide.Foundation.xml"));
+                geometryDoc.Save(Path.Combine(outDir, "OSGeo.MapGuide.Geometry.xml"));
+                platformBaseDoc.Save(Path.Combine(outDir, "OSGeo.MapGuide.PlatformBase.xml"));
+                mapguideCommonDoc.Save(Path.Combine(outDir, "OSGeo.MapGuide.MapGuideCommon.xml"));
+                webDoc.Save(Path.Combine(outDir, "OSGeo.MapGuide.Web.xml"));
+            }
+            else
+            {
+                foundationDoc.Save("OSGeo.MapGuide.Foundation.xml");
+                geometryDoc.Save("OSGeo.MapGuide.Geometry.xml");
+                platformBaseDoc.Save("OSGeo.MapGuide.PlatformBase.xml");
+                mapguideCommonDoc.Save("OSGeo.MapGuide.MapGuideCommon.xml");
+                webDoc.Save("OSGeo.MapGuide.Web.xml");
+            }
         }
 
         static void Usage()
         {
-            Console.WriteLine("DoxyTransform.exe <dotnet|java> <doxygen xml path>");
+            Console.WriteLine("DoxyTransform.exe <dotnet|java> <doxygen xml path> [output path]");
         }
     }
 }
