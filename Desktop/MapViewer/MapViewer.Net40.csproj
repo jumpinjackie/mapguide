@@ -219,6 +219,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <Compile Include="Strings.Designer.cs" />
     <Compile Include="Tasks\MgTaskPaneStub.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -270,6 +271,7 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+    <EmbeddedResource Include="Strings.resx" />
     <EmbeddedResource Include="Tasks\MgTaskPaneStub.resx">
       <DependentUpon>MgTaskPaneStub.cs</DependentUpon>
     </EmbeddedResource>

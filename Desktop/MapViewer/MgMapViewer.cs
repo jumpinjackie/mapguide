@@ -12,6 +12,7 @@ using System.Threading;
 using System.Xml;
 using System.Collections.Specialized;
 using System.Collections.ObjectModel;
+using System.Globalization;
 
 namespace OSGeo.MapGuide.Viewer
 {
@@ -144,7 +145,7 @@ namespace OSGeo.MapGuide.Viewer
             if (_debugCenter == null)
                 _debugCenter = new MgPropertyCollection();
 
-            var center = _wktRW.Read("POINT (" + _map.ViewCenter.Coordinate.X + " " + _map.ViewCenter.Coordinate.Y + ")"); //NOXLATE
+            var center = _wktRW.Read("POINT (" + _map.ViewCenter.Coordinate.X.ToString(CultureInfo.InvariantCulture) + " " + _map.ViewCenter.Coordinate.Y.ToString(CultureInfo.InvariantCulture) + ")"); //NOXLATE
             var agf = _agfRW.Write(center);
             if (!_debugCenter.Contains("Geometry")) //NOXLATE
             {
@@ -2084,13 +2085,6 @@ namespace OSGeo.MapGuide.Viewer
             }
         }
 
-        private static string MakeWktPolygon(double x1, double y1, double x2, double y2)
-        {
-            return "POLYGON((" + x1 + " " + y1 + ", " + x2 + " " + y1 + ", " + x2 + " " + y2 + ", " + x1 + " " + y2 + ", " + x1 + " " + y1 + "))"; //NOXLATE
-        }
-
-        
-
         private int? _lastTooltipX;
         private int? _lastTooltipY;
 
@@ -2535,7 +2529,7 @@ namespace OSGeo.MapGuide.Viewer
 
                     var dist = _mapMeasure.GetDistance(coord1, coord2);
 
-                    MgGeometry geom = _wktRW.Read(MakeWktPolygon(mapPt1.X, mapPt1.Y, mapPt2.X, mapPt2.Y));
+                    MgGeometry geom = _wktRW.Read(Util.MakeWktPolygon(mapPt1.X, mapPt1.Y, mapPt2.X, mapPt2.Y));
 
                     SelectByGeometry(geom, 1);
                 }

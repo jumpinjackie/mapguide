@@ -73,11 +73,6 @@ namespace OSGeo.MapGuide.Viewer
             }
         }
 
-        static string MakeWktPolygon(double x1, double y1, double x2, double y2)
-        {
-            return "POLYGON((" + x1 + " " + y1 + ", " + x2 + " " + y1 + ", " + x2 + " " + y2 + ", " + x1 + " " + y2 + ", " + x1 + " " + y1 + "))"; //NOXLATE
-        }
-
         private MgGeometry _filterGeometry;
 
         private void btnRectangle_Click(object sender, EventArgs e)
@@ -85,7 +80,7 @@ namespace OSGeo.MapGuide.Viewer
             _viewer.DigitizeRectangle((llx, lly, urx, ury) =>
             {
                 ClearFilterGeometry();
-                _filterGeometry = _wktRw.Read(MakeWktPolygon(llx, lly, urx, ury));
+                _filterGeometry = _wktRw.Read(Util.MakeWktPolygon(llx, lly, urx, ury));
                 lblSpatialFilterGeomSet.Visible = true;
             });
         }

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.ComponentModel;
 using System.Windows.Forms;
+using System.Globalization;
 
 namespace OSGeo.MapGuide.Viewer
 {
@@ -329,10 +330,7 @@ namespace OSGeo.MapGuide.Viewer
             }
         }
 
-        static string MakeWktCircle(double x, double y, double r)
-        {
-            return "CURVEPOLYGON ((" + (x - r) + " " + y + " (CIRCULARARCSEGMENT (" + x + " " + (y - r) + ", " + (x + r) + " " + y + "), CIRCULARARCSEGMENT (" + x + " " + (y + r) + ", " + (x - r) + " " + y + "))))"; //NOXLATE
-        }
+        
 
         public override void Invoke()
         {
@@ -342,7 +340,7 @@ namespace OSGeo.MapGuide.Viewer
                 if (_wktRw == null)
                     _wktRw = new MgWktReaderWriter();
 
-                MgGeometry geom = _wktRw.Read(MakeWktCircle(x, y, r));
+                MgGeometry geom = _wktRw.Read(Util.MakeWktCircle(x, y, r));
                 viewer.SelectByGeometry(geom);
             });
         }

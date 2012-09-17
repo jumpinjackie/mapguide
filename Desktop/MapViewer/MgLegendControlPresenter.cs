@@ -11,6 +11,7 @@ namespace OSGeo.MapGuide.Viewer
     using System.Xml;
     using System.IO;
     using System.Diagnostics;
+    using System.Globalization;
 
     interface ILegendView
     {
@@ -992,10 +993,10 @@ namespace OSGeo.MapGuide.Viewer
 
                 if (bHasMin)
                 {
-                    double minVal = double.Parse(cat.MinScale);
+                    double minVal = double.Parse(cat.MinScale, CultureInfo.InvariantCulture);
                     if (bHasMax) //bHasMin = true, bHasMax = true
                     {
-                        double maxVal = double.Parse(cat.MaxScale);
+                        double maxVal = double.Parse(cat.MaxScale, CultureInfo.InvariantCulture);
                         if (scale >= minVal && scale < maxVal)
                             bApplicable = true;
                     }
@@ -1009,7 +1010,7 @@ namespace OSGeo.MapGuide.Viewer
                 {
                     if (bHasMax) //bHasMin = false, bHasMax = true
                     {
-                        double maxVal = double.Parse(cat.MaxScale);
+                        double maxVal = double.Parse(cat.MaxScale, CultureInfo.InvariantCulture);
                         if (scale < maxVal)
                             bApplicable = true;
                     }

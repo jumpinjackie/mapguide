@@ -8,6 +8,20 @@ namespace OSGeo.MapGuide.Viewer
 {
     internal static class Util
     {
+        public static string MakeWktCircle(double x, double y, double r)
+        {
+            return "CURVEPOLYGON ((" + (x - r).ToString(CultureInfo.InvariantCulture) + " " + y.ToString(CultureInfo.InvariantCulture) + " (CIRCULARARCSEGMENT (" + x.ToString(CultureInfo.InvariantCulture) + " " + (y - r).ToString(CultureInfo.InvariantCulture) + ", " + (x + r).ToString(CultureInfo.InvariantCulture) + " " + y.ToString(CultureInfo.InvariantCulture) + "), CIRCULARARCSEGMENT (" + x.ToString(CultureInfo.InvariantCulture) + " " + (y + r).ToString(CultureInfo.InvariantCulture) + ", " + (x - r).ToString(CultureInfo.InvariantCulture) + " " + y.ToString(CultureInfo.InvariantCulture) + "))))"; //NOXLATE
+        }
+
+        public static string MakeWktPolygon(double x1, double y1, double x2, double y2)
+        {
+            string x1str = x1.ToString(CultureInfo.InvariantCulture);
+            string y1str = y1.ToString(CultureInfo.InvariantCulture);
+            string x2str = x2.ToString(CultureInfo.InvariantCulture);
+            string y2str = y2.ToString(CultureInfo.InvariantCulture);
+            return "POLYGON((" + x1str + " " + y1str + ", " + x2str + " " + y1str + ", " + x2str + " " + y2str + ", " + x1str + " " + y2str + ", " + x1str + " " + y1str + "))"; //NOXLATE
+        }
+
         public static string ToHtmlColor(Color color)
         {
             return String.Format("{0:X2}{1:X2}{2:X2}", color.R, color.G, color.B); //NOXLATE
