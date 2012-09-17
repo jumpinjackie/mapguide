@@ -258,7 +258,7 @@ namespace OSGeo.MapGuide.Viewer
 
             _viewer.DigitizeCircle((x, y, r) =>
             {
-                MgGeometry geom = _wktRw.Read(MakeWktCircle(x, y, r));
+                MgGeometry geom = _wktRw.Read(Util.MakeWktCircle(x, y, r));
                 _viewer.SelectByGeometry(geom);
             });
         }
@@ -361,16 +361,6 @@ namespace OSGeo.MapGuide.Viewer
             {
                 UpdateButtonCheckedState();
             }
-        }
-
-        static string MakeWktPolygon(double x1, double y1, double x2, double y2)
-        {
-            return "POLYGON((" + x1 + " " + y1 + ", " + x2 + " " + y1 + ", " + x2 + " " + y2 + ", " + x1 + " " + y2 + ", " + x1 + " " + y1 + "))"; //NOXLATE
-        }
-
-        static string MakeWktCircle(double x, double y, double r)
-        {
-            return "CURVEPOLYGON ((" + (x - r) + " " + y + " (CIRCULARARCSEGMENT (" + x + " " + (y - r) + ", " + (x + r) + " " + y + "), CIRCULARARCSEGMENT (" + x + " " + (y + r) + ", " + (x - r) + " " + y + "))))"; //NOXLATE
         }
     }
 

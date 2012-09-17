@@ -80,6 +80,7 @@
     <Compile Include="MgDesktopMapViewerProvider.cs" />
     <Compile Include="MgdTransientMapState.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Strings.Designer.cs" />
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
@@ -103,6 +104,9 @@
       <Project>{D46ED17B-329B-4D80-9181-FEF8307EFCBB}</Project>
       <Name>MapViewer.Net40</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Strings.resx" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
