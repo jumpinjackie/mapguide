@@ -36,7 +36,7 @@ namespace OSGeo.MapGuide.Viewer
             if (mgc != null)
                 lblTitle.Text = mgc.Title;
             else
-                lblTitle.Text = Properties.Resources.TextTaskPane;
+                lblTitle.Text = Strings.TextTaskPane;
         }
 
         protected override void OnLoad(EventArgs e)
@@ -57,7 +57,7 @@ namespace OSGeo.MapGuide.Viewer
         internal void SetInitialComponent(MgViewerComponent cmp)
         {
             if (cmp.Target != MgViewerTarget.TaskPane)
-                throw new InvalidOperationException("The specified component's target is not the Task Pane");
+                throw new InvalidOperationException(Strings.ErrorComponentTargetNotTaskPane);
             this.InitialTask = cmp.CreateControl();
         }
     }

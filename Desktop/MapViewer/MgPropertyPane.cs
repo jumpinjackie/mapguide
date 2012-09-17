@@ -133,8 +133,8 @@ namespace OSGeo.MapGuide.Viewer
         /// <summary>
         /// Raised when a request to zoom to the current selected feature has been made
         /// </summary>
-        [Category("MapGuide Viewer")]
-        [Description("Raised when the zoom to current feature toolbar button is clicked")]
+        [Category("MapGuide Viewer")] //NOXLATE
+        [Description("Raised when the zoom to current feature toolbar button is clicked")] //NOXLATE
         public event EventHandler RequestZoomToCurrentFeature;
 
         private void btnZoomCurrent_Click(object sender, EventArgs e)
@@ -176,6 +176,28 @@ namespace OSGeo.MapGuide.Viewer
                     idx = _currentLayerFeatures.Count - 1;
             }
             this.CurrentSelectedFeatureIndex = idx;
+        }
+
+        internal void SetLanguage(System.Globalization.CultureInfo lang)
+        {
+            ComponentResourceManager resources = new ComponentResourceManager(this.GetType());
+            ApplyResourceToControl(resources, this, lang);
+            resources.ApplyResources(this, "$this", lang);
+
+            //NOTE: These will slip under the radar of the above call because they aren't direct children
+            resources.ApplyResources(btnNextFeature, btnNextFeature.Name, lang);
+            resources.ApplyResources(btnPrevFeature, btnPrevFeature.Name, lang);
+            resources.ApplyResources(lblCount, lblCount.Name, lang);
+            resources.ApplyResources(btnZoomSelectedFeature, btnZoomSelectedFeature.Name, lang);
+        }
+
+        private static void ApplyResourceToControl(ComponentResourceManager resources, Control control, System.Globalization.CultureInfo lang)
+        {
+            foreach (Control c in control.Controls)
+            {
+                ApplyResourceToControl(resources, c, lang);
+                resources.ApplyResources(c, c.Name, lang);
+            }
         }
     }
 

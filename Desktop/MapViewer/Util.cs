@@ -10,12 +10,12 @@ namespace OSGeo.MapGuide.Viewer
     {
         public static string ToHtmlColor(Color color)
         {
-            return String.Format("{0:X2}{1:X2}{2:X2}", color.R, color.G, color.B);
+            return String.Format("{0:X2}{1:X2}{2:X2}", color.R, color.G, color.B); //NOXLATE
         }
 
         public static string ToHtmlColorWithAlpha(Color color)
         {
-            return String.Format("{0:X2}{1:X2}{2:X2}{3:X2}", color.A, color.R, color.G, color.B);
+            return String.Format("{0:X2}{1:X2}{2:X2}{3:X2}", color.A, color.R, color.G, color.B); //NOXLATE
         }
 
         public static Color FromHtmlColor(string html)
@@ -46,7 +46,7 @@ namespace OSGeo.MapGuide.Viewer
             try
             {
                 String srs = map.GetMapSRS();
-                if (srs != "")
+                if (srs != string.Empty)
                     return srs;
             }
             catch (MgException e)
@@ -55,12 +55,12 @@ namespace OSGeo.MapGuide.Viewer
 
             //No SRS, set to ArbitrayXY meters
             //
-            return "LOCALCS[\"Non-Earth (Meter)\",LOCAL_DATUM[\"Local Datum\",0],UNIT[\"Meter\", 1],AXIS[\"X\",EAST],AXIS[\"Y\",NORTH]]";
+            return "LOCALCS[\"Non-Earth (Meter)\",LOCAL_DATUM[\"Local Datum\",0],UNIT[\"Meter\", 1],AXIS[\"X\",EAST],AXIS[\"Y\",NORTH]]"; //NOXLATE
         }
 
         public static void ClearDataSource(MgFeatureService featSvc, MgResourceIdentifier fsId, String featureName)
         {
-            MgDeleteFeatures deleteCmd = new MgDeleteFeatures(featureName, "ID >= 0");
+            MgDeleteFeatures deleteCmd = new MgDeleteFeatures(featureName, "ID >= 0"); //NOXLATE
             MgFeatureCommandCollection commands = new MgFeatureCommandCollection();
             commands.Add(deleteCmd);
             featSvc.UpdateFeatures(fsId, commands, false);
@@ -91,17 +91,17 @@ namespace OSGeo.MapGuide.Viewer
         public static void AddFeatureToCollection(MgBatchPropertyCollection propCollection, MgAgfReaderWriter agfRW, int featureId, MgGeometry featureGeom)
         {
             MgPropertyCollection bufferProps = new MgPropertyCollection();
-            MgInt32Property idProp = new MgInt32Property("ID", featureId);
+            MgInt32Property idProp = new MgInt32Property("ID", featureId); //NOXLATE
             bufferProps.Add(idProp);
             MgByteReader geomReader = agfRW.Write(featureGeom);
-            MgGeometryProperty geomProp = new MgGeometryProperty("GEOM", geomReader);
+            MgGeometryProperty geomProp = new MgGeometryProperty("GEOM", geomReader); //NOXLATE
             bufferProps.Add(geomProp);
             propCollection.Add(bufferProps);
         }
 
         public static String GetFeaturePropertyValue(MgReader featureReader, String propName)
         {
-            String value = "";
+            String value = string.Empty;
             int propertyType = featureReader.GetPropertyType(propName);
             switch (propertyType)
             {
@@ -136,7 +136,7 @@ namespace OSGeo.MapGuide.Viewer
                 case MgPropertyType.Feature:
                 case MgPropertyType.Geometry:
                 case MgPropertyType.Raster:
-                    value = "[unsupported data type]";
+                    value = Strings.StrUnsupportedDataType; //NOXLATE
                     break;
             }
             return value;
@@ -144,7 +144,7 @@ namespace OSGeo.MapGuide.Viewer
 
         public static String MakeUniqueLayerName(MgMapBase map, String layerName, String themeName)
         {
-            String desiredName = "_" + layerName + themeName;
+            String desiredName = "_" + layerName + themeName; //NOXLATE
             String uniqueName = desiredName;
             int index = 1;
 
@@ -160,17 +160,17 @@ namespace OSGeo.MapGuide.Viewer
         public static String InterpolateColor(double portion, String startColor, String endColor, int percentTransparent)
         {
             int alpha = (int)(255 * (100.0 - percentTransparent) / 100.0);
-            String result = "";
+            String result = string.Empty;
             if (startColor.Equals(endColor))
             {
-                result = String.Format("{0:X2}{1}", alpha, startColor);
+                result = String.Format("{0:X2}{1}", alpha, startColor); //NOXLATE
             }
             else
             {
                 int red = CalculateRGB(portion, startColor.Substring(0, 2), endColor.Substring(0, 2));
                 int green = CalculateRGB(portion, startColor.Substring(2, 2), endColor.Substring(2, 2));
                 int blue = CalculateRGB(portion, startColor.Substring(4, 2), endColor.Substring(4, 2));
-                result = String.Format("{0:X2}{1:X2}{2:X2}{3:X2}", alpha, red, green, blue);
+                result = String.Format("{0:X2}{1:X2}{2:X2}{3:X2}", alpha, red, green, blue); //NOXLATE
             }
             return result;
         }

@@ -23,7 +23,7 @@ namespace OSGeo.MapGuide.Viewer
         public MgThemeControlImpl(IMapViewer viewer)
         {
             InitializeComponent();
-            this.Title = Properties.Resources.TitleTheme;
+            this.Title = Strings.TitleTheme;
             this.Disposed += new EventHandler(OnDisposed);
             _viewer = viewer;
             _properties = new BindingList<MgDataPropertyDefinition>();
@@ -34,11 +34,11 @@ namespace OSGeo.MapGuide.Viewer
 
             _distros = new Dictionary<string,string>() 
             {
-                { THEME_INDIVIDUAL, "Individual" },
-                { THEME_EQUAL, "Equal" },
-                { THEME_STDDEV, "Standard Deviation" },
-                { THEME_QUANT, "Quantile" },
-                { THEME_JENK, "Jenks (Natural Breaks)"}
+                { THEME_INDIVIDUAL, Strings.ThemeIndividual },
+                { THEME_EQUAL, Strings.ThemeEqual },
+                { THEME_STDDEV, Strings.ThemeStandardDeviation },
+                { THEME_QUANT, Strings.ThemeQuantile },
+                { THEME_JENK, Strings.ThemeJenks }
             };
 
             cmbLayer.DataSource = _layers;
@@ -126,31 +126,31 @@ namespace OSGeo.MapGuide.Viewer
 
             XmlDocument doc = new XmlDocument();
             doc.LoadXml(byteReader.ToString());
-            XmlNodeList nodeList = doc.GetElementsByTagName("VectorScaleRange");
+            XmlNodeList nodeList = doc.GetElementsByTagName("VectorScaleRange"); //NOXLATE
 
             var scaleRanges = new List<string>();
             foreach (XmlElement node in nodeList)
             {
                 String range = null;
 
-                XmlNodeList minNodeList = node.GetElementsByTagName("MinScale");
+                XmlNodeList minNodeList = node.GetElementsByTagName("MinScale"); //NOXLATE
                 if (minNodeList.Count > 0)
                 {
                     range = minNodeList.Item(0).FirstChild.Value;
                 }
                 else
                 {
-                    range = "0";
+                    range = "0"; //NOXLATE
                 }
 
-                XmlNodeList maxNodeList = node.GetElementsByTagName("MaxScale");
+                XmlNodeList maxNodeList = node.GetElementsByTagName("MaxScale"); //NOXLATE
                 if (maxNodeList.Count > 0)
                 {
-                    range = range + " - " + maxNodeList.Item(0).FirstChild.Value;
+                    range = range + " - " + maxNodeList.Item(0).FirstChild.Value; //NOXLATE
                 }
                 else
                 {
-                    range = range + " - Infinity";
+                    range = range + " - " + Strings.Infinity; //NOXLATE
                 }
 
                 scaleRanges.Add(range);
@@ -238,7 +238,7 @@ namespace OSGeo.MapGuide.Viewer
             };
             string name = ApplyTheme(tp);
             _viewer.RefreshMap();
-            MessageBox.Show("Theme layer (" + name + ") created");
+            MessageBox.Show(string.Format(Strings.MsgThemeLayerCreated, name));
         }
 
         private void SetPropertyMinMaxCount(MgLayerBase layer, MgDataPropertyDefinition prop)
@@ -321,11 +321,11 @@ namespace OSGeo.MapGuide.Viewer
             numRules.Value = featureCount = count;
         }
 
-        const string THEME_INDIVIDUAL = "INDIV_DIST";
-        const string THEME_EQUAL = "EQUAL_DIST";
-        const string THEME_STDDEV = "STDEV_DIST";
-        const string THEME_QUANT = "QUANT_DIST";
-        const string THEME_JENK = "JENK_DIST";
+        const string THEME_INDIVIDUAL = "INDIV_DIST"; //NOXLATE
+        const string THEME_EQUAL = "EQUAL_DIST"; //NOXLATE
+        const string THEME_STDDEV = "STDEV_DIST"; //NOXLATE
+        const string THEME_QUANT = "QUANT_DIST"; //NOXLATE
+        const string THEME_JENK = "JENK_DIST"; //NOXLATE
 
         class ThemeParams
         {
@@ -363,14 +363,14 @@ namespace OSGeo.MapGuide.Viewer
             XmlDocument doc = new XmlDocument();
             String xmlLayerDef = byteReader.ToString();
             doc.LoadXml(xmlLayerDef);
-            XmlNodeList nodeList = doc.GetElementsByTagName("VectorScaleRange");
+            XmlNodeList nodeList = doc.GetElementsByTagName("VectorScaleRange"); //NOXLATE
 
             XmlElement vectorScaleRangecElement = (XmlElement)nodeList.Item(themeParams.scaleRangeIndex);
-            XmlElement areaTypeStyle = (XmlElement)vectorScaleRangecElement.GetElementsByTagName("AreaTypeStyle").Item(0);
+            XmlElement areaTypeStyle = (XmlElement)vectorScaleRangecElement.GetElementsByTagName("AreaTypeStyle").Item(0); //NOXLATE
 
             // Remove any existing <AreaRule> elements.
 
-            XmlNodeList areaRuleList = areaTypeStyle.GetElementsByTagName("AreaRule");
+            XmlNodeList areaRuleList = areaTypeStyle.GetElementsByTagName("AreaRule"); //NOXLATE
             int count = areaRuleList.Count;
             for (int i = 0; i < count; i++)
             {
@@ -394,23 +394,21 @@ namespace OSGeo.MapGuide.Viewer
 
             if (THEME_INDIVIDUAL == themeParams.distro)
             {
-                //aggregateOptions.AddFeatureProperty(themeParams.property.Name);
-                //aggregateOptions.SelectDistinct(true);
-                aggregateOptions.AddComputedProperty("THEME_VALUE", "UNIQUE(\"" + themeParams.property.Name + "\")");
+                aggregateOptions.AddComputedProperty("THEME_VALUE", "UNIQUE(\"" + themeParams.property.Name + "\")"); //NOXLATE
 
                 MgDataReader dataReader = featureService.SelectAggregate(resId, themeParams.layer.GetFeatureClassName(), aggregateOptions);
                 while (dataReader.ReadNext())
                 {
-                    value = Util.GetFeaturePropertyValue(dataReader, "THEME_VALUE"); // themeParams.property.Name);
+                    value = Util.GetFeaturePropertyValue(dataReader, "THEME_VALUE"); //NOXLATE
 
-                    filterText = "&quot;" + themeParams.property.Name + "&quot; = ";
+                    filterText = "&quot;" + themeParams.property.Name + "&quot; = "; //NOXLATE
                     if (themeParams.property.DataType == MgPropertyType.String)
-                        filterText = filterText + "'" + value + "'";
+                        filterText = filterText + "'" + value + "'"; //NOXLATE
                     else
                         filterText = filterText + value;
 
                     areaRuleXML = String.Format(areaRuleTemplate,
-                                                themeParams.property.Name + ":" + value,
+                                                themeParams.property.Name + ":" + value, //NOXLATE
                                                 filterText,
                                                 Util.InterpolateColor(portion, themeParams.fillFrom, themeParams.fillTo, themeParams.fillTrans),
                                                 Util.InterpolateColor(portion, themeParams.borderFrom, themeParams.borderTo, 0));
@@ -427,26 +425,26 @@ namespace OSGeo.MapGuide.Viewer
             {
                 var values = new List<string>();
 
-                var expr = themeParams.distro + "(\"" + themeParams.property.Name + "\"," + themeParams.numRules + "," + themeParams.minValue + "," + themeParams.maxValue + ")";
-                aggregateOptions.AddComputedProperty("THEME_VALUE", expr);
+                var expr = themeParams.distro + "(\"" + themeParams.property.Name + "\"," + themeParams.numRules + "," + themeParams.minValue + "," + themeParams.maxValue + ")"; //NOXLATE
+                aggregateOptions.AddComputedProperty("THEME_VALUE", expr); //NOXLATE
                 MgDataReader dataReader = featureService.SelectAggregate(resId, themeParams.layer.GetFeatureClassName(), aggregateOptions);
                 while (dataReader.ReadNext())
                 {
-                    value = Util.GetFeaturePropertyValue(dataReader, "THEME_VALUE");
+                    value = Util.GetFeaturePropertyValue(dataReader, "THEME_VALUE"); //NOXLATE
                     values.Add(value);
                 }
                 dataReader.Close();
 
                 for (int i = 0; i < values.Count - 1; i++)
                 {
-                    filterText = "&quot;" + themeParams.property.Name + "&quot; &gt;= " + values[i] + " AND &quot;" + themeParams.property.Name;
+                    filterText = "&quot;" + themeParams.property.Name + "&quot; &gt;= " + values[i] + " AND &quot;" + themeParams.property.Name; //NOXLATE
                     if (i == values.Count - 1)
-                        filterText = filterText + "&quot; &lt;= " + values[i + 1];
+                        filterText = filterText + "&quot; &lt;= " + values[i + 1]; //NOXLATE
                     else
-                        filterText = filterText + "&quot; &lt; " + values[i + 1];
+                        filterText = filterText + "&quot; &lt; " + values[i + 1]; //NOXLATE
 
                     areaRuleXML = String.Format(areaRuleTemplate,
-                                                themeParams.property.Name + ":" + values[i] + " - " + values[i + 1],
+                                                themeParams.property.Name + ":" + values[i] + " - " + values[i + 1], //NOXLATE
                                                 filterText,
                                                 Util.InterpolateColor(portion, themeParams.fillFrom, themeParams.fillTo, themeParams.fillTrans),
                                                 Util.InterpolateColor(portion, themeParams.borderFrom, themeParams.borderTo, 0));
@@ -466,10 +464,10 @@ namespace OSGeo.MapGuide.Viewer
             String uniqueName = Util.MakeUniqueLayerName(map, themeParams.layer.Name, themeParams.themeName);
             String legendLabel = themeParams.layer.GetLegendLabel();
             if (!string.IsNullOrEmpty(themeParams.themeName))
-                legendLabel = legendLabel + " (" + themeParams.themeName + ")";
+                legendLabel = legendLabel + " (" + themeParams.themeName + ")"; //NOXLATE
 
-            MgResourceIdentifier layerResId = new MgResourceIdentifier("Session:" + _sessionId + "//" + uniqueName + ".LayerDefinition");
-            resourceService.SetResource(layerResId, new MgByteReader(xmlString, "text/xml"), null);
+            MgResourceIdentifier layerResId = new MgResourceIdentifier("Session:" + _sessionId + "//" + uniqueName + ".LayerDefinition"); //NOXLATE
+            resourceService.SetResource(layerResId, new MgByteReader(xmlString, "text/xml"), null); //NOXLATE
 
             var newLayer = provider.CreateLayer(layerResId);
             newLayer.SetName(uniqueName);

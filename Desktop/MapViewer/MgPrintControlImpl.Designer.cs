@@ -44,30 +44,18 @@
             // 
             // label1
             // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(14, 16);
+            resources.ApplyResources(this.label1, "label1");
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(27, 13);
-            this.label1.TabIndex = 0;
-            this.label1.Text = "Title";
             // 
             // txtTitle
             // 
-            this.txtTitle.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
-            this.txtTitle.Location = new System.Drawing.Point(17, 32);
+            resources.ApplyResources(this.txtTitle, "txtTitle");
             this.txtTitle.Name = "txtTitle";
-            this.txtTitle.Size = new System.Drawing.Size(202, 20);
-            this.txtTitle.TabIndex = 1;
             // 
             // chkScale
             // 
-            this.chkScale.AutoSize = true;
-            this.chkScale.Location = new System.Drawing.Point(17, 103);
+            resources.ApplyResources(this.chkScale, "chkScale");
             this.chkScale.Name = "chkScale";
-            this.chkScale.Size = new System.Drawing.Size(83, 17);
-            this.chkScale.TabIndex = 2;
-            this.chkScale.Text = "Show Scale";
             this.chkScale.UseVisualStyleBackColor = true;
             // 
             // printDocument
@@ -78,33 +66,22 @@
             // 
             // printPreviewDialog
             // 
-            this.printPreviewDialog.AutoScrollMargin = new System.Drawing.Size(0, 0);
-            this.printPreviewDialog.AutoScrollMinSize = new System.Drawing.Size(0, 0);
-            this.printPreviewDialog.ClientSize = new System.Drawing.Size(400, 300);
+            resources.ApplyResources(this.printPreviewDialog, "printPreviewDialog");
             this.printPreviewDialog.Document = this.printDocument;
-            this.printPreviewDialog.Enabled = true;
-            this.printPreviewDialog.Icon = ((System.Drawing.Icon)(resources.GetObject("printPreviewDialog.Icon")));
             this.printPreviewDialog.Name = "printPreviewDialog1";
             this.printPreviewDialog.UseAntiAlias = true;
-            this.printPreviewDialog.Visible = false;
             // 
             // btnPrintPreview
             // 
-            this.btnPrintPreview.Location = new System.Drawing.Point(17, 126);
+            resources.ApplyResources(this.btnPrintPreview, "btnPrintPreview");
             this.btnPrintPreview.Name = "btnPrintPreview";
-            this.btnPrintPreview.Size = new System.Drawing.Size(83, 23);
-            this.btnPrintPreview.TabIndex = 3;
-            this.btnPrintPreview.Text = "Print Preview";
             this.btnPrintPreview.UseVisualStyleBackColor = true;
             this.btnPrintPreview.Click += new System.EventHandler(this.btnPrintPreview_Click);
             // 
             // btnPrint
             // 
-            this.btnPrint.Location = new System.Drawing.Point(106, 126);
+            resources.ApplyResources(this.btnPrint, "btnPrint");
             this.btnPrint.Name = "btnPrint";
-            this.btnPrint.Size = new System.Drawing.Size(75, 23);
-            this.btnPrint.TabIndex = 4;
-            this.btnPrint.Text = "Print";
             this.btnPrint.UseVisualStyleBackColor = true;
             this.btnPrint.Click += new System.EventHandler(this.btnPrint_Click);
             // 
@@ -117,15 +94,13 @@
             // 
             // numDPI
             // 
-            this.numDPI.Location = new System.Drawing.Point(17, 77);
+            resources.ApplyResources(this.numDPI, "numDPI");
             this.numDPI.Maximum = new decimal(new int[] {
             1410065407,
             2,
             0,
             0});
             this.numDPI.Name = "numDPI";
-            this.numDPI.Size = new System.Drawing.Size(120, 20);
-            this.numDPI.TabIndex = 5;
             this.numDPI.Value = new decimal(new int[] {
             96,
             0,
@@ -134,16 +109,12 @@
             // 
             // label2
             // 
-            this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(14, 61);
+            resources.ApplyResources(this.label2, "label2");
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(25, 13);
-            this.label2.TabIndex = 6;
-            this.label2.Text = "DPI";
             // 
             // MgPrintControlImpl
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            resources.ApplyResources(this, "$this");
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.Controls.Add(this.label2);
             this.Controls.Add(this.numDPI);
@@ -153,7 +124,6 @@
             this.Controls.Add(this.txtTitle);
             this.Controls.Add(this.label1);
             this.Name = "MgPrintControlImpl";
-            this.Size = new System.Drawing.Size(236, 164);
             ((System.ComponentModel.ISupportInitialize)(this.numDPI)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();

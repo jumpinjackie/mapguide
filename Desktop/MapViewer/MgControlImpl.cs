@@ -46,6 +46,17 @@ namespace OSGeo.MapGuide.Viewer
             if (this.Closer != null)
                 this.Closer.Close();
         }
+
+        private void InitializeComponent()
+        {
+            this.SuspendLayout();
+            // 
+            // MgControlView
+            // 
+            this.Name = "MgControlView";
+            this.ResumeLayout(false);
+
+        }
     }
 
     public interface IContentCloser

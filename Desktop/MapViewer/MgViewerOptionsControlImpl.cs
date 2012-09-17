@@ -18,7 +18,7 @@ namespace OSGeo.MapGuide.Viewer
         internal MgViewerOptionsControlImpl(IMapViewer viewer, string saveDirectory)
         {
             InitializeComponent();
-            this.Title = Properties.Resources.TitleViewerOptions;
+            this.Title = Strings.TitleViewerOptions;
             this.ModalWindow = true;
             _viewer = viewer;
             _saveDirectory = saveDirectory;
@@ -53,7 +53,7 @@ namespace OSGeo.MapGuide.Viewer
             {
                 ser.Serialize(stream, options);
             }
-            MessageBox.Show(Properties.Resources.TextOptionsSaved);
+            MessageBox.Show(Strings.TextOptionsSaved);
             base.Close();
         }
     }
@@ -61,7 +61,7 @@ namespace OSGeo.MapGuide.Viewer
     [Serializable]
     public class MgViewerOptions
     {
-        public const string FILENAME = "MgViewerOptions.xml";
+        public const string FILENAME = "MgViewerOptions.xml"; //NOXLATE
 
         [XmlElement]
         public string SelectionColor { get; set; }

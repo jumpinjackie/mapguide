@@ -14,12 +14,12 @@ namespace OSGeo.MapGuide.Viewer
     {
         public MgViewerOptionsComponent()
         {
-            this.Label = this.ToolTipText = Properties.Resources.TextViewerOptions;
+            this.Label = this.ToolTipText = Strings.TextViewerOptions;
             this.Icon = Properties.Resources.options;
             this.PreferencesDirectory = string.Empty;
         }
-        
-        [Description("The directory where the preferences are saved to and loaded from")]
+
+        [Description("The directory where the preferences are saved to and loaded from")] //NOXLATE
         [MgComponentProperty]
         public string PreferencesDirectory
         {
@@ -46,14 +46,14 @@ namespace OSGeo.MapGuide.Viewer
                         viewer.ZoomInFactor = options.ZoomInFactor;
                         viewer.ZoomOutFactor = options.ZoomOutFactor;
                         viewer.ConvertTiledGroupsToNonTiled = options.ConvertTiledLayersToNonTiled;
-                        Trace.TraceInformation("Applied viewer settings from: " + path);
+                        Trace.TraceInformation("Applied viewer settings from: " + path); //NOXLATE
                     }
                     catch { }
                 }
             }
             else
             {
-                Trace.TraceInformation("No viewer settings found in " + path + ". Doing nothing");
+                Trace.TraceInformation("No viewer settings found in " + path + ". Doing nothing"); //NOXLATE
             }
         }
 

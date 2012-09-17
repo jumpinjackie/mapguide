@@ -15,7 +15,7 @@ namespace OSGeo.MapGuide.Viewer
         public MgPrintControlImpl(IMapViewer viewer)
         {
             InitializeComponent();
-            this.Title = Properties.Resources.TitlePrintSettings;
+            this.Title = Strings.TitlePrintSettings;
             this.ModalWindow = true;
             _viewer = viewer;
         }
@@ -67,7 +67,7 @@ namespace OSGeo.MapGuide.Viewer
             yPos += (sizeTitle.Height * 1.1f);
 
             var scaleFont = SystemFonts.CaptionFont;
-            var scaleStr = string.Format("{0} 1 : {1}", Properties.Resources.TextScale, _viewer.GetMap().ViewScale);
+            var scaleStr = string.Format("{0} 1 : {1}", Strings.TextScale, _viewer.GetMap().ViewScale); //NOXLATE
             var sizeScale = e.Graphics.MeasureString(scaleStr, scaleFont);
 
             //Scale to fit within this page
@@ -78,7 +78,7 @@ namespace OSGeo.MapGuide.Viewer
             {
                 var tempState = new MgMapDisplayParameters(coord.X, coord.Y, map.ViewScale, imgWidth, imgHeight, (int)numDPI.Value);
                 state.PushState(tempState);
-                MgByteReader br = provider.RenderMap(selection, "PNG");
+                MgByteReader br = provider.RenderMap(selection, "PNG"); //NOXLATE
                 using (MgReadOnlyStream stream = new MgReadOnlyStream(br))
                 {
                     Image img = Image.FromStream(stream);

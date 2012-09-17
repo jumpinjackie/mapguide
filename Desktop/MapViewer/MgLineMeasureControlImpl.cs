@@ -17,7 +17,7 @@ namespace OSGeo.MapGuide.Viewer
         public MgLineMeasureControlImpl(IMapViewer viewer, MeasurementUnit preferredUnit)
         {
             InitializeComponent();
-            this.Title = Properties.Resources.TitleMeasure;
+            this.Title = Strings.TitleMeasure;
             _viewer = viewer;
             _segments = new BindingList<MeasuredLineSegment>();
             cmbUnits.DataSource = Enum.GetValues(typeof(MeasurementUnit));
@@ -96,8 +96,8 @@ namespace OSGeo.MapGuide.Viewer
                     var h = this.PropertyChanged;
                     if (h != null) 
                     {
-                        h(this, new PropertyChangedEventArgs("Units"));
-                        h(this, new PropertyChangedEventArgs("DisplayUnits"));
+                        h(this, new PropertyChangedEventArgs("Units")); //NOXLATE
+                        h(this, new PropertyChangedEventArgs("DisplayUnits")); //NOXLATE
                     }
                 }
             }

@@ -149,7 +149,7 @@ namespace OSGeo.MapGuide.Viewer
                 }
                 catch (MgException ex)
                 {
-                    Trace.TraceWarning("Failed to get geometry property for layer: " + layer.Name + Environment.NewLine + ex.ToString());
+                    Trace.TraceWarning("Failed to get geometry property for layer: " + layer.Name + Environment.NewLine + ex.ToString()); //NOXLATE
                     ex.Dispose();
                     continue;
                 }
@@ -175,13 +175,13 @@ namespace OSGeo.MapGuide.Viewer
 
                 _cachedLayerDefinitions[resIds.GetItem(i)] = doc;
 
-                XmlNodeList propMaps = doc.GetElementsByTagName("PropertyMapping");
+                XmlNodeList propMaps = doc.GetElementsByTagName("PropertyMapping"); //NOXLATE
                 if (propMaps.Count > 0)
                 {
                     NameValueCollection propertyMappings = new NameValueCollection();
                     foreach (XmlNode pm in propMaps)
                     {
-                        propertyMappings[pm["Name"].InnerText] = pm["Value"].InnerText;
+                        propertyMappings[pm["Name"].InnerText] = pm["Value"].InnerText; //NOXLATE
                     }
                     _propertyMappings[resIds.GetItem(i)] = propertyMappings;
                 }

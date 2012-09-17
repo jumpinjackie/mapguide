@@ -14,7 +14,7 @@ namespace OSGeo.MapGuide.Viewer
         public MgMeasureComponent()
         {
             this.Icon = Properties.Resources.measure;
-            this.Label = this.ToolTipText = Properties.Resources.TitleMeasure;
+            this.Label = this.ToolTipText = Strings.TitleMeasure;
             this.MeasureMode = MeasureMode.Line;
             this.PreferredUnits = MeasurementUnit.Meters;
         }
@@ -30,8 +30,8 @@ namespace OSGeo.MapGuide.Viewer
             }
         }
 
-        [Category("MapGuide Component Properties")]
-        [Description("The default units to measure in")]
+        [Category("MapGuide Component Properties")] //NOXLATE
+        [Description("The default units to measure in")] //NOXLATE
         [DefaultValue(MeasurementUnit.Meters)]
         [MgComponentProperty]
         public MeasurementUnit PreferredUnits
@@ -42,10 +42,10 @@ namespace OSGeo.MapGuide.Viewer
 
         private MeasureMode _measureMode;
 
-        [Category("MapGuide Component Properties")]
+        [Category("MapGuide Component Properties")] //NOXLATE
         [DefaultValue(MeasureMode.Line)]
         [Browsable(true)]
-        [Description("The mode of measurement")]
+        [Description("The mode of measurement")] //NOXLATE
         [MgComponentProperty]
         public MeasureMode MeasureMode
         {
@@ -53,7 +53,7 @@ namespace OSGeo.MapGuide.Viewer
             set 
             {
                 if (value == MeasureMode.Area)
-                    throw new NotImplementedException("This mode is not yet implemented");
+                    throw new NotImplementedException(Strings.ErrorNotImplemented);
                 _measureMode = value; 
             }
         }

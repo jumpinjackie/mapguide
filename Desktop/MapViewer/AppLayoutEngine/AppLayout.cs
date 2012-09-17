@@ -14,6 +14,9 @@ namespace OSGeo.MapGuide.Viewer.AppLayoutEngine
         public string Icon { get; set; }
 
         [XmlElement]
+        public string Language { get; set; }
+
+        [XmlElement]
         public AppLayoutSettings Settings { get; set; }
 
         [XmlElement]
@@ -71,26 +74,26 @@ namespace OSGeo.MapGuide.Viewer.AppLayoutEngine
             {
                 Items = new List<ItemBase>()
                 {
-                    new SubMenu("File") 
+                    new SubMenu(Strings.MenuFile) 
                     {
                         Items = new List<ItemBase>()
                         {
-                            new CommandItem("LoadMap"),
-                            new CommandItem("LoadPackage"),
+                            new CommandItem("LoadMap"), //NOXLATE
+                            new CommandItem("LoadPackage"), //NOXLATE
                             new SeparatorItem(),
-                            new CommandItem("Quit")
+                            new CommandItem("Quit") //NOXLATE
                         }
                     },
-                    new SubMenu("Tools")
+                    new SubMenu(Strings.MenuTools)
                     {
                         Items = new List<ItemBase>()
                         {
-                            new CommandItem("Buffer"),
-                            new CommandItem("Measure"),
-                            new CommandItem("Query"),
-                            new CommandItem("Theme"),
+                            new CommandItem("Buffer"), //NOXLATE
+                            new CommandItem("Measure"), //NOXLATE
+                            new CommandItem("Query"), //NOXLATE
+                            new CommandItem("Theme"), //NOXLATE
                             new SeparatorItem(),
-                            new CommandItem("ViewerOptions")
+                            new CommandItem("ViewerOptions") //NOXLATE
                         }
                     }
                 }
@@ -99,37 +102,37 @@ namespace OSGeo.MapGuide.Viewer.AppLayoutEngine
             {
                 Items = new List<ItemBase>()
                 {
-                    new CommandItem("PrintMap", false),
+                    new CommandItem("PrintMap", false), //NOXLATE
                     new SeparatorItem(),
-                    new CommandItem("CopyMap", false),
+                    new CommandItem("CopyMap", false), //NOXLATE
                     new SeparatorItem(),
-                    new CommandItem("ZoomIn", false),
-                    new CommandItem("ZoomOut", false),
-                    new CommandItem("InitialView", false),
+                    new CommandItem("ZoomIn", false), //NOXLATE
+                    new CommandItem("ZoomOut", false), //NOXLATE
+                    new CommandItem("InitialView", false), //NOXLATE
                     new SeparatorItem(),
-                    new CommandItem("ZoomPrev", false),
-                    new CommandItem("ZoomNext", false),
+                    new CommandItem("ZoomPrev", false), //NOXLATE
+                    new CommandItem("ZoomNext", false), //NOXLATE
                     new SeparatorItem(),
-                    new CommandItem("Select", false),
-                    new CommandItem("SelectRadius", false),
-                    new CommandItem("SelectPolygon", false),
-                    new CommandItem("Pan", false),
+                    new CommandItem("Select", false), //NOXLATE
+                    new CommandItem("SelectRadius", false), //NOXLATE
+                    new CommandItem("SelectPolygon", false), //NOXLATE
+                    new CommandItem("Pan", false), //NOXLATE
                     new SeparatorItem(),
-                    new CommandItem("ClearSelection", false),
-                    new CommandItem("RefreshMap", false),
+                    new CommandItem("ClearSelection", false), //NOXLATE
+                    new CommandItem("RefreshMap", false), //NOXLATE
                     new SeparatorItem(),
-                    new CommandItem("TooltipToggle", true),
+                    new CommandItem("TooltipToggle", true), //NOXLATE
                     new SeparatorItem(),
-                    new SubMenu("Tools")
+                    new SubMenu(Strings.MenuTools)
                     {
                         Items = new List<ItemBase>()
                         {
-                            new CommandItem("Buffer"),
-                            new CommandItem("Measure"),
-                            new CommandItem("Query"),
-                            new CommandItem("Theme"),
+                            new CommandItem("Buffer"), //NOXLATE
+                            new CommandItem("Measure"), //NOXLATE
+                            new CommandItem("Query"), //NOXLATE
+                            new CommandItem("Theme"), //NOXLATE
                             new SeparatorItem(),
-                            new CommandItem("ViewerOptions")
+                            new CommandItem("ViewerOptions") //NOXLATE
                         }
                     }
                 }
@@ -138,29 +141,29 @@ namespace OSGeo.MapGuide.Viewer.AppLayoutEngine
             {
                 Items = new List<ItemBase>()
                 {
-                    new CommandItem("RefreshMap"),
+                    new CommandItem("RefreshMap"), //NOXLATE
                     new SeparatorItem(),
-                    new CommandItem("ZoomIn"),
-                    new CommandItem("ZoomOut"),
-                    new CommandItem("ZoomToSelection"),
-                    new CommandItem("InitialView"),
+                    new CommandItem("ZoomIn"), //NOXLATE
+                    new CommandItem("ZoomOut"), //NOXLATE
+                    new CommandItem("ZoomToSelection"), //NOXLATE
+                    new CommandItem("InitialView"), //NOXLATE
                     new SeparatorItem(),
-                    new CommandItem("Pan"),
-                    new CommandItem("Select"),
-                    new CommandItem("ClearSelection"),
+                    new CommandItem("Pan"), //NOXLATE
+                    new CommandItem("Select"), //NOXLATE
+                    new CommandItem("ClearSelection"), //NOXLATE
                     new SeparatorItem(),
-                    new SubMenu("Tools") 
+                    new SubMenu(Strings.MenuTools) 
                     {
                         Items = new List<ItemBase>() 
                         {
-                            new CommandItem("Buffer"),
-                            new CommandItem("Measure"),
-                            new CommandItem("Query"),
-                            new CommandItem("Theme")
+                            new CommandItem("Buffer"), //NOXLATE
+                            new CommandItem("Measure"), //NOXLATE
+                            new CommandItem("Query"), //NOXLATE
+                            new CommandItem("Theme") //NOXLATE
                         }
                     },
                     new SeparatorItem(),
-                    new CommandItem("ViewerOptions"),
+                    new CommandItem("ViewerOptions"), //NOXLATE
                 }
             };
             layout.TaskPane = new TaskPaneDefinition()
@@ -170,10 +173,10 @@ namespace OSGeo.MapGuide.Viewer.AppLayoutEngine
                 {
                     Items = new List<ItemBase>()
                     {
-                        new CommandItem("Buffer"),
-                        new CommandItem("Measure"),
-                        new CommandItem("Query"),
-                        new CommandItem("Theme")
+                        new CommandItem("Buffer"), //NOXLATE
+                        new CommandItem("Measure"), //NOXLATE
+                        new CommandItem("Query"), //NOXLATE
+                        new CommandItem("Theme") //NOXLATE
                     }
                 }
             };
@@ -183,72 +186,72 @@ namespace OSGeo.MapGuide.Viewer.AppLayoutEngine
                 {
                     ClassName = typeof(Viewer.MgBufferComponent).FullName,
                     Assembly = null,
-                    ComponentID = "Buffer",
+                    ComponentID = "Buffer", //NOXLATE
                     Properties = new List<NameValue>()
                     {
-                        new NameValue("DefaultLayerName", "BufferLayer"),
-                        new NameValue("DefaultBufferUnits", "enum:" + typeof(MeasurementUnit).FullName + ":" + MeasurementUnit.Meters.ToString()),
-                        new NameValue("Target", "enum:" + typeof(MgViewerTarget).FullName + ":" + MgViewerTarget.TaskPane),
-                        new NameValue("TaskPane", "taskpane:")
+                        new NameValue("DefaultLayerName", "BufferLayer"), //NOXLATE
+                        new NameValue("DefaultBufferUnits", "enum:" + typeof(MeasurementUnit).FullName + ":" + MeasurementUnit.Meters.ToString()), //NOXLATE
+                        new NameValue("Target", "enum:" + typeof(MgViewerTarget).FullName + ":" + MgViewerTarget.TaskPane), //NOXLATE
+                        new NameValue("TaskPane", "taskpane:") //NOXLATE
                     }
                 },
-                new ComponentDefinition(typeof(Viewer.MgCircleSelectComponent).FullName, "SelectRadius"),
-                new ComponentDefinition(typeof(Viewer.MgClearSelectionComponent).FullName, "ClearSelection"),
-                new ComponentDefinition(typeof(Viewer.MgCopyMapComponent).FullName, "CopyMap"),
-                new ComponentDefinition(typeof(Viewer.MgInitialViewComponent).FullName, "InitialView"),
-                new ComponentDefinition(typeof(Viewer.MgLoadMapComponent).FullName, "LoadMap")
+                new ComponentDefinition(typeof(Viewer.MgCircleSelectComponent).FullName, "SelectRadius"), //NOXLATE
+                new ComponentDefinition(typeof(Viewer.MgClearSelectionComponent).FullName, "ClearSelection"), //NOXLATE
+                new ComponentDefinition(typeof(Viewer.MgCopyMapComponent).FullName, "CopyMap"), //NOXLATE
+                new ComponentDefinition(typeof(Viewer.MgInitialViewComponent).FullName, "InitialView"), //NOXLATE
+                new ComponentDefinition(typeof(Viewer.MgLoadMapComponent).FullName, "LoadMap") //NOXLATE
                 {
                     Properties = new List<NameValue>()
                     {
-                        new NameValue("MapDefinition", mapDefinition)
+                        new NameValue("MapDefinition", mapDefinition) //NOXLATE
                     }
                 },
-                new ComponentDefinition(typeof(Viewer.MgLoadPackageComponent).FullName, "LoadPackage")
+                new ComponentDefinition(typeof(Viewer.MgLoadPackageComponent).FullName, "LoadPackage") //NOXLATE
                 {
                     Properties = new List<NameValue>()
                     {
-                        new NameValue("InvokeOnPackageLoad", "component:LoadMap")
+                        new NameValue("InvokeOnPackageLoad", "component:LoadMap") //NOXLATE
                     }
                 },
-                new ComponentDefinition(typeof(Viewer.MgMeasureComponent).FullName, "Measure")
+                new ComponentDefinition(typeof(Viewer.MgMeasureComponent).FullName, "Measure") //NOXLATE
                 {
                     Properties = new List<NameValue>()
                     {
-                        new NameValue("MeasureMode", "enum:" + typeof(MeasureMode).FullName + ":" + MeasureMode.Line.ToString()),
-                        new NameValue("PreferredUnits", "enum:" + typeof(MeasurementUnit).FullName + ":" + MeasurementUnit.Meters.ToString()),
-                        new NameValue("Target", "enum:" + typeof(MgViewerTarget).FullName + ":" + MgViewerTarget.TaskPane),
-                        new NameValue("TaskPane", "taskpane:")
+                        new NameValue("MeasureMode", "enum:" + typeof(MeasureMode).FullName + ":" + MeasureMode.Line.ToString()), //NOXLATE
+                        new NameValue("PreferredUnits", "enum:" + typeof(MeasurementUnit).FullName + ":" + MeasurementUnit.Meters.ToString()), //NOXLATE
+                        new NameValue("Target", "enum:" + typeof(MgViewerTarget).FullName + ":" + MgViewerTarget.TaskPane), //NOXLATE
+                        new NameValue("TaskPane", "taskpane:") //NOXLATE
                     }
                 },
-                new ComponentDefinition(typeof(Viewer.MgPanComponent).FullName, "Pan"),
-                new ComponentDefinition(typeof(Viewer.MgPolygonSelectComponent).FullName, "SelectPolygon"),
-                new ComponentDefinition(typeof(Viewer.MgPrintComponent).FullName, "PrintMap"),
-                new ComponentDefinition(typeof(Viewer.MgQueryComponent).FullName, "Query")
+                new ComponentDefinition(typeof(Viewer.MgPanComponent).FullName, "Pan"), //NOXLATE
+                new ComponentDefinition(typeof(Viewer.MgPolygonSelectComponent).FullName, "SelectPolygon"), //NOXLATE
+                new ComponentDefinition(typeof(Viewer.MgPrintComponent).FullName, "PrintMap"), //NOXLATE
+                new ComponentDefinition(typeof(Viewer.MgQueryComponent).FullName, "Query") //NOXLATE
                 {
                     Properties = new List<NameValue>()
                     {
-                        new NameValue("Target", "enum:" + typeof(MgViewerTarget).FullName + ":" + MgViewerTarget.TaskPane),
-                        new NameValue("TaskPane", "taskpane:")
+                        new NameValue("Target", "enum:" + typeof(MgViewerTarget).FullName + ":" + MgViewerTarget.TaskPane), //NOXLATE
+                        new NameValue("TaskPane", "taskpane:") //NOXLATE
                     }
                 },
-                new ComponentDefinition(typeof(Viewer.AppLayoutEngine.MgQuitComponent).FullName, "Quit"),
-                new ComponentDefinition(typeof(Viewer.MgRefreshMapComponent).FullName, "RefreshMap"),
-                new ComponentDefinition(typeof(Viewer.MgSelectComponent).FullName, "Select"),
-                new ComponentDefinition(typeof(Viewer.MgThemeComponent).FullName, "Theme")
+                new ComponentDefinition(typeof(Viewer.AppLayoutEngine.MgQuitComponent).FullName, "Quit"), //NOXLATE
+                new ComponentDefinition(typeof(Viewer.MgRefreshMapComponent).FullName, "RefreshMap"), //NOXLATE
+                new ComponentDefinition(typeof(Viewer.MgSelectComponent).FullName, "Select"), //NOXLATE
+                new ComponentDefinition(typeof(Viewer.MgThemeComponent).FullName, "Theme") //NOXLATE
                 {
                     Properties = new List<NameValue>()
                     {
-                        new NameValue("Target", "enum:" + typeof(MgViewerTarget).FullName + ":" + MgViewerTarget.TaskPane),
-                        new NameValue("TaskPane", "taskpane:")
+                        new NameValue("Target", "enum:" + typeof(MgViewerTarget).FullName + ":" + MgViewerTarget.TaskPane), //NOXLATE
+                        new NameValue("TaskPane", "taskpane:") //NOXLATE
                     }
                 },
-                new ComponentDefinition(typeof(Viewer.MgTooltipToggleComponent).FullName, "TooltipToggle"),
-                new ComponentDefinition(typeof(Viewer.MgViewerOptionsComponent).FullName, "ViewerOptions"),
-                new ComponentDefinition(typeof(Viewer.MgZoomInComponent).FullName, "ZoomIn"),
-                new ComponentDefinition(typeof(Viewer.MgZoomNextComponent).FullName, "ZoomNext"),
-                new ComponentDefinition(typeof(Viewer.MgZoomOutComponent).FullName, "ZoomOut"),
-                new ComponentDefinition(typeof(Viewer.MgZoomPreviousComponent).FullName, "ZoomPrev"),
-                new ComponentDefinition(typeof(Viewer.MgZoomToSelectionComponent).FullName, "ZoomToSelection")
+                new ComponentDefinition(typeof(Viewer.MgTooltipToggleComponent).FullName, "TooltipToggle"), //NOXLATE
+                new ComponentDefinition(typeof(Viewer.MgViewerOptionsComponent).FullName, "ViewerOptions"), //NOXLATE
+                new ComponentDefinition(typeof(Viewer.MgZoomInComponent).FullName, "ZoomIn"), //NOXLATE
+                new ComponentDefinition(typeof(Viewer.MgZoomNextComponent).FullName, "ZoomNext"), //NOXLATE
+                new ComponentDefinition(typeof(Viewer.MgZoomOutComponent).FullName, "ZoomOut"), //NOXLATE
+                new ComponentDefinition(typeof(Viewer.MgZoomPreviousComponent).FullName, "ZoomPrev"), //NOXLATE
+                new ComponentDefinition(typeof(Viewer.MgZoomToSelectionComponent).FullName, "ZoomToSelection") //NOXLATE
             };
             return layout;
         }

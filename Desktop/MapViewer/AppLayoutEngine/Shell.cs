@@ -6,6 +6,7 @@ using System.Drawing;
 using System.Text;
 using System.Windows.Forms;
 using System.Reflection;
+using System.Globalization;
 
 namespace OSGeo.MapGuide.Viewer.AppLayoutEngine
 {
@@ -34,6 +35,23 @@ namespace OSGeo.MapGuide.Viewer.AppLayoutEngine
         public void Initialize(AppLayout layout, MgMapViewerProvider provider)
         {
             this.Text = layout.Title;
+
+            if (!string.IsNullOrEmpty(layout.Language))
+            {
+                try
+                {
+                    var ci = CultureInfo.GetCultureInfo(layout.Language);
+                    System.Threading.Thread.CurrentThread.CurrentUICulture 
+                        = System.Threading.Thread.CurrentThread.CurrentCulture
+                        = ci;
+                    SetLanguage(ci);
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.Message, "Set Language");
+                }
+            }
+
             _menuInvoker = new MgMenuItemComponentInvoker();
             _toolInvoker = new MgToolButtonComponentInvoker();
 
@@ -66,11 +84,33 @@ namespace OSGeo.MapGuide.Viewer.AppLayoutEngine
                 if (cmp != null)
                     taskPane.SetInitialComponent(cmp);
                 else
-                    MessageBox.Show("WARNING: The specified initial task component id (" + _layout.TaskPane.InitialComponentID + ") does not exist in the AppLayout");
+                    MessageBox.Show(string.Format(Strings.WarnInitialTaskComponentNotFound, _layout.TaskPane.InitialComponentID));
             }
 
             _provider = provider;
             mapViewer.PropertyChanged += new PropertyChangedEventHandler(OnMapViewerPropertyChanged);
+        }
+
+        private void SetLanguage(CultureInfo lang)
+        {
+            //The reason we have to do this is because we're setting the language after this object
+            //has been initialized and resources applied. We basically have to re-apply against the
+            //current language
+            ComponentResourceManager resources = new ComponentResourceManager(this.GetType());
+            ApplyResourceToControl(resources, this, lang);
+            resources.ApplyResources(this, "$this", lang);
+
+            //NOTE: Property pane is a separate case that has to be handled individually
+            propertyPane.SetLanguage(lang);
+        }
+
+        private static void ApplyResourceToControl(ComponentResourceManager resources, Control control, CultureInfo lang)
+        {
+            foreach (Control c in control.Controls)
+            {
+                ApplyResourceToControl(resources, c, lang);
+                resources.ApplyResources(c, c.Name, lang);
+            }
         }
 
         internal void SetTaskPaneWidth(uint width)
@@ -111,7 +151,7 @@ namespace OSGeo.MapGuide.Viewer.AppLayoutEngine
 
         void OnMapViewerPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == "IsBusy")
+            if (e.PropertyName == "IsBusy") //NOXLATE
             {
                 if (_loader != null)
                     _loader.Visible = mapViewer.IsBusy;
@@ -143,7 +183,7 @@ namespace OSGeo.MapGuide.Viewer.AppLayoutEngine
                 }
                 else
                 {
-                    MessageBox.Show("WARNING: Attempted to invoke the component with ID (" + _layout.Settings.InvokeOnStartup + "), but could not find any component with this ID. The application will continue");
+                    MessageBox.Show(string.Format(Strings.WarnInvokeNonExistentComponent, _layout.Settings.InvokeOnStartup));
                 }
             }
         }
@@ -185,7 +225,7 @@ namespace OSGeo.MapGuide.Viewer.AppLayoutEngine
             {
                 _loader = new ToolStripLabel(Properties.Resources.icon_loading);
                 _loader.Alignment = ToolStripItemAlignment.Right;
-                _loader.Text = "";
+                _loader.Text = string.Empty;
                 _loader.ImageScaling = ToolStripItemImageScaling.None;
             }
             viewerToolbar.Items.Add(_loader);
@@ -195,7 +235,7 @@ namespace OSGeo.MapGuide.Viewer.AppLayoutEngine
         private ToolStripItem CreateToolbarItem(ItemBase item)
         {
             if (item == null)
-                throw new ArgumentNullException("item");
+                throw new ArgumentNullException("item"); //NOXLATE
 
             if (item is SeparatorItem)
             {
@@ -228,14 +268,14 @@ namespace OSGeo.MapGuide.Viewer.AppLayoutEngine
             }
             else
             {
-                throw new NotSupportedException("Unsupported item type: " + item.GetType().Name);
+                throw new NotSupportedException(string.Format(Strings.ErrorUnsupportedItemType, item.GetType().Name));
             }
         }
 
         private ToolStripItem CreateMenuItem(ItemBase item)
         {
             if (item == null)
-                throw new ArgumentNullException("item");
+                throw new ArgumentNullException("item"); //NOXLATE
 
             if (item is SeparatorItem)
             {
@@ -270,7 +310,7 @@ namespace OSGeo.MapGuide.Viewer.AppLayoutEngine
             }
             else
             {
-                throw new NotSupportedException("Unsupported item type: " + item.GetType().Name);
+                throw new NotSupportedException(string.Format(Strings.ErrorUnsupportedItemType, item.GetType().Name));
             }
         }
 
@@ -306,7 +346,7 @@ namespace OSGeo.MapGuide.Viewer.AppLayoutEngine
                         if (type.FullName == compDef.ClassName)
                         {
                             if (_components.ContainsKey(compDef.ComponentID))
-                                throw new InvalidOperationException("A component with ID " + compDef.ComponentID + " already exists");
+                                throw new InvalidOperationException(string.Format(Strings.ErrorComponentAlreadyExists, compDef.ComponentID));
                             var comp = (MgComponent)Activator.CreateInstance(type);
                             _components[compDef.ComponentID] = comp;
                             break;
@@ -325,7 +365,7 @@ namespace OSGeo.MapGuide.Viewer.AppLayoutEngine
                         if (type.FullName == compDef.ClassName)
                         {
                             if (_components.ContainsKey(compDef.ComponentID))
-                                throw new InvalidOperationException("A component with ID " + compDef.ComponentID + " already exists");
+                                throw new InvalidOperationException(string.Format(Strings.ErrorComponentAlreadyExists, compDef.ComponentID));
                             var comp = (MgComponent)Activator.CreateInstance(type);
                             _components[compDef.ComponentID] = comp;
                             break;
@@ -352,7 +392,7 @@ namespace OSGeo.MapGuide.Viewer.AppLayoutEngine
                     {
                         var compID = prop.Value.Substring(StringPrefixes.COMPONENTID.Length);
                         if (!_components.ContainsKey(compID))
-                            throw new InvalidOperationException("Component " + compID + " does not exist");
+                            throw new InvalidOperationException(string.Format(Strings.ErrorComponentNotFound, compID));
 
                         comp.SetPropertyValue(prop.Name, _components[compID]);
                     }
@@ -360,7 +400,7 @@ namespace OSGeo.MapGuide.Viewer.AppLayoutEngine
                     {
                         string [] tokens = prop.Value.Split(':');
                         if (tokens.Length != 3)
-                            throw new InvalidOperationException("Malformed enum string. Expected enum:className:value");
+                            throw new InvalidOperationException(Strings.ErrorMalformedEnumString);
                         comp.SetPropertyValue(prop.Name, Enum.Parse(Type.GetType(tokens[1]), tokens[2]));
                     }
                     else if (prop.Value.StartsWith(StringPrefixes.TASKPANEID)) //NOTE: only one taskpane instance, but we're checking this as a forward-looking measure
@@ -468,7 +508,7 @@ namespace OSGeo.MapGuide.Viewer.AppLayoutEngine
 
         private void UpdateLegendTabText()
         {
-            TAB_LEGEND.Text = legend.IsBusy ? Properties.Resources.TextLayersRefreshing : Properties.Resources.TextLayers;
+            TAB_LEGEND.Text = legend.IsBusy ? Strings.TextLayersRefreshing : Strings.TextLayers;
         }
     }
 

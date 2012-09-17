@@ -19,7 +19,7 @@ namespace OSGeo.MapGuide.Viewer
         public MgBufferControlImpl(IMapViewer viewer, string defaultLayerName, MeasurementUnit units)
         {
             InitializeComponent();
-            this.Title = Properties.Resources.TitleBuffer;
+            this.Title = Strings.TitleBuffer;
             _viewer = viewer;
             _sessionId = Guid.NewGuid().ToString();
             var provider = viewer.GetProvider();
@@ -98,13 +98,13 @@ namespace OSGeo.MapGuide.Viewer
                 var layerName = txtBufferLayer.Text.Trim();
                 if (string.IsNullOrEmpty(layerName))
                 {
-                    MessageBox.Show("Please enter a name for this layer");
+                    MessageBox.Show(Strings.MsgEnterNameForLayer);
                     return;
                 }
 
                 if (lstLayers.SelectedItems.Count == 0)
                 {
-                    MessageBox.Show("Please include one or more layers to create a buffer from");
+                    MessageBox.Show(Strings.MsgIncludeLayersToBuffer);
                     return;
                 }
 
@@ -113,8 +113,8 @@ namespace OSGeo.MapGuide.Viewer
                 var provider = _viewer.GetProvider();
 
                 //From here, it's the same logic as buffer.aspx in .net MapGuide AJAX viewer
-                MgResourceIdentifier fsId = new MgResourceIdentifier("Session:" + _sessionId + "//" + txtBufferLayer.Text + "_Buffer.FeatureSource");
-                MgResourceIdentifier ldfId = new MgResourceIdentifier("Session:" + _sessionId + "//" + txtBufferLayer.Text + "_Buffer.LayerDefinition");
+                MgResourceIdentifier fsId = new MgResourceIdentifier("Session:" + _sessionId + "//" + txtBufferLayer.Text + "_Buffer.FeatureSource"); //NOXLATE
+                MgResourceIdentifier ldfId = new MgResourceIdentifier("Session:" + _sessionId + "//" + txtBufferLayer.Text + "_Buffer.LayerDefinition"); //NOXLATE
 
                 MgLayerBase layer = Util.FindLayer(layers, txtBufferLayer.Text);
                 string[] layerNames = GetLayerNames();
@@ -141,17 +141,17 @@ namespace OSGeo.MapGuide.Viewer
                 if (arbitraryMapSrs)
                     mapSrsUnits = srsMap.GetUnits();
 
-                String xtrans = String.Format("{0:x2}", ((int)(255 * Convert.ToInt32(numFillTransparency.Value) / 100)));
+                String xtrans = String.Format("{0:x2}", ((int)(255 * Convert.ToInt32(numFillTransparency.Value) / 100))); //NOXLATE
                 var lineColor = Util.ToHtmlColor(pnlBorderColor.BackColor);
                 var foreColor = Util.ToHtmlColor(pnlFillColor.BackColor);
                 var backColor = Util.ToHtmlColor(pnlFillBackColor.BackColor);
                 String layerTempl = string.Format(Properties.Resources.AreaLayerDef,
                         fsId.ToString(),
-                        "BufferSchema:Buffer",
-                        "GEOM",
+                        "BufferSchema:Buffer", //NOXLATE
+                        "GEOM", //NOXLATE
                         cmbFillPattern.SelectedItem,
                         xtrans + foreColor,
-                        ((0 != 1/*transparent*/) ? "ff" : "00") + backColor,
+                        ((0 != 1/*transparent*/) ? "ff" : "00") + backColor, //NOXLATE
                         cmbBorderPattern.SelectedItem,
                         numLineThickness.Value.ToString(NumberFormatInfo.InvariantInfo),
                         lineColor
@@ -170,12 +170,12 @@ namespace OSGeo.MapGuide.Viewer
                     //
                     MgClassDefinition classDef = new MgClassDefinition();
 
-                    classDef.SetName("Buffer");
-                    classDef.SetDescription("Feature class for buffer layer");
-                    classDef.SetDefaultGeometryPropertyName("GEOM");
+                    classDef.SetName("Buffer"); //NOXLATE
+                    classDef.SetDescription("Feature class for buffer layer"); //NOXLATE
+                    classDef.SetDefaultGeometryPropertyName("GEOM"); //NOXLATE
 
                     //Set KEY property
-                    MgDataPropertyDefinition prop = new MgDataPropertyDefinition("KEY");
+                    MgDataPropertyDefinition prop = new MgDataPropertyDefinition("KEY"); //NOXLATE
                     prop.SetDataType(MgPropertyType.Int32);
                     prop.SetAutoGeneration(true);
                     prop.SetReadOnly(true);
@@ -183,22 +183,22 @@ namespace OSGeo.MapGuide.Viewer
                     classDef.GetProperties().Add(prop);
 
                     //Set ID property. Hold this segment ID
-                    prop = new MgDataPropertyDefinition("ID");
+                    prop = new MgDataPropertyDefinition("ID"); //NOXLATE
                     prop.SetDataType(MgPropertyType.Int32);
                     classDef.GetProperties().Add(prop);
 
                     //Set geometry property
-                    MgGeometricPropertyDefinition geomProp = new MgGeometricPropertyDefinition("GEOM");
+                    MgGeometricPropertyDefinition geomProp = new MgGeometricPropertyDefinition("GEOM"); //NOXLATE
                     //prop.SetGeometryTypes(MgFeatureGeometricType.mfgtSurface); //TODO use the constant when exposed
                     geomProp.SetGeometryTypes(4);
                     classDef.GetProperties().Add(geomProp);
 
                     //Create the schema
-                    MgFeatureSchema schema = new MgFeatureSchema("BufferSchema", "Temporary buffer schema");
+                    MgFeatureSchema schema = new MgFeatureSchema("BufferSchema", "Temporary buffer schema"); //NOXLATE
                     schema.GetClasses().Add(classDef);
 
                     //finally, creation of the feature source
-                    MgCreateSdfParams sdfParams = new MgCreateSdfParams("LatLong", map.GetMapSRS(), schema);
+                    MgCreateSdfParams sdfParams = new MgCreateSdfParams("LatLong", map.GetMapSRS(), schema); //NOXLATE
                     _featSvc.CreateFeatureSource(fsId, sdfParams);
 
                     //Add layer to map
@@ -213,7 +213,7 @@ namespace OSGeo.MapGuide.Viewer
                 {
                     //data source already exist. clear its content
                     //
-                    Util.ClearDataSource(_featSvc, fsId, "BufferSchema:Buffer");
+                    Util.ClearDataSource(_featSvc, fsId, "BufferSchema:Buffer"); //NOXLATE
                 }
 
                 var sel = _viewer.GetSelection();
@@ -255,7 +255,7 @@ namespace OSGeo.MapGuide.Viewer
                     //
                     MgResourceIdentifier featSourceId = new MgResourceIdentifier(selLayer.GetFeatureSourceId());
                     MgSpatialContextReader ctxs = _featSvc.GetSpatialContexts(featSourceId, false);
-                    String srsDefDs = "";
+                    String srsDefDs = string.Empty;
                     if (ctxs != null && ctxs.ReadNext())
                         srsDefDs = ctxs.GetCoordinateSystemWkt();
 
@@ -268,7 +268,7 @@ namespace OSGeo.MapGuide.Viewer
                     var srsFactory = new MgCoordinateSystemFactory();
                     srsDs = srsFactory.Create(srsDefDs);
                     bool arbitraryDsSrs = (srsDs.GetType() == MgCoordinateSystemType.Arbitrary);
-                    String dsSrsUnits = "";
+                    String dsSrsUnits = string.Empty;
 
                     if (arbitraryDsSrs)
                         dsSrsUnits = srsDs.GetUnits();
@@ -371,7 +371,7 @@ namespace OSGeo.MapGuide.Viewer
 
                 if (propCollection.GetCount() > 0)
                 {
-                    commands.Add(new MgInsertFeatures("BufferSchema:Buffer", propCollection));
+                    commands.Add(new MgInsertFeatures("BufferSchema:Buffer", propCollection)); //NOXLATE
 
                     //Insert the features in the temporary data source
                     //
@@ -384,7 +384,10 @@ namespace OSGeo.MapGuide.Viewer
                 _viewer.RefreshMap();
 
                 //build report message
-                MessageBox.Show("Buffer layer (" + txtBufferLayer.Text + ") " + (newBuffer ? "created" : "updated"));
+                if (newBuffer)
+                    MessageBox.Show(string.Format(Strings.MsgBufferLayerCreated, txtBufferLayer.Text));
+                else
+                    MessageBox.Show(string.Format(Strings.MsgBufferLayerUpdated, txtBufferLayer.Text));
             }
             finally
             {

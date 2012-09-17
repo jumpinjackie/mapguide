@@ -14,16 +14,16 @@ namespace OSGeo.MapGuide.Viewer
         public MgBufferComponent()
         {
             this.Icon = Properties.Resources.buffer;
-            this.Label = this.ToolTipText = Properties.Resources.TitleBuffer;
-            this.DefaultLayerName = "Buffer 1";
+            this.Label = this.ToolTipText = Strings.TitleBuffer;
+            this.DefaultLayerName = "Buffer 1"; //NOXLATE
             this.DefaultBufferUnits = MeasurementUnit.Meters;
         }
 
-        [Description("The default name of the buffer layer that is created")]
+        [Description("The default name of the buffer layer that is created")] //NOXLATE
         [MgComponentProperty]
         public string DefaultLayerName { get; set; }
 
-        [Description("The default buffer unit selection")]
+        [Description("The default buffer unit selection")] //NOXLATE
         [MgComponentProperty]
         public MeasurementUnit DefaultBufferUnits { get; set; }
 

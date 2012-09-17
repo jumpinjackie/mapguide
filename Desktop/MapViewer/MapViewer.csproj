@@ -199,6 +199,11 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <Compile Include="Strings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Strings.resx</DependentUpon>
+    </Compile>
     <Compile Include="Tasks\MgTaskPaneStub.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -218,6 +223,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="MgBufferControlImpl.resx">
       <DependentUpon>MgBufferControlImpl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="MgControlImpl.resx">
+      <DependentUpon>MgControlImpl.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="MgLegend.resx">
       <DependentUpon>MgLegend.cs</DependentUpon>
@@ -249,6 +257,10 @@
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Strings.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Strings.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Include="Tasks\MgTaskPaneStub.resx">
       <DependentUpon>MgTaskPaneStub.cs</DependentUpon>

@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MgPropertyPane));
             this.propGrid = new System.Windows.Forms.PropertyGrid();
             this.featureToolStrip = new System.Windows.Forms.ToolStrip();
             this.btnPrevFeature = new System.Windows.Forms.ToolStripButton();
@@ -45,13 +46,9 @@
             // propGrid
             // 
             this.propGrid.CommandsVisibleIfAvailable = false;
-            this.propGrid.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.propGrid.HelpVisible = false;
-            this.propGrid.Location = new System.Drawing.Point(0, 30);
+            resources.ApplyResources(this.propGrid, "propGrid");
             this.propGrid.Name = "propGrid";
             this.propGrid.PropertySort = System.Windows.Forms.PropertySort.NoSort;
-            this.propGrid.Size = new System.Drawing.Size(210, 347);
-            this.propGrid.TabIndex = 1;
             // 
             // featureToolStrip
             // 
@@ -61,43 +58,34 @@
             this.lblCount,
             this.btnNextFeature,
             this.btnZoomSelectedFeature});
-            this.featureToolStrip.Location = new System.Drawing.Point(0, 30);
+            resources.ApplyResources(this.featureToolStrip, "featureToolStrip");
             this.featureToolStrip.Name = "featureToolStrip";
-            this.featureToolStrip.Size = new System.Drawing.Size(210, 25);
-            this.featureToolStrip.TabIndex = 2;
-            this.featureToolStrip.Text = "toolStrip1";
-            this.featureToolStrip.Visible = false;
             // 
             // btnPrevFeature
             // 
             this.btnPrevFeature.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
             this.btnPrevFeature.Image = global::OSGeo.MapGuide.Viewer.Properties.Resources.control_180;
-            this.btnPrevFeature.ImageTransparentColor = System.Drawing.Color.Magenta;
+            resources.ApplyResources(this.btnPrevFeature, "btnPrevFeature");
             this.btnPrevFeature.Name = "btnPrevFeature";
-            this.btnPrevFeature.Size = new System.Drawing.Size(23, 22);
-            this.btnPrevFeature.Text = "Previous Feature";
             this.btnPrevFeature.Click += new System.EventHandler(this.btnPrevFeature_Click);
             // 
             // txtPosition
             // 
             this.txtPosition.Name = "txtPosition";
             this.txtPosition.ReadOnly = true;
-            this.txtPosition.Size = new System.Drawing.Size(50, 25);
+            resources.ApplyResources(this.txtPosition, "txtPosition");
             // 
             // lblCount
             // 
             this.lblCount.Name = "lblCount";
-            this.lblCount.Size = new System.Drawing.Size(35, 22);
-            this.lblCount.Text = "of {0}";
+            resources.ApplyResources(this.lblCount, "lblCount");
             // 
             // btnNextFeature
             // 
             this.btnNextFeature.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
             this.btnNextFeature.Image = global::OSGeo.MapGuide.Viewer.Properties.Resources.control;
-            this.btnNextFeature.ImageTransparentColor = System.Drawing.Color.Magenta;
+            resources.ApplyResources(this.btnNextFeature, "btnNextFeature");
             this.btnNextFeature.Name = "btnNextFeature";
-            this.btnNextFeature.Size = new System.Drawing.Size(23, 22);
-            this.btnNextFeature.Text = "Next Feature";
             this.btnNextFeature.Click += new System.EventHandler(this.btnNextFeature_Click);
             // 
             // btnZoomSelectedFeature
@@ -105,54 +93,37 @@
             this.btnZoomSelectedFeature.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
             this.btnZoomSelectedFeature.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
             this.btnZoomSelectedFeature.Image = global::OSGeo.MapGuide.Viewer.Properties.Resources.icon_zoomselect;
-            this.btnZoomSelectedFeature.ImageTransparentColor = System.Drawing.Color.Magenta;
+            resources.ApplyResources(this.btnZoomSelectedFeature, "btnZoomSelectedFeature");
             this.btnZoomSelectedFeature.Name = "btnZoomSelectedFeature";
-            this.btnZoomSelectedFeature.Size = new System.Drawing.Size(23, 22);
-            this.btnZoomSelectedFeature.Text = "Zoom to current feature";
             this.btnZoomSelectedFeature.Click += new System.EventHandler(this.btnZoomCurrent_Click);
             // 
             // controlToolStrip
             // 
             this.controlToolStrip.Controls.Add(this.cmbLayer);
             this.controlToolStrip.Controls.Add(this.label1);
-            this.controlToolStrip.Dock = System.Windows.Forms.DockStyle.Top;
-            this.controlToolStrip.Location = new System.Drawing.Point(0, 0);
+            resources.ApplyResources(this.controlToolStrip, "controlToolStrip");
             this.controlToolStrip.Name = "controlToolStrip";
-            this.controlToolStrip.Size = new System.Drawing.Size(210, 30);
-            this.controlToolStrip.TabIndex = 3;
-            this.controlToolStrip.Visible = false;
             // 
             // cmbLayer
             // 
-            this.cmbLayer.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
+            resources.ApplyResources(this.cmbLayer, "cmbLayer");
             this.cmbLayer.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cmbLayer.FormattingEnabled = true;
-            this.cmbLayer.Location = new System.Drawing.Point(65, 4);
             this.cmbLayer.Name = "cmbLayer";
-            this.cmbLayer.Size = new System.Drawing.Size(142, 21);
-            this.cmbLayer.TabIndex = 1;
             // 
             // label1
             // 
-            this.label1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                        | System.Windows.Forms.AnchorStyles.Left)));
-            this.label1.Location = new System.Drawing.Point(13, 4);
+            resources.ApplyResources(this.label1, "label1");
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(46, 23);
-            this.label1.TabIndex = 0;
-            this.label1.Text = "Layer";
-            this.label1.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // MgPropertyPane
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            resources.ApplyResources(this, "$this");
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.Controls.Add(this.propGrid);
             this.Controls.Add(this.featureToolStrip);
             this.Controls.Add(this.controlToolStrip);
             this.Name = "MgPropertyPane";
-            this.Size = new System.Drawing.Size(210, 377);
             this.featureToolStrip.ResumeLayout(false);
             this.featureToolStrip.PerformLayout();
             this.controlToolStrip.ResumeLayout(false);

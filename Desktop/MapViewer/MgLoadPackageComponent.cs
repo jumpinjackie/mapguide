@@ -11,7 +11,7 @@ namespace OSGeo.MapGuide.Viewer
     {
         public MgLoadPackageComponent() 
         {
-            this.Label = this.ToolTipText = Properties.Resources.TextLoadPackage;
+            this.Label = this.ToolTipText = Strings.TextLoadPackage;
             this.Icon = Properties.Resources.load_package;
         }
 
@@ -35,7 +35,7 @@ namespace OSGeo.MapGuide.Viewer
         {
             using (var open = new OpenFileDialog())
             {
-                open.Title = Properties.Resources.TextLoadPackage;
+                open.Title = Strings.TextLoadPackage;
                 open.Filter = "*.mgp|*.mgp";
                 if (open.ShowDialog() == DialogResult.OK)
                 {
@@ -46,7 +46,7 @@ namespace OSGeo.MapGuide.Viewer
                     var br = source.GetReader();
 
                     resSvc.ApplyResourcePackage(br);
-                    MessageBox.Show(Properties.Resources.TextPackageLoaded);
+                    MessageBox.Show(Strings.TextPackageLoaded);
                     if (this.InvokeOnPackageLoad != null)
                         this.InvokeOnPackageLoad.Invoke();
                 }

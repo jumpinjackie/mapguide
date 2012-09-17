@@ -28,9 +28,9 @@ namespace OSGeo.MapGuide.Viewer
 
         protected ComponentInvokerBase() { _bindings = new Dictionary<T, MgComponent>(); }
 
-        [Category("MapGuide Viewer")]
-        [DisplayName("Target Component")]
-        [Description("The target MapGuide component to invoke when this item is clicked")]
+        [Category("MapGuide Viewer")] //NOXLATE
+        [DisplayName("Target Component")] //NOXLATE
+        [Description("The target MapGuide component to invoke when this item is clicked")] //NOXLATE
         [DefaultValue(null)]
         public MgComponent GetTargetComponent(T component)
         {
@@ -173,7 +173,7 @@ namespace OSGeo.MapGuide.Viewer
     }
 
     [ToolboxItem(true)]
-    [ProvideProperty("TargetComponent", typeof(ToolStripMenuItem))]
+    [ProvideProperty("TargetComponent", typeof(ToolStripMenuItem))] //NOXLATE
     public class MgMenuItemComponentInvoker : ComponentInvokerBase<ToolStripMenuItem>, IExtenderProvider
     {
         public bool CanExtend(object extendee)
@@ -202,7 +202,7 @@ namespace OSGeo.MapGuide.Viewer
     }
 
     [ToolboxItem(true)]
-    [ProvideProperty("TargetComponent", typeof(ToolStripButton))]
+    [ProvideProperty("TargetComponent", typeof(ToolStripButton))] //NOXLATE
     public class MgToolButtonComponentInvoker : ComponentInvokerBase<ToolStripButton>, IExtenderProvider
     {
         public bool CanExtend(object extendee)

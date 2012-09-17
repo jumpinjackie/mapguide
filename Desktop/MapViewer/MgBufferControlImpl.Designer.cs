@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MgBufferControlImpl));
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.lstLayers = new System.Windows.Forms.ListBox();
             this.label2 = new System.Windows.Forms.Label();
@@ -71,56 +72,38 @@
             // 
             // groupBox1
             // 
-            this.groupBox1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
+            resources.ApplyResources(this.groupBox1, "groupBox1");
             this.groupBox1.Controls.Add(this.lstLayers);
             this.groupBox1.Controls.Add(this.label2);
             this.groupBox1.Controls.Add(this.cmbUnits);
             this.groupBox1.Controls.Add(this.numBufferDistance);
             this.groupBox1.Controls.Add(this.label1);
             this.groupBox1.Controls.Add(this.lblSelectFeatures);
-            this.groupBox1.Location = new System.Drawing.Point(0, 0);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(232, 220);
-            this.groupBox1.TabIndex = 0;
             this.groupBox1.TabStop = false;
-            this.groupBox1.Text = "Buffer Settings";
             // 
             // lstLayers
             // 
-            this.lstLayers.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                        | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
+            resources.ApplyResources(this.lstLayers, "lstLayers");
             this.lstLayers.FormattingEnabled = true;
-            this.lstLayers.Location = new System.Drawing.Point(9, 126);
             this.lstLayers.Name = "lstLayers";
-            this.lstLayers.Size = new System.Drawing.Size(206, 82);
-            this.lstLayers.TabIndex = 5;
             // 
             // label2
             // 
-            this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(6, 101);
+            resources.ApplyResources(this.label2, "label2");
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(180, 13);
-            this.label2.TabIndex = 4;
-            this.label2.Text = "Includes the following layers in buffer";
             // 
             // cmbUnits
             // 
-            this.cmbUnits.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
+            resources.ApplyResources(this.cmbUnits, "cmbUnits");
             this.cmbUnits.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cmbUnits.FormattingEnabled = true;
-            this.cmbUnits.Location = new System.Drawing.Point(105, 66);
             this.cmbUnits.Name = "cmbUnits";
-            this.cmbUnits.Size = new System.Drawing.Size(110, 21);
-            this.cmbUnits.TabIndex = 3;
             // 
             // numBufferDistance
             // 
             this.numBufferDistance.DecimalPlaces = 7;
-            this.numBufferDistance.Location = new System.Drawing.Point(9, 67);
+            resources.ApplyResources(this.numBufferDistance, "numBufferDistance");
             this.numBufferDistance.Maximum = new decimal(new int[] {
             100000,
             0,
@@ -132,33 +115,22 @@
             0,
             -2147483648});
             this.numBufferDistance.Name = "numBufferDistance";
-            this.numBufferDistance.Size = new System.Drawing.Size(92, 20);
-            this.numBufferDistance.TabIndex = 2;
             // 
             // label1
             // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(6, 50);
+            resources.ApplyResources(this.label1, "label1");
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(126, 13);
-            this.label1.TabIndex = 1;
-            this.label1.Text = "Distance around features";
             // 
             // lblSelectFeatures
             // 
             this.lblSelectFeatures.BackColor = System.Drawing.Color.White;
             this.lblSelectFeatures.ForeColor = System.Drawing.Color.Blue;
-            this.lblSelectFeatures.Location = new System.Drawing.Point(6, 16);
+            resources.ApplyResources(this.lblSelectFeatures, "lblSelectFeatures");
             this.lblSelectFeatures.Name = "lblSelectFeatures";
-            this.lblSelectFeatures.Size = new System.Drawing.Size(209, 23);
-            this.lblSelectFeatures.TabIndex = 0;
-            this.lblSelectFeatures.Text = "Select Features on the Map first";
-            this.lblSelectFeatures.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // groupBox2
             // 
-            this.groupBox2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
+            resources.ApplyResources(this.groupBox2, "groupBox2");
             this.groupBox2.Controls.Add(this.btnFillBackColor);
             this.groupBox2.Controls.Add(this.pnlFillBackColor);
             this.groupBox2.Controls.Add(this.label10);
@@ -169,103 +141,68 @@
             this.groupBox2.Controls.Add(this.label4);
             this.groupBox2.Controls.Add(this.cmbFillPattern);
             this.groupBox2.Controls.Add(this.label3);
-            this.groupBox2.Location = new System.Drawing.Point(0, 220);
             this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(232, 144);
-            this.groupBox2.TabIndex = 1;
             this.groupBox2.TabStop = false;
-            this.groupBox2.Text = "Fill Style";
             // 
             // btnFillBackColor
             // 
-            this.btnFillBackColor.Location = new System.Drawing.Point(183, 102);
+            resources.ApplyResources(this.btnFillBackColor, "btnFillBackColor");
             this.btnFillBackColor.Name = "btnFillBackColor";
-            this.btnFillBackColor.Size = new System.Drawing.Size(32, 23);
-            this.btnFillBackColor.TabIndex = 9;
-            this.btnFillBackColor.Text = "...";
             this.btnFillBackColor.UseVisualStyleBackColor = true;
             this.btnFillBackColor.Click += new System.EventHandler(this.btnFillBackColor_Click);
             // 
             // pnlFillBackColor
             // 
-            this.pnlFillBackColor.Location = new System.Drawing.Point(95, 103);
+            resources.ApplyResources(this.pnlFillBackColor, "pnlFillBackColor");
             this.pnlFillBackColor.Name = "pnlFillBackColor";
-            this.pnlFillBackColor.Size = new System.Drawing.Size(82, 22);
-            this.pnlFillBackColor.TabIndex = 8;
             // 
             // label10
             // 
-            this.label10.AutoSize = true;
-            this.label10.Location = new System.Drawing.Point(30, 107);
+            resources.ApplyResources(this.label10, "label10");
             this.label10.Name = "label10";
-            this.label10.Size = new System.Drawing.Size(59, 13);
-            this.label10.TabIndex = 7;
-            this.label10.Text = "Back Color";
             // 
             // numFillTransparency
             // 
-            this.numFillTransparency.Location = new System.Drawing.Point(95, 77);
+            resources.ApplyResources(this.numFillTransparency, "numFillTransparency");
             this.numFillTransparency.Name = "numFillTransparency";
-            this.numFillTransparency.Size = new System.Drawing.Size(120, 20);
-            this.numFillTransparency.TabIndex = 6;
             // 
             // label5
             // 
-            this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(17, 79);
+            resources.ApplyResources(this.label5, "label5");
             this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(72, 13);
-            this.label5.TabIndex = 5;
-            this.label5.Text = "Transparency";
             // 
             // btnFillColor
             // 
-            this.btnFillColor.Location = new System.Drawing.Point(183, 48);
+            resources.ApplyResources(this.btnFillColor, "btnFillColor");
             this.btnFillColor.Name = "btnFillColor";
-            this.btnFillColor.Size = new System.Drawing.Size(32, 23);
-            this.btnFillColor.TabIndex = 4;
-            this.btnFillColor.Text = "...";
             this.btnFillColor.UseVisualStyleBackColor = true;
             this.btnFillColor.Click += new System.EventHandler(this.btnFillColor_Click);
             // 
             // pnlFillColor
             // 
-            this.pnlFillColor.Location = new System.Drawing.Point(95, 49);
+            resources.ApplyResources(this.pnlFillColor, "pnlFillColor");
             this.pnlFillColor.Name = "pnlFillColor";
-            this.pnlFillColor.Size = new System.Drawing.Size(82, 22);
-            this.pnlFillColor.TabIndex = 3;
             // 
             // label4
             // 
-            this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(34, 53);
+            resources.ApplyResources(this.label4, "label4");
             this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(55, 13);
-            this.label4.TabIndex = 2;
-            this.label4.Text = "Fore Color";
             // 
             // cmbFillPattern
             // 
             this.cmbFillPattern.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cmbFillPattern.FormattingEnabled = true;
-            this.cmbFillPattern.Location = new System.Drawing.Point(95, 23);
+            resources.ApplyResources(this.cmbFillPattern, "cmbFillPattern");
             this.cmbFillPattern.Name = "cmbFillPattern";
-            this.cmbFillPattern.Size = new System.Drawing.Size(120, 21);
-            this.cmbFillPattern.TabIndex = 1;
             // 
             // label3
             // 
-            this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(48, 26);
+            resources.ApplyResources(this.label3, "label3");
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(41, 13);
-            this.label3.TabIndex = 0;
-            this.label3.Text = "Pattern";
             // 
             // groupBox3
             // 
-            this.groupBox3.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
+            resources.ApplyResources(this.groupBox3, "groupBox3");
             this.groupBox3.Controls.Add(this.numLineThickness);
             this.groupBox3.Controls.Add(this.cmbBorderPattern);
             this.groupBox3.Controls.Add(this.label6);
@@ -273,130 +210,85 @@
             this.groupBox3.Controls.Add(this.btnBorderColor);
             this.groupBox3.Controls.Add(this.label7);
             this.groupBox3.Controls.Add(this.pnlBorderColor);
-            this.groupBox3.Location = new System.Drawing.Point(0, 364);
             this.groupBox3.Name = "groupBox3";
-            this.groupBox3.Size = new System.Drawing.Size(232, 100);
-            this.groupBox3.TabIndex = 2;
             this.groupBox3.TabStop = false;
-            this.groupBox3.Text = "Border Style";
             // 
             // numLineThickness
             // 
-            this.numLineThickness.Location = new System.Drawing.Point(95, 73);
+            resources.ApplyResources(this.numLineThickness, "numLineThickness");
             this.numLineThickness.Name = "numLineThickness";
-            this.numLineThickness.Size = new System.Drawing.Size(120, 20);
-            this.numLineThickness.TabIndex = 13;
             // 
             // cmbBorderPattern
             // 
             this.cmbBorderPattern.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cmbBorderPattern.FormattingEnabled = true;
-            this.cmbBorderPattern.Location = new System.Drawing.Point(95, 19);
+            resources.ApplyResources(this.cmbBorderPattern, "cmbBorderPattern");
             this.cmbBorderPattern.Name = "cmbBorderPattern";
-            this.cmbBorderPattern.Size = new System.Drawing.Size(120, 21);
-            this.cmbBorderPattern.TabIndex = 8;
             // 
             // label6
             // 
-            this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(17, 75);
+            resources.ApplyResources(this.label6, "label6");
             this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(72, 13);
-            this.label6.TabIndex = 12;
-            this.label6.Text = "Transparency";
             // 
             // label8
             // 
-            this.label8.AutoSize = true;
-            this.label8.Location = new System.Drawing.Point(48, 22);
+            resources.ApplyResources(this.label8, "label8");
             this.label8.Name = "label8";
-            this.label8.Size = new System.Drawing.Size(41, 13);
-            this.label8.TabIndex = 7;
-            this.label8.Text = "Pattern";
             // 
             // btnBorderColor
             // 
-            this.btnBorderColor.Location = new System.Drawing.Point(183, 44);
+            resources.ApplyResources(this.btnBorderColor, "btnBorderColor");
             this.btnBorderColor.Name = "btnBorderColor";
-            this.btnBorderColor.Size = new System.Drawing.Size(32, 23);
-            this.btnBorderColor.TabIndex = 11;
-            this.btnBorderColor.Text = "...";
             this.btnBorderColor.UseVisualStyleBackColor = true;
             this.btnBorderColor.Click += new System.EventHandler(this.btnBorderColor_Click);
             // 
             // label7
             // 
-            this.label7.AutoSize = true;
-            this.label7.Location = new System.Drawing.Point(58, 49);
+            resources.ApplyResources(this.label7, "label7");
             this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(31, 13);
-            this.label7.TabIndex = 9;
-            this.label7.Text = "Color";
             // 
             // pnlBorderColor
             // 
-            this.pnlBorderColor.Location = new System.Drawing.Point(95, 45);
+            resources.ApplyResources(this.pnlBorderColor, "pnlBorderColor");
             this.pnlBorderColor.Name = "pnlBorderColor";
-            this.pnlBorderColor.Size = new System.Drawing.Size(82, 22);
-            this.pnlBorderColor.TabIndex = 10;
             // 
             // btnCreate
             // 
-            this.btnCreate.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.btnCreate.Location = new System.Drawing.Point(9, 567);
+            resources.ApplyResources(this.btnCreate, "btnCreate");
             this.btnCreate.Name = "btnCreate";
-            this.btnCreate.Size = new System.Drawing.Size(98, 23);
-            this.btnCreate.TabIndex = 3;
-            this.btnCreate.Text = "Create Buffer";
             this.btnCreate.UseVisualStyleBackColor = true;
             this.btnCreate.Click += new System.EventHandler(this.btnCreate_Click);
             // 
             // groupBox4
             // 
-            this.groupBox4.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                        | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
+            resources.ApplyResources(this.groupBox4, "groupBox4");
             this.groupBox4.Controls.Add(this.chkMergeBuffers);
             this.groupBox4.Controls.Add(this.txtBufferLayer);
             this.groupBox4.Controls.Add(this.label9);
-            this.groupBox4.Location = new System.Drawing.Point(0, 464);
             this.groupBox4.Name = "groupBox4";
-            this.groupBox4.Size = new System.Drawing.Size(232, 97);
-            this.groupBox4.TabIndex = 4;
             this.groupBox4.TabStop = false;
-            this.groupBox4.Text = "Other";
             // 
             // chkMergeBuffers
             // 
-            this.chkMergeBuffers.AutoSize = true;
+            resources.ApplyResources(this.chkMergeBuffers, "chkMergeBuffers");
             this.chkMergeBuffers.Checked = true;
             this.chkMergeBuffers.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.chkMergeBuffers.Location = new System.Drawing.Point(12, 69);
             this.chkMergeBuffers.Name = "chkMergeBuffers";
-            this.chkMergeBuffers.Size = new System.Drawing.Size(117, 17);
-            this.chkMergeBuffers.TabIndex = 2;
-            this.chkMergeBuffers.Text = "Merge Buffer Areas";
             this.chkMergeBuffers.UseVisualStyleBackColor = true;
             // 
             // txtBufferLayer
             // 
-            this.txtBufferLayer.Location = new System.Drawing.Point(12, 43);
+            resources.ApplyResources(this.txtBufferLayer, "txtBufferLayer");
             this.txtBufferLayer.Name = "txtBufferLayer";
-            this.txtBufferLayer.Size = new System.Drawing.Size(203, 20);
-            this.txtBufferLayer.TabIndex = 1;
             // 
             // label9
             // 
-            this.label9.AutoSize = true;
-            this.label9.Location = new System.Drawing.Point(9, 26);
+            resources.ApplyResources(this.label9, "label9");
             this.label9.Name = "label9";
-            this.label9.Size = new System.Drawing.Size(98, 13);
-            this.label9.TabIndex = 0;
-            this.label9.Text = "Buffer Layer Name:";
             // 
             // MgBufferControlImpl
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            resources.ApplyResources(this, "$this");
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.Controls.Add(this.groupBox4);
             this.Controls.Add(this.btnCreate);
@@ -404,7 +296,6 @@
             this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.groupBox1);
             this.Name = "MgBufferControlImpl";
-            this.Size = new System.Drawing.Size(232, 601);
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numBufferDistance)).EndInit();
