@@ -14,8 +14,6 @@ namespace OSGeo.MapGuide.Viewer
 
     interface ILegendView
     {
-        //ContextMenuStrip LayerContextMenu { get; }
-        //ContextMenuStrip GroupContextMenu { get; }
         void AddLegendIcon(string id, Image icon);
         int ThemeCompressionLimit { get; }
         void OnRequestRefresh();
@@ -23,14 +21,14 @@ namespace OSGeo.MapGuide.Viewer
 
     class MgLegendControlPresenter
     {
-        const string IMG_BROKEN = "lc_broken";
-        const string IMG_DWF = "lc_dwf";
-        const string IMG_GROUP = "lc_group";
-        const string IMG_RASTER = "lc_raster";
-        const string IMG_SELECT = "lc_select";
-        const string IMG_THEME = "lc_theme";
-        const string IMG_UNSELECT = "lc_unselect";
-        const string IMG_OTHER = "icon_etc";
+        const string IMG_BROKEN = "lc_broken"; //NOXLATE
+        const string IMG_DWF = "lc_dwf"; //NOXLATE
+        const string IMG_GROUP = "lc_group"; //NOXLATE
+        const string IMG_RASTER = "lc_raster"; //NOXLATE
+        const string IMG_SELECT = "lc_select"; //NOXLATE
+        const string IMG_THEME = "lc_theme"; //NOXLATE
+        const string IMG_UNSELECT = "lc_unselect"; //NOXLATE
+        const string IMG_OTHER = "icon_etc"; //NOXLATE
 
         private MgResourceService _resSvc;
         private MgMapViewerProvider _provider;
@@ -97,7 +95,7 @@ namespace OSGeo.MapGuide.Viewer
             var fsId = layer.GetFeatureSourceId();
 
             LayerNodeMetadata layerMeta = null;
-            if (fsId.EndsWith("DrawingSource"))
+            if (fsId.EndsWith("DrawingSource")) //NOXLATE
             {
                 node.SelectedImageKey = node.ImageKey = IMG_DWF;
                 bool bInitiallySelectable = layer.Selectable;
@@ -112,7 +110,7 @@ namespace OSGeo.MapGuide.Viewer
                     _layers[layer.GetObjectId()] = layerMeta;
                 }
                 node.Tag = layerMeta;
-                node.ToolTipText = string.Format(Properties.Resources.DrawingLayerTooltip, Environment.NewLine, layer.Name, layer.FeatureSourceId);
+                node.ToolTipText = string.Format(Strings.DrawingLayerTooltip, Environment.NewLine, layer.Name, layer.FeatureSourceId);
             }
             else
             {
@@ -134,13 +132,13 @@ namespace OSGeo.MapGuide.Viewer
                 XmlDocument doc = new XmlDocument();
                 doc.LoadXml(layerMeta.LayerDefinitionContent);
                 int type = 0;
-                XmlNodeList scaleRanges = doc.GetElementsByTagName("VectorScaleRange");
+                XmlNodeList scaleRanges = doc.GetElementsByTagName("VectorScaleRange"); //NOXLATE
                 if (scaleRanges.Count == 0)
                 {
-                    scaleRanges = doc.GetElementsByTagName("GridScaleRange");
+                    scaleRanges = doc.GetElementsByTagName("GridScaleRange"); //NOXLATE
                     if (scaleRanges.Count == 0)
                     {
-                        scaleRanges = doc.GetElementsByTagName("DrawingLayerDefinition");
+                        scaleRanges = doc.GetElementsByTagName("DrawingLayerDefinition"); //NOXLATE
                         if (scaleRanges.Count == 0)
                             return null;
                         type = 2;
@@ -149,20 +147,20 @@ namespace OSGeo.MapGuide.Viewer
                         type = 1;
                 }
 
-                String[] typeStyles = new String[] { "PointTypeStyle", "LineTypeStyle", "AreaTypeStyle", "CompositeTypeStyle" };
-                String[] ruleNames = new String[] { "PointRule", "LineRule", "AreaRule", "CompositeRule" };
+                String[] typeStyles = new String[] { "PointTypeStyle", "LineTypeStyle", "AreaTypeStyle", "CompositeTypeStyle" }; //NOXLATE
+                String[] ruleNames = new String[] { "PointRule", "LineRule", "AreaRule", "CompositeRule" }; //NOXLATE
 
-                node.ToolTipText = string.Format(Properties.Resources.DefaultLayerTooltip, Environment.NewLine, layer.Name, layer.FeatureSourceId, layer.FeatureClassName);
+                node.ToolTipText = string.Format(Strings.DefaultLayerTooltip, Environment.NewLine, layer.Name, layer.FeatureSourceId, layer.FeatureClassName);
                 if (!layerMeta.HasTheme() || !layerMeta.HasDefaultIcons())
                 {
                     for (int sc = 0; sc < scaleRanges.Count; sc++)
                     {
                         XmlElement scaleRange = (XmlElement)scaleRanges[sc];
-                        XmlNodeList minElt = scaleRange.GetElementsByTagName("MinScale");
-                        XmlNodeList maxElt = scaleRange.GetElementsByTagName("MaxScale");
+                        XmlNodeList minElt = scaleRange.GetElementsByTagName("MinScale"); //NOXLATE
+                        XmlNodeList maxElt = scaleRange.GetElementsByTagName("MaxScale"); //NOXLATE
                         String minScale, maxScale;
-                        minScale = "0";
-                        maxScale = "1000000000000.0";   // as MDF's VectorScaleRange::MAX_MAP_SCALE
+                        minScale = "0"; //NOXLATE
+                        maxScale = "1000000000000.0";  //NOXLATE  // as MDF's VectorScaleRange::MAX_MAP_SCALE
                         if (minElt.Count > 0)
                             minScale = minElt[0].ChildNodes[0].Value;
                         if (maxElt.Count > 0)
@@ -185,7 +183,7 @@ namespace OSGeo.MapGuide.Viewer
                             for (int st = 0; st < typeStyle.Count; st++)
                             {
                                 // We will check if this typestyle is going to be shown in the legend
-                                XmlNodeList showInLegend = ((XmlElement)typeStyle[st]).GetElementsByTagName("ShowInLegend");
+                                XmlNodeList showInLegend = ((XmlElement)typeStyle[st]).GetElementsByTagName("ShowInLegend"); //NOXLATE
                                 if (showInLegend.Count > 0)
                                     if (!bool.Parse(showInLegend[0].ChildNodes[0].Value))
                                         continue;   // This typestyle does not need to be shown in the legend
@@ -194,7 +192,7 @@ namespace OSGeo.MapGuide.Viewer
                                 if (rules.Count > 1)
                                 {
                                     layerMeta.SetDefaultIcon(themeCat, Properties.Resources.lc_theme);
-                                    node.ToolTipText = string.Format(Properties.Resources.ThemedLayerTooltip, Environment.NewLine, layer.Name, layer.FeatureSourceId, layer.FeatureClassName, rules.Count);
+                                    node.ToolTipText = string.Format(Strings.ThemedLayerTooltip, Environment.NewLine, layer.Name, layer.FeatureSourceId, layer.FeatureClassName, rules.Count);
 
                                     if (_legend.ThemeCompressionLimit > 0 && rules.Count > _legend.ThemeCompressionLimit)
                                     {
@@ -218,7 +216,7 @@ namespace OSGeo.MapGuide.Viewer
                                                                                                    _map.ViewScale,
                                                                                                    16,
                                                                                                    16,
-                                                                                                   "PNG",
+                                                                                                   "PNG", //NOXLATE
                                                                                                    -1,
                                                                                                    -1);
                                         legendCallCount++;
@@ -231,7 +229,7 @@ namespace OSGeo.MapGuide.Viewer
                                                 using (var ms = new MemoryStream(b))
                                                 {
                                                     layerMeta.SetDefaultIcon(themeCat, Image.FromStream(ms));
-                                                    node.ToolTipText = string.Format(Properties.Resources.DefaultLayerTooltip, Environment.NewLine, layer.Name, layer.FeatureSourceId, layer.FeatureClassName);
+                                                    node.ToolTipText = string.Format(Strings.DefaultLayerTooltip, Environment.NewLine, layer.Name, layer.FeatureSourceId, layer.FeatureClassName);
                                                 }
                                             }
                                             finally
@@ -255,7 +253,7 @@ namespace OSGeo.MapGuide.Viewer
                 }
                 else //Already cached
                 {
-                    Trace.TraceInformation("Icons already cached for: " + layer.Name);
+                    Trace.TraceInformation("Icons already cached for: " + layer.Name); //NOXLATE
                     node.Nodes.AddRange(layerMeta.CreateThemeNodesFromCachedMetadata(_map.ViewScale));
                 }
             }
@@ -266,10 +264,10 @@ namespace OSGeo.MapGuide.Viewer
         private void AddThemeRuleNode(LayerNodeMetadata layerMeta, ThemeCategory themeCat, TreeNode node, int geomType, int catIndex, XmlNodeList rules, int r)
         {
             XmlElement rule = (XmlElement)rules[r];
-            XmlNodeList label = rule.GetElementsByTagName("LegendLabel");
-            XmlNodeList filter = rule.GetElementsByTagName("Filter");
+            XmlNodeList label = rule.GetElementsByTagName("LegendLabel"); //NOXLATE
+            XmlNodeList filter = rule.GetElementsByTagName("Filter"); //NOXLATE
 
-            String labelText = "";
+            String labelText = string.Empty;
             if (label != null && label.Count > 0 && label[0].ChildNodes.Count > 0)
                 labelText = label[0].ChildNodes[0].Value;
             //String filterText = "";
@@ -283,7 +281,7 @@ namespace OSGeo.MapGuide.Viewer
         private TreeNode CreateCompressedThemeNode(LayerNodeMetadata layer, ThemeCategory cat, int count)
         {
             TreeNode node = new TreeNode();
-            node.Text = (count + " other styles");
+            node.Text = string.Format(Strings.CountOtherStyles, count);
             node.ImageKey = node.SelectedImageKey = IMG_OTHER;
             var meta = new LayerThemeNodeMetadata(true, Properties.Resources.icon_etc, node.Text);
             node.Tag = meta;
@@ -298,7 +296,7 @@ namespace OSGeo.MapGuide.Viewer
                                                               viewScale,
                                                               16,
                                                               16,
-                                                              "PNG",
+                                                              "PNG", //NOXLATE
                                                               geomType,
                                                               categoryIndex);
             legendCallCount++;
@@ -459,7 +457,7 @@ namespace OSGeo.MapGuide.Viewer
                     }
                     meta.LayerDefinitionContent = layerContents.GetItem(i);
                 }
-                Trace.TraceInformation("CreateNodes: {0} layer contents added, {1} layer contents updated", added, updated);
+                Trace.TraceInformation("CreateNodes: {0} layer contents added, {1} layer contents updated", added, updated); //NOXLATE
             }
 
             List<MgLayerBase> remainingLayers = new List<MgLayerBase>();
@@ -534,7 +532,7 @@ namespace OSGeo.MapGuide.Viewer
                     }
                 }
             }
-            Trace.TraceInformation("{0} calls made to GenerateLegendImage", legendCallCount);
+            Trace.TraceInformation("{0} calls made to GenerateLegendImage", legendCallCount); //NOXLATE
             return output.ToArray();
         }
 
@@ -769,7 +767,7 @@ namespace OSGeo.MapGuide.Viewer
             public abstract string ObjectId { get; }
         }
 
-        [DebuggerDisplay("Name = {Layer.Name}, Label = {Layer.LegendLabel}")]
+        [DebuggerDisplay("Name = {Layer.Name}, Label = {Layer.LegendLabel}")] //NOXLATE
         class GroupNodeMetadata : LegendNodeMetadata
         {
             internal MgLayerGroup Group { get; private set; }
@@ -786,7 +784,7 @@ namespace OSGeo.MapGuide.Viewer
             }
         }
 
-        [DebuggerDisplay("Layer Theme Node")]
+        [DebuggerDisplay("Layer Theme Node")] //NOXLATE
         class LayerThemeNodeMetadata : LegendNodeMetadata
         {
             public LayerThemeNodeMetadata(bool bPlaceholder, Image themeIcon, string labelText)
@@ -843,7 +841,7 @@ namespace OSGeo.MapGuide.Viewer
             }
         }
 
-        [DebuggerDisplay("Name = {Layer.Name}, Label = {Layer.LegendLabel}")]
+        [DebuggerDisplay("Name = {Layer.Name}, Label = {Layer.LegendLabel}")] //NOXLATE
         class LayerNodeMetadata : LegendNodeMetadata
         {
             public LayerNodeMetadata(MgLayerBase layer, bool bInitiallySelectable)
@@ -873,12 +871,12 @@ namespace OSGeo.MapGuide.Viewer
                         return _isRaster.Value;
 
                     if (!string.IsNullOrEmpty(this.LayerDefinitionContent))
-                        _isRaster = this.LayerDefinitionContent.Contains("<GridLayerDefinition");
+                        _isRaster = this.LayerDefinitionContent.Contains("<GridLayerDefinition"); //NOXLATE
 
                     if (_isRaster.HasValue)
                         return _isRaster.Value;
 
-                    throw new Exception("Layer metadata not fully initialized"); //Shouldn't get to here
+                    throw new Exception(Strings.ErrorLayerMetadataNotFullyInitialized); //Shouldn't get to here
                 }
             }
 
@@ -892,12 +890,12 @@ namespace OSGeo.MapGuide.Viewer
                         return _isRaster.Value;
 
                     if (!string.IsNullOrEmpty(this.LayerDefinitionContent))
-                        _isDwf = this.LayerDefinitionContent.Contains("<DrawingLayerDefinition");
+                        _isDwf = this.LayerDefinitionContent.Contains("<DrawingLayerDefinition"); //NOXLATE
 
                     if (_isDwf.HasValue)
                         return _isRaster.Value;
 
-                    throw new Exception("Layer metadata not fully initialized"); //Shouldn't get to here
+                    throw new Exception(Strings.ErrorLayerMetadataNotFullyInitialized); //Shouldn't get to here
                 }
             }
 

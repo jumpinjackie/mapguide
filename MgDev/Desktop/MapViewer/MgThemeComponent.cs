@@ -11,7 +11,7 @@ namespace OSGeo.MapGuide.Viewer
         public MgThemeComponent()
         {
             this.Icon = Properties.Resources.lc_theme;
-            this.Label = this.ToolTipText = Properties.Resources.TitleTheme;
+            this.Label = this.ToolTipText = Strings.TitleTheme;
         }
 
         protected override MgControlView CreateControlView()

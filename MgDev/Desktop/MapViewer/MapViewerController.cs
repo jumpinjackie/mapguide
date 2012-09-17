@@ -24,7 +24,7 @@ namespace OSGeo.MapGuide.Viewer
         public MapViewerController(IMapViewer viewer, IMapLegend legend, IMapStatusBar statBar, IPropertyPane propPane)
         {
             if (viewer == null)
-                throw new ArgumentNullException("viewer");
+                throw new ArgumentNullException("viewer"); //NOXLATE
 
             _viewer = viewer;
             _legend = legend;
@@ -85,7 +85,7 @@ namespace OSGeo.MapGuide.Viewer
                 return;
 
             if (_statBar != null)
-                _statBar.SetCursorPositionMessage(string.Format("X: {0:0.0000000}, Y: {1:0.0000000} ({2})", e.X, e.Y, _viewer.CoordinateSystem.Units));
+                _statBar.SetCursorPositionMessage(string.Format("X: {0:0.0000000}, Y: {1:0.0000000} ({2})", e.X, e.Y, _viewer.CoordinateSystem.Units)); //NOXLATE
         }
 
         void OnLegendVisibilityChanged(object sender, EventArgs e)
@@ -115,7 +115,7 @@ namespace OSGeo.MapGuide.Viewer
                 if (_propPane != null)
                     _propPane.Init(sset);
                 if (_statBar != null)
-                    _statBar.SetFeatureSelectedMessage(string.Format("{0} features selected", sset.TotalCount));
+                    _statBar.SetFeatureSelectedMessage(string.Format(Strings.StatFeaturesSelected, sset.TotalCount));
             }
         }
 
@@ -128,7 +128,7 @@ namespace OSGeo.MapGuide.Viewer
                 _legend.SetScale(scale);
 
             if (_statBar != null)
-                _statBar.SetMapScaleMessage(string.Format("1:{0:0.00000}", scale));
+                _statBar.SetMapScaleMessage(string.Format("1:{0:0.00000}", scale)); //NOXLATE
         }
 
         void OnMapRefreshed(object sender, EventArgs e)
@@ -136,11 +136,9 @@ namespace OSGeo.MapGuide.Viewer
             if (_statBar != null)
             {
                 var map = _viewer.GetMap();
-                _statBar.SetMapScaleMessage(string.Format("1:{0:0.00000}", map.ViewScale));
+                _statBar.SetMapScaleMessage(string.Format("1:{0:0.00000}", map.ViewScale)); //NOXLATE0
                 var ext = map.MapExtent;
-                _statBar.SetMapSizeMessage(string.Format("{0:0.000} x {1:0.000} ({2})", ext.Width, ext.Height, _viewer.CoordinateSystem.Units));
-                //var sel = _viewer.GetSelection();
-                //_statBar.SetFeatureSelectedMessage(string.Format("{0} features selected", GetTotalSelectionCount(sel)));
+                _statBar.SetMapSizeMessage(string.Format("{0:0.000} x {1:0.000} ({2})", ext.Width, ext.Height, _viewer.CoordinateSystem.Units)); //NOXLATE
             }
         }
     }

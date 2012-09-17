@@ -35,15 +35,11 @@
             this.layerPropertiesContainer = new System.Windows.Forms.SplitContainer();
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.TAB_LEGEND = new System.Windows.Forms.TabPage();
-            this.legend = new OSGeo.MapGuide.Viewer.MgLegend();
             this.imgList = new System.Windows.Forms.ImageList(this.components);
             this.tabControl2 = new System.Windows.Forms.TabControl();
             this.TAB_PROPERTIES = new System.Windows.Forms.TabPage();
-            this.propertyPane = new OSGeo.MapGuide.Viewer.MgPropertyPane();
-            this.mapViewer = new OSGeo.MapGuide.Viewer.MgMapViewer();
             this.viewerContextMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.viewerToolbar = new System.Windows.Forms.ToolStrip();
-            this.taskPane = new OSGeo.MapGuide.Viewer.MgTaskPane();
             this.taskPaneToolbar = new System.Windows.Forms.ToolStrip();
             this.btnInitialTask = new System.Windows.Forms.ToolStripButton();
             this.taskMenu = new System.Windows.Forms.ToolStripDropDownButton();
@@ -54,6 +50,10 @@
             this.lblMapScale = new System.Windows.Forms.ToolStripStatusLabel();
             this.lblMapSize = new System.Windows.Forms.ToolStripStatusLabel();
             this.lblPoweredBy = new System.Windows.Forms.ToolStripStatusLabel();
+            this.legend = new OSGeo.MapGuide.Viewer.MgLegend();
+            this.propertyPane = new OSGeo.MapGuide.Viewer.MgPropertyPane();
+            this.mapViewer = new OSGeo.MapGuide.Viewer.MgMapViewer();
+            this.taskPane = new OSGeo.MapGuide.Viewer.MgTaskPane();
             this.appContainer.Panel1.SuspendLayout();
             this.appContainer.Panel2.SuspendLayout();
             this.appContainer.SuspendLayout();
@@ -73,9 +73,8 @@
             // 
             // appContainer
             // 
-            this.appContainer.Dock = System.Windows.Forms.DockStyle.Fill;
+            resources.ApplyResources(this.appContainer, "appContainer");
             this.appContainer.FixedPanel = System.Windows.Forms.FixedPanel.Panel2;
-            this.appContainer.Location = new System.Drawing.Point(0, 24);
             this.appContainer.Name = "appContainer";
             // 
             // appContainer.Panel1
@@ -87,15 +86,11 @@
             // 
             this.appContainer.Panel2.Controls.Add(this.taskPane);
             this.appContainer.Panel2.Controls.Add(this.taskPaneToolbar);
-            this.appContainer.Size = new System.Drawing.Size(881, 528);
-            this.appContainer.SplitterDistance = 662;
-            this.appContainer.TabIndex = 1;
             // 
             // infoPaneViewerContainer
             // 
-            this.infoPaneViewerContainer.Dock = System.Windows.Forms.DockStyle.Fill;
+            resources.ApplyResources(this.infoPaneViewerContainer, "infoPaneViewerContainer");
             this.infoPaneViewerContainer.FixedPanel = System.Windows.Forms.FixedPanel.Panel1;
-            this.infoPaneViewerContainer.Location = new System.Drawing.Point(0, 25);
             this.infoPaneViewerContainer.Name = "infoPaneViewerContainer";
             // 
             // infoPaneViewerContainer.Panel1
@@ -105,17 +100,12 @@
             // infoPaneViewerContainer.Panel2
             // 
             this.infoPaneViewerContainer.Panel2.Controls.Add(this.mapViewer);
-            this.infoPaneViewerContainer.Size = new System.Drawing.Size(662, 503);
-            this.infoPaneViewerContainer.SplitterDistance = 220;
-            this.infoPaneViewerContainer.TabIndex = 0;
             // 
             // layerPropertiesContainer
             // 
-            this.layerPropertiesContainer.Dock = System.Windows.Forms.DockStyle.Fill;
+            resources.ApplyResources(this.layerPropertiesContainer, "layerPropertiesContainer");
             this.layerPropertiesContainer.FixedPanel = System.Windows.Forms.FixedPanel.Panel2;
-            this.layerPropertiesContainer.Location = new System.Drawing.Point(0, 0);
             this.layerPropertiesContainer.Name = "layerPropertiesContainer";
-            this.layerPropertiesContainer.Orientation = System.Windows.Forms.Orientation.Horizontal;
             // 
             // layerPropertiesContainer.Panel1
             // 
@@ -124,45 +114,21 @@
             // layerPropertiesContainer.Panel2
             // 
             this.layerPropertiesContainer.Panel2.Controls.Add(this.tabControl2);
-            this.layerPropertiesContainer.Size = new System.Drawing.Size(220, 503);
-            this.layerPropertiesContainer.SplitterDistance = 271;
-            this.layerPropertiesContainer.TabIndex = 0;
             // 
             // tabControl1
             // 
             this.tabControl1.Controls.Add(this.TAB_LEGEND);
-            this.tabControl1.Dock = System.Windows.Forms.DockStyle.Fill;
+            resources.ApplyResources(this.tabControl1, "tabControl1");
             this.tabControl1.ImageList = this.imgList;
-            this.tabControl1.Location = new System.Drawing.Point(0, 0);
             this.tabControl1.Name = "tabControl1";
             this.tabControl1.SelectedIndex = 0;
-            this.tabControl1.Size = new System.Drawing.Size(220, 271);
-            this.tabControl1.TabIndex = 0;
             // 
             // TAB_LEGEND
             // 
             this.TAB_LEGEND.Controls.Add(this.legend);
-            this.TAB_LEGEND.ImageIndex = 0;
-            this.TAB_LEGEND.Location = new System.Drawing.Point(4, 23);
+            resources.ApplyResources(this.TAB_LEGEND, "TAB_LEGEND");
             this.TAB_LEGEND.Name = "TAB_LEGEND";
-            this.TAB_LEGEND.Padding = new System.Windows.Forms.Padding(3);
-            this.TAB_LEGEND.Size = new System.Drawing.Size(212, 244);
-            this.TAB_LEGEND.TabIndex = 1;
-            this.TAB_LEGEND.Text = "Layers";
             this.TAB_LEGEND.UseVisualStyleBackColor = true;
-            // 
-            // legend
-            // 
-            this.legend.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.legend.GroupContextMenu = null;
-            this.legend.LayerContextMenu = null;
-            this.legend.Location = new System.Drawing.Point(3, 3);
-            this.legend.Name = "legend";
-            this.legend.ShowTooltips = true;
-            this.legend.Size = new System.Drawing.Size(206, 238);
-            this.legend.TabIndex = 0;
-            this.legend.ThemeCompressionLimit = 0;
-            this.legend.PropertyChanged += new System.ComponentModel.PropertyChangedEventHandler(this.legend_PropertyChanged);
             // 
             // imgList
             // 
@@ -174,110 +140,54 @@
             // tabControl2
             // 
             this.tabControl2.Controls.Add(this.TAB_PROPERTIES);
-            this.tabControl2.Dock = System.Windows.Forms.DockStyle.Fill;
+            resources.ApplyResources(this.tabControl2, "tabControl2");
             this.tabControl2.ImageList = this.imgList;
-            this.tabControl2.Location = new System.Drawing.Point(0, 0);
             this.tabControl2.Name = "tabControl2";
             this.tabControl2.SelectedIndex = 0;
-            this.tabControl2.Size = new System.Drawing.Size(220, 228);
-            this.tabControl2.TabIndex = 0;
             // 
             // TAB_PROPERTIES
             // 
             this.TAB_PROPERTIES.Controls.Add(this.propertyPane);
-            this.TAB_PROPERTIES.ImageIndex = 1;
-            this.TAB_PROPERTIES.Location = new System.Drawing.Point(4, 23);
+            resources.ApplyResources(this.TAB_PROPERTIES, "TAB_PROPERTIES");
             this.TAB_PROPERTIES.Name = "TAB_PROPERTIES";
-            this.TAB_PROPERTIES.Padding = new System.Windows.Forms.Padding(3);
-            this.TAB_PROPERTIES.Size = new System.Drawing.Size(212, 201);
-            this.TAB_PROPERTIES.TabIndex = 1;
-            this.TAB_PROPERTIES.Text = "Properties";
             this.TAB_PROPERTIES.UseVisualStyleBackColor = true;
-            // 
-            // propertyPane
-            // 
-            this.propertyPane.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.propertyPane.Location = new System.Drawing.Point(3, 3);
-            this.propertyPane.Name = "propertyPane";
-            this.propertyPane.Size = new System.Drawing.Size(206, 195);
-            this.propertyPane.TabIndex = 0;
-            // 
-            // mapViewer
-            // 
-            this.mapViewer.ContextMenuStrip = this.viewerContextMenu;
-            this.mapViewer.Cursor = System.Windows.Forms.Cursors.Default;
-            this.mapViewer.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.mapViewer.Location = new System.Drawing.Point(0, 0);
-            this.mapViewer.MaxScale = 1000000000;
-            this.mapViewer.MinScale = 10;
-            this.mapViewer.MouseWheelDelayRenderInterval = 800;
-            this.mapViewer.Name = "mapViewer";
-            this.mapViewer.PointPixelBuffer = 2;
-            this.mapViewer.SelectionColor = System.Drawing.Color.Blue;
-            this.mapViewer.Size = new System.Drawing.Size(438, 503);
-            this.mapViewer.TabIndex = 0;
-            this.mapViewer.Text = "mgMapViewer1";
-            this.mapViewer.TooltipDelayInterval = 1000;
-            this.mapViewer.ZoomInFactor = 0.5;
-            this.mapViewer.ZoomOutFactor = 2;
             // 
             // viewerContextMenu
             // 
             this.viewerContextMenu.Name = "viewerContextMenu";
-            this.viewerContextMenu.Size = new System.Drawing.Size(61, 4);
+            resources.ApplyResources(this.viewerContextMenu, "viewerContextMenu");
             // 
             // viewerToolbar
             // 
-            this.viewerToolbar.Location = new System.Drawing.Point(0, 0);
+            resources.ApplyResources(this.viewerToolbar, "viewerToolbar");
             this.viewerToolbar.Name = "viewerToolbar";
-            this.viewerToolbar.Size = new System.Drawing.Size(662, 25);
-            this.viewerToolbar.TabIndex = 1;
-            this.viewerToolbar.Text = "toolStrip2";
-            // 
-            // taskPane
-            // 
-            this.taskPane.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.taskPane.Location = new System.Drawing.Point(0, 25);
-            this.taskPane.Name = "taskPane";
-            this.taskPane.Size = new System.Drawing.Size(215, 503);
-            this.taskPane.TabIndex = 1;
             // 
             // taskPaneToolbar
             // 
             this.taskPaneToolbar.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.btnInitialTask,
             this.taskMenu});
-            this.taskPaneToolbar.Location = new System.Drawing.Point(0, 0);
+            resources.ApplyResources(this.taskPaneToolbar, "taskPaneToolbar");
             this.taskPaneToolbar.Name = "taskPaneToolbar";
-            this.taskPaneToolbar.Size = new System.Drawing.Size(215, 25);
-            this.taskPaneToolbar.TabIndex = 0;
-            this.taskPaneToolbar.Text = "toolStrip3";
             // 
             // btnInitialTask
             // 
             this.btnInitialTask.Image = global::OSGeo.MapGuide.Viewer.Properties.Resources.icon_home;
-            this.btnInitialTask.ImageTransparentColor = System.Drawing.Color.Magenta;
+            resources.ApplyResources(this.btnInitialTask, "btnInitialTask");
             this.btnInitialTask.Name = "btnInitialTask";
-            this.btnInitialTask.Size = new System.Drawing.Size(83, 22);
-            this.btnInitialTask.Text = "Initial Task";
             this.btnInitialTask.Click += new System.EventHandler(this.btnInitialTask_Click);
             // 
             // taskMenu
             // 
             this.taskMenu.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
             this.taskMenu.Image = global::OSGeo.MapGuide.Viewer.Properties.Resources.icon_tasks;
-            this.taskMenu.ImageTransparentColor = System.Drawing.Color.Magenta;
+            resources.ApplyResources(this.taskMenu, "taskMenu");
             this.taskMenu.Name = "taskMenu";
-            this.taskMenu.Size = new System.Drawing.Size(65, 22);
-            this.taskMenu.Text = "Tasks";
             // 
             // mainMenu
             // 
-            this.mainMenu.Location = new System.Drawing.Point(0, 0);
+            resources.ApplyResources(this.mainMenu, "mainMenu");
             this.mainMenu.Name = "mainMenu";
-            this.mainMenu.Size = new System.Drawing.Size(881, 24);
-            this.mainMenu.TabIndex = 2;
-            this.mainMenu.Text = "menuStrip1";
             // 
             // appStatusBar
             // 
@@ -287,52 +197,80 @@
             this.lblMapScale,
             this.lblMapSize,
             this.lblPoweredBy});
-            this.appStatusBar.Location = new System.Drawing.Point(0, 552);
+            resources.ApplyResources(this.appStatusBar, "appStatusBar");
             this.appStatusBar.Name = "appStatusBar";
-            this.appStatusBar.Size = new System.Drawing.Size(881, 23);
-            this.appStatusBar.TabIndex = 3;
-            this.appStatusBar.Text = "statusStrip1";
             // 
             // lblCoordinates
             // 
             this.lblCoordinates.Name = "lblCoordinates";
-            this.lblCoordinates.Size = new System.Drawing.Size(0, 18);
+            resources.ApplyResources(this.lblCoordinates, "lblCoordinates");
             // 
             // lblSelected
             // 
             this.lblSelected.Name = "lblSelected";
-            this.lblSelected.Size = new System.Drawing.Size(729, 18);
+            resources.ApplyResources(this.lblSelected, "lblSelected");
             this.lblSelected.Spring = true;
-            this.lblSelected.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // lblMapScale
             // 
             this.lblMapScale.Name = "lblMapScale";
-            this.lblMapScale.Size = new System.Drawing.Size(0, 18);
+            resources.ApplyResources(this.lblMapScale, "lblMapScale");
             // 
             // lblMapSize
             // 
             this.lblMapSize.Name = "lblMapSize";
-            this.lblMapSize.Size = new System.Drawing.Size(0, 18);
+            resources.ApplyResources(this.lblMapSize, "lblMapSize");
             // 
             // lblPoweredBy
             // 
             this.lblPoweredBy.Image = global::OSGeo.MapGuide.Viewer.Properties.Resources.PoweredBy_en;
-            this.lblPoweredBy.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
+            resources.ApplyResources(this.lblPoweredBy, "lblPoweredBy");
             this.lblPoweredBy.Name = "lblPoweredBy";
-            this.lblPoweredBy.Size = new System.Drawing.Size(137, 18);
+            // 
+            // legend
+            // 
+            resources.ApplyResources(this.legend, "legend");
+            this.legend.GroupContextMenu = null;
+            this.legend.LayerContextMenu = null;
+            this.legend.Name = "legend";
+            this.legend.ShowTooltips = true;
+            this.legend.ThemeCompressionLimit = 0;
+            this.legend.PropertyChanged += new System.ComponentModel.PropertyChangedEventHandler(this.legend_PropertyChanged);
+            // 
+            // propertyPane
+            // 
+            resources.ApplyResources(this.propertyPane, "propertyPane");
+            this.propertyPane.Name = "propertyPane";
+            // 
+            // mapViewer
+            // 
+            this.mapViewer.ContextMenuStrip = this.viewerContextMenu;
+            this.mapViewer.Cursor = System.Windows.Forms.Cursors.Default;
+            resources.ApplyResources(this.mapViewer, "mapViewer");
+            this.mapViewer.MaxScale = 1000000000;
+            this.mapViewer.MinScale = 10;
+            this.mapViewer.MouseWheelDelayRenderInterval = 800;
+            this.mapViewer.Name = "mapViewer";
+            this.mapViewer.PointPixelBuffer = 2;
+            this.mapViewer.SelectionColor = System.Drawing.Color.Blue;
+            this.mapViewer.TooltipDelayInterval = 1000;
+            this.mapViewer.ZoomInFactor = 0.5;
+            this.mapViewer.ZoomOutFactor = 2;
+            // 
+            // taskPane
+            // 
+            resources.ApplyResources(this.taskPane, "taskPane");
+            this.taskPane.Name = "taskPane";
             // 
             // Shell
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            resources.ApplyResources(this, "$this");
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(881, 575);
             this.Controls.Add(this.appContainer);
             this.Controls.Add(this.mainMenu);
             this.Controls.Add(this.appStatusBar);
             this.MainMenuStrip = this.mainMenu;
             this.Name = "Shell";
-            this.Text = "Shell";
             this.appContainer.Panel1.ResumeLayout(false);
             this.appContainer.Panel1.PerformLayout();
             this.appContainer.Panel2.ResumeLayout(false);

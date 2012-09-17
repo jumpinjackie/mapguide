@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MgViewerOptionsControlImpl));
             this.label1 = new System.Windows.Forms.Label();
             this.lblSelectionColor = new System.Windows.Forms.Label();
             this.btnPickSelectionColor = new System.Windows.Forms.Button();
@@ -45,115 +46,75 @@
             // 
             // label1
             // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(19, 16);
+            resources.ApplyResources(this.label1, "label1");
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(113, 13);
-            this.label1.TabIndex = 0;
-            this.label1.Text = "Viewer Selection Color";
             // 
             // lblSelectionColor
             // 
-            this.lblSelectionColor.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
-            this.lblSelectionColor.Location = new System.Drawing.Point(157, 16);
+            resources.ApplyResources(this.lblSelectionColor, "lblSelectionColor");
             this.lblSelectionColor.Name = "lblSelectionColor";
-            this.lblSelectionColor.Size = new System.Drawing.Size(82, 13);
-            this.lblSelectionColor.TabIndex = 1;
-            this.lblSelectionColor.Text = "                         ";
             // 
             // btnPickSelectionColor
             // 
-            this.btnPickSelectionColor.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnPickSelectionColor.Location = new System.Drawing.Point(250, 11);
+            resources.ApplyResources(this.btnPickSelectionColor, "btnPickSelectionColor");
             this.btnPickSelectionColor.Name = "btnPickSelectionColor";
-            this.btnPickSelectionColor.Size = new System.Drawing.Size(27, 23);
-            this.btnPickSelectionColor.TabIndex = 2;
-            this.btnPickSelectionColor.Text = "...";
             this.btnPickSelectionColor.UseVisualStyleBackColor = true;
             this.btnPickSelectionColor.Click += new System.EventHandler(this.btnPickSelectionColor_Click);
             // 
             // label2
             // 
-            this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(19, 42);
+            resources.ApplyResources(this.label2, "label2");
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(79, 13);
-            this.label2.TabIndex = 3;
-            this.label2.Text = "Zoom In Factor";
             // 
             // label3
             // 
-            this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(19, 68);
+            resources.ApplyResources(this.label3, "label3");
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(87, 13);
-            this.label3.TabIndex = 4;
-            this.label3.Text = "Zoom Out Factor";
             // 
             // chkConvertTiledToNonTiled
             // 
-            this.chkConvertTiledToNonTiled.AutoSize = true;
-            this.chkConvertTiledToNonTiled.Location = new System.Drawing.Point(22, 92);
+            resources.ApplyResources(this.chkConvertTiledToNonTiled, "chkConvertTiledToNonTiled");
             this.chkConvertTiledToNonTiled.Name = "chkConvertTiledToNonTiled";
-            this.chkConvertTiledToNonTiled.Size = new System.Drawing.Size(247, 17);
-            this.chkConvertTiledToNonTiled.TabIndex = 5;
-            this.chkConvertTiledToNonTiled.Text = "Display tiled layers as non-tiled (requires restart)";
             this.chkConvertTiledToNonTiled.UseVisualStyleBackColor = true;
             // 
             // numZoomInFactor
             // 
-            this.numZoomInFactor.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
+            resources.ApplyResources(this.numZoomInFactor, "numZoomInFactor");
             this.numZoomInFactor.DecimalPlaces = 7;
-            this.numZoomInFactor.Location = new System.Drawing.Point(157, 40);
             this.numZoomInFactor.Maximum = new decimal(new int[] {
             1000,
             0,
             0,
             0});
             this.numZoomInFactor.Name = "numZoomInFactor";
-            this.numZoomInFactor.Size = new System.Drawing.Size(120, 20);
-            this.numZoomInFactor.TabIndex = 6;
             // 
             // numZoomOutFactor
             // 
-            this.numZoomOutFactor.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
+            resources.ApplyResources(this.numZoomOutFactor, "numZoomOutFactor");
             this.numZoomOutFactor.DecimalPlaces = 7;
-            this.numZoomOutFactor.Location = new System.Drawing.Point(157, 66);
             this.numZoomOutFactor.Maximum = new decimal(new int[] {
             1000,
             0,
             0,
             0});
             this.numZoomOutFactor.Name = "numZoomOutFactor";
-            this.numZoomOutFactor.Size = new System.Drawing.Size(120, 20);
-            this.numZoomOutFactor.TabIndex = 7;
             // 
             // chkShowVertexCoordinates
             // 
-            this.chkShowVertexCoordinates.AutoSize = true;
-            this.chkShowVertexCoordinates.Location = new System.Drawing.Point(22, 116);
+            resources.ApplyResources(this.chkShowVertexCoordinates, "chkShowVertexCoordinates");
             this.chkShowVertexCoordinates.Name = "chkShowVertexCoordinates";
-            this.chkShowVertexCoordinates.Size = new System.Drawing.Size(217, 17);
-            this.chkShowVertexCoordinates.TabIndex = 8;
-            this.chkShowVertexCoordinates.Text = "Show Vertex Coordinates when digitizing";
             this.chkShowVertexCoordinates.UseVisualStyleBackColor = true;
             // 
             // btnSave
             // 
-            this.btnSave.Location = new System.Drawing.Point(22, 149);
+            resources.ApplyResources(this.btnSave, "btnSave");
             this.btnSave.Name = "btnSave";
-            this.btnSave.Size = new System.Drawing.Size(75, 23);
-            this.btnSave.TabIndex = 9;
-            this.btnSave.Text = "Save Changes";
             this.btnSave.UseVisualStyleBackColor = true;
             this.btnSave.Click += new System.EventHandler(this.btnSave_Click);
             // 
             // MgViewerOptionsControlImpl
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            resources.ApplyResources(this, "$this");
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.Controls.Add(this.btnSave);
             this.Controls.Add(this.chkShowVertexCoordinates);
@@ -166,7 +127,6 @@
             this.Controls.Add(this.lblSelectionColor);
             this.Controls.Add(this.label1);
             this.Name = "MgViewerOptionsControlImpl";
-            this.Size = new System.Drawing.Size(295, 183);
             ((System.ComponentModel.ISupportInitialize)(this.numZoomInFactor)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.numZoomOutFactor)).EndInit();
             this.ResumeLayout(false);

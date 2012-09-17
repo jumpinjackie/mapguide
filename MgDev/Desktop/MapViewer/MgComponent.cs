@@ -40,8 +40,8 @@ namespace OSGeo.MapGuide.Viewer
         /// Gets whether to disable invocation entry points (eg. buttons, menus, etc) to this component when the
         /// viewer is digitizing
         /// </summary>
-        [Category("MapGuide Component Properties")]
-        [Description("Disables this component while the digitizing is happening")]
+        [Category("MapGuide Component Properties")] //NOXLATE
+        [Description("Disables this component while the digitizing is happening")] //NOXLATE
         [MgComponentProperty]
         public virtual bool DisableWhenDigitizing { get { return true; } }
 
@@ -49,40 +49,40 @@ namespace OSGeo.MapGuide.Viewer
         /// Gets whether to disable invocation entry points (eg. buttons, menus, etc) to this component when the
         /// viewer is busy
         /// </summary>
-        [Category("MapGuide Component Properties")]
-        [Description("Disables this component while the map is loading")]
+        [Category("MapGuide Component Properties")] //NOXLATE
+        [Description("Disables this component while the map is loading")] //NOXLATE
         [MgComponentProperty]
         public virtual bool DisableWhenMapIsLoading { get { return true; } }
 
         /// <summary>
         /// Gets or sets the description of this component
         /// </summary>
-        [Category("MapGuide Component Properties")]
-        [Description("The description of this component")]
+        [Category("MapGuide Component Properties")] //NOXLATE
+        [Description("The description of this component")] //NOXLATE
         [MgComponentProperty]
         public string Label { get; set; }
 
         /// <summary>
         /// Gets or sets the tooltip text of this component
         /// </summary>
-        [Category("MapGuide Component Properties")]
-        [Description("The tooltip text of this component")]
+        [Category("MapGuide Component Properties")] //NOXLATE
+        [Description("The tooltip text of this component")] //NOXLATE
         [MgComponentProperty]
         public string ToolTipText { get; set; }
 
         /// <summary>
         /// The icon for this component
         /// </summary>
-        [Category("MapGuide Component Properties")]
-        [Description("The icon for this component")]
+        [Category("MapGuide Component Properties")] //NOXLATE
+        [Description("The icon for this component")] //NOXLATE
         [MgComponentProperty]
         public Image Icon { get; set; }
 
         /// <summary>
         /// Gets or sets the view instance to subscribe events to
         /// </summary>
-        [Category("MapGuide Component Properties")]
-        [Description("The viewer instance to subscribe events to")]
+        [Category("MapGuide Component Properties")] //NOXLATE
+        [Description("The viewer instance to subscribe events to")] //NOXLATE
         [MgComponentProperty]
         public IMapViewer Viewer
         {
@@ -135,17 +135,17 @@ namespace OSGeo.MapGuide.Viewer
 
         protected virtual void OnViewerPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == "IsBusy")
+            if (e.PropertyName == "IsBusy") //NOXLATE
             {
                 var busy = this.Viewer.IsBusy;
-                //Trace.TraceInformation("Dispatching busy state event to " + _listeners.Count + " listeners");
+                //Trace.TraceInformation("Dispatching busy state event to " + _listeners.Count + " listeners"); //NOXLATE
                 if (this.DisableWhenMapIsLoading)
                 {
                     foreach (var l in _listeners)
                         l.SetEnabled(!busy);
                 }
             }
-            else if (e.PropertyName == "DigitizingType")
+            else if (e.PropertyName == "DigitizingType") //NOXLATE
             {
                 var bDigitizing = (this.Viewer.DigitizingType != MapDigitizationType.None);
                 if (this.DisableWhenDigitizing)
@@ -222,7 +222,7 @@ namespace OSGeo.MapGuide.Viewer
         {
             CheckAndInitProperties();
             if (!_properties.ContainsKey(propertyName))
-                throw new InvalidOperationException("Property " + propertyName + " is not a valid component property as it has not been marked with the MgComponentProperty attribute");
+                throw new InvalidOperationException(string.Format(Strings.ErrorInvalidComponentProperty, propertyName));
 
             _properties[propertyName].SetValue(this, value, null);
         }
@@ -231,7 +231,7 @@ namespace OSGeo.MapGuide.Viewer
         {
             CheckAndInitProperties();
             if (!_properties.ContainsKey(propertyName))
-                throw new InvalidOperationException("Property " + propertyName + " is not a valid component property as it has not been marked with the MgComponentProperty attribute");
+                throw new InvalidOperationException(string.Format(Strings.ErrorInvalidComponentProperty, propertyName));
 
             return _properties[propertyName].GetValue(propertyName, null);
         }
@@ -277,8 +277,8 @@ namespace OSGeo.MapGuide.Viewer
         /// <summary>
         /// 
         /// </summary>
-        [Category("MapGuide Component Properties")]
-        [Description("The task pane which will host the UI view")]
+        [Category("MapGuide Component Properties")] //NOXLATE
+        [Description("The task pane which will host the UI view")] //NOXLATE
         [MgComponentProperty]
         public MgTaskPane TaskPane
         {
@@ -291,9 +291,9 @@ namespace OSGeo.MapGuide.Viewer
         /// <summary>
         /// Gets or sets the target that this component should display its UI view in
         /// </summary>
-        [Category("MapGuide Component Properties")]
+        [Category("MapGuide Component Properties")] //NOXLATE
         [DefaultValue(MgViewerTarget.NewWindow)]
-        [Description("Target that this component should display its UI view in")]
+        [Description("Target that this component should display its UI view in")] //NOXLATE
         [MgComponentProperty]
         public MgViewerTarget Target
         {
@@ -302,7 +302,7 @@ namespace OSGeo.MapGuide.Viewer
             {
                 //Must have a task pane assigned, but we suppress this check during initialization
                 if (!_init && (value == MgViewerTarget.TaskPane && this.TaskPane == null))
-                    throw new ArgumentException("Target: No task pane assigned");
+                    throw new ArgumentException(Strings.ErrorTargetNoTaskPaneAssigned);
                 _target = value;
             }
         }
@@ -310,8 +310,8 @@ namespace OSGeo.MapGuide.Viewer
         /// <summary>
         /// Gets or sets the owner form that any new windows displayed by this component will belong to.
         /// </summary>
-        [Category("MapGuide Component Properties")]
-        [Description("The parent form which will be the owner for any new windows displayed by this component")]
+        [Category("MapGuide Component Properties")] //NOXLATE
+        [Description("The parent form which will be the owner for any new windows displayed by this component")] //NOXLATE
         public Form OwnerParent
         {
             get;
@@ -408,7 +408,7 @@ namespace OSGeo.MapGuide.Viewer
             _init = false;
             //Now it's safe to check that task pane must be assigned if target is task pane
             if (this.TaskPane == null && this.Target == MgViewerTarget.TaskPane)
-                throw new InvalidOperationException("EndInit: No task pane assigned");
+                throw new InvalidOperationException(Strings.ErrorEndInitNoTaskPaneAssigned);
         }
     }
 }

@@ -20,7 +20,7 @@ namespace OSGeo.MapGuide.Viewer
         public MgQueryControlImpl(IMapViewer viewer)
         {
             InitializeComponent();
-            this.Title = Properties.Resources.TitleQuery;
+            this.Title = Strings.TitleQuery;
             this.Disposed += new EventHandler(OnDisposed);
             _viewer = viewer;
             _properties = new BindingList<MgDataPropertyDefinition>();
@@ -75,7 +75,7 @@ namespace OSGeo.MapGuide.Viewer
 
         static string MakeWktPolygon(double x1, double y1, double x2, double y2)
         {
-            return "POLYGON((" + x1 + " " + y1 + ", " + x2 + " " + y1 + ", " + x2 + " " + y2 + ", " + x1 + " " + y2 + ", " + x1 + " " + y1 + "))";
+            return "POLYGON((" + x1 + " " + y1 + ", " + x2 + " " + y1 + ", " + x2 + " " + y2 + ", " + x1 + " " + y2 + ", " + x1 + " " + y1 + "))"; //NOXLATE
         }
 
         private MgGeometry _filterGeometry;
@@ -140,49 +140,49 @@ namespace OSGeo.MapGuide.Viewer
         {
             var sb = new StringBuilder();
 
-            sb.Append(prop.Name + " ");
+            sb.Append(prop.Name + " "); //NOXLATE
 
             switch (op)
             {
                 case QueryOperator.EqualTo:
-                    sb.Append(" = ");
+                    sb.Append(" = "); //NOXLATE
                     break;
                 case QueryOperator.GreaterThan:
-                    sb.Append(" > ");
+                    sb.Append(" > "); //NOXLATE
                     break;
                 case QueryOperator.GreaterThanOrEqualTo:
-                    sb.Append(" >= ");
+                    sb.Append(" >= "); //NOXLATE
                     break;
                 case QueryOperator.In:
-                    sb.Append(" IN ");
+                    sb.Append(" IN "); //NOXLATE
                     break;
                 case QueryOperator.LessThan:
-                    sb.Append(" < ");
+                    sb.Append(" < "); //NOXLATE
                     break;
                 case QueryOperator.LessThanOrEqualTo:
-                    sb.Append(" <= ");
+                    sb.Append(" <= "); //NOXLATE
                     break;
                 case QueryOperator.Like:
-                    sb.Append(" LIKE ");
+                    sb.Append(" LIKE "); //NOXLATE
                     break;
                 case QueryOperator.NotEqualTo:
-                    sb.Append(" <> ");
+                    sb.Append(" <> "); //NOXLATE
                     break;
             }
 
             if (op == QueryOperator.In)
             {
-                sb.Append("(");
+                sb.Append("("); //NOXLATE
                 sb.Append(value);
-                sb.Append(")");
+                sb.Append(")"); //NOXLATE
             }
             else
             {
                 if (prop.DataType == MgPropertyType.String)
                 {
-                    sb.Append("'");
+                    sb.Append("'"); //NOXLATE
                     sb.Append(value);
-                    sb.Append("'");
+                    sb.Append("'"); //NOXLATE
                 }
                 else
                 {

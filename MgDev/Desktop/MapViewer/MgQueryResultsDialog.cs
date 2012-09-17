@@ -189,7 +189,7 @@ namespace OSGeo.MapGuide.Viewer
 
         private void bgGridLoader_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
-            lblResults.Text = grdResults.Rows.Count + " results";
+            lblResults.Text = string.Format(Strings.CountResults, grdResults.Rows.Count);
         }
 
         static DateTime ToClrDateTime(MgDateTime dt)
@@ -305,7 +305,7 @@ namespace OSGeo.MapGuide.Viewer
             int idx = Array.IndexOf(_columns, _geomProp);
             if (idx < 0)
             {
-                MessageBox.Show("Could not find the geoemtry property: " + _geomProp);
+                MessageBox.Show(string.Format(Strings.ErrorGeometryPropertyNotFound, _geomProp));
                 return;
             }
 

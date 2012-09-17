@@ -22,21 +22,18 @@ namespace OSGeo.MapGuide.Viewer
     {
         // TODO:
         // 
-        // 1. This should build the full client-side tree (w/ applicable scales) ala. legend.aspx in the AJAX viewer
-        // 2. This should be done in a background worker to avoid clogging up the UI thread.
-        // 3. Instead of refreshing the legend on save, just flip visibility of the client-side tree
-        // 4. Load layer icons on demand.
-        // 5. Do not refresh if toggling a layer whose parent group is not visible
-        // 6. Do not refresh if toggling a group whose parent group is not visible
+        // 1. Instead of refreshing the legend on save, just flip visibility of the client-side tree
+        // 2. Do not refresh if toggling a layer whose parent group is not visible
+        // 3. Do not refresh if toggling a group whose parent group is not visible
 
-        const string IMG_BROKEN = "lc_broken";
-        const string IMG_DWF = "lc_dwf";
-        const string IMG_GROUP = "lc_group";
-        const string IMG_RASTER = "lc_raster";
-        const string IMG_SELECT = "lc_select";
-        const string IMG_THEME = "lc_theme";
-        const string IMG_UNSELECT = "lc_unselect";
-        const string IMG_OTHER = "icon_etc";
+        const string IMG_BROKEN = "lc_broken"; //NOXLATE
+        const string IMG_DWF = "lc_dwf"; //NOXLATE
+        const string IMG_GROUP = "lc_group"; //NOXLATE
+        const string IMG_RASTER = "lc_raster"; //NOXLATE
+        const string IMG_SELECT = "lc_select"; //NOXLATE
+        const string IMG_THEME = "lc_theme"; //NOXLATE
+        const string IMG_UNSELECT = "lc_unselect"; //NOXLATE
+        const string IMG_OTHER = "icon_etc"; //NOXLATE
 
         // The thing that does all the heavy lifting and dirty work
         private MgLegendControlPresenter _presenter;
@@ -75,6 +72,7 @@ namespace OSGeo.MapGuide.Viewer
             trvLegend.BeginUpdate();
             _legendUpdateStopwatch.Start();
             this.IsBusy = true;
+            _currentCulture = System.Threading.Thread.CurrentThread.CurrentUICulture;
             bgLegendUpdate.RunWorkerAsync();
             /*
             //Synchronous version
@@ -100,13 +98,18 @@ namespace OSGeo.MapGuide.Viewer
                     return;
 
                 _busy = value;
-                Trace.TraceInformation("Legend IsBusy: {0}", this.IsBusy);
-                OnPropertyChanged("IsBusy");
+                Trace.TraceInformation("Legend IsBusy: {0}", this.IsBusy); //NOXLATE
+                OnPropertyChanged("IsBusy"); //NOXLATE
             }
         }
 
+        private System.Globalization.CultureInfo _currentCulture;
+
         private void bgLegendUpdate_DoWork(object sender, DoWorkEventArgs e)
         {
+            //This being on a different thread, needs to have its culture information synced up
+            System.Threading.Thread.CurrentThread.CurrentUICulture =
+                System.Threading.Thread.CurrentThread.CurrentCulture = _currentCulture;
             e.Result = _presenter.CreateNodes();
         }
 
@@ -138,7 +141,7 @@ namespace OSGeo.MapGuide.Viewer
             }
             trvLegend.EndUpdate();
             _legendUpdateStopwatch.Stop();
-            Trace.TraceInformation("RefreshLegend: Completed in {0}ms", _legendUpdateStopwatch.ElapsedMilliseconds);
+            Trace.TraceInformation("RefreshLegend: Completed in {0}ms", _legendUpdateStopwatch.ElapsedMilliseconds); //NOXLATE
             _legendUpdateStopwatch.Reset();
         }
 
@@ -273,8 +276,8 @@ namespace OSGeo.MapGuide.Viewer
         /// <summary>
         /// Gets or sets the context menu that is attached to group nodes
         /// </summary>
-        [Category("MapGuide Viewer")]
-        [Description("The context menu to attach to group nodes")]
+        [Category("MapGuide Viewer")] //NOXLATE
+        [Description("The context menu to attach to group nodes")] //NOXLATE
         public ContextMenuStrip GroupContextMenu
         {
             get { return _grpContextMenu; }
@@ -299,8 +302,8 @@ namespace OSGeo.MapGuide.Viewer
         /// <summary>
         /// Gets or sets the context menu that is attached to layer nodes
         /// </summary>
-        [Category("MapGuide Viewer")]
-        [Description("The context menu to attach to layer nodes")]
+        [Category("MapGuide Viewer")] //NOXLATE
+        [Description("The context menu to attach to layer nodes")] //NOXLATE
         public ContextMenuStrip LayerContextMenu
         {
             get { return _layerContextMenu; }
@@ -325,8 +328,8 @@ namespace OSGeo.MapGuide.Viewer
         /// <value>
         /// The theme compression limit.
         /// </value>
-        [Category("MapGuide Viewer")]
-        [Description("The number of rules a layer style must exceed in order to be displayed as a compressed theme")]
+        [Category("MapGuide Viewer")] //NOXLATE
+        [Description("The number of rules a layer style must exceed in order to be displayed as a compressed theme")] //NOXLATE
         public int ThemeCompressionLimit
         {
             get { return _themeCompressionLimit; }
@@ -336,7 +339,7 @@ namespace OSGeo.MapGuide.Viewer
                     return;
 
                 _themeCompressionLimit = value;
-                OnPropertyChanged("ThemeCompressionLimit");
+                OnPropertyChanged("ThemeCompressionLimit"); //NOXLATE
             }
         }
         
@@ -417,7 +420,7 @@ namespace OSGeo.MapGuide.Viewer
                     return;
 
                 trvLegend.ShowNodeToolTips = value;
-                OnPropertyChanged("ShowTooltips");
+                OnPropertyChanged("ShowTooltips"); //NOXLATE
             }
         }
 

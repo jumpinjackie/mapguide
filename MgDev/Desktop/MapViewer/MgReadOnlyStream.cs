@@ -213,7 +213,7 @@ namespace OSGeo.MapGuide.Viewer
         public override void Rewind()
         {
             if (!CanRewind)
-                throw new InvalidOperationException("This stream is not rewindable"); //LOCALIZEME
+                throw new InvalidOperationException(Strings.ErrorStreamNotRewindable);
 
             _reader.Rewind();
         }

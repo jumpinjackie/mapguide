@@ -7,18 +7,18 @@ namespace OSGeo.MapGuide.Viewer
 {
     public delegate void MgLayerSelectionEventHandler(MgSelectionSet selectedFeatures);
 
-    [DefaultEvent("SelectionMade")]
+    [DefaultEvent("SelectionMade")] //NOXLATE
     [ToolboxItem(true)]
     public class MgLayerSelectionHandler : Component
     {
-        [Category("MapGuide Viewer")]
-        [Description("The map layers that this component will listen for selections")]
+        [Category("MapGuide Viewer")] //NOXLATE
+        [Description("The map layers that this component will listen for selections")] //NOXLATE
         public string[] Layers { get; set; }
 
         private IMapViewer _viewer;
 
-        [Category("MapGuide Viewer")]
-        [Description("The map viewer instance")]
+        [Category("MapGuide Viewer")] //NOXLATE
+        [Description("The map viewer instance")] //NOXLATE
         public IMapViewer Viewer
         {
             get { return _viewer; }
@@ -62,8 +62,8 @@ namespace OSGeo.MapGuide.Viewer
             }
         }
 
-        [Category("MapGuide Viewer")]
-        [Description("Raised when a selection on any of the specified layers has been made")]
+        [Category("MapGuide Viewer")] //NOXLATE
+        [Description("Raised when a selection on any of the specified layers has been made")] //NOXLATE
         public event MgLayerSelectionEventHandler SelectionMade;
     }
 }

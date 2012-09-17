@@ -10,7 +10,7 @@ namespace OSGeo.MapGuide.Viewer.AppLayoutEngine
     {
         public MgQuitComponent()
         {
-            this.Label = Properties.Resources.TextExitApplication;
+            this.Label = Strings.TextExitApplication;
         }
 
         public override void Invoke()

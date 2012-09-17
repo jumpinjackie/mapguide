@@ -29,6 +29,7 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MgLegend));
             this.trvLegend = new System.Windows.Forms.TreeView();
             this.imgLegend = new System.Windows.Forms.ImageList(this.components);
             this.bgLegendUpdate = new System.ComponentModel.BackgroundWorker();
@@ -37,17 +38,12 @@
             // trvLegend
             // 
             this.trvLegend.CheckBoxes = true;
-            this.trvLegend.Dock = System.Windows.Forms.DockStyle.Fill;
+            resources.ApplyResources(this.trvLegend, "trvLegend");
             this.trvLegend.DrawMode = System.Windows.Forms.TreeViewDrawMode.OwnerDrawAll;
-            this.trvLegend.ImageIndex = 0;
             this.trvLegend.ImageList = this.imgLegend;
-            this.trvLegend.Location = new System.Drawing.Point(0, 0);
             this.trvLegend.Name = "trvLegend";
-            this.trvLegend.SelectedImageIndex = 0;
             this.trvLegend.ShowLines = false;
             this.trvLegend.ShowNodeToolTips = true;
-            this.trvLegend.Size = new System.Drawing.Size(150, 150);
-            this.trvLegend.TabIndex = 0;
             this.trvLegend.AfterCheck += new System.Windows.Forms.TreeViewEventHandler(this.trvLegend_AfterCheck);
             this.trvLegend.AfterCollapse += new System.Windows.Forms.TreeViewEventHandler(this.trvLegend_AfterCollapse);
             this.trvLegend.DrawNode += new System.Windows.Forms.DrawTreeNodeEventHandler(this.trvLegend_DrawNode);
@@ -57,7 +53,7 @@
             // imgLegend
             // 
             this.imgLegend.ColorDepth = System.Windows.Forms.ColorDepth.Depth8Bit;
-            this.imgLegend.ImageSize = new System.Drawing.Size(16, 16);
+            resources.ApplyResources(this.imgLegend, "imgLegend");
             this.imgLegend.TransparentColor = System.Drawing.Color.Transparent;
             // 
             // bgLegendUpdate
@@ -67,7 +63,7 @@
             // 
             // MgLegend
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            resources.ApplyResources(this, "$this");
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.Controls.Add(this.trvLegend);
             this.Name = "MgLegend";

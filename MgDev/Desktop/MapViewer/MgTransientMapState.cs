@@ -41,7 +41,7 @@ namespace OSGeo.MapGuide.Viewer
         public void PushState(MgMapDisplayParameters state)
         {
             if (state == null)
-                throw new ArgumentNullException("state");
+                throw new ArgumentNullException("state"); //NOXLATE
 
             var oldState = GetCurrentState();
             ApplyState(state);

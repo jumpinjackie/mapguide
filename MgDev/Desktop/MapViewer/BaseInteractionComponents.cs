@@ -11,7 +11,7 @@ namespace OSGeo.MapGuide.Viewer
     {
         public MgCopyMapComponent()
         {
-            this.Label = this.ToolTipText = Properties.Resources.TextCopyMap;
+            this.Label = this.ToolTipText = Strings.TextCopyMap;
             this.Icon = Properties.Resources.edit_copy;
         }
 
@@ -26,7 +26,7 @@ namespace OSGeo.MapGuide.Viewer
     {
         public MgZoomInComponent()
         {
-            this.Label = this.ToolTipText = Properties.Resources.TextZoomIn;
+            this.Label = this.ToolTipText = Strings.TextZoomIn;
             this.Icon = Properties.Resources.zoom_in_fixed;
         }
 
@@ -44,7 +44,7 @@ namespace OSGeo.MapGuide.Viewer
     {
         public MgZoomOutComponent()
         {
-            this.Label = this.ToolTipText = Properties.Resources.TextZoomOut;
+            this.Label = this.ToolTipText = Strings.TextZoomOut;
             this.Icon = Properties.Resources.zoom_out_fixed;
         }
 
@@ -56,7 +56,7 @@ namespace OSGeo.MapGuide.Viewer
 
         protected override void OnViewerPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == "ActiveTool")
+            if (e.PropertyName == "ActiveTool") //NOXLATE
             {
                 var state = (this.Viewer.ActiveTool == MapActiveTool.ZoomOut);
                 foreach (var l in _listeners)
@@ -88,7 +88,7 @@ namespace OSGeo.MapGuide.Viewer
     {
         public MgZoomNextComponent()
         {
-            this.Label = this.ToolTipText = Properties.Resources.TextZoomNext;
+            this.Label = this.ToolTipText = Strings.TextZoomNext;
             this.Icon = Properties.Resources.view_forward;
         }
 
@@ -107,7 +107,7 @@ namespace OSGeo.MapGuide.Viewer
 
         protected override void OnViewerPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == "ViewHistoryIndex" || e.PropertyName == "ViewHistory")
+            if (e.PropertyName == "ViewHistoryIndex" || e.PropertyName == "ViewHistory") //NOXLATE
             {
                 Evaluate();
             }
@@ -125,7 +125,7 @@ namespace OSGeo.MapGuide.Viewer
     {
         public MgZoomPreviousComponent()
         {
-            this.Label = this.ToolTipText = Properties.Resources.TextZoomPrevious;
+            this.Label = this.ToolTipText = Strings.TextZoomPrevious;
             this.Icon = Properties.Resources.view_back;
         }
 
@@ -144,7 +144,7 @@ namespace OSGeo.MapGuide.Viewer
 
         protected override void OnViewerPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == "ViewHistoryIndex" || e.PropertyName == "ViewHistory")
+            if (e.PropertyName == "ViewHistoryIndex" || e.PropertyName == "ViewHistory") //NOXLATE
             {
                 Evaluate();
             }
@@ -164,7 +164,7 @@ namespace OSGeo.MapGuide.Viewer
 
         public MgZoomToSelectionComponent()
         {
-            this.Label = this.ToolTipText = Properties.Resources.TextZoomToSelection;
+            this.Label = this.ToolTipText = Strings.TextZoomToSelection;
             this.Icon = Properties.Resources.icon_zoomselect;
             this.Disposed += new EventHandler(OnDisposed);
         }
@@ -185,7 +185,7 @@ namespace OSGeo.MapGuide.Viewer
 
             if (selLayers == null)
             {
-                MessageBox.Show(Properties.Resources.TextNoSelection);
+                MessageBox.Show(Strings.TextNoSelection);
                 return;
             }
 
@@ -251,7 +251,7 @@ namespace OSGeo.MapGuide.Viewer
     {
         public MgInitialViewComponent()
         {
-            this.Label = this.ToolTipText = Properties.Resources.TextZoomExtents;
+            this.Label = this.ToolTipText = Strings.TextZoomExtents;
             this.Icon = Properties.Resources.zoom_full;
         }
 
@@ -267,7 +267,7 @@ namespace OSGeo.MapGuide.Viewer
         protected override void OnViewerPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
             base.OnViewerPropertyChanged(sender, e);
-            if (e.PropertyName == "ActiveTool")
+            if (e.PropertyName == "ActiveTool") //NOXLATE
             {
                 ViewerActiveToolChanged(this.Viewer.ActiveTool);
             }
@@ -295,7 +295,7 @@ namespace OSGeo.MapGuide.Viewer
     {
         public MgSelectComponent()
         {
-            this.Label = this.ToolTipText = Properties.Resources.TextSelect;
+            this.Label = this.ToolTipText = Strings.TextSelect;
             this.Icon = Properties.Resources.select_features;
         }
 
@@ -315,7 +315,7 @@ namespace OSGeo.MapGuide.Viewer
 
         public MgCircleSelectComponent()
         {
-            this.Label = this.ToolTipText = Properties.Resources.TextSelectRadius;
+            this.Label = this.ToolTipText = Strings.TextSelectRadius;
             this.Icon = Properties.Resources.select_radius;
             this.Disposed += new EventHandler(OnDisposed);
         }
@@ -331,7 +331,7 @@ namespace OSGeo.MapGuide.Viewer
 
         static string MakeWktCircle(double x, double y, double r)
         {
-            return "CURVEPOLYGON ((" + (x - r) + " " + y + " (CIRCULARARCSEGMENT (" + x + " " + (y - r) + ", " + (x + r) + " " + y + "), CIRCULARARCSEGMENT (" + x + " " + (y + r) + ", " + (x - r) + " " + y + "))))";
+            return "CURVEPOLYGON ((" + (x - r) + " " + y + " (CIRCULARARCSEGMENT (" + x + " " + (y - r) + ", " + (x + r) + " " + y + "), CIRCULARARCSEGMENT (" + x + " " + (y + r) + ", " + (x - r) + " " + y + "))))"; //NOXLATE
         }
 
         public override void Invoke()
@@ -355,7 +355,7 @@ namespace OSGeo.MapGuide.Viewer
 
         public MgPolygonSelectComponent()
         {
-            this.Label = this.ToolTipText = Properties.Resources.TextSelectPolygon;
+            this.Label = this.ToolTipText = Strings.TextSelectPolygon;
             this.Icon = Properties.Resources.select_polygon;
             this.Disposed += new EventHandler(OnDisposed);
         }
@@ -395,7 +395,7 @@ namespace OSGeo.MapGuide.Viewer
     {
         public MgPanComponent()
         {
-            this.Label = this.ToolTipText = Properties.Resources.TextPan;
+            this.Label = this.ToolTipText = Strings.TextPan;
             this.Icon = Properties.Resources.icon_pan;
         }
 
@@ -413,7 +413,7 @@ namespace OSGeo.MapGuide.Viewer
     {
         public MgClearSelectionComponent()
         {
-            this.Label = this.ToolTipText = Properties.Resources.TextClearSelection;
+            this.Label = this.ToolTipText = Strings.TextClearSelection;
             this.Icon = Properties.Resources.select_clear;
         }
 
@@ -428,7 +428,7 @@ namespace OSGeo.MapGuide.Viewer
     {
         public MgRefreshMapComponent()
         {
-            this.Label = this.ToolTipText = Properties.Resources.TextRefreshMap;
+            this.Label = this.ToolTipText = Strings.TextRefreshMap;
             this.Icon = Properties.Resources.view_refresh;
         }
 
@@ -443,7 +443,7 @@ namespace OSGeo.MapGuide.Viewer
     {
         public MgTooltipToggleComponent()
         {
-            this.Label = this.ToolTipText = Properties.Resources.TextEnableTooltips;
+            this.Label = this.ToolTipText = Strings.TextEnableTooltips;
             this.Icon = Properties.Resources.ui_tooltip_balloon_bottom;
         }
 
@@ -454,12 +454,12 @@ namespace OSGeo.MapGuide.Viewer
 
             if (viewer.FeatureTooltipsEnabled)
             {
-                this.Label = this.ToolTipText = Properties.Resources.TextDisableTooltips;
+                this.Label = this.ToolTipText = Strings.TextDisableTooltips;
                 this.Icon = Properties.Resources.ui_tooltip_balloon_bottom;
             }
             else
             {
-                this.Label = this.ToolTipText = Properties.Resources.TextEnableTooltips;
+                this.Label = this.ToolTipText = Strings.TextEnableTooltips;
                 this.Icon = Properties.Resources.ui_tooltip_balloon_bottom;
             }
             //Update subscribers

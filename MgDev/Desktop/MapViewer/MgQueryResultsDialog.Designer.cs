@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MgQueryResultsDialog));
             this.toolStrip1 = new System.Windows.Forms.ToolStrip();
             this.btnSelect = new System.Windows.Forms.ToolStripButton();
             this.btnZoom = new System.Windows.Forms.ToolStripButton();
@@ -45,58 +46,43 @@
             this.toolStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.btnSelect,
             this.btnZoom});
-            this.toolStrip1.Location = new System.Drawing.Point(0, 0);
+            resources.ApplyResources(this.toolStrip1, "toolStrip1");
             this.toolStrip1.Name = "toolStrip1";
-            this.toolStrip1.Size = new System.Drawing.Size(904, 25);
-            this.toolStrip1.TabIndex = 0;
-            this.toolStrip1.Text = "toolStrip1";
             // 
             // btnSelect
             // 
-            this.btnSelect.Enabled = false;
+            resources.ApplyResources(this.btnSelect, "btnSelect");
             this.btnSelect.Image = global::OSGeo.MapGuide.Viewer.Properties.Resources.select_features;
-            this.btnSelect.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.btnSelect.Name = "btnSelect";
-            this.btnSelect.Size = new System.Drawing.Size(58, 22);
-            this.btnSelect.Text = "Select";
             this.btnSelect.Click += new System.EventHandler(this.btnSelect_Click);
             // 
             // btnZoom
             // 
-            this.btnZoom.Enabled = false;
+            resources.ApplyResources(this.btnZoom, "btnZoom");
             this.btnZoom.Image = global::OSGeo.MapGuide.Viewer.Properties.Resources.search;
-            this.btnZoom.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.btnZoom.Name = "btnZoom";
-            this.btnZoom.Size = new System.Drawing.Size(59, 22);
-            this.btnZoom.Text = "Zoom";
             this.btnZoom.Click += new System.EventHandler(this.btnZoom_Click);
             // 
             // statusStrip1
             // 
             this.statusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.lblResults});
-            this.statusStrip1.Location = new System.Drawing.Point(0, 302);
+            resources.ApplyResources(this.statusStrip1, "statusStrip1");
             this.statusStrip1.Name = "statusStrip1";
-            this.statusStrip1.Size = new System.Drawing.Size(904, 22);
-            this.statusStrip1.TabIndex = 1;
-            this.statusStrip1.Text = "statusStrip1";
             // 
             // lblResults
             // 
             this.lblResults.Name = "lblResults";
-            this.lblResults.Size = new System.Drawing.Size(0, 17);
+            resources.ApplyResources(this.lblResults, "lblResults");
             // 
             // grdResults
             // 
             this.grdResults.AllowUserToAddRows = false;
             this.grdResults.AllowUserToDeleteRows = false;
             this.grdResults.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.grdResults.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.grdResults.Location = new System.Drawing.Point(0, 25);
+            resources.ApplyResources(this.grdResults, "grdResults");
             this.grdResults.Name = "grdResults";
             this.grdResults.ReadOnly = true;
-            this.grdResults.Size = new System.Drawing.Size(904, 277);
-            this.grdResults.TabIndex = 2;
             this.grdResults.SelectionChanged += new System.EventHandler(this.grdResults_SelectionChanged);
             // 
             // bgGridLoader
@@ -108,16 +94,13 @@
             // 
             // MgQueryResultsDialog
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            resources.ApplyResources(this, "$this");
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(904, 324);
             this.Controls.Add(this.grdResults);
             this.Controls.Add(this.statusStrip1);
             this.Controls.Add(this.toolStrip1);
             this.Name = "MgQueryResultsDialog";
             this.ShowIcon = false;
-            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
-            this.Text = "Query Results";
             this.TopMost = true;
             this.toolStrip1.ResumeLayout(false);
             this.toolStrip1.PerformLayout();

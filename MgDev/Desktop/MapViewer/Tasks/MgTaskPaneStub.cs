@@ -14,7 +14,7 @@ namespace OSGeo.MapGuide.Viewer.Tasks
         public MgTaskPaneStub()
         {
             InitializeComponent();
-            this.Title = "About the Task Pane";
+            this.Title = Strings.TitleTaskPaneAbout;
         }
     }
 }

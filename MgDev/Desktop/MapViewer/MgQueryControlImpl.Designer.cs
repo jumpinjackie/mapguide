@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MgQueryControlImpl));
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.lnkRefreshLayers = new System.Windows.Forms.LinkLabel();
             this.label1 = new System.Windows.Forms.Label();
@@ -62,45 +63,29 @@
             this.groupBox1.Controls.Add(this.lnkRefreshLayers);
             this.groupBox1.Controls.Add(this.label1);
             this.groupBox1.Controls.Add(this.cmbLayer);
-            this.groupBox1.Dock = System.Windows.Forms.DockStyle.Top;
-            this.groupBox1.Location = new System.Drawing.Point(0, 0);
+            resources.ApplyResources(this.groupBox1, "groupBox1");
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(266, 82);
-            this.groupBox1.TabIndex = 0;
             this.groupBox1.TabStop = false;
-            this.groupBox1.Text = "Layer";
             // 
             // lnkRefreshLayers
             // 
-            this.lnkRefreshLayers.AutoSize = true;
-            this.lnkRefreshLayers.Location = new System.Drawing.Point(97, 20);
+            resources.ApplyResources(this.lnkRefreshLayers, "lnkRefreshLayers");
             this.lnkRefreshLayers.Name = "lnkRefreshLayers";
-            this.lnkRefreshLayers.Size = new System.Drawing.Size(50, 13);
-            this.lnkRefreshLayers.TabIndex = 2;
             this.lnkRefreshLayers.TabStop = true;
-            this.lnkRefreshLayers.Text = "(Refresh)";
             this.lnkRefreshLayers.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.lnkRefreshLayers_LinkClicked);
             // 
             // label1
             // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(16, 20);
+            resources.ApplyResources(this.label1, "label1");
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(75, 13);
-            this.label1.TabIndex = 1;
-            this.label1.Text = "Select a Layer";
             // 
             // cmbLayer
             // 
-            this.cmbLayer.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
+            resources.ApplyResources(this.cmbLayer, "cmbLayer");
             this.cmbLayer.DisplayMember = "Name";
             this.cmbLayer.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cmbLayer.FormattingEnabled = true;
-            this.cmbLayer.Location = new System.Drawing.Point(16, 45);
             this.cmbLayer.Name = "cmbLayer";
-            this.cmbLayer.Size = new System.Drawing.Size(231, 21);
-            this.cmbLayer.TabIndex = 0;
             this.cmbLayer.SelectedIndexChanged += new System.EventHandler(this.cmbLayer_SelectedIndexChanged);
             // 
             // groupBox2
@@ -112,81 +97,49 @@
             this.groupBox2.Controls.Add(this.cmbProperty);
             this.groupBox2.Controls.Add(this.label2);
             this.groupBox2.Controls.Add(this.chkPropFilterEnabled);
-            this.groupBox2.Dock = System.Windows.Forms.DockStyle.Top;
-            this.groupBox2.Location = new System.Drawing.Point(0, 82);
+            resources.ApplyResources(this.groupBox2, "groupBox2");
             this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(266, 187);
-            this.groupBox2.TabIndex = 1;
             this.groupBox2.TabStop = false;
-            this.groupBox2.Text = "Property Filter";
             // 
             // txtValue
             // 
-            this.txtValue.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
-            this.txtValue.Location = new System.Drawing.Point(16, 145);
+            resources.ApplyResources(this.txtValue, "txtValue");
             this.txtValue.Name = "txtValue";
-            this.txtValue.Size = new System.Drawing.Size(231, 20);
-            this.txtValue.TabIndex = 6;
             // 
             // label4
             // 
-            this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(16, 129);
+            resources.ApplyResources(this.label4, "label4");
             this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(34, 13);
-            this.label4.TabIndex = 5;
-            this.label4.Text = "Value";
             // 
             // cmbOperator
             // 
-            this.cmbOperator.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
+            resources.ApplyResources(this.cmbOperator, "cmbOperator");
             this.cmbOperator.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cmbOperator.FormattingEnabled = true;
-            this.cmbOperator.Location = new System.Drawing.Point(16, 101);
             this.cmbOperator.Name = "cmbOperator";
-            this.cmbOperator.Size = new System.Drawing.Size(231, 21);
-            this.cmbOperator.TabIndex = 4;
             // 
             // label3
             // 
-            this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(16, 85);
+            resources.ApplyResources(this.label3, "label3");
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(48, 13);
-            this.label3.TabIndex = 3;
-            this.label3.Text = "Operator";
             // 
             // cmbProperty
             // 
-            this.cmbProperty.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
+            resources.ApplyResources(this.cmbProperty, "cmbProperty");
             this.cmbProperty.DisplayMember = "Name";
             this.cmbProperty.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cmbProperty.FormattingEnabled = true;
-            this.cmbProperty.Location = new System.Drawing.Point(16, 60);
             this.cmbProperty.Name = "cmbProperty";
-            this.cmbProperty.Size = new System.Drawing.Size(231, 21);
-            this.cmbProperty.TabIndex = 2;
             // 
             // label2
             // 
-            this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(16, 44);
+            resources.ApplyResources(this.label2, "label2");
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(46, 13);
-            this.label2.TabIndex = 1;
-            this.label2.Text = "Property";
             // 
             // chkPropFilterEnabled
             // 
-            this.chkPropFilterEnabled.AutoSize = true;
-            this.chkPropFilterEnabled.Location = new System.Drawing.Point(19, 20);
+            resources.ApplyResources(this.chkPropFilterEnabled, "chkPropFilterEnabled");
             this.chkPropFilterEnabled.Name = "chkPropFilterEnabled";
-            this.chkPropFilterEnabled.Size = new System.Drawing.Size(65, 17);
-            this.chkPropFilterEnabled.TabIndex = 0;
-            this.chkPropFilterEnabled.Text = "Enabled";
             this.chkPropFilterEnabled.UseVisualStyleBackColor = true;
             // 
             // groupBox3
@@ -194,110 +147,72 @@
             this.groupBox3.Controls.Add(this.lblSpatialFilterGeomSet);
             this.groupBox3.Controls.Add(this.spatialFilterButtonPanel);
             this.groupBox3.Controls.Add(this.chkSpatialFilter);
-            this.groupBox3.Dock = System.Windows.Forms.DockStyle.Top;
-            this.groupBox3.Location = new System.Drawing.Point(0, 269);
+            resources.ApplyResources(this.groupBox3, "groupBox3");
             this.groupBox3.Name = "groupBox3";
-            this.groupBox3.Size = new System.Drawing.Size(266, 119);
-            this.groupBox3.TabIndex = 2;
             this.groupBox3.TabStop = false;
-            this.groupBox3.Text = "Spatial Filter";
             // 
             // lblSpatialFilterGeomSet
             // 
-            this.lblSpatialFilterGeomSet.AutoSize = true;
+            resources.ApplyResources(this.lblSpatialFilterGeomSet, "lblSpatialFilterGeomSet");
             this.lblSpatialFilterGeomSet.ForeColor = System.Drawing.Color.Red;
-            this.lblSpatialFilterGeomSet.Location = new System.Drawing.Point(90, 20);
             this.lblSpatialFilterGeomSet.Name = "lblSpatialFilterGeomSet";
-            this.lblSpatialFilterGeomSet.Size = new System.Drawing.Size(144, 13);
-            this.lblSpatialFilterGeomSet.TabIndex = 3;
-            this.lblSpatialFilterGeomSet.Text = "Spatial Filter Geometry drawn";
-            this.lblSpatialFilterGeomSet.Visible = false;
             // 
             // spatialFilterButtonPanel
             // 
-            this.spatialFilterButtonPanel.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                        | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
+            resources.ApplyResources(this.spatialFilterButtonPanel, "spatialFilterButtonPanel");
             this.spatialFilterButtonPanel.Controls.Add(this.btnRectangle);
             this.spatialFilterButtonPanel.Controls.Add(this.btnPolygon);
             this.spatialFilterButtonPanel.Controls.Add(this.btnClear);
-            this.spatialFilterButtonPanel.Location = new System.Drawing.Point(19, 43);
             this.spatialFilterButtonPanel.Name = "spatialFilterButtonPanel";
-            this.spatialFilterButtonPanel.Size = new System.Drawing.Size(228, 60);
-            this.spatialFilterButtonPanel.TabIndex = 2;
             // 
             // btnRectangle
             // 
-            this.btnRectangle.Location = new System.Drawing.Point(3, 3);
+            resources.ApplyResources(this.btnRectangle, "btnRectangle");
             this.btnRectangle.Name = "btnRectangle";
-            this.btnRectangle.Size = new System.Drawing.Size(75, 23);
-            this.btnRectangle.TabIndex = 2;
-            this.btnRectangle.Text = "Rectangle";
             this.btnRectangle.UseVisualStyleBackColor = true;
             this.btnRectangle.Click += new System.EventHandler(this.btnRectangle_Click);
             // 
             // btnPolygon
             // 
-            this.btnPolygon.Location = new System.Drawing.Point(84, 3);
+            resources.ApplyResources(this.btnPolygon, "btnPolygon");
             this.btnPolygon.Name = "btnPolygon";
-            this.btnPolygon.Size = new System.Drawing.Size(75, 23);
-            this.btnPolygon.TabIndex = 3;
-            this.btnPolygon.Text = "Polygon";
             this.btnPolygon.UseVisualStyleBackColor = true;
             this.btnPolygon.Click += new System.EventHandler(this.btnPolygon_Click);
             // 
             // btnClear
             // 
-            this.btnClear.Location = new System.Drawing.Point(3, 32);
+            resources.ApplyResources(this.btnClear, "btnClear");
             this.btnClear.Name = "btnClear";
-            this.btnClear.Size = new System.Drawing.Size(75, 23);
-            this.btnClear.TabIndex = 4;
-            this.btnClear.Text = "Clear";
             this.btnClear.UseVisualStyleBackColor = true;
             this.btnClear.Click += new System.EventHandler(this.btnClear_Click);
             // 
             // chkSpatialFilter
             // 
-            this.chkSpatialFilter.AutoSize = true;
-            this.chkSpatialFilter.Location = new System.Drawing.Point(19, 19);
+            resources.ApplyResources(this.chkSpatialFilter, "chkSpatialFilter");
             this.chkSpatialFilter.Name = "chkSpatialFilter";
-            this.chkSpatialFilter.Size = new System.Drawing.Size(65, 17);
-            this.chkSpatialFilter.TabIndex = 1;
-            this.chkSpatialFilter.Text = "Enabled";
             this.chkSpatialFilter.UseVisualStyleBackColor = true;
             // 
             // btnExecute
             // 
-            this.btnExecute.Location = new System.Drawing.Point(16, 395);
+            resources.ApplyResources(this.btnExecute, "btnExecute");
             this.btnExecute.Name = "btnExecute";
-            this.btnExecute.Size = new System.Drawing.Size(75, 23);
-            this.btnExecute.TabIndex = 3;
-            this.btnExecute.Text = "Execute";
             this.btnExecute.UseVisualStyleBackColor = true;
             this.btnExecute.Click += new System.EventHandler(this.btnExecute_Click);
             // 
             // label5
             // 
-            this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(97, 400);
+            resources.ApplyResources(this.label5, "label5");
             this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(42, 13);
-            this.label5.TabIndex = 4;
-            this.label5.Text = "Results";
             // 
             // numResults
             // 
-            this.numResults.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
-            this.numResults.Location = new System.Drawing.Point(143, 398);
+            resources.ApplyResources(this.numResults, "numResults");
             this.numResults.Maximum = new decimal(new int[] {
             10000,
             0,
             0,
             0});
             this.numResults.Name = "numResults";
-            this.numResults.Size = new System.Drawing.Size(104, 20);
-            this.numResults.TabIndex = 5;
             this.numResults.Value = new decimal(new int[] {
             100,
             0,
@@ -306,7 +221,7 @@
             // 
             // MgQueryControlImpl
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            resources.ApplyResources(this, "$this");
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.Controls.Add(this.numResults);
             this.Controls.Add(this.label5);
@@ -315,7 +230,6 @@
             this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.groupBox1);
             this.Name = "MgQueryControlImpl";
-            this.Size = new System.Drawing.Size(266, 431);
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
             this.groupBox2.ResumeLayout(false);

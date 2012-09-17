@@ -20,65 +20,65 @@ namespace OSGeo.MapGuide.Viewer
             : base()
         {
             this.GripStyle = ToolStripGripStyle.Visible;
-            this.ZoomIn = new ToolStripButton("", Properties.Resources.zoom_in_fixed, OnZoomIn)
+            this.ZoomIn = new ToolStripButton(string.Empty, Properties.Resources.zoom_in_fixed, OnZoomIn)
             {
-                ToolTipText = Properties.Resources.TextZoomIn,
+                ToolTipText = Strings.TextZoomIn,
                 DisplayStyle = ToolStripItemDisplayStyle.Image
             };
-            this.ZoomOut = new ToolStripButton("", Properties.Resources.zoom_out_fixed, OnZoomOut)
+            this.ZoomOut = new ToolStripButton(string.Empty, Properties.Resources.zoom_out_fixed, OnZoomOut)
             {
-                ToolTipText = Properties.Resources.TextZoomOut,
+                ToolTipText = Strings.TextZoomOut,
                 DisplayStyle = ToolStripItemDisplayStyle.Image
             };
-            this.ZoomExtents = new ToolStripButton("", Properties.Resources.zoom_full, OnZoomExtents)
+            this.ZoomExtents = new ToolStripButton(string.Empty, Properties.Resources.zoom_full, OnZoomExtents)
             {
-                ToolTipText = Properties.Resources.TextZoomExtents,
+                ToolTipText = Strings.TextZoomExtents,
                 DisplayStyle = ToolStripItemDisplayStyle.Image
             };
-            this.SelectTool = new ToolStripButton("", Properties.Resources.select_features, OnSelect)
+            this.SelectTool = new ToolStripButton(string.Empty, Properties.Resources.select_features, OnSelect)
             {
-                ToolTipText = Properties.Resources.TextSelect,
+                ToolTipText = Strings.TextSelect,
                 DisplayStyle = ToolStripItemDisplayStyle.Image
             };
-            this.Pan = new ToolStripButton("", Properties.Resources.icon_pan, OnPan)
+            this.Pan = new ToolStripButton(string.Empty, Properties.Resources.icon_pan, OnPan)
             {
-                ToolTipText = Properties.Resources.TextPan,
+                ToolTipText = Strings.TextPan,
                 DisplayStyle = ToolStripItemDisplayStyle.Image
             };
-            this.ClearSelection = new ToolStripButton("", Properties.Resources.select_clear, OnClearSelection)
+            this.ClearSelection = new ToolStripButton(string.Empty, Properties.Resources.select_clear, OnClearSelection)
             {
-                ToolTipText = Properties.Resources.TextClearSelection,
+                ToolTipText = Strings.TextClearSelection,
                 DisplayStyle = ToolStripItemDisplayStyle.Image
             };
-            this.RefreshMap = new ToolStripButton("", Properties.Resources.view_refresh, OnRefreshMap)
+            this.RefreshMap = new ToolStripButton(string.Empty, Properties.Resources.view_refresh, OnRefreshMap)
             {
-                ToolTipText = Properties.Resources.TextRefreshMap,
+                ToolTipText = Strings.TextRefreshMap,
                 DisplayStyle = ToolStripItemDisplayStyle.Image
             };
-            this.ToggleTooltips = new ToolStripButton(Properties.Resources.TextDisableTooltips, Properties.Resources.ui_tooltip_balloon_bottom, OnToggleTooltips)
+            this.ToggleTooltips = new ToolStripButton(Strings.TextDisableTooltips, Properties.Resources.ui_tooltip_balloon_bottom, OnToggleTooltips)
             {
-                ToolTipText = Properties.Resources.TextDisableTooltips,
+                ToolTipText = Strings.TextDisableTooltips,
                 DisplayStyle = ToolStripItemDisplayStyle.ImageAndText
             };
-            this.Loading = new ToolStripButton("", Properties.Resources.icon_loading)
+            this.Loading = new ToolStripButton(string.Empty, Properties.Resources.icon_loading)
             {
                 Alignment = ToolStripItemAlignment.Right,
                 ImageScaling = ToolStripItemImageScaling.None,
                 Visible = false
             };
-            this.SelectPolygon = new ToolStripButton("", Properties.Resources.select_polygon, OnSelectPolygon)
+            this.SelectPolygon = new ToolStripButton(string.Empty, Properties.Resources.select_polygon, OnSelectPolygon)
             {
-                ToolTipText = Properties.Resources.TextSelectPolygon,
+                ToolTipText = Strings.TextSelectPolygon,
                 DisplayStyle = ToolStripItemDisplayStyle.Image
             };
-            this.SelectRadius = new ToolStripButton("", Properties.Resources.select_radius, OnSelectRadius)
+            this.SelectRadius = new ToolStripButton(string.Empty, Properties.Resources.select_radius, OnSelectRadius)
             {
-                ToolTipText = Properties.Resources.TextSelectRadius,
+                ToolTipText = Strings.TextSelectRadius,
                 DisplayStyle = ToolStripItemDisplayStyle.Image
             };
-            this.CopyMap = new ToolStripButton("", Properties.Resources.edit_copy, OnCopyMap)
+            this.CopyMap = new ToolStripButton(string.Empty, Properties.Resources.edit_copy, OnCopyMap)
             {
-                ToolTipText = Properties.Resources.TextCopyMap,
+                ToolTipText = Strings.TextCopyMap,
                 DisplayStyle = ToolStripItemDisplayStyle.Image
             };
 
@@ -111,8 +111,8 @@ namespace OSGeo.MapGuide.Viewer
         /// <value>
         /// The zoom out mode.
         /// </value>
-        [Category("MapGuide Viewer")]
-        [Description("The behaviour of the zoom out command")]
+        [Category("MapGuide Viewer")] //NOXLATE
+        [Description("The behaviour of the zoom out command")] //NOXLATE
         [DefaultValue(ZoomOutMode.ClickToZoom)]
         public ZoomOutMode ZoomOutMode
         {
@@ -143,8 +143,8 @@ namespace OSGeo.MapGuide.Viewer
         /// <summary>
         /// Gets or sets the viewer this toolbar is associated with
         /// </summary>
-        [Category("MapGuide Viewer")]
-        [Description("The map viewer component this toolbar will control")]
+        [Category("MapGuide Viewer")] //NOXLATE
+        [Description("The map viewer component this toolbar will control")] //NOXLATE
         public IMapViewer Viewer
         {
             get { return _viewer; }
@@ -321,13 +321,13 @@ namespace OSGeo.MapGuide.Viewer
 
             if (_viewer.FeatureTooltipsEnabled)
             {
-                this.ToggleTooltips.Text = Properties.Resources.TextDisableTooltips;
-                this.ToggleTooltips.ToolTipText = Properties.Resources.TooltipDisableTooltips;
+                this.ToggleTooltips.Text = Strings.TextDisableTooltips;
+                this.ToggleTooltips.ToolTipText = Strings.TooltipDisableTooltips;
             }
             else
             {
-                this.ToggleTooltips.Text = Properties.Resources.TextEnableTooltips;
-                this.ToggleTooltips.ToolTipText = Properties.Resources.TooltipEnableTooltips;
+                this.ToggleTooltips.Text = Strings.TextEnableTooltips;
+                this.ToggleTooltips.ToolTipText = Strings.TooltipEnableTooltips;
             }
         }
 
@@ -342,7 +342,7 @@ namespace OSGeo.MapGuide.Viewer
 
         private void OnViewerPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == "IsBusy")
+            if (e.PropertyName == "IsBusy") //NOXLATE
             {
                 var busy = _viewer.IsBusy;
                 this.ZoomExtents.Enabled = this.ZoomIn.Enabled
@@ -357,7 +357,7 @@ namespace OSGeo.MapGuide.Viewer
                                          = this.RefreshMap.Enabled = !busy;
                 this.Loading.Visible = busy;
             }
-            else if (e.PropertyName == "ActiveTool" || e.PropertyName == "DigitizingType")
+            else if (e.PropertyName == "ActiveTool" || e.PropertyName == "DigitizingType") //NOXLATE
             {
                 UpdateButtonCheckedState();
             }
@@ -365,12 +365,12 @@ namespace OSGeo.MapGuide.Viewer
 
         static string MakeWktPolygon(double x1, double y1, double x2, double y2)
         {
-            return "POLYGON((" + x1 + " " + y1 + ", " + x2 + " " + y1 + ", " + x2 + " " + y2 + ", " + x1 + " " + y2 + ", " + x1 + " " + y1 + "))";
+            return "POLYGON((" + x1 + " " + y1 + ", " + x2 + " " + y1 + ", " + x2 + " " + y2 + ", " + x1 + " " + y2 + ", " + x1 + " " + y1 + "))"; //NOXLATE
         }
 
         static string MakeWktCircle(double x, double y, double r)
         {
-            return "CURVEPOLYGON ((" + (x - r) + " " + y + " (CIRCULARARCSEGMENT (" + x + " " + (y - r) + ", " + (x + r) + " " + y + "), CIRCULARARCSEGMENT (" + x + " " + (y + r) + ", " + (x - r) + " " + y + "))))";
+            return "CURVEPOLYGON ((" + (x - r) + " " + y + " (CIRCULARARCSEGMENT (" + x + " " + (y - r) + ", " + (x + r) + " " + y + "), CIRCULARARCSEGMENT (" + x + " " + (y + r) + ", " + (x - r) + " " + y + "))))"; //NOXLATE
         }
     }
 

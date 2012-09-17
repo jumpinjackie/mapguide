@@ -10,7 +10,7 @@ namespace OSGeo.MapGuide.Viewer
     {
         public MgPrintComponent()
         {
-            this.Label = this.ToolTipText = Properties.Resources.TextPrint;
+            this.Label = this.ToolTipText = Strings.TextPrint;
             this.Icon = Properties.Resources.print;
         }
 

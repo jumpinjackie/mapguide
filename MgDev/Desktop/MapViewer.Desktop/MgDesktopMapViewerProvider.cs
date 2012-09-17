@@ -122,7 +122,7 @@ namespace OSGeo.MapGuide.Viewer.Desktop
             if (layerImpl != null)
                 return layerImpl.HasTooltips();
 
-            throw new InvalidOperationException("The given layer is not of the expected implementation (" + typeof(MgdLayer).FullName + ")");
+            throw new InvalidOperationException(string.Format(Strings.ErrorLayerIncorrectImpl, typeof(MgdLayer).FullName));
         }
 
         public override bool IsLayerPotentiallyVisibleAtScale(MgLayerBase layer, bool bConsiderParentGroupVisibility)
@@ -131,7 +131,7 @@ namespace OSGeo.MapGuide.Viewer.Desktop
             if (layerImpl != null)
                 return layerImpl.IsPotentiallyVisibleAtScale(_implMap.ViewScale, bConsiderParentGroupVisibility);
 
-            throw new InvalidOperationException("The given layer is not of the expected implementation (" + typeof(MgdLayer).FullName + ")");
+            throw new InvalidOperationException(string.Format(Strings.ErrorLayerIncorrectImpl, typeof(MgdLayer).FullName));
         }
 
         public override MgLayerBase CreateLayer(MgResourceIdentifier layerDefId)
