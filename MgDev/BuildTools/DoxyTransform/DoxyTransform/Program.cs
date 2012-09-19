@@ -142,6 +142,7 @@ namespace DoxyTransform
                     return "System.Double";
                 case "float":
                     return "System.Single";
+                case "INT8": //These are exposed as short in .net
                 case "INT16":
                     return "System.Int16";
                 case "INT32":
@@ -152,6 +153,9 @@ namespace DoxyTransform
                     return "System.String";
                 case "CREFSTRING":
                     return "System.String";
+                case "BYTE_ARRAY_IN":
+                case "BYTE_ARRAY_OUT":
+                    return "System.Byte[]";
                 default:
                     return mgType;
             }
