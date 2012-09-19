@@ -217,9 +217,14 @@ namespace Doxygen.NET
             {
                 string kind = member.Attributes["kind"].Value;
                 string name = member["name"].InnerText;
-                string args = member["argsstring"] != null ? 
-                    member["argsstring"].InnerText.Replace("(", "").Replace(")", "").Trim() :
-                    string.Empty;
+                string args = string.Empty;
+                if (member["argsstring"] != null) {
+                    //This is to strip any const and pure virtual modifiers
+                    string str = member["argsstring"].InnerText;
+                    if (str.LastIndexOf("(") >= 0 && str.LastIndexOf(")") >= 0)
+                        str = str.Substring(str.LastIndexOf("("), str.LastIndexOf(")") - str.LastIndexOf("("));
+                    args = str.Replace("(", "").Replace(")", "").Trim();
+                }
 
                 List<Parameter> parameters = new List<Parameter>();
                 
