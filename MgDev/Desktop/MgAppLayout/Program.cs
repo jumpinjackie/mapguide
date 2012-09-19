@@ -1,4 +1,5 @@
-﻿using System;
+﻿//#define PROFILE
+using System;
 using System.Collections.Generic;
 using System.Windows.Forms;
 using OSGeo.MapGuide;
@@ -25,11 +26,14 @@ namespace MgAppLayout
             //Must call MgPlatform.Initialize() before we can work with anything from the MapGuide API
             try
             {
-                var sw = new Stopwatch();
-                sw.Start();
+#if PROFILE
+                using (new CallMeasure("MgdPlatform.Initialize"))
+                {
+                    MgdPlatform.Initialize("Platform.ini");
+                }
+#else
                 MgdPlatform.Initialize("Platform.ini");
-                sw.Stop();
-                Trace.TraceInformation("Platform initialization took {0}ms", sw.ElapsedMilliseconds);
+#endif
             }
             catch (Exception ex)
             {
@@ -60,22 +64,53 @@ namespace MgAppLayout
             var provider = new MgDesktopMapViewerProvider(null);
             var resSvc = (MgResourceService)provider.CreateService(MgServiceType.ResourceService);
             if (resSvc.ResourceExists(mdfId))
+            {
+#if PROFILE
+                using (new CallMeasure("MgdMap constructor (cold start)"))
+                {
+                    var mapCold = new MgdMap(mdfId);
+                }
+                MgdMap map = null;
+                using (new CallMeasure("MgdMap constructor (warm start)"))
+                {
+                    map = new MgdMap(mdfId);
+                }
+                using (new CallMeasure("MgMapViewerProvider.LoadMap"))
+                {
+                    provider.LoadMap(map);
+                }
+#else
                 provider.LoadMap(new MgdMap(mdfId));
+#endif
+            }
             var frm = Shell.Instance;
             ((Shell)frm).Initialize(layout, provider);
-            Application.ApplicationExit += new EventHandler(OnAppExit);
             Application.Run((Shell)frm);
             MgdPlatform.Terminate();
-        }
-
-        static void OnAppExit(object sender, EventArgs e)
-        {
-            
         }
 
         static void Application_ThreadException(object sender, System.Threading.ThreadExceptionEventArgs e)
         {
             MessageBox.Show(e.Exception.ToString());
+        }
+    }
+
+    class CallMeasure : IDisposable
+    {
+        private Stopwatch _sw;
+        private string _msg;
+
+        public CallMeasure(string msg)
+        {
+            _msg = msg;
+            _sw = new Stopwatch();
+            _sw.Start();
+        }
+
+        public void Dispose()
+        {
+            _sw.Stop();
+            Console.WriteLine("{0} - {1}ms", _msg, _sw.ElapsedMilliseconds);
         }
     }
 }

@@ -93,7 +93,7 @@ FdoIConnection* MgdFdoConnectionPool::GetConnection(MgResourceIdentifier* featur
         }
     }
 
-    MgdLogDetiail logDetail(MgServiceType::FeatureService, MgdLogDetiail::InternalTrace, L"MgdFdoConnectionPool::GetConnection", mgStackParams);
+    MgdLogDetail logDetail(MgServiceType::FeatureService, MgdLogDetail::InternalTrace, L"MgdFdoConnectionPool::GetConnection", mgStackParams);
     logDetail.AddResourceIdentifier(L"featureSourceId", featureSourceId);
     logDetail.AddBool(L"IsNewInstance", bNewInstance);
     logDetail.Create();
@@ -156,7 +156,7 @@ void MgdFdoConnectionPool::ReturnConnection(MgdFeatureConnection* conn)
         #endif
     }
 
-    MgdLogDetiail logDetail(MgServiceType::FeatureService, MgdLogDetiail::InternalTrace, L"MgdFdoConnectionPool::ReturnConnection", mgStackParams);
+    MgdLogDetail logDetail(MgServiceType::FeatureService, MgdLogDetail::InternalTrace, L"MgdFdoConnectionPool::ReturnConnection", mgStackParams);
     logDetail.AddString(L"FeatureSource", fsIdStr.empty() ? L"<No Feature Source>" : fsIdStr);
     logDetail.AddBool(L"ReturnedToPool", bReturned);
     logDetail.AddBool(L"ProviderExcluded", bProviderExcluded);
@@ -208,7 +208,7 @@ void MgdFdoConnectionPool::Initialize(MgConfiguration* pConfiguration)
         g_excludedProviders = new MgStringCollection();
     }
 
-    MgdLogDetiail logDetail(MgServiceType::FeatureService, MgdLogDetiail::InternalTrace, L"MgdFdoConnectionPool::Initialize", mgStackParams);
+    MgdLogDetail logDetail(MgServiceType::FeatureService, MgdLogDetail::InternalTrace, L"MgdFdoConnectionPool::Initialize", mgStackParams);
     logDetail.AddBool(L"PoolingEnabled", g_bPoolingEnabled);
     logDetail.AddString(L"ExcludedProviders", excludedProviders);
     logDetail.Create();
@@ -269,7 +269,7 @@ void MgdFdoConnectionPool::PurgeCachedConnections(MgResourceIdentifier* resId)
     #ifdef DEBUG_FDO_CONNECTION_POOL
         ACE_DEBUG((LM_INFO, ACE_TEXT("[Purge]: (%W) %d purged\n"), fsIdStr.c_str(), purged));
     #endif
-        MgdLogDetiail logDetail(MgServiceType::FeatureService, MgdLogDetiail::InternalTrace, L"MgdFdoConnectionPool::PurgeCachedConnections", mgStackParams);
+        MgdLogDetail logDetail(MgServiceType::FeatureService, MgdLogDetail::InternalTrace, L"MgdFdoConnectionPool::PurgeCachedConnections", mgStackParams);
         logDetail.AddResourceIdentifier(L"resId", resId);
         logDetail.AddInt32(L"purgedConnections", purged);
         logDetail.Create();
@@ -314,7 +314,7 @@ void MgdFdoConnectionPool::PurgeCachedConnectionsUnderFolder(MgResourceIdentifie
     ACE_DEBUG((LM_INFO, ACE_TEXT("[Purge]: (%W) %d purged\n"), fsIdStr.c_str(), purged));
 #endif
 
-    MgdLogDetiail logDetail(MgServiceType::FeatureService, MgdLogDetiail::InternalTrace, L"MgdFdoConnectionPool::PurgeCachedConnectionsUnderFolder", mgStackParams);
+    MgdLogDetail logDetail(MgServiceType::FeatureService, MgdLogDetail::InternalTrace, L"MgdFdoConnectionPool::PurgeCachedConnectionsUnderFolder", mgStackParams);
     logDetail.AddResourceIdentifier(L"resId", resId);
     logDetail.AddInt32(L"purgedConnections", purged);
     logDetail.Create();

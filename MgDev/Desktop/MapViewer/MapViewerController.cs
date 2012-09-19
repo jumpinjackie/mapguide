@@ -111,7 +111,7 @@ namespace OSGeo.MapGuide.Viewer
             if (_propPane != null || _statBar != null)
             {
                 var sel = _viewer.GetSelection();
-                var sset = new MgSelectionSet(sel, _viewer.GetProvider().AllPropertyMappings);
+                var sset = new MgSelectionSet(sel, _viewer.GetProvider());
                 if (_propPane != null)
                     _propPane.Init(sset);
                 if (_statBar != null)

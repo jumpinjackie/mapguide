@@ -76,7 +76,6 @@ namespace OSGeo.MapGuide.Viewer
 
             DisposeExistingMap();
             _map = map;
-            RebuildLayerInfoCache();
             OnNewMapLoaded(map);
             var h = this.MapLoaded;
             if (h != null)
@@ -105,127 +104,38 @@ namespace OSGeo.MapGuide.Viewer
             }
         }
 
+        /// <summary>
+        /// Gets the coordinate system for the map
+        /// </summary>
+        /// <returns></returns>
         public MgCoordinateSystem GetMapCoordinateSystem()
         {
             return CoordSysFactory.Create(_map.GetMapSRS());
         }
 
-        private Dictionary<string, MgCoordinateSystemTransform> _mapToLayerTransforms = new Dictionary<string, MgCoordinateSystemTransform>();
         private Dictionary<string, NameValueCollection> _propertyMappings = new Dictionary<string, NameValueCollection>();
 
-        internal Dictionary<string, NameValueCollection> AllPropertyMappings { get { return _propertyMappings; } }
-
-        private Dictionary<string, XmlDocument> _cachedLayerDefinitions = new Dictionary<string, XmlDocument>();
-
-        protected void RebuildLayerInfoCache()
+        internal NameValueCollection GetPropertyMappings(MgLayerBase layer)
         {
-            _cachedLayerDefinitions.Clear();
-            _propertyMappings.Clear();
+            MgResourceIdentifier resId = layer.GetLayerDefinition();
+            MgByteReader content = _resSvc.GetResourceContent(resId);
+            string resIdStr = resId.ToString();
 
-            foreach (var trans in _mapToLayerTransforms.Values)
+            XmlDocument doc = new XmlDocument();
+            string xml = content.ToString();
+            doc.LoadXml(xml);
+
+            XmlNodeList propMaps = doc.GetElementsByTagName("PropertyMapping"); //NOXLATE
+            if (propMaps.Count > 0)
             {
-                if (trans != null)
-                    trans.Dispose();
+                NameValueCollection propertyMappings = new NameValueCollection();
+                foreach (XmlNode pm in propMaps)
+                {
+                    propertyMappings[pm["Name"].InnerText] = pm["Value"].InnerText; //NOXLATE
+                }
+                _propertyMappings[resIdStr] = propertyMappings;
             }
-            _mapToLayerTransforms.Clear();
-
-            if (_resSvc == null)
-                _resSvc = (MgResourceService)CreateService(MgServiceType.ResourceService);
-
-            //Pre-cache layer definitions and tooltip properties
-            var layers = _map.GetLayers();
-            MgStringCollection resIds = new MgStringCollection();
-            for (int i = 0; i < layers.GetCount(); i++)
-            {
-                var layer = layers.GetItem(i);
-                var ldf = layer.GetLayerDefinition();
-                resIds.Add(ldf.ToString());
-
-                //Make sure geometry property checks out
-                MgClassDefinition clsDef = null;
-                try 
-                {
-                    clsDef = layer.GetClassDefinition();
-                }
-                catch (MgException ex)
-                {
-                    Trace.TraceWarning("Failed to get geometry property for layer: " + layer.Name + Environment.NewLine + ex.ToString()); //NOXLATE
-                    ex.Dispose();
-                    continue;
-                }
-                var props = clsDef.GetProperties();
-                var geomName = clsDef.DefaultGeometryPropertyName;
-                if (string.IsNullOrEmpty(geomName))
-                    continue;
-
-                if (props.IndexOf(geomName) < 0)
-                    continue;
-
-                var geomProp = props.GetItem(geomName) as MgGeometricPropertyDefinition;
-                if (geomProp == null)
-                    continue;
-
-                var trans = GetMapToLayerTransform(layer, geomProp);
-            }
-            MgStringCollection contents = _resSvc.GetResourceContents(resIds, null);
-            for (int i = 0; i < contents.GetCount(); i++)
-            {
-                XmlDocument doc = new XmlDocument();
-                doc.LoadXml(contents.GetItem(i));
-
-                _cachedLayerDefinitions[resIds.GetItem(i)] = doc;
-
-                XmlNodeList propMaps = doc.GetElementsByTagName("PropertyMapping"); //NOXLATE
-                if (propMaps.Count > 0)
-                {
-                    NameValueCollection propertyMappings = new NameValueCollection();
-                    foreach (XmlNode pm in propMaps)
-                    {
-                        propertyMappings[pm["Name"].InnerText] = pm["Value"].InnerText; //NOXLATE
-                    }
-                    _propertyMappings[resIds.GetItem(i)] = propertyMappings;
-                }
-            }
-        }
-
-        internal MgCoordinateSystemTransform GetMapToLayerTransform(MgLayerBase layer, MgGeometricPropertyDefinition geomProp)
-        {
-            string objId = layer.GetObjectId();
-            string mapCsWkt = _map.GetMapSRS();
-            bool bChecked = false;
-            MgCoordinateSystemTransform trans = this.GetLayerTransform(objId, out bChecked);
-            if (trans == null && !bChecked)
-            {
-                MgSpatialContextReader scReader = GetSpatialContexts(layer, false);
-                try
-                {
-                    while (scReader.ReadNext())
-                    {
-                        if (scReader.GetName() == geomProp.SpatialContextAssociation)
-                        {
-                            //Only need to set up transform if layer and map wkts do not match
-                            if (!string.IsNullOrEmpty(mapCsWkt) && !string.IsNullOrEmpty(scReader.GetCoordinateSystemWkt()))
-                            {
-                                if (mapCsWkt != scReader.GetCoordinateSystemWkt())
-                                {
-                                    var csFact = this.CoordSysFactory;
-                                    var layerCs = csFact.Create(scReader.GetCoordinateSystemWkt());
-                                    trans = csFact.GetTransform(this.GetMapCoordinateSystem(), layerCs);
-                                    this.CacheLayerTransform(objId, trans);
-                                    break;
-                                }
-                            }
-                        }
-                    }
-                }
-                finally
-                {
-                    scReader.Close();
-                }
-                if (trans == null)
-                    this.CacheLayerTransform(objId, null);
-            }
-            return trans;
+            return _propertyMappings[resIdStr];
         }
 
         protected abstract MgSpatialContextReader GetSpatialContexts(MgLayerBase layer, bool activeOnly);
@@ -258,22 +168,6 @@ namespace OSGeo.MapGuide.Viewer
         public MgTransientMapState CreateTransientState()
         {
             return CreateTransientState(_map);
-        }
-
-        internal MgCoordinateSystemTransform GetLayerTransform(string objId, out bool bAlreadyChecked)
-        {
-            bAlreadyChecked = false;
-            if (_mapToLayerTransforms.ContainsKey(objId))
-            {
-                bAlreadyChecked = true;
-                return _mapToLayerTransforms[objId];
-            }
-            return null;
-        }
-
-        internal void CacheLayerTransform(string objId, MgCoordinateSystemTransform trans)
-        {
-            _mapToLayerTransforms[objId] = trans;
         }
 
         /// <summary>

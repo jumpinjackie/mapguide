@@ -174,7 +174,7 @@ void MgdPlatform::Terminate()
     MG_LOG_TRACE_ENTRY(L"MgdPlatform::Terminate()");
     MG_TRY()
 
-    //MgdFdoConnectionPool::Cleanup();
+    MgdFdoConnectionPool::Cleanup();
 
     //This is important. Otherwise the process using this library will be left lingering
     MgdLogManager* pLogManager = MgdLogManager::GetInstance();

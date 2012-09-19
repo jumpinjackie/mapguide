@@ -16,6 +16,7 @@
 //
 
 #include "MgDesktop.h"
+#include "Services\Resource\ResourceContentCache.h"
 #include "Fdo.h"
 #include "TestResourceService.h"
 #include "CppUnitExtensions.h"
@@ -1100,189 +1101,84 @@ void TestResourceService::TestCase_EnumerateUnmanagedData()
     }
 }
 
-// data structure which is passed to each thread
-struct ResourceThreadData
+void TestResourceService::TestCase_BenchmarkGetResourceContents()
 {
-    INT32 threadId;
-    INT32 command;
-    bool success;
-    bool done;
-    STRING session;
-};
-
-// the method which gets executed by the ACE worker thread
-ACE_THR_FUNC_RETURN RepositoryWorker(void* param)
-{
-    // get the data for this thread
-    ResourceThreadData* threadData = (ResourceThreadData*)param;
-    INT32 threadId = threadData->threadId;
-    INT32 command = threadData->command;
-    STRING session = threadData->session;
-
-    ACE_DEBUG((LM_INFO, ACE_TEXT("> thread %d started\n"), threadId));
-
-    try
-    {
-        // get the tile service instance
-        Ptr<MgdServiceFactory> fact = new MgdServiceFactory();
-        Ptr<MgResourceService> svcResource = dynamic_cast<MgResourceService*>(fact->CreateService(MgServiceType::ResourceService));
-        assert(svcResource != NULL);
-
-        STRING resource = L"Session:";
-        resource += session;
-        resource += L"//UnitTests/Data/test-1.FeatureSource";
-        Ptr<MgResourceIdentifier> resId = new MgResourceIdentifier(resource);
-
-        switch (command)
+	try
+	{
+		Ptr<MgdServiceFactory> fact = new MgdServiceFactory();
+        Ptr<MgResourceService> pService = dynamic_cast<MgResourceService*>(fact->CreateService(MgServiceType::ResourceService));
+        if (pService == 0)
         {
-        case 0:
-            {
-            //Set the resource
-            Ptr<MgByteSource> contentSource = new MgByteSource(resourceContentFileName);
-            Ptr<MgByteReader> contentReader = contentSource->GetReader();
-            svcResource->SetResource(resId, contentReader, NULL);
-            }
-        case 1:
-            {
-            //Set the resource data
-            Ptr<MgByteSource> dataSource = new MgByteSource(dataFileName);
-            Ptr<MgByteReader> dataReader = dataSource->GetReader();
-            svcResource->SetResourceData(resId, resourceDataName, L"File", dataReader);
-            }
-            // Need to add a case that updates the session with runtime map
+            throw new MgServiceNotAvailableException(L"TestResourceService.TestCase_BenchmarkGetResourceContents", __LINE__, __WFILE__, NULL, L"", NULL);
         }
 
-        threadData->success = true;
-    }
-    catch (MgException* e)
-    {
-        STRING message = e->GetDetails(TEST_LOCALE);
-        message += L"\n";
-        message += e->GetStackTrace(TEST_LOCALE);
-        SAFE_RELEASE(e);
-        ACE_DEBUG((LM_INFO, ACE_TEXT("RepositoryWorker(%d) - Exception:\n%W\n"), threadId, message.c_str()));
-    }
-    catch (...)
-    {
-        throw;
-    }
+		Ptr<MgStringCollection> resources = new MgStringCollection();
 
-    ACE_DEBUG((LM_INFO, ACE_TEXT("> thread %d done\n"), threadId));
+		Ptr<MgByteSource> source = new MgByteSource(resourceContentFileName2);
+		Ptr<MgByteReader> reader = source->GetReader();
+		// Prepare the resources
+		for (INT32 i = 0; i < 150; i++)
+		{
+			STRING numStr;
+			MgUtil::Int32ToString(i, numStr);
+			STRING resIdStr = L"Library://BatchTests/Layer";
+			resIdStr += numStr;
+			resIdStr += L".LayerDefinition";
 
-    threadData->done = true;
-    return 0;
-}
+			Ptr<MgResourceIdentifier> resId = new MgResourceIdentifier(resIdStr);
+			pService->SetResource(resId, reader, NULL);
+			resources->Add(resId->ToString());
+			reader->Rewind();
+		}
 
-/*
-void TestResourceService::TestCase_RepositoryBusy()
-{
-    // specify the number of threads to use
-    const INT32 numThreads = MG_TEST_THREADS;
-    ResourceThreadData threadData[numThreads];
+		//Evict all cached copies to avoid distortion of results due to caching
+		MgdResourceContentCache* cache = MgdResourceContentCache::GetInstance();
+		cache->Clear();
 
-    try
-    {
-        long lStart = GetTickCount();
+		long lStart = GetTickCount();
+		ACE_DEBUG((LM_INFO, ACE_TEXT("\nTestResourceService::TestCase_BenchmarkGetResourceContents() - Individual GetResourceContent calls (cold) \n")));
+		for (INT32 i = 0; i < resources->GetCount(); i++)
+		{
+			Ptr<MgResourceIdentifier> resId = new MgResourceIdentifier(resources->GetItem(i));
+			Ptr<MgByteReader> content = pService->GetResourceContent(resId);
+		}
+		ACE_DEBUG((LM_INFO, ACE_TEXT("  Execution Time: = %6.4f (s)\n"), ((GetTickCount()-lStart)/1000.0) ));
+		ACE_DEBUG((LM_INFO, ACE_TEXT(" %d resource content items in cache\n"), (cache->GetCacheSize()) ));
 
-        // get the tile service instance
-        Ptr<MgResourceService> svcResource = MgdServiceFactory::CreateResourceService();
-        assert(svcResource != NULL);
+		lStart = GetTickCount();
+		ACE_DEBUG((LM_INFO, ACE_TEXT("\nTestResourceService::TestCase_BenchmarkGetResourceContents() - Individual GetResourceContent calls (cached contents) \n")));
+		for (INT32 i = 0; i < resources->GetCount(); i++)
+		{
+			Ptr<MgResourceIdentifier> resId = new MgResourceIdentifier(resources->GetItem(i));
+			Ptr<MgByteReader> content = pService->GetResourceContent(resId);
+		}
+		ACE_DEBUG((LM_INFO, ACE_TEXT("  Execution Time: = %6.4f (s)\n"), ((GetTickCount()-lStart)/1000.0) ));
+		
+		//Evict all cached copies to avoid distortion of results due to caching
+		cache->Clear();
+		ACE_DEBUG((LM_INFO, ACE_TEXT(" %d resource content items in cache\n"), (cache->GetCacheSize()) ));
 
-        // need a thread manager
-        ACE_Thread_Manager* manager = ACE_Thread_Manager::instance();
+		lStart = GetTickCount();
+		Ptr<MgStringCollection> contents;
+		ACE_DEBUG((LM_INFO, ACE_TEXT("\nTestResourceService::TestCase_BenchmarkGetResourceContents() - Multi-threaded GetResourceContents call (cold) \n")));
+		contents = pService->GetResourceContents(resources, NULL);
+		CPPUNIT_ASSERT(NULL != contents.p);
+		CPPUNIT_ASSERT(contents->GetCount() == resources->GetCount());
+		ACE_DEBUG((LM_INFO, ACE_TEXT("  Execution Time: = %6.4f (s)\n"), ((GetTickCount()-lStart)/1000.0) ));
+		ACE_DEBUG((LM_INFO, ACE_TEXT(" %d resource content items in cache\n"), (cache->GetCacheSize()) ));
 
-        // initialize the thread data
-        for (INT32 i=0; i<numThreads; i++)
-        {
-            // Initialize the resource
-            wchar_t wszBuffer[255];
-            swprintf(wszBuffer, 255, L"48cb0286-%04d-1000-8001-005056c00008_en_6F7A8590045708AE0D05", i);
-
-            // Session format: 48cb0286-0000-1000-8001-005056c00008_en_6F7A8590045708AE0D05
-            STRING session = wszBuffer;
-            STRING resource = L"Session:";
-            resource += session;
-            resource += L"//";
-
-            // Create session resource
-            Ptr<MgResourceIdentifier> resIdSession = new MgResourceIdentifier(resource);
-            svcResource->CreateRepository(resIdSession, NULL, NULL);
-
-            // Create feature source resource
-            resource += L"UnitTests/Data/test-1.FeatureSource";
-            Ptr<MgResourceIdentifier> resId = new MgResourceIdentifier(resource);
-            Ptr<MgByteSource> contentSource = new MgByteSource(resourceContentFileName);
-            Ptr<MgByteReader> contentReader = contentSource->GetReader();
-            svcResource->SetResource(resId, contentReader, NULL);
-
-            // Set the thread specific data
-            threadData[i].threadId = i;
-            threadData[i].success  = false;
-            threadData[i].done     = true;
-            threadData[i].session  = session;
-        }
-
-        ACE_DEBUG((LM_INFO, ACE_TEXT("\nTestCase_RepositoryBusy\nThreads: %d  Requests: %d\n\n"), numThreads, TESTREQUESTS));
-
-        INT32 nRequest = 0;
-        INT32 nSuccessful = 0;
-        bool bExceptionOcurred = false;
-        for (;;)
-        {
-            INT32 dc = 0;
-            for (INT32 i=0; i<numThreads; i++)
-            {
-                // check if the thread is available
-                if (threadData[i].done)
-                {
-                    if(threadData[i].success)
-                        nSuccessful++;
-
-                    threadData[i].success = false;
-                    threadData[i].done    = false;
-                    threadData[i].command = i%2;
-
-                    // spawn a new thread using a specific group id
-                    int thid = manager->spawn(ACE_THR_FUNC(RepositoryWorker), &threadData[i], 0, NULL, NULL, 0, THREAD_GROUP);
-                    nRequest++;
-                }
-            }
-
-            // move on if all threads are done
-            if ((nRequest > TESTREQUESTS) || (bExceptionOcurred))
-                break;
-
-            // under Linux we get a deadlock if we don't call this every once in a while
-            if (nRequest % 25 == 0)
-                manager->wait_grp(THREAD_GROUP);
-            else
-            {
-                // pause briefly (10ms) before checking again
-                ACE_Time_Value t(0, 10000);
-                ACE_OS::sleep(t);
-            }
-        }
-
-        // make sure all threads in the group have completed
-        manager->wait_grp(THREAD_GROUP);
-
-        for (INT32 i=0; i<numThreads; i++)
-        {
-            if(threadData[i].success)
-                nSuccessful++;
-        }
-
-        ACE_DEBUG((LM_INFO, ACE_TEXT("\nRequests: %d/%d - Execution Time: = %6.4f (s)\n"), nSuccessful, nRequest, ((GetTickCount()-lStart)/1000.0)));
-    }
-    catch (MgException* e)
+		lStart = GetTickCount();
+		ACE_DEBUG((LM_INFO, ACE_TEXT("\nTestResourceService::TestCase_BenchmarkGetResourceContents() - Multi-threaded GetResourceContents call (cached contents) \n")));
+		contents = pService->GetResourceContents(resources, NULL);
+		CPPUNIT_ASSERT(NULL != contents.p);
+		CPPUNIT_ASSERT(contents->GetCount() == resources->GetCount());
+		ACE_DEBUG((LM_INFO, ACE_TEXT("  Execution Time: = %6.4f (s)\n"), ((GetTickCount()-lStart)/1000.0) ));
+		ACE_DEBUG((LM_INFO, ACE_TEXT(" %d resource content items in cache\n"), (cache->GetCacheSize()) ));
+	}
+    catch(MgException* e)
     {
         STRING message = e->GetDetails(TEST_LOCALE);
         SAFE_RELEASE(e);
         CPPUNIT_FAIL(MG_WCHAR_TO_CHAR(message.c_str()));
     }
-    catch (...)
-    {
-        throw;
-    }
 }
-*/

@@ -3,7 +3,7 @@
 
 #include "MgDesktop.h"
 
-class MgdResourceContentCache : public MgGuardDisposable
+class MG_DESKTOP_API MgdResourceContentCache : public MgGuardDisposable
 {
 private:
     static Ptr<MgdResourceContentCache> smInstance;
@@ -16,6 +16,9 @@ public:
     STRING GetContentEntry(MgResourceIdentifier* resource);
     void RemoveContentEntry(MgResourceIdentifier* resource);
     void PutContentEntry(MgResourceIdentifier* resource, CREFSTRING content);
+
+	void Clear();
+	INT32 GetCacheSize();
 
 protected:
     virtual void Dispose() { delete this; }
