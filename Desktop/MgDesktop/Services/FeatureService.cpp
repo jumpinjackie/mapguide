@@ -643,7 +643,7 @@ MgFeatureReader* MgdFeatureService::SelectFeatures(MgResourceIdentifier* resourc
     MG_LOG_OPERATION_MESSAGE_ADD_STRING(L"MgFeatureQueryOptions");
     MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
 
-    MgdLogDetiail logDetail(MgServiceType::FeatureService, MgdLogDetiail::Trace, L"MgdFeatureService::SelectFeatures", mgStackParams);
+    MgdLogDetail logDetail(MgServiceType::FeatureService, MgdLogDetail::Trace, L"MgdFeatureService::SelectFeatures", mgStackParams);
     logDetail.AddResourceIdentifier(L"Resource", resource);
     logDetail.AddString(L"ClassName", className);
     logDetail.AddObject(L"Options", options);
@@ -696,7 +696,7 @@ MgFeatureReader* MgdFeatureService::SelectFeatures(MgResourceIdentifier* resourc
     MG_LOG_OPERATION_MESSAGE_ADD_STRING(L"STRING");
     MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
 
-	MgdLogDetiail logDetail(MgServiceType::FeatureService, MgdLogDetiail::Trace, L"MgdFeatureService::SelectFeatures", mgStackParams);
+	MgdLogDetail logDetail(MgServiceType::FeatureService, MgdLogDetail::Trace, L"MgdFeatureService::SelectFeatures", mgStackParams);
     logDetail.AddResourceIdentifier(L"Resource", resource);
     logDetail.AddString(L"ClassName", className);
     logDetail.AddObject(L"Options", options);
@@ -794,7 +794,7 @@ MgdScrollableFeatureReader* MgdFeatureService::SelectFeaturesExtended(MgResource
 
     MG_LOG_TRACE_ENTRY(L"MgdFeatureService::SelectFeaturesExtended()");
 
-    MgdLogDetiail logDetail(MgServiceType::FeatureService, MgdLogDetiail::Trace, L"MgdFeatureService::SelectFeaturesExtended", mgStackParams);
+    MgdLogDetail logDetail(MgServiceType::FeatureService, MgdLogDetail::Trace, L"MgdFeatureService::SelectFeaturesExtended", mgStackParams);
     logDetail.AddResourceIdentifier(L"Resource", resource);
     logDetail.AddString(L"ClassName", className);
     logDetail.AddObject(L"Options", options);
@@ -845,7 +845,7 @@ MgDataReader* MgdFeatureService::SelectAggregate(MgResourceIdentifier* resource,
     MG_LOG_OPERATION_MESSAGE_ADD_STRING(L"MgFeatureAggregateOptions");
     MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
 
-    MgdLogDetiail logDetail(MgServiceType::FeatureService, MgdLogDetiail::Trace, L"MgdFeatureService::SelectAggregate", mgStackParams);
+    MgdLogDetail logDetail(MgServiceType::FeatureService, MgdLogDetail::Trace, L"MgdFeatureService::SelectAggregate", mgStackParams);
     logDetail.AddResourceIdentifier(L"Resource", resource);
     logDetail.AddString(L"ClassName", className);
     logDetail.AddObject(L"Options", options);
@@ -1667,7 +1667,7 @@ MgSpatialContextReader* MgdFeatureService::GetSpatialContexts(MgResourceIdentifi
     MG_LOG_OPERATION_MESSAGE_ADD_BOOL(bActiveOnly);
     MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
 
-    MgdLogDetiail logDetail(MgServiceType::FeatureService, MgdLogDetiail::Trace, L"MgdFeatureService::GetSpatialContexts", mgStackParams);
+    MgdLogDetail logDetail(MgServiceType::FeatureService, MgdLogDetail::Trace, L"MgdFeatureService::GetSpatialContexts", mgStackParams);
     logDetail.AddResourceIdentifier(L"Id", resId);
     logDetail.AddBool(L"ActiveOnly", bActiveOnly);
     logDetail.Create();

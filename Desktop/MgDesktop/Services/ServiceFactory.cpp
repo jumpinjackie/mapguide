@@ -90,33 +90,3 @@ MgService* MgdServiceFactory::CreateService(INT32 serviceType)
     }
     throw new MgServiceNotSupportedException(L"MgdServiceFactory::CreateService", __LINE__, __WFILE__, NULL, L"", NULL);
 }
-
-/*
-MgdTileService* MgdServiceFactory::CreateTileService()
-{
-    return new MgdTileService();
-}
-
-MgdFeatureService* MgdServiceFactory::CreateFeatureService()
-{
-	return new MgdFeatureService();
-}
-
-MgdResourceService* MgdServiceFactory::CreateResourceService()
-{
-	return new MgdResourceService(sm_libContentPath,
-                                  sm_libDataPath, 
-                                  sm_sesContentPath, 
-                                  sm_sesDataPath);
-}
-
-MgdDrawingService* MgdServiceFactory::CreateDrawingService()
-{
-    return new MgdDrawingService();
-}
-
-MgdRenderingService* MgdServiceFactory::CreateRenderingService()
-{
-    return new MgdRenderingService();
-}
-*/

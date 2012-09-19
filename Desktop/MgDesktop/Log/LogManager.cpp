@@ -1637,7 +1637,7 @@ void MgdLogManager::LogWarning(INT16 service, CREFSTRING entry, CREFSTRING clien
     // Warnings are only logged if the detail level for the service is high enough.
     INT8 detailLevel = GetDetailLevelForService(service);
 
-    if (detailLevel >= MgdLogDetiail::Warning)
+    if (detailLevel >= MgdLogDetail::Warning)
     {
         // Log entries to both error log and trace log, if applicable
         if(IsErrorLogEnabled())

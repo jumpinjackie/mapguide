@@ -26,6 +26,7 @@ namespace OSGeo.MapGuide.Viewer.Desktop
         protected override void SubInit()
         {
             _fact = new MgdServiceFactory();
+            _resSvc = (MgdResourceService)_fact.CreateService(MgServiceType.ResourceService);
             _renderSvc = (MgdRenderingService)_fact.CreateService(MgServiceType.RenderingService);
             _mappingSvc = (MgdMappingService)_fact.CreateService(MgServiceType.MappingService);
         }

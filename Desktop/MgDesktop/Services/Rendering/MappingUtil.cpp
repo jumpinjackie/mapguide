@@ -420,7 +420,7 @@ void MgdMappingUtil::StylizeLayers(MgResourceService* svcResource,
 
             Ptr<MgLayerGroup> group = mapLayer->GetGroup();
 			
-            MgdLogDetiail logDetail(MgServiceType::MappingService, MgdLogDetiail::InternalTrace, L"MgdMappingUtil.StylizeLayers", mgStackParams);
+            MgdLogDetail logDetail(MgServiceType::MappingService, MgdLogDetail::InternalTrace, L"MgdMappingUtil.StylizeLayers", mgStackParams);
             logDetail.AddString(L"Map",map->GetName());
 
             logDetail.AddResourceIdentifier(L"LayerId",layerid);

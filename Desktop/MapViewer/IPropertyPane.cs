@@ -135,12 +135,14 @@ namespace OSGeo.MapGuide.Viewer
         /// </summary>
         /// <param name="selection">The selection.</param>
         public MgSelectionSet(MgSelectionBase selection)
-            : this(selection, new Dictionary<string,NameValueCollection>())
+            : this(selection, null)
         {
             
         }
 
-        internal MgSelectionSet(MgSelectionBase selection, Dictionary<string, NameValueCollection> propertyMappings)
+        private MgMapViewerProvider _provider;
+
+        internal MgSelectionSet(MgSelectionBase selection, MgMapViewerProvider provider)
         {
             _agfRw = new MgAgfReaderWriter();
             _features = new Dictionary<string, List<MgFeature>>();
@@ -158,11 +160,7 @@ namespace OSGeo.MapGuide.Viewer
                         continue;
                     }
 
-                    var ldfId = layer.GetLayerDefinition();
-                    NameValueCollection mappings = null;
-                    if (propertyMappings.ContainsKey(ldfId.ToString()))
-                        mappings = propertyMappings[ldfId.ToString()];
-
+                    NameValueCollection mappings = provider.GetPropertyMappings(layer);
                     _features[layer.Name] = new List<MgFeature>();
                     
                     var reader = selection.GetSelectedFeatures(layer, layer.GetFeatureClassName(), false);

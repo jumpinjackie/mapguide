@@ -57,6 +57,8 @@ class TestResourceService : public CppUnit::TestFixture
     CPPUNIT_TEST(TestCase_EnumerateUnmanagedData);
     //CPPUNIT_TEST(TestCase_RepositoryBusy);
 
+	CPPUNIT_TEST(TestCase_BenchmarkGetResourceContents);
+
     CPPUNIT_TEST(TestEnd); // This must be the very last unit test
     CPPUNIT_TEST_SUITE_END();
 
@@ -100,6 +102,9 @@ public:
 
     void TestCase_EnumerateUnmanagedData();
     //void TestCase_RepositoryBusy();
+
+	// Benchmarking
+	void TestCase_BenchmarkGetResourceContents();
 };
 
 #endif // TESTRESOURCESERVICE_H_

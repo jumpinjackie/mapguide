@@ -16,7 +16,7 @@ FdoIConnection* MgdFdoConnectionUtil::CreateConnection(CREFSTRING providerName, 
 
     MG_FEATURE_SERVICE_TRY()
 
-    MgdLogDetiail logDetail(MgServiceType::FeatureService, MgdLogDetiail::InternalTrace, L"MgdFdoConnectionUtil::CreateConnection", mgStackParams);
+    MgdLogDetail logDetail(MgServiceType::FeatureService, MgdLogDetail::InternalTrace, L"MgdFdoConnectionUtil::CreateConnection", mgStackParams);
     logDetail.AddString(L"providerName", providerName);
     logDetail.AddString(L"connectionString", connectionString);
     logDetail.Create();
@@ -125,7 +125,7 @@ FdoIConnection* MgdFdoConnectionUtil::CreateConnection(MgResourceIdentifier* res
 		dict->SetProperty(n.c_str(), v.c_str());
 	}
 
-    MgdLogDetiail logDetail(MgServiceType::FeatureService, MgdLogDetiail::InternalTrace, L"MgdFdoConnectionUtil::CreateConnection", mgStackParams);
+    MgdLogDetail logDetail(MgServiceType::FeatureService, MgdLogDetail::InternalTrace, L"MgdFdoConnectionUtil::CreateConnection", mgStackParams);
     logDetail.AddResourceIdentifier(L"resource", resource);
     logDetail.Create();
 

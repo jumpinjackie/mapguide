@@ -131,7 +131,7 @@ STRING MgdResourceService::ResolveContentPath(MgResourceIdentifier* resId)
         path += type;
     }
 
-    MgdLogDetiail logDetail(MgServiceType::ResourceService, MgdLogDetiail::InternalTrace, L"MgdResourceService::ResolveContentPath", mgStackParams);
+    MgdLogDetail logDetail(MgServiceType::ResourceService, MgdLogDetail::InternalTrace, L"MgdResourceService::ResolveContentPath", mgStackParams);
     logDetail.AddResourceIdentifier(L"resId", resId);
     logDetail.AddString(L"resolvedPath", path);
     logDetail.Create();
@@ -202,7 +202,7 @@ STRING MgdResourceService::ResolveDataPath(MgResourceIdentifier* resId)
 		throw new MgInvalidArgumentException(L"MgdResourceService::ResolveDataPath", __LINE__, __WFILE__, NULL, L"", NULL);
 	}
 
-    MgdLogDetiail logDetail(MgServiceType::ResourceService, MgdLogDetiail::InternalTrace, L"MgdResourceService::ResolveDataPath", mgStackParams);
+    MgdLogDetail logDetail(MgServiceType::ResourceService, MgdLogDetail::InternalTrace, L"MgdResourceService::ResolveDataPath", mgStackParams);
     logDetail.AddResourceIdentifier(L"resId", resId);
     logDetail.AddString(L"repositoryType", type);
     logDetail.AddString(L"resolvedPath", cntPath);
