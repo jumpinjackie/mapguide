@@ -1,7 +1,7 @@
 /**
  * Fusion.Widget.LayerManager
  *
- * $Id: LayerManager.js 2384 2011-05-25 17:36:06Z madair $
+ * $Id: LayerManager.js 2587 2012-09-07 14:30:47Z jng $
  *
  * Copyright (c) 2007, DM Solutions Group Inc.
  * Permission is hereby granted, free of charge, to any person obtaining a
@@ -47,7 +47,9 @@
  * DisabledLayerIcon: (string, optional)
  *
  * The url to an image to use for layers that are out of scale.
- *
+ * 
+ * Inherits from:
+ *  - <Fusion.Widget>
  * **********************************************************************/
 
 Fusion.Widget.LayerManager = OpenLayers.Class(Fusion.Widget,  {

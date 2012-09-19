@@ -1,7 +1,7 @@
 /**
  * Fusion.Widget.InitialMapView
  *
- * $Id: InitialMapView.js 1547 2008-09-23 19:45:16Z madair $
+ * $Id: InitialMapView.js 2587 2012-09-07 14:30:47Z jng $
  *
  * Copyright (c) 2007, DM Solutions Group Inc.
  * Permission is hereby granted, free of charge, to any person obtaining a
@@ -28,6 +28,8 @@
  *
  * Restore the map to it's full extents determined when it was initially loaded.
  * 
+ * Inherits from:
+ *  - <Fusion.Widget>
  * **********************************************************************/
 Fusion.Widget.InitialMapView = OpenLayers.Class(Fusion.Widget, {
     uiClass: Jx.Button,

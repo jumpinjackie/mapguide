@@ -23,23 +23,56 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-/***************************************************************************
-* Class: Fusion.Layers
-*
-* Implements Layers for Fusion.
-*/
-
+/**
+ * Constant: Fusion.Event.MAP_LAYER_TOGGLED
+ */
 Fusion.Event.MAP_LAYER_TOGGLED = Fusion.Event.lastEventId++;
+/**
+ * Constant: Fusion.Event.MAP_LAYER_ORDER_CHANGED
+ */
 Fusion.Event.MAP_LAYER_ORDER_CHANGED = Fusion.Event.lastEventId++;
+/**
+ * Constant: Fusion.Event.LAYER_LOADED
+ */
 Fusion.Event.LAYER_LOADED = Fusion.Event.lastEventId++;
+/**
+ * Constant: Fusion.Event.LAYER_LOADING
+ */
 Fusion.Event.LAYER_LOADING = Fusion.Event.lastEventId++;
+/**
+ * Constant: Fusion.Event.LAYER_START_EDIT
+ */
 Fusion.Event.LAYER_START_EDIT = Fusion.Event.lastEventId++;
+/**
+ * Constant: Fusion.Event.LAYER_STOP_EDIT
+ */
 Fusion.Event.LAYER_STOP_EDIT = Fusion.Event.lastEventId++;
+/**
+ * Constant: Fusion.Event.LAYER_DATA_FILTER
+ */
 Fusion.Event.LAYER_DATA_FILTER = Fusion.Event.lastEventId++;
+/**
+ * Constant: Fusion.Event.LAYER_DATA_RELOAD
+ */
 Fusion.Event.LAYER_DATA_RELOAD = Fusion.Event.lastEventId++;
+/**
+ * Constant: Fusion.Event.LAYER_DATA_ADD
+ */
 Fusion.Event.LAYER_DATA_ADD = Fusion.Event.lastEventId++;
+/**
+ * Constant: Fusion.Event.LAYER_DATA_DELETE
+ */
 Fusion.Event.LAYER_DATA_DELETE = Fusion.Event.lastEventId++;
 
+/**
+ * Class: Fusion.Layers
+ * 
+ * Implements Layers for Fusion
+ * 
+ * Inherits from:
+ * 
+ *  - <Fusion.Lib.EventMgr>
+ */
 Fusion.Layers = OpenLayers.Class(Fusion.Lib.EventMgr, {
     bSingleTile: null,
     bIsBaseLayer: false,     //TODO: set this in AppDef?
@@ -107,18 +140,58 @@ Fusion.Layers = OpenLayers.Class(Fusion.Lib.EventMgr, {
       if (userFunc) userFunc();
     },
 
+    /**
+     * Function: getScale
+     * 
+     * Gets the current scale of the map widget
+     * 
+     * Returns:
+     * 
+     *   The current scale of the map widget
+     */
     getScale: function() {
         return this.mapWidget.getScale();
     },
 
+    /**
+     * Function: getMapName
+     * 
+     * Gets the map name of the map widget
+     * 
+     * Returns:
+     * 
+     *   The map name
+     */
     getMapName: function() {
         return this._sMapname;
     },
 
+    /**
+     * Function: getMapTitle
+     * 
+     * Gets the map title of the map widget
+     * 
+     * Returns:
+     * 
+     *   the map title
+     */
     getMapTitle: function() {
         return this._sMapTitle;
     },
     
+    /**
+     * Function: getMetadata
+     * 
+     * Gets the value for the specified metadata property
+     * 
+     * Parameters:
+     * 
+     *   key - {String} the metadata property name
+     * 
+     * Returns:
+     * 
+     *   The metadata property value
+     */
     getMetadata: function(key) {
         if (this.metadata && typeof this.metadata[key] != 'undefined') {
             return this.metadata[key];
@@ -176,38 +249,47 @@ Fusion.Layers = OpenLayers.Class(Fusion.Lib.EventMgr, {
     },
 
 
-     /**
-     * asynchronously load the current selection.  When the current
-     * selection changes, the selection is not loaded because it
-     * could be a lengthy process.  The user-supplied function will
-     * be called when the selection is available.
-     *
-     * @param userFunc {Function} a function to call when the
-     *        selection has loaded
-     *
-     * @param layers {string} Optional parameter.  A comma separated
-     *        list of layer names (Roads,Parcels). If it is not
-     *        given, all the layers that have a selection will be used
-     *
-     * @param startcount {string} Optional parameter.  A comma separated
-     *        list of a statinh index and the number of features to be retured for
-     *        each layer given in the layers parameter. Index starts at 0
-     *        (eg: 0:4,2:6 : return 4 elements for the first layers starting at index 0 and
-     *         six elements for layer 2 starting at index 6). If it is not
-     *        given, all the elemsnts will be returned.
-     */
+   /**
+    * Method: getSelection
+    * 
+    * asynchronously load the current selection.  When the current
+    * selection changes, the selection is not loaded because it
+    * could be a lengthy process.  The user-supplied function will
+    * be called when the selection is available.
+    *
+    * Parameters:
+    *  userFunc - {Function} a function to call when the
+    *        selection has loaded
+    *  layers - {string} Optional parameter.  A comma separated
+    *        list of layer names (Roads,Parcels). If it is not
+    *        given, all the layers that have a selection will be used
+    *  startcount - {string} Optional parameter.  A comma separated
+    *        list of a statinh index and the number of features to be retured for
+    *        each layer given in the layers parameter. Index starts at 0
+    *        (eg: 0:4,2:6 : return 4 elements for the first layers starting at index 0 and
+    *         six elements for layer 2 starting at index 6). If it is not
+    *        given, all the elemsnts will be returned.
+    */
     getSelection: function(userFunc, layers, startcount) {
     },
 
     /**
-       Utility function to clear current selection
-    */
+     * Function: clearSelection
+     * 
+     * Utility function to clear current selection
+     */
     clearSelection: function() {
     },
 
     /**
-       Do a query on the map
-    */
+     * Function: query
+     * 
+     * Do a query on the map
+     * 
+     * Parameters:
+     * 
+     *   options - Query options
+     */
     query: function(options) {
     },
 
@@ -323,13 +405,20 @@ Fusion.Layers = OpenLayers.Class(Fusion.Lib.EventMgr, {
     stopEditing: function() { }
 });
 
-/***************************************************************************
-* Class: Fusion.Layers.Group
-*
-* Implements the map layer groups
- * **********************************************************************/
+/**
+ * Constant: Fusion.Event.GROUP_PROPERTY_CHANGED
+ */
 Fusion.Event.GROUP_PROPERTY_CHANGED = Fusion.Event.lastEventId++;
 
+/**
+ * Class: Fusion.Layers.Group
+ * 
+ * Implements the map layer groups
+ * 
+ * Inherits from:
+ * 
+ *  - <Fusion.Lib.EventMgr>
+ */
 Fusion.Layers.Group = OpenLayers.Class(Fusion.Lib.EventMgr, {
     name: null,
     groups: null,
@@ -463,13 +552,16 @@ Fusion.Layers.Group = OpenLayers.Class(Fusion.Lib.EventMgr, {
 
 });
 
-/***************************************************************************
-* Class: Fusion.Layers.Layer
-*
-* Implements individual map legend layers
- * **********************************************************************/
+/**
+ * Constant: Fusion.Event.LAYER_PROPERTY_CHANGED
+ */
 Fusion.Event.LAYER_PROPERTY_CHANGED = Fusion.Event.lastEventId++;
 
+/**
+ * Variable: Fusion.Layers.Layer
+ * 
+ * Implements individual map legend layers
+ */
 Fusion.Layers.Layer = OpenLayers.Class(Fusion.Lib.EventMgr, {
 
     name: null,
@@ -671,12 +763,11 @@ Fusion.Layers.Layer = OpenLayers.Class(Fusion.Lib.EventMgr, {
     }
 });
 
-/***************************************************************************
-* Class: Fusion.Layers.ScaleRange
-*
-* Implements a scale range object
-*/
-
+/**
+ * Class: Fusion.Layers.ScaleRange
+ * 
+ * Implements a scale range object
+ */
 Fusion.Layers.ScaleRange = OpenLayers.Class({
     styles: null,
     initialize: function(o, layerType, iconOpt) {
@@ -712,12 +803,11 @@ Fusion.Layers.ScaleRange = OpenLayers.Class({
     }
 });
 
-/***************************************************************************
-* Class: Fusion.Layers.StyleItem
-*
-* Implements the legend style items to get a legend icon from the server
-*/
-
+/**
+ * Class: Fusion.Layers.StyleItem
+ * 
+ * Implements the legend style items to get a legend icon from the server
+ */
 Fusion.Layers.StyleItem = OpenLayers.Class({
     clientAgent: 'Fusion Viewer',
     initialize: function(o, staticIcon, iconOpt) {

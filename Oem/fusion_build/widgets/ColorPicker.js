@@ -1,7 +1,7 @@
 /**
  * Fusion.Widget.ColorPicker
  *
- * $Id: ColorPicker.js 1820 2009-03-12 20:46:58Z madair $
+ * $Id: ColorPicker.js 2587 2012-09-07 14:30:47Z jng $
  *
  * Copyright (c) 2007, DM Solutions Group Inc.
  * Permission is hereby granted, free of charge, to any person obtaining a
@@ -29,6 +29,8 @@
  * The user can pick from a palette of web-safe colours or enter a hex value. 
  * The colour selected will be entered into the configured input element.
  *
+ * Inherits from:
+ *  - <Fusion.Widget>
  * **********************************************************************/
 
 Fusion.Widget.ColorPicker = OpenLayers.Class(Fusion.Widget, {

@@ -1,7 +1,7 @@
 /**
  * Fusion.Widget.TaskPane
  *
- * $Id: TaskPane.js 2521 2012-01-19 02:04:27Z hubu $
+ * $Id: TaskPane.js 2587 2012-09-07 14:30:47Z jng $
  *
  * Copyright (c) 2007, DM Solutions Group Inc.
  * Permission is hereby granted, free of charge, to any person obtaining a
@@ -27,6 +27,9 @@
  * Class: Fusion.Widget.TaskPane
  *
  * A utility widget that holds output from other widgets.
+ * 
+ * Inherits from:
+ *  - <Fusion.Widget>
  ****************************************************************************/
  
 Fusion.Event.TASK_PANE_LOADED = Fusion.Event.lastEventId++;

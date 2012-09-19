@@ -1,7 +1,7 @@
 /**
  * Fusion.Widget.SelectionPanel
  *
- * $Id: SelectionPanel.js 2313 2011-01-07 20:36:04Z madair $
+ * $Id: SelectionPanel.js 2587 2012-09-07 14:30:47Z jng $
  *
  * Copyright (c) 2007, DM Solutions Group Inc.
  * Permission is hereby granted, free of charge, to any person obtaining a
@@ -28,6 +28,8 @@
  *
  * A widget to display information about the currently selected set of features.
  *
+ * Inherits from:
+ *  - <Fusion.Widget>
  * **********************************************************************/
 
 Fusion.Widget.SelectionPanel = OpenLayers.Class(Fusion.Widget, {

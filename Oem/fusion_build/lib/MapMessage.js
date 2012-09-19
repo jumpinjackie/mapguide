@@ -36,14 +36,16 @@ Fusion.MapMessage = OpenLayers.Class({
             this.parentNode.appendChild(container);
         }
 
-        container.style.cssText = this.containerCssText;
+        this.container.style.cssText = this.containerCssText;
         var offset = {left:10, top:10};
-        container.style.left = offset.left + "px";
-        container.style.top  = offset.top  + "px";
+        this.container.style.left = offset.left + "px";
+        this.container.style.top  = offset.top  + "px";
+        
+        this.container.innerHTML = "";
         
         // Create the inner table
         var table = document.createElement("table");
-        container.appendChild(table);
+        this.container.appendChild(table);
         table.style.width = "100%";
         table.cellSpacing = "0";
         table.cellPadding = "0";
@@ -77,12 +79,25 @@ Fusion.MapMessage = OpenLayers.Class({
             this.container.fade(0);
             window.setTimeout((function()
             {
-                this.container.parentNode.removeChild(this.container);
-                this.container = null;
+                if (typeof (this.container) != "undefined" && this.container != null)
+                {
+                    this.container.parentNode.removeChild(this.container);
+                    this.container = null;
+                }
+                
             }).bind(this), 500);
         }
     },
     
+    /**
+     * Function: info
+     * 
+     * Displays an informational message on the Map Message notification bar
+     * 
+     * Parameters:
+     * 
+     *   message - The message to display
+     */
     info : function(message)
     {
         this.message = message;
@@ -90,6 +105,15 @@ Fusion.MapMessage = OpenLayers.Class({
         this.leadingIcon.src = this.infoIconName;
     },
     
+    /**
+     * Function: warn
+     * 
+     * Displays a warning message on the Map Message notification bar
+     * 
+     * Parameters:
+     * 
+     *   message - The message to display
+     */
     warn : function(message)
     {
         this.message = message;
@@ -97,6 +121,15 @@ Fusion.MapMessage = OpenLayers.Class({
         this.leadingIcon.src = this.warningIconName;
     },
     
+    /**
+     * Function: error
+     * 
+     * Displays a error message on the Map Message notification bar
+     * 
+     * Parameters:
+     * 
+     *   message - The message to display
+     */
     error : function(message)
     {
         this.message = message;
@@ -104,6 +137,11 @@ Fusion.MapMessage = OpenLayers.Class({
         this.leadingIcon.src = this.errorIconName;
     },
     
+    /**
+     * Function: clear
+     * 
+     * Hides the notification bar and clears all content
+     */
     clear : function()
     {
         this.message = "";
@@ -111,6 +149,11 @@ Fusion.MapMessage = OpenLayers.Class({
         this.hide();
     },
     
+    /**
+     * Function: show
+     * 
+     * Displays the notification bar
+     */
     show : function()
     {
         this.createBar();
@@ -118,9 +161,22 @@ Fusion.MapMessage = OpenLayers.Class({
         this.container.fade(this.opacity);
     },
     
+    /**
+     * Function: hide
+     * 
+     * Hides the notification bar
+     */
     hide : function()
     {
         this.removeBar();
+    },
+    
+    hideDesignatedMessage: function(message)
+    {
+        if(message == this.message)
+        {
+            this.removeBar();
+        }
     },
     
     refreshLayout: function()

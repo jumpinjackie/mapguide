@@ -1,7 +1,7 @@
 /**
  * Fusion.Widget.BufferPanel
  *
- * $Id: BufferPanel.js 2521 2012-01-19 02:04:27Z hubu $
+ * $Id: BufferPanel.js 2587 2012-09-07 14:30:47Z jng $
  *
  * Copyright (c) 2007, DM Solutions Group Inc.
  * Permission is hereby granted, free of charge, to any person obtaining a
@@ -33,6 +33,9 @@
  * the menu list of the TaskPane and loaded there.
  * Otherwise if the target is an existing IFrame in the page it will be loaded 
  * there, otherwise it will open a new window with that name.
+ * 
+ *  Inherits from:
+ *  - <Fusion.Widget>
  * **********************************************************************/
 
 Fusion.Widget.BufferPanel = OpenLayers.Class(Fusion.Widget, {

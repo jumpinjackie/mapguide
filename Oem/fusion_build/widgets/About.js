@@ -1,7 +1,7 @@
 /**
  * Fusion.Widget.About
  *
- * $Id: About.js 1656 2008-11-08 21:44:26Z madair $
+ * $Id: About.js 2587 2012-09-07 14:30:47Z jng $
  *
  * Copyright (c) 2007, DM Solutions Group Inc.
  * Permission is hereby granted, free of charge, to any person obtaining a
@@ -29,6 +29,8 @@
 * About widget to display a pop-up window about the application.  The contents
 * of the page are come from an HTML page set as the AboutUrl extension property.
 *
+* Inherits from:
+*  - <Fusion.Widget>
 * **********************************************************************/
 
 Fusion.Widget.About = OpenLayers.Class(Fusion.Widget, {
@@ -45,14 +47,6 @@ Fusion.Widget.About = OpenLayers.Class(Fusion.Widget, {
      */
     _sDefaultUrl: 'widgets/About/About.html',
 
-/*
- * Constructor: About
- *
- * Parameters:
- *
- * widgetTag - JSON node for this widget from the Application definition
- *
- */
     initializeWidget: function(widgetTag) {
         var json = widgetTag.extension;
         this._sAboutUrl = (json.AboutURL) ? json.AboutURL[0] : this._sDefaultUrl;
@@ -65,7 +59,7 @@ Fusion.Widget.About = OpenLayers.Class(Fusion.Widget, {
     },
 
     /**
-     * Function: execute
+     * Function: activate
      *
      * opens a pop-up window with the about information when invoked
      * 

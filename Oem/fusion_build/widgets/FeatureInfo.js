@@ -32,6 +32,9 @@
  * the menu list of the TaskPane and loaded there.
  * Otherwise if the target is an existing IFrame in the page it will be loaded
  * there, otherwise it will open a new window with that name.
+ * 
+ *  Inherits from:
+ *  - <Fusion.Widget>
  * **********************************************************************/
 
 

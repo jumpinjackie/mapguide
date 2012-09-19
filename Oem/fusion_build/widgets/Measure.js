@@ -1,7 +1,7 @@
 /**
  * Fusion.Widget.Measure
  *
- * $Id: Measure.js 2521 2012-01-19 02:04:27Z hubu $
+ * $Id: Measure.js 2587 2012-09-07 14:30:47Z jng $
  *
  * Copyright (c) 2007, DM Solutions Group Inc.
  * Permission is hereby granted, free of charge, to any person obtaining a
@@ -29,6 +29,8 @@
  * The Measure widget allows the user to measure distances or areas on the map
  * in one or more segments. Area is positive if measured clockwise.
  *
+ * Inherits from:
+ *  - <Fusion.Widget>
  * **********************************************************************/
 
 Fusion.Constant.MEASURE_TYPE_DISTANCE = 1;
@@ -448,6 +450,7 @@ Fusion.Widget.Measure = OpenLayers.Class(Fusion.Widget, {
 
     activate: function() {
         this.control.activate();
+        this.getMap().message.info(OpenLayers.i18n("measureInProgress"));
         this.resetMeasure();
         OpenLayers.Event.observe(document,"keypress",this.keyHandler);
         this.loadDisplayPanel();
@@ -505,6 +508,7 @@ Fusion.Widget.Measure = OpenLayers.Class(Fusion.Widget, {
         OpenLayers.Event.stopObserving(document, 'keypress', this.keyHandler);
         this.control.deactivate();
         this.control.cancel();
+        this.getMap().message.clear();
         this.getMap().supressContextMenu(false);
     },
 
@@ -548,8 +552,7 @@ Fusion.Widget.Measure = OpenLayers.Class(Fusion.Widget, {
 
     remoteMeasureCompleted: function(from, to, marker, r) {
         if (r.status == 200) {
-            var o;
-            eval('o='+r.responseText);
+            var o = Fusion.parseJSON(r.responseText);
             if (o.distance) {
               /* distance returned is always in meters*/
               //var mapUnits = Fusion.unitFromName(this.getMap().getUnits());

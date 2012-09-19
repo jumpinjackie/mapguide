@@ -1,7 +1,7 @@
 /**
  * Fusion.Widget.Scalebar
  *
- * $Id: Scalebar.js 1523 2008-09-11 19:30:43Z pagameba $
+ * $Id: Scalebar.js 2587 2012-09-07 14:30:47Z jng $
  *
  * Copyright (c) 2007, DM Solutions Group Inc.
  * Permission is hereby granted, free of charge, to any person obtaining a
@@ -30,6 +30,9 @@
  *
  * uses JavaScript Scale Bar for MapServer 
  * (http://mapserver.commenspace.org/tools/scalebar/
+ * 
+ * Inherits from:
+ *  - <Fusion.Widget>
  * **********************************************************************/
 
 

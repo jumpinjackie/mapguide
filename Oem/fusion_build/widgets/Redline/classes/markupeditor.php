@@ -44,6 +44,7 @@ class MarkupEditor
 			$text = trim($featureReader->GetString('Text'));
 			$features[$id] = $text;
 		}
+		$featureReader->Close();
 		
 		return $features;
 	}
