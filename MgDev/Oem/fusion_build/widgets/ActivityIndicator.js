@@ -1,7 +1,7 @@
 /**
  * Fusion.Widget.ActivityIndicator
  *
- * $Id: ActivityIndicator.js 2249 2010-10-19 14:31:05Z madair $
+ * $Id: ActivityIndicator.js 2587 2012-09-07 14:30:47Z jng $
  *
  * Copyright (c) 2007, DM Solutions Group Inc.
  * Permission is hereby granted, free of charge, to any person obtaining a
@@ -31,6 +31,8 @@
  * becomes busy when loading maps, reloading maps or redrawing
  * layers.
  *
+ * Inherits from:
+ *  - <Fusion.Widget>
  * **************************************************************************/
 
 

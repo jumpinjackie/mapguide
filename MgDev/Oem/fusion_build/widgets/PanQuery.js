@@ -1,7 +1,7 @@
 /**
  * Fusion.Widget.PanQuery
  *
- * $Id: PanQuery.js 1824 2009-04-01 15:09:35Z madair $
+ * $Id: PanQuery.js 2587 2012-09-07 14:30:47Z jng $
  *
  * Copyright (c) 2007, DM Solutions Group Inc.
  * Permission is hereby granted, free of charge, to any person obtaining a
@@ -28,7 +28,9 @@
  *
  * A widget that combines pan and query functionality.  If the mouse is moved
  * before being released, a pan is performedd, otherwise a query is executed.
- * 
+ *
+ * Inherits from:
+ *  - <Fusion.Widget>
  * **********************************************************************/
 
 //Fusion.require('widgets/Pan.js');

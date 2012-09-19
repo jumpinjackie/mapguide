@@ -1,7 +1,7 @@
 /**
  * Fusion.Widget.ViewSize
  *
- * $Id: ViewSize.js 2249 2010-10-19 14:31:05Z madair $
+ * $Id: ViewSize.js 2587 2012-09-07 14:30:47Z jng $
  *
  * Copyright (c) 2007, DM Solutions Group Inc.
  * Permission is hereby granted, free of charge, to any person obtaining a
@@ -27,6 +27,9 @@
  * Class: Fusion.Widget.ViewSize
  *
  * Display the size of the current view in user-definable units
+ * 
+ * Inherits from:
+ *  - <Fusion.Widget>
  ****************************************************************************/
 Fusion.Widget.ViewSize = OpenLayers.Class(Fusion.Widget, {
     defaultTemplate: 'x: {x}, y: {y}',

@@ -1,7 +1,7 @@
 /**
  * Fusion.Widget.ExtentHistory
  *
- * $Id: ExtentHistory.js 2013 2009-12-10 23:53:01Z waltweltonlair $
+ * $Id: ExtentHistory.js 2587 2012-09-07 14:30:47Z jng $
  *
  * Copyright (c) 2007, DM Solutions Group Inc.
  * Permission is hereby granted, free of charge, to any person obtaining a
@@ -28,6 +28,8 @@
  *
  * Maintain and navigate through a history of extents
  * 
+ *  Inherits from:
+ *  - <Fusion.Widget>
  * **********************************************************************/
 
 Fusion.Event.HISTORY_CHANGED = Fusion.Event.lastEventId++;

@@ -23,18 +23,18 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+// This event could be emitted by the Redline widget
+Fusion.Event.REDLINE_FEATURE_ADDED = Fusion.Event.lastEventId++;
+
 /* ********************************************************************
 * Class: Fusion.Widget.Redline
 *
 * Allows the user to create a temporary OpenLayers Vector layer and
 * draw POINT, LINE and POLYGON features on that layer.
 *
+* Inherits from:
+*  - <Fusion.Widget>
 **********************************************************************/
-
-
-// This event could be emitted by the Redline widget
-Fusion.Event.REDLINE_FEATURE_ADDED = Fusion.Event.lastEventId++;
-
 Fusion.Widget.Redline = OpenLayers.Class(Fusion.Widget, {
     isExclusive: true,
     uiClass: Jx.Button,
@@ -50,6 +50,9 @@ Fusion.Widget.Redline = OpenLayers.Class(Fusion.Widget, {
     
     // Indicates whether to autogenerate redline layer names or to prompt the user for one.
     autogenerateLayerNames: true,
+
+    // Indicates whether to use the MapMessage component to display digitization prompts
+    mapMessagePrompt: true,
     
     initializeWidget: function(widgetTag) {
         var json = widgetTag.extension;
@@ -60,6 +63,9 @@ Fusion.Widget.Redline = OpenLayers.Class(Fusion.Widget, {
             
         if (json.AutogenerateLayerNames)
             this.autogenerateLayerNames = (json.AutogenerateLayerNames[0] == "true");
+
+        if (json.UseMapMessagePrompt)
+            this.mapMessagePrompt = (json.UseMapMessagePrompt[0] == "true");
 
         // register Redline specific events
         this.registerEventID(Fusion.Event.REDLINE_FEATURE_ADDED);
@@ -84,8 +90,13 @@ Fusion.Widget.Redline = OpenLayers.Class(Fusion.Widget, {
         }
     },
 
-    // desactivate the redline widget
+    // deactivate the redline widget
     deactivate: function() {
+        if (this.taskPane) {
+            this.taskPane.abortActiveDigitization();
+        }
+        if (this.mapMessagePrompt)
+            this.mapWidget.message.clear(); //Clear digization prompts
     }
 });
 
@@ -136,5 +147,11 @@ Fusion.Widget.Redline.DefaultTaskPane = OpenLayers.Class(
         }
         //outputWin.parent = window;
         this.taskPaneWin = outputWin;
+    },
+
+    abortActiveDigitization: function() {
+        //This function exists if MapGuideViewerApi.js was included in
+        if (this.taskPaneWin.ClearDigitization)
+            this.taskPaneWin.ClearDigitization(true);
     }
 });

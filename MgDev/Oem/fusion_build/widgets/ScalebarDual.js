@@ -1,7 +1,7 @@
 /**
  * Fusion.Widget.ScalebarDual
  *
- * $Id: ScalebarDual.js 2249 2010-10-19 14:31:05Z madair $
+ * $Id: ScalebarDual.js 2587 2012-09-07 14:30:47Z jng $
  *
  * Copyright (c) 2007, DM Solutions Group Inc.
  * Permission is hereby granted, free of charge, to any person obtaining a
@@ -28,6 +28,8 @@
  *
  * A dynamically generated cartographic scalebar that looks like the Google scalebar
  *
+ * Inherits from:
+ *  - <Fusion.Widget>
  * **********************************************************************/
 
 Fusion.Widget.ScalebarDual = OpenLayers.Class(Fusion.Widget, {

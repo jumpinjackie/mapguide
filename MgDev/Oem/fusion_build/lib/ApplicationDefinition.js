@@ -1,7 +1,7 @@
 /**
  * Fusion.Lib.ApplicationDefinition
  *
- * $Id: ApplicationDefinition.js 2515 2012-01-13 03:13:51Z liuar $
+ * $Id: ApplicationDefinition.js 2587 2012-09-07 14:30:47Z jng $
  *
  * Copyright (c) 2007, DM Solutions Group Inc.
  * Permission is hereby granted, free of charge, to any person obtaining a
@@ -145,8 +145,7 @@ Fusion.Lib.ApplicationDefinition = OpenLayers.Class({
 
     createSessionThenGetAppDefCB : function(xhr) {
       if (xhr && typeof(xhr) == "object" && xhr.responseText) {
-        var o;
-        eval("o="+xhr.responseText);
+        var o = Fusion.parseJSON(xhr.responseText);
         this.sessionId = o.sessionId;
         Fusion.sessionId = this.sessionId;
       }
@@ -162,8 +161,7 @@ Fusion.Lib.ApplicationDefinition = OpenLayers.Class({
     },
 
     getAppDefCB: function(xhr) {
-        var o;
-        eval("o="+xhr.responseText);
+        var o = Fusion.parseJSON(xhr.responseText);
         this.parseAppDef(o);
         Fusion.setLoadState(Fusion.LOAD_WIDGETS);
     },
@@ -927,7 +925,7 @@ Fusion.Lib.ApplicationDefinition.Widget = OpenLayers.Class({
          */
         if (widgetName != null && (widgetName == '' || $(widgetName) != null)) {
             this.name = widgetName;
-            widget = eval("new Fusion.Widget."+this.type+"(this)");
+            widget = new Fusion.Widget[this.type](this);
             widgetSet.addWidgetInstance(widget);
             if (this.name.length>0 && $(this.name)) {
                 widget.id = this.name;

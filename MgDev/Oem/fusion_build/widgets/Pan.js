@@ -1,7 +1,7 @@
 /**
  * Fusion.Widget.Pan
  *
- * $Id: Pan.js 2287 2010-11-24 03:18:32Z hubu $
+ * $Id: Pan.js 2587 2012-09-07 14:30:47Z jng $
  *
  * Copyright (c) 2007, DM Solutions Group Inc.
  * Permission is hereby granted, free of charge, to any person obtaining a
@@ -27,6 +27,9 @@
  * Class: Fusion.Widget.Pan
  *
  * A widget that allows for naviagtion by panning
+ * 
+ * Inherits from:
+ *  - <Fusion.Widget>
  * **********************************************************************/
 
 Fusion.Widget.Pan = OpenLayers.Class(Fusion.Widget, {

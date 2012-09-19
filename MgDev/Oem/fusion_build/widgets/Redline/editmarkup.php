@@ -117,6 +117,11 @@
 		{
 			var digitizeInfo = document.getElementById("digitizeInfo");
 			digitizeInfo.innerHTML = text;
+			var widget = Fusion.getWidgetsByType("Redline")[0];
+			if (widget.mapMessagePrompt) {
+				var map = Fusion.getMapByName(mapName).mapWidget;
+				map.message.info(text);
+			}
 		}
 
 		function SubmitCommand(cmd)
@@ -167,7 +172,7 @@
                 textLabel = window.prompt("<?=$promptLabelLocal?>", "");
                 textInput.value = (textLabel != null) ? textLabel : "";
             }
-            ClearDigitization();
+            ClearDigitization(true);
 		}
 	
 		function OnPointDigitized(point)
@@ -216,7 +221,7 @@
 			if(polygon.Count < 3)
 			{
 				// invalid polygon
-				ClearDigitization();
+				ClearDigitization(true);
 				
 				return;  
 			}
@@ -271,6 +276,10 @@
 	
 		function CloseEditor()
 		{
+			ClearDigitization(true);
+			var map = Fusion.getMapByName(mapName).mapWidget;
+			map.message.clear();
+
 			var editForm = document.getElementById("editForm");
 			editForm.action = "markupmain.php";
 			

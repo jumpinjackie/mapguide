@@ -1,7 +1,7 @@
 /**
  * Fusion.Widget.ZoomOnClick
  *
- * $Id: ZoomOnClick.js 1523 2008-09-11 19:30:43Z pagameba $
+ * $Id: ZoomOnClick.js 2587 2012-09-07 14:30:47Z jng $
  *
  * Copyright (c) 2007, DM Solutions Group Inc.
  * Permission is hereby granted, free of charge, to any person obtaining a
@@ -28,6 +28,8 @@
  *
  * Zoom the map by a fixed amount when a button is clicked
  * 
+ * Inherits from:
+ *  - <Fusion.Widget>
  * **********************************************************************/
 Fusion.Widget.ZoomOnClick = OpenLayers.Class(Fusion.Widget, {
     uiClass: Jx.Button,

@@ -28,7 +28,7 @@ function GetParameters($params)
     $mapName   = $params['mapname'];
     $sessionId = $params['session'];
     $popup     = $params['popup'];
-    $us        = $params['us'];
+    $us        = array_key_exists("us", $params) ? $params['us'] : "";
     $popup     = $params['popup'];
 }
 

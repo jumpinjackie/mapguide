@@ -1,7 +1,7 @@
 /**
  * Fusion.Widget.Zoom
  *
- * $Id: Zoom.js 2451 2011-11-08 21:06:19Z madair $
+ * $Id: Zoom.js 2587 2012-09-07 14:30:47Z jng $
  *
  * Copyright (c) 2007, DM Solutions Group Inc.
  * Permission is hereby granted, free of charge, to any person obtaining a
@@ -28,6 +28,8 @@
  *
  * A widget that will zoom the map in or out.
  * 
+ * Inherits from:
+ *  - <Fusion.Widget>
  * **********************************************************************/
 
 Fusion.Widget.Zoom = OpenLayers.Class(Fusion.Widget, {

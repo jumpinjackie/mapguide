@@ -1,7 +1,7 @@
 /**
  * Fusion.Widget.Legend
  *
- * $Id: Legend.js 2539 2012-06-26 20:45:48Z madair $
+ * $Id: Legend.js 2587 2012-09-07 14:30:47Z jng $
  *
  * Copyright (c) 2007, DM Solutions Group Inc.
  * Permission is hereby granted, free of charge, to any person obtaining a
@@ -27,7 +27,9 @@
  * Class: Fusion.Widget.Legend
  *
  * A widget to display a legend of all layers.
- *
+ * 
+ * Inherits from:
+ *  - <Fusion.Widget>
  * **********************************************************************/
 
 Fusion.Widget.Legend = OpenLayers.Class(Fusion.Widget,  {

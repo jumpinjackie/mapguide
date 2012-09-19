@@ -17,7 +17,11 @@
  *
  * A widget to allow selection of the basemaps display under the overlay MapGuide layer
  * Currently, Google Street, Google Satellite, Google Hybrid, Yahoo Street, Yahoo Satellite,
- * Yahoo Hybrid, Bing Street, Bing Satellite and Bing Hybrid is supported. 
+ * Yahoo Hybrid, OpenStreetMap Mapnik, OpenStreetMap Cycle, OpenStreetMap Transport,
+ * Bing Street, Bing Satellite and Bing Hybrid is supported. 
+ * 
+ *  Inherits from:
+ *  - <Fusion.Widget>
  ****************************************************************************/
 
 Fusion.Widget.BasemapSwitcher = OpenLayers.Class(Fusion.Widget, {

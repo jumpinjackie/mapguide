@@ -1,7 +1,7 @@
 /**
  * Fusion.Widget.CenterSelection
  *
- * $Id: CenterSelection.js 1523 2008-09-11 19:30:43Z pagameba $
+ * $Id: CenterSelection.js 2587 2012-09-07 14:30:47Z jng $
  *
  * Copyright (c) 2007, DM Solutions Group Inc.
  * Permission is hereby granted, free of charge, to any person obtaining a
@@ -29,6 +29,8 @@
  * Center the current selection, if any, but maintain the current scale
  * if possible.  Zoom out if not.
  *
+ * Inherits from:
+ *  - <Fusion.Widget>
  * **********************************************************************/
 
 
