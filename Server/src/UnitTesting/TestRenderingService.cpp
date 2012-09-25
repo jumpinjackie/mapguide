@@ -469,7 +469,7 @@ void TestRenderingService::TestEnd()
 }
 
 
-void TestRenderingService::TestCase_RenderDynamicOverlay()
+void TestRenderingService::TestCase_RenderDynamicOverlay(CREFSTRING imageFormat, CREFSTRING extension)
 {
     try
     {
@@ -483,16 +483,16 @@ void TestRenderingService::TestCase_RenderDynamicOverlay()
 
 //        for (int i=0; i<10; i++)
 //        {
-            Ptr<MgByteReader> rdr1 = m_svcRendering->RenderDynamicOverlay(map, NULL, L"PNG");
-            rdr1->ToFile(L"../UnitTestFiles/RenderDynamicOverlay75k.png");
+            Ptr<MgByteReader> rdr1 = m_svcRendering->RenderDynamicOverlay(map, NULL, imageFormat);
+            rdr1->ToFile(GetPath(L"../UnitTestFiles/RenderDynamicOverlay75k", imageFormat, extension));
 //        }
 
         map->SetViewScale(12000.0);
 
 //        for (int i=0; i<100; i++)
 //        {
-            Ptr<MgByteReader> rdr2 = m_svcRendering->RenderDynamicOverlay(map, NULL, L"PNG");
-            rdr2->ToFile(L"../UnitTestFiles/RenderDynamicOverlay12k.png");
+            Ptr<MgByteReader> rdr2 = m_svcRendering->RenderDynamicOverlay(map, NULL, imageFormat);
+            rdr2->ToFile(GetPath(L"../UnitTestFiles/RenderDynamicOverlay12k", imageFormat, extension));
 //        }
 
 //        clock_t t1 = clock();
@@ -511,7 +511,7 @@ void TestRenderingService::TestCase_RenderDynamicOverlay()
 }
 
 
-void TestRenderingService::TestCase_RenderMap()
+void TestRenderingService::TestCase_RenderMap(CREFSTRING imageFormat, CREFSTRING extension)
 {
     try
     {
@@ -520,12 +520,12 @@ void TestRenderingService::TestCase_RenderMap()
 
         // call the API using scales of 75000 and 12000
         map->SetViewScale(75000.0);
-        Ptr<MgByteReader> rdr1 = m_svcRendering->RenderMap(map, NULL, L"PNG");
-        rdr1->ToFile(L"../UnitTestFiles/RenderMap75k.png");
+        Ptr<MgByteReader> rdr1 = m_svcRendering->RenderMap(map, NULL, imageFormat);
+        rdr1->ToFile(GetPath(L"../UnitTestFiles/RenderMap75k", imageFormat, extension));
 
         map->SetViewScale(12000.0);
-        Ptr<MgByteReader> rdr2 = m_svcRendering->RenderMap(map, NULL, L"PNG");
-        rdr2->ToFile(L"../UnitTestFiles/RenderMap12k.png");
+        Ptr<MgByteReader> rdr2 = m_svcRendering->RenderMap(map, NULL, imageFormat);
+        rdr2->ToFile(GetPath(L"../UnitTestFiles/RenderMap12k", imageFormat, extension));
     }
     catch (MgException* e)
     {
@@ -539,7 +539,7 @@ void TestRenderingService::TestCase_RenderMap()
     }
 }
 
-void TestRenderingService::TestCase_RenderMapWithWatermark()
+void TestRenderingService::TestCase_RenderMapWithWatermark(CREFSTRING imageFormat, CREFSTRING extension)
 {
     try
     {
@@ -548,12 +548,12 @@ void TestRenderingService::TestCase_RenderMapWithWatermark()
 
         // call the API using scales of 75000 and 12000
         map->SetViewScale(75000.0);
-        Ptr<MgByteReader> rdr1 = m_svcRendering->RenderMap(map, NULL, L"PNG");
-        rdr1->ToFile(L"../UnitTestFiles/RenderMapWithWatermark75k.png");
+        Ptr<MgByteReader> rdr1 = m_svcRendering->RenderMap(map, NULL, imageFormat);
+        rdr1->ToFile(GetPath(L"../UnitTestFiles/RenderMapWithWatermark75k", imageFormat, extension));
 
         map->SetViewScale(12000.0);
-        Ptr<MgByteReader> rdr2 = m_svcRendering->RenderMap(map, NULL, L"PNG");
-        rdr2->ToFile(L"../UnitTestFiles/RenderMapWithWatermark12k.png");
+        Ptr<MgByteReader> rdr2 = m_svcRendering->RenderMap(map, NULL, imageFormat);
+		rdr2->ToFile(GetPath(L"../UnitTestFiles/RenderMapWithWatermark12k", imageFormat, extension));
     }
     catch (MgException* e)
     {
@@ -568,7 +568,7 @@ void TestRenderingService::TestCase_RenderMapWithWatermark()
 }
 
 
-void TestRenderingService::TestCase_RenderLegend()
+void TestRenderingService::TestCase_RenderLegend(CREFSTRING imageFormat, CREFSTRING extension)
 {
     try
     {
@@ -579,12 +579,12 @@ void TestRenderingService::TestCase_RenderLegend()
         Ptr<MgColor> bgc = new MgColor(255, 255, 255, 255);
 
         map->SetViewScale(75000.0);
-        Ptr<MgByteReader> rdr1 = m_svcRendering->RenderMapLegend(map, 200, 400, bgc, L"PNG");
-        rdr1->ToFile(L"../UnitTestFiles/RenderLegend75k.png");
+        Ptr<MgByteReader> rdr1 = m_svcRendering->RenderMapLegend(map, 200, 400, bgc, imageFormat);
+        rdr1->ToFile(GetPath(L"../UnitTestFiles/RenderLegend75k", imageFormat, extension));
 
         map->SetViewScale(12000.0);
-        Ptr<MgByteReader> rdr2 = m_svcRendering->RenderMapLegend(map, 200, 400, bgc, L"PNG");
-        rdr2->ToFile(L"../UnitTestFiles/RenderLegend12k.png");
+        Ptr<MgByteReader> rdr2 = m_svcRendering->RenderMapLegend(map, 200, 400, bgc, imageFormat);
+        rdr2->ToFile(GetPath(L"../UnitTestFiles/RenderLegend12k", imageFormat, extension));
 
         // add a layer group
         Ptr<MgLayerGroupCollection> layerGroups = map->GetLayerGroups();
@@ -607,18 +607,18 @@ void TestRenderingService::TestCase_RenderLegend()
 
         //Re-draw at 75k. Layer group should not be there because it has no visible layers
         map->SetViewScale(75000.0);
-        Ptr<MgByteReader> rdr3 = m_svcRendering->RenderMapLegend(map, 200, 400, bgc, L"PNG");
-        rdr3->ToFile(L"../UnitTestFiles/RenderLegend75kWithEmptyLayerGroup.png");
+		Ptr<MgByteReader> rdr3 = m_svcRendering->RenderMapLegend(map, 200, 400, bgc, imageFormat);
+		rdr3->ToFile(GetPath(L"../UnitTestFiles/RenderLegend75kWithEmptyLayerGroup", imageFormat, extension));
 
         //Re-draw at 14000. Layer group should still not be there because it has no visible layers
         map->SetViewScale(14000.0);
-        Ptr<MgByteReader> rdr4 = m_svcRendering->RenderMapLegend(map, 200, 400, bgc, L"PNG");
-        rdr4->ToFile(L"../UnitTestFiles/RenderLegend14kWithEmptyLayerGroup.png");
+		Ptr<MgByteReader> rdr4 = m_svcRendering->RenderMapLegend(map, 200, 400, bgc, imageFormat);
+        rdr4->ToFile(GetPath(L"../UnitTestFiles/RenderLegend14kWithEmptyLayerGroup", imageFormat, extension));
 
         //Re-draw at 12000. Layer group should now be there because its child layer (Parcels) should be visible
         map->SetViewScale(12000.0);
-        Ptr<MgByteReader> rdr5 = m_svcRendering->RenderMapLegend(map, 200, 400, bgc, L"PNG");
-        rdr5->ToFile(L"../UnitTestFiles/RenderLegend12kWithLayerGroup.png");
+		Ptr<MgByteReader> rdr5 = m_svcRendering->RenderMapLegend(map, 200, 400, bgc, imageFormat);
+        rdr5->ToFile(GetPath(L"../UnitTestFiles/RenderLegend12kWithLayerGroup", imageFormat, extension));
     }
     catch (MgException* e)
     {
@@ -732,7 +732,7 @@ MgPolygon* TestRenderingService::CreateSelectionPolygon(MgMap* map, double width
 }
 
 
-void TestRenderingService::TestCase_SymbologyPoints()
+void TestRenderingService::TestCase_SymbologyPoints(CREFSTRING imageFormat, CREFSTRING extension)
 {
     try
     {
@@ -757,8 +757,8 @@ void TestRenderingService::TestCase_SymbologyPoints()
         map->SetViewScale(scale);
 
         // call the API
-        Ptr<MgByteReader> rdr = m_svcRendering->RenderMap(map, NULL, L"PNG");
-        rdr->ToFile(L"../UnitTestFiles/SymbologyPoints.png");
+        Ptr<MgByteReader> rdr = m_svcRendering->RenderMap(map, NULL, imageFormat);
+        rdr->ToFile(GetPath(L"../UnitTestFiles/SymbologyPoints", imageFormat, extension));
     }
     catch (MgException* e)
     {
@@ -769,7 +769,7 @@ void TestRenderingService::TestCase_SymbologyPoints()
 }
 
 
-void TestRenderingService::TestCase_SymbologyPointsParam()
+void TestRenderingService::TestCase_SymbologyPointsParam(CREFSTRING imageFormat, CREFSTRING extension)
 {
     try
     {
@@ -794,8 +794,8 @@ void TestRenderingService::TestCase_SymbologyPointsParam()
         map->SetViewScale(scale);
 
         // call the API
-        Ptr<MgByteReader> rdr = m_svcRendering->RenderMap(map, NULL, L"PNG");
-        rdr->ToFile(L"../UnitTestFiles/SymbologyPointsParam.png");
+        Ptr<MgByteReader> rdr = m_svcRendering->RenderMap(map, NULL, imageFormat);
+        rdr->ToFile(GetPath(L"../UnitTestFiles/SymbologyPointsParam", imageFormat, extension));
     }
     catch (MgException* e)
     {
@@ -806,7 +806,7 @@ void TestRenderingService::TestCase_SymbologyPointsParam()
 }
 
 
-void TestRenderingService::TestCase_SymbologyLines()
+void TestRenderingService::TestCase_SymbologyLines(CREFSTRING imageFormat, CREFSTRING extension)
 {
     try
     {
@@ -831,8 +831,8 @@ void TestRenderingService::TestCase_SymbologyLines()
         map->SetViewScale(scale);
 
         // call the API
-        Ptr<MgByteReader> rdr = m_svcRendering->RenderMap(map, NULL, L"PNG");
-        rdr->ToFile(L"../UnitTestFiles/SymbologyLines.png");
+        Ptr<MgByteReader> rdr = m_svcRendering->RenderMap(map, NULL, imageFormat);
+        rdr->ToFile(GetPath(L"../UnitTestFiles/SymbologyLines", imageFormat, extension));
     }
     catch (MgException* e)
     {
@@ -843,7 +843,7 @@ void TestRenderingService::TestCase_SymbologyLines()
 }
 
 
-void TestRenderingService::TestCase_SymbologyLinesCrossTick()
+void TestRenderingService::TestCase_SymbologyLinesCrossTick(CREFSTRING imageFormat, CREFSTRING extension)
 {
     try
     {
@@ -868,8 +868,8 @@ void TestRenderingService::TestCase_SymbologyLinesCrossTick()
         map->SetViewScale(scale);
 
         // call the API
-        Ptr<MgByteReader> rdr = m_svcRendering->RenderMap(map, NULL, L"PNG");
-        rdr->ToFile(L"../UnitTestFiles/SymbologyLinesCrossTick.png");
+        Ptr<MgByteReader> rdr = m_svcRendering->RenderMap(map, NULL, imageFormat);
+        rdr->ToFile(GetPath(L"../UnitTestFiles/SymbologyLinesCrossTick", imageFormat, extension));
     }
     catch (MgException* e)
     {
@@ -880,7 +880,7 @@ void TestRenderingService::TestCase_SymbologyLinesCrossTick()
 }
 
 
-void TestRenderingService::TestCase_Annotation1()
+void TestRenderingService::TestCase_Annotation1(CREFSTRING imageFormat, CREFSTRING extension)
 {
     try
     {
@@ -905,8 +905,8 @@ void TestRenderingService::TestCase_Annotation1()
         map->SetViewScale(scale);
 
         // call the API
-        Ptr<MgByteReader> rdr = m_svcRendering->RenderMap(map, NULL, L"PNG");
-        rdr->ToFile(L"../UnitTestFiles/Annotation1.png");
+        Ptr<MgByteReader> rdr = m_svcRendering->RenderMap(map, NULL, imageFormat);
+        rdr->ToFile(GetPath(L"../UnitTestFiles/Annotation1", imageFormat, extension));
     }
     catch (MgException* e)
     {
@@ -917,7 +917,7 @@ void TestRenderingService::TestCase_Annotation1()
 }
 
 
-void TestRenderingService::TestCase_Annotation2()
+void TestRenderingService::TestCase_Annotation2(CREFSTRING imageFormat, CREFSTRING extension)
 {
     try
     {
@@ -942,8 +942,8 @@ void TestRenderingService::TestCase_Annotation2()
         map->SetViewScale(scale);
 
         // call the API
-        Ptr<MgByteReader> rdr = m_svcRendering->RenderMap(map, NULL, L"PNG");
-        rdr->ToFile(L"../UnitTestFiles/Annotation2.png");
+        Ptr<MgByteReader> rdr = m_svcRendering->RenderMap(map, NULL, imageFormat);
+        rdr->ToFile(GetPath(L"../UnitTestFiles/Annotation2", imageFormat, extension));
     }
     catch (MgException* e)
     {
@@ -954,7 +954,7 @@ void TestRenderingService::TestCase_Annotation2()
 }
 
 
-void TestRenderingService::TestCase_Annotation3()
+void TestRenderingService::TestCase_Annotation3(CREFSTRING imageFormat, CREFSTRING extension)
 {
     try
     {
@@ -979,8 +979,8 @@ void TestRenderingService::TestCase_Annotation3()
         map->SetViewScale(scale);
 
         // call the API
-        Ptr<MgByteReader> rdr = m_svcRendering->RenderMap(map, NULL, L"PNG");
-        rdr->ToFile(L"../UnitTestFiles/Annotation3.png");
+        Ptr<MgByteReader> rdr = m_svcRendering->RenderMap(map, NULL, imageFormat);
+        rdr->ToFile(GetPath(L"../UnitTestFiles/Annotation3", imageFormat, extension));
     }
     catch (MgException* e)
     {
@@ -991,7 +991,7 @@ void TestRenderingService::TestCase_Annotation3()
 }
 
 
-void TestRenderingService::TestCase_SymbologyPolygons()
+void TestRenderingService::TestCase_SymbologyPolygons(CREFSTRING imageFormat, CREFSTRING extension)
 {
     try
     {
@@ -1008,8 +1008,8 @@ void TestRenderingService::TestCase_SymbologyPolygons()
         map->SetDisplayHeight(1024);
 
         map->SetViewScale(12000.0);
-        Ptr<MgByteReader> rdr2 = m_svcRendering->RenderMap(map, NULL, L"PNG");
-        rdr2->ToFile(L"../UnitTestFiles/SymbologyPolygons.png");
+        Ptr<MgByteReader> rdr2 = m_svcRendering->RenderMap(map, NULL, imageFormat);
+        rdr2->ToFile(GetPath(L"../UnitTestFiles/SymbologyPolygons", imageFormat, extension));
     }
     catch (MgException* e)
     {
@@ -1019,6 +1019,16 @@ void TestRenderingService::TestCase_SymbologyPolygons()
     }
 }
 
+STRING TestRenderingService::GetPath(CREFSTRING basePath, CREFSTRING imageFormat, CREFSTRING extension)
+{
+	STRING ret;
+	ret += basePath;
+	ret += L"_";
+	ret += imageFormat;
+	ret += L".";
+	ret += extension;
+	return ret;
+}
 
 //void TestRenderingService::TestCase_RendererPerformance()
 //{
