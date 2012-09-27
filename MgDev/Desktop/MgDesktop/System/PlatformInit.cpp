@@ -132,14 +132,6 @@ void MgdPlatform::Initialize(CREFSTRING configFile)
     }
     #endif
 
-    // NOTE: Altering the dictionary path via MgCoordinateSystemCatalog::SetDictionaryDir() does not
-    // update the internal library status. Possible defect?
-    /*
-    if (csCatalog->GetLibraryStatus() != LibraryStatus::lsInitialized)
-    {
-        throw new MgCoordinateSystemInitializationFailedException(L"MgdPlatform::Initialize", __LINE__, __WFILE__, NULL, L"MgCoordinateSystemInitializationFailedException", NULL);
-    }*/
-
     // Load the Fdo library
     STRING fdoLibrary = fdoPath;
 
@@ -163,6 +155,43 @@ void MgdPlatform::Initialize(CREFSTRING configFile)
 
     // Initialize Stylizer callback mechanism for non-fatal FDO exceptions
     MgdMappingUtil::InitializeStylizerCallback();
+
+    // Precache the specified maps, which will prime any related caches
+    STRING preCacheMaps;
+    pConfiguration->GetStringValue(MgdConfigProperties::GeneralPropertiesSection, MgdConfigProperties::GeneralPropertyPreCacheMaps, preCacheMaps, MgdConfigProperties::DefaultGeneralPropertyPreCacheMaps);
+
+    // Check if there is actually anything to precache
+    if (!preCacheMaps.empty())
+    {
+        Ptr<MgStringCollection> preCacheMapsCollection;
+        preCacheMapsCollection = MgStringCollection::ParseCollection(preCacheMaps, L",");
+
+        if (preCacheMapsCollection->GetCount() > 0)
+        {
+            ACE_DEBUG((LM_INFO, ACE_TEXT("%W\n"), MgResources::PreCacheMapsStart.c_str()));
+
+            for(INT32 i = 0; i < preCacheMapsCollection->GetCount(); i++)
+            {
+                try
+                {
+                    STRING mapRes = preCacheMapsCollection->GetItem(i);
+                    ACE_DEBUG((LM_INFO, ACE_TEXT("  %W  "), mapRes.c_str()));
+                    Ptr<MgResourceIdentifier> mapResId = new MgResourceIdentifier(mapRes);
+                    Ptr<MgdMap> map = new MgdMap(mapResId, L"PreCacheMap");
+                    ACE_DEBUG((LM_INFO, ACE_TEXT("<%W>\n"), MgResources::Success.c_str()));
+                }
+                catch(MgException* e)
+                {
+                    // Skip map entries that fail to be cached
+                    STRING message = e->GetDetails();
+                    SAFE_RELEASE(e);
+                    ACE_DEBUG((LM_INFO, ACE_TEXT("<%W> %W\n"), MgResources::Failure.c_str(), message.c_str()));
+                }
+            }
+
+            ACE_DEBUG((LM_INFO, ACE_TEXT("\n")));
+        }
+    }
 
     MG_LOG_TRACE_ENTRY(L"MgdPlatform::Initialize()");
 
