@@ -179,6 +179,9 @@ namespace OSGeo.MapGuide.Viewer
                                 GeometryType = geomType
                             };
 
+                            if (layerMeta.CategoryExists(themeCat))
+                                continue;
+
                             int catIndex = 0;
                             XmlNodeList typeStyle = scaleRange.GetElementsByTagName(typeStyles[geomType]);
                             for (int st = 0; st < typeStyle.Count; st++)
@@ -209,43 +212,49 @@ namespace OSGeo.MapGuide.Viewer
                                         }
                                     }
                                 }
-                                else if (!layerMeta.HasDefaultIconsAt(_map.ViewScale))
+                                else
                                 {
-                                    try
+                                    if (LayerNodeMetadata.ScaleIsApplicable(_map.ViewScale, themeCat))
                                     {
-                                        MgByteReader layerIcon = _provider.GenerateLegendImage(layer.LayerDefinition,
-                                                                                                   _map.ViewScale,
-                                                                                                   16,
-                                                                                                   16,
-                                                                                                   "PNG", //NOXLATE
-                                                                                                   -1,
-                                                                                                   -1);
-                                        legendCallCount++;
-                                        if (layerIcon != null)
+                                        if (!layerMeta.HasDefaultIconsAt(_map.ViewScale))
                                         {
                                             try
                                             {
-                                                byte[] b = new byte[layerIcon.GetLength()];
-                                                layerIcon.Read(b, b.Length);
-                                                using (var ms = new MemoryStream(b))
+                                                MgByteReader layerIcon = _provider.GenerateLegendImage(layer.LayerDefinition,
+                                                                                                           _map.ViewScale,
+                                                                                                           16,
+                                                                                                           16,
+                                                                                                           "PNG", //NOXLATE
+                                                                                                           -1,
+                                                                                                           -1);
+                                                legendCallCount++;
+                                                if (layerIcon != null)
                                                 {
-                                                    layerMeta.SetDefaultIcon(themeCat, Image.FromStream(ms));
-                                                    node.ToolTipText = string.Format(Strings.DefaultLayerTooltip, Environment.NewLine, layer.Name, layer.FeatureSourceId, layer.FeatureClassName);
+                                                    try
+                                                    {
+                                                        byte[] b = new byte[layerIcon.GetLength()];
+                                                        layerIcon.Read(b, b.Length);
+                                                        using (var ms = new MemoryStream(b))
+                                                        {
+                                                            layerMeta.SetDefaultIcon(themeCat, Image.FromStream(ms));
+                                                            node.ToolTipText = string.Format(Strings.DefaultLayerTooltip, Environment.NewLine, layer.Name, layer.FeatureSourceId, layer.FeatureClassName);
+                                                        }
+                                                    }
+                                                    finally
+                                                    {
+                                                        layerIcon.Dispose();
+                                                    }
+                                                }
+                                                else
+                                                {
+                                                    layerMeta.SetDefaultIcon(themeCat, Properties.Resources.lc_broken);
                                                 }
                                             }
-                                            finally
+                                            catch
                                             {
-                                                layerIcon.Dispose();
+                                                layerMeta.SetDefaultIcon(themeCat, Properties.Resources.lc_broken);
                                             }
                                         }
-                                        else
-                                        {
-                                            layerMeta.SetDefaultIcon(themeCat, Properties.Resources.lc_broken);
-                                        }
-                                    }
-                                    catch
-                                    {
-                                        layerMeta.SetDefaultIcon(themeCat, Properties.Resources.lc_broken);
                                     }
                                 }
                             }
@@ -984,7 +993,7 @@ namespace OSGeo.MapGuide.Viewer
                 return nodes.ToArray();
             }
 
-            private static bool ScaleIsApplicable(double scale, ThemeCategory cat)
+            internal static bool ScaleIsApplicable(double scale, ThemeCategory cat)
             {
                 bool bApplicable = false;
 
@@ -1041,6 +1050,11 @@ namespace OSGeo.MapGuide.Viewer
                         return true;
                 }
                 return false;
+            }
+
+            internal bool CategoryExists(ThemeCategory themeCat)
+            {
+                return _themeNodes.ContainsKey(themeCat);
             }
         }
     }
