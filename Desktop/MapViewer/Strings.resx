@@ -381,4 +381,10 @@
   <data name="TextLayersRefreshing" xml:space="preserve">
     <value>Layers (Refreshing...)</value>
   </data>
+  <data name="ErrorInvalidMapName" xml:space="preserve">
+    <value>Invalid map name "{0}". A map name cannot have spaces or any of the following characters: \:*?"&lt;&gt;|&amp;'%=/</value>
+  </data>
+  <data name="ErrorMapNotFound" xml:space="preserve">
+    <value>A map named ({0}) was not found in the AppLayout</value>
+  </data>
 </root>

@@ -55,6 +55,8 @@ namespace OSGeo.MapGuide.Viewer.AppLayoutEngine
             _menuInvoker = new MgMenuItemComponentInvoker();
             _toolInvoker = new MgToolButtonComponentInvoker();
 
+            ValidateMapNames(layout);
+
             InitializeComponentSet(layout);
             InitializeMenu(layout.Menu);
             InitializeToolbar(layout.Toolbar);
@@ -89,6 +91,21 @@ namespace OSGeo.MapGuide.Viewer.AppLayoutEngine
 
             _provider = provider;
             mapViewer.PropertyChanged += new PropertyChangedEventHandler(OnMapViewerPropertyChanged);
+        }
+
+        const string RESERVED_CHARS = "\\:*?\"<>|&'%=/";
+
+        private static void ValidateMapNames(AppLayout layout)
+        {
+            string mapName = layout.Map.Name;
+            if (mapName.Contains(" "))
+                throw new InvalidOperationException(string.Format(Strings.ErrorInvalidMapName, mapName));
+
+            foreach (char c in mapName)
+            {
+                if (RESERVED_CHARS.IndexOf(c) >= 0)
+                    throw new InvalidOperationException(string.Format(Strings.ErrorInvalidMapName, mapName));
+            }
         }
 
         private void SetLanguage(CultureInfo lang)
@@ -382,7 +399,16 @@ namespace OSGeo.MapGuide.Viewer.AppLayoutEngine
 
                 foreach (var prop in compDef.Properties)
                 {
-                    if (prop.Value.StartsWith(StringPrefixes.COLOR))
+                    if (prop.Value.StartsWith(StringPrefixes.MAPDEFINITION))
+                    {
+                        var mapName = prop.Value.Substring(StringPrefixes.MAPDEFINITION.Length);
+                        //TODO: Update for multi-maps if/when we support it
+                        if (layout.Map.Name == mapName)
+                            comp.SetPropertyValue(prop.Name, mapName);
+                        else
+                            throw new InvalidOperationException(string.Format(Strings.ErrorMapNotFound, mapName));
+                    }
+                    else if (prop.Value.StartsWith(StringPrefixes.COLOR))
                     {
                         var colorStr = prop.Value.Substring(StringPrefixes.COLOR.Length);
                         var color = Util.FromHtmlColor(colorStr);
@@ -421,6 +447,8 @@ namespace OSGeo.MapGuide.Viewer.AppLayoutEngine
             //Apply viewer properties. We do this here because we want to respect the viewer options component
             //So we apply before the viewer options component gets its chance to
             mapViewer.ConvertTiledGroupsToNonTiled = layout.Settings.ConvertTiledGroupsToNonTiled;
+            mapViewer.UseRenderMapIfTiledLayersExist = layout.Settings.UseRenderMap;
+            mapViewer.RespectFiniteDisplayScales = layout.Settings.RespectFiniteScales;
             mapViewer.SelectionColor = Util.FromHtmlColor(layout.Settings.SelectionColor);
             mapViewer.ShowVertexCoordinatesWhenDigitizing = layout.Settings.ShowVertexCoordinatesWhenDigitizing;
             mapViewer.ZoomInFactor = layout.Settings.ZoomInFactor;

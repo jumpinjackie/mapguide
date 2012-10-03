@@ -169,6 +169,15 @@ namespace OSGeo.MapGuide.Viewer {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Invalid map name &quot;{0}&quot;. A map name cannot have spaces or any of the following characters: \:*?&quot;&lt;&gt;|&amp;&apos;%=/.
+        /// </summary>
+        internal static string ErrorInvalidMapName {
+            get {
+                return ResourceManager.GetString("ErrorInvalidMapName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Layer metadata not fully initialized.
         /// </summary>
         internal static string ErrorLayerMetadataNotFullyInitialized {
@@ -183,6 +192,15 @@ namespace OSGeo.MapGuide.Viewer {
         internal static string ErrorMalformedEnumString {
             get {
                 return ResourceManager.GetString("ErrorMalformedEnumString", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to A map named ({0}) was not found in the AppLayout.
+        /// </summary>
+        internal static string ErrorMapNotFound {
+            get {
+                return ResourceManager.GetString("ErrorMapNotFound", resourceCulture);
             }
         }
         

@@ -1213,6 +1213,7 @@ namespace OSGeo.MapGuide.Viewer
 
         private void OnMapSetOnProvider(object sender, EventArgs e)
         {
+            _hasTiledLayers = null;
             _map = _provider.GetMap();
             _mapCs = _provider.GetMapCoordinateSystem();
             _mapMeasure = _mapCs.GetMeasure();
@@ -1300,6 +1301,27 @@ namespace OSGeo.MapGuide.Viewer
             get;
             set;
         }
+
+        [Category("MapGuide Viewer")] //NOXLATE
+        [Description("If true, the viewer will use the RenderMap API instead of RenderDynamicOverlay allowing tiled layers to be rendered to the final image. Setting this property to true nullifies the ConvertTiledGroupsToNonTiled property")] //NOXLATE
+        [DefaultValue(true)]
+        /// <summary>
+        /// Gets whether to use the RenderMap API instead of RenderDynamicOverlay if the map has tiled
+        /// layers. RenderMap includes tiled layers as part of the output image, but will not take advantage
+        /// of any tile caching mechanisms. Setting this property to true nullifies any effect of the 
+        /// <see cref="P:OSGeo.MapGuide.Viewer.IMapViewer.ConvertTiledGroupsToNonTiled"/> property
+        /// </summary>
+        public bool UseRenderMapIfTiledLayersExist { get; set; }
+
+        [Category("MapGuide Viewer")] //NOXLATE
+        [Description("If true, all zooms will snap to the nearest finite display scale defined in the map being viewed")] //NOXLATE
+        [DefaultValue(true)]
+        /// <summary>
+        /// Gets whether to respect the list of finite display scales in a map being viewed if there are any defined.
+        /// If true, all zooms will "snap" to the nearest finite display scale. Otherwise, the viewer will disregard
+        /// this list when zooming in or out.
+        /// </summary>
+        public bool RespectFiniteDisplayScales { get; set; }
 
         /// <summary>
         /// Raised when the viewer has been initialized
@@ -1452,6 +1474,10 @@ namespace OSGeo.MapGuide.Viewer
 
         class RenderWorkArgs
         {
+            public RenderWorkArgs() { this.UseRenderMap = false; }
+
+            public bool UseRenderMap { get; set; }
+
             public MgViewerRenderingOptions SelectionRenderingOptions { get; set; }
 
             public MgViewerRenderingOptions MapRenderingOptions { get; set; }
@@ -1566,6 +1592,7 @@ namespace OSGeo.MapGuide.Viewer
             {
                 var args = new RenderWorkArgs()
                 {
+                    UseRenderMap = this.UseRenderMapIfTiledLayersExist && this.HasTiledLayers,
                     MapRenderingOptions = _overlayRenderOpts,
                     RaiseEvents = raiseEvents
                 };
@@ -1589,6 +1616,37 @@ namespace OSGeo.MapGuide.Viewer
             else //Otherwise execute it immediately
             {
                 action();   
+            }
+        }
+
+        private bool? _hasTiledLayers;
+
+        internal bool HasTiledLayers
+        {
+            get
+            {
+                if (!_hasTiledLayers.HasValue)
+                {
+                    if (_map != null)
+                    {
+                        var groups = _map.GetLayerGroups();
+                        for (int i = 0; i < groups.Count; i++)
+                        {
+                            if (groups[i].LayerGroupType == MgLayerGroupType.BaseMap)
+                            {
+                                _hasTiledLayers = true;
+                                break;
+                            }
+                        }
+                        if (!_hasTiledLayers.HasValue)
+                            _hasTiledLayers = false;
+                    }
+                    else
+                    {
+                        _hasTiledLayers = false;
+                    }
+                }
+                return _hasTiledLayers.Value;
             }
         }
 
@@ -1810,13 +1868,16 @@ namespace OSGeo.MapGuide.Viewer
 
         internal void ZoomToView(double x, double y, double scale, bool refresh, bool raiseEvents, bool addToHistoryStack)
         {
+            var newScale = NormalizeScale(scale);
+            if (_map.FiniteDisplayScaleCount > 0 && this.RespectFiniteDisplayScales)
+                newScale = GetNearestFiniteScale(scale);
             if (addToHistoryStack)
             {
                 //If not current view, then any entries from the current view index are no longer needed
                 if (ViewHistoryIndex < _viewHistory.Count - 1)
                     PruneHistoryEntriesFromCurrentView();
 
-                _viewHistory.Add(new MgMapViewHistoryEntry(x, y, scale));
+                _viewHistory.Add(new MgMapViewHistoryEntry(x, y, newScale));
                 OnPropertyChanged("ViewHistory"); //NOXLATE
                 _viewHistoryIndex = _viewHistory.Count - 1;
                 OnPropertyChanged("ViewHistoryIndex"); //NOXLATE
@@ -1833,7 +1894,7 @@ namespace OSGeo.MapGuide.Viewer
             Trace.TraceInformation("Center is (" + x + ", " + y + ")");
 #endif
             var oldScale = _map.ViewScale;
-            _provider.SetViewScale(NormalizeScale(scale));
+            _provider.SetViewScale(newScale);
 
             if (oldScale != _map.ViewScale)
             {
@@ -1851,6 +1912,36 @@ namespace OSGeo.MapGuide.Viewer
             //Then refresh
             if (refresh)
                 RefreshMap(raiseEvents);
+        }
+
+        private double GetNearestFiniteScale(double scale)
+        {
+            return _map.GetFiniteDisplayScaleAt(GetFiniteScaleIndex(scale));
+        }
+
+        private int GetFiniteScaleIndex(double reqScale)
+        {
+            var index = 0;
+            var scaleCount = _map.GetFiniteDisplayScaleCount();
+            if (scaleCount > 0)
+            {
+                var bestDiff = Math.Abs(_map.GetFiniteDisplayScaleAt(0) - reqScale);
+                for (var i = 1; i < scaleCount; i++)
+                {
+                    var scaleDiff = Math.Abs(_map.GetFiniteDisplayScaleAt(i) - reqScale);
+                    if (scaleDiff < bestDiff)
+                    {
+                        index = i;
+                        bestDiff = scaleDiff;
+                        if (bestDiff == 0)
+                        {
+                            //perfect match
+                            break;
+                        }
+                    }
+                }
+            }
+            return index;
         }
 
         /// <summary>
@@ -1874,7 +1965,11 @@ namespace OSGeo.MapGuide.Viewer
             var res = new RenderResult() { RaiseEvents = args.RaiseEvents, InvalidateRegardless = args.InvalidateRegardless };
             if (args.MapRenderingOptions != null)
             {
-                var br = _provider.RenderDynamicOverlay(null, args.MapRenderingOptions);
+                MgByteReader br = null;
+                if (args.UseRenderMap)
+                    br = _provider.RenderMap(null, args.MapRenderingOptions.Format);
+                else
+                    br = _provider.RenderDynamicOverlay(null, args.MapRenderingOptions);
                 byte[] b = new byte[br.GetLength()];
                 br.Read(b, b.Length);
                 using (var ms = new MemoryStream(b))

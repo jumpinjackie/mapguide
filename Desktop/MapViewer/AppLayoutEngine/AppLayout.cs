@@ -47,6 +47,7 @@ namespace OSGeo.MapGuide.Viewer.AppLayoutEngine
             layout.Settings = new AppLayoutSettings()
             {
                 ConvertTiledGroupsToNonTiled = true,
+                UseRenderMap = true,
                 SelectionColor = Util.ToHtmlColorWithAlpha(System.Drawing.Color.Blue),
                 ShowVertexCoordinatesWhenDigitizing = false,
                 ZoomInFactor = 0.5,
@@ -269,6 +270,12 @@ namespace OSGeo.MapGuide.Viewer.AppLayoutEngine
         public bool ConvertTiledGroupsToNonTiled { get; set; }
 
         [XmlElement]
+        public bool UseRenderMap { get; set; }
+
+        [XmlElement]
+        public bool RespectFiniteScales { get; set; }
+
+        [XmlElement]
         public bool ShowVertexCoordinatesWhenDigitizing { get; set; }
 
         [XmlElement]
@@ -316,6 +323,9 @@ namespace OSGeo.MapGuide.Viewer.AppLayoutEngine
 
     public class MapReference
     {
+        [XmlElement]
+        public string Name { get; set; }
+
         [XmlElement]
         public string MapDefinition { get; set; }
     }
@@ -432,6 +442,7 @@ namespace OSGeo.MapGuide.Viewer.AppLayoutEngine
     /// </summary>
     public class StringPrefixes
     {
+        public const string MAPDEFINITION = "map:";
         public const string COMPONENTID = "component:";
         public const string COLOR = "color:";
         public const string ENUM = "enum:";
