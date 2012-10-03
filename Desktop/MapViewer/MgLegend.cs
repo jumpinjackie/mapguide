@@ -365,6 +365,11 @@ namespace OSGeo.MapGuide.Viewer
                 var box = new Rectangle(
                     new Point((e.Node.Bounds.Location.X - 36) + 16, e.Node.Bounds.Location.Y), 
                     new Size(16, e.Node.Bounds.Height));
+
+                //Uncheckable items need to move 16px to the left
+                if (!meta.Checkable)
+                    box.Offset(-16, 0);
+
                 if (box.Contains(e.X, e.Y))
                 {
                     var layer = meta.Layer;

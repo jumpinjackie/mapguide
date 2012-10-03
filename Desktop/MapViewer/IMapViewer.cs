@@ -57,7 +57,7 @@ namespace OSGeo.MapGuide.Viewer
     /// <summary>
     /// A map viewer component
     /// </summary>
-    public interface IMapViewer : IMapViewerComponent, INotifyPropertyChanged
+    public interface IMapViewer : IMapViewerComponent, INotifyPropertyChanged, IMapComponent
     {
         /// <summary>
         /// Clears the current selection

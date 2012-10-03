@@ -387,4 +387,7 @@
   <data name="ErrorMapNotFound" xml:space="preserve">
     <value>A map named ({0}) was not found in the AppLayout</value>
   </data>
+  <data name="SetLanguage" xml:space="preserve">
+    <value>Set Language</value>
+  </data>
 </root>

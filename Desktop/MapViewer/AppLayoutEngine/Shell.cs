@@ -48,7 +48,7 @@ namespace OSGeo.MapGuide.Viewer.AppLayoutEngine
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show(ex.Message, "Set Language");
+                    MessageBox.Show(ex.Message, Strings.SetLanguage);
                 }
             }
 
@@ -93,12 +93,12 @@ namespace OSGeo.MapGuide.Viewer.AppLayoutEngine
             mapViewer.PropertyChanged += new PropertyChangedEventHandler(OnMapViewerPropertyChanged);
         }
 
-        const string RESERVED_CHARS = "\\:*?\"<>|&'%=/";
+        const string RESERVED_CHARS = "\\:*?\"<>|&'%=/"; //NOXLATE
 
         private static void ValidateMapNames(AppLayout layout)
         {
             string mapName = layout.Map.Name;
-            if (mapName.Contains(" "))
+            if (mapName.Contains(" ")) //NOXLATE
                 throw new InvalidOperationException(string.Format(Strings.ErrorInvalidMapName, mapName));
 
             foreach (char c in mapName)
@@ -115,7 +115,7 @@ namespace OSGeo.MapGuide.Viewer.AppLayoutEngine
             //current language
             ComponentResourceManager resources = new ComponentResourceManager(this.GetType());
             ApplyResourceToControl(resources, this, lang);
-            resources.ApplyResources(this, "$this", lang);
+            resources.ApplyResources(this, "$this", lang); //NOXLATE
 
             //NOTE: Property pane is a separate case that has to be handled individually
             propertyPane.SetLanguage(lang);
@@ -178,6 +178,8 @@ namespace OSGeo.MapGuide.Viewer.AppLayoutEngine
         private AppLayout _layout;
         private MgMapViewerProvider _provider;
 
+        private string _invokeComponentOnStartup;
+
         protected override void OnLoad(EventArgs e)
         {
             //Optimization: If legend or property pane aren't visible
@@ -192,15 +194,15 @@ namespace OSGeo.MapGuide.Viewer.AppLayoutEngine
             new MapViewerController(mapViewer, theLegend, this, thePropertyPane);
             mapViewer.Init(_provider);
 
-            if (!string.IsNullOrEmpty(_layout.Settings.InvokeOnStartup))
+            if (!string.IsNullOrEmpty(_invokeComponentOnStartup))
             {
-                if (_components.ContainsKey(_layout.Settings.InvokeOnStartup))
+                if (_components.ContainsKey(_invokeComponentOnStartup))
                 {
-                    _components[_layout.Settings.InvokeOnStartup].Invoke();
+                    _components[_invokeComponentOnStartup].Invoke();
                 }
                 else
                 {
-                    MessageBox.Show(string.Format(Strings.WarnInvokeNonExistentComponent, _layout.Settings.InvokeOnStartup));
+                    MessageBox.Show(string.Format(Strings.WarnInvokeNonExistentComponent, _invokeComponentOnStartup));
                 }
             }
         }
@@ -347,11 +349,12 @@ namespace OSGeo.MapGuide.Viewer.AppLayoutEngine
             var assemblies = new Dictionary<string, Assembly>();
             _components = new Dictionary<string, MgComponent>();
 
-            // We do this in 3 passes:
+            // We do this in 4 passes:
             //
             // 1. Create the components in the component set
             // 2. Then set the properties of the instantiated components
             // 3. Assign the viewer to all these components
+            // 4. Set the owner parent and Task Pane of any MgViewerComponent instances to this instance
 
             // 1st pass
             foreach (var compDef in layout.Components)
@@ -424,7 +427,7 @@ namespace OSGeo.MapGuide.Viewer.AppLayoutEngine
                     }
                     else if (prop.Value.StartsWith(StringPrefixes.ENUM))
                     {
-                        string [] tokens = prop.Value.Split(':');
+                        string [] tokens = prop.Value.Split(':'); //NOXLATE
                         if (tokens.Length != 3)
                             throw new InvalidOperationException(Strings.ErrorMalformedEnumString);
                         comp.SetPropertyValue(prop.Name, Enum.Parse(Type.GetType(tokens[1]), tokens[2]));
@@ -446,13 +449,52 @@ namespace OSGeo.MapGuide.Viewer.AppLayoutEngine
 
             //Apply viewer properties. We do this here because we want to respect the viewer options component
             //So we apply before the viewer options component gets its chance to
-            mapViewer.ConvertTiledGroupsToNonTiled = layout.Settings.ConvertTiledGroupsToNonTiled;
-            mapViewer.UseRenderMapIfTiledLayersExist = layout.Settings.UseRenderMap;
-            mapViewer.RespectFiniteDisplayScales = layout.Settings.RespectFiniteScales;
-            mapViewer.SelectionColor = Util.FromHtmlColor(layout.Settings.SelectionColor);
-            mapViewer.ShowVertexCoordinatesWhenDigitizing = layout.Settings.ShowVertexCoordinatesWhenDigitizing;
-            mapViewer.ZoomInFactor = layout.Settings.ZoomInFactor;
-            mapViewer.ZoomOutFactor = layout.Settings.ZoomOutFactor;
+
+            foreach (var prop in layout.Settings)
+            {
+                if (prop.Value.StartsWith(StringPrefixes.MAPDEFINITION))
+                {
+                    var mapName = prop.Value.Substring(StringPrefixes.MAPDEFINITION.Length);
+                    //TODO: Update for multi-maps if/when we support it
+                    if (layout.Map.Name == mapName)
+                        mapViewer.SetPropertyValue(prop.Name, mapName);
+                    else
+                        throw new InvalidOperationException(string.Format(Strings.ErrorMapNotFound, mapName));
+                }
+                else if (prop.Value.StartsWith(StringPrefixes.COLOR))
+                {
+                    var colorStr = prop.Value.Substring(StringPrefixes.COLOR.Length);
+                    var color = Util.FromHtmlColor(colorStr);
+                    mapViewer.SetPropertyValue(prop.Name, color);
+                }
+                else if (prop.Value.StartsWith(StringPrefixes.COMPONENTID))
+                {
+                    var compID = prop.Value.Substring(StringPrefixes.COMPONENTID.Length);
+                    if (!_components.ContainsKey(compID))
+                        throw new InvalidOperationException(string.Format(Strings.ErrorComponentNotFound, compID));
+
+                    mapViewer.SetPropertyValue(prop.Name, _components[compID]);
+                }
+                else if (prop.Value.StartsWith(StringPrefixes.ENUM))
+                {
+                    string[] tokens = prop.Value.Split(':'); //NOXLATE
+                    if (tokens.Length != 3)
+                        throw new InvalidOperationException(Strings.ErrorMalformedEnumString);
+                    mapViewer.SetPropertyValue(prop.Name, Enum.Parse(Type.GetType(tokens[1]), tokens[2]));
+                }
+                else if (prop.Value.StartsWith(StringPrefixes.TASKPANEID)) //NOTE: only one taskpane instance, but we're checking this as a forward-looking measure
+                {
+                    mapViewer.SetPropertyValue(prop.Name, taskPane);
+                }
+                else if (prop.Value.StartsWith(StringPrefixes.VIEWERID)) //NOTE: only one viewer instance, but we're checking this as a forward-looking measure
+                {
+                    mapViewer.SetPropertyValue(prop.Name, mapViewer);
+                }
+                else
+                {
+                    mapViewer.SetPropertyValue(prop.Name, prop.Value);
+                }
+            }
 
             //3rd pass
             foreach (var compDef in layout.Components)
@@ -460,7 +502,7 @@ namespace OSGeo.MapGuide.Viewer.AppLayoutEngine
                 _components[compDef.ComponentID].Viewer = mapViewer;
             }
 
-            //4th pass, set the owner parent of any MgViewerComponent instances
+            //4th pass, set the owner parent and Task Pane of any MgViewerComponent instances
             //to this instance
             foreach (var comp in _components.Values)
             {
