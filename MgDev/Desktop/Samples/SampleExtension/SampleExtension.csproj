@@ -290,6 +290,6 @@ xcopy /s /y "$(SolutionDir)Lib\Schema" "$(TargetDir)Schema"
 copy /y "$(SolutionDir)Lib\*.dll" "$(TargetDir)"
 copy /y "$(SolutionDir)Lib\Platform.ini" "$(TargetDir)"
 copy /y "$(SolutionDir)Lib\MgAppLayout.exe" "$(TargetDir)"
-copy /y "$(SolutionDir)Lib\Sheboygan.AppLayout" "$(TargetDir)"</PostBuildEvent>
+copy /y "$(SolutionDir)Lib\SheboyganSample.AppLayout" "$(TargetDir)"</PostBuildEvent>
   </PropertyGroup>
 </Project>
