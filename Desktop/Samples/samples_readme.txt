@@ -20,6 +20,11 @@ AdvancedSample
 
 Demonstrates a Windows Forms Application that embeds the mg-desktop map viewer and shows how to do things like measuring and digitizing
 
+FreeFormSample
+==============
+
+Demonstrates that the MgMapViewer control is like any other WinForms control, and that you can have your toolbar buttons on top of the viewer control itself, allowing for a minimal user interface.
+
 SampleExtension
 ===============
 

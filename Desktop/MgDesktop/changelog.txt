@@ -1,9 +1,20 @@
 API Changelog:
+
  - MgdPlatform::Terminate() did not call MgdFdoConnectionPool::Cleanup() leaving that to the static initializer to cleanup. This caused problems for the GDAL provider if connection pooling is enabled. The call has been put into MgdPlatform::Terminate() and connection pooling for the GDAL provider has been re-enabled in Platform.ini
  - Add support for MapGuide's PreCacheMaps configuration property in Platform.ini
+ - MgMapViewer is now an IMapComponent, and any properties tagged with MgComponentPropertyAttribute can be dynamically set by the AppLayout engine.
 
 Viewer Changelog:
  - Support for Localization
+ - New Viewer properties to support display of Tiled Maps:
+    - UseRenderMapIfTiledLayersExist (if true will use the RenderMap API, which includes tiled layers in the rendered image)
+    - RespectFiniteDisplayScales (if true will cause all zooms to snap to the nearest finite display scale)
+ - NOTE: Because RenderMap pre-fills the map's background color into the final image, setting the viewer to use the RenderMap API makes it impossible to use the viewer's Pre-Rendering hook as the rendered image will be drawn completely over it.
+ - MgQueryResultsDialog now allows for unbounded size in search results (passing a limit of -1 will instruct the dialog to spin through the entire feature reader)
+ - Fix legend node display for tiled layers (checkboxes should not show)
+ - Fix illegal attempts to fetch theme icons at scales where they're not applicable.
+ - New simple search component. Similar to the search command in the AJAX/Fusion viewer
+ - AppLayout schema change to accomodate dynamic assignment of viewer properties. See updated AppLayout examples.
  - Improve performance of MgMapViewerProvider
 
 2.4.0.6971 (Aug 30 2012)

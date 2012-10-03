@@ -407,7 +407,7 @@ namespace OSGeo.MapGuide.Viewer.AppLayoutEngine
                         var mapName = prop.Value.Substring(StringPrefixes.MAPDEFINITION.Length);
                         //TODO: Update for multi-maps if/when we support it
                         if (layout.Map.Name == mapName)
-                            comp.SetPropertyValue(prop.Name, mapName);
+                            comp.SetPropertyValue(prop.Name, layout.Map.MapDefinition);
                         else
                             throw new InvalidOperationException(string.Format(Strings.ErrorMapNotFound, mapName));
                     }
@@ -449,15 +449,21 @@ namespace OSGeo.MapGuide.Viewer.AppLayoutEngine
 
             //Apply viewer properties. We do this here because we want to respect the viewer options component
             //So we apply before the viewer options component gets its chance to
-
             foreach (var prop in layout.Settings)
             {
+                //Special case
+                if (prop.Name == "InvokeOnStartup") //NOXLATE
+                {
+                    _invokeComponentOnStartup = prop.Value.Substring(StringPrefixes.COMPONENTID.Length);
+                    continue;
+                }
+
                 if (prop.Value.StartsWith(StringPrefixes.MAPDEFINITION))
                 {
                     var mapName = prop.Value.Substring(StringPrefixes.MAPDEFINITION.Length);
                     //TODO: Update for multi-maps if/when we support it
                     if (layout.Map.Name == mapName)
-                        mapViewer.SetPropertyValue(prop.Name, mapName);
+                        mapViewer.SetPropertyValue(prop.Name, layout.Map.MapDefinition);
                     else
                         throw new InvalidOperationException(string.Format(Strings.ErrorMapNotFound, mapName));
                 }
