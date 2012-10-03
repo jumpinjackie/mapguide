@@ -9,19 +9,36 @@ using System.Reflection;
 
 namespace OSGeo.MapGuide.Viewer
 {
+    /// <summary>
+    /// Defines a map viewer component
+    /// </summary>
     public interface IMapComponent
     {
+        /// <summary>
+        /// Gets the list of component properties
+        /// </summary>
         IEnumerable<PropertyInfo> ComponentProperties { get; }
 
+        /// <summary>
+        /// Sets the value of the specified component property
+        /// </summary>
+        /// <param name="propertyName"></param>
+        /// <param name="value"></param>
         void SetPropertyValue(string propertyName, object value);
 
+        /// <summary>
+        /// Gets the value of the specified component property
+        /// </summary>
+        /// <param name="propertyName"></param>
+        /// <returns></returns>
         object GetPropertyValue(string propertyName);
     }
 
     /// <summary>
-    /// Indicates that a given CLR property is dynamically invokable
+    /// Indicates that a given CLR property is dynamically invokable. Primarily used for property
+    /// value assignment by the AppLayout engine
     /// </summary>
-    [AttributeUsage(AttributeTargets.Property)]
+    [AttributeUsage(AttributeTargets.Property, Inherited = true)]
     public class MgComponentPropertyAttribute : Attribute
     {
 
@@ -224,7 +241,8 @@ namespace OSGeo.MapGuide.Viewer
             if (!_properties.ContainsKey(propertyName))
                 throw new InvalidOperationException(string.Format(Strings.ErrorInvalidComponentProperty, propertyName));
 
-            _properties[propertyName].SetValue(this, value, null);
+            var prop = _properties[propertyName];
+            prop.SetValue(this, Convert.ChangeType(value, prop.PropertyType), null);
         }
 
         public object GetPropertyValue(string propertyName)

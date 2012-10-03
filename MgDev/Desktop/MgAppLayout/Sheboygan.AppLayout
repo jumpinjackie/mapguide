@@ -3,14 +3,38 @@
   <Title>MapGuide Desktop App Layout Example</Title>
   <Icon>app.ico</Icon>
   <Settings>
-    <SelectionColor>0000FF</SelectionColor>
-    <ConvertTiledGroupsToNonTiled>false</ConvertTiledGroupsToNonTiled>
-    <UseRenderMap>false</UseRenderMap>
-    <RespectFiniteScales>false</RespectFiniteScales>
-    <ShowVertexCoordinatesWhenDigitizing>false</ShowVertexCoordinatesWhenDigitizing>
-    <ZoomInFactor>0.5</ZoomInFactor>
-    <ZoomOutFactor>2</ZoomOutFactor>
-    <PointPixelBuffer>3</PointPixelBuffer>
+    <NameValue>
+      <Name>SelectionColor</Name>
+      <Value>color:0000FF</Value>
+    </NameValue>
+    <NameValue>
+      <Name>ConvertTiledGroupsToNonTiled</Name>
+      <Value>false</Value>
+    </NameValue>
+    <NameValue>
+      <Name>UseRenderMapIfTiledLayersExist</Name>
+      <Value>false</Value>
+    </NameValue>
+    <NameValue>
+      <Name>RespectFiniteDisplayScales</Name>
+      <Value>false</Value>
+    </NameValue>
+    <NameValue>
+      <Name>ShowVertexCoordinatesWhenDigitizing</Name>
+      <Value>false</Value>
+    </NameValue>
+    <NameValue>
+      <Name>ZoomInFactor</Name>
+      <Value>0.5</Value>
+    </NameValue>
+    <NameValue>
+      <Name>ZoomOutFactor</Name>
+      <Value>2</Value>
+    </NameValue>
+    <NameValue>
+      <Name>PointPixelBuffer</Name>
+      <Value>3</Value>
+    </NameValue>
   </Settings>
   <InfoPane>
     <Width>200</Width>

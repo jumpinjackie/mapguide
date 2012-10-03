@@ -13,6 +13,7 @@ using System.Xml;
 using System.Collections.Specialized;
 using System.Collections.ObjectModel;
 using System.Globalization;
+using System.Reflection;
 
 namespace OSGeo.MapGuide.Viewer
 {
@@ -370,6 +371,7 @@ namespace OSGeo.MapGuide.Viewer
         /// </summary>
         [Category("MapGuide Viewer")] //NOXLATE
         [Description("The minimum allowed zoom scale for this viewer")] //NOXLATE
+        [MgComponentProperty]
         public int MinScale { get; set; }
 
         /// <summary>
@@ -377,6 +379,7 @@ namespace OSGeo.MapGuide.Viewer
         /// </summary>
         [Category("MapGuide Viewer")] //NOXLATE
         [Description("The maximum allowed zoom scale for this viewer")] //NOXLATE
+        [MgComponentProperty]
         public int MaxScale { get; set; }
 
         /// <summary>
@@ -384,6 +387,7 @@ namespace OSGeo.MapGuide.Viewer
         /// </summary>
         [Category("MapGuide Viewer")] //NOXLATE
         [Description("The amount of time (in ms) to wait to re-render after a mouse wheel scroll")] //NOXLATE
+        [MgComponentProperty]
         public int MouseWheelDelayRenderInterval { get; set; }
 
         /// <summary>
@@ -391,6 +395,7 @@ namespace OSGeo.MapGuide.Viewer
         /// </summary>
         [Category("MapGuide Viewer")] //NOXLATE
         [Description("The amount of time (in ms) to wait to fire off a tooltip request after the mouse pointer becomes stationary")] //NOXLATE
+        [MgComponentProperty]
         public int TooltipDelayInterval { get; set; }
 
         private Color _selColor;
@@ -400,6 +405,7 @@ namespace OSGeo.MapGuide.Viewer
         /// </summary>
         [Category("MapGuide Viewer")] //NOXLATE
         [Description("The color to use for active selections")] //NOXLATE
+        [MgComponentProperty]
         public Color SelectionColor
         {
             get { return _selColor; }
@@ -488,6 +494,7 @@ namespace OSGeo.MapGuide.Viewer
         [Category("MapGuide Viewer")] //NOXLATE
         [Description("Indicates whether coordinate values are shown when digitizing geometry")] //NOXLATE
         [DefaultValue(false)]
+        [MgComponentProperty]
         public bool ShowVertexCoordinatesWhenDigitizing
         {
             get { return _showVertexCoords; }
@@ -662,6 +669,7 @@ namespace OSGeo.MapGuide.Viewer
 
         [Category("MapGuide Viewer")] //NOXLATE
         [Description("The amount of pixels to buffer out by when doing point-based selections with the Select tool")] //NOXLATE
+        [MgComponentProperty]
         public int PointPixelBuffer { get; set; }
 
         private Color _digitizingFillColor;
@@ -847,6 +855,7 @@ namespace OSGeo.MapGuide.Viewer
         /// </summary>
         [Browsable(false)]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        [MgComponentProperty]
         public bool FeatureTooltipsEnabled
         {
             get { return _featTooltipsEnabled; }
@@ -1296,31 +1305,34 @@ namespace OSGeo.MapGuide.Viewer
         [Category("MapGuide Viewer")] //NOXLATE
         [Description("If true, the map being viewed will have all its tiled groups converted to non-tiled groups. Tiled groups are not supported by this viewer and are not rendered")] //NOXLATE
         [DefaultValue(false)]
+        [MgComponentProperty]
         public bool ConvertTiledGroupsToNonTiled
         {
             get;
             set;
         }
 
-        [Category("MapGuide Viewer")] //NOXLATE
-        [Description("If true, the viewer will use the RenderMap API instead of RenderDynamicOverlay allowing tiled layers to be rendered to the final image. Setting this property to true nullifies the ConvertTiledGroupsToNonTiled property")] //NOXLATE
-        [DefaultValue(true)]
         /// <summary>
         /// Gets whether to use the RenderMap API instead of RenderDynamicOverlay if the map has tiled
         /// layers. RenderMap includes tiled layers as part of the output image, but will not take advantage
         /// of any tile caching mechanisms. Setting this property to true nullifies any effect of the 
         /// <see cref="P:OSGeo.MapGuide.Viewer.IMapViewer.ConvertTiledGroupsToNonTiled"/> property
         /// </summary>
+        [Category("MapGuide Viewer")] //NOXLATE
+        [Description("If true, the viewer will use the RenderMap API instead of RenderDynamicOverlay allowing tiled layers to be rendered to the final image. Setting this property to true nullifies the ConvertTiledGroupsToNonTiled property")] //NOXLATE
+        [DefaultValue(true)]
+        [MgComponentProperty]
         public bool UseRenderMapIfTiledLayersExist { get; set; }
 
-        [Category("MapGuide Viewer")] //NOXLATE
-        [Description("If true, all zooms will snap to the nearest finite display scale defined in the map being viewed")] //NOXLATE
-        [DefaultValue(true)]
         /// <summary>
         /// Gets whether to respect the list of finite display scales in a map being viewed if there are any defined.
         /// If true, all zooms will "snap" to the nearest finite display scale. Otherwise, the viewer will disregard
         /// this list when zooming in or out.
         /// </summary>
+        [Category("MapGuide Viewer")] //NOXLATE
+        [Description("If true, all zooms will snap to the nearest finite display scale defined in the map being viewed")] //NOXLATE
+        [DefaultValue(true)]
+        [MgComponentProperty]
         public bool RespectFiniteDisplayScales { get; set; }
 
         /// <summary>
@@ -2151,6 +2163,7 @@ namespace OSGeo.MapGuide.Viewer
         /// </summary>
         [Category("MapGuide Viewer")] //NOXLATE
         [Description("The zoom in factor")] //NOXLATE
+        [MgComponentProperty]
         public double ZoomInFactor
         {
             get { return _zoomInFactor; }
@@ -2168,6 +2181,7 @@ namespace OSGeo.MapGuide.Viewer
         /// </summary>
         [Category("MapGuide Viewer")] //NOXLATE
         [Description("The zoom out factor")] //NOXLATE
+        [MgComponentProperty]
         public double ZoomOutFactor
         {
             get { return _zoomOutFactor; }
@@ -2876,6 +2890,7 @@ namespace OSGeo.MapGuide.Viewer
         /// </summary>
         [Browsable(false)]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        [MgComponentProperty]
         public MapActiveTool ActiveTool
         {
             get
@@ -2984,5 +2999,57 @@ namespace OSGeo.MapGuide.Viewer
         public event PaintEventHandler PreMapRender;
 
         public event PaintEventHandler PostMapRender;
+
+        private Dictionary<string, PropertyInfo> _properties;
+
+        public IEnumerable<PropertyInfo> ComponentProperties
+        {
+            get
+            {
+                CheckAndInitProperties();
+                return _properties.Values;
+            }
+        }
+
+        private void CheckAndInitProperties()
+        {
+            if (_properties == null)
+            {
+                _properties = new Dictionary<string, PropertyInfo>();
+                var props = this.GetType().GetProperties();
+                foreach (var p in props)
+                {
+                    var attributes = p.GetCustomAttributes(true);
+                    foreach (var att in attributes)
+                    {
+                        var compAttr = att as MgComponentPropertyAttribute;
+                        if (compAttr != null)
+                        {
+                            _properties[p.Name] = p;
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+
+        public void SetPropertyValue(string propertyName, object value)
+        {
+            CheckAndInitProperties();
+            if (!_properties.ContainsKey(propertyName))
+                throw new InvalidOperationException(string.Format(Strings.ErrorInvalidComponentProperty, propertyName));
+
+            var prop = _properties[propertyName];
+            prop.SetValue(this, Convert.ChangeType(value, prop.PropertyType), null);
+        }
+
+        public object GetPropertyValue(string propertyName)
+        {
+            CheckAndInitProperties();
+            if (!_properties.ContainsKey(propertyName))
+                throw new InvalidOperationException(string.Format(Strings.ErrorInvalidComponentProperty, propertyName));
+
+            return _properties[propertyName].GetValue(propertyName, null);
+        }
     }
 }

@@ -394,6 +394,15 @@ namespace OSGeo.MapGuide.Viewer {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Set Language.
+        /// </summary>
+        internal static string SetLanguage {
+            get {
+                return ResourceManager.GetString("SetLanguage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to {0} features selected.
         /// </summary>
         internal static string StatFeaturesSelected {

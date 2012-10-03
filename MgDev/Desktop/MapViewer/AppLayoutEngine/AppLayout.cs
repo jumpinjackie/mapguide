@@ -16,8 +16,8 @@ namespace OSGeo.MapGuide.Viewer.AppLayoutEngine
         [XmlElement]
         public string Language { get; set; }
 
-        [XmlElement]
-        public AppLayoutSettings Settings { get; set; }
+        [XmlArray]
+        public List<NameValue> Settings { get; set; }
 
         [XmlElement]
         public InfoPaneSettings InfoPane { get; set; }
@@ -44,15 +44,15 @@ namespace OSGeo.MapGuide.Viewer.AppLayoutEngine
         {
             var layout = new AppLayout();
             layout.Title = title;
-            layout.Settings = new AppLayoutSettings()
+            layout.Settings = new List<NameValue>()
             {
-                ConvertTiledGroupsToNonTiled = true,
-                UseRenderMap = true,
-                SelectionColor = Util.ToHtmlColorWithAlpha(System.Drawing.Color.Blue),
-                ShowVertexCoordinatesWhenDigitizing = false,
-                ZoomInFactor = 0.5,
-                ZoomOutFactor = 2.0,
-                PointPixelBuffer = 3
+                new NameValue() { Name = "ConvertTiledGroupsToNonTiled", Value = "true" }, //NOXLATE
+                new NameValue() { Name = "UseRenderMap", Value = "true" }, //NOXLATE
+                new NameValue() { Name = "SelectionColor", Value = "color:" + Util.ToHtmlColorWithAlpha(System.Drawing.Color.Blue) }, //NOXLATE
+                new NameValue() { Name = "ShowVertexCoordinatesWhenDigitizing", Value = "true" }, //NOXLATE
+                new NameValue() { Name = "ZoomInFactor", Value = "0.5" }, //NOXLATE
+                new NameValue() { Name = "ZoomOutFactor", Value = "2.0" }, //NOXLATE
+                new NameValue() { Name = "PointPixelBuffer", Value = "3" } //NOXLATE
             };
             layout.InfoPane = new InfoPaneSettings()
             {
@@ -258,36 +258,6 @@ namespace OSGeo.MapGuide.Viewer.AppLayoutEngine
         }
     }
 
-    public class AppLayoutSettings
-    {
-        [XmlElement]
-        public string InvokeOnStartup { get; set; }
-
-        [XmlElement]
-        public string SelectionColor { get; set; }
-
-        [XmlElement]
-        public bool ConvertTiledGroupsToNonTiled { get; set; }
-
-        [XmlElement]
-        public bool UseRenderMap { get; set; }
-
-        [XmlElement]
-        public bool RespectFiniteScales { get; set; }
-
-        [XmlElement]
-        public bool ShowVertexCoordinatesWhenDigitizing { get; set; }
-
-        [XmlElement]
-        public double ZoomInFactor { get; set; }
-
-        [XmlElement]
-        public double ZoomOutFactor { get; set; }
-
-        [XmlElement]
-        public int PointPixelBuffer { get; set; }
-    }
-
     public class InfoPaneSettings
     {
         [XmlElement]
@@ -442,11 +412,11 @@ namespace OSGeo.MapGuide.Viewer.AppLayoutEngine
     /// </summary>
     public class StringPrefixes
     {
-        public const string MAPDEFINITION = "map:";
-        public const string COMPONENTID = "component:";
-        public const string COLOR = "color:";
-        public const string ENUM = "enum:";
-        public const string VIEWERID = "viewer:";
-        public const string TASKPANEID = "taskpane:";
+        public const string MAPDEFINITION = "map:"; //NOXLATE
+        public const string COMPONENTID = "component:"; //NOXLATE
+        public const string COLOR = "color:"; //NOXLATE
+        public const string ENUM = "enum:"; //NOXLATE
+        public const string VIEWERID = "viewer:"; //NOXLATE
+        public const string TASKPANEID = "taskpane:"; //NOXLATE
     }
 }
