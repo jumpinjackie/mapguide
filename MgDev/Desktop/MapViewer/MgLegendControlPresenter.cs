@@ -622,7 +622,7 @@ namespace OSGeo.MapGuide.Viewer
                 var checkBoxOffset = xoffset;
                 var selectabilityOffset = xoffset + 16;
                 var iconOffsetNoSelect = xoffset + 16;
-                if (themeMeta != null) //No checkbox for theme rule nodes
+                if (layerMeta != null && !layerMeta.Checkable) //No checkbox for theme rule nodes
                 {
                     selectabilityOffset = xoffset;
                     iconOffsetNoSelect = xoffset;
@@ -634,7 +634,7 @@ namespace OSGeo.MapGuide.Viewer
                 //Uncomment if you need to "see" the bounds of the node
                 //e.Graphics.DrawRectangle(Pens.Black, e.Node.Bounds);
 
-                if (layerMeta != null) //No checkbox for theme rule nodes
+                if (layerMeta != null && layerMeta.Checkable) //No checkbox for theme rule nodes
                 {
                     if (Application.RenderWithVisualStyles)
                     {
@@ -774,6 +774,8 @@ namespace OSGeo.MapGuide.Viewer
         {
             public bool IsGroup { get; protected set; }
 
+            public bool Checkable { get; protected set; }
+
             public abstract string ObjectId { get; }
         }
 
@@ -786,6 +788,7 @@ namespace OSGeo.MapGuide.Viewer
             {
                 base.IsGroup = true;
                 this.Group = group;
+                this.Checkable = true;
             }
 
             public override string ObjectId
@@ -802,6 +805,7 @@ namespace OSGeo.MapGuide.Viewer
                 this.IsPlaceholder = bPlaceholder;
                 this.ThemeIcon = themeIcon;
                 this.Label = labelText;
+                this.Checkable = false;
             }
 
             public bool IsPlaceholder { get; private set; }
@@ -858,6 +862,7 @@ namespace OSGeo.MapGuide.Viewer
             {
                 base.IsGroup = false;
                 this.Layer = layer;
+                this.Checkable = (layer.Group != null && layer.Group.LayerGroupType == MgLayerGroupType.Normal);
                 this.IsSelectable = (layer != null) ? layer.Selectable : false;
                 this.DrawSelectabilityIcon = (layer != null && bInitiallySelectable);
                 this.WasInitiallySelectable = bInitiallySelectable;

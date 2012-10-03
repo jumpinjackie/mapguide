@@ -371,9 +371,26 @@ namespace OSGeo.MapGuide.Viewer
         /// <summary>
         /// Gets or sets whether to convert tiled layers to non-tiled layers. This is a workaround
         /// setting for tiled maps to be displayed as viewer support for tiled layers is still not
-        /// implemented
+        /// implemented.
+        /// 
+        /// If <see cref="P:OSGeo.MapGuide.Viewer.IMapViewer.UseRenderMapIfTiledLayersExist"/> is set
+        /// to true, this property has no effect.
         /// </summary>
         bool ConvertTiledGroupsToNonTiled { get; set; }
+
+        /// <summary>
+        /// Gets whether to use the RenderMap API instead of RenderDynamicOverlay if the map has tiled
+        /// layers. RenderMap includes tiled layers as part of the output image, but will not take advantage
+        /// of any tile caching mechanisms. Setting this property to true nullifies any effect of the 
+        /// <see cref="P:OSGeo.MapGuide.Viewer.IMapViewer.ConvertTiledGroupsToNonTiled"/> property
+        /// </summary>
+        bool UseRenderMapIfTiledLayersExist { get; set; }
+
+        /// <summary>
+        /// Gets whether to respect the list of finite display scales in a map being viewed if there are any defined.
+        /// If true, all zooms will "snap" to the nearest finite display scale
+        /// </summary>
+        bool RespectFiniteDisplayScales { get; set; }
 
         /// <summary>
         /// Gets whether this viewer has a map loaded into it

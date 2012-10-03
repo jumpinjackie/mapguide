@@ -196,14 +196,15 @@ namespace OSGeo.MapGuide.Viewer
             RefreshLegend();
         }
 
-        
-
         private void trvLegend_AfterCheck(object sender, TreeViewEventArgs e)
         {
             if (e.Node.Tag == null)
                 return;
 
             var meta = ((LegendNodeMetadata)e.Node.Tag);
+            if (!meta.Checkable)
+                return;
+
             if (meta.IsGroup) //Group
             {
                 _presenter.SetGroupVisible(meta.ObjectId, e.Node.Checked);
@@ -220,6 +221,9 @@ namespace OSGeo.MapGuide.Viewer
                 return;
 
             var meta = ((LegendNodeMetadata)e.Node.Tag);
+            if (!meta.Checkable) //Shouldn't happen, but just in case
+                return;
+
             if (meta.IsGroup) //Group
             {
                 _presenter.SetGroupExpandInLegend(meta.ObjectId, true);

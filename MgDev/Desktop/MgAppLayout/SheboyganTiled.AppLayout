@@ -5,8 +5,8 @@
   <Settings>
     <SelectionColor>0000FF</SelectionColor>
     <ConvertTiledGroupsToNonTiled>false</ConvertTiledGroupsToNonTiled>
-    <UseRenderMap>false</UseRenderMap>
-    <RespectFiniteScales>false</RespectFiniteScales>
+    <UseRenderMap>true</UseRenderMap>
+    <RespectFiniteScales>true</RespectFiniteScales>
     <ShowVertexCoordinatesWhenDigitizing>false</ShowVertexCoordinatesWhenDigitizing>
     <ZoomInFactor>0.5</ZoomInFactor>
     <ZoomOutFactor>2</ZoomOutFactor>
@@ -24,8 +24,8 @@
     </PropertyPane>
   </InfoPane>
   <Map>
-    <Name>Sheboygan</Name>
-    <MapDefinition>Library://Samples/Sheboygan/Maps/Sheboygan.MapDefinition</MapDefinition>
+    <Name>SheboyganTiled</Name>
+    <MapDefinition>Library://Samples/Sheboygan/MapsTiled/Sheboygan.MapDefinition</MapDefinition>
   </Map>
   <Menu>
     <Items>
@@ -305,7 +305,7 @@
         </NameValue>
         <NameValue>
           <Name>MapDefinition</Name>
-          <Value>map:Sheboygan</Value>
+          <Value>map:SheboyganTiled</Value>
         </NameValue>
       </Properties>
     </ComponentDefinition>
