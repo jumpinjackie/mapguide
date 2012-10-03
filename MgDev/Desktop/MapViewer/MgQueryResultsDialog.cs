@@ -79,7 +79,7 @@ namespace OSGeo.MapGuide.Viewer
             {
                 bgGridLoader.ReportProgress(-1, new InitGridAction() { ColumnNames = propNames.ToArray() });
                 int read = 0;
-                while (reader.ReadNext() && read < _limit)
+                while (reader.ReadNext())
                 {
                     object[] values = new object[propCount];
                     for (int i = 0; i < propCount; i++)
@@ -157,6 +157,8 @@ namespace OSGeo.MapGuide.Viewer
                     }
                     bgGridLoader.ReportProgress(-1, new AddRow() { Values = values });
                     read++;
+                    if ((_limit > 0 && read >= _limit))
+                        break;
                 }
             }
             finally

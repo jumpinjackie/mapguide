@@ -390,4 +390,16 @@
   <data name="SetLanguage" xml:space="preserve">
     <value>Set Language</value>
   </data>
+  <data name="ErrorSearchFilterMissingPlaceholder" xml:space="preserve">
+    <value>The search filter is missing the required $USER_VARIABLE placeholder</value>
+  </data>
+  <data name="ErrorInvalidSearchLayer" xml:space="preserve">
+    <value>Invalid search layer. Layer {0} not found on map</value>
+  </data>
+  <data name="TextEnterSearchCriteria" xml:space="preserve">
+    <value>Enter Search Criteria</value>
+  </data>
+  <data name="TitleSearch" xml:space="preserve">
+    <value>Search</value>
+  </data>
 </root>

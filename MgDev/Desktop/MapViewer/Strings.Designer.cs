@@ -178,6 +178,15 @@ namespace OSGeo.MapGuide.Viewer {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Invalid search layer. Layer {0} not found on map.
+        /// </summary>
+        internal static string ErrorInvalidSearchLayer {
+            get {
+                return ResourceManager.GetString("ErrorInvalidSearchLayer", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Layer metadata not fully initialized.
         /// </summary>
         internal static string ErrorLayerMetadataNotFullyInitialized {
@@ -210,6 +219,15 @@ namespace OSGeo.MapGuide.Viewer {
         internal static string ErrorNotImplemented {
             get {
                 return ResourceManager.GetString("ErrorNotImplemented", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The search filter is missing the required $USER_VARIABLE placeholder.
+        /// </summary>
+        internal static string ErrorSearchFilterMissingPlaceholder {
+            get {
+                return ResourceManager.GetString("ErrorSearchFilterMissingPlaceholder", resourceCulture);
             }
         }
         
@@ -507,6 +525,15 @@ namespace OSGeo.MapGuide.Viewer {
         internal static string TextEnableTooltips {
             get {
                 return ResourceManager.GetString("TextEnableTooltips", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Enter Search Criteria.
+        /// </summary>
+        internal static string TextEnterSearchCriteria {
+            get {
+                return ResourceManager.GetString("TextEnterSearchCriteria", resourceCulture);
             }
         }
         
@@ -813,6 +840,15 @@ namespace OSGeo.MapGuide.Viewer {
         internal static string TitleQuery {
             get {
                 return ResourceManager.GetString("TitleQuery", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Search.
+        /// </summary>
+        internal static string TitleSearch {
+            get {
+                return ResourceManager.GetString("TitleSearch", resourceCulture);
             }
         }
         
