@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <AppLayout xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
-  <Title>MapGuide Desktop App Layout Example</Title>
+  <Title>MapGuide Desktop App Layout Example (Untiled)</Title>
   <Icon>app.ico</Icon>
   <Settings>
     <NameValue>
@@ -88,6 +88,11 @@
           </ItemBase>
           <ItemBase xsi:type="CommandItem">
             <ComponentID>Theme</ComponentID>
+            <ShowLabel>false</ShowLabel>
+          </ItemBase>
+          <ItemBase xsi:type="SeparatorItem" />
+          <ItemBase xsi:type="CommandItem">
+            <ComponentID>SearchParcelsByName</ComponentID>
             <ShowLabel>false</ShowLabel>
           </ItemBase>
           <ItemBase xsi:type="SeparatorItem" />
@@ -185,6 +190,11 @@
           </ItemBase>
           <ItemBase xsi:type="SeparatorItem" />
           <ItemBase xsi:type="CommandItem">
+            <ComponentID>SearchParcelsByName</ComponentID>
+            <ShowLabel>false</ShowLabel>
+          </ItemBase>
+          <ItemBase xsi:type="SeparatorItem" />
+          <ItemBase xsi:type="CommandItem">
             <ComponentID>ViewerOptions</ComponentID>
             <ShowLabel>false</ShowLabel>
           </ItemBase>
@@ -248,6 +258,11 @@
             <ComponentID>Theme</ComponentID>
             <ShowLabel>false</ShowLabel>
           </ItemBase>
+          <ItemBase xsi:type="SeparatorItem" />
+          <ItemBase xsi:type="CommandItem">
+            <ComponentID>SearchParcelsByName</ComponentID>
+            <ShowLabel>false</ShowLabel>
+          </ItemBase>
         </Items>
       </ItemBase>
       <ItemBase xsi:type="SeparatorItem" />
@@ -275,6 +290,11 @@
         </ItemBase>
         <ItemBase xsi:type="CommandItem">
           <ComponentID>Theme</ComponentID>
+          <ShowLabel>false</ShowLabel>
+        </ItemBase>
+        <ItemBase xsi:type="SeparatorItem" />
+        <ItemBase xsi:type="CommandItem">
+          <ComponentID>SearchParcelsByName</ComponentID>
           <ShowLabel>false</ShowLabel>
         </ItemBase>
       </Items>
@@ -402,6 +422,40 @@
     <ComponentDefinition>
       <ComponentID>Select</ComponentID>
       <ClassName>OSGeo.MapGuide.Viewer.MgSelectComponent</ClassName>
+    </ComponentDefinition>
+    <ComponentDefinition>
+      <ComponentID>SearchParcelsByName</ComponentID>
+      <ClassName>OSGeo.MapGuide.Viewer.MgSearchComponent</ClassName>
+      <Properties>
+        <NameValue>
+          <Name>Label</Name>
+          <Value>Search Parcels by Owner</Value>
+        </NameValue>
+        <NameValue>
+          <Name>Title</Name>
+          <Value>Search Parcels by Owner</Value>
+        </NameValue>
+        <NameValue>
+          <Name>LayerName</Name>
+          <Value>Parcels</Value>
+        </NameValue>
+        <NameValue>
+          <Name>Prompt</Name>
+          <Value>Enter the owner's name (eg. Schmitt)</Value>
+        </NameValue>
+        <NameValue>
+          <Name>Filter</Name>
+          <Value>RNAME LIKE '$USER_VARIABLE%'</Value>
+        </NameValue>
+        <NameValue>
+          <Name>Target</Name>
+          <Value>enum:OSGeo.MapGuide.Viewer.MgViewerTarget:TaskPane</Value>
+        </NameValue>
+        <NameValue>
+          <Name>TaskPane</Name>
+          <Value>taskpane:</Value>
+        </NameValue>
+      </Properties>
     </ComponentDefinition>
     <ComponentDefinition>
       <ComponentID>Theme</ComponentID>
