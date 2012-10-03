@@ -188,6 +188,15 @@
       <DependentUpon>MgQueryResultsDialog.cs</DependentUpon>
     </Compile>
     <Compile Include="MgReadOnlyStream.cs" />
+    <Compile Include="MgSearchComponent.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="MgSearchControlImpl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="MgSearchControlImpl.Designer.cs">
+      <DependentUpon>MgSearchControlImpl.cs</DependentUpon>
+    </Compile>
     <Compile Include="MgTaskPane.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -257,6 +266,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="MgQueryResultsDialog.resx">
       <DependentUpon>MgQueryResultsDialog.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="MgSearchControlImpl.resx">
+      <DependentUpon>MgSearchControlImpl.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="MgTaskPane.resx">
       <DependentUpon>MgTaskPane.cs</DependentUpon>
