@@ -3,6 +3,7 @@ API Changelog:
  - MgdPlatform::Terminate() did not call MgdFdoConnectionPool::Cleanup() leaving that to the static initializer to cleanup. This caused problems for the GDAL provider if connection pooling is enabled. The call has been put into MgdPlatform::Terminate() and connection pooling for the GDAL provider has been re-enabled in Platform.ini
  - Add support for MapGuide's PreCacheMaps configuration property in Platform.ini
  - MgMapViewer is now an IMapComponent, and any properties tagged with MgComponentPropertyAttribute can be dynamically set by the AppLayout engine.
+ - New MapToScreenUnits viewer API to complement the existing ScreenToMapUnits API.
 
 Viewer Changelog:
  - Support for Localization

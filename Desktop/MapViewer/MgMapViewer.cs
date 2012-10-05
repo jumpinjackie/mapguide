@@ -2956,20 +2956,36 @@ namespace OSGeo.MapGuide.Viewer
             return ScreenToMapUnits(x, y, false);
         }
 
-        private PointF ScreenToMapUnits(double x, double y, bool allowOutsideWindow)
+        private PointF ScreenToMapUnits(double sx, double sy, bool allowOutsideWindow)
         {
             if (!allowOutsideWindow)
             {
-                if (x > this.Width - 1) x = this.Width - 1;
-                else if (x < 0) x = 0;
+                if (sx > this.Width - 1) sx = this.Width - 1;
+                else if (sx < 0) sx = 0;
 
-                if (y > this.Height - 1) y = this.Height - 1;
-                else if (y < 0) y = 0;
+                if (sy > this.Height - 1) sy = this.Height - 1;
+                else if (sy < 0) sy = 0;
             }
 
-            x = _extX1 + (_extX2 - _extX1) * (x / this.Width);
-            y = _extY1 - (_extY1 - _extY2) * (y / this.Height);
-            return new PointF((float)x, (float)y);
+            var mx = _extX1 + ((_extX2 - _extX1) * (sx / this.Width));
+            var my = _extY1 - ((_extY1 - _extY2) * (sy / this.Height));
+            return new PointF((float)mx, (float)my);
+        }
+
+        /// <summary>
+        /// Converts the specified map coordinates to screen coordinates
+        /// </summary>
+        /// <param name="mx"></param>
+        /// <param name="my"></param>
+        /// <returns></returns>
+        public Point MapToScreenUnits(double mx, double my)
+        {
+            //Equation derived from high-school mathematical inversion of the 
+            //ScreenToMapUnits formula :) Tests thus far indicate this formula
+            //is correct.
+            var sx = this.Width * ((mx - _extX1) / (_extX2 - _extX1));
+            var sy = this.Height * ((my - _extY1) / (_extY2 - _extY1));
+            return new Point(Convert.ToInt32(Math.Round(sx)), Convert.ToInt32(Math.Round(sy)));
         }
 
         /// <summary>
