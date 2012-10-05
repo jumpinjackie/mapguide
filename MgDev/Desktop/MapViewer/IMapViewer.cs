@@ -471,10 +471,19 @@ namespace OSGeo.MapGuide.Viewer
         /// <summary>
         /// Converts the given coordinate in screen units to map units
         /// </summary>
-        /// <param name="x"></param>
-        /// <param name="y"></param>
+        /// <param name="x">The x coordinate in screen space</param>
+        /// <param name="y">The y coordinate in screen space</param>
         /// <returns></returns>
         PointF ScreenToMapUnits(double x, double y);
+
+        /// <summary>
+        /// Converts the given coordinate in map-space to coordinates in screen space. This is the inverse of
+        /// <see cref="M:OSGeo.MapGuide.Viewer.IMapViewer.ScreenToMapUnits" />
+        /// </summary>
+        /// <param name="x">The x coordinate in map space</param>
+        /// <param name="y">The y coordinate in map space</param>
+        /// <returns></returns>
+        Point MapToScreenUnits(double x, double y);
     }
 
     public class MgMapViewHistoryEntry
