@@ -119,6 +119,7 @@
     </ClCompile>
     <ClCompile Include="CriticalSection.cpp" />
     <ClCompile Include="RenderUtil.cpp" />
+    <ClCompile Include="MapQuantization.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="SymbolTrans.h">
@@ -215,6 +216,7 @@
     <ClInclude Include="Renderers.h" />
     <ClInclude Include="RenderUtil.h" />
     <ClInclude Include="stdafx.h" />
+    <ClInclude Include="MapQuantization.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Renderers.rc" />
