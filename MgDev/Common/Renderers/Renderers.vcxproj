@@ -208,6 +208,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="MapQuantization.cpp" />
     <ClCompile Include="SymbolTrans.cpp" />
     <ClCompile Include="DWFRenderer.cpp" />
     <ClCompile Include="EMapRenderer.cpp" />
@@ -253,6 +254,7 @@
     <ClCompile Include="RenderUtil.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="MapQuantization.h" />
     <ClInclude Include="SymbolTrans.h" />
     <ClInclude Include="DWFRenderer.h" />
     <ClInclude Include="DWFRSInputStream.h" />
