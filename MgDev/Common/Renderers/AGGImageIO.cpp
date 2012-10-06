@@ -29,7 +29,7 @@
 //from the alpha channel, which is not desirable for high quality output
 
 #include "GDUtils.h"
-
+#include "MapQuantization.h"
 #include <assert.h>
 
 #ifdef _DEBUG_PNG8
@@ -40,7 +40,7 @@
 
 #pragma warning(disable : 4611)
 
-enum MS_RETURN_VALUE {MS_SUCCESS, MS_FAILURE, MS_DONE};
+//enum MS_RETURN_VALUE {MS_SUCCESS, MS_FAILURE, MS_DONE};
 
 // in-memory switch to permit disabling colormapping at runtime
 // (could be in debug ifdefs but will be optimized away in release build anyway)
@@ -666,6 +666,129 @@ int read_png(png_write_context* cxt, int& retwidth, int& retheight, unsigned cha
    return 0;
 }
 
+/*
+ * sort a given list of rgba entries so that all the opaque pixels are at the end
+ */
+int remapPaletteForPNG(unsigned char *apixels,int height,int width,rgbaPixel *palette,int palette_num_entries,unsigned int palette_scaling_maxval, rgbPixel *rgb, unsigned char *a, int *num_a) {
+    int bot_idx, top_idx, x;
+    int remap[256];
+    unsigned int maxval = palette_scaling_maxval; 
+
+
+    /*
+     ** remap the palette colors so that all entries with
+     ** the maximal alpha value (i.e., fully opaque) are at the end and can
+     ** therefore be omitted from the tRNS chunk.  Note that the ordering of
+     ** opaque entries is reversed from how they were previously arranged
+     ** --not that this should matter to anyone.
+     */
+
+    for (top_idx = palette_num_entries-1, bot_idx = x = 0;  x < palette_num_entries;  ++x) {
+        if (palette[x].a == maxval)
+            remap[x] = top_idx--;
+        else
+            remap[x] = bot_idx++;
+    }
+    /* sanity check:  top and bottom indices should have just crossed paths */
+    if (bot_idx != top_idx + 1) {
+        //msSetError(MS_MISCERR,"quantization sanity check failed","createPNGPalette()");
+        return MS_FAILURE;
+    }
+
+    *num_a = bot_idx;
+
+    for(x=0;x<width*height;x++)
+        apixels[x] = remap[apixels[x]];
+
+
+    for (x = 0; x < palette_num_entries; ++x) {
+        if (maxval == 255) {
+            a[remap[x]] = palette[x].a;
+            rgb[remap[x]].r = palette[x].r;
+            rgb[remap[x]].g = palette[x].g;
+            rgb[remap[x]].b = palette[x].b;
+        } else {
+            /* rescale palette */
+            rgb[remap[x]].r = (palette[x].r * 255 + (maxval >> 1)) / maxval;
+            rgb[remap[x]].g = (palette[x].g * 255 + (maxval >> 1)) / maxval;
+            rgb[remap[x]].b = (palette[x].b * 255 + (maxval >> 1)) / maxval;
+            a[remap[x]] = (palette[x].a * 255 + (maxval >> 1)) / maxval;
+        }
+        if (a[remap[x]] != 255) {
+            /* un-premultiply pixels */
+            double da = 255.0/a[remap[x]];
+            rgb[remap[x]].r *=  da;
+            rgb[remap[x]].g *=  da;
+            rgb[remap[x]].b *=  da;
+        }
+    }
+
+    return MS_SUCCESS;
+}
+
+int savePalettePNG(unsigned char *apixels,int height,int width,rgbaPixel *palette,int palette_num_entries,unsigned int palette_scaling_maxval, png_write_context* cxt, int compression) 
+{
+    png_infop info_ptr;
+    rgbPixel rgb[256];
+    unsigned char a[256];
+    int num_a;
+    int row,sample_depth;
+    png_structp png_ptr = png_create_write_struct(
+        PNG_LIBPNG_VER_STRING, NULL,NULL,NULL);
+    
+    if (!png_ptr)
+        return (MS_FAILURE);
+
+    info_ptr = png_create_info_struct(png_ptr);
+    if (!info_ptr)
+    {
+        png_destroy_write_struct(&png_ptr,
+            (png_infopp)NULL);
+        return (MS_FAILURE);
+    }
+
+    if (setjmp(png_jmpbuf(png_ptr)))
+    {
+        png_destroy_write_struct(&png_ptr, &info_ptr);
+        return (MS_FAILURE);
+    }
+
+    png_set_write_fn(png_ptr, (void *)cxt, png_write_cb, NULL);
+
+    png_set_compression_level(png_ptr, compression);
+
+    if (palette_num_entries <= 2)
+        sample_depth = 1;
+    else if (palette_num_entries <= 4)
+        sample_depth = 2;
+    else if (palette_num_entries <= 16)
+        sample_depth = 4;
+    else
+        sample_depth = 8;
+   
+    png_set_IHDR(png_ptr, info_ptr, width, height,
+                sample_depth, PNG_COLOR_TYPE_PALETTE,
+                0, PNG_COMPRESSION_TYPE_DEFAULT,
+                PNG_FILTER_TYPE_DEFAULT);
+   
+    remapPaletteForPNG(apixels,height,width,palette,palette_num_entries,palette_scaling_maxval,rgb,a,&num_a);
+
+    png_set_PLTE(png_ptr, info_ptr, (png_colorp)(rgb),palette_num_entries);
+    if(num_a)
+        png_set_tRNS(png_ptr, info_ptr, a,num_a, NULL);
+
+    png_write_info(png_ptr, info_ptr);
+    png_set_packing(png_ptr);
+
+    for(row=0;row<height;row++) {
+        unsigned char *rowptr = &(apixels[row*width]);
+        png_write_row(png_ptr, rowptr);
+    }
+    png_write_end(png_ptr, info_ptr);
+    png_destroy_write_struct(&png_ptr, &info_ptr);
+    return MS_SUCCESS;
+}
+
 ////////////////////////////////////////////////////////////////////////////////////////
 /******************************************************************************
  * mapgd.c 7803 2008-07-09 05:17:40Z sdlime
@@ -964,12 +1087,14 @@ RS_ByteData* AGGImageIO::Save(const RS_String& format,
     {
         double gamma = 1.0; //TODO: will use this once we allow user setting of gamma for AGG gendering
 
-        UnmultiplyAlpha(src, src_width * src_height);
+        
 
         //NOTE: We do not use gd for reading or writing PNG since internally gd drops a bit
         //from the alpha channel, which is not desirable for high quality output
         if (format == L"PNG")
         {
+            UnmultiplyAlpha(src, src_width * src_height);
+
             png_write_context cxt;
             memset(&cxt, 0, sizeof(cxt));
             write_png(&cxt, src, dst_width, dst_height, gamma, drop_alpha);
@@ -978,8 +1103,71 @@ RS_ByteData* AGGImageIO::Save(const RS_String& format,
             delete [] cxt.buf;
             return byteData;
         }
-        else if (format == L"JPG" || format == L"GIF" || format == L"PNG8")
+        //NOTE: We do not use gd for reading or writing PNG8 for the same reason as for the PNG
+        else if (format == L"PNG8")
         {
+            // copy the src data into the rgbaPixel array
+            rgbaPixel *apixelsIn=(rgbaPixel*)malloc(dst_height*dst_width*sizeof(rgbaPixel));
+            unsigned int* ptr = src;
+            for (int i=0; i<dst_height*dst_width; i++)
+            {
+                unsigned int c = *ptr++;
+                rgbaPixel *pixel = &(apixelsIn[i]);
+                pixel->a = c >> 24;
+                pixel->b = (c >> 16) & 0xff;  // some simple optimization ;-)
+                pixel->g = (c >> 8) & 0xff;
+                pixel->r = c & 0xff;
+            }
+            int ncolors = baseColorPalette ? baseColorPalette->size() : 0;
+            //jng: Incorporate the colors that have been handed down to us into the final palette
+            bool bWithinPalette = (ncolors < 256 && ncolors > 0);
+            unsigned int reqcolor = (bWithinPalette) ? (256 - ncolors) : 256;
+            unsigned int palette_scaling_maxval = 255;
+            rgbaPixel *palette=(rgbaPixel*)malloc(256*sizeof(rgbaPixel));
+            msQuantizeRasterBuffer(apixelsIn,dst_height,dst_width, &reqcolor, palette, &palette_scaling_maxval);
+            
+            if (bWithinPalette)
+            {
+                //A [256 - #colors] color palette has been generated. So fill in the rest with the colors
+                //handed down from the baseColorPalette
+                unsigned int added = 0;
+                for (int i = reqcolor; i < 256; i++)
+                {
+                    //Requested Colors + baseColorPalette size may not actually reach 256, so guard
+                    //against overrun
+                    if ((i - reqcolor) >= baseColorPalette->size())
+                        break;
+
+                    RS_Color c = baseColorPalette->at(i - reqcolor);
+                    //bscott: If the palette_scaling_maxval is lower than 255 we have to scale down all the map palette 
+                    //colors so the resulting png palette will be remap correctly.
+                    palette[i].a = (c.alpha() * (palette_scaling_maxval) + (255) / 2 ) / (255); 
+                    palette[i].r = (c.red() * (palette_scaling_maxval) + (255) / 2 ) / (255); 
+                    palette[i].g = (c.green() * (palette_scaling_maxval) + (255) / 2 ) / (255); 
+                    palette[i].b = (c.blue() * (palette_scaling_maxval) + (255) / 2 ) / (255); 
+                    added++;
+                }
+                reqcolor += added;
+            }
+
+            unsigned char *apixelsOut=(unsigned char *)malloc(dst_height*dst_width);
+            msClassifyRasterBuffer(apixelsIn,dst_height,dst_width, palette,reqcolor,apixelsOut) ;
+
+            png_write_context cxt;
+            memset(&cxt, 0, sizeof(cxt));
+            savePalettePNG(apixelsOut,dst_height,dst_width,palette,reqcolor,palette_scaling_maxval,&cxt,-1);
+            RS_ByteData* byteData = (cxt.used > 0)? new RS_ByteData(cxt.buf, (unsigned int)cxt.used) : NULL;
+            delete [] cxt.buf;
+
+            free(apixelsIn);
+            free(palette);
+            free(apixelsOut);
+
+            return byteData;
+        }
+        else if (format == L"JPG" || format == L"GIF")
+        {
+            UnmultiplyAlpha(src, src_width * src_height);
             // gdimg24 contains the 24bit image
             gdImagePtr gdimg24 = gdImageCreateTrueColor(dst_width, dst_height);
 
@@ -1028,7 +1216,7 @@ RS_ByteData* AGGImageIO::Save(const RS_String& format,
 
             // convert to 256 color paletted image for PNG8, GIF
             gdImagePtr gdImgPalette = NULL;
-            if (format == L"GIF" || format == L"PNG8")
+            if (format == L"GIF")
             {
                 /// skip color quantization if no palette given or empty
                 if (baseColorPalette && !baseColorPalette->empty() && s_bUseColorMap) // memory based switch
@@ -1055,8 +1243,6 @@ RS_ByteData* AGGImageIO::Save(const RS_String& format,
 
             if (format == L"GIF")       // MgImageFormats::Gif
                 data = (unsigned char*)gdImageGifPtr(gdImgPalette, &size);
-            else if (format == L"PNG8") // MgImageFormats::Png8
-                data = (unsigned char*)gdImagePngPtr(gdImgPalette, &size);
             else if (format == L"JPG")  // MgImageFormats::Jpeg
                 data = (unsigned char*)gdImageJpegPtr(gdimg24, &size, 75);
 

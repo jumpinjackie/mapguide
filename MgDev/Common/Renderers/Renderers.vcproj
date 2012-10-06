@@ -692,6 +692,14 @@
 			>
 		</File>
 		<File
+			RelativePath=".\MapQuantization.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\MapQuantization.h"
+			>
+		</File>
+		<File
 			RelativePath=".\Renderers.h"
 			>
 		</File>
