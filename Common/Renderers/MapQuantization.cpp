@@ -45,6 +45,7 @@
  ** implied warranty.
  */
 #include "stdafx.h"
+#include <cstdlib>
 #include "gd.h"
 #include "MapQuantization.h"
 
