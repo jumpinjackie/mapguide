@@ -38,6 +38,7 @@ libMgRenderers_la_SOURCES = \
   KmlPolyStyle.cpp \
   KmlIconStyle.cpp \
   KmlRenderer.cpp \
+  MapQuantization.cpp \
   ObservationMesh.cpp \
   RenderUtil.cpp \
   RS_ByteData.cpp \
@@ -68,6 +69,7 @@ noinst_HEADERS = \
   KmlPolyStyle.h \
   KmlIconStyle.h \
   KmlRenderer.h \
+  MapQuantization.h \
   ObservationMesh.h \
   Renderers.h \
   RenderUtil.h \
