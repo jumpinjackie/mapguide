@@ -16,9 +16,9 @@ SET NUGET_CONTENT_VIEWER=%NUGET_BASEDIR%\api-desktop-viewer\content\%NUGET_TARGE
 SET NUGET_LIB_VIEWER=%NUGET_BASEDIR%\api-desktop-viewer\lib\%NUGET_TARGET%
 SET NUGET_CONTENT_WEB=%NUGET_BASEDIR%\api-web\content\%NUGET_TARGET%\mapguide-api-web
 SET NUGET_LIB_WEB=%NUGET_BASEDIR%\api-web\lib\%NUGET_TARGET%
-SET WEB_BASEDIR=%CD%\..\Web\bin\%TYPEBUILD%
-SET DESKTOP_BASEDIR=bin\%TYPEBUILD%
-SET SIGNER_ROOT=%CD%\DesktopUnmanagedApi\DotNet
+SET WEB_BASEDIR=%CD%\Web\bin\%TYPEBUILD%
+SET DESKTOP_BASEDIR=%CD%\%TYPEBUILD%\Desktop
+SET SIGNER_ROOT=%CD%\Desktop\DesktopUnmanagedApi\DotNet
 
 echo [install]: Copy api-base files to nuget staging
 %XCOPY% "%DESKTOP_BASEDIR%\*" "%NUGET_CONTENT_BASE%" /EXCLUDE:package_excludes.txt+base_package_excludes.txt
