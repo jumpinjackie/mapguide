@@ -34,5 +34,6 @@ MapViewerTest.exe.config
 SignMapGuideApi.exe
 UnitTest.exe
 Sheboygan.AppLayout
+SheboyganTiled.AppLayout
 SampleExtension.dll
 MgAppLayout.exe
