@@ -1,11 +1,9 @@
 @echo off
+SET MG_CPU=x86
+IF NOT "%1" == "" SET MG_CPU=%1
 pushd nuget
-nuget pack mapguide-api-base-x86.nuspec -BasePath x86\api-base
-nuget pack mg-desktop-net40-x86.nuspec -BasePath x86\api-desktop
-nuget pack mg-desktop-viewer-net40-x86.nuspec -BasePath x86\api-desktop-viewer
-nuget pack mapguide-api-web-x86.nuspec -BasePath x86\api-web
-nuget pack mapguide-api-base-x64.nuspec -BasePath x64\api-base
-nuget pack mg-desktop-net40-x64.nuspec -BasePath x64\api-desktop
-nuget pack mg-desktop-viewer-net40-x64.nuspec -BasePath x64\api-desktop-viewer
-nuget pack mapguide-api-web-x64.nuspec -BasePath x64\api-web
+nuget pack mapguide-api-base-%MG_CPU%.nuspec -BasePath %MG_CPU%\api-base
+nuget pack mg-desktop-net40-%MG_CPU%.nuspec -BasePath %MG_CPU%\api-desktop
+nuget pack mg-desktop-viewer-net40-%MG_CPU%.nuspec -BasePath %MG_CPU%\api-desktop-viewer
+nuget pack mapguide-api-web-%MG_CPU%.nuspec -BasePath %MG_CPU%\api-web
 popd
