@@ -1,5 +1,7 @@
 Backup
 Logs
+Schema
+Temp
 Repositories
 Dictionaries
 ACE.dll
@@ -23,6 +25,9 @@ OSGeo.MapGuide.Viewer.xml
 maestroapi.key
 DotNetHarness.exe
 DotNetHarness.exe.config
+DotNetHarness.vshost.exe
+DotNetHarness.vshost.exe.config
+DotNetHarness.vshost.exe.manifest
 DotNetUnitTest.exe
 DotNetUnitTest.exe.config
 MapViewerTest.exe
@@ -30,4 +35,5 @@ MapViewerTest.exe.config
 SignMapGuideApi.exe
 UnitTest.exe
 Sheboygan.AppLayout
+SampleExtension.dll
 MgAppLayout.exe
