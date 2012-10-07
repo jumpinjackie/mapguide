@@ -39,4 +39,5 @@ SignMapGuideApi.exe
 UnitTest.exe
 SampleExtension.dll
 Sheboygan.AppLayout
+SheboyganTiled.AppLayout
 MgAppLayout.exe
