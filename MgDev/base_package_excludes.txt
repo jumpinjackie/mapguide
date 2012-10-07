@@ -22,6 +22,9 @@ MgStylization.dll
 OSGeo.MapGuide.Foundation.dll
 OSGeo.MapGuide.Geometry.dll
 OSGeo.MapGuide.PlatformBase.dll
+OSGeo.MapGuide.Foundation.xml
+OSGeo.MapGuide.Geometry.xml
+OSGeo.MapGuide.PlatformBase.xml
 maestroapi.key
 DotNetHarness.exe
 DotNetHarness.exe.config

@@ -35,9 +35,10 @@ DoxyTransform.exe dotnet "%MG_DOC_XML%" "%MG_OUTPUT_DESKTOP%"
 echo [install]: binaries
 %XCOPY% "Desktop\bin\%TYPEBUILD%" "%MG_OUTPUT_DESKTOP%" /EXCLUDE:svn_excludes.txt+%CONFIGURATION%_excludes.txt
 pushd "%MG_OUTPUT_DESKTOP%"
-del MgMapGuideCommon.dll
-del OSGeo.MapGuide.MapGuideCommon.xml
-rd /S /Q Backup
+if exist MgMapGuideCommon.dll del MgMapGuideCommon.dll
+if exist OSGeo.MapGuide.MapGuideCommon.xml del OSGeo.MapGuide.MapGuideCommon.xml
+if exist OSGeo.MapGuide.Web.xml del OSGeo.MapGuide.Web.xml
+if exist Backup rd /S /Q Backup
 popd
 echo [install]: Samples
 pushd Desktop

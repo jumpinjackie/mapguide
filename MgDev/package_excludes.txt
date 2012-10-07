@@ -2,6 +2,9 @@
 .exp
 .lib
 MgMapGuideCommon.dll
+OSGeo.MapGuide.Foundation.xml
+OSGeo.MapGuide.Geometry.xml
+OSGeo.MapGuide.PlatformBase.xml
 OSGeo.FDO.dll
 OSGeo.FDO.Common.dll
 OSGeo.FDO.Geometry.dll

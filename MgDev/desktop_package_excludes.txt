@@ -1,6 +1,5 @@
 Backup
 Logs
-Schema
 Temp
 Repositories
 Dictionaries
