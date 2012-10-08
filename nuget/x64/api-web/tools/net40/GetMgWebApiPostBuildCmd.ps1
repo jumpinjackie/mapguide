@@ -1,5 +1,7 @@
 ﻿$solutionDir = [System.IO.Path]::GetDirectoryName($dte.Solution.FullName) + "\"
 $path = $installPath.Replace($solutionDir, "`$(SolutionDir)")
+$contentDir = Join-Path $path "mapguide-api-web"
+$files = $(Join-Path $contentDir "*.*")
 
 $MgWebApiPostBuildCmd = "
-copy /y `"`$(ProjectDir)mapguide-api-web\*.dll`" `"`$(TargetDir)`""
+xcopy /s /y `"$files`" `"`$(TargetDir)`""
