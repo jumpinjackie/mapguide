@@ -48,7 +48,8 @@ extern DefinitionAccess<CCoordinateSystemGeodeticPath, cs_GeodeticPath_> definit
 
     CCoordinateSystemGeodeticPathDictionary::ReadName,
     CCoordinateSystemGeodeticPathDictionary::ReadDescription,
-    CCoordinateSystemGeodeticPathDictionary::ReadAllGeodeticPaths,
+
+    CS_gpdefAll,
 
     CS_gpfnm,
 
@@ -89,11 +90,6 @@ CsDictionaryOpenMode CCoordinateSystemGeodeticPathDictionary::GetFileOpenMode(lo
 int CCoordinateSystemGeodeticPathDictionary::UpdateGeodeticPath(cs_GeodeticPath_* csPath, int /*unused*/)
 {
     return CS_gpupd(csPath);
-}
-
-int CCoordinateSystemGeodeticPathDictionary::ReadAllGeodeticPaths(csFILE *file, cs_GeodeticPath_ *gp_def, int* /*unused*/)
-{
-    return CS_gprd(file, gp_def);
 }
 
 bool CCoordinateSystemGeodeticPathDictionary::SetupCsGeodeticPathStruct(CCoordinateSystemGeodeticPath* mgGeodeticPath, cs_GeodeticPath_& csPath)

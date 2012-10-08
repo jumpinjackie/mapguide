@@ -41,6 +41,37 @@
 
 namespace MentorDictionary
 {
+    template<class TCsMap, class TContainer >
+    class TContainerPtr : public auto_ptr<TContainer>
+    {
+    public:
+        TContainerPtr()
+            : auto_ptr<TContainer>()
+        {
+        }
+
+        TContainerPtr(TContainer* pContainer)
+            : auto_ptr<TContainer>(pContainer)
+        {
+        }
+
+        ~TContainerPtr()
+        {
+            TContainer* pContainer = auto_ptr<TContainer>::get();
+            if (NULL == pContainer)
+                return;
+
+            for(typename TContainer::iterator iter = pContainer->begin();
+                iter != pContainer->end(); ++iter)
+            {
+                if (NULL != *iter)
+                    CS_free(*iter);
+                *iter = NULL;
+            }
+        }
+    };
+
+
     void SetFileName(INT32& lMagic, CsDictionaryOpenMode (*ValidMagic)(long), CREFSTRING sDirectory, CREFSTRING sFileName, REFSTRING sFileNameSet, const wchar_t* kpMethodName);
     csFILE* Open(INT32& lMagic, CsDictionaryOpenMode (*ValidMagic)(long), const wchar_t* kpPath, CsDictionaryOpenMode nOpenMode);
     CsDictionaryOpenMode OpenReadDictionaryOpenCallback(long dictMagicNumber);
@@ -69,7 +100,7 @@ namespace MentorDictionary
     //iterates through all entries return a vector of definitions in the same order as they've been returned by CsMap
     //return NULL, if the file couldn't be read successfully
     template <class T>
-    vector<T>*
+    vector<T*>*
     ReadDictionaryEntries(
         csFILE *pFile,
         int (*CS_Trd)(csFILE*, T *, int *))
@@ -77,12 +108,17 @@ namespace MentorDictionary
         //Scan through the file - add an entry for each definition we find
         try
         {
-            auto_ptr<vector<T> > allDictEntries(new vector<T>);
+            TContainerPtr<T, vector<T*> > allDictEntries;
+            allDictEntries.reset(new vector<T*>);
 
             int nCrypt;
-            T def;
+            T* def = NULL;
 
-            while (MentorDictionary::GetNextEntry(pFile, def, nCrypt, CS_Trd))
+            def = (T*) CS_malc(sizeof(T));
+            if (NULL == def)
+                throw new MgOutOfMemoryException(L"MentorDictionary.ReadDictionaryEntries", __LINE__, __WFILE__, NULL, L"", NULL);
+
+            while (MentorDictionary::GetNextEntry(pFile, *def, nCrypt, CS_Trd))
             {
                 allDictEntries->push_back(def);
 
@@ -104,11 +140,13 @@ namespace MentorDictionary
     //opens a dictionary file for reading and then iterates over all entries and returns them as a vector; the order is the same as returned by CsMap
     //before accessing the file, a global lock is placed through an [SmartCriticalClass] object
     template <class T>
-    vector<T>* ReadDictionaryEntries(
+    vector<T*>* ReadDictionaryEntries(
         /*IN*/ MgCoordinateSystemDictionaryBase* targetDictionary,
         /*IN*/ int (*CS_Trd)(csFILE*, T *, int *))
     {
-        auto_ptr<vector<T> > allDefs;
+	typedef vector<T*> CsMapDefPtrVector;
+        
+	TContainerPtr<T, CsMapDefPtrVector> allDefs;
         csFILE *pFile = NULL;
 
         MG_TRY()
@@ -137,7 +175,7 @@ namespace MentorDictionary
         return allDefs.release();
     }
 
-    //Template function which generates a summary from a dictionary
+    //Template function(s) which generates a summary from a dictionary
     //file.  The caller is responsible for deleting the returned map.
     //Function returns NULL if it runs out of memory.  Note that this
     //is a fairly expensive function, timewise, since it involves
@@ -145,6 +183,41 @@ namespace MentorDictionary
     //a megabyte in size.  Template parameter T is a Mentor struct
     //(cs_Csdef_ et al).
     //
+
+    template <class T>
+    CSystemNameDescriptionMap*
+    GenerateSystemNameDescriptionMap(
+        vector<T*> const* csMapDefs,
+        const char* (*CS_Tkey)(const T&),
+        const char * (*description)(const T&))
+    {
+        try
+        {
+            //Make a collection to return - we first read all entries from the dictionary file
+            //and use those to fill up the dictionary we're returning
+            auto_ptr<CSystemNameDescriptionMap> pmapSystemNameDescription(new CSystemNameDescriptionMap);
+            for(typename vector<T>::size_type i = 0; i < csMapDefs->size(); ++i)
+            {
+                T* def = csMapDefs->at(i);
+
+                const char* keyName = CS_Tkey(*def);
+                pmapSystemNameDescription->insert(
+                    CSystemNameDescriptionPair(
+                        CSystemName(keyName),
+                        CSystemDescription(description(*def))
+                    )
+                );
+            }
+
+            return pmapSystemNameDescription.release();
+        }
+        catch(std::bad_alloc&)
+        {
+        }
+
+        return NULL;
+    }
+
     template <class T>
     CSystemNameDescriptionMap *
     GenerateSystemNameDescriptionMap(
@@ -166,31 +239,44 @@ namespace MentorDictionary
             //Make a collection to return - we first read all entries from the dictionary file
             //and use those to fill up the dictionary we're returning
             auto_ptr<CSystemNameDescriptionMap> pmapSystemNameDescription(new CSystemNameDescriptionMap);
-            
-            auto_ptr<vector<T> > allDictEntries(MentorDictionary::ReadDictionaryEntries(pFile, CS_Trd));
+            TContainerPtr<T, vector<T*> > allDictEntries(MentorDictionary::ReadDictionaryEntries(pFile, CS_Trd));
             if (NULL == allDictEntries.get())
                 return NULL;
 
-            for(typename vector<T>::size_type i = 0; i < allDictEntries->size(); i++)
-            {
-                T& def = allDictEntries->at(i);
-                
-                const char* keyName = CS_Tkey(def);
-                pmapSystemNameDescription->insert(
-                    CSystemNameDescriptionPair(
-                        CSystemName(keyName),
-                        CSystemDescription(description(def))
-                    )
-                );
-            }
-
-            return pmapSystemNameDescription.release();
+            return GenerateSystemNameDescriptionMap(allDictEntries.get(), CS_Tkey, description);
         }
         catch(std::bad_alloc&)
         {
         }
 
         return NULL;
+    }
+
+    template <class T>
+    CSystemNameDescriptionMap *
+    GenerateSystemNameDescriptionMap(
+        const char* (*CS_Tkey)(const T&),
+        const char * (*description)(const T&),
+        int (*CS_TrdAll)(T **[]))
+    {
+	typedef vector<T*> CsMapDefPtrVector;
+
+        TContainerPtr<T*, CsMapDefPtrVector > definitions;
+        definitions.reset(new vector<T*>);
+
+        T**  pAllDefs = NULL;
+        int readStatus = CS_TrdAll(&pAllDefs);
+        if (readStatus < 0)
+            return NULL;
+
+        for(int i = 0; i < readStatus; ++i)
+            definitions->push_back(pAllDefs[i]);
+
+        //free the pointer array only - not the items;
+        //these are now owned by [definitions]
+        CS_free(pAllDefs);
+
+        return GenerateSystemNameDescriptionMap(definitions.get(), CS_Tkey, description);
     }
 
     //Reads all Mg definitions from the dictionary [targetDictionary] and returns them
@@ -264,7 +350,7 @@ namespace MentorDictionary
     template <class T /* The MgCS type [primaryDictionary] contains*/, class U /* The CsMap struct type*/, class V /* The dictionary type that will return items of type T*/>
     MgDisposableCollection* ReadAllDefinitions(
         /*IN, required*/ V* primaryDictionary, //the primary MgCS dictionary to read the items of type T from
-        /*IN, required*/ int (*CS_Trd)(csFILE*, U *, int *), //The file access method as retrieved from CsMap
+        /*IN, required*/ int (*CS_TrdAll)(U **pDefArray[]), //The CsMap method to read all entries
         /*IN, optional*/ void (V::*PostProcess)(U*), //A method that's being called with the CsMap definition struct just read from the file
         /*IN, required*/ T* (V::*GetMgItem)(const U*, const std::vector<std::map<STRING,Ptr<MgDisposable> >*>* const), //the method on the [primaryDictionary] to read the actual MgCS item from
         /*IN, optional*/ const std::vector<std::map<STRING,Ptr<MgDisposable> >*>* const secondaryDictionaryInfos, //infos that have been read from the dictionaries before; will be passed to [V::*GetMgItem]
@@ -275,27 +361,48 @@ namespace MentorDictionary
             throw new MgNullArgumentException(L"MentorDictionary.ReadAllDefinitionsCascaded", __LINE__, __WFILE__, NULL, L"", NULL);
 
         //method pointer checks
-        if (NULL == GetMgItem || NULL == CS_Trd)
+        if (NULL == GetMgItem || NULL == CS_TrdAll)
             throw new MgNullArgumentException(L"MentorDictionary.ReadAllDefinitionsCascaded", __LINE__, __WFILE__, NULL, L"", NULL);
 
-        auto_ptr<vector<U> > allDefs(MentorDictionary::ReadDictionaryEntries<U>(primaryDictionary, CS_Trd));
-        if (NULL == allDefs.get()) //[ReadDictionaryEntries] will return NULL, if the dictionary entries couldn't be read
-            throw new MgInvalidArgumentException(L"MgCoordinateSystemDictionary.ReadAllCoordinateSystems", __LINE__, __WFILE__, NULL, L"", NULL);
+        U** pDefArray = NULL;
+        const int readStatus = CS_TrdAll(&pDefArray);
+        if (readStatus < 0)
+        {
+            _ASSERT(NULL == pDefArray);
+            throw new MgCoordinateSystemLoadFailedException(L"MgCoordinateSystemDictionary.ReadAllCoordinateSystems", __LINE__, __WFILE__, NULL, L"", NULL);
+        }
 
         const bool doPostProcess = (NULL != PostProcess);
         Ptr<MgDisposableCollection> filteredDefinitions = new MgDisposableCollection();
 
-        //go through all defs as we've read them from CsMap, do some post processing and finally
-        //retrieve the MgCs item we'll later return to the caller
-        for(typename vector<U>::size_type i = 0; i < allDefs->size(); i++)
-        {
-            U csMapDef = allDefs->at(i); //don't work on the reference
-            if (doPostProcess)
-                CALL_MEMBER_FN(primaryDictionary, PostProcess)(&csMapDef);
+        MG_TRY()
 
-            Ptr<T> mgItem = CALL_MEMBER_FN(primaryDictionary, GetMgItem)(&csMapDef, secondaryDictionaryInfos); //throws an exception, if the entry hasn't been found
-            filteredDefinitions->Add(mgItem);
-        }
+            //go through all defs as we've read them from CsMap, do some post processing and finally
+            //retrieve the MgCs item we'll later return to the caller
+            for(int i = 0; i < readStatus; ++i)
+            {
+                U* csMapDef = pDefArray[i];
+                if (doPostProcess)
+                    CALL_MEMBER_FN(primaryDictionary, PostProcess)(csMapDef);
+
+                Ptr<T> mgItem = CALL_MEMBER_FN(primaryDictionary, GetMgItem)(csMapDef, secondaryDictionaryInfos); //throws an exception, if the entry hasn't been found
+                CS_free(csMapDef);
+                pDefArray[i] = NULL;
+
+                filteredDefinitions->Add(mgItem);
+            }
+
+        MG_CATCH(L"MentorDictionary.ReadAllDefinitions")
+
+            if (NULL != mgException) //the array's elements have been cleaned up otherwise already
+            {
+                for(int i = 0; i < readStatus; ++i)
+                    CS_free(pDefArray[i]);
+            }
+
+            CS_free(pDefArray);
+
+        MG_THROW()
 
         //we might get the same reference back - what isn't a problem as we're using the Ptr<> here
         filteredDefinitions = MentorDictionary::FilterDefinitions<MgCoordinateSystem>(filteredDefinitions, filters);

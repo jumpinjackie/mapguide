@@ -323,7 +323,6 @@ CCoordinateSystemEnum* DICTIONARY_BASE_TEMPLATE_METHOD::GetEnumImp()
         dictionaryFile = MentorDictionary::Open(this->dictMagicNumber, definitionAccess->magicNumberCallback, strPath.c_str(), Read);
 
         allDictionaryEntries = MentorDictionary::GenerateSystemNameDescriptionMap<U>(
-            dictionaryFile,
             definitionAccess->readDefinitionName,
             definitionAccess->readDefinitionDescription,
             definitionAccess->readAllDefinitions);

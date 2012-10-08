@@ -38,8 +38,6 @@ extern "C" struct cs_Unittab_ cs_Unittab[]; // Mentor unit table
 
 namespace CSLibrary
 {
-const STRING CategoryFilename      = L"Category.CSD";  // NOXLATE
-
 const double ZERO_SCALE = 1e-9;  //-- unit scale smaller than this is considered zero
 const double ZERO_VALUE = 1e-12; //-- value smaller than this is considered zero
 }

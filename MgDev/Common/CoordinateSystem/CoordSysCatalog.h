@@ -41,6 +41,10 @@ EXTERNAL_API:
     virtual bool AreDictionaryFilesWritable();
     virtual STRING GetDictionaryDir();
 
+    virtual STRING GetDefaultUserDictionaryDir();
+    virtual void SetUserDictionaryDir(CREFSTRING sDirPath);
+    virtual STRING GetUserDictionaryDir();
+
     virtual void SetProtectionMode(INT16 nMode);
     virtual INT16 GetProtectionMode();
     virtual MgCoordinateSystemCategoryDictionary* GetCategoryDictionary();
@@ -76,6 +80,7 @@ protected:
 protected:
     //Data members
     STRING m_sDir;
+    STRING m_sUserDir;
 
     Ptr<CCoordinateSystemDictionary> m_pCsDict;
     Ptr<CCoordinateSystemDatumDictionary> m_pDtDict;
@@ -90,6 +95,8 @@ private:
     //Unimplemented stuff
     CCoordinateSystemCatalog(const CCoordinateSystemCatalog&);
     CCoordinateSystemCatalog& operator=(const CCoordinateSystemCatalog&);
+
+    STRING SetDictionaryDir(CREFSTRING sDirPath, bool dirWriteAccess, int (*CsMapDirFunc)(const char *pszDirectoryPath));
 };
 
 } // End of namespace

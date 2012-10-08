@@ -42,7 +42,7 @@ public:
         void (*FullInitialize)(T*, U*, MgCoordinateSystemCatalog* catalog), //fully initializes the Mg API objects from the CS Map API struct
         const char* (*ReadDefinitionName)(const U& definition), //reads the definition's name; the caller has to copy the string's content
         const char* (*ReadDefinitionDescription)(const U& definition), //reads the definition's description; the caller must copy the string's content (if not NULL)
-        int (*ReadAllDefinitions) (csFILE *strm, U* definition, int*), // reads the entire content of a dictionary file; depends on the current file pointer position
+        int (*ReadAllDefinitions) (U** pDefinition[]), // reads the entire content of a dictionary file(s);
         void (*CsMapTargetFileName)(const char *newFileName), //set the target dictionary file name in the CS Map library
         CsDictionaryOpenMode (*MagicNumberCallback)(long)) //returns the correct open mode for a dictionary file taking into account the magic number read from the file; passed in as long
         :
@@ -73,7 +73,7 @@ public:
     void (*fullInitialize)(T*, U*, MgCoordinateSystemCatalog* catalog);
     const char* (*readDefinitionName)(const U& definition);
     const char* (*readDefinitionDescription)(const U& definition);
-    int (*readAllDefinitions) (csFILE *strm, U* definition, int*);
+    int (*readAllDefinitions) (U** pDefinitions[]);
     void (*csMapTargetFileName) (const char *newFileName);
     CsDictionaryOpenMode (*magicNumberCallback)(long);
 };

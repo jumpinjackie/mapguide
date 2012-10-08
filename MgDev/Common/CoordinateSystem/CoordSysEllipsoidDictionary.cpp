@@ -580,16 +580,22 @@ CCoordinateSystemEnumEllipsoid* CCoordinateSystemEllipsoidDictionary::GetEnumImp
 
     MG_TRY()
     STRING strPath=GetPath();
-    pFile=MentorDictionary::Open(m_lMagic, EllipsoidValidMagic, strPath.c_str(), Read);
+    pFile = MentorDictionary::Open(m_lMagic, EllipsoidValidMagic, strPath.c_str(), Read);
+    _ASSERT(pFile);
+
+    //close the file before calling into the [read all CS-Map defs] method
+    if (0 != CS_fclose(pFile))
+        throw new MgFileIoException(L"MgCoordinateSystemDictionary.GetEnum", __LINE__, __WFILE__, NULL, L"MgCoordinateSystemDictionaryCloseFailedException", NULL);
+
+    pFile = NULL;
 
     //Generate a summary list, if we don't already have one
     if (NULL == m_pmapSystemNameDescription)
     {
         m_pmapSystemNameDescription = MentorDictionary::GenerateSystemNameDescriptionMap<cs_Eldef_>(
-            pFile,
             ElKey,
             ElDesc,
-            CS_elrd);
+            CS_eldefAll);
         if (NULL == m_pmapSystemNameDescription)
         {
             throw new MgInvalidArgumentException(L"MgCoordinateSystemEllipsoidDictionary.GetEnum", __LINE__, __WFILE__, NULL, L"", NULL);
@@ -599,15 +605,12 @@ CCoordinateSystemEnumEllipsoid* CCoordinateSystemEllipsoidDictionary::GetEnumImp
     //Make an enumerator object
     pNew = new CCoordinateSystemEnumEllipsoid;
 
-    if (NULL == pNew.p)
-    {
-        throw new MgOutOfMemoryException(L"MgCoordinateSystemEllipsoidDictionary.GetEnum", __LINE__, __WFILE__, NULL, L"", NULL);
-    }
-    if (0!=CS_fclose(pFile))
+    if (pFile && 0 != CS_fclose(pFile))
     {
         throw new MgFileIoException(L"MgCoordinateSystemEllipsoidDictionary.GetEnum", __LINE__, __WFILE__, NULL, L"MgCoordinateSystemDictionaryCloseFailedException", NULL);
     }
-    pFile=NULL;
+
+    pFile = NULL;
 
     MG_CATCH(L"MgCoordinateSystemEllipsoidDictionary.GetEnum")
 
@@ -638,7 +641,7 @@ MgDisposableCollection* CCoordinateSystemEllipsoidDictionary::ReadAllEllipsoids(
 
     return MentorDictionary::ReadAllDefinitions<MgCoordinateSystemEllipsoid, cs_Eldef_, CCoordinateSystemEllipsoidDictionary>(
         ellipsoidDictionary,
-        CS_elrd, 
+        CS_eldefAll,
         NULL, //no post processing needed
         &CCoordinateSystemEllipsoidDictionary::GetEllipsoid,
         NULL, //no additional info needed/used to create an MgCoordinateSystemEllipsoid object

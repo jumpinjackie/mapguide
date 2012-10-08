@@ -71,8 +71,6 @@ namespace CSLibrary
         static const char* ReadName(const cs_GeodeticTransform_& definition);
         static const char* ReadDescription(const cs_GeodeticTransform_& definition);
 
-        static int ReadAllGeodeticTransformDefs(csFILE *file, cs_GeodeticTransform_* csTransformDef, int* /*unused*/);
-
         static CsDictionaryOpenMode GetFileOpenMode(long magicNumberFromFile);
     };
 

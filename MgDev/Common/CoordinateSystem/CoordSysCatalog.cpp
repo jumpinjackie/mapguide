@@ -278,19 +278,21 @@ STRING CCoordinateSystemCatalog::GetDictionaryDir()
 
 //Sets the complete path to the directory where the dictionaries are
 //located.  This method can be invoked only when not
-//currently connected to a dictionary database.  This method does not
-//perform any validation on the specified dictionary path.  Instead,
-//full validation is performed by the OpenDictionaries() method.
-//Throws an exception MgCoordinateSystemCatalogIsOpenException if already connected to a
-//dictionary database
-//
-void CCoordinateSystemCatalog::SetDictionaryDir(CREFSTRING sDirPath)
+//currently connected to a dictionary database.  This method just verifies that
+//the dictionary path exists, and, if appropriate, whether a file named Coordsys.CSD could be found-
+//Full validation is performed later on by the OpenDictionaries() method.
+//Throws [MgFileIoException] if the targeted directory is invalid and/or cannot be accessed in the
+//in the mode indicated by [dirWriteAccess]
+
+STRING CCoordinateSystemCatalog::SetDictionaryDir(CREFSTRING sDirPath, bool dirWriteAccess, int (*CsMapDirFunc)(const char *pszDirectoryPath))
 {
-    MG_TRY()
+    if (NULL == CsMapDirFunc)
+        throw new MgNullArgumentException(L"MgCoordinateSystemCatalog.SetDictionaryDir", __LINE__, __WFILE__, NULL, L"", NULL);
 
     if (sDirPath.empty())
     {
-        throw new MgInvalidArgumentException(L"MgCoordinateSystemCatalog.SetDictionaryDir", __LINE__, __WFILE__, NULL, L"", NULL);
+        CsMapDirFunc("");
+        return L"";
     }
 
 #ifdef _WIN32
@@ -302,14 +304,14 @@ void CCoordinateSystemCatalog::SetDictionaryDir(CREFSTRING sDirPath)
     wchar_t szDir[_MAX_DIR] = {0};
     wchar_t szFname[_MAX_FNAME] = {0};
     wchar_t szExt[_MAX_EXT] = {0};
-    _tsplitpath(sDirPath.c_str(), szDrive, szDir, szFname, szExt);
+
+    //make sure, we don't have any '/' in the string that CS-Map could stumble over
+    STRING sPathCopy = sDirPath;
+    std::replace(sPathCopy.begin(), sPathCopy.end(), L'/', L'\\');
+
+    _tsplitpath(sPathCopy.c_str(), szDrive, szDir, szFname, szExt);
     if ((_tcslen(szFname) > 0) || (_tcslen(szExt) > 0))
     {
-        //ABA: don't understand: if a filename or an extension has been found,
-        //we concatenate the filename to the directory + then the extension;
-        //Then, we call makepath() what will give us a full path information incl.
-        //the file name;
-        //
         //Nope, not properly terminated, need to fix it.
         assert(_tcslen(szDir) + _tcslen(szFname) + _tcslen(szExt) < _MAX_DIR);
         _tcscat(szDir, szFname);
@@ -337,21 +339,35 @@ void CCoordinateSystemCatalog::SetDictionaryDir(CREFSTRING sDirPath)
         szPath,    //path to directory
         true,    //must exist
         true,    //must be a directory
-        false,    //must be writable?
+        dirWriteAccess,    //must be writable?
         &reason))
     {
         ThrowFileError(L"MgCoordinateSystemCatalog.SetDictionaryDir", szPath, reason);
     }
 
-    m_sDir = szPath;
-    m_libraryStatus = lsInitializationFailed; 
-
-    //initializes Mentor
-    char* pszPath=Convert_Wide_To_Ascii(szPath);
-    CriticalClass.Enter();
-    CS_altdr(pszPath);
-    CriticalClass.Leave();
+    //initializes CS-Map's target directory function with the new path
+    SmartCriticalClass csmapLock;
+    char* pszPath = Convert_Wide_To_Ascii(szPath);
+    int csmapResult = CsMapDirFunc(pszPath);
     delete[] pszPath;
+
+    //CS-Map return -1 if for cs_altdr() the Coordsys.CSD file couldn't be found; 0 otherwise
+
+    if (csmapResult)
+        throw new MgFileIoException(L"MgCoordinateSystemCatalog.SetDictionaryDir", __LINE__, __WFILE__, NULL, L"", NULL);
+
+    return szPath;
+}
+
+void CCoordinateSystemCatalog::SetDictionaryDir(CREFSTRING sDirPath)
+{
+    MG_TRY()
+
+    if (sDirPath.empty())
+        throw new MgInvalidArgumentException(L"MgCoordinateSystemCatalog.SetDictionaryDir", __LINE__, __WFILE__, NULL, L"", NULL);
+
+    m_libraryStatus = lsInitializationFailed;
+    m_sDir = this->SetDictionaryDir(sDirPath, false, CS_altdr);
 
     //now need to validate the dictionary files
     //an reinitialize their internal data
@@ -374,6 +390,67 @@ void CCoordinateSystemCatalog::SetDictionaryDir(CREFSTRING sDirPath)
     m_libraryStatus = lsInitialized; 
 
     MG_CATCH_AND_THROW(L"MgCoordinateSystemCatalog.SetDictionaryDir")
+}
+
+STRING CCoordinateSystemCatalog::GetDefaultUserDictionaryDir()
+{
+    STRING defaultUserDir;
+
+#ifdef _WIN32
+
+    //let the [MENTOR_USER_DICTIONARY_PATH] environment variable override the
+    //the default path - which on Windows systems is the "(user-)Local app data path\Autodesk\User Geospatial Coordinate Systems"
+
+    // Check to see if the environment variable is set
+    const TCHAR* szPathVar = _tgetenv(_T(MENTOR_USER_DICTIONARY_PATH));
+    bool variableDefined = (szPathVar && L'\0' != *szPathVar);
+
+    if(!variableDefined)
+    {
+        TCHAR szPath[MAX_PATH] = { L'\0' };
+        if(TRUE == SHGetSpecialFolderPath(NULL, szPath, CSIDL_LOCAL_APPDATA, FALSE))
+        {
+            defaultUserDir = szPath;
+            defaultUserDir += _T("\\Autodesk\\User Geospatial Coordinate Systems"); //NOXLATE
+        }
+    }
+
+    if (!defaultUserDir.empty() && L'\\' != defaultUserDir[defaultUserDir.length() - 1])
+        defaultUserDir.append(L"\\");
+
+#else
+
+    char* szPath = getenv(MENTOR_USER_DICTIONARY_PATH);
+    bool variableDefined = (szPath && L'\0' != *szPath);
+
+    if (variableDefined)
+    {
+        MgUtil::MultiByteToWideChar(string(szPath), defaultUserDir);
+        if(L'/' != defaultUserDir[defaultUserDir.length() - 1])
+            defaultUserDir.append(L"/");
+    }
+
+#endif
+
+    if (defaultUserDir.empty())
+        return L"";
+
+
+    return defaultUserDir.c_str();
+}
+
+void CCoordinateSystemCatalog::SetUserDictionaryDir(CREFSTRING sDirPath)
+{
+    MG_TRY()
+
+        m_sUserDir = this->SetDictionaryDir(sDirPath /* can be empty */, true, CS_usrdr);
+
+    MG_CATCH_AND_THROW(L"MgCoordinateSystemCatalog.SetUserDictionaryDir")
+}
+
+STRING CCoordinateSystemCatalog::GetUserDictionaryDir()
+{
+    return m_sUserDir;
 }
 
 //cgeck if the files are writable
@@ -500,9 +577,39 @@ void CCoordinateSystemCatalog::SetDefaultDictionaryDirAndFileNames()
     m_pGpDict->SetFileName(sGp);
     m_pGxDict->SetFileName(sGx);
 
-    m_libraryStatus=lsInitialized;
-
     MG_CATCH_AND_THROW(L"MgCoordinateSystemCatalog.SetDefaultDictionaryDirAndFileNames")
+
+    STRING sDefUserDictionaryDir;
+    {
+        MG_TRY()
+
+            //Get the default path where to store the custom CS information
+            //note, that we don't require that to be available for (the server
+            sDefUserDictionaryDir = this->GetDefaultUserDictionaryDir();
+            if (!sDefUserDictionaryDir.empty())
+            {
+                this->SetUserDictionaryDir(sDefUserDictionaryDir);
+            }
+
+        MG_CATCH_AND_RELEASE()
+
+        #ifdef _DEBUG
+            if (NULL != mgException)
+            {
+                _ASSERT(!sDefUserDictionaryDir.empty());
+                //log the fact, that we couldn't set the right user dictionary dir
+                ACE_DEBUG((LM_DEBUG, ACE_TEXT("\n(%t) CCoordinateSystemCatalog::SetDefaultDictionaryDirAndFileNames() - The directory to store user defined CS information could not be set using this directory\n%W.\n"), 
+                    sDefUserDictionaryDir.c_str()));
+            }
+            else if (!sDefUserDictionaryDir.empty())
+            {
+                ACE_DEBUG((LM_DEBUG, ACE_TEXT("\n(%t) CCoordinateSystemCatalog::SetDefaultDictionaryDirAndFileNames() - The directory to store user defined CS information in has been set to \n%W.\n"), 
+                        sDefUserDictionaryDir.c_str()));
+            }
+        #endif
+    }
+
+    m_libraryStatus = lsInitialized;
 }
 
 

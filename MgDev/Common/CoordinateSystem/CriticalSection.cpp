@@ -68,6 +68,19 @@ void CustomCriticalSection::Leave()
     ::LeaveCriticalSection(&CritSect);
 }
 
+#ifdef _DEBUG
+    bool CustomCriticalSection::IsEntered()
+    {
+        if (!::TryEnterCriticalSection(&CritSect))
+            return false;
+
+        bool wasHeld = (CritSect.RecursionCount > 0);
+        ::LeaveCriticalSection(&CritSect);
+
+        return wasHeld;
+    }
+#endif
+
 #else //LINUX
 
 CustomCriticalSection::~CustomCriticalSection()
@@ -97,4 +110,11 @@ void CustomCriticalSection::Leave()
     pthread_mutex_unlock(&CritSect);
 }
 
-#endif //_WIN32
+#ifdef _DEBUG
+    bool CustomCriticalSection::IsEntered()
+    {
+        return true;
+    }
+#endif
+
+#endif //_WIN32 / LINUX

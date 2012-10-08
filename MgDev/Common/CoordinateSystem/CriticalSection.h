@@ -31,6 +31,12 @@ public:
     void Enter();
     void Leave();
 
+#ifdef _DEBUG
+
+    bool IsEntered();
+
+#endif
+
 private:
     bool m_bInitialized;
 };

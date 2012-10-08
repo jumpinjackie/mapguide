@@ -100,6 +100,517 @@ void TestCoordinateSystem::TestEnd()
 ///----------------------------------------------------------------------------
 /// Test Case Description:
 ///
+/// The following test cases try reading all types of definitions from the current catalog
+///----------------------------------------------------------------------------
+
+//our helper method to read all definitions from all dictionaries
+#define CALL_MEMBER_FN(object,ptrToMember)  ((object)->*(ptrToMember))
+template<
+    class MgCsType, class MgCsDictionaryType,
+    STRING (MgCsType::*GetCode)(),
+    MgCsDictionaryType* (MgCoordinateSystemCatalog::*MgGetDictionaryFunc)()>
+void TestReadAllDefinitions(wchar_t const* pzswDefType)
+{
+    ACE_DEBUG((LM_INFO, ACE_TEXT("\nReading all %W, ... "), pzswDefType));
+
+    MgCoordinateSystemFactory csFactory;
+    Ptr<MgCoordinateSystemCatalog> pMgCsCatalog = csFactory.GetCatalog();
+
+    Ptr<MgCsDictionaryType> pCsDictionary = CALL_MEMBER_FN(pMgCsCatalog, MgGetDictionaryFunc)();
+    Ptr<MgCoordinateSystemEnum> pCsEnum = pCsDictionary->GetEnum();
+    UINT32 size = pCsDictionary->GetSize();
+
+    CPPUNIT_ASSERT(size > 0); //by default, we're assuming to have 'something' in each dictionary
+
+    std::vector<STRING> allCodes;
+
+    bool firstFullSetDone = false;
+    Ptr<MgDisposableCollection> pNextCsDefinitions;
+    do
+    {
+        pNextCsDefinitions = pCsEnum->Next(size);
+        CPPUNIT_ASSERT(pNextCsDefinitions);
+
+        const INT32 defCount = pNextCsDefinitions->GetCount();
+        if (firstFullSetDone)
+        {
+            CPPUNIT_ASSERT(0 == defCount);
+        }
+        else
+        {
+            firstFullSetDone = true;
+            ACE_DEBUG((LM_INFO, ACE_TEXT("found %d definitions ...\n"), defCount));
+        }
+
+        for(INT32 i = 0; i < defCount; ++i)
+        {
+            Ptr<MgDisposable> pCsDisposable = pNextCsDefinitions->GetItem(i);
+
+            MgCsType* pDefinition = dynamic_cast<MgCsType*>(pCsDisposable.p);
+            CPPUNIT_ASSERT(pDefinition); //the collection must only contain objects of the required type
+
+            STRING code = CALL_MEMBER_FN(pDefinition, GetCode)();
+            CPPUNIT_ASSERT(!code.empty());
+            allCodes.push_back(code);
+        }
+
+    } while (pNextCsDefinitions->GetCount() > 0);
+
+    CPPUNIT_ASSERT(allCodes.size() == pCsDictionary->GetSize());
+
+    for(size_t i = 0; i < allCodes.size(); ++i)
+    {
+        STRING const& code = allCodes[i];
+        Ptr<MgDisposable> pDictionaryDef = pCsDictionary->Get(code);
+        MgCsType *pConcreteDef = dynamic_cast<MgCsType*>(pDictionaryDef.p);
+        CPPUNIT_ASSERT(pConcreteDef);
+
+        STRING codeFromDef = CALL_MEMBER_FN(pConcreteDef, GetCode)();
+        CPPUNIT_ASSERT(0 == _wcsicmp(codeFromDef.c_str(), code.c_str()));
+    }
+}
+
+/// (1) Read all Coordinate systems
+void TestCoordinateSystem::TestCase_ReadAllCoordinateSystems()
+{
+    TestReadAllDefinitions<MgCoordinateSystem, MgCoordinateSystemDictionary,
+        &MgCoordinateSystem::GetCsCode,
+        &MgCoordinateSystemCatalog::GetCoordinateSystemDictionary>(L"Coordinate Systems");
+}
+
+/// (2) Read all datums
+void TestCoordinateSystem::TestCase_ReadAllDatums()
+{
+    TestReadAllDefinitions<MgCoordinateSystemDatum, MgCoordinateSystemDatumDictionary,
+        &MgCoordinateSystemDatum::GetDtCode,
+        &MgCoordinateSystemCatalog::GetDatumDictionary>(L"Datums");
+}
+
+/// (3) Read all ellipsoids
+void TestCoordinateSystem::TestCase_ReadAllEllipsoids()
+{
+    TestReadAllDefinitions<MgCoordinateSystemEllipsoid, MgCoordinateSystemEllipsoidDictionary,
+        &MgCoordinateSystemEllipsoid::GetElCode,
+        &MgCoordinateSystemCatalog::GetEllipsoidDictionary>(L"Ellipsoids");
+}
+
+/// (4) Read all categories
+void TestCoordinateSystem::TestCase_ReadAllCategories()
+{
+    TestReadAllDefinitions<MgCoordinateSystemCategory, MgCoordinateSystemCategoryDictionary,
+        &MgCoordinateSystemCategory::GetName,
+        &MgCoordinateSystemCatalog::GetCategoryDictionary>(L"Categories");
+}
+
+/// (5) Read all geodetic transformations
+void TestCoordinateSystem::TestCase_ReadAllGeodeticTransformations()
+{
+    TestReadAllDefinitions<MgCoordinateSystemGeodeticTransformDef, MgCoordinateSystemGeodeticTransformDefDictionary,
+        &MgCoordinateSystemGeodeticTransformDef::GetTransformName,
+        &MgCoordinateSystemCatalog::GetGeodeticTransformDefDictionary>(L"Geodetic Transformations");
+}
+
+/// (6) Read all geodetic paths
+void TestCoordinateSystem::TestCase_ReadAllGeodeticPaths()
+{
+    TestReadAllDefinitions<MgCoordinateSystemGeodeticPath, MgCoordinateSystemGeodeticPathDictionary,
+        &MgCoordinateSystemGeodeticPath::GetPathName,
+        &MgCoordinateSystemCatalog::GetGeodeticPathDictionary>(L"Geodetic Paths");
+}
+
+///----------------------------------------------------------------------------
+/// Test Case Description:
+///
+/// The following test cases try updating all types of definitions in the current catalog
+///----------------------------------------------------------------------------
+///
+
+//our helper functions
+template<class MgCsType>
+void SetDefinitionUnprotected(MgCsType* pDefinition)
+{
+    pDefinition->SetProtectMode(false);
+}
+
+template<class MgCsType>
+MgCsType* CloneDefinition(MgCsType* pDefinition)
+{
+    return pDefinition->CreateClone();
+}
+
+template<
+    bool TAutoRemove,
+    bool TWithUserDefDir,
+    class MgCsType, class MgCsDictionaryType,
+    STRING (MgCsType::*GetCode)(),
+    void (MgCsType::*SetCode)(CREFSTRING),
+    MgCsDictionaryType* (MgCoordinateSystemCatalog::*MgGetDictionaryFunc)()>
+STRING TestUpdateDefinition(wchar_t const* pzswDefType,
+    void (*UnprotecDefFunc)(MgCsType*) = SetDefinitionUnprotected<MgCsType>,
+    MgCsType* (*CloneDefFunc)(MgCsType*) = NULL)
+{
+    ACE_DEBUG((LM_INFO, ACE_TEXT("\nUpdating a %W definition ... "), pzswDefType));
+
+    MgCoordinateSystemFactory csFactory;
+    Ptr<MgCoordinateSystemCatalog> pMgCsCatalog = csFactory.GetCatalog();
+
+    if (TWithUserDefDir)
+    {
+        TestCoordinateSystem::SetDefaultUserDictionaryDir();
+    }
+    else
+    {
+        if (!pMgCsCatalog->GetUserDictionaryDir().empty())
+            pMgCsCatalog->SetUserDictionaryDir(L"");
+    }
+
+    Ptr<MgCsDictionaryType> pCsDictionary = CALL_MEMBER_FN(pMgCsCatalog, MgGetDictionaryFunc)();
+    Ptr<MgCoordinateSystemEnum> pCsEnum = pCsDictionary->GetEnum();
+    UINT32 size = pCsDictionary->GetSize();
+
+    CPPUNIT_ASSERT(size > 0); //by default, we're assuming to have 'something' in each dictionary
+
+    Ptr<MgDisposableCollection> pNextCsDefinitions;
+    pNextCsDefinitions = pCsEnum->Next(1);
+
+    INT32 definitionCount = pNextCsDefinitions->GetCount();
+    CPPUNIT_ASSERT(1 == definitionCount);
+
+    Ptr<MgDisposable> pMgDefinition = pNextCsDefinitions->GetItem(0);
+    CPPUNIT_ASSERT(pMgDefinition);
+
+    MgCsType* pTypedDef = dynamic_cast<MgCsType*>(pMgDefinition.p);
+    CPPUNIT_ASSERT(NULL != pTypedDef);
+
+    STRING code = CALL_MEMBER_FN(pTypedDef, GetCode)();
+    CPPUNIT_ASSERT(!code.empty());
+
+    ACE_DEBUG((LM_INFO, ACE_TEXT("trying with %W ... "), code.c_str()));
+
+    //get us a definition we can modify
+    if (NULL != UnprotecDefFunc)
+    {
+        UnprotecDefFunc(pTypedDef);
+    }
+    else if (NULL != CloneDefFunc)
+    {
+        pMgDefinition = CloneDefFunc(pTypedDef);
+        pTypedDef = dynamic_cast<MgCsType*>(pMgDefinition.p);
+        CPPUNIT_ASSERT(NULL != pTypedDef);
+    }
+
+    STRING newCode = (code + L"_MOD");
+    CALL_MEMBER_FN(pTypedDef, SetCode)(newCode);
+
+    STRING csdFile = pCsDictionary->GetPath();
+    //backup the current CSD file and automatically restore it after we are done; or delete the newly created CSD file
+    //make sure, we keep the current file
+    TestCoordinateSystem::FileAutoBackup csdFileBackup(csdFile, L".UNIT_TEST_SAVE", true);
+
+    pCsDictionary->Add(pTypedDef);
+
+    Ptr<MgDisposable> pAddedDefinition = pCsDictionary->Get(newCode);
+    CPPUNIT_ASSERT(pAddedDefinition);
+
+    ACE_DEBUG((LM_INFO, ACE_TEXT("OK")));
+
+    CPPUNIT_ASSERT( pCsDictionary->Has(newCode) );
+
+    if (TAutoRemove)
+    {
+        ACE_DEBUG((LM_INFO, ACE_TEXT("... Remove it again... ")));
+        pCsDictionary->Remove(newCode);
+        CPPUNIT_ASSERT( !pCsDictionary->Has(newCode) );
+
+        ACE_DEBUG((LM_INFO, ACE_TEXT("OK")));
+    }
+
+    return newCode;
+}
+
+/// (1) Update a coordinate system
+void TestCoordinateSystem::TestCase_UpdateCoordinateSystems()
+{
+    TestUpdateDefinition<
+        true, /* compile as 'auto-remove function' */
+        false, /* compile as 'no-user-def-dir'*/
+        MgCoordinateSystem, MgCoordinateSystemDictionary,
+        &MgCoordinateSystem::GetCsCode,
+        &MgCoordinateSystem::SetCsCode,
+        &MgCoordinateSystemCatalog::GetCoordinateSystemDictionary>(L"Coordinate System");
+}
+
+/// (2) Update a datum
+void TestCoordinateSystem::TestCase_UpdateDatums()
+{
+    TestUpdateDefinition<
+        true, /* compile as 'auto-remove function' */
+        false, /* compile as 'no-user-def-dir'*/
+        MgCoordinateSystemDatum, MgCoordinateSystemDatumDictionary,
+        &MgCoordinateSystemDatum::GetDtCode,
+        &MgCoordinateSystemDatum::SetDtCode,
+        &MgCoordinateSystemCatalog::GetDatumDictionary>(L"Datum");
+}
+
+/// (3) Update an ellipsoid
+void TestCoordinateSystem::TestCase_UpdateEllipsoids()
+{
+    TestUpdateDefinition<
+        true, /* compile as 'auto-remove function' */
+        false, /* compile as 'no-user-def-dir'*/
+        MgCoordinateSystemEllipsoid, MgCoordinateSystemEllipsoidDictionary,
+        &MgCoordinateSystemEllipsoid::GetElCode,
+        &MgCoordinateSystemEllipsoid::SetElCode,
+        &MgCoordinateSystemCatalog::GetEllipsoidDictionary>(L"Ellipsoid");
+}
+
+/// (4) Update a category
+void TestCoordinateSystem::TestCase_UpdateCategories()
+{
+    TestUpdateDefinition<
+        true, /* compile as 'auto-remove function' */
+        false, /* compile as 'no-user-def-dir'*/
+        MgCoordinateSystemCategory, MgCoordinateSystemCategoryDictionary,
+        &MgCoordinateSystemCategory::GetName,
+        &MgCoordinateSystemCategory::SetName,
+        &MgCoordinateSystemCatalog::GetCategoryDictionary>(L"Category", NULL, NULL);
+}
+
+/// (5) Update a geodetic transformation
+void TestCoordinateSystem::TestCase_UpdateGeodeticTransformations()
+{
+    TestUpdateDefinition<
+        true, /* compile as 'auto-remove function' */
+        false, /* compile as 'no-user-def-dir'*/
+        MgCoordinateSystemGeodeticTransformDef, MgCoordinateSystemGeodeticTransformDefDictionary,
+        &MgCoordinateSystemGeodeticTransformDef::GetTransformName,
+        &MgCoordinateSystemGeodeticTransformDef::SetTransformName,
+        &MgCoordinateSystemCatalog::GetGeodeticTransformDefDictionary>(L"Geodetic Transformation", NULL, CloneDefinition);
+}
+
+/// (5) Update a geodetic path
+void TestCoordinateSystem::TestCase_UpdateGeodeticPaths()
+{
+    TestUpdateDefinition<
+        true, /* compile as 'auto-remove function' */
+        false, /* compile as 'no-user-def-dir'*/
+        MgCoordinateSystemGeodeticPath, MgCoordinateSystemGeodeticPathDictionary,
+        &MgCoordinateSystemGeodeticPath::GetPathName,
+        &MgCoordinateSystemGeodeticPath::SetPathName,
+        &MgCoordinateSystemCatalog::GetGeodeticPathDictionary>(L"Geodetic Path", NULL, CloneDefinition);
+}
+
+///----------------------------------------------------------------------------
+/// Test Case Description:
+///
+/// Tries setting a user dictionary path where to store CS user information into
+///----------------------------------------------------------------------------
+void TestCoordinateSystem::TestCase_InitializeValidUserDictionaryDir()
+{
+    MgCoordinateSystemFactory mgCsFactory;
+    Ptr<MgCoordinateSystemCatalog> pCsCatalog = mgCsFactory.GetCatalog();
+
+    STRING userDictionaryDir = pCsCatalog->GetDefaultUserDictionaryDir();
+    if (userDictionaryDir.empty())
+        return;
+
+    //create the directory to make sure, [SetUserDictionaryDir]
+    //can succeed
+    MgFileUtil::CreateDirectory(userDictionaryDir);
+
+    pCsCatalog->SetUserDictionaryDir(userDictionaryDir);
+    STRING setUserDictionaryDir = pCsCatalog->GetUserDictionaryDir();
+    CPPUNIT_ASSERT(setUserDictionaryDir == userDictionaryDir);
+
+    pCsCatalog->SetUserDictionaryDir(L"");
+    setUserDictionaryDir = pCsCatalog->GetUserDictionaryDir();
+    CPPUNIT_ASSERT(setUserDictionaryDir.empty());
+}
+
+///----------------------------------------------------------------------------
+/// Test Case Description:
+///
+/// Tries setting an invalid user dictionary path where to store CS user information into
+///----------------------------------------------------------------------------
+void TestCoordinateSystem::TestCase_InitializeInvalidUserDictionaryDir()
+{
+    MgCoordinateSystemFactory mgCsFactory;
+    Ptr<MgCoordinateSystemCatalog> pCsCatalog = mgCsFactory.GetCatalog();
+
+    STRING userDictionaryDir = pCsCatalog->GetDefaultUserDictionaryDir();
+    if (userDictionaryDir.empty())
+        return;
+
+    STRING setUserDictionaryDir = pCsCatalog->GetUserDictionaryDir();
+    pCsCatalog->SetUserDictionaryDir(userDictionaryDir);
+
+    MG_TRY()
+
+#ifdef _WIN32
+        pCsCatalog->SetUserDictionaryDir(L"X:\\I am a hopefully not existing path - if I do, changeme");
+#else
+        pCsCatalog->SetUserDictionaryDir(L"/I a hopefully not existing path - if I do, changeme");
+#endif
+
+    MG_CATCH_AND_RELEASE()
+
+    CPPUNIT_ASSERT(NULL != mgException); //this *must* result in an exception
+
+    STRING currentUserDictionaryDir = pCsCatalog->GetUserDictionaryDir();
+    CPPUNIT_ASSERT(setUserDictionaryDir == currentUserDictionaryDir); //the current user dictionary path must not have changed
+}
+
+///----------------------------------------------------------------------------
+/// Test Case Description:
+///
+/// The following test cases try updating all types of definitions in the current catalog
+/// with a user dictionary path being set
+///----------------------------------------------------------------------------
+///
+
+bool TestCoordinateSystem::SetDefaultUserDictionaryDir()
+{
+    MgCoordinateSystemFactory mgCsFactory;
+    Ptr<MgCoordinateSystemCatalog> pCsCatalog = mgCsFactory.GetCatalog();
+
+    STRING defUserDictionaryDir = pCsCatalog->GetDefaultUserDictionaryDir();
+    if (defUserDictionaryDir.empty())
+    {
+        defUserDictionaryDir = MgFileUtil::GetTempPath();
+        if (defUserDictionaryDir.empty())
+            return false;
+
+        defUserDictionaryDir += L"User Geospatial Coordinate Systems/";
+    }
+
+     //create the directory to make sure, [SetUserDictionaryDir]
+    //can succeed
+    MgFileUtil::CreateDirectory(defUserDictionaryDir);
+    pCsCatalog->SetUserDictionaryDir(defUserDictionaryDir);
+
+    return true;
+}
+
+template<
+    class MgCsType, class MgCsDictionaryType,
+    STRING (MgCsType::*GetCode)(),
+    void (MgCsType::*SetCode)(CREFSTRING),
+    MgCsDictionaryType* (MgCoordinateSystemCatalog::*MgGetDictionaryFunc)()>
+void TestUpdateUserDefinition(wchar_t const* pzswDefType,
+    void (*UnprotecDefFunc)(MgCsType*) = SetDefinitionUnprotected<MgCsType>,
+    MgCsType* (*CloneDefFunc)(MgCsType*) = NULL)
+{
+    ACE_DEBUG((LM_INFO, ACE_TEXT("\nTrying to set the default user dictionary path ...\n")));
+
+    bool userDirSet = TestCoordinateSystem::SetDefaultUserDictionaryDir();
+    if (!userDirSet)
+    {
+        ACE_DEBUG((LM_WARNING, ACE_TEXT("\nCould not set the default user dictionary path. Current test will be skipped\n")));
+        return;
+    }
+
+    MgCoordinateSystemFactory mgCsFactory;
+    Ptr<MgCoordinateSystemCatalog> pCsCatalog = mgCsFactory.GetCatalog();
+    Ptr<MgCsDictionaryType> pCsDictionary = CALL_MEMBER_FN(pCsCatalog, MgGetDictionaryFunc)();
+
+    const STRING& csCsdFilename = pCsDictionary->GetFileName();
+
+    STRING csCsdFile = pCsDictionary->GetPath();
+    CPPUNIT_ASSERT(!csCsdFile.empty());
+    CPPUNIT_ASSERT(MgFileUtil::IsFile(csCsdFile));
+
+    const INT64 csdFileSize = MgFileUtil::GetFileSize(csCsdFile);
+
+    STRING userDir = pCsCatalog->GetUserDictionaryDir();
+    STRING csCsdUserFile = userDir + csCsdFilename;
+
+    STRING addedCode;
+    {
+        //backup the current user CSD file and automatically restore it after we are done; or delete the newly created CSD file
+        TestCoordinateSystem::FileAutoBackup csdFileBackup(csCsdUserFile, L".UNIT_TEST_SAVE");
+
+        addedCode = TestUpdateDefinition<
+            false /* compile as 'no-auto-remove' */,
+            true /* compile as 'with-user-def-dir' */,
+            MgCsType, MgCsDictionaryType,
+            GetCode,
+            SetCode,
+            MgGetDictionaryFunc>(pzswDefType, UnprotecDefFunc, CloneDefFunc);
+
+        const INT64 updateCsdFileSize = MgFileUtil::GetFileSize(csCsdFile);
+        CPPUNIT_ASSERT(updateCsdFileSize == csdFileSize);
+
+        //the user CSD file now must exist
+        struct _stat fileStatus;
+        bool fileExists = MgFileUtil::GetFileStatus(csCsdUserFile, fileStatus);
+        CPPUNIT_ASSERT(fileExists && fileStatus.st_size);
+
+        CPPUNIT_ASSERT(!addedCode.empty());
+        CPPUNIT_ASSERT(pCsDictionary->Has(addedCode));
+    }
+
+    //now, that the user file had been deleted, our newly added definition must have been gone, too
+    pCsDictionary->SetFileName(pCsDictionary->GetFileName()); //force the Mg dictionary to update is cache
+    CPPUNIT_ASSERT(!pCsDictionary->Has(addedCode));
+}
+
+void TestCoordinateSystem::TestCase_UpdateUserCoordinateSystems()
+{
+    TestUpdateUserDefinition<
+        MgCoordinateSystem, MgCoordinateSystemDictionary,
+        &MgCoordinateSystem::GetCsCode,
+        &MgCoordinateSystem::SetCsCode,
+        &MgCoordinateSystemCatalog::GetCoordinateSystemDictionary>(L"Coordinate System");
+}
+
+void TestCoordinateSystem::TestCase_UpdateUserDatums()
+{
+    TestUpdateUserDefinition<
+        MgCoordinateSystemDatum, MgCoordinateSystemDatumDictionary,
+        &MgCoordinateSystemDatum::GetDtCode,
+        &MgCoordinateSystemDatum::SetDtCode,
+        &MgCoordinateSystemCatalog::GetDatumDictionary>(L"Datum");
+}
+
+void TestCoordinateSystem::TestCase_UpdateUserEllipsoids()
+{
+    TestUpdateUserDefinition<
+        MgCoordinateSystemEllipsoid, MgCoordinateSystemEllipsoidDictionary,
+        &MgCoordinateSystemEllipsoid::GetElCode,
+        &MgCoordinateSystemEllipsoid::SetElCode,
+        &MgCoordinateSystemCatalog::GetEllipsoidDictionary>(L"Ellipsoid");
+}
+
+void TestCoordinateSystem::TestCase_UpdateUserCategories()
+{
+    TestUpdateUserDefinition<
+        MgCoordinateSystemCategory, MgCoordinateSystemCategoryDictionary,
+        &MgCoordinateSystemCategory::GetName,
+        &MgCoordinateSystemCategory::SetName,
+        &MgCoordinateSystemCatalog::GetCategoryDictionary>(L"Category", NULL, NULL);
+}
+
+void TestCoordinateSystem::TestCase_UpdateUserGeodeticTransformations()
+{
+    TestUpdateUserDefinition<
+        MgCoordinateSystemGeodeticTransformDef, MgCoordinateSystemGeodeticTransformDefDictionary,
+        &MgCoordinateSystemGeodeticTransformDef::GetTransformName,
+        &MgCoordinateSystemGeodeticTransformDef::SetTransformName,
+        &MgCoordinateSystemCatalog::GetGeodeticTransformDefDictionary>(L"Geodetic Transformation", NULL, CloneDefinition);
+}
+
+void TestCoordinateSystem::TestCase_UpdateUserGeodeticPaths()
+{
+    TestUpdateUserDefinition<
+        MgCoordinateSystemGeodeticPath, MgCoordinateSystemGeodeticPathDictionary,
+        &MgCoordinateSystemGeodeticPath::GetPathName,
+        &MgCoordinateSystemGeodeticPath::SetPathName,
+        &MgCoordinateSystemCatalog::GetGeodeticPathDictionary>(L"Geodetic Path", NULL, CloneDefinition);
+}
+
+///----------------------------------------------------------------------------
+/// Test Case Description:
+///
 /// This test case loads OGC WKT coordinate systems from an external file and
 /// tries to validate them.
 ///----------------------------------------------------------------------------
