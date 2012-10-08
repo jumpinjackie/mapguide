@@ -10,3 +10,7 @@ if (!$currentPostBuildCmd.Contains($CsMapDictPostBuildCmd)) {
     $project.Properties.Item("PostBuildEvent").Value += $CsMapDictPostBuildCmd
     Write-Host "Updated Post-Build event for project"
 }
+
+$project.ProjectItems | ForEach { if ($_.Name -eq "cs-map-dummy-C008508B-11C9-40D0-B0CB-4AA35B6EE010.txt") { $_.Remove() } }
+$projectPath = Split-Path $project.FullName -Parent
+Join-Path $projectPath "cs-map-dummy-C008508B-11C9-40D0-B0CB-4AA35B6EE010.txt" | Remove-Item
