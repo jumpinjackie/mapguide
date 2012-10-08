@@ -65,8 +65,11 @@ echo [install]: Copy api-desktop files to nuget staging
 %XCOPY% "%DESKTOP_BASEDIR%\*" "%NUGET_CONTENT_DESKTOP%" /EXCLUDE:package_excludes.txt+desktop_package_excludes.txt
 copy /y "%DESKTOP_BASEDIR%\OSGeo.MapGuide.Desktop.dll" "%NUGET_LIB_DESKTOP%"
 echo [install]: Copy api-web files to nuget staging
+REM Just in case
+DoxyTransform.exe dotnet "%MG_DOC_XML%" "%WEB_BASEDIR%"
 copy /y "%WEB_BASEDIR%\MgWebApp.dll" "%NUGET_CONTENT_WEB%"
 copy /y "%WEB_BASEDIR%\MgWebSupport.dll" "%NUGET_CONTENT_WEB%"
+copy /y "%WEB_BASEDIR%\MgHttpHandler.dll" "%NUGET_CONTENT_WEB%"
 copy /y "%WEB_BASEDIR%\MgMapGuideCommon.dll" "%NUGET_CONTENT_WEB%"
 copy /y "%WEB_BASEDIR%\MapGuideCommonUnmanagedApi.dll" "%NUGET_CONTENT_WEB%"
 copy /y "%WEB_BASEDIR%\lib_json.dll" "%NUGET_CONTENT_WEB%"
