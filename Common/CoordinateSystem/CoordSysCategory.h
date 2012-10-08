@@ -18,6 +18,8 @@
 #ifndef _CCOORDINATESYSTEMCATEGORY_H_
 #define _CCOORDINATESYSTEMCATEGORY_H_
 
+struct cs_Ctdef_;
+
 namespace CSLibrary
 {
 
@@ -25,12 +27,13 @@ class CCoordinateSystemCategory : public MgCoordinateSystemCategory
 {
 public:
     CCoordinateSystemCategory(MgCoordinateSystemCatalog *pCatalog);
+    CCoordinateSystemCategory(MgCoordinateSystemCatalog *pCatalog, cs_Ctdef_* pCategory);
+    CCoordinateSystemCategory(CCoordinateSystemCategory const&);
+    CCoordinateSystemCategory& operator=(const CCoordinateSystemCategory&);
+
     virtual ~CCoordinateSystemCategory();
 
-    char *Name();
-    void SaveToFstream(csFILE *pFile, UINT32 ulMinSize = 0);
-    void LoadFromFstream(csFILE *pFile);
-    void CopyFrom(MgCoordinateSystemCategory *pDef);
+    void CopyFrom(CCoordinateSystemCategory const* pDef);
 
     //MgCoordinateSystemCategory
     virtual STRING GetName();
@@ -49,24 +52,27 @@ public:
     virtual void Clear();
     virtual MgCoordinateSystemCatalog* GetCatalog();
 
+    cs_Ctdef_ const* GetCategoryDef() const;
+
 protected:
     //MgDisposable
     virtual void Dispose();
 
 protected:
     //Data members
-    CCategoryName m_categoryName;
-    CSystemNameList m_listCoordinateSystemNames;
+    std::vector<STRING> m_listCoordinateSystemNames;
     Ptr<MgCoordinateSystemCatalog> m_pCatalog;
 
     //Private member functions
     static bool IsLegalName(const char *kpName);
 
 private:
-    //Unimplemented stuff
-    CCoordinateSystemCategory();
-    CCoordinateSystemCategory(const CCoordinateSystemCategory&);
-    CCoordinateSystemCategory& operator=(const CCoordinateSystemCategory&);
+
+    std::vector<STRING>& GetAllCsNames();
+    void ClearAllCsNames();
+
+    cs_Ctdef_ * mp_ctDef;
+    static void CtorInit(CCoordinateSystemCategory* pToInitialize, MgCoordinateSystemCatalog *pCatalog, cs_Ctdef_* pSourceCtDef = NULL, bool copyDef = true);
 };
 
 } // End of namespace

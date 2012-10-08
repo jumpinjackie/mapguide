@@ -28,6 +28,7 @@
 struct cs_Eldef_;
 struct cs_Dtdef_;
 struct cs_Csdef_;
+struct cs_Ctdef_;
 struct cs_Datum_;
 struct cs_Csprm_;
 struct cs_Dtcprm_;

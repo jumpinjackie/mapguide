@@ -72,7 +72,6 @@ namespace CSLibrary
         static const char* ReadDescription(const cs_GeodeticPath_& definition);
 
         static int UpdateGeodeticPath(cs_GeodeticPath_* csPath, int /*unused*/);
-        static int ReadAllGeodeticPaths(csFILE *file, cs_GeodeticPath_ *gp_def, int* /*unused*/);
 
         static bool SetupCsGeodeticPathStruct(CCoordinateSystemGeodeticPath* mgGeodeticPath, cs_GeodeticPath_& csPath);
         static void FullInitialize(CCoordinateSystemGeodeticPath* mgGeodeticPath, cs_GeodeticPath_* csPath, MgCoordinateSystemCatalog* catalog);

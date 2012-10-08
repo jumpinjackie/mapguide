@@ -15,6 +15,8 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
+#include <vector>
+
 #include "GeometryCommon.h"
 #include "CoordSysCommon.h"
 
@@ -23,12 +25,24 @@
 #include "MentorUtil.h"                                 //for IsLegalMentorName()
 
 using namespace CSLibrary;
+using namespace std;
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 CCoordinateSystemEnumCoordinateSystemInCategory::CCoordinateSystemEnumCoordinateSystemInCategory(MgCoordinateSystemCatalog *pCatalog)
-    : m_kpListCoordinateSystemNames(NULL)
 {
     m_pCatalog = SAFE_ADDREF(pCatalog);
+}
+
+CCoordinateSystemEnumCoordinateSystemInCategory::CCoordinateSystemEnumCoordinateSystemInCategory(CCoordinateSystemEnumCoordinateSystemInCategory const& copyFrom)
+{
+    this->m_pCatalog = SAFE_ADDREF(copyFrom.m_pCatalog.p);
+    this->Initialize(copyFrom.m_csNames);
+
+    for (size_t i=0; i < copyFrom.m_vectFilter.size(); i++)
+    {
+        this->m_vectFilter.push_back(copyFrom.m_vectFilter[i]);
+        SAFE_ADDREF(this->m_vectFilter[i]);
+    }
 }
 
 CCoordinateSystemEnumCoordinateSystemInCategory::~CCoordinateSystemEnumCoordinateSystemInCategory()
@@ -69,14 +83,10 @@ void CCoordinateSystemEnumCoordinateSystemInCategory::ClearFilter()
 //This function must be called on a freshly-constructed CCoordinateSystemEnumCoordinateSystemInCategory
 //object before anything else can be done with it.
 //
-void CCoordinateSystemEnumCoordinateSystemInCategory::Initialize(
-    const CSystemNameList *kpListCoordinateSystemNames)
-
+void CCoordinateSystemEnumCoordinateSystemInCategory::Initialize(std::vector<STRING> const& allCsNames)
 {
-    assert(NULL != kpListCoordinateSystemNames);
-
-    m_kpListCoordinateSystemNames = kpListCoordinateSystemNames;
-    m_iter = m_kpListCoordinateSystemNames->begin();
+    this->m_csNames = allCsNames;
+    this->m_iter = this->m_csNames.begin();
 }
 
 //----------------------------------------------------------
@@ -95,14 +105,14 @@ MgDisposableCollection* CCoordinateSystemEnumCoordinateSystemInCategory::Next(UI
     {
         throw new MgCoordinateSystemInitializationFailedException(L"MgCoordinateSystemEnum.Next", __LINE__, __WFILE__, NULL, L"", NULL);
     }
-    Ptr<MgCoordinateSystemDictionary> pCsDict=m_pCatalog->GetCoordinateSystemDictionary();
+
+    Ptr<MgCoordinateSystemDictionary> pCsDict = m_pCatalog->GetCoordinateSystemDictionary();
     if (!pCsDict)
     {
         throw new MgCoordinateSystemInitializationFailedException(L"MgCoordinateSystem.Next", __LINE__, __WFILE__, NULL, L"MgCoordinateSystemNoDictionaryException", NULL);
     }
 
-    wchar_t* pstr;
-    for (; m_iter != m_kpListCoordinateSystemNames->end(); ++m_iter)
+    for (; m_iter != this->m_csNames.end(); ++m_iter)
     {
         if (pOutput->GetCount() == ulCount)
         {
@@ -110,31 +120,16 @@ MgDisposableCollection* CCoordinateSystemEnumCoordinateSystemInCategory::Next(UI
             return pOutput.Detach();
         }
 
-        //get the coordinate system name from the category
-        const char *kpName = (*m_iter).Name();
-
-        assert(IsLegalMentorName(kpName));
-        pstr = Convert_Ascii_To_Wide(kpName);
-        if (NULL == pstr)
-        {
-            throw new MgOutOfMemoryException(L"MgCoordinateSystemEnum.Next", __LINE__, __WFILE__, NULL, L"", NULL);
-        }
-        STRING strCsName(pstr);
-        delete[] pstr;
-
         //now get the definition from the dictionary
-        Ptr<MgGuardDisposable> pCs=pCsDict->Get(strCsName);
-        if (!pCs)
-        {
-            MgStringCollection arguments;
-            arguments.Add(strCsName);
-            throw new MgCoordinateSystemLoadFailedException(L"MgCoordinateSystemEnum.Next", __LINE__, __WFILE__, &arguments, L"", NULL);
-        }
+        Ptr<MgGuardDisposable> pCs = pCsDict->Get(m_iter->c_str());
+        _ASSERT(NULL != pCs);
+
         //is it filtered out?
         if (IsFilteredOut(pCs))
         {
             continue;
         }
+
         pOutput->Add(pCs);
     }
 
@@ -150,35 +145,13 @@ MgStringCollection* CCoordinateSystemEnumCoordinateSystemInCategory::NextName(UI
 {
     Ptr<MgStringCollection> pOutput;
     MG_TRY()
-    pOutput=new MgStringCollection;
-    if (!pOutput)
-    {
-        throw new MgOutOfMemoryException(L"MgCoordinateSystemEnum.NextName", __LINE__, __WFILE__, NULL, L"", NULL);
-    }
-    wchar_t* pstr;
-    for (; m_iter != m_kpListCoordinateSystemNames->end(); ++m_iter)
-    {
-        if (pOutput->GetCount() == ulCount)
-        {
-            //success
-            return pOutput.Detach();
-        }
-        const char *kpName = (*m_iter).Name();
 
-        if (IsFilteredOut(kpName))
+        pOutput=new MgStringCollection;
+        Ptr<MgDisposableCollection> pNextCsObjects = this->Next(ulCount);
+        for(INT32 i = 0; i < pNextCsObjects->GetCount(); ++i)
         {
-            continue;
+            pOutput->Add(Ptr<MgCoordinateSystem>(dynamic_cast<MgCoordinateSystem*>(pNextCsObjects->GetItem(i)))->GetCsCode());
         }
-
-        assert(IsLegalMentorName(kpName));
-        pstr = Convert_Ascii_To_Wide(kpName);
-        if (NULL == pstr)
-        {
-            throw new MgOutOfMemoryException(L"MgCoordinateSystemEnum.NextName", __LINE__, __WFILE__, NULL, L"", NULL);
-        }
-        pOutput->Add(pstr);
-        delete[] pstr;
-    }
 
     MG_CATCH_AND_THROW(L"MgCoordinateSystemEnum.NextName")
     return pOutput.Detach();
@@ -189,60 +162,13 @@ MgStringCollection* CCoordinateSystemEnumCoordinateSystemInCategory::NextDescrip
 {
     Ptr<MgStringCollection> pOutput;
     MG_TRY()
-    pOutput=new MgStringCollection;
-    if (!pOutput)
-    {
-        throw new MgOutOfMemoryException(L"MgCoordinateSystemEnum.NextDescription", __LINE__, __WFILE__, NULL, L"", NULL);
-    }
-    if (!m_pCatalog)
-    {
-        throw new MgCoordinateSystemInitializationFailedException(L"MgCoordinateSystemEnum.NextDescription", __LINE__, __WFILE__, NULL, L"", NULL);
-    }
-    Ptr<MgCoordinateSystemDictionary> pCsDict=m_pCatalog->GetCoordinateSystemDictionary();
-    if (!pCsDict)
-    {
-        throw new MgCoordinateSystemInitializationFailedException(L"MgCoordinateSystem.NextDescription", __LINE__, __WFILE__, NULL, L"MgCoordinateSystemNoDictionaryException", NULL);
-    }
 
-    wchar_t* pstr;
-    for (; m_iter != m_kpListCoordinateSystemNames->end(); ++m_iter)
-    {
-        if (pOutput->GetCount() == ulCount)
+        pOutput=new MgStringCollection;
+        Ptr<MgDisposableCollection> pNextCsObjects = this->Next(ulCount);
+        for(INT32 i = 0; i < pNextCsObjects->GetCount(); ++i)
         {
-            //success
-            return pOutput.Detach();
+            pOutput->Add(Ptr<MgCoordinateSystem>(dynamic_cast<MgCoordinateSystem*>(pNextCsObjects->GetItem(i)))->GetDescription());
         }
-        //get the coordinate system name from the category
-        const char *kpName = (*m_iter).Name();
-
-        assert(IsLegalMentorName(kpName));
-        pstr = Convert_Ascii_To_Wide(kpName);
-        if (NULL == pstr)
-        {
-            throw new MgOutOfMemoryException(L"MgCoordinateSystemEnum.NextDescription", __LINE__, __WFILE__, NULL, L"", NULL);
-        }
-        STRING strCsName(pstr);
-        delete[] pstr;
-
-        //now get the definition from the dictionary
-        Ptr<MgGuardDisposable> pCs=pCsDict->Get(strCsName);
-        if (!pCs)
-        {
-            MgStringCollection arguments;
-            arguments.Add(strCsName);
-            throw new MgCoordinateSystemLoadFailedException(L"MgCoordinateSystemEnum.NextDescription", __LINE__, __WFILE__, &arguments, L"", NULL);
-        }
-        //is it filtered out?
-        if (IsFilteredOut(pCs))
-        {
-            continue;
-        }
-        MgCoordinateSystem* pCsDef=dynamic_cast<MgCoordinateSystem*>(pCs.p);
-        assert(pCsDef);
-        STRING strDescription=pCsDef->GetDescription();
-
-        pOutput->Add(strDescription);
-    }
 
     MG_CATCH_AND_THROW(L"MgCoordinateSystemEnum.NextDescription")
     return pOutput.Detach();
@@ -256,16 +182,16 @@ void CCoordinateSystemEnumCoordinateSystemInCategory::Skip(UINT32 ulSkipCount)
 {
     MG_TRY()
     UINT32 ulSkipped;
-    for (ulSkipped=0; m_iter != m_kpListCoordinateSystemNames->end(); ++m_iter)
+    for (ulSkipped=0; m_iter != m_csNames.end(); ++m_iter)
     {
         if (ulSkipped == ulSkipCount)
         {
             //success
             return;
         }
+
         //get the coordinate system name from the category
-        const char *kpName = (*m_iter).Name();
-        if (IsFilteredOut(kpName))
+        if (IsFilteredOut(m_iter->c_str()))
         {
             continue;
         }
@@ -285,34 +211,7 @@ void CCoordinateSystemEnumCoordinateSystemInCategory::Skip(UINT32 ulSkipCount)
 //
 void CCoordinateSystemEnumCoordinateSystemInCategory::Reset()
 {
-    m_iter = m_kpListCoordinateSystemNames->begin();
-}
-
-//This function evaluates the provided def using the current
-//Filter.  If there is no Filter, the result will always
-//be true.
-//
-bool CCoordinateSystemEnumCoordinateSystemInCategory::IsFilteredOut(const char *kpName)
-{
-    bool bIsFiltered=false;
-
-    MG_TRY()
-    assert(NULL != kpName);
-    if (!kpName)
-    {
-        throw new MgNullArgumentException(L"MgCoordinateSystemEnum.IsFilteredOut", __LINE__, __WFILE__, NULL, L"", NULL);
-    }
-
-    //Get a def from the set for the Filter to work with
-    wchar_t* pStr = Convert_Ascii_To_Wide(kpName);
-    if (NULL == pStr)
-    {
-        throw new MgOutOfMemoryException(L"MgCoordinateSystemEnum.IsFilteredOut", __LINE__, __WFILE__, NULL, L"", NULL);
-    }
-    bIsFiltered=IsFilteredOut(pStr);
-    delete[] pStr;
-    MG_CATCH_AND_THROW(L"MgCoordinateSystemEnum.IsFilteredOut")
-    return bIsFiltered;
+    m_iter = this->m_csNames.begin();
 }
 
 //This function evaluates the provided def using the current
@@ -398,29 +297,13 @@ bool CCoordinateSystemEnumCoordinateSystemInCategory::IsFilteredOut(MgGuardDispo
 //
 MgCoordinateSystemEnum* CCoordinateSystemEnumCoordinateSystemInCategory::CreateClone()
 {
-    Ptr<CCoordinateSystemEnumCoordinateSystemInCategory> pNew;
-
     MG_TRY()
 
-    //Make a new object
-    pNew = new CCoordinateSystemEnumCoordinateSystemInCategory(m_pCatalog);
-
-    if (NULL == pNew.p)
-    {
-        throw new MgOutOfMemoryException(L"MgCoordinateSystemEnum.CreateClone", __LINE__, __WFILE__, NULL, L"", NULL);
-    }
-
-    //Copy it from this one
-    pNew->m_iter = m_iter;
-    pNew->m_kpListCoordinateSystemNames = m_kpListCoordinateSystemNames;
-    for (size_t i=0; i<m_vectFilter.size(); i++)
-    {
-        pNew->m_vectFilter.push_back(m_vectFilter[i]);
-        SAFE_ADDREF(m_vectFilter[i]);
-    }
+        //Make a new object and return it
+        return new CCoordinateSystemEnumCoordinateSystemInCategory(*this);
 
     MG_CATCH_AND_THROW(L"MgCoordinateSystemEnum.CreateClone")
 
-    //And we're done!  Return success.
-    return pNew.Detach();
+    _ASSERT(false);
+    return NULL;
 }

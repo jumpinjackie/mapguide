@@ -15,6 +15,8 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
+#include <vector>
+
 #include "GeometryCommon.h"
 #include "CoordSysCommon.h"
 
@@ -24,16 +26,76 @@
 #include "MentorUtil.h"                            //for IsLegalMentorName
 #include <algorithm>                            //for std::find
 
+#include "cs_map.h"
+
+using namespace std;
 using namespace CSLibrary;
+
+extern "C"
+{
+    extern int cs_Error;
+}
+
+void CCoordinateSystemCategory::CtorInit(CCoordinateSystemCategory* pToInitialize, MgCoordinateSystemCatalog *pCatalog,
+    cs_Ctdef_* pSourceCtDef,
+    bool copyDef)
+{
+    if (NULL == pCatalog)
+        throw new MgNullArgumentException(L"MgCoordinateSystemCategory.MgCoordinateSystemCategory()", __LINE__, __WFILE__, NULL, L"", NULL);
+
+    _ASSERT(NULL != pToInitialize && NULL == pToInitialize->mp_ctDef);
+
+    cs_Ctdef_ *pCategoryCopy = NULL;
+    if (NULL != pSourceCtDef)
+    {
+        if (copyDef)
+            pCategoryCopy = CScpyCategory(pSourceCtDef);
+        else
+            pCategoryCopy = pSourceCtDef;
+    }
+    else
+    {
+        pCategoryCopy = CSnewCategory(NULL);
+    }
+
+    if (NULL == pCategoryCopy)
+        throw new MgOutOfMemoryException(L"MgCoordinateSystemCategory.CtorInit", __LINE__, __WFILE__, NULL, L"", NULL);
+
+    pToInitialize->m_pCatalog = SAFE_ADDREF(pCatalog);
+    pToInitialize->mp_ctDef = pCategoryCopy;
+}
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 CCoordinateSystemCategory::CCoordinateSystemCategory(MgCoordinateSystemCatalog *pCatalog)
+    : mp_ctDef(NULL)
 {
-    m_pCatalog = SAFE_ADDREF(pCatalog);
+    CCoordinateSystemCategory::CtorInit(this, pCatalog);
+}
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+CCoordinateSystemCategory::CCoordinateSystemCategory(MgCoordinateSystemCatalog *pCatalog, cs_Ctdef_* pCategory)
+    : mp_ctDef(NULL)
+{
+    CCoordinateSystemCategory::CtorInit(this, pCatalog, pCategory, false);
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+CCoordinateSystemCategory::CCoordinateSystemCategory(CCoordinateSystemCategory const& toCopyFrom)
+    : mp_ctDef(NULL)
+{
+    CCoordinateSystemCategory::CtorInit(this, toCopyFrom.m_pCatalog, toCopyFrom.mp_ctDef);
+}
+
+CCoordinateSystemCategory& CCoordinateSystemCategory::operator=(const CCoordinateSystemCategory& other)
+{
+    this->CopyFrom(&other);
+    return *this;
 }
 
 CCoordinateSystemCategory::~CCoordinateSystemCategory()
 {
+    CSrlsCategory(this->mp_ctDef);
+    this->mp_ctDef = NULL;
 }
 
 //MgDisposable
@@ -42,284 +104,54 @@ void CCoordinateSystemCategory::Dispose()
     delete this;
 }
 
-//Gets the name of the category definition.
-//
-char * CCoordinateSystemCategory::Name()
-{
-    return const_cast<char*>(m_categoryName.Name());
-}
-
-//Saves the object to a file.  Purpose of the ulMinSize parameter:
-//A category definition is, of necessity, a variable-length record
-//in a file, since it can contain an arbitrary number of coordinate
-//systems.  Therefore, when written, it stores the number of coordinate
-//systems which it contains.  However, suppose you have a file which
-//consists of a bunch of category definitions, one after the other,
-//and you modify one of them by deleting a single coordinate system
-//from it, thereby making it a bit smaller.  In that case, it seems
-//inefficient to have to re-write the entire file, compacting it; better
-//to simply be slightly disk-space-inefficient, write the individual
-//record in situ, and mark it so that the reader knows to skip a bit
-//of space.  Thus, a category definition in a disk file actually stores
-//two numbers:  how many coordinate systems it actually contains,
-//and how much space (in terms of number of coordinate systems) it
-//occupies in the disk file.  The second number will be greater than
-//or equal to the first.  The first number will always be supplied by
-//the category definition itself, but the caller needs to supply the
-//second number, which the ulMinSize parameter supplies.
-//
-//This function returns true for success, false for failure.  If the
-//ulMinSize parameter is less than the number of coordinate systems
-//in the category, it will be ignored.
-//
-void CCoordinateSystemCategory::SaveToFstream(csFILE *pFile, UINT32 ulMinSize)
-{
-    long previousPosition = -1;
-    MG_TRY()
-
-    UINT32 ulSize = static_cast<UINT32>(m_listCoordinateSystemNames.size());
-    if (ulMinSize < ulSize)
-    {
-        ulMinSize = ulSize;
-    }
-
-    //make sure the file is okay
-    if (!pFile || -1==CS_ftell(pFile))
-    {
-        throw new MgInvalidArgumentException(L"MgCoordinateSystemCategory.SaveToFstream", __LINE__, __WFILE__, NULL, L"", NULL);
-    }
-    if (ferror(pFile))
-    {
-        throw new MgFileIoException(L"MgCoordinateSystemCategory.SaveToFstream", __LINE__, __WFILE__, NULL, L"", NULL);
-    }
-    previousPosition = CS_ftell(pFile);    //in case of error
-
-    //We write in this order:
-    // 1. Name
-    // 2. Size (actual number of coordinate systems)
-    // 3. File size (ulMinSize; see description above)
-    // 4. The coordinate system names
-    // 5. Blank space (if ulMinSize > size)
-
-    //Name.
-    CS_fwrite(m_categoryName.Name(), sizeof(char), knMaxCategoryNameLen, pFile);
-
-    //Size.
-    CS_fwrite(reinterpret_cast<char *>(&ulSize), sizeof(ulSize), 1, pFile);
-
-    //Size in file.
-    CS_fwrite(reinterpret_cast<char *>(&ulMinSize), sizeof(ulMinSize), 1, pFile);
-
-    //Coordinate system names.
-    CSystemNameList::const_iterator iter;
-    for (iter=m_listCoordinateSystemNames.begin(); iter!=m_listCoordinateSystemNames.end(); ++iter)
-    {
-        CS_fwrite((*iter).Name(), sizeof(char), cs_KEYNM_DEF, pFile);
-    }
-
-    //Blank space, if needed
-    assert(ulMinSize >= ulSize);
-    UINT32 ulDiff = ulMinSize - ulSize;
-    if (ulDiff > 0)
-    {
-        //I could just pad the blank space with nulls,
-        //but I anticipate that it may be handy in the
-        //future for diagnostic purposes to be able go into
-        //the category dictionary with a binary editor and
-        //spot where the blanks are.  So I'll pick a distinctive
-        //string that's not likely to crop up elsewhere.
-        CSystemName dummy(/*NOXLATE*/"fnord");
-        for (UINT32 i=0; i<ulDiff; i++)
-        {
-            CS_fwrite(dummy.Name(), sizeof(char), cs_KEYNM_DEF, pFile);
-        }
-    }
-
-    //We're done!  Return success.
-    MG_CATCH(L"MgCoordinateSystemCategory.SaveToFstream")
-    //If we encountered an error, reset to where we started
-    if (0!=ferror(pFile) && -1!=previousPosition)
-    {
-        CS_fseek(pFile, previousPosition, SEEK_SET);
-        throw new MgFileIoException(L"MgCoordinateSystemCategory.SaveToFstream", __LINE__, __WFILE__, NULL, L"MgCoordinateSystemInternalException", NULL);
-    }
-    MG_THROW()
-}
-
-//Load the object from a file, returning true for success or false for
-//failure.  In case of failure, the object will be cleared to a freshly
-//constructed state, and the stream pointer will be positioned where it was
-//to start with.  In case of success, the stream pointer will be positioned
-//just past the end of the object.
-//
-//See description under CCoordinateSystemCategory::SaveToFstream() for details.
-//
-void CCoordinateSystemCategory::LoadFromFstream(csFILE *pFile)
-{
-    long previousPosition = -1;
-
-    MG_TRY()
-
-    UINT32 ulDiff;
-    CSystemName member;
-
-    Clear();
-
-    //make sure the stream is okay
-    assert(pFile && CS_ftell(pFile)>=0);
-    if (!pFile || -1==CS_ftell(pFile))
-    {
-        throw new MgInvalidArgumentException(L"MgCoordinateSystemCategory.LoadFromFstream", __LINE__, __WFILE__, NULL, L"", NULL);
-    }
-    if (ferror(pFile))
-    {
-        throw new MgFileIoException(L"MgCoordinateSystemCategory.LoadFromFstream", __LINE__, __WFILE__, NULL, L"", NULL);
-    }
-    previousPosition = CS_ftell(pFile);    //in case of error
-
-    //We read in this order:
-    // 1. Name
-    // 2. Size (actual number of coordinate systems)
-    // 3. File size (ulMinSize; see description under SaveToFstream())
-    // 4. The coordinate system names
-    // 5. Blank space (if ulMinSize > size)
-
-    //Name.
-    char tempCharBuffer[knMaxCategoryNameLen] = { '\0' };
-    const size_t expectedReadCount = sizeof(tempCharBuffer) / sizeof(char);
-    size_t nRead=CS_fread(tempCharBuffer, sizeof(char), expectedReadCount, pFile);
-    if (expectedReadCount != nRead)
-    {
-        _ASSERT(0 == nRead); //otherwise something else is going on here...
-
-        //we reached the end of the file
-        throw new MgFileIoException(L"MgCoordinateSystemCategory.LoadFromFstream", __LINE__, __WFILE__, NULL, L"", NULL);
-    }
-
-    //copy the category name into our [m_categoryName] TNameStruct
-    m_categoryName = tempCharBuffer;
-
-    //Size.
-    UINT32 ulSize;
-    nRead=CS_fread(reinterpret_cast<char *>(&ulSize), sizeof(ulSize), 1, pFile);
-    if (1!=nRead)
-    {
-        throw new MgFileIoException(L"MgCoordinateSystemCategory.LoadFromFstream", __LINE__, __WFILE__, NULL, L"", NULL);
-    }
-
-    //Size in file.
-    UINT32 ulMinSize;
-    nRead=CS_fread(reinterpret_cast<char *>(&ulMinSize), sizeof(ulMinSize), 1, pFile);
-    if (1!=nRead)
-    {
-        throw new MgFileIoException(L"MgCoordinateSystemCategory.LoadFromFstream", __LINE__, __WFILE__, NULL, L"", NULL);
-    }
-    assert(ulMinSize >= ulSize);
-    if (ulMinSize < ulSize)
-    {
-        throw new MgFileIoException(L"MgCoordinateSystemCategory.LoadFromFstream", __LINE__, __WFILE__, NULL, L"", NULL);
-    }
-
-    char keyNameBuffer[cs_KEYNM_DEF]  = { '\0' };
-    const size_t expectedBufferCountRead = sizeof(keyNameBuffer) / sizeof(char);
-    //Coordinate system names.
-    for (UINT32 i=0; i<ulSize; i++)
-    {
-        keyNameBuffer[0] = '\0';
-        nRead=CS_fread(keyNameBuffer, sizeof(char), expectedBufferCountRead, pFile);
-        if (expectedBufferCountRead != nRead)
-        {
-            throw new MgFileIoException(L"MgCoordinateSystemCategory.LoadFromFstream", __LINE__, __WFILE__, NULL, L"", NULL);
-        }
-
-        member = keyNameBuffer;
-
-        // TODO - WORKAROUND TO SKIP BAD COORDINATE SYSTEMS IN CURRENT DICTIONARIES
-        if((strcmp(member.Name(), "IGN63/Hiva") != 0) &&
-           (strcmp(member.Name(), "Phoenix") != 0))
-        {
-            m_listCoordinateSystemNames.push_back(member);
-        }
-    }
-
-    //Blank space, if needed
-    assert(ulMinSize >= ulSize);
-    ulDiff = ulMinSize - ulSize;
-    if (ulDiff > 0)
-    {
-        CS_fseek(pFile, CS_ftell(pFile) + ulDiff * (sizeof(keyNameBuffer) / sizeof(char)), SEEK_SET);
-    }
-    if (ferror(pFile))
-    {
-        throw new MgFileIoException(L"MgCoordinateSystemCategory.LoadFromFstream", __LINE__, __WFILE__, NULL, L"", NULL);
-    }
-
-    //We're done!  Return success.
-    MG_CATCH(L"MgCoordinateSystemCategory.LoadFromFstream")
-    //If we encountered an error, reset to where we started
-    if (ferror(pFile) && -1!=previousPosition)
-    {
-        CS_fseek(pFile, previousPosition, SEEK_SET);
-        Clear();
-        throw new MgFileIoException(L"MgCoordinateSystemCategory.LoadFromFstream", __LINE__, __WFILE__, NULL, L"MgCoordinateSystemInternalException", NULL);
-    }
-    MG_THROW()
-}
-
 //Make self into a copy of another category def.  Note that the other
 //def need only support MgCoordinateSystemCategory-- it doesn't necessarily have
 //to be a CCoordinateSystemCategory.
 //
-void CCoordinateSystemCategory::CopyFrom(MgCoordinateSystemCategory *pDef)
+void CCoordinateSystemCategory::CopyFrom(CCoordinateSystemCategory const* pDef)
 {
+    _ASSERT(NULL != pDef);
+    if (!pDef)
+        throw new MgNullArgumentException(L"MgCoordinateSystemCategory.CopyFrom", __LINE__, __WFILE__, NULL, L"", NULL);
+
+    if (!const_cast<CCoordinateSystemCategory*>(pDef)->IsValid())
+        throw new MgInvalidArgumentException(L"MgCoordinateSystemCategory.CopyFrom", __LINE__, __WFILE__, NULL, L"", NULL);
+
+    CCoordinateSystemCategory const* pOtherCategory = dynamic_cast<CCoordinateSystemCategory const*>(pDef);
+    if (NULL == pOtherCategory)
+        throw new MgInvalidArgumentException(L"MgCoordinateSystemCategory.CopyFrom", __LINE__, __WFILE__, NULL, L"", NULL);
+
+    cs_Ctdef_* pCategoryCopy = CScpyCategory(pOtherCategory->mp_ctDef);
+    if (NULL == pCategoryCopy)
+        throw new MgOutOfMemoryException(L"MgCoordinateSystemCategory.CopyFrom", __LINE__, __WFILE__, NULL, L"", NULL);
+
     MG_TRY()
 
-    assert(NULL != pDef);
-    if (!pDef)
-    {
-        throw new MgNullArgumentException(L"MgCoordinateSystemCategory.CopyFrom", __LINE__, __WFILE__, NULL, L"", NULL);
-    }
+        this->Clear();
+        this->mp_ctDef = pCategoryCopy;
 
-    Clear();
-
-    //Copy the name
-    STRING str = pDef->GetName();
-    SetName(str);
-
-    //Get an enumerator
-    Ptr<MgCoordinateSystemEnum> pEnum=pDef->GetEnum();
-    if (!pEnum)
-    {
-        throw new MgOutOfMemoryException(L"MgCoordinateSystemCategory.CopyFrom", __LINE__, __WFILE__, NULL, L"", NULL);
-    }
-
-    //Add the coordinate systems
-    for ( ; ; )
-    {
-        Ptr<MgStringCollection> pCsNameColl=pEnum->NextName(1);
-        if (1 != pCsNameColl->GetCount()) break;
-        AddCoordinateSystem(pCsNameColl->GetItem(0));
-    }
     MG_CATCH_AND_THROW(L"MgCoordinateSystemCategory.CopyFrom")
 }
 
 //Gets the name of the def.
 STRING CCoordinateSystemCategory::GetName()
 {
-    STRING sName;
+    STRING categoryName;
+    wchar_t* pszwName = NULL;
 
     MG_TRY()
-    wchar_t *pName = Convert_Ascii_To_Wide(m_categoryName.Name());
-    if (!pName)
-    {
-        throw new MgOutOfMemoryException(L"MgCoordinateSystemCategory.GetName", __LINE__, __WFILE__, NULL, L"", NULL);
-    }
 
-    sName=pName;
-    delete[] pName;
-    MG_CATCH_AND_THROW(L"MgCoordinateSystemCategory.GetName")
+        pszwName = Convert_Ascii_To_Wide(this->mp_ctDef->ctName);
+        categoryName = pszwName;
 
-    return sName;
+    MG_CATCH(L"MgCoordinateSystemCategory.GetName");
+
+    delete[] pszwName;
+    pszwName = NULL;
+
+    MG_THROW()
+
+    return categoryName;
 }
 
 //Sets the name of the def.
@@ -327,23 +159,24 @@ STRING CCoordinateSystemCategory::GetName()
 //if the specified name is not legal.
 void CCoordinateSystemCategory::SetName(CREFSTRING sName)
 {
+    char* pszNewName = NULL;
+
     MG_TRY()
-    if (!IsLegalName(sName))
-    {
-        throw new MgInvalidArgumentException(L"MgCoordinateSystemCategory.SetName", __LINE__, __WFILE__, NULL, L"", NULL);
-    }
 
-    char *pName = Convert_Wide_To_Ascii(sName.c_str());    //need to delete [] pName
-    if (!pName)
-    {
-        throw new MgOutOfMemoryException(L"MgCoordinateSystemCategory.SetName", __LINE__, __WFILE__, NULL, L"", NULL);
-    }
+        if (!IsLegalName(sName))
+        {
+            throw new MgInvalidArgumentException(L"MgCoordinateSystemCategory.SetName", __LINE__, __WFILE__, NULL, L"", NULL);
+        }
 
-    //assign the name to our internal [TNameStruct]
-    m_categoryName = pName;
+        pszNewName = Convert_Wide_To_Ascii(sName.c_str());
+        CS_stncp(this->mp_ctDef->ctName, pszNewName, cs_CATDEF_CATNMSZ);
 
-    delete [] pName;
-    MG_CATCH_AND_THROW(L"MgCoordinateSystemCategory.SetName")
+    MG_CATCH(L"MgCoordinateSystemCategory.SetName")
+
+        delete[] pszNewName;
+        pszNewName = NULL;
+
+    MG_THROW()
 }
 
 //Gets whether the def is "valid."  Validity, in this case, is
@@ -361,7 +194,7 @@ void CCoordinateSystemCategory::SetName(CREFSTRING sName)
 //
 bool CCoordinateSystemCategory::IsValid()
 {
-    return IsLegalName(m_categoryName.Name());
+    return IsLegalName(this->mp_ctDef->ctName);
 }
 
 //Private member function which returns whether the specified string
@@ -377,7 +210,7 @@ bool CCoordinateSystemCategory::IsLegalName(const char *kpName)
 
     //String can't be empty or too long
     INT32 nLen = static_cast<UINT32>(strlen(kpName));
-    return ((nLen > 0) && (nLen < knMaxCategoryNameLen));
+    return ((nLen > 0) && (nLen < cs_CATDEF_CATNMSZ));
 }
 
 //Tests the specified string to find out whether it's a legal
@@ -385,7 +218,7 @@ bool CCoordinateSystemCategory::IsLegalName(const char *kpName)
 //
 bool CCoordinateSystemCategory::IsLegalName(CREFSTRING sName)
 {
-    return (sName.length() > 0) && (sName.length() < knMaxCategoryNameLen);
+    return (sName.length() > 0) && (sName.length() < cs_CATDEF_CATNMSZ);
 }
 
 //Gets whether the def is usable in the context of the given catalog.
@@ -428,62 +261,40 @@ bool CCoordinateSystemCategory::IsSameAs(MgGuardDisposable *pDef)
     }
 
     //Make sure it's a category def
-    MgCoordinateSystemCategory* pCtDef=dynamic_cast<MgCoordinateSystemCategory*>(pDef);
+    CCoordinateSystemCategory* pCtDef=dynamic_cast<CCoordinateSystemCategory*>(pDef);
     if (!pCtDef)
     {
         return false;
     }
 
-    //Get enumerators for doing comparison
-    Ptr<MgCoordinateSystemEnum> pThis=GetEnum();
-    assert(pThis);
-    if (!pThis)
+    //our [mp_ctDef]'s must always be set, we don't delete that; unless we ran into a situation where we deleted
+    //the field and then couldn't create a new instance via CSnewCategory
+    if (NULL == pCtDef->mp_ctDef)
     {
-        return false;
+        _ASSERT(false);
+        throw new MgInvalidArgumentException(L"MgCoordinateSystemCategory.IsSameAs", __LINE__, __WFILE__, NULL, L"", NULL);
     }
-    pThis->Reset();
 
-    Ptr<MgCoordinateSystemEnum> pThat=pCtDef->GetEnum();
-    assert(pThat);
-    if (!pThat)
+    if (NULL == this->mp_ctDef)
     {
-        return false;
+        _ASSERT(false);
+        throw new MgInvalidOperationException(L"MgCoordinateSystemCategory.IsSameAs", __LINE__, __WFILE__, NULL, L"", NULL);
     }
-    pThat->Reset();
 
-    //Start comparing names.  Even though the enumerators may
-    //allow us to grab many names at one go, we'll do them one
-    //at a time.  This is to avoid the complication of "what do
-    //we do when we ask A for a hundred, and B for a hundred,
-    //and they give us different size chunks?"  Processing speed
-    //isn't much of an issue here, so we'll keep the code simple.
-    for ( ; ; )
+    if (this->mp_ctDef->nameCnt != pCtDef->mp_ctDef->nameCnt)
+        return false;
+
+    //now check, whether all the CRS names are the same
+    for(ulong32_t i = 0; i < this->mp_ctDef->nameCnt; ++i)
     {
-        Ptr<MgStringCollection> pCsNameCollThis=pThis->NextName(1);
-        Ptr<MgStringCollection> pCsNameCollThat=pThat->NextName(1);
-        if ((0 == pCsNameCollThis->GetCount()) && (0 == pCsNameCollThat->GetCount()))
-        {
-            //We've reached the end of the list without
-            //finding any differences.  They're the same.
-            return true;
-        }
-        else if (1==pCsNameCollThis->GetCount() && 1==pCsNameCollThat->GetCount())
-        {
-            //We got a name from each.  Compare them.
-            bool bSameName = (0 == _wcsicmp(pCsNameCollThis->GetItem(0).c_str(), pCsNameCollThat->GetItem(0).c_str()));
-            if (!bSameName)
-            {
-                //Different names!
-                return false;
-            }
-        }
-        else
-        {
-            //The lists are of different length!  Not the same.
-            assert(pCsNameCollThis->GetCount() != pCsNameCollThat->GetCount());
+        char const* pCrsNameThis = (this->mp_ctDef->csNames + i)->csName;
+        char const* pCrsNameOther = (pCtDef->mp_ctDef->csNames + i)->csName;
+
+        if (0 != CS_stricmp(pCrsNameThis, pCrsNameOther))
             return false;
-        }
-    }    //for each coordsys name in the category
+    }
+
+    return true;
 
     MG_CATCH_AND_THROW(L"MgCoordinateSystemCategory.IsSameAs")
 
@@ -495,35 +306,22 @@ bool CCoordinateSystemCategory::IsSameAs(MgGuardDisposable *pDef)
 //
 MgCoordinateSystemCategory* CCoordinateSystemCategory::CreateClone()
 {
-    Ptr<CCoordinateSystemCategory> pNew;
-
     MG_TRY()
 
-    //Create a clone object
-    pNew = new CCoordinateSystemCategory(m_pCatalog);
-
-    if (NULL == pNew.p)
-    {
-        throw new MgOutOfMemoryException(L"MgCoordinateSystemCategory.CreateClone", __LINE__, __WFILE__, NULL, L"", NULL);
-    }
-
-    //Copy the category name
-    pNew->m_categoryName = m_categoryName;
-
-    //Copy the list of coordinate systems
-    pNew->m_listCoordinateSystemNames = m_listCoordinateSystemNames;
+        //Create a clone object
+        return new CCoordinateSystemCategory(*this);
 
     MG_CATCH_AND_THROW(L"MgCoordinateSystemCategory.CreateClone")
 
-    //And we're done!  Return success.
-    return pNew.Detach();
+    _ASSERT(false);
+    return NULL;
 }
 
 //Gets the number of coordinate systems listed in the category.
 //
 UINT32 CCoordinateSystemCategory::GetSize()
 {
-    return static_cast<UINT32>(m_listCoordinateSystemNames.size());
+    return static_cast<UINT32>(this->GetAllCsNames().size());
 }
 
 //Gets an enumerator for listing the names of all the coordinate
@@ -532,43 +330,58 @@ UINT32 CCoordinateSystemCategory::GetSize()
 //
 MgCoordinateSystemEnum* CCoordinateSystemCategory::GetEnum()
 {
-    CCoordinateSystemEnumCoordinateSystemInCategory* pNameEnum=NULL;
+    Ptr<CCoordinateSystemEnumCoordinateSystemInCategory> pNameEnum;
 
     MG_TRY()
-    pNameEnum=new CCoordinateSystemEnumCoordinateSystemInCategory(m_pCatalog);
-    if (!pNameEnum)
-    {
-        throw new MgOutOfMemoryException(L"MgCoordinateSystemCategory.GetEnum", __LINE__, __WFILE__, NULL, L"", NULL);
-    }
-    pNameEnum->Initialize(&m_listCoordinateSystemNames);
+
+        pNameEnum=new CCoordinateSystemEnumCoordinateSystemInCategory(m_pCatalog);
+        pNameEnum->Initialize(this->GetAllCsNames());
+
     MG_CATCH_AND_THROW(L"MgCoordinateSystemCategory.GetEnum")
 
-    return pNameEnum;
+    return pNameEnum.Detach();
+}
+
+//-------------------------------------------------------------------------------
+std::vector<STRING>& CCoordinateSystemCategory::GetAllCsNames()
+{
+    MG_TRY()
+
+        if (0 == this->m_listCoordinateSystemNames.size() && this->mp_ctDef->nameCnt > 0)
+        {
+            for(ulong32_t i = 0; i < this->mp_ctDef->nameCnt; ++i)
+            {
+                wchar_t *pszwCsName = Convert_Ascii_To_Wide(this->mp_ctDef->csNames[i].csName);
+                this->m_listCoordinateSystemNames.push_back(pszwCsName);
+                delete[] pszwCsName;
+            }
+        }
+
+    MG_CATCH_AND_THROW(L"MgCoordinateSystemCategory.GetAllCsNames")
+
+    return this->m_listCoordinateSystemNames;
+}
+
+//-------------------------------------------------------------------------------
+void CCoordinateSystemCategory::ClearAllCsNames()
+{
+    this->m_listCoordinateSystemNames.clear();
 }
 
 //-------------------------------------------------------------------------------
 MgStringCollection* CCoordinateSystemCategory::GetCoordinateSystems()
 {
     Ptr<MgStringCollection> pCsColl;
+
     MG_TRY()
+    pCsColl = new MgStringCollection;
 
-    pCsColl=new MgStringCollection;
-    if (NULL == pCsColl)
+    std::vector<STRING> const& allCsNames = this->GetAllCsNames();
+    for(size_t i = 0; i < allCsNames.size(); ++i)
     {
-        throw new MgOutOfMemoryException(L"MgCoordinateSystemCategory.GetCoordinateSystems", __LINE__, __WFILE__, NULL, L"", NULL);
+        pCsColl->Add(allCsNames[0]);
     }
 
-    CSystemNameList::const_iterator iter;
-    for (iter=m_listCoordinateSystemNames.begin(); iter!=m_listCoordinateSystemNames.end(); ++iter)
-    {
-        wchar_t *pName = Convert_Ascii_To_Wide((*iter).Name());    //need to delete [] pName
-        if (NULL == pName)
-        {
-            throw new MgOutOfMemoryException(L"MgCoordinateSystemCategory.GetCoordinateSystems", __LINE__, __WFILE__, NULL, L"", NULL);
-        }
-        pCsColl->Add(pName);
-        delete[] pName;
-    }
     MG_CATCH_AND_THROW(L"MgCoordinateSystemCategory.GetCoordinateSystems")
     return pCsColl.Detach();
 }
@@ -580,36 +393,52 @@ MgStringCollection* CCoordinateSystemCategory::GetCoordinateSystems()
 //
 void CCoordinateSystemCategory::AddCoordinateSystem(CREFSTRING sName)
 {
+    char *pName = NULL;
+
     MG_TRY()
+
+    std::vector<STRING>& allCsNames = this->GetAllCsNames();
+
     //Make sure it's a legal name
-    char *pName = Convert_Wide_To_Ascii(sName.c_str());    //need to delete [] pName
+    pName = Convert_Wide_To_Ascii(sName.c_str());    //need to delete [] pName
     if (NULL == pName)
     {
         throw new MgOutOfMemoryException(L"MgCoordinateSystemCategory.AddCoordinateSystem", __LINE__, __WFILE__, NULL, L"", NULL);
     }
+
     if (!IsLegalMentorName(pName))
     {
-        delete [] pName;
         throw new MgInvalidArgumentException(L"MgCoordinateSystemCategory.AddCoordinateSystem", __LINE__, __WFILE__, NULL, L"", NULL);
     }
 
-    //Make a new member out of it
-    CSystemName newMember(pName);
-    delete [] pName;
-
     //See if it's already present
-    CSystemNameList::iterator itList=std::find(m_listCoordinateSystemNames.begin(), m_listCoordinateSystemNames.end(), newMember);
-    if (itList != m_listCoordinateSystemNames.end())
+    std::vector<STRING>::iterator const& itList = std::find(allCsNames.begin(), allCsNames.end(), sName);
+    if (itList != allCsNames.end())
     {
         //duplicate!
         throw new MgInvalidArgumentException(L"MgCoordinateSystemCategory.AddCoordinateSystem", __LINE__, __WFILE__, NULL, L"MgCoordinateSystemCategoryDuplicateException", NULL);
     }
 
+    if (CSaddItmNameEx(this->mp_ctDef, pName))
+    {
+        _ASSERT(false); //whatever the problem is here... the name we validated; OOM ? hopefully unlikely
+        throw new MgInvalidArgumentException(L"MgCoordinateSystemCategory.AddCoordinateSystem", __LINE__, __WFILE__, NULL, L"MgCoordinateSystemCategoryDuplicateException", NULL);
+    }
+
     //Try to insert it in our list
-    m_listCoordinateSystemNames.push_back(newMember);
+    allCsNames.push_back(sName);
 
     //Success!
-    MG_CATCH_AND_THROW(L"MgCoordinateSystemCategory.AddCoordinateSystem")
+    MG_CATCH(L"MgCoordinateSystemCategory.AddCoordinateSystem")
+
+    delete [] pName;
+    pName = NULL;
+
+    if (NULL != mgException)
+        this->ClearAllCsNames();
+
+    MG_THROW();
+
 }
 
 //Removes the specified coordinate system key name from the category.
@@ -619,33 +448,46 @@ void CCoordinateSystemCategory::AddCoordinateSystem(CREFSTRING sName)
 //
 void CCoordinateSystemCategory::RemoveCoordinateSystem(CREFSTRING sName)
 {
+    char *pName = NULL;
+
     MG_TRY()
 
-    //Make sure it's a legal name
-    char *pName = Convert_Wide_To_Ascii(sName.c_str());    //need to delete [] pName
-    if (NULL == pName)
-    {
-        throw new MgOutOfMemoryException(L"MgCoordinateSystemCategory.RemoveCoordinateSystem", __LINE__, __WFILE__, NULL, L"", NULL);
-    }
-    if (!IsLegalMentorName(pName))
-    {
-        delete [] pName;
-        throw new MgInvalidArgumentException(L"MgCoordinateSystemCategory.RemoveCoordinateSystem", __LINE__, __WFILE__, NULL, L"", NULL);
-    }
+        std::vector<STRING>& allCsNames = this->GetAllCsNames();
 
-    //Make a member out of it
-    CSystemName member(pName);
+        //Make sure it's a legal name
+        pName = Convert_Wide_To_Ascii(sName.c_str());    //need to delete [] pName
+        _ASSERT(NULL != pName); //would throw an exception otherwise
+
+        if (!IsLegalMentorName(pName))
+            throw new MgInvalidArgumentException(L"MgCoordinateSystemCategory.RemoveCoordinateSystem", __LINE__, __WFILE__, NULL, L"", NULL);
+
+        if (CSrmvItmNameEx(this->mp_ctDef, pName))
+        {
+            if (cs_Error != cs_CT_CS_NOT_IN)
+            {
+                //the name should be valid... the only expected error here would be
+                //that we couldn't find the CS in the category
+                _ASSERT(false);
+                allCsNames.clear();
+            }
+
+            throw new MgInvalidArgumentException(L"MgCoordinateSystemCategory.RemoveCoordinateSystem", __LINE__, __WFILE__, NULL, L"", NULL);
+        }
+
+        //See if it's already present
+        std::vector<STRING>::iterator const& itList = std::find(allCsNames.begin(), allCsNames.end(), sName);
+        if (itList != allCsNames.end())
+            allCsNames.erase(itList);
+
+    MG_CATCH(L"MgCoordinateSystemCategory.RemoveCoordinateSystem")
+
     delete [] pName;
+    pName = NULL;
 
-    CSystemNameList::iterator itList=std::find(m_listCoordinateSystemNames.begin(), m_listCoordinateSystemNames.end(), member);
-    if (itList != m_listCoordinateSystemNames.end())
-    {
-        //Found it!
-        m_listCoordinateSystemNames.erase(itList);
-    }
+    if (NULL != mgException)
+        this->ClearAllCsNames();
 
-    //Return success.
-    MG_CATCH_AND_THROW(L"MgCoordinateSystemCategory.RemoveCoordinateSystem")
+    MG_THROW()
 }
 
 //Tests whether the category contains the specified coordinate system
@@ -653,40 +495,53 @@ void CCoordinateSystemCategory::RemoveCoordinateSystem(CREFSTRING sName)
 //
 bool CCoordinateSystemCategory::HasCoordinateSystem(CREFSTRING sName)
 {
-    bool bHas=false;
+    bool bHas = false;
+    char *pName = NULL;
+
+    std::vector<STRING>& allCsNames = this->GetAllCsNames();
 
     MG_TRY()
-    //Make sure it's a legal name
-    char *pName = Convert_Wide_To_Ascii(sName.c_str());    //need to delete [] pName
-    if (NULL == pName)
-    {
-        throw new MgOutOfMemoryException(L"MgCoordinateSystemCategory.HasCoordinateSystem", __LINE__, __WFILE__, NULL, L"", NULL);
-    }
-    if (!IsLegalMentorName(pName))
-    {
-        delete [] pName;
-        return false; //the name is not valid so the category doesn't have it. No assertion since the name might be ok for something else than this coordsys library
-    }
 
-    //Make a member out of it
-    CSystemName member(pName);
-    delete [] pName;
+        //Make sure it's a legal name
+        pName = Convert_Wide_To_Ascii(sName.c_str());
+        if (IsLegalMentorName(pName))
+        {
+            //Try to find it
+            //See if it's already present
+            std::vector<STRING>::iterator const& itList = std::find(allCsNames.begin(), allCsNames.end(), sName);
+            bHas = (itList != allCsNames.end());
+        }
+        //else:
+            //the name is not valid so the category doesn't have it. No assertion since the name might be ok for something else than this coordsys library
 
-    //Try to find it
-    CSystemNameList::iterator itList=std::find(m_listCoordinateSystemNames.begin(), m_listCoordinateSystemNames.end(), member);
-    bHas=(itList != m_listCoordinateSystemNames.end());
+    MG_CATCH(L"MgCoordinateSystemCategory.HasCoordinateSystem")
 
-    MG_CATCH_AND_THROW(L"MgCoordinateSystemCategory.HasCoordinateSystem")
+    delete[] pName;
+    pName = NULL;
+
+    MG_THROW()
 
     return bHas;
+}
+
+cs_Ctdef_ const* CCoordinateSystemCategory::GetCategoryDef() const
+{
+    return this->mp_ctDef;
 }
 
 //Clears the object to a freshly constructed state.
 //
 void CCoordinateSystemCategory::Clear()
 {
-    m_categoryName = "\0";
-    m_listCoordinateSystemNames.clear();
+    this->ClearAllCsNames();
+
+    //create the new empty cs_Ctdef_ instance first
+    struct cs_Ctdef_* pNewCategory = CSnewCategory(NULL);
+    if (NULL == pNewCategory)
+        throw new MgOutOfMemoryException(L"MgCoordinateSystemCategory.MgCoordinateSystemCategory", __LINE__, __WFILE__, NULL, L"", NULL);
+
+    CSrlsCategory(this->mp_ctDef);
+    this->mp_ctDef = pNewCategory;
 }
 
 //*****************************************************************************

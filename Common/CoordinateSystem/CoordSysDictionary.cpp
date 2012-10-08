@@ -356,6 +356,8 @@ STRING CCoordinateSystemDictionary::GetFileName()
 //------------------------------------------------------------------------
 void CCoordinateSystemDictionary::SetFileName(CREFSTRING sFileName)
 {
+    char* szCs = NULL;
+
     MG_TRY()
 
     //Make local variables to hold converted strings
@@ -375,22 +377,22 @@ void CCoordinateSystemDictionary::SetFileName(CREFSTRING sFileName)
         m_sFileName,
         L"MgCoordinateSystemDictionary.SetFileName");
 
+    SmartCriticalClass csMapLock;
+
     //Okay, everybody opened all right, so update Mentor's global
     //variables appropriately.
-    char* szCs=Convert_Wide_To_Ascii(sFileName.c_str()); //ABA: why use sFileName here?
-    CriticalClass.Enter();
+    szCs = Convert_Wide_To_Ascii(sFileName.c_str());
     CS_csfnm(szCs);
-    CriticalClass.Leave();
-    delete[] szCs; //ABA: where is that deleted in case of an exception
 
-    if (m_pmapSystemNameDescription)
-    {
-        m_pmapSystemNameDescription->clear();
-        delete m_pmapSystemNameDescription;
-        m_pmapSystemNameDescription=NULL;
-    }
+    delete m_pmapSystemNameDescription;
+    m_pmapSystemNameDescription = NULL;
 
-    MG_CATCH_AND_THROW(L"MgCoordinateSystemDictionary.SetFileName")
+    MG_CATCH(L"MgCoordinateSystemDictionary.SetFileName")
+
+        delete[] szCs;
+        szCs = NULL;
+
+    MG_THROW()
 }
 
 //------------------------------------------------------------------------
@@ -692,7 +694,7 @@ MgDisposableCollection* CCoordinateSystemDictionary::ReadAllCoordinateSystems(/*
     //finally, read all "root" coordinate system definitions from the dictionary
     return MentorDictionary::ReadAllDefinitions<MgCoordinateSystem, cs_Csdef_, CCoordinateSystemDictionary>(
         csDictionary,
-        CS_csrd, 
+        CS_csdefAll, 
         &CCoordinateSystemDictionary::DoCsDefPostReadProcessing,
         &CCoordinateSystemDictionary::GetCoordinateSystem,
         &datumEllipsoidInfos,
@@ -729,8 +731,7 @@ CCoordinateSystemEnum* CCoordinateSystemDictionary::GetEnumImp()
     MG_TRY()
     
     STRING strPath=GetPath();
-    pFile=MentorDictionary::Open(m_lMagic, CoordinateSystemValidMagic, strPath.c_str(), Read);
-
+    pFile = MentorDictionary::Open(m_lMagic, CoordinateSystemValidMagic, strPath.c_str(), Read);
     const int nVersion = CoordinateSystemVersion(m_lMagic);
     assert(nVersion > 0);
 
@@ -760,11 +761,16 @@ CCoordinateSystemEnum* CCoordinateSystemDictionary::GetEnumImp()
         case 7:
         case 8:
             //Generate summary for version 7 or 8 coordsys file.
+            //close the file before calling into the [read all CS-Map defs] method
+            if (0 != CS_fclose(pFile))
+                throw new MgFileIoException(L"MgCoordinateSystemDictionary.GetEnum", __LINE__, __WFILE__, NULL, L"MgCoordinateSystemDictionaryCloseFailedException", NULL);
+
+            pFile = NULL;
+
             m_pmapSystemNameDescription = MentorDictionary::GenerateSystemNameDescriptionMap<cs_Csdef_>(
-                pFile,
                 CsKey,
                 CsDesc,
-                CS_csrd);
+                CS_csdefAll);
             break;
         default:
             assert(0);
@@ -783,11 +789,11 @@ CCoordinateSystemEnum* CCoordinateSystemDictionary::GetEnumImp()
         throw new MgOutOfMemoryException(L"MgCoordinateSystemDictionary.GetEnum", __LINE__, __WFILE__, NULL, L"", NULL);
     }
 
-    if (0!=CS_fclose(pFile))
+    if (pFile && 0 != CS_fclose(pFile))
     {
         throw new MgFileIoException(L"MgCoordinateSystemDictionary.GetEnum", __LINE__, __WFILE__, NULL, L"MgCoordinateSystemDictionaryCloseFailedException", NULL);
     }
-    pFile=NULL;
+    pFile = NULL;
 
     MG_CATCH(L"MgCoordinateSystemDictionary.GetEnum")
 

@@ -48,6 +48,39 @@ PUBLISHED_API:
     virtual void SetDictionaryDir(CREFSTRING sDirPath)=0;
     virtual STRING GetDictionaryDir()=0;
 
+    ///////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Returns the default directory path where user defined coordinate system
+    /// definitions can be found or can be written into, respectively.
+    /// If set, this method returns the value of the MENTOR_USER_DICTIONARY_PATH
+    /// environment variable. Returns 'CSIDL_LOCAL_APPDATA\Autodesk\User Geospatial Coordinate Systems'
+    /// on Windows systems or an empty string on non-Windows systems, otherwise.
+    ///
+    /// \remarks
+    /// The directory returned by this function is not guaranteed to exist. If it does, however,
+    /// and is writable, too, the value returned by this function will be used to initialize this catalog of definitions
+    /// on the first initialization.
+    ///
+    virtual STRING GetDefaultUserDictionaryDir()=0;
+
+    ///////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Sets the actual directory where user defined coordinate system
+    /// definitions can be found or can be written into. The directory set through this method must exist
+    /// and writeable. If set to an empty string, the catalog's 'user defined coordinate system' directory
+    /// will be unset and any updates will again happen only inside the directory
+    /// as returned by GetDictionaryDir().
+    ///
+    virtual void SetUserDictionaryDir(CREFSTRING sDirPath)=0;
+
+    ///////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Returns the current directory where user defined coordinate system
+    /// definitions is obtained from or is written into. Returns an empty string
+    /// if no such directory is currently configured for this catalog.
+    ///
+    virtual STRING GetUserDictionaryDir()=0;
+
     virtual void SetProtectionMode(INT16 nMode)=0;
     virtual INT16 GetProtectionMode()=0;
 

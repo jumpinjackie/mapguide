@@ -133,7 +133,6 @@ bool CCoordinateSystemEnumCategory::IsFilteredOut(const char *kpName)
 void CCoordinateSystemEnumCategory::Initialize(
     MgCoordinateSystemCategoryDictionary* pDict,
     CCategoryNameList *kpCategoryNameList)
-
 {
     assert(NULL != kpCategoryNameList);
 

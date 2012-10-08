@@ -66,9 +66,9 @@ private:
     bool m_bIndexDirty;
 
     //Private member functions
-    void GenerateIndex(csFILE *pFile);
-    void RewriteFile(const char *kpDefName, CCoordinateSystemCategory *pDef=NULL);
-    csFILE* Open(CsDictionaryOpenMode nOpenMode);
+    void GenerateIndex();
+    void InvalidateIndex();
+
     CCategoryNameIndexMap& Index();
     CCategoryNameList& List();
 

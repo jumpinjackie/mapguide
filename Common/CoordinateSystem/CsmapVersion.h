@@ -19,6 +19,7 @@
 #define __CSMAP_CONSTANTS__
 
 // Windows and Linux will always use the environment variable
-#define MENTOR_DICTIONARY_PATH          "MENTOR_DICTIONARY_PATH"                    // No translate
+#define MENTOR_DICTIONARY_PATH              "MENTOR_DICTIONARY_PATH"                    // No translate
+#define MENTOR_USER_DICTIONARY_PATH         "MENTOR_USER_DICTIONARY_PATH"               // No translate
 
 #endif

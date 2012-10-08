@@ -25,6 +25,29 @@ class TestCoordinateSystem : public CppUnit::TestFixture
     CPPUNIT_TEST_SUITE(TestCoordinateSystem);
     CPPUNIT_TEST(TestStart); // This must be the very first unit test
 
+    CPPUNIT_TEST(TestCase_ReadAllCoordinateSystems);
+    CPPUNIT_TEST(TestCase_ReadAllDatums);
+    CPPUNIT_TEST(TestCase_ReadAllEllipsoids);
+    CPPUNIT_TEST(TestCase_ReadAllCategories);
+    CPPUNIT_TEST(TestCase_ReadAllGeodeticTransformations);
+    CPPUNIT_TEST(TestCase_ReadAllGeodeticPaths);
+
+    CPPUNIT_TEST(TestCase_UpdateCoordinateSystems);
+    CPPUNIT_TEST(TestCase_UpdateDatums);
+    CPPUNIT_TEST(TestCase_UpdateEllipsoids);
+    CPPUNIT_TEST(TestCase_UpdateCategories);
+    CPPUNIT_TEST(TestCase_UpdateGeodeticTransformations);
+    CPPUNIT_TEST(TestCase_UpdateGeodeticPaths);
+
+    CPPUNIT_TEST(TestCase_InitializeValidUserDictionaryDir);
+
+    CPPUNIT_TEST(TestCase_UpdateUserCoordinateSystems);
+    CPPUNIT_TEST(TestCase_UpdateUserDatums);
+    CPPUNIT_TEST(TestCase_UpdateUserEllipsoids);
+    CPPUNIT_TEST(TestCase_UpdateUserCategories);
+    CPPUNIT_TEST(TestCase_UpdateUserGeodeticTransformations);
+    CPPUNIT_TEST(TestCase_UpdateUserGeodeticPaths);
+
     CPPUNIT_TEST(TestCase_CheckCoordinateSystems);
     CPPUNIT_TEST(TestCase_CreateValidCoordinateSystem);
     CPPUNIT_TEST(TestCase_CreateInvalidCoordinateSystem);
@@ -235,6 +258,31 @@ public:
     void TestStart();
     void TestEnd();
 
+    //check sanity of the dictionaries
+    void TestCase_ReadAllCoordinateSystems();
+    void TestCase_ReadAllDatums();
+    void TestCase_ReadAllEllipsoids();
+    void TestCase_ReadAllCategories();
+    void TestCase_ReadAllGeodeticTransformations();
+    void TestCase_ReadAllGeodeticPaths();
+
+    void TestCase_UpdateCoordinateSystems();
+    void TestCase_UpdateDatums();
+    void TestCase_UpdateEllipsoids();
+    void TestCase_UpdateCategories();
+    void TestCase_UpdateGeodeticTransformations();
+    void TestCase_UpdateGeodeticPaths();
+
+    void TestCase_InitializeInvalidUserDictionaryDir();
+    void TestCase_InitializeValidUserDictionaryDir();
+
+    void TestCase_UpdateUserCoordinateSystems();
+    void TestCase_UpdateUserDatums();
+    void TestCase_UpdateUserEllipsoids();
+    void TestCase_UpdateUserCategories();
+    void TestCase_UpdateUserGeodeticTransformations();
+    void TestCase_UpdateUserGeodeticPaths();
+
     void TestCase_CheckCoordinateSystems();
     void TestCase_CreateValidCoordinateSystem();
     void TestCase_CreateInvalidCoordinateSystem();
@@ -437,6 +485,60 @@ public:
 
     // Performance
     void TestCase_Benchmark_Transformation();
+
+    static bool SetDefaultUserDictionaryDir();
+
+    class FileAutoBackup
+    {
+    private:
+
+        STRING m_sFilename;
+        STRING m_sRotateSuffix;
+        STRING m_sBackupFilename;
+        bool m_bRotated;
+        bool m_bKeepFile;
+
+    public:
+        FileAutoBackup(const CREFSTRING filename, const CREFSTRING rotateSuffix, bool keepFile = false)
+            : m_sFilename(filename), m_sRotateSuffix(rotateSuffix), m_bRotated(false), m_bKeepFile(keepFile)
+        {
+            struct _stat fileStatus;
+            bool fileExists = MgFileUtil::GetFileStatus(filename, fileStatus);
+
+            this->m_sBackupFilename = (this->m_sFilename + this->m_sRotateSuffix);
+
+            ACE_DEBUG((LM_INFO, ACE_TEXT("\nBacking up file\n%W\n-->\n%W\n"), this->m_sFilename.c_str(), this->m_sBackupFilename.c_str()));
+
+            MgFileUtil::DeleteFile(this->m_sBackupFilename);
+            if (fileExists)
+            {
+                if (!this->m_bKeepFile)
+                {
+                    MgFileUtil::RenameFile(this->m_sFilename, this->m_sBackupFilename);
+                }
+                else
+                {
+                    MgFileUtil::CopyFile(this->m_sFilename, this->m_sBackupFilename);
+                }
+
+                this->m_bRotated = true;
+            }
+        }
+
+        ~FileAutoBackup()
+        {
+            MgFileUtil::DeleteFile(this->m_sFilename);
+            if (this->m_bRotated)
+            {
+                ACE_DEBUG((LM_INFO, ACE_TEXT("\nRestoring file\n%W\n-->\n%W\n"), this->m_sBackupFilename.c_str(), this->m_sFilename.c_str()));
+                MgFileUtil::RenameFile(this->m_sBackupFilename, this->m_sFilename, true);
+            }
+            else
+            {
+                ACE_DEBUG((LM_INFO, ACE_TEXT("\nDid not restore file\n%W\nas it did not exist before\n"), this->m_sFilename.c_str()));
+            }
+        }
+    };
 
 private:
 

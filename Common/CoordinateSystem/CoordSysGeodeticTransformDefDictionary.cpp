@@ -48,7 +48,7 @@ extern DefinitionAccess<CCoordinateSystemGeodeticTransformDef, cs_GeodeticTransf
 
     CCoordinateSystemGeodeticTransformDefDictionary::ReadName,
     CCoordinateSystemGeodeticTransformDefDictionary::ReadDescription,
-    CCoordinateSystemGeodeticTransformDefDictionary::ReadAllGeodeticTransformDefs,
+    CS_gxdefAll,
 
     CS_gxfnm,
 
@@ -198,11 +198,6 @@ const char* CCoordinateSystemGeodeticTransformDefDictionary::ReadName(const cs_G
 const char* CCoordinateSystemGeodeticTransformDefDictionary::ReadDescription(const cs_GeodeticTransform_& definition)
 {
     return definition.description;
-}
-
-int CCoordinateSystemGeodeticTransformDefDictionary::ReadAllGeodeticTransformDefs(csFILE *file, cs_GeodeticTransform_* csTransformDef, int* /*unused*/)
-{
-    return CS_gxrd(file, csTransformDef);
 }
 
 CsDictionaryOpenMode CCoordinateSystemGeodeticTransformDefDictionary::GetFileOpenMode(long magicNumberFromFile)

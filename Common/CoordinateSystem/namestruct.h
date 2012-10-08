@@ -43,6 +43,7 @@
 #pragma once
 
 #include <list>
+#include <vector>
 #include <map>
 #include "cs_map.h" //for cs_KEYNM_DEF
 
@@ -111,21 +112,8 @@ typedef std::list<CSystemName> CSystemNameList;
 typedef std::map<CSystemName, CSystemDescription> CSystemNameDescriptionMap;
 typedef std::pair<CSystemName, CSystemDescription> CSystemNameDescriptionPair;
 
-//Max length of a category "name" (really, description).
-//The value chosen here is admittedly arbitrary.  This is also
-//a new constraint, as ADE.PRO allowed arbitrarily long category
-//names.  However I scanned the ADE.PRO which shipped with Map 3,
-//and the longest description therein was only 29 characters, so
-//this size should be more than ample.
-//
-//Note:  Be careful about changing this number!  It determines the
-//format of the category dictionary file, so changing this number
-//will render the public API unable to access any category dictionaries
-//which were created using a different number.
-const int knMaxCategoryNameLen = 128;
-
 typedef TNameStruct CCategoryName;
 typedef std::map<CCategoryName, long> CCategoryNameIndexMap;
-typedef std::list<CCategoryName> CCategoryNameList;
+typedef std::vector<CCategoryName> CCategoryNameList;
 
 #endif //MG_NAMESTRUCT_H

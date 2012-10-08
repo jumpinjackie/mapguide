@@ -25,9 +25,10 @@ class CCoordinateSystemEnumCoordinateSystemInCategory : public MgCoordinateSyste
 {
 public:
     CCoordinateSystemEnumCoordinateSystemInCategory(MgCoordinateSystemCatalog *pCatalog);
+    CCoordinateSystemEnumCoordinateSystemInCategory(CCoordinateSystemEnumCoordinateSystemInCategory const& copyFrom);
     virtual ~CCoordinateSystemEnumCoordinateSystemInCategory();
 
-    void Initialize(const CSystemNameList *kpListCoordinateSystemNames);
+    void Initialize(std::vector<STRING> const& allCsNames);
 
     virtual MgDisposableCollection* Next(UINT32 ulCount);
     virtual void Skip(UINT32 ulSkipCount);
@@ -42,14 +43,13 @@ protected:
 
 protected:
     bool IsFilteredOut(MgGuardDisposable *pDef);
-    bool IsFilteredOut(const char *kpName);
     bool IsFilteredOut(const wchar_t *kpName);
     void ClearFilter();
 
 protected:
     //Data members
-    const CSystemNameList *m_kpListCoordinateSystemNames;
-    CSystemNameList::const_iterator m_iter;
+    std::vector<STRING> m_csNames;
+    std::vector<STRING>::const_iterator m_iter;
     Ptr<MgCoordinateSystemCatalog> m_pCatalog;
     std::vector<MgCoordinateSystemFilter*> m_vectFilter;
 

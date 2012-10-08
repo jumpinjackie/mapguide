@@ -21,7 +21,7 @@
 class SmartCriticalClass
 {
 public:
-    SmartCriticalClass(bool bEnter);
+    SmartCriticalClass(bool bEnter = true);
     ~SmartCriticalClass();
 
     void Enter();

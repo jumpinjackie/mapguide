@@ -683,15 +683,21 @@ CCoordinateSystemEnumDatum* CCoordinateSystemDatumDictionary::GetEnumImp()
                 DtKey06,
                 DtDesc06,
                 CS_dtrd06);
-            break;   
+            break;
         case 7:
         case 8:
             //Generate summary for version 7 or 8 datum file.
+
+            //close the file before calling into the [read all CS-Map defs] method
+            if (0 != CS_fclose(pFile))
+                throw new MgFileIoException(L"MgCoordinateSystemDictionary.GetEnum", __LINE__, __WFILE__, NULL, L"MgCoordinateSystemDictionaryCloseFailedException", NULL);
+
+            pFile = NULL;
+
             m_pmapSystemNameDescription = MentorDictionary::GenerateSystemNameDescriptionMap<cs_Dtdef_>(
-                pFile,
                 DtKey,
                 DtDesc,
-                CS_dtrd);
+                CS_dtdefAll);
             break;
         default:
             assert(0);
@@ -747,7 +753,7 @@ MgDisposableCollection* CCoordinateSystemDatumDictionary::ReadAllDatums(/*IN, re
         throw new MgInvalidArgumentException(L"CCoordinateSystemDatumDictionary.ReadAllDatums", __LINE__, __WFILE__, NULL, L"", NULL);
 
     //place a lock here - we don't want any interference; what we need is the *current* status of all dictionary files
-    SmartCriticalClass dictionaryLock(true);
+    SmartCriticalClass dictionaryLock;
 
     Ptr<MgCoordinateSystemCatalog> catalog = targetDictionary->GetCatalog();
     Ptr<MgCoordinateSystemEllipsoidDictionary> ellipsoidDictionary = catalog->GetEllipsoidDictionary();
@@ -763,7 +769,7 @@ MgDisposableCollection* CCoordinateSystemDatumDictionary::ReadAllDatums(/*IN, re
     //finally, read all "root" coordinate system definitions from the dictionary
     return MentorDictionary::ReadAllDefinitions<MgCoordinateSystemDatum, cs_Dtdef_, CCoordinateSystemDatumDictionary>(
         datumDictionary,
-        CS_dtrd, 
+        CS_dtdefAll, 
         NULL, //no additional processing
         &CCoordinateSystemDatumDictionary::GetDatum,
         &ellipsoidInfos,
