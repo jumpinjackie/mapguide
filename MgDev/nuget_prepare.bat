@@ -22,15 +22,20 @@ IF "%MG_CPU%" == "x64" (
 SET NUGET_ROOT=%CD%\nuget
 SET NUGET_BASEDIR=%NUGET_ROOT%\%MG_CPU%
 SET NUGET_TARGET=net40
-SET NUGET_CONTENT_BASE=%NUGET_BASEDIR%\api-base\content\%NUGET_TARGET%\mapguide-api-base
-SET NUGET_LIB_BASE=%NUGET_BASEDIR%\api-base\lib\%NUGET_TARGET%
-SET NUGET_CONTENT_DESKTOP=%NUGET_BASEDIR%\api-desktop\content\%NUGET_TARGET%\mg-desktop
-SET NUGET_LIB_DESKTOP=%NUGET_BASEDIR%\api-desktop\lib\%NUGET_TARGET%
-SET NUGET_CONTENT_VIEWER=%NUGET_BASEDIR%\api-desktop-viewer\content\%NUGET_TARGET%\mg-desktop-viewer
-SET NUGET_LIB_VIEWER=%NUGET_BASEDIR%\api-desktop-viewer\lib\%NUGET_TARGET%
-SET NUGET_CONTENT_WEB=%NUGET_BASEDIR%\api-web\content\%NUGET_TARGET%\mapguide-api-web
-SET NUGET_LIB_WEB=%NUGET_BASEDIR%\api-web\lib\%NUGET_TARGET%
+SET NUGET_BASE_ROOT=%NUGET_BASEDIR%\api-base
+SET NUGET_CONTENT_BASE=%NUGET_BASE_ROOT%\mapguide-api-base
+SET NUGET_LIB_BASE=%NUGET_BASE_ROOT%\lib\%NUGET_TARGET%
+SET NUGET_DESKTOP_ROOT=%NUGET_BASEDIR%\api-desktop
+SET NUGET_CONTENT_DESKTOP=%NUGET_DESKTOP_ROOT%\mg-desktop
+SET NUGET_LIB_DESKTOP=%NUGET_DESKTOP_ROOT%\lib\%NUGET_TARGET%
+SET NUGET_VIEWER_ROOT=%NUGET_BASEDIR%\api-desktop-viewer
+SET NUGET_CONTENT_VIEWER=%NUGET_VIEWER_ROOT%\mg-desktop-viewer
+SET NUGET_LIB_VIEWER=%NUGET_VIEWER_ROOT%\lib\%NUGET_TARGET%
+SET NUGET_WEB_ROOT=%NUGET_BASEDIR%\api-web
+SET NUGET_CONTENT_WEB=%NUGET_WEB_ROOT%\mapguide-api-web
+SET NUGET_LIB_WEB=%NUGET_WEB_ROOT%\lib\%NUGET_TARGET%
 SET WEB_BASEDIR=%CD%\Web\bin\%TYPEBUILD%
+SET DESKTOP_SRC=%CD%\Desktop\MgDesktop
 SET DESKTOP_BASEDIR=%CD%\%TYPEBUILD%\Desktop
 SET SIGNER_ROOT=%CD%\Desktop\DesktopUnmanagedApi\DotNet
 
@@ -53,33 +58,37 @@ IF NOT EXIST "%SIGNER_ROOT%" (
     echo Signer root directory: %SIGNER_ROOT%
 )
 
+IF NOT EXIST "%NUGET_CONTENT_BASE%" MKDIR "%NUGET_CONTENT_BASE%"
+IF NOT EXIST "%NUGET_CONTENT_DESKTOP%" MKDIR "%NUGET_CONTENT_DESKTOP%"
+IF NOT EXIST "%NUGET_CONTENT_WEB%" MKDIR "%NUGET_CONTENT_WEB%"
+
 echo [install]: Copy api-base files to nuget staging
-%XCOPY% "%DESKTOP_BASEDIR%\*" "%NUGET_CONTENT_BASE%" /EXCLUDE:package_excludes.txt+base_package_excludes.txt
-copy /y "%DESKTOP_BASEDIR%\OSGeo.MapGuide.Foundation.dll" "%NUGET_LIB_BASE%"
-copy /y "%DESKTOP_BASEDIR%\OSGeo.MapGuide.Geometry.dll" "%NUGET_LIB_BASE%"
-copy /y "%DESKTOP_BASEDIR%\OSGeo.MapGuide.PlatformBase.dll" "%NUGET_LIB_BASE%"
-copy /y "%DESKTOP_BASEDIR%\OSGeo.MapGuide.Foundation.xml" "%NUGET_LIB_BASE%"
-copy /y "%DESKTOP_BASEDIR%\OSGeo.MapGuide.Geometry.xml" "%NUGET_LIB_BASE%"
-copy /y "%DESKTOP_BASEDIR%\OSGeo.MapGuide.PlatformBase.xml" "%NUGET_LIB_BASE%"
+xcopy /S /Y "%DESKTOP_BASEDIR%\*" "%NUGET_CONTENT_BASE%" /EXCLUDE:package_excludes.txt+base_package_excludes.txt
+xcopy /Y /I "%DESKTOP_BASEDIR%\OSGeo.MapGuide.Foundation.dll" "%NUGET_LIB_BASE%"
+xcopy /Y /I "%DESKTOP_BASEDIR%\OSGeo.MapGuide.Geometry.dll" "%NUGET_LIB_BASE%"
+xcopy /Y /I "%DESKTOP_BASEDIR%\OSGeo.MapGuide.PlatformBase.dll" "%NUGET_LIB_BASE%"
+xcopy /Y /I "%DESKTOP_BASEDIR%\OSGeo.MapGuide.Foundation.xml" "%NUGET_LIB_BASE%"
+xcopy /Y /I "%DESKTOP_BASEDIR%\OSGeo.MapGuide.Geometry.xml" "%NUGET_LIB_BASE%"
+xcopy /Y /I "%DESKTOP_BASEDIR%\OSGeo.MapGuide.PlatformBase.xml" "%NUGET_LIB_BASE%"
 echo [install]: Copy api-desktop files to nuget staging
-%XCOPY% "%DESKTOP_BASEDIR%\*" "%NUGET_CONTENT_DESKTOP%" /EXCLUDE:package_excludes.txt+desktop_package_excludes.txt
-copy /y "%DESKTOP_BASEDIR%\OSGeo.MapGuide.Desktop.dll" "%NUGET_LIB_DESKTOP%"
+xcopy /S /Y "%DESKTOP_BASEDIR%\*" "%NUGET_CONTENT_DESKTOP%" /EXCLUDE:package_excludes.txt+desktop_package_excludes.txt
+xcopy /Y /I "%DESKTOP_BASEDIR%\OSGeo.MapGuide.Desktop.dll" "%NUGET_LIB_DESKTOP%"
 echo [install]: Copy api-web files to nuget staging
 REM Just in case
 DoxyTransform.exe dotnet "%MG_DOC_XML%" "%WEB_BASEDIR%"
-copy /y "%WEB_BASEDIR%\MgWebApp.dll" "%NUGET_CONTENT_WEB%"
-copy /y "%WEB_BASEDIR%\MgWebSupport.dll" "%NUGET_CONTENT_WEB%"
-copy /y "%WEB_BASEDIR%\MgHttpHandler.dll" "%NUGET_CONTENT_WEB%"
-copy /y "%WEB_BASEDIR%\MgMapGuideCommon.dll" "%NUGET_CONTENT_WEB%"
-copy /y "%WEB_BASEDIR%\MapGuideCommonUnmanagedApi.dll" "%NUGET_CONTENT_WEB%"
-copy /y "%WEB_BASEDIR%\lib_json.dll" "%NUGET_CONTENT_WEB%"
-copy /y "%WEB_BASEDIR%\WebUnmanagedApi.dll" "%NUGET_CONTENT_WEB%"
-copy /y "%WEB_BASEDIR%\OSGeo.MapGuide.MapGuideCommon.dll" "%NUGET_LIB_WEB%"
-copy /y "%WEB_BASEDIR%\OSGeo.MapGuide.Web.dll" "%NUGET_LIB_WEB%"
-copy /y "%WEB_BASEDIR%\OSGeo.MapGuide.MapGuideCommon.xml" "%NUGET_LIB_WEB%"
-copy /y "%WEB_BASEDIR%\OSGeo.MapGuide.Web.xml" "%NUGET_LIB_WEB%"
-copy /y "%SIGNER_ROOT%\SignMapGuideApi.exe" "%NUGET_LIB_WEB%"
-copy /y "%SIGNER_ROOT%\maestroapi.key" "%NUGET_LIB_WEB%"
+xcopy /Y /I "%WEB_BASEDIR%\MgWebApp.dll" "%NUGET_CONTENT_WEB%"
+xcopy /Y /I "%WEB_BASEDIR%\MgWebSupport.dll" "%NUGET_CONTENT_WEB%"
+xcopy /Y /I "%WEB_BASEDIR%\MgHttpHandler.dll" "%NUGET_CONTENT_WEB%"
+xcopy /Y /I "%WEB_BASEDIR%\MgMapGuideCommon.dll" "%NUGET_CONTENT_WEB%"
+xcopy /Y /I "%WEB_BASEDIR%\MapGuideCommonUnmanagedApi.dll" "%NUGET_CONTENT_WEB%"
+xcopy /Y /I "%WEB_BASEDIR%\lib_json.dll" "%NUGET_CONTENT_WEB%"
+xcopy /Y /I "%WEB_BASEDIR%\WebUnmanagedApi.dll" "%NUGET_CONTENT_WEB%"
+xcopy /Y /I "%WEB_BASEDIR%\OSGeo.MapGuide.MapGuideCommon.dll" "%NUGET_LIB_WEB%"
+xcopy /Y /I "%WEB_BASEDIR%\OSGeo.MapGuide.Web.dll" "%NUGET_LIB_WEB%"
+xcopy /Y /I "%WEB_BASEDIR%\OSGeo.MapGuide.MapGuideCommon.xml" "%NUGET_LIB_WEB%"
+xcopy /Y /I "%WEB_BASEDIR%\OSGeo.MapGuide.Web.xml" "%NUGET_LIB_WEB%"
+xcopy /Y /I "%SIGNER_ROOT%\SignMapGuideApi.exe" "%NUGET_LIB_WEB%"
+xcopy /Y /I "%SIGNER_ROOT%\maestroapi.key" "%NUGET_LIB_WEB%"
 echo [build]: Signing MapGuide API assemblies
 pushd "%NUGET_LIB_WEB%"
 SignMapGuideApi.exe
@@ -88,9 +97,9 @@ del maestroapi.key
 del SignMapGuideApi.exe
 popd
 echo [install]: Copy api-desktop-viewer files to nuget staging
-copy /y "%DESKTOP_BASEDIR%\OSGeo.MapGuide.Viewer.xml" "%NUGET_LIB_VIEWER%"
-copy /y "%DESKTOP_BASEDIR%\OSGeo.MapGuide.Viewer.dll" "%NUGET_LIB_VIEWER%"
-copy /y "%DESKTOP_BASEDIR%\OSGeo.MapGuide.Viewer.Desktop.dll" "%NUGET_LIB_VIEWER%"
+xcopy /Y /I "%DESKTOP_BASEDIR%\OSGeo.MapGuide.Viewer.xml" "%NUGET_LIB_VIEWER%"
+xcopy /Y /I "%DESKTOP_BASEDIR%\OSGeo.MapGuide.Viewer.dll" "%NUGET_LIB_VIEWER%"
+xcopy /Y /I "%DESKTOP_BASEDIR%\OSGeo.MapGuide.Viewer.Desktop.dll" "%NUGET_LIB_VIEWER%"
 echo [prepare]: Nuspec files for %MG_VERSION% (%MG_CPU%)
 REM prep nuspec files
 pushd "%NUGET_ROOT%"
@@ -107,6 +116,13 @@ echo [prepare]: mg-desktop-viewer-net40
 call BatchSubstitute.bat MG_CPU %MG_CPU% mg-desktop-viewer-net40.nuspec.tpl > temp.txt
 call BatchSubstitute.bat MG_VERSION %MG_VERSION% temp.txt > mg-desktop-viewer-net40-%MG_CPU%.nuspec
 del temp.txt
+echo [prepare]: NuGet Package readmes
+type api-base-readme.txt > "%NUGET_BASE_ROOT%\readme.txt"
+type api-desktop-readme.txt > "%NUGET_DESKTOP_ROOT%\readme.txt"
+type "%DESKTOP_SRC%\changelog.txt" >> "%NUGET_DESKTOP_ROOT%\readme.txt"
+type api-desktop-viewer-readme.txt > "%NUGET_VIEWER_ROOT%\readme.txt"
+type "%DESKTOP_SRC%\changelog.txt" >> "%NUGET_VIEWER_ROOT%\readme.txt"
+type api-web-readme.txt > "%NUGET_WEB_ROOT%\readme.txt"
 popd
 echo mg-desktop is ready for nuget packaging and publishing
 goto quit

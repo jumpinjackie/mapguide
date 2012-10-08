@@ -1,7 +1,7 @@
 ﻿$solutionDir = [System.IO.Path]::GetDirectoryName($dte.Solution.FullName) + "\"
 $path = $installPath.Replace($solutionDir, "`$(SolutionDir)")
+$contentDir = Join-Path $path "mapguide-api-base"
+$files = $(Join-Path $contentDir "*.*")
 
 $MgApiBasePostBuildCmd = "
-if not exist `"`$(TargetDir)Dictionaries`" md `"`$(TargetDir)Dictionaries`"
-xcopy /s /y `"`$(ProjectDir)mapguide-api-base\Dictionaries`" `"`$(TargetDir)Dictionaries`"
-copy /y `"`$(ProjectDir)mapguide-api-base\*.dll`" `"`$(TargetDir)`""
+xcopy /s /y `"$files`" `"`$(TargetDir)`""
