@@ -25,3 +25,5 @@ As part of your application's startup, you have to call:
 Before you can use most parts of the MapGuide API. For Web Applications (ASP.net), you can generally call this in the Application_Start() method of your Global.asax
 
 If you installed the x64 package, in order to be able to debug your MapGuide Application, you must have your application use <Local IIS> instead of the built-in web server. This normally requires you run Visual Studio as administrator. The reason for this is simply that the built-in web server is a 32-bit process which cannot load your MapGuide 64-bit dlls.
+
+Unlike the assemblies that come with your MapGuide Open Source installation, the assemblies in this package are signed. You cannot use this package if you require un-signed MapGuide assemblies.
