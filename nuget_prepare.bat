@@ -34,6 +34,8 @@ SET NUGET_LIB_VIEWER=%NUGET_VIEWER_ROOT%\lib\%NUGET_TARGET%
 SET NUGET_WEB_ROOT=%NUGET_BASEDIR%\api-web
 SET NUGET_CONTENT_WEB=%NUGET_WEB_ROOT%\mapguide-api-web
 SET NUGET_LIB_WEB=%NUGET_WEB_ROOT%\lib\%NUGET_TARGET%
+SET NUGET_CSMAP_ROOT=%NUGET_ROOT%\cs-map-dicts
+SET NUGET_CONTENT_CSMAP=%NUGET_CSMAP_ROOT%\dictionaries
 SET WEB_BASEDIR=%CD%\Web\bin\%TYPEBUILD%
 SET DESKTOP_SRC=%CD%\Desktop\MgDesktop
 SET DESKTOP_BASEDIR=%CD%\%TYPEBUILD%\Desktop
@@ -51,6 +53,12 @@ IF NOT EXIST "%WEB_BASEDIR%" (
 ) ELSE (
     echo MapGuide Web base directory: %WEB_BASEDIR%
 )
+IF NOT EXIST "%DESKTOP_BASEDIR%\Dictionaries" (
+    echo CS-Map dictionaries directory not found: "%DESKTOP_BASEDIR%\Dictionaries"
+    goto error
+) ELSE (
+    echo CS-Map dictionaries directory: "%DESKTOP_BASEDIR%\Dictionaries"
+)
 IF NOT EXIST "%SIGNER_ROOT%" (
     echo Signer root directory not found: %SIGNER_ROOT%
     goto error
@@ -61,6 +69,7 @@ IF NOT EXIST "%SIGNER_ROOT%" (
 IF NOT EXIST "%NUGET_CONTENT_BASE%" MKDIR "%NUGET_CONTENT_BASE%"
 IF NOT EXIST "%NUGET_CONTENT_DESKTOP%" MKDIR "%NUGET_CONTENT_DESKTOP%"
 IF NOT EXIST "%NUGET_CONTENT_WEB%" MKDIR "%NUGET_CONTENT_WEB%"
+IF NOT EXIST "%NUGET_CONTENT_CSMAP%" MKDIR "%NUGET_CONTENT_CSMAP%"
 
 echo [install]: Copy api-base files to nuget staging
 xcopy /S /Y "%DESKTOP_BASEDIR%\*" "%NUGET_CONTENT_BASE%" /EXCLUDE:package_excludes.txt+base_package_excludes.txt
@@ -89,6 +98,8 @@ xcopy /Y /I "%WEB_BASEDIR%\OSGeo.MapGuide.MapGuideCommon.xml" "%NUGET_LIB_WEB%"
 xcopy /Y /I "%WEB_BASEDIR%\OSGeo.MapGuide.Web.xml" "%NUGET_LIB_WEB%"
 xcopy /Y /I "%SIGNER_ROOT%\SignMapGuideApi.exe" "%NUGET_LIB_WEB%"
 xcopy /Y /I "%SIGNER_ROOT%\maestroapi.key" "%NUGET_LIB_WEB%"
+echo [install]: Copy cs-map dictionaries to nuget staging
+xcopy /S /Y "%DESKTOP_BASEDIR%\Dictionaries\*" "%NUGET_CONTENT_CSMAP%"
 echo [build]: Signing MapGuide API assemblies
 pushd "%NUGET_LIB_WEB%"
 SignMapGuideApi.exe
@@ -115,6 +126,9 @@ call BatchSubstitute.bat MG_VERSION %MG_VERSION% temp.txt > mg-desktop-net40-%MG
 echo [prepare]: mg-desktop-viewer-net40
 call BatchSubstitute.bat MG_CPU %MG_CPU% mg-desktop-viewer-net40.nuspec.tpl > temp.txt
 call BatchSubstitute.bat MG_VERSION %MG_VERSION% temp.txt > mg-desktop-viewer-net40-%MG_CPU%.nuspec
+echo [prepare]: cs-map-dictionaries
+call BatchSubstitute.bat MG_CPU %MG_CPU% cs-map-dictionaries.nuspec.tpl > temp.txt
+call BatchSubstitute.bat MG_VERSION %MG_VERSION% temp.txt > cs-map-dictionaries.nuspec
 del temp.txt
 echo [prepare]: NuGet Package readmes
 type api-base-readme.txt > "%NUGET_BASE_ROOT%\readme.txt"
@@ -123,6 +137,7 @@ type "%DESKTOP_SRC%\changelog.txt" >> "%NUGET_DESKTOP_ROOT%\readme.txt"
 type api-desktop-viewer-readme.txt > "%NUGET_VIEWER_ROOT%\readme.txt"
 type "%DESKTOP_SRC%\changelog.txt" >> "%NUGET_VIEWER_ROOT%\readme.txt"
 type api-web-readme.txt > "%NUGET_WEB_ROOT%\readme.txt"
+type cs-map-dict-readme.txt > "%NUGET_CSMAP_ROOT%\readme.txt"
 popd
 echo mg-desktop is ready for nuget packaging and publishing
 goto quit
