@@ -61,6 +61,14 @@ Fusion.Layers.Generic = OpenLayers.Class(Fusion.Layers, {
         this.bMapLoaded = false;
 
         this.triggerEvent(Fusion.Event.LAYER_LOADING);
+        
+        this.internalLoadMap(resourceId);
+        
+        //this.triggerEvent(Fusion.Event.LAYER_LOADED);
+        window.setTimeout(OpenLayers.Function.bind(this.asyncTrigger, this),1);
+    },
+
+    internalLoadMap: function(resourceId) {
         if (this.bIsMapWidgetLayer) {
           this.mapWidget._addWorker();
         }
@@ -251,9 +259,6 @@ Fusion.Layers.Generic = OpenLayers.Class(Fusion.Layers, {
           this.mapWidget.addMap(this);
           this.mapWidget._removeWorker();
         }
-        
-        //this.triggerEvent(Fusion.Event.LAYER_LOADED);
-        window.setTimeout(OpenLayers.Function.bind(this.asyncTrigger, this),1);
     },
     
     asyncTrigger: function() {
@@ -272,12 +277,15 @@ Fusion.Layers.Generic = OpenLayers.Class(Fusion.Layers, {
         this.triggerEvent(Fusion.Event.LAYER_LOADED);
     },
     
-//TBD: this function not yet converted for OL    
+    //TBD: this function not yet converted for OL    
     reloadMap: function() {
+        this.bMapLoaded = false;
         
-        this.loadMap(this.sResourceId);
-            this.mapWidget.triggerEvent(Fusion.Event.MAP_RELOADED);
-            this.drawMap();
+        this.internalLoadMap(this.sResourceId);
+        this.mapWidget.triggerEvent(Fusion.Event.MAP_RELOADED);
+        this.drawMap();
+        
+        this.bMapLoaded = true;
     },
     
     drawMap: function() {

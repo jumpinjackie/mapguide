@@ -42,6 +42,7 @@ Fusion.Widget.FeatureInfo = OpenLayers.Class(Fusion.Widget, {
     isExclusive: true,
     uiClass: Jx.Button,
     sFeatures: 'menubar=no,location=no,resizable=no,status=no',
+    oTarget: null,
 
     initializeWidget: function(widgetTag) {
         var json = widgetTag.extension;
@@ -53,7 +54,7 @@ Fusion.Widget.FeatureInfo = OpenLayers.Class(Fusion.Widget, {
         var url = this.sBaseUrl;
         //add in other parameters to the url here
 
-        var map = this.getMap();
+        this.mapWidget = this.getMap();
         var widgetLayer = this.getMapLayer();
         var taskPaneTarget = Fusion.getWidgetById(this.sTarget);
         var pageElement = $(this.sTarget);
@@ -79,12 +80,22 @@ Fusion.Widget.FeatureInfo = OpenLayers.Class(Fusion.Widget, {
             {
                 taskPaneTarget.setContent(url);
             }
+            this.oTarget = taskPaneTarget.iframe.contentWindow;
         } else {
             if ( pageElement ) {
                 pageElement.src = url;
+                this.oTarget = pageElement;
             } else {
-                window.open(url, this.sTarget, this.sWinFeatures);
+                this.oTarget = window.open(url, this.sTarget, this.sWinFeatures);
             }
+        }
+    },
+
+    deactivate: function() {
+        this.mapWidget.message.clear();
+        //This function exists if MapGuideViewerApi.js was included in
+        if (this.oTarget && this.oTarget.ClearDigitization) {
+            this.oTarget.ClearDigitization(true);
         }
     }
 });

@@ -2,7 +2,7 @@
 /**
  * Xml2JSON
  *
- * $Id: Xml2JSON.php 1806 2009-03-04 20:38:53Z pdeschamps $
+ * $Id: Xml2JSON.php 2599 2012-09-18 04:36:53Z jng $
  *
  * Copyright (c) 2007, DM Solutions Group Inc.
  * Permission is hereby granted, free of charge, to any person obtaining a
@@ -67,5 +67,5 @@ if ($document == null) {
     die ('/* invalid xml document:'.$xml.' */');
 }
 $root = $document->documentElement;
-echo '{"' . $root->tagName . '":' . xml2json($root) . '};';
+echo '{"' . $root->tagName . '":' . xml2json($root) . '}';
 ?>

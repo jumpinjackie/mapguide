@@ -57,6 +57,10 @@
     $noLayerInfoLocal = GetLocalizedString('FEATUREINFONOINFO', $locale );
     $noFeatureInLocal = GetLocalizedString('FEATUREINFONOFEATUREIN', $locale );
 
+    $drawPointLocal = GetLocalizedString("REDLINEEDITPOINTHELP", $locale );
+    $drawRectLocal = GetLocalizedString("REDLINEEDITRECTANGLEHELP", $locale );
+    $drawPolyLocal = GetLocalizedString("REDLINEEDITPOLYGONHELP", $locale );
+
     try
     {
         $featureInfo = new FeatureInfo($args);
@@ -95,6 +99,10 @@
         var session = '<?= $args['SESSION'] ?>';
         var mapName = '<?= $args['MAPNAME'] ?>';
 
+        var DRAW_POINT_HELP = '<?= $drawPointLocal ?>';
+        var DRAW_RECT_HELP = '<?= $drawRectLocal ?>';
+        var DRAW_POLY_HELP = '<?= $drawPolyLocal ?>';
+
         var properties = null;
         var results;
 
@@ -119,11 +127,23 @@
             map.clearSelection();
         }
 
+        function SetMessage(msg) {
+            var map = GetFusionMapWidget();
+            map.message.info(msg);
+        }
+
+        function ClearMessage() {
+            var map = GetFusionMapWidget();
+            map.message.clear();
+        }
+
         function OnDigitizePoint() {
+            SetMessage(DRAW_POINT_HELP);
             DigitizePoint(OnPointDigitized);
         }
 
         function OnPointDigitized(point) {
+            ClearMessage();
             var tolerance = GetFusionMapWidget().pixToGeoMeasure(3);
             var min = {x:point.X-tolerance,y:point.Y-tolerance};
             var max = {x:point.X+tolerance,y:point.Y+tolerance};
@@ -132,22 +152,26 @@
             SetSpatialFilter(geom);
         }
         function OnDigitizeRectangle() {
+            SetMessage(DRAW_RECT_HELP);
             DigitizeRectangle(OnRectangleDigitized);
         }
 
         function OnRectangleDigitized(rectangle) {
-          var min = rectangle.Point1;
-          var max = rectangle.Point2;
-          var geom = 'POLYGON(('+ min.X + ' ' +  min.Y + ', ' +  max.X + ' ' +  min.Y + ', ' + max.X + ' ' +  max.Y + ', ' + min.X + ' ' +  max.Y + ', ' + min.X + ' ' +  min.Y + '))';
+            ClearMessage();
+            var min = rectangle.Point1;
+            var max = rectangle.Point2;
+            var geom = 'POLYGON(('+ min.X + ' ' +  min.Y + ', ' +  max.X + ' ' +  min.Y + ', ' + max.X + ' ' +  max.Y + ', ' + min.X + ' ' +  max.Y + ', ' + min.X + ' ' +  min.Y + '))';
 
-          SetSpatialFilter(geom);
+            SetSpatialFilter(geom);
         }
 
         function OnDigitizePolygon() {
+            SetMessage(DRAW_POLY_HELP);
             DigitizePolygon(OnPolyonDigitized);
         }
 
         function OnPolyonDigitized(polygon) {
+            ClearMessage();
             var points = [];
             for (var i = 0; i < polygon.Count; i++) {
                 points.push(polygon.Point(i).X+' '+polygon.Point(i).Y);
@@ -267,10 +291,11 @@
         }
 
         function OnUnload() {
-          var map = GetFusionMapWidget();
-          map.deregisterForEvent(Fusion.Event.MAP_SELECTION_ON, SelectionOn);
-          map.deregisterForEvent(Fusion.Event.MAP_SELECTION_OFF, SelectionOff);
-          map.deregisterForEvent(Fusion.Event.MAP_ACTIVE_LAYER_CHANGED, ActiveLayerChange);
+            ClearDigitization(true);
+            var map = GetFusionMapWidget();
+            map.deregisterForEvent(Fusion.Event.MAP_SELECTION_ON, SelectionOn);
+            map.deregisterForEvent(Fusion.Event.MAP_SELECTION_OFF, SelectionOff);
+            map.deregisterForEvent(Fusion.Event.MAP_ACTIVE_LAYER_CHANGED, ActiveLayerChange);
         }
 
     </script>
