@@ -23,3 +23,12 @@ popd
 pushd "%CD%\Desktop\DesktopUnmanagedApi\DotNet\Partials"
 SetAssemblyVersion.exe -set:%1 AssemblyInfo.cs
 popd
+pushd "%CD%\Desktop\MgAppLayout\Properties"
+SetAssemblyVersion.exe -set:%1 AssemblyInfo.cs
+popd
+pushd "%CD%\Desktop\MapViewer\Properties"
+SetAssemblyVersion.exe -set:%1 AssemblyInfo.cs
+popd
+pushd "%CD%\Desktop\MapViewer.Desktop\Properties"
+SetAssemblyVersion.exe -set:%1 AssemblyInfo.cs
+popd
