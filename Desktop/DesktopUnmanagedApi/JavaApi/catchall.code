@@ -1,8 +1,0 @@
-
-void onCatchAll(JNIEnv* jenv, const char* proxyfname)
-{
-    string s = proxyfname;
-    wstring fname = MgUtil::MultiByteToWideChar(s);
-    MgUnclassifiedException* e = new MgUnclassifiedException(fname, __LINE__, __WFILE__, NULL, L"", NULL);
-    ThrowJavaExceptionWrapper(jenv, e);
-}
