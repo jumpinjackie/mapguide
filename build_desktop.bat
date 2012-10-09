@@ -13,6 +13,7 @@ rem which is why we can do it like this
 rem ==================================================
 
 SET MG_OUTPUT_DESKTOP=%MG_OUTPUT%\Desktop
+SET MG_OUTPUT_SAMPLES=%MG_OUTPUT%\DesktopSamples
 SET VS_SLN_SUFFIX=
 IF "%VC_COMPILER_VERSION%" == "10" SET VS_SLN_SUFFIX=_VS2010
 
@@ -29,8 +30,20 @@ echo [build]: .net components (%DESKTOP_PLATFORM%)
 %MSBUILD% /p:Platform=%DESKTOP_PLATFORM% MgDesktopDotNet%VS_SLN_SUFFIX%.sln
 if "%errorlevel%"=="1" goto error
 popd
+echo [build]: .net intellisense files
+DoxyTransform.exe dotnet "%MG_DOC_XML%" "%MG_OUTPUT_DESKTOP%"
 echo [install]: binaries
 %XCOPY% "Desktop\bin\%TYPEBUILD%" "%MG_OUTPUT_DESKTOP%" /EXCLUDE:svn_excludes.txt+%CONFIGURATION%_excludes.txt
+pushd "%MG_OUTPUT_DESKTOP%"
+if exist MgMapGuideCommon.dll del MgMapGuideCommon.dll
+if exist OSGeo.MapGuide.MapGuideCommon.xml del OSGeo.MapGuide.MapGuideCommon.xml
+if exist OSGeo.MapGuide.Web.xml del OSGeo.MapGuide.Web.xml
+if exist Backup rd /S /Q Backup
+popd
+echo [install]: Samples
+pushd Desktop
+%XCOPY% Samples "%MG_OUTPUT_SAMPLES%" /EXCLUDE:samples_exclude.txt
+popd
 goto quit
 
 :error
