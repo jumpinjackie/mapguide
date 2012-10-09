@@ -1,0 +1,533 @@
+<?xml version="1.0"?>
+<AppLayout xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <Title>MapGuide Desktop App Layout Example</Title>
+  <Icon>app.ico</Icon>
+  <Settings>
+    <NameValue>
+      <Name>InvokeOnStartup</Name>
+      <Value>component:Startup</Value>
+    </NameValue>
+    <NameValue>
+      <Name>SelectionColor</Name>
+      <Value>color:0000FF</Value>
+    </NameValue>
+    <NameValue>
+      <Name>ConvertTiledGroupsToNonTiled</Name>
+      <Value>false</Value>
+    </NameValue>
+    <NameValue>
+      <Name>UseRenderMapIfTiledLayersExist</Name>
+      <Value>false</Value>
+    </NameValue>
+    <NameValue>
+      <Name>RespectFiniteDisplayScales</Name>
+      <Value>false</Value>
+    </NameValue>
+    <NameValue>
+      <Name>ShowVertexCoordinatesWhenDigitizing</Name>
+      <Value>false</Value>
+    </NameValue>
+    <NameValue>
+      <Name>ZoomInFactor</Name>
+      <Value>0.5</Value>
+    </NameValue>
+    <NameValue>
+      <Name>ZoomOutFactor</Name>
+      <Value>2</Value>
+    </NameValue>
+    <NameValue>
+      <Name>PointPixelBuffer</Name>
+      <Value>3</Value>
+    </NameValue>
+  </Settings>
+  <InfoPane>
+    <Width>200</Width>
+    <Legend>
+      <Visible>true</Visible>
+      <ShowTooltips>true</ShowTooltips>
+      <ThemeCompressionLimit>25</ThemeCompressionLimit>
+    </Legend>
+    <PropertyPane>
+      <Visible>true</Visible>
+    </PropertyPane>
+  </InfoPane>
+  <Map>
+    <Name>Sheboygan</Name>
+    <MapDefinition>Library://Samples/Sheboygan/Maps/Sheboygan.MapDefinition</MapDefinition>
+  </Map>
+  <Menu>
+    <Items>
+      <ItemBase xsi:type="SubMenu">
+        <Label>File</Label>
+        <Items>
+          <ItemBase xsi:type="CommandItem">
+            <ComponentID>LoadMap</ComponentID>
+            <ShowLabel>false</ShowLabel>
+          </ItemBase>
+          <ItemBase xsi:type="CommandItem">
+            <ComponentID>LoadPackage</ComponentID>
+            <ShowLabel>false</ShowLabel>
+          </ItemBase>
+          <ItemBase xsi:type="SeparatorItem" />
+          <ItemBase xsi:type="CommandItem">
+            <ComponentID>Quit</ComponentID>
+            <ShowLabel>false</ShowLabel>
+          </ItemBase>
+        </Items>
+      </ItemBase>
+      <ItemBase xsi:type="SubMenu">
+        <Label>Tools</Label>
+        <Items>
+          <ItemBase xsi:type="CommandItem">
+            <ComponentID>Buffer</ComponentID>
+            <ShowLabel>false</ShowLabel>
+          </ItemBase>
+          <ItemBase xsi:type="CommandItem">
+            <ComponentID>Measure</ComponentID>
+            <ShowLabel>false</ShowLabel>
+          </ItemBase>
+          <ItemBase xsi:type="CommandItem">
+            <ComponentID>Query</ComponentID>
+            <ShowLabel>false</ShowLabel>
+          </ItemBase>
+          <ItemBase xsi:type="CommandItem">
+            <ComponentID>Theme</ComponentID>
+            <ShowLabel>false</ShowLabel>
+          </ItemBase>
+          <ItemBase xsi:type="SeparatorItem" />
+          <ItemBase xsi:type="CommandItem">
+            <ComponentID>ViewerOptions</ComponentID>
+            <ShowLabel>false</ShowLabel>
+          </ItemBase>
+        </Items>
+      </ItemBase>
+    </Items>
+  </Menu>
+  <Toolbar>
+    <Items>
+      <ItemBase xsi:type="CommandItem">
+        <ComponentID>PrintMap</ComponentID>
+        <ShowLabel>false</ShowLabel>
+      </ItemBase>
+      <ItemBase xsi:type="SeparatorItem" />
+      <ItemBase xsi:type="CommandItem">
+        <ComponentID>CopyMap</ComponentID>
+        <ShowLabel>false</ShowLabel>
+      </ItemBase>
+      <ItemBase xsi:type="SeparatorItem" />
+      <ItemBase xsi:type="CommandItem">
+        <ComponentID>ZoomIn</ComponentID>
+        <ShowLabel>false</ShowLabel>
+      </ItemBase>
+      <ItemBase xsi:type="CommandItem">
+        <ComponentID>ZoomOut</ComponentID>
+        <ShowLabel>false</ShowLabel>
+      </ItemBase>
+      <ItemBase xsi:type="CommandItem">
+        <ComponentID>InitialView</ComponentID>
+        <ShowLabel>false</ShowLabel>
+      </ItemBase>
+      <ItemBase xsi:type="SeparatorItem" />
+      <ItemBase xsi:type="CommandItem">
+        <ComponentID>ZoomPrev</ComponentID>
+        <ShowLabel>false</ShowLabel>
+      </ItemBase>
+      <ItemBase xsi:type="CommandItem">
+        <ComponentID>ZoomNext</ComponentID>
+        <ShowLabel>false</ShowLabel>
+      </ItemBase>
+      <ItemBase xsi:type="SeparatorItem" />
+      <ItemBase xsi:type="CommandItem">
+        <ComponentID>Select</ComponentID>
+        <ShowLabel>false</ShowLabel>
+      </ItemBase>
+      <ItemBase xsi:type="CommandItem">
+        <ComponentID>SelectRadius</ComponentID>
+        <ShowLabel>false</ShowLabel>
+      </ItemBase>
+      <ItemBase xsi:type="CommandItem">
+        <ComponentID>SelectPolygon</ComponentID>
+        <ShowLabel>false</ShowLabel>
+      </ItemBase>
+      <ItemBase xsi:type="CommandItem">
+        <ComponentID>Pan</ComponentID>
+        <ShowLabel>false</ShowLabel>
+      </ItemBase>
+      <ItemBase xsi:type="SeparatorItem" />
+      <ItemBase xsi:type="CommandItem">
+        <ComponentID>ClearSelection</ComponentID>
+        <ShowLabel>false</ShowLabel>
+      </ItemBase>
+      <ItemBase xsi:type="CommandItem">
+        <ComponentID>RefreshMap</ComponentID>
+        <ShowLabel>false</ShowLabel>
+      </ItemBase>
+      <ItemBase xsi:type="SeparatorItem" />
+      <ItemBase xsi:type="CommandItem">
+        <ComponentID>TooltipToggle</ComponentID>
+        <ShowLabel>true</ShowLabel>
+      </ItemBase>
+      <ItemBase xsi:type="SeparatorItem" />
+      <ItemBase xsi:type="SubMenu">
+        <Label>Tools</Label>
+        <Items>
+          <ItemBase xsi:type="CommandItem">
+            <ComponentID>Buffer</ComponentID>
+            <ShowLabel>false</ShowLabel>
+          </ItemBase>
+          <ItemBase xsi:type="CommandItem">
+            <ComponentID>Measure</ComponentID>
+            <ShowLabel>false</ShowLabel>
+          </ItemBase>
+          <ItemBase xsi:type="CommandItem">
+            <ComponentID>Query</ComponentID>
+            <ShowLabel>false</ShowLabel>
+          </ItemBase>
+          <ItemBase xsi:type="CommandItem">
+            <ComponentID>Theme</ComponentID>
+            <ShowLabel>false</ShowLabel>
+          </ItemBase>
+          <ItemBase xsi:type="SeparatorItem" />
+          <ItemBase xsi:type="CommandItem">
+            <ComponentID>ViewerOptions</ComponentID>
+            <ShowLabel>false</ShowLabel>
+          </ItemBase>
+        </Items>
+      </ItemBase>
+      <ItemBase xsi:type="SeparatorItem" />
+      <ItemBase xsi:type="SubMenu">
+        <Label>Custom</Label>
+        <Items>
+          <ItemBase xsi:type="CommandItem">
+            <ComponentID>PlotToDwf</ComponentID>
+            <ShowLabel>false</ShowLabel>
+          </ItemBase>
+          <ItemBase xsi:type="CommandItem">
+            <ComponentID>Profile</ComponentID>
+            <ShowLabel>false</ShowLabel>
+          </ItemBase>
+        </Items>
+      </ItemBase>
+    </Items>
+  </Toolbar>
+  <ContextMenu>
+    <Items>
+      <ItemBase xsi:type="CommandItem">
+        <ComponentID>RefreshMap</ComponentID>
+        <ShowLabel>false</ShowLabel>
+      </ItemBase>
+      <ItemBase xsi:type="SeparatorItem" />
+      <ItemBase xsi:type="CommandItem">
+        <ComponentID>ZoomIn</ComponentID>
+        <ShowLabel>false</ShowLabel>
+      </ItemBase>
+      <ItemBase xsi:type="CommandItem">
+        <ComponentID>ZoomOut</ComponentID>
+        <ShowLabel>false</ShowLabel>
+      </ItemBase>
+      <ItemBase xsi:type="CommandItem">
+        <ComponentID>ZoomToSelection</ComponentID>
+        <ShowLabel>false</ShowLabel>
+      </ItemBase>
+      <ItemBase xsi:type="CommandItem">
+        <ComponentID>InitialView</ComponentID>
+        <ShowLabel>false</ShowLabel>
+      </ItemBase>
+      <ItemBase xsi:type="SeparatorItem" />
+      <ItemBase xsi:type="CommandItem">
+        <ComponentID>Pan</ComponentID>
+        <ShowLabel>false</ShowLabel>
+      </ItemBase>
+      <ItemBase xsi:type="CommandItem">
+        <ComponentID>Select</ComponentID>
+        <ShowLabel>false</ShowLabel>
+      </ItemBase>
+      <ItemBase xsi:type="CommandItem">
+        <ComponentID>ClearSelection</ComponentID>
+        <ShowLabel>false</ShowLabel>
+      </ItemBase>
+      <ItemBase xsi:type="SeparatorItem" />
+      <ItemBase xsi:type="SubMenu">
+        <Label>Tools</Label>
+        <Items>
+          <ItemBase xsi:type="CommandItem">
+            <ComponentID>Buffer</ComponentID>
+            <ShowLabel>false</ShowLabel>
+          </ItemBase>
+          <ItemBase xsi:type="CommandItem">
+            <ComponentID>Measure</ComponentID>
+            <ShowLabel>false</ShowLabel>
+          </ItemBase>
+          <ItemBase xsi:type="CommandItem">
+            <ComponentID>Query</ComponentID>
+            <ShowLabel>false</ShowLabel>
+          </ItemBase>
+          <ItemBase xsi:type="CommandItem">
+            <ComponentID>Theme</ComponentID>
+            <ShowLabel>false</ShowLabel>
+          </ItemBase>
+        </Items>
+      </ItemBase>
+      <ItemBase xsi:type="SeparatorItem" />
+      <ItemBase xsi:type="CommandItem">
+        <ComponentID>ViewerOptions</ComponentID>
+        <ShowLabel>false</ShowLabel>
+      </ItemBase>
+    </Items>
+  </ContextMenu>
+  <TaskPane>
+    <Width>250</Width>
+    <InitialComponentID>SamplesTaskPane</InitialComponentID>
+    <TaskMenu>
+      <Items>
+        <ItemBase xsi:type="CommandItem">
+          <ComponentID>Buffer</ComponentID>
+          <ShowLabel>false</ShowLabel>
+        </ItemBase>
+        <ItemBase xsi:type="CommandItem">
+          <ComponentID>Measure</ComponentID>
+          <ShowLabel>false</ShowLabel>
+        </ItemBase>
+        <ItemBase xsi:type="CommandItem">
+          <ComponentID>Query</ComponentID>
+          <ShowLabel>false</ShowLabel>
+        </ItemBase>
+        <ItemBase xsi:type="CommandItem">
+          <ComponentID>Theme</ComponentID>
+          <ShowLabel>false</ShowLabel>
+        </ItemBase>
+      </Items>
+    </TaskMenu>
+  </TaskPane>
+  <Components>
+    <ComponentDefinition>
+      <ComponentID>Buffer</ComponentID>
+      <ClassName>OSGeo.MapGuide.Viewer.MgBufferComponent</ClassName>
+      <Properties>
+        <NameValue>
+          <Name>DefaultLayerName</Name>
+          <Value>BufferLayer</Value>
+        </NameValue>
+        <NameValue>
+          <Name>DefaultBufferUnits</Name>
+          <Value>enum:OSGeo.MapGuide.Viewer.MeasurementUnit:Meters</Value>
+        </NameValue>
+        <NameValue>
+          <Name>Target</Name>
+          <Value>enum:OSGeo.MapGuide.Viewer.MgViewerTarget:TaskPane</Value>
+        </NameValue>
+        <NameValue>
+          <Name>TaskPane</Name>
+          <Value>taskpane:</Value>
+        </NameValue>
+      </Properties>
+    </ComponentDefinition>
+    <ComponentDefinition>
+      <ComponentID>SelectRadius</ComponentID>
+      <ClassName>OSGeo.MapGuide.Viewer.MgCircleSelectComponent</ClassName>
+    </ComponentDefinition>
+    <ComponentDefinition>
+      <ComponentID>ClearSelection</ComponentID>
+      <ClassName>OSGeo.MapGuide.Viewer.MgClearSelectionComponent</ClassName>
+    </ComponentDefinition>
+    <ComponentDefinition>
+      <ComponentID>CopyMap</ComponentID>
+      <ClassName>OSGeo.MapGuide.Viewer.MgCopyMapComponent</ClassName>
+    </ComponentDefinition>
+    <ComponentDefinition>
+      <ComponentID>InitialView</ComponentID>
+      <ClassName>OSGeo.MapGuide.Viewer.MgInitialViewComponent</ClassName>
+    </ComponentDefinition>
+    <ComponentDefinition>
+      <ComponentID>LoadMap</ComponentID>
+      <ClassName>OSGeo.MapGuide.Viewer.MgLoadMapComponent</ClassName>
+      <Properties>
+        <NameValue>
+          <Name>Label</Name>
+          <Value>Load Sheboygan Map</Value>
+        </NameValue>
+        <NameValue>
+          <Name>MapDefinition</Name>
+          <Value>map:Sheboygan</Value>
+        </NameValue>
+      </Properties>
+    </ComponentDefinition>
+    <ComponentDefinition>
+      <ComponentID>LoadPackage</ComponentID>
+      <ClassName>OSGeo.MapGuide.Viewer.MgLoadPackageComponent</ClassName>
+      <Properties>
+        <NameValue>
+          <Name>InvokeOnPackageLoad</Name>
+          <Value>component:LoadMap</Value>
+        </NameValue>
+      </Properties>
+    </ComponentDefinition>
+    <ComponentDefinition>
+      <ComponentID>Measure</ComponentID>
+      <ClassName>OSGeo.MapGuide.Viewer.MgMeasureComponent</ClassName>
+      <Properties>
+        <NameValue>
+          <Name>MeasureMode</Name>
+          <Value>enum:OSGeo.MapGuide.Viewer.MeasureMode:Line</Value>
+        </NameValue>
+        <NameValue>
+          <Name>PreferredUnits</Name>
+          <Value>enum:OSGeo.MapGuide.Viewer.MeasurementUnit:Meters</Value>
+        </NameValue>
+        <NameValue>
+          <Name>Target</Name>
+          <Value>enum:OSGeo.MapGuide.Viewer.MgViewerTarget:TaskPane</Value>
+        </NameValue>
+        <NameValue>
+          <Name>TaskPane</Name>
+          <Value>taskpane:</Value>
+        </NameValue>
+      </Properties>
+    </ComponentDefinition>
+    <ComponentDefinition>
+      <ComponentID>Pan</ComponentID>
+      <ClassName>OSGeo.MapGuide.Viewer.MgPanComponent</ClassName>
+    </ComponentDefinition>
+    <ComponentDefinition>
+      <ComponentID>SelectPolygon</ComponentID>
+      <ClassName>OSGeo.MapGuide.Viewer.MgPolygonSelectComponent</ClassName>
+    </ComponentDefinition>
+    <ComponentDefinition>
+      <ComponentID>PrintMap</ComponentID>
+      <ClassName>OSGeo.MapGuide.Viewer.MgPrintComponent</ClassName>
+    </ComponentDefinition>
+    <ComponentDefinition>
+      <ComponentID>Query</ComponentID>
+      <ClassName>OSGeo.MapGuide.Viewer.MgQueryComponent</ClassName>
+      <Properties>
+        <NameValue>
+          <Name>Target</Name>
+          <Value>enum:OSGeo.MapGuide.Viewer.MgViewerTarget:TaskPane</Value>
+        </NameValue>
+        <NameValue>
+          <Name>TaskPane</Name>
+          <Value>taskpane:</Value>
+        </NameValue>
+      </Properties>
+    </ComponentDefinition>
+    <ComponentDefinition>
+      <ComponentID>Quit</ComponentID>
+      <ClassName>OSGeo.MapGuide.Viewer.AppLayoutEngine.MgQuitComponent</ClassName>
+    </ComponentDefinition>
+    <ComponentDefinition>
+      <ComponentID>RefreshMap</ComponentID>
+      <ClassName>OSGeo.MapGuide.Viewer.MgRefreshMapComponent</ClassName>
+    </ComponentDefinition>
+    <ComponentDefinition>
+      <ComponentID>Select</ComponentID>
+      <ClassName>OSGeo.MapGuide.Viewer.MgSelectComponent</ClassName>
+    </ComponentDefinition>
+    <ComponentDefinition>
+      <ComponentID>Theme</ComponentID>
+      <ClassName>OSGeo.MapGuide.Viewer.MgThemeComponent</ClassName>
+      <Properties>
+        <NameValue>
+          <Name>Target</Name>
+          <Value>enum:OSGeo.MapGuide.Viewer.MgViewerTarget:TaskPane</Value>
+        </NameValue>
+        <NameValue>
+          <Name>TaskPane</Name>
+          <Value>taskpane:</Value>
+        </NameValue>
+      </Properties>
+    </ComponentDefinition>
+    <ComponentDefinition>
+      <ComponentID>TooltipToggle</ComponentID>
+      <ClassName>OSGeo.MapGuide.Viewer.MgTooltipToggleComponent</ClassName>
+    </ComponentDefinition>
+    <ComponentDefinition>
+      <ComponentID>ViewerOptions</ComponentID>
+      <ClassName>OSGeo.MapGuide.Viewer.MgViewerOptionsComponent</ClassName>
+    </ComponentDefinition>
+    <ComponentDefinition>
+      <ComponentID>ZoomIn</ComponentID>
+      <ClassName>OSGeo.MapGuide.Viewer.MgZoomInComponent</ClassName>
+    </ComponentDefinition>
+    <ComponentDefinition>
+      <ComponentID>ZoomNext</ComponentID>
+      <ClassName>OSGeo.MapGuide.Viewer.MgZoomNextComponent</ClassName>
+    </ComponentDefinition>
+    <ComponentDefinition>
+      <ComponentID>ZoomOut</ComponentID>
+      <ClassName>OSGeo.MapGuide.Viewer.MgZoomOutComponent</ClassName>
+    </ComponentDefinition>
+    <ComponentDefinition>
+      <ComponentID>ZoomPrev</ComponentID>
+      <ClassName>OSGeo.MapGuide.Viewer.MgZoomPreviousComponent</ClassName>
+    </ComponentDefinition>
+    <ComponentDefinition>
+      <ComponentID>ZoomToSelection</ComponentID>
+      <ClassName>OSGeo.MapGuide.Viewer.MgZoomToSelectionComponent</ClassName>
+    </ComponentDefinition>
+    <ComponentDefinition>
+      <ComponentID>PlotToDwf</ComponentID>
+      <Assembly>SampleExtension.dll</Assembly>
+      <ClassName>SampleExtension.MgPlotToDwfComponent</ClassName>
+    </ComponentDefinition>
+    <ComponentDefinition>
+      <ComponentID>Profile</ComponentID>
+      <Assembly>SampleExtension.dll</Assembly>
+      <ClassName>SampleExtension.MgProfileComponent</ClassName>
+    </ComponentDefinition>
+    <ComponentDefinition>
+      <ComponentID>Startup</ComponentID>
+      <Assembly>SampleExtension.dll</Assembly>
+      <ClassName>SampleExtension.MgStartupComponent</ClassName>
+    </ComponentDefinition>
+    <ComponentDefinition>
+      <ComponentID>SamplesTaskPane</ComponentID>
+      <Assembly>SampleExtension.dll</Assembly>
+      <ClassName>SampleExtension.MgSampleTaskPaneComponent</ClassName>
+    </ComponentDefinition>
+    <ComponentDefinition>
+      <ComponentID>HelloMap</ComponentID>
+      <Assembly>SampleExtension.dll</Assembly>
+      <ClassName>SampleExtension.MgHelloMapComponent</ClassName>
+    </ComponentDefinition>
+    <ComponentDefinition>
+      <ComponentID>HelloViewer</ComponentID>
+      <Assembly>SampleExtension.dll</Assembly>
+      <ClassName>SampleExtension.MgHelloViewerComponent</ClassName>
+    </ComponentDefinition>
+    <ComponentDefinition>
+      <ComponentID>InteractingWithLayers</ComponentID>
+      <Assembly>SampleExtension.dll</Assembly>
+      <ClassName>SampleExtension.MgInteractingWithLayersComponent</ClassName>
+    </ComponentDefinition>
+    <ComponentDefinition>
+      <ComponentID>WorkingWithFeatureData</ComponentID>
+      <Assembly>SampleExtension.dll</Assembly>
+      <ClassName>SampleExtension.MgWorkingWithFeatureDataComponent</ClassName>
+    </ComponentDefinition>
+    <ComponentDefinition>
+      <ComponentID>ModifyingMapsAndLayers</ComponentID>
+      <Assembly>SampleExtension.dll</Assembly>
+      <ClassName>SampleExtension.MgModifyingMapsAndLayersComponent</ClassName>
+    </ComponentDefinition>
+    <ComponentDefinition>
+      <ComponentID>AnalyzingFeatures</ComponentID>
+      <Assembly>SampleExtension.dll</Assembly>
+      <ClassName>SampleExtension.MgAnalyzingFeaturesComponent</ClassName>
+    </ComponentDefinition>
+    <ComponentDefinition>
+      <ComponentID>DigitizingAndRedlining</ComponentID>
+      <Assembly>SampleExtension.dll</Assembly>
+      <ClassName>SampleExtension.MgDigitizingAndRedliningComponent</ClassName>
+    </ComponentDefinition>
+    <ComponentDefinition>
+      <ComponentID>CustomOutput</ComponentID>
+      <Assembly>SampleExtension.dll</Assembly>
+      <ClassName>SampleExtension.MgCustomOutputComponent</ClassName>
+    </ComponentDefinition>
+    <ComponentDefinition> 
+      <ComponentID>PrePostRender</ComponentID> 
+      <Assembly>SampleExtension.dll</Assembly> 
+      <ClassName>SampleExtension.MgPrePostRenderingComponent</ClassName> 
+    </ComponentDefinition> 
+  </Components>
+</AppLayout>
