@@ -1,7 +1,7 @@
 /**
  * Fusion.Lib.ApplicationDefinition
  *
- * $Id: ApplicationDefinition.js 2587 2012-09-07 14:30:47Z jng $
+ * $Id: ApplicationDefinition.js 2615 2012-10-05 05:18:37Z jng $
  *
  * Copyright (c) 2007, DM Solutions Group Inc.
  * Permission is hereby granted, free of charge, to any person obtaining a
