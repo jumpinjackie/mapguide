@@ -725,6 +725,9 @@ MgByteReader* MgdRenderingService::RenderDynamicOverlayInternal(MgdMap* map,
     // initialize the renderer
     auto_ptr<SE_Renderer> dr(CreateRenderer(width, height, bgColor, true));
 
+    bool bIncludeDynamicLayers = ((options->GetBehavior() & MgdRenderingOptions::RenderLayers) == MgdRenderingOptions::RenderLayers);
+    bool bIncludeBaseLayers = ((options->GetBehavior() & MgdRenderingOptions::RenderBaseLayers) == MgdRenderingOptions::RenderBaseLayers);
+
     // create a temporary collection containing all the dynamic layers
     Ptr<MgLayerCollection> layers = map->GetLayers();
     Ptr<MgReadOnlyLayerCollection> roLayers = new MgReadOnlyLayerCollection();
@@ -732,7 +735,9 @@ MgByteReader* MgdRenderingService::RenderDynamicOverlayInternal(MgdMap* map,
     {
         Ptr<MgLayerBase> layer = layers->GetItem(i);
         INT32 layerType = layer->GetLayerType();
-        if (layerType == MgLayerType::Dynamic)
+        if (bIncludeDynamicLayers && layerType == MgLayerType::Dynamic)
+            roLayers->Add(layer);
+        else if (bIncludeBaseLayers && layerType == MgLayerType::BaseMap)
             roLayers->Add(layer);
     }
 
