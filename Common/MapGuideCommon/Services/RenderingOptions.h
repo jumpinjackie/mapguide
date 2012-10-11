@@ -40,15 +40,18 @@ PUBLISHED_API:
     /// \n
     /// \c RenderSelection - Renders the selected feature(s).
     /// \n
-    /// \c RenderLayers - Renders the features on the map.
+    /// \c RenderLayers - Renders the dynamic layers on the map.
     /// \n
     /// \c KeepSelection - Renders the selected feature(s) even if they are outside the current scale.
+    /// \n
+    /// \c RenderBaseLayers - Renders the base layers on the map.
     ///
     enum
     {
         RenderSelection = 1,
         RenderLayers = 2,
-        KeepSelection = 4
+        KeepSelection = 4,
+        RenderBaseLayers = 8
     };
 
     /////////////////////////////////////////////////////////////////

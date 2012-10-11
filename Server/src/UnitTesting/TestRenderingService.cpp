@@ -325,6 +325,46 @@ void TestRenderingService::TestStart()
         Ptr<MgByteReader> wdfrdr1 = wdfsrc1->GetReader();
         m_svcResource->SetResource(wdfres1, wdfrdr1, NULL);
 
+        // ------------------------------------------------------
+        // base map source data
+        // ------------------------------------------------------
+        // publish the map definition
+        Ptr<MgResourceIdentifier> mapres13 = new MgResourceIdentifier(L"Library://UnitTests/Maps/BaseMap.MapDefinition");
+        Ptr<MgByteSource> mdfsrc13 = new MgByteSource(L"../UnitTestFiles/UT_BaseMap.mdf", false);
+        Ptr<MgByteReader> mdfrdr13 = mdfsrc13->GetReader();
+        m_svcResource->SetResource(mapres13, mdfrdr13, NULL);
+
+        // publish the layer definitions
+        Ptr<MgResourceIdentifier> ldfres12 = new MgResourceIdentifier(L"Library://UnitTests/Layers/RoadCenterLines.LayerDefinition");
+        Ptr<MgByteSource> ldfsrc12 = new MgByteSource(L"../UnitTestFiles/UT_RoadCenterLines.ldf", false);
+        Ptr<MgByteReader> ldfrdr12 = ldfsrc12->GetReader();
+        m_svcResource->SetResource(ldfres12, ldfrdr12, NULL);
+
+        Ptr<MgResourceIdentifier> ldfres13 = new MgResourceIdentifier(L"Library://UnitTests/Layers/VotingDistricts.LayerDefinition");
+        Ptr<MgByteSource> ldfsrc13 = new MgByteSource(L"../UnitTestFiles/UT_VotingDistricts.ldf", false);
+        Ptr<MgByteReader> ldfrdr13 = ldfsrc13->GetReader();
+        m_svcResource->SetResource(ldfres13, ldfrdr13, NULL);
+
+        // publish the feature sources
+        Ptr<MgResourceIdentifier> fsres6 = new MgResourceIdentifier(L"Library://UnitTests/Data/RoadCenterLines.FeatureSource");
+        Ptr<MgByteSource> fssrc6 = new MgByteSource(L"../UnitTestFiles/UT_RoadCenterLines.fs", false);
+        Ptr<MgByteReader> fsrdr6 = fssrc6->GetReader();
+        m_svcResource->SetResource(fsres6, fsrdr6, NULL);
+
+        Ptr<MgResourceIdentifier> fsres7 = new MgResourceIdentifier(L"Library://UnitTests/Data/VotingDistricts.FeatureSource");
+        Ptr<MgByteSource> fssrc7 = new MgByteSource(L"../UnitTestFiles/UT_VotingDistricts.fs", false);
+        Ptr<MgByteReader> fsrdr7 = fssrc7->GetReader();
+        m_svcResource->SetResource(fsres7, fsrdr7, NULL);
+
+        // publish the resource data
+        Ptr<MgByteSource> dataSource6 = new MgByteSource(L"../UnitTestFiles/UT_RoadCenterLines.sdf", false);
+        Ptr<MgByteReader> dataReader6 = dataSource6->GetReader();
+        m_svcResource->SetResourceData(fsres5, L"UT_RoadCenterLines.sdf", L"File", dataReader6);
+
+        Ptr<MgByteSource> dataSource7 = new MgByteSource(L"../UnitTestFiles/UT_VotingDistricts.sdf", false);
+        Ptr<MgByteReader> dataReader7 = dataSource7->GetReader();
+        m_svcResource->SetResourceData(fsres6, L"UT_VotingDistricts.sdf", L"File", dataReader7);
+
     }
     catch (MgException* e)
     {
@@ -439,7 +479,18 @@ void TestRenderingService::TestEnd()
         Ptr<MgResourceIdentifier> wdfres1 = new MgResourceIdentifier(L"Library://UnitTests/Watermarks/PoweredByMapGuide.WatermarkDefinition");
         m_svcResource->DeleteResource(wdfres1);
 
-       #ifdef _DEBUG
+        Ptr<MgResourceIdentifier> mapres13 = new MgResourceIdentifier(L"Library://UnitTests/Maps/BaseMap.MapDefinition");
+        m_svcResource->DeleteResource(mapres13);
+        Ptr<MgResourceIdentifier> ldfres12 = new MgResourceIdentifier(L"Library://UnitTests/Layers/RoadCenterLines.LayerDefinition");
+        m_svcResource->DeleteResource(ldfres12);
+        Ptr<MgResourceIdentifier> ldfres13 = new MgResourceIdentifier(L"Library://UnitTests/Layers/VotingDistricts.LayerDefinition");
+        m_svcResource->DeleteResource(ldfres13);
+        Ptr<MgResourceIdentifier> fsres6 = new MgResourceIdentifier(L"Library://UnitTests/Data/RoadCenterLines.FeatureSource");
+        m_svcResource->DeleteResource(fsres6);
+        Ptr<MgResourceIdentifier> fsres7 = new MgResourceIdentifier(L"Library://UnitTests/Data/VotingDistricts.FeatureSource");
+        m_svcResource->DeleteResource(fsres7);
+
+        #ifdef _DEBUG
         MgFdoConnectionManager* pFdoConnectionManager = MgFdoConnectionManager::GetInstance();
         if(pFdoConnectionManager)
         {
@@ -493,6 +544,50 @@ void TestRenderingService::TestCase_RenderDynamicOverlay(CREFSTRING imageFormat,
 //        {
             Ptr<MgByteReader> rdr2 = m_svcRendering->RenderDynamicOverlay(map, NULL, imageFormat);
             rdr2->ToFile(GetPath(L"../UnitTestFiles/RenderDynamicOverlay12k", imageFormat, extension));
+//        }
+
+//        clock_t t1 = clock();
+//        printf ("delta clock %d\n", t1 - t0);
+    }
+    catch (MgException* e)
+    {
+        STRING message = e->GetDetails(TEST_LOCALE);
+        SAFE_RELEASE(e);
+        CPPUNIT_FAIL(MG_WCHAR_TO_CHAR(message.c_str()));
+    }
+    catch (...)
+    {
+        throw;
+    }
+}
+
+
+void TestRenderingService::TestCase_RenderDynamicOverlayTiledMap(CREFSTRING imageFormat, CREFSTRING extension)
+{
+    try
+    {
+        // make a runtime map
+        Ptr<MgMap> map = CreateTestTiledMap();
+
+//        clock_t t0 = clock();
+
+        Ptr<MgRenderingOptions> renderOpts = new MgRenderingOptions(imageFormat, MgRenderingOptions::RenderLayers | MgRenderingOptions::RenderBaseLayers, NULL);
+
+        map->SetViewScale(12000.0);
+//        for (int i=0; i<10; i++)
+//        {
+            //EXPECT: Tiled layers rendered with transparent background for applicable formats
+            Ptr<MgByteReader> rdr1 = m_svcRendering->RenderDynamicOverlay(map, NULL, renderOpts);
+            rdr1->ToFile(GetPath(L"../UnitTestFiles/RenderDynamicOverlayTiled_WithBase12k", imageFormat, extension));
+//        }
+
+        Ptr<MgRenderingOptions> renderOpts2 = new MgRenderingOptions(imageFormat, MgRenderingOptions::RenderLayers, NULL);
+
+//        for (int i=0; i<100; i++)
+//        {
+            //EXPECT: Nothing, with transparent background for applicable formats
+            Ptr<MgByteReader> rdr2 = m_svcRendering->RenderDynamicOverlay(map, NULL, renderOpts2);
+            rdr2->ToFile(GetPath(L"../UnitTestFiles/RenderDynamicOverlayTiled_NoBase12k", imageFormat, extension));
 //        }
 
 //        clock_t t1 = clock();
@@ -704,6 +799,22 @@ MgMap* TestRenderingService::CreateTestMap()
     return map;
 }
 
+MgMap* TestRenderingService::CreateTestTiledMap()
+{
+    Ptr<MgResourceIdentifier> mdfres = new MgResourceIdentifier(L"Library://UnitTests/Maps/BaseMap.MapDefinition");
+    MgMap* map = new MgMap(m_siteConnection);
+    map->Create(mdfres, L"UnitTestSheboyganTiled");
+
+    Ptr<MgCoordinate> coordNewCenter = new MgCoordinateXY(-87.733253, 43.746199);
+    Ptr<MgPoint> ptNewCenter = new MgPoint(coordNewCenter);
+    map->SetViewCenter(ptNewCenter);
+    map->SetViewScale(75000.0);
+    map->SetDisplayDpi(96);
+    map->SetDisplayWidth(1024);
+    map->SetDisplayHeight(1024);
+
+    return map;
+}
 
 // creates a selection bounds in mapping space
 MgPolygon* TestRenderingService::CreateSelectionPolygon(MgMap* map, double width, double height)
