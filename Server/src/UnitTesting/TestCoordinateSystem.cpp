@@ -441,15 +441,15 @@ void TestCoordinateSystem::TestCase_InitializeInvalidUserDictionaryDir()
     if (userDictionaryDir.empty())
         return;
 
-    STRING setUserDictionaryDir = pCsCatalog->GetUserDictionaryDir();
     pCsCatalog->SetUserDictionaryDir(userDictionaryDir);
+    STRING setUserDictionaryDir = pCsCatalog->GetUserDictionaryDir();
 
     MG_TRY()
 
 #ifdef _WIN32
         pCsCatalog->SetUserDictionaryDir(L"X:\\I am a hopefully not existing path - if I do, changeme");
 #else
-        pCsCatalog->SetUserDictionaryDir(L"/I a hopefully not existing path - if I do, changeme");
+        pCsCatalog->SetUserDictionaryDir(L"/I am a hopefully not existing path - if I do, changeme");
 #endif
 
     MG_CATCH_AND_RELEASE()

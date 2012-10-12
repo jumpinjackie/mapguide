@@ -721,6 +721,7 @@ int MgServer::open(void *args)
     ACE_UNUSED_ARG(args);
     int nResult = 0;
     STRING mentorDictPath;
+    STRING mentorUserDictPath;
 
     MG_TRY()
     {
@@ -882,12 +883,47 @@ int MgServer::open(void *args)
             {
                 // Check if path ends with a '/' if not, add one if needed
                 MgFileUtil::AppendSlashToEndOfPath(mentorDictPath);
-                csCatalog->SetDictionaryDir(mentorDictPath);
+                MG_TRY()
+                    csCatalog->SetDictionaryDir(mentorDictPath);
+                MG_CATCH_AND_RELEASE()
+                if (NULL != mgException)
+                {
+                    ACE_DEBUG((LM_ERROR, ACE_TEXT("(%t) MgServer::open() - The MentorDictionaryPath setting is invalid. The coordinate system engine could not be initialized.\n")));
+                }
             }
             else
             {
                 mentorDictPath = L"";
-                ACE_DEBUG((LM_INFO, ACE_TEXT("(%t) Warning - No configured dictionary path found. Defaulting to MENTOR_DICTIONARY_PATH environment variable.\n")));
+                ACE_DEBUG((LM_INFO, ACE_TEXT("(%t) MgServer::open() - No configured dictionary path found. Defaulting to [%W].\n"), csCatalog->GetDictionaryDir().c_str()));
+            }
+
+            // Update the user dictionary path with our configured value
+            pConfiguration->GetStringValue(MgConfigProperties::GeneralPropertiesSection, MgConfigProperties::GeneralPropertyMentorUserDictionaryPath, mentorUserDictPath, MgConfigProperties::DefaultGeneralPropertyMentorUserDictionaryPath);
+            if (!mentorUserDictPath.empty())
+            {
+                // Check if path ends with a '/' if not, add one if needed
+                MgFileUtil::AppendSlashToEndOfPath(mentorUserDictPath);
+                MG_TRY()
+                    csCatalog->SetUserDictionaryDir(mentorUserDictPath);
+                MG_CATCH_AND_RELEASE()
+                if (NULL != mgException)
+                {
+                    //not being able to initialize the user dictionary path doesn't result in the server not starting up
+                    ACE_DEBUG((LM_WARNING, ACE_TEXT("(%t) MgServer::open() - The MentorUserDictionaryPath setting is invalid. The user dictionary path setting will not be applied.\n")));
+                }
+            }
+            else
+            {
+                mentorUserDictPath = L"";
+                STRING defaultUserPath = csCatalog->GetUserDictionaryDir();
+                if (defaultUserPath.empty())
+                {
+                    ACE_DEBUG((LM_DEBUG, ACE_TEXT("(%t) MgServer::open() - No configured user dictionary path found.\n")));
+                }
+                else
+                {
+                    ACE_DEBUG((LM_DEBUG, ACE_TEXT("(%t) MgServer::open() - No configured user dictionary path found. Defaulting to directory [%W].\n"), defaultUserPath.c_str()));
+                }
             }
 
             // Did we successfully initialize the coordinate system library?
