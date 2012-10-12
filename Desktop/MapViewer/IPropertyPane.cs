@@ -160,7 +160,7 @@ namespace OSGeo.MapGuide.Viewer
                         continue;
                     }
 
-                    NameValueCollection mappings = provider.GetPropertyMappings(layer);
+                    NameValueCollection mappings = (provider != null) ? provider.GetPropertyMappings(layer) : null;
                     _features[layer.Name] = new List<MgFeature>();
                     
                     var reader = selection.GetSelectedFeatures(layer, layer.GetFeatureClassName(), false);
