@@ -39,6 +39,7 @@ class TestCoordinateSystem : public CppUnit::TestFixture
     CPPUNIT_TEST(TestCase_UpdateGeodeticTransformations);
     CPPUNIT_TEST(TestCase_UpdateGeodeticPaths);
 
+    CPPUNIT_TEST(TestCase_InitializeInvalidUserDictionaryDir);
     CPPUNIT_TEST(TestCase_InitializeValidUserDictionaryDir);
 
     CPPUNIT_TEST(TestCase_UpdateUserCoordinateSystems);

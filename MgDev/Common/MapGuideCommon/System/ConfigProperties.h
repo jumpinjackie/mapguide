@@ -74,6 +74,10 @@ EXTERNAL_API:
     static const STRING GeneralPropertyMentorDictionaryPath;            /// value("MentorDictionaryPath")
     static const STRING DefaultGeneralPropertyMentorDictionaryPath;     /// value("")
 
+    /// Mentor User Dictionary Path
+    static const STRING GeneralPropertyMentorUserDictionaryPath;        /// value("MentorUserDictionaryPath")
+    static const STRING DefaultGeneralPropertyMentorUserDictionaryPath; /// value("")
+
     /// Path of the license server
     static const STRING GeneralPropertyLicenseServerPath;               /// value("LicenseServerPath")
     static const STRING DefaultGeneralPropertyLicenseServerPath;        /// value("");
