@@ -118,9 +118,11 @@ namespace OSGeo.MapGuide.Viewer
         internal NameValueCollection GetPropertyMappings(MgLayerBase layer)
         {
             MgResourceIdentifier resId = layer.GetLayerDefinition();
-            MgByteReader content = _resSvc.GetResourceContent(resId);
             string resIdStr = resId.ToString();
+            if (_propertyMappings.ContainsKey(resIdStr))
+                return _propertyMappings[resIdStr];
 
+            MgByteReader content = _resSvc.GetResourceContent(resId);
             XmlDocument doc = new XmlDocument();
             string xml = content.ToString();
             doc.LoadXml(xml);
@@ -134,6 +136,11 @@ namespace OSGeo.MapGuide.Viewer
                     propertyMappings[pm["Name"].InnerText] = pm["Value"].InnerText; //NOXLATE
                 }
                 _propertyMappings[resIdStr] = propertyMappings;
+            }
+            else
+            {
+                //NULL is a legit dictionary value
+                _propertyMappings[resIdStr] = null;
             }
             return _propertyMappings[resIdStr];
         }
