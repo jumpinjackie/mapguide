@@ -80,6 +80,7 @@ var iconGroup = '<img width="16" height ="16" src="../stdicons/lc_group.gif" />'
 var clientAgent = 'Ajax Viewer';
 
 var legendTextNoWrap = true;
+var showInvisibleLayers = false;
 if(legendTextNoWrap)
 {
   iconExpand = "../stdicons/lc_expand_16.gif";
@@ -227,12 +228,26 @@ function BuildLayersAndGroups(node)
 
 function RequestSymbolizationIconImg(layer, scale, iconId)
 {
-    return BuildDelayedLoadIconImg(layer.layerRes, scale, -1, -1, iconId);
+    if(showInvisibleLayers && layer.willDisplayAtScale)
+    {
+      return BuildDelayedLoadIconImg(layer.layerRes, layer.willDisplayAtScale, -1, -1, iconId);
+    }
+    else
+    {
+      return BuildDelayedLoadIconImg(layer.layerRes, scale, -1, -1, iconId);
+    }
 }
 
 function RequestThemeStyleIconImg(layer, scale, themeIndex, geomtype, iconId)
 {
-    return BuildDelayedLoadIconImg(layer.layerRes, scale, themeIndex, geomtype, iconId);
+   if(showInvisibleLayers && layer.willDisplayAtScale)
+   {   
+      return BuildDelayedLoadIconImg(layer.layerRes, layer.willDisplayAtScale, themeIndex, geomtype, iconId);
+   }
+   else
+   {
+      return BuildDelayedLoadIconImg(layer.layerRes, scale, themeIndex, geomtype, iconId);
+   }
 }
 
 function BuildIconRequest(layerDef, scale, themeIndex, geomtype)
@@ -287,7 +302,8 @@ function SetLayerStyles(layer)
 {
     var layerChildren = document.getElementById('ChildrenOf_' + layer.objectId);
     var code = "";
-    var sc = layer.children[layer.curScale];
+    var layerCurScale = layer.curScale != -1 ? layer.curScale:0;
+    var sc = layer.children[layerCurScale];
     var styles = sc.children;
     var hasThemes = styles.length > 1;
     var layerIconImg = "";
@@ -295,10 +311,17 @@ function SetLayerStyles(layer)
     {
         if(layer.expanded && !sc.iconWasRequested)
         {
+            var textStyle = "";
+            if(showInvisibleLayers && layer.willDisplayAtScale)
+            {
+              textStyle = "font-style:italic;color:#C0C0C0";
+            }
+
+
             for(var j=0; j < styles.length; j++)
             {
                 var node = styles[j];
-                var iconId = GetIconId(layer) + '_Scl_' + layer.curScale + '_Th_' + j;
+                var iconId = GetIconId(layer) + '_Scl_' + layerCurScale + '_Th_' + j;
                 var iconImg = RequestThemeStyleIconImg(layer, scale, node.catindex, node.geomtype, iconId);
 
                 code += '<table border=0 cellspacing="0" cellpadding="0"><tr height=17>';
@@ -308,14 +331,14 @@ function SetLayerStyles(layer)
                   code += '<td width=16 id="' + iconId + '">' + iconImg + '</td>';
                   //legend text
                   code += '<td width=7><img width=7 height=16 src="../stdicons/transparentpixel.gif"></td>';
-                  code += '<td style="white-space:nowrap">' + node.legend + '</td>';
+                  code += '<td style="white-space:nowrap;' + textStyle +'">' + node.legend + '</td>';
                 }
                 else
                 {
                   //icon
                   code += '<td width=23 id="' + iconId + '">' + iconImg + '</td>';
                   //legend text
-                  code += '<td>' + node.legend + '</td>';
+                  code += '<td style="' + textStyle + '">' + node.legend + '</td>';
                 }
                 code += '</tr></table>';
 
@@ -348,7 +371,7 @@ function SetLayerStyles(layer)
             layerIconImg = iconRasterLayer;
         else if(layer.lyrtype == 2)
             layerIconImg = iconDrawingLayer;
-        else if(layer.curScale == -1)
+        else if(layerCurScale == -1)
             layerIconImg = iconBrokenLayer;
         else
         {
@@ -357,6 +380,10 @@ function SetLayerStyles(layer)
     }
     SetLayerIcon(layer, layerIconImg);
     SetLayerExpandBox(layer, hasThemes);
+    if(showInvisibleLayers)
+    {
+      SetLayerTextStyle(layer);
+    }
 }
 
 function SetLayerIcon(layer, layerIconImg)
@@ -365,7 +392,23 @@ function SetLayerIcon(layer, layerIconImg)
     if(icElt != null)
         icElt.innerHTML = layerIconImg;
 }
-
+function SetLayerTextStyle(layer)
+{
+    var textElt = document.getElementById("Lg_" + layer.objectId);
+    if(textElt != null)
+    {
+      if(layer.willDisplayAtScale)
+      {
+        textElt.style.fontStyle = "italic";
+        textElt.style.color = "#C0C0C0";
+      }
+      else
+      {
+        textElt.style.fontStyle = "normal";
+        textElt.style.color = "#000000";
+      }
+    }
+}
 function GetIconId(node)
 {
     return 'Ic_' + node.objectId;
@@ -672,6 +715,16 @@ function ContextMenu(x, y, node)
     addMenuOption(ctxMenu, "__#ALLSELECTABLE#__", 7, 1, "", "", cmdState[7] = true);
     addMenuOption(ctxMenu, "__#ALLUNSELECTABLE#__", 8, 1, "", "", cmdState[8] = true);
 
+    addMenuOption(ctxMenu, "", 0, 2, "", "", false);
+    if(showInvisibleLayers)
+    {
+      addMenuOption(ctxMenu, "__#HIDEINVISIBLELAYERS#__", 9, 1, "", "", cmdState[9] = true);
+    }
+    else
+    {
+      addMenuOption(ctxMenu, "__#SHOWINVISIBLELAYERS#__", 10, 1, "", "", cmdState[10] = true);
+    }
+
     endBuildMenuContent(ctxMenu);
     showPopup(ctxMenu, true, x, y);
 }
@@ -713,6 +766,12 @@ function ExecuteCommand(option)
         case 8:
             SetSelectability(tree,false)
             break;
+        case 9:
+           SetShowInvisibleLayers(false);
+           break;
+        case 10:
+           SetShowInvisibleLayers(true);
+           break;
     }
 }
 
@@ -834,7 +893,10 @@ function SetScale(newScale)
     if(tree == null)
         return;
     UpdateScaleRanges(tree);
-    ShowHideNodes(tree);
+    if(showInvisibleLayers == false)
+    {
+      ShowHideNodes(tree);
+    }
     iconsToLoad.reverse();
     LoadNextIcon();
 }
@@ -895,6 +957,8 @@ function RefreshNodesState(nodes)
             var rangeIndex = node.curScale;
             var scaleRanges = node.children;
             node.curScale = -1;
+
+            node.willDisplayAtScale = null;
             for(var j=0; j < scaleRanges.length; j++)
             {
                 var scaleRange = scaleRanges[j];
@@ -904,33 +968,63 @@ function RefreshNodesState(nodes)
                     break;
                 }
             }
-
-            if(node.displayInLegend && node.curScale != -1)
+            if(showInvisibleLayers && node.curScale == -1)
             {
-                // scale changed
-                if(rangeIndex != node.curScale)
-                {
-                    // the layer's theme will be changed on demand
-                    node.children[node.curScale].iconWasRequested = false;
+              var minScale = 1000000000;
+              var maxScale = 0;
+              for(var j=0; j < scaleRanges.length; j++)
+              {
+                  var scaleRange = scaleRanges[j];
+                  minScale = Math.min(minScale,scaleRange.min);
+                  maxScale = Math.max(maxScale,scaleRange.max);
+              }
+              if(scale > maxScale)
+              {
+                node.willDisplayAtScale = maxScale-1;
+              }
+              else if(scale < minScale)
+              {
+                node.willDisplayAtScale = minScale;
+              }
+            }
+            var nodeCurScale= -1;
+            if(node.curScale != -1)
+            {
+              nodeCurScale = node.curScale;
+            }
+            else if(node.willDisplayAtScale)
+            {
+              nodeCurScale = 0;
+            }
 
-                    // the layer's legend image will be changed immediately
-                    if(!HasCollapsedParent(node))
-                    {
-                        SetLayerStyles(node);
-                        node.iconWasRequested = true;
-                    }
-                    // the layer's legend image will be changed on demand
-                    else
-                    {
-                        node.iconWasRequested = false;
-                    }
-                }
-                // parent group expanded
-                else if(!node.iconWasRequested  && !HasCollapsedParent(node))
-                {
-                    SetLayerStyles(node);
-                    node.iconWasRequested = true;
-                }
+            {
+              if(node.displayInLegend && nodeCurScale != -1)
+              {
+                  // scale changed
+                  if(rangeIndex != nodeCurScale || node.willDisplayAtScale)
+                  {
+                      // the layer's theme will be changed on demand
+                      node.children[nodeCurScale].iconWasRequested = false;
+
+                      // the layer's legend image will be changed immediately
+                      if(!HasCollapsedParent(node))
+                      {
+                          SetLayerStyles(node);
+                          node.iconWasRequested = true;
+                      }
+                      // the layer's legend image will be changed on demand
+                      else
+                      {
+                          node.iconWasRequested = false;
+                      }
+                  }
+                  // parent group expanded
+                  else if(!node.iconWasRequested  && !HasCollapsedParent(node))
+                  {
+                      SetLayerStyles(node);
+                      node.iconWasRequested = true;
+                  }
+              }
             }
 
             node.isDisplayed = node.displayInLegend && node.curScale != -1;
@@ -1124,6 +1218,12 @@ function GetBaseGroups(visOnly,scale)
         }
     }
     return groups;
+}
+
+function SetShowInvisibleLayers(isInvisibleLayersVisible)
+{
+  showInvisibleLayers = isInvisibleLayersVisible;
+  GetMainFrame().Refresh();
 }
 
 </script>
