@@ -2884,17 +2884,22 @@ function ExecuteRectangleTool()
     if(tool == 3)
     {
         if((x2 - x1 <= 2) && (y2 - y1 <= 2))
-            return;
+        {
+            // use ZoomIn function if the user clicks on map
+            ZoomIn(x1, y1);
+        }
+        else
+        {
+            pt1 = ScreenToMapUnits(x1, y1);
+            pt2 = ScreenToMapUnits(x2, y2);
 
-        pt1 = ScreenToMapUnits(x1, y1);
-        pt2 = ScreenToMapUnits(x2, y2);
-
-        mcsW = Math.abs(pt2.X - pt1.X);
-        mcsH = Math.abs(pt2.Y - pt1.Y);
-        scale = CalculateScale1(mcsW, mcsH, mapDevW, mapDevH);
-        scale = finscale? GetNearestFiniteScale(scale): NormalizeScale(scale);
-        HideMapImage();
-        GotoView(pt1.X + (pt2.X - pt1.X)/2, pt1.Y + (pt2.Y - pt1.Y)/2, scale, true, false);
+            mcsW = Math.abs(pt2.X - pt1.X);
+            mcsH = Math.abs(pt2.Y - pt1.Y);
+            scale = CalculateScale1(mcsW, mcsH, mapDevW, mapDevH);
+            scale = finscale? GetNearestFiniteScale(scale): NormalizeScale(scale);
+            HideMapImage();
+            GotoView(pt1.X + (pt2.X - pt1.X)/2, pt1.Y + (pt2.Y - pt1.Y)/2, scale, true, false);
+        }
     }
     else if(tool == 0)
     {
