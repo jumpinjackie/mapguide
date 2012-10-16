@@ -344,6 +344,9 @@ var lastLegendScaleUpdate = curScale;
 var featureRequestUrl = '%s';
 %s
 var isAlertShow = false;
+var mapImgFormat = "PNG";
+var selectionImgFormat = "PNG";
+var queryVariant = "INTERSECTS";
 
 var simulateCirclePoints = [];
 var simulateCircleHalfPointNumber = 40;
@@ -1862,7 +1865,7 @@ function RequestMap(scale, centerX, centerY, showGroups, hideGroups, showLayers,
 
 function RequestMapImage(reqId, viewParams)
 {
-    url = webAgent + "?OPERATION=GETDYNAMICMAPOVERLAYIMAGE&FORMAT=PNG&VERSION=2.1.0&SESSION=" + sessionId + "&MAPNAME=" + encodeComponent(mapName) + "&SEQ=" + Math.random() + "&CLIENTAGENT=" + encodeComponent(clientAgent) + "&BEHAVIOR=2";
+    url = webAgent + "?OPERATION=GETDYNAMICMAPOVERLAYIMAGE&FORMAT=" + mapImgFormat + "&VERSION=2.1.0&SESSION=" + sessionId + "&MAPNAME=" + encodeComponent(mapName) + "&SEQ=" + Math.random() + "&CLIENTAGENT=" + encodeComponent(clientAgent) + "&BEHAVIOR=2";
     url += viewParams;
     if(safari || chrome || firefox)
     {
@@ -1879,7 +1882,7 @@ function RequestMapImage(reqId, viewParams)
 
 function RequestSelectionImage(reqId, viewParams)
 {
-    url = webAgent + "?OPERATION=GETDYNAMICMAPOVERLAYIMAGE&FORMAT=PNG&VERSION=2.1.0&SESSION=" + sessionId + "&MAPNAME=" + encodeComponent(mapName) + "&SEQ=" + Math.random() + "&CLIENTAGENT=" + encodeComponent(clientAgent) + "&BEHAVIOR=5&SELECTIONCOLOR=" + selectionColor;
+    url = webAgent + "?OPERATION=GETDYNAMICMAPOVERLAYIMAGE&FORMAT=" + selectionImgFormat + "&VERSION=2.1.0&SESSION=" + sessionId + "&MAPNAME=" + encodeComponent(mapName) + "&SEQ=" + Math.random() + "&CLIENTAGENT=" + encodeComponent(clientAgent) + "&BEHAVIOR=5&SELECTIONCOLOR=" + selectionColor;
     url += viewParams;
     if(safari || chrome)
     {
@@ -3011,7 +3014,7 @@ function QueryFeatureInfo(geom, append, maxfeatures, which)
     if(GetVisSelLayers() == "") return;
     if(moveType != NONE) return;
     var reqParams = "OPERATION=QUERYMAPFEATURES&VERSION=1.0.0&PERSIST=1&MAPNAME=" + encodeURIComponent(mapName) + "&SESSION=" + sessionId + "&SEQ=" + Math.random();
-    reqParams += "&LAYERNAMES=" + encodeURIComponent(GetVisSelLayers()) + "&GEOMETRY=" + geom + "&SELECTIONVARIANT=INTERSECTS" + "&CLIENTAGENT=" + encodeURIComponent(clientAgent);
+    reqParams += "&LAYERNAMES=" + encodeURIComponent(GetVisSelLayers()) + "&GEOMETRY=" + geom + "&SELECTIONVARIANT=" + queryVariant + "&CLIENTAGENT=" + encodeURIComponent(clientAgent);
     if(maxfeatures != 0)
     {
         reqParams += "&MAXFEATURES=" + maxfeatures;
