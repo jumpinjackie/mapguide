@@ -193,6 +193,8 @@ HIDEALLINGROUP          = Hide All in Group
 SHOWLONGTHEME           = Show Long Theme
 ALLSELECTABLE           = All Selectable
 ALLUNSELECTABLE         = All Unselectable
+HIDEINVISIBLELAYERS     = Hide invisible layers
+SHOWINVISIBLELAYERS     = Show invisible layers
 
 # Task Bar
 TASKS                   = Tasks
