@@ -1831,7 +1831,7 @@ function RequestMap(scale, centerX, centerY, showGroups, hideGroups, showLayers,
     //If a new scale was requested in the status bar for a tiled map, the closest
     //finite scale may not change, but we need to send a scale update anyway so that
     //the status bar shows the scale that we snapped to.
-    parent.OnScaleChanged(scale);
+    parent.OnScaleChanged(hasTiles, scale, scales);
     if(scaleChanged = (curScale != scale))
     {
         curScale = scale;
@@ -4044,7 +4044,7 @@ function HandleMouseWheelEvent(delta, event)
     }
 
     //Update scale displayed in status bar
-    parent.OnScaleChanged(newScale);
+    parent.OnScaleChanged(hasTiles, newScale, scales);
 
     //Reload the map at the new scale. 500ms delay to allow for more
     //mouse wheel events.
