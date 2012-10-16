@@ -35,6 +35,24 @@
         position: absolute;
         top: 3px;
     }
+    select.StatusSelect
+    {
+        height: 20px;
+        border-left: 1px solid #c0c0c0;
+        border-top: 1px solid #c0c0c0;
+        border-bottom: 1px solid white;
+        border-right: 1px solid white;
+        position: absolute;
+        top: 3px;
+        font-family: __#@font#__;
+        font-size: __#@fontsize#__;
+        background-color: #EEEEEE;
+    }
+    #ScaleElement
+    {
+      position: absolute;
+      top: 0px;
+    }
 </style>
 
 <script language="javascript" src="../viewerfiles/browserdetect.js"></script>
@@ -63,6 +81,41 @@ function SetMapScaleMsg(msg)
     SetFieldText(msg, 3);
 }
 
+function SetMapScalesList(scale, scales)
+{
+    // remove the input field
+    var scaleDiv = document.getElementById("ScaleElement");
+    var scaleInput = GetScaleField();
+    scaleDiv.removeChild(scaleInput);
+    
+    // add the select element
+    var select = document.createElement("select");
+    select.id = "3";
+    select.name = "3";
+    select.className = "StatusSelect";
+    select.onchange = OnChangeScaleSelect;
+    
+    for(var i=0; i<scales.length; i++)
+    {
+      var option = document.createElement("option");
+      option.text = "1: " + scales[i];
+      option.value = scales[i];
+      if(Math.floor(scale) == Math.floor(scales[i]))
+          option.selected=true;
+          
+      try
+      {
+        // for IE earlier than version 8
+        select.add(option,select.options[null]);
+      }
+      catch (e)
+      {
+        select.add(option,null);
+      }
+    }
+    scaleDiv.appendChild(select);
+}
+
 function SetMapSizeMsg(msg)
 {
     SetFieldText(msg, 4);
@@ -72,14 +125,7 @@ function SetMapSizeMsg(msg)
 //
 function InitDocument()
 {
-    document.onmousedown = OnMouseDown;
     OnStatusResized();
-}
-
-function OnMouseDown(e)
-{
-    parent.ForwardMouseDown(document, e);
-    return false;
 }
 
 function OnStatusResized()
@@ -96,6 +142,10 @@ function OnStatusResized()
     for(var i=1; i < 5; i++)
     {
         elt = document.getElementById(i);
+        
+        if(i == 3)
+            elt = document.getElementById("ScaleElement");
+        
         elt.style.left = posX + "px";
         if(i == 1)
         {
@@ -184,6 +234,12 @@ function OnBlurScaleField()
     SetZoomToScale(scaleField);
 }
 
+function OnChangeScaleSelect()
+{
+    var scaleField = GetScaleField();
+    SetZoomToScale(scaleField);
+}
+
 function GetScaleField()
 {
     return document.getElementById("3");
@@ -197,7 +253,9 @@ function GetScaleField()
       <tr><td valign=center>
         <input class="StatusField" id="1" type="text" title="" readonly >
         <input class="StatusField" id="2" type="text" title="" readonly >
+        <div id="ScaleElement">
         <input class="StatusField" id="3" name="3" type="text" onKeyUp="KeyboardController(this)" onKeyDown="OnScaleFieldKeyDown(event)" onfocus="OnScaleFieldFocus()" onblur="OnBlurScaleField()" onclick="this.focus()">
+        </div>
         <input class="StatusField" id="4" type="text" readonly >
         <img src="../localized/__#POWEREDBYICON#__" width="137" height="18" class="StatusLogo" id="5">
       </td></tr>

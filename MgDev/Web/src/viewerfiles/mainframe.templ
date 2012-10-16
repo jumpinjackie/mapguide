@@ -408,12 +408,17 @@ function OnMenuShown(shown)
     menuOpen = shown;
 }
 
-function OnScaleChanged(scale)
+function OnScaleChanged(hasTiles, scale, scalesList)
 {
     curScale = scale;
     DisplayMapSize();
     if(hasStatusbar == 1 && sbFrame.SetMapScaleMsg != null)
-        sbFrame.SetMapScaleMsg("1: " + FormatScale(scale));
+    {
+        if(hasTiles)
+            sbFrame.SetMapScalesList(parseInt(scale), scalesList); 
+        else
+            sbFrame.SetMapScaleMsg("1: " + FormatScale(scale));
+    }
 }
 
 function FormatScale(scale)
