@@ -159,7 +159,10 @@ function CloseTaskPane()
     }
     
     var divRefresh = tbframe.document.getElementById("divRefresh");
-    divRefresh.className = "cssRefreshWithOpenBtn";
+    if(divRefresh)
+    {
+        divRefresh.className = "cssRefreshWithOpenBtn";
+    }
     
     parent.CloseTaskBar();
 }
