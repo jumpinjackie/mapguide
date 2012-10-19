@@ -26,6 +26,7 @@
 
 
 #ifdef _DEBUG
+#include <cstdio>
 void GwsDebugUtils::TraceToFile (const WSTR & msg)
 {
     char * fname = getenv("GWS_TRACE_FILE");
