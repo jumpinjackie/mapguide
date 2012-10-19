@@ -223,9 +223,13 @@ UnitTestFiles :
 	@cp -f ../../../UnitTest/TestData/MappingService/UT_Rail.sdf ../UnitTestFiles
 	@cp -f ../../../UnitTest/TestData/MappingService/UT_Rail.fs ../UnitTestFiles
 	@cp -f ../../../UnitTest/TestData/MappingService/UT_Rail.ldf ../UnitTestFiles
+	@cp -f ../../../UnitTest/TestData/MappingService/UT_SheboyganWithWatermark.mdf ../UnitTestFiles
+	@cp -f ../../../UnitTest/TestData/MappingService/UT_PoweredByMapGuide.wdf ../UnitTestFiles
 	@cp -f ../../../UnitTest/TestData/MdfModel/MdfTestTypeStyles.ldf ../UnitTestFiles
 	@cp -f ../../../UnitTest/TestData/MdfModel/MdfTestCompoundSymbol.sd ../UnitTestFiles
 	@cp -f ../../../UnitTest/TestData/MdfModel/MdfTestSimpleSymbol.sd ../UnitTestFiles
+	@cp -f ../../../UnitTest/TestData/MdfModel/MdfTestMap.mdf ../UnitTestFiles
+	@cp -f ../../../UnitTest/TestData/MdfModel/MdfTestTypeStyles.ldf ../UnitTestFiles
 	@cp -f ../../../UnitTest/TestData/Symbology/areasymbol.sd ../UnitTestFiles
 	@cp -f ../../../UnitTest/TestData/Symbology/linesymbol.sd ../UnitTestFiles
 	@cp -f ../../../UnitTest/TestData/Symbology/symbol.sd ../UnitTestFiles
@@ -268,6 +272,12 @@ UnitTestFiles :
 	@cp -f ../../../UnitTest/TestData/ServerAdmin/1.1.1.mgd ../UnitTestFiles
 	@cp -f ../../../UnitTest/TestData/CoordinateSystems/epsgcodes.txt ../UnitTestFiles
 	@cp -f ../../../UnitTest/TestData/CoordinateSystems/ogcwkts.txt ../UnitTestFiles
+	@cp -f ../../../UnitTest/TestData/FeatureService/SQLite/SavePointTest.sqlite ../UnitTestFiles
+	@cp -f ../../../UnitTest/TestData/FeatureService/SQLite/SavePointTest.FeatureSource ../UnitTestFiles
+	@cp -f ../../../UnitTest/TestData/FeatureService/SQLite/UT_FdoJoin.FeatureSource ../UnitTestFiles
+	@cp -f ../../../UnitTest/TestData/FeatureService/SQLite/UT_Parcels_SQLite_Join.FeatureSource ../UnitTestFiles
+	@cp -f ../../../UnitTest/TestData/FeatureService/SQLite/ParcelsJoinTest.sqlite ../UnitTestFiles
+	@cp -f ../../../UnitTest/TestData/FeatureService/SQLite/JoinTest.sqlite ../UnitTestFiles
 	@chmod +w ../UnitTestFiles/*.sdf
 
 TESTS = unittest.sh
