@@ -1222,12 +1222,98 @@ function GetBaseGroups(visOnly,scale)
 
 function SetShowInvisibleLayers(isInvisibleLayersVisible)
 {
-  showInvisibleLayers = isInvisibleLayersVisible;
-  GetMainFrame().Refresh();
+    showInvisibleLayers = isInvisibleLayersVisible;
+    GetMainFrame().Refresh();
 }
 
-</script>
+function ExpandLayerInLegend(layerName, expandInLegend)
+{
+    if (tree == null) return;
+    var nodeLayer = FindLayerByName(tree,layerName);
+    if (nodeLayer != null) 
+    {
+            if (expandInLegend) 
+                 Expand(nodeLayer);
+            else
+                 Collapse(nodeLayer);
+            
+    }
+}
 
+function ExpandGroupInLegend(groupName, expandInLegend)
+{
+    if (tree == null)
+        return;
+    var nodeGroup = FindGroupByName(tree, groupName);
+    if (nodeGroup != null)
+        ExpandAllGroupParentInLegend(expandInLegend,nodeGroup);
+}
+
+function FindGroupByName(nodes, groupName)
+{
+    for (var i=0; i < nodes.length; i++)
+    {
+        var node = nodes[i];
+        if (node.type == 0)// only group
+        {
+            if (node.name.toLowerCase() == groupName.toLowerCase())
+                return node;
+            if (node.children != null)
+            {
+                var child = FindGroupByName(node.children, groupName.toLowerCase());
+                if (child != null)
+                    return child;
+            }
+        }
+    }
+    return null;
+}
+
+function FindLayerByName(nodes, layerName)
+{
+    for (var i=0; i < nodes.length; i++)
+    {
+        var node = nodes[i];
+        if (node.type == 1)// only layer
+        {
+            if (node.name.toLowerCase() == layerName.toLowerCase())
+                return node;
+        }
+        else (node.type == 0) // only group
+        {
+            if (node.children != null)
+            {
+                var child = FindLayerByName(node.children, layerName.toLowerCase());
+                if (child != null)
+                    return child;
+            }
+        }
+    }
+    return null;
+}
+
+// if expandInLegend==true => node group and all parents of this group are expanded
+// if expandInLegend==false => only node group is collapsed
+function ExpandAllGroupParentInLegend(expandInLegend,node)
+{
+    if (expandInLegend) 
+    {
+        Expand(node);
+        if (node.parent!= null)
+            ExpandAllGroupParentInLegend(expandInLegend,node.parent);   
+    }
+    else Collapse(node);
+}
+
+function GetGroupByLayer(layerName)
+{
+    if (tree == null) return null;
+    var nodeLayer = FindLayerByName(tree,layerName);
+    if ((nodeLayer != null) && (nodeLayer.parent != null))
+        return nodeLayer.parent;
+    return null;
+}
+</script>
 </head>
 <body id="legendUi" onload="InitDocument()" leftmargin=3 topmargin=3 rightmargin=3 bottommargin=3 marginwidth=3 marginheight=3>
     <div id="Tree"></div>

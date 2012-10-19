@@ -42,6 +42,16 @@ function GetBaseGroups(onlyVisible,scale)
     return thisFrame.legendUiFrame.GetBaseGroups(onlyVisible,scale);
 }
 
+function ExpandLayerInLegend(layerName, expandInLegend)
+{ 
+    return thisFrame.legendUiFrame.ExpandLayerInLegend(layerName, expandInLegend);
+} 
+
+function ExpandGroupInLegend(groupName, expandInLegend)
+{ 
+    return thisFrame.legendUiFrame.ExpandGroupInLegend(groupName, expandInLegend);
+} 
+
 // private functions -----------------------------------------------
 //
 function IsUiReady()
