@@ -28,7 +28,9 @@
 #include "FeatureTypeStyleVisitor.h"
 #include "StylizationEngine.h"
 #include "ExpressionHelper.h"
-
+#ifdef _DEBUG
+#include <cstdio>
+#endif
 
 //////////////////////////////////////////////////////////////////////////////
 DefaultStylizer::DefaultStylizer(SE_SymbolManager* sman)

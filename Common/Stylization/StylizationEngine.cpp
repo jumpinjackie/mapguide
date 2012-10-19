@@ -28,6 +28,10 @@
 #include <algorithm>
 #include <functional>
 
+#ifdef _DEBUG
+#include <cstdio>
+#endif
+
 using namespace MDFMODEL_NAMESPACE;
 
 extern void ProcessStylizerException(FdoException* exception, int line, wchar_t* file);
