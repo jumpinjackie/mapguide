@@ -21,6 +21,8 @@
       <LI><A href="#legendpalette_getbasegroups">GetBaseGroups</A></LI>
       <LI><A href="#legendpalette_getlayer">GetLayer</A></LI>
       <LI><A href="#legendpalette_getlayers">GetLayers</A></LI>
+      <LI><A href="#legendpalette_expandlayerinlegend">ExpandLayerInLegend</A></LI>
+      <LI><A href="#legendpalette_expandgroupinlegend">ExpandGroupInLegend</A></LI>
       <LI><A href="#legendpalette_internalstatecomplete">InternalStateComplete</A></LI>
       <LI><A href="#legendpalette_refresh">Refresh</A></LI>
       <LI><A href="#legendpalette_setscale">SetScale</A></LI>
@@ -186,6 +188,38 @@
       <STRONG>Parameters:</STRONG><BR>
       <CODE>onlyVisible</CODE> - set to <CODE>true</CODE> to return only the layers visible at the current scale; set to <CODE>false</CODE> to ignore layer visibility.<BR><BR>
       <CODE>onlySelectable</CODE> - set to <CODE>true</CODE> to return only layers that can be selected;  set to <CODE>false</CODE> to ignore layer selectability.
+      </P>
+      </DD>
+  </DL>
+  
+  <DL>
+    <DT><STRONG><A name="legendpalette_expandlayerinlegend">ExpandLayerInLegend(layerName, expandInLegend)</A></STRONG></DT>
+      <DD>
+      Expands or collapses the specified (themed) layer in the legend
+      <P>
+      <STRONG>Parameters:</STRONG><BR>
+      <CODE>layerName</CODE> - The name of the layer to expand or collapse<BR><BR>
+      <CODE>expandInLegend</CODE> - set to <CODE>true</CODE> to expand this layer;  set to <CODE>false</CODE> to collapse it
+      </P>
+      <P>
+      <STRONG>Remarks:</STRONG>
+      This only expands/collapses the layer client-side. To persist these changes (ie. Keep the state after refreshing the legend) you must call a server-side script that updates this map state
+      </P>
+      </DD>
+  </DL>
+  
+  <DL>
+    <DT><STRONG><A name="legendpalette_expandgroupinlegend">ExpandGroupInLegend(groupName, expandInLegend)</A></STRONG></DT>
+      <DD>
+      Expands or collapses the specified layer group in the legend
+      <P>
+      <STRONG>Parameters:</STRONG><BR>
+      <CODE>groupName</CODE> - The name of the layer group to expand or collapse<BR><BR>
+      <CODE>expandInLegend</CODE> - set to <CODE>true</CODE> to expand this group;  set to <CODE>false</CODE> to collapse it
+      </P>
+      <P>
+      <STRONG>Remarks:</STRONG>
+      This only expands/collapses the group client-side. To persist these changes (ie. Keep the state after refreshing the legend) you must call a server-side script that updates this map state
       </P>
       </DD>
   </DL>
