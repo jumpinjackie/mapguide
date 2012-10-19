@@ -3311,14 +3311,15 @@ function GetDPI()
     return DPI;
 }
 
-function StartResizingLegend(e)
+function StartResizingLegend(event)
 {
+    e = event || window.event;
     if(moveType == RESIZINGLEGEND)
     {
         moveType = NONE;
         return false;
     }
-    rlAnchor = msie?event.screenY: e.screenY;
+    rlAnchor = e.screenY;
     initLegendHeight = legendHeight;
     moveType = RESIZINGLEGEND;
     
