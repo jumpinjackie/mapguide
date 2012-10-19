@@ -347,6 +347,7 @@ var isAlertShow = false;
 var mapImgFormat = "PNG";
 var selectionImgFormat = "PNG";
 var queryVariant = "INTERSECTS";
+var bufferPx = 2;
 
 var simulateCirclePoints = [];
 var simulateCircleHalfPointNumber = 40;
@@ -2906,10 +2907,10 @@ function ExecuteRectangleTool()
     }
     else if(tool == 0)
     {
-        if((x2 - x1 <= 2) && (y2 - y1 <= 2))
+        if((x2 - x1 <= bufferPx) && (y2 - y1 <= bufferPx))
         {
-            pt1 = ScreenToMapUnits(x1-2, y1-2);
-            pt2 = ScreenToMapUnits(x1+2, y1+2);
+            pt1 = ScreenToMapUnits(x1-bufferPx, y1-bufferPx);
+            pt2 = ScreenToMapUnits(x1+bufferPx, y1+bufferPx);
             RequestPointSelection(pt1.X, pt1.Y, pt2.X, pt2.Y, appending);
         }
         else
@@ -3751,8 +3752,8 @@ function RequestHyperLinkData(id, x, y, exec)
     req = CreateRequestHandler();
     req.open("POST", webAgent, true);
     req.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-    x1 = x - 2; x2 = x + 2;
-    y1 = y - 2; y2 = y + 2;
+    x1 = x - bufferPx; x2 = x + bufferPx;
+    y1 = y - bufferPx; y2 = y + bufferPx;
     pt1 = ScreenToMapUnits(x1,y1);
     pt2 = ScreenToMapUnits(x2,y2);
     geom = MakeWktPolygon(pt1.X, pt1.Y, pt2.X, pt2.Y);
