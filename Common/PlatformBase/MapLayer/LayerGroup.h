@@ -406,6 +406,35 @@ PUBLISHED_API:
     ///
     virtual void SetLegendLabel(CREFSTRING legendLabel);
 
+    //////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Specifies whether the entry for the group should initially
+    /// be expanded in the legend, if possible.
+    ///
+    /// <!-- Syntax in .Net, Java, and PHP -->
+    /// \htmlinclude DotNetSyntaxTop.html
+    /// bool SetExpandInLegend(bool expandInLegend);
+    /// \htmlinclude SyntaxBottom.html
+    /// \htmlinclude JavaSyntaxTop.html
+    /// boolean SetExpandInLegend(boolean expandInLegend);
+    /// \htmlinclude SyntaxBottom.html
+    /// \htmlinclude PHPSyntaxTop.html
+    /// bool SetExpandInLegend(bool expandInLegend);
+    /// \htmlinclude SyntaxBottom.html
+    ///
+    /// \param expandInLegend (boolean/bool)
+    /// Indicates whether this group is expanded in the legend
+    ///
+    /// \remarks 
+    /// This method is reserved only for calls from the web tier invoked by the AJAX
+    /// viewer. Invocation from the (now deprecated) DWF viewer is not supported
+    ///
+    /// \since 2.5
+    ///
+    /// \return
+    /// Returns nothing.
+    virtual void SetExpandInLegend(bool expandInLegend);
+
 INTERNAL_API:
 
     //////////////////////////////////////////////////////////////////
@@ -447,13 +476,6 @@ INTERNAL_API:
     /// Attaches this group to a set of groups
     ///
     virtual void SetContainer(MgLayerGroupCollection* cont);
-
-    //////////////////////////////////////////////////////////////////
-    /// \brief
-    /// Specifies whether the entry for the group should initially
-    /// be expanded in the legend, if possible.
-    ///
-    virtual void SetExpandInLegend(bool expandInLegend);
 
     //////////////////////////////////////////////////////////////////
     /// \brief
