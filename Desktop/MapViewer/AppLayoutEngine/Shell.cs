@@ -369,6 +369,9 @@ namespace OSGeo.MapGuide.Viewer.AppLayoutEngine
                                 throw new InvalidOperationException(string.Format(Strings.ErrorComponentAlreadyExists, compDef.ComponentID));
                             var comp = (MgComponent)Activator.CreateInstance(type);
                             _components[compDef.ComponentID] = comp;
+                            //Override default label if specified
+                            if (!string.IsNullOrEmpty(compDef.Label))
+                                comp.Label = compDef.Label;
                             break;
                         }
                     }
@@ -431,6 +434,12 @@ namespace OSGeo.MapGuide.Viewer.AppLayoutEngine
                         if (tokens.Length != 3)
                             throw new InvalidOperationException(Strings.ErrorMalformedEnumString);
                         comp.SetPropertyValue(prop.Name, Enum.Parse(Type.GetType(tokens[1]), tokens[2]));
+                    }
+                    else if (prop.Value.StartsWith(StringPrefixes.STRINGARRAY))
+                    {
+                        var csvList = prop.Value.Substring(StringPrefixes.STRINGARRAY.Length);
+                        var values = csvList.Split(',');
+                        comp.SetPropertyValue(prop.Name, values);
                     }
                     else if (prop.Value.StartsWith(StringPrefixes.TASKPANEID)) //NOTE: only one taskpane instance, but we're checking this as a forward-looking measure
                     {

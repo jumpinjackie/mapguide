@@ -17,9 +17,19 @@ namespace OSGeo.MapGuide.Viewer
         private BindingList<MgDataPropertyDefinition> _properties;
         private BindingList<MgLayerBase> _layers;
 
-        public MgQueryControlImpl(IMapViewer viewer)
+        private string[] _restrictedLayerList;
+
+        public MgQueryControlImpl(IMapViewer viewer, string[] layerList)
         {
             InitializeComponent();
+            _restrictedLayerList = layerList;
+            InitBase(viewer);
+            LoadLayerList(viewer);
+            cmbLayer.SelectedIndex = 0;
+        }
+
+        private void InitBase(IMapViewer viewer)
+        {
             this.Title = Strings.TitleQuery;
             this.Disposed += new EventHandler(OnDisposed);
             _viewer = viewer;
@@ -33,14 +43,38 @@ namespace OSGeo.MapGuide.Viewer
             cmbProperty.DataSource = _properties;
 
             cmbOperator.SelectedIndex = 0;
-            
+        }
+
+        public MgQueryControlImpl(IMapViewer viewer)
+        {
+            InitializeComponent();
+            InitBase(viewer);
+            LoadLayerList(viewer);
+            cmbLayer.SelectedIndex = 0;
+        }
+
+        private void LoadLayerList(IMapViewer viewer)
+        {
             var map = viewer.GetMap();
             var layers = map.GetLayers();
-            for (var i = 0; i < layers.GetCount(); i++)
+            if (_restrictedLayerList != null && _restrictedLayerList.Length > 0)
             {
-                _layers.Add(layers.GetItem(i));
+                foreach (var name in _restrictedLayerList)
+                {
+                    if (layers.IndexOf(name) < 0)
+                        continue;
+
+                    var layer = layers.GetItem(name);
+                    _layers.Add(layer);
+                }
             }
-            cmbLayer.SelectedIndex = 0;
+            else
+            {
+                for (var i = 0; i < layers.GetCount(); i++)
+                {
+                    _layers.Add(layers.GetItem(i));
+                }
+            }
         }
 
         void OnDisposed(object sender, EventArgs e)
@@ -191,12 +225,7 @@ namespace OSGeo.MapGuide.Viewer
         private void lnkRefreshLayers_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
             _layers.Clear();
-            var map = _viewer.GetMap();
-            var layers = map.GetLayers();
-            for (var i = 0; i < layers.GetCount(); i++)
-            {
-                _layers.Add(layers.GetItem(i));
-            }
+            LoadLayerList(_viewer);
             if (cmbLayer.SelectedIndex != 0)
                 cmbLayer.SelectedIndex = 0;
             else
