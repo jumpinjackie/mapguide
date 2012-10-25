@@ -185,6 +185,10 @@
             <ShowLabel>false</ShowLabel>
           </ItemBase>
           <ItemBase xsi:type="CommandItem">
+            <ComponentID>QueryRestricted</ComponentID>
+            <ShowLabel>false</ShowLabel>
+          </ItemBase>
+          <ItemBase xsi:type="CommandItem">
             <ComponentID>Theme</ComponentID>
             <ShowLabel>false</ShowLabel>
           </ItemBase>
@@ -255,6 +259,10 @@
             <ShowLabel>false</ShowLabel>
           </ItemBase>
           <ItemBase xsi:type="CommandItem">
+            <ComponentID>QueryRestricted</ComponentID>
+            <ShowLabel>false</ShowLabel>
+          </ItemBase>
+          <ItemBase xsi:type="CommandItem">
             <ComponentID>Theme</ComponentID>
             <ShowLabel>false</ShowLabel>
           </ItemBase>
@@ -286,6 +294,10 @@
         </ItemBase>
         <ItemBase xsi:type="CommandItem">
           <ComponentID>Query</ComponentID>
+          <ShowLabel>false</ShowLabel>
+        </ItemBase>
+        <ItemBase xsi:type="CommandItem">
+          <ComponentID>QueryRestricted</ComponentID>
           <ShowLabel>false</ShowLabel>
         </ItemBase>
         <ItemBase xsi:type="CommandItem">
@@ -408,6 +420,25 @@
         <NameValue>
           <Name>TaskPane</Name>
           <Value>taskpane:</Value>
+        </NameValue>
+      </Properties>
+    </ComponentDefinition>
+    <ComponentDefinition>
+      <ComponentID>QueryRestricted</ComponentID>
+      <Label>Query (restricted)</Label>
+      <ClassName>OSGeo.MapGuide.Viewer.MgQueryComponent</ClassName>
+      <Properties>
+        <NameValue>
+          <Name>Target</Name>
+          <Value>enum:OSGeo.MapGuide.Viewer.MgViewerTarget:TaskPane</Value>
+        </NameValue>
+        <NameValue>
+          <Name>TaskPane</Name>
+          <Value>taskpane:</Value>
+        </NameValue>
+        <NameValue>
+          <Name>LayerList</Name>
+          <Value>stringarray:Parcels,Roads</Value>
         </NameValue>
       </Properties>
     </ComponentDefinition>
