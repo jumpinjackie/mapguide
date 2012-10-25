@@ -1,3 +1,13 @@
+Viewer Changelog:
+
+ - Query component now supports a LayerList property allowing the list of queryable layers in the UI to be restricted to what is in this list.
+ - AppLayout component definitions can have their labels overridden by specifying a <Label> element in the ComponentDefinition.
+ - AppLayout engine support for string array property values
+ - Fix issue when selecting objects from a layer with no property display mappings.
+
+2.4.0.7096 (Oct 9 2012)
+=======================
+
 API Changelog:
 
  - MgdPlatform::Terminate() did not call MgdFdoConnectionPool::Cleanup() leaving that to the static initializer to cleanup. This caused problems for the GDAL provider if connection pooling is enabled. The call has been put into MgdPlatform::Terminate() and connection pooling for the GDAL provider has been re-enabled in Platform.ini

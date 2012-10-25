@@ -379,6 +379,9 @@ namespace OSGeo.MapGuide.Viewer.AppLayoutEngine
         public string ComponentID { get; set; }
 
         [XmlElement]
+        public string Label { get; set; }
+
+        [XmlElement]
         public string ClassName { get; set; }
 
         [XmlElement]
@@ -418,5 +421,6 @@ namespace OSGeo.MapGuide.Viewer.AppLayoutEngine
         public const string ENUM = "enum:"; //NOXLATE
         public const string VIEWERID = "viewer:"; //NOXLATE
         public const string TASKPANEID = "taskpane:"; //NOXLATE
+        public const string STRINGARRAY = "stringarray:"; //NOXLATE
     }
 }
