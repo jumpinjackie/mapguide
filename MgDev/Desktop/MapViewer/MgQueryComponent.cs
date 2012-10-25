@@ -17,9 +17,22 @@ namespace OSGeo.MapGuide.Viewer
             this.Label = this.ToolTipText = Strings.TitleQuery;
         }
 
+        [Category("MapGuide Component Properties")] //NOXLATE
+        [Description("An optional list of layer names that will be displayed in the list of queryable layers. If left empty, all layers from the map will be displayed in the list of queryable layers")] //NOXLATE
+        [DefaultValue(MeasurementUnit.Meters)]
+        [MgComponentProperty]
+        public string[] LayerList
+        {
+            get;
+            set;
+        }
+
         protected override MgControlView CreateControlView()
         {
-            return new MgQueryControlImpl(this.Viewer);
+            if (this.LayerList == null || this.LayerList.Length == 0)
+                return new MgQueryControlImpl(this.Viewer);
+            else
+                return new MgQueryControlImpl(this.Viewer, this.LayerList);
         }
     }
 }
