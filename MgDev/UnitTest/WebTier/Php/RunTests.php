@@ -30,6 +30,7 @@ function main()
     $testsFailed = 0;
     $testsRun = 0;
     $isEnterprise = false;
+    $runApiTestsOnly = false;
     $file = fopen("UnitTests.log", "w");
 
     date_default_timezone_set("GMT-0");
@@ -47,6 +48,17 @@ function main()
     {
         $isEnterprise = true;
     }
+    
+    if (($_SERVER['argc']>1))
+    {
+        for ($i = 0; $i < count($_SERVER['argv']); $i++)
+        {
+            if ($_SERVER['argv'][$i] == "-apionly")
+            {
+                $runApiTestsOnly = true;
+            }
+        }
+    }
 
     if (!$file)
     {
@@ -54,19 +66,24 @@ function main()
     }
 
     $testsFailed += ExecuteTest("Api", "../../TestData/ResourceService/ResourceServiceTest.dump", $testsRun, $file, $isEnterprise);
-    $testsFailed += ExecuteTest("Http", "../../TestData/ResourceService/ResourceServiceTest.dump", $testsRun, $file, $isEnterprise);
+    if (!$runApiTestsOnly)
+        $testsFailed += ExecuteTest("Http", "../../TestData/ResourceService/ResourceServiceTest.dump", $testsRun, $file, $isEnterprise);
 
     $testsFailed += ExecuteTest("Api", "../../TestData/DrawingService/DrawingServiceTest.dump", $testsRun, $file, $isEnterprise);
-    $testsFailed += ExecuteTest("Http", "../../TestData/DrawingService/DrawingServiceTest.dump", $testsRun, $file, $isEnterprise);
+    if (!$runApiTestsOnly)
+        $testsFailed += ExecuteTest("Http", "../../TestData/DrawingService/DrawingServiceTest.dump", $testsRun, $file, $isEnterprise);
 
     $testsFailed += ExecuteTest("Api", "../../TestData/FeatureService/FeatureServiceTest.dump", $testsRun, $file, $isEnterprise);
-    $testsFailed += ExecuteTest("Http", "../../TestData/FeatureService/FeatureServiceTest.dump", $testsRun, $file, $isEnterprise);
+    if (!$runApiTestsOnly)
+        $testsFailed += ExecuteTest("Http", "../../TestData/FeatureService/FeatureServiceTest.dump", $testsRun, $file, $isEnterprise);
 
     $testsFailed += ExecuteTest("Api", "../../TestData/SiteService/SiteServiceTest.dump", $testsRun, $file, $isEnterprise);
-    $testsFailed += ExecuteTest("Http", "../../TestData/SiteService/SiteServiceTest.dump", $testsRun, $file, $isEnterprise);
+    if (!$runApiTestsOnly)
+        $testsFailed += ExecuteTest("Http", "../../TestData/SiteService/SiteServiceTest.dump", $testsRun, $file, $isEnterprise);
 
     $testsFailed += ExecuteTest("Api", "../../TestData/MappingService/MappingServiceTest.dump", $testsRun, $file, $isEnterprise);
-    $testsFailed += ExecuteTest("Http", "../../TestData/MappingService/MappingServiceTest.dump", $testsRun, $file, $isEnterprise);
+    if (!$runApiTestsOnly)
+        $testsFailed += ExecuteTest("Http", "../../TestData/MappingService/MappingServiceTest.dump", $testsRun, $file, $isEnterprise);
 
     $testsFailed += ExecuteTest("Api", "../../TestData/ServerAdmin/ServerAdminTest.dump", $testsRun, $file, $isEnterprise);
 
@@ -74,10 +91,11 @@ function main()
 
     $testsFailed += ExecuteTest("Api", "../../TestData/WebLayout/WebLayoutTest.dump", $testsRun, $file, $isEnterprise);
 
-    $testsFailed += ExecuteTest("Http", "../../TestData/Wfs/WfsTest.dump", $testsRun, $file, $isEnterprise);
-
-    $testsFailed += ExecuteTest("Http", "../../TestData/Wms/WmsTest.dump", $testsRun, $file, $isEnterprise);
-
+    if (!$runApiTestsOnly)
+    {
+        $testsFailed += ExecuteTest("Http", "../../TestData/Wfs/WfsTest.dump", $testsRun, $file, $isEnterprise);
+        $testsFailed += ExecuteTest("Http", "../../TestData/Wms/WmsTest.dump", $testsRun, $file, $isEnterprise);
+    }
     $testsFailed += ExecuteTest("Api", "../../TestData/Unicode/UnicodeTest.dump", $testsRun, $file, $isEnterprise);
 
     $str = sprintf("\n\nTests failed/run: %d/%d\n", $testsFailed, $testsRun);
