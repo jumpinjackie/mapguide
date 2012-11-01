@@ -98,7 +98,9 @@ IF "%API_ONLY%" == "1" (
 popd
 
 IF "%START_MGSERVER%" == "1" (
-    echo You can now terminate mgserver.exe
+    REM We're naturally assuming the only mgserver.exe that is running is the one this script started
+    echo Terminating mgserver.exe
+    taskkill /im mgserver.exe
 )
 
 :quit
