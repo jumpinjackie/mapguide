@@ -37,6 +37,7 @@ var curScale = 0;
 var dwf = %s;
 var mapUnitsType = "";
 var newWindowIndex = 1;
+var cursorPosDecimalPlaces = 6;
 
 var commands = new Array();
 var toolbarItems = new Array();
@@ -484,8 +485,8 @@ function OnCursorPosChanged(x, y)
         var pt = GetMapFrame().ScreenToMapUnits(x, y);
         if(latlon)
             pt = GetMapFrame().MapUnitsToLatLon(pt.X, pt.Y);
-        x = FormatLocalizedDecimal(pt.X, 6);
-        y = FormatLocalizedDecimal(pt.Y, 6);
+        x = FormatLocalizedDecimal(pt.X, cursorPosDecimalPlaces);
+        y = FormatLocalizedDecimal(pt.Y, cursorPosDecimalPlaces);
 
         var text;
         if(latlon)
