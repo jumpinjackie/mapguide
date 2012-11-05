@@ -424,8 +424,8 @@ function showPopup(menuObj, optimizeWidth, x, y)
     }
     else
     {
-        w = window.innerWidth - 2;
-        h = window.innerHeight - 2;
+        w = document.body.clientWidth - 2;
+        h = document.body.clientHeight - 2;
     }
 
     //calculate menu width and x position
@@ -509,7 +509,8 @@ function showPopup(menuObj, optimizeWidth, x, y)
     menuObj.left = xPos;
     menuObj.menuDiv.style.width = mw + "px";
 
-    var yPos = y + mh >= h? h - mh - 1: y;
+    var yPos = y + mh >= h ? h - mh - 1 : y;
+    yPos = yPos + window.document.body.scrollTop;
     menuObj.top = yPos;
     menuObj.menuDiv.style.left = xPos + "px";
     menuObj.menuDiv.style.visibility = "visible";
