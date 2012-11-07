@@ -453,15 +453,18 @@ STRING CCoordinateSystemCatalog::GetUserDictionaryDir()
     return m_sUserDir;
 }
 
-//cgeck if the files are writable
+//check if the files are writable
 //The read mode was tracked down when the file names were set up
-//if the files were not valif an assertion was thorwn at that time
+//if the files were not valid an assertion was thorwn at that time
 //this additional method can check if the files can be open in write mode
 //if the file names and path have not yet been set up, an assertion is thrown
 bool CCoordinateSystemCatalog::AreDictionaryFilesWritable()
 {
     MG_TRY()
 
+    //the default dictionary path must contain the relevant CSD files,
+    //whereas the directory into which we might store any user-defined
+    //definitions does not necessarily contain any of the CSD files
     if (m_sDir.empty()
         || !m_pCsDict || m_pCsDict->GetFileName().empty()
         || !m_pDtDict || m_pDtDict->GetFileName().empty()
@@ -474,8 +477,27 @@ bool CCoordinateSystemCatalog::AreDictionaryFilesWritable()
         throw new MgCoordinateSystemInitializationFailedException(L"MgCoordinateSystemCatalog.AreDictionaryFilesWritable", __LINE__, __WFILE__, NULL, L"MgCoordinateSystemNotReadyException", NULL);
     }
 
-    STRING sPath=m_pElDict->GetPath();
+    //the [m_sUserDir] will only contain something, if [SetUserDictionaryDir] had been called
+    //successfully before - either by the automatic initialization or explicitly
+    //
+    if (!m_sUserDir.empty()) 
+    {
+        //note, that we're assuming here that if we can write to the directory
+        //we'll also be able to write-open any CSD file contained in it.
+        //As this here is just a pre-check for the current point in time,
+        //the actual attempt to write to the CSD file might then still fail what is
+        //unlikely and should actually be considered a problem in the user-specific setup of the CSD
+        //files & folder
+        return ValidateFile(
+            m_sUserDir.c_str(),    //path to directory 
+            true,    //must exist 
+            true,    //must be a directory 
+            true,    //must be writable? 
+            NULL);
+    }
+
     EFileValidity reason;
+    STRING sPath=m_pElDict->GetPath();
     if (!ValidateFile(
         sPath.c_str(),          //file name
         true,                   //must exist
