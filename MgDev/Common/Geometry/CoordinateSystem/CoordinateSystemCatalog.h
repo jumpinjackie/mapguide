@@ -96,6 +96,24 @@ PUBLISHED_API:
     virtual MgCoordinateSystemProjectionInformation* GetProjectionInformation()=0;
     virtual MgCoordinateSystemUnitInformation* GetUnitInformation()=0;
     virtual MgCoordinateSystemDictionaryUtility* GetDictionaryUtility()=0;
+
+    ///////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Checks whether any kind of definition supported by this catalog can be updated in the dictionary files currently in use.
+    ///
+    /// Depending on whether this catalog uses a specific directory to store user-provided definitions in, this method
+    /// will perform the following checks:
+    /// \li <b>No specific directory supplied:</b> The target directory is verified to contain all required CSD files.
+    /// If all have been found, they are verified to be writable. If not all CSD files have been found or
+    /// if at least one CSD files cannot be written to, this method will return false.
+    /// \li <b>Specific directory supplied:</b> The target directory is verified to exist and that it is writable, i.e.
+    /// new files can be created in it. Any existing CSD files are assumed to be writeable then, too.
+    ///
+    /// \return Returns true, if definitions can be updated, incl. adding and deletion, as per the definition above.
+    /// Otherwise false.
+    /// \remarks
+    /// Note, that even if this method returns true, the caller must be prepared that the actual
+    /// update request of a definition might still fail.
     virtual bool AreDictionaryFilesWritable()=0;
 
 INTERNAL_API:
