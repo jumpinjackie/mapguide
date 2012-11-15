@@ -379,7 +379,7 @@ MgStringCollection* CCoordinateSystemCategory::GetCoordinateSystems()
     std::vector<STRING> const& allCsNames = this->GetAllCsNames();
     for(size_t i = 0; i < allCsNames.size(); ++i)
     {
-        pCsColl->Add(allCsNames[0]);
+        pCsColl->Add(allCsNames[i]);
     }
 
     MG_CATCH_AND_THROW(L"MgCoordinateSystemCategory.GetCoordinateSystems")
