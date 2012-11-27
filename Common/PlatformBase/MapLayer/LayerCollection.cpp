@@ -149,9 +149,9 @@ bool MgLayerCollection::Remove(MgLayerBase* value)
         Ptr<MgLayerBase> layer = SAFE_ADDREF(value);
 
         //value is released by m_layers base class
-        m_layers->Remove(value);
+        removed = m_layers->Remove(value);
 
-        if (m_owner)
+        if (m_owner && removed)
             m_owner->OnLayerRemoved(layer);
     }
     catch (MgException* e)

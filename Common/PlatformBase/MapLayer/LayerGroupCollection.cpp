@@ -130,9 +130,9 @@ bool MgLayerGroupCollection::Remove(MgLayerGroup* value)
         Ptr<MgLayerGroup> group = SAFE_ADDREF(value);
 
         //value is released by m_groups base class
-        m_groups->Remove(value);
+        removed = m_groups->Remove(value);
 
-        if (m_owner)
+        if (m_owner && removed)
             m_owner->OnGroupRemoved(group);
     }
     catch (MgException* e)
