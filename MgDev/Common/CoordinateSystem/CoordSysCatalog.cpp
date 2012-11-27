@@ -414,6 +414,8 @@ STRING CCoordinateSystemCatalog::GetDefaultUserDictionaryDir()
             defaultUserDir += _T("\\Autodesk\\User Geospatial Coordinate Systems"); //NOXLATE
         }
     }
+    else
+        defaultUserDir = szPathVar;
 
     if (!defaultUserDir.empty() && L'\\' != defaultUserDir[defaultUserDir.length() - 1])
         defaultUserDir.append(L"\\");
@@ -436,7 +438,7 @@ STRING CCoordinateSystemCatalog::GetDefaultUserDictionaryDir()
         return L"";
 
 
-    return defaultUserDir.c_str();
+    return defaultUserDir;
 }
 
 void CCoordinateSystemCatalog::SetUserDictionaryDir(CREFSTRING sDirPath)
