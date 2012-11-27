@@ -513,24 +513,24 @@ void TestMisc::TestCase_1304()
 
 void TestMisc::TestCase_MapLayerCollections()
 {
-	try
-	{
-		Ptr<MgResourceIdentifier> mapRes1 = new MgResourceIdentifier(L"Library://UnitTests/Maps/Sheboygan.MapDefinition");
+    try
+    {
+        Ptr<MgResourceIdentifier> mapRes1 = new MgResourceIdentifier(L"Library://UnitTests/Maps/Sheboygan.MapDefinition");
         Ptr<MgMap> map1 = new MgMap(m_siteConnection);
         map1->Create(mapRes1, L"UnitTestSheboygan1");
 
-		Ptr<MgLayerGroup> detachedGroup = new MgLayerGroup(L"DetachedGroup");
+        Ptr<MgLayerGroup> detachedGroup = new MgLayerGroup(L"DetachedGroup");
         Ptr<MgResourceIdentifier> ldf = new MgResourceIdentifier(L"Library://UnitTests/Layers/Parcels.LayerDefinition");
         Ptr<MgLayer> detachedLayer = new MgLayer(ldf, m_svcResource);
-		detachedLayer->SetName(L"DetachedLayer");
+        detachedLayer->SetName(L"DetachedLayer");
 
-		Ptr<MgLayerCollection> mapLayers = map1->GetLayers();
-		Ptr<MgLayerGroupCollection> mapGroups = map1->GetLayerGroups();
+        Ptr<MgLayerCollection> mapLayers = map1->GetLayers();
+        Ptr<MgLayerGroupCollection> mapGroups = map1->GetLayerGroups();
 
-		//Remove() should be returning false when passing in layers/groups that don't belong
-		CPPUNIT_ASSERT(!mapLayers->Remove(detachedLayer));
-		CPPUNIT_ASSERT(!mapGroups->Remove(detachedGroup));
-	}
+        //Remove() should be returning false when passing in layers/groups that don't belong
+        CPPUNIT_ASSERT(!mapLayers->Remove(detachedLayer));
+        CPPUNIT_ASSERT(!mapGroups->Remove(detachedGroup));
+    }
     catch (MgException* e)
     {
         STRING message = e->GetDetails(TEST_LOCALE);
