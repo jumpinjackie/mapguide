@@ -133,7 +133,7 @@ void MgMultiGeometry::Serialize(MgStream* stream)
     stream->WriteInt32(numGeometries);
 
     //Geometries
-    for(INT32 i = 0; i < numGeometries; i++)
+    for (INT32 i = 0; i < numGeometries; i++)
     {
         Ptr<MgGeometry> geometry = m_geometries->GetItem(i);
         if (tcpipStream)
@@ -164,29 +164,37 @@ void MgMultiGeometry::Deserialize(MgStream* stream)
     //Geometries
     Ptr<MgStreamHelper> streamHelper = stream->GetStreamHelper();
     bool tcpipStream = (typeid(*streamHelper.p) == typeid(MgAceStreamHelper));
+    const type_info& streamType = typeid(*stream);
 
     m_geometries = new MgGeometryCollection();
-    for(INT32 i = 0; i < numGeometries; i++)
+    for (INT32 i = 0; i < numGeometries; i++)
     {
         INT32 geomType;
-        if(tcpipStream)
+        if (tcpipStream)
             stream->GetInt32(geomType);
         else
         {
             // HACK!
             // get the geometry type without removing it from the stream
-            // NOTE: to get to the geometry type we have to also read the
-            //       packet header and argument type
-            UINT32 buffer[3];
-//          UINT32 packetHeader = buffer[0];
-//          UINT32 argumentType = buffer[1];
-//          UINT32 data         = buffer[2];
-            streamHelper->GetData(buffer, 3*sizeof(UINT32), true, true);
-            assert(buffer[1] == (UINT32)MgPacketParser::matINT32);
-            geomType = (INT32)buffer[2];
+            if (streamType == typeid(MgStream))
+            {
+                // NOTE: in the case of MgStream we have to also read the packet
+                //       header and argument type to get to the geometry type 
+                UINT32 buffer[3];
+//              UINT32 packetHeader = buffer[0];
+//              UINT32 argumentType = buffer[1];
+//              UINT32 data         = buffer[2];
+                streamHelper->GetData(buffer, 3*sizeof(UINT32), true, true);
+                assert(buffer[1] == (UINT32)MgPacketParser::matINT32);
+                geomType = (INT32)buffer[2];
+            }
+            else
+            {
+                streamHelper->GetUINT32((UINT32&)geomType, true, true);
+            }
         }
 
-        //create the adequate geometry based on its type id and deserialize
+        // create the geometry based on its type and deserialize
         Ptr<MgGeometry> geometry = MgGeometryFactory::CreateGeometry(geomType);
         geometry->Deserialize(stream);
         m_geometries->Add(geometry);

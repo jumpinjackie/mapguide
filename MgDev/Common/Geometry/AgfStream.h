@@ -90,7 +90,7 @@ INTERNAL_API:
     /// \return
     /// Nothing
     ///
-    virtual void  GetInt16(INT16& value);
+    virtual void GetInt16(INT16& value);
 
     //////////////////////////////////////////////////////////////////
     /// \brief
