@@ -337,7 +337,7 @@ MgMultiCurvePolygon* TestGeometry::CreateMultiCurvePolygon(INT32 numCurvePolys, 
     MgGeometryFactory factory;
 
     Ptr<MgCurvePolygonCollection> curvePolys = new MgCurvePolygonCollection();
-    for (INT32 i=0; i < numCurvePolys; i++)
+    for (INT32 i=0; i<numCurvePolys; ++i)
     {
         Ptr<MgCurvePolygon> curvePoly = CreateCurvePolygon(i+offset);
         curvePolys->Add(curvePoly);
@@ -434,7 +434,7 @@ bool TestGeometry::CheckGeometry(MgGeometry* geom, CREFSTRING wkt)
     Ptr<MgGeometry> lineString = readerWriter.Read(wkt);
     Ptr<MgCoordinateIterator> baselineIterator = lineString->GetCoordinates();
 
-    while(iterator->MoveNext() && baselineIterator->MoveNext())
+    while (iterator->MoveNext() && baselineIterator->MoveNext())
     {
         Ptr<MgCoordinate> coord = iterator->GetCurrent();
         Ptr<MgCoordinate> baselineCoord = baselineIterator->GetCurrent();
@@ -462,9 +462,9 @@ bool TestGeometry::CheckGeometry(CREFSTRING calculated, CREFSTRING base)
     Ptr<MgCoordinateIterator> baseCoords = baseGeom->GetCoordinates();
     Ptr<MgCoordinateIterator> calculatedCoords = calculatedGeom->GetCoordinates();
 
-    if(baseCoords->GetCount() == calculatedCoords->GetCount())
+    if (baseCoords->GetCount() == calculatedCoords->GetCount())
     {
-        for(int i=0;i<baseCoords->GetCount();i++)
+        for (int i=0; i<baseCoords->GetCount(); ++i)
         {
             baseCoords->MoveNext();
             calculatedCoords->MoveNext();
@@ -495,11 +495,11 @@ void TestGeometry::TestCase_Point()
 {
     try
     {
-        MgWktReaderWriter readerWriter;
-
         STRING base = L"POINT XYZ (5 3 2)";
 
         Ptr<MgGeometry> geom = CreatePoint();
+
+        MgWktReaderWriter readerWriter;
         STRING found = readerWriter.Write(geom);
         CPPUNIT_ASSERT(CheckGeometry(geom, base));
         CPPUNIT_ASSERT(CheckGeometry(geom, found));
@@ -515,7 +515,11 @@ void TestGeometry::TestCase_Point()
         point1->Serialize(stream);
         point2->Deserialize(stream);
         CPPUNIT_ASSERT(CheckGeometry(point2, base));
-        CPPUNIT_ASSERT(CheckGeometry(point2, found));
+
+        MgAgfReaderWriter agfReaderWriter;
+        Ptr<MgByteReader> reader = agfReaderWriter.Write(geom);
+        Ptr<MgGeometry> point3 = agfReaderWriter.Read(reader);
+        CPPUNIT_ASSERT(CheckGeometry(point3, base));
     }
     catch (MgException* e)
     {
@@ -534,11 +538,11 @@ void TestGeometry::TestCase_LineString()
 {
     try
     {
-        MgWktReaderWriter readerWriter;
-
         STRING base = L"LINESTRING (0 1, 2 3, 4 5)";
 
         Ptr<MgGeometry> geom = CreateLineString();
+
+        MgWktReaderWriter readerWriter;
         STRING found = readerWriter.Write(geom);
         CPPUNIT_ASSERT(CheckGeometry(geom, base));
         CPPUNIT_ASSERT(CheckGeometry(geom, found));
@@ -554,7 +558,11 @@ void TestGeometry::TestCase_LineString()
         lineString1->Serialize(stream);
         lineString2->Deserialize(stream);
         CPPUNIT_ASSERT(CheckGeometry(lineString2, base));
-        CPPUNIT_ASSERT(CheckGeometry(lineString2, found));
+
+        MgAgfReaderWriter agfReaderWriter;
+        Ptr<MgByteReader> reader = agfReaderWriter.Write(geom);
+        Ptr<MgGeometry> lineString3 = agfReaderWriter.Read(reader);
+        CPPUNIT_ASSERT(CheckGeometry(lineString3, base));
     }
     catch (MgException* e)
     {
@@ -573,11 +581,11 @@ void TestGeometry::TestCase_Polygon()
 {
     try
     {
-        MgWktReaderWriter readerWriter;
-
         STRING base = L"POLYGON ((0 0, 5 0, 5 5, 0 5, 0 0), (1 1, 2 1, 2 2, 1 1), (3 3, 4 3, 4 4, 3 3))";
 
         Ptr<MgGeometry> geom = CreatePolygon();
+
+        MgWktReaderWriter readerWriter;
         STRING found = readerWriter.Write(geom);
         CPPUNIT_ASSERT(CheckGeometry(geom, base));
         CPPUNIT_ASSERT(CheckGeometry(geom, found));
@@ -593,7 +601,11 @@ void TestGeometry::TestCase_Polygon()
         polygon1->Serialize(stream);
         polygon2->Deserialize(stream);
         CPPUNIT_ASSERT(CheckGeometry(polygon2, base));
-        CPPUNIT_ASSERT(CheckGeometry(polygon2, found));
+
+        MgAgfReaderWriter agfReaderWriter;
+        Ptr<MgByteReader> reader = agfReaderWriter.Write(geom);
+        Ptr<MgGeometry> polygon3 = agfReaderWriter.Read(reader);
+        CPPUNIT_ASSERT(CheckGeometry(polygon3, base));
     }
     catch (MgException* e)
     {
@@ -612,11 +624,11 @@ void TestGeometry::TestCase_CurveString()
 {
     try
     {
-        MgWktReaderWriter readerWriter;
-
         STRING base = L"CURVESTRING (0 0 (CIRCULARARCSEGMENT (0 1, 1 2), LINESTRINGSEGMENT (3 0, 3 2)))";
 
         Ptr<MgGeometry> geom = CreateCurveString(0.0);
+
+        MgWktReaderWriter readerWriter;
         STRING found = readerWriter.Write(geom);
         CPPUNIT_ASSERT(CheckGeometry(geom, base));
         CPPUNIT_ASSERT(CheckGeometry(geom, found));
@@ -632,7 +644,11 @@ void TestGeometry::TestCase_CurveString()
         curveString1->Serialize(stream);
         curveString2->Deserialize(stream);
         CPPUNIT_ASSERT(CheckGeometry(curveString2, base));
-        CPPUNIT_ASSERT(CheckGeometry(curveString2, found));
+
+        MgAgfReaderWriter agfReaderWriter;
+        Ptr<MgByteReader> reader = agfReaderWriter.Write(geom);
+        Ptr<MgGeometry> curveString3 = agfReaderWriter.Read(reader);
+        CPPUNIT_ASSERT(CheckGeometry(curveString3, base));
     }
     catch (MgException* e)
     {
@@ -651,8 +667,6 @@ void TestGeometry::TestCase_CurveRing()
 {
     try
     {
-        MgWktReaderWriter readerWriter;
-
         STRING base = L"(3.14 3.14 (CIRCULARARCSEGMENT (3.14 4.140000000000001, 4.140000000000001 5.140000000000001),"
                       L" LINESTRINGSEGMENT (3.14 3.14)))";
 
@@ -678,13 +692,13 @@ void TestGeometry::TestCase_CurvePolygon()
 {
     try
     {
-        MgWktReaderWriter readerWriter;
-
         STRING base = L"CURVEPOLYGON ((200 200 (CIRCULARARCSEGMENT (200 201, 201 202), LINESTRINGSEGMENT (200 200))),"
                       L" (300 300 (CIRCULARARCSEGMENT (300 301, 301 302), LINESTRINGSEGMENT (300 300))),"
                       L" (400 400 (CIRCULARARCSEGMENT (400 401, 401 402), LINESTRINGSEGMENT (400 400))))";
 
         Ptr<MgGeometry> geom = CreateCurvePolygon(100.0);
+
+        MgWktReaderWriter readerWriter;
         STRING found = readerWriter.Write(geom);
         CPPUNIT_ASSERT(CheckGeometry(geom, base));
         CPPUNIT_ASSERT(CheckGeometry(geom, found));
@@ -700,7 +714,11 @@ void TestGeometry::TestCase_CurvePolygon()
         curvePolygon1->Serialize(stream);
         curvePolygon2->Deserialize(stream);
         CPPUNIT_ASSERT(CheckGeometry(curvePolygon2, base));
-        CPPUNIT_ASSERT(CheckGeometry(curvePolygon2, found));
+
+        MgAgfReaderWriter agfReaderWriter;
+        Ptr<MgByteReader> reader = agfReaderWriter.Write(geom);
+        Ptr<MgGeometry> curvePolygon3 = agfReaderWriter.Read(reader);
+        CPPUNIT_ASSERT(CheckGeometry(curvePolygon3, base));
     }
     catch (MgException* e)
     {
@@ -719,11 +737,11 @@ void TestGeometry::TestCase_MultiPoint()
 {
     try
     {
-        MgWktReaderWriter readerWriter;
-
         STRING base = L"MULTIPOINT XYZ (1 2 3, 4 5 6, 7 8 9)";
 
         Ptr<MgGeometry> geom = CreateMultiPoint();
+
+        MgWktReaderWriter readerWriter;
         STRING found = readerWriter.Write(geom);
         CPPUNIT_ASSERT(CheckGeometry(geom, base));
         CPPUNIT_ASSERT(CheckGeometry(geom, found));
@@ -739,7 +757,11 @@ void TestGeometry::TestCase_MultiPoint()
         multiPoint1->Serialize(stream);
         multiPoint2->Deserialize(stream);
         CPPUNIT_ASSERT(CheckGeometry(multiPoint2, base));
-        CPPUNIT_ASSERT(CheckGeometry(multiPoint2, found));
+
+        MgAgfReaderWriter agfReaderWriter;
+        Ptr<MgByteReader> reader = agfReaderWriter.Write(geom);
+        Ptr<MgGeometry> multiPoint3 = agfReaderWriter.Read(reader);
+        CPPUNIT_ASSERT(CheckGeometry(multiPoint3, base));
     }
     catch (MgException* e)
     {
@@ -758,11 +780,11 @@ void TestGeometry::TestCase_MultiLineString()
 {
     try
     {
-        MgWktReaderWriter readerWriter;
-
         STRING base = L"MULTILINESTRING XYZ ((0 1 2, 3 4 5, 6 7 8), (9 10 11, 12 13 14, 15 16 17))";
 
         Ptr<MgGeometry> geom = CreateMultiLineString();
+
+        MgWktReaderWriter readerWriter;
         STRING found = readerWriter.Write(geom);
         CPPUNIT_ASSERT(CheckGeometry(geom, base));
         CPPUNIT_ASSERT(CheckGeometry(geom, found));
@@ -778,7 +800,11 @@ void TestGeometry::TestCase_MultiLineString()
         multiLineString1->Serialize(stream);
         multiLineString2->Deserialize(stream);
         CPPUNIT_ASSERT(CheckGeometry(multiLineString2, base));
-        CPPUNIT_ASSERT(CheckGeometry(multiLineString2, found));
+
+        MgAgfReaderWriter agfReaderWriter;
+        Ptr<MgByteReader> reader = agfReaderWriter.Write(geom);
+        Ptr<MgGeometry> multiLineString3 = agfReaderWriter.Read(reader);
+        CPPUNIT_ASSERT(CheckGeometry(multiLineString3, base));
     }
     catch (MgException* e)
     {
@@ -797,12 +823,12 @@ void TestGeometry::TestCase_MultiPolygon()
 {
     try
     {
-        MgWktReaderWriter readerWriter;
-
         STRING base = L"MULTIPOLYGON (((0 0, 5 0, 5 5, 0 5, 0 0), (1 1, 2 1, 2 2, 1 1), (3 3, 4 3, 4 4, 3 3)),"
                       L" ((0 0, 5 0, 5 5, 0 5, 0 0), (1 1, 2 1, 2 2, 1 1), (3 3, 4 3, 4 4, 3 3)))";
 
         Ptr<MgGeometry> geom = CreateMultiPolygon();
+
+        MgWktReaderWriter readerWriter;
         STRING found = readerWriter.Write(geom);
         CPPUNIT_ASSERT(CheckGeometry(geom, base));
         CPPUNIT_ASSERT(CheckGeometry(geom, found));
@@ -818,7 +844,11 @@ void TestGeometry::TestCase_MultiPolygon()
         multiPolygon1->Serialize(stream);
         multiPolygon2->Deserialize(stream);
         CPPUNIT_ASSERT(CheckGeometry(multiPolygon2, base));
-        CPPUNIT_ASSERT(CheckGeometry(multiPolygon2, found));
+
+        MgAgfReaderWriter agfReaderWriter;
+        Ptr<MgByteReader> reader = agfReaderWriter.Write(geom);
+        Ptr<MgGeometry> multiPolygon3 = agfReaderWriter.Read(reader);
+        CPPUNIT_ASSERT(CheckGeometry(multiPolygon3, base));
     }
     catch (MgException* e)
     {
@@ -837,13 +867,13 @@ void TestGeometry::TestCase_MultiCurveString()
 {
     try
     {
-        MgWktReaderWriter readerWriter;
-
         STRING base = L"MULTICURVESTRING ((100 100 (CIRCULARARCSEGMENT (100 101, 101 102), LINESTRINGSEGMENT (103 100, 103 102))),"
                       L" (200 200 (CIRCULARARCSEGMENT (200 201, 201 202), LINESTRINGSEGMENT (203 200, 203 202))),"
                       L" (300 300 (CIRCULARARCSEGMENT (300 301, 301 302), LINESTRINGSEGMENT (303 300, 303 302))))";
 
         Ptr<MgGeometry> geom = CreateMultiCurveString();
+
+        MgWktReaderWriter readerWriter;
         STRING found = readerWriter.Write(geom);
         CPPUNIT_ASSERT(CheckGeometry(geom, base));
         CPPUNIT_ASSERT(CheckGeometry(geom, found));
@@ -859,7 +889,11 @@ void TestGeometry::TestCase_MultiCurveString()
         multiCurveString1->Serialize(stream);
         multiCurveString2->Deserialize(stream);
         CPPUNIT_ASSERT(CheckGeometry(multiCurveString2, base));
-        CPPUNIT_ASSERT(CheckGeometry(multiCurveString2, found));
+
+        MgAgfReaderWriter agfReaderWriter;
+        Ptr<MgByteReader> reader = agfReaderWriter.Write(geom);
+        Ptr<MgGeometry> multiCurveString3 = agfReaderWriter.Read(reader);
+        CPPUNIT_ASSERT(CheckGeometry(multiCurveString3, base));
     }
     catch (MgException* e)
     {
@@ -878,8 +912,6 @@ void TestGeometry::TestCase_MultiCurvePolygon()
 {
     try
     {
-        MgWktReaderWriter readerWriter;
-
         STRING base = L"MULTICURVEPOLYGON (((200 200 (CIRCULARARCSEGMENT (200 201, 201 202), LINESTRINGSEGMENT (200 200))),"
                       L" (300 300 (CIRCULARARCSEGMENT (300 301, 301 302), LINESTRINGSEGMENT (300 300))),"
                       L" (400 400 (CIRCULARARCSEGMENT (400 401, 401 402), LINESTRINGSEGMENT (400 400)))),"
@@ -891,6 +923,8 @@ void TestGeometry::TestCase_MultiCurvePolygon()
                       L" (402 402 (CIRCULARARCSEGMENT (402 403, 403 404), LINESTRINGSEGMENT (402 402)))))";
 
         Ptr<MgGeometry> geom = CreateMultiCurvePolygon(3, 100.0);
+
+        MgWktReaderWriter readerWriter;
         STRING found = readerWriter.Write(geom);
         CPPUNIT_ASSERT(CheckGeometry(geom, base));
         CPPUNIT_ASSERT(CheckGeometry(geom, found));
@@ -906,7 +940,11 @@ void TestGeometry::TestCase_MultiCurvePolygon()
         multiCurvePolygon1->Serialize(stream);
         multiCurvePolygon2->Deserialize(stream);
         CPPUNIT_ASSERT(CheckGeometry(multiCurvePolygon2, base));
-        CPPUNIT_ASSERT(CheckGeometry(multiCurvePolygon2, found));
+
+        MgAgfReaderWriter agfReaderWriter;
+        Ptr<MgByteReader> reader = agfReaderWriter.Write(geom);
+        Ptr<MgGeometry> multiCurvePolygon3 = agfReaderWriter.Read(reader);
+        CPPUNIT_ASSERT(CheckGeometry(multiCurvePolygon3, base));
     }
     catch (MgException* e)
     {
@@ -925,14 +963,14 @@ void TestGeometry::TestCase_MultiGeometry()
 {
     try
     {
-        MgWktReaderWriter readerWriter;
-
         STRING base = L"GEOMETRYCOLLECTION (CURVEPOLYGON ((100 100 (CIRCULARARCSEGMENT (100 101, 101 102),"
                       L" LINESTRINGSEGMENT (100 100))), (200 200 (CIRCULARARCSEGMENT (200 201, 201 202),"
                       L" LINESTRINGSEGMENT (200 200))), (300 300 (CIRCULARARCSEGMENT (300 301, 301 302),"
                       L" LINESTRINGSEGMENT (300 300)))), CURVESTRING (100 100 (CIRCULARARCSEGMENT (100 101, 101 102),"
                       L" LINESTRINGSEGMENT (103 100, 103 102))), LINESTRING (0 1, 2 3, 4 5), POINT XYZ (5 3 2),"
                       L" POLYGON ((0 0, 5 0, 5 5, 0 5, 0 0), (1 1, 2 1, 2 2, 1 1), (3 3, 4 3, 4 4, 3 3)))";
+
+        MgWktReaderWriter readerWriter;
 
         Ptr<MgGeometry> geom = CreateMultiGeometry();
         STRING found = readerWriter.Write(geom);
@@ -950,7 +988,11 @@ void TestGeometry::TestCase_MultiGeometry()
         multiGeometry1->Serialize(stream);
         multiGeometry2->Deserialize(stream);
         CPPUNIT_ASSERT(CheckGeometry(multiGeometry2, base));
-        CPPUNIT_ASSERT(CheckGeometry(multiGeometry2, found));
+
+        MgAgfReaderWriter agfReaderWriter;
+        Ptr<MgByteReader> reader = agfReaderWriter.Write(geom);
+        Ptr<MgGeometry> multiGeometry3 = agfReaderWriter.Read(reader);
+        CPPUNIT_ASSERT(CheckGeometry(multiGeometry3, base));
     }
     catch (MgException* e)
     {
