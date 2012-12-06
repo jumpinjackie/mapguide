@@ -212,7 +212,11 @@ bool SE_StyleVisitor::ParseDouble(const wchar_t*& str, double& val)
     if (quick_parse && buffer_len > 0 && buffer_len < BUFFER_SIZE)
     {
         buffer[buffer_len] = L'\0';
+#ifdef _WIN32
         val = _wtof(buffer);
+#else
+        val =  (double)wcstod(buffer, NULL);
+#endif
         str = strTmp;
         return true;
     }
@@ -276,7 +280,11 @@ bool SE_StyleVisitor::ParseDoublePair(const wchar_t*& str, double& x, double& y)
             buffer[buffer_len] = L'\0';
             if (!read_x)
             {
+#ifdef _WIN32
                 x = _wtof(buffer);
+#else
+                x =  (double)wcstod(buffer, NULL);
+#endif
                 read_x = true;
             }
             else
@@ -315,7 +323,11 @@ bool SE_StyleVisitor::ParseDoublePair(const wchar_t*& str, double& x, double& y)
     if (quick_parse && read_x && buffer_len > 0 && buffer_len < BUFFER_SIZE)
     {
         buffer[buffer_len] = L'\0';
+#ifdef _WIN32
         y = _wtof(buffer);
+#else
+        y =  (double)wcstod(buffer, NULL);
+#endif
         str = strTmp;
         return true;
     }
