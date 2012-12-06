@@ -1,5 +1,5 @@
 //
-//  Copyright (C) 2007-2011 by Autodesk, Inc.
+//  Copyright (C) 2007-2012 by Autodesk, Inc.
 //
 //  This library is free software; you can redistribute it and/or
 //  modify it under the terms of version 2.1 of the GNU Lesser
@@ -144,8 +144,81 @@ SE_AreaStyle* SE_StyleVisitor::ProcessAreaUsage(AreaUsage& areaUsage)
 }
 
 
+#ifdef _DEBUG
+inline bool IsTag(const wchar_t& item)
+{
+    return (item == L'm' || item == L'M'
+         || item == L'l' || item == L'L'
+         || item == L'h' || item == L'H'
+         || item == L'v' || item == L'V'
+         || item == L'a' || item == L'A'
+         || item == L'z' || item == L'Z');
+}
+#endif
+
+
 bool SE_StyleVisitor::ParseDouble(const wchar_t*& str, double& val)
 {
+    // Using "swscanf" results in slow performance.  We therefore first try to parse it
+    // using a quick algorithm which implements the same functionality as the statement:
+    //   swscanf(str, L" %lf%n", &val, &length)
+    // If this quick algorithm fails, parse it again with "swscanf" to get the same
+    // robust behavior as before.
+    // The source "str" is like "918 v -49.12458 M 87.76316,113.56123".
+    bool quick_parse = true;
+    const int BUFFER_SIZE = 128;
+    wchar_t buffer[BUFFER_SIZE];
+    int buffer_len = 0;
+    const wchar_t* strTmp = str;
+    while (*strTmp != L'\0')
+    {
+        if (*strTmp == L' ')
+        {
+            if (buffer_len > 0)
+                break;
+            else
+                strTmp++;
+        }
+#ifdef _DEBUG  // We shouldn't be here unless the geometry string is malformed.
+        else if (*strTmp == L',')
+        {
+            // unexpected comma and ParseDoublePair should be used
+            _ASSERT(false);
+            quick_parse = false;
+            break;
+        }
+        else if (IsTag(*strTmp))
+        {
+            // white-space must be missing
+            _ASSERT(false);
+            quick_parse = (buffer_len > 0);
+            break;
+        }
+#endif
+        else
+        {
+            buffer[buffer_len] = *strTmp++;
+            buffer_len++;
+            if (buffer_len >= BUFFER_SIZE)
+            {
+                // the buffer is too small
+                _ASSERT(false);
+                quick_parse = false;
+                break;
+            }
+        }
+    }
+
+    if (quick_parse && buffer_len > 0 && buffer_len < BUFFER_SIZE)
+    {
+        buffer[buffer_len] = L'\0';
+        val = _wtof(buffer);
+        str = strTmp;
+        return true;
+    }
+
+    // The quick parser algorithm failed.  Perhaps the geometry string is
+    // empty or malformed.  Fallback and directly parse it using "swscanf".
     size_t length = 0;
     swscanf(str, L" %lf%n", &val, &length);
     str += length;
@@ -155,6 +228,100 @@ bool SE_StyleVisitor::ParseDouble(const wchar_t*& str, double& val)
 
 bool SE_StyleVisitor::ParseDoublePair(const wchar_t*& str, double& x, double& y)
 {
+    // Using "swscanf" results in slow performance.  We therefore first try to parse it
+    // using a quick algorithm which implements the same functionality as the statement:
+    //   swscanf(str, L" %lf , %lf%n", &x, &y, &length)
+    // If this quick algorithm fails, parse it again with "swscanf" to get the same
+    // robust behavior as before.
+    // The source "str" is like "228.85853,113.60915 h 0.95853 L 230.82351,113.56123 ".
+    bool quick_parse = true;
+    const int BUFFER_SIZE = 128;
+    wchar_t buffer[BUFFER_SIZE];
+    int buffer_len = 0;
+    const wchar_t* strTmp = str;
+    bool read_x = false;
+    while (*strTmp != L'\0')
+    {
+        if (*strTmp == L' ')
+        {
+            if (read_x)
+            {
+                if (buffer_len > 0)
+                    break;
+                else
+                    strTmp++;
+            }
+            else
+            {
+                if (buffer_len == 0)
+                   strTmp++;
+                else
+                {
+                    // the comma must be missing or ParseDouble should be used
+                    _ASSERT(false);
+                    quick_parse = false;
+                    break;
+                }
+            }
+        }
+        else if (*strTmp == L',')
+        {
+            if (buffer_len >= BUFFER_SIZE)
+            {
+                // the buffer is too small
+                _ASSERT(false);
+                quick_parse = false;
+                break;
+            }
+            buffer[buffer_len] = L'\0';
+            if (!read_x)
+            {
+                x = _wtof(buffer);
+                read_x = true;
+            }
+            else
+            {
+                // malformed geometry string
+                _ASSERT(false);
+                quick_parse = false;
+                break;
+            }
+            buffer_len = 0;
+            strTmp++;
+        }
+#ifdef _DEBUG  // We shouldn't be here unless the geometry string is malformed.
+        else if (IsTag(*strTmp))
+        {
+            // the white-space must be missing
+            _ASSERT(false);
+            quick_parse = (read_x && buffer_len > 0);
+            break;
+        }
+#endif
+        else
+        {
+            buffer[buffer_len] = *strTmp++;
+            buffer_len++;
+            if (buffer_len >= BUFFER_SIZE)
+            {
+                // the buffer is too small
+                _ASSERT(false);
+                quick_parse = false;
+                break;
+            }
+        }
+    }
+
+    if (quick_parse && read_x && buffer_len > 0 && buffer_len < BUFFER_SIZE)
+    {
+        buffer[buffer_len] = L'\0';
+        y = _wtof(buffer);
+        str = strTmp;
+        return true;
+    }
+
+    // The quick parser algorithm failed.  Perhaps the geometry string is
+    // empty or malformed.  Fallback and directly parse it using "swscanf".
     size_t length = 0;
     swscanf(str, L" %lf , %lf%n", &x, &y, &length);
     str += length;
