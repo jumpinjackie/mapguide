@@ -38,14 +38,48 @@ enum LibraryStatus
     lsLoadFailed
 };
 
+///////////////////////////////////////////////////////////////////////////////////////////////
+/// \brief
+/// Defines and manages the physical location of coordinate system data files
+///
 class MgCoordinateSystemCatalog : public MgGuardDisposable
 {
     DECLARE_CLASSNAME(MgCoordinateSystemCatalog)
 
 PUBLISHED_API:
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Sets the default dictionary path and file names
+    ///
     virtual void SetDefaultDictionaryDirAndFileNames()=0;
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Gets the default dictionary path
+    ///
+    /// \return
+    /// The default dictionary path
+    ///
     virtual STRING GetDefaultDictionaryDir()=0;
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Sets the path where the dictionary files are located
+    ///
+    /// \remarks
+    /// If set to a valid path, this path is used to read dictionary files instead of the default dictionary path
+    /// and the one specified by the MENTOR_DICTIONARY_PATH environment variable
+    ///
     virtual void SetDictionaryDir(CREFSTRING sDirPath)=0;
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Gets the current dictionary path
+    ///
+    /// \return
+    /// The current dictionary path
+    ///
     virtual STRING GetDictionaryDir()=0;
 
     ///////////////////////////////////////////////////////////////////////////
@@ -81,20 +115,135 @@ PUBLISHED_API:
     ///
     virtual STRING GetUserDictionaryDir()=0;
 
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Sets the protection mode
+    ///
+    /// \param nMode (short/int)
+    /// The protection mode
+    ///
     virtual void SetProtectionMode(INT16 nMode)=0;
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Gets the protection mode of this catalog
+    ///
+    /// \return
+    /// The protection mode of this catalog
+    ///
     virtual INT16 GetProtectionMode()=0;
 
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Gets the coordinate system category dictionary
+    ///
+    /// \return
+    /// The coordinate system category dictionary
+    ///
     virtual MgCoordinateSystemCategoryDictionary* GetCategoryDictionary()=0;
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Gets the coordinate system dictionary
+    ///
+    /// \return
+    /// The coordinate system dictionary
+    ///
     virtual MgCoordinateSystemDictionary* GetCoordinateSystemDictionary()=0;
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Gets the coordinate system datum dictionary
+    ///
+    /// \return
+    /// The coordinate system datum dictionary
+    ///
     virtual MgCoordinateSystemDatumDictionary* GetDatumDictionary()=0;
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Gets the coordinate system ellipsoid dictionary
+    ///
+    /// \return
+    /// The coordinate system ellipsoid dictionary
+    ///
     virtual MgCoordinateSystemEllipsoidDictionary* GetEllipsoidDictionary()=0;
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Gets the coordinate system geodetic path dictionary
+    ///
+    /// \return
+    /// The coordinate system geodetic path dictionary
+    ///
     virtual MgCoordinateSystemGeodeticPathDictionary* GetGeodeticPathDictionary()=0;
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Gets the coordinate system geodetic transform definition dictionary
+    ///
+    /// \return
+    /// The coordinate system geodetic transform definition dictionary
+    ///
     virtual MgCoordinateSystemGeodeticTransformDefDictionary* GetGeodeticTransformDefDictionary()=0;
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Gets the geodetic transformations for the source and target coordinate system datums
+    ///
+    /// \param pSource (MgCoordinateSystemDatum)
+    /// The source coordinate system datum
+    /// \param pTarget (MgCoordinateSystemDatum)
+    /// The target coordinate system datum
+    ///
+    /// \return
+    /// The collection of MgCoordinateSystemGeodeticTransformation objects
+    ///
     virtual MgDisposableCollection* GetGeodeticTransformations(MgCoordinateSystemDatum* pSource, MgCoordinateSystemDatum *pTarget)=0;
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Gets the coordinate system math comparator
+    ///
+    /// \return
+    /// The coordinate system math comparator
+    ///
     virtual MgCoordinateSystemMathComparator* GetMathComparator()=0;
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Gets the coordinate system format converter
+    ///
+    /// \return
+    /// The coordinate system format converter
+    ///
     virtual MgCoordinateSystemFormatConverter* GetFormatConverter()=0;
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Gets the coordinate system projection information
+    ///
+    /// \return
+    /// The coordinate system projection information
+    ///
     virtual MgCoordinateSystemProjectionInformation* GetProjectionInformation()=0;
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Gets the coordinate system unit information
+    ///
+    /// \return
+    /// The coordinate system unit information
+    ///
     virtual MgCoordinateSystemUnitInformation* GetUnitInformation()=0;
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Gets the coordinate system dictionary utility
+    ///
+    /// \return
+    /// The coordinate system dictionary utility
+    ///
     virtual MgCoordinateSystemDictionaryUtility* GetDictionaryUtility()=0;
 
     ///////////////////////////////////////////////////////////////////////////

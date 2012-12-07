@@ -18,6 +18,10 @@
 #ifndef _MGCOORDINATESYSTEMELLIPSOID_H_
 #define _MGCOORDINATESYSTEMELLIPSOID_H_
 
+///////////////////////////////////////////////////////////////////////////////////////////////
+/// \brief
+/// Defines a coordinate system ellipsoid
+///
 class MgCoordinateSystemEllipsoid : public MgGuardDisposable
 {
     DECLARE_CLASSNAME(MgCoordinateSystemEllipsoid)

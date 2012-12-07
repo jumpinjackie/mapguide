@@ -31,12 +31,12 @@ class MG_GEOMETRY_API MgCoordinateSystemCodeFormat
 PUBLISHED_API:
     ///////////////////////////////////////////////////////////////
     /// \brief
-    ///
+    /// Mentor/CS-Map flavor
     ///
     static const INT32 Mentor = 0;
     ///////////////////////////////////////////////////////////////
     /// \brief
-    ///
+    /// EPSG flavor
     ///
     static const INT32 Epsg = 1;
 };
