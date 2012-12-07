@@ -32,8 +32,23 @@ class MgCoordinateSystemEllipsoidDictionary : public MgCoordinateSystemDictionar
     DECLARE_CLASSNAME(MgCoordinateSystemEllipsoidDictionary)
 
 PUBLISHED_API:
-        virtual MgCoordinateSystemEllipsoid* NewEllipsoid()=0;
-        virtual MgCoordinateSystemEllipsoid* GetEllipsoid(CREFSTRING sName)=0;
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Creates a new coordinate system ellipsoid
+    ///
+    /// \return
+    /// A MgCoordinateSystemEllipsoid object
+    ///
+    virtual MgCoordinateSystemEllipsoid* NewEllipsoid()=0;
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Gets the coordinate system ellipsoid matching the specified name
+    ///
+    /// \return
+    /// A MgCoordinateSystemEllipsoid object. NULL if not found.
+    ///
+    virtual MgCoordinateSystemEllipsoid* GetEllipsoid(CREFSTRING sName)=0;
 
 protected:
     /////////////////////////////////////////////////////////////////

@@ -32,10 +32,50 @@ class MgCoordinateSystemDictionaryUtility : public MgGuardDisposable
     DECLARE_CLASSNAME(MgCoordinateSystemDictionaryUtility)
 
 PUBLISHED_API:
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Gets the associated coordinate system catalog
+    ///
+    /// \return
+    /// The associated coordinate system catalog
+    ///
     virtual MgCoordinateSystemCatalog* GetCatalog()=0;
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Creates the ellipsoid dictionary in the specified path
+    ///
+    /// \param sDictPathName (String/string)
+    /// The path to create the dictionary in
+    ///
     virtual void CreateEllipsoidDictionary(CREFSTRING sDictPathName)=0;
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Creates the datum dictionary in the specified path
+    ///
+    /// \param sDictPathName (String/string)
+    /// The path to create the dictionary in
+    ///
     virtual void CreateDatumDictionary(CREFSTRING sDictPathName)=0;
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Creates the coordinate system dictionary in the specified path
+    ///
+    /// \param sDictPathName (String/string)
+    /// The path to create the dictionary in
+    ///
     virtual void CreateCoordsysDictionary(CREFSTRING sDictPathName)=0;
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Creates the category dictionary in the specified path
+    ///
+    /// \param sDictPathName (String/string)
+    /// The path to create the dictionary in
+    ///
     virtual void CreateCategoryDictionary(CREFSTRING sDictPathName)=0;
 
 protected:

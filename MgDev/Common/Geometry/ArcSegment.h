@@ -46,6 +46,10 @@ class MG_GEOMETRY_API MgArcSegment : public MgCurveSegment
     DECLARE_CLASSNAME(MgArcSegment)
 
 PUBLISHED_API:
+    ///////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Gets the component type of this arc segment
+    ///
     /// <!-- Syntax in .Net, Java, and PHP -->
     /// \htmlinclude DotNetSyntaxTop.html
     /// virtual int GetComponentType();
@@ -79,6 +83,10 @@ PUBLISHED_API:
     ///
     virtual MgCoordinate* GetControlCoordinate(); /// __get
 
+    ///////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Gets the start coordinate of this arc segment
+    ///
     /// <!-- Syntax in .Net, Java, and PHP -->
     /// \htmlinclude DotNetSyntaxTop.html
     /// virtual MgCoordinate GetStartCoordinate();
@@ -92,6 +100,10 @@ PUBLISHED_API:
     ///
     virtual MgCoordinate* GetStartCoordinate(); /// __get, __inherited
 
+    ///////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Gets the end coordinate of this arc segment
+    ///
     /// <!-- Syntax in .Net, Java, and PHP -->
     /// \htmlinclude DotNetSyntaxTop.html
     /// virtual MgCoordinate GetEndCoordinate();
@@ -105,6 +117,10 @@ PUBLISHED_API:
     ///
     virtual MgCoordinate* GetEndCoordinate(); /// __get, __inherited
 
+    ///////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Gets the dimension of this arc segment
+    ///
     /// <!-- Syntax in .Net, Java, and PHP -->
     /// \htmlinclude DotNetSyntaxTop.html
     /// virtual int GetDimension();
@@ -118,6 +134,10 @@ PUBLISHED_API:
     ///
     virtual INT32 GetDimension();  /// __get, __inherited
 
+    ///////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Gets whether this arc segment is empty
+    ///
     /// <!-- Syntax in .Net, Java, and PHP -->
     /// \htmlinclude DotNetSyntaxTop.html
     /// virtual bool IsEmpty();
@@ -131,6 +151,10 @@ PUBLISHED_API:
     ///
     virtual bool IsEmpty();
 
+    ///////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Gets whether this arc segment is closed
+    ///
     /// <!-- Syntax in .Net, Java, and PHP -->
     /// \htmlinclude DotNetSyntaxTop.html
     /// virtual bool IsClosed();

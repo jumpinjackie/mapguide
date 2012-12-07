@@ -32,8 +32,23 @@ class MgCoordinateSystemDatumDictionary : public MgCoordinateSystemDictionaryBas
     DECLARE_CLASSNAME(MgCoordinateSystemDatumDictionary)
 
 PUBLISHED_API:
-        virtual MgCoordinateSystemDatum* NewDatum()=0;
-        virtual MgCoordinateSystemDatum* GetDatum(CREFSTRING sName)=0;
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Creates a new coordinate system datum 
+    ///
+    /// \return
+    /// The MgCoordinateSystemDatum object
+    ///
+    virtual MgCoordinateSystemDatum* NewDatum()=0;
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Gets the coordinate system datum matching the specified name 
+    ///
+    /// \return
+    /// The matching MgCoordinateSystemDatum object. NULL if not found
+    ///
+    virtual MgCoordinateSystemDatum* GetDatum(CREFSTRING sName)=0;
 
 protected:
     /////////////////////////////////////////////////////////////////
