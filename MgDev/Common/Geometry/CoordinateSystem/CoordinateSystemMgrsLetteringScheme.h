@@ -31,12 +31,12 @@ class MG_GEOMETRY_API MgCoordinateSystemMgrsLetteringScheme
 PUBLISHED_API:
     ///////////////////////////////////////////////////////////////
     /// \brief
-    ///
+    /// Normal
     ///
     static const INT8 Normal = 0;
     ///////////////////////////////////////////////////////////////
     /// \brief
-    ///
+    /// Alternative
     ///
     static const INT8 Alternative = 1;
 };

@@ -22,14 +22,71 @@ class MgCoordinateSystem;
 class MgCoordinateSystemDatum;
 class MgCoordinateSystemEllipsoid;
 
+/////////////////////////////////////////////////////////////
+/// \brief
+/// A mathematical comparator used to detemerine equality between
+/// two different coordinate systems, datums or ellipsoids
+///
 class MgCoordinateSystemMathComparator : public MgGuardDisposable
 {
     DECLARE_CLASSNAME(MgCoordinateSystemMathComparator)
 
 PUBLISHED_API:
+    
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Determines if the two given definitions are the same
+    ///
+    /// \param pDefinition1 (MgGuardDisposable)
+    /// The first definition to compare
+    /// \param pDefinition2 (MgGuardDisposable)
+    /// The second definiton to compare
+    ///
+    /// \return
+    /// true if both definitions are the same. false otherwise
+    ///
     virtual bool Same(MgGuardDisposable *pDefinition1, MgGuardDisposable *pDefinition2)=0;
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Determines if the two given ellipsoids are the same
+    ///
+    /// \param pDefinition1 (MgCoordinateSystemEllipsoid)
+    /// The first definition to compare
+    /// \param pDefinition2 (MgCoordinateSystemEllipsoid)
+    /// The second definiton to compare
+    ///
+    /// \return
+    /// true if both definitions are the same. false otherwise
+    ///
     virtual bool SameEllipsoid(MgCoordinateSystemEllipsoid *pDefinition1, MgCoordinateSystemEllipsoid *pDefinition2)=0;
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Determines if the two given datums are the same
+    ///
+    /// \param pDefinition1 (MgCoordinateSystemDatum)
+    /// The first definition to compare
+    /// \param pDefinition2 (MgCoordinateSystemDatum)
+    /// The second definiton to compare
+    ///
+    /// \return
+    /// true if both definitions are the same. false otherwise
+    ///
     virtual bool SameDatum(MgCoordinateSystemDatum *pDefinition1, MgCoordinateSystemDatum *pDefinition2)=0;
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Determines if the two given coordinate system are the same
+    ///
+    /// \param pDefinition1 (MgCoordinateSystem)
+    /// The first definition to compare
+    /// \param pDefinition2 (MgCoordinateSystem)
+    /// The second definiton to compare
+    ///
+    /// \return
+    /// true if both definitions are the same. false otherwise
+    ///
     virtual bool SameCoordinateSystem(MgCoordinateSystem *pDefinition1, MgCoordinateSystem *pDefinition2)=0;
 
     /////////////////////////////////////////////////////////////
