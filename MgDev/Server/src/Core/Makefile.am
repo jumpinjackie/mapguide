@@ -296,6 +296,7 @@ unittest.sh : all serverconfig_linux.ini UnitTestFiles $(map_unittesting_dir)
 serverconfig_linux.ini :
 	@sed -e 's#^FdoPath.*=.*#FdoPath                            = $(map_fdo_lib)#' \
              -e 's#^LogsPath.*=.*#LogsPath                           = Logs/#' \
+             -e 's#^MentorDictionaryPath.*=.*#MentorDictionaryPath   = ${mentor_dict_install_dir}#' \
              -e 's#^ResourcesPath.*=.*#ResourcesPath                      = Resources/#' \
              -e 's#^TempPath.*=.*#TempPath                           = Temp/#' \
              -e 's#^WmsDocumentPath.*=.*#WmsDocumentPath                    = Wms/#' \
