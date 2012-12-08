@@ -23,6 +23,7 @@
 /// \{
 
 ///////////////////////////////////////////////////////////////////////////////
+/// \brief
 /// This object carries most, if not all, intelligence specific to the MGRS
 /// (Military Grid Reference System) grid standard.  It can be used at two
 /// distinct levels, depending upon how it is manufactured.
@@ -44,64 +45,64 @@ class MgCoordinateSystemMgrs : public MgCoordinateSystemGridBase
 PUBLISHED_API:
     // section that reads/writes MGRS coordinates
     ///////////////////////////////////////////////////////////////////////////
-    /// /brief
+    /// \brief
     /// Converts a geographic coordinate to MGRS string form.
-    /// /param dLongitude
+    /// \param dLongitude (double)
     /// Longitude of the geographic position to be converted, in degrees
     /// relative to Greenwich.  Use negative value for west longitude.
-    /// /param dLatitude
+    /// \param dLatitude (double)
     /// Latitude of the geographic position to be converted, in degrees.
     /// Use negative value for south latitude.
-    /// /param nPrecision
+    /// \param nPrecision (int)
     /// A value between zero and five, indicates the precision of the
     /// numeric portion of the returned MGRS designation.
-    /// /returns
+    /// \return
     /// The MGRs representation for the given point.
     virtual STRING ConvertFromLonLat(double dLongitude, double dLatitude, INT32 nPrecision)=0;
 
     ///////////////////////////////////////////////////////////////////////////
-    /// /brief
+    /// \brief
     /// Converts a geographic coordinate to MGRS string form.
-    /// /param pLonLat
+    /// \param pLonLat (String/string)
     /// The geographic position to be converted.  X coordinate is the longitude
     /// in degrees relative to Greenwich, negative indicating west longitude.
     /// Y coordinate is latitude in degrees, negative indicating south latitude.
-    /// /param nPrecision
+    /// \param nPrecision (int)
     /// A value between zero and five, indicates the precision of the
     /// numeric portion of the returned MGRS designation.
-    /// /returns
+    /// \return
     /// The MGRs representation for the given point.
     virtual STRING ConvertFromLonLat(MgCoordinate* pLonLat, INT32 nPrecision)=0;
 
     ///////////////////////////////////////////////////////////////////////////
-    /// /brief
+    /// \brief
     /// Converts an MGRS string to geographic coordinates.
-    /// /param sMgrs
+    /// \param sMgrs (String/string)
     /// The MGRS string to be converted.
-    /// /returns
+    /// \return
     /// The geographic coordinates of the location identified by the provided
     /// MGRS string (center of the grid sqaure).
     virtual MgCoordinate* ConvertToLonLat(CREFSTRING sMgrs)=0;
 
     ///////////////////////////////////////////////////////////////////////////
-    /// /brief
+    /// \brief
     /// Converts an MGRS string to geographic coordinates.
-    /// /param sMgrs
+    /// \param sMgrs (String/string)
     /// The MGRS string to be converted.
-    /// /param grdSqrPosition
+    /// \param grdSqrPosition (int)
     /// A value from the MgCoordinateSystemMgrsGridSquarePosition enumeration
     /// which indicates the position within the grid sqaure referenced by
     /// the sMgrs argumjent which is to be returned.
-    /// /returns
+    /// \return
     /// The geographic coordinates of the location identified by the provided
     /// MGRS string.
     virtual MgCoordinate* ConvertToLonLat(CREFSTRING sMgrs, INT32 grdSqrPosition)=0;
 
     ///////////////////////////////////////////////////////////////////////////
-    /// /brief
+    /// \brief
     /// Returns a value as defined by the MgCoordinateSystemMgrsLetteringScheme
     /// object indicating which lettering scheme is currently active.
-    /// /returns
+    /// \return
     /// Either MgCoordinateSystemMgrsLetteringScheme::Normal or
     /// MgCoordinateSystemMgrsLetteringScheme::Alternative
     virtual INT8 GetLetteringScheme()=0;

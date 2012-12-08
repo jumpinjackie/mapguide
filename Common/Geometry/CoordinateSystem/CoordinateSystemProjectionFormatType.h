@@ -24,20 +24,56 @@
 
 ///////////////////////////////////////////////////////////////
 /// \brief
-///
+/// Defines the type of projection format
 ///
 class MG_GEOMETRY_API MgCoordinateSystemProjectionFormatType
 {
 PUBLISHED_API:
-    static const INT32 None = 0;        //none (no formatting)
-    static const INT32 Lng = 57509;     //longitude(cs_FRMT_LNG), azimuth(cs_FRMT_AZM)
-    static const INT32 Lat = 41157;     //latitude (cs_FRMT_LAT)
-    static const INT32 Angd = 32933;    //angular distance (cs_FRMT_ANGD)
-    static const INT32 Coef = 13;       //coefficient (cs_FRMT_COEF)
-    static const INT32 Xxx = 4099;      //coefficient (cs_FRMT_XXX)
-    static const INT32 Yyy = 4099;      //coefficient (cs_FRMT_YYY)
-    static const INT32 Scl = 7;         //coefficient (cs_FRMT_SCL)
-    static const INT32 Rot = 4;         //coefficient (cs_FRMT_ROT)
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// none (no formatting)
+    ///
+    static const INT32 None = 0;        
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// longitude(cs_FRMT_LNG), azimuth(cs_FRMT_AZM)
+    ///
+    static const INT32 Lng = 57509;     
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// latitude (cs_FRMT_LAT)
+    ///
+    static const INT32 Lat = 41157;     
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// angular distance (cs_FRMT_ANGD)
+    ///
+    static const INT32 Angd = 32933;    
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// coefficient (cs_FRMT_COEF)
+    ///
+    static const INT32 Coef = 13;       
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// coefficient (cs_FRMT_XXX)
+    ///
+    static const INT32 Xxx = 4099;      
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// coefficient (cs_FRMT_YYY)
+    ///
+    static const INT32 Yyy = 4099;      
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// coefficient (cs_FRMT_SCL)
+    ///
+    static const INT32 Scl = 7;         
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// coefficient (cs_FRMT_ROT)
+    ///
+    static const INT32 Rot = 4;         
 };
 /// \}
 

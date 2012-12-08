@@ -652,7 +652,7 @@ PUBLISHED_API:
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
     /// \brief
-    /// Gets the projection code of this coordinate system
+    /// Gets the projection code of this coordinate system (see MgCoordinateSystemProjectionCode)
     ///
     /// \return
     /// The projection code of this coordinate system
@@ -664,7 +664,7 @@ PUBLISHED_API:
     /// Sets the projection code for this coordinate system
     ///
     /// \param prjType (int)
-    /// The projection code
+    /// The projection code (see MgCoordinateSystemProjectionCode)
     ///
     virtual void SetProjectionCode(INT32  prjType)=0;
 

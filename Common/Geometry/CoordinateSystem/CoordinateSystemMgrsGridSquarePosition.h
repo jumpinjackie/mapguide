@@ -19,64 +19,63 @@
 #define _MGCOORDINATESYSTEMMGRSGRIDSQUAREPOSITION_H_
 
 ///////////////////////////////////////////////////////////////////////////////
-///<summary>
+/// \brief
 /// MgCoordinateSystemMgrsGridSquarePosition defines enumerated values used to
 /// specify the the location desired relative to the subject MGRS grid sqaure
 /// when evaluating an MGRS string.
 ///
 /// Note that the values used in this enumeration match those used by the
-// CS-MAP interface.
-///</summary>
+/// CS-MAP interface.
 class MG_GEOMETRY_API MgCoordinateSystemMgrsGridSquarePosition
 {
     // MENTOR_MAINTENANCE --> These enumeration values are assumed to be the
     // same as those used by CS-MAP.
 PUBLISHED_API:
     ///////////////////////////////////////////////////////////////////////////
-    ///<summary>
+    /// \brief
     /// Specifies the grid square position is not set as yet.
-    ///</summary>
+    ///
     static const INT32 None = 0;
-    ///<summary>
+    /// \brief
     /// Specifies the center of the grid square; the default previous to this
     /// revision (Dec 2009).
-    ///</summary>
+    ///
     static const INT32 Center = 1;
-    ///<summary>
+    /// \brief
     /// Specifies the southwest corner of the MGRS grid square.
-    ///</summary>
+    ///
     static const INT32 SouthWest = 2;
-    ///<summary>
+    /// \brief
     /// Specifies the midpoint of the western edge of the MGRS grid square.
-    ///</summary>
+    ///
     static const INT32 West = 3;
-    ///<summary>
+    /// \brief
     /// Specifies the northwest corner of the MGRS grid square.
-    ///</summary>
+    ///
     static const INT32 NorthWest = 4;
-    ///<summary>
+    /// \brief
     /// Specifies the midpoint of the northern edge of the MGRS grid square.
-    ///</summary>
+    ///
     static const INT32 North = 5;
-    ///<summary>
+    /// \brief
     /// Specifies the southwest corner of the MGRS grid square.
-    ///</summary>
+    ///
     static const INT32 NorthEast = 6;
-    ///<summary>
+    /// \brief
     /// Specifies the midpoint of the eastern edge of the MGRS grid square.
-    ///</summary>
+    ///
     static const INT32 East = 7;
-    ///<summary>
+    /// \brief
     /// Specifies the southeast corner of the MGRS grid square.
-    ///</summary>
+    ///
     static const INT32 SouthEast = 8;
-    ///<summary>
+    /// \brief
     /// Specifies the midpoint of the southern edge of the MGRS grid square.
-    ///</summary>
+    ///
     static const INT32 South = 9;
-    ///<summary>
+    /// \brief
     /// Specifies an error return value, end of table, or other abnormal situation.
-    ///</summary>
+    ///
     static const INT32 Unknown = 10;
 };
 
