@@ -5,6 +5,8 @@ EXTRA_DIST = MapGuideApi DotNetApi DotNetUnmanagedApi mapviewernet mapviewerjava
 
 prefix=@prefix@/webserverextensions/www
 
+mentor_dict_install_dir=@prefix@/share/gis/coordsys
+
 apachedir = @prefix@/webserverextensions/apache2
 apachemodulesdir = ${apachedir}/modules
 apacheconfdir = ${apachedir}/conf
@@ -58,6 +60,7 @@ install-data-local:
 
 install-data-hook:
 	@sed -e 's#^ResourcesPath.*=.*#ResourcesPath                      = ${prefix}/Resources/#' \
+          -e 's#^MentorDictionaryPath.*=.*#MentorDictionaryPath   = ${mentor_dict_install_dir}#' \
           -e 's#^TempPath.*=.*#TempPath                           = ${prefix}/TempDir/#' \
           -e 's#^TemplateRootFolder.*=.*#TemplateRootFolder                 = ${fusiondir}/templates/mapguide#' \
           -e 's#^WidgetInfoFolder.*=.*#WidgetInfoFolder                   = ${fusiondir}/widgets/widgetinfo#' \
