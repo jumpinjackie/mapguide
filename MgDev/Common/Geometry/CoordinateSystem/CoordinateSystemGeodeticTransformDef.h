@@ -36,60 +36,330 @@ PUBLISHED_API:
 
     //BEGIN: struct cs_GeodeticTransform_
 
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Gets the transform name of this instance
+    ///
+    /// \return
+    /// The transform name of this instance
+    ///
     virtual STRING GetTransformName() = 0;
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Sets the transform name of this instance
+    ///
+    /// \param name (String/string)
+    /// The transform name
+    ///
     virtual void SetTransformName(CREFSTRING name) = 0;
 
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Gets the source datum of this instance
+    ///
+    /// \return
+    /// The source datum of this instance
+    ///
     virtual STRING GetSourceDatum() = 0;
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Sets the source datum of this instance
+    ///
+    /// \param datumKey (String/string)
+    /// The source datum
+    ///
     virtual void SetSourceDatum(CREFSTRING datumKey) = 0;
 
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Gets the target datum of this instance
+    ///
+    /// \return
+    /// The target datum of this instance
+    ///
     virtual STRING GetTargetDatum() = 0;
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Sets the target datum of this instance
+    ///
+    /// \param datumKey (String/string)
+    /// The target datum
+    ///
     virtual void SetTargetDatum(CREFSTRING datumKey) = 0;
 
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Gets the group of this instance
+    ///
+    /// \return
+    /// The group of this instance
+    ///
     virtual STRING GetGroup() = 0;
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Sets the group of this instance
+    ///
+    /// \param group (String/string)
+    /// The group
+    ///
     virtual void SetGroup(CREFSTRING group) = 0;
 
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Gets the description of this instance
+    ///
+    /// \return
+    /// The description of this instance
+    ///
     virtual STRING GetDescription() = 0;
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Sets the description of this instance
+    ///
+    /// \param description (String/string)
+    /// The description
+    ///
     virtual void SetDescription(CREFSTRING description) = 0;
 
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Gets the source of this instance
+    ///
+    /// \return
+    /// The source of this instance
+    ///
     virtual STRING GetSource() = 0;
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Sets the source of this instance
+    ///
+    /// \param source (String/string)
+    /// The source
+    ///
     virtual void SetSource(CREFSTRING source) = 0;
 
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Gets the EPSG code of this instance
+    ///
+    /// \return
+    /// The EPSG code of this instance
+    ///
     virtual INT32 GetEpsgCode() = 0;
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Sets the EPSG code of this instance
+    ///
+    /// \param epsgCode (int)
+    /// The EPSG code
+    ///
     virtual void SetEpsgCode(INT32 epsgCode) = 0;
 
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Gets the EPSG variation of this instance
+    ///
+    /// \return
+    /// The EPSG variation of this instance
+    ///
     virtual INT32 GetEpsgVariation() = 0;
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Sets the EPSG variation of this instance
+    ///
+    /// \param epsgVariation (int)
+    /// The EPSG variation
+    ///
     virtual void SetEpsgVariation(INT32 epsgVariation) = 0;
 
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Gets whether the inverse is supported
+    ///
+    /// \return
+    /// true if this inverse is supported. false otherwise
+    ///
     virtual bool GetInverseSupported() = 0;
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Sets whether the inverse is supported
+    ///
+    /// \param inverseSupported (boolean/bool)
+    /// true if the inverse is supported. false otherwise
+    ///
     virtual void SetInverseSupported(bool inverseSupported) = 0;
 
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Gets the maximum iterations of this instance
+    ///
+    /// \return
+    /// The maximum iterations of this instance
+    ///
     virtual INT32 GetMaxIterations() = 0;
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Sets the maximum iterations of this instance
+    ///
+    /// \param maxIterations (int)
+    /// The maximum iterations
+    ///
     virtual void SetMaxIterations(INT32 maxIterations) = 0;
 
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Gets the convergence value of this instance
+    ///
+    /// \return
+    /// The convergence value of this instance
+    ///
     virtual double GetConvergenceValue() = 0;
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Sets the convergence value of this instance
+    ///
+    /// \param convergenceValue (double)
+    /// The convergence value
+    ///
     virtual void SetConvergenceValue(double convergenceValue) = 0;
 
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Gets the error value of this instance
+    ///
+    /// \return
+    /// The error value of this instance
+    ///
     virtual double GetErrorValue() = 0;
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Sets the error value of this instance
+    ///
+    /// \param errorValue (double)
+    /// The error value
+    ///
     virtual void SetErrorValue(double errorValue) = 0;
 
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Gets the accuracy value of this instance
+    ///
+    /// \return
+    /// The accuracy value of this instance
+    ///
     virtual double GetAccuracy() = 0;
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Sets the accuracy value of this instance
+    ///
+    /// \param accuracy (double)
+    /// The accuracy value
+    ///
     virtual void SetAccuracy(double accuracy) = 0;
 
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Gets the minimum range longitude of this instance
+    ///
+    /// \return
+    /// The minimum range longitude of this instance
+    ///
     virtual double GetRangeMinLongitude() = 0;
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Sets the minimum range longitude of this instance
+    ///
+    /// \param minLong (double)
+    /// The minimum range longitude
+    ///
     virtual void SetRangeMinLongitude(double minLong) = 0;
 
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Gets the maximum range longitude of this instance
+    ///
+    /// \return
+    /// The maximum range longitude of this instance
+    ///
     virtual double GetRangeMaxLongitude() = 0;
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Sets the maximum range longitude of this instance
+    ///
+    /// \param maxLong (double)
+    /// The maximum range longitude
+    ///
     virtual void SetRangeMaxLongitude(double maxLong) = 0;
 
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Gets the minimum range latitude of this instance
+    ///
+    /// \return
+    /// The minimum range latitude of this instance
+    ///
     virtual double GetRangeMinLatitude() = 0;
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Sets the minimum range latitude of this instance
+    ///
+    /// \param minLat (double)
+    /// The minimum range latitude
+    ///
     virtual void SetRangeMinLatitude(double minLat) = 0;
 
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Gets the maximum range latitude of this instance
+    ///
+    /// \return
+    /// The maximum range latitude of this instance
+    ///
     virtual double GetRangeMaxLatitude() = 0;
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Sets the maximum range latitude of this instance
+    ///
+    /// \param maxLat (double)
+    /// The maximum range latitude
+    ///
     virtual void SetRangeMaxLatitude(double maxLat) = 0;
 
     //END: struct cs_GeodeticTransform_
 
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Gets whether this instance is protected
+    ///
+    /// \return
+    /// true if this instance is protected. false otherwise
+    ///
     virtual bool IsProtected() = 0;
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Gets whether this instance is valid
+    ///
+    /// \return
+    /// true if this instance is valid. false otherwise
+    ///
     virtual bool IsValid() = 0;
 
     ////////////////////////////////////////////////////////////////

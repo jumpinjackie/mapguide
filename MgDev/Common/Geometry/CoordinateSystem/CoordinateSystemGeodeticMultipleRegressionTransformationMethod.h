@@ -33,10 +33,22 @@
 class MG_GEOMETRY_API MgCoordinateSystemGeodeticMultipleRegressionTransformationMethod
 {
 PUBLISHED_API:
-
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    /// \brief
+    ///  None 
+    ///
     static const INT32 None = 0;
 
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    /// \brief
+    ///  Multiple Regression
+    ///
     static const INT32 MultipleRegression =     20481; //cs_DTCMTH_MULRG
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    /// \brief
+    ///  General Polynomial EPSG 
+    ///
     static const INT32 GeneralPolynomialEpsg =  20482; //cs_DTCMTH_PLYNM
 
 };

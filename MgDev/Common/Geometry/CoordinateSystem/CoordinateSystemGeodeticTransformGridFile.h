@@ -68,10 +68,40 @@ PUBLISHED_API:
     /// to what's specified in the parent transformation definition.
     virtual void SetIsInverseDirection(bool isInverseDirection) = 0;
 
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Gets the physical file name
+    ///
+    /// \return
+    /// The physical file name
+    ///
     virtual STRING GetFileName() = 0;
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Sets the physical file name
+    ///
+    /// \param fileName (String/string)
+    /// The physical file name
+    ///
     virtual void SetFileName(CREFSTRING fileName) = 0;
 
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Gets whether this file is protected
+    ///
+    /// \return
+    /// true if this file is protected. false otherwise
+    ///
     virtual bool IsProtected() = 0;
+    
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Gets whether this file is valid
+    ///
+    /// \return
+    /// true if this file is valid. false otherwise
+    ///
     virtual bool IsValid() = 0;
 
 protected:

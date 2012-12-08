@@ -33,13 +33,70 @@ class MgCoordinateSystemGeodeticTransformation : public MgGuardDisposable
     DECLARE_CLASSNAME(MgCoordinateSystemGeodeticTransformation)
 
 PUBLISHED_API:
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Sets the source and target datums of this geodetic transformation
+    ///
+    /// \param pSource (MgCoordinateSystemDatum)
+    /// The source datum
+    /// \param pTarget (MgCoordinateSystemDatum)
+    /// The target datum
+    ///
     virtual void SetSourceAndTarget(MgCoordinateSystemDatum *pSource, MgCoordinateSystemDatum *pTarget)=0;
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Gets the source datum of this geodetic transformation
+    ///
+    /// \return
+    /// The source datum of this geodetic transformation
+    ///
     virtual MgCoordinateSystemDatum* GetSource()=0;
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Gets the target datum of this geodetic transformation
+    ///
+    /// \return
+    /// The target datum of this geodetic transformation
+    ///
     virtual MgCoordinateSystemDatum* GetTarget()=0;
 
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Shift this datum to the specified coordinate
+    ///
+    /// \param pLonLat (MgCoordinate)
+    /// The coordinate to shift to
+    ///
     virtual void Shift(MgCoordinate* pLonLat)=0;
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Shift this datum to the specified longitude/latitude coordinate
+    ///
+    /// \param dLongitude (double)
+    /// The longitude coordinate to shift to
+    /// \param dLatitude (double)
+    /// The longitude coordinate to shift to
+    ///
     virtual MgCoordinate* Shift(double dLongitude, double dLatitude)=0;
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Shift this datum to the specified longitude/latitude/z coordinate
+    ///
+    /// \param dLongitude (double)
+    /// The longitude coordinate to shift to
+    /// \param dLatitude (double)
+    /// The longitude coordinate to shift to
+    /// \param dZ (double)
+    /// The Z coordinate to shift to
+    ///
     virtual MgCoordinate* Shift(double dLongitude, double dLatitude, double dZ)=0;
+
+    //Is this stuff below deprecated? If so, tag with \deprecated
 
     ////////////////////////////////////////////////////////////////
     /// \brief
