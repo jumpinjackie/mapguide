@@ -718,9 +718,10 @@ CLASS_ID:
 /// \ingroup Coordinate_System_classes
 /// \{
 
-//=============================================================================
-// Abstract base class for all grid generation objects (generic and
-// specialized).
+////////////////////////////////////////////////////////////////
+/// \brief
+/// Abstract base class for all grid generation objects (generic and
+/// specialized).
 /// \since 2.2
 class MG_GEOMETRY_API MgCoordinateSystemGridBase : public MgGuardDisposable
 {

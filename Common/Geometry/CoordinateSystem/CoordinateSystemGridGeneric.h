@@ -18,6 +18,10 @@
 #ifndef _MGCOORDINATESYSTEMGRIDGENERIC_H_
 #define _MGCOORDINATESYSTEMGRIDGENERIC_H_
 
+////////////////////////////////////////////////////////////////
+/// \brief
+/// Generic grid generation object
+///
 class MgCoordinateSystemGridGeneric : public MgCoordinateSystemGridBase
 {
 PUBLISHED_API:

@@ -38,21 +38,31 @@ class MG_GEOMETRY_API MgCoordinateSystemGridSpecializationType
 {
 PUBLISHED_API:
     ///////////////////////////////////////////////////////////////////////////
-    /// /brief Not specified yet, initialize to this value.
+    /// \brief 
+    /// Not specified yet, initialize to this value.
+    ///
     static const INT32 None              = 0;
     ///////////////////////////////////////////////////////////////////////////
-    /// /brief Generic grid of a specified coordinate system; may be
+    /// \brief 
+    /// Generic grid of a specified coordinate system; may be
     /// geographic or projected.
+    ///
     static const INT32 Generic           = 1;           // Generic grid of a specified coordinate system;
                                                         // may be geographic or projected
     ///////////////////////////////////////////////////////////////////////////
-    /// /brief Specialized grid: MGRS (Military Grid Reference System)
+    /// \brief 
+    /// Specialized grid: MGRS (Military Grid Reference System)
+    ///
     static const INT32 MGRS              = 17;
     ///////////////////////////////////////////////////////////////////////////
-    /// /brief Specialized grid: USNG (United States National Grid)
+    /// \brief 
+    /// Specialized grid: USNG (United States National Grid)
+    ///
     static const INT32 USNG              = 18;
     ///////////////////////////////////////////////////////////////////////////
-    /// /brief Indicates the failure of an algorithm or other problem.
+    /// \brief 
+    /// Indicates the failure of an algorithm or other problem.
+    ///
     static const INT32 Unknown           = 65366;
 };
 

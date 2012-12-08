@@ -37,34 +37,184 @@ PUBLISHED_API:
 
     //properties
 
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Gets the path name of this geodetic path
+    ///
+    /// \return
+    /// The path name of this geodetic path
+    ///
     virtual STRING GetPathName()=0;
-    virtual void SetPathName(CREFSTRING)=0;
 
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Sets the path name of this geodetic path
+    ///
+    /// \param sName (String/string)
+    /// The path name
+    ///
+    virtual void SetPathName(CREFSTRING sName)=0;
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Gets the description of this geodetic path
+    ///
+    /// \return
+    /// The description of this geodetic path
+    ///
     virtual STRING GetDescription()=0;  /// __get
-    virtual void SetDescription(CREFSTRING)=0;
 
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Sets the description of this geodetic path
+    ///
+    /// \param sDescription (String/string)
+    /// The description
+    ///
+    virtual void SetDescription(CREFSTRING sDescription)=0;
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Gets the group of this geodetic path
+    ///
+    /// \return
+    /// The group of this geodetic path
+    ///
     virtual STRING GetGroup()=0;  /// __get
-    virtual void SetGroup(CREFSTRING)=0;
 
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Sets the group of this geodetic path
+    ///
+    /// \param sGroup (String/string)
+    /// The group
+    ///
+    virtual void SetGroup(CREFSTRING sGroup)=0;
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Gets the source of this geodetic path
+    ///
+    /// \return
+    /// The source of this geodetic path
+    ///
     virtual STRING GetSource()=0;  /// __get
-    virtual void SetSource(CREFSTRING)=0;
 
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Sets the source of this geodetic path
+    ///
+    /// \param sSource (String/string)
+    /// The source
+    ///
+    virtual void SetSource(CREFSTRING sSource)=0;
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Gets the target datum of this geodetic path
+    ///
+    /// \return
+    /// The target datum of this geodetic path
+    ///
     virtual STRING GetTargetDatum()=0;  /// __get
-    virtual void SetTargetDatum(CREFSTRING)=0;
 
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Sets the target datum of this geodetic path
+    ///
+    /// \param sTargetDatum (String/string)
+    /// The target datum
+    ///
+    virtual void SetTargetDatum(CREFSTRING sTargetDatum)=0;
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Gets the source datum of this geodetic path
+    ///
+    /// \return
+    /// The source datum of this geodetic path
+    ///
     virtual STRING GetSourceDatum()=0;  /// __get
-    virtual void SetSourceDatum(CREFSTRING)=0;
 
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Sets the source datum of this geodetic path
+    ///
+    /// \param sSourceDatum (String/string)
+    /// The source datum
+    ///
+    virtual void SetSourceDatum(CREFSTRING sSourceDatum)=0;
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Gets the accuracy of this geodetic path
+    ///
+    /// \return
+    /// The accuracy of this geodetic path
+    ///
     virtual double GetAccuracy()=0; /// __get
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Sets the accuracy of this geodetic path
+    ///
+    /// \param accuracy (String/string)
+    /// The accuracy
+    ///
     virtual void SetAccuracy(double accuracy)=0;
 
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Gets whether this geodetic path is reversible
+    ///
+    /// \return
+    /// true if this geodetic path is reversible
+    ///
     virtual bool GetIsReversible()=0;
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Sets whether this geodetic path is reversible
+    ///
+    /// \param isReversible (boolean/bool)
+    /// true if reversible. false otherwise
+    ///
     virtual void SetIsReversible(bool isReversible)=0;
 
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Gets the EPSG code of of this geodetic path
+    ///
+    /// \return
+    /// The EPSG code of this geodetic path
+    ///
     virtual INT32 GetEpsgCode()=0;
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Sets the EPSG code of of this geodetic path
+    ///
+    /// \param epsgCode (int)
+    /// the EPSG code
+    ///
     virtual void SetEpsgCode(INT32 epsgCode)=0;
 
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Gets the EPSG variant of this geodetic path
+    ///
+    /// \return
+    /// The EPSG variant of this geodetic path
+    ///
     virtual INT32 GetEpsgVariant()=0;
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Sets the EPSG variant of of this geodetic path
+    ///
+    /// \param epsgVariant (int)
+    /// the EPSG variant
+    ///
     virtual void SetEpsgVariant(INT32 epsgVariant)=0;
 
     ///////////////////////////////////////////////////////////////////////////
@@ -92,7 +242,22 @@ PUBLISHED_API:
     /// this geodetic path instance will not take ownership of the elements.
     virtual void SetPathElements(MgDisposableCollection* pathElements) = 0;
 
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Gets whether this geodetic path is protected
+    ///
+    /// \return
+    /// true if this geodetic path is protected. false otherwise
+    ///
     virtual bool IsProtected() = 0;
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Gets whether this geodetic path is valid
+    ///
+    /// \return
+    /// true if this geodetic path is valid. false otherwise
+    ///
     virtual bool IsValid() = 0;
 
     ///////////////////////////////////////////////////////////////////////////
