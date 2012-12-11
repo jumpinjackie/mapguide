@@ -591,12 +591,16 @@ FdoFilter* DefaultStylizer::GetRulesFilter(MdfModel::VectorLayerDefinition* laye
         RuleCollection* rulecoll = style->GetRules();
         int nRules = rulecoll->GetCount();
 
-        for (int j=0; j<nRules; ++j)
+        for (int j = nRules-1; j >= 0; --j)
         {
             CompositeRule* r = static_cast<CompositeRule*>(rulecoll->GetAt(j));
             const MdfString& temp = r->GetFilter(); 
 
-            if (!temp.empty())
+            // If any of the rules is the default rule, return an empty filter because the
+            // default rule will match all features, even those not matched by other rules.
+            if (temp.empty())
+                return NULL;
+            else
             {
                 if (filterstr.empty())
                     filterstr.append(L"("); // start filter
