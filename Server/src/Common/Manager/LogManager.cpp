@@ -2233,7 +2233,7 @@ MgPropertyCollection* MgLogManager::EnumerateLogs()
     STRING path;
     int statResult;
 #ifdef _WIN32
-    struct _stat statBuf;
+    struct _stat64 statBuf;
 #else
     struct stat statBuf;
 #endif
@@ -2246,7 +2246,7 @@ MgPropertyCollection* MgLogManager::EnumerateLogs()
         path = m_path + name;
 
 #ifdef _WIN32
-        statResult = ::_wstat(path.c_str(), &statBuf);
+        statResult = ::_wstat64(path.c_str(), &statBuf);
 #else
         statResult = ::stat(MgUtil::WideCharToMultiByte(path).c_str(),
             &statBuf);

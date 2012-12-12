@@ -28,7 +28,7 @@
     #include <sys/file.h>
 
     #define _rmdir rmdir
-    #define _stat stat
+    #define _stat64 stat
 #endif
 
 class MG_FOUNDATION_API ACE_Recursive_Thread_Mutex;
@@ -67,7 +67,7 @@ class MG_FOUNDATION_API MgFileUtil
     static void AppendSlashToEndOfPath(REFSTRING path);
     static void RemoveSlashFromEndOfPath(REFSTRING path);
 
-    static bool GetFileStatus(CREFSTRING pathname, struct _stat& statInfo,
+    static bool GetFileStatus(CREFSTRING pathname, struct _stat64& statInfo,
         bool strict = false);
     static bool PathnameExists(CREFSTRING pathname);
 
