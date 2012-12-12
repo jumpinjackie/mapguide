@@ -179,22 +179,21 @@ bool SE_StyleVisitor::ParseDouble(const wchar_t*& str, double& val)
             else
                 strTmp++;
         }
-#ifdef _DEBUG  // We shouldn't be here unless the geometry string is malformed.
+#ifdef _DEBUG
         else if (*strTmp == L',')
         {
-            // unexpected comma and ParseDoublePair should be used
+            // We shouldn't be here unless there is an unexpected comma and "ParseDoublePair" should be used.
             _ASSERT(false);
             quick_parse = false;
             break;
         }
+#endif
         else if (IsTag(*strTmp))
         {
-            // white-space must be missing
-            _ASSERT(false);
+            // We shouldn't be here unless white-space is missing, like "-0.571M -0.5,-0.2855"
             quick_parse = (buffer_len > 0);
             break;
         }
-#endif
         else
         {
             buffer[buffer_len] = *strTmp++;
@@ -297,15 +296,12 @@ bool SE_StyleVisitor::ParseDoublePair(const wchar_t*& str, double& x, double& y)
             buffer_len = 0;
             strTmp++;
         }
-#ifdef _DEBUG  // We shouldn't be here unless the geometry string is malformed.
         else if (IsTag(*strTmp))
         {
-            // the white-space must be missing
-            _ASSERT(false);
+            // We shouldn't be here unless white-space is missing, like "0.485,-0.571M -0.5,-0.2855"
             quick_parse = (read_x && buffer_len > 0);
             break;
         }
-#endif
         else
         {
             buffer[buffer_len] = *strTmp++;
