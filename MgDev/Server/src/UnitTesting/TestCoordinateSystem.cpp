@@ -541,7 +541,7 @@ void TestUpdateUserDefinition(wchar_t const* pzswDefType,
         CPPUNIT_ASSERT(updateCsdFileSize == csdFileSize);
 
         //the user CSD file now must exist
-        struct _stat fileStatus;
+        struct _stat64 fileStatus;
         bool fileExists = MgFileUtil::GetFileStatus(csCsdUserFile, fileStatus);
         CPPUNIT_ASSERT(fileExists && fileStatus.st_size);
 

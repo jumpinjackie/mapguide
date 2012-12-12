@@ -503,7 +503,7 @@ public:
         FileAutoBackup(const CREFSTRING filename, const CREFSTRING rotateSuffix, bool keepFile = false)
             : m_sFilename(filename), m_sRotateSuffix(rotateSuffix), m_bRotated(false), m_bKeepFile(keepFile)
         {
-            struct _stat fileStatus;
+            struct _stat64 fileStatus;
             bool fileExists = MgFileUtil::GetFileStatus(filename, fileStatus);
 
             this->m_sBackupFilename = (this->m_sFilename + this->m_sRotateSuffix);

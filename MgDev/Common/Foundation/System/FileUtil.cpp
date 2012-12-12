@@ -203,7 +203,7 @@ void MgFileUtil::RemoveSlashFromEndOfPath(REFSTRING path)
 /// </summary>
 ///----------------------------------------------------------------------------
 
-bool MgFileUtil::GetFileStatus(CREFSTRING pathname, struct _stat& statInfo,
+bool MgFileUtil::GetFileStatus(CREFSTRING pathname, struct _stat64& statInfo,
     bool strict)
 {
     bool success = false;
@@ -227,7 +227,7 @@ bool MgFileUtil::GetFileStatus(CREFSTRING pathname, struct _stat& statInfo,
         ACE_MT(ACE_GUARD_RETURN(ACE_Recursive_Thread_Mutex, ace_mon, sm_mutex, false));
 
 #ifdef _WIN32
-        success = ::_wstat(path.c_str(), &statInfo) == 0;
+        success = ::_wstat64(path.c_str(), &statInfo) == 0;
 #else
         success = ::stat(MgUtil::WideCharToMultiByte(path).c_str(), &statInfo) == 0;
 #endif
@@ -263,7 +263,7 @@ bool MgFileUtil::GetFileStatus(CREFSTRING pathname, struct _stat& statInfo,
 
 bool MgFileUtil::PathnameExists(CREFSTRING pathname)
 {
-    struct _stat statInfo;
+    struct _stat64 statInfo;
 
     return GetFileStatus(pathname, statInfo);
 }
@@ -277,7 +277,7 @@ bool MgFileUtil::PathnameExists(CREFSTRING pathname)
 bool MgFileUtil::IsDirectory(CREFSTRING pathname)
 {
     bool result = false;
-    struct _stat statInfo;
+    struct _stat64 statInfo;
 
     if (GetFileStatus(pathname, statInfo))
     {
@@ -744,7 +744,7 @@ bool MgFileUtil::GetFilesInDirectory(
 bool MgFileUtil::IsFile(CREFSTRING pathname)
 {
     bool result = false;
-    struct _stat statInfo;
+    struct _stat64 statInfo;
 
     if (GetFileStatus(pathname, statInfo))
     {
@@ -1145,7 +1145,7 @@ STRING MgFileUtil::GenerateTempFileName(bool useMgTempPath,
 ///
 MgDateTime MgFileUtil::GetFileCreationTime(CREFSTRING pathname)
 {
-    struct _stat statInfo;
+    struct _stat64 statInfo;
 
     if (GetFileStatus(pathname, statInfo, true))
     {
@@ -1161,7 +1161,7 @@ MgDateTime MgFileUtil::GetFileCreationTime(CREFSTRING pathname)
 ///
 MgDateTime MgFileUtil::GetFileModificationTime(CREFSTRING pathname)
 {
-    struct _stat statInfo;
+    struct _stat64 statInfo;
 
     if (GetFileStatus(pathname, statInfo, true))
     {
@@ -1177,7 +1177,7 @@ MgDateTime MgFileUtil::GetFileModificationTime(CREFSTRING pathname)
 ///
 INT64 MgFileUtil::GetFileSize(CREFSTRING pathname)
 {
-    struct _stat statInfo;
+    struct _stat64 statInfo;
 
     if (GetFileStatus(pathname, statInfo, true))
     {
