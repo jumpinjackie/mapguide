@@ -117,26 +117,33 @@ void IsapiPostParser::Parse(MgHttpRequestParam* params)
 
     string content = m_pECB->lpszContentType;
 
+    if (content.empty())
+    {
+        params->SetXmlPostData("");
+    }
     if (content.find(MapAgentStrings::UrlEncoded) == 0)
     {
-        m_pBuffer[dwTotalBytes] = '\0';  // null terminate
+        if (dwTotalBytes > 0)
+        {
+            m_pBuffer[dwTotalBytes] = '\0';  // null terminate
 
-        // Here's another case of interoperability "Forgiveness
-        // and Tolerance": degree, among other clients, sends along
-        // a POST with xml contents, but fails to correctly set the
-        // mime type.  You guessed it: it says it's url-encoded.
-        // ----------------
-        // If we got here, but determine that the contents look
-        // and feel like XML, it's a safe bet that it should
-        // be treated like XML.  Otherwise, we assume the
-        // content-type is probably correct.  (Note that
-        // the IsXmlPi should conveniently fail if it really IS
-        // url-encoded, since the question mark in <?xml...?>
-        // should itself be url-encoded: <%3Fxml... )
-        if (MapAgentCommon::IsXmlPi((char *)m_pBuffer))
-            params->SetXmlPostData((char *)m_pBuffer);
-        else
-            MapAgentGetParser::Parse((char *)m_pBuffer, params);
+            // Here's another case of interoperability "Forgiveness
+            // and Tolerance": degree, among other clients, sends along
+            // a POST with xml contents, but fails to correctly set the
+            // mime type.  You guessed it: it says it's url-encoded.
+            // ----------------
+            // If we got here, but determine that the contents look
+            // and feel like XML, it's a safe bet that it should
+            // be treated like XML.  Otherwise, we assume the
+            // content-type is probably correct.  (Note that
+            // the IsXmlPi should conveniently fail if it really IS
+            // url-encoded, since the question mark in <?xml...?>
+            // should itself be url-encoded: <%3Fxml... )
+            if (MapAgentCommon::IsXmlPi((char *)m_pBuffer))
+	            params->SetXmlPostData((char *)m_pBuffer);
+            else
+	            MapAgentGetParser::Parse((char *)m_pBuffer, params);
+        }
     }
     else if (content.find(MapAgentStrings::MultiPartForm) != content.npos)
     {
