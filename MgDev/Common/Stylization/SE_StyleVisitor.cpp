@@ -144,7 +144,6 @@ SE_AreaStyle* SE_StyleVisitor::ProcessAreaUsage(AreaUsage& areaUsage)
 }
 
 
-#ifdef _DEBUG
 inline bool IsTag(const wchar_t& item)
 {
     return (item == L'm' || item == L'M'
@@ -154,7 +153,6 @@ inline bool IsTag(const wchar_t& item)
          || item == L'a' || item == L'A'
          || item == L'z' || item == L'Z');
 }
-#endif
 
 
 bool SE_StyleVisitor::ParseDouble(const wchar_t*& str, double& val)
