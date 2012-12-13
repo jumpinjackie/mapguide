@@ -375,14 +375,6 @@ void CCoordinateSystemCategoryDictionary::Remove(CREFSTRING sName)
         throw new MgCoordinateSystemInitializationFailedException(L"MgCoordinateSystemCategoryDictionary.Remove", __LINE__, __WFILE__, &arguments, L"MgCoordinateSystemInternalException", NULL);
     }
 
-    int updateCategoriesResult = CSupdCategories(NULL);
-    if (updateCategoriesResult)
-    {
-        MgStringCollection arguments;
-        arguments.Add(sName);
-        throw new MgCoordinateSystemInitializationFailedException(L"MgCoordinateSystemCategoryDictionary.Remove", __LINE__, __WFILE__, &arguments, L"MgCoordinateSystemInternalException", NULL);
-    }
-
     long position = iter->second;
     CCategoryName const& categoryName = List().at(position);
     if (0 != CS_stricmp(categoryName.Name(), pName)) //is the category name at the index what we think it is?
@@ -454,15 +446,8 @@ void CCoordinateSystemCategoryDictionary::Modify(MgGuardDisposable *pDefinition)
 
         invalidIndexOnFailure = true;
 
-        pCategory = CS_ctdef(pName);
-        if (NULL == pCategory)
-        {
-            MgStringCollection arguments;
-            arguments.Add(str);
-            throw new MgCoordinateSystemLoadFailedException(L"MgCoordinateSystemCategoryDictionary.Modify", __LINE__, __WFILE__, &arguments, L"MgCoordinateSystemNotFoundException", NULL);
-        }
-
-        int updateResult = CS_ctupd(pCategory);
+        cs_Ctdef_ const* pDef = pCategoryDef->GetCategoryDef();
+        int updateResult = CS_ctupd(pDef);
         if (updateResult < 0)
         {
             MgStringCollection arguments;
