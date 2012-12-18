@@ -121,6 +121,12 @@ void MgHttpWmsGetFeatureInfo::Execute(MgHttpResponse& hResponse)
     // world is not case-insensitive (with respect to names,) but
     // WMS is.
     Ptr<MgHttpRequestParam> origReqParams = m_hRequest->GetRequestParam();
+
+    // #2053: Clients like Gaia doesn't pass this in, so default to XML if INFO_FORMAT
+    // is not specified
+    if (!origReqParams->ContainsParameter(kpszQueryStringInfoFormat))
+        origReqParams->AddParameter(kpszQueryStringInfoFormat, kpszMimeTypeXml);
+
     MgHttpRequestParameters requestParams(origReqParams);
 
     // Create the WMS handler
