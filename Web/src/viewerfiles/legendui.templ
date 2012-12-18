@@ -64,6 +64,8 @@ var iconCollapse = "../stdicons/lc_collapse.gif";
 var iconNoExpand = "../stdicons/lc_noexpand.gif";
 var iconChecked = "../stdicons/lc_checked.gif";
 var iconUnchecked = "../stdicons/lc_unchecked.gif";
+var iconCheckedGrayed = "../stdicons/lc_checked_grayed.gif";
+var iconUncheckedGrayed = "../stdicons/lc_unchecked_grayed.gif";
 var iconSelectable = "../stdicons/lc_select.gif";
 var iconUnselectable = "../stdicons/lc_unselect.gif";
 var ctxMenu;
@@ -83,11 +85,13 @@ var legendTextNoWrap = true;
 var showInvisibleLayers = false;
 if(legendTextNoWrap)
 {
-  iconExpand = "../stdicons/lc_expand_16.gif";
-  iconCollapse = "../stdicons/lc_collapse_16.gif";
-  iconNoExpand = "../stdicons/lc_noexpand.gif";
-  iconChecked = "../stdicons/lc_checked_16.gif";
-  iconUnchecked = "../stdicons/lc_unchecked_16.gif";
+    iconExpand = "../stdicons/lc_expand_16.gif";
+    iconCollapse = "../stdicons/lc_collapse_16.gif";
+    iconNoExpand = "../stdicons/lc_noexpand.gif";
+    iconChecked = "../stdicons/lc_checked_16.gif";
+    iconUnchecked = "../stdicons/lc_unchecked_16.gif";
+    iconCheckedGrayed = "../stdicons/lc_checked_grayed_16.gif";
+    iconUncheckedGrayed = "../stdicons/lc_unchecked_grayed_16.gif";
 }
 
 
@@ -140,14 +144,14 @@ function SetSelectability(node,selectable)
 {
     for(var i=0; i < node.length; i++)
     {
-      if(node[i].code == "L")
-      {
-        ChangeSelectability(node[i].objectId,(selectable)? 1: 2)
-      }
-      else
-      {
-        SetSelectability(node[i].children,selectable)
-      }
+        if(node[i].code == "L")
+        {
+            ChangeSelectability(node[i].objectId,(selectable)? 1: 2)
+        }
+        else
+        {
+            SetSelectability(node[i].children,selectable)
+        }
     }
 }
 
@@ -170,11 +174,11 @@ function BuildLayersAndGroups(node)
     //icon
     if(legendTextNoWrap)
     {
-      item += '<td width=16 id="' + GetIconId(node) + '">';
+        item += '<td width=16 id="' + GetIconId(node) + '">';
     }
     else
     {
-      item += '<td width=23 id="' + GetIconId(node) + '">';
+        item += '<td width=23 id="' + GetIconId(node) + '">';
     }
     if(isGroup)
     {
@@ -188,37 +192,36 @@ function BuildLayersAndGroups(node)
     //legend text
     if(legendTextNoWrap)
     {
-      item += '<td width=7><img width=7 height=16 src="../stdicons/transparentpixel.gif"></td>';
-      item += '<td id="Lg_' + node.objectId + '" style="white-space:nowrap">' + node.legend + '</td>';
+        item += '<td width=7><img width=7 height=16 src="../stdicons/transparentpixel.gif"></td>';
+        item += '<td id="Lg_' + node.objectId + '" style="white-space:nowrap">' + node.legend + '</td>';
     }
     else
     {
-      item += '<td id="Lg_' + node.objectId + '">' + node.legend + '</td>';
+        item += '<td id="Lg_' + node.objectId + '">' + node.legend + '</td>';
     }
     
     item += '</tr></table>';
     if(legendTextNoWrap)
     {
-      var strWidth = "";
-      if(msie)
-      {
-        strWidth = "width:auto;";
-      }
-      else
-      {
-        strWidth = "width:10;";
-      }
-
-      item += '<div id="ChildrenOf_' + node.objectId + '" style="position:relative;' + strWidth + 'left: ' + (isGroup? 20: 32) + 'px; display:';
+        var strWidth = "";
+        if(msie)
+        {
+            strWidth = "width:auto;";
+        }
+        else
+        {
+            strWidth = "width:10;";
+        }
+        item += '<div id="ChildrenOf_' + node.objectId + '" style="position:relative;' + strWidth + 'left: ' + (isGroup? 20: 32) + 'px; display:';
     }
     else
     {
-      item += '<div id="ChildrenOf_' + node.objectId + '" style="margin-left: ' + (isGroup? 20: 32) + 'px; display:';
+        item += '<div id="ChildrenOf_' + node.objectId + '" style="margin-left: ' + (isGroup? 20: 32) + 'px; display:';
     }
     item += node.expanded? 'block">' : 'none">';
     if(isGroup && node.children != null && node.children.length > 0)
     {
-       for(var i=0; i < node.children.length; i++)
+        for(var i=0; i < node.children.length; i++)
             item += BuildLayersAndGroups(node.children[i]);
     }
     item += '</div>';
@@ -230,24 +233,24 @@ function RequestSymbolizationIconImg(layer, scale, iconId)
 {
     if(showInvisibleLayers && layer.willDisplayAtScale)
     {
-      return BuildDelayedLoadIconImg(layer.layerRes, layer.willDisplayAtScale, -1, -1, iconId);
+        return BuildDelayedLoadIconImg(layer.layerRes, layer.willDisplayAtScale, -1, -1, iconId);
     }
     else
     {
-      return BuildDelayedLoadIconImg(layer.layerRes, scale, -1, -1, iconId);
+        return BuildDelayedLoadIconImg(layer.layerRes, scale, -1, -1, iconId);
     }
 }
 
 function RequestThemeStyleIconImg(layer, scale, themeIndex, geomtype, iconId)
 {
-   if(showInvisibleLayers && layer.willDisplayAtScale)
-   {   
-      return BuildDelayedLoadIconImg(layer.layerRes, layer.willDisplayAtScale, themeIndex, geomtype, iconId);
-   }
-   else
-   {
-      return BuildDelayedLoadIconImg(layer.layerRes, scale, themeIndex, geomtype, iconId);
-   }
+    if(showInvisibleLayers && layer.willDisplayAtScale)
+    {   
+        return BuildDelayedLoadIconImg(layer.layerRes, layer.willDisplayAtScale, themeIndex, geomtype, iconId);
+    }
+    else
+    {
+        return BuildDelayedLoadIconImg(layer.layerRes, scale, themeIndex, geomtype, iconId);
+    }
 }
 
 function BuildIconRequest(layerDef, scale, themeIndex, geomtype)
@@ -382,7 +385,8 @@ function SetLayerStyles(layer)
     SetLayerExpandBox(layer, hasThemes);
     if(showInvisibleLayers)
     {
-      SetLayerTextStyle(layer);
+        UpdateGroupLayerCheck(layer)
+        SetLayerTextStyle(layer);
     }
 }
 
@@ -397,16 +401,16 @@ function SetLayerTextStyle(layer)
     var textElt = document.getElementById("Lg_" + layer.objectId);
     if(textElt != null)
     {
-      if(layer.willDisplayAtScale)
-      {
-        textElt.style.fontStyle = "italic";
-        textElt.style.color = "#C0C0C0";
-      }
-      else
-      {
-        textElt.style.fontStyle = "normal";
-        textElt.style.color = "#000000";
-      }
+        if(layer.willDisplayAtScale)
+        {
+            textElt.style.fontStyle = "italic";
+            textElt.style.color = "#C0C0C0";
+        }
+        else
+        {
+            textElt.style.fontStyle = "normal";
+            textElt.style.color = "#000000";
+        }
     }
 }
 function GetIconId(node)
@@ -428,50 +432,58 @@ function SetLayerExpandBox(layer, show)
 
 function MakeBlankCode()
 {
-  if(legendTextNoWrap)
-  {
-    return '<img width=16 height=9 src="../stdicons/transparentpixel.gif">';
-  }
-  else
-  {
-    return '';
-  }
+    if(legendTextNoWrap)
+    {
+        return '<img width=16 height=9 src="../stdicons/transparentpixel.gif">';
+    }
+    else
+    {
+        return '';
+    }
 }
 
 function MakeExpandCode(node)
 {
-  if(legendTextNoWrap)
-  {
-    return '<img width=16 height=9 src="' + (node.expanded? iconCollapse: iconExpand) + '" onclick="Toggle(\'' + node.objectId +'\')">';
-  }
-  else
-  {
-    return '<img width=9 height=9 src="' + (node.expanded? iconCollapse: iconExpand) + '" onclick="Toggle(\'' + node.objectId +'\')">';
-  }
+    if(legendTextNoWrap)
+    {
+        return '<img width=16 height=9 src="' + (node.expanded? iconCollapse: iconExpand) + '" onclick="Toggle(\'' + node.objectId +'\')">';
+    }
+    else
+    {
+        return '<img width=9 height=9 src="' + (node.expanded? iconCollapse: iconExpand) + '" onclick="Toggle(\'' + node.objectId +'\')">';
+    }
 }
 
 function MakeCheckCode(node)
 {
-  if(legendTextNoWrap)
-  {
-    return '<img width=16 height=13 src="' + (node.visible? iconChecked: iconUnchecked) + '" onClick="ChangeVisibility(\'' + node.objectId +'\')">';
-  }
-  else
-  {
-    return '<img width=13 height=13 src="' + (node.visible? iconChecked: iconUnchecked) + '" onClick="ChangeVisibility(\'' + node.objectId +'\')">';
-  }
+    var thisIcon = (node.visible? iconChecked: iconUnchecked);
+    var onClickCode = "onClick=\"ChangeVisibility('" + node.objectId + "')";
+    if(node.willDisplayAtScale)
+    {
+        thisIcon = (node.visible? iconCheckedGrayed: iconUncheckedGrayed);
+        onClickCode = "";
+    }
+
+    if(legendTextNoWrap)
+    {
+        return '<img width=16 height=13 src="' + thisIcon + '" ' + onClickCode + '">';
+    }
+    else
+    {
+        return '<img width=13 height=13 src="' + thisIcon + '" ' + onClickCode + '">';
+    }
 }
 
 function MakeSelectableCode(node)
 {
-  if(legendTextNoWrap)
-  {
-    return '<img width=16 height=13 src="' + (node.selectable? iconSelectable: iconUnselectable) + '" onClick="ChangeSelectability(\'' + node.objectId +'\',0)">';
-  }
-  else
-  {
-    return '<img width=13 height=13 src="' + (node.selectable? iconSelectable: iconUnselectable) + '" onClick="ChangeSelectability(\'' + node.objectId +'\',0)">';
-  }
+    if(legendTextNoWrap)
+    {
+        return '<img width=16 height=13 src="' + (node.selectable? iconSelectable: iconUnselectable) + '" onClick="ChangeSelectability(\'' + node.objectId +'\',0)">';
+    }
+    else
+    {
+        return '<img width=13 height=13 src="' + (node.selectable? iconSelectable: iconUnselectable) + '" onClick="ChangeSelectability(\'' + node.objectId +'\',0)">';
+    }
 }
 
 function UpdateGroupLayerCheck(node)
@@ -970,63 +982,58 @@ function RefreshNodesState(nodes)
             }
             if(showInvisibleLayers && node.curScale == -1)
             {
-              var minScale = 1000000000;
-              var maxScale = 0;
-              for(var j=0; j < scaleRanges.length; j++)
-              {
-                  var scaleRange = scaleRanges[j];
-                  minScale = Math.min(minScale,scaleRange.min);
-                  maxScale = Math.max(maxScale,scaleRange.max);
-              }
-              if(scale > maxScale)
-              {
-                node.willDisplayAtScale = maxScale-1;
-              }
-              else if(scale < minScale)
-              {
-                node.willDisplayAtScale = minScale;
-              }
+                var minScale = 1000000000;
+                var maxScale = 0;
+                for(var j=0; j < scaleRanges.length; j++)
+                {
+                    var scaleRange = scaleRanges[j];
+                    minScale = Math.min(minScale,scaleRange.min);
+                    maxScale = Math.max(maxScale,scaleRange.max);
+                }
+                if(scale > maxScale)
+                {
+                    node.willDisplayAtScale = maxScale-1;
+                }
+                else if(scale < minScale)
+                {
+                    node.willDisplayAtScale = minScale;
+                }
             }
             var nodeCurScale= -1;
             if(node.curScale != -1)
             {
-              nodeCurScale = node.curScale;
+                nodeCurScale = node.curScale;
             }
             else if(node.willDisplayAtScale)
             {
-              nodeCurScale = 0;
+                nodeCurScale = 0;
             }
-
+            if(node.displayInLegend && nodeCurScale != -1)
             {
-              if(node.displayInLegend && nodeCurScale != -1)
-              {
-                  // scale changed
-                  if(rangeIndex != nodeCurScale || node.willDisplayAtScale)
-                  {
-                      // the layer's theme will be changed on demand
-                      node.children[nodeCurScale].iconWasRequested = false;
-
-                      // the layer's legend image will be changed immediately
-                      if(!HasCollapsedParent(node))
-                      {
-                          SetLayerStyles(node);
-                          node.iconWasRequested = true;
-                      }
-                      // the layer's legend image will be changed on demand
-                      else
-                      {
-                          node.iconWasRequested = false;
-                      }
-                  }
-                  // parent group expanded
-                  else if(!node.iconWasRequested  && !HasCollapsedParent(node))
-                  {
-                      SetLayerStyles(node);
-                      node.iconWasRequested = true;
-                  }
-              }
+                // scale changed
+                if(rangeIndex != nodeCurScale || node.willDisplayAtScale)
+                {
+                    // the layer's theme will be changed on demand
+                    node.children[nodeCurScale].iconWasRequested = false;
+                    // the layer's legend image will be changed immediately
+                    if(!HasCollapsedParent(node))
+                    {
+                        SetLayerStyles(node);
+                        node.iconWasRequested = true;
+                    }
+                    // the layer's legend image will be changed on demand
+                    else
+                    {
+                        node.iconWasRequested = false;
+                    }
+                }
+                // parent group expanded
+                else if(!node.iconWasRequested  && !HasCollapsedParent(node))
+                {
+                    SetLayerStyles(node);
+                    node.iconWasRequested = true;
+                }
             }
-
             node.isDisplayed = node.displayInLegend && node.curScale != -1;
         }
         else if(node.type == 2)
@@ -1183,19 +1190,19 @@ function DoGetLayers(nodes, layers, onlyVisible, onlySelectable)
 
 function IsBaseGroupLayersVisible(baseGroup,scale)
 {
-  for(var i=0; i < baseGroup.children.length; i++)
-  {
-    var layerTree = baseGroup.children[i];
-    for( var j=0; j < layerTree.children.length;j++ )
+    for(var i=0; i < baseGroup.children.length; i++)
     {
-      var style = layerTree.children[j];
-      if(scale >= style.min && scale <= style.max)
-      {
-        return true;
-      }
+        var layerTree = baseGroup.children[i];
+        for( var j=0; j < layerTree.children.length;j++ )
+        {
+            var style = layerTree.children[j];
+            if(scale >= style.min && scale <= style.max)
+            {
+                return true;
+            }
+        }
     }
-  }
-  return false;
+    return false;
 }
 
 function GetBaseGroups(visOnly,scale)
@@ -1228,14 +1235,14 @@ function SetShowInvisibleLayers(isInvisibleLayersVisible)
 
 function ExpandLayerInLegend(layerName, expandInLegend)
 {
-    if (tree == null) return;
+    if(tree == null) return;
     var nodeLayer = FindLayerByName(tree,layerName);
     if (nodeLayer != null) 
     {
-            if (expandInLegend) 
-                 Expand(nodeLayer);
-            else
-                 Collapse(nodeLayer);
+        if (expandInLegend) 
+             Expand(nodeLayer);
+        else
+             Collapse(nodeLayer);
             
     }
 }
