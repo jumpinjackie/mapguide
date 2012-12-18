@@ -199,6 +199,7 @@ void MgClassDefinition::Serialize(MgStream* stream)
     stream->WriteBoolean(m_isComputed);
     stream->WriteBoolean(m_isAbstract);
     stream->WriteObject(m_baseClassDefinition);
+    stream->WriteBoolean(m_isDeleted);
 }
 
 //////////////////////////////////////////////////////////////
@@ -214,6 +215,7 @@ void MgClassDefinition::Deserialize(MgStream* stream)
     stream->GetBoolean(m_isComputed);
     stream->GetBoolean(m_isAbstract);
     m_baseClassDefinition = (MgClassDefinition*)stream->GetObject();
+    stream->GetBoolean(m_isDeleted);
 }
 
 //////////////////////////////////////////////////////////////

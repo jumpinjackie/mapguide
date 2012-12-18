@@ -94,6 +94,7 @@ void MgFeatureSchema::Serialize(MgStream* stream)
     stream->WriteString(m_name);
     stream->WriteString(m_description);
     stream->WriteObject(m_collection);
+    stream->WriteBoolean(m_isDeleted);
 }
 
 //////////////////////////////////////////////////////////////
@@ -102,6 +103,7 @@ void MgFeatureSchema::Deserialize(MgStream* stream)
     stream->GetString(m_name);
     stream->GetString(m_description);
     m_collection = (MgClassDefinitionCollection*)stream->GetObject();
+    stream->GetBoolean(m_isDeleted);
 }
 
 //////////////////////////////////////////////////////////////
