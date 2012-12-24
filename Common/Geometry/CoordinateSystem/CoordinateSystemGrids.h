@@ -59,12 +59,14 @@ class MgCoordinateSystemGridTick;               // a position in viewport coordi
 /// convey all the parameters necessary for the generation of a grid/graticule
 /// lumped into a single object for convenience.  Thus, adding a parameter
 /// determined to be necessary at a later time does not alter a lot of calling
-/// sequences.\n
+/// sequences.
+///
 /// Note that this interface is an abstract interface.  There is code
 /// associated with the implementation of this interface which is used to
 /// handle the conversion of parameters between the various unit systems.
 /// Thus, one obtains a MgCoordinateSystemGridSpecification from the
-/// MgCoordinateSystemFactory object.\n
+/// MgCoordinateSystemFactory object.
+///
 /// Note that all values are provided in the units specified within the object.
 /// The units used in this object do <b>not</b> need to be the same as any
 /// coordinate system involved in the generation of a grid, although the
@@ -77,36 +79,36 @@ class MG_GEOMETRY_API MgCoordinateSystemGridSpecification : public MgGuardDispos
 {
 PUBLISHED_API:
     ///////////////////////////////////////////////////////////////////////////
-    /// <summary>
+    /// \brief
     /// Gets the easting base value.
-    /// </summary>
-    /// <returns>
+    /// 
+    /// \return
     /// Returns the current value of the easting base member.
-    /// </returns>
-    /// <remarks>
+    /// 
+    /// \remarks
     /// The base value is the base upon which grid values are determined.
     /// Thus, a grid with and increment of, say, two degrees, can actually
     /// start at one (the base) yielding grid lines at 1, 3, 5, 7, etc.
-    /// </remarks>
+    /// 
     virtual double GetEastingBase (void)=0;
 
     ///////////////////////////////////////////////////////////////////////////
-    /// <summary>
+    /// \brief
     /// Gets the northing base value.
-    /// </summary>
-    /// <returns>
+    /// 
+    /// \return
     /// Returns the current value of the northing base member.
-    /// </returns>
-    /// <remarks>
+    /// 
+    /// \remarks
     /// The base value is the base upon which grid values are determined.
     /// Thus, a grid with and increment of, say, two degrees, can actually
     /// start at one (the base) yielding grid lines at 1, 3, 5, 7, etc.
-    /// </remarks>
+    /// 
     virtual double GetNorthingBase (void)=0;
 
     ///////////////////////////////////////////////////////////////////////////
     /// \brief
-    /// Gets the easting increment value.
+    /// Gets the easting increment value (the interval between easting grid lines).
     ///
     /// <!-- Syntax in .Net, Java, and PHP -->
     /// \htmlinclude DotNetSyntaxTop.html
@@ -432,7 +434,7 @@ PUBLISHED_API:
 
     ///////////////////////////////////////////////////////////////////////////
     /// \brief
-    /// Sets the desired precision of complecx curve approximations.
+    /// Sets the desired precision of complex curve approximations.
     ///
     /// <!-- Syntax in .Net, Java, and PHP -->
     /// \htmlinclude DotNetSyntaxTop.html
@@ -679,13 +681,15 @@ CLASS_ID:
 //=============================================================================
 // External to this interface, boundary objects are always in the viewport
 // (i.e. target) coordinate system.
+///////////////////////////////////////////////////////////////////////////
 /// \brief
 /// This object is used to maintain the definition of the boundary of a
 /// specific grid or graticule.  Externally, a
 /// MgCoordinateSystemGridBoundary object will be in viewport
 /// coordinates.  Internally, objects of this type are often used to the
 /// carry grid boundaries in grid coordinates, and also greographic
-/// coordinates.\n
+/// coordinates.
+///
 /// Grid boundaries iusually start out as rectangles, but are often converted
 /// to a series of complex curves approximated by multi-segment lines (i.e.
 /// line strings).
@@ -697,8 +701,39 @@ PUBLISHED_API:
     // Contrary to other envelope objects, the first of these overloads specifically
     // requires that the southwest argument indeed be southwest of the northeast
     // argument.  Necessary to support geographic coordinate systems (i.e. +/- 180).
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Sets the extents of this grid boundary
+    ///
+    /// \param southwest (MgCoordinate)
+    /// The southwest coordinate of the extents
+    /// \param northwest (MgCoordinate) 
+    /// The northwest coordinate of the extents
+    ///
+    /// \remarks
+    /// Contrary to other envelope objects, this method specifically
+    /// requires that the southwest argument indeed be southwest of the northeast
+    /// argument. Necessary to support geographic coordinate systems (i.e. +/- 180).
+    ///
     virtual void SetBoundaryExtents (MgCoordinate* southwest,MgCoordinate* northeast)=0;
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Sets the extents of this grid boundary
+    ///
+    /// \param boundary (MgPolygon)
+    /// The extents of this grid boundary
+    ///
     virtual void SetBoundaryExtents (MgPolygon* boundary)=0;
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Gets the geometry representing the grid boundary
+    ///
+    /// \return
+    /// The polygon geometry representing the grid boundary
+    ///
     virtual MgPolygon* GetBoundary (void) const=0;
 INTERNAL_API:
 
@@ -726,25 +761,112 @@ CLASS_ID:
 class MG_GEOMETRY_API MgCoordinateSystemGridBase : public MgGuardDisposable
 {
 PUBLISHED_API:
-    // The following may be somewhat redendant in view of the fact that all grid
+    // The following may be somewhat redundant in view of the fact that all grid
     // specialization objects will have their own ClassID value.  Nevertheless,
     // the specialization type enumeration and this function are provided to
     // support exposure of this interface to other environments in a standard
     // pre-determined manner.  In this manner, therefore. this module will
     // continue to control the ID associated with any given specialization.
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Gets the specialized type of this grid instance. Value can be any value from MgCoordinateSystemGridSpecializationType
+    ///
+    /// \return
+    /// The specialized type of this grid instance (MgCoordinateSystemGridSpecializationType)
+    ///
     virtual INT32 GetSpecializationType ()=0;
 
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Sets the boundary of this grid instance
+    ///
+    /// \param pGridBoundary (MgCoordinateSystemGridBoundary)
+    /// The boundary
+    ///
     virtual void SetBoundary (MgCoordinateSystemGridBoundary* pGridBoundary) = 0;
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Gets the boundary of this grid instance
+    ///
+    /// \return
+    /// The boundary of this grid instance
+    ///
     virtual MgCoordinateSystemGridBoundary* GetBoundary(void)=0;
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Gets the grid lines for this grid instance for the given grid specification
+    ///
+    /// \param specification (MgCoordinateSystemGridSpecification)
+    /// The grid specification
+    ///
+    /// \return
+    /// The collection of grid lines
+    ///
     virtual MgCoordinateSystemGridLineCollection* GetGridLines (MgCoordinateSystemGridSpecification* specification)=0;
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Gets the grid regions for this grid instance for the given grid specification
+    ///
+    /// \param specification (MgCoordinateSystemGridSpecification)
+    /// The grid specification
+    ///
+    /// \return
+    /// The collection of grid regions
+    ///
     virtual MgCoordinateSystemGridRegionCollection* GetGridRegions (MgCoordinateSystemGridSpecification* specification)=0;
-    // The following generates grid ticks for the grid boundary.
+    
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Generates grid ticks for the grid boundary.
+    ///
+    /// \param specification (MgCoordinateSystemGridSpecification)
+    /// The grid specification
+    ///
+    /// \return
+    /// The collection of grid ticks for the grid boundary
+    ///
     virtual MgCoordinateSystemGridTickCollection* GetGridTicks (MgCoordinateSystemGridSpecification* specification)=0;
 
     // The following can be of value for rendering and stylization objects
     // which need to render north arrows, scale bars, etc.  Location
     // parameter is always in viewport/frame coordinates.
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Gets the convergence angle for the given location
+    ///
+    /// \param location (MgCoordinate)
+    /// The location
+    ///
+    /// \return
+    /// The convergence angle for the given location
+    ///
+    /// \remarks
+    /// The following can be of value for rendering and stylization objects
+    /// which need to render north arrows, scale bars, etc.  Location
+    /// parameter is always in viewport/frame coordinates.
+    ///
     virtual double GetConvergenceAngle (MgCoordinate* location) = 0;
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Gets the projective grid scale for the given location
+    ///
+    /// \param location (MgCoordinate)
+    /// The location
+    ///
+    /// \return
+    /// The projective grid scale for the given location
+    ///
+    /// \remarks
+    /// The following can be of value for rendering and stylization objects
+    /// which need to render north arrows, scale bars, etc.  Location
+    /// parameter is always in viewport/frame coordinates.
+    ///
     virtual double GetProjectiveGridScale (MgCoordinate* location) = 0;
 
     // The following may be used to determine if a specific grid generation
@@ -752,8 +874,62 @@ PUBLISHED_API:
     // The proposed grid boundary for the grid object hosting this interface must
     // set prior to calling this function.  Failure to do so will cause a -1
     // return value.
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Calculates the approximate amount of memory required to generated grid lines for this instance
+    ///
+    /// \param specification (MgCoordinateSystemGridSpecification)
+    /// The grid specification
+    ///
+    /// \return
+    /// The approximate memory usage in bytes
+    ///
+    /// \remarks
+    /// This method may be used to determine if a specific grid generation
+    /// should be attempted. The returned values are approximate and is in bytes.
+    /// The proposed grid boundary for the grid object hosting this interface must
+    /// set prior to calling this function.  Failure to do so will cause a -1
+    /// return value.
+    ///
     virtual INT32 ApproxGridLineMemoryUsage (MgCoordinateSystemGridSpecification* specification) = 0;
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Calculates the approximate amount of memory required to generated grid regions for this instance
+    ///
+    /// \param specification (MgCoordinateSystemGridSpecification)
+    /// The grid specification
+    ///
+    /// \return
+    /// The approximate memory usage in bytes
+    ///
+    /// \remarks
+    /// This method may be used to determine if a specific grid generation
+    /// should be attempted. The returned values are approximate and is in bytes.
+    /// The proposed grid boundary for the grid object hosting this interface must
+    /// set prior to calling this function.  Failure to do so will cause a -1
+    /// return value.
+    ///
     virtual INT32 ApproxGridRegionMemoryUsage (MgCoordinateSystemGridSpecification* specification) = 0;
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Calculates the approximate amount of memory required to generated grid ticks for this instance
+    ///
+    /// \param specification (MgCoordinateSystemGridSpecification)
+    /// The grid specification
+    ///
+    /// \return
+    /// The approximate memory usage in bytes
+    ///
+    /// \remarks
+    /// This method may be used to determine if a specific grid generation
+    /// should be attempted. The returned values are approximate and is in bytes.
+    /// The proposed grid boundary for the grid object hosting this interface must
+    /// set prior to calling this function.  Failure to do so will cause a -1
+    /// return value.
+    ///
     virtual INT32 ApproxGridTickMemoryUsage (MgCoordinateSystemGridSpecification* specification) = 0;
 
     // Each grid object establishes a hard coded value and will throw an exception
@@ -763,13 +939,104 @@ PUBLISHED_API:
     // only within the existence of the modified object.
     // These functions return the previous value and make no changes if the argument
     // value is less than 10MB.  The memoryUseMax argument is always in bytes.
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Sets the amount of memory at which an exception will be thrown if generating a grid line 
+    /// collection that would exceed the specified value in memory usage
+    ///
+    /// \param memoryUseMax (int)
+    /// The memory limit in bytes
+    ///
+    /// \return
+    /// The new memory limit
+    ///
+    /// \remarks
+    /// Each grid object establishes a hard coded value and will throw an exception
+    /// before generating a grid which, accordinag to the grid object estimates, will
+    /// cause memory usage to exceed the hard coded value. This method can be used to
+    /// to modify the threshold for the exception.  Such modification remains in effect
+    /// only within the existence of the modified object.
+    /// These functions return the previous value and make no changes if the argument
+    /// value is less than 10MB.  The memoryUseMax argument is always in bytes.
+    ///
     virtual INT32 SetGridLineExceptionLevel (INT32 memoryUseMax) = 0;
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Sets the amount of memory at which an exception will be thrown if generating a grid region 
+    /// collection that would exceed the specified value in memory usage
+    ///
+    /// \param memoryUseMax (int)
+    /// The memory limit in bytes
+    ///
+    /// \return
+    /// The new memory limit
+    ///
+    /// \remarks
+    /// Each grid object establishes a hard coded value and will throw an exception
+    /// before generating a grid which, accordinag to the grid object estimates, will
+    /// cause memory usage to exceed the hard coded value. This method can be used to
+    /// to modify the threshold for the exception.  Such modification remains in effect
+    /// only within the existence of the modified object.
+    /// These functions return the previous value and make no changes if the argument
+    /// value is less than 10MB.  The memoryUseMax argument is always in bytes.
+    ///
     virtual INT32 SetGridRegionExceptionLevel (INT32 memoryUseMax) = 0;
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Sets the amount of memory at which an exception will be thrown if generating a grid tick 
+    /// collection that would exceed the specified value in memory usage
+    ///
+    /// \param memoryUseMax (int)
+    /// The memory limit in bytes
+    ///
+    /// \return
+    /// The new memory limit
+    ///
+    /// \remarks
+    /// Each grid object establishes a hard coded value and will throw an exception
+    /// before generating a grid which, accordinag to the grid object estimates, will
+    /// cause memory usage to exceed the hard coded value. This method can be used to
+    /// to modify the threshold for the exception.  Such modification remains in effect
+    /// only within the existence of the modified object.
+    /// These functions return the previous value and make no changes if the argument
+    /// value is less than 10MB.  The memoryUseMax argument is always in bytes.
+    ///
     virtual INT32 SetGridTickExceptionLevel (INT32 memoryUseMax) = 0;
 
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Returns the last error code
+    ///
+    /// \return
+    /// The last error code
+    ///
     virtual INT32 GetLastError() = 0;
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Resets the last error code
+    /// 
     virtual void ResetLastError()= 0;
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Gets whether exceptions are enabled for this instance
+    ///
+    /// \return
+    /// true if exceptions are enabled. false otherwise
+    ///
     virtual bool AreExceptionsOn() = 0;
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Enables or disables exceptions for this instance
+    ///
+    /// \param bOn (boolean/bool)
+    /// true to enable exceptions. false to disable exceptions
+    ///
     virtual void SetExceptionsOn(bool bOn) = 0;
 INTERNAL_API:
 protected:
@@ -782,22 +1049,74 @@ CLASS_ID:
 /// \ingroup Coordinate_System_classes
 /// \{
 
-//=============================================================================
-// An MgCoordinateSystemGridLine object is a grid value (as a double) and a
-// collection of line strings, where each individual line string being
-// considered a grid line segment.  All line strings in the collection are in
-// the viewport coordinate system.  The value returned by GetGridOrientation
-// indicates the nature of the grid line in grid coordinates (i.e. easting or
-// northing).
+////////////////////////////////////////////////////////////////
+/// \brief
+/// An MgCoordinateSystemGridLine object is a grid value (as a double) and a
+/// collection of line strings, where each individual line string being
+/// considered a grid line segment.  All line strings in the collection are in
+/// the viewport coordinate system.  The value returned by GetGridOrientation
+/// indicates the nature of the grid line in grid coordinates (i.e. easting or
+/// northing).
+///
 /// \since 2.2
 class MG_GEOMETRY_API MgCoordinateSystemGridLine : public MgGuardDisposable
 {
 PUBLISHED_API:
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Gets the grid orientation for this instance (see MgCoordinateSystemGridOrientation)
+    ///
+    /// \return
+    /// The grid orientation for this instance (see MgCoordinateSystemGridOrientation)
+    ///
     virtual INT32 GetGridOrientation(void)= 0;
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Gets the real value for this instance
+    ///
+    /// \return
+    /// The real value for this instance
+    ///
     virtual double GetRealValue(void)=0;
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Gets the number of line segments in this instance
+    ///
+    /// \return
+    /// The number of line segments in this instance
+    ///
     virtual INT32 GetCount (void) = 0;
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Gets the line segment at the specified index
+    ///
+    /// \param index (int)
+    /// The index at which to retrieve the line segment
+    ///
+    /// \return
+    /// The MgLineString at the specified index
+    ///
     virtual MgLineString* GetSegment (INT32 index)=0;
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Gets the entire line segment collection
+    ///
+    /// \return
+    /// The MgLineStringCollection containing the line segments
+    ///
     virtual MgLineStringCollection* GetSegmentCollection(void)= 0;
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Sets the entire line segment collection
+    ///
+    /// \param segmentCollection (MgLineStringCollection)
+    /// The line segment collection
+    ///
     virtual void SetSegmentCollection (MgLineStringCollection* segmentCollection) = 0;
 INTERNAL_API:
 protected:
@@ -823,22 +1142,107 @@ CLASS_ID:
 // will be deprecated in the next release.                                   //
 //                                                                           //
 ///////////////////////////////////////////////////////////////////////////////
+
 ///////////////////////////////////////////////////////////////////////////////
+/// \brief
+/// An MgCoordinateSystemGridRegion object consists of a label and a polygon.
+/// The polygon is always in the viewport coordinate system.  Such an object
+/// is used, for example, to label and delineate an MGRS 100Km UTM grid zone.
+///
 /// \since 2.2
 class MG_GEOMETRY_API MgCoordinateSystemGridRegion : public MgGuardDisposable
 {
 PUBLISHED_API:
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Gets the label for this region
+    ///
+    /// \return
+    /// The label for this region
+    ///
     virtual STRING GetLabel () = 0;
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Gets the center of this region
+    ///
+    /// \return
+    /// The center (MgCoordinate) of this region
+    ///
     virtual MgCoordinate* GetRegionCenter (void) = 0;
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Gets the boundary geometry of this region
+    ///
+    /// \return
+    /// The boundary geometry (MgPolygon) of this region
+    ///
     virtual MgPolygon* GetRegionBoundary (void) = 0;
 
     // The returns from the following members are clipped to the frame boundary
     // of the grid object from which the region object was obtained.  Since it
     // is possible (rare, but possible) that a region boundary line enters and
     // leaves the frame boundary more than once.
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Gets the south line of this region
+    ///
+    /// \return
+    /// The south line (MgLineStringCollection) of this region
+    ///
+    /// \remarks
+    /// The return value is clipped to the frame boundary
+    /// of the grid object from which the region object was obtained.  Since it
+    /// is possible (rare, but possible) that a region boundary line enters and
+    /// leaves the frame boundary more than once.
+    ///
     virtual MgLineStringCollection* GetSouthLine (void) = 0;
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Gets the east line of this region
+    ///
+    /// \return
+    /// The east line (MgLineStringCollection) of this region
+    ///
+    /// \remarks
+    /// The return value is clipped to the frame boundary
+    /// of the grid object from which the region object was obtained.  Since it
+    /// is possible (rare, but possible) that a region boundary line enters and
+    /// leaves the frame boundary more than once.
+    ///
     virtual MgLineStringCollection* GetEastLine (void) = 0;
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Gets the north line of this region
+    ///
+    /// \return
+    /// The north line (MgLineStringCollection) of this region
+    ///
+    /// \remarks
+    /// The return value is clipped to the frame boundary
+    /// of the grid object from which the region object was obtained.  Since it
+    /// is possible (rare, but possible) that a region boundary line enters and
+    /// leaves the frame boundary more than once.
+    ///
     virtual MgLineStringCollection* GetNorthLine (void) = 0;
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Gets the west line of this region
+    ///
+    /// \return
+    /// The west line (MgLineStringCollection) of this region
+    ///
+    /// \remarks
+    /// The return value is clipped to the frame boundary
+    /// of the grid object from which the region object was obtained.  Since it
+    /// is possible (rare, but possible) that a region boundary line enters and
+    /// leaves the frame boundary more than once.
+    ///
     virtual MgLineStringCollection* GetWestLine (void) = 0;
 
 INTERNAL_API:
@@ -853,22 +1257,63 @@ CLASS_ID:
 /// \defgroup MgCoordinateSystemGridTick MgCoordinateSystemGridTick
 /// \ingroup Coordinate_System_classes
 /// \{
-//=============================================================================
-// An MgCoordinateSystemGridTick object consists of a grid value, a tick
-// location point in viewport coordinates, and a 2D unit direction vector.
-// Position is the position of the tick mark on a grid or boundary line.  The
-// 2D unit direction vector is the direction of the line at the position given.
-// In the case of a tick mark on a boundary line, since boundary lines are
-// always maintained in the counterclockwise direction, the interior of the
-// viewport will always be to the left of the direction vector.
+///////////////////////////////////////////////////////////////////////////////
+/// \brief
+/// An MgCoordinateSystemGridTick object consists of a grid value, a tick
+/// location point in viewport coordinates, and a 2D unit direction vector.
+/// Position is the position of the tick mark on a grid or boundary line.  The
+/// 2D unit direction vector is the direction of the line at the position given.
+/// In the case of a tick mark on a boundary line, since boundary lines are
+/// always maintained in the counterclockwise direction, the interior of the
+/// viewport will always be to the left of the direction vector.
+///
 /// \since 2.2
 class MG_GEOMETRY_API MgCoordinateSystemGridTick : public MgGuardDisposable
 {
 PUBLISHED_API:
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Gets whether this grid tick is on a grid line
+    ///
+    /// \return
+    /// true if this grid tick is on a grid line. false otherwise
+    ///
     virtual bool GetIsOnGridLine () = 0;
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Gets the tick orientation (see MgCoordinateSystemGridOrientation for valid values)
+    ///
+    /// \return
+    /// The tick orientation
+    ///
     virtual INT32 GetTickOrientation () = 0;
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Gets the tick value
+    ///
+    /// \return
+    /// The tick value
+    ///
     virtual double GetValue () = 0;
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Gets the tick position
+    ///
+    /// \return
+    /// The tick position
+    ///
     virtual MgCoordinate* GetPosition () = 0;
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Gets the tick's direction vector
+    ///
+    /// \return
+    /// The tick's direction vector
+    ///
     virtual MgCoordinate* GetDirectionVector () = 0;
 INTERNAL_API:
 protected:
@@ -881,20 +1326,66 @@ CLASS_ID:
 /// \defgroup MgCoordinateSystemGridLineCollection MgCoordinateSystemGridLineCollection
 /// \ingroup Coordinate_System_classes
 /// \{
-//=============================================================================
-// An MgCoordinateSystemGridLineCollection is collection of
-// MgCoordinateSystemGridLine objects.  As manufactured, grid horizontal lines
-// appear first in ascending order by grid value (easting in this case);
-// followed by grid vertical lines in ascending order by grid value (northing
-// in this case).
+///////////////////////////////////////////////////////////////////////////////
+/// \brief
+/// An MgCoordinateSystemGridLineCollection is collection of
+/// MgCoordinateSystemGridLine objects.  As manufactured, grid horizontal lines
+/// appear first in ascending order by grid value (easting in this case);
+/// followed by grid vertical lines in ascending order by grid value (northing
+/// in this case).
+///
 /// \since 2.2
 class MG_GEOMETRY_API MgCoordinateSystemGridLineCollection : public MgGuardDisposable
 {
 PUBLISHED_API:
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Gets the number of grid lines in this collection
+    ///
+    /// \return
+    /// The number of grid lines in this collection
+    ///
     virtual INT32 GetCount () const=0;
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Gets the grid line at the specified index
+    ///
+    /// \param index (int)
+    /// The index
+    ///
+    /// \return
+    /// The grid line (MgCoordinateSystemGridLine) at the specified index
+    ///
     virtual MgCoordinateSystemGridLine* GetItem (INT32 index) const=0;
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Gets the index of the given grid orientation and value
+    ///
+    /// \param gridOrientation (int)
+    /// The grid orientation
+    /// \param gridValue (double)
+    /// The grid value
+    ///
+    /// \return
+    /// The index of the given grid orientation and value
+    ///
     virtual INT32 IndexOf (INT32 gridOrientation,double gridValue) const=0;
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Removes the grid line at the specified index
+    ///
+    /// \param index (int)
+    /// The index to remove
+    ///
     virtual void RemoveAt (INT32 index)=0;
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Removes all grid lines from this collection
+    ///
     virtual void Clear()=0;
 INTERNAL_API:
     virtual void SetItem (INT32 index, MgCoordinateSystemGridLine* value)=0;
@@ -911,16 +1402,48 @@ CLASS_ID:
 /// \defgroup MgCoordinateSystemGridRegionCollection MgCoordinateSystemGridRegionCollection
 /// \ingroup Coordinate_System_classes
 /// \{
-//=============================================================================
-// An MgCoordinateSystemGridRegionCollection is collection of
-// MgCoordinateSystemGridRegion objects.
+///////////////////////////////////////////////////////////////////////////////
+/// \brief
+/// An MgCoordinateSystemGridRegionCollection is collection of
+/// MgCoordinateSystemGridRegion objects.
 /// \since 2.2
 class MG_GEOMETRY_API MgCoordinateSystemGridRegionCollection : public MgGuardDisposable
 {
 PUBLISHED_API:
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Gets the number of grid regions in this collection
+    ///
+    /// \return
+    /// The number of grid regions in this collection
+    ///
     virtual INT32 GetCount () const=0;
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Gets the grid region at the specified index
+    ///
+    /// \param index (int)
+    /// The index
+    ///
+    /// \return
+    /// The grid region (MgCoordinateSystemGridRegion) at the specified index
+    ///
     virtual MgCoordinateSystemGridRegion* GetItem (INT32 index) const=0;
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Removes the grid region at the specified index
+    ///
+    /// \param index (int)
+    /// The index to remove
+    ///
     virtual void RemoveAt (INT32 index)=0;
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Removes all grid regions from this collection
+    ///
     virtual void Clear()=0;
 INTERNAL_API:
     virtual void SetItem (INT32 index, MgCoordinateSystemGridRegion* value)=0;
@@ -936,18 +1459,50 @@ CLASS_ID:
 /// \defgroup MgCoordinateSystemGridTickCollection MgCoordinateSystemGridTickCollection
 /// \ingroup Coordinate_System_classes
 /// \{
-//=============================================================================
-// An MgCoordinateSystemGridTickCollection is collection of
-// MgCoordinateSystemGridTick objects.  MgCoordinateSystemGridTickCollection
-// objects will contain MgCoordinateSystemGridTick objects for the entire
-// boundary, or for an individual grid line.
+///////////////////////////////////////////////////////////////////////////////
+/// \brief
+/// An MgCoordinateSystemGridTickCollection is collection of
+/// MgCoordinateSystemGridTick objects.  MgCoordinateSystemGridTickCollection
+/// objects will contain MgCoordinateSystemGridTick objects for the entire
+/// boundary, or for an individual grid line.
 /// \since 2.2
 class MG_GEOMETRY_API MgCoordinateSystemGridTickCollection : public MgGuardDisposable
 {
 PUBLISHED_API:
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Gets the number of grid ticks in this collection
+    ///
+    /// \return
+    /// The number of grid ticks in this collection
+    ///
     virtual INT32 GetCount () const=0;
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Gets the grid tick at the specified index
+    ///
+    /// \param index (int)
+    /// The index
+    ///
+    /// \return
+    /// The grid tick (MgCoordinateSystemGridTick) at the specified index
+    ///
     virtual MgCoordinateSystemGridTick* GetItem (INT32 index) const=0;
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Removes the grid tick at the specified index
+    ///
+    /// \param index (int)
+    /// The index to remove
+    ///
     virtual void RemoveAt (INT32 index)=0;
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Removes all grid ticks from this collection
+    ///
     virtual void Clear()=0;
 INTERNAL_API:
     virtual void SetItem (INT32 index, MgCoordinateSystemGridTick* value)=0;

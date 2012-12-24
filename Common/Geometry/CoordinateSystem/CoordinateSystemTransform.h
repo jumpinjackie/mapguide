@@ -359,6 +359,13 @@ PUBLISHED_API:
     ///
     virtual MgEnvelope* Transform(MgEnvelope* envelope)=0;
 
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Transforms the specified coordinate in-place.
+    ///
+    /// \param coordinate (MgCoordinate)
+    /// The coordinate that will be transformed in-place
+    ///
     virtual void TransformCoordinate(MgCoordinate* coordinate)=0;
 
     ///////////////////////////////////////////////////////////////////////////
@@ -392,13 +399,93 @@ PUBLISHED_API:
                                                           double curvePrecision,
                                                           UINT32 maxPoints) = 0;
 
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Gets whether the given source point is valid
+    ///
+    /// \param x (double)
+    /// The X coordinate of the source point
+    /// \param y (double)
+    /// The Y coordinate of the source point
+    ///
+    /// \return
+    /// true if this given source point is valid. false otherwise
+    ///
     virtual bool IsValidSourcePoint(double x, double y)=0;
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Gets whether the given source point is valid
+    ///
+    /// \param x (double)
+    /// The X coordinate of the source point
+    /// \param y (double)
+    /// The Y coordinate of the source point
+    /// \param z (double)
+    /// The Z coordinate of the source point
+    ///
+    /// \return
+    /// true if this given source point is valid. false otherwise
+    ///
     virtual bool IsValidSourcePoint(double x, double y, double z)=0;
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Gets whether the given target point is valid
+    ///
+    /// \param x (double)
+    /// The X coordinate of the target point
+    /// \param y (double)
+    /// The Y coordinate of the target point
+    ///
+    /// \return
+    /// true if this given target point is valid. false otherwise
+    ///
     virtual bool IsValidTargetPoint(double x, double y)=0;
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Gets whether the given target point is valid
+    ///
+    /// \param x (double)
+    /// The X coordinate of the target point
+    /// \param y (double)
+    /// The Y coordinate of the target point
+    /// \param z (double)
+    /// The Z coordinate of the target point
+    ///
+    /// \return
+    /// true if this given target point is valid. false otherwise
+    ///
     virtual bool IsValidTargetPoint(double x, double y, double z)=0;
 
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Gets the source coordinate system (MgCoordinateSystem)
+    ///
+    /// \return
+    /// The source coordinate system
+    ///
     virtual MgCoordinateSystem* GetSource()=0;
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Gets the target coordinate system (MgCoordinateSystem)
+    ///
+    /// \return
+    /// The target coordinate system
+    ///
     virtual MgCoordinateSystem* GetTarget()=0;
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Sets the source and target coordinate systems
+    ///
+    /// \param pSource (MgCoordinateSystem)
+    /// The source coordinate system
+    /// \param pTarget (MgCoordinateSystem)
+    /// The target coordinate system
+    ///
     virtual void SetSourceAndTarget(MgCoordinateSystem* pSource, MgCoordinateSystem* pTarget)=0;
     
     // Geodetic Transformation Information
@@ -483,32 +570,143 @@ PUBLISHED_API:
     virtual MgCoordinateSystemGeodeticPath* GetExplicitGeodeticPath()=0;
 
     // Transformation warnings
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Sets whether datum shift warnings will be ignored
+    ///
+    /// \param bIgnoreDatumShiftWarning (boolean/bool)
+    /// true if datum shift warnings will be ignored. false otherwise
+    ///
     virtual void IgnoreDatumShiftWarning(bool bIgnoreDatumShiftWarning)=0;
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Gets whether datum shift warnings will be ignored
+    ///
+    /// \return
+    /// true if this datum shift warnings will be ignored. false otherwise
+    ///
     virtual bool IsIgnoreDatumShiftWarning()=0;
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Sets whether outside domain warnings will be ignored
+    ///
+    /// \param bIgnoreOutsideDomainWarning (boolean/bool)
+    /// true if outside domain warnings will be ignored. false otherwise
+    ///
     virtual void IgnoreOutsideDomainWarning(bool bIgnoreOutsideDomainWarning)=0;
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Gets whether outside domain warnings will be ignored
+    ///
+    /// \return
+    /// true if this outside domain warnings will be ignored. false otherwise
+    ///
     virtual bool IsIgnoreOutsideDomainWarning()=0;
 
     // Status Accumulator
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Gets the source warning count
+    ///
+    /// \return
+    /// The source warning count
+    ///
     /// \since 2.4
+    ///
     virtual INT32 GetSourceWarningCount (void)=0;
+    
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Gets the datum warning count
+    ///
+    /// \return
+    /// The datum warning count
+    ///
     /// \since 2.4
+    ///
     virtual INT32 GetdatumWarningCount (void)=0;
+    
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Gets the target warning count
+    ///
+    /// \return
+    /// The target warning count
+    ///
     /// \since 2.4
+    ///
     virtual INT32 GetTargetWarningCount (void)=0;
 
     // Transformation status
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Transformation status: ok
+    ///
     static const INT32 TransformOk = 0;
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Transformation status: resulted in being outside the domain warning
+    ///
     static const INT32 TransformOutsideDomainWarning = 1;
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Transformation status: resulted in a datum shift warning
+    ///
     static const INT32 TransformDatumShiftWarning = 2;
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Transformation status: was a total failure
+    ///
     static const INT32 TransformTotalFailure = 3;
 
     // Status Accumulation Status bit map.
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Status Accumulation Status bit map: Source CRS error
+    ///
     static const INT32 SourceCrsError = 1;
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Status Accumulation Status bit map: Datum shift fallback
+    ///
     static const INT32 DatumShiftFallback = 2;
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Status Accumulation Status bit map: Datum shift error
+    ///
     static const INT32 DatumShiftError = 4;
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Status Accumulation Status bit map: Target CRS error
+    ///
     static const INT32 TargetCrsError = 8;
 
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Gets the last transformation status
+    ///
+    /// \return
+    /// The last transformation status
+    ///
     virtual INT32 GetLastTransformStatus()=0;
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Resets the last transformation status
+    ///
     virtual void ResetLastTransformStatus()=0;
 
 INTERNAL_API:
