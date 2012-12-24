@@ -24,24 +24,88 @@
 
 ///////////////////////////////////////////////////////////////
 /// \brief
-///
+/// Defines the logical types of a coordinate system projection
 ///
 class MG_GEOMETRY_API MgCoordinateSystemProjectionLogicalType
 {
 PUBLISHED_API:
-    static const INT32 None = 0;                //no specification
-    static const INT32 Longitude = 1;           //longitude
-    static const INT32 Latitude = 2;            //latitude
-    static const INT32 Azimuth = 3;             //azimuth
-    static const INT32 AngularDistance = 4;     //angular distance
-    static const INT32 ComplexCoefficient = 5;  //complex coefficient
-    static const INT32 UTMZoneNumber = 6;       //UTM zone number
-    static const INT32 HemisphereSelection = 7; //hemisphere selection: north > 0, south < 0
-    static const INT32 GeoidHeight = 8;         //geoid height in meters
-    static const INT32 Elevation = 9;           //elevation, system units
-    static const INT32 AffineCoefficient = 10;  //affine coefficient
-    static const INT32 XYCoordinate = 11;       //X/Y Coordinate
-    static const INT32 Scale = 12;              //Scale value
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// no specification
+    ///
+    static const INT32 None = 0;                
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// longitude
+    ///
+    static const INT32 Longitude = 1;           
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// latitude
+    ///
+    static const INT32 Latitude = 2;            
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// azimuth
+    ///
+    static const INT32 Azimuth = 3;             
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// angular distance
+    ///
+    static const INT32 AngularDistance = 4;     
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// complex coefficient
+    ///
+    static const INT32 ComplexCoefficient = 5;  
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// UTM zone number
+    ///
+    static const INT32 UTMZoneNumber = 6;       
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// hemisphere selection: north > 0, south < 0
+    ///
+    static const INT32 HemisphereSelection = 7; 
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// geoid height in meters
+    ///
+    static const INT32 GeoidHeight = 8;         
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// elevation, system units
+    ///
+    static const INT32 Elevation = 9;           
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// affine coefficient
+    ///
+    static const INT32 AffineCoefficient = 10;  
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// X/Y Coordinate
+    ///
+    static const INT32 XYCoordinate = 11;       
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Scale value
+    ///
+    static const INT32 Scale = 12;              
 };
 /// \}
 

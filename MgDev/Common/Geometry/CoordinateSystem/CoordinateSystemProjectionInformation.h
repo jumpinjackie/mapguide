@@ -18,6 +18,10 @@
 #ifndef _MGCOORDINATESYSTEMPROJECTIONINFORMATION_H_
 #define _MGCOORDINATESYSTEMPROJECTIONINFORMATION_H_
 
+///////////////////////////////////////////////////////////////////////////////////////////////
+/// \brief
+/// Represents information about a coordinate system projection
+///
 class MgCoordinateSystemProjectionInformation : public MgGuardDisposable
 {
     DECLARE_CLASSNAME(MgCoordinateSystemProjectionInformation)

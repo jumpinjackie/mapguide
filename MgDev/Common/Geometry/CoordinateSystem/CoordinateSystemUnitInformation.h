@@ -18,6 +18,10 @@
 #ifndef _MGCOORDINATESYSTEMUNITINFORMATION_H_
 #define _MGCOORDINATESYSTEMUNITINFORMATION_H_
 
+///////////////////////////////////////////////////////////////////////////////////////////////
+/// \brief
+/// Represents information about a coordinate system unit
+///
 class MgCoordinateSystemUnitInformation : public MgGuardDisposable
 {
     DECLARE_CLASSNAME(MgCoordinateSystemUnitInformation)

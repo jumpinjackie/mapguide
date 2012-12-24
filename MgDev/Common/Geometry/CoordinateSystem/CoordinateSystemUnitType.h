@@ -24,13 +24,25 @@
 
 ///////////////////////////////////////////////////////////////
 /// \brief
-///
+/// Defines the types of coordinate system units
 ///
 class MG_GEOMETRY_API MgCoordinateSystemUnitType
 {
 PUBLISHED_API:
-    static const INT32 Unknown = 0;    //used mainly for default or error conditions
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Unknown unit type. Used mainly for default or error conditions
+    ///
+    static const INT32 Unknown = 0;
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Linear unit type
+    ///
     static const INT32 Linear = 1;
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Angular unit type
+    ///
     static const INT32 Angular = 2;
 };
 /// \}
