@@ -823,16 +823,21 @@ MgEnvelope* MgSelectionBase::GetExtents(MgFeatureService* featureService)
             STRING clsName = layer->GetFeatureClassName();
             STRING geomName = layer->GetFeatureGeometryName();
 
-            STRING filterText = this->GenerateFilter(layer, clsName);
+            Ptr<MgStringCollection> filters = GenerateFilters(layer, clsName, 30000 /* magic number */);
+            INT32 numFilter = (NULL == filters)? 0 : filters->GetCount();
 
-            Ptr<MgEnvelope> clsEnv = GetFeatureExtents(featureService, featureResId, clsName, filterText, geomName);
-            if (env != NULL)
+            for (INT32 j = 0; j < numFilter; ++j)
             {
-                env->ExpandToInclude(clsEnv);
-            }
-            else
-            {
-                env = clsEnv.Detach();
+                STRING filterText = filters->GetItem(j);
+                Ptr<MgEnvelope> clsEnv = GetFeatureExtents(featureService, featureResId, clsName, filterText, geomName);
+                if (env != NULL)
+                {
+                    env->ExpandToInclude(clsEnv);
+                }
+                else
+                {
+                    env = clsEnv.Detach();
+                }
             }
         }
     }
