@@ -396,6 +396,27 @@ PUBLISHED_API:
     ///
     STRING GenerateFilter(MgLayerBase* layer, CREFSTRING className);
 
+    //////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Generates a collection of FDO filter strings for the selections
+    /// of the specified layer and class
+    ///
+    /// <!-- Syntax in .Net, Java, and PHP -->
+    /// \htmlinclude DotNetSyntaxTop.html
+    /// string GenerateFilters(MgLayerBase layer, string className, int selectionSize);
+    /// \htmlinclude SyntaxBottom.html
+    /// \htmlinclude JavaSyntaxTop.html
+    /// String GenerateFilters(MgLayerBase layer, String className, int selectionSize);
+    /// \htmlinclude SyntaxBottom.html
+    /// \htmlinclude PHPSyntaxTop.html
+    /// string GenerateFilters(MgLayerBase layer, string className, int selectionSize);
+    /// \htmlinclude SyntaxBottom.html
+    ///
+    /// \return
+    /// Returns the collection of FDO filter strings
+    ///
+    MgStringCollection* GenerateFilters(MgLayerBase* layer, CREFSTRING className, INT32 selectionSize);
+
     ///////////////////////////////////////////////////////////////////////////
     /// \brief
     /// Gets the extents of the selection set.
@@ -519,15 +540,6 @@ PUBLISHED_API:
 
 INTERNAL_API:
 
-    //////////////////////////////////////////////////////////////////
-    /// \brief
-    /// Generate a collection of FDO filter strings for the selections
-    /// of the specified layer and class.
-    ///
-    /// \return
-    /// Collection of FDO filter strings.
-    ///
-    MgStringCollection* GenerateFilters(MgLayerBase* layer, CREFSTRING className, INT32 selectionSize);
 
     //////////////////////////////////////////////////////////////////
     /// \brief
