@@ -701,6 +701,68 @@ void MgdProxyDataReader::ToXml(string &str)
     str += "</PropertySet>";
 }
 
+string MgdProxyDataReader::GetResponseElementName()
+{
+    return "PropertySet";
+}
+
+string MgdProxyDataReader::GetBodyElementName()
+{
+    return "Properties";
+}
+
+void MgdProxyDataReader::ResponseStartUtf8(string& str)
+{
+    str += "<?xml version=\"1.0\" encoding=\"UTF-8\"?>";
+    str += "<";
+    str += GetResponseElementName();
+    str += ">";
+}
+
+void MgdProxyDataReader::ResponseEndUtf8(string& str)
+{
+    str += "</";
+    str += GetResponseElementName();
+    str += ">";
+}
+
+void MgdProxyDataReader::BodyStartUtf8(string& str)
+{
+    str += "<";
+    str += GetBodyElementName();
+    str += ">";
+}
+
+void MgdProxyDataReader::BodyEndUtf8(string& str)
+{
+    str += "</";
+    str += GetBodyElementName();
+    str += ">";
+}
+
+void MgdProxyDataReader::HeaderToStringUtf8(string& str)
+{
+    if (NULL != (MgPropertyDefinitionCollection*)m_propDefCol)
+    {
+        m_propDefCol->ToXml(str);
+    }
+}
+
+void MgdProxyDataReader::CurrentToStringUtf8(string& str)
+{
+    if (NULL != (MgBatchPropertyCollection*)m_set)
+    {
+        Ptr<MgPropertyCollection> propCol = m_set->GetItem(m_currRecord-1);
+        INT32 cnt = propCol->GetCount();
+        if (propCol != NULL && cnt > 0)
+        {
+            str += "<PropertyCollection>";
+            propCol->ToXml(str, false);
+            str += "</PropertyCollection>";
+        }
+    }
+}
+
 void MgdProxyDataReader::SetService(MgFeatureService* service)
 {
     CHECKNULL(service, L"MgdProxyDataReader.SetService");

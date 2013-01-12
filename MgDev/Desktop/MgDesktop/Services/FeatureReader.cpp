@@ -647,6 +647,22 @@ MgByteReader* MgdFeatureReader::ToXml()
 
 //INTERNAL_API:
 
+string MgdFeatureReader::GetResponseElementName() { NOT_IMPLEMENTED(L"MgdFeatureReader::GetResponseElementName"); }
+
+string MgdFeatureReader::GetBodyElementName() { NOT_IMPLEMENTED(L"MgdFeatureReader::GetResponseElementName"); }
+
+void MgdFeatureReader::ResponseStartUtf8(string& str) { NOT_IMPLEMENTED(L"MgdFeatureReader::GetResponseElementName"); }
+
+void MgdFeatureReader::ResponseEndUtf8(string& str) { NOT_IMPLEMENTED(L"MgdFeatureReader::GetResponseElementName"); }
+
+void MgdFeatureReader::BodyStartUtf8(string& str) { NOT_IMPLEMENTED(L"MgdFeatureReader::GetResponseElementName"); }
+
+void MgdFeatureReader::BodyEndUtf8(string& str) { NOT_IMPLEMENTED(L"MgdFeatureReader::GetResponseElementName"); }
+
+void MgdFeatureReader::HeaderToStringUtf8(string& str) { NOT_IMPLEMENTED(L"MgdFeatureReader::GetResponseElementName"); }
+
+void MgdFeatureReader::CurrentToStringUtf8(string& str) { NOT_IMPLEMENTED(L"MgdFeatureReader::GetResponseElementName"); }
+
 const wchar_t* MgdFeatureReader::GetString(CREFSTRING propertyName, INT32& length) 
 { 
 	CHECKNULL(m_reader, L"MgdFeatureReader::GetString");

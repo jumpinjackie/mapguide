@@ -75,7 +75,7 @@ bool MgdTileService::IsTileCacheEmpty() const
 bool MgdTileService::DetectTileLockFile(CREFSTRING lockPathname)
 {
     bool found = false;
-    struct _stat lockFileInfo;
+    struct _stat64 lockFileInfo;
 
     // Check the lock file to see if another thread/process is writing the tile file.
     while (MgFileUtil::GetFileStatus(lockPathname, lockFileInfo))

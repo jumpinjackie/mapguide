@@ -558,6 +558,22 @@ MgByteReader* MgdSqlDataReader::ToXml()
 
 //INTERNAL_API:
 
+string MgdSqlDataReader::GetResponseElementName() { NOT_IMPLEMENTED(L"MgdSqlDataReader::GetResponseElementName"); }
+
+string MgdSqlDataReader::GetBodyElementName() { NOT_IMPLEMENTED(L"MgdSqlDataReader::GetResponseElementName"); }
+
+void MgdSqlDataReader::ResponseStartUtf8(string& str) { NOT_IMPLEMENTED(L"MgdSqlDataReader::GetResponseElementName"); }
+
+void MgdSqlDataReader::ResponseEndUtf8(string& str) { NOT_IMPLEMENTED(L"MgdSqlDataReader::GetResponseElementName"); }
+
+void MgdSqlDataReader::BodyStartUtf8(string& str) { NOT_IMPLEMENTED(L"MgdSqlDataReader::GetResponseElementName"); }
+
+void MgdSqlDataReader::BodyEndUtf8(string& str) { NOT_IMPLEMENTED(L"MgdSqlDataReader::GetResponseElementName"); }
+
+void MgdSqlDataReader::CurrentToStringUtf8(string& str) { NOT_IMPLEMENTED(L"MgdSqlDataReader::CurrentToStringUtf8"); }
+
+void MgdSqlDataReader::HeaderToStringUtf8(string& str) { NOT_IMPLEMENTED(L"MgdSqlDataReader::HeaderToStringUtf8"); }
+
 MgByteReader* MgdSqlDataReader::GetLOB(CREFSTRING propertyName)
 {
     Ptr<MgByteReader> byteReader;
