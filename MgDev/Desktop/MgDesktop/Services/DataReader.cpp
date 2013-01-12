@@ -671,6 +671,22 @@ MgByteReader* MgdDataReader::ToXml()
 
 //INTERNAL_API:
 
+string MgdDataReader::GetResponseElementName() { NOT_IMPLEMENTED(L"MgdDataReader::GetResponseElementName"); }
+
+string MgdDataReader::GetBodyElementName() { NOT_IMPLEMENTED(L"MgdDataReader::GetResponseElementName"); }
+
+void MgdDataReader::ResponseStartUtf8(string& str) { NOT_IMPLEMENTED(L"MgdDataReader::GetResponseElementName"); }
+
+void MgdDataReader::ResponseEndUtf8(string& str) { NOT_IMPLEMENTED(L"MgdDataReader::GetResponseElementName"); }
+
+void MgdDataReader::BodyStartUtf8(string& str) { NOT_IMPLEMENTED(L"MgdDataReader::GetResponseElementName"); }
+
+void MgdDataReader::BodyEndUtf8(string& str) { NOT_IMPLEMENTED(L"MgdDataReader::GetResponseElementName"); }
+
+void MgdDataReader::CurrentToStringUtf8(string& str) { NOT_IMPLEMENTED(L"MgdDataReader::CurrentToStringUtf8"); }
+
+void MgdDataReader::HeaderToStringUtf8(string& str) { NOT_IMPLEMENTED(L"MgdDataReader::HeaderToStringUtf8"); }
+
 const wchar_t* MgdDataReader::GetString(CREFSTRING propertyName, INT32& length) 
 { 
     FdoString* retVal;
