@@ -19,6 +19,7 @@
 #include "HttpHandler.h"
 #include "HttpPrimitiveValue.h"
 #include "IsapiResponseHandler.h"
+#include "IsapiReaderStreamer.h"
 #include "MapAgentStrings.h"
 
 #include <stdlib.h>
@@ -102,6 +103,7 @@ void IsapiResponseHandler::SendResponse(MgHttpResponse* response)
             sResponseHeader.append(tempHeader);
         }
 
+        Ptr<MgReader> outputDataReader;
         Ptr<MgByteReader> outputReader;
         Ptr<MgDisposable> resultObj = result->GetResultObject();
         MgDisposable* pResultObj = (MgDisposable*)resultObj;
@@ -112,7 +114,7 @@ void IsapiResponseHandler::SendResponse(MgHttpResponse* response)
         }
         else if (NULL != dynamic_cast<MgFeatureReader*>(pResultObj))
         {
-            outputReader = ((MgFeatureReader*)pResultObj)->ToXml();
+            outputDataReader = SAFE_ADDREF((MgFeatureReader*)pResultObj); //Need to AddRef because there's now 2 references on this pointer
         }
         else if (NULL != dynamic_cast<MgStringCollection*>(pResultObj))
         {
@@ -120,11 +122,11 @@ void IsapiResponseHandler::SendResponse(MgHttpResponse* response)
         }
         else if (NULL != dynamic_cast<MgSqlDataReader*>(pResultObj))
         {
-            outputReader = ((MgSqlDataReader*)pResultObj)->ToXml();
+            outputDataReader = SAFE_ADDREF((MgSqlDataReader*)pResultObj); //Need to AddRef because there's now 2 references on this pointer
         }
         else if (NULL != dynamic_cast<MgDataReader*>(pResultObj))
         {
-            outputReader = ((MgDataReader*)pResultObj)->ToXml();
+            outputDataReader = SAFE_ADDREF((MgDataReader*)pResultObj); //Need to AddRef because there's now 2 references on this pointer
         }
         else if (NULL != dynamic_cast<MgSpatialContextReader*>(pResultObj))
         {
@@ -150,6 +152,11 @@ void IsapiResponseHandler::SendResponse(MgHttpResponse* response)
 
             DWORD dwBufLen = (DWORD)utf8.length();
             m_pECB->WriteClient(m_pECB->ConnID, (LPVOID)utf8.c_str(), &dwBufLen, 0);
+        }
+        else if (outputDataReader != NULL)
+        {
+            IsapiReaderStreamer irs(m_pECB, sResponseHeader, outputDataReader, result->GetResultContentType());
+            irs.StreamResult();
         }
         else if (outputReader != NULL)
         {

@@ -100,6 +100,7 @@ include_SOURCES = \
   HttpMoveResource.cpp \
   HttpPrimitiveValue.cpp \
   HttpQueryMapFeatures.cpp \
+  HttpReaderStreamer.cpp \
   HttpRenameResourceData.cpp \
   HttpRequest.cpp \
   HttpRequestMetadata.cpp \
@@ -228,6 +229,7 @@ noinst_HEADERS = $(include_SOURCES) \
   HttpPrimitiveValue.h \
   HttpPrimitiveValueTypes.h \
   HttpQueryMapFeatures.h \
+  HttpReaderStreamer.h \
   HttpRenameResourceData.h \
   HttpRequest.h \
   HttpRequestMetadata.h \

@@ -1352,6 +1352,54 @@ MgByteReader* MgServerSqlDataReader::ToXml()
         __LINE__, __WFILE__, NULL, L"", NULL);
 }
 
+string MgServerSqlDataReader::GetResponseElementName()
+{
+    throw new MgInvalidOperationException(L"MgServerSqlDataReader.GetResponseElementName",
+        __LINE__, __WFILE__, NULL, L"", NULL);
+}
+
+string MgServerSqlDataReader::GetBodyElementName()
+{
+    throw new MgInvalidOperationException(L"MgServerSqlDataReader.GetBodyElementName",
+        __LINE__, __WFILE__, NULL, L"", NULL);
+}
+
+void MgServerSqlDataReader::ResponseStartUtf8(string& str)
+{
+    throw new MgInvalidOperationException(L"MgServerSqlDataReader.ResponseStartUtf8",
+        __LINE__, __WFILE__, NULL, L"", NULL);
+}
+
+void MgServerSqlDataReader::ResponseEndUtf8(string& str)
+{
+    throw new MgInvalidOperationException(L"MgServerSqlDataReader.ResponseEndUtf8",
+        __LINE__, __WFILE__, NULL, L"", NULL);
+}
+
+void MgServerSqlDataReader::BodyStartUtf8(string& str)
+{
+    throw new MgInvalidOperationException(L"MgServerSqlDataReader.BodyStartUtf8",
+        __LINE__, __WFILE__, NULL, L"", NULL);
+}
+
+void MgServerSqlDataReader::BodyEndUtf8(string& str)
+{
+    throw new MgInvalidOperationException(L"MgServerSqlDataReader.BodyEndUtf8",
+        __LINE__, __WFILE__, NULL, L"", NULL);
+}
+
+void MgServerSqlDataReader::HeaderToStringUtf8(string& str)
+{
+    throw new MgInvalidOperationException(L"MgServerSqlDataReader.HeaderToStringUtf8",
+        __LINE__, __WFILE__, NULL, L"", NULL);
+}
+
+void MgServerSqlDataReader::CurrentToStringUtf8(string& str)
+{
+    throw new MgInvalidOperationException(L"MgServerSqlDataReader.CurrentToStringUtf8",
+        __LINE__, __WFILE__, NULL, L"", NULL);
+}
+
 /// <summary>Gets the raster object of the specified property.
 /// the property must be of Raster type; otherwise, an exception is thrown.
 /// </summary>

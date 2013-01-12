@@ -768,22 +768,77 @@ void MgProxyGwsFeatureReader::ToXml(string &str)
     {
         // TODO: define a schema for this XML
         // TODO: rename FeatureSet element to avoid conflict with FeatureSet-1.0.0.xsd?
-        str += "<?xml version=\"1.0\" encoding=\"UTF-8\"?>";
-        str += "<FeatureSet>";
-        classDef->ToXml(str);
-        str += "<Features>";
+        ResponseStartUtf8(str);
+        HeaderToStringUtf8(str);
+        BodyStartUtf8(str);
         while ( this->ReadNext() )
         {
-            Ptr<MgPropertyCollection> propCol = m_set->GetFeatureAt(m_currRecord-1);
-            INT32 cnt = propCol->GetCount();
-            if (propCol != NULL && cnt > 0)
-            {
-                propCol->ToFeature(str);
-            }
+            CurrentToStringUtf8(str);
         }
-        str += "</Features>";
-        str += "</FeatureSet>";
+        BodyEndUtf8(str);
+        ResponseEndUtf8(str);
     }
+}
+
+string MgProxyGwsFeatureReader::GetResponseElementName()
+{
+    return "FeatureSet";
+}
+
+string MgProxyGwsFeatureReader::GetBodyElementName()
+{
+    return "Features";
+}
+
+void MgProxyGwsFeatureReader::ResponseStartUtf8(string& str)
+{
+    str += "<?xml version=\"1.0\" encoding=\"UTF-8\"?>";
+    str += "<";
+    str += GetResponseElementName();
+    str += ">";
+}
+
+void MgProxyGwsFeatureReader::ResponseEndUtf8(string& str)
+{
+    str += "</";
+    str += GetResponseElementName();
+    str += ">";
+}
+
+void MgProxyGwsFeatureReader::BodyStartUtf8(string& str)
+{
+    str += "<";
+    str += GetBodyElementName();
+    str += ">";
+}
+
+void MgProxyGwsFeatureReader::BodyEndUtf8(string& str)
+{
+    str += "</";
+    str += GetBodyElementName();
+    str += ">";
+}
+
+void MgProxyGwsFeatureReader::HeaderToStringUtf8(string& str)
+{
+	Ptr<MgClassDefinition> classDef = this->GetClassDefinition();
+    if (classDef != NULL)
+	{
+		classDef->ToXml(str);
+	}
+}
+
+void MgProxyGwsFeatureReader::CurrentToStringUtf8(string& str)
+{
+	if (NULL != (MgFeatureSet*)m_set)
+	{
+		Ptr<MgPropertyCollection> propCol = m_set->GetFeatureAt(m_currRecord-1);
+		INT32 cnt = propCol->GetCount();
+		if (propCol != NULL && cnt > 0)
+		{
+			propCol->ToFeature(str);
+		}
+	}
 }
 
 void MgProxyGwsFeatureReader::SetService(MgFeatureService* service)

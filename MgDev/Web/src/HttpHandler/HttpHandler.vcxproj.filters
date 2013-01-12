@@ -382,6 +382,7 @@
     <ClCompile Include="HttpUtil.cpp" />
     <ClCompile Include="JsonDoc.cpp" />
     <ClCompile Include="XmlJsonConvert.cpp" />
+    <ClCompile Include="HttpReaderStreamer.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="HttpApplyResourcePackage.h">
@@ -752,6 +753,7 @@
     <ClInclude Include="HttpUtil.h" />
     <ClInclude Include="JsonDoc.h" />
     <ClInclude Include="XmlJsonConvert.h" />
+    <ClInclude Include="HttpReaderStreamer.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="HttpHandler.rc" />

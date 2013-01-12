@@ -680,11 +680,67 @@ void MgProxySqlDataReader::ToXml(string &str)
     CHECKNULL((MgPropertyDefinitionCollection*)m_propDefCol, L"MgProxySqlDataReader.ToXml");
 
     // this XML follows the SqlSelect-1.0.0.xsd schema
-    str += "<?xml version=\"1.0\" encoding=\"UTF-8\"?>";
-    str += "<RowSet>";
-    m_propDefCol->ToColumnDefinitions(str);
-    str += "<Rows>";
+    ResponseStartUtf8(str);
+    HeaderToStringUtf8(str);
+    BodyStartUtf8(str);
     while ( this->ReadNext() )
+    {
+        CurrentToStringUtf8(str);
+    }
+    BodyEndUtf8(str);
+    ResponseEndUtf8(str);
+}
+
+string MgProxySqlDataReader::GetResponseElementName()
+{
+    return "RowSet";
+}
+
+string MgProxySqlDataReader::GetBodyElementName()
+{
+    return "Rows";
+}
+
+void MgProxySqlDataReader::ResponseStartUtf8(string& str)
+{
+    str += "<?xml version=\"1.0\" encoding=\"UTF-8\"?>";
+    str += "<";
+    str += GetResponseElementName();
+    str += ">";
+}
+
+void MgProxySqlDataReader::ResponseEndUtf8(string& str)
+{
+    str += "</";
+    str += GetResponseElementName();
+    str += ">";
+}
+
+void MgProxySqlDataReader::BodyStartUtf8(string& str)
+{
+    str += "<";
+    str += GetBodyElementName();
+    str += ">";
+}
+
+void MgProxySqlDataReader::BodyEndUtf8(string& str)
+{
+    str += "</";
+    str += GetBodyElementName();
+    str += ">";
+}
+
+void MgProxySqlDataReader::HeaderToStringUtf8(string& str)
+{
+    if (NULL != (MgPropertyDefinitionCollection*)m_propDefCol)
+    {
+        m_propDefCol->ToColumnDefinitions(str);
+    }
+}
+
+void MgProxySqlDataReader::CurrentToStringUtf8(string& str)
+{
+    if (NULL != (MgBatchPropertyCollection*)m_set)
     {
         Ptr<MgPropertyCollection> propCol = m_set->GetItem(m_currRecord-1);
         INT32 cnt = propCol->GetCount();
@@ -693,8 +749,6 @@ void MgProxySqlDataReader::ToXml(string &str)
             propCol->ToRow(str);
         }
     }
-    str += "</Rows>";
-    str += "</RowSet>";
 }
 
 void MgProxySqlDataReader::SetService(MgFeatureService* service)

@@ -97,6 +97,7 @@
 #include "HttpMoveResource.cpp"
 #include "HttpPrimitiveValue.cpp"
 #include "HttpQueryMapFeatures.cpp"
+#include "HttpReaderStreamer.cpp"
 #include "HttpRenameResourceData.cpp"
 #include "HttpRequest.cpp"
 #include "HttpRequestMetadata.cpp"

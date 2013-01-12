@@ -18,6 +18,7 @@ bin_PROGRAMS = mapagent
 
 mapagent_SOURCES = CgiAgent.cpp \
                    CgiPostParser.cpp \
+                   CgiReaderStreamer.cpp \
                    CgiResponseHandler.cpp \
                    EchoTest.cpp \
                    ../MapAgentCommon/MapAgentCommon.cpp \
@@ -26,6 +27,7 @@ mapagent_SOURCES = CgiAgent.cpp \
                    ../WebSupport/InitializeWebTier.cpp
 
 noinst_HEADERS = CgiPostParser.h \
+                 CgiReaderStreamer.h \
                  CgiResponseHandler.h \
                  ../MapAgentCommon/MapAgentCommon.h \
                  ../MapAgentCommon/MapAgentGetParser.h \

@@ -104,12 +104,9 @@ void MgHttpSelectFeatures::Execute(MgHttpResponse& hResponse)
     }
 
     Ptr<MgFeatureReader> featureReader = service->SelectFeatures(&resId, m_className, qryOptions);
-    Ptr<MgByteReader> byteReader = featureReader->ToXml();
-
-    //Convert to alternate response format, if necessary
-    ProcessFormatConversion(byteReader);
-
-    hResult->SetResultObject(byteReader, byteReader->GetMimeType());
+    //HACK-ish: We're passing conversion responsibility to the caller (agent), so we store the
+    //originally requested format so the caller can determine if conversion is required
+    hResult->SetResultObject(featureReader, m_responseFormat);
 
     MG_HTTP_HANDLER_CATCH_AND_THROW_EX(L"MgHttpSelectFeatures.Execute")
 }

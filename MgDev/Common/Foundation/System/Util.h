@@ -542,6 +542,7 @@ INTERNAL_API:
 
     static void Int32ToString(INT32 val, string& str);
     static void Int32ToString(INT32 val, STRING& str);
+    static void Int32ToHexString(INT32 val, string& str);
     static void UInt32ToString(UINT32 val, string& str);
     static void UInt32ToString(UINT32 val, STRING& str);
     static void Int64ToString(INT64 val, string& str);

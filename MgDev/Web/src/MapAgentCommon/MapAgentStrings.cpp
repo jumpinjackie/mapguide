@@ -64,7 +64,6 @@ const char* MapAgentStrings::ContentTypeKey = "Content-Type";
 const char* MapAgentStrings::WWWAuthKey = "WWW-Authenticate";
 const char* MapAgentStrings::WWWAuthVal = "Basic realm=\"%s\"";
 
-
 const wchar_t* MapAgentStrings::WebConfig = L"../webconfig.ini";
 const wchar_t* MapAgentStrings::FailedAuth1 = L"MgAuthenticationFailedException";
 const wchar_t* MapAgentStrings::FailedAuth2 = L"MgUnauthorizedAccessException";

@@ -1512,6 +1512,54 @@ MgByteReader* MgServerDataReader::ToXml()
         __LINE__, __WFILE__, NULL, L"", NULL);
 }
 
+string MgServerDataReader::GetResponseElementName()
+{
+    throw new MgInvalidOperationException(L"MgServerDataReader.GetResponseElementName",
+        __LINE__, __WFILE__, NULL, L"", NULL);
+}
+
+string MgServerDataReader::GetBodyElementName()
+{
+    throw new MgInvalidOperationException(L"MgServerDataReader.GetBodyElementName",
+        __LINE__, __WFILE__, NULL, L"", NULL);
+}
+
+void MgServerDataReader::ResponseStartUtf8(string& str)
+{
+    throw new MgInvalidOperationException(L"MgServerDataReader.ResponseStartUtf8",
+        __LINE__, __WFILE__, NULL, L"", NULL);
+}
+
+void MgServerDataReader::ResponseEndUtf8(string& str)
+{
+    throw new MgInvalidOperationException(L"MgServerDataReader.ResponseEndUtf8",
+        __LINE__, __WFILE__, NULL, L"", NULL);
+}
+
+void MgServerDataReader::BodyStartUtf8(string& str)
+{
+    throw new MgInvalidOperationException(L"MgServerDataReader.BodyStartUtf8",
+        __LINE__, __WFILE__, NULL, L"", NULL);
+}
+
+void MgServerDataReader::BodyEndUtf8(string& str)
+{
+    throw new MgInvalidOperationException(L"MgServerDataReader.BodyEndUtf8",
+        __LINE__, __WFILE__, NULL, L"", NULL);
+}
+
+void MgServerDataReader::HeaderToStringUtf8(string& str)
+{
+    throw new MgInvalidOperationException(L"MgServerDataReader.HeaderToStringUtf8",
+        __LINE__, __WFILE__, NULL, L"", NULL);
+}
+
+void MgServerDataReader::CurrentToStringUtf8(string& str)
+{
+    throw new MgInvalidOperationException(L"MgServerDataReader.CurrentToStringUtf8",
+        __LINE__, __WFILE__, NULL, L"", NULL);
+}
+
 MgByteReader* MgServerDataReader::GetRaster(INT32 xSize, INT32 ySize, STRING rasterPropName)
 {
     CHECKNULL(m_dataReader, L"MgServerDataReader.GetRaster");
