@@ -1145,7 +1145,7 @@ INTERNAL_API:
     ///
     /// \param str
     /// Destination string.
-	///
+    ///
     virtual string GetResponseElementName() = 0;
 
     ///////////////////////////////////////////////////////////////////////////
@@ -1155,60 +1155,60 @@ INTERNAL_API:
     ///
     /// \param str
     /// Destination string.
-	///
+    ///
     virtual string GetBodyElementName() = 0;
 
-	///////////////////////////////////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////////
     /// \brief
     /// Returns the start of the response as a UTF-8 string. The mime
     /// type must be a text type, for example text/xml.
     ///
     /// \param str
     /// Destination string.
-	///
-	virtual void ResponseStartUtf8(string& str) = 0;
+    ///
+    virtual void ResponseStartUtf8(string& str) = 0;
 
-	///////////////////////////////////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////////
     /// \brief
     /// Returns the end of the response as a UTF-8 string. The mime
     /// type must be a text type, for example text/xml.
     ///
     /// \param str
     /// Destination string.
-	///
-	virtual void ResponseEndUtf8(string& str) = 0;
+    ///
+    virtual void ResponseEndUtf8(string& str) = 0;
 
-	///////////////////////////////////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////////
     /// \brief
     /// Returns the start of the response body as a UTF-8 string. The mime
     /// type must be a text type, for example text/xml.
     ///
     /// \param str
     /// Destination string.
-	///
-	virtual void BodyStartUtf8(string& str) = 0;
+    ///
+    virtual void BodyStartUtf8(string& str) = 0;
 
-	///////////////////////////////////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////////
     /// \brief
     /// Returns the end of the response body as a UTF-8 string. The mime
     /// type must be a text type, for example text/xml.
     ///
     /// \param str
     /// Destination string.
-	///
-	virtual void BodyEndUtf8(string& str) = 0;
+    ///
+    virtual void BodyEndUtf8(string& str) = 0;
 
-	///////////////////////////////////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////////
     /// \brief
     /// Returns the contents of the header in this reader as a UTF-8 string.  The mime
     /// type must be a text type, for example text/xml.
     ///
     /// \param str
     /// Destination string.
-	///
+    ///
     virtual void HeaderToStringUtf8(string& str) = 0;
 
-	///////////////////////////////////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////////
     /// \brief
     /// Returns the contents of the current record/feature in the reader as a UTF-8 string.  The mime
     /// type must be a text type, for example text/xml.

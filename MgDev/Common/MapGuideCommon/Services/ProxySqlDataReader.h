@@ -492,7 +492,7 @@ INTERNAL_API:
     ///
     /// \param str
     /// Destination string.
-	///
+    ///
     virtual string GetResponseElementName();
 
     ///////////////////////////////////////////////////////////////////////////
@@ -502,7 +502,7 @@ INTERNAL_API:
     ///
     /// \param str
     /// Destination string.
-	///
+    ///
     virtual string GetBodyElementName();
 
     ///////////////////////////////////////////////////////////////////////////
