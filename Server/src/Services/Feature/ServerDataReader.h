@@ -443,7 +443,7 @@ INTERNAL_API:
     ///
     /// \param str
     /// Destination string.
-	///
+    ///
     string GetResponseElementName();
 
     ///////////////////////////////////////////////////////////////////////////
@@ -453,7 +453,7 @@ INTERNAL_API:
     ///
     /// \param str
     /// Destination string.
-	///
+    ///
     string GetBodyElementName();
 
     ///////////////////////////////////////////////////////////////////////////

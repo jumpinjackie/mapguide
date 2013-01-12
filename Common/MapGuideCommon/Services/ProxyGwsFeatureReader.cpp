@@ -821,24 +821,24 @@ void MgProxyGwsFeatureReader::BodyEndUtf8(string& str)
 
 void MgProxyGwsFeatureReader::HeaderToStringUtf8(string& str)
 {
-	Ptr<MgClassDefinition> classDef = this->GetClassDefinition();
+    Ptr<MgClassDefinition> classDef = this->GetClassDefinition();
     if (classDef != NULL)
-	{
-		classDef->ToXml(str);
-	}
+    {
+        classDef->ToXml(str);
+    }
 }
 
 void MgProxyGwsFeatureReader::CurrentToStringUtf8(string& str)
 {
-	if (NULL != (MgFeatureSet*)m_set)
-	{
-		Ptr<MgPropertyCollection> propCol = m_set->GetFeatureAt(m_currRecord-1);
-		INT32 cnt = propCol->GetCount();
-		if (propCol != NULL && cnt > 0)
-		{
-			propCol->ToFeature(str);
-		}
-	}
+    if (NULL != (MgFeatureSet*)m_set)
+    {
+        Ptr<MgPropertyCollection> propCol = m_set->GetFeatureAt(m_currRecord-1);
+        INT32 cnt = propCol->GetCount();
+        if (propCol != NULL && cnt > 0)
+        {
+            propCol->ToFeature(str);
+        }
+    }
 }
 
 void MgProxyGwsFeatureReader::SetService(MgFeatureService* service)

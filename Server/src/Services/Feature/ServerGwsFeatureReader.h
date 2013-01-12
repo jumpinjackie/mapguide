@@ -400,7 +400,7 @@ EXTERNAL_API:
     ///
     /// \param str
     /// Destination string.
-	///
+    ///
     string GetResponseElementName();
 
     ///////////////////////////////////////////////////////////////////////////
@@ -410,50 +410,50 @@ EXTERNAL_API:
     ///
     /// \param str
     /// Destination string.
-	///
+    ///
     string GetBodyElementName();
 
-	///////////////////////////////////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////////
     /// \brief
     /// Returns the start of the response as a UTF-8 string. The mime
     /// type must be a text type, for example text/xml.
     ///
     /// \param str
     /// Destination string.
-	///
-	void ResponseStartUtf8(string& str);
+    ///
+    void ResponseStartUtf8(string& str);
 
-	///////////////////////////////////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////////
     /// \brief
     /// Returns the end of the response as a UTF-8 string. The mime
     /// type must be a text type, for example text/xml.
     ///
     /// \param str
     /// Destination string.
-	///
-	void ResponseEndUtf8(string& str);
+    ///
+    void ResponseEndUtf8(string& str);
 
-	///////////////////////////////////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////////
     /// \brief
     /// Returns the start of the response body as a UTF-8 string. The mime
     /// type must be a text type, for example text/xml.
     ///
     /// \param str
     /// Destination string.
-	///
-	void BodyStartUtf8(string& str);
+    ///
+    void BodyStartUtf8(string& str);
 
-	///////////////////////////////////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////////
     /// \brief
     /// Returns the end of the response body as a UTF-8 string. The mime
     /// type must be a text type, for example text/xml.
     ///
     /// \param str
     /// Destination string.
-	///
-	void BodyEndUtf8(string& str);
+    ///
+    void BodyEndUtf8(string& str);
 
-	///////////////////////////////////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////////
     /// \brief
     /// Returns the contents of the header in this reader as a UTF-8 string.  The mime
     /// type must be a text type, for example text/xml.
@@ -463,7 +463,7 @@ EXTERNAL_API:
     ///
     void HeaderToStringUtf8(string& str);
 
-	///////////////////////////////////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////////
     /// \brief
     /// Returns the contents of the current record/feature in the reader as a UTF-8 string.  The mime
     /// type must be a text type, for example text/xml.
