@@ -1,0 +1,297 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi"
+     xmlns:iis="http://schemas.microsoft.com/wix/IIsExtension"
+     xmlns:util="http://schemas.microsoft.com/wix/UtilExtension">
+    <?if "$(var.MgPlatform)" = "x64" ?>
+        <?define Win64 = "yes" ?>
+        <?define PlatformProgramFilesFolder = "ProgramFiles64Folder" ?>
+        <!-- isapi_MapAgent.dll -->
+        <?define FCGI_MAP = "[!file_MAPAGENTFILES_100]" ?>
+        <!-- php-cgi.exe -->
+        <?define PHP_CGI_EXE = "[!file_PHPFILES_26]" ?>
+    <?else ?>
+        <?define Win64 = "no" ?>
+        <?define PlatformProgramFilesFolder = "ProgramFilesFolder" ?>
+        <!-- isapi_MapAgent.dll -->
+        <?define FCGI_MAP = "[!file_MAPAGENTFILES_100]" ?>
+        <!-- php-cgi.exe -->
+        <?define PHP_CGI_EXE = "[!file_PHPFILES_32]" ?>
+    <?endif ?>
+	<!-- fcgiext.dll -->
+    <?define PHP_MAP = "[WindowsFolder]system32\inetsrv\fcgiext.dll" ?>
+    <Fragment>
+        <Property Id="FRAMEWORKDIR">
+            <RegistrySearch
+            Id="DotNetSearch"
+            Root="HKLM"
+            Win64="$(var.Win64)"
+            Key="Software\Microsoft\.NETFramework"
+            Name="InstallRoot"
+            Type="directory" />
+        </Property>
+        <PropertyRef Id="MGWEB_CONFIG"/>
+        <PropertyRef Id="IISVERSIONMAJOR"/>
+        <PropertyRef Id="IIS_API_TYPE"/>
+
+        <CustomAction Id="AspNetRegIIS_Cmd" Property="AspNetRegIIS" Execute="immediate"
+            Value="&quot;[FRAMEWORKDIR]v4.0.30319\aspnet_regiis.exe&quot; -s W3SVC/[SITE_ID]/ROOT/[VIRTUALDIR]" />
+        <CustomAction Id="AspNetRegIIS" BinaryKey="WixCA" DllEntry="CAQuietExec" Execute="deferred" Return="ignore" Impersonate="no" />
+
+        <!-- Begin Trac Ticket #361 stuff -->
+        
+
+        <!-- CA dll reference -->
+        <Binary Id="iis_uihelper" SourceFile="..\..\Custom\bin\iis_actions.dll" />
+        <CustomAction Id="EnumerateIIS6WebSites" BinaryKey="iis_uihelper" DllEntry="PopulateWebSites" Return="check" Execute="immediate" />
+        
+        <!-- 
+        This is no longer a pointer, this will reference the site we choose from the UI selection. The key is in
+        the SiteId attribute, which is * to allow for a selection by web site name, instead of name/port/ip/header
+        
+        For more information: http://www.mail-archive.com/wix-users@lists.sourceforge.net/msg27928.html
+        -->
+        <iis:WebSite Id="IISDefaultWebSite" Description="[MG_WEBSITE]" SiteId="*">
+            <iis:WebAddress Id="AllUnassigned" Port="80" />
+        </iis:WebSite>
+
+        <!-- End Trac Ticket #361 stuff -->
+
+        <Feature Id="IISSetupFeature" Level="1" Display="hidden" >
+            <Component Id="IISFastCgiConfigComponent" Win64="$(var.Win64)" Guid="2C29D170-15B0-41E6-AD72-91DA094A28CC" Directory="IISROOTLOCATION">
+                <Condition>MGWEB_CONFIG=&quot;IIS&quot; AND IISVERSIONMAJOR=&quot;#5&quot; OR IISVERSIONMAJOR=&quot;#6&quot;</Condition>
+                <CreateFolder />
+                <IniFile Id="IniRegPhpType"
+                         Action="addLine"
+                         Directory="IISROOTLOCATION"
+                         Key="php"
+                         Name="fcgiext.ini"
+                         Section="Types"
+                         Value="PHP"/>
+                <IniFile Id="IniSetPhpExe"
+                         Action="addLine"
+                         Directory="IISROOTLOCATION"
+                         Key="ExePath"
+                         Name="fcgiext.ini"
+                         Section="PHP"
+                         Value="$(var.PHP_CGI_EXE)"/>
+            </Component>
+            
+            <!-- IIS5 Base component -->
+            <!-- 
+            NOTE: Always check the file offsets whenever PHP is updated and/or the mapagent is updated, because we may be creating script
+            maps to files that have moved up or down, and thus the offset is no longer valid
+            -->
+            <Component Id="IIS5BaseMapGuideComponent" Win64="$(var.Win64)" Guid="4174B322-8449-4299-813F-E2B1FCB4ECB4" Directory="WEBEXTENSIONSLOCATION">
+                <Condition>MGWEB_CONFIG=&quot;IIS&quot; AND IISVERSIONMAJOR=&quot;#5&quot;</Condition>
+                <CreateFolder />
+                <iis:WebVirtualDir Id="IIS5MapGuideVDir" Alias="[VIRTUALDIR]" Directory="WEBROOTLOCATION" WebSite="IISDefaultWebSite">
+                    <iis:WebDirProperties Id="IIS5MapGuideDocuments" DefaultDocuments="index.php,index.html,index.htm,default.aspx,index.aspx,default.htm,default.html" AnonymousAccess="yes" BasicAuthentication="no" WindowsAuthentication="no"/>
+                    <iis:WebApplication Id="IIS5MapGuideWebApp" Name="[VIRTUALDIR]">
+                        <iis:WebApplicationExtension Extension="php" Script="yes" Verbs="GET,POST,HEAD" CheckPath="yes" Executable="$(var.PHP_MAP)" />
+                    </iis:WebApplication>
+                    <iis:WebVirtualDir Id="IIS5MapAgentVDir" Alias="mapagent" Directory="dir_mapagent_0" >
+                        <iis:WebDirProperties Id="IIS5MapAgentProperties" DefaultDocuments="index.html" AnonymousAccess="yes" BasicAuthentication="no" WindowsAuthentication="no"/>
+                        <!-- Moving to WiX 3.5 broke this. So we'll disable for now -->
+                        <!-- 
+                        <iis:WebError ErrorCode="401" SubCode="0" />
+                        <iis:WebError ErrorCode="401" SubCode="1" />
+                        <iis:WebError ErrorCode="401" SubCode="2" />
+                        <iis:WebError ErrorCode="401" SubCode="3" />
+                        <iis:WebError ErrorCode="401" SubCode="4" />
+                        <iis:WebError ErrorCode="401" SubCode="5" />
+                        -->
+                        <iis:WebApplication Id="IIS5MapAgentWebApp" Name="mapagent" >
+                            <iis:WebApplicationExtension Extension="fcgi" Script="yes" Verbs="GET,POST" CheckPath="no" Executable="$(var.FCGI_MAP)" />
+                            <iis:WebApplicationExtension Extension="php" Script="yes" Verbs="GET,POST" CheckPath="no" Executable="$(var.PHP_MAP)" />
+                        </iis:WebApplication>
+                    </iis:WebVirtualDir>
+                    <iis:WebVirtualDir Id="IIS5MapAdminVDir" Alias="mapadmin" Directory="dir_mapadmin_0" >
+                        <iis:WebDirProperties Id="IIS5MapAdminDocument" DefaultDocuments="login.php" AnonymousAccess="yes" BasicAuthentication="no" WindowsAuthentication="no"/>
+                    </iis:WebVirtualDir>
+                </iis:WebVirtualDir>
+            </Component>
+
+            <!-- IIS5 PHP MapViewer component -->
+            <Component Id="IIS5PhpViewerComponent" Win64="$(var.Win64)" Guid="1E56B410-1305-4406-BDFB-1252E159B746" Directory="WEBEXTENSIONSLOCATION">
+                <Condition>MGWEB_CONFIG=&quot;IIS&quot; AND IIS_API_TYPE=&quot;PHP&quot; AND IISVERSIONMAJOR=&quot;#5&quot;</Condition>
+                <CreateFolder />
+                <iis:WebVirtualDir Id="IIS5PhpViewerVDir" Alias="[VIRTUALDIR]/mapviewerajax" Directory="dir_mapviewerphp_0" WebSite="IISDefaultWebSite">
+                    <iis:WebDirProperties Id="IIS5PhpViewerDocument" DefaultDocuments="ajaxviewer.php" AnonymousAccess="yes" BasicAuthentication="no" WindowsAuthentication="no"/>
+                </iis:WebVirtualDir>
+            </Component>
+
+            <!-- IIS5 PHP Viewer Sample component -->
+            <Component Id="IIS5PhpViewerSampleComponent" Win64="$(var.Win64)" Guid="2CB24A26-985E-4EEF-8412-A54282542B04" Directory="WEBEXTENSIONSLOCATION">
+                <Condition>MGWEB_CONFIG=&quot;IIS&quot; AND IIS_API_TYPE=&quot;PHP&quot; AND IISVERSIONMAJOR=&quot;#5&quot;</Condition>
+                <CreateFolder />
+                <iis:WebVirtualDir Id="IIS5PhpViewerSampleVDir" Alias="[VIRTUALDIR]/phpviewersample" Directory="dir_phpviewersample_0" WebSite="IISDefaultWebSite">
+                    <iis:WebDirProperties Id="IIS5PhpViewerSampleDocument" DefaultDocuments="ajaxviewersample.php"  AnonymousAccess="yes" BasicAuthentication="no" WindowsAuthentication="no" />
+                    <iis:WebApplication Id="IIS5PhpViewerSampleWebApp" Name="phpviewersample" />
+                </iis:WebVirtualDir>
+            </Component>
+
+            <!-- IIS5 PHP DevGuide Sample component -->
+            <Component Id="IIS5PhpDevGuideSampleComponent" Win64="$(var.Win64)" Guid="58BB8334-650E-481D-8033-BF1C212FE57E" Directory="WEBEXTENSIONSLOCATION">
+                <Condition>MGWEB_CONFIG=&quot;IIS&quot; AND IIS_API_TYPE=&quot;PHP&quot; AND IISVERSIONMAJOR=&quot;#5&quot;</Condition>
+                <CreateFolder />
+                <iis:WebVirtualDir Id="IIS5PhpDevGuideSampleVDir" Alias="[VIRTUALDIR]/phpsamples" Directory="dir_phpsamples_0" WebSite="IISDefaultWebSite">
+                    <iis:WebDirProperties Id="IIS5PhpDevGuideSampleDocument" DefaultDocuments="main.php"  AnonymousAccess="yes" BasicAuthentication="no" WindowsAuthentication="no" />
+                    <iis:WebApplication Id="IIS5PhpDevGuideSampleWebApp" Name="phpsamples" />
+                </iis:WebVirtualDir>
+            </Component>
+
+            <!-- IIS5 DotNet MapViewer component -->
+            <Component Id="IIS5DotNetViewerComponent" Win64="$(var.Win64)" Guid="EC460125-D5D4-4596-BD03-B8D920F02E7F" Directory="WEBEXTENSIONSLOCATION">
+                <Condition>NETFRAMEWORK40FULL AND MGWEB_CONFIG=&quot;IIS&quot; AND IIS_API_TYPE=&quot;DOTNET&quot; AND IISVERSIONMAJOR=&quot;#5&quot;</Condition>
+                <CreateFolder />
+                <iis:WebVirtualDir Id="IIS5DotNetViewerVDir" Alias="[VIRTUALDIR]/mapviewerajax" Directory="dir_mapviewernet_0" WebSite="IISDefaultWebSite">
+                    <iis:WebDirProperties Id="IIS5DotNetViewerDocument" DefaultDocuments="ajaxviewer.aspx"  AnonymousAccess="yes" BasicAuthentication="no" WindowsAuthentication="no" />
+                    <iis:WebApplication Id="IIS5MapViewerWebApp" Name="mapviewerajax" />
+                </iis:WebVirtualDir>
+            </Component>
+
+            <!-- IIS5 DotNet MapViewer component -->
+            <Component Id="IIS5DotNetViewerComponent2" Win64="$(var.Win64)" Guid="DAEBD87A-CAC4-45AA-A5FD-0AF8472EB13C" Directory="WEBEXTENSIONSLOCATION">
+                <Condition>NETFRAMEWORK40FULL AND MGWEB_CONFIG=&quot;IIS&quot; AND IIS_API_TYPE=&quot;DOTNET&quot; AND IISVERSIONMAJOR=&quot;#5&quot;</Condition>
+                <CreateFolder />
+                <iis:WebVirtualDir Id="IIS5DotNetViewerVDir2" Alias="[VIRTUALDIR]/mapviewernet" Directory="dir_mapviewernet_0" WebSite="IISDefaultWebSite">
+                    <iis:WebDirProperties Id="IIS5DotNetViewerDocument2" DefaultDocuments="ajaxviewer.aspx"  AnonymousAccess="yes" BasicAuthentication="no" WindowsAuthentication="no" />
+                    <iis:WebApplication Id="IIS5MapViewerWebApp2" Name="mapviewernet" />
+                </iis:WebVirtualDir>
+            </Component>
+
+            <!-- IIS5 DotNet Viewer Sample component -->
+            <Component Id="IIS5DotNetViewerSampleComponent" Win64="$(var.Win64)" Guid="81AE3F12-5CC5-48F6-AC62-5F225A9743EB" Directory="WEBEXTENSIONSLOCATION">
+                <Condition>NETFRAMEWORK40FULL AND MGWEB_CONFIG=&quot;IIS&quot; AND IIS_API_TYPE=&quot;DOTNET&quot; AND IISVERSIONMAJOR=&quot;#5&quot;</Condition>
+                <CreateFolder />
+                <iis:WebVirtualDir Id="IIS5DotNetViewerSampleVDir" Alias="[VIRTUALDIR]/dotnetviewersample" Directory="dir_dotnetviewersample_0" WebSite="IISDefaultWebSite">
+                    <iis:WebDirProperties Id="IIS5DotNetViewerSampleDocument" DefaultDocuments="ajaxviewersample.aspx"  AnonymousAccess="yes" BasicAuthentication="no" WindowsAuthentication="no" />
+                    <iis:WebApplication Id="IIS5DotNetViewerSampleWebApp" Name="dotnetviewersample" />
+                </iis:WebVirtualDir>
+            </Component>
+
+            <!-- IIS5 DotNet DevGuide Sample component -->
+            <Component Id="IIS5DotNetDevGuideSampleComponent" Win64="$(var.Win64)" Guid="91FA4F55-0673-4043-BEBD-19E4094A8A32" Directory="WEBEXTENSIONSLOCATION">
+                <Condition>NETFRAMEWORK40FULL AND MGWEB_CONFIG=&quot;IIS&quot; AND IIS_API_TYPE=&quot;DOTNET&quot; AND IISVERSIONMAJOR=&quot;#5&quot;</Condition>
+                <CreateFolder />
+                <iis:WebVirtualDir Id="IIS5DotNetDevGuideSampleVDir" Alias="[VIRTUALDIR]/dotnetsamples" Directory="dir_dotnetsamples_0" WebSite="IISDefaultWebSite">
+                    <iis:WebDirProperties Id="IIS5DotNetDevGuideSampleDocument" DefaultDocuments="main.aspx"  AnonymousAccess="yes" BasicAuthentication="no" WindowsAuthentication="no" />
+                    <iis:WebApplication Id="IIS5DotNetDevGuideSampleWebApp" Name="dotnetsamples" />
+                </iis:WebVirtualDir>
+            </Component>
+            
+            <!-- Trac #361 -->
+            <Component Id="PersistWebsiteSelection" Win64="$(var.Win64)" Guid="0C0CBB26-C99B-486a-9367-15D49AC9726B" Directory="WEBEXTENSIONSLOCATION">
+                <RegistryKey Root="HKLM" Key="$(var.MgRegKey)">
+                    <RegistryValue Name="MG_WEBSITE" Type="string" Value="[MG_WEBSITE]" />
+                </RegistryKey>
+            </Component>
+            
+            <!-- IIS6 Base component -->
+            <!-- 
+            NOTE: Always check the file offsets whenever PHP is updated and/or the mapagent is updated, because we may be creating script
+            maps to files that have moved up or down, and thus the offset is no longer valid
+            -->
+            <Component Id="IIS6BaseMapGuideComponent" Win64="$(var.Win64)" Guid="BC77760D-55D5-4111-BC1D-50CEC0482D60" Directory="WEBEXTENSIONSLOCATION">
+                <Condition>MGWEB_CONFIG=&quot;IIS&quot; AND IISVERSIONMAJOR=&quot;#6&quot;</Condition>
+                <CreateFolder />
+                <iis:WebAppPool Id="IIS6MapGuideAppPool" Name="[APP_POOL_NAME]" />
+                <iis:WebServiceExtension Id="IIS6PhpWebServiceExt" Allow="yes" Description="[PHP_FCGI_HANDLER_NAME]" File="$(var.PHP_MAP)" />
+                <iis:WebServiceExtension Id="IIS6MapGuideWebServiceExt" Allow="yes" Description="[MAPAGENT_ISAPI_NAME]" File="$(var.FCGI_MAP)" />
+                <iis:WebVirtualDir Id="IIS6MapGuideVDir" Alias="[VIRTUALDIR]" Directory="WEBROOTLOCATION" WebSite="IISDefaultWebSite" >
+                    <iis:WebDirProperties Id="IIS6MapGuideDocuments" DefaultDocuments="index.php,index.html,index.htm,default.aspx,index.aspx,default.htm,default.html"  AnonymousAccess="yes" BasicAuthentication="no" WindowsAuthentication="no" />
+                    <iis:MimeMap Id="IIS6JsonMimeType" Type="application/json" Extension =".json" />
+                    <iis:WebApplication Id="IIS6MapGuideWebApp" Name="[VIRTUALDIR]" WebAppPool="IIS6MapGuideAppPool" >
+                        <iis:WebApplicationExtension Extension="php" Script="yes" Verbs="GET,POST,HEAD" CheckPath="yes" Executable="$(var.PHP_MAP)" />
+                    </iis:WebApplication>
+                    <iis:WebVirtualDir Id="IIS6MapAgentVDir" Alias="mapagent" Directory="dir_mapagent_0" >
+                        <iis:WebDirProperties Id="IIS6MapAgentProperties" DefaultDocuments="index.html" AnonymousAccess="yes" BasicAuthentication="no" WindowsAuthentication="no" />
+                        <!-- Moving to WiX 3.5 broke this. So we'll disable for now -->
+                        <!-- 
+                        <iis:WebError ErrorCode="401" SubCode="0"/>
+                        <iis:WebError ErrorCode="401" SubCode="1" />
+                        <iis:WebError ErrorCode="401" SubCode="2" />
+                        <iis:WebError ErrorCode="401" SubCode="3" />
+                        <iis:WebError ErrorCode="401" SubCode="4" />
+                        <iis:WebError ErrorCode="401" SubCode="5" />
+                        -->
+                        <iis:WebApplication Id="IIS6MapAgentWebApp" Name="mapagent" WebAppPool="IIS6MapGuideAppPool">
+                            <iis:WebApplicationExtension Extension="fcgi" Script="yes" Verbs="GET,POST" CheckPath="no" Executable="$(var.FCGI_MAP)" />
+                            <iis:WebApplicationExtension Extension="php" Script="yes" Verbs="GET,POST" CheckPath="no" Executable="$(var.PHP_MAP)" />
+                        </iis:WebApplication>
+                    </iis:WebVirtualDir>
+                    <iis:WebVirtualDir Id="IIS6MapAdminVDir" Alias="mapadmin" Directory="dir_mapadmin_0" >
+                        <iis:WebDirProperties Id="IIS6MapAdminDocument" DefaultDocuments="login.php"  AnonymousAccess="yes" BasicAuthentication="no" WindowsAuthentication="no" />
+                    </iis:WebVirtualDir>
+                </iis:WebVirtualDir>
+            </Component>
+
+            <!-- IIS6 PHP MapViewer component -->
+            <Component Id="IIS6PhpViewerComponent" Win64="$(var.Win64)" Guid="6CDC8E73-B6B1-4A2E-98E3-953C399D1D0D" Directory="WEBEXTENSIONSLOCATION">
+                <Condition>MGWEB_CONFIG=&quot;IIS&quot; AND IIS_API_TYPE=&quot;PHP&quot; AND IISVERSIONMAJOR=&quot;#6&quot;</Condition>
+                <CreateFolder />
+                <iis:WebVirtualDir Id="IIS6PhpViewerVDir" Alias="[VIRTUALDIR]/mapviewerajax" Directory="dir_mapviewerphp_0" WebSite="IISDefaultWebSite">
+                    <iis:WebDirProperties Id="IIS6PhpViewerDocument" DefaultDocuments="ajaxviewer.php"  AnonymousAccess="yes" BasicAuthentication="no" WindowsAuthentication="no" />
+                </iis:WebVirtualDir>
+            </Component>
+
+            <!-- IIS6 PHP Viewer Sample component -->
+            <Component Id="IIS6PhpViewerSampleComponent" Win64="$(var.Win64)" Guid="88AACC15-76BC-47B9-B5C3-698142A3BE07" Directory="WEBEXTENSIONSLOCATION">
+                <Condition>MGWEB_CONFIG=&quot;IIS&quot; AND IIS_API_TYPE=&quot;PHP&quot; AND IISVERSIONMAJOR=&quot;#6&quot;</Condition>
+                <CreateFolder />
+                <iis:WebVirtualDir Id="IIS6PhpViewerSampleVDir" Alias="[VIRTUALDIR]/phpviewersample" Directory="dir_phpviewersample_0" WebSite="IISDefaultWebSite">
+                    <iis:WebDirProperties Id="IIS6PhpViewerSampleDocument" DefaultDocuments="ajaxviewersample.php"  AnonymousAccess="yes" BasicAuthentication="no" WindowsAuthentication="no" />
+                </iis:WebVirtualDir>
+            </Component>
+
+            <!-- IIS6 PHP DevGuide Sample component -->
+            <Component Id="IIS6PhpDevGuideSampleComponent" Win64="$(var.Win64)" Guid="EFE0BE5D-4D36-4366-A81F-F05414DE766F" Directory="WEBEXTENSIONSLOCATION">
+                <Condition>MGWEB_CONFIG=&quot;IIS&quot; AND IIS_API_TYPE=&quot;PHP&quot; AND IISVERSIONMAJOR=&quot;#6&quot;</Condition>
+                <CreateFolder />
+                <iis:WebVirtualDir Id="IIS6PhpDevGuideSampleVDir" Alias="[VIRTUALDIR]/phpsamples" Directory="dir_phpsamples_0" WebSite="IISDefaultWebSite">
+                    <iis:WebDirProperties Id="IIS6PhpDevGuideSampleDocument" DefaultDocuments="main.php"  AnonymousAccess="yes" BasicAuthentication="no" WindowsAuthentication="no" />
+                </iis:WebVirtualDir>
+            </Component>
+
+            <!-- IIS6 DotNet MapViewer component -->
+            <Component Id="IIS6DotNetViewerComponent" Win64="$(var.Win64)" Guid="357E1C68-9E29-474F-A783-6F8FD8BCEAB4" Directory="WEBEXTENSIONSLOCATION">
+                <Condition>NETFRAMEWORK40FULL AND MGWEB_CONFIG=&quot;IIS&quot; AND IIS_API_TYPE=&quot;DOTNET&quot; AND IISVERSIONMAJOR=&quot;#6&quot;</Condition>
+                <CreateFolder />
+                <iis:WebVirtualDir Id="IIS6DotNetViewerVDir" Alias="[VIRTUALDIR]/mapviewerajax" Directory="dir_mapviewernet_0" WebSite="IISDefaultWebSite">
+                    <iis:WebDirProperties Id="IIS6DotNetViewerDocument" DefaultDocuments="ajaxviewer.aspx"  AnonymousAccess="yes" BasicAuthentication="no" WindowsAuthentication="no" />
+                    <iis:WebApplication Id="IIS6MapViewerWebApp" Name="mapviewerajax" WebAppPool="IIS6MapGuideAppPool" />
+                </iis:WebVirtualDir>
+            </Component>
+
+            <!-- IIS6 DotNet MapViewer component -->
+            <Component Id="IIS6DotNetViewerComponent2" Win64="$(var.Win64)" Guid="44807D96-F0FB-4D2E-A863-335AA034ECB4" Directory="WEBEXTENSIONSLOCATION">
+                <Condition>NETFRAMEWORK40FULL AND MGWEB_CONFIG=&quot;IIS&quot; AND IIS_API_TYPE=&quot;DOTNET&quot; AND IISVERSIONMAJOR=&quot;#6&quot;</Condition>
+                <CreateFolder />
+                <iis:WebVirtualDir Id="IIS6DotNetViewerVDir2" Alias="[VIRTUALDIR]/mapviewernet" Directory="dir_mapviewernet_0" WebSite="IISDefaultWebSite">
+                    <iis:WebDirProperties Id="IIS6DotNetViewerDocument2" DefaultDocuments="ajaxviewer.aspx"  AnonymousAccess="yes" BasicAuthentication="no" WindowsAuthentication="no" />
+                    <iis:WebApplication Id="IIS6MapViewerWebApp2" Name="mapviewernet" WebAppPool="IIS6MapGuideAppPool" />
+                </iis:WebVirtualDir>
+            </Component>
+
+            <!-- IIS6 DotNet Viewer Sample component -->
+            <Component Id="IIS6DotNetViewerSampleComponent" Win64="$(var.Win64)" Guid="E2330508-5E84-4451-9D34-F813B452039D" Directory="WEBEXTENSIONSLOCATION">
+                <Condition>NETFRAMEWORK40FULL AND MGWEB_CONFIG=&quot;IIS&quot; AND IIS_API_TYPE=&quot;DOTNET&quot; AND IISVERSIONMAJOR=&quot;#6&quot;</Condition>
+                <CreateFolder />
+                <iis:WebVirtualDir Id="IIS6DotNetViewerSampleVDir" Alias="[VIRTUALDIR]/dotnetviewersample" Directory="dir_dotnetviewersample_0" WebSite="IISDefaultWebSite">
+                    <iis:WebDirProperties Id="IIS6DotNetViewerSampleDocument" DefaultDocuments="ajaxviewersample.aspx"  AnonymousAccess="yes" BasicAuthentication="no" WindowsAuthentication="no" />
+                    <iis:WebApplication Id="IIS6DotNetViewerSampleWebApp" Name="dotnetviewersample" WebAppPool="IIS6MapGuideAppPool" />
+                </iis:WebVirtualDir>
+            </Component>
+
+            <!-- IIS6 DotNet DevGuide Sample component -->
+            <Component Id="IIS6DotNetDevGuideSampleComponent" Win64="$(var.Win64)" Guid="71EDDC8E-A1BA-4c69-B7E3-F52E32FB3CA1" Directory="WEBEXTENSIONSLOCATION">
+                <Condition>NETFRAMEWORK40FULL AND MGWEB_CONFIG=&quot;IIS&quot; AND IIS_API_TYPE=&quot;DOTNET&quot; AND IISVERSIONMAJOR=&quot;#6&quot;</Condition>
+                <CreateFolder />
+                <iis:WebVirtualDir Id="IIS6DotNetDevGuideSampleVDir" Alias="[VIRTUALDIR]/dotnetsamples" Directory="dir_dotnetsamples_0" WebSite="IISDefaultWebSite">
+                    <iis:WebDirProperties Id="IIS6DotNetDevGuideSampleDocument" DefaultDocuments="main.aspx"  AnonymousAccess="yes" BasicAuthentication="no" WindowsAuthentication="no" />
+                    <iis:WebApplication Id="IIS6DotNetDevGuideSampleWebApp" Name="dotnetsamples" WebAppPool="IIS6MapGuideAppPool" />
+                </iis:WebVirtualDir>
+            </Component>
+        </Feature>
+    </Fragment>
+</Wix>

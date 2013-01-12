@@ -1,0 +1,9 @@
+; apache_actions.def : Declares the module parameters for the DLL.
+
+LIBRARY      "apache_actions"
+DESCRIPTION  'apache_actions Windows Dynamic Link Library'
+
+EXPORTS
+GetApacheDir         @2
+UpdatePhpIni         @3
+UpdateApacheConfig   @4
