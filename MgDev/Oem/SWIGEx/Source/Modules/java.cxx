@@ -62,6 +62,8 @@ class JAVA : public Language {
   bool   wrapping_member_flag; // Flag for when wrapping a member variable/enum/const
   bool   global_variable_flag; // Flag for when wrapping a global variable
   bool   member_func_flag;      // flag set when wrapping a member function
+  bool   lower_camel_case_method_names; //Flag to determine if java method should be forced into lowerCamelCase
+  bool   skip_throws_clause; //Flag to determine if throws clauses are to be omitted (assumes root exception proxy extends RuntimeException)
 
   bool	 firstFuncWrapper;
 
@@ -136,6 +138,8 @@ class JAVA : public Language {
     global_variable_flag(false),
     member_func_flag(false),
 	firstFuncWrapper(true),
+    lower_camel_case_method_names(false),
+    skip_throws_clause(false),
 
     imclass_name(NULL),
     module_class_name(NULL),
@@ -332,6 +336,12 @@ class JAVA : public Language {
         } else if ((strcmp(argv[i],"-noproxy") == 0)) {
           Swig_mark_arg(i);
           proxy_flag = false;
+        } else if ((strcmp(argv[i],"-mgjavacasing") == 0)) {
+          Swig_mark_arg(i);
+          lower_camel_case_method_names = true;
+        } else if ((strcmp(argv[i],"-mgjavanothrow") == 0)) {
+          Swig_mark_arg(i);
+          skip_throws_clause = true;
         } else if ((strcmp(argv[i],"-dllname") == 0)) {
 			if (argv[i+1]) 
 			{
@@ -1885,6 +1895,7 @@ class JAVA : public Language {
     String    *imcall = NewString("");
     String    *return_type = NewString("");
     String    *function_code = NewString("");
+    String    *camelCasedName = NULL;
 
     if(!proxy_flag) return;
 
@@ -1915,12 +1926,31 @@ class JAVA : public Language {
     }
 
     /* Start generating the proxy function */
+
+    //NOTE: Not for general consumption. All MapGuide API methods are in UpperCamelCase so this simply lowercases the first letter
+    if (lower_camel_case_method_names)
+    {
+        camelCasedName = NewString("");
+        char * chOriginalName = Char(proxy_function_name);
+        if (chOriginalName && strlen(chOriginalName) > 0) 
+        {
+            int i = 0;
+            Printf(camelCasedName, "%c", tolower(chOriginalName[i]));
+            i++;
+            while(chOriginalName[i] != '\0')
+            {
+                Printf(camelCasedName, "%c", chOriginalName[i]);
+                i++;
+            }
+        }
+    }
+
     const String *methodmods = Getattr(n,"feature:java:methodmodifiers");
     methodmods = methodmods ? methodmods : (is_protected(n) ? protected_string : public_string);
     Printf(function_code, "  %s ", methodmods);
     if (static_flag)
       Printf(function_code, "static ");
-    Printf(function_code, "%s %s(", return_type, proxy_function_name);
+    Printf(function_code, "%s %s(", return_type, (camelCasedName != NULL ? camelCasedName : proxy_function_name));
 
     Printv(imcall, imclass_name, ".", intermediary_function_name, "(", NIL);
     if (!static_flag)
@@ -1992,7 +2022,7 @@ class JAVA : public Language {
 
     Printf(imcall, ")");
     Printf(function_code, ")");
-    if(baseException)
+    if(baseException && !skip_throws_clause)
         Printf(function_code, " throws %s ", baseException);
 
     // Transform return type used in JNI function (in intermediary class) to type used in Java wrapper function (in proxy class)
@@ -2021,6 +2051,11 @@ class JAVA : public Language {
     Printf(function_code, " %s\n\n", tm ? tm : empty_string);
 
     Printv(proxy_class_code, function_code, NIL);
+
+    if (camelCasedName != NULL) {
+        Delete(camelCasedName);
+        camelCasedName = NULL;
+    }
 
     Delete(function_code);
     Delete(return_type);
@@ -2121,7 +2156,7 @@ class JAVA : public Language {
 
       Printf(proxy_class_code, ")");
 
-      if(baseException)
+      if(baseException && !skip_throws_clause)
           Printf(proxy_class_code, " throws %s", baseException);
 
       generateThrowsClause(n, proxy_class_code);
@@ -3604,6 +3639,8 @@ Java Options (available with -java)\n\
      -package <name> - set name of the Java package to <name>\n\
      -noproxy        - Generate the low-level functional interface instead\n\
                        of proxy classes\n\
+     -mgjavanothrow  - Omit the throws clause in Java wrapper methods (root proxy exception class must extend RuntimeException)\n\
+     -mgjavacasing   - Force java methods to be written in lowerCamelCase\n\
      -root <name>    - set the name of the root class\n\
      -dllname <name>    - set the name of JNI dll\n\
 \n";

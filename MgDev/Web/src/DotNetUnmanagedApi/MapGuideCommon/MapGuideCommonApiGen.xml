@@ -14,6 +14,7 @@
    Target section.
 -->
 <Target path="./MapGuideCommonApi.i" />
+<DocTarget path="./MapGuideCommonApi_Doc.i" />
 
 <!--
    C++ inline section.
@@ -52,6 +53,7 @@ typedef wchar_t* STRINGPARAM;
   %import "../Foundation/FoundationApi.i"
   %import "../Geometry/GeometryApi.i"
   %import "../PlatformBase/PlatformBaseApi.i"
+  %include "MapGuideCommonApi_Doc.i" //doc fragments
   %include "language.i"   //typemaps specific for each language
   %include "../../../../Common/MapGuideCommon/System/MapGuideCommonClassId.h"
 
