@@ -70,16 +70,16 @@
                 break;
             case Command.EXECUTEQUERY:
                 responseType = "text/plain";
-		ArrayList<Feature> resultList = query.Execute();
-		for(int i=0;i<resultList.size();i++)
-		{
-		    jsonObj.put("displayValue", resultList.get(i).displayValue);
-		    jsonObj.put("centerX", resultList.get(i).centerX);
-		    jsonObj.put("centerY", resultList.get(i).centerY);
-		    jsonObj.put("idList", resultList.get(i).idList);
-		    json.put(i, jsonObj.toString());
-		}
-		responseString = json.toString();
+                ArrayList<Feature> resultList = query.Execute();
+                for(int i=0;i<resultList.size();i++)
+                {
+                    jsonObj.put("displayValue", resultList.get(i).displayValue);
+                    jsonObj.put("centerX", resultList.get(i).centerX);
+                    jsonObj.put("centerY", resultList.get(i).centerY);
+                    jsonObj.put("idList", resultList.get(i).idList);
+                    json.put(i, jsonObj.toString());
+                }
+                responseString = json.toString();
                 break;
             case Command.GETSELECTIONXML:
                 responseType = "text/xml";

@@ -30,11 +30,14 @@
         public Map idList = null;
         
         public Feature(String displayValue, MgPoint centerPoint, Map idList) throws MgException
-    	{
-    	    this.displayValue = displayValue;
-    	    this.centerX = centerPoint.GetCoordinate().GetX();
-    	    this.centerY = centerPoint.GetCoordinate().GetY();
-    	    this.idList = new HashMap(idList);
-    	}
+        {
+            this.displayValue = displayValue;
+            if (centerPoint != null)
+            {
+                this.centerX = centerPoint.GetCoordinate().GetX();
+                this.centerY = centerPoint.GetCoordinate().GetY();
+            }
+            this.idList = new HashMap(idList);
+        }
     }
 %>
