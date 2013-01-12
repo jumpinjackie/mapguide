@@ -114,12 +114,9 @@ void MgHttpSelectFeaturesSpatially::Execute(MgHttpResponse& hResponse)
     }
 
     Ptr<MgDataReader> dataReader = service->SelectAggregate(&resId, m_className, qryOptions);
-    Ptr<MgByteReader> byteReader = dataReader->ToXml();
-
-    //Convert to alternate response format, if necessary
-    ProcessFormatConversion(byteReader);
-
-    hResult->SetResultObject(byteReader, byteReader->GetMimeType());
+    //HACK-ish: We're passing conversion responsibility to the caller (agent), so we store the
+    //originally requested format so the caller can determine if conversion is required
+    hResult->SetResultObject(dataReader, m_responseFormat);
 
     MG_HTTP_HANDLER_CATCH_AND_THROW_EX(L"MgHttpSelectFeaturesSpatially.Execute")
 }

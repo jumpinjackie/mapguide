@@ -190,6 +190,7 @@
   <ItemGroup>
     <ClCompile Include="CgiAgent.cpp" />
     <ClCompile Include="CgiPostParser.cpp" />
+    <ClCompile Include="CgiReaderStreamer.cpp" />
     <ClCompile Include="CgiResponseHandler.cpp" />
     <ClCompile Include="EchoTest.cpp" />
   </ItemGroup>
@@ -198,6 +199,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CgiPostParser.h" />
+    <ClInclude Include="CgiReaderStreamer.h" />
     <ClInclude Include="CgiResponseHandler.h" />
   </ItemGroup>
   <ItemGroup>

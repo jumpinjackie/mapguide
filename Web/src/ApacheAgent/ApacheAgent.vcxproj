@@ -224,6 +224,7 @@ if NOT EXIST httpd-2.2-x64 ..\..\BuildTools\WebTools\7-Zip\7z.exe x httpd-2.2-x6
   <ItemGroup>
     <ClCompile Include="ApacheAgent.cpp" />
     <ClCompile Include="ApachePostParser.cpp" />
+    <ClCompile Include="ApacheReaderStreamer.cpp" />
     <ClCompile Include="ApacheResponseHandler.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -231,6 +232,7 @@ if NOT EXIST httpd-2.2-x64 ..\..\BuildTools\WebTools\7-Zip\7z.exe x httpd-2.2-x6
   </ItemGroup>
   <ItemGroup>
     <CustomBuildStep Include="ApachePostParser.h" />
+    <ClInclude Include="ApacheReaderStreamer.h" />
     <ClInclude Include="ApacheResponseHandler.h" />
   </ItemGroup>
   <ItemGroup>

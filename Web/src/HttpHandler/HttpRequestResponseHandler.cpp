@@ -278,4 +278,3 @@ void MgHttpRequestResponseHandler::ProcessFormatConversion(Ptr<MgByteReader> &by
         convert.ToJson(byteReader);
     }
 }
-

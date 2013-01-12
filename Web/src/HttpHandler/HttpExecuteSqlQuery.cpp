@@ -63,12 +63,9 @@ void MgHttpExecuteSqlQuery::Execute(MgHttpResponse& hResponse)
 
     // call the C++ API
     Ptr<MgSqlDataReader> sqlReader = service->ExecuteSqlQuery(resId, m_sqlStatement);
-    Ptr<MgByteReader> byteReader = sqlReader->ToXml();
-
-    //Convert to alternate response format, if necessary
-    ProcessFormatConversion(byteReader);
-
-    hResult->SetResultObject(byteReader, byteReader->GetMimeType());
+    //HACK-ish: We're passing conversion responsibility to the caller (agent), so we store the
+    //originally requested format so the caller can determine if conversion is required
+    hResult->SetResultObject(sqlReader, m_responseFormat);
 
     MG_HTTP_HANDLER_CATCH_AND_THROW_EX(L"MgHttpExecuteSqlQuery.Execute")
 }

@@ -23,6 +23,7 @@ lib_LTLIBRARIES = mod_mgmapagent.la
 
 mod_mgmapagent_la_SOURCES = ApacheAgent.cpp \
                             ApachePostParser.cpp \
+                            ApacheReaderStreamer.cpp \
                             ApacheResponseHandler.cpp \
                             ../MapAgentCommon/MapAgentCommon.cpp \
                             ../MapAgentCommon/MapAgentGetParser.cpp \
@@ -30,6 +31,7 @@ mod_mgmapagent_la_SOURCES = ApacheAgent.cpp \
                             ../WebSupport/InitializeWebTier.cpp
 
 noinst_HEADERS = ApachePostParser.h \
+                 ApacheReaderStreamer.h \
                  ApacheResponseHandler.h \
                  ../MapAgentCommon/MapAgentCommon.h \
                  ../MapAgentCommon/MapAgentGetParser.h \

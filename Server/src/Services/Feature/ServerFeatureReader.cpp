@@ -865,6 +865,53 @@ MgByteReader* MgServerFeatureReader::ToXml()
         __LINE__, __WFILE__, NULL, L"", NULL);
 }
 
+string MgServerFeatureReader::GetResponseElementName()
+{
+    throw new MgInvalidOperationException(L"MgServerFeatureReader.GetResponseElementName",
+        __LINE__, __WFILE__, NULL, L"", NULL);
+}
+
+string MgServerFeatureReader::GetBodyElementName()
+{
+    throw new MgInvalidOperationException(L"MgServerFeatureReader.GetBodyElementName",
+        __LINE__, __WFILE__, NULL, L"", NULL);
+}
+
+void MgServerFeatureReader::ResponseStartUtf8(string& str)
+{
+    throw new MgInvalidOperationException(L"MgServerFeatureReader.ResponseStartUtf8",
+        __LINE__, __WFILE__, NULL, L"", NULL);
+}
+
+void MgServerFeatureReader::ResponseEndUtf8(string& str)
+{
+    throw new MgInvalidOperationException(L"MgServerFeatureReader.ResponseEndUtf8",
+        __LINE__, __WFILE__, NULL, L"", NULL);
+}
+
+void MgServerFeatureReader::BodyStartUtf8(string& str)
+{
+    throw new MgInvalidOperationException(L"MgServerFeatureReader.BodyStartUtf8",
+        __LINE__, __WFILE__, NULL, L"", NULL);
+}
+
+void MgServerFeatureReader::BodyEndUtf8(string& str)
+{
+    throw new MgInvalidOperationException(L"MgServerFeatureReader.BodyEndUtf8",
+        __LINE__, __WFILE__, NULL, L"", NULL);
+}
+
+void MgServerFeatureReader::HeaderToStringUtf8(string& str)
+{
+    throw new MgInvalidOperationException(L"MgServerFeatureReader.HeaderToStringUtf8",
+        __LINE__, __WFILE__, NULL, L"", NULL);
+}
+
+void MgServerFeatureReader::CurrentToStringUtf8(string& str)
+{
+    throw new MgInvalidOperationException(L"MgServerFeatureReader.CurrentToStringUtf8",
+        __LINE__, __WFILE__, NULL, L"", NULL);
+}
 
 //////////////////////////////////////////////////////////////////
 /// <summary>

@@ -1234,6 +1234,53 @@ MgByteReader* MgServerGwsFeatureReader::ToXml()
         __LINE__, __WFILE__, NULL, L"", NULL);
 }
 
+string MgServerGwsFeatureReader::GetResponseElementName()
+{
+    throw new MgInvalidOperationException(L"MgServerGwsFeatureReader.GetResponseElementName",
+        __LINE__, __WFILE__, NULL, L"", NULL);
+}
+
+string MgServerGwsFeatureReader::GetBodyElementName()
+{
+    throw new MgInvalidOperationException(L"MgServerGwsFeatureReader.GetBodyElementName",
+        __LINE__, __WFILE__, NULL, L"", NULL);
+}
+
+void MgServerGwsFeatureReader::ResponseStartUtf8(string& str)
+{
+	throw new MgInvalidOperationException(L"MgServerGwsFeatureReader.ResponseStartUtf8",
+        __LINE__, __WFILE__, NULL, L"", NULL);
+}
+
+void MgServerGwsFeatureReader::ResponseEndUtf8(string& str)
+{
+	throw new MgInvalidOperationException(L"MgServerGwsFeatureReader.ResponseEndUtf8",
+        __LINE__, __WFILE__, NULL, L"", NULL);
+}
+
+void MgServerGwsFeatureReader::BodyStartUtf8(string& str)
+{
+	throw new MgInvalidOperationException(L"MgServerGwsFeatureReader.BodyStartUtf8",
+        __LINE__, __WFILE__, NULL, L"", NULL);
+}
+
+void MgServerGwsFeatureReader::BodyEndUtf8(string& str)
+{
+	throw new MgInvalidOperationException(L"MgServerGwsFeatureReader.BodyEndUtf8",
+        __LINE__, __WFILE__, NULL, L"", NULL);
+}
+
+void MgServerGwsFeatureReader::HeaderToStringUtf8(string& str)
+{
+    throw new MgInvalidOperationException(L"MgServerGwsFeatureReader.HeaderToStringUtf8",
+        __LINE__, __WFILE__, NULL, L"", NULL);
+}
+
+void MgServerGwsFeatureReader::CurrentToStringUtf8(string& str)
+{
+	throw new MgInvalidOperationException(L"MgServerGwsFeatureReader.CurrentToStringUtf8",
+        __LINE__, __WFILE__, NULL, L"", NULL);
+}
 
 //////////////////////////////////////////////////////////////////
 /// <summary>

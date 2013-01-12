@@ -33,6 +33,7 @@ class MgHttpResponse;
 // Common HttpHandler headers
 #include "HttpHandlerApiDllExport.h"
 #include "HttpHeader.h"
+#include "HttpReaderStreamer.h"
 #include "HttpRequestParam.h"
 #include "HttpRequestMetadata.h"
 #include "HttpStatusCodes.h"

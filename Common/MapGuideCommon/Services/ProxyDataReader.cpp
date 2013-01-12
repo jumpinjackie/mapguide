@@ -682,23 +682,77 @@ void MgProxyDataReader::ToXml(string &str)
     CHECKNULL((MgPropertyDefinitionCollection*)m_propDefCol, L"MgProxyDataReader.ToXml");
 
     // this XML follows the SelectAggregate-1.0.0.xsd schema
-    str += "<?xml version=\"1.0\" encoding=\"UTF-8\"?>";
-    str += "<PropertySet>";
-    m_propDefCol->ToXml(str);
-    str += "<Properties>";
+    ResponseStartUtf8(str);
+    HeaderToStringUtf8(str);
+    BodyStartUtf8(str);
     while ( this->ReadNext() )
+    {
+        CurrentToStringUtf8(str);
+    }
+    BodyEndUtf8(str);
+    ResponseEndUtf8(str);
+}
+
+string MgProxyDataReader::GetResponseElementName()
+{
+    return "PropertySet";
+}
+
+string MgProxyDataReader::GetBodyElementName()
+{
+    return "Properties";
+}
+
+void MgProxyDataReader::ResponseStartUtf8(string& str)
+{
+    str += "<?xml version=\"1.0\" encoding=\"UTF-8\"?>";
+    str += "<";
+    str += GetResponseElementName();
+    str += ">";
+}
+
+void MgProxyDataReader::ResponseEndUtf8(string& str)
+{
+    str += "</";
+    str += GetResponseElementName();
+    str += ">";
+}
+
+void MgProxyDataReader::BodyStartUtf8(string& str)
+{
+    str += "<";
+    str += GetBodyElementName();
+    str += ">";
+}
+
+void MgProxyDataReader::BodyEndUtf8(string& str)
+{
+    str += "</";
+    str += GetBodyElementName();
+    str += ">";
+}
+
+void MgProxyDataReader::HeaderToStringUtf8(string& str)
+{
+    if (NULL != (MgPropertyDefinitionCollection*)m_propDefCol)
+    {
+        m_propDefCol->ToXml(str);
+    }
+}
+
+void MgProxyDataReader::CurrentToStringUtf8(string& str)
+{
+    if (NULL != (MgBatchPropertyCollection*)m_set)
     {
         Ptr<MgPropertyCollection> propCol = m_set->GetItem(m_currRecord-1);
         INT32 cnt = propCol->GetCount();
         if (propCol != NULL && cnt > 0)
         {
             str += "<PropertyCollection>";
-            propCol->ToXml(str,false);
+            propCol->ToXml(str, false);
             str += "</PropertyCollection>";
         }
     }
-    str += "</Properties>";
-    str += "</PropertySet>";
 }
 
 void MgProxyDataReader::SetService(MgFeatureService* service)

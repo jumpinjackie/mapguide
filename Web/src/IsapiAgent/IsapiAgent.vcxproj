@@ -186,6 +186,7 @@
   <ItemGroup>
     <ClCompile Include="IsapiAgent.cpp" />
     <ClCompile Include="IsapiPostParser.cpp" />
+    <ClCompile Include="IsapiReaderStreamer.cpp" />
     <ClCompile Include="IsapiResponseHandler.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -196,6 +197,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="IsapiPostParser.h" />
+    <ClInclude Include="IsapiReaderStreamer.h" />
     <ClInclude Include="IsapiResponseHandler.h" />
     <ClInclude Include="stdafx.h" />
   </ItemGroup>

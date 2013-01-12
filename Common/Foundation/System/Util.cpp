@@ -1012,6 +1012,14 @@ void MgUtil::Int32ToString(INT32 val, STRING& str)
     str = &buf[0];
 }
 
+void MgUtil::Int32ToHexString(INT32 val, string& str)
+{
+    char buf[32] = { 0 };
+
+    ::sprintf(buf, "%x", val);
+    str = &buf[0];
+}
+
 void MgUtil::UInt32ToString(UINT32 val, string& str)
 {
     char buf[32] = { 0 };

@@ -19,6 +19,7 @@
 #include "HttpHandler.h"
 #include "HttpPrimitiveValue.h"
 #include "CgiResponseHandler.h"
+#include "CgiReaderStreamer.h"
 #include "MapAgentStrings.h"
 
 #include <stdlib.h>
@@ -101,6 +102,7 @@ void CgiResponseHandler::SendResponse(MgHttpResponse* response)
             printf(MapAgentStrings::ContentTypeHeader, MapAgentStrings::TextPlain, MapAgentStrings::Utf8Text);
         }
 
+        Ptr<MgReader> outputDataReader;
         Ptr<MgByteReader> outputReader;
         Ptr<MgDisposable> resultObj = result->GetResultObject();
         MgDisposable* pResultObj = (MgDisposable*)resultObj;
@@ -111,7 +113,7 @@ void CgiResponseHandler::SendResponse(MgHttpResponse* response)
         }
         else if (NULL != dynamic_cast<MgFeatureReader*>(pResultObj))
         {
-            outputReader = ((MgFeatureReader*)pResultObj)->ToXml();
+            outputDataReader = SAFE_ADDREF((MgFeatureReader*)pResultObj); //Need to AddRef because there's now 2 references on this pointer
         }
         else if (NULL != dynamic_cast<MgStringCollection*>(pResultObj))
         {
@@ -119,11 +121,11 @@ void CgiResponseHandler::SendResponse(MgHttpResponse* response)
         }
         else if (NULL != dynamic_cast<MgSqlDataReader*>(pResultObj))
         {
-            outputReader = ((MgSqlDataReader*)pResultObj)->ToXml();
+            outputDataReader = SAFE_ADDREF((MgSqlDataReader*)pResultObj); //Need to AddRef because there's now 2 references on this pointer
         }
         else if (NULL != dynamic_cast<MgDataReader*>(pResultObj))
         {
-            outputReader = ((MgDataReader*)pResultObj)->ToXml();
+            outputDataReader = SAFE_ADDREF((MgDataReader*)pResultObj); //Need to AddRef because there's now 2 references on this pointer
         }
         else if (NULL != dynamic_cast<MgSpatialContextReader*>(pResultObj))
         {
@@ -143,6 +145,11 @@ void CgiResponseHandler::SendResponse(MgHttpResponse* response)
             string utf8 = MG_WCHAR_TO_CHAR(stringVal);
             printf(MapAgentStrings::ContentLengthHeader, utf8.length());
             printf("\r\n%s",utf8.c_str());
+        }
+        else if (outputDataReader != NULL)
+        {
+            CgiReaderStreamer crs(outputDataReader, result->GetResultContentType());
+            crs.StreamResult();
         }
         else if (outputReader != NULL)
         {

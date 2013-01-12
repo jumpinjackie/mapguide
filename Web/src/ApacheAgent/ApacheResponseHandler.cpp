@@ -16,6 +16,7 @@
 //
 
 #include "ApacheResponseHandler.h"
+#include "ApacheReaderStreamer.h"
 #include "MapAgentStrings.h"
 
 #include "httpd.h"
@@ -97,6 +98,7 @@ void ApacheResponseHandler::SendResponse(MgHttpResponse *response)
             m_r->content_type = apr_pstrdup(m_r->pool, tempHeader);
         }
 
+        Ptr<MgReader> outputDataReader;
         Ptr<MgByteReader> outputReader;
         Ptr<MgDisposable> resultObj = result->GetResultObject();
         MgDisposable* pResultObj = (MgDisposable*)resultObj;
@@ -107,7 +109,7 @@ void ApacheResponseHandler::SendResponse(MgHttpResponse *response)
         }
         else if (NULL != dynamic_cast<MgFeatureReader*>(pResultObj))
         {
-            outputReader = ((MgFeatureReader*)pResultObj)->ToXml();
+            outputDataReader = SAFE_ADDREF((MgFeatureReader*)pResultObj); //Need to AddRef because there's now 2 references on this pointer
         }
         else if (NULL != dynamic_cast<MgStringCollection*>(pResultObj))
         {
@@ -115,11 +117,11 @@ void ApacheResponseHandler::SendResponse(MgHttpResponse *response)
         }
         else if (NULL != dynamic_cast<MgSqlDataReader*>(pResultObj))
         {
-            outputReader = ((MgSqlDataReader*)pResultObj)->ToXml();
+            outputDataReader = SAFE_ADDREF((MgSqlDataReader*)pResultObj); //Need to AddRef because there's now 2 references on this pointer
         }
         else if (NULL != dynamic_cast<MgDataReader*>(pResultObj))
         {
-            outputReader = ((MgDataReader*)pResultObj)->ToXml();
+            outputDataReader = SAFE_ADDREF((MgDataReader*)pResultObj); //Need to AddRef because there's now 2 references on this pointer
         }
         else if (NULL != dynamic_cast<MgSpatialContextReader*>(pResultObj))
         {
@@ -142,7 +144,11 @@ void ApacheResponseHandler::SendResponse(MgHttpResponse *response)
 
             ap_send_http_header(m_r);
             ap_rwrite(utf8.c_str(), (int)utf8.length(), m_r);
-
+        }
+        else if (outputDataReader != NULL)
+        {
+            ApacheReaderStreamer ars(m_r, outputDataReader, result->GetResultContentType());
+            ars.StreamResult();
         }
         else if (outputReader != NULL)
         {
