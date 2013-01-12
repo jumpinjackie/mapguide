@@ -9,6 +9,7 @@
    Target section. 
 -->
 <Target path="./SQLitePhpApi.i"/>
+<DocTarget path="./SQLitePhpApi_Doc.i"/>
 
 <!--  
    C++ inline section. 

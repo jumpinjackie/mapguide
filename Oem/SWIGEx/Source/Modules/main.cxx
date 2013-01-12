@@ -71,11 +71,11 @@ extern String  *ModuleName;
 
 static char *usage = (char*)"\
 \nGeneral Options\n\
-	 -baseexception <name>  - Name of the exception base class\n\
+     -baseexception <name>  - Name of the exception base class\n\
      -c++            - Enable C++ processing\n\
-	 -clsiddata <member> - Data member used as class identifier\n\
-	 -clsidcode <file> - Name of the file implementing getClassId()\n\
-	 -catchallcode <file> - Name of the file implementing onCatchAll()\n\
+     -clsiddata <member> - Data member used as class identifier\n\
+     -clsidcode <file> - Name of the file implementing getClassId()\n\
+     -catchallcode <file> - Name of the file implementing onCatchAll()\n\
      -co             - Check a file out of the SWIG library\n\
      -dispose <code> - Code to call to replace 'delete arg1'\n\
      -dirprot        - Turn on wrapping of protected members for director classes\n\

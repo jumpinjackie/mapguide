@@ -9,6 +9,7 @@
    Target section.
 -->
 <Target path="./MapGuideApi.i" />
+<DocTarget path="./MapGuideApi_Doc.i" />
 
 <!--
    C++ inline section.
@@ -51,6 +52,7 @@ typedef wchar_t* STRINGPARAM;
    Swig inline section.
 -->
 <SwigInline>
+  %include "MapGuideApi_Doc.i" //translated doxygen fragments
   %include "language.i"   //typemaps specific for each language
   %include "../../../Common/Foundation/System/FoundationClassId.h"
   %include "../../../Common/Geometry/GeometryClassId.h"

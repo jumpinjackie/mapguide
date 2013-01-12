@@ -200,6 +200,7 @@ PUBLISHED_API:
     /// Returns nothing.
     ///
     /// \since 2.2
+	///
     void Delete();
 
 INTERNAL_API:

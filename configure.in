@@ -240,6 +240,7 @@ AC_CONFIG_FILES([Web/Makefile \
         Web/src/WebApp/Makefile \
         Web/src/WebSupport/Makefile \
         Web/src/JavaApi/Makefile \
+        Web/src/JavaApiEx/Makefile \
         Web/src/PhpApi/Makefile \
         Web/src/HttpHandler/Makefile \
         Web/src/CgiAgent/Makefile \

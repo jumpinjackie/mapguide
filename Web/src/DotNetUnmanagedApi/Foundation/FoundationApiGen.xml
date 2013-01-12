@@ -14,6 +14,7 @@
    Target section.
 -->
 <Target path="./FoundationApi.i" />
+<DocTarget path="./FoundationApi_Doc.i" />
 
 <!--
    C++ inline section.
@@ -47,6 +48,7 @@ typedef wchar_t* STRINGPARAM;
    Swig inline section.
 -->
 <SwigInline>
+  %include "FoundationApi_Doc.i" //doc fragments
   %include "language.i"   //typemaps specific for each language
   %include "../../../../Common/Foundation/System/FoundationClassId.h"
 

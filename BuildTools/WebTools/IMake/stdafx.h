@@ -7,10 +7,12 @@
 #define _IMAKE_STD_H_
 
 #include <string>
+#include <iostream>
 #include <vector>
 #include <algorithm>
 #include <deque>
 #include <map>
+#include <set>
 #include <iostream>
 #include <sstream>
 #include <time.h>

@@ -318,6 +318,7 @@ PUBLISHED_API:
     /// Returns nothing.
     ///
     /// \since 2.2
+	///
     void Delete();
 
 EXTERNAL_API:

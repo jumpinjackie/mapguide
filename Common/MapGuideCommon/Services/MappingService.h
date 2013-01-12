@@ -337,7 +337,7 @@ PUBLISHED_API:
     /// The requested image height in pixels.
     /// \param format (String/string)
     /// Input
-    /// Image format, from MgImageFormats. Example: PNG, JPG, PNG8, etc …
+    /// Image format, from MgImageFormats. Example: PNG, JPG, PNG8, etc 
     /// \param geomType (int)
     /// Input
     /// The type of symbolization required: 1=Point, 2=Line, 3=Area, 4=Composite
@@ -400,7 +400,7 @@ EXTERNAL_API:
     /// \return
     /// A byte reader containing an XML document with the feature
     /// information described in GML (Geography Markup Language). GML
-    /// is defined by the OpenGIS® consortium. A specification for
+    /// is defined by the OpenGIS consortium. A specification for
     /// this language can be found at: /// https://portal.opengeospatial.org/files/?artifact_id=7174
     ///
     ///
@@ -439,7 +439,7 @@ EXTERNAL_API:
     /// \return
     /// Returns a byte reader containing an XML document with the feature
     /// information described in GML (Geography Markup Language). GML
-    /// is defined by the OpenGIS® consortium. A specification for
+    /// is defined by the OpenGIS consortium. A specification for
     /// this language can be found at: /// https://portal.opengeospatial.org/files/?artifact_id=7174
     ///
     ///

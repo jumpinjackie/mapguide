@@ -60,6 +60,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "MapGuideCommonDotNetApi", "
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "WebDotNetApi", "DotNetApi\Web\WebDotNetApi.vcxproj", "{41F3263B-C16C-49E8-ADF6-416DFB55C9E2}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "JavaApiEx", "JavaApiEx\JavaApiEx.vcxproj", "{C02F44CB-D916-428D-A1A5-04E225A2A4EC}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -308,6 +310,14 @@ Global
 		{41F3263B-C16C-49E8-ADF6-416DFB55C9E2}.Release|Win32.Build.0 = Release|Win32
 		{41F3263B-C16C-49E8-ADF6-416DFB55C9E2}.Release|x64.ActiveCfg = Release|x64
 		{41F3263B-C16C-49E8-ADF6-416DFB55C9E2}.Release|x64.Build.0 = Release|x64
+		{C02F44CB-D916-428D-A1A5-04E225A2A4EC}.Debug|Win32.ActiveCfg = Debug|Win32
+		{C02F44CB-D916-428D-A1A5-04E225A2A4EC}.Debug|Win32.Build.0 = Debug|Win32
+		{C02F44CB-D916-428D-A1A5-04E225A2A4EC}.Debug|x64.ActiveCfg = Debug|x64
+		{C02F44CB-D916-428D-A1A5-04E225A2A4EC}.Debug|x64.Build.0 = Debug|x64
+		{C02F44CB-D916-428D-A1A5-04E225A2A4EC}.Release|Win32.ActiveCfg = Release|Win32
+		{C02F44CB-D916-428D-A1A5-04E225A2A4EC}.Release|Win32.Build.0 = Release|Win32
+		{C02F44CB-D916-428D-A1A5-04E225A2A4EC}.Release|x64.ActiveCfg = Release|x64
+		{C02F44CB-D916-428D-A1A5-04E225A2A4EC}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
