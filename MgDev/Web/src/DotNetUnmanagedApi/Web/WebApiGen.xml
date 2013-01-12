@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Parameters>
+<!--
+   Module section.
+-->
+<Module name="MapGuideApi" />
+
+<!--
+   Custom file path.
+-->
+<CustomFile path="./WebCustom" />
+
+<!--
+   Target section.
+-->
+<Target path="./MapGuideApi.i" />
+<DocTarget path="./WebApi_Doc.i" />
+
+<!--
+   C++ inline section.
+-->
+<CppInline>
+#ifdef _WIN32
+#pragma warning(disable: 4251)
+#endif
+
+#include &lt;string&gt;
+#include &lt;map&gt;
+
+#include "MapGuideCommon.h"
+#include "WebApp.h"
+
+#ifdef _WIN32
+#include "WebSupport.h"
+#else
+#include "InitializeWebTier.cpp"
+#include "UnicodeString.h"
+#endif
+#include "HttpHandlerApiDllExport.h"
+#include "HttpHandler.h"
+
+#if defined(PHP) || defined(JAVA)
+typedef std::wstring STRINGPARAM;
+#else
+typedef wchar_t* STRINGPARAM;
+#endif
+</CppInline>
+
+<!--
+   Type replacements.
+-->
+<TypeReplacements>
+    <TypeReplacement oldtype="CREFSTRING" newtype="STRINGPARAM" />
+    <TypeReplacement oldtype="INT64" newtype="long long" />
+</TypeReplacements>
+
+<!--
+   Swig inline section.
+-->
+<SwigInline>
+  %import "../Foundation/FoundationApi.i"
+  %import "../Geometry/GeometryApi.i"
+  %import "../PlatformBase/PlatformBaseApi.i"
+  %import "../MapGuideCommon/MapGuideCommonApi.i"
+  %include "WebApi_Doc.i" //doc fragments
+  %include "language.i"   //typemaps specific for each language
+  %include "InitializeWebTier.i"
+  %include "../../WebApp/WebAppClassId.h"
+  %include "../../HttpHandler/HttpHandlerClassId.h"
+
+#if defined(PHPSWIG)
+  // We force UTF-8 encoding for PHP
+  typedef char*         STRINGPARAM;
+  typedef char*         STRING;
+  typedef char*         BYTE_ARRAY_IN;
+  typedef char*         BYTE_ARRAY_OUT;
+  typedef unsigned char BYTE;
+#elseif defined(JAVA)
+  typedef std::wstring  STRINGPARAM;
+  typedef signed char   BYTE;  //mapped to byte in Java
+#else // .Net
+  typedef char*         BYTE_ARRAY_IN;
+  typedef char*         BYTE_ARRAY_OUT;
+  typedef unsigned char BYTE;    //mapped to byte in C#
+#endif
+
+  typedef int           STATUS;
+  typedef short         INT8;
+  typedef short         INT16;
+  typedef int           INT32;
+  typedef int           UINT32;
+
+</SwigInline>
+
+<!--
+   C++ Headers section.  If you add headers to this section then you
+   must also add them to Makefile.am in the JavaApi and PhpApi folders.
+-->
+<Headers>
+
+    <!-- WebApp classes -->
+
+    <Header path="../../WebApp/WebCommand.h" />
+    <Header path="../../WebApp/WebUiTargetCommand.h" />
+    <Header path="../../WebApp/WebWidget.h" />
+    <Header path="../../WebApp/WebWidgetCollection.h" />
+    <Header path="../../WebApp/WebUiPane.h" />
+    <Header path="../../WebApp/WebUiSizablePane.h" />
+
+    <Header path="../../WebApp/WebBufferCommand.h" />
+    <Header path="../../WebApp/WebCommandCollection.h" />
+    <Header path="../../WebApp/WebCommandWidget.h" />
+    <Header path="../../WebApp/WebContextMenu.h" />
+    <Header path="../../WebApp/WebFlyoutWidget.h" />
+    <Header path="../../WebApp/WebGetPrintablePageCommand.h" />
+    <Header path="../../WebApp/WebHelpCommand.h" />
+    <Header path="../../WebApp/WebInformationPane.h" />
+    <Header path="../../WebApp/WebInvokeScriptCommand.h" />
+    <Header path="../../WebApp/WebInvokeUrlCommand.h" />
+    <Header path="../../WebApp/WebLayout.h" />
+    <Header path="../../WebApp/WebMeasureCommand.h" />
+    <Header path="../../WebApp/WebPrintCommand.h" />
+    <Header path="../../WebApp/WebSearchCommand.h" />
+    <Header path="../../WebApp/WebSelectWithinCommand.h" />
+    <Header path="../../WebApp/WebSeparatorWidget.h" />
+    <Header path="../../WebApp/WebTaskBar.h" />
+    <Header path="../../WebApp/WebTaskBarWidget.h" />
+    <Header path="../../WebApp/WebTaskPane.h" />
+    <Header path="../../WebApp/WebToolbar.h" />
+    <Header path="../../WebApp/WebViewOptionsCommand.h" />
+
+    <!-- HttpHandler classes -->
+
+    <Header path="../../HttpHandler/HttpHeader.h" />
+    <Header path="../../HttpHandler/HttpPrimitiveValue.h" />
+    <Header path="../../HttpHandler/HttpRequest.h" />
+    <Header path="../../HttpHandler/HttpRequestMetadata.h" />
+    <Header path="../../HttpHandler/HttpRequestParam.h" />
+    <Header path="../../HttpHandler/HttpResponse.h" />
+    <Header path="../../HttpHandler/HttpResult.h" />
+
+</Headers>
+
+</Parameters>

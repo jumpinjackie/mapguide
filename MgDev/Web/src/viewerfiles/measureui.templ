@@ -1,0 +1,213 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>__#MEASURETITLE#__</title>
+<link rel="stylesheet" href="../viewerfiles/viewer.css" type="text/css">
+<style type="text/css">
+    td.Title
+    {
+        font-family: __#@font#__;
+        font-weight: bold;
+        font-size: 13pt;
+    }
+    .RegText
+    {
+        font-family: __#@font#__;
+        font-size: __#@fontsize#__;
+    }
+    td.InfoText
+    {
+        background-color: #FFFFCC;
+        color: #666666;
+        font-family: __#@font#__;
+        font-size: __#@fontsize#__;
+    }
+    td.MeasureData
+    {
+        background-color: #DCDCDC;
+        color: black;
+        font-family:__#@font#__;
+        font-size: __#@fontsize#__;
+    }
+    .Ctrl
+    {
+        font-family: __#@font#__;
+        font-size: __#@fontsize#__;
+    }
+</style>
+
+<script language="javascript" src="../viewerfiles/browserdetect.js"></script>
+<script language="javascript" src="../viewerfiles/contextmenu.js"></script>
+<script language=javascript>
+
+var locale = '%s';
+var target = %s;
+var popup = %s;
+var mapName = "%s";
+var sessionId = "%s";
+var total = %s;
+var partial = %s;
+var refresh = %s;
+var units = "%s";
+
+function InitDocument()
+{
+    if(!popup)
+        document.onmousedown = OnMouseDown;
+    SetUnits();
+    SetMeasureResults(partial, total);
+    if(refresh)
+        GetParent().Refresh();
+}
+
+function OnMouseDown(e)
+{
+    GetParent().ForwardMouseDown(document, e);
+}
+
+function AddMeasure(segId, begin, end)
+{
+    var url = "%s?SEGID=" + segId + "&LOCALE=" + locale + "&MAPNAME=" + encodeURIComponent(mapName) + "&SESSION=" + sessionId + "&X1=" + begin.X + "&Y1=" + begin.Y + "&X2=" + end.X + "&Y2=" + end.Y + "&TOTAL=" + total + "&UNITS=" + units + "&TGT=" + target + "&POPUP=" + popup;
+    document.location.href = url;
+}
+
+function ClearMeasure()
+{
+    GetParent().ClearMeasure();
+    var url = "%s?MAPNAME=" + encodeURIComponent(mapName) + "&LOCALE=" + locale + "&SESSION=" + sessionId + "&CLEAR=&TGT=" + target + "&POPUP=" + popup + "&UNITS=" + units;
+    document.location.href = url;
+    GetParent().ResumeMeasure();
+}
+
+function ResumeStopMeasure()
+{
+    var parentRef = GetParent();
+    if(parentRef.InMeasure())
+        parentRef.EndMeasure();
+    else
+        parentRef.ResumeMeasure();
+}
+
+function MeasureEnded()
+{
+    document.getElementById("stopresume").value = "__#RESUME#__";
+}
+
+function MeasureResumed()
+{
+    document.getElementById("stopresume").value = "__#STOP#__";
+}
+
+function GetParent()
+{
+    if(popup)
+        return opener;
+    else
+        return parent.parent;
+}
+
+function SetMeasureResults(partial, total)
+{
+    document.getElementById("partial").innerHTML = FormatLocalizedDecimal(partial, 2);
+    document.getElementById("total").innerHTML = FormatLocalizedDecimal(total, 2);
+}
+
+function OnChangeUnits()
+{
+    var unitelem = document.getElementById("unitselect");
+    for (var i=0; i < unitelem.length; i++)
+    {
+        var opt = unitelem.options[i];
+        if (opt.selected)
+        {
+            units = opt.value;
+            document.getElementById("units1").innerHTML = opt.text;
+            document.getElementById("units2").innerHTML = opt.text;
+            break;
+        }
+    }
+}
+
+function SetUnits()
+{
+    if (!units || units == "")
+    {
+        units = GetParent().GetMapFrame().IsEnglishUnits()? "mi": "km";
+    }
+
+    var unitelem = document.getElementById("unitselect");
+    var unitText = "";
+    for (var i=0; i < unitelem.length; i++)
+    {
+        var opt = unitelem.options[i];
+        opt.selected = false;
+        if (opt.value == units)
+        {
+            opt.selected = true;
+            unitText = opt.text;
+        }
+    }
+
+    document.getElementById("units1").innerHTML = unitText;
+    document.getElementById("units2").innerHTML = unitText;
+}
+
+function FormatLocalizedDecimal(numberValue, decimalPlaces)
+{
+    var unlocalized = numberValue.toFixed(decimalPlaces);
+    var localized = unlocalized;
+    var decimalSeparator = "__#DECIMALSEPARATOR#__";
+    if(decimalSeparator != "." && decimalSeparator.length > 0)
+    {
+        localized = unlocalized.replace(".", decimalSeparator);
+    }
+    return localized;
+}
+
+</script>
+
+</head>
+<body class="MeasureUi" onload="InitDocument()" marginwidth=5 marginheight=5 leftmargin=5 topmargin=5 bottommargin=5 rightmargin=5>
+  <table border="0" cellspacing="0" cellpadding="3" width="100%%">
+    <tr><td class="Title">__#MEASURETITLE#__<hr></td></tr>
+    <tr><td class="InfoText">__#MEASUREINFO#__</td></tr>
+    <tr><td height="6"></td></tr>
+    <tr><td class="InfoText">__#MEASUREUNITS#__</td></tr>
+    <tr><td>
+      <select id="unitselect" name="UNITS" class="Ctrl" onchange="OnChangeUnits()">
+        <option value="mi">__#DISTANCEMILES#__</option>
+        <option value="km">__#DISTANCEKILOMETERS#__</option>
+        <option value="usft">__#DISTANCEUSFEET#__</option>
+        <option value="ft">__#DISTANCEFEET#__</option>
+        <option value="m">__#DISTANCEMETERS#__</option>
+      </select>
+    </td></tr>
+  </table>
+  <table border="0" cellpadding="5">
+    <tr class="RegText">
+      <td>__#SEGMENT#__:</td>
+      <td align="right" class="MeasureData"><span id="partial"></span></td>
+      <td>(<span id="units1"></span>)</td>
+    </tr>
+    <tr class="RegText">
+      <td>__#TOTAL#__:</td>
+      <td align="right" class="MeasureData"><span id="total"></span></td>
+      <td>(<span id="units2"></span>)</td>
+    </tr>
+  </table>
+  <table border="0" cellspacing="0" cellpadding="3" swidth="100%%">
+    <tr><td height="6"></td></tr>
+    <tr>
+      <td class="InfoText">
+        <div style="position: relative; left: -25px;">
+        <ul>
+          __#MEASUREHELP#__
+        </ul>
+        </div>
+      </td>
+    </tr>
+    <tr><td height="12"></td></tr>
+  </table>
+  <input class="Ctrl" type="button" value="__#CLEAR#__" style="width: 70px" onclick="ClearMeasure()">&nbsp;<input class="Ctrl" id="stopresume" type="button" value="__#STOP#__" style="width: 70px" onclick="ResumeStopMeasure()">
+</body>
+</html>

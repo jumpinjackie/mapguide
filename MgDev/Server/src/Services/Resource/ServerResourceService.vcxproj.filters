@@ -1,0 +1,304 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Ops">
+      <UniqueIdentifier>{ae3c4045-e00e-468e-97b1-b7a2bc823b7b}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="OpApplyResourcePackage.cpp">
+      <Filter>Ops</Filter>
+    </ClCompile>
+    <ClCompile Include="OpChangeResourceOwner.cpp">
+      <Filter>Ops</Filter>
+    </ClCompile>
+    <ClCompile Include="OpCopyResource.cpp">
+      <Filter>Ops</Filter>
+    </ClCompile>
+    <ClCompile Include="OpCreateRepository.cpp">
+      <Filter>Ops</Filter>
+    </ClCompile>
+    <ClCompile Include="OpDeleteRepository.cpp">
+      <Filter>Ops</Filter>
+    </ClCompile>
+    <ClCompile Include="OpDeleteResource.cpp">
+      <Filter>Ops</Filter>
+    </ClCompile>
+    <ClCompile Include="OpDeleteResourceData.cpp">
+      <Filter>Ops</Filter>
+    </ClCompile>
+    <ClCompile Include="OpEnumerateParentMapDefinitions.cpp">
+      <Filter>Ops</Filter>
+    </ClCompile>
+    <ClCompile Include="OpEnumerateRepositories.cpp">
+      <Filter>Ops</Filter>
+    </ClCompile>
+    <ClCompile Include="OpEnumerateResourceData.cpp">
+      <Filter>Ops</Filter>
+    </ClCompile>
+    <ClCompile Include="OpEnumerateResourceDocuments.cpp">
+      <Filter>Ops</Filter>
+    </ClCompile>
+    <ClCompile Include="OpEnumerateResourceReferences.cpp">
+      <Filter>Ops</Filter>
+    </ClCompile>
+    <ClCompile Include="OpEnumerateResources.cpp">
+      <Filter>Ops</Filter>
+    </ClCompile>
+    <ClCompile Include="OpEnumerateUnmanagedData.cpp">
+      <Filter>Ops</Filter>
+    </ClCompile>
+    <ClCompile Include="OperationInfo.cpp">
+      <Filter>Ops</Filter>
+    </ClCompile>
+    <ClCompile Include="OperationParameter.cpp">
+      <Filter>Ops</Filter>
+    </ClCompile>
+    <ClCompile Include="OpGetRepositoryContent.cpp">
+      <Filter>Ops</Filter>
+    </ClCompile>
+    <ClCompile Include="OpGetRepositoryHeader.cpp">
+      <Filter>Ops</Filter>
+    </ClCompile>
+    <ClCompile Include="OpGetResourceContent.cpp">
+      <Filter>Ops</Filter>
+    </ClCompile>
+    <ClCompile Include="OpGetResourceContents.cpp">
+      <Filter>Ops</Filter>
+    </ClCompile>
+    <ClCompile Include="OpGetResourceData.cpp">
+      <Filter>Ops</Filter>
+    </ClCompile>
+    <ClCompile Include="OpGetResourceHeader.cpp">
+      <Filter>Ops</Filter>
+    </ClCompile>
+    <ClCompile Include="OpGetResourceModifiedDate.cpp">
+      <Filter>Ops</Filter>
+    </ClCompile>
+    <ClCompile Include="OpInheritPermissionsFrom.cpp">
+      <Filter>Ops</Filter>
+    </ClCompile>
+    <ClCompile Include="OpMoveResource.cpp">
+      <Filter>Ops</Filter>
+    </ClCompile>
+    <ClCompile Include="OpRenameResourceData.cpp">
+      <Filter>Ops</Filter>
+    </ClCompile>
+    <ClCompile Include="OpResourceExists.cpp">
+      <Filter>Ops</Filter>
+    </ClCompile>
+    <ClCompile Include="OpSetResource.cpp">
+      <Filter>Ops</Filter>
+    </ClCompile>
+    <ClCompile Include="OpSetResourceData.cpp">
+      <Filter>Ops</Filter>
+    </ClCompile>
+    <ClCompile Include="OpUpdateRepository.cpp">
+      <Filter>Ops</Filter>
+    </ClCompile>
+    <ClCompile Include="ResourceOperation.cpp">
+      <Filter>Ops</Filter>
+    </ClCompile>
+    <ClCompile Include="ResourceOperationFactory.cpp">
+      <Filter>Ops</Filter>
+    </ClCompile>
+    <ClCompile Include="ApplicationRepository.cpp" />
+    <ClCompile Include="ApplicationRepositoryManager.cpp" />
+    <ClCompile Include="ApplicationResourceContentManager.cpp" />
+    <ClCompile Include="ByteSourceDwfInputStreamImpl.cpp" />
+    <ClCompile Include="Database.cpp" />
+    <ClCompile Include="DataBindingInfo.cpp" />
+    <ClCompile Include="DbEnvironment.cpp" />
+    <ClCompile Include="..\..\Common\Dll.cpp" />
+    <ClCompile Include="LibraryRepository.cpp" />
+    <ClCompile Include="LibraryRepositoryManager.cpp" />
+    <ClCompile Include="LibraryResourceContentManager.cpp" />
+    <ClCompile Include="Repository.cpp" />
+    <ClCompile Include="RepositoryManager.cpp" />
+    <ClCompile Include="ResourceContainer.cpp" />
+    <ClCompile Include="ResourceContentManager.cpp" />
+    <ClCompile Include="ResourceDatabase.cpp" />
+    <ClCompile Include="ResourceDataFileManager.cpp" />
+    <ClCompile Include="ResourceDataManager.cpp" />
+    <ClCompile Include="ResourceDataStreamManager.cpp" />
+    <ClCompile Include="ResourceDefinitionManager.cpp" />
+    <ClCompile Include="ResourceHeader.cpp" />
+    <ClCompile Include="ResourceHeaderManager.cpp" />
+    <ClCompile Include="ResourceInfo.cpp" />
+    <ClCompile Include="ResourceManager.cpp" />
+    <ClCompile Include="ResourcePackageHandler.cpp" />
+    <ClCompile Include="ResourcePackageLoader.cpp" />
+    <ClCompile Include="ResourcePackageMaker.cpp" />
+    <ClCompile Include="ResourcePackageManifestHandler.cpp" />
+    <ClCompile Include="ResourcePackageManifestParser.cpp" />
+    <ClCompile Include="ResourcePackageManifestSerializer.cpp" />
+    <ClCompile Include="ResourceServiceHandler.cpp" />
+    <ClCompile Include="ServerResourceService.cpp" />
+    <ClCompile Include="ServerResourceServiceBuild.cpp" />
+    <ClCompile Include="SessionRepository.cpp" />
+    <ClCompile Include="SessionRepositoryManager.cpp" />
+    <ClCompile Include="SessionResourceContentManager.cpp" />
+    <ClCompile Include="SiteRepository.cpp" />
+    <ClCompile Include="SiteRepositoryManager.cpp" />
+    <ClCompile Include="SiteResourceContentManager.cpp" />
+    <ClCompile Include="SystemRepository.cpp" />
+    <ClCompile Include="SystemRepositoryManager.cpp" />
+    <ClCompile Include="SystemResourceContentManager.cpp" />
+    <ClCompile Include="TagInfo.cpp" />
+    <ClCompile Include="TagManager.cpp" />
+    <ClCompile Include="XmlSchemaResolver.cpp" />
+    <ClCompile Include="ZipFileHandler.cpp" />
+    <ClCompile Include="ZipFileReader.cpp" />
+    <ClCompile Include="ZipFileWriter.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="OpApplyResourcePackage.h">
+      <Filter>Ops</Filter>
+    </ClInclude>
+    <ClInclude Include="OpChangeResourceOwner.h">
+      <Filter>Ops</Filter>
+    </ClInclude>
+    <ClInclude Include="OpCopyResource.h">
+      <Filter>Ops</Filter>
+    </ClInclude>
+    <ClInclude Include="OpCreateRepository.h">
+      <Filter>Ops</Filter>
+    </ClInclude>
+    <ClInclude Include="OpDeleteRepository.h">
+      <Filter>Ops</Filter>
+    </ClInclude>
+    <ClInclude Include="OpDeleteResource.h">
+      <Filter>Ops</Filter>
+    </ClInclude>
+    <ClInclude Include="OpDeleteResourceData.h">
+      <Filter>Ops</Filter>
+    </ClInclude>
+    <ClInclude Include="OpEnumerateParentMapDefinitions.h">
+      <Filter>Ops</Filter>
+    </ClInclude>
+    <ClInclude Include="OpEnumerateRepositories.h">
+      <Filter>Ops</Filter>
+    </ClInclude>
+    <ClInclude Include="OpEnumerateResourceData.h">
+      <Filter>Ops</Filter>
+    </ClInclude>
+    <ClInclude Include="OpEnumerateResourceDocuments.h">
+      <Filter>Ops</Filter>
+    </ClInclude>
+    <ClInclude Include="OpEnumerateResourceReferences.h">
+      <Filter>Ops</Filter>
+    </ClInclude>
+    <ClInclude Include="OpEnumerateResources.h">
+      <Filter>Ops</Filter>
+    </ClInclude>
+    <ClInclude Include="OpEnumerateUnmanagedData.h">
+      <Filter>Ops</Filter>
+    </ClInclude>
+    <ClInclude Include="OperationInfo.h">
+      <Filter>Ops</Filter>
+    </ClInclude>
+    <ClInclude Include="OperationParameter.h">
+      <Filter>Ops</Filter>
+    </ClInclude>
+    <ClInclude Include="OpGetRepositoryContent.h">
+      <Filter>Ops</Filter>
+    </ClInclude>
+    <ClInclude Include="OpGetRepositoryHeader.h">
+      <Filter>Ops</Filter>
+    </ClInclude>
+    <ClInclude Include="OpGetResourceContent.h">
+      <Filter>Ops</Filter>
+    </ClInclude>
+    <ClInclude Include="OpGetResourceContents.h">
+      <Filter>Ops</Filter>
+    </ClInclude>
+    <ClInclude Include="OpGetResourceData.h">
+      <Filter>Ops</Filter>
+    </ClInclude>
+    <ClInclude Include="OpGetResourceHeader.h">
+      <Filter>Ops</Filter>
+    </ClInclude>
+    <ClInclude Include="OpGetResourceModifiedDate.h">
+      <Filter>Ops</Filter>
+    </ClInclude>
+    <ClInclude Include="OpInheritPermissionsFrom.h">
+      <Filter>Ops</Filter>
+    </ClInclude>
+    <ClInclude Include="OpMoveResource.h">
+      <Filter>Ops</Filter>
+    </ClInclude>
+    <ClInclude Include="OpRenameResourceData.h">
+      <Filter>Ops</Filter>
+    </ClInclude>
+    <ClInclude Include="OpResourceExists.h">
+      <Filter>Ops</Filter>
+    </ClInclude>
+    <ClInclude Include="OpSetResource.h">
+      <Filter>Ops</Filter>
+    </ClInclude>
+    <ClInclude Include="OpSetResourceData.h">
+      <Filter>Ops</Filter>
+    </ClInclude>
+    <ClInclude Include="OpUpdateRepository.h">
+      <Filter>Ops</Filter>
+    </ClInclude>
+    <ClInclude Include="ResourceOperation.h">
+      <Filter>Ops</Filter>
+    </ClInclude>
+    <ClInclude Include="ResourceOperationFactory.h">
+      <Filter>Ops</Filter>
+    </ClInclude>
+    <ClInclude Include="ApplicationRepository.h" />
+    <ClInclude Include="ApplicationRepositoryManager.h" />
+    <ClInclude Include="ApplicationResourceContentManager.h" />
+    <ClInclude Include="ByteSourceDwfInputStreamImpl.h" />
+    <ClInclude Include="Database.h" />
+    <ClInclude Include="DataBindingInfo.h" />
+    <ClInclude Include="DbEnvironment.h" />
+    <ClInclude Include="LibraryRepository.h" />
+    <ClInclude Include="LibraryRepositoryManager.h" />
+    <ClInclude Include="LibraryResourceContentManager.h" />
+    <ClInclude Include="Repository.h" />
+    <ClInclude Include="RepositoryManager.h" />
+    <ClInclude Include="ResourceContainer.h" />
+    <ClInclude Include="ResourceContentManager.h" />
+    <ClInclude Include="ResourceDatabase.h" />
+    <ClInclude Include="ResourceDataFileManager.h" />
+    <ClInclude Include="ResourceDataManager.h" />
+    <ClInclude Include="ResourceDataStreamManager.h" />
+    <ClInclude Include="ResourceDefinitionManager.h" />
+    <ClInclude Include="ResourceHeader.h" />
+    <ClInclude Include="ResourceHeaderManager.h" />
+    <ClInclude Include="ResourceInfo.h" />
+    <ClInclude Include="ResourceManager.h" />
+    <ClInclude Include="ResourcePackageHandler.h" />
+    <ClInclude Include="ResourcePackageLoader.h" />
+    <ClInclude Include="ResourcePackageMaker.h" />
+    <ClInclude Include="ResourcePackageManifestHandler.h" />
+    <ClInclude Include="ResourcePackageManifestParser.h" />
+    <ClInclude Include="ResourcePackageManifestSerializer.h" />
+    <ClInclude Include="ResourceServiceDefs.h" />
+    <ClInclude Include="ResourceServiceHandler.h" />
+    <ClInclude Include="ServerResourceDllExport.h" />
+    <ClInclude Include="ServerResourceService.h" />
+    <ClInclude Include="SessionRepository.h" />
+    <ClInclude Include="SessionRepositoryManager.h" />
+    <ClInclude Include="SessionResourceContentManager.h" />
+    <ClInclude Include="SiteRepository.h" />
+    <ClInclude Include="SiteRepositoryManager.h" />
+    <ClInclude Include="SiteResourceContentManager.h" />
+    <ClInclude Include="..\..\Common\stdafx.h" />
+    <ClInclude Include="SystemRepository.h" />
+    <ClInclude Include="SystemRepositoryManager.h" />
+    <ClInclude Include="SystemResourceContentManager.h" />
+    <ClInclude Include="TagInfo.h" />
+    <ClInclude Include="TagManager.h" />
+    <ClInclude Include="XmlSchemaResolver.h" />
+    <ClInclude Include="ZipFileHandler.h" />
+    <ClInclude Include="ZipFileReader.h" />
+    <ClInclude Include="ZipFileWriter.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="ServerResourceService.rc" />
+  </ItemGroup>
+</Project>

@@ -1,0 +1,312 @@
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+
+<script language="javascript" src="../viewerfiles/browserdetect.js"></script>
+<script language=javascript>
+
+var scrollable = 0;
+var tc;
+var tcTimer = null;
+var owner = null;
+var scrolling = false, scrolled = 0, scrollInc = 21, scrollAmount;
+var scrollTimer = 0;
+
+function BuildList(maxWidth, maxHeight, ownerRef)
+{
+    var ref = parent.parent;
+    var taskItems = ref.taskItems;
+    var commands = ref.commands;
+    var fullHeight = 2;
+
+    owner = ownerRef;
+    for(var i=0; i < taskItems.length; i++)
+    {
+        if(taskItems[i].type == 2)
+            fullHeight += 3;
+        else if(taskItems[i].type == 1)
+            fullHeight += 21;
+    }
+    scrollable = fullHeight > maxHeight;
+    var actualHeight = scrollable? maxHeight: fullHeight;
+    var html = "";
+    html = "<div class=\"TScrollUpArea\" id=\"TScrollUpArea\" align=center style=\"height: 16px;\"><img id=\"ArrowUp\" src=\"../stdicons/mn_scrollup.gif\" width=16 height=16></div>\n";
+    html += "<div class=\"TList\" id=\"TList\">\n" +
+            "<div class=\"TInnerList\" id=\"TInnerList\">\n" +
+            "<table class=\"TContent\" id=\"TContent\" width=100% cellspacing=0 cellpadding=0>\n";
+
+    for(var i=0; i < taskItems.length; i++)
+    {
+        if(taskItems[i].type == 2)
+            html += "<tr height=3><td colspan=2 align=center valign=center><div style=\"width: 95%; height: 2px; border-bottom: #a0a0a0 1px solid;\"><span></span></div></td></tr>\n";
+        else if(taskItems[i].type == 1)
+        {
+            var cmdIndex = taskItems[i].cmdIndex;
+            var cmd = commands[cmdIndex];
+            var icon = cmd.icon;
+            var icond = cmd.iconDisabled==""? cmd.icon: cmd.iconDisabled;
+            var dispIcon = cmd.enabled? icon: icond;
+            var imgTag;
+            if(dispIcon == "")
+                imgTag = "";
+            else
+                imgTag = "<img width=16 height=16 id=\"PMI" + cmdIndex + "\" src=\"" + dispIcon + "\">";
+            html += "<tr height=21 id=\"" + i + "\" state=\"" + (cmd.enabled? "true": "false") + "\" icon=\"" + icon + "\" icond=\"" + icond +  "\" name=\"" + cmdIndex + "\" onmousemove=\"OnEnterItem(this)\" onmouseout=\"OnLeaveItem(this)\" onclick=\"OnClickItem(this)\"" + (cmd.enabled? "": " style=\"color: #b4b4b4\"") + "><td width=24 align=center>" + imgTag + "</td><td><span id=\"T" + i + "\">" + taskItems[i].name + "</span></td></tr>\n";
+        }
+    }
+
+    html += "</table></div></div>";
+    html += "</div>\n<div class=\"TScrollDnArea\" id=\"TScrollDnArea\" align=center style=\"height: 16px;\"><img id=\"ArrowDn\" src=\"../stdicons/mn_scrolldown.gif\" width=16 height=16></div>\n";
+    //alert(html);
+
+    outerList = document.getElementById("TaskList");
+    xHeight = scrollable? 32: 0;
+    outerList.innerHTML = html;
+    outerList.style.height = actualHeight + xHeight + (scrollable? msie? 2: 0: 0) + "px";
+    scrollAmount = fullHeight - actualHeight;
+
+    su = document.getElementById("TScrollUpArea");
+    if(scrollable) {
+        su.style.position = "absolute";
+        su.style.top = 0 + "px";
+        su.style.left = 0 + "px";
+        su.style.width = maxWidth + "px";
+    }
+    else
+        su.style.display = "none";
+
+    list = document.getElementById("TList");
+    list.style.position = "absolute";
+    list.style.width = maxWidth + "px";
+    list.style.left = 0 + "px";
+    list.style.top = scrollable? (16 + "px"): "0px";
+    list.style.height = (actualHeight -1) + "px";
+
+    innerlist = document.getElementById("TInnerList");
+    innerlist.style.position = "absolute";
+    innerlist.style.width = maxWidth + "px";
+    innerlist.style.left = 0 + "px";
+    innerlist.style.top = 0 + "px";
+
+    sd = document.getElementById("TScrollDnArea");
+    if(scrollable) {
+        sd.style.position = "absolute";
+        sd.style.top = actualHeight + 16 + "px";
+        sd.style.left = 0 + "px";
+        sd.style.width = maxWidth + "px";
+    }
+    else
+        sd.style.display = "none";
+
+    if(scrollable) {
+        su.onmousemove = onStartScrollingUp
+        su.onmouseout = onStopScrolling
+        sd.onmousemove = onStartScrollingDown
+        sd.onmouseout = onStopScrolling
+    }
+    enableArrow(false, true);
+
+    tc = (new Date()).getTime();
+    tcTimer = setInterval(CheckActivity, 3000);
+
+    return actualHeight + xHeight + (!msie || scrollable? 2: 0);
+}
+
+function OnEnterItem(obj)
+{
+    var bgcolor = "#dcdcdc";
+    var color = "black";
+
+    var name = getAttributeNodeValue(obj,"name");
+    try
+    {
+        owner.OnCommandSelected(name);
+    }
+    catch(e) {}
+
+    var enabled = getAttributeNodeValue(obj,"state") != "false";
+    if(!enabled)
+    {
+        bgcolor = "#f0f0f0";
+        color = "#b4b4b4";
+    }
+
+    obj.style.backgroundColor = bgcolor;
+    obj.style.color = color;
+
+    clearInterval(tcTimer);
+    tcTimer = setInterval(CheckActivity, 3000);
+    tc = (new Date()).getTime();
+
+    return false;
+}
+
+function OnLeaveItem(obj)
+{
+    var bgcolor = "#f0f0f0";
+    var color = "black";
+
+    try
+    {
+        owner.OnCommandSelected(-1);
+    } catch(e) {}
+
+    var enabled = getAttributeNodeValue(obj,"state") != "false";
+    if(!enabled)
+    {
+        bgcolor = "#f0f0f0";
+        color = "#b4b4b4";
+    }
+
+    obj.style.backgroundColor = bgcolor;
+    obj.style.color = color;
+
+    return false;
+}
+
+function onStartScrollingUp(e)
+{
+    if(!scrolling)
+    {
+        scrollTimer = setInterval(scrollUp, 50);
+        scrolling = true;
+    }
+    return false;
+}
+
+function onStopScrolling(e)
+{
+    if(scrolling)
+    {
+        clearInterval(scrollTimer);
+        scrolling = false;
+    }
+    return false;
+}
+
+function onStartScrollingDown(e)
+{
+    if(!scrolling)
+    {
+        scrollTimer = setInterval(scrollDown, 50);
+        scrolling = true;
+    }
+    return false;
+}
+
+function scrollUp()
+{
+    if(scrolled == 0)
+        return;
+    scrolled -= scrollInc;
+    if(scrolled < 0)
+        scrolled = 0;
+    document.getElementById("TInnerList").style.top = -scrolled +"px";
+    enableArrow(true, false);
+
+    if(scrolled == 0)
+    {
+        clearInterval(scrollTimer);
+        scrolling = false;
+        enableArrow(false, true);
+    }
+}
+
+function scrollDown()
+{
+    if(scrolled >= scrollAmount)
+        return;
+    scrolled += scrollInc;
+    if(scrolled > scrollAmount)
+        scrolled = scrollAmount;
+    document.getElementById("TInnerList").style.top = -scrolled +"px";
+    enableArrow(true, true);
+
+    if(scrolled == scrollAmount)
+    {
+        clearInterval(scrollTimer);
+        scrolling = false;
+        enableArrow(false, false);
+    }
+}
+
+function enableArrow(enabled, up)
+{
+   if(up)
+      document.getElementById("ArrowUp").src = enabled? "../stdicons/mn_scrollup.gif": "../stdicons/mn_scrollup_disabled.gif";
+   else
+      document.getElementById("ArrowDn").src = enabled? "../stdicons/mn_scrolldown.gif": "../stdicons/mn_scrolldown_disabled.gif";
+}
+
+function OnClickItem(obj)
+{
+    var name = getAttributeNodeValue(obj,"name");
+    try
+    {
+        owner.ExecuteCommand(name);
+        parent.OnListIdle();
+    }
+    catch(e) {}
+    return false;
+}
+
+function CheckActivity()
+{
+    var now = (new Date()).getTime();
+    if(now - tc >= 5000)
+    {
+        clearInterval(tcTimer);
+        parent.OnListIdle();
+    }
+}
+
+</script>
+
+<style>
+    div.TaskList
+    {
+        border-bottom-width: 2px;
+        border-bottom-style: solid;
+        border-bottom-color: gray;
+    }
+    div.TList
+    {
+        overflow: hidden;
+    }
+    div.TInnerList
+    {
+        overflow: hidden;
+    }
+    div.TScrollUpArea
+    {
+        position: absolute;
+        left: 0px;
+        top: 0px;
+        height: 16px;
+        background: #f0f0f0;
+        width: 100%;
+        cursor: pointer;
+    }
+    div.TScrollDnArea
+    {
+        position: absolute;
+        left: 0px;
+        top: 0px;
+        height: 16px;
+        background: #f0f0f0;
+        width: 100%;
+        cursor: pointer;
+    }
+    table.TContent
+    {
+        font-family: __#@font#__;
+        font-size: __#@fontsize#__;
+        font-weight: normal;
+        color: black;
+        background-color: #f0f0f0;
+    }
+</style>
+</head>
+<body bgcolor=#f0f0f0 marginwidth=0 marginheight=0 leftmargin=0 topmargin=0 bottommargin=0 rightmargin=0>
+    <div class="TaskList" id="TaskList" style="width: 100%" >
+    </div>
+</body>

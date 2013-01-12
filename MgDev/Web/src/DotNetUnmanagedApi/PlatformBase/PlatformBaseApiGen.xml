@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Parameters>
+<!--
+   Module section.
+-->
+<Module name="PlatformBaseApi" />
+
+<!--
+   Custom file path.
+-->
+<CustomFile path="./PlatformBaseCustom" />
+
+<!--
+   Target section.
+-->
+<Target path="./PlatformBaseApi.i" />
+<DocTarget path="./PlatformBaseApi_Doc.i" />
+
+<!--
+   C++ inline section.
+-->
+<CppInline>
+#ifdef _WIN32
+#pragma warning(disable: 4251)
+#endif
+
+#include &lt;string&gt;
+#include &lt;map&gt;
+
+#include "Foundation.h"
+#include "GeometryCommon.h"
+#include "PlatformBase.h"
+
+#if defined(PHP) || defined(JAVA)
+typedef std::wstring STRINGPARAM;
+#else
+typedef wchar_t* STRINGPARAM;
+#endif
+</CppInline>
+
+<!--
+   Type replacements.
+-->
+<TypeReplacements>
+    <TypeReplacement oldtype="CREFSTRING" newtype="STRINGPARAM" />
+    <TypeReplacement oldtype="INT64" newtype="long long" />
+</TypeReplacements>
+
+<!--
+   Swig inline section.
+-->
+<SwigInline>
+  %import "../Foundation/FoundationApi.i"
+  %import "../Geometry/GeometryApi.i"
+  %include "PlatformBaseApi_Doc.i" //doc fragments
+  %include "language.i"   //typemaps specific for each language
+  %include "../../../../Common/PlatformBase/Services/PlatformBaseClassId.h"
+
+#if defined(PHPSWIG)
+  // We force UTF-8 encoding for PHP
+  typedef char*         STRINGPARAM;
+  typedef char*         STRING;
+  typedef char*         BYTE_ARRAY_IN;
+  typedef char*         BYTE_ARRAY_OUT;
+  typedef unsigned char BYTE;
+#elseif defined(JAVA)
+  typedef std::wstring  STRINGPARAM;
+  typedef signed char   BYTE;  //mapped to byte in Java
+#else // .Net
+  typedef char*         BYTE_ARRAY_IN;
+  typedef char*         BYTE_ARRAY_OUT;
+  typedef unsigned char BYTE;    //mapped to byte in C#
+#endif
+
+  typedef int           STATUS;
+  typedef short         INT8;
+  typedef short         INT16;
+  typedef int           INT32;
+  typedef int           UINT32;
+
+</SwigInline>
+
+<!--
+   C++ Headers section.  If you add headers to this section then you
+   must also add them to Makefile.am in the JavaApi and PhpApi folders.
+-->
+<Headers>
+
+    <!-- PlatformBase classes -->
+
+    <Header path="../../../../Common/PlatformBase/Data/BlobProperty.h" />
+    <Header path="../../../../Common/PlatformBase/Data/BooleanProperty.h" />
+    <Header path="../../../../Common/PlatformBase/Data/ByteProperty.h" />
+    <Header path="../../../../Common/PlatformBase/Data/ClobProperty.h" />
+    <Header path="../../../../Common/PlatformBase/Data/Color.h" />
+    <Header path="../../../../Common/PlatformBase/Data/DateTimeProperty.h" />
+    <Header path="../../../../Common/PlatformBase/Data/DoubleProperty.h" />
+    <Header path="../../../../Common/PlatformBase/Data/Int16Property.h" />
+    <Header path="../../../../Common/PlatformBase/Data/Int32Property.h" />
+    <Header path="../../../../Common/PlatformBase/Data/Int64Property.h" />
+    <Header path="../../../../Common/PlatformBase/Data/IntCollection.h" />
+    <Header path="../../../../Common/PlatformBase/Data/PropertyDefinitionCollection.h" />
+    <Header path="../../../../Common/PlatformBase/Data/SingleProperty.h" />
+    <Header path="../../../../Common/PlatformBase/Data/StringPropertyCollection.h" />
+
+    <Header path="../../../../Common/PlatformBase/Exception/ArrayTypeMismatchException.h" />
+    <Header path="../../../../Common/PlatformBase/Exception/DuplicateResourceDataException.h" />
+    <Header path="../../../../Common/PlatformBase/Exception/DuplicateResourceException.h" />
+    <Header path="../../../../Common/PlatformBase/Exception/EmptyFeatureSetException.h" />
+    <Header path="../../../../Common/PlatformBase/Exception/FdoException.h" />
+    <Header path="../../../../Common/PlatformBase/Exception/FeatureServiceException.h" />
+    <Header path="../../../../Common/PlatformBase/Exception/InvalidMapDefinitionException.h" />
+    <Header path="../../../../Common/PlatformBase/Exception/InvalidRepositoryNameException.h" />
+    <Header path="../../../../Common/PlatformBase/Exception/InvalidRepositoryTypeException.h" />
+    <Header path="../../../../Common/PlatformBase/Exception/InvalidResourceDataNameException.h" />
+    <Header path="../../../../Common/PlatformBase/Exception/InvalidResourceDataTypeException.h" />
+    <Header path="../../../../Common/PlatformBase/Exception/InvalidResourceNameException.h" />
+    <Header path="../../../../Common/PlatformBase/Exception/InvalidResourcePathException.h" />
+    <Header path="../../../../Common/PlatformBase/Exception/InvalidResourcePreProcessingTypeException.h" />
+    <Header path="../../../../Common/PlatformBase/Exception/InvalidResourceTypeException.h" />
+    <Header path="../../../../Common/PlatformBase/Exception/LayerNotFoundException.h" />
+    <Header path="../../../../Common/PlatformBase/Exception/ResourceBusyException.h" />
+    <Header path="../../../../Common/PlatformBase/Exception/ResourceDataNotFoundException.h" />
+    <Header path="../../../../Common/PlatformBase/Exception/ResourceNotFoundException.h" />
+    <Header path="../../../../Common/PlatformBase/Exception/ServiceNotAvailableException.h" />
+    <Header path="../../../../Common/PlatformBase/Exception/ServiceNotSupportedException.h" />
+    <Header path="../../../../Common/PlatformBase/Exception/UserNotFoundException.h" />
+
+    <Header path="../../../../Common/PlatformBase/Services/FeatureCommand.h" />
+    <Header path="../../../../Common/PlatformBase/Services/FeatureQueryOptions.h" />
+    <Header path="../../../../Common/PlatformBase/Services/FeatureSourceParams.h" />
+    <Header path="../../../../Common/PlatformBase/Services/Reader.h" />
+    <Header path="../../../../Common/PlatformBase/Services/Service.h" />
+
+    <Header path="../../../../Common/PlatformBase/Services/BaseService.h" />
+    <Header path="../../../../Common/PlatformBase/Services/ClassDefinition.h" />
+    <Header path="../../../../Common/PlatformBase/Services/ClassDefinitionCollection.h" />
+    <Header path="../../../../Common/PlatformBase/Services/FileFeatureSourceParams.h" />
+    <Header path="../../../../Common/PlatformBase/Services/CreateSdfParams.h" />
+    <Header path="../../../../Common/PlatformBase/Services/DataPropertyDefinition.h" />
+    <Header path="../../../../Common/PlatformBase/Services/DataReader.h" />
+    <Header path="../../../../Common/PlatformBase/Services/DeleteFeatures.h" />
+    <Header path="../../../../Common/PlatformBase/Services/FeatureAggregateOptions.h" />
+    <Header path="../../../../Common/PlatformBase/Services/FeatureCommandCollection.h" />
+    <Header path="../../../../Common/PlatformBase/Services/FeatureProperty.h" />
+    <Header path="../../../../Common/PlatformBase/Services/FeatureReader.h" />
+    <Header path="../../../../Common/PlatformBase/Services/FeatureSchema.h" />
+    <Header path="../../../../Common/PlatformBase/Services/FeatureSchemaCollection.h" />
+    <Header path="../../../../Common/PlatformBase/Services/FeatureService.h" />
+    <Header path="../../../../Common/PlatformBase/Services/GeometricPropertyDefinition.h" />
+    <Header path="../../../../Common/PlatformBase/Services/GeometryProperty.h" />
+    <Header path="../../../../Common/PlatformBase/Services/GeometryTypeInfo.h" />
+    <Header path="../../../../Common/PlatformBase/Services/GwsFeatureReader.h" />
+    <Header path="../../../../Common/PlatformBase/Services/InsertFeatures.h" />
+    <Header path="../../../../Common/PlatformBase/Services/LongTransactionReader.h" />
+    <Header path="../../../../Common/PlatformBase/Services/ObjectPropertyDefinition.h" />
+    <Header path="../../../../Common/PlatformBase/Services/Parameter.h" />
+    <Header path="../../../../Common/PlatformBase/Services/ParameterCollection.h" />
+    <Header path="../../../../Common/PlatformBase/Services/Raster.h" />
+    <Header path="../../../../Common/PlatformBase/Services/RasterProperty.h" />
+    <Header path="../../../../Common/PlatformBase/Services/RasterPropertyDefinition.h" />
+    <Header path="../../../../Common/PlatformBase/Services/Resource.h" />
+    <Header path="../../../../Common/PlatformBase/Services/ResourceIdentifier.h" />
+    <Header path="../../../../Common/PlatformBase/Services/ResourceService.h" />
+    <Header path="../../../../Common/PlatformBase/Services/SpatialContextReader.h" />
+    <Header path="../../../../Common/PlatformBase/Services/SqlDataReader.h" />
+    <Header path="../../../../Common/PlatformBase/Services/Transaction.h" />
+    <Header path="../../../../Common/PlatformBase/Services/UpdateFeatures.h" />
+    <Header path="../../../../Common/PlatformBase/Services/Warnings.h" />
+
+    <Header path="../../../../Common/PlatformBase/MapLayer/LayerBase.h" />
+    <Header path="../../../../Common/PlatformBase/MapLayer/LayerCollection.h" />
+    <Header path="../../../../Common/PlatformBase/MapLayer/LayerGroup.h" />
+    <Header path="../../../../Common/PlatformBase/MapLayer/LayerGroupCollection.h" />
+    <Header path="../../../../Common/PlatformBase/MapLayer/MapBase.h" />
+    <Header path="../../../../Common/PlatformBase/MapLayer/MapCollection.h" />
+    <Header path="../../../../Common/PlatformBase/MapLayer/ReadOnlyLayerCollection.h" />
+    <Header path="../../../../Common/PlatformBase/MapLayer/SelectionBase.h" />
+
+</Headers>
+
+</Parameters>

@@ -1,0 +1,1113 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<HTML xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"><HEAD><META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <TITLE>MapGuide Viewer API Reference</TITLE>
+  <META name="keywords" content="mapguide viewer javascript api reference">
+  <META name="description" content="MapGuide Viewer API Reference">
+</HEAD><BODY>
+  <H1>MapGuide Viewer API Reference</H1>
+
+  <H4>Contents</H4>
+
+<UL>
+
+  <LI><A href="#formframe">Form frame method</A>
+    <UL>
+      <LI><A href="#formframe_submit">Submit</A></LI>
+    </UL>
+  </LI>
+
+  <LI><A href="#legendpalette">Legend palette methods</A>
+    <UL>
+      <LI><A href="#legendpalette_getbasegroups">GetBaseGroups</A></LI>
+      <LI><A href="#legendpalette_getlayer">GetLayer</A></LI>
+      <LI><A href="#legendpalette_getlayers">GetLayers</A></LI>
+      <LI><A href="#legendpalette_expandlayerinlegend">ExpandLayerInLegend</A></LI>
+      <LI><A href="#legendpalette_expandgroupinlegend">ExpandGroupInLegend</A></LI>
+      <LI><A href="#legendpalette_internalstatecomplete">InternalStateComplete</A></LI>
+      <LI><A href="#legendpalette_refresh">Refresh</A></LI>
+      <LI><A href="#legendpalette_setscale">SetScale</A></LI>
+    </UL>
+  </LI>
+
+  <LI><A href="#mainframe">Main frame methods</A>
+    <UL>
+      <LI><A href="#mainframe_executecommand">ExecuteCommand</A></LI>
+      <LI><A href="#mainframe_executemapaction">ExecuteMapAction</A></LI>
+      <LI><A href="#mainframe_formatmessage">FormatMessage</A></LI>
+      <LI><A href="#mainframe_forwardmousedown">ForwardMouseDown</A></LI>
+      <LI><A href="#mainframe_getcommands">GetCommands</A></LI>
+      <LI><A href="#mainframe_getcontextmenuitems">GetContextMenuItems</A></LI>
+      <LI><A href="#mainframe_getformframe">GetFormFrame</A></LI>
+      <LI><A href="#mainframe_getmapframe">GetMapFrame</A></LI>
+      <LI><A href="#mainframe_getscriptframe">GetScriptFrame</A></LI>
+      <LI><A href="#mainframe_gettaskframe">GetTaskFrame</A></LI>
+      <LI><A href="#mainframe_gettasklistitems">GetTaskListItems</A></LI>
+      <LI><A href="#mainframe_gettingstartedurl">GettingStartedURL</A></LI>
+      <LI><A href="#mainframe_gettoolbaritems">GetToolbarItems</A></LI>
+      <LI><A href="#mainframe_gotohomepage">GotoHomePage</A></LI>
+      <LI><A href="#mainframe_refresh">Refresh</A></LI>
+      <LI><A href="#mainframe_setselectionxml">SetSelectionXML</A></LI>
+      <LI><A href="#mainframe_setstatusmsg">SetStatusMsg</A></LI>
+      <LI><A href="#mainframe_zoomtoview">ZoomToView</A></LI>
+    </UL>
+  </LI>
+
+  <LI><A href="#mapframe">Map frame methods</A>
+    <UL>
+      <LI><A href="#mapframe_clearselection">ClearSelection</A></LI>
+      <LI><A href="#mapframe_digitizecircle">DigitizeCircle</A></LI>
+      <LI><A href="#mapframe_digitizeline">DigitizeLine</A></LI>
+      <LI><A href="#mapframe_digitizepoint">DigitizePoint</A></LI>
+      <LI><A href="#mapframe_digitizepolygon">DigitizePolygon</A></LI>
+      <LI><A href="#mapframe_digitizelinestring">DigitizeLineString</A></LI>
+      <LI><A href="#mapframe_digitizerectangle">DigitizeRectangle</A></LI>
+      <LI><A href="#mapframe_getcenter">GetCenter</A></LI>
+      <LI><A href="#mapframe_getlayers">GetLayers</A></LI>
+      <LI><A href="#mapframe_getmapname">GetMapName</A></LI>
+      <LI><A href="#mapframe_getmapheight">GetMapHeight</A></LI>
+      <LI><A href="#mapframe_getmapunitstype">GetMapUnitsType</A></LI>
+      <LI><A href="#mapframe_getmapwidth">GetMapWidth</A></LI>
+      <LI><A href="#mapframe_getmetersperunit">GetMetersPerUnit</A></LI>
+      <LI><A href="#mapframe_getscale">GetScale</A></LI>
+      <LI><A href="#mapframe_getselectedcount">GetSelectedCount</A></LI>
+      <LI><A href="#mapframe_getselectedlayers">GetSelectedLayers</A></LI>
+      <LI><A href="#mapframe_getselectionxml">GetSelectionXML</A></LI>
+      <LI><A href="#mapframe_getsessionid">GetSessionId</A></LI>
+      <LI><A href="#mapframe_isdigitizing">IsDigitizing</A></LI>
+      <LI><A href="#mapframe_isenglishunits">IsEnglishUnits</A></LI>
+      <LI><A href="#mapframe_islatlondisplayunits">IsLatLonDisplayUnits</A></LI>
+      <LI><A href="#mapframe_mapunitstolatlon">MapUnitsToLatLon</A></LI>
+      <LI><A href="#mapframe_refresh">Refresh</A></LI>
+      <LI><A href="#mapframe_screentomapunits">ScreenToMapUnits</A></LI>
+      <LI><A href="#mapframe_setenglishunits">SetEnglishUnits</A></LI>
+      <LI><A href="#mapframe_setlatlondisplayunits">SetLatLonDisplayUnits</A></LI>
+      <LI><A href="#mapframe_setselectionxml">SetSelectionXML</A></LI>
+      <LI><A href="#mapframe_zoomtoview">ZoomToView</A></LI>
+    </UL>
+  </LI>
+
+  <LI><A href="#propertypalette">Property palette method</A>
+    <UL>
+      <LI><A href="#propertypalette_setproperties">SetProperties</A></LI>
+    </UL>
+  </LI>
+
+  <LI><A href="#statusbar">Status bar methods</A>
+    <UL>
+      <LI><A href="#statusbar_setcursorpositionmsg">SetCursorPositionMsg</A></LI>
+      <LI><A href="#statusbar_setfeatureselectedmsg">SetFeatureSelectedMsg</A></LI>
+      <LI><A href="#statusbar_setmapscalemsg">SetMapScaleMsg</A></LI>
+      <LI><A href="#statusbar_setmapsizemsg">SetMapSizeMsg</A></LI>
+    </UL>
+  </LI>
+
+  <LI><A href="#toolbar">Toolbar methods</A>
+    <UL>
+      <LI><A href="#toolbar_oncommandexecuted">OnCommandExecuted</A></LI>
+      <LI><A href="#toolbar_oncmdstatechanged">OnCmdStateChanged</A></LI>
+    </UL>
+  </LI>
+
+</UL>
+
+<HR>
+
+<H3><A name="formframe">Form frame method</A></H3>
+  <DL>
+    <DT><STRONG><A name="formframe_submit">Submit(url, params, target)</A></STRONG></DT>
+      <DD>
+      Submits a <CODE>POST</CODE> request to a server.
+
+      <P>
+      <STRONG>Parameters:</STRONG><BR>
+      <CODE>url</CODE> - the URL of the server to send the request to. <VAR>url</VAR> can be the name of the script, a relative URL, or an absolute URL, depending on where the invoked script is located.<BR><BR>
+      <CODE>params</CODE> - an array containing the request's parameters. Specify each parameter as a name-value pair of strings, where each pair occupies two consecutive array elements. If a request has two parameters, for example, <VAR>params</VAR> must have four elements: The first element contains the name of the first parameter; the second element contains the value of the first parameter; the third element contains the name of the second parameter; and the fourth element contains the value of the second parameter. If the request has no parameters, use an empty array or null.<BR><BR>
+      <CODE>target</CODE> - the case-sensitive name of the request's target frame: <CODE>"tbFrame"</CODE> (toolbar), <CODE>"mapFrame"</CODE> (map area, including the legend and property palettes), <CODE>"formFrame"</CODE> (this form), <CODE>"scriptFrame"</CODE> (script frame), <CODE>"taskBar"</CODE> (toolbar above the task frame), <CODE>"taskPaneFrame"</CODE> (frame containing the task pane), or <CODE>"sbFrame"</CODE> (status bar). <VAR>target</VAR> also can be the window name of an existing pop-up frame. The usual targets of a form submit are <CODE>"scriptFrame"</CODE> and <CODE>"taskPaneFrame"</CODE>.
+      </P>
+
+      <P>
+      <STRONG>Examples:</STRONG><BR>
+      The following example calls the script <CODE>BuildReport.php</CODE> on the server, without parameters, and directs the script's result to the script frame.<BR>
+      <CODE>formFrame.Submit("BuildReport.php", null, "scriptFrame");</CODE>
+      <BR><BR>
+      The following example calls the script <CODE>Surface.php</CODE> with two arguments and displays the script's result in the task frame.<BR>
+      <CODE>xmlSel = mapFrame.GetSelectionXML();</CODE><BR>
+      <CODE>params = new Array("UNITS", "SquareFeet", "SEL", xmlSel);</CODE><BR>
+      <CODE>formFrame.Submit("../MiscScripts/Surface.php", params, "taskPaneFrame");</CODE>
+      </P>
+
+      </DD>
+  </DL>
+
+<HR>
+
+<H3><A name="legendpalette">Legend palette methods</A></H3>
+
+  <DL>
+    <DT><STRONG><A name="legendpalette_getbasegroups">GetBaseGroups(onlyVisible, scale)</A></STRONG></DT>
+      <DD>
+      Returns a list of the names of the base groups that meet the specified filtering criteria.
+
+      <P>
+      <STRONG>Parameters:</STRONG><BR>
+      <CODE>onlyVisible</CODE> - set to <CODE>true</CODE> to return only visible base groups; set to <CODE>false</CODE> to ignore base-group visibility.<BR>
+      <CODE>scale</CODE> - set to the desired scale which to filter such visible groups at. Does nothing if <CODE>onlyVisible</CODE> is set to <CODE>false</CODE>
+      </P>
+
+      </DD>
+  </DL>
+
+  <DL>
+    <DT><STRONG><A name="legendpalette_getlayer">GetLayer(layerId)</A></STRONG></DT>
+      <DD>
+      Returns the map layer with the specified object ID, as a <CODE>Layer</CODE> object:
+<PRE>Layer {
+  legend;     /* Legend text displayed for this layer */
+  name;       /* Layer name */
+  objectid;   /* Unique layer identifier */
+}
+</PRE>
+      <P>
+      <STRONG>Parameters:</STRONG><BR>
+      <CODE>layerId</CODE> - the layer's unique object ID.
+      </P>
+      </DD>
+  </DL>
+
+  <DL>
+    <DT><STRONG><A name="legendpalette_getlayers">GetLayers(onlyVisible, onlySelectable)</A></STRONG></DT>
+      <DD>
+      Returns a list of the map layers that meet the specified filtering criteria. The list contains <CODE>Layer</CODE> objects:
+<PRE>Layer {
+  legend;     /* Legend text displayed for this layer */
+  name;       /* Layer name */
+  objectid;   /* Unique layer identifier */
+}
+</PRE>
+      <P>
+      <STRONG>Parameters:</STRONG><BR>
+      <CODE>onlyVisible</CODE> - set to <CODE>true</CODE> to return only the layers visible at the current scale; set to <CODE>false</CODE> to ignore layer visibility.<BR><BR>
+      <CODE>onlySelectable</CODE> - set to <CODE>true</CODE> to return only layers that can be selected;  set to <CODE>false</CODE> to ignore layer selectability.
+      </P>
+      </DD>
+  </DL>
+  
+  <DL>
+    <DT><STRONG><A name="legendpalette_expandlayerinlegend">ExpandLayerInLegend(layerName, expandInLegend)</A></STRONG></DT>
+      <DD>
+      Expands or collapses the specified (themed) layer in the legend
+      <P>
+      <STRONG>Parameters:</STRONG><BR>
+      <CODE>layerName</CODE> - The name of the layer to expand or collapse<BR><BR>
+      <CODE>expandInLegend</CODE> - set to <CODE>true</CODE> to expand this layer;  set to <CODE>false</CODE> to collapse it
+      </P>
+      <P>
+      <STRONG>Remarks:</STRONG>
+      This only expands/collapses the layer client-side. To persist these changes (ie. Keep the state after refreshing the legend) you must call a server-side script that updates this map state
+      </P>
+      </DD>
+  </DL>
+  
+  <DL>
+    <DT><STRONG><A name="legendpalette_expandgroupinlegend">ExpandGroupInLegend(groupName, expandInLegend)</A></STRONG></DT>
+      <DD>
+      Expands or collapses the specified layer group in the legend
+      <P>
+      <STRONG>Parameters:</STRONG><BR>
+      <CODE>groupName</CODE> - The name of the layer group to expand or collapse<BR><BR>
+      <CODE>expandInLegend</CODE> - set to <CODE>true</CODE> to expand this group;  set to <CODE>false</CODE> to collapse it
+      </P>
+      <P>
+      <STRONG>Remarks:</STRONG>
+      This only expands/collapses the group client-side. To persist these changes (ie. Keep the state after refreshing the legend) you must call a server-side script that updates this map state
+      </P>
+      </DD>
+  </DL>
+
+  <DL>
+    <DT><STRONG><A name="legendpalette_internalstatecomplete">InternalStateComplete()</A></STRONG></DT>
+      <DD>
+      Indicates whether the legend palette is fully initialized. Returns <CODE>true</CODE> if the legend palette is initialized; <CODE>false</CODE> otherwise. Scripts running in other frames must make sure that this method returns <CODE>true</CODE> before calling other  methods of the legend palette; otherwise the result will be unpredictable. If this method returns <CODE>false</CODE>, wait until the viewer can build all the layers before calling it again.
+
+      </DD>
+  </DL>
+
+  <DL>
+    <DT><STRONG><A name="legendpalette_refresh">Refresh()</A></STRONG></DT>
+      <DD>
+      Forces a refresh of the legend palette, requesting complete layer and group information from the server. This method refreshes only the legend palette; to refresh other viewer components, use the map frame <A href="#mapframe_refresh">Refresh()</A> method.
+
+      </DD>
+  </DL>
+
+  <DL>
+    <DT><STRONG><A name="legendpalette_setscale">SetScale(scale)</A></STRONG></DT>
+      <DD>
+      Changes the legend's scale. This command can make layers and groups appear or disappear from the palette's display, depending on how visibility is defined for the new scale.
+
+      <P>
+      <STRONG>Parameters:</STRONG><BR>
+      <CODE>scale</CODE> - the new scale, as a floating-point number greater than or equal to one.
+      </P>
+
+      </DD>
+  </DL>
+
+<HR>
+
+<H3><A name="mainframe">Main frame methods</A></H3>
+  <DL>
+    <DT><STRONG><A name="mainframe_executecommand">ExecuteCommand(index)</A></STRONG></DT>
+      <DD>
+      Executes a command in the command list that <A href="#mainframe_getcommands">GetCommands()</A> returns.
+
+      <P>
+      <STRONG>Parameters:</STRONG><BR>
+      <CODE>index</CODE> - a zero-based index that specifies which command in the list to execute. A floating-point number is truncated to an integer. If <VAR>index</VAR> is out of bounds then the call is ignored and no command is executed.
+      </P>
+      </DD>
+  </DL>
+
+  <DL>
+    <DT><STRONG><A name="mainframe_executemapaction">ExecuteMapAction(code)</A></STRONG></DT>
+      <DD>
+      Executes a map command.
+
+      <P>
+      <STRONG>Parameters:</STRONG><BR>
+      <CODE>code</CODE> - the code associated with the command to execute. The following table shows the valid codes.<BR><BR>
+      </P>
+
+      <TABLE>
+        <THEAD>
+          <TR><TH>Code</TH><TH>Action</TH></TR>
+        </THEAD>
+
+        <TBODY>
+          <TR><TD>1</TD> <TD>Enter Pan mode</TD></TR>
+          <TR><TD>2</TD> <TD>Pan up</TD></TR>
+          <TR><TD>3</TD> <TD>Pan down</TD></TR>
+          <TR><TD>4</TD> <TD>Pan right</TD></TR>
+          <TR><TD>5</TD> <TD>Pan left</TD></TR>
+          <TR><TD>6</TD> <TD>Enter Zoom mode</TD></TR>
+          <TR><TD>7</TD> <TD>Zoom in</TD></TR>
+          <TR><TD>8</TD> <TD>Zoom out</TD></TR>
+          <TR><TD>9</TD> <TD>Zoom to rectangle</TD></TR>
+          <TR><TD>10</TD> <TD>Zoom to selection</TD></TR>
+          <TR><TD>11</TD> <TD>Zoom to map extents</TD></TR>
+          <TR><TD>12</TD> <TD>Go to previous view</TD></TR>
+          <TR><TD>13</TD> <TD>Go to next view</TD></TR>
+          <TR><TD>14</TD> <TD>Zoom to initial view</TD></TR>
+          <TR><TD>15</TD> <TD>Enter selection mode</TD></TR>
+          <TR><TD>16</TD> <TD>Select radius</TD></TR>
+          <TR><TD>17</TD> <TD>Select polygon</TD></TR>
+          <TR><TD>18</TD> <TD>--</TD></TR>
+          <TR><TD>19</TD> <TD>Clear selection</TD></TR>
+          <TR><TD>20</TD> <TD>Refresh map</TD></TR>
+          <TR><TD>21</TD> <TD>Copy map to clipboard</TD></TR>
+          <TR><TD>22</TD> <TD>About</TD></TR>
+        </TBODY>
+      </TABLE>
+
+      <P>
+      <STRONG>See Also:</STRONG>
+      <A href="#toolbar_oncommandexecuted">OnCommandExecuted</A>
+      </P>
+
+      </DD>
+  </DL>
+
+  <DL>
+    <DT><STRONG><A name="mainframe_formatmessage">FormatMessage(fmt, params)</A></STRONG></DT>
+      <DD>
+      Formats a message, performing simple string substitution. Returns the formatted message.
+
+      <P>
+      <STRONG>Parameters:</STRONG><BR>
+      <CODE>fmt</CODE> - a format string, containing substitution tags of the form {0}, {1}, {2}, etc.<BR><BR>
+      <CODE>params</CODE> - an array of values to be substituted into the format.
+      </P>
+
+      <P>
+      <STRONG>Example:</STRONG><BR>
+      FormatMessage("This is the format string, with values {0} and {1}.", new Array("first", "second"));<BR><BR>
+      returns<BR><BR>
+      "This is the format string, with values first and second."
+      </P>
+
+      </DD>
+  </DL>
+
+  <DL>
+    <DT><STRONG><A name="mainframe_forwardmousedown">ForwardMouseDown(doc, evt)</A></STRONG></DT>
+      <DD>
+      Notifies all other frames that a mouse-down event has occurred. This notification allows a frame with an open context menu to close that menu when another part of the viewer is clicked. A script that runs in the task pane must call this method when it receives mouse-down events. You don't have to write special code to handle the viewer's default context menu but if you have provided a custom context menu then you must write your own menu-closing code.
+
+      <P>
+      <STRONG>Parameters:</STRONG><BR>
+      <CODE>doc</CODE> - a reference to the document where the click occurred.<BR><BR>
+      <CODE>evt</CODE> - the event.
+      </P>
+
+      <P>
+      <STRONG>Example:</STRONG><BR>
+      In the following example, the script attached to the document receiving the mouse-down event calls ForwardMouseDown() before processing the event, causing the main frame to call OnForwardMouseDown() in every frame where this method is present, giving each frame the opportunity to close an open context menu.
+      </P>
+<PRE>function OnMouseDown(evt) {
+    parent.ForwardMouseDown(this.document, evt);
+    //further processing of the event here...
+}
+</PRE>
+
+      </DD>
+  </DL>
+
+  <DL>
+    <DT><STRONG><A name="mainframe_getcommands">GetCommands()</A></STRONG></DT>
+      <DD>
+      Returns a list of the commands defined for the current web layout. The list contains <CODE>BasicCommand</CODE>-derived objects (a search command is a <CODE>SearchCommand</CODE> object, for example). Don't modify the list items. Use <A href="#mainframe_executecommand">ExecuteCommand()</A> to execute a command in the list.
+      </DD>
+  </DL>
+
+  <DL>
+    <DT><STRONG><A name="mainframe_getcontextmenuitems">GetContextMenuItems()</A></STRONG></DT>
+      <DD>
+      Returns a list of the items in the context menu. These items are as they are defined in the web layout, whether or not the context menu is visible when this method is called. The list contains <CODE>CommandItem</CODE> or <CODE>FlyoutItem</CODE> objects. Don't modify the list items.
+      </DD>
+  </DL>
+
+  <DL>
+    <DT><STRONG><A name="mainframe_getformframe">GetFormFrame()</A></STRONG></DT>
+      <DD>
+      Retrieves a reference to the hidden form frame, which you can use to make <CODE>POST</CODE> requests to a server-side script. Use the returned reference with <A href="#formframe_submit">Submit()</A>.
+      </DD>
+  </DL>
+
+  <DL>
+    <DT><STRONG><A name="mainframe_getmapframe">GetMapFrame()</A></STRONG></DT>
+      <DD>
+      Retrieves a reference to the map frame that holds the currently displayed map (DWF or HTML format). Use the returned reference with the <A href="#mainframe">Main frame methods</A>.
+      </DD>
+  </DL>
+
+  <DL>
+    <DT><STRONG><A name="mainframe_getscriptframe">GetScriptFrame()</A></STRONG></DT>
+      <DD>
+      Retrieves a reference to the hidden script frame, which executes client-side scripts. Every frame contains an HTML page that can contain JavaScript code that's executed when the page is loaded. The GetScriptFrame() method returns a reference to the script frame, which you can use to execute a client action after a server-side script runs.
+
+      <P>
+      <STRONG>Example:</STRONG><BR>
+      <CODE>GetScriptFrame().location.href = "MyScript.php"</CODE>
+      </P>
+
+      </DD>
+  </DL>
+
+  <DL>
+    <DT><STRONG><A name="mainframe_gettaskframe">GetTaskFrame()</A></STRONG></DT>
+      <DD>
+      Retrieves a reference to the task pane, which can display the result of a server-side script.
+
+      <P>
+      <STRONG>Example:</STRONG><BR>
+      <CODE>GetTaskFrame().location.href = "MyScript.php"</CODE>
+      </P>
+      </DD>
+  </DL>
+
+  <DL>
+    <DT><STRONG><A name="mainframe_gettasklistitems">GetTaskListItems()</A></STRONG></DT>
+      <DD>
+      Returns a list of the items in the task list. These items are as they are defined in the web layout, whether or not the task list is visible when this method is called. The list contains <CODE>CommandItem</CODE> objects. Don't modify the list items.
+      </DD>
+  </DL>
+
+  <DL>
+    <DT><STRONG><A name="mainframe_gettingstartedurl">GettingStartedURL()</A></STRONG></DT>
+      <DD>
+      Returns the URL of the page displayed in the task pane. If no home task is defined, returns the URL of the default Getting Started page.
+      </DD>
+  </DL>
+
+  <DL>
+    <DT><STRONG><A name="mainframe_gettoolbaritems">GetToolbarItems()</A></STRONG></DT>
+      <DD>
+      Returns a list of the items in the toolbar. The list contains <CODE>CommandItem</CODE> or <CODE>FlyoutItem</CODE> objects. Don't modify the list items.
+      </DD>
+  </DL>
+
+  <DL>
+    <DT><STRONG><A name="mainframe_gotohomepage">GotoHomePage()</A></STRONG></DT>
+      <DD>
+      Displays the home page in the task pane. If the user hasn't set a home page then the web layout's default home page is displayed. If the task pane is hidden, nothing happens.
+      </DD>
+  </DL>
+
+  <DL>
+    <DT><STRONG><A name="mainframe_refresh">Refresh()</A></STRONG></DT>
+      <DD>
+      Refreshes the current map. This method refreshes the viewer's map, legend, and property components; to refresh only the legend, use the legend palette <A href="#legendpalette_refresh">Refresh()</A> method.
+      </DD>
+  </DL>
+
+  <DL>
+    <DT><STRONG><A name="mainframe_setselectionxml">SetSelectionXML(xmlSet)</A></STRONG></DT>
+      <DD>
+      Selects map features by using an XML description of those features. Calls the SetSelectionXML() method of the map frame.
+      <P>
+      <STRONG>Parameters:</STRONG><BR>
+      <CODE>xmlSet</CODE> - a well-formed XML description of the features to select. This XML text must validate against the feature-set schema <CODE>FeatureSet-1.0.0.xsd</CODE>, which comes with the MapGuide distribution.
+      </P>
+
+      <P>
+      <STRONG>See Also:</STRONG>
+      <A href="#mapframe_getselectionxml">GetSelectionXML()</A>
+      <A href="#mapframe_setselectionxml">SetSelectionXML()</A>
+      </P>
+
+      </DD>
+  </DL>
+
+  <DL>
+    <DT><STRONG><A name="mainframe_setstatusmsg">SetStatusMsg(msg)</A></STRONG></DT>
+      <DD>
+      Displays the specified text in the browser's status bar. The text remains in the status bar until it's overwritten by the browser or an application.
+
+      <P>
+      <STRONG>Parameters:</STRONG><BR>
+      <CODE>msg</CODE> - the string to display. Use an empty string or null to clear the status bar.
+      </P>
+
+      </DD>
+  </DL>
+
+  <DL>
+    <DT><STRONG><A name="mainframe_zoomtoview">ZoomToView(x, y, scale, refresh)</A></STRONG></DT>
+      <DD>
+      Centers the map at the specified point and zooms to a specified scale. Calls the ZoomToView() method of the map frame.
+      <P>
+      <STRONG>Parameters:</STRONG><BR>
+      <CODE>x</CODE> - the x coordinate of the new center point, expressed in map units.<BR><BR>
+      <CODE>y</CODE> - the y coordinate of the new center point, expressed in map units.<BR><BR>
+      <CODE>scale</CODE> - the new scale of the map, as a floating-point number greater than or equal to one.<BR><BR>
+      <CODE>refresh</CODE> - Determines whether the entire map is refreshed when it is recentered or zoomed. Set <VAR>refresh</VAR> to <CODE>true</CODE> to refresh; <CODE>false</CODE> otherwise. This setting applies only to DWF images; HTML images always refresh automatically.
+      </P>
+
+      <P>
+      <STRONG>See Also:</STRONG>
+      <A href="#mapframe_getcenter">GetCenter()</A>,
+      <A href="#mapframe_getmapunitstype">GetMapUnitsType()</A>,
+      <A href="#mapframe_getscale">GetScale()</A>
+      <A href="#mapframe_zoomtoview">ZoomToView()</A>
+      </P>
+
+      </DD>
+  </DL>
+
+<HR>
+
+<H3><A name="mapframe">Map frame methods</A></H3>
+
+  <DL>
+    <DT><STRONG><A name="mapframe_clearselection"></A>ClearSelection()</STRONG></DT>
+      <DD>
+      Resets the selection on the current map.
+      </DD>
+  </DL>
+
+  <DL>
+  	<DT><STRONG><A name="mapframe_digitizecircle"></A>DigitizeCircle(handler)</STRONG></DT>
+      <DD>
+      Digitizes a circle and passes the value to a function for processing.
+      <P>
+      <STRONG>Parameters:</STRONG><BR>
+      <CODE>handler</CODE> - function to process the digitized object.
+    </P>
+    <P>
+    	The handler function is passed one parameter, a <CODE>Circle</CODE> object.
+    </P>
+<PRE>Circle {
+  Center {
+    X;
+    Y;
+  }
+  Radius;
+}
+</PRE>
+      <P>
+      <STRONG>See Also:</STRONG>
+      <A href="#mapframe_digitizeline">DigitizeLine()</A>,
+      <A href="#mapframe_digitizepoint">DigitizePoint()</A>,
+      <A href="#mapframe_digitizepolygon">DigitizePolygon()</A>,
+      <A href="#mapframe_digitizelinestring">DigitizeLineString()</A>,
+      <A href="#mapframe_digitizerectangle">DigitizeRectangle()</A>
+      </P>
+
+      </DD>
+  </DL>
+
+  <DL>
+  	<DT><STRONG><A name="mapframe_digitizeline"></A>DigitizeLine(handler)</STRONG></DT>
+      <DD>
+      Digitizes a line segment and passes the value to a function for processing.
+      <P>
+      <STRONG>Parameters:</STRONG><BR>
+      <CODE>handler</CODE> - function to process the digitized object.
+    </P>
+    <P>
+    	The handler function is passed one parameter, a <CODE>LineString</CODE> object. DigitizeLine() passes two points, start and end.
+    </P>
+<PRE>LineString {
+  Count;    // The number of points in the line
+  Point();  // Point(i) returns a Point object for point i.
+}
+</PRE>
+      <P>
+      <STRONG>See Also:</STRONG>
+      <A href="#mapframe_digitizecircle">DigitizeCircle()</A>,
+      <A href="#mapframe_digitizepoint">DigitizePoint()</A>,
+      <A href="#mapframe_digitizepolygon">DigitizePolygon()</A>,
+      <A href="#mapframe_digitizelinestring">DigitizeLineString()</A>,
+      <A href="#mapframe_digitizerectangle">DigitizeRectangle()</A>
+      </P>
+
+      </DD>
+  </DL>
+
+  <DL>
+  	<DT><STRONG><A name="mapframe_digitizepoint"></A>DigitizePoint(handler)</STRONG></DT>
+      <DD>
+      Digitizes a point and passes the value to a function for processing.
+      <P>
+      <STRONG>Parameters:</STRONG><BR>
+      <CODE>handler</CODE> - function to process the digitized object.
+    </P>
+    <P>
+    The handler function is passed one parameter, a <CODE>Point</CODE> object.
+    </P>
+<PRE>Point {
+  X;
+  Y;
+}
+</PRE>
+      <P>
+      <STRONG>See Also:</STRONG>
+      <A href="#mapframe_digitizecircle">DigitizeCircle()</A>,
+      <A href="#mapframe_digitizeline">DigitizeLine()</A>,
+      <A href="#mapframe_digitizepolygon">DigitizePolygon()</A>,
+      <A href="#mapframe_digitizelinestring">DigitizeLineString()</A>,
+      <A href="#mapframe_digitizerectangle">DigitizeRectangle()</A>
+      </P>
+
+      </DD>
+  </DL>
+
+  <DL>
+  	<DT><STRONG><A name="mapframe_digitizepolygon"></A>DigitizePolygon(handler)</STRONG></DT>
+      <DD>
+      Digitizes a polygon and passes the value to a function for processing.
+      <P>
+      <STRONG>Parameters:</STRONG><BR>
+      <CODE>handler</CODE> - function to process the digitized object.
+    </P>
+    <P>
+    The handler function is passed one parameter, a <CODE>Polygon</CODE> object representing the polygon. The polygon is closed, so the first and last points are the same.
+    </P>
+<PRE>Polygon {
+  Count;    // The number of points in the polygon
+  Point();  // Point(i) returns a Point object for point i.
+}
+</PRE>
+      <P>
+      <STRONG>See Also:</STRONG>
+      <A href="#mapframe_digitizecircle">DigitizeCircle()</A>,
+      <A href="#mapframe_digitizeline">DigitizeLine()</A>,
+      <A href="#mapframe_digitizepoint">DigitizePoint()</A>,
+      <A href="#mapframe_digitizelinestring">DigitizeLineString()</A>,
+      <A href="#mapframe_digitizerectangle">DigitizeRectangle()</A>
+      </P>
+
+      </DD>
+  </DL>
+
+  <DL>
+  	<DT><STRONG><A name="mapframe_digitizelinestring"></A>DigitizeLineString(handler)</STRONG></DT>
+      <DD>
+      Digitizes a line string and passes the value to a function for processing.
+      <P>
+      <STRONG>Parameters:</STRONG><BR>
+      <CODE>handler</CODE> - function to process the digitized object.
+    </P>
+    <P>
+    The handler function is passed one parameter, a <CODE>LineString</CODE> object representing the line string.
+    </P>
+<PRE>LineString {
+  Count;    // The number of points in the line
+  Point();  // Point(i) returns a Point object for point i.
+}
+</PRE>
+      <P>
+      <STRONG>See Also:</STRONG>
+      <A href="#mapframe_digitizecircle">DigitizeCircle()</A>,
+      <A href="#mapframe_digitizeline">DigitizeLine()</A>,
+      <A href="#mapframe_digitizepoint">DigitizePoint()</A>,
+      <A href="#mapframe_digitizepolygon">DigitizePolygon()</A>,
+      <A href="#mapframe_digitizerectangle">DigitizeRectangle()</A>
+      </P>
+
+      </DD>
+  </DL>
+
+  <DL>
+  	<DT><STRONG><A name="mapframe_digitizerectangle"></A>DigitizeRectangle(handler)</STRONG></DT>
+      <DD>
+      Digitizes a rectangle and passes the value to a function for processing.
+      <P>
+      <STRONG>Parameters:</STRONG><BR>
+      <CODE>handler</CODE> - function to process the digitized object.
+    </P>
+    <P>
+    	The handler function is passed one parameter, a <CODE>Rectangle</CODE> object. <CODE>Point1</CODE> is the upper left corner. <CODE>Point2</CODE> is the lower right corner.
+    </P>
+<PRE>Rectangle {
+  Point1 {
+    X;
+    Y;
+  }
+  Point2 {
+    X;
+    Y;
+  }
+}
+</PRE>
+      <P>
+      <STRONG>See Also:</STRONG>
+      <A href="#mapframe_digitizecircle">DigitizeCircle()</A>,
+      <A href="#mapframe_digitizeline">DigitizeLine()</A>,
+      <A href="#mapframe_digitizepoint">DigitizePoint()</A>,
+      <A href="#mapframe_digitizepolygon">DigitizePolygon()</A>,
+      <A href="#mapframe_digitizelinestring">DigitizeLineString()</A>
+      </P>
+
+      </DD>
+  </DL>
+
+  <DL>
+    <DT><STRONG><A name="mapframe_getcenter">GetCenter()</A></STRONG></DT>
+      <DD>
+      Returns the center of the current map, as a <CODE>Point</CODE> object:
+<PRE>Point {
+  X;
+  Y;
+}
+</PRE>
+
+      <P>
+      <STRONG>See Also:</STRONG>
+      <A href="#mapframe_getscale">GetScale()</A>,
+      <A href="#mapframe_zoomtoview">ZoomToView()</A>
+      </P>
+
+      </DD>
+  </DL>
+
+  <DL>
+    <DT><STRONG><A name="mapframe_getlayers">GetLayers(onlyVisible, onlySelectable)</A></STRONG></DT>
+      <DD>
+      Returns a list of the map layers that meet the specified filtering criteria. The list contains <CODE>Layer</CODE> objects:
+<PRE>Layer {
+  legend;     /* Legend text displayed for this layer */
+  name;       /* Layer name */
+  objectid;   /* Unique layer identifier */
+}
+</PRE>
+      <P>
+      <STRONG>Parameters:</STRONG><BR>
+      <CODE>onlyVisible</CODE> - set to <CODE>true</CODE> to return only the layers visible at the current scale; set to <CODE>false</CODE> to ignore layer visibility.<BR><BR>
+      <CODE>onlySelectable</CODE> - set to <CODE>true</CODE> to return only layers that can be selected;  set to <CODE>false</CODE> to ignore layer selectability.
+      </P>
+
+      <P>
+      <STRONG>See Also:</STRONG>
+      <A href="#mapframe_getselectedlayers">GetSelectedLayers()</A>
+      </P>
+
+      </DD>
+  </DL>
+
+  <DL>
+    <DT><STRONG><A name="mapframe_getmapheight">GetMapHeight()</A></STRONG></DT>
+      <DD>
+      Returns the height of the current map, expressed in map units.
+      <P>
+      <STRONG>See Also:</STRONG>
+      <A href="#mapframe_getmapunitstype">GetMapUnitsType()</A>,
+      <A href="#mapframe_getmapwidth">GetMapWidth()</A>
+      </P>
+
+      </DD>
+  </DL>
+
+  <DL>
+    <DT><STRONG><A name="mapframe_getmapname">GetMapName()</A></STRONG></DT>
+      <DD>
+      Returns the name of the map currently displayed in the map frame.
+      </DD>
+  </DL>
+
+  <DL>
+    <DT><STRONG><A name="mapframe_getmapunitstype">GetMapUnitsType()</A></STRONG></DT>
+      <DD>
+      Returns the map units associated with the current map's coordinate system. The common return values include <CODE>"Miles"</CODE>, <CODE>"Kilometers"</CODE>, <CODE>"meters"</CODE>, <CODE>"feet"</CODE>, <CODE>"inches"</CODE>, <CODE>"centimeters"</CODE>, and <CODE>"millimeters"</CODE>.
+      </DD>
+  </DL>
+
+  <DL>
+    <DT><STRONG><A name="mapframe_getmapwidth">GetMapWidth()</A></STRONG></DT>
+      <DD>
+      Returns the width of the current map, expressed in map units.
+
+      <P>
+      <STRONG>See Also:</STRONG>
+      <A href="#mapframe_getmapheight">GetMapHeight()</A>,
+      <A href="#mapframe_getmapunitstype">GetMapUnitsType()</A>
+      </P>
+
+      </DD>
+  </DL>
+
+  <DL>
+    <DT><STRONG><A name="mapframe_getmetersperunit">GetMetersPerUnit()</A></STRONG></DT>
+      <DD>
+      Returns the number of meters per map unit of the current map.
+
+      <P>
+      <STRONG>See Also:</STRONG>
+      <A href="#mapframe_getmapunitstype">GetMapUnitsType()</A>
+      </P>
+
+      </DD>
+  </DL>
+
+  <DL>
+    <DT><STRONG><A name="mapframe_getscale">GetScale()</A></STRONG></DT>
+      <DD>
+      Returns the scale of the current map, as a floating-point number greater than or equal to one.
+      <P>
+      <STRONG>See Also:</STRONG>
+      <A href="#mapframe_getcenter">GetCenter()</A>,
+      <A href="#mapframe_zoomtoview">ZoomToView()</A>
+      </P>
+
+      </DD>
+  </DL>
+
+  <DL>
+    <DT><STRONG><A name="mapframe_getselectedlayers">GetSelectedLayers()</A></STRONG></DT>
+      <DD>
+      Returns the list of the map layers that contains features that are currently selected. The list contains <CODE>Layer</CODE> objects:
+<PRE>Layer {
+  legend;     /* Legend text displayed for this layer */
+  name;       /* Layer name */
+  objectid;   /* Unique layer identifier */
+}
+</PRE>
+
+      <P>
+      <STRONG>See Also:</STRONG>
+      <A href="#mapframe_getlayers">GetLayers()</A>
+      </P>
+
+      </DD>
+  </DL>
+
+  <DL>
+    <DT><STRONG><A name="mapframe_getselectionxml"></A>GetSelectionXML()</STRONG></DT>
+      <DD>
+      Returns well-formed XML text describing the current selection. This text validates against the feature-set schema <CODE>FeatureSet-1.0.0.xsd</CODE>, which comes with the MapGuide distribution. Typically you will send this XML text to a server-side script for processing.
+
+      <P>
+      <STRONG>See Also:</STRONG>
+      <A href="#mapframe_setselectionxml">SetSelectionXML()</A>
+      </P>
+
+      </DD>
+  </DL>
+
+  <DL>
+    <DT><STRONG><A name="mapframe_getsessionid">GetSessionId()</A></STRONG></DT>
+      <DD>
+      Returns the session id.
+      </DD>
+  </DL>
+
+  <DL>
+    <DT><STRONG><A name="mapframe_getselectedcount">GetSelectedCount()</A></STRONG></DT>
+      <DD>
+      Returns the number of features that are currently selected.
+      </DD>
+  </DL>
+
+  <DL>
+    <DT><STRONG><A name="mapframe_isdigitizing">IsDigitizing()</A></STRONG></DT>
+      <DD>
+      Indicates whether digitizing is currently taking place. Returns <CODE>true</CODE> or <CODE>false</CODE>.
+      </DD>
+  </DL>
+
+  <DL>
+    <DT><STRONG><A name="mapframe_isenglishunits">IsEnglishUnits()</A></STRONG></DT>
+      <DD>
+      Indicates whether distances on the current map are shown in U.S./English or metric units. Returns <CODE>true</CODE> for U.S./English; <CODE>false</CODE> for metric.
+
+      <P>
+      <STRONG>See Also:</STRONG>
+      <A href="#mapframe_setenglishunits">SetEnglishUnits()</A>
+      </P>
+
+      </DD>
+  </DL>
+
+  <DL>
+    <DT><STRONG><A name="mapframe_islatlondisplayunits">IsLatLonDisplayUnits()</A></STRONG></DT>
+      <DD>
+      Indicates whether map coordinates are displayed in latitude/longitude or map units. Returns <CODE>true</CODE> for latitude/longitude; <CODE>false</CODE> for map units. This method always returns <CODE>false</CODE> for the AJAX viewer, which doesn't support latitude/longitude display.
+
+      <P>
+      <STRONG>See Also:</STRONG>
+      <A href="#mapframe_getmapunitstype">GetMapUnitsType()</A>,
+      <A href="#mapframe_mapunitstolatlon">MapUnitsToLatLon()</A>,
+      <A href="#mapframe_setlatlondisplayunits">SetLatLonDisplayUnits()</A>
+      </P>
+
+      </DD>
+  </DL>
+
+  <DL>
+    <DT><STRONG><A name="mapframe_mapunitstolatlon">MapUnitsToLatLon(x, y)</A></STRONG></DT>
+      <DD>
+      Converts a position expressed in map units to one expressed in latitude/longitude, returning a <CODE>Point</CODE> object:
+<PRE>Point {
+  X;
+  Y;
+}
+</PRE>
+This method is available for only the DWF viewer; the AJAX viewer doesn't support latitude/longitude coordinates.
+
+      <P>
+      <STRONG>Parameters:</STRONG><BR>
+      <CODE>x</CODE> - the x coordinate, expressed in map units.<BR><BR>
+      <CODE>y</CODE> - the y coordinate, expressed in map units.
+      </P>
+
+      <P>
+      <STRONG>See Also:</STRONG>
+      <A href="#mapframe_getmapunitstype">GetMapUnitsType()</A>,
+      <A href="#mapframe_islatlondisplayunits">IsLatLonDisplayUnits()</A>,
+      <A href="#mapframe_setlatlondisplayunits">SetLatLonDisplayUnits()</A>
+      </P>
+
+      </DD>
+  </DL>
+
+  <DL>
+    <DT><STRONG><A name="mapframe_refresh">Refresh()</A></STRONG></DT>
+      <DD>
+      Refreshes the current map. This method refreshes the viewer's map, legend, and property components; to refresh only the legend, use the legend palette <A href="#legendpalette_refresh">Refresh()</A> method.
+      </DD>
+  </DL>
+
+  <DL>
+    <DT><STRONG><A name="mapframe_screentomapunits">ScreenToMapUnits(x, y)</A></STRONG></DT>
+      <DD>
+      Converts a position expressed in pixels (screen units) to one expressed in map units, returning a <CODE>Point</CODE> object:
+<PRE>Point {
+  X;
+  Y;
+}
+</PRE>
+      <P>
+      <STRONG>Parameters:</STRONG><BR>
+      <CODE>x</CODE> - the x coordinate, expressed in pixels.<BR><BR>
+      <CODE>y</CODE> - the y coordinate, expressed in pixels.
+      </P>
+
+      <P>
+      <STRONG>See Also:</STRONG>
+      <A href="#mapframe_getmapunitstype">GetMapUnitsType()</A>
+      </P>
+
+      </DD>
+  </DL>
+
+  <DL>
+    <DT><STRONG><A name="mapframe_setenglishunits">SetEnglishUnits(usEnglish)</A></STRONG></DT>
+      <DD>
+      Sets the units in which distances on the current map are shown. This setting persists across sessions.
+      <P>
+      <STRONG>Parameters:</STRONG><BR>
+      <CODE>usEnglish</CODE> - set to <CODE>true</CODE> for U.S./English units, or <CODE>false</CODE> for metric units.
+      </P>
+
+      <P>
+      <STRONG>See Also:</STRONG>
+      <A href="#mapframe_isenglishunits">IsEnglishUnits()</A>
+      </P>
+
+      </DD>
+  </DL>
+
+  <DL>
+    <DT><STRONG><A name="mapframe_setlatlondisplayunits">SetLatLonDisplayUnits(latLon)</A></STRONG></DT>
+      <DD>
+      Sets the units in which map coordinates are displayed. This setting persists across sessions. This method has no effect in the AJAX viewer, which doesn't support latitude/longitude display.
+      <P>
+      <STRONG>Parameters:</STRONG><BR>
+      <CODE>latLon</CODE> - set to <CODE>true</CODE> for latitude/longitude, or <CODE>false</CODE> for map units.
+      </P>
+
+      <P>
+      <STRONG>See Also:</STRONG>
+      <A href="#mapframe_getmapunitstype">GetMapUnitsType()</A>,
+      <A href="#mapframe_islatlondisplayunits">IsLatLonDisplayUnits()</A>,
+      <A href="#mapframe_mapunitstolatlon">MapUnitsToLatLon()</A>
+      </P>
+
+      </DD>
+  </DL>
+
+  <DL>
+    <DT><STRONG><A name="mapframe_setselectionxml">SetSelectionXML(xmlSet)</A></STRONG></DT>
+      <DD>
+      Selects map features by using an XML description of those features.
+      <P>
+      <STRONG>Parameters:</STRONG><BR>
+      <CODE>xmlSet</CODE> - a well-formed XML description of the features to select. This XML text must validate against the feature-set schema <CODE>FeatureSet-1.0.0.xsd</CODE>, which comes with the MapGuide distribution.
+      </P>
+
+      <P>
+      <STRONG>See Also:</STRONG>
+      <A href="#mapframe_getselectionxml">GetSelectionXML()</A>
+      </P>
+
+      </DD>
+  </DL>
+
+  <DL>
+    <DT><STRONG><A name="mapframe_zoomtoview">ZoomToView(x, y, scale, refresh)</A></STRONG></DT>
+      <DD>
+      Centers the map at the specified point and zooms to a specified scale.
+      <P>
+      <STRONG>Parameters:</STRONG><BR>
+      <CODE>x</CODE> - the x coordinate of the new center point, expressed in map units.<BR><BR>
+      <CODE>y</CODE> - the y coordinate of the new center point, expressed in map units.<BR><BR>
+      <CODE>scale</CODE> - the new scale of the map, as a floating-point number greater than or equal to one.<BR><BR>
+      <CODE>refresh</CODE> - Determines whether the entire map is refreshed when it is recentered or zoomed. Set <VAR>refresh</VAR> to <CODE>true</CODE> to refresh; <CODE>false</CODE> otherwise. This setting applies only to DWF images; HTML images always refresh automatically.
+      </P>
+
+      <P>
+      <STRONG>See Also:</STRONG>
+      <A href="#mapframe_getcenter">GetCenter()</A>,
+      <A href="#mapframe_getmapunitstype">GetMapUnitsType()</A>,
+      <A href="#mapframe_getscale">GetScale()</A>
+      </P>
+
+      </DD>
+  </DL>
+
+<HR>
+
+<H3><A name="propertypalette">Property palette method</A></H3>
+
+  <DL>
+    <DT><STRONG><A name="propertypalette_setproperties">SetProperties(count, properties)</A></STRONG></DT>
+      <DD>
+      Sets the attributes to display in the properties palette.
+      <P>
+      <STRONG>Parameters:</STRONG><BR>
+      <CODE>count</CODE> - the number of attributes to display. The properties palette displays a grid of <VAR>count</VAR> attributes only if exactly one feature is selected; otherwise it displays the message "<VAR>n</VAR> features selected" and ignores <VAR>properties</VAR>.<BR><BR>
+      <CODE>properties</CODE> - a 1-by-<VAR>count</VAR> array containing the names and corresponding values of the attributes to display in the properties grid, as <CODE>Property</CODE> objects:
+      </P>
+<PRE>Property {
+  name;
+  value;
+}
+</PRE>
+
+      </DD>
+  </DL>
+
+<HR>
+
+<H3><A name="statusbar">Status bar methods</A></H3>
+
+  <DL>
+    <DT><STRONG><A name="statusbar_setcursorpositionmsg">SetCursorPositionMsg(msg)</A></STRONG></DT>
+      <DD>
+      Sets the text that appears in the status-bar field that normally shows the cursor position.
+      <P>
+      <STRONG>Parameters:</STRONG><BR>
+      <CODE>msg</CODE> - the text to display. Use an empty string or null to clear the field.
+      </P>
+      </DD>
+  </DL>
+
+  <DL>
+    <DT><STRONG><A name="statusbar_setfeatureselectedmsg">SetFeatureSelectedMsg(msg)</A></STRONG></DT>
+      <DD>
+      Sets the text that appears in the status-bar field that normally shows the number of features selected.
+      <P>
+      <STRONG>Parameters:</STRONG><BR>
+      <CODE>msg</CODE> - the text to display. Use an empty string or null to clear the field.
+      </P>
+
+      </DD>
+  </DL>
+
+  <DL>
+    <DT><STRONG><A name="statusbar_setmapscalemsg">SetMapScaleMsg(msg)</A></STRONG></DT>
+      <DD>
+      Sets the text that appears in the status-bar field that normally shows the map scale.
+      <P>
+      <STRONG>Parameters:</STRONG><BR>
+      <CODE>msg</CODE> - the text to display. Use an empty string or null to clear the field.
+      </P>
+      </DD>
+  </DL>
+
+  <DL>
+    <DT><STRONG><A name="statusbar_setmapsizemsg">SetMapSizeMsg(msg)</A></STRONG></DT>
+      <DD>
+      Sets the text that appears in the status-bar field that normally shows the map size.
+      <P>
+      <STRONG>Parameters:</STRONG><BR>
+      <CODE>msg</CODE> - the text to display. Use an empty string or null to clear the field.
+      </P>
+      </DD>
+  </DL>
+
+<HR>
+
+<H3><A name="toolbar">Toolbar methods</A></H3>
+
+  <DL>
+    <DT><STRONG><A name="toolbar_oncommandexecuted">OnCommandExecuted(action)</A></STRONG></DT>
+      <DD>
+      Called by the main frame when a command is executed (either programmatically or by the user). You can use this method to change the status of toolbar buttons, if necessary. The toolbar must provide an implementation for OnCommandExecuted().
+      <P>
+      <STRONG>Parameters:</STRONG><BR>
+      <CODE>action</CODE> - the code associated with the executed command. See <A href="#mainframe_executemapaction">ExecuteMapAction</A> for a list of valid codes.
+      </P>
+      </DD>
+  </DL>
+
+  <DL>
+    <DT><STRONG><A name="toolbar_oncmdstatechanged">OnCmdStateChanged()</A></STRONG></DT>
+      <DD>
+        Called by the main frame when the state of some command(s) changes. You can use the method to enable or disable toolbar buttons, if necessary. The toolbar must provide an implementation for OnCmdStateChanged().
+      </DD>
+  </DL>
+
+
+
+</BODY><STYLE type="text/css">@import url("chrome-extension://gofhjkjmkpinhpoiabjplobcaignabnl/flashblock.css");</STYLE></HTML>

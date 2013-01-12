@@ -1,0 +1,36 @@
+<WidgetInfo>
+    <Type>Redline</Type>
+    <Location></Location>
+    <LocalizedType>Redline</LocalizedType>
+    <Description>This widget opens a panel in the TaskPane and allows the user to digitize features that can be downloaded as a GML file or uploaded to restore previously digitized features.</Description>
+    <Label>Redline</Label>
+    <Tooltip>Click to draw redline features</Tooltip>
+    <ImageUrl>images/icons.png</ImageUrl>
+    <ImageClass>redline</ImageClass>
+    <StandardUi>true</StandardUi>
+    <ContainableBy>Any</ContainableBy>
+    <Parameter>
+        <Name>Target</Name>
+        <Label>Target</Label>
+        <Type>target</Type>
+        <Description>The frame, window, or TaskPane in which to display any UI for the widget. If empty, a new window is used</Description>
+        <IsMandatory>true</IsMandatory>
+        <DefaultValue>TaskPane</DefaultValue>
+    </Parameter>
+    <Parameter>
+        <Name>PromptForRedlineLabels</Name>
+        <Description>Indicates whether to prompt the user for label input when recording redlines. Default is false</Description>
+        <Type>boolean</Type>
+        <Label>PromptForRedlineLabels</Label>
+        <DefaultValue>false</DefaultValue>
+        <IsMandatory>false</IsMandatory>
+    </Parameter>
+    <Parameter>
+        <Name>AutogenerateLayerNames</Name>
+        <Description>Indicates whether to prompt the auto-generate redline layer names when creating a new redline layer or to prompt the user. Default is true (don't prompt)</Description>
+        <Type>boolean</Type>
+        <Label>AutogenerateLayerNames</Label>
+        <DefaultValue>true</DefaultValue>
+        <IsMandatory>false</IsMandatory>
+    </Parameter>
+</WidgetInfo>

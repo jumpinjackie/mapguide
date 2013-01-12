@@ -1,0 +1,1330 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<link rel="stylesheet" href="../viewerfiles/viewer.css" type="text/css">
+<style type="text/css">
+    body,td
+    {
+        font-family: __#@font#__;
+        font-size: __#@fontsize#__;
+    }
+    div.PopupMenu
+    {
+        position: absolute;
+        width: 200px;
+        background-color: white;
+        position: absolute;
+        left: -500px;
+        top: 1px;
+        border: solid 1px #a0a0a0;
+        overflow: hidden;
+        z-index: -1;
+    }
+    div.PopupScrollUpArea
+    {
+        position: absolute;
+        left: 0px;
+        top: 0px;
+        height: 12px;
+        background: white;
+        width: 100%%;
+        cursor: pointer;
+        visibility: hidden;
+    }
+    div.PopupScrollDownArea
+    {
+        position: absolute;
+        left: 0px;
+        top: 0px;
+        height: 12px;
+        background: white;
+        width: 100%%;
+        cursor: pointer;
+        visibility: hidden;
+    }
+    span.PopupMetrics
+    {
+        font-family: __#@font#__;
+        font-size: __#@fontsize#__;
+        font-weight: normal;
+    }
+</style>
+
+<script language="javascript" src="../viewerfiles/browserdetect.js"></script>
+<script language="javascript" src="../viewerfiles/contextmenu.js"></script>
+<script language="javascript" src="../viewerfiles/legend.js"></script>
+<script type="text/javascript" src="../viewerfiles/hashtable.js"></script>
+<script language=javascript>
+
+var thisFrame = this;
+var tree = null;
+var scale = -1;
+var iconExpand = "../stdicons/lc_expand.gif";
+var iconCollapse = "../stdicons/lc_collapse.gif";
+var iconNoExpand = "../stdicons/lc_noexpand.gif";
+var iconChecked = "../stdicons/lc_checked.gif";
+var iconUnchecked = "../stdicons/lc_unchecked.gif";
+var iconCheckedGrayed = "../stdicons/lc_checked_grayed.gif";
+var iconUncheckedGrayed = "../stdicons/lc_unchecked_grayed.gif";
+var iconSelectable = "../stdicons/lc_select.gif";
+var iconUnselectable = "../stdicons/lc_unselect.gif";
+var ctxMenu;
+var cmdState;
+var layerMap = null;
+var iconsToLoad = new Array();
+
+var iconBrokenLayer = '<img width="16" height ="16" src="../stdicons/lc_broken.gif" />';
+var iconRasterLayer = '<img width="16" height ="16" src="../stdicons/lc_raster.gif" />';
+var iconDrawingLayer = '<img width="16" height ="16" src="../stdicons/lc_dwf.gif" />';
+var iconThemeLayer = '<img width="16" height ="16" src="../stdicons/lc_theme.gif" />';
+var iconGroup = '<img width="16" height ="16" src="../stdicons/lc_group.gif" />';
+
+var clientAgent = 'Ajax Viewer';
+
+var legendTextNoWrap = true;
+var showInvisibleLayers = false;
+if(legendTextNoWrap)
+{
+    iconExpand = "../stdicons/lc_expand_16.gif";
+    iconCollapse = "../stdicons/lc_collapse_16.gif";
+    iconNoExpand = "../stdicons/lc_noexpand.gif";
+    iconChecked = "../stdicons/lc_checked_16.gif";
+    iconUnchecked = "../stdicons/lc_unchecked_16.gif";
+    iconCheckedGrayed = "../stdicons/lc_checked_grayed_16.gif";
+    iconUncheckedGrayed = "../stdicons/lc_unchecked_grayed_16.gif";
+}
+
+
+function GroupStats()
+{
+    this.lyrgrpCount = 0;
+    this.lyrgrpVisible = 0;
+}
+
+function ShowGroupLayerCmd()
+{
+    this.showGroups = new Array();
+    this.hideGroups = new Array();
+    this.showLayers = new Array();
+    this.hideLayers = new Array();
+}
+
+function InitDocument()
+{
+    document.onmousemove = OnMouseMove;
+    if(msie || safari || chrome || opera)
+        document.oncontextmenu = OnContextMenu;
+    document.onclick = OnClick;
+    document.onmousedown = OnMouseDown;
+    document.onmouseup = OnMouseUp;
+    parent.OnControlLoaded();
+}
+
+function SetTree(groupLayers)
+{
+    tree = groupLayers;
+    BuildTreeUi(tree);
+    if(scale != -1)
+        SetScale(scale);
+    layerMap = new Hashtable();
+    BuildLayerMap(tree, layerMap);
+    parent.OnInternalStateComplete();
+    try { GetMapFrame().OnLayersChanged(); } catch(e) {}
+}
+
+function BuildTreeUi(tree)
+{
+    var code = "";
+    for(var i=0; i < tree.length; i++)
+        code += BuildLayersAndGroups(tree[i]);
+    document.getElementById("Tree").innerHTML = code;
+}
+
+function SetSelectability(node,selectable)
+{
+    for(var i=0; i < node.length; i++)
+    {
+        if(node[i].code == "L")
+        {
+            ChangeSelectability(node[i].objectId,(selectable)? 1: 2)
+        }
+        else
+        {
+            SetSelectability(node[i].children,selectable)
+        }
+    }
+}
+
+function BuildLayersAndGroups(node)
+{
+    var isGroup = node.type == 0;
+    var item = '<div id="' + node.objectId + '"><table border=0 cellspacing="0" cellpadding="0"><tr height=17>';
+    
+    //expand/collapse icon
+    item += '<td width=16 id="Ex_' + node.objectId + '">' + (isGroup? MakeExpandCode(node) : MakeBlankCode()) + '</td>';
+    if(!node.base||isGroup)
+    {
+        //checkbox
+        item += '<td width=16 id="Chk_' + node.objectId + '">' + MakeCheckCode(node) + '</td>';
+    }
+    if(node.code == "L" && node.selectable)
+    {
+        item += '<td width=16 id="Sel_' + node.objectId + '">' + MakeSelectableCode(node) + '</td>';
+    }
+    //icon
+    if(legendTextNoWrap)
+    {
+        item += '<td width=16 id="' + GetIconId(node) + '">';
+    }
+    else
+    {
+        item += '<td width=23 id="' + GetIconId(node) + '">';
+    }
+    if(isGroup)
+    {
+        item += iconGroup;
+    }
+    else
+    {
+        item += iconBrokenLayer;
+    }
+    item += '</td>';
+    //legend text
+    if(legendTextNoWrap)
+    {
+        item += '<td width=7><img width=7 height=16 src="../stdicons/transparentpixel.gif"></td>';
+        item += '<td id="Lg_' + node.objectId + '" style="white-space:nowrap">' + node.legend + '</td>';
+    }
+    else
+    {
+        item += '<td id="Lg_' + node.objectId + '">' + node.legend + '</td>';
+    }
+    
+    item += '</tr></table>';
+    if(legendTextNoWrap)
+    {
+        var strWidth = "";
+        if(msie)
+        {
+            strWidth = "width:auto;";
+        }
+        else
+        {
+            strWidth = "width:10;";
+        }
+        item += '<div id="ChildrenOf_' + node.objectId + '" style="position:relative;' + strWidth + 'left: ' + (isGroup? 20: 32) + 'px; display:';
+    }
+    else
+    {
+        item += '<div id="ChildrenOf_' + node.objectId + '" style="margin-left: ' + (isGroup? 20: 32) + 'px; display:';
+    }
+    item += node.expanded? 'block">' : 'none">';
+    if(isGroup && node.children != null && node.children.length > 0)
+    {
+        for(var i=0; i < node.children.length; i++)
+            item += BuildLayersAndGroups(node.children[i]);
+    }
+    item += '</div>';
+    item += '</div>';
+    return item;
+}
+
+function RequestSymbolizationIconImg(layer, scale, iconId)
+{
+    if(showInvisibleLayers && layer.willDisplayAtScale)
+    {
+        return BuildDelayedLoadIconImg(layer.layerRes, layer.willDisplayAtScale, -1, -1, iconId);
+    }
+    else
+    {
+        return BuildDelayedLoadIconImg(layer.layerRes, scale, -1, -1, iconId);
+    }
+}
+
+function RequestThemeStyleIconImg(layer, scale, themeIndex, geomtype, iconId)
+{
+    if(showInvisibleLayers && layer.willDisplayAtScale)
+    {   
+        return BuildDelayedLoadIconImg(layer.layerRes, layer.willDisplayAtScale, themeIndex, geomtype, iconId);
+    }
+    else
+    {
+        return BuildDelayedLoadIconImg(layer.layerRes, scale, themeIndex, geomtype, iconId);
+    }
+}
+
+function BuildIconRequest(layerDef, scale, themeIndex, geomtype)
+{
+    var iconRequest = GetMapFrame().GetWebAgent() + "?OPERATION=GETLEGENDIMAGE&SESSION=" + GetMapFrame().GetSessionId() + "&VERSION=1.0.0&SCALE=" + scale + "&LAYERDEFINITION=" + encodeURIComponent(layerDef) + "&THEMECATEGORY=" + themeIndex + "&TYPE=" + geomtype + "&CLIENTAGENT=" + encodeURIComponent(clientAgent);
+    return iconRequest;
+}
+
+function BuildDelayedLoadIconImg(layerDef, scale, themeIndex, geomtype, iconId)
+{
+    var request = BuildIconRequest(layerDef, scale, themeIndex, geomtype);
+    iconsToLoad.push(new IconRequest(iconId, '<img width="16" height="16" onerror="OnLoadIconError()" onload="OnLoadIcon()" src="' + request + '" />'));
+    return '<img width="16" height="16" src="../stdicons/transparentpixel.gif">';
+}
+
+function OnLoadIcon()
+{
+    LoadNextIcon();
+}
+
+function OnLoadIconError()
+{
+    LoadNextIcon();
+}
+
+function LoadNextIcon()
+{
+    if(iconsToLoad.length > 0)
+    {
+        var nextIcon = iconsToLoad.pop();
+        var imgObject = document.getElementById(nextIcon.id);
+        if(imgObject != null)
+        {
+            imgObject.innerHTML = nextIcon.request;
+        }
+        else
+        {
+            LoadNextIcon();
+        }
+    }
+}
+
+function IconRequest(id, request)
+{
+    this.id = id;
+    this.request = request;
+}
+
+// Set the styles sub elements of a layer element
+// Set the layer icon and the layer check as necessary
+function SetLayerStyles(layer)
+{
+    var layerChildren = document.getElementById('ChildrenOf_' + layer.objectId);
+    var code = "";
+    var layerCurScale = layer.curScale != -1 ? layer.curScale:0;
+    var sc = layer.children[layerCurScale];
+    var styles = sc.children;
+    var hasThemes = styles.length > 1;
+    var layerIconImg = "";
+    if(hasThemes)
+    {
+        if(layer.expanded && !sc.iconWasRequested)
+        {
+            var textStyle = "";
+            if(showInvisibleLayers && layer.willDisplayAtScale)
+            {
+              textStyle = "font-style:italic;color:#C0C0C0";
+            }
+
+
+            for(var j=0; j < styles.length; j++)
+            {
+                var node = styles[j];
+                var iconId = GetIconId(layer) + '_Scl_' + layerCurScale + '_Th_' + j;
+                var iconImg = RequestThemeStyleIconImg(layer, scale, node.catindex, node.geomtype, iconId);
+
+                code += '<table border=0 cellspacing="0" cellpadding="0"><tr height=17>';
+                if(legendTextNoWrap)
+                {
+                  //icon
+                  code += '<td width=16 id="' + iconId + '">' + iconImg + '</td>';
+                  //legend text
+                  code += '<td width=7><img width=7 height=16 src="../stdicons/transparentpixel.gif"></td>';
+                  code += '<td style="white-space:nowrap;' + textStyle +'">' + node.legend + '</td>';
+                }
+                else
+                {
+                  //icon
+                  code += '<td width=23 id="' + iconId + '">' + iconImg + '</td>';
+                  //legend text
+                  code += '<td style="' + textStyle + '">' + node.legend + '</td>';
+                }
+                code += '</tr></table>';
+
+                if(!sc.showlongtheme && styles.length > 10)
+                {
+                    if(j == styles.length - 1)
+                        break;
+                    code += '<table border=0 cellspacing="0" cellpadding="0"><tr height=17>';
+                    code += '<td width=23><img width=16 height=16 src="../stdicons/transparentpixel.gif"></td>';
+                    code += '<td>...</td>';
+                    code += '</tr></table>';
+                    j = styles.length - 2;
+                    sc.iconWasRequested = false; //not all icons are requested, so mark false
+                }
+            }
+            if(styles.length <= 10) {
+                sc.showlongtheme = true;
+            }
+            if(sc.showlongtheme) {
+                sc.iconWasRequested = true;
+            }
+            layerChildren.innerHTML = code;
+        }
+
+        layerIconImg = iconThemeLayer;
+    }
+    else
+    {
+        if(layer.lyrtype == 1)
+            layerIconImg = iconRasterLayer;
+        else if(layer.lyrtype == 2)
+            layerIconImg = iconDrawingLayer;
+        else if(layerCurScale == -1)
+            layerIconImg = iconBrokenLayer;
+        else
+        {
+            layerIconImg = RequestSymbolizationIconImg(layer, scale, GetIconId(layer));
+        }
+    }
+    SetLayerIcon(layer, layerIconImg);
+    SetLayerExpandBox(layer, hasThemes);
+    if(showInvisibleLayers)
+    {
+        UpdateGroupLayerCheck(layer)
+        SetLayerTextStyle(layer);
+    }
+}
+
+function SetLayerIcon(layer, layerIconImg)
+{
+    var icElt = document.getElementById(GetIconId(layer));
+    if(icElt != null)
+        icElt.innerHTML = layerIconImg;
+}
+function SetLayerTextStyle(layer)
+{
+    var textElt = document.getElementById("Lg_" + layer.objectId);
+    if(textElt != null)
+    {
+        if(layer.willDisplayAtScale)
+        {
+            textElt.style.fontStyle = "italic";
+            textElt.style.color = "#C0C0C0";
+        }
+        else
+        {
+            textElt.style.fontStyle = "normal";
+            textElt.style.color = "#000000";
+        }
+    }
+}
+function GetIconId(node)
+{
+    return 'Ic_' + node.objectId;
+}
+
+function SetLayerExpandBox(layer, show)
+{
+    var expElt = document.getElementById('Ex_' + layer.objectId);
+    if(expElt != null)
+    {
+        if(!show)
+            expElt.innerHTML = MakeBlankCode();
+        else
+            expElt.innerHTML = MakeExpandCode(layer);
+    }
+}
+
+function MakeBlankCode()
+{
+    if(legendTextNoWrap)
+    {
+        return '<img width=16 height=9 src="../stdicons/transparentpixel.gif">';
+    }
+    else
+    {
+        return '';
+    }
+}
+
+function MakeExpandCode(node)
+{
+    if(legendTextNoWrap)
+    {
+        return '<img width=16 height=9 src="' + (node.expanded? iconCollapse: iconExpand) + '" onclick="Toggle(\'' + node.objectId +'\')">';
+    }
+    else
+    {
+        return '<img width=9 height=9 src="' + (node.expanded? iconCollapse: iconExpand) + '" onclick="Toggle(\'' + node.objectId +'\')">';
+    }
+}
+
+function MakeCheckCode(node)
+{
+    var thisIcon = (node.visible? iconChecked: iconUnchecked);
+    var onClickCode = "onClick=\"ChangeVisibility('" + node.objectId + "')";
+    if(node.willDisplayAtScale)
+    {
+        thisIcon = (node.visible? iconCheckedGrayed: iconUncheckedGrayed);
+        onClickCode = "";
+    }
+
+    if(legendTextNoWrap)
+    {
+        return '<img width=16 height=13 src="' + thisIcon + '" ' + onClickCode + '">';
+    }
+    else
+    {
+        return '<img width=13 height=13 src="' + thisIcon + '" ' + onClickCode + '">';
+    }
+}
+
+function MakeSelectableCode(node)
+{
+    if(legendTextNoWrap)
+    {
+        return '<img width=16 height=13 src="' + (node.selectable? iconSelectable: iconUnselectable) + '" onClick="ChangeSelectability(\'' + node.objectId +'\',0)">';
+    }
+    else
+    {
+        return '<img width=13 height=13 src="' + (node.selectable? iconSelectable: iconUnselectable) + '" onClick="ChangeSelectability(\'' + node.objectId +'\',0)">';
+    }
+}
+
+function UpdateGroupLayerCheck(node)
+{
+    var elt = document.getElementById('Chk_' + node.objectId);
+    if(elt != null)
+        elt.innerHTML = MakeCheckCode(node);
+}
+
+function Toggle(objectId)
+{
+    var node = FindNode(tree, objectId);
+    if(node == null)
+        return;
+    if(node.expanded)
+        Collapse(node);
+    else
+        Expand(node);
+}
+
+// Expanding a node, the legend for the sub-items of this node will be generated dynamically
+function Expand(node)
+{
+    var elt = document.getElementById('ChildrenOf_' + node.objectId);
+    if(elt != null)
+    {
+        node.expanded = true;
+        elt.style.display = "block";
+        RefreshNodesState(node.children);
+        iconsToLoad.reverse();
+        LoadNextIcon();
+
+        if(node.type == 0 || HasLayerThemes(node))
+            ShowExpandedState(node);
+    }
+}
+
+function Collapse(node)
+{
+    var elt = document.getElementById('ChildrenOf_' + node.objectId);
+    if(elt != null)
+    {
+        node.expanded = false;
+        elt.style.display = "none";
+        if(node.type == 0 || HasLayerThemes(node))
+            ShowExpandedState(node);
+    }
+}
+
+function ShowExpandedState(node)
+{
+    var expElt = document.getElementById('Ex_' + node.objectId);
+    if(expElt != null)
+        expElt.innerHTML = MakeExpandCode(node);
+}
+
+function ChangeVisibility(objectId)
+{
+    var node = FindNode(tree, objectId);
+    if(node == null)
+        return;
+    var show = (node.visible = !node.visible);
+    var chkElt = document.getElementById('Chk_' + objectId);
+    if(chkElt != null)
+        chkElt.innerHTML = MakeCheckCode(node);
+    if(node.type == 0 && node.base)
+        GetMapFrame().ShowBaseGroup(node.name, node.objectId, show);
+    else
+        GetMapFrame().ShowGroupLayers(node.type == 0? (show? node.objectId: ""): "",
+                                      node.type == 0? (show? "": node.objectId): "",
+                                      node.type == 1? (show? node.objectId: ""): "",
+                                      node.type == 1? (show? "": node.objectId): "");
+}
+
+//selectabilityFlag : 0=toggle,1=selectable,2=unselectable
+function ChangeSelectability(objectId,selectabilityFlag)
+{
+    var node = FindNode(tree, objectId);
+    if(node == null)
+        return;
+    switch(selectabilityFlag)
+    {
+      case 0: node.selectable = !node.selectable;break;
+      case 1: node.selectable = true;break;
+      case 2: node.selectable = false;break;
+    }
+    var chkElt = document.getElementById('Sel_' + objectId);
+    if(chkElt != null)
+        chkElt.innerHTML = MakeSelectableCode(node);
+    GetMapFrame().ResetVisLayers();
+}
+
+function ShowHideNodes(nodes)
+{
+    for(var i=0; i < nodes.length; i++)
+    {
+        var node = nodes[i];
+        if(node.type == 0)
+        {
+            var grpElt = document.getElementById(node.objectId);
+            if(!node.isDisplayed)
+                grpElt.style.display = "none";
+            else
+            {
+                grpElt.style.display = "block";
+                if(node.children != null && node.children.length > 0)
+                {
+                    ShowHideNodes(node.children);
+                    hasVisibleChildren = false;
+                    for(var j=0; j < node.children.length; j++)
+                    {
+                        if(node.children[j].isDisplayed)
+                            hasVisibleChildren = true;
+                    }
+                    expElt = document.getElementById('Ex_' + node.objectId);
+                    if(expElt)
+                        expElt.style.visibility = hasVisibleChildren? "visible": "hidden";
+                }
+            }
+        }
+        else if(node.type == 1)
+        {
+            var lyrElt = document.getElementById(node.objectId);
+            lyrElt.style.display = node.isDisplayed? "block" : "none";
+        }
+    }
+}
+
+function OnMouseMove(e)
+{
+    if(!msie)
+    {
+        try { GetMapFrame().OnMouseMove(e); } catch(e) {}
+    }
+}
+
+function OnMouseDown(e)
+{
+    if(!PopupMouseDown(e))
+    {
+        hidePopup(ctxMenu)
+        GetMainFrame().ForwardMouseDown(document, e);
+    }
+}
+
+function OnMouseUp(e)
+{
+    var tgt;
+    if(msie)
+    {
+        e = event;
+        tgt = e.srcElement;
+    }
+    else
+        tgt = e.target;
+    if(e.button != 2)
+    {
+        GetMapFrame().ForwardMouseUp(e);
+        return false;
+    }
+    CheckContextMenu(tgt, e.clientX, e.clientY);
+
+    return false;
+}
+
+function OnContextMenu(e)
+{
+    if(safari)
+        CheckContextMenu(e.target, e.clientX, e.clientY);
+    return false;
+}
+
+function CheckContextMenu(tgt, x, y)
+{
+    var tgname = tgt.tagName;
+    var id = "";
+    if(tgname == "TD")
+    {
+        id = tgt.id;
+        if(id.substr(0, 3) == "Lg_")
+            id = id.substr(3);
+        else
+            id = "";
+    }
+    else if(tgname == "IMG")
+    {
+        id = tgt.parentNode.id;
+        if(id.substr(0, 3) == "Ic_")
+            id = id.substr(3);
+        else
+            id = "";
+    }
+
+    var node = id != ""? FindNode(tree, id): null;
+    ContextMenu(x, y, node);
+}
+
+function OnClick(e)
+{
+    return false;
+}
+
+function OnForwardMouseDown(e)
+{
+    hidePopup(ctxMenu);
+}
+
+function ContextMenu(x, y, node)
+{
+    cmdState = new Array();
+    var isLayer = node && node.type == 1;
+    var isGroup = node && node.type == 0;
+
+    ctxMenu = new MenuData('Legend',20, 21, 50, 150, "../stdicons/icon_popupscrollup.gif", "../stdicons/icon_popupscrollup_disabled.gif", "../stdicons/icon_popupscrolldown.gif", "../stdicons/icon_popupscrolldown_disabled.gif", this, false, "white");
+    startBuildMenuContent(ctxMenu);
+
+    if(isGroup && !node.base)
+    {
+        var grpStats = new GroupStats();
+        GetGroupStats(node, grpStats);
+        addMenuOption(ctxMenu, "__#DISPLAYALLINGROUP#__", 1 + ':' + node.objectId, 1, "", "", cmdState[1] = (grpStats.lyrgrpCount != grpStats.lyrgrpVisible));
+        addMenuOption(ctxMenu, "__#HIDEALLINGROUP#__", 2 + ':' + node.objectId, 1, "", "", cmdState[2] = (grpStats.lyrgrpVisible != 0));
+        addMenuOption(ctxMenu, "", 0, 2, "", "", false);
+    }
+    else if(isLayer)
+    {
+        if(node.curScale != -1)
+        {
+            sc = node.children[node.curScale];
+            if(!sc.showlongtheme && sc.children.length > 1 && node.expanded)
+            {
+                addMenuOption(ctxMenu, "__#SHOWLONGTHEME#__", 6 + ':' + node.objectId, 1, "", "", cmdState[6] = true);
+                addMenuOption(ctxMenu, "", 0, 2, "", "", false);
+            }
+        }
+    }
+    addMenuOption(ctxMenu, "__#REFRESH#__", 3, 1, "", "", cmdState[3] = true);
+    addMenuOption(ctxMenu, "__#EXPANDALL#__", 4, 1, "", "", cmdState[4] = true);
+    addMenuOption(ctxMenu, "__#COLLAPSEALL#__", 5, 1, "", "", cmdState[5] = true);
+    addMenuOption(ctxMenu, "", 0, 2, "", "", false);
+    addMenuOption(ctxMenu, "__#ALLSELECTABLE#__", 7, 1, "", "", cmdState[7] = true);
+    addMenuOption(ctxMenu, "__#ALLUNSELECTABLE#__", 8, 1, "", "", cmdState[8] = true);
+
+    addMenuOption(ctxMenu, "", 0, 2, "", "", false);
+    if(showInvisibleLayers)
+    {
+      addMenuOption(ctxMenu, "__#HIDEINVISIBLELAYERS#__", 9, 1, "", "", cmdState[9] = true);
+    }
+    else
+    {
+      addMenuOption(ctxMenu, "__#SHOWINVISIBLELAYERS#__", 10, 1, "", "", cmdState[10] = true);
+    }
+
+    endBuildMenuContent(ctxMenu);
+    showPopup(ctxMenu, true, x, y);
+}
+
+function ExecuteCommand(option)
+{
+    var tok = option.split(":");
+    var cmd, objectId;
+    if(tok.length > 1)
+        objectId = tok[1];
+    switch(parseInt(tok[0]))
+    {
+        case 1:
+            ShowGroupLayers(FindNode(tree, objectId), true);
+            break;
+        case 2:
+            ShowGroupLayers(FindNode(tree, objectId), false);
+            break;
+        case 3:
+            GetMainFrame().Refresh();
+            break;
+        case 4:
+            ExpandNodes(tree, true);
+            break;
+        case 5:
+            ExpandNodes(tree, false);
+            break;
+        case 6:
+            layer = FindNode(tree, objectId);
+            layer.children[layer.curScale].showlongtheme = true;
+            SetLayerStyles(layer);
+            // Better way to refresh and request icons?
+            ExpandNodes([layer], false);
+            ExpandNodes([layer], true);
+            break;
+        case 7:
+            SetSelectability(tree,true)
+            break;
+        case 8:
+            SetSelectability(tree,false)
+            break;
+        case 9:
+           SetShowInvisibleLayers(false);
+           break;
+        case 10:
+           SetShowInvisibleLayers(true);
+           break;
+    }
+}
+
+function OnEnableCommand(option)
+{
+    var tok = option.split(":");
+    var cmd = parseInt(tok[0]);
+    return cmdState[cmd];
+}
+
+function ShowGroupLayers(group, show)
+{
+    if(group == null)
+        return;
+    var cmd = new ShowGroupLayerCmd();
+    PrepareShowGroupLayers(group, show, cmd);
+    if(show)
+    {
+        if(cmd.showGroups.length == 0 && cmd.showLayers.length == 0)
+            return;
+        GetMapFrame().ShowGroupLayers(cmd.showGroups.length > 0? cmd.showGroups.join('__#LEGENDLISTSEPARATOR#__'): "", "",
+        cmd.showLayers.length > 0? cmd.showLayers.join('__#LEGENDLISTSEPARATOR#__'): "", "");
+    }
+    else
+    {
+        if(cmd.hideGroups.length == 0 && cmd.hideLayers.length == 0)
+            return;
+        GetMapFrame().ShowGroupLayers("", cmd.hideGroups.length > 0? cmd.hideGroups.join('__#LEGENDLISTSEPARATOR#__'): "",
+            "", cmd.hideLayers.length > 0? cmd.hideLayers.join('__#LEGENDLISTSEPARATOR#__'): "");
+    }
+}
+
+function PrepareShowGroupLayers(group, show, cmd)
+{
+    if(!group.children)
+        return;
+    for(var i=0; i < group.children.length; i++)
+    {
+        var node = group.children[i];
+        if(node.isDisplayed)
+        {
+            if(show)
+            {
+                if(!node.visible)
+                {
+                    node.visible = true;
+                    if(node.type == 0)
+                        cmd.showGroups.push(node.objectId);
+                    else
+                        cmd.showLayers.push(node.objectId);
+                    UpdateGroupLayerCheck(node);
+                }
+            }
+            else
+            {
+                if(node.visible)
+                {
+                    node.visible = false;
+                    if(node.type == 0)
+                        cmd.hideGroups.push(node.objectId);
+                    else
+                        cmd.hideLayers.push(node.objectId);
+                    UpdateGroupLayerCheck(node);
+                }
+            }
+            if(node.type == 0)
+                PrepareShowGroupLayers(node, show, cmd);
+        }
+    }
+}
+
+function ExpandNodes(nodes, expand)
+{
+    for(var i=0; i < nodes.length; i++)
+    {
+        var node = nodes[i];
+        if(expand)
+        {
+            if(!node.expanded)
+                Expand(node);
+        }
+        else
+        {
+            if(node.expanded)
+                Collapse(node);
+        }
+        if(node.type == 0 && node.children != null && node.children.length > 0)
+            ExpandNodes(node.children, expand);
+    }
+}
+
+function GetGroupStats(group, grpStats)
+{
+    if(!group.children)
+        return;
+    for(var i=0; i < group.children.length; i++)
+    {
+        var node = group.children[i];
+        if(node.isDisplayed)
+        {
+            grpStats.lyrgrpCount ++;
+            if(node.visible)
+            {
+                grpStats.lyrgrpVisible ++;
+                if(node.type == 0)
+                    GetGroupStats(node, grpStats);
+            }
+        }
+    }
+}
+
+function SetScale(newScale)
+{
+    if(iconsToLoad != null && iconsToLoad.length > 0)
+    {
+        iconsToLoad.reverse();
+    }
+    scale = newScale;
+    if(tree == null)
+        return;
+    UpdateScaleRanges(tree);
+    if(showInvisibleLayers == false)
+    {
+      ShowHideNodes(tree);
+    }
+    iconsToLoad.reverse();
+    LoadNextIcon();
+}
+
+function HasLayerThemes(layer)
+{
+    if(layer.curScale == -1)
+        return false;
+    return layer.children[layer.curScale].children.length > 1;
+}
+
+// set the display state for themes, layers and groups and update the layer styles if necessary
+function UpdateScaleRanges(nodes)
+{
+    RefreshNodesState(nodes);
+}
+
+
+// there are three possible reasons to refresh the nodes' state:
+// the first one is updating scale ranges to refresh the legend images
+// the second one is expanding a group to build the legend images of layers in that group.
+// the third one is expanding a layer node to build the legend images of themes in that layer.
+function RefreshNodesState(nodes)
+{
+    for(var i=0; i < nodes.length; i++)
+    {
+        var node = nodes[i];
+        if(node.type == 0)
+        {
+            var count = node.children != null? node.children.length: 0;
+            node.hasVisibleLayers = false;
+            if(count > 0) {
+                RefreshNodesState(node.children);
+                for(var j=0; j < node.children.length; j++)
+                {
+                    child = node.children[j];
+                    if(child.type == 0)
+                    {
+                        if(child.hasVisibleLayers)
+                        {
+                            node.hasVisibleLayers = true;
+                            break;
+                        }
+                    }
+                    else {
+                        if(child.curScale != -1)
+                        {
+                            node.hasVisibleLayers = true;
+                            break;
+                        }
+                    }
+                }
+            }
+            node.isDisplayed = node.displayInLegend && node.hasVisibleLayers;
+        }
+        else if(node.type == 1)
+        {
+            var rangeIndex = node.curScale;
+            var scaleRanges = node.children;
+            node.curScale = -1;
+
+            node.willDisplayAtScale = null;
+            for(var j=0; j < scaleRanges.length; j++)
+            {
+                var scaleRange = scaleRanges[j];
+                if(scale >= scaleRange.min && scale < scaleRange.max)
+                {
+                    node.curScale = j;
+                    break;
+                }
+            }
+            if(showInvisibleLayers && node.curScale == -1)
+            {
+                var minScale = 1000000000;
+                var maxScale = 0;
+                for(var j=0; j < scaleRanges.length; j++)
+                {
+                    var scaleRange = scaleRanges[j];
+                    minScale = Math.min(minScale,scaleRange.min);
+                    maxScale = Math.max(maxScale,scaleRange.max);
+                }
+                if(scale > maxScale)
+                {
+                    node.willDisplayAtScale = maxScale-1;
+                }
+                else if(scale < minScale)
+                {
+                    node.willDisplayAtScale = minScale;
+                }
+            }
+            var nodeCurScale= -1;
+            if(node.curScale != -1)
+            {
+                nodeCurScale = node.curScale;
+            }
+            else if(node.willDisplayAtScale)
+            {
+                nodeCurScale = 0;
+            }
+            if(node.displayInLegend && nodeCurScale != -1)
+            {
+                // scale changed
+                if(rangeIndex != nodeCurScale || node.willDisplayAtScale)
+                {
+                    // the layer's theme will be changed on demand
+                    node.children[nodeCurScale].iconWasRequested = false;
+                    // the layer's legend image will be changed immediately
+                    if(!HasCollapsedParent(node))
+                    {
+                        SetLayerStyles(node);
+                        node.iconWasRequested = true;
+                    }
+                    // the layer's legend image will be changed on demand
+                    else
+                    {
+                        node.iconWasRequested = false;
+                    }
+                }
+                // parent group expanded
+                else if(!node.iconWasRequested  && !HasCollapsedParent(node))
+                {
+                    SetLayerStyles(node);
+                    node.iconWasRequested = true;
+                }
+            }
+            node.isDisplayed = node.displayInLegend && node.curScale != -1;
+        }
+        else if(node.type == 2)
+        {
+            // parent layer expanded
+            if(node.parent.children[node.parent.curScale]=== node && !node.iconWasRequested)
+            {
+                SetLayerStyles(node.parent);
+            }
+        }
+    }
+}
+
+// To check if any parent node of current node is collapsed.
+function HasCollapsedParent(node)
+{
+    if(node.parent != null)
+    {
+        if(node.parent.expanded == true)
+        {
+            return HasCollapsedParent(node.parent)
+        }
+        else
+        {
+            return true;
+        }
+    }
+    else
+    {
+        return false;
+    }
+}
+
+function FindNode(nodes, objectId)
+{
+    for(var i=0; i < nodes.length; i++)
+    {
+        var node = nodes[i];
+        if(node.objectId == objectId)
+            return node;
+        if(node.type == 0 && node.children != null)
+        {
+            var child = FindNode(node.children, objectId);
+            if(child != null)
+                return child;
+        }
+    }
+    return null;
+}
+
+function GetMapFrame()
+{
+    return parent.GetMapFrame();
+}
+
+function GetMainFrame()
+{
+    return GetMapFrame().parent;
+}
+
+function UpdateTree(layerGroups)
+{
+    if(!HasTreeChanged(tree, layerGroups))
+        return null;
+
+    return new Array();
+
+    //For now, when the tree has changed, we query the whole content again.
+    //If we want an intelligent update of the tree, here is the place to
+    //implement it.
+}
+
+function HasTreeChanged(current, lightTree)
+{
+    if(current.length != lightTree.length)
+        return true;
+
+    for(var i = 0; i < current.length; i++)
+    {
+        var node1 = current[i], node2 = lightTree[i];
+        if(node1.type != node2.type || node1.objectId != node2.objectId)
+            return true;
+        if(node1.type == 1)
+        {
+            if(node1.layerRes != node2.layerRes)
+                return true;
+        }
+        else if(node1.type == 0)
+        {
+            if(node1.children != null)
+            {
+                if(node2.children == null)
+                    return true;
+                if(HasTreeChanged(node1.children, node2.children))
+                    return true;
+            }
+        }
+    }
+    return false;
+}
+
+function BuildLayerMap(nodes, layerMap)
+{
+    for(var i=0; i < nodes.length; i++)
+    {
+        var node = nodes[i];
+        if(node.type == 0)
+        {
+            if(node.children != null && node.children.length > 0)
+                BuildLayerMap(node.children, layerMap);
+        }
+        else if(node.type == 1)
+            layerMap.setItem(node.objectId, node);
+    }
+}
+
+function GetLayer(layerId)
+{
+    var lyr = layerMap.getItem(layerId);
+    if(lyr == null)
+        return null;
+    return new Layer(lyr.legend, lyr.name, layerId);
+}
+
+function GetLayers(onlyVisible, onlySelectable)
+{
+    var layers = new Array();
+    DoGetLayers(tree, layers, onlyVisible, onlySelectable);
+    return layers;
+}
+
+function DoGetLayers(nodes, layers, onlyVisible, onlySelectable)
+{
+    for(var i=0; i < nodes.length; i++)
+    {
+        var node = nodes[i];
+        if(node.type == 0)
+        {
+            if(onlyVisible && (!node.visible || node.curScale == -1))
+                continue;
+            if(node.children != null && node.children.length > 0)
+                DoGetLayers(node.children, layers, onlyVisible, onlySelectable);
+        }
+        else if(node.type == 1)
+        {
+            if(onlyVisible && (!node.visible || node.curScale == -1))
+                continue;
+            if(onlySelectable && !node.selectable)
+                continue;
+            layers.push(new Layer(node.legend, node.name, node.objectId));
+        }
+    }
+}
+
+function IsBaseGroupLayersVisible(baseGroup,scale)
+{
+    for(var i=0; i < baseGroup.children.length; i++)
+    {
+        var layerTree = baseGroup.children[i];
+        for( var j=0; j < layerTree.children.length;j++ )
+        {
+            var style = layerTree.children[j];
+            if(scale >= style.min && scale <= style.max)
+            {
+                return true;
+            }
+        }
+    }
+    return false;
+}
+
+function GetBaseGroups(visOnly,scale)
+{
+    if(tree == null)
+        return null;
+    groups = new Array();
+    for(var i=0; i < tree.length; i++)
+    {
+        if(tree[i].type == 0)
+        {
+            if(tree[i].base)
+            {
+                if(visOnly && !tree[i].visible)
+                    continue;
+                if(scale && visOnly && !IsBaseGroupLayersVisible(tree[i],scale))
+                    continue;
+                groups.push(tree[i].name);
+            }
+        }
+    }
+    return groups;
+}
+
+function SetShowInvisibleLayers(isInvisibleLayersVisible)
+{
+    showInvisibleLayers = isInvisibleLayersVisible;
+    GetMainFrame().Refresh();
+}
+
+function ExpandLayerInLegend(layerName, expandInLegend)
+{
+    if(tree == null) return;
+    var nodeLayer = FindLayerByName(tree,layerName);
+    if (nodeLayer != null) 
+    {
+        if (expandInLegend) 
+             Expand(nodeLayer);
+        else
+             Collapse(nodeLayer);
+            
+    }
+}
+
+function ExpandGroupInLegend(groupName, expandInLegend)
+{
+    if (tree == null)
+        return;
+    var nodeGroup = FindGroupByName(tree, groupName);
+    if (nodeGroup != null)
+        ExpandAllGroupParentInLegend(expandInLegend,nodeGroup);
+}
+
+function FindGroupByName(nodes, groupName)
+{
+    for (var i=0; i < nodes.length; i++)
+    {
+        var node = nodes[i];
+        if (node.type == 0)// only group
+        {
+            if (node.name.toLowerCase() == groupName.toLowerCase())
+                return node;
+            if (node.children != null)
+            {
+                var child = FindGroupByName(node.children, groupName.toLowerCase());
+                if (child != null)
+                    return child;
+            }
+        }
+    }
+    return null;
+}
+
+function FindLayerByName(nodes, layerName)
+{
+    for (var i=0; i < nodes.length; i++)
+    {
+        var node = nodes[i];
+        if (node.type == 1)// only layer
+        {
+            if (node.name.toLowerCase() == layerName.toLowerCase())
+                return node;
+        }
+        else (node.type == 0) // only group
+        {
+            if (node.children != null)
+            {
+                var child = FindLayerByName(node.children, layerName.toLowerCase());
+                if (child != null)
+                    return child;
+            }
+        }
+    }
+    return null;
+}
+
+// if expandInLegend==true => node group and all parents of this group are expanded
+// if expandInLegend==false => only node group is collapsed
+function ExpandAllGroupParentInLegend(expandInLegend,node)
+{
+    if (expandInLegend) 
+    {
+        Expand(node);
+        if (node.parent!= null)
+            ExpandAllGroupParentInLegend(expandInLegend,node.parent);   
+    }
+    else Collapse(node);
+}
+
+function GetGroupByLayer(layerName)
+{
+    if (tree == null) return null;
+    var nodeLayer = FindLayerByName(tree,layerName);
+    if ((nodeLayer != null) && (nodeLayer.parent != null))
+        return nodeLayer.parent;
+    return null;
+}
+</script>
+</head>
+<body id="legendUi" onload="InitDocument()" leftmargin=3 topmargin=3 rightmargin=3 bottommargin=3 marginwidth=3 marginheight=3>
+    <div id="Tree"></div>
+    <div class="PopupMenu" id="Legend"></div>
+    <div class="PopupMetricsDiv" id="MetricsDiv" style="visibility:hidden;"><span class="PopupMetrics" id="Metrics"></span></div>
+</body>
+</html>

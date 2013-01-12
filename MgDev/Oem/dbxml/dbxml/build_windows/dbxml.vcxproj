@@ -1,0 +1,739 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Static Debug|Win32">
+      <Configuration>Static Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Static Debug|x64">
+      <Configuration>Static Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Static Release|Win32">
+      <Configuration>Static Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Static Release|x64">
+      <Configuration>Static Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{0047EDFC-C26D-49D0-9559-029FA38B3839}</ProjectGuid>
+    <RootNamespace>dbxml</RootNamespace>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Static Release|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseOfMfc>false</UseOfMfc>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseOfMfc>false</UseOfMfc>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Static Debug|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseOfMfc>false</UseOfMfc>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseOfMfc>false</UseOfMfc>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Static Release|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Static Debug|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Static Release|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC71.props" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC71.props" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Static Debug|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC71.props" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Static Release|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Static Debug|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <_ProjectFileVersion>10.0.30319.1</_ProjectFileVersion>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">..\build_windows\$(Configuration)32\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">./$(OutDir)dbxml\</IntDir>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</LinkIncremental>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">..\build_windows\$(Configuration)64\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">./$(OutDir)dbxml\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Static Debug|Win32'">..\build_windows\$(Platform)\Static Debug\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Static Debug|Win32'">./$(OutDir)dbxml\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">..\build_windows\$(Configuration)32\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">./$(OutDir)dbxml\</IntDir>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</LinkIncremental>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">..\build_windows\$(Configuration)64\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">./$(OutDir)dbxml\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Static Release|Win32'">..\build_windows\$(Platform)\Static Release\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Static Release|Win32'">./$(OutDir)dbxml\</IntDir>
+    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" />
+    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" />
+    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" />
+    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" />
+    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" />
+    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" />
+    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Release|x64'">AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Release|x64'" />
+    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Release|x64'" />
+    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Static Debug|Win32'">AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Static Debug|Win32'" />
+    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Static Debug|Win32'" />
+    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Static Debug|x64'">AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Static Debug|x64'" />
+    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Static Debug|x64'" />
+    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Static Release|Win32'">AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Static Release|Win32'" />
+    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Static Release|Win32'" />
+    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Static Release|x64'">AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Static Release|x64'" />
+    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Static Release|x64'" />
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">libdbxml25d</TargetName>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">libdbxml25d</TargetName>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">libdbxml25</TargetName>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">libdbxml25</TargetName>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>.;../include;../src/dbxml;../../db-4.8.26/build_windows;../../db-4.8.26/include;../../db-4.8.26/dbinc;../../xerces-c-src/include;../../xerces-c-src/src;../../xqilla/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;_DEBUG;_USRDLL;DBXML_CREATE_DLL;_DBXML_COMPRESSION;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <StringPooling>true</StringPooling>
+      <MinimalRebuild>true</MinimalRebuild>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <PrecompiledHeaderFile>DbXmlInternal.hpp</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile>./$(IntDir)dbxml.pch</PrecompiledHeaderOutputFile>
+      <AssemblerListingLocation>
+      </AssemblerListingLocation>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+      <WarningLevel>Level3</WarningLevel>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <CompileAs>Default</CompileAs>
+    </ClCompile>
+    <Link>
+      <AdditionalOptions>/machine:x86 %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
+      <OutputFile>$(OutDir)libdbxml25d.dll</OutputFile>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <ProgramDatabaseFile>$(OutDir)libdbxml25d.pdb</ProgramDatabaseFile>
+      <OptimizeReferences>false</OptimizeReferences>
+      <RandomizedBaseAddress>false</RandomizedBaseAddress>
+      <DataExecutionPrevention>
+      </DataExecutionPrevention>
+      <ImportLibrary>$(OutDir)libdbxml25d.lib</ImportLibrary>
+      <TargetMachine>NotSet</TargetMachine>
+    </Link>
+    <PostBuildEvent>
+      <Message>Copying libraries to install directory</Message>
+      <Command>copyFiles10.bat $(Platform)
+installProj.bat libdbxml25 dll $(OutDir) debug copyLib
+</Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>.;../include;../src/dbxml;../../db-4.8.26/build_windows;../../db-4.8.26/include;../../db-4.8.26/dbinc;../../xerces-c-src/include;../../xerces-c-src/src;../../xqilla/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;_DEBUG;_USRDLL;DBXML_CREATE_DLL;_DBXML_COMPRESSION;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
+      <OutputFile>$(OutDir)libdbxml25d.dll</OutputFile>
+      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
+      <IgnoreSpecificDefaultLibraries>%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <ProgramDatabaseFile>$(OutDir)libdbxml25d.pdb</ProgramDatabaseFile>
+      <RandomizedBaseAddress>false</RandomizedBaseAddress>
+      <DataExecutionPrevention>
+      </DataExecutionPrevention>
+      <ImportLibrary>$(OutDir)libdbxml25d.lib</ImportLibrary>
+      <TargetMachine>MachineX64</TargetMachine>
+    </Link>
+    <PostBuildEvent>
+      <Message>Copying libraries to install directory</Message>
+      <Command>copyFiles10_win64.bat
+installProj_win64.bat libdbxml25 dll $(OutDir) debug copyLib
+</Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Static Debug|Win32'">
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>.;../include;../src/dbxml;../../db-4.8.26/build_windows;../../db-4.8.26/include;../../db-4.8.26/dbinc;../../xerces-c-src/include;../../xerces-c-src/src;../../xqilla/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;_DEBUG;_LIB;DBXML_EXPORT=;XQILLA_API=;XERCES_STATIC_LIBRARY;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <StringPooling>true</StringPooling>
+      <MinimalRebuild>true</MinimalRebuild>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <PrecompiledHeaderFile>DbXmlInternal.hpp</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile>./$(IntDir)dbxml.pch</PrecompiledHeaderOutputFile>
+      <AssemblerListingLocation>./$(IntDir)</AssemblerListingLocation>
+      <ObjectFileName>./$(IntDir)</ObjectFileName>
+      <WarningLevel>Level3</WarningLevel>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <CompileAs>Default</CompileAs>
+    </ClCompile>
+    <Lib>
+      <AdditionalOptions>/machine:x86 %(AdditionalOptions)</AdditionalOptions>
+      <OutputFile>$(OutDir)libdbxml25sd.lib</OutputFile>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Static Debug|x64'">
+    <Link>
+      <RandomizedBaseAddress>false</RandomizedBaseAddress>
+      <DataExecutionPrevention>
+      </DataExecutionPrevention>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <Optimization>MaxSpeed</Optimization>
+      <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
+      <AdditionalIncludeDirectories>.;../include;../src/dbxml;../../db-4.8.26/build_windows;../../db-4.8.26/include;../../db-4.8.26/dbinc;../../xerces-c-src/include;../../xerces-c-src/src;../../xqilla/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;_USRDLL;DBXML_CREATE_DLL;_DBXML_COMPRESSION;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <StringPooling>true</StringPooling>
+      <MinimalRebuild>true</MinimalRebuild>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <PrecompiledHeaderFile>DbXmlInternal.hpp</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile>./$(IntDir)dbxml.pch</PrecompiledHeaderOutputFile>
+      <AssemblerListingLocation>
+      </AssemblerListingLocation>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+      <WarningLevel>Level3</WarningLevel>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <CompileAs>Default</CompileAs>
+    </ClCompile>
+    <Link>
+      <AdditionalOptions>/machine:x86 %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
+      <OutputFile>$(OutDir)libdbxml25.dll</OutputFile>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <ProgramDatabaseFile>$(OutDir)libdbxml25.pdb</ProgramDatabaseFile>
+      <OptimizeReferences>true</OptimizeReferences>
+      <RandomizedBaseAddress>false</RandomizedBaseAddress>
+      <DataExecutionPrevention>
+      </DataExecutionPrevention>
+      <ImportLibrary>$(OutDir)libdbxml25.lib</ImportLibrary>
+      <TargetMachine>NotSet</TargetMachine>
+    </Link>
+    <PostBuildEvent>
+      <Message>Copying libraries to install directory</Message>
+      <Command>copyFiles10.bat $(Platform)
+installProj.bat libdbxml25 dll $(OutDir) release copyLib
+</Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>.;../include;../src/dbxml;../../db-4.8.26/build_windows;../../db-4.8.26/include;../../db-4.8.26/dbinc;../../xerces-c-src/include;../../xerces-c-src/src;../../xqilla/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;_USRDLL;DBXML_CREATE_DLL;_DBXML_COMPRESSION;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
+      <OutputFile>$(OutDir)libdbxml25.dll</OutputFile>
+      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <ProgramDatabaseFile>$(OutDir)libdbxml25.pdb</ProgramDatabaseFile>
+      <RandomizedBaseAddress>false</RandomizedBaseAddress>
+      <DataExecutionPrevention>
+      </DataExecutionPrevention>
+      <ImportLibrary>$(OutDir)libdbxml25.lib</ImportLibrary>
+      <TargetMachine>MachineX64</TargetMachine>
+    </Link>
+    <PostBuildEvent>
+      <Message>Copying libraries to install directory</Message>
+      <Command>copyFiles10_win64.bat $(Platform)
+installProj.bat libdbxml25 dll $(OutDir) release copyLib
+</Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Static Release|Win32'">
+    <ClCompile>
+      <Optimization>MaxSpeed</Optimization>
+      <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
+      <AdditionalIncludeDirectories>.;../include;../src/dbxml;../../db-4.8.26/build_windows;../../db-4.8.26/include;../../db-4.8.26/dbinc;../../xerces-c-src/include;../../xerces-c-src/src;../../xqilla/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;_LIB;DBXML_EXPORT=;XQILLA_API=;XERCES_STATIC_LIBRARY;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <StringPooling>true</StringPooling>
+      <MinimalRebuild>true</MinimalRebuild>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <PrecompiledHeaderFile>DbXmlInternal.hpp</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile>./$(IntDir)dbxml.pch</PrecompiledHeaderOutputFile>
+      <AssemblerListingLocation>./$(IntDir)</AssemblerListingLocation>
+      <ObjectFileName>./$(IntDir)</ObjectFileName>
+      <WarningLevel>Level3</WarningLevel>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <CompileAs>Default</CompileAs>
+    </ClCompile>
+    <Lib>
+      <AdditionalOptions>/machine:x86 %(AdditionalOptions)</AdditionalOptions>
+      <OutputFile>$(OutDir)libdbxml25s.lib</OutputFile>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Static Release|x64'">
+    <Link>
+      <RandomizedBaseAddress>false</RandomizedBaseAddress>
+      <DataExecutionPrevention>
+      </DataExecutionPrevention>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ResourceCompile Include="libdbxml.rc">
+      <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">_DEBUG;$(NoInherit));%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NDEBUG;$(NoInherit));%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\include\dbxml\DbXml.hpp" />
+    <ClInclude Include="..\include\dbxml\DbXmlFwd.hpp" />
+    <ClInclude Include="..\include\dbxml\XmlCompression.hpp" />
+    <ClInclude Include="..\include\dbxml\XmlContainer.hpp" />
+    <ClInclude Include="..\include\dbxml\XmlContainerConfig.hpp" />
+    <ClInclude Include="..\include\dbxml\XmlData.hpp" />
+    <ClInclude Include="..\include\dbxml\XmlDebugListener.hpp" />
+    <ClInclude Include="..\include\dbxml\XmlDocument.hpp" />
+    <ClInclude Include="..\include\dbxml\XmlEventReader.hpp" />
+    <ClInclude Include="..\include\dbxml\XmlEventReaderToWriter.hpp" />
+    <ClInclude Include="..\include\dbxml\XmlEventWriter.hpp" />
+    <ClInclude Include="..\include\dbxml\XmlException.hpp" />
+    <ClInclude Include="..\include\dbxml\XmlExternalFunction.hpp" />
+    <ClInclude Include="..\include\dbxml\XmlIndexLookup.hpp" />
+    <ClInclude Include="..\include\dbxml\XmlIndexSpecification.hpp" />
+    <ClInclude Include="..\include\dbxml\XmlInputStream.hpp" />
+    <ClInclude Include="..\include\dbxml\XmlManager.hpp" />
+    <ClInclude Include="..\include\dbxml\XmlMetaDataIterator.hpp" />
+    <ClInclude Include="..\include\dbxml\XmlNamespace.hpp" />
+    <ClInclude Include="..\include\dbxml\XmlPortability.hpp" />
+    <ClInclude Include="..\include\dbxml\XmlQueryContext.hpp" />
+    <ClInclude Include="..\include\dbxml\XmlQueryExpression.hpp" />
+    <ClInclude Include="..\include\dbxml\XmlResolver.hpp" />
+    <ClInclude Include="..\include\dbxml\XmlResults.hpp" />
+    <ClInclude Include="..\include\dbxml\XmlStatistics.hpp" />
+    <ClInclude Include="..\include\dbxml\XmlTransaction.hpp" />
+    <ClInclude Include="..\include\dbxml\XmlUpdateContext.hpp" />
+    <ClInclude Include="..\include\dbxml\XmlValue.hpp" />
+    <ClInclude Include="..\src\dbxml\AtomicNodeValue.hpp" />
+    <ClInclude Include="..\src\dbxml\BaseInputStream.hpp" />
+    <ClInclude Include="..\src\dbxml\Buffer.hpp" />
+    <ClInclude Include="..\src\dbxml\BulkPut.hpp" />
+    <ClInclude Include="..\src\dbxml\CacheDatabase.hpp" />
+    <ClInclude Include="..\src\dbxml\CacheDatabaseMinder.hpp" />
+    <ClInclude Include="..\src\dbxml\CompressionZlib.hpp" />
+    <ClInclude Include="..\src\dbxml\ConfigurationDatabase.hpp" />
+    <ClInclude Include="..\src\dbxml\Container.hpp" />
+    <ClInclude Include="..\src\dbxml\ContainerBase.hpp" />
+    <ClInclude Include="..\src\dbxml\ContainerConfig.hpp" />
+    <ClInclude Include="..\src\dbxml\Counters.hpp" />
+    <ClInclude Include="..\src\dbxml\Cursor.hpp" />
+    <ClInclude Include="..\src\dbxml\DatabaseNodeValue.hpp" />
+    <ClInclude Include="..\src\dbxml\db_rdbt.h" />
+    <ClInclude Include="..\src\dbxml\db_utils.h" />
+    <ClInclude Include="..\src\dbxml\DbWrapper.hpp" />
+    <ClInclude Include="..\src\dbxml\DbXmlInternal.hpp" />
+    <ClInclude Include="..\src\dbxml\DictionaryCache.hpp" />
+    <ClInclude Include="..\src\dbxml\DictionaryDatabase.hpp" />
+    <ClInclude Include="..\src\dbxml\DocID.hpp" />
+    <ClInclude Include="..\src\dbxml\Document.hpp" />
+    <ClInclude Include="..\src\dbxml\DocumentDatabase.hpp" />
+    <ClInclude Include="..\src\dbxml\Globals.hpp" />
+    <ClInclude Include="..\src\dbxml\HighResTimer.hpp" />
+    <ClInclude Include="..\src\dbxml\IndexEntry.hpp" />
+    <ClInclude Include="..\src\dbxml\Indexer.hpp" />
+    <ClInclude Include="..\src\dbxml\IndexLookup.hpp" />
+    <ClInclude Include="..\src\dbxml\IndexSpecification.hpp" />
+    <ClInclude Include="..\src\dbxml\Key.hpp" />
+    <ClInclude Include="..\src\dbxml\KeyGenerator.hpp" />
+    <ClInclude Include="..\src\dbxml\KeyStash.hpp" />
+    <ClInclude Include="..\src\dbxml\KeyStatistics.hpp" />
+    <ClInclude Include="..\src\dbxml\LocalFileInputStream.hpp" />
+    <ClInclude Include="..\src\dbxml\Log.hpp" />
+    <ClInclude Include="..\src\dbxml\Manager.hpp" />
+    <ClInclude Include="..\src\dbxml\MemBufInputStream.hpp" />
+    <ClInclude Include="..\src\dbxml\MetaDatum.hpp" />
+    <ClInclude Include="..\src\dbxml\MutexLock.hpp" />
+    <ClInclude Include="..\src\dbxml\Name.hpp" />
+    <ClInclude Include="..\src\dbxml\NameID.hpp" />
+    <ClInclude Include="..\src\dbxml\NamespaceMap.hpp" />
+    <ClInclude Include="..\src\dbxml\OperationContext.hpp" />
+    <ClInclude Include="..\src\dbxml\QueryContext.hpp" />
+    <ClInclude Include="..\src\dbxml\QueryExpression.hpp" />
+    <ClInclude Include="..\src\dbxml\RawNodeValue.hpp" />
+    <ClInclude Include="..\src\dbxml\ReferenceCounted.hpp" />
+    <ClInclude Include="..\src\dbxml\ReferenceMinder.hpp" />
+    <ClInclude Include="..\src\dbxml\Results.hpp" />
+    <ClInclude Include="..\src\dbxml\ResultsEventWriter.hpp" />
+    <ClInclude Include="..\src\dbxml\ScopedDbt.hpp" />
+    <ClInclude Include="..\src\dbxml\ScopedPtr.hpp" />
+    <ClInclude Include="..\src\dbxml\SharedPtr.hpp" />
+    <ClInclude Include="..\src\dbxml\Statistics.hpp" />
+    <ClInclude Include="..\src\dbxml\StdInInputStream.hpp" />
+    <ClInclude Include="..\src\dbxml\StructuralStatsDatabase.hpp" />
+    <ClInclude Include="..\src\dbxml\Syntax.hpp" />
+    <ClInclude Include="..\src\dbxml\SyntaxDatabase.hpp" />
+    <ClInclude Include="..\src\dbxml\SyntaxManager.hpp" />
+    <ClInclude Include="..\src\dbxml\tokenizer.hpp" />
+    <ClInclude Include="..\src\dbxml\Transaction.hpp" />
+    <ClInclude Include="..\src\dbxml\TypeConversions.hpp" />
+    <ClInclude Include="..\src\dbxml\UpdateContext.hpp" />
+    <ClInclude Include="..\src\dbxml\URLInputStream.hpp" />
+    <ClInclude Include="..\src\dbxml\UTF8.hpp" />
+    <ClInclude Include="..\src\dbxml\Value.hpp" />
+    <ClInclude Include="..\src\dbxml\VariableBindings.hpp" />
+    <ClInclude Include="..\src\dbxml\XmlInputStreamWrapper.hpp" />
+    <ClInclude Include="..\src\dbxml\dataItem\DbXmlConfiguration.hpp" />
+    <ClInclude Include="..\src\dbxml\dataItem\DbXmlContains.hpp" />
+    <ClInclude Include="..\src\dbxml\dataItem\DbXmlDocAvailable.hpp" />
+    <ClInclude Include="..\src\dbxml\dataItem\DbXmlDocumentCacheImpl.hpp" />
+    <ClInclude Include="..\src\dbxml\dataItem\DbXmlFactoryImpl.hpp" />
+    <ClInclude Include="..\src\dbxml\dataItem\DbXmlFunction.hpp" />
+    <ClInclude Include="..\src\dbxml\dataItem\DbXmlNodeImpl.hpp" />
+    <ClInclude Include="..\src\dbxml\dataItem\DbXmlNodeTest.hpp" />
+    <ClInclude Include="..\src\dbxml\dataItem\DbXmlPredicate.hpp" />
+    <ClInclude Include="..\src\dbxml\dataItem\DbXmlPrintAST.hpp" />
+    <ClInclude Include="..\src\dbxml\dataItem\DbXmlSequenceBuilder.hpp" />
+    <ClInclude Include="..\src\dbxml\dataItem\DbXmlUpdateFactory.hpp" />
+    <ClInclude Include="..\src\dbxml\dataItem\DbXmlUri.hpp" />
+    <ClInclude Include="..\src\dbxml\dataItem\DbXmlURIResolver.hpp" />
+    <ClInclude Include="..\src\dbxml\dataItem\Join.hpp" />
+    <ClInclude Include="..\src\dbxml\dataItem\LookupIndexFunction.hpp" />
+    <ClInclude Include="..\src\dbxml\dataItem\MetaDataFunction.hpp" />
+    <ClInclude Include="..\src\dbxml\dataItem\NodeHandleFunction.hpp" />
+    <ClInclude Include="..\src\dbxml\nodeStore\EventReader.hpp" />
+    <ClInclude Include="..\src\dbxml\nodeStore\EventReaderToWriter.hpp" />
+    <ClInclude Include="..\src\dbxml\nodeStore\EventWriter.hpp" />
+    <ClInclude Include="..\src\dbxml\nodeStore\NsConstants.hpp" />
+    <ClInclude Include="..\src\dbxml\nodeStore\NsDoc.hpp" />
+    <ClInclude Include="..\src\dbxml\nodeStore\NsDocument.hpp" />
+    <ClInclude Include="..\src\dbxml\nodeStore\NsDocumentDatabase.hpp" />
+    <ClInclude Include="..\src\dbxml\nodeStore\NsDom.hpp" />
+    <ClInclude Include="..\src\dbxml\nodeStore\NsEvent.hpp" />
+    <ClInclude Include="..\src\dbxml\nodeStore\NsEventReader.hpp" />
+    <ClInclude Include="..\src\dbxml\nodeStore\NsEventWriter.hpp" />
+    <ClInclude Include="..\src\dbxml\nodeStore\NsFormat.hpp" />
+    <ClInclude Include="..\src\dbxml\nodeStore\NsHandlerBase.hpp" />
+    <ClInclude Include="..\src\dbxml\nodeStore\NsImpliedSchemaFilter.hpp" />
+    <ClInclude Include="..\src\dbxml\nodeStore\NsNid.hpp" />
+    <ClInclude Include="..\src\dbxml\nodeStore\NsNode.hpp" />
+    <ClInclude Include="..\src\dbxml\nodeStore\NsRawNode.hpp" />
+    <ClInclude Include="..\src\dbxml\nodeStore\NsReindexer.hpp" />
+    <ClInclude Include="..\src\dbxml\nodeStore\NsSAX2Reader.hpp" />
+    <ClInclude Include="..\src\dbxml\nodeStore\NsTypes.hpp" />
+    <ClInclude Include="..\src\dbxml\nodeStore\NsUpdate.hpp" />
+    <ClInclude Include="..\src\dbxml\nodeStore\NsUpgrade.hpp" />
+    <ClInclude Include="..\src\dbxml\nodeStore\NsUtil.hpp" />
+    <ClInclude Include="..\src\dbxml\nodeStore\NsWriter.hpp" />
+    <ClInclude Include="..\src\dbxml\nodeStore\NsXercesIndexer.hpp" />
+    <ClInclude Include="..\src\dbxml\nodeStore\NsXercesTranscoder.hpp" />
+    <ClInclude Include="..\src\dbxml\nodeStore\PullEventInputStream.hpp" />
+    <ClInclude Include="..\src\dbxml\optimizer\ASTReplaceOptimizer.hpp" />
+    <ClInclude Include="..\src\dbxml\optimizer\DbXmlStaticTyper.hpp" />
+    <ClInclude Include="..\src\dbxml\optimizer\ImpliedSchemaGenerator.hpp" />
+    <ClInclude Include="..\src\dbxml\optimizer\NodeVisitingOptimizer.hpp" />
+    <ClInclude Include="..\src\dbxml\optimizer\QueryPlanGenerator.hpp" />
+    <ClInclude Include="..\src\dbxml\optimizer\QueryPlanOptimizer.hpp" />
+    <ClInclude Include="..\src\dbxml\query\AncestorJoinQP.hpp" />
+    <ClInclude Include="..\src\dbxml\query\ASTToQueryPlan.hpp" />
+    <ClInclude Include="..\src\dbxml\query\AttributeJoinQP.hpp" />
+    <ClInclude Include="..\src\dbxml\query\AttributeOrChildJoinQP.hpp" />
+    <ClInclude Include="..\src\dbxml\query\BufferQP.hpp" />
+    <ClInclude Include="..\src\dbxml\query\ChildJoinQP.hpp" />
+    <ClInclude Include="..\src\dbxml\query\CollectionQP.hpp" />
+    <ClInclude Include="..\src\dbxml\query\ContextNodeQP.hpp" />
+    <ClInclude Include="..\src\dbxml\query\DecisionPointQP.hpp" />
+    <ClInclude Include="..\src\dbxml\query\DescendantJoinQP.hpp" />
+    <ClInclude Include="..\src\dbxml\query\DocQP.hpp" />
+    <ClInclude Include="..\src\dbxml\query\EmptyQP.hpp" />
+    <ClInclude Include="..\src\dbxml\query\ExceptQP.hpp" />
+    <ClInclude Include="..\src\dbxml\query\FilterQP.hpp" />
+    <ClInclude Include="..\src\dbxml\query\ImpliedSchemaNode.hpp" />
+    <ClInclude Include="..\src\dbxml\query\IntersectQP.hpp" />
+    <ClInclude Include="..\src\dbxml\query\LevelFilterQP.hpp" />
+    <ClInclude Include="..\src\dbxml\query\NodeInfo.hpp" />
+    <ClInclude Include="..\src\dbxml\query\NodeIterator.hpp" />
+    <ClInclude Include="..\src\dbxml\query\NodePredicateFilterQP.hpp" />
+    <ClInclude Include="..\src\dbxml\query\ParentJoinQP.hpp" />
+    <ClInclude Include="..\src\dbxml\query\ParentOfAttributeJoinQP.hpp" />
+    <ClInclude Include="..\src\dbxml\query\ParentOfChildJoinQP.hpp" />
+    <ClInclude Include="..\src\dbxml\query\PredicateFilterQP.hpp" />
+    <ClInclude Include="..\src\dbxml\query\QueryExecutionContext.hpp" />
+    <ClInclude Include="..\src\dbxml\query\QueryPlan.hpp" />
+    <ClInclude Include="..\src\dbxml\query\QueryPlanHolder.hpp" />
+    <ClInclude Include="..\src\dbxml\query\QueryPlanToAST.hpp" />
+    <ClInclude Include="..\src\dbxml\query\SequentialScanQP.hpp" />
+    <ClInclude Include="..\src\dbxml\query\StepQP.hpp" />
+    <ClInclude Include="..\src\dbxml\query\StructuralJoinQP.hpp" />
+    <ClInclude Include="..\src\dbxml\query\UnionQP.hpp" />
+    <ClInclude Include="..\src\dbxml\query\ValueFilterQP.hpp" />
+    <ClInclude Include="..\src\dbxml\query\VariableQP.hpp" />
+    <ClInclude Include="..\src\dbxml\debug\DbXmlASTDebugHook.hpp" />
+    <ClInclude Include="..\src\dbxml\debug\DbXmlDebugHookDecorator.hpp" />
+    <ClInclude Include="..\src\dbxml\debug\DbXmlTupleDebugHook.hpp" />
+    <ClInclude Include="..\src\dbxml\debug\QPDebugHook.hpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\src\dbxml\AtomicNodeValue.cpp" />
+    <ClCompile Include="..\src\dbxml\BaseInputStream.cpp" />
+    <ClCompile Include="..\src\dbxml\Buffer.cpp" />
+    <ClCompile Include="..\src\dbxml\BulkPut.cpp" />
+    <ClCompile Include="..\src\dbxml\CacheDatabase.cpp" />
+    <ClCompile Include="..\src\dbxml\CacheDatabaseMinder.cpp" />
+    <ClCompile Include="..\src\dbxml\CompressionZlib.cpp" />
+    <ClCompile Include="..\src\dbxml\ConfigurationDatabase.cpp" />
+    <ClCompile Include="..\src\dbxml\Container.cpp" />
+    <ClCompile Include="..\src\dbxml\ContainerBase.cpp" />
+    <ClCompile Include="..\src\dbxml\ContainerConfig.cpp" />
+    <ClCompile Include="..\src\dbxml\Counters.cpp" />
+    <ClCompile Include="..\src\dbxml\Cursor.cpp" />
+    <ClCompile Include="..\src\dbxml\DatabaseNodeValue.cpp" />
+    <ClCompile Include="..\src\dbxml\db_rdbt.c" />
+    <ClCompile Include="..\src\dbxml\DbWrapper.cpp" />
+    <ClCompile Include="..\src\dbxml\DbXmlInternal.cpp" />
+    <ClCompile Include="..\src\dbxml\DictionaryCache.cpp" />
+    <ClCompile Include="..\src\dbxml\DictionaryDatabase.cpp" />
+    <ClCompile Include="..\src\dbxml\DocID.cpp" />
+    <ClCompile Include="..\src\dbxml\Document.cpp" />
+    <ClCompile Include="..\src\dbxml\DocumentDatabase.cpp" />
+    <ClCompile Include="..\src\dbxml\Globals.cpp" />
+    <ClCompile Include="..\src\dbxml\HighResTimer.cpp" />
+    <ClCompile Include="..\src\dbxml\IndexEntry.cpp" />
+    <ClCompile Include="..\src\dbxml\Indexer.cpp" />
+    <ClCompile Include="..\src\dbxml\IndexLookup.cpp" />
+    <ClCompile Include="..\src\dbxml\IndexSpecification.cpp" />
+    <ClCompile Include="..\src\dbxml\Key.cpp" />
+    <ClCompile Include="..\src\dbxml\KeyGenerator.cpp" />
+    <ClCompile Include="..\src\dbxml\KeyStash.cpp" />
+    <ClCompile Include="..\src\dbxml\KeyStatistics.cpp" />
+    <ClCompile Include="..\src\dbxml\LocalFileInputStream.cpp" />
+    <ClCompile Include="..\src\dbxml\LogDbXml.cpp" />
+    <ClCompile Include="..\src\dbxml\Manager.cpp" />
+    <ClCompile Include="..\src\dbxml\MemBufInputStream.cpp" />
+    <ClCompile Include="..\src\dbxml\MetaDatum.cpp" />
+    <ClCompile Include="..\src\dbxml\MutexLock.cpp" />
+    <ClCompile Include="..\src\dbxml\Name.cpp" />
+    <ClCompile Include="..\src\dbxml\NameID.cpp" />
+    <ClCompile Include="..\src\dbxml\QueryContext.cpp" />
+    <ClCompile Include="..\src\dbxml\QueryExpression.cpp" />
+    <ClCompile Include="..\src\dbxml\RawNodeValue.cpp" />
+    <ClCompile Include="..\src\dbxml\ReferenceCounted.cpp" />
+    <ClCompile Include="..\src\dbxml\ReferenceMinder.cpp" />
+    <ClCompile Include="..\src\dbxml\Results.cpp" />
+    <ClCompile Include="..\src\dbxml\ResultsEventWriter.cpp" />
+    <ClCompile Include="..\src\dbxml\Statistics.cpp" />
+    <ClCompile Include="..\src\dbxml\StdInInputStream.cpp" />
+    <ClCompile Include="..\src\dbxml\StructuralStatsDatabase.cpp" />
+    <ClCompile Include="..\src\dbxml\Syntax.cpp" />
+    <ClCompile Include="..\src\dbxml\SyntaxDatabase.cpp" />
+    <ClCompile Include="..\src\dbxml\SyntaxManager.cpp" />
+    <ClCompile Include="..\src\dbxml\Transaction.cpp" />
+    <ClCompile Include="..\src\dbxml\UpdateContext.cpp" />
+    <ClCompile Include="..\src\dbxml\URLInputStream.cpp" />
+    <ClCompile Include="..\src\dbxml\UTF8.cpp" />
+    <ClCompile Include="..\src\dbxml\Value.cpp" />
+    <ClCompile Include="..\src\dbxml\VariableBindings.cpp" />
+    <ClCompile Include="..\src\dbxml\XmlCompression.cpp" />
+    <ClCompile Include="..\src\dbxml\XmlContainer.cpp" />
+    <ClCompile Include="..\src\dbxml\XmlContainerConfig.cpp" />
+    <ClCompile Include="..\src\dbxml\XmlData.cpp" />
+    <ClCompile Include="..\src\dbxml\XmlDocument.cpp" />
+    <ClCompile Include="..\src\dbxml\XmlEventReader.cpp" />
+    <ClCompile Include="..\src\dbxml\XmlEventReaderToWriter.cpp" />
+    <ClCompile Include="..\src\dbxml\XmlEventWriter.cpp" />
+    <ClCompile Include="..\src\dbxml\XmlException.cpp" />
+    <ClCompile Include="..\src\dbxml\XmlIndexLookup.cpp" />
+    <ClCompile Include="..\src\dbxml\XmlIndexSpecification.cpp" />
+    <ClCompile Include="..\src\dbxml\XmlInputStream.cpp" />
+    <ClCompile Include="..\src\dbxml\XmlManager.cpp" />
+    <ClCompile Include="..\src\dbxml\XmlMetaDataIterator.cpp" />
+    <ClCompile Include="..\src\dbxml\XmlNamespace.cpp" />
+    <ClCompile Include="..\src\dbxml\XmlQueryContext.cpp" />
+    <ClCompile Include="..\src\dbxml\XmlQueryExpression.cpp" />
+    <ClCompile Include="..\src\dbxml\XmlResolver.cpp" />
+    <ClCompile Include="..\src\dbxml\XmlResults.cpp" />
+    <ClCompile Include="..\src\dbxml\XmlStatistics.cpp" />
+    <ClCompile Include="..\src\dbxml\XmlTransaction.cpp" />
+    <ClCompile Include="..\src\dbxml\XmlUpdateContext.cpp" />
+    <ClCompile Include="..\src\dbxml\XmlValue.cpp" />
+    <ClCompile Include="..\src\dbxml\dataItem\DbXmlConfiguration.cpp" />
+    <ClCompile Include="..\src\dbxml\dataItem\DbXmlContains.cpp" />
+    <ClCompile Include="..\src\dbxml\dataItem\DbXmlDocAvailable.cpp" />
+    <ClCompile Include="..\src\dbxml\dataItem\DbXmlDocumentCacheImpl.cpp" />
+    <ClCompile Include="..\src\dbxml\dataItem\DbXmlFactoryImpl.cpp" />
+    <ClCompile Include="..\src\dbxml\dataItem\DbXmlFunction.cpp" />
+    <ClCompile Include="..\src\dbxml\dataItem\DbXmlNodeImpl.cpp" />
+    <ClCompile Include="..\src\dbxml\dataItem\DbXmlNodeTest.cpp" />
+    <ClCompile Include="..\src\dbxml\dataItem\DbXmlPredicate.cpp" />
+    <ClCompile Include="..\src\dbxml\dataItem\DbXmlPrintAST.cpp" />
+    <ClCompile Include="..\src\dbxml\dataItem\DbXmlSequenceBuilder.cpp" />
+    <ClCompile Include="..\src\dbxml\dataItem\DbXmlUpdateFactory.cpp" />
+    <ClCompile Include="..\src\dbxml\dataItem\DbXmlUri.cpp" />
+    <ClCompile Include="..\src\dbxml\dataItem\DbXmlURIResolver.cpp" />
+    <ClCompile Include="..\src\dbxml\dataItem\Join.cpp" />
+    <ClCompile Include="..\src\dbxml\dataItem\LookupIndexFunction.cpp" />
+    <ClCompile Include="..\src\dbxml\dataItem\MetaDataFunction.cpp" />
+    <ClCompile Include="..\src\dbxml\dataItem\NodeHandleFunction.cpp" />
+    <ClCompile Include="..\src\dbxml\nodeStore\EventReader.cpp" />
+    <ClCompile Include="..\src\dbxml\nodeStore\EventReaderToWriter.cpp" />
+    <ClCompile Include="..\src\dbxml\nodeStore\NsDoc.cpp" />
+    <ClCompile Include="..\src\dbxml\nodeStore\NsDocument.cpp" />
+    <ClCompile Include="..\src\dbxml\nodeStore\NsDocumentDatabase.cpp" />
+    <ClCompile Include="..\src\dbxml\nodeStore\NsDom.cpp" />
+    <ClCompile Include="..\src\dbxml\nodeStore\NsEvent.cpp" />
+    <ClCompile Include="..\src\dbxml\nodeStore\NsEventReader.cpp" />
+    <ClCompile Include="..\src\dbxml\nodeStore\NsEventWriter.cpp" />
+    <ClCompile Include="..\src\dbxml\nodeStore\NsFormat.cpp" />
+    <ClCompile Include="..\src\dbxml\nodeStore\NsHandlerBase.cpp" />
+    <ClCompile Include="..\src\dbxml\nodeStore\NsImpliedSchemaFilter.cpp" />
+    <ClCompile Include="..\src\dbxml\nodeStore\NsNid.cpp" />
+    <ClCompile Include="..\src\dbxml\nodeStore\NsNode.cpp" />
+    <ClCompile Include="..\src\dbxml\nodeStore\NsRawNode.cpp" />
+    <ClCompile Include="..\src\dbxml\nodeStore\NsReindexer.cpp" />
+    <ClCompile Include="..\src\dbxml\nodeStore\NsSAX2Reader.cpp" />
+    <ClCompile Include="..\src\dbxml\nodeStore\NsUpdate.cpp" />
+    <ClCompile Include="..\src\dbxml\nodeStore\NsUpgrade.cpp" />
+    <ClCompile Include="..\src\dbxml\nodeStore\NsUtil.cpp" />
+    <ClCompile Include="..\src\dbxml\nodeStore\NsWriter.cpp" />
+    <ClCompile Include="..\src\dbxml\nodeStore\NsXercesIndexer.cpp" />
+    <ClCompile Include="..\src\dbxml\nodeStore\NsXercesTranscoder.cpp" />
+    <ClCompile Include="..\src\dbxml\nodeStore\PullEventInputStream.cpp" />
+    <ClCompile Include="..\src\dbxml\optimizer\ASTReplaceOptimizer.cpp" />
+    <ClCompile Include="..\src\dbxml\optimizer\DbXmlStaticTyper.cpp" />
+    <ClCompile Include="..\src\dbxml\optimizer\ImpliedSchemaGenerator.cpp" />
+    <ClCompile Include="..\src\dbxml\optimizer\QueryPlanGenerator.cpp" />
+    <ClCompile Include="..\src\dbxml\optimizer\QueryPlanOptimizer.cpp" />
+    <ClCompile Include="..\src\dbxml\query\AncestorJoinQP.cpp" />
+    <ClCompile Include="..\src\dbxml\query\ASTToQueryPlan.cpp" />
+    <ClCompile Include="..\src\dbxml\query\AttributeJoinQP.cpp" />
+    <ClCompile Include="..\src\dbxml\query\AttributeOrChildJoinQP.cpp" />
+    <ClCompile Include="..\src\dbxml\query\BufferQP.cpp" />
+    <ClCompile Include="..\src\dbxml\query\ChildJoinQP.cpp" />
+    <ClCompile Include="..\src\dbxml\query\CollectionQP.cpp" />
+    <ClCompile Include="..\src\dbxml\query\ContextNodeQP.cpp" />
+    <ClCompile Include="..\src\dbxml\query\DecisionPointQP.cpp" />
+    <ClCompile Include="..\src\dbxml\query\DescendantJoinQP.cpp" />
+    <ClCompile Include="..\src\dbxml\query\DocQP.cpp" />
+    <ClCompile Include="..\src\dbxml\query\EmptyQP.cpp" />
+    <ClCompile Include="..\src\dbxml\query\ExceptQP.cpp" />
+    <ClCompile Include="..\src\dbxml\query\FilterQP.cpp" />
+    <ClCompile Include="..\src\dbxml\query\ImpliedSchemaNode.cpp" />
+    <ClCompile Include="..\src\dbxml\query\IntersectQP.cpp" />
+    <ClCompile Include="..\src\dbxml\query\LevelFilterQP.cpp" />
+    <ClCompile Include="..\src\dbxml\query\NodeInfo.cpp" />
+    <ClCompile Include="..\src\dbxml\query\NodeIterator.cpp" />
+    <ClCompile Include="..\src\dbxml\query\NodePredicateFilterQP.cpp" />
+    <ClCompile Include="..\src\dbxml\query\ParentJoinQP.cpp" />
+    <ClCompile Include="..\src\dbxml\query\ParentOfAttributeJoinQP.cpp" />
+    <ClCompile Include="..\src\dbxml\query\ParentOfChildJoinQP.cpp" />
+    <ClCompile Include="..\src\dbxml\query\PredicateFilterQP.cpp" />
+    <ClCompile Include="..\src\dbxml\query\QueryExecutionContext.cpp" />
+    <ClCompile Include="..\src\dbxml\query\QueryPlan.cpp" />
+    <ClCompile Include="..\src\dbxml\query\QueryPlanHolder.cpp" />
+    <ClCompile Include="..\src\dbxml\query\QueryPlanToAST.cpp" />
+    <ClCompile Include="..\src\dbxml\query\SequentialScanQP.cpp" />
+    <ClCompile Include="..\src\dbxml\query\StepQP.cpp" />
+    <ClCompile Include="..\src\dbxml\query\StructuralJoinQP.cpp" />
+    <ClCompile Include="..\src\dbxml\query\UnionQP.cpp" />
+    <ClCompile Include="..\src\dbxml\query\ValueFilterQP.cpp" />
+    <ClCompile Include="..\src\dbxml\query\VariableQP.cpp" />
+    <ClCompile Include="..\src\dbxml\debug\DbXmlASTDebugHook.cpp" />
+    <ClCompile Include="..\src\dbxml\debug\DbXmlDebugHookDecorator.cpp" />
+    <ClCompile Include="..\src\dbxml\debug\DbXmlTupleDebugHook.cpp" />
+    <ClCompile Include="..\src\dbxml\debug\QPDebugHook.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\gd\lpng\projects\visualc8\zlib.vcxproj">
+      <Project>{3cecb989-0b34-449d-9161-8bee074d7ec0}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\..\db-4.8.26\build_windows\db_dll.vcxproj">
+      <Project>{96c27024-6dee-45ed-bcc3-a731949131fa}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\..\xerces-c-src\projects\Win32\VC10\xerces-all\XercesLib\XercesLib.vcxproj">
+      <Project>{152ce948-f659-4206-a50a-1d2b9658ef96}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\..\xqilla\Win32Projects\VC8\xqilla.vcxproj">
+      <Project>{63e85107-41e0-4fc7-8083-40e85861b426}</Project>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

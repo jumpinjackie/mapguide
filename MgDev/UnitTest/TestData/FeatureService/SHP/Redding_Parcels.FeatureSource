@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FeatureSource xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="FeatureSource-1.0.0.xsd">
+  <Provider>OSGeo.SHP</Provider>
+  <Parameter>
+    <Name>DefaultFileLocation</Name>
+    <Value>%MG_DATA_FILE_PATH%</Value>
+  </Parameter>
+</FeatureSource>

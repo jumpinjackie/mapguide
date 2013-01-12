@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Parameters>
+<!--  
+   Module section. 
+-->
+<Module name="SQLitePhpApi"/>
+
+<!--  
+   Target section. 
+-->
+<Target path="./SQLitePhpApi.i"/>
+<DocTarget path="./SQLitePhpApi_Doc.i"/>
+
+<!--  
+   C++ inline section. 
+ -->
+<CppInline>
+#ifdef WIN32
+#pragma warning(disable: 4251)
+#endif
+
+#include &lt;string&gt;
+#include &lt;map&gt;
+#include "SqliteWrap.h"
+
+typedef wstring STRINGPARAM;
+ </CppInline>
+
+<!--  
+   Type replacements. 
+-->
+<TypeReplacements>
+	<TypeReplacement oldtype="CREFSTRING" newtype="STRINGPARAM"/>
+</TypeReplacements>
+
+<!--  
+   Swig inline section. 
+-->
+<SwigInline>
+%include "language.i"	//typemaps specific for each language
+%include "../SqliteVM/ClassId.h"
+
+typedef char*   BYTE_ARRAY_OUT;
+typedef char*   BYTE_ARRAY_IN;
+typedef wstring STRINGPARAM;
+typedef unsigned char    INT8;
+typedef short   INT16;
+typedef long    INT32;
+typedef unsigned long UINT32;
+typedef long long INT64;
+</SwigInline>
+
+<!--  
+   C++ Headers section. 
+-->
+<Headers>
+
+    <Header path="../SqliteVM/SqliteDisposable.h"/>
+    <Header path="../Exceptions/SqliteException.h"/>
+	<Header path="../Exceptions/CantCloseDbException.h"/>
+	<Header path="../Exceptions/CantOpenDbException.h"/>
+	<Header path="../Exceptions/ColumnNotFoundException.h"/>
+	<Header path="../Exceptions/ExecuteErrorException.h"/>
+	<Header path="../Exceptions/NoDbConnectionException.h"/>
+	<Header path="../Exceptions/SQLiteFinalizeException.h"/>
+	<Header path="../Exceptions/SQLitePrepareException.h"/>
+	<Header path="../Exceptions/SQLiteVMConstructException.h"/>
+	<Header path="../Exceptions/TypeMismatchException.h"/>
+	<Header path="../Exceptions/InvalidArgumentException.h"/>
+	<Header path="../Exceptions/OutOfMemoryException.h"/>
+	<Header path="../SqliteVM/SqliteDB.h"/>
+	<Header path="../SqliteVM/SqliteVM.h"/>	
+	<Header path="../SqliteVM/SqliteBlob.h"/>	
+</Headers>
+
+</Parameters>

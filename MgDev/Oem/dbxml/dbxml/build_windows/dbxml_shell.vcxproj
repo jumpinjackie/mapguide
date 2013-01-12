@@ -1,0 +1,495 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Static Debug|Win32">
+      <Configuration>Static Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Static Debug|x64">
+      <Configuration>Static Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Static Release|Win32">
+      <Configuration>Static Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Static Release|x64">
+      <Configuration>Static Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{DF725DAC-C6F3-4BC1-A1D3-C4745232B05D}</ProjectGuid>
+    <RootNamespace>dbxml_shell</RootNamespace>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Static Release|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseOfMfc>false</UseOfMfc>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseOfMfc>false</UseOfMfc>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Static Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseOfMfc>false</UseOfMfc>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseOfMfc>false</UseOfMfc>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Static Release|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Static Debug|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Static Release|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC71.props" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC71.props" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Static Debug|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC71.props" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC71.props" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Static Release|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Static Debug|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <_ProjectFileVersion>10.0.40219.1</_ProjectFileVersion>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">..\build_windows\$(Configuration)32\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">./$(OutDir)dbxml_shell\</IntDir>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</LinkIncremental>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">..\build_windows\$(Configuration)64\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">./$(OutDir)dbxml_shell\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Static Debug|Win32'">..\build_windows\$(Platform)\Static Debug\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Static Debug|Win32'">./$(OutDir)dbxml_shell\</IntDir>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Static Debug|Win32'">true</LinkIncremental>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">..\build_windows\$(Configuration)32\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">./$(OutDir)dbxml_shell\</IntDir>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</LinkIncremental>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">..\build_windows\$(Configuration)64\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">./$(OutDir)dbxml_shell\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Static Release|Win32'">..\build_windows\$(Platform)\Static Release\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Static Release|Win32'">./$(OutDir)dbxml_shell\</IntDir>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Static Release|Win32'">false</LinkIncremental>
+    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" />
+    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" />
+    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" />
+    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" />
+    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" />
+    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" />
+    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Release|x64'">AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Release|x64'" />
+    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Release|x64'" />
+    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Static Debug|Win32'">AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Static Debug|Win32'" />
+    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Static Debug|Win32'" />
+    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Static Debug|x64'">AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Static Debug|x64'" />
+    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Static Debug|x64'" />
+    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Static Release|Win32'">AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Static Release|Win32'" />
+    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Static Release|Win32'" />
+    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Static Release|x64'">AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Static Release|x64'" />
+    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Static Release|x64'" />
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">dbxml</TargetName>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">dbxml</TargetName>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">dbxml</TargetName>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">dbxml</TargetName>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Static Debug|Win32'">dbxml</TargetName>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Static Debug|x64'">dbxml</TargetName>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Static Release|x64'">dbxml</TargetName>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Static Release|Win32'">dbxml</TargetName>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>.;../include;../src/dbxml;../../db-4.8.26/build_windows;../../db-4.8.26/include;../../db-4.8.26/dbinc;../../xerces-c-src/include;../../xerces-c-src/src;../../xqilla/include;../src/common;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <StringPooling>true</StringPooling>
+      <MinimalRebuild>true</MinimalRebuild>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <PrecompiledHeaderOutputFile>./$(IntDir)dbxml_shell.pch</PrecompiledHeaderOutputFile>
+      <AssemblerListingLocation>
+      </AssemblerListingLocation>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+      <WarningLevel>Level3</WarningLevel>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <CompileAs>Default</CompileAs>
+    </ClCompile>
+    <Link>
+      <AdditionalOptions>/machine:x86 %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalDependencies>ws2_32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <OutputFile>$(OutDir)dbxml.exe</OutputFile>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <ProgramDatabaseFile>$(OutDir)dbxml.pdb</ProgramDatabaseFile>
+      <OptimizeReferences>false</OptimizeReferences>
+      <RandomizedBaseAddress>false</RandomizedBaseAddress>
+      <DataExecutionPrevention>
+      </DataExecutionPrevention>
+      <TargetMachine>NotSet</TargetMachine>
+    </Link>
+    <PostBuildEvent>
+      <Message>Copying program files to install directory</Message>
+      <Command>installProj.bat dbxml prog $(OutDir) debug</Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>.;../include;../src/dbxml;../../db-4.8.26/build_windows;../../db-4.8.26/include;../../db-4.8.26/dbinc;../../xerces-c-src/include;../../xerces-c-src/src;../../xqilla/include;../src/common;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>ws2_32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <OutputFile>$(OutDir)dbxml.exe</OutputFile>
+      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <ProgramDatabaseFile>$(OutDir)dbxml.pdb</ProgramDatabaseFile>
+      <RandomizedBaseAddress>false</RandomizedBaseAddress>
+      <DataExecutionPrevention>
+      </DataExecutionPrevention>
+      <TargetMachine>MachineX64</TargetMachine>
+    </Link>
+    <PostBuildEvent>
+      <Message>Copying program files to install directory</Message>
+      <Command>installProj_win64.bat dbxml prog $(OutDir) debug</Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Static Debug|Win32'">
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>.;../include;../src/dbxml;../../db-4.8.26/build_windows;../../db-4.8.26/include;../../db-4.8.26/dbinc;../../xerces-c-src/include;../../xerces-c-src/src;../../xqilla/include;../src/common;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;_DEBUG;DBXML_EXPORT=;XQILLA_API=;XERCES_STATIC_LIBRARY;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <StringPooling>true</StringPooling>
+      <MinimalRebuild>true</MinimalRebuild>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <PrecompiledHeaderOutputFile>./$(IntDir)dbxml_shell.pch</PrecompiledHeaderOutputFile>
+      <AssemblerListingLocation>./$(IntDir)</AssemblerListingLocation>
+      <ObjectFileName>./$(IntDir)</ObjectFileName>
+      <WarningLevel>Level3</WarningLevel>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <CompileAs>Default</CompileAs>
+    </ClCompile>
+    <Link>
+      <AdditionalOptions>/machine:x86 %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalDependencies>libdbxml25sd.lib;libdb48sd.lib;xqilla22sd.lib;xerces-c_static_3d.lib;ws2_32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <OutputFile>$(OutDir)dbxml.exe</OutputFile>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <AdditionalLibraryDirectories>$(OutDir);$(OutDir);../../xqilla/build/windows/vc7.1/$(Platform)/$(Configuration);../../xerces-c-src/Build/Win32/VC7.1/$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <ProgramDatabaseFile>$(OutDir)dbxml_shell.pdb</ProgramDatabaseFile>
+      <OptimizeReferences>false</OptimizeReferences>
+      <RandomizedBaseAddress>false</RandomizedBaseAddress>
+      <DataExecutionPrevention>
+      </DataExecutionPrevention>
+      <TargetMachine>NotSet</TargetMachine>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Static Debug|x64'">
+    <Link>
+      <RandomizedBaseAddress>false</RandomizedBaseAddress>
+      <DataExecutionPrevention>
+      </DataExecutionPrevention>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <Optimization>MaxSpeed</Optimization>
+      <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
+      <AdditionalIncludeDirectories>.;../include;../src/dbxml;../../db-4.8.26/build_windows;../../db-4.8.26/include;../../db-4.8.26/dbinc;../../xerces-c-src/include;../../xerces-c-src/src;../../xqilla/include;../src/common;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <StringPooling>true</StringPooling>
+      <MinimalRebuild>true</MinimalRebuild>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <PrecompiledHeaderOutputFile>./$(IntDir)dbxml_shell.pch</PrecompiledHeaderOutputFile>
+      <AssemblerListingLocation>
+      </AssemblerListingLocation>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+      <WarningLevel>Level3</WarningLevel>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <CompileAs>Default</CompileAs>
+    </ClCompile>
+    <Link>
+      <AdditionalOptions>/machine:x86 %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalDependencies>ws2_32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <OutputFile>$(OutDir)dbxml.exe</OutputFile>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <ProgramDatabaseFile>$(OutDir)dbxml.pdb</ProgramDatabaseFile>
+      <OptimizeReferences>true</OptimizeReferences>
+      <RandomizedBaseAddress>false</RandomizedBaseAddress>
+      <DataExecutionPrevention>
+      </DataExecutionPrevention>
+      <TargetMachine>NotSet</TargetMachine>
+    </Link>
+    <PostBuildEvent>
+      <Message>Copying program files to install directory</Message>
+      <Command>installProj.bat dbxml prog $(OutDir) release</Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>.;../include;../src/dbxml;../../db-4.8.26/build_windows;../../db-4.8.26/include;../../db-4.8.26/dbinc;../../xerces-c-src/include;../../xerces-c-src/src;../../xqilla/include;../src/common;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>ws2_32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <OutputFile>$(OutDir)dbxml.exe</OutputFile>
+      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <ProgramDatabaseFile>$(OutDir)dbxml.pdb</ProgramDatabaseFile>
+      <RandomizedBaseAddress>false</RandomizedBaseAddress>
+      <DataExecutionPrevention>
+      </DataExecutionPrevention>
+      <TargetMachine>MachineX64</TargetMachine>
+    </Link>
+    <PostBuildEvent>
+      <Message>Copying program files to install directory</Message>
+      <Command>installProj_win64.bat dbxml prog $(OutDir) release</Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Static Release|Win32'">
+    <ClCompile>
+      <Optimization>MaxSpeed</Optimization>
+      <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
+      <AdditionalIncludeDirectories>.;../include;../src/dbxml;../../db-4.8.26/build_windows;../../db-4.8.26/include;../../db-4.8.26/dbinc;../../xerces-c-src/include;../../xerces-c-src/src;../../xqilla/include;../src/common;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;DBXML_EXPORT=;XQILLA_API=;XERCES_STATIC_LIBRARY;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <StringPooling>true</StringPooling>
+      <MinimalRebuild>true</MinimalRebuild>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <PrecompiledHeaderOutputFile>./$(IntDir)dbxml_shell.pch</PrecompiledHeaderOutputFile>
+      <AssemblerListingLocation>./$(IntDir)</AssemblerListingLocation>
+      <ObjectFileName>./$(IntDir)</ObjectFileName>
+      <WarningLevel>Level3</WarningLevel>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <CompileAs>Default</CompileAs>
+    </ClCompile>
+    <Link>
+      <AdditionalOptions>/machine:x86 %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalDependencies>libdbxml25s.lib;libdb48s.lib;xqilla22s.lib;xerces-c_static_3.lib;ws2_32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <OutputFile>$(OutDir)dbxml.exe</OutputFile>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <AdditionalLibraryDirectories>$(OutDir);$(OutDir);../../xqilla/build/windows/vc7.1/$(Platform)/$(Configuration);../../xerces-c-src/Build/Win32/VC7.1/$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <ProgramDatabaseFile>$(OutDir)dbxml_shell.pdb</ProgramDatabaseFile>
+      <OptimizeReferences>true</OptimizeReferences>
+      <RandomizedBaseAddress>false</RandomizedBaseAddress>
+      <DataExecutionPrevention>
+      </DataExecutionPrevention>
+      <TargetMachine>NotSet</TargetMachine>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Static Release|x64'">
+    <Link>
+      <RandomizedBaseAddress>false</RandomizedBaseAddress>
+      <DataExecutionPrevention>
+      </DataExecutionPrevention>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="..\src\utils\shell\AbortCommand.cpp" />
+    <ClCompile Include="..\src\utils\shell\AddAliasCommand.cpp" />
+    <ClCompile Include="..\src\utils\shell\AddDocumentCommand.cpp" />
+    <ClCompile Include="..\src\utils\shell\AddIndexCommand.cpp" />
+    <ClCompile Include="..\src\utils\shell\CommentCommand.cpp" />
+    <ClCompile Include="..\src\utils\shell\CommitCommand.cpp" />
+    <ClCompile Include="..\src\utils\shell\CompactCommand.cpp" />
+    <ClCompile Include="..\src\utils\shell\ContainerQueryCommand.cpp" />
+    <ClCompile Include="..\src\utils\shell\ContextItemQueryCommand.cpp" />
+    <ClCompile Include="..\src\utils\shell\CreateContainerCommand.cpp" />
+    <ClCompile Include="..\src\common\dbxml_util_sig.c" />
+    <ClCompile Include="..\src\utils\shell\dbxmlsh.cpp" />
+    <ClCompile Include="..\src\utils\shell\DebugCommand.cpp" />
+    <ClCompile Include="..\src\utils\shell\DebugOptimizationCommand.cpp" />
+    <ClCompile Include="..\src\utils\shell\DefaultShell.cpp" />
+    <ClCompile Include="..\src\utils\shell\DeleteDocumentCommand.cpp" />
+    <ClCompile Include="..\src\utils\shell\DeleteIndexCommand.cpp" />
+    <ClCompile Include="..\src\utils\shell\EchoCommand.cpp" />
+    <ClCompile Include="..\src\utils\shell\EdgeIndexLookupCommand.cpp" />
+    <ClCompile Include="..\src\utils\shell\Environment.cpp" />
+    <ClCompile Include="..\src\utils\shell\GetDocumentsCommand.cpp" />
+    <ClCompile Include="..\src\utils\shell\GetMetaDataCommand.cpp" />
+    <ClCompile Include="..\src\clib\getopt.c" />
+    <ClCompile Include="..\src\utils\shell\HelpCommand.cpp" />
+    <ClCompile Include="..\src\utils\shell\IncludeCommand.cpp" />
+    <ClCompile Include="..\src\utils\shell\IndexLookupCommand.cpp" />
+    <ClCompile Include="..\src\utils\shell\InfoCommand.cpp" />
+    <ClCompile Include="..\src\utils\shell\LazyCommand.cpp" />
+    <ClCompile Include="..\src\utils\shell\ListIndexesCommand.cpp" />
+    <ClCompile Include="..\src\utils\shell\OpenContainerCommand.cpp" />
+    <ClCompile Include="..\src\utils\shell\PreLoadCommand.cpp" />
+    <ClCompile Include="..\src\utils\shell\PrepareCommand.cpp" />
+    <ClCompile Include="..\src\utils\shell\PrintCommand.cpp" />
+    <ClCompile Include="..\src\utils\shell\ProjectionCommand.cpp" />
+    <ClCompile Include="..\src\utils\shell\QueryCommand.cpp" />
+    <ClCompile Include="..\src\utils\shell\QueryPlanCommand.cpp" />
+    <ClCompile Include="..\src\utils\shell\QuitCommand.cpp" />
+    <ClCompile Include="..\src\utils\shell\ReindexCommand.cpp" />
+    <ClCompile Include="..\src\utils\shell\RemoveAliasCommand.cpp" />
+    <ClCompile Include="..\src\utils\shell\RemoveContainerCommand.cpp" />
+    <ClCompile Include="..\src\utils\shell\ReturnTypeCommand.cpp" />
+    <ClCompile Include="..\src\utils\shell\SetAutoIndexingCommand.cpp" />
+    <ClCompile Include="..\src\utils\shell\SetBaseURICommand.cpp" />
+    <ClCompile Include="..\src\utils\shell\SetIgnoreCommand.cpp" />
+    <ClCompile Include="..\src\utils\shell\SetMetaDataCommand.cpp" />
+    <ClCompile Include="..\src\utils\shell\SetNamespaceCommand.cpp" />
+    <ClCompile Include="..\src\utils\shell\SetQueryTimeoutCommand.cpp" />
+    <ClCompile Include="..\src\utils\shell\SetTypedVariableCommand.cpp" />
+    <ClCompile Include="..\src\utils\shell\SetVariableCommand.cpp" />
+    <ClCompile Include="..\src\utils\shell\SetVerboseCommand.cpp" />
+    <ClCompile Include="..\src\utils\shell\Shell.cpp" />
+    <ClCompile Include="..\src\utils\shell\ShellCommand.cpp" />
+    <ClCompile Include="..\src\common\SigBlock.cpp" />
+    <ClCompile Include="..\src\utils\shell\StartTransactionCommand.cpp" />
+    <ClCompile Include="..\src\utils\shell\StatsLookupCommand.cpp" />
+    <ClCompile Include="..\src\utils\shell\SyncCommand.cpp" />
+    <ClCompile Include="..\src\utils\shell\TimeCommand.cpp" />
+    <ClCompile Include="..\src\common\Timer.cpp" />
+    <ClCompile Include="..\src\utils\shell\UpgradeCommand.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\src\utils\shell\AbortCommand.hpp" />
+    <ClInclude Include="..\src\utils\shell\AddAliasCommand.hpp" />
+    <ClInclude Include="..\src\utils\shell\AddDocumentCommand.hpp" />
+    <ClInclude Include="..\src\utils\shell\AddIndexCommand.hpp" />
+    <ClInclude Include="..\src\utils\shell\CommentCommand.hpp" />
+    <ClInclude Include="..\src\utils\shell\CommitCommand.hpp" />
+    <ClInclude Include="..\src\utils\shell\CompactCommand.hpp" />
+    <ClInclude Include="..\src\utils\shell\ContainerQueryCommand.hpp" />
+    <ClInclude Include="..\src\utils\shell\ContextItemQueryCommand.hpp" />
+    <ClInclude Include="..\src\utils\shell\CreateContainerCommand.hpp" />
+    <ClInclude Include="..\src\utils\shell\DebugCommand.hpp" />
+    <ClInclude Include="..\src\utils\shell\DebugOptimizationCommand.hpp" />
+    <ClInclude Include="..\src\utils\shell\DefaultShell.hpp" />
+    <ClInclude Include="..\src\utils\shell\DeleteDocumentCommand.hpp" />
+    <ClInclude Include="..\src\utils\shell\DeleteIndexCommand.hpp" />
+    <ClInclude Include="..\src\utils\shell\EchoCommand.hpp" />
+    <ClInclude Include="..\src\utils\shell\EdgeIndexLookupCommand.hpp" />
+    <ClInclude Include="..\src\utils\shell\Environment.hpp" />
+    <ClInclude Include="..\src\utils\shell\GetDocumentsCommand.hpp" />
+    <ClInclude Include="..\src\utils\shell\GetMetaDataCommand.hpp" />
+    <ClInclude Include="..\src\utils\shell\HelpCommand.hpp" />
+    <ClInclude Include="..\src\utils\shell\IncludeCommand.hpp" />
+    <ClInclude Include="..\src\utils\shell\IndexLookupCommand.hpp" />
+    <ClInclude Include="..\src\utils\shell\InfoCommand.hpp" />
+    <ClInclude Include="..\src\utils\shell\LazyCommand.hpp" />
+    <ClInclude Include="..\src\utils\shell\ListIndexesCommand.hpp" />
+    <ClInclude Include="..\src\utils\shell\OpenContainerCommand.hpp" />
+    <ClInclude Include="..\src\utils\shell\PreLoadCommand.hpp" />
+    <ClInclude Include="..\src\utils\shell\PrepareCommand.hpp" />
+    <ClInclude Include="..\src\utils\shell\PrintCommand.hpp" />
+    <ClInclude Include="..\src\utils\shell\ProjectionCommand.hpp" />
+    <ClInclude Include="..\src\utils\shell\QueryCommand.hpp" />
+    <ClInclude Include="..\src\utils\shell\QueryPlanCommand.hpp" />
+    <ClInclude Include="..\src\utils\shell\QuitCommand.hpp" />
+    <ClInclude Include="..\src\utils\shell\ReindexCommand.hpp" />
+    <ClInclude Include="..\src\utils\shell\RemoveAliasCommand.hpp" />
+    <ClInclude Include="..\src\utils\shell\RemoveContainerCommand.hpp" />
+    <ClInclude Include="..\src\utils\shell\ReturnTypeCommand.hpp" />
+    <ClInclude Include="..\src\utils\shell\SetAutoIndexingCommand.hpp" />
+    <ClInclude Include="..\src\utils\shell\SetBaseURICommand.hpp" />
+    <ClInclude Include="..\src\utils\shell\SetIgnoreCommand.hpp" />
+    <ClInclude Include="..\src\utils\shell\SetMetaDataCommand.hpp" />
+    <ClInclude Include="..\src\utils\shell\SetNamespaceCommand.hpp" />
+    <ClInclude Include="..\src\utils\shell\SetQueryTimeoutCommand.hpp" />
+    <ClInclude Include="..\src\utils\shell\SetTypedVariableCommand.hpp" />
+    <ClInclude Include="..\src\utils\shell\SetVariableCommand.hpp" />
+    <ClInclude Include="..\src\utils\shell\SetVerboseCommand.hpp" />
+    <ClInclude Include="..\src\utils\shell\Shell.hpp" />
+    <ClInclude Include="..\src\utils\shell\ShellCommand.hpp" />
+    <ClInclude Include="..\src\utils\shell\StartTransactionCommand.hpp" />
+    <ClInclude Include="..\src\utils\shell\StatsLookupCommand.hpp" />
+    <ClInclude Include="..\src\utils\shell\SyncCommand.hpp" />
+    <ClInclude Include="..\src\utils\shell\TimeCommand.hpp" />
+    <ClInclude Include="..\src\utils\shell\UpgradeCommand.hpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\db-4.8.26\build_windows\db_dll.vcxproj">
+      <Project>{96c27024-6dee-45ed-bcc3-a731949131fa}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\..\xerces-c-src\projects\Win32\VC10\xerces-all\XercesLib\XercesLib.vcxproj">
+      <Project>{152ce948-f659-4206-a50a-1d2b9658ef96}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\..\xqilla\Win32Projects\VC8\xqilla.vcxproj">
+      <Project>{63e85107-41e0-4fc7-8083-40e85861b426}</Project>
+    </ProjectReference>
+    <ProjectReference Include="dbxml.vcxproj">
+      <Project>{0047edfc-c26d-49d0-9559-029fa38b3839}</Project>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

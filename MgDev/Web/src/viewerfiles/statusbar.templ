@@ -1,0 +1,264 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<link rel="stylesheet" href="../viewerfiles/viewer.css" type="text/css">
+<style>
+    body.StatusBar
+    {
+        background-color: #f0f0f0;
+        border-style: solid;
+        border-width: 1px;
+        border-bottom-color: #808080;
+        border-right-color: #808080;
+        border-left-color: #ffffff;
+        border-top-color: #ffffff;
+    }
+    input.StatusField
+    {
+        background-color: #f0f0f0;
+        height: 20px;
+        border-left: 1px solid #c0c0c0;
+        border-top: 1px solid #c0c0c0;
+        border-bottom: 1px solid white;
+        border-right: 1px solid white;
+        position: absolute;
+        top: 3px;
+        font-family: __#@font#__;
+        font-size: __#@fontsize#__;
+    }
+    img.StatusLogo
+    {
+        border-left: 1px solid #c0c0c0;
+        border-top: 1px solid #c0c0c0;
+        border-bottom: 1px solid white;
+        border-right: 1px solid white;
+        position: absolute;
+        top: 3px;
+    }
+    select.StatusSelect
+    {
+        height: 20px;
+        border-left: 1px solid #c0c0c0;
+        border-top: 1px solid #c0c0c0;
+        border-bottom: 1px solid white;
+        border-right: 1px solid white;
+        position: absolute;
+        top: 3px;
+        font-family: __#@font#__;
+        font-size: __#@fontsize#__;
+        background-color: #EEEEEE;
+    }
+    #ScaleElement
+    {
+      position: absolute;
+      top: 0px;
+    }
+</style>
+
+<script language="javascript" src="../viewerfiles/browserdetect.js"></script>
+<script language=javascript>
+
+var intId;
+var fieldSizes = new Array(300, 120, 175);
+var fieldsW = 300+120+175;
+var origScaleValue;
+var origScaleFieldBackground;
+
+// public functions -----------------------------------------------
+//
+function SetCursorPositionMsg(msg)
+{
+    SetFieldText(msg, 1);
+}
+
+function SetFeatureSelectedMsg(msg)
+{
+    SetFieldText(msg, 2);
+}
+
+function SetMapScaleMsg(msg)
+{
+    SetFieldText(msg, 3);
+}
+
+function SetMapScalesList(scale, scales)
+{
+    // remove the input field
+    var scaleDiv = document.getElementById("ScaleElement");
+    var scaleInput = GetScaleField();
+    scaleDiv.removeChild(scaleInput);
+    
+    // add the select element
+    var select = document.createElement("select");
+    select.id = "3";
+    select.name = "3";
+    select.className = "StatusSelect";
+    select.onchange = OnChangeScaleSelect;
+    
+    for(var i=0; i<scales.length; i++)
+    {
+      var option = document.createElement("option");
+      option.text = "1: " + scales[i];
+      option.value = scales[i];
+      if(Math.floor(scale) == Math.floor(scales[i]))
+          option.selected=true;
+          
+      try
+      {
+        // for IE earlier than version 8
+        select.add(option,select.options[null]);
+      }
+      catch (e)
+      {
+        select.add(option,null);
+      }
+    }
+    scaleDiv.appendChild(select);
+}
+
+function SetMapSizeMsg(msg)
+{
+    SetFieldText(msg, 4);
+}
+
+// private functions -----------------------------------------------
+//
+function InitDocument()
+{
+    OnStatusResized();
+}
+
+function OnStatusResized()
+{
+    var width = msie? document.body.clientWidth - 3: window.innerWidth - 4;
+    var logoW = 137;
+
+    var leftFieldW = width - logoW - fieldsW - 3;
+    if(leftFieldW < 10)
+        leftFieldW = 10;
+
+    var posX = 2;
+    var elt;
+    for(var i=1; i < 5; i++)
+    {
+        elt = document.getElementById(i);
+        
+        if(i == 3)
+            elt = document.getElementById("ScaleElement");
+        
+        elt.style.left = posX + "px";
+        if(i == 1)
+        {
+            elt.style.width = (leftFieldW - 2) + "px";
+            posX += leftFieldW;
+        }
+        else
+        {
+            var w = fieldSizes[i-2];
+            elt.style.width = (w - 2) + "px";
+            posX += w;
+        }
+    }
+
+    elt = document.getElementById("5");
+    elt.style.left = (width - logoW - 1) + "px";
+    return false;
+}
+
+function SetFieldText(msg, index)
+{
+    document.getElementById(index).value = msg;
+    if(index == 1 || index == 2)
+    {
+        document.getElementById(index).title = msg;
+    }
+}
+
+function CalcKeyCode(aChar)
+{
+    var character = aChar.substring(0,1);
+    var code = aChar.charCodeAt(0);
+    return code;
+}
+
+function KeyboardController(val)
+{
+    var strPass = val.value;
+    var strLength = strPass.length;
+    var lchar = val.value.charAt((strLength) - 1);
+    var cCode = CalcKeyCode(lchar);
+
+    if ((cCode < 48 || cCode > 57 ) && cCode != 46)
+    {
+        var myNumber = val.value.substring(0, (strLength) - 1);
+        val.value = myNumber;
+    }
+    return false;
+}
+
+function SetZoomToScale(val)
+{
+    if (val.value == "")
+    {
+        val.value = origScaleValue;
+        return;
+    }
+    else
+    {
+        parent.GetMapFrame().ZoomToScale(parseFloat(val.value));
+        document.getElementById("4").focus();
+    }
+}
+
+function OnScaleFieldKeyDown(event)
+{
+    if(event.keyCode==13)
+    {
+        document.getElementById("4").focus();
+    }
+}
+
+function OnScaleFieldFocus()
+{
+    var scaleField = GetScaleField();
+    origScaleFieldBackground = scaleField.style.backgroundColor;
+    scaleField.style.backgroundColor = 'lightyellow';
+    origScaleValue = scaleField.value;
+    scaleField.value='';
+}
+
+function OnBlurScaleField()
+{
+    var scaleField = GetScaleField();
+    scaleField.style.backgroundColor = origScaleFieldBackground;
+    SetZoomToScale(scaleField);
+}
+
+function OnChangeScaleSelect()
+{
+    var scaleField = GetScaleField();
+    SetZoomToScale(scaleField);
+}
+
+function GetScaleField()
+{
+    return document.getElementById("3");
+}
+
+</script>
+
+</head>
+<body class="StatusBar" onload="InitDocument()" onResize="return OnStatusResized();" leftmargin=0 topmargin=0 rightmargin=0 bottommargin=0 marginwidth=0 marginheight=0 >
+    <table width=100% height=100% cellspacing=0 cellpadding=0 border=0>
+      <tr><td valign=center>
+        <input class="StatusField" id="1" type="text" title="" readonly >
+        <input class="StatusField" id="2" type="text" title="" readonly >
+        <div id="ScaleElement">
+        <input class="StatusField" id="3" name="3" type="text" onKeyUp="KeyboardController(this)" onKeyDown="OnScaleFieldKeyDown(event)" onfocus="OnScaleFieldFocus()" onblur="OnBlurScaleField()" onclick="this.focus()">
+        </div>
+        <input class="StatusField" id="4" type="text" readonly >
+        <img src="../localized/__#POWEREDBYICON#__" width="137" height="18" class="StatusLogo" id="5">
+      </td></tr>
+    </table>
+</body>
+</html>

@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="Windows-1252"?>
+<VisualStudioProject
+	ProjectType="Visual C++"
+	Version="9.00"
+	Name="GeometryDotNetApi"
+	ProjectGUID="{D70DE528-8829-42E6-8EF6-E8F2FCDA6334}"
+	RootNamespace="GeometryDotNetApi"
+	Keyword="MakeFileProj"
+	TargetFrameworkVersion="131072"
+	>
+	<Platforms>
+		<Platform
+			Name="Win32"
+		/>
+		<Platform
+			Name="x64"
+		/>
+	</Platforms>
+	<ToolFiles>
+	</ToolFiles>
+	<Configurations>
+		<Configuration
+			Name="Debug|Win32"
+			OutputDirectory="..\..\..\bin\debug"
+			IntermediateDirectory="..\..\..\obj\debug\DotNetApi\Geometry"
+			ConfigurationType="0"
+			>
+			<Tool
+				Name="VCNMakeTool"
+				BuildCommandLine="nmake -f GeometryMakefile PLATFORM=x86 OUTDIR=&quot;$(OutDir)&quot; debug"
+				ReBuildCommandLine="nmake -a -f GeometryMakefile PLATFORM=x86 OUTDIR=&quot;$(OutDir)&quot; debug"
+				CleanCommandLine="nmake -f GeometryMakefile OUTDIR=&quot;$(OutDir)&quot; cleandebug"
+				Output="$(OutDir)\OSGeo.MapGuide.Geometry.dll"
+				PreprocessorDefinitions=""
+				IncludeSearchPath=""
+				ForcedIncludes=""
+				AssemblySearchPath=""
+				ForcedUsingAssemblies=""
+				CompileAsManaged=""
+			/>
+		</Configuration>
+		<Configuration
+			Name="Debug|x64"
+			OutputDirectory="..\..\..\bin\debug64"
+			IntermediateDirectory="..\..\..\obj\debug64\DotNetApi\Geometry"
+			ConfigurationType="0"
+			>
+			<Tool
+				Name="VCNMakeTool"
+				BuildCommandLine="nmake -f GeometryMakefile PLATFORM=x64 OUTDIR=&quot;$(OutDir)&quot; debug"
+				ReBuildCommandLine="nmake -a -f GeometryMakefile PLATFORM=x64 OUTDIR=&quot;$(OutDir)&quot; debug"
+				CleanCommandLine="nmake -f GeometryMakefile OUTDIR=&quot;$(OutDir)&quot; cleandebug"
+				Output="$(OutDir)\OSGeo.MapGuide.Geometry.dll"
+				PreprocessorDefinitions=""
+				IncludeSearchPath=""
+				ForcedIncludes=""
+				AssemblySearchPath=""
+				ForcedUsingAssemblies=""
+				CompileAsManaged=""
+			/>
+		</Configuration>
+		<Configuration
+			Name="Release|Win32"
+			OutputDirectory="..\..\..\bin\release"
+			IntermediateDirectory="..\..\..\obj\release\DotNetApi\Geometry"
+			ConfigurationType="0"
+			>
+			<Tool
+				Name="VCNMakeTool"
+				BuildCommandLine="nmake -f GeometryMakefile PLATFORM=x86 OUTDIR=&quot;$(OutDir)&quot; release"
+				ReBuildCommandLine="nmake -a -f GeometryMakefile PLATFORM=x86 OUTDIR=&quot;$(OutDir)&quot; release"
+				CleanCommandLine="nmake -f GeometryMakefile OUTDIR=&quot;$(OutDir)&quot; cleanrelease"
+				Output="$(OutDir)\OSGeo.MapGuide.Geometry.dll"
+				PreprocessorDefinitions=""
+				IncludeSearchPath=""
+				ForcedIncludes=""
+				AssemblySearchPath=""
+				ForcedUsingAssemblies=""
+				CompileAsManaged=""
+			/>
+		</Configuration>
+		<Configuration
+			Name="Release|x64"
+			OutputDirectory="..\..\..\bin\release64"
+			IntermediateDirectory="..\..\..\obj\release64\DotNetApi\Geometry"
+			ConfigurationType="0"
+			>
+			<Tool
+				Name="VCNMakeTool"
+				BuildCommandLine="nmake -f GeometryMakefile PLATFORM=x64 OUTDIR=&quot;$(OutDir)&quot; release"
+				ReBuildCommandLine="nmake -a -f GeometryMakefile PLATFORM=x64 OUTDIR=&quot;$(OutDir)&quot; release"
+				CleanCommandLine="nmake -f GeometryMakefile OUTDIR=&quot;$(OutDir)&quot; cleanrelease"
+				Output="$(OutDir)\OSGeo.MapGuide.Geometry.dll"
+				PreprocessorDefinitions=""
+				IncludeSearchPath=""
+				ForcedIncludes=""
+				AssemblySearchPath=""
+				ForcedUsingAssemblies=""
+				CompileAsManaged=""
+			/>
+		</Configuration>
+	</Configurations>
+	<References>
+	</References>
+	<Files>
+		<File
+			RelativePath=".\GeometryMakefile"
+			>
+		</File>
+	</Files>
+	<Globals>
+	</Globals>
+</VisualStudioProject>

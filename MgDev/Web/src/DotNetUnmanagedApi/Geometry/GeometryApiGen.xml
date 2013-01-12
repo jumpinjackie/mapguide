@@ -1,0 +1,186 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Parameters>
+<!--
+   Module section.
+-->
+<Module name="GeometryApi" />
+
+<!--
+   Custom file path.
+-->
+<CustomFile path="./GeometryCustom" />
+
+<!--
+   Target section.
+-->
+<Target path="./GeometryApi.i" />
+<DocTarget path="./GeometryApi_Doc.i" />
+
+<!--
+   C++ inline section.
+-->
+<CppInline>
+#ifdef _WIN32
+#pragma warning(disable: 4251)
+#endif
+
+#include &lt;string&gt;
+#include &lt;map&gt;
+
+#include "Foundation.h"
+#include "GeometryCommon.h"
+
+#if defined(PHP) || defined(JAVA)
+typedef std::wstring STRINGPARAM;
+#else
+typedef wchar_t* STRINGPARAM;
+#endif
+</CppInline>
+
+<!--
+   Type replacements.
+-->
+<TypeReplacements>
+    <TypeReplacement oldtype="CREFSTRING" newtype="STRINGPARAM" />
+    <TypeReplacement oldtype="INT64" newtype="long long" />
+</TypeReplacements>
+
+<!--
+   Swig inline section.
+-->
+<SwigInline>
+  %import "../Foundation/FoundationApi.i"
+  %include "GeometryApi_Doc.i" //doc fragments
+  %include "language.i"   //typemaps specific for each language
+  %include "../../../../Common/Geometry/GeometryClassId.h"
+
+#if defined(PHPSWIG)
+  // We force UTF-8 encoding for PHP
+  typedef char*         STRINGPARAM;
+  typedef char*         STRING;
+  typedef char*         BYTE_ARRAY_IN;
+  typedef char*         BYTE_ARRAY_OUT;
+  typedef unsigned char BYTE;
+#elseif defined(JAVA)
+  typedef std::wstring  STRINGPARAM;
+  typedef signed char   BYTE;  //mapped to byte in Java
+#else // .Net
+  typedef char*         BYTE_ARRAY_IN;
+  typedef char*         BYTE_ARRAY_OUT;
+  typedef unsigned char BYTE;    //mapped to byte in C#
+#endif
+
+  typedef int           STATUS;
+  typedef short         INT8;
+  typedef short         INT16;
+  typedef int           INT32;
+  typedef int           UINT32;
+
+</SwigInline>
+
+<!--
+   C++ Headers section.  If you add headers to this section then you
+   must also add them to Makefile.am in the JavaApi and PhpApi folders.
+-->
+<Headers>
+
+    <!-- Geometry classes -->
+
+    <Header path="../../../../Common/Geometry/GeometricEntity.h" />
+    <Header path="../../../../Common/Geometry/Geometry.h" />
+    <Header path="../../../../Common/Geometry/GeometryComponent.h" />
+    <Header path="../../../../Common/Geometry/Curve.h" />
+    <Header path="../../../../Common/Geometry/CurveSegment.h" />
+    <Header path="../../../../Common/Geometry/Ring.h" />
+    <Header path="../../../../Common/Geometry/Region.h" />
+
+    <Header path="../../../../Common/Geometry/AgfReaderWriter.h" />
+    <Header path="../../../../Common/Geometry/AggregateGeometry.h" />
+    <Header path="../../../../Common/Geometry/ArcSegment.h" />
+    <Header path="../../../../Common/Geometry/Coordinate.h" />
+    <Header path="../../../../Common/Geometry/CoordinateCollection.h" />
+    <Header path="../../../../Common/Geometry/CoordinateIterator.h" />
+    <Header path="../../../../Common/Geometry/CoordinateXY.h" />
+    <Header path="../../../../Common/Geometry/CoordinateXYM.h" />
+    <Header path="../../../../Common/Geometry/CoordinateXYZ.h" />
+    <Header path="../../../../Common/Geometry/CoordinateXYZM.h" />
+    <Header path="../../../../Common/Geometry/CurvePolygon.h" />
+    <Header path="../../../../Common/Geometry/CurvePolygonCollection.h" />
+    <Header path="../../../../Common/Geometry/CurveRing.h" />
+    <Header path="../../../../Common/Geometry/CurveRingCollection.h" />
+    <Header path="../../../../Common/Geometry/CurveSegmentCollection.h" />
+    <Header path="../../../../Common/Geometry/CurveString.h" />
+    <Header path="../../../../Common/Geometry/CurveStringCollection.h" />
+    <Header path="../../../../Common/Geometry/Envelope.h" />
+    <Header path="../../../../Common/Geometry/GeometryCollection.h" />
+    <Header path="../../../../Common/Geometry/GeometryFactory.h" />
+    <Header path="../../../../Common/Geometry/LinearRing.h" />
+    <Header path="../../../../Common/Geometry/LinearRingCollection.h" />
+    <Header path="../../../../Common/Geometry/LinearSegment.h" />
+    <Header path="../../../../Common/Geometry/LineString.h" />
+    <Header path="../../../../Common/Geometry/LineStringCollection.h" />
+    <Header path="../../../../Common/Geometry/Measure.h" />
+    <Header path="../../../../Common/Geometry/MultiCurvePolygon.h" />
+    <Header path="../../../../Common/Geometry/MultiCurveString.h" />
+    <Header path="../../../../Common/Geometry/MultiGeometry.h" />
+    <Header path="../../../../Common/Geometry/MultiLineString.h" />
+    <Header path="../../../../Common/Geometry/MultiPoint.h" />
+    <Header path="../../../../Common/Geometry/MultiPolygon.h" />
+    <Header path="../../../../Common/Geometry/Point.h" />
+    <Header path="../../../../Common/Geometry/PointCollection.h" />
+    <Header path="../../../../Common/Geometry/Polygon.h" />
+    <Header path="../../../../Common/Geometry/PolygonCollection.h" />
+    <Header path="../../../../Common/Geometry/Transform.h" />
+    <Header path="../../../../Common/Geometry/WktReaderWriter.h" />
+
+    <Header path="../../../../Common/Geometry/CoordinateSystem/CoordinateSystem.h" />
+    <Header path="../../../../Common/Geometry/CoordinateSystem/CoordinateSystemDictionaryBase.h" />
+    <Header path="../../../../Common/Geometry/CoordinateSystem/CoordinateSystemCatalog.h" />
+    <Header path="../../../../Common/Geometry/CoordinateSystem/CoordinateSystemCategory.h" />
+    <Header path="../../../../Common/Geometry/CoordinateSystem/CoordinateSystemCategoryDictionary.h" />
+    <Header path="../../../../Common/Geometry/CoordinateSystem/CoordinateSystemDatum.h" />
+    <Header path="../../../../Common/Geometry/CoordinateSystem/CoordinateSystemDatumDictionary.h" />
+    <Header path="../../../../Common/Geometry/CoordinateSystem/CoordinateSystemGeodeticTransformDefParams.h" />
+    <Header path="../../../../Common/Geometry/CoordinateSystem/CoordinateSystemGeodeticPathElement.h" />
+    <Header path="../../../../Common/Geometry/CoordinateSystem/CoordinateSystemGeodeticPath.h" />
+    <Header path="../../../../Common/Geometry/CoordinateSystem/CoordinateSystemGeodeticPathDictionary.h" />
+    <Header path="../../../../Common/Geometry/CoordinateSystem/CoordinateSystemGeodeticTransformDef.h" />
+    <Header path="../../../../Common/Geometry/CoordinateSystem/CoordinateSystemGeodeticTransformGridFile.h" />
+    <Header path="../../../../Common/Geometry/CoordinateSystem/CoordinateSystemGeodeticAnalyticalTransformDefParams.h" />
+    <Header path="../../../../Common/Geometry/CoordinateSystem/CoordinateSystemGeodeticInterpolationTransformDefParams.h" />
+    <Header path="../../../../Common/Geometry/CoordinateSystem/CoordinateSystemGeodeticMultipleRegressionTransformDefParams.h" />
+    <Header path="../../../../Common/Geometry/CoordinateSystem/CoordinateSystemGeodeticStandaloneTransformDefParams.h" />
+    <Header path="../../../../Common/Geometry/CoordinateSystem/CoordinateSystemGeodeticTransformDefDictionary.h" />
+    <Header path="../../../../Common/Geometry/CoordinateSystem/CoordinateSystemDictionary.h" />
+    <Header path="../../../../Common/Geometry/CoordinateSystem/CoordinateSystemDictionaryUtility.h" />
+    <Header path="../../../../Common/Geometry/CoordinateSystem/CoordinateSystemEllipsoid.h" />
+    <Header path="../../../../Common/Geometry/CoordinateSystem/CoordinateSystemEllipsoidDictionary.h" />
+    <Header path="../../../../Common/Geometry/CoordinateSystem/CoordinateSystemEnum.h" />
+    <Header path="../../../../Common/Geometry/CoordinateSystem/CoordinateSystemEnumInteger32.h" />
+    <Header path="../../../../Common/Geometry/CoordinateSystem/CoordinateSystemFactory.h" />
+    <Header path="../../../../Common/Geometry/CoordinateSystem/CoordinateSystemFilter.h" />
+    <Header path="../../../../Common/Geometry/CoordinateSystem/CoordinateSystemFilterInteger32.h" />
+    <Header path="../../../../Common/Geometry/CoordinateSystem/CoordinateSystemFormatConverter.h" />
+    <Header path="../../../../Common/Geometry/CoordinateSystem/CoordinateSystemGeodeticTransformation.h" />
+    <Header path="../../../../Common/Geometry/CoordinateSystem/CoordinateSystemGrids.h" />
+    <Header path="../../../../Common/Geometry/CoordinateSystem/CoordinateSystemMathComparator.h" />
+    <Header path="../../../../Common/Geometry/CoordinateSystem/CoordinateSystemMeasure.h" />
+    <Header path="../../../../Common/Geometry/CoordinateSystem/CoordinateSystemMgrs.h" />
+    <Header path="../../../../Common/Geometry/CoordinateSystem/CoordinateSystemProjectionInformation.h" />
+    <Header path="../../../../Common/Geometry/CoordinateSystem/CoordinateSystemTransform.h" />
+    <Header path="../../../../Common/Geometry/CoordinateSystem/CoordinateSystemUnitInformation.h" />
+
+    <Header path="../../../../Common/Geometry/Exception/CoordinateSystemComputationFailedException.h" />
+    <Header path="../../../../Common/Geometry/Exception/CoordinateSystemConversionFailedException.h" />
+    <Header path="../../../../Common/Geometry/Exception/CoordinateSystemInitializationFailedException.h" />
+    <Header path="../../../../Common/Geometry/Exception/CoordinateSystemLoadFailedException.h" />
+    <Header path="../../../../Common/Geometry/Exception/CoordinateSystemMeasureFailedException.h" />
+    <Header path="../../../../Common/Geometry/Exception/CoordinateSystemTransformFailedException.h" />
+    <Header path="../../../../Common/Geometry/Exception/GeometryException.h" />
+    <Header path="../../../../Common/Geometry/Exception/InvalidCoordinateSystemException.h" />
+    <Header path="../../../../Common/Geometry/Exception/InvalidCoordinateSystemTypeException.h" />
+    <Header path="../../../../Common/Geometry/Exception/InvalidCoordinateSystemUnitsException.h" />
+
+</Headers>
+
+</Parameters>

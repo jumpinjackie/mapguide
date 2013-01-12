@@ -1,0 +1,974 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>%s</title>
+
+<script language="javascript" src="../viewerfiles/numfmt.js"></script>
+<script language="javascript" src="../viewerfiles/browserdetect.js"></script>
+<script language="javascript" src="../viewerfiles/contextmenu.js"></script>
+<script language="javascript" src="../viewerfiles/util.js"></script>
+<script language=javascript>
+
+var clientAgentName = 'Ajax Viewer';
+var webAgentAddress = '%s';
+var enablePingServer = %s;
+var serverSessionTimeout = %s;
+var locale = '%s';
+var hasToolbar = %s;
+var hasStatusbar = %s;
+var hasTaskpane = %s;
+var hasTaskbar = %s;
+var homePage = '%s';
+var thisFrame = this;
+var defHome = %s;
+var webLayout = '%s';
+var mapDefinition = '%s';
+var taskWidth = %s;
+var pointBegin= null;
+var measureWinRef = null;
+var inMeasure = false;
+var segId = 1;
+var center = %s;
+var scale = %s;
+var title = "%s";
+var forwardMouse = false;
+var menuOpen = false;
+var curScale = 0;
+var dwf = %s;
+var mapUnitsType = "";
+var newWindowIndex = 1;
+var cursorPosDecimalPlaces = 6;
+
+var commands = new Array();
+var toolbarItems = new Array();
+var taskItems = new Array();
+var ctxMenuItems = new Array();
+var intervalID;
+var pingServerFailTime;
+
+function BasicCommand(name, action, icon, iconDisabled, tooltip, description)
+{
+    this.name = name;
+    this.action = action;
+    this.icon = icon;
+    this.iconDisabled = iconDisabled;
+    this.tooltip = tooltip;
+    this.description = description;
+    this.enabled = true;
+}
+
+function UiTargetCommand(name, action, icon, iconDisabled, tooltip, description, targetType, target)
+{
+    this.targetType = targetType;
+    this.target = target;
+    this.BasicCommandInfo = BasicCommand;
+    this.BasicCommandInfo(name, action, icon, iconDisabled, tooltip, description);
+}
+
+function SearchCommand(name, label, action, icon, iconDisabled, tooltip, description, layer, prompt, resultColumns, filter, matchLimit, targetType, target)
+{
+    this.layer = layer;
+    this.prompt = prompt;
+    this.resultColumns = resultColumns;
+    this.filter = filter;
+    this.matchLimit = matchLimit;
+    this.label = label;
+    this.UiTargetCommandInfo = UiTargetCommand;
+    this.UiTargetCommandInfo(name, action, icon, iconDisabled, tooltip, description, targetType, target);
+}
+
+function InvokeUrlCommand(name, action, icon, iconDisabled, tooltip, description, url, params, disableIfSelEmpty, layerConstraints, targetType, target)
+{
+    this.url = url;
+    this.params = params;
+    this.disableIfSelEmpty = disableIfSelEmpty;
+    this.layerConstraints = layerConstraints;
+    this.UiTargetCommandInfo = UiTargetCommand;
+    this.UiTargetCommandInfo(name, action, icon, iconDisabled, tooltip, description, targetType, target);
+}
+
+function HelpCommand(name, action, icon, iconDisabled, tooltip, description, url, targetType, target)
+{
+    this.url = url;
+    this.UiTargetCommandInfo = UiTargetCommand;
+    this.UiTargetCommandInfo(name, action, icon, iconDisabled, tooltip, description, targetType, target);
+}
+
+function PrintCommand(name, action, icon, iconDisabled, tooltip, description, layouts)
+{
+    this.layouts = layouts;
+    this.BasicCommandInfo = BasicCommand;
+    this.BasicCommandInfo(name, action, icon, iconDisabled, tooltip, description);
+}
+
+function InvokeScriptCommand(name, action, icon, iconDisabled, tooltip, description, index)
+{
+    this.codeIndex = index;
+    this.BasicCommandInfo = BasicCommand;
+    this.BasicCommandInfo(name, action, icon, iconDisabled, tooltip, description);
+}
+
+function NavParam(key, value)
+{
+    this.key = key;
+    this.value = value;
+}
+
+function ResultColumn(displayName, propertyName)
+{
+    this.displayName = displayName;
+    this.propertyName = propertyName;
+}
+
+function UiItem(name)
+{
+    this.name = name;
+    this.type = 2;
+}
+
+function CommandItem(name, cmdIndex)
+{
+    this.cmdIndex = cmdIndex;
+    this.UiItemInfo = UiItem;
+    this.UiItemInfo(name);
+    this.type = 1;
+}
+
+function FlyoutItem(name, subItems, htmlEltName, iconUrl)
+{
+    this.subItems = subItems;
+    this.UiItemInfo = UiItem;
+    this.htmlElt = htmlEltName;
+    this.iconUrl = iconUrl;
+    this.UiItemInfo(name);
+    this.type = 3;
+}
+
+function Point(x,y)
+{
+    this.x = x;
+    this.y = y;
+}
+
+//Commands
+%s
+
+//Toolbar items
+%s
+
+//Task items
+%s
+
+//Contextual menu
+%s
+
+//User code
+%s
+
+var taskItemTexts = new Array(%s);
+var selectionAwareCmds = new Array();
+%s
+
+// public functions -----------------------------------------------
+//
+
+var orgTaskBarWidth = -1;
+function SetTaskBarWidth( width )
+{
+    var mainappFrame = document.getElementById("mainappFrame");
+    if(mainappFrame != null)
+    {
+        if(orgTaskBarWidth == -1)
+        {
+            orgTaskBarWidth = mainappFrame.cols.substring(2);;
+        }
+        if(width != -1)
+        {
+            
+            mainappFrame.cols = "*," + width;
+        }
+    }
+}
+
+function CloseTaskBar()
+{
+    SetTaskBarWidth(0);
+}
+
+function OpenTaskBar()
+{
+    SetTaskBarWidth(orgTaskBarWidth);
+}
+
+function ZoomToView(x,y,scale,refresh)
+{
+    GetMapFrame().ZoomToView(x,y,scale,refresh);
+}
+
+function Refresh()
+{
+    GetMapFrame().Refresh();
+}
+
+function SetStatusMsg(msg)
+{
+    if(msg == null)
+        msg = "";
+    window.status = msg;
+}
+
+function ExecuteMapAction(action)
+{
+    if(action == 14)
+        if(RestoreView())
+            return;
+
+    if(action < 2 || action > 8)
+        if(inMeasure)
+            EndMeasure();
+
+    GetMapFrame().ExecuteMapAction(action);
+    if(hasToolbar == 1)
+        tbFrame.OnCommandExecuted(action);
+}
+
+function GetMapFrame()
+{
+    return safari1or2? document.getElementById("mapFrame"): frames["mapFrame"];
+}
+
+function GetScriptFrame()
+{
+    return scriptFrame;
+}
+
+function GetTaskFrame()
+{
+    return taskFrame;
+}
+
+function GetFormFrame()
+{
+    return formFrame;
+}
+
+function GotoHomePage()
+{
+    GetTaskFrame().GetTaskPane().location.href = GettingStartedURL();
+}
+
+function GettingStartedURL ()
+{
+    if(defHome)
+        return homePage + "?WEBLAYOUT=" + encodeURIComponent(webLayout) + "&SESSION=" + GetMapFrame().GetSessionId() + "&LOCALE=" + locale + "&DWF=" + dwf;
+    else
+    {
+        var baseUrl = homePage;
+        var query = "";
+        var index = homePage.indexOf("?");
+        if (index > 0)
+        {
+            baseUrl = homePage.substring(0, index);
+            query = "&" + homePage.substring(index+1);
+        }
+        return baseUrl + "?SESSION=" + GetMapFrame().GetSessionId() + "&LOCALE=" + locale + "&MAPNAME=" + encodeURIComponent(GetMapFrame().GetMapName()) + query;
+    }
+}
+
+function SetSelectionXML(xmlSet)
+{
+    GetMapFrame().SetSelectionXML(xmlSet);
+}
+
+function ExecuteCommand(index)
+{
+    if(index < 0 || index >= commands.length)
+        return;
+    var cmd = commands[index];
+    if(cmd == null)
+        return;
+    if(!cmd.enabled)
+            return;
+    var action = cmd.action;
+    if(cmd.targetType != null && cmd.targetType == 1)
+    {
+        OpenTaskBar();
+    }
+    if((action >= 1 && action <= 22)||(action == 34))
+        ExecuteMapAction(action);
+    else if(cmd.action == 23)
+        ExecutePrintCommand(index);
+    else if(cmd.action == 24)
+        ExecutePrintablePageCommand(index);
+    else if(cmd.action == 25)
+        ExecuteMeasureCommand(index);
+    else if(cmd.action == 26)
+        ExecuteInvokeCommand(index);
+    else if(cmd.action == 27)
+        ExecuteSearchCommand(index);
+    else if(cmd.action == 28)
+        ExecuteBufferCommand(index);
+    else if(cmd.action == 30)
+        ConfigureViewer(index);
+    else if(cmd.action == 31)
+        ExecuteScriptCommand(index);
+    else if(cmd.action == 32)
+        ExecuteSelectWithinCommand(index);
+    else if(cmd.action == 33)
+        ExecuteHelpCommand(index);
+}
+
+function ForwardMouseDown(doc, e)
+{
+    forwardMouse = true;
+    var frs = window.frames;
+    for(var i=0; i < frs.length; i++)
+    {
+        try
+        {
+            frs[i].OnForwardMouseDown(doc, e);
+        }
+        catch(e)
+        {
+        }
+    }
+    forwardMouse = false;
+}
+
+function GetCommands()
+{
+    return commands;
+}
+
+function GetToolbarItems()
+{
+    return toolbarItems;
+}
+
+function GetTaskListItems()
+{
+    return taskItems;
+}
+
+function GetContextMenuItems()
+{
+    return ctxMenuItems;
+}
+
+function FormatMessage(fmt, params)
+{
+    if(params != null)
+    {
+        for(var i = 0; i < params.length; i++)
+        {
+            tag = "{" + i + "}";
+            pos1 = fmt.indexOf(tag);
+            if(pos1 == -1)
+                break;
+            if(pos1 > 0)
+                begin = fmt.substr(0, pos1);
+            else
+                begin = "";
+            end = fmt.substr(pos1 + tag.length);
+            fmt = begin + params[i] + end;
+        }
+    }
+    return fmt;
+}
+
+// private functions -----------------------------------------------
+//
+function RestoreView()
+{
+    if(center == null)
+        return false;
+
+    ZoomToView(center.x, center.y, scale, 1);
+    return true;
+}
+
+function OnCommandSelected(cmdIndex)
+{
+    if(cmdIndex != -1)
+    {
+        var cmd = commands[cmdIndex];
+        if(cmd)
+        SetStatusMsg(cmd.description);
+    }
+    else
+        SetStatusMsg("");
+}
+
+function OnEnableCommand(cmdIndex)
+{
+    return commands[cmdIndex].enabled;
+}
+
+function OnMenuShown(shown)
+{
+    menuOpen = shown;
+}
+
+function OnScaleChanged(hasTiles, scale, scalesList)
+{
+    curScale = scale;
+    DisplayMapSize();
+    if(hasStatusbar == 1 && sbFrame.SetMapScaleMsg != null)
+    {
+        if(hasTiles)
+            sbFrame.SetMapScalesList(parseInt(scale), scalesList); 
+        else
+            sbFrame.SetMapScaleMsg("1: " + FormatScale(scale));
+    }
+}
+
+function FormatScale(scale)
+{
+    if(scale >= 100000)
+        return parseInt(scale);
+    else if(scale >= 1)
+        return FormatLocalizedDecimal(scale, 2);
+    else if(scale > 0.001)
+        return FormatLocalizedDecimal(scale, 3);
+    else
+        return 0.001;
+}
+
+function OnMapLoaded()
+{
+    ExecuteMapAction(15);
+    ExecuteMapAction(34);
+    RestoreView();
+    OnSelectionChanged();
+    DisplayMapSize();
+    //ping server
+    pingServerFailTime = 0;
+    if(enablePingServer)
+    {
+        var pingServerInterval = serverSessionTimeout / 5 * 1000;  //Ping server 5 times each period. Timeout is returned in seconds.
+        intervalID = window.setInterval(GetServerSessionTimeout, pingServerInterval);
+    }
+}
+
+function handler()
+{
+    if(this.readyState == 4 && this.status != 200)
+    {
+        // error happens
+        if(pingServerFailTime < 6)
+        {
+            pingServerFailTime++;
+        }
+        else
+        {
+                window.clearInterval(intervalID);
+        }
+    }
+}
+
+function GetServerSessionTimeout()
+{
+    var url = webAgentAddress + "?OPERATION=GETSESSIONTIMEOUT&VERSION=1.0.0&SESSION=" + GetMapFrame().GetSessionId() + "&LOCALE=" + locale + "&CLIENTAGENT=" + encodeComponent(clientAgentName) + "&REQUESTTIME=" + (new Date()).getTime();
+    var request = new XMLHttpRequest();
+    request.onreadystatechange = handler;
+    request.open('GET', url);
+    request.send(null);
+}
+
+function OnCursorPosChanged(x, y)
+{
+    if(menuOpen || hasStatusbar == 0)
+        return true;
+    try
+    {
+        var latlon = GetMapFrame().IsLatLongDisplayUnits();
+        var pt = GetMapFrame().ScreenToMapUnits(x, y);
+        if(latlon)
+            pt = GetMapFrame().MapUnitsToLatLon(pt.X, pt.Y);
+        x = FormatLocalizedDecimal(pt.X, cursorPosDecimalPlaces);
+        y = FormatLocalizedDecimal(pt.Y, cursorPosDecimalPlaces);
+
+        var text;
+        if(latlon)
+            text = FormatMessage("__#LATLONCURPOS#__", new Array(x, y) );
+        else
+            text = FormatMessage("__#MAPUNITSCURPOS#__", new Array(x, y) ) + " (" + GetMapUnitsType() + ")";
+
+        sbFrame.SetCursorPositionMsg(text);
+    }
+    catch(e) {}
+
+    return true;
+}
+
+function InitTaskMenu()
+{
+    var taskMenu = new MenuData("Task", 20, 21, 50, 200,
+    "../stdicons/icon_popupscrollup.gif", "../stdicons/icon_popupscrollup_disabled.gif", "../stdicons/icon_popupscrolldown.gif", "../stdicons/icon_popupscrolldown_disabled.gif",
+    thisFrame, true, "#f0f0f0");
+    startBuildMenuContent(taskMenu);
+
+    for(var i = 0; i < taskItems.length; i++)
+    {
+        var task = taskItems[i];
+        if(task.type == 2)
+            addMenuOption(taskMenu, "", 0, 2, "", "", false);
+        else
+        {
+            var cmd = commands[task.cmdIndex];
+            addMenuOption(taskMenu, task.name, task.cmdIndex, 1, cmd.icon, cmd.iconDisabled, cmd.enabled);
+        }
+    }
+    endBuildMenuContent(taskMenu);
+    return taskMenu;
+}
+
+function EndMeasure()
+{
+    inMeasure = false;
+    try
+    {
+        measureWinRef.MeasureEnded();
+        GetMapFrame().SetCurrentToolCursor();
+    }
+    catch(e) {}
+}
+
+function ResumeMeasure()
+{
+    inMeasure = true;
+    try
+    {
+        GetMapFrame().SetMapCursor("measure");
+        measureWinRef.MeasureResumed();
+    }
+    catch(e) {}
+}
+
+function InMeasure()
+{
+    return inMeasure;
+}
+
+function StopMeasure()
+{
+    inMeasure = false;
+    GetMapFrame().SetCurrentToolCursor();
+}
+
+function ClearMeasure()
+{
+    pointBegin = null;
+    segId = 1;
+}
+
+function ClickMap(x, y)
+{
+    if(!inMeasure)
+        return false;
+    var newPoint = GetMapFrame().ScreenToMapUnits(x, y);
+    if(pointBegin == null)
+        pointBegin = newPoint;
+    else
+    {
+        try
+        {
+            measureWinRef.AddMeasure(segId ++, pointBegin, newPoint);
+            pointBegin = newPoint;
+        }
+        catch(e) {}
+    }
+    return true;
+}
+
+function OnSelectionChanged()
+{
+    var selCount = GetMapFrame().GetSelectedCount();
+    if(hasStatusbar == 1 && sbFrame.SetMapScaleMsg != null)
+    {
+        var selLayers = GetMapFrame().GetSelectedLayers();
+        if(selLayers != null && selLayers.length == 1)
+        {
+            sbFrame.SetFeatureSelectedMsg(FormatMessage("__#LAYERSELECTED#__", new Array(selCount, selLayers[0].legend)));
+        }
+        else
+        {
+            sbFrame.SetFeatureSelectedMsg(FormatMessage((selCount == 1? "__#FEATURESELECTED#__": "__#FEATURESSELECTED#__"), new Array(selCount, "unused")));
+        }
+    }
+
+    var stateChanged = false;
+
+    for(var i = 0; i < selectionAwareCmds.length; i++)
+    {
+        var cmd = commands[selectionAwareCmds[i]];
+        if(cmd.action == 26)
+        {
+            if(selCount > 0)
+            {
+                var layers = cmd.layerConstraints;
+                if(layers.length > 0)
+                {
+                    var foundLayer = false;
+                    var selLayers = GetMapFrame().GetSelectedLayers();
+                    for(var k=0; k < selLayers.length; k++)
+                    {
+                        var selLayer = selLayers[k];
+                        for(var j = 0; j < layers.length; j++)
+                        {
+                            if(selLayer.name == layers[j])
+                            {
+                                foundLayer = true;
+                                break;
+                            }
+                        }
+                        
+                        if (foundLayer)
+                            break;
+                    }
+                    if(!foundLayer)
+                    {
+                        if(EnableCommand(cmd, false))
+                            stateChanged = true;
+                        continue;
+                    }
+                }
+            }
+            else
+            {
+                if(cmd.disableIfSelEmpty)
+                {
+                    if(EnableCommand(cmd, false))
+                        stateChanged = true;
+                    continue;
+                }
+            }
+
+            if(EnableCommand(cmd, true))
+                stateChanged = true;
+        }
+    }
+    if(stateChanged && hasToolbar == 1)
+        tbFrame.OnCmdStateChanged();
+}
+
+function IsContextMenu()
+{
+    return ctxMenuItems.length > 0;
+}
+
+function DisplayMapSize()
+{
+    if(hasStatusbar == 0)
+        return;
+    var mi = "__#MI#__", km = "__#KM#__", ft = "__#FT#__", i = "__#IN#__", mt = "__#MT#__",  cm = "__#CM#__";
+    var usEnglish = GetMapFrame().IsEnglishUnits();
+    var mpu = GetMapFrame().GetMetersPerUnits();
+    var w = GetMapFrame().GetMapWidth() * mpu;
+    var h = GetMapFrame().GetMapHeight() * mpu;
+    if(usEnglish == true) {
+        w *= 3.28083988128;
+        h *= 3.28083988128;
+        if(w >= 5279.7552 && h >= 5279.7552)
+        {
+            u = mi;
+            w /= 5279.7552; h /= 5279.7552;
+        }
+        else if(w < 1 && h < 1)
+        {
+            u = i;
+            w *= 12; h *= 12;
+        }
+        else
+        {
+            u = ft;
+        }
+    }
+    else {
+        if(w >= 1000 && h >= 1000)
+        {
+            u = km;
+            w /= 1000; h /= 1000;
+        }
+        else if (w < 1 && h < 1)
+        {
+            u = cm;
+            w *= 100; h *= 100;
+        }
+        else
+        {
+            u = mt;
+        }
+    }
+
+    var text = FormatLocalizedDecimal(w, 2) + " x " + FormatLocalizedDecimal(h, 2) + " (" + u + ")";
+
+    if(sbFrame.SetMapSizeMsg !=null)
+    {
+        sbFrame.SetMapSizeMsg(text);
+    }
+}
+
+function SetOptions(engUnit, latLonUnit)
+{
+    GetMapFrame().SetEnglishUnits(engUnit);
+    GetMapFrame().SetLatLonDisplayUnits(latLonUnit);
+    DisplayMapSize();
+}
+
+function IsInitialView()
+{
+    return center != null;
+}
+
+function ExecutePrintCommand(index)
+{
+    GetMapFrame().Print(commands[index].layouts, title);
+}
+
+function ExecutePrintablePageCommand(index)
+{
+    if(inMeasure)
+        EndMeasure();
+    var mapFrame = GetMapFrame();
+    var center = mapFrame.GetCenter();
+
+    var vpath = "%s";
+    mapFrame.LoadJxLib(function()
+    {
+        if (typeof mapFrame.MapCapturer == "undefined")
+        {
+            mapFrame.LoadJsFile("../viewerfiles/quickplot.js", function()
+            {
+                OpenUrl(vpath + "?TARGETTYPE=" + commands[index].targetType, index);
+            });
+        }
+        else
+        {
+            OpenUrl(vpath + "?TARGETTYPE=" + commands[index].targetType, index);
+        }
+    });
+}
+
+function ExecuteMeasureCommand(index)
+{
+    if(GetMapFrame().IsDigitizing()) {
+        SetStatusMsg("__#DIGALREADYRUNNING#__");
+        return;
+    }
+    inMeasure = true;
+    pointBegin = null;
+    GetMapFrame().SetMapCursor("measure");
+    measureWinRef = OpenUrl("%s?PARTIAL=0&TOTAL=0", index);
+}
+
+function ExecuteInvokeCommand(index)
+{
+    var cmd = commands[index];
+    if(cmd.url.replace(" \t\n", "") == "")
+        return;
+    if(inMeasure)
+        EndMeasure();
+
+    params = null;
+    if(cmd.params != null)
+    {
+        params = new Array();
+        for(var i=0; i < cmd.params.length; i++)
+        {
+            param = cmd.params[i];
+            if(param.value == "$CurrentSelection")
+                value = encodeURIComponent(GetMapFrame().GetSelectionXML());
+            else
+                value = param.value;
+            params.push(param.key);
+            params.push(value);
+        }
+    }
+    OpenUrlFromForm(cmd.url, params, index);
+}
+
+function ExecuteSearchCommand(index)
+{
+    if(inMeasure)
+        EndMeasure();
+    var cmd = commands[index];
+    OpenUrl("%s?LAYER=" + encodeURIComponent(cmd.layer) + "&FILTER=" + encodeURIComponent(cmd.filter) + "&MR=" + cmd.matchLimit, index);
+}
+
+function ExecuteBufferCommand(index)
+{
+    if(inMeasure)
+        EndMeasure();
+    var cmd = commands[index];
+    OpenUrl("%s?US=" + (GetMapFrame().IsEnglishUnits()? "1" : "0"), index);
+}
+
+function ExecuteSelectWithinCommand(index)
+{
+    if(inMeasure)
+        EndMeasure();
+    var cmd = commands[index];
+    OpenUrl("%s?DWF=" + dwf, index);
+}
+
+function ExecuteHelpCommand(index)
+{
+    if(inMeasure)
+        EndMeasure();
+    var cmd = commands[index];
+    var url = cmd.url == ""? GettingStartedURL(): cmd.url + "?";
+    OpenUrl(url, index);
+}
+
+function ExecuteScriptCommand(index)
+{
+    if(inMeasure)
+        EndMeasure();
+    var funcIndex = commands[index].codeIndex;
+    %s
+}
+
+function OpenUrl(url, index)
+{
+    url = MakeUrl(url, index);
+    var cmd = commands[index];
+    if(cmd.targetType == 1)
+    {
+        taskFrame.taskPaneFrame.location.href = url;
+        return taskFrame.taskPaneFrame;
+    }
+    else if(cmd.targetType == 2)
+        return window.open(url, "", "toolbar=no,status=no,width=500,height=500,resizable,scrollbars");
+    else
+    {
+        var winRef = GetFrame(cmd.target);
+        if(winRef != null)
+        {
+            winRef.location.href = url;
+            return winRef;
+        }
+        else
+            return window.open(url, cmd.targetFrame + index, "toolbar=no,status=no,width=500,height=500,resizable,scrollbars");
+    }
+}
+
+function OpenUrlFromForm(url, params, index)
+{
+    AddStdParams(params, index);
+    var cmd = commands[index];
+    targetName = "";
+    if(cmd.targetType == 1)
+        targetName = "taskPaneFrame";
+    else if(cmd.targetType == 2)
+    {
+        targetName = "newFrame" + (newWindowIndex ++);
+        window.open("", targetName, "toolbar=no,status=no,width=500,height=500,resizable,scrollbars");
+    }
+    else
+    {
+        var winRef = GetFrame(cmd.target);
+        if(winRef != null)
+            targetName = cmd.target;
+        else
+        {
+            targetName = cmd.targetFrame + index;
+            window.open("", targetName, "toolbar=no,status=no,width=500,height=500,resizable,scrollbars");
+        }
+    }
+    GetFormFrame().Submit(url, params, targetName);
+}
+
+function AddStdParams(params, index)
+{
+    var cmd = commands[index];
+    var popup = (cmd.targetType == 2) || (cmd.targetType == 3 && GetFrame(cmd.target) == null);
+    params.push("WIDTH");
+    if(popup)
+        params.push("400");
+    else
+        params.push(taskWidth);
+    params.push("LOCALE");  params.push(locale);
+    params.push("SESSION");  params.push(GetMapFrame().GetSessionId());
+    params.push("MAPNAME");  params.push(encodeURIComponent(GetMapFrame().GetMapName()));
+    params.push("TGT");  params.push(cmd.targetType);
+    params.push("POPUP");  params.push(popup?1:0);
+    params.push("CMDINDEX");  params.push(index);
+}
+
+function GetFrame(name)
+{
+    var frs = window.frames;
+    for(var i=0; i < frs.length; i++)
+    {
+        if(frs[i].name == name)
+            return frs[i];
+    }
+    return null;
+}
+
+function MakeUrl(url, index)
+{
+    if(url.lastIndexOf("?") != url.length - 1)
+        url += "&";
+    var cmd = commands[index];
+    var popup = (cmd.targetType == 2) || (cmd.targetType == 3 && GetFrame(cmd.target) == null);
+    if(popup)
+        url += "WIDTH=400";
+    else
+        url += "WIDTH=" + taskWidth;
+
+    // Don't append duplicate locale and session infomation for help cmd
+    // Seems other parameters are also useless, just keep them for compatibility
+    if(33 == cmd.action)
+    {
+        url += "&MAPNAME=" + encodeURIComponent(GetMapFrame().GetMapName()) + "&TGT=" + cmd.targetType + "&POPUP=" + (popup?1:0) + "&CMDINDEX=" + index;
+    }
+    else
+    {
+        url += "&LOCALE=" + locale + "&SESSION=" + GetMapFrame().GetSessionId() + "&MAPNAME=" + encodeURIComponent(GetMapFrame().GetMapName()) + "&TGT=" + cmd.targetType + "&POPUP=" + (popup?1:0) + "&CMDINDEX=" + index;
+    }
+    return url;
+}
+
+function ConfigureViewer(index)
+{
+    if(inMeasure)
+        EndMeasure();
+    OpenUrl("%s?DWF=" + dwf, index);
+}
+
+function EnableCommand(cmd, enable)
+{
+    if(cmd.enabled == enable)
+        return false;
+    cmd.enabled = enable;
+    return true;
+}
+
+function GetMapUnitsType()
+{
+    if(mapUnitsType == "")
+        mapUnitsType = GetMapFrame().GetMapUnitsType();
+    return mapUnitsType;
+}
+
+function FormatLocalizedDecimal(numberValue, decimalPlaces)
+{
+    var unlocalized = numberValue.toFixed(decimalPlaces);
+    var localized = unlocalized;
+    var decimalSeparator = "__#DECIMALSEPARATOR#__";
+    if(decimalSeparator != "." && decimalSeparator.length > 0)
+    {
+        localized = unlocalized.replace(".", decimalSeparator);
+    }
+    return localized;
+}
+
+</script>
+</head>
+
+
+%s
+
+</html>

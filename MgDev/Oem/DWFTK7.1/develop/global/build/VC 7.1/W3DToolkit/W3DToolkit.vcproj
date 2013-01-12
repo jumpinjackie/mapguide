@@ -1,0 +1,4688 @@
+<?xml version="1.0" encoding="Windows-1252"?>
+<VisualStudioProject
+	ProjectType="Visual C++"
+	Version="7.10"
+	Name="DWF W3D Toolkit (1.2.1236)"
+	ProjectGUID="{9415DE9A-E01E-47C1-A159-EB1E1D4E518C}">
+	<Platforms>
+		<Platform
+			Name="Win32"/>
+	</Platforms>
+	<Configurations>
+		<Configuration
+			Name="Debug (Read-Write LIB)|Win32"
+			OutputDirectory="../../../lib/static/debug"
+			IntermediateDirectory="./obj/static/debug/read-write"
+			ConfigurationType="4"
+			UseOfMFC="0"
+			ATLMinimizesCRunTimeLibraryUsage="FALSE"
+			CharacterSet="1">
+			<Tool
+				Name="VCCLCompilerTool"
+				Optimization="0"
+				AdditionalIncludeDirectories="..\..\..\src"
+				PreprocessorDefinitions="WIN32;_DEBUG;_LIB;DWFCORE_STATIC;DWFTK_STATIC;DWFTK_BUILD_JPEG;DWFCORE_BUILD_ZLIB"
+				BasicRuntimeChecks="3"
+				SmallerTypeCheck="FALSE"
+				RuntimeLibrary="3"
+				EnableFunctionLevelLinking="TRUE"
+				TreatWChar_tAsBuiltInType="FALSE"
+				RuntimeTypeInfo="TRUE"
+				PrecompiledHeaderFile=""
+				ProgramDataBaseFileName="$(OutDir)/$(TargetName).pdb"
+				WarningLevel="4"
+				WarnAsError="TRUE"
+				DebugInformationFormat="3"
+				CompileAs="0"
+				DisableSpecificWarnings="4290"/>
+			<Tool
+				Name="VCCustomBuildTool"/>
+			<Tool
+				Name="VCLibrarianTool"
+				OutputFile="$(OutDir)/w3dtk.1.2.1236.lib"
+				IgnoreDefaultLibraryNames="dwfcore.1.1.1.lib"/>
+			<Tool
+				Name="VCMIDLTool"
+				PreprocessorDefinitions="_DEBUG"
+				MkTypLibCompatible="TRUE"
+				TargetEnvironment="1"
+				TypeLibraryName=""
+				HeaderFileName=""/>
+			<Tool
+				Name="VCPostBuildEventTool"/>
+			<Tool
+				Name="VCPreBuildEventTool"/>
+			<Tool
+				Name="VCPreLinkEventTool"/>
+			<Tool
+				Name="VCResourceCompilerTool"
+				PreprocessorDefinitions="_DEBUG"
+				Culture="1033"/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"/>
+			<Tool
+				Name="VCManagedWrapperGeneratorTool"/>
+			<Tool
+				Name="VCAuxiliaryManagedWrapperGeneratorTool"/>
+		</Configuration>
+		<Configuration
+			Name="Release (Read-Write LIB)|Win32"
+			OutputDirectory="../../../lib/static/release"
+			IntermediateDirectory="./obj/static/release/read-write"
+			ConfigurationType="4"
+			UseOfMFC="0"
+			ATLMinimizesCRunTimeLibraryUsage="FALSE"
+			CharacterSet="1">
+			<Tool
+				Name="VCCLCompilerTool"
+				Optimization="2"
+				GlobalOptimizations="TRUE"
+				InlineFunctionExpansion="2"
+				EnableIntrinsicFunctions="TRUE"
+				ImproveFloatingPointConsistency="TRUE"
+				FavorSizeOrSpeed="1"
+				OmitFramePointers="TRUE"
+				AdditionalIncludeDirectories="..\..\..\src"
+				PreprocessorDefinitions="WIN32;NDEBUG;_LIB;DWFCORE_STATIC;DWFTK_STATIC;DWFTK_BUILD_JPEG;DWFCORE_BUILD_ZLIB"
+				StringPooling="TRUE"
+				SmallerTypeCheck="FALSE"
+				RuntimeLibrary="2"
+				EnableFunctionLevelLinking="FALSE"
+				TreatWChar_tAsBuiltInType="FALSE"
+				RuntimeTypeInfo="TRUE"
+				PrecompiledHeaderFile=""
+				ProgramDataBaseFileName="$(OutDir)/$(TargetName).pdb"
+				WarningLevel="4"
+				WarnAsError="TRUE"
+				DebugInformationFormat="3"
+				CompileAs="0"
+				DisableSpecificWarnings="4290"/>
+			<Tool
+				Name="VCCustomBuildTool"/>
+			<Tool
+				Name="VCLibrarianTool"
+				OutputFile="$(OutDir)/w3dtk.1.2.1236.lib"
+				IgnoreDefaultLibraryNames="dwfcore.1.1.1.lib"/>
+			<Tool
+				Name="VCMIDLTool"
+				PreprocessorDefinitions="NDEBUG"
+				MkTypLibCompatible="TRUE"
+				TargetEnvironment="1"
+				TypeLibraryName=""
+				HeaderFileName=""/>
+			<Tool
+				Name="VCPostBuildEventTool"/>
+			<Tool
+				Name="VCPreBuildEventTool"/>
+			<Tool
+				Name="VCPreLinkEventTool"/>
+			<Tool
+				Name="VCResourceCompilerTool"
+				PreprocessorDefinitions="NDEBUG"
+				Culture="1033"/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"/>
+			<Tool
+				Name="VCManagedWrapperGeneratorTool"/>
+			<Tool
+				Name="VCAuxiliaryManagedWrapperGeneratorTool"/>
+		</Configuration>
+		<Configuration
+			Name="Debug (Read-Only LIB)|Win32"
+			OutputDirectory="../../../lib/static/debug"
+			IntermediateDirectory="./obj/static/debug/read-only"
+			ConfigurationType="4"
+			UseOfMFC="0"
+			ATLMinimizesCRunTimeLibraryUsage="FALSE"
+			CharacterSet="1">
+			<Tool
+				Name="VCCLCompilerTool"
+				Optimization="0"
+				AdditionalIncludeDirectories="..\..\..\src"
+				PreprocessorDefinitions="WIN32;_DEBUG;_LIB;DWFCORE_STATIC;DWFTK_STATIC;DWFTK_READ_ONLY;DWFTK_BUILD_JPEG;DWFCORE_BUILD_ZLIB"
+				BasicRuntimeChecks="3"
+				SmallerTypeCheck="FALSE"
+				RuntimeLibrary="3"
+				EnableFunctionLevelLinking="TRUE"
+				TreatWChar_tAsBuiltInType="FALSE"
+				RuntimeTypeInfo="TRUE"
+				PrecompiledHeaderFile=""
+				ProgramDataBaseFileName="$(OutDir)/$(TargetName).pdb"
+				WarningLevel="4"
+				WarnAsError="TRUE"
+				DebugInformationFormat="3"
+				CompileAs="0"
+				DisableSpecificWarnings="4290"/>
+			<Tool
+				Name="VCCustomBuildTool"/>
+			<Tool
+				Name="VCLibrarianTool"
+				OutputFile="$(OutDir)/w3dtk_ro.1.2.1236.lib"
+				IgnoreDefaultLibraryNames="dwfcore.1.1.1.lib"/>
+			<Tool
+				Name="VCMIDLTool"
+				PreprocessorDefinitions="_DEBUG"
+				MkTypLibCompatible="TRUE"
+				TargetEnvironment="1"
+				TypeLibraryName=""
+				HeaderFileName=""/>
+			<Tool
+				Name="VCPostBuildEventTool"/>
+			<Tool
+				Name="VCPreBuildEventTool"/>
+			<Tool
+				Name="VCPreLinkEventTool"/>
+			<Tool
+				Name="VCResourceCompilerTool"
+				PreprocessorDefinitions="_DEBUG"
+				Culture="1033"/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"/>
+			<Tool
+				Name="VCManagedWrapperGeneratorTool"/>
+			<Tool
+				Name="VCAuxiliaryManagedWrapperGeneratorTool"/>
+		</Configuration>
+		<Configuration
+			Name="Release (Read-Only LIB)|Win32"
+			OutputDirectory="../../../lib/static/release"
+			IntermediateDirectory="./obj/static/release/read-only"
+			ConfigurationType="4"
+			UseOfMFC="0"
+			ATLMinimizesCRunTimeLibraryUsage="FALSE"
+			CharacterSet="1">
+			<Tool
+				Name="VCCLCompilerTool"
+				Optimization="2"
+				GlobalOptimizations="TRUE"
+				InlineFunctionExpansion="2"
+				EnableIntrinsicFunctions="TRUE"
+				ImproveFloatingPointConsistency="TRUE"
+				FavorSizeOrSpeed="1"
+				OmitFramePointers="TRUE"
+				AdditionalIncludeDirectories="..\..\..\src"
+				PreprocessorDefinitions="WIN32;NDEBUG;_LIB;DWFCORE_STATIC;DWFTK_STATIC;DWFTK_READ_ONLY;DWFTK_BUILD_JPEG;DWFCORE_BUILD_ZLIB"
+				StringPooling="TRUE"
+				SmallerTypeCheck="FALSE"
+				RuntimeLibrary="2"
+				EnableFunctionLevelLinking="FALSE"
+				TreatWChar_tAsBuiltInType="FALSE"
+				RuntimeTypeInfo="TRUE"
+				PrecompiledHeaderFile=""
+				ProgramDataBaseFileName="$(OutDir)/$(TargetName).pdb"
+				WarningLevel="4"
+				WarnAsError="TRUE"
+				DebugInformationFormat="3"
+				CompileAs="0"
+				DisableSpecificWarnings="4290"/>
+			<Tool
+				Name="VCCustomBuildTool"/>
+			<Tool
+				Name="VCLibrarianTool"
+				OutputFile="$(OutDir)/w3dtk_ro.1.2.1236.lib"
+				IgnoreDefaultLibraryNames="dwfcore.1.1.1.lib"/>
+			<Tool
+				Name="VCMIDLTool"
+				PreprocessorDefinitions="NDEBUG"
+				MkTypLibCompatible="TRUE"
+				TargetEnvironment="1"
+				TypeLibraryName=""
+				HeaderFileName=""/>
+			<Tool
+				Name="VCPostBuildEventTool"/>
+			<Tool
+				Name="VCPreBuildEventTool"/>
+			<Tool
+				Name="VCPreLinkEventTool"/>
+			<Tool
+				Name="VCResourceCompilerTool"
+				PreprocessorDefinitions="NDEBUG"
+				Culture="1033"/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"/>
+			<Tool
+				Name="VCManagedWrapperGeneratorTool"/>
+			<Tool
+				Name="VCAuxiliaryManagedWrapperGeneratorTool"/>
+		</Configuration>
+		<Configuration
+			Name="Debug (Read-Only DLL)|Win32"
+			OutputDirectory="../../../bin/debug"
+			IntermediateDirectory="./obj/shared/debug/read-only"
+			ConfigurationType="2"
+			UseOfMFC="0"
+			ATLMinimizesCRunTimeLibraryUsage="FALSE"
+			CharacterSet="1">
+			<Tool
+				Name="VCCLCompilerTool"
+				Optimization="0"
+				AdditionalIncludeDirectories="..\..\..\src"
+				PreprocessorDefinitions="WIN32;_DEBUG;DWFTK_EXPORT_API;DWFTK_READ_ONLY;DWFTK_BUILD_JPEG;DWFCORE_BUILD_ZLIB"
+				BasicRuntimeChecks="3"
+				SmallerTypeCheck="FALSE"
+				RuntimeLibrary="3"
+				EnableFunctionLevelLinking="TRUE"
+				TreatWChar_tAsBuiltInType="FALSE"
+				RuntimeTypeInfo="TRUE"
+				PrecompiledHeaderFile=""
+				ProgramDataBaseFileName="$(IntDir)/$(TargetName).pdb"
+				WarningLevel="4"
+				WarnAsError="TRUE"
+				DebugInformationFormat="3"
+				CompileAs="0"
+				DisableSpecificWarnings="4290"/>
+			<Tool
+				Name="VCCustomBuildTool"/>
+			<Tool
+				Name="VCLinkerTool"
+				AdditionalDependencies="dwfcore.1.1.1.lib"
+				OutputFile="$(OutDir)/w3dtk_ro.1.2.1236.dll"
+				AdditionalLibraryDirectories="..\..\..\lib\shared\debug"
+				GenerateDebugInformation="TRUE"
+				ProgramDatabaseFile="$(OutDir)/$(TargetName).pdb"
+				OptimizeReferences="2"
+				EnableCOMDATFolding="2"
+				ImportLibrary="../../../lib/shared/debug/$(TargetName).lib"
+				TargetMachine="1"/>
+			<Tool
+				Name="VCMIDLTool"
+				PreprocessorDefinitions="_DEBUG"
+				MkTypLibCompatible="TRUE"
+				TargetEnvironment="1"
+				TypeLibraryName=""
+				HeaderFileName=""/>
+			<Tool
+				Name="VCPostBuildEventTool"/>
+			<Tool
+				Name="VCPreBuildEventTool"/>
+			<Tool
+				Name="VCPreLinkEventTool"/>
+			<Tool
+				Name="VCResourceCompilerTool"
+				PreprocessorDefinitions="_DEBUG"
+				Culture="1033"/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"/>
+			<Tool
+				Name="VCWebDeploymentTool"/>
+			<Tool
+				Name="VCManagedWrapperGeneratorTool"/>
+			<Tool
+				Name="VCAuxiliaryManagedWrapperGeneratorTool"/>
+		</Configuration>
+		<Configuration
+			Name="Release (Read-Only DLL)|Win32"
+			OutputDirectory="../../../bin/release"
+			IntermediateDirectory="./obj/shared/release/read-only"
+			ConfigurationType="2"
+			UseOfMFC="0"
+			ATLMinimizesCRunTimeLibraryUsage="FALSE"
+			CharacterSet="1">
+			<Tool
+				Name="VCCLCompilerTool"
+				Optimization="2"
+				GlobalOptimizations="TRUE"
+				InlineFunctionExpansion="2"
+				EnableIntrinsicFunctions="TRUE"
+				ImproveFloatingPointConsistency="TRUE"
+				FavorSizeOrSpeed="1"
+				OmitFramePointers="TRUE"
+				AdditionalIncludeDirectories="..\..\..\src"
+				PreprocessorDefinitions="WIN32;NDEBUG;DWFTK_EXPORT_API;DWFTK_READ_ONLY;DWFTK_BUILD_JPEG;DWFCORE_BUILD_ZLIB"
+				StringPooling="TRUE"
+				SmallerTypeCheck="FALSE"
+				RuntimeLibrary="2"
+				EnableFunctionLevelLinking="FALSE"
+				TreatWChar_tAsBuiltInType="FALSE"
+				RuntimeTypeInfo="TRUE"
+				PrecompiledHeaderFile=""
+				ProgramDataBaseFileName="$(IntDir)/$(TargetName).pdb"
+				WarningLevel="4"
+				WarnAsError="TRUE"
+				DebugInformationFormat="3"
+				CompileAs="0"
+				DisableSpecificWarnings="4290"/>
+			<Tool
+				Name="VCCustomBuildTool"/>
+			<Tool
+				Name="VCLinkerTool"
+				AdditionalDependencies="dwfcore.1.1.1.lib"
+				OutputFile="$(OutDir)/w3dtk_ro.1.2.1236.dll"
+				AdditionalLibraryDirectories="..\..\..\lib\shared\release"
+				GenerateDebugInformation="TRUE"
+				ProgramDatabaseFile="$(OutDir)/$(TargetName).pdb"
+				OptimizeReferences="2"
+				EnableCOMDATFolding="2"
+				ImportLibrary="../../../lib/shared/release/$(TargetName).lib"
+				TargetMachine="1"/>
+			<Tool
+				Name="VCMIDLTool"
+				PreprocessorDefinitions="NDEBUG"
+				MkTypLibCompatible="TRUE"
+				TargetEnvironment="1"
+				TypeLibraryName=""
+				HeaderFileName=""/>
+			<Tool
+				Name="VCPostBuildEventTool"/>
+			<Tool
+				Name="VCPreBuildEventTool"/>
+			<Tool
+				Name="VCPreLinkEventTool"/>
+			<Tool
+				Name="VCResourceCompilerTool"
+				PreprocessorDefinitions="NDEBUG"
+				Culture="1033"/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"/>
+			<Tool
+				Name="VCWebDeploymentTool"/>
+			<Tool
+				Name="VCManagedWrapperGeneratorTool"/>
+			<Tool
+				Name="VCAuxiliaryManagedWrapperGeneratorTool"/>
+		</Configuration>
+		<Configuration
+			Name="Debug (Read-Write WChar LIB)|Win32"
+			OutputDirectory="../../../lib/static/debug"
+			IntermediateDirectory="./obj/static/debug/read-write-wt"
+			ConfigurationType="4"
+			UseOfMFC="0"
+			ATLMinimizesCRunTimeLibraryUsage="FALSE"
+			CharacterSet="1">
+			<Tool
+				Name="VCCLCompilerTool"
+				Optimization="0"
+				AdditionalIncludeDirectories="..\..\..\src"
+				PreprocessorDefinitions="WIN32;_DEBUG;_LIB;DWFCORE_STATIC;DWFTK_STATIC;DWFTK_BUILD_JPEG;DWFCORE_BUILD_ZLIB"
+				BasicRuntimeChecks="3"
+				SmallerTypeCheck="FALSE"
+				RuntimeLibrary="3"
+				EnableFunctionLevelLinking="TRUE"
+				TreatWChar_tAsBuiltInType="TRUE"
+				RuntimeTypeInfo="TRUE"
+				PrecompiledHeaderFile=""
+				ProgramDataBaseFileName="$(OutDir)/$(TargetName).pdb"
+				WarningLevel="4"
+				WarnAsError="TRUE"
+				DebugInformationFormat="3"
+				CompileAs="0"
+				DisableSpecificWarnings="4290"/>
+			<Tool
+				Name="VCCustomBuildTool"/>
+			<Tool
+				Name="VCLibrarianTool"
+				OutputFile="$(OutDir)/w3dtk_wt.1.2.1236.lib"
+				IgnoreDefaultLibraryNames="dwfcore.1.1.1.lib"/>
+			<Tool
+				Name="VCMIDLTool"
+				PreprocessorDefinitions="_DEBUG"
+				MkTypLibCompatible="TRUE"
+				TargetEnvironment="1"
+				TypeLibraryName=""
+				HeaderFileName=""/>
+			<Tool
+				Name="VCPostBuildEventTool"/>
+			<Tool
+				Name="VCPreBuildEventTool"/>
+			<Tool
+				Name="VCPreLinkEventTool"/>
+			<Tool
+				Name="VCResourceCompilerTool"
+				PreprocessorDefinitions="_DEBUG"
+				Culture="1033"/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"/>
+			<Tool
+				Name="VCManagedWrapperGeneratorTool"/>
+			<Tool
+				Name="VCAuxiliaryManagedWrapperGeneratorTool"/>
+		</Configuration>
+		<Configuration
+			Name="Release (Read-Write WChar LIB)|Win32"
+			OutputDirectory="../../../lib/static/release"
+			IntermediateDirectory="./obj/static/release/read-write-wt"
+			ConfigurationType="4"
+			UseOfMFC="0"
+			ATLMinimizesCRunTimeLibraryUsage="FALSE"
+			CharacterSet="1">
+			<Tool
+				Name="VCCLCompilerTool"
+				Optimization="2"
+				GlobalOptimizations="TRUE"
+				InlineFunctionExpansion="2"
+				EnableIntrinsicFunctions="TRUE"
+				ImproveFloatingPointConsistency="TRUE"
+				FavorSizeOrSpeed="1"
+				OmitFramePointers="TRUE"
+				AdditionalIncludeDirectories="..\..\..\src"
+				PreprocessorDefinitions="WIN32;NDEBUG;_LIB;DWFCORE_STATIC;DWFTK_STATIC;DWFTK_BUILD_JPEG;DWFCORE_BUILD_ZLIB"
+				StringPooling="TRUE"
+				SmallerTypeCheck="FALSE"
+				RuntimeLibrary="2"
+				EnableFunctionLevelLinking="FALSE"
+				TreatWChar_tAsBuiltInType="TRUE"
+				RuntimeTypeInfo="TRUE"
+				PrecompiledHeaderFile=""
+				ProgramDataBaseFileName="$(OutDir)/$(TargetName).pdb"
+				WarningLevel="4"
+				WarnAsError="TRUE"
+				DebugInformationFormat="3"
+				CompileAs="0"
+				DisableSpecificWarnings="4290"/>
+			<Tool
+				Name="VCCustomBuildTool"/>
+			<Tool
+				Name="VCLibrarianTool"
+				OutputFile="$(OutDir)/w3dtk_wt.1.2.1236.lib"
+				IgnoreDefaultLibraryNames="dwfcore.1.1.1.lib"/>
+			<Tool
+				Name="VCMIDLTool"
+				PreprocessorDefinitions="NDEBUG"
+				MkTypLibCompatible="TRUE"
+				TargetEnvironment="1"
+				TypeLibraryName=""
+				HeaderFileName=""/>
+			<Tool
+				Name="VCPostBuildEventTool"/>
+			<Tool
+				Name="VCPreBuildEventTool"/>
+			<Tool
+				Name="VCPreLinkEventTool"/>
+			<Tool
+				Name="VCResourceCompilerTool"
+				PreprocessorDefinitions="NDEBUG"
+				Culture="1033"/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"/>
+			<Tool
+				Name="VCManagedWrapperGeneratorTool"/>
+			<Tool
+				Name="VCAuxiliaryManagedWrapperGeneratorTool"/>
+		</Configuration>
+		<Configuration
+			Name="Debug (Read-Write DLL)|Win32"
+			OutputDirectory="../../../bin/debug"
+			IntermediateDirectory="./obj/shared/debug"
+			ConfigurationType="2"
+			UseOfMFC="0"
+			ATLMinimizesCRunTimeLibraryUsage="FALSE"
+			CharacterSet="1">
+			<Tool
+				Name="VCCLCompilerTool"
+				Optimization="0"
+				AdditionalIncludeDirectories="..\..\..\src"
+				PreprocessorDefinitions="WIN32;_DEBUG;DWFTK_EXPORT_API;DWFTK_BUILD_JPEG;DWFCORE_BUILD_ZLIB"
+				BasicRuntimeChecks="3"
+				SmallerTypeCheck="FALSE"
+				RuntimeLibrary="3"
+				EnableFunctionLevelLinking="TRUE"
+				TreatWChar_tAsBuiltInType="FALSE"
+				RuntimeTypeInfo="TRUE"
+				PrecompiledHeaderFile=""
+				ProgramDataBaseFileName="$(IntDir)/$(TargetName).pdb"
+				WarningLevel="4"
+				WarnAsError="TRUE"
+				DebugInformationFormat="3"
+				CompileAs="0"
+				DisableSpecificWarnings="4290"/>
+			<Tool
+				Name="VCCustomBuildTool"/>
+			<Tool
+				Name="VCLinkerTool"
+				AdditionalDependencies="dwfcore.1.1.1.lib"
+				OutputFile="$(OutDir)/w3dtk.1.2.1236.dll"
+				AdditionalLibraryDirectories="..\..\..\lib\shared\debug"
+				GenerateDebugInformation="TRUE"
+				ProgramDatabaseFile="$(OutDir)/$(TargetName).pdb"
+				OptimizeReferences="2"
+				EnableCOMDATFolding="2"
+				ImportLibrary="../../../lib/shared/debug/$(TargetName).lib"
+				TargetMachine="1"/>
+			<Tool
+				Name="VCMIDLTool"
+				PreprocessorDefinitions="_DEBUG"
+				MkTypLibCompatible="TRUE"
+				TargetEnvironment="1"
+				TypeLibraryName=""
+				HeaderFileName=""/>
+			<Tool
+				Name="VCPostBuildEventTool"/>
+			<Tool
+				Name="VCPreBuildEventTool"/>
+			<Tool
+				Name="VCPreLinkEventTool"/>
+			<Tool
+				Name="VCResourceCompilerTool"
+				PreprocessorDefinitions="_DEBUG"
+				Culture="1033"/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"/>
+			<Tool
+				Name="VCWebDeploymentTool"/>
+			<Tool
+				Name="VCManagedWrapperGeneratorTool"/>
+			<Tool
+				Name="VCAuxiliaryManagedWrapperGeneratorTool"/>
+		</Configuration>
+		<Configuration
+			Name="Release (Read-Write DLL)|Win32"
+			OutputDirectory="../../../bin/release"
+			IntermediateDirectory="./obj/shared/release"
+			ConfigurationType="2"
+			UseOfMFC="0"
+			ATLMinimizesCRunTimeLibraryUsage="FALSE"
+			CharacterSet="1">
+			<Tool
+				Name="VCCLCompilerTool"
+				Optimization="2"
+				GlobalOptimizations="TRUE"
+				InlineFunctionExpansion="2"
+				EnableIntrinsicFunctions="TRUE"
+				ImproveFloatingPointConsistency="TRUE"
+				FavorSizeOrSpeed="1"
+				OmitFramePointers="TRUE"
+				AdditionalIncludeDirectories="..\..\..\src"
+				PreprocessorDefinitions="WIN32;NDEBUG;DWFTK_EXPORT_API;DWFTK_BUILD_JPEG;DWFCORE_BUILD_ZLIB"
+				StringPooling="TRUE"
+				SmallerTypeCheck="FALSE"
+				RuntimeLibrary="2"
+				EnableFunctionLevelLinking="FALSE"
+				TreatWChar_tAsBuiltInType="FALSE"
+				RuntimeTypeInfo="TRUE"
+				PrecompiledHeaderFile=""
+				ProgramDataBaseFileName="$(IntDir)/$(TargetName).pdb"
+				WarningLevel="4"
+				WarnAsError="TRUE"
+				DebugInformationFormat="3"
+				CompileAs="0"
+				DisableSpecificWarnings="4290"/>
+			<Tool
+				Name="VCCustomBuildTool"/>
+			<Tool
+				Name="VCLinkerTool"
+				AdditionalDependencies="dwfcore.1.1.1.lib"
+				OutputFile="$(OutDir)/w3dtk.1.2.1236.dll"
+				AdditionalLibraryDirectories="..\..\..\lib\shared\release"
+				GenerateDebugInformation="TRUE"
+				ProgramDatabaseFile="$(OutDir)/$(TargetName).pdb"
+				OptimizeReferences="2"
+				EnableCOMDATFolding="2"
+				ImportLibrary="../../../lib/shared/release/$(TargetName).lib"
+				TargetMachine="1"/>
+			<Tool
+				Name="VCMIDLTool"
+				PreprocessorDefinitions="NDEBUG"
+				MkTypLibCompatible="TRUE"
+				TargetEnvironment="1"
+				TypeLibraryName=""
+				HeaderFileName=""/>
+			<Tool
+				Name="VCPostBuildEventTool"/>
+			<Tool
+				Name="VCPreBuildEventTool"/>
+			<Tool
+				Name="VCPreLinkEventTool"/>
+			<Tool
+				Name="VCResourceCompilerTool"
+				PreprocessorDefinitions="NDEBUG"
+				Culture="1033"/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"/>
+			<Tool
+				Name="VCWebDeploymentTool"/>
+			<Tool
+				Name="VCManagedWrapperGeneratorTool"/>
+			<Tool
+				Name="VCAuxiliaryManagedWrapperGeneratorTool"/>
+		</Configuration>
+	</Configurations>
+	<References>
+	</References>
+	<Files>
+		<Filter
+			Name="Source Files"
+			Filter="cpp;c;cxx;rc;def;r;odl;idl;hpj;bat">
+			<File
+				RelativePath="..\..\..\src\dwf\w3dtk\BCompress.cpp">
+			</File>
+			<File
+				RelativePath="..\..\..\src\dwf\w3dtk\BCompressData.cpp">
+			</File>
+			<File
+				RelativePath="..\..\..\src\dwf\w3dtk\BEdgeBreakerCommon.cpp">
+			</File>
+			<File
+				RelativePath="..\..\..\src\dwf\w3dtk\BEdgeBreakerCompress.cpp">
+			</File>
+			<File
+				RelativePath="..\..\..\src\dwf\w3dtk\BEdgeBreakerDecompress.cpp">
+			</File>
+			<File
+				RelativePath="..\..\..\src\dwf\w3dtk\BOpcodeHandler.cpp">
+			</File>
+			<File
+				RelativePath="..\..\..\src\dwf\w3dtk\BOpcodeShell.cpp">
+			</File>
+			<File
+				RelativePath="..\..\..\src\dwf\w3dtk\BPointCloud.cpp">
+			</File>
+			<File
+				RelativePath="..\..\..\src\dwf\w3dtk\BPolyhedron.cpp">
+			</File>
+			<File
+				RelativePath="..\..\..\src\dwf\w3dtk\BPolyPoly.cpp">
+			</File>
+			<File
+				RelativePath="..\..\..\src\dwf\w3dtk\BStreamFileToolkit.cpp">
+			</File>
+			<File
+				RelativePath="..\..\..\src\dwf\w3dtk\W3DCamera.cpp">
+			</File>
+			<File
+				RelativePath="..\..\..\src\dwf\w3dtk\W3DStreamWriter.cpp">
+			</File>
+			<Filter
+				Name="jpeg"
+				Filter="">
+				<File
+					RelativePath="..\..\..\src\dwf\w3dtk\jpeg\jcapimin.c">
+					<FileConfiguration
+						Name="Debug (Read-Write LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (Read-Write LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug (Read-Only LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (Read-Only LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug (Read-Only DLL)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (Read-Only DLL)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug (Read-Write WChar LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (Read-Write WChar LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug (Read-Write DLL)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (Read-Write DLL)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+				</File>
+				<File
+					RelativePath="..\..\..\src\dwf\w3dtk\jpeg\jcapistd.c">
+					<FileConfiguration
+						Name="Debug (Read-Write LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (Read-Write LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug (Read-Only LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (Read-Only LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug (Read-Only DLL)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (Read-Only DLL)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug (Read-Write WChar LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (Read-Write WChar LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug (Read-Write DLL)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (Read-Write DLL)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+				</File>
+				<File
+					RelativePath="..\..\..\src\dwf\w3dtk\jpeg\jccoefct.c">
+					<FileConfiguration
+						Name="Debug (Read-Write LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (Read-Write LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug (Read-Only LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (Read-Only LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug (Read-Only DLL)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (Read-Only DLL)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug (Read-Write WChar LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (Read-Write WChar LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug (Read-Write DLL)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (Read-Write DLL)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+				</File>
+				<File
+					RelativePath="..\..\..\src\dwf\w3dtk\jpeg\jccolor.c">
+					<FileConfiguration
+						Name="Debug (Read-Write LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (Read-Write LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug (Read-Only LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (Read-Only LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug (Read-Only DLL)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (Read-Only DLL)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug (Read-Write WChar LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (Read-Write WChar LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug (Read-Write DLL)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (Read-Write DLL)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+				</File>
+				<File
+					RelativePath="..\..\..\src\dwf\w3dtk\jpeg\jcdctmgr.c">
+					<FileConfiguration
+						Name="Debug (Read-Write LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (Read-Write LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug (Read-Only LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (Read-Only LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug (Read-Only DLL)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (Read-Only DLL)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug (Read-Write WChar LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (Read-Write WChar LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug (Read-Write DLL)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (Read-Write DLL)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+				</File>
+				<File
+					RelativePath="..\..\..\src\dwf\w3dtk\jpeg\jchuff.c">
+					<FileConfiguration
+						Name="Debug (Read-Write LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (Read-Write LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug (Read-Only LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (Read-Only LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug (Read-Only DLL)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (Read-Only DLL)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug (Read-Write WChar LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (Read-Write WChar LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug (Read-Write DLL)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (Read-Write DLL)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+				</File>
+				<File
+					RelativePath="..\..\..\src\dwf\w3dtk\jpeg\jcinit.c">
+					<FileConfiguration
+						Name="Debug (Read-Write LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (Read-Write LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug (Read-Only LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (Read-Only LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug (Read-Only DLL)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (Read-Only DLL)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug (Read-Write WChar LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (Read-Write WChar LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug (Read-Write DLL)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (Read-Write DLL)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+				</File>
+				<File
+					RelativePath="..\..\..\src\dwf\w3dtk\jpeg\jcmainct.c">
+					<FileConfiguration
+						Name="Debug (Read-Write LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (Read-Write LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug (Read-Only LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (Read-Only LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug (Read-Only DLL)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (Read-Only DLL)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug (Read-Write WChar LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (Read-Write WChar LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug (Read-Write DLL)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (Read-Write DLL)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+				</File>
+				<File
+					RelativePath="..\..\..\src\dwf\w3dtk\jpeg\jcmarker.c">
+					<FileConfiguration
+						Name="Debug (Read-Write LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (Read-Write LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug (Read-Only LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (Read-Only LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug (Read-Only DLL)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (Read-Only DLL)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug (Read-Write WChar LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (Read-Write WChar LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug (Read-Write DLL)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (Read-Write DLL)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+				</File>
+				<File
+					RelativePath="..\..\..\src\dwf\w3dtk\jpeg\jcmaster.c">
+					<FileConfiguration
+						Name="Debug (Read-Write LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (Read-Write LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug (Read-Only LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (Read-Only LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug (Read-Only DLL)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (Read-Only DLL)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug (Read-Write WChar LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (Read-Write WChar LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug (Read-Write DLL)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (Read-Write DLL)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+				</File>
+				<File
+					RelativePath="..\..\..\src\dwf\w3dtk\jpeg\jcomapi.c">
+					<FileConfiguration
+						Name="Debug (Read-Write LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (Read-Write LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug (Read-Only LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (Read-Only LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug (Read-Only DLL)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (Read-Only DLL)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug (Read-Write WChar LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (Read-Write WChar LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug (Read-Write DLL)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (Read-Write DLL)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+				</File>
+				<File
+					RelativePath="..\..\..\src\dwf\w3dtk\jpeg\jcparam.c">
+					<FileConfiguration
+						Name="Debug (Read-Write LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (Read-Write LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug (Read-Only LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (Read-Only LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug (Read-Only DLL)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (Read-Only DLL)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug (Read-Write WChar LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (Read-Write WChar LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug (Read-Write DLL)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (Read-Write DLL)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+				</File>
+				<File
+					RelativePath="..\..\..\src\dwf\w3dtk\jpeg\jcphuff.c">
+					<FileConfiguration
+						Name="Debug (Read-Write LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (Read-Write LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug (Read-Only LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (Read-Only LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug (Read-Only DLL)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (Read-Only DLL)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug (Read-Write WChar LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (Read-Write WChar LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug (Read-Write DLL)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (Read-Write DLL)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+				</File>
+				<File
+					RelativePath="..\..\..\src\dwf\w3dtk\jpeg\jcprepct.c">
+					<FileConfiguration
+						Name="Debug (Read-Write LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (Read-Write LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug (Read-Only LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (Read-Only LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug (Read-Only DLL)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (Read-Only DLL)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug (Read-Write WChar LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (Read-Write WChar LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug (Read-Write DLL)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (Read-Write DLL)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+				</File>
+				<File
+					RelativePath="..\..\..\src\dwf\w3dtk\jpeg\jcsample.c">
+					<FileConfiguration
+						Name="Debug (Read-Write LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (Read-Write LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug (Read-Only LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (Read-Only LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug (Read-Only DLL)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (Read-Only DLL)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug (Read-Write WChar LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (Read-Write WChar LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug (Read-Write DLL)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (Read-Write DLL)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+				</File>
+				<File
+					RelativePath="..\..\..\src\dwf\w3dtk\jpeg\jctrans.c">
+					<FileConfiguration
+						Name="Debug (Read-Write LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (Read-Write LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug (Read-Only LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (Read-Only LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug (Read-Only DLL)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (Read-Only DLL)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug (Read-Write WChar LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (Read-Write WChar LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug (Read-Write DLL)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (Read-Write DLL)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+				</File>
+				<File
+					RelativePath="..\..\..\src\dwf\w3dtk\jpeg\jdapimin.c">
+					<FileConfiguration
+						Name="Debug (Read-Write LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (Read-Write LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug (Read-Only LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (Read-Only LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug (Read-Only DLL)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (Read-Only DLL)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug (Read-Write WChar LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (Read-Write WChar LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug (Read-Write DLL)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (Read-Write DLL)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+				</File>
+				<File
+					RelativePath="..\..\..\src\dwf\w3dtk\jpeg\jdapistd.c">
+					<FileConfiguration
+						Name="Debug (Read-Write LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (Read-Write LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug (Read-Only LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (Read-Only LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug (Read-Only DLL)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (Read-Only DLL)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug (Read-Write WChar LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (Read-Write WChar LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug (Read-Write DLL)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (Read-Write DLL)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+				</File>
+				<File
+					RelativePath="..\..\..\src\dwf\w3dtk\jpeg\jdatadst.c">
+					<FileConfiguration
+						Name="Debug (Read-Write LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (Read-Write LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug (Read-Only LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (Read-Only LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug (Read-Only DLL)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (Read-Only DLL)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug (Read-Write WChar LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (Read-Write WChar LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug (Read-Write DLL)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (Read-Write DLL)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+				</File>
+				<File
+					RelativePath="..\..\..\src\dwf\w3dtk\jpeg\jdatasrc.c">
+					<FileConfiguration
+						Name="Debug (Read-Write LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (Read-Write LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug (Read-Only LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (Read-Only LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug (Read-Only DLL)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (Read-Only DLL)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug (Read-Write WChar LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (Read-Write WChar LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug (Read-Write DLL)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (Read-Write DLL)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+				</File>
+				<File
+					RelativePath="..\..\..\src\dwf\w3dtk\jpeg\jdcoefct.c">
+					<FileConfiguration
+						Name="Debug (Read-Write LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (Read-Write LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug (Read-Only LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (Read-Only LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug (Read-Only DLL)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (Read-Only DLL)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug (Read-Write WChar LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (Read-Write WChar LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug (Read-Write DLL)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (Read-Write DLL)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+				</File>
+				<File
+					RelativePath="..\..\..\src\dwf\w3dtk\jpeg\jdcolor.c">
+					<FileConfiguration
+						Name="Debug (Read-Write LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (Read-Write LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug (Read-Only LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (Read-Only LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug (Read-Only DLL)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (Read-Only DLL)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug (Read-Write WChar LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (Read-Write WChar LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug (Read-Write DLL)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (Read-Write DLL)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+				</File>
+				<File
+					RelativePath="..\..\..\src\dwf\w3dtk\jpeg\jddctmgr.c">
+					<FileConfiguration
+						Name="Debug (Read-Write LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (Read-Write LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug (Read-Only LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (Read-Only LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug (Read-Only DLL)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (Read-Only DLL)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug (Read-Write WChar LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (Read-Write WChar LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug (Read-Write DLL)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (Read-Write DLL)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+				</File>
+				<File
+					RelativePath="..\..\..\src\dwf\w3dtk\jpeg\jdhuff.c">
+					<FileConfiguration
+						Name="Debug (Read-Write LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (Read-Write LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug (Read-Only LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (Read-Only LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug (Read-Only DLL)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (Read-Only DLL)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug (Read-Write WChar LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (Read-Write WChar LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug (Read-Write DLL)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (Read-Write DLL)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+				</File>
+				<File
+					RelativePath="..\..\..\src\dwf\w3dtk\jpeg\jdinput.c">
+					<FileConfiguration
+						Name="Debug (Read-Write LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (Read-Write LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug (Read-Only LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (Read-Only LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug (Read-Only DLL)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (Read-Only DLL)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug (Read-Write WChar LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (Read-Write WChar LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug (Read-Write DLL)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (Read-Write DLL)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+				</File>
+				<File
+					RelativePath="..\..\..\src\dwf\w3dtk\jpeg\jdmainct.c">
+					<FileConfiguration
+						Name="Debug (Read-Write LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (Read-Write LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug (Read-Only LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (Read-Only LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug (Read-Only DLL)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (Read-Only DLL)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug (Read-Write WChar LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (Read-Write WChar LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug (Read-Write DLL)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (Read-Write DLL)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+				</File>
+				<File
+					RelativePath="..\..\..\src\dwf\w3dtk\jpeg\jdmarker.c">
+					<FileConfiguration
+						Name="Debug (Read-Write LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (Read-Write LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug (Read-Only LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (Read-Only LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug (Read-Only DLL)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (Read-Only DLL)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug (Read-Write WChar LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (Read-Write WChar LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug (Read-Write DLL)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (Read-Write DLL)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+				</File>
+				<File
+					RelativePath="..\..\..\src\dwf\w3dtk\jpeg\jdmaster.c">
+					<FileConfiguration
+						Name="Debug (Read-Write LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (Read-Write LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug (Read-Only LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (Read-Only LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug (Read-Only DLL)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (Read-Only DLL)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug (Read-Write WChar LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (Read-Write WChar LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug (Read-Write DLL)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (Read-Write DLL)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+				</File>
+				<File
+					RelativePath="..\..\..\src\dwf\w3dtk\jpeg\jdmerge.c">
+					<FileConfiguration
+						Name="Debug (Read-Write LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (Read-Write LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug (Read-Only LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (Read-Only LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug (Read-Only DLL)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (Read-Only DLL)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug (Read-Write WChar LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (Read-Write WChar LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug (Read-Write DLL)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (Read-Write DLL)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+				</File>
+				<File
+					RelativePath="..\..\..\src\dwf\w3dtk\jpeg\jdphuff.c">
+					<FileConfiguration
+						Name="Debug (Read-Write LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (Read-Write LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug (Read-Only LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (Read-Only LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug (Read-Only DLL)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (Read-Only DLL)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug (Read-Write WChar LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (Read-Write WChar LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug (Read-Write DLL)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (Read-Write DLL)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+				</File>
+				<File
+					RelativePath="..\..\..\src\dwf\w3dtk\jpeg\jdpostct.c">
+					<FileConfiguration
+						Name="Debug (Read-Write LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (Read-Write LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug (Read-Only LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (Read-Only LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug (Read-Only DLL)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (Read-Only DLL)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug (Read-Write WChar LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (Read-Write WChar LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug (Read-Write DLL)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (Read-Write DLL)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+				</File>
+				<File
+					RelativePath="..\..\..\src\dwf\w3dtk\jpeg\jdsample.c">
+					<FileConfiguration
+						Name="Debug (Read-Write LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (Read-Write LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug (Read-Only LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (Read-Only LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug (Read-Only DLL)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (Read-Only DLL)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug (Read-Write WChar LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (Read-Write WChar LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug (Read-Write DLL)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (Read-Write DLL)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+				</File>
+				<File
+					RelativePath="..\..\..\src\dwf\w3dtk\jpeg\jdtrans.c">
+					<FileConfiguration
+						Name="Debug (Read-Write LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (Read-Write LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug (Read-Only LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (Read-Only LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug (Read-Only DLL)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (Read-Only DLL)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug (Read-Write WChar LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (Read-Write WChar LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug (Read-Write DLL)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (Read-Write DLL)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+				</File>
+				<File
+					RelativePath="..\..\..\src\dwf\w3dtk\jpeg\jerror.c">
+					<FileConfiguration
+						Name="Debug (Read-Write LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (Read-Write LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug (Read-Only LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (Read-Only LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug (Read-Only DLL)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (Read-Only DLL)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug (Read-Write WChar LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (Read-Write WChar LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug (Read-Write DLL)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (Read-Write DLL)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+				</File>
+				<File
+					RelativePath="..\..\..\src\dwf\w3dtk\jpeg\jfdctflt.c">
+					<FileConfiguration
+						Name="Debug (Read-Write LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (Read-Write LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug (Read-Only LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (Read-Only LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug (Read-Only DLL)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (Read-Only DLL)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug (Read-Write WChar LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (Read-Write WChar LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug (Read-Write DLL)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (Read-Write DLL)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+				</File>
+				<File
+					RelativePath="..\..\..\src\dwf\w3dtk\jpeg\jfdctfst.c">
+					<FileConfiguration
+						Name="Debug (Read-Write LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (Read-Write LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug (Read-Only LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (Read-Only LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug (Read-Only DLL)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (Read-Only DLL)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug (Read-Write WChar LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (Read-Write WChar LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug (Read-Write DLL)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (Read-Write DLL)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+				</File>
+				<File
+					RelativePath="..\..\..\src\dwf\w3dtk\jpeg\jfdctint.c">
+					<FileConfiguration
+						Name="Debug (Read-Write LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (Read-Write LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug (Read-Only LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (Read-Only LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug (Read-Only DLL)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (Read-Only DLL)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug (Read-Write WChar LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (Read-Write WChar LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug (Read-Write DLL)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (Read-Write DLL)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+				</File>
+				<File
+					RelativePath="..\..\..\src\dwf\w3dtk\jpeg\jidctflt.c">
+					<FileConfiguration
+						Name="Debug (Read-Write LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (Read-Write LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug (Read-Only LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (Read-Only LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug (Read-Only DLL)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (Read-Only DLL)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug (Read-Write WChar LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (Read-Write WChar LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug (Read-Write DLL)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (Read-Write DLL)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+				</File>
+				<File
+					RelativePath="..\..\..\src\dwf\w3dtk\jpeg\jidctfst.c">
+					<FileConfiguration
+						Name="Debug (Read-Write LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (Read-Write LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug (Read-Only LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (Read-Only LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug (Read-Only DLL)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (Read-Only DLL)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug (Read-Write WChar LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (Read-Write WChar LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug (Read-Write DLL)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (Read-Write DLL)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+				</File>
+				<File
+					RelativePath="..\..\..\src\dwf\w3dtk\jpeg\jidctint.c">
+					<FileConfiguration
+						Name="Debug (Read-Write LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (Read-Write LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug (Read-Only LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (Read-Only LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug (Read-Only DLL)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (Read-Only DLL)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug (Read-Write WChar LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (Read-Write WChar LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug (Read-Write DLL)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (Read-Write DLL)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+				</File>
+				<File
+					RelativePath="..\..\..\src\dwf\w3dtk\jpeg\jidctred.c">
+					<FileConfiguration
+						Name="Debug (Read-Write LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (Read-Write LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug (Read-Only LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (Read-Only LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug (Read-Only DLL)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (Read-Only DLL)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug (Read-Write WChar LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (Read-Write WChar LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug (Read-Write DLL)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (Read-Write DLL)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+				</File>
+				<File
+					RelativePath="..\..\..\src\dwf\w3dtk\jpeg\jmemmgr.c">
+					<FileConfiguration
+						Name="Debug (Read-Write LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (Read-Write LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug (Read-Only LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (Read-Only LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug (Read-Only DLL)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (Read-Only DLL)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug (Read-Write WChar LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (Read-Write WChar LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug (Read-Write DLL)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (Read-Write DLL)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+				</File>
+				<File
+					RelativePath="..\..\..\src\dwf\w3dtk\jpeg\jmemnobs.c">
+					<FileConfiguration
+						Name="Debug (Read-Write LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (Read-Write LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug (Read-Only LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (Read-Only LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug (Read-Only DLL)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (Read-Only DLL)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug (Read-Write WChar LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (Read-Write WChar LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug (Read-Write DLL)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (Read-Write DLL)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+				</File>
+				<File
+					RelativePath="..\..\..\src\dwf\w3dtk\jpeg\jquant1.c">
+					<FileConfiguration
+						Name="Debug (Read-Write LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (Read-Write LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug (Read-Only LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (Read-Only LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug (Read-Only DLL)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (Read-Only DLL)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug (Read-Write WChar LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (Read-Write WChar LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug (Read-Write DLL)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (Read-Write DLL)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+				</File>
+				<File
+					RelativePath="..\..\..\src\dwf\w3dtk\jpeg\jquant2.c">
+					<FileConfiguration
+						Name="Debug (Read-Write LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (Read-Write LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug (Read-Only LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (Read-Only LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug (Read-Only DLL)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (Read-Only DLL)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug (Read-Write WChar LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (Read-Write WChar LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug (Read-Write DLL)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (Read-Write DLL)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+				</File>
+				<File
+					RelativePath="..\..\..\src\dwf\w3dtk\jpeg\jutils.c">
+					<FileConfiguration
+						Name="Debug (Read-Write LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (Read-Write LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug (Read-Only LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (Read-Only LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug (Read-Only DLL)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (Read-Only DLL)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug (Read-Write WChar LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (Read-Write WChar LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug (Read-Write DLL)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (Read-Write DLL)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+				</File>
+			</Filter>
+			<Filter
+				Name="utility"
+				Filter="">
+				<File
+					RelativePath="..\..\..\src\dwf\w3dtk\utility\vconf.c">
+					<FileConfiguration
+						Name="Debug (Read-Write LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (Read-Write LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug (Read-Only LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (Read-Only LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug (Read-Only DLL)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (Read-Only DLL)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug (Read-Write WChar LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (Read-Write WChar LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug (Read-Write DLL)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (Read-Write DLL)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+				</File>
+				<File
+					RelativePath="..\..\..\src\dwf\w3dtk\utility\vhash.c">
+					<FileConfiguration
+						Name="Debug (Read-Write LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (Read-Write LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug (Read-Only LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (Read-Only LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug (Read-Only DLL)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (Read-Only DLL)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug (Read-Write WChar LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (Read-Write WChar LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug (Read-Write DLL)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (Read-Write DLL)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+				</File>
+				<File
+					RelativePath="..\..\..\src\dwf\w3dtk\utility\vheap.c">
+					<FileConfiguration
+						Name="Debug (Read-Write LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (Read-Write LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug (Read-Only LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (Read-Only LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug (Read-Only DLL)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (Read-Only DLL)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug (Read-Write WChar LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (Read-Write WChar LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug (Read-Write DLL)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (Read-Write DLL)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+				</File>
+				<File
+					RelativePath="..\..\..\src\dwf\w3dtk\utility\vlist.c">
+					<FileConfiguration
+						Name="Debug (Read-Write LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (Read-Write LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug (Read-Only LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (Read-Only LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug (Read-Only DLL)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (Read-Only DLL)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug (Read-Write WChar LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (Read-Write WChar LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug (Read-Write DLL)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (Read-Write DLL)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+				</File>
+				<File
+					RelativePath="..\..\..\src\dwf\w3dtk\utility\vlogfile.c">
+					<FileConfiguration
+						Name="Debug (Read-Write LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (Read-Write LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug (Read-Only LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (Read-Only LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug (Read-Only DLL)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (Read-Only DLL)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug (Read-Write WChar LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (Read-Write WChar LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug (Read-Write DLL)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (Read-Write DLL)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+				</File>
+			</Filter>
+			<Filter
+				Name="hoops"
+				Filter="">
+				<File
+					RelativePath="..\..\..\src\dwf\w3dtk\hoops\fastlod.c">
+					<FileConfiguration
+						Name="Debug (Read-Write LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (Read-Write LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug (Read-Only LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (Read-Only LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug (Read-Only DLL)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (Read-Only DLL)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug (Read-Write WChar LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (Read-Write WChar LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug (Read-Write DLL)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (Read-Write DLL)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+				</File>
+				<File
+					RelativePath="..\..\..\src\dwf\w3dtk\hoops\mxmain.c">
+					<FileConfiguration
+						Name="Debug (Read-Write LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (Read-Write LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug (Read-Only LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (Read-Only LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug (Read-Only DLL)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (Read-Only DLL)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug (Read-Write WChar LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (Read-Write WChar LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug (Read-Write DLL)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (Read-Write DLL)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+				</File>
+				<File
+					RelativePath="..\..\..\src\dwf\w3dtk\hoops\mxmath.c">
+					<FileConfiguration
+						Name="Debug (Read-Write LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (Read-Write LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug (Read-Only LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (Read-Only LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug (Read-Only DLL)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (Read-Only DLL)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug (Read-Write WChar LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (Read-Write WChar LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug (Read-Write DLL)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (Read-Write DLL)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+				</File>
+				<File
+					RelativePath="..\..\..\src\dwf\w3dtk\hoops\mxmetric.c">
+					<FileConfiguration
+						Name="Debug (Read-Write LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (Read-Write LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug (Read-Only LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (Read-Only LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug (Read-Only DLL)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (Read-Only DLL)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug (Read-Write WChar LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (Read-Write WChar LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug (Read-Write DLL)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (Read-Write DLL)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+				</File>
+				<File
+					RelativePath="..\..\..\src\dwf\w3dtk\hoops\mxmodel.c">
+					<FileConfiguration
+						Name="Debug (Read-Write LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (Read-Write LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug (Read-Only LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (Read-Only LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug (Read-Only DLL)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (Read-Only DLL)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug (Read-Write WChar LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (Read-Write WChar LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug (Read-Write DLL)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (Read-Write DLL)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+				</File>
+				<File
+					RelativePath="..\..\..\src\dwf\w3dtk\hoops\mxqslim.c">
+					<FileConfiguration
+						Name="Debug (Read-Write LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (Read-Write LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug (Read-Only LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (Read-Only LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug (Read-Only DLL)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (Read-Only DLL)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug (Read-Write WChar LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (Read-Write WChar LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug (Read-Write DLL)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (Read-Write DLL)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+				</File>
+				<File
+					RelativePath="..\..\..\src\dwf\w3dtk\hoops\mxtype.c">
+					<FileConfiguration
+						Name="Debug (Read-Write LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (Read-Write LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug (Read-Only LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (Read-Only LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug (Read-Only DLL)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (Read-Only DLL)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug (Read-Write WChar LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (Read-Write WChar LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug (Read-Write DLL)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (Read-Write DLL)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+				</File>
+				<File
+					RelativePath="..\..\..\src\dwf\w3dtk\hoops\shellopt.cpp">
+					<FileConfiguration
+						Name="Debug (Read-Write LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (Read-Write LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug (Read-Only LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (Read-Only LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug (Read-Only DLL)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (Read-Only DLL)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug (Read-Write WChar LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (Read-Write WChar LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug (Read-Write DLL)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (Read-Write DLL)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+				</File>
+				<File
+					RelativePath="..\..\..\src\dwf\w3dtk\hoops\trialate.c">
+					<FileConfiguration
+						Name="Debug (Read-Write LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (Read-Write LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug (Read-Only LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (Read-Only LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug (Read-Only DLL)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (Read-Only DLL)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug (Read-Write WChar LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (Read-Write WChar LIB)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug (Read-Write DLL)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (Read-Write DLL)|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							WarningLevel="3"/>
+					</FileConfiguration>
+				</File>
+			</Filter>
+		</Filter>
+		<Filter
+			Name="Header Files"
+			Filter="h;hpp;hxx;hm;inl">
+			<File
+				RelativePath="..\..\..\src\dwf\w3dtk\BByteStream.h">
+			</File>
+			<File
+				RelativePath="..\..\..\src\dwf\w3dtk\BCompress.h">
+			</File>
+			<File
+				RelativePath="..\..\..\src\dwf\w3dtk\BEdgeBreaker.h">
+			</File>
+			<File
+				RelativePath="..\..\..\src\dwf\w3dtk\BInternal.h">
+			</File>
+			<File
+				RelativePath="..\..\..\src\dwf\w3dtk\BOpcodeHandler.h">
+			</File>
+			<File
+				RelativePath="..\..\..\src\dwf\w3dtk\BOpcodeShell.h">
+			</File>
+			<File
+				RelativePath="..\..\..\src\dwf\w3dtk\BPointCloud.h">
+			</File>
+			<File
+				RelativePath="..\..\..\src\dwf\w3dtk\BPolyhedron.h">
+			</File>
+			<File
+				RelativePath="..\..\..\src\dwf\w3dtk\BPolyPoly.h">
+			</File>
+			<File
+				RelativePath="..\..\..\src\dwf\w3dtk\BStream.h">
+			</File>
+			<File
+				RelativePath="..\..\..\src\dwf\w3dtk\BStreamFileToolkit.h">
+			</File>
+			<File
+				RelativePath="..\..\..\rc\dwf\w3dtk\resource.h">
+			</File>
+			<File
+				RelativePath="..\..\..\src\dwf\w3dtk\Version.h">
+			</File>
+			<File
+				RelativePath="..\..\..\src\dwf\w3dtk\W3DCamera.h">
+			</File>
+			<File
+				RelativePath="..\..\..\src\dwf\w3dtk\W3DOpcodeHandler.h">
+			</File>
+			<File
+				RelativePath="..\..\..\src\dwf\w3dtk\W3DStreamWriter.h">
+			</File>
+			<Filter
+				Name="utility"
+				Filter="">
+				<File
+					RelativePath="..\..\..\src\dwf\w3dtk\utility\varray.h">
+				</File>
+				<File
+					RelativePath="..\..\..\src\dwf\w3dtk\utility\vconf.h">
+				</File>
+				<File
+					RelativePath="..\..\..\src\dwf\w3dtk\utility\vhash.h">
+				</File>
+				<File
+					RelativePath="..\..\..\src\dwf\w3dtk\utility\vheap.h">
+				</File>
+				<File
+					RelativePath="..\..\..\src\dwf\w3dtk\utility\vlist.h">
+				</File>
+				<File
+					RelativePath="..\..\..\src\dwf\w3dtk\utility\vlogfile.h">
+				</File>
+			</Filter>
+			<Filter
+				Name="hoops"
+				Filter="">
+				<File
+					RelativePath="..\..\..\src\dwf\w3dtk\hoops\hoops_tools.h">
+				</File>
+				<File
+					RelativePath="..\..\..\src\dwf\w3dtk\hoops\lod.h">
+				</File>
+			</Filter>
+			<Filter
+				Name="jpeg"
+				Filter="">
+				<File
+					RelativePath="..\..\..\src\dwf\w3dtk\jpeg\jchuff.h">
+				</File>
+				<File
+					RelativePath="..\..\..\src\dwf\w3dtk\jpeg\jconfig.h">
+				</File>
+				<File
+					RelativePath="..\..\..\src\dwf\w3dtk\jpeg\jdct.h">
+				</File>
+				<File
+					RelativePath="..\..\..\src\dwf\w3dtk\jpeg\jdhuff.h">
+				</File>
+				<File
+					RelativePath="..\..\..\src\dwf\w3dtk\jpeg\jerror.h">
+				</File>
+				<File
+					RelativePath="..\..\..\src\dwf\w3dtk\jpeg\jinclude.h">
+				</File>
+				<File
+					RelativePath="..\..\..\src\dwf\w3dtk\jpeg\jmemsys.h">
+				</File>
+				<File
+					RelativePath="..\..\..\src\dwf\w3dtk\jpeg\jmorecfg.h">
+				</File>
+				<File
+					RelativePath="..\..\..\src\dwf\w3dtk\jpeg\jpegint.h">
+				</File>
+				<File
+					RelativePath="..\..\..\src\dwf\w3dtk\jpeg\jpeglib.h">
+				</File>
+				<File
+					RelativePath="..\..\..\src\dwf\w3dtk\jpeg\jversion.h">
+				</File>
+			</Filter>
+		</Filter>
+		<Filter
+			Name="Resources"
+			Filter="">
+			<File
+				RelativePath="..\..\..\rc\dwf\w3dtk\W3DToolkit.rc">
+				<FileConfiguration
+					Name="Debug (Read-Write LIB)|Win32">
+					<Tool
+						Name="VCResourceCompilerTool"
+						AdditionalIncludeDirectories="../../../src"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release (Read-Write LIB)|Win32">
+					<Tool
+						Name="VCResourceCompilerTool"
+						AdditionalIncludeDirectories="../../../src"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug (Read-Only LIB)|Win32">
+					<Tool
+						Name="VCResourceCompilerTool"
+						AdditionalIncludeDirectories="../../../src"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release (Read-Only LIB)|Win32">
+					<Tool
+						Name="VCResourceCompilerTool"
+						AdditionalIncludeDirectories="../../../src"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug (Read-Only DLL)|Win32">
+					<Tool
+						Name="VCResourceCompilerTool"
+						AdditionalIncludeDirectories="../../../src"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release (Read-Only DLL)|Win32">
+					<Tool
+						Name="VCResourceCompilerTool"
+						AdditionalIncludeDirectories="../../../src"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug (Read-Write WChar LIB)|Win32">
+					<Tool
+						Name="VCResourceCompilerTool"
+						AdditionalIncludeDirectories="../../../src"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release (Read-Write WChar LIB)|Win32">
+					<Tool
+						Name="VCResourceCompilerTool"
+						AdditionalIncludeDirectories="../../../src"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug (Read-Write DLL)|Win32">
+					<Tool
+						Name="VCResourceCompilerTool"
+						AdditionalIncludeDirectories="../../../src"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release (Read-Write DLL)|Win32">
+					<Tool
+						Name="VCResourceCompilerTool"
+						AdditionalIncludeDirectories="../../../src"/>
+				</FileConfiguration>
+			</File>
+		</Filter>
+	</Files>
+	<Globals>
+	</Globals>
+</VisualStudioProject>

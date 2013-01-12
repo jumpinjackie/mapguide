@@ -1,0 +1,141 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Unicode">
+      <UniqueIdentifier>{99a99123-6c53-4ccc-a541-acfa0fea3119}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Exceptions">
+      <UniqueIdentifier>{b3e53a87-ff32-402a-998c-3b76ab0a2550}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SQLite">
+      <UniqueIdentifier>{a7d42420-7a63-40ca-a2ec-8fc55960fcad}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\Unicode\ConvertUTF.c">
+      <Filter>Unicode</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Unicode\UnicodeString.cpp">
+      <Filter>Unicode</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Exceptions\CantCloseDbException.cpp">
+      <Filter>Exceptions</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Exceptions\CantOpenDbException.cpp">
+      <Filter>Exceptions</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Exceptions\ColumnNotFoundException.cpp">
+      <Filter>Exceptions</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Exceptions\ExecuteErrorException.cpp">
+      <Filter>Exceptions</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Exceptions\InvalidArgumentException.cpp">
+      <Filter>Exceptions</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Exceptions\NoDbConnectionException.cpp">
+      <Filter>Exceptions</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Exceptions\OutOfMemoryException.cpp">
+      <Filter>Exceptions</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Exceptions\SqliteException.cpp">
+      <Filter>Exceptions</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Exceptions\SQLiteFinalizeException.cpp">
+      <Filter>Exceptions</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Exceptions\SQLitePrepareException.cpp">
+      <Filter>Exceptions</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Exceptions\SQLiteVMConstructException.cpp">
+      <Filter>Exceptions</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Exceptions\TypeMismatchException.cpp">
+      <Filter>Exceptions</Filter>
+    </ClCompile>
+    <ClCompile Include="SqliteBlob.cpp">
+      <Filter>SQLite</Filter>
+    </ClCompile>
+    <ClCompile Include="SqliteDB.cpp">
+      <Filter>SQLite</Filter>
+    </ClCompile>
+    <ClCompile Include="SqliteDisposable.cpp">
+      <Filter>SQLite</Filter>
+    </ClCompile>
+    <ClCompile Include="SqliteVM.cpp">
+      <Filter>SQLite</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\Unicode\ConvertUTF.h">
+      <Filter>Unicode</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Unicode\UnicodeString.h">
+      <Filter>Unicode</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Exceptions\CantCloseDbException.h">
+      <Filter>Exceptions</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Exceptions\CantOpenDbException.h">
+      <Filter>Exceptions</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Exceptions\ColumnNotFoundException.h">
+      <Filter>Exceptions</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Exceptions\ExecuteErrorException.h">
+      <Filter>Exceptions</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Exceptions\InvalidArgumentException.h">
+      <Filter>Exceptions</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Exceptions\NoDbConnectionException.h">
+      <Filter>Exceptions</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Exceptions\OutOfMemoryException.h">
+      <Filter>Exceptions</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Exceptions\SqliteException.h">
+      <Filter>Exceptions</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Exceptions\SQLiteExceptions.h">
+      <Filter>Exceptions</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Exceptions\SQLiteFinalizeException.h">
+      <Filter>Exceptions</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Exceptions\SQLitePrepareException.h">
+      <Filter>Exceptions</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Exceptions\SQLiteVMConstructException.h">
+      <Filter>Exceptions</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Exceptions\TypeMismatchException.h">
+      <Filter>Exceptions</Filter>
+    </ClInclude>
+    <ClInclude Include="ClassId.h">
+      <Filter>SQLite</Filter>
+    </ClInclude>
+    <ClInclude Include="CommonDefs.h">
+      <Filter>SQLite</Filter>
+    </ClInclude>
+    <ClInclude Include="SqliteBlob.h">
+      <Filter>SQLite</Filter>
+    </ClInclude>
+    <ClInclude Include="SqliteDB.h">
+      <Filter>SQLite</Filter>
+    </ClInclude>
+    <ClInclude Include="SQLiteDefs.h">
+      <Filter>SQLite</Filter>
+    </ClInclude>
+    <ClInclude Include="SqliteDisposable.h">
+      <Filter>SQLite</Filter>
+    </ClInclude>
+    <ClInclude Include="SqliteVM.h">
+      <Filter>SQLite</Filter>
+    </ClInclude>
+    <ClInclude Include="SqliteWrap.h">
+      <Filter>SQLite</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>

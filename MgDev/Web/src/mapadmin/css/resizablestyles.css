@@ -1,0 +1,1144 @@
+/*
+Copyright (C) 2004-2011 by Autodesk, Inc.
+
+This library is free software; you can redistribute it and/or
+modify it under the terms of version 2.1 of the GNU Lesser
+General Public License as published by the Free Software Foundation.
+
+This library is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+Lesser General Public License for more details.
+
+You should have received a copy of the GNU Lesser General Public
+License along with this library; if not, write to the Free Software
+Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+*/
+/*
+----------------------------------------------------------
+autodesk masthead base styles for screen media
+FileName: ad_mh.css
+Version: 2003.01.10
+2-10-05: Updated with values from global.css for new
+         Corp look.
+----------------------------------------------------------
+*/
+
+
+/* General Elements */
+/* ----------------------------------------------------- */
+body {
+    margin: 0px 0px 0px 0px;
+    color: #000000;
+    font-family: arial,verdana,helvetica,sans-serif;
+    background: #f0f0f0;
+    font-size: 0.625em; /*global font size, thus 11px = 1em if not redefined elsewhere*/
+    height: 100%;
+}
+td {
+    font-family: Arial,Helvetica,Verdana,Geneva,sans-serif;
+    color: #000000;
+    font-size: 13px;
+}
+
+/*global link settings*/
+a {
+    color:#0082b4;
+    text-decoration:none;
+}
+
+a:visited {
+    color:#0082B4;
+}
+a:hover,
+a:active {
+    text-decoration:underline;
+}
+
+input, select, textarea {
+    font-family: Arial,Helvetica,Verdana,Geneva,sans-serif;
+    font-size: 13px;
+}
+
+hr {
+    border: 0;
+    color: #CCCCCC;
+    background: #CCCCCC;
+    height: 1px;
+    margin: 0px 0px 5px 0px;
+}
+
+img  {
+     border: 0px; /* remove border from image */
+}
+
+/* main */
+/*---------------------------------------------------------------*/
+
+table.main {
+    width: 100%;
+    height: 100%;
+    background: #FFFFFF;
+    padding:0px 0px 0px 0px;
+}
+
+/* header */
+/*----------------------------------------------------------------*/
+
+/* Set the height to 170px if you are using the name and logo banner */
+td.header {
+    width: 100%;
+    height: 0px;
+    background: #FFFFFF;
+    vertical-align:bottom;
+    border-bottom: solid 1px #999999;
+}
+
+table.nameAndLogo {
+    width:100%;
+}
+
+div.appName {
+    text-align:left;
+    color: #000000;
+    font-size: 20px;
+    font-weight: bold;
+    text-decoration: none;
+    padding-left: 11px;
+    line-height: 20px;
+}
+
+div.logo {
+    height:36px;
+    text-align: right;
+    vertical-align: bottom;
+    padding-right: 11px;
+}
+
+table.bannerDarkBlue {
+    width: 100%;
+    height: 40px;
+}
+
+td.bannerDarkBlue {
+    width: 100%;
+    background: #004282;
+    color: #ffffff;
+    font-family: arial,verdana,helvetica,sans-serif;
+    font-weight: bold;
+    font-size: 20px;
+}
+
+table.bannerPurple {
+    width: 100%;
+    height: 80px;
+}
+
+td.bannerPurple {
+    width: 100%;
+    background: #993388;
+}
+
+table.horizontalNav {
+    width: 100%;
+    height: 20px;
+}
+
+td.horizontalNav {
+    width: 100%;
+    height: 20px;
+    padding-left: 11px;
+    vertical-align : middle;
+    color: #000000;
+    font-size: 1em;
+    text-decoration: none;
+}
+
+
+/* navLink */
+/*---------*/
+
+td.navLink, td.navLinkBold {
+    padding: 0px 0px 0px 1px; /* Ww */
+}
+.navLink {
+    color: #000000;
+    font-size:0.8em;
+    text-decoration: none;
+}
+
+a.navLink, a.navLink:visited {
+    color: #0082B4;
+    font-size:0.8em;
+    text-decoration: none;
+}
+
+a.navLink:hover {
+    color: #0082B4;
+    font-size:0.8em;
+    text-decoration: underline;
+}
+
+.navLinkHeading {
+    color: #000000;
+    font-size: 0.8em;
+    font-weight: bold;
+    text-decoration: none;
+
+}
+a.navLinkHeading, a.navLinkHeading:visited {
+    color: #0082B4;
+    font-size:0.8em;
+    text-decoration: none;
+}
+a.navLinkHeading:hover {
+    color: #0082B4;
+    font-size:0.8em;
+    text-decoration: underline;
+}
+.navLinkBold {
+    color: #000000;
+    font-size: 0.7em;
+    font-weight: bold;
+    text-decoration: none;
+}
+a.navLinkBold, a.navLinkBold:visited {
+    color: #0082B4;
+    font-size: 0.9em;
+    text-decoration: none;
+}
+a.navLinkBold:hover {
+    color: #0082B4;
+    text-decoration: underline;
+}
+
+/* lhSash */
+/*--------*/
+
+td.lhSash {
+    background-color: #F0F0F0;
+    padding: 27px 11px 11px 10px; /* Ww */
+    width: 20%; /* Ww */
+    height: 100%;
+    vertical-align: top;
+}
+
+/* content */
+/*---------*/
+
+td.content {
+    padding: 27px 11px 11px 11px;
+    height: 100%;
+    font-size: 1em;
+    vertical-align: top;
+    background: #FFFFFF;
+}
+
+/* titleBar */
+/*----------*/
+
+table.titleBar {
+    width: 100%;
+    height: 20px;
+}
+td.titleBar {
+    text-align:left;
+}
+hr.titleBar {
+    color: #00AADD;
+    background: #00AADD;
+    border: 0;
+    height: 3px;
+    width: 100%;
+}
+td.pageTitle {
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 1.2em;
+    color: #00AADD;
+    font-weight: bold;
+    text-align:left;
+    vertical-align:middle;
+    border-width:0;
+}
+
+td.helpButton {
+    color: #00AADD;
+    font-size: 0.8em;
+    text-decoration: none;
+    vertical-align:middle;
+    text-align:right;
+}
+
+a.helpButton, a.helpButton:visited {
+    text-decoration: none;
+}
+
+a.helpButton:hover {
+    text-decoration: underline;
+}
+
+img.helpButton {
+    text-align:right;
+    vertical-align:middle;
+}
+
+
+/* confirmationMsg */
+/*-----------------*/
+
+.confirmationMsg {
+    width: 100%;
+    height: 20px;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 0.8em;
+    font-weight: bold;
+    color: #00AADD;
+    text-align: left;
+    vertical-align:middle;
+}
+
+/* errorMsg */
+/*----------*/
+
+.errorMsg {
+    width: 100%;
+    height: 20px;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 0.8em;
+    font-weight: bold;
+    color: #FF0000;
+    background-color: #FFFFCC;
+    text-align: left;
+    vertical-align:middle;
+}
+
+/*  textMsg */
+/*----------*/
+
+.textMsg{
+    background-color: #FFFFFF;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 0.8em;
+    color: #000000;
+    vertical-align: top;
+}
+
+/* footer */
+/*--------*/
+
+td.footer {
+    padding: 16px 11px 11px 11px;
+    height: 26px;
+    vertical-align: top;
+    color: #666666;
+    font-size: 11px;
+}
+a.footer, a.footer:visited {
+    color: #0082B4;
+    font-size: 11px;
+    text-decoration: none;
+}
+a.footer:hover {
+    text-decoration: underline;
+}
+
+/* toolbar */
+/*---------*/
+
+table.toolbar {
+    height:35px;
+    background-color: #FFFFCC;
+    border-left:  solid 2px #CCCCCC;
+    border-top: solid 2px #CCCCCC;
+    border-right: solid 2px #CCCCCC;
+    border-bottom: none;
+    width: 100%;
+}
+
+td.toolbar {
+    font-size: 0.8 em;
+}
+
+/* dataTable */
+/*-----------*/
+
+table.dataTable {
+    background-color: #CCCCCC;
+    width: 100%;
+}
+td.dataHeader {
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 0.8em;
+    color: #000000;
+    background-color: #EEEEEE;
+    font-weight: bold;
+    border: thin solid #EEEEEE;
+}
+td.dataCell {
+    background-color: #FFFFFF;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 0.8em;
+    color: #000000;
+    vertical-align: top;
+}
+
+td.highlightedDataCell {
+    background-color: #F8F8F8;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 0.8em;
+    color: #000000;
+    vertical-align: top;
+}
+
+/* serviceSelector table */
+/*-----------------------*/
+table.serviceSelector{
+    border: 0;
+    cellspacing: 0;
+    background-color: #FFFFFF;
+    width: 100%;
+}
+
+td.serviceSelectorLabel {
+    width: 15%;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 0.8em;
+    color: #000000;
+    background-color: #FFFFFF;
+    vertical-align: top;
+}
+
+td.serviceSelectorValue {
+    width: 20%;
+    text-align:left;
+    vertical-align:top;
+    font-size: 0.8em;
+}
+
+td.connectionStatusLabel {
+    width:  20%;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 0.8em;
+    color: #000000;
+    background-color: #FFFFFF;
+    vertical-align: top;
+}
+
+td.connectionsStatusValue {
+    width: 45%;
+    text-align:left;
+    vertical-align:top;
+    font-size: 0.8em;
+}
+
+
+textarea.serviceSelectorValue {
+    width: 20%;
+    text-align:left;
+    vertical-align:bottom;
+    font-size: 0.8em;
+}
+
+
+select.serverSelector {
+    font-size: 1em;
+}
+
+option.serverSelector {
+    font-size: 1em;
+}
+
+/* inputForm */
+/*-----------*/
+
+table.inputForm {
+    background-color: #FFFFFF;
+    width: 100%;
+}
+
+td.inputForm {
+    font-size: 1em;
+}
+
+td.inputFormValue {
+    width: 100%;
+    text-align:left;
+    vertical-align:bottom;
+    font-size: 0.8em;
+}
+input.inputFormValue {
+    width: 100%;
+    background-color: #FFFFFF;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 1em;
+    color: #000000;
+}
+
+select.inputFormValue {
+    font-size: 1em;
+}
+
+
+textarea.inputFormValue {
+    width: 100%;
+    background-color: #FFFFFF;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 1em;
+    color: #000000;
+}
+
+td.inputLabel {
+    width:  15%;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 0.8em;
+    color: #000000;
+    background-color: #FFFFFF;
+}
+
+td.addGroupInputLabel {
+    width:  15%;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 0.8em;
+    color: #000000;
+    background-color: #FFFFFF;
+}
+
+td.makePackageInputLabel {
+    width:  35%;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 0.8em;
+    color: #000000;
+    background-color: #FFFFFF;
+}
+
+td.editGroupInputLabel {
+    width:  15%;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 0.8em;
+    color: #000000;
+    background-color: #FFFFFF;
+}
+
+td.addUserInputLabel {
+    width:  15%;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 0.8em;
+    color: #000000;
+    background-color: #FFFFFF;
+}
+
+td.editUserInputLabel {
+    width:  15%;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 0.8em;
+    color: #000000;
+    background-color: #FFFFFF;
+}
+
+td.editRolesInputLabel {
+    width:  10%;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 0.8em;
+    color: #000000;
+    background-color: #FFFFFF;
+}
+
+td.propsInputLabel {
+    width:  35%;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 0.8em;
+    color: #000000;
+    background-color: #FFFFFF;
+}
+
+td.loginInputLabel {
+    width:  20%;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 0.8em;
+    color: #000000;
+    background-color: #FFFFFF;
+}
+td.loginInputFormValue {
+    width: 100%;
+    font-size: 0.8em;
+    text-align:left;
+}
+
+input.loginInputFormValue {
+    width: 300px;
+    background-color: #FFFFFF;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 1em;
+    color: #000000;
+}
+
+td.logPropsInputLabel {
+    width:  25%;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 0.8em;
+    color: #000000;
+    background-color: #FFFFFF;
+}
+
+td.logPropsInputValue {
+    font-size: 1em;
+}
+
+input.logPropsInputValue {
+    font-size: 0.8em;
+    width: 60%;
+}
+select.logPropsInputValue {
+    font-size: 0.8em;
+}
+
+/* Server Status */
+/*------------*/
+
+/*TODO:serverStatusForm needs to be removed and inputForm should be used*/
+td.serverStatusForm {
+    font-size: 12pt;
+}
+td.serverStatusLabel {
+    background-color: #FFFFFF;
+    font-family: Arial, Helvetica, sans-serif;
+    width: 30%;
+    font-size: 10pt;
+    color: #000000;
+    text-align: left;
+    vertical-align: top;
+}
+
+td.serverStatusValue {
+    background-color: #FFFFFF;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 10pt;
+    color: #0066CC;
+    text-align: left;
+}
+
+/* saveCancel */
+/*------------*/
+
+table.saveCancel {
+    width: 100%;
+    background-color: #F0F0F0;
+}
+td.saveCancel {
+    background-color: #F0F0F0;
+    font-size: 0.8em;
+}
+
+input.saveCancelButtons {
+    width: 5em;
+    font-size: 1em;
+}
+
+/*Resizable button */
+/*-----------*/
+
+td.resizableButton {
+    font-size: 0.8em;
+}
+
+input.resizableButton {
+    width: 5em;
+    font-size: 1em;
+}
+
+
+/* addRemove */
+/*-----------*/
+
+table.addRemoveControl{
+    width: 100%;
+    background-color: #FFFFFF;
+    font-family: Arial, Helvetica, sans-serif;
+    color: #000000;
+}
+
+div.addRemoveHeading {
+    width: 100%;
+    text-align:left;
+    background-color: #FFFFFF;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 1em;
+    font-weight:bold;
+    color: #00AADD;
+}
+
+td.addRemoveSelector {
+    width: 40%;
+    font-size: 1em;
+}
+
+select.addRemoveSelector {
+    width: 100%;
+    background-color: #FFFFFF;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 0.9em;
+    color: #000000;
+}
+
+td.addRemoveSelectorHeading {
+    width: 40%;
+    background-color: #FFFFFF;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 0.8em;
+    font-weight:bold;
+    color: #000000;
+}
+
+td.addRemoveButtons {
+    width: 20%;
+    text-align:center;
+    vertical-align:middle;
+    font-size: 1em;
+}
+
+input.addRemoveButtons {
+    width: 9em;
+    font-size: 0.8em;
+}
+
+
+/* logPropsTable and logDisplayTable*/
+/*----------------------------------*/
+
+table.logPropsTable {
+    width: 100%;
+}
+table.logPropsTableBody {
+    width: 100%;
+}
+td.logPropsTableBody {
+    width: 100%;
+    background-color: #FFFFFF;
+    border-top: none;
+    border-right: thin solid #AAAAAA;
+    border-bottom: thin solid #AAAAAA;
+    border-left: thin solid #AAAAAA;
+    text-align: center;
+}
+
+table.logDisplayTable {
+    width: 100%;
+    height: 100%;
+}
+
+tr.logDisplayTable td.content form{  
+    height: 100%;  
+} 
+
+td.logDisplayTable {
+    width: 100%;
+    background-color: #FFFFFF;
+    border-top: none;
+    border-right: none;
+    border-bottom: none;
+    border-left: none;
+    text-align: center;
+    vertical-align:top;
+}
+
+/*TODO:logDisplayForm needs to be removed and inputForm should be used*/
+td.logDisplayForm {
+    font-size: 12pt;
+}
+
+td.logPropsInputFormValue {
+    font-size: 0.8em;
+}
+
+input.logPropsInputFormValue {
+    font-size: 1em;
+}
+
+select.logPropsInputFormValue {
+    font-size: 1em;
+}
+
+textarea.logDisplayTable {
+    width: 95%;
+    height: 95%;
+}
+
+pre.logBody {
+    font-size: 9pt;
+}
+
+.LogFilenameExample {
+    color: #AAAAAA;
+    font-size: 0.8em;
+}
+
+.LogTabTable {
+    width: 100%;
+}
+
+.LogTabTableBody {
+    width: 100%;
+    background-color: #FFFFFF;
+    border-top: none;
+    border-right: thin solid #AAAAAA;
+    border-bottom: thin solid #AAAAAA;
+    border-left: thin solid #AAAAAA;
+    text-align: center;
+    font-size: 1em;
+}
+
+td.deselectedLogTab {
+    width: 13%;
+    height: 30px;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 0.8em;
+    color: #000000;
+    background-color: #EEEEEE;
+    font-weight: normal;
+    text-align: center;
+    vertical-align: middle;
+    border-top: none;
+    border-right: none;
+    border-bottom:thin solid #AAAAAA;
+    border-left: none;
+
+}
+td.selectedLogTab {
+    width: 13%;
+    height: 30px;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 0.8em;
+    color: #000000;
+    background-color: #FFFFFF;
+    font-weight: normal;
+    text-align: center;
+    vertical-align: middle;
+    border-top: thin solid #AAAAAA;
+    border-right: thin solid #AAAAAA;
+    border-bottom: none;
+    border-left: thin solid #AAAAAA;
+}
+td.noLogTabs {
+    height: 30px;
+    background-color: #FFFFFF;
+    border-top: none;
+    border-right: none;
+    border-bottom: thin solid #AAAAAA;
+    border-left: none;
+}
+
+/* aboutBox */
+/*----------*/
+
+body.aboutBox {
+    width: 100%;
+    height: 100%;
+    background-color:#FFFFFF;
+}
+
+table.aboutBox {
+    width: 100%;
+    background-color:#FFFFFF;
+}
+table.aboutBoxTitle {
+    font-size:18px;
+    font-weight:bold;
+    color:#00AADD;
+    width: 100%;
+}
+hr.aboutBoxTitle {
+    color:#00AADD;
+    width: 100%;
+    background-color: #00AADD;
+    height:3px;
+}
+div.aboutBoxTitle {
+    color:#00AADD;
+    width: 100%;
+    height:3px;
+}
+
+td.aboutBoxTitle {
+    color:#00AADD;
+    width: 100%;
+    height:3px;
+}
+
+table.aboutBoxBanner {
+    background-color:#004282;
+    width:100%;
+}
+td.aboutBoxText {
+    font-size:1em;
+    color:#000000;
+    width:100%;
+}
+
+td.aboutBoxTextBold {
+    font-weight:bold;
+    font-size:1.2em;
+    color:#00AADD;
+    width:100%;
+
+
+}
+
+
+/* DIV */
+/* ----------------------------------------------------- */
+div.clear { clear: both; }
+div.lh-blue {
+        color: #0066CC;
+    padding: 0px 4px 0px 1px; /* Ww */
+    font-size: 11px;
+}/* blue '-' on the LHSash subnavigation */
+div.lh-black {
+    color: #000000;
+    padding: 0px 4px 0px 1px; /* Ww */
+    font-size: 11px;
+}/* black '-' on the LHSash subnavigation */
+
+div.paginationControl {
+    font-size: 0.8em;
+}
+
+
+/* Text Formatting */
+/* ----------------------------------------------------- */
+.title {
+    color: #000000;
+    font-weight: bold;
+    font-size: 14px;
+ }
+ .pdf {
+    color: #666666;
+    font-size: 0.8em;
+    font-style : italic;
+    text-decoration: none;
+}
+.bold {
+    font-weight: bold;
+}
+
+.GrayTab {
+
+    background-color: #CCCCCC;
+    text-align: left;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 1.1em;
+    color: #000000;
+    line-height: 1.5em;
+}
+
+.TableHeader {
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 1.1em;
+    color: #000000;
+    background-color: #EEEEEE;
+    font-weight: bold;
+    border: thin solid #EEEEEE;
+}
+
+.TableCell {
+    background-color: #FFFFFF;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 1em;
+    color: #000000;
+    vertical-align: top;
+}
+
+.TableOverall {
+    width: 100%;
+    background-color: #CCCCCC;
+}
+
+.BoldTableCell {
+    background-color: #FFFFFF;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 1em;
+    color: #000000;
+    font-weight: bold;
+}
+.TableSubHeading {
+
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 0.8em;
+    color: #000000;
+    background-color: #EEEEEE;
+    font-weight: normal;
+    border: thin solid #EEEEEE;
+}
+.DeselectedTab {
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 0.8em;
+    color: #000000;
+    background-color: #EEEEEE;
+    font-weight: normal;
+    text-align: center;
+    vertical-align: middle;
+    height: 30px;
+    width: 100px;
+    border-top: none;
+    border-right: none;
+    border-bottom:thin solid #AAAAAA;
+    border-left: none;
+}
+.SelectedTab {
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 0.8em;
+    color: #000000;
+    background-color: #FFFFFF;
+    font-weight: normal;
+    text-align: center;
+    vertical-align: middle;
+    height: 30px;
+    width: 100px;
+    border-top: thin solid #AAAAAA;
+    border-right: thin solid #AAAAAA;
+    border-bottom: none;
+    border-left: thin solid #AAAAAA;
+}
+.NoTabs {
+    background-color: #FFFFFF;
+    height: 30px;
+    width: 400px;
+    border-top: none;
+    border-right: none;
+    border-bottom: thin solid #AAAAAA;
+    border-left: none;
+}
+.TabTable {
+    width: 100%;
+}
+.TabTableBody {
+    width: 100%;
+    background-color: #FFFFFF;
+    border-top: none;
+    border-right: thin solid #AAAAAA;
+    border-bottom: thin solid #AAAAAA;
+    border-left: thin solid #AAAAAA;
+    text-align: center;
+    font-size: 1em;
+}
+.RoleDescription {
+    background-color: #FFFFFF;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 1em;
+    color: #0099FF;
+    width: 400px;
+}
+
+.PropertyLabel {
+    background-color: #FFFFFF;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 1em;
+    color: #000000;
+    width: 400px;
+    text-align: left;
+    vertical-align: top;
+}
+
+.PropertyValue {
+    width: 100%;
+    background-color: #FFFFFF;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 1em;
+    color: #000000;
+    text-align: left;
+}
+
+.PropertyTitle {
+    background-color: #FFFFFF;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 1em;
+    color: #000000;
+    text-align: left;
+    vertical-align: top;
+    font-weight: bold;
+}
+.BasicPropertyLabel {
+    background-color: #FFFFFF;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 1em;
+    color: #000000;
+    width: 25%;
+    text-align: left;
+    vertical-align: top;
+}
+.EnabledBar {
+
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 1em;
+    font-weight: bold;
+    color: #FFFFFF;
+    background-color: #00AADD;
+    border: none;
+}
+.PropertyBar {
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 0.9em;
+    font-weight: bold;
+    color: #FFFFFF;
+    background-color: #00AADD;
+    border: none;
+}
+.BasicPropertyValue {
+    width: 100%;
+    background-color: #FFFFFF;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 1em;
+    color: #000000;
+    text-align: left;
+    width: 350px;
+}
+
+body.ViewCurrentLogTop {
+    width: 100%;
+    font-size: 1em;
+    background-color:#FFFFFF;
+    vertical-align:bottom;
+    border:none;
+}
+body.ViewCurrentLogBottom {
+    width: 100%;
+    background-color:#FFFFFF;
+    vertical-align:top;
+    border: none;
+}
+.ViewCurrentLogBottomTimestamp {
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 10pt;
+    font-weight: bold;
+    color: #0066CC;
+    text-align: left;
+}
+.ViewCurrentLogToolbar {
+    height:35px;
+    width:100%;
+    background-color: #FFFFCC;
+    border-left:  solid 2px #CCCCCC;
+    border-top: solid 2px #CCCCCC;
+    border-right: solid 2px #CCCCCC;
+    border-bottom: solid 3px #0066CC;
+    font-size: 1em;
+}
+.LogFilenameExample {
+    color: #AAAAAA;
+}
+body.ViewServerStatusBottom {
+    width: 100%;
+    background-color:#FFFFFF;
+    vertical-align:top;
+    border: none;
+    font-size: 1em;
+}
+body.DownloadLogFile {
+    width: 100%;
+    background-color:#FFFFFF;
+    vertical-align:top;
+    border: none;
+}
+
+frameset.serverStatus {
+    rows: 180;
+}

@@ -1,0 +1,229 @@
+<?xml version="1.0" encoding="utf-8"?>
+<WebLayout xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xsi:noNamespaceSchemaLocation="WebLayout-1.1.0.xsd">
+    <Title>Select a Center Point and Map Scale</Title>
+    <Map>
+        <ResourceId>{0}</ResourceId>
+        <HyperlinkTarget>TaskPane</HyperlinkTarget>
+    </Map>
+    <EnablePingServer>false</EnablePingServer>
+    <ToolBar>
+        <Visible>true</Visible>
+        <Button xsi:type="CommandItemType">
+            <Function>Command</Function>
+            <Command>Select</Command>
+        </Button>
+        <Button xsi:type="CommandItemType">
+            <Function>Command</Function>
+            <Command>Pan</Command>
+        </Button>
+        <Button xsi:type="CommandItemType">
+            <Function>Command</Function>
+            <Command>Zoom Rectangle</Command>
+        </Button>
+        <Button xsi:type="CommandItemType">
+            <Function>Command</Function>
+            <Command>Zoom In</Command>
+        </Button>
+        <Button xsi:type="CommandItemType">
+            <Function>Command</Function>
+            <Command>Zoom Out</Command>
+        </Button>
+        <Button xsi:type="CommandItemType">
+            <Function>Command</Function>
+            <Command>Initial Map View</Command>
+        </Button>
+        <Button xsi:type="CommandItemType">
+            <Function>Command</Function>
+            <Command>Previous View</Command>
+        </Button>
+        <Button xsi:type="CommandItemType">
+            <Function>Command</Function>
+            <Command>Next View</Command>
+        </Button>
+    </ToolBar>
+    <InformationPane>
+        <Visible>false</Visible>
+        <Width>200</Width>
+        <LegendVisible>false</LegendVisible>
+        <PropertiesVisible>false</PropertiesVisible>
+    </InformationPane>
+    <ContextMenu>
+        <Visible>true</Visible>
+        <MenuItem xsi:type="CommandItemType">
+            <Function>Command</Function>
+            <Command>Select</Command>
+        </MenuItem>
+        <MenuItem xsi:type="CommandItemType">
+            <Function>Command</Function>
+            <Command>Pan</Command>
+        </MenuItem>
+        <MenuItem xsi:type="CommandItemType">
+            <Function>Command</Function>
+            <Command>Zoom Rectangle</Command>
+        </MenuItem>
+        <MenuItem xsi:type="CommandItemType">
+            <Function>Command</Function>
+            <Command>Zoom In</Command>
+        </MenuItem>
+        <MenuItem xsi:type="CommandItemType">
+            <Function>Command</Function>
+            <Command>Zoom Out</Command>
+        </MenuItem>
+        <MenuItem xsi:type="CommandItemType">
+            <Function>Command</Function>
+            <Command>Initial Map View</Command>
+        </MenuItem>
+        <MenuItem xsi:type="CommandItemType">
+            <Function>Command</Function>
+            <Command>Previous View</Command>
+        </MenuItem>
+        <MenuItem xsi:type="CommandItemType">
+            <Function>Command</Function>
+            <Command>Next View</Command>
+        </MenuItem>
+    </ContextMenu>
+    <TaskPane>
+        <Visible>false</Visible>
+        <Width>250</Width>
+        <TaskBar>
+            <Visible>true</Visible>
+            <Home>
+                <Name>Home</Name>
+                <Tooltip>Return to home task page</Tooltip>
+                <Description>Return to home task page</Description>
+                <ImageURL>../stdicons/icon_home.gif</ImageURL>
+                <DisabledImageURL>../stdicons/icon_home_disabled.gif</DisabledImageURL>
+            </Home>
+            <Forward>
+                <Name>Forward</Name>
+                <Tooltip>Forward to next task page</Tooltip>
+                <Description>Forward to next task page</Description>
+                <ImageURL>../stdicons/icon_forward.gif</ImageURL>
+                <DisabledImageURL>../stdicons/icon_forward_disabled.gif</DisabledImageURL>
+            </Forward>
+            <Back>
+                <Name>Back</Name>
+                <Tooltip>Return to previous task page</Tooltip>
+                <Description>Return to previous task page</Description>
+                <ImageURL>../stdicons/icon_back.gif</ImageURL>
+                <DisabledImageURL>../stdicons/icon_back_disabled.gif</DisabledImageURL>
+            </Back>
+            <Tasks>
+                <Name>Tasks</Name>
+                <Tooltip>Task list</Tooltip>
+                <Description>View a list of available tasks</Description>
+                <ImageURL>../stdicons/icon_tasks.gif</ImageURL>
+                <DisabledImageURL>../stdicons/icon_tasks_disabled.gif</DisabledImageURL>
+            </Tasks>
+        </TaskBar>
+        <InitialTask />
+    </TaskPane>
+    <StatusBar>
+        <Visible>true</Visible>
+    </StatusBar>
+    <ZoomControl>
+        <Visible>true</Visible>
+    </ZoomControl>
+    <CommandSet>
+        <Command xsi:type="BasicCommandType">
+            <Name>Pan</Name>
+            <Label>Pan</Label>
+            <Tooltip>Pan mode</Tooltip>
+            <Description>Drag the map to view areas out of range</Description>
+            <ImageURL>../stdicons/icon_pan.gif</ImageURL>
+            <DisabledImageURL>../stdicons/icon_pan_disabled.gif</DisabledImageURL>
+            <TargetViewer>All</TargetViewer>
+            <Action>Pan</Action>
+        </Command>
+        <Command xsi:type="BasicCommandType">
+            <Name>Zoom</Name>
+            <Label>Zoom</Label>
+            <Tooltip>Zoom dynamic</Tooltip>
+            <Description>Zoom dynamically by clicking and dragging</Description>
+            <ImageURL>../stdicons/icon_zoom.gif</ImageURL>
+            <DisabledImageURL>../stdicons/icon_zoom_disabled.gif</DisabledImageURL>
+            <TargetViewer>Dwf</TargetViewer>
+            <Action>Zoom</Action>
+        </Command>
+        <Command xsi:type="BasicCommandType">
+            <Name>Zoom In</Name>
+            <Label>Zoom In</Label>
+            <Tooltip>Zoom in</Tooltip>
+            <Description>Zoom in by a preset increment</Description>
+            <ImageURL>../stdicons/icon_zoomin.gif</ImageURL>
+            <DisabledImageURL>../stdicons/icon_zoomin_disabled.gif</DisabledImageURL>
+            <TargetViewer>All</TargetViewer>
+            <Action>ZoomIn</Action>
+        </Command>
+        <Command xsi:type="BasicCommandType">
+            <Name>Zoom Out</Name>
+            <Label>Zoom Out</Label>
+            <Tooltip>Zoom out</Tooltip>
+            <Description>Zoom out by a preset increment</Description>
+            <ImageURL>../stdicons/icon_zoomout.gif</ImageURL>
+            <DisabledImageURL>../stdicons/icon_zoomout_disabled.gif</DisabledImageURL>
+            <TargetViewer>All</TargetViewer>
+            <Action>ZoomOut</Action>
+        </Command>
+        <Command xsi:type="BasicCommandType">
+            <Name>Zoom Rectangle</Name>
+            <Label>Zoom Rectangle</Label>
+            <Tooltip>Zoom rectangle</Tooltip>
+            <Description>Zoom in on an area</Description>
+            <ImageURL>../stdicons/icon_zoomrect.gif</ImageURL>
+            <DisabledImageURL>../stdicons/icon_zoomrect_disabled.gif</DisabledImageURL>
+            <TargetViewer>All</TargetViewer>
+            <Action>ZoomRectangle</Action>
+        </Command>
+        <Command xsi:type="BasicCommandType">
+            <Name>Zoom Selection</Name>
+            <Label>Zoom Selection</Label>
+            <Tooltip>Zoom to selection</Tooltip>
+            <Description>Zoom to extents of selected features</Description>
+            <ImageURL>../stdicons/icon_zoomselect.gif</ImageURL>
+            <DisabledImageURL>../stdicons/icon_zoomselect_disabled.gif</DisabledImageURL>
+            <TargetViewer>All</TargetViewer>
+            <Action>ZoomToSelection</Action>
+        </Command>
+        <Command xsi:type="BasicCommandType">
+            <Name>Initial Map View</Name>
+            <Label>Initial Map View</Label>
+            <Tooltip>Initial map view</Tooltip>
+            <Description>Fit the extents of the map to the window</Description>
+            <ImageURL>../stdicons/icon_fitwindow.gif</ImageURL>
+            <DisabledImageURL>../stdicons/icon_fitwindow_disabled.gif</DisabledImageURL>
+            <TargetViewer>All</TargetViewer>
+            <Action>FitToWindow</Action>
+        </Command>
+        <Command xsi:type="BasicCommandType">
+            <Name>Previous View</Name>
+            <Label>Previous View</Label>
+            <Tooltip>Previous view</Tooltip>
+            <Description>Go to previous view</Description>
+            <ImageURL>../stdicons/icon_zoomprev.gif</ImageURL>
+            <DisabledImageURL>../stdicons/icon_zoomprev_disabled.gif</DisabledImageURL>
+            <TargetViewer>All</TargetViewer>
+            <Action>PreviousView</Action>
+        </Command>
+        <Command xsi:type="BasicCommandType">
+            <Name>Next View</Name>
+            <Label>Next View</Label>
+            <Tooltip>Next view</Tooltip>
+            <Description>Go to next view</Description>
+            <ImageURL>../stdicons/icon_zoomnext.gif</ImageURL>
+            <DisabledImageURL>../stdicons/icon_zoomnext_disabled.gif</DisabledImageURL>
+            <TargetViewer>All</TargetViewer>
+            <Action>NextView</Action>
+        </Command>
+        <Command xsi:type="BasicCommandType">
+            <Name>Select</Name>
+            <Label>Select</Label>
+            <Tooltip>Select mode</Tooltip>
+            <Description>Select features by clicking and dragging</Description>
+            <ImageURL>../stdicons/icon_select.gif</ImageURL>
+            <DisabledImageURL>../stdicons/icon_select_disabled.gif</DisabledImageURL>
+            <TargetViewer>All</TargetViewer>
+            <Action>Select</Action>
+        </Command>
+    </CommandSet>
+</WebLayout>

@@ -1,0 +1,19 @@
+cleandebug:
+  if exist $(OUTDIR)\OSGeo.MapGuide.Foundation.dll del $(OUTDIR)\OSGeo.MapGuide.Foundation.dll
+  if exist $(OUTDIR)\OSGeo.MapGuide.Foundation.pdb del $(OUTDIR)\OSGeo.MapGuide.Foundation.pdb
+  if exist $(OUTDIR)\OSGeo.MapGuide.Foundation.Temp.dll del $(OUTDIR)\OSGeo.MapGuide.Foundation.Temp.dll
+
+cleanrelease:
+  if exist $(OUTDIR)\OSGeo.MapGuide.Foundation.dll del $(OUTDIR)\OSGeo.MapGuide.Foundation.dll
+  if exist $(OUTDIR)\OSGeo.MapGuide.Foundation.pdb del $(OUTDIR)\OSGeo.MapGuide.Foundation.pdb
+
+debug: $(OUTDIR)\OSGeo.MapGuide.Foundation.Temp.dll
+
+release: $(OUTDIR)\OSGeo.MapGuide.Foundation.dll
+
+$(OUTDIR)\OSGeo.MapGuide.Foundation.Temp.dll:
+  csc.exe /debug+ /debug:full /optimize- /out:$(OUTDIR)\OSGeo.MapGuide.Foundation.dll /doc:$(OUTDIR)\OSGeo.MapGuide.Foundation.xml /platform:$(PLATFORM) /target:library .\*.cs
+  copy /y $(OUTDIR)\OSGeo.MapGuide.Foundation.dll $(OUTDIR)\OSGeo.MapGuide.Foundation.Temp.dll
+
+$(OUTDIR)\OSGeo.MapGuide.Foundation.dll:
+  csc.exe /debug+ /debug:pdbonly /optimize+ /out:$(OUTDIR)\OSGeo.MapGuide.Foundation.dll /doc:$(OUTDIR)\OSGeo.MapGuide.Foundation.xml /platform:$(PLATFORM) /target:library .\*.cs

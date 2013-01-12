@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<Parameters>
+
+<!--
+   Type replacements.
+-->
+<PHPTypeReplacements>
+    <TypeReplacement oldtype="STRING" newtype=""/>
+    <TypeReplacement oldtype="INT16" newtype=""/>
+    <TypeReplacement oldtype="INT32" newtype=""/>
+    <TypeReplacement oldtype="int" newtype=""/>
+    <TypeReplacement oldtype="float" newtype=""/>
+    <TypeReplacement oldtype="double" newtype=""/>
+    <TypeReplacement oldtype="static" newtype=""/>
+    <TypeReplacement oldtype="bool" newtype=""/>
+</PHPTypeReplacements>
+<CSharpTypeReplacements>
+    <TypeReplacement oldtype="STRING" newtype="string"/>
+    <TypeReplacement oldtype="INT16" newtype="short"/>
+    <TypeReplacement oldtype="INT32" newtype="int"/>
+    <TypeReplacement oldtype="int" newtype="int"/>
+    <TypeReplacement oldtype="float" newtype="float"/>
+    <TypeReplacement oldtype="double" newtype="double"/>
+    <TypeReplacement oldtype="static" newtype=""/>
+    <TypeReplacement oldtype="const" newtype="const"/>
+</CSharpTypeReplacements>
+<JavaTypeReplacements>
+    <TypeReplacement oldtype="STRING" newtype="String"/>
+    <TypeReplacement oldtype="INT16" newtype="short"/>
+    <TypeReplacement oldtype="INT32" newtype="int"/>
+    <TypeReplacement oldtype="int" newtype="int"/>
+    <TypeReplacement oldtype="float" newtype="float"/>
+    <TypeReplacement oldtype="double" newtype="double"/>
+    <TypeReplacement oldtype="const" newtype="final"/>
+    <TypeReplacement oldtype="bool" newtype="boolean"/>
+</JavaTypeReplacements>
+
+<!--
+   Inline section.
+-->
+<Inline>
+//
+//  Copyright (C) 2004-2011 by Autodesk, Inc.
+//
+//  This library is free software; you can redistribute it and/or
+//  modify it under the terms of version 2.1 of the GNU Lesser
+//  General Public License as published by the Free Software Foundation.
+//
+//  This library is distributed in the hope that it will be useful,
+//  but WITHOUT ANY WARRANTY; without even the implied warranty of
+//  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+//  Lesser General Public License for more details.
+//
+//  You should have received a copy of the GNU Lesser General Public
+//  License along with this library; if not, write to the Free Software
+//  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+//
+</Inline>
+
+<Namespace>OSGeo.MapGuide</Namespace>
+<Package>org.osgeo.mapguide</Package>
+
+<Classes>
+  <Class name="MgMimeType" />
+</Classes>
+
+<!--
+   C++ Headers section.  If you add headers to this section then you
+   must also add them to Makefile.am in the JavaApi and PhpApi folders.
+-->
+<Headers>
+
+    <!-- API -->
+
+    <Header path="../../../../Common/Foundation/Data/MimeType.h" />
+
+</Headers>
+
+</Parameters>

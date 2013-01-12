@@ -1,0 +1,776 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="MapLayer">
+      <UniqueIdentifier>{791df5a8-cbb5-49d8-88c3-8756ff65592e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Controller">
+      <UniqueIdentifier>{f2931e10-9b2a-4c65-a45b-87b247a19774}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Exception">
+      <UniqueIdentifier>{684cecbd-a4b2-476a-8c9d-c98ee8d65678}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Net">
+      <UniqueIdentifier>{19455d03-2a41-470e-af83-3e03cccc5d8c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Services">
+      <UniqueIdentifier>{88528991-8e7c-4f42-a264-27ae09fd4003}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="System">
+      <UniqueIdentifier>{8b3a99d2-2fa8-470c-8972-c7c5fd772479}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Util">
+      <UniqueIdentifier>{40c3ff42-a86c-4220-b62f-61b4ac380b5d}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="MapLayer\Layer.cpp">
+      <Filter>MapLayer</Filter>
+    </ClCompile>
+    <ClCompile Include="MapLayer\Map.cpp">
+      <Filter>MapLayer</Filter>
+    </ClCompile>
+    <ClCompile Include="MapLayer\Selection.cpp">
+      <Filter>MapLayer</Filter>
+    </ClCompile>
+    <ClCompile Include="Controller\Controller.cpp">
+      <Filter>Controller</Filter>
+    </ClCompile>
+    <ClCompile Include="Controller\DwfController.cpp">
+      <Filter>Controller</Filter>
+    </ClCompile>
+    <ClCompile Include="Controller\HtmlController.cpp">
+      <Filter>Controller</Filter>
+    </ClCompile>
+    <ClCompile Include="Exception\AllProviderConnectionsUsedException.cpp">
+      <Filter>Exception</Filter>
+    </ClCompile>
+    <ClCompile Include="Exception\AuthenticationFailedException.cpp">
+      <Filter>Exception</Filter>
+    </ClCompile>
+    <ClCompile Include="Exception\ConnectionFailedException.cpp">
+      <Filter>Exception</Filter>
+    </ClCompile>
+    <ClCompile Include="Exception\ConnectionNotOpenException.cpp">
+      <Filter>Exception</Filter>
+    </ClCompile>
+    <ClCompile Include="Exception\DbException.cpp">
+      <Filter>Exception</Filter>
+    </ClCompile>
+    <ClCompile Include="Exception\DbXmlException.cpp">
+      <Filter>Exception</Filter>
+    </ClCompile>
+    <ClCompile Include="Exception\DuplicateGroupException.cpp">
+      <Filter>Exception</Filter>
+    </ClCompile>
+    <ClCompile Include="Exception\DuplicateNameException.cpp">
+      <Filter>Exception</Filter>
+    </ClCompile>
+    <ClCompile Include="Exception\DuplicateParameterException.cpp">
+      <Filter>Exception</Filter>
+    </ClCompile>
+    <ClCompile Include="Exception\DuplicateRepositoryException.cpp">
+      <Filter>Exception</Filter>
+    </ClCompile>
+    <ClCompile Include="Exception\DuplicateRoleException.cpp">
+      <Filter>Exception</Filter>
+    </ClCompile>
+    <ClCompile Include="Exception\DuplicateServerException.cpp">
+      <Filter>Exception</Filter>
+    </ClCompile>
+    <ClCompile Include="Exception\DuplicateSessionException.cpp">
+      <Filter>Exception</Filter>
+    </ClCompile>
+    <ClCompile Include="Exception\DuplicateUserException.cpp">
+      <Filter>Exception</Filter>
+    </ClCompile>
+    <ClCompile Include="Exception\DwfException.cpp">
+      <Filter>Exception</Filter>
+    </ClCompile>
+    <ClCompile Include="Exception\DwfSectionNotFoundException.cpp">
+      <Filter>Exception</Filter>
+    </ClCompile>
+    <ClCompile Include="Exception\DwfSectionResourceNotFoundException.cpp">
+      <Filter>Exception</Filter>
+    </ClCompile>
+    <ClCompile Include="Exception\EndOfStreamException.cpp">
+      <Filter>Exception</Filter>
+    </ClCompile>
+    <ClCompile Include="Exception\EvaluationExpiredException.cpp">
+      <Filter>Exception</Filter>
+    </ClCompile>
+    <ClCompile Include="Exception\GroupNotFoundException.cpp">
+      <Filter>Exception</Filter>
+    </ClCompile>
+    <ClCompile Include="Exception\InvalidDwfPackageException.cpp">
+      <Filter>Exception</Filter>
+    </ClCompile>
+    <ClCompile Include="Exception\InvalidDwfSectionException.cpp">
+      <Filter>Exception</Filter>
+    </ClCompile>
+    <ClCompile Include="Exception\InvalidFeatureSourceException.cpp">
+      <Filter>Exception</Filter>
+    </ClCompile>
+    <ClCompile Include="Exception\InvalidIpAddressException.cpp">
+      <Filter>Exception</Filter>
+    </ClCompile>
+    <ClCompile Include="Exception\InvalidLicenseException.cpp">
+      <Filter>Exception</Filter>
+    </ClCompile>
+    <ClCompile Include="Exception\InvalidLogEntryException.cpp">
+      <Filter>Exception</Filter>
+    </ClCompile>
+    <ClCompile Include="Exception\InvalidOperationVersionException.cpp">
+      <Filter>Exception</Filter>
+    </ClCompile>
+    <ClCompile Include="Exception\InvalidPasswordException.cpp">
+      <Filter>Exception</Filter>
+    </ClCompile>
+    <ClCompile Include="Exception\InvalidPrintLayoutFontSizeUnitsException.cpp">
+      <Filter>Exception</Filter>
+    </ClCompile>
+    <ClCompile Include="Exception\InvalidPrintLayoutPositionUnitsException.cpp">
+      <Filter>Exception</Filter>
+    </ClCompile>
+    <ClCompile Include="Exception\InvalidPrintLayoutSizeUnitsException.cpp">
+      <Filter>Exception</Filter>
+    </ClCompile>
+    <ClCompile Include="Exception\InvalidSerialNumberException.cpp">
+      <Filter>Exception</Filter>
+    </ClCompile>
+    <ClCompile Include="Exception\InvalidServerNameException.cpp">
+      <Filter>Exception</Filter>
+    </ClCompile>
+    <ClCompile Include="Exception\LicenseException.cpp">
+      <Filter>Exception</Filter>
+    </ClCompile>
+    <ClCompile Include="Exception\LicenseExpiredException.cpp">
+      <Filter>Exception</Filter>
+    </ClCompile>
+    <ClCompile Include="Exception\LogOpenFailedException.cpp">
+      <Filter>Exception</Filter>
+    </ClCompile>
+    <ClCompile Include="Exception\OperationProcessingException.cpp">
+      <Filter>Exception</Filter>
+    </ClCompile>
+    <ClCompile Include="Exception\ParameterNotFoundException.cpp">
+      <Filter>Exception</Filter>
+    </ClCompile>
+    <ClCompile Include="Exception\PathTooLongException.cpp">
+      <Filter>Exception</Filter>
+    </ClCompile>
+    <ClCompile Include="Exception\PermissionDeniedException.cpp">
+      <Filter>Exception</Filter>
+    </ClCompile>
+    <ClCompile Include="Exception\PortNotAvailableException.cpp">
+      <Filter>Exception</Filter>
+    </ClCompile>
+    <ClCompile Include="Exception\PrintToScaleModeNotSelectedException.cpp">
+      <Filter>Exception</Filter>
+    </ClCompile>
+    <ClCompile Include="Exception\RasterTransformationNotSupportedException.cpp">
+      <Filter>Exception</Filter>
+    </ClCompile>
+    <ClCompile Include="Exception\RepositoryCreationFailedException.cpp">
+      <Filter>Exception</Filter>
+    </ClCompile>
+    <ClCompile Include="Exception\RepositoryNotFoundException.cpp">
+      <Filter>Exception</Filter>
+    </ClCompile>
+    <ClCompile Include="Exception\RepositoryNotOpenException.cpp">
+      <Filter>Exception</Filter>
+    </ClCompile>
+    <ClCompile Include="Exception\RepositoryOpenFailedException.cpp">
+      <Filter>Exception</Filter>
+    </ClCompile>
+    <ClCompile Include="Exception\RoleNotFoundException.cpp">
+      <Filter>Exception</Filter>
+    </ClCompile>
+    <ClCompile Include="Exception\ServerNotFoundException.cpp">
+      <Filter>Exception</Filter>
+    </ClCompile>
+    <ClCompile Include="Exception\ServerNotOnlineException.cpp">
+      <Filter>Exception</Filter>
+    </ClCompile>
+    <ClCompile Include="Exception\SessionExpiredException.cpp">
+      <Filter>Exception</Filter>
+    </ClCompile>
+    <ClCompile Include="Exception\SessionNotFoundException.cpp">
+      <Filter>Exception</Filter>
+    </ClCompile>
+    <ClCompile Include="Exception\StylizeLayerFailedException.cpp">
+      <Filter>Exception</Filter>
+    </ClCompile>
+    <ClCompile Include="Exception\UnauthorizedAccessException.cpp">
+      <Filter>Exception</Filter>
+    </ClCompile>
+    <ClCompile Include="Exception\UnsupportedProviderThreadModelException.cpp">
+      <Filter>Exception</Filter>
+    </ClCompile>
+    <ClCompile Include="Exception\UriFormatException.cpp">
+      <Filter>Exception</Filter>
+    </ClCompile>
+    <ClCompile Include="Net\IOperationHandler.cpp">
+      <Filter>Net</Filter>
+    </ClCompile>
+    <ClCompile Include="Services\Command.cpp">
+      <Filter>Services</Filter>
+    </ClCompile>
+    <ClCompile Include="Services\ConnectionProperties.cpp">
+      <Filter>Services</Filter>
+    </ClCompile>
+    <ClCompile Include="Services\CustomLogoInfo.cpp">
+      <Filter>Services</Filter>
+    </ClCompile>
+    <ClCompile Include="Services\CustomTextInfo.cpp">
+      <Filter>Services</Filter>
+    </ClCompile>
+    <ClCompile Include="Services\DrawingDefs.cpp">
+      <Filter>Services</Filter>
+    </ClCompile>
+    <ClCompile Include="Services\DrawingService.cpp">
+      <Filter>Services</Filter>
+    </ClCompile>
+    <ClCompile Include="Services\DwfVersion.cpp">
+      <Filter>Services</Filter>
+    </ClCompile>
+    <ClCompile Include="Services\FeatureInformation.cpp">
+      <Filter>Services</Filter>
+    </ClCompile>
+    <ClCompile Include="Services\ImageFormats.cpp">
+      <Filter>Services</Filter>
+    </ClCompile>
+    <ClCompile Include="Services\KmlDefs.cpp">
+      <Filter>Services</Filter>
+    </ClCompile>
+    <ClCompile Include="Services\KmlService.cpp">
+      <Filter>Services</Filter>
+    </ClCompile>
+    <ClCompile Include="Services\Layout.cpp">
+      <Filter>Services</Filter>
+    </ClCompile>
+    <ClCompile Include="Services\MappingDefs.cpp">
+      <Filter>Services</Filter>
+    </ClCompile>
+    <ClCompile Include="Services\MappingService.cpp">
+      <Filter>Services</Filter>
+    </ClCompile>
+    <ClCompile Include="Services\MapPlot.cpp">
+      <Filter>Services</Filter>
+    </ClCompile>
+    <ClCompile Include="Services\MapPlotCollection.cpp">
+      <Filter>Services</Filter>
+    </ClCompile>
+    <ClCompile Include="Services\PackageStatusInformation.cpp">
+      <Filter>Services</Filter>
+    </ClCompile>
+    <ClCompile Include="Services\PlotSpecification.cpp">
+      <Filter>Services</Filter>
+    </ClCompile>
+    <ClCompile Include="Services\PrintLayout.cpp">
+      <Filter>Services</Filter>
+    </ClCompile>
+    <ClCompile Include="Services\ProxyDataReader.cpp">
+      <Filter>Services</Filter>
+    </ClCompile>
+    <ClCompile Include="Services\ProxyDrawingService.cpp">
+      <Filter>Services</Filter>
+    </ClCompile>
+    <ClCompile Include="Services\ProxyFeatureReader.cpp">
+      <Filter>Services</Filter>
+    </ClCompile>
+    <ClCompile Include="Services\ProxyFeatureService.cpp">
+      <Filter>Services</Filter>
+    </ClCompile>
+    <ClCompile Include="Services\ProxyFeatureTransaction.cpp">
+      <Filter>Services</Filter>
+    </ClCompile>
+    <ClCompile Include="Services\ProxyGwsFeatureReader.cpp">
+      <Filter>Services</Filter>
+    </ClCompile>
+    <ClCompile Include="Services\ProxyKmlService.cpp">
+      <Filter>Services</Filter>
+    </ClCompile>
+    <ClCompile Include="Services\ProxyMappingService.cpp">
+      <Filter>Services</Filter>
+    </ClCompile>
+    <ClCompile Include="Services\ProxyRenderingService.cpp">
+      <Filter>Services</Filter>
+    </ClCompile>
+    <ClCompile Include="Services\ProxyResourceService.cpp">
+      <Filter>Services</Filter>
+    </ClCompile>
+    <ClCompile Include="Services\ProxySqlDataReader.cpp">
+      <Filter>Services</Filter>
+    </ClCompile>
+    <ClCompile Include="Services\ProxyTileService.cpp">
+      <Filter>Services</Filter>
+    </ClCompile>
+    <ClCompile Include="Services\RenderingDefs.cpp">
+      <Filter>Services</Filter>
+    </ClCompile>
+    <ClCompile Include="Services\RenderingOptions.cpp">
+      <Filter>Services</Filter>
+    </ClCompile>
+    <ClCompile Include="Services\RenderingService.cpp">
+      <Filter>Services</Filter>
+    </ClCompile>
+    <ClCompile Include="Services\ServerAdmin.cpp">
+      <Filter>Services</Filter>
+    </ClCompile>
+    <ClCompile Include="Services\ServerAdminDefs.cpp">
+      <Filter>Services</Filter>
+    </ClCompile>
+    <ClCompile Include="Services\ServerConnection.cpp">
+      <Filter>Services</Filter>
+    </ClCompile>
+    <ClCompile Include="Services\ServerConnectionEventHandler.cpp">
+      <Filter>Services</Filter>
+    </ClCompile>
+    <ClCompile Include="Services\ServerConnectionImp.cpp">
+      <Filter>Services</Filter>
+    </ClCompile>
+    <ClCompile Include="Services\ServerConnectionPool.cpp">
+      <Filter>Services</Filter>
+    </ClCompile>
+    <ClCompile Include="Services\ServerConnectionStack.cpp">
+      <Filter>Services</Filter>
+    </ClCompile>
+    <ClCompile Include="Services\ServerInformation.cpp">
+      <Filter>Services</Filter>
+    </ClCompile>
+    <ClCompile Include="Services\Site.cpp">
+      <Filter>Services</Filter>
+    </ClCompile>
+    <ClCompile Include="Services\SiteConnection.cpp">
+      <Filter>Services</Filter>
+    </ClCompile>
+    <ClCompile Include="Services\SiteInfo.cpp">
+      <Filter>Services</Filter>
+    </ClCompile>
+    <ClCompile Include="Services\SiteManager.cpp">
+      <Filter>Services</Filter>
+    </ClCompile>
+    <ClCompile Include="Services\SqlResult.cpp">
+      <Filter>Services</Filter>
+    </ClCompile>
+    <ClCompile Include="Services\TileDefs.cpp">
+      <Filter>Services</Filter>
+    </ClCompile>
+    <ClCompile Include="Services\TileService.cpp">
+      <Filter>Services</Filter>
+    </ClCompile>
+    <ClCompile Include="Services\UnitType.cpp">
+      <Filter>Services</Filter>
+    </ClCompile>
+    <ClCompile Include="System\ConfigProperties.cpp">
+      <Filter>System</Filter>
+    </ClCompile>
+    <ClCompile Include="System\CryptographyManager.cpp">
+      <Filter>System</Filter>
+    </ClCompile>
+    <ClCompile Include="System\MapGuideCommonFactory.cpp">
+      <Filter>System</Filter>
+    </ClCompile>
+    <ClCompile Include="System\MapGuideStream.cpp">
+      <Filter>System</Filter>
+    </ClCompile>
+    <ClCompile Include="System\UserInformation.cpp">
+      <Filter>System</Filter>
+    </ClCompile>
+    <ClCompile Include="Util\IpUtil.cpp">
+      <Filter>Util</Filter>
+    </ClCompile>
+    <ClCompile Include="MapGuideCommonBuild.cpp" />
+    <ClCompile Include="Services\ProxyProfilingService.cpp">
+      <Filter>Services</Filter>
+    </ClCompile>
+    <ClCompile Include="Services\ProfilingDefs.cpp">
+      <Filter>Services</Filter>
+    </ClCompile>
+    <ClCompile Include="Services\ProfilingService.cpp">
+      <Filter>Services</Filter>
+    </ClCompile>
+    <ClCompile Include="Util\TimerUtil.cpp">
+      <Filter>Util</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="MapLayer\Layer.h">
+      <Filter>MapLayer</Filter>
+    </ClInclude>
+    <ClInclude Include="MapLayer\Map.h">
+      <Filter>MapLayer</Filter>
+    </ClInclude>
+    <ClInclude Include="MapLayer\Selection.h">
+      <Filter>MapLayer</Filter>
+    </ClInclude>
+    <ClInclude Include="Controller\Controller.h">
+      <Filter>Controller</Filter>
+    </ClInclude>
+    <ClInclude Include="Controller\DwfController.h">
+      <Filter>Controller</Filter>
+    </ClInclude>
+    <ClInclude Include="Controller\HtmlController.h">
+      <Filter>Controller</Filter>
+    </ClInclude>
+    <ClInclude Include="Exception\AllProviderConnectionsUsedException.h">
+      <Filter>Exception</Filter>
+    </ClInclude>
+    <ClInclude Include="Exception\AuthenticationFailedException.h">
+      <Filter>Exception</Filter>
+    </ClInclude>
+    <ClInclude Include="Exception\ConnectionFailedException.h">
+      <Filter>Exception</Filter>
+    </ClInclude>
+    <ClInclude Include="Exception\ConnectionNotOpenException.h">
+      <Filter>Exception</Filter>
+    </ClInclude>
+    <ClInclude Include="Exception\DbException.h">
+      <Filter>Exception</Filter>
+    </ClInclude>
+    <ClInclude Include="Exception\DbXmlException.h">
+      <Filter>Exception</Filter>
+    </ClInclude>
+    <ClInclude Include="Exception\DuplicateGroupException.h">
+      <Filter>Exception</Filter>
+    </ClInclude>
+    <ClInclude Include="Exception\DuplicateNameException.h">
+      <Filter>Exception</Filter>
+    </ClInclude>
+    <ClInclude Include="Exception\DuplicateParameterException.h">
+      <Filter>Exception</Filter>
+    </ClInclude>
+    <ClInclude Include="Exception\DuplicateRepositoryException.h">
+      <Filter>Exception</Filter>
+    </ClInclude>
+    <ClInclude Include="Exception\DuplicateRoleException.h">
+      <Filter>Exception</Filter>
+    </ClInclude>
+    <ClInclude Include="Exception\DuplicateServerException.h">
+      <Filter>Exception</Filter>
+    </ClInclude>
+    <ClInclude Include="Exception\DuplicateSessionException.h">
+      <Filter>Exception</Filter>
+    </ClInclude>
+    <ClInclude Include="Exception\DuplicateUserException.h">
+      <Filter>Exception</Filter>
+    </ClInclude>
+    <ClInclude Include="Exception\DwfException.h">
+      <Filter>Exception</Filter>
+    </ClInclude>
+    <ClInclude Include="Exception\DwfSectionNotFoundException.h">
+      <Filter>Exception</Filter>
+    </ClInclude>
+    <ClInclude Include="Exception\DwfSectionResourceNotFoundException.h">
+      <Filter>Exception</Filter>
+    </ClInclude>
+    <ClInclude Include="Exception\EndOfStreamException.h">
+      <Filter>Exception</Filter>
+    </ClInclude>
+    <ClInclude Include="Exception\EvaluationExpiredException.h">
+      <Filter>Exception</Filter>
+    </ClInclude>
+    <ClInclude Include="Exception\GroupNotFoundException.h">
+      <Filter>Exception</Filter>
+    </ClInclude>
+    <ClInclude Include="Exception\InvalidDwfPackageException.h">
+      <Filter>Exception</Filter>
+    </ClInclude>
+    <ClInclude Include="Exception\InvalidDwfSectionException.h">
+      <Filter>Exception</Filter>
+    </ClInclude>
+    <ClInclude Include="Exception\InvalidFeatureSourceException.h">
+      <Filter>Exception</Filter>
+    </ClInclude>
+    <ClInclude Include="Exception\InvalidIpAddressException.h">
+      <Filter>Exception</Filter>
+    </ClInclude>
+    <ClInclude Include="Exception\InvalidLicenseException.h">
+      <Filter>Exception</Filter>
+    </ClInclude>
+    <ClInclude Include="Exception\InvalidLogEntryException.h">
+      <Filter>Exception</Filter>
+    </ClInclude>
+    <ClInclude Include="Exception\InvalidOperationVersionException.h">
+      <Filter>Exception</Filter>
+    </ClInclude>
+    <ClInclude Include="Exception\InvalidPasswordException.h">
+      <Filter>Exception</Filter>
+    </ClInclude>
+    <ClInclude Include="Exception\InvalidPrintLayoutFontSizeUnitsException.h">
+      <Filter>Exception</Filter>
+    </ClInclude>
+    <ClInclude Include="Exception\InvalidPrintLayoutPositionUnitsException.h">
+      <Filter>Exception</Filter>
+    </ClInclude>
+    <ClInclude Include="Exception\InvalidPrintLayoutSizeUnitsException.h">
+      <Filter>Exception</Filter>
+    </ClInclude>
+    <ClInclude Include="Exception\InvalidSerialNumberException.h">
+      <Filter>Exception</Filter>
+    </ClInclude>
+    <ClInclude Include="Exception\InvalidServerNameException.h">
+      <Filter>Exception</Filter>
+    </ClInclude>
+    <ClInclude Include="Exception\LicenseException.h">
+      <Filter>Exception</Filter>
+    </ClInclude>
+    <ClInclude Include="Exception\LicenseExpiredException.h">
+      <Filter>Exception</Filter>
+    </ClInclude>
+    <ClInclude Include="Exception\LogOpenFailedException.h">
+      <Filter>Exception</Filter>
+    </ClInclude>
+    <ClInclude Include="Exception\OperationProcessingException.h">
+      <Filter>Exception</Filter>
+    </ClInclude>
+    <ClInclude Include="Exception\ParameterNotFoundException.h">
+      <Filter>Exception</Filter>
+    </ClInclude>
+    <ClInclude Include="Exception\PathTooLongException.h">
+      <Filter>Exception</Filter>
+    </ClInclude>
+    <ClInclude Include="Exception\PermissionDeniedException.h">
+      <Filter>Exception</Filter>
+    </ClInclude>
+    <ClInclude Include="Exception\PortNotAvailableException.h">
+      <Filter>Exception</Filter>
+    </ClInclude>
+    <ClInclude Include="Exception\PrintToScaleModeNotSelectedException.h">
+      <Filter>Exception</Filter>
+    </ClInclude>
+    <ClInclude Include="Exception\RasterTransformationNotSupportedException.h">
+      <Filter>Exception</Filter>
+    </ClInclude>
+    <ClInclude Include="Exception\RepositoryCreationFailedException.h">
+      <Filter>Exception</Filter>
+    </ClInclude>
+    <ClInclude Include="Exception\RepositoryNotFoundException.h">
+      <Filter>Exception</Filter>
+    </ClInclude>
+    <ClInclude Include="Exception\RepositoryNotOpenException.h">
+      <Filter>Exception</Filter>
+    </ClInclude>
+    <ClInclude Include="Exception\RepositoryOpenFailedException.h">
+      <Filter>Exception</Filter>
+    </ClInclude>
+    <ClInclude Include="Exception\RoleNotFoundException.h">
+      <Filter>Exception</Filter>
+    </ClInclude>
+    <ClInclude Include="Exception\ServerNotFoundException.h">
+      <Filter>Exception</Filter>
+    </ClInclude>
+    <ClInclude Include="Exception\ServerNotOnlineException.h">
+      <Filter>Exception</Filter>
+    </ClInclude>
+    <ClInclude Include="Exception\SessionExpiredException.h">
+      <Filter>Exception</Filter>
+    </ClInclude>
+    <ClInclude Include="Exception\SessionNotFoundException.h">
+      <Filter>Exception</Filter>
+    </ClInclude>
+    <ClInclude Include="Exception\StylizeLayerFailedException.h">
+      <Filter>Exception</Filter>
+    </ClInclude>
+    <ClInclude Include="Exception\UnauthorizedAccessException.h">
+      <Filter>Exception</Filter>
+    </ClInclude>
+    <ClInclude Include="Exception\UnsupportedProviderThreadModelException.h">
+      <Filter>Exception</Filter>
+    </ClInclude>
+    <ClInclude Include="Exception\UriFormatException.h">
+      <Filter>Exception</Filter>
+    </ClInclude>
+    <ClInclude Include="Net\IOperationHandler.h">
+      <Filter>Net</Filter>
+    </ClInclude>
+    <ClInclude Include="Services\Command.h">
+      <Filter>Services</Filter>
+    </ClInclude>
+    <ClInclude Include="Services\ConnectionProperties.h">
+      <Filter>Services</Filter>
+    </ClInclude>
+    <ClInclude Include="Services\CustomLogoInfo.h">
+      <Filter>Services</Filter>
+    </ClInclude>
+    <ClInclude Include="Services\CustomTextInfo.h">
+      <Filter>Services</Filter>
+    </ClInclude>
+    <ClInclude Include="Services\DrawingDefs.h">
+      <Filter>Services</Filter>
+    </ClInclude>
+    <ClInclude Include="Services\DrawingService.h">
+      <Filter>Services</Filter>
+    </ClInclude>
+    <ClInclude Include="Services\DwfVersion.h">
+      <Filter>Services</Filter>
+    </ClInclude>
+    <ClInclude Include="Services\FeatureInformation.h">
+      <Filter>Services</Filter>
+    </ClInclude>
+    <ClInclude Include="Services\ImageFormats.h">
+      <Filter>Services</Filter>
+    </ClInclude>
+    <ClInclude Include="Services\KmlDefs.h">
+      <Filter>Services</Filter>
+    </ClInclude>
+    <ClInclude Include="Services\KmlService.h">
+      <Filter>Services</Filter>
+    </ClInclude>
+    <ClInclude Include="Services\Layout.h">
+      <Filter>Services</Filter>
+    </ClInclude>
+    <ClInclude Include="Services\MappingDefs.h">
+      <Filter>Services</Filter>
+    </ClInclude>
+    <ClInclude Include="Services\MappingService.h">
+      <Filter>Services</Filter>
+    </ClInclude>
+    <ClInclude Include="Services\MapPlot.h">
+      <Filter>Services</Filter>
+    </ClInclude>
+    <ClInclude Include="Services\MapPlotCollection.h">
+      <Filter>Services</Filter>
+    </ClInclude>
+    <ClInclude Include="Services\MapPlotInstruction.h">
+      <Filter>Services</Filter>
+    </ClInclude>
+    <ClInclude Include="Services\PackageStatusInformation.h">
+      <Filter>Services</Filter>
+    </ClInclude>
+    <ClInclude Include="Services\PlotSpecification.h">
+      <Filter>Services</Filter>
+    </ClInclude>
+    <ClInclude Include="Services\PrintLayout.h">
+      <Filter>Services</Filter>
+    </ClInclude>
+    <ClInclude Include="Services\ProxyDataReader.h">
+      <Filter>Services</Filter>
+    </ClInclude>
+    <ClInclude Include="Services\ProxyDrawingService.h">
+      <Filter>Services</Filter>
+    </ClInclude>
+    <ClInclude Include="Services\ProxyFeatureReader.h">
+      <Filter>Services</Filter>
+    </ClInclude>
+    <ClInclude Include="Services\ProxyFeatureService.h">
+      <Filter>Services</Filter>
+    </ClInclude>
+    <ClInclude Include="Services\ProxyFeatureTransaction.h">
+      <Filter>Services</Filter>
+    </ClInclude>
+    <ClInclude Include="Services\ProxyGwsFeatureReader.h">
+      <Filter>Services</Filter>
+    </ClInclude>
+    <ClInclude Include="Services\ProxyKmlService.h">
+      <Filter>Services</Filter>
+    </ClInclude>
+    <ClInclude Include="Services\ProxyMappingService.h">
+      <Filter>Services</Filter>
+    </ClInclude>
+    <ClInclude Include="Services\ProxyRenderingService.h">
+      <Filter>Services</Filter>
+    </ClInclude>
+    <ClInclude Include="Services\ProxyResourceService.h">
+      <Filter>Services</Filter>
+    </ClInclude>
+    <ClInclude Include="Services\ProxySqlDataReader.h">
+      <Filter>Services</Filter>
+    </ClInclude>
+    <ClInclude Include="Services\ProxyTileService.h">
+      <Filter>Services</Filter>
+    </ClInclude>
+    <ClInclude Include="Services\RenderingDefs.h">
+      <Filter>Services</Filter>
+    </ClInclude>
+    <ClInclude Include="Services\RenderingOptions.h">
+      <Filter>Services</Filter>
+    </ClInclude>
+    <ClInclude Include="Services\RenderingService.h">
+      <Filter>Services</Filter>
+    </ClInclude>
+    <ClInclude Include="Services\ServerAdmin.h">
+      <Filter>Services</Filter>
+    </ClInclude>
+    <ClInclude Include="Services\ServerAdminDefs.h">
+      <Filter>Services</Filter>
+    </ClInclude>
+    <ClInclude Include="Services\ServerConnection.h">
+      <Filter>Services</Filter>
+    </ClInclude>
+    <ClInclude Include="Services\ServerConnectionEventHandler.h">
+      <Filter>Services</Filter>
+    </ClInclude>
+    <ClInclude Include="Services\ServerConnectionImp.h">
+      <Filter>Services</Filter>
+    </ClInclude>
+    <ClInclude Include="Services\ServerConnectionPool.h">
+      <Filter>Services</Filter>
+    </ClInclude>
+    <ClInclude Include="Services\ServerConnectionStack.h">
+      <Filter>Services</Filter>
+    </ClInclude>
+    <ClInclude Include="Services\ServerInformation.h">
+      <Filter>Services</Filter>
+    </ClInclude>
+    <ClInclude Include="Services\Site.h">
+      <Filter>Services</Filter>
+    </ClInclude>
+    <ClInclude Include="Services\SiteConnection.h">
+      <Filter>Services</Filter>
+    </ClInclude>
+    <ClInclude Include="Services\SiteInfo.h">
+      <Filter>Services</Filter>
+    </ClInclude>
+    <ClInclude Include="Services\SiteManager.h">
+      <Filter>Services</Filter>
+    </ClInclude>
+    <ClInclude Include="Services\SqlResult.h">
+      <Filter>Services</Filter>
+    </ClInclude>
+    <ClInclude Include="Services\TileDefs.h">
+      <Filter>Services</Filter>
+    </ClInclude>
+    <ClInclude Include="Services\TileService.h">
+      <Filter>Services</Filter>
+    </ClInclude>
+    <ClInclude Include="Services\UnitType.h">
+      <Filter>Services</Filter>
+    </ClInclude>
+    <ClInclude Include="System\ConfigProperties.h">
+      <Filter>System</Filter>
+    </ClInclude>
+    <ClInclude Include="System\CryptographyManager.h">
+      <Filter>System</Filter>
+    </ClInclude>
+    <ClInclude Include="System\MapGuideCommonClassId.h">
+      <Filter>System</Filter>
+    </ClInclude>
+    <ClInclude Include="System\MapGuideStream.h">
+      <Filter>System</Filter>
+    </ClInclude>
+    <ClInclude Include="System\UserInformation.h">
+      <Filter>System</Filter>
+    </ClInclude>
+    <ClInclude Include="Util\IpUtil.h">
+      <Filter>Util</Filter>
+    </ClInclude>
+    <ClInclude Include="MapGuideCommon.h" />
+    <ClInclude Include="Services\ProfilingService.h">
+      <Filter>Services</Filter>
+    </ClInclude>
+    <ClInclude Include="Services\ProxyProfilingService.h">
+      <Filter>Services</Filter>
+    </ClInclude>
+    <ClInclude Include="Services\ProfilingDefs.h">
+      <Filter>Services</Filter>
+    </ClInclude>
+    <ClInclude Include="Util\TimerUtil.h">
+      <Filter>Util</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="MapGuideCommon.rc" />
+  </ItemGroup>
+</Project>

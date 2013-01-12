@@ -1,0 +1,286 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<link rel="stylesheet" href="../viewerfiles/viewer.css" type="text/css">
+<style type="text/css">
+    body.Toolbar
+    {
+        background-color: #f0f0f0;
+        border-right-width: 1px;
+        border-right-style: solid;
+        border-right-color: #a0a0a0;
+    }
+    img.btnImg
+    {
+        border-color: #f0f0f0;
+        border-width: 1px;
+        position: absolute;
+        left: 4px;
+        top: 3px;
+    }
+    span.btn
+    {
+        border-width: 1px;
+        border-style: solid;
+        border-color: #f0f0f0;
+        width: 26px;
+        height: %spx;
+        top: 3px;
+        cursor: pointer;
+        /* font-family: __#@font#__; */
+        /* font-size: __#@fontsize#__; */
+    }
+    div.cssOpenTaskbarBtn
+    {
+        position: absolute;
+        right:5px;
+        top:3px;
+        width: 26px;
+        height:25px;
+        border-width: 1px;
+        border-style: solid;
+        border-color: #f0f0f0;
+        cursor: pointer;
+    }
+
+</style>
+
+<script language=javascript>
+
+var hovered = "";
+var active = "";
+var intId;
+var btnActions = new Array();
+var btnStates = new Array();
+var mapTipBtns = new Array();
+
+// public functions -----------------------------------------------
+//
+function OnCommandExecuted(action)
+{
+    if(IsToggle(action))
+    {
+        intb = false;
+        for(var i = 0; i < btnActions.length; i++)
+        {
+            if(btnActions[i] == action)
+            {
+                ToggleButton(i.toString());
+                intb = true;
+                break;
+            }
+        }
+        if(!intb)
+            ToggleButton("");
+    }
+}
+
+function OnCmdStateChanged()
+{
+    var commands = parent.commands;
+    var toolbarDef = parent.toolbarItems;
+
+    for(var i = 0; i < toolbarDef.length; i++)
+    {
+        if(toolbarDef[i].type == 1)
+        {
+            var cmd = commands[toolbarDef[i].cmdIndex];
+            if(btnStates[i] == cmd.enabled)
+                continue;
+            btnStates[i] = cmd.enabled;
+            var icon = cmd.enabled? cmd.icon: cmd.iconDisabled;
+            if(icon == null || icon == "")
+                continue;
+            var img = document.getElementById('I' + toolbarDef[i].cmdIndex);
+            if(img != null)
+                img.src = icon;
+        }
+    }
+}
+
+// private functions -----------------------------------------------
+//
+function InitDocument()
+{
+    if(active != "")
+        document.getElementById(active).style.border = "solid gray 1px";
+    InitToolbar();
+    document.onmousedown = OnMouseDown;
+}
+
+function HoverButton(eltId, cmdId)
+{
+    if(hovered != "")
+        document.getElementById(hovered).style.border = "solid #f0f0f0 1px";
+
+    document.getElementById(eltId).style.border = "solid #a0a0a0 1px";
+    hovered = eltId;
+    
+    if(eltId == 'divOpenTaskbarBtn')
+        parent.SetStatusMsg("__#TASKBAROPENBUTTONDESC#__");
+    else
+        parent.SetStatusMsg(cmdId!=null? parent.commands[cmdId].description: '');
+}
+
+function LeaveButton(eltId)
+{
+    var elt = document.getElementById(eltId);
+    if(eltId == active)
+        elt.style.border = "solid #a0a0a0 1px";
+    else
+        elt.style.border = "solid #f0f0f0 1px";
+    hovered = "";
+    parent.SetStatusMsg('');
+}
+
+function ToggleButton(eltId)
+{
+    if(eltId == active)
+        return;
+
+    var elt;
+    if(active != "")
+    {
+        elt = document.getElementById(active);
+        if(elt)
+        {
+            elt.style.border = "solid #f0f0f0 1px";
+            elt.style.background = "#f0f0f0";
+        }
+    }
+    if(eltId != "") {
+        elt = document.getElementById(eltId);
+        if(elt) {
+            elt.style.border = "solid #a0a0a0 1px";
+            elt.style.background = "#dcdcdc";
+        }
+    }
+    active = eltId;
+}
+
+function OpenTaskPane()
+{
+    var openTaskbarBtn = document.getElementById("divOpenTaskbarBtn");
+    if(openTaskbarBtn != null)
+    {
+        openTaskbarBtn.style.display='none';
+    }
+    
+    var divRefresh = document.getElementById("divRefresh");
+    divRefresh.className = "cssRefresh";
+    
+    parent.OpenTaskBar();
+}
+
+function ExecuteCommand(index, toggle, eltId)
+{
+    parent.ExecuteCommand(index);
+}
+
+function IsToggle(action)
+{
+    return action == 1 || (action >= 6 && action <= 9) || (action >= 15 && action <= 18);
+}
+
+function OnMouseDown(e)
+{
+    parent.ForwardMouseDown(document, e);
+    return false;
+}
+
+function MeasureText(t)
+{
+    var metrics = document.getElementById("Metrics");
+    metrics.innerHTML = t;
+    return metrics.offsetWidth;
+}
+
+function GetMapTipButtons() { return mapTipBtns; }
+
+function InitToolbar()
+{
+    var commands = parent.commands;
+    var toolbarDef = parent.toolbarItems;
+
+    var cell = "";
+    var table = "<table height=26px border=0 cellpadding=0 cellspacing=0><tr>";
+    var curPosX = 5;
+    var flyoutIndex = 0;
+    for(var i = 0; i < toolbarDef.length; i++)
+    {
+        var tbItem = toolbarDef[i];
+        if(tbItem.type == 2)
+        {
+            cell = "<td align=center valign=center>\n" +
+                   "  <span class=\"separator\" style=\"position: absolute; left: " + curPosX + "px;\">\n" +
+                   "  </span>\n" +
+                   "</td>\n";
+
+            btnActions[i] = -1;
+            btnStates[i] = false;
+            curPosX += 6;
+        }
+        else if(tbItem.type == 1)
+        {
+            var cmd = commands[tbItem.cmdIndex];
+            var execCall = "ExecuteCommand(" + tbItem.cmdIndex + ", IsToggle(" + cmd.action + "), '" + i + "')";
+            var icon = cmd.enabled? cmd.icon: (cmd.iconDisabled != ""? cmd.iconDisabled: cmd.icon);
+
+            cell = "<td align=center width=30px valign=center>\n" +
+                   "  <span class=\"btn\" id=\"" + i + "\" style=\"position: absolute; left: " + curPosX + "px;\" onclick=\"javascript: void " + execCall + ";\" onmouseover=\"HoverButton('" + i + "', " + tbItem.cmdIndex + "); return true;\" onmouseout=\"LeaveButton('" + i + "')\"  >\n" +
+                   "   <a name=\"\">\n" +
+                   "    <img class=\"btnImg\" id=\"I" + tbItem.cmdIndex + "\" title=\"" + cmd.tooltip + "\" src=\"" + encodeURI(icon) + "\" width=16px height=16px>\n" +
+                   "   </a>\n" +
+                   "  </span>\n" +
+                   "</td>\n";
+
+            btnActions[i] = cmd.action;
+            btnStates[i] = cmd.enabled;
+            if (cmd.action == 34) //34 - MapTip
+                mapTipBtns.push(i);
+            curPosX += 28;
+        }
+        else if(tbItem.type == 3)
+        {
+            var hasIcon = tbItem.iconUrl != "";
+            var cellW = MeasureText(tbItem.name) + (hasIcon? 42: 26);
+
+            cell = "<td id=\"cell" + i + "\" align=right valign=top width=" + cellW + "px style=\"position: absolute; left: " + curPosX + "px;\">\n" +
+                   "  <span class=\"btnFlyout\" id=\"btn" + i + "\" style=\"width: " + cellW + "px; cursor: pointer;\"  onmouseover=\"HoverButton('btn" + i + "', null)\" onmouseout=\"LeaveButton('btn" + i + "', '')\" onclick=\"OpenFlyout('cell" + i + "', " + i + ")\">\n" +
+                      (hasIcon ? "    <img class=\"iconFlyout\" title=\"\" id=\"" + i + "\" src=\"" + encodeURI(tbItem.iconUrl) + "\" width=16px height=16px Hspace=2 VSpace=2>\n" : "\n") +
+                   "    <span class=\"txtFlyout\" style=\"left: " +  (hasIcon? 24: 4) +  "px;\"> " + tbItem.name + " </span>\n" +
+                   "    <img class=\"arrowFlyout\" src=\"../stdicons/icon_menuarrow.gif\" style=\"left: " + (cellW - 20) + "px;\" width=16px height=16px Hspace=2 VSpace=2>\n" +
+                   "  </span>\n" +
+                   "</td>\n";
+
+            btnActions[i] = -1;
+            btnStates[i] = false;
+            curPosX += (cellW + 12);
+        }
+        table += cell;
+    }
+    table += "</tr></table>";
+    document.getElementById("ToolbarContent").innerHTML = table;
+}
+
+function OpenFlyout(elt, tbItemIndex)
+{
+    parent.mapFrame.OpenFlyout(parseInt(document.getElementById(elt).style.left), tbItemIndex);
+}
+</script>
+
+</head>
+<body class="Toolbar" onload="InitDocument()" leftmargin="10" topmargin="0" rightmargin="0" bottommargin="0" marginwidth="0">
+    <div id="divRefresh" name="divRefresh" class="cssRefresh" style="display:none;">
+        <img alt="loading" src="../stdicons/icon_loading.gif">
+    </div>
+    <div id="divOpenTaskbarBtn" name="divOpenTaskbarBtn" class="cssOpenTaskbarBtn" style="display:none;" onmouseover="HoverButton('divOpenTaskbarBtn', null)" onmouseout="LeaveButton('divOpenTaskbarBtn')" onclick="OpenTaskPane()">
+        <img id="imgOpen" title="__#TASKBAROPENBUTTONTEXT#__" src="../stdicons/openButton.gif" style="margin: 4px 0px 0px 5px;" width=16px height=16px>
+    </div>
+    <span id="ToolbarContent">
+    </span>
+    <div class="TextMetricsDiv" id="TextMetricsDiv">
+        <span class="TextMetrics" id="Metrics"></span>
+    </div>
+</body>
+</html>

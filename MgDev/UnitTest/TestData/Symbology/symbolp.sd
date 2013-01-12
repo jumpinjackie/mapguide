@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<SimpleSymbolDefinition xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="SymbolDefinition-1.1.0.xsd" version="1.1.0">
+  <Name>X_on_Box</Name>
+  <Graphics>
+    <Path>
+      <Geometry>M 0,0 L 5,0 L 5,5 L 0,5 L 0,0</Geometry>
+      <FillColor>%FILL%</FillColor>
+      <LineColor>%OUTLINE%</LineColor>
+      <LineWeight>2.0*(%THICKNESS% + 1.0)</LineWeight>
+    </Path>
+    <Path>
+      <Geometry>M -2,-2 L 7,7 M 7,-2 L -2,7</Geometry>
+      <FillColor>00000000</FillColor>
+      <LineColor>%COLOR%</LineColor>
+      <LineWeight>1.0</LineWeight>
+    </Path>
+  </Graphics>
+  <PointUsage/>
+  <ParameterDefinition>
+    <Parameter>
+      <Identifier>FILL</Identifier>
+      <DefaultValue>ff000000</DefaultValue>
+      <DisplayName>Fill Color</DisplayName>
+      <Description>The fill color of the box</Description>
+      <DataType>Color</DataType>
+    </Parameter>
+    <Parameter>
+      <Identifier>OUTLINE</Identifier>
+      <DefaultValue>ffff0000</DefaultValue>
+      <DisplayName>Outline Color</DisplayName>
+      <Description>The outline color of the box</Description>
+      <DataType>Color</DataType>
+    </Parameter>
+    <Parameter>
+      <Identifier>THICKNESS</Identifier>
+      <DefaultValue>-0.5</DefaultValue>
+      <DisplayName>Line Thickness</DisplayName>
+      <Description>The thickness of the box in mm...minus 2 and halved</Description>
+      <DataType>Real</DataType>
+    </Parameter>
+    <Parameter>
+      <Identifier>COLOR</Identifier>
+      <DefaultValue>ffffff00</DefaultValue>
+      <DisplayName>X Color</DisplayName>
+      <Description>The color of the X thingie that is across the box</Description>
+      <DataType>Color</DataType>
+    </Parameter>
+  </ParameterDefinition>
+</SimpleSymbolDefinition>

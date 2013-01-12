@@ -1,0 +1,122 @@
+<html>
+<head>
+<title>__#OPTIONSTITLE#__</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+    td.Title
+    {
+        font-family: __#@font#__;
+        font-weight: bold;
+        font-size: 13pt;
+    }
+    td.SubTitle
+    {
+        font-family: __#@font#__;
+        font-weight: bold;
+        font-size: __#@fontsize#__;
+        background-color: #DCDCDC;
+        color: black;
+        height: 20px;
+    }
+    td.InfoText
+    {
+        background-color: #FFFFCC;
+        color: #666666;
+        font-family: __#@font#__;
+        font-size: __#@fontsize#__;
+    }
+    .RegText
+    {
+        font-family: __#@font#__;
+        font-size: __#@fontsize#__;
+    }
+    .Ctrl
+    {
+        font-family: __#@font#__;
+        font-size: __#@fontsize#__;
+    }
+</style>
+
+<script language=javascript>
+
+var target=%s;
+var popup=%s;
+var dwf=%s;
+
+function ParentRef()
+{
+    if(popup)
+        return opener;
+    else
+        return parent.parent;
+}
+
+function InitDocument()
+{
+    if(!popup)
+        document.onmousedown = OnMouseDown;
+
+    var parentRef = ParentRef();
+    if(parentRef.GetMapFrame().IsEnglishUnits() == true)
+        document.getElementById("USEnglish").checked = true;
+    else
+        document.getElementById("Metric").checked = true;
+
+    if(dwf)
+    {
+        if(parentRef.GetMapFrame().IsLatLongDisplayUnits())
+            document.getElementById("LatLon").checked = true;
+        else
+            document.getElementById("MCS").checked = true;
+    }
+    else
+        document.getElementById("DwfSpecific").style.display = "none";
+}
+
+function OnMouseDown(e)
+{
+    ParentRef().ForwardMouseDown(document, e);
+}
+
+function Save()
+{
+    ParentRef().SetOptions(document.getElementById("USEnglish").checked, document.getElementById("LatLon").checked);
+    if(popup)
+        self.close();
+    else
+        ParentRef().GotoHomePage();
+}
+
+</script>
+
+</head>
+<body onload="InitDocument()" marginwidth=5 marginheight=5 leftmargin=5 topmargin=5 bottommargin=5 rightmargin=5>
+    <table cellspacing=0 border=0 width="100%%">
+        <tr><td class="Title">__#OPTIONSTITLE#__<hr></td></tr>
+        <tr><td class="InfoText">__#OPTIONSINFOTEXT#__</td></tr>
+        <tr><td height="6"></td></tr>
+        <tr><td class="SubTitle">&nbsp;__#OPTIONSDISTANCE#__</td></tr>
+        <tr><td height="6"></td></tr>
+        <tr><td class="RegText">
+            <input type="radio" id="Metric" name="MapUnit" value="Metric">__#OPTIONSMETRIC#__<br>
+            <input type="radio" id="USEnglish" name="MapUnit" value="USEnglish">__#OPTIONSUSENGLISH#__<br>
+        </td></tr>
+        <tr><td height="6"></td></tr>
+    </table>
+    <div id="DwfSpecific">
+    <table cellspacing=0 border=0 width="100%%">
+        <tr><td class="SubTitle">&nbsp;__#OPTIONSPOSITION#__</td></tr>
+        <tr><td height="6"></td></tr>
+        <tr><td class="RegText">
+            <input type="radio" id="LatLon" name="DispUnit" value="LatLon">__#OPTIONSLATLON#__<br>
+                    <input type="radio" id="MCS" name="DispUnit" value="MCS">__#OPTIONSMAPUNITS#__<br>
+         </td></tr>
+        <tr><td height="6"></td></tr>
+    </table>
+    </div>
+    <table cellspacing=0 border=0 width="100%%">
+        <tr><td height="6"></td></tr>
+        <tr><td><input type="button" class="Ctrl" name="Save" id="Save" value="__#BUTTONSAVE#__" onclick="Save()" style="width: 70px" ></td></tr>
+    </table>
+</body>
+</html>

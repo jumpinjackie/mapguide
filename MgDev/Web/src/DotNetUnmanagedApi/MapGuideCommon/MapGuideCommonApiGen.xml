@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Parameters>
+<!--
+   Module section.
+-->
+<Module name="MapGuideCommonApi" />
+
+<!--
+   Custom file path.
+-->
+<CustomFile path="./MapGuideCommonCustom" />
+
+<!--
+   Target section.
+-->
+<Target path="./MapGuideCommonApi.i" />
+<DocTarget path="./MapGuideCommonApi_Doc.i" />
+
+<!--
+   C++ inline section.
+-->
+<CppInline>
+#ifdef _WIN32
+#pragma warning(disable: 4251)
+#endif
+
+#include &lt;string&gt;
+#include &lt;map&gt;
+
+#include "Foundation.h"
+#include "GeometryCommon.h"
+#include "MapGuideCommon.h"
+
+#if defined(PHP) || defined(JAVA)
+typedef std::wstring STRINGPARAM;
+#else
+typedef wchar_t* STRINGPARAM;
+#endif
+</CppInline>
+
+<!--
+   Type replacements.
+-->
+<TypeReplacements>
+    <TypeReplacement oldtype="CREFSTRING" newtype="STRINGPARAM" />
+    <TypeReplacement oldtype="INT64" newtype="long long" />
+</TypeReplacements>
+
+<!--
+   Swig inline section.
+-->
+<SwigInline>
+  %import "../Foundation/FoundationApi.i"
+  %import "../Geometry/GeometryApi.i"
+  %import "../PlatformBase/PlatformBaseApi.i"
+  %include "MapGuideCommonApi_Doc.i" //doc fragments
+  %include "language.i"   //typemaps specific for each language
+  %include "../../../../Common/MapGuideCommon/System/MapGuideCommonClassId.h"
+
+#if defined(PHPSWIG)
+  // We force UTF-8 encoding for PHP
+  typedef char*         STRINGPARAM;
+  typedef char*         STRING;
+  typedef char*         BYTE_ARRAY_IN;
+  typedef char*         BYTE_ARRAY_OUT;
+  typedef unsigned char BYTE;
+#elseif defined(JAVA)
+  typedef std::wstring  STRINGPARAM;
+  typedef signed char   BYTE;  //mapped to byte in Java
+#else // .Net
+  typedef char*         BYTE_ARRAY_IN;
+  typedef char*         BYTE_ARRAY_OUT;
+  typedef unsigned char BYTE;    //mapped to byte in C#
+#endif
+
+  typedef int           STATUS;
+  typedef short         INT8;
+  typedef short         INT16;
+  typedef int           INT32;
+  typedef int           UINT32;
+
+</SwigInline>
+
+<!--
+   C++ Headers section.  If you add headers to this section then you
+   must also add them to Makefile.am in the JavaApi and PhpApi folders.
+-->
+<Headers>
+
+    <!-- MapGuideCommon classes -->
+
+    <Header path="../../../../Common/MapGuideCommon/Exception/AuthenticationFailedException.h" />
+    <Header path="../../../../Common/MapGuideCommon/Exception/ConnectionFailedException.h" />
+    <Header path="../../../../Common/MapGuideCommon/Exception/ConnectionNotOpenException.h" />
+    <Header path="../../../../Common/MapGuideCommon/Exception/DbException.h" />
+    <Header path="../../../../Common/MapGuideCommon/Exception/DbXmlException.h" />
+    <Header path="../../../../Common/MapGuideCommon/Exception/DuplicateGroupException.h" />
+    <Header path="../../../../Common/MapGuideCommon/Exception/DuplicateNameException.h" />
+    <Header path="../../../../Common/MapGuideCommon/Exception/DuplicateParameterException.h" />
+    <Header path="../../../../Common/MapGuideCommon/Exception/DuplicateRepositoryException.h" />
+    <Header path="../../../../Common/MapGuideCommon/Exception/DuplicateRoleException.h" />
+    <Header path="../../../../Common/MapGuideCommon/Exception/DuplicateServerException.h" />
+    <Header path="../../../../Common/MapGuideCommon/Exception/DuplicateSessionException.h" />
+    <Header path="../../../../Common/MapGuideCommon/Exception/DuplicateUserException.h" />
+    <Header path="../../../../Common/MapGuideCommon/Exception/DwfException.h" />
+    <Header path="../../../../Common/MapGuideCommon/Exception/DwfSectionNotFoundException.h" />
+    <Header path="../../../../Common/MapGuideCommon/Exception/DwfSectionResourceNotFoundException.h" />
+    <Header path="../../../../Common/MapGuideCommon/Exception/EndOfStreamException.h" />
+    <Header path="../../../../Common/MapGuideCommon/Exception/GroupNotFoundException.h" />
+    <Header path="../../../../Common/MapGuideCommon/Exception/InvalidDwfPackageException.h" />
+    <Header path="../../../../Common/MapGuideCommon/Exception/InvalidDwfSectionException.h" />
+    <Header path="../../../../Common/MapGuideCommon/Exception/InvalidFeatureSourceException.h" />
+    <Header path="../../../../Common/MapGuideCommon/Exception/InvalidIpAddressException.h" />
+    <Header path="../../../../Common/MapGuideCommon/Exception/InvalidLicenseException.h" />
+    <Header path="../../../../Common/MapGuideCommon/Exception/InvalidLogEntryException.h" />
+    <Header path="../../../../Common/MapGuideCommon/Exception/InvalidPasswordException.h" />
+    <Header path="../../../../Common/MapGuideCommon/Exception/InvalidPrintLayoutFontSizeUnitsException.h" />
+    <Header path="../../../../Common/MapGuideCommon/Exception/InvalidPrintLayoutPositionUnitsException.h" />
+    <Header path="../../../../Common/MapGuideCommon/Exception/InvalidPrintLayoutSizeUnitsException.h" />
+    <Header path="../../../../Common/MapGuideCommon/Exception/InvalidServerNameException.h" />
+    <Header path="../../../../Common/MapGuideCommon/Exception/LicenseException.h" />
+    <Header path="../../../../Common/MapGuideCommon/Exception/LicenseExpiredException.h" />
+    <Header path="../../../../Common/MapGuideCommon/Exception/OperationProcessingException.h" />
+    <Header path="../../../../Common/MapGuideCommon/Exception/ParameterNotFoundException.h" />
+    <Header path="../../../../Common/MapGuideCommon/Exception/PathTooLongException.h" />
+    <Header path="../../../../Common/MapGuideCommon/Exception/PortNotAvailableException.h" />
+    <Header path="../../../../Common/MapGuideCommon/Exception/PrintToScaleModeNotSelectedException.h" />
+    <Header path="../../../../Common/MapGuideCommon/Exception/RepositoryCreationFailedException.h" />
+    <Header path="../../../../Common/MapGuideCommon/Exception/RepositoryNotFoundException.h" />
+    <Header path="../../../../Common/MapGuideCommon/Exception/RepositoryNotOpenException.h" />
+    <Header path="../../../../Common/MapGuideCommon/Exception/RepositoryOpenFailedException.h" />
+    <Header path="../../../../Common/MapGuideCommon/Exception/RoleNotFoundException.h" />
+    <Header path="../../../../Common/MapGuideCommon/Exception/ServerNotFoundException.h" />
+    <Header path="../../../../Common/MapGuideCommon/Exception/ServerNotOnlineException.h" />
+    <Header path="../../../../Common/MapGuideCommon/Exception/SessionExpiredException.h" />
+    <Header path="../../../../Common/MapGuideCommon/Exception/SessionNotFoundException.h" />
+    <Header path="../../../../Common/MapGuideCommon/Exception/UnauthorizedAccessException.h" />
+    <Header path="../../../../Common/MapGuideCommon/Exception/UriFormatException.h" />
+
+    <Header path="../../../../Common/MapGuideCommon/Services/DrawingService.h" />
+    <Header path="../../../../Common/MapGuideCommon/Services/DwfVersion.h" />
+    <Header path="../../../../Common/MapGuideCommon/Services/FeatureInformation.h" />
+    <Header path="../../../../Common/MapGuideCommon/Services/KmlService.h" />
+    <Header path="../../../../Common/MapGuideCommon/Services/Layout.h" />
+    <Header path="../../../../Common/MapGuideCommon/Services/MappingService.h" />
+    <Header path="../../../../Common/MapGuideCommon/Services/MapPlot.h" />
+    <Header path="../../../../Common/MapGuideCommon/Services/MapPlotCollection.h" />
+    <Header path="../../../../Common/MapGuideCommon/Services/PackageStatusInformation.h" />
+    <Header path="../../../../Common/MapGuideCommon/Services/PlotSpecification.h" />
+    <Header path="../../../../Common/MapGuideCommon/Services/ProfilingService.h" />
+    <Header path="../../../../Common/MapGuideCommon/Services/RenderingOptions.h" />
+    <Header path="../../../../Common/MapGuideCommon/Services/RenderingService.h" />
+    <Header path="../../../../Common/MapGuideCommon/Services/ServerAdmin.h" />
+    <Header path="../../../../Common/MapGuideCommon/Services/Site.h" />
+    <Header path="../../../../Common/MapGuideCommon/Services/SiteConnection.h" />
+    <Header path="../../../../Common/MapGuideCommon/Services/SiteInfo.h" />
+    <Header path="../../../../Common/MapGuideCommon/Services/TileService.h" />
+
+    <Header path="../../../../Common/MapGuideCommon/System/UserInformation.h" />
+
+    <Header path="../../../../Common/MapGuideCommon/MapLayer/Layer.h" />
+    <Header path="../../../../Common/MapGuideCommon/MapLayer/Map.h" />
+    <Header path="../../../../Common/MapGuideCommon/MapLayer/Selection.h" />
+
+</Headers>
+
+</Parameters>

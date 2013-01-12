@@ -1,0 +1,235 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<link rel="stylesheet" href="../viewerfiles/viewer.css" type="text/css">
+<style type="text/css">
+    body.Toolbar
+    {
+        background-color: #f0f0f0;
+        border-bottom-width: 1px;
+        border-bottom-style: solid;
+        border-bottom-color: #a0a0a0;
+    }
+    img.btnImg
+    {
+        border-color: #f0f0f0;
+        border-width: 1px;
+        position: absolute;
+        left: 4px;
+        top: 3px;
+    }
+    span.btn
+    {
+        border-width: 1px;
+        border-style: solid;
+        border-color: #f0f0f0;
+        width: 26;
+        height: %s;
+        top: 3px;
+        cursor: pointer;
+        font-family: __#@font#__;
+        font-size: __#@fontsize#__;
+    }
+    .MetricsDiv
+    {
+        position: absolute;
+        visibility: hidden;
+        top: 0px;
+        left: 0px;
+    }
+    .Metrics
+    {
+        font-family: __#@font#__;
+        font-size: __#@fontsize#__;
+        font-weight: normal;
+    }
+</style>
+
+<script language="javascript" src="../viewerfiles/browserdetect.js"></script>
+<script language=javascript>
+
+var hovered = "";
+var active = "";
+var intId;
+var imgOpenArrow = new Image(16,16);
+imgOpenArrow.src = "../stdicons/icon_menuarrow.gif";
+var imgCloseArrow = new Image(16,16);
+imgCloseArrow.src = "../stdicons/icon_menuarrowup.gif";
+
+function InitDocument()
+{
+    if(active != "")
+        document.getElementById(active).style.border = "solid gray 1px";
+    document.onmousedown = OnMouseDown;
+
+    var taskText = "__#TASKS#__";
+    var taskLen = GetTextLen(taskText);
+    var btnLen = taskLen + 10 + 16 + 13;
+    document.getElementById("btnTask").style.width = btnLen;
+    document.getElementById("btnTask").style.visibility = "visible";
+    document.getElementById("imgOpenClose").style.left = btnLen - 20;
+
+    var width = msie? document.body.clientWidth: window.innerWidth;
+    document.getElementById("taskCell").style.left = (width - btnLen - 5) + "px";
+    var btn = document.getElementById("imgHome");
+    btn.title = parent.taskItemTexts[1];
+    btn.src = parent.taskItemTexts[3];
+    btn = document.getElementById("imgBack");
+    btn.title = parent.taskItemTexts[6];
+    btn.src = parent.taskItemTexts[8];
+    btn = document.getElementById("imgForward");
+    btn.title = parent.taskItemTexts[11];
+    btn.src = parent.taskItemTexts[13];
+    document.getElementById("btnTask").title = parent.taskItemTexts[16];
+    btn = document.getElementById("imgTask");
+    btn.title = parent.taskItemTexts[16];
+    btn.src = parent.taskItemTexts[18];
+
+    btn = document.getElementById("imgClose");
+    btn.title = "__#TASKBARCLOSEBUTTONTEXT#__";
+    btn.src = "../stdicons/closeButton.gif";
+
+    document.getElementById("imgOpenClose").src = imgOpenArrow.src;
+}
+
+function OnMouseDown(e)
+{
+   parent.ForwardMouseDown(document, e);
+}
+
+function HoverButton(eltId, description)
+{
+    if(hovered != "")
+        document.getElementById(hovered).style.border = "solid #f0f0f0 1px";
+
+    document.getElementById(eltId).style.border = "solid #99B5CA 1px";
+    hovered = eltId;
+
+    var txtIndex = -1;
+    if(eltId == 'btnHome')
+        parent.SetStatusMsg(parent.taskItemTexts[2]);
+    else if(eltId == 'btnBack')
+        parent.SetStatusMsg(parent.taskItemTexts[7]);
+    else if(eltId == 'btnForward')
+        parent.SetStatusMsg(parent.taskItemTexts[12]);
+    else if(eltId == 'btnTask')
+        parent.SetStatusMsg(parent.taskItemTexts[17]);
+    else if(eltId == 'btnClose')
+        parent.SetStatusMsg("__#TASKBARCLOSEBUTTONDESC#__");
+}
+
+function LeaveButton(eltId)
+{
+    if(eltId == active)
+        document.getElementById(eltId).style.border = "solid #99B5CA 1px";
+    else
+        document.getElementById(eltId).style.border = "solid #f0f0f0 1px";
+    hovered = "";
+
+    parent.SetStatusMsg('');
+}
+
+function ToggleButton(eltId)
+{
+    if(eltId == active)
+        return;
+
+    var elt;
+    if(active != "")
+    {
+        elt = document.getElementById(active);
+        elt.style.border = "solid #f0f0f0 1px";
+        elt.style.background = "#f0f0f0";
+    }
+
+    elt = document.getElementById(eltId);
+    elt.style.border = "solid #99B5CA 1px";
+    elt.style.background = "#bac8f1";
+
+    active = eltId;
+}
+
+function CloseTaskPane()
+{
+    var tbframe = parent.frames["tbFrame"];
+    var openTaskbarBtn = tbframe.document.getElementById("divOpenTaskbarBtn");
+    if(openTaskbarBtn != null)
+    {
+        openTaskbarBtn.style.display='block';
+    }
+    
+    var divRefresh = tbframe.document.getElementById("divRefresh");
+    if(divRefresh)
+    {
+        divRefresh.className = "cssRefreshWithOpenBtn";
+    }
+    
+    parent.CloseTaskBar();
+}
+
+function OpenTaskMenu()
+{
+    try
+    {
+        parent.GetTaskFrame().OpenTaskMenu();
+    }
+    catch(e){}
+}
+
+function GotoHomePage()
+{
+    parent.GotoHomePage();
+}
+
+function OnListOpen(open)
+{
+    document.getElementById("imgOpenClose").src = open? imgCloseArrow.src: imgOpenArrow.src;
+}
+
+function GetTextLen(text)
+{
+    var metrics = document.getElementById("Metrics");
+    metrics.innerHTML = text;
+    return metrics.offsetWidth;
+}
+
+</script>
+
+</head>
+<body class="Toolbar" onload="InitDocument()" leftmargin=10 topmargin=0 rightmargin=0 bottommargin=0 marginwidth=0 >
+    <table height=30px border=0 cellpadding=0 cellspacing=0>
+        <tr height=30px>
+          <td align=center valign=center>
+            <span class="btn" id="btnClose" style="position: absolute; left: 5px;" onmouseover="HoverButton('btnClose', '')" onmouseout="LeaveButton('btnClose', '')" onclick="CloseTaskPane()">
+              <img class="btnImg" id="imgClose" title="" src="../stdicons/transparentpixel.gif" width=16px height=16px>
+            </span>
+          </td>
+          <td align=center valign=center>
+            <span class="btn" id="btnHome" style="position: absolute; left: 36px;" onmouseover="HoverButton('btnHome', '')" onmouseout="LeaveButton('btnHome', '')" onclick="GotoHomePage()">
+              <img class="btnImg" id="imgHome" title="" src="../stdicons/transparentpixel.gif" width=16px height=16px>
+            </span>
+          </td>
+          <td align=center valign=center>
+            <span class="btn" id="btnBack" style="position: absolute; left: 64px;" onmouseover="HoverButton('btnBack', '')" onmouseout="LeaveButton('btnBack', '')" onclick="history.back()">
+              <img class="btnImg" id="imgBack" title="" src="../stdicons/transparentpixel.gif" width=16px height=16px>
+            </span>
+          </td>
+          <td align=center valign=center>
+            <span class="btn" id="btnForward" style="position: absolute; left: 92px;" onmouseover="HoverButton('btnForward', '')" onmouseout="LeaveButton('btnForward', '')" onclick="history.forward()">
+              <img class="btnImg" id="imgForward" title="" src="../stdicons/transparentpixel.gif" width=16px height=16px>
+            </span>
+          </td>
+          <td id="taskCell" align=right valign=top style="position: absolute; left: 225px;">
+            <span class="btn" id="btnTask" style="position: absolute; left: 1px; height: 22px; width: 70px; cursor: pointer; visibility: hidden"  onmouseover="HoverButton('btnTask', '')" onmouseout="LeaveButton('btnTask', '')" onclick="OpenTaskMenu()">
+               <img title="" id="imgTask" src="../stdicons/transparentpixel.gif" style="position: absolute; left: 2px;" width=16px height=16px Hspace=2 VSpace=2>
+               <span style="position: absolute; left: 22px; top: 4px;">
+                    __#TASKS#__
+                </span>
+                <img id="imgOpenClose" src="../stdicons/icon_menuarrow.gif" style="position: absolute; left: 50px;" width=16px height=16px Hspace=2 VSpace=2>
+            </span>
+          </td>
+        </tr>
+    </table>
+    <div class="MetricsDiv"><span class="Metrics" id="Metrics"></span></div>
+</body>
+</html>
