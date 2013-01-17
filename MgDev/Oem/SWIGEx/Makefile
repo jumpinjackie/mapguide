@@ -12,8 +12,8 @@ CC       = gcc
 CXX      = g++
 LEX      = flex
 YACC     = yacc
-CFLAGS   = -pipe -UZTS -Wall -W -O2 -g -pipe -march=i686 -mtune=i686 -fno-use-cxa-atexit -fexceptions  -DNDEBUG
-CXXFLAGS = -pipe -UZTS -Wall -W -O2 -g -pipe -march=i686 -mtune=i686 -fno-use-cxa-atexit -fexceptions  -DNDEBUG
+CFLAGS   = -pipe -UZTS -Wall -W -O2 -g -pipe -fno-use-cxa-atexit -fexceptions  -DNDEBUG
+CXXFLAGS = -pipe -UZTS -Wall -W -O2 -g -pipe -fno-use-cxa-atexit -fexceptions  -DNDEBUG
 LEXFLAGS = 
 YACCFLAGS= -d
 INCPATH  = -I$(QTDIR)/mkspecs/default -I. -ISource/CParse -ISource/DOH -ISource/Include -ISource/Swig -ISource/Modules -ISource/Preprocessor
