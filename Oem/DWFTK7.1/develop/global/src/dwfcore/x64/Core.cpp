@@ -50,13 +50,79 @@ throw()
    return InterlockedDecrement((volatile long*)pValue);
 }
 
-#elif _DWFCORE_LINUX_SYSTEM
+#elif defined(_DWFCORE_LINUX_SYSTEM)
 
 //
 //  TODO: Need 64-bit Linux
 //  for AtomicIncrement and AtomicDecrement
 //
 
+// NOTE: Backported from DWF Toolkit 7.7
+
+#ifdef  HAVE_CONFIG_H
+		#include "dwfcore/config.h"
+
+			#if !defined( _DWFCORE_USE_ASM_ATOMIC_H ) && !defined( _DWFCORE_USE_ALSA_IATOMIC_H )
+
+				#if     defined( HAVE_ASM_ATOMIC_H )
+				#include <asm/atomic.h>
+				#elif   defined( HAVE_ALSA_IATOMIC_H )
+				#include <alsa/iatomic.h>
+				#else
+				#error  Missing header file - cannot continue
+				#endif
+
+
+				//
+				// change LOCK to _DWFCORE_ATOMIC_LOCK
+				// to prevent any unexpected redefinitions
+				//
+				#ifdef __SMP__
+				#define _DWFCORE_ATOMIC_LOCK "lock ; "
+				#else
+				#define _DWFCORE_ATOMIC_LOCK ""
+				#endif
+
+				namespace DWFCore
+				{
+
+					_DWFCORE_API
+						int
+						AtomicIncrement( volatile int* pValue )
+						throw()
+					{
+						atomic_t tValue;
+						atomic_set( &tValue, *pValue );
+
+						__asm__ __volatile__(
+							_DWFCORE_ATOMIC_LOCK "incl %0"
+							:"=m" (tValue.counter)
+							:"m" (tValue.counter));
+
+						*pValue = atomic_read( &tValue );
+						return *pValue;
+					}
+
+					_DWFCORE_API
+						int
+						AtomicDecrement( volatile int* pValue )
+						throw()
+					{
+						atomic_t tValue;
+						atomic_set( &tValue, *pValue );
+
+						__asm__ __volatile__(
+							_DWFCORE_ATOMIC_LOCK "decl %0"
+							:"=m" (tValue.counter)
+							:"m" (tValue.counter));
+
+						*pValue = atomic_read( &tValue );
+						return *pValue;
+					}
+
+				}
+#endif
+#endif
 #endif
 
 #endif

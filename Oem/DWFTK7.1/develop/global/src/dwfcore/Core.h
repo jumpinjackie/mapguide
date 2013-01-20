@@ -44,7 +44,7 @@
 
 #if     defined(__i386__) || defined(__i486__) || defined(__i586__) || defined(__i686) || defined(_M_IX86)
 #define _DWFCORE_X86_SYSTEM
-#elif   defined(_WIN64)
+#elif   defined(_M_X64) || defined(__x86_64__) //DWFTK 7.7 backport
 #define _DWFCORE_X64_SYSTEM
 #elif   defined(_M_ALPHA)
 #define _DWFCORE_ALPHA_SYSTEM
