@@ -1,12 +1,19 @@
 #
 #! /bin/bash
 #
-
+# Backported from DWF Toolkit 7.7
+echo "Ensuring that files have no dos-ness..."
+cd files
+chmod +w *
+dos2unix -q *
+cd ..
+echo "Copying files..."
 cd ../../../src/dwfcore
-tar -xzf ../../build/gnu/dwfcore/build_files.tar.gz
-
+cp -f ../../build/gnu/dwfcore/files/* .
+echo "Configuring..."
 rm -rf autom4te.cache/
 autoreconf --force
+echo "Done."
 
 
 
