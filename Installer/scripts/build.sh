@@ -5,6 +5,7 @@ APIVERSION=2.5
 BUILDNUM=${APIVERSION}.0
 BUILDROOT=`pwd`
 INSTALLROOT=/usr/local/mapguideopensource-${BUILDNUM}
+#INSTALLROOT=/usr/local/mapguideopensource-trunk
 LOCKFILEDIR=/var/lock/mgserver
 MGSOURCE=${BUILDROOT}/mgdev
 VERFILE=${MGSOURCE}/Common/ProductVersion.h
@@ -76,6 +77,9 @@ then
         svn export -q -r ${REVISION} ${SVNROOT}${SVNRELPATH} ${MGSOURCE}
     fi
 fi
+
+start_time=`date +%s`
+
 echo "Building Revision ${BUILDNUM}.${REVISION}" 
 cd ${MGSOURCE}
 
@@ -133,6 +137,8 @@ BUILD_COMPONENT="MapGuide Install"
 make install
 check_build
 
+end_time=`date +%s`
+
 echo "Preparing binaries for packaging"
 # Prepare binaries for packaging by removing unnecessary
 # .la and .a files and stripping unneeded symbols from the binaries
@@ -164,3 +170,4 @@ fi
 tar -zcf bin/mapguideopensource-${BUILDNUM}.${REVISION}.tar.gz ${INSTALLROOT} ${LOCKFILEDIR}
 
 echo "Build complete!"
+echo Main build execution: `expr $end_time - $start_time` s
