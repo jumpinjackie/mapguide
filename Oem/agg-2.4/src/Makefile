@@ -1,6 +1,6 @@
 include ../Makefile.in.$(shell uname)
 
-CXXFLAGS= $(AGGCXXFLAGS) -I../include -L./
+CXXFLAGS= $(AGGCXXFLAGS) $(EXTRACXXFLAGS) -I../include -L./
 
 SRC_CXX=\
 agg_arc.cpp \
