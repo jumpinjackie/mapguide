@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Global vars for this script. Modify as necessary
-APIVERSION=2.4
+APIVERSION=2.5
 BUILDNUM=${APIVERSION}.0
 BUILDROOT=`pwd`
 INSTALLROOT=/usr/local/mapguideopensource-${BUILDNUM}
@@ -15,7 +15,7 @@ SVNROOT=/home/user
 #SVNRELPATH=/mg-2.4/MgDev
 #SVNROOT="svn://svn.bld.mgproto.net"
 #SVNROOT="http://svn.osgeo.org"
-SVNRELPATH=/mapguide/branches/2.4/MgDev
+SVNRELPATH=/mapguide/branches/2.5/MgDev
 MY_MAKE_OPTS="-j 4"
 UBUNTU=1
 PRESERVE_BUILD_ROOT=1
@@ -122,7 +122,11 @@ aclocal
 libtoolize --force
 automake --add-missing --copy
 autoconf
-./configure --enable-optimized --prefix=${INSTALLROOT}
+if [ $(uname -m) = "x86_64" ]; then
+    ./configure --enable-optimized --enable-64bit --prefix=${INSTALLROOT}
+else
+    ./configure --enable-optimized --prefix=${INSTALLROOT}
+fi
 make $MY_MAKE_OPTS
 check_build
 BUILD_COMPONENT="MapGuide Install"
