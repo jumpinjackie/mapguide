@@ -131,11 +131,137 @@ throw()
     return _nTick;
 }
 
-#elif _DWFCORE_LINUX_SYSTEM
+#elif defined(_DWFCORE_LINUX_SYSTEM)
 
 //
 //  TODO: Need 64-bit Linux
 //
+
+// NOTE: Implementation backported from DWF Toolkit 7.7
+
+_DWFCORE_API
+DWFTimer::DWFTimer()
+throw()
+: _nTick( 0 )
+{
+	;
+}
+
+_DWFCORE_API
+DWFTimer::DWFTimer( const DWFTimer& rTimer )
+throw()
+: _nTick( rTimer._nTick )
+{
+	;
+}
+
+_DWFCORE_API
+DWFTimer&
+DWFTimer::operator=( const DWFTimer& rTimer )
+throw()
+{
+	_nTick = rTimer._nTick;
+	return *this;
+}
+
+_DWFCORE_API
+DWFTimer::~DWFTimer()
+throw()
+{
+}
+
+_DWFCORE_API
+unsigned long
+DWFTimer::Tick32()
+throw()
+{
+	unsigned long eax = 0L;
+
+	__asm__ __volatile__( ".byte 15, 49" : : : "eax", "edx" );
+	__asm__ __volatile__( "movq %%rax, %0" : "=r"(eax) );
+
+	//
+	// gcc is checking no return
+	//
+	return eax;
+
+	//
+	// lower 32-bits in eax
+	//
+}
+
+_DWFCORE_API
+uint64_t
+DWFTimer::Tick64()
+throw()
+{
+	unsigned long eax = 0L;
+	unsigned long edx = 0L;
+
+	__asm__ __volatile__( ".byte 15, 49" : : : "eax", "edx" );
+	__asm__ __volatile__( "movq %%rax, %0; movq %%rdx, %1": "=r"(eax), "=r"(edx) );
+
+	//
+	// gcc is checking no return
+	//
+	uint64_t nTick64 = edx;
+	nTick64 <<= 32;
+	nTick64 |= eax;
+	return nTick64;
+
+	//
+	// lower 32-bits in eax
+	// upper 32-bits in edx
+	//
+}
+
+_DWFCORE_API
+void
+DWFTimer::start()
+throw()
+{
+	_nTick = Tick64();
+}
+
+_DWFCORE_API
+unsigned long
+DWFTimer::tick32()
+throw()
+{
+	return (Tick32() - (unsigned long)(0x00000000ffffffff & _nTick));
+}
+
+_DWFCORE_API
+uint64_t
+DWFTimer::tick64()
+throw()
+{
+	return (Tick64() - _nTick);
+}
+
+_DWFCORE_API
+void
+DWFTimer::stop()
+throw()
+{
+	_nTick = (Tick64() - _nTick);
+}
+
+_DWFCORE_API
+unsigned long
+DWFTimer::timer32()
+throw()
+{
+	return (unsigned long)(0x00000000ffffffff & _nTick);
+}
+
+_DWFCORE_API
+uint64_t
+DWFTimer::timer64()
+throw()
+{
+	return _nTick;
+}
 
 #endif
 

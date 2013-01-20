@@ -107,6 +107,6 @@ fi
 rm gccver.txt
 rm gcc32.txt
 
-AC_OUTPUT(Makefile ansi/Makefile mac/Makefile zip/Makefile zlib/Makefile x86/Makefile)
+AC_OUTPUT(Makefile ansi/Makefile mac/Makefile zip/Makefile zlib/Makefile x86/Makefile x64/Makefile)
 
 
