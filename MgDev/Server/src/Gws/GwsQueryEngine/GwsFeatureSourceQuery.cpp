@@ -23,8 +23,6 @@
 
 #include "stdafx.h"
 #include "GwsQueryEngineImp.h"
-#include <SDF/SdfCommandType.h>
-#include <SHP/ShpCommandType.h>
 
 //Uncomment to see what join algorithm is used for the join operation
 //
@@ -52,9 +50,7 @@ static bool supportOrdering (FdoIConnection * conn, bool bSingleJoinProperty)
     bool bSupportsExtendedSelect = false;
     for(int i = 0; i < size; i++ )
     {
-        if( pTypes[i] == SdfCommandType_ExtendedSelect || 
-            pTypes[i] == ShpCommandType_ExtendedSelect || 
-            pTypes[i] == FdoCommandType_ExtendedSelect)
+        if( pTypes[i] == FdoCommandType_ExtendedSelect)
         {
             bSupportsExtendedSelect = true;
             break;

@@ -24,8 +24,6 @@
 #include "stdafx.h"
 #include "GwsQueryEngineImp.h"
 #include "GwsBinaryFeatureWriter.h"
-#include "SDF/IScrollableFeatureReader.h"
-#include "SHP/IScrollableFeatureReader.h"
 
 
 /////////////////////////////////////////////////////////////////////
@@ -75,13 +73,9 @@ EGwsStatus CGwsFeatureIterator::InitializeReader (
     
     if(dynamic_cast<FdoIScrollableFeatureReader*>(pReader) != NULL)
         m_extProviderType = eFDO;
-    else if(dynamic_cast<SdfIScrollableFeatureReader*>(pReader) != NULL)
-        m_extProviderType = eSDF;
-    else if(dynamic_cast<ShpIScrollableFeatureReader*>(pReader) != NULL)
-        m_extProviderType = eSHP;
     else if(dynamic_cast<CGwsFeatureIterator*>(pReader) != NULL)
         m_extProviderType = eCGFI;
-   else
+    else
         m_bScrollableReader = false;
 
     if (pReader)
@@ -714,10 +708,8 @@ CGwsFeatureIterator::Count()
     CheckReader();
     if(!m_bScrollableReader) GWS_THROW(eGwsNotSupported);
 
-    if(dynamic_cast<SdfIScrollableFeatureReader*>(m_reader.p) != NULL)
-        return ((SdfIScrollableFeatureReader*)m_reader.p)->Count();
-    if(dynamic_cast<ShpIScrollableFeatureReader*>(m_reader.p) != NULL)
-        return ((ShpIScrollableFeatureReader*)m_reader.p)->Count();
+    if(dynamic_cast<FdoIScrollableFeatureReader*>(m_reader.p) != NULL)
+        return ((FdoIScrollableFeatureReader*)m_reader.p)->Count();
     if(dynamic_cast<CGwsFeatureIterator*>(m_reader.p) != NULL)
         return ((CGwsFeatureIterator*)m_reader.p)->Count();
     assert(false);
@@ -734,10 +726,8 @@ CGwsFeatureIterator::ReadFirst()
     m_bMutableFeatureSet = false;
     m_bGeometryConverted = false;
 
-    if(dynamic_cast<SdfIScrollableFeatureReader*>(m_reader.p) != NULL)
-        return ((SdfIScrollableFeatureReader*)m_reader.p)->ReadFirst();
-    if(dynamic_cast<ShpIScrollableFeatureReader*>(m_reader.p) != NULL)
-        return ((ShpIScrollableFeatureReader*)m_reader.p)->ReadFirst();
+    if(dynamic_cast<FdoIScrollableFeatureReader*>(m_reader.p) != NULL)
+        return ((FdoIScrollableFeatureReader*)m_reader.p)->ReadFirst();
     if(dynamic_cast<CGwsFeatureIterator*>(m_reader.p) != NULL)
         return ((CGwsFeatureIterator*)m_reader.p)->ReadFirst();
     assert(false);
@@ -754,10 +744,8 @@ CGwsFeatureIterator::ReadLast()
     m_bMutableFeatureSet = false;
     m_bGeometryConverted = false;
 
-    if(dynamic_cast<SdfIScrollableFeatureReader*>(m_reader.p) != NULL)
-        return ((SdfIScrollableFeatureReader*)m_reader.p)->ReadLast();
-    if(dynamic_cast<ShpIScrollableFeatureReader*>(m_reader.p) != NULL)
-        return ((ShpIScrollableFeatureReader*)m_reader.p)->ReadLast();
+    if(dynamic_cast<FdoIScrollableFeatureReader*>(m_reader.p) != NULL)
+        return ((FdoIScrollableFeatureReader*)m_reader.p)->ReadLast();
     if(dynamic_cast<CGwsFeatureIterator*>(m_reader.p) != NULL)
         return ((CGwsFeatureIterator*)m_reader.p)->ReadLast();
     assert(false);
@@ -774,10 +762,8 @@ CGwsFeatureIterator::ReadPrevious()
     m_bMutableFeatureSet = false;
     m_bGeometryConverted = false;
 
-    if(dynamic_cast<SdfIScrollableFeatureReader*>(m_reader.p) != NULL)
-        return ((SdfIScrollableFeatureReader*)m_reader.p)->ReadPrevious();
-    if(dynamic_cast<ShpIScrollableFeatureReader*>(m_reader.p) != NULL)
-        return ((ShpIScrollableFeatureReader*)m_reader.p)->ReadPrevious();
+    if(dynamic_cast<FdoIScrollableFeatureReader*>(m_reader.p) != NULL)
+        return ((FdoIScrollableFeatureReader*)m_reader.p)->ReadPrevious();
     if(dynamic_cast<CGwsFeatureIterator*>(m_reader.p) != NULL)
         return ((CGwsFeatureIterator*)m_reader.p)->ReadPrevious();
     assert(false);
@@ -794,10 +780,8 @@ CGwsFeatureIterator::ReadAt(FdoPropertyValueCollection* key)
     m_bMutableFeatureSet = false;
     m_bGeometryConverted = false;
 
-    if(dynamic_cast<SdfIScrollableFeatureReader*>(m_reader.p) != NULL)
-        return ((SdfIScrollableFeatureReader*)m_reader.p)->ReadAt(key);
-    if(dynamic_cast<ShpIScrollableFeatureReader*>(m_reader.p) != NULL)
-        return ((ShpIScrollableFeatureReader*)m_reader.p)->ReadAt(key);
+    if(dynamic_cast<FdoIScrollableFeatureReader*>(m_reader.p) != NULL)
+        return ((FdoIScrollableFeatureReader*)m_reader.p)->ReadAt(key);
     if(dynamic_cast<CGwsFeatureIterator*>(m_reader.p) != NULL)
         return ((CGwsFeatureIterator*)m_reader.p)->ReadAt(key);
     assert(false);
@@ -814,10 +798,8 @@ CGwsFeatureIterator::ReadAtIndex( unsigned int recordindex )
     m_bMutableFeatureSet = false;
     m_bGeometryConverted = false;
 
-    if(dynamic_cast<SdfIScrollableFeatureReader*>(m_reader.p) != NULL)
-        return ((SdfIScrollableFeatureReader*)m_reader.p)->ReadAtIndex(recordindex);
-    if(dynamic_cast<ShpIScrollableFeatureReader*>(m_reader.p) != NULL)
-        return ((ShpIScrollableFeatureReader*)m_reader.p)->ReadAtIndex(recordindex);
+    if(dynamic_cast<FdoIScrollableFeatureReader*>(m_reader.p) != NULL)
+        return ((FdoIScrollableFeatureReader*)m_reader.p)->ReadAtIndex(recordindex);
     if(dynamic_cast<CGwsFeatureIterator*>(m_reader.p) != NULL)
         return ((CGwsFeatureIterator*)m_reader.p)->ReadAtIndex(recordindex);
     assert(false);
@@ -831,10 +813,8 @@ CGwsFeatureIterator::IndexOf(FdoPropertyValueCollection* key)
     CheckReader();
     if(!m_bScrollableReader) GWS_THROW(eGwsNotSupported);
 
-    if(dynamic_cast<SdfIScrollableFeatureReader*>(m_reader.p) != NULL)
-        return ((SdfIScrollableFeatureReader*)m_reader.p)->IndexOf(key);
-    if(dynamic_cast<ShpIScrollableFeatureReader*>(m_reader.p) != NULL)
-        return ((ShpIScrollableFeatureReader*)m_reader.p)->IndexOf(key);
+    if(dynamic_cast<FdoIScrollableFeatureReader*>(m_reader.p) != NULL)
+        return ((FdoIScrollableFeatureReader*)m_reader.p)->IndexOf(key);
     if(dynamic_cast<CGwsFeatureIterator*>(m_reader.p) != NULL)
         return ((CGwsFeatureIterator*)m_reader.p)->IndexOf(key);
     assert(false);
@@ -848,8 +828,7 @@ CGwsFeatureIterator::Scrollable()
     CheckReader();
     if(NULL == m_reader || !m_bScrollableReader)
         return false;
-    if( (NULL == dynamic_cast<SdfIScrollableFeatureReader*>(m_reader.p)) &&
-        (NULL == dynamic_cast<ShpIScrollableFeatureReader*>(m_reader.p)) &&
+    if( (NULL == dynamic_cast<FdoIScrollableFeatureReader*>(m_reader.p)) &&
         (NULL == dynamic_cast<CGwsFeatureIterator*>(m_reader.p)))
         return false;
 

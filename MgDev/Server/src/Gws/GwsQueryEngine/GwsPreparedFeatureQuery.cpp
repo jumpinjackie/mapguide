@@ -23,10 +23,6 @@
 
 #include "stdafx.h"
 #include "GwsQueryEngineImp.h"
-#include <SDF/IExtendedSelect.h>
-#include <SDF/SdfCommandType.h>
-#include <SHP/IExtendedSelect.h>
-#include <SHP/ShpCommandType.h>
 #include "FdoExpressionEngineCopyFilter.h"
 #include "FdoExpressionEngineFilterProcessor.h"
 
@@ -212,20 +208,6 @@ EGwsStatus CGwsPreparedFeatureQuery::Init (
                 mExSelProv = eFDO;
                 break;
             }
-            if( pTypes[i] == SdfCommandType_ExtendedSelect)
-            {
-                m_bExtendedQuerySupported = true;
-                selcmd = (SdfIExtendedSelect *) m_connection->CreateCommand (SdfCommandType_ExtendedSelect);
-                mExSelProv = eSDF;
-                break;
-            }
-            if( pTypes[i] == ShpCommandType_ExtendedSelect)
-            {
-                m_bExtendedQuerySupported = true;
-                selcmd = (ShpIExtendedSelect *) m_connection->CreateCommand (ShpCommandType_ExtendedSelect);
-                mExSelProv = eSHP;
-                break;
-            }
         }
 
         if(!m_bExtendedQuerySupported)
@@ -245,16 +227,6 @@ EGwsStatus CGwsPreparedFeatureQuery::Init (
                     FdoIExtendedSelect* pExSelCmd = (FdoIExtendedSelect*)selcmd;
                     pExSelCmd->SetOrderingOption(orderBy->GetString(0), orderingOption);
                 }
-                else if(mExSelProv == eSDF)
-                {
-                    SdfIExtendedSelect* pExSelCmd = (SdfIExtendedSelect*)selcmd;
-                    pExSelCmd->SetOrderingOption(orderBy->GetString(0), orderingOption);
-                }
-                else if(mExSelProv == eSHP)
-                {
-                    ShpIExtendedSelect* pExSelCmd = (ShpIExtendedSelect*)selcmd;
-                    pExSelCmd->SetOrderingOption(orderBy->GetString(0), orderingOption);
-                }//etc.
             }
             else
             {
@@ -426,10 +398,6 @@ EGwsStatus CGwsPreparedFeatureQuery::Execute (
         {
             if (mExSelProv == eFDO)
                 reader = ((FdoIExtendedSelect *)m_pCommand.p)->ExecuteScrollable();
-            else if(mExSelProv == eSDF)
-                reader = ((SdfIExtendedSelect *)m_pCommand.p)->ExecuteScrollable();
-            else if(mExSelProv == eSHP)
-                reader = ((ShpIExtendedSelect *)m_pCommand.p)->ExecuteScrollable();
         }
         //If extended query failed or was skipped, do standard query
         if(NULL == reader)
