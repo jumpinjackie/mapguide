@@ -1,6 +1,3 @@
-OSTN02.txt
-OSTN97.txt
-Japan/TKY2JGD.par
 coordsys.asc
 datums.asc
 ellipsoid.asc
