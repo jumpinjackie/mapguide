@@ -31,7 +31,11 @@
    <?Ifdef item="Feature.WGS84BoundingBox"?>
    <?Enum list="&Feature.WGS84BoundingBox;" using="&BoundingBox.xml;" item="Bounds"?>
    <?Else?>
+    <?Ifdef item="Feature.Bounds"?>
+      <?Enum list="&Feature.Bounds;" using="&BoundingBox.xml;" item="Bounds"?>
+    <?Else?>
     &Feature.name.to.BoundingBox;
+    <?Endif?>
    <?Endif?>
    </ows:WGS84BoundingBox>
   </wfs:FeatureType>
