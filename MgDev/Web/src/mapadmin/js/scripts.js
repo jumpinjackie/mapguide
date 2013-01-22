@@ -306,7 +306,6 @@ function ScrollToBottomOfPage()
     var scrollHeight = 0;
     if ( document.body.scrollHeight )
     {
-        scrollWidth = document.body.scrollWidth;
         scrollHeight = document.body.scrollHeight;
     }
     window.self.scrollBy( scrollWidth, scrollHeight );
