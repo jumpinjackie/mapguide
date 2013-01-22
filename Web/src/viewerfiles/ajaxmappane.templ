@@ -768,7 +768,7 @@ function SetMapCursor(strCursor)
     else
     {
         // https://code.google.com/p/chromium/issues/detail?id=145919
-        if (chrome && (strCursor == "digitizePoint" strCursor == "measure"))
+        if (chrome && (strCursor == "digitizePoint" || strCursor == "measure"))
             strCursor = "crosshair";
         else
             strCursor = "url('../stdicons/" + strCursor + ".cur'), pointer";
