@@ -1,10 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
-  <?define Have_ArcSde = "no" ?>
-  <?define Fdo_VS2010 = "yes" ?>
-  <?if "$(var.Fdo_VS2010)" = "yes" ?>
-    <?define Have_ArcSde = "yes" ?>
-  <?endif ?>
   <?if "$(var.MgPlatform)" = "x64" ?>
     <?define Win64 = "yes" ?>
     <?define PlatformProgramFilesFolder = "ProgramFiles64Folder" ?>
@@ -93,13 +88,8 @@
           <!-- FDO Core -->
           <Component Id="FdoCoreCompnent" Win64="$(var.Win64)" Guid="90F4CB26-524F-499B-AA22-BD17036B167D">
               <File Id="FdoRegUtil" Checksum="yes" Source="$(var.MgSource)\Server\FDO\FdoRegUtil.exe" />
-              <?if "$(var.Fdo_VS2010)" = "no" ?>
-              <File Id="FdoBoostDateTime" Checksum="yes" Source="$(var.MgSource)\Server\FDO\boost_date_time-vc90-mt-1_42.dll" />
-              <File Id="FdoBoostThread" Checksum="yes" Source="$(var.MgSource)\Server\FDO\boost_thread-vc90-mt-1_42.dll" />
-              <?else?>
               <File Id="FdoBoostDateTime" Checksum="yes" Source="$(var.MgSource)\Server\FDO\boost_date_time-vc100-mt-1_42.dll" />
               <File Id="FdoBoostThread" Checksum="yes" Source="$(var.MgSource)\Server\FDO\boost_thread-vc100-mt-1_42.dll" />
-              <?endif ?>
               <File Id="XalanLib" Checksum="yes" Source="$(var.MgSource)\Server\FDO\Xalan-C_1_11.dll" />
               <File Id="XalanMessagesLib" Checksum="yes" Source="$(var.MgSource)\Server\FDO\XalanMessages_1_11.dll" />
               <File Id="XercesLib" Checksum="yes" Source="$(var.MgSource)\Server\FDO\xerces-c_3_1.dll" />
@@ -119,7 +109,7 @@
           </Component>
           <!-- ArcSDE Provider -->
           <Component Id="FdoArcSdeComponent" Win64="$(var.Win64)" Guid="73E0719B-243F-49E9-BF74-F1B7CF7EA35F">
-              <?if Have_ArcSde = "yes" ?>
+              <?if "$(var.Have_ArcSde)" = "yes" ?>
               <File Id="ArcSdeMessage" Checksum="yes" Source="$(var.MgSource)\Server\FDO\ArcSDEMessage.dll" />
               <File Id="ArcSdeProvider92" Checksum="yes" Source="$(var.MgSource)\Server\FDO\ArcSdeProvider92.dll" />
               <File Id="ArcSdeProvider" Checksum="yes" Source="$(var.MgSource)\Server\FDO\ArcSdeProvider.dll" />
@@ -195,7 +185,7 @@
         <ComponentRef Id="FdoComponent"/>
         <ComponentRef Id="FdoComComponent" />
         <ComponentRef Id="FdoCoreCompnent" />
-        <?if Have_ArcSde = "yes" ?>
+        <?if "$(var.Have_ArcSde)" = "yes" ?>
         <Feature Id="FdoArcSdeProviderFeature" Title="!(loc.ArcSdeProvider)" Level="1" Description="!(loc.ArcSdeProviderDesc)" AllowAdvertise="no" TypicalDefault="install" InstallDefault="local">
           <ComponentRef Id="FdoArcSdeComponent" />
         </Feature>

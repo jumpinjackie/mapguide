@@ -58,12 +58,18 @@ SET INSTALLER_VERSION_MAJOR_MINOR_REV=%INSTALLER_VERSION_MAJOR_MINOR%.0
 SET INSTALLER_NAME=MapGuideOpenSource-%INSTALLER_VERSION_MAJOR_MINOR_REV%-Trunk-%CULTURE%-%TYPEBUILD%-%CPUTYPE%
 SET INSTALLER_VERSION=%INSTALLER_VERSION_MAJOR_MINOR_REV%.0
 SET INSTALLER_TITLE="MapGuide Open Source %INSTALLER_VERSION_MAJOR_MINOR% Trunk (%TYPEBUILD%)"
+rem Default to no (omit the ArcSDE installer feature and don't look for ArcSDE provider dlls in staging area)
+rem Only when we're packaging against the official FDO SDK can we set this to yes
+SET MG_WITH_ARCSDE=no
 SET MG_REG_KEY=Software\OSGeo\MapGuide\%INSTALLER_VERSION_MAJOR_MINOR_REV%
 SET MG_SOURCE=%CD%\..\MgDev\%TYPEBUILD%
 SET MG_SOURCE_WEB=%CD%\..\MgDev\Web
 SET MG_SOURCE_INC=
 rem Set to NO to build installers quicker (at the expense of file size)
 SET MAX_COMPRESSION=YES
+
+rem Unlike other parameters, this is an env-var to faciliate ease of invocation from a CI like Jenkins
+IF "%WITH_ARCSDE%"=="yes" SET MG_WITH_ARCSDE=yes
 
 rem ==================================================
 rem MapGuide Installer vars
@@ -202,6 +208,7 @@ echo Installer Output Directory: %INSTALLER_OUTPUT%
 echo MG Source Directory: %MG_SOURCE%
 echo Locale: %CULTURE%
 echo Registry Root: %MG_REG_KEY%
+echo Bundling ArcSDE Provider: %MG_WITH_ARCSDE%
 echo ===================================================
 
 if "%TYPEACTION%"=="build" goto build
@@ -464,7 +471,7 @@ echo [generate]: Web - misc web root
 goto quit
 
 :build
-SET RUN_BUILD=%MSBUILD% /p:OutputName=%INSTALLER_NAME%;MgCulture=%CULTURE%;MgTitle=%INSTALLER_TITLE%;MgVersion=%INSTALLER_VERSION%;MgRegKey=%MG_REG_KEY%;MgPlatform=%CPUTYPE%
+SET RUN_BUILD=%MSBUILD% /p:OutputName=%INSTALLER_NAME%;MgCulture=%CULTURE%;MgTitle=%INSTALLER_TITLE%;MgVersion=%INSTALLER_VERSION%;MgRegKey=%MG_REG_KEY%;MgPlatform=%CPUTYPE%;Have_ArcSde=%MG_WITH_ARCSDE%
 if not ""=="%MG_SOURCE_INC%" set RUN_BUILD=%RUN_BUILD%;MgSource=%MG_SOURCE_INC%
 echo [build]: Installer 
 %RUN_BUILD% InstallerWix%VS_SLN_SUFFIX%.sln
