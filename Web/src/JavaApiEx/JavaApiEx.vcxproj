@@ -98,8 +98,9 @@ del org\osgeo\mapguide\*.class
 echo Building java classes...
 "$(JAVA_HOME)\bin\javac" -classpath . org\osgeo\mapguide\*.java
 echo Building JAR file
-"$(JAVA_HOME)\bin\jar" cf ..\WEB-INF\lib\MapGuideApid.jar org\osgeo\mapguide\*.class
-</Command>
+"$(JAVA_HOME)\bin\jar" cf ..\WEB-INF\lib\MapGuideApiExd.jar org\osgeo\mapguide\*.class
+echo Building -sources JAR file
+"$(JAVA_HOME)\bin\jar" cf ..\WEB-INF\lib\MapGuideApiExd-sources.jar org\osgeo\mapguide\*.java</Command>
     </PreBuildEvent>
     <ClCompile>
       <Optimization>Disabled</Optimization>
@@ -137,8 +138,9 @@ del org\osgeo\mapguide\*.class
 echo Building java classes...
 "$(JAVA_HOME)\bin\javac" -classpath . org\osgeo\mapguide\*.java
 echo Building JAR file
-"$(JAVA_HOME)\bin\jar" cf ..\WEB-INF\lib\MapGuideApid.jar org\osgeo\mapguide\*.class
-</Command>
+"$(JAVA_HOME)\bin\jar" cf ..\WEB-INF\lib\MapGuideApiExd.jar org\osgeo\mapguide\*.class
+echo Building -sources JAR file
+"$(JAVA_HOME)\bin\jar" cf ..\WEB-INF\lib\MapGuideApiExd-sources.jar org\osgeo\mapguide\*.java</Command>
     </PreBuildEvent>
     <ClCompile>
       <Optimization>Disabled</Optimization>
@@ -177,6 +179,8 @@ echo Building java classes...
 "$(JAVA_HOME)\bin\javac" -classpath . org\osgeo\mapguide\*.java
 echo Building JAR file
 "$(JAVA_HOME)\bin\jar" cf ..\WEB-INF\lib\MapGuideApiEx.jar org\osgeo\mapguide\*.class
+echo Building -sources JAR file
+"$(JAVA_HOME)\bin\jar" cf ..\WEB-INF\lib\MapGuideApiEx-sources.jar org\osgeo\mapguide\*.java
 </Command>
     </PreBuildEvent>
     <ClCompile>
@@ -216,7 +220,8 @@ echo Building java classes...
 "$(JAVA_HOME)\bin\javac" -classpath . org\osgeo\mapguide\*.java
 echo Building JAR file
 "$(JAVA_HOME)\bin\jar" cf ..\WEB-INF\lib\MapGuideApiEx.jar org\osgeo\mapguide\*.class
-</Command>
+echo Building -sources JAR file
+"$(JAVA_HOME)\bin\jar" cf ..\WEB-INF\lib\MapGuideApiEx-sources.jar org\osgeo\mapguide\*.java</Command>
     </PreBuildEvent>
     <ClCompile>
       <Optimization>MaxSpeed</Optimization>
