@@ -91,6 +91,9 @@ private:
     INT32 m_nJoinQueryBatchSize;
 
     INT32 m_nDataCacheSize;
+    // This is the overriding flag that decides if we should test for and use the FDO Join
+    // APIs if possible
+    bool m_bUseFdoJoinOptimization;
 
     // FDO join optimization
     bool IsFunctionOnPrimaryProperty(FdoFunction* function, FdoIConnection* conn, CREFSTRING schemaName, CREFSTRING className);
