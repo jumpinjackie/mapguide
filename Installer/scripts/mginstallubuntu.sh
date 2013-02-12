@@ -1,13 +1,15 @@
 #!/bin/bash
 TEMPDIR=/tmp/build_mapguide
-#URL="http://download.osgeo.org/mapguide/releases/2.4.0/Beta1/ubuntu12"
-URL="http://192.168.0.3/downloads/ubuntu12"
-FDOVER_MAJOR_MINOR=3.7
+URL="http://download.osgeo.org/mapguide/releases/2.5.0/Beta1/ubuntu12"
+#URL="http://192.168.0.4/downloads/ubuntu12"
+FDOVER_MAJOR_MINOR=3.8
 FDOVER_MAJOR_MINOR_REV=${FDOVER_MAJOR_MINOR}.0
-FDOVER=${FDOVER_MAJOR_MINOR_REV}-6479_i386
-MGVER_MAJOR_MINOR=2.4
+FDOBUILD=14601
+FDOVER=${FDOVER_MAJOR_MINOR_REV}-${FDOBUILD}_i386
+MGVER_MAJOR_MINOR=2.5
 MGVER_MAJOR_MINOR_REV=${MGVER_MAJOR_MINOR}.0
-MGVER=${MGVER_MAJOR_MINOR_REV}-6757_i386
+MGBUILD=7345
+MGVER=${MGVER_MAJOR_MINOR_REV}-${MGBUILD}_i386
 
 # Must have root
 if [[ $EUID -ne 0 ]]; then
@@ -118,7 +120,7 @@ start_install()
 	done
 
 	# Nuke the old providers.xml, we're rebuiding it
-	providersxml=/usr/local/fdo-3.7.0/lib/providers.xml
+	providersxml=/usr/local/fdo-${FDOVER_MAJOR_MINOR_REV}/lib/providers.xml
 	echo -ne "<?xml version=\"1.0\" encoding=\"utf-8\" standalone=\"no\" ?>" > ${providersxml}
 	echo -ne "\n<FeatureProviderRegistry>" >> ${providersxml}
 	for file in $choice
