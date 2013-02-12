@@ -351,6 +351,10 @@ EXTERNAL_API:
     static const STRING FeatureServicePropertyFDOConnectionTimeoutCustom;        /// value("FDOConnectionTimeoutCustom")
     static const STRING DefaultFeatureServicePropertyFDOConnectionTimeoutCustom; /// value("OSGeo.WMS:120")
 
+    /// Defines whether to use the FDO Join APIs for Feature Joins where applicable and supported
+    static const STRING FeatureServicePropertyUseFdoJoinOptimization;            /// value("UseFdoJoinOptimization")
+    static const bool DefaultFeatureServicePropertyUseFdoJoinOptimization;       /// value(true)
+
     /// MAPPING SERVICE PROPERTIES SECTION -------------------------------------------------------------------------------
 
     /// Mapping Service properties
