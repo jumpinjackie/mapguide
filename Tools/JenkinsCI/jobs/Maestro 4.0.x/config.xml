@@ -1,0 +1,109 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<project>
+  <actions/>
+  <description></description>
+  <logRotator>
+    <daysToKeep>-1</daysToKeep>
+    <numToKeep>5</numToKeep>
+    <artifactDaysToKeep>-1</artifactDaysToKeep>
+    <artifactNumToKeep>-1</artifactNumToKeep>
+  </logRotator>
+  <keepDependencies>false</keepDependencies>
+  <properties>
+    <hudson.model.ParametersDefinitionProperty>
+      <parameterDefinitions>
+        <hudson.model.StringParameterDefinition>
+          <name>VersionLabel</name>
+          <description>The release version label</description>
+          <defaultValue>4.0.4</defaultValue>
+        </hudson.model.StringParameterDefinition>
+      </parameterDefinitions>
+    </hudson.model.ParametersDefinitionProperty>
+  </properties>
+  <scm class="hudson.scm.SubversionSCM">
+    <locations>
+      <hudson.scm.SubversionSCM_-ModuleLocation>
+        <remote>http://svn.osgeo.org/mapguide/branches/maestro-4.0.x</remote>
+        <local>.</local>
+      </hudson.scm.SubversionSCM_-ModuleLocation>
+    </locations>
+    <excludedRegions></excludedRegions>
+    <includedRegions></includedRegions>
+    <excludedUsers></excludedUsers>
+    <excludedRevprop></excludedRevprop>
+    <excludedCommitMessages></excludedCommitMessages>
+    <workspaceUpdater class="hudson.scm.subversion.UpdateUpdater"/>
+  </scm>
+  <canRoam>true</canRoam>
+  <disabled>false</disabled>
+  <blockBuildWhenDownstreamBuilding>false</blockBuildWhenDownstreamBuilding>
+  <blockBuildWhenUpstreamBuilding>false</blockBuildWhenUpstreamBuilding>
+  <jdk>(Default)</jdk>
+  <triggers class="vector">
+    <hudson.triggers.SCMTrigger>
+      <spec>15 * * * *</spec>
+    </hudson.triggers.SCMTrigger>
+  </triggers>
+  <concurrentBuild>false</concurrentBuild>
+  <builders>
+    <hudson.tasks.BatchFile>
+      <command>pushd %WORKSPACE%
+rd /S /Q out
+popd
+pushd %WORKSPACE%\Properties
+C:\builds\SetAssemblyVersion.exe -set:%VersionLabel%.%SVN_REVISION% GlobalAssemblyInfo.cs
+popd
+pushd %WORKSPACE%\SDK
+rd /S /Q bin
+popd</command>
+    </hudson.tasks.BatchFile>
+    <hudson.plugins.msbuild.MsBuildBuilder>
+      <msBuildName>MSBUILD 3.5 x86</msBuildName>
+      <msBuildFile>Maestro\Maestro_All.sln</msBuildFile>
+      <cmdLineArgs>/p:Configuration=Release</cmdLineArgs>
+      <buildVariablesAsProperties>true</buildVariablesAsProperties>
+    </hudson.plugins.msbuild.MsBuildBuilder>
+    <hudson.tasks.BatchFile>
+      <command>pushd %WORKSPACE%\UserDoc
+call make.bat html
+popd
+pushd %WORKSPACE%\UserDoc\build\html
+xcopy /S /Y *.* &quot;%WORKSPACE%\out\Release\UserDoc\&quot;
+popd
+</command>
+    </hudson.tasks.BatchFile>
+    <hudson.tasks.BatchFile>
+      <command>pushd %WORKSPACE%\Thirdparty\NSIS
+makensis.exe /DSLN_CONFIG=Release /DCPU=x86 /DRELEASE_VERSION=%VersionLabel% &quot;%WORKSPACE%\Install\Maestro.nsi&quot;
+pushd 
+pushd %WORKSPACE%\out
+move /Y *.exe C:\builds
+popd</command>
+    </hudson.tasks.BatchFile>
+    <hudson.tasks.BatchFile>
+      <command>pushd %WORKSPACE%\out\Release\AddIns
+rd /S /Q Local
+popd
+pushd %WORKSPACE%\out\Release
+del LocalConfigure.*
+7z a -tzip -mx9 C:\builds\MapGuideMaestro-%VersionLabel%-Release.zip .
+popd</command>
+    </hudson.tasks.BatchFile>
+    <hudson.plugins.msbuild.MsBuildBuilder>
+      <msBuildName>MSBUILD 4.0 x86</msBuildName>
+      <msBuildFile>Doc\MaestroAPI.shfbproj</msBuildFile>
+      <cmdLineArgs></cmdLineArgs>
+      <buildVariablesAsProperties>true</buildVariablesAsProperties>
+    </hudson.plugins.msbuild.MsBuildBuilder>
+    <hudson.tasks.BatchFile>
+      <command>pushd %WORKSPACE%\Doc\Help
+move /Y MaestroAPI.chm &quot;%WORKSPACE%\SDK&quot;
+popd
+pushd %WORKSPACE%\SDK
+7z a -tzip -mx9 C:\builds\MaestroSDK_%VersionLabel%.zip .
+popd</command>
+    </hudson.tasks.BatchFile>
+  </builders>
+  <publishers/>
+  <buildWrappers/>
+</project>
