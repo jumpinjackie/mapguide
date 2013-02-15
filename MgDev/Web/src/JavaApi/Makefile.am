@@ -466,3 +466,4 @@ MgApi_wrap.cpp : \
 	mv -f *.java org/osgeo/mapguide
 	$(JAVA_HOME)/bin/javac -classpath . org/osgeo/mapguide/*.java
 	$(JAVA_HOME)/bin/jar cf ../WEB-INF/lib/MapGuideApi.jar org/osgeo/mapguide/*.class
+	$(JAVA_HOME)/bin/jar cf ../WEB-INF/lib/MapGuideApi-sources.jar org/osgeo/mapguide/*.java
