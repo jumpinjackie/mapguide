@@ -424,7 +424,7 @@ function BuildLayerDefinitionContent()
                       "GEOM",
                       $fillstyle,
                       $xtrans . $ffcolor,
-                      $transparent? "ff" . $fbcolor: "00" . $fbcolor,
+                      $transparent? "00" . $fbcolor: "ff" . $fbcolor,
                       $linestyle,
                       $thickness,
                       $lcolor);
