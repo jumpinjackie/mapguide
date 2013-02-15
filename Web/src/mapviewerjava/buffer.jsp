@@ -441,7 +441,7 @@ MgByteReader BuildLayerDefinitionContent() throws MgException, Exception
                 "GEOM",
                 fillstyle,
                 xtrans + ffcolor,
-                (0 != transparent? ("ff" + fbcolor): ("00" + fbcolor)),
+                (0 != transparent? ("00" + fbcolor): ("ff" + fbcolor)),
                 linestyle,
                 String.valueOf(thickness),
                 lcolor };

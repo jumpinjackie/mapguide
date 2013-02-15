@@ -438,7 +438,7 @@ MgByteReader BuildLayerDefinitionContent()
                     "GEOM",
                     fillstyle,
                     xtrans + ffcolor,
-                    (0!=transparent)? "ff" + fbcolor: "00" + fbcolor,
+                    (0!=transparent)? "00" + fbcolor: "ff" + fbcolor,
                     linestyle,
                     thickness.ToString(NumberFormatInfo.InvariantInfo),
                     lcolor
