@@ -419,7 +419,7 @@ install-data-hook:
            serverconfig.ini > ${prefix}/bin/serverconfig.ini
 	@echo '#!/bin/bash' > ${prefix}/bin/mgserver.sh
 	@echo '' >> ${prefix}/bin/mgserver.sh
-    @echo 'export PATH=${prefix}/bin:$PATH' >> ${prefix}/bin/mgserver.sh
+	@echo 'export PATH=${prefix}/bin:$$PATH' >> ${prefix}/bin/mgserver.sh
 	@echo 'export MENTOR_DICTIONARY_PATH=$(mentor_dict_install_dir)' >> ${prefix}/bin/mgserver.sh
 	@echo 'export LD_LIBRARY_PATH=$(fdodir):"$$LD_LIBRARY_PATH"' >> ${prefix}/bin/mgserver.sh
 	@echo 'export NLSPATH=$(map_fdo_nls):"$$NLSPATH"' >> ${prefix}/bin/mgserver.sh
