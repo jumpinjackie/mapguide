@@ -11,7 +11,7 @@
 #**********************************************************
 
 echo "MapGuide Open Source build script for OEM components"
-INSTALLDIR=/usr/local/mapguideopensource-2.4.0
+INSTALLDIR=/usr/local/mapguideopensource-2.5.0
 MY_MAKE_OPTS="-j 4"
 CLEAN_FLAG=0
 while [ $# -gt 0 ]; do    # Until you run out of parameters...
@@ -203,7 +203,11 @@ build_geos()
     libtoolize --copy --force
     autoconf
     automake --add-missing --copy --force-missing
-    sh ./configure --prefix="${INSTALLDIR}"
+    if [ $(uname -m) = "x86_64" ]; then
+        sh ./configure --with-pic --prefix="${INSTALLDIR}"
+    else
+        sh ./configure --prefix="${INSTALLDIR}"
+    fi
     make $MY_MAKE_OPTS
     # The check build is disabled as the build will fail with automake version < 2.59
     # check_build
@@ -410,7 +414,13 @@ build_libpng()
 {
     pushd gd/lpng
     cp scripts/makefile.std makefile
-    make $MY_MAKE_OPTS
+    if [ $(uname -m) = "x86_64" ]; then
+        #Inject -fPIC to CFLAGS for 64-bit
+        sed 's/^CFLAGS=/CFLAGS= -fPIC /g' makefile > makefile64
+        make -fmakefile64 $MY_MAKE_OPTS
+    else
+        make $MY_MAKE_OPTS
+    fi
     check_build
     popd
 }
@@ -436,8 +446,16 @@ init_jpeg()
 build_jpeg()
 {
     pushd gd/jpeg
-    sh ./configure --enable-static --disable-shared
-    make $MY_MAKE_OPTS
+    if [ $(uname -m) = "x86_64" ]; then
+        sh ./configure --enable-static --disable-shared
+        #--with-pic does nothing (probably ancient configure script), so do some sed trickery
+        #to inject this flag. Know a better way? Enlighten us :)
+        sed 's/^CFLAGS=/CFLAGS= -fPIC/g' Makefile > Makefile64
+        make -fMakefile64 $MY_MAKE_OPTS
+    else
+        sh ./configure --enable-static --disable-shared
+        make $MY_MAKE_OPTS
+    fi
     check_build
     popd
 }
@@ -463,7 +481,11 @@ init_freetype()
 build_freetype()
 {
     pushd gd/freetype
-    sh ./configure --enable-static --disable-shared
+    if [ $(uname -m) = "x86_64" ]; then
+        sh ./configure --enable-static --disable-shared --with-pic
+    else
+    	sh ./configure --enable-static --disable-shared
+    fi
     make $MY_MAKE_OPTS
     check_build
     popd
@@ -490,7 +512,11 @@ init_gd()
 build_gd()
 {
     pushd gd/gd
-    sh ./configure --enable-static --disable-shared --without-fontconfig
+    if [ $(uname -m) = "x86_64" ]; then
+        sh ./configure --enable-static --disable-shared --without-fontconfig --with-pic
+    else
+    	sh ./configure --enable-static --disable-shared --without-fontconfig
+    fi
     make $MY_MAKE_OPTS
     check_build
     popd
@@ -517,7 +543,11 @@ init_agg()
 build_agg()
 {
     pushd agg-2.4
-    make $MY_MAKE_OPTS
+    if [ $(uname -m) = "x86_64" ]; then
+        make $MY_MAKE_OPTS EXTRACXXFLAGS=-fPIC
+    else
+        make $MY_MAKE_OPTS
+    fi
     check_build
     popd
 }
@@ -570,11 +600,23 @@ build_csmap()
     pushd CsMap
     mkdir -p .libs
     pushd Source
-    make -fLibrary.mak $MY_MAKE_OPTS
+    if [ $(uname -m) = "x86_64" ]; then
+        #Need to build CS-Map with -fPIC because linking libraries will be built with -fPIC
+	sed 's/^C_FLG =/C_FLG = -fPIC/g' Library.mak | sed 's/CPP_FLG =/CPP_FLG = -fPIC/g' > Library64.mak
+	make -fLibrary64.mak $MY_MAKE_OPTS
+    else
+    	make -fLibrary.mak $MY_MAKE_OPTS
+    fi
     cp CsMap.a ../.libs/libCsmap.a
     popd
     pushd Dictionaries
-    make -fCompiler.mak $MY_MAKE_OPTS
+    if [ $(uname -m) = "x86_x64" ]; then
+        #Need to build CS-Map with -fPIC because linking libraries will be built with -fPIC
+        sed 's/^C_FLG =/C_FLG = -fPIC/g' Library.mak | sed 's/CPP_FLG =/CPP_FLG = -fPIC/g' > Compiler64.mak
+	make -fCompiler64.mak $MY_MAKE_OPTS
+    else
+        make -fCompiler.mak $MY_MAKE_OPTS
+    fi
     ./CS_Comp -b . .
     popd
     check_build

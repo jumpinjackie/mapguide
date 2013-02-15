@@ -1,14 +1,16 @@
 #!/bin/bash
-#URL="http://download.osgeo.org/mapguide/releases/2.4.0/Beta1"
-URL="http://192.168.0.3/downloads/"
-FDOVER_MAJOR_MINOR=3.7
+URL="http://download.osgeo.org/mapguide/releases/2.5.0/Beta1"
+#URL="http://192.168.0.4/downloads"
+FDOVER_MAJOR_MINOR=3.8
 FDOVER_MAJOR_MINOR_REV=${FDOVER_MAJOR_MINOR}.0
-FDOVER=${FDOVER_MAJOR_MINOR_REV}.6479
-MGVER_MAJOR_MINOR=2.4
+FDOVER=${FDOVER_MAJOR_MINOR_REV}_14601
+MGVER_MAJOR_MINOR=2.5
 MGVER_MAJOR_MINOR_REV=${MGVER_MAJOR_MINOR}.0
-MGVER=${MGVER_MAJOR_MINOR_REV}.6757
-FDO_TARBALL=fdosdk-centos5-${FDOVER}.tgz
+MGVER=${MGVER_MAJOR_MINOR_REV}.7345
+FDO_TARBALL=fdosdk-centos5-${FDOVER}.tar.gz
 MG_TARBALL=mapguideopensource-${MGVER}.tar.gz
+MG_URL=${URL}/${MG_TARBALL}
+FDO_URL="http://download.osgeo.org/fdo/3.8.0/beta1/binaries/linux/${FDO_TARBALL}"
 
 # Must have root
 if [[ $EUID -ne 0 ]]; then
@@ -17,13 +19,15 @@ if [[ $EUID -ne 0 ]]; then
 fi
 
 if [ ! -f ${FDO_TARBALL} ]; then
-wget -N ${URL}${FDO_TARBALL}
+wget -N ${FDO_URL}
 fi
 
-tar -C / -zxvf ${FDO_TARBALL}
+#tar -C / -zxvf ${FDO_TARBALL}
+mkdir -p /usr/local/fdo-3.8.0
+tar -C /usr/local/fdo-3.8.0/ -zxvf ${FDO_TARBALL}
 
 if [ ! -f ${MG_TARBALL} ]; then
-wget -N ${URL}${MG_TARBALL}
+wget -N ${MG_URL}
 fi
 
 tar -C / -zxvf ${MG_TARBALL}

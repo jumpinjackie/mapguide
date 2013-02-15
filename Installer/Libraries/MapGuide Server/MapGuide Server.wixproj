@@ -16,22 +16,22 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
     <OutputPath>bin\$(Configuration)\</OutputPath>
     <IntermediateOutputPath>obj\$(Configuration)\</IntermediateOutputPath>
-    <DefineConstants>Debug;MgRegKey=$(MgRegKey);MgSource=$(MgSource);MgPlatform=$(MgPlatform)</DefineConstants>
+    <DefineConstants>Debug;MgRegKey=$(MgRegKey);MgSource=$(MgSource);MgPlatform=$(MgPlatform);Have_ArcSde=$(Have_ArcSde)</DefineConstants>
     <LibBindFiles>True</LibBindFiles>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
     <OutputPath>bin\$(Configuration)\</OutputPath>
     <IntermediateOutputPath>obj\$(Configuration)\</IntermediateOutputPath>
-    <DefineConstants>MgCulture=$(MgCulture);MgRegKey=$(MgRegKey);MgSource=$(MgSource);MgPlatform=$(MgPlatform)</DefineConstants>
+    <DefineConstants>MgCulture=$(MgCulture);MgRegKey=$(MgRegKey);MgSource=$(MgSource);MgPlatform=$(MgPlatform);Have_ArcSde=$(Have_ArcSde)</DefineConstants>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x64' ">
-    <DefineConstants>Debug;MgRegKey=$(MgRegKey);MgSource=$(MgSource);MgPlatform=$(MgPlatform)</DefineConstants>
+    <DefineConstants>Debug;MgRegKey=$(MgRegKey);MgSource=$(MgSource);MgPlatform=$(MgPlatform);Have_ArcSde=$(Have_ArcSde)</DefineConstants>
     <LibBindFiles>True</LibBindFiles>
     <OutputPath>bin\$(Platform)\$(Configuration)\</OutputPath>
     <IntermediateOutputPath>obj\$(Platform)\$(Configuration)\</IntermediateOutputPath>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x64' ">
-    <DefineConstants>MgCulture=$(MgCulture);MgRegKey=$(MgRegKey);MgSource=$(MgSource);MgPlatform=$(MgPlatform)</DefineConstants>
+    <DefineConstants>MgCulture=$(MgCulture);MgRegKey=$(MgRegKey);MgSource=$(MgSource);MgPlatform=$(MgPlatform);Have_ArcSde=$(Have_ArcSde)</DefineConstants>
     <OutputPath>bin\$(Platform)\$(Configuration)\</OutputPath>
     <IntermediateOutputPath>obj\$(Platform)\$(Configuration)\</IntermediateOutputPath>
   </PropertyGroup>
