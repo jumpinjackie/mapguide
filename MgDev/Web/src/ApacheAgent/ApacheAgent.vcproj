@@ -329,7 +329,7 @@
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
-                CommandLine=""  
+				CommandLine=""
 			/>
 		</Configuration>
 	</Configurations>
@@ -365,6 +365,14 @@
 					Name="VCCustomBuildTool"
 				/>
 			</FileConfiguration>
+		</File>
+		<File
+			RelativePath=".\ApacheReaderStreamer.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\ApacheReaderStreamer.h"
+			>
 		</File>
 		<File
 			RelativePath=".\ApacheResponseHandler.cpp"

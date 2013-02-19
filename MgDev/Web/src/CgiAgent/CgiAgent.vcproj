@@ -352,6 +352,14 @@
 			>
 		</File>
 		<File
+			RelativePath=".\CgiReaderStreamer.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\CgiReaderStreamer.h"
+			>
+		</File>
+		<File
 			RelativePath=".\CgiResponseHandler.cpp"
 			>
 		</File>

@@ -352,6 +352,14 @@
 			>
 		</File>
 		<File
+			RelativePath=".\IsapiReaderStreamer.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\IsapiReaderStreamer.h"
+			>
+		</File>
+		<File
 			RelativePath=".\IsapiResponseHandler.cpp"
 			>
 		</File>
