@@ -39,9 +39,8 @@ class TestFeatureService : public CppUnit::TestFixture
     CPPUNIT_TEST(TestCase_ApplySchema);
     CPPUNIT_TEST(TestCase_SelectFeatures);
     CPPUNIT_TEST(TestCase_SelectAggregate);
-//    CPPUNIT_TEST(TestCase_UpdateFeatures);
+    CPPUNIT_TEST(TestCase_UpdateFeaturesInsert);
     CPPUNIT_TEST(TestCase_UpdateFeaturesPartialFailure);
-//  TODO write test case when know how to make command collection
     CPPUNIT_TEST(TestCase_ExecuteSqlQuery);
     CPPUNIT_TEST(TestCase_ExecuteSqlNonQuery);
     CPPUNIT_TEST(TestCase_GetSpatialContexts);
@@ -62,7 +61,6 @@ class TestFeatureService : public CppUnit::TestFixture
     CPPUNIT_TEST(TestCase_SavePoint);
     CPPUNIT_TEST(TestCase_JoinFdoFeatures);
     CPPUNIT_TEST(TestCase_BenchmarkSqliteJoin);
-    
     CPPUNIT_TEST(TestCase_BenchmarkSqliteAggregateJoin);
 
     CPPUNIT_TEST(TestEnd); // This must be the very last unit test
@@ -89,7 +87,7 @@ public:
     void TestCase_ApplySchema();
     void TestCase_SelectFeatures();
     void TestCase_SelectAggregate();
-//    void TestCase_UpdateFeatures();
+    void TestCase_UpdateFeaturesInsert();
     void TestCase_UpdateFeaturesPartialFailure();
     void TestCase_ExecuteSqlQuery();
     void TestCase_ExecuteSqlNonQuery();

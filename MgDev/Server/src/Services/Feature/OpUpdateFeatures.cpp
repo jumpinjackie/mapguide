@@ -91,9 +91,6 @@ void MgOpUpdateFeatures::Execute()
         // Execute the operation
         Ptr<MgPropertyCollection> rowsAffected = m_service->UpdateFeatures(resource, commands, useTransaction);
 
-        // Write the response
-        EndExecution(rowsAffected);
-
         // #649: Exceptions are only thrown in transactional cases (which will never reach here). For non-transactional cases, 
         // we check for any MgStringProperty instances. These are "serialized" FDO exception messages indicating failure for that 
         // particular command. We can't throw for non-transactional cases, instead we put the onus on the consuming caller to do 
@@ -108,6 +105,13 @@ void MgOpUpdateFeatures::Execute()
                 partialFailureMsg = sprop->GetValue();
                 break;
             }
+        }
+
+        if (mgException == NULL && partialFailureMsg.empty())
+        {
+            // Only Write the response if there no Fdo Exception
+            // if there is an exception, Response will be written by MgFeatureServiceHandler::ProcessOperation catching it
+            EndExecution(rowsAffected);
         }
     }
     else
@@ -148,4 +152,5 @@ void MgOpUpdateFeatures::Execute()
     MG_LOG_OPERATION_MESSAGE_ACCESS_ENTRY();
 
     MG_FEATURE_SERVICE_THROW()
+
 }
