@@ -235,9 +235,7 @@ init_php()
 build_php()
 {
     pushd php
-    # #237: Include unixODBC support for PHP
-    # Most distros will have unixODBC headers under /usr instead of php's assumed default [/usr/local]
-    sh ./configure --with-unixODBC=/usr --with-openssl --with-curl --enable-mbstring --with-zlib
+    sh ./configure
     check_build
     popd
 }
