@@ -270,7 +270,7 @@ void TestFeatureService::TestEnd()
         Ptr<MgResourceIdentifier> fsres9 = new MgResourceIdentifier(L"Library://UnitTests/Data/GetIdentityPropertiesTest.FeatureSource");
         if (pService->ResourceExists(fsres9)) pService->DeleteResource(fsres9);
 
-        Ptr<MgResourceIdentifier> fsres10 = new MgResourceIdentifier(L"Library://UnitTests/Data/2218.FeatureSource");
+        Ptr<MgResourceIdentifier> fsres10 = new MgResourceIdentifier(L"Library://UnitTests/Data/TestInsert.FeatureSource");
         if (pService->ResourceExists(fsres10)) pService->DeleteResource(fsres10);
 
         #ifdef _DEBUG
@@ -2486,7 +2486,7 @@ void TestFeatureService::TestCase_UpdateFeaturesInsert()
             throw new MgServiceNotAvailableException(L"TestFeatureService.TestCase_SavePoint", __LINE__, __WFILE__, NULL, L"", NULL);
         }
 
-        Ptr<MgResourceIdentifier> featureSource = new MgResourceIdentifier(L"Library://UnitTests/Data/2218.FeatureSource");
+        Ptr<MgResourceIdentifier> featureSource = new MgResourceIdentifier(L"Library://UnitTests/Data/TestInsert.FeatureSource");
 
         //Create our test data store (SQLite)
         STRING scName = L"Default";
