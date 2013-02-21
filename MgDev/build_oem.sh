@@ -282,6 +282,14 @@ init_bdbxml()
 
 build_bdbxml()
 {
+    # Need to force regen of the correct xerces config header before building dbxml proper
+    pushd dbxml/xerces-c-src
+    sh ./configure
+    popd
+    # Also need to check and set executable flag for s_paths
+    pushd dbxml/dbxml/dist
+    chmod +x s_paths
+    popd
     pushd dbxml
     sh ./buildall.sh
     check_build
