@@ -317,7 +317,13 @@ init_cppunit()
 build_cppunit()
 {
     pushd CppUnit-1.9.14
-    sh ./configure --prefix="${INSTALLDIR}"
+    # Force regen of configure to cover our bases
+    aclocal -I config
+    libtoolize --copy --force
+    autoconf
+    automake --add-missing --copy --force-missing
+    # -ldl is to prevent undefined reference to dlsym/dlopen/dlclose
+    sh ./configure --prefix="${INSTALLDIR}" LDFLAGS="-ldl"
     make
     check_build
     popd
