@@ -1,8 +1,30 @@
 Jenkins CI configuration
 ========================
 
+Build Artifacts produced by this setup
+======================================
+
+== Manually triggered from the Jenkins dashboard ==
+
+ * FDO 3.8 (32-bit/64-bit)
+	* Prepared for MapGuide/mg-desktop. No distribution tarballs as we can't build the ArcSDE provider
+ * MapGuide Open Source 2.5 (32-bit/64-bit)
+	* Windows Installer (32-bit/64-bit)
+	* InstantSetup bundles (32-bit/64-bit)
+ * mg-desktop 2.5 (32-bit/64-bit)
+	* nuget packages (32-bit/64-bit)
+	* zip distributions (32-bit/64-bit)
+
+== Automatically triggered by Jenkins (off of svn commit polling) ==
+
+ * MapGuide Maestro 5.0
+ * MapGuide Maestro 4.0.x
+
 Required Tools
 ==============
+
+Doesn't have to be *exact versions* where specified, but different versions may require editing Jenkins Job files
+and/or MapGuide/FDO setenvironment.bat to point to the correct locations
 
  * Microsoft .net Framework 4.0
  * Microsoft Visual C++ Express 2010 with Service Pack 1
@@ -20,6 +42,14 @@ Required Tools
  * Slik Subversion 1.6.x
  * Windows Installer XML Toolset 3.5
  * Visual C++ SP1 compiler update for Windows SDK (KB2519277)
+ * Apache Ant 1.8.3
+ * MySQL Connector C SDK 6.0.2
+ * Oracle Instant Client 11.2 SDK
+ * Doxygen 1.8.0
+ * GraphViz 2.30
+ * NASM (Netwide Assembler) 2.10
+ * Microsoft HTML Workshop (32-bit)
+ * Sphinx (http://sphinx.pocoo.org)
 
 VS Installation Order
 =====================
@@ -37,8 +67,13 @@ Filesystem layout
 * Currently configured for MGOS 2.5 and FDO 3.8, adjust these version numbers as necessary
 
 C:\apache-ant-1.8.3		[extracted location of apache ant v1.8.3]
-C:\builds
+C:\builds		[all build artifacts produced by Jenkins will be here]
 	- revnum.pl [copy from http://svn.osgeo.org/fdo/branches/2.5/Installer/scripts/revnum.pl]
+C:\fdo_rdbms_thirdparty
+	mysql		[extract/copy MySQL Connector C 32-bit headers/libs here]
+	mysql_x64	[extract/copy MySQL Connector C 64-bit headers/libs here]
+	oracle		[extract 32-bit oracle 11.2 instant client sdk here]
+	oracle_x64	[extract 64-bit oracle 11.2 instant client sdk here]
 C:\fdo-3.8-x86 	[svn wc of http://svn.osgeo.org/fdo/branches/3.8]
 C:\fdo-3.8-x64 	[svn wc of http://svn.osgeo.org/fdo/branches/3.8]
 C:\mg-2.5-x86
@@ -47,3 +82,29 @@ C:\mg-2.5-x86
 C:\mg-2.5-x64
 	- Installer [svn wc of http://svn.osgeo.org/mapguide/branches/2.5/Installer]
 	- MgDev		[svn wc of http://svn.osgeo.org/mapguide/branches/2.5/MgDev]
+C:\nasm			[extract nasm binaries here]
+
+PATH environment variable
+=========================
+
+Make sure the following tools are accessible from the PATH env var:
+
+ * NASM
+ * GraphViz
+ * Doxygen
+ * SlikSvn
+ * 7-zip
+ * Python (installer should do this)
+ * Perl (installer should do this)
+
+SVN Working Copy preparation
+============================
+
+For FDO 3.8 64-bit, edit the root build.bat of thirdparty/core/providers and un-comment the SET EXTRA_MSBUILD_PROPERTIES call
+This is to ensure that the correct 64-bit VS compiler will be used (from the Windows 7.1 SDK)
+
+If setting up on a Windows with UAC, build the UpdateVersion executable under FDOROOT\Thirdparty\util\UpdateVersion and replace the
+existing binary to prevent UAC notifications.
+
+For MapGuide 64-bit modify setenvironment64.bat to ensure that the msbuild calls include /p:PlatformToolset=Windows7.1SDK
+This is to ensure that the correct 64-bit VS compiler will be used (from the Windows 7.1 SDK)
