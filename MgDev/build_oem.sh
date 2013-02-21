@@ -110,6 +110,7 @@ init_dwfcore()
 build_dwfcore()
 {
     pushd DWFTK7.1/develop/global/src/dwfcore
+    libtoolize --copy --force
     sh ./configure --enable-optimized --prefix="${INSTALLDIR}"
     make
     check_build
@@ -140,6 +141,7 @@ init_dwftk()
 build_dwftk()
 {
     pushd DWFTK7.1/develop/global/src/dwf
+    libtoolize --copy --force
     sh ./configure --enable-optimized --prefix="${INSTALLDIR}"
     make
     check_build
@@ -170,6 +172,7 @@ init_dwfemap()
 build_dwfemap()
 {
     pushd DWFTK7.1/develop/global/src/dwfemap
+    libtoolize --copy --force
     sh ./configure --enable-optimized --prefix="${INSTALLDIR}"
     make
     check_build
