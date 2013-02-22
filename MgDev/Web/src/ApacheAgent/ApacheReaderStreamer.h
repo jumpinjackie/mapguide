@@ -14,12 +14,14 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
+
 #ifndef APACHE_READER_STREAMER_H
 #define APACHE_READER_STREAMER_H
 
 #include "MapGuideCommon.h"
 #include "httpd.h"
 #include "HttpHandler.h"
+
 
 class ApacheReaderStreamer : public MgHttpReaderStreamer
 {

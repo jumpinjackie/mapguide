@@ -14,12 +14,13 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
+
 #ifndef MG_HTTP_READER_STREAMER_H
 #define MG_HTTP_READER_STREAMER_H
 
 /// <summary>
-/// Purpose of this class is to provide a common base class for streaming out the contents of
-/// an MgReader instance via chunked response encoding
+/// Purpose of this class is to provide a common base class for streaming out
+/// the contents of an MgReader instance via chunked response encoding.
 /// </summary>
 class MG_MAPAGENT_API MgHttpReaderStreamer : public MgGuardDisposable
 {

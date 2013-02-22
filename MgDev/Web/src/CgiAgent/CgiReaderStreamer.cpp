@@ -1,8 +1,26 @@
+//
+//  Copyright (C) 2004-2011 by Autodesk, Inc.
+//
+//  This library is free software; you can redistribute it and/or
+//  modify it under the terms of version 2.1 of the GNU Lesser
+//  General Public License as published by the Free Software Foundation.
+//
+//  This library is distributed in the hope that it will be useful,
+//  but WITHOUT ANY WARRANTY; without even the implied warranty of
+//  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+//  Lesser General Public License for more details.
+//
+//  You should have received a copy of the GNU Lesser General Public
+//  License along with this library; if not, write to the Free Software
+//  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+//
+
 #include "CgiReaderStreamer.h"
 #include "MapAgentStrings.h"
 
 extern void DumpMessage(const char* format, ...);
 extern void DumpMessage2(const char* msg);
+
 
 CgiReaderStreamer::CgiReaderStreamer(MgReader* reader, CREFSTRING format) :
     MgHttpReaderStreamer(reader, format),
@@ -10,10 +28,12 @@ CgiReaderStreamer::CgiReaderStreamer(MgReader* reader, CREFSTRING format) :
 {
 }
 
+
 CgiReaderStreamer::~CgiReaderStreamer() 
 { 
     EndStream();
 }
+
 
 void CgiReaderStreamer::EndStream()
 {
@@ -25,6 +45,7 @@ void CgiReaderStreamer::EndStream()
     }
 }
 
+
 void CgiReaderStreamer::SetChunkedEncoding() 
 {
     printf("Connection: Keep-Alive");
@@ -33,6 +54,7 @@ void CgiReaderStreamer::SetChunkedEncoding()
     printf(MapAgentStrings::CrLf);
     printf(MapAgentStrings::CrLf);
 }
+
 
 void CgiReaderStreamer::WriteChunk(const char* str, size_t length)
 {
