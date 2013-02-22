@@ -84,7 +84,6 @@
     String locale;
     CultureInfo culture;
     System.Text.RegularExpressions.Regex regex;
-    const int RenderSelectionBatchSize = 30000; /* default filter size */
 
     static NameValueCollection GetLayerPropertyMappings(MgResourceService resSvc, MgLayerBase layer)
     {
@@ -313,70 +312,66 @@
                 }
 
                 query.AddFeatureProperty(geomName);
-                MgStringCollection filters = selection.GenerateFilters(layer, className, RenderSelectionBatchSize);
-                for (int j = 0; j < filters.GetCount(); j++)
+                String filter = selection.GenerateFilter(layer, className);
+                query.SetFilter(filter);
+
+                MgFeatureReader reader = layer.SelectFeatures(query);
+
+                MgClassDefinition clsDef = reader.GetClassDefinition();
+                MgPropertyDefinitionCollection props = clsDef.GetProperties();
+
+                while (reader.ReadNext())
                 {
-                    String filter = filters.GetItem(j);
-                    query.SetFilter(filter);
+                    Feature feat = new Feature(layerName);
+                    ZoomBox zoom = null;
 
-                    MgFeatureReader reader = layer.SelectFeatures(query);
-
-                    MgClassDefinition clsDef = reader.GetClassDefinition();
-                    MgPropertyDefinitionCollection props = clsDef.GetProperties();
-
-                    while (reader.ReadNext())
+                    for (int k = 0; k < props.Count; k++)
                     {
-                        Feature feat = new Feature(layerName);
-                        ZoomBox zoom = null;
+                        MgPropertyDefinition propDef = props[k];
+                        String propName = propDef.Name;
+                        int propType = reader.GetPropertyType(propName);
 
-                        for (int k = 0; k < props.Count; k++)
+                        if (mappings[propName] != null || propType == MgPropertyType.Geometry)
                         {
-                            MgPropertyDefinition propDef = props[k];
-                            String propName = propDef.Name;
-                            int propType = reader.GetPropertyType(propName);
-
-                            if (mappings[propName] != null || propType == MgPropertyType.Geometry)
+                            String value = "";
+                            if (!reader.IsNull(propName))
                             {
-                                String value = "";
-                                if (!reader.IsNull(propName))
+                                if (propName == geomName)
                                 {
-                                    if (propName == geomName)
-                                    {
-                                        MgByteReader agf = reader.GetGeometry(propName);
-                                        MgGeometry geom = agfRW.Read(agf);
+                                    MgByteReader agf = reader.GetGeometry(propName);
+                                    MgGeometry geom = agfRW.Read(agf);
 
-                                        MgEnvelope env = geom.Envelope();
-                                        MgCoordinate ll = env.GetLowerLeftCoordinate();
-                                        MgCoordinate ur = env.GetUpperRightCoordinate();
+                                    MgEnvelope env = geom.Envelope();
+                                    MgCoordinate ll = env.GetLowerLeftCoordinate();
+                                    MgCoordinate ur = env.GetUpperRightCoordinate();
 
-                                        zoom = new ZoomBox();
-                                        zoom.MinX = ll.X;
-                                        zoom.MinY = ll.Y;
-                                        zoom.MaxX = ur.X;
-                                        zoom.MaxY = ur.Y;
+                                    zoom = new ZoomBox();
+                                    zoom.MinX = ll.X;
+                                    zoom.MinY = ll.Y;
+                                    zoom.MaxX = ur.X;
+                                    zoom.MaxY = ur.Y;
 
-                                        feat.Zoom = zoom;
-                                    }
-                                    else
-                                    {
-                                        value = GetPropertyValueFromFeatureReader(reader, agfRW, propType, propName);
-                                    }
+                                    feat.Zoom = zoom;
+                                }
+                                else
+                                {
+                                    value = GetPropertyValueFromFeatureReader(reader, agfRW, propType, propName);
+                                }
 
-                                    if (mappings[propName] != null)
-                                    {
-                                        FeatureProperty fp = new FeatureProperty();
-                                        fp.Name = mappings[propName];
-                                        fp.Value = value;
+                                if (mappings[propName] != null)
+                                {
+                                    FeatureProperty fp = new FeatureProperty();
+                                    fp.Name = mappings[propName];
+                                    fp.Value = value;
 
-                                        feat.AddProperty(fp);
-                                    }
+                                    feat.AddProperty(fp);
                                 }
                             }
                         }
-                        selectionSet.AddFeature(feat);
                     }
-                    reader.Close();
+                    selectionSet.AddFeature(feat);
                 }
+                reader.Close();
             }
 
             //Now output the selection set
