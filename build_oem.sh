@@ -540,7 +540,8 @@ init_json()
 build_json()
 {
     pushd jsoncpp
-    python scons.py platform=linux-gcc
+    # Use system scons
+    scons platform=linux-gcc
     popd
 }
 
