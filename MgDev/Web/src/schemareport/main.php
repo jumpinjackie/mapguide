@@ -67,6 +67,7 @@
             <?php echo FormText::InputClass ?>
             <input name="className" type="text" size="20"><br><br>
             <input name="sessionId" type="hidden" value="<?php echo $sessionId ?>">
+            <input name="viewer" type="hidden" value="basic">
 
             <input type="submit" value="<?php echo FormText::FindButton ?>">
         </form>
