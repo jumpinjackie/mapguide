@@ -113,9 +113,14 @@ body, table {
 }
 
 #Toolbar span.jxButtonLabel {
-  color: #000;
+  color: #fff;
   padding-top: 0px;
   padding-bottom: 0px;
+}
+
+#Toolbar .jxButton:hover span.jxButtonLabel,
+#Toolbar .jxButtonActive span.jxButtonLabel {
+  color: #000 !important;
 }
 
 /**********************************************************
