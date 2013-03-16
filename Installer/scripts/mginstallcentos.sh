@@ -1,12 +1,12 @@
 #!/bin/bash
-URL="http://download.osgeo.org/mapguide/releases/2.5.0/Beta1"
-#URL="http://192.168.0.4/downloads"
+URL="http://download.osgeo.org/mapguide/releases/2.5.0/RC1"
+#URL="http://192.168.0.6/downloads"
 FDOVER_MAJOR_MINOR=3.8
 FDOVER_MAJOR_MINOR_REV=${FDOVER_MAJOR_MINOR}.0
-FDOVER=${FDOVER_MAJOR_MINOR_REV}_14601
+FDOVER=${FDOVER_MAJOR_MINOR_REV}_3601
 MGVER_MAJOR_MINOR=2.5
 MGVER_MAJOR_MINOR_REV=${MGVER_MAJOR_MINOR}.0
-MGVER=${MGVER_MAJOR_MINOR_REV}.7345
+MGVER=${MGVER_MAJOR_MINOR_REV}.7396
 FDO_TARBALL=fdosdk-centos5-${FDOVER}.tar.gz
 MG_TARBALL=mapguideopensource-${MGVER}.tar.gz
 MG_URL=${URL}/${MG_TARBALL}
