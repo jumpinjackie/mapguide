@@ -55,6 +55,11 @@ FdoFeatureSchemaCollection* MgdDescribeSchema::DescribeFdoSchema(MgResourceIdent
         // The reference to the FDO connection from the MgdFeatureConnection object must be cleaned up before the parent object
         // otherwise it leaves the FDO connection marked as still in use.
         FdoPtr<FdoIConnection> fdoConn = connection->GetConnection();
+
+        // Ensure all user-defined functions are loaded 
+        FdoPtr<FdoIExpressionCapabilities> ec = fdoConn->GetExpressionCapabilities();
+        FdoPtr<FdoFunctionDefinitionCollection> funcs = ec->GetFunctions();
+
         FdoPtr<FdoIDescribeSchema> fdoCommand = (FdoIDescribeSchema*)fdoConn->CreateCommand(FdoCommandType_DescribeSchema);
 
         classNameHintUsed = IsClassNameHintUsed(fdoCommand);
