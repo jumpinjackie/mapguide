@@ -48,6 +48,7 @@ MgdSelectFeatures::MgdSelectFeatures()
 
     // Set a default join query batch size
     m_nJoinQueryBatchSize = MgdConfigProperties::DefaultFeatureServicePropertyJoinQueryBatchSize;
+    m_bUseFdoJoinOptimization = MgdConfigProperties::DefaultFeatureServicePropertyUseFdoJoinOptimization; 
 
     MgConfiguration* config = MgConfiguration::GetInstance();
     if(config)
@@ -62,6 +63,11 @@ MgdSelectFeatures::MgdSelectFeatures()
                             MgdConfigProperties::FeatureServicePropertyDataCacheSize,
                             m_nDataCacheSize,
                             MgdConfigProperties::DefaultFeatureServicePropertyDataCacheSize);
+        // Get FDO Join use flag 
+ 	    config->GetBoolValue(MgdConfigProperties::FeatureServicePropertiesSection, 
+                             MgdConfigProperties::FeatureServicePropertyUseFdoJoinOptimization, 
+                             m_bUseFdoJoinOptimization, 
+                             MgdConfigProperties::DefaultFeatureServicePropertyUseFdoJoinOptimization); 
     }
 }
 
@@ -183,7 +189,7 @@ MgReader* MgdSelectFeatures::SelectFeatures(MgResourceIdentifier* resource,
 
             MgStringCollection arguments;
             arguments.Add(message);
-            throw new MgFeatureServiceException(L"MgServerSelectFeatures.SelectFeatures", __LINE__, __WFILE__, &arguments, L"", NULL);
+            throw new MgFeatureServiceException(L"MgdSelectFeatures.SelectFeatures", __LINE__, __WFILE__, &arguments, L"", NULL);
         }
 
         // Custom function specified using SelectAggregate,
@@ -323,7 +329,7 @@ MgReader* MgdSelectFeatures::SelectFeatures(MgResourceIdentifier* resource,
         else
             reader = m_command->Execute();
 
-        CHECKNULL((MgReader*)reader, L"MgServerSelectFeatures.SelectFeatures");
+        CHECKNULL((MgReader*)reader, L"MgdSelectFeatures.SelectFeatures");
 
         if (executeSelectAggregate && m_customPropertyFound)
         {
@@ -340,7 +346,7 @@ MgReader* MgdSelectFeatures::SelectFeatures(MgResourceIdentifier* resource,
         }
     }
 
-    MG_FEATURE_SERVICE_CHECK_CONNECTION_CATCH_AND_THROW(resource, L"MgServerSelectFeatures.SelectFeatures")
+    MG_FEATURE_SERVICE_CHECK_CONNECTION_CATCH_AND_THROW(resource, L"MgdSelectFeatures.SelectFeatures")
 
     return mgReader.Detach();
 }
@@ -348,7 +354,7 @@ MgReader* MgdSelectFeatures::SelectFeatures(MgResourceIdentifier* resource,
 
 void MgdSelectFeatures::ApplyQueryOptions(bool isSelectAggregate)
 {
-    CHECKNULL(m_command, L"MgServerSelectFeatures.ApplyQueryOptions");
+    CHECKNULL(m_command, L"MgdSelectFeatures.ApplyQueryOptions");
 
     if (m_options != NULL)
     {
@@ -365,8 +371,8 @@ void MgdSelectFeatures::ApplyQueryOptions(bool isSelectAggregate)
 // ClassProperties
 void MgdSelectFeatures::ApplyClassProperties()
 {
-    CHECKNULL(m_options, L"MgServerSelectFeatures.ApplyClassProperties");
-    CHECKNULL(m_command, L"MgServerSelectFeatures.ApplyClassProperties");
+    CHECKNULL(m_options, L"MgdSelectFeatures.ApplyClassProperties");
+    CHECKNULL(m_command, L"MgdSelectFeatures.ApplyClassProperties");
 
     Ptr<MgStringCollection> properties = m_options->GetClassProperties();
 
@@ -381,25 +387,76 @@ void MgdSelectFeatures::ApplyClassProperties()
     //secondary properties.
 
     FdoPtr<FdoIdentifierCollection> fic = m_command->GetPropertyNames();
-    CHECKNULL((FdoIdentifierCollection*)fic, L"MgServerSelectFeatures.ApplyClassProperties");
+    CHECKNULL((FdoIdentifierCollection*)fic, L"MgdSelectFeatures.ApplyClassProperties");
 
     for (INT32 i=0; i < cnt; i++)
     {
         STRING propertyName = properties->GetItem(i);
 
         FdoPtr<FdoIdentifier> fdoIden = FdoIdentifier::Create((FdoString*)propertyName.c_str());
-        CHECKNULL((FdoIdentifier*)fdoIden, L"MgServerSelectFeatures.ApplyClassProperties");
+        CHECKNULL((FdoIdentifier*)fdoIden, L"MgdSelectFeatures.ApplyClassProperties");
 
         fic->Add(fdoIden);
     }
 }
 
+void MgdSelectFeatures::ApplyClassPropertiesForFdoJoin(CREFSTRING primaryAlias, CREFSTRING secondaryAlias, CREFSTRING secondaryPrefix)
+{
+    CHECKNULL(m_options, L"MgdSelectFeatures.ApplyClassPropertiesForFdoJoin");
+    CHECKNULL(m_command, L"MgdSelectFeatures.ApplyClassPropertiesForFdoJoin");
+
+    Ptr<MgStringCollection> properties = m_options->GetClassProperties();
+
+    if (properties == NULL)
+        return; // Nothing to do
+
+    INT32 cnt = properties->GetCount();
+    if (cnt <= 0)
+        return; // Nothing to do
+
+    FdoPtr<FdoIdentifierCollection> fic = m_command->GetPropertyNames();
+    CHECKNULL((FdoIdentifierCollection*)fic, L"MgdSelectFeatures.ApplyClassPropertiesForFdoJoin");
+
+    //If we're given an explicit property list, it will be whatever is presented by the Extended Feature Class
+    //So we have to "re-shape" this property list into a aliased qualified property list like the standard FDO
+    //join query. Basically, were doing a reverse property mapping.
+
+    for (INT32 i=0; i < cnt; i++)
+    {
+        STRING propertyName = properties->GetItem(i);
+
+        //Check if this name starts with prefix
+        //
+        // If it does, it's a secondary join property and should be re-aliased as [secondaryAlias].[propertyNameWithoutPrefix]
+        // Otherwise, it should be re-aliased as [primaryAlias].[propertyNameAsIs]
+        STRING reAliasedPropName;
+        if (propertyName.compare(0, secondaryPrefix.length(), secondaryPrefix) == 0)
+        {
+            reAliasedPropName = secondaryAlias;
+            reAliasedPropName += L".";
+            reAliasedPropName += propertyName.substr(secondaryPrefix.length());
+        }
+        else
+        {
+            reAliasedPropName = primaryAlias;
+            reAliasedPropName += L".";
+            reAliasedPropName += propertyName;
+        }
+
+        //This will now be [alias].[reAliasedPropertyName] AS [propertyName]
+        FdoPtr<FdoExpression> expr = FdoExpression::Parse((FdoString*)reAliasedPropName.c_str());
+        FdoPtr<FdoComputedIdentifier> fdoIden = FdoComputedIdentifier::Create((FdoString*)propertyName.c_str(), expr);
+        CHECKNULL((FdoComputedIdentifier*)fdoIden, L"MgdSelectFeatures.ApplyClassPropertiesForFdoJoin");
+
+        fic->Add(fdoIden);
+    }
+}
 
 // Computed properties
 void MgdSelectFeatures::ApplyComputedProperties()
 {
-    CHECKNULL(m_options, L"MgServerSelectFeatures.ApplyComputedProperties");
-    CHECKNULL(m_command, L"MgServerSelectFeatures.ApplyComputedProperties");
+    CHECKNULL(m_options, L"MgdSelectFeatures.ApplyComputedProperties");
+    CHECKNULL(m_command, L"MgdSelectFeatures.ApplyComputedProperties");
 
     Ptr<MgStringPropertyCollection> properties = m_options->GetComputedProperties();
 
@@ -424,7 +481,7 @@ void MgdSelectFeatures::ApplyComputedProperties()
         if (str != NULL)
         {
             FdoPtr<FdoExpression> expression = FdoExpression::Parse(str);
-            CHECKNULL((FdoExpression*)expression, L"MgServerSelectFeatures.ApplyComputedProperties");
+            CHECKNULL((FdoExpression*)expression, L"MgdSelectFeatures.ApplyComputedProperties");
 
             bool udf = ContainsUdf(expression);
             if (!udf)
@@ -442,8 +499,8 @@ void MgdSelectFeatures::ApplyComputedProperties()
 //// Filter text
 //void MgdSelectFeatures::ApplyFilter()
 //{
-//    CHECKNULL(m_options, L"MgServerSelectFeatures.ApplyFilter");
-//    CHECKNULL(m_command, L"MgServerSelectFeatures.ApplyFilter");
+//    CHECKNULL(m_options, L"MgdSelectFeatures.ApplyFilter");
+//    CHECKNULL(m_command, L"MgdSelectFeatures.ApplyFilter");
 //
 //    STRING filterText = m_options->GetFilter();
 //    if (filterText.empty()) { return; } // Nothing to do
@@ -454,7 +511,7 @@ void MgdSelectFeatures::ApplyComputedProperties()
 // Fetch size
 void MgdSelectFeatures::ApplyFetchSize()
 {
-    CHECKNULL(m_command, L"MgServerSelectFeatures.ApplyFetchSize");
+    CHECKNULL(m_command, L"MgdSelectFeatures.ApplyFetchSize");
     if(m_options)
         m_command->SetFetchSize(m_options->GetFetchSize());
     else
@@ -464,8 +521,8 @@ void MgdSelectFeatures::ApplyFetchSize()
 // Spatial Filter
 void MgdSelectFeatures::ApplyFilter()
 {
-    CHECKNULL(m_options, L"MgServerSelectFeatures.ApplyFilter");
-    CHECKNULL(m_command, L"MgServerSelectFeatures.ApplyFilter");
+    CHECKNULL(m_options, L"MgdSelectFeatures.ApplyFilter");
+    CHECKNULL(m_command, L"MgdSelectFeatures.ApplyFilter");
 
     FdoPtr<FdoFilter> regularFilter;
     FdoPtr<FdoSpatialCondition> spatialFilter;
@@ -477,7 +534,7 @@ void MgdSelectFeatures::ApplyFilter()
     if (!filterText.empty())
     {
         regularFilter = FdoFilter::Parse(filterText.c_str());
-        #ifdef _DEBUG
+        #if defined(_DEBUG) || defined(DEBUG_FDO_JOIN)
         ACE_DEBUG((LM_ERROR, ACE_TEXT("FILTER(size=%d):\n%W\n\n"), filterText.length(), filterText.c_str()));
         #endif
     }
@@ -557,8 +614,8 @@ void MgdSelectFeatures::ApplyFilter()
 // Ordering options
 void MgdSelectFeatures::ApplyOrderingOptions()
 {
-    CHECKNULL(m_options, L"MgServerSelectFeatures.ApplyOrderingOptions");
-    CHECKNULL(m_command, L"MgServerSelectFeatures.ApplyOrderingOptions");
+    CHECKNULL(m_options, L"MgdSelectFeatures.ApplyOrderingOptions");
+    CHECKNULL(m_command, L"MgdSelectFeatures.ApplyOrderingOptions");
 
     Ptr<MgStringCollection> properties = m_options->GetOrderingProperties();
 
@@ -576,11 +633,11 @@ void MgdSelectFeatures::ApplyOrderingOptions()
 
         MgStringCollection arguments;
         arguments.Add(message);
-        throw new MgFeatureServiceException(L"MgServerSelectFeatures.ApplyOrderingOptions", __LINE__, __WFILE__, &arguments, L"", NULL);
+        throw new MgFeatureServiceException(L"MgdSelectFeatures.ApplyOrderingOptions", __LINE__, __WFILE__, &arguments, L"", NULL);
     }
 
     FdoPtr<FdoIdentifierCollection> fic = m_command->GetOrdering();
-    CHECKNULL((FdoIdentifierCollection*)fic, L"MgServerSelectFeatures.ApplyOrderingOptions");
+    CHECKNULL((FdoIdentifierCollection*)fic, L"MgdSelectFeatures.ApplyOrderingOptions");
 
     // Order option Asc or Desc (default is Asc)
     FdoOrderingOption option = MgdFeatureUtil::GetFdoOrderingOption(m_options->GetOrderOption());
@@ -593,7 +650,7 @@ void MgdSelectFeatures::ApplyOrderingOptions()
         if (!propertyName.empty())
         {
             FdoPtr<FdoIdentifier> fdoIden = FdoIdentifier::Create((FdoString*)propertyName.c_str());
-            CHECKNULL((FdoIdentifier*)fdoIden, L"MgServerSelectFeatures.ApplyOrderingOptions");
+            CHECKNULL((FdoIdentifier*)fdoIden, L"MgdSelectFeatures.ApplyOrderingOptions");
 
             fic->Add(fdoIden);
         }
@@ -647,13 +704,13 @@ bool MgdSelectFeatures::IsCustomFunction(FdoFunction* fdoFunc)
 void MgdSelectFeatures::AddFdoComputedProperty(CREFSTRING aliasName, FdoExpression* expression)
 {
     FdoPtr<FdoIdentifierCollection> fic = m_command->GetPropertyNames();
-    CHECKNULL((FdoIdentifierCollection*)fic, L"MgServerSelectFeatures.AddFdoComputedProperty");
+    CHECKNULL((FdoIdentifierCollection*)fic, L"MgdSelectFeatures.AddFdoComputedProperty");
 
     FdoString* expName = aliasName.c_str();
     if (expName != NULL)
     {
         FdoPtr<FdoComputedIdentifier> fdoIden = FdoComputedIdentifier::Create(expName, expression);
-        CHECKNULL((FdoComputedIdentifier*)fdoIden, L"MgServerSelectFeatures.AddFdoComputedProperty");
+        CHECKNULL((FdoComputedIdentifier*)fdoIden, L"MgdSelectFeatures.AddFdoComputedProperty");
 
         fic->Add(fdoIden);
     }
@@ -661,10 +718,10 @@ void MgdSelectFeatures::AddFdoComputedProperty(CREFSTRING aliasName, FdoExpressi
 
 void MgdSelectFeatures::AddCustomComputedProperty(CREFSTRING aliasName, FdoExpression* expression)
 {
-    CHECKNULL((FdoExpression*)expression, L"MgServerSelectFeatures.AddCustomComputedProperty");
+    CHECKNULL((FdoExpression*)expression, L"MgdSelectFeatures.AddCustomComputedProperty");
 
     FdoPtr<FdoIdentifierCollection> fic = m_command->GetPropertyNames();
-    CHECKNULL((FdoIdentifierCollection*)fic, L"MgServerSelectFeatures.AddCustomComputedProperty");
+    CHECKNULL((FdoIdentifierCollection*)fic, L"MgdSelectFeatures.AddCustomComputedProperty");
 
     // If property is already found, two custom properties are not supported and therefore throw exception
     if (m_customPropertyFound)
@@ -673,7 +730,7 @@ void MgdSelectFeatures::AddCustomComputedProperty(CREFSTRING aliasName, FdoExpre
 
         MgStringCollection arguments;
         arguments.Add(message);
-        throw new MgFeatureServiceException(L"MgServerSelectFeatures.AddCustomComputedProperty", __LINE__, __WFILE__, &arguments, L"", NULL);
+        throw new MgFeatureServiceException(L"MgdSelectFeatures.AddCustomComputedProperty", __LINE__, __WFILE__, &arguments, L"", NULL);
     }
 
     // Downcast to FdoFunction
@@ -731,7 +788,7 @@ void MgdSelectFeatures::ValidateConstraintsOnCustomFunctions()
 
                 MgStringCollection arguments;
                 arguments.Add(message);
-                throw new MgFeatureServiceException(L"MgServerSelectFeatures.ValidateConstraintsOnCustomFunctions",
+                throw new MgFeatureServiceException(L"MgdSelectFeatures.ValidateConstraintsOnCustomFunctions",
                     __LINE__, __WFILE__, &arguments, L"", NULL);
             }
             MgdFeatureUtil::ValidateCustomConstraints(m_customFunction);
@@ -750,7 +807,7 @@ void MgdSelectFeatures::CreateCommand(MgResourceIdentifier* resource, bool isSel
     {
         m_command = MgdFeatureServiceCommand::CreateCommand(resource, FdoCommandType_SelectAggregates);
     }
-    CHECKNULL((MgdFeatureServiceCommand*)m_command, L"MgServerSelectFeatures.CreateCommand");
+    CHECKNULL((MgdFeatureServiceCommand*)m_command, L"MgdSelectFeatures.CreateCommand");
 }
 
 void MgdSelectFeatures::ValidateParam(MgResourceIdentifier* resource, CREFSTRING className)
@@ -811,8 +868,8 @@ void MgdSelectFeatures::ApplyAggregateOptions(bool isSelectAggregate)
 
 void MgdSelectFeatures::ApplyFdoGroupingProperties(MgStringCollection* propertyNames)
 {
-    CHECKNULL(m_options, L"MgServerSelectFeatures.ApplyFdoGroupingProperties");
-    CHECKNULL(m_command, L"MgServerSelectFeatures.ApplyFdoGroupingProperties");
+    CHECKNULL(m_options, L"MgdSelectFeatures.ApplyFdoGroupingProperties");
+    CHECKNULL(m_command, L"MgdSelectFeatures.ApplyFdoGroupingProperties");
 
     Ptr<MgStringCollection> properties = SAFE_ADDREF(propertyNames);
 
@@ -830,18 +887,18 @@ void MgdSelectFeatures::ApplyFdoGroupingProperties(MgStringCollection* propertyN
 
         MgStringCollection arguments;
         arguments.Add(message);
-        throw new MgFeatureServiceException(L"MgServerSelectFeatures.ApplyFdoGroupingProperties", __LINE__, __WFILE__, &arguments, L"", NULL);
+        throw new MgFeatureServiceException(L"MgdSelectFeatures.ApplyFdoGroupingProperties", __LINE__, __WFILE__, &arguments, L"", NULL);
     }
 
     FdoPtr<FdoIdentifierCollection> fic = ((MgdFeatureServiceCommand*)m_command)->GetGrouping();
-    CHECKNULL((FdoIdentifierCollection*)fic, L"MgServerSelectFeatures.ApplyFdoGroupingProperties");
+    CHECKNULL((FdoIdentifierCollection*)fic, L"MgdSelectFeatures.ApplyFdoGroupingProperties");
 
     for (INT32 i=0; i < cnt; i++)
     {
         STRING propertyName = properties->GetItem(i);
 
         FdoPtr<FdoIdentifier> fdoIden = FdoIdentifier::Create((FdoString*)propertyName.c_str());
-        CHECKNULL((FdoIdentifier*)fdoIden, L"MgServerSelectFeatures.ApplyFdoGroupingProperties");
+        CHECKNULL((FdoIdentifier*)fdoIden, L"MgdSelectFeatures.ApplyFdoGroupingProperties");
 
         fic->Add(fdoIden);
     }
@@ -873,7 +930,7 @@ bool MgdSelectFeatures::ContainsCustomFunction(MgFeatureQueryOptions* options)
         if (str != NULL)
         {
             FdoPtr<FdoExpression> expression = FdoExpression::Parse(str);
-            CHECKNULL((FdoExpression*)expression, L"MgServerSelectFeatures.ContainsCustomFunction");
+            CHECKNULL((FdoExpression*)expression, L"MgdSelectFeatures.ContainsCustomFunction");
 
             hasCustomFunction = ContainsUdf(expression);
         }
@@ -886,7 +943,7 @@ bool MgdSelectFeatures::ContainsCustomFunction(MgFeatureQueryOptions* options)
 
         MgStringCollection arguments;
         arguments.Add(message);
-        throw new MgFeatureServiceException(L"MgServerSelectFeatures.ContainsCustomFunction",
+        throw new MgFeatureServiceException(L"MgdSelectFeatures.ContainsCustomFunction",
             __LINE__, __WFILE__, &arguments, L"", NULL);
     }
 
@@ -913,15 +970,15 @@ bool MgdSelectFeatures::FindFeatureCalculation(MgResourceIdentifier* resourceId,
 {
     bool bCalculationExists = false;
 
-    CHECKNULL(m_featureSourceCacheItem.p, L"MgServerSelectFeatures.FindFeatureCalculation");
+    CHECKNULL(m_featureSourceCacheItem.p, L"MgdSelectFeatures.FindFeatureCalculation");
     MdfModel::FeatureSource* featureSource = m_featureSourceCacheItem->Get();
     MdfModel::ExtensionCollection* extensions = featureSource->GetExtensions();
-    CHECKNULL(extensions, L"MgServerSelectFeatures.FindFeatureCalculation");
+    CHECKNULL(extensions, L"MgdSelectFeatures.FindFeatureCalculation");
 
     for (int i = 0; i < extensions->GetCount(); i++)
     {
         MdfModel::Extension* extension = extensions->GetAt(i);
-        CHECKNULL(extension, L"MgServerSelectFeatures.FindFeatureCalculation");
+        CHECKNULL(extension, L"MgdSelectFeatures.FindFeatureCalculation");
         STRING name = (STRING)extension->GetName();
 
         STRING parsedSchemaName, parsedExtensionName;
@@ -948,15 +1005,15 @@ bool MgdSelectFeatures::FindFeatureJoinProperties(MgResourceIdentifier* resource
 {
     bool bJoinPropertiesExists = false;
 
-    CHECKNULL(m_featureSourceCacheItem.p, L"MgServerSelectFeatures.FindFeatureJoinProperties");
+    CHECKNULL(m_featureSourceCacheItem.p, L"MgdSelectFeatures.FindFeatureJoinProperties");
     MdfModel::FeatureSource* featureSource = m_featureSourceCacheItem->Get();
     MdfModel::ExtensionCollection* extensions = featureSource->GetExtensions();
-    CHECKNULL(extensions, L"MgServerSelectFeatures.FindFeatureJoinProperties");
+    CHECKNULL(extensions, L"MgdSelectFeatures.FindFeatureJoinProperties");
 
     for (int i = 0; i < extensions->GetCount(); i++)
     {
         MdfModel::Extension* extension = extensions->GetAt(i);
-        CHECKNULL(extension, L"MgServerSelectFeatures.FindFeatureJoinProperties");
+        CHECKNULL(extension, L"MgdSelectFeatures.FindFeatureJoinProperties");
         STRING name = (STRING)extension->GetName();
 
         STRING parsedSchemaName, parsedExtensionName;
@@ -981,15 +1038,15 @@ void MgdSelectFeatures::UpdateCommandOnJoinCalculation(MgResourceIdentifier* fea
 {
     MG_FEATURE_SERVICE_TRY()
 
-    CHECKNULL(m_featureSourceCacheItem.p, L"MgServerSelectFeatures.UpdateCommandOnJoinCalculation");
+    CHECKNULL(m_featureSourceCacheItem.p, L"MgdSelectFeatures.UpdateCommandOnJoinCalculation");
     MdfModel::FeatureSource* featureSource = m_featureSourceCacheItem->Get();
     MdfModel::ExtensionCollection* extensions = featureSource->GetExtensions();
-    CHECKNULL(extensions, L"MgServerSelectFeatures.UpdateCommandOnJoinCalculation");
+    CHECKNULL(extensions, L"MgdSelectFeatures.UpdateCommandOnJoinCalculation");
 
     for (int i = 0; i < extensions->GetCount(); i++)
     {
         MdfModel::Extension* extension = extensions->GetAt(i);
-        CHECKNULL(extension, L"MgServerSelectFeatures.UpdateCommandOnJoinCalculation");
+        CHECKNULL(extension, L"MgdSelectFeatures.UpdateCommandOnJoinCalculation");
         STRING name = (STRING)extension->GetName();
 
         STRING parsedSchemaName, parsedExtensionName;
@@ -1042,22 +1099,22 @@ void MgdSelectFeatures::UpdateCommandOnJoinCalculation(MgResourceIdentifier* fea
             break;
         }
     }
-    MG_FEATURE_SERVICE_CHECK_CONNECTION_CATCH_AND_THROW(featureSourceId, L"MgServerSelectFeatures.UpdateCommandOnJoinCalculation")
+    MG_FEATURE_SERVICE_CHECK_CONNECTION_CATCH_AND_THROW(featureSourceId, L"MgdSelectFeatures.UpdateCommandOnJoinCalculation")
 }
 
 void MgdSelectFeatures::UpdateCommandOnCalculation(MgResourceIdentifier* featureSourceId, CREFSTRING extensionName)
 {
     MG_FEATURE_SERVICE_TRY()
 
-    CHECKNULL(m_featureSourceCacheItem.p, L"MgServerSelectFeatures.UpdateCommandOnCalculation");
+    CHECKNULL(m_featureSourceCacheItem.p, L"MgdSelectFeatures.UpdateCommandOnCalculation");
     MdfModel::FeatureSource* featureSource = m_featureSourceCacheItem->Get();
     MdfModel::ExtensionCollection* extensions = featureSource->GetExtensions();
-    CHECKNULL(extensions, L"MgServerSelectFeatures.UpdateCommandOnCalculation");
+    CHECKNULL(extensions, L"MgdSelectFeatures.UpdateCommandOnCalculation");
 
     for (int i = 0; i < extensions->GetCount(); i++)
     {
         MdfModel::Extension* extension = extensions->GetAt(i);
-        CHECKNULL(extension, L"MgServerSelectFeatures.UpdateCommandOnCalculation");
+        CHECKNULL(extension, L"MgdSelectFeatures.UpdateCommandOnCalculation");
         STRING name = (STRING)extension->GetName();
 
         STRING parsedSchemaName, parsedExtensionName;
@@ -1177,7 +1234,7 @@ void MgdSelectFeatures::UpdateCommandOnCalculation(MgResourceIdentifier* feature
             break;
         }
     }
-    MG_FEATURE_SERVICE_CHECK_CONNECTION_CATCH_AND_THROW(featureSourceId, L"MgServerSelectFeatures.UpdateCommandOnCalculation")
+    MG_FEATURE_SERVICE_CHECK_CONNECTION_CATCH_AND_THROW(featureSourceId, L"MgdSelectFeatures.UpdateCommandOnCalculation")
 }
 
 MgdGwsFeatureReader* MgdSelectFeatures::JoinFeatures(MgResourceIdentifier* featureSourceIdentifier, CREFSTRING extensionName, FdoFilter* filter)
@@ -1189,15 +1246,15 @@ MgdGwsFeatureReader* MgdSelectFeatures::JoinFeatures(MgResourceIdentifier* featu
     FdoPtr<IGWSQueryDefinition> qd;
     FdoPtr<MgdGwsConnectionPool> pool = MgdGwsConnectionPool::Create();
 
-    CHECKNULL(m_featureSourceCacheItem.p, L"MgServerSelectFeatures.JoinFeatures");
+    CHECKNULL(m_featureSourceCacheItem.p, L"MgdSelectFeatures.JoinFeatures");
     MdfModel::FeatureSource* featureSource = m_featureSourceCacheItem->Get();
     MdfModel::ExtensionCollection* extensions = featureSource->GetExtensions();
-    CHECKNULL(extensions, L"MgServerSelectFeatures.JoinFeatures");
+    CHECKNULL(extensions, L"MgdSelectFeatures.JoinFeatures");
 
     for (int i = 0; i < extensions->GetCount(); i++)
     {
         MdfModel::Extension* extension = extensions->GetAt(i);
-        CHECKNULL(extension, L"MgServerSelectFeatures.JoinFeatures");
+        CHECKNULL(extension, L"MgdSelectFeatures.JoinFeatures");
         STRING name = (STRING)extension->GetName();
 
         STRING parsedSchemaName, parsedExtensionName;
@@ -1219,7 +1276,7 @@ MgdGwsFeatureReader* MgdSelectFeatures::JoinFeatures(MgResourceIdentifier* featu
             }
             else
             {
-                throw new MgdConnectionFailedException(L"MgServerSelectFeatures.JoinFeatures",
+                throw new MgdConnectionFailedException(L"MgdSelectFeatures.JoinFeatures",
                     __LINE__, __WFILE__, NULL, L"", NULL);
             }
 
@@ -1306,13 +1363,13 @@ MgdGwsFeatureReader* MgdSelectFeatures::JoinFeatures(MgResourceIdentifier* featu
                 lsellist,
                 GWSQualifiedName(primaryConnectionName.c_str(), primaryFsSchema.c_str(), primaryFsClassName.c_str()),
                 lfilter);
-            CHECKNULL(lqd, L"MgServerSelectFeatures.JoinFeatures");
+            CHECKNULL(lqd, L"MgdSelectFeatures.JoinFeatures");
             qd = lqd;
 
             IGWSJoinQueryDefinition* jqd = NULL;
 
             MdfModel::AttributeRelateCollection* attributeRelates = extension->GetAttributeRelates();
-            CHECKNULL(attributeRelates, L"MgServerSelectFeatures.JoinFeatures");
+            CHECKNULL(attributeRelates, L"MgdSelectFeatures.JoinFeatures");
 
             bool bForceOneToOne = true;
             Ptr<MgStringCollection> attributeNameDelimiters = new MgStringCollection();
@@ -1325,7 +1382,7 @@ MgdGwsFeatureReader* MgdSelectFeatures::JoinFeatures(MgResourceIdentifier* featu
             for (int attributeRelateIndex = 0; attributeRelateIndex < attributeRelates->GetCount(); attributeRelateIndex++)
             {
                 MdfModel::AttributeRelate* attributeRelate = attributeRelates->GetAt(attributeRelateIndex);
-                CHECKNULL(attributeRelate, L"MgServerSelectFeatures.JoinFeatures");
+                CHECKNULL(attributeRelate, L"MgdSelectFeatures.JoinFeatures");
 
                 // Get the secondary resource id
                 STRING secondaryResourceId = (STRING)attributeRelate->GetResourceId();
@@ -1366,7 +1423,7 @@ MgdGwsFeatureReader* MgdSelectFeatures::JoinFeatures(MgResourceIdentifier* featu
                     }
                     else
                     {
-                        throw new MgdConnectionFailedException(L"MgServerSelectFeatures.JoinFeatures",
+                        throw new MgdConnectionFailedException(L"MgdSelectFeatures.JoinFeatures",
                             __LINE__, __WFILE__, NULL, L"", NULL);
                     }
                 }
@@ -1386,7 +1443,7 @@ MgdGwsFeatureReader* MgdSelectFeatures::JoinFeatures(MgResourceIdentifier* featu
                     rsellist,
                     GWSQualifiedName(secondaryConnectionName.c_str(), secondaryFsSchema.c_str(), secondaryFsClassName.c_str()),
                     rfilter);
-                CHECKNULL(rqd, L"MgServerSelectFeatures.JoinFeatures");
+                CHECKNULL(rqd, L"MgdSelectFeatures.JoinFeatures");
 
                 // Get Join Attributes
                 FdoPtr<FdoStringCollection> lattrs = FdoStringCollection::Create();
@@ -1394,14 +1451,14 @@ MgdGwsFeatureReader* MgdSelectFeatures::JoinFeatures(MgResourceIdentifier* featu
 
                 // Determine the number of RelateProperties (attributes)
                 MdfModel::RelatePropertyCollection* relateProperties = attributeRelate->GetRelateProperties();
-                CHECKNULL(relateProperties, L"MgServerSelectFeatures.JoinFeatures");
+                CHECKNULL(relateProperties, L"MgdSelectFeatures.JoinFeatures");
                 int nRelatePropertyCount = relateProperties->GetCount();
 
                 // For each RelateProperty need to do the following
                 for (int relatePropertyIndex = 0; relatePropertyIndex < nRelatePropertyCount; relatePropertyIndex++)
                 {
                     MdfModel::RelateProperty* relateProperty = relateProperties->GetAt(relatePropertyIndex);
-                    CHECKNULL(relateProperty, L"MgServerSelectFeatures.JoinFeatures");
+                    CHECKNULL(relateProperty, L"MgdSelectFeatures.JoinFeatures");
 
                     // Get the FeatureClassProperty (primary attribute)
                     STRING primaryAttribute = (STRING)relateProperty->GetFeatureClassProperty();
@@ -1482,7 +1539,7 @@ MgdGwsFeatureReader* MgdSelectFeatures::JoinFeatures(MgResourceIdentifier* featu
         }
     }
 
-    MG_FEATURE_SERVICE_CHECK_CONNECTION_CATCH_AND_THROW(featureSourceIdentifier, L"MgServerSelectFeatures.JoinFeatures")
+    MG_FEATURE_SERVICE_CHECK_CONNECTION_CATCH_AND_THROW(featureSourceIdentifier, L"MgdSelectFeatures.JoinFeatures")
 
     // Now that the reader has been created we will need to mark all of the connections it uses as OwnReader() because the GWS reader will be
     // taking ownership of the connections. We have to do it this late in the code in case an exception is thrown somewhere before this.
@@ -1494,7 +1551,7 @@ MgdGwsFeatureReader* MgdSelectFeatures::JoinFeatures(MgResourceIdentifier* featu
 
 void MgdSelectFeatures::ParseQualifiedClassNameForCalculation(MdfModel::Extension* extension, CREFSTRING qualifiedClassName, STRING& schemaName, STRING& className)
 {
-    CHECKNULL(extension, L"MgServerSelectFeatures.ParseQualifiedClassNameForCalculation");
+    CHECKNULL(extension, L"MgdSelectFeatures.ParseQualifiedClassNameForCalculation");
 
     MgUtil::ParseQualifiedClassName(qualifiedClassName, schemaName, className);
 
@@ -1510,15 +1567,15 @@ MgResourceIdentifier* MgdSelectFeatures::GetSecondaryResourceIdentifier(MgResour
 {
     Ptr<MgResourceIdentifier> secResId;
 
-    CHECKNULL(m_featureSourceCacheItem.p, L"MgServerSelectFeatures.GetSecondaryResourceIdentifier");
+    CHECKNULL(m_featureSourceCacheItem.p, L"MgdSelectFeatures.GetSecondaryResourceIdentifier");
     MdfModel::FeatureSource* featureSource = m_featureSourceCacheItem->Get();
     MdfModel::ExtensionCollection* extensions = featureSource->GetExtensions();
-    CHECKNULL(extensions, L"MgServerSelectFeatures.GetSecondaryResourceIdentifier");
+    CHECKNULL(extensions, L"MgdSelectFeatures.GetSecondaryResourceIdentifier");
 
     for (int i = 0; i < extensions->GetCount(); i++)
     {
         MdfModel::Extension* extension = extensions->GetAt(i);
-        CHECKNULL(extension, L"MgServerSelectFeatures.GetSecondaryResourceIdentifier");
+        CHECKNULL(extension, L"MgdSelectFeatures.GetSecondaryResourceIdentifier");
 
         // Get the extension name
         STRING name = (STRING)extension->GetName();
@@ -1534,7 +1591,7 @@ MgResourceIdentifier* MgdSelectFeatures::GetSecondaryResourceIdentifier(MgResour
         {
             // Determine the number of secondary sources (AttributeRelates)
             MdfModel::AttributeRelateCollection* attributeRelates = extension->GetAttributeRelates();
-            CHECKNULL(attributeRelates, L"MgServerSelectFeatures.GetSecondaryResourceIdentifier");
+            CHECKNULL(attributeRelates, L"MgdSelectFeatures.GetSecondaryResourceIdentifier");
             int nAttributeRelateCount = attributeRelates->GetCount();
 
             // Find the specified relation name
@@ -1542,7 +1599,7 @@ MgResourceIdentifier* MgdSelectFeatures::GetSecondaryResourceIdentifier(MgResour
                 for (int attributeRelateIndex = 0; attributeRelateIndex < nAttributeRelateCount; attributeRelateIndex++)
                 {
                     MdfModel::AttributeRelate* attributeRelate = attributeRelates->GetAt(attributeRelateIndex);
-                    CHECKNULL(attributeRelate, L"MgServerSelectFeatures.GetSecondaryResourceIdentifier");
+                    CHECKNULL(attributeRelate, L"MgdSelectFeatures.GetSecondaryResourceIdentifier");
 
                     // Get the name for the join relationship
                     STRING attributeRelateName = (STRING)attributeRelate->GetName();
@@ -1570,6 +1627,10 @@ bool MgdSelectFeatures::SupportsFdoJoin(MgResourceIdentifier* featureSourceId, C
 {
     bool bSupported = false;
 
+    //If disabled on a global level, don't even bother continuing 
+    if (!m_bUseFdoJoinOptimization)
+        return false;
+
     MG_FEATURE_SERVICE_TRY()
 
     //This could be qualified, so parse it to be sure
@@ -1577,10 +1638,10 @@ bool MgdSelectFeatures::SupportsFdoJoin(MgResourceIdentifier* featureSourceId, C
     STRING extName;
     MgUtil::ParseQualifiedClassName(extensionName, schemaName, extName);
 
-    CHECKNULL(m_featureSourceCacheItem.p, L"MgServerSelectFeatures.SupportsFdoJoin");
+    CHECKNULL(m_featureSourceCacheItem.p, L"MgdSelectFeatures.SupportsFdoJoin");
     MdfModel::FeatureSource* featureSource = m_featureSourceCacheItem->Get();
     MdfModel::ExtensionCollection* extensions = featureSource->GetExtensions();
-    CHECKNULL(extensions, L"MgServerSelectFeatures.SupportsFdoJoin");
+    CHECKNULL(extensions, L"MgdSelectFeatures.SupportsFdoJoin");
 
     MdfModel::Extension* extension = NULL;
     for (INT32 i = 0; i < extensions->GetCount(); i++) 
@@ -1605,7 +1666,7 @@ bool MgdSelectFeatures::SupportsFdoJoin(MgResourceIdentifier* featureSourceId, C
     {
         if (!conn->IsConnectionOpen())
         {
-            throw new MgdConnectionFailedException(L"MgServerSelectFeatures.SupportsFdoJoin", __LINE__, __WFILE__, NULL, L"", NULL);
+            throw new MgdConnectionFailedException(L"MgdSelectFeatures.SupportsFdoJoin", __LINE__, __WFILE__, NULL, L"", NULL);
         }
 
         FdoPtr<FdoIConnection> fdoConn = conn->GetConnection();
@@ -1751,7 +1812,7 @@ bool MgdSelectFeatures::SupportsFdoJoin(MgResourceIdentifier* featureSourceId, C
         bSupported = true;
     }
 
-    MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgServerSelectFeatures.SupportsFdoJoin")
+    MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgdSelectFeatures.SupportsFdoJoin")
 
     return bSupported;
 }
@@ -1763,7 +1824,7 @@ bool MgdSelectFeatures::IsFunctionOnPrimaryProperty(FdoFunction* function, FdoIC
         return true; //Inconsequential
 
     FdoPtr<FdoIDescribeSchema> descSchema = dynamic_cast<FdoIDescribeSchema*>(fdoConn->CreateCommand(FdoCommandType_DescribeSchema));
-    CHECKNULL((FdoIDescribeSchema*)descSchema, L"MgServerSelectFeatures.SelectFdoJoin");
+    CHECKNULL((FdoIDescribeSchema*)descSchema, L"MgdSelectFeatures.SelectFdoJoin");
 
     if (!schemaName.empty())
     {
@@ -1799,7 +1860,7 @@ bool MgdSelectFeatures::IsFunctionOnPrimaryProperty(FdoFunction* function, FdoIC
     if (NULL == (FdoClassDefinition*)classDef)
     {
         //TODO: Refine message if available
-        throw new MgClassNotFoundException(L"MgServerSelectFeatures.IsFunctionOnPrimaryProperty", __LINE__, __WFILE__, NULL, L"", NULL);
+        throw new MgClassNotFoundException(L"MgdSelectFeatures.IsFunctionOnPrimaryProperty", __LINE__, __WFILE__, NULL, L"", NULL);
     }
 
     FdoPtr<FdoPropertyDefinitionCollection> properties = classDef->GetProperties();
@@ -1831,13 +1892,13 @@ bool MgdSelectFeatures::FilterContainsSecondaryProperties(MgResourceIdentifier* 
     {
         if (!conn->IsConnectionOpen())
         {
-            throw new MgdConnectionFailedException(L"MgServerSelectFeatures.SupportsFdoJoin", __LINE__, __WFILE__, NULL, L"", NULL);
+            throw new MgdConnectionFailedException(L"MgdSelectFeatures.SupportsFdoJoin", __LINE__, __WFILE__, NULL, L"", NULL);
         }
 
         FdoPtr<FdoIConnection> fdoConn = conn->GetConnection();
 
         FdoPtr<FdoIDescribeSchema> descSchema = dynamic_cast<FdoIDescribeSchema*>(fdoConn->CreateCommand(FdoCommandType_DescribeSchema));
-        CHECKNULL((FdoIDescribeSchema*)descSchema, L"MgServerSelectFeatures.SelectFdoJoin");
+        CHECKNULL((FdoIDescribeSchema*)descSchema, L"MgdSelectFeatures.SelectFdoJoin");
 
         if (!secondarySchema.empty())
         {
@@ -1873,7 +1934,7 @@ bool MgdSelectFeatures::FilterContainsSecondaryProperties(MgResourceIdentifier* 
         if (NULL == (FdoClassDefinition*)classDef)
         {
             //TODO: Refine message if available
-            throw new MgClassNotFoundException(L"MgServerSelectFeatures.FilterContainsSecondaryProperties", __LINE__, __WFILE__, NULL, L"", NULL);
+            throw new MgClassNotFoundException(L"MgdSelectFeatures.FilterContainsSecondaryProperties", __LINE__, __WFILE__, NULL, L"", NULL);
         }
 
         FdoPtr<FdoPropertyDefinitionCollection> propDefs = classDef->GetProperties();
@@ -1904,10 +1965,10 @@ MgReader* MgdSelectFeatures::SelectFdoJoin(MgResourceIdentifier* featureSourceId
     STRING extName;
     MgUtil::ParseQualifiedClassName(extensionName, schemaName, extName);
 
-    CHECKNULL(m_featureSourceCacheItem.p, L"MgServerSelectFeatures.SelectFdoJoin");
+    CHECKNULL(m_featureSourceCacheItem.p, L"MgdSelectFeatures.SelectFdoJoin");
     MdfModel::FeatureSource* featureSource = m_featureSourceCacheItem->Get();
     MdfModel::ExtensionCollection* extensions = featureSource->GetExtensions();
-    CHECKNULL(extensions, L"MgServerSelectFeatures.SelectFdoJoin");
+    CHECKNULL(extensions, L"MgdSelectFeatures.SelectFdoJoin");
 
     MdfModel::Extension* extension = NULL;
     for (INT32 i = 0; i < extensions->GetCount(); i++) 
@@ -1920,10 +1981,14 @@ MgReader* MgdSelectFeatures::SelectFdoJoin(MgResourceIdentifier* featureSourceId
         }
     }
 
-    CHECKNULL(extension, L"MgServerSelectFeatures.SelectFdoJoin");
-    m_command->SetFeatureClassName(extension->GetFeatureClass().c_str());
+    CHECKNULL(extension, L"MgdSelectFeatures.SelectFdoJoin");
+    FdoString* clsName = extension->GetFeatureClass().c_str();
+    m_command->SetFeatureClassName(clsName);
+#ifdef DEBUG_FDO_JOIN
+    ACE_DEBUG((LM_INFO, ACE_TEXT("\n\t(%t) [FdoISelect] Set primary feature class: %W"), clsName));
+#endif
     MdfModel::AttributeRelateCollection* relates = extension->GetAttributeRelates();
-    CHECKNULL(relates, L"MgServerSelectFeatures.SelectFdoJoin");
+    CHECKNULL(relates, L"MgdSelectFeatures.SelectFdoJoin");
     MdfModel::AttributeRelate* relate = relates->GetAt(0);
 
     const MdfModel::MdfString& prefix = relate->GetName();
@@ -1950,20 +2015,18 @@ MgReader* MgdSelectFeatures::SelectFdoJoin(MgResourceIdentifier* featureSourceId
     {
         if (!conn->IsConnectionOpen())
         {
-            throw new MgdConnectionFailedException(L"MgServerSelectFeatures.SelectFdoJoin", __LINE__, __WFILE__, NULL, L"", NULL);
+            throw new MgdConnectionFailedException(L"MgdSelectFeatures.SelectFdoJoin", __LINE__, __WFILE__, NULL, L"", NULL);
         }
 
-        CHECKNULL(m_command, L"MgServerSelectFeatures.SelectFdoJoin");
+        CHECKNULL(m_command, L"MgdSelectFeatures.SelectFdoJoin");
         FdoPtr<FdoIConnection> fdoConn = conn->GetConnection();
 
         bool bAppliedProperties = false;
         if (m_options != NULL)
         {
-            //ApplyClassProperties();
             ApplyComputedProperties();
             // TODO: We need to find out if there are any filters involving the secondary side
             ApplyFilter();
-            // ApplySpatialFilter();
             ApplyOrderingOptions();
             // We don't apply aggregate options here because these go through the FDO Expression Engine
             ApplyAggregateOptions(isAggregate);
@@ -1974,7 +2037,7 @@ MgReader* MgdSelectFeatures::SelectFdoJoin(MgResourceIdentifier* featureSourceId
             Ptr<MgStringCollection> props = m_options->GetClassProperties();
             if (props->GetCount() > 0)
             {
-                ApplyClassProperties();
+                ApplyClassPropertiesForFdoJoin(primaryAlias, secondaryAlias, prefix);
                 bAppliedProperties = true;
             }
         }
@@ -2056,7 +2119,7 @@ MgReader* MgdSelectFeatures::SelectFdoJoin(MgResourceIdentifier* featureSourceId
     else
         ret = ((MgdSelectCommand*)m_command.p)->ExecuteJoined(idPropNames, bForceOneToOne);
 
-    MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgServerSelectFeatures.SelectFdoJoin")
+    MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgdSelectFeatures.SelectFdoJoin")
 
     return ret.Detach();
 }
@@ -2072,10 +2135,10 @@ void MgdSelectFeatures::ApplyAggregateCommandJoinFilterAndCriteria(MgResourceIde
     STRING extName;
     MgUtil::ParseQualifiedClassName(extensionName, schemaName, extName);
 
-    CHECKNULL(m_featureSourceCacheItem.p, L"MgServerSelectFeatures.SupportsFdoJoin");
+    CHECKNULL(m_featureSourceCacheItem.p, L"MgdSelectFeatures.SupportsFdoJoin");
     MdfModel::FeatureSource* featureSource = m_featureSourceCacheItem->Get();
     MdfModel::ExtensionCollection* extensions = featureSource->GetExtensions();
-    CHECKNULL(extensions, L"MgServerSelectFeatures.SupportsFdoJoin");
+    CHECKNULL(extensions, L"MgdSelectFeatures.SupportsFdoJoin");
 
     MdfModel::Extension* extension = NULL;
     for (INT32 i = 0; i < extensions->GetCount(); i++) 
@@ -2088,10 +2151,10 @@ void MgdSelectFeatures::ApplyAggregateCommandJoinFilterAndCriteria(MgResourceIde
         }
     }
 
-    CHECKNULL(extension, L"MgServerSelectFeatures.SelectFdoJoin");
+    CHECKNULL(extension, L"MgdSelectFeatures.SelectFdoJoin");
     m_command->SetFeatureClassName(extension->GetFeatureClass().c_str());
     MdfModel::AttributeRelateCollection* relates = extension->GetAttributeRelates();
-    CHECKNULL(relates, L"MgServerSelectFeatures.SelectFdoJoin");
+    CHECKNULL(relates, L"MgdSelectFeatures.SelectFdoJoin");
     MdfModel::AttributeRelate* relate = relates->GetAt(0);
 
     const MdfModel::MdfString& prefix = relate->GetName();
@@ -2156,7 +2219,7 @@ void MgdSelectFeatures::ApplyAggregateCommandJoinFilterAndCriteria(MgResourceIde
 void MgdSelectFeatures::ApplyClassProperties(FdoIConnection* fdoConn, CREFSTRING schemaName, CREFSTRING className, MgStringCollection* idPropNames, CREFSTRING alias, CREFSTRING prefix)
 {
     FdoPtr<FdoIDescribeSchema> descSchema = dynamic_cast<FdoIDescribeSchema*>(fdoConn->CreateCommand(FdoCommandType_DescribeSchema));
-    CHECKNULL((FdoIDescribeSchema*)descSchema, L"MgServerSelectFeatures.SelectFdoJoin");
+    CHECKNULL((FdoIDescribeSchema*)descSchema, L"MgdSelectFeatures.SelectFdoJoin");
 
     if (!schemaName.empty())
     {
@@ -2192,7 +2255,7 @@ void MgdSelectFeatures::ApplyClassProperties(FdoIConnection* fdoConn, CREFSTRING
     if (NULL == (FdoClassDefinition*)classDef)
     {
         //TODO: Refine message if available
-        throw new MgClassNotFoundException(L"MgServerSelectFeatures.ApplyClassProperties", __LINE__, __WFILE__, NULL, L"", NULL);
+        throw new MgClassNotFoundException(L"MgdSelectFeatures.ApplyClassProperties", __LINE__, __WFILE__, NULL, L"", NULL);
     }
 
     FdoPtr<FdoIdentifierCollection> propNames = m_command->GetPropertyNames();

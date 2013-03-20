@@ -51,6 +51,9 @@ int main(int argc, char** argv)
     ACE_DEBUG((LM_INFO, ACE_TEXT("Initialize Platform.ini\n")));
     //Benchmark this
 #ifdef WIN32
+    //Muffle errors due to broken FDO RDBMS provider dlls, they aren't the ones exercised
+    //under test anyway
+    SetErrorMode(SEM_FAILCRITICALERRORS);
     long lStart = GetTickCount();
 #endif
     MgdPlatform::Initialize(L"Platform.ini");
