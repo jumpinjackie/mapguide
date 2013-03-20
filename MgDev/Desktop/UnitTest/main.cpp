@@ -24,7 +24,6 @@
 #endif
 #endif
 
-#define TEST_COORDINATE_SYSTEM  1
 #define TEST_LOG_MANAGER        1
 #define TEST_RESOURCE_SERVICE   1
 #define TEST_FEATURE_SERVICE    1
@@ -72,14 +71,6 @@ int main(int argc, char** argv)
     //NOTE: Leave trace log off, otherwise one of the tests here will fail
 #if TEST_LOG_MANAGER == 1
     runner.addTest(CppUnit::TestFactoryRegistry::getRegistry("TestLogManager").makeTest());
-#endif
-#ifdef _DEBUG
-    ACE_DEBUG((LM_INFO, ACE_TEXT(">>>>> Running all unit tests - Excluding Performance and CoordinateSystem. <<<<<\n\n")));
-#else
-    ACE_DEBUG((LM_INFO, ACE_TEXT(">>>>> Running all unit tests - Excluding Performance. <<<<<\n\n")));
-    #if TEST_COORDINATE_SYSTEM == 1
-    runner.addTest(CppUnit::TestFactoryRegistry::getRegistry("TestCoordinateSystem").makeTest());
-    #endif
 #endif
 #if TEST_RESOURCE_SERVICE == 1
     runner.addTest(CppUnit::TestFactoryRegistry::getRegistry("TestResourceService").makeTest());
