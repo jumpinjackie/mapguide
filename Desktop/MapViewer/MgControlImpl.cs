@@ -4,6 +4,8 @@ using System.Text;
 using System.Windows.Forms;
 using System.ComponentModel;
 
+#pragma warning disable 1591
+
 namespace OSGeo.MapGuide.Viewer
 {
     /// <summary>
@@ -36,10 +38,13 @@ namespace OSGeo.MapGuide.Viewer
         /// </summary>
         public virtual bool ModalWindow { get; set; }
 
+        /// <summary>
+        /// Gets or sets the content closer
+        /// </summary>
         public IContentCloser Closer { get; set; }
 
         /// <summary>
-        /// Raises the <see cref="ContentClosed"/> event
+        /// 
         /// </summary>
         protected void Close()
         {
@@ -59,8 +64,14 @@ namespace OSGeo.MapGuide.Viewer
         }
     }
 
+    /// <summary>
+    /// An interface for closing component UI content
+    /// </summary>
     public interface IContentCloser
     {
+        /// <summary>
+        /// Closes the UI content
+        /// </summary>
         void Close();
     }
 }

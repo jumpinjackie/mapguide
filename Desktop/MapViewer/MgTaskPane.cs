@@ -7,6 +7,8 @@ using System.Text;
 using System.Windows.Forms;
 using OSGeo.MapGuide.Viewer.Tasks;
 
+#pragma warning disable 1591
+
 namespace OSGeo.MapGuide.Viewer
 {
     public partial class MgTaskPane : UserControl

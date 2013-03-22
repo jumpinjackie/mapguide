@@ -7,6 +7,8 @@ using System.Text;
 using System.Windows.Forms;
 using System.Globalization;
 
+#pragma warning disable 1591
+
 namespace OSGeo.MapGuide.Viewer
 {
     internal partial class MgBufferControlImpl : MgControlView
@@ -198,7 +200,7 @@ namespace OSGeo.MapGuide.Viewer
                     schema.GetClasses().Add(classDef);
 
                     //finally, creation of the feature source
-                    MgCreateSdfParams sdfParams = new MgCreateSdfParams("LatLong", map.GetMapSRS(), schema); //NOXLATE
+                    MgFileFeatureSourceParams sdfParams = new MgFileFeatureSourceParams("OSGeo.SDF", "LatLong", map.GetMapSRS(), schema); //NOXLATE
                     _featSvc.CreateFeatureSource(fsId, sdfParams);
 
                     //Add layer to map

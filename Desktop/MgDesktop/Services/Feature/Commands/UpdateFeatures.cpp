@@ -135,7 +135,7 @@ MgPropertyCollection* MgdUpdateFeaturesCommand::Execute(MgResourceIdentifier* re
         commited = true;
     }
 
-    MG_FEATURE_SERVICE_CHECK_CONNECTION_CATCH_AND_THROW(resource, L"MgdUpdateFeaturesCommand.UpdateFeatures")
+    MG_FEATURE_SERVICE_CHECK_CONNECTION_CATCH(resource, L"MgdUpdateFeaturesCommand.UpdateFeatures")
 
     if (transaction != NULL && !commited)
     {

@@ -47,6 +47,8 @@ class TestFeatureService : public CppUnit::TestFixture
     CPPUNIT_TEST(TestCase_InsertFeatures);
     CPPUNIT_TEST(TestCase_InsertFeaturesBatch);
     CPPUNIT_TEST(TestCase_UpdateFeatures);
+    CPPUNIT_TEST(TestCase_UpdateFeaturesInsert);
+    CPPUNIT_TEST(TestCase_UpdateFeaturesPartialFailure);
     CPPUNIT_TEST(TestCase_DeleteFeatures);
 //  TODO write test case when know how to make command collection
     CPPUNIT_TEST(TestCase_ExecuteSqlQuery);
@@ -102,6 +104,8 @@ public:
     void TestCase_SelectFeaturesTransformed();
     void TestCase_SelectScrollable();
     void TestCase_SelectAggregate();
+    void TestCase_UpdateFeaturesInsert();
+    void TestCase_UpdateFeaturesPartialFailure();
     void TestCase_InsertFeatures();
     void TestCase_InsertFeaturesBatch();
     void TestCase_UpdateFeatures();

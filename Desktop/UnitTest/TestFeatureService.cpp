@@ -2817,6 +2817,145 @@ void TestFeatureService::TestCase_ExtendedFeatureClass()
 ///----------------------------------------------------------------------------
 /// Test Case Description:
 ///
+/// This test case exercises the UpdateFeatures API for insertion
+///----------------------------------------------------------------------------
+void TestFeatureService::TestCase_UpdateFeaturesInsert()
+{
+    try
+    {
+        Ptr<MgdServiceFactory> fact = new MgdServiceFactory();
+        if (fact == 0)
+        {
+            throw new MgNullReferenceException(L"TestFeatureService.TestCase_SavePoint", __LINE__, __WFILE__, NULL, L"", NULL);
+        }
+
+        Ptr<MgFeatureService> pService = dynamic_cast<MgFeatureService*>(fact->CreateService(MgServiceType::FeatureService));
+        if (pService == 0)
+        {
+            throw new MgServiceNotAvailableException(L"TestFeatureService.TestCase_SavePoint", __LINE__, __WFILE__, NULL, L"", NULL);
+        }
+
+        Ptr<MgResourceIdentifier> featureSource = new MgResourceIdentifier(L"Library://UnitTests/Data/TestInsert.FeatureSource");
+
+        //Create our test data store (SQLite)
+        STRING scName = L"Default";
+        STRING srsWkt = L"LOCAL_CS[\"Non-Earth (Meter)\",LOCAL_DATUM[\"Local Datum\",0],UNIT[\"Meter\", 1],AXIS[\"X\",EAST],AXIS[\"Y\",NORTH]]";
+        
+        //Setup schema
+        Ptr<MgFeatureSchema> schema = new MgFeatureSchema(L"Default", L"Test schema for TestCase_2218");
+        Ptr<MgClassDefinition> klass = new MgClassDefinition();
+        klass->SetName(L"TestClass");
+        Ptr<MgPropertyDefinitionCollection> clsProps = klass->GetProperties();
+        Ptr<MgPropertyDefinitionCollection> idProps = klass->GetIdentityProperties();
+        
+        //ID
+        Ptr<MgDataPropertyDefinition> idProperty = new MgDataPropertyDefinition(L"ID");
+        idProperty->SetDataType(MgPropertyType::Int32);
+        idProperty->SetAutoGeneration(false);
+        idProperty->SetNullable(false);
+        clsProps->Add(idProperty);
+        idProps->Add(idProperty);
+        //Name
+        Ptr<MgDataPropertyDefinition> nameProperty = new MgDataPropertyDefinition(L"Name");
+        nameProperty->SetDataType(MgPropertyType::String);
+        nameProperty->SetLength(255);
+        nameProperty->SetNullable(true);
+        clsProps->Add(nameProperty);
+        //Geom
+        Ptr<MgGeometricPropertyDefinition> geomProperty = new MgGeometricPropertyDefinition(L"Geom");
+        geomProperty->SetSpatialContextAssociation(scName);
+        clsProps->Add(geomProperty);
+
+        klass->SetDefaultGeometryPropertyName(L"Geom");
+
+        Ptr<MgClassDefinitionCollection> classes = schema->GetClasses();
+        classes->Add(klass);
+
+        //Create the feature source
+        Ptr<MgFileFeatureSourceParams> fileParams = new MgFileFeatureSourceParams(L"OSGeo.SQLite", scName, srsWkt, schema);
+        pService->CreateFeatureSource(featureSource, fileParams);
+
+        //Set up insert command
+        Ptr<MgFeatureCommandCollection> commands = new MgFeatureCommandCollection();
+        Ptr<MgPropertyCollection> propVals = new MgPropertyCollection();
+        
+        Ptr<MgInt32Property> idVal = new MgInt32Property(L"ID", 1);
+        Ptr<MgStringProperty> nameVal = new MgStringProperty(L"Name", L"Foo");
+        
+        Ptr<MgWktReaderWriter> wktRw = new MgWktReaderWriter();
+        Ptr<MgAgfReaderWriter> agfRw = new MgAgfReaderWriter();
+        Ptr<MgGeometry> geom = wktRw->Read(L"POINT (1 2)");
+        Ptr<MgByteReader> agf = agfRw->Write(geom);
+        Ptr<MgGeometryProperty> geomVal = new MgGeometryProperty(L"Geom", agf);
+
+        propVals->Add(idVal);
+        propVals->Add(nameVal);
+        propVals->Add(geomVal);
+
+        Ptr<MgInsertFeatures> insert = new MgInsertFeatures(L"Default:TestClass", propVals);
+        commands->Add(insert);
+
+        //Execute insert. Should be fine
+        Ptr<MgPropertyCollection> result = pService->UpdateFeatures(featureSource, commands, true);
+        CPPUNIT_ASSERT(result->GetCount() == 1);
+        INT32 i = 0;
+        Ptr<MgProperty> resItem1 = result->GetItem(i);
+        CPPUNIT_ASSERT(resItem1->GetPropertyType() == MgPropertyType::Feature);
+        Ptr<MgFeatureReader> rdr = ((MgFeatureProperty*)resItem1.p)->GetValue();
+        rdr->Close();
+
+        //Change name, retain same id
+        nameVal->SetValue(L"Bar");
+
+        //Execute again, expect MgFdoException due to constraint violation
+        CPPUNIT_ASSERT_THROW_MG(result = pService->UpdateFeatures(featureSource, commands, true), MgFdoException*);
+        
+        //Expect one inserted result
+        Ptr<MgFeatureQueryOptions> query = new MgFeatureQueryOptions();
+        Ptr<MgFeatureReader> qryReader = pService->SelectFeatures(featureSource, L"Default:TestClass", query);
+        INT32 count = 0;
+        while (qryReader->ReadNext()) { count++; }
+        qryReader->Close();
+        CPPUNIT_ASSERT(1 == count);
+
+        //Execute again, useTransaction = false. Should not throw exception, but log
+        //the error as a MgStringProperty
+        result = pService->UpdateFeatures(featureSource, commands, false);
+        CPPUNIT_ASSERT(result->GetCount() == 1);
+        resItem1 = result->GetItem(i);
+        CPPUNIT_ASSERT(resItem1->GetPropertyType() == MgPropertyType::String); //Errors are of type String
+
+        //Use new id
+        idVal->SetValue(2);
+
+        //Should be fine now
+        result = pService->UpdateFeatures(featureSource, commands, true);
+        CPPUNIT_ASSERT(result->GetCount() == 1);
+        resItem1 = result->GetItem(i);
+        CPPUNIT_ASSERT(resItem1->GetPropertyType() == MgPropertyType::Feature);
+        rdr = ((MgFeatureProperty*)resItem1.p)->GetValue();
+        rdr->Close();
+    }
+    catch(MgException* e)
+    {
+        STRING message = e->GetDetails(TEST_LOCALE);
+        SAFE_RELEASE(e);
+        CPPUNIT_FAIL(MG_WCHAR_TO_CHAR(message.c_str()));
+    }
+    catch(FdoException* e)
+    {
+        FDO_SAFE_RELEASE(e);
+        CPPUNIT_FAIL("FdoException occurred");
+    }
+    catch(...)
+    {
+        throw;
+    }
+}
+
+///----------------------------------------------------------------------------
+/// Test Case Description:
+///
 /// This test case exercises the FDO join optimization
 ///----------------------------------------------------------------------------
 void TestFeatureService::TestCase_JoinFdoFeatures()
@@ -4496,6 +4635,72 @@ void TestFeatureService::TestCase_BenchmarkNestedLoopsJoin()
         reader->Close();
 
         ACE_DEBUG((LM_INFO, ACE_TEXT("  Execution Time (%d results): = %6.4f (s)\n"), total, ((GetTickCount()-lStart)/1000.0) ));
+    }
+    catch(MgException* e)
+    {
+        STRING message = e->GetDetails(TEST_LOCALE);
+        SAFE_RELEASE(e);
+        CPPUNIT_FAIL(MG_WCHAR_TO_CHAR(message.c_str()));
+    }
+    catch(FdoException* e)
+    {
+        STRING message = L"FdoException occurred: ";
+        message += e->GetExceptionMessage();
+        FDO_SAFE_RELEASE(e);
+        CPPUNIT_FAIL(MG_WCHAR_TO_CHAR(message.c_str()));
+    }
+    catch(...)
+    {
+        throw;
+    }
+}
+
+///----------------------------------------------------------------------------
+/// Test Case Description:
+///
+/// This test case tests the correct response for a non-transactional failure
+/// in UpdateFeatures
+///----------------------------------------------------------------------------
+void TestFeatureService::TestCase_UpdateFeaturesPartialFailure()
+{
+    try
+    {
+        Ptr<MgdServiceFactory> fact = new MgdServiceFactory();
+        if (fact == 0)
+        {
+            throw new MgNullReferenceException(L"TestFeatureService.TestCase_UpdateFeaturesPartialFailure", __LINE__, __WFILE__, NULL, L"", NULL);
+        }
+
+        Ptr<MgFeatureService> featSvc = dynamic_cast<MgFeatureService*>(fact->CreateService(MgServiceType::FeatureService));
+        if (featSvc == 0)
+        {
+            throw new MgServiceNotAvailableException(L"TestFeatureService.TestCase_UpdateFeaturesPartialFailure",
+                __LINE__, __WFILE__, NULL, L"", NULL);
+        }
+
+        Ptr<MgResourceIdentifier> fsId = new MgResourceIdentifier(L"Library://UnitTests/Data/Sheboygan_Parcels.FeatureSource");
+        Ptr<MgPropertyCollection> props = new MgPropertyCollection();
+        Ptr<MgInt32Property> idProp = new MgInt32Property(L"id", 0);
+        props->Add(idProp);
+        Ptr<MgInsertFeatures> insert = new MgInsertFeatures(L"Parcels1", props); //Bogus class name to trigger exception
+        Ptr<MgFeatureCommandCollection> cmds = new MgFeatureCommandCollection();
+        cmds->Add(insert);
+
+        Ptr<MgPropertyCollection> result = featSvc->UpdateFeatures(fsId, cmds, false);
+        CPPUNIT_ASSERT(result->GetCount() > 0);
+
+        bool bPartialFailure = false;
+        for (INT32 i = 0; i < result->GetCount(); i++)
+        {
+            Ptr<MgProperty> prop = result->GetItem(i);
+            if (prop->GetPropertyType() == MgPropertyType::String)
+            {
+                bPartialFailure = true;
+                break;
+            }
+        }
+
+        CPPUNIT_ASSERT(bPartialFailure);
     }
     catch(MgException* e)
     {

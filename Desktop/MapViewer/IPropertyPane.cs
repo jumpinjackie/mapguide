@@ -140,8 +140,6 @@ namespace OSGeo.MapGuide.Viewer
             
         }
 
-        private MgMapViewerProvider _provider;
-
         internal MgSelectionSet(MgSelectionBase selection, MgMapViewerProvider provider)
         {
             _agfRw = new MgAgfReaderWriter();

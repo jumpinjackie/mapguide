@@ -185,6 +185,8 @@ const STRING MgdConfigProperties::FeatureServicePropertyDataTransactionTimerInte
 const INT32  MgdConfigProperties::DefaultFeatureServicePropertyDataTransactionTimerInterval  = 60;
 const STRING MgdConfigProperties::FeatureServicePropertyFDOConnectionTimeoutCustom           = L"FDOConnectionTimeoutCustom";
 const STRING MgdConfigProperties::DefaultFeatureServicePropertyFDOConnectionTimeoutCustom    = L"OSGeo.WMS:120";
+const STRING MgdConfigProperties::FeatureServicePropertyUseFdoJoinOptimization               = L"UseFdoJoinOptimization";
+const bool   MgdConfigProperties::DefaultFeatureServicePropertyUseFdoJoinOptimization        = true;
 
 // ******************************************************************
 // Mapping Service Properties

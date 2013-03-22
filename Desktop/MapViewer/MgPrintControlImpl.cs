@@ -6,6 +6,8 @@ using System.Data;
 using System.Text;
 using System.Windows.Forms;
 
+#pragma warning disable 1591
+
 namespace OSGeo.MapGuide.Viewer
 {
     public partial class MgPrintControlImpl : MgControlView
