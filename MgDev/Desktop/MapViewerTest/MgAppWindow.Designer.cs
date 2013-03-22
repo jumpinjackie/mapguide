@@ -104,6 +104,13 @@
             this.toolStripMenuItem25 = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem26 = new System.Windows.Forms.ToolStripMenuItem();
             this.lblLoading = new System.Windows.Forms.ToolStripLabel();
+            this.toolStripSplitButton1 = new System.Windows.Forms.ToolStripSplitButton();
+            this.pointToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.lineToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.rectangleToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.lineStringToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.polygonToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.circleToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.taskPane = new OSGeo.MapGuide.Viewer.MgTaskPane();
             this.toolStrip1 = new System.Windows.Forms.ToolStrip();
             this.btnInitialTask = new System.Windows.Forms.ToolStripButton();
@@ -143,16 +150,11 @@
             this.loadCompactViewerComponent = new OSGeo.MapGuide.Viewer.MgGenericInvokeComponent();
             this.profileComponent = new OSGeo.MapGuide.Viewer.MgGenericInvokeComponent();
             this.mgToolButtonComponentInvoker1 = new OSGeo.MapGuide.Viewer.MgToolButtonComponentInvoker();
-            this.mgZoomNextComponent1 = new OSGeo.MapGuide.Viewer.MgZoomNextComponent();
             this.mgZoomPreviousComponent1 = new OSGeo.MapGuide.Viewer.MgZoomPreviousComponent();
+            this.mgZoomNextComponent1 = new OSGeo.MapGuide.Viewer.MgZoomNextComponent();
             this.mgLayerSelectionHandler1 = new OSGeo.MapGuide.Viewer.MgLayerSelectionHandler();
-            this.toolStripSplitButton1 = new System.Windows.Forms.ToolStripSplitButton();
-            this.pointToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.lineToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.rectangleToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.lineStringToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.polygonToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.circleToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.testToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.oneshotCallbackToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.appMenu.SuspendLayout();
             this.appContextMenu.SuspendLayout();
             this.appContainer.Panel1.SuspendLayout();
@@ -186,7 +188,8 @@
             // 
             this.appMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.fileToolStripMenuItem,
-            this.toolsToolStripMenuItem});
+            this.toolsToolStripMenuItem,
+            this.testToolStripMenuItem});
             this.appMenu.Location = new System.Drawing.Point(0, 0);
             this.appMenu.Name = "appMenu";
             this.appMenu.Size = new System.Drawing.Size(1008, 24);
@@ -591,10 +594,13 @@
             this.mapViewer.MouseWheelDelayRenderInterval = 800;
             this.mapViewer.Name = "mapViewer";
             this.mapViewer.PointPixelBuffer = 2;
+            this.mapViewer.RespectFiniteDisplayScales = false;
             this.mapViewer.SelectionColor = System.Drawing.Color.Blue;
             this.mapViewer.Size = new System.Drawing.Size(495, 658);
             this.mapViewer.TabIndex = 0;
             this.mapViewer.Text = "mgMapViewer1";
+            this.mapViewer.TooltipDelayInterval = 1000;
+            this.mapViewer.UseRenderMapIfTiledLayersExist = false;
             this.mapViewer.ZoomInFactor = 0.5;
             this.mapViewer.ZoomOutFactor = 2;
             this.mapViewer.PropertyChanged += new System.ComponentModel.PropertyChangedEventHandler(this.OnViewerPropertyChanged);
@@ -960,6 +966,63 @@
             this.lblLoading.Size = new System.Drawing.Size(30, 22);
             this.lblLoading.Visible = false;
             // 
+            // toolStripSplitButton1
+            // 
+            this.toolStripSplitButton1.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.pointToolStripMenuItem,
+            this.lineToolStripMenuItem,
+            this.rectangleToolStripMenuItem,
+            this.lineStringToolStripMenuItem,
+            this.polygonToolStripMenuItem,
+            this.circleToolStripMenuItem});
+            this.toolStripSplitButton1.Image = global::MapViewerTest.Properties.Resources.icon_tasks;
+            this.toolStripSplitButton1.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.toolStripSplitButton1.Name = "toolStripSplitButton1";
+            this.toolStripSplitButton1.Size = new System.Drawing.Size(78, 22);
+            this.toolStripSplitButton1.Text = "Digitize";
+            // 
+            // pointToolStripMenuItem
+            // 
+            this.pointToolStripMenuItem.Name = "pointToolStripMenuItem";
+            this.pointToolStripMenuItem.Size = new System.Drawing.Size(127, 22);
+            this.pointToolStripMenuItem.Text = "Point";
+            this.pointToolStripMenuItem.Click += new System.EventHandler(this.pointToolStripMenuItem_Click);
+            // 
+            // lineToolStripMenuItem
+            // 
+            this.lineToolStripMenuItem.Name = "lineToolStripMenuItem";
+            this.lineToolStripMenuItem.Size = new System.Drawing.Size(127, 22);
+            this.lineToolStripMenuItem.Text = "Line";
+            this.lineToolStripMenuItem.Click += new System.EventHandler(this.lineToolStripMenuItem_Click);
+            // 
+            // rectangleToolStripMenuItem
+            // 
+            this.rectangleToolStripMenuItem.Name = "rectangleToolStripMenuItem";
+            this.rectangleToolStripMenuItem.Size = new System.Drawing.Size(127, 22);
+            this.rectangleToolStripMenuItem.Text = "Rectangle";
+            this.rectangleToolStripMenuItem.Click += new System.EventHandler(this.rectangleToolStripMenuItem_Click);
+            // 
+            // lineStringToolStripMenuItem
+            // 
+            this.lineStringToolStripMenuItem.Name = "lineStringToolStripMenuItem";
+            this.lineStringToolStripMenuItem.Size = new System.Drawing.Size(127, 22);
+            this.lineStringToolStripMenuItem.Text = "LineString";
+            this.lineStringToolStripMenuItem.Click += new System.EventHandler(this.lineStringToolStripMenuItem_Click);
+            // 
+            // polygonToolStripMenuItem
+            // 
+            this.polygonToolStripMenuItem.Name = "polygonToolStripMenuItem";
+            this.polygonToolStripMenuItem.Size = new System.Drawing.Size(127, 22);
+            this.polygonToolStripMenuItem.Text = "Polygon";
+            this.polygonToolStripMenuItem.Click += new System.EventHandler(this.polygonToolStripMenuItem_Click);
+            // 
+            // circleToolStripMenuItem
+            // 
+            this.circleToolStripMenuItem.Name = "circleToolStripMenuItem";
+            this.circleToolStripMenuItem.Size = new System.Drawing.Size(127, 22);
+            this.circleToolStripMenuItem.Text = "Circle";
+            this.circleToolStripMenuItem.Click += new System.EventHandler(this.circleToolStripMenuItem_Click);
+            // 
             // taskPane
             // 
             this.taskPane.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -1086,6 +1149,7 @@
             // 
             this.mgPrintComponent1.Icon = ((System.Drawing.Image)(resources.GetObject("mgPrintComponent1.Icon")));
             this.mgPrintComponent1.Label = "Print";
+            this.mgPrintComponent1.OwnerParent = null;
             this.mgPrintComponent1.Target = OSGeo.MapGuide.Viewer.MgViewerTarget.TaskPane;
             this.mgPrintComponent1.TaskPane = this.taskPane;
             this.mgPrintComponent1.ToolTipText = "Print";
@@ -1175,6 +1239,7 @@
             this.mgBufferComponent1.DefaultLayerName = "Buffer 1";
             this.mgBufferComponent1.Icon = ((System.Drawing.Image)(resources.GetObject("mgBufferComponent1.Icon")));
             this.mgBufferComponent1.Label = "Buffer";
+            this.mgBufferComponent1.OwnerParent = null;
             this.mgBufferComponent1.Target = OSGeo.MapGuide.Viewer.MgViewerTarget.TaskPane;
             this.mgBufferComponent1.TaskPane = this.taskPane;
             this.mgBufferComponent1.ToolTipText = null;
@@ -1184,6 +1249,7 @@
             // 
             this.mgMeasureComponent1.Icon = ((System.Drawing.Image)(resources.GetObject("mgMeasureComponent1.Icon")));
             this.mgMeasureComponent1.Label = "Measure";
+            this.mgMeasureComponent1.OwnerParent = null;
             this.mgMeasureComponent1.Target = OSGeo.MapGuide.Viewer.MgViewerTarget.TaskPane;
             this.mgMeasureComponent1.TaskPane = this.taskPane;
             this.mgMeasureComponent1.ToolTipText = null;
@@ -1193,6 +1259,8 @@
             // 
             this.mgQueryComponent1.Icon = ((System.Drawing.Image)(resources.GetObject("mgQueryComponent1.Icon")));
             this.mgQueryComponent1.Label = "Query";
+            this.mgQueryComponent1.LayerList = null;
+            this.mgQueryComponent1.OwnerParent = null;
             this.mgQueryComponent1.Target = OSGeo.MapGuide.Viewer.MgViewerTarget.TaskPane;
             this.mgQueryComponent1.TaskPane = this.taskPane;
             this.mgQueryComponent1.ToolTipText = null;
@@ -1202,6 +1270,7 @@
             // 
             this.mgViewerOptionsComponent1.Icon = ((System.Drawing.Image)(resources.GetObject("mgViewerOptionsComponent1.Icon")));
             this.mgViewerOptionsComponent1.Label = "Viewer Options";
+            this.mgViewerOptionsComponent1.OwnerParent = null;
             this.mgViewerOptionsComponent1.PreferencesDirectory = "";
             this.mgViewerOptionsComponent1.Target = OSGeo.MapGuide.Viewer.MgViewerTarget.TaskPane;
             this.mgViewerOptionsComponent1.TaskPane = this.taskPane;
@@ -1244,6 +1313,7 @@
             // 
             this.mgThemeComponent1.Icon = ((System.Drawing.Image)(resources.GetObject("mgThemeComponent1.Icon")));
             this.mgThemeComponent1.Label = "Theme";
+            this.mgThemeComponent1.OwnerParent = null;
             this.mgThemeComponent1.Target = OSGeo.MapGuide.Viewer.MgViewerTarget.TaskPane;
             this.mgThemeComponent1.TaskPane = this.taskPane;
             this.mgThemeComponent1.ToolTipText = "Theme";
@@ -1267,19 +1337,19 @@
             this.profileComponent.Viewer = this.mapViewer;
             this.profileComponent.Invoked += new System.EventHandler(this.profileComponent_Invoked);
             // 
-            // mgZoomNextComponent1
-            // 
-            this.mgZoomNextComponent1.Icon = ((System.Drawing.Image)(resources.GetObject("mgZoomNextComponent1.Icon")));
-            this.mgZoomNextComponent1.Label = "Zoom Next";
-            this.mgZoomNextComponent1.ToolTipText = "Zoom Next";
-            this.mgZoomNextComponent1.Viewer = this.mapViewer;
-            // 
             // mgZoomPreviousComponent1
             // 
             this.mgZoomPreviousComponent1.Icon = ((System.Drawing.Image)(resources.GetObject("mgZoomPreviousComponent1.Icon")));
             this.mgZoomPreviousComponent1.Label = "Zoom Previous";
             this.mgZoomPreviousComponent1.ToolTipText = "Zoom Previous";
             this.mgZoomPreviousComponent1.Viewer = this.mapViewer;
+            // 
+            // mgZoomNextComponent1
+            // 
+            this.mgZoomNextComponent1.Icon = ((System.Drawing.Image)(resources.GetObject("mgZoomNextComponent1.Icon")));
+            this.mgZoomNextComponent1.Label = "Zoom Next";
+            this.mgZoomNextComponent1.ToolTipText = "Zoom Next";
+            this.mgZoomNextComponent1.Viewer = this.mapViewer;
             // 
             // mgLayerSelectionHandler1
             // 
@@ -1288,62 +1358,20 @@
             this.mgLayerSelectionHandler1.Viewer = this.mapViewer;
             this.mgLayerSelectionHandler1.SelectionMade += new OSGeo.MapGuide.Viewer.MgLayerSelectionEventHandler(this.mgLayerSelectionHandler1_SelectionMade);
             // 
-            // toolStripSplitButton1
+            // testToolStripMenuItem
             // 
-            this.toolStripSplitButton1.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.pointToolStripMenuItem,
-            this.lineToolStripMenuItem,
-            this.rectangleToolStripMenuItem,
-            this.lineStringToolStripMenuItem,
-            this.polygonToolStripMenuItem,
-            this.circleToolStripMenuItem});
-            this.toolStripSplitButton1.Image = global::MapViewerTest.Properties.Resources.icon_tasks;
-            this.toolStripSplitButton1.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.toolStripSplitButton1.Name = "toolStripSplitButton1";
-            this.toolStripSplitButton1.Size = new System.Drawing.Size(78, 22);
-            this.toolStripSplitButton1.Text = "Digitize";
+            this.testToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.oneshotCallbackToolStripMenuItem});
+            this.testToolStripMenuItem.Name = "testToolStripMenuItem";
+            this.testToolStripMenuItem.Size = new System.Drawing.Size(41, 20);
+            this.testToolStripMenuItem.Text = "Test";
             // 
-            // pointToolStripMenuItem
+            // oneshotCallbackToolStripMenuItem
             // 
-            this.pointToolStripMenuItem.Name = "pointToolStripMenuItem";
-            this.pointToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
-            this.pointToolStripMenuItem.Text = "Point";
-            this.pointToolStripMenuItem.Click += new System.EventHandler(this.pointToolStripMenuItem_Click);
-            // 
-            // lineToolStripMenuItem
-            // 
-            this.lineToolStripMenuItem.Name = "lineToolStripMenuItem";
-            this.lineToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
-            this.lineToolStripMenuItem.Text = "Line";
-            this.lineToolStripMenuItem.Click += new System.EventHandler(this.lineToolStripMenuItem_Click);
-            // 
-            // rectangleToolStripMenuItem
-            // 
-            this.rectangleToolStripMenuItem.Name = "rectangleToolStripMenuItem";
-            this.rectangleToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
-            this.rectangleToolStripMenuItem.Text = "Rectangle";
-            this.rectangleToolStripMenuItem.Click += new System.EventHandler(this.rectangleToolStripMenuItem_Click);
-            // 
-            // lineStringToolStripMenuItem
-            // 
-            this.lineStringToolStripMenuItem.Name = "lineStringToolStripMenuItem";
-            this.lineStringToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
-            this.lineStringToolStripMenuItem.Text = "LineString";
-            this.lineStringToolStripMenuItem.Click += new System.EventHandler(this.lineStringToolStripMenuItem_Click);
-            // 
-            // polygonToolStripMenuItem
-            // 
-            this.polygonToolStripMenuItem.Name = "polygonToolStripMenuItem";
-            this.polygonToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
-            this.polygonToolStripMenuItem.Text = "Polygon";
-            this.polygonToolStripMenuItem.Click += new System.EventHandler(this.polygonToolStripMenuItem_Click);
-            // 
-            // circleToolStripMenuItem
-            // 
-            this.circleToolStripMenuItem.Name = "circleToolStripMenuItem";
-            this.circleToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
-            this.circleToolStripMenuItem.Text = "Circle";
-            this.circleToolStripMenuItem.Click += new System.EventHandler(this.circleToolStripMenuItem_Click);
+            this.oneshotCallbackToolStripMenuItem.Name = "oneshotCallbackToolStripMenuItem";
+            this.oneshotCallbackToolStripMenuItem.Size = new System.Drawing.Size(170, 22);
+            this.oneshotCallbackToolStripMenuItem.Text = "One-shot callback";
+            this.oneshotCallbackToolStripMenuItem.Click += new System.EventHandler(this.oneshotCallbackToolStripMenuItem_Click);
             // 
             // MgAppWindow
             // 
@@ -1520,6 +1548,8 @@
         private System.Windows.Forms.ToolStripMenuItem lineStringToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem polygonToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem circleToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem testToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem oneshotCallbackToolStripMenuItem;
 
     }
 }

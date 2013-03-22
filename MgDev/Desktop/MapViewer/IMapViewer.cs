@@ -282,7 +282,7 @@ namespace OSGeo.MapGuide.Viewer
         /// set outside of the viewer
         /// </summary>
         /// <remarks>
-        /// If you have modified the selection as a result of calling <see cref="SelectByGeometry"/>, calling
+        /// If you have modified the selection as a result of calling <see cref="M:OSGeo.MapGuide.Viewer.IMapViewer.SelectByGeometry"/>, calling
         /// this method is not necessary as it will have automatically do this.
         /// </remarks>
         void UpdateSelection();
@@ -293,7 +293,7 @@ namespace OSGeo.MapGuide.Viewer
         /// </summary>
         /// <param name="raise">Indicates if the <see cref="SelectionChanged"/> event should be raised as well</param>
         /// <remarks>
-        /// If you have modified the selection as a result of calling <see cref="SelectByGeometry"/>, calling
+        /// If you have modified the selection as a result of calling <see cref="M:OSGeo.MapGuide.Viewer.IMapViewer.SelectByGeometry"/>, calling
         /// this method is not necessary as it will have automatically do this.
         /// </remarks>
         void UpdateSelection(bool raise);
@@ -301,9 +301,9 @@ namespace OSGeo.MapGuide.Viewer
         /// <summary>
         /// Selects features from all selectable layers that intersects the given geometry
         /// </summary>
-        /// <param name="geom"></param>
+        /// <param name="geom">The geometry to perform intersection tests against</param>
         /// <remarks>
-        /// This method will automatically trigger selection updates. Calling <see cref="UpdateSelection"/> is not necessary if
+        /// This method will automatically trigger selection updates. Calling <see cref="M:OSGeo.MapGuide.Viewer.IMapViewer.UpdateSelection"/> is not necessary if
         /// you are calling this method
         /// </remarks>
         void SelectByGeometry(MgGeometry geom);
@@ -311,13 +311,29 @@ namespace OSGeo.MapGuide.Viewer
         /// <summary>
         /// Selects features from all selectable layers that intersects the given geometry up to the specified number
         /// </summary>
-        /// <param name="geom"></param>
+        /// <param name="geom">The geometry to perform intersection tests against</param>
         /// <param name="maxFeatures">The maximum number of features to select. Specify -1 for all features</param>
         /// <remarks>
-        /// This method will automatically trigger selection updates. Calling <see cref="UpdateSelection"/> is not necessary if
+        /// This method will automatically trigger selection updates. Calling <see cref="M:OSGeo.MapGuide.Viewer.IMapViewer.UpdateSelection"/> is not necessary if
         /// you are calling this method
         /// </remarks>
         void SelectByGeometry(MgGeometry geom, int maxFeatures);
+
+        /// <summary>
+        /// Selects features from all selectable layers that intersects the given geometry up to the specified number
+        /// </summary>
+        /// <param name="geom">The geometry to perform intersection tests against</param>
+        /// <param name="maxFeatures">The maximum number of features to select. Specify -1 for all features</param>
+        /// <param name="selectionHandler">An optional handler method that is invoked upon change of selection</param>
+        /// <remarks>
+        /// If a selection handler is passed to this method two things will happen:
+        /// <list type="number">
+        ///     <item>The <see cref="E:OSGeo.MapGuide.Viewer.IMapViewer.SelectionChanged"/> event is not raised upon change of selection. Existing subscribers will not be notified of any selection change caused by this method</item>
+        ///     <item>The handler will be called with a <see cref="T:OSGeo.MapGuide.MgSelectionBase"/> object passed to it. If this query results in nothing selected, null is passed to this handler</item>
+        /// </list>
+        /// The handler is responsible for the selection given to it. You may call <see cref="M:OSGeo.MapGuide.MgSelectionBase.Dispose()"/> on this selection if desired when your handler is done with it
+        /// </remarks>
+        void SelectByGeometry(MgGeometry geom, int maxFeatures, Action<MgSelectionBase> selectionHandler);
 
         /// <summary>
         /// Zooms to the initial map view
@@ -486,8 +502,17 @@ namespace OSGeo.MapGuide.Viewer
         Point MapToScreenUnits(double x, double y);
     }
 
+    /// <summary>
+    /// Defines a map view location already visited
+    /// </summary>
     public class MgMapViewHistoryEntry
     {
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="x"></param>
+        /// <param name="y"></param>
+        /// <param name="scale"></param>
         public MgMapViewHistoryEntry(double x, double y, double scale)
         {
             this.X = x;
@@ -495,10 +520,19 @@ namespace OSGeo.MapGuide.Viewer
             this.Scale = scale;
         }
 
+        /// <summary>
+        /// The view location X coordinate
+        /// </summary>
         public double X { get; private set; }
 
+        /// <summary>
+        /// The view location Y coordinate
+        /// </summary>
         public double Y { get; private set; }
 
+        /// <summary>
+        /// The view scale
+        /// </summary>
         public double Scale { get; private set; }
     }
 

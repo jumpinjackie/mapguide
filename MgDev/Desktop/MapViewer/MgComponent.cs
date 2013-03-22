@@ -7,6 +7,8 @@ using System.Drawing;
 using System.Diagnostics;
 using System.Reflection;
 
+#pragma warning disable 1591
+
 namespace OSGeo.MapGuide.Viewer
 {
     /// <summary>
@@ -204,6 +206,9 @@ namespace OSGeo.MapGuide.Viewer
 
         private Dictionary<string, PropertyInfo> _properties;
 
+        /// <summary>
+        /// Gets the defined properties of this component
+        /// </summary>
         public IEnumerable<PropertyInfo> ComponentProperties
         {
             get 
@@ -235,6 +240,11 @@ namespace OSGeo.MapGuide.Viewer
             }
         }
 
+        /// <summary>
+        /// Sets a value for the given property
+        /// </summary>
+        /// <param name="propertyName"></param>
+        /// <param name="value"></param>
         public void SetPropertyValue(string propertyName, object value)
         {
             CheckAndInitProperties();
@@ -245,6 +255,11 @@ namespace OSGeo.MapGuide.Viewer
             prop.SetValue(this, Convert.ChangeType(value, prop.PropertyType), null);
         }
 
+        /// <summary>
+        /// Gets the value of the given property
+        /// </summary>
+        /// <param name="propertyName"></param>
+        /// <returns></returns>
         public object GetPropertyValue(string propertyName)
         {
             CheckAndInitProperties();
@@ -255,13 +270,39 @@ namespace OSGeo.MapGuide.Viewer
         }
     }
 
+    /// <summary>
+    /// Defines a method that's called when the viewer's busy state changes
+    /// </summary>
+    /// <param name="busy"></param>
     public delegate void ViewerBusyStateEventHandler(bool busy);
 
+    /// <summary>
+    /// Defines a listener for button state changes
+    /// </summary>
     public interface IButtonStateListener
     {
+        /// <summary>
+        /// The button needs to be enabled or disabled
+        /// </summary>
+        /// <param name="enabled"></param>
         void SetEnabled(bool enabled);
+        
+        /// <summary>
+        /// The button needs to be highlighted or un-highlighted
+        /// </summary>
+        /// <param name="outlined"></param>
         void SetActive(bool outlined);
+
+        /// <summary>
+        /// The text needs to be set on the button
+        /// </summary>
+        /// <param name="text"></param>
         void SetText(string text);
+
+        /// <summary>
+        /// The icon needs to be set on the button
+        /// </summary>
+        /// <param name="icon"></param>
         void SetIcon(Image icon);
     }
 
@@ -286,6 +327,9 @@ namespace OSGeo.MapGuide.Viewer
     [ToolboxItem(false)]
     public class MgViewerComponent : MgComponent, ISupportInitialize
     {
+        /// <summary>
+        /// Constructor
+        /// </summary>
         protected MgViewerComponent()
         {
             this.TaskPane = null;
@@ -344,6 +388,9 @@ namespace OSGeo.MapGuide.Viewer
 
         internal MgControlView CreateControl() { return CreateControlView(); }
 
+        /// <summary>
+        /// Invokes the component
+        /// </summary>
         public override void Invoke()
         {
             var control = CreateControlView();

@@ -7,6 +7,8 @@ using System.Text;
 using System.Windows.Forms;
 using System.Collections;
 
+#pragma warning disable 1591
+
 namespace OSGeo.MapGuide.Viewer
 {
     /// <summary>
@@ -201,6 +203,10 @@ namespace OSGeo.MapGuide.Viewer
         }
     }
 
+    /// <summary>
+    /// An adapter that allows an <see cref="T:System.Collections.IDictionary"/> to be presented
+    /// in a <see cref="T:System.Windows.Forms.PropertyGrid"/>
+    /// </summary>
     public class MgDictionaryPropertyGridAdapter : ICustomTypeDescriptor
     {
         IDictionary _dictionary;

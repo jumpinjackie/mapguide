@@ -160,5 +160,40 @@ namespace MapViewerTest
         {
             mapViewer.DigitizeCircle((x, y, r) => { MessageBox.Show("Done"); }, "Custom circle digitization prompt");
         }
+
+        private void oneshotCallbackToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            MgGeometryFactory geomFact = new MgGeometryFactory();
+            mapViewer.DigitizePoint((x, y) => {
+                MgCoordinate coord = geomFact.CreateCoordinateXY(x, y);
+                MgPoint pt = geomFact.CreatePoint(coord);
+
+                mapViewer.SelectByGeometry(pt, -1, (selection) => {
+                    if (selection == null)
+                    {
+                        MessageBox.Show("No selected features");
+                        return;
+                    }
+                    else
+                    {
+                        MgReadOnlyLayerCollection layers = selection.GetLayers();
+                        if (layers != null)
+                        {
+                            StringBuilder sb = new StringBuilder("Selection summary:");
+                            for (int i = 0; i < layers.GetCount(); i++)
+                            {
+                                MgLayerBase lyr = layers.GetItem(i);
+                                sb.Append(Environment.NewLine + lyr.GetName() + ": " + selection.GetSelectedFeaturesCount(lyr, lyr.GetFeatureClassName()));
+                            }
+                            MessageBox.Show(sb.ToString());
+                        }
+                        else 
+                        {
+                            MessageBox.Show("No selected features");
+                        }
+                    }
+                });
+            });
+        }
     }
 }

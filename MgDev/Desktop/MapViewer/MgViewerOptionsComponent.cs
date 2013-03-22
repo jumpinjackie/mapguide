@@ -7,6 +7,8 @@ using System.IO;
 using System.Diagnostics;
 using System.Drawing;
 
+#pragma warning disable 1591
+
 namespace OSGeo.MapGuide.Viewer
 {
     [ToolboxItem(true)]

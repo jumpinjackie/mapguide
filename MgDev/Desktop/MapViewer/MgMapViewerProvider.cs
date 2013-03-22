@@ -5,6 +5,8 @@ using System.Xml;
 using System.Collections.Specialized;
 using System.Diagnostics;
 
+#pragma warning disable 1591
+
 namespace OSGeo.MapGuide.Viewer
 {
     /// <summary>

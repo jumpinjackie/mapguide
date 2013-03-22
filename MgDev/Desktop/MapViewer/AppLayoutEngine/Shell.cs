@@ -10,6 +10,9 @@ using System.Globalization;
 
 namespace OSGeo.MapGuide.Viewer.AppLayoutEngine
 {
+    /// <summary>
+    /// The top-level window of an AppLayout application
+    /// </summary>
     public partial class Shell : Form, IShell
     {
         private Shell()
@@ -20,6 +23,9 @@ namespace OSGeo.MapGuide.Viewer.AppLayoutEngine
 
         private static Shell _instance;
 
+        /// <summary>
+        /// The shell instance
+        /// </summary>
         public static IShell Instance
         {
             get
@@ -32,6 +38,12 @@ namespace OSGeo.MapGuide.Viewer.AppLayoutEngine
             }
         }
 
+        /// <summary>
+        /// Initializes this map viewer and constructs the user interface based on the
+        /// given AppLayout document
+        /// </summary>
+        /// <param name="layout"></param>
+        /// <param name="provider"></param>
         public void Initialize(AppLayout layout, MgMapViewerProvider provider)
         {
             this.Text = layout.Title;
@@ -179,7 +191,11 @@ namespace OSGeo.MapGuide.Viewer.AppLayoutEngine
         private MgMapViewerProvider _provider;
 
         private string _invokeComponentOnStartup;
-
+        
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="e"></param>
         protected override void OnLoad(EventArgs e)
         {
             //Optimization: If legend or property pane aren't visible
@@ -531,21 +547,37 @@ namespace OSGeo.MapGuide.Viewer.AppLayoutEngine
             }
         }
 
+        /// <summary>
+        /// Sets the message for the cursor position element of the status bar
+        /// </summary>
+        /// <param name="message"></param>
         public void SetCursorPositionMessage(string message)
         {
             lblCoordinates.Text = message;
         }
 
+        /// <summary>
+        /// Sets the message for the selected feature count element of the status bar
+        /// </summary>
+        /// <param name="message"></param>
         public void SetFeatureSelectedMessage(string message)
         {
             lblSelected.Text = message;
         }
 
+        /// <summary>
+        /// Sets the message for the map scale element of the status bar
+        /// </summary>
+        /// <param name="message"></param>
         public void SetMapScaleMessage(string message)
         {
             lblMapScale.Text = message;
         }
 
+        /// <summary>
+        /// Sets the message for the map size element of the status bar
+        /// </summary>
+        /// <param name="message"></param>
         public void SetMapSizeMessage(string message)
         {
             lblMapSize.Text = message;
@@ -556,27 +588,44 @@ namespace OSGeo.MapGuide.Viewer.AppLayoutEngine
             taskPane.LoadInitialTask();
         }
 
+        /// <summary>
+        /// Gets the component by its registered component id
+        /// </summary>
+        /// <param name="componentId"></param>
+        /// <returns></returns>
         public MgComponent GetComponent(string componentId)
         {
             return _components.ContainsKey(componentId) ? _components[componentId] : null;
         }
 
-
+        /// <summary>
+        /// Gets the legend component
+        /// </summary>
         public IMapLegend Legend
         {
             get { return legend; }
         }
 
+        /// <summary>
+        /// Gets the property pane component
+        /// </summary>
         public IPropertyPane PropertyPane
         {
             get { return propertyPane; }
         }
 
+        /// <summary>
+        /// Gets the task pane component
+        /// </summary>
         public MgTaskPane TaskPane
         {
             get { return taskPane; }
         }
 
+        /// <summary>
+        /// Reloads the map viewer
+        /// </summary>
+        /// <param name="provider"></param>
         public void ReloadViewer(MgMapViewerProvider provider)
         {
             _provider = provider;
@@ -597,16 +646,37 @@ namespace OSGeo.MapGuide.Viewer.AppLayoutEngine
         }
     }
 
+    /// <summary>
+    /// Defines the top-level window of an AppLayout application
+    /// </summary>
     public interface IShell : IMapStatusBar
     {
+        /// <summary>
+        /// Gets the component by its registered component id
+        /// </summary>
+        /// <param name="componentId"></param>
+        /// <returns></returns>
         MgComponent GetComponent(string componentId);
 
+        /// <summary>
+        /// Gets the legend component
+        /// </summary>
         IMapLegend Legend { get; }
 
+        /// <summary>
+        /// Gets the property pane component
+        /// </summary>
         IPropertyPane PropertyPane { get; }
 
+        /// <summary>
+        /// Gets the task pane component
+        /// </summary>
         MgTaskPane TaskPane { get; }
 
+        /// <summary>
+        /// Reloads the map viewer
+        /// </summary>
+        /// <param name="provider"></param>
         void ReloadViewer(MgMapViewerProvider provider);
     }
 }

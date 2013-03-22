@@ -8,6 +8,8 @@ using System.Windows.Forms;
 using System.Xml;
 using System.Globalization;
 
+#pragma warning disable 1591
+
 namespace OSGeo.MapGuide.Viewer
 {
     public partial class MgThemeControlImpl : MgControlView

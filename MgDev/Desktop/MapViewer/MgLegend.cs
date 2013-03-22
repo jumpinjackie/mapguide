@@ -11,6 +11,8 @@ using System.Xml;
 using System.Diagnostics;
 using System.Windows.Forms.VisualStyles;
 
+#pragma warning disable 1591
+
 namespace OSGeo.MapGuide.Viewer
 {
     using Legend.Model;
@@ -88,6 +90,9 @@ namespace OSGeo.MapGuide.Viewer
 
         private bool _busy = false;
 
+        /// <summary>
+        /// Gets whether the legend is currently in the state of rendering its tree
+        /// </summary>
         [Browsable(false)]
         public bool IsBusy
         {
@@ -420,6 +425,9 @@ namespace OSGeo.MapGuide.Viewer
             return null;
         }
 
+        /// <summary>
+        /// Gets or sets whether to display tooltips for tree nodes
+        /// </summary>
         public bool ShowTooltips
         {
             get { return trvLegend.ShowNodeToolTips; }
@@ -433,6 +441,9 @@ namespace OSGeo.MapGuide.Viewer
             }
         }
 
+        /// <summary>
+        /// Raised when a property has changed
+        /// </summary>
         public event PropertyChangedEventHandler PropertyChanged;
 
         private void OnPropertyChanged(string propertyName)

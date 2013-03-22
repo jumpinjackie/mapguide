@@ -21,13 +21,29 @@ namespace OSGeo.MapGuide.Viewer
         MgComponent TargetComponent { get; set; }
     }
 
+    /// <summary>
+    /// A design-time invoker that invokes the target MgComponent when the source
+    /// UI component is clicked
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
     [ToolboxItem(false)]
     public class ComponentInvokerBase<T> : Component where T : ToolStripItem
     {
+        /// <summary>
+        /// The set of bindings
+        /// </summary>
         protected Dictionary<T, MgComponent> _bindings;
 
+        /// <summary>
+        /// Constructor
+        /// </summary>
         protected ComponentInvokerBase() { _bindings = new Dictionary<T, MgComponent>(); }
 
+        /// <summary>
+        /// Gets the target bound component to invoke when this item is clicked
+        /// </summary>
+        /// <param name="component"></param>
+        /// <returns></returns>
         [Category("MapGuide Viewer")] //NOXLATE
         [DisplayName("Target Component")] //NOXLATE
         [Description("The target MapGuide component to invoke when this item is clicked")] //NOXLATE
@@ -40,6 +56,9 @@ namespace OSGeo.MapGuide.Viewer
                 return null;
         }
 
+        /// <summary>
+        /// Clears all registered bindings
+        /// </summary>
         public void Clear()
         {
             foreach (var key in _bindings.Keys)
@@ -57,16 +76,31 @@ namespace OSGeo.MapGuide.Viewer
                 binding.Component.Invoke();
         }
 
+        /// <summary>
+        /// Performs component setup
+        /// </summary>
+        /// <param name="component"></param>
+        /// <param name="value"></param>
         protected virtual void SetupComponent(T component, MgComponent value)
         {
             component.Click += OnComponentClicked;
         }
 
+        /// <summary>
+        /// Performs component teardown
+        /// </summary>
+        /// <param name="component"></param>
+        /// <param name="value"></param>
         protected virtual void TeardownComponent(T component, MgComponent value)
         {
             component.Click -= OnComponentClicked;
         }
 
+        /// <summary>
+        /// Associates the target component with teh source UI element
+        /// </summary>
+        /// <param name="component"></param>
+        /// <param name="value"></param>
         public void SetTargetComponent(T component, MgComponent value)
         {
             if (value == null)
@@ -172,15 +206,29 @@ namespace OSGeo.MapGuide.Viewer
         }
     }
 
+    /// <summary>
+    /// An design-time invoker that ties a <see cref="T:System.Windows.Forms.ToolStripMenuItem"/> to a
+    /// <see cref="T:OSGeo.MapGuide.Viewer.MgComponent"/>
+    /// </summary>
     [ToolboxItem(true)]
     [ProvideProperty("TargetComponent", typeof(ToolStripMenuItem))] //NOXLATE
     public class MgMenuItemComponentInvoker : ComponentInvokerBase<ToolStripMenuItem>, IExtenderProvider
     {
+        /// <summary>
+        /// Specifies whether this object can provide its extender properties to the specified object.
+        /// </summary>
+        /// <param name="extendee"></param>
+        /// <returns></returns>
         public bool CanExtend(object extendee)
         {
             return typeof(ToolStripMenuItem) == extendee.GetType();
         }
 
+        /// <summary>
+        /// Performs component setup
+        /// </summary>
+        /// <param name="component"></param>
+        /// <param name="value"></param>
         protected override void SetupComponent(ToolStripMenuItem component, MgComponent value)
         {
             component.ToolTipText = value.ToolTipText;
@@ -192,6 +240,11 @@ namespace OSGeo.MapGuide.Viewer
             base.SetupComponent(component, value);
         }
 
+        /// <summary>
+        /// Performs component teardown
+        /// </summary>
+        /// <param name="component"></param>
+        /// <param name="value"></param>
         protected override void TeardownComponent(ToolStripMenuItem component, MgComponent value)
         {
             var listener = component.Tag as MenuItemComponentBinding;
@@ -201,15 +254,29 @@ namespace OSGeo.MapGuide.Viewer
         }
     }
 
+    /// <summary>
+    /// An design-time invoker that ties a <see cref="T:System.Windows.Forms.ToolStripButton"/> to a
+    /// <see cref="T:OSGeo.MapGuide.Viewer.MgComponent"/>
+    /// </summary>
     [ToolboxItem(true)]
     [ProvideProperty("TargetComponent", typeof(ToolStripButton))] //NOXLATE
     public class MgToolButtonComponentInvoker : ComponentInvokerBase<ToolStripButton>, IExtenderProvider
     {
+        /// <summary>
+        /// Specifies whether this object can provide its extender properties to the specified object.
+        /// </summary>
+        /// <param name="extendee"></param>
+        /// <returns></returns>
         public bool CanExtend(object extendee)
         {
             return typeof(ToolStripButton) == extendee.GetType();
         }
 
+        /// <summary>
+        /// Performs component setup
+        /// </summary>
+        /// <param name="component"></param>
+        /// <param name="value"></param>
         protected override void SetupComponent(ToolStripButton component, MgComponent value)
         {
             component.ToolTipText = value.ToolTipText;
@@ -221,6 +288,11 @@ namespace OSGeo.MapGuide.Viewer
             base.SetupComponent(component, value);
         }
 
+        /// <summary>
+        /// Performs component teardown
+        /// </summary>
+        /// <param name="component"></param>
+        /// <param name="value"></param>
         protected override void TeardownComponent(ToolStripButton component, MgComponent value)
         {
             var listener = component.Tag as ToolbarButtonComponentBinding;
