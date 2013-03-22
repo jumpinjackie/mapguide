@@ -56,6 +56,9 @@ PUBLISHED_API:
     /// Generates an \link eMap eMap \endlink that describes the specified
     /// map
     ///
+    /// \deprecated
+    /// This method has been deprecated. eMap DWF support may be removed in a future release of MapGuide
+    ///
     /// <!-- Syntax in .Net, Java, and PHP -->
     /// \htmlinclude DotNetSyntaxTop.html
     /// virtual MgByteReader GenerateMap(MgMap map, string mapAgentUri, MgDwfVersion dwfVersion);
@@ -106,6 +109,9 @@ PUBLISHED_API:
     /// Generates an \link eMap eMap \endlink that contains any required
     /// updates to the metadata and layer graphics based on the state
     /// of the specified map.
+    ///
+    /// \deprecated
+    /// This method has been deprecated. eMap DWF support may be removed in a future release of MapGuide
     ///
     /// <!-- Syntax in .Net, Java, and PHP -->
     /// \htmlinclude DotNetSyntaxTop.html
