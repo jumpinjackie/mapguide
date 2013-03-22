@@ -71,15 +71,30 @@ namespace OSGeo.MapGuide.Viewer
         }
     }
 
+    /// <summary>
+    /// Defines a unit of measurement
+    /// </summary>
     public enum MeasurementUnit
     {
+        /// <summary>
+        /// Feet
+        /// </summary>
         Feet,
+        /// <summary>
+        /// Meters
+        /// </summary>
         Meters,
+        /// <summary>
+        /// Kilometers
+        /// </summary>
         Kilometers,
+        /// <summary>
+        /// Miles
+        /// </summary>
         Miles
     }
 
-    public class MeasuredLineSegment : INotifyPropertyChanged
+    internal class MeasuredLineSegment : INotifyPropertyChanged
     {
         public double MapDistanceMeters { get; set; }
 

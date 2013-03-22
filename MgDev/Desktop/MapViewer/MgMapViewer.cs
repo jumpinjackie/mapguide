@@ -15,6 +15,8 @@ using System.Collections.ObjectModel;
 using System.Globalization;
 using System.Reflection;
 
+#pragma warning disable 1591
+
 namespace OSGeo.MapGuide.Viewer
 {
     /// <summary>
@@ -1523,7 +1525,7 @@ namespace OSGeo.MapGuide.Viewer
         /// set outside of the viewer. This does not raise the <see cref="SelectionChanged"/> event
         /// </summary>
         /// <remarks>
-        /// If you have modified the selection as a result of calling <see cref="SelectByGeometry"/>, calling
+        /// If you have modified the selection as a result of calling <see cref="M:OSGeo.MapGuide.Viewer.IMapViewer.SelectByGeometry"/>, calling
         /// this method is not necessary as it will have automatically do this.
         /// </remarks>
         public void UpdateSelection()
@@ -1537,7 +1539,7 @@ namespace OSGeo.MapGuide.Viewer
         /// </summary>
         /// <param name="raise">Indicates if the <see cref="SelectionChanged"/> event should be raised as well</param>
         /// <remarks>
-        /// If you have modified the selection as a result of calling <see cref="SelectByGeometry"/>, calling
+        /// If you have modified the selection as a result of calling <see cref="M:OSGeo.MapGuide.Viewer.IMapViewer.SelectByGeometry"/>, calling
         /// this method is not necessary as it will have automatically do this.
         /// </remarks>
         public void UpdateSelection(bool raise)
@@ -2287,23 +2289,37 @@ namespace OSGeo.MapGuide.Viewer
         /// <param name="maxFeatures"></param>
         public void SelectByGeometry(MgGeometry geom, int maxFeatures)
         {
+            SelectByGeometry(geom, maxFeatures, null);
+        }
+
+        /// <summary>
+        /// Selects features from all selectable layers that intersects the given geometry
+        /// </summary>
+        /// <param name="geom"></param>
+        /// <param name="maxFeatures"></param>
+        /// <param name="selectionHandler"></param>
+        public void SelectByGeometry(MgGeometry geom, int maxFeatures, Action<MgSelectionBase> selectionHandler)
+        {
             //Don't select if dragging. This is the cause of the failure to render
             //multiple selections, which required a manual refresh afterwards
             if (isDragging)
                 return;
-
 #if TRACE
             var sw = new Stopwatch();
             sw.Start();
 #endif
+            MgSelectionBase newSel = null;
             //We will be either wiping or updating the existing selection set
             MgSelectionQueryResult sel = _provider.QueryMapFeatures(MgQueryRequestType.Selection, null, geom, MgFeatureSpatialOperations.Intersects, "", maxFeatures, (1 | 2)) as MgSelectionQueryResult; //1=Visible, 2=Selectable, 4=HasTooltips
             if (sel != null)
             {
-                MgSelectionBase newSel = sel.Selection;
+                newSel = sel.Selection;
                 string newXml = newSel.ToXml();
                 _selection.FromXml(newXml);
-                newSel.Dispose();
+
+                //If specified, we need to retain this for passing to the given selection handler
+                if (selectionHandler == null)
+                    newSel.Dispose();
             }
             else
             {
@@ -2320,9 +2336,16 @@ namespace OSGeo.MapGuide.Viewer
                 _selectionImage = null;
             }
             RenderSelection(true); //This is either async or queued up. Either way do this before firing off selection changed
-            var handler = this.SelectionChanged;
-            if (handler != null)
-                handler(this, EventArgs.Empty);
+            if (selectionHandler == null)
+            {
+                var handler = this.SelectionChanged;
+                if (handler != null)
+                    handler(this, EventArgs.Empty);
+            }
+            else
+            {
+                selectionHandler(newSel);
+            }
         }
 
         protected override void OnResize(EventArgs e)

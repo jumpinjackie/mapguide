@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Text;
 using System.ComponentModel;
 
+#pragma warning disable 1591
+
 namespace OSGeo.MapGuide.Viewer
 {
     /// <summary>

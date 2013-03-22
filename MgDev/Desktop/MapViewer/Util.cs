@@ -63,7 +63,7 @@ namespace OSGeo.MapGuide.Viewer
                 if (srs != string.Empty)
                     return srs;
             }
-            catch (MgException e)
+            catch (MgException)
             {
             }
 

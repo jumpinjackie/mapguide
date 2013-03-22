@@ -3,8 +3,14 @@ using System.Collections.Generic;
 using System.Text;
 using System.ComponentModel;
 
+#pragma warning disable 1591
+
 namespace OSGeo.MapGuide.Viewer
 {
+    /// <summary>
+    /// Defines a method for handling viewer selections
+    /// </summary>
+    /// <param name="selectedFeatures"></param>
     public delegate void MgLayerSelectionEventHandler(MgSelectionSet selectedFeatures);
 
     [DefaultEvent("SelectionMade")] //NOXLATE

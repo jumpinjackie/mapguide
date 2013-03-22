@@ -5,6 +5,8 @@ using System.ComponentModel;
 using System.Windows.Forms;
 using System.Globalization;
 
+#pragma warning disable 1591
+
 namespace OSGeo.MapGuide.Viewer
 {
     [ToolboxItem(true)]

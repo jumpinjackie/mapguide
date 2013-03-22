@@ -6,8 +6,13 @@ using System.Drawing;
 using System.Text;
 using System.Windows.Forms;
 
+#pragma warning disable 1591
+
 namespace OSGeo.MapGuide.Viewer
 {
+    /// <summary>
+    /// A dialog for displaying feature query results in a grid
+    /// </summary>
     public partial class MgQueryResultsDialog : Form
     {
         private string _geomProp;
@@ -325,7 +330,7 @@ namespace OSGeo.MapGuide.Viewer
         }
     }
 
-    public struct Bounds
+    internal struct Bounds
     {
         public double LowerX;
         public double LowerY;
@@ -333,7 +338,7 @@ namespace OSGeo.MapGuide.Viewer
         public double UpperY;
     }
 
-    public class BoxedGeometry
+    internal class BoxedGeometry
     {
         public override string ToString()
         {

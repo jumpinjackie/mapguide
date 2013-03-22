@@ -13,7 +13,7 @@ class MgdFeatureConnection;
 class MG_DESKTOP_API MgdFeatureReader : public MgFeatureReader
 {
 INTERNAL_API:
-	MgdFeatureReader(MgdFeatureConnection* conn, FdoIFeatureReader* reader);
+	MgdFeatureReader(MgdFeatureConnection* conn, FdoIFeatureReader* reader, MgStringCollection* forceIdProps = NULL);
 
 EXTERNAL_API:
 	virtual ~MgdFeatureReader();
@@ -206,6 +206,7 @@ protected:
 	FdoIFeatureReader* m_reader;
     Ptr<MgClassDefinition> m_classDef;
     Ptr<MgdFeatureConnection> m_connection;
+    Ptr<MgStringCollection> m_forceIdProps;
 };
 /// \}
 #endif
