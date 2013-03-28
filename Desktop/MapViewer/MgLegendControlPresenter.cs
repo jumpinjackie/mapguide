@@ -352,12 +352,12 @@ namespace OSGeo.MapGuide.Viewer
 
         public TreeNode[] CreateNodes()
         {
-            List<TreeNode> output = new List<TreeNode>();
-            var nodesById = new Dictionary<string, TreeNode>();
-
+            List<TreeNode> topLevelNodes = new List<TreeNode>();
             var scale = _map.ViewScale;
             if (scale < 10.0)
-                return output.ToArray();
+                return topLevelNodes.ToArray();
+            var nodesById = new Dictionary<string, TreeNode>();
+            var groupsById = new Dictionary<string, TreeNode>();
 
             var groups = _map.GetLayerGroups();
             var layers = _map.GetLayers();
@@ -372,7 +372,7 @@ namespace OSGeo.MapGuide.Viewer
                 if (!group.GetDisplayInLegend())
                     continue;
 
-                //Add ones without parents first.
+                //Add ones without parents first. Queue up child groups
                 if (group.Group != null)
                 {
                     remainingNodes.Add(group);
@@ -380,13 +380,16 @@ namespace OSGeo.MapGuide.Viewer
                 else
                 {
                     var node = CreateGroupNode(group);
-                    output.Add(node);
+                    topLevelNodes.Add(node);
                     nodesById.Add(group.GetObjectId(), node);
+                    groupsById.Add(group.GetObjectId(), node);
                 }
 
+                //Process child groups
                 while (remainingNodes.Count > 0)
                 {
                     List<MgLayerGroup> toRemove = new List<MgLayerGroup>();
+                    //Establish parent-child relationship for any child groups here
                     for (int j = 0; j < remainingNodes.Count; j++)
                     {
                         var parentId = remainingNodes[j].Group.GetObjectId();
@@ -394,6 +397,12 @@ namespace OSGeo.MapGuide.Viewer
                         {
                             var node = CreateGroupNode(remainingNodes[j]);
                             nodesById[parentId].Nodes.Add(node);
+
+                            //Got to add this group node too, otherwise we could infinite
+                            //loop looking for a parent that's not registered
+                            nodesById.Add(group.GetObjectId(), node);
+                            groupsById.Add(group.GetObjectId(), node);
+
                             toRemove.Add(remainingNodes[j]);
                         }
                     }
@@ -414,7 +423,8 @@ namespace OSGeo.MapGuide.Viewer
             var layerMetaNodesToUpdate = new Dictionary<string, MgLayerBase>();
             //Now process layers. Layers without metadata nodes or without layer definition content
             //are added to the list
-            for (int i = 0; i < layers.GetCount(); i++)
+            int layerCount = layers.GetCount();
+            for (int i = 0; i < layerCount; i++)
             {
                 var lyr = layers.GetItem(i);
                 bool display = lyr.DisplayInLegend;
@@ -425,30 +435,34 @@ namespace OSGeo.MapGuide.Viewer
                 if (!visible)
                     continue;
 
-                if (_layers.ContainsKey(lyr.GetObjectId()))
+                var lyrObjId = lyr.GetObjectId();
+                if (_layers.ContainsKey(lyrObjId))
                 {
-                    if (string.IsNullOrEmpty(_layers[lyr.GetObjectId()].LayerDefinitionContent))
+                    if (string.IsNullOrEmpty(_layers[lyrObjId].LayerDefinitionContent))
                     {
                         var ldfId = lyr.LayerDefinition;
-                        layerIds.Add(ldfId.ToString());
-                        layerMetaNodesToUpdate[ldfId.ToString()] = lyr;
+                        var ldfIdStr = ldfId.ToString();
+                        layerIds.Add(ldfIdStr);
+                        layerMetaNodesToUpdate[ldfIdStr] = lyr;
                     }
                 }
                 else
                 {
                     var ldfId = lyr.LayerDefinition;
-                    layerIds.Add(ldfId.ToString());
-                    layerMetaNodesToUpdate[ldfId.ToString()] = lyr;
+                    var ldfIdStr = ldfId.ToString();
+                    layerIds.Add(ldfIdStr);
+                    layerMetaNodesToUpdate[ldfIdStr] = lyr;
                 }
             }
 
-            if (layerIds.GetCount() > 0)
+            int layerIdCount = layerIds.GetCount();
+            if (layerIdCount > 0)
             {
                 int added = 0;
                 int updated = 0;
                 //Fetch the contents and create/update the required layer metadata nodes
                 MgStringCollection layerContents = _resSvc.GetResourceContents(layerIds, null);
-                for (int i = 0; i < layerIds.GetCount(); i++)
+                for (int i = 0; i < layerIdCount; i++)
                 {
                     string lid = layerIds.GetItem(i);
                     var lyr = layerMetaNodesToUpdate[lid];
@@ -470,8 +484,13 @@ namespace OSGeo.MapGuide.Viewer
                 Trace.TraceInformation("CreateNodes: {0} layer contents added, {1} layer contents updated", added, updated); //NOXLATE
             }
 
+            //Now create our layer nodes
             List<MgLayerBase> remainingLayers = new List<MgLayerBase>();
-            for (int i = 0; i < layers.GetCount(); i++)
+            //NOTE: We're taking a page out of the Fusion playbook of reverse iterating the layer
+            //collection and prepending the nodes, as this control suffered the same problem as the
+            //Legend widget in Fusion. Doing it this way eliminates the need for doing an extra pass to fix
+            //the layer/group ordering, which may make an impact on really chunky maps.
+            for (int i = layerCount - 1; i >= 0; i--)
             {
                 var layer = layers.GetItem(i);
                 
@@ -493,7 +512,7 @@ namespace OSGeo.MapGuide.Viewer
                     var node = CreateLayerNode(layer);
                     if (node != null)
                     {
-                        output.Add(node);
+                        topLevelNodes.Insert(0, node);
                         nodesById.Add(layer.GetObjectId(), node);
                         if (layer.ExpandInLegend)
                             node.Expand();
@@ -503,7 +522,7 @@ namespace OSGeo.MapGuide.Viewer
                 while (remainingLayers.Count > 0)
                 {
                     List<MgLayerBase> toRemove = new List<MgLayerBase>();
-                    for (int j = 0; j < remainingLayers.Count; j++)
+                    for (int j = remainingLayers.Count - 1; j >= 0; j--)
                     {
                         var parentId = remainingLayers[j].Group.GetObjectId();
                         if (nodesById.ContainsKey(parentId))
@@ -511,7 +530,7 @@ namespace OSGeo.MapGuide.Viewer
                             var node = CreateLayerNode(remainingLayers[j]);
                             if (node != null)
                             {
-                                nodesById[parentId].Nodes.Add(node);
+                                nodesById[parentId].Nodes.Insert(0, node);
                                 if (remainingLayers[j].ExpandInLegend)
                                     node.Expand();
                             }
@@ -543,7 +562,7 @@ namespace OSGeo.MapGuide.Viewer
                 }
             }
             Trace.TraceInformation("{0} calls made to GenerateLegendImage", legendCallCount); //NOXLATE
-            return output.ToArray();
+            return topLevelNodes.ToArray();
         }
 
         private static bool IsThemeLayerNode(TreeNode node)
