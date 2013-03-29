@@ -82,7 +82,7 @@ echo [build]: build thirdparty
 call build_thirdparty.bat -p=x64 -a=buildinstall -o=%BUILD_OUTPUT64%
 echo [build]: build core and providers
 call build.bat -p=x64 -a=buildinstall -o=%BUILD_OUTPUT64%
-if not exists %FDO_BIN_EXTRAS64% goto pack
+if not exist %FDO_BIN_EXTRAS64% goto pack
 pushd %FDO_BIN_EXTRAS64%
 copy /Y *.* %BUILD_OUTPUT64%\Fdo\Bin
 popd
