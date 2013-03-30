@@ -1,14 +1,14 @@
 #!/bin/bash
 TEMPDIR=/tmp/build_mapguide
-URL="http://download.osgeo.org/mapguide/releases/2.5.0/RC1/ubuntu12"
-#URL="http://192.168.0.6/downloads/ubuntu12"
+URL="http://download.osgeo.org/mapguide/releases/2.5.0/RC2/ubuntu12"
+#URL="http://192.168.0.4/downloads/ubuntu12"
 FDOVER_MAJOR_MINOR=3.8
 FDOVER_MAJOR_MINOR_REV=${FDOVER_MAJOR_MINOR}.0
 FDOBUILD=3601
 FDOVER=${FDOVER_MAJOR_MINOR_REV}-${FDOBUILD}_i386
 MGVER_MAJOR_MINOR=2.5
 MGVER_MAJOR_MINOR_REV=${MGVER_MAJOR_MINOR}.0
-MGBUILD=7396
+MGBUILD=7428
 MGVER=${MGVER_MAJOR_MINOR_REV}-${MGBUILD}_i386
 
 # Must have root
