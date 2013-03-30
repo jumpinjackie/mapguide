@@ -1,0 +1,5 @@
+OSGeo.MapGuide.Foundation.xml
+OSGeo.MapGuide.Geometry.xml
+OSGeo.MapGuide.PlatformBase.xml
+OSGeo.MapGuide.MapGuideCommon.xml
+OSGeo.MapGuide.Web.xml
