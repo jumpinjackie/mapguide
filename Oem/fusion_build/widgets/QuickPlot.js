@@ -3,14 +3,15 @@
  * Copyright (C) 2010 Autodesk, Inc. All rights reserved.
  */
 
- /*****************************************************************************
+Fusion.require("widgets/QuickPlot/MapCapturer.js");
+
+/*****************************************************************************
  * Class: Fusion.Widget.QuickPlot
  * This widget provides a quick way to print a certain region of map in a good quality
+ *
+ * Inherits from:
+ *  - <Fusion.Widget>
  * **********************************************************************/
-
-Fusion.require("widgets/QuickPlot/MapCapturer.js");
-Fusion.require("widgets/QuickPlot/PreviewDialog.js");
-
 Fusion.Widget.QuickPlot = OpenLayers.Class(Fusion.Widget, 
 {
     isExclusive: true,
@@ -45,6 +46,24 @@ Fusion.Widget.QuickPlot = OpenLayers.Class(Fusion.Widget,
         
         if (json.DefaultDpi) {
             this.defaultDpi = parseInt(json.DefaultDpi[0]);
+        }
+        
+        /******************************************************
+         *
+         *<DefaultMargin>25.4,12.7,12.7,12.7</DefaultMargin>
+         *top,buttom,left,right
+        ******************************************************/
+        if(json.DefaultMargin){      
+            try{
+                this.margin = {};
+                var marginArray = json.DefaultMargin[0].split(",");
+                this.margin.top = parseFloat(marginArray[0]);
+                this.margin.buttom = parseFloat(marginArray[1]);
+                this.margin.left = parseFloat(marginArray[2]);
+                this.margin.right = parseFloat(marginArray[3]);
+            }catch(ex){
+                this.margin = null;
+            }
         }
         
         /*
@@ -156,7 +175,10 @@ Fusion.Widget.QuickPlot = OpenLayers.Class(Fusion.Widget,
         
         if (taskPaneTarget) 
         {
-            taskPaneTarget.setContent(url);
+            if(!taskPaneTarget.isSameWithLast(url))
+            {
+                taskPaneTarget.setContent(url);
+            }
         } 
         else 
         {
@@ -184,57 +206,5 @@ Fusion.Widget.QuickPlot = OpenLayers.Class(Fusion.Widget,
                 }
             }
         }
-    },
-    
-    /***************************************************************************************
-     * The dialogContentLoadedCallback is used to submit the Quick Plot panel's parameters to the preview iframe
-     ***************************************************************************************/
-    preview: function(dialogConentLoadedCallback, printDpi)
-    {
-        var map = this.getMapLayer();
-        var capture  = this.mapCapturer.getCaptureBox();
-        var normalizedCapture = this.mapCapturer.getNormalizedCapture();
-        var vertices = capture.geometry.getVertices();
-        this.options.printDpi = printDpi;
-        this.options.showCoordinateLabels = this.showCoordinatesInPreview;
-        this.options.showSubTitle = this.showSubTitle;
-        var options = {mapInfo : {sessionID : map.getSessionID(), name : map.getMapName()}, 
-                       captureInfo : {topLeftCs : {x : vertices[3].x, y : vertices[3].y},
-                                     bottomRightCs : {x : vertices[1].x, y : vertices[1].y}, 
-                                     paperSize : {w : this.mapCapturer.paperSize.w, h : this.mapCapturer.paperSize.h},
-                                     scaleDenominator : this.mapCapturer.scaleDenominator,
-                                     rotation : this.mapCapturer.rotation,
-                                     center : capture.geometry.getCentroid(),
-                                     params1 : capture.params,
-                                     params2 : normalizedCapture.params},
-                       params : this.options};
-        
-        if (!this.previewDialog)
-        {
-            this.previewDialog = new PreviewDialog(options);
-        }
-        else
-        {
-            this.previewDialog.mapInfo     = options.mapInfo;
-            this.previewDialog.captureInfo = options.captureInfo;
-            this.previewDialog.params      = options.params;
-        }
-        
-        this.previewDialog.open(dialogConentLoadedCallback);
-    },
-    
-    cancelPreview: function()
-    {
-        this.previewDialog.cancel();
-    },
-    
-    printPreview: function()
-    {
-        this.previewDialog.print();
-    },
-    
-    previewInnerLoaded: function()
-    {
-        this.previewDialog.previewInnerLoaded();
     }
 });

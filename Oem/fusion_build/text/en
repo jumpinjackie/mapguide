@@ -134,7 +134,9 @@ MEASURESCHEMADESCR      = Temporary measure schema
 MEASUREPARTIAL          = Partial
 MEASURETOTAL            = total
 MEASURELAYER            = Measure
-MEASUREHINT             = To measure multiple distances, continue clicking new points. To finish, double click on the last point. You can cancel and restart the measuring by pressing the ESC key.
+MEASURESTOP             = Stop
+MEASURESTART            = Start
+MEASUREHINT             = To measure multiple distances, continue clicking new points. To finish, double click on the last point. You can cancel and restart the measuring by pressing the ESC key or by using the Stop and Start buttons.
 
 # FeatureInfoUI
 FEATUREINFOTITLE        = Feature Information
@@ -150,10 +152,11 @@ FEATUREINFONOSELECTED   = no features selected.
 FEATUREINFOERROR        = Error
 FEATUREINFOFETCHINFO    = fetching feature info ...
 FEATUREINFOFEATURESEL   = features selected
-FEATUREINFOAREA         = Area: 
+FEATUREINFOAREA         = Area:
 FEATUREINFOAREAUNDEFINE = areaIdx undefined
 FEATUREINFONOINFO       = no layer info
 FEATUREINFONOFEATUREIN  = no features in selected layer.
+FEATUREINFOREFRESH      = Refresh Layers
 
 # QueryUI
 QUERYTITLE              = Query Features
@@ -216,16 +219,28 @@ THEMEJENKS              = Jenks (Natural Breaks)
 REDLINEMANAGE           = Manage Redline
 REDLINEAVAILABLELAYERS  = Available Redline Layers
 REDLINELOADEDLAYERS     = Redline Layers on Map
-REDLINENEW              = New
+REDLINENEWSDF           = SDF
+REDLINENEWSHP           = SHP
+REDLINENEWSQLITE        = SQLite
+REDLINECREATENEW        = Create New Redline
 REDLINEADDTOMAP         = Add To Map
 REDLINEDELETE           = Delete
-REDLINEREFRESH          = Refresh
+REDLINEREFRESH          = Refresh List
 REDLINEEDIT             = Add/Edit Redlines
 REDLINEREMOVEFROMMAP    = Remove From Map
-REDLINEDOWNLOADSDF      = Download Data
-REDLINEUPLOADSDF        = Upload
+REDLINEDOWNLOADOPTIONS  = Download Options
+REDLINEDOWNLOAD         = Native Format
+REDLINEDOWNLOADKML      = KML Format
+REDLINEDOWNLOADKMZ      = KMZ Format
+REDLINEUPLOAD           = Upload Redline
+REDLINEOTHEROPTIONS     = Other Options
 REDLINEEDITSTYLE        = Edit Style
 REDLINECREATEFAILURE    = Failed to create redline
+REDLINEUPLOADUNKNOWNPROVIDER  = Could not determine FDO provider from uploaded file
+REDLINEUPLOADNOGEOMETRY = Could not find geometry property in uploaded file
+REDLINEPOINT            = Point
+REDLINELINE             = Line
+REDLINEPOLY             = Polygon
 
 # Edit Redline Style UI
 REDLINEEDITLAYERSTYLE   = Edit Redline Style
@@ -316,10 +331,12 @@ REDLINEEDITCLOSE        = Close
 # Redline Upload
 REDLINEUPLOAD           = Upload Redline
 REDLINEDATAFILE         = Redline Data File
-REDLINEUPLOADNOTE       = Note: Data file must be a SDF file and you can only upload data files that have either been originally created by this widget or have an identical feature schema.
+REDLINEUPLOADNOTE       = Note: Data file must be a SDF, SQLite or SHP file and you can only upload data files that have either been originally created by this widget or have an identical feature schema.<br><br>For SHP files, you must upload a zip file containing the SHP file and its associated files (.dbf, .idx, .shx, etc)
 REDLINEUPLOADREQUIRED   = Redline Data File not specified
 REDLINEUPLOADTEXT       = Upload
 REDLINEUPLOADCLOSE      = Close
+REDLINEUPLOADSHPZIPERROR = Error uploading zip file. File is either:<ul><li>Not a zip file</li><li>A corrupted zip file</li><li>Does not contain a .shp file</li></ul>
+REDLINEUPLOADINVALIDSCHEMA = The uploaded redline data file has an invalid schema. This widget expects the following properties in the class definition:<ul><li>The class definition is named 'Markup'</li><li>It has an auto-generated numeric identity property (ID or FeatId)</li><li>It has a geometry property (Geometry)</li><li>It has a string property (Text)</li></ul><br>Redline data files created by this widget satisfy this schema requirements.
 
 # HtmlViewerAbout
 HTMLABOUTTITLE          = About %s
@@ -411,7 +428,7 @@ THOUSANDSEPARATOR       = ,
 # Main Frame
 NEEDLOGIN               = You must enter a valid login ID and password to access this site
 ALREADYINMEASURE        = Only one measure command is allowed in a web layout
-ACCESSDENIED            = Access Denied   
+ACCESSDENIED            = Access Denied
 LATLONCURPOS            = Lat: {0}, Lon: {1}
 MAPUNITSCURPOS          = X: {0}, Y: {1}
 FEATURESSELECTED        = {0} features selected
@@ -429,16 +446,17 @@ MEASALREADYRUNNING      = Cannot execute digitization: A measure is in progress.
 POWEREDBYICON           = PoweredBy_en.gif
 
 # Quick Plot UI
-QUICKPLOT_HEADER        = Quick Plot
-QUICKPLOT_TITLE         = Title
-QUICKPLOT_SUBTITLE      = Sub title
-QUICKPLOT_PAPER_SIZE    = Paper size
-QUICKPLOT_SCALING       = Scaling
-QUICKPLOT_DPI           = Print DPI
-QUICKPLOT_GENERATE      = Generate
-QUICKPLOT_ADVANCED_OPTIONS = Advanced options
-QUICKPLOT_PRINT         = Print
-QUICKPLOT_CANCEL        = Cancel
-QUICKPLOT_PREVIEW_ERROR = The application resources required to generate the plot exceed the settings defined by the administrator
-QUICKPLOT_RESOLUTION_WARNING = The current settings exceed the map resolution. Zooming out or increasing the scaling will help create a more legible plot
-QUICKPLOT_SCALE_LABEL   = Scale
+QUICKPLOT_HEADER                = Quick Plot
+QUICKPLOT_TITLE                 = Title
+QUICKPLOT_SUBTITLE              = Sub title
+QUICKPLOT_PAPER_SIZE            = Paper size
+QUICKPLOT_SCALING               = Scaling
+QUICKPLOT_DPI                   = Print DPI
+QUICKPLOT_ORIENTATION           = Orientation
+QUICKPLOT_ORIENTATION_P         = Portrait Orientation
+QUICKPLOT_ORIENTATION_L         = Landscape Orientation
+QUICKPLOT_GENERATE              = Generate
+QUICKPLOT_ADVANCED_OPTIONS      = Advanced options
+QUICKPLOT_PREVIEW_ERROR         = The application resources required to generate the plot exceed the settings defined by the administrator
+QUICKPLOT_RESOLUTION_WARNING    = The current settings exceed the map resolution. Zooming out or increasing the scaling will help create a more legible plot
+QUICKPLOT_SCALE_LABEL           = Scale

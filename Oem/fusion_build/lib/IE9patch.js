@@ -1,5 +1,9 @@
 document.newElement = function(tag, props) {
     var createdElement;
+    var temp = tag.split(' ').shift();//error in IE if tag has extra attributes listed
+                                      //just strip off the tag name, properties should
+                                      //set through the props argument
+
     if (Browser.Engine.trident && props){
         ['name', 'type', 'checked'].each(function(attribute){
             if (!props[attribute]) return;
@@ -13,12 +17,12 @@ document.newElement = function(tag, props) {
             createdElement = this.createElement(replaceTag);
         }
         catch (e) {
-            createdElement = this.createElement(tag);
+            createdElement = this.createElement(temp);
         }
     }
     else {
         createdElement = this.createElement(tag);
     }
 
-    return document.id(this.createElement(tag)).set(props);
+    return document.id(this.createElement(temp)).set(props);
 };

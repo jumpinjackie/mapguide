@@ -15,12 +15,12 @@
     require_once $fusionMGpath . 'Utilities.php';
     require_once $fusionMGpath . 'JSON.php';
     require_once 'classes/defaultstyle.php';
-	require_once 'classes/markupmanager.php';
+    require_once 'classes/markupmanager.php';
 
-	$args = ($_SERVER['REQUEST_METHOD'] == "POST") ? $_POST : $_GET;
+    $args = ($_SERVER['REQUEST_METHOD'] == "POST") ? $_POST : $_GET;
 
-	$errorMsg = null;
-	$errorDetail = null;
+    $errorMsg = null;
+    $errorDetail = null;
 
     SetLocalizedFilesPath(GetLocalizationPath());
     if(isset($_REQUEST['LOCALE'])) {
@@ -30,8 +30,8 @@
     }
 
     $responseJson = null;
-	try
-	{
+    try
+    {
         $args["MARKUPNAME"] = array_key_exists("NEWLAYERNAME", $args) ? $args["NEWLAYERNAME"] : "RedlineLayer";
         
         $args["MARKERCOLOR"] = DefaultStyle::MARKER_COLOR;
@@ -64,7 +64,7 @@
         $args["LABELBACKCOLOR"] = DefaultStyle::LABEL_BACK_COLOR;
         $args["LABELBACKSTYLE"] = DefaultStyle::LABEL_BACK_STYLE;
         
-		$markupManager = new MarkupManager($args);
+        $markupManager = new MarkupManager($args);
         $layerDef = $markupManager->CreateMarkup();
         
         $resId = new MgResourceIdentifier($layerDef);
@@ -74,17 +74,17 @@
         $responseJson = "{ success: true, refreshMap: true, layerDefinition: '$layerDef', layerName: '$layerName' }";
     }
     catch (MgException $mge)
-	{
-		$errorMsg = $mge->GetExceptionMessage();
-		$errorDetail = $mge->GetDetails();
+    {
+        $errorMsg = $mge->GetExceptionMessage();
+        $errorDetail = $mge->GetDetails();
         $stackTrace = $mge->GetStackTrace();
         $responseJson = "{success: false, refreshMap: false, message:'$errorMsg\nDetail: $errorDetail\nStack Trace: $stackTrace'}";
-	}
-	catch (Exception $e)
-	{
-		$errorMsg = $e->GetMessage();
+    }
+    catch (Exception $e)
+    {
+        $errorMsg = $e->GetMessage();
         $responseJson = "{success: false, refreshMap: false, message:'$errorMsg'}";
-	}
+    }
     
     $responseJson = str_replace("\n", "\\n", $responseJson);
     echo $responseJson;

@@ -32,13 +32,17 @@
  * the menu list of the TaskPane and loaded there.
  * Otherwise if the target is an existing IFrame in the page it will be loaded
  * there, otherwise it will open a new window with that name.
+ * 
+ *  Inherits from:
+ *  - <Fusion.Widget>
  * **********************************************************************/
 
 
 Fusion.Widget.FeatureInfo = OpenLayers.Class(Fusion.Widget, {
-    isExclusive: true,
+    isExclusive: false,
     uiClass: Jx.Button,
     sFeatures: 'menubar=no,location=no,resizable=no,status=no',
+    oTarget: null,
 
     initializeWidget: function(widgetTag) {
         var json = widgetTag.extension;
@@ -50,7 +54,7 @@ Fusion.Widget.FeatureInfo = OpenLayers.Class(Fusion.Widget, {
         var url = this.sBaseUrl;
         //add in other parameters to the url here
 
-        var map = this.getMap();
+        this.mapWidget = this.getMap();
         var widgetLayer = this.getMapLayer();
         var taskPaneTarget = Fusion.getWidgetById(this.sTarget);
         var pageElement = $(this.sTarget);
@@ -72,13 +76,26 @@ Fusion.Widget.FeatureInfo = OpenLayers.Class(Fusion.Widget, {
         }
         url += params.join('&');
         if ( taskPaneTarget ) {
-            taskPaneTarget.setContent(url);
+            if(!taskPaneTarget.isSameWithLast(url))
+            {
+                taskPaneTarget.setContent(url);
+            }
+            this.oTarget = taskPaneTarget.iframe.contentWindow;
         } else {
             if ( pageElement ) {
                 pageElement.src = url;
+                this.oTarget = pageElement;
             } else {
-                window.open(url, this.sTarget, this.sWinFeatures);
+                this.oTarget = window.open(url, this.sTarget, this.sWinFeatures);
             }
+        }
+    },
+
+    deactivate: function() {
+        this.mapWidget.message.clear();
+        //This function exists if MapGuideViewerApi.js was included in
+        if (this.oTarget && this.oTarget.ClearDigitization) {
+            this.oTarget.ClearDigitization(true);
         }
     }
 });

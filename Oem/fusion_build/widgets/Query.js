@@ -33,11 +33,14 @@
  * the menu list of the TaskPane and loaded there.
  * Otherwise if the target is an existing IFrame in the page it will be loaded
  * there, otherwise it will open a new window with that name.
+ *
+ * Inherits from:
+ *  - <Fusion.Widget>
  * **********************************************************************/
 
 
 Fusion.Widget.Query = OpenLayers.Class(Fusion.Widget, {
-    isExclusive: true,
+    isExclusive: false,
     uiClass: Jx.Button,
     sFeatures : 'menubar=no,location=no,resizable=no,status=no',
 
@@ -72,7 +75,10 @@ Fusion.Widget.Query = OpenLayers.Class(Fusion.Widget, {
         }
         url += params.join('&');
         if ( taskPaneTarget ) {
-            taskPaneTarget.setContent(url);
+            if(!taskPaneTarget.isSameWithLast(url))
+            {
+                taskPaneTarget.setContent(url);
+            }
         } else {
             if ( pageElement ) {
                 pageElement.src = url;

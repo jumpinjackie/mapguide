@@ -1,7 +1,7 @@
 /**
  * Fusion.Widget.SelectRadius
  *
- * $Id: SelectRadius.js 2378 2011-05-05 19:24:04Z madair $
+ * $Id: SelectRadius.js 2579 2012-09-07 09:20:12Z jng $
  *
  * Copyright (c) 2007, DM Solutions Group Inc.
  * Permission is hereby granted, free of charge, to any person obtaining a
@@ -28,6 +28,8 @@
  *
  * perform a selection by radius from a point
  * 
+ * Inherits from:
+ *  - <Fusion.Widget>
  * **********************************************************************/
 Fusion.Event.RADIUS_WIDGET_ACTIVATED = Fusion.Event.lastEventId++;
 
@@ -117,6 +119,7 @@ Fusion.Widget.SelectRadius = OpenLayers.Class(Fusion.Widget, {
         map.setCursor(this.asCursor);
         /*map units for tool tip*/
         this.units = map.units;
+        map.message.info(OpenLayers.i18n("selectRadiusPrompt"))
         map.supressContextMenu(true);
         this.triggerEvent(Fusion.Event.RADIUS_WIDGET_ACTIVATED, true);
     },
@@ -128,8 +131,10 @@ Fusion.Widget.SelectRadius = OpenLayers.Class(Fusion.Widget, {
      **/
     deactivate: function() {
         this.handler.deactivate();
-        this.getMap().setCursor('auto');
-        this.getMap().supressContextMenu(false);
+        var map = this.getMap();
+        map.message.clear();
+        map.setCursor('auto');
+        map.supressContextMenu(false);
         /*icon button*/
         this.triggerEvent(Fusion.Event.RADIUS_WIDGET_ACTIVATED, false);
     },

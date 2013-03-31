@@ -1,7 +1,7 @@
 /**
  * Fusion.Widget.Maptip
  *
- * $Id: Maptip.js 2494 2011-12-21 02:52:44Z liuar $
+ * $Id: Maptip.js 2579 2012-09-07 09:20:12Z jng $
  *
  * Copyright (c) 2007, DM Solutions Group Inc.
  * Permission is hereby granted, free of charge, to any person obtaining a
@@ -45,6 +45,8 @@
  * queried and the top-most one will be displayed.  Multiple Layer tags
  * can be added, allowing tooltips to come from different layers.
  *
+ * Inherits from:
+ *  - <Fusion.Widget>
  * **********************************************************************/
 
 

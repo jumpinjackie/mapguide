@@ -24,6 +24,7 @@ var panel2;
 var panel3;
 var panel4;
 var panelman;
+var COLLAPSED_SIDEBAR_WIDTH = 8;
 
 window.onload = function() {
     Fusion.initializeLocale();  //need to call this first if String.Translate is to be used in the onload
@@ -70,7 +71,7 @@ window.onload = function() {
         splitInto:2,
         elements:[$('MapArea'),$('Sidebar')],
         layout:'horizontal',
-        containerOptions: [{},{minWidth:8, width: 218}],
+        containerOptions: [{},{minWidth:COLLAPSED_SIDEBAR_WIDTH, width: 218}],
         barOptions: [
             {
                 snap: 'after', 
@@ -195,20 +196,29 @@ var initPanelHandler = function() {
     isTaskPaneRegistered = true;
 }
 
+var showSidebarIfCollapsed = function() {
+    if ($("Sidebar").getWidth() <= (COLLAPSED_SIDEBAR_WIDTH + 1)) //Template-specific
+        $("SidebarCollapse").fireEvent("click");
+};
+
 var showOverviewMap = function() {
-  panelman.maximizePanel(panel4);
+    showSidebarIfCollapsed();
+    panelman.maximizePanel(panel4);
 }
 
 var showTaskPane = function() {
-  panelman.maximizePanel(panel3);
+    showSidebarIfCollapsed();
+    panelman.maximizePanel(panel3);
 }
 
 var showLegend = function() {
-  panelman.maximizePanel(panel1);
+    showSidebarIfCollapsed();
+    panelman.maximizePanel(panel1);
 }
 
 var showSelectionPanel = function() {
-  panelman.maximizePanel(panel2);
+    showSidebarIfCollapsed();
+    panelman.maximizePanel(panel2);
 }
 
 </script>

@@ -1,7 +1,7 @@
 /**
  * Fusion.Widget
  *
- * $Id: Widget.js 2474 2011-12-01 10:04:17Z liuar $
+ * $Id: Widget.js 2579 2012-09-07 09:20:12Z jng $
  *
  * Copyright (c) 2007, DM Solutions Group Inc.
  * Permission is hereby granted, free of charge, to any person obtaining a
@@ -87,8 +87,19 @@ Fusion.Widget = OpenLayers.Class(Fusion.Lib.EventMgr, {
 
     initializeWidget: function() {},
 
+    /**
+     * Function: activate
+     * 
+     * Activates this widget
+     * 
+     */
     activate: function() { },
 
+    /**
+     * Function: deactivate
+     * 
+     * Deactivates this widget
+     */
     deactivate: function() { },
 
     setUiObject: function(uiObj) {
@@ -119,11 +130,9 @@ Fusion.Widget = OpenLayers.Class(Fusion.Lib.EventMgr, {
         if (uiObj.addEvents) {
             if (Fusion.Widget.uiInstances[this.type][0].uiObj &&
                 Fusion.Widget.uiInstances[this.type][0].uiObj.options.active &&
-                Fusion.Widget.uiInstances[this.type][0].shouldActivateWith(this)) {
-                uiObj.options.active = true;
-                if (uiObj.domA) {
-                    uiObj.domA.addClass('jx' + uiObj.options.type + 'Active');
-                }
+                Fusion.Widget.uiInstances[this.type][0].shouldActivateWith(this) &&
+                uiObj.setActive) {
+                uiObj.setActive(true);
             }
             
             uiObj.addEvents({
@@ -134,11 +143,9 @@ Fusion.Widget = OpenLayers.Class(Fusion.Lib.EventMgr, {
                     var instances = Fusion.Widget.uiInstances[this.type];
                     for (var i=0; i<instances.length; i++) {
                         var instance = instances[i];
-                        if (instance.shouldActivateWith(this) && instance.uiObj) {
-                            instance.uiObj.options.active = false;
-                            if (instance.uiObj.domA) {
-                                instance.uiObj.domA.removeClass('jx' + instance.uiObj.options.type + 'Active');
-                            }
+                        if (instance.shouldActivateWith(this) &&
+                            instance.uiObj && instance.uiObj.setActive) {
+                            instance.uiObj.setActive(false);
                         }
                     }
                     this.deactivate();
@@ -147,11 +154,9 @@ Fusion.Widget = OpenLayers.Class(Fusion.Lib.EventMgr, {
                     var instances = Fusion.Widget.uiInstances[this.type];
                     for (var i=0; i<instances.length; i++) {
                         var instance = instances[i];
-                        if (instance.shouldActivateWith(this) && instance.uiObj) {
-                            instance.uiObj.options.active = true;
-                            if (instance.uiObj.domA) {
-                                instance.uiObj.domA.addClass('jx' + instance.uiObj.options.type + 'Active');
-                            }                            
+                        if (instance.shouldActivateWith(this) &&
+                            instance.uiObj && instance.uiObj.setActive) {
+                            instance.uiObj.setActive(true);
                         }
                     }
                     this.activate();
@@ -162,14 +167,21 @@ Fusion.Widget = OpenLayers.Class(Fusion.Lib.EventMgr, {
     },
     
     /**
+     * Method: shouldActivateWith
+     *
      */
     shouldActivateWith: function(widget) {
         return true;
     },
 
     /**
+     * Method: setMap
+     *
      * set the map object that this widget is associated with
-     * @param oMap {Object} the map
+     * 
+     * Parameters:
+     * 
+     *   oMap - {<Fusion.Widget.Map>} the map
      */
     setMap: function(oMap) {
         if (this.mapLoadedWatcher) {
@@ -190,16 +202,24 @@ Fusion.Widget = OpenLayers.Class(Fusion.Lib.EventMgr, {
         }
     },
     /**
+     * Method: getMap
+     *
      * accessor to get the Map object that this widget is associated with
-     * @return {object} the map
+     * 
+     * Return: 
+     * {<Fusion.Widget.Map>} the map
      */
     getMap: function() {
         return this.oMap;
     },
     
     /**
-     * accessor to get the Map object that this widget is associated with
-     * @return {object} the map
+     * Method: getMapLayer
+     *
+     * accessor to get the implementation-specific Layer object that this widget is associated with
+     * 
+     * Return: 
+     * {<Fusion.Layers>} the implementation-specific layer
      */
     getMapLayer: function() {
       if (this.widgetLayerId) {
@@ -217,7 +237,12 @@ Fusion.Widget = OpenLayers.Class(Fusion.Lib.EventMgr, {
     },
     
     /**
-     * utility method to add an OL control to the OL map object
+     * Method: addControl
+     * 
+     * utility method to add an {<OpenLayers.Control>} control to the internal {<OpenLayers.Map>} object
+     * 
+     * Parameters:
+     * control - {<OpenLayers.Control>} the control to add
      */
     addControl: function(control) {
         this.getMap().oMapOL.addControl(control);
@@ -236,25 +261,37 @@ Fusion.Widget = OpenLayers.Class(Fusion.Lib.EventMgr, {
     },
     
     /** 
-     * set whether this widget is mutually exclusive on its map
-     * @param bIsMutEx {boolean} is the widget mutually exclusive?
+     * Method: setMutEx
+     *
+     * sets whether this widget is mutually exclusive on its map
+     * 
+     * Parameters:
+     * bIsMutEx - {boolean} is the widget mutually exclusive?
      */
     setMutEx: function(bIsMutEx) {
         this.isExclusive = bIsMutEx;
     },
     
     /**
+     * Method: isMutEx
+     * 
      * accessor to determine if the widget should be activated mutually
      * exclusively from other widgets on the map.
-     * @return {boolean} true if the widget is mutually exclusive
+     * 
+     * Return: 
+     * {boolean} true if the widget is mutually exclusive
      */
     isMutEx: function() {
         return this.isExclusive;
     },
     
     /**
+     * Method: getName
+     *
      * accessor to return the name of the widget.  Mostly for debugging
-     * @return {string} the name of the widget
+     * 
+     * Return: 
+     * {string} the name of the widget
      */
     getName: function() {
         return this.name;
@@ -267,21 +304,37 @@ Fusion.Widget = OpenLayers.Class(Fusion.Lib.EventMgr, {
      * of fusion.  Can be used to construct URLs to resources that
      * the widget needs.
      *
-     * Returns: {String} the location of this widget
+     * Return: 
+     * {String} the location of this widget
      */
     getLocation: function() {
         return this.widgetTag.location;    
     },
     
+    /**
+     * Method: isEnabled
+     * 
+     * Gets whether this widget is enabled
+     */
     isEnabled: function() { 
         return this.enabled; 
     },
     
+    /**
+     * Method: enabled
+     * 
+     * Enables this widget. Triggers the {<Fusion.Event.WIDGET_STATE_CHANGED>} event
+     */
     enable: function() { 
         this.enabled = true; 
         this.triggerEvent(Fusion.Event.WIDGET_STATE_CHANGED, this);
     },
 
+    /**
+     * Method: disable
+     * 
+     * Disables this widget. Triggers the {<Fusion.Event.WIDGET_STATE_CHANGED>} event
+     */
     disable: function() { 
         this.enabled = false; 
         this.triggerEvent(Fusion.Event.WIDGET_STATE_CHANGED, this);

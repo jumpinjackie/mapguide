@@ -1,7 +1,7 @@
 /**
  * Fusion.Widget.Measure
  *
- * $Id: Measure.js 2485 2011-12-08 16:29:53Z jng $
+ * $Id: Measure.js 2674 2013-03-22 18:11:51Z jng $
  *
  * Copyright (c) 2007, DM Solutions Group Inc.
  * Permission is hereby granted, free of charge, to any person obtaining a
@@ -29,6 +29,8 @@
  * The Measure widget allows the user to measure distances or areas on the map
  * in one or more segments. Area is positive if measured clockwise.
  *
+ * Inherits from:
+ *  - <Fusion.Widget>
  * **********************************************************************/
 
 Fusion.Constant.MEASURE_TYPE_DISTANCE = 1;
@@ -39,7 +41,7 @@ Fusion.Event.MEASURE_CLEAR = Fusion.Event.lastEventId++;
 Fusion.Event.MEASURE_COMPLETE = Fusion.Event.lastEventId++;
 
 Fusion.Widget.Measure = OpenLayers.Class(Fusion.Widget, {
-    isExclusive: true,
+    isExclusive: false,
     uiClass: Jx.Button,
 
     //distance of each segment
@@ -447,11 +449,64 @@ Fusion.Widget.Measure = OpenLayers.Class(Fusion.Widget, {
     },
 
     activate: function() {
-        this.control.activate();
-        this.resetMeasure();
-        OpenLayers.Event.observe(document,"keypress",this.keyHandler);
         this.loadDisplayPanel();
+        this.startMeasurement();
+    },
+    
+    startMeasurement: function() {
+        this.control.activate();
+        //We add a stub "stop" link to the MapMessage, then wire it up to stopMeasurement() by fetching the
+        //anchor element through its DOM
+        var msg = this.getMap().message;
+        msg.info(OpenLayers.i18n("measureInProgress") + " <a id='measureMsgDismiss' href='javascript:void(0)'>" + OpenLayers.i18n("stop") + "</a>");
+        var link = msg.container.ownerDocument.getElementById("measureMsgDismiss");
+        //Wire the anchor click
+        link.onclick = OpenLayers.Function.bind(this.stopMeasurement, this);
+        
+        OpenLayers.Event.observe(document,"keypress",this.keyHandler);
         this.getMap().supressContextMenu(true);
+        this.updateButtonStates();
+    },
+    
+    stopMeasurement: function() {
+        OpenLayers.Event.stopObserving(document, 'keypress', this.keyHandler);
+        this.control.deactivate();
+        this.control.cancel();
+        this.getMap().message.clear();
+        this.getMap().supressContextMenu(false);
+        this.updateButtonStates();
+    },
+    
+    updateButtonStates: function() {
+        if (this.startButton != null && this.stopButton != null) {
+            this.stopButton.disabled = !this.control.active;
+            this.startButton.disabled = this.control.active;
+        }
+    },
+    
+    setButtons: function(stopBtn, startBtn) {
+        this.startButton = startBtn;
+        this.stopButton = stopBtn;
+        this.updateButtonStates();
+    },
+    
+    initManualControls: function(outputWin) {
+        this.startButton = null;
+        this.stopButton = null;
+        
+        var timer;
+        var that = this;
+        var watch = function() {
+            try {
+                if (outputWin.domInit) {
+                    doc = outputWin.document;
+                    clearInterval(timer);
+                    outputWin.SetWidget(that); //Hook the widget for auto-deactivation
+                }
+            } catch (e) {
+            }
+        };
+        timer = setInterval(watch, 200);
     },
 
     loadDisplayPanel: function() {
@@ -468,11 +523,15 @@ Fusion.Widget.Measure = OpenLayers.Class(Fusion.Widget, {
             var taskPaneTarget = Fusion.getWidgetById(this.sTarget);
             var outputWin = window;
             if ( taskPaneTarget ) {
-                taskPaneTarget.setContent(url);
+                if(!taskPaneTarget.isSameWithLast(url))
+                {
+                    taskPaneTarget.setContent(url);
+                }
                 outputWin = taskPaneTarget.iframe.contentWindow;
             } else {
                 outputWin = window.open(url, this.sTarget, this.sWinFeatures);
             }
+            this.initManualControls(outputWin);
             this.registerForEvent(Fusion.Event.MEASURE_CLEAR, OpenLayers.Function.bind(this.clearDisplay, this, outputWin));
             this.registerForEvent(Fusion.Event.MEASURE_SEGMENT_UPDATE, OpenLayers.Function.bind(this.updateDisplay, this, outputWin));
             this.registerForEvent(Fusion.Event.MEASURE_COMPLETE, OpenLayers.Function.bind(this.updateDisplay, this, outputWin));
@@ -499,10 +558,7 @@ Fusion.Widget.Measure = OpenLayers.Class(Fusion.Widget, {
      * deactivate the ruler tool
      */
     deactivate: function() {
-        OpenLayers.Event.stopObserving(document, 'keypress', this.keyHandler);
-        this.control.deactivate();
-        this.control.cancel();
-        this.getMap().supressContextMenu(false);
+        this.stopMeasurement();
     },
 
     resetMeasure: function() {
@@ -545,8 +601,7 @@ Fusion.Widget.Measure = OpenLayers.Class(Fusion.Widget, {
 
     remoteMeasureCompleted: function(from, to, marker, r) {
         if (r.status == 200) {
-            var o;
-            eval('o='+r.responseText);
+            var o = Fusion.parseJSON(r.responseText);
             if (o.distance) {
               /* distance returned is always in meters*/
               //var mapUnits = Fusion.unitFromName(this.getMap().getUnits());
@@ -567,7 +622,7 @@ Fusion.Widget.Measure = OpenLayers.Class(Fusion.Widget, {
     /*
      * updates the summary display if it is loaded in a window somewhere
      */
-     updateDisplay: function(outputWin) {
+    updateDisplay: function(outputWin) {
         var outputDoc = outputWin.document;
         var resolution = this.getMap().getResolution();
         this.clearDisplay(outputWin);

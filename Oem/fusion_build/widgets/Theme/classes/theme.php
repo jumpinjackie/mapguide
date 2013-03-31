@@ -312,14 +312,13 @@ class Theme
         {
             $values = array();
             
-            $aggregateOptions->AddFeatureProperty($this->args['PROPERTYNAME']);
-            $aggregateOptions->SelectDistinct(true);
+            $aggregateOptions->AddComputedProperty('THEME_VALUE', 'UNIQUE("' . $this->args['PROPERTYNAME'] . '")');
             if($filter != '')
                 $aggregateOptions->SetFilter($filter);
-            $dataReader = $featureService->SelectAggregate($resId, $layer->GetFeatureClassName(), $aggregateOptions);            
+            $dataReader = $featureService->SelectAggregate($resId, $layer->GetFeatureClassName(), $aggregateOptions);
             while ($dataReader->ReadNext())
             {
-                $value = $this->GetFeaturePropertyValue($dataReader, $this->args['PROPERTYNAME']);
+                $value = $this->GetFeaturePropertyValue($dataReader, 'THEME_VALUE');
                 array_push($values, $value);
             }
             $dataReader->Close();

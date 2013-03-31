@@ -1,7 +1,7 @@
 /**
  * Fusion.Layers.MapGuide
  *
- * $Id: MapGuide.js 2479 2011-12-02 10:13:04Z jng $
+ * $Id: MapGuide.js 2619 2012-10-22 08:12:44Z liuar $
  *
  * Copyright (c) 2007, DM Solutions Group Inc.
  * Permission is hereby granted, free of charge, to any person obtaining a
@@ -151,8 +151,7 @@ Fusion.Layers.MapGuide = OpenLayers.Class(Fusion.Layers, {
 
     createSessionCB: function(xhr) {
         if (xhr.status == 200) {
-            var o;
-            eval('o='+xhr.responseText);
+            var o = Fusion.parseJSON(xhr.responseText);
             if (o.success === false) {
                 Fusion.reportError(o.message);
             } else {
@@ -241,13 +240,26 @@ Fusion.Layers.MapGuide = OpenLayers.Class(Fusion.Layers, {
 
     mapLoaded: function(r) {
         if (r.status == 200) {
-            var o;
-            eval('o='+r.responseText);
+            var o = Fusion.parseJSON(r.responseText);
             this._sResourceId = o.mapId;
             this._sMapname = o.mapName;
             this._sMapTitle = o.mapTitle;
-            this.mapWidget.setMetersPerUnit(o.metersPerUnit);
-            this.mapWidget.setBackgroundColor(o.backgroundColor);
+            
+            // Fix defect that background color in overview map will affect background color in main map.
+            // We'll first check if the loaded map is the one shown in main map.
+            var currentMaps = this.mapWidget.mapGroup.maps;
+            var isInMapWidget = false;
+            for(var index = 0, len = currentMaps.length; index < len; index++) {
+                var mapInMaps = currentMaps[index];
+                if(mapInMaps.resourceId == this._sResourceId) {
+                    isInMapWidget = this;
+                    break;
+                }
+            }
+            if(isInMapWidget) {
+                this.mapWidget.setMetersPerUnit(o.metersPerUnit);
+                this.mapWidget.setBackgroundColor(o.backgroundColor);
+            }
 
             var version = o.siteVersion;
             var bits = version.split('.');
@@ -407,6 +419,19 @@ Fusion.Layers.MapGuide = OpenLayers.Class(Fusion.Layers, {
                     this.oLayerOL2.setVisibility(true);
                 }
             }
+
+            //Fix Defect: the Base Layer Group should be invisiable when the "initially visiable in map" is set to false
+            var i = 0;
+            var j = 0;
+            for(i = 0;i < this.layerRoot.groups.length; i++){  
+                if(this.layerRoot.groups[i].isBaseMapGroup && !this.layerRoot.groups[i].initiallyVisible){
+                    for(j = 0; j<this.oLayersOLTile.length; j++) {
+                        if(this.oLayersOLTile[j].params.basemaplayergroupname === this.layerRoot.groups[i].name) {
+                            this.oLayersOLTile[j].setVisibility(false);
+                        }
+                    }    
+                }   
+            }
         }
         this.mapWidget._removeWorker();
         this.triggerEvent(Fusion.Event.LAYER_LOADED);
@@ -472,8 +497,7 @@ Fusion.Layers.MapGuide = OpenLayers.Class(Fusion.Layers, {
     scaleRangesLoaded: function(r)
     {
         if (r.status == 200) {
-            var o;
-            eval('o='+r.responseText);
+            var o = Fusion.parseJSON(r.responseText);
             if (o.layers && o.layers.length > 0) {
                 var iconOpt = {
                     url: o.icons_url || null,
@@ -499,8 +523,7 @@ Fusion.Layers.MapGuide = OpenLayers.Class(Fusion.Layers, {
 //TBD: this function not yet converted for OL
     mapReloaded: function(oldLayers,r) {
         if (r.status == 200) {
-            var o;
-            eval('o='+r.responseText);
+            var o = Fusion.parseJSON(r.responseText);
             this.parseMapLayersAndGroups(o);
             for (var i=0; i<this.aLayers.length; ++i) {
               var newLayer = this.aLayers[i];
@@ -536,8 +559,7 @@ Fusion.Layers.MapGuide = OpenLayers.Class(Fusion.Layers, {
 
     mapLayersReset: function(aLayerIndex,r) {
       if (r.status == 200) {
-        var o;
-        eval('o='+r.responseText);
+        var o = Fusion.parseJSON(r.responseText);
             if (o.success) {
                 var layerCopy = $A(this.aLayers);
                 this.aLayers = [];
@@ -810,8 +832,7 @@ Fusion.Layers.MapGuide = OpenLayers.Class(Fusion.Layers, {
 
     getSelectionCB: function(userFunc, r) {
       if (r.status == 200) {
-          var o;
-          eval("o="+r.responseText);
+          var o = Fusion.parseJSON(r.responseText);
           var oSelection = new Fusion.SelectionObject(o);
           userFunc(oSelection);
       }
@@ -1027,8 +1048,7 @@ Fusion.Layers.MapGuide = OpenLayers.Class(Fusion.Layers, {
     processSelectedFeatureProperties: function(r) {
         this.mapWidget._removeWorker();
         if (r.responseText) {   //TODO: make the equivalent change to MapServer.js
-            var oNode;
-            eval('oNode='+r.responseText);
+            var oNode = Fusion.parseJSON(r.responseText);
 
             if (oNode.hasSelection) {
               this.newSelection();
@@ -1046,8 +1066,7 @@ Fusion.Layers.MapGuide = OpenLayers.Class(Fusion.Layers, {
     renderSelection: function(zoomTo, r) {
         this.mapWidget._removeWorker();
         if (r.responseText) {   //TODO: make the equivalent change to MapServer.js
-            var oNode;
-            eval('oNode='+r.responseText);
+            var oNode = Fusion.parseJSON(r.responseText);
 
             if (oNode.hasSelection) {
               if (this.selectionAsOverlay) {
@@ -1123,7 +1142,7 @@ Fusion.Layers.MapGuide = OpenLayers.Class(Fusion.Layers, {
                                                                 options.layers,
                                                                 layerAttributeFilter);
         var callback = (options.extendSelection == true) ? OpenLayers.Function.bind(this.processAndMergeFeatureInfo, this) : OpenLayers.Function.bind(this.processFeatureInfo, this);
-        Fusion.oBroker.dispatchRequest(r, OpenLayers.Function.bind(Fusion.xml2json, this, callback));
+        Fusion.oBroker.dispatchRequest(r, callback);
     },
 
     showLayer: function( layer, noDraw ) {
@@ -1213,7 +1232,7 @@ Fusion.Layers.MapGuide = OpenLayers.Class(Fusion.Layers, {
                                                             maxFeatures, persist, selection, filter, layerNames,
                                                             layerAttributeFilter);
         var callback = OpenLayers.Function.bind(this.crtlClickDisplay, this);
-        Fusion.oBroker.dispatchRequest(r, OpenLayers.Function.bind(Fusion.xml2json, this, callback));
+        Fusion.oBroker.dispatchRequest(r, callback);
       }
     },
 
@@ -1223,8 +1242,7 @@ Fusion.Layers.MapGuide = OpenLayers.Class(Fusion.Layers, {
     crtlClickDisplay: function(xhr) {
         //console.log('ctrlclcik  _display');
         if (xhr.status == 200) {
-            var o;
-            eval('o='+xhr.responseText);
+            var o = Fusion.parseJSON(xhr.responseText);
             var h = o['FeatureInformation']['Hyperlink'];
             if (h) {
                 window.open(h[0], "");
@@ -1259,8 +1277,7 @@ Fusion.Layers.MapGuide = OpenLayers.Class(Fusion.Layers, {
     
     checkPingResponse: function(xhr) {
       if (xhr.responseText) {
-        var o;
-        eval("o="+xhr.responseText);
+        var o = Fusion.parseJSON(xhr.responseText);
         if (!o.success) {
           Fusion.reportError(o.message);
           clearInterval(this.keepAliveTimer);
@@ -1333,14 +1350,12 @@ Fusion.Layers.MapGuide = OpenLayers.Class(Fusion.Layers, {
                                         sGeometry,
                                         maxFeatures, persist, selection, filter, layerNames,
                                         layerAttributeFilter);
-        oBroker.dispatchRequest(r, 
-            OpenLayers.Function.bind(Fusion.xml2json, this, 
-                  OpenLayers.Function.bind(this.parseMapTip, this)));
+        oBroker.dispatchRequest(r, OpenLayers.Function.bind(this.parseMapTip, this));
     },
     
     parseMapTip: function(xhr) {
         var o;
-        eval("tooltip="+xhr.responseText);
+        var tooltip = Fusion.parseJSON(xhr.responseText);
         this.oMaptip = {t:"",h:""};
         var t = tooltip['FeatureInformation']['Tooltip'];
         if (t) {
@@ -1398,7 +1413,7 @@ Fusion.Layers.MapGuide = OpenLayers.Class(Fusion.Layers, {
     },
 
     processSelectedFeatureInfo: function (r, mergeSelection) {
-        eval('o='+r.responseText);
+        var o = Fusion.parseJSON(r.responseText);
 
         var newSelection = new Fusion.SimpleSelectionObject(o);
         if(mergeSelection == true)
@@ -1429,10 +1444,10 @@ Fusion.SimpleSelectionObject = OpenLayers.Class({
             {
                 for(var i = 0; i < layers.length; i++)
                 {
-                    var layerId = o['FeatureInformation']['FeatureSet'][0]['Layer'][i]['@id'][0];
+                    var layerId = layers[i]['@id'][0];
 
-                    var classElt = o['FeatureInformation']['FeatureSet'][0]['Layer'][i]['Class'][0];
-                    var className = o['FeatureInformation']['FeatureSet'][0]['Layer'][i]['Class'][0]['@id'][0];
+                    var classElt = layers[i]['Class'][0];
+                    var className = layers[i]['Class'][0]['@id'][0];
 
                     var layer = new Fusion.SimpleSelectionObject.Layer(layerId, className);
 

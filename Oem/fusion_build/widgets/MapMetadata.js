@@ -28,6 +28,8 @@
 *
 * MapMetadata widget to inject map metadata elements into the interface
 *
+* Inherits from:
+*  - <Fusion.Widget>
 * **********************************************************************/
 
 Fusion.Widget.MapMetadata = OpenLayers.Class(Fusion.Widget, {

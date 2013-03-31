@@ -1,7 +1,7 @@
 /**
  * Fusion.Widget.InvokeScript
  *
- * $Id: InvokeScript.js 1523 2008-09-11 19:30:43Z pagameba $
+ * $Id: InvokeScript.js 2579 2012-09-07 09:20:12Z jng $
  *
  * Copyright (c) 2007, DM Solutions Group Inc.
  * Permission is hereby granted, free of charge, to any person obtaining a
@@ -27,6 +27,9 @@
  * Class: Fusion.Widget.InvokeScript
  *
  * Executes an arbitrary piece of JavaScript code
+ * 
+ * Inherits from:
+ *  - <Fusion.Widget>
  * **********************************************************************/
 
 Fusion.Widget.InvokeScript = OpenLayers.Class(Fusion.Widget, {

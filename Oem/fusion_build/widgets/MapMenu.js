@@ -1,7 +1,7 @@
 /**
  * Fusion.Widget.MapMenu
  *
- * $Id: MapMenu.js 2379 2011-05-11 18:15:37Z madair $
+ * $Id: MapMenu.js 2579 2012-09-07 09:20:12Z jng $
  *
  * Copyright (c) 2007, DM Solutions Group Inc.
  * Permission is hereby granted, free of charge, to any person obtaining a
@@ -28,6 +28,9 @@
  *
  * A widget that displays a selection of maps that can be loaded into the 
  * application.  The list of maps is configured in the ApplicationDefinition.
+ * 
+ * Inherits from:
+ *  - <Fusion.Widget>
  * **********************************************************************/
 
 Fusion.Widget.MapMenu = OpenLayers.Class(Fusion.Widget,  {
@@ -128,8 +131,7 @@ Fusion.Widget.MapMenu = OpenLayers.Class(Fusion.Widget,  {
     
     processMSMapMenu: function(r) {
         if (r.status == 200) {
-            var o;
-            eval("o="+r.responseText);
+            var o = Fusion.parseJSON(r.responseText);
             //var testData = '{"success":true,"errorMessages":[],"values":[{
             //  "sPath":"/ms4w/apps/gmap/cap/HamiltonLowIncome.map",
             //  "sPermissions":"2",
@@ -190,8 +192,7 @@ Fusion.Widget.MapMenu = OpenLayers.Class(Fusion.Widget,  {
     
     processMapMenu: function(r) {
         if (r.status == 200) {
-            var o;
-            eval("o="+r.responseText);
+            var o = Fusion.parseJSON(r.responseText);
             this.menus = {};
             for (var i=0; i<o.maps.length; i++) {
                 var map = o.maps[i];

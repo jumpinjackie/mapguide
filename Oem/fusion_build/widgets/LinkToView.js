@@ -1,7 +1,7 @@
 /**
  * Fusion.Widget.LinkToView
  *
- * $Id: LinkToView.js 2359 2011-04-04 20:25:47Z madair $
+ * $Id: LinkToView.js 2579 2012-09-07 09:20:12Z jng $
  *
  * Copyright (c) 2007, DM Solutions Group Inc.
  * Permission is hereby granted, free of charge, to any person obtaining a
@@ -27,6 +27,9 @@
  * Class: Fusion.Widget.LinkToView
  *
  * A widget that displays a link to the currently displayedd map view.
+ * 
+ * Inherits from:
+ *  - <Fusion.Widget>
  * **********************************************************************/
 
 
