@@ -75,21 +75,24 @@ include('Utilities.php');
 
             /* select the features */
             $queryOptions = new MgFeatureQueryOptions();
-
+            $geomName = $oLayer->GetFeatureGeometryName();
             //TODO : seems that property mapping breaks the selection ????
             //could it be that $selection->AddFeatures($layerObj, $featureReader, 0) is
             //the one causing a problem when the properies are limited ?
             if (isset($_SESSION['property_mappings']) && isset($_SESSION['property_mappings'][$oLayer->GetObjectId()])) {
                 $mappings = $_SESSION['property_mappings'][$oLayer->GetObjectId()];
-                if (0 && count($mappings) > 0) {
+                if (count($mappings) > 0) {
                     foreach($mappings as $name => $value) {
-                        $queryOptions->AddFeatureProperty($name);
-                        //echo "$name $value <br>\n";
+                        if ($geomName != $name) {
+                            $queryOptions->AddFeatureProperty($name);
+                            //echo "$name $value <br>\n";
+                        }
                     }
-                    $geomName = $oLayer->GetFeatureGeometryName();
-                    $queryOptions->AddFeatureProperty($geomName);
                 }
             }
+
+            //Add geometry property in all cases.
+            $queryOptions->AddFeatureProperty($geomName);
 
             $filter = $selection->GenerateFilter($oLayer, $class);
             $queryOptions->SetFilter($filter);
@@ -136,7 +139,7 @@ include('Utilities.php');
 
             $properties = BuildSelectionArray($featureReader, $layerName, $properties,
                                               $bComputedProperties,
-                                              $srsLayer, $bNeedsTransform, $oLayer);
+                                              $srsLayer, $bNeedsTransform, $oLayer, true);
             $featureReader->Close();
         }
 

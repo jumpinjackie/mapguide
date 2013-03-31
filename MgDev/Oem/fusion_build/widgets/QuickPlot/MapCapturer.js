@@ -602,7 +602,9 @@ OpenLayers.Control.MapCapturer = OpenLayers.Class(OpenLayers.Control, {
             if (this.validateResolution())
             {
                 this.layer.features.each(function(item){item.layer.drawFeature(item);});
-                this.wMap.message.hide();
+                if(this.wMap.message){
+                   this.wMap.message.hide();
+                }
             }
             else
             {
@@ -833,8 +835,9 @@ OpenLayers.Control.MapCapturer = OpenLayers.Class(OpenLayers.Control, {
     disable: function()
     {
         this.enabled  = false;
-
-        this.wMap.message.hide();
+        if(this.wMap.message){
+           this.wMap.message.hide();
+        }
         this.clearFeatures();
         this.rotation = 0;
         

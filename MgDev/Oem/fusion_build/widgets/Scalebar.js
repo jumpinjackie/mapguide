@@ -1,7 +1,7 @@
 /**
  * Fusion.Widget.Scalebar
  *
- * $Id: Scalebar.js 1523 2008-09-11 19:30:43Z pagameba $
+ * $Id: Scalebar.js 2675 2013-03-25 03:32:46Z jng $
  *
  * Copyright (c) 2007, DM Solutions Group Inc.
  * Permission is hereby granted, free of charge, to any person obtaining a
@@ -30,6 +30,9 @@
  *
  * uses JavaScript Scale Bar for MapServer 
  * (http://mapserver.commenspace.org/tools/scalebar/
+ * 
+ * Inherits from:
+ *  - <Fusion.Widget>
  * **********************************************************************/
 
 
@@ -94,7 +97,7 @@ Fusion.Widget.Scalebar = OpenLayers.Class(Fusion.Widget, {
         //debugging using firebug, the problem doesn't occur.
         //this.oScaleBar.place(widgetTag.name);
         //A parameter or an operation is not supported by the underlying object"  code: "15
-        window.setTimeout(OpenLayers.Function.bind(this.oScaleBar, widgetTag.name), 1);
+        window.setTimeout(OpenLayers.Function.bind(this.oScaleBar.place, this.oScaleBar, widgetTag.name), 1);
 
         this.getMap().registerForEvent(Fusion.Event.MAP_EXTENTS_CHANGED, OpenLayers.Function.bind(this.extentsChangedCB, this));
         this.getMap().registerForEvent(Fusion.Event.MAP_LOADED, OpenLayers.Function.bind(this.extentsChangedCB, this));

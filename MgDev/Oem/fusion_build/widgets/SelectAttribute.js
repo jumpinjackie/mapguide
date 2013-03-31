@@ -27,7 +27,9 @@
  * Class: Fusion.Widget.SelectRadius
  *
  * perform a selection by radius from a point
- * 
+ *
+ * Inherits from:
+ *  - <Fusion.Widget>
  * **********************************************************************/
 Fusion.Event.RADIUS_WIDGET_ACTIVATED = Fusion.Event.lastEventId++;
 
@@ -96,7 +98,7 @@ Fusion.Widget.SelectAttribute = OpenLayers.Class(Fusion.Widget, {
     
     setAttributes: function(xhr) {
       if (xhr.status < 400) {
-          eval('this.attrs='+xhr.responseText);
+          this.attrs = Fusion.parseJSON(xhr.responseText);
       }
     },
     

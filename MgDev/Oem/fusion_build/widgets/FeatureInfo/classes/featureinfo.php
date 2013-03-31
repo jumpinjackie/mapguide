@@ -48,7 +48,7 @@ class FeatureInfo
 
             //TODO: Exclude Raster and Drawing Layers???
 
-            if((substr($layer->GetName(), 0, 1) != "_") && (substr(strtoupper($layer->GetFeatureSourceId()), 0, 7) != "SESSION"))
+            if((substr($layer->GetName(), 0, 1) != "_") && (substr(strtoupper($layer->GetFeatureSourceId()), 0, 7) != "SESSION") && ($layer->IsVisible()) && $layer->GetSelectable())
             {
                 $layerNames[$layer->GetName()] = $layer->GetLegendLabel();
             }

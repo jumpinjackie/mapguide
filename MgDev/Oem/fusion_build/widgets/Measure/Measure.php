@@ -2,7 +2,7 @@
 /**
  * Measure
  *
- * $Id: Measure.php 2403 2011-06-14 15:14:08Z jng $
+ * $Id: Measure.php 2671 2013-03-22 17:17:27Z jng $
  *
  * Copyright (c) 2007, DM Solutions Group Inc.
  * Permission is hereby granted, free of charge, to any person obtaining a
@@ -60,6 +60,8 @@
 
   $segment = GetLocalizedString( "SEGMENT", $locale );
   $length = GetLocalizedString( "LENGTH", $locale );
+  $measureStop = GetLocalizedString( "MEASURESTOP", $locale );
+  $measureStart = GetLocalizedString( "MEASURESTART", $locale );
 ?>
 
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"
@@ -71,11 +73,45 @@
     <style type="text/css" media="screen">
         @import url(Measure.css);
     </style>
+    <script type="text/javascript">
+    
+        var _widget = null;
+        var domInit = false;
+        
+        function OnLoad() {
+            domInit = true;
+        }
+        
+        function OnUnload() {
+            _widget.deactivate();
+        }
+        
+        function SetWidget(widget) {
+            _widget = widget;
+            _widget.setButtons(document.getElementById("measureStopBtn"), document.getElementById("measureStartBtn"));
+        }
+        
+        function OnStop() {
+            _widget.stopMeasurement();
+        }
+        
+        function OnStart() {
+            _widget.startMeasurement();
+        }
+    
+    </script>
 </head>
-<body id="MeasurementWidgetResults">
+<body id="MeasurementWidgetResults" onload="OnLoad()" onunload="OnUnload()">
     <h1><?php echo $title ?></h1>
     <hr />
     <p><?php echo $hint ?></p>
+    <table border="0">
+        <tr>
+            <td id="measureStopCnt"><input type="button" id="measureStopBtn" onclick="OnStop()" value="<?= $measureStop ?>" disabled="disabled" /></td>
+            <td id="measureStartCnt"><input type="button" id="measureStartBtn" onclick="OnStart()" value="<?= $measureStart ?>" disabled="disabled" /></td>
+        </tr>
+    </table>
+    <hr />
     <table id="MeasurementWidgetResultsTable" border="0" cellspacing="5" cellpadding="5">
 <?php if ($type & 1): ?>
         <thead>

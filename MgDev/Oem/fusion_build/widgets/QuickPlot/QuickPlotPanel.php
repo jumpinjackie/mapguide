@@ -16,19 +16,18 @@
     SetLocalizedFilesPath(GetLocalizationPath());
     $templ = Localize($templ, $locale, GetClientOS());
 
-    $vpath = GetSurroundVirtualPath();
     $jsPath = "";
     print sprintf($templ, $popup, $jsPath);
 
 function GetParameters($params)
 {
-    global $target, $cmdIndex, $clientWidth, $mapName, $sessionId, $popup, $us, $locale, $popup;
+    global $mapName, $sessionId, $popup, $us, $locale, $popup;
 
     $locale    = $params['locale'];
     $mapName   = $params['mapname'];
     $sessionId = $params['session'];
     $popup     = $params['popup'];
-    $us        = $params['us'];
+    $us        = array_key_exists("us", $params) ? $params['us'] : "";
     $popup     = $params['popup'];
 }
 

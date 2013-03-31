@@ -1,7 +1,7 @@
 /**
  * Fusion.Widget.Map
  *
- * $Id: Map.js 2495 2011-12-23 03:11:53Z liuar $
+ * $Id: Map.js 2585 2012-09-07 14:01:25Z jng $
  *
  * Copyright (c) 2007, DM Solutions Group Inc.
  * Permission is hereby granted, free of charge, to any person obtaining a
@@ -23,37 +23,101 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
- /****************************************************************************
+/**
+ * Constant: Fusion.Event.MAP_EXTENTS_CHANGED
+ */
+Fusion.Event.MAP_EXTENTS_CHANGED = Fusion.Event.lastEventId++;
+/**
+ * Constant: Fusion.Event.MAP_BUSY_CHANGED
+ */
+Fusion.Event.MAP_BUSY_CHANGED = Fusion.Event.lastEventId++;
+/**
+ * Constant: Fusion.Event.MAP_GENERIC_EVENT
+ */
+Fusion.Event.MAP_GENERIC_EVENT = Fusion.Event.lastEventId++;
+/**
+ * Constant: Fusion.Event.MAP_RESIZED
+ */
+Fusion.Event.MAP_RESIZED = Fusion.Event.lastEventId++;
+/**
+ * Constant: Fusion.Event.MAP_SELECTION_ON
+ */
+Fusion.Event.MAP_SELECTION_ON = Fusion.Event.lastEventId++;
+/**
+ * Constant: Fusion.Event.MAP_SELECTION_OFF
+ */
+Fusion.Event.MAP_SELECTION_OFF = Fusion.Event.lastEventId++;
+/**
+ * Constant: Fusion.Event.MAP_ACTIVE_LAYER_CHANGED
+ */
+Fusion.Event.MAP_ACTIVE_LAYER_CHANGED = Fusion.Event.lastEventId++;
+/**
+ * Constant: Fusion.Event.MAP_LOADED
+ */
+Fusion.Event.MAP_LOADED = Fusion.Event.lastEventId++;
+/**
+ * Constant: Fusion.Event.MAP_LOADING
+ */
+Fusion.Event.MAP_LOADING = Fusion.Event.lastEventId++;
+/**
+ * Constant: Fusion.Event.MAP_RELOADED
+ */
+Fusion.Event.MAP_RELOADED = Fusion.Event.lastEventId++;
+/**
+ * Constant: Fusion.Event.MAP_SESSION_CREATED
+ */
+Fusion.Event.MAP_SESSION_CREATED = Fusion.Event.lastEventId++;
+/**
+ * Constant: Fusion.Event.MAP_MAPTIP_REQ_FINISHED
+ */
+Fusion.Event.MAP_MAPTIP_REQ_FINISHED = Fusion.Event.lastEventId++;
+/**
+ * Constant: Fusion.Event.WMS_LAYER_ADDED
+ */
+Fusion.Event.WMS_LAYER_ADDED = Fusion.Event.lastEventId++;
+/**
+ * Constant: Fusion.Event.MAP_SCALE_RANGE_LOADED
+ */
+Fusion.Event.MAP_SCALE_RANGE_LOADED = Fusion.Event.lastEventId++;
+/**
+ * Constant: Fusion.Event.MAP_MAP_GROUP_LOADED
+ */
+Fusion.Event.MAP_MAP_GROUP_LOADED = Fusion.Event.lastEventId++;
+
+/**
+ * Constant: Fusion.Constant.LAYER_POINT_TYPE
+ */
+Fusion.Constant.LAYER_POINT_TYPE = 0;
+/**
+ * Constant: Fusion.Constant.LAYER_POINT_TYPE
+ */
+Fusion.Constant.LAYER_POINT_TYPE = 1;
+/**
+ * Constant: Fusion.Constant.LAYER_POINT_TYPE
+ */
+Fusion.Constant.LAYER_POINT_TYPE = 2;
+/**
+ * Constant: Fusion.Constant.LAYER_POINT_TYPE
+ */
+Fusion.Constant.LAYER_POINT_TYPE = 3;
+/**
+ * Constant: Fusion.Constant.LAYER_POINT_TYPE
+ */
+Fusion.Constant.LAYER_POINT_TYPE = 4;
+/**
+ * Constant: Fusion.Constant.LAYER_DWF_TYPE
+ */
+Fusion.Constant.LAYER_DWF_TYPE = 5;
+
+/****************************************************************************
  * Class: Fusion.Widget.Map
  *
  * generic class for map widgets. Provides common utility classes.
- * This class provides a wrapper around the OpenLayers Map object.
+ * This class provides a wrapper around the {<OpenLayers.Map>} object.
+ * 
+ * Inherits from:
+ *  - <Fusion.Lib.EventMgr>
  * **********************************************************************/
-
-Fusion.Event.MAP_EXTENTS_CHANGED = Fusion.Event.lastEventId++;
-Fusion.Event.MAP_BUSY_CHANGED = Fusion.Event.lastEventId++;
-Fusion.Event.MAP_GENERIC_EVENT = Fusion.Event.lastEventId++;
-Fusion.Event.MAP_RESIZED = Fusion.Event.lastEventId++;
-Fusion.Event.MAP_SELECTION_ON = Fusion.Event.lastEventId++;
-Fusion.Event.MAP_SELECTION_OFF = Fusion.Event.lastEventId++;
-Fusion.Event.MAP_ACTIVE_LAYER_CHANGED = Fusion.Event.lastEventId++;
-Fusion.Event.MAP_LOADED = Fusion.Event.lastEventId++;
-Fusion.Event.MAP_LOADING = Fusion.Event.lastEventId++;
-Fusion.Event.MAP_RELOADED = Fusion.Event.lastEventId++;
-Fusion.Event.MAP_SESSION_CREATED = Fusion.Event.lastEventId++;
-Fusion.Event.MAP_MAPTIP_REQ_FINISHED = Fusion.Event.lastEventId++;
-Fusion.Event.WMS_LAYER_ADDED = Fusion.Event.lastEventId++;
-Fusion.Event.MAP_SCALE_RANGE_LOADED = Fusion.Event.lastEventId++;
-Fusion.Event.MAP_MAP_GROUP_LOADED = Fusion.Event.lastEventId++;
-
-
-Fusion.Constant.LAYER_POINT_TYPE = 0;
-Fusion.Constant.LAYER_LINE_TYPE = 1;
-Fusion.Constant.LAYER_POLYGON_TYPE = 2;
-Fusion.Constant.LAYER_SOLID_TYPE = 3;
-Fusion.Constant.LAYER_RASTER_TYPE = 4;
-Fusion.Constant.LAYER_DWF_TYPE = 5;
-
 Fusion.Widget.Map = OpenLayers.Class(Fusion.Lib.EventMgr, {
     
     /** The DOM object that holds the map */
@@ -108,6 +172,13 @@ Fusion.Widget.Map = OpenLayers.Class(Fusion.Lib.EventMgr, {
     
     /** The DOM object that holds the map */
     maxScale: null, //set this to a large number in AppDef to zoom out beyond maxExtent, e.g. 1 billion
+
+    /**
+     * Property: message
+     * 
+     * The {<Fusion.MapMessage>} notification bar
+     */
+    message: null,
 
     /**
      * construct a new view Fusion.Widget.Map class.
@@ -914,7 +985,7 @@ Fusion.Widget.Map = OpenLayers.Class(Fusion.Lib.EventMgr, {
             initialExtents = this.getMapGroupExtent(true);
         }
       }
-      this.initialExtents = initialExtents;
+      if (!this.initialExtents) this.initialExtents = initialExtents;
       return initialExtents;
     },
 
@@ -1012,18 +1083,12 @@ Fusion.Widget.Map = OpenLayers.Class(Fusion.Lib.EventMgr, {
     },
 
     /**
-     * Function: zoom
+     * Function: zoomToScale
      * 
-     * sets the map zoom and extent.
+     * Zooms to the specified scale
      *
      * Parameters:
-     *   fX {Float} - new x coordinate value in map units
-     *   fY {Float} - new y coordinate value in map units
-     *   nFactor {Float} - zoom factor; positive values zoom in, negative out
-     *                  - if set to 0 or 1, the map is just recentered
-     *                  - if the map has fractional zoom enabled, the map resolution
-     *                  will be modified by this factor
-     *                  - with fixed scales, zoom up or down one level, depending on the sign
+     *   fScale - {Float} The scale to zoom to
      *
      * Returns: none
      */
@@ -1034,50 +1099,40 @@ Fusion.Widget.Map = OpenLayers.Class(Fusion.Lib.EventMgr, {
     },
 
     /**
-     * Function: zoom
-     * 
-     * sets the map zoom and extent.
+     * Performs a rectangular query
      *
      * Parameters:
-     *   fX {Float} - new x coordinate value in map units
-     *   fY {Float} - new y coordinate value in map units
-     *   nFactor {Float} - zoom factor; positive values zoom in, negative out
-     *                  - if set to 0 or 1, the map is just recentered
-     *                  - if the map has fractional zoom enabled, the map resolution
-     *                  will be modified by this factor
-     *                  - with fixed scales, zoom up or down one level, depending on the sign
+     *   fMinX {Float} - new minimum x coordinate value in map units
+     *   fMinY {Float} - new minimum y coordinate value in map units
+     *   fMaxX {Float} - new maximum x coordinate value in map units
+     *   fMaxY {Float} - new maximum y coordinate value in map units
      *
      * Returns: none
      */
     queryRect: function(fMinX, fMinY, fMaxX, fMaxY) { },
 
     /**
-     * Function: zoom
-     * 
-     * sets the map zoom and extent.
+     * Performs a point query
      *
      * Parameters:
      *   fX {Float} - new x coordinate value in map units
      *   fY {Float} - new y coordinate value in map units
-     *   nFactor {Float} - zoom factor; positive values zoom in, negative out
-     *                  - if set to 0 or 1, the map is just recentered
-     *                  - if the map has fractional zoom enabled, the map resolution
-     *                  will be modified by this factor
-     *                  - with fixed scales, zoom up or down one level, depending on the sign
      *
      * Returns: none
      */
     queryPoint: function(fX, fY) { },
 
     /**
+     * Method: pixToGeo
      *
      * convert pixel coordinates into geographic coordinates.
      *
-     * @paran pX int the x coordinate in pixel units
-     * @param pY int the y coordinate in pixel units
+     * Parameters:
+     * pX - {Integer} the x coordinate in pixel units
+     * pY - {Integer} the y coordinate in pixel units
      *
-     * @return an object with geographic coordinates in x and y properties of the
-     *         object.
+     * Return:
+     * an object with geographic coordinates in x and y properties of the object.
      */
     pixToGeo: function( pX, pY ) {
         var lonLat = this.oMapOL.getLonLatFromPixel( new OpenLayers.Pixel(pX,pY) );
@@ -1088,14 +1143,16 @@ Fusion.Widget.Map = OpenLayers.Class(Fusion.Lib.EventMgr, {
     },
 
     /**
+     * Method: geoToPix
      *
      * convert geographic coordinates into pixel coordinates.
      *
-     * @paran gX int the x coordinate in geographic units
-     * @param gY int the y coordinate in geographic units
+     * Parameters:
+     * gX - {Integer} the x coordinate in geographic units
+     * gY - {Integer} the y coordinate in geographic units
      *
-     * @return an object with pixel coordinates in x and y properties of the
-     *         object.
+     * Return:
+     * an object with pixel coordinates in x and y properties of the object.
      */
     geoToPix: function( gX, gY ) {
         if (!(this._oCurrentExtents)) {
@@ -1106,10 +1163,12 @@ Fusion.Widget.Map = OpenLayers.Class(Fusion.Lib.EventMgr, {
     },
 
     /**
+     * Method: pixToGeoMeasure
      *
      * convert pixel into geographic : used to measure.
      *
-     * @param nPixels int measures in pixel
+     * Parameters:
+     * nPixels - {Integer} measures in pixel
      *
      * @return geographic measure
      */
@@ -1118,11 +1177,14 @@ Fusion.Widget.Map = OpenLayers.Class(Fusion.Lib.EventMgr, {
         return (nPixels*resolution);
     },
 
-  /**
+    /**
+     * Method: setProjection
      *
      * initializes the OpenLayers projection object on the Map object
      *
-     * @param projCode projection code
+     * Parameters:
+     * projCode - {String} projection code
+     * units - the units
      */
     setProjection: function(projCode, units) {
         this.projection = projCode;
@@ -1130,13 +1192,15 @@ Fusion.Widget.Map = OpenLayers.Class(Fusion.Lib.EventMgr, {
         this.oMapOL.units = units;
     },
 
-  /**
+    /**
+     * Method: setMetersPerUnit
      *
      * initializes the meters per unit values when a new map is loaded.  Some systems make different
      * assumptions for the conversion of degrees to meters so this makes sure both Fusion and
      * OpenLayers are using the same value.
      *
-     * @param metersPerUnit the value returned by LoadMap.php for meters per unit
+     * Parameters:
+     * metersPerUnit - {Float} the value returned by LoadMap.php for meters per unit
      */
     setMetersPerUnit: function(metersPerUnit) {
         if (this._fMetersperunit < 0) {
@@ -1151,25 +1215,29 @@ Fusion.Widget.Map = OpenLayers.Class(Fusion.Lib.EventMgr, {
     },
 
     /**
+     * Method: getMetersPerUnit
      *
      * returns the meters per unit value
      *
-     * @return metersPerUnit the value as set when the map initialized
+     * Return:
+     * metersPerUnit the value as set when the map initialized
      */
     getMetersPerUnit: function() {
         return this._fMetersperunit;
     },
 
-  /**
-     *
+    /**
+     * Method: setViewOptions
+     * 
      * initializes all widgets with the map units after the map has loaded
      *
      */
     setViewOptions: function(data) {
-      this.setWidgetParam('Units', data);
+        this.setWidgetParam('Units', data);
     },
 
-  /**
+    /**
+     * Method: setWidgetParam
      *
      * initializes all widgets with a parameter and value at runtime
      *
@@ -1189,12 +1257,15 @@ Fusion.Widget.Map = OpenLayers.Class(Fusion.Lib.EventMgr, {
     },
 
     /**
+     * Method: geoToPixMeasure
      *
      * convert geographic into pixels.
      *
-     * @param fGeo float distance in geographic units
+     * Parameters:
+     * fGeo - {Float} distance in geographic units
      *
-     * @return pixels
+     * Return:
+     * pixels
      */
     geoToPixMeasure: function(fGeo) {
         return parseInt(fGeo/this.oMapOL.getResolution());
@@ -1205,7 +1276,8 @@ Fusion.Widget.Map = OpenLayers.Class(Fusion.Lib.EventMgr, {
      *
      * returns the current center of the map view
      *
-     * Return: {Object} an object with the following attributes
+     * Return: 
+     * {Object} an object with the following attributes
      * x - the x coordinate of the center
      * y - the y coordinate of the center
      */
@@ -1215,7 +1287,8 @@ Fusion.Widget.Map = OpenLayers.Class(Fusion.Lib.EventMgr, {
     },
 
     /**
-     *
+     * Method: getCurrentExtents
+     * 
      * returns the current extents
      */
     getCurrentExtents: function() {
@@ -1227,7 +1300,8 @@ Fusion.Widget.Map = OpenLayers.Class(Fusion.Lib.EventMgr, {
      *
      * returns the Extent of the map given a center point and a scale (optional)
      *
-     * Return: {OpenLayers.Bounds} the bounds for the map centered on a point
+     * Return: 
+     * {<OpenLayers.Bounds>} the bounds for the map centered on a point
      */
     getExtentFromPoint: function(fX,fY,fScale) {
         if (!fScale) {
@@ -1244,10 +1318,26 @@ Fusion.Widget.Map = OpenLayers.Class(Fusion.Lib.EventMgr, {
                                            fY + h_deg / 2);
     },
 
+    /**
+     * Function: getScale
+     * 
+     * Gets the current scale of the map
+     * 
+     * Returns:
+     * The current map scale
+     */
     getScale: function() {
         return this.oMapOL.getScale();
     },
 
+    /**
+     * Function: getResolution
+     * 
+     * Gets the current resolution of the map
+     * 
+     * Returns:
+     * The current resolution of the map
+     */
     getResolution: function() {
         return this.oMapOL.getResolution();
     },
@@ -1256,6 +1346,15 @@ Fusion.Widget.Map = OpenLayers.Class(Fusion.Lib.EventMgr, {
         return this.oMapOL.baseLayer.units;
     },
 
+    /**
+     * Function: getSize
+     * 
+     * Gets the size of the map
+     * 
+     * Returns:
+     * 
+     *   return description
+     */
     getSize: function() {
         return this.oMapOL.getSize();
     },
@@ -1392,9 +1491,6 @@ Fusion.Widget.Map = OpenLayers.Class(Fusion.Lib.EventMgr, {
 
      onContextMenu: function(e) {
          //console.log('oncontextmenu');
-         // below line as a workaround for IE9 defect, please refer to https://trac.osgeo.org/fusion/ticket/424
-         // once IE9 fix this defect, we will roll back this line.
-         e=window.event?window.event:e;
          if (this.oContextMenu && !this.bSupressContextMenu && this.isLoaded()) {
              this.oContextMenu.show(new Event(e));
              this.contextMenuPosition = this.getEventPosition(e);
@@ -1408,12 +1504,10 @@ Fusion.Widget.Map = OpenLayers.Class(Fusion.Lib.EventMgr, {
      }
 });
 
-
 /**
- * SelectionObject
- *
- * Utility class to hold slection information
- *
+ * Class: Fusion.SelectionObject
+ * 
+ * Holds information about selected map features
  */
 Fusion.SelectionObject = OpenLayers.Class({
     aLayers : null,
@@ -1438,27 +1532,74 @@ Fusion.SelectionObject = OpenLayers.Class({
             }
         }
     },
-
+    /**
+     * Function: getNumElements
+     * 
+     * Gets the number of selected map features
+     * 
+     * Returns:
+     * 
+     *   the number of selected map features
+     */
     getNumElements : function()
     {
         return this.nTotalElements;
     },
 
+    /**
+     * Function: getLowerLeftCoord
+     * 
+     * Gets the lower left coordinate of this selection's bounding box
+     * 
+     * Returns:
+     * 
+     *   the lower left coordinate
+     */
     getLowerLeftCoord : function()
     {
         return {x:this.fMinX, y:this.fMinY};
     },
 
+    /**
+     * Function: getUpperRightCoord
+     * 
+     * Gets the upper right coordinate of this selection's bounding box
+     * 
+     * Returns:
+     * 
+     *   the upper right coordinate
+     */
     getUpperRightCoord : function()
     {
         return {x:this.fMaxX, y:this.fMaxY};
     },
 
+    /**
+     * Function: getNumLayers
+     * 
+     * Gets the number of map layers included in this selection
+     * 
+     * Returns:
+     *  The number of map layers
+     */
     getNumLayers : function()
     {
         return this.nLayers;
     },
 
+    /**
+     * Function: getLayerByName
+     * 
+     * Gets the selected map layer by its name
+     * 
+     * Parameters:
+     * 
+     *   name - The name of the selected map layer
+     * 
+     * Returns:
+     * 
+     *   {<Fusion.SelectionObject.Layer>} The selected map layer
+     */
     getLayerByName : function(name)
     {
         var oLayer = null;
@@ -1473,7 +1614,19 @@ Fusion.SelectionObject = OpenLayers.Class({
         return oLayer;
     },
 
-
+    /**
+     * Function: getLayer
+     * 
+     * Gets the selected map layer by the specified index
+     * 
+     * Parameters:
+     * 
+     *   iIndice - The index of the selected map layer
+     * 
+     * Returns:
+     * 
+     *   {<Fusion.SelectionObject.Layer>} The selected map layer
+     */
     getLayer : function(iIndice)
     {
         if (iIndice >=0 && iIndice < this.nLayers)
@@ -1488,7 +1641,11 @@ Fusion.SelectionObject = OpenLayers.Class({
     }
 });
 
-
+/**
+ * Class: Fusion.SelectionObject.Layer
+ * 
+ * Defines a map layer in a {<Fusion.SelectionObject>}
+ */
 Fusion.SelectionObject.Layer = OpenLayers.Class({
     name: null,
     nElements: null,

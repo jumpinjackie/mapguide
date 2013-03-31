@@ -2,7 +2,7 @@
 /**
  * Utilities.php
  *
- * $Id: Utilities.php 2512 2012-01-10 05:33:26Z liuar $
+ * $Id: Utilities.php 2643 2013-02-22 00:28:59Z liuar $
  *
  * Copyright (c) 2007, DM Solutions Group Inc.
  * Permission is hereby granted, free of charge, to any person obtaining a
@@ -754,21 +754,26 @@ function GetPropertyValueFromFeatReader($featureReader, $propertyType, $property
     return $val;
 }
 
-function GetLayerNameInProperties($layerName)
+function GetEncodedLayerName($layerName)
 {
-	return 'layer'.$layerName;    // Add prefix to avoid layer name beginning with number
+    return 'layer'.$layerName;    // Add prefix to avoid layer name beginning with number
 }
 
 /**
    keep all the attributes of selected features in an array
  */
 function BuildSelectionArray($featureReader, $layerName, $properties, $bComputedProperties,
-                             $srsLayer, $bNeedsTransform, $layerObj)
+                             $srsLayer, $bNeedsTransform, $layerObj, $isLayerNameEncoded)
 {
     $agf = new MgAgfReaderWriter();
     $srsFactory = new MgCoordinateSystemFactory();
     
-    $layerName = GetLayerNameInProperties($layerName);    // Add prefix to avoid layer name beginning with number
+    if($isLayerNameEncoded)
+    {
+        // Add prefix to avoid layer name beginning with number
+        // So $isLayerNameEncoded should be true when and only when the properties will be stored in session
+        $layerName = GetEncodedLayerName($layerName);    
+    }
 
     $properties->$layerName->propertynames = array();
     $properties->$layerName->propertyvalues = array();
@@ -783,15 +788,15 @@ function BuildSelectionArray($featureReader, $layerName, $properties, $bComputed
     array_push($properties->$layerName->metadatanames, 'area');
     array_push($properties->$layerName->metadatanames, 'length');
 
-    //NOTE: PHP will complain about _SESSION being undefined when display_errors = On with full verbosity
-    //messing up any JSON response in the process!
-    $mappings = $_SESSION['property_mappings'][$layerObj->GetObjectId()];
-    foreach((array)$mappings as $name => $value)
-    {
-        $propType = $featureReader->GetPropertyType($name);
-        array_push($properties->$layerName->propertynames, $name);
-        array_push($properties->$layerName->propertyvalues, $value);
-        array_push($properties->$layerName->propertytypes, $propType);
+    if (isset($_SESSION)) {
+        $mappings = $_SESSION['property_mappings'][$layerObj->GetObjectId()];    
+        foreach((array)$mappings as $name => $value)
+        {
+            $propType = $featureReader->GetPropertyType($name);
+            array_push($properties->$layerName->propertynames, $name);
+            array_push($properties->$layerName->propertyvalues, $value);
+            array_push($properties->$layerName->propertytypes, $propType);
+        }
     }
 
     $srsTarget = null;

@@ -1,7 +1,7 @@
 /**
  * Fusion.Widget.EditableScale
  *
- * $Id: EditableScale.js 1602 2008-10-23 13:11:03Z pagameba $
+ * $Id: EditableScale.js 2579 2012-09-07 09:20:12Z jng $
  *
  * Copyright (c) 2007, DM Solutions Group Inc.
  * Permission is hereby granted, free of charge, to any person obtaining a
@@ -28,6 +28,8 @@
  *
  * The user can manually type in a new scale
  *
+ * Inherits from:
+ *  - <Fusion.Widget>
  * **********************************************************************/
 
 Fusion.Widget.EditableScale = OpenLayers.Class(Fusion.Widget, {

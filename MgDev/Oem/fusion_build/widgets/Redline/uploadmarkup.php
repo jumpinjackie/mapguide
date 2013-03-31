@@ -10,10 +10,10 @@
     require_once $fusionMGpath . 'JSON.php';
     require_once 'classes/markupcommand.php';
 
-	$args = ($_SERVER['REQUEST_METHOD'] == "POST") ? $_POST : $_GET;
+    $args = ($_SERVER['REQUEST_METHOD'] == "POST") ? $_POST : $_GET;
 
-	$errorMsg = null;
-	$errorDetail = null;
+    $errorMsg = null;
+    $errorDetail = null;
 
     SetLocalizedFilesPath(GetLocalizationPath());
     if(isset($_REQUEST['LOCALE'])) {
@@ -22,29 +22,29 @@
         $locale = GetDefaultLocale();
     }
 
-	try
-	{
+    try
+    {
         $uploadTitleLocal = GetLocalizedString('REDLINEUPLOAD', $locale );
         $uploadFileLocal = GetLocalizedString('REDLINEDATAFILE', $locale );
         $uploadNoteLocal = GetLocalizedString('REDLINEUPLOADNOTE', $locale );
         $uploadLocal = GetLocalizedString('REDLINEUPLOADTEXT', $locale );
         $uploadFileRequiredLocal = GetLocalizedString('REDLINEUPLOADREQUIRED', $locale);
         $closeLocal = GetLocalizedString('REDLINEUPLOADCLOSE', $locale );
-	}
-	catch (MgException $e)
-	{
-		$errorMsg = $e->GetMessage();
-		$errorDetail = $e->GetDetails();
-	}
+    }
+    catch (MgException $e)
+    {
+        $errorMsg = $e->GetMessage();
+        $errorDetail = $e->GetDetails();
+    }
 ?>
 <html>
 <head>
     <meta http-equiv="Content-type" content="text/html; charset=utf-8">
-	<title><?=$uploadTitleLocal?></title>
+    <title><?=$uploadTitleLocal?></title>
     <link rel="stylesheet" href="Redline.css" type="text/css">
     <script language="javascript" src="../../layers/MapGuide/MapGuideViewerApi.js"></script>
     <script language="javascript" src="../../common/browserdetect.js"></script>
-	<script language="javascript">
+    <script language="javascript">
         var session = '<?= $args['SESSION'] ?>';
         var mapName = '<?= $args['MAPNAME'] ?>';
         
@@ -58,14 +58,14 @@
         }
         
         function CloseUpload()
-		{
-			var uploadForm = document.getElementById("uploadForm");
+        {
+            var uploadForm = document.getElementById("uploadForm");
             document.getElementById("cmdType").value = "";
-			uploadForm.action = "markupmain.php";
-			
-			uploadForm.submit();
-		}
-	</script>
+            uploadForm.action = "markupmain.php";
+            
+            uploadForm.submit();
+        }
+    </script>
 </head>
 
 <body marginwidth=5 marginheight=5 leftmargin=5 topmargin=5 bottommargin=5 rightmargin=5>
@@ -75,27 +75,27 @@
 <form action="markupmain.php" method="post" enctype="multipart/form-data" id="uploadForm" target="_self">
 <input type="hidden" name="MAX_FILE_SIZE" value="5000000" />
 <table class="RegText" border="0" cellspacing="0" width="100%">
-	<tr>
-		<td colspan="2" class="Title"><?= $uploadTitleLocal ?><hr></td>
-	</tr>
-	<tr>
-		<td colspan="2" class="SubTitle"><?= $uploadFileLocal ?></td>
-	</tr>
-	<tr>
-		<td colspan="2">
-			<input class="Ctrl" id="uploadFile" name="UPLOADFILE" type="file" style="width:100%"><br></td>
-		</td>
-	</tr>
-	<tr><td colspan="2" height="2px"></td></tr>
-	<tr>
-		<td colspan="2">
-			<input class="Ctrl" name="" type="submit" onClick="return CheckFileName()" value="<?=$uploadLocal?>" style="width:85px">
-			<input class="Ctrl" name="" type="button" onClick="CloseUpload()" value="<?=$closeLocal?>" style="width:85px">
+    <tr>
+        <td colspan="2" class="Title"><?= $uploadTitleLocal ?><hr></td>
+    </tr>
+    <tr>
+        <td colspan="2" class="SubTitle"><?= $uploadFileLocal ?></td>
+    </tr>
+    <tr>
+        <td colspan="2">
+            <input class="Ctrl" id="uploadFile" name="UPLOADFILE" type="file" style="width:100%"><br></td>
+        </td>
+    </tr>
+    <tr><td colspan="2" height="2px"></td></tr>
+    <tr>
+        <td colspan="2">
+            <input class="Ctrl" name="" type="submit" onClick="return CheckFileName()" value="<?=$uploadLocal?>" style="width:85px">
+            <input class="Ctrl" name="" type="button" onClick="CloseUpload()" value="<?=$closeLocal?>" style="width:85px">
             <input type="hidden" name="MARKUPCOMMAND" id="cmdType" value="<?= MarkupCommand::Upload ?>" />
             <input type="hidden" name="MAPNAME" id="MAPNAME" value="<?= $args["MAPNAME"] ?>" />
             <input type="hidden" name="SESSION" id="SESSION" value="<?= $args["SESSION"] ?>" />
-		</td>
-	</tr>
+        </td>
+    </tr>
     <tr><td colspan="2" height="2px"></td></tr>
     <tr><td colspan="2"><strong><?= $uploadNoteLocal ?></strong></td></tr>
 </table>
@@ -104,9 +104,9 @@
 <?php } else { ?>
 
 <table class="RegText" border="0" cellspacing="0" width="100%%">
-	<tr><td class="Title">Error<hr></td></tr>
-	<tr><td><?= $errorMsg ?></td></tr>
-	<tr><td><?= $errorDetail ?></td></tr>
+    <tr><td class="Title">Error<hr></td></tr>
+    <tr><td><?= $errorMsg ?></td></tr>
+    <tr><td><?= $errorDetail ?></td></tr>
 </table>
 
 <?php } ?>

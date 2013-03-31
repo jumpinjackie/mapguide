@@ -2,7 +2,7 @@
 /**
  * Query
  *
- * $Id: Query.php 2150 2010-04-22 16:21:53Z chrisclaydon $
+ * $Id: Query.php 2523 2012-01-20 05:16:28Z liuar $
  *
  * Copyright (c) 2007, DM Solutions Group Inc.
  * Permission is hereby granted, free of charge, to any person obtaining a
@@ -261,7 +261,7 @@ try {
                 $featureReader = $featureService->SelectFeatures($featureResId, $class, $queryOptions);
                 $properties = BuildSelectionArray($featureReader, $layerName, $properties,
                                                   $bComputedProperties,
-                                                  $srsLayer, $bNeedsTransform, $layerObj);
+                                                  $srsLayer, $bNeedsTransform, $layerObj, true);
                 $featureReader->Close();
             }
         } catch (MgObjectNotFoundException $onfe) {
@@ -343,7 +343,7 @@ try {
 
                 $properties = BuildSelectionArray($featureReader, $layerName, $properties,
                                                   $bComputedProperties,
-                                                  $srsLayer, $bNeedsTransform, $oLayer);
+                                                  $srsLayer, $bNeedsTransform, $oLayer, true);
                 $featureReader->Close();
             }
         }

@@ -33,4 +33,12 @@
         <DefaultValue>true</DefaultValue>
         <IsMandatory>false</IsMandatory>
     </Parameter>
+    <Parameter>
+        <Name>UseMapMessage</Name>
+        <Description>Indicates to use the map message bar for digitization prompts. Default is true</Description>
+        <Type>boolean</Type>
+        <Label>UseMapMessage</Label>
+        <DefaultValue>true</DefaultValue>
+        <IsMandatory>false</IsMandatory>
+    </Parameter>
 </WidgetInfo>

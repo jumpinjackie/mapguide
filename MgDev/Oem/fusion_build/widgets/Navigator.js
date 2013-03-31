@@ -1,7 +1,7 @@
 /**
  * Fusion.Widget.Navigator
  *
- * $Id: Navigator.js 2041 2010-01-22 17:14:59Z chrisclaydon $
+ * $Id: Navigator.js 2579 2012-09-07 09:20:12Z jng $
  *
  * Copyright (c) 2007, DM Solutions Group Inc.
  * Permission is hereby granted, free of charge, to any person obtaining a
@@ -27,6 +27,9 @@
  * Class: Fusion.Widget.Navigator
  *
  * A widget that immplements an in-map navigation control with zoom and pan.
+ * 
+ * Inherits from:
+ *  - <Fusion.Widget>
  * **********************************************************************/
 
 Fusion.Widget.Navigator = OpenLayers.Class(Fusion.Widget, {

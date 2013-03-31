@@ -1,7 +1,7 @@
 /**
  * Fusion.Widget.SelectionInfo
  *
- * $Id: SelectionInfo.js 2249 2010-10-19 14:31:05Z madair $
+ * $Id: SelectionInfo.js 2579 2012-09-07 09:20:12Z jng $
  *
  * Copyright (c) 2007, DM Solutions Group Inc.
  * Permission is hereby granted, free of charge, to any person obtaining a
@@ -41,6 +41,9 @@
  * < is &lt;
  * > is &gt;
  * & is &amp;
+ * 
+ * Inherits from:
+ *  - <Fusion.Widget>
  * **********************************************************************/
 
 Fusion.Widget.SelectionInfo = OpenLayers.Class(Fusion.Widget, {

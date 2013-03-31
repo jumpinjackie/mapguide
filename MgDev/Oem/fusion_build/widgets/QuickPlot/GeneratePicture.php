@@ -12,12 +12,13 @@
     $scaleDenominator = 0;
     $captureBox;
     $normalizedCapture;
+    $printSize_pixel;
     $printSize;
-    $paperSize;    
+    
     try
     {
         GetParameters();
-        GenerateMap($printSize);
+        GenerateMap($printSize_pixel);
     }
     catch (MgException $e) {
         $msg = "last error";
@@ -36,7 +37,7 @@
 
     function GetParameters()
     {
-        global $sessionID, $mapName, $printDpi, $rotation, $paperSize, $captureBox, $printSize, $scaleDenominator, $normalizedCapture;
+        global $sessionID, $mapName, $printDpi, $rotation, $printSize, $printSize_pixel, $captureBox, $scaleDenominator, $normalizedCapture;
         $args = $_GET;
         if ($_SERVER["REQUEST_METHOD"] == "POST")
         {
@@ -51,10 +52,9 @@
 
         $scaleDenominator = intval($args["scale_denominator"]);
 
-        $array       = explode(",", $args["paper_size"]);
-        $paperSize   = new Size(ParseLocaleDouble($array[0]), ParseLocaleDouble($array[1]));
-        $printSize   = new Size($paperSize->width / 25.4 * $printDpi, $paperSize->height / 25.4 * $printDpi);
-        
+        $array       = explode(",", $args["print_size"]);
+        $printSize   = new Size(ParseLocaleDouble($array[0]), ParseLocaleDouble($array[1]));
+        $printSize_pixel   = new Size($printSize->width / 25.4 * $printDpi, $printSize->height / 25.4 * $printDpi);
         $array       = explode(",", $args["box"]);
         $captureBox  = CreatePolygon($array);
         
@@ -82,10 +82,9 @@
         return $captureBox;
     }
 
-    function GenerateMap($size)
+    function GenerateMap($size)//print_size
     {
         global $sessionID, $mapName, $captureBox, $printSize, $normalizedCapture, $rotation, $scaleDenominator, $printDpi;
-        
         $userInfo         = new MgUserInformation($sessionID);
         $siteConnection   = new MgSiteConnection();
         $siteConnection->Open($userInfo);
@@ -96,7 +95,7 @@
         $map->Open($resourceService, $mapName);
         
         $selection        = new MgSelection($map);
-        
+    
         // Calculate the generated picture size
         $envelope         = $captureBox->Envelope();
         $normalizedE      = $normalizedCapture->Envelope();
@@ -104,7 +103,7 @@
         $size2            = new Size($normalizedE->getWidth(), $normalizedE->getHeight());
         $toSize           = new Size($size1->width / $size2->width * $size->width, $size1->height / $size2->height * $size->height);
         $center           = $captureBox->GetCentroid()->GetCoordinate();
-        
+  
         $map->SetDisplayDpi($printDpi);
         $colorString = $map->GetBackgroundColor();
         // The returned color string is in AARRGGBB format. But the constructor of MgColor needs a string in RRGGBBAA format
@@ -120,9 +119,10 @@
                                                 $color,
                                                 "PNG",
                                                 false);
-
         $tempImage = sys_get_temp_dir() . DIRECTORY_SEPARATOR . "mgo" . uniqid();
+
         $mgReader->ToFile($tempImage);
+        
         $image = imagecreatefrompng($tempImage);
         unlink($tempImage);
 
@@ -140,11 +140,12 @@
 
         header ("Content-type: image/png"); 
         imagepng($croppedImg);
-        imagedestroy($croppedImg);    }
+        imagedestroy($croppedImg);
+    }
     
     function DrawNorthArrow($map)
     {
-        global $paperSize, $rotation;
+        global $printSize, $rotation;
         
         // Load the north arrow image which has a 300 dpi resolution
         $na         = imagecreatefrompng("./north_arrow.png");
@@ -160,7 +161,7 @@
         $mapWidth   = imagesx($map);
         $mapHeight  = imagesy($map);
         // Get the logical resolution of map
-        $resolution = $mapWidth * 25.4 / $paperSize->width;
+        $resolution = $mapWidth * 25.4 / $printSize->width;
         // On printed paper, north arrow is located at the right bottom corner with 6 MM margin
         $naRes      = 300;
         $naMargin   = 12;

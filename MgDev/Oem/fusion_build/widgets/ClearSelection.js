@@ -1,7 +1,7 @@
 /**
  * Fusion.Widget.ClearSelection
  *
- * $Id: ClearSelection.js 1523 2008-09-11 19:30:43Z pagameba $
+ * $Id: ClearSelection.js 2579 2012-09-07 09:20:12Z jng $
  *
  * Copyright (c) 2007, DM Solutions Group Inc.
  * Permission is hereby granted, free of charge, to any person obtaining a
@@ -27,6 +27,9 @@
  * Class: Fusion.Widget.ClearSelection
  *
  * Clears the current selection, if any.
+ * 
+ *  Inherits from:
+ *  - <Fusion.Widget>
  * **********************************************************************/
 
 Fusion.Widget.ClearSelection = OpenLayers.Class(Fusion.Widget, {

@@ -21893,6 +21893,8 @@ Jx.Button = new Class({
                 }).bindWithEvent(this),
                 mouseup: (function(e) {
                     this.domA.removeClass(options.pressedClass);
+                    if (!this.options.active) //MG Fusion #549
+                        this.domA.removeClass(options.activeClass);
                     mouseDown = false;
                 }).bindWithEvent(this),
                 mouseleave: (function(e) {

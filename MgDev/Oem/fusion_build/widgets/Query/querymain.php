@@ -61,6 +61,9 @@
     $zoomLocal = GetLocalizedString('QUERYZOOM', $locale );
     $selectLocal = GetLocalizedString('QUERYSELECT', $locale );
     $errorLocal = GetLocalizedString('QUERYERROR', $locale );
+    
+    $rectangleHelpLocal = GetLocalizedString('REDLINEEDITRECTANGLEHELP', $locale );
+    $polygonHelpLocal = GetLocalizedString('REDLINEEDITPOLYGONHELP', $locale );
 
     try
     {
@@ -177,11 +180,15 @@
         function OnDigitizeRectangle()
         {
             ClearDigitization();
+            var map = Fusion.getMapByName(mapName).mapWidget;
+            map.message.info("<?= $rectangleHelpLocal ?>");
             DigitizeRectangle(OnRectangleDigitized);
         }
 
         function OnRectangleDigitized(rectangle)
         {
+            var map = Fusion.getMapByName(mapName).mapWidget;
+            map.message.clear();
             var geomText = "5,"
                 + rectangle.Point1.X + "," + rectangle.Point1.Y + ","
                 + rectangle.Point2.X + "," + rectangle.Point1.Y + ","
@@ -195,11 +202,15 @@
         function OnDigitizePolygon()
         {
             ClearDigitization();
+            var map = Fusion.getMapByName(mapName).mapWidget;
+            map.message.info("<?= $polygonHelpLocal ?>");
             DigitizePolygon(OnPolyonDigitized);
         }
 
         function OnPolyonDigitized(polygon)
         {
+            var map = Fusion.getMapByName(mapName).mapWidget;
+            map.message.clear();
             var geomText = polygon.Count;
             for (var i = 0; i < polygon.Count; i++)
             {
@@ -404,6 +415,7 @@
 
         function OnUnload()
         {
+            ClearDigitization();
             ToggleSpatialFilter(false);
         }
 

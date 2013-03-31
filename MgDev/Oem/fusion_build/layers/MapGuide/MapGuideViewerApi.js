@@ -1,7 +1,7 @@
 /**
  * Fusion API AjaxViewer API layer
  *
- * $Id: MapGuideViewerApi.js 2189 2010-07-07 06:42:25Z hubu $
+ * $Id: MapGuideViewerApi.js 2583 2012-09-07 12:03:03Z jng $
  *
  * Copyright (c) 2007, DM Solutions Group Inc.
  * Permission is hereby granted, free of charge, to any person obtaining a
@@ -27,7 +27,7 @@
 * This is a simple API layer to mimick the MapGuide ajaxviewer API
 */
 var mgApiMapWidgetId = 'Map';
-var mgApimgApiActiveWidget = null;
+var mgApiActiveWidget = null;
 var mgApiActiveControl = null;
 var mgApiDrawControls;
 var mgApiDigitizingLayer = null;
@@ -83,10 +83,12 @@ function DigitizePolygon(handler) {
     mgApiStartDigitizing('polygon', handler)
 }
 
-function ClearDigitization() {
+function ClearDigitization(bCancelHandler) {
     if (mgApiDigitizingLayer) {
         mgApiDigitizingLayer.removeFeatures(mgApiDigitizingLayer.features);
     }
+    if (bCancelHandler)
+        mgApiDeactivate();
 }
 
 //Theses are the Geometry classes used in the MapGuide Viewer API

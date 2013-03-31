@@ -21,6 +21,7 @@ var tab1;
 var tab2;
 var tab3;
 var tabbox1;
+var COLLAPSED_SIDEBAR_WIDTH = 8;
 
 window.onload = function() {
     Fusion.initializeLocale();  //need to call this first if String.Translate is to be used in the onload
@@ -38,7 +39,7 @@ window.onload = function() {
         splitInto:2,
         elements:[$('Main'),$('Sidebar')],
         layout:'horizontal',
-        containerOptions: [{},{minWidth:50, width: 214}],
+        containerOptions: [{},{minWidth:COLLAPSED_SIDEBAR_WIDTH, width: 214}],
         barOptions: [{
             snap: 'after',
             snapElement: $('SidebarCollapse'),
@@ -174,18 +175,27 @@ var initPanelHandler = function() {
 }
 
 var showOverviewMap = function() {
+    showSidebarIfCollapsed();
 }
 
+var showSidebarIfCollapsed = function() {
+    if ($("Sidebar").getWidth() <= COLLAPSED_SIDEBAR_WIDTH)
+        $("SidebarCollapse").fireEvent("click");
+};
+
 var showTaskPane = function() {
-  tab1.setActive(true);
+    showSidebarIfCollapsed();
+    tab1.setActive(true);
 }
 
 var showLegend = function() {
-  tab2.setActive(true);
+    showSidebarIfCollapsed();
+    tab2.setActive(true);
 }
 
 var showSelectionPanel = function() {
-  tab3.setActive(true);
+    showSidebarIfCollapsed();
+    tab3.setActive(true);
 }
 
 </script>

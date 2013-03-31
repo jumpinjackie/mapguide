@@ -1,7 +1,7 @@
 /**
  * Fusion.Widget.OverviewMap
  *
- * $Id: OverviewMap.js 2412 2011-07-11 01:59:57Z liuar $
+ * $Id: OverviewMap.js 2579 2012-09-07 09:20:12Z jng $
  *
  * Copyright (c) 2007, DM Solutions Group Inc.
  * Permission is hereby granted, free of charge, to any person obtaining a
@@ -28,6 +28,9 @@
  *
  * A widget that displays an overview map showing the current view of the
  * primary map.
+ * 
+ * Inherits from:
+ *  - <Fusion.Widget>
  * **********************************************************************/
 
 Fusion.Widget.OverviewMap = OpenLayers.Class(Fusion.Widget, {

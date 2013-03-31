@@ -20,6 +20,7 @@ var panel2;
 var panel3;
 var panelman;
 var dOverviewMap;
+var COLLAPSED_SIDEBAR_WIDTH = 8;
 
 window.onload = function() {
     Fusion.initializeLocale();  //need to call this first if String.Translate is to be used in the onload
@@ -36,7 +37,7 @@ window.onload = function() {
         splitInto:2,
         elements:[$('Sidebar'),$('MapArea')],
         layout:'horizontal',
-        containerOptions: [{minWidth:8, width: 218}],
+        containerOptions: [{minWidth:COLLAPSED_SIDEBAR_WIDTH, width: 218}],
         barOptions: [{
             snap: 'before',
             snapElement: $('SidebarCollapse'),
@@ -128,9 +129,9 @@ var fusionError = function(eventId, error) {
     //Case 2: For dealing with Function: ajaxException. (fusion.js)
     //******************************************
     //        ajaxException: function(r, e) {
-    //        this.reportError(new Fusion.Error(Fusion.Error.WARNING, 
-    //            OpenLayers.i18n('ajaxError', {'exception':e.message, 
-    //                                          'filename':e.fileName, 
+    //        this.reportError(new Fusion.Error(Fusion.Error.WARNING,
+    //            OpenLayers.i18n('ajaxError', {'exception':e.message,
+    //                                          'filename':e.fileName,
     //                                          'line':e.lineNumber,
     //                                          'response': r.transport.responseText
     //                                          })));
@@ -180,16 +181,24 @@ var showOverviewMap = function() {
     dOverviewMap.open();
 }
 
+var showSidebarIfCollapsed = function() {
+    if ($("Sidebar").getWidth() <= COLLAPSED_SIDEBAR_WIDTH)
+        $("SidebarCollapse").fireEvent("click");
+};
+
 var showTaskPane = function() {
-  panelman.maximizePanel(panel3);
+    showSidebarIfCollapsed();
+    panelman.maximizePanel(panel3);
 }
 
 var showLegend = function() {
-  panelman.maximizePanel(panel1);
+    showSidebarIfCollapsed();
+    panelman.maximizePanel(panel1);
 }
 
 var showSelectionPanel = function() {
-  panelman.maximizePanel(panel2);
+    showSidebarIfCollapsed();
+    panelman.maximizePanel(panel2);
 }
 
 </script>

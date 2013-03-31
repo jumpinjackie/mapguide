@@ -65,6 +65,14 @@
         <IsMandatory>false</IsMandatory>
     </Parameter>
     <Parameter>
+        <Name>DefaultMargin</Name>
+        <Description>Indicates the default Margin to use for plotting. If specified, this will hide the Margin field in the QuickPlot UI and will override whatever Margin is used.</Description>
+        <Type>string</Type>
+        <Label>Margin</Label>
+        <DefaultValue>25.4,12.7,12.7,12.7</DefaultValue>
+        <IsMandatory>false</IsMandatory>
+    </Parameter>
+    <Parameter>
         <Name>Disclaimer</Name>
         <Description>The legal disclaimer text to show in the preview dialog and final printout</Description>
         <Type>string</Type>
