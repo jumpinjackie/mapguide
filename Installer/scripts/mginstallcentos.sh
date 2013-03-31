@@ -1,16 +1,17 @@
 #!/bin/bash
-URL="http://download.osgeo.org/mapguide/releases/2.5.0/RC1"
-#URL="http://192.168.0.6/downloads"
+URL="http://download.osgeo.org/mapguide/releases/2.5.0/RC2"
+#URL="http://192.168.0.4/downloads"
 FDOVER_MAJOR_MINOR=3.8
 FDOVER_MAJOR_MINOR_REV=${FDOVER_MAJOR_MINOR}.0
 FDOVER=${FDOVER_MAJOR_MINOR_REV}_3601
 MGVER_MAJOR_MINOR=2.5
 MGVER_MAJOR_MINOR_REV=${MGVER_MAJOR_MINOR}.0
-MGVER=${MGVER_MAJOR_MINOR_REV}.7396
+MGVER=${MGVER_MAJOR_MINOR_REV}.7432
 FDO_TARBALL=fdosdk-centos5-${FDOVER}.tar.gz
 MG_TARBALL=mapguideopensource-${MGVER}.tar.gz
 MG_URL=${URL}/${MG_TARBALL}
-FDO_URL="http://download.osgeo.org/fdo/3.8.0/beta1/binaries/linux/${FDO_TARBALL}"
+FDO_URL="http://download.osgeo.org/fdo/3.8.0/rc1/binaries/linux32/${FDO_TARBALL}"
+#FDO_URL=${URL}/${FDO_TARBALL}
 
 # Must have root
 if [[ $EUID -ne 0 ]]; then
