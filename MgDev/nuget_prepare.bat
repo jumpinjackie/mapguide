@@ -82,9 +82,8 @@ xcopy /Y /I "%DESKTOP_BASEDIR%\OSGeo.MapGuide.PlatformBase.xml" "%NUGET_LIB_BASE
 echo [install]: Copy api-desktop files to nuget staging
 xcopy /S /Y "%DESKTOP_BASEDIR%\*" "%NUGET_CONTENT_DESKTOP%" /EXCLUDE:package_excludes.txt+desktop_package_excludes.txt
 xcopy /Y /I "%DESKTOP_BASEDIR%\OSGeo.MapGuide.Desktop.dll" "%NUGET_LIB_DESKTOP%"
+xcopy /Y /I "%DESKTOP_BASEDIR%\OSGeo.MapGuide.Desktop.xml" "%NUGET_LIB_DESKTOP%"
 echo [install]: Copy api-web files to nuget staging
-REM Just in case
-DoxyTransform.exe dotnet "%MG_DOC_XML%" "%WEB_BASEDIR%"
 xcopy /Y /I "%WEB_BASEDIR%\MgWebApp.dll" "%NUGET_CONTENT_WEB%"
 xcopy /Y /I "%WEB_BASEDIR%\MgWebSupport.dll" "%NUGET_CONTENT_WEB%"
 xcopy /Y /I "%WEB_BASEDIR%\MgHttpHandler.dll" "%NUGET_CONTENT_WEB%"
