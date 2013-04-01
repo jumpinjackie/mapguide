@@ -30,8 +30,6 @@ echo [build]: .net components (%DESKTOP_PLATFORM%)
 %MSBUILD% /p:Platform=%DESKTOP_PLATFORM% MgDesktopDotNet%VS_SLN_SUFFIX%.sln
 if "%errorlevel%"=="1" goto error
 popd
-echo [build]: .net intellisense files
-DoxyTransform.exe dotnet "%MG_DOC_XML%" "%MG_OUTPUT_DESKTOP%"
 echo [install]: binaries
 %XCOPY% "Desktop\bin\%TYPEBUILD%" "%MG_OUTPUT_DESKTOP%" /EXCLUDE:svn_excludes.txt+%CONFIGURATION%_excludes.txt
 pushd "%MG_OUTPUT_DESKTOP%"
