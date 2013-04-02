@@ -392,6 +392,10 @@ namespace OSGeo.MapGuide.Viewer
         /// If <see cref="P:OSGeo.MapGuide.Viewer.IMapViewer.UseRenderMapIfTiledLayersExist"/> is set
         /// to true, this property has no effect.
         /// </summary>
+        /// <remarks>
+        /// As of 2.5, images from RenderDynamicOverlay will include any base layers by default. Using this property
+        /// as a workaround is no longer required. This property remains for compatibility purposes.
+        /// </remarks>
         bool ConvertTiledGroupsToNonTiled { get; set; }
 
         /// <summary>
@@ -400,6 +404,11 @@ namespace OSGeo.MapGuide.Viewer
         /// of any tile caching mechanisms. Setting this property to true nullifies any effect of the 
         /// <see cref="P:OSGeo.MapGuide.Viewer.IMapViewer.ConvertTiledGroupsToNonTiled"/> property
         /// </summary>
+        /// <remarks>
+        /// As of 2.5, images from RenderDynamicOverlay will include any base layers by default. Setting this property to true is no longer required
+        /// unless you still require map images to be rendered with a pre-filled background (which RenderMap() does). This property remains
+        /// for compatibility purposes.
+        /// </remarks>
         bool UseRenderMapIfTiledLayersExist { get; set; }
 
         /// <summary>
