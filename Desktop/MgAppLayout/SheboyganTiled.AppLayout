@@ -13,7 +13,7 @@
     </NameValue>
     <NameValue>
       <Name>UseRenderMapIfTiledLayersExist</Name>
-      <Value>true</Value>
+      <Value>false</Value>
     </NameValue>
     <NameValue>
       <Name>RespectFiniteDisplayScales</Name>
