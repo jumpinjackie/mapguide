@@ -17,7 +17,7 @@
 
 package org.osgeo.mapguide;
 
-class AppThrowable extends Exception
+class AppThrowable extends RuntimeException
 {
     public AppThrowable()
     {
@@ -31,7 +31,7 @@ class AppThrowable extends Exception
     {
         try
         {
-            return ((MgException)this).GetExceptionMessage();
+            return ((MgException)this).getExceptionMessage();
         }
         catch (MgException e)
         {
@@ -43,7 +43,7 @@ class AppThrowable extends Exception
     {
         try
         {
-            System.out.println(((MgException)this).GetStackTrace());
+            System.out.println(((MgException)this).getExceptionStackTrace());
         }
         catch (MgException e)
         {

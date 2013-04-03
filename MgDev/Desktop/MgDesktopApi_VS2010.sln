@@ -67,6 +67,13 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "DesktopDotNetApi", "Desktop
 		{5FE54BF6-2939-46BB-A811-277D46C901C4} = {5FE54BF6-2939-46BB-A811-277D46C901C4}
 	EndProjectSection
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "JavaApiEx", "DesktopUnmanagedApi\JavaApiEx\JavaApiEx.vcxproj", "{C02F44CB-D916-428D-A1A5-04E225A2A4EC}"
+	ProjectSection(ProjectDependencies) = postProject
+		{85882748-DD71-4D2B-9E5A-03AF8C8D91B7} = {85882748-DD71-4D2B-9E5A-03AF8C8D91B7}
+		{CBC0339F-E68B-48BA-9059-945483BEBDCA} = {CBC0339F-E68B-48BA-9059-945483BEBDCA}
+		{C50254F2-654A-48DE-AF5B-20605AEF8D10} = {C50254F2-654A-48DE-AF5B-20605AEF8D10}
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -242,6 +249,14 @@ Global
 		{AB42A48E-8C9C-4D05-826A-1E5B6C457753}.Release|Win32.Build.0 = Release|Win32
 		{AB42A48E-8C9C-4D05-826A-1E5B6C457753}.Release|x64.ActiveCfg = Release|x64
 		{AB42A48E-8C9C-4D05-826A-1E5B6C457753}.Release|x64.Build.0 = Release|x64
+		{C02F44CB-D916-428D-A1A5-04E225A2A4EC}.Debug|Win32.ActiveCfg = Debug|Win32
+		{C02F44CB-D916-428D-A1A5-04E225A2A4EC}.Debug|Win32.Build.0 = Debug|Win32
+		{C02F44CB-D916-428D-A1A5-04E225A2A4EC}.Debug|x64.ActiveCfg = Debug|x64
+		{C02F44CB-D916-428D-A1A5-04E225A2A4EC}.Debug|x64.Build.0 = Debug|x64
+		{C02F44CB-D916-428D-A1A5-04E225A2A4EC}.Release|Win32.ActiveCfg = Release|Win32
+		{C02F44CB-D916-428D-A1A5-04E225A2A4EC}.Release|Win32.Build.0 = Release|Win32
+		{C02F44CB-D916-428D-A1A5-04E225A2A4EC}.Release|x64.ActiveCfg = Release|x64
+		{C02F44CB-D916-428D-A1A5-04E225A2A4EC}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

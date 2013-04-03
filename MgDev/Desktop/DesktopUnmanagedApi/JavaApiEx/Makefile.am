@@ -3,8 +3,8 @@ AUTOMAKE_OPTIONS = foreign
 EXTRA_DIST = getclassid.code \
              catchall.code \
              java.i \
-             JavaApi.rc \
-             JavaApi.vcproj \
+             JavaApiEx.rc \
+             JavaApiEx.vcproj \
              org/osgeo/mapguide/AppThrowable.java \
              org/osgeo/mapguide/MgBase64.java \
              org/osgeo/mapguide/MgLocalizer.java
@@ -26,13 +26,13 @@ INCLUDES = -I../../../Common/MdfModel \
 
 BUILT_SOURCES = MgApi_wrap.cpp
 
-lib_LTLIBRARIES = libMapGuideJavaApi.la
+lib_LTLIBRARIES = libMapGuideJavaApiEx.la
 
-nodist_libMapGuideJavaApi_la_SOURCES = MgApi_wrap.cpp
+nodist_libMapGuideJavaApiEx_la_SOURCES = MgApi_wrap.cpp
 
 AM_CXXFLAGS = @CXXFLAGS@ -fno-strict-aliasing -DJAVA
 
-libMapGuideJavaApi_la_LIBADD = \
+libMapGuideJavaApiEx_la_LIBADD = \
     -lACE \
     -lMgFoundation \
     -lMgGeometry \
@@ -44,7 +44,7 @@ libMapGuideJavaApi_la_LIBADD = \
     -lxerces-c \
     -lMgWebApp
 
-libMapGuideJavaApi_la_LDFLAGS = -release $(PACKAGE_VERSION) \
+libMapGuideJavaApiEx_la_LDFLAGS = -release $(PACKAGE_VERSION) \
     -L../../../Oem/ACE/ACE_wrappers/ace \
     -L../../../Common/MdfModel \
     -L../../../Common/MdfParser \
@@ -461,8 +461,9 @@ MgApi_wrap.cpp : \
 	../../../BuildTools/WebTools/IMake/Linux/IMake ../MapGuideApi/MapGuideApiGen.xml Java
 	cp -f java.i language.i
 	../../../BuildTools/WebTools/IMake/Linux/IMake ../MapGuideApi/Constants.xml Java .
-	../../../Oem/SWIGEx/Linux/swig -dllname MapGuideJavaApi -c++ -java -DJAVA -package org.osgeo.mapguide -root MgObject -baseexception MgException -clsidcode getclassid.code -clsiddata m_cls_id -catchallcode catchall.code -dispose "((MgDisposable*)arg1)->Release()" -rethrow "e->Raise();" -nodefault -noconstants -module MapGuideJavaApi -o MgApi_wrap.cpp -lib ../../../Oem/SWIGEx/Lib MapGuideApi.i
+	../../../Oem/SWIGEx/Linux/swig -dllname MapGuideJavaApiEx -c++ -java -mgjavanothrow -mgjavacasing -DJAVA -package org.osgeo.mapguide -root MgObject -baseexception MgException -clsidcode getclassid.code -clsiddata m_cls_id -catchallcode catchall.code -dispose "((MgDisposable*)arg1)->Release()" -rethrow "e->Raise();" -nodefault -noconstants -module MapGuideJavaApiEx -o MgApi_wrap.cpp -lib ../../../Oem/SWIGEx/Lib MapGuideApi.i
 	rm -f org/osgeo/mapguide/*.class
 	mv -f *.java org/osgeo/mapguide
 	$(JAVA_HOME)/bin/javac -classpath . org/osgeo/mapguide/*.java
-	$(JAVA_HOME)/bin/jar cf ../WEB-INF/lib/MapGuideApi.jar org/osgeo/mapguide/*.class
+	$(JAVA_HOME)/bin/jar cf ../WEB-INF/lib/MapGuideApiEx.jar org/osgeo/mapguide/*.class
+	$(JAVA_HOME)/bin/jar cf ../WEB-INF/lib/MapGuideApiEx-sources.jar org/osgeo/mapguide/*.java

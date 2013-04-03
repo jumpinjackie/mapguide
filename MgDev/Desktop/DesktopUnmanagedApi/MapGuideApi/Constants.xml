@@ -1,14 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!--
-NOTE: Sadly, we cannot have utilise the partitioned assembly approach of the
-current MapGuide / AutoCAD Map API introduced in MGOS 2.2
 
-The reason is simply that the Foundation/Geometry/PlatformBase swig interface
-files use the original header file structure of the original MGOS source tree
-
-Since we're not using the MGOS source tree, we can't use the existing
-Foundation/Geometry/PlatformBase swig interfaces 
--->
 <Parameters>
 
 <!--
@@ -16,6 +7,7 @@ Foundation/Geometry/PlatformBase swig interfaces
 -->
 <PHPTypeReplacements>
     <TypeReplacement oldtype="STRING" newtype="" />
+    <TypeReplacement oldtype="INT8" newtype="" />
     <TypeReplacement oldtype="INT16" newtype="" />
     <TypeReplacement oldtype="INT32" newtype="" />
     <TypeReplacement oldtype="int" newtype="" />
@@ -37,7 +29,7 @@ Foundation/Geometry/PlatformBase swig interfaces
 </CSharpTypeReplacements>
 <JavaTypeReplacements>
     <TypeReplacement oldtype="STRING" newtype="String" />
-    <TypeReplacement oldtype="INT8" newtype="byte" />
+    <TypeReplacement oldtype="INT8" newtype="short" />
     <TypeReplacement oldtype="INT16" newtype="short" />
     <TypeReplacement oldtype="INT32" newtype="int" />
     <TypeReplacement oldtype="int" newtype="int" />
@@ -52,7 +44,7 @@ Foundation/Geometry/PlatformBase swig interfaces
 -->
 <Inline>
 //
-//  Copyright (C) 2004-2010 by Autodesk, Inc.
+//  Copyright (C) 2004-2011 by Autodesk, Inc.
 //
 //  This library is free software; you can redistribute it and/or
 //  modify it under the terms of version 2.1 of the GNU Lesser
@@ -73,61 +65,63 @@ Foundation/Geometry/PlatformBase swig interfaces
 <Package>org.osgeo.mapguide</Package>
 
 <Classes>
-    <Class name="MgServiceType" />
-    <Class name="MgRepositoryType" />
-    <Class name="MgResourceType" />
-    <Class name="MgResourceTag" />
-    <Class name="MgResourceDataName" />
-    <Class name="MgResourceDataType" />
-    <Class name="MgResourcePermission" />
-    <Class name="MgMimeType" />
-    <Class name="MgPropertyType" />
-    <Class name="MgPageUnitsType" />
-    <Class name="MgCoordinateSpace" />
-    <Class name="MgGeometryEntityType" />
-    <Class name="MgCoordinateDimension" />
-    <Class name="MgGeometricPathInstructionType" />
-    <Class name="MgGeometryType" />
-    <Class name="MgGeometryComponentType" />
-    <Class name="MgLayerGroupType" />
-    <Class name="MgLayerType" />
-    <Class name="MgFeatureGeometricType" />
-    <Class name="MgReaderType" />
-    <Class name="MgOrderingOption" />
-    <Class name="MgFeatureSpatialOperations" />
-    <Class name="MgFeatureCommandType" />
-    <Class name="MgFeaturePropertyType" />
-    <Class name="MgObjectPropertyType" />
-    <Class name="MgParameterDirection" />
-    <Class name="MgSpatialContextExtentType" />
-    <Class name="MgLogFileType" />
-    <Class name="MgServerInformationProperties" />
-    <Class name="MgCoordinateSystemCodeFormat" />
-    <Class name="MgCoordinateSystemErrorCode" />
-    <Class name="MgCoordinateSystemGeodeticTransformationMethod" />
-    <Class name="MgCoordinateSystemGridOrientation" />
-    <Class name="MgCoordinateSystemGridSpecializationType" />
-    <Class name="MgCoordinateSystemMgrsGridLevel" />
-    <Class name="MgCoordinateSystemMgrsLetteringScheme" />
-    <Class name="MgCoordinateSystemMgrsGridSquarePosition" />
-    <Class name="MgCoordinateSystemProjectionCode" />
-    <Class name="MgCoordinateSystemProjectionFormatType" />
-    <Class name="MgCoordinateSystemProjectionLogicalType" />
-    <Class name="MgCoordinateSystemProjectionParameterType" />
-    <Class name="MgCoordinateSystemType" />
-    <Class name="MgCoordinateSystemUnitCode" />
-    <Class name="MgCoordinateSystemUnitType" />
-    <Class name="MgCoordinateSystemWktFlavor" />
-    <Class name="MgCoordinateSystemGeodeticTransformDefType" />
-    <Class name="MgCoordinateSystemGeodeticAnalyticalTransformationMethod" />
-    <Class name="MgCoordinateSystemGeodeticMultipleRegressionTransformationMethod" />
-    <Class name="MgCoordinateSystemGeodeticTransformGridFileFormat" />
-    <Class name="MgMapPlotInstruction" />
-    <Class name="MgUnitType" />
-    <Class name="MgPackageStatus" />
-    <Class name="MgRasterDataModelType" />
-    <Class name="MgImageFormats" />
-    <Class name="MgConfigProperties" />
+  <Class name="MgServiceType" />
+  <Class name="MgUser" />
+  <Class name="MgGroup" />
+  <Class name="MgRole" />
+  <Class name="MgRepositoryType" />
+  <Class name="MgResourceType" />
+  <Class name="MgResourceTag" />
+  <Class name="MgResourceDataName" />
+  <Class name="MgResourceDataType" />
+  <Class name="MgResourcePermission" />
+  <Class name="MgMimeType" />
+  <Class name="MgPropertyType" />
+  <Class name="MgPageUnitsType" />
+  <Class name="MgCoordinateSpace" />
+  <Class name="MgGeometryEntityType" />
+  <Class name="MgCoordinateDimension" />
+  <Class name="MgGeometricPathInstructionType" />
+  <Class name="MgGeometryType" />
+  <Class name="MgGeometryComponentType" />
+  <Class name="MgLayerGroupType" />
+  <Class name="MgLayerType" />
+  <Class name="MgFeatureGeometricType" />
+  <Class name="MgReaderType" />
+  <Class name="MgOrderingOption" />
+  <Class name="MgFeatureSpatialOperations" />
+  <Class name="MgFeatureCommandType" />
+  <Class name="MgFeaturePropertyType" />
+  <Class name="MgObjectPropertyType" />
+  <Class name="MgParameterDirection" />
+  <Class name="MgSpatialContextExtentType" />
+  <Class name="MgConfigProperties" />
+  <Class name="MgLogFileType" />
+  <Class name="MgServerInformationProperties" />
+  <Class name="MgCoordinateSystemCodeFormat" />
+  <Class name="MgCoordinateSystemErrorCode" />
+  <Class name="MgCoordinateSystemGeodeticTransformationMethod" />
+  <Class name="MgCoordinateSystemGridOrientation" />
+  <Class name="MgCoordinateSystemGridSpecializationType" />
+  <Class name="MgCoordinateSystemMgrsGridLevel" />
+  <Class name="MgCoordinateSystemMgrsLetteringScheme" />
+  <Class name="MgCoordinateSystemMgrsGridSquarePosition" />
+  <Class name="MgCoordinateSystemProjectionCode" />
+  <Class name="MgCoordinateSystemProjectionFormatType" />
+  <Class name="MgCoordinateSystemProjectionLogicalType" />
+  <Class name="MgCoordinateSystemProjectionParameterType" />
+  <Class name="MgCoordinateSystemType" />
+  <Class name="MgCoordinateSystemUnitCode" />
+  <Class name="MgCoordinateSystemUnitType" />
+  <Class name="MgCoordinateSystemWktFlavor" />
+  <Class name="MgCoordinateSystemGeodeticTransformDefType" />
+  <Class name="MgCoordinateSystemGeodeticAnalyticalTransformationMethod" />
+  <Class name="MgCoordinateSystemGeodeticMultipleRegressionTransformationMethod" />
+  <Class name="MgCoordinateSystemGeodeticTransformGridFileFormat" />
+  <Class name="MgMapPlotInstruction" />
+  <Class name="MgUnitType" />
+  <Class name="MgPackageStatus" />
+  <Class name="MgRasterDataModelType" />
 </Classes>
 
 <!--
@@ -137,6 +131,7 @@ Foundation/Geometry/PlatformBase swig interfaces
 <Headers>
 
     <!-- API -->
+
     <Header path="../../../Common/Foundation/Data/FeaturePropertyType.h" />
     <Header path="../../../Common/Foundation/Data/MimeType.h" />
     <Header path="../../../Common/Foundation/Data/PropertyType.h" />
@@ -181,10 +176,6 @@ Foundation/Geometry/PlatformBase swig interfaces
     <Header path="../../../Common/Geometry/CoordinateSystem/CoordinateSystemGeodeticMultipleRegressionTransformationMethod.h" />
     <Header path="../../../Common/Geometry/CoordinateSystem/CoordinateSystemGeodeticTransformGridFileFormat.h" />
 
-    <Header path="../../MgDesktop/Services/ImageFormats.h" />
-    <Header path="../../MgDesktop/Services/Rendering/MapPlotInstruction.h" />
-    <Header path="../../MgDesktop/Services/Rendering/UnitType.h" />
-    <Header path="../../MgDesktop/System/ConfigProperties.h" />
 </Headers>
 
 </Parameters>
