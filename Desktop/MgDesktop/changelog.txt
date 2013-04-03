@@ -1,3 +1,16 @@
+API Changelog:
+
+ - New experimental Java wrapper API using same SWIG configuration and enhancements introduced with MapGuide RFC 129
+ - New behavior flag (8 = RenderBaseLayers) for MgdRenderingService::RenderDynamicOverlay, allows base layers to be rendered to a map overlay image
+
+Viewer Changelog:
+
+ - Base Layers now included by default for any map overlay images rendered. Eliminates the need to use the UseRenderMapIfTiledLayersExist or ConvertTiledGroupsToNonTiled viewer properties and allows for pre-rendering hooks to be used with Tiled Maps.
+ - New overload of SelectByGeometry() that allows for a custom selection callback to be specified. This bypasses the normal selection notification mechanisms.
+
+2.4.0.7152 (Oct 24 2012)
+========================
+
 Viewer Changelog:
 
  - Query component now supports a LayerList property allowing the list of queryable layers in the UI to be restricted to what is in this list.
