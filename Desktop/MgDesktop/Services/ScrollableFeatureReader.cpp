@@ -88,3 +88,8 @@ UINT32 MgdScrollableFeatureReader::IndexOf(MgPropertyCollection* key)
     MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgdScrollableFeatureReader::IndexOf")
     return ret;
 }
+
+FdoIScrollableFeatureReader* MgdScrollableFeatureReader::GetInternalReader()
+{
+    return FDO_SAFE_ADDREF(m_scrollReader); 
+}

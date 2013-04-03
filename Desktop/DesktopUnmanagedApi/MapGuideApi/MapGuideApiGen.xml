@@ -3,17 +3,13 @@
 <!--
    Module section.
 -->
-<Module name="MapGuideDesktopApi" />
-
-<!--
-   Custom file path.
--->
-<CustomFile path="./DesktopCustom" />
+<Module name="MapGuideApi" />
 
 <!--
    Target section.
 -->
-<Target path="./MapGuideDesktopApi.i" />
+<Target path="./MapGuideApi.i" />
+<DocTarget path="./MapGuideApi_Doc.i" />
 
 <!--
    C++ inline section.
@@ -26,6 +22,8 @@
 #include &lt;string&gt;
 #include &lt;map&gt;
 
+#include "Foundation.h"
+#include "GeometryCommon.h"
 #include "MgDesktop.h"
 
 #if defined(PHP) || defined(JAVA)
@@ -47,33 +45,34 @@ typedef wchar_t* STRINGPARAM;
    Swig inline section.
 -->
 <SwigInline>
-    %include "language.i"   //typemaps specific for each language
-    %include "../../MgDesktop/System/ClassId.h"
-    %include "../../../Common/Foundation/System/FoundationClassId.h"
-    %include "../../../Common/Geometry/GeometryClassId.h"
-    %include "../../../Common/PlatformBase/Services/PlatformBaseClassId.h"
+  %include "MapGuideApi_Doc.i" //translated doxygen fragments
+  %include "language.i"   //typemaps specific for each language
+  %include "../../../Common/Foundation/System/FoundationClassId.h"
+  %include "../../../Common/Geometry/GeometryClassId.h"
+  %include "../../../Common/PlatformBase/Services/PlatformBaseClassId.h"
+  %include "../../MgDesktop/System/ClassId.h"
 
-    #if defined(PHPSWIG)
-    // We force UTF-8 encoding for PHP
-    typedef char*         STRINGPARAM;
-    typedef char*         STRING;
-    typedef char*         BYTE_ARRAY_IN;
-    typedef char*         BYTE_ARRAY_OUT;
-    typedef unsigned char BYTE;
-    #elseif defined(JAVA)
-    typedef std::wstring  STRINGPARAM;
-    typedef signed char   BYTE;  //mapped to byte in Java
-    #else // .Net
-    typedef char*         BYTE_ARRAY_IN;
-    typedef char*         BYTE_ARRAY_OUT;
-    typedef unsigned char BYTE;    //mapped to byte in C#
-    #endif
+#if defined(PHPSWIG)
+  // We force UTF-8 encoding for PHP
+  typedef char*         STRINGPARAM;
+  typedef char*         STRING;
+  typedef char*         BYTE_ARRAY_IN;
+  typedef char*         BYTE_ARRAY_OUT;
+  typedef unsigned char BYTE;
+#elseif defined(JAVA)
+  typedef std::wstring  STRINGPARAM;
+  typedef signed char   BYTE;  //mapped to byte in Java
+#else // .Net
+  typedef char*         BYTE_ARRAY_IN;
+  typedef char*         BYTE_ARRAY_OUT;
+  typedef unsigned char BYTE;    //mapped to byte in C#
+#endif
 
-    typedef int           STATUS;
-    typedef short         INT8;
-    typedef short         INT16;
-    typedef int           INT32;
-    typedef int           UINT32;
+  typedef int           STATUS;
+  typedef short         INT8;
+  typedef short         INT16;
+  typedef int           INT32;
+  typedef int           UINT32;
 
 </SwigInline>
 
@@ -344,9 +343,8 @@ typedef wchar_t* STRINGPARAM;
     <Header path="../../../Common/PlatformBase/MapLayer/MapCollection.h" />
     <Header path="../../../Common/PlatformBase/MapLayer/ReadOnlyLayerCollection.h" />
     <Header path="../../../Common/PlatformBase/MapLayer/SelectionBase.h" />
-    
-    <!-- MapGuideDesktop classes -->
 
+    <!-- mg-desktop classes -->
     <Header path="../../MgDesktop/Exception/AliasNotFoundException.h" />
     <Header path="../../MgDesktop/Exception/ConnectionFailedException.h" />
     <Header path="../../MgDesktop/Exception/DuplicateParameterException.h" />
@@ -355,12 +353,20 @@ typedef wchar_t* STRINGPARAM;
     <Header path="../../MgDesktop/Exception/DwfSectionResourceNotFoundException.h" />
     <Header path="../../MgDesktop/Exception/InvalidDwfPackageException.h" />
     <Header path="../../MgDesktop/Exception/InvalidDwfSectionException.h" />
+    <Header path="../../MgDesktop/Exception/InvalidFeatureSourceException.h" />
+    <Header path="../../MgDesktop/Exception/InvalidLogEntryException.h" />
+    <Header path="../../MgDesktop/Exception/InvalidPrintLayoutFontSizeUnitsException.h" />
+    <Header path="../../MgDesktop/Exception/InvalidPrintLayoutPositionUnitsException.h" />
+    <Header path="../../MgDesktop/Exception/InvalidPrintLayoutSizeUnitsException.h" />
     <Header path="../../MgDesktop/Exception/ParameterNotFoundException.h" />
+    <Header path="../../MgDesktop/Exception/StylizeLayerFailedException.h" />
 
     <Header path="../../MgDesktop/Services/DataReader.h" />
     <Header path="../../MgDesktop/Services/DrawingService.h" />
     <Header path="../../MgDesktop/Services/FeatureReader.h" />
     <Header path="../../MgDesktop/Services/FeatureService.h" />
+    <Header path="../../MgDesktop/Services/MappingService.h" />
+    <Header path="../../MgDesktop/Services/ProfilingService.h" />
     <Header path="../../MgDesktop/Services/RenderingService.h" />
     <Header path="../../MgDesktop/Services/ResourceService.h" />
     <Header path="../../MgDesktop/Services/ScrollableFeatureReader.h" />
@@ -371,15 +377,13 @@ typedef wchar_t* STRINGPARAM;
 
     <Header path="../../MgDesktop/Services/Feature/RdbmsFeatureSourceParams.h" />
 
-    <Header path="../../MgDesktop/Services/Rendering/CustomLogoInfo.h" />
-    <Header path="../../MgDesktop/Services/Rendering/CustomTextInfo.h" />
     <Header path="../../MgDesktop/Services/Rendering/DwfVersion.h" />
+    <Header path="../../MgDesktop/Services/Rendering/FeatureInformation.h" />
     <Header path="../../MgDesktop/Services/Rendering/Layout.h" />
     <Header path="../../MgDesktop/Services/Rendering/MapPlot.h" />
     <Header path="../../MgDesktop/Services/Rendering/DwfVersion.h" />
     <Header path="../../MgDesktop/Services/Rendering/MapPlotCollection.h" />
     <Header path="../../MgDesktop/Services/Rendering/PlotSpecification.h" />
-    <Header path="../../MgDesktop/Services/Rendering/PrintLayout.h" />
     <Header path="../../MgDesktop/Services/Rendering/RenderingOptions.h" />
 
     <Header path="../../MgDesktop/System/PlatformInit.h" />

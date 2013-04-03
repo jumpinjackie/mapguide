@@ -94,3 +94,5 @@
     jenv->ReleaseByteArrayElements($input, bytes$argnum, JNI_COMMIT);
 }
 %typemap(javain) BYTE_ARRAY_OUT "$javainput"
+
+%include "javaextensions.i"

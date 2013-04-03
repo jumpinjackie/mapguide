@@ -1,9 +1,9 @@
 #ifndef DESKTOP_SCROLLABLE_FEATURE_READER_H
 #define DESKTOP_SCROLLABLE_FEATURE_READER_H
 
-#include "Fdo.h"
 #include "MgDesktop.h"
 
+class FdoIScrollableFeatureReader;
 class MgdFeatureConnection;
 
 // The MgdScrollableFeatureReader is an extension to the MgFeatureReader 
@@ -39,7 +39,7 @@ protected:
 	virtual void Dispose() { delete this; }
 
 INTERNAL_API:
-    FdoIScrollableFeatureReader* GetInternalReader() { return FDO_SAFE_ADDREF(m_scrollReader); }
+    FdoIScrollableFeatureReader* GetInternalReader();
 
 private:
 	FdoIScrollableFeatureReader* m_scrollReader;
