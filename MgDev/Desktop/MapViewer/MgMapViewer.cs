@@ -1163,14 +1163,31 @@ namespace OSGeo.MapGuide.Viewer
 
         #endregion
 
+        /// <summary>
+        /// Renders the selected feature(s)
+        /// </summary>
+        const int BEHAVIOR_RENDER_SELECTION = 1;
+        /// <summary>
+        /// Renders the dynamic layers on the map
+        /// </summary>
+        const int BEHAVIOR_RENDER_LAYERS = 2;
+        /// <summary>
+        /// Renders the selected feature(s) even if they are outside the current scale
+        /// </summary>
+        const int BEHAVIOR_KEEP_SELECTION = 4;
+        /// <summary>
+        /// Renders the base layers on the map
+        /// </summary>
+        const int BEHAVIOR_RENDER_BASE_LAYERS = 8; //New in 2.5
+
         static MgViewerRenderingOptions CreateMapRenderingOptions(short red, short green, short blue)
         {
-            return new MgViewerRenderingOptions("PNG", 2, new MgColor(red, green, blue)); //NOXLATE
+            return new MgViewerRenderingOptions("PNG", BEHAVIOR_RENDER_LAYERS | BEHAVIOR_RENDER_BASE_LAYERS, new MgColor(red, green, blue)); //NOXLATE
         }
 
         static MgViewerRenderingOptions CreateSelectionRenderingOptions(short red, short green, short blue)
         {
-            return new MgViewerRenderingOptions("PNG", (1 | 4), new MgColor(red, green, blue)); //NOXLATE
+            return new MgViewerRenderingOptions("PNG", (BEHAVIOR_RENDER_SELECTION | BEHAVIOR_KEEP_SELECTION), new MgColor(red, green, blue)); //NOXLATE
         }
 
         public void LoadMap(MgMapBase map)
