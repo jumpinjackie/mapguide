@@ -7,6 +7,7 @@ Dictionaries
 Resources
 Schema
 OSGeo.MapGuide.Desktop.dll
+OSGeo.MapGuide.Desktop.xml
 OSGeo.MapGuide.Viewer.dll
 OSGeo.MapGuide.Viewer.Desktop.dll
 OSGeo.MapGuide.Viewer.xml
@@ -41,3 +42,6 @@ SampleExtension.dll
 Sheboygan.AppLayout
 SheboyganTiled.AppLayout
 MgAppLayout.exe
+MapGuideDesktopApi.jar
+MapGuideDesktopApiJNI.dll
+MapGuideDesktopApi-sources.jar

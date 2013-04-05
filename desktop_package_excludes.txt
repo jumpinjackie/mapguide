@@ -18,6 +18,7 @@ OSGeo.MapGuide.PlatformBase.dll
 PlatformBaseUnmanagedApi.dll
 xerces-c_3_1mg.dll
 OSGeo.MapGuide.Desktop.dll
+OSGeo.MapGuide.Desktop.xml
 OSGeo.MapGuide.Viewer.dll
 OSGeo.MapGuide.Viewer.Desktop.dll
 OSGeo.MapGuide.Viewer.xml
@@ -37,3 +38,6 @@ Sheboygan.AppLayout
 SheboyganTiled.AppLayout
 SampleExtension.dll
 MgAppLayout.exe
+MapGuideDesktopApi.jar
+MapGuideDesktopApiJNI.dll
+MapGuideDesktopApi-sources.jar
