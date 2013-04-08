@@ -32,6 +32,7 @@ String sessionId = "";
 String orgSessionId = "";
 String username = "";
 String password = "";
+String startupScriptCode = "";
 String locale = "";
 String mapName = "";
 int curFlyout = 0;
@@ -101,6 +102,12 @@ NameValueCollection cmds = null;
         MgWebInformationPane infoPane = webLayout.GetInformationPane();
         MgWebTaskBar taskBar = taskPane.GetTaskBar();
         String mapDef = webLayout.GetMapDefinition();
+
+        startupScriptCode = webLayout.GetStartupScript();
+        String selectionColor = webLayout.GetSelectionColor();
+        String mapImgFormat = webLayout.GetMapImageFormat();
+        String selImgFormat = webLayout.GetSelectionImageFormat();
+        int pointBuffer = webLayout.GetPointSelectionBuffer();
 
         bool showTaskPane = taskPane.IsVisible();
         bool showTaskBar = taskBar.IsVisible();
@@ -449,6 +456,10 @@ NameValueCollection cmds = null;
                         webLayout.GetHyperlinkTarget().ToString(NumberFormatInfo.InvariantInfo),
                         webLayout.GetHyperlinkTargetFrame(),
                         webLayout.IsZoomControlVisible()? "1": "0",
+                        selectionColor,
+                        mapImgFormat,
+                        selImgFormat,
+                        pointBuffer.ToString(NumberFormatInfo.InvariantInfo),
                         sessionParam,
                         vpath + "formframe.aspx",
                         taskBarHeight.ToString(NumberFormatInfo.InvariantInfo),
@@ -476,6 +487,10 @@ NameValueCollection cmds = null;
                         webLayout.GetHyperlinkTarget().ToString(NumberFormatInfo.InvariantInfo),
                         webLayout.GetHyperlinkTargetFrame(),
                         webLayout.IsZoomControlVisible()? "1": "0",
+                        selectionColor,
+                        mapImgFormat,
+                        selImgFormat,
+                        pointBuffer.ToString(NumberFormatInfo.InvariantInfo),
                         sessionParam,
                         srcTaskFrame,
                         vpath + "formframe.aspx",
@@ -517,6 +532,7 @@ NameValueCollection cmds = null;
                     userCode,
                     taskItemTexts,
                     selAwareCmds,
+                    startupScriptCode,
                     vpath + "quickplotpanel.aspx",
                     vpath + "measureui.aspx",
                     vpath + "searchprompt.aspx",

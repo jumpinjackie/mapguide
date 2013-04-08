@@ -339,15 +339,15 @@ var digitizing = false;
 var cancelTgt;
 var locale = '%s';
 var openHlinkText = macOS ? "__#OPENHYPERLINKMAC#__" : "__#OPENHYPERLINK#__";
-var selectionColor = '0x0000FFFF'; // Blue
 var lastLegendScaleUpdate = curScale;
 var featureRequestUrl = '%s';
 %s
 var isAlertShow = false;
-var mapImgFormat = "PNG";
-var selectionImgFormat = "PNG";
+var selectionColor = '0x%s';
+var mapImgFormat = "%s";
+var selectionImgFormat = "%s";
 var queryVariant = "INTERSECTS";
-var bufferPx = 2;
+var bufferPx = %s;
 
 var simulateCirclePoints = [];
 var simulateCircleHalfPointNumber = 40;

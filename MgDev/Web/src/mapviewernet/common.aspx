@@ -278,9 +278,14 @@ String ValidateMapName(String proposedMapName)
 
 String ValidateColorString(String proposedColorString)
 {
+    return ValidateColorString(proposedColorString, 6);
+}
+
+String ValidateColorString(String proposedColorString, int charCount)
+{
     String validColorString = "000000";
     if (proposedColorString != null &&
-        System.Text.RegularExpressions.Regex.IsMatch(proposedColorString, "^[A-Fa-f0-9]{6}$"))
+        System.Text.RegularExpressions.Regex.IsMatch(proposedColorString, "^[A-Fa-f0-9]{" + charCount + "}$"))
     {
         validColorString = proposedColorString;
     }

@@ -28,6 +28,7 @@ $sessionId = '';
 $orgSessionId = '';
 $username = '';
 $password = '';
+$startupScriptCode = '';
 $curFlyout = 0;
 $cmds = array();
 
@@ -120,6 +121,12 @@ function BuildViewer($forDwf = true)
         $infoPane = $webLayout->GetInformationPane();
         $taskBar = $taskPane->GetTaskBar();
         $mapDef = $webLayout->GetMapDefinition();
+        
+        $startupScriptCode = $webLayout->GetStartupScript();
+        $selectionColor = $webLayout->GetSelectionColor();
+        $mapImgFormat = $webLayout->GetMapImageFormat();
+        $selImgFormat = $webLayout->GetSelectionImageFormat();
+        $pointBuffer = $webLayout->GetPointSelectionBuffer();
 
         $showTaskPane = $taskPane->IsVisible();
         $showTaskBar = $taskBar->IsVisible();
@@ -453,6 +460,10 @@ function BuildViewer($forDwf = true)
                                     $locale,
                                     $webLayout->GetHyperlinkTarget(), $webLayout->GetHyperlinkTargetFrame(),
                                     $webLayout->IsZoomControlVisible()? 1: 0,
+                                    $selectionColor,
+                                    $mapImgFormat,
+                                    $selImgFormat,
+                                    $pointBuffer,
                                     $sessionParam,
                                     $vpath . "formframe.php",
                                     $taskbarHeight+1, $srcTaskBar,
@@ -477,6 +488,10 @@ function BuildViewer($forDwf = true)
                                     $webLayout->GetHyperlinkTarget(),
                                     $webLayout->GetHyperlinkTargetFrame(),
                                     $webLayout->IsZoomControlVisible()? 1: 0,
+                                    $selectionColor,
+                                    $mapImgFormat,
+                                    $selImgFormat,
+                                    $pointBuffer,
                                     $sessionParam,
                                     $srcTaskFrame,
                                     $vpath . "formframe.php",
@@ -516,6 +531,7 @@ function BuildViewer($forDwf = true)
                     $userCode,
                     $taskItemTexts,
                     $selAwareCmds,
+                    $startupScriptCode,
                     $vpath . "quickplotpanel.php",
                     $vpath . "measureui.php",
                     $vpath . "searchprompt.php",

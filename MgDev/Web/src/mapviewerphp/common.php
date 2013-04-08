@@ -241,10 +241,10 @@ function ValidateMapName($proposedMapName)
     return $validMapName;
 }
 
-function ValidateColorString($proposedColorString)
+function ValidateColorString($proposedColorString, $digits = 6)
 {
     $validColorString = "000000";
-    if ($proposedColorString != null && preg_match('/^[A-Fa-f0-9]{6}$/', $proposedColorString))
+    if ($proposedColorString != null && preg_match('/^[A-Fa-f0-9]{'.$digits.'}$/', $proposedColorString))
     {
         $validColorString = $proposedColorString;
     }

@@ -32,6 +32,10 @@ $password = '';
 $hlTgt = '';
 $hlTgtName = '';
 $showSlider = true;
+$selectionColor = '0000FFFF';
+$mapImgFormat = 'PNG';
+$selImgFormat = 'PNG';
+$pointBufferSize = 2;
 
 GetRequestParameters();
 
@@ -144,6 +148,10 @@ else
                     $locale,
                     $vpath . "getselectedfeatures.php",
                     $scaleCreationCode,
+                    $selectionColor,
+                    $mapImgFormat,
+                    $selImgFormat,
+                    $pointBufferSize,
                     $vpath . "ajaxviewerabout.php",
                     $vpath . "legendctrl.php",
                     urlencode($mapName),
@@ -166,7 +174,7 @@ function GetParameters($params)
     global $mapDefinition, $type;
     global $infoWidth, $showLegend, $showProperties, $sessionId;
     global $locale, $hlTgt, $hlTgtName, $showSlider;
-
+    global $selectionColor, $mapImgFormat, $selImgFormat, $pointBufferSize;
 
     $sessionId = ValidateSessionId(GetParameter($params, 'SESSION'));
     $locale = ValidateLocaleString(GetParameter($params, 'LOCALE'));
@@ -178,6 +186,10 @@ function GetParameters($params)
     $showSlider = (GetIntParameter($params, 'SHOWSLIDER') == 1);
     $infoWidth = GetIntParameter($params, 'INFOWIDTH');
     $type = GetParameter($params, 'TYPE');
+    $selectionColor = ValidateColorString(GetParameter($params, 'SELCOLOR'), 8);
+    $mapImgFormat = GetParameter($params, 'MAPIMGFORMAT');
+    $selImgFormat = GetParameter($params, 'SELIMGFORMAT');
+    $pointBufferSize = GetIntParameter($params, 'POINTBUFFERSIZE');
 }
 
 function GetRequestParameters()

@@ -64,6 +64,51 @@ PUBLISHED_API:
 
     ///////////////////////////////////////////////////////////////////////////
     /// <summary>
+    /// Returns the selection color in HTML RGBA format
+    /// </summary>
+    /// <returns>
+    /// The selection color in HTML RGBA format
+    /// </returns>
+    STRING GetSelectionColor();
+
+    ///////////////////////////////////////////////////////////////////////////
+    /// <summary>
+    /// Returns the point selection buffer size in pixels
+    /// </summary>
+    /// <returns>
+    /// The point selection buffer size in pixels
+    /// </returns>
+    INT32 GetPointSelectionBuffer();
+
+    ///////////////////////////////////////////////////////////////////////////
+    /// <summary>
+    /// Returns the map image format
+    /// </summary>
+    /// <returns>
+    /// The map image format
+    /// </returns>
+    STRING GetMapImageFormat();
+
+    ///////////////////////////////////////////////////////////////////////////
+    /// <summary>
+    /// Returns the selection overlay image format
+    /// </summary>
+    /// <returns>
+    /// The selection overlay image format
+    /// </returns>
+    STRING GetSelectionImageFormat();
+
+    ///////////////////////////////////////////////////////////////////////////
+    /// <summary>
+    /// Returns the startup script code that is executed when the viewer has loaded
+    /// </summary>
+    /// <returns>
+    /// The startup script code
+    /// </returns>
+    STRING GetStartupScript();
+
+    ///////////////////////////////////////////////////////////////////////////
+    /// <summary>
     /// Returns the initial scale of the view. Return -1. if scale is not set
     /// </summary>
     /// <returns>
@@ -382,6 +427,11 @@ protected:
     STRING       m_title;
     STRING       m_mapDefinition;
     bool         m_enablePingServer;
+    STRING       m_mapImageFormat;
+    STRING       m_selectionImageFormat;
+    INT32        m_pointPixelBuffer;
+    STRING       m_selectionColor;
+    STRING       m_startupScript;
     INT32        m_hyperlinkTarget;
     STRING       m_hyperlinkTargetFrame;
     double       m_scale;

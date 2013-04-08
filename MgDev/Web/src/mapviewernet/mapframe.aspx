@@ -35,6 +35,10 @@ String sessionId;
 String type;
 String hlTgt;
 String hlTgtName;
+String selectionColor;
+String mapImgFormat;
+String selImgFormat;
+int pointBufferSize;
 </script>
 
 <%
@@ -180,6 +184,10 @@ String hlTgtName;
                         locale,
                         vpath + "getselectedfeatures.aspx",
                         scaleCreationCode,
+                        selectionColor,
+                        mapImgFormat,
+                        selImgFormat,
+                        pointBufferSize.ToString(NumberFormatInfo.InvariantInfo),
                         vpath + "ajaxviewerabout.aspx",
                         vpath + "legendctrl.aspx",
                         HttpUtility.UrlEncode(mapName),
@@ -225,8 +233,13 @@ void GetParameters(NameValueCollection parameters)
     showProperties = GetIntParameter(parameters, "SHOWPROP");
     showSlider = GetIntParameter(parameters, "SHOWSLIDER");
 
+    selectionColor = ValidateColorString(GetParameter(parameters, "SELCOLOR"), 8);
+    mapImgFormat = GetParameter(parameters, "MAPIMGFORMAT");
+    selImgFormat = GetParameter(parameters, "SELIMGFORMAT");
+    pointBufferSize = GetIntParameter(parameters, "POINTBUFFERSIZE");
+
     mapDefinition = ValidateResourceId(GetParameter(parameters, "MAPDEFINITION"));
-    }
+}
 
 String IntToString(int number)
 {

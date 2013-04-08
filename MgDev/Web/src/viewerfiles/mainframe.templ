@@ -169,6 +169,10 @@ var taskItemTexts = new Array(%s);
 var selectionAwareCmds = new Array();
 %s
 
+function StartupFunc() {
+%s
+}
+
 // public functions -----------------------------------------------
 //
 
@@ -443,6 +447,7 @@ function OnMapLoaded()
     DisplayMapSize();
     //ping server
     pingServerFailTime = 0;
+    StartupFunc();
     if(enablePingServer)
     {
         var pingServerInterval = serverSessionTimeout / 5 * 1000;  //Ping server 5 times each period. Timeout is returned in seconds.

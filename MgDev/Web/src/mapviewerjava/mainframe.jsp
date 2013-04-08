@@ -33,6 +33,7 @@ String sessionId = "";
 String orgSessionId = "";
 String username = "";
 String password = "";
+String startupScriptCode = "";
 String locale = "";
 String mapName = "";
 int curFlyout = 0;
@@ -102,6 +103,12 @@ try
     MgWebInformationPane infoPane = webLayout.GetInformationPane();
     MgWebTaskBar taskBar = taskPane.GetTaskBar();
     String mapDef = webLayout.GetMapDefinition();
+
+    startupScriptCode = webLayout.GetStartupScript();
+    String selectionColor = webLayout.GetSelectionColor(); 
+ 	String mapImgFormat = webLayout.GetMapImageFormat(); 
+ 	String selImgFormat = webLayout.GetSelectionImageFormat(); 
+ 	int pointBuffer = webLayout.GetPointSelectionBuffer(); 
 
     boolean showTaskPane = taskPane.IsVisible();
     boolean showTaskBar = taskBar.IsVisible();
@@ -445,6 +452,10 @@ try
                         String.valueOf(webLayout.GetHyperlinkTarget()),
                         webLayout.GetHyperlinkTargetFrame(),
                         webLayout.IsZoomControlVisible()? "1": "0",
+                        selectionColor, 
+                        mapImgFormat, 
+                        selImgFormat, 
+                        String.valueOf(pointBuffer),
                         sessionParam,
                         vpath + "formframe.jsp",
                         String.valueOf(taskBarHeight),
@@ -473,6 +484,10 @@ try
                         String.valueOf(webLayout.GetHyperlinkTarget()),
                         webLayout.GetHyperlinkTargetFrame(),
                         webLayout.IsZoomControlVisible()? "1": "0",
+                        selectionColor, 
+                        mapImgFormat, 
+                        selImgFormat, 
+                        String.valueOf(pointBuffer),
                         sessionParam,
                         srcTaskFrame,
                         vpath + "formframe.jsp",
@@ -518,6 +533,7 @@ try
                       userCode,
                       taskItemTexts,
                       selAwareCmds,
+                      startupScriptCode,
                       vpath + "quickplotpanel.jsp",
                       vpath + "measureui.jsp",
                       vpath + "searchprompt.jsp",

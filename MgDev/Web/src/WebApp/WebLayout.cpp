@@ -23,7 +23,12 @@
 MgWebLayout::MgWebLayout(MgResourceService* resourceService, MgResourceIdentifier* webLayoutId)
 :  m_scale(-1.0),
    m_hyperlinkTarget(MgWebTargetType::TaskPane),
-   m_zoomControlVisible(true)
+   m_zoomControlVisible(true),
+   m_selectionColor(L"0000FFFF"), //NOXLATE
+   m_pointPixelBuffer(2),
+   m_mapImageFormat(MgImageFormats::Png),
+   m_selectionImageFormat(MgImageFormats::Png),
+   m_startupScript(L"") //NOXLATE
 {
     MG_TRY()
 
@@ -79,6 +84,66 @@ STRING MgWebLayout::GetMapDefinition()
 bool MgWebLayout::GetEnablePingServer()
 {
     return m_enablePingServer;
+}
+
+///////////////////////////////////////////////////////////////////////////
+/// <summary>
+/// Returns the selection color in HTML RGBA format
+/// </summary>
+/// <returns>
+/// The selection color in HTML RGBA format
+/// </returns>
+STRING MgWebLayout::GetSelectionColor()
+{
+    return m_selectionColor;
+}
+
+///////////////////////////////////////////////////////////////////////////
+/// <summary>
+/// Returns the point selection buffer size in pixels
+/// </summary>
+/// <returns>
+/// The point selection buffer size in pixels
+/// </returns>
+INT32 MgWebLayout::GetPointSelectionBuffer()
+{
+    return m_pointPixelBuffer;
+}
+
+///////////////////////////////////////////////////////////////////////////
+/// <summary>
+/// Returns the map image format
+/// </summary>
+/// <returns>
+/// The map image format
+/// </returns>
+STRING MgWebLayout::GetMapImageFormat()
+{
+    return m_mapImageFormat;
+}
+
+///////////////////////////////////////////////////////////////////////////
+/// <summary>
+/// Returns the selection overlay image format
+/// </summary>
+/// <returns>
+/// The selection overlay image format
+/// </returns>
+STRING MgWebLayout::GetSelectionImageFormat()
+{
+    return m_selectionImageFormat;
+}
+
+///////////////////////////////////////////////////////////////////////////
+/// <summary>
+/// Returns the startup script code that is executed when the viewer has loaded
+/// </summary>
+/// <returns>
+/// The startup script code
+/// </returns>
+STRING MgWebLayout::GetStartupScript() 
+{
+    return m_startupScript;
 }
 
 ///////////////////////////////////////////////////////////////////////////
@@ -255,11 +320,31 @@ void MgWebLayout::ParseWebLayoutDefinition(MgByteReader* xmlWebLayout)
             {
                 ParseMapProperties(elt);
             }
-            else if(strName == L"EnablePingServer")
+            else if(strName == L"EnablePingServer") //NOXLATE
             {
                 m_enablePingServer = GetBooleanFromElement(elt);
             }
-            else if(strName == L"InformationPane")
+            else if(strName == L"SelectionColor") //NOXLATE
+            {
+                m_selectionColor = GetStringFromElement(elt);
+            }
+            else if(strName == L"PointSelectionBuffer") //NOXLATE
+            {
+                m_pointPixelBuffer = GetIntegerFromElement(elt);
+            }
+            else if(strName == L"MapImageFormat") //NOXLATE
+            {
+                m_mapImageFormat = GetStringFromElement(elt);
+            }
+            else if(strName == L"SelectionImageFormat") //NOXLATE
+            {
+                m_selectionImageFormat = GetStringFromElement(elt);
+            }
+            else if(strName == L"StartupScript") //NOXLATE
+            {
+                m_startupScript = GetStringFromElement(elt);
+            }
+            else if(strName == L"InformationPane") //NOXLATE
             {
                 ParseInformationPane(elt);
             }

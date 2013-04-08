@@ -35,6 +35,10 @@ String sessionId;
 String type;
 String hlTgt;
 String hlTgtName;
+String selectionColor; 
+String mapImgFormat; 
+String selImgFormat; 
+int pointBufferSize; 
 %>
 
 <%
@@ -178,6 +182,10 @@ String hlTgtName;
                     locale,
                     vpath + "getselectedfeatures.jsp",
                     scaleCreationCode,
+                    selectionColor,
+                    mapImgFormat,
+                    selImgFormat,
+                    String.valueOf(pointBufferSize),
                     vpath + "ajaxviewerabout.jsp",
                     vpath + "legendctrl.jsp",
                     URLEncoder.encode(mapName, "UTF-8"),
@@ -203,5 +211,9 @@ void GetRequestParameters(HttpServletRequest request)
     showProperties = GetIntParameter(request, "SHOWPROP");
     showSlider = GetIntParameter(request, "SHOWSLIDER");
     type = GetParameter(request, "TYPE");
+    selectionColor = ValidateColorString(GetParameter(request, "SELCOLOR"), 8); 
+    mapImgFormat = GetParameter(request, "MAPIMGFORMAT"); 
+    selImgFormat = GetParameter(request, "SELIMGFORMAT"); 
+    pointBufferSize = GetIntParameter(request, "POINTBUFFERSIZE"); 
 }
 %>
