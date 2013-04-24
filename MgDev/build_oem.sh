@@ -110,6 +110,7 @@ init_dwfcore()
 build_dwfcore()
 {
     pushd DWFTK7.1/develop/global/src/dwfcore
+    libtoolize --copy --force
     sh ./configure --enable-optimized --prefix="${INSTALLDIR}"
     make
     check_build
@@ -140,6 +141,7 @@ init_dwftk()
 build_dwftk()
 {
     pushd DWFTK7.1/develop/global/src/dwf
+    libtoolize --copy --force
     sh ./configure --enable-optimized --prefix="${INSTALLDIR}"
     make
     check_build
@@ -170,6 +172,7 @@ init_dwfemap()
 build_dwfemap()
 {
     pushd DWFTK7.1/develop/global/src/dwfemap
+    libtoolize --copy --force
     sh ./configure --enable-optimized --prefix="${INSTALLDIR}"
     make
     check_build
@@ -279,6 +282,14 @@ init_bdbxml()
 
 build_bdbxml()
 {
+    # Need to force regen of the correct xerces config header before building dbxml proper
+    pushd dbxml/xerces-c-src
+    sh ./configure
+    popd
+    # Also need to check and set executable flag for s_paths
+    pushd dbxml/dbxml/dist
+    chmod +x s_paths
+    popd
     pushd dbxml
     sh ./buildall.sh
     check_build
@@ -306,7 +317,13 @@ init_cppunit()
 build_cppunit()
 {
     pushd CppUnit-1.9.14
-    sh ./configure --prefix="${INSTALLDIR}"
+    # Force regen of configure to cover our bases
+    aclocal -I config
+    libtoolize --copy --force
+    autoconf
+    automake --add-missing --copy --force-missing
+    # -ldl is to prevent undefined reference to dlsym/dlopen/dlclose
+    sh ./configure --prefix="${INSTALLDIR}" LDFLAGS="-ldl"
     make
     check_build
     popd
@@ -523,7 +540,8 @@ init_json()
 build_json()
 {
     pushd jsoncpp
-    python scons.py platform=linux-gcc
+    # Use system scons
+    scons platform=linux-gcc
     popd
 }
 
