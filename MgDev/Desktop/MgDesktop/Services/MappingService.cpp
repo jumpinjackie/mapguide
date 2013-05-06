@@ -834,7 +834,7 @@ MgByteReader* MgdMappingService::GenerateMultiPlotInternal(MgdMapPlotCollection*
         if (userInfo != NULL)
             sessionId = userInfo->GetMgSessionId();*/
 
-        RS_MapUIInfo mapInfo(sessionId, map->GetName(), L"", srs, units, layoutColor);
+        RS_MapUIInfo mapInfo(sessionId, map->GetName(), L"", srs, units, layoutColor, center->GetX(), center->GetY(), dMapScale);
 
         // Dynamically adjust the width and height of the map
         printLayout->ComputeMapOffsetAndSize(dMapScale, extents, metersPerUnit, dr.mapOffsetX(), dr.mapOffsetY(), dr.mapWidth(), dr.mapHeight(), mapPlot->GetExpandToFit());

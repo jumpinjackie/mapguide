@@ -985,7 +985,9 @@ MgByteReader* MgServerRenderingService::RenderMapInternal(MgMap* map,
 
     STRING format = options->GetImageFormat();
 
-    RS_MapUIInfo mapInfo(sessionId, map->GetName(), map->GetObjectId(), srs, units, bgcolor);
+    Ptr<MgPoint> ptCenter = map->GetViewCenter();
+    Ptr<MgCoordinate> coord = ptCenter->GetCoordinate();
+    RS_MapUIInfo mapInfo(sessionId, map->GetName(), map->GetObjectId(), srs, units, bgcolor, coord->GetX(), coord->GetY(), scale);
 
     // begin map stylization
     dr->StartMap(&mapInfo, b, scale, map->GetDisplayDpi(), map->GetMetersPerUnit(), NULL);
@@ -1228,7 +1230,7 @@ void MgServerRenderingService::RenderForSelection(MgMap* map,
     // begin map stylization
     RS_Color bgcolor(0, 0, 0, 255); // not used
     STRING srs = map->GetMapSRS();
-    RS_MapUIInfo mapInfo(sessionId, map->GetName(), map->GetObjectId(), srs, L"", bgcolor);
+    RS_MapUIInfo mapInfo(sessionId, map->GetName(), map->GetObjectId(), srs, L"", bgcolor, center->GetX(), center->GetY(), scale);
 
     // initialize the stylizer
     SEMgSymbolManager semgr(m_svcResource);
@@ -1384,7 +1386,9 @@ void MgServerRenderingService::RenderForSelection(MgMap* map,
                     //for the first feature hit
 
                     RS_UIGraphic uig(NULL, 0, L"");
+                    Ptr<MgResourceIdentifier> layerDefId = layer->GetLayerDefinition();
                     RS_LayerUIInfo layerinfo(layer->GetName(),
+                                             layerDefId->ToString(),
                                              layer->GetObjectId(), // object ID
                                              true,   // selectable
                                              true,   // visible
@@ -1406,7 +1410,7 @@ void MgServerRenderingService::RenderForSelection(MgMap* map,
                     //string the viewer should be displaying as the name of each
                     //feature property
                     // TODO: can FeatureName be an extension name rather than a FeatureClass?
-                    RS_FeatureClassInfo fcinfo(vl->GetFeatureName());
+                    RS_FeatureClassInfo fcinfo(vl->GetFeatureName(), vl->GetResourceID());
 
                     MdfModel::NameStringPairCollection* pmappings = vl->GetPropertyMappings();
                     for (int i=0; i<pmappings->GetCount(); i++)

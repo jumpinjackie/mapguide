@@ -315,11 +315,22 @@ void TestRenderingService::TestStart()
         // publish the resource data
         Ptr<MgByteSource> dataSource6 = new MgByteSource(L"../UnitTestFiles/UT_RoadCenterLines.sdf", false);
         Ptr<MgByteReader> dataReader6 = dataSource6->GetReader();
-        m_svcResource->SetResourceData(fsres5, L"UT_RoadCenterLines.sdf", L"File", dataReader6);
+        m_svcResource->SetResourceData(fsres6, L"UT_RoadCenterLines.sdf", L"File", dataReader6);
 
         Ptr<MgByteSource> dataSource7 = new MgByteSource(L"../UnitTestFiles/UT_VotingDistricts.sdf", false);
         Ptr<MgByteReader> dataReader7 = dataSource7->GetReader();
-        m_svcResource->SetResourceData(fsres6, L"UT_VotingDistricts.sdf", L"File", dataReader7);
+        m_svcResource->SetResourceData(fsres7, L"UT_VotingDistricts.sdf", L"File", dataReader7);
+
+        // Data related to stylization function tests
+        Ptr<MgResourceIdentifier> ldfres14 = new MgResourceIdentifier(L"Library://UnitTests/Layers/StylizationFuncs.LayerDefinition");
+        Ptr<MgByteSource> ldfsrc14 = new MgByteSource(L"../UnitTestFiles/UT_VotingDistrictsFunctions.ldf", false);
+        Ptr<MgByteReader> ldfrdr14 = ldfsrc14->GetReader();
+        m_svcResource->SetResource(ldfres14, ldfrdr14, NULL);
+
+        Ptr<MgResourceIdentifier> mapres15 = new MgResourceIdentifier(L"Library://UnitTests/Maps/StylizationFuncs.MapDefinition");
+        Ptr<MgByteSource> mdfsrc15 = new MgByteSource(L"../UnitTestFiles/UT_StylizationFuncs.mdf", false);
+        Ptr<MgByteReader> mdfrdr15 = mdfsrc15->GetReader();
+        m_svcResource->SetResource(mapres15, mdfrdr15, NULL);
 
     }
     catch (MgException* e)
@@ -440,6 +451,13 @@ void TestRenderingService::TestEnd()
         m_svcResource->DeleteResource(fsres6);
         Ptr<MgResourceIdentifier> fsres7 = new MgResourceIdentifier(L"Library://UnitTests/Data/VotingDistricts.FeatureSource");
         m_svcResource->DeleteResource(fsres7);
+
+        // Data related to stylization function tests
+        Ptr<MgResourceIdentifier> ldfres14 = new MgResourceIdentifier(L"Library://UnitTests/Layers/StylizationFuncs.LayerDefinition");
+        m_svcResource->GetResourceHeader(ldfres14);
+
+        Ptr<MgResourceIdentifier> mapres15 = new MgResourceIdentifier(L"Library://UnitTests/Maps/StylizationFuncs.MapDefinition");
+        m_svcResource->GetResourceHeader(mapres15);
     }
     catch(MgFileIoException* e)
     {
@@ -669,6 +687,42 @@ void TestRenderingService::TestCase_RenderLegend(CREFSTRING imageFormat, CREFSTR
     }
 }
 
+void TestRenderingService::TestCase_StylizationFunctions(CREFSTRING imageFormat, CREFSTRING extension)
+{
+    try
+    {
+        Ptr<MgdMap> map = CreateTestStylizationFunctionMap();
+        
+        // call the API using a scale of 75000
+        map->SetViewScale(75000.0);
+
+        Ptr<MgByteReader> rdr1 = m_svcRendering->RenderDynamicOverlay(map, NULL, imageFormat);
+        rdr1->ToFile(GetPath(L"../UnitTestFiles/StylizationFunc_75k", imageFormat, extension));
+
+        // call the API using a scale of 12000
+        map->SetViewScale(12000);
+        Ptr<MgByteReader> rdr2 = m_svcRendering->RenderDynamicOverlay(map, NULL, imageFormat);
+        rdr2->ToFile(GetPath(L"../UnitTestFiles/StylizationFunc_12k", imageFormat, extension));
+
+        // Move around
+        Ptr<MgCoordinate> coordNewCenter = new MgCoordinateXY(-87.733753, 43.746899);
+        Ptr<MgPoint> ptNewCenter = new MgPoint(coordNewCenter);
+        map->SetViewCenter(ptNewCenter);
+        Ptr<MgByteReader> rdr3 = m_svcRendering->RenderDynamicOverlay(map, NULL, imageFormat);
+        rdr3->ToFile(GetPath(L"../UnitTestFiles/StylizationFunc_12k_Moved", imageFormat, extension));
+    }
+    catch (MgException* e)
+    {
+        STRING message = e->GetDetails(TEST_LOCALE);
+        SAFE_RELEASE(e);
+        CPPUNIT_FAIL(MG_WCHAR_TO_CHAR(message.c_str()));
+    }
+    catch (...)
+    {
+        throw;
+    }
+}
+
 void TestRenderingService::TestCase_QueryFeatures()
 {
     try
@@ -733,6 +787,23 @@ MgdMap* TestRenderingService::CreateTestMap()
     Ptr<MgPoint> ptNewCenter = new MgPoint(coordNewCenter);
     map->SetViewCenter(ptNewCenter);
     map->SetViewScale(75000.0);
+    map->SetDisplayDpi(96);
+    map->SetDisplayWidth(1024);
+    map->SetDisplayHeight(1024);
+
+    return map;
+}
+
+MgdMap* TestRenderingService::CreateTestStylizationFunctionMap()
+{
+    Ptr<MgResourceIdentifier> mdfres = new MgResourceIdentifier(L"Library://UnitTests/Maps/StylizationFuncs.MapDefinition");
+    MgdMap* map = new MgdMap(mdfres);
+    //map->Create(mdfres, L"StylizationFuncs");
+
+    Ptr<MgCoordinate> coordNewCenter = new MgCoordinateXY(-87.733253, 43.746199);
+    Ptr<MgPoint> ptNewCenter = new MgPoint(coordNewCenter);
+    map->SetViewCenter(ptNewCenter);
+    map->SetViewScale(60000.0);
     map->SetDisplayDpi(96);
     map->SetDisplayWidth(1024);
     map->SetDisplayHeight(1024);

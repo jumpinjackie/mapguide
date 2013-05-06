@@ -223,10 +223,12 @@ MgByteReader* MgServerMappingService::GenerateMap(MgMap* map,
     StylizationUtil::ParseColor( mdf->GetBackgroundColor(), bgcolor);
 
     //These should not matter for GenerateMap
+    Ptr<MgPoint> ptCenter = map->GetViewCenter();
+    Ptr<MgCoordinate> coord = ptCenter->GetCoordinate();
     double dMapScale = map->GetViewScale();
     double dpi = map->GetDisplayDpi();
 
-    RS_MapUIInfo mapInfo(sessionId, mapResId->GetName(), map->GetObjectId(), srs, units, bgcolor);
+    RS_MapUIInfo mapInfo(sessionId, mapResId->GetName(), map->GetObjectId(), srs, units, bgcolor, coord->GetX(), coord->GetY(), dMapScale);
 
     dr.StartMap(&mapInfo, b, dMapScale, dpi, metersPerUnit);
 
@@ -244,6 +246,7 @@ MgByteReader* MgServerMappingService::GenerateMap(MgMap* map,
         //layer legend and ui specific information
         RS_UIGraphic uig(NULL, 0, mggroup->GetLegendLabel());
         RS_LayerUIInfo layerInfo( mggroup->GetName(),
+                                  L"",
                                   mggroup->GetObjectId(),
                                   false,   // selectable - does not apply to groups
                                   mggroup->GetVisible(),
@@ -277,8 +280,10 @@ MgByteReader* MgServerMappingService::GenerateMap(MgMap* map,
             bEditable = false;
 
         //layer legend and ui specific information
+        Ptr<MgResourceIdentifier> layerDefId = mglayer->GetLayerDefinition();
         RS_UIGraphic uig(NULL, 0, mglayer->GetLegendLabel());
         RS_LayerUIInfo layerInfo( mglayer->GetName(),
+                                  layerDefId->ToString(),
                                   mglayer->GetObjectId(),
                                   mglayer->GetSelectable(),
                                   mglayer->GetVisible(),
@@ -475,6 +480,8 @@ MgByteReader* MgServerMappingService::GenerateMapUpdate(MgMap* map,
     RS_Color bgcolor;
     StylizationUtil::ParseColor( map->GetBackgroundColor(), bgcolor);
 
+    Ptr<MgPoint> ptCenter = map->GetViewCenter();
+    Ptr<MgCoordinate> coord = ptCenter->GetCoordinate();
     double dMapScale = map->GetViewScale();
     double dpi       = map->GetDisplayDpi();
 
@@ -499,7 +506,7 @@ MgByteReader* MgServerMappingService::GenerateMapUpdate(MgMap* map,
     SEMgSymbolManager semgr(m_svcResource);
     DefaultStylizer ds(&semgr);
 
-    RS_MapUIInfo mapInfo(sessionId, map->GetName(), map->GetObjectId(), srs, units, bgcolor);
+    RS_MapUIInfo mapInfo(sessionId, map->GetName(), map->GetObjectId(), srs, units, bgcolor, coord->GetX(), coord->GetY(), dMapScale);
 
     //begin map stylization
     dr.StartMap(&mapInfo, b, dMapScale, dpi, metersPerUnit, xformToLL);
@@ -517,6 +524,7 @@ MgByteReader* MgServerMappingService::GenerateMapUpdate(MgMap* map,
             //layer legend and ui specific information
             RS_UIGraphic uig(NULL, 0, mggroup->GetLegendLabel());
             RS_LayerUIInfo layerInfo( mggroup->GetName(),
+                                      L"",
                                       mggroup->GetObjectId(),
                                       false,   // selectable - does not apply to groups
                                       mggroup->GetVisible(),
@@ -547,9 +555,11 @@ MgByteReader* MgServerMappingService::GenerateMapUpdate(MgMap* map,
             if (mglayer->GetLayerType() == MgLayerType::BaseMap)
                 bEditable = false;
 
+            Ptr<MgResourceIdentifier> layerDefId = mglayer->GetLayerDefinition();
             //layer legend and ui specific information
             RS_UIGraphic uig(NULL, 0, mglayer->GetLegendLabel());
             RS_LayerUIInfo layerInfo( mglayer->GetName(),
+                                      layerDefId->ToString(),
                                       mglayer->GetObjectId(),
                                       mglayer->GetSelectable(),
                                       mglayer->GetVisible(),
@@ -1222,7 +1232,7 @@ MgByteReader* MgServerMappingService::GenerateMultiPlot(
         if (userInfo != NULL)
             sessionId = userInfo->GetMgSessionId();
 
-        RS_MapUIInfo mapInfo(sessionId, map->GetName(), L"", srs, units, layoutColor);
+        RS_MapUIInfo mapInfo(sessionId, map->GetName(), L"", srs, units, layoutColor, center->GetX(), center->GetY(), dMapScale);
 
         // Dynamically adjust the width and height of the map
         printLayout->ComputeMapOffsetAndSize(dMapScale, extents, metersPerUnit, dr.mapOffsetX(), dr.mapOffsetY(), dr.mapWidth(), dr.mapHeight(), mapPlot->GetExpandToFit());
@@ -1419,8 +1429,12 @@ MgByteReader* MgServerMappingService::GenerateLegendPlot(
     double metersPerUnit = (dstCs.p) ? dstCs->ConvertCoordinateSystemUnitsToMeters(1.0) : 1.0;
     RS_String units = (dstCs.p) ? dstCs->GetUnits() : L"";
 
+    Ptr<MgPoint> ptCenter = map->GetViewCenter();
+    Ptr<MgCoordinate> coord = ptCenter->GetCoordinate();
+    double dMapScale = map->GetViewScale();
+
     RS_Color mapBgColor(255, 255, 255, 0);
-    RS_MapUIInfo mapInfo(L"", map->GetName(), L"", srs, units, mapBgColor);
+    RS_MapUIInfo mapInfo(L"", map->GetName(), L"", srs, units, mapBgColor, coord->GetX(), coord->GetY(), dMapScale);
 
     double dpi = map->GetDisplayDpi();
     dr.StartMap(&mapInfo, b, scale, dpi, metersPerUnit);

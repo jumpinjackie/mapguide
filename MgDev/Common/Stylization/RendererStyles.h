@@ -582,6 +582,7 @@ class RS_LayerUIInfo
 public:
     RS_LayerUIInfo() :
         m_name(L""),
+        m_layerdef(L""),
         m_guid(L""),
         m_selectable(true),
         m_visible(true),
@@ -598,6 +599,7 @@ public:
     }
 
     RS_LayerUIInfo(const RS_String& name,
+                   const RS_String& layerdef,
                    const RS_String& guid,
                    bool             selectable,
                    bool             visible,
@@ -611,6 +613,7 @@ public:
                    bool             hastooltips = false,
                    bool             hashyperlinks = false) :
         m_name(name),
+        m_layerdef(layerdef),
         m_guid(guid),
         m_selectable(selectable),
         m_visible(visible),
@@ -627,6 +630,7 @@ public:
     }
 
     inline RS_String&    name()          { return m_name; }
+    inline RS_String&    layerdef()      { return m_layerdef; }
     inline RS_String&    guid()          { return m_guid; }
     inline bool&         selectable()    { return m_selectable; }
     inline bool&         visible()       { return m_visible; }
@@ -642,6 +646,7 @@ public:
 
 private:
     RS_String m_name;
+    RS_String m_layerdef;
     RS_String m_guid;
     bool m_selectable;
     bool m_visible;
@@ -667,7 +672,10 @@ public:
         m_guid(L""),
         m_coordsys(L""),
         m_units(L""),
-        m_bgcolor(255, 255, 255, 255)
+        m_bgcolor(255, 255, 255, 255),
+        m_viewx(0.0),
+        m_viewy(0.0),
+        m_scale(0.0)
     {
     }
 
@@ -676,13 +684,19 @@ public:
                  const RS_String& guid,
                  const RS_String& coordsys,
                  const RS_String& units,
-                 const RS_Color&  bgcolor) :
+                 const RS_Color&  bgcolor,
+                 const double viewx = 0.0,
+                 const double viewy = 0.0,
+                 const double scale = 0.0) :
         m_session(session),
         m_name(name),
         m_guid(guid),
         m_coordsys(coordsys),
         m_units(units),
-        m_bgcolor(bgcolor)
+        m_bgcolor(bgcolor),
+        m_viewx(viewx),
+        m_viewy(viewy),
+        m_scale(scale)
     {
     }
 
@@ -692,6 +706,9 @@ public:
     inline RS_String& coordsys() { return m_coordsys; }
     inline RS_String& units()    { return m_units; }
     inline RS_Color&  bgcolor()  { return m_bgcolor; }
+    inline double&    scale()    { return m_scale; }
+    inline double&    viewx()    { return m_viewx; }
+    inline double&    viewy()    { return m_viewy; }
 
 private:
     RS_String m_session;
@@ -700,6 +717,9 @@ private:
     RS_String m_coordsys;
     RS_String m_units;
     RS_Color  m_bgcolor;
+    double    m_scale;
+    double    m_viewx;
+    double    m_viewy;
 };
 
 
@@ -708,12 +728,12 @@ class RS_FeatureClassInfo
 {
 public:
     RS_FeatureClassInfo() :
-        m_name(L"")
+        m_name(L""), m_source(L"")
     {
     }
 
-    RS_FeatureClassInfo(const RS_String& name) :
-        m_name(name)
+    RS_FeatureClassInfo(const RS_String& name, const RS_String& source) :
+        m_name(name), m_source(source)
     {
     }
 
@@ -730,8 +750,10 @@ public:
 
     inline RS_String&              name()     { return m_name; }
     inline std::vector<RS_String>& mappings() { return m_propMappings; }
+    inline RS_String&              source()   { return m_source; }
 
 private:
+    RS_String m_source;
     RS_String m_name;
     std::vector<RS_String> m_propMappings;
 };

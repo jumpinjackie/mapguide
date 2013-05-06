@@ -164,6 +164,7 @@ debug : ..\..\bin\debug\MgFoundationd.dll \
         ..\..\bin\UnitTestFiles\TEST.FeatureSource \
         ..\..\bin\UnitTestFiles\TEST.sdf \
         ..\..\bin\UnitTestFiles\UT_BaseMap.mdf \
+        ..\..\bin\UnitTestFiles\UT_StylizationFuncs.mdf \
         ..\..\bin\UnitTestFiles\UT_Parcels.fs \
         ..\..\bin\UnitTestFiles\UT_Parcels.ldf \
         ..\..\bin\UnitTestFiles\UT_Parcels.sdf \
@@ -172,6 +173,7 @@ debug : ..\..\bin\debug\MgFoundationd.dll \
         ..\..\bin\UnitTestFiles\UT_RoadCenterLines.sdf \
         ..\..\bin\UnitTestFiles\UT_VotingDistricts.fs \
         ..\..\bin\UnitTestFiles\UT_VotingDistricts.ldf \
+        ..\..\bin\UnitTestFiles\UT_VotingDistrictsFunctions.ldf \
         ..\..\bin\UnitTestFiles\UT_VotingDistricts.sdf \
         ..\..\bin\UnitTestFiles\UT_AllElements.pl \
         ..\..\bin\UnitTestFiles\UT_NoLegend.pl \
@@ -421,6 +423,7 @@ debug64 : ..\..\bin\debug64\MgFoundationd.dll \
         ..\..\bin\UnitTestFiles\TEST.FeatureSource \
         ..\..\bin\UnitTestFiles\TEST.sdf \
         ..\..\bin\UnitTestFiles\UT_BaseMap.mdf \
+        ..\..\bin\UnitTestFiles\UT_StylizationFuncs.mdf \
         ..\..\bin\UnitTestFiles\UT_Parcels.fs \
         ..\..\bin\UnitTestFiles\UT_Parcels.ldf \
         ..\..\bin\UnitTestFiles\UT_Parcels.sdf \
@@ -429,6 +432,7 @@ debug64 : ..\..\bin\debug64\MgFoundationd.dll \
         ..\..\bin\UnitTestFiles\UT_RoadCenterLines.sdf \
         ..\..\bin\UnitTestFiles\UT_VotingDistricts.fs \
         ..\..\bin\UnitTestFiles\UT_VotingDistricts.ldf \
+        ..\..\bin\UnitTestFiles\UT_VotingDistrictsFunctions.ldf \
         ..\..\bin\UnitTestFiles\UT_VotingDistricts.sdf \
         ..\..\bin\UnitTestFiles\UT_AllElements.pl \
         ..\..\bin\UnitTestFiles\UT_NoLegend.pl \
@@ -678,6 +682,7 @@ release : ..\..\bin\release\MgFoundation.dll \
           ..\..\bin\UnitTestFiles\TEST.FeatureSource \
           ..\..\bin\UnitTestFiles\TEST.sdf \
           ..\..\bin\UnitTestFiles\UT_BaseMap.mdf \
+          ..\..\bin\UnitTestFiles\UT_StylizationFuncs.mdf \
           ..\..\bin\UnitTestFiles\UT_Parcels.fs \
           ..\..\bin\UnitTestFiles\UT_Parcels.ldf \
           ..\..\bin\UnitTestFiles\UT_Parcels.sdf \
@@ -686,6 +691,7 @@ release : ..\..\bin\release\MgFoundation.dll \
           ..\..\bin\UnitTestFiles\UT_RoadCenterLines.sdf \
           ..\..\bin\UnitTestFiles\UT_VotingDistricts.fs \
           ..\..\bin\UnitTestFiles\UT_VotingDistricts.ldf \
+          ..\..\bin\UnitTestFiles\UT_VotingDistrictsFunctions.ldf \
           ..\..\bin\UnitTestFiles\UT_VotingDistricts.sdf \
           ..\..\bin\UnitTestFiles\UT_AllElements.pl \
           ..\..\bin\UnitTestFiles\UT_NoLegend.pl \
@@ -935,6 +941,7 @@ release64 : ..\..\bin\release64\MgFoundation.dll \
           ..\..\bin\UnitTestFiles\TEST.FeatureSource \
           ..\..\bin\UnitTestFiles\TEST.sdf \
           ..\..\bin\UnitTestFiles\UT_BaseMap.mdf \
+          ..\..\bin\UnitTestFiles\UT_StylizationFuncs.mdf \
           ..\..\bin\UnitTestFiles\UT_Parcels.fs \
           ..\..\bin\UnitTestFiles\UT_Parcels.ldf \
           ..\..\bin\UnitTestFiles\UT_Parcels.sdf \
@@ -943,6 +950,7 @@ release64 : ..\..\bin\release64\MgFoundation.dll \
           ..\..\bin\UnitTestFiles\UT_RoadCenterLines.sdf \
           ..\..\bin\UnitTestFiles\UT_VotingDistricts.fs \
           ..\..\bin\UnitTestFiles\UT_VotingDistricts.ldf \
+          ..\..\bin\UnitTestFiles\UT_VotingDistrictsFunctions.ldf \
           ..\..\bin\UnitTestFiles\UT_VotingDistricts.sdf \
           ..\..\bin\UnitTestFiles\UT_AllElements.pl \
           ..\..\bin\UnitTestFiles\UT_NoLegend.pl \
@@ -1065,6 +1073,7 @@ cleandebug:
     if EXIST ..\..\bin\UnitTestFiles\TEST.FeatureSource             del /F ..\..\bin\UnitTestFiles\TEST.FeatureSource
     if EXIST ..\..\bin\UnitTestFiles\TEST.sdf                       del /F ..\..\bin\UnitTestFiles\TEST.sdf
     if EXIST ..\..\bin\UnitTestFiles\UT_BaseMap.mdf                 del /F ..\..\bin\UnitTestFiles\UT_BaseMap.mdf
+    if EXIST ..\..\bin\UnitTestFiles\UT_StylizationFuncs.mdf        del /F ..\..\bin\UnitTestFiles\UT_StylizationFuncs.mdf
     if EXIST ..\..\bin\UnitTestFiles\UT_Parcels.fs                  del /F ..\..\bin\UnitTestFiles\UT_Parcels.fs
     if EXIST ..\..\bin\UnitTestFiles\UT_Parcels.ldf                 del /F ..\..\bin\UnitTestFiles\UT_Parcels.ldf
     if EXIST ..\..\bin\UnitTestFiles\UT_Parcels.sdf                 del /F ..\..\bin\UnitTestFiles\UT_Parcels.sdf
@@ -1073,6 +1082,7 @@ cleandebug:
     if EXIST ..\..\bin\UnitTestFiles\UT_RoadCenterLines.sdf         del /F ..\..\bin\UnitTestFiles\UT_RoadCenterLines.sdf
     if EXIST ..\..\bin\UnitTestFiles\UT_VotingDistricts.fs          del /F ..\..\bin\UnitTestFiles\UT_VotingDistricts.fs
     if EXIST ..\..\bin\UnitTestFiles\UT_VotingDistricts.ldf         del /F ..\..\bin\UnitTestFiles\UT_VotingDistricts.ldf
+    if EXIST ..\..\bin\UnitTestFiles\UT_VotingDistrictsFunctions.ldf del /F ..\..\bin\UnitTestFiles\UT_VotingDistrictsFunctions.ldf
     if EXIST ..\..\bin\UnitTestFiles\UT_VotingDistricts.sdf         del /F ..\..\bin\UnitTestFiles\UT_VotingDistricts.sdf
     if EXIST ..\..\bin\UnitTestFiles\UT_AllElements.pl              del /F ..\..\bin\UnitTestFiles\UT_AllElements.pl
     if EXIST ..\..\bin\UnitTestFiles\UT_NoLegend.pl                 del /F ..\..\bin\UnitTestFiles\UT_NoLegend.pl
@@ -1190,6 +1200,7 @@ cleandebug64:
     if EXIST ..\..\bin\UnitTestFiles\TEST.FeatureSource             del /F ..\..\bin\UnitTestFiles\TEST.FeatureSource
     if EXIST ..\..\bin\UnitTestFiles\TEST.sdf                       del /F ..\..\bin\UnitTestFiles\TEST.sdf
     if EXIST ..\..\bin\UnitTestFiles\UT_BaseMap.mdf                 del /F ..\..\bin\UnitTestFiles\UT_BaseMap.mdf
+    if EXIST ..\..\bin\UnitTestFiles\UT_StylizationFuncs.mdf        del /F ..\..\bin\UnitTestFiles\UT_StylizationFuncs.mdf
     if EXIST ..\..\bin\UnitTestFiles\UT_Parcels.fs                  del /F ..\..\bin\UnitTestFiles\UT_Parcels.fs
     if EXIST ..\..\bin\UnitTestFiles\UT_Parcels.ldf                 del /F ..\..\bin\UnitTestFiles\UT_Parcels.ldf
     if EXIST ..\..\bin\UnitTestFiles\UT_Parcels.sdf                 del /F ..\..\bin\UnitTestFiles\UT_Parcels.sdf
@@ -1198,6 +1209,7 @@ cleandebug64:
     if EXIST ..\..\bin\UnitTestFiles\UT_RoadCenterLines.sdf         del /F ..\..\bin\UnitTestFiles\UT_RoadCenterLines.sdf
     if EXIST ..\..\bin\UnitTestFiles\UT_VotingDistricts.fs          del /F ..\..\bin\UnitTestFiles\UT_VotingDistricts.fs
     if EXIST ..\..\bin\UnitTestFiles\UT_VotingDistricts.ldf         del /F ..\..\bin\UnitTestFiles\UT_VotingDistricts.ldf
+    if EXIST ..\..\bin\UnitTestFiles\UT_VotingDistrictsFunctions.ldf del /F ..\..\bin\UnitTestFiles\UT_VotingDistrictsFunctions.ldf
     if EXIST ..\..\bin\UnitTestFiles\UT_VotingDistricts.sdf         del /F ..\..\bin\UnitTestFiles\UT_VotingDistricts.sdf
     if EXIST ..\..\bin\UnitTestFiles\UT_AllElements.pl              del /F ..\..\bin\UnitTestFiles\UT_AllElements.pl
     if EXIST ..\..\bin\UnitTestFiles\UT_NoLegend.pl                 del /F ..\..\bin\UnitTestFiles\UT_NoLegend.pl
@@ -1315,6 +1327,7 @@ cleanrelease:
     if EXIST ..\..\bin\UnitTestFiles\TEST.FeatureSource             del /F ..\..\bin\UnitTestFiles\TEST.FeatureSource
     if EXIST ..\..\bin\UnitTestFiles\TEST.sdf                       del /F ..\..\bin\UnitTestFiles\TEST.sdf
     if EXIST ..\..\bin\UnitTestFiles\UT_BaseMap.mdf                 del /F ..\..\bin\UnitTestFiles\UT_BaseMap.mdf
+    if EXIST ..\..\bin\UnitTestFiles\UT_StylizationFuncs.mdf        del /F ..\..\bin\UnitTestFiles\UT_StylizationFuncs.mdf
     if EXIST ..\..\bin\UnitTestFiles\UT_Parcels.fs                  del /F ..\..\bin\UnitTestFiles\UT_Parcels.fs
     if EXIST ..\..\bin\UnitTestFiles\UT_Parcels.ldf                 del /F ..\..\bin\UnitTestFiles\UT_Parcels.ldf
     if EXIST ..\..\bin\UnitTestFiles\UT_Parcels.sdf                 del /F ..\..\bin\UnitTestFiles\UT_Parcels.sdf
@@ -1323,6 +1336,7 @@ cleanrelease:
     if EXIST ..\..\bin\UnitTestFiles\UT_RoadCenterLines.sdf         del /F ..\..\bin\UnitTestFiles\UT_RoadCenterLines.sdf
     if EXIST ..\..\bin\UnitTestFiles\UT_VotingDistricts.fs          del /F ..\..\bin\UnitTestFiles\UT_VotingDistricts.fs
     if EXIST ..\..\bin\UnitTestFiles\UT_VotingDistricts.ldf         del /F ..\..\bin\UnitTestFiles\UT_VotingDistricts.ldf
+    if EXIST ..\..\bin\UnitTestFiles\UT_VotingDistrictsFunctions.ldf del /F ..\..\bin\UnitTestFiles\UT_VotingDistrictsFunctions.ldf
     if EXIST ..\..\bin\UnitTestFiles\UT_VotingDistricts.sdf         del /F ..\..\bin\UnitTestFiles\UT_VotingDistricts.sdf
     if EXIST ..\..\bin\UnitTestFiles\UT_AllElements.pl              del /F ..\..\bin\UnitTestFiles\UT_AllElements.pl
     if EXIST ..\..\bin\UnitTestFiles\UT_NoLegend.pl                 del /F ..\..\bin\UnitTestFiles\UT_NoLegend.pl
@@ -1394,8 +1408,8 @@ cleanrelease:
     if EXIST ..\..\bin\UnitTestFiles\UT_Annotation3.mdf             del /F ..\..\bin\UnitTestFiles\UT_Annotation3.mdf
     if EXIST ..\..\bin\UnitTestFiles\SavePointTest.sqlite           del /F ..\..\bin\UnitTestFiles\SavePointTest.sqlite
     if EXIST ..\..\bin\UnitTestFiles\SavePointTest.FeatureSource    del /F ..\..\bin\UnitTestFiles\SavePointTest.FeatureSource
-	if EXIST ..\..\bin\UnitTestFiles\UT_Parcels_SQLite_Join.FeatureSource    del /F ..\..\bin\UnitTestFiles\UT_Parcels_SQLite_Join.FeatureSource
-    if EXIST ..\..\bin\UnitTestFiles\UT_FdoJoin.FeatureSource		del /F ..\..\bin\UnitTestFiles\UT_FdoJoin.FeatureSource
+    if EXIST ..\..\bin\UnitTestFiles\UT_Parcels_SQLite_Join.FeatureSource    del /F ..\..\bin\UnitTestFiles\UT_Parcels_SQLite_Join.FeatureSource
+    if EXIST ..\..\bin\UnitTestFiles\UT_FdoJoin.FeatureSource       del /F ..\..\bin\UnitTestFiles\UT_FdoJoin.FeatureSource
     if EXIST ..\..\bin\UnitTestFiles\ParcelsJoinTest.sqlite         del /F ..\..\bin\UnitTestFiles\ParcelsJoinTest.sqlite
     if EXIST ..\..\bin\UnitTestFiles\JoinTest.sqlite                del /F ..\..\bin\UnitTestFiles\JoinTest.FeatureSource
 
@@ -1438,6 +1452,7 @@ cleanrelease64:
     if EXIST ..\..\bin\UnitTestFiles\TEST.FeatureSource             del /F ..\..\bin\UnitTestFiles\TEST.FeatureSource
     if EXIST ..\..\bin\UnitTestFiles\TEST.sdf                       del /F ..\..\bin\UnitTestFiles\TEST.sdf
     if EXIST ..\..\bin\UnitTestFiles\UT_BaseMap.mdf                 del /F ..\..\bin\UnitTestFiles\UT_BaseMap.mdf
+    if EXIST ..\..\bin\UnitTestFiles\UT_StylizationFuncs.mdf        del /F ..\..\bin\UnitTestFiles\UT_StylizationFuncs.mdf
     if EXIST ..\..\bin\UnitTestFiles\UT_Parcels.fs                  del /F ..\..\bin\UnitTestFiles\UT_Parcels.fs
     if EXIST ..\..\bin\UnitTestFiles\UT_Parcels.ldf                 del /F ..\..\bin\UnitTestFiles\UT_Parcels.ldf
     if EXIST ..\..\bin\UnitTestFiles\UT_Parcels.sdf                 del /F ..\..\bin\UnitTestFiles\UT_Parcels.sdf
@@ -1446,6 +1461,7 @@ cleanrelease64:
     if EXIST ..\..\bin\UnitTestFiles\UT_RoadCenterLines.sdf         del /F ..\..\bin\UnitTestFiles\UT_RoadCenterLines.sdf
     if EXIST ..\..\bin\UnitTestFiles\UT_VotingDistricts.fs          del /F ..\..\bin\UnitTestFiles\UT_VotingDistricts.fs
     if EXIST ..\..\bin\UnitTestFiles\UT_VotingDistricts.ldf         del /F ..\..\bin\UnitTestFiles\UT_VotingDistricts.ldf
+    if EXIST ..\..\bin\UnitTestFiles\UT_VotingDistrictsFunctions.ldf del /F ..\..\bin\UnitTestFiles\UT_VotingDistrictsFunctions.ldf
     if EXIST ..\..\bin\UnitTestFiles\UT_VotingDistricts.sdf         del /F ..\..\bin\UnitTestFiles\UT_VotingDistricts.sdf
     if EXIST ..\..\bin\UnitTestFiles\UT_AllElements.pl              del /F ..\..\bin\UnitTestFiles\UT_AllElements.pl
     if EXIST ..\..\bin\UnitTestFiles\UT_NoLegend.pl                 del /F ..\..\bin\UnitTestFiles\UT_NoLegend.pl
@@ -1558,6 +1574,7 @@ cleanrelease64:
 "..\..\..\UnitTest\TestData\MappingService\UT_Rail.fs" :
 "..\..\..\UnitTest\TestData\MappingService\UT_Rail.ldf" :
 "..\..\..\UnitTest\TestData\TileService\UT_BaseMap.mdf" :
+"..\..\..\UnitTest\TestData\TileService\UT_StylizationFuncs.mdf" :
 "..\..\..\UnitTest\TestData\TileService\UT_Parcels.fs" :
 "..\..\..\UnitTest\TestData\TileService\UT_Parcels.ldf" :
 "..\..\..\UnitTest\TestData\TileService\UT_Parcels.sdf" :
@@ -1566,6 +1583,7 @@ cleanrelease64:
 "..\..\..\UnitTest\TestData\TileService\UT_RoadCenterLines.sdf" :
 "..\..\..\UnitTest\TestData\TileService\UT_VotingDistricts.fs" :
 "..\..\..\UnitTest\TestData\TileService\UT_VotingDistricts.ldf" :
+"..\..\..\UnitTest\TestData\TileService\UT_VotingDistrictsFunctions.ldf" :
 "..\..\..\UnitTest\TestData\TileService\UT_VotingDistricts.sdf" :
 "..\..\..\UnitTest\TestData\ServerAdmin\1.1.1.mgd" :
 "..\..\..\UnitTest\TestData\CoordinateSystems\epsgcodes.txt" :
@@ -1755,6 +1773,10 @@ cleanrelease64:
     if NOT EXIST ..\..\bin\UnitTestFiles\nul mkdir ..\..\bin\UnitTestFiles
     if EXIST "..\..\..\UnitTest\TestData\TileService\UT_BaseMap.mdf" xcopy /r /d /y "..\..\..\UnitTest\TestData\TileService\UT_BaseMap.mdf" ..\..\bin\UnitTestFiles\
 
+..\..\bin\UnitTestFiles\UT_StylizationFuncs.mdf : "..\..\..\UnitTest\TestData\TileService\UT_StylizationFuncs.mdf"
+    if NOT EXIST ..\..\bin\UnitTestFiles\nul mkdir ..\..\bin\UnitTestFiles
+    if EXIST "..\..\..\UnitTest\TestData\TileService\UT_StylizationFuncs.mdf" xcopy /r /d /y "..\..\..\UnitTest\TestData\TileService\UT_StylizationFuncs.mdf" ..\..\bin\UnitTestFiles\
+
 ..\..\bin\UnitTestFiles\UT_Parcels.fs : "..\..\..\UnitTest\TestData\TileService\UT_Parcels.fs"
     if NOT EXIST ..\..\bin\UnitTestFiles\nul mkdir ..\..\bin\UnitTestFiles
     if EXIST "..\..\..\UnitTest\TestData\TileService\UT_Parcels.fs" xcopy /r /d /y "..\..\..\UnitTest\TestData\TileService\UT_Parcels.fs" ..\..\bin\UnitTestFiles\
@@ -1786,6 +1808,10 @@ cleanrelease64:
 ..\..\bin\UnitTestFiles\UT_VotingDistricts.ldf : "..\..\..\UnitTest\TestData\TileService\UT_VotingDistricts.ldf"
     if NOT EXIST ..\..\bin\UnitTestFiles\nul mkdir ..\..\bin\UnitTestFiles
     if EXIST "..\..\..\UnitTest\TestData\TileService\UT_VotingDistricts.ldf" xcopy /r /d /y "..\..\..\UnitTest\TestData\TileService\UT_VotingDistricts.ldf" ..\..\bin\UnitTestFiles\
+
+..\..\bin\UnitTestFiles\UT_VotingDistrictsFunctions.ldf : "..\..\..\UnitTest\TestData\TileService\UT_VotingDistrictsFunctions.ldf"
+    if NOT EXIST ..\..\bin\UnitTestFiles\nul mkdir ..\..\bin\UnitTestFiles
+    if EXIST "..\..\..\UnitTest\TestData\TileService\UT_VotingDistrictsFunctions.ldf" xcopy /r /d /y "..\..\..\UnitTest\TestData\TileService\UT_VotingDistrictsFunctions.ldf" ..\..\bin\UnitTestFiles\
 
 ..\..\bin\UnitTestFiles\UT_VotingDistricts.sdf : "..\..\..\UnitTest\TestData\TileService\UT_VotingDistricts.sdf"
     if NOT EXIST ..\..\bin\UnitTestFiles\nul mkdir ..\..\bin\UnitTestFiles

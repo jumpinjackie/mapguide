@@ -265,6 +265,24 @@
       <Filter>Shared</Filter>
     </ClCompile>
     <ClCompile Include="ThemeParameters.cpp" />
+    <ClCompile Include="ExpressionFunctionHtmlColor.cpp">
+      <Filter>ExpressionEngine</Filter>
+    </ClCompile>
+    <ClCompile Include="ExpressionFunctionFeatureSource.cpp">
+      <Filter>ExpressionEngine</Filter>
+    </ClCompile>
+    <ClCompile Include="ExpressionFunctionLayerDefinition.cpp">
+      <Filter>ExpressionEngine</Filter>
+    </ClCompile>
+    <ClCompile Include="ExpressionFunctionMapCenterX.cpp">
+      <Filter>ExpressionEngine</Filter>
+    </ClCompile>
+    <ClCompile Include="ExpressionFunctionMapCenterY.cpp">
+      <Filter>ExpressionEngine</Filter>
+    </ClCompile>
+    <ClCompile Include="ExpressionFunctionMapScale.cpp">
+      <Filter>ExpressionEngine</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ExpressionFunctionArgb.h">
@@ -572,6 +590,24 @@
     <ClInclude Include="StylizationAPI.h" />
     <ClInclude Include="StylizationDefs.h" />
     <ClInclude Include="ThemeParameters.h" />
+    <ClInclude Include="ExpressionFunctionHtmlColor.h">
+      <Filter>ExpressionEngine</Filter>
+    </ClInclude>
+    <ClInclude Include="ExpressionFunctionFeatureSource.h">
+      <Filter>ExpressionEngine</Filter>
+    </ClInclude>
+    <ClInclude Include="ExpressionFunctionLayerDefinition.h">
+      <Filter>ExpressionEngine</Filter>
+    </ClInclude>
+    <ClInclude Include="ExpressionFunctionMapCenterX.h">
+      <Filter>ExpressionEngine</Filter>
+    </ClInclude>
+    <ClInclude Include="ExpressionFunctionMapCenterY.h">
+      <Filter>ExpressionEngine</Filter>
+    </ClInclude>
+    <ClInclude Include="ExpressionFunctionMapScale.h">
+      <Filter>ExpressionEngine</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Stylization.rc" />

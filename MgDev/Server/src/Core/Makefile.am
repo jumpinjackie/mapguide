@@ -260,6 +260,7 @@ UnitTestFiles :
 	@cp -f ../../../UnitTest/TestData/Symbology/UT_Annotation3.ldf ../UnitTestFiles
 	@cp -f ../../../UnitTest/TestData/Symbology/UT_Annotation3.mdf ../UnitTestFiles
 	@cp -f ../../../UnitTest/TestData/TileService/UT_BaseMap.mdf ../UnitTestFiles
+	@cp -f ../../../UnitTest/TestData/TileService/UT_StylizationFuncs.mdf ../UnitTestFiles
 	@cp -f ../../../UnitTest/TestData/TileService/UT_Parcels.fs ../UnitTestFiles
 	@cp -f ../../../UnitTest/TestData/TileService/UT_Parcels.ldf ../UnitTestFiles
 	@cp -f ../../../UnitTest/TestData/TileService/UT_Parcels.sdf ../UnitTestFiles
@@ -268,6 +269,7 @@ UnitTestFiles :
 	@cp -f ../../../UnitTest/TestData/TileService/UT_RoadCenterLines.sdf ../UnitTestFiles
 	@cp -f ../../../UnitTest/TestData/TileService/UT_VotingDistricts.fs ../UnitTestFiles
 	@cp -f ../../../UnitTest/TestData/TileService/UT_VotingDistricts.ldf ../UnitTestFiles
+	@cp -f ../../../UnitTest/TestData/TileService/UT_VotingDistrictsFunctions.ldf ../UnitTestFiles
 	@cp -f ../../../UnitTest/TestData/TileService/UT_VotingDistricts.sdf ../UnitTestFiles
 	@cp -f ../../../UnitTest/TestData/ServerAdmin/1.1.1.mgd ../UnitTestFiles
 	@cp -f ../../../UnitTest/TestData/CoordinateSystems/epsgcodes.txt ../UnitTestFiles

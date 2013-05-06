@@ -30,10 +30,16 @@ libMgStylization_la_SOURCES = \
   ExpressionFunctionDecap.cpp \
   ExpressionFunctionFeatureClass.cpp \
   ExpressionFunctionFeatureId.cpp \
+  ExpressionFunctionFeatureSource.cpp \
+  ExpressionFunctionHtmlColor.cpp \
   ExpressionFunctionIf.cpp \
+  ExpressionFunctionLayerDefinition.cpp \
   ExpressionFunctionLayerId.cpp \
   ExpressionFunctionLookup.cpp \
+  ExpressionFunctionMapCenterX.cpp \
+  ExpressionFunctionMapCenterY.cpp \
   ExpressionFunctionMapName.cpp \
+  ExpressionFunctionMapScale.cpp \
   ExpressionFunctionRange.cpp \
   ExpressionFunctionSession.cpp \
   ExpressionFunctionUrlEncode.cpp \
@@ -117,10 +123,16 @@ noinst_HEADERS = \
   ExpressionFunctionDecap.h \
   ExpressionFunctionFeatureClass.h \
   ExpressionFunctionFeatureId.h \
+  ExpressionFunctionFeatureSource.h \
+  ExpressionFunctionHtmlColor.h \
   ExpressionFunctionIf.h \
+  ExpressionFunctionLayerDefinition.h \
   ExpressionFunctionLayerId.h \
   ExpressionFunctionLookup.h \
+  ExpressionFunctionMapCenterX.h \
+  ExpressionFunctionMapCenterY.h \
   ExpressionFunctionMapName.h \
+  ExpressionFunctionMapScale.h \
   ExpressionFunctionRange.h \
   ExpressionFunctionSession.h \
   ExpressionFunctionUrlEncode.h \

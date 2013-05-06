@@ -25,6 +25,8 @@ class TestRenderingService : public CppUnit::TestFixture
     CPPUNIT_TEST_SUITE(TestRenderingService);
     CPPUNIT_TEST(TestStart); // This must be the very first unit test
 
+    CPPUNIT_TEST(TestCase_StylizationFunctionsPNG);
+
     CPPUNIT_TEST(TestCase_SymbologyPointsPNG);
     CPPUNIT_TEST(TestCase_SymbologyPointsParamPNG);
     CPPUNIT_TEST(TestCase_SymbologyLinesPNG);
@@ -40,6 +42,8 @@ class TestRenderingService : public CppUnit::TestFixture
     CPPUNIT_TEST(TestCase_RenderMapPNG);
     CPPUNIT_TEST(TestCase_RenderMapWithWatermarkPNG);
     CPPUNIT_TEST(TestCase_RenderLegendPNG);
+
+    CPPUNIT_TEST(TestCase_StylizationFunctionsPNG8);
 
 	CPPUNIT_TEST(TestCase_SymbologyPointsPNG8);
     CPPUNIT_TEST(TestCase_SymbologyPointsParamPNG8);
@@ -57,6 +61,8 @@ class TestRenderingService : public CppUnit::TestFixture
     CPPUNIT_TEST(TestCase_RenderMapWithWatermarkPNG8);
     CPPUNIT_TEST(TestCase_RenderLegendPNG8);
 
+    CPPUNIT_TEST(TestCase_StylizationFunctionsGIF);
+
 	CPPUNIT_TEST(TestCase_SymbologyPointsGIF);
     CPPUNIT_TEST(TestCase_SymbologyPointsParamGIF);
     CPPUNIT_TEST(TestCase_SymbologyLinesGIF);
@@ -72,6 +78,8 @@ class TestRenderingService : public CppUnit::TestFixture
     CPPUNIT_TEST(TestCase_RenderMapGIF);
     CPPUNIT_TEST(TestCase_RenderMapWithWatermarkGIF);
     CPPUNIT_TEST(TestCase_RenderLegendGIF);
+
+    CPPUNIT_TEST(TestCase_StylizationFunctionsJPG);
 
 	CPPUNIT_TEST(TestCase_SymbologyPointsJPG);
     CPPUNIT_TEST(TestCase_SymbologyPointsParamJPG);
@@ -122,6 +130,8 @@ public:
     void TestCase_Annotation2(CREFSTRING imageFormat, CREFSTRING extension);
     void TestCase_Annotation3(CREFSTRING imageFormat, CREFSTRING extension);
 
+    void TestCase_StylizationFunctions(CREFSTRING imageFormat, CREFSTRING extension);
+
 	//PNG output tests
 	void TestCase_RenderDynamicOverlayPNG() { TestCase_RenderDynamicOverlay(L"PNG", L"png"); }
     void TestCase_RenderDynamicOverlayTiledMapPNG() { TestCase_RenderDynamicOverlayTiledMap(L"PNG", L"png"); }
@@ -136,6 +146,7 @@ public:
     void TestCase_Annotation1PNG() { TestCase_Annotation1(L"PNG", L"png"); }
     void TestCase_Annotation2PNG() { TestCase_Annotation2(L"PNG", L"png"); }
     void TestCase_Annotation3PNG() { TestCase_Annotation3(L"PNG", L"png"); }
+    void TestCase_StylizationFunctionsPNG() { TestCase_StylizationFunctions(L"PNG", L"png"); }
 
 	//PNG8 output tests
 	void TestCase_RenderDynamicOverlayPNG8() { TestCase_RenderDynamicOverlay(L"PNG8", L"png"); }
@@ -151,6 +162,7 @@ public:
     void TestCase_Annotation1PNG8() { TestCase_Annotation1(L"PNG8", L"png"); }
     void TestCase_Annotation2PNG8() { TestCase_Annotation2(L"PNG8", L"png"); }
     void TestCase_Annotation3PNG8() { TestCase_Annotation3(L"PNG8", L"png"); }
+    void TestCase_StylizationFunctionsPNG8() { TestCase_StylizationFunctions(L"PNG8", L"png"); }
 
 	//GIF output tests
 	void TestCase_RenderDynamicOverlayGIF() { TestCase_RenderDynamicOverlay(L"GIF", L"gif"); }
@@ -166,6 +178,7 @@ public:
     void TestCase_Annotation1GIF() { TestCase_Annotation1(L"GIF", L"gif"); }
     void TestCase_Annotation2GIF() { TestCase_Annotation2(L"GIF", L"gif"); }
     void TestCase_Annotation3GIF() { TestCase_Annotation3(L"GIF", L"gif"); }
+    void TestCase_StylizationFunctionsGIF() { TestCase_StylizationFunctions(L"GIF", L"gif"); }
 
 	//JPG output tests
 	void TestCase_RenderDynamicOverlayJPG() { TestCase_RenderDynamicOverlay(L"JPG", L"jpg"); }
@@ -181,6 +194,7 @@ public:
     void TestCase_Annotation1JPG() { TestCase_Annotation1(L"JPG", L"jpg"); }
     void TestCase_Annotation2JPG() { TestCase_Annotation2(L"JPG", L"jpg"); }
     void TestCase_Annotation3JPG() { TestCase_Annotation3(L"JPG", L"jpg"); }
+    void TestCase_StylizationFunctionsJPG() { TestCase_StylizationFunctions(L"JPG", L"jpg"); }
 
     void TestCase_QueryFeatures();
 
@@ -189,6 +203,7 @@ public:
 private:
     MgdMap* CreateTestMap();
     MgdMap* CreateTestTiledMap();
+    MgdMap* CreateTestStylizationFunctionMap();
     MgdMap* CreateTestMapWithWatermark();
     MgPolygon* CreateSelectionPolygon(MgdMap* map, double width, double height);
     static STRING GetPath(CREFSTRING basePath, CREFSTRING imageFormat, CREFSTRING extension);

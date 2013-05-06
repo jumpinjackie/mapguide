@@ -451,8 +451,10 @@ void MgServerKmlService::AppendFeatures(MgLayer* layer,
         wcstombs(legendImage, strLegendImage.c_str(), 4096 );
     }
     
+    Ptr<MgResourceIdentifier> layerDefId = layer->GetLayerDefinition();
     RS_UIGraphic uig((unsigned char*)legendImage, 0, layer->GetLegendLabel());
     RS_LayerUIInfo layerInfo(layer->GetName(),
+                             layerDefId->ToString(),
                              layer->GetObjectId(),
                              layer->GetSelectable(),
                              layer->GetVisible(),
@@ -487,7 +489,7 @@ void MgServerKmlService::AppendFeatures(MgLayer* layer,
 
         if (NULL != fdoReader.p)
         {
-            RS_FeatureClassInfo fcInfo(vl->GetFeatureName());
+            RS_FeatureClassInfo fcInfo(vl->GetFeatureName(), vl->GetResourceID());
             MdfModel::NameStringPairCollection* pmappings = vl->GetPropertyMappings();
             for (int j=0; j<pmappings->GetCount(); j++)
             {
