@@ -384,35 +384,36 @@ namespace OSGeo.MapGuide.Viewer
                     nodesById.Add(group.GetObjectId(), node);
                     groupsById.Add(group.GetObjectId(), node);
                 }
+            }
 
-                //Process child groups
-                while (remainingNodes.Count > 0)
+            //Process child groups
+            while (remainingNodes.Count > 0)
+            {
+                List<MgLayerGroup> toRemove = new List<MgLayerGroup>();
+                //Establish parent-child relationship for any child groups here
+                for (int j = 0; j < remainingNodes.Count; j++)
                 {
-                    List<MgLayerGroup> toRemove = new List<MgLayerGroup>();
-                    //Establish parent-child relationship for any child groups here
-                    for (int j = 0; j < remainingNodes.Count; j++)
+                    var parentId = remainingNodes[j].Group.GetObjectId();
+                    if (nodesById.ContainsKey(parentId))
                     {
-                        var parentId = remainingNodes[j].Group.GetObjectId();
-                        if (nodesById.ContainsKey(parentId))
-                        {
-                            var node = CreateGroupNode(remainingNodes[j]);
-                            nodesById[parentId].Nodes.Add(node);
+                        MgLayerGroup grp = remainingNodes[j];
+                        var node = CreateGroupNode(grp);
+                        nodesById[parentId].Nodes.Add(node);
 
-                            //Got to add this group node too, otherwise we could infinite
-                            //loop looking for a parent that's not registered
-                            nodesById.Add(group.GetObjectId(), node);
-                            groupsById.Add(group.GetObjectId(), node);
+                        //Got to add this group node too, otherwise we could infinite
+                        //loop looking for a parent that's not registered
+                        nodesById.Add(grp.GetObjectId(), node);
+                        groupsById.Add(grp.GetObjectId(), node);
 
-                            toRemove.Add(remainingNodes[j]);
-                        }
+                        toRemove.Add(grp);
                     }
-                    //Whittle down this list
-                    if (toRemove.Count > 0)
+                }
+                //Whittle down this list
+                if (toRemove.Count > 0)
+                {
+                    foreach (var g in toRemove)
                     {
-                        foreach (var g in toRemove)
-                        {
-                            remainingNodes.Remove(g);
-                        }
+                        remainingNodes.Remove(g);
                     }
                 }
             }
