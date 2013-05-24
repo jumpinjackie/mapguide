@@ -60,7 +60,7 @@ void MgOpQueryFeatureProperties::Execute()
 
     ACE_ASSERT(m_stream != NULL);
 
-    if (7 == m_packet.m_NumArguments)
+    if (7 == m_packet.m_NumArguments || 8 == m_packet.m_NumArguments)
     {
         Ptr<MgMap> map = (MgMap*)m_stream->GetObject();
         Ptr<MgResourceIdentifier> resource = map->GetResourceId();
@@ -81,6 +81,11 @@ void MgOpQueryFeatureProperties::Execute()
         INT32 layerAttributeFilter = 3;
         m_stream->GetInt32(layerAttributeFilter);
 
+        bool bIncludeFeatureBBOX = false;
+        if (8 == m_packet.m_NumArguments)
+        {
+            m_stream->GetBoolean(bIncludeFeatureBBOX);
+        }
         BeginExecution();
 
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_START();
@@ -97,14 +102,26 @@ void MgOpQueryFeatureProperties::Execute()
         MG_LOG_OPERATION_MESSAGE_ADD_INT32(maxFeatures);
         MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
         MG_LOG_OPERATION_MESSAGE_ADD_INT32(layerAttributeFilter);
+        if (8 == m_packet.m_NumArguments)
+        {
+            MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
+            MG_LOG_OPERATION_MESSAGE_ADD_BOOL(bIncludeFeatureBBOX);
+        }
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
 
         Validate();
 
-        Ptr<MgBatchPropertyCollection> info =
-            m_service->QueryFeatureProperties(map, layerNames, geom, selectionVariant,
-            featureFilter, maxFeatures, layerAttributeFilter);
-
+        Ptr<MgBatchPropertyCollection> info;
+        if (8 == m_packet.m_NumArguments)
+        {
+            info = m_service->QueryFeatureProperties(map, layerNames, geom, selectionVariant,
+                featureFilter, maxFeatures, layerAttributeFilter, bIncludeFeatureBBOX);
+        }
+        else
+        {
+            info = m_service->QueryFeatureProperties(map, layerNames, geom, selectionVariant,
+                featureFilter, maxFeatures, layerAttributeFilter);
+        }
         EndExecution(info);
     }
     else

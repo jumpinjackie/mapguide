@@ -31,7 +31,8 @@ class MG_SERVER_RENDERING_API FeaturePropRenderer : public FeatureInfoRenderer
 public:
     FeaturePropRenderer(MgSelection* selection,
                         int maxFeatures,
-                        double mapScale);
+                        double mapScale,
+                        bool bIncludeFeatureBBOX);
     virtual ~FeaturePropRenderer();
 
     ///////////////////////////////////
@@ -49,6 +50,17 @@ public:
     virtual bool SupportsTooltips();
     virtual bool SupportsHyperlinks();
 
+    virtual void ProcessPolygon(LineBuffer*   lb,
+                                RS_FillStyle& fill);
+
+    virtual void ProcessPolyline(LineBuffer*    lb,
+                                 RS_LineStroke& lsym);
+
+    virtual void ProcessMarker(LineBuffer*   lb,
+                               RS_MarkerDef& mdef,
+                               bool          allowOverpost,
+                               RS_Bounds*    bounds = NULL);
+
     MgBatchPropertyCollection* GetProperties()
     {
         return SAFE_ADDREF(m_featprops);
@@ -56,6 +68,8 @@ public:
 
 private:
     MgBatchPropertyCollection* m_featprops;
+    MgPropertyCollection* m_currentFeature;
+    bool m_bIncludeFeatureBBOX;
 };
 
 #endif

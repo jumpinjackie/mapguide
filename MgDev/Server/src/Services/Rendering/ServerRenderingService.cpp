@@ -864,9 +864,8 @@ MgBatchPropertyCollection* MgServerRenderingService::QueryFeatureProperties(MgMa
                                                                             INT32 maxFeatures)
 {
     // Call updated QueryFeatureProperties API
-    return QueryFeatureProperties(map, layerNames, filterGeometry, selectionVariant, L"", maxFeatures, 3 /*visible and selectable*/);
+    return QueryFeatureProperties(map, layerNames, filterGeometry, selectionVariant, L"", maxFeatures, 3 /*visible and selectable*/, false);
 }
-
 
 ///////////////////////////////////////////////////////////////////////////////
 MgBatchPropertyCollection* MgServerRenderingService::QueryFeatureProperties(MgMap* map,
@@ -877,6 +876,19 @@ MgBatchPropertyCollection* MgServerRenderingService::QueryFeatureProperties(MgMa
                                                                             INT32 maxFeatures,
                                                                             INT32 layerAttributeFilter)
 {
+    return QueryFeatureProperties(map, layerNames, filterGeometry, selectionVariant, L"", maxFeatures, layerAttributeFilter, false);
+}
+
+///////////////////////////////////////////////////////////////////////////////
+MgBatchPropertyCollection* MgServerRenderingService::QueryFeatureProperties(MgMap* map,
+                                                                            MgStringCollection* layerNames,
+                                                                            MgGeometry* filterGeometry,
+                                                                            INT32 selectionVariant, // Within, Touching, Topmost
+                                                                            CREFSTRING featureFilter,
+                                                                            INT32 maxFeatures,
+                                                                            INT32 layerAttributeFilter,
+                                                                            bool bIncludeFeatureBBOX)
+{
     Ptr<MgBatchPropertyCollection> ret;
 
     MG_TRY()
@@ -886,7 +898,7 @@ MgBatchPropertyCollection* MgServerRenderingService::QueryFeatureProperties(MgMa
         maxFeatures = INT_MAX;
 
     Ptr<MgSelection> sel;   //TODO: do we need this for this API? new MgSelection(map);
-    FeaturePropRenderer fpr(sel, maxFeatures, map->GetViewScale());
+    FeaturePropRenderer fpr(sel, maxFeatures, map->GetViewScale(), bIncludeFeatureBBOX);
 
     RenderForSelection(map, layerNames, filterGeometry, selectionVariant, featureFilter, maxFeatures, layerAttributeFilter, &fpr);
 

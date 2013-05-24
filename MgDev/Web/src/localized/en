@@ -254,11 +254,9 @@ POWEREDBYICON           = PoweredBy_en.gif
 
 # Property Pane Toolbar
 ZOOMSELECTEDFEATUREDESC = Zoom to this feature
-NOFEATSELECTRESPONSE    = No response from feature selection request
 
 # Multiple Property Processing
 SERVERERROR             = Server Error
-ERRORSTACKTRACE         = Stack Trace
 
 # Quick Plot
 QUICKPLOT_HEADER        = Quick Plot

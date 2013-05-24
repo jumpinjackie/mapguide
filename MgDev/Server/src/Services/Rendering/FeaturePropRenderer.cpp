@@ -21,17 +21,22 @@
 #include "FeaturePropRenderer.h"
 #include "RS_FeatureReader.h"
 
+#define SPECIAL_PROP_LAYER_NAME     L"_MgLayerName"
+#define SPECIAL_PROP_BOUNDING_BOX   L"_MgFeatureBoundingBox"
 
-FeaturePropRenderer::FeaturePropRenderer(MgSelection* selection, int maxFeatures, double mapScale)
+FeaturePropRenderer::FeaturePropRenderer(MgSelection* selection, int maxFeatures, double mapScale, bool bIncludeFeatureBBOX)
 : FeatureInfoRenderer(selection, maxFeatures, mapScale)
 {
     m_featprops = new MgBatchPropertyCollection();
+    m_currentFeature = NULL;
+    m_bIncludeFeatureBBOX = bIncludeFeatureBBOX;
 }
 
 
 FeaturePropRenderer::~FeaturePropRenderer()
 {
     SAFE_RELEASE(m_featprops);
+    SAFE_RELEASE(m_currentFeature);
 }
 
 
@@ -69,11 +74,20 @@ void FeaturePropRenderer::StartFeature(RS_FeatureReader* feature,
     }
     */
 
+    SAFE_RELEASE(m_currentFeature);
     Ptr<MgPropertyCollection> featureProps = new MgPropertyCollection(true, true);
+    m_currentFeature = SAFE_ADDREF(featureProps.p);
 
     //Add the layer name as a property with a special ID
-    Ptr<MgStringProperty> layerNameProperty = new MgStringProperty(L"_MgLayerName", m_layerInfo->name());
+    Ptr<MgStringProperty> layerNameProperty = new MgStringProperty(SPECIAL_PROP_LAYER_NAME, m_layerInfo->name());
     featureProps->Add(layerNameProperty);
+
+    //Add bounding box if we're instructed to
+    if (m_bIncludeFeatureBBOX)
+    {
+        Ptr<MgStringProperty> boundingBoxProperty = new MgStringProperty(SPECIAL_PROP_BOUNDING_BOX, L"");
+        featureProps->Add(boundingBoxProperty);
+    }
 
     //for each property in the property mapping, add to the
     //return property collection
@@ -108,4 +122,79 @@ bool FeaturePropRenderer::SupportsHyperlinks()
 {
     // set to false to disable processing of hyperlinks
     return false;
+}
+
+void FeaturePropRenderer::ProcessPolygon(LineBuffer*   lb,
+                                         RS_FillStyle& fill)
+{
+    if (!m_bIncludeFeatureBBOX)
+        return;
+
+    const RS_Bounds& featBounds = lb->bounds();
+    Ptr<MgStringProperty> bbox = dynamic_cast<MgStringProperty*>(m_currentFeature->GetItem(SPECIAL_PROP_BOUNDING_BOX));
+    STRING val;
+    STRING buf;
+    MgUtil::DoubleToString(featBounds.minx, buf);
+    val += buf;
+    MgUtil::DoubleToString(featBounds.miny, buf);
+    val += L" ";
+    val += buf;
+    MgUtil::DoubleToString(featBounds.maxx, buf);
+    val += L" ";
+    val += buf;
+    MgUtil::DoubleToString(featBounds.maxy, buf);
+    val += L" ";
+    val += buf;
+    bbox->SetValue(val);
+}
+
+void FeaturePropRenderer::ProcessPolyline(LineBuffer*    lb,
+                                          RS_LineStroke& lsym)
+{
+    if (!m_bIncludeFeatureBBOX)
+        return;
+
+    const RS_Bounds& featBounds = lb->bounds();
+    Ptr<MgStringProperty> bbox = dynamic_cast<MgStringProperty*>(m_currentFeature->GetItem(SPECIAL_PROP_BOUNDING_BOX));
+    STRING val;
+    STRING buf;
+    MgUtil::DoubleToString(featBounds.minx, buf);
+    val += buf;
+    MgUtil::DoubleToString(featBounds.miny, buf);
+    val += L" ";
+    val += buf;
+    MgUtil::DoubleToString(featBounds.maxx, buf);
+    val += L" ";
+    val += buf;
+    MgUtil::DoubleToString(featBounds.maxy, buf);
+    val += L" ";
+    val += buf;
+    bbox->SetValue(val);
+}
+
+void FeaturePropRenderer::ProcessMarker(LineBuffer*   lb,
+                                        RS_MarkerDef& mdef,
+                                        bool          allowOverpost,
+                                        RS_Bounds*    bounds)
+{
+    if (!m_bIncludeFeatureBBOX)
+        return;
+
+    //Should we inflate this a bit to represent an actual box?
+    const RS_Bounds& featBounds = lb->bounds();
+    Ptr<MgStringProperty> bbox = dynamic_cast<MgStringProperty*>(m_currentFeature->GetItem(SPECIAL_PROP_BOUNDING_BOX));
+    STRING val;
+    STRING buf;
+    MgUtil::DoubleToString(featBounds.minx, buf);
+    val += buf;
+    MgUtil::DoubleToString(featBounds.miny, buf);
+    val += L" ";
+    val += buf;
+    MgUtil::DoubleToString(featBounds.maxx, buf);
+    val += L" ";
+    val += buf;
+    MgUtil::DoubleToString(featBounds.maxy, buf);
+    val += L" ";
+    val += buf;
+    bbox->SetValue(val);
 }

@@ -146,7 +146,6 @@ else
                     $vpath . "setselection.php",
                     $showSlider? "true": "false",
                     $locale,
-                    $vpath . "getselectedfeatures.php",
                     $scaleCreationCode,
                     $selectionColor,
                     $mapImgFormat,

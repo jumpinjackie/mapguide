@@ -51,6 +51,9 @@ public:
     /// </returns>
     MgRequestClassification GetRequestClassification() { return MgHttpRequestResponseHandler::mrcViewer; }
 
+protected:
+    virtual void ValidateOperationVersion();
+
 private:
     STRING  m_mapName;
     STRING  m_layerNames;
@@ -60,6 +63,11 @@ private:
     INT32   m_maxFeatures;
     INT32   m_layerAttributeFilter;
     bool    m_persist;
+
+    //New for 2.6
+    INT32   m_requestData;
+    STRING  m_selectionColor;
+    STRING  m_selectionFormat;
 };
 
 #endif  // _FS_DESCRIBE_MAP_FEATURES_H

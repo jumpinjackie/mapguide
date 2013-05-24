@@ -796,6 +796,10 @@ void TestRenderingService::TestCase_QueryFeatures()
         Ptr<MgPolygon> poly1 = CreateSelectionPolygon(map, 0.3, 0.3);
         Ptr<MgFeatureInformation> fi1 = m_svcRendering->QueryFeatures(map, layerNames1, poly1, MgFeatureSpatialOperations::Within, -1);
 
+        Ptr<MgByteReader> br1 = fi1->ToXml();
+        Ptr<MgByteSink> sink1 = new MgByteSink(br1);
+        sink1->ToFile(L"../UnitTestFiles/QueryFeatures75k.xml");
+
         // call the API using a scale of 12000
         map->SetViewScale(12000.0);
 
@@ -804,6 +808,10 @@ void TestRenderingService::TestCase_QueryFeatures()
         layerNames2->Add(L"Parcels");
         Ptr<MgPolygon> poly2 = CreateSelectionPolygon(map, 0.05, 0.05);
         Ptr<MgFeatureInformation> fi2 = m_svcRendering->QueryFeatures(map, layerNames2, poly2, MgFeatureSpatialOperations::Within, -1);
+
+        Ptr<MgByteReader> br2 = fi2->ToXml();
+        Ptr<MgByteSink> sink2 = new MgByteSink(br2);
+        sink2->ToFile(L"../UnitTestFiles/QueryFeatures12k.xml");
     }
     catch (MgException* e)
     {

@@ -27,15 +27,22 @@ if(!chrome && safariIndex != -1)
 var msieIndex = agent.indexOf("msie");
 var msie = false;
 var msie7plus = false;
+var msie8plus = false;
 var msie6minus = false;
 if(msieIndex != -1)
 {
     msie = true;
     var msieVersion = agent.substr(msieIndex + 5, 2);
 
-    if(parseFloat(msieVersion) >= 7)
+    if(parseFloat(msieVersion) == 7)
     {
         msie7plus = true;
+        msie8plus = false;
+    }
+    else if (parseFloat(msieVersion) >= 8)
+    {
+        msie7plus = true;
+        msie8plus = true;
     }
     else
     {

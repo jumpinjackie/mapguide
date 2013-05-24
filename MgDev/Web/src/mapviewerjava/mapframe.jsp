@@ -180,7 +180,6 @@ int pointBufferSize;
                     vpath + "setselection.jsp",
                     showSlider != 0? "true": "false",
                     locale,
-                    vpath + "getselectedfeatures.jsp",
                     scaleCreationCode,
                     selectionColor,
                     mapImgFormat,

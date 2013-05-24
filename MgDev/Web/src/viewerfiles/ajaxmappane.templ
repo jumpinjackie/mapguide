@@ -340,7 +340,6 @@ var cancelTgt;
 var locale = '%s';
 var openHlinkText = macOS ? "__#OPENHYPERLINKMAC#__" : "__#OPENHYPERLINK#__";
 var lastLegendScaleUpdate = curScale;
-var featureRequestUrl = '%s';
 %s
 var isAlertShow = false;
 var selectionColor = '0x%s';
@@ -530,6 +529,16 @@ function DigitizePolygon(handler)
 function IsDigitizing()
 {
     return digitizing;
+}
+
+function GetSelectedFeatures()
+{
+    return selFeatures;
+}
+
+function GetSelectedBounds()
+{
+    return selBounds;
 }
 
 // private functions -----------------------------------------------
@@ -1885,10 +1894,8 @@ function RequestMapImage(reqId, viewParams)
         document.getElementById("mapImage").src = document.getElementById("mapImage").src;
 }
 
-function RequestSelectionImage(reqId, viewParams)
+function PutSelectionImageUrl(reqId, url)
 {
-    url = webAgent + "?OPERATION=GETDYNAMICMAPOVERLAYIMAGE&FORMAT=" + selectionImgFormat + "&VERSION=2.1.0&SESSION=" + sessionId + "&MAPNAME=" + encodeComponent(mapName) + "&SEQ=" + Math.random() + "&CLIENTAGENT=" + encodeComponent(clientAgent) + "&BEHAVIOR=5&SELECTIONCOLOR=" + selectionColor;
-    url += viewParams;
     if(safari || chrome)
     {
         LoadAlternateSelectionImage(url, reqId);
@@ -1900,6 +1907,13 @@ function RequestSelectionImage(reqId, viewParams)
     }
     if (opera)
         document.getElementById("selectionImage").src = document.getElementById("selectionImage").src;
+}
+
+function RequestSelectionImage(reqId, viewParams)
+{
+    url = webAgent + "?OPERATION=GETDYNAMICMAPOVERLAYIMAGE&FORMAT=" + selectionImgFormat + "&VERSION=2.1.0&SESSION=" + sessionId + "&MAPNAME=" + encodeComponent(mapName) + "&SEQ=" + Math.random() + "&CLIENTAGENT=" + encodeComponent(clientAgent) + "&BEHAVIOR=5&SELECTIONCOLOR=" + selectionColor;
+    url += viewParams;
+    PutSelectionImageUrl(reqId, url);
 }
 
 function OnMapOverlayImageLoaded(e)
@@ -3018,8 +3032,14 @@ function QueryFeatureInfo(geom, append, maxfeatures, which)
 {
     if(GetVisSelLayers() == "") return;
     if(moveType != NONE) return;
-    var reqParams = "OPERATION=QUERYMAPFEATURES&VERSION=1.0.0&PERSIST=1&MAPNAME=" + encodeURIComponent(mapName) + "&SESSION=" + sessionId + "&SEQ=" + Math.random();
+    if(geom.indexOf("NaN") >= 0) return;
+    
+    var reqData = 1; //attributes
+    if (msie8plus || !msie)
+        reqData |= 2; //inline selection
+    var reqParams = "OPERATION=QUERYMAPFEATURES&VERSION=2.6.0&PERSIST=1&MAPNAME=" + encodeURIComponent(mapName) + "&SESSION=" + sessionId + "&SEQ=" + Math.random();
     reqParams += "&LAYERNAMES=" + encodeURIComponent(GetVisSelLayers()) + "&GEOMETRY=" + geom + "&SELECTIONVARIANT=" + queryVariant + "&CLIENTAGENT=" + encodeURIComponent(clientAgent);
+    reqParams += "&REQUESTDATA=" + reqData + "&SELECTIONCOLOR=" + selectionColor + "&SELECTIONFORMAT=" + selectionImgFormat;
     if(maxfeatures != 0)
     {
         reqParams += "&MAXFEATURES=" + maxfeatures;
@@ -3129,7 +3149,17 @@ function ProcessFeatureInfo(xmlIn, append, which)
                 }
             }
             parent.OnSelectionChanged();
-            RequestSelectionImage(++ selMapId, "");
+            var mtEls = xmlIn.getElementsByTagName("MimeType");
+            var cntEls = xmlIn.getElementsByTagName("Content");
+            var bDataUriSupport = (msie8plus || !msie);
+            if (bDataUriSupport && mtEls.length == 1 && cntEls.length == 1) {
+                var mt = msie ? mtEls[0].text : mtEls[0].textContent;
+                var cnt = msie ? cntEls[0].text : cntEls[0].textContent;
+                var dataUri = "data:" + mt + ";base64," + cnt;
+                PutSelectionImageUrl(++ selMapId, dataUri);
+            } else {
+                RequestSelectionImage(++ selMapId, "");
+            }
         }
     }
     if(which & 2)
@@ -3138,7 +3168,10 @@ function ProcessFeatureInfo(xmlIn, append, which)
         {
             if (selection.count > 0)
             {
-                RequestSelectedFeatureProperties();
+                //Check if we have attributes inline
+                var props = xmlIn.getElementsByTagName("SelectedLayer");
+                var resp = ConvertToSelectedFeatureSet(props);
+                ProcessSelectedFeatureSet(resp);
             }
             else
             {
@@ -3203,12 +3236,14 @@ function ClearSelection()
 
     SetSelection("", false);
 
+    selFeatures = {};
+    selBounds = null;
+
     selImg = document.getElementById(msie6minus ? "selImg1div": curSelImg);
     if(selImg)
     {
         selImg.style.visibility = "hidden";
     }
-
 
     parent.OnSelectionChanged();
 }
@@ -3226,32 +3261,15 @@ function SetSelection(selText, requery)
 
 function ZoomSelection()
 {
-    if(selection.count == 0)
+    if(selection.count == 0 || !selBounds)
         return;
-
-    var reqParams = "OPERATION=GETFEATURESETENVELOPE&VERSION=1.0.0&SESSION=" + sessionId + "&MAPNAME=" + encodeURIComponent(mapName) + "&SEQ=" + Math.random();
-    reqParams += "&FEATURESET=" + encodeURIComponent(selectionToXml()) + "&CLIENTAGENT=" + encodeURIComponent(clientAgent);
-
-    dr = CreateRequestHandler();
-    dr.open("POST", webAgent, false);
-    dr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-    dr.send(reqParams);
-   
-    if(dr.status == 200)
-    {
-        var env = ParseEnvelope(dr.responseXML.documentElement);
-        if(env != null)
-        {
-            var mcsW = env.upperRight.X - env.lowerLeft.X;
-            var mcsH = env.upperRight.Y - env.lowerLeft.Y;
-            var centerX = env.lowerLeft.X + mcsW / 2;
-            var centerY = env.lowerLeft.Y + mcsH / 2;
-            var scale = CalculateScale1(mcsW*2, mcsH*2, mapDevW, mapDevH);
-            GotoView(centerX, centerY, scale, true, true);
-        }
-    }
-    else
-        RequestFailed(dr.responseText);
+        
+    var mcsW = selBounds.maxx - selBounds.minx;
+    var mcsH = selBounds.maxy - selBounds.miny;
+    var centerX = selBounds.minx + mcsW / 2;
+    var centerY = selBounds.miny + mcsH / 2;
+    var scale = CalculateScale1(mcsW*2, mcsH*2, mapDevW, mapDevH);
+    GotoView(centerX, centerY, scale, true, true);
 }
 
 function ParseEnvelope(xmlRoot)
@@ -3761,7 +3779,8 @@ function RequestHyperLinkData(id, x, y, exec)
     pt1 = ScreenToMapUnits(x1,y1);
     pt2 = ScreenToMapUnits(x2,y2);
     geom = MakeWktPolygon(pt1.X, pt1.Y, pt2.X, pt2.Y);
-    reqParams = "OPERATION=QUERYMAPFEATURES&VERSION=1.0.0&PERSIST=0&MAPNAME=" + encodeURIComponent(mapName) + "&SESSION=" + sessionId + "&SEQ=" + Math.random() + "&LAYERNAMES=" + encodeURIComponent(GetVisLayers()) + "&GEOMETRY=" + geom + "&SELECTIONVARIANT=INTERSECTS&MAXFEATURES=1&LAYERATTRIBUTEFILTER=5" + "&CLIENTAGENT=" + encodeURIComponent(clientAgent);
+    var reqData = (4 | 8); //Tooltips + Hyperlinks
+    reqParams = "OPERATION=QUERYMAPFEATURES&VERSION=2.6.0&PERSIST=0&MAPNAME=" + encodeURIComponent(mapName) + "&SESSION=" + sessionId + "&SEQ=" + Math.random() + "&LAYERNAMES=" + encodeURIComponent(GetVisLayers()) + "&GEOMETRY=" + geom + "&SELECTIONVARIANT=INTERSECTS&MAXFEATURES=1&LAYERATTRIBUTEFILTER=5&REQUESTDATA=" + reqData + "&CLIENTAGENT=" + encodeURIComponent(clientAgent);
     obj = new HlRequest(id, x, y, req, exec);
     req.onreadystatechange = obj.OnHl;
     try { req.send(reqParams); } catch(ex) {}
@@ -4131,37 +4150,52 @@ var selFeatureZoom = 200;
 var hovered = "";
 var active = "";
 var selFeatures = {};
+var selBounds = null;
 
-function RequestSelectedFeatureProperties()
+function ConvertToSelectedFeatureSet(layerEls)
 {
-    var mapname = GetMapName();
-    var session = GetSessionId();
-    var selRequest = CreateRequestHandler();
-    var reqParams = "MAPNAME="+mapname+"&SESSION="+session+"&LOCALE="+locale+"&SEQ="+Math.random();
-    selRequest.open("POST", featureRequestUrl, false);
-    selRequest.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-    selRequest.send(reqParams);
- 
-    var respText = selRequest.responseText;
-    if (respText && respText.length > 0)
+    var featuresByLayer = {};
+    for (var i = 0; i < layerEls.length; i++)
     {
-        var resp = eval('(' + respText + ')');
-        //If an error occurred server-side, it is written as the error property of the JSON response
-        if (resp.Error)
-            RequestFailed(resp.Error.Message + "\n\n__#ERRORSTACKTRACE#__:\n\n" + resp.Error.StackTrace);
-        else
-            ProcessSelectedFeatureSet(resp);
+        var layerEl = layerEls[i];
+        var layerName = layerEl.getAttribute("name");
+        if (!featuresByLayer[layerName])
+            featuresByLayer[layerName] = [];
+            
+        var featEls = layerEl.getElementsByTagName("Feature");
+        for (var j = 0; j < featEls.length; j++)
+        {
+            var feat = { values: [] };
+            var featEl = featEls[j];
+            var bounds = featEl.getElementsByTagName("Bounds")[0];
+            var bbox = (msie ? bounds.text : bounds.textContent).split(" ");
+            feat.zoom = { minx: parseFloat(bbox[0]), miny: parseFloat(bbox[1]), maxx: parseFloat(bbox[2]), maxy: parseFloat(bbox[3]) };
+            
+            var propEls = featEl.getElementsByTagName("Property");
+            for (var k = 0; k < propEls.length; k++)
+            {
+                var nameEl = propEls[k].getElementsByTagName("Name")[0];
+                var valueEl = propEls[k].getElementsByTagName("Value");
+                //Name,Value
+                var name = msie ? nameEl.text : nameEl.textContent;
+                var value = null;
+                if (valueEl.length == 1)
+                    value = msie ? valueEl[0].text : valueEl[0].textContent;
+                feat.values.push({ name: name, value: value });
+            }
+            featuresByLayer[layerName].push(feat);
+        }
     }
-    else
-        RequestFailed("__#NOFEATSELECTRESPONSE#__");
+    return featuresByLayer;
 }
 
 function ProcessSelectedFeatureSet(resp)
 {
     selFeatures = {};
+    selBounds = null;
     if (!resp)
         return;
-        
+
     var selLayers = document.getElementById("selLayers");
     selLayers.length = 0;
     GetPropertyCtrl().Clear();
@@ -4180,6 +4214,26 @@ function ProcessSelectedFeatureSet(resp)
  
         //Associates the selected features on layer
         selFeatures[layerName] = resp[layerName];
+        
+        //Update selection bounding box
+        for (var i = 0; i < resp[layerName].length; i++)
+        {
+            var feat = resp[layerName][i];
+            if (feat.zoom) {
+                if (!selBounds) {
+                    selBounds = { minx: feat.zoom.minx, miny: feat.zoom.miny, maxx: feat.zoom.maxx, maxy: feat.zoom.maxy };
+                } else {
+                    if (feat.zoom.minx < selBounds.minx)
+                        selBounds.minx = feat.zoom.minx;
+                    if (feat.zoom.miny < selBounds.miny)
+                        selBounds.miny = feat.zoom.miny;
+                    if (feat.zoom.maxx > selBounds.maxx)
+                        selBounds.maxx = feat.zoom.maxx;
+                    if (feat.zoom.maxy > selBounds.maxy)
+                        selBounds.maxy = feat.zoom.maxy;
+                }
+            }
+        }
     }
     
     if (selLayers.length > 0)

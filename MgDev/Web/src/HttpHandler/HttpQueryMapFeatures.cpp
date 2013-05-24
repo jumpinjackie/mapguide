@@ -70,6 +70,17 @@ MgHttpQueryMapFeatures::MgHttpQueryMapFeatures(MgHttpRequest *hRequest)
 
     // Get the feature filter
     m_featureFilter = params->GetParameterValue(MgHttpResourceStrings::reqRenderingFeatureFilter);
+
+    INT32 version = m_userInfo->GetApiVersion();
+    if (version == MG_API_VERSION(2,6,0))
+    {
+        m_requestData = 0;
+        STRING strReqData = params->GetParameterValue(MgHttpResourceStrings::reqRenderingRequestData);
+        if (!strReqData.empty())
+            m_requestData = MgUtil::StringToInt32(strReqData);
+        m_selectionFormat = params->GetParameterValue(MgHttpResourceStrings::reqRenderingSelectionFormat);
+        m_selectionColor = params->GetParameterValue(MgHttpResourceStrings::reqRenderingSelectionColor);
+    }
 }
 
 /// <summary>
@@ -120,9 +131,17 @@ void MgHttpQueryMapFeatures::Execute(MgHttpResponse& hResponse)
 
     // Call the HTML controller to process the request
     MgHtmlController controller(m_siteConn);
-    Ptr<MgByteReader> featureDescriptionInfo = controller.QueryMapFeatures(
-        m_mapName, layerNames, filterGeometry, selectionVariant, m_featureFilter, m_maxFeatures, m_persist, m_layerAttributeFilter);
-
+    Ptr<MgByteReader> featureDescriptionInfo;
+    
+    INT32 version = m_userInfo->GetApiVersion();
+    if (version == MG_API_VERSION(1, 0, 0))
+    {
+        featureDescriptionInfo = controller.QueryMapFeatures(m_mapName, layerNames, filterGeometry, selectionVariant, m_featureFilter, m_maxFeatures, m_persist, m_layerAttributeFilter);
+    }
+    else if (version == MG_API_VERSION(2, 6, 0))
+    {
+        featureDescriptionInfo = controller.QueryMapFeatures(m_mapName, layerNames, filterGeometry, selectionVariant, m_featureFilter, m_maxFeatures, m_persist, m_layerAttributeFilter, m_requestData, m_selectionColor, m_selectionFormat);
+    }
     //Convert to alternate response format, if necessary
     ProcessFormatConversion(featureDescriptionInfo);
 
@@ -130,4 +149,25 @@ void MgHttpQueryMapFeatures::Execute(MgHttpResponse& hResponse)
     hResult->SetResultObject(featureDescriptionInfo, featureDescriptionInfo->GetMimeType());
 
     MG_HTTP_HANDLER_CATCH_AND_THROW_EX(L"MgHttpQueryMapFeatures.Execute")
+}
+
+/// <summary>
+/// This method is responsible for checking if
+/// a valid version was given
+/// </summary>
+/// <returns>Returns nothing</returns>
+void MgHttpQueryMapFeatures::ValidateOperationVersion()
+{
+    MG_HTTP_HANDLER_TRY()
+
+    // There are multiple supported versions
+    INT32 version = m_userInfo->GetApiVersion();
+    if (version != MG_API_VERSION(1,0,0) &&
+        version != MG_API_VERSION(2,6,0))
+    {
+        throw new MgInvalidOperationVersionException(
+        L"MgHttpQueryMapFeatures.ValidateOperationVersion", __LINE__, __WFILE__, NULL, L"", NULL);
+    }
+
+    MG_HTTP_HANDLER_CATCH_AND_THROW(L"MgHttpQueryMapFeatures.ValidateOperationVersion");
 }

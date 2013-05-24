@@ -177,6 +177,8 @@ public:
     static const STRING reqRenderingClip;
     static const STRING reqRenderingBehavior;
     static const STRING reqRenderingSelectionColor;
+    static const STRING reqRenderingRequestData;
+    static const STRING reqRenderingSelectionFormat;
 
     // PREDEFINED TILE REQUEST PARAMETERS
     static const STRING reqTileMapDefinition;

@@ -173,6 +173,16 @@ public:
                                         INT32 maxFeatures,
                                         INT32 layerAttributeFilter);
 
+    virtual MgBatchPropertyCollection* QueryFeatureProperties(
+                                        MgMap* map,
+                                        MgStringCollection* layerNames,
+                                        MgGeometry* filterGeometry,
+                                        INT32 selectionVariant,
+                                        CREFSTRING featureFilter,
+                                        INT32 maxFeatures,
+                                        INT32 layerAttributeFilter,
+                                        bool bIncludeFeatureBBOX);
+
 private:
     // used for tile generation
     MgByteReader* RenderTile(MgMap* map,

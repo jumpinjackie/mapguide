@@ -48,3 +48,16 @@ void MgRenderingService::Dispose()
 {
     delete this;
 }
+
+MgBatchPropertyCollection* MgRenderingService::QueryFeatureProperties(
+    MgMap* map,
+    MgStringCollection* layerNames,
+    MgGeometry* filterGeometry,
+    INT32 selectionVariant,
+    CREFSTRING featureFilter,
+    INT32 maxFeatures,
+    INT32 layerAttributeFilter,
+    bool bIncludeFeatureBBOX)
+{
+    throw new MgNotImplementedException(L"MgRenderingService.QueryFeatureProperties", __LINE__, __WFILE__, NULL, L"", NULL);
+}

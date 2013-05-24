@@ -112,7 +112,7 @@ INTERNAL_API:
 
     //////////////////////////////////////////////////////////////////
     /// \brief
-    /// Processes a DescribeMapFeatures request from the Viewer
+    /// Processes a QueryMapFeatures request from the Viewer
     ///
     /// \param mapName
     /// Name of the map
@@ -139,6 +139,39 @@ INTERNAL_API:
         INT32 maxFeatures,
         bool persist,
         INT32 layerAttributeFilter);
+
+    //////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Processes a QueryMapFeatures request from the Viewer
+    ///
+    /// \param mapName
+    /// Name of the map
+    /// \param layer
+    /// Layer for which to provide feature descriptions
+    /// \param selectionGeometry
+    /// Geometry defining which features to select
+    /// \param selectionVariant
+    /// Specifies how features are selected
+    /// \param maxFeatures
+    /// Max number of feature descriptions to return
+    /// \param persist
+    /// Indicates if the returned selection set should be persisted in the session repository
+    ///
+    /// \return
+    /// A byte reader containing the feature info
+    ///
+    MgByteReader* QueryMapFeatures(
+        CREFSTRING mapName,
+        MgStringCollection* layerNames,
+        MgGeometry* selectionGeometry,
+        INT32 selectionVariant,
+        CREFSTRING featureFilter,
+        INT32 maxFeatures,
+        bool persist,
+        INT32 layerAttributeFilter,
+        INT32 requestData,
+        CREFSTRING selectionColor,
+        CREFSTRING selectionFormat);
 
     //////////////////////////////////////////////////////////////////
     /// \brief
@@ -236,6 +269,17 @@ protected:
 
     //////////////////////////////////////////////////////////////////
     /// \brief
+    /// Assembles the composite QueryMapFeatures result
+    ///
+    virtual MgByteReader* CollectQueryMapFeaturesResult(MgResourceService* resourceService,
+                                                        INT32 requestData, 
+                                                        MgFeatureInformation* featInfo,
+                                                        MgSelection* selectionSet,
+                                                        MgBatchPropertyCollection* attributes, 
+                                                        MgByteReader* inlineSelection);
+
+    //////////////////////////////////////////////////////////////////
+    /// \brief
     /// Dispose this object.
     ///
     /// \return
@@ -245,6 +289,12 @@ protected:
     {
         delete this;
     }
+
+private:
+    static void WriteSelectedFeatureAttributes(MgResourceService* resourceService,
+                                               MgSelection* selectionSet,
+                                               MgBatchPropertyCollection* attriubtes,
+                                               REFSTRING xmlOut);
 
 CLASS_ID:
     static const INT32 m_cls_id = MapGuide_MapLayer_ZcvController;

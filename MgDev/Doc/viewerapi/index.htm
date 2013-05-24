@@ -69,7 +69,9 @@
       <LI><A href="#mapframe_getmapwidth">GetMapWidth</A></LI>
       <LI><A href="#mapframe_getmetersperunit">GetMetersPerUnit</A></LI>
       <LI><A href="#mapframe_getscale">GetScale</A></LI>
+      <LI><A href="#mapframe_getselectedbounds">GetSelectedBounds</A></LI>
       <LI><A href="#mapframe_getselectedcount">GetSelectedCount</A></LI>
+      <LI><A href="#mapframe_getselectedfeatures">GetSelectedFeatures</A></LI>
       <LI><A href="#mapframe_getselectedlayers">GetSelectedLayers</A></LI>
       <LI><A href="#mapframe_getselectionxml">GetSelectionXML</A></LI>
       <LI><A href="#mapframe_getsessionid">GetSessionId</A></LI>
@@ -842,9 +844,72 @@
   </DL>
 
   <DL>
+    <DT><STRONG><A name="mapframe_getselectedbounds">GetSelectedBounds()</A></STRONG></DT>
+      <DD>
+      Returns the bounding box of the selected features. Returns null if no features are selected. The box is a <CODE>Bounds</CODE> object:
+<PRE>Bounds {
+  minx; /* The min x coordinate of this bounding box */
+  miny; /* The min y coordinate of this bounding box */
+  maxx; /* The max x coordinate of this bounding box */
+  maxy; /* The max y coordinate of this bounding box */
+}
+</PRE>
+      </DD>
+  </DL>
+
+  <DL>
     <DT><STRONG><A name="mapframe_getselectedcount">GetSelectedCount()</A></STRONG></DT>
       <DD>
       Returns the number of features that are currently selected.
+      </DD>
+  </DL>
+  
+  <DL>
+    <DT><STRONG><A name="mapframe_getselectedfeatures">GetSelectedFeatures()</A></STRONG></DT>
+      <DD>
+      Returns the selection set including attributes of selected features. The selection set is structured like so:
+<PRE>{
+    layerName1 : [
+    { //feature 1 in layerName1
+        values: [
+            { name: "attribute1", value: "value1" },
+            { name: "attribute2", value: "value2" },
+            { name: "attribute3", value: "value3" },
+            ...
+            { name: "attributeN", value: "valueN" }
+        ]
+        zoom: { minx: &lt;feature1_bbox_minx&gt;, miny: &lt;feature1_bbox_miny&gt;, maxx: &lt;feature1_bbox_maxx&gt;, maxy: &lt;feature1_bbox_maxy&gt; }
+    },
+    { //feature 2 in layerName1
+        values: [
+            { name: "attribute1", value: "value1" },
+            { name: "attribute2", value: "value2" },
+            { name: "attribute3", value: "value3" },
+            ...
+            { name: "attributeN", value: "valueN" }
+        ]
+        zoom: { minx: &lt;feature2_bbox_minx&gt;, miny: &lt;feature2_bbox_miny&gt;, maxx: &lt;feature2_bbox_maxx&gt;, maxy: &lt;feature2_bbox_maxy&gt; }
+    },
+    ...,
+    { //feature N in layerName1
+        values: [
+            { name: "attribute1", value: "value1" },
+            { name: "attribute2", value: "value2" },
+            { name: "attribute3", value: "value3" },
+            ...
+            { name: "attributeN", value: "valueN" }
+        ]
+        zoom: { minx: &lt;featureN_bbox_minx&gt;, miny: &lt;featureN_bbox_miny&gt;, maxx: &lt;featureN_bbox_maxx&gt;, maxy: &lt;featureN_bbox_maxy&gt; }
+    }
+    ], layerName2 : [
+        ...
+    ], 
+    ..., 
+    layerNameN : [
+        ...
+    ]
+}
+</PRE>
       </DD>
   </DL>
 
