@@ -1153,10 +1153,10 @@ void TestResourceService::TestCase_BenchmarkGetResourceContents()
 			Ptr<MgByteReader> content = pService->GetResourceContent(resId);
 		}
 		ACE_DEBUG((LM_INFO, ACE_TEXT("  Execution Time: = %6.4f (s)\n"), ((GetTickCount()-lStart)/1000.0) ));
-		
-		//Evict all cached copies to avoid distortion of results due to caching
-		cache->Clear();
 		ACE_DEBUG((LM_INFO, ACE_TEXT(" %d resource content items in cache\n"), (cache->GetCacheSize()) ));
+
+        //Evict all cached copies to avoid distortion of results due to caching
+        cache->Clear();
 
 		lStart = GetTickCount();
 		Ptr<MgStringCollection> contents;
