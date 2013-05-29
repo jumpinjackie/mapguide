@@ -247,6 +247,8 @@ if not exist "%MG_SOURCE%\Web" goto error_mg_web_not_found
 if not exist "%MG_SOURCE%\CS-Map" goto error_mg_csmap_not_found
 echo [prepare] Installer Pre-Requisites
 %MSBUILD% InstallerPreReq%VS_SLN_SUFFIX%.sln
+REM Uncomment line below (and comment line above) if you are building 64-bit with Visual C++ 2010 express 
+REM call build64_vce.bat
 copy %INSTALLER_FDO_REG_UTIL%\%TYPEBUILD%\FdoRegUtil.exe %MG_SOURCE%\Server\FDO
 popd
 echo [prepare] Unpack Apache httpd
