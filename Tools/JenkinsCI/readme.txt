@@ -7,13 +7,13 @@ Build Artifacts produced by this setup
 == Manually triggered from the Jenkins dashboard ==
 
  * FDO 3.8 (32-bit/64-bit)
-	* Prepared for MapGuide/mg-desktop. No distribution tarballs as we can't build the ArcSDE provider
+    * Prepared for MapGuide/mg-desktop. No distribution tarballs as we can't build the ArcSDE provider
  * MapGuide Open Source 2.5 (32-bit/64-bit)
-	* Windows Installer (32-bit/64-bit)
-	* InstantSetup bundles (32-bit/64-bit)
+    * Windows Installer (32-bit/64-bit)
+    * InstantSetup bundles (32-bit/64-bit)
  * mg-desktop 2.5 (32-bit/64-bit)
-	* nuget packages (32-bit/64-bit)
-	* zip distributions (32-bit/64-bit)
+    * nuget packages (32-bit/64-bit)
+    * zip distributions (32-bit/64-bit)
 
 == Automatically triggered by Jenkins (off of svn commit polling) ==
 
@@ -28,7 +28,7 @@ and/or MapGuide/FDO setenvironment.bat to point to the correct locations
 
  * Microsoft .net Framework 4.0
  * Microsoft Visual C++ Express 2010 with Service Pack 1
- * Windows SDK 7.1
+ * Windows SDK 7.1 (64-bit)
  * Java SDK 6u33 (32/64-bit)
  * Java SDK 7u13 (32/64-bit)
  * Jenkins 1.465
@@ -68,20 +68,20 @@ Filesystem layout
 
 C:\apache-ant-1.8.3		[extracted location of apache ant v1.8.3]
 C:\builds		[all build artifacts produced by Jenkins will be here]
-	- revnum.pl [copy from http://svn.osgeo.org/fdo/branches/2.5/Installer/scripts/revnum.pl]
+    - revnum.pl [copy from http://svn.osgeo.org/fdo/branches/2.5/Installer/scripts/revnum.pl]
 C:\fdo_rdbms_thirdparty
-	mysql		[extract/copy MySQL Connector C 32-bit headers/libs here]
-	mysql_x64	[extract/copy MySQL Connector C 64-bit headers/libs here]
-	oracle		[extract 32-bit oracle 11.2 instant client sdk here]
-	oracle_x64	[extract 64-bit oracle 11.2 instant client sdk here]
+    mysql		[extract/copy MySQL Connector C 32-bit headers/libs here]
+    mysql_x64	[extract/copy MySQL Connector C 64-bit headers/libs here]
+    oracle		[extract 32-bit oracle 11.2 instant client sdk here]
+    oracle_x64	[extract 64-bit oracle 11.2 instant client sdk here]
 C:\fdo-3.8-x86 	[svn wc of http://svn.osgeo.org/fdo/branches/3.8]
 C:\fdo-3.8-x64 	[svn wc of http://svn.osgeo.org/fdo/branches/3.8]
 C:\mg-2.5-x86
-	- Installer [svn wc of http://svn.osgeo.org/mapguide/branches/2.5/Installer]
-	- MgDev		[svn wc of http://svn.osgeo.org/mapguide/branches/2.5/MgDev]
+    - Installer [svn wc of http://svn.osgeo.org/mapguide/branches/2.5/Installer]
+    - MgDev		[svn wc of http://svn.osgeo.org/mapguide/branches/2.5/MgDev]
 C:\mg-2.5-x64
-	- Installer [svn wc of http://svn.osgeo.org/mapguide/branches/2.5/Installer]
-	- MgDev		[svn wc of http://svn.osgeo.org/mapguide/branches/2.5/MgDev]
+    - Installer [svn wc of http://svn.osgeo.org/mapguide/branches/2.5/Installer]
+    - MgDev		[svn wc of http://svn.osgeo.org/mapguide/branches/2.5/MgDev]
 C:\nasm			[extract nasm binaries here]
 
 PATH environment variable
@@ -96,6 +96,18 @@ Make sure the following tools are accessible from the PATH env var:
  * 7-zip
  * Python (installer should do this)
  * Perl (installer should do this)
+
+Test that the following commands are accessible from the command line:
+
+ * bison
+ * sed
+ * svn
+ * perl
+ * doxygen
+ * graphviz
+ * nasm
+ * 7z
+ * sphinx-build
 
 SVN Working Copy preparation
 ============================

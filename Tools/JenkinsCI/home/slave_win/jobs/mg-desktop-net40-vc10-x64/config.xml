@@ -1,0 +1,74 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<project>
+  <actions/>
+  <description></description>
+  <keepDependencies>false</keepDependencies>
+  <properties/>
+  <scm class="hudson.scm.NullSCM"/>
+  <canRoam>true</canRoam>
+  <disabled>false</disabled>
+  <blockBuildWhenDownstreamBuilding>false</blockBuildWhenDownstreamBuilding>
+  <blockBuildWhenUpstreamBuilding>false</blockBuildWhenUpstreamBuilding>
+  <jdk>(Default)</jdk>
+  <triggers class="vector"/>
+  <concurrentBuild>false</concurrentBuild>
+  <builders>
+    <hudson.tasks.BatchFile>
+      <command>@echo off
+
+SET VCBEXTENSION=_vs10
+SET VC_COMPILER=vc100
+call &quot;C:\Program Files\Microsoft SDKs\Windows\v7.1\Bin\SetEnv.cmd&quot; /release /x64
+
+SET MG_VER_MAJOR=2
+SET MG_VER_MINOR=5
+SET MG_VER_BUILD=0
+SET MG_VER_MAJOR_MINOR=%MG_VER_MAJOR%.%MG_VER_MINOR%
+SET MG_VER_MAJOR_MINOR_BUILD=%MG_VER_MAJOR_MINOR%.%MG_VER_BUILD%
+SET FDO_VER_MAJOR_MINOR=3.8
+
+SET FDO_SRC64=C:\builds\fdo\%FDO_VER_MAJOR_MINOR%\x64_vc10\Fdo
+SET BUILD_SRC64=C:\mg-%MG_VER_MAJOR_MINOR%-x64
+SET CURRENT_DIR=C:\builds\
+SET BUILD_OUTPUT64=C:\builds\mapguide\%MG_VER_MAJOR_MINOR%\x64\release
+SET JAVA_HOME=C:\Program Files\Java\jdk1.6.0_33
+SET ANT_HOME=C:\apache-ant-1.8.3
+SET DOXYGEN=C:\Program Files\doxygen\bin
+pushd %BUILD_SRC64%\MgDev\Desktop
+if exist bin rd /S /Q bin
+if exist lib rd /S /Q lib
+if exist obj rd /S /Q obj
+popd
+pushd %BUILD_SRC64%\MgDev\Desktop\DesktopUnmanagedApi\DotNet
+if exist Backup rd /S /Q Backup
+if exist DesktopCustom rd /S /Q DesktopCustom
+del *.cs
+del MgDesktopApi_wrap.cpp
+del MapGuideDesktopApi.i
+popd
+pushd %BUILD_SRC64%\MgDev
+set /p REVISION64= &lt; C:\builds\last_mg_x86_revision.txt
+cscript updateversion.vbs /major:%MG_VER_MAJOR% /minor:%MG_VER_MINOR% /point:%MG_VER_BUILD% /build:%REVISION64%
+echo [build]: Set env vars
+call setenvironment64.bat vc10
+echo [build]: mg-desktop
+call build_desktop.bat x64
+echo [clean]: Nuget package temp files
+pushd %BUILD_SRC64%\MgDev\nuget
+call package_clean.bat
+popd
+echo [build]: Nuget packages
+call nuget_prepare.bat %MG_VER_MAJOR_MINOR_BUILD%.%REVISION64% x64
+call nuget_pack.bat x64
+echo [deploy]: Move nupkg files to output
+pushd %BUILD_SRC64%\MgDev\nuget
+move *.nupkg C:\builds\
+popd
+pushd %BUILD_SRC64%\MgDev\Release64
+7z a -mx9 C:\builds\mg-desktop-%MG_VER_MAJOR_MINOR_BUILD%.%REVISION64%-net40-vc10-x64.zip Desktop DesktopSamples
+popd</command>
+    </hudson.tasks.BatchFile>
+  </builders>
+  <publishers/>
+  <buildWrappers/>
+</project>

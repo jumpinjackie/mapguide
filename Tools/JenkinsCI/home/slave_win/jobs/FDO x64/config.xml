@@ -1,0 +1,118 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<project>
+  <actions/>
+  <description></description>
+  <logRotator>
+    <daysToKeep>-1</daysToKeep>
+    <numToKeep>1</numToKeep>
+    <artifactDaysToKeep>-1</artifactDaysToKeep>
+    <artifactNumToKeep>-1</artifactNumToKeep>
+  </logRotator>
+  <keepDependencies>false</keepDependencies>
+  <properties>
+    <hudson.model.ParametersDefinitionProperty>
+      <parameterDefinitions>
+        <hudson.model.StringParameterDefinition>
+          <name>BUILD_SRC64</name>
+          <description>FDO Source directory</description>
+          <defaultValue>C:\fdo-3.8-x64</defaultValue>
+        </hudson.model.StringParameterDefinition>
+        <hudson.model.StringParameterDefinition>
+          <name>BUILD_OUTPUT64</name>
+          <description>FDO build output directory</description>
+          <defaultValue>C:\builds\fdo\3.8\x64_vc10</defaultValue>
+        </hudson.model.StringParameterDefinition>
+        <hudson.model.StringParameterDefinition>
+          <name>MYSQL_SDK64</name>
+          <description>MySQL Connector C SDK path</description>
+          <defaultValue>C:\fdo_rdbms_thirdparty\mysql_x64</defaultValue>
+        </hudson.model.StringParameterDefinition>
+        <hudson.model.StringParameterDefinition>
+          <name>ORACLE_SDK64</name>
+          <description>Oracle Instant Client SDK path</description>
+          <defaultValue>C:\fdo_rdbms_thirdparty\oracle_x64\instantclient\11.2\sdk</defaultValue>
+        </hudson.model.StringParameterDefinition>
+        <hudson.model.StringParameterDefinition>
+          <name>FDO_VERSION_64</name>
+          <description>FDO Version Number (major.minor.rev)</description>
+          <defaultValue>3.8.0</defaultValue>
+        </hudson.model.StringParameterDefinition>
+        <hudson.model.StringParameterDefinition>
+          <name>FDO_STAMP_FILE64</name>
+          <description>Path to store the last FDO svn revision</description>
+          <defaultValue>C:\builds\last_fdo_x64_revision.txt</defaultValue>
+        </hudson.model.StringParameterDefinition>
+        <hudson.model.StringParameterDefinition>
+          <name>REVNUM_FILE64</name>
+          <description>Path to revnum.pl script</description>
+          <defaultValue>C:\builds\revnum.pl</defaultValue>
+        </hudson.model.StringParameterDefinition>
+        <hudson.model.StringParameterDefinition>
+          <name>FDO_BIN_EXTRAS64</name>
+          <description>Path to FDO binaries to overlay on top of the build output</description>
+          <defaultValue>C:\builds\fdo_extras_x64</defaultValue>
+        </hudson.model.StringParameterDefinition>
+      </parameterDefinitions>
+    </hudson.model.ParametersDefinitionProperty>
+  </properties>
+  <scm class="hudson.scm.NullSCM"/>
+  <canRoam>true</canRoam>
+  <disabled>false</disabled>
+  <blockBuildWhenDownstreamBuilding>false</blockBuildWhenDownstreamBuilding>
+  <blockBuildWhenUpstreamBuilding>false</blockBuildWhenUpstreamBuilding>
+  <jdk>(Default)</jdk>
+  <triggers class="vector"/>
+  <concurrentBuild>false</concurrentBuild>
+  <builders>
+    <hudson.tasks.BatchFile>
+      <command>@echo off
+SET FDOMYSQL=%MYSQL_SDK64%
+SET FDOORACLE=%ORACLE_SDK64%
+if exist %BUILD_OUTPUT64% rd /S /Q %BUILD_OUTPUT64%
+pushd %BUILD_SRC64%
+REM If we ever do implement CI build triggers, remove this update command
+svn update .
+svn info . | perl %REVNUM_FILE64% &gt; revision.txt
+set /p REVISION= &lt; revision.txt
+copy /Y revision.txt %FDO_STAMP_FILE64%
+echo [build]: Set env vars
+call &quot;C:\Program Files\Microsoft SDKs\Windows\v7.1\Bin\SetEnv.cmd&quot; /release /x64
+call setenvironment.bat x64 VC10
+echo [build]: build thirdparty
+call build_thirdparty.bat -p=x64 -a=buildinstall -o=%BUILD_OUTPUT64%
+echo [build]: build core and providers
+call build.bat -p=x64 -a=buildinstall -o=%BUILD_OUTPUT64%
+if not exist %FDO_BIN_EXTRAS64% goto pack
+pushd %FDO_BIN_EXTRAS64%
+copy /Y *.* %BUILD_OUTPUT64%\Fdo\Bin
+popd
+:pack
+echo [build]: Pack files
+rem call createtarzipbinfiles.bat -i=%BUILD_OUTPUT64%\Fdo -o=%BUILD_OUTPUT64%\dist -w=fdo -b=%REVISION% -r=%FDO_VERSION_64%
+rem call createtarzipbinfiles.bat -i=%BUILD_OUTPUT64%\Fdo -o=%BUILD_OUTPUT64%\dist -w=shp -b=%REVISION% -r=%FDO_VERSION_64%
+rem call createtarzipbinfiles.bat -i=%BUILD_OUTPUT64%\Fdo -o=%BUILD_OUTPUT64%\dist -w=sdf -b=%REVISION% -r=%FDO_VERSION_64%
+rem call createtarzipbinfiles.bat -i=%BUILD_OUTPUT64%\Fdo -o=%BUILD_OUTPUT64%\dist -w=wfs -b=%REVISION% -r=%FDO_VERSION_64%
+rem call createtarzipbinfiles.bat -i=%BUILD_OUTPUT64%\Fdo -o=%BUILD_OUTPUT64%\dist -w=wms -b=%REVISION% -r=%FDO_VERSION_64%
+rem call createtarzipbinfiles.bat -i=%BUILD_OUTPUT64%\Fdo -o=%BUILD_OUTPUT64%\dist -w=rdbms -b=%REVISION% -r=%FDO_VERSION_64%
+rem call createtarzipbinfiles.bat -i=%BUILD_OUTPUT64%\Fdo -o=%BUILD_OUTPUT64%\dist -w=mysql -b=%REVISION% -r=%FDO_VERSION_64%
+rem call createtarzipbinfiles.bat -i=%BUILD_OUTPUT64%\Fdo -o=%BUILD_OUTPUT64%\dist -w=odbc -b=%REVISION% -r=%FDO_VERSION_64%
+rem call createtarzipbinfiles.bat -i=%BUILD_OUTPUT64%\Fdo -o=%BUILD_OUTPUT64%\dist -w=sqlspatial -b=%REVISION% -r=%FDO_VERSION_64%
+rem call createtarzipbinfiles.bat -i=%BUILD_OUTPUT64%\Fdo -o=%BUILD_OUTPUT64%\dist -w=gdal -b=%REVISION% -r=%FDO_VERSION_64%
+rem call createtarzipbinfiles.bat -i=%BUILD_OUTPUT64%\Fdo -o=%BUILD_OUTPUT64%\dist -w=kingoracle -b=%REVISION% -r=%FDO_VERSION_64%
+rem call createtarzipbinfiles.bat -i=%BUILD_OUTPUT64%\Fdo -o=%BUILD_OUTPUT64%\dist -w=ogr -b=%REVISION% -r=%FDO_VERSION_64%
+rem call createtarzipbinfiles.bat -i=%BUILD_OUTPUT64%\Fdo -o=%BUILD_OUTPUT64%\dist -w=sqlite -b=%REVISION% -r=%FDO_VERSION_64%
+popd</command>
+    </hudson.tasks.BatchFile>
+  </builders>
+  <publishers>
+    <hudson.tasks.BuildTrigger>
+      <childProjects>MapGuide Open Source x64</childProjects>
+      <threshold>
+        <name>SUCCESS</name>
+        <ordinal>0</ordinal>
+        <color>BLUE</color>
+      </threshold>
+    </hudson.tasks.BuildTrigger>
+  </publishers>
+  <buildWrappers/>
+</project>
