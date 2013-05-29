@@ -2,7 +2,7 @@
 <project>
   <actions/>
   <description></description>
-  <logRotator>
+  <logRotator class="hudson.tasks.LogRotator">
     <daysToKeep>-1</daysToKeep>
     <numToKeep>1</numToKeep>
     <artifactDaysToKeep>-1</artifactDaysToKeep>
@@ -15,22 +15,7 @@
         <hudson.model.StringParameterDefinition>
           <name>BUILD_SRC64</name>
           <description>FDO Source directory</description>
-          <defaultValue>C:\fdo-3.8-x64</defaultValue>
-        </hudson.model.StringParameterDefinition>
-        <hudson.model.StringParameterDefinition>
-          <name>BUILD_OUTPUT64</name>
-          <description>FDO build output directory</description>
-          <defaultValue>C:\builds\fdo\3.8\x64_vc10</defaultValue>
-        </hudson.model.StringParameterDefinition>
-        <hudson.model.StringParameterDefinition>
-          <name>MYSQL_SDK64</name>
-          <description>MySQL Connector C SDK path</description>
-          <defaultValue>C:\fdo_rdbms_thirdparty\mysql_x64</defaultValue>
-        </hudson.model.StringParameterDefinition>
-        <hudson.model.StringParameterDefinition>
-          <name>ORACLE_SDK64</name>
-          <description>Oracle Instant Client SDK path</description>
-          <defaultValue>C:\fdo_rdbms_thirdparty\oracle_x64\instantclient\11.2\sdk</defaultValue>
+          <defaultValue>C:\working\sources\fdo-3.8</defaultValue>
         </hudson.model.StringParameterDefinition>
         <hudson.model.StringParameterDefinition>
           <name>FDO_VERSION_64</name>
@@ -38,19 +23,9 @@
           <defaultValue>3.8.0</defaultValue>
         </hudson.model.StringParameterDefinition>
         <hudson.model.StringParameterDefinition>
-          <name>FDO_STAMP_FILE64</name>
-          <description>Path to store the last FDO svn revision</description>
-          <defaultValue>C:\builds\last_fdo_x64_revision.txt</defaultValue>
-        </hudson.model.StringParameterDefinition>
-        <hudson.model.StringParameterDefinition>
           <name>REVNUM_FILE64</name>
           <description>Path to revnum.pl script</description>
           <defaultValue>C:\builds\revnum.pl</defaultValue>
-        </hudson.model.StringParameterDefinition>
-        <hudson.model.StringParameterDefinition>
-          <name>FDO_BIN_EXTRAS64</name>
-          <description>Path to FDO binaries to overlay on top of the build output</description>
-          <defaultValue>C:\builds\fdo_extras_x64</defaultValue>
         </hudson.model.StringParameterDefinition>
       </parameterDefinitions>
     </hudson.model.ParametersDefinitionProperty>

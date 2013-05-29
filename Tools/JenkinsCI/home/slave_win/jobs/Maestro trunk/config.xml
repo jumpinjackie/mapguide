@@ -2,7 +2,7 @@
 <project>
   <actions/>
   <description></description>
-  <logRotator>
+  <logRotator class="hudson.tasks.LogRotator">
     <daysToKeep>-1</daysToKeep>
     <numToKeep>5</numToKeep>
     <artifactDaysToKeep>-1</artifactDaysToKeep>
@@ -15,16 +15,18 @@
         <hudson.model.StringParameterDefinition>
           <name>VersionLabel</name>
           <description>The release version label</description>
-          <defaultValue>5.0b5</defaultValue>
+          <defaultValue>5.0RC2</defaultValue>
         </hudson.model.StringParameterDefinition>
       </parameterDefinitions>
     </hudson.model.ParametersDefinitionProperty>
   </properties>
-  <scm class="hudson.scm.SubversionSCM">
+  <scm class="hudson.scm.SubversionSCM" plugin="subversion@1.48">
     <locations>
       <hudson.scm.SubversionSCM_-ModuleLocation>
         <remote>http://svn.osgeo.org/mapguide/trunk/Tools/Maestro</remote>
         <local>.</local>
+        <depthOption>infinity</depthOption>
+        <ignoreExternalsOption>false</ignoreExternalsOption>
       </hudson.scm.SubversionSCM_-ModuleLocation>
     </locations>
     <excludedRegions></excludedRegions>
@@ -33,6 +35,8 @@
     <excludedRevprop></excludedRevprop>
     <excludedCommitMessages></excludedCommitMessages>
     <workspaceUpdater class="hudson.scm.subversion.UpdateUpdater"/>
+    <ignoreDirPropChanges>false</ignoreDirPropChanges>
+    <filterChangelog>false</filterChangelog>
   </scm>
   <canRoam>true</canRoam>
   <disabled>false</disabled>
@@ -42,6 +46,7 @@
   <triggers class="vector">
     <hudson.triggers.SCMTrigger>
       <spec>15 * * * *</spec>
+      <ignorePostCommitHooks>false</ignorePostCommitHooks>
     </hudson.triggers.SCMTrigger>
   </triggers>
   <concurrentBuild>false</concurrentBuild>
@@ -51,17 +56,18 @@
 rd /S /Q out
 popd
 pushd %WORKSPACE%\Properties
-C:\builds\SetAssemblyVersion.exe -set:5.0.0.%SVN_REVISION% GlobalAssemblyInfo.cs
+%MG_TOOL_PATH%\SetAssemblyVersion.exe -set:5.0.0.%SVN_REVISION% GlobalAssemblyInfo.cs
 popd
 pushd %WORKSPACE%\SDK
 rd /S /Q bin
 popd</command>
     </hudson.tasks.BatchFile>
-    <hudson.plugins.msbuild.MsBuildBuilder>
+    <hudson.plugins.msbuild.MsBuildBuilder plugin="msbuild@1.17">
       <msBuildName>MSBUILD 4.0 x86</msBuildName>
       <msBuildFile>Maestro\Maestro_All.sln</msBuildFile>
       <cmdLineArgs>/p:Configuration=Release</cmdLineArgs>
       <buildVariablesAsProperties>true</buildVariablesAsProperties>
+      <continueOnBuildFailure>false</continueOnBuildFailure>
     </hudson.plugins.msbuild.MsBuildBuilder>
     <hudson.tasks.BatchFile>
       <command>pushd %WORKSPACE%\out\Release\AddIns
@@ -95,11 +101,12 @@ del LocalConfigure.*
 7z a -tzip -mx9 C:\builds\MapGuideMaestro-%VersionLabel%-Release.zip .
 popd</command>
     </hudson.tasks.BatchFile>
-    <hudson.plugins.msbuild.MsBuildBuilder>
+    <hudson.plugins.msbuild.MsBuildBuilder plugin="msbuild@1.17">
       <msBuildName>MSBUILD 4.0 x86</msBuildName>
       <msBuildFile>Doc\MaestroAPI.shfbproj</msBuildFile>
       <cmdLineArgs></cmdLineArgs>
       <buildVariablesAsProperties>true</buildVariablesAsProperties>
+      <continueOnBuildFailure>false</continueOnBuildFailure>
     </hudson.plugins.msbuild.MsBuildBuilder>
     <hudson.tasks.BatchFile>
       <command>pushd %WORKSPACE%\Doc\Help

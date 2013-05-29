@@ -66,23 +66,39 @@ Filesystem layout
 
 * Currently configured for MGOS 2.5 and FDO 3.8, adjust these version numbers as necessary
 
-C:\apache-ant-1.8.3		[extracted location of apache ant v1.8.3]
-C:\builds		[all build artifacts produced by Jenkins will be here]
-    - revnum.pl [copy from http://svn.osgeo.org/fdo/branches/2.5/Installer/scripts/revnum.pl]
-C:\fdo_rdbms_thirdparty
-    mysql		[extract/copy MySQL Connector C 32-bit headers/libs here]
-    mysql_x64	[extract/copy MySQL Connector C 64-bit headers/libs here]
-    oracle		[extract 32-bit oracle 11.2 instant client sdk here]
-    oracle_x64	[extract 64-bit oracle 11.2 instant client sdk here]
-C:\fdo-3.8-x86 	[svn wc of http://svn.osgeo.org/fdo/branches/3.8]
-C:\fdo-3.8-x64 	[svn wc of http://svn.osgeo.org/fdo/branches/3.8]
-C:\mg-2.5-x86
-    - Installer [svn wc of http://svn.osgeo.org/mapguide/branches/2.5/Installer]
-    - MgDev		[svn wc of http://svn.osgeo.org/mapguide/branches/2.5/MgDev]
-C:\mg-2.5-x64
-    - Installer [svn wc of http://svn.osgeo.org/mapguide/branches/2.5/Installer]
-    - MgDev		[svn wc of http://svn.osgeo.org/mapguide/branches/2.5/MgDev]
-C:\nasm			[extract nasm binaries here]
+C:\apache-ant-1.8.3     [extracted location of apache ant v1.8.3]
+C:\builds               [all build artifacts produced by Jenkins will be here]
+C:\nasm	                [extract nasm binaries here]
+C:\working
+    libs
+        fdo_rdbms_thirdparty
+            mysql       [extract/copy MySQL Connector C 32-bit headers/libs here]
+            mysql_x64   [extract/copy MySQL Connector C 64-bit headers/libs here]
+            oracle      [extract 32-bit oracle 11.2 instant client sdk here]
+            oracle_x64  [extract 64-bit oracle 11.2 instant client sdk here]
+    sources
+        fdo-3.8         [svn checkout of http://svn.osgeo.org/fdo/branches/3.8]
+        mg-2.5
+            Installer   [svn checkout of http://svn.osgeo.org/mapguide/branches/2.5/Installer]
+            MgDev       [svn checkout of http://svn.osgeo.org/mapguide/branches/2.5/MgDev]
+    JenkinsCI           [svn checkout of http://svn.osgeo.org/mapguide/trunk/Tools/JenkinsCI]
+        home
+            slave_win   [the path of JENKINS_HOME]
+
+Required Jenkins Plugins
+========================
+ 
+ * MSBuild
+
+Jenkins Post-install config
+===========================
+
+ * Environment variables (already defined in JenkinsCI checkout. Double check paths)
+    * MG_BUILD_ARTIFACT_PATH = C:\builds
+    * MG_TOOL_PATH = C:\working\JenkinsCI\tools
+    * MG_LIB_ROOT = C:\working\libs
+    * MG_BUILD_AREA = C:\working\build_area
+    * WINDOWS_SDK_71_ROOT = C:\Program Files\Microsoft SDKs\Windows\v7.1
 
 PATH environment variable
 =========================
