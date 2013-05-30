@@ -1832,6 +1832,7 @@ MgByteReader* MgServerFeatureService::GetWfsFeature(MgResourceIdentifier* fs,
     //get a transform from feature space to mapping space
     TransformCache* item = TransformCache::GetLayerToMapTransform(transformCache, lfeatureName, fs, mapCs, &fact, this);
     Ptr<MgCoordinateSystemTransform> trans = item? item->GetMgTransform() : NULL;
+    FdoPtr<MgGMLCsTransform> transform = new MgGMLCsTransform(trans);
 
     assert(fc != NULL);
     if (fc == NULL)
@@ -1926,6 +1927,14 @@ MgByteReader* MgServerFeatureService::GetWfsFeature(MgResourceIdentifier* fs,
     flags->SetCollectionName(L"FeatureCollection");
     flags->SetMemberName(L"featureMember");
     flags->SetMemberUri(L"http://www.opengis.net/gml");
+    flags->SetCoordinateSystemTransform(transform);    
+    int epsgCode = 0;
+    if (mapCs != NULL)
+    {
+        epsgCode = mapCs->GetEpsgCode();
+    }
+    STRING srsName = L"EPSG:" + to_wstring((_Longlong)epsgCode) ;
+    flags->SetSrsName(srsName.c_str());
 
     // gml schema location and version
     if(L"text/xml; subtype=gml/2.1.2" == outputFormat)
@@ -2013,6 +2022,7 @@ MgByteReader* MgServerFeatureService::GetWfsFeature(MgResourceIdentifier* fs,
     featWriter = NULL;
     propWriter = NULL;
     xmlWriter = NULL; //flush and close file
+    transform = NULL;
 
     //return the file
     Ptr<MgByteSource> src = new MgByteSource(fileName, true);
@@ -2306,4 +2316,43 @@ bool MgServerFeatureService::NotifyResourcesChanged(MgSerializableCollection* re
     }
 
     return success;
+}
+
+MgGMLCsTransform::MgGMLCsTransform(MgCoordinateSystemTransform *transform)
+    : FdoCoordinateSystemTransform(),
+      mTransform(transform)
+{}
+
+FdoIDirectPosition* MgGMLCsTransform::CoordinateSystemTransform(FdoIDirectPosition* sourceGeometry)
+{
+    double x = sourceGeometry->GetX();
+    double y = sourceGeometry->GetY();
+    double z = 0;
+    double m = 0;
+    FdoInt32 dimension = sourceGeometry->GetDimensionality();
+    if (dimension & FdoDimensionality_Z)
+    {
+        z = sourceGeometry->GetZ();
+    }
+    if (dimension & FdoDimensionality_M)
+    {
+        m = sourceGeometry->GetM();
+    }
+    FdoPtr<FdoDirectPositionImpl> posImpl;
+    if (dimension & FdoDimensionality_M)
+    {
+        mTransform->TransformM(&x, &y, &z, &m);
+        posImpl = FdoDirectPositionImpl::Create(x, y, z, m);
+    }
+    else if (dimension & FdoDimensionality_Z)
+    {
+        mTransform->Transform(&x, &y, &z);
+        posImpl = FdoDirectPositionImpl::Create(x, y, z);
+    }
+    else
+    {
+        mTransform->Transform(&x, &y);
+        posImpl = FdoDirectPositionImpl::Create(x, y);
+    }
+    return FDO_SAFE_ADDREF(posImpl.p);
 }

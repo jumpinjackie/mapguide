@@ -1057,4 +1057,15 @@ private:
     INT32 m_nDataCacheSize;
 };
 
+//Used for WFS coordinate system transformation
+class MgGMLCsTransform : public FdoCoordinateSystemTransform
+{
+public:    
+    MgGMLCsTransform(MgCoordinateSystemTransform *transform);
+    virtual FdoIDirectPosition* CoordinateSystemTransform(FdoIDirectPosition* sourceGeometry);
+
+private:
+     MgCoordinateSystemTransform *mTransform;
+};
+
 #endif
