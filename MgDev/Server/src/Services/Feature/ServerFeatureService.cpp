@@ -1858,7 +1858,13 @@ MgByteReader* MgServerFeatureService::GetWfsFeature(MgResourceIdentifier* fs,
         }
     }
 
-    Ptr<MgCoordinateSystem> mapCs = (wkt.empty()) ? NULL : fact.Create(wkt);
+    Ptr<MgCoordinateSystem> mapCs = NULL;
+    if (!wkt.empty())
+    {
+        MG_TRY();
+            mapCs = fact.Create(wkt);
+        MG_CATCH_AND_RELEASE();
+    }
 
     //get a transform from feature space to mapping space
     TransformCache* item = TransformCache::GetLayerToMapTransform(transformCache, lfeatureName, fs, mapCs, &fact, this);
@@ -2356,6 +2362,12 @@ MgGMLCsTransform::MgGMLCsTransform(MgCoordinateSystemTransform *transform)
 
 FdoIDirectPosition* MgGMLCsTransform::CoordinateSystemTransform(FdoIDirectPosition* sourceGeometry)
 {
+    //if not suitable transform available, return the original geometry.
+    if (mTransform == NULL)
+    {
+        return FDO_SAFE_ADDREF(sourceGeometry);
+    }
+
     double x = sourceGeometry->GetX();
     double y = sourceGeometry->GetY();
     double z = 0;
