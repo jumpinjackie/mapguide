@@ -1827,7 +1827,38 @@ MgByteReader* MgServerFeatureService::GetWfsFeature(MgResourceIdentifier* fs,
     }
 
     MgCoordinateSystemFactory fact;
-    Ptr<MgCoordinateSystem> mapCs = (srs.empty()) ? NULL : fact.Create(srs);
+    std::wstring wkt = srs;
+    if (wkt.empty())
+    {
+        //If there is no coordinate system pass in, get the default one in resource header.
+        MgServiceManager* serviceMan = MgServiceManager::GetInstance();
+        assert(NULL != serviceMan);
+        Ptr<MgResourceService> resourceService = dynamic_cast<MgResourceService*>(serviceMan->RequestService(MgServiceType::ResourceService));
+        assert(resourceService != NULL);
+        Ptr<MgByteReader> byteReaderHeader = resourceService->GetResourceHeader(fs);
+        Ptr<MgByteSink> byteSinkHeader = new MgByteSink(byteReaderHeader);
+        std::string resourceHeader;
+        byteSinkHeader->ToStringUtf8(resourceHeader);
+        //parse for default SRS of this WFS, the format is:
+        //<Property xsi:noNamespaceSchemaLocation="Property-1.0.0.xsd">
+        //  <Name>_PrimarySRS</Name>
+        //  <Value>EPSG:4326</Value>
+        //</Property>
+        std::string begin("EPSG:");
+        std::size_t beginPos = resourceHeader.find(begin);
+        if (beginPos != std::string::npos)
+        {
+            std::size_t endPos = resourceHeader.find("</Value>", beginPos);
+            if (endPos != std::string::npos)
+            {
+                std::string primarySRS = resourceHeader.substr(beginPos+begin.length(), endPos-beginPos-begin.length());
+                int epsgCode = atoi(primarySRS.c_str());
+                wkt = fact.ConvertEpsgCodeToWkt(epsgCode);
+            }
+        }
+    }
+
+    Ptr<MgCoordinateSystem> mapCs = (wkt.empty()) ? NULL : fact.Create(wkt);
 
     //get a transform from feature space to mapping space
     TransformCache* item = TransformCache::GetLayerToMapTransform(transformCache, lfeatureName, fs, mapCs, &fact, this);
