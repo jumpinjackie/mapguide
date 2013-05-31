@@ -59,7 +59,9 @@
           <default>
             <comparator class="hudson.util.CaseInsensitiveComparator"/>
           </default>
-          <int>5</int>
+          <int>6</int>
+          <string>ANT_HOME</string>
+          <string>C:\apache-ant-1.9.1</string>
           <string>MG_BUILD_AREA</string>
           <string>C:\working\build_area</string>
           <string>MG_BUILD_ARTIFACT_PATH</string>
@@ -67,7 +69,7 @@
           <string>MG_LIB_ROOT</string>
           <string>C:\working\libs</string>
           <string>MG_TOOL_PATH</string>
-          <string>C:\working\JenkinsCI</string>
+          <string>C:\working\JenkinsCI\tools</string>
           <string>WINDOWS_SDK_71_ROOT</string>
           <string>C:\Program Files\Microsoft SDKs\Windows\v7.1</string>
         </tree-map>

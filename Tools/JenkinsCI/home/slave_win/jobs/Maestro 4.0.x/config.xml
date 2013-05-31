@@ -83,7 +83,8 @@ popd
 makensis.exe /DSLN_CONFIG=Release /DCPU=x86 /DRELEASE_VERSION=%VersionLabel% &quot;%WORKSPACE%\Install\Maestro.nsi&quot;
 pushd 
 pushd %WORKSPACE%\out
-move /Y *.exe C:\builds
+if not exist %MG_BUILD_ARTIFACT_PATH%\maestro mkdir %MG_BUILD_ARTIFACT_PATH%\maestro
+move /Y *.exe %MG_BUILD_ARTIFACT_PATH%\maestro
 popd</command>
     </hudson.tasks.BatchFile>
     <hudson.tasks.BatchFile>
@@ -91,8 +92,9 @@ popd</command>
 rd /S /Q Local
 popd
 pushd %WORKSPACE%\out\Release
-del LocalConfigure.*
-7z a -tzip -mx9 C:\builds\MapGuideMaestro-%VersionLabel%-Release.zip .
+del /Q LocalConfigure.*
+if not exist %MG_BUILD_ARTIFACT_PATH%\maestro mkdir %MG_BUILD_ARTIFACT_PATH%\maestro
+7z a -tzip -mx9 %MG_BUILD_ARTIFACT_PATH%\maestro\MapGuideMaestro-%VersionLabel%-Release.zip .
 popd</command>
     </hudson.tasks.BatchFile>
     <hudson.plugins.msbuild.MsBuildBuilder plugin="msbuild@1.17">
@@ -107,7 +109,8 @@ popd</command>
 move /Y MaestroAPI.chm &quot;%WORKSPACE%\SDK&quot;
 popd
 pushd %WORKSPACE%\SDK
-7z a -tzip -mx9 C:\builds\MaestroSDK_%VersionLabel%.zip .
+if not exist %MG_BUILD_ARTIFACT_PATH%\maestro mkdir %MG_BUILD_ARTIFACT_PATH%\maestro
+7z a -tzip -mx9 %MG_BUILD_ARTIFACT_PATH%\maestro\MaestroSDK_%VersionLabel%.zip .
 popd</command>
     </hudson.tasks.BatchFile>
   </builders>

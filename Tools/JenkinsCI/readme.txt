@@ -65,6 +65,7 @@ Filesystem layout
 =================
 
 * Currently configured for MGOS 2.5 and FDO 3.8, adjust these version numbers as necessary
+* Will need to revisit for MGOS 2.6 and FDO 3.9 as we'll be moving to VS2012. Fortunately, building with free MS tools is *much* simpler in VS2012.
 
 C:\apache-ant-1.8.3     [extracted location of apache ant v1.8.3]
 C:\builds               [all build artifacts produced by Jenkins will be here]
@@ -76,6 +77,10 @@ C:\working
             mysql_x64   [extract/copy MySQL Connector C 64-bit headers/libs here]
             oracle      [extract 32-bit oracle 11.2 instant client sdk here]
             oracle_x64  [extract 64-bit oracle 11.2 instant client sdk here]
+        fdo_extras      [Optional files to overlay on top of build result]
+            3.8.0
+                x64     [extract/copy ArcSDE dlls and providers.xml from FDO SDK]
+                x86     [extract/copy ArcSDE dlls and providers.xml from FDO SDK]
     sources
         fdo-3.8         [svn checkout of http://svn.osgeo.org/fdo/branches/3.8]
         mg-2.5
@@ -99,6 +104,7 @@ Jenkins Post-install config
     * MG_LIB_ROOT = C:\working\libs
     * MG_BUILD_AREA = C:\working\build_area
     * WINDOWS_SDK_71_ROOT = C:\Program Files\Microsoft SDKs\Windows\v7.1
+    * ANT_HOME = C:\apache-ant-1.8.3
 
 PATH environment variable
 =========================
@@ -125,14 +131,18 @@ Test that the following commands are accessible from the command line:
  * 7z
  * sphinx-build
 
-SVN Working Copy preparation
-============================
+Jenkins MapGuide/FDO build process
+==================================
 
-For FDO 3.8 64-bit, edit the root build.bat of thirdparty/core/providers and un-comment the SET EXTRA_MSBUILD_PROPERTIES call
-This is to ensure that the correct 64-bit VS compiler will be used (from the Windows 7.1 SDK)
+ * Clears out any existing build area and artifact directories
+ * Exports FDO/MapGuide from the working copy location to the build area
+ * 64-bit builds: Runs any pre-processing on the build area to support 64-bit compilation with Windows SDK 7.1 C++ compiler
+ * Runs the build and copies the build artifacts to the designated directory
+ * FDO only: Overlay any extra files (eg. ArcSDE provider) onto the build artifacts directory
 
-If setting up on a Windows with UAC, build the UpdateVersion executable under FDOROOT\Thirdparty\util\UpdateVersion and replace the
-existing binary to prevent UAC notifications.
+TODO
+====
 
-For MapGuide 64-bit modify setenvironment64.bat to ensure that the msbuild calls include /p:PlatformToolset=Windows7.1SDK
-This is to ensure that the correct 64-bit VS compiler will be used (from the Windows 7.1 SDK)
+ * Regularly scheduled job to auto svn update the working copies and to trigger new MapGuide/FDO builds off of that
+ * Equivalent Ubuntu/CentOS build/job configurations
+ * Aggregate all the Windows/Linux build environments into a master/slave configuration.

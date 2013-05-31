@@ -2,7 +2,7 @@
 <project>
   <actions/>
   <description></description>
-  <logRotator>
+  <logRotator class="hudson.tasks.LogRotator">
     <daysToKeep>-1</daysToKeep>
     <numToKeep>1</numToKeep>
     <artifactDaysToKeep>-1</artifactDaysToKeep>
@@ -15,12 +15,37 @@
         <hudson.model.StringParameterDefinition>
           <name>RELEASE_LABEL64</name>
           <description></description>
-          <defaultValue>Beta1</defaultValue>
+          <defaultValue>Final</defaultValue>
         </hudson.model.StringParameterDefinition>
         <hudson.model.StringParameterDefinition>
           <name>WITH_ARCSDE</name>
           <description></description>
           <defaultValue>no</defaultValue>
+        </hudson.model.StringParameterDefinition>
+        <hudson.model.StringParameterDefinition>
+          <name>MG_MAJOR_VER</name>
+          <description></description>
+          <defaultValue>2</defaultValue>
+        </hudson.model.StringParameterDefinition>
+        <hudson.model.StringParameterDefinition>
+          <name>MG_VER_MINOR</name>
+          <description></description>
+          <defaultValue>5</defaultValue>
+        </hudson.model.StringParameterDefinition>
+        <hudson.model.StringParameterDefinition>
+          <name>MG_VER_BUILD</name>
+          <description></description>
+          <defaultValue>1</defaultValue>
+        </hudson.model.StringParameterDefinition>
+        <hudson.model.StringParameterDefinition>
+          <name>MG_BUILD_SRC64</name>
+          <description></description>
+          <defaultValue>C:\working\sources\mg-2.5</defaultValue>
+        </hudson.model.StringParameterDefinition>
+        <hudson.model.StringParameterDefinition>
+          <name>FDO_SRC64</name>
+          <description></description>
+          <defaultValue>C:\builds\fdo\3.8.0\x64_vc10\Fdo</defaultValue>
         </hudson.model.StringParameterDefinition>
       </parameterDefinitions>
     </hudson.model.ParametersDefinitionProperty>
@@ -30,7 +55,7 @@
   <disabled>false</disabled>
   <blockBuildWhenDownstreamBuilding>false</blockBuildWhenDownstreamBuilding>
   <blockBuildWhenUpstreamBuilding>false</blockBuildWhenUpstreamBuilding>
-  <jdk>(Default)</jdk>
+  <jdk>JDK6 64-bit</jdk>
   <triggers class="vector"/>
   <concurrentBuild>false</concurrentBuild>
   <builders>
@@ -39,69 +64,143 @@
 
 SET VCBEXTENSION=_vs10
 SET VC_COMPILER=vc100
-call &quot;C:\Program Files\Microsoft SDKs\Windows\v7.1\Bin\SetEnv.cmd&quot; /release /x64
+call &quot;%WINDOWS_SDK_71_ROOT%\Bin\SetEnv.cmd&quot; /release /x64
 
-SET MG_VER_MAJOR=2
-SET MG_VER_MINOR=5
-SET MG_VER_BUILD=0
 SET MG_VER_MAJOR_MINOR=%MG_VER_MAJOR%.%MG_VER_MINOR%
 SET MG_VER_MAJOR_MINOR_BUILD=%MG_VER_MAJOR_MINOR%.%MG_VER_BUILD%
-SET FDO_VER_MAJOR_MINOR=3.8
+SET MG_BUILD_OUTPUT_ROOT64=%MG_BUILD_ARTIFACT_PATH%\mapguide
+SET MG_BUILD_OUTPUT64=%MG_BUILD_OUTPUT_ROOT64%\%MG_VER_MAJOR_MINOR_BUILD%\x64\release
+SET MG_BUILD_AREA64=%MG_BUILD_AREA%\mapguide\%MG_VER_MAJOR_MINOR_BUILD%\x64
+SET REVNUM_FILE64=%MG_TOOL_PATH%\revnum.pl
+SET MG_STAMP_FILE64=%MG_BUILD_ARTIFACT_PATH%\last_mapguide_%MG_VER_MAJOR_MINOR_BUILD%_revision_x64.txt
+SET BUILD_ACTION=
 
-SET FDO_SRC64=C:\builds\fdo\%FDO_VER_MAJOR_MINOR%\x64_vc10\Fdo
-SET BUILD_SRC64=C:\mg-%MG_VER_MAJOR_MINOR%-x64
-SET CURRENT_DIR=C:\builds\
-SET BUILD_OUTPUT64=C:\builds\mapguide\%MG_VER_MAJOR_MINOR%\x64\release
-SET JAVA_HOME=C:\Program Files\Java\jdk1.6.0_33
-SET ANT_HOME=C:\apache-ant-1.8.3
-SET DOXYGEN=C:\Program Files\doxygen\bin
-if exist %BUILD_OUTPUT64% rd /S /Q %BUILD_OUTPUT64%
-if exist &quot;%BUILD_SRC64%\Output&quot; rd /S /Q &quot;%BUILD_SRC64%\Output&quot;
-cd %BUILD_SRC64%\MgDev\Oem\FDO
+echo =================== Env Vars for MapGuide =============================
+echo MG_VER_MAJOR_MINOR         = %MG_VER_MAJOR_MINOR%
+echo MG_VER_MAJOR_MINOR_BUILD   = %MG_VER_MAJOR_MINOR_BUILD%
+echo MG_BUILD_OUTPUT_ROOT64     = %MG_BUILD_OUTPUT_ROOT64%
+echo MG_BUILD_OUTPUT64          = %MG_BUILD_OUTPUT64%
+echo MG_BUILD_AREA64            = %MG_BUILD_AREA64%
+echo REVNUM_FILE64              = %REVNUM_FILE64%
+echo MG_STAMP_FILE64            = %MG_STAMP_FILE64%
+echo =======================================================================
+
+echo [prepare]: Cleaning out build artifacts and build area
+if exist %MG_BUILD_OUTPUT64% rd /S /Q %MG_BUILD_OUTPUT64%
+if exist %MG_BUILD_AREA64% rd /S /Q %MG_BUILD_AREA64%
+if not exist %MG_BUILD_AREA64%\Installer mkdir %MG_BUILD_AREA64%\Installer
+if not exist %MG_BUILD_AREA64%\MgDev mkdir %MG_BUILD_AREA64%\MgDev
+if not exist %MG_BUILD_ARTIFACT_PATH%\mg-desktop mkdir %MG_BUILD_ARTIFACT_PATH%\mg-desktop
+
+echo [prepare]: Exporting SVN working copy to build area (Installer)
+SET BUILD_ACTION=Exporting SVN working copy to build area (Installer)
+svn export %MG_BUILD_SRC64%\Installer %MG_BUILD_AREA64%\Installer --force
+if &quot;%errorlevel%&quot;==&quot;1&quot; goto error
+
+REM Need to copy and not export as we need the SVN metadata for packaging with the installer
+echo [prepare]: Copying SVN working copy to build area (MgDev)
+SET BUILD_ACTION=Copying SVN working copy to build area (MgDev)
+robocopy %MG_BUILD_SRC64%\MgDev %MG_BUILD_AREA64%\MgDev /E /NFL /NDL /nc /ns /np
+if &quot;%errorlevel%&quot;==&quot;1&quot; goto error
+
+echo [prepare]: Setup FDO in Oem
+cd %MG_BUILD_AREA64%\MgDev\Oem\FDO
 xcopy /S /Y /I %FDO_SRC64%\Inc Inc
 xcopy /S /Y /I %FDO_SRC64%\Lib Lib64
 xcopy /S /Y /I %FDO_SRC64%\Bin Bin\Release64
 xcopy /S /Y /I %FDO_SRC64%\Bin\com\*.* Bin\Release64\com
-cd %BUILD_SRC64%\MgDev\Web
-rd /S /Q bin
-rd /S /Q lib
-rd /S /Q obj
-cd %BUILD_SRC64%\MgDev
-echo [build]: Updating to latest revision
-REM If we ever do implement CI build triggers, remove this update command
-svn cleanup
-svn update .
-svn info . | perl C:\builds\revnum.pl &gt; revision.txt
-set /p REVISION64= &lt; revision.txt
-copy /Y revision.txt C:\builds\last_mg_x64_revision.txt
-cscript updateversion.vbs /major:%MG_VER_MAJOR% /minor:%MG_VER_MINOR% /point:%MG_VER_BUILD% /build:%REVISION64%
-call stampassemblies.bat %MG_VER_MAJOR_MINOR_BUILD%.%REVISION64%
+
+echo [prepare]: Pre-process for 64-bit compilation with Windows SDK 7.1
+sed -i &quot;s/\%%MSBUILD\%% InstallerPreReq\%%VS_SLN_SUFFIX\%%.sln/REM \%%MSBUILD\%% InstallerPreReq\%%VS_SLN_SUFFIX\%%.sln/g&quot; %MG_BUILD_AREA64%\Installer\build64.bat
+sed -i &quot;s/REM call build64_vce.bat/call build64_vce.bat/g&quot; %MG_BUILD_AREA64%\Installer\build64.bat
+echo Updated - %MG_BUILD_AREA64%\Installer\build64.bat
+
+cd %MG_BUILD_SRC64%\MgDev
+echo [prepare]: Noting SVN revision
+svn info . | perl %REVNUM_FILE64% &gt; revision.txt
+set /p MG_REVISION64= &lt; revision.txt
+copy /Y revision.txt %MG_STAMP_FILE64%
+
+cd %MG_BUILD_AREA64%\MgDev
+echo [build]: Stamp version numbers
+SET BUILD_ACTION=Stamp version numbers
+cscript updateversion.vbs /major:%MG_VER_MAJOR% /minor:%MG_VER_MINOR% /point:%MG_VER_BUILD% /build:%MG_REVISION64%
+call stampassemblies.bat %MG_VER_MAJOR_MINOR_BUILD%.%MG_REVISION64%
+if &quot;%errorlevel%&quot;==&quot;1&quot; goto error
+
+REM ========================================= MapGuide ====================================================
+
 echo [build]: Set env vars
 call setenvironment64.bat vc10
+
 echo [build]: build oem/server/web
-call build64.bat -o=%BUILD_OUTPUT64%
-echo [build]: install files
-call build64.bat -a=install -o=%BUILD_OUTPUT64%
-cd %BUILD_SRC64%\Installer
-echo [build]: Updating to latest revision
-svn update
+SET BUILD_ACTION=build oem/server/web
+call build64.bat -o=%MG_BUILD_OUTPUT64%
+if &quot;%errorlevel%&quot;==&quot;1&quot; goto error
+
+echo [build]: install files to build artifact directory
+SET BUILD_ACTION=install files to build artifact directory
+call build64.bat -a=install -o=%MG_BUILD_OUTPUT64%
+if &quot;%errorlevel%&quot;==&quot;1&quot; goto error
+
+pushd %MG_BUILD_AREA64%\Installer
+echo [build]: Prepare artifact directory
+SET BUILD_ACTION=Prepare artifact directory
+call build64.bat -a=prepare -source=%MG_BUILD_OUTPUT64%
+if &quot;%errorlevel%&quot;==&quot;1&quot; goto error
 popd
-pushd %BUILD_SRC64%\Installer
-call build64.bat -a=prepare -source=%BUILD_OUTPUT64%
-call build64.bat -a=generate -source=%BUILD_OUTPUT64%
-call build64.bat -source=%BUILD_OUTPUT64% -version=%MG_VER_MAJOR_MINOR_BUILD%.%REVISION64% -name=MapGuideOpenSource-%MG_VER_MAJOR_MINOR_BUILD%.%REVISION64%-%RELEASE_LABEL64%-x64 -title=&quot;MapGuide Open Source %MG_VER_MAJOR_MINOR% %RELEASE_LABEL64%&quot;
-move /Y Output\en-US\MapGuideOpenSource-%MG_VER_MAJOR_MINOR_BUILD%.%REVISION64%-%RELEASE_LABEL64%-x64.exe C:\builds\mapguide</command>
+
+REM ========================================= mg-desktop ====================================================
+
+pushd %MG_BUILD_AREA64%\MgDev
+echo [build]: mg-desktop
+call build_desktop.bat x64
+popd
+
+pushd %MG_BUILD_AREA64%\MgDev\nuget
+echo [clean]: Nuget package temp files
+call package_clean.bat
+popd
+
+pushd %MG_BUILD_AREA64%\MgDev
+echo [build]: Nuget packages
+call nuget_prepare.bat %MG_VER_MAJOR_MINOR_BUILD%.%REVISION64% x64
+call nuget_pack.bat x64
+popd
+
+pushd %MG_BUILD_AREA64%\MgDev\nuget
+echo [build]: Copy mg-desktop build artifacts (NuGet packages)
+move *.nupkg %MG_BUILD_ARTIFACT_PATH%\mg-desktop
+popd
+
+pushd %MG_BUILD_AREA64%\MgDev\Release64
+echo [build]: Copy mg-desktop build artifacts (zip dist)
+7z a -mx9 %MG_BUILD_ARTIFACT_PATH%\mg-desktop\mg-desktop-%MG_VER_MAJOR_MINOR_BUILD%.%REVISION64%-net40-vc10-x64.zip Desktop DesktopSamples
+popd
+
+REM ========================================= MapGuide Installer ====================================================
+
+pushd %MG_BUILD_AREA64%\Installer
+echo [build]: Generate installer file listings
+SET BUILD_ACTION=Generate installer file listings
+call build64.bat -a=generate -source=%MG_BUILD_OUTPUT64%
+if &quot;%errorlevel%&quot;==&quot;1&quot; goto error
+
+echo [build]: Build the installer
+SET BUILD_ACTION=Build the installer
+call build64.bat -source=%MG_BUILD_OUTPUT64% -version=%MG_VER_MAJOR_MINOR_BUILD%.%MG_REVISION64% -name=MapGuideOpenSource-%MG_VER_MAJOR_MINOR_BUILD%.%MG_REVISION64%-%RELEASE_LABEL64%-x64 -title=&quot;MapGuide Open Source %MG_VER_MAJOR_MINOR% %RELEASE_LABEL64%&quot;
+if &quot;%errorlevel%&quot;==&quot;1&quot; goto error
+
+move /Y Output\en-US\MapGuideOpenSource-%MG_VER_MAJOR_MINOR_BUILD%.%MG_REVISION64%-%RELEASE_LABEL64%-x64.exe %MG_BUILD_OUTPUT_ROOT64%
+popd
+goto end
+:error
+echo An error occurred while building MapGuide: %BUILD_ACTION%
+exit /b 1
+:end
+exit /b 0</command>
     </hudson.tasks.BatchFile>
   </builders>
-  <publishers>
-    <hudson.tasks.BuildTrigger>
-      <childProjects>mg-desktop-net40-vc10-x64</childProjects>
-      <threshold>
-        <name>SUCCESS</name>
-        <ordinal>0</ordinal>
-        <color>BLUE</color>
-      </threshold>
-    </hudson.tasks.BuildTrigger>
-  </publishers>
+  <publishers/>
   <buildWrappers/>
 </project>
