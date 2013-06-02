@@ -22,6 +22,11 @@
           <description>FDO Version Number (major.minor.rev)</description>
           <defaultValue>3.8.0</defaultValue>
         </hudson.model.StringParameterDefinition>
+        <hudson.model.BooleanParameterDefinition>
+          <name>CLEAR_WORKING_AREA</name>
+          <description></description>
+          <defaultValue>true</defaultValue>
+        </hudson.model.BooleanParameterDefinition>
       </parameterDefinitions>
     </hudson.model.ParametersDefinitionProperty>
   </properties>
@@ -57,6 +62,10 @@ echo =========================================================
 REM Pre-build checks, nuke artifact dir and working area
 echo [prepare]: Clean out build area and build artifacts
 if exist %FDO_BUILD_OUTPUT64% rd /S /Q %FDO_BUILD_OUTPUT64%
+if &quot;%CLEAR_WORKING_AREA%&quot;==&quot;false&quot; (
+    echo [prepare]: Skip cleaning build area
+    goto build_fdo
+)
 if exist %FDO_WORKING_AREA64% rd /S /Q %FDO_WORKING_AREA64%
 if not exist %FDO_WORKING_AREA64% mkdir %FDO_WORKING_AREA64%
 
@@ -78,6 +87,7 @@ SET BUILD_ACTION=Enabling build settings for compilation with Windows 7.1 SDK C+
 call %MG_TOOL_PATH%\fdo_enable_vcexpress64.bat %FDO_WORKING_AREA64%
 if &quot;%errorlevel%&quot;==&quot;1&quot; goto error
 
+:build_fdo
 echo [prepare]: Noting SVN revision
 pushd %FDO_BUILD_SRC64% 
 REM If we ever do implement CI build triggers, remove this update command
@@ -130,6 +140,15 @@ exit /b 1
 exit /b 0</command>
     </hudson.tasks.BatchFile>
   </builders>
-  <publishers/>
+  <publishers>
+    <hudson.tasks.BuildTrigger>
+      <childProjects>MapGuide Open Source x64</childProjects>
+      <threshold>
+        <name>SUCCESS</name>
+        <ordinal>0</ordinal>
+        <color>BLUE</color>
+      </threshold>
+    </hudson.tasks.BuildTrigger>
+  </publishers>
   <buildWrappers/>
 </project>

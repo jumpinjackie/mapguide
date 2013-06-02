@@ -97,6 +97,8 @@ echo MG_BUILD_AREA64            = %MG_BUILD_AREA64%
 echo REVNUM_FILE64              = %REVNUM_FILE64%
 echo MG_STAMP_FILE64            = %MG_STAMP_FILE64%
 echo INSTANT_SETUP_SRC          = %INSTANT_SETUP_SRC%
+echo JAVA_HOME                  = %JAVA_HOME%
+echo ANT_HOME                   = %ANT_HOME%
 echo =======================================================================
 
 echo [prepare]: Cleaning out build artifacts
