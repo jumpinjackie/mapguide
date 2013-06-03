@@ -1970,7 +1970,14 @@ MgByteReader* MgServerFeatureService::GetWfsFeature(MgResourceIdentifier* fs,
     {
         epsgCode = mapCs->GetEpsgCode();
     }
-    STRING srsName = L"EPSG:" + to_wstring((_Longlong)epsgCode) ;
+    wchar_t wszEpsg[255];
+    #ifdef _WIN32
+    _itow(epsgCode, wszEpsg, 10);
+    #else
+    swprintf(wszEpsg, 255, L"%d", epsgCode);
+    #endif
+    STRING strEpsgCode(wszEpsg);
+    STRING srsName = L"EPSG:" + strEpsgCode;
     flags->SetSrsName(srsName.c_str());
 
     // gml schema location and version
