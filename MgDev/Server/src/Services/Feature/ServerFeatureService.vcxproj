@@ -156,7 +156,7 @@
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>ACE.lib;xerces-c_3mg.lib;FDO.lib;FDOCommon.lib;ExpressionEngine.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>ACE.lib;xerces-c_3mg.lib;FDO.lib;FDOCommon.lib;FDOGeometry.lib;ExpressionEngine.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(OutDir)MgServerFeatureService.dll</OutputFile>
       <AdditionalLibraryDirectories>..\..\..\..\Oem\ACE\ACE_wrappers\lib;..\..\..\..\Oem\dbxml\lib;..\..\..\..\Oem\FDO\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <DelayLoadDLLs>FDO.dll;FDOCommon.dll;ExpressionEngine.dll;%(DelayLoadDLLs)</DelayLoadDLLs>
@@ -186,7 +186,7 @@
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>ACE.lib;xerces-c_3mg.lib;FDO.lib;FDOCommon.lib;ExpressionEngine.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>ACE.lib;xerces-c_3mg.lib;FDO.lib;FDOCommon.lib;FDOGeometry.lib;ExpressionEngine.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(OutDir)MgServerFeatureService.dll</OutputFile>
       <AdditionalLibraryDirectories>..\..\..\..\Oem\ACE\ACE_wrappers\lib64;..\..\..\..\Oem\dbxml\lib64;..\..\..\..\Oem\FDO\lib64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <DelayLoadDLLs>FDO.dll;FDOCommon.dll;ExpressionEngine.dll;%(DelayLoadDLLs)</DelayLoadDLLs>
