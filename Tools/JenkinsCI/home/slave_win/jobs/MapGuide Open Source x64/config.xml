@@ -104,6 +104,13 @@ echo =======================================================================
 echo [prepare]: Cleaning out build artifacts
 if exist %MG_BUILD_OUTPUT64% rd /S /Q %MG_BUILD_OUTPUT64%
 
+pushd %MG_BUILD_SRC64%\MgDev
+echo [prepare]: Noting SVN revision
+svn info . | perl %REVNUM_FILE64% &gt; revision.txt
+set /p MG_REVISION64= &lt; revision.txt
+copy /Y revision.txt %MG_STAMP_FILE64%
+popd
+
 if &quot;%CLEAR_WORKING_AREA%&quot;==&quot;false&quot; (
     echo [prepare]: Skip cleaning build area
     goto build_mapguide
@@ -165,12 +172,6 @@ sed -i &quot;s/REM call build64_vce.bat/call build64_vce.bat/g&quot; %MG_BUILD_A
 echo Updated - %MG_BUILD_AREA64%\Installer\build64.bat
 
 :build_mapguide
-cd %MG_BUILD_SRC64%\MgDev
-echo [prepare]: Noting SVN revision
-svn info . | perl %REVNUM_FILE64% &gt; revision.txt
-set /p MG_REVISION64= &lt; revision.txt
-copy /Y revision.txt %MG_STAMP_FILE64%
-
 cd %MG_BUILD_AREA64%\MgDev
 echo [build]: Stamp version numbers
 SET BUILD_ACTION=Stamp version numbers
