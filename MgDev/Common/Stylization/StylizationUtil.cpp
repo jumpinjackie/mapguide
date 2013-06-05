@@ -229,7 +229,6 @@ void StylizationUtil::RenderPointSymbolization(PointSymbolization2D* psym,
 
     if (symbol)
     {
-        StylizationUtil::ParseDouble(symbol->GetRotation(), mdef.rotation());
         SymbolVisitor::eSymbolType type = SymbolVisitor::DetermineSymbolType(symbol);
 
         switch (type)
