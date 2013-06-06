@@ -386,11 +386,35 @@
 				>
 			</File>
 			<File
+				RelativePath=".\ExpressionFunctionFeatureSource.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ExpressionFunctionFeatureSource.h"
+				>
+			</File>
+			<File
+				RelativePath=".\ExpressionFunctionHtmlColor.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ExpressionFunctionHtmlColor.h"
+				>
+			</File>
+			<File
 				RelativePath=".\ExpressionFunctionIf.cpp"
 				>
 			</File>
 			<File
 				RelativePath=".\ExpressionFunctionIf.h"
+				>
+			</File>
+			<File
+				RelativePath=".\ExpressionFunctionLayerDefinition.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ExpressionFunctionLayerDefinition.h"
 				>
 			</File>
 			<File
@@ -410,11 +434,35 @@
 				>
 			</File>
 			<File
+				RelativePath=".\ExpressionFunctionMapCenterX.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ExpressionFunctionMapCenterX.h"
+				>
+			</File>
+			<File
+				RelativePath=".\ExpressionFunctionMapCenterY.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ExpressionFunctionMapCenterY.h"
+				>
+			</File>
+			<File
 				RelativePath=".\ExpressionFunctionMapName.cpp"
 				>
 			</File>
 			<File
 				RelativePath=".\ExpressionFunctionMapName.h"
+				>
+			</File>
+			<File
+				RelativePath=".\ExpressionFunctionMapScale.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ExpressionFunctionMapScale.h"
 				>
 			</File>
 			<File
