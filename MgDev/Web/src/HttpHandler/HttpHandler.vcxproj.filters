@@ -383,6 +383,9 @@
     <ClCompile Include="JsonDoc.cpp" />
     <ClCompile Include="XmlJsonConvert.cpp" />
     <ClCompile Include="HttpReaderStreamer.cpp" />
+    <ClCompile Include="HttpCreateRuntimeMap.cpp">
+      <Filter>Mapping Service</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="HttpApplyResourcePackage.h">
@@ -754,6 +757,9 @@
     <ClInclude Include="JsonDoc.h" />
     <ClInclude Include="XmlJsonConvert.h" />
     <ClInclude Include="HttpReaderStreamer.h" />
+    <ClInclude Include="HttpCreateRuntimeMap.h">
+      <Filter>Mapping Service</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="HttpHandler.rc" />

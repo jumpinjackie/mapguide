@@ -190,6 +190,7 @@ const STRING MgHttpResourceStrings::opEnumerateDrawingSectionResources = L"ENUME
 const STRING MgHttpResourceStrings::opGetDrawingCoordinateSpace = L"GETDRAWINGCOORDINATESPACE";
 
 // Mapping Service Operation Requests
+const STRING MgHttpResourceStrings::opCreateRuntimeMap = L"CREATERUNTIMEMAP";
 const STRING MgHttpResourceStrings::opGetMap = L"GETMAP";
 const STRING MgHttpResourceStrings::opGetMapUpdate = L"GETMAPUPDATE";
 const STRING MgHttpResourceStrings::opGetPlot = L"GETPLOT";
@@ -216,6 +217,12 @@ const STRING MgHttpResourceStrings::reqMappingScale = L"SCALE";
 const STRING MgHttpResourceStrings::reqMappingFormat = L"FORMAT";
 const STRING MgHttpResourceStrings::reqMappingType = L"TYPE";
 const STRING MgHttpResourceStrings::reqMappingThemeCategory = L"THEMECATEGORY";
+const STRING MgHttpResourceStrings::reqMappingRequestedFeatures = L"REQUESTEDFEATURES";
+const STRING MgHttpResourceStrings::reqMappingIconsPerScaleRange = L"ICONSPERSCALERANGE";
+const STRING MgHttpResourceStrings::reqMappingTargetMapName = L"TARGETMAPNAME";
+const STRING MgHttpResourceStrings::reqMappingIconWidth = L"ICONWIDTH";
+const STRING MgHttpResourceStrings::reqMappingIconHeight = L"ICONHEIGHT";
+const STRING MgHttpResourceStrings::reqMappingIconFormat = L"ICONFORMAT";
 
 // Predefined Rendering Service Request Parameters
 const STRING MgHttpResourceStrings::reqRenderingMapDefinition = L"MAPDEFINITION";

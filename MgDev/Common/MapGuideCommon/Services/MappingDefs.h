@@ -103,6 +103,8 @@ INTERNAL_API:
     static const int GeneratePlot2              = 0x1111EE09;
     static const int GeneratePlot3              = 0x1111EE0A;
     static const int GenerateLegendImage        = 0x1111EE0D;
+    static const int CreateRuntimeMap           = 0x1111EE0E;
+    static const int CreateRuntimeMap2          = 0x1111EE0F;
 };
 /// \endcond
 

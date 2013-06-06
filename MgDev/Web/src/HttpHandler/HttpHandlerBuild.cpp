@@ -27,6 +27,7 @@
 #include "HttpCreateRepository.cpp"
 #include "HttpCreateSession.cpp"
 #include "HttpGetSessionTimeout.cpp"
+#include "HttpCreateRuntimeMap.cpp"
 #include "HttpCsConvertWktToCoordinateSystemCode.cpp"
 #include "HttpCsConvertCoordinateSystemCodeToWkt.cpp"
 #include "HttpCsConvertEpsgCodeToWkt.cpp"

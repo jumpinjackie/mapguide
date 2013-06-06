@@ -116,11 +116,27 @@ class MG_SERVER_MAPPING_API MgServerMappingService : public MgMappingService
             INT32 geomType,
             INT32 themeCategory);
 
+        virtual MgByteReader* CreateRuntimeMap(MgResourceIdentifier* mapDefinition,
+                                               CREFSTRING sessionId,
+                                               INT32 requestedFeatures,
+                                               INT32 iconsPerScaleRange);
+
+        virtual MgByteReader* CreateRuntimeMap(MgResourceIdentifier* mapDefinition,
+                                               CREFSTRING targetMapName,
+                                               CREFSTRING sessionId,
+                                               CREFSTRING iconFormat,
+                                               INT32 iconWidth,
+                                               INT32 iconHeight,
+                                               INT32 requestedFeatures,
+                                               INT32 iconsPerScaleRange);
+
         void SetConnectionProperties(MgConnectionProperties* connProp);
 
 // Data Members
 
     private:
+        void CreateGroupItem(MgLayerGroup* group, MgLayerGroup* parent, std::string& xml);
+        void CreateLayerItem(INT32 requestedFeatures, INT32 iconsPerScaleRange, CREFSTRING iconFormat, INT32 iconWidth, INT32 iconHeight, MgLayerBase* layer, MgLayerGroup* parent, MdfModel::LayerDefinition* ldf, std::string& xml);
         bool FeatureTypeStyleSupportsGeomType(MdfModel::FeatureTypeStyle* fts, INT32 geomType);
         void MakeUIGraphicsForScaleRange(std::list<RS_UIGraphic>& uiGraphics, std::vector<MgByte*>& uiGraphicSources, MdfModel::VectorScaleRange* sr);
 

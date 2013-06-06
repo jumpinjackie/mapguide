@@ -150,6 +150,19 @@ void MgSelection::Save(MgResourceService* resourceService, CREFSTRING mapName)
     MgResource::Save(resourceService, resId);
 }
 
+//////////////////////////////////////////////////////////////////
+// Save the resource
+//
+void MgSelection::Save(MgResourceService* resourceService, CREFSTRING sessionId, CREFSTRING mapName)
+{
+    if (sessionId.empty())
+    {
+        throw new MgSessionExpiredException(L"MgSelection.Save",__LINE__,__WFILE__, NULL, L"MgSelectionSaveWithEmptySession", NULL);
+    }
+
+    Ptr<MgResourceIdentifier> resId = new MgResourceIdentifier(GetResourceName(sessionId, mapName));
+    MgResource::Save(resourceService, resId);
+}
 
 //////////////////////////////////////////////////////////////////
 STRING MgSelection::GetResourceName(CREFSTRING sessionId, CREFSTRING mapName)

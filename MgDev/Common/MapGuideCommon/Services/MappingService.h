@@ -315,6 +315,7 @@ PUBLISHED_API:
         MgMapPlotCollection* mapPlots,
         MgDwfVersion* dwfVersion) = 0;
 
+    ////////////////////////////////////////////////////////////////////////////////
     /// \brief
     /// GenerateLegendImage() returns the legend image for the specified layer.
     ///
@@ -371,6 +372,100 @@ PUBLISHED_API:
                                               CREFSTRING format,
                                               INT32 geomType,
                                               INT32 themeCategory) = 0;
+
+    ////////////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Creates a new runtime map from the specified Map Definition resource id and returns an XML-based description of the runtime
+    /// map
+    ///
+    /// <!-- Syntax in .Net, Java, and PHP -->
+    /// \htmlinclude DotNetSyntaxTop.html
+    /// virtual MgByteReader CreateRuntimeMap(MgResourceIdentifier mapDefinition, int requestedFeatures, int iconsPerScaleRange);
+    /// \htmlinclude SyntaxBottom.html
+    /// \htmlinclude JavaSyntaxTop.html
+    /// virtual MgByteReader CreateRuntimeMap(MgResourceIdentifier mapDefinition, int requestedFeatures, int iconsPerScaleRange);
+    /// \htmlinclude SyntaxBottom.html
+    /// \htmlinclude PHPSyntaxTop.html
+    /// virtual MgByteReader CreateRuntimeMap(MgResourceIdentifier mapDefinition, int requestedFeatures, int iconsPerScaleRange);
+    /// \htmlinclude SyntaxBottom.html
+    ///
+    /// \param mapDefinition (MgResourceIdentifier)
+    /// MgResourceIdentifier object identifying the map definition resource.
+    /// \param requestedFeatures (int)
+    /// A bitmask representing the desired information to return in the XML response: 
+    /// 1=Layer/Group structure, 2=Layer Icons, 4=Layer Feature Source Information
+    /// \param iconsPerScaleRange (int)
+    /// The number of legend icons per scale range to render inline in the XML response as base64 strings. 
+    /// If a scale range contains a number of rules that exceeds this value, only the first and
+    /// last rules of a type style in the scale range will have inline icons
+    ///
+    /// \remarks
+    /// The bitmask values of 2 (Layer Icons) and 4 (Layer Feature Source Information) have no effect if 1 (Layer/Group structure)
+    /// is not specified
+    ///
+    /// \return
+    /// Returns an XML-based description of the runtime map
+    ///
+    virtual MgByteReader* CreateRuntimeMap(MgResourceIdentifier* mapDefinition,
+                                           CREFSTRING sessionId,
+                                           INT32 requestedFeatures,
+                                           INT32 iconsPerScaleRange) = 0;
+
+    ////////////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Creates a new runtime map from the specified Map Definition resource id and returns an XML-based description of the runtime
+    /// map
+    ///
+    /// <!-- Syntax in .Net, Java, and PHP -->
+    /// \htmlinclude DotNetSyntaxTop.html
+    /// virtual MgByteReader CreateRuntimeMap(MgResourceIdentifier mapDefinition, int iconWidth, int iconHeight, int requestedFeatures, int iconsPerScaleRange);
+    /// \htmlinclude SyntaxBottom.html
+    /// \htmlinclude JavaSyntaxTop.html
+    /// virtual MgByteReader CreateRuntimeMap(MgResourceIdentifier mapDefinition, int iconWidth, int iconHeight, int requestedFeatures, int iconsPerScaleRange);
+    /// \htmlinclude SyntaxBottom.html
+    /// \htmlinclude PHPSyntaxTop.html
+    /// virtual MgByteReader CreateRuntimeMap(MgResourceIdentifier mapDefinition, int iconWidth, int iconHeight, int requestedFeatures, int iconsPerScaleRange);
+    /// \htmlinclude SyntaxBottom.html
+    ///
+    /// \param mapDefinition (MgResourceIdentifier)
+    /// MgResourceIdentifier object identifying the map definition resource.
+    /// \param targetMapName (String/string)
+    /// The desired name of the runtime map
+    /// \param sessionId (String/string)
+    /// The session ID
+    /// \param iconFormat (String/string)
+    /// The desired image format for icons (from MgImageFormats)
+    /// \param iconWidth (int)
+    /// The width of each individual inline legend icons. Has no effect if icons was not requested in the response.
+    /// \param iconHeight (int)
+    /// The height of each individual inline legend icons. Has no effect if icons was not requested in the response.
+    /// \param requestedFeatures (int)
+    /// A bitmask representing the desired information to return in the XML response: 
+    /// 1=Layer/Group structure, 2=Layer Icons, 4=Layer Feature Source Information
+    /// \param iconsPerScaleRange (int)
+    /// The number of legend icons per scale range to render inline in the XML response as base64 strings. 
+    /// If a scale range contains a number of rules that exceeds this value, only the first and
+    /// last rules of a type style in the scale range will have inline icons
+    ///
+    /// \remarks
+    /// The bitmask values of 2 (Layer Icons) and 4 (Layer Feature Source Information) have no effect if 1 (Layer/Group structure)
+    /// is not specified
+    ///
+    /// \return
+    /// Returns an XML-based description of the runtime map
+    ///
+    /// \exception MgInvalidArgumentException
+    /// \exception MgNullArgumentException
+    ///
+    virtual MgByteReader* CreateRuntimeMap(MgResourceIdentifier* mapDefinition,
+                                           CREFSTRING targetMapName,
+                                           CREFSTRING sessionId,
+                                           CREFSTRING iconFormat,
+                                           INT32 iconWidth,
+                                           INT32 iconHeight,
+                                           INT32 requestedFeatures,
+                                           INT32 iconsPerScaleRange) = 0;
+                                             
 
 EXTERNAL_API:
 
@@ -543,7 +638,9 @@ public:
         opIdQueryFeaturesWms        =  0x1111EE08,
         opIdGeneratePlot2           =  0x1111EE09,
         opIdGeneratePlot3           =  0x1111EE0A,
-        opIdGenerateLegendImage     =  0x1111EE0D
+        opIdGenerateLegendImage     =  0x1111EE0D,
+        opIdCreateRuntimeMap        =  0x1111EE0E,
+        opIdCreateRuntimeMap2       =  0x1111EE0F
     };
 };
 /// \}

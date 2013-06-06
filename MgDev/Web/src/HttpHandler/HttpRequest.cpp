@@ -74,6 +74,7 @@
 #include "HttpGetFdoCacheInfo.h"
 
 // Http Mapping Service operations
+#include "HttpCreateRuntimeMap.h"
 #include "HttpGetMap.h"
 #include "HttpGetMapUpdate.h"
 #include "HttpGetPlot.h"
@@ -341,6 +342,7 @@ bool InitializeStaticData()
 {
     //declare each Http class creator, associate the operation name with it
     //
+    httpClassCreators[MgHttpResourceStrings::opCreateRuntimeMap] = MgHttpCreateRuntimeMap::CreateObject;
     httpClassCreators[MgHttpResourceStrings::opGetMap] = MgHttpGetMap::CreateObject;
     httpClassCreators[MgHttpResourceStrings::opGetMapUpdate] = MgHttpGetMapUpdate::CreateObject;
     httpClassCreators[MgHttpResourceStrings::opGetDrawing] = MgHttpGetDrawing::CreateObject;

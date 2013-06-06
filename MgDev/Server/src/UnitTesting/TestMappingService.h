@@ -34,6 +34,7 @@ class TestMappingService : public CppUnit::TestFixture
     CPPUNIT_TEST(TestCase_GetPlotUsingExtents);
     CPPUNIT_TEST(TestCase_GetPlotUsingExtentsAndExpandToFit);
     CPPUNIT_TEST(TestCase_GetLegendPlot);
+    CPPUNIT_TEST(TestCase_CreateRuntimeMap);
     //CPPUNIT_TEST(TestCase_QueryFeaturesImageMap);
 
     CPPUNIT_TEST(TestEnd); // This must be the very last unit test
@@ -49,6 +50,7 @@ public:
     void TestStart();
     void TestEnd();
 
+    void TestCase_CreateRuntimeMap();
     void TestCase_GetMap();
     void TestCase_GetMapUpdate();
     void TestCase_SaveMap();
@@ -68,6 +70,8 @@ private:
     Ptr<MgSiteConnection> m_siteConnection;
     Ptr<MgResourceService> m_svcResource;
     Ptr<MgMappingService> m_svcMapping;
+
+    STRING m_session;
 };
 
 #endif // TESTMAPPINGSERVICE_H_

@@ -55,9 +55,9 @@ TestMappingService::TestMappingService()
     // This must be done before calling CreateSession()
     MgUserInformation::SetCurrentUserInfo(userInfo);
 
-    STRING session = svcSite->CreateSession();
-    assert(!session.empty());
-    userInfo->SetMgSessionId(session);
+    m_session = svcSite->CreateSession();
+    assert(!m_session.empty());
+    userInfo->SetMgSessionId(m_session);
 
     // Set the current MgUserInformation
     MgUserInformation::SetCurrentUserInfo(userInfo);
@@ -249,6 +249,104 @@ void TestMappingService::TestEnd()
     }
 
     ACE_DEBUG((LM_INFO, ACE_TEXT("\nMapping Service tests completed.\n\n")));
+}
+
+void TestMappingService::TestCase_CreateRuntimeMap()
+{
+    try
+    {
+        //make a runtime map
+        Ptr<MgResourceIdentifier> mdfres = new MgResourceIdentifier(L"Library://UnitTests/Maps/Sheboygan.MapDefinition");
+        STRING format = MgImageFormats::Png;
+        //call the API
+        Ptr<MgByteReader> rtMap = m_svcMapping->CreateRuntimeMap(mdfres, L"UnitTestSheboygan1", m_session, format, 16, 16, 0, 25);
+        Ptr<MgByteSink> sink = new MgByteSink(rtMap);
+        sink->ToFile(L"../UnitTestFiles/RuntimeMapBarebones.xml");
+
+        rtMap = m_svcMapping->CreateRuntimeMap(mdfres, L"UnitTestSheboygan2", m_session, format, 16, 16, 1, 25);
+        sink = new MgByteSink(rtMap);
+        sink->ToFile(L"../UnitTestFiles/RuntimeMapLayersAndGroups.xml");
+
+        rtMap = m_svcMapping->CreateRuntimeMap(mdfres, L"UnitTestSheboygan3", m_session, format, 16, 16, (1 | 2), 25);
+        sink = new MgByteSink(rtMap);
+        sink->ToFile(L"../UnitTestFiles/RuntimeMapLayersAndGroupsWithIconsPNG16x16.xml");
+
+        rtMap = m_svcMapping->CreateRuntimeMap(mdfres, L"UnitTestSheboygan4", m_session, format, 16, 16, (1 | 2 | 4), 25);
+        sink = new MgByteSink(rtMap);
+        sink->ToFile(L"../UnitTestFiles/RuntimeMapLayersAndGroupsWithIconsAndFeatureSourcePNG16x16.xml");
+
+        rtMap = m_svcMapping->CreateRuntimeMap(mdfres, L"UnitTestSheboygan5", m_session, format, 32, 32, (1 | 2), 25);
+        sink = new MgByteSink(rtMap);
+        sink->ToFile(L"../UnitTestFiles/RuntimeMapLayersAndGroupsWithIconsPNG32x32.xml");
+
+        rtMap = m_svcMapping->CreateRuntimeMap(mdfres, L"UnitTestSheboygan6", m_session, format, 32, 32, (1 | 2 | 4), 25);
+        sink = new MgByteSink(rtMap);
+        sink->ToFile(L"../UnitTestFiles/RuntimeMapLayersAndGroupsWithIconsAndFeatureSourcePNG32x32.xml");
+
+        format = MgImageFormats::Gif;
+
+        rtMap = m_svcMapping->CreateRuntimeMap(mdfres, L"UnitTestSheboygan3", m_session, format, 16, 16, (1 | 2), 25);
+        sink = new MgByteSink(rtMap);
+        sink->ToFile(L"../UnitTestFiles/RuntimeMapLayersAndGroupsWithIconsGIF16x16.xml");
+
+        rtMap = m_svcMapping->CreateRuntimeMap(mdfres, L"UnitTestSheboygan4", m_session, format, 16, 16, (1 | 2 | 4), 25);
+        sink = new MgByteSink(rtMap);
+        sink->ToFile(L"../UnitTestFiles/RuntimeMapLayersAndGroupsWithIconsAndFeatureSourceGIF16x16.xml");
+
+        rtMap = m_svcMapping->CreateRuntimeMap(mdfres, L"UnitTestSheboygan5", m_session, format, 32, 32, (1 | 2), 25);
+        sink = new MgByteSink(rtMap);
+        sink->ToFile(L"../UnitTestFiles/RuntimeMapLayersAndGroupsWithIconsGIF32x32.xml");
+
+        rtMap = m_svcMapping->CreateRuntimeMap(mdfres, L"UnitTestSheboygan6", m_session, format, 32, 32, (1 | 2 | 4), 25);
+        sink = new MgByteSink(rtMap);
+        sink->ToFile(L"../UnitTestFiles/RuntimeMapLayersAndGroupsWithIconsAndFeatureSourceGIF32x32.xml");
+
+        format = MgImageFormats::Jpeg;
+
+        rtMap = m_svcMapping->CreateRuntimeMap(mdfres, L"UnitTestSheboygan3", m_session, format, 16, 16, (1 | 2), 25);
+        sink = new MgByteSink(rtMap);
+        sink->ToFile(L"../UnitTestFiles/RuntimeMapLayersAndGroupsWithIconsJPEG16x16.xml");
+
+        rtMap = m_svcMapping->CreateRuntimeMap(mdfres, L"UnitTestSheboygan4", m_session, format, 16, 16, (1 | 2 | 4), 25);
+        sink = new MgByteSink(rtMap);
+        sink->ToFile(L"../UnitTestFiles/RuntimeMapLayersAndGroupsWithIconsAndFeatureSourceJPEG16x16.xml");
+
+        rtMap = m_svcMapping->CreateRuntimeMap(mdfres, L"UnitTestSheboygan5", m_session, format, 32, 32, (1 | 2), 25);
+        sink = new MgByteSink(rtMap);
+        sink->ToFile(L"../UnitTestFiles/RuntimeMapLayersAndGroupsWithIconsJPEG32x32.xml");
+
+        rtMap = m_svcMapping->CreateRuntimeMap(mdfres, L"UnitTestSheboygan6", m_session, format, 32, 32, (1 | 2 | 4), 25);
+        sink = new MgByteSink(rtMap);
+        sink->ToFile(L"../UnitTestFiles/RuntimeMapLayersAndGroupsWithIconsAndFeatureSourceJPEG32x32.xml");
+
+        format = MgImageFormats::Png8;
+
+        rtMap = m_svcMapping->CreateRuntimeMap(mdfres, L"UnitTestSheboygan3", m_session, format, 16, 16, (1 | 2), 25);
+        sink = new MgByteSink(rtMap);
+        sink->ToFile(L"../UnitTestFiles/RuntimeMapLayersAndGroupsWithIconsPNG816x16.xml");
+
+        rtMap = m_svcMapping->CreateRuntimeMap(mdfres, L"UnitTestSheboygan4", m_session, format, 16, 16, (1 | 2 | 4), 25);
+        sink = new MgByteSink(rtMap);
+        sink->ToFile(L"../UnitTestFiles/RuntimeMapLayersAndGroupsWithIconsAndFeatureSourcePNG816x16.xml");
+
+        rtMap = m_svcMapping->CreateRuntimeMap(mdfres, L"UnitTestSheboygan5", m_session, format, 32, 32, (1 | 2), 25);
+        sink = new MgByteSink(rtMap);
+        sink->ToFile(L"../UnitTestFiles/RuntimeMapLayersAndGroupsWithIconsPNG832x32.xml");
+
+        rtMap = m_svcMapping->CreateRuntimeMap(mdfres, L"UnitTestSheboygan6", m_session, format, 32, 32, (1 | 2 | 4), 25);
+        sink = new MgByteSink(rtMap);
+        sink->ToFile(L"../UnitTestFiles/RuntimeMapLayersAndGroupsWithIconsAndFeatureSourcePNG832x32.xml");
+    }
+    catch(MgException* e)
+    {
+        STRING message = e->GetDetails(TEST_LOCALE);
+        SAFE_RELEASE(e);
+        CPPUNIT_FAIL(MG_WCHAR_TO_CHAR(message.c_str()));
+    }
+    catch(...)
+    {
+        throw;
+    }
 }
 
 

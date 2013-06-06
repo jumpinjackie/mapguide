@@ -189,6 +189,9 @@ PUBLISHED_API:
     //
     virtual ~MgSelection();
 
+INTERNAL_API:
+    void Save(MgResourceService* resourceService, CREFSTRING sessionId, CREFSTRING mapName);
+
 protected:
 
     void Dispose();

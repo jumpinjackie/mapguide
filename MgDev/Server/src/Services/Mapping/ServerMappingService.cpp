@@ -43,6 +43,11 @@
 
 #define LEGEND_BITMAP_SIZE 16
 
+#define REQUEST_LAYER_STRUCTURE         1 /* Request layer and group structure */
+#define REQUEST_LAYER_ICONS             2 /* Request layer scale and icon information */
+#define REQUEST_LAYER_FEATURE_SOURCE    4 /* Request information about a layer's feature source */
+
+typedef std::map<STRING, MdfModel::LayerDefinition*> LayerDefinitionMap;
 
 //for use by observation mesh transformation
 const STRING SRS_LL84 = L"GEOGCS[\"LL84\",DATUM[\"WGS84\",SPHEROID[\"WGS84\",6378137,298.25722293287],TOWGS84[0,0,0,0,0,0,0]],PRIMEM[\"Greenwich\",0],UNIT[\"Degrees\",0.01745329252]]";
@@ -1685,7 +1690,7 @@ MgByteReader* MgServerMappingService::GenerateLegendImage(MgResourceIdentifier* 
             }
 
             if (fts)
-                byteReader = MgMappingUtil::DrawFTS(m_svcResource, fts, imgWidth, imgHeight, themeCategory);
+                byteReader = MgMappingUtil::DrawFTS(m_svcResource, fts, imgWidth, imgHeight, themeCategory, format);
             else
             {
                 //return the fixed array
@@ -1855,4 +1860,467 @@ void MgServerMappingService::MakeUIGraphicsForScaleRange(std::list<RS_UIGraphic>
 void MgServerMappingService::SetConnectionProperties(MgConnectionProperties*)
 {
     // Do nothing.  No connection properties are required for Server-side service objects.
+}
+
+MgByteReader* MgServerMappingService::CreateRuntimeMap(MgResourceIdentifier* mapDefinition,
+                                                       CREFSTRING sessionId,
+                                                       INT32 requestedFeatures,
+                                                       INT32 iconsPerScaleRange)
+{
+    CHECKNULL(mapDefinition, L"MgServerMappingService.CreateRuntimeMap");
+    STRING mapName = mapDefinition->GetName();
+    return CreateRuntimeMap(mapDefinition, mapName, sessionId, MgImageFormats::Png, LEGEND_BITMAP_SIZE, LEGEND_BITMAP_SIZE, requestedFeatures, iconsPerScaleRange);
+}
+
+MgByteReader* MgServerMappingService::CreateRuntimeMap(MgResourceIdentifier* mapDefinition,
+                                                       CREFSTRING targetMapName,
+                                                       CREFSTRING sessionId,
+                                                       CREFSTRING iconFormat,
+                                                       INT32 iconWidth,
+                                                       INT32 iconHeight,
+                                                       INT32 requestedFeatures,
+                                                       INT32 iconsPerScaleRange)
+{
+    CHECKARGUMENTNULL(mapDefinition, L"MgServerMappingService.CreateRuntimeMap");
+    LayerDefinitionMap layerDefinitionMap;
+    if (MgImageFormats::Png != iconFormat &&
+        MgImageFormats::Gif != iconFormat &&
+        MgImageFormats::Png8 != iconFormat &&
+        MgImageFormats::Jpeg != iconFormat)
+    {
+        MgStringCollection args;
+        args.Add(iconFormat);
+        throw new MgInvalidArgumentException(L"MgServerMappingService.CreateRuntimeMap", __LINE__, __WFILE__, NULL, L"MgInvalidImageFormat", &args);
+    }
+    Ptr<MgByteReader> byteReader;
+
+    MG_SERVER_MAPPING_SERVICE_TRY()
+
+    if (m_svcResource == NULL)
+        InitializeResourceService();
+
+    Ptr<MgSiteConnection> siteConn = new MgSiteConnection();
+    Ptr<MgUserInformation> userInfo = new MgUserInformation(sessionId);
+    siteConn->Open(userInfo);
+    Ptr<MgMap> map = new MgMap(siteConn);
+    map->Create(mapDefinition, targetMapName);
+    
+    STRING sStateId = L"Session:";
+    sStateId += sessionId;
+    sStateId += L"//";
+    sStateId += targetMapName;
+    sStateId += L".";
+    sStateId += MgResourceType::Map;
+
+    Ptr<MgResourceIdentifier> mapStateId = new MgResourceIdentifier(sStateId);
+    Ptr<MgSelection> sel = new MgSelection(map);
+    //Call our special Save() API that doesn't try to look for a MgUserInformation that's not
+    //there
+    sel->Save(m_svcResource, sessionId, targetMapName);
+    map->Save(m_svcResource, mapStateId);
+
+    //TODO: Possible future caching opportunity?
+    std::string xml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";  // NOXLATE
+    xml.append("<RuntimeMap xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:noNamespaceSchemaLocation=\"RuntimeMap-2.6.0.xsd\">\n");
+    // ------------------------------ Site Version ----------------------------------//
+    xml.append("<SiteVersion>");
+    MgServerManager* serverMgr = MgServerManager::GetInstance();
+    xml.append(MgUtil::WideCharToMultiByte(serverMgr->GetSiteVersion()));
+    xml.append("</SiteVersion>\n");
+    // ------------------------------ Session ID --------------------------------- //
+    xml.append("<SessionId>");
+    xml.append(MgUtil::WideCharToMultiByte(sessionId));
+    xml.append("</SessionId>\n");
+    // ------------------------------ Map Name --------------------------------- //
+    xml.append("<Name>");
+    xml.append(MgUtil::WideCharToMultiByte(targetMapName));
+    xml.append("</Name>\n");
+    // ------------------------------ Map Definition ID --------------------------------- //
+    xml.append("<MapDefinition>");
+    xml.append(MgUtil::WideCharToMultiByte(mapDefinition->ToString()));
+    xml.append("</MapDefinition>\n");
+    // ------------------------------ Background Color ---------------------------------- //
+    xml.append("<BackgroundColor>");
+    xml.append(MgUtil::WideCharToMultiByte(map->GetBackgroundColor()));
+    xml.append("</BackgroundColor>\n");
+    // ------------------------------ Display DPI --------------------------------------- //
+    xml.append("<DisplayDpi>");
+    std::string sDpi;
+    MgUtil::Int32ToString(map->GetDisplayDpi(), sDpi);
+    xml.append(sDpi);
+    xml.append("</DisplayDpi>\n");
+    // ------------------------------ Icon Image Format --------------------------------- //
+    if ((requestedFeatures & REQUEST_LAYER_ICONS) == REQUEST_LAYER_ICONS)
+    {
+        xml.append("<IconMimeType>");
+        if (iconFormat == MgImageFormats::Gif)
+            xml.append(MgUtil::WideCharToMultiByte(MgMimeType::Gif));
+        else if (iconFormat == MgImageFormats::Jpeg)
+            xml.append(MgUtil::WideCharToMultiByte(MgMimeType::Jpeg));
+        else if (iconFormat == MgImageFormats::Png || iconFormat == MgImageFormats::Png8)
+            xml.append(MgUtil::WideCharToMultiByte(MgMimeType::Png));
+        xml.append("</IconMimeType>\n");
+    }
+    // ------------------------------ Coordinate System --------------------------------- //
+    xml.append("<CoordinateSystem>\n");
+    xml.append("<Wkt>");
+    STRING srs = map->GetMapSRS();
+    xml.append(MgUtil::WideCharToMultiByte(MgUtil::ReplaceEscapeCharInXml(srs)));
+    xml.append("</Wkt>\n");
+    Ptr<MgCoordinateSystemFactory> fact = new MgCoordinateSystemFactory();
+    std::string sEpsg;
+    std::string sMentor;
+    std::string sMpu;
+    try
+    {
+        Ptr<MgCoordinateSystem> cs = fact->Create(srs);
+        if (!srs.empty())
+            MgUtil::DoubleToString(cs->ConvertCoordinateSystemUnitsToMeters(1.0), sMpu);
+        else
+            sMpu = "1.0";
+        sMentor = MgUtil::WideCharToMultiByte(cs->GetCsCode());
+        INT32 epsg = cs->GetEpsgCode();
+        MgUtil::Int32ToString(epsg, sEpsg);
+    }
+    catch (MgException* ex)
+    {
+        SAFE_RELEASE(ex);
+    }
+    xml.append("<MentorCode>");
+    xml.append(sMentor);
+    xml.append("</MentorCode>\n");
+    xml.append("<EpsgCode>");
+    xml.append(sEpsg);
+    xml.append("</EpsgCode>\n");
+    xml.append("<MetersPerUnit>");
+    xml.append(sMpu);
+    xml.append("</MetersPerUnit>\n");
+    xml.append("</CoordinateSystem>");
+    // ------------------------------ Extents --------------------------------- //
+    std::string sExtents;
+    Ptr<MgEnvelope> extents = map->GetMapExtent();
+    extents->ToXml(sExtents);
+    xml.append("<Extents>\n");
+    xml.append(sExtents);
+    xml.append("</Extents>");
+    // ---------------------- Optional things if requested -------------------- //
+    if ((requestedFeatures & REQUEST_LAYER_STRUCTURE) == REQUEST_LAYER_STRUCTURE)
+    {
+        //Build our LayerDefinition map for code below that requires it
+        if ((requestedFeatures & REQUEST_LAYER_ICONS) == REQUEST_LAYER_ICONS)
+        {
+            Ptr<MgStringCollection> layerIds = new MgStringCollection();
+            Ptr<MgLayerCollection> layers = map->GetLayers();
+            for (INT32 i = 0; i < layers->GetCount(); i++)
+            {
+                Ptr<MgLayerBase> layer = layers->GetItem(i);
+                Ptr<MgResourceIdentifier> ldfId = layer->GetLayerDefinition();
+                layerIds->Add(ldfId->ToString());
+            }
+
+            Ptr<MgStringCollection> layerContents = m_svcResource->GetResourceContents(layerIds, NULL);
+            for (INT32 i = 0; i < layerIds->GetCount(); i++)
+            {
+                STRING ldfId = layerIds->GetItem(i);
+                STRING content = layerContents->GetItem(i);
+                MdfModel::LayerDefinition* ldf = MgLayerBase::GetLayerDefinition(content);
+                layerDefinitionMap[ldfId] = ldf;
+            }
+        }
+
+        // ----------- Some pre-processing before we do groups/layers ------------- //
+        Ptr<MgLayerGroupCollection> groups = map->GetLayerGroups();
+        Ptr<MgLayerCollection> layers = map->GetLayers();
+        for (INT32 i = 0; i < groups->GetCount(); i++)
+        {
+            Ptr<MgLayerGroup> group = groups->GetItem(i);
+            Ptr<MgLayerGroup> parent = group->GetGroup();
+            CreateGroupItem(group, parent, xml);
+        }
+        for (INT32 i = 0; i < layers->GetCount(); i++)
+        {
+            Ptr<MgLayerBase> layer = layers->GetItem(i);
+            Ptr<MgLayerGroup> parent = layer->GetGroup();
+            
+            MdfModel::LayerDefinition* layerDef = NULL;
+            Ptr<MgResourceIdentifier> layerid = layer->GetLayerDefinition();
+            LayerDefinitionMap::iterator it = layerDefinitionMap.find(layerid->ToString());
+            if (it != layerDefinitionMap.end())
+                layerDef = it->second;
+
+            CreateLayerItem(requestedFeatures, iconsPerScaleRange, iconFormat, iconWidth, iconHeight, layer, parent, layerDef, xml);
+        }
+    }
+    else //Base Layer Groups need to be outputted regardless, otherwise a client application doesn't have enough information to build GETTILEIMAGE requests
+    {
+        Ptr<MgLayerGroupCollection> groups = map->GetLayerGroups();
+        for (INT32 i = 0; i < groups->GetCount(); i++)
+        {
+            Ptr<MgLayerGroup> group = groups->GetItem(i);
+            if (group->GetLayerGroupType() != MgLayerGroupType::BaseMap)
+                continue;
+
+            Ptr<MgLayerGroup> parent = group->GetGroup();
+            CreateGroupItem(group, parent, xml);
+        }
+    }
+    // ------------------------ Finite Display Scales (if any) ------------------------- //
+    INT32 fsCount = map->GetFiniteDisplayScaleCount();
+    if (fsCount > 0)
+    {
+        for (INT32 i = 0; i < fsCount; i++)
+        {
+            xml.append("<FiniteDisplayScale>");
+            double dScale = map->GetFiniteDisplayScaleAt(i);
+            std::string sScale;
+            MgUtil::DoubleToString(dScale, sScale);
+            xml.append(sScale);
+            xml.append("</FiniteDisplayScale>\n");
+        }
+    }
+    xml.append("</RuntimeMap>");
+
+    Ptr<MgByteSource> byteSource = new MgByteSource((BYTE_ARRAY_IN)xml.c_str(), (INT32)xml.length());
+    byteSource->SetMimeType(MgMimeType::Xml);
+    byteReader = byteSource->GetReader();
+
+    MG_SERVER_MAPPING_SERVICE_CATCH(L"MgServerMappingService.CreateRuntimeMap")
+
+    //Cleanup our LayerDefinition pointers. Do it here so we don't leak on any exception
+    for (LayerDefinitionMap::iterator it = layerDefinitionMap.begin(); it != layerDefinitionMap.end(); it++)
+    {
+        MdfModel::LayerDefinition* ldf = it->second;
+        delete ldf;
+    }
+    layerDefinitionMap.clear();
+
+    MG_SERVER_MAPPING_SERVICE_THROW()
+
+    return byteReader.Detach();
+}
+
+void MgServerMappingService::CreateGroupItem(MgLayerGroup* group, MgLayerGroup* parent, std::string& xml)
+{
+    MG_SERVER_MAPPING_SERVICE_TRY()
+
+    STRING groupName = group->GetName();
+    xml.append("<Group>\n");
+    xml.append("<Name>");
+    xml.append(MgUtil::WideCharToMultiByte(groupName));
+    xml.append("</Name>\n");
+    xml.append("<Type>");
+    INT32 gType = group->GetLayerGroupType();
+    std::string sType;
+    MgUtil::Int32ToString(gType, sType);
+    xml.append(sType);
+    xml.append("</Type>\n");
+    xml.append("<LegendLabel>");
+    xml.append(MgUtil::WideCharToMultiByte(MgUtil::ReplaceEscapeCharInXml(group->GetLegendLabel())));
+    xml.append("</LegendLabel>\n");
+    xml.append("<ObjectId>");
+    xml.append(MgUtil::WideCharToMultiByte(group->GetObjectId()));
+    xml.append("</ObjectId>\n");
+    if (NULL != parent)
+    {
+        xml.append("<ParentId>");
+        xml.append(MgUtil::WideCharToMultiByte(parent->GetObjectId()));
+        xml.append("</ParentId>\n");
+    }
+    xml.append("<DisplayInLegend>");
+    xml.append(group->GetDisplayInLegend() ? "true" : "false");
+    xml.append("</DisplayInLegend>\n");
+    xml.append("<ExpandInLegend>");
+    xml.append(group->GetExpandInLegend() ? "true" : "false");
+    xml.append("</ExpandInLegend>\n");
+    xml.append("<Visible>");
+    xml.append(group->GetVisible() ? "true" : "false");
+    xml.append("</Visible>\n");
+    xml.append("<ActuallyVisible>");
+    xml.append(group->IsVisible() ? "true" : "false");
+    xml.append("</ActuallyVisible>\n");
+    xml.append("</Group>");
+
+    MG_SERVER_MAPPING_SERVICE_CATCH_AND_THROW(L"MgServerMappingService.CreateGroupItem")
+}
+
+void MgServerMappingService::CreateLayerItem(INT32 requestedFeatures, INT32 iconsPerScaleRange, CREFSTRING iconFormat, INT32 iconWidth, INT32 iconHeight, MgLayerBase* layer, MgLayerGroup* parent, MdfModel::LayerDefinition* ldf, std::string& xml)
+{
+    MG_SERVER_MAPPING_SERVICE_TRY()
+
+    xml.append("<Layer>\n");
+    xml.append("<Name>");
+    xml.append(MgUtil::WideCharToMultiByte(layer->GetName()));
+    xml.append("</Name>\n");
+    xml.append("<Type>");
+    std::string sLayerType;
+    MgUtil::Int32ToString(layer->GetLayerType(), sLayerType);
+    xml.append(sLayerType);
+    xml.append("</Type>\n");
+    xml.append("<LegendLabel>");
+    xml.append(MgUtil::WideCharToMultiByte(MgUtil::ReplaceEscapeCharInXml(layer->GetLegendLabel())));
+    xml.append("</LegendLabel>\n");
+    xml.append("<ObjectId>");
+    xml.append(MgUtil::WideCharToMultiByte(layer->GetObjectId()));
+    xml.append("</ObjectId>\n");
+    if (NULL != parent)
+    {
+        xml.append("<ParentId>");
+        xml.append(MgUtil::WideCharToMultiByte(parent->GetObjectId()));
+        xml.append("</ParentId>\n");
+    }
+    xml.append("<Selectable>");
+    xml.append(layer->GetSelectable() ? "true" : "false");
+    xml.append("</Selectable>\n");
+    xml.append("<DisplayInLegend>");
+    xml.append(layer->GetDisplayInLegend() ? "true" : "false");
+    xml.append("</DisplayInLegend>\n");
+    xml.append("<ExpandInLegend>");
+    xml.append(layer->GetExpandInLegend() ? "true" : "false");
+    xml.append("</ExpandInLegend>\n");
+    xml.append("<Visible>");
+    xml.append(layer->GetVisible() ? "true" : "false");
+    xml.append("</Visible>\n");
+    xml.append("<ActuallyVisible>");
+    xml.append(layer->IsVisible() ? "true" : "false");
+    xml.append("</ActuallyVisible>\n");
+    xml.append("<LayerDefinition>");
+    Ptr<MgResourceIdentifier> layerDefId = layer->GetLayerDefinition();
+    STRING ldfId = layerDefId->ToString();
+    xml.append(MgUtil::WideCharToMultiByte(ldfId));
+    xml.append("</LayerDefinition>\n");
+    // ----------------------- Optional things if requested ------------------------- //
+    if ((requestedFeatures & REQUEST_LAYER_FEATURE_SOURCE) == REQUEST_LAYER_FEATURE_SOURCE)
+    {
+        xml.append("<FeatureSource>\n");
+        xml.append("<ResourceId>");
+        xml.append(MgUtil::WideCharToMultiByte(layer->GetFeatureSourceId()));
+        xml.append("</ResourceId>\n");
+        xml.append("<ClassName>");
+        xml.append(MgUtil::WideCharToMultiByte(layer->GetFeatureClassName()));
+        xml.append("</ClassName>\n");
+        xml.append("<Geometry>");
+        xml.append(MgUtil::WideCharToMultiByte(layer->GetFeatureGeometryName()));
+        xml.append("</Geometry>\n");
+        xml.append("</FeatureSource>\n");
+    }
+    
+    if (NULL != ldf)
+    {
+        MdfModel::VectorLayerDefinition* vl = dynamic_cast<MdfModel::VectorLayerDefinition*>(ldf);
+        if (NULL != vl)
+        {
+            MdfModel::VectorScaleRangeCollection* vsrs = vl->GetScaleRanges();
+            for (INT32 i = 0; i < vsrs->GetCount(); i++)
+            {
+                MdfModel::VectorScaleRange* vsr = vsrs->GetAt(i);
+                xml.append("<ScaleRange>\n");
+                xml.append("<MinScale>");
+                std::string sMinScale;
+                MgUtil::DoubleToString(vsr->GetMinScale(), sMinScale);
+                xml.append(sMinScale);
+                xml.append("</MinScale>\n");
+                xml.append("<MaxScale>");
+                std::string sMaxScale;
+                MgUtil::DoubleToString(vsr->GetMaxScale(), sMaxScale);
+                xml.append(sMaxScale);
+                xml.append("</MaxScale>\n");
+
+                double dScale = (vsr->GetMaxScale() + vsr->GetMinScale()) / 2.0;
+                MdfModel::FeatureTypeStyleCollection* ftsc = vsr->GetFeatureTypeStyles();
+
+                INT32 nIconCount = 0;
+                for (INT32 j = 0; j < ftsc->GetCount(); j++)
+                {
+                    MdfModel::FeatureTypeStyle* fts = ftsc->GetAt(j);
+                    if (fts->IsShowInLegend())
+                    {
+                        MdfModel::RuleCollection* rules = fts->GetRules();
+                        nIconCount += rules->GetCount();
+                    }
+                }
+
+                //This theme will be compressed if we're over the specified limit for this scale range
+                bool bCompress = (nIconCount > iconsPerScaleRange);
+
+                for (INT32 j = 0; j < ftsc->GetCount(); j++)
+                {
+                    MdfModel::FeatureTypeStyle* fts = ftsc->GetAt(j);
+                    if (!fts->IsShowInLegend())
+                        continue;
+
+                    MdfModel::PointTypeStyle*       pts = dynamic_cast<MdfModel::PointTypeStyle*>(fts);
+                    MdfModel::LineTypeStyle*        lts = dynamic_cast<MdfModel::LineTypeStyle*>(fts);
+                    MdfModel::AreaTypeStyle*        ats = dynamic_cast<MdfModel::AreaTypeStyle*>(fts);
+                    MdfModel::CompositeTypeStyle*   cts = dynamic_cast<MdfModel::CompositeTypeStyle*>(fts);
+                        
+                    INT32 geomType = 0;
+                    if (pts)
+                        geomType = 1;
+                    else if (lts)
+                        geomType = 2;
+                    else if (ats)
+                        geomType = 3;
+                    else if (cts)
+                        geomType = 4;
+
+                    //Geometry type and Theme Category are required so that deferred icon requests can be made
+                    //back to the GetLegendImage(), especially if we exceed the icons-per-scale-range limit
+                    //Geometry type is specified here, theme category is inferred from rule item positioning.
+                    xml.append("<FeatureStyle>\n");
+                    xml.append("<Type>");
+                    std::string sGeomType;
+                    MgUtil::Int32ToString(geomType, sGeomType);
+                    xml.append(sGeomType);
+                    xml.append("</Type>\n");
+                    MdfModel::RuleCollection* rules = fts->GetRules();
+                    for (INT32 r = 0; r < rules->GetCount(); r++)
+                    {
+                        MdfModel::Rule* rule = rules->GetAt(r);
+                        bool bRequestIcon = false;
+                        if (!bCompress)
+                        {
+                            bRequestIcon = true;
+                        }
+                        else //This is a compressed theme
+                        {
+                            bRequestIcon = (r == 0 || r == rules->GetCount() - 1); //Only first and last rule
+                        }
+
+                        xml.append("<Rule>\n");
+                        xml.append("<LegendLabel>");
+                        xml.append(MgUtil::WideCharToMultiByte(MgUtil::ReplaceEscapeCharInXml(rule->GetLegendLabel())));
+                        xml.append("</LegendLabel>\n");
+                        xml.append("<Filter>");
+                        xml.append(MgUtil::WideCharToMultiByte(MgUtil::ReplaceEscapeCharInXml(rule->GetFilter())));
+                        xml.append("</Filter>\n");
+                        if (bRequestIcon)
+                        {
+                            xml.append("<Icon>");
+                            Ptr<MgByteReader> iconReader = MgMappingUtil::DrawFTS(m_svcResource, fts, iconWidth, iconHeight, r, iconFormat);
+                            Ptr<MgByteSink> sink = new MgByteSink(iconReader);
+                            Ptr<MgByte> bytes = sink->ToBuffer();
+                            Ptr<MgMemoryStreamHelper> streamHelper = new MgMemoryStreamHelper((INT8*) bytes->Bytes(), bytes->GetLength(), false);
+                            std::string b64 = streamHelper->ToBase64();
+                            xml.append(b64);
+                            xml.append("</Icon>");
+                        }
+                        xml.append("</Rule>\n");
+                    }
+                    xml.append("</FeatureStyle>\n");
+                }
+
+                xml.append("</ScaleRange>\n");
+            }
+        }
+        else
+        {
+            xml.append("<ScaleRange/>");
+        }
+    }
+    else
+        xml.append("<ScaleRange/>");
+
+    xml.append("</Layer>");
+
+    MG_SERVER_MAPPING_SERVICE_CATCH_AND_THROW(L"MgServerMappingService.CreateLayerItem")
 }

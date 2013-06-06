@@ -46,6 +46,9 @@
     <ClCompile Include="SEMgSymbolManager.cpp" />
     <ClCompile Include="ServerMappingService.cpp" />
     <ClCompile Include="ServerMappingServiceBuild.cpp" />
+    <ClCompile Include="OpCreateRuntimeMap.cpp">
+      <Filter>Ops</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="MappingOperation.h">
@@ -90,6 +93,9 @@
     <ClInclude Include="ServerMappingDllExport.h" />
     <ClInclude Include="ServerMappingService.h" />
     <ClInclude Include="ServerMappingServiceDefs.h" />
+    <ClInclude Include="OpCreateRuntimeMap.h">
+      <Filter>Ops</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="ServerMappingService.rc" />

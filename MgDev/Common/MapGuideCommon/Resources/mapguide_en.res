@@ -259,6 +259,7 @@ MgInvalidGeometryNoDimension                          = The geometry is invalid 
 MgInvalidGeometryTooFewCoordinates                    = The geometry is invalid because it has too few coordinates.
 MgInvalidGeometryType                                 = The geometry type is invalid because it is not recognized.
 MgInvalidHour                                         = The hour is invalid because it must be between 0 and 23.
+MgInvalidImageFormat                                  = Invalid Image Format: %1
 MgInvalidImageSizeTooBig                              = The requested image size exceeds the maximum.
 MgInvalidIpConfigurationForSiteServer                 = The site server (%1) must have the same IP address as this local server (%2).
 MgInvalidIpConfigurationForSupportServer              = The site server (%1) must have a different IP address than this support server (%2).

@@ -377,6 +377,136 @@ MgByteReader* MgProxyMappingService::GenerateLegendImage(MgResourceIdentifier* r
     return (MgByteReader*)cmd.GetReturnValue().val.m_obj;
 }
 
+////////////////////////////////////////////////////////////////////////////////
+/// \brief
+/// Creates a new runtime map from the specified Map Definition resource id and returns an XML-based description of the runtime
+/// map
+///
+/// <!-- Syntax in .Net, Java, and PHP -->
+/// \htmlinclude DotNetSyntaxTop.html
+/// virtual MgByteReader CreateRuntimeMap(MgResourceIdentifier mapDefinition, int requestedFeatures, int iconsPerScaleRange);
+/// \htmlinclude SyntaxBottom.html
+/// \htmlinclude JavaSyntaxTop.html
+/// virtual MgByteReader CreateRuntimeMap(MgResourceIdentifier mapDefinition, int requestedFeatures, int iconsPerScaleRange);
+/// \htmlinclude SyntaxBottom.html
+/// \htmlinclude PHPSyntaxTop.html
+/// virtual MgByteReader CreateRuntimeMap(MgResourceIdentifier mapDefinition, int requestedFeatures, int iconsPerScaleRange);
+/// \htmlinclude SyntaxBottom.html
+///
+/// \param mapDefinition (MgResourceIdentifier)
+/// MgResourceIdentifier object identifying the map definition resource.
+/// \param requestedFeatures (int)
+/// A bitmask representing the desired information to return in the XML response: 
+/// 1=Layer/Group structure, 2=Layer Icons, 4=Layer Feature Source Information
+/// \param iconsPerScaleRange (int)
+/// The number of legend icons per scale range to render inline in the XML response as base64 strings. 
+/// If a scale range contains a number of rules that exceeds this value, only the first and
+/// last rules of a type style in the scale range will have inline icons
+///
+/// \remarks
+/// The bitmask values of 2 (Layer Icons) and 4 (Layer Feature Source Information) have no effect if 1 (Layer/Group structure)
+/// is not specified
+///
+/// \return
+/// Returns an XML-based description of the runtime map
+///
+MgByteReader* MgProxyMappingService::CreateRuntimeMap(MgResourceIdentifier* mapDefinition,
+                                                      CREFSTRING sessionId,
+                                                      INT32 requestedFeatures,
+                                                      INT32 iconsPerScaleRange)
+{
+    MgCommand cmd;
+
+    cmd.ExecuteCommand(m_connProp,
+                       MgCommand::knObject,
+                       MgMappingServiceOpId::CreateRuntimeMap,
+                       4,
+                       Mapping_Service,
+                       BUILD_VERSION(2,6,0),
+                       MgCommand::knObject,    mapDefinition,
+                       MgCommand::knString,    sessionId,
+                       MgCommand::knInt32,     requestedFeatures,
+                       MgCommand::knInt32,     iconsPerScaleRange,
+                       MgCommand::knNone);
+
+    SetWarning(cmd.GetWarningObject());
+
+    return (MgByteReader*)cmd.GetReturnValue().val.m_obj;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+/// \brief
+/// Creates a new runtime map from the specified Map Definition resource id and returns an XML-based description of the runtime
+/// map
+///
+/// <!-- Syntax in .Net, Java, and PHP -->
+/// \htmlinclude DotNetSyntaxTop.html
+/// virtual MgByteReader CreateRuntimeMap(MgResourceIdentifier mapDefinition, int iconWidth, int iconHeight, int requestedFeatures, int iconsPerScaleRange);
+/// \htmlinclude SyntaxBottom.html
+/// \htmlinclude JavaSyntaxTop.html
+/// virtual MgByteReader CreateRuntimeMap(MgResourceIdentifier mapDefinition, int iconWidth, int iconHeight, int requestedFeatures, int iconsPerScaleRange);
+/// \htmlinclude SyntaxBottom.html
+/// \htmlinclude PHPSyntaxTop.html
+/// virtual MgByteReader CreateRuntimeMap(MgResourceIdentifier mapDefinition, int iconWidth, int iconHeight, int requestedFeatures, int iconsPerScaleRange);
+/// \htmlinclude SyntaxBottom.html
+///
+/// \param mapDefinition (MgResourceIdentifier)
+/// MgResourceIdentifier object identifying the map definition resource.
+/// \param targetMapName (String/string)
+/// The desired name of the runtime map
+/// \param sessionId (String/string)
+/// The session ID
+/// \param iconWidth (int)
+/// The width of each individual inline legend icons. Has no effect if icons was not requested in the response.
+/// \param iconHeight (int)
+/// The height of each individual inline legend icons. Has no effect if icons was not requested in the response.
+/// \param requestedFeatures (int)
+/// A bitmask representing the desired information to return in the XML response: 
+/// 1=Layer/Group structure, 2=Layer Icons, 4=Layer Feature Source Information
+/// \param iconsPerScaleRange (int)
+/// The number of legend icons per scale range to render inline in the XML response as base64 strings. 
+/// If a scale range contains a number of rules that exceeds this value, only the first and
+/// last rules of a type style in the scale range will have inline icons
+///
+/// \remarks
+/// The bitmask values of 2 (Layer Icons) and 4 (Layer Feature Source Information) have no effect if 1 (Layer/Group structure)
+/// is not specified
+///
+/// \return
+/// Returns an XML-based description of the runtime map
+///
+MgByteReader* MgProxyMappingService::CreateRuntimeMap(MgResourceIdentifier* mapDefinition,
+                                                      CREFSTRING targetMapName,
+                                                      CREFSTRING sessionId,
+                                                      CREFSTRING iconFormat,
+                                                      INT32 iconWidth,
+                                                      INT32 iconHeight,
+                                                      INT32 requestedFeatures,
+                                                      INT32 iconsPerScaleRange)
+{
+    MgCommand cmd;
+
+    cmd.ExecuteCommand(m_connProp,
+                       MgCommand::knObject,
+                       MgMappingServiceOpId::CreateRuntimeMap2,
+                       8,
+                       Mapping_Service,
+                       BUILD_VERSION(2,6,0),
+                       MgCommand::knObject,    mapDefinition,
+                       MgCommand::knString,    targetMapName,
+                       MgCommand::knString,    sessionId,
+                       MgCommand::knString,    iconFormat,
+                       MgCommand::knInt32,     iconWidth,
+                       MgCommand::knInt32,     iconHeight,
+                       MgCommand::knInt32,     requestedFeatures,
+                       MgCommand::knInt32,     iconsPerScaleRange,
+                       MgCommand::knNone);
+
+    SetWarning(cmd.GetWarningObject());
+
+    return (MgByteReader*)cmd.GetReturnValue().val.m_obj;
+}
+
 //////////////////////////////////////////////////////////////////
 /// \brief
 /// Sets the connection properties for the Proxy Service.  This

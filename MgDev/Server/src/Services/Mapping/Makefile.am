@@ -35,6 +35,7 @@ include_SOURCES = \
   MappingOperationFactory.cpp \
   MappingServiceHandler.cpp \
   MappingUtil.cpp \
+  OpCreateRuntimeMap.cpp \
   OpGenerateLegendImage.cpp \
   OpGenerateLegendPlot.cpp \
   OpGenerateMap.cpp \
@@ -56,6 +57,7 @@ noinst_HEADERS = $(include_SOURCES) \
   MappingOperationFactory.h \
   MappingServiceHandler.h \
   MappingUtil.h \
+  OpCreateRuntimeMap.h \
   OpGenerateLegendImage.h \
   OpGenerateLegendPlot.h \
   OpGenerateMap.h \

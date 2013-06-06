@@ -24,6 +24,7 @@ include_SOURCES = \
   HttpClearTileCache.cpp \
   HttpCopyResource.cpp \
   HttpCreateRepository.cpp \
+  HttpCreateRuntimeMap.cpp \
   HttpCreateSession.cpp \
   HttpCsConvertWktToCoordinateSystemCode.cpp \
   HttpCsConvertCoordinateSystemCodeToWkt.cpp \
@@ -149,6 +150,7 @@ noinst_HEADERS = $(include_SOURCES) \
   HttpClearTileCache.h \
   HttpCopyResource.h \
   HttpCreateRepository.h \
+  HttpCreateRuntimeMap.h \
   HttpCreateSession.h \
   HttpCsConvertWktToCoordinateSystemCode.h \
   HttpCsConvertCoordinateSystemCodeToWkt.h \

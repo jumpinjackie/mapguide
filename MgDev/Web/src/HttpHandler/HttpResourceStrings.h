@@ -153,6 +153,12 @@ public:
     static const STRING reqMappingFormat;
     static const STRING reqMappingType;
     static const STRING reqMappingThemeCategory;
+    static const STRING reqMappingRequestedFeatures;
+    static const STRING reqMappingIconsPerScaleRange;
+    static const STRING reqMappingTargetMapName;
+    static const STRING reqMappingIconWidth;
+    static const STRING reqMappingIconHeight;
+    static const STRING reqMappingIconFormat;
 
     // PREDEFINED RENDERING REQUEST PARAMETERS
     static const STRING reqRenderingMapDefinition;
@@ -293,6 +299,7 @@ public:
     static const STRING opGetDrawingCoordinateSpace;
 
     // Mapping services
+    static const STRING opCreateRuntimeMap;
     static const STRING opGetMap;
     static const STRING opGetMapUpdate;
     static const STRING opGetPlot;
