@@ -34,6 +34,7 @@ class TestMappingService : public CppUnit::TestFixture
     CPPUNIT_TEST(TestCase_GetPlotUsingExtents);
     CPPUNIT_TEST(TestCase_GetPlotUsingExtentsAndExpandToFit);
     CPPUNIT_TEST(TestCase_GetLegendPlot);
+    CPPUNIT_TEST(TestCase_GetLegendImage);
     CPPUNIT_TEST(TestCase_CreateRuntimeMap);
     //CPPUNIT_TEST(TestCase_QueryFeaturesImageMap);
 
@@ -61,6 +62,7 @@ public:
     void TestCase_GetPlotUsingExtents();
     void TestCase_GetPlotUsingExtentsAndExpandToFit();
     void TestCase_GetLegendPlot();
+    void TestCase_GetLegendImage();
     void TestCase_QueryFeaturesImageMap();
 
 private:
