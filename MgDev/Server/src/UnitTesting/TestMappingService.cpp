@@ -639,6 +639,38 @@ void TestMappingService::TestCase_GetLegendPlot()
     }
 }
 
+void TestMappingService::TestCase_GetLegendImage()
+{
+    try
+    {
+        Ptr<MgResourceIdentifier> ldf = new MgResourceIdentifier(L"Library://UnitTests/Layers/Parcels.LayerDefinition");
+        Ptr<MgByteReader> rdr = m_svcMapping->GenerateLegendImage(ldf, 10000.0, 16, 16, MgImageFormats::Png, 3, 0);
+        Ptr<MgByteSink> sink = new MgByteSink(rdr);
+        sink->ToFile(L"../UnitTestFiles/GenerateLegendImage_Parcels_16x16_PNG.png");
+
+        rdr = m_svcMapping->GenerateLegendImage(ldf, 10000.0, 16, 16, MgImageFormats::Png8, 3, 0);
+        sink = new MgByteSink(rdr);
+        sink->ToFile(L"../UnitTestFiles/GenerateLegendImage_Parcels_16x16_PNG8.png");
+
+        rdr = m_svcMapping->GenerateLegendImage(ldf, 10000.0, 16, 16, MgImageFormats::Jpeg, 3, 0);
+        sink = new MgByteSink(rdr);
+        sink->ToFile(L"../UnitTestFiles/GenerateLegendImage_Parcels_16x16_JPG.jpg");
+
+        rdr = m_svcMapping->GenerateLegendImage(ldf, 10000.0, 16, 16, MgImageFormats::Gif, 3, 0);
+        sink = new MgByteSink(rdr);
+        sink->ToFile(L"../UnitTestFiles/GenerateLegendImage_Parcels_16x16_GIF.gif");
+    }
+    catch (MgException* e)
+    {
+        STRING message = e->GetDetails(TEST_LOCALE);
+        SAFE_RELEASE(e);
+        CPPUNIT_FAIL(MG_WCHAR_TO_CHAR(message.c_str()));
+    }
+    catch (...)
+    {
+        throw;
+    }
+}
 
 void TestMappingService::TestCase_QueryFeaturesImageMap()
 {
