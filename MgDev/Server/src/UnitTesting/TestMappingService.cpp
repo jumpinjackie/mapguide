@@ -788,41 +788,61 @@ void TestMappingService::TestCase_GetLegendImagePointStyleWithConstRotations()
 
         Ptr<MgByteReader> rdr = m_svcMapping->GenerateLegendImage(ldfId, 1000.0, 16, 16, MgImageFormats::Png, 1, 0);
         Ptr<MgByteSink> sink = new MgByteSink(rdr);
-        sink->ToFile(L"../UnitTestFiles/RotatedPoint_Square_45_16x16.png");
+        sink->ToFile(L"../UnitTestFiles/RotatedPoint_Square_0_16x16.png");
         
         rdr = m_svcMapping->GenerateLegendImage(ldfId, 1000.0, 16, 16, MgImageFormats::Png, 1, 1);
         sink = new MgByteSink(rdr);
-        sink->ToFile(L"../UnitTestFiles/RotatedPoint_Square_25_16x16.png");
+        sink->ToFile(L"../UnitTestFiles/RotatedPoint_Square_45_16x16.png");
 
         rdr = m_svcMapping->GenerateLegendImage(ldfId, 1000.0, 16, 16, MgImageFormats::Png, 1, 2);
         sink = new MgByteSink(rdr);
-        sink->ToFile(L"../UnitTestFiles/RotatedPoint_Star_45_16x16.png");
+        sink->ToFile(L"../UnitTestFiles/RotatedPoint_Square_25_16x16.png");
 
         rdr = m_svcMapping->GenerateLegendImage(ldfId, 1000.0, 16, 16, MgImageFormats::Png, 1, 3);
         sink = new MgByteSink(rdr);
-        sink->ToFile(L"../UnitTestFiles/RotatedPoint_Star_25_16x16.png");
+        sink->ToFile(L"../UnitTestFiles/RotatedPoint_Star_0_16x16.png");
 
         rdr = m_svcMapping->GenerateLegendImage(ldfId, 1000.0, 16, 16, MgImageFormats::Png, 1, 4);
         sink = new MgByteSink(rdr);
-        sink->ToFile(L"../UnitTestFiles/RotatedPoint_Triangle_45_16x16.png");
+        sink->ToFile(L"../UnitTestFiles/RotatedPoint_Star_45_16x16.png");
 
         rdr = m_svcMapping->GenerateLegendImage(ldfId, 1000.0, 16, 16, MgImageFormats::Png, 1, 5);
         sink = new MgByteSink(rdr);
-        sink->ToFile(L"../UnitTestFiles/RotatedPoint_Triangle_25_16x16.png");
+        sink->ToFile(L"../UnitTestFiles/RotatedPoint_Star_25_16x16.png");
 
         rdr = m_svcMapping->GenerateLegendImage(ldfId, 1000.0, 16, 16, MgImageFormats::Png, 1, 6);
         sink = new MgByteSink(rdr);
-        sink->ToFile(L"../UnitTestFiles/RotatedPoint_Cross_45_16x16.png");
+        sink->ToFile(L"../UnitTestFiles/RotatedPoint_Triangle_0_16x16.png");
 
         rdr = m_svcMapping->GenerateLegendImage(ldfId, 1000.0, 16, 16, MgImageFormats::Png, 1, 7);
         sink = new MgByteSink(rdr);
-        sink->ToFile(L"../UnitTestFiles/RotatedPoint_Cross_25_16x16.png");
+        sink->ToFile(L"../UnitTestFiles/RotatedPoint_Triangle_45_16x16.png");
 
         rdr = m_svcMapping->GenerateLegendImage(ldfId, 1000.0, 16, 16, MgImageFormats::Png, 1, 8);
         sink = new MgByteSink(rdr);
-        sink->ToFile(L"../UnitTestFiles/RotatedPoint_XMark_45_16x16.png");
+        sink->ToFile(L"../UnitTestFiles/RotatedPoint_Triangle_25_16x16.png");
 
         rdr = m_svcMapping->GenerateLegendImage(ldfId, 1000.0, 16, 16, MgImageFormats::Png, 1, 9);
+        sink = new MgByteSink(rdr);
+        sink->ToFile(L"../UnitTestFiles/RotatedPoint_Cross_0_16x16.png");
+
+        rdr = m_svcMapping->GenerateLegendImage(ldfId, 1000.0, 16, 16, MgImageFormats::Png, 1, 10);
+        sink = new MgByteSink(rdr);
+        sink->ToFile(L"../UnitTestFiles/RotatedPoint_Cross_45_16x16.png");
+
+        rdr = m_svcMapping->GenerateLegendImage(ldfId, 1000.0, 16, 16, MgImageFormats::Png, 1, 11);
+        sink = new MgByteSink(rdr);
+        sink->ToFile(L"../UnitTestFiles/RotatedPoint_Cross_25_16x16.png");
+
+        rdr = m_svcMapping->GenerateLegendImage(ldfId, 1000.0, 16, 16, MgImageFormats::Png, 1, 12);
+        sink = new MgByteSink(rdr);
+        sink->ToFile(L"../UnitTestFiles/RotatedPoint_XMark_0_16x16.png");
+
+        rdr = m_svcMapping->GenerateLegendImage(ldfId, 1000.0, 16, 16, MgImageFormats::Png, 1, 13);
+        sink = new MgByteSink(rdr);
+        sink->ToFile(L"../UnitTestFiles/RotatedPoint_XMark_45_16x16.png");
+
+        rdr = m_svcMapping->GenerateLegendImage(ldfId, 1000.0, 16, 16, MgImageFormats::Png, 1, 14);
         sink = new MgByteSink(rdr);
         sink->ToFile(L"../UnitTestFiles/RotatedPoint_XMark_25_16x16.png");
 
@@ -830,41 +850,61 @@ void TestMappingService::TestCase_GetLegendImagePointStyleWithConstRotations()
 
         rdr = m_svcMapping->GenerateLegendImage(ldfId, 1000.0, 32, 16, MgImageFormats::Png, 1, 0);
         sink = new MgByteSink(rdr);
+        sink->ToFile(L"../UnitTestFiles/RotatedPoint_Square_0_32x16.png");
+
+        rdr = m_svcMapping->GenerateLegendImage(ldfId, 1000.0, 32, 16, MgImageFormats::Png, 1, 1);
+        sink = new MgByteSink(rdr);
         sink->ToFile(L"../UnitTestFiles/RotatedPoint_Square_45_32x16.png");
         
-        rdr = m_svcMapping->GenerateLegendImage(ldfId, 1000.0, 32, 16, MgImageFormats::Png, 1, 1);
+        rdr = m_svcMapping->GenerateLegendImage(ldfId, 1000.0, 32, 16, MgImageFormats::Png, 1, 2);
         sink = new MgByteSink(rdr);
         sink->ToFile(L"../UnitTestFiles/RotatedPoint_Square_25_32x16.png");
 
-        rdr = m_svcMapping->GenerateLegendImage(ldfId, 1000.0, 32, 16, MgImageFormats::Png, 1, 2);
-        sink = new MgByteSink(rdr);
-        sink->ToFile(L"../UnitTestFiles/RotatedPoint_Star_45_32x16.png");
-
         rdr = m_svcMapping->GenerateLegendImage(ldfId, 1000.0, 32, 16, MgImageFormats::Png, 1, 3);
         sink = new MgByteSink(rdr);
-        sink->ToFile(L"../UnitTestFiles/RotatedPoint_Star_25_32x16.png");
+        sink->ToFile(L"../UnitTestFiles/RotatedPoint_Star_0_32x16.png");
 
         rdr = m_svcMapping->GenerateLegendImage(ldfId, 1000.0, 32, 16, MgImageFormats::Png, 1, 4);
         sink = new MgByteSink(rdr);
-        sink->ToFile(L"../UnitTestFiles/RotatedPoint_Triangle_45_32x16.png");
+        sink->ToFile(L"../UnitTestFiles/RotatedPoint_Star_45_32x16.png");
 
         rdr = m_svcMapping->GenerateLegendImage(ldfId, 1000.0, 32, 16, MgImageFormats::Png, 1, 5);
         sink = new MgByteSink(rdr);
-        sink->ToFile(L"../UnitTestFiles/RotatedPoint_Triangle_25_32x16.png");
+        sink->ToFile(L"../UnitTestFiles/RotatedPoint_Star_25_32x16.png");
 
         rdr = m_svcMapping->GenerateLegendImage(ldfId, 1000.0, 32, 16, MgImageFormats::Png, 1, 6);
         sink = new MgByteSink(rdr);
-        sink->ToFile(L"../UnitTestFiles/RotatedPoint_Cross_45_32x16.png");
+        sink->ToFile(L"../UnitTestFiles/RotatedPoint_Triangle_0_32x16.png");
 
         rdr = m_svcMapping->GenerateLegendImage(ldfId, 1000.0, 32, 16, MgImageFormats::Png, 1, 7);
         sink = new MgByteSink(rdr);
-        sink->ToFile(L"../UnitTestFiles/RotatedPoint_Cross_25_32x16.png");
+        sink->ToFile(L"../UnitTestFiles/RotatedPoint_Triangle_45_32x16.png");
 
         rdr = m_svcMapping->GenerateLegendImage(ldfId, 1000.0, 32, 16, MgImageFormats::Png, 1, 8);
         sink = new MgByteSink(rdr);
-        sink->ToFile(L"../UnitTestFiles/RotatedPoint_XMark_45_32x16.png");
+        sink->ToFile(L"../UnitTestFiles/RotatedPoint_Triangle_25_32x16.png");
 
         rdr = m_svcMapping->GenerateLegendImage(ldfId, 1000.0, 32, 16, MgImageFormats::Png, 1, 9);
+        sink = new MgByteSink(rdr);
+        sink->ToFile(L"../UnitTestFiles/RotatedPoint_Cross_0_32x16.png");
+
+        rdr = m_svcMapping->GenerateLegendImage(ldfId, 1000.0, 32, 16, MgImageFormats::Png, 1, 10);
+        sink = new MgByteSink(rdr);
+        sink->ToFile(L"../UnitTestFiles/RotatedPoint_Cross_45_32x16.png");
+
+        rdr = m_svcMapping->GenerateLegendImage(ldfId, 1000.0, 32, 16, MgImageFormats::Png, 1, 11);
+        sink = new MgByteSink(rdr);
+        sink->ToFile(L"../UnitTestFiles/RotatedPoint_Cross_25_32x16.png");
+
+        rdr = m_svcMapping->GenerateLegendImage(ldfId, 1000.0, 32, 16, MgImageFormats::Png, 1, 12);
+        sink = new MgByteSink(rdr);
+        sink->ToFile(L"../UnitTestFiles/RotatedPoint_XMark_0_32x16.png");
+
+        rdr = m_svcMapping->GenerateLegendImage(ldfId, 1000.0, 32, 16, MgImageFormats::Png, 1, 13);
+        sink = new MgByteSink(rdr);
+        sink->ToFile(L"../UnitTestFiles/RotatedPoint_XMark_45_32x16.png");
+
+        rdr = m_svcMapping->GenerateLegendImage(ldfId, 1000.0, 32, 16, MgImageFormats::Png, 1, 14);
         sink = new MgByteSink(rdr);
         sink->ToFile(L"../UnitTestFiles/RotatedPoint_XMark_25_32x16.png");
     }

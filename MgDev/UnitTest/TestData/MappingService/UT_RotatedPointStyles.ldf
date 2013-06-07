@@ -10,6 +10,30 @@
         <DisplayAsText>false</DisplayAsText>
         <AllowOverpost>false</AllowOverpost>
         <PointRule>
+          <LegendLabel>0 degree square</LegendLabel>
+          <PointSymbolization2D>
+            <Mark>
+              <Unit>Points</Unit>
+              <SizeContext>DeviceUnits</SizeContext>
+              <SizeX>10</SizeX>
+              <SizeY>10</SizeY>
+              <Rotation>0</Rotation>
+              <Shape>Square</Shape>
+              <Fill>
+                <FillPattern>Solid</FillPattern>
+                <ForegroundColor>ffffffff</ForegroundColor>
+                <BackgroundColor>ffffffff</BackgroundColor>
+              </Fill>
+              <Edge>
+                <LineStyle>Solid</LineStyle>
+                <Thickness>1</Thickness>
+                <Color>ff000000</Color>
+                <Unit>Points</Unit>
+              </Edge>
+            </Mark>
+          </PointSymbolization2D>
+        </PointRule>
+        <PointRule>
           <LegendLabel>45 degree square</LegendLabel>
           <PointSymbolization2D>
             <Mark>
@@ -43,6 +67,30 @@
               <SizeY>10</SizeY>
               <Rotation>25</Rotation>
               <Shape>Square</Shape>
+              <Fill>
+                <FillPattern>Solid</FillPattern>
+                <ForegroundColor>ffffffff</ForegroundColor>
+                <BackgroundColor>ffffffff</BackgroundColor>
+              </Fill>
+              <Edge>
+                <LineStyle>Solid</LineStyle>
+                <Thickness>1</Thickness>
+                <Color>ff000000</Color>
+                <Unit>Points</Unit>
+              </Edge>
+            </Mark>
+          </PointSymbolization2D>
+        </PointRule>
+        <PointRule>
+          <LegendLabel>0 degree star</LegendLabel>
+          <PointSymbolization2D>
+            <Mark>
+              <Unit>Points</Unit>
+              <SizeContext>DeviceUnits</SizeContext>
+              <SizeX>10</SizeX>
+              <SizeY>10</SizeY>
+              <Rotation>0</Rotation>
+              <Shape>Star</Shape>
               <Fill>
                 <FillPattern>Solid</FillPattern>
                 <ForegroundColor>ffffffff</ForegroundColor>
@@ -106,6 +154,30 @@
           </PointSymbolization2D>
         </PointRule>
         <PointRule>
+          <LegendLabel>0 degree triangle</LegendLabel>
+          <PointSymbolization2D>
+            <Mark>
+              <Unit>Points</Unit>
+              <SizeContext>DeviceUnits</SizeContext>
+              <SizeX>10</SizeX>
+              <SizeY>10</SizeY>
+              <Rotation>0</Rotation>
+              <Shape>Triangle</Shape>
+              <Fill>
+                <FillPattern>Solid</FillPattern>
+                <ForegroundColor>ffffffff</ForegroundColor>
+                <BackgroundColor>ffffffff</BackgroundColor>
+              </Fill>
+              <Edge>
+                <LineStyle>Solid</LineStyle>
+                <Thickness>1</Thickness>
+                <Color>ff000000</Color>
+                <Unit>Points</Unit>
+              </Edge>
+            </Mark>
+          </PointSymbolization2D>
+        </PointRule>
+        <PointRule>
           <LegendLabel>45 degree triangle</LegendLabel>
           <PointSymbolization2D>
             <Mark>
@@ -154,6 +226,30 @@
           </PointSymbolization2D>
         </PointRule>
         <PointRule>
+          <LegendLabel>0 degree cross</LegendLabel>
+          <PointSymbolization2D>
+            <Mark>
+              <Unit>Points</Unit>
+              <SizeContext>DeviceUnits</SizeContext>
+              <SizeX>10</SizeX>
+              <SizeY>10</SizeY>
+              <Rotation>0</Rotation>
+              <Shape>Cross</Shape>
+              <Fill>
+                <FillPattern>Solid</FillPattern>
+                <ForegroundColor>ffffffff</ForegroundColor>
+                <BackgroundColor>ffffffff</BackgroundColor>
+              </Fill>
+              <Edge>
+                <LineStyle>Solid</LineStyle>
+                <Thickness>1</Thickness>
+                <Color>ff000000</Color>
+                <Unit>Points</Unit>
+              </Edge>
+            </Mark>
+          </PointSymbolization2D>
+        </PointRule>
+        <PointRule>
           <LegendLabel>45 degree cross</LegendLabel>
           <PointSymbolization2D>
             <Mark>
@@ -187,6 +283,30 @@
               <SizeY>10</SizeY>
               <Rotation>25</Rotation>
               <Shape>Cross</Shape>
+              <Fill>
+                <FillPattern>Solid</FillPattern>
+                <ForegroundColor>ffffffff</ForegroundColor>
+                <BackgroundColor>ffffffff</BackgroundColor>
+              </Fill>
+              <Edge>
+                <LineStyle>Solid</LineStyle>
+                <Thickness>1</Thickness>
+                <Color>ff000000</Color>
+                <Unit>Points</Unit>
+              </Edge>
+            </Mark>
+          </PointSymbolization2D>
+        </PointRule>
+        <PointRule>
+          <LegendLabel>0 degree X</LegendLabel>
+          <PointSymbolization2D>
+            <Mark>
+              <Unit>Points</Unit>
+              <SizeContext>DeviceUnits</SizeContext>
+              <SizeX>10</SizeX>
+              <SizeY>10</SizeY>
+              <Rotation>0</Rotation>
+              <Shape>X</Shape>
               <Fill>
                 <FillPattern>Solid</FillPattern>
                 <ForegroundColor>ffffffff</ForegroundColor>
