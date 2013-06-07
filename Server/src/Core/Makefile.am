@@ -223,6 +223,7 @@ UnitTestFiles :
 	@cp -f ../../../UnitTest/TestData/MappingService/UT_Rail.sdf ../UnitTestFiles
 	@cp -f ../../../UnitTest/TestData/MappingService/UT_Rail.fs ../UnitTestFiles
 	@cp -f ../../../UnitTest/TestData/MappingService/UT_Rail.ldf ../UnitTestFiles
+	@cp -f ../../../UnitTest/TestData/MappingService/UT_RotatedPointStyles.ldf ../UnitTestFiles
 	@cp -f ../../../UnitTest/TestData/MappingService/UT_SheboyganWithWatermark.mdf ../UnitTestFiles
 	@cp -f ../../../UnitTest/TestData/MappingService/UT_PoweredByMapGuide.wdf ../UnitTestFiles
 	@cp -f ../../../UnitTest/TestData/MdfModel/MdfTestTypeStyles.ldf ../UnitTestFiles
