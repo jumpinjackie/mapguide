@@ -383,27 +383,27 @@ namespace OSGeo.MapGuide.Viewer
                     output.Add(node);
                     nodesById.Add(group.GetObjectId(), node);
                 }
+            }
 
-                while (remainingNodes.Count > 0)
+            while (remainingNodes.Count > 0)
+            {
+                List<MgLayerGroup> toRemove = new List<MgLayerGroup>();
+                for (int j = 0; j < remainingNodes.Count; j++)
                 {
-                    List<MgLayerGroup> toRemove = new List<MgLayerGroup>();
-                    for (int j = 0; j < remainingNodes.Count; j++)
+                    var parentId = remainingNodes[j].Group.GetObjectId();
+                    if (nodesById.ContainsKey(parentId))
                     {
-                        var parentId = remainingNodes[j].Group.GetObjectId();
-                        if (nodesById.ContainsKey(parentId))
-                        {
-                            var node = CreateGroupNode(remainingNodes[j]);
-                            nodesById[parentId].Nodes.Add(node);
-                            toRemove.Add(remainingNodes[j]);
-                        }
+                        var node = CreateGroupNode(remainingNodes[j]);
+                        nodesById[parentId].Nodes.Add(node);
+                        toRemove.Add(remainingNodes[j]);
                     }
-                    //Whittle down this list
-                    if (toRemove.Count > 0)
+                }
+                //Whittle down this list
+                if (toRemove.Count > 0)
+                {
+                    foreach (var g in toRemove)
                     {
-                        foreach (var g in toRemove)
-                        {
-                            remainingNodes.Remove(g);
-                        }
+                        remainingNodes.Remove(g);
                     }
                 }
             }
@@ -499,32 +499,38 @@ namespace OSGeo.MapGuide.Viewer
                             node.Expand();
                     }
                 }
+            }
 
-                while (remainingLayers.Count > 0)
+            while (remainingLayers.Count > 0)
+            {
+                List<MgLayerBase> toRemove = new List<MgLayerBase>();
+                for (int j = 0; j < remainingLayers.Count; j++)
                 {
-                    List<MgLayerBase> toRemove = new List<MgLayerBase>();
-                    for (int j = 0; j < remainingLayers.Count; j++)
+                    var parentGroup = remainingLayers[j].Group;
+                    var parentId = parentGroup.GetObjectId();
+                    if (nodesById.ContainsKey(parentId))
                     {
-                        var parentId = remainingLayers[j].Group.GetObjectId();
-                        if (nodesById.ContainsKey(parentId))
+                        var node = CreateLayerNode(remainingLayers[j]);
+                        if (node != null)
                         {
-                            var node = CreateLayerNode(remainingLayers[j]);
-                            if (node != null)
-                            {
-                                nodesById[parentId].Nodes.Add(node);
-                                if (remainingLayers[j].ExpandInLegend)
-                                    node.Expand();
-                            }
-                            toRemove.Add(remainingLayers[j]);
+                            nodesById[parentId].Nodes.Add(node);
+                            if (remainingLayers[j].ExpandInLegend)
+                                node.Expand();
                         }
+                        toRemove.Add(remainingLayers[j]);
                     }
-                    //Whittle down this list
-                    if (toRemove.Count > 0)
+                    else //Check parent group visibility. Could explain it
                     {
-                        foreach (var g in toRemove)
-                        {
-                            remainingLayers.Remove(g);
-                        }
+                        if (!parentGroup.GetDisplayInLegend())
+                            toRemove.Add(remainingLayers[j]);
+                    }
+                }
+                //Whittle down this list
+                if (toRemove.Count > 0)
+                {
+                    foreach (var g in toRemove)
+                    {
+                        remainingLayers.Remove(g);
                     }
                 }
             }
