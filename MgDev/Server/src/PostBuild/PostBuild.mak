@@ -188,6 +188,7 @@ debug : ..\..\bin\debug\MgFoundationd.dll \
         ..\..\bin\UnitTestFiles\UT_Rail.sdf \
         ..\..\bin\UnitTestFiles\UT_Rail.fs \
         ..\..\bin\UnitTestFiles\UT_Rail.ldf \
+        ..\..\bin\UnitTestFiles\UT_RotatedPointStyles.ldf \
         ..\..\bin\UnitTestFiles\Sheboygan_Parcels.FeatureSource \
         ..\..\bin\UnitTestFiles\Sheboygan_Parcels.sdf \
         ..\..\bin\UnitTestFiles\Sheboygan_BuildingOutlines.FeatureSource \
@@ -447,6 +448,7 @@ debug64 : ..\..\bin\debug64\MgFoundationd.dll \
         ..\..\bin\UnitTestFiles\UT_Rail.sdf \
         ..\..\bin\UnitTestFiles\UT_Rail.fs \
         ..\..\bin\UnitTestFiles\UT_Rail.ldf \
+        ..\..\bin\UnitTestFiles\UT_RotatedPointStyles.ldf \
         ..\..\bin\UnitTestFiles\Sheboygan_Parcels.FeatureSource \
         ..\..\bin\UnitTestFiles\Sheboygan_Parcels.sdf \
         ..\..\bin\UnitTestFiles\Sheboygan_BuildingOutlines.FeatureSource \
@@ -706,6 +708,7 @@ release : ..\..\bin\release\MgFoundation.dll \
           ..\..\bin\UnitTestFiles\UT_Rail.sdf \
           ..\..\bin\UnitTestFiles\UT_Rail.fs \
           ..\..\bin\UnitTestFiles\UT_Rail.ldf \
+          ..\..\bin\UnitTestFiles\UT_RotatedPointStyles.ldf \
           ..\..\bin\UnitTestFiles\Sheboygan_Parcels.FeatureSource \
           ..\..\bin\UnitTestFiles\Sheboygan_Parcels.sdf \
           ..\..\bin\UnitTestFiles\Sheboygan_BuildingOutlines.FeatureSource \
@@ -965,6 +968,7 @@ release64 : ..\..\bin\release64\MgFoundation.dll \
           ..\..\bin\UnitTestFiles\UT_Rail.sdf \
           ..\..\bin\UnitTestFiles\UT_Rail.fs \
           ..\..\bin\UnitTestFiles\UT_Rail.ldf \
+          ..\..\bin\UnitTestFiles\UT_RotatedPointStyles.ldf \
           ..\..\bin\UnitTestFiles\Sheboygan_Parcels.FeatureSource \
           ..\..\bin\UnitTestFiles\Sheboygan_Parcels.sdf \
           ..\..\bin\UnitTestFiles\Sheboygan_BuildingOutlines.FeatureSource \
@@ -1097,6 +1101,7 @@ cleandebug:
     if EXIST ..\..\bin\UnitTestFiles\UT_Rail.sdf                    del /F ..\..\bin\UnitTestFiles\UT_Rail.sdf
     if EXIST ..\..\bin\UnitTestFiles\UT_Rail.fs                     del /F ..\..\bin\UnitTestFiles\UT_Rail.fs
     if EXIST ..\..\bin\UnitTestFiles\UT_Rail.ldf                    del /F ..\..\bin\UnitTestFiles\UT_Rail.ldf
+    if EXIST ..\..\bin\UnitTestFiles\UT_RotatedPointStyles.ldf      del /F ..\..\bin\UnitTestFiles\UT_RotatedPointStyles.ldf
     if EXIST ..\..\bin\UnitTestFiles\Sheboygan_Parcels.FeatureSource del /F ..\..\bin\UnitTestFiles\Sheboygan_Parcels.FeatureSource
     if EXIST ..\..\bin\UnitTestFiles\Sheboygan_Parcels.sdf          del /F ..\..\bin\UnitTestFiles\Sheboygan_Parcels.sdf
     if EXIST ..\..\bin\UnitTestFiles\Sheboygan_BuildingOutlines.FeatureSource del /F ..\..\bin\UnitTestFiles\Sheboygan_BuildingOutlines.FeatureSource
@@ -1224,6 +1229,7 @@ cleandebug64:
     if EXIST ..\..\bin\UnitTestFiles\UT_Rail.sdf                    del /F ..\..\bin\UnitTestFiles\UT_Rail.sdf
     if EXIST ..\..\bin\UnitTestFiles\UT_Rail.fs                     del /F ..\..\bin\UnitTestFiles\UT_Rail.fs
     if EXIST ..\..\bin\UnitTestFiles\UT_Rail.ldf                    del /F ..\..\bin\UnitTestFiles\UT_Rail.ldf
+    if EXIST ..\..\bin\UnitTestFiles\UT_RotatedPointStyles.ldf      del /F ..\..\bin\UnitTestFiles\UT_RotatedPointStyles.ldf
     if EXIST ..\..\bin\UnitTestFiles\Sheboygan_Parcels.FeatureSource del /F ..\..\bin\UnitTestFiles\Sheboygan_Parcels.FeatureSource
     if EXIST ..\..\bin\UnitTestFiles\Sheboygan_Parcels.sdf          del /F ..\..\bin\UnitTestFiles\Sheboygan_Parcels.sdf
     if EXIST ..\..\bin\UnitTestFiles\Sheboygan_BuildingOutlines.FeatureSource del /F ..\..\bin\UnitTestFiles\Sheboygan_BuildingOutlines.FeatureSource
@@ -1351,6 +1357,7 @@ cleanrelease:
     if EXIST ..\..\bin\UnitTestFiles\UT_Rail.sdf                    del /F ..\..\bin\UnitTestFiles\UT_Rail.sdf
     if EXIST ..\..\bin\UnitTestFiles\UT_Rail.fs                     del /F ..\..\bin\UnitTestFiles\UT_Rail.fs
     if EXIST ..\..\bin\UnitTestFiles\UT_Rail.ldf                    del /F ..\..\bin\UnitTestFiles\UT_Rail.ldf
+    if EXIST ..\..\bin\UnitTestFiles\UT_RotatedPointStyles.ldf      del /F ..\..\bin\UnitTestFiles\UT_RotatedPointStyles.ldf
     if EXIST ..\..\bin\UnitTestFiles\Sheboygan_Parcels.FeatureSource del /F ..\..\bin\UnitTestFiles\Sheboygan_Parcels.FeatureSource
     if EXIST ..\..\bin\UnitTestFiles\Sheboygan_Parcels.sdf          del /F ..\..\bin\UnitTestFiles\Sheboygan_Parcels.sdf
     if EXIST ..\..\bin\UnitTestFiles\Sheboygan_BuildingOutlines.FeatureSource del /F ..\..\bin\UnitTestFiles\Sheboygan_BuildingOutlines.FeatureSource
@@ -1476,6 +1483,7 @@ cleanrelease64:
     if EXIST ..\..\bin\UnitTestFiles\UT_Rail.sdf                    del /F ..\..\bin\UnitTestFiles\UT_Rail.sdf
     if EXIST ..\..\bin\UnitTestFiles\UT_Rail.fs                     del /F ..\..\bin\UnitTestFiles\UT_Rail.fs
     if EXIST ..\..\bin\UnitTestFiles\UT_Rail.ldf                    del /F ..\..\bin\UnitTestFiles\UT_Rail.ldf
+    if EXIST ..\..\bin\UnitTestFiles\UT_RotatedPointStyles.ldf      del /F ..\..\bin\UnitTestFiles\UT_RotatedPointStyles.ldf
     if EXIST ..\..\bin\UnitTestFiles\Sheboygan_Parcels.FeatureSource del /F ..\..\bin\UnitTestFiles\Sheboygan_Parcels.FeatureSource
     if EXIST ..\..\bin\UnitTestFiles\Sheboygan_Parcels.sdf          del /F ..\..\bin\UnitTestFiles\Sheboygan_Parcels.sdf
     if EXIST ..\..\bin\UnitTestFiles\Sheboygan_BuildingOutlines.FeatureSource del /F ..\..\bin\UnitTestFiles\Sheboygan_BuildingOutlines.FeatureSource
@@ -1573,6 +1581,7 @@ cleanrelease64:
 "..\..\..\UnitTest\TestData\MappingService\UT_Rail.sdf" :
 "..\..\..\UnitTest\TestData\MappingService\UT_Rail.fs" :
 "..\..\..\UnitTest\TestData\MappingService\UT_Rail.ldf" :
+"..\..\..\UnitTest\TestData\MappingService\UT_RotatedPointStyles.ldf" :
 "..\..\..\UnitTest\TestData\TileService\UT_BaseMap.mdf" :
 "..\..\..\UnitTest\TestData\TileService\UT_StylizationFuncs.mdf" :
 "..\..\..\UnitTest\TestData\TileService\UT_Parcels.fs" :
@@ -1768,6 +1777,10 @@ cleanrelease64:
 ..\..\bin\UnitTestFiles\UT_Rail.ldf : "..\..\..\UnitTest\TestData\MappingService\UT_Rail.ldf"
     if NOT EXIST ..\..\bin\UnitTestFiles\nul mkdir ..\..\bin\UnitTestFiles
     if EXIST "..\..\..\UnitTest\TestData\MappingService\UT_Rail.ldf" xcopy /r /d /y "..\..\..\UnitTest\TestData\MappingService\UT_Rail.ldf" ..\..\bin\UnitTestFiles\
+
+..\..\bin\UnitTestFiles\UT_RotatedPointStyles.ldf : "..\..\..\UnitTest\TestData\MappingService\UT_RotatedPointStyles.ldf"
+    if NOT EXIST ..\..\bin\UnitTestFiles\nul mkdir ..\..\bin\UnitTestFiles
+    if EXIST "..\..\..\UnitTest\TestData\MappingService\UT_RotatedPointStyles.ldf" xcopy /r /d /y "..\..\..\UnitTest\TestData\MappingService\UT_RotatedPointStyles.ldf" ..\..\bin\UnitTestFiles\
 
 ..\..\bin\UnitTestFiles\UT_BaseMap.mdf : "..\..\..\UnitTest\TestData\TileService\UT_BaseMap.mdf"
     if NOT EXIST ..\..\bin\UnitTestFiles\nul mkdir ..\..\bin\UnitTestFiles
