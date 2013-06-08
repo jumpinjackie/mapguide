@@ -1325,7 +1325,7 @@ void MgServerRenderingService::RenderForSelection(MgMap* map,
 
             //get a transform from layer coord sys to map coord sys
             Ptr<MgCoordinateSystem> mapCs = srs.empty()? NULL : m_pCSFactory->Create(srs);
-            TransformCache* item = TransformCache::GetLayerToMapTransform(transformCache, vl->GetFeatureName(), featResId, mapCs, m_pCSFactory, m_svcFeature);
+            TransformCache* item = TransformCache::GetLayerToMapTransform(transformCache, vl->GetFeatureName(), featResId, mapCs, m_pCSFactory, m_svcFeature, true);
             Ptr<MgCoordinateSystemTransform> trans = item? item->GetMgTransform() : NULL;
             MgCSTrans* xformer = item? item->GetTransform() : NULL;
 

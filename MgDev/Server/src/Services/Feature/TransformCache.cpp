@@ -74,7 +74,8 @@ TransformCache* TransformCache::GetLayerToMapTransform(TransformCacheMap& cache,
                                                        MgResourceIdentifier* resId,
                                                        MgCoordinateSystem* dstCs,
                                                        MgCoordinateSystemFactory* csFactory,
-                                                       MgFeatureService* svcFeature)
+                                                       MgFeatureService* svcFeature,
+                                                       bool reverse)
 {
     // prevent separate threads from simultaneously creating coordinate systems
     ACE_MT(ACE_GUARD_RETURN(ACE_Recursive_Thread_Mutex, ace_mon, sm_mutex, NULL));
@@ -158,7 +159,7 @@ TransformCache* TransformCache::GetLayerToMapTransform(TransformCacheMap& cache,
         {
             TransformCacheMap::const_iterator iter = cache.find(srcwkt);
             if (cache.end() != iter) item = (*iter).second;
-            if (NULL == item)
+            if (NULL == item || !reverse)
             {
                 Ptr<MgCoordinateSystem> srcCs = csFactory->Create(srcwkt);
                 if (srcCs.p)
@@ -167,7 +168,15 @@ TransformCache* TransformCache::GetLayerToMapTransform(TransformCacheMap& cache,
                     cache[srcwkt] = item;
 
                     // Set the coordinate system transform
-                    Ptr<MgCoordinateSystemTransform> trans = csFactory->GetTransform(srcCs, dstCs);
+                    Ptr<MgCoordinateSystemTransform> trans;
+                    if (reverse)
+                    {
+                        trans = csFactory->GetTransform(dstCs, srcCs);
+                    }
+                    else 
+                    {
+                        trans = csFactory->GetTransform(srcCs, dstCs);
+                    }
                     trans->IgnoreDatumShiftWarning(true);
                     trans->IgnoreOutsideDomainWarning(true);
 

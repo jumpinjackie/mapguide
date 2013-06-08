@@ -44,7 +44,8 @@ public:
                                                   MgResourceIdentifier* resId,
                                                   MgCoordinateSystem* dstCs,
                                                   MgCoordinateSystemFactory* csFactory,
-                                                  MgFeatureService* svcFeature);
+                                                  MgFeatureService* svcFeature,
+                                                  bool reverse);
 
     static void Clear(TransformCacheMap& cacheMap);
 

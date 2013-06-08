@@ -531,7 +531,7 @@ void MgMappingUtil::StylizeLayers(MgResourceService* svcResource,
                     #endif
 
                     //get a transform from layer coord sys to map coord sys
-                    TransformCache* item = TransformCache::GetLayerToMapTransform(transformCache, vl->GetFeatureName(), featResId, dstCs, csFactory, svcFeature);
+                    TransformCache* item = TransformCache::GetLayerToMapTransform(transformCache, vl->GetFeatureName(), featResId, dstCs, csFactory, svcFeature, true);
                     TCForProfile = item;
                     Ptr<MgCoordinateSystem> layerCs = item? item->GetCoordSys() : NULL;
                     MgCSTrans* xformer = item? item->GetTransform() : NULL;
@@ -641,7 +641,7 @@ void MgMappingUtil::StylizeLayers(MgResourceService* svcResource,
                     TransformCache* item = NULL;
                     {
                         ACE_MT(ACE_GUARD(ACE_Recursive_Thread_Mutex, ace_mon, sg_fdoRfpMutex));
-                        item = TransformCache::GetLayerToMapTransform(transformCache, gl->GetFeatureName(), featResId, dstCs, csFactory, svcFeature);
+                        item = TransformCache::GetLayerToMapTransform(transformCache, gl->GetFeatureName(), featResId, dstCs, csFactory, svcFeature, true);
                     }
                     TCForProfile = item;
 

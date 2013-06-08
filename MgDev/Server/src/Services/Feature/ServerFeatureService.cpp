@@ -1867,7 +1867,7 @@ MgByteReader* MgServerFeatureService::GetWfsFeature(MgResourceIdentifier* fs,
     }
 
     //get a transform from feature space to mapping space
-    TransformCache* item = TransformCache::GetLayerToMapTransform(transformCache, lfeatureName, fs, mapCs, &fact, this);
+    TransformCache* item = TransformCache::GetLayerToMapTransform(transformCache, lfeatureName, fs, mapCs, &fact, this, false);
     Ptr<MgCoordinateSystemTransform> trans = item? item->GetMgTransform() : NULL;
     FdoPtr<MgGMLCsTransform> transform = new MgGMLCsTransform(trans);
 
