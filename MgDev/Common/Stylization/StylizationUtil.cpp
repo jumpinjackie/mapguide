@@ -230,7 +230,10 @@ void StylizationUtil::RenderPointSymbolization(PointSymbolization2D* psym,
     if (symbol)
     {
         SymbolVisitor::eSymbolType type = SymbolVisitor::DetermineSymbolType(symbol);
-
+        //Apply rotation if we can. Now there may be undesired cropping as a result of this, so we'll try
+        //to compensate for certain symbol types where we know compensation can eliminate cropping, namely
+        //certain markers
+        bool bAppliedRotation = StylizationUtil::ParseDouble(symbol->GetRotation(), mdef.rotation()) && mdef.rotation() != 0.0;
         switch (type)
         {
         case SymbolVisitor::stMark:
@@ -250,6 +253,28 @@ void StylizationUtil::RenderPointSymbolization(PointSymbolization2D* psym,
                     case MarkSymbol::Cross:    mdef.markernum() = SLDType_Cross;    break;
                     case MarkSymbol::X:        mdef.markernum() = SLDType_X;        break;
                     default: break;
+                }
+
+                // These are the marker types that could do with compensation
+                if (bAppliedRotation &&
+                    (mdef.markernum() == SLDType_Square ||
+                     mdef.markernum() == SLDType_X ||
+                     mdef.markernum() == SLDType_Triangle))
+                {
+                    // For preview purposes, SizeX and SizeY are not considered when rendering, thus we know we're dealing
+                    // with something whose bounding box has the same width and height.
+                    double rotRad = mdef.rotation() * M_PI / 180.0;
+                    double length = rs_min(mdef.width(), mdef.height());
+
+                    // http://stackoverflow.com/questions/6657479/aabb-of-rotated-sprite
+                    double rotatedLength = (length * std::sin(rotRad)) + (length * std::cos(rotRad));
+
+                    double normalizedLength = rs_max(length, rotatedLength);
+                    if (rotatedLength > length)
+                        normalizedLength = length * (length / rotatedLength);
+
+                    mdef.width() = normalizedLength;
+                    mdef.height() = normalizedLength;
                 }
 
                 // fill and edge colors
