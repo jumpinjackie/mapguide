@@ -123,6 +123,11 @@ void TestMappingService::TestStart()
         Ptr<MgByteReader> ldfrdr3 = ldfsrc3->GetReader();
         m_svcResource->SetResource(ldfres3, ldfrdr3, NULL);
 
+        Ptr<MgResourceIdentifier> ldfres4 = new MgResourceIdentifier(L"Library://UnitTests/Layers/RotatedPointStyles.LayerDefinition");
+        Ptr<MgByteSource> ldfsrc4 = new MgByteSource(L"../UnitTestFiles/UT_RotatedPointStyles.ldf", false);
+        Ptr<MgByteReader> ldfrdr4 = ldfsrc4->GetReader();
+        m_svcResource->SetResource(ldfres4, ldfrdr4, NULL);
+
         //publish the feature sources
         Ptr<MgResourceIdentifier> fsres1 = new MgResourceIdentifier(L"Library://UnitTests/Data/HydrographicPolygons.FeatureSource");
         Ptr<MgByteSource> fssrc1 = new MgByteSource(L"../UnitTestFiles/UT_HydrographicPolygons.fs", false);
@@ -207,6 +212,9 @@ void TestMappingService::TestEnd()
 
         Ptr<MgResourceIdentifier> ldfres3 = new MgResourceIdentifier(L"Library://UnitTests/Layers/Rail.LayerDefinition");
         m_svcResource->DeleteResource(ldfres3);
+
+        Ptr<MgResourceIdentifier> ldfres4 = new MgResourceIdentifier(L"Library://UnitTests/Layers/RotatedPointStyles.LayerDefinition");
+        m_svcResource->DeleteResource(ldfres4);
 
         //delete the feature sources
         Ptr<MgResourceIdentifier> fsres1 = new MgResourceIdentifier(L"Library://UnitTests/Data/HydrographicPolygons.FeatureSource");
@@ -639,6 +647,148 @@ void TestMappingService::TestCase_GetLegendPlot()
     }
 }
 
+
+void TestMappingService::TestCase_GetLegendImagePointStyleWithConstRotations()
+{
+    try
+    {
+        Ptr<MgResourceIdentifier> ldfId = new MgResourceIdentifier(L"Library://UnitTests/Layers/RotatedPointStyles.LayerDefinition");
+
+        //Do 16x16 icons first. Our common scenario.
+
+        Ptr<MgByteReader> rdr = m_svcMapping->GenerateLegendImage(ldfId, 1000.0, 16, 16, MgImageFormats::Png, 1, 0);
+        Ptr<MgByteSink> sink = new MgByteSink(rdr);
+        sink->ToFile(L"../UnitTestFiles/RotatedPoint_Square_0_16x16.png");
+        
+        rdr = m_svcMapping->GenerateLegendImage(ldfId, 1000.0, 16, 16, MgImageFormats::Png, 1, 1);
+        sink = new MgByteSink(rdr);
+        sink->ToFile(L"../UnitTestFiles/RotatedPoint_Square_45_16x16.png");
+
+        rdr = m_svcMapping->GenerateLegendImage(ldfId, 1000.0, 16, 16, MgImageFormats::Png, 1, 2);
+        sink = new MgByteSink(rdr);
+        sink->ToFile(L"../UnitTestFiles/RotatedPoint_Square_25_16x16.png");
+
+        rdr = m_svcMapping->GenerateLegendImage(ldfId, 1000.0, 16, 16, MgImageFormats::Png, 1, 3);
+        sink = new MgByteSink(rdr);
+        sink->ToFile(L"../UnitTestFiles/RotatedPoint_Star_0_16x16.png");
+
+        rdr = m_svcMapping->GenerateLegendImage(ldfId, 1000.0, 16, 16, MgImageFormats::Png, 1, 4);
+        sink = new MgByteSink(rdr);
+        sink->ToFile(L"../UnitTestFiles/RotatedPoint_Star_45_16x16.png");
+
+        rdr = m_svcMapping->GenerateLegendImage(ldfId, 1000.0, 16, 16, MgImageFormats::Png, 1, 5);
+        sink = new MgByteSink(rdr);
+        sink->ToFile(L"../UnitTestFiles/RotatedPoint_Star_25_16x16.png");
+
+        rdr = m_svcMapping->GenerateLegendImage(ldfId, 1000.0, 16, 16, MgImageFormats::Png, 1, 6);
+        sink = new MgByteSink(rdr);
+        sink->ToFile(L"../UnitTestFiles/RotatedPoint_Triangle_0_16x16.png");
+
+        rdr = m_svcMapping->GenerateLegendImage(ldfId, 1000.0, 16, 16, MgImageFormats::Png, 1, 7);
+        sink = new MgByteSink(rdr);
+        sink->ToFile(L"../UnitTestFiles/RotatedPoint_Triangle_45_16x16.png");
+
+        rdr = m_svcMapping->GenerateLegendImage(ldfId, 1000.0, 16, 16, MgImageFormats::Png, 1, 8);
+        sink = new MgByteSink(rdr);
+        sink->ToFile(L"../UnitTestFiles/RotatedPoint_Triangle_25_16x16.png");
+
+        rdr = m_svcMapping->GenerateLegendImage(ldfId, 1000.0, 16, 16, MgImageFormats::Png, 1, 9);
+        sink = new MgByteSink(rdr);
+        sink->ToFile(L"../UnitTestFiles/RotatedPoint_Cross_0_16x16.png");
+
+        rdr = m_svcMapping->GenerateLegendImage(ldfId, 1000.0, 16, 16, MgImageFormats::Png, 1, 10);
+        sink = new MgByteSink(rdr);
+        sink->ToFile(L"../UnitTestFiles/RotatedPoint_Cross_45_16x16.png");
+
+        rdr = m_svcMapping->GenerateLegendImage(ldfId, 1000.0, 16, 16, MgImageFormats::Png, 1, 11);
+        sink = new MgByteSink(rdr);
+        sink->ToFile(L"../UnitTestFiles/RotatedPoint_Cross_25_16x16.png");
+
+        rdr = m_svcMapping->GenerateLegendImage(ldfId, 1000.0, 16, 16, MgImageFormats::Png, 1, 12);
+        sink = new MgByteSink(rdr);
+        sink->ToFile(L"../UnitTestFiles/RotatedPoint_XMark_0_16x16.png");
+
+        rdr = m_svcMapping->GenerateLegendImage(ldfId, 1000.0, 16, 16, MgImageFormats::Png, 1, 13);
+        sink = new MgByteSink(rdr);
+        sink->ToFile(L"../UnitTestFiles/RotatedPoint_XMark_45_16x16.png");
+
+        rdr = m_svcMapping->GenerateLegendImage(ldfId, 1000.0, 16, 16, MgImageFormats::Png, 1, 14);
+        sink = new MgByteSink(rdr);
+        sink->ToFile(L"../UnitTestFiles/RotatedPoint_XMark_25_16x16.png");
+
+        //Now try 32x16 to see if the rotation handling is acceptable with non-square sizes
+
+        rdr = m_svcMapping->GenerateLegendImage(ldfId, 1000.0, 32, 16, MgImageFormats::Png, 1, 0);
+        sink = new MgByteSink(rdr);
+        sink->ToFile(L"../UnitTestFiles/RotatedPoint_Square_0_32x16.png");
+
+        rdr = m_svcMapping->GenerateLegendImage(ldfId, 1000.0, 32, 16, MgImageFormats::Png, 1, 1);
+        sink = new MgByteSink(rdr);
+        sink->ToFile(L"../UnitTestFiles/RotatedPoint_Square_45_32x16.png");
+        
+        rdr = m_svcMapping->GenerateLegendImage(ldfId, 1000.0, 32, 16, MgImageFormats::Png, 1, 2);
+        sink = new MgByteSink(rdr);
+        sink->ToFile(L"../UnitTestFiles/RotatedPoint_Square_25_32x16.png");
+
+        rdr = m_svcMapping->GenerateLegendImage(ldfId, 1000.0, 32, 16, MgImageFormats::Png, 1, 3);
+        sink = new MgByteSink(rdr);
+        sink->ToFile(L"../UnitTestFiles/RotatedPoint_Star_0_32x16.png");
+
+        rdr = m_svcMapping->GenerateLegendImage(ldfId, 1000.0, 32, 16, MgImageFormats::Png, 1, 4);
+        sink = new MgByteSink(rdr);
+        sink->ToFile(L"../UnitTestFiles/RotatedPoint_Star_45_32x16.png");
+
+        rdr = m_svcMapping->GenerateLegendImage(ldfId, 1000.0, 32, 16, MgImageFormats::Png, 1, 5);
+        sink = new MgByteSink(rdr);
+        sink->ToFile(L"../UnitTestFiles/RotatedPoint_Star_25_32x16.png");
+
+        rdr = m_svcMapping->GenerateLegendImage(ldfId, 1000.0, 32, 16, MgImageFormats::Png, 1, 6);
+        sink = new MgByteSink(rdr);
+        sink->ToFile(L"../UnitTestFiles/RotatedPoint_Triangle_0_32x16.png");
+
+        rdr = m_svcMapping->GenerateLegendImage(ldfId, 1000.0, 32, 16, MgImageFormats::Png, 1, 7);
+        sink = new MgByteSink(rdr);
+        sink->ToFile(L"../UnitTestFiles/RotatedPoint_Triangle_45_32x16.png");
+
+        rdr = m_svcMapping->GenerateLegendImage(ldfId, 1000.0, 32, 16, MgImageFormats::Png, 1, 8);
+        sink = new MgByteSink(rdr);
+        sink->ToFile(L"../UnitTestFiles/RotatedPoint_Triangle_25_32x16.png");
+
+        rdr = m_svcMapping->GenerateLegendImage(ldfId, 1000.0, 32, 16, MgImageFormats::Png, 1, 9);
+        sink = new MgByteSink(rdr);
+        sink->ToFile(L"../UnitTestFiles/RotatedPoint_Cross_0_32x16.png");
+
+        rdr = m_svcMapping->GenerateLegendImage(ldfId, 1000.0, 32, 16, MgImageFormats::Png, 1, 10);
+        sink = new MgByteSink(rdr);
+        sink->ToFile(L"../UnitTestFiles/RotatedPoint_Cross_45_32x16.png");
+
+        rdr = m_svcMapping->GenerateLegendImage(ldfId, 1000.0, 32, 16, MgImageFormats::Png, 1, 11);
+        sink = new MgByteSink(rdr);
+        sink->ToFile(L"../UnitTestFiles/RotatedPoint_Cross_25_32x16.png");
+
+        rdr = m_svcMapping->GenerateLegendImage(ldfId, 1000.0, 32, 16, MgImageFormats::Png, 1, 12);
+        sink = new MgByteSink(rdr);
+        sink->ToFile(L"../UnitTestFiles/RotatedPoint_XMark_0_32x16.png");
+
+        rdr = m_svcMapping->GenerateLegendImage(ldfId, 1000.0, 32, 16, MgImageFormats::Png, 1, 13);
+        sink = new MgByteSink(rdr);
+        sink->ToFile(L"../UnitTestFiles/RotatedPoint_XMark_45_32x16.png");
+
+        rdr = m_svcMapping->GenerateLegendImage(ldfId, 1000.0, 32, 16, MgImageFormats::Png, 1, 14);
+        sink = new MgByteSink(rdr);
+        sink->ToFile(L"../UnitTestFiles/RotatedPoint_XMark_25_32x16.png");
+    }
+    catch (MgException* e)
+    {
+        STRING message = e->GetDetails(TEST_LOCALE);
+        SAFE_RELEASE(e);
+        CPPUNIT_FAIL(MG_WCHAR_TO_CHAR(message.c_str()));
+    }
+    catch (...)
+    {
+        throw;
+    }
+}
 
 void TestMappingService::TestCase_QueryFeaturesImageMap()
 {
