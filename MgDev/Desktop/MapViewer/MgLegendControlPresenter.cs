@@ -494,7 +494,7 @@ namespace OSGeo.MapGuide.Viewer
             for (int i = layerCount - 1; i >= 0; i--)
             {
                 var layer = layers.GetItem(i);
-                
+
                 bool display = layer.DisplayInLegend;
                 bool visible = _provider.IsLayerPotentiallyVisibleAtScale(layer, false);
                 if (!display)
@@ -519,32 +519,38 @@ namespace OSGeo.MapGuide.Viewer
                             node.Expand();
                     }
                 }
+            }
 
-                while (remainingLayers.Count > 0)
+            while (remainingLayers.Count > 0)
+            {
+                List<MgLayerBase> toRemove = new List<MgLayerBase>();
+                for (int j = remainingLayers.Count - 1; j >= 0; j--)
                 {
-                    List<MgLayerBase> toRemove = new List<MgLayerBase>();
-                    for (int j = remainingLayers.Count - 1; j >= 0; j--)
+                    var parentGroup = remainingLayers[j].Group;
+                    var parentId = parentGroup.GetObjectId();
+                    if (nodesById.ContainsKey(parentId))
                     {
-                        var parentId = remainingLayers[j].Group.GetObjectId();
-                        if (nodesById.ContainsKey(parentId))
+                        var node = CreateLayerNode(remainingLayers[j]);
+                        if (node != null)
                         {
-                            var node = CreateLayerNode(remainingLayers[j]);
-                            if (node != null)
-                            {
-                                nodesById[parentId].Nodes.Insert(0, node);
-                                if (remainingLayers[j].ExpandInLegend)
-                                    node.Expand();
-                            }
-                            toRemove.Add(remainingLayers[j]);
+                            nodesById[parentId].Nodes.Insert(0, node);
+                            if (remainingLayers[j].ExpandInLegend)
+                                node.Expand();
                         }
+                        toRemove.Add(remainingLayers[j]);
                     }
-                    //Whittle down this list
-                    if (toRemove.Count > 0)
+                    else
                     {
-                        foreach (var g in toRemove)
-                        {
-                            remainingLayers.Remove(g);
-                        }
+                        if (!parentGroup.GetDisplayInLegend())
+                            toRemove.Add(remainingLayers[j]);
+                    }
+                }
+                //Whittle down this list
+                if (toRemove.Count > 0)
+                {
+                    foreach (var g in toRemove)
+                    {
+                        remainingLayers.Remove(g);
                     }
                 }
             }
@@ -882,7 +888,7 @@ namespace OSGeo.MapGuide.Viewer
             {
                 base.IsGroup = false;
                 this.Layer = layer;
-                this.Checkable = (layer.Group != null && layer.Group.LayerGroupType == MgLayerGroupType.Normal);
+                this.Checkable = (layer.LayerType != MgLayerType.BaseMap);
                 this.IsSelectable = (layer != null) ? layer.Selectable : false;
                 this.DrawSelectabilityIcon = (layer != null && bInitiallySelectable);
                 this.WasInitiallySelectable = bInitiallySelectable;
