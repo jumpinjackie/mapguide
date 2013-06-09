@@ -49,6 +49,7 @@ MgServerSelectFeatures::MgServerSelectFeatures()
 
     // Set a default join query batch size
     m_nJoinQueryBatchSize = MgConfigProperties::DefaultFeatureServicePropertyJoinQueryBatchSize;
+    m_bUseFdoJoinOptimization = MgConfigProperties::DefaultFeatureServicePropertyUseFdoJoinOptimization;
 
     MgConfiguration* config = MgConfiguration::GetInstance();
     if(config)
@@ -63,6 +64,11 @@ MgServerSelectFeatures::MgServerSelectFeatures()
                             MgConfigProperties::FeatureServicePropertyDataCacheSize,
                             m_nDataCacheSize,
                             MgConfigProperties::DefaultFeatureServicePropertyDataCacheSize);
+        // Get FDO Join use flag
+        config->GetBoolValue(MgConfigProperties::FeatureServicePropertiesSection,
+                             MgConfigProperties::FeatureServicePropertyUseFdoJoinOptimization,
+                             m_bUseFdoJoinOptimization,
+                             MgConfigProperties::DefaultFeatureServicePropertyUseFdoJoinOptimization);
     }
 }
 
@@ -1555,6 +1561,10 @@ MgResourceIdentifier* MgServerSelectFeatures::GetSecondaryResourceIdentifier(MgR
 bool MgServerSelectFeatures::SupportsFdoJoin(MgResourceIdentifier* featureSourceId, CREFSTRING extensionName, bool isAggregate)
 {
     bool bSupported = false;
+
+    //If disabled on a global level, don't even bother continuing
+    if (!m_bUseFdoJoinOptimization)
+        return false;
 
     MG_FEATURE_SERVICE_TRY()
 
