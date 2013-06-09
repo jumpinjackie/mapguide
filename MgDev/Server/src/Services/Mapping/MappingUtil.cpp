@@ -1189,7 +1189,8 @@ MgByteReader* MgMappingUtil::DrawFTS(MgResourceService* svcResource,
                                      MdfModel::FeatureTypeStyle* fts,
                                      INT32 imgWidth,
                                      INT32 imgHeight,
-                                     INT32 themeCategory)
+                                     INT32 themeCategory,
+                                     CREFSTRING format)
 {
     if (!fts)
         return NULL;
@@ -1207,9 +1208,6 @@ MgByteReader* MgMappingUtil::DrawFTS(MgResourceService* svcResource,
     // draw the preview
     StylizationUtil::DrawStylePreview(imgWidth, imgHeight, themeCategory, fts, &er, &se_sman);
 
-    // TODO: use user-specified format
-    RS_String format = L"PNG";
-
     auto_ptr<RS_ByteData> data;
     data.reset(er.Save(format, imgWidth, imgHeight));
 
@@ -1217,7 +1215,13 @@ MgByteReader* MgMappingUtil::DrawFTS(MgResourceService* svcResource,
     {
         // put this into a byte source
         Ptr<MgByteSource> bs = new MgByteSource(data->GetBytes(), data->GetNumBytes());
-        bs->SetMimeType(MgMimeType::Png);
+
+        if (format == MgImageFormats::Gif)
+            bs->SetMimeType(MgMimeType::Gif);
+        else if (format == MgImageFormats::Jpeg)
+            bs->SetMimeType(MgMimeType::Jpeg);
+        else if (format == MgImageFormats::Png || format == MgImageFormats::Png8)
+            bs->SetMimeType(MgMimeType::Png);
 
         return bs->GetReader();
     }
