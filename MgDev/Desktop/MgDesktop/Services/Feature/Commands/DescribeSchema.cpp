@@ -1264,7 +1264,7 @@ bool MgdDescribeSchema::GetIdentityProperties(CREFSTRING className,
 ///
 bool MgdDescribeSchema::IsClassNameHintUsed(FdoIDescribeSchema* fdoCommand)
 {
-    CHECKNULL(fdoCommand, L"MgdDescribeSchema.IsClassNameHintUsed");
+    CHECKARGUMENTNULL(fdoCommand, L"MgdDescribeSchema.IsClassNameHintUsed");
 
     FdoPtr<FdoStringCollection> classNames = fdoCommand->GetClassNames();
     bool classNameHintUsed = (NULL != classNames.p);
@@ -1275,7 +1275,7 @@ bool MgdDescribeSchema::IsClassNameHintUsed(FdoIDescribeSchema* fdoCommand)
 ///////////////////////////////////////////////////////////////////////////////
 MgStringCollection* MgdDescribeSchema::GetSchemaNames(MgFeatureSchemaCollection* schemas)
 {
-    CHECKNULL(schemas, L"MgdDescribeSchema.GetSchemaNames");
+    CHECKARGUMENTNULL(schemas, L"MgdDescribeSchema.GetSchemaNames");
 
     Ptr<MgStringCollection> schemaNames = new MgStringCollection();
     INT32 schemaCount = schemas->GetCount();
@@ -1336,7 +1336,7 @@ MgStringCollection* MgdDescribeSchema::GetClassNames(MgFeatureSchemaCollection* 
 ///////////////////////////////////////////////////////////////////////////////
 MgClassDefinition* MgdDescribeSchema::GetClassDefinition(MgFeatureSchemaCollection* schemas, CREFSTRING schemaName, CREFSTRING className)
 {
-    CHECKNULL(schemas, L"MgdDescribeSchema.GetClassDefinition");
+    CHECKARGUMENTNULL(schemas, L"MgdDescribeSchema.GetClassDefinition");
 
     Ptr<MgClassDefinition> classDef;
     INT32 schemaCount = schemas->GetCount();
@@ -1390,9 +1390,12 @@ MgPropertyDefinitionCollection* MgdDescribeSchema::GetIdentityProperties(
     FdoFeatureSchemaCollection* schemas, MgResourceIdentifier* resource,
     CREFSTRING schemaName, CREFSTRING className)
 {
-    CHECKNULL(schemas, L"MgdDescribeSchema.GetIdentityProperties");
+    CHECKARGUMENTNULL(schemas, L"MgdDescribeSchema.GetIdentityProperties");
+    CHECKARGUMENTNULL(resource, L"MgdDescribeSchema.GetIdentityProperties");
+    Ptr<MgPropertyDefinitionCollection> idProps;
 
-    Ptr<MgPropertyDefinitionCollection> idProps = new MgPropertyDefinitionCollection();
+    MG_FEATURE_SERVICE_TRY()
+    idProps = new MgPropertyDefinitionCollection();
     INT32 schemaCount = schemas->GetCount();
 
     // There should be at least one schema for the primary feature source.
@@ -1452,6 +1455,31 @@ MgPropertyDefinitionCollection* MgdDescribeSchema::GetIdentityProperties(
             break;
         }
     }
+
+    MG_FEATURE_SERVICE_CATCH_WITH_FEATURE_SOURCE(L"MgdDescribeSchema.GetIdentityProperties", resource)
+
+    if (mgException != NULL)
+    {
+        //Sorry, if you're complaining about duplicate identity properties, then we need that thing called context
+        if (mgException->IsOfClass(Foundation_Exception_MgDuplicateObjectException))
+        {
+            STRING detail = mgException->GetDetails();
+            MgStringCollection args;
+            args.Add(resource->ToString());
+            STRING qualifiedClassName;
+            qualifiedClassName += schemaName;
+            qualifiedClassName += L":";
+            qualifiedClassName += className;
+            args.Add(qualifiedClassName);
+            args.Add(L"MgDuplicateObjectException"); //NOXLATE
+            args.Add(detail);
+
+            mgException = NULL;
+            mgException = new MgFeatureServiceException(L"MgdDescribeSchema.GetIdentityProperties", __LINE__, __WFILE__, NULL, L"MgFeatureSourceFormatInnerExceptionMessage", &args);
+        }
+    }
+
+    MG_FEATURE_SERVICE_THROW()
 
     return idProps.Detach();
 }
