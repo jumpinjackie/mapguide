@@ -1671,7 +1671,7 @@ MgByteReader* MgServerMappingService::GenerateLegendImage(MgResourceIdentifier* 
             }
 
             if (fts)
-                byteReader = MgMappingUtil::DrawFTS(m_svcResource, fts, imgWidth, imgHeight, themeCategory);
+                byteReader = MgMappingUtil::DrawFTS(m_svcResource, fts, imgWidth, imgHeight, themeCategory, format);
             else
             {
                 //return the fixed array
