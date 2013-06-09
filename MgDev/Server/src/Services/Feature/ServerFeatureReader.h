@@ -475,7 +475,7 @@ INTERNAL_API:
 
     MgServerFeatureReader();
 
-    MgServerFeatureReader(MgServerFeatureConnection* connection, FdoIFeatureReader* fdoReader);
+    MgServerFeatureReader(MgServerFeatureConnection* connection, FdoIFeatureReader* fdoReader, MgStringCollection* forceIdProps = NULL);
     ~MgServerFeatureReader();
 
     virtual void Dispose();
@@ -494,6 +494,7 @@ private:
     Ptr<MgServerFeatureConnection> m_connection;
     FdoIFeatureReader* m_fdoReader;
     bool m_removeFromPoolOnDestruction;
+    Ptr<MgStringCollection> m_forceIdProps;
 
 CLASS_ID:
     static const INT32 m_cls_id = PlatformBase_FeatureService_FeatureReader;
