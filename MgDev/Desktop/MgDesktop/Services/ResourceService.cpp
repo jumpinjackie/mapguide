@@ -451,10 +451,6 @@ void MgdResourceService::DeleteResource(MgResourceIdentifier* resource)
     {
         ReleasePotentialLocks(resource);
 
-        //Empty cached version
-        MgdResourceContentCache* cache = MgdResourceContentCache::GetInstance();
-        cache->RemoveContentEntry(resource);
-
         STRING contentPath = ResolveContentPath(resource);
 	    STRING dataPath = ResolveDataPath(resource);
 	    if (MgFileUtil::IsFile(contentPath))
@@ -494,6 +490,10 @@ void MgdResourceService::DeleteResource(MgResourceIdentifier* resource)
 
 void MgdResourceService::ReleasePotentialLocks(MgResourceIdentifier* resource)
 {
+    //Empty cached version
+    MgdResourceContentCache* cache = MgdResourceContentCache::GetInstance();
+    cache->RemoveContentEntry(resource);
+
     CHECKARGUMENTNULL(resource, L"MgdResourceService::DeleteResource");
     if (resource->GetResourceType() == MgResourceType::FeatureSource)
     {
