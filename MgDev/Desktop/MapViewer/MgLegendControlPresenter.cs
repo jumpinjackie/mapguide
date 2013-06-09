@@ -888,7 +888,7 @@ namespace OSGeo.MapGuide.Viewer
             {
                 base.IsGroup = false;
                 this.Layer = layer;
-                this.Checkable = (layer.Group != null && layer.Group.LayerGroupType == MgLayerGroupType.Normal);
+                this.Checkable = (layer.LayerType != MgLayerType.BaseMap);
                 this.IsSelectable = (layer != null) ? layer.Selectable : false;
                 this.DrawSelectabilityIcon = (layer != null && bInitiallySelectable);
                 this.WasInitiallySelectable = bInitiallySelectable;
