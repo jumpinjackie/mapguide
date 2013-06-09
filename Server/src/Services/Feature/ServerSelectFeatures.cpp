@@ -365,9 +365,6 @@ void MgServerSelectFeatures::ApplyClassProperties()
     if (cnt <= 0)
         return; // Nothing to do
 
-    //TODO: Need to check if FDO join optimization is supported, and whether this contains prefixed
-    //secondary properties.
-
     FdoPtr<FdoIdentifierCollection> fic = m_command->GetPropertyNames();
     CHECKNULL((FdoIdentifierCollection*)fic, L"MgServerSelectFeatures.ApplyClassProperties");
 
@@ -382,6 +379,57 @@ void MgServerSelectFeatures::ApplyClassProperties()
     }
 }
 
+void MgServerSelectFeatures::ApplyClassPropertiesForFdoJoin(CREFSTRING primaryAlias, CREFSTRING secondaryAlias, CREFSTRING secondaryPrefix)
+{
+    CHECKNULL(m_options, L"MgServerSelectFeatures.ApplyClassPropertiesForFdoJoin");
+    CHECKNULL(m_command, L"MgServerSelectFeatures.ApplyClassPropertiesForFdoJoin");
+
+    Ptr<MgStringCollection> properties = m_options->GetClassProperties();
+
+    if (properties == NULL)
+        return; // Nothing to do
+
+    INT32 cnt = properties->GetCount();
+    if (cnt <= 0)
+        return; // Nothing to do
+
+    FdoPtr<FdoIdentifierCollection> fic = m_command->GetPropertyNames();
+    CHECKNULL((FdoIdentifierCollection*)fic, L"MgServerSelectFeatures.ApplyClassPropertiesForFdoJoin");
+
+    //If we're given an explicit property list, it will be whatever is presented by the Extended Feature Class
+    //So we have to "re-shape" this property list into a aliased qualified property list like the standard FDO
+    //join query. Basically, were doing a reverse property mapping.
+
+    for (INT32 i=0; i < cnt; i++)
+    {
+        STRING propertyName = properties->GetItem(i);
+
+        //Check if this name starts with prefix
+        //
+        // If it does, it's a secondary join property and should be re-aliased as [secondaryAlias].[propertyNameWithoutPrefix]
+        // Otherwise, it should be re-aliased as [primaryAlias].[propertyNameAsIs]
+        STRING reAliasedPropName;
+        if (propertyName.compare(0, secondaryPrefix.length(), secondaryPrefix) == 0)
+        {
+            reAliasedPropName = secondaryAlias;
+            reAliasedPropName += L".";
+            reAliasedPropName += propertyName.substr(secondaryPrefix.length());
+        }
+        else
+        {
+            reAliasedPropName = primaryAlias;
+            reAliasedPropName += L".";
+            reAliasedPropName += propertyName;
+        }
+
+        //This will now be [alias].[reAliasedPropertyName] AS [propertyName]
+        FdoPtr<FdoExpression> expr = FdoExpression::Parse((FdoString*)reAliasedPropName.c_str());
+        FdoPtr<FdoComputedIdentifier> fdoIden = FdoComputedIdentifier::Create((FdoString*)propertyName.c_str(), expr);
+        CHECKNULL((FdoComputedIdentifier*)fdoIden, L"MgServerSelectFeatures.ApplyClassPropertiesForFdoJoin");
+
+        fic->Add(fdoIden);
+    }
+}
 
 // Computed properties
 void MgServerSelectFeatures::ApplyComputedProperties()
@@ -465,7 +513,7 @@ void MgServerSelectFeatures::ApplyFilter()
     if (!filterText.empty())
     {
         regularFilter = FdoFilter::Parse(filterText.c_str());
-        #ifdef _DEBUG
+        #if defined(_DEBUG) || defined(DEBUG_FDO_JOIN)
         ACE_DEBUG((LM_ERROR, ACE_TEXT("FILTER(size=%d):\n%W\n\n"), filterText.length(), filterText.c_str()));
         #endif
     }
@@ -1917,7 +1965,11 @@ MgReader* MgServerSelectFeatures::SelectFdoJoin(MgResourceIdentifier* featureSou
     }
 
     CHECKNULL(extension, L"MgServerSelectFeatures.SelectFdoJoin");
-    m_command->SetFeatureClassName(extension->GetFeatureClass().c_str());
+    FdoString* clsName = extension->GetFeatureClass().c_str();
+    m_command->SetFeatureClassName(clsName);
+#ifdef DEBUG_FDO_JOIN
+    ACE_DEBUG((LM_INFO, ACE_TEXT("\n\t(%t) [FdoISelect] Set primary feature class: %W"), clsName));
+#endif
     MdfModel::AttributeRelateCollection* relates = extension->GetAttributeRelates();
     CHECKNULL(relates, L"MgServerSelectFeatures.SelectFdoJoin");
     MdfModel::AttributeRelate* relate = relates->GetAt(0);
@@ -1955,11 +2007,9 @@ MgReader* MgServerSelectFeatures::SelectFdoJoin(MgResourceIdentifier* featureSou
         bool bAppliedProperties = false;
         if (m_options != NULL)
         {
-            //ApplyClassProperties();
             ApplyComputedProperties();
             // TODO: We need to find out if there are any filters involving the secondary side
             ApplyFilter();
-            // ApplySpatialFilter();
             ApplyOrderingOptions();
             // We don't apply aggregate options here because these go through the FDO Expression Engine
             ApplyAggregateOptions(isAggregate);
@@ -1970,7 +2020,7 @@ MgReader* MgServerSelectFeatures::SelectFdoJoin(MgResourceIdentifier* featureSou
             Ptr<MgStringCollection> props = m_options->GetClassProperties();
             if (props->GetCount() > 0)
             {
-                ApplyClassProperties();
+                ApplyClassPropertiesForFdoJoin(primaryAlias, secondaryAlias, prefix);
                 bAppliedProperties = true;
             }
         }
@@ -2211,7 +2261,6 @@ void MgServerSelectFeatures::ApplyClassProperties(FdoIConnection* fdoConn, CREFS
         STRING idName = prefix + propDef->GetName();
         //[alias].[propertyName] AS [prefix][propertyName]
         FdoPtr<FdoComputedIdentifier> compId = FdoComputedIdentifier::Create(idName.c_str(), expr);
-
         propNames->Add(compId);
     }
 

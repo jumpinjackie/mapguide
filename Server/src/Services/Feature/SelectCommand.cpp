@@ -415,16 +415,26 @@ MgReader* MgSelectCommand::ExecuteJoined(MgStringCollection* idPropNames, bool b
 
     MG_FEATURE_SERVICE_TRY()
 
+#ifdef DEBUG_FDO_JOIN
+    FdoPtr<FdoIdentifierCollection> cmdPropNames = m_command->GetPropertyNames();
+    for (FdoInt32 i = 0; i < cmdPropNames->GetCount(); i++)
+    {
+        FdoPtr<FdoIdentifier> ident = cmdPropNames->GetItem(i);
+        STRING idStr = ident->ToString();
+        ACE_DEBUG((LM_INFO, ACE_TEXT("\n(%t) [FdoISelect]: (%W)"), idStr.c_str()));
+    }
+#endif
+
     FdoPtr<FdoIFeatureReader> fdoReader = m_command->Execute();
     if (bForceOneToOne)
     {
         FdoPtr<FdoStringCollection> names = MgServerFeatureUtil::MgToFdoStringCollection(idPropNames, false);
         FdoPtr<FdoIFeatureReader> forcedReader = new MgFdoForcedOneToOneFeatureReader(fdoReader, names); 
-        ret = new MgServerFeatureReader(m_connection, forcedReader);
+        ret = new MgServerFeatureReader(m_connection, forcedReader, idPropNames);
     }
     else
     {
-        ret = new MgServerFeatureReader(m_connection, fdoReader);
+        ret = new MgServerFeatureReader(m_connection, fdoReader, idPropNames);
     }
     MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgSelectCommand.ExecuteJoined")
 

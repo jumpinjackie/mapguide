@@ -28,7 +28,7 @@
 ///</summary>
 ///<param name="byteSource">Byte  source object</param>
 ///
-MgServerFeatureReader::MgServerFeatureReader(MgServerFeatureConnection* connection, FdoIFeatureReader* fdoReader)
+MgServerFeatureReader::MgServerFeatureReader(MgServerFeatureConnection* connection, FdoIFeatureReader* fdoReader, MgStringCollection* forceIdProps)
 {
     MG_FEATURE_SERVICE_TRY()
 
@@ -36,6 +36,7 @@ MgServerFeatureReader::MgServerFeatureReader(MgServerFeatureConnection* connecti
     m_featureSet = NULL;
     m_connection = SAFE_ADDREF(connection);
     m_fdoReader = FDO_SAFE_ADDREF(fdoReader);
+    m_forceIdProps = SAFE_ADDREF(forceIdProps); //This is only passed in for select queries that involve the FDO Join APIs
     m_removeFromPoolOnDestruction = false;
 
     // The reader takes ownership of the FDO connection
@@ -140,6 +141,39 @@ MgClassDefinition* MgServerFeatureReader::GetClassDefinition()
         // Convert FdoClassDefinition to MgClassDefinition
         m_classDef = MgServerFeatureUtil::GetMgClassDefinition(fdoClassDefinition, true);
         CHECKNULL(m_classDef.p, L"MgServerGetFeatures.GetFeatures");
+
+        // The class definition presented by a FDO reader from a join select query will probably
+        // not contain any identity properties, thereby violating our golden rule of selection (no id props = unselectable)
+        // so for such queries executed by MapGuide, we pass this list of identity properties on to this reader (sourced
+        // with the identity properties from the "primary" class definition) so that we can "rewrite" the converted MgClassDefinition
+        if (NULL != m_forceIdProps && m_forceIdProps->GetCount() > 0)
+        {
+            Ptr<MgPropertyDefinitionCollection> clsProps = m_classDef->GetProperties();
+            Ptr<MgPropertyDefinitionCollection> clsIdProps = m_classDef->GetIdentityProperties();
+
+            // This is most likely empty, but we're overwriting this anyway, so clear it
+            clsIdProps->Clear();
+
+            // Copy across any properties from the explicity identity property name list
+            for (INT32 i = 0; i < m_forceIdProps->GetCount(); i++)
+            {
+                STRING propName = m_forceIdProps->GetItem(i);
+                INT32 pidx = clsProps->IndexOf(propName);
+                if (pidx >= 0)
+                {
+                    Ptr<MgPropertyDefinition> p = clsProps->GetItem(pidx);
+                    clsIdProps->Add(p);
+                } //else should we care about correctness?
+            }
+        }
+
+#ifdef DEBUG_FDO_JOIN
+        Ptr<MgPropertyDefinitionCollection> idProps = m_classDef->GetIdentityProperties();
+        Ptr<MgPropertyDefinitionCollection> props = m_classDef->GetProperties();
+        INT32 idCount = idProps->GetCount();
+        INT32 propCount = props->GetCount();
+        ACE_DEBUG((LM_INFO, ACE_TEXT("\n(%t) [MgFeatureReader::GetClassDefinition] %d props, %d identity props"), propCount, idCount));
+#endif
     }
 
     MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgServerFeatureReader.GetClassDefinition")
@@ -176,6 +210,39 @@ MgClassDefinition* MgServerFeatureReader::GetClassDefinitionNoXml()
         // Convert FdoClassDefinition to MgClassDefinition
         m_classDef = MgServerFeatureUtil::GetMgClassDefinition(fdoClassDefinition, false);
         CHECKNULL(m_classDef.p, L"MgServerGetFeatures.GetFeatures");
+
+        // The class definition presented by a FDO reader from a join select query will probably
+        // not contain any identity properties, thereby violating our golden rule of selection (no id props = unselectable)
+        // so for such queries executed by MapGuide, we pass this list of identity properties on to this reader (sourced
+        // with the identity properties from the "primary" class definition) so that we can "rewrite" the converted MgClassDefinition
+        if (NULL != m_forceIdProps && m_forceIdProps->GetCount() > 0)
+        {
+            Ptr<MgPropertyDefinitionCollection> clsProps = m_classDef->GetProperties();
+            Ptr<MgPropertyDefinitionCollection> clsIdProps = m_classDef->GetIdentityProperties();
+
+            // This is most likely empty, but we're overwriting this anyway, so clear it
+            clsIdProps->Clear();
+
+            // Copy across any properties from the explicity identity property name list
+            for (INT32 i = 0; i < m_forceIdProps->GetCount(); i++)
+            {
+                STRING propName = m_forceIdProps->GetItem(i);
+                INT32 pidx = clsProps->IndexOf(propName);
+                if (pidx >= 0)
+                {
+                    Ptr<MgPropertyDefinition> p = clsProps->GetItem(pidx);
+                    clsIdProps->Add(p);
+                } //else should we care about correctness?
+            }
+        }
+
+#ifdef DEBUG_FDO_JOIN
+        Ptr<MgPropertyDefinitionCollection> idProps = m_classDef->GetIdentityProperties();
+        Ptr<MgPropertyDefinitionCollection> props = m_classDef->GetProperties();
+        INT32 idCount = idProps->GetCount();
+        INT32 propCount = props->GetCount();
+        ACE_DEBUG((LM_INFO, ACE_TEXT("\n(%t) [MgFeatureReader::GetClassDefinitionNoXml] %d props, %d identity props"), propCount, idCount));
+#endif
     }
 
     MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgServerFeatureReader.GetClassDefinitionNoXml")
