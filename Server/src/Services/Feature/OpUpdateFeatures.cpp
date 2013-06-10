@@ -55,6 +55,7 @@ void MgOpUpdateFeatures::Execute()
     ACE_DEBUG((LM_DEBUG, ACE_TEXT("  (%t) MgOpUpdateFeatures::Execute()\n")));
 
     STRING partialFailureMsg;
+    Ptr<MgPropertyCollection> rowsAffected;
     MG_LOG_OPERATION_MESSAGE(L"UpdateFeatures");
 
     MG_FEATURE_SERVICE_TRY()
@@ -89,10 +90,7 @@ void MgOpUpdateFeatures::Execute()
         Validate();
 
         // Execute the operation
-        Ptr<MgPropertyCollection> rowsAffected = m_service->UpdateFeatures(resource, commands, useTransaction);
-
-        // Write the response
-        EndExecution(rowsAffected);
+        rowsAffected = m_service->UpdateFeatures(resource, commands, useTransaction);
 
         // #649: Exceptions are only thrown in transactional cases (which will never reach here). For non-transactional cases, 
         // we check for any MgStringProperty instances. These are "serialized" FDO exception messages indicating failure for that 
@@ -108,6 +106,13 @@ void MgOpUpdateFeatures::Execute()
                 partialFailureMsg = sprop->GetValue();
                 break;
             }
+        }
+
+        if (mgException == NULL && partialFailureMsg.empty())
+        {
+            // Only Write the response if there no Fdo Exception
+            // if there is an exception, Response will be written by MgFeatureServiceHandler::ProcessOperation catching it
+            EndExecution(rowsAffected);
         }
     }
     else
@@ -134,13 +139,18 @@ void MgOpUpdateFeatures::Execute()
     {
         // Failed operation
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Failure.c_str());
-        // Only thrown exceptions are logged, so for this partial failure to be logged into Error.log it needs to be
-        // wrapped in an MgException to be thrown at the end of this method
+        // Only thrown exceptions are logged, so for this partial failure to be logged into Error.log
+        // we have to log it here
         if (mgException == NULL && !partialFailureMsg.empty())
         {
-            MgStringCollection args;
-            args.Add(partialFailureMsg);
-            mgException = new MgFeatureServiceException(L"MgOpUpdateFeatures.Execute", __LINE__, __WFILE__, NULL, L"MgFormatInnerExceptionMessage", &args);
+            //NOTE: Serialized MgFdoException already has the stack trace, so stub an empty string to
+            //satisfy the logging macro
+            STRING sTrace = L"";
+            MG_LOG_EXCEPTION_ENTRY(partialFailureMsg, sTrace);
+
+            //DO NOT THROW A NEW EXCEPTION! We must respect the original contract of the API as perceived by the
+            //calling web tier code. That is: Write out the original MgPropertyCollection
+            EndExecution(rowsAffected);
         }
     }
 
@@ -148,4 +158,5 @@ void MgOpUpdateFeatures::Execute()
     MG_LOG_OPERATION_MESSAGE_ACCESS_ENTRY();
 
     MG_FEATURE_SERVICE_THROW()
+
 }
