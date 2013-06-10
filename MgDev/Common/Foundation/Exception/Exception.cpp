@@ -534,6 +534,8 @@ STRING MgException::GetDetails(CREFSTRING locale) throw()
         m_details = GetExceptionMessage(locale);
         m_details += L"\n";
         m_details += FormatDetails(locale);
+        m_details += L"\n";
+        m_details += FormatStackTrace(locale);
     }
 
     MG_CATCH_AND_RELEASE()
