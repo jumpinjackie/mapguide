@@ -115,15 +115,15 @@ echo Building -sources JAR file
     </ClCompile>
     <Link>
       <AdditionalDependencies>ACEd.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <OutputFile>$(OutDir)MapGuideJavaApid.dll</OutputFile>
+      <OutputFile>$(OutDir)MapGuideJavaApiExd.dll</OutputFile>
       <AdditionalLibraryDirectories>..\..\..\Oem\ACE\ACE_wrappers\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <ProgramDatabaseFile>$(OutDir)MapGuideJavaApid.pdb</ProgramDatabaseFile>
+      <ProgramDatabaseFile>$(OutDir)MapGuideJavaApiExd.pdb</ProgramDatabaseFile>
       <SubSystem>Windows</SubSystem>
       <RandomizedBaseAddress>false</RandomizedBaseAddress>
       <DataExecutionPrevention>
       </DataExecutionPrevention>
-      <ImportLibrary>..\..\lib\debug\MapGuideJavaApid.lib</ImportLibrary>
+      <ImportLibrary>..\..\lib\debug\MapGuideJavaApiExd.lib</ImportLibrary>
       <TargetMachine>MachineX86</TargetMachine>
     </Link>
   </ItemDefinitionGroup>
