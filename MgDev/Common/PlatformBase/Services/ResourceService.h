@@ -156,7 +156,7 @@ PUBLISHED_API:
     /// \param header (MgByteReader)
     /// <ul>
     ///    <li>If the repository is the library, this is the
-    ///    <repository header in XML format using the \link ResourceFolderHeader_schema ResourceFolderHeader_schema \endlink
+    ///    repository header in XML format using the \link ResourceFolderHeader_schema ResourceFolderHeader_schema \endlink
     ///    schema. Or, this can be set to null in which case
     ///    the header is not changed.</li>
     ///    <li>If the repository is a session repository, this
@@ -298,6 +298,7 @@ PUBLISHED_API:
     ///          0.
     ///     </li>
     ///     <li>If the resource is a folder:
+    ///     </li>
     ///     <ul>
     ///         <li>If the depth is equal to 0, only information about
     ///              the specified folder is returned.
@@ -404,6 +405,7 @@ PUBLISHED_API:
     ///          0.
     ///     </li>
     ///     <li>If the resource is a folder:
+    ///     </li>
     ///     <ul>
     ///         <li>If the depth is equal to 0, only information about
     ///              the specified folder is returned.

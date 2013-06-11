@@ -1015,7 +1015,6 @@ PUBLISHED_API:
     ///
     /// \exception MgFeatureServiceException
     /// \exception MgInvalidArgumentException
-    /// \exception ...
     ///
     virtual MgFeatureReader* GetLockedFeatures(MgResourceIdentifier* resource,
                                                CREFSTRING className,

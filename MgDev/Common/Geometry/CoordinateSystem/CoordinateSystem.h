@@ -603,7 +603,7 @@ PUBLISHED_API:
     /// \brief
     /// Checks whether this location is legal for this coordinate system
     ///
-    /// \param sSource (String/string)
+    /// \param sLoc (String/string)
     /// The location to check
     ///
     /// \return
@@ -681,7 +681,7 @@ PUBLISHED_API:
     /// \brief
     /// Sets the unit code for this coordinate system
     ///
-    /// \param prjType (int)
+    /// \param unit (int)
     /// The unit code
     ///
     virtual void SetUnitCode(INT32 unit)=0;
@@ -967,7 +967,7 @@ PUBLISHED_API:
     /// \param pDatum (MgCoordinateSystemDatum)
     /// The datum definition
     ///
-    virtual void SetDatumDefinition(MgCoordinateSystemDatum *pDatum)=0;
+    virtual void SetDatumDefinition(MgCoordinateSystemDatum* pDatum)=0;
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
     /// \brief
@@ -982,10 +982,10 @@ PUBLISHED_API:
     /// \brief
     /// Sets the ellipsoid definition for this coordinate system
     ///
-    /// \param pDatum (MgCoordinateSystemEllipsoid)
+    /// \param pEllipsoid (MgCoordinateSystemEllipsoid)
     /// The ellipsoid definition
     ///
-    virtual void SetEllipsoidDefinition(MgCoordinateSystemEllipsoid *pEllipsoid)=0;
+    virtual void SetEllipsoidDefinition(MgCoordinateSystemEllipsoid* pEllipsoid)=0;
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
     /// \brief
@@ -1028,7 +1028,7 @@ PUBLISHED_API:
     /// \brief
     /// Converts the specified MgCoordinate in coordinate system units to lon/lat units
     ///
-    /// \param lonLatToCoordinate (MgCoordinate)
+    /// \param coordinateToLonLat (MgCoordinate)
     /// The MgCoordinate in coordinate system units that will be converted
     ///
     virtual void ConvertCoordinateToLonLat(MgCoordinate* coordinateToLonLat)=0;

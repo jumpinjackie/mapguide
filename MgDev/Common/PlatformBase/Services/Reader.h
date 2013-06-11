@@ -208,7 +208,7 @@ PUBLISHED_API:
     /// \return
     /// Returns the Boolean value.
     ///
-    /// \exception MgInvalidPropertyTypeException.
+    /// \exception MgInvalidPropertyTypeException
     ///
     ///
     virtual bool GetBoolean(CREFSTRING propertyName) = 0;
@@ -239,7 +239,7 @@ PUBLISHED_API:
     /// \return
     /// Returns the Byte value.
     ///
-    /// \exception MgInvalidPropertyTypeException.
+    /// \exception MgInvalidPropertyTypeException
     ///
     ///
     virtual BYTE GetByte(CREFSTRING propertyName) = 0;
@@ -270,7 +270,7 @@ PUBLISHED_API:
     /// \return
     /// Returns an MgDateTime object.
     ///
-    /// \exception MgInvalidPropertyTypeException.
+    /// \exception MgInvalidPropertyTypeException
     ///
     ///
     virtual MgDateTime* GetDateTime(CREFSTRING propertyName) = 0;
@@ -301,7 +301,7 @@ PUBLISHED_API:
     /// \return
     /// Returns the single value.
     ///
-    /// \exception MgInvalidPropertyTypeException.
+    /// \exception MgInvalidPropertyTypeException
     ///
     ///
     virtual float GetSingle(CREFSTRING propertyName) = 0;
@@ -332,7 +332,7 @@ PUBLISHED_API:
     /// \return
     /// Returns the double value.
     ///
-    /// \exception MgInvalidPropertyTypeException.
+    /// \exception MgInvalidPropertyTypeException
     ///
     ///
     virtual double GetDouble(CREFSTRING propertyName) = 0;
@@ -394,7 +394,7 @@ PUBLISHED_API:
     /// \return
     /// Returns the integer 32 bits value.
     ///
-    /// \exception MgInvalidPropertyTypeException.
+    /// \exception MgInvalidPropertyTypeException
     ///
     ///
     virtual INT32 GetInt32(CREFSTRING propertyName) = 0;
@@ -425,7 +425,7 @@ PUBLISHED_API:
     /// \return
     /// Returns the integer 64 bits value.
     ///
-    /// \exception MgInvalidPropertyTypeException.
+    /// \exception MgInvalidPropertyTypeException
     ///
     /// \note
     /// INT64 is actually a pointer to an Integer64 object
@@ -458,7 +458,7 @@ PUBLISHED_API:
     /// \return
     /// Returns the string value.
     ///
-    /// \exception MgInvalidPropertyTypeException.
+    /// \exception MgInvalidPropertyTypeException
     ///
     ///
     virtual STRING GetString(CREFSTRING propertyName) = 0;
@@ -520,7 +520,7 @@ PUBLISHED_API:
     /// \return
     /// Returns the CLOB value in an MgByteReader object.
     ///
-    /// \exception MgInvalidPropertyTypeException.
+    /// \exception MgInvalidPropertyTypeException
     ///
     ///
     virtual MgByteReader* GetCLOB(CREFSTRING propertyName) = 0;
@@ -584,7 +584,7 @@ PUBLISHED_API:
     ///
     /// \exception MgConnectionNotOpenException MgNullPropertyValueException
     /// \exception MgFdoException MgInvalidPropertyTypeException
-    /// \exception MgInvalidPropertyTypeException.
+    /// \exception MgInvalidPropertyTypeException
     ///
     ///
     virtual MgRaster* GetRaster(CREFSTRING propertyName) = 0;
@@ -671,7 +671,7 @@ PUBLISHED_API:
     /// \return
     /// Returns the Boolean value.
     ///
-    /// \exception MgInvalidPropertyTypeException.
+    /// \exception MgInvalidPropertyTypeException
     ///
     /// \since 2.2
     virtual bool GetBoolean(INT32 index) = 0;
@@ -704,7 +704,7 @@ PUBLISHED_API:
     /// \return
     /// Returns the Byte value.
     ///
-    /// \exception MgInvalidPropertyTypeException.
+    /// \exception MgInvalidPropertyTypeException
     ///
     /// \since 2.2
     virtual BYTE GetByte(INT32 index) = 0;
@@ -737,7 +737,7 @@ PUBLISHED_API:
     /// \return
     /// Returns an MgDateTime object.
     ///
-    /// \exception MgInvalidPropertyTypeException.
+    /// \exception MgInvalidPropertyTypeException
     ///
     /// \since 2.2
     virtual MgDateTime* GetDateTime(INT32 index) = 0;
@@ -770,7 +770,7 @@ PUBLISHED_API:
     /// \return
     /// Returns the single value.
     ///
-    /// \exception MgInvalidPropertyTypeException.
+    /// \exception MgInvalidPropertyTypeException
     ///
     /// \since 2.2
     virtual float GetSingle(INT32 index) = 0;
@@ -803,7 +803,7 @@ PUBLISHED_API:
     /// \return
     /// Returns the double value.
     ///
-    /// \exception MgInvalidPropertyTypeException.
+    /// \exception MgInvalidPropertyTypeException
     ///
     /// \since 2.2
     virtual double GetDouble(INT32 index) = 0;
@@ -869,7 +869,7 @@ PUBLISHED_API:
     /// \return
     /// Returns the integer 32 bits value.
     ///
-    /// \exception MgInvalidPropertyTypeException.
+    /// \exception MgInvalidPropertyTypeException
     ///
     /// \since 2.2
     virtual INT32 GetInt32(INT32 index) = 0;
@@ -902,7 +902,7 @@ PUBLISHED_API:
     /// \return
     /// Returns the integer 64 bits value.
     ///
-    /// \exception MgInvalidPropertyTypeException.
+    /// \exception MgInvalidPropertyTypeException
     ///
     /// \note
     /// INT64 is actually a pointer to an Integer64 object
@@ -938,7 +938,7 @@ PUBLISHED_API:
     /// \return
     /// Returns the string value.
     ///
-    /// \exception MgInvalidPropertyTypeException.
+    /// \exception MgInvalidPropertyTypeException
     ///
     /// \since 2.2
     virtual STRING GetString(INT32 index) = 0;
@@ -1004,7 +1004,7 @@ PUBLISHED_API:
     /// \return
     /// Returns the CLOB value in an MgByteReader object.
     ///
-    /// \exception MgInvalidPropertyTypeException.
+    /// \exception MgInvalidPropertyTypeException
     ///
     /// \since 2.2
     virtual MgByteReader* GetCLOB(INT32 index) = 0;
@@ -1072,7 +1072,7 @@ PUBLISHED_API:
     ///
     /// \exception MgConnectionNotOpenException MgNullPropertyValueException
     /// \exception MgFdoException MgInvalidPropertyTypeException
-    /// \exception MgInvalidPropertyTypeException.
+    /// \exception MgInvalidPropertyTypeException
     ///
     /// \since 2.2
     virtual MgRaster* GetRaster(INT32 index) = 0;

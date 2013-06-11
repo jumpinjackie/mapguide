@@ -708,15 +708,15 @@ PUBLISHED_API:
     ///
     /// \param southwest (MgCoordinate)
     /// The southwest coordinate of the extents
-    /// \param northwest (MgCoordinate) 
-    /// The northwest coordinate of the extents
+    /// \param northeast (MgCoordinate) 
+    /// The northeast coordinate of the extents
     ///
     /// \remarks
     /// Contrary to other envelope objects, this method specifically
     /// requires that the southwest argument indeed be southwest of the northeast
     /// argument. Necessary to support geographic coordinate systems (i.e. +/- 180).
     ///
-    virtual void SetBoundaryExtents (MgCoordinate* southwest,MgCoordinate* northeast)=0;
+    virtual void SetBoundaryExtents (MgCoordinate* southwest, MgCoordinate* northeast)=0;
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
     /// \brief

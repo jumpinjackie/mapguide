@@ -354,6 +354,8 @@ EXTERNAL_API:
     ///
     /// \param mapDefinition (MgResourceIdentifier)
     /// MgResourceIdentifier object identifying the map definition resource.
+    /// \param sessionId (String/string)
+    /// The session ID
     /// \param requestedFeatures (int)
     /// A bitmask representing the desired information to return in the XML response: 
     /// 1=Layer/Group structure, 2=Layer Icons, 4=Layer Feature Source Information

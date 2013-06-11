@@ -285,9 +285,9 @@ EXTERNAL_API:
     /// The log to retrieve. (AccessLog, AdminLog, AuthenticationLog, ErrorLog,
     /// MapLayerAccessLog, SessionLog, TraceLog)
     /// \param fromDate
-    /// Date & time to start pulling entries from
+    /// Date and time to start pulling entries from
     /// \param toDate
-    /// Last date & time to pull entries for
+    /// Last date and time to pull entries for
     ///
     /// \return
     /// The log contents in a ByteReader.

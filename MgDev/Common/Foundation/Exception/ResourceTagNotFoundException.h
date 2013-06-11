@@ -40,8 +40,12 @@ EXTERNAL_API:
     /// Line number where the exception occurred.
     /// \param fileName
     /// File name where the exception occurred.
-    /// \param arguments
-    /// Collection of arguments associated with the exception.
+    /// \param whatArguments
+    /// Collection of arguments used to format the message that describes what the exception is.
+    /// \param whyMessageId
+    /// ID of the message that describes why the exception occurs.
+    /// \param whyArguments
+    /// Collection of arguments used to format the message that describes why the exception occurs.
     ///
     MgResourceTagNotFoundException(CREFSTRING methodName, INT32 lineNumber,
         CREFSTRING fileName, MgStringCollection* whatArguments,

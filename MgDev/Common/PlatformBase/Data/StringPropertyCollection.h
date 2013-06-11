@@ -134,7 +134,7 @@ EXTERNAL_API:
     /// \brief
     /// Adds item to the collection.
     ///
-    /// \param property
+    /// \param value
     /// Property to add
     ///
     /// \return
@@ -168,8 +168,6 @@ EXTERNAL_API:
     ///
     /// \param index
     /// Insertion point
-    /// \param keyname
-    /// Input key
     /// \param value
     /// Input value
     ///

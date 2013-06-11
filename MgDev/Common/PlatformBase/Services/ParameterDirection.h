@@ -45,7 +45,7 @@ PUBLISHED_API:
 
     ///////////////////////////////////////////////////
     /// \brief
-    /// Specifies that the parameter is an input & output parameter.
+    /// Specifies that the parameter is an input and output parameter.
     ///
     static const INT32 InputOutput = 2;
 

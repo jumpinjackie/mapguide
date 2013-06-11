@@ -46,8 +46,6 @@ EXTERNAL_API:
     /// ID of the message that describes why the exception occurs.
     /// \param whyArguments
     /// Collection of arguments used to format the message that describes why the exception occurs.
-    /// \param thirdPartyMessage
-    /// Exception message from the third party component
     ///
     MgDecryptionException(CREFSTRING methodName, INT32 lineNumber,
         CREFSTRING fileName, MgStringCollection* whatArguments,
