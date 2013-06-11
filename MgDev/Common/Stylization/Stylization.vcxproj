@@ -93,12 +93,12 @@
       <Optimization>Disabled</Optimization>
       <AdditionalIncludeDirectories>..\MdfModel;..\Foundation;..\..\Oem\ACE\ACE_wrappers;..\..\Oem\FDO\inc;..\..\Oem\FDO\inc\ExpressionEngine;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_USRDLL;STYLIZATION_EXPORTS;_CRT_SECURE_NO_DEPRECATE;_CRT_NONSTDC_NO_DEPRECATE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <MinimalRebuild>true</MinimalRebuild>
       <ExceptionHandling>Async</ExceptionHandling>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <WarningLevel>Level4</WarningLevel>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
       <AdditionalDependencies>FDO.lib;FDOCommon.lib;ExpressionEngine.lib;%(AdditionalDependencies)</AdditionalDependencies>
@@ -123,13 +123,13 @@
       <Optimization>Disabled</Optimization>
       <AdditionalIncludeDirectories>..\MdfModel;..\Foundation;..\..\Oem\ACE\ACE_wrappers;..\..\Oem\FDO\inc;..\..\Oem\FDO\inc\ExpressionEngine;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_USRDLL;STYLIZATION_EXPORTS;_CRT_SECURE_NO_DEPRECATE;_CRT_NONSTDC_NO_DEPRECATE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <MinimalRebuild>true</MinimalRebuild>
       <ExceptionHandling>Async</ExceptionHandling>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <WarningLevel>Level3</WarningLevel>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <ShowIncludes>false</ShowIncludes>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
       <AdditionalDependencies>FDO.lib;FDOCommon.lib;ExpressionEngine.lib;%(AdditionalDependencies)</AdditionalDependencies>
@@ -159,6 +159,7 @@
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <WarningLevel>Level4</WarningLevel>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
       <AdditionalDependencies>FDO.lib;FDOCommon.lib;ExpressionEngine.lib;%(AdditionalDependencies)</AdditionalDependencies>
@@ -193,6 +194,7 @@
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <WarningLevel>Level3</WarningLevel>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
       <AdditionalDependencies>FDO.lib;FDOCommon.lib;ExpressionEngine.lib;%(AdditionalDependencies)</AdditionalDependencies>

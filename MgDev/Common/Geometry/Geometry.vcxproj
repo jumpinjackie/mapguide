@@ -92,11 +92,11 @@
       <Optimization>Disabled</Optimization>
       <AdditionalIncludeDirectories>..\CoordinateSystem;..\Foundation;..\Geometry;..\..\Oem\ACE\ACE_wrappers;..\..\Oem\geos-2.2.0\source\headers;..\..\Oem\CsMap\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_USRDLL;GEOMETRY_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <MinimalRebuild>true</MinimalRebuild>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <WarningLevel>Level3</WarningLevel>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
       <AdditionalDependencies>csmapd.lib;ACEd.lib;GEOSd.lib;%(AdditionalDependencies)</AdditionalDependencies>
@@ -118,11 +118,11 @@
       <Optimization>Disabled</Optimization>
       <AdditionalIncludeDirectories>..\CoordinateSystem;..\Foundation;..\Geometry;..\..\Oem\ACE\ACE_wrappers;..\..\Oem\geos-2.2.0\source\headers;..\..\Oem\CsMap\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_USRDLL;GEOMETRY_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <MinimalRebuild>true</MinimalRebuild>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <WarningLevel>Level3</WarningLevel>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
       <AdditionalDependencies>csmapd.lib;ACEd.lib;GEOSd.lib;%(AdditionalDependencies)</AdditionalDependencies>
@@ -144,6 +144,7 @@
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <WarningLevel>Level3</WarningLevel>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
       <AdditionalDependencies>csmap.lib;ACE.lib;GEOS.lib;%(AdditionalDependencies)</AdditionalDependencies>
@@ -170,6 +171,7 @@
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <WarningLevel>Level3</WarningLevel>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
       <AdditionalDependencies>csmap.lib;ACE.lib;GEOS.lib;%(AdditionalDependencies)</AdditionalDependencies>
