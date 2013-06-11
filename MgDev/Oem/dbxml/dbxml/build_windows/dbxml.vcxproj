@@ -155,7 +155,6 @@
       <AdditionalIncludeDirectories>.;../include;../src/dbxml;../../db-4.8.26/build_windows;../../db-4.8.26/include;../../db-4.8.26/dbinc;../../xerces-c-src/include;../../xerces-c-src/src;../../xqilla/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;_WINDOWS;_DEBUG;_USRDLL;DBXML_CREATE_DLL;_DBXML_COMPRESSION;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <StringPooling>true</StringPooling>
-      <MinimalRebuild>true</MinimalRebuild>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
@@ -170,6 +169,7 @@
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <CompileAs>Default</CompileAs>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
       <AdditionalOptions>/machine:x86 %(AdditionalOptions)</AdditionalOptions>
@@ -198,6 +198,7 @@ installProj.bat libdbxml25 dll $(OutDir) debug copyLib
       <AdditionalIncludeDirectories>.;../include;../src/dbxml;../../db-4.8.26/build_windows;../../db-4.8.26/include;../../db-4.8.26/dbinc;../../xerces-c-src/include;../../xerces-c-src/src;../../xqilla/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;_WINDOWS;_DEBUG;_USRDLL;DBXML_CREATE_DLL;_DBXML_COMPRESSION;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
       <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
@@ -226,7 +227,6 @@ installProj_win64.bat libdbxml25 dll $(OutDir) debug copyLib
       <AdditionalIncludeDirectories>.;../include;../src/dbxml;../../db-4.8.26/build_windows;../../db-4.8.26/include;../../db-4.8.26/dbinc;../../xerces-c-src/include;../../xerces-c-src/src;../../xqilla/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;_WINDOWS;_DEBUG;_LIB;DBXML_EXPORT=;XQILLA_API=;XERCES_STATIC_LIBRARY;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <StringPooling>true</StringPooling>
-      <MinimalRebuild>true</MinimalRebuild>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
@@ -240,6 +240,7 @@ installProj_win64.bat libdbxml25 dll $(OutDir) debug copyLib
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <CompileAs>Default</CompileAs>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Lib>
       <AdditionalOptions>/machine:x86 %(AdditionalOptions)</AdditionalOptions>
@@ -252,6 +253,9 @@ installProj_win64.bat libdbxml25 dll $(OutDir) debug copyLib
       <DataExecutionPrevention>
       </DataExecutionPrevention>
     </Link>
+    <ClCompile>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+    </ClCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
@@ -260,7 +264,6 @@ installProj_win64.bat libdbxml25 dll $(OutDir) debug copyLib
       <AdditionalIncludeDirectories>.;../include;../src/dbxml;../../db-4.8.26/build_windows;../../db-4.8.26/include;../../db-4.8.26/dbinc;../../xerces-c-src/include;../../xerces-c-src/src;../../xqilla/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;_USRDLL;DBXML_CREATE_DLL;_DBXML_COMPRESSION;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <StringPooling>true</StringPooling>
-      <MinimalRebuild>true</MinimalRebuild>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
@@ -275,6 +278,7 @@ installProj_win64.bat libdbxml25 dll $(OutDir) debug copyLib
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <CompileAs>Default</CompileAs>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
       <AdditionalOptions>/machine:x86 %(AdditionalOptions)</AdditionalOptions>
@@ -303,6 +307,7 @@ installProj.bat libdbxml25 dll $(OutDir) release copyLib
       <AdditionalIncludeDirectories>.;../include;../src/dbxml;../../db-4.8.26/build_windows;../../db-4.8.26/include;../../db-4.8.26/dbinc;../../xerces-c-src/include;../../xerces-c-src/src;../../xqilla/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;_USRDLL;DBXML_CREATE_DLL;_DBXML_COMPRESSION;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
       <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
@@ -330,7 +335,6 @@ installProj.bat libdbxml25 dll $(OutDir) release copyLib
       <AdditionalIncludeDirectories>.;../include;../src/dbxml;../../db-4.8.26/build_windows;../../db-4.8.26/include;../../db-4.8.26/dbinc;../../xerces-c-src/include;../../xerces-c-src/src;../../xqilla/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;_LIB;DBXML_EXPORT=;XQILLA_API=;XERCES_STATIC_LIBRARY;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <StringPooling>true</StringPooling>
-      <MinimalRebuild>true</MinimalRebuild>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
@@ -344,6 +348,7 @@ installProj.bat libdbxml25 dll $(OutDir) release copyLib
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <CompileAs>Default</CompileAs>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Lib>
       <AdditionalOptions>/machine:x86 %(AdditionalOptions)</AdditionalOptions>
@@ -356,6 +361,9 @@ installProj.bat libdbxml25 dll $(OutDir) release copyLib
       <DataExecutionPrevention>
       </DataExecutionPrevention>
     </Link>
+    <ClCompile>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+    </ClCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ResourceCompile Include="libdbxml.rc">
