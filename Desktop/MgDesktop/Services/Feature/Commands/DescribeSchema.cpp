@@ -1440,6 +1440,10 @@ MgPropertyDefinitionCollection* MgdDescribeSchema::GetIdentityProperties(
                     {
                         extensionFeatureClass = (STRING)extension->GetFeatureClass();
                         GetIdentityProperties(extensionFeatureClass, currClass.p, idProps.p);
+                        //Break because
+                        // a) We've found and processed our extended class
+                        // b) Guards against duplicate extended classes of the same name defined in the Feature Source. Authoring tools *should not* let this happen
+                        break;
                     }
                 }
             }
