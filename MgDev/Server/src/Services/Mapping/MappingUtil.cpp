@@ -468,14 +468,28 @@ void MgMappingUtil::StylizeLayers(MgResourceService* svcResource,
 
             if (vl) //############################################################################ vector layer
             {
+                // Tweaking this logic for #1981:
+                //
+                // We first try to find a valid scale range, only when we can't find a valid scale range do we
+                // coerce the first one to [0 - Infinity]
+
+                MdfModel::VectorScaleRangeCollection* scaleRanges = vl->GetScaleRanges();
+                MdfModel::VectorScaleRange* scaleRange = NULL;
+                if (scaleRanges)
+                {
+                    // make sure we have a valid scale range
+                    scaleRange = Stylizer::FindScaleRange(*scaleRanges, scale);
+                }
+
+                // We have a selection but no applicable scale range
+                //
                 // Modify the layer scale range to also support infinite
                 // Need to apply default style as one will not be defined
-                if (selection)
+                if (selection && !scaleRange)
                 {
-                    MdfModel::VectorScaleRangeCollection* scaleRanges = vl->GetScaleRanges();
                     if (scaleRanges)
                     {
-                        MdfModel::VectorScaleRange* scaleRange = scaleRanges->GetAt(0);
+                        scaleRange = scaleRanges->GetAt(0);
                         if (scaleRange)
                         {
                             scaleRange->SetMinScale(0.0);
@@ -483,9 +497,6 @@ void MgMappingUtil::StylizeLayers(MgResourceService* svcResource,
                         }
                     }
                 }
-
-                // make sure we have a valid scale range
-                MdfModel::VectorScaleRange* scaleRange = Stylizer::FindScaleRange(*vl->GetScaleRanges(), scale);
 
                 if (scaleRange)
                 {
