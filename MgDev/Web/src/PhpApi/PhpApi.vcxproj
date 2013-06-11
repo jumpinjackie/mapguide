@@ -101,12 +101,12 @@ copy .\php.i .\language.i
       <Optimization>Disabled</Optimization>
       <AdditionalIncludeDirectories>..\HttpHandler;..\WebApp;..\WebSupport;..\..\..\Common\MdfModel;..\..\..\Common\Foundation;..\..\..\Common\Geometry;..\..\..\Common\PlatformBase;..\..\..\Common\MapGuideCommon;..\..\..\Oem\ACE\ACE_wrappers;..\..\..\Oem\dbxml\xerces-c-src\src;..\..\..\Oem\php;..\..\..\Oem\php\main;..\..\..\Oem\php\TSRM;..\..\..\Oem\php\Zend;..\..\..\Oem\php\ext\w32api;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_USRDLL;PHPPROXYAPI_EXPORTS;ZEND_WIN32;PHP_WIN32;ZEND_DEBUG=0;ZTS=1;PHP;_USE_32BIT_TIME_T;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <MinimalRebuild>true</MinimalRebuild>
       <ExceptionHandling>Async</ExceptionHandling>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <WarningLevel>Level3</WarningLevel>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
       <AdditionalDependencies>ACEd.lib;xerces-c_3mgD.lib;php5ts.lib;%(AdditionalDependencies)</AdditionalDependencies>
@@ -136,12 +136,12 @@ copy .\php.i .\language.i
       <Optimization>Disabled</Optimization>
       <AdditionalIncludeDirectories>..\HttpHandler;..\WebApp;..\WebSupport;..\..\..\Common\MdfModel;..\..\..\Common\Foundation;..\..\..\Common\Geometry;..\..\..\Common\PlatformBase;..\..\..\Common\MapGuideCommon;..\..\..\Oem\ACE\ACE_wrappers;..\..\..\Oem\dbxml\xerces-c-src\src;..\..\..\Oem\php;..\..\..\Oem\php\main;..\..\..\Oem\php\TSRM;..\..\..\Oem\php\Zend;..\..\..\Oem\php\ext\w32api;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_USRDLL;PHPPROXYAPI_EXPORTS;ZEND_WIN32;PHP_WIN32;ZEND_DEBUG=0;ZTS=1;PHP;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <MinimalRebuild>true</MinimalRebuild>
       <ExceptionHandling>Async</ExceptionHandling>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <WarningLevel>Level3</WarningLevel>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
       <AdditionalDependencies>ACEd.lib;xerces-c_3mgD.lib;php5ts.lib;%(AdditionalDependencies)</AdditionalDependencies>
@@ -175,6 +175,7 @@ copy .\php.i .\language.i
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <WarningLevel>Level3</WarningLevel>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
       <AdditionalDependencies>ACE.lib;xerces-c_3mg.lib;php5ts.lib;%(AdditionalDependencies)</AdditionalDependencies>
@@ -210,6 +211,7 @@ copy .\php.i .\language.i
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <WarningLevel>Level3</WarningLevel>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
       <AdditionalDependencies>ACE.lib;xerces-c_3mg.lib;php5ts.lib;%(AdditionalDependencies)</AdditionalDependencies>

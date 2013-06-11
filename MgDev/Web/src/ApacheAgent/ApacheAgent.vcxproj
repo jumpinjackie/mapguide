@@ -104,11 +104,11 @@ type .\httpd-2.2.21\srclib\apr-util\include\apu.hw &gt; .\httpd-2.2.21\srclib\ap
       <Optimization>Disabled</Optimization>
       <AdditionalIncludeDirectories>..\..\..\Oem\ACE\ACE_wrappers;..\..\..\Oem\LinuxApt\httpd-2.2.21\include;..\..\..\Oem\LinuxApt\httpd-2.2.21\srclib\apr\include;..\..\..\Oem\LinuxApt\httpd-2.2.21\srclib\apr-util\include;..\..\..\Oem\LinuxApt\httpd-2.2.21\os\win32;..\..\..\Common\MapGuideCommon;..\..\..\Common\PlatformBase;..\..\..\Common\Geometry;..\..\..\Common\Foundation;..\..\..\Common\MdfModel;..\WebSupport;..\HttpHandler;..\MapAgentCommon;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_USRDLL;APACHEAGENT_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <MinimalRebuild>true</MinimalRebuild>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <WarningLevel>Level3</WarningLevel>
-      <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
       <AdditionalDependencies>libhttpd.lib;libapr-1.lib;libaprutil-1.lib;ACEd.lib;%(AdditionalDependencies)</AdditionalDependencies>
@@ -136,11 +136,11 @@ if NOT EXIST httpd-2.2-x64 ..\..\BuildTools\WebTools\7-Zip\7z.exe x httpd-2.2-x6
       <Optimization>Disabled</Optimization>
       <AdditionalIncludeDirectories>..\..\..\Oem\ACE\ACE_wrappers;..\..\..\Oem\LinuxApt\httpd-2.2-x64\include;..\..\..\Common\MapGuideCommon;..\..\..\Common\PlatformBase;..\..\..\Common\Geometry;..\..\..\Common\Foundation;..\..\..\Common\MdfModel;..\WebSupport;..\HttpHandler;..\MapAgentCommon;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_USRDLL;APACHEAGENT_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <MinimalRebuild>true</MinimalRebuild>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <WarningLevel>Level3</WarningLevel>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
       <AdditionalDependencies>libhttpd.lib;libapr-1.lib;libaprutil-1.lib;ACEd.lib;%(AdditionalDependencies)</AdditionalDependencies>
@@ -171,6 +171,7 @@ type .\httpd-2.2.21\srclib\apr-util\include\apu.hw &gt; .\httpd-2.2.21\srclib\ap
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <WarningLevel>Level3</WarningLevel>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
       <AdditionalDependencies>libhttpd.lib;libapr-1.lib;libaprutil-1.lib;ACE.lib;%(AdditionalDependencies)</AdditionalDependencies>
@@ -201,6 +202,7 @@ if NOT EXIST httpd-2.2-x64 ..\..\BuildTools\WebTools\7-Zip\7z.exe x httpd-2.2-x6
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <WarningLevel>Level3</WarningLevel>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
       <AdditionalDependencies>libhttpd.lib;libapr-1.lib;libaprutil-1.lib;ACE.lib;%(AdditionalDependencies)</AdditionalDependencies>
