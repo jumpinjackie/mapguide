@@ -1,3 +1,20 @@
+2.4.1.7610 (12 Jun 2013)
+========================
+
+API Changelog:
+
+ - Fix: MgdResourceService::SetResource not properly flushing out in-memory cached content
+ - Fix: Guard against duplicate extended feature classes 
+ - Fix: Backported fix for incorrect style being used for selection rendering
+
+Viewer Changelog:
+
+ - Fix: Infinite loop on background thread in legend control when loading a map with one or more groups not set to display in the legend
+ - Fix: Improper display ordering of layers and groups in legend control (ie. It does not reflect the layer/group structure you would see in Maestro/AJAX/Fusion viewer)
+
+2.4.0.7152 (Oct 28 2012)
+========================
+
 Viewer Changelog:
 
  - Query component now supports a LayerList property allowing the list of queryable layers in the UI to be restricted to what is in this list.
