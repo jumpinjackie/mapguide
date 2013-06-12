@@ -1,5 +1,18 @@
 API Changelog:
 
+ - Fix: MgdResourceService::SetResource not properly flushing out in-memory cached content
+ - Fix: Guard against duplicate extended feature classes 
+
+Viewer Changelog:
+
+ - Fix: Infinite loop on background thread in legend control when loading a map with one or more groups not set to display in the legend
+ - Fix: Improper display ordering of layers and groups in legend control (ie. It does not reflect the layer/group structure you would see in Maestro/AJAX/Fusion viewer)
+
+2.5.0.7449 (Apr 06 2013)
+========================
+
+API Changelog:
+
  - New experimental Java wrapper API using same SWIG configuration and enhancements introduced with MapGuide RFC 129
  - New behavior flag (8 = RenderBaseLayers) for MgdRenderingService::RenderDynamicOverlay, allows base layers to be rendered to a map overlay image
 
