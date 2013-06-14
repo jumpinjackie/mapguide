@@ -1844,16 +1844,21 @@ MgByteReader* MgServerFeatureService::GetWfsFeature(MgResourceIdentifier* fs,
         //  <Name>_PrimarySRS</Name>
         //  <Value>EPSG:4326</Value>
         //</Property>
-        std::string begin("EPSG:");
-        std::size_t beginPos = resourceHeader.find(begin);
-        if (beginPos != std::string::npos)
+        std::string primary("<Name>_PrimarySRS</Name>");
+        std::size_t primaryPos = resourceHeader.find(primary);
+        if (primaryPos != std::string::npos)
         {
-            std::size_t endPos = resourceHeader.find("</Value>", beginPos);
-            if (endPos != std::string::npos)
+            std::string begin("<Value>EPSG:");
+            std::size_t beginPos = resourceHeader.find(begin, primaryPos);
+            if (beginPos != std::string::npos)
             {
-                std::string primarySRS = resourceHeader.substr(beginPos+begin.length(), endPos-beginPos-begin.length());
-                int epsgCode = atoi(primarySRS.c_str());
-                wkt = fact.ConvertEpsgCodeToWkt(epsgCode);
+                std::size_t endPos = resourceHeader.find("</Value>", beginPos);
+                if (endPos != std::string::npos)
+                {
+                    std::string primarySRS = resourceHeader.substr(beginPos+begin.length(), endPos-beginPos-begin.length());
+                    int epsgCode = atoi(primarySRS.c_str());
+                    wkt = fact.ConvertEpsgCodeToWkt(epsgCode);
+                }
             }
         }
     }
