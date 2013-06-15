@@ -124,6 +124,16 @@ public:
 
   bool operator !=(const XQillaAllocator<_Tp>& o)
   {
+      if (_memMgr != o._memMgr)
+          return true;
+      else
+          return false;
+  }
+#endif
+#if _MSC_VER >= 1700
+  // Needed for Vistual Studio 2012
+  bool operator ==(const XQillaAllocator<_Tp>& o)
+  {
       if (_memMgr == o._memMgr)
           return true;
       else

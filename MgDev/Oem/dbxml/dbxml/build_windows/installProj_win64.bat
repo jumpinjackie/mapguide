@@ -12,14 +12,12 @@ REM  copyLib if not null, and dll, will copy name[d]./lib to LIB_DEST
 REM This script assumes all directories have been created
 REM
 REM
-SET LIB_DEST=..\..\lib64
-SET JAR_DEST=..\..\jar64
-SET BIN_DEST=..\..\bin64
-SET DLL_DEST=..\..\bin64
+SET LIB_DEST=..\..\lib64\%4
+SET JAR_DEST=..\..\jar64\%4
+SET BIN_DEST=..\..\bin64\%4
+SET DLL_DEST=..\..\bin64\%4
 
-IF %4 == debug SET BIN_DEST=%BIN_DEST%\debug
-IF %4 == debug SET DLL_DEST=%DLL_DEST%\debug
-
+mkdir %DLL_DEST%
 mkdir %LIB_DEST%
 mkdir %BIN_DEST%
 mkdir %JAR_DEST%
@@ -31,19 +29,20 @@ ECHO "USAGE: installProj.bat name <prog|dll> OutDir <debug|release> [copyLib]"
 GOTO :EOF
 
 :program
-ECHO "installing program %1"
+ECHO "installing program %3 %1"
 SET pname=%1
-xcopy %3\%pname%.exe %BIN_DEST% /S/Y
-xcopy %3\%pname%.pdb %BIN_DEST% /S/Y/Q
+xcopy %3%pname%.exe %BIN_DEST% /S/Y
+xcopy %3%pname%.pdb %BIN_DEST% /S/Y/Q
 GOTO :EOF
 
 :dll
 ECHO "installing dll %1"
 SET pname=%1
 SET libname=%1
-IF "%4" == "debug" set libname=%libname%d
-xcopy %3\%libname%.dll %DLL_DEST% /S/Y
-if "%5" NEQ "" xcopy %3\%libname%.lib %LIB_DEST% /S/Y
-IF "%4" == "debug" xcopy %3\%pname%.pdb %DLL_DEST% /S/Y
+IF "%5" == "debug" set libname=%libname%d
+IF "%5" == "debug" set pname=%pname%d
+xcopy %3%libname%.dll %DLL_DEST% /S/Y
+if "%6" NEQ "" xcopy %3%libname%.lib %LIB_DEST% /S/Y
+IF "%5" == "debug" xcopy %3%pname%.pdb %DLL_DEST% /S/Y
 
 

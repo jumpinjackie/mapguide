@@ -27,18 +27,22 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <CharacterSet>Unicode</CharacterSet>
+    <PlatformToolset>v110</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <CharacterSet>Unicode</CharacterSet>
+    <PlatformToolset>v110</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <CharacterSet>Unicode</CharacterSet>
+    <PlatformToolset>v110</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <CharacterSet>Unicode</CharacterSet>
+    <PlatformToolset>v110</PlatformToolset>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
@@ -58,17 +62,17 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup>
     <_ProjectFileVersion>10.0.40219.1</_ProjectFileVersion>
-    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">..\bin\debug\</OutDir>
-    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">..\obj\debug\Renderers\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">..\bin\$(Configuration)\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">..\obj\$(Configuration)\Renderers\</IntDir>
     <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</LinkIncremental>
-    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">..\bin\debug64\</OutDir>
-    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">..\obj\debug64\Renderers\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">..\bin\$(Configuration)64\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">..\obj\$(Configuration)64\Renderers\</IntDir>
     <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</LinkIncremental>
-    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">..\bin\release\</OutDir>
-    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">..\obj\release\Renderers\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">..\bin\$(Configuration)\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">..\obj\$(Configuration)\Renderers\</IntDir>
     <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</LinkIncremental>
-    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">..\bin\release64\</OutDir>
-    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">..\obj\release64\Renderers\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">..\bin\$(Configuration)64\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">..\obj\$(Configuration)64\Renderers\</IntDir>
     <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</LinkIncremental>
     <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">AllRules.ruleset</CodeAnalysisRuleSet>
     <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" />
@@ -103,14 +107,14 @@
     <Link>
       <AdditionalDependencies>dwfcore_wt.1.1.1.lib;dwftk_wt.7.1.1.lib;whiptk_wt.7.7.601.lib;emaptk_wt.1.0.0.lib;gd.lib;freetype235_D.lib;libpngd.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(OutDir)MgRenderersd.dll</OutputFile>
-      <AdditionalLibraryDirectories>..\..\Oem\DWFTK7.1\develop\global\lib\static\debug\vc8.0;..\..\Oem\gd\build\win32\gd\Debug;..\..\Oem\gd\freetype\objs\debug;..\..\Oem\gd\lpng\projects\visualc8\Win32_LIB_ASM_Debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>..\..\Oem\DWFTK7.1\develop\global\lib\static\$(Configuration);..\..\Oem\gd\build\win32\gd\$(Configuration);..\..\Oem\gd\freetype\objs\$(Configuration);..\..\Oem\gd\lpng\projects\vs\$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <ProgramDatabaseFile>$(OutDir)MgRenderersd.pdb</ProgramDatabaseFile>
       <SubSystem>Windows</SubSystem>
       <RandomizedBaseAddress>false</RandomizedBaseAddress>
       <DataExecutionPrevention>
       </DataExecutionPrevention>
-      <ImportLibrary>..\lib\debug\MgRenderersd.lib</ImportLibrary>
+      <ImportLibrary>..\lib\$(Configuration)\MgRenderersd.lib</ImportLibrary>
       <TargetMachine>MachineX86</TargetMachine>
       <ForceFileOutput>
       </ForceFileOutput>
@@ -132,11 +136,11 @@
     <Link>
       <AdditionalDependencies>dwfcore_wt.1.1.1.lib;dwftk_wt.7.1.1.lib;whiptk_wt.7.7.601.lib;emaptk_wt.1.0.0.lib;gd.lib;freetype235_D.lib;libpngd.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(OutDir)MgRenderersd.dll</OutputFile>
-      <AdditionalLibraryDirectories>..\..\Oem\DWFTK7.1\develop\global\lib\static\debug64\vc8.0;..\..\Oem\gd\build\win32\gd\Debug64;..\..\Oem\gd\freetype\objs64\debug64;..\..\Oem\gd\lpng\projects\visualc8\Win64_LIB_Debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>..\..\Oem\DWFTK7.1\develop\global\lib\static\$(Configuration)64;..\..\Oem\gd\build\win32\gd\$(Configuration)64;..\..\Oem\gd\freetype\objs\$(Configuration)64;..\..\Oem\gd\lpng\projects\vs\$(Configuration)64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <ProgramDatabaseFile>$(OutDir)MgRenderersd.pdb</ProgramDatabaseFile>
       <SubSystem>Windows</SubSystem>
-      <ImportLibrary>..\lib\debug64\MgRenderersd.lib</ImportLibrary>
+      <ImportLibrary>..\lib\$(Configuration)64\MgRenderersd.lib</ImportLibrary>
       <TargetMachine>MachineX64</TargetMachine>
       <ForceFileOutput>
       </ForceFileOutput>
@@ -162,7 +166,7 @@
     <Link>
       <AdditionalDependencies>dwfcore_wt.1.1.1.lib;dwftk_wt.7.1.1.lib;whiptk_wt.7.7.601.lib;emaptk_wt.1.0.0.lib;gd.lib;freetype235.lib;libpng.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(OutDir)MgRenderers.dll</OutputFile>
-      <AdditionalLibraryDirectories>..\..\Oem\DWFTK7.1\develop\global\lib\static\release\vc8.0;..\..\Oem\gd\build\win32\gd\Release;..\..\Oem\gd\freetype\objs\release;..\..\Oem\gd\lpng\projects\visualc8\Win32_LIB_ASM_Release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>..\..\Oem\DWFTK7.1\develop\global\lib\static\$(Configuration);..\..\Oem\gd\build\win32\gd\$(Configuration);..\..\Oem\gd\freetype\objs\$(Configuration);..\..\Oem\gd\lpng\projects\vs\$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <ProgramDatabaseFile>$(OutDir)MgRenderers.pdb</ProgramDatabaseFile>
       <SubSystem>Windows</SubSystem>
@@ -171,7 +175,7 @@
       <RandomizedBaseAddress>false</RandomizedBaseAddress>
       <DataExecutionPrevention>
       </DataExecutionPrevention>
-      <ImportLibrary>..\lib\release\MgRenderers.lib</ImportLibrary>
+      <ImportLibrary>..\lib\$(Configuration)\MgRenderers.lib</ImportLibrary>
       <TargetMachine>MachineX86</TargetMachine>
       <ForceFileOutput>
       </ForceFileOutput>
@@ -197,13 +201,13 @@
     <Link>
       <AdditionalDependencies>dwfcore_wt.1.1.1.lib;dwftk_wt.7.1.1.lib;whiptk_wt.7.7.601.lib;emaptk_wt.1.0.0.lib;gd.lib;freetype235.lib;libpng.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(OutDir)MgRenderers.dll</OutputFile>
-      <AdditionalLibraryDirectories>..\..\Oem\DWFTK7.1\develop\global\lib\static\release64\vc8.0;..\..\Oem\gd\build\win32\gd\Release64;..\..\Oem\gd\freetype\objs64\release64;..\..\Oem\gd\lpng\projects\visualc8\Win64_LIB_Release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>..\..\Oem\DWFTK7.1\develop\global\lib\static\$(Configuration)64;..\..\Oem\gd\build\win32\gd\$(Configuration)64;..\..\Oem\gd\freetype\objs\$(Configuration)64;..\..\Oem\gd\lpng\projects\vs\$(Configuration)64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <ProgramDatabaseFile>$(OutDir)MgRenderers.pdb</ProgramDatabaseFile>
       <SubSystem>Windows</SubSystem>
       <OptimizeReferences>true</OptimizeReferences>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
-      <ImportLibrary>..\lib\release64\MgRenderers.lib</ImportLibrary>
+      <ImportLibrary>..\lib\$(Configuration)64\MgRenderers.lib</ImportLibrary>
       <TargetMachine>MachineX64</TargetMachine>
       <ForceFileOutput>
       </ForceFileOutput>

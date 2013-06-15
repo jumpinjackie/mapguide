@@ -2,19 +2,19 @@
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <Filter Include="Data">
-      <UniqueIdentifier>{1150e3b1-65e8-43c0-bb96-3d7edcc60590}</UniqueIdentifier>
+      <UniqueIdentifier>{c998d541-b8ef-434e-8be3-ec2660bb9c7c}</UniqueIdentifier>
     </Filter>
     <Filter Include="Exception">
-      <UniqueIdentifier>{f2489010-3cce-4d26-81f7-a2904eb541c4}</UniqueIdentifier>
+      <UniqueIdentifier>{b129b7be-89b1-4995-a47d-e092302b4eae}</UniqueIdentifier>
     </Filter>
     <Filter Include="Services">
-      <UniqueIdentifier>{1d72215f-cef6-4977-8f83-74e033d878db}</UniqueIdentifier>
+      <UniqueIdentifier>{23ebfbb2-7b3a-49f3-b894-7c930d568034}</UniqueIdentifier>
     </Filter>
     <Filter Include="Services\PrintLayoutService">
-      <UniqueIdentifier>{07089497-5007-4bc7-83de-6050176e15b8}</UniqueIdentifier>
+      <UniqueIdentifier>{e6e367b0-7730-453b-9163-e10f234ecb67}</UniqueIdentifier>
     </Filter>
     <Filter Include="MapLayer">
-      <UniqueIdentifier>{1d100cca-9aea-4bb3-ae4f-3c984514edf5}</UniqueIdentifier>
+      <UniqueIdentifier>{c73f7955-b35a-49b3-8b1b-45f823b8d57f}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

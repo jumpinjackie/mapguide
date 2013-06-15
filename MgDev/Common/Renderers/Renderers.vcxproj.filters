@@ -2,25 +2,25 @@
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <Filter Include="CSTransformers">
-      <UniqueIdentifier>{8747ddfb-31b2-4cd5-834b-c2ef1c4a04eb}</UniqueIdentifier>
+      <UniqueIdentifier>{b08c2fd6-9fea-4ce3-9ecf-006822957739}</UniqueIdentifier>
     </Filter>
     <Filter Include="DWFRenderers">
-      <UniqueIdentifier>{bb2ea305-1943-4a27-a915-ec45f9f37d96}</UniqueIdentifier>
+      <UniqueIdentifier>{8b46facf-dc03-4213-8f2c-9dc00b1c8547}</UniqueIdentifier>
     </Filter>
     <Filter Include="GDRenderer">
-      <UniqueIdentifier>{4fa67d73-f739-4eeb-818b-b0376d57fdec}</UniqueIdentifier>
+      <UniqueIdentifier>{18e77f59-0972-4d40-9546-188f62b18c49}</UniqueIdentifier>
     </Filter>
     <Filter Include="Mesh">
-      <UniqueIdentifier>{12b6b94b-c1e9-49f7-95c6-b194c95a18f5}</UniqueIdentifier>
+      <UniqueIdentifier>{f451c1e3-40e1-4a05-a00e-22d2a2bd70fe}</UniqueIdentifier>
     </Filter>
     <Filter Include="KmlRenderer">
-      <UniqueIdentifier>{88d696ad-588a-49ca-ace8-62c4a4f12ebc}</UniqueIdentifier>
+      <UniqueIdentifier>{1cba4c6e-438e-46f2-a8c6-a343cdd191db}</UniqueIdentifier>
     </Filter>
     <Filter Include="FontEngine">
-      <UniqueIdentifier>{6ab9c349-e24c-482a-b54b-da399c814374}</UniqueIdentifier>
+      <UniqueIdentifier>{dcbd7b18-5be9-4904-a9c6-07792d3fcfdf}</UniqueIdentifier>
     </Filter>
     <Filter Include="AGGRenderer">
-      <UniqueIdentifier>{6221a27a-f225-4e4a-9c5a-1dd6d9636718}</UniqueIdentifier>
+      <UniqueIdentifier>{737455e1-014f-4212-b295-d535728637bc}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -118,8 +118,8 @@
       <Filter>AGGRenderer</Filter>
     </ClCompile>
     <ClCompile Include="CriticalSection.cpp" />
-    <ClCompile Include="RenderUtil.cpp" />
     <ClCompile Include="MapQuantization.cpp" />
+    <ClCompile Include="RenderUtil.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="SymbolTrans.h">
@@ -213,10 +213,10 @@
       <Filter>AGGRenderer</Filter>
     </ClInclude>
     <ClInclude Include="CriticalSection.h" />
+    <ClInclude Include="MapQuantization.h" />
     <ClInclude Include="Renderers.h" />
     <ClInclude Include="RenderUtil.h" />
     <ClInclude Include="stdafx.h" />
-    <ClInclude Include="MapQuantization.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Renderers.rc" />

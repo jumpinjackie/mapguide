@@ -46,11 +46,11 @@
 ..\..\bin\debug\MgRenderersd.pdb : ..\..\..\Common\bin\debug\MgRenderersd.pdb
     xcopy /r /d /y ..\..\..\Common\bin\debug\MgRenderersd.pdb ..\..\bin\debug\
 
-..\..\bin\debug\ACEd.dll : ..\..\..\Oem\ACE\ACE_wrappers\lib\ACEd.dll
-    xcopy /r /d /y ..\..\..\Oem\ACE\ACE_wrappers\lib\ACEd.dll ..\..\bin\debug\
+..\..\bin\debug\ACEd.dll : ..\..\..\Oem\ACE\ACE_wrappers\lib\debug\ACEd.dll
+    xcopy /r /d /y ..\..\..\Oem\ACE\ACE_wrappers\lib\debug\ACEd.dll ..\..\bin\debug\
 
-..\..\bin\debug\ACEd.pdb : ..\..\..\Oem\ACE\ACE_wrappers\lib\ACEd.pdb
-    xcopy /r /d /y ..\..\..\Oem\ACE\ACE_wrappers\lib\ACEd.pdb ..\..\bin\debug\
+..\..\bin\debug\ACEd.pdb : ..\..\..\Oem\ACE\ACE_wrappers\lib\debug\ACEd.pdb
+    xcopy /r /d /y ..\..\..\Oem\ACE\ACE_wrappers\lib\debug\ACEd.pdb ..\..\bin\debug\
 
 ..\..\bin\debug\gd.dll : ..\..\..\Oem\gd\build\win32\gd\Debug\gd.dll
     xcopy /r /d /y ..\..\..\Oem\gd\build\win32\gd\Debug\gd.dll ..\..\bin\debug\
@@ -306,11 +306,11 @@ debug : ..\..\bin\debug\MgFoundationd.dll \
 ..\..\bin\debug64\MgRenderersd.pdb : ..\..\..\Common\bin\debug64\MgRenderersd.pdb
     xcopy /r /d /y ..\..\..\Common\bin\debug64\MgRenderersd.pdb ..\..\bin\debug64\
 
-..\..\bin\debug64\ACEd.dll : ..\..\..\Oem\ACE\ACE_wrappers\lib64\ACEd.dll
-    xcopy /r /d /y ..\..\..\Oem\ACE\ACE_wrappers\lib64\ACEd.dll ..\..\bin\debug64\
+..\..\bin\debug64\ACEd.dll : ..\..\..\Oem\ACE\ACE_wrappers\lib64\debug\ACEd.dll
+    xcopy /r /d /y ..\..\..\Oem\ACE\ACE_wrappers\lib64\debug\ACEd.dll ..\..\bin\debug64\
 
-..\..\bin\debug64\ACEd.pdb : ..\..\..\Oem\ACE\ACE_wrappers\lib64\ACEd.pdb
-    xcopy /r /d /y ..\..\..\Oem\ACE\ACE_wrappers\lib64\ACEd.pdb ..\..\bin\debug64\
+..\..\bin\debug64\ACEd.pdb : ..\..\..\Oem\ACE\ACE_wrappers\lib64\debug\ACEd.pdb
+    xcopy /r /d /y ..\..\..\Oem\ACE\ACE_wrappers\lib64\debug\ACEd.pdb ..\..\bin\debug64\
 
 ..\..\bin\debug64\gd.dll : ..\..\..\Oem\gd\build\win32\gd\debug64\gd.dll
     xcopy /r /d /y ..\..\..\Oem\gd\build\win32\gd\debug64\gd.dll ..\..\bin\debug64\
@@ -566,11 +566,11 @@ debug64 : ..\..\bin\debug64\MgFoundationd.dll \
 ..\..\bin\release\MgRenderers.pdb : ..\..\..\Common\bin\release\MgRenderers.pdb
     xcopy /r /d /y ..\..\..\Common\bin\release\MgRenderers.pdb ..\..\bin\release\
 
-..\..\bin\release\ACE.dll : ..\..\..\Oem\ACE\ACE_wrappers\lib\ACE.dll
-    xcopy /r /d /y ..\..\..\Oem\ACE\ACE_wrappers\lib\ACE.dll ..\..\bin\release\
+..\..\bin\release\ACE.dll : ..\..\..\Oem\ACE\ACE_wrappers\lib\release\ACE.dll
+    xcopy /r /d /y ..\..\..\Oem\ACE\ACE_wrappers\lib\release\ACE.dll ..\..\bin\release\
 
-..\..\bin\release\ACE.pdb : ..\..\..\Oem\ACE\ACE_wrappers\lib\ACE.pdb
-    xcopy /r /d /y ..\..\..\Oem\ACE\ACE_wrappers\lib\ACE.pdb ..\..\bin\release\
+..\..\bin\release\ACE.pdb : ..\..\..\Oem\ACE\ACE_wrappers\lib\release\ACE.pdb
+    xcopy /r /d /y ..\..\..\Oem\ACE\ACE_wrappers\lib\release\ACE.pdb ..\..\bin\release\
 
 ..\..\bin\release\gd.dll : ..\..\..\Oem\gd\build\win32\gd\Release\gd.dll
     xcopy /r /d /y ..\..\..\Oem\gd\build\win32\gd\Release\gd.dll ..\..\bin\release\
@@ -584,29 +584,29 @@ debug64 : ..\..\bin\debug64\MgFoundationd.dll \
 ..\..\bin\release\GEOS.pdb : ..\..\..\Oem\geos-2.2.0\VisualStudio\Release\GEOS.pdb
     xcopy /r /d /y ..\..\..\Oem\geos-2.2.0\VisualStudio\Release\GEOS.pdb ..\..\bin\release\
 
-..\..\bin\release\libdb48.dll : ..\..\..\Oem\dbxml\bin\libdb48.dll
-    xcopy /r /d /y ..\..\..\Oem\dbxml\bin\libdb48.dll ..\..\bin\release\
+..\..\bin\release\libdb48.dll : ..\..\..\Oem\dbxml\bin\release\libdb48.dll
+    xcopy /r /d /y ..\..\..\Oem\dbxml\bin\release\libdb48.dll ..\..\bin\release\
 
-..\..\bin\release\libdb48.pdb : ..\..\..\Oem\dbxml\bin\libdb48.pdb
-    xcopy /r /d /y ..\..\..\Oem\dbxml\bin\libdb48.pdb ..\..\bin\release\
+..\..\bin\release\libdb48.pdb : ..\..\..\Oem\dbxml\bin\release\libdb48.pdb
+    xcopy /r /d /y ..\..\..\Oem\dbxml\bin\release\libdb48.pdb ..\..\bin\release\
 
-..\..\bin\release\libdbxml25.dll : ..\..\..\Oem\dbxml\bin\libdbxml25.dll
-    xcopy /r /d /y ..\..\..\Oem\dbxml\bin\libdbxml25.dll ..\..\bin\release\
+..\..\bin\release\libdbxml25.dll : ..\..\..\Oem\dbxml\bin\release\libdbxml25.dll
+    xcopy /r /d /y ..\..\..\Oem\dbxml\bin\release\libdbxml25.dll ..\..\bin\release\
 
-..\..\bin\release\libdbxml25.pdb : ..\..\..\Oem\dbxml\bin\libdbxml25.pdb
-    xcopy /r /d /y ..\..\..\Oem\dbxml\bin\libdbxml25.pdb ..\..\bin\release\
+..\..\bin\release\libdbxml25.pdb : ..\..\..\Oem\dbxml\bin\release\libdbxml25.pdb
+    xcopy /r /d /y ..\..\..\Oem\dbxml\bin\release\libdbxml25.pdb ..\..\bin\release\
 
-..\..\bin\release\xqilla24.dll : ..\..\..\Oem\dbxml\bin\xqilla24.dll
-    xcopy /r /d /y ..\..\..\Oem\dbxml\bin\xqilla24.dll ..\..\bin\release\
+..\..\bin\release\xqilla24.dll : ..\..\..\Oem\dbxml\bin\release\xqilla24.dll
+    xcopy /r /d /y ..\..\..\Oem\dbxml\bin\release\xqilla24.dll ..\..\bin\release\
 
-..\..\bin\release\xqilla24.pdb : ..\..\..\Oem\dbxml\bin\xqilla24.pdb
-    xcopy /r /d /y ..\..\..\Oem\dbxml\bin\xqilla24.pdb ..\..\bin\release\
+..\..\bin\release\xqilla24.pdb : ..\..\..\Oem\dbxml\bin\release\xqilla24.pdb
+    xcopy /r /d /y ..\..\..\Oem\dbxml\bin\release\xqilla24.pdb ..\..\bin\release\
 
-..\..\bin\release\xerces-c_3_1mg.dll : ..\..\..\Oem\dbxml\bin\xerces-c_3_1mg.dll
-    xcopy /r /d /y ..\..\..\Oem\dbxml\bin\xerces-c_3_1mg.dll ..\..\bin\release\
+..\..\bin\release\xerces-c_3_1mg.dll : ..\..\..\Oem\dbxml\bin\release\xerces-c_3_1mg.dll
+    xcopy /r /d /y ..\..\..\Oem\dbxml\bin\release\xerces-c_3_1mg.dll ..\..\bin\release\
 
-..\..\bin\release\xerces-c_3_1mg.pdb : ..\..\..\Oem\dbxml\bin\xerces-c_3_1mg.pdb
-    xcopy /r /d /y ..\..\..\Oem\dbxml\bin\xerces-c_3_1mg.pdb ..\..\bin\release\
+..\..\bin\release\xerces-c_3_1mg.pdb : ..\..\..\Oem\dbxml\bin\release\xerces-c_3_1mg.pdb
+    xcopy /r /d /y ..\..\..\Oem\dbxml\bin\release\xerces-c_3_1mg.pdb ..\..\bin\release\
 
 ..\..\bin\release\serverconfig.ini : ..\..\src\Core\serverconfig.ini
     xcopy /r /d /y ..\..\src\Core\serverconfig.ini ..\..\bin\release\
@@ -826,11 +826,11 @@ release : ..\..\bin\release\MgFoundation.dll \
 ..\..\bin\release64\MgRenderers.pdb : ..\..\..\Common\bin\release64\MgRenderers.pdb
     xcopy /r /d /y ..\..\..\Common\bin\release64\MgRenderers.pdb ..\..\bin\release64\
 
-..\..\bin\release64\ACE.dll : ..\..\..\Oem\ACE\ACE_wrappers\lib64\ACE.dll
-    xcopy /r /d /y ..\..\..\Oem\ACE\ACE_wrappers\lib64\ACE.dll ..\..\bin\release64\
+..\..\bin\release64\ACE.dll : ..\..\..\Oem\ACE\ACE_wrappers\lib64\release\ACE.dll
+    xcopy /r /d /y ..\..\..\Oem\ACE\ACE_wrappers\lib64\release\ACE.dll ..\..\bin\release64\
 
-..\..\bin\release64\ACE.pdb : ..\..\..\Oem\ACE\ACE_wrappers\lib64\ACE.pdb
-    xcopy /r /d /y ..\..\..\Oem\ACE\ACE_wrappers\lib64\ACE.pdb ..\..\bin\release64\
+..\..\bin\release64\ACE.pdb : ..\..\..\Oem\ACE\ACE_wrappers\lib64\release\ACE.pdb
+    xcopy /r /d /y ..\..\..\Oem\ACE\ACE_wrappers\lib64\release\ACE.pdb ..\..\bin\release64\
 
 ..\..\bin\release64\gd.dll : ..\..\..\Oem\gd\build\win32\gd\release64\gd.dll
     xcopy /r /d /y ..\..\..\Oem\gd\build\win32\gd\release64\gd.dll ..\..\bin\release64\
@@ -844,29 +844,29 @@ release : ..\..\bin\release\MgFoundation.dll \
 ..\..\bin\release64\GEOS.pdb : ..\..\..\Oem\geos-2.2.0\VisualStudio\Release64\GEOS.pdb
     xcopy /r /d /y ..\..\..\Oem\geos-2.2.0\VisualStudio\Release64\GEOS.pdb ..\..\bin\release64\
 
-..\..\bin\release64\libdb48.dll : ..\..\..\Oem\dbxml\bin64\libdb48.dll
-    xcopy /r /d /y ..\..\..\Oem\dbxml\bin64\libdb48.dll ..\..\bin\release64\
+..\..\bin\release64\libdb48.dll : ..\..\..\Oem\dbxml\bin64\release\libdb48.dll
+    xcopy /r /d /y ..\..\..\Oem\dbxml\bin64\release\libdb48.dll ..\..\bin\release64\
 
-..\..\bin\release64\libdb48.pdb : ..\..\..\Oem\dbxml\bin64\libdb48.pdb
-    xcopy /r /d /y ..\..\..\Oem\dbxml\bin64\libdb48.pdb ..\..\bin\release64\
+..\..\bin\release64\libdb48.pdb : ..\..\..\Oem\dbxml\bin64\release\libdb48.pdb
+    xcopy /r /d /y ..\..\..\Oem\dbxml\bin64\release\libdb48.pdb ..\..\bin\release64\
 
-..\..\bin\release64\libdbxml25.dll : ..\..\..\Oem\dbxml\bin64\libdbxml25.dll
-    xcopy /r /d /y ..\..\..\Oem\dbxml\bin64\libdbxml25.dll ..\..\bin\release64\
+..\..\bin\release64\libdbxml25.dll : ..\..\..\Oem\dbxml\bin64\release\libdbxml25.dll
+    xcopy /r /d /y ..\..\..\Oem\dbxml\bin64\release\libdbxml25.dll ..\..\bin\release64\
 
-..\..\bin\release64\libdbxml25.pdb : ..\..\..\Oem\dbxml\bin64\libdbxml25.pdb
-    xcopy /r /d /y ..\..\..\Oem\dbxml\bin64\libdbxml25.pdb ..\..\bin\release64\
+..\..\bin\release64\libdbxml25.pdb : ..\..\..\Oem\dbxml\bin64\release\libdbxml25.pdb
+    xcopy /r /d /y ..\..\..\Oem\dbxml\bin64\release\libdbxml25.pdb ..\..\bin\release64\
 
-..\..\bin\release64\xqilla24.dll : ..\..\..\Oem\dbxml\bin64\xqilla24.dll
-    xcopy /r /d /y ..\..\..\Oem\dbxml\bin64\xqilla24.dll ..\..\bin\release64\
+..\..\bin\release64\xqilla24.dll : ..\..\..\Oem\dbxml\bin64\release\xqilla24.dll
+    xcopy /r /d /y ..\..\..\Oem\dbxml\bin64\release\xqilla24.dll ..\..\bin\release64\
 
-..\..\bin\release64\xqilla24.pdb : ..\..\..\Oem\dbxml\bin64\xqilla24.pdb
-    xcopy /r /d /y ..\..\..\Oem\dbxml\bin64\xqilla24.pdb ..\..\bin\release64\
+..\..\bin\release64\xqilla24.pdb : ..\..\..\Oem\dbxml\bin64\release\xqilla24.pdb
+    xcopy /r /d /y ..\..\..\Oem\dbxml\bin64\release\xqilla24.pdb ..\..\bin\release64\
 
-..\..\bin\release64\xerces-c_3_1mg.dll : ..\..\..\Oem\dbxml\bin64\xerces-c_3_1mg.dll
-    xcopy /r /d /y ..\..\..\Oem\dbxml\bin64\xerces-c_3_1mg.dll ..\..\bin\release64\
+..\..\bin\release64\xerces-c_3_1mg.dll : ..\..\..\Oem\dbxml\bin64\release\xerces-c_3_1mg.dll
+    xcopy /r /d /y ..\..\..\Oem\dbxml\bin64\release\xerces-c_3_1mg.dll ..\..\bin\release64\
 
-..\..\bin\release64\xerces-c_3_1mg.pdb : ..\..\..\Oem\dbxml\bin64\xerces-c_3_1mg.pdb
-    xcopy /r /d /y ..\..\..\Oem\dbxml\bin64\xerces-c_3_1mg.pdb ..\..\bin\release64\
+..\..\bin\release64\xerces-c_3_1mg.pdb : ..\..\..\Oem\dbxml\bin64\release\xerces-c_3_1mg.pdb
+    xcopy /r /d /y ..\..\..\Oem\dbxml\bin64\release\xerces-c_3_1mg.pdb ..\..\bin\release64\
 
 ..\..\bin\release64\serverconfig.ini : ..\..\src\Core\serverconfig.ini
     xcopy /r /d /y ..\..\src\Core\serverconfig.ini ..\..\bin\release64\
@@ -1484,6 +1484,1546 @@ cleanrelease64:
     if EXIST ..\..\bin\UnitTestFiles\UT_Rail.fs                     del /F ..\..\bin\UnitTestFiles\UT_Rail.fs
     if EXIST ..\..\bin\UnitTestFiles\UT_Rail.ldf                    del /F ..\..\bin\UnitTestFiles\UT_Rail.ldf
     if EXIST ..\..\bin\UnitTestFiles\UT_RotatedPointStyles.ldf      del /F ..\..\bin\UnitTestFiles\UT_RotatedPointStyles.ldf
+    if EXIST ..\..\bin\UnitTestFiles\Sheboygan_Parcels.FeatureSource del /F ..\..\bin\UnitTestFiles\Sheboygan_Parcels.FeatureSource
+    if EXIST ..\..\bin\UnitTestFiles\Sheboygan_Parcels.sdf          del /F ..\..\bin\UnitTestFiles\Sheboygan_Parcels.sdf
+    if EXIST ..\..\bin\UnitTestFiles\Sheboygan_BuildingOutlines.FeatureSource del /F ..\..\bin\UnitTestFiles\Sheboygan_BuildingOutlines.FeatureSource
+    if EXIST ..\..\bin\UnitTestFiles\Sheboygan_BuildingOutlines.sdf del /F ..\..\bin\UnitTestFiles\Sheboygan_BuildingOutlines.sdf
+    if EXIST ..\..\bin\UnitTestFiles\Sheboygan_VotingDistricts.FeatureSource del /F ..\..\bin\UnitTestFiles\Sheboygan_VotingDistricts.FeatureSource
+    if EXIST ..\..\bin\UnitTestFiles\Sheboygan_VotingDistricts.sdf  del /F ..\..\bin\UnitTestFiles\Sheboygan_VotingDistricts.sdf
+    if EXIST ..\..\bin\UnitTestFiles\Empty.FeatureSource            del /F ..\..\bin\UnitTestFiles\Empty.FeatureSource
+    if EXIST ..\..\bin\UnitTestFiles\Empty.sdf                      del /F ..\..\bin\UnitTestFiles\Empty.sdf
+    if EXIST ..\..\bin\UnitTestFiles\World.mgp                      del /F ..\..\bin\UnitTestFiles\World.mgp
+    if EXIST ..\..\bin\UnitTestFiles\World_Countries.sdf            del /F ..\..\bin\UnitTestFiles\World_Countries.sdf
+    if EXIST ..\..\bin\UnitTestFiles\Shuttle.zip                    del /F ..\..\bin\UnitTestFiles\Shuttle.zip
+    if EXIST ..\..\bin\UnitTestFiles\Redding_Parcels.FeatureSource  del /F ..\..\bin\UnitTestFiles\Redding_Parcels.FeatureSource
+    if EXIST ..\..\bin\UnitTestFiles\Redding_Parcels.shp            del /F ..\..\bin\UnitTestFiles\Redding_Parcels.shp
+    if EXIST ..\..\bin\UnitTestFiles\Redding_Parcels.dbf            del /F ..\..\bin\UnitTestFiles\Redding_Parcels.dbf
+    if EXIST ..\..\bin\UnitTestFiles\Redding_Parcels.shx            del /F ..\..\bin\UnitTestFiles\Redding_Parcels.shx
+    if EXIST ..\..\bin\UnitTestFiles\1.1.1.mgd                      del /F ..\..\bin\UnitTestFiles\1.1.1.mgd
+    if EXIST ..\..\bin\UnitTestFiles\epsgcodes.txt                  del /F ..\..\bin\UnitTestFiles\epsgcodes.txt
+    if EXIST ..\..\bin\UnitTestFiles\ogcwkts.txt                    del /F ..\..\bin\UnitTestFiles\ogcwkts.txt
+    if EXIST ..\..\bin\UnitTestFiles\UT_GetMapKmlResult.txt         del /F ..\..\bin\UnitTestFiles\UT_GetMapKmlResult.txt
+    if EXIST ..\..\bin\UnitTestFiles\UT_GetLayerKmlResult.txt       del /F ..\..\bin\UnitTestFiles\UT_GetLayerKmlResult.txt
+    if EXIST ..\..\bin\UnitTestFiles\UT_GetFeaturesKmlResult.txt    del /F ..\..\bin\UnitTestFiles\UT_GetFeaturesKmlResult.txt
+    if EXIST ..\..\bin\UnitTestFiles\TESTChainedInner1ToManyJoin.FeatureSource del /F ..\..\bin\UnitTestFiles\TESTChainedInner1ToManyJoin.FeatureSource
+    if EXIST ..\..\bin\UnitTestFiles\MdfTestMap.mdf                 del /F ..\..\bin\UnitTestFiles\MdfTestMap.mdf
+    if EXIST ..\..\bin\UnitTestFiles\MdfTestTypeStyles.ldf          del /F ..\..\bin\UnitTestFiles\MdfTestTypeStyles.ldf
+    if EXIST ..\..\bin\UnitTestFiles\MdfTestCompoundSymbol.sd       del /F ..\..\bin\UnitTestFiles\MdfTestCompoundSymbol.sd
+    if EXIST ..\..\bin\UnitTestFiles\MdfTestSimpleSymbol.sd         del /F ..\..\bin\UnitTestFiles\MdfTestSimpleSymbol.sd
+    if EXIST ..\..\bin\UnitTestFiles\areasymbol.sd                  del /F ..\..\bin\UnitTestFiles\areasymbol.sd
+    if EXIST ..\..\bin\UnitTestFiles\linesymbol.sd                  del /F ..\..\bin\UnitTestFiles\linesymbol.sd
+    if EXIST ..\..\bin\UnitTestFiles\symbol.sd                      del /F ..\..\bin\UnitTestFiles\symbol.sd
+    if EXIST ..\..\bin\UnitTestFiles\symbolp.sd                     del /F ..\..\bin\UnitTestFiles\symbolp.sd
+    if EXIST ..\..\bin\UnitTestFiles\MTYP1500a.sd                   del /F ..\..\bin\UnitTestFiles\MTYP1500a.sd
+    if EXIST ..\..\bin\UnitTestFiles\UT_SymbologyLines.fs           del /F ..\..\bin\UnitTestFiles\UT_SymbologyLines.fs
+    if EXIST ..\..\bin\UnitTestFiles\UT_SymbologyLines.ldf          del /F ..\..\bin\UnitTestFiles\UT_SymbologyLines.ldf
+    if EXIST ..\..\bin\UnitTestFiles\UT_SymbologyLines.mdf          del /F ..\..\bin\UnitTestFiles\UT_SymbologyLines.mdf
+    if EXIST ..\..\bin\UnitTestFiles\UT_SymbologyLines.sdf          del /F ..\..\bin\UnitTestFiles\UT_SymbologyLines.sdf
+    if EXIST ..\..\bin\UnitTestFiles\UT_SymbologyLinesCrossTick.ldf del /F ..\..\bin\UnitTestFiles\UT_SymbologyLinesCrossTick.ldf
+    if EXIST ..\..\bin\UnitTestFiles\UT_SymbologyLinesCrossTick.mdf del /F ..\..\bin\UnitTestFiles\UT_SymbologyLinesCrossTick.mdf
+    if EXIST ..\..\bin\UnitTestFiles\UT_SymbologyPoints.fs          del /F ..\..\bin\UnitTestFiles\UT_SymbologyPoints.fs
+    if EXIST ..\..\bin\UnitTestFiles\UT_SymbologyPoints.ldf         del /F ..\..\bin\UnitTestFiles\UT_SymbologyPoints.ldf
+    if EXIST ..\..\bin\UnitTestFiles\UT_SymbologyPoints.mdf         del /F ..\..\bin\UnitTestFiles\UT_SymbologyPoints.mdf
+    if EXIST ..\..\bin\UnitTestFiles\UT_SymbologyPoints.sdf         del /F ..\..\bin\UnitTestFiles\UT_SymbologyPoints.sdf
+    if EXIST ..\..\bin\UnitTestFiles\UT_SymbologyPointsParam.ldf    del /F ..\..\bin\UnitTestFiles\UT_SymbologyPointsParam.ldf
+    if EXIST ..\..\bin\UnitTestFiles\UT_SymbologyPointsParam.mdf    del /F ..\..\bin\UnitTestFiles\UT_SymbologyPointsParam.mdf
+    if EXIST ..\..\bin\UnitTestFiles\UT_SymbologyRoads.fs           del /F ..\..\bin\UnitTestFiles\UT_SymbologyRoads.fs
+    if EXIST ..\..\bin\UnitTestFiles\UT_SymbologyRoads.ldf          del /F ..\..\bin\UnitTestFiles\UT_SymbologyRoads.ldf
+    if EXIST ..\..\bin\UnitTestFiles\UT_SymbologyRoads.mdf          del /F ..\..\bin\UnitTestFiles\UT_SymbologyRoads.mdf
+    if EXIST ..\..\bin\UnitTestFiles\UT_SymbologyRoads.sdf          del /F ..\..\bin\UnitTestFiles\UT_SymbologyRoads.sdf
+    if EXIST ..\..\bin\UnitTestFiles\UT_SymbologyParcels.ldf        del /F ..\..\bin\UnitTestFiles\UT_SymbologyParcels.ldf
+    if EXIST ..\..\bin\UnitTestFiles\UT_SymbologyPolygons.mdf       del /F ..\..\bin\UnitTestFiles\UT_SymbologyPolygons.mdf
+    if EXIST ..\..\bin\UnitTestFiles\UT_Annotation1.ldf             del /F ..\..\bin\UnitTestFiles\UT_Annotation1.ldf
+    if EXIST ..\..\bin\UnitTestFiles\UT_Annotation1.mdf             del /F ..\..\bin\UnitTestFiles\UT_Annotation1.mdf
+    if EXIST ..\..\bin\UnitTestFiles\UT_Annotation2.ldf             del /F ..\..\bin\UnitTestFiles\UT_Annotation2.ldf
+    if EXIST ..\..\bin\UnitTestFiles\UT_Annotation2.mdf             del /F ..\..\bin\UnitTestFiles\UT_Annotation2.mdf
+    if EXIST ..\..\bin\UnitTestFiles\UT_Annotation3.ldf             del /F ..\..\bin\UnitTestFiles\UT_Annotation3.ldf
+    if EXIST ..\..\bin\UnitTestFiles\UT_Annotation3.mdf             del /F ..\..\bin\UnitTestFiles\UT_Annotation3.mdf
+    if EXIST ..\..\bin\UnitTestFiles\SavePointTest.sqlite           del /F ..\..\bin\UnitTestFiles\SavePointTest.sqlite
+    if EXIST ..\..\bin\UnitTestFiles\SavePointTest.FeatureSource    del /F ..\..\bin\UnitTestFiles\SavePointTest.FeatureSource
+    if EXIST ..\..\bin\UnitTestFiles\UT_Parcels_SQLite_Join.FeatureSource    del /F ..\..\bin\UnitTestFiles\UT_Parcels_SQLite_Join.FeatureSource
+    if EXIST ..\..\bin\UnitTestFiles\UT_FdoJoin.FeatureSource		del /F ..\..\bin\UnitTestFiles\UT_FdoJoin.FeatureSource
+    if EXIST ..\..\bin\UnitTestFiles\ParcelsJoinTest.sqlite         del /F ..\..\bin\UnitTestFiles\ParcelsJoinTest.sqlite
+    if EXIST ..\..\bin\UnitTestFiles\JoinTest.sqlite                del /F ..\..\bin\UnitTestFiles\JoinTest.FeatureSource
+
+..\..\bin\debug(v100)\MgFoundationd.dll : ..\..\..\Common\bin\debug(v100)\MgFoundationd.dll
+    xcopy /r /d /y ..\..\..\Common\bin\debug(v100)\MgFoundationd.dll ..\..\bin\debug(v100)\
+
+..\..\bin\debug(v100)\MgFoundationd.pdb : ..\..\..\Common\bin\debug(v100)\MgFoundationd.pdb
+    xcopy /r /d /y ..\..\..\Common\bin\debug(v100)\MgFoundationd.pdb ..\..\bin\debug(v100)\
+
+..\..\bin\debug(v100)\MgPlatformBased.dll : ..\..\..\Common\bin\debug(v100)\MgPlatformBased.dll
+    xcopy /r /d /y ..\..\..\Common\bin\debug(v100)\MgPlatformBased.dll ..\..\bin\debug(v100)\
+
+..\..\bin\debug(v100)\MgPlatformBased.pdb : ..\..\..\Common\bin\debug(v100)\MgPlatformBased.pdb
+    xcopy /r /d /y ..\..\..\Common\bin\debug(v100)\MgPlatformBased.pdb ..\..\bin\debug(v100)\
+
+..\..\bin\debug(v100)\MgGeometryd.dll : ..\..\..\Common\bin\debug(v100)\MgGeometryd.dll
+    xcopy /r /d /y ..\..\..\Common\bin\debug(v100)\MgGeometryd.dll ..\..\bin\debug(v100)\
+
+..\..\bin\debug(v100)\MgGeometryd.pdb : ..\..\..\Common\bin\debug(v100)\MgGeometryd.pdb
+    xcopy /r /d /y ..\..\..\Common\bin\debug(v100)\MgGeometryd.pdb ..\..\bin\debug(v100)\
+
+..\..\bin\debug(v100)\MgMapGuideCommond.dll : ..\..\..\Common\bin\debug(v100)\MgMapGuideCommond.dll
+    xcopy /r /d /y ..\..\..\Common\bin\debug(v100)\MgMapGuideCommond.dll ..\..\bin\debug(v100)\
+
+..\..\bin\debug(v100)\MgMapGuideCommond.pdb : ..\..\..\Common\bin\debug(v100)\MgMapGuideCommond.pdb
+    xcopy /r /d /y ..\..\..\Common\bin\debug(v100)\MgMapGuideCommond.pdb ..\..\bin\debug(v100)\
+
+..\..\bin\debug(v100)\MgMdfModeld.dll : ..\..\..\Common\bin\debug(v100)\MgMdfModeld.dll
+    xcopy /r /d /y ..\..\..\Common\bin\debug(v100)\MgMdfModeld.dll ..\..\bin\debug(v100)\
+
+..\..\bin\debug(v100)\MgMdfModeld.pdb : ..\..\..\Common\bin\debug(v100)\MgMdfModeld.pdb
+    xcopy /r /d /y ..\..\..\Common\bin\debug(v100)\MgMdfModeld.pdb ..\..\bin\debug(v100)\
+
+..\..\bin\debug(v100)\MgMdfParserd.dll : ..\..\..\Common\bin\debug(v100)\MgMdfParserd.dll
+    xcopy /r /d /y ..\..\..\Common\bin\debug(v100)\MgMdfParserd.dll ..\..\bin\debug(v100)\
+
+..\..\bin\debug(v100)\MgMdfParserd.pdb : ..\..\..\Common\bin\debug(v100)\MgMdfParserd.pdb
+    xcopy /r /d /y ..\..\..\Common\bin\debug(v100)\MgMdfParserd.pdb ..\..\bin\debug(v100)\
+
+..\..\bin\debug(v100)\MgStylizationd.dll : ..\..\..\Common\bin\debug(v100)\MgStylizationd.dll
+    xcopy /r /d /y ..\..\..\Common\bin\debug(v100)\MgStylizationd.dll ..\..\bin\debug(v100)\
+
+..\..\bin\debug(v100)\MgStylizationd.pdb : ..\..\..\Common\bin\debug(v100)\MgStylizationd.pdb
+    xcopy /r /d /y ..\..\..\Common\bin\debug(v100)\MgStylizationd.pdb ..\..\bin\debug(v100)\
+
+..\..\bin\debug(v100)\MgRenderersd.dll : ..\..\..\Common\bin\debug(v100)\MgRenderersd.dll
+    xcopy /r /d /y ..\..\..\Common\bin\debug(v100)\MgRenderersd.dll ..\..\bin\debug(v100)\
+
+..\..\bin\debug(v100)\MgRenderersd.pdb : ..\..\..\Common\bin\debug(v100)\MgRenderersd.pdb
+    xcopy /r /d /y ..\..\..\Common\bin\debug(v100)\MgRenderersd.pdb ..\..\bin\debug(v100)\
+
+..\..\bin\debug(v100)\ACEd.dll : ..\..\..\Oem\ACE\ACE_wrappers\lib\debug(v100)\ACEd.dll
+    xcopy /r /d /y ..\..\..\Oem\ACE\ACE_wrappers\lib\debug(v100)\ACEd.dll ..\..\bin\debug(v100)\
+
+..\..\bin\debug(v100)\ACEd.pdb : ..\..\..\Oem\ACE\ACE_wrappers\lib\debug(v100)\ACEd.pdb
+    xcopy /r /d /y ..\..\..\Oem\ACE\ACE_wrappers\lib\debug(v100)\ACEd.pdb ..\..\bin\debug(v100)\
+
+..\..\bin\debug(v100)\gd.dll : ..\..\..\Oem\gd\build\win32\gd\debug(v100)\gd.dll
+    xcopy /r /d /y ..\..\..\Oem\gd\build\win32\gd\debug(v100)\gd.dll ..\..\bin\debug(v100)\
+
+..\..\bin\debug(v100)\gd.pdb : ..\..\..\Oem\gd\build\win32\gd\debug(v100)\gd.pdb
+    xcopy /r /d /y ..\..\..\Oem\gd\build\win32\gd\debug(v100)\gd.pdb ..\..\bin\debug(v100)\
+
+..\..\bin\debug(v100)\GEOSd.dll : ..\..\..\Oem\geos-2.2.0\VisualStudio\debug(v100)\GEOSd.dll
+    xcopy /r /d /y ..\..\..\Oem\geos-2.2.0\VisualStudio\debug(v100)\GEOSd.dll ..\..\bin\debug(v100)\
+
+..\..\bin\debug(v100)\GEOSd.pdb : ..\..\..\Oem\geos-2.2.0\VisualStudio\debug(v100)\GEOSd.pdb
+    xcopy /r /d /y ..\..\..\Oem\geos-2.2.0\VisualStudio\debug(v100)\GEOSd.pdb ..\..\bin\debug(v100)\
+
+..\..\bin\debug(v100)\libdb48d.dll : ..\..\..\Oem\dbxml\bin\debug(v100)\libdb48d.dll
+    xcopy /r /d /y ..\..\..\Oem\dbxml\bin\debug(v100)\libdb48d.dll ..\..\bin\debug(v100)\
+
+..\..\bin\debug(v100)\libdb48d.pdb : ..\..\..\Oem\dbxml\bin\debug(v100)\libdb48d.pdb
+    xcopy /r /d /y ..\..\..\Oem\dbxml\bin\debug(v100)\libdb48d.pdb ..\..\bin\debug(v100)\
+
+..\..\bin\debug(v100)\libdbxml25d.dll : ..\..\..\Oem\dbxml\bin\debug(v100)\libdbxml25d.dll
+    xcopy /r /d /y ..\..\..\Oem\dbxml\bin\debug(v100)\libdbxml25d.dll ..\..\bin\debug(v100)\
+
+..\..\bin\debug(v100)\libdbxml25d.pdb : ..\..\..\Oem\dbxml\bin\debug(v100)\libdbxml25d.pdb
+    xcopy /r /d /y ..\..\..\Oem\dbxml\bin\debug(v100)\libdbxml25d.pdb ..\..\bin\debug(v100)\
+
+..\..\bin\debug(v100)\xqilla24d.dll : ..\..\..\Oem\dbxml\bin\debug(v100)\xqilla24d.dll
+    xcopy /r /d /y ..\..\..\Oem\dbxml\bin\debug(v100)\xqilla24d.dll ..\..\bin\debug(v100)\
+
+..\..\bin\debug(v100)\xqilla24d.pdb : ..\..\..\Oem\dbxml\bin\debug(v100)\xqilla24d.pdb
+    xcopy /r /d /y ..\..\..\Oem\dbxml\bin\debug(v100)\xqilla24d.pdb ..\..\bin\debug(v100)\
+
+..\..\bin\debug(v100)\xerces-c_3_1mgD.dll : ..\..\..\Oem\dbxml\bin\debug(v100)\xerces-c_3_1mgD.dll
+    xcopy /r /d /y ..\..\..\Oem\dbxml\bin\debug(v100)\xerces-c_3_1mgD.dll ..\..\bin\debug(v100)\
+
+..\..\bin\debug(v100)\xerces-c_3_1mgD.pdb : ..\..\..\Oem\dbxml\bin\debug(v100)\xerces-c_3_1mgD.pdb
+    xcopy /r /d /y ..\..\..\Oem\dbxml\bin\debug(v100)\xerces-c_3_1mgD.pdb ..\..\bin\debug(v100)\
+
+..\..\bin\debug(v100)\serverconfig.ini : ..\..\src\Core\serverconfig.ini
+    xcopy /r /d /y ..\..\src\Core\serverconfig.ini ..\..\bin\debug(v100)\
+
+CopyFdoComponentsdebug(v100) : ..\..\..\Oem\FDO\*.*
+    if NOT EXIST ..\..\bin\debug(v100)\FDO\nul mkdir ..\..\bin\debug(v100)\FDO
+    xcopy /r /d /y /s ..\..\..\Oem\FDO\bin\release ..\..\bin\debug(v100)\FDO\
+
+CopyFdoProvidersdebug(v100) : ..\..\..\Oem\FDO\ProviderList\ServerCommunity\providers.xml
+    xcopy /r /d /y "..\..\..\Oem\FDO\ProviderList\ServerCommunity\providers.xml" ..\..\bin\debug(v100)\FDO\
+
+CopySchemadebug(v100) : ..\..\..\Common\Schema\*.xsd
+    if NOT EXIST ..\..\bin\debug(v100)\Schema\nul mkdir ..\..\bin\debug(v100)\Schema
+    xcopy /r /d /y ..\..\..\Common\Schema\*.xsd ..\..\bin\debug(v100)\Schema
+
+CopyResourcesdebug(v100) : ..\..\..\Common\MapGuideCommon\Resources\mapguide_en.res
+    if NOT EXIST ..\..\bin\debug(v100)\Resources\nul mkdir ..\..\bin\debug(v100)\Resources
+    xcopy /r /d /y "..\..\..\Common\MapGuideCommon\Resources\mapguide_en.res" ..\..\bin\debug(v100)\Resources\
+
+CopyOgcFilesdebug(v100) : ..\..\src\wms\*.awd ..\..\src\wfs\*.awd
+    if NOT EXIST ..\..\bin\debug(v100)\wms\nul mkdir ..\..\bin\debug(v100)\wms
+    xcopy /r /d /y "..\..\src\wms\*.awd"       ..\..\bin\debug(v100)\wms
+    if NOT EXIST ..\..\bin\debug(v100)\wfs\nul mkdir ..\..\bin\debug(v100)\wfs
+    xcopy /r /d /y "..\..\src\wfs\*.awd"       ..\..\bin\debug(v100)\wfs
+
+CreatePathsdebug(v100) :
+    if NOT EXIST ..\..\bin\debug(v100)\Logs\nul mkdir ..\..\bin\debug(v100)\Logs
+    if NOT EXIST ..\..\bin\debug(v100)\Packages\nul mkdir ..\..\bin\debug(v100)\Packages
+    if NOT EXIST ..\..\bin\debug(v100)\Temp\nul mkdir ..\..\bin\debug(v100)\Temp
+    if NOT EXIST ..\..\bin\debug(v100)\wms\nul mkdir ..\..\bin\debug(v100)\wms
+    if NOT EXIST ..\..\bin\debug(v100)\wfs\nul mkdir ..\..\bin\debug(v100)\wfs
+    if NOT EXIST ..\..\bin\debug(v100)\Repositories\nul mkdir ..\..\bin\debug(v100)\Repositories
+    if NOT EXIST ..\..\bin\debug(v100)\Repositories\Library\nul mkdir ..\..\bin\debug(v100)\Repositories\Library
+    if NOT EXIST ..\..\bin\debug(v100)\Repositories\Library\DataFiles\nul mkdir ..\..\bin\debug(v100)\Repositories\Library\DataFiles
+    if NOT EXIST ..\..\bin\debug(v100)\Repositories\Session\nul mkdir ..\..\bin\debug(v100)\Repositories\Session
+    if NOT EXIST ..\..\bin\debug(v100)\Repositories\Session\DataFiles\nul mkdir ..\..\bin\debug(v100)\Repositories\Session\DataFiles
+    if NOT EXIST ..\..\bin\debug(v100)\Repositories\Site\nul mkdir ..\..\bin\debug(v100)\Repositories\Site
+    if NOT EXIST ..\..\bin\debug(v100)\Repositories\TileCache\nul mkdir ..\..\bin\debug(v100)\Repositories\TileCache
+
+debug(v100) : ..\..\bin\debug(v100)\MgFoundationd.dll \
+        ..\..\bin\debug(v100)\MgFoundationd.pdb \
+        ..\..\bin\debug(v100)\MgGeometryd.dll \
+        ..\..\bin\debug(v100)\MgGeometryd.pdb \
+        ..\..\bin\debug(v100)\MgPlatformBased.dll \
+        ..\..\bin\debug(v100)\MgPlatformBased.pdb \
+        ..\..\bin\debug(v100)\MgMapGuideCommond.dll \
+        ..\..\bin\debug(v100)\MgMapGuideCommond.pdb \
+        ..\..\bin\debug(v100)\MgMdfModeld.dll \
+        ..\..\bin\debug(v100)\MgMdfModeld.pdb \
+        ..\..\bin\debug(v100)\MgMdfParserd.dll \
+        ..\..\bin\debug(v100)\MgMdfParserd.pdb \
+        ..\..\bin\debug(v100)\MgStylizationd.dll \
+        ..\..\bin\debug(v100)\MgStylizationd.pdb \
+        ..\..\bin\debug(v100)\MgRenderersd.dll \
+        ..\..\bin\debug(v100)\MgRenderersd.pdb \
+        ..\..\bin\debug(v100)\ACEd.dll \
+        ..\..\bin\debug(v100)\ACEd.pdb \
+        ..\..\bin\debug(v100)\gd.dll \
+        ..\..\bin\debug(v100)\gd.pdb \
+        ..\..\bin\debug(v100)\GEOSd.dll \
+        ..\..\bin\debug(v100)\GEOSd.pdb \
+        ..\..\bin\debug(v100)\libdb48d.dll \
+        ..\..\bin\debug(v100)\libdb48d.pdb \
+        ..\..\bin\debug(v100)\libdbxml25d.dll \
+        ..\..\bin\debug(v100)\libdbxml25d.pdb \
+        ..\..\bin\debug(v100)\xqilla24d.dll \
+        ..\..\bin\debug(v100)\xqilla24d.pdb \
+        ..\..\bin\debug(v100)\xerces-c_3_1mgD.dll \
+        ..\..\bin\debug(v100)\xerces-c_3_1mgD.pdb \
+        ..\..\bin\debug(v100)\serverconfig.ini \
+        ..\..\bin\UnitTestFiles\LibraryRepositoryContent.xml \
+        ..\..\bin\UnitTestFiles\SampleRepositoryHeader.xml \
+        ..\..\bin\UnitTestFiles\SampleRepositoryContent.xml \
+        ..\..\bin\UnitTestFiles\TEST.LayerDefinition \
+        ..\..\bin\UnitTestFiles\TEST.FeatureSource \
+        ..\..\bin\UnitTestFiles\TEST.sdf \
+        ..\..\bin\UnitTestFiles\UT_BaseMap.mdf \
+        ..\..\bin\UnitTestFiles\UT_StylizationFuncs.mdf \
+        ..\..\bin\UnitTestFiles\UT_Parcels.fs \
+        ..\..\bin\UnitTestFiles\UT_Parcels.ldf \
+        ..\..\bin\UnitTestFiles\UT_Parcels.sdf \
+        ..\..\bin\UnitTestFiles\UT_RoadCenterLines.fs \
+        ..\..\bin\UnitTestFiles\UT_RoadCenterLines.ldf \
+        ..\..\bin\UnitTestFiles\UT_RoadCenterLines.sdf \
+        ..\..\bin\UnitTestFiles\UT_VotingDistricts.fs \
+        ..\..\bin\UnitTestFiles\UT_VotingDistricts.ldf \
+        ..\..\bin\UnitTestFiles\UT_VotingDistrictsFunctions.ldf \
+        ..\..\bin\UnitTestFiles\UT_VotingDistricts.sdf \
+        ..\..\bin\UnitTestFiles\UT_AllElements.pl \
+        ..\..\bin\UnitTestFiles\UT_NoLegend.pl \
+        ..\..\bin\UnitTestFiles\UT_SymbolMart.sl \
+        ..\..\bin\UnitTestFiles\UT_Symbols.dwf \
+        ..\..\bin\UnitTestFiles\UT_SheboyganWithWatermark.mdf \
+        ..\..\bin\UnitTestFiles\UT_PoweredByMapGuide.wdf \
+        ..\..\bin\UnitTestFiles\UT_Sheboygan.mdf \
+        ..\..\bin\UnitTestFiles\UT_HydrographicPolygons.sdf \
+        ..\..\bin\UnitTestFiles\UT_HydrographicPolygons.fs \
+        ..\..\bin\UnitTestFiles\UT_HydrographicPolygons.ldf \
+        ..\..\bin\UnitTestFiles\UT_Rail.sdf \
+        ..\..\bin\UnitTestFiles\UT_Rail.fs \
+        ..\..\bin\UnitTestFiles\UT_Rail.ldf \
+        ..\..\bin\UnitTestFiles\Sheboygan_Parcels.FeatureSource \
+        ..\..\bin\UnitTestFiles\Sheboygan_Parcels.sdf \
+        ..\..\bin\UnitTestFiles\Sheboygan_BuildingOutlines.FeatureSource \
+        ..\..\bin\UnitTestFiles\Sheboygan_BuildingOutlines.sdf \
+        ..\..\bin\UnitTestFiles\Sheboygan_VotingDistricts.FeatureSource \
+        ..\..\bin\UnitTestFiles\Sheboygan_VotingDistricts.sdf \
+        ..\..\bin\UnitTestFiles\Empty.FeatureSource \
+        ..\..\bin\UnitTestFiles\Empty.sdf \
+        ..\..\bin\UnitTestFiles\World.mgp \
+        ..\..\bin\UnitTestFiles\World_Countries.sdf \
+        ..\..\bin\UnitTestFiles\Shuttle.zip \
+        ..\..\bin\UnitTestFiles\Redding_Parcels.FeatureSource \
+        ..\..\bin\UnitTestFiles\Redding_Parcels.shp \
+        ..\..\bin\UnitTestFiles\Redding_Parcels.dbf \
+        ..\..\bin\UnitTestFiles\Redding_Parcels.shx \
+        ..\..\bin\UnitTestFiles\1.1.1.mgd \
+        ..\..\bin\UnitTestFiles\epsgcodes.txt \
+        ..\..\bin\UnitTestFiles\ogcwkts.txt \
+        ..\..\bin\UnitTestFiles\UT_GetMapKmlResult.txt \
+        ..\..\bin\UnitTestFiles\UT_GetLayerKmlResult.txt \
+        ..\..\bin\UnitTestFiles\UT_GetFeaturesKmlResult.txt \
+        ..\..\bin\UnitTestFiles\TESTChainedInner1ToManyJoin.FeatureSource \
+        ..\..\bin\UnitTestFiles\MdfTestMap.mdf \
+        ..\..\bin\UnitTestFiles\MdfTestTypeStyles.ldf \
+        ..\..\bin\UnitTestFiles\MdfTestCompoundSymbol.sd \
+        ..\..\bin\UnitTestFiles\MdfTestSimpleSymbol.sd \
+        ..\..\bin\UnitTestFiles\areasymbol.sd \
+        ..\..\bin\UnitTestFiles\linesymbol.sd \
+        ..\..\bin\UnitTestFiles\symbol.sd \
+        ..\..\bin\UnitTestFiles\symbolp.sd \
+        ..\..\bin\UnitTestFiles\MTYP1500a.sd \
+        ..\..\bin\UnitTestFiles\UT_SymbologyLines.fs \
+        ..\..\bin\UnitTestFiles\UT_SymbologyLines.ldf \
+        ..\..\bin\UnitTestFiles\UT_SymbologyLines.mdf \
+        ..\..\bin\UnitTestFiles\UT_SymbologyLines.sdf \
+        ..\..\bin\UnitTestFiles\UT_SymbologyLinesCrossTick.ldf \
+        ..\..\bin\UnitTestFiles\UT_SymbologyLinesCrossTick.mdf \
+        ..\..\bin\UnitTestFiles\UT_SymbologyPoints.fs \
+        ..\..\bin\UnitTestFiles\UT_SymbologyPoints.ldf \
+        ..\..\bin\UnitTestFiles\UT_SymbologyPoints.mdf \
+        ..\..\bin\UnitTestFiles\UT_SymbologyPoints.sdf \
+        ..\..\bin\UnitTestFiles\UT_SymbologyPointsParam.ldf \
+        ..\..\bin\UnitTestFiles\UT_SymbologyPointsParam.mdf \
+        ..\..\bin\UnitTestFiles\UT_SymbologyRoads.fs \
+        ..\..\bin\UnitTestFiles\UT_SymbologyRoads.ldf \
+        ..\..\bin\UnitTestFiles\UT_SymbologyRoads.mdf \
+        ..\..\bin\UnitTestFiles\UT_SymbologyRoads.sdf \
+        ..\..\bin\UnitTestFiles\UT_SymbologyParcels.ldf \
+        ..\..\bin\UnitTestFiles\UT_SymbologyPolygons.mdf \
+        ..\..\bin\UnitTestFiles\UT_Annotation1.ldf \
+        ..\..\bin\UnitTestFiles\UT_Annotation1.mdf \
+        ..\..\bin\UnitTestFiles\UT_Annotation2.ldf \
+        ..\..\bin\UnitTestFiles\UT_Annotation2.mdf \
+        ..\..\bin\UnitTestFiles\UT_Annotation3.ldf \
+        ..\..\bin\UnitTestFiles\UT_Annotation3.mdf \
+        ..\..\bin\UnitTestFiles\SavePointTest.sqlite \
+        ..\..\bin\UnitTestFiles\SavePointTest.FeatureSource \
+        ..\..\bin\UnitTestFiles\UT_Parcels_SQLite_Join.FeatureSource \
+        ..\..\bin\UnitTestFiles\UT_FdoJoin.FeatureSource \
+        ..\..\bin\UnitTestFiles\ParcelsJoinTest.sqlite \
+        ..\..\bin\UnitTestFiles\JoinTest.sqlite \
+        CopyFdoComponentsdebug(v100) \
+        CopyFdoProvidersdebug(v100) \
+        CopySchemadebug(v100) \
+        CopyResourcesdebug(v100) \
+        CreatePathsdebug(v100) \
+        CopyOgcFilesdebug(v100)
+
+
+..\..\bin\debug(v100)64\MgFoundationd.dll : ..\..\..\Common\bin\debug(v100)64\MgFoundationd.dll
+    xcopy /r /d /y ..\..\..\Common\bin\debug(v100)64\MgFoundationd.dll ..\..\bin\debug(v100)64\
+
+..\..\bin\debug(v100)64\MgFoundationd.pdb : ..\..\..\Common\bin\debug(v100)64\MgFoundationd.pdb
+    xcopy /r /d /y ..\..\..\Common\bin\debug(v100)64\MgFoundationd.pdb ..\..\bin\debug(v100)64\
+
+..\..\bin\debug(v100)64\MgPlatformBased.dll : ..\..\..\Common\bin\debug(v100)64\MgPlatformBased.dll
+    xcopy /r /d /y ..\..\..\Common\bin\debug(v100)64\MgPlatformBased.dll ..\..\bin\debug(v100)64\
+
+..\..\bin\debug(v100)64\MgPlatformBased.pdb : ..\..\..\Common\bin\debug(v100)64\MgPlatformBased.pdb
+    xcopy /r /d /y ..\..\..\Common\bin\debug(v100)64\MgPlatformBased.pdb ..\..\bin\debug(v100)64\
+
+..\..\bin\debug(v100)64\MgGeometryd.dll : ..\..\..\Common\bin\debug(v100)64\MgGeometryd.dll
+    xcopy /r /d /y ..\..\..\Common\bin\debug(v100)64\MgGeometryd.dll ..\..\bin\debug(v100)64\
+
+..\..\bin\debug(v100)64\MgGeometryd.pdb : ..\..\..\Common\bin\debug(v100)64\MgGeometryd.pdb
+    xcopy /r /d /y ..\..\..\Common\bin\debug(v100)64\MgGeometryd.pdb ..\..\bin\debug(v100)64\
+
+..\..\bin\debug(v100)64\MgMapGuideCommond.dll : ..\..\..\Common\bin\debug(v100)64\MgMapGuideCommond.dll
+    xcopy /r /d /y ..\..\..\Common\bin\debug(v100)64\MgMapGuideCommond.dll ..\..\bin\debug(v100)64\
+
+..\..\bin\debug(v100)64\MgMapGuideCommond.pdb : ..\..\..\Common\bin\debug(v100)64\MgMapGuideCommond.pdb
+    xcopy /r /d /y ..\..\..\Common\bin\debug(v100)64\MgMapGuideCommond.pdb ..\..\bin\debug(v100)64\
+
+..\..\bin\debug(v100)64\MgMdfModeld.dll : ..\..\..\Common\bin\debug(v100)64\MgMdfModeld.dll
+    xcopy /r /d /y ..\..\..\Common\bin\debug(v100)64\MgMdfModeld.dll ..\..\bin\debug(v100)64\
+
+..\..\bin\debug(v100)64\MgMdfModeld.pdb : ..\..\..\Common\bin\debug(v100)64\MgMdfModeld.pdb
+    xcopy /r /d /y ..\..\..\Common\bin\debug(v100)64\MgMdfModeld.pdb ..\..\bin\debug(v100)64\
+
+..\..\bin\debug(v100)64\MgMdfParserd.dll : ..\..\..\Common\bin\debug(v100)64\MgMdfParserd.dll
+    xcopy /r /d /y ..\..\..\Common\bin\debug(v100)64\MgMdfParserd.dll ..\..\bin\debug(v100)64\
+
+..\..\bin\debug(v100)64\MgMdfParserd.pdb : ..\..\..\Common\bin\debug(v100)64\MgMdfParserd.pdb
+    xcopy /r /d /y ..\..\..\Common\bin\debug(v100)64\MgMdfParserd.pdb ..\..\bin\debug(v100)64\
+
+..\..\bin\debug(v100)64\MgStylizationd.dll : ..\..\..\Common\bin\debug(v100)64\MgStylizationd.dll
+    xcopy /r /d /y ..\..\..\Common\bin\debug(v100)64\MgStylizationd.dll ..\..\bin\debug(v100)64\
+
+..\..\bin\debug(v100)64\MgStylizationd.pdb : ..\..\..\Common\bin\debug(v100)64\MgStylizationd.pdb
+    xcopy /r /d /y ..\..\..\Common\bin\debug(v100)64\MgStylizationd.pdb ..\..\bin\debug(v100)64\
+
+..\..\bin\debug(v100)64\MgRenderersd.dll : ..\..\..\Common\bin\debug(v100)64\MgRenderersd.dll
+    xcopy /r /d /y ..\..\..\Common\bin\debug(v100)64\MgRenderersd.dll ..\..\bin\debug(v100)64\
+
+..\..\bin\debug(v100)64\MgRenderersd.pdb : ..\..\..\Common\bin\debug(v100)64\MgRenderersd.pdb
+    xcopy /r /d /y ..\..\..\Common\bin\debug(v100)64\MgRenderersd.pdb ..\..\bin\debug(v100)64\
+
+..\..\bin\debug(v100)64\ACEd.dll : ..\..\..\Oem\ACE\ACE_wrappers\lib64\debug(v100)\ACEd.dll
+    xcopy /r /d /y ..\..\..\Oem\ACE\ACE_wrappers\lib64\debug(v100)\ACEd.dll ..\..\bin\debug(v100)64\
+
+..\..\bin\debug(v100)64\ACEd.pdb : ..\..\..\Oem\ACE\ACE_wrappers\lib64\debug(v100)\ACEd.pdb
+    xcopy /r /d /y ..\..\..\Oem\ACE\ACE_wrappers\lib64\debug(v100)\ACEd.pdb ..\..\bin\debug(v100)64\
+
+..\..\bin\debug(v100)64\gd.dll : ..\..\..\Oem\gd\build\win32\gd\debug(v100)64\gd.dll
+    xcopy /r /d /y ..\..\..\Oem\gd\build\win32\gd\debug(v100)64\gd.dll ..\..\bin\debug(v100)64\
+
+..\..\bin\debug(v100)64\gd.pdb : ..\..\..\Oem\gd\build\win32\gd\debug(v100)64\gd.pdb
+    xcopy /r /d /y ..\..\..\Oem\gd\build\win32\gd\debug(v100)64\gd.pdb ..\..\bin\debug(v100)64\
+
+..\..\bin\debug(v100)64\GEOSd.dll : ..\..\..\Oem\geos-2.2.0\VisualStudio\debug(v100)64\GEOSd.dll
+    xcopy /r /d /y ..\..\..\Oem\geos-2.2.0\VisualStudio\debug(v100)64\GEOSd.dll ..\..\bin\debug(v100)64\
+
+..\..\bin\debug(v100)64\GEOSd.pdb : ..\..\..\Oem\geos-2.2.0\VisualStudio\debug(v100)64\GEOSd.pdb
+    xcopy /r /d /y ..\..\..\Oem\geos-2.2.0\VisualStudio\debug(v100)64\GEOSd.pdb ..\..\bin\debug(v100)64\
+
+..\..\bin\debug(v100)64\libdb48d.dll : ..\..\..\Oem\dbxml\bin64\debug(v100)\libdb48d.dll
+    xcopy /r /d /y ..\..\..\Oem\dbxml\bin64\debug(v100)\libdb48d.dll ..\..\bin\debug(v100)64\
+
+..\..\bin\debug(v100)64\libdb48d.pdb : ..\..\..\Oem\dbxml\bin64\debug(v100)\libdb48d.pdb
+    xcopy /r /d /y ..\..\..\Oem\dbxml\bin64\debug(v100)\libdb48d.pdb ..\..\bin\debug(v100)64\
+
+..\..\bin\debug(v100)64\libdbxml25d.dll : ..\..\..\Oem\dbxml\bin64\debug(v100)\libdbxml25d.dll
+    xcopy /r /d /y ..\..\..\Oem\dbxml\bin64\debug(v100)\libdbxml25d.dll ..\..\bin\debug(v100)64\
+
+..\..\bin\debug(v100)64\libdbxml25d.pdb : ..\..\..\Oem\dbxml\bin64\debug(v100)\libdbxml25d.pdb
+    xcopy /r /d /y ..\..\..\Oem\dbxml\bin64\debug(v100)\libdbxml25d.pdb ..\..\bin\debug(v100)64\
+
+..\..\bin\debug(v100)64\xqilla24d.dll : ..\..\..\Oem\dbxml\bin64\debug(v100)\xqilla24d.dll
+    xcopy /r /d /y ..\..\..\Oem\dbxml\bin64\debug(v100)\xqilla24d.dll ..\..\bin\debug(v100)64\
+
+..\..\bin\debug(v100)64\xqilla24d.pdb : ..\..\..\Oem\dbxml\bin64\debug(v100)\xqilla24d.pdb
+    xcopy /r /d /y ..\..\..\Oem\dbxml\bin64\debug(v100)\xqilla24d.pdb ..\..\bin\debug(v100)64\
+
+..\..\bin\debug(v100)64\xerces-c_3_1mgD.dll : ..\..\..\Oem\dbxml\bin64\debug(v100)\xerces-c_3_1mgD.dll
+    xcopy /r /d /y ..\..\..\Oem\dbxml\bin64\debug(v100)\xerces-c_3_1mgD.dll ..\..\bin\debug(v100)64\
+
+..\..\bin\debug(v100)64\xerces-c_3_1mgD.pdb : ..\..\..\Oem\dbxml\bin64\debug(v100)\xerces-c_3_1mgD.pdb
+    xcopy /r /d /y ..\..\..\Oem\dbxml\bin64\debug(v100)\xerces-c_3_1mgD.pdb ..\..\bin\debug(v100)64\
+
+..\..\bin\debug(v100)64\serverconfig.ini : ..\..\src\Core\serverconfig.ini
+    xcopy /r /d /y ..\..\src\Core\serverconfig.ini ..\..\bin\debug(v100)64\
+
+CopyFdoComponentsdebug(v100)64 : ..\..\..\Oem\FDO\*.*
+    if NOT EXIST ..\..\bin\debug(v100)64\FDO\nul mkdir ..\..\bin\debug(v100)64\FDO
+    xcopy /r /d /y /s ..\..\..\Oem\FDO\bin\release64 ..\..\bin\debug(v100)64\FDO\
+
+CopyFdoProvidersdebug(v100)64 : ..\..\..\Oem\FDO\ProviderList\ServerCommunity\providers.xml
+    xcopy /r /d /y "..\..\..\Oem\FDO\ProviderList\ServerCommunity\providers.xml" ..\..\bin\debug(v100)64\FDO\
+
+CopySchemadebug(v100)64 : ..\..\..\Common\Schema\*.xsd
+    if NOT EXIST ..\..\bin\debug(v100)64\Schema\nul mkdir ..\..\bin\debug(v100)64\Schema
+    xcopy /r /d /y ..\..\..\Common\Schema\*.xsd ..\..\bin\debug(v100)64\Schema
+
+CopyResourcesdebug(v100)64 : ..\..\..\Common\MapGuideCommon\Resources\mapguide_en.res
+    if NOT EXIST ..\..\bin\debug(v100)64\Resources\nul mkdir ..\..\bin\debug(v100)64\Resources
+    xcopy /r /d /y "..\..\..\Common\MapGuideCommon\Resources\mapguide_en.res" ..\..\bin\debug(v100)64\Resources\
+
+CopyOgcFilesdebug(v100)64 : ..\..\src\wms\*.awd ..\..\src\wfs\*.awd
+    if NOT EXIST ..\..\bin\debug(v100)64\wms\nul mkdir ..\..\bin\debug(v100)64\wms
+    xcopy /r /d /y "..\..\src\wms\*.awd"       ..\..\bin\debug(v100)64\wms
+    if NOT EXIST ..\..\bin\debug(v100)64\wfs\nul mkdir ..\..\bin\debug(v100)64\wfs
+    xcopy /r /d /y "..\..\src\wfs\*.awd"       ..\..\bin\debug(v100)64\wfs
+
+CreatePathsdebug(v100)64 :
+    if NOT EXIST ..\..\bin\debug(v100)64\Logs\nul mkdir ..\..\bin\debug(v100)64\Logs
+    if NOT EXIST ..\..\bin\debug(v100)64\Packages\nul mkdir ..\..\bin\debug(v100)64\Packages
+    if NOT EXIST ..\..\bin\debug(v100)64\Temp\nul mkdir ..\..\bin\debug(v100)64\Temp
+    if NOT EXIST ..\..\bin\debug(v100)64\wms\nul mkdir ..\..\bin\debug(v100)64\wms
+    if NOT EXIST ..\..\bin\debug(v100)64\wfs\nul mkdir ..\..\bin\debug(v100)64\wfs
+    if NOT EXIST ..\..\bin\debug(v100)64\Repositories\nul mkdir ..\..\bin\debug(v100)64\Repositories
+    if NOT EXIST ..\..\bin\debug(v100)64\Repositories\Library\nul mkdir ..\..\bin\debug(v100)64\Repositories\Library
+    if NOT EXIST ..\..\bin\debug(v100)64\Repositories\Library\DataFiles\nul mkdir ..\..\bin\debug(v100)64\Repositories\Library\DataFiles
+    if NOT EXIST ..\..\bin\debug(v100)64\Repositories\Session\nul mkdir ..\..\bin\debug(v100)64\Repositories\Session
+    if NOT EXIST ..\..\bin\debug(v100)64\Repositories\Session\DataFiles\nul mkdir ..\..\bin\debug(v100)64\Repositories\Session\DataFiles
+    if NOT EXIST ..\..\bin\debug(v100)64\Repositories\Site\nul mkdir ..\..\bin\debug(v100)64\Repositories\Site
+    if NOT EXIST ..\..\bin\debug(v100)64\Repositories\TileCache\nul mkdir ..\..\bin\debug(v100)64\Repositories\TileCache
+
+debug(v100)64 : ..\..\bin\debug(v100)64\MgFoundationd.dll \
+        ..\..\bin\debug(v100)64\MgFoundationd.pdb \
+        ..\..\bin\debug(v100)64\MgGeometryd.dll \
+        ..\..\bin\debug(v100)64\MgGeometryd.pdb \
+        ..\..\bin\debug(v100)64\MgPlatformBased.dll \
+        ..\..\bin\debug(v100)64\MgPlatformBased.pdb \
+        ..\..\bin\debug(v100)64\MgMapGuideCommond.dll \
+        ..\..\bin\debug(v100)64\MgMapGuideCommond.pdb \
+        ..\..\bin\debug(v100)64\MgMdfModeld.dll \
+        ..\..\bin\debug(v100)64\MgMdfModeld.pdb \
+        ..\..\bin\debug(v100)64\MgMdfParserd.dll \
+        ..\..\bin\debug(v100)64\MgMdfParserd.pdb \
+        ..\..\bin\debug(v100)64\MgStylizationd.dll \
+        ..\..\bin\debug(v100)64\MgStylizationd.pdb \
+        ..\..\bin\debug(v100)64\MgRenderersd.dll \
+        ..\..\bin\debug(v100)64\MgRenderersd.pdb \
+        ..\..\bin\debug(v100)64\ACEd.dll \
+        ..\..\bin\debug(v100)64\ACEd.pdb \
+        ..\..\bin\debug(v100)64\gd.dll \
+        ..\..\bin\debug(v100)64\gd.pdb \
+        ..\..\bin\debug(v100)64\GEOSd.dll \
+        ..\..\bin\debug(v100)64\GEOSd.pdb \
+        ..\..\bin\debug(v100)64\libdb48d.dll \
+        ..\..\bin\debug(v100)64\libdb48d.pdb \
+        ..\..\bin\debug(v100)64\libdbxml25d.dll \
+        ..\..\bin\debug(v100)64\libdbxml25d.pdb \
+        ..\..\bin\debug(v100)64\xqilla24d.dll \
+        ..\..\bin\debug(v100)64\xqilla24d.pdb \
+        ..\..\bin\debug(v100)64\xerces-c_3_1mgD.dll \
+        ..\..\bin\debug(v100)64\xerces-c_3_1mgD.pdb \
+        ..\..\bin\debug(v100)64\serverconfig.ini \
+        ..\..\bin\UnitTestFiles\LibraryRepositoryContent.xml \
+        ..\..\bin\UnitTestFiles\SampleRepositoryHeader.xml \
+        ..\..\bin\UnitTestFiles\SampleRepositoryContent.xml \
+        ..\..\bin\UnitTestFiles\TEST.LayerDefinition \
+        ..\..\bin\UnitTestFiles\TEST.FeatureSource \
+        ..\..\bin\UnitTestFiles\TEST.sdf \
+        ..\..\bin\UnitTestFiles\UT_BaseMap.mdf \
+        ..\..\bin\UnitTestFiles\UT_StylizationFuncs.mdf \
+        ..\..\bin\UnitTestFiles\UT_Parcels.fs \
+        ..\..\bin\UnitTestFiles\UT_Parcels.ldf \
+        ..\..\bin\UnitTestFiles\UT_Parcels.sdf \
+        ..\..\bin\UnitTestFiles\UT_RoadCenterLines.fs \
+        ..\..\bin\UnitTestFiles\UT_RoadCenterLines.ldf \
+        ..\..\bin\UnitTestFiles\UT_RoadCenterLines.sdf \
+        ..\..\bin\UnitTestFiles\UT_VotingDistricts.fs \
+        ..\..\bin\UnitTestFiles\UT_VotingDistricts.ldf \
+        ..\..\bin\UnitTestFiles\UT_VotingDistrictsFunctions.ldf \
+        ..\..\bin\UnitTestFiles\UT_VotingDistricts.sdf \
+        ..\..\bin\UnitTestFiles\UT_AllElements.pl \
+        ..\..\bin\UnitTestFiles\UT_NoLegend.pl \
+        ..\..\bin\UnitTestFiles\UT_SymbolMart.sl \
+        ..\..\bin\UnitTestFiles\UT_Symbols.dwf \
+        ..\..\bin\UnitTestFiles\UT_SheboyganWithWatermark.mdf \
+        ..\..\bin\UnitTestFiles\UT_PoweredByMapGuide.wdf \
+        ..\..\bin\UnitTestFiles\UT_Sheboygan.mdf \
+        ..\..\bin\UnitTestFiles\UT_HydrographicPolygons.sdf \
+        ..\..\bin\UnitTestFiles\UT_HydrographicPolygons.fs \
+        ..\..\bin\UnitTestFiles\UT_HydrographicPolygons.ldf \
+        ..\..\bin\UnitTestFiles\UT_Rail.sdf \
+        ..\..\bin\UnitTestFiles\UT_Rail.fs \
+        ..\..\bin\UnitTestFiles\UT_Rail.ldf \
+        ..\..\bin\UnitTestFiles\Sheboygan_Parcels.FeatureSource \
+        ..\..\bin\UnitTestFiles\Sheboygan_Parcels.sdf \
+        ..\..\bin\UnitTestFiles\Sheboygan_BuildingOutlines.FeatureSource \
+        ..\..\bin\UnitTestFiles\Sheboygan_BuildingOutlines.sdf \
+        ..\..\bin\UnitTestFiles\Sheboygan_VotingDistricts.FeatureSource \
+        ..\..\bin\UnitTestFiles\Sheboygan_VotingDistricts.sdf \
+        ..\..\bin\UnitTestFiles\Empty.FeatureSource \
+        ..\..\bin\UnitTestFiles\Empty.sdf \
+        ..\..\bin\UnitTestFiles\World.mgp \
+        ..\..\bin\UnitTestFiles\World_Countries.sdf \
+        ..\..\bin\UnitTestFiles\Shuttle.zip \
+        ..\..\bin\UnitTestFiles\Redding_Parcels.FeatureSource \
+        ..\..\bin\UnitTestFiles\Redding_Parcels.shp \
+        ..\..\bin\UnitTestFiles\Redding_Parcels.dbf \
+        ..\..\bin\UnitTestFiles\Redding_Parcels.shx \
+        ..\..\bin\UnitTestFiles\1.1.1.mgd \
+        ..\..\bin\UnitTestFiles\epsgcodes.txt \
+        ..\..\bin\UnitTestFiles\ogcwkts.txt \
+        ..\..\bin\UnitTestFiles\UT_GetMapKmlResult.txt \
+        ..\..\bin\UnitTestFiles\UT_GetLayerKmlResult.txt \
+        ..\..\bin\UnitTestFiles\UT_GetFeaturesKmlResult.txt \
+        ..\..\bin\UnitTestFiles\TESTChainedInner1ToManyJoin.FeatureSource \
+        ..\..\bin\UnitTestFiles\MdfTestMap.mdf \
+        ..\..\bin\UnitTestFiles\MdfTestTypeStyles.ldf \
+        ..\..\bin\UnitTestFiles\MdfTestCompoundSymbol.sd \
+        ..\..\bin\UnitTestFiles\MdfTestSimpleSymbol.sd \
+        ..\..\bin\UnitTestFiles\areasymbol.sd \
+        ..\..\bin\UnitTestFiles\linesymbol.sd \
+        ..\..\bin\UnitTestFiles\symbol.sd \
+        ..\..\bin\UnitTestFiles\symbolp.sd \
+        ..\..\bin\UnitTestFiles\MTYP1500a.sd \
+        ..\..\bin\UnitTestFiles\UT_SymbologyLines.fs \
+        ..\..\bin\UnitTestFiles\UT_SymbologyLines.ldf \
+        ..\..\bin\UnitTestFiles\UT_SymbologyLines.mdf \
+        ..\..\bin\UnitTestFiles\UT_SymbologyLines.sdf \
+        ..\..\bin\UnitTestFiles\UT_SymbologyLinesCrossTick.ldf \
+        ..\..\bin\UnitTestFiles\UT_SymbologyLinesCrossTick.mdf \
+        ..\..\bin\UnitTestFiles\UT_SymbologyPoints.fs \
+        ..\..\bin\UnitTestFiles\UT_SymbologyPoints.ldf \
+        ..\..\bin\UnitTestFiles\UT_SymbologyPoints.mdf \
+        ..\..\bin\UnitTestFiles\UT_SymbologyPoints.sdf \
+        ..\..\bin\UnitTestFiles\UT_SymbologyPointsParam.ldf \
+        ..\..\bin\UnitTestFiles\UT_SymbologyPointsParam.mdf \
+        ..\..\bin\UnitTestFiles\UT_SymbologyRoads.fs \
+        ..\..\bin\UnitTestFiles\UT_SymbologyRoads.ldf \
+        ..\..\bin\UnitTestFiles\UT_SymbologyRoads.mdf \
+        ..\..\bin\UnitTestFiles\UT_SymbologyRoads.sdf \
+        ..\..\bin\UnitTestFiles\UT_SymbologyParcels.ldf \
+        ..\..\bin\UnitTestFiles\UT_SymbologyPolygons.mdf \
+        ..\..\bin\UnitTestFiles\UT_Annotation1.ldf \
+        ..\..\bin\UnitTestFiles\UT_Annotation1.mdf \
+        ..\..\bin\UnitTestFiles\UT_Annotation2.ldf \
+        ..\..\bin\UnitTestFiles\UT_Annotation2.mdf \
+        ..\..\bin\UnitTestFiles\UT_Annotation3.ldf \
+        ..\..\bin\UnitTestFiles\UT_Annotation3.mdf \
+        ..\..\bin\UnitTestFiles\SavePointTest.sqlite \
+        ..\..\bin\UnitTestFiles\SavePointTest.FeatureSource \
+        ..\..\bin\UnitTestFiles\UT_Parcels_SQLite_Join.FeatureSource \
+        ..\..\bin\UnitTestFiles\UT_FdoJoin.FeatureSource \
+        ..\..\bin\UnitTestFiles\ParcelsJoinTest.sqlite \
+        ..\..\bin\UnitTestFiles\JoinTest.sqlite \
+        CopyFdoComponentsdebug(v100)64 \
+        CopyFdoProvidersdebug(v100)64 \
+        CopySchemadebug(v100)64 \
+        CopyResourcesdebug(v100)64 \
+        CreatePathsdebug(v100)64 \
+        CopyOgcFilesdebug(v100)64
+
+
+..\..\bin\release(v100)\MgFoundation.dll : ..\..\..\Common\bin\release(v100)\MgFoundation.dll
+    xcopy /r /d /y ..\..\..\Common\bin\release(v100)\MgFoundation.dll ..\..\bin\release(v100)\
+
+..\..\bin\release(v100)\MgFoundation.pdb : ..\..\..\Common\bin\release(v100)\MgFoundation.pdb
+    xcopy /r /d /y ..\..\..\Common\bin\release(v100)\MgFoundation.pdb ..\..\bin\release(v100)\
+
+..\..\bin\release(v100)\MgPlatformBase.dll : ..\..\..\Common\bin\release(v100)\MgPlatformBase.dll
+    xcopy /r /d /y ..\..\..\Common\bin\release(v100)\MgPlatformBase.dll ..\..\bin\release(v100)\
+
+..\..\bin\release(v100)\MgPlatformBase.pdb : ..\..\..\Common\bin\release(v100)\MgPlatformBase.pdb
+    xcopy /r /d /y ..\..\..\Common\bin\release(v100)\MgPlatformBase.pdb ..\..\bin\release(v100)\
+
+..\..\bin\release(v100)\MgGeometry.dll : ..\..\..\Common\bin\release(v100)\MgGeometry.dll
+    xcopy /r /d /y ..\..\..\Common\bin\release(v100)\MgGeometry.dll ..\..\bin\release(v100)\
+
+..\..\bin\release(v100)\MgGeometry.pdb : ..\..\..\Common\bin\release(v100)\MgGeometry.pdb
+    xcopy /r /d /y ..\..\..\Common\bin\release(v100)\MgGeometry.pdb ..\..\bin\release(v100)\
+
+..\..\bin\release(v100)\MgMapGuideCommon.dll : ..\..\..\Common\bin\release(v100)\MgMapGuideCommon.dll
+    xcopy /r /d /y ..\..\..\Common\bin\release(v100)\MgMapGuideCommon.dll ..\..\bin\release(v100)\
+
+..\..\bin\release(v100)\MgMapGuideCommon.pdb : ..\..\..\Common\bin\release(v100)\MgMapGuideCommon.pdb
+    xcopy /r /d /y ..\..\..\Common\bin\release(v100)\MgMapGuideCommon.pdb ..\..\bin\release(v100)\
+
+..\..\bin\release(v100)\MgMdfModel.dll : ..\..\..\Common\bin\release(v100)\MgMdfModel.dll
+    xcopy /r /d /y ..\..\..\Common\bin\release(v100)\MgMdfModel.dll ..\..\bin\release(v100)\
+
+..\..\bin\release(v100)\MgMdfModel.pdb : ..\..\..\Common\bin\release(v100)\MgMdfModel.pdb
+    xcopy /r /d /y ..\..\..\Common\bin\release(v100)\MgMdfModel.pdb ..\..\bin\release(v100)\
+
+..\..\bin\release(v100)\MgMdfParser.dll : ..\..\..\Common\bin\release(v100)\MgMdfParser.dll
+    xcopy /r /d /y ..\..\..\Common\bin\release(v100)\MgMdfParser.dll ..\..\bin\release(v100)\
+
+..\..\bin\release(v100)\MgMdfParser.pdb : ..\..\..\Common\bin\release(v100)\MgMdfParser.pdb
+    xcopy /r /d /y ..\..\..\Common\bin\release(v100)\MgMdfParser.pdb ..\..\bin\release(v100)\
+
+..\..\bin\release(v100)\MgStylization.dll : ..\..\..\Common\bin\release(v100)\MgStylization.dll
+    xcopy /r /d /y ..\..\..\Common\bin\release(v100)\MgStylization.dll ..\..\bin\release(v100)\
+
+..\..\bin\release(v100)\MgStylization.pdb : ..\..\..\Common\bin\release(v100)\MgStylization.pdb
+    xcopy /r /d /y ..\..\..\Common\bin\release(v100)\MgStylization.pdb ..\..\bin\release(v100)\
+
+..\..\bin\release(v100)\MgRenderers.dll : ..\..\..\Common\bin\release(v100)\MgRenderers.dll
+    xcopy /r /d /y ..\..\..\Common\bin\release(v100)\MgRenderers.dll ..\..\bin\release(v100)\
+
+..\..\bin\release(v100)\MgRenderers.pdb : ..\..\..\Common\bin\release(v100)\MgRenderers.pdb
+    xcopy /r /d /y ..\..\..\Common\bin\release(v100)\MgRenderers.pdb ..\..\bin\release(v100)\
+
+..\..\bin\release(v100)\ACE.dll : ..\..\..\Oem\ACE\ACE_wrappers\lib\release(v100)\ACE.dll
+    xcopy /r /d /y ..\..\..\Oem\ACE\ACE_wrappers\lib\release(v100)\ACE.dll ..\..\bin\release(v100)\
+
+..\..\bin\release(v100)\ACE.pdb : ..\..\..\Oem\ACE\ACE_wrappers\lib\release(v100)\ACE.pdb
+    xcopy /r /d /y ..\..\..\Oem\ACE\ACE_wrappers\lib\release(v100)\ACE.pdb ..\..\bin\release(v100)\
+
+..\..\bin\release(v100)\gd.dll : ..\..\..\Oem\gd\build\win32\gd\release(v100)\gd.dll
+    xcopy /r /d /y ..\..\..\Oem\gd\build\win32\gd\release(v100)\gd.dll ..\..\bin\release(v100)\
+
+..\..\bin\release(v100)\gd.pdb : ..\..\..\Oem\gd\build\win32\gd\release(v100)\gd.pdb
+    xcopy /r /d /y ..\..\..\Oem\gd\build\win32\gd\release(v100)\gd.pdb ..\..\bin\release(v100)\
+
+..\..\bin\release(v100)\GEOS.dll : ..\..\..\Oem\geos-2.2.0\VisualStudio\release(v100)\GEOS.dll
+    xcopy /r /d /y ..\..\..\Oem\geos-2.2.0\VisualStudio\release(v100)\GEOS.dll ..\..\bin\release(v100)\
+
+..\..\bin\release(v100)\GEOS.pdb : ..\..\..\Oem\geos-2.2.0\VisualStudio\release(v100)\GEOS.pdb
+    xcopy /r /d /y ..\..\..\Oem\geos-2.2.0\VisualStudio\release(v100)\GEOS.pdb ..\..\bin\release(v100)\
+
+..\..\bin\release(v100)\libdb48.dll : ..\..\..\Oem\dbxml\bin\release(v100)\libdb48.dll
+    xcopy /r /d /y ..\..\..\Oem\dbxml\bin\release(v100)\libdb48.dll ..\..\bin\release(v100)\
+
+..\..\bin\release(v100)\libdb48.pdb : ..\..\..\Oem\dbxml\bin\release(v100)\libdb48.pdb
+    xcopy /r /d /y ..\..\..\Oem\dbxml\bin\release(v100)\libdb48.pdb ..\..\bin\release(v100)\
+
+..\..\bin\release(v100)\libdbxml25.dll : ..\..\..\Oem\dbxml\bin\release(v100)\libdbxml25.dll
+    xcopy /r /d /y ..\..\..\Oem\dbxml\bin\release(v100)\libdbxml25.dll ..\..\bin\release(v100)\
+
+..\..\bin\release(v100)\libdbxml25.pdb : ..\..\..\Oem\dbxml\bin\release(v100)\libdbxml25.pdb
+    xcopy /r /d /y ..\..\..\Oem\dbxml\bin\release(v100)\libdbxml25.pdb ..\..\bin\release(v100)\
+
+..\..\bin\release(v100)\xqilla24.dll : ..\..\..\Oem\dbxml\bin\release(v100)\xqilla24.dll
+    xcopy /r /d /y ..\..\..\Oem\dbxml\bin\release(v100)\xqilla24.dll ..\..\bin\release(v100)\
+
+..\..\bin\release(v100)\xqilla24.pdb : ..\..\..\Oem\dbxml\bin\release(v100)\xqilla24.pdb
+    xcopy /r /d /y ..\..\..\Oem\dbxml\bin\release(v100)\xqilla24.pdb ..\..\bin\release(v100)\
+
+..\..\bin\release(v100)\xerces-c_3_1mg.dll : ..\..\..\Oem\dbxml\bin\release(v100)\xerces-c_3_1mg.dll
+    xcopy /r /d /y ..\..\..\Oem\dbxml\bin\release(v100)\xerces-c_3_1mg.dll ..\..\bin\release(v100)\
+
+..\..\bin\release(v100)\xerces-c_3_1mg.pdb : ..\..\..\Oem\dbxml\bin\release(v100)\xerces-c_3_1mg.pdb
+    xcopy /r /d /y ..\..\..\Oem\dbxml\bin\release(v100)\xerces-c_3_1mg.pdb ..\..\bin\release(v100)\
+
+..\..\bin\release(v100)\serverconfig.ini : ..\..\src\Core\serverconfig.ini
+    xcopy /r /d /y ..\..\src\Core\serverconfig.ini ..\..\bin\release(v100)\
+
+CopyFdoComponentsrelease(v100) : ..\..\..\Oem\FDO\*.*
+    if NOT EXIST ..\..\bin\release(v100)\FDO\nul mkdir ..\..\bin\release(v100)\FDO
+    xcopy /r /d /y /s ..\..\..\Oem\FDO\bin\release ..\..\bin\release(v100)\FDO\
+
+CopyFdoProvidersrelease(v100) : ..\..\..\Oem\FDO\ProviderList\ServerCommunity\providers.xml
+    xcopy /r /d /y "..\..\..\Oem\FDO\ProviderList\ServerCommunity\providers.xml" ..\..\bin\release(v100)\FDO\
+
+CopySchemarelease(v100) : ..\..\..\Common\Schema\*.xsd
+    if NOT EXIST ..\..\bin\release(v100)\Schema\nul mkdir ..\..\bin\release(v100)\Schema
+    xcopy /r /d /y ..\..\..\Common\Schema\*.xsd ..\..\bin\release(v100)\Schema
+
+CopyResourcesrelease(v100) : ..\..\..\Common\MapGuideCommon\Resources\mapguide_en.res
+    if NOT EXIST ..\..\bin\release(v100)\Resources\nul mkdir ..\..\bin\release(v100)\Resources
+    xcopy /r /d /y "..\..\..\Common\MapGuideCommon\Resources\mapguide_en.res" ..\..\bin\release(v100)\Resources\
+
+CopyOgcFilesrelease(v100) : ..\..\src\wms\*.awd ..\..\src\wfs\*.awd
+    if NOT EXIST ..\..\bin\release(v100)\wms\nul mkdir ..\..\bin\release(v100)\wms
+    xcopy /r /d /y "..\..\src\wms\*.awd"         ..\..\bin\release(v100)\wms
+    if NOT EXIST ..\..\bin\release(v100)\wfs\nul mkdir ..\..\bin\release(v100)\wfs
+    xcopy /r /d /y "..\..\src\wfs\*.awd"         ..\..\bin\release(v100)\wfs
+
+CreatePathsrelease(v100) :
+    if NOT EXIST ..\..\bin\release(v100)\Logs\nul mkdir ..\..\bin\release(v100)\Logs
+    if NOT EXIST ..\..\bin\release(v100)\Packages\nul mkdir ..\..\bin\release(v100)\Packages
+    if NOT EXIST ..\..\bin\release(v100)\Temp\nul mkdir ..\..\bin\release(v100)\Temp
+    if NOT EXIST ..\..\bin\release(v100)\wms\nul mkdir ..\..\bin\release(v100)\wms
+    if NOT EXIST ..\..\bin\release(v100)\wfs\nul mkdir ..\..\bin\release(v100)\wfs
+    if NOT EXIST ..\..\bin\release(v100)\Repositories\nul mkdir ..\..\bin\release(v100)\Repositories
+    if NOT EXIST ..\..\bin\release(v100)\Repositories\Library\nul mkdir ..\..\bin\release(v100)\Repositories\Library
+    if NOT EXIST ..\..\bin\release(v100)\Repositories\Library\DataFiles\nul mkdir ..\..\bin\release(v100)\Repositories\Library\DataFiles
+    if NOT EXIST ..\..\bin\release(v100)\Repositories\Session\nul mkdir ..\..\bin\release(v100)\Repositories\Session
+    if NOT EXIST ..\..\bin\release(v100)\Repositories\Session\DataFiles\nul mkdir ..\..\bin\release(v100)\Repositories\Session\DataFiles
+    if NOT EXIST ..\..\bin\release(v100)\Repositories\Site\nul mkdir ..\..\bin\release(v100)\Repositories\Site
+    if NOT EXIST ..\..\bin\release(v100)\Repositories\TileCache\nul mkdir ..\..\bin\release(v100)\Repositories\TileCache
+
+release(v100) : ..\..\bin\release(v100)\MgFoundation.dll \
+          ..\..\bin\release(v100)\MgFoundation.pdb \
+          ..\..\bin\release(v100)\MgGeometry.dll \
+          ..\..\bin\release(v100)\MgGeometry.pdb \
+          ..\..\bin\release(v100)\MgPlatformBase.dll \
+          ..\..\bin\release(v100)\MgPlatformBase.pdb \
+          ..\..\bin\release(v100)\MgMapGuideCommon.dll \
+          ..\..\bin\release(v100)\MgMapGuideCommon.pdb \
+          ..\..\bin\release(v100)\MgMdfModel.dll \
+          ..\..\bin\release(v100)\MgMdfModel.pdb \
+          ..\..\bin\release(v100)\MgMdfParser.dll \
+          ..\..\bin\release(v100)\MgMdfParser.pdb \
+          ..\..\bin\release(v100)\MgStylization.dll \
+          ..\..\bin\release(v100)\MgStylization.pdb \
+          ..\..\bin\release(v100)\MgRenderers.dll \
+          ..\..\bin\release(v100)\MgRenderers.pdb \
+          ..\..\bin\release(v100)\ACE.dll \
+          ..\..\bin\release(v100)\ACE.pdb \
+          ..\..\bin\release(v100)\gd.dll \
+          ..\..\bin\release(v100)\gd.pdb \
+          ..\..\bin\release(v100)\GEOS.dll \
+          ..\..\bin\release(v100)\GEOS.pdb \
+          ..\..\bin\release(v100)\libdb48.dll \
+          ..\..\bin\release(v100)\libdb48.pdb \
+          ..\..\bin\release(v100)\libdbxml25.dll \
+          ..\..\bin\release(v100)\libdbxml25.pdb \
+          ..\..\bin\release(v100)\xqilla24.dll \
+          ..\..\bin\release(v100)\xqilla24.pdb \
+          ..\..\bin\release(v100)\xerces-c_3_1mg.dll \
+          ..\..\bin\release(v100)\xerces-c_3_1mg.pdb \
+          ..\..\bin\release(v100)\serverconfig.ini \
+          ..\..\bin\UnitTestFiles\LibraryRepositoryContent.xml \
+          ..\..\bin\UnitTestFiles\SampleRepositoryHeader.xml \
+          ..\..\bin\UnitTestFiles\SampleRepositoryContent.xml \
+          ..\..\bin\UnitTestFiles\TEST.LayerDefinition \
+          ..\..\bin\UnitTestFiles\TEST.FeatureSource \
+          ..\..\bin\UnitTestFiles\TEST.sdf \
+          ..\..\bin\UnitTestFiles\UT_BaseMap.mdf \
+          ..\..\bin\UnitTestFiles\UT_StylizationFuncs.mdf \
+          ..\..\bin\UnitTestFiles\UT_Parcels.fs \
+          ..\..\bin\UnitTestFiles\UT_Parcels.ldf \
+          ..\..\bin\UnitTestFiles\UT_Parcels.sdf \
+          ..\..\bin\UnitTestFiles\UT_RoadCenterLines.fs \
+          ..\..\bin\UnitTestFiles\UT_RoadCenterLines.ldf \
+          ..\..\bin\UnitTestFiles\UT_RoadCenterLines.sdf \
+          ..\..\bin\UnitTestFiles\UT_VotingDistricts.fs \
+          ..\..\bin\UnitTestFiles\UT_VotingDistricts.ldf \
+          ..\..\bin\UnitTestFiles\UT_VotingDistrictsFunctions.ldf \
+          ..\..\bin\UnitTestFiles\UT_VotingDistricts.sdf \
+          ..\..\bin\UnitTestFiles\UT_AllElements.pl \
+          ..\..\bin\UnitTestFiles\UT_NoLegend.pl \
+          ..\..\bin\UnitTestFiles\UT_SymbolMart.sl \
+          ..\..\bin\UnitTestFiles\UT_Symbols.dwf \
+          ..\..\bin\UnitTestFiles\UT_SheboyganWithWatermark.mdf \
+          ..\..\bin\UnitTestFiles\UT_PoweredByMapGuide.wdf \
+          ..\..\bin\UnitTestFiles\UT_Sheboygan.mdf \
+          ..\..\bin\UnitTestFiles\UT_HydrographicPolygons.sdf \
+          ..\..\bin\UnitTestFiles\UT_HydrographicPolygons.fs \
+          ..\..\bin\UnitTestFiles\UT_HydrographicPolygons.ldf \
+          ..\..\bin\UnitTestFiles\UT_Rail.sdf \
+          ..\..\bin\UnitTestFiles\UT_Rail.fs \
+          ..\..\bin\UnitTestFiles\UT_Rail.ldf \
+          ..\..\bin\UnitTestFiles\Sheboygan_Parcels.FeatureSource \
+          ..\..\bin\UnitTestFiles\Sheboygan_Parcels.sdf \
+          ..\..\bin\UnitTestFiles\Sheboygan_BuildingOutlines.FeatureSource \
+          ..\..\bin\UnitTestFiles\Sheboygan_BuildingOutlines.sdf \
+          ..\..\bin\UnitTestFiles\Sheboygan_VotingDistricts.FeatureSource \
+          ..\..\bin\UnitTestFiles\Sheboygan_VotingDistricts.sdf \
+          ..\..\bin\UnitTestFiles\Empty.FeatureSource \
+          ..\..\bin\UnitTestFiles\Empty.sdf \
+          ..\..\bin\UnitTestFiles\World.mgp \
+          ..\..\bin\UnitTestFiles\World_Countries.sdf \
+          ..\..\bin\UnitTestFiles\Shuttle.zip \
+          ..\..\bin\UnitTestFiles\Redding_Parcels.FeatureSource \
+          ..\..\bin\UnitTestFiles\Redding_Parcels.shp \
+          ..\..\bin\UnitTestFiles\Redding_Parcels.dbf \
+          ..\..\bin\UnitTestFiles\Redding_Parcels.shx \
+          ..\..\bin\UnitTestFiles\1.1.1.mgd \
+          ..\..\bin\UnitTestFiles\epsgcodes.txt \
+          ..\..\bin\UnitTestFiles\ogcwkts.txt \
+          ..\..\bin\UnitTestFiles\UT_GetMapKmlResult.txt \
+          ..\..\bin\UnitTestFiles\UT_GetLayerKmlResult.txt \
+          ..\..\bin\UnitTestFiles\UT_GetFeaturesKmlResult.txt \
+          ..\..\bin\UnitTestFiles\TESTChainedInner1ToManyJoin.FeatureSource \
+          ..\..\bin\UnitTestFiles\MdfTestMap.mdf \
+          ..\..\bin\UnitTestFiles\MdfTestTypeStyles.ldf \
+          ..\..\bin\UnitTestFiles\MdfTestCompoundSymbol.sd \
+          ..\..\bin\UnitTestFiles\MdfTestSimpleSymbol.sd \
+          ..\..\bin\UnitTestFiles\areasymbol.sd \
+          ..\..\bin\UnitTestFiles\linesymbol.sd \
+          ..\..\bin\UnitTestFiles\symbol.sd \
+          ..\..\bin\UnitTestFiles\symbolp.sd \
+          ..\..\bin\UnitTestFiles\MTYP1500a.sd \
+          ..\..\bin\UnitTestFiles\UT_SymbologyLines.fs \
+          ..\..\bin\UnitTestFiles\UT_SymbologyLines.ldf \
+          ..\..\bin\UnitTestFiles\UT_SymbologyLines.mdf \
+          ..\..\bin\UnitTestFiles\UT_SymbologyLines.sdf \
+          ..\..\bin\UnitTestFiles\UT_SymbologyLinesCrossTick.ldf \
+          ..\..\bin\UnitTestFiles\UT_SymbologyLinesCrossTick.mdf \
+          ..\..\bin\UnitTestFiles\UT_SymbologyPoints.fs \
+          ..\..\bin\UnitTestFiles\UT_SymbologyPoints.ldf \
+          ..\..\bin\UnitTestFiles\UT_SymbologyPoints.mdf \
+          ..\..\bin\UnitTestFiles\UT_SymbologyPoints.sdf \
+          ..\..\bin\UnitTestFiles\UT_SymbologyPointsParam.ldf \
+          ..\..\bin\UnitTestFiles\UT_SymbologyPointsParam.mdf \
+          ..\..\bin\UnitTestFiles\UT_SymbologyRoads.fs \
+          ..\..\bin\UnitTestFiles\UT_SymbologyRoads.ldf \
+          ..\..\bin\UnitTestFiles\UT_SymbologyRoads.mdf \
+          ..\..\bin\UnitTestFiles\UT_SymbologyRoads.sdf \
+          ..\..\bin\UnitTestFiles\UT_SymbologyParcels.ldf \
+          ..\..\bin\UnitTestFiles\UT_SymbologyPolygons.mdf \
+          ..\..\bin\UnitTestFiles\UT_Annotation1.ldf \
+          ..\..\bin\UnitTestFiles\UT_Annotation1.mdf \
+          ..\..\bin\UnitTestFiles\UT_Annotation2.ldf \
+          ..\..\bin\UnitTestFiles\UT_Annotation2.mdf \
+          ..\..\bin\UnitTestFiles\UT_Annotation3.ldf \
+          ..\..\bin\UnitTestFiles\UT_Annotation3.mdf \
+          ..\..\bin\UnitTestFiles\SavePointTest.sqlite \
+          ..\..\bin\UnitTestFiles\SavePointTest.FeatureSource \
+          ..\..\bin\UnitTestFiles\UT_Parcels_SQLite_Join.FeatureSource \
+          ..\..\bin\UnitTestFiles\UT_FdoJoin.FeatureSource \
+          ..\..\bin\UnitTestFiles\ParcelsJoinTest.sqlite \
+          ..\..\bin\UnitTestFiles\JoinTest.sqlite \
+          CopyFdoComponentsrelease(v100) \
+          CopyFdoProvidersrelease(v100) \
+          CopySchemarelease(v100) \
+          CopyResourcesrelease(v100) \
+          CreatePathsrelease(v100) \
+          CopyOgcFilesrelease(v100)
+
+
+..\..\bin\release(v100)64\MgFoundation.dll : ..\..\..\Common\bin\release(v100)64\MgFoundation.dll
+    xcopy /r /d /y ..\..\..\Common\bin\release(v100)64\MgFoundation.dll ..\..\bin\release(v100)64\
+
+..\..\bin\release(v100)64\MgFoundation.pdb : ..\..\..\Common\bin\release(v100)64\MgFoundation.pdb
+    xcopy /r /d /y ..\..\..\Common\bin\release(v100)64\MgFoundation.pdb ..\..\bin\release(v100)64\
+
+..\..\bin\release(v100)64\MgPlatformBase.dll : ..\..\..\Common\bin\release(v100)64\MgPlatformBase.dll
+    xcopy /r /d /y ..\..\..\Common\bin\release(v100)64\MgPlatformBase.dll ..\..\bin\release(v100)64\
+
+..\..\bin\release(v100)64\MgPlatformBase.pdb : ..\..\..\Common\bin\release(v100)64\MgPlatformBase.pdb
+    xcopy /r /d /y ..\..\..\Common\bin\release(v100)64\MgPlatformBase.pdb ..\..\bin\release(v100)64\
+
+..\..\bin\release(v100)64\MgGeometry.dll : ..\..\..\Common\bin\release(v100)64\MgGeometry.dll
+    xcopy /r /d /y ..\..\..\Common\bin\release(v100)64\MgGeometry.dll ..\..\bin\release(v100)64\
+
+..\..\bin\release(v100)64\MgGeometry.pdb : ..\..\..\Common\bin\release(v100)64\MgGeometry.pdb
+    xcopy /r /d /y ..\..\..\Common\bin\release(v100)64\MgGeometry.pdb ..\..\bin\release(v100)64\
+
+..\..\bin\release(v100)64\MgMapGuideCommon.dll : ..\..\..\Common\bin\release(v100)64\MgMapGuideCommon.dll
+    xcopy /r /d /y ..\..\..\Common\bin\release(v100)64\MgMapGuideCommon.dll ..\..\bin\release(v100)64\
+
+..\..\bin\release(v100)64\MgMapGuideCommon.pdb : ..\..\..\Common\bin\release(v100)64\MgMapGuideCommon.pdb
+    xcopy /r /d /y ..\..\..\Common\bin\release(v100)64\MgMapGuideCommon.pdb ..\..\bin\release(v100)64\
+
+..\..\bin\release(v100)64\MgMdfModel.dll : ..\..\..\Common\bin\release(v100)64\MgMdfModel.dll
+    xcopy /r /d /y ..\..\..\Common\bin\release(v100)64\MgMdfModel.dll ..\..\bin\release(v100)64\
+
+..\..\bin\release(v100)64\MgMdfModel.pdb : ..\..\..\Common\bin\release(v100)64\MgMdfModel.pdb
+    xcopy /r /d /y ..\..\..\Common\bin\release(v100)64\MgMdfModel.pdb ..\..\bin\release(v100)64\
+
+..\..\bin\release(v100)64\MgMdfParser.dll : ..\..\..\Common\bin\release(v100)64\MgMdfParser.dll
+    xcopy /r /d /y ..\..\..\Common\bin\release(v100)64\MgMdfParser.dll ..\..\bin\release(v100)64\
+
+..\..\bin\release(v100)64\MgMdfParser.pdb : ..\..\..\Common\bin\release(v100)64\MgMdfParser.pdb
+    xcopy /r /d /y ..\..\..\Common\bin\release(v100)64\MgMdfParser.pdb ..\..\bin\release(v100)64\
+
+..\..\bin\release(v100)64\MgStylization.dll : ..\..\..\Common\bin\release(v100)64\MgStylization.dll
+    xcopy /r /d /y ..\..\..\Common\bin\release(v100)64\MgStylization.dll ..\..\bin\release(v100)64\
+
+..\..\bin\release(v100)64\MgStylization.pdb : ..\..\..\Common\bin\release(v100)64\MgStylization.pdb
+    xcopy /r /d /y ..\..\..\Common\bin\release(v100)64\MgStylization.pdb ..\..\bin\release(v100)64\
+
+..\..\bin\release(v100)64\MgRenderers.dll : ..\..\..\Common\bin\release(v100)64\MgRenderers.dll
+    xcopy /r /d /y ..\..\..\Common\bin\release(v100)64\MgRenderers.dll ..\..\bin\release(v100)64\
+
+..\..\bin\release(v100)64\MgRenderers.pdb : ..\..\..\Common\bin\release(v100)64\MgRenderers.pdb
+    xcopy /r /d /y ..\..\..\Common\bin\release(v100)64\MgRenderers.pdb ..\..\bin\release(v100)64\
+
+..\..\bin\release(v100)64\ACE.dll : ..\..\..\Oem\ACE\ACE_wrappers\lib64\release(v100)\ACE.dll
+    xcopy /r /d /y ..\..\..\Oem\ACE\ACE_wrappers\lib64\release(v100)\ACE.dll ..\..\bin\release(v100)64\
+
+..\..\bin\release(v100)64\ACE.pdb : ..\..\..\Oem\ACE\ACE_wrappers\lib64\release(v100)\ACE.pdb
+    xcopy /r /d /y ..\..\..\Oem\ACE\ACE_wrappers\lib64\release(v100)\ACE.pdb ..\..\bin\release(v100)64\
+
+..\..\bin\release(v100)64\gd.dll : ..\..\..\Oem\gd\build\win32\gd\release(v100)64\gd.dll
+    xcopy /r /d /y ..\..\..\Oem\gd\build\win32\gd\release(v100)64\gd.dll ..\..\bin\release(v100)64\
+
+..\..\bin\release(v100)64\gd.pdb : ..\..\..\Oem\gd\build\win32\gd\release(v100)64\gd.pdb
+    xcopy /r /d /y ..\..\..\Oem\gd\build\win32\gd\release(v100)64\gd.pdb ..\..\bin\release(v100)64\
+
+..\..\bin\release(v100)64\GEOS.dll : ..\..\..\Oem\geos-2.2.0\VisualStudio\release(v100)64\GEOS.dll
+    xcopy /r /d /y ..\..\..\Oem\geos-2.2.0\VisualStudio\release(v100)64\GEOS.dll ..\..\bin\release(v100)64\
+
+..\..\bin\release(v100)64\GEOS.pdb : ..\..\..\Oem\geos-2.2.0\VisualStudio\release(v100)64\GEOS.pdb
+    xcopy /r /d /y ..\..\..\Oem\geos-2.2.0\VisualStudio\release(v100)64\GEOS.pdb ..\..\bin\release(v100)64\
+
+..\..\bin\release(v100)64\libdb48.dll : ..\..\..\Oem\dbxml\bin64\release(v100)\libdb48.dll
+    xcopy /r /d /y ..\..\..\Oem\dbxml\bin64\release(v100)\libdb48.dll ..\..\bin\release(v100)64\
+
+..\..\bin\release(v100)64\libdb48.pdb : ..\..\..\Oem\dbxml\bin64\release(v100)\libdb48.pdb
+    xcopy /r /d /y ..\..\..\Oem\dbxml\bin64\release(v100)\libdb48.pdb ..\..\bin\release(v100)64\
+
+..\..\bin\release(v100)64\libdbxml25.dll : ..\..\..\Oem\dbxml\bin64\release(v100)\libdbxml25.dll
+    xcopy /r /d /y ..\..\..\Oem\dbxml\bin64\release(v100)\libdbxml25.dll ..\..\bin\release(v100)64\
+
+..\..\bin\release(v100)64\libdbxml25.pdb : ..\..\..\Oem\dbxml\bin64\release(v100)\libdbxml25.pdb
+    xcopy /r /d /y ..\..\..\Oem\dbxml\bin64\release(v100)\libdbxml25.pdb ..\..\bin\release(v100)64\
+
+..\..\bin\release(v100)64\xqilla24.dll : ..\..\..\Oem\dbxml\bin64\release(v100)\xqilla24.dll
+    xcopy /r /d /y ..\..\..\Oem\dbxml\bin64\release(v100)\xqilla24.dll ..\..\bin\release(v100)64\
+
+..\..\bin\release(v100)64\xqilla24.pdb : ..\..\..\Oem\dbxml\bin64\release(v100)\xqilla24.pdb
+    xcopy /r /d /y ..\..\..\Oem\dbxml\bin64\release(v100)\xqilla24.pdb ..\..\bin\release(v100)64\
+
+..\..\bin\release(v100)64\xerces-c_3_1mg.dll : ..\..\..\Oem\dbxml\bin64\release(v100)\xerces-c_3_1mg.dll
+    xcopy /r /d /y ..\..\..\Oem\dbxml\bin64\release(v100)\xerces-c_3_1mg.dll ..\..\bin\release(v100)64\
+
+..\..\bin\release(v100)64\xerces-c_3_1mg.pdb : ..\..\..\Oem\dbxml\bin64\release(v100)\xerces-c_3_1mg.pdb
+    xcopy /r /d /y ..\..\..\Oem\dbxml\bin64\release(v100)\xerces-c_3_1mg.pdb ..\..\bin\release(v100)64\
+
+..\..\bin\release(v100)64\serverconfig.ini : ..\..\src\Core\serverconfig.ini
+    xcopy /r /d /y ..\..\src\Core\serverconfig.ini ..\..\bin\release(v100)64\
+
+CopyFdoComponentsrelease(v100)64 : ..\..\..\Oem\FDO\*.*
+    if NOT EXIST ..\..\bin\release(v100)64\FDO\nul mkdir ..\..\bin\release(v100)64\FDO
+    xcopy /r /d /y /s ..\..\..\Oem\FDO\bin\release64 ..\..\bin\release(v100)64\FDO\
+
+CopyFdoProvidersrelease(v100)64 : ..\..\..\Oem\FDO\ProviderList\ServerCommunity\providers.xml
+    xcopy /r /d /y "..\..\..\Oem\FDO\ProviderList\ServerCommunity\providers.xml" ..\..\bin\release(v100)64\FDO\
+
+CopySchemarelease(v100)64 : ..\..\..\Common\Schema\*.xsd
+    if NOT EXIST ..\..\bin\release(v100)64\Schema\nul mkdir ..\..\bin\release(v100)64\Schema
+    xcopy /r /d /y ..\..\..\Common\Schema\*.xsd ..\..\bin\release(v100)64\Schema
+
+CopyResourcesrelease(v100)64 : ..\..\..\Common\MapGuideCommon\Resources\mapguide_en.res
+    if NOT EXIST ..\..\bin\release(v100)64\Resources\nul mkdir ..\..\bin\release(v100)64\Resources
+    xcopy /r /d /y "..\..\..\Common\MapGuideCommon\Resources\mapguide_en.res" ..\..\bin\release(v100)64\Resources\
+
+CopyOgcFilesrelease(v100)64 : ..\..\src\wms\*.awd ..\..\src\wfs\*.awd
+    if NOT EXIST ..\..\bin\release(v100)64\wms\nul mkdir ..\..\bin\release(v100)64\wms
+    xcopy /r /d /y "..\..\src\wms\*.awd"         ..\..\bin\release(v100)64\wms
+    if NOT EXIST ..\..\bin\release(v100)64\wfs\nul mkdir ..\..\bin\release(v100)64\wfs
+    xcopy /r /d /y "..\..\src\wfs\*.awd"         ..\..\bin\release(v100)64\wfs
+
+CreatePathsrelease(v100)64 :
+    if NOT EXIST ..\..\bin\release(v100)64\Logs\nul mkdir ..\..\bin\release(v100)64\Logs
+    if NOT EXIST ..\..\bin\release(v100)64\Packages\nul mkdir ..\..\bin\release(v100)64\Packages
+    if NOT EXIST ..\..\bin\release(v100)64\Temp\nul mkdir ..\..\bin\release(v100)64\Temp
+    if NOT EXIST ..\..\bin\release(v100)64\wms\nul mkdir ..\..\bin\release(v100)64\wms
+    if NOT EXIST ..\..\bin\release(v100)64\wfs\nul mkdir ..\..\bin\release(v100)64\wfs
+    if NOT EXIST ..\..\bin\release(v100)64\Repositories\nul mkdir ..\..\bin\release(v100)64\Repositories
+    if NOT EXIST ..\..\bin\release(v100)64\Repositories\Library\nul mkdir ..\..\bin\release(v100)64\Repositories\Library
+    if NOT EXIST ..\..\bin\release(v100)64\Repositories\Library\DataFiles\nul mkdir ..\..\bin\release(v100)64\Repositories\Library\DataFiles
+    if NOT EXIST ..\..\bin\release(v100)64\Repositories\Session\nul mkdir ..\..\bin\release(v100)64\Repositories\Session
+    if NOT EXIST ..\..\bin\release(v100)64\Repositories\Session\DataFiles\nul mkdir ..\..\bin\release(v100)64\Repositories\Session\DataFiles
+    if NOT EXIST ..\..\bin\release(v100)64\Repositories\Site\nul mkdir ..\..\bin\release(v100)64\Repositories\Site
+    if NOT EXIST ..\..\bin\release(v100)64\Repositories\TileCache\nul mkdir ..\..\bin\release(v100)64\Repositories\TileCache
+
+release(v100)64 : ..\..\bin\release(v100)64\MgFoundation.dll \
+          ..\..\bin\release(v100)64\MgFoundation.pdb \
+          ..\..\bin\release(v100)64\MgGeometry.dll \
+          ..\..\bin\release(v100)64\MgGeometry.pdb \
+          ..\..\bin\release(v100)64\MgPlatformBase.dll \
+          ..\..\bin\release(v100)64\MgPlatformBase.pdb \
+          ..\..\bin\release(v100)64\MgMapGuideCommon.dll \
+          ..\..\bin\release(v100)64\MgMapGuideCommon.pdb \
+          ..\..\bin\release(v100)64\MgMdfModel.dll \
+          ..\..\bin\release(v100)64\MgMdfModel.pdb \
+          ..\..\bin\release(v100)64\MgMdfParser.dll \
+          ..\..\bin\release(v100)64\MgMdfParser.pdb \
+          ..\..\bin\release(v100)64\MgStylization.dll \
+          ..\..\bin\release(v100)64\MgStylization.pdb \
+          ..\..\bin\release(v100)64\MgRenderers.dll \
+          ..\..\bin\release(v100)64\MgRenderers.pdb \
+          ..\..\bin\release(v100)64\ACE.dll \
+          ..\..\bin\release(v100)64\ACE.pdb \
+          ..\..\bin\release(v100)64\gd.dll \
+          ..\..\bin\release(v100)64\gd.pdb \
+          ..\..\bin\release(v100)64\GEOS.dll \
+          ..\..\bin\release(v100)64\GEOS.pdb \
+          ..\..\bin\release(v100)64\libdb48.dll \
+          ..\..\bin\release(v100)64\libdb48.pdb \
+          ..\..\bin\release(v100)64\libdbxml25.dll \
+          ..\..\bin\release(v100)64\libdbxml25.pdb \
+          ..\..\bin\release(v100)64\xqilla24.dll \
+          ..\..\bin\release(v100)64\xqilla24.pdb \
+          ..\..\bin\release(v100)64\xerces-c_3_1mg.dll \
+          ..\..\bin\release(v100)64\xerces-c_3_1mg.pdb \
+          ..\..\bin\release(v100)64\serverconfig.ini \
+          ..\..\bin\UnitTestFiles\LibraryRepositoryContent.xml \
+          ..\..\bin\UnitTestFiles\SampleRepositoryHeader.xml \
+          ..\..\bin\UnitTestFiles\SampleRepositoryContent.xml \
+          ..\..\bin\UnitTestFiles\TEST.LayerDefinition \
+          ..\..\bin\UnitTestFiles\TEST.FeatureSource \
+          ..\..\bin\UnitTestFiles\TEST.sdf \
+          ..\..\bin\UnitTestFiles\UT_BaseMap.mdf \
+          ..\..\bin\UnitTestFiles\UT_StylizationFuncs.mdf \
+          ..\..\bin\UnitTestFiles\UT_Parcels.fs \
+          ..\..\bin\UnitTestFiles\UT_Parcels.ldf \
+          ..\..\bin\UnitTestFiles\UT_Parcels.sdf \
+          ..\..\bin\UnitTestFiles\UT_RoadCenterLines.fs \
+          ..\..\bin\UnitTestFiles\UT_RoadCenterLines.ldf \
+          ..\..\bin\UnitTestFiles\UT_RoadCenterLines.sdf \
+          ..\..\bin\UnitTestFiles\UT_VotingDistricts.fs \
+          ..\..\bin\UnitTestFiles\UT_VotingDistricts.ldf \
+          ..\..\bin\UnitTestFiles\UT_VotingDistrictsFunctions.ldf \
+          ..\..\bin\UnitTestFiles\UT_VotingDistricts.sdf \
+          ..\..\bin\UnitTestFiles\UT_AllElements.pl \
+          ..\..\bin\UnitTestFiles\UT_NoLegend.pl \
+          ..\..\bin\UnitTestFiles\UT_SymbolMart.sl \
+          ..\..\bin\UnitTestFiles\UT_Symbols.dwf \
+          ..\..\bin\UnitTestFiles\UT_SheboyganWithWatermark.mdf \
+          ..\..\bin\UnitTestFiles\UT_PoweredByMapGuide.wdf \
+          ..\..\bin\UnitTestFiles\UT_Sheboygan.mdf \
+          ..\..\bin\UnitTestFiles\UT_HydrographicPolygons.sdf \
+          ..\..\bin\UnitTestFiles\UT_HydrographicPolygons.fs \
+          ..\..\bin\UnitTestFiles\UT_HydrographicPolygons.ldf \
+          ..\..\bin\UnitTestFiles\UT_Rail.sdf \
+          ..\..\bin\UnitTestFiles\UT_Rail.fs \
+          ..\..\bin\UnitTestFiles\UT_Rail.ldf \
+          ..\..\bin\UnitTestFiles\Sheboygan_Parcels.FeatureSource \
+          ..\..\bin\UnitTestFiles\Sheboygan_Parcels.sdf \
+          ..\..\bin\UnitTestFiles\Sheboygan_BuildingOutlines.FeatureSource \
+          ..\..\bin\UnitTestFiles\Sheboygan_BuildingOutlines.sdf \
+          ..\..\bin\UnitTestFiles\Sheboygan_VotingDistricts.FeatureSource \
+          ..\..\bin\UnitTestFiles\Sheboygan_VotingDistricts.sdf \
+          ..\..\bin\UnitTestFiles\Empty.FeatureSource \
+          ..\..\bin\UnitTestFiles\Empty.sdf \
+          ..\..\bin\UnitTestFiles\World.mgp \
+          ..\..\bin\UnitTestFiles\World_Countries.sdf \
+          ..\..\bin\UnitTestFiles\Shuttle.zip \
+          ..\..\bin\UnitTestFiles\Redding_Parcels.FeatureSource \
+          ..\..\bin\UnitTestFiles\Redding_Parcels.shp \
+          ..\..\bin\UnitTestFiles\Redding_Parcels.dbf \
+          ..\..\bin\UnitTestFiles\Redding_Parcels.shx \
+          ..\..\bin\UnitTestFiles\1.1.1.mgd \
+          ..\..\bin\UnitTestFiles\epsgcodes.txt \
+          ..\..\bin\UnitTestFiles\ogcwkts.txt \
+          ..\..\bin\UnitTestFiles\UT_GetMapKmlResult.txt \
+          ..\..\bin\UnitTestFiles\UT_GetLayerKmlResult.txt \
+          ..\..\bin\UnitTestFiles\UT_GetFeaturesKmlResult.txt \
+          ..\..\bin\UnitTestFiles\TESTChainedInner1ToManyJoin.FeatureSource \
+          ..\..\bin\UnitTestFiles\MdfTestMap.mdf \
+          ..\..\bin\UnitTestFiles\MdfTestTypeStyles.ldf \
+          ..\..\bin\UnitTestFiles\MdfTestCompoundSymbol.sd \
+          ..\..\bin\UnitTestFiles\MdfTestSimpleSymbol.sd \
+          ..\..\bin\UnitTestFiles\areasymbol.sd \
+          ..\..\bin\UnitTestFiles\linesymbol.sd \
+          ..\..\bin\UnitTestFiles\symbol.sd \
+          ..\..\bin\UnitTestFiles\symbolp.sd \
+          ..\..\bin\UnitTestFiles\MTYP1500a.sd \
+          ..\..\bin\UnitTestFiles\UT_SymbologyLines.fs \
+          ..\..\bin\UnitTestFiles\UT_SymbologyLines.ldf \
+          ..\..\bin\UnitTestFiles\UT_SymbologyLines.mdf \
+          ..\..\bin\UnitTestFiles\UT_SymbologyLines.sdf \
+          ..\..\bin\UnitTestFiles\UT_SymbologyLinesCrossTick.ldf \
+          ..\..\bin\UnitTestFiles\UT_SymbologyLinesCrossTick.mdf \
+          ..\..\bin\UnitTestFiles\UT_SymbologyPoints.fs \
+          ..\..\bin\UnitTestFiles\UT_SymbologyPoints.ldf \
+          ..\..\bin\UnitTestFiles\UT_SymbologyPoints.mdf \
+          ..\..\bin\UnitTestFiles\UT_SymbologyPoints.sdf \
+          ..\..\bin\UnitTestFiles\UT_SymbologyPointsParam.ldf \
+          ..\..\bin\UnitTestFiles\UT_SymbologyPointsParam.mdf \
+          ..\..\bin\UnitTestFiles\UT_SymbologyRoads.fs \
+          ..\..\bin\UnitTestFiles\UT_SymbologyRoads.ldf \
+          ..\..\bin\UnitTestFiles\UT_SymbologyRoads.mdf \
+          ..\..\bin\UnitTestFiles\UT_SymbologyRoads.sdf \
+          ..\..\bin\UnitTestFiles\UT_SymbologyParcels.ldf \
+          ..\..\bin\UnitTestFiles\UT_SymbologyPolygons.mdf \
+          ..\..\bin\UnitTestFiles\UT_Annotation1.ldf \
+          ..\..\bin\UnitTestFiles\UT_Annotation1.mdf \
+          ..\..\bin\UnitTestFiles\UT_Annotation2.ldf \
+          ..\..\bin\UnitTestFiles\UT_Annotation2.mdf \
+          ..\..\bin\UnitTestFiles\UT_Annotation3.ldf \
+          ..\..\bin\UnitTestFiles\UT_Annotation3.mdf \
+          ..\..\bin\UnitTestFiles\SavePointTest.sqlite \
+          ..\..\bin\UnitTestFiles\SavePointTest.FeatureSource \
+          ..\..\bin\UnitTestFiles\UT_Parcels_SQLite_Join.FeatureSource \
+          ..\..\bin\UnitTestFiles\UT_FdoJoin.FeatureSource \
+          ..\..\bin\UnitTestFiles\ParcelsJoinTest.sqlite \
+          ..\..\bin\UnitTestFiles\JoinTest.sqlite \
+          CopyFdoComponentsrelease(v100)64 \
+          CopyFdoProvidersrelease(v100)64 \
+          CopySchemarelease(v100)64 \
+          CopyResourcesrelease(v100)64 \
+          CreatePathsrelease(v100)64 \
+          CopyOgcFilesrelease(v100)64
+
+
+cleandebug(v100):
+    if EXIST ..\..\bin\debug(v100)\MgFoundationd.dll               del /F ..\..\bin\debug(v100)\MgFoundationd.dll
+    if EXIST ..\..\bin\debug(v100)\MgFoundationd.pdb               del /F ..\..\bin\debug(v100)\MgFoundationd.pdb
+    if EXIST ..\..\bin\debug(v100)\MgGeometryd.dll                 del /F ..\..\bin\debug(v100)\MgGeometryd.dll
+    if EXIST ..\..\bin\debug(v100)\MgGeometryd.pdb                 del /F ..\..\bin\debug(v100)\MgGeometryd.pdb
+    if EXIST ..\..\bin\debug(v100)\MgPlatformBased.dll             del /F ..\..\bin\debug(v100)\MgPlatformBased.dll
+    if EXIST ..\..\bin\debug(v100)\MgPlatformBased.pdb             del /F ..\..\bin\debug(v100)\MgPlatformBased.pdb
+    if EXIST ..\..\bin\debug(v100)\MgMapGuideCommond.dll           del /F ..\..\bin\debug(v100)\MgMapGuideCommond.dll
+    if EXIST ..\..\bin\debug(v100)\MgMapGuideCommond.pdb           del /F ..\..\bin\debug(v100)\MgMapGuideCommond.pdb
+    if EXIST ..\..\bin\debug(v100)\MgMdfModeld.dll                 del /F ..\..\bin\debug(v100)\MgMdfModeld.dll
+    if EXIST ..\..\bin\debug(v100)\MgMdfModeld.pdb                 del /F ..\..\bin\debug(v100)\MgMdfModeld.pdb
+    if EXIST ..\..\bin\debug(v100)\MgMdfParserd.dll                del /F ..\..\bin\debug(v100)\MgMdfParserd.dll
+    if EXIST ..\..\bin\debug(v100)\MgMdfParserd.pdb                del /F ..\..\bin\debug(v100)\MgMdfParserd.pdb
+    if EXIST ..\..\bin\debug(v100)\MgStylizationd.dll              del /F ..\..\bin\debug(v100)\MgStylizationd.dll
+    if EXIST ..\..\bin\debug(v100)\MgStylizationd.pdb              del /F ..\..\bin\debug(v100)\MgStylizationd.pdb
+    if EXIST ..\..\bin\debug(v100)\MgRenderersd.dll                del /F ..\..\bin\debug(v100)\MgRenderersd.dll
+    if EXIST ..\..\bin\debug(v100)\MgRenderersd.pdb                del /F ..\..\bin\debug(v100)\MgRenderersd.pdb
+    if EXIST ..\..\bin\debug(v100)\ACEd.dll                        del /F ..\..\bin\debug(v100)\ACEd.dll
+    if EXIST ..\..\bin\debug(v100)\ACEd.pdb                        del /F ..\..\bin\debug(v100)\ACEd.pdb
+    if EXIST ..\..\bin\debug(v100)\gd.dll                          del /F ..\..\bin\debug(v100)\gd.dll
+    if EXIST ..\..\bin\debug(v100)\gd.pdb                          del /F ..\..\bin\debug(v100)\gd.pdb
+    if EXIST ..\..\bin\debug(v100)\GEOSd.dll                       del /F ..\..\bin\debug(v100)\GEOSd.dll
+    if EXIST ..\..\bin\debug(v100)\GEOSd.pdb                       del /F ..\..\bin\debug(v100)\GEOSd.pdb
+    if EXIST ..\..\bin\debug(v100)\libdb48d.dll                    del /F ..\..\bin\debug(v100)\libdb48d.dll
+    if EXIST ..\..\bin\debug(v100)\libdb48d.pdb                    del /F ..\..\bin\debug(v100)\libdb48d.pdb
+    if EXIST ..\..\bin\debug(v100)\libdbxml25d.dll                 del /F ..\..\bin\debug(v100)\libdbxml25d.dll
+    if EXIST ..\..\bin\debug(v100)\libdbxml25d.pdb                 del /F ..\..\bin\debug(v100)\libdbxml25d.pdb
+    if EXIST ..\..\bin\debug(v100)\xqilla24d.dll                   del /F ..\..\bin\debug(v100)\xqilla24d.dll
+    if EXIST ..\..\bin\debug(v100)\xqilla24d.pdb                   del /F ..\..\bin\debug(v100)\xqilla24d.pdb
+    if EXIST ..\..\bin\debug(v100)\xerces-c_3_1mgD.dll             del /F ..\..\bin\debug(v100)\xerces-c_3_1mgD.dll
+    if EXIST ..\..\bin\debug(v100)\xerces-c_3_1mgD.pdb             del /F ..\..\bin\debug(v100)\xerces-c_3_1mgD.pdb
+    if EXIST ..\..\bin\debug(v100)\serverconfig.ini                del /F ..\..\bin\debug(v100)\serverconfig.ini
+    if EXIST ..\..\bin\UnitTestFiles\LibraryRepositoryContent.xml   del /F ..\..\bin\UnitTestFiles\LibraryRepositoryContent.xml
+    if EXIST ..\..\bin\UnitTestFiles\SampleRepositoryHeader.xml     del /F ..\..\bin\UnitTestFiles\SampleRepositoryHeader.xml
+    if EXIST ..\..\bin\UnitTestFiles\SampleRepositoryContent.xml    del /F ..\..\bin\UnitTestFiles\SampleRepositoryContent.xml
+    if EXIST ..\..\bin\UnitTestFiles\TEST.LayerDefinition           del /F ..\..\bin\UnitTestFiles\TEST.LayerDefinition
+    if EXIST ..\..\bin\UnitTestFiles\TEST.FeatureSource             del /F ..\..\bin\UnitTestFiles\TEST.FeatureSource
+    if EXIST ..\..\bin\UnitTestFiles\TEST.sdf                       del /F ..\..\bin\UnitTestFiles\TEST.sdf
+    if EXIST ..\..\bin\UnitTestFiles\UT_BaseMap.mdf                 del /F ..\..\bin\UnitTestFiles\UT_BaseMap.mdf
+    if EXIST ..\..\bin\UnitTestFiles\UT_StylizationFuncs.mdf        del /F ..\..\bin\UnitTestFiles\UT_StylizationFuncs.mdf
+    if EXIST ..\..\bin\UnitTestFiles\UT_Parcels.fs                  del /F ..\..\bin\UnitTestFiles\UT_Parcels.fs
+    if EXIST ..\..\bin\UnitTestFiles\UT_Parcels.ldf                 del /F ..\..\bin\UnitTestFiles\UT_Parcels.ldf
+    if EXIST ..\..\bin\UnitTestFiles\UT_Parcels.sdf                 del /F ..\..\bin\UnitTestFiles\UT_Parcels.sdf
+    if EXIST ..\..\bin\UnitTestFiles\UT_RoadCenterLines.fs          del /F ..\..\bin\UnitTestFiles\UT_RoadCenterLines.fs
+    if EXIST ..\..\bin\UnitTestFiles\UT_RoadCenterLines.ldf         del /F ..\..\bin\UnitTestFiles\UT_RoadCenterLines.ldf
+    if EXIST ..\..\bin\UnitTestFiles\UT_RoadCenterLines.sdf         del /F ..\..\bin\UnitTestFiles\UT_RoadCenterLines.sdf
+    if EXIST ..\..\bin\UnitTestFiles\UT_VotingDistricts.fs          del /F ..\..\bin\UnitTestFiles\UT_VotingDistricts.fs
+    if EXIST ..\..\bin\UnitTestFiles\UT_VotingDistricts.ldf         del /F ..\..\bin\UnitTestFiles\UT_VotingDistricts.ldf
+    if EXIST ..\..\bin\UnitTestFiles\UT_VotingDistrictsFunctions.ldf del /F ..\..\bin\UnitTestFiles\UT_VotingDistrictsFunctions.ldf
+    if EXIST ..\..\bin\UnitTestFiles\UT_VotingDistricts.sdf         del /F ..\..\bin\UnitTestFiles\UT_VotingDistricts.sdf
+    if EXIST ..\..\bin\UnitTestFiles\UT_AllElements.pl              del /F ..\..\bin\UnitTestFiles\UT_AllElements.pl
+    if EXIST ..\..\bin\UnitTestFiles\UT_NoLegend.pl                 del /F ..\..\bin\UnitTestFiles\UT_NoLegend.pl
+    if EXIST ..\..\bin\UnitTestFiles\UT_SymbolMart.sl               del /F ..\..\bin\UnitTestFiles\UT_SymbolMart.sl
+    if EXIST ..\..\bin\UnitTestFiles\UT_Symbols.dwf                 del /F ..\..\bin\UnitTestFiles\UT_Symbols.dwf
+    if EXIST ..\..\bin\UnitTestFiles\UT_SheboyganWithWatermark.mdf  del /F ..\..\bin\UnitTestFiles\UT_SheboyganWithWatermark.mdf
+    if EXIST ..\..\bin\UnitTestFiles\UT_PoweredByMapGuide.wdf       del /F ..\..\bin\UnitTestFiles\UT_PoweredByMapGuide.wdf
+    if EXIST ..\..\bin\UnitTestFiles\UT_Sheboygan.mdf               del /F ..\..\bin\UnitTestFiles\UT_Sheboygan.mdf
+    if EXIST ..\..\bin\UnitTestFiles\UT_HydrographicPolygons.sdf    del /F ..\..\bin\UnitTestFiles\UT_HydrographicPolygons.sdf
+    if EXIST ..\..\bin\UnitTestFiles\UT_HydrographicPolygons.fs     del /F ..\..\bin\UnitTestFiles\UT_HydrographicPolygons.fs
+    if EXIST ..\..\bin\UnitTestFiles\UT_HydrographicPolygons.ldf    del /F ..\..\bin\UnitTestFiles\UT_HydrographicPolygons.ldf
+    if EXIST ..\..\bin\UnitTestFiles\UT_Rail.sdf                    del /F ..\..\bin\UnitTestFiles\UT_Rail.sdf
+    if EXIST ..\..\bin\UnitTestFiles\UT_Rail.fs                     del /F ..\..\bin\UnitTestFiles\UT_Rail.fs
+    if EXIST ..\..\bin\UnitTestFiles\UT_Rail.ldf                    del /F ..\..\bin\UnitTestFiles\UT_Rail.ldf
+    if EXIST ..\..\bin\UnitTestFiles\Sheboygan_Parcels.FeatureSource del /F ..\..\bin\UnitTestFiles\Sheboygan_Parcels.FeatureSource
+    if EXIST ..\..\bin\UnitTestFiles\Sheboygan_Parcels.sdf          del /F ..\..\bin\UnitTestFiles\Sheboygan_Parcels.sdf
+    if EXIST ..\..\bin\UnitTestFiles\Sheboygan_BuildingOutlines.FeatureSource del /F ..\..\bin\UnitTestFiles\Sheboygan_BuildingOutlines.FeatureSource
+    if EXIST ..\..\bin\UnitTestFiles\Sheboygan_BuildingOutlines.sdf del /F ..\..\bin\UnitTestFiles\Sheboygan_BuildingOutlines.sdf
+    if EXIST ..\..\bin\UnitTestFiles\Sheboygan_VotingDistricts.FeatureSource del /F ..\..\bin\UnitTestFiles\Sheboygan_VotingDistricts.FeatureSource
+    if EXIST ..\..\bin\UnitTestFiles\Sheboygan_VotingDistricts.sdf  del /F ..\..\bin\UnitTestFiles\Sheboygan_VotingDistricts.sdf
+    if EXIST ..\..\bin\UnitTestFiles\Empty.FeatureSource            del /F ..\..\bin\UnitTestFiles\Empty.FeatureSource
+    if EXIST ..\..\bin\UnitTestFiles\Empty.sdf                      del /F ..\..\bin\UnitTestFiles\Empty.sdf
+    if EXIST ..\..\bin\UnitTestFiles\World.mgp                      del /F ..\..\bin\UnitTestFiles\World.mgp
+    if EXIST ..\..\bin\UnitTestFiles\World_Countries.sdf            del /F ..\..\bin\UnitTestFiles\World_Countries.sdf
+    if EXIST ..\..\bin\UnitTestFiles\Shuttle.zip                    del /F ..\..\bin\UnitTestFiles\Shuttle.zip
+    if EXIST ..\..\bin\UnitTestFiles\Redding_Parcels.FeatureSource  del /F ..\..\bin\UnitTestFiles\Redding_Parcels.FeatureSource
+    if EXIST ..\..\bin\UnitTestFiles\Redding_Parcels.shp            del /F ..\..\bin\UnitTestFiles\Redding_Parcels.shp
+    if EXIST ..\..\bin\UnitTestFiles\Redding_Parcels.dbf            del /F ..\..\bin\UnitTestFiles\Redding_Parcels.dbf
+    if EXIST ..\..\bin\UnitTestFiles\Redding_Parcels.shx            del /F ..\..\bin\UnitTestFiles\Redding_Parcels.shx
+    if EXIST ..\..\bin\UnitTestFiles\1.1.1.mgd                      del /F ..\..\bin\UnitTestFiles\1.1.1.mgd
+    if EXIST ..\..\bin\UnitTestFiles\epsgcodes.txt                  del /F ..\..\bin\UnitTestFiles\epsgcodes.txt
+    if EXIST ..\..\bin\UnitTestFiles\ogcwkts.txt                    del /F ..\..\bin\UnitTestFiles\ogcwkts.txt
+    if EXIST ..\..\bin\UnitTestFiles\UT_GetMapKmlResult.txt         del /F ..\..\bin\UnitTestFiles\UT_GetMapKmlResult.txt
+    if EXIST ..\..\bin\UnitTestFiles\UT_GetLayerKmlResult.txt       del /F ..\..\bin\UnitTestFiles\UT_GetLayerKmlResult.txt
+    if EXIST ..\..\bin\UnitTestFiles\UT_GetFeaturesKmlResult.txt    del /F ..\..\bin\UnitTestFiles\UT_GetFeaturesKmlResult.txt
+    if EXIST ..\..\bin\UnitTestFiles\TESTChainedInner1ToManyJoin.FeatureSource del /F ..\..\bin\UnitTestFiles\TESTChainedInner1ToManyJoin.FeatureSource
+    if EXIST ..\..\bin\UnitTestFiles\MdfTestMap.mdf                 del /F ..\..\bin\UnitTestFiles\MdfTestMap.mdf
+    if EXIST ..\..\bin\UnitTestFiles\MdfTestTypeStyles.ldf          del /F ..\..\bin\UnitTestFiles\MdfTestTypeStyles.ldf
+    if EXIST ..\..\bin\UnitTestFiles\MdfTestCompoundSymbol.sd       del /F ..\..\bin\UnitTestFiles\MdfTestCompoundSymbol.sd
+    if EXIST ..\..\bin\UnitTestFiles\MdfTestSimpleSymbol.sd         del /F ..\..\bin\UnitTestFiles\MdfTestSimpleSymbol.sd
+    if EXIST ..\..\bin\UnitTestFiles\areasymbol.sd                  del /F ..\..\bin\UnitTestFiles\areasymbol.sd
+    if EXIST ..\..\bin\UnitTestFiles\linesymbol.sd                  del /F ..\..\bin\UnitTestFiles\linesymbol.sd
+    if EXIST ..\..\bin\UnitTestFiles\symbol.sd                      del /F ..\..\bin\UnitTestFiles\symbol.sd
+    if EXIST ..\..\bin\UnitTestFiles\symbolp.sd                     del /F ..\..\bin\UnitTestFiles\symbolp.sd
+    if EXIST ..\..\bin\UnitTestFiles\MTYP1500a.sd                   del /F ..\..\bin\UnitTestFiles\MTYP1500a.sd
+    if EXIST ..\..\bin\UnitTestFiles\UT_SymbologyLines.fs           del /F ..\..\bin\UnitTestFiles\UT_SymbologyLines.fs
+    if EXIST ..\..\bin\UnitTestFiles\UT_SymbologyLines.ldf          del /F ..\..\bin\UnitTestFiles\UT_SymbologyLines.ldf
+    if EXIST ..\..\bin\UnitTestFiles\UT_SymbologyLines.mdf          del /F ..\..\bin\UnitTestFiles\UT_SymbologyLines.mdf
+    if EXIST ..\..\bin\UnitTestFiles\UT_SymbologyLines.sdf          del /F ..\..\bin\UnitTestFiles\UT_SymbologyLines.sdf
+    if EXIST ..\..\bin\UnitTestFiles\UT_SymbologyLinesCrossTick.ldf del /F ..\..\bin\UnitTestFiles\UT_SymbologyLinesCrossTick.ldf
+    if EXIST ..\..\bin\UnitTestFiles\UT_SymbologyLinesCrossTick.mdf del /F ..\..\bin\UnitTestFiles\UT_SymbologyLinesCrossTick.mdf
+    if EXIST ..\..\bin\UnitTestFiles\UT_SymbologyPoints.fs          del /F ..\..\bin\UnitTestFiles\UT_SymbologyPoints.fs
+    if EXIST ..\..\bin\UnitTestFiles\UT_SymbologyPoints.ldf         del /F ..\..\bin\UnitTestFiles\UT_SymbologyPoints.ldf
+    if EXIST ..\..\bin\UnitTestFiles\UT_SymbologyPoints.mdf         del /F ..\..\bin\UnitTestFiles\UT_SymbologyPoints.mdf
+    if EXIST ..\..\bin\UnitTestFiles\UT_SymbologyPoints.sdf         del /F ..\..\bin\UnitTestFiles\UT_SymbologyPoints.sdf
+    if EXIST ..\..\bin\UnitTestFiles\UT_SymbologyPointsParam.ldf    del /F ..\..\bin\UnitTestFiles\UT_SymbologyPointsParam.ldf
+    if EXIST ..\..\bin\UnitTestFiles\UT_SymbologyPointsParam.mdf    del /F ..\..\bin\UnitTestFiles\UT_SymbologyPointsParam.mdf
+    if EXIST ..\..\bin\UnitTestFiles\UT_SymbologyRoads.fs           del /F ..\..\bin\UnitTestFiles\UT_SymbologyRoads.fs
+    if EXIST ..\..\bin\UnitTestFiles\UT_SymbologyRoads.ldf          del /F ..\..\bin\UnitTestFiles\UT_SymbologyRoads.ldf
+    if EXIST ..\..\bin\UnitTestFiles\UT_SymbologyRoads.mdf          del /F ..\..\bin\UnitTestFiles\UT_SymbologyRoads.mdf
+    if EXIST ..\..\bin\UnitTestFiles\UT_SymbologyRoads.sdf          del /F ..\..\bin\UnitTestFiles\UT_SymbologyRoads.sdf
+    if EXIST ..\..\bin\UnitTestFiles\UT_SymbologyParcels.ldf        del /F ..\..\bin\UnitTestFiles\UT_SymbologyParcels.ldf
+    if EXIST ..\..\bin\UnitTestFiles\UT_SymbologyPolygons.mdf       del /F ..\..\bin\UnitTestFiles\UT_SymbologyPolygons.mdf
+    if EXIST ..\..\bin\UnitTestFiles\UT_Annotation1.ldf             del /F ..\..\bin\UnitTestFiles\UT_Annotation1.ldf
+    if EXIST ..\..\bin\UnitTestFiles\UT_Annotation1.mdf             del /F ..\..\bin\UnitTestFiles\UT_Annotation1.mdf
+    if EXIST ..\..\bin\UnitTestFiles\UT_Annotation2.ldf             del /F ..\..\bin\UnitTestFiles\UT_Annotation2.ldf
+    if EXIST ..\..\bin\UnitTestFiles\UT_Annotation2.mdf             del /F ..\..\bin\UnitTestFiles\UT_Annotation2.mdf
+    if EXIST ..\..\bin\UnitTestFiles\UT_Annotation3.ldf             del /F ..\..\bin\UnitTestFiles\UT_Annotation3.ldf
+    if EXIST ..\..\bin\UnitTestFiles\UT_Annotation3.mdf             del /F ..\..\bin\UnitTestFiles\UT_Annotation3.mdf
+    if EXIST ..\..\bin\UnitTestFiles\SavePointTest.sqlite           del /F ..\..\bin\UnitTestFiles\SavePointTest.sqlite
+    if EXIST ..\..\bin\UnitTestFiles\SavePointTest.FeatureSource    del /F ..\..\bin\UnitTestFiles\SavePointTest.FeatureSource
+    if EXIST ..\..\bin\UnitTestFiles\UT_Parcels_SQLite_Join.FeatureSource    del /F ..\..\bin\UnitTestFiles\UT_Parcels_SQLite_Join.FeatureSource
+    if EXIST ..\..\bin\UnitTestFiles\UT_FdoJoin.FeatureSource		del /F ..\..\bin\UnitTestFiles\UT_FdoJoin.FeatureSource
+    if EXIST ..\..\bin\UnitTestFiles\ParcelsJoinTest.sqlite         del /F ..\..\bin\UnitTestFiles\ParcelsJoinTest.sqlite
+    if EXIST ..\..\bin\UnitTestFiles\JoinTest.sqlite                del /F ..\..\bin\UnitTestFiles\JoinTest.FeatureSource
+    del /F   ..\..\bin\debug(v100)\*.ilk
+
+
+cleandebug(v100)64:
+    if EXIST ..\..\bin\debug(v100)64\MgFoundationd.dll               del /F ..\..\bin\debug(v100)64\MgFoundationd.dll
+    if EXIST ..\..\bin\debug(v100)64\MgFoundationd.pdb               del /F ..\..\bin\debug(v100)64\MgFoundationd.pdb
+    if EXIST ..\..\bin\debug(v100)64\MgGeometryd.dll                 del /F ..\..\bin\debug(v100)64\MgGeometryd.dll
+    if EXIST ..\..\bin\debug(v100)64\MgGeometryd.pdb                 del /F ..\..\bin\debug(v100)64\MgGeometryd.pdb
+    if EXIST ..\..\bin\debug(v100)64\MgPlatformBased.dll             del /F ..\..\bin\debug(v100)64\MgPlatformBased.dll
+    if EXIST ..\..\bin\debug(v100)64\MgPlatformBased.pdb             del /F ..\..\bin\debug(v100)64\MgPlatformBased.pdb
+    if EXIST ..\..\bin\debug(v100)64\MgMapGuideCommond.dll           del /F ..\..\bin\debug(v100)64\MgMapGuideCommond.dll
+    if EXIST ..\..\bin\debug(v100)64\MgMapGuideCommond.pdb           del /F ..\..\bin\debug(v100)64\MgMapGuideCommond.pdb
+    if EXIST ..\..\bin\debug(v100)64\MgMdfModeld.dll                 del /F ..\..\bin\debug(v100)64\MgMdfModeld.dll
+    if EXIST ..\..\bin\debug(v100)64\MgMdfModeld.pdb                 del /F ..\..\bin\debug(v100)64\MgMdfModeld.pdb
+    if EXIST ..\..\bin\debug(v100)64\MgMdfParserd.dll                del /F ..\..\bin\debug(v100)64\MgMdfParserd.dll
+    if EXIST ..\..\bin\debug(v100)64\MgMdfParserd.pdb                del /F ..\..\bin\debug(v100)64\MgMdfParserd.pdb
+    if EXIST ..\..\bin\debug(v100)64\MgStylizationd.dll              del /F ..\..\bin\debug(v100)64\MgStylizationd.dll
+    if EXIST ..\..\bin\debug(v100)64\MgStylizationd.pdb              del /F ..\..\bin\debug(v100)64\MgStylizationd.pdb
+    if EXIST ..\..\bin\debug(v100)64\MgRenderersd.dll                del /F ..\..\bin\debug(v100)64\MgRenderersd.dll
+    if EXIST ..\..\bin\debug(v100)64\MgRenderersd.pdb                del /F ..\..\bin\debug(v100)64\MgRenderersd.pdb
+    if EXIST ..\..\bin\debug(v100)64\ACEd.dll                        del /F ..\..\bin\debug(v100)64\ACEd.dll
+    if EXIST ..\..\bin\debug(v100)64\ACEd.pdb                        del /F ..\..\bin\debug(v100)64\ACEd.pdb
+    if EXIST ..\..\bin\debug(v100)64\gd.dll                          del /F ..\..\bin\debug(v100)64\gd.dll
+    if EXIST ..\..\bin\debug(v100)64\gd.pdb                          del /F ..\..\bin\debug(v100)64\gd.pdb
+    if EXIST ..\..\bin\debug(v100)64\GEOSd.dll                       del /F ..\..\bin\debug(v100)64\GEOSd.dll
+    if EXIST ..\..\bin\debug(v100)64\GEOSd.pdb                       del /F ..\..\bin\debug(v100)64\GEOSd.pdb
+    if EXIST ..\..\bin\debug(v100)64\libdb48d.dll                    del /F ..\..\bin\debug(v100)64\libdb48d.dll
+    if EXIST ..\..\bin\debug(v100)64\libdb48d.pdb                    del /F ..\..\bin\debug(v100)64\libdb48d.pdb
+    if EXIST ..\..\bin\debug(v100)64\libdbxml25d.dll                 del /F ..\..\bin\debug(v100)64\libdbxml25d.dll
+    if EXIST ..\..\bin\debug(v100)64\libdbxml25d.pdb                 del /F ..\..\bin\debug(v100)64\libdbxml25d.pdb
+    if EXIST ..\..\bin\debug(v100)64\xqilla24d.dll                   del /F ..\..\bin\debug(v100)64\xqilla24d.dll
+    if EXIST ..\..\bin\debug(v100)64\xqilla24d.pdb                   del /F ..\..\bin\debug(v100)64\xqilla24d.pdb
+    if EXIST ..\..\bin\debug(v100)64\xerces-c_3_1mgD.dll             del /F ..\..\bin\debug(v100)64\xerces-c_3_1mgD.dll
+    if EXIST ..\..\bin\debug(v100)64\xerces-c_3_1mgD.pdb             del /F ..\..\bin\debug(v100)64\xerces-c_3_1mgD.pdb
+    if EXIST ..\..\bin\debug(v100)64\serverconfig.ini                del /F ..\..\bin\debug(v100)64\serverconfig.ini
+    if EXIST ..\..\bin\UnitTestFiles\LibraryRepositoryContent.xml   del /F ..\..\bin\UnitTestFiles\LibraryRepositoryContent.xml
+    if EXIST ..\..\bin\UnitTestFiles\SampleRepositoryHeader.xml     del /F ..\..\bin\UnitTestFiles\SampleRepositoryHeader.xml
+    if EXIST ..\..\bin\UnitTestFiles\SampleRepositoryContent.xml    del /F ..\..\bin\UnitTestFiles\SampleRepositoryContent.xml
+    if EXIST ..\..\bin\UnitTestFiles\TEST.LayerDefinition           del /F ..\..\bin\UnitTestFiles\TEST.LayerDefinition
+    if EXIST ..\..\bin\UnitTestFiles\TEST.FeatureSource             del /F ..\..\bin\UnitTestFiles\TEST.FeatureSource
+    if EXIST ..\..\bin\UnitTestFiles\TEST.sdf                       del /F ..\..\bin\UnitTestFiles\TEST.sdf
+    if EXIST ..\..\bin\UnitTestFiles\UT_BaseMap.mdf                 del /F ..\..\bin\UnitTestFiles\UT_BaseMap.mdf
+    if EXIST ..\..\bin\UnitTestFiles\UT_StylizationFuncs.mdf        del /F ..\..\bin\UnitTestFiles\UT_StylizationFuncs.mdf
+    if EXIST ..\..\bin\UnitTestFiles\UT_Parcels.fs                  del /F ..\..\bin\UnitTestFiles\UT_Parcels.fs
+    if EXIST ..\..\bin\UnitTestFiles\UT_Parcels.ldf                 del /F ..\..\bin\UnitTestFiles\UT_Parcels.ldf
+    if EXIST ..\..\bin\UnitTestFiles\UT_Parcels.sdf                 del /F ..\..\bin\UnitTestFiles\UT_Parcels.sdf
+    if EXIST ..\..\bin\UnitTestFiles\UT_RoadCenterLines.fs          del /F ..\..\bin\UnitTestFiles\UT_RoadCenterLines.fs
+    if EXIST ..\..\bin\UnitTestFiles\UT_RoadCenterLines.ldf         del /F ..\..\bin\UnitTestFiles\UT_RoadCenterLines.ldf
+    if EXIST ..\..\bin\UnitTestFiles\UT_RoadCenterLines.sdf         del /F ..\..\bin\UnitTestFiles\UT_RoadCenterLines.sdf
+    if EXIST ..\..\bin\UnitTestFiles\UT_VotingDistricts.fs          del /F ..\..\bin\UnitTestFiles\UT_VotingDistricts.fs
+    if EXIST ..\..\bin\UnitTestFiles\UT_VotingDistricts.ldf         del /F ..\..\bin\UnitTestFiles\UT_VotingDistricts.ldf
+    if EXIST ..\..\bin\UnitTestFiles\UT_VotingDistrictsFunctions.ldf del /F ..\..\bin\UnitTestFiles\UT_VotingDistrictsFunctions.ldf
+    if EXIST ..\..\bin\UnitTestFiles\UT_VotingDistricts.sdf         del /F ..\..\bin\UnitTestFiles\UT_VotingDistricts.sdf
+    if EXIST ..\..\bin\UnitTestFiles\UT_AllElements.pl              del /F ..\..\bin\UnitTestFiles\UT_AllElements.pl
+    if EXIST ..\..\bin\UnitTestFiles\UT_NoLegend.pl                 del /F ..\..\bin\UnitTestFiles\UT_NoLegend.pl
+    if EXIST ..\..\bin\UnitTestFiles\UT_SymbolMart.sl               del /F ..\..\bin\UnitTestFiles\UT_SymbolMart.sl
+    if EXIST ..\..\bin\UnitTestFiles\UT_Symbols.dwf                 del /F ..\..\bin\UnitTestFiles\UT_Symbols.dwf
+    if EXIST ..\..\bin\UnitTestFiles\UT_SheboyganWithWatermark.mdf  del /F ..\..\bin\UnitTestFiles\UT_SheboyganWithWatermark.mdf
+    if EXIST ..\..\bin\UnitTestFiles\UT_PoweredByMapGuide.wdf       del /F ..\..\bin\UnitTestFiles\UT_PoweredByMapGuide.wdf
+    if EXIST ..\..\bin\UnitTestFiles\UT_Sheboygan.mdf               del /F ..\..\bin\UnitTestFiles\UT_Sheboygan.mdf
+    if EXIST ..\..\bin\UnitTestFiles\UT_HydrographicPolygons.sdf    del /F ..\..\bin\UnitTestFiles\UT_HydrographicPolygons.sdf
+    if EXIST ..\..\bin\UnitTestFiles\UT_HydrographicPolygons.fs     del /F ..\..\bin\UnitTestFiles\UT_HydrographicPolygons.fs
+    if EXIST ..\..\bin\UnitTestFiles\UT_HydrographicPolygons.ldf    del /F ..\..\bin\UnitTestFiles\UT_HydrographicPolygons.ldf
+    if EXIST ..\..\bin\UnitTestFiles\UT_Rail.sdf                    del /F ..\..\bin\UnitTestFiles\UT_Rail.sdf
+    if EXIST ..\..\bin\UnitTestFiles\UT_Rail.fs                     del /F ..\..\bin\UnitTestFiles\UT_Rail.fs
+    if EXIST ..\..\bin\UnitTestFiles\UT_Rail.ldf                    del /F ..\..\bin\UnitTestFiles\UT_Rail.ldf
+    if EXIST ..\..\bin\UnitTestFiles\Sheboygan_Parcels.FeatureSource del /F ..\..\bin\UnitTestFiles\Sheboygan_Parcels.FeatureSource
+    if EXIST ..\..\bin\UnitTestFiles\Sheboygan_Parcels.sdf          del /F ..\..\bin\UnitTestFiles\Sheboygan_Parcels.sdf
+    if EXIST ..\..\bin\UnitTestFiles\Sheboygan_BuildingOutlines.FeatureSource del /F ..\..\bin\UnitTestFiles\Sheboygan_BuildingOutlines.FeatureSource
+    if EXIST ..\..\bin\UnitTestFiles\Sheboygan_BuildingOutlines.sdf del /F ..\..\bin\UnitTestFiles\Sheboygan_BuildingOutlines.sdf
+    if EXIST ..\..\bin\UnitTestFiles\Sheboygan_VotingDistricts.FeatureSource del /F ..\..\bin\UnitTestFiles\Sheboygan_VotingDistricts.FeatureSource
+    if EXIST ..\..\bin\UnitTestFiles\Sheboygan_VotingDistricts.sdf  del /F ..\..\bin\UnitTestFiles\Sheboygan_VotingDistricts.sdf
+    if EXIST ..\..\bin\UnitTestFiles\Empty.FeatureSource            del /F ..\..\bin\UnitTestFiles\Empty.FeatureSource
+    if EXIST ..\..\bin\UnitTestFiles\Empty.sdf                      del /F ..\..\bin\UnitTestFiles\Empty.sdf
+    if EXIST ..\..\bin\UnitTestFiles\World.mgp                      del /F ..\..\bin\UnitTestFiles\World.mgp
+    if EXIST ..\..\bin\UnitTestFiles\World_Countries.sdf            del /F ..\..\bin\UnitTestFiles\World_Countries.sdf
+    if EXIST ..\..\bin\UnitTestFiles\Shuttle.zip                    del /F ..\..\bin\UnitTestFiles\Shuttle.zip
+    if EXIST ..\..\bin\UnitTestFiles\Redding_Parcels.FeatureSource  del /F ..\..\bin\UnitTestFiles\Redding_Parcels.FeatureSource
+    if EXIST ..\..\bin\UnitTestFiles\Redding_Parcels.shp            del /F ..\..\bin\UnitTestFiles\Redding_Parcels.shp
+    if EXIST ..\..\bin\UnitTestFiles\Redding_Parcels.dbf            del /F ..\..\bin\UnitTestFiles\Redding_Parcels.dbf
+    if EXIST ..\..\bin\UnitTestFiles\Redding_Parcels.shx            del /F ..\..\bin\UnitTestFiles\Redding_Parcels.shx
+    if EXIST ..\..\bin\UnitTestFiles\1.1.1.mgd                      del /F ..\..\bin\UnitTestFiles\1.1.1.mgd
+    if EXIST ..\..\bin\UnitTestFiles\epsgcodes.txt                  del /F ..\..\bin\UnitTestFiles\epsgcodes.txt
+    if EXIST ..\..\bin\UnitTestFiles\ogcwkts.txt                    del /F ..\..\bin\UnitTestFiles\ogcwkts.txt
+    if EXIST ..\..\bin\UnitTestFiles\UT_GetMapKmlResult.txt         del /F ..\..\bin\UnitTestFiles\UT_GetMapKmlResult.txt
+    if EXIST ..\..\bin\UnitTestFiles\UT_GetLayerKmlResult.txt       del /F ..\..\bin\UnitTestFiles\UT_GetLayerKmlResult.txt
+    if EXIST ..\..\bin\UnitTestFiles\UT_GetFeaturesKmlResult.txt    del /F ..\..\bin\UnitTestFiles\UT_GetFeaturesKmlResult.txt
+    if EXIST ..\..\bin\UnitTestFiles\TESTChainedInner1ToManyJoin.FeatureSource del /F ..\..\bin\UnitTestFiles\TESTChainedInner1ToManyJoin.FeatureSource
+    if EXIST ..\..\bin\UnitTestFiles\MdfTestMap.mdf                 del /F ..\..\bin\UnitTestFiles\MdfTestMap.mdf
+    if EXIST ..\..\bin\UnitTestFiles\MdfTestTypeStyles.ldf          del /F ..\..\bin\UnitTestFiles\MdfTestTypeStyles.ldf
+    if EXIST ..\..\bin\UnitTestFiles\MdfTestCompoundSymbol.sd       del /F ..\..\bin\UnitTestFiles\MdfTestCompoundSymbol.sd
+    if EXIST ..\..\bin\UnitTestFiles\MdfTestSimpleSymbol.sd         del /F ..\..\bin\UnitTestFiles\MdfTestSimpleSymbol.sd
+    if EXIST ..\..\bin\UnitTestFiles\areasymbol.sd                  del /F ..\..\bin\UnitTestFiles\areasymbol.sd
+    if EXIST ..\..\bin\UnitTestFiles\linesymbol.sd                  del /F ..\..\bin\UnitTestFiles\linesymbol.sd
+    if EXIST ..\..\bin\UnitTestFiles\symbol.sd                      del /F ..\..\bin\UnitTestFiles\symbol.sd
+    if EXIST ..\..\bin\UnitTestFiles\symbolp.sd                     del /F ..\..\bin\UnitTestFiles\symbolp.sd
+    if EXIST ..\..\bin\UnitTestFiles\MTYP1500a.sd                   del /F ..\..\bin\UnitTestFiles\MTYP1500a.sd
+    if EXIST ..\..\bin\UnitTestFiles\UT_SymbologyLines.fs           del /F ..\..\bin\UnitTestFiles\UT_SymbologyLines.fs
+    if EXIST ..\..\bin\UnitTestFiles\UT_SymbologyLines.ldf          del /F ..\..\bin\UnitTestFiles\UT_SymbologyLines.ldf
+    if EXIST ..\..\bin\UnitTestFiles\UT_SymbologyLines.mdf          del /F ..\..\bin\UnitTestFiles\UT_SymbologyLines.mdf
+    if EXIST ..\..\bin\UnitTestFiles\UT_SymbologyLines.sdf          del /F ..\..\bin\UnitTestFiles\UT_SymbologyLines.sdf
+    if EXIST ..\..\bin\UnitTestFiles\UT_SymbologyLinesCrossTick.ldf del /F ..\..\bin\UnitTestFiles\UT_SymbologyLinesCrossTick.ldf
+    if EXIST ..\..\bin\UnitTestFiles\UT_SymbologyLinesCrossTick.mdf del /F ..\..\bin\UnitTestFiles\UT_SymbologyLinesCrossTick.mdf
+    if EXIST ..\..\bin\UnitTestFiles\UT_SymbologyPoints.fs          del /F ..\..\bin\UnitTestFiles\UT_SymbologyPoints.fs
+    if EXIST ..\..\bin\UnitTestFiles\UT_SymbologyPoints.ldf         del /F ..\..\bin\UnitTestFiles\UT_SymbologyPoints.ldf
+    if EXIST ..\..\bin\UnitTestFiles\UT_SymbologyPoints.mdf         del /F ..\..\bin\UnitTestFiles\UT_SymbologyPoints.mdf
+    if EXIST ..\..\bin\UnitTestFiles\UT_SymbologyPoints.sdf         del /F ..\..\bin\UnitTestFiles\UT_SymbologyPoints.sdf
+    if EXIST ..\..\bin\UnitTestFiles\UT_SymbologyPointsParam.ldf    del /F ..\..\bin\UnitTestFiles\UT_SymbologyPointsParam.ldf
+    if EXIST ..\..\bin\UnitTestFiles\UT_SymbologyPointsParam.mdf    del /F ..\..\bin\UnitTestFiles\UT_SymbologyPointsParam.mdf
+    if EXIST ..\..\bin\UnitTestFiles\UT_SymbologyRoads.fs           del /F ..\..\bin\UnitTestFiles\UT_SymbologyRoads.fs
+    if EXIST ..\..\bin\UnitTestFiles\UT_SymbologyRoads.ldf          del /F ..\..\bin\UnitTestFiles\UT_SymbologyRoads.ldf
+    if EXIST ..\..\bin\UnitTestFiles\UT_SymbologyRoads.mdf          del /F ..\..\bin\UnitTestFiles\UT_SymbologyRoads.mdf
+    if EXIST ..\..\bin\UnitTestFiles\UT_SymbologyRoads.sdf          del /F ..\..\bin\UnitTestFiles\UT_SymbologyRoads.sdf
+    if EXIST ..\..\bin\UnitTestFiles\UT_SymbologyParcels.ldf        del /F ..\..\bin\UnitTestFiles\UT_SymbologyParcels.ldf
+    if EXIST ..\..\bin\UnitTestFiles\UT_SymbologyPolygons.mdf       del /F ..\..\bin\UnitTestFiles\UT_SymbologyPolygons.mdf
+    if EXIST ..\..\bin\UnitTestFiles\UT_Annotation1.ldf             del /F ..\..\bin\UnitTestFiles\UT_Annotation1.ldf
+    if EXIST ..\..\bin\UnitTestFiles\UT_Annotation1.mdf             del /F ..\..\bin\UnitTestFiles\UT_Annotation1.mdf
+    if EXIST ..\..\bin\UnitTestFiles\UT_Annotation2.ldf             del /F ..\..\bin\UnitTestFiles\UT_Annotation2.ldf
+    if EXIST ..\..\bin\UnitTestFiles\UT_Annotation2.mdf             del /F ..\..\bin\UnitTestFiles\UT_Annotation2.mdf
+    if EXIST ..\..\bin\UnitTestFiles\UT_Annotation3.ldf             del /F ..\..\bin\UnitTestFiles\UT_Annotation3.ldf
+    if EXIST ..\..\bin\UnitTestFiles\UT_Annotation3.mdf             del /F ..\..\bin\UnitTestFiles\UT_Annotation3.mdf
+    if EXIST ..\..\bin\UnitTestFiles\SavePointTest.sqlite           del /F ..\..\bin\UnitTestFiles\SavePointTest.sqlite
+    if EXIST ..\..\bin\UnitTestFiles\SavePointTest.FeatureSource    del /F ..\..\bin\UnitTestFiles\SavePointTest.FeatureSource
+    if EXIST ..\..\bin\UnitTestFiles\UT_Parcels_SQLite_Join.FeatureSource    del /F ..\..\bin\UnitTestFiles\UT_Parcels_SQLite_Join.FeatureSource
+    if EXIST ..\..\bin\UnitTestFiles\UT_FdoJoin.FeatureSource		del /F ..\..\bin\UnitTestFiles\UT_FdoJoin.FeatureSource
+    if EXIST ..\..\bin\UnitTestFiles\ParcelsJoinTest.sqlite         del /F ..\..\bin\UnitTestFiles\ParcelsJoinTest.sqlite
+    if EXIST ..\..\bin\UnitTestFiles\JoinTest.sqlite                del /F ..\..\bin\UnitTestFiles\JoinTest.FeatureSource
+    del /F   ..\..\bin\debug(v100)64\*.ilk
+
+
+cleanrelease(v100):
+    if EXIST ..\..\bin\release(v100)\MgFoundation.dll              del /F ..\..\bin\release(v100)\MgFoundation.dll
+    if EXIST ..\..\bin\release(v100)\MgFoundation.pdb              del /F ..\..\bin\release(v100)\MgFoundation.pdb
+    if EXIST ..\..\bin\release(v100)\MgGeometry.dll                del /F ..\..\bin\release(v100)\MgGeometry.dll
+    if EXIST ..\..\bin\release(v100)\MgGeometry.pdb                del /F ..\..\bin\release(v100)\MgGeometry.pdb
+    if EXIST ..\..\bin\release(v100)\MgPlatformBase.dll            del /F ..\..\bin\release(v100)\MgPlatformBase.dll
+    if EXIST ..\..\bin\release(v100)\MgPlatformBase.pdb            del /F ..\..\bin\release(v100)\MgPlatformBase.pdb
+    if EXIST ..\..\bin\release(v100)\MgMapGuideCommon.dll          del /F ..\..\bin\release(v100)\MgMapGuideCommon.dll
+    if EXIST ..\..\bin\release(v100)\MgMapGuideCommon.pdb          del /F ..\..\bin\release(v100)\MgMapGuideCommon.pdb
+    if EXIST ..\..\bin\release(v100)\MgMdfModel.dll                del /F ..\..\bin\release(v100)\MgMdfModel.dll
+    if EXIST ..\..\bin\release(v100)\MgMdfModel.pdb                del /F ..\..\bin\release(v100)\MgMdfModel.pdb
+    if EXIST ..\..\bin\release(v100)\MgMdfParser.dll               del /F ..\..\bin\release(v100)\MgMdfParser.dll
+    if EXIST ..\..\bin\release(v100)\MgMdfParser.pdb               del /F ..\..\bin\release(v100)\MgMdfParser.pdb
+    if EXIST ..\..\bin\release(v100)\MgStylization.dll             del /F ..\..\bin\release(v100)\MgStylization.dll
+    if EXIST ..\..\bin\release(v100)\MgStylization.pdb             del /F ..\..\bin\release(v100)\MgStylization.pdb
+    if EXIST ..\..\bin\release(v100)\MgRenderers.dll               del /F ..\..\bin\release(v100)\MgRenderers.dll
+    if EXIST ..\..\bin\release(v100)\MgRenderers.pdb               del /F ..\..\bin\release(v100)\MgRenderers.pdb
+    if EXIST ..\..\bin\release(v100)\ACE.dll                       del /F ..\..\bin\release(v100)\ACE.dll
+    if EXIST ..\..\bin\release(v100)\ACE.pdb                       del /F ..\..\bin\release(v100)\ACE.pdb
+    if EXIST ..\..\bin\release(v100)\gd.dll                        del /F ..\..\bin\release(v100)\gd.dll
+    if EXIST ..\..\bin\release(v100)\gd.pdb                        del /F ..\..\bin\release(v100)\gd.pdb
+    if EXIST ..\..\bin\release(v100)\GEOS.dll                      del /F ..\..\bin\release(v100)\GEOS.dll
+    if EXIST ..\..\bin\release(v100)\GEOS.pdb                      del /F ..\..\bin\release(v100)\GEOS.pdb
+    if EXIST ..\..\bin\release(v100)\libdb48.dll                   del /F ..\..\bin\release(v100)\libdb48.dll
+    if EXIST ..\..\bin\release(v100)\libdb48.pdb                   del /F ..\..\bin\release(v100)\libdb48.pdb
+    if EXIST ..\..\bin\release(v100)\libdbxml25.dll                del /F ..\..\bin\release(v100)\libdbxml25.dll
+    if EXIST ..\..\bin\release(v100)\libdbxml25.pdb                del /F ..\..\bin\release(v100)\libdbxml25.pdb
+    if EXIST ..\..\bin\release(v100)\xqilla24.dll                  del /F ..\..\bin\release(v100)\xqilla24.dll
+    if EXIST ..\..\bin\release(v100)\xqilla24.pdb                  del /F ..\..\bin\release(v100)\xqilla24.pdb
+    if EXIST ..\..\bin\release(v100)\xerces-c_3_1mg.dll            del /F ..\..\bin\release(v100)\xerces-c_3_1mg.dll
+    if EXIST ..\..\bin\release(v100)\xerces-c_3_1mg.pdb            del /F ..\..\bin\release(v100)\xerces-c_3_1mg.pdb
+    if EXIST ..\..\bin\release(v100)\serverconfig.ini              del /F ..\..\bin\release(v100)\serverconfig.ini
+    if EXIST ..\..\bin\UnitTestFiles\LibraryRepositoryContent.xml   del /F ..\..\bin\UnitTestFiles\LibraryRepositoryContent.xml
+    if EXIST ..\..\bin\UnitTestFiles\SampleRepositoryHeader.xml     del /F ..\..\bin\UnitTestFiles\SampleRepositoryHeader.xml
+    if EXIST ..\..\bin\UnitTestFiles\SampleRepositoryContent.xml    del /F ..\..\bin\UnitTestFiles\SampleRepositoryContent.xml
+    if EXIST ..\..\bin\UnitTestFiles\TEST.LayerDefinition           del /F ..\..\bin\UnitTestFiles\TEST.LayerDefinition
+    if EXIST ..\..\bin\UnitTestFiles\TEST.FeatureSource             del /F ..\..\bin\UnitTestFiles\TEST.FeatureSource
+    if EXIST ..\..\bin\UnitTestFiles\TEST.sdf                       del /F ..\..\bin\UnitTestFiles\TEST.sdf
+    if EXIST ..\..\bin\UnitTestFiles\UT_BaseMap.mdf                 del /F ..\..\bin\UnitTestFiles\UT_BaseMap.mdf
+    if EXIST ..\..\bin\UnitTestFiles\UT_StylizationFuncs.mdf        del /F ..\..\bin\UnitTestFiles\UT_StylizationFuncs.mdf
+    if EXIST ..\..\bin\UnitTestFiles\UT_Parcels.fs                  del /F ..\..\bin\UnitTestFiles\UT_Parcels.fs
+    if EXIST ..\..\bin\UnitTestFiles\UT_Parcels.ldf                 del /F ..\..\bin\UnitTestFiles\UT_Parcels.ldf
+    if EXIST ..\..\bin\UnitTestFiles\UT_Parcels.sdf                 del /F ..\..\bin\UnitTestFiles\UT_Parcels.sdf
+    if EXIST ..\..\bin\UnitTestFiles\UT_RoadCenterLines.fs          del /F ..\..\bin\UnitTestFiles\UT_RoadCenterLines.fs
+    if EXIST ..\..\bin\UnitTestFiles\UT_RoadCenterLines.ldf         del /F ..\..\bin\UnitTestFiles\UT_RoadCenterLines.ldf
+    if EXIST ..\..\bin\UnitTestFiles\UT_RoadCenterLines.sdf         del /F ..\..\bin\UnitTestFiles\UT_RoadCenterLines.sdf
+    if EXIST ..\..\bin\UnitTestFiles\UT_VotingDistricts.fs          del /F ..\..\bin\UnitTestFiles\UT_VotingDistricts.fs
+    if EXIST ..\..\bin\UnitTestFiles\UT_VotingDistricts.ldf         del /F ..\..\bin\UnitTestFiles\UT_VotingDistricts.ldf
+    if EXIST ..\..\bin\UnitTestFiles\UT_VotingDistrictsFunctions.ldf del /F ..\..\bin\UnitTestFiles\UT_VotingDistrictsFunctions.ldf
+    if EXIST ..\..\bin\UnitTestFiles\UT_VotingDistricts.sdf         del /F ..\..\bin\UnitTestFiles\UT_VotingDistricts.sdf
+    if EXIST ..\..\bin\UnitTestFiles\UT_AllElements.pl              del /F ..\..\bin\UnitTestFiles\UT_AllElements.pl
+    if EXIST ..\..\bin\UnitTestFiles\UT_NoLegend.pl                 del /F ..\..\bin\UnitTestFiles\UT_NoLegend.pl
+    if EXIST ..\..\bin\UnitTestFiles\UT_SymbolMart.sl               del /F ..\..\bin\UnitTestFiles\UT_SymbolMart.sl
+    if EXIST ..\..\bin\UnitTestFiles\UT_Symbols.dwf                 del /F ..\..\bin\UnitTestFiles\UT_Symbols.dwf
+    if EXIST ..\..\bin\UnitTestFiles\UT_SheboyganWithWatermark.mdf  del /F ..\..\bin\UnitTestFiles\UT_SheboyganWithWatermark.mdf
+    if EXIST ..\..\bin\UnitTestFiles\UT_PoweredByMapGuide.wdf       del /F ..\..\bin\UnitTestFiles\UT_PoweredByMapGuide.wdf
+    if EXIST ..\..\bin\UnitTestFiles\UT_Sheboygan.mdf               del /F ..\..\bin\UnitTestFiles\UT_Sheboygan.mdf
+    if EXIST ..\..\bin\UnitTestFiles\UT_HydrographicPolygons.sdf    del /F ..\..\bin\UnitTestFiles\UT_HydrographicPolygons.sdf
+    if EXIST ..\..\bin\UnitTestFiles\UT_HydrographicPolygons.fs     del /F ..\..\bin\UnitTestFiles\UT_HydrographicPolygons.fs
+    if EXIST ..\..\bin\UnitTestFiles\UT_HydrographicPolygons.ldf    del /F ..\..\bin\UnitTestFiles\UT_HydrographicPolygons.ldf
+    if EXIST ..\..\bin\UnitTestFiles\UT_Rail.sdf                    del /F ..\..\bin\UnitTestFiles\UT_Rail.sdf
+    if EXIST ..\..\bin\UnitTestFiles\UT_Rail.fs                     del /F ..\..\bin\UnitTestFiles\UT_Rail.fs
+    if EXIST ..\..\bin\UnitTestFiles\UT_Rail.ldf                    del /F ..\..\bin\UnitTestFiles\UT_Rail.ldf
+    if EXIST ..\..\bin\UnitTestFiles\Sheboygan_Parcels.FeatureSource del /F ..\..\bin\UnitTestFiles\Sheboygan_Parcels.FeatureSource
+    if EXIST ..\..\bin\UnitTestFiles\Sheboygan_Parcels.sdf          del /F ..\..\bin\UnitTestFiles\Sheboygan_Parcels.sdf
+    if EXIST ..\..\bin\UnitTestFiles\Sheboygan_BuildingOutlines.FeatureSource del /F ..\..\bin\UnitTestFiles\Sheboygan_BuildingOutlines.FeatureSource
+    if EXIST ..\..\bin\UnitTestFiles\Sheboygan_BuildingOutlines.sdf del /F ..\..\bin\UnitTestFiles\Sheboygan_BuildingOutlines.sdf
+    if EXIST ..\..\bin\UnitTestFiles\Sheboygan_VotingDistricts.FeatureSource del /F ..\..\bin\UnitTestFiles\Sheboygan_VotingDistricts.FeatureSource
+    if EXIST ..\..\bin\UnitTestFiles\Sheboygan_VotingDistricts.sdf  del /F ..\..\bin\UnitTestFiles\Sheboygan_VotingDistricts.sdf
+    if EXIST ..\..\bin\UnitTestFiles\Empty.FeatureSource            del /F ..\..\bin\UnitTestFiles\Empty.FeatureSource
+    if EXIST ..\..\bin\UnitTestFiles\Empty.sdf                      del /F ..\..\bin\UnitTestFiles\Empty.sdf
+    if EXIST ..\..\bin\UnitTestFiles\World.mgp                      del /F ..\..\bin\UnitTestFiles\World.mgp
+    if EXIST ..\..\bin\UnitTestFiles\World_Countries.sdf            del /F ..\..\bin\UnitTestFiles\World_Countries.sdf
+    if EXIST ..\..\bin\UnitTestFiles\Shuttle.zip                    del /F ..\..\bin\UnitTestFiles\Shuttle.zip
+    if EXIST ..\..\bin\UnitTestFiles\Redding_Parcels.FeatureSource  del /F ..\..\bin\UnitTestFiles\Redding_Parcels.FeatureSource
+    if EXIST ..\..\bin\UnitTestFiles\Redding_Parcels.shp            del /F ..\..\bin\UnitTestFiles\Redding_Parcels.shp
+    if EXIST ..\..\bin\UnitTestFiles\Redding_Parcels.dbf            del /F ..\..\bin\UnitTestFiles\Redding_Parcels.dbf
+    if EXIST ..\..\bin\UnitTestFiles\Redding_Parcels.shx            del /F ..\..\bin\UnitTestFiles\Redding_Parcels.shx
+    if EXIST ..\..\bin\UnitTestFiles\1.1.1.mgd                      del /F ..\..\bin\UnitTestFiles\1.1.1.mgd
+    if EXIST ..\..\bin\UnitTestFiles\epsgcodes.txt                  del /F ..\..\bin\UnitTestFiles\epsgcodes.txt
+    if EXIST ..\..\bin\UnitTestFiles\ogcwkts.txt                    del /F ..\..\bin\UnitTestFiles\ogcwkts.txt
+    if EXIST ..\..\bin\UnitTestFiles\UT_GetMapKmlResult.txt         del /F ..\..\bin\UnitTestFiles\UT_GetMapKmlResult.txt
+    if EXIST ..\..\bin\UnitTestFiles\UT_GetLayerKmlResult.txt       del /F ..\..\bin\UnitTestFiles\UT_GetLayerKmlResult.txt
+    if EXIST ..\..\bin\UnitTestFiles\UT_GetFeaturesKmlResult.txt    del /F ..\..\bin\UnitTestFiles\UT_GetFeaturesKmlResult.txt
+    if EXIST ..\..\bin\UnitTestFiles\TESTChainedInner1ToManyJoin.FeatureSource del /F ..\..\bin\UnitTestFiles\TESTChainedInner1ToManyJoin.FeatureSource
+    if EXIST ..\..\bin\UnitTestFiles\MdfTestMap.mdf                 del /F ..\..\bin\UnitTestFiles\MdfTestMap.mdf
+    if EXIST ..\..\bin\UnitTestFiles\MdfTestTypeStyles.ldf          del /F ..\..\bin\UnitTestFiles\MdfTestTypeStyles.ldf
+    if EXIST ..\..\bin\UnitTestFiles\MdfTestCompoundSymbol.sd       del /F ..\..\bin\UnitTestFiles\MdfTestCompoundSymbol.sd
+    if EXIST ..\..\bin\UnitTestFiles\MdfTestSimpleSymbol.sd         del /F ..\..\bin\UnitTestFiles\MdfTestSimpleSymbol.sd
+    if EXIST ..\..\bin\UnitTestFiles\areasymbol.sd                  del /F ..\..\bin\UnitTestFiles\areasymbol.sd
+    if EXIST ..\..\bin\UnitTestFiles\linesymbol.sd                  del /F ..\..\bin\UnitTestFiles\linesymbol.sd
+    if EXIST ..\..\bin\UnitTestFiles\symbol.sd                      del /F ..\..\bin\UnitTestFiles\symbol.sd
+    if EXIST ..\..\bin\UnitTestFiles\symbolp.sd                     del /F ..\..\bin\UnitTestFiles\symbolp.sd
+    if EXIST ..\..\bin\UnitTestFiles\MTYP1500a.sd                   del /F ..\..\bin\UnitTestFiles\MTYP1500a.sd
+    if EXIST ..\..\bin\UnitTestFiles\UT_SymbologyLines.fs           del /F ..\..\bin\UnitTestFiles\UT_SymbologyLines.fs
+    if EXIST ..\..\bin\UnitTestFiles\UT_SymbologyLines.ldf          del /F ..\..\bin\UnitTestFiles\UT_SymbologyLines.ldf
+    if EXIST ..\..\bin\UnitTestFiles\UT_SymbologyLines.mdf          del /F ..\..\bin\UnitTestFiles\UT_SymbologyLines.mdf
+    if EXIST ..\..\bin\UnitTestFiles\UT_SymbologyLines.sdf          del /F ..\..\bin\UnitTestFiles\UT_SymbologyLines.sdf
+    if EXIST ..\..\bin\UnitTestFiles\UT_SymbologyLinesCrossTick.ldf del /F ..\..\bin\UnitTestFiles\UT_SymbologyLinesCrossTick.ldf
+    if EXIST ..\..\bin\UnitTestFiles\UT_SymbologyLinesCrossTick.mdf del /F ..\..\bin\UnitTestFiles\UT_SymbologyLinesCrossTick.mdf
+    if EXIST ..\..\bin\UnitTestFiles\UT_SymbologyPoints.fs          del /F ..\..\bin\UnitTestFiles\UT_SymbologyPoints.fs
+    if EXIST ..\..\bin\UnitTestFiles\UT_SymbologyPoints.ldf         del /F ..\..\bin\UnitTestFiles\UT_SymbologyPoints.ldf
+    if EXIST ..\..\bin\UnitTestFiles\UT_SymbologyPoints.mdf         del /F ..\..\bin\UnitTestFiles\UT_SymbologyPoints.mdf
+    if EXIST ..\..\bin\UnitTestFiles\UT_SymbologyPoints.sdf         del /F ..\..\bin\UnitTestFiles\UT_SymbologyPoints.sdf
+    if EXIST ..\..\bin\UnitTestFiles\UT_SymbologyPointsParam.ldf    del /F ..\..\bin\UnitTestFiles\UT_SymbologyPointsParam.ldf
+    if EXIST ..\..\bin\UnitTestFiles\UT_SymbologyPointsParam.mdf    del /F ..\..\bin\UnitTestFiles\UT_SymbologyPointsParam.mdf
+    if EXIST ..\..\bin\UnitTestFiles\UT_SymbologyRoads.fs           del /F ..\..\bin\UnitTestFiles\UT_SymbologyRoads.fs
+    if EXIST ..\..\bin\UnitTestFiles\UT_SymbologyRoads.ldf          del /F ..\..\bin\UnitTestFiles\UT_SymbologyRoads.ldf
+    if EXIST ..\..\bin\UnitTestFiles\UT_SymbologyRoads.mdf          del /F ..\..\bin\UnitTestFiles\UT_SymbologyRoads.mdf
+    if EXIST ..\..\bin\UnitTestFiles\UT_SymbologyRoads.sdf          del /F ..\..\bin\UnitTestFiles\UT_SymbologyRoads.sdf
+    if EXIST ..\..\bin\UnitTestFiles\UT_SymbologyParcels.ldf        del /F ..\..\bin\UnitTestFiles\UT_SymbologyParcels.ldf
+    if EXIST ..\..\bin\UnitTestFiles\UT_SymbologyPolygons.mdf       del /F ..\..\bin\UnitTestFiles\UT_SymbologyPolygons.mdf
+    if EXIST ..\..\bin\UnitTestFiles\UT_Annotation1.ldf             del /F ..\..\bin\UnitTestFiles\UT_Annotation1.ldf
+    if EXIST ..\..\bin\UnitTestFiles\UT_Annotation1.mdf             del /F ..\..\bin\UnitTestFiles\UT_Annotation1.mdf
+    if EXIST ..\..\bin\UnitTestFiles\UT_Annotation2.ldf             del /F ..\..\bin\UnitTestFiles\UT_Annotation2.ldf
+    if EXIST ..\..\bin\UnitTestFiles\UT_Annotation2.mdf             del /F ..\..\bin\UnitTestFiles\UT_Annotation2.mdf
+    if EXIST ..\..\bin\UnitTestFiles\UT_Annotation3.ldf             del /F ..\..\bin\UnitTestFiles\UT_Annotation3.ldf
+    if EXIST ..\..\bin\UnitTestFiles\UT_Annotation3.mdf             del /F ..\..\bin\UnitTestFiles\UT_Annotation3.mdf
+    if EXIST ..\..\bin\UnitTestFiles\SavePointTest.sqlite           del /F ..\..\bin\UnitTestFiles\SavePointTest.sqlite
+    if EXIST ..\..\bin\UnitTestFiles\SavePointTest.FeatureSource    del /F ..\..\bin\UnitTestFiles\SavePointTest.FeatureSource
+    if EXIST ..\..\bin\UnitTestFiles\UT_Parcels_SQLite_Join.FeatureSource    del /F ..\..\bin\UnitTestFiles\UT_Parcels_SQLite_Join.FeatureSource
+    if EXIST ..\..\bin\UnitTestFiles\UT_FdoJoin.FeatureSource       del /F ..\..\bin\UnitTestFiles\UT_FdoJoin.FeatureSource
+    if EXIST ..\..\bin\UnitTestFiles\ParcelsJoinTest.sqlite         del /F ..\..\bin\UnitTestFiles\ParcelsJoinTest.sqlite
+    if EXIST ..\..\bin\UnitTestFiles\JoinTest.sqlite                del /F ..\..\bin\UnitTestFiles\JoinTest.FeatureSource
+
+cleanrelease(v100)64:
+    if EXIST ..\..\bin\release(v100)64\MgFoundation.dll              del /F ..\..\bin\release(v100)64\MgFoundation.dll
+    if EXIST ..\..\bin\release(v100)64\MgFoundation.pdb              del /F ..\..\bin\release(v100)64\MgFoundation.pdb
+    if EXIST ..\..\bin\release(v100)64\MgGeometry.dll                del /F ..\..\bin\release(v100)64\MgGeometry.dll
+    if EXIST ..\..\bin\release(v100)64\MgGeometry.pdb                del /F ..\..\bin\release(v100)64\MgGeometry.pdb
+    if EXIST ..\..\bin\release(v100)64\MgPlatformBase.dll            del /F ..\..\bin\release(v100)64\MgPlatformBase.dll
+    if EXIST ..\..\bin\release(v100)64\MgPlatformBase.pdb            del /F ..\..\bin\release(v100)64\MgPlatformBase.pdb
+    if EXIST ..\..\bin\release(v100)64\MgMapGuideCommon.dll          del /F ..\..\bin\release(v100)64\MgMapGuideCommon.dll
+    if EXIST ..\..\bin\release(v100)64\MgMapGuideCommon.pdb          del /F ..\..\bin\release(v100)64\MgMapGuideCommon.pdb
+    if EXIST ..\..\bin\release(v100)64\MgMdfModel.dll                del /F ..\..\bin\release(v100)64\MgMdfModel.dll
+    if EXIST ..\..\bin\release(v100)64\MgMdfModel.pdb                del /F ..\..\bin\release(v100)64\MgMdfModel.pdb
+    if EXIST ..\..\bin\release(v100)64\MgMdfParser.dll               del /F ..\..\bin\release(v100)64\MgMdfParser.dll
+    if EXIST ..\..\bin\release(v100)64\MgMdfParser.pdb               del /F ..\..\bin\release(v100)64\MgMdfParser.pdb
+    if EXIST ..\..\bin\release(v100)64\MgStylization.dll             del /F ..\..\bin\release(v100)64\MgStylization.dll
+    if EXIST ..\..\bin\release(v100)64\MgStylization.pdb             del /F ..\..\bin\release(v100)64\MgStylization.pdb
+    if EXIST ..\..\bin\release(v100)64\MgRenderers.dll               del /F ..\..\bin\release(v100)64\MgRenderers.dll
+    if EXIST ..\..\bin\release(v100)64\MgRenderers.pdb               del /F ..\..\bin\release(v100)64\MgRenderers.pdb
+    if EXIST ..\..\bin\release(v100)64\ACE.dll                       del /F ..\..\bin\release(v100)64\ACE.dll
+    if EXIST ..\..\bin\release(v100)64\ACE.pdb                       del /F ..\..\bin\release(v100)64\ACE.pdb
+    if EXIST ..\..\bin\release(v100)64\gd.dll                        del /F ..\..\bin\release(v100)64\gd.dll
+    if EXIST ..\..\bin\release(v100)64\gd.pdb                        del /F ..\..\bin\release(v100)64\gd.pdb
+    if EXIST ..\..\bin\release(v100)64\GEOS.dll                      del /F ..\..\bin\release(v100)64\GEOS.dll
+    if EXIST ..\..\bin\release(v100)64\GEOS.pdb                      del /F ..\..\bin\release(v100)64\GEOS.pdb
+    if EXIST ..\..\bin\release(v100)64\libdb48.dll                   del /F ..\..\bin\release(v100)64\libdb48.dll
+    if EXIST ..\..\bin\release(v100)64\libdb48.pdb                   del /F ..\..\bin\release(v100)64\libdb48.pdb
+    if EXIST ..\..\bin\release(v100)64\libdbxml25.dll                del /F ..\..\bin\release(v100)64\libdbxml25.dll
+    if EXIST ..\..\bin\release(v100)64\libdbxml25.pdb                del /F ..\..\bin\release(v100)64\libdbxml25.pdb
+    if EXIST ..\..\bin\release(v100)64\xqilla24.dll                  del /F ..\..\bin\release(v100)64\xqilla24.dll
+    if EXIST ..\..\bin\release(v100)64\xqilla24.pdb                  del /F ..\..\bin\release(v100)64\xqilla24.pdb
+    if EXIST ..\..\bin\release(v100)64\xerces-c_3_1mg.dll            del /F ..\..\bin\release(v100)64\xerces-c_3_1mg.dll
+    if EXIST ..\..\bin\release(v100)64\xerces-c_3_1mg.pdb            del /F ..\..\bin\release(v100)64\xerces-c_3_1mg.pdb
+    if EXIST ..\..\bin\release(v100)64\serverconfig.ini              del /F ..\..\bin\release(v100)64\serverconfig.ini
+    if EXIST ..\..\bin\UnitTestFiles\LibraryRepositoryContent.xml   del /F ..\..\bin\UnitTestFiles\LibraryRepositoryContent.xml
+    if EXIST ..\..\bin\UnitTestFiles\SampleRepositoryHeader.xml     del /F ..\..\bin\UnitTestFiles\SampleRepositoryHeader.xml
+    if EXIST ..\..\bin\UnitTestFiles\SampleRepositoryContent.xml    del /F ..\..\bin\UnitTestFiles\SampleRepositoryContent.xml
+    if EXIST ..\..\bin\UnitTestFiles\TEST.LayerDefinition           del /F ..\..\bin\UnitTestFiles\TEST.LayerDefinition
+    if EXIST ..\..\bin\UnitTestFiles\TEST.FeatureSource             del /F ..\..\bin\UnitTestFiles\TEST.FeatureSource
+    if EXIST ..\..\bin\UnitTestFiles\TEST.sdf                       del /F ..\..\bin\UnitTestFiles\TEST.sdf
+    if EXIST ..\..\bin\UnitTestFiles\UT_BaseMap.mdf                 del /F ..\..\bin\UnitTestFiles\UT_BaseMap.mdf
+    if EXIST ..\..\bin\UnitTestFiles\UT_StylizationFuncs.mdf        del /F ..\..\bin\UnitTestFiles\UT_StylizationFuncs.mdf
+    if EXIST ..\..\bin\UnitTestFiles\UT_Parcels.fs                  del /F ..\..\bin\UnitTestFiles\UT_Parcels.fs
+    if EXIST ..\..\bin\UnitTestFiles\UT_Parcels.ldf                 del /F ..\..\bin\UnitTestFiles\UT_Parcels.ldf
+    if EXIST ..\..\bin\UnitTestFiles\UT_Parcels.sdf                 del /F ..\..\bin\UnitTestFiles\UT_Parcels.sdf
+    if EXIST ..\..\bin\UnitTestFiles\UT_RoadCenterLines.fs          del /F ..\..\bin\UnitTestFiles\UT_RoadCenterLines.fs
+    if EXIST ..\..\bin\UnitTestFiles\UT_RoadCenterLines.ldf         del /F ..\..\bin\UnitTestFiles\UT_RoadCenterLines.ldf
+    if EXIST ..\..\bin\UnitTestFiles\UT_RoadCenterLines.sdf         del /F ..\..\bin\UnitTestFiles\UT_RoadCenterLines.sdf
+    if EXIST ..\..\bin\UnitTestFiles\UT_VotingDistricts.fs          del /F ..\..\bin\UnitTestFiles\UT_VotingDistricts.fs
+    if EXIST ..\..\bin\UnitTestFiles\UT_VotingDistricts.ldf         del /F ..\..\bin\UnitTestFiles\UT_VotingDistricts.ldf
+    if EXIST ..\..\bin\UnitTestFiles\UT_VotingDistrictsFunctions.ldf del /F ..\..\bin\UnitTestFiles\UT_VotingDistrictsFunctions.ldf
+    if EXIST ..\..\bin\UnitTestFiles\UT_VotingDistricts.sdf         del /F ..\..\bin\UnitTestFiles\UT_VotingDistricts.sdf
+    if EXIST ..\..\bin\UnitTestFiles\UT_AllElements.pl              del /F ..\..\bin\UnitTestFiles\UT_AllElements.pl
+    if EXIST ..\..\bin\UnitTestFiles\UT_NoLegend.pl                 del /F ..\..\bin\UnitTestFiles\UT_NoLegend.pl
+    if EXIST ..\..\bin\UnitTestFiles\UT_SymbolMart.sl               del /F ..\..\bin\UnitTestFiles\UT_SymbolMart.sl
+    if EXIST ..\..\bin\UnitTestFiles\UT_Symbols.dwf                 del /F ..\..\bin\UnitTestFiles\UT_Symbols.dwf
+    if EXIST ..\..\bin\UnitTestFiles\UT_SheboyganWithWatermark.mdf  del /F ..\..\bin\UnitTestFiles\UT_SheboyganWithWatermark.mdf
+    if EXIST ..\..\bin\UnitTestFiles\UT_PoweredByMapGuide.wdf       del /F ..\..\bin\UnitTestFiles\UT_PoweredByMapGuide.wdf
+    if EXIST ..\..\bin\UnitTestFiles\UT_Sheboygan.mdf               del /F ..\..\bin\UnitTestFiles\UT_Sheboygan.mdf
+    if EXIST ..\..\bin\UnitTestFiles\UT_HydrographicPolygons.sdf    del /F ..\..\bin\UnitTestFiles\UT_HydrographicPolygons.sdf
+    if EXIST ..\..\bin\UnitTestFiles\UT_HydrographicPolygons.fs     del /F ..\..\bin\UnitTestFiles\UT_HydrographicPolygons.fs
+    if EXIST ..\..\bin\UnitTestFiles\UT_HydrographicPolygons.ldf    del /F ..\..\bin\UnitTestFiles\UT_HydrographicPolygons.ldf
+    if EXIST ..\..\bin\UnitTestFiles\UT_Rail.sdf                    del /F ..\..\bin\UnitTestFiles\UT_Rail.sdf
+    if EXIST ..\..\bin\UnitTestFiles\UT_Rail.fs                     del /F ..\..\bin\UnitTestFiles\UT_Rail.fs
+    if EXIST ..\..\bin\UnitTestFiles\UT_Rail.ldf                    del /F ..\..\bin\UnitTestFiles\UT_Rail.ldf
     if EXIST ..\..\bin\UnitTestFiles\Sheboygan_Parcels.FeatureSource del /F ..\..\bin\UnitTestFiles\Sheboygan_Parcels.FeatureSource
     if EXIST ..\..\bin\UnitTestFiles\Sheboygan_Parcels.sdf          del /F ..\..\bin\UnitTestFiles\Sheboygan_Parcels.sdf
     if EXIST ..\..\bin\UnitTestFiles\Sheboygan_BuildingOutlines.FeatureSource del /F ..\..\bin\UnitTestFiles\Sheboygan_BuildingOutlines.FeatureSource

@@ -27,18 +27,22 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <CharacterSet>Unicode</CharacterSet>
+    <PlatformToolset>v110</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <CharacterSet>Unicode</CharacterSet>
+    <PlatformToolset>v110</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <CharacterSet>Unicode</CharacterSet>
+    <PlatformToolset>v110</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <CharacterSet>Unicode</CharacterSet>
+    <PlatformToolset>v110</PlatformToolset>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
@@ -58,17 +62,17 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup>
     <_ProjectFileVersion>10.0.40219.1</_ProjectFileVersion>
-    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">..\..\..\bin\debug\</OutDir>
-    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">..\..\..\obj\debug\Services\Drawing\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">..\..\..\bin\$(Configuration)\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">..\..\..\obj\$(Configuration)\Services\Drawing\</IntDir>
     <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</LinkIncremental>
-    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">..\..\..\bin\debug64\</OutDir>
-    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">..\..\..\obj\debug64\Services\Drawing\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">..\..\..\bin\$(Configuration)64\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">..\..\..\obj\$(Configuration)64\Services\Drawing\</IntDir>
     <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</LinkIncremental>
-    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">..\..\..\bin\release\</OutDir>
-    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">..\..\..\obj\release\Services\Drawing\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">..\..\..\bin\$(Configuration)\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">..\..\..\obj\$(Configuration)\Services\Drawing\</IntDir>
     <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</LinkIncremental>
-    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">..\..\..\bin\release64\</OutDir>
-    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">..\..\..\obj\release64\Services\Drawing\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">..\..\..\bin\$(Configuration)64\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">..\..\..\obj\$(Configuration)64\Services\Drawing\</IntDir>
     <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</LinkIncremental>
     <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">AllRules.ruleset</CodeAnalysisRuleSet>
     <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" />
@@ -102,14 +106,14 @@
     <Link>
       <AdditionalDependencies>ACEd.lib;xerces-c_3mgD.lib;dwfcore_wt.1.1.1.lib;dwftk_wt.7.1.1.lib;whiptk_wt.7.7.601.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(OutDir)MgServerDrawingServiced.dll</OutputFile>
-      <AdditionalLibraryDirectories>..\..\..\..\Oem\ACE\ACE_wrappers\lib;..\..\..\..\Oem\dbxml\lib;..\..\..\..\Oem\DWFTK7.1\develop\global\lib\static\debug\vc8.0;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>..\..\..\..\Oem\ACE\ACE_wrappers\lib\$(Configuration);..\..\..\..\Oem\dbxml\lib\$(Configuration);..\..\..\..\Oem\DWFTK7.1\develop\global\lib\static\$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <ProgramDatabaseFile>$(OutDir)MgServerDrawingServiced.pdb</ProgramDatabaseFile>
       <SubSystem>Windows</SubSystem>
       <RandomizedBaseAddress>false</RandomizedBaseAddress>
       <DataExecutionPrevention>
       </DataExecutionPrevention>
-      <ImportLibrary>..\..\..\lib\debug\MgServerDrawingServiced.lib</ImportLibrary>
+      <ImportLibrary>..\..\..\lib\$(Configuration)\MgServerDrawingServiced.lib</ImportLibrary>
       <TargetMachine>MachineX86</TargetMachine>
     </Link>
   </ItemDefinitionGroup>
@@ -128,14 +132,14 @@
     <Link>
       <AdditionalDependencies>ACEd.lib;xerces-c_3mgD.lib;dwfcore_wt.1.1.1.lib;dwftk_wt.7.1.1.lib;whiptk_wt.7.7.601.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(OutDir)MgServerDrawingServiced.dll</OutputFile>
-      <AdditionalLibraryDirectories>..\..\..\..\Oem\ACE\ACE_wrappers\lib64;..\..\..\..\Oem\dbxml\lib64;..\..\..\..\Oem\DWFTK7.1\develop\global\lib\static\debug64\vc8.0;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>..\..\..\..\Oem\ACE\ACE_wrappers\lib64\$(Configuration);..\..\..\..\Oem\dbxml\lib64\$(Configuration);..\..\..\..\Oem\DWFTK7.1\develop\global\lib\static\$(Configuration)64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <ProgramDatabaseFile>$(OutDir)MgServerDrawingServiced.pdb</ProgramDatabaseFile>
       <SubSystem>Windows</SubSystem>
       <RandomizedBaseAddress>false</RandomizedBaseAddress>
       <DataExecutionPrevention>
       </DataExecutionPrevention>
-      <ImportLibrary>..\..\..\lib\debug64\MgServerDrawingServiced.lib</ImportLibrary>
+      <ImportLibrary>..\..\..\lib\$(Configuration)64\MgServerDrawingServiced.lib</ImportLibrary>
       <TargetMachine>MachineX64</TargetMachine>
     </Link>
   </ItemDefinitionGroup>
@@ -153,7 +157,7 @@
     <Link>
       <AdditionalDependencies>ACE.lib;xerces-c_3mg.lib;dwfcore_wt.1.1.1.lib;dwftk_wt.7.1.1.lib;whiptk_wt.7.7.601.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(OutDir)MgServerDrawingService.dll</OutputFile>
-      <AdditionalLibraryDirectories>..\..\..\..\Oem\ACE\ACE_wrappers\lib;..\..\..\..\Oem\dbxml\lib;..\..\..\..\Oem\DWFTK7.1\develop\global\lib\static\release\vc8.0;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>..\..\..\..\Oem\ACE\ACE_wrappers\lib\$(Configuration);..\..\..\..\Oem\dbxml\lib\$(Configuration);..\..\..\..\Oem\DWFTK7.1\develop\global\lib\static\$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <ProgramDatabaseFile>$(OutDir)MgServerDrawingService.pdb</ProgramDatabaseFile>
       <SubSystem>Windows</SubSystem>
@@ -162,7 +166,7 @@
       <RandomizedBaseAddress>false</RandomizedBaseAddress>
       <DataExecutionPrevention>
       </DataExecutionPrevention>
-      <ImportLibrary>..\..\..\lib\release\MgServerDrawingService.lib</ImportLibrary>
+      <ImportLibrary>..\..\..\lib\$(Configuration)\MgServerDrawingService.lib</ImportLibrary>
       <TargetMachine>MachineX86</TargetMachine>
     </Link>
   </ItemDefinitionGroup>
@@ -180,7 +184,7 @@
     <Link>
       <AdditionalDependencies>ACE.lib;xerces-c_3mg.lib;dwfcore_wt.1.1.1.lib;dwftk_wt.7.1.1.lib;whiptk_wt.7.7.601.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(OutDir)MgServerDrawingService.dll</OutputFile>
-      <AdditionalLibraryDirectories>..\..\..\..\Oem\ACE\ACE_wrappers\lib64;..\..\..\..\Oem\dbxml\lib64;..\..\..\..\Oem\DWFTK7.1\develop\global\lib\static\release64\vc8.0;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>..\..\..\..\Oem\ACE\ACE_wrappers\lib64\$(Configuration);..\..\..\..\Oem\dbxml\lib64\$(Configuration);..\..\..\..\Oem\DWFTK7.1\develop\global\lib\static\$(Configuration)64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <ProgramDatabaseFile>$(OutDir)MgServerDrawingService.pdb</ProgramDatabaseFile>
       <SubSystem>Windows</SubSystem>
@@ -189,7 +193,7 @@
       <RandomizedBaseAddress>false</RandomizedBaseAddress>
       <DataExecutionPrevention>
       </DataExecutionPrevention>
-      <ImportLibrary>..\..\..\lib\release64\MgServerDrawingService.lib</ImportLibrary>
+      <ImportLibrary>..\..\..\lib\$(Configuration)64\MgServerDrawingService.lib</ImportLibrary>
       <TargetMachine>MachineX64</TargetMachine>
     </Link>
   </ItemDefinitionGroup>

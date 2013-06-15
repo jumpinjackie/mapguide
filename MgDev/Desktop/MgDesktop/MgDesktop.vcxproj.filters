@@ -848,7 +848,7 @@
     <ClInclude Include="Services\CryptoDefs.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Services\Resource\ResourceRontentCache.h">
+    <ClInclude Include="Services\Resource\ResourceContentCache.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

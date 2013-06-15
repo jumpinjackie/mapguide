@@ -26,18 +26,22 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <CharacterSet>Unicode</CharacterSet>
+    <PlatformToolset>v110</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <CharacterSet>Unicode</CharacterSet>
+    <PlatformToolset>v110</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <CharacterSet>Unicode</CharacterSet>
+    <PlatformToolset>v110</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <CharacterSet>Unicode</CharacterSet>
+    <PlatformToolset>v110</PlatformToolset>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
@@ -57,17 +61,17 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup>
     <_ProjectFileVersion>10.0.40219.1</_ProjectFileVersion>
-    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">..\..\bin\debug\</OutDir>
-    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">..\..\obj\debug\ServerCore\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">..\..\bin\$(Configuration)\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">..\..\obj\$(Configuration)\ServerCore\</IntDir>
     <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</LinkIncremental>
-    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">..\..\bin\debug64\</OutDir>
-    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">..\..\obj\debug64\ServerCore\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">..\..\bin\$(Configuration)64\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">..\..\obj\$(Configuration)64\ServerCore\</IntDir>
     <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</LinkIncremental>
-    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">..\..\bin\release\</OutDir>
-    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">..\..\obj\release\ServerCore\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">..\..\bin\$(Configuration)\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">..\..\obj\$(Configuration)\ServerCore\</IntDir>
     <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</LinkIncremental>
-    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">..\..\bin\release64\</OutDir>
-    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">..\..\obj\release64\ServerCore\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">..\..\bin\$(Configuration)64\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">..\..\obj\$(Configuration)64\ServerCore\</IntDir>
     <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</LinkIncremental>
     <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">AllRules.ruleset</CodeAnalysisRuleSet>
     <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" />
@@ -102,7 +106,7 @@
     <Link>
       <AdditionalDependencies>ACEd.lib;xerces-c_3mgD.lib;FDOCommon.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(OutDir)mgserver.exe</OutputFile>
-      <AdditionalLibraryDirectories>..\..\..\Oem\ACE\ACE_wrappers\lib;..\..\..\Oem\dbxml\lib;..\..\..\Oem\FDO\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>..\..\..\Oem\ACE\ACE_wrappers\lib\$(Configuration);..\..\..\Oem\dbxml\lib\$(Configuration);..\..\..\Oem\FDO\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <DelayLoadDLLs>FDOCommon.dll;%(DelayLoadDLLs)</DelayLoadDLLs>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <ProgramDatabaseFile>$(OutDir)mgserver.pdb</ProgramDatabaseFile>
@@ -111,7 +115,7 @@
       <RandomizedBaseAddress>false</RandomizedBaseAddress>
       <DataExecutionPrevention>
       </DataExecutionPrevention>
-      <ImportLibrary>..\..\lib\debug\MgServer.lib</ImportLibrary>
+      <ImportLibrary>..\..\lib\$(Configuration)\MgServer.lib</ImportLibrary>
       <TargetMachine>MachineX86</TargetMachine>
     </Link>
   </ItemDefinitionGroup>
@@ -131,7 +135,7 @@
     <Link>
       <AdditionalDependencies>ACEd.lib;xerces-c_3mgD.lib;FDOCommon.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(OutDir)mgserver.exe</OutputFile>
-      <AdditionalLibraryDirectories>..\..\..\Oem\ACE\ACE_wrappers\lib64;..\..\..\Oem\dbxml\lib64;..\..\..\Oem\FDO\lib64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>..\..\..\Oem\ACE\ACE_wrappers\lib64\$(Configuration);..\..\..\Oem\dbxml\lib64\$(Configuration);..\..\..\Oem\FDO\lib64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <DelayLoadDLLs>FDOCommon.dll;%(DelayLoadDLLs)</DelayLoadDLLs>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <ProgramDatabaseFile>$(OutDir)mgserver.pdb</ProgramDatabaseFile>
@@ -140,7 +144,7 @@
       <RandomizedBaseAddress>false</RandomizedBaseAddress>
       <DataExecutionPrevention>
       </DataExecutionPrevention>
-      <ImportLibrary>..\..\lib\debug64\MgServer.lib</ImportLibrary>
+      <ImportLibrary>..\..\lib\$(Configuration)64\MgServer.lib</ImportLibrary>
       <TargetMachine>MachineX64</TargetMachine>
     </Link>
   </ItemDefinitionGroup>
@@ -162,7 +166,7 @@
     <Link>
       <AdditionalDependencies>ACE.lib;xerces-c_3mg.lib;FDOCommon.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(OutDir)mgserver.exe</OutputFile>
-      <AdditionalLibraryDirectories>..\..\..\Oem\ACE\ACE_wrappers\lib;..\..\..\Oem\dbxml\lib;..\..\..\Oem\FDO\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>..\..\..\Oem\ACE\ACE_wrappers\lib\$(Configuration);..\..\..\Oem\dbxml\lib\$(Configuration);..\..\..\Oem\FDO\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <DelayLoadDLLs>FDOCommon.dll;%(DelayLoadDLLs)</DelayLoadDLLs>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <ProgramDatabaseFile>$(OutDir)mgserver.pdb</ProgramDatabaseFile>
@@ -172,7 +176,7 @@
       <FixedBaseAddress>false</FixedBaseAddress>
       <DataExecutionPrevention>
       </DataExecutionPrevention>
-      <ImportLibrary>..\..\lib\release\MgServer.lib</ImportLibrary>
+      <ImportLibrary>..\..\lib\$(Configuration)\MgServer.lib</ImportLibrary>
       <TargetMachine>MachineX86</TargetMachine>
     </Link>
   </ItemDefinitionGroup>
@@ -194,7 +198,7 @@
     <Link>
       <AdditionalDependencies>ACE.lib;xerces-c_3mg.lib;FDOCommon.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(OutDir)mgserver.exe</OutputFile>
-      <AdditionalLibraryDirectories>..\..\..\Oem\ACE\ACE_wrappers\lib64;..\..\..\Oem\dbxml\lib64;..\..\..\Oem\FDO\lib64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>..\..\..\Oem\ACE\ACE_wrappers\lib64\$(Configuration);..\..\..\Oem\dbxml\lib64\$(Configuration);..\..\..\Oem\FDO\lib64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <DelayLoadDLLs>FDOCommon.dll;%(DelayLoadDLLs)</DelayLoadDLLs>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <ProgramDatabaseFile>$(OutDir)mgserver.pdb</ProgramDatabaseFile>
@@ -204,7 +208,7 @@
       <FixedBaseAddress>false</FixedBaseAddress>
       <DataExecutionPrevention>
       </DataExecutionPrevention>
-      <ImportLibrary>..\..\lib\release64\MgServer.lib</ImportLibrary>
+      <ImportLibrary>..\..\lib\$(Configuration)64\MgServer.lib</ImportLibrary>
       <TargetMachine>MachineX64</TargetMachine>
     </Link>
   </ItemDefinitionGroup>

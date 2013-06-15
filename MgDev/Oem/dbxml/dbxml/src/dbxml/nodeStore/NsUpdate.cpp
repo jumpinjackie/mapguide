@@ -1358,13 +1358,13 @@ int NsUpdate::getTextIndex(const std::string &key, int index) const
 void NsUpdate::attributeRemoved(const DbXmlNodeImpl &node)
 {
 	string key = makeKey(node);
-	attrMap_.insert(make_pair<const std::string, int>(key,node.getIndex()));
+	attrMap_.insert(make_pair(key,node.getIndex()));
 }
 
 void NsUpdate::textRemoved(const DbXmlNodeImpl &node)
 {
 	string key = makeKey(node);
-	textDeleteMap_.insert(make_pair<const std::string, int>(key,node.getIndex()));
+	textDeleteMap_.insert(make_pair(key,node.getIndex()));
 }
 
 void NsUpdate::textRemoved(int index, const NsNid &nid,
@@ -1372,13 +1372,13 @@ void NsUpdate::textRemoved(int index, const NsNid &nid,
 			   const std::string &cname)
 {
 	string key = makeKey(nid, did, cname);
-	textDeleteMap_.insert(make_pair<const std::string, int>(key,index));
+	textDeleteMap_.insert(make_pair(key,index));
 }
 
 void NsUpdate::textInserted(int index, const DbXmlNodeImpl &node)
 {
 	string key = makeKey(node);
-	textInsertMap_.insert(make_pair<const std::string, int>(key,index));
+	textInsertMap_.insert(make_pair(key,index));
 }
 
 void NsUpdate::textInserted(int index, const NsNid &nid,
@@ -1386,7 +1386,7 @@ void NsUpdate::textInserted(int index, const NsNid &nid,
 			    const std::string &cname)
 {
 	string key = makeKey(nid, did, cname);
-	textInsertMap_.insert(make_pair<const std::string, int>(key,index));
+	textInsertMap_.insert(make_pair(key,index));
 }
 
 //

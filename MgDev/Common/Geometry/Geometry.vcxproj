@@ -27,18 +27,22 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <CharacterSet>Unicode</CharacterSet>
+    <PlatformToolset>v110</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <CharacterSet>Unicode</CharacterSet>
+    <PlatformToolset>v110</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <CharacterSet>Unicode</CharacterSet>
+    <PlatformToolset>v110</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <CharacterSet>Unicode</CharacterSet>
+    <PlatformToolset>v110</PlatformToolset>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
@@ -58,17 +62,17 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup>
     <_ProjectFileVersion>10.0.30319.1</_ProjectFileVersion>
-    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">..\bin\debug\</OutDir>
-    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">..\obj\debug\Geometry\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">..\bin\$(Configuration)\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">..\obj\$(Configuration)\Geometry\</IntDir>
     <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</LinkIncremental>
-    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">..\bin\debug64\</OutDir>
-    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">..\obj\debug64\Geometry\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">..\bin\$(Configuration)64\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">..\obj\$(Configuration)64\Geometry\</IntDir>
     <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</LinkIncremental>
-    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">..\bin\release\</OutDir>
-    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">..\obj\release\Geometry\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">..\bin\$(Configuration)\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">..\obj\$(Configuration)\Geometry\</IntDir>
     <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</LinkIncremental>
-    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">..\bin\release64\</OutDir>
-    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">..\obj\release64\Geometry\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">..\bin\$(Configuration)64\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">..\obj\$(Configuration)64\Geometry\</IntDir>
     <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</LinkIncremental>
     <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">AllRules.ruleset</CodeAnalysisRuleSet>
     <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" />
@@ -101,13 +105,13 @@
     <Link>
       <AdditionalDependencies>csmapd.lib;ACEd.lib;GEOSd.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(OutDir)MgGeometryd.dll</OutputFile>
-      <AdditionalLibraryDirectories>..\..\Oem\CsMap\lib100\Debug;..\..\Oem\ACE\ACE_wrappers\lib;..\..\Oem\geos-2.2.0\VisualStudio\Debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>..\..\Oem\CsMap\lib110\$(Configuration);..\..\Oem\ACE\ACE_wrappers\lib\$(Configuration);..\..\Oem\geos-2.2.0\VisualStudio\$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Windows</SubSystem>
       <RandomizedBaseAddress>false</RandomizedBaseAddress>
       <DataExecutionPrevention>
       </DataExecutionPrevention>
-      <ImportLibrary>..\lib\debug\MgGeometryd.lib</ImportLibrary>
+      <ImportLibrary>..\lib\$(Configuration)\MgGeometryd.lib</ImportLibrary>
       <TargetMachine>MachineX86</TargetMachine>
       <ForceFileOutput>
       </ForceFileOutput>
@@ -127,10 +131,10 @@
     <Link>
       <AdditionalDependencies>csmapd.lib;ACEd.lib;GEOSd.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(OutDir)MgGeometryd.dll</OutputFile>
-      <AdditionalLibraryDirectories>..\..\Oem\CsMap\lib100\Debug64;..\..\Oem\ACE\ACE_wrappers\lib64;..\..\Oem\geos-2.2.0\VisualStudio\Debug64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>..\..\Oem\CsMap\lib110\$(Configuration)64;..\..\Oem\ACE\ACE_wrappers\lib64\$(Configuration);..\..\Oem\geos-2.2.0\VisualStudio\$(Configuration)64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Windows</SubSystem>
-      <ImportLibrary>..\lib\debug64\MgGeometryd.lib</ImportLibrary>
+      <ImportLibrary>..\lib\$(Configuration)64\MgGeometryd.lib</ImportLibrary>
       <TargetMachine>MachineX64</TargetMachine>
       <ForceFileOutput>
       </ForceFileOutput>
@@ -149,7 +153,7 @@
     <Link>
       <AdditionalDependencies>csmap.lib;ACE.lib;GEOS.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(OutDir)MgGeometry.dll</OutputFile>
-      <AdditionalLibraryDirectories>..\..\Oem\CsMap\lib100\Release;..\..\Oem\ACE\ACE_wrappers\lib;..\..\Oem\geos-2.2.0\VisualStudio\Release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>..\..\Oem\CsMap\lib110\$(Configuration);..\..\Oem\ACE\ACE_wrappers\lib\$(Configuration);..\..\Oem\geos-2.2.0\VisualStudio\$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Windows</SubSystem>
       <OptimizeReferences>true</OptimizeReferences>
@@ -157,7 +161,7 @@
       <RandomizedBaseAddress>false</RandomizedBaseAddress>
       <DataExecutionPrevention>
       </DataExecutionPrevention>
-      <ImportLibrary>..\lib\release\MgGeometry.lib</ImportLibrary>
+      <ImportLibrary>..\lib\$(Configuration)\MgGeometry.lib</ImportLibrary>
       <TargetMachine>MachineX86</TargetMachine>
       <ForceFileOutput>
       </ForceFileOutput>
@@ -176,12 +180,12 @@
     <Link>
       <AdditionalDependencies>csmap.lib;ACE.lib;GEOS.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(OutDir)MgGeometry.dll</OutputFile>
-      <AdditionalLibraryDirectories>..\..\Oem\CsMap\lib100\Release64;..\..\Oem\ACE\ACE_Wrappers\lib64;..\..\Oem\geos-2.2.0\VisualStudio\Release64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>..\..\Oem\CsMap\lib110\$(Configuration)64;..\..\Oem\ACE\ACE_Wrappers\lib64\$(Configuration);..\..\Oem\geos-2.2.0\VisualStudio\$(Configuration)64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Windows</SubSystem>
       <OptimizeReferences>true</OptimizeReferences>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
-      <ImportLibrary>..\lib\release64\MgGeometry.lib</ImportLibrary>
+      <ImportLibrary>..\lib\$(Configuration)64\MgGeometry.lib</ImportLibrary>
       <TargetMachine>MachineX64</TargetMachine>
       <ForceFileOutput>
       </ForceFileOutput>

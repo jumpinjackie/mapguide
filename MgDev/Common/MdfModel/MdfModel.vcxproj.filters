@@ -2,43 +2,43 @@
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <Filter Include="SymbolDefinition">
-      <UniqueIdentifier>{ea2b0fdf-fa5b-42c8-b6eb-088bd72c3b4d}</UniqueIdentifier>
+      <UniqueIdentifier>{06b027f3-a387-4147-8598-b6132778f137}</UniqueIdentifier>
     </Filter>
     <Filter Include="RasterLayer">
-      <UniqueIdentifier>{88421988-f253-45d9-bb5d-4b27097857b7}</UniqueIdentifier>
+      <UniqueIdentifier>{3854604f-b530-44cd-a1ab-66859decf43c}</UniqueIdentifier>
     </Filter>
     <Filter Include="VectorLayer">
-      <UniqueIdentifier>{5f51c40b-a4b1-420c-a301-cf7ee674da88}</UniqueIdentifier>
+      <UniqueIdentifier>{abbf9c13-9a8f-47d5-90c3-858a876ee7c7}</UniqueIdentifier>
     </Filter>
     <Filter Include="VectorLayer\Joins">
-      <UniqueIdentifier>{c26e10e6-85d6-4ac0-a8a2-852279d2eec1}</UniqueIdentifier>
+      <UniqueIdentifier>{e0dd65f2-bf3a-4cf5-8787-e755c8898711}</UniqueIdentifier>
     </Filter>
     <Filter Include="VectorLayer\VectorStyles">
-      <UniqueIdentifier>{1e1a4b5e-6e4f-4fe5-9487-6801d9beb831}</UniqueIdentifier>
+      <UniqueIdentifier>{30b3f7da-82ff-4618-8250-a7a289dbf6df}</UniqueIdentifier>
     </Filter>
     <Filter Include="VectorLayer\VectorStyles\Rules">
-      <UniqueIdentifier>{eec67b33-edee-4d76-965c-e9e5377f4c1b}</UniqueIdentifier>
+      <UniqueIdentifier>{b2d628af-7b80-4867-8fec-ae1c98eacaff}</UniqueIdentifier>
     </Filter>
     <Filter Include="VectorLayer\VectorStyles\Symbolizations">
-      <UniqueIdentifier>{17915239-1764-4157-a8ed-aefc37b36eaa}</UniqueIdentifier>
+      <UniqueIdentifier>{768373d4-aafe-406b-be11-983268bd4812}</UniqueIdentifier>
     </Filter>
     <Filter Include="VectorLayer\VectorStyles\Symbols">
-      <UniqueIdentifier>{a8003299-79d1-41ed-9b1b-db813b49e8a0}</UniqueIdentifier>
+      <UniqueIdentifier>{38688552-50d0-45b1-8211-d6b0594cdd47}</UniqueIdentifier>
     </Filter>
     <Filter Include="MapDefinition">
-      <UniqueIdentifier>{42654ddd-1328-411c-be85-37e2e3a800ae}</UniqueIdentifier>
+      <UniqueIdentifier>{52c7b7eb-254d-41c9-8926-2cfeeda39c6f}</UniqueIdentifier>
     </Filter>
     <Filter Include="PrintLayout">
-      <UniqueIdentifier>{772f1714-aca3-4854-a81c-c104e910bf66}</UniqueIdentifier>
+      <UniqueIdentifier>{0f8b8bb8-eda1-49f1-8ce2-cb2d02e74d57}</UniqueIdentifier>
     </Filter>
     <Filter Include="Common">
-      <UniqueIdentifier>{f55f239a-26f4-4310-a0e7-c3c76ce7500b}</UniqueIdentifier>
+      <UniqueIdentifier>{60789d0c-1f4a-4a81-8778-5732e5e689a4}</UniqueIdentifier>
     </Filter>
     <Filter Include="WatermarkDefinition">
-      <UniqueIdentifier>{e53f17be-958d-40bb-882d-aa1ef9f538bc}</UniqueIdentifier>
+      <UniqueIdentifier>{fb2c8289-d933-4792-98d9-537a10e935f9}</UniqueIdentifier>
     </Filter>
     <Filter Include="ProfileResult">
-      <UniqueIdentifier>{e2817956-7222-40f0-93fd-d3fc5ad63418}</UniqueIdentifier>
+      <UniqueIdentifier>{117f7c46-7bea-4de3-887b-c162c15359d5}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -315,26 +315,22 @@
     <ClCompile Include="XYWatermarkPosition.cpp">
       <Filter>WatermarkDefinition</Filter>
     </ClCompile>
-    <ClCompile Include="ConvertUTF.c" />
-    <ClCompile Include="DrawingLayerDefinition.cpp" />
-    <ClCompile Include="ElevationSettings.cpp" />
-    <ClCompile Include="LayerDefinition.cpp" />
-    <ClCompile Include="LengthConverter.cpp" />
-    <ClCompile Include="MdfModel.cpp" />
-    <ClCompile Include="MdfRootObject.cpp" />
-    <ClCompile Include="NameStringPair.cpp" />
-    <ClCompile Include="UnicodeString.cpp" />
-    <ClCompile Include="Version.cpp" />
-    <ClCompile Include="ScaleRange.cpp">
-      <Filter>ProfileResult</Filter>
-    </ClCompile>
     <ClCompile Include="ProfileRenderLabelsResult.cpp">
       <Filter>ProfileResult</Filter>
     </ClCompile>
     <ClCompile Include="ProfileRenderLayerResult.cpp">
       <Filter>ProfileResult</Filter>
     </ClCompile>
+    <ClCompile Include="ProfileRenderLayersResult.cpp">
+      <Filter>ProfileResult</Filter>
+    </ClCompile>
+    <ClCompile Include="ProfileRenderLayersResultBase.cpp">
+      <Filter>ProfileResult</Filter>
+    </ClCompile>
     <ClCompile Include="ProfileRenderMapResult.cpp">
+      <Filter>ProfileResult</Filter>
+    </ClCompile>
+    <ClCompile Include="ProfileRenderSelectionResult.cpp">
       <Filter>ProfileResult</Filter>
     </ClCompile>
     <ClCompile Include="ProfileRenderWatermarkResult.cpp">
@@ -346,15 +342,19 @@
     <ClCompile Include="ProfileResult.cpp">
       <Filter>ProfileResult</Filter>
     </ClCompile>
-    <ClCompile Include="ProfileRenderLayersResultBase.cpp">
+    <ClCompile Include="ScaleRange.cpp">
       <Filter>ProfileResult</Filter>
     </ClCompile>
-    <ClCompile Include="ProfileRenderLayersResult.cpp">
-      <Filter>ProfileResult</Filter>
-    </ClCompile>
-    <ClCompile Include="ProfileRenderSelectionResult.cpp">
-      <Filter>ProfileResult</Filter>
-    </ClCompile>
+    <ClCompile Include="ConvertUTF.c" />
+    <ClCompile Include="DrawingLayerDefinition.cpp" />
+    <ClCompile Include="ElevationSettings.cpp" />
+    <ClCompile Include="LayerDefinition.cpp" />
+    <ClCompile Include="LengthConverter.cpp" />
+    <ClCompile Include="MdfModel.cpp" />
+    <ClCompile Include="MdfRootObject.cpp" />
+    <ClCompile Include="NameStringPair.cpp" />
+    <ClCompile Include="UnicodeString.cpp" />
+    <ClCompile Include="Version.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AreaUsage.h">
@@ -639,6 +639,36 @@
     <ClInclude Include="XYWatermarkPosition.h">
       <Filter>WatermarkDefinition</Filter>
     </ClInclude>
+    <ClInclude Include="ProfileRenderLabelsResult.h">
+      <Filter>ProfileResult</Filter>
+    </ClInclude>
+    <ClInclude Include="ProfileRenderLayerResult.h">
+      <Filter>ProfileResult</Filter>
+    </ClInclude>
+    <ClInclude Include="ProfileRenderLayersResult.h">
+      <Filter>ProfileResult</Filter>
+    </ClInclude>
+    <ClInclude Include="ProfileRenderLayersResultBase.h">
+      <Filter>ProfileResult</Filter>
+    </ClInclude>
+    <ClInclude Include="ProfileRenderMapResult.h">
+      <Filter>ProfileResult</Filter>
+    </ClInclude>
+    <ClInclude Include="ProfileRenderSelectionResult.h">
+      <Filter>ProfileResult</Filter>
+    </ClInclude>
+    <ClInclude Include="ProfileRenderWatermarkResult.h">
+      <Filter>ProfileResult</Filter>
+    </ClInclude>
+    <ClInclude Include="ProfileRenderWatermarksResult.h">
+      <Filter>ProfileResult</Filter>
+    </ClInclude>
+    <ClInclude Include="ProfileResult.h">
+      <Filter>ProfileResult</Filter>
+    </ClInclude>
+    <ClInclude Include="ScaleRange.h">
+      <Filter>ProfileResult</Filter>
+    </ClInclude>
     <ClInclude Include="Base64.h" />
     <ClInclude Include="ConvertUTF.h" />
     <ClInclude Include="DrawingLayerDefinition.h" />
@@ -653,52 +683,8 @@
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="UnicodeString.h" />
     <ClInclude Include="Version.h" />
-    <ClInclude Include="URLData.h">
-      <Filter>VectorLayer</Filter>
-    </ClInclude>
-    <ClInclude Include="ProfileResult.h">
-      <Filter>ProfileResult</Filter>
-    </ClInclude>
-    <ClInclude Include="ProfileRenderMapResult.h">
-      <Filter>ProfileResult</Filter>
-    </ClInclude>
-    <ClInclude Include="ProfileRenderLayersResult.h">
-      <Filter>ProfileResult</Filter>
-    </ClInclude>
-    <ClInclude Include="ProfileRenderLayerResult.h">
-      <Filter>ProfileResult</Filter>
-    </ClInclude>
-    <ClInclude Include="ProfileRenderSelectionResult.h">
-      <Filter>ProfileResult</Filter>
-    </ClInclude>
-    <ClInclude Include="ProfileRenderWatermarksResult.h">
-      <Filter>ProfileResult</Filter>
-    </ClInclude>
-    <ClInclude Include="ProfileRenderWatermarkResult.h">
-      <Filter>ProfileResult</Filter>
-    </ClInclude>
-    <ClInclude Include="ScaleRange.h">
-      <Filter>ProfileResult</Filter>
-    </ClInclude>
-    <ClInclude Include="ProfileRenderLabelsResult.h">
-      <Filter>ProfileResult</Filter>
-    </ClInclude>
-    <ClInclude Include="ProfileRenderLayersResultBase.h">
-      <Filter>ProfileResult</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="MdfModel.rc" />
-  </ItemGroup>
-  <ItemGroup>
-    <CustomBuildStep Include="Image.h">
-      <Filter>SymbolDefinition</Filter>
-    </CustomBuildStep>
-    <CustomBuildStep Include="Text.h">
-      <Filter>SymbolDefinition</Filter>
-    </CustomBuildStep>
-    <CustomBuildStep Include="CompositeSymbolization.h">
-      <Filter>VectorLayer\VectorStyles\Symbolizations</Filter>
-    </CustomBuildStep>
   </ItemGroup>
 </Project>

@@ -1,0 +1,189 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Source Files\package">
+      <UniqueIdentifier>{8b697d12-5faf-470a-8cc1-6dd95fec1033}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\package\transaction">
+      <UniqueIdentifier>{b9f08c9d-ca81-4772-8abd-8062b6d01030}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="Header Files\package">
+      <UniqueIdentifier>{4141b0bb-242a-472f-9d02-19e7bd1913e1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\package\transaction">
+      <UniqueIdentifier>{65f3cd7c-a2a3-40da-ab56-b08f7c9b8bab}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx</Extensions>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\..\src\dwfemap\package\Background.cpp">
+      <Filter>Source Files\package</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\dwfemap\package\Bounds.cpp">
+      <Filter>Source Files\package</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\dwfemap\package\CoordinateSpace.cpp">
+      <Filter>Source Files\package</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\dwfemap\package\EMapConstants.cpp">
+      <Filter>Source Files\package</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\dwfemap\package\EMapGlobalSection.cpp">
+      <Filter>Source Files\package</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\dwfemap\package\EMapInterface.cpp">
+      <Filter>Source Files\package</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\dwfemap\package\EMapSection.cpp">
+      <Filter>Source Files\package</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\dwfemap\package\EMapSectionDescriptorReader.cpp">
+      <Filter>Source Files\package</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\dwfemap\package\EMapUtility.cpp">
+      <Filter>Source Files\package</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\dwfemap\package\Layer.cpp">
+      <Filter>Source Files\package</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\dwfemap\package\LayerGroup.cpp">
+      <Filter>Source Files\package</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\dwfemap\package\LinearUnit.cpp">
+      <Filter>Source Files\package</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\dwfemap\package\ScaleRange.cpp">
+      <Filter>Source Files\package</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\dwfemap\package\UIGraphic.cpp">
+      <Filter>Source Files\package</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\dwfemap\package\View.cpp">
+      <Filter>Source Files\package</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\dwfemap\package\transaction\AddLayer.cpp">
+      <Filter>Source Files\package\transaction</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\dwfemap\package\transaction\AddLayerGroup.cpp">
+      <Filter>Source Files\package\transaction</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\dwfemap\package\transaction\Command.cpp">
+      <Filter>Source Files\package\transaction</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\dwfemap\package\transaction\RemoveLayer.cpp">
+      <Filter>Source Files\package\transaction</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\dwfemap\package\transaction\RemoveLayerGroup.cpp">
+      <Filter>Source Files\package\transaction</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\dwfemap\package\transaction\TransactionSection.cpp">
+      <Filter>Source Files\package\transaction</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\dwfemap\package\transaction\TransactionSectionDescriptorReader.cpp">
+      <Filter>Source Files\package\transaction</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\dwfemap\package\transaction\UpdateLayer.cpp">
+      <Filter>Source Files\package\transaction</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\dwfemap\package\transaction\UpdateLayerGroup.cpp">
+      <Filter>Source Files\package\transaction</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\dwfemap\package\transaction\UpdateUIGraphic.cpp">
+      <Filter>Source Files\package\transaction</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\..\src\dwfemap\EMapToolkit.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\dwfemap\EMapVersion.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\dwfemap\package\Background.h">
+      <Filter>Header Files\package</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\dwfemap\package\Bounds.h">
+      <Filter>Header Files\package</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\dwfemap\package\CoordinateSpace.h">
+      <Filter>Header Files\package</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\dwfemap\package\EMapConstants.h">
+      <Filter>Header Files\package</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\dwfemap\package\EMapGlobalSection.h">
+      <Filter>Header Files\package</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\dwfemap\package\EMapInterface.h">
+      <Filter>Header Files\package</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\dwfemap\package\EMapSection.h">
+      <Filter>Header Files\package</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\dwfemap\package\EMapSectionDescriptorReader.h">
+      <Filter>Header Files\package</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\dwfemap\package\EMapUtility.h">
+      <Filter>Header Files\package</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\dwfemap\package\Layer.h">
+      <Filter>Header Files\package</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\dwfemap\package\LayerGroup.h">
+      <Filter>Header Files\package</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\dwfemap\package\LinearUnit.h">
+      <Filter>Header Files\package</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\dwfemap\package\ScaleRange.h">
+      <Filter>Header Files\package</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\dwfemap\package\UIGraphic.h">
+      <Filter>Header Files\package</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\dwfemap\package\View.h">
+      <Filter>Header Files\package</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\dwfemap\package\transaction\AddLayer.h">
+      <Filter>Header Files\package\transaction</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\dwfemap\package\transaction\AddLayerGroup.h">
+      <Filter>Header Files\package\transaction</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\dwfemap\package\transaction\Command.h">
+      <Filter>Header Files\package\transaction</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\dwfemap\package\transaction\RemoveLayer.h">
+      <Filter>Header Files\package\transaction</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\dwfemap\package\transaction\RemoveLayerGroup.h">
+      <Filter>Header Files\package\transaction</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\dwfemap\package\transaction\TransactionSection.h">
+      <Filter>Header Files\package\transaction</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\dwfemap\package\transaction\TransactionSectionDescriptorReader.h">
+      <Filter>Header Files\package\transaction</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\dwfemap\package\transaction\UpdateLayer.h">
+      <Filter>Header Files\package\transaction</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\dwfemap\package\transaction\UpdateLayerGroup.h">
+      <Filter>Header Files\package\transaction</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\dwfemap\package\transaction\UpdateUIGraphic.h">
+      <Filter>Header Files\package\transaction</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>

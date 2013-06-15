@@ -27,18 +27,22 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <CharacterSet>Unicode</CharacterSet>
+    <PlatformToolset>v110</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <CharacterSet>Unicode</CharacterSet>
+    <PlatformToolset>v110</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <CharacterSet>Unicode</CharacterSet>
+    <PlatformToolset>v110</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <CharacterSet>Unicode</CharacterSet>
+    <PlatformToolset>v110</PlatformToolset>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
@@ -116,7 +120,7 @@ echo Building -sources JAR file
     <Link>
       <AdditionalDependencies>MgFoundationd.lib;MgMdfModeld.lib;MgMdfParserd.lib;MgGeometryd.lib;MgPlatformBased.lib;MgDesktopd.lib;ACEd.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(OutDir)$(TargetName).dll</OutputFile>
-      <AdditionalLibraryDirectories>..\..\..\Common\lib\debug;..\..\lib\debug;..\..\..\Oem\ACE\ACE_wrappers\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>..\..\..\Common\lib\$(Configuration);..\..\lib\debug;..\..\..\Oem\ACE\ACE_wrappers\lib\$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <ProgramDatabaseFile>$(OutDir)$(TargetName).pdb</ProgramDatabaseFile>
       <SubSystem>Windows</SubSystem>
@@ -156,7 +160,7 @@ echo Building -sources JAR file
     <Link>
       <AdditionalDependencies>MgFoundationd.lib;MgMdfModeld.lib;MgMdfParserd.lib;MgGeometryd.lib;MgPlatformBased.lib;MgDesktopd.lib;ACEd.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(OutDir)$(TargetName).dll</OutputFile>
-      <AdditionalLibraryDirectories>..\..\..\Common\lib\debug64;..\..\lib\debug64;..\..\..\Oem\ACE\ACE_wrappers\lib64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>..\..\..\Common\lib\$(Configuration)64;..\..\lib\debug64;..\..\..\Oem\ACE\ACE_wrappers\lib64\$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <ProgramDatabaseFile>$(OutDir)$(TargetName).pdb</ProgramDatabaseFile>
       <SubSystem>Windows</SubSystem>
@@ -195,7 +199,7 @@ echo Building -sources JAR file
     <Link>
       <AdditionalDependencies>MgFoundation.lib;MgMdfModel.lib;MgMdfParser.lib;MgGeometry.lib;MgPlatformBase.lib;MgDesktop.lib;ACE.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(OutDir)$(TargetName).dll</OutputFile>
-      <AdditionalLibraryDirectories>..\..\..\Common\lib\release;..\..\lib\release;..\..\..\Oem\ACE\ACE_wrappers\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>..\..\..\Common\lib\$(Configuration);..\..\lib\release;..\..\..\Oem\ACE\ACE_wrappers\lib\$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <ProgramDatabaseFile>$(OutDir)$(TargetName).pdb</ProgramDatabaseFile>
       <SubSystem>Windows</SubSystem>
@@ -235,7 +239,7 @@ echo Building -sources JAR file
     <Link>
       <AdditionalDependencies>MgFoundation.lib;MgMdfModel.lib;MgMdfParser.lib;MgGeometry.lib;MgPlatformBase.lib;MgDesktop.lib;ACE.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(OutDir)$(TargetName).dll</OutputFile>
-      <AdditionalLibraryDirectories>..\..\..\Common\lib\release64;..\..\lib\release64;..\..\..\Oem\ACE\ACE_wrappers\lib64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>..\..\..\Common\lib\$(Configuration)64;..\..\lib\release64;..\..\..\Oem\ACE\ACE_wrappers\lib64\$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <ProgramDatabaseFile>$(OutDir)$(TargetName).pdb</ProgramDatabaseFile>
       <SubSystem>Windows</SubSystem>

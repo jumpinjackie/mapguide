@@ -28,19 +28,23 @@
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <CharacterSet>Unicode</CharacterSet>
     <WholeProgramOptimization>true</WholeProgramOptimization>
+    <PlatformToolset>v110</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <CharacterSet>Unicode</CharacterSet>
+    <PlatformToolset>v110</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <CharacterSet>Unicode</CharacterSet>
     <WholeProgramOptimization>true</WholeProgramOptimization>
+    <PlatformToolset>v110</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <CharacterSet>Unicode</CharacterSet>
+    <PlatformToolset>v110</PlatformToolset>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
@@ -92,7 +96,7 @@ copy ..\dotnet.i .\language.i
     <Link>
       <AdditionalDependencies>MgDesktopd.lib;FDO.lib;FDOCommon.lib;ACEd.lib;MgFoundationd.lib;MgGeometryd.lib;MgMdfModeld.lib;MgMdfParserd.lib;MgPlatformBased.lib;MgRenderersd.lib;MgStylizationd.lib;xerces-c_3mgD.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>..\..\bin\debug\MapGuideDesktopUnmanagedApi.dll</OutputFile>
-      <AdditionalLibraryDirectories>..\..\Lib\Debug;..\..\..\Common\lib\debug;..\..\..\Oem\FDO\Lib;..\..\..\Oem\ACE\ACE_wrappers\lib;..\..\..\Oem\dbxml\xerces-c-src\Build\Win32\VC9\Debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>..\..\Lib\Debug;..\..\..\Common\lib\$(Configuration);..\..\..\Oem\FDO\Lib;..\..\..\Oem\ACE\ACE_wrappers\lib\$(Configuration);..\..\..\Oem\dbxml\xerces-c-src\Build\$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <ImportLibrary>..\lib\debug\MapGuideDesktopUnmanagedApi.lib</ImportLibrary>
       <TargetMachine>MachineX86</TargetMachine>
@@ -121,7 +125,7 @@ copy ..\dotnet.i .\language.i
     <Link>
       <AdditionalDependencies>MgDesktop.lib;FDO.lib;FDOCommon.lib;ACE.lib;MgFoundation.lib;MgGeometry.lib;MgMdfModel.lib;MgMdfParser.lib;MgPlatformBase.lib;MgRenderers.lib;MgStylization.lib;xerces-c_3mg.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>..\..\bin\release\$(ProjectName).dll</OutputFile>
-      <AdditionalLibraryDirectories>..\..\Lib\Release;..\..\..\Common\lib\release;..\..\..\Oem\FDO\Lib;..\..\..\Oem\ACE\ACE_wrappers\lib;..\..\..\Oem\dbxml\xerces-c-src\Build\Win32\VC10\Release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>..\..\Lib\release;..\..\..\Common\lib\$(Configuration);..\..\..\Oem\FDO\Lib;..\..\..\Oem\ACE\ACE_wrappers\lib\$(Configuration);..\..\..\Oem\dbxml\xerces-c-src\Build\$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <DelayLoadDLLs>FDO.dll;%(DelayLoadDLLs)</DelayLoadDLLs>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <OptimizeReferences>true</OptimizeReferences>
@@ -160,7 +164,7 @@ copy ..\dotnet.i .\language.i
     <Link>
       <AdditionalDependencies>MgDesktopd.lib;FDO.lib;FDOCommon.lib;ACEd.lib;MgFoundationd.lib;MgGeometryd.lib;MgMdfModeld.lib;MgMdfParserd.lib;MgPlatformBased.lib;MgRenderersd.lib;MgStylizationd.lib;xerces-c_3mgD.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>..\..\bin\debug\MapGuideDesktopUnmanagedApi.dll</OutputFile>
-      <AdditionalLibraryDirectories>..\..\Lib\Debug64;..\..\..\Common\lib\debug64;..\..\..\Oem\FDO\Lib64;..\..\..\Oem\ACE\ACE_wrappers\lib64;..\..\..\Oem\dbxml\xerces-c-src\Build\x64\VC9\Debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>..\..\Lib\Debug64;..\..\..\Common\lib\$(Configuration)64;..\..\..\Oem\FDO\Lib64;..\..\..\Oem\ACE\ACE_wrappers\lib64\$(Configuration);..\..\..\Oem\dbxml\xerces-c-src\Build\$(Configuration)64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <ImportLibrary>..\lib\debug\MapGuideDesktopUnmanagedApi.lib</ImportLibrary>
       <TargetMachine>MachineX64</TargetMachine>
@@ -192,12 +196,12 @@ copy ..\dotnet.i .\language.i
     <Link>
       <AdditionalDependencies>MgDesktop.lib;FDO.lib;FDOCommon.lib;ACE.lib;MgFoundation.lib;MgGeometry.lib;MgMdfModel.lib;MgMdfParser.lib;MgPlatformBase.lib;MgRenderers.lib;MgStylization.lib;xerces-c_3mg.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>..\..\bin\release64\$(ProjectName).dll</OutputFile>
-      <AdditionalLibraryDirectories>..\..\Lib\Release64;..\..\..\Common\lib\release64;..\..\..\Oem\FDO\Lib64;..\..\..\Oem\ACE\ACE_wrappers\lib64;..\..\..\Oem\dbxml\xerces-c-src\Build\x64\VC10\Release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>..\..\Lib\Release64;..\..\..\Common\lib\$(Configuration)64;..\..\..\Oem\FDO\Lib64;..\..\..\Oem\ACE\ACE_wrappers\lib64\$(Configuration);..\..\..\Oem\dbxml\xerces-c-src\Build\$(Configuration)64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <DelayLoadDLLs>FDO.dll;%(DelayLoadDLLs)</DelayLoadDLLs>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <OptimizeReferences>true</OptimizeReferences>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
-      <ImportLibrary>..\..\lib\release\$(TargetName).lib</ImportLibrary>
+      <ImportLibrary>..\..\lib\release64\$(TargetName).lib</ImportLibrary>
       <TargetMachine>MachineX64</TargetMachine>
     </Link>
     <PostBuildEvent>

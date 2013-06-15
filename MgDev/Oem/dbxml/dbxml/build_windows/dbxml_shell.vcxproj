@@ -43,33 +43,41 @@
     <ConfigurationType>Application</ConfigurationType>
     <UseOfMfc>false</UseOfMfc>
     <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v110</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseOfMfc>false</UseOfMfc>
     <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v110</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Static Debug|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseOfMfc>false</UseOfMfc>
     <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v110</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseOfMfc>false</UseOfMfc>
     <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v110</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Static Release|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
+    <PlatformToolset>v110</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
+    <PlatformToolset>v110</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Static Debug|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
+    <PlatformToolset>v110</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
+    <PlatformToolset>v110</PlatformToolset>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
@@ -105,7 +113,7 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup>
     <_ProjectFileVersion>10.0.40219.1</_ProjectFileVersion>
-    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">..\build_windows\$(Configuration)32\</OutDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">..\build_windows\$(Configuration)\</OutDir>
     <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">./$(OutDir)dbxml_shell\</IntDir>
     <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</LinkIncremental>
     <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">..\build_windows\$(Configuration)64\</OutDir>
@@ -113,7 +121,7 @@
     <OutDir Condition="'$(Configuration)|$(Platform)'=='Static Debug|Win32'">..\build_windows\$(Platform)\Static Debug\</OutDir>
     <IntDir Condition="'$(Configuration)|$(Platform)'=='Static Debug|Win32'">./$(OutDir)dbxml_shell\</IntDir>
     <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Static Debug|Win32'">true</LinkIncremental>
-    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">..\build_windows\$(Configuration)32\</OutDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">..\build_windows\$(Configuration)\</OutDir>
     <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">./$(OutDir)dbxml_shell\</IntDir>
     <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</LinkIncremental>
     <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">..\build_windows\$(Configuration)64\</OutDir>
@@ -189,7 +197,7 @@
     </Link>
     <PostBuildEvent>
       <Message>Copying program files to install directory</Message>
-      <Command>installProj.bat dbxml prog $(OutDir) debug</Command>
+      <Command>installProj.bat dbxml prog $(OutDir) $(Configuration) debug</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -212,7 +220,7 @@
     </Link>
     <PostBuildEvent>
       <Message>Copying program files to install directory</Message>
-      <Command>installProj_win64.bat dbxml prog $(OutDir) debug</Command>
+      <Command>installProj_win64.bat dbxml prog $(OutDir) $(Configuration) debug</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Static Debug|Win32'">
@@ -296,7 +304,7 @@
     </Link>
     <PostBuildEvent>
       <Message>Copying program files to install directory</Message>
-      <Command>installProj.bat dbxml prog $(OutDir) release</Command>
+      <Command>installProj.bat dbxml prog $(OutDir) $(Configuration) release</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -317,7 +325,7 @@
     </Link>
     <PostBuildEvent>
       <Message>Copying program files to install directory</Message>
-      <Command>installProj_win64.bat dbxml prog $(OutDir) release</Command>
+      <Command>installProj_win64.bat dbxml prog $(OutDir) $(Configuration) release</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Static Release|Win32'">
@@ -486,10 +494,10 @@
     <ProjectReference Include="..\..\db-4.8.26\build_windows\db_dll.vcxproj">
       <Project>{96c27024-6dee-45ed-bcc3-a731949131fa}</Project>
     </ProjectReference>
-    <ProjectReference Include="..\..\xerces-c-src\projects\Win32\VC10\xerces-all\XercesLib\XercesLib.vcxproj">
+    <ProjectReference Include="..\..\xerces-c-src\projects\Win32\VS\xerces-all\XercesLib\XercesLib.vcxproj">
       <Project>{152ce948-f659-4206-a50a-1d2b9658ef96}</Project>
     </ProjectReference>
-    <ProjectReference Include="..\..\xqilla\Win32Projects\VC8\xqilla.vcxproj">
+    <ProjectReference Include="..\..\xqilla\Win32Projects\VS\xqilla.vcxproj">
       <Project>{63e85107-41e0-4fc7-8083-40e85861b426}</Project>
     </ProjectReference>
     <ProjectReference Include="dbxml.vcxproj">

@@ -4,15 +4,15 @@ REM For Windows only
 REM ----------------
 
 REM **** Do not edit these unless you know what you are doing *****
-set WEB_BIN_DEBUG=..\..\bin\debug
-set WEB_BIN_RELEASE=..\..\bin\release
+set WEB_BIN_DEBUG=..\..\bin\%2
+set WEB_BIN_RELEASE=..\..\bin\%2
 
 set WEB_ROOT=..\..
 
 set COMMON_ROOT=..\..\..\Common
 
-set COMMON_BIN_DEBUG=..\..\..\Common\bin\debug
-set COMMON_BIN_RELEASE=..\..\..\Common\bin\release
+set COMMON_BIN_DEBUG=..\..\..\Common\bin\%2
+set COMMON_BIN_RELEASE=..\..\..\Common\bin\%2
 
 if "%1"=="BUILD" goto copy_build
 if "%1"=="RELEASE" goto copy_release
@@ -35,16 +35,16 @@ REM and that this batch file is being run in the MapGuideApi folder
 if not exist %WEB_BIN_RELEASE% mkdir %WEB_BIN_RELEASE%
 
 echo Copying ACE Release DLL to %WEB_BIN_RELEASE%
-xcopy /r /d /y "..\..\..\Oem\ACE\ACE_wrappers\lib\ACE.dll" %WEB_BIN_RELEASE%
+xcopy /r /d /y "..\..\..\Oem\ACE\ACE_wrappers\lib\%2\ACE.dll" %WEB_BIN_RELEASE%
 
 echo Copying GEOS Release DLL to %WEB_BIN_RELEASE%
-xcopy /r /d /y "..\..\..\Oem\geos-2.2.0\VisualStudio\Release\GEOS.dll" %WEB_BIN_RELEASE%
+xcopy /r /d /y "..\..\..\Oem\geos-2.2.0\VisualStudio\%2\GEOS.dll" %WEB_BIN_RELEASE%
 
 echo Copying JSON Release DLL to %WEB_BIN_RELEASE%
-xcopy /r /d /y "..\..\..\Oem\jsoncpp\lib\lib_json.dll" %WEB_BIN_RELEASE%
+xcopy /r /d /y "..\..\..\Oem\jsoncpp\lib\%2\lib_json.dll" %WEB_BIN_RELEASE%
 
 echo Copying Xerces Release DLL to %WEB_BIN_RELEASE%
-xcopy /r /d /y "..\..\..\Oem\dbxml\bin\xerces-c_3_1mg.dll" %WEB_BIN_RELEASE%
+xcopy /r /d /y "..\..\..\Oem\dbxml\bin\%2\xerces-c_3_1mg.dll" %WEB_BIN_RELEASE%
 
 echo Copying MgFoundation Release DLL to %WEB_BIN_RELEASE%
 xcopy /r /d /y %COMMON_BIN_RELEASE%\MgFoundation.dll %WEB_BIN_RELEASE%
@@ -75,16 +75,16 @@ REM and that this batch file is being run in the MapGuideApi folder
 if not exist %WEB_BIN_RELEASE%64 mkdir %WEB_BIN_RELEASE%64
 
 echo Copying ACE Release DLL to %WEB_BIN_RELEASE%64
-xcopy /r /d /y "..\..\..\Oem\ACE\ACE_wrappers\lib64\ACE.dll" %WEB_BIN_RELEASE%64
+xcopy /r /d /y "..\..\..\Oem\ACE\ACE_wrappers\lib64\%2\ACE.dll" %WEB_BIN_RELEASE%64
 
 echo Copying GEOS Release DLL to %WEB_BIN_RELEASE%64
-xcopy /r /d /y "..\..\..\Oem\geos-2.2.0\VisualStudio\Release64\GEOS.dll" %WEB_BIN_RELEASE%64
+xcopy /r /d /y "..\..\..\Oem\geos-2.2.0\VisualStudio\%264\GEOS.dll" %WEB_BIN_RELEASE%64
 
 echo Copying JSON Release DLL to %WEB_BIN_RELEASE%64
-xcopy /r /d /y "..\..\..\Oem\jsoncpp\lib64\lib_json.dll" %WEB_BIN_RELEASE%64
+xcopy /r /d /y "..\..\..\Oem\jsoncpp\lib64\%2\lib_json.dll" %WEB_BIN_RELEASE%64
 
 echo Copying Xerces Release DLL to %WEB_BIN_RELEASE%64
-xcopy /r /d /y "..\..\..\Oem\dbxml\bin64\xerces-c_3_1mg.dll" %WEB_BIN_RELEASE%64
+xcopy /r /d /y "..\..\..\Oem\dbxml\bin64\%2\xerces-c_3_1mg.dll" %WEB_BIN_RELEASE%64
 
 echo Copying MgFoundation Release DLL to %WEB_BIN_RELEASE%64
 xcopy /r /d /y %COMMON_BIN_RELEASE%64\MgFoundation.dll %WEB_BIN_RELEASE%64
@@ -115,16 +115,16 @@ REM and that this batch file is being run in the MapGuideApi folder
 if not exist %WEB_BIN_DEBUG% mkdir %WEB_BIN_DEBUG%
 
 echo Copying ACE Debug DLL to %WEB_BIN_DEBUG%
-xcopy /r /d /y "..\..\..\Oem\ACE\ACE_wrappers\lib\ACEd.dll" %WEB_BIN_DEBUG%
+xcopy /r /d /y "..\..\..\Oem\ACE\ACE_wrappers\lib\%2\ACEd.dll" %WEB_BIN_DEBUG%
 
 echo Copying GEOS Debug DLL to %WEB_BIN_DEBUG%
-xcopy /r /d /y "..\..\..\Oem\geos-2.2.0\VisualStudio\Debug\GEOSd.dll" %WEB_BIN_DEBUG%
+xcopy /r /d /y "..\..\..\Oem\geos-2.2.0\VisualStudio\%2\GEOSd.dll" %WEB_BIN_DEBUG%
 
 echo Copying JSON Debug DLL to %WEB_BIN_DEBUG%
-xcopy /r /d /y "..\..\..\Oem\jsoncpp\lib\lib_jsond.dll" %WEB_BIN_DEBUG%
+xcopy /r /d /y "..\..\..\Oem\jsoncpp\lib\%2\lib_jsond.dll" %WEB_BIN_DEBUG%
 
 echo Copying Xerces Debug DLL to %WEB_BIN_DEBUG%
-xcopy /r /d /y "..\..\..\Oem\dbxml\bin\debug\xerces-c_3_1mgD.dll" %WEB_BIN_DEBUG%
+xcopy /r /d /y "..\..\..\Oem\dbxml\bin\%2\xerces-c_3_1mgD.dll" %WEB_BIN_DEBUG%
 
 echo Copying MgFoundation Debug DLL to %WEB_BIN_DEBUG%
 xcopy /r /d /y %COMMON_BIN_DEBUG%\MgFoundationd.dll %WEB_BIN_DEBUG%
@@ -155,16 +155,16 @@ REM and that this batch file is being run in the MapGuideApi folder
 if not exist %WEB_BIN_DEBUG%64 mkdir %WEB_BIN_DEBUG%64
 
 echo Copying ACE Debug DLL to %WEB_BIN_DEBUG%64
-xcopy /r /d /y "..\..\..\Oem\ACE\ACE_wrappers\lib64\ACEd.dll" %WEB_BIN_DEBUG%64
+xcopy /r /d /y "..\..\..\Oem\ACE\ACE_wrappers\lib64\%2\ACEd.dll" %WEB_BIN_DEBUG%64
 
 echo Copying GEOS Debug DLL to %WEB_BIN_DEBUG%64
-xcopy /r /d /y "..\..\..\Oem\geos-2.2.0\VisualStudio\Debug64\GEOSd.dll" %WEB_BIN_DEBUG%64
+xcopy /r /d /y "..\..\..\Oem\geos-2.2.0\VisualStudio\%264\GEOSd.dll" %WEB_BIN_DEBUG%64
 
 echo Copying JSON Debug DLL to %WEB_BIN_DEBUG%64
-xcopy /r /d /y "..\..\..\Oem\jsoncpp\lib64\lib_jsond.dll" %WEB_BIN_DEBUG%64
+xcopy /r /d /y "..\..\..\Oem\jsoncpp\lib64\%2\lib_jsond.dll" %WEB_BIN_DEBUG%64
 
 echo Copying Xerces Debug DLL to %WEB_BIN_DEBUG%64
-xcopy /r /d /y "..\..\..\Oem\dbxml\bin64\debug\xerces-c_3_1mgD.dll" %WEB_BIN_DEBUG%64
+xcopy /r /d /y "..\..\..\Oem\dbxml\bin64\%2\xerces-c_3_1mgD.dll" %WEB_BIN_DEBUG%64
 
 echo Copying MgFoundation Debug DLL to %WEB_BIN_DEBUG%64
 xcopy /r /d /y %COMMON_BIN_DEBUG%64\MgFoundationd.dll %WEB_BIN_DEBUG%64

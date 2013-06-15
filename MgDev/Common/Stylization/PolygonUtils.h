@@ -20,6 +20,7 @@
 
 #include "LineBuffer.h"
 #include <map>
+#include <functional>
 
 ////////////////////////////////////////////////////////////////////////////////
 // Used with overlapping contour computations.

@@ -27,21 +27,25 @@
     <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseOfMfc>false</UseOfMfc>
     <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v110</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseOfMfc>false</UseOfMfc>
     <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v110</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseOfMfc>false</UseOfMfc>
     <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v110</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseOfMfc>false</UseOfMfc>
     <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v110</PlatformToolset>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
@@ -61,14 +65,14 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup>
     <_ProjectFileVersion>10.0.40219.1</_ProjectFileVersion>
-    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">.\Debug\</OutDir>
-    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">.\Debug\</IntDir>
-    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">.\Debug64\</OutDir>
-    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">.\Debug64\</IntDir>
-    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">.\Release\</OutDir>
-    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">.\Release\</IntDir>
-    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">.\Release64\</OutDir>
-    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">.\Release64\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">..\..\lib\$(Configuration)\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">..\obj\$(Configuration)\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">..\..\lib64\$(Configuration)\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">..\obj64\$(Configuration)\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">..\..\lib\$(Configuration)\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">..\obj\$(Configuration)\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">..\..\lib64\$(Configuration)\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">..\obj64\$(Configuration)\</IntDir>
     <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">AllRules.ruleset</CodeAnalysisRuleSet>
     <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" />
     <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" />
@@ -96,10 +100,10 @@
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
       <PrecompiledHeader>
       </PrecompiledHeader>
-      <PrecompiledHeaderOutputFile>.\Debug/cppunit.pch</PrecompiledHeaderOutputFile>
-      <AssemblerListingLocation>.\Debug/</AssemblerListingLocation>
-      <ObjectFileName>.\Debug/</ObjectFileName>
-      <ProgramDataBaseFileName>.\Debug/cppunitd.pdb</ProgramDataBaseFileName>
+      <PrecompiledHeaderOutputFile>.\$(Configuration)/cppunit.pch</PrecompiledHeaderOutputFile>
+      <AssemblerListingLocation>.\$(Configuration)/</AssemblerListingLocation>
+      <ObjectFileName>.\$(Configuration)/</ObjectFileName>
+      <ProgramDataBaseFileName>.\$(Configuration)/cppunitd.pdb</ProgramDataBaseFileName>
       <WarningLevel>Level3</WarningLevel>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
@@ -111,14 +115,14 @@
       <Culture>0x040c</Culture>
     </ResourceCompile>
     <Lib>
-      <OutputFile>Debug\cppunitd.lib</OutputFile>
+      <OutputFile>$(OutDir)cppunitd.lib</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
     </Lib>
     <PostBuildEvent>
-      <Message>Copying target to lib/</Message>
-      <Command>if not exist ..\..\lib mkdir ..\..\lib
-copy "$(TargetPath)" ..\..\lib\"$(TargetName)".lib
-copy "$(TargetDir)""$(TargetName)".pdb ..\..\lib\"$(TargetName)".pdb</Command>
+      <Message>
+      </Message>
+      <Command>
+      </Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -134,10 +138,10 @@ copy "$(TargetDir)""$(TargetName)".pdb ..\..\lib\"$(TargetName)".pdb</Command>
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
       <PrecompiledHeader>
       </PrecompiledHeader>
-      <PrecompiledHeaderOutputFile>.\Debug64/cppunit.pch</PrecompiledHeaderOutputFile>
-      <AssemblerListingLocation>.\Debug64/</AssemblerListingLocation>
-      <ObjectFileName>.\Debug64/</ObjectFileName>
-      <ProgramDataBaseFileName>.\Debug64/cppunitd.pdb</ProgramDataBaseFileName>
+      <PrecompiledHeaderOutputFile>.\$(Configuration)64/cppunit.pch</PrecompiledHeaderOutputFile>
+      <AssemblerListingLocation>.\$(Configuration)64/</AssemblerListingLocation>
+      <ObjectFileName>.\$(Configuration)64/</ObjectFileName>
+      <ProgramDataBaseFileName>.\$(Configuration)64/cppunitd.pdb</ProgramDataBaseFileName>
       <WarningLevel>Level3</WarningLevel>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
@@ -149,15 +153,14 @@ copy "$(TargetDir)""$(TargetName)".pdb ..\..\lib\"$(TargetName)".pdb</Command>
       <Culture>0x040c</Culture>
     </ResourceCompile>
     <Lib>
-      <OutputFile>Debug64\cppunitd.lib</OutputFile>
+      <OutputFile>$(OutDir)cppunitd.lib</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
     </Lib>
     <PostBuildEvent>
-      <Message>Copying target to lib64/</Message>
-      <Command>if not exist ..\..\lib64 mkdir ..\..\lib64
-copy "$(TargetPath)" ..\..\lib64\"$(TargetName)".lib
-copy "$(TargetDir)""$(TargetName)".pdb ..\..\lib64\"$(TargetName)".pdb
-</Command>
+      <Message>
+      </Message>
+      <Command>
+      </Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -172,10 +175,10 @@ copy "$(TargetDir)""$(TargetName)".pdb ..\..\lib64\"$(TargetName)".pdb
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
       <PrecompiledHeader>
       </PrecompiledHeader>
-      <PrecompiledHeaderOutputFile>.\Release/cppunit.pch</PrecompiledHeaderOutputFile>
-      <AssemblerListingLocation>.\Release/</AssemblerListingLocation>
-      <ObjectFileName>.\Release/</ObjectFileName>
-      <ProgramDataBaseFileName>.\Release/cppunit.pdb</ProgramDataBaseFileName>
+      <PrecompiledHeaderOutputFile>.\$(Configuration)/cppunit.pch</PrecompiledHeaderOutputFile>
+      <AssemblerListingLocation>.\$(Configuration)/</AssemblerListingLocation>
+      <ObjectFileName>.\$(Configuration)/</ObjectFileName>
+      <ProgramDataBaseFileName>.\$(Configuration)/cppunit.pdb</ProgramDataBaseFileName>
       <WarningLevel>Level3</WarningLevel>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <CompileAs>Default</CompileAs>
@@ -186,15 +189,14 @@ copy "$(TargetDir)""$(TargetName)".pdb ..\..\lib64\"$(TargetName)".pdb
       <Culture>0x040c</Culture>
     </ResourceCompile>
     <Lib>
-      <OutputFile>.\Release\cppunit.lib</OutputFile>
+      <OutputFile>$(OutDir)cppunit.lib</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
     </Lib>
     <PostBuildEvent>
-      <Message>Copying target to lib/</Message>
-      <Command>if not exist ..\..\lib mkdir ..\..\lib
-copy "$(TargetPath)" ..\..\lib\"$(TargetName)".lib
-
-</Command>
+      <Message>
+      </Message>
+      <Command>
+      </Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -212,10 +214,10 @@ copy "$(TargetPath)" ..\..\lib\"$(TargetName)".lib
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
       <PrecompiledHeader>
       </PrecompiledHeader>
-      <PrecompiledHeaderOutputFile>.\Release64/cppunit.pch</PrecompiledHeaderOutputFile>
-      <AssemblerListingLocation>.\Release64/</AssemblerListingLocation>
-      <ObjectFileName>.\Release64/</ObjectFileName>
-      <ProgramDataBaseFileName>.\Release64/cppunit.pdb</ProgramDataBaseFileName>
+      <PrecompiledHeaderOutputFile>.\$(Configuration)64/cppunit.pch</PrecompiledHeaderOutputFile>
+      <AssemblerListingLocation>.\$(Configuration)64/</AssemblerListingLocation>
+      <ObjectFileName>.\$(Configuration)64/</ObjectFileName>
+      <ProgramDataBaseFileName>.\$(Configuration)64/cppunit.pdb</ProgramDataBaseFileName>
       <WarningLevel>Level3</WarningLevel>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <CompileAs>Default</CompileAs>
@@ -226,14 +228,14 @@ copy "$(TargetPath)" ..\..\lib\"$(TargetName)".lib
       <Culture>0x040c</Culture>
     </ResourceCompile>
     <Lib>
-      <OutputFile>.\Release64\cppunit.lib</OutputFile>
+      <OutputFile>$(OutDir)cppunit.lib</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
     </Lib>
     <PostBuildEvent>
-      <Message>Copying target to lib64/</Message>
-      <Command>if not exist ..\..\lib64 mkdir ..\..\lib64
-copy "$(TargetPath)" ..\..\lib64\"$(TargetName)".lib
-</Command>
+      <Message>
+      </Message>
+      <Command>
+      </Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>

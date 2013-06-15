@@ -27,18 +27,22 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <CharacterSet>Unicode</CharacterSet>
+    <PlatformToolset>v110</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <CharacterSet>Unicode</CharacterSet>
+    <PlatformToolset>v110</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <CharacterSet>Unicode</CharacterSet>
+    <PlatformToolset>v110</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <CharacterSet>Unicode</CharacterSet>
+    <PlatformToolset>v110</PlatformToolset>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
@@ -58,17 +62,17 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup>
     <_ProjectFileVersion>10.0.40219.1</_ProjectFileVersion>
-    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">..\..\bin\debug\</OutDir>
-    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">..\..\obj\debug\PhpApi\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">..\..\bin\$(Configuration)\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">..\..\obj\$(Configuration)\PhpApi\</IntDir>
     <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</LinkIncremental>
-    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">..\..\bin\debug64\</OutDir>
-    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">..\..\obj\debug64\PhpApi\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">..\..\bin\$(Configuration)64\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">..\..\obj\$(Configuration)64\PhpApi\</IntDir>
     <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</LinkIncremental>
-    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">..\..\bin\release\</OutDir>
-    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">..\..\obj\release\PhpApi\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">..\..\bin\$(Configuration)\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">..\..\obj\$(Configuration)\PhpApi\</IntDir>
     <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</LinkIncremental>
-    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">..\..\bin\release64\</OutDir>
-    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">..\..\obj\release64\PhpApi\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">..\..\bin\$(Configuration)64\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">..\..\obj\$(Configuration)64\PhpApi\</IntDir>
     <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</LinkIncremental>
     <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">AllRules.ruleset</CodeAnalysisRuleSet>
     <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" />
@@ -111,14 +115,14 @@ copy .\php.i .\language.i
     <Link>
       <AdditionalDependencies>ACEd.lib;xerces-c_3mgD.lib;php5ts.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(OutDir)php_MapGuideApid.dll</OutputFile>
-      <AdditionalLibraryDirectories>..\..\..\Oem\ACE\ACE_wrappers\lib;..\..\..\Oem\dbxml\xerces-c-src\Build\Win32\VC10\Debug;..\..\..\Oem\php\Release_TS;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>..\..\..\Oem\ACE\ACE_wrappers\lib\$(Configuration);..\..\..\Oem\dbxml\xerces-c-src\Build\$(Configuration);..\..\..\Oem\php\Release_TS;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <ProgramDatabaseFile>$(OutDir)php_MapGuideApid.pdb</ProgramDatabaseFile>
       <SubSystem>Windows</SubSystem>
       <RandomizedBaseAddress>false</RandomizedBaseAddress>
       <DataExecutionPrevention>
       </DataExecutionPrevention>
-      <ImportLibrary>..\..\lib\debug\php_MapGuideApid.lib</ImportLibrary>
+      <ImportLibrary>..\..\lib\$(Configuration)\php_MapGuideApid.lib</ImportLibrary>
       <TargetMachine>MachineX86</TargetMachine>
     </Link>
   </ItemDefinitionGroup>
@@ -146,14 +150,14 @@ copy .\php.i .\language.i
     <Link>
       <AdditionalDependencies>ACEd.lib;xerces-c_3mgD.lib;php5ts.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(OutDir)php_MapGuideApid.dll</OutputFile>
-      <AdditionalLibraryDirectories>..\..\..\Oem\ACE\ACE_wrappers\lib64;..\..\..\Oem\dbxml\xerces-c-src\Build\x64\VC10\Debug;..\..\..\Oem\php\x64\Release_TS;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>..\..\..\Oem\ACE\ACE_wrappers\lib64\$(Configuration);..\..\..\Oem\dbxml\xerces-c-src\Build\$(Configuration)64;..\..\..\Oem\php\x64\Release_TS;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <ProgramDatabaseFile>$(OutDir)php_MapGuideApid.pdb</ProgramDatabaseFile>
       <SubSystem>Windows</SubSystem>
       <RandomizedBaseAddress>false</RandomizedBaseAddress>
       <DataExecutionPrevention>
       </DataExecutionPrevention>
-      <ImportLibrary>..\..\lib\debug64\php_MapGuideApid.lib</ImportLibrary>
+      <ImportLibrary>..\..\lib\$(Configuration)64\php_MapGuideApid.lib</ImportLibrary>
       <TargetMachine>MachineX64</TargetMachine>
     </Link>
   </ItemDefinitionGroup>
@@ -180,7 +184,7 @@ copy .\php.i .\language.i
     <Link>
       <AdditionalDependencies>ACE.lib;xerces-c_3mg.lib;php5ts.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(OutDir)php_MapGuideApi.dll</OutputFile>
-      <AdditionalLibraryDirectories>..\..\..\Oem\ACE\ACE_wrappers\lib;..\..\..\Oem\dbxml\xerces-c-src\Build\Win32\VC10\Release;..\..\..\Oem\php\Release_TS;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>..\..\..\Oem\ACE\ACE_wrappers\lib\$(Configuration);..\..\..\Oem\dbxml\xerces-c-src\Build\$(Configuration);..\..\..\Oem\php\Release_TS;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <ProgramDatabaseFile>$(OutDir)php_MapGuideApi.pdb</ProgramDatabaseFile>
       <SubSystem>Windows</SubSystem>
@@ -189,7 +193,7 @@ copy .\php.i .\language.i
       <RandomizedBaseAddress>false</RandomizedBaseAddress>
       <DataExecutionPrevention>
       </DataExecutionPrevention>
-      <ImportLibrary>..\..\lib\release\php_MapGuideApi.lib</ImportLibrary>
+      <ImportLibrary>..\..\lib\$(Configuration)\php_MapGuideApi.lib</ImportLibrary>
       <TargetMachine>MachineX86</TargetMachine>
     </Link>
   </ItemDefinitionGroup>
@@ -216,7 +220,7 @@ copy .\php.i .\language.i
     <Link>
       <AdditionalDependencies>ACE.lib;xerces-c_3mg.lib;php5ts.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(OutDir)php_MapGuideApi.dll</OutputFile>
-      <AdditionalLibraryDirectories>..\..\..\Oem\ACE\ACE_wrappers\lib64;..\..\..\Oem\dbxml\xerces-c-src\Build\x64\VC10\Release;..\..\..\Oem\php\x64\Release_TS;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>..\..\..\Oem\ACE\ACE_wrappers\lib64\$(Configuration);..\..\..\Oem\dbxml\xerces-c-src\Build\$(Configuration)64;..\..\..\Oem\php\x64\Release_TS;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <ProgramDatabaseFile>$(OutDir)php_MapGuideApi.pdb</ProgramDatabaseFile>
       <SubSystem>Windows</SubSystem>
@@ -225,7 +229,7 @@ copy .\php.i .\language.i
       <RandomizedBaseAddress>false</RandomizedBaseAddress>
       <DataExecutionPrevention>
       </DataExecutionPrevention>
-      <ImportLibrary>..\..\lib\release64\php_MapGuideApi.lib</ImportLibrary>
+      <ImportLibrary>..\..\lib\$(Configuration)64\php_MapGuideApi.lib</ImportLibrary>
       <TargetMachine>MachineX64</TargetMachine>
     </Link>
   </ItemDefinitionGroup>
