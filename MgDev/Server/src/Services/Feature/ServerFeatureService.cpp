@@ -1915,8 +1915,9 @@ MgByteReader* MgServerFeatureService::GetWfsFeature(MgResourceIdentifier* fs,
                 {
                     fdoFilterString += L" OR "; //NOXLATE
                 }
-
-                fdoFilterString += u.Ogc2FdoFilter(ogcFilter, trans, prop->GetName(), properties);
+                TransformCache* itemFilter = TransformCache::GetLayerToMapTransform(transformCache, lfeatureName, fs, mapCs, &fact, this, true);
+                Ptr<MgCoordinateSystemTransform> transFilter = itemFilter? itemFilter->GetMgTransform() : NULL;
+                fdoFilterString += u.Ogc2FdoFilter(ogcFilter, transFilter, prop->GetName(), properties);
             }
         }
 
