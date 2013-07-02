@@ -110,6 +110,27 @@ int SqliteDb::Open(System::String* newName)
     return SQLITE_ERROR;
 }
 
+///Dumps binary SQLite database into a SQL text format.
+void SqliteDb::DumpDatabase(System::String* iniFileName)
+{
+    if (database != NULL)
+    {
+        wstring str = SToWs(iniFileName);
+        database->DumpDatabase(str);
+    }
+}
+
+///Generates binary database from a SQL text file
+void SqliteDb::GenerateDatabase(System::String* dumpFileName, System::String* dbFileName)
+{
+    if (database != NULL)
+    {
+        wstring strDump = SToWs(dumpFileName);
+        wstring strDb = SToWs(dbFileName);
+        database->GenerateDatabase(strDump, strDb);
+    }
+}
+
 SqliteDB* SqliteDb::Database()
 {
     return database;
@@ -335,7 +356,6 @@ int SqliteVm::SqlFinalize()
     }
     return ret;
 }
-
 
 SqliteGcBlob::SqliteGcBlob(SqliteBlob* blob)
 {

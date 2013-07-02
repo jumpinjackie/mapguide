@@ -67,6 +67,12 @@ namespace SqliteDotNet
         ///Initializes a database object
         int Open(System::String* newName);
 
+        ///Dumps binary SQLite database into a SQL text format.
+        void DumpDatabase(System::String* iniFileName);
+
+        ///Generates binary database from a SQL text file
+        void GenerateDatabase(System::String* dumpFileName, System::String* dbFileName);
+
         SqliteDB* Database();
 
     private:
