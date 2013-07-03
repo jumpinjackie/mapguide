@@ -186,12 +186,24 @@ namespace OSGeo.MapGuide.Test.Common
         {
             try
             {
+                //Sigh, we're too smart for our own good. Yes, the trailing comma
+                //should be there!
+                StringBuilder sb = new StringBuilder();
+                for (int i = 0; i < coll.GetCount(); i++)
+                {
+                    sb.Append(coll.GetItem(i));
+                    sb.Append(",");
+                }
+                return sb.ToString();
+
+                /*
                 List<string> items = new List<string>();
                 for (int i = 0; i < coll.GetCount(); i++)
                 {
                     items.Add(coll.GetItem(i));
                 }
                 return string.Join(",", items.ToArray());
+                 */
             }
             catch (MgException ex)
             {
@@ -317,27 +329,59 @@ namespace OSGeo.MapGuide.Test.Common
             return res;
         }
 
+        class InvertedComparer<T> : IComparer<T>
+        {
+            private IComparer<T> _comp;
+
+            public InvertedComparer(IComparer<T> comp) { _comp = comp; }
+
+            public int Compare(T x, T y)
+            {
+                int res = _comp.Compare(x, y);
+                //Invert the non-zero results
+                if (res > 0)
+                    return -1;
+                else if (res < 0)
+                    return 1;
+                else
+                    return 0;
+            }
+        }
+
         private static string SortElement(XmlNode elem, string preText)
         {
             var elemArray = new List<string>();
             string elemString = "";
             if (elem.ChildNodes.Count > 0)
             {
-                foreach (XmlNode child in elem.ChildNodes)
+                int elCount = 0;
+                int txtCount = 0;
+                //foreach (XmlNode child in elem.ChildNodes)
+                for (int i = 0; i < elem.ChildNodes.Count; i++)
                 {
+                    var child = elem.ChildNodes[i];
                     if (child.NodeType == XmlNodeType.Element)
                     {
                         var elemValue = SortElement(child, preText + "  ");
                         if (!string.IsNullOrEmpty(elemValue))
+                        {
                             elemArray.Add(elemValue);
+                            elCount++;
+                        }
                     }
                     else if (child.NodeType == XmlNodeType.Text)
                     {
                         string content = child.InnerText.Trim();
                         if (!string.IsNullOrEmpty(content))
+                        {
                             elemArray.Add(content);
+                            txtCount++;
+                        }
                     }
                 }
+
+                //FIXME: Okay, PHP sort() does things differently than what
+                //we're expecting here (not surprising!)
                 elemArray.Sort();
                 foreach (string str in elemArray)
                 {

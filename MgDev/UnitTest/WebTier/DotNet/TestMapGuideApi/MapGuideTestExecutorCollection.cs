@@ -9,6 +9,7 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml;
+using System.Xml.Linq;
 
 namespace OSGeo.MapGuide.Test.Web
 {
@@ -36,9 +37,14 @@ namespace OSGeo.MapGuide.Test.Web
             MgFeatureService featSvc = (MgFeatureService)_conn.CreateService(MgServiceType.FeatureService);
             MgDrawingService drawSvc = (MgDrawingService)_conn.CreateService(MgServiceType.DrawingService);
 
+            var site = _conn.GetSite();
+            var admin = new MgServerAdmin();
+            admin.Open(_userInfo);
+            var wlCreator = new MgWebLayoutCreator(resSvc);
             var creator = new MgMapCreator(resSvc);
             var sessionCreator = new MgSessionCreator(_conn);
             var sessionApply = new MgApplySession(_userInfo);
+            var session = new MgSession();
 
             //Resource Service
             _executors[typeof(Operations.ApplyResourcePackage).Name.ToUpper()] = new Operations.ApplyResourcePackage(resSvc, dbPath);
@@ -114,10 +120,90 @@ namespace OSGeo.MapGuide.Test.Web
             //Rendering Service
 
             //Server Admin
+            _executors[typeof(Operations.Offline).Name.ToUpper()] = new Operations.Offline(admin, dbPath);
+            _executors[typeof(Operations.Online).Name.ToUpper()] = new Operations.Online(admin, dbPath);
+            _executors[typeof(Operations.GetLog).Name.ToUpper()] = new Operations.GetLog(admin, dbPath);
+            _executors[typeof(Operations.GetLogByDate).Name.ToUpper()] = new Operations.GetLogByDate(admin, dbPath);
+            _executors[typeof(Operations.ClearLog).Name.ToUpper()] = new Operations.ClearLog(admin, dbPath);
+            _executors[typeof(Operations.DeleteLog).Name.ToUpper()] = new Operations.DeleteLog(admin, dbPath);
+            _executors[typeof(Operations.RenameLog).Name.ToUpper()] = new Operations.RenameLog(admin, dbPath);
+            _executors[typeof(Operations.EnumeratePackages).Name.ToUpper()] = new Operations.EnumeratePackages(admin, dbPath);
+            _executors[typeof(Operations.DeletePackage).Name.ToUpper()] = new Operations.DeletePackage(admin, dbPath);
+            _executors[typeof(Operations.LoadPackage).Name.ToUpper()] = new Operations.LoadPackage(admin, dbPath);
+            _executors[typeof(Operations.GetPackageStatus).Name.ToUpper()] = new Operations.GetPackageStatus(admin, dbPath);
+            _executors[typeof(Operations.GetPackageLog).Name.ToUpper()] = new Operations.GetPackageLog(admin, dbPath);
 
             //Site Service
+            _executors[typeof(Operations.CreateSession).Name.ToUpper()] = new Operations.CreateSession(site, dbPath, session);
+            _executors[typeof(Operations.DestroySession).Name.ToUpper()] = new Operations.DestroySession(site, dbPath);
+            _executors[typeof(Operations.GetUserForSession).Name.ToUpper()] = new Operations.GetUserForSession(site, dbPath, session);
+            _executors[typeof(Operations.EnumerateUsers).Name.ToUpper()] = new Operations.EnumerateUsers(site, dbPath);
+            _executors[typeof(Operations.AddUser).Name.ToUpper()] = new Operations.AddUser(site, dbPath);
+            _executors[typeof(Operations.UpdateUser).Name.ToUpper()] = new Operations.UpdateUser(site, dbPath);
+            _executors[typeof(Operations.DeleteUsers).Name.ToUpper()] = new Operations.DeleteUsers(site, dbPath);
+            _executors[typeof(Operations.GrantRoleMembershipsToUsers).Name.ToUpper()] = new Operations.GrantRoleMembershipsToUsers(site, dbPath);
+            _executors[typeof(Operations.RevokeRoleMembershipsFromUsers).Name.ToUpper()] = new Operations.RevokeRoleMembershipsFromUsers(site, dbPath);
+            _executors[typeof(Operations.GrantGroupMembershipsToUsers).Name.ToUpper()] = new Operations.GrantGroupMembershipsToUsers(site, dbPath);
+            _executors[typeof(Operations.RevokeGroupMembershipsFromUsers).Name.ToUpper()] = new Operations.RevokeGroupMembershipsFromUsers(site, dbPath);
+            _executors[typeof(Operations.EnumerateGroups).Name.ToUpper()] = new Operations.EnumerateGroups(site, dbPath);
+            _executors[typeof(Operations.EnumerateGroups2).Name.ToUpper()] = new Operations.EnumerateGroups2(site, dbPath);
+            _executors[typeof(Operations.EnumerateRoles2).Name.ToUpper()] = new Operations.EnumerateRoles2(site, dbPath);
+            _executors[typeof(Operations.AddGroup).Name.ToUpper()] = new Operations.AddGroup(site, dbPath);
+            _executors[typeof(Operations.UpdateGroup).Name.ToUpper()] = new Operations.UpdateGroup(site, dbPath);
+            _executors[typeof(Operations.DeleteGroups).Name.ToUpper()] = new Operations.DeleteGroups(site, dbPath);
+            _executors[typeof(Operations.GrantRoleMembershipsToGroups).Name.ToUpper()] = new Operations.GrantRoleMembershipsToGroups(site, dbPath);
+            _executors[typeof(Operations.RevokeRoleMembershipsFromGroups).Name.ToUpper()] = new Operations.RevokeRoleMembershipsFromGroups(site, dbPath);
+            _executors[typeof(Operations.EnumerateRoles).Name.ToUpper()] = new Operations.EnumerateRoles(site, dbPath);
+            _executors[typeof(Operations.EnumerateServers).Name.ToUpper()] = new Operations.EnumerateServers(site, dbPath);
+            _executors[typeof(Operations.AddServer).Name.ToUpper()] = new Operations.AddServer(site, dbPath);
+            _executors[typeof(Operations.UpdateServer).Name.ToUpper()] = new Operations.UpdateServer(site, dbPath);
+            _executors[typeof(Operations.RemoveServer).Name.ToUpper()] = new Operations.RemoveServer(site, dbPath);
 
             //Web Layout
+            _executors[typeof(Operations.WL_GetTitle).Name.ToUpper()] = new Operations.WL_GetTitle(wlCreator, dbPath);
+            _executors[typeof(Operations.WL_GetMapDefinition).Name.ToUpper()] = new Operations.WL_GetMapDefinition(wlCreator, dbPath);
+            _executors[typeof(Operations.WL_GetScale).Name.ToUpper()] = new Operations.WL_GetScale(wlCreator, dbPath);
+            _executors[typeof(Operations.WL_GetCenter).Name.ToUpper()] = new Operations.WL_GetCenter(wlCreator, dbPath);
+            _executors[typeof(Operations.WL_ShowToolbar).Name.ToUpper()] = new Operations.WL_ShowToolbar(wlCreator, dbPath);
+            _executors[typeof(Operations.WL_ShowStatusbar).Name.ToUpper()] = new Operations.WL_ShowStatusbar(wlCreator, dbPath);
+            _executors[typeof(Operations.WL_ShowTaskpane).Name.ToUpper()] = new Operations.WL_ShowTaskpane(wlCreator, dbPath);
+            _executors[typeof(Operations.WL_ShowTaskbar).Name.ToUpper()] = new Operations.WL_ShowTaskbar(wlCreator, dbPath);
+            _executors[typeof(Operations.WL_ShowLegend).Name.ToUpper()] = new Operations.WL_ShowLegend(wlCreator, dbPath);
+            _executors[typeof(Operations.WL_ShowProperties).Name.ToUpper()] = new Operations.WL_ShowProperties(wlCreator, dbPath);
+            _executors[typeof(Operations.WL_GetTaskPaneWidth).Name.ToUpper()] = new Operations.WL_GetTaskPaneWidth(wlCreator, dbPath);
+            _executors[typeof(Operations.WL_GetInformationPaneWidth).Name.ToUpper()] = new Operations.WL_GetInformationPaneWidth(wlCreator, dbPath);
+            _executors[typeof(Operations.WL_GetInitialTaskUrl).Name.ToUpper()] = new Operations.WL_GetInitialTaskUrl(wlCreator, dbPath);
+            _executors[typeof(Operations.WL_ShowContextMenu).Name.ToUpper()] = new Operations.WL_ShowContextMenu(wlCreator, dbPath);
+            _executors[typeof(Operations.WL_TestUiItem).Name.ToUpper()] = new Operations.WL_TestUiItem(wlCreator, dbPath);
+            _executors[typeof(Operations.WL_HomeTooltip).Name.ToUpper()] = new Operations.WL_HomeTooltip(wlCreator, dbPath);
+            _executors[typeof(Operations.WL_HomeDescription).Name.ToUpper()] = new Operations.WL_HomeDescription(wlCreator, dbPath);
+            _executors[typeof(Operations.WL_BackTooltip).Name.ToUpper()] = new Operations.WL_BackTooltip(wlCreator, dbPath);
+            _executors[typeof(Operations.WL_BackDescription).Name.ToUpper()] = new Operations.WL_BackDescription(wlCreator, dbPath);
+            _executors[typeof(Operations.WL_ForwardTooltip).Name.ToUpper()] = new Operations.WL_ForwardTooltip(wlCreator, dbPath);
+            _executors[typeof(Operations.WL_ForwardDescription).Name.ToUpper()] = new Operations.WL_ForwardDescription(wlCreator, dbPath);
+            _executors[typeof(Operations.WL_TasksName).Name.ToUpper()] = new Operations.WL_TasksName(wlCreator, dbPath);
+            _executors[typeof(Operations.WL_TasksTooltip).Name.ToUpper()] = new Operations.WL_TasksTooltip(wlCreator, dbPath);
+            _executors[typeof(Operations.WL_TasksDescription).Name.ToUpper()] = new Operations.WL_TasksDescription(wlCreator, dbPath);
+        }
+
+        class MgWebLayoutCreator : Operations.IWebLayoutCreator
+        {
+            private MgResourceService _resSvc;
+            private MgWebLayout _wl;
+
+            public MgWebLayoutCreator(MgResourceService resSvc)
+            {
+                _resSvc = resSvc;
+            }
+
+            public MgWebLayout CreateWebLayout(MgResourceIdentifier resId)
+            {
+                if (_wl != null)
+                    return _wl;
+
+                _wl = new MgWebLayout(_resSvc, resId);
+                return _wl;
+            }
         }
 
         class MgMapCreator : Operations.IMapCreator
@@ -176,6 +262,15 @@ namespace OSGeo.MapGuide.Test.Web
             public void SetSessionId(string sessionId)
             {
                 _userInfo.SetMgSessionId(sessionId);
+            }
+        }
+
+        class MgSession : Operations.IMapGuideSession
+        {
+            public string SessionID
+            {
+                get;
+                set;
             }
         }
 
@@ -287,8 +382,11 @@ namespace OSGeo.MapGuide.Test.Web
 
                         if (this.TestExecutionMode == "validate")
                         {
+                            bool bStringsEqual = false;
+                            bStringsEqual = resultData.Equals(expectedResult, StringComparison.InvariantCultureIgnoreCase);
+                            
                             //If the results are different and special validation fails then the operation failed ->mark it red
-                            if (!resultData.Equals(expectedResult, StringComparison.InvariantCultureIgnoreCase) && !CommonUtility.SpecialValidation(operation, resultData, expectedResult))
+                            if (!bStringsEqual && !CommonUtility.SpecialValidation(operation, resultData, expectedResult))
                             {
                                 outcome = "fail";
                                 exitStatus = 1;
@@ -319,7 +417,8 @@ namespace OSGeo.MapGuide.Test.Web
             {
                 Console.WriteLine("****{0} {1} {2} failed.\n", testName, paramSetId, operation);
                 string str = string.Format("\n****ACTUAL RESULT****\n{0}\n****EXPECTED RESULT****\n{1}\n********\n\n\n", resultData, expectedResult);
-                Console.WriteLine(str);
+                //Console.WriteLine(str);
+                //Console.WriteLine("<FAIL>");
                 logger.Write(str);
             }
 

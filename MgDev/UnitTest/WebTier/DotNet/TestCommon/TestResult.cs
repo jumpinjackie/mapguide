@@ -44,7 +44,20 @@ namespace OSGeo.MapGuide.Test.Common
                 if (byteReader != null)
                 {
                     res.ContentType = byteReader.GetMimeType();
-                    res.ResultData = byteReader.ToString();
+                    if (res.ContentType == MgMimeType.Html ||
+                        res.ContentType == MgMimeType.Json ||
+                        res.ContentType == MgMimeType.Kml ||
+                        res.ContentType == MgMimeType.Text ||
+                        res.ContentType == MgMimeType.Xml)
+                    {
+                        res.ResultData = byteReader.ToString();
+                    }
+                    else
+                    {
+                        byte[] bytes = new byte[byteReader.GetLength()];
+                        byteReader.Read(bytes, bytes.Length);
+                        res.ResultData = Encoding.UTF8.GetString(bytes);
+                    }
                 }
                 return res;
             }

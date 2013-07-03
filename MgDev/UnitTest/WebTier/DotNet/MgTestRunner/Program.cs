@@ -45,9 +45,9 @@ namespace MgTestRunner
                     failures += ExecuteTest(ApiTypes.Platform, "../../TestData/MapLayer/MapLayerTest.dump", ref testsRun, logger, isEnterprise);
                     failures += ExecuteTest(ApiTypes.Platform, "../../TestData/DrawingService/DrawingServiceTest.dump", ref testsRun, logger, isEnterprise);
                     failures += ExecuteTest(ApiTypes.Platform, "../../TestData/MappingService/MappingServiceTest.dump", ref testsRun, logger, isEnterprise);
-                    //failures += ExecuteTest(ApiTypes.Platform, "../../TestData/SiteService/SiteServiceTest.dump", ref testsRun, logger, isEnterprise);
-                    //failures += ExecuteTest(ApiTypes.Platform, "../../TestData/ServerAdmin/ServerAdminTest.dump", ref testsRun, logger, isEnterprise);
-                    //failures += ExecuteTest(ApiTypes.Platform, "../../TestData/WebLayout/WebLayoutTest.dump", ref testsRun, logger, isEnterprise);
+                    failures += ExecuteTest(ApiTypes.Platform, "../../TestData/SiteService/SiteServiceTest.dump", ref testsRun, logger, isEnterprise);
+                    failures += ExecuteTest(ApiTypes.Platform, "../../TestData/ServerAdmin/ServerAdminTest.dump", ref testsRun, logger, isEnterprise);
+                    failures += ExecuteTest(ApiTypes.Platform, "../../TestData/WebLayout/WebLayoutTest.dump", ref testsRun, logger, isEnterprise);
                     failures += ExecuteTest(ApiTypes.Platform, "../../TestData/Unicode/UnicodeTest.dump", ref testsRun, logger, isEnterprise);
                     logger.Write("\n\nTests failed/run: {0}/{1}\n", failures, testsRun);
                     Console.Write("\n\nTests failed/run: {0}/{1}\n", failures, testsRun);
@@ -71,6 +71,7 @@ namespace MgTestRunner
             int ret = 0;
             if (exec != null)
             {
+                //"validate" is currently the only test execution mode supported
                 exec.Initialize("validate", dumpFile);
                 ret += exec.Execute(ref testsRun, logger, isEnterprise);
             }

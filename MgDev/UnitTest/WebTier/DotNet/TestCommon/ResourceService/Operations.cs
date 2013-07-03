@@ -262,7 +262,6 @@ namespace OSGeo.MapGuide.Test.Operations
             }
             catch (MgException ex)
             {
-                Console.WriteLine(ex.GetDetails());
                 return TestResult.FromMgException(ex);
             }
             catch (Exception ex)
