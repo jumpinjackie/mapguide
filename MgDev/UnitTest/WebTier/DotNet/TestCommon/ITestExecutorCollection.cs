@@ -83,51 +83,47 @@ namespace OSGeo.MapGuide.Test.Common
         public int Execute(ref int testsRun, ITestLogger logger, bool isEnterprise)
         {
             int exitStatus = 0;
-            try
+            string dbPath = CommonUtility.GetDbPath(this.DumpFile);
+            string dbName = CommonUtility.GetPath(dbPath);
+
+            if (File.Exists(dbName))
             {
-                string dbPath = CommonUtility.GetDbPath(this.DumpFile);
-                string dbName = CommonUtility.GetPath(dbPath);
+                var db = new SqliteDb();
+                db.Open(dbName);
 
-                if (File.Exists(dbName))
+                var vm = new SqliteVm(db, true);
+
+                int status = vm.Execute("Select TestName, TestType from TestCase where TestType=\"{0}\" order by ExecuteSequence", this.ApiType);
+
+                //NOTE: We can't share the SqliteVm instance among our executor objects as this messes up query results
+                //we must be able to re-create a new SqliteVm for each executor, so we pass down the db path
+                SetupExecutors(dbName);
+
+                while (status == Sqlite.Row)
                 {
-                    var db = new SqliteDb();
-                    db.Open(dbName);
+                    string testName = vm.GetString("TestName");
+                    string testType = vm.GetString("TestType");
 
-                    var vm = new SqliteVm(db, true);
-
-                    int status = vm.Execute("Select TestName, TestType from TestCase where TestType=\"{0}\" order by ExecuteSequence", this.ApiType);
-
-                    //NOTE: We can't share the SqliteVm instance among our executor objects as this messes up query results
-                    //we must be able to re-create a new SqliteVm for each executor, so we pass down the db path
-                    SetupExecutors(dbName);
-
-                    while (status == Sqlite.Row)
+                    Console.WriteLine("Executing {0} test: {1}", testType, testName);
+                    using (var run = new TestExecutionRun(dbPath, this))
                     {
-                        string testName = vm.GetString("TestName");
-                        string testType = vm.GetString("TestType");
-
-                        Console.WriteLine("Executing {0} test: {1}", testType, testName);
-                        using (var run = new TestExecutionRun(dbPath, this))
+                        try
                         {
                             exitStatus += run.RunTests(testName, logger, ref testsRun);
                         }
-                        status = vm.NextRow();
+                        catch (Exception ex)
+                        {
+                            Console.WriteLine(ex.ToString());
+                            exitStatus += 1;
+                        }
                     }
-                    vm.SqlFinalize();
-                    vm = null;
-                    db = null;
+                    status = vm.NextRow();
                 }
-                return exitStatus;
+                vm.SqlFinalize();
+                vm = null;
+                db = null;
             }
-            catch (UnitTestException ex)
-            {
-                throw;
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.Message);
-                return 1;
-            }
+            return exitStatus;
         }
 
         public abstract ITestExecutor GetTestExecutor(string opName);

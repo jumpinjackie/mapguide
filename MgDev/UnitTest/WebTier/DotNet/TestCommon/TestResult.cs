@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.SqlTypes;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -11,7 +12,7 @@ namespace OSGeo.MapGuide.Test.Common
     /// </summary>
     public class TestResult
     {
-        public string ResultData
+        public object ResultData
         {
             get;
             private set;
@@ -56,7 +57,7 @@ namespace OSGeo.MapGuide.Test.Common
                     {
                         byte[] bytes = new byte[byteReader.GetLength()];
                         byteReader.Read(bytes, bytes.Length);
-                        res.ResultData = Encoding.UTF8.GetString(bytes);
+                        res.ResultData = bytes;
                     }
                 }
                 return res;
@@ -69,7 +70,8 @@ namespace OSGeo.MapGuide.Test.Common
 
         public static TestResult FromMgException(MgException ex)
         {
-            return new TestResult(ex.GetType().Name, "text/plain");
+            //Need to be lowercase to satisfy a PHP-ism. Ugh!
+            return new TestResult(ex.GetType().Name.ToLower(), "text/plain");
         }
 
         public static TestResult FromException(Exception ex)

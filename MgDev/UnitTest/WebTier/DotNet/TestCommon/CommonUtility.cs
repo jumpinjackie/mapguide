@@ -295,35 +295,36 @@ namespace OSGeo.MapGuide.Test.Common
             }
         }
 
-        public static string SpecialDataHandling(string operation, string resultData, string mimeType)
+        public static object SpecialDataHandling(string operation, object resultData, string mimeType)
         {
-            string res = resultData;
+            object res = resultData;
             switch (operation)
             {
                 case "ENUMERATERESOURCES":
-                    res = RemoveTimeStamp(resultData);
+                    res = RemoveTimeStamp(resultData.ToString());
                     break;
                 case "GETDRAWINGLAYER":
-                    res = RemoveDwfSectionName(resultData);
+                    res = RemoveDwfSectionName(resultData, Encoding.UTF8);
                     break;
                 case "GETDRAWINGSECTION":
-                    res = RemoveDwfSectionName(resultData);
+                    res = RemoveDwfSectionName(resultData, Encoding.UTF8);
                     break;
                 case "GETLOG":
-                    res = RemoveLogEntryTimeStamp(resultData);
+                    res = RemoveLogEntryTimeStamp(resultData.ToString());
                     break;
                 case "GETMAP":
-                    res = GetMapHeader(resultData);
+                    res = GetMapHeader(resultData.ToString());
                     break;
                 case "GETLONGTRANSACTIONS":
-                    res = RemoveCreationDate(resultData);
+                    res = RemoveCreationDate(resultData.ToString());
                     break;
             }
 
-            if (res != null && mimeType == "text/xml")
+            string strRes = res as string;
+            if (strRes != null && mimeType == "text/xml")
             {
                 var doc = new XmlDocument();
-                doc.LoadXml(res);
+                doc.LoadXml(strRes);
                 res = SortElement(doc, "");
             }
             return res;
@@ -380,9 +381,12 @@ namespace OSGeo.MapGuide.Test.Common
                     }
                 }
 
-                //FIXME: Okay, PHP sort() does things differently than what
-                //we're expecting here (not surprising!)
-                elemArray.Sort();
+                //We have to ordinal compare to match the sort behaviour of
+                //sort() in PHP
+                elemArray.Sort((s1, s2) =>
+                {
+                    return string.CompareOrdinal(s1, s2);
+                });
                 foreach (string str in elemArray)
                 {
                     elemString += str;
@@ -422,14 +426,42 @@ namespace OSGeo.MapGuide.Test.Common
             return newResult;
         }
 
-        private static string RemoveDwfSectionName(string resultData)
+        private static object RemoveDwfSectionName(object resultData, Encoding enc)
         {
-            string newResult = resultData.Substring(resultData.IndexOf(".w2d"));
-            if (0 != newResult.IndexOf("EndOfDWF"))
+            bool bFromByteArray = false;
+
+            string strResultData = resultData as string;
+            if (strResultData == null)
             {
-                newResult = newResult.Substring(0, newResult.IndexOf("EndOfDWF"));
+                byte[] b = resultData as byte[];
+                if (b != null)
+                {
+                    strResultData = enc.GetString(b);
+                    bFromByteArray = true;
+                }
             }
-            return newResult;
+            if (strResultData != null)
+            {
+                Console.WriteLine("RemoveDwfSectionName: length = {0}", strResultData.Length);
+                int idx = strResultData.IndexOf(".w2d");
+                Console.WriteLine("RemoveDwfSectionName: widx = {0}", idx);
+                if (idx >= 0)
+                {
+                    string newResult = strResultData.Substring(idx);
+                    int eidx = newResult.IndexOf("EndOfDWF");
+                    Console.WriteLine("RemoveDwfSectionName: eidx = {0}", eidx);
+                    if (0 != eidx)
+                    {
+                        newResult = newResult.Substring(0, eidx);
+                        Console.WriteLine("RemoveDwfSectionName: newlength = {0}", newResult.Length);
+                    }
+                    if (bFromByteArray)
+                        return enc.GetBytes(newResult);
+                    else
+                        return newResult;
+                }
+            }
+            return resultData;
         }
 
         private static string RemoveLogEntryTimeStamp(string resultData)
@@ -464,21 +496,27 @@ namespace OSGeo.MapGuide.Test.Common
             return newResult;
         }
 
-        public static string ProcessExceptionMessage(string resultData)
+        public static object ProcessExceptionMessage(object resultData)
         {
-            string text = "exception occurred";
-            if (resultData.Contains(text))
+            string strResultData = resultData as string;
+            if (strResultData != null)
             {
-                resultData = resultData.Substring(0, resultData.IndexOf(text) + text.Length); 
+                string text = "exception occurred";
+                if (strResultData.Contains(text))
+                {
+                    strResultData = strResultData.Substring(0, strResultData.IndexOf(text) + text.Length);
+                }
+                return strResultData;
             }
             return resultData;
         }
 
-        public static bool SpecialValidation(string operation, string resultData, string expectedResult)
+        public static bool SpecialValidation(string operation, object resultData, object expectedResult)
         {
-            if (operation == "GETFEATUREPROVIDERS")
+            if (operation == "GETFEATUREPROVIDERS") 
             {
-                return GetFeatureProvidersValidation(resultData, expectedResult);
+                //We expect both to be strings here
+                return GetFeatureProvidersValidation(resultData.ToString(), expectedResult.ToString());
             }
             return false;
         }
@@ -488,8 +526,9 @@ namespace OSGeo.MapGuide.Test.Common
             throw new NotImplementedException();
         }
 
-        public static string RemoveStackTraceFromResult(string result)
+        public static object RemoveStackTraceFromResult(object result)
         {
+            var strResult = result as string;
             //TODO: Clean out stack trace
             return result;
         }

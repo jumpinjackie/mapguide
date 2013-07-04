@@ -90,7 +90,7 @@ namespace OSGeo.MapGuide.Test.Operations
                     resId = new MgResourceIdentifier(param["RESOURCEID"]);
                 }
 
-                MgStringCollection coll = _drawingService.EnumerateLayers(resId, param["SECTION"]);
+                MgStringCollection coll = _drawingService.EnumerateLayers(resId, param["SECTION"] ?? "");
                 MgByteReader reader = coll.ToXml();
                 return TestResult.FromByteReader(reader);
             }
@@ -215,7 +215,7 @@ namespace OSGeo.MapGuide.Test.Operations
                     resId = new MgResourceIdentifier(param["RESOURCEID"]);
                 }
 
-                MgByteReader reader = _drawingService.EnumerateSectionResources(resId, param["SECTION"]);
+                MgByteReader reader = _drawingService.EnumerateSectionResources(resId, param["SECTION"] ?? "");
                 return TestResult.FromByteReader(reader);
             }
             catch (MgException ex)

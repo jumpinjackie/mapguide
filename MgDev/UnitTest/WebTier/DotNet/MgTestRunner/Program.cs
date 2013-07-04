@@ -41,12 +41,12 @@ namespace MgTestRunner
                     int testsRun = 0;
                     bool isEnterprise = false;
                     failures += ExecuteTest(ApiTypes.Platform, "../../TestData/ResourceService/ResourceServiceTest.dump", ref testsRun, logger, isEnterprise);
-                    failures += ExecuteTest(ApiTypes.Platform, "../../TestData/FeatureService/FeatureServiceTest.dump", ref testsRun, logger, isEnterprise);
-                    failures += ExecuteTest(ApiTypes.Platform, "../../TestData/MapLayer/MapLayerTest.dump", ref testsRun, logger, isEnterprise);
                     failures += ExecuteTest(ApiTypes.Platform, "../../TestData/DrawingService/DrawingServiceTest.dump", ref testsRun, logger, isEnterprise);
-                    failures += ExecuteTest(ApiTypes.Platform, "../../TestData/MappingService/MappingServiceTest.dump", ref testsRun, logger, isEnterprise);
+                    failures += ExecuteTest(ApiTypes.Platform, "../../TestData/FeatureService/FeatureServiceTest.dump", ref testsRun, logger, isEnterprise);
                     failures += ExecuteTest(ApiTypes.Platform, "../../TestData/SiteService/SiteServiceTest.dump", ref testsRun, logger, isEnterprise);
+                    failures += ExecuteTest(ApiTypes.Platform, "../../TestData/MappingService/MappingServiceTest.dump", ref testsRun, logger, isEnterprise);
                     failures += ExecuteTest(ApiTypes.Platform, "../../TestData/ServerAdmin/ServerAdminTest.dump", ref testsRun, logger, isEnterprise);
+                    failures += ExecuteTest(ApiTypes.Platform, "../../TestData/MapLayer/MapLayerTest.dump", ref testsRun, logger, isEnterprise);
                     failures += ExecuteTest(ApiTypes.Platform, "../../TestData/WebLayout/WebLayoutTest.dump", ref testsRun, logger, isEnterprise);
                     failures += ExecuteTest(ApiTypes.Platform, "../../TestData/Unicode/UnicodeTest.dump", ref testsRun, logger, isEnterprise);
                     logger.Write("\n\nTests failed/run: {0}/{1}\n", failures, testsRun);
