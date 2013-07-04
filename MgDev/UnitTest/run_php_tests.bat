@@ -39,12 +39,13 @@ SET OEM_PATH=%CD%\..\Oem
 SET OEM_PHP=%OEM_PATH%\php\Release_TS
 REM MENTOR_DICTIONARY_PATH fallback for MgCoordinateSystem still exists, so use it so we don't have to mess around with webconfig.ini
 SET MENTOR_DICTIONARY_PATH=%OEM_PATH%\CsMap\Dictionaries
+SET OEM_SQLITE=%OEM_PATH%\SQLite\bin\release
 IF "%PLATFORM%" == "64" (
     SET OEM_PHP=%OEM_PATH%\php\x64\Release_TS
     SET WEB_BIN=%CD%\..\Web\bin\release64
     SET SERVER_BIN=%CD%\..\Server\bin\release
+    SET OEM_SQLITE=%OEM_PATH%\SQLite\bin\release64
 )
-SET OEM_SQLITE=%OEM_PATH%\SQLite\bin\Win%PLATFORM%\release
 SET MAPAGENT=%CD%\..\Web\src\mapagent
 SET OLD_PATH=%PATH%
 SET PATH=%PATH%;%OEM_PHP%;%MAPAGENT%
