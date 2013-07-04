@@ -2752,7 +2752,8 @@ MgByteReader* MgLogManager::GetLogHeader(CREFSTRING filename)
         ACE_OS::fclose(pReadFile);
     }
 
-    byteReader = MgUtil::GetByteReader(contents);
+    STRING mimeType = MgMimeType::Text;
+    byteReader = MgUtil::GetByteReader(contents, &mimeType);
 
     MG_LOGMANAGER_CATCH(L"MgLogManager.GetLogHeader")
     if (mgException != NULL)
@@ -2809,7 +2810,8 @@ MgByteReader* MgLogManager::GetLogContents(CREFSTRING filename)
         ACE_OS::fclose(pReadFile);
     }
 
-    byteReader = MgUtil::GetByteReader(contents);
+    STRING mimeType = MgMimeType::Text;
+    byteReader = MgUtil::GetByteReader(contents, &mimeType);
 
     MG_LOGMANAGER_CATCH(L"MgLogManager.GetLogContents")
     if (mgException != NULL)
@@ -2933,7 +2935,8 @@ MgByteReader* MgLogManager::GetLogContents(CREFSTRING filename, INT32 numEntries
         ACE_OS::fclose(pReadFile);
     }
 
-    byteReader = MgUtil::GetByteReader(contents);
+    STRING mimeType = MgMimeType::Text;
+    byteReader = MgUtil::GetByteReader(contents, &mimeType);
 
     MG_LOGMANAGER_CATCH(L"MgLogManager.GetLogContents")
     if (mgException != NULL)
@@ -3150,7 +3153,8 @@ MgByteReader* MgLogManager::GetLogContents(enum MgLogType logType, MgDateTime* f
     } // End of file selecting while loop
 
     // Put string into the byteReader that will be sent back
-    byteReader = MgUtil::GetByteReader(contents);
+    STRING mimeType = MgMimeType::Text;
+    byteReader = MgUtil::GetByteReader(contents, &mimeType);
 
     MG_LOGMANAGER_CATCH(L"MgLogManager.GetLogContents");
     if (mgException != NULL)
