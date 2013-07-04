@@ -750,6 +750,7 @@ namespace SqliteGUI
                 if (!Form1.IsReadOnly(dbName) || this.Overwrite())
                 {
                     this.SaveData(false);
+                    MessageBox.Show("Test Saved");
                 }
             }
         }
