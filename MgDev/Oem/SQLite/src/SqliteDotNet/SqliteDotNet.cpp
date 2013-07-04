@@ -58,7 +58,15 @@ int SqliteDb::Close()
     int err = SQLITE_ERROR;
     if (database != NULL)
     {
-        err = database->CloseDB();
+        try 
+        {
+            err = database->CloseDB();
+        }
+        catch (CantCloseDbException* ex)
+        {
+            SAFE_RELEASE(ex);
+        }
+
         delete database;
         database = NULL;
     }

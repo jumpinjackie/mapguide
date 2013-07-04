@@ -42,7 +42,14 @@ errMsg(L"")
 //Destructor. Closes the connection and deallocates the space for db_name
 SqliteDB::~SqliteDB()
 {
-    CloseDB();
+    try
+    {
+        CloseDB();
+    }
+    catch (CantCloseDbException* ex)
+    {
+        SAFE_RELEASE(ex);
+    }
 }
 
 void SqliteDB::Dispose()
