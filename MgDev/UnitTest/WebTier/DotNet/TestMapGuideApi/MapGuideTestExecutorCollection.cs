@@ -461,7 +461,11 @@ namespace OSGeo.MapGuide.Test.Web
 
         public override void Cleanup()
         {
-            
+            foreach (var exec in _executors.Values)
+            {
+                exec.Dispose();
+            }
+            _executors.Clear();
         }
 
         public override string ApiType

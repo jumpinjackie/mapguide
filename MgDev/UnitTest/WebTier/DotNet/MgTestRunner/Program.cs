@@ -74,6 +74,7 @@ namespace MgTestRunner
                 //"validate" is currently the only test execution mode supported
                 exec.Initialize("validate", dumpFile);
                 ret += exec.Execute(ref testsRun, logger, isEnterprise);
+                exec.Cleanup();
             }
             return ret;
         }

@@ -5,6 +5,7 @@ using System.Collections.Specialized;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml;
@@ -161,7 +162,15 @@ namespace OSGeo.MapGuide.Test.Common
 
         public static string GetPath(string dbPath)
         {
-            return dbPath.Replace("\\", "/");
+            if (Path.IsPathRooted(dbPath))
+                return dbPath.Replace("\\", "/");
+            else
+                return Path.Combine(GetAssemblyPath(), dbPath).Replace("\\", "/");
+        }
+
+        private static string GetAssemblyPath()
+        {
+            return Path.GetDirectoryName(new Uri(Assembly.GetExecutingAssembly().CodeBase).LocalPath);
         }
 
         public static MgStringCollection StringToMgStringCollection(string str)
