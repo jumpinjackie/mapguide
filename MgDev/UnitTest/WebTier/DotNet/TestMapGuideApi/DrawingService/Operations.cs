@@ -60,7 +60,7 @@ namespace OSGeo.MapGuide.Test.Operations
                 }
 
                 MgByteReader reader = _drawingService.GetDrawing(resId);
-                return TestResult.FromByteReader(reader);
+                return TestResult.FromByteReader(reader, "GETDRAWING");
             }
             catch (MgException ex)
             {
@@ -124,7 +124,7 @@ namespace OSGeo.MapGuide.Test.Operations
                 }
 
                 MgByteReader reader = _drawingService.GetLayer(resId, param["SECTION"], param["LAYER"]);
-                return TestResult.FromByteReader(reader);
+                return TestResult.FromByteReader(reader, "GETDRAWINGLAYER");
             }
             catch (MgException ex)
             {
@@ -155,7 +155,7 @@ namespace OSGeo.MapGuide.Test.Operations
                 }
 
                 MgByteReader reader = _drawingService.GetSection(resId, param["SECTION"]);
-                return TestResult.FromByteReader(reader);
+                return TestResult.FromByteReader(reader, "GETDRAWINGSECTION");
             }
             catch (MgException ex)
             {
@@ -247,7 +247,7 @@ namespace OSGeo.MapGuide.Test.Operations
                 }
 
                 MgByteReader reader = _drawingService.GetSectionResource(resId, param["RESOURCENAME"]);
-                return TestResult.FromByteReader(reader);
+                return TestResult.FromByteReader(reader, "GETDRAWINGSECTIONRESOURCE");
             }
             catch (MgException ex)
             {

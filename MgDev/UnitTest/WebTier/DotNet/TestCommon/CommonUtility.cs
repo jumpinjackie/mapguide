@@ -1,4 +1,7 @@
-﻿using SqliteDotNet;
+﻿#if DEBUG
+#define DEBUG_BINARY_COMPARISON
+#endif
+using SqliteDotNet;
 using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
@@ -438,36 +441,145 @@ namespace OSGeo.MapGuide.Test.Common
         private static object RemoveDwfSectionName(object resultData, Encoding enc)
         {
             bool bFromByteArray = false;
-
+            byte[] bResultData = resultData as byte[];
             string strResultData = resultData as string;
+            /*
             if (strResultData == null)
             {
-                byte[] b = resultData as byte[];
-                if (b != null)
+                if (bResultData != null)
                 {
-                    strResultData = enc.GetString(b);
+                    strResultData = enc.GetString(bResultData);
                     bFromByteArray = true;
                 }
-            }
+            }*/
+
             if (strResultData != null)
             {
-                Console.WriteLine("RemoveDwfSectionName: length = {0}", strResultData.Length);
+                //Console.WriteLine("RemoveDwfSectionName: length = {0}", strResultData.Length);
                 int idx = strResultData.IndexOf(".w2d");
-                Console.WriteLine("RemoveDwfSectionName: widx = {0}", idx);
+                //Console.WriteLine("RemoveDwfSectionName: widx = {0}", idx);
                 if (idx >= 0)
                 {
                     string newResult = strResultData.Substring(idx);
                     int eidx = newResult.IndexOf("EndOfDWF");
-                    Console.WriteLine("RemoveDwfSectionName: eidx = {0}", eidx);
+                    //Console.WriteLine("RemoveDwfSectionName: eidx = {0}", eidx);
                     if (0 != eidx)
                     {
                         newResult = newResult.Substring(0, eidx);
-                        Console.WriteLine("RemoveDwfSectionName: newlength = {0}", newResult.Length);
+                        //Console.WriteLine("RemoveDwfSectionName: newlength = {0}", newResult.Length);
                     }
                     if (bFromByteArray)
                         return enc.GetBytes(newResult);
                     else
                         return newResult;
+                }
+            }
+            else if (bResultData != null)
+            {
+                byte[] bW2d = enc.GetBytes(".w2d");
+                byte[] bEOF = enc.GetBytes("EndOfDWF");
+
+                int widx = -1;
+                int eidx = -1;
+
+                int wMatches = 0;
+                int eMatches = 0;
+
+                int i = 0;
+                while(i < bResultData.Length)
+                {
+                    //Haven't found .w2d sequence
+                    if (widx < 0 && wMatches == 0) 
+                    {
+                        //We've found a "."
+                        if (bResultData[i] == bW2d[0])
+                        {
+                            wMatches++;
+                            i++;
+
+                            //Now try to follow through this sequence to see if it is ".w2d"
+                            while (wMatches < bW2d.Length)
+                            {
+                                //End of array. Abort
+                                if (i >= bResultData.Length)
+                                    break;
+
+                                //Next byte in sequence matches. Advance
+                                if (bResultData[i] == bW2d[wMatches])
+                                {
+                                    //Increment matches
+                                    wMatches++;
+                                    
+                                    //Check if full sequence matches
+                                    if (wMatches == bW2d.Length)
+                                    {
+                                        //Match. Record index which is current position minus the # of consecutive matches
+                                        widx = i - wMatches;
+                                        break;
+                                    }
+                                }
+                                else //Incomplete sequence. Break this loop
+                                {
+                                    wMatches = 0; //Reset
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                    //Haven't found EndOfDWF sequence
+                    else if (eidx < 0 && eMatches == 0)
+                    {
+                        //We've found a "E"
+                        if (bResultData[i] == bEOF[0])
+                        {
+                            eMatches++;
+                            i++;
+
+                            //Now try to follow through this sequence to see if it is "EndOfDWF"
+                            while (eMatches < bEOF.Length)
+                            {
+                                //End of array. Abort
+                                if (i >= bResultData.Length)
+                                    break;
+
+                                //Next byte in sequence matches. Advance
+                                if (bResultData[i] == bEOF[eMatches])
+                                {
+                                    //Increment matches
+                                    eMatches++;
+
+                                    //Check if full sequence matches
+                                    if (eMatches == bEOF.Length)
+                                    {
+                                        //Match. Record index which is current position minus the # of consecutive matches
+                                        eidx = i - eMatches;
+                                        break;
+                                    }
+                                }
+                                else //Incomplete sequence. Break this loop
+                                {
+                                    eMatches = 0; //Reset
+                                    break;
+                                }
+                            }
+                        }
+                    }
+
+                    //Found both offsets. We're done
+                    if (widx > 0 && eidx > widx)
+                        break;
+
+                    i++;
+                }
+
+                if (widx > 0 && eidx > widx)
+                {
+                    byte[] newResult = new byte[eidx - widx];
+                    int off = 0;
+                    for (int j = widx; j <= eidx; j++)
+                    {
+                        newResult[off] = bResultData[j];
+                    }
                 }
             }
             return resultData;
@@ -571,6 +683,66 @@ namespace OSGeo.MapGuide.Test.Common
             }
 
             return extension;
+        }
+
+        public static bool ByteArraysEqual(byte[] bExpected, byte[] bActual, string operation, string testName)
+        {
+            if (bExpected == null && bActual != null)
+                return false;
+
+            if (bExpected != null && bActual == null)
+                return false;
+
+            bool bRet = true;
+#if DEBUG_BINARY_COMPARISON
+            bool bLogged = false;
+            Guid guid = Guid.NewGuid();
+            using (StreamWriter sw1 = new StreamWriter(guid.ToString() + "_" + operation + "_" + testName + "_expected.txt", false))
+            using (StreamWriter sw2 = new StreamWriter(guid.ToString() + "_" + operation + "_" + testName + "_actual.txt", false))
+            {
+#endif
+            for (int i = 0; i < bExpected.Length; i++)
+            {
+                if (i >= bExpected.Length ||
+                    i >= bActual.Length)
+                {
+                    break;
+                }
+
+                byte b1 = bExpected[i];
+                byte b2 = bActual[i];
+
+#if DEBUG_BINARY_COMPARISON
+                sw1.WriteLine("{0} {1}", b1, Convert.ToChar(b1));
+                sw2.WriteLine("{0} {1}", b2, Convert.ToChar(b2));
+#endif
+
+                if (b1 != b2)
+                {
+#if DEBUG_BINARY_COMPARISON
+                    bRet = false;
+                    if (!bLogged)
+                    {
+                        System.Diagnostics.Debug.WriteLine(string.Format("[MgTestRunner]: Comparison {0} returned false. See logged text files", guid.ToString()));
+                        bLogged = true;
+                    }
+#else
+                    return false;
+#endif
+                }
+            }
+#if DEBUG_BINARY_COMPARISON
+            }
+
+            if (bRet)
+            {
+                File.Delete(guid.ToString() + "_" + operation + "_" + testName + "_expected.txt");
+                File.Delete(guid.ToString() + "_" + operation + "_" + testName + "_actual.txt");
+            }
+#endif
+
+            System.Diagnostics.Debug.WriteLine(string.Format("[MgTestRunner]: {0} - {1} - COMPARE: {2} with {3} = {4}", testName, operation, bExpected.Length, bActual.Length, (bRet ? 0 : 1)));
+            return bRet;
         }
     }
 }

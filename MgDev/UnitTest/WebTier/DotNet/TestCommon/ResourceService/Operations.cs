@@ -35,7 +35,7 @@ namespace OSGeo.MapGuide.Test.Operations
                 }
                 MgByteReader byteReader = _resourceService.EnumerateResources(resId, Convert.ToInt32(param["DEPTH"]), param["TYPE"] ?? "");
 
-                return TestResult.FromByteReader(byteReader);
+                return TestResult.FromByteReader(byteReader, "GETRESOURCEDATA");
             }
             catch (MgException ex)
             {

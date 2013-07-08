@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data.SqlTypes;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -37,7 +38,7 @@ namespace OSGeo.MapGuide.Test.Common
             this.HttpStatusCode = statusCode;
         }
 
-        public static TestResult FromByteReader(MgByteReader byteReader)
+        public static TestResult FromByteReader(MgByteReader byteReader, string operation = "")
         {
             try
             {
@@ -55,9 +56,21 @@ namespace OSGeo.MapGuide.Test.Common
                     }
                     else
                     {
+                        MgByteSink sink = new MgByteSink(byteReader);
+                        string path = operation + Guid.NewGuid().ToString() + "Result.bin";
+                        if (string.IsNullOrEmpty(operation))
+                            path = Path.GetTempFileName();
+                        sink.ToFile(path);
+                        res.ResultData = File.ReadAllBytes(path);
+                        if (string.IsNullOrEmpty(operation))
+                            File.Delete(path);
+                        else
+                            System.Diagnostics.Debug.WriteLine(string.Format("[MgTestRunner]: Check out {0} if binary comparison results are strange", path));
+                        /*
                         byte[] bytes = new byte[byteReader.GetLength()];
                         byteReader.Read(bytes, bytes.Length);
                         res.ResultData = bytes;
+                        */
                     }
                 }
                 return res;

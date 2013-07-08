@@ -407,10 +407,11 @@ namespace OSGeo.MapGuide.Test.Web
                             }
                             else if (bExpected != null && bActual != null)
                             {
-                                //FIXME: Obviously PHP is doing some cryptic black magic that
-                                //causes these supposedly same byte arrays to not be equal so
-                                //we're just doing length comparison for now
-                                bEqual = bExpected.Length == bActual.Length;
+                                bEqual = CommonUtility.ByteArraysEqual(bExpected, bActual, operation, testName);
+                            }
+                            else
+                            {
+                                System.Diagnostics.Debug.WriteLine(string.Format("[MgTestRunner]: {0} - {1} - Encountered disparate data types between expected and actual results. Expecting test failure :(", testName, operation));
                             }
                             
                             //If the results are different and special validation fails then the operation failed ->mark it red
