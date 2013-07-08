@@ -62,7 +62,6 @@
 #include "HttpDescribeSchema.h"
 #include "HttpSelectFeatures.h"
 #include "HttpSelectFeaturesSpatially.h"
-#include "HttpExecuteSqlQuery.h"
 #include "HttpGetSpatialContexts.h"
 #include "HttpGetLongTransactions.h"
 #include "HttpEnumerateDataStores.h"
@@ -379,7 +378,6 @@ bool InitializeStaticData()
     httpClassCreators[MgHttpResourceStrings::opDescribeSchema] = MgHttpDescribeSchema::CreateObject;
     httpClassCreators[MgHttpResourceStrings::opSelectFeatures] = MgHttpSelectFeatures::CreateObject;
     httpClassCreators[MgHttpResourceStrings::opSelectFeaturesSpatially] = MgHttpSelectFeaturesSpatially::CreateObject;
-    httpClassCreators[MgHttpResourceStrings::opExecuteSqlQuery] = MgHttpExecuteSqlQuery::CreateObject;
     httpClassCreators[MgHttpResourceStrings::opGetSpatialContexts] = MgHttpGetSpatialContexts::CreateObject;
     httpClassCreators[MgHttpResourceStrings::opGetLongTransactions] = MgHttpGetLongTransactions::CreateObject;
     httpClassCreators[MgHttpResourceStrings::opEnumerateUsers] = MgHttpEnumerateUsers::CreateObject;

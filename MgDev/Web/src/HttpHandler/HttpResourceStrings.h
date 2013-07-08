@@ -122,7 +122,6 @@ public:
     static const STRING reqFeatGeomProperty;
     static const STRING reqFeatSpatialOp;
     static const STRING reqFeatGeometry;
-    static const STRING reqFeatSql;
     static const STRING reqFeatActiveOnly;
     static const STRING reqFeatComputedProperties;
     static const STRING reqFeatComputedAliases;
@@ -276,7 +275,6 @@ public:
     static const STRING opDescribeSchema;
     static const STRING opSelectFeatures;
     static const STRING opSelectFeaturesSpatially;
-    static const STRING opExecuteSqlQuery;
     static const STRING opGetSpatialContexts;
     static const STRING opGetLongTransactions;
     static const STRING opEnumerateDataStores;
