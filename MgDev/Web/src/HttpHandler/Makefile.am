@@ -52,7 +52,6 @@ include_SOURCES = \
   HttpEnumerateApplicationContainers.cpp \
   HttpEnumerateApplicationWidgets.cpp \
   HttpEnumerateApplicationTemplates.cpp \
-  HttpExecuteSqlQuery.cpp \
   HttpGetCapabilities.cpp \
   HttpGetClassDefinition.cpp \
   HttpGetClasses.cpp \
@@ -176,7 +175,6 @@ noinst_HEADERS = $(include_SOURCES) \
   HttpEnumerateApplicationContainers.h \
   HttpEnumerateApplicationWidgets.h \
   HttpEnumerateApplicationTemplates.h \
-  HttpExecuteSqlQuery.h \
   HttpGetCapabilities.h \
   HttpGetClassDefinition.h \
   HttpGetClasses.h \

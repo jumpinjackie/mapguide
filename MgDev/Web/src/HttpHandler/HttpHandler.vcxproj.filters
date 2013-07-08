@@ -117,9 +117,6 @@
     <ClCompile Include="HttpEnumerateDataStores.cpp">
       <Filter>Feature Service</Filter>
     </ClCompile>
-    <ClCompile Include="HttpExecuteSqlQuery.cpp">
-      <Filter>Feature Service</Filter>
-    </ClCompile>
     <ClCompile Include="HttpGetCapabilities.cpp">
       <Filter>Feature Service</Filter>
     </ClCompile>
@@ -460,9 +457,6 @@
       <Filter>Feature Service</Filter>
     </ClInclude>
     <ClInclude Include="HttpEnumerateDataStores.h">
-      <Filter>Feature Service</Filter>
-    </ClInclude>
-    <ClInclude Include="HttpExecuteSqlQuery.h">
       <Filter>Feature Service</Filter>
     </ClInclude>
     <ClInclude Include="HttpGetCapabilities.h">
