@@ -81,7 +81,7 @@ DllExport void SWIGSTDCALL SWIGRegisterCustomExceptionCallbacks_$module(SWIG_CSh
                 }
             }
             if (type == null)
-                exception = new Exception();
+                exception = new Exception("Exception (" + className + ") was thrown. No .net type could be found for this exception type");
             else
                 exception = Activator.CreateInstance(type, parameters);
         }
