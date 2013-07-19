@@ -5,10 +5,10 @@ rem
 rem Sets the required environment variables for the
 rem build.bat script
 rem
-rem Compiler defaults to vc9.0. To use the vc10
-rem compiler, call setenvironment.bat like so:
+rem This script must be run from the VS2012 command prompt
 rem 
-rem setenvironment64.bat vc10
+rem Cross-compilation is no longer supported by these scripts. 
+rem It's 2013, most of you should have a 64-bit box by now :)
 rem ==================================================
 rem Top-level vars
 rem ==================================================
@@ -17,24 +17,18 @@ SET TYPEACTION=build
 SET TYPEBUILD=Release64
 SET CONFIGURATION=Release
 SET PLATFORM=x64
+SET PLATFORM_CLR=x64
 SET TYPECOMPONENT=all
-SET VC_COMPILER_VERSION=9
-IF "%1" == "vc10" (
-SET VC_COMPILER_VERSION=10
-SET VC_X64_CROSS_COMPILE=0
-)
-IF "%1" == "vc10cross" (
-SET VC_COMPILER_VERSION=10
-SET VC_X64_CROSS_COMPILE=1
-)
 rem ==================================================
 rem MapGuide vars
 rem ==================================================
 SET MG_DEV=%CD%
 SET MG_OEM=%MG_DEV%\Oem
-rem DBXML seems to change frequently enough that we should externalize this information
 SET MG_OEM_DBXML=dbxml
 SET MG_OEM_DB=db-4.8.26
+SET MG_FDO_BIN=%MG_OEM%\FDO\Bin\%TYPEBUILD%
+SET MG_FDO_INC=%MG_OEM%\FDO\Inc
+SET MG_FDO_LIB=%MG_OEM%\FDO\Lib64
 SET MG_COMMON=%MG_DEV%\Common
 SET MG_SERVER=%MG_DEV%\Server
 SET MG_WEB=%MG_DEV%\Web
@@ -71,16 +65,14 @@ IF "%GNUWIN32%" == "" SET GNUWIN32=C:\Program Files (x86)\GnuWin32\bin
 IF "%SEVENZ%" == "" SET SEVENZ=%MG_DEV%\BuildTools\WebTools\7-Zip
 IF "%ANT_HOME%" == "" SET ANT_HOME=C:\apache-ant-1.8.3
 
-SET PATH=%PATH%;%DOXYGEN%;%GNUWIN32%;%SEVENZ%;%ANT_HOME%\bin;%MG_DEV%\BuildTools\DoxyTransform
+SET PATH=%PATH%;%DOXYGEN%;%GNUWIN32%;%SEVENZ%;%ANT_HOME%\bin
 
 rem ==================================================
 rem MSBuild Settings
 rem ==================================================
 
 rem If the NUMBER_OF_PROCESSORS environment variable is wrong for any reason. Change this value.
-rem Multi core builds seem to be broken
 SET CPU_CORES=%NUMBER_OF_PROCESSORS%
-rem SET CPU_CORES=1
 
 rem Uncomment the line below to enable msbuild logging
 rem SET MSBUILD_LOG=/l:FileLogger,Microsoft.Build.Engine;logfile=Build.log;verbosity=diagnostic
