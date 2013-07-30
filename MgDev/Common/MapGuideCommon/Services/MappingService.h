@@ -380,13 +380,13 @@ PUBLISHED_API:
     ///
     /// <!-- Syntax in .Net, Java, and PHP -->
     /// \htmlinclude DotNetSyntaxTop.html
-    /// virtual MgByteReader CreateRuntimeMap(MgResourceIdentifier mapDefinition, int requestedFeatures, int iconsPerScaleRange);
+    /// virtual MgByteReader CreateRuntimeMap(MgResourceIdentifier mapDefinition, string sessionId, int requestedFeatures, int iconsPerScaleRange);
     /// \htmlinclude SyntaxBottom.html
     /// \htmlinclude JavaSyntaxTop.html
-    /// virtual MgByteReader CreateRuntimeMap(MgResourceIdentifier mapDefinition, int requestedFeatures, int iconsPerScaleRange);
+    /// virtual MgByteReader CreateRuntimeMap(MgResourceIdentifier mapDefinition, String sessionId, int requestedFeatures, int iconsPerScaleRange);
     /// \htmlinclude SyntaxBottom.html
     /// \htmlinclude PHPSyntaxTop.html
-    /// virtual MgByteReader CreateRuntimeMap(MgResourceIdentifier mapDefinition, int requestedFeatures, int iconsPerScaleRange);
+    /// virtual MgByteReader CreateRuntimeMap(MgResourceIdentifier mapDefinition, string sessionId, int requestedFeatures, int iconsPerScaleRange);
     /// \htmlinclude SyntaxBottom.html
     ///
     /// \param mapDefinition (MgResourceIdentifier)
@@ -420,13 +420,13 @@ PUBLISHED_API:
     ///
     /// <!-- Syntax in .Net, Java, and PHP -->
     /// \htmlinclude DotNetSyntaxTop.html
-    /// virtual MgByteReader CreateRuntimeMap(MgResourceIdentifier mapDefinition, int iconWidth, int iconHeight, int requestedFeatures, int iconsPerScaleRange);
+    /// virtual MgByteReader CreateRuntimeMap(MgResourceIdentifier mapDefinition, string targetMapName, string sessionId, string iconFormat, int iconWidth, int iconHeight, int requestedFeatures, int iconsPerScaleRange);
     /// \htmlinclude SyntaxBottom.html
     /// \htmlinclude JavaSyntaxTop.html
-    /// virtual MgByteReader CreateRuntimeMap(MgResourceIdentifier mapDefinition, int iconWidth, int iconHeight, int requestedFeatures, int iconsPerScaleRange);
+    /// virtual MgByteReader CreateRuntimeMap(MgResourceIdentifier mapDefinition, String targetMapName, String sessionId, String iconFormat, int iconWidth, int iconHeight, int requestedFeatures, int iconsPerScaleRange);
     /// \htmlinclude SyntaxBottom.html
     /// \htmlinclude PHPSyntaxTop.html
-    /// virtual MgByteReader CreateRuntimeMap(MgResourceIdentifier mapDefinition, int iconWidth, int iconHeight, int requestedFeatures, int iconsPerScaleRange);
+    /// virtual MgByteReader CreateRuntimeMap(MgResourceIdentifier mapDefinition, string targetMapName, string sessionId, string iconFormat, int iconWidth, int iconHeight, int requestedFeatures, int iconsPerScaleRange);
     /// \htmlinclude SyntaxBottom.html
     ///
     /// \param mapDefinition (MgResourceIdentifier)
