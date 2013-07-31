@@ -14,11 +14,35 @@ rem Top-level vars
 rem ==================================================
 SET OLDPATH=%PATH%
 SET TYPEACTION=build
+SET TYPECOMPONENT=all
+
+SET TYPEBUILD=unknown
+SET CONFIGURATION=unknown
+SET PLATFORM=unknown
+SET PLATFORM_CLR=unknown
+
+SET PCONF=release
+if not "%1" == "" set PCONF=%1
+
+if "%PCONF%"=="debug" (
+SET TYPEBUILD=Debug64
+SET CONFIGURATION=Debug
+SET PLATFORM=x64
+SET PLATFORM_CLR=x64
+)
+
+IF "%PCONF%"=="release" (
 SET TYPEBUILD=Release64
 SET CONFIGURATION=Release
 SET PLATFORM=x64
 SET PLATFORM_CLR=x64
-SET TYPECOMPONENT=all
+)
+
+if "%TYPEBUILD%"=="unknown" (
+    echo Unknown configuration: %PCONF%
+    goto help_show
+)
+
 rem ==================================================
 rem MapGuide vars
 rem ==================================================
@@ -37,10 +61,14 @@ SET MG_WEB_BIN=%MG_WEB%\bin
 SET MG_UNIT_TEST=%MG_DEV%\UnitTest
 SET MG_FUSION=%MG_OEM%\Fusion
 SET MG_DOC=%MG_DEV%\Doc
-SET MG_DOC_XML=%MG_DOC%\mgopensource_xml
 SET MG_DOC_OUTPUT=%MG_DOC%\MgOpensource_WebAPIReference
 SET MG_DOC_DEVGUIDE_SAMPLES=%MG_DOC%\samples
 SET MG_BUILD_TEMP=%MG_DEV%\BuildTemp
+
+rem === Intermediate build vars ===
+SET MG_BUILD_DBXML_EXE_PATH=%MG_OEM%\%MG_OEM_DBXML%\bin64\%CONFIGURATION%
+SET MG_BUILD_SQLITE_PHP_API=%MG_OEM%\SQLite\bin\%TYPEBUILD%\php_SQLitePhpApi.dll
+SET MG_BUILD_MAPAGENT=%MG_WEB_SRC%\mapagent64\mod_mgmapagent.so
 
 SET MG_OUTPUT=%MG_DEV%\%TYPEBUILD%
 SET MG_OUTPUT_SERVER=%MG_OUTPUT%\Server
@@ -81,9 +109,33 @@ SET MSBUILD_VERBOSITY=/v:n
 rem ==================================================
 rem Command aliases
 rem ==================================================
-rem SET XCOPY=xcopy /E /Y /I /F
 SET XCOPY=xcopy /E /Y /I /Q /H
 SET XCOPY_SINGLE=xcopy /Y /I /Q
 SET MSBUILD=msbuild.exe /nologo /m:%CPU_CORES% /p:Configuration=%CONFIGURATION% /p:Platform=%PLATFORM% %MSBUILD_VERBOSITY% %MSBUILD_LOG%
 SET MSBUILD_CLEAN=msbuild.exe /nologo /m:%CPU_CORES% /p:Configuration=%CONFIGURATION% /p:Platform=%PLATFORM% /t:Clean %MSBUILD_VERBOSITY%
 SET ANT=ant
+
+echo ======== Environment Variable Summary =============
+echo Configuration is [%TYPEBUILD%, "%CONFIGURATION%|%PLATFORM%"]
+echo Deployment Directory for Server: %MG_OUTPUT_SERVER%
+echo Deployment Directory for Web: %MG_OUTPUT_WEB%
+echo CPU cores: %CPU_CORES%
+echo =================== FDO ===========================
+echo Binaries: %MG_FDO_BIN%
+echo Headers: %MG_FDO_INC%
+echo Libs: %MG_FDO_LIB%
+echo =================== Oem ===========================
+echo DBXML executables: %MG_BUILD_DBXML_EXE_PATH%
+echo SQLite PHP API: %MG_BUILD_SQLITE_PHP_API%
+echo mod_mgmapagent.so: %MG_BUILD_MAPAGENT%
+echo ===================================================
+echo Type build.bat to build MapGuide
+
+goto done
+
+:help_show
+echo ************************************************************************
+echo Usage: setenvironment64.bat [debug|release]
+echo If unspecified, configuration will default to release
+echo ************************************************************************
+:done

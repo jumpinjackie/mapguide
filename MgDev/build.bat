@@ -29,13 +29,10 @@ rem
 rem Usage:
 rem
 rem build.bat [-h]
-rem           [-v]
-rem           [-c=BuildType]
 rem           [-w=Component]
 rem           [-a=Action]
 rem           [-o=OutputDirectory]
 rem
-rem BuildType: Release(default), Debug, Release64, Debug64
 rem Component: all(default), oem, server, web, doc, common
 rem Action: build(default), install, clean
 rem OutputDirectory: The directory where files will be copied to if -a=install, if -o=default or -o=def then 
@@ -53,16 +50,12 @@ if (%1)==() goto pre_build_check
 if "%1"=="-help"    goto help_show
 if "%1"=="-h"       goto help_show
 
-if "%1"=="-c"       goto get_conf
-if "%1"=="-config"  goto get_conf
-
 if "%1"=="-a"       goto get_action
 if "%1"=="-action"  goto get_action
 
 if "%1"=="-w"       goto get_component
 if "%1"=="-with"    goto get_component
 
-if "%1"=="-v"       goto get_verbose
 if "%1"=="-o"       goto get_output
 
 goto custom_error
@@ -72,12 +65,6 @@ shift
 shift
 goto study_params
 
-:get_verbose
-SET MSBUILD_VERBOSITY=/v:d
-SET MSBUILD=msbuild.exe /nologo /m:%CPU_CORES% /p:Configuration=%CONFIGURATION% /p:Platform=%PLATFORM% %MSBUILD_VERBOSITY% %MSBUILD_LOG%
-SET MSBUILD_CLEAN=msbuild.exe /nologo /m:%CPU_CORES% /p:Configuration=%CONFIGURATION% /p:Platform=%PLATFORM% /t:Clean %MSBUILD_VERBOSITY%
-goto next_param
-
 :get_output
 SET MG_OUTPUT=%2
 if "%2" == "default" SET MG_OUTPUT=%MG_DEFAULT_INSTALLDIR%
@@ -86,46 +73,6 @@ SET MG_OUTPUT_SERVER=%MG_OUTPUT%\Server
 SET MG_OUTPUT_WEB=%MG_OUTPUT%\Web
 SET MG_OUTPUT_CSMAP=%MG_OUTPUT%\CS-Map
 goto next_param
-
-:get_conf
-SET TYPEBUILD=%2
-SET CONFIGURATION=invalid
-SET PLATFORM=invalid
-SET PLATFORM_CLR=invalid
-
-IF "%2"=="Release" (
-SET CONFIGURATION=Release
-SET PLATFORM=Win32
-SET PLATFORM_CLR=x86
-)
-
-IF "%2"=="Release64" (
-SET CONFIGURATION=Release
-SET PLATFORM=x64
-SET PLATFORM_CLR=x64
-)
-
-if "%2"=="Debug" (
-SET CONFIGURATION=Debug
-SET PLATFORM=Win32
-SET PLATFORM_CLR=x86
-)
-
-if "%2"=="Debug64" (
-SET CONFIGURATION=Debug
-SET PLATFORM=x64
-SET PLATFORM_CLR=x64
-)
-
-SET MSBUILD=msbuild.exe /nologo /m:%CPU_CORES% /p:Configuration=%CONFIGURATION% /p:Platform=%PLATFORM% %MSBUILD_VERBOSITY% %MSBUILD_LOG%
-SET MSBUILD_CLEAN=msbuild.exe /nologo /m:%CPU_CORES% /p:Configuration=%CONFIGURATION% /p:Platform=%PLATFORM% /t:Clean %MSBUILD_VERBOSITY%
-SET MG_OUTPUT=%MG_DEV%\%TYPEBUILD%
-SET MG_OUTPUT_SERVER=%MG_OUTPUT%\Server
-SET MG_OUTPUT_WEB=%MG_OUTPUT%\Web
-
-if NOT %CONFIGURATION%=="invalid" goto next_param
-SET ERRORMSG=Unrecognised configuration: %2
-goto custom_error
 
 :get_action
 SET TYPEACTION=%2
@@ -315,8 +262,7 @@ echo [install]: Server - WFS
 echo [install]: Server - WMS
 %XCOPY% "%MG_SERVER%\bin\%TYPEBUILD%\wms" "%MG_OUTPUT_SERVER%\wms" /EXCLUDE:svn_excludes.txt+%TYPEBUILD%_excludes.txt
 echo [install]: Server - DBXML
-copy /Y "%MG_OEM%\%MG_OEM_DBXML%\%MG_OEM_DB%\build_windows\%TYPEBUILD%32\*.exe" "%MG_OUTPUT_SERVER%\bin"
-copy /Y "%MG_OEM%\%MG_OEM_DBXML%\bin\*.exe" "%MG_OUTPUT_SERVER%\bin"
+copy /Y "%MG_BUILD_DBXML_EXE_PATH%\*.exe" "%MG_OUTPUT_SERVER%\bin"
 echo [install]: Server - RepositoryAdmin
 %XCOPY% "%MG_SERVER%\RepositoryAdmin" "%MG_OUTPUT_SERVER%\RepositoryAdmin" /EXCLUDE:svn_excludes.txt+%TYPEBUILD%_excludes.txt
 echo [install]: CsMap Dictionaries
@@ -362,13 +308,13 @@ echo [install]: Web Tier - mapviewerjava
 echo [install]: Web Tier - mapviewerjava - WEB-INF
 %XCOPY% "%MG_WEB_SRC%\WEB-INF" "%MG_OUTPUT_WEB%\www\WEB-INF" /EXCLUDE:svn_excludes.txt+%TYPEBUILD%_excludes.txt
 REM Required for Web Tier unit tests
-copy /Y "%MG_OEM%\SQLite\bin\win32\%TYPEBUILD%\php_SQLitePhpApi.dll" "%MG_OUTPUT_WEB%\Php\ext"
+copy /Y "%MG_BUILD_SQLITE_PHP_API%" "%MG_OUTPUT_WEB%\Php\ext"
 echo [install]: Web Tier - fusion
 call build_fusion.bat
 %XCOPY% "%MG_OEM%\fusion_build" "%MG_OUTPUT_WEB%\www\fusion" /EXCLUDE:%CONFIGURATION%_excludes.txt
 echo [install]: Web Tier - Apache module
 if not exist "%MG_OUTPUT_WEB%\Apache2\modules" mkdir "%MG_OUTPUT_WEB%\Apache2\modules"
-%XCOPY% /F "%MG_WEB_SRC%\mapagent\mod_mgmapagent.so" "%MG_OUTPUT_WEB%\Apache2\modules"
+%XCOPY% /F "%MG_BUILD_MAPAGENT%" "%MG_OUTPUT_WEB%\Apache2\modules"
 if "%TYPECOMPONENT%"=="server" goto quit
 if "%TYPECOMPONENT%"=="web" goto quit
 
@@ -412,14 +358,10 @@ echo Please use the format:
 :help_show
 echo ************************************************************************
 echo build.bat [-h]
-echo           [-v]
-echo           [-c=BuildType]
 echo           [-w=Component]
 echo           [-a=Action]
 echo           [-o=OutputDirectory]
 echo Help:                  -h[elp]
-echo Verbose:               -v
-echo BuildType:             -c[onfig]=Release(default), Debug, Release64, Debug64
 echo Action:                -a[ction]=build(default),
 echo                                  install,
 echo                                  clean,
@@ -431,24 +373,3 @@ echo                                doc
 echo ************************************************************************
 :quit
 SET TYPEACTION=
-REM SET TYPEBUILD=
-REM SET MG_OUTPUT=
-REM SET MG_BUILD_COMPONENT=
-REM SET MG_DEV=
-REM SET MG_INSTALLER=
-REM SET MG_OEM=
-REM SET MG_SERVER=
-REM SET MG_WEB=
-REM SET MG_WEB_SRC=
-REM SET MG_WEB_BIN=
-REM SET MG_UNIT_TEST=
-REM SET MG_FUSION=
-REM SET MG_DOC=
-REM SET MG_DOC_OUTPUT=
-REM SET MG_ERROR=
-
-REM SET MSBUILD_LOG=
-REM SET MSBUILD_VERBOSITY=
-REM SET XCOPY=
-REM SET MSBUILD=
-REM SET PATH=%OLDPATH%
