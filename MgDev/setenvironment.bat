@@ -129,7 +129,7 @@ goto done
 
 :help_show
 echo ************************************************************************
-echo Usage: setenvironment64.bat [debug|release]
+echo Usage: setenvironment.bat [debug|release]
 echo If unspecified, configuration will default to release
 echo ************************************************************************
 :done
