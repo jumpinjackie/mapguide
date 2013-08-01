@@ -112,7 +112,9 @@ rem ==================================================
 SET XCOPY=xcopy /E /Y /I /Q /H
 SET XCOPY_SINGLE=xcopy /Y /I /Q
 SET MSBUILD=msbuild.exe /nologo /m:%CPU_CORES% /p:Configuration=%CONFIGURATION% /p:Platform=%PLATFORM% %MSBUILD_VERBOSITY% %MSBUILD_LOG%
+SET MSBUILD_CLR=msbuild.exe /nologo /m:%CPU_CORES% /p:Configuration=%CONFIGURATION% /p:Platform=%PLATFORM_CLR% %MSBUILD_VERBOSITY% %MSBUILD_LOG%
 SET MSBUILD_CLEAN=msbuild.exe /nologo /m:%CPU_CORES% /p:Configuration=%CONFIGURATION% /p:Platform=%PLATFORM% /t:Clean %MSBUILD_VERBOSITY%
+SET MSBUILD_CLEAN_CLR=msbuild.exe /nologo /m:%CPU_CORES% /p:Configuration=%CONFIGURATION% /p:Platform=%PLATFORM_CLR% /t:Clean %MSBUILD_VERBOSITY%
 SET ANT=ant
 
 echo ======== Environment Variable Summary =============
